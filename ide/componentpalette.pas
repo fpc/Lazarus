@@ -60,7 +60,7 @@ type
     OpenPackageMenuItem: TMenuItem;
     OpenUnitMenuItem: TMenuItem;
     procedure ActivePageChanged(Sender: TObject);
-    procedure OnPageResize(Sender: TObject);
+    procedure OnScrollBoxResize(Sender: TObject);
     procedure OpenPackageClicked(Sender: TObject);
     procedure OpenUnitClicked(Sender: TObject);
     procedure ComponentListClicked(Sender: TObject);
@@ -175,16 +175,17 @@ end;
 procedure TComponentPalette.ActivePageChanged(Sender: TObject);
 begin
   if FPageControl=nil then exit;
+  ReAlignButtons(FPageControl.ActivePage);
   if (FSelected<>nil)
   and (FSelected.Page.PageComponent=FPageControl.ActivePage)
   then exit;
   Selected:=nil;
 end;
 
-procedure TComponentPalette.OnPageResize(Sender: TObject);
+procedure TComponentPalette.OnScrollBoxResize(Sender: TObject);
 begin
-  if Sender is TCustomPage then
-    ReAlignButtons(TCustomPage(Sender));
+  if TControl(Sender).Parent is TCustomPage then
+    ReAlignButtons(TCustomPage(TControl(Sender).Parent));
 end;
 
 procedure TComponentPalette.OpenPackageClicked(Sender: TObject);
@@ -547,6 +548,7 @@ var
   ScrollBox: TScrollBox;
 begin
   //DebugLn(['TComponentPalette.ReAlignButtons ',Page.Caption,' ',Page.ClientWidth]);
+  if not Page.Visible then exit;
   if FPageControl<>nil then
     PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
   ButtonTree:=nil;
@@ -568,6 +570,7 @@ begin
     {$IF DEFINED(LCLGTK2) OR DEFINED(LCLQT)}
     MaxBtnPerRow:=((ScrollBox.ClientWidth - ScrollBox.VertScrollBar.Size - ButtonX) div ComponentPaletteBtnWidth);
     {$ELSE}
+    debugln(['TComponentPalette.ReAlignButtons ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),' ClientRect=',dbgs(ScrollBox.ClientRect),' VertScrollBar.Size=',ScrollBox.VertScrollBar.Size,' ClientSizeWithoutBar=',ScrollBox.VertScrollBar.ClientSizeWithoutBar]);
     MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
     // If we need to wrap, make sure we have space for the scrollbar
     if MaxBtnPerRow < ButtonTree.Count then
@@ -802,8 +805,8 @@ var
     CompPage := Pages[aPageIndex];
     if not CompPage.Visible then Exit;
     CurNoteBookPage := CompPage.PageComponent;
-    CurNoteBookPage.OnResize := @OnPageResize;
     CurScrollBox := CurNoteBookPage.Components[0] as TScrollBox;
+    CurScrollBox.OnResize := @OnScrollBoxResize;
     //DebugLn(['TComponentPalette.UpdateNoteBookButtons PAGE=',CompPage.PageName,' PageIndex=',CurNoteBookPage.PageIndex]);
     // create selection button
     CreateSelectionButton(CompPage, IntToStr(aPageIndex), CurScrollBox);
