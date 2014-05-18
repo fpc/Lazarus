@@ -15324,7 +15324,9 @@ msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%s
 msgstr "La classe %s%s%s est un TControl et ne peut pas être collée ailleurs que dans un contrôle.%sCollage imposible."
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
-msgid "The codetools found an error:%s%s%s"
+#, fuzzy
+#| msgid "The codetools found an error:%s%s%s"
+msgid "The Codetools found an error:%s%s%s"
 msgstr "L'outil de code a décelé une erreur:% s% s% s"
 
 #: lazarusidestrconsts.listhecommandafterisnotexecutable
