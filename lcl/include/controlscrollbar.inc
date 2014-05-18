@@ -437,14 +437,14 @@ function TControlScrollBar.ClientSizeWithBar: integer;
 begin
   Result := ClientSize;
   if not IsScrollBarVisible then
-    dec(Result, GetSize+3);
+    dec(Result, GetSize);
 end;
 
 function TControlScrollBar.ClientSizeWithoutBar: integer;
 begin
   Result:=ClientSize;
   if IsScrollBarVisible then
-    inc(Result, GetSize+3);
+    inc(Result, GetSize);
 end;
 
 function TControlScrollBar.GetHorzScrollBar: TControlScrollBar;
