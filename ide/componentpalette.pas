@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, Controls, Forms, Graphics, ComCtrls, Buttons, FileUtil,
   LazFileCache, Menus, LResources, AVL_Tree, PropEdits, FormEditingIntf,
-  LazIDEIntf, IDEProcs, LCLProc, ExtCtrls,
+  LazIDEIntf, IDEProcs, LCLProc, ExtCtrls, LCLIntf,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
@@ -546,6 +546,7 @@ var
   ButtonTree: TAVLTree;
   Node: TAVLTreeNode;
   ScrollBox: TScrollBox;
+  //WSClientRect: TRect;
 begin
   //DebugLn(['TComponentPalette.ReAlignButtons ',Page.Caption,' ',Page.ClientWidth]);
   if not Page.Visible then exit;
@@ -567,15 +568,13 @@ begin
 
     ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
-    {$IFDEF LCLGTK2}
-    MaxBtnPerRow:=((ScrollBox.ClientWidth - ScrollBox.VertScrollBar.Size - ButtonX) div ComponentPaletteBtnWidth);
-    {$ELSE}
-    debugln(['TComponentPalette.ReAlignButtons ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),' ClientRect=',dbgs(ScrollBox.ClientRect),' VertScrollBar.Size=',ScrollBox.VertScrollBar.Size,' ClientSizeWithoutBar=',ScrollBox.VertScrollBar.ClientSizeWithoutBar]);
+    //GetClientRect(ScrollBox.Handle,WSClientRect);
+    //debugln(['TComponentPalette.ReAlignButtons ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),' ClientRect=',dbgs(ScrollBox.ClientRect),' WSClientRect=',dbgs(WSClientRect),' VertScrollBar.Size=',ScrollBox.VertScrollBar.Size,' ClientSizeWithoutBar=',ScrollBox.VertScrollBar.ClientSizeWithoutBar,' IsScrollBarVisible=',ScrollBox.VertScrollBar.IsScrollBarVisible]);
     MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
     // If we need to wrap, make sure we have space for the scrollbar
     if MaxBtnPerRow < ButtonTree.Count then
       MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithBar - ButtonX) div ComponentPaletteBtnWidth);
-    {$ENDIF}
+    //debugln(['TComponentPalette.ReAlignButtons MaxBtnPerRow=',MaxBtnPerRow,' ButtonTree.Count=',ButtonTree.Count,' ',ButtonX + MaxBtnPerRow * ComponentPaletteBtnWidth]);
     if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
 
     j:=0;
