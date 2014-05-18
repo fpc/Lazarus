@@ -3908,14 +3908,8 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_CYDOUBLECLK      ');
       end;
-    SM_CXDRAG:
-      begin
-        Result := 2;
-      end;
-    SM_CYDRAG:
-      begin
-        Result := 2;
-      end;
+    SM_CXDRAG,
+    SM_CYDRAG: QApplication_startDragDistance();
     SM_CXEDGE:
       begin
         Result := 2;
