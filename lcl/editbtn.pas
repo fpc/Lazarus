@@ -418,7 +418,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure InvalidateFilter;
-    function ForceFilter(AFilter : String = '') : String;
+    procedure Reset;
+    function ForceFilter(AFilter: String) : String;
     procedure StoreSelection; virtual; abstract;
     procedure RestoreSelection; virtual; abstract;
   public
@@ -1891,10 +1892,8 @@ begin
     fSelectedPart:=Nil;
     RestoreSelection;
   end
-  else begin
-    if [csDestroying,csDesigning]*ComponentState=[] then
-      InvalidateFilter;
-  end;
+  else if [csDestroying,csDesigning]*ComponentState=[] then
+    InvalidateFilter;
 end;
 
 procedure TCustomControlFilterEdit.InvalidateFilter;
@@ -1903,7 +1902,13 @@ begin
   IdleConnected:=true;
 end;
 
+procedure TCustomControlFilterEdit.Reset;
+begin
+  Filter := '';
+end;
+
 function TCustomControlFilterEdit.ForceFilter(AFilter: String): String;
+// Apply a new filter immediately without waiting for idle. Returns the previous filter.
 begin
   Result := FFilter;
   FFilter := AFilter;

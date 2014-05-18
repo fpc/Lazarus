@@ -1796,7 +1796,7 @@ var
   OldFilter : String;
 begin
   if LazPackage=nil then exit;
-  OldFilter := FilterEdit.ForceFilter;
+  OldFilter := FilterEdit.ForceFilter('');
 
   // files belonging to package
   FilesBranch:=FilterEdit.GetBranch(FFilesNode);
@@ -1849,7 +1849,7 @@ var
   NodeData: TPENodeData;
 begin
   if LazPackage=nil then exit;
-  OldFilter := FilterEdit.ForceFilter;
+  OldFilter := FilterEdit.ForceFilter('');
 
   // required packages
   RequiredBranch:=FilterEdit.GetBranch(FRequiredPackagesNode);
@@ -2437,7 +2437,7 @@ var
 begin
   EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
   EnvironmentOptions.PackageEditorShowDirHierarchy := ShowDirectoryHierarchy;
-  FilterEdit.ForceFilter;
+  FilterEdit.ForceFilter('');
   for nt:=Low(TPENodeType) to High(TPENodeType) do
     FreeNodeData(nt);
   if PackageEditorMenuRoot.MenuItem=FilesPopupMenu.Items then
