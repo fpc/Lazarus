@@ -567,7 +567,7 @@ begin
 
     ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
-    {$IF DEFINED(LCLGTK2) OR DEFINED(LCLQT)}
+    {$IFDEF LCLGTK2}
     MaxBtnPerRow:=((ScrollBox.ClientWidth - ScrollBox.VertScrollBar.Size - ButtonX) div ComponentPaletteBtnWidth);
     {$ELSE}
     debugln(['TComponentPalette.ReAlignButtons ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),' ClientRect=',dbgs(ScrollBox.ClientRect),' VertScrollBar.Size=',ScrollBox.VertScrollBar.Size,' ClientSizeWithoutBar=',ScrollBox.VertScrollBar.ClientSizeWithoutBar]);
