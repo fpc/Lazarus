@@ -480,7 +480,8 @@ type
                         // and are not compiled into projects.
                         // The IDE calls the 'register' procedures of each unit.
     lptRunAndDesignTime,// RunAndDesignTime packages can do anything.
-    lptRunTimeOnly      // as lptRunTime, but they can not be used in the IDE
+    lptRunTimeOnly      // as lptRunTime, but they can not be installed in the
+                        // IDE, not even indirectly
     );
   TLazPackageTypes = set of TLazPackageType;
     
