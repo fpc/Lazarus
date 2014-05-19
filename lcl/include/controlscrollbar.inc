@@ -437,7 +437,7 @@ function TControlScrollBar.ClientSizeWithBar: integer;
 begin
   Result := ClientSize;
   if not IsScrollBarVisible then
-    dec(Result, GetSize);
+    Result := Max(0,Result-GetSize);
 end;
 
 function TControlScrollBar.ClientSizeWithoutBar: integer;
