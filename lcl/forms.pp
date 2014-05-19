@@ -80,12 +80,12 @@ type
 
   TControlScrollBar = class(TPersistent)
   private
-    FAutoRange: Longint; // = FRange - ClientSize, >=0
+    FAutoRange: Longint; // = Max(0, FRange - ClientSize)
     FIncrement: TScrollBarInc;
     FKind: TScrollBarKind;
     FPage: TScrollBarInc;
     FPosition: Integer;
-    FRange: Integer;
+    FRange: Integer; // if AutoScroll=true this is the needed size of the child controls
     FSmooth: Boolean;
     FTracking: Boolean;
     FVisible: Boolean;
@@ -103,7 +103,6 @@ type
     function GetSmooth: Boolean; virtual;
     function HandleAllocated: boolean; virtual;
     function IsRangeStored: boolean; virtual;
-    procedure AutoCalcRange; virtual;
     procedure ControlUpdateScrollBars; virtual;
     procedure InternalSetRange(const AValue: Integer); virtual;
     procedure ScrollHandler(var Message: TLMScroll);
@@ -158,13 +157,14 @@ type
     class procedure WSRegisterClass; override;
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     function AutoScrollEnabled: Boolean; virtual;
+    procedure CalculateAutoRanges; virtual;
     procedure CreateWnd; override;
     function GetClientScrollOffset: TPoint; override;
     function GetLogicalClientRect: TRect; override;// logical size of client area
     procedure DoOnResize; override;
     procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
     procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
-    function ComputeScrollbars: Boolean; virtual;
+    procedure ComputeScrollbars; virtual;
     procedure ScrollbarHandler(ScrollKind: TScrollBarKind;
                                OldPosition: Integer); virtual;
     procedure SetAutoScroll(Value: Boolean); virtual;
