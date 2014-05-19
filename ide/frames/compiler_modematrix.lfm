@@ -27,7 +27,7 @@ object CompOptModeMatrixFrame: TCompOptModeMatrixFrame
       ShowHint = True
     end
     object BMMMoveDownButton: TToolButton
-      Left = 26
+      Left = 24
       Top = 0
       Caption = 'Down'
       OnClick = BMMMoveDownButtonClick
@@ -35,7 +35,7 @@ object CompOptModeMatrixFrame: TCompOptModeMatrixFrame
       ShowHint = True
     end
     object BMMUndoButton: TToolButton
-      Left = 78
+      Left = 74
       Top = 0
       Caption = 'Undo'
       OnClick = BMMUndoButtonClick
@@ -43,7 +43,7 @@ object CompOptModeMatrixFrame: TCompOptModeMatrixFrame
       ShowHint = True
     end
     object BMMRedoToolButton: TToolButton
-      Left = 119
+      Left = 111
       Top = 0
       Caption = 'Redo'
       OnClick = BMMRedoToolButtonClick
@@ -51,36 +51,36 @@ object CompOptModeMatrixFrame: TCompOptModeMatrixFrame
       ShowHint = True
     end
     object BMMDeleteButton: TToolButton
-      Left = 408
+      Left = 385
       Top = 0
       Caption = 'Delete'
       OnClick = BMMDeleteButtonClick
       ParentShowHint = False
       ShowHint = True
     end
-    object ToolButton1: TToolButton
-      Left = 68
+    object MoveSepToolButton: TToolButton
+      Left = 64
       Top = 0
       Width = 10
-      Caption = 'ToolButton1'
+      Caption = 'MoveSepToolButton'
       Style = tbsSeparator
     end
-    object ToolButton2: TToolButton
-      Left = 158
+    object DoSepToolButton: TToolButton
+      Left = 148
       Top = 0
       Width = 10
-      Caption = 'ToolButton2'
+      Caption = 'DoSepToolButton'
       Style = tbsSeparator
     end
-    object ToolButton3: TToolButton
-      Left = 398
+    object AddOtherSepToolButton: TToolButton
+      Left = 375
       Top = 0
       Width = 10
-      Caption = 'ToolButton3'
+      Caption = 'AddOtherSepToolButton'
       Style = tbsSeparator
     end
     object BMMAddOtherButton: TToolButton
-      Left = 315
+      Left = 297
       Top = 0
       Caption = 'Add Other'
       DropdownMenu = BMMAddOtherPopupMenu
@@ -88,17 +88,17 @@ object CompOptModeMatrixFrame: TCompOptModeMatrixFrame
       Style = tbsDropDown
     end
     object BMMAddLclWidgetButton: TToolButton
-      Left = 168
+      Left = 158
       Top = 0
       Caption = 'Add LCLWidgetType'
       OnClick = BMMAddLclWidgetButtonClick
       Style = tbsDropDown
     end
-    object ToolButton4: TToolButton
-      Left = 305
+    object LCLMacroSepToolButton: TToolButton
+      Left = 287
       Top = 0
       Width = 10
-      Caption = 'ToolButton4'
+      Caption = 'LCLMacroSepToolButton'
       Style = tbsSeparator
     end
   end

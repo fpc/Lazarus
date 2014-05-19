@@ -24,7 +24,6 @@
    Options frame for build mode matrix options.
 
  ToDo:
-   - add checkbox "Show build modes" when there is only one build mode
    - editor for targets
    - show pick list icon for type column
    - undo: combine changes while editing a cell
@@ -60,11 +59,11 @@ type
     BMMAddOtherButton: TToolButton;
     BMMNewIDEMacroMenuItem: TMenuItem;
     BMMNewOutDirMenuItem: TMenuItem;
-    ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
-    ToolButton3: TToolButton;
+    MoveSepToolButton: TToolButton;
+    DoSepToolButton: TToolButton;
+    AddOtherSepToolButton: TToolButton;
     BMMAddLclWidgetButton: TToolButton;
-    ToolButton4: TToolButton;
+    LCLMacroSepToolButton: TToolButton;
     procedure BMMDeleteButtonClick(Sender: TObject);
     procedure BMMMoveDownButtonClick(Sender: TObject);
     procedure BMMMoveUpButtonClick(Sender: TObject);
@@ -617,25 +616,31 @@ var
   List: TStringList;
   MenuIndex: Integer;
   MacroMenuItem: TMenuItem;
+  PkgList: TFPList;
 begin
   LCLWidgetTypeMacro:=Nil;
+  PkgList:=nil;
   List:=TStringList.Create;
   try
     // First collect all macros from all used packages to a sorted list.
-    for i:=0 to PackageGraph.Count-1 do begin
-      Pkg:=PackageGraph[i];
-      Macros:=Pkg.CompilerOptions.BuildMacros;
-      for j:=0 to Macros.Count-1 do begin
-        Macro:=Macros[j];
-        if Macro.Identifier = 'LCLWidgetType' then
-          LCLWidgetTypeMacro:=Macro
-        else if IsValidIdent(Macro.Identifier) then
-          List.AddObject(Macro.Identifier,Macro);
+    PackageGraph.GetAllRequiredPackages(nil,LazProject.FirstRequiredDependency,PkgList);
+    if PkgList<>nil then begin
+      for i:=0 to PkgList.Count-1 do begin
+        Pkg:=TLazPackage(PkgList[i]);
+        Macros:=Pkg.CompilerOptions.BuildMacros;
+        for j:=0 to Macros.Count-1 do begin
+          Macro:=Macros[j];
+          if Macro.Identifier = 'LCLWidgetType' then
+            LCLWidgetTypeMacro:=Macro
+          else if IsValidIdent(Macro.Identifier) then
+            List.AddObject(Macro.Identifier,Macro);
+        end;
       end;
     end;
     List.Sort;
     // LCLWidgetType gets its own button.
     BMMAddLclWidgetButton.Visible:=Assigned(LCLWidgetTypeMacro);
+    LCLMacroSepToolButton.Visible:=BMMAddLclWidgetButton.Visible;
     if Assigned(LCLWidgetTypeMacro) then
       AddLCLWidgetTypeValues(BMMAddLclWidgetPopupMenu, LCLWidgetTypeMacro);
     // Place other macros to the popup menu opened from "Add" button.
@@ -650,6 +655,7 @@ begin
       AddMacroValues(MacroMenuItem, Macro);
     end;
   finally
+    PkgList.Free;
     List.Free;
   end;
 end;
@@ -743,7 +749,7 @@ begin
   try
     Grid.StoreUndo;
     MatRow:=Grid.Matrix[aRow-1];
-    debugln(['TCompOptModeMatrix.CreateNewOption ',DbgSName(MatRow),' ',MatRow.AsString]);
+    //debugln(['TCompOptModeMatrix.CreateNewOption ',DbgSName(MatRow),' ',MatRow.AsString]);
     if MatRow is TGroupedMatrixGroup then begin
       Group:=TGroupedMatrixGroup(MatRow);
       if Group.Group=nil then begin
@@ -1147,7 +1153,6 @@ begin
   BMMAddOtherButton.Caption:=lisAdd;
 
   UpdateButtons;
-  FillMenus;
 end;
 
 destructor TCompOptModeMatrixFrame.Destroy;
@@ -1181,7 +1186,7 @@ begin
   //debugln(['TCompOptModeMatrix.ReadSettings ',DbgSName(AOptions)]);
   if not (AOptions is TProjectCompilerOptions) then exit;
   CompOptions:=TProjectCompilerOptions(AOptions);
-  if FProject=CompOptions.LazProject then begin
+  if LazProject=CompOptions.LazProject then begin
     // options already loaded, only active compiler options are reloaded
     UpdateActiveMode;
     exit;
@@ -1190,6 +1195,7 @@ begin
   fProject:=CompOptions.LazProject;
 
   UpdateModes(false);
+  FillMenus;
 
   // read IDE options
   AssignBuildMatrixOptionsToGroup(EnvironmentOptions.BuildMatrixOptions,
