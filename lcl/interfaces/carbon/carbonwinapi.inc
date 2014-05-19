@@ -3927,7 +3927,15 @@ end;
 
 function TCarbonWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
   bShow: Boolean): Boolean;
+var
+  CarbonControl: TCarbonControl;
 begin
+  Result:=false;
+
+  CarbonControl := TCarbonControl(Handle);
+
+  // ToDo:
+
   Result:=inherited ShowScrollBar(Handle, wBar, bShow);
 end;
 

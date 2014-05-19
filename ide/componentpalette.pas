@@ -568,8 +568,17 @@ begin
 
     ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
-    //GetClientRect(ScrollBox.Handle,WSClientRect);
-    //debugln(['TComponentPalette.ReAlignButtons ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),' ClientRect=',dbgs(ScrollBox.ClientRect),' WSClientRect=',dbgs(WSClientRect),' VertScrollBar.Size=',ScrollBox.VertScrollBar.Size,' ClientSizeWithoutBar=',ScrollBox.VertScrollBar.ClientSizeWithoutBar,' IsScrollBarVisible=',ScrollBox.VertScrollBar.IsScrollBarVisible]);
+    {GetClientRect(ScrollBox.Handle,WSClientRect);
+    debugln(['TComponentPalette.ReAlignButtons ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),
+      ' ClientRect=',dbgs(ScrollBox.ClientRect),' WSClientRect=',dbgs(WSClientRect),
+      ' VertScrollBar.Size=',ScrollBox.VertScrollBar.Size,
+      ' ClientSizeWithoutBar=',ScrollBox.VertScrollBar.ClientSizeWithoutBar,
+      ' IsScrollBarVisible=',ScrollBox.VertScrollBar.IsScrollBarVisible,
+      ' HorzScrollBar.Size=',ScrollBox.HorzScrollBar.Size,
+      ' Page=',ScrollBox.HorzScrollBar.Page,
+      ' Range=',ScrollBox.HorzScrollBar.Range,
+      ' IsScrollBarVisible=',ScrollBox.HorzScrollBar.IsScrollBarVisible
+      ]);}
     MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
     // If we need to wrap, make sure we have space for the scrollbar
     if MaxBtnPerRow < ButtonTree.Count then

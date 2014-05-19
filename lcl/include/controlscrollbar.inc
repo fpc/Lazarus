@@ -233,10 +233,10 @@ begin
       ScrollInfo.nTrackPos := TrackToPolicyMap[FTracking];
       SetScrollInfo(ControlHandle, IntfBarKind[Kind], ScrollInfo, NewVisible);
     end;
-    ShowScrollBar(FControl.Handle, IntfBarKind[Kind], NewVisible);
+    ShowScrollBar(ControlHandle, IntfBarKind[Kind], NewVisible);
     {$IFDEF VerboseScrollingWinControl}
     //if DebugCondition then
-      DebugLn(['TControlScrollBar.UpdateScrollBar ',DbgSName(FControl),' ',DbgSName(Self),' ',dbgs(Kind),' FVisible=',FVisible,' Range=',FRange,' FPosition=',FPosition,' FPage=',FPage,' FAutoRange=',FAutoRange,' ShouldVisible=',NewVisible]);
+      DebugLn(['TControlScrollBar.UpdateScrollBar ',DbgSName(FControl),' ',DbgSName(Self),' ',dbgs(Kind),' FVisible=',FVisible,' Range=',FRange,' FPosition=',FPosition,' FPage=',FPage,' FAutoRange=',FAutoRange,' ShouldVisible=',NewVisible,' IsVisible=',IsScrollBarVisible]);
     {$ENDIF}
   end;
 
