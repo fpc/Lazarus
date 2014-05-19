@@ -1034,13 +1034,17 @@ var
   TranslatedMsg: String;
 
   procedure CheckFinalNote;
-  // check if there was already a message of this urgency
+  // check if there was already an error message
   // if yes, then downgrade this message to a mluVerbose
+  var
+    u: TMessageLineUrgency;
   begin
-    i:=Tool.WorkerMessages.Count-1;
-    if (i>=0) and (Tool.WorkerMessages[i].Urgency>=MsgType) then begin
-      MsgType:=mluVerbose;
-    end;
+    for u:=mluError to high(TMessageLineUrgency) do
+      if Tool.WorkerMessages.UrgencyCounts[u]>0 then
+      begin
+        MsgType:=mluVerbose;
+        exit;
+      end;
   end;
 
 begin
@@ -1050,7 +1054,8 @@ begin
     MsgType:=mluFatal;
     // check for "Fatal: compilation aborted"
     MsgItem:=MsgFile.GetMsg(MsgIDCompilationAborted);
-    if (MsgItem<>nil) and ReadString(p,MsgItem.Pattern) then
+    p2:=p;
+    if (MsgItem<>nil) and ReadString(p2,MsgItem.Pattern) then
       CheckFinalNote;
   end
   else if ReadString(p,'Panic') then
