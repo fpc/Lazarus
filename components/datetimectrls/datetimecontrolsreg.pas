@@ -36,7 +36,8 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('Common Controls', [TDateTimePicker, TDBDateTimePicker]);
+  RegisterComponents('Common Controls', [TDateTimePicker]);
+  RegisterComponents('Data Controls', [TDBDateTimePicker]);
 end;
 
 initialization
