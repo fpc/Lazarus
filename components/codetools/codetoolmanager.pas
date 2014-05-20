@@ -2237,6 +2237,7 @@ var
   CursorPos: TCodeXYPosition;
 begin
   Result:=false;
+  CodeContexts:=nil;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindCodeContext A ',Code.Filename,' x=',dbgs(x),' y=',dbgs(y));
   {$ENDIF}
