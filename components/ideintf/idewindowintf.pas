@@ -1537,6 +1537,7 @@ procedure TSimpleWindowLayoutList.ApplyAndShow(Sender: TObject; AForm: TCustomFo
   var
     Overlap: TRect;
   begin
+    Overlap:=Rect(0,0,0,0);
     IntersectRect(Overlap, AForm.BoundsRect, AForm.Monitor.WorkareaRect);
     Result := (Overlap.Bottom > Overlap.Top + 1) and
               (Overlap.Right > Overlap.Left + 1);

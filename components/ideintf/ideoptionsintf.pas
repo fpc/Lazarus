@@ -509,7 +509,7 @@ function TAbstractIDEOptionsEditor.ContainsTextInCaption(AText: string): Boolean
 var
   LowerText: String;
 
-  function SearchComboBox(AControl: TCustomComboBox): Boolean;
+  function SearchComboBox({%H-}AControl: TCustomComboBox): Boolean;
   begin
     Result:=False;  // ToDo...
   end;
@@ -530,17 +530,17 @@ var
     end;
   end;
 
-  function SearchListView(AControl: TCustomListView): Boolean;
+  function SearchListView({%H-}AControl: TCustomListView): Boolean;
   begin
     Result:=False;  // ToDo...
   end;
 
-  function SearchTreeView(AControl: TCustomTreeView): Boolean;
+  function SearchTreeView({%H-}AControl: TCustomTreeView): Boolean;
   begin
     Result:=False;  // ToDo...
   end;
 
-  function SearchStringGrid(AControl: TCustomStringGrid): Boolean;
+  function SearchStringGrid({%H-}AControl: TCustomStringGrid): Boolean;
   begin
     Result:=False;  // ToDo...
   end;
