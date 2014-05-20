@@ -974,7 +974,7 @@ type
     property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
     property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
     property Color default {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
-    property FullRepaint: Boolean read FFullRepaint write FFullRepaint default True;
+    property FullRepaint: Boolean read FFullRepaint write FFullRepaint default True; // exists only for Delphi compatibility, has no effect in LCL
     property ParentColor default true;
     property TabStop default False;
   end;
