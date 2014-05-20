@@ -25,6 +25,9 @@ The license directory tree:
  +- tools           (GPLv2)
  |
  +- lcl             (modified LGPL)
+ |                  With the exception of the customdrawn/android interface,
+ |                  where some files are licensed under the
+ |                  Apache Licence, Version 2.
  |
  +- components/
     |
