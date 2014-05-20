@@ -437,14 +437,14 @@ function TControlScrollBar.ClientSizeWithBar: integer;
 begin
   Result := ClientSize;
   if not IsScrollBarVisible then
-    Result := Max(0,Result-GetSize);
+    Result := Max(0,Result-GetSize-GetSystemMetrics(SM_SWSCROLLBARSPACING));
 end;
 
 function TControlScrollBar.ClientSizeWithoutBar: integer;
 begin
   Result:=ClientSize;
   if IsScrollBarVisible then
-    inc(Result, GetSize);
+    inc(Result, GetSize+GetSystemMetrics(SM_SWSCROLLBARSPACING));
 end;
 
 function TControlScrollBar.GetHorzScrollBar: TControlScrollBar;
