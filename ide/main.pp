@@ -1922,6 +1922,7 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF IDE_DEBUG}
@@ -1942,6 +1943,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   CTResult: Boolean;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF IDE_DEBUG}
@@ -1968,6 +1970,7 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
     Exit;
   {$IFDEF IDE_DEBUG}
@@ -3925,6 +3928,7 @@ begin
   SelAvail:=False;
   IdentFound:=False;
   StringFound:=False;
+  ASrcEdit:=nil;
   if BeginCodeTool(ASrcEdit,AnUnitInfo,[]) then begin
     Assert(Assigned(ASrcEdit));
     Editable:=not ASrcEdit.ReadOnly;
@@ -4954,6 +4958,7 @@ var
   AProject: TProject;
 begin
   //debugln(['TMainIDE.DoProjectOptionsBeforeRead ',DbgSName(Sender)]);
+  ActiveSrcEdit:=nil;
   BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
   AProject:=TProject(Sender);
   AProject.BackupSession;
@@ -6339,6 +6344,7 @@ begin
   Result:=DoOpenEditorFile(AFilename, PageIndex, WindowIndex, Flags);
   if Result<>mrOk then exit;
   Result:=mrCancel;
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   if CodeToolBoss.FindDeclarationInInterface(ActiveUnitInfo.Source,
     AnIdentifier,NewSource, NewX, NewY, NewTopLine)
@@ -6648,6 +6654,7 @@ var
   MsgResult: TModalResult;
 begin
   Result:=mrCancel;
+  ActiveSourceEditor:=nil;
   if not BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]) then exit;
   if (ActiveUnitInfo=nil) then exit;
   if ActiveUnitInfo.IsPartOfProject then begin
@@ -7792,6 +7799,7 @@ var
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then exit;
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   Result:=DoSaveProject([]);
   if Result<>mrOk then exit;
@@ -7891,6 +7899,7 @@ var
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then exit;
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
     Result:=DoSaveEditorFile(ActiveSrcEdit,[sfCheckAmbiguousFiles]);
@@ -7985,6 +7994,7 @@ var
   s: String;
 begin
   Result:=mrCancel;
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
     Result:=DoSaveEditorFile(ActiveSrcEdit,[sfCheckAmbiguousFiles]);
@@ -9884,6 +9894,7 @@ var
   ActiveSrcEdit: TSourceEditor;
 begin
   ADirectivesTool:=nil;
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   CodeToolBoss.ExploreDirectives(ActiveUnitInfo.Source,ADirectivesTool);
 end;
@@ -9905,6 +9916,7 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
+  ActiveSrcEdit:=nil;
   Abort:=not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]);
 end;
 
@@ -9988,6 +10000,7 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
+  ActiveSrcEdit:=nil;
   Result:=BeginCodeTool(nil,ActiveSrcEdit,ActiveUnitInfo,
                         [ctfSourceEditorNotNeeded]);
 end;
@@ -10486,6 +10499,7 @@ var ActiveSrcEdit: TSourceEditor;
   LogCaret: TPoint;
   Flags: TJumpToCodePosFlags;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
@@ -10605,6 +10619,7 @@ var
   NewX, NewY, NewTopLine: integer;
   FindFlags: TFindSmartFlags;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
@@ -10704,6 +10719,7 @@ var
   OldChange: Boolean;
 begin
   Result:=mrCancel;
+  TargetSrcEdit:=nil;
   if not BeginCodeTool(TargetSrcEdit,TargetUnitInfo,[]) then exit;
 
   // find the main declaration
@@ -10865,6 +10881,7 @@ var
   Identifier: String;
 begin
   Result:=false;
+  SrcEdit:=nil;
   if not BeginCodeTool(SrcEdit,AnUnitInfo,[]) then exit;
 
   ListOfPCodeXYPosition:=nil;
@@ -10950,6 +10967,7 @@ var
   ActiveUnitInfo: TUnitInfo;
   LogCaretXY: TPoint;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit(false);
   {$IFDEF IDE_DEBUG}
   writeln('');
@@ -10972,6 +10990,7 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit(false);
   {$IFDEF IDE_DEBUG}
   writeln('');
@@ -10993,6 +11012,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
@@ -11016,6 +11036,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewX, NewY, NewTopLine: integer;
   Flags: TJumpToCodePosFlags;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
@@ -11043,6 +11064,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   StartX, StartY, NewX, NewY, NewTopLine: integer;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
@@ -11074,6 +11096,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   StartX, StartY, NewX, NewY, NewTopLine: integer;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
@@ -11101,6 +11124,7 @@ var ActiveSrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
@@ -11139,6 +11163,7 @@ begin
   OpenEditorsOnCodeToolChange:=true;
   try
     Result:=mrCancel;
+    ActiveSrcEdit:=nil;
     if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
     {$IFDEF IDE_DEBUG}
     debugln('');
@@ -11293,6 +11318,7 @@ begin
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
   try
+    ActiveSrcEdit:=nil;
     if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
     {$IFDEF IDE_DEBUG}
     writeln('');
@@ -11328,6 +11354,7 @@ var
   CTResult: boolean;
   OldChange: Boolean;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
@@ -12089,6 +12116,7 @@ begin
     // 'Owner' is used by TReader/TWriter
     raise EComponentError.Create(lisOwnerIsAlreadyUsedByTReaderTWriterPleaseChooseAnot);
 
+  ActiveSrcEdit:=nil;
   BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
   ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot);
 
@@ -12880,6 +12908,7 @@ var
 begin
   Result:=mrOk;
   //debugln(['TMainIDE.ProjInspectorAddUnitToProject ',AnUnitInfo.Filename]);
+  ActiveSourceEditor:=nil;
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
   AnUnitInfo.IsPartOfProject:=true;
   OkToAdd:=True;
@@ -13128,6 +13157,7 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
     Exit;
   {$IFDEF IDE_DEBUG}
@@ -13261,6 +13291,7 @@ var
 begin
   Result.Code:=nil;
   Result.Data:=nil;
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF VerboseOnPropHookCreateMethod}
@@ -13315,6 +13346,7 @@ var
   AnInheritedClassName: string;
   CurMethodName: String;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF IDE_DEBUG}
@@ -13361,6 +13393,7 @@ var ActiveSrcEdit: TSourceEditor;
   OldChange: Boolean;
   RenamedMethods: TStringList;
 begin
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF IDE_DEBUG}
@@ -13421,6 +13454,7 @@ begin
   end;
 
   // check for syntax errors in unit interface
+  ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[])
   then exit;
   Code:=ActiveUnitInfo.Source;
@@ -13494,6 +13528,7 @@ begin
   end;
 
   if (ADesigner<>nil) and ((RegComp<>nil) or (ClassUnitInfo<>nil)) then begin
+    ActiveSrcEdit:=nil;
     if not BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
     then exit;
 
