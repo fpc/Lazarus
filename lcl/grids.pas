@@ -7618,26 +7618,20 @@ begin
 
     // send editor bounds
     Msg.CellRect:=CellRect(FCol,FRow);
-    if (Msg.CellRect.Top<FGCache.FixedHeight) or
-       (UseRightToLeftAlignment and (Msg.CellRect.Right-1>FlipX(FGCache.FixedWidth))) or
-       (not UseRightToLeftAlignment and (Msg.CellRect.Left<FGCache.FixedWidth)) then
-    begin
-      // editor is not in visible area, hide it complety
-      // to avoid showing it in fixed cell area
-      Msg.CellRect := Bounds(-FEditor.Width-10, -FEditor.Height-10, FEditor.Width,FEditor.Height);
-    end;
+
+    with msg.CellRect do
+    if (Top<FGCache.FixedHeight) or (Top>FGCache.ClientHeight) or
+       (UseRightToLeftAlignment and ((Right-1>FlipX(FGCache.FixedWidth)) or (Right<0))) or
+       (not UseRightToLeftAlignment and ((Left<FGCache.FixedWidth) or (Left>FGCache.ClientWidth))) then
+      // if editor will be out of sight, make the out of sight coords fixed
+      // this should avoid range check errors on widgetsets that can't handle
+      // high control coords (like GTK2)
+      Msg.CellRect := Bounds(-FEditor.Width-100, -FEditor.Height-100, Right-Left, Bottom-Top);
+
     if FEditorOptions and EO_AUTOSIZE = EO_AUTOSIZE then begin
       if EditorBorderStyle = bsNone then
-          InflateRect(Msg.CellRect, -1, -1);
-      // hide editor if out of visible area
-      if (Msg.CellRect.Right>=0) and (Msg.CellRect.Bottom>=0)
-        and (Msg.CellRect.Left<=ClientWidth) and (Msg.CellRect.Top<=ClientHeight)
-      then begin
-        FEditor.Visible := true;
-        FEditor.BoundsRect := Msg.CellRect;
-      end else begin
-        FEditor.Visible := false;
-      end;
+        InflateRect(Msg.CellRect, -1, -1);
+      FEditor.BoundsRect := Msg.CellRect;
     end else begin
       Msg.LclMsg.msg:=GM_SETBOUNDS;
       Msg.Grid:=Self;
