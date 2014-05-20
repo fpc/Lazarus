@@ -408,7 +408,7 @@ type
     procedure HideSearchSpeedButtonClick(Sender: TObject);
     procedure MsgCtrlPopupMenuClose(Sender: TObject);
     procedure MsgCtrlPopupMenuPopup(Sender: TObject);
-    procedure OnSwitchFilterClick(Sender: TObject);
+    procedure OnSelectFilterClick(Sender: TObject);
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
     procedure SaveShownToFileMenuItemClick(Sender: TObject);
     procedure SearchEditChange(Sender: TObject);
@@ -482,8 +482,8 @@ var
     MsgHideDebugMenuItem: TIDEMenuCommand;
     MsgHideNoneMenuItem: TIDEMenuCommand;
   MsgHideHintsWithoutPosMenuItem: TIDEMenuCommand;
-  MsgSwitchFilterMenuSection: TIDEMenuSection;
-    MsgFiltersMenuSection: TIDEMenuSection;
+  MsgFiltersMenuSection: TIDEMenuSection;
+    MsgSelectFilterMenuSection: TIDEMenuSection;
     MsgAddFilterMenuItem: TIDEMenuCommand;
   MsgCopyMenuSection: TIDEMenuSection;
     MsgCopyFilenameMenuItem: TIDEMenuCommand;
@@ -536,11 +536,11 @@ begin
     MsgHideDebugMenuItem:=RegisterIDEMenuCommand(Parent,'Hide debug messages','Hide debug messages');
     MsgHideNoneMenuItem:=RegisterIDEMenuCommand(Parent,'Hide none, do not hide by urgency','Hide none, do not hide by urgency');
   MsgHideHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Root, 'Hide hints without source position', 'Hide hints without source position');
-  MsgSwitchFilterMenuSection:=RegisterIDEMenuSection(Root,'Switch Filter Section');
-    Parent:=MsgSwitchFilterMenuSection;
+  MsgFiltersMenuSection:=RegisterIDEMenuSection(Root,'Switch Filter Section');
+    Parent:=MsgFiltersMenuSection;
     Parent.ChildsAsSubMenu:=true;
     Parent.Caption:='Switch Filter Settings ...';
-    MsgFiltersMenuSection:=RegisterIDEMenuSection(Parent,'Filters');
+    MsgSelectFilterMenuSection:=RegisterIDEMenuSection(Parent,'Filters');
     MsgAddFilterMenuItem:=RegisterIDEMenuCommand(Parent,'Add Filter','Add filter ...');
   MsgCopyMenuSection:=RegisterIDEMenuSection(Root,'Copy');
     Parent:=MsgCopyMenuSection;
@@ -2953,7 +2953,7 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
     end;
     // delete old menu items
     while MsgUnhideMsgOneTypeMenuSection.Count>Cnt do
-      MsgUnhideMsgOneTypeMenuSection[MsgUnhideMsgOneTypeMenuSection.Count-1].Free;
+      MsgUnhideMsgOneTypeMenuSection[Cnt].Free;
     MsgUnhideAllMsgTypesMenuItem.OnClick:=@ClearHideMsgTypesMenuItemClick;
   end;
 
@@ -2962,22 +2962,23 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
     i: Integer;
     Filter: TLMsgViewFilter;
     Item: TIDEMenuCommand;
+    Cnt: Integer;
   begin
-    for i:=0 to MessagesCtrl.FilterCount-1 do begin
+    Cnt:=MessagesCtrl.FilterCount;
+    for i:=0 to Cnt-1 do begin
       Filter:=MessagesCtrl.Filters[i];
-      if i>=MsgSwitchFilterMenuSection.Count then begin
-        Item:=RegisterIDEMenuCommand(MsgSwitchFilterMenuSection,'MsgSwitchFilter'+IntToStr(i),'');
+      if i>=MsgSelectFilterMenuSection.Count then begin
+        Item:=RegisterIDEMenuCommand(MsgSelectFilterMenuSection,'MsgSelectFilter'+IntToStr(i),'');
         Item.Tag:=i;
-        Item.OnClick:=@OnSwitchFilterClick;
+        Item.OnClick:=@OnSelectFilterClick;
       end else
-        Item:=MsgSwitchFilterMenuSection[i] as TIDEMenuCommand;
+        Item:=MsgSelectFilterMenuSection[i] as TIDEMenuCommand;
       Item.Caption:=Filter.Caption;
       Item.Checked:=Filter=MessagesCtrl.ActiveFilter;
     end;
     // delete old menu items
-    i:=MessagesCtrl.FilterCount;
-    while MsgSwitchFilterMenuSection.Count>i do
-      MsgSwitchFilterMenuSection[i].Free;
+    while MsgSelectFilterMenuSection.Count>Cnt do
+      MsgSelectFilterMenuSection[Cnt].Free;
 
     MsgAddFilterMenuItem.OnClick:=@AddFilterMenuItemClick;
   end;
@@ -3108,7 +3109,7 @@ begin
   end;
 end;
 
-procedure TMessagesFrame.OnSwitchFilterClick(Sender: TObject);
+procedure TMessagesFrame.OnSelectFilterClick(Sender: TObject);
 var
   Filter: TLMsgViewFilter;
   Item: TIDEMenuCommand;
