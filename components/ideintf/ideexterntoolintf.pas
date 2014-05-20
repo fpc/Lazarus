@@ -250,7 +250,7 @@ type
     procedure Done; virtual; // called after process stopped (worker thread)
     procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean); virtual; abstract; // (worker thread)
     function CreateMsgLine(OutputIndex: integer): TMessageLine; // (worker thread)
-    procedure AddMsgLine(MsgLine: TMessageLine); // (worker thread)
+    procedure AddMsgLine(MsgLine: TMessageLine); virtual; // (worker thread)
     property Tool: TAbstractExternalTool read FTool;// set when added to a tool
     property NeedSynchronize: boolean read FNeedSynchronize write FNeedSynchronize;
     procedure ImproveMessages({%H-}aSynchronized: boolean); virtual; // (Synchronized=true->main, else worker thread) called after parsers added lines to Tool.WorkerMessages, Tool is in Critical section
@@ -267,12 +267,16 @@ type
   { TFPCParser - standard parser for Free Pascal messages, implemented by IDE }
 
   TFPCParser = class(TExtToolParser)
+  protected
+    FFilesToIgnoreUnitNotUsed: TStrings;
   public
     class function GetFPCParser(Msg: TMessageLine): TFPCParser;
     function GetFPCMsgIDPattern(MsgID: integer): string; virtual; abstract;
     class function GetFPCMsgPattern(Msg: TMessageLine): string; virtual; abstract;
     class function GetFPCMsgValue1(Msg: TMessageLine): string; virtual; abstract;
     class function GetFPCMsgValues(Msg: TMessageLine; out Value1, Value2: string): boolean; virtual; abstract;
+    property FilesToIgnoreUnitNotUsed: TStrings read FFilesToIgnoreUnitNotUsed
+                                                write FFilesToIgnoreUnitNotUsed;
   end;
 
   { TMakeParser - standard parser for 'make' messages, implemented by IDE }
@@ -471,7 +475,7 @@ type
     // parsers
     property ParserCount: integer read GetParserCount;
     property Parsers[Index: integer]: TExtToolParser read GetParsers; // sorted for Priority
-    procedure AddParsers(const SubTool: string); // will be freed on Destroy
+    function AddParsers(const SubTool: string): TExtToolParser; // will be freed on Destroy
     function AddParser(ParserClass: TExtToolParserClass): TExtToolParser; // will be freed on Destroy
     procedure DeleteParser(Parser: TExtToolParser); // disconnect and free
     procedure RemoveParser(Parser: TExtToolParser); // disconnect without free
@@ -1071,21 +1075,20 @@ begin
   RemoveHandler(ethNewOutput,TMethod(OnNewOutput));
 end;
 
-procedure TAbstractExternalTool.AddParsers(const SubTool: string);
+function TAbstractExternalTool.AddParsers(const SubTool: string
+  ): TExtToolParser;
 var
   ParserClass: TExtToolParserClass;
   i: Integer;
-  Found: Boolean;
 begin
-  Found:=false;
+  Result:=nil;
   for i:=0 to ExternalToolList.ParserCount-1 do begin
     ParserClass:=ExternalToolList.Parsers[i];
     if not ParserClass.IsSubTool(SubTool) then continue;
-    Found:=true;
-    AddParser(ParserClass);
+    Result:=AddParser(ParserClass);
+    exit;
   end;
-  if not Found then
-    raise Exception.Create('unable to find parser for tool "'+SubTool+'"');
+  raise Exception.Create('unable to find parser for tool "'+SubTool+'"');
 end;
 
 function TAbstractExternalTool.AddParser(ParserClass: TExtToolParserClass

@@ -31,9 +31,9 @@ interface
 
 uses
   Classes, SysUtils, strutils, FileProcs, KeywordFuncLists, IDEExternToolIntf,
-  PackageIntf, LazIDEIntf, ProjectIntf, CodeToolsFPCMsgs, CodeToolsStructs,
-  CodeCache, CodeToolManager, DirectoryCacher, BasicCodeTools, DefineTemplates,
-  LazUTF8, FileUtil, etMakeMsgParser, EnvironmentOpts;
+  PackageIntf, LazIDEIntf, ProjectIntf, IDEUtils, CodeToolsFPCMsgs,
+  CodeToolsStructs, CodeCache, CodeToolManager, DirectoryCacher, BasicCodeTools,
+  DefineTemplates, LazUTF8, FileUtil, etMakeMsgParser, EnvironmentOpts;
 
 type
   TFPCMsgFilePool = class;
@@ -137,9 +137,10 @@ type
     function CheckForLoadFromUnit(p: PChar): Boolean;
     function CheckForWindresErrors(p: PChar): boolean;
     function CreateMsgLine: TMessageLine;
+    function CheckMsgID(MsgLine: TMessageLine; MsgID: integer): boolean;
     procedure ImproveMsgHiddenByIDEDirective(const SourceOK: Boolean;
       var MsgLine: TMessageLine);
-    procedure ImproveMsgSenderNotUsed(const MsgLine: TMessageLine);
+    procedure ImproveMsgSenderNotUsed(MsgLine: TMessageLine);
     procedure ImproveMsgUnitNotUsed(aSynchronized: boolean;
       const aFilename: String; var MsgLine: TMessageLine);
     procedure ImproveMsgUnitNotFound(aSynchronized: boolean;
@@ -180,6 +181,9 @@ var
 function FPCMsgToMsgUrgency(Msg: TFPCMsgItem): TMessageLineUrgency;
 function FPCMsgTypeToUrgency(const Typ: string): TMessageLineUrgency;
 function TranslateFPCMsg(const Src, SrcPattern, TargetPattern: string): string;
+function FPCMsgFits(const Msg, Pattern: string;
+  VarStarts: PPChar = nil; VarEnds: PPChar = nil // 10 PChars
+  ): boolean;
 function GetFPCMsgValue1(const Src, Pattern: string; out Value1: string): boolean;
 function GetFPCMsgValues(Src, Pattern: string; out Value1, Value2: string): boolean;
 
@@ -226,6 +230,16 @@ begin
   end;
 end;
 
+function IsFPCMsgVar(p: PChar): boolean; inline;
+begin
+  Result:=(p^='$') and (p[1] in ['0'..'9']);
+end;
+
+function IsFPCMsgEndOrVar(p: PChar): boolean; inline;
+begin
+  Result:=(p^=#0) or IsFPCMsgVar(p);
+end;
+
 function TranslateFPCMsg(const Src, SrcPattern, TargetPattern: string): string;
 { for example:
   Src='A lines compiled, B sec C'
@@ -234,103 +248,25 @@ function TranslateFPCMsg(const Src, SrcPattern, TargetPattern: string): string;
 
   Result='A Zeilen uebersetzt, B Sekunden C'
 }
-  function IsVar(p: PChar): boolean; inline;
-  begin
-    Result:=(p^='$') and (p[1] in ['0'..'9']);
-  end;
-
-  function IsEndOrVar(p: PChar): boolean; inline;
-  begin
-    Result:=(p^=#0) or IsVar(p);
-  end;
-
 var
   SrcPos: PChar;
-  SrcPatPos: PChar;
   TargetPatPos: PChar;
   TargetPos: PChar;
   SrcVarStarts, SrcVarEnds: array[0..9] of PChar;
   VarUsed: array[0..9] of integer;
   i: Integer;
-  SrcPos2: PChar;
-  SrcPatPos2: PChar;
 begin
   Result:='';
   {$IFDEF VerboseFPCTranslate}
   debugln(['TranslateFPCMsg Src="',Src,'" SrcPattern="',SrcPattern,'" TargetPattern="',TargetPattern,'"']);
   {$ENDIF}
   if (Src='') or (SrcPattern='') or (TargetPattern='') then exit;
-  SrcPos:=PChar(Src);
-  SrcPatPos:=PChar(SrcPattern);
-  for i:=Low(SrcVarStarts) to high(SrcVarStarts) do begin
-    SrcVarStarts[i]:=nil;
-    SrcVarEnds[i]:=nil;
+
+  if not FPCMsgFits(Src,SrcPattern,@SrcVarStarts[0],@SrcVarEnds[0]) then
+    exit;
+
+  for i:=Low(SrcVarStarts) to high(SrcVarStarts) do
     VarUsed[i]:=0;
-  end;
-  // skip the characters of Src copied from SrcPattern
-  while not IsEndOrVar(SrcPatPos) do begin
-    if (SrcPos^<>SrcPatPos^) then begin
-      // SrcPattern does not fit
-      {$IFDEF VerboseFPCTranslate}
-      debugln(['TranslateFPCMsg skipping start of Src and SrcPattern failed']);
-      {$ENDIF}
-      exit;
-    end;
-    inc(SrcPos);
-    inc(SrcPatPos)
-  end;
-  {$IFDEF VerboseFPCTranslate}
-  debugln(['TranslateFPCMsg skipped start: SrcPos="',SrcPos,'" SrcPatPos="',SrcPatPos,'"']);
-  {$ENDIF}
-  // find the parameters in Src and store their boundaries in SrcVarStarts, SrcVarEnds
-  while (SrcPatPos^<>#0) do begin
-    // read variable number
-    inc(SrcPatPos);
-    i:=ord(SrcPatPos^)-ord('0');
-    inc(SrcPatPos);
-    SrcVarStarts[i]:=SrcPos;
-    SrcVarEnds[i]:=nil;
-    // find the end of the parameter in Src
-    // example:  SrcPattern='$1 found' Src='Ha found found'
-    repeat
-      if SrcPos^=SrcPatPos^ then begin
-        {$IFDEF VerboseFPCTranslate}
-        debugln(['TranslateFPCMsg candidate for param ',i,' end: SrcPos="',SrcPos,'" SrcPatPos="',SrcPatPos,'"']);
-        {$ENDIF}
-        SrcPos2:=SrcPos;
-        SrcPatPos2:=SrcPatPos;
-        while (SrcPos2^=SrcPatPos2^) and not IsEndOrVar(SrcPatPos2) do begin
-          inc(SrcPos2);
-          inc(SrcPatPos2);
-        end;
-        if IsEndOrVar(SrcPatPos2) then begin
-          {$IFDEF VerboseFPCTranslate}
-          debugln(['TranslateFPCMsg param ',i,' end found: SrcPos2="',SrcPos2,'" SrcPatPos2="',SrcPatPos2,'"']);
-          {$ENDIF}
-          SrcVarEnds[i]:=SrcPos;
-          SrcPos:=SrcPos2;
-          SrcPatPos:=SrcPatPos2;
-          break;
-        end;
-        {$IFDEF VerboseFPCTranslate}
-        debugln(['TranslateFPCMsg searching further...']);
-        {$ENDIF}
-      end else if SrcPos^=#0 then begin
-        if IsEndOrVar(SrcPatPos) then begin
-          // empty parameter at end
-          SrcVarEnds[i]:=SrcPos;
-          break;
-        end else begin
-          // SrcPattern does not fit Src
-          {$IFDEF VerboseFPCTranslate}
-          debugln(['TranslateFPCMsg finding end of parameter ',i,' failed']);
-          {$ENDIF}
-          exit;
-        end;
-      end;
-      inc(SrcPos);
-    until false;
-  end;
 
   // create Target
   SetLength(Result,length(TargetPattern)+length(Src));
@@ -338,7 +274,7 @@ begin
   TargetPos:=PChar(Result);
   while TargetPatPos^<>#0 do begin
     //debugln(['TranslateFPCMsg Target ',dbgs(Pointer(TargetPatPos)),' ',ord(TargetPatPos^),' TargetPatPos="',TargetPatPos,'"']);
-    if IsVar(TargetPatPos) then begin
+    if IsFPCMsgVar(TargetPatPos) then begin
       // insert variable
       inc(TargetPatPos);
       i:=ord(TargetPatPos^)-ord('0');
@@ -346,7 +282,7 @@ begin
       if SrcVarStarts[i]<>nil then begin
         inc(VarUsed[i]);
         if VarUsed[i]>1 then begin
-          // variable is used more than once => increase result
+          // variable is used more than once => realloc result
           dec(TargetPos,{%H-}PtrUInt(PChar(Result)));
           SetLength(Result,length(Result)+SrcVarEnds[i]-SrcVarStarts[i]);
           inc(TargetPos,{%H-}PtrUInt(PChar(Result)));
@@ -372,6 +308,99 @@ begin
   {$IFDEF VerboseFPCTranslate}
   debugln(['TranslateFPCMsg Result="',Result,'"']);
   {$ENDIF}
+end;
+
+function FPCMsgFits(const Msg, Pattern: string; VarStarts: PPChar;
+  VarEnds: PPChar): boolean;
+{ for example:
+  Src='A lines compiled, B sec C'
+  SrcPattern='$1 lines compiled, $2 sec $3'
+}
+var
+  MsgPos, PatPos: PChar;
+  MsgPos2, PatPos2: PChar;
+  i: Integer;
+begin
+  Result:=false;
+  {$IFDEF VerboseFPCTranslate}
+  debugln(['FPCMsgFits Msg="',Msg,'" Pattern="',Pattern,'"']);
+  {$ENDIF}
+  if (Msg='') or (Pattern='') then exit;
+  MsgPos:=PChar(Msg);
+  PatPos:=PChar(Pattern);
+  // skip the characters of Msg copied from Pattern
+  while not IsFPCMsgEndOrVar(PatPos) do begin
+    if (MsgPos^<>PatPos^) then begin
+      // Pattern does not fit
+      {$IFDEF VerboseFPCTranslate}
+      debugln(['FPCMsgFits skipping start of Src and SrcPattern failed']);
+      {$ENDIF}
+      exit;
+    end;
+    inc(MsgPos);
+    inc(PatPos)
+  end;
+  {$IFDEF VerboseFPCTranslate}
+  debugln(['FPCMsgFits skipped start: SrcPos="',SrcPos,'" SrcPatPos="',SrcPatPos,'"']);
+  {$ENDIF}
+  if VarStarts<>nil then begin
+    FillByte(VarStarts^,SizeOf(PChar)*10,0);
+    FillByte(VarEnds^,SizeOf(PChar)*10,0);
+  end;
+  // find the parameters in Msg and store their boundaries in VarStarts, VarEnds
+  while (PatPos^<>#0) do begin
+    // read variable number
+    inc(PatPos);
+    i:=ord(PatPos^)-ord('0');
+    inc(PatPos);
+    if (VarEnds<>nil) and (VarEnds[i]=nil) then begin
+      VarStarts[i]:=MsgPos;
+      VarEnds[i]:=nil;
+    end;
+    // find the end of the parameter in Msg
+    // example:  Pattern='$1 found' Msg='Ha found found'
+    repeat
+      if MsgPos^=PatPos^ then begin
+        {$IFDEF VerboseFPCTranslate}
+        debugln(['FPCMsgFits candidate for param ',i,' end: SrcPos="',SrcPos,'" SrcPatPos="',SrcPatPos,'"']);
+        {$ENDIF}
+        MsgPos2:=MsgPos;
+        PatPos2:=PatPos;
+        while (MsgPos2^=PatPos2^) and not IsFPCMsgEndOrVar(PatPos2) do begin
+          inc(MsgPos2);
+          inc(PatPos2);
+        end;
+        if IsFPCMsgEndOrVar(PatPos2) then begin
+          {$IFDEF VerboseFPCTranslate}
+          debugln(['FPCMsgFits param ',i,' end found: SrcPos2="',SrcPos2,'" SrcPatPos2="',SrcPatPos2,'"']);
+          {$ENDIF}
+          if (VarEnds<>nil) and (VarEnds[i]=nil) then
+            VarEnds[i]:=MsgPos;
+          MsgPos:=MsgPos2;
+          PatPos:=PatPos2;
+          break;
+        end;
+        {$IFDEF VerboseFPCTranslate}
+        debugln(['FPCMsgFits searching further...']);
+        {$ENDIF}
+      end else if MsgPos^=#0 then begin
+        if IsFPCMsgEndOrVar(PatPos) then begin
+          // empty parameter at end
+          if (VarEnds<>nil) and (VarEnds[i]=nil) then
+            VarEnds[i]:=MsgPos;
+          break;
+        end else begin
+          // Pattern does not fit Msg
+          {$IFDEF VerboseFPCTranslate}
+          debugln(['FPCMsgFits finding end of parameter ',i,' failed']);
+          {$ENDIF}
+          exit;
+        end;
+      end;
+      inc(MsgPos);
+    until false;
+  end;
+  Result:=true;
 end;
 
 function GetFPCMsgValue1(const Src, Pattern: string; out Value1: string
@@ -882,6 +911,7 @@ end;
 
 destructor TIDEFPCParser.Destroy;
 begin
+  FreeAndNil(FFilesToIgnoreUnitNotUsed);
   FreeAndNil(fFileExists);
   FreeAndNil(fLastSource);
   if TranslationFile<>nil then
@@ -1405,6 +1435,20 @@ begin
   Result.MsgID:=fMsgID;
 end;
 
+function TIDEFPCParser.CheckMsgID(MsgLine: TMessageLine; MsgID: integer
+  ): boolean;
+var
+  Item: TFPCMsgItem;
+begin
+  if MsgLine.MsgID=MsgID then exit(true);
+  if MsgLine.MsgID<>0 then exit(false);
+  Item:=MsgFile.GetMsg(MsgID);
+  if Item=nil then exit;
+  if Item.PatternFits(MsgLine.Msg)<0 then exit(false);
+  MsgLine.MsgID:=MsgID;
+  Result:=true;
+end;
+
 procedure TIDEFPCParser.ImproveMsgHiddenByIDEDirective(const SourceOK: Boolean;
   var MsgLine: TMessageLine);
 var
@@ -1434,12 +1478,12 @@ begin
   end;
 end;
 
-procedure TIDEFPCParser.ImproveMsgSenderNotUsed(const MsgLine: TMessageLine);
+procedure TIDEFPCParser.ImproveMsgSenderNotUsed(MsgLine: TMessageLine);
+// FPCMsgIDParameterNotUsed = 5024;  Parameter "$1" not used
 begin
+  if (MsgLine.Urgency<=mluVerbose) then exit;
   // check for Sender not used
-  if (MsgLine.MsgID=5024) // parameter $1 not used
-  and (MsgLine.Urgency>mluVerbose)
-  and (MsgLine.Msg='Parameter "Sender" not used') then begin
+  if (MsgLine.Msg='Parameter "Sender" not used') then begin
     // almost always not important
     MsgLine.Urgency:=mluVerbose;
   end;
@@ -1449,24 +1493,24 @@ procedure TIDEFPCParser.ImproveMsgUnitNotUsed(aSynchronized: boolean;
   const aFilename: String; var MsgLine: TMessageLine);
 // check for Unit not used message in main sources
 // and change urgency to merely 'verbose'
+const
+  FPCMsgIDUnitNotUsed = 5023; // Unit "$1" not used in $2
 begin
-  if (MsgLine.MsgID<>5023) // Unit $1 not used
-  or (MsgLine.Urgency<=mluVerbose) then exit;
+  if aSynchronized then exit;
+  if (MsgLine.Urgency<=mluVerbose) then exit;
+  if not CheckMsgID(MsgLine,FPCMsgIDUnitNotUsed) then exit;
+
   //debugln(['TIDEFPCParser.ImproveMsgUnitNotUsed ',aSynchronized,' ',MsgLine.Msg]);
   // unit not used
-  if FilenameIsAbsolute(aFilename)
+  if IndexInStringList(FilesToIgnoreUnitNotUsed,cstFilename,aFilename)>=0 then
+  begin
+    MsgLine.Urgency:=mluVerbose;
+  end else if FilenameIsAbsolute(aFilename)
   and ((CompareFileExt(aFilename, 'lpr', false)=0)
     or FileExists(ChangeFileExt(aFilename, '.lpk'), aSynchronized))
   then begin
     // a lpk/lpr does not use a unit => almost always not important
     MsgLine.Urgency:=mluVerbose;
-  end else begin
-    if aSynchronized then begin
-      // ToDo: check if this is the main unit of a project/package
-      MsgLine.Urgency:=mluVerbose;
-    end else begin
-      NeedSynchronize:=true;
-    end;
   end;
 end;
 
@@ -1569,9 +1613,9 @@ var
   OnlyInstalled: Boolean;
   s: String;
 begin
-  if (not aSynchronized)
-  or (MsgLine.MsgID<>10022) // Can't find unit $1 used by $2
-  then exit;
+  if (not aSynchronized) then exit;
+  if not CheckMsgID(MsgLine,10022) then // Can't find unit $1 used by $2
+    exit;
 
   if not TFPCParser.GetFPCMsgValues(MsgLine,MissingUnitName,UsedByUnit) then
     exit;
@@ -1728,6 +1772,7 @@ begin
   inherited Create(AOwner);
   fLineToMsgID:=TPatternToMsgIDs.Create;
   fFileExists:=TFilenameToPointerTree.Create(false);
+  FFilesToIgnoreUnitNotUsed:=TStringList.Create;
 end;
 
 function TIDEFPCParser.FileExists(const Filename: string; aSynchronized: boolean
@@ -1735,16 +1780,19 @@ function TIDEFPCParser.FileExists(const Filename: string; aSynchronized: boolean
 var
   p: Pointer;
 begin
+  // check internal cache
   p:=fFileExists[Filename];
   if p=Pointer(Self) then
     Result:=true
   else if p=Pointer(fFileExists) then
     Result:=false
   else begin
+    // check disk
     if aSynchronized then
       Result:=FileExistsCached(Filename)
     else
       Result:=FileExistsUTF8(Filename);
+    // save result
     if Result then
       fFileExists[Filename]:=Pointer(Self)
     else

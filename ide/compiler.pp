@@ -278,6 +278,7 @@ var
   Abort : Boolean;
   {$IFDEF EnableNewExtTools}
   Tool: TAbstractExternalTool;
+  FPCParser: TFPCParser;
   {$ENDIF}
 begin
   Result:=mrCancel;
@@ -320,11 +321,13 @@ begin
     DebugLn('[TCompiler.Compile] CmdLine="',CompilerFilename+CmdLine,'"');
 
   {$IFDEF EnableNewExtTools}
-  Tool:=ExternalToolList.Add('Compling Project');
+  Tool:=ExternalToolList.Add('Compiling Project');
   Tool.Process.Executable:=CompilerFilename;
   Tool.CmdLineParams:=CmdLine;
   Tool.Process.CurrentDirectory:=WorkingDir;
-  Tool.AddParsers(SubToolFPC);
+  FPCParser:=TFPCParser(Tool.AddParsers(SubToolFPC));
+  if AProject.MainFilename<>'' then
+    FPCParser.FilesToIgnoreUnitNotUsed.Add(AProject.MainFilename);
   Tool.AddParsers(SubToolMake);
   Tool.Execute;
   Tool.WaitForExit;
