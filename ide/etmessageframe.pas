@@ -471,9 +471,9 @@ var
   MsgQuickFixMenuSection: TIDEMenuSection;
   MsgClearMenuItem: TIDEMenuCommand;
   MsgHideMsgOfTypeMenuItem: TIDEMenuCommand;
-  MsgUnhideMsgTypeMenuSection: TIDEMenuSection;
-    MsgUnhideMsgOfTypeMenuSection: TIDEMenuSection;
-    MsgClearHideMsgTypesMenuItem: TIDEMenuCommand;
+  MsgUnhideMsgTypesMenuSection: TIDEMenuSection;
+    MsgUnhideMsgOneTypeMenuSection: TIDEMenuSection;
+    MsgUnhideAllMsgTypesMenuItem: TIDEMenuCommand;
   MsgHideBelowMenuSection: TIDEMenuSection;
     MsgHideWarningsMenuItem: TIDEMenuCommand;
     MsgHideNotesMenuItem: TIDEMenuCommand;
@@ -519,12 +519,12 @@ begin
   MsgQuickFixMenuSection := RegisterIDEMenuSection(Root, 'Quick Fix');
   MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', 'Clear');
   MsgHideMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'HideMsgOfType','');
-  MsgUnhideMsgTypeMenuSection:=RegisterIDEMenuSection(Root,'UnhideMsgType');
-    Parent:=MsgUnhideMsgTypeMenuSection;
+  MsgUnhideMsgTypesMenuSection:=RegisterIDEMenuSection(Root,'UnhideMsgType');
+    Parent:=MsgUnhideMsgTypesMenuSection;
     Parent.ChildsAsSubMenu:=true;
     Parent.Caption:='Unhide message type';
-    MsgUnhideMsgOfTypeMenuSection:=RegisterIDEMenuSection(Parent,'UnhideMsgOfTypeSection');
-    MsgClearHideMsgTypesMenuItem:=RegisterIDEMenuCommand(Parent,'Unhide all','Unhide all');
+    MsgUnhideMsgOneTypeMenuSection:=RegisterIDEMenuSection(Parent,'UnhideMsgOfTypeSection');
+    MsgUnhideAllMsgTypesMenuItem:=RegisterIDEMenuCommand(Parent,'Unhide all','Unhide all');
   MsgHideBelowMenuSection:=RegisterIDEMenuSection(Root,'Hide Below Section');
     Parent:=MsgHideBelowMenuSection;
     Parent.ChildsAsSubMenu:=true;
@@ -2580,7 +2580,7 @@ function TMessagesCtrl.GetHeaderText(View: TLMsgWndView): string;
 begin
   Result:=View.Caption;
   if View.SummaryMsg<>'' then
-    Result+=', '+View.SummaryMsg;
+    Result+=': '+View.SummaryMsg;
   if mcoShowStats in Options then begin
     Result+=GetStats(View.Lines);
   end;
@@ -2930,16 +2930,18 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
     HideItem: TLMVFilterHideMsgType;
     i: Integer;
     Item: TIDEMenuCommand;
+    Cnt: Integer;
   begin
     // create one menuitem per filter item
-    MsgUnhideMsgTypeMenuSection.Visible:=MessagesCtrl.ActiveFilter.HideMsgTypeCount>0;
-    for i:=0 to MessagesCtrl.ActiveFilter.HideMsgTypeCount-1 do begin
-      if i>=MsgUnhideMsgOfTypeMenuSection.Count then begin
-        Item:=RegisterIDEMenuCommand(MsgUnhideMsgOfTypeMenuSection,'MsgUnhideOfType'+IntToStr(i),'');
+    Cnt:=MessagesCtrl.ActiveFilter.HideMsgTypeCount;
+    MsgUnhideMsgTypesMenuSection.Visible:=Cnt>0;
+    for i:=0 to Cnt-1 do begin
+      if i>=MsgUnhideMsgOneTypeMenuSection.Count then begin
+        Item:=RegisterIDEMenuCommand(MsgUnhideMsgOneTypeMenuSection,'MsgUnhideOfType'+IntToStr(i),'');
         Item.Tag:=i;
         Item.OnClick:=@UnhideMsgTypeClick;
       end else
-        Item:=MsgUnhideMsgTypeMenuSection.Items[i] as TIDEMenuCommand;
+        Item:=MsgUnhideMsgOneTypeMenuSection.Items[i] as TIDEMenuCommand;
       HideItem:=MessagesCtrl.ActiveFilter.HideMsgTypes[i];
       s:=HideItem.SubTool;
       if HideItem.MsgID<>0 then
@@ -2950,10 +2952,9 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
       Item.Caption:=s;
     end;
     // delete old menu items
-    i:=MessagesCtrl.ActiveFilter.HideMsgTypeCount;
-    while MsgUnhideMsgTypeMenuSection.Count>i do
-      MsgUnhideMsgTypeMenuSection[i].Free;
-    MsgClearHideMsgTypesMenuItem.OnClick:=@ClearHideMsgTypesMenuItemClick;
+    while MsgUnhideMsgOneTypeMenuSection.Count>Cnt do
+      MsgUnhideMsgOneTypeMenuSection[MsgUnhideMsgOneTypeMenuSection.Count-1].Free;
+    MsgUnhideAllMsgTypesMenuItem.OnClick:=@ClearHideMsgTypesMenuItemClick;
   end;
 
   procedure UpdateFilterItems;
