@@ -6383,6 +6383,7 @@ lcl/interfaces/customdrawn/Makefile svneol=native#text/plain
 lcl/interfaces/customdrawn/Makefile.compiled svneol=native#text/plain
 lcl/interfaces/customdrawn/Makefile.fpc svneol=native#text/plain
 lcl/interfaces/customdrawn/alllclintfunits.pas svneol=native#text/pascal
+lcl/interfaces/customdrawn/android/ApacheLicense2.0.txt svneol=native#text/plain
 lcl/interfaces/customdrawn/android/android_native_app_glue.pas svneol=native#text/pascal
 lcl/interfaces/customdrawn/android/android_sockets.pas svneol=native#text/plain
 lcl/interfaces/customdrawn/android/asset_manager.pas svneol=native#text/pascal
