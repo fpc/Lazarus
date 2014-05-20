@@ -254,6 +254,7 @@ var
   Buffer: array[0..511] of char;
   BufP: Integer;
   PCP: String;
+  LHelpProjectDir: String;
 begin
   Result := mrCancel;
 
@@ -266,9 +267,9 @@ begin
     Exit;
   end;
 
-  LHelpProject := '$(LazarusDir)/components/chmhelp/lhelp/lhelp.lpi';
+  LHelpProject := '$(LazarusDir)'+SetDirSeparators('/components/chmhelp/lhelp/lhelp.lpi');
   if not IDEMacros.SubstituteMacros(LHelpProject) then exit;
-  LHelpProject:=TrimFilename(SetDirSeparators(LHelpProject));
+  LHelpProject:=TrimFilename(LHelpProject);
   if not FileExistsUTF8(LHelpProject) then
   begin
     debugln(['TChmHelpViewer.CheckBuildLHelp failed because lhelp.lpi not found']);
@@ -305,9 +306,7 @@ begin
   IDEMessagesWindow.BeginBlock;
   IDEMessagesWindow.AddMsg('- Building lhelp -','',0);
 
-  LHelpProject := '$(LazarusDir)/components/chmhelp/lhelp/';
-  IDEMacros.SubstituteMacros(LHelpProject);
-  LHelpProject:=TrimFilename(SetDirSeparators(LHelpProject));
+  LHelpProjectDir := ExtractFilePath(LHelpProject);
 
   while Proc.Running do begin
     while Proc.Output.NumBytesAvailable > 0 do
@@ -318,7 +317,7 @@ begin
         if not(BufC in [#13, #10]) then
         begin
 
-          IDEMessagesWindow.AddMsg(PChar(@Buffer[0]),LHelpProject,1);
+          IDEMessagesWindow.AddMsg(PChar(@Buffer[0]),LHelpProjectDir,1);
           Buffer[0] := BufC;
           BufP := 1;
           LastWasEOL:=False;
@@ -343,7 +342,7 @@ begin
   end;
 
   if BufP > 0 then
-    IDEMessagesWindow.AddMsg(PChar(@Buffer[0]),LHelpProject,0);
+    IDEMessagesWindow.AddMsg(PChar(@Buffer[0]),LHelpProjectDir,0);
 
 
   if Proc.ExitStatus = 0 then
