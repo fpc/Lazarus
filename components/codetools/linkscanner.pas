@@ -2842,7 +2842,7 @@ begin
       // ToDo: fpintres
       FHiddenUsedUnits:=FHiddenUsedUnits+',fpextres';
     end;
-    if (cmsObjpas in CompilerModeSwitches) then
+    if (cmsObjpas in CompilerModeSwitches) and (PascalCompiler=pcFPC) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',ObjPas';
     if (cmsDefault_unicodestring in CompilerModeSwitches) then
       FHiddenUsedUnits:=FHiddenUsedUnits+',UUChar';
