@@ -3377,6 +3377,7 @@ var
 begin
   Result:=mrOk;
   if (AnUnitInfo.Component=nil) then exit;
+  ActiveSrcEdit:=nil;
   if not MainIDE.BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   // unselect methods in ObjectInspector1
   if (ObjectInspector1<>nil)
