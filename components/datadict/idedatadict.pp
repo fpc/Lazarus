@@ -55,7 +55,12 @@ Var
   
 implementation
 
-uses inifiles,BaseIDEIntf,idemsgintf;
+uses
+  inifiles, IDEMsgIntf,
+  {$IFDEF EnableNewExtTools}
+  IDEExternToolIntf,
+  {$ENDIF}
+  BaseIDEIntf;
 
 Const
   // Do not localize
@@ -176,7 +181,11 @@ end;
 procedure TIDEDataDictionary.DDProgress(Sender : TObject; Const Msg : String);
 
 begin
+  {$IFDEF EnableNewExtTools}
+  IDEMessagesWindow.AddCustomMessage(mluImportant,SLoadingDataDict+Msg);
+  {$ELSE}
   IDEMessagesWindow.AddMsg(SLoadingDataDict+Msg,'',2);
+  {$ENDIF}
 end;
 
 procedure TIDEDataDictionary.SetFileName(const AValue: String);
@@ -273,13 +282,20 @@ procedure TIDEDataDictionary.Load;
 begin
   If (FFileName<>'') and Active then
     begin
+    {$IFDEF EnableNewExtTools}
+    IDEMessagesWindow.AddCustomMessage(mluImportant,SLoadingDataDict+SFromfile+FFileName);
+    {$ELSE}
     IDEMessagesWindow.BeginBlock(False);
     Try
       IDEMessagesWindow.AddMsg(SLoadingDataDict+SFromfile+FFileName,'',2);
+    {$ENDIF}
       FDataDict.LoadFromFile(UTF8ToSys(FFileName));
+    {$IFDEF EnableNewExtTools}
+    {$ELSE}
     Finally
       IDEMessagesWindow.EndBlock;
     end;
+    {$ENDIF}
     end;
     
 end;

@@ -7750,7 +7750,6 @@ begin
         if ProfInd<>-1 then begin
           // Set current profile temporarily, used by the codetools functions.
           BuildLazProfiles.CurrentIndex:=ProfInd;
-          // does not show message: IDEMessagesWindow.AddMsg('Building: '+BuildLazProfiles.Current.Name,'',-1);
           LazSrcTemplate:=
             CodeToolBoss.DefineTree.FindDefineTemplateByName(StdDefTemplLazarusSources,true);
           if Assigned(LazSrcTemplate) then begin
