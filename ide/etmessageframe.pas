@@ -2529,12 +2529,14 @@ begin
     Result+=' ';
 
   // 'error: '
-  if (mcoShowTranslated in Options)
-  and (fUrgencyStyles[Line.Urgency].Translated<>'') then
-    Result+=fUrgencyStyles[Line.Urgency].Translated
-  else
-    Result+=MessageLineUrgencyNames[Line.Urgency];
-  Result+=': ';
+  if Line.Urgency<>mluImportant then begin
+    if (mcoShowTranslated in Options)
+    and (fUrgencyStyles[Line.Urgency].Translated<>'') then
+      Result+=fUrgencyStyles[Line.Urgency].Translated
+    else
+      Result+=MessageLineUrgencyNames[Line.Urgency];
+    Result+=': ';
+  end;
 
   // message id
   if (mcoShowMessageID in Options) and (Line.MsgID<>0) then
