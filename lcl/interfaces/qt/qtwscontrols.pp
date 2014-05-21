@@ -141,6 +141,8 @@ begin
   QtCustomControl := TQtCustomControl.Create(AWinControl, AParams);
   QtCustomControl.setFrameShape(TBorderStyleToQtFrameShapeMap[TCustomControl(AWinControl).BorderStyle]);
   QtCustomControl.viewportNeeded;
+  QtCustomControl.verticalScrollBar;
+  QtCustomControl.horizontalScrollBar;
   QtCustomControl.AttachEvents;
   Result := TLCLIntfHandle(QtCustomControl);
 

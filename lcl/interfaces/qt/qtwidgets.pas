@@ -15770,8 +15770,7 @@ var
   AOldRect: TRect;
   AOffset: Integer;
 begin
-  if not getVisible or
-    QWidget_testAttribute(viewportWidget, QtWA_PendingResizeEvent) then
+  if not QWidget_testAttribute(viewportWidget, QtWA_Mapped) then
   begin
     QWidget_contentsRect(Widget, @Result);
     if (QStyle_styleHint(QApplication_style(),
@@ -15785,6 +15784,7 @@ begin
       if HaveBar and (horizontalScrollBar.getVisibleTo(Widget)) then
         dec(Result.Bottom, horizontalScrollBar.getHeight);
     end;
+    OffsetRect(Result, -Result.Left, -Result.Top);
   end else
   begin
     if (ChildOfComplexWidget = ccwScrollingWinControl) and
