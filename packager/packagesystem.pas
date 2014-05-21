@@ -3362,6 +3362,7 @@ function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
 var
   {$IFDEF EnableNewExtTools}
   PkgCompileTool: TAbstractExternalTool;
+  FPCParser: TFPCParser;
   {$ELSE}
   PkgCompileTool: TIDEExternalToolOptions;
   BlockBegan: Boolean;
@@ -3376,7 +3377,6 @@ var
   SrcPPUFileExists: Boolean;
   CompilerParams: String;
   Note: String;
-  FPCParser: TFPCParser;
 begin
   Result:=mrCancel;
 
