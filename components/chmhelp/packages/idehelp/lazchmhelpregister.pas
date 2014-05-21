@@ -35,8 +35,11 @@ implementation
 uses
   { lazarus }
   LazIDEIntf, MenuIntf, IdeCommands,
+  {$IFNDEF EnableNewExtTools}
+  IDEMsgIntf,
+  {$ENDIF}
   { local }
-  LazCHMHelp, InterfaceBase, IDEMsgIntf;
+  LazCHMHelp, InterfaceBase;
 
 const
   HELP_CURRENT_NAME  = 'chpHelp';
