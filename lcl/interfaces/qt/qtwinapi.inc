@@ -4129,6 +4129,14 @@ begin
       begin
         //DebugLn('Trace:TODO: [TQtWidgetSet.GetSystemMetrics] --> SM_SWAPBUTTON       ');
       end;
+    SM_SWSCROLLBARSPACING:
+      begin
+        Result := 0;
+        if (QStyle_styleHint(QApplication_style(),
+          QStyleSH_ScrollView_FrameOnlyAroundContents) <> 0) then
+        Result := QStyle_pixelMetric(QApplication_style(),
+          QStylePM_ScrollView_ScrollBarSpacing, nil, nil);
+      end;
     SM_LCLMAXIMIZEDWIDTH:
       begin
         Result := GetSystemMetrics(SM_CXMAXIMIZED);

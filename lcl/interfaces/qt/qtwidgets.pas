@@ -8174,23 +8174,6 @@ begin
 
   LMScroll.Pos := p1;
   LMScroll.ScrollCode := SIF_POS;
-  {$IFDEF QTSCROLLABLEFORMS}
-  if Assigned(FOwner) and (FOwner is TQtWindowArea) then
-  begin
-    if LMScroll.Msg = LM_VSCROLL then
-      TQtWindowArea(FOwner).FScrollY := -p1
-    else
-      TQtWindowArea(FOwner).FScrollX := -p1;
-  end else
-  {$ENDIF}
-  if (FChildOfComplexWidget = ccwAbstractScrollArea) and Assigned(FOwner) and
-    (FOwner.ChildOfComplexWidget = ccwScrollingWinControl) then
-  begin
-    if LMScroll.Msg = LM_VSCROLL then
-      TQtCustomControl(FOwner).viewport.FScrollY := -p1
-    else
-      TQtCustomControl(FOwner).viewport.FScrollX := -p1;
-  end;
 
   if not InUpdate then
     DeliverMessage(LMScroll);
@@ -8476,25 +8459,10 @@ begin
         {$ENDIF}
       end;
 
-      {$IFDEF QTSCROLLABLEFORMS}
-      if Assigned(FOwner) and (FOwner is TQtWindowArea) then
-      begin
-        if Assigned(TQtWindowArea(FOwner).viewportWidget) then
-          case getOrientation of
-            QtVertical: TQtWindowArea(FOwner).FScrollY := 0;
-            QtHorizontal: TQtWindowArea(FOwner).FScrollX := 0;
-          end;
-      end else
-      {$ENDIF}
       if Assigned(FOwner) and (FOwner is TQtCustomControl) then
       begin
         if Assigned(TQtCustomControl(FOwner).FViewPortWidget) then
         begin
-          case getOrientation of
-            QtVertical: TQtCustomControl(FOwner).FViewPortWidget.FScrollY := 0;
-            QtHorizontal: TQtCustomControl(FOwner).FViewPortWidget.FScrollX := 0;
-          end;
-
           // this can fail with infinite loop like in gtk2 in case of ide main bar resizing
           // don't know what to do since ClientRectNeedsInterfaceUpdate and caspComputing is true.
           // So we just set result according to the caspComputingBounds result.
@@ -8509,8 +8477,9 @@ begin
             // DelayResizeEvent(Widget, ASize);
             if (FOwner.InResizeEvent or InResizeEvent) then
             else
-            if LCLObject.ClientRectNeedsInterfaceUpdate then
-              LCLObject.DoAdjustClientRectChange(True);
+            if not (caspComputingBounds in LCLObject.AutoSizePhases) and
+              LCLObject.ClientRectNeedsInterfaceUpdate then
+                LCLObject.DoAdjustClientRectChange(True);
           end;
         end;
       end;
@@ -15785,8 +15754,7 @@ var
   AOldRect: TRect;
   AOffset: Integer;
 begin
-  if not getVisible or
-    QWidget_testAttribute(viewportWidget, QtWA_PendingResizeEvent) then
+  if not QWidget_testAttribute(viewportWidget, QtWA_Mapped) then
   begin
     QWidget_contentsRect(Widget, @Result);
     if (QStyle_styleHint(QApplication_style(),
@@ -15800,6 +15768,7 @@ begin
       if HaveBar and (horizontalScrollBar.getVisibleTo(Widget)) then
         dec(Result.Bottom, horizontalScrollBar.getHeight);
     end;
+    OffsetRect(Result, -Result.Left, -Result.Top);
   end else
   begin
     if (ChildOfComplexWidget = ccwScrollingWinControl) and
@@ -15809,14 +15778,6 @@ begin
       Result := AOldRect;
 
       AOffset := getScrollFrameOffset;
-      {EVIL ! Themes like oxygen have negative offset.
-      With correct negative AOffset LCL raises size loop (while
-      clientRect is correct),so we'll choose less troubles
-      in this case: say to lcl that we are AOffset div 2 pixel off.
-      Usually on oxygen new AOffset will be -1, so won't raise size loop
-      error.}
-      if AOffset < 0 then
-        AOffset := AOffset div 2;
 
       if horizontalScrollBar.InShow then
         dec(Result.Bottom, horizontalScrollBar.getHeight + AOffset)
