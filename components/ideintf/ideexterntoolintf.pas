@@ -1524,8 +1524,6 @@ var
 begin
   if (SrcLines=nil) or (SrcLines=Self) or (SrcLines.Count=0) then exit;
   SrcLines.FSortedForSrcPos.Clear;
-  for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
-    UrgencyCounts[u]:=0;
   for i:=0 to SrcLines.Count-1 do begin
     MsgLine:=SrcLines[i];
     //debugln(['TMessageLines.FetchAll ',MsgLine.Msg]);
@@ -1536,6 +1534,8 @@ begin
     LineChanged(MsgLine);
   end;
   SrcLines.fItems.Clear;
+  for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
+    SrcLines.UrgencyCounts[u]:=0;
   IncreaseChangeStamp;
 end;
 

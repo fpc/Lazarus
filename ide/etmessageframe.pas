@@ -391,7 +391,6 @@ type
     SearchNextSpeedButton: TSpeedButton;
     SearchPanel: TPanel;
     SearchPrevSpeedButton: TSpeedButton;
-    ShowIDMenuItem: TMenuItem;
     procedure AboutToolMenuItemClick(Sender: TObject);
     procedure AddFilterMenuItemClick(Sender: TObject);
     procedure ClearHideMsgTypesMenuItemClick(Sender: TObject);
@@ -3166,7 +3165,7 @@ end;
 
 procedure TMessagesFrame.ShowIDMenuItemClick(Sender: TObject);
 begin
-  if ShowIDMenuItem.Checked then
+  if MsgShowIDMenuItem.Checked then
     MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowMessageID]
   else
     MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowMessageID];
