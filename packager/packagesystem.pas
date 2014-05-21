@@ -3526,6 +3526,7 @@ begin
         and (APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
           FPCParser.FilesToIgnoreUnitNotUsed.Add(APackage.MainUnit.Filename);
         FPCParser.HideHintsSenderNotUsed:=not APackage.CompilerOptions.ShowHintsForSenderNotUsed;
+        FPCParser.HideHintsUnitNotUsedInMainSource:=not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
         PkgCompileTool.AddParsers(SubToolMake);
         PkgCompileTool.Process.CurrentDirectory:=APackage.Directory;
         PkgCompileTool.Process.Executable:=CompilerFilename;

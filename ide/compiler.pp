@@ -326,7 +326,10 @@ begin
   Tool.CmdLineParams:=CmdLine;
   Tool.Process.CurrentDirectory:=WorkingDir;
   FPCParser:=TFPCParser(Tool.AddParsers(SubToolFPC));
-  if AProject.MainFilename<>'' then
+  FPCParser.HideHintsSenderNotUsed:=not AProject.CompilerOptions.ShowHintsForSenderNotUsed;
+  FPCParser.HideHintsUnitNotUsedInMainSource:=not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
+  if AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc
+  and (AProject.MainFilename<>'') then
     FPCParser.FilesToIgnoreUnitNotUsed.Add(AProject.MainFilename);
   Tool.AddParsers(SubToolMake);
   Tool.Execute;
