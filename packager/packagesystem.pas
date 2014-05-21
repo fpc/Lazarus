@@ -3535,6 +3535,7 @@ begin
         PkgCompileTool.Data:=TIDEExternalToolData.Create(IDEToolCompilePackage,
           APackage.Name,APackage.Filename);
         PkgCompileTool.FreeData:=true;
+
         // check if main ppu file was created
         SrcPPUFile:=APackage.GetSrcPPUFilename;
         SrcPPUFileExists:=(SrcPPUFile<>'') and FileExistsUTF8(SrcPPUFile);
