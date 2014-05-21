@@ -6484,6 +6484,7 @@ var
   OldRop: Integer;
   OldBkColor: TColorRef;
   RestoreClip: Boolean;
+  AClipRect: TRect;
 begin
   {$ifdef VerboseQtWinAPI}
     WriteLn('[WinAPI StretchMaskBlt]',
@@ -6627,7 +6628,11 @@ begin
         if (SrcRect.Left < DstRect.Left) or (SrcRect.Top < DstRect.Top) and
           DstQDC.getClipping and DstQDC.getClipRegion.containsRect(SrcRect) then
         begin
-          if DstQDC.getClipRegion.containsPoint(DstRect.Left, DstRect.Top) then
+          AClipRect := DstQDC.getClipRegion.getBoundingRect;
+          OffsetRect(AClipRect, -AClipRect.Left, -AClipRect.Top);
+          if (DstRect.Right - DstRect.Left <= AClipRect.Right) and
+            (DstRect.Bottom - DstRect.Top <= AClipRect.Bottom) and
+            DstQDC.getClipRegion.containsPoint(DstRect.Left, DstRect.Top) then
           begin
             RestoreClip := True;
             DstQDC.setClipping(False);
