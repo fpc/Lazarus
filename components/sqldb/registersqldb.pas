@@ -111,7 +111,10 @@ uses
   lazideintf,
   srceditorintf,
   ProjectIntf,
-  idemsgintf,
+  IDEMsgIntf,
+  {$IFDEF EnableNewExtTools}
+  IDEExternToolIntf,
+  {$ENDIF}
   CodeCache,
   CodeToolManager;
 
@@ -421,7 +424,11 @@ end;
 
 procedure TSQLSyntaxChecker.ShowMessage(const Msg: String);
 begin
+  {$IFDEF EnableNewExtTools}
+  IDEMessagesWindow.AddCustomMessage(mluImportant,Msg,SourceFileName);
+  {$ELSE}
   IDEMessagesWindow.AddMsg(SourceFileName+' : '+Msg,'',0,Nil);
+  {$ENDIF}
 end;
 
 procedure TSQLSyntaxChecker.ShowMessage(const Fmt: String; Args: array of const);
@@ -470,7 +477,9 @@ Var
   S : TStringStream;
 
 begin
+  {$IFNDEF EnableNewExtTools}
   IDEMessagesWindow.BeginBlock(False);
+  {$ENDIF}
   try
     try
     Handled:=False;
@@ -496,7 +505,9 @@ begin
         ShowException('Error during syntax check',E);
     end;
   finally
+    {$IFNDEF EnableNewExtTools}
     IDEMessagesWindow.EndBlock;
+    {$ENDIF}
   end;
 end;
 
