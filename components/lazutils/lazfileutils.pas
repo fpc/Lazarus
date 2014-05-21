@@ -10,6 +10,7 @@ interface
 uses
   Classes, SysUtils, SysConst, LazUTF8, LazUtilsStrConsts;
 
+
 {$IFDEF Windows}
   {$define CaseInsensitiveFilenames}
   {$define HasUNCPaths}

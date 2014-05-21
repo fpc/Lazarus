@@ -10548,10 +10548,11 @@ begin
   MessagesView.ClearCustomMessages;
   if CodeToolBoss.ErrorCode<>nil then begin
     Msg:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,
-      CodeToolBoss.ErrorCode.Filename,CodeToolBoss.ErrorLine,CodeToolBoss.ErrorColumn);
+      CodeToolBoss.ErrorCode.Filename,CodeToolBoss.ErrorLine,CodeToolBoss.ErrorColumn,
+      'Codetools');
     Msg.Flags:=Msg.Flags+[mlfLeftToken];
   end else
-    MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage);
+    MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'Codetools');
   {$ELSE}
   MessagesView.ClearTillLastSeparator;
   MessagesView.AddSeparator;

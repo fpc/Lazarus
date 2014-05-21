@@ -3320,6 +3320,8 @@ begin
   s+=LineEnding;
   Tool:=View.Tool;
   if Tool<>nil then begin
+    if Tool.Hint<>'' then
+      s+=Tool.Hint+LineEnding+LineEnding;
     Proc:=Tool.Process;
     if Proc<>nil then begin
       if Proc.Executable<>'' then
@@ -3355,6 +3357,7 @@ begin
       Align:=alClient;
       WordWrap:=false;
       ScrollBars:=ssBoth;
+      ReadOnly:=true;
       Parent:=Form;
     end;
     Form.ShowModal;

@@ -3530,6 +3530,11 @@ begin
         PkgCompileTool.CmdLineParams:=EffectiveCompilerParams;
         PkgCompileTool.Execute;
         PkgCompileTool.WaitForExit;
+        if Note<>'' then
+          PkgCompileTool.Hint:='Compile reason: '+Note;
+        PkgCompileTool.Data:=TIDEExternalToolData.Create(IDEToolCompilePackage,
+          APackage.Name,APackage.Filename);
+        PkgCompileTool.FreeData:=true;
         // check if main ppu file was created
         SrcPPUFile:=APackage.GetSrcPPUFilename;
         SrcPPUFileExists:=(SrcPPUFile<>'') and FileExistsUTF8(SrcPPUFile);
