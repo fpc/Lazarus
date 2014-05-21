@@ -31,9 +31,10 @@ interface
 
 uses
   Classes, SysUtils, strutils, FileProcs, KeywordFuncLists, IDEExternToolIntf,
-  PackageIntf, LazIDEIntf, ProjectIntf, IDEUtils, CodeToolsFPCMsgs,
-  CodeToolsStructs, CodeCache, CodeToolManager, DirectoryCacher, BasicCodeTools,
-  DefineTemplates, LazUTF8, FileUtil, etMakeMsgParser, EnvironmentOpts;
+  PackageIntf, LazIDEIntf, ProjectIntf, IDEUtils, CompOptsIntf,
+  CodeToolsFPCMsgs, CodeToolsStructs, CodeCache, CodeToolManager,
+  DirectoryCacher, BasicCodeTools, DefineTemplates, LazUTF8, FileUtil,
+  etMakeMsgParser, EnvironmentOpts;
 
 type
   TFPCMsgFilePool = class;
@@ -1138,7 +1139,8 @@ begin
           MsgItem:=MsgFile.GetMsg(fMsgID);
         Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgType);
         if (TranslatedItem=nil) and (MsgItem=nil) then begin
-          debugln(['TFPCParser.CheckForGeneralMessage msgid not found: ',fMsgID]);
+          if ConsoleVerbosity>=0 then
+            debugln(['TFPCParser.CheckForGeneralMessage msgid not found: ',fMsgID]);
         end;
       end;
 
@@ -1357,7 +1359,7 @@ begin
     MsgLine.SubTool:=SubToolFPCRes;
     MsgLine.Urgency:=PrevMsgLine.Urgency;
     MsgLine.Msg:=p;
-    debugln(['TFPCParser.CheckForCompilingResourceErrors ',MsgLine.Msg,' ',dbgs(MsgLine.Urgency)]);
+    //debugln(['TFPCParser.CheckForCompilingResourceErrors ',MsgLine.Msg,' ',dbgs(MsgLine.Urgency)]);
     AddMsgLine(MsgLine);
     exit(true);
   end;
@@ -1913,9 +1915,11 @@ begin
           MsgItem:=MsgFile.GetMsg(fMsgID);
         Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgType);
         if (TranslatedItem=nil) and (MsgItem=nil) then begin
-          debugln(['TFPCParser.CheckForFileLineColMessage msgid not found: ',fMsgID]);
+          if ConsoleVerbosity>=0 then
+            debugln(['TFPCParser.CheckForFileLineColMessage msgid not found: ',fMsgID]);
         end else if MsgType=mluNone then begin
-          debugln(['TFPCParser.CheckForFileLineColMessage msgid has no type: ',fMsgID]);
+          if ConsoleVerbosity>=0 then
+            debugln(['TFPCParser.CheckForFileLineColMessage msgid has no type: ',fMsgID]);
         end;
       end;
     end;
