@@ -6,10 +6,14 @@ interface
 
 uses
   Classes, SysUtils, fpwebdata,
-  sqldbwebdata, LazIDEIntf,srceditorintf,idemsgintf,
-  ProjectIntf, fpextjs,
+  sqldbwebdata,
+  LazIDEIntf, SrcEditorIntf, IDEMsgIntf, ProjectIntf,
+  {$IFDEF EnableNewExtTools}
+  IDEExternToolIntf,
+  {$ENDIF}
+  fpextjs,
   extjsjson, extjsxml,
-  fpjsonrpc, controls, dialogs, forms,
+  fpjsonrpc, Controls, Dialogs, Forms,
   jstree,jsparser,
   fpextdirect,
   webjsonrpc;
@@ -424,7 +428,11 @@ end;
 
 procedure TJSSyntaxChecker.ShowMessage(const Msg: String);
 begin
+  {$IFDEF EnableNewExtTools}
+  IDEMessagesWindow.AddCustomMessage(mluImportant,Msg,SourceFileName);
+  {$ELSE}
   IDEMessagesWindow.AddMsg(SourceFileName+' : '+Msg,'',0,Nil);
+  {$ENDIF}
 end;
 
 procedure TJSSyntaxChecker.ShowMessage(const Fmt: String;
@@ -471,7 +479,9 @@ Var
   S : TStringStream;
 
 begin
+  {$IFNDEF EnableNewExtTools}
   IDEMessagesWindow.BeginBlock(False);
+  {$ENDIF}
   try
     try
     Handled:=False;
@@ -498,7 +508,9 @@ begin
         ShowException('Error during syntax check',E);
     end;
   finally
+    {$IFNDEF EnableNewExtTools}
     IDEMessagesWindow.EndBlock;
+    {$ENDIF}
   end;
 end;
 
