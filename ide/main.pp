@@ -8217,6 +8217,9 @@ begin
 
   if MainBuildBoss.CompilerOnDiskChanged then
     MainBuildBoss.RescanCompilerDefines(false,false,false,false);
+
+  if IDEMessagesWindow<>nil then
+    IDEMessagesWindow.Clear;
 end;
 
 {$IFNDEF EnableNewExtTools}
