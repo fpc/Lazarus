@@ -432,8 +432,6 @@ begin
     LazarusIDE.MainBarSubTitle:=Profile.Name;
   IdeBuildMode:=Profile.IdeBuildMode;
 
-  IDEMessagesWindow.Clear;
-
   EnvironmentOverrides:=TStringList.Create;
   Tool:=nil;
   try

@@ -3376,6 +3376,7 @@ var
   SrcPPUFileExists: Boolean;
   CompilerParams: String;
   Note: String;
+  FPCParser: TFPCParser;
 begin
   Result:=mrCancel;
 
@@ -3520,7 +3521,9 @@ begin
 
         {$IFDEF EnableNewExtTools}
         PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilingPackage, [APackage.IDAsString]));
-        PkgCompileTool.AddParsers(SubToolFPC);
+        FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
+        if APackage.MainUnit<>nil then
+          FPCParser.FilesToIgnoreUnitNotUsed.Add(APackage.MainUnit.Filename);
         PkgCompileTool.AddParsers(SubToolMake);
         PkgCompileTool.Process.CurrentDirectory:=APackage.Directory;
         PkgCompileTool.Process.Executable:=CompilerFilename;

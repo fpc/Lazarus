@@ -7620,7 +7620,9 @@ begin
 
   if fBuilder=Nil then
     fBuilder:=TLazarusBuilder.Create;
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableNewExtTools}
+  IDEMessagesWindow.Clear;
+  {$ELSE}
   MessagesView.BeginBlock;
   fBuilder.ExternalTools:=ExternalTools;
   {$ENDIF}
