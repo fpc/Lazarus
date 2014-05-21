@@ -22,14 +22,15 @@ unit H2PasDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls,
-  Graphics, Dialogs, ComCtrls, Buttons, StdCtrls, ExtCtrls,
-  LazConfigStorage,
-  SynEdit, SynHighlighterCPP,
-  FileProcs,
-  IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf, IDEDialogs, LazIDEIntf,
-  ProjectIntf, CodeToolManager, SrcEditorIntf, IDETextConverter,
-  H2PasStrConsts, H2PasConvert, IDETextConvListEdit, CompOptsIntf;
+  Classes, SysUtils, LCLProc, LCLType, LResources, Forms, Controls, Graphics,
+  Dialogs, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConfigStorage, SynEdit,
+  SynHighlighterCPP, FileProcs, IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf,
+  IDEDialogs, LazIDEIntf, ProjectIntf, CodeToolManager, SrcEditorIntf,
+  IDETextConverter, H2PasStrConsts, H2PasConvert, IDETextConvListEdit,
+  {$IFDEF EnableNewExtTools}
+  IDEExternToolIntf,
+  {$ENDIF}
+  CompOptsIntf;
 
 type
 
@@ -162,7 +163,7 @@ type
     function OnIDESavedAll(Sender: TObject): TModalResult;
   public
     function Convert: TModalResult;
-    procedure ShowH2PasError(MsgLine: integer);
+    procedure ShowH2PasError;
 
     function SaveSettings: TModalResult;
     function SaveGlobalSettings: TModalResult;
@@ -238,6 +239,11 @@ begin
   TextConverterToolClasses.RegisterClass(TReplaceTypeCastFunctionsInUnit);
   TextConverterToolClasses.RegisterClass(TFixForwardDefinitions);
   TextConverterToolClasses.RegisterClass(TAddToUsesSection);
+
+  {$IFDEF EnableNewExtTools}
+  // register h2pas output parser
+  ExternalToolList.RegisterParser(TH2PasParser);
+  {$ENDIF}
 end;
 
 { TH2PasDialog }
@@ -1115,19 +1121,13 @@ begin
   
   Result:=Converter.Execute;
   if Result<>mrOk then begin
-    ShowH2PasError(-1);
+    ShowH2PasError;
   end;
 end;
 
-procedure TH2PasDialog.ShowH2PasError(MsgLine: integer);
+procedure TH2PasDialog.ShowH2PasError;
 begin
-  if MsgLine<0 then
-    MsgLine:=Converter.FindH2PasErrorMessage;
-  if (MsgLine<0) or (MsgLine>=IDEMessagesWindow.LinesCount) then begin
-    exit;
-  end;
-  
-  LazarusIDE.DoJumpToCompilerMessage(true, MsgLine);
+  LazarusIDE.DoJumpToCompilerMessage(true);
 end;
 
 function TH2PasDialog.SaveSettings: TModalResult;
