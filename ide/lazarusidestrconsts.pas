@@ -3009,6 +3009,7 @@ resourcestring
   lisConfirmBuildAllProfiles = 'Lazarus will be rebuilt with the following profiles:%sContinue?';
   lisNoBuildProfilesSelected = 'No profiles are selected to be built.';
   lisCleanLazarusSource = 'Clean Lazarus Source';
+  lisBuildIDE = 'Build IDE';
   lisMakeNotFound = 'Make not found';
   lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa = 'The program %smake%'
     +'s was not found.%sThis tool is needed to build Lazarus.%s';

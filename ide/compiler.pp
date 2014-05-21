@@ -321,7 +321,7 @@ begin
     DebugLn('[TCompiler.Compile] CmdLine="',CompilerFilename+CmdLine,'"');
 
   {$IFDEF EnableNewExtTools}
-  Tool:=ExternalToolList.Add('Compiling Project');
+  Tool:=ExternalToolList.Add('Compile Project');
   Tool.Process.Executable:=CompilerFilename;
   Tool.CmdLineParams:=CmdLine;
   Tool.Process.CurrentDirectory:=WorkingDir;

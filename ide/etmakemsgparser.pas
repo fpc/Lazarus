@@ -280,7 +280,7 @@ begin
       Dir:=p;
       if (Dir<>'') and (Dir[length(Dir)]='''') then
         Dir:=copy(Dir,1,length(Dir)-1);
-      Tool.WorkerDirectory:=p;
+      Tool.WorkerDirectory:=Dir;
     end else if ReadString(p,LeavingDirPattern) then begin
       // leaving directory
       MsgLine.MsgID:=MakeMsgIDLeavingDirectory;
