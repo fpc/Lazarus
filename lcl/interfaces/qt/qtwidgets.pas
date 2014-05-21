@@ -15713,11 +15713,13 @@ var
   HaveBar: Boolean;
   AOldRect: TRect;
   AOffset: Integer;
+  ASize: TSize;
 begin
   if not QWidget_testAttribute(viewportWidget, QtWA_Mapped) then
   begin
+    ASize := getSize;
     QWidget_contentsRect(Widget, @Result);
-    if (QStyle_styleHint(QApplication_style(),
+    if (ASize.cx > 0) and (ASize.cy > 0) and (QStyle_styleHint(QApplication_style(),
           QStyleSH_ScrollView_FrameOnlyAroundContents) <= 0) then
     begin
       HaveBar := Assigned(FVScrollbar);
@@ -15729,11 +15731,14 @@ begin
         dec(Result.Bottom, horizontalScrollBar.getHeight);
     end;
     OffsetRect(Result, -Result.Left, -Result.Top);
+    {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
+    DebugLn('TQtAbstractScrollArea.GetClientBounds(not mapped): ',dbgsName(LCLObject),':',dbgsName(Self),' ',dbgs(Result),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
+    {$ENDIF}
   end else
   begin
     QWidget_rect(viewportWidget, @Result);
     {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
-    // DebugLn('TQtAbstractScrollArea.GetClientBounds(**** OK ***): ',dbgsName(LCLObject),' ',dbgs(Result),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
+    DebugLn('TQtAbstractScrollArea.GetClientBounds: ',dbgsName(LCLObject),':',dbgsName(Self),' ',dbgs(Result),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
     {$ENDIF}
   end;
 end;
