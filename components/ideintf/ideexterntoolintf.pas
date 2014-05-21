@@ -267,6 +267,9 @@ type
   { TFPCParser - standard parser for Free Pascal messages, implemented by IDE }
 
   TFPCParser = class(TExtToolParser)
+  private
+    FHideHintsSenderNotUsed: boolean;
+    FHideHintsUnitNotUsedInMainSource: boolean;
   protected
     FFilesToIgnoreUnitNotUsed: TStrings;
   public
@@ -277,6 +280,11 @@ type
     class function GetFPCMsgValues(Msg: TMessageLine; out Value1, Value2: string): boolean; virtual; abstract;
     property FilesToIgnoreUnitNotUsed: TStrings read FFilesToIgnoreUnitNotUsed
                                                 write FFilesToIgnoreUnitNotUsed;
+    property HideHintsSenderNotUsed: boolean read FHideHintsSenderNotUsed
+                                     write FHideHintsSenderNotUsed default true;
+    property HideHintsUnitNotUsedInMainSource: boolean
+                           read FHideHintsUnitNotUsedInMainSource
+                           write FHideHintsUnitNotUsedInMainSource default true;
   end;
 
   { TMakeParser - standard parser for 'make' messages, implemented by IDE }

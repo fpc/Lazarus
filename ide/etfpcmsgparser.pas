@@ -1028,6 +1028,8 @@ begin
     inc(p,2); // skip ./
   AFilename:=ExtractFilePath(TrimFilename(p));
   if AFilename<>'' then begin
+    if (not FilenameIsAbsolute(AFilename)) and (Tool.WorkerDirectory<>'') then
+      AFilename:=TrimFilename(AppendPathDelim(Tool.WorkerDirectory)+AFilename);
     if DirectoryStack=nil then DirectoryStack:=TStringList.Create;
     if (DirectoryStack.Count=0)
     or (DirectoryStack[DirectoryStack.Count-1]<>AFilename) then
@@ -1504,8 +1506,8 @@ procedure TIDEFPCParser.ImproveMsgSenderNotUsed(MsgLine: TMessageLine);
 begin
   if (MsgLine.Urgency<=mluVerbose) then exit;
   // check for Sender not used
-  if (MsgLine.Msg='Parameter "Sender" not used') then begin
-    // almost always not important
+  if HideHintsSenderNotUsed
+  and (MsgLine.Msg='Parameter "Sender" not used') then begin
     MsgLine.Urgency:=mluVerbose;
   end;
 end;
@@ -1526,7 +1528,8 @@ begin
   if IndexInStringList(FilesToIgnoreUnitNotUsed,cstFilename,aFilename)>=0 then
   begin
     MsgLine.Urgency:=mluVerbose;
-  end else if FilenameIsAbsolute(aFilename)
+  end else if HideHintsUnitNotUsedInMainSource
+  and FilenameIsAbsolute(aFilename)
   and ((CompareFileExt(aFilename, 'lpr', false)=0)
     or FileExists(ChangeFileExt(aFilename, '.lpk'), aSynchronized))
   then begin
@@ -1794,6 +1797,8 @@ begin
   fLineToMsgID:=TPatternToMsgIDs.Create;
   fFileExists:=TFilenameToPointerTree.Create(false);
   FFilesToIgnoreUnitNotUsed:=TStringList.Create;
+  HideHintsSenderNotUsed:=true;
+  HideHintsUnitNotUsedInMainSource:=true;
 end;
 
 function TIDEFPCParser.FileExists(const Filename: string; aSynchronized: boolean
