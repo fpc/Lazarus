@@ -378,8 +378,6 @@ type
 
   TQtScrollBar = class(TQtAbstractSlider)
   private
-    FInHide: boolean;
-    FInShow: boolean;
     FTrackPos: Integer;
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
@@ -390,8 +388,6 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure AttachEvents; override;
     property TrackPos: Integer read FTrackPos write FTrackPos;
-    property InShow: boolean read FInShow write FInShow;
-    property InHide: boolean read FInHide write FInHide;
   end;
 
   { TQtFrame }
@@ -8294,8 +8290,6 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtScrollBar.Create');
   {$endif}
-  FInHide := False;
-  FInShow := False;
   if AParams.WndParent <> 0 then
     Parent := TQtWidget(AParams.WndParent).GetContainerWidget
   else
@@ -8429,62 +8423,6 @@ begin
                        QAbstractSliderSliderNoAction);
           end;
         end;
-    end;
-    QEventHide, QEventShow:
-    begin
-      if (FOwner <> nil) then
-      begin
-        if QEvent_type(Event) = QEventHide then
-          InHide := True
-        else
-          InShow := True;
-        {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
-        if (QEvent_type(Event) = QEventShow) then
-          DebugLn('> TQtScrollbar QEventShow orientation=',dbgs(getOrientation),' ',dbgsName(LCLObject),' TIME=',dbgs(GetTickCount))
-        else
-          DebugLn('> TQtScrollbar QEventHide orientation=',dbgs(getOrientation),' ',dbgsName(LCLObject),' TIME=',dbgs(GetTickCount));
-        {$ENDIF}
-      end;
-
-      if Assigned(FOwner) and (FOwner is TQtCustomControl) then
-      begin
-        if Assigned(TQtCustomControl(FOwner).FViewPortWidget) then
-        begin
-          // this can fail with infinite loop like in gtk2 in case of ide main bar resizing
-          // don't know what to do since ClientRectNeedsInterfaceUpdate and caspComputing is true.
-          // So we just set result according to the caspComputingBounds result.
-          if (FOwner.ChildOfComplexWidget = ccwScrollingWinControl) then
-          begin
-            ASize := FOwner.getSize;
-            {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
-            DebugLn(' ===> Sending delayResizeEvent from TQtScrollbar show/hide mapped ? ',dbgs(FOwner.testAttribute(QtWA_Mapped)),
-            ' casp ',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' ASize=',dbgs(ASize),
-            ' INRESIZEVENT ? ',dbgs(FOwner.InResizeEvent or InResizeEvent));
-            {$ENDIF}
-            // DelayResizeEvent(Widget, ASize);
-            if (FOwner.InResizeEvent or InResizeEvent) then
-            else
-            if not (caspComputingBounds in LCLObject.AutoSizePhases) and
-              LCLObject.ClientRectNeedsInterfaceUpdate then
-                LCLObject.DoAdjustClientRectChange(True);
-          end;
-        end;
-      end;
-      if (FOwner <> nil) then
-      begin
-        if QEvent_type(Event) = QEventHide then
-          InHide := False
-        else
-          InShow := False;
-        {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
-        if (QEvent_type(Event) = QEventShow) then
-          DebugLn('< TQtScrollbar QEventShow orientation=',dbgs(getOrientation),' ',dbgsName(LCLObject),' TIME=',dbgs(GetTickCount))
-        else
-          DebugLn('< TQtScrollbar QEventHide orientation=',dbgs(getOrientation),' ',dbgsName(LCLObject),' TIME=',dbgs(GetTickCount));
-        {$ENDIF}
-      end;
-      if FOwnWidget then
-        Result := inherited EventFilter(Sender, Event);
     end;
 
     QEventMouseButtonRelease:
@@ -15716,6 +15654,12 @@ begin
       QAbstractScrollArea_setVerticalScrollBarPolicy(Area, AValue)
     else
       QAbstractScrollArea_setHorizontalScrollBarPolicy(Area, AValue);
+
+    if Assigned(LCLObject) and LCLObject.ClientRectNeedsInterfaceUpdate then
+    begin
+      if not (caspComputingBounds in LCLObject.AutoSizePhases) then
+        LCLObject.DoAdjustClientRectChange(True);
+    end;
   end;
 end;
 
@@ -15787,36 +15731,10 @@ begin
     OffsetRect(Result, -Result.Left, -Result.Top);
   end else
   begin
-    if (ChildOfComplexWidget = ccwScrollingWinControl) and
-      testAttribute(QtWA_Mapped) then
-    begin
-      QWidget_rect(viewportWidget, @AOldRect);
-      Result := AOldRect;
-
-      AOffset := getScrollFrameOffset;
-
-      if horizontalScrollBar.InShow then
-        dec(Result.Bottom, horizontalScrollBar.getHeight + AOffset)
-      else
-      if horizontalScrollbar.InHide then
-        inc(Result.Bottom, horizontalScrollBar.getHeight + AOffset);
-
-      if verticalScrollBar.InShow then
-        dec(Result.Right, verticalScrollBar.getWidth + AOffset)
-      else
-      if verticalScrollBar.InHide then
-        inc(Result.Right, verticalScrollBar.getWidth + AOffset);
-
-      {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
-      DebugLn('TQtAbstractScrollArea.GetClientBounds(** COUNTED **): ',dbgsName(LCLObject),' ',dbgs(Result),' from scammed viewport=',dbgs(AOldRect));
-      {$ENDIF}
-    end else
-    begin
-      QWidget_rect(viewportWidget, @Result);
-      {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
-      // DebugLn('TQtAbstractScrollArea.GetClientBounds(**** OK ***): ',dbgsName(LCLObject),' ',dbgs(Result),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
-      {$ENDIF}
-    end;
+    QWidget_rect(viewportWidget, @Result);
+    {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
+    // DebugLn('TQtAbstractScrollArea.GetClientBounds(**** OK ***): ',dbgsName(LCLObject),' ',dbgs(Result),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
+    {$ENDIF}
   end;
 end;
 
@@ -15864,8 +15782,6 @@ begin
     FHScrollBar.ChildOfComplexWidget := ccwAbstractScrollArea;
     FHScrollBar.FOwner := Self;
     FHScrollBar.setFocusPolicy(QtNoFocus);
-    FHScrollBar.InHide := False;
-    FHScrollBar.InShow := False;
 
     if not FHScrollBar.CanChangeFontColor then
     begin
@@ -15902,8 +15818,6 @@ begin
     FVScrollBar.ChildOfComplexWidget := ccwAbstractScrollArea;
     FVScrollBar.FOwner := Self;
     FVScrollBar.setFocusPolicy(QtNoFocus);
-    FVScrollBar.InHide := False;
-    FVScrollBar.InShow := False;
     if not FVScrollBar.CanChangeFontColor then
     begin
       with FVScrollBar do
