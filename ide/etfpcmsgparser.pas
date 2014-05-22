@@ -981,6 +981,10 @@ begin
   LoadMsgFile(MsgFilename,MsgFile);
   if TranslationFilename<>'' then
     LoadMsgFile(TranslationFilename,TranslationFile);
+
+  fIncPathValidForWorkerDir:=Tool.WorkerDirectory;
+  fIncPath:=CodeToolBoss.GetIncludePathForDirectory(
+                           ChompPathDelim(fIncPathValidForWorkerDir));
 end;
 
 procedure TIDEFPCParser.InitReading;
@@ -1003,7 +1007,6 @@ begin
   fLastWorkerImprovedMessage[false]:=-1;
   fLastWorkerImprovedMessage[true]:=-1;
 
-  fIncPathValidForWorkerDir:='-';
   FreeAndNil(DirectoryStack);
 end;
 
