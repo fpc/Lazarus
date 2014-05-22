@@ -6718,12 +6718,9 @@ end;
 function TQtMainWindow.getClientBounds: TRect;
 begin
   {$IFDEF QTSCROLLABLEFORMS}
-  if Assigned(ScrollArea) and
-    {forms which have parent eg.docked must always provide
-     ScrollArea clientRect, while others provide such info
-     only when they are mapped.}
-    (testAttribute(QtWA_Mapped) or (LCLObject.Parent <> nil)) then
-      Result := ScrollArea.getClientBounds
+  if Assigned(ScrollArea) and not
+    ScrollArea.testAttribute(QtWA_PendingResizeEvent) then
+    Result := ScrollArea.getClientBounds
   else
   {$ENDIF}
   Result:=inherited getClientBounds;
