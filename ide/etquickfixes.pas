@@ -266,7 +266,7 @@ begin
   or (Msg.MsgID<>4046) // Constructing a class "$1" with abstract method "$2"
   or (not Msg.HasSourcePosition)
   then exit;
-  if not TFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then begin
+  if not IDEFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then begin
     debugln(['TQuickFixClassWithAbstractMethods.IsApplicable can not extract values: ',Msg.Msg]);
     exit;
   end;
@@ -283,7 +283,7 @@ begin
   if Fixes.LineCount<>1 then exit;
   Msg:=Fixes.Lines[0];
   if not IsApplicable(Msg) then exit;
-  if not TFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then exit;
+  if not IDEFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then exit;
   Fixes.AddMenuItem(Self,Msg,'Show abstract methods of "'+aClassName+'"');
 end;
 
@@ -300,7 +300,7 @@ var
   NewTopLine: integer;
 begin
   if not IsApplicable(Msg) then exit;
-  if not TFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then begin
+  if not IDEFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then begin
     debugln(['TQuickFixClassWithAbstractMethods.QuickFix invalid message ',Msg.Msg]);
     exit;
   end;
@@ -363,7 +363,7 @@ begin
   and (Msg.MsgID<>10022) // Can't find unit $1 used by $2
   and (Msg.MsgID<>10023)) // Unit $1 was not found but $2 exists
   then exit;
-  if not TFPCParser.GetFPCMsgValues(Msg,Unit1,Unit2) then begin
+  if not IDEFPCParser.GetFPCMsgValues(Msg,Unit1,Unit2) then begin
     debugln(['TQuickFixUnitNotFound_Remove.IsApplicable failed to extract unit names: ',Msg.Msg]);
     exit;
   end;
@@ -379,7 +379,7 @@ begin
   if Fixes.LineCount<>1 then exit;
   Msg:=Fixes.Lines[0];
   if not IsApplicable(Msg) then exit;
-  if not TFPCParser.GetFPCMsgValues(Msg,Unit1,Unit2) then exit;
+  if not IDEFPCParser.GetFPCMsgValues(Msg,Unit1,Unit2) then exit;
   Fixes.AddMenuItem(Self,Msg,'Remove uses "'+Unit1+'"');
 end;
 
@@ -391,7 +391,7 @@ var
   Code: TCodeBuffer;
 begin
   if not IsApplicable(Msg) then exit;
-  if not TFPCParser.GetFPCMsgValues(Msg,MissingUnitName,SrcUnitName) then begin
+  if not IDEFPCParser.GetFPCMsgValues(Msg,MissingUnitName,SrcUnitName) then begin
     debugln(['TQuickFixUnitNotFound_Remove.QuickFix invalid message ',Msg.Msg]);
     exit;
   end;
@@ -431,7 +431,7 @@ begin
   or (Msg.MsgID<>5000) // identifier not found "$1"
   or (not Msg.HasSourcePosition)
   then exit;
-  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
+  Identifier:=IDEFPCParser.GetFPCMsgValue1(Msg);
   if not IsValidIdent(Identifier) then exit;
 
   // check if message position is at end of identifier
@@ -462,7 +462,7 @@ begin
   if Fixes.LineCount<>1 then exit;
   Msg:=Fixes.Lines[0];
   if not IsApplicable(Msg) then exit;
-  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
+  Identifier:=IDEFPCParser.GetFPCMsgValue1(Msg);
   if Identifier='' then exit;
   Fixes.AddMenuItem(Self,Msg,'Create local variable "'+Identifier+'"');
   // ToDo: add private/public variable
@@ -479,7 +479,7 @@ var
   NewTopLine: integer;
 begin
   if Msg=nil then exit;
-  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
+  Identifier:=IDEFPCParser.GetFPCMsgValue1(Msg);
   if Identifier='' then exit;
 
   if not LazarusIDE.BeginCodeTools then begin

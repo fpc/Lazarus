@@ -450,7 +450,7 @@ var
   UnitName2: String;
   Path: TStringList;
 begin
-  if not TFPCParser.GetFPCMsgValues(Msg,UnitName1,UnitName2) then begin
+  if not IDEFPCParser.GetFPCMsgValues(Msg,UnitName1,UnitName2) then begin
     debugln(['TQuickFixCircularUnitReference.QuickFix invalid message ',Msg.Msg]);
     exit;
   end;

@@ -286,7 +286,11 @@ type
                            read FHideHintsUnitNotUsedInMainSource
                            write FHideHintsUnitNotUsedInMainSource default true;
   end;
+  TFPCParserClass = class of TFPCParser;
+var
+  IDEFPCParser: TFPCParserClass = nil;
 
+type
   { TMakeParser - standard parser for 'make' messages, implemented by IDE }
 
   TMakeParser = class(TExtToolParser)
