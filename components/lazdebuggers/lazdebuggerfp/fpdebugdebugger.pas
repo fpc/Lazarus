@@ -50,6 +50,11 @@ type
     FDbgController: TDbgController;
     FFpDebugThread: TFpDebugThread;
     FQuickPause: boolean;
+    FRaiseExceptionBreakpoint: FpDbgClasses.TDBGBreakPoint;
+    function GetClassInstanceName(AnAddr: TDBGPtr): string;
+    function ReadAnsiString(AnAddr: TDbgPtr): string;
+    function SetSoftwareExceptionBreakpoint: boolean;
+    procedure HandleSoftwareException(var AnExceptionLocation: TDBGLocationRec; var continue: boolean);
     procedure FreeDebugThread;
     procedure FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: FpDbgClasses.TDbgBreakpoint);
     procedure FDbgControllerCreateProcessEvent(var continue: boolean);
@@ -88,6 +93,7 @@ type
   public
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
+    function GetLocationRec(AnAddress: TDBGPtr=0): TDBGLocationRec;
     function GetLocation: TDBGLocationRec; override;
     class function Caption: String; override;
     class function HasExePath: boolean; override;
@@ -344,7 +350,7 @@ begin
     RegList := AController.CurrentProcess.MainThread.RegisterValueList;
   Reg := RegList.FindRegisterByDwarfIndex(8);
   if Reg <> nil then
-    AContext := AController.CurrentProcess.DbgInfo.FindContext(ThreadId, CurStackFrame, Reg.NumValue)
+    AContext := AController.CurrentProcess.DbgInfo.FindContext(CurThreadId, CurStackFrame, Reg.NumValue)
   else
     AContext := nil;
 
@@ -985,6 +991,72 @@ begin
     end;
 end;
 
+function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;
+var
+  VMTAddr: TDBGPtr;
+  ClassNameAddr: TDBGPtr;
+  b: byte;
+begin
+  // Read address of the vmt
+  FDbgController.CurrentProcess.ReadAddress(AnAddr, VMTAddr);
+  FDbgController.CurrentProcess.ReadAddress(VMTAddr+3*4, ClassNameAddr);
+  // read classname (as shortstring)
+  FDbgController.CurrentProcess.ReadData(ClassNameAddr, 1, b);
+  setlength(result,b);
+  FDbgController.CurrentProcess.ReadData(ClassNameAddr+1, b, result[1]);
+end;
+
+function TFpDebugDebugger.ReadAnsiString(AnAddr: TDbgPtr): string;
+var
+  StrAddr: TDBGPtr;
+  len: integer;
+begin
+  result := '';
+  if not FDbgController.CurrentProcess.ReadAddress(AnAddr, StrAddr) then
+    Exit;
+  FDbgController.CurrentProcess.ReadOrdinal(StrAddr-sizeof(len), len);
+  setlength(result, len);
+  if not FDbgController.CurrentProcess.ReadData(StrAddr, len, result[1]) then
+    result := '';
+end;
+
+function TFpDebugDebugger.SetSoftwareExceptionBreakpoint: boolean;
+var
+  AContext: TFpDbgInfoContext;
+  AValue: TFpDbgValue;
+begin
+  result := false;
+  if assigned(FDbgController.CurrentProcess.SymbolTableInfo) then
+  begin
+    AContext := FDbgController.CurrentProcess.SymbolTableInfo.FindContext(0);
+    if Assigned(AContext) then
+    begin
+      AValue := AContext.FindSymbol('FPC_RAISEEXCEPTION');
+      if assigned(AValue) then
+      begin
+        FRaiseExceptionBreakpoint := FDbgController.CurrentProcess.AddBreak(AValue.Address.Address);
+        if assigned(FRaiseExceptionBreakpoint) then
+          result := True;
+      end;
+    end;
+  end;
+end;
+
+procedure TFpDebugDebugger.HandleSoftwareException(var AnExceptionLocation: TDBGLocationRec;var continue: boolean);
+var
+  AnExceptionObjectLocation: TDBGPtr;
+  ExceptionClass: string;
+  ExceptionMessage: string;
+begin
+  // Using regvar:
+  AnExceptionLocation:=GetLocationRec(FDbgController.CurrentProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(2).NumValue);
+  AnExceptionObjectLocation:=FDbgController.CurrentProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(0).NumValue;
+  ExceptionClass := GetClassInstanceName(AnExceptionObjectLocation);
+  ExceptionMessage := ReadAnsiString(AnExceptionObjectLocation+4);
+
+  DoException(deInternal, ExceptionClass, AnExceptionLocation, ExceptionMessage, continue);
+end;
+
 procedure TFpDebugDebugger.FreeDebugThread;
 begin
   if FFpDebugThread = nil then
@@ -999,12 +1071,23 @@ end;
 procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: FpDbgClasses.TDbgBreakpoint);
 var
   ABreakPoint: TDBGBreakPoint;
+  ALocationAddr: TDBGLocationRec;
 begin
   if assigned(Breakpoint) then
     begin
-    ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
-    if assigned(ABreakPoint) then
-      ABreakPoint.Hit(continue);
+    if BreakPoint=FRaiseExceptionBreakpoint then
+      begin
+        HandleSoftwareException(ALocationAddr, continue);
+        if continue then
+          exit;
+      end
+    else
+      begin
+        ABreakPoint := TFPBreakpoints(BreakPoints).Find(Breakpoint);
+        if assigned(ABreakPoint) then
+          ABreakPoint.Hit(continue);
+        ALocationAddr := GetLocation;
+      end;
     end
   else if FQuickPause then
     begin
@@ -1013,13 +1096,16 @@ begin
       exit;
     end;
   SetState(dsPause);
-  DoCurrent(GetLocation);
+  DoCurrent(ALocationAddr);
 end;
 
 procedure TFpDebugDebugger.FDbgControllerCreateProcessEvent(var continue: boolean);
 begin
   // This will trigger setting the breakpoints
   SetState(dsPause);
+
+  if not SetSoftwareExceptionBreakpoint then
+    debugln('Failed to set software-debug breakpoint');
 end;
 
 function TFpDebugDebugger.RequestCommand(const ACommand: TDBGCommand;
@@ -1197,7 +1283,7 @@ begin
   inherited Destroy;
 end;
 
-function TFpDebugDebugger.GetLocation: TDBGLocationRec;
+function TFpDebugDebugger.GetLocationRec(AnAddress: TDBGPtr): TDBGLocationRec;
 var
   sym, symproc: TFpDbgSymbol;
 begin
@@ -1208,7 +1294,10 @@ begin
     result.SrcFullName:='';
     result.SrcLine:=0;
 
-    result.Address := FDbgController.CurrentProcess.GetInstructionPointerRegisterValue;
+    if AnAddress=0 then
+      result.Address := FDbgController.CurrentProcess.GetInstructionPointerRegisterValue
+    else
+      result.Address := AnAddress;
 
     sym := FDbgController.CurrentProcess.FindSymbol(result.Address);
     if sym = nil then
@@ -1218,8 +1307,6 @@ begin
     result.SrcLine := sym.Line;
     result.SrcFullName := sym.FileName;
 
-    debugln('Locatie: '+sym.FileName+':'+sym.Name+':'+inttostr(sym.Line));
-
     symproc := sym;
     while not (symproc.kind in [skProcedure, skFunction]) do
       symproc := symproc.Parent;
@@ -1227,8 +1314,11 @@ begin
     if assigned(symproc) then
       result.FuncName:=symproc.Name;
     end
-  else
-    result := inherited;
+end;
+
+function TFpDebugDebugger.GetLocation: TDBGLocationRec;
+begin
+  Result:=GetLocationRec;
 end;
 
 class function TFpDebugDebugger.Caption: String;

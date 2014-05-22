@@ -292,6 +292,7 @@ type
     function  RunTo(ASourceFile: string; ALineNr: integer): boolean;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; virtual;
+    function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean; virtual;
     function ReadOrdinal(const AAdress: TDbgPtr; out AData): Boolean; virtual;
     function ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean; virtual;
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; virtual;
@@ -773,6 +774,25 @@ end;
 function TDbgProcess.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
 begin
   result := false
+end;
+
+function TDbgProcess.ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
+var
+  dw: DWord;
+  qw: QWord;
+begin
+  case GMode of
+    dm32:
+      begin
+        result := ReadData(AAdress, sizeof(dw), dw);
+        AData:=dw;
+      end;
+    dm64:
+      begin
+        result := ReadData(AAdress, sizeof(qw), qw);
+        AData:=qw;
+      end;
+  end;
 end;
 
 function TDbgProcess.ReadOrdinal(const AAdress: TDbgPtr; out AData): Boolean;
