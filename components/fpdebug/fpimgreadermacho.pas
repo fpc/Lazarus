@@ -112,7 +112,7 @@ begin
       if (SymbolArr^[i].n_type and $0e)=$e then
       begin
         // Section-index is ignored for now...
-        AfpSymbolInfo.AddObject(pchar(SymbolStr+SymbolArr^[i].n_un.n_strx), TObject(SymbolArr^[i].n_value));
+        AfpSymbolInfo.AddObject(pchar(SymbolStr+SymbolArr^[i].n_un.n_strx), TObject(PtrUInt(SymbolArr^[i].n_value)));
       end
     end;
   end;
