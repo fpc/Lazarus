@@ -3958,7 +3958,7 @@ begin
       Color := Palette.DefaultColor
     else
       ColorRefToTQColor(ColorToRGB(LCLObject.Color), Color);
-    Painter := QPainter_create(QWidget_to_QPaintDevice(Widget));
+    Painter := QPainter_create(QWidget_to_QPaintDevice(QWidgetH(Sender)));
     Brush := QBrush_create(@Color, QtSolidPattern);
     try
       QPaintEvent_rect(QPaintEventH(Event), @R);
