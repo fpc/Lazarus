@@ -315,6 +315,7 @@ type
     function GetLineText(Line: TMessageLine): string;
     function GetHeaderText(View: TLMsgWndView): string;
     function FindUnfinishedView: TLMsgWndView; // running or waiting for run
+    function GetLastViewWithContent: TLMsgWndView;
 
     // filter
     property ActiveFilter: TLMsgViewFilter read FActiveFilter write SetActiveFilter;
@@ -2599,6 +2600,19 @@ begin
   Result:=nil;
 end;
 
+function TMessagesCtrl.GetLastViewWithContent: TLMsgWndView;
+var
+  i: Integer;
+begin
+  i:=ViewCount-1;
+  while i>=0 do begin
+    Result:=Views[i];
+    if Result.HasContent then exit;
+    dec(i);
+  end;
+  Result:=nil;
+end;
+
 function TMessagesCtrl.GetFilter(aCaption: string; CreateIfNotExist: boolean
   ): TLMsgViewFilter;
 var
@@ -3049,7 +3063,9 @@ begin
       MsgAboutToolMenuItem.Caption:='About '+View.Caption;
       MsgAboutToolMenuItem.Visible:=true;
     end else begin
-      MsgAboutToolMenuItem.Visible:=false;
+      // no line selected => use last visible View
+      View:=MessagesCtrl.GetLastViewWithContent;
+      MsgAboutToolMenuItem.Visible:=View<>nil;
     end;
     MsgAboutToolMenuItem.OnClick:=@AboutToolMenuItemClick;
 
@@ -3314,7 +3330,10 @@ var
   Memo: TMemo;
 begin
   View:=MessagesCtrl.SelectedView;
-  if View=nil then exit;
+  if View=nil then begin
+    View:=MessagesCtrl.GetLastViewWithContent;
+    if View=nil then exit;
+  end;
 
   s:=View.Caption+LineEnding;
   s+=LineEnding;
