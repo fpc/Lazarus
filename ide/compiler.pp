@@ -328,7 +328,7 @@ begin
   FPCParser:=TFPCParser(Tool.AddParsers(SubToolFPC));
   FPCParser.HideHintsSenderNotUsed:=not AProject.CompilerOptions.ShowHintsForSenderNotUsed;
   FPCParser.HideHintsUnitNotUsedInMainSource:=not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
-  if AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc
+  if (not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc)
   and (AProject.MainFilename<>'') then
     FPCParser.FilesToIgnoreUnitNotUsed.Add(AProject.MainFilename);
   Tool.AddParsers(SubToolMake);

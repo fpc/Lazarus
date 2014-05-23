@@ -3346,6 +3346,8 @@ begin
   try
     with Form do begin
       Name:='AboutExtToolDlg';
+      Width:=500;
+      Height:=300;
       Position:=poMainFormCenter;
       Caption:='About '+View.Caption;
     end;

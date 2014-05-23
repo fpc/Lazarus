@@ -3522,8 +3522,9 @@ begin
         {$IFDEF EnableNewExtTools}
         PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilingPackage, [APackage.IDAsString]));
         FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
+        //debugln(['TLazPackageGraph.CompilePackage ',APackage.Name,' ',APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc,' ',APackage.MainUnit.Filename]);
         if (APackage.MainUnit<>nil)
-        and (APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
+        and (not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
           FPCParser.FilesToIgnoreUnitNotUsed.Add(APackage.MainUnit.Filename);
         FPCParser.HideHintsSenderNotUsed:=not APackage.CompilerOptions.ShowHintsForSenderNotUsed;
         FPCParser.HideHintsUnitNotUsedInMainSource:=not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;

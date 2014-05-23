@@ -151,8 +151,7 @@ type
     procedure ImproveMsgHiddenByIDEDirective(const SourceOK: Boolean;
       var MsgLine: TMessageLine);
     procedure ImproveMsgSenderNotUsed(aSynchronized: boolean; MsgLine: TMessageLine);
-    procedure ImproveMsgUnitNotUsed(aSynchronized: boolean;
-      const aFilename: String; MsgLine: TMessageLine);
+    procedure ImproveMsgUnitNotUsed(aSynchronized: boolean; MsgLine: TMessageLine);
     procedure ImproveMsgUnitNotFound(aSynchronized: boolean;
       MsgLine: TMessageLine);
     procedure Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
@@ -1536,7 +1535,7 @@ begin
 end;
 
 procedure TIDEFPCParser.ImproveMsgUnitNotUsed(aSynchronized: boolean;
-  const aFilename: String; MsgLine: TMessageLine);
+  MsgLine: TMessageLine);
 // check for Unit not used message in main sources
 // and change urgency to merely 'verbose'
 const
@@ -1548,13 +1547,13 @@ begin
 
   //debugln(['TIDEFPCParser.ImproveMsgUnitNotUsed ',aSynchronized,' ',MsgLine.Msg]);
   // unit not used
-  if IndexInStringList(FilesToIgnoreUnitNotUsed,cstFilename,aFilename)>=0 then
+  if IndexInStringList(FilesToIgnoreUnitNotUsed,cstFilename,MsgLine.Filename)>=0 then
   begin
     MsgLine.Urgency:=mluVerbose;
   end else if HideHintsUnitNotUsedInMainSource
-  and FilenameIsAbsolute(aFilename)
-  and ((CompareFileExt(aFilename, 'lpr', false)=0)
-    or FileExists(ChangeFileExt(aFilename, '.lpk'), aSynchronized))
+  and FilenameIsAbsolute(MsgLine.Filename)
+  and ((CompareFileExt(MsgLine.Filename, 'lpr', false)=0)
+    or FileExists(ChangeFileExt(MsgLine.Filename, '.lpk'), aSynchronized))
   then begin
     // a lpk/lpr does not use a unit => almost always not important
     MsgLine.Urgency:=mluVerbose;
@@ -2151,7 +2150,7 @@ begin
     and (MsgLine.SubTool=SubToolFPC) and (MsgLine.Filename<>'')
     then begin
       // try to find for short file name the full file name
-      aFilename:=MsgLine.GetFullFilename;
+      aFilename:=MsgLine.Filename;
       if not FilenameIsAbsolute(aFilename) then begin
         MsgWorkerDir:=MsgLine.Attribute['WD'];
         if fIncPathValidForWorkerDir<>MsgWorkerDir then begin
@@ -2174,7 +2173,7 @@ begin
 
       // get source
       SourceOK:=false;
-      aFilename:=MsgLine.GetFullFilename;
+      aFilename:=MsgLine.Filename;
       if FilenameIsAbsolute(aFilename) then begin
         if (fLastSource<>nil)
         and (CompareFilenames(aFilename,fLastSource.Filename)=0) then begin
@@ -2200,7 +2199,7 @@ begin
       if MsgLine.Urgency<mluError then
         ImproveMsgHiddenByIDEDirective(SourceOK, MsgLine);
       ImproveMsgUnitNotFound(aSynchronized, MsgLine);
-      ImproveMsgUnitNotUsed(aSynchronized, aFilename, MsgLine);
+      ImproveMsgUnitNotUsed(aSynchronized, MsgLine);
       ImproveMsgSenderNotUsed(aSynchronized, MsgLine);
     end;
   end;
