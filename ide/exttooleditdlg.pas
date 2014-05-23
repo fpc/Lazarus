@@ -557,6 +557,7 @@ begin
   Tool:=TIDEExternalToolOptions.Create;
   try
     Tool.Title:=Item.Title;
+    Tool.Hint:='External tool '+IntToStr(Index+1);
     Tool.Executable:=Item.Filename;
     Tool.WorkingDirectory:=Item.WorkingDirectory;
     Tool.CmdLineParams:=Item.CmdLineParams;
