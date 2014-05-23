@@ -346,7 +346,7 @@ type
                                 DoSwitchPathDelims: boolean); virtual;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch); virtual;
-    function Execute(const WorkingDir, ToolTitle: string): TModalResult;
+    function Execute(const WorkingDir, ToolTitle, CompileHint: string): TModalResult;
     property ChangeStamp: int64 read FChangeStamp;
     procedure IncreaseChangeStamp;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
@@ -4206,13 +4206,17 @@ begin
   if Done(Tool.AddDiff('ShowAllMessages',ShowAllMessages,CompOpts.ShowAllMessages)) then exit;
 end;
 
-function TCompilationToolOptions.Execute(const WorkingDir, ToolTitle: string
-  ): TModalResult;
+function TCompilationToolOptions.Execute(const WorkingDir, ToolTitle,
+  CompileHint: string): TModalResult;
 var
   ProgramFilename, Params: string;
   Filename: String;
   CurCommand: String;
+  {$IFDEF EnableNewExtTools}
+  ExtTool: TAbstractExternalTool;
+  {$ELSE}
   ExtTool: TIDEExternalToolOptions;
+  {$ENDIF}
 begin
   Result:=mrCancel;
 
@@ -4229,23 +4233,29 @@ begin
     if Filename<>'' then ProgramFilename:=Filename;
   end;
 
+  {$IFDEF EnableNewExtTools}
+  ExtTool:=ExternalToolList.Add(ToolTitle);
+  ExtTool.Hint:=CompileHint;
+  ExtTool.Process.CurrentDirectory:=WorkingDir;
+  ExtTool.Process.Executable:=ProgramFilename;
+  ExtTool.CmdLineParams:=Params;
+  if ScanForFPCMessages then
+    ExtTool.AddParsers(SubToolFPC);
+  if ScanForMakeMessages then
+    ExtTool.AddParsers(SubToolMake);
+  if ExtTool.ParserCount=0 then
+    ExtTool.AddParsers(SubToolDefault);
+  // run
+  ExtTool.Execute;
+  ExtTool.WaitForExit;
+  if ExtTool.ErrorMessage='' then
+    Result:=mrOK;
+  {$ELSE}
   ExtTool:=TIDEExternalToolOptions.Create;
   try
     ExtTool.Title:=ToolTitle;
     ExtTool.WorkingDirectory:=WorkingDir;
     ExtTool.CmdLineParams:=Params;
-    {$IFDEF EnableNewExtTools}
-    ExtTool.Executable:=ProgramFilename;
-    if ScanForFPCMessages then
-      ExtTool.Scanners.Add(SubToolFPC);
-    if ScanForMakeMessages then
-      ExtTool.Scanners.Add(SubToolMake);
-    if ExtTool.Scanners.Count=0 then
-      ExtTool.Scanners.Add(SubToolDefault);
-    // run
-    if RunExternalTool(ExtTool) then
-      Result:=mrOk;
-    {$ELSE}
     ExtTool.Filename:=ProgramFilename;
     ExtTool.ScanOutputForFPCMessages:=ScanForFPCMessages;
     ExtTool.ScanOutputForMakeMessages:=ScanForMakeMessages;
@@ -4253,11 +4263,11 @@ begin
     ExtTool.ShowAllOutput:=ShowAllMessages;
     // run
     Result:=RunExternalTool(ExtTool);
-    {$ENDIF}
   finally
     // clean up
     ExtTool.Free;
   end;
+  {$ENDIF}
 end;
 
 procedure TCompilationToolOptions.IncreaseChangeStamp;

@@ -7089,6 +7089,8 @@ begin
         end;
       end;
     end;
+    if aCompileHint<>'' then
+      aCompileHint:='Compile Reason: '+aCompileHint;
 
     // create unit output directory
     UnitOutputDirectory:=Project1.CompilerOptions.GetUnitOutPath(false);
@@ -7159,7 +7161,8 @@ begin
                                         Project1.CompilerOptions.ExecuteBefore);
       if (AReason in ToolBefore.CompileReasons) then begin
         Result:=Project1.CompilerOptions.ExecuteBefore.Execute(
-                           Project1.ProjectDirectory,lisExecutingCommandBefore);
+               Project1.ProjectDirectory, lisProject2+lisExecutingCommandBefore,
+               aCompileHint);
         if Result<>mrOk then
         begin
           debugln(['TMainIDE.DoBuildProject CompilerOptions.ExecuteBefore.Execute failed']);
@@ -7188,7 +7191,7 @@ begin
 
         // compile
         CompilerFilename:=Project1.GetCompilerFilename;
-        // aCompileHint: use absolute paths, because some external tools resolve symlinked directories
+        // Hint: use absolute paths, because some external tools resolve symlinked directories
         CompilerParams :=
           Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
                  + ' ' + PrepareCmdLineOption(SrcFilename);
@@ -7249,7 +7252,8 @@ begin
       // no need to check for mrOk, we are exit if it wasn't
       if (AReason in ToolAfter.CompileReasons) then begin
         Result:=Project1.CompilerOptions.ExecuteAfter.Execute(
-                            Project1.ProjectDirectory,lisExecutingCommandAfter);
+                            Project1.ProjectDirectory,
+                            lisProject2+lisExecutingCommandAfter,aCompileHint);
         if Result<>mrOk then
         begin
           debugln(['TMainIDE.DoBuildProject CompilerOptions.ExecuteAfter.Execute failed']);

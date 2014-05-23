@@ -733,6 +733,7 @@ resourcestring
     +'compiler while debugging or compiling.';
   lisProjectSuccessfullyBuilt = 'Project %s%s%s successfully built';
   lisExecutingCommandBefore = 'Executing command before';
+  lisProject2 = 'Project: ';
   lisExecutingCommandAfter = 'Executing command after';
   lisNoProgramFileSFound = 'No program file %s%s%s found.';
   lisNotNow = 'Not now';
