@@ -6960,7 +6960,7 @@ var
   {$ENDIF}
   TargetExeDirectory: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
-  Note: String;
+  aCompileHint: String;
   OldToolStatus: TIDEToolStatus;
 begin
   if (Project1=nil) or (Project1.MainUnitInfo=nil) then begin
@@ -7069,10 +7069,10 @@ begin
     // check if build is needed (only if we will call the compiler)
     // and check if a 'build all' is needed
     NeedBuildAllFlag:=false;
+    aCompileHint:='';
     if (AReason in Project1.CompilerOptions.CompileReasons) then begin
-      Note:='';
       Result:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
-                                                         NeedBuildAllFlag,Note);
+                                                 NeedBuildAllFlag,aCompileHint);
       if  (pbfOnlyIfNeeded in Flags)
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if Result=mrNo then begin
@@ -7188,7 +7188,7 @@ begin
 
         // compile
         CompilerFilename:=Project1.GetCompilerFilename;
-        // Note: use absolute paths, because some external tools resolve symlinked directories
+        // aCompileHint: use absolute paths, because some external tools resolve symlinked directories
         CompilerParams :=
           Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
                  + ' ' + PrepareCmdLineOption(SrcFilename);
@@ -7204,7 +7204,7 @@ begin
                                 WorkingDir,CompilerFilename,CompilerParams,
                                 (pbfCleanCompile in Flags) or NeedBuildAllFlag,
                                 pbfSkipLinking in Flags,
-                                pbfSkipAssembler in Flags);
+                                pbfSkipAssembler in Flags,aCompileHint);
         if Result<>mrOk then begin
           // save state, so that next time the project is not compiled clean
           Project1.LastCompilerFilename:=CompilerFilename;
