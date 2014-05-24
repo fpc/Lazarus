@@ -39,7 +39,8 @@ unit FpImgReaderWinPE;
 interface
 
 uses
-  Classes, SysUtils, math, FpImgReaderBase, FpImgReaderWinPETypes, LazLoggerBase;
+  Classes, SysUtils, math, FpImgReaderBase, FpImgReaderWinPETypes, LazLoggerBase,
+  fpDbgSymTable;
   
 type
 
@@ -50,6 +51,7 @@ type
     FSections: TStringList;
     FFileLoader : TDbgFileLoader;
     FOwnLoader  : Boolean;
+    FCodeBase   : DWord;
   protected
     function GetSection(const AName: String): PDbgImageSection; override;
 
@@ -60,9 +62,19 @@ type
   public
     constructor Create(ASource: TDbgFileLoader; OwnSource: Boolean); override;
     destructor Destroy; override;
+    procedure ParseSymbolTable(AfpSymbolInfo: TfpSymbolList); override;
   end;
 
 implementation
+
+const
+  // Symbol-map section name
+  _symbol        = '.symbols';
+  _symbolstrings = '.symbolsstrings';
+
+type
+  PImageSymbolArray = ^TImageSymbolArray;
+  TImageSymbolArray = array[0..maxSmallint] of TImageSymbol;
 
 function isValidPEStream(ASource: TDbgFileLoader): Boolean;
 var
@@ -102,6 +114,47 @@ begin
   end;
   FSections.Free;
   inherited Destroy;  
+end;
+
+procedure TPEFileSource.ParseSymbolTable(AfpSymbolInfo: TfpSymbolList);
+var
+  p: PDbgImageSection;
+  ps: PDbgImageSection;
+  SymbolArr: PImageSymbolArray;
+  SymbolStr: pointer;
+  i,j: integer;
+  SymbolCount: integer;
+  SymbolName: AnsiString;
+begin
+  p := Section[_symbol];
+  ps := Section[_symbolstrings];
+  if assigned(p) and assigned(ps) then
+  begin
+    SymbolArr:=PDbgImageSectionEx(p)^.Sect.RawData;
+    SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
+    SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(TImageSymbol);
+    for i := 0 to SymbolCount-1 do
+    begin
+      begin
+        // Section-index is ignored for now...
+        if SymbolArr^[i].N.Name.Short=0 then
+          SymbolName:=pchar(SymbolStr+SymbolArr^[i].N.Name.Long)
+        else
+        begin
+          SymbolName:='';
+          if SymbolArr^[i].N.Name.Long<>0 then
+          begin
+            for j := 0 to sizeof(SymbolArr^[i].N.ShortName)-1 do
+            begin
+              if SymbolArr^[i].N.ShortName[j]=#0 then break;
+              SymbolName:=SymbolName+SymbolArr^[i].N.ShortName[j];
+            end;
+          end;
+        end;
+        AfpSymbolInfo.AddObject(SymbolName, TObject(PtrUInt(SymbolArr^[i].Value+ImageBase+FCodeBase)));
+      end
+    end;
+  end;
 end;
 
 function TPEFileSource.GetSection(const AName: String): PDbgImageSection;
@@ -150,6 +203,8 @@ var
   SectionName: array[0..IMAGE_SIZEOF_SHORT_NAME] of Char;
   SectionMax: QWord;
   s: string[255];
+  StringTableLen: DWord;
+  StringTableStart: QWord;
 begin
   FFileLoader.Read(0, sizeof(DosHeader), @DosHeader);
   if (DosHeader.e_magic <> IMAGE_DOS_SIGNATURE)
@@ -171,7 +226,7 @@ begin
   if Image64Bit
   then SetImageBase(NtHeaders.W64.OptionalHeader.ImageBase)
   else SetImageBase(NtHeaders.W32.OptionalHeader.ImageBase);
-
+  FCodeBase := NtHeaders.W32.OptionalHeader.BaseOfCode;
   SectionMax := FFileLoader.LoadMemory(
     DosHeader.e_lfanew +
     (@NtHeaders.Sys.OptionalHeader - @NtHeaders.Sys) +
@@ -207,6 +262,15 @@ begin
       Add(SectionName, SectionHeader[n].PointerToRawData, SectionHeader[n].Misc.VirtualSize,  SectionHeader[n].VirtualAddress);
     end
   end;
+
+  // Create a fake-sections for the symbol-table:
+  if NtHeaders.Sys.FileHeader.PointerToSymbolTable<>0 then
+    begin
+    Add(_symbol,NtHeaders.Sys.FileHeader.PointerToSymbolTable, NtHeaders.Sys.FileHeader.NumberOfSymbols*IMAGE_SIZEOF_SYMBOL,0);
+    StringTableStart:=NtHeaders.Sys.FileHeader.PointerToSymbolTable+NtHeaders.Sys.FileHeader.NumberOfSymbols*IMAGE_SIZEOF_SYMBOL;
+    FFileLoader.Read(StringTableStart, sizeof(DWord), @StringTableLen);
+    Add(_symbolstrings,StringTableStart, StringTableLen, 0);
+    end;
 
   FFileLoader.UnloadMemory(SectionHeader);
 end;
