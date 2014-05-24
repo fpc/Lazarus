@@ -40,7 +40,7 @@ uses
   CodeToolsStructs,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, LazIDEIntf, IDEDialogs,
-  PackageIntf,
+  PackageIntf, IDEMsgIntf,
   // IDE
   Project, PackageSystem, ExtToolEditDlg, IDEProcs, EnvironmentOpts,
   LazarusIDEStrConsts, PackageDefs, CompilerOptions, TransferMacros, LazConf;
@@ -872,9 +872,10 @@ begin
   CompilerFiles:=nil;
   Target_PPUs:=nil;
   FPC_PPUs:=nil;
+  IDEMessagesWindow.Clear;
   Screen.Cursor:=crHourGlass;
   try
-    // do not confuse the user with cached data
+    // make sure there is no invalid cache due to bugs
     InvalidateFileStateCache();
 
     // check for special characters in search paths
