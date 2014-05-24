@@ -186,6 +186,10 @@ var
   e: Integer;
   Line: Cardinal;
   bp: TDbgBreakpoint;
+
+  AContext: TFpDbgInfoContext;
+  AValue: TFpDbgValue;
+
 begin
   if GController.MainProcess = nil
   then begin
@@ -218,8 +222,17 @@ begin
       Val(P, Address, e);
       if e <> 0
       then begin
-        WriteLN('Illegal address: ', P);
-        Exit;
+        AContext := GController.CurrentProcess.SymbolTableInfo.FindContext(GController.CurrentProcess.GetInstructionPointerRegisterValue);
+        if AContext = nil then begin
+          Writeln('Invalid context');
+          exit;
+        end;
+        AValue := AContext.FindSymbol(P);
+        if not assigned(AValue) then begin
+          WriteLN('Illegal address/unknown symbol: ', P);
+          Exit;
+        end;
+        Address:=AValue.Address.Address;
       end;
     end;
     if Remove
