@@ -2345,6 +2345,7 @@ var
 begin
   Value1:='';
   Value2:='';
+  if Msg=nil then exit(false);
   if Msg.MsgID=MsgId then exit(true);
   if Msg.MsgID<>0 then exit(false);
   if Msg.SubTool<>SubToolFPC then exit(false);

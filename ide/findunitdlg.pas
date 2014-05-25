@@ -124,6 +124,7 @@ type
 
   TQuickFixUnitNotFound_Search = class(TMsgQuickFix)
   public
+    function IsApplicable(Msg: TMessageLine; out MissingUnit, UsedByUnit: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -174,35 +175,48 @@ end;
 {$IFDEF EnableNewExtTools}
 { TQuickFixUnitNotFound_Search }
 
+function TQuickFixUnitNotFound_Search.IsApplicable(Msg: TMessageLine; out
+  MissingUnit, UsedByUnit: string): boolean;
+begin
+  Result:=false;
+  if Msg=nil then exit;
+  if Msg.MsgID<>FPCMsgIDCantFindUnitUsedBy then exit;
+  MissingUnit:=Msg.Attribute[FPCMsgAttrMissingUnit];
+  UsedByUnit:=Msg.Attribute[FPCMsgAttrUsedByUnit];
+  if (MissingUnit='')
+  and not IDEFPCParser.GetFPCMsgValues(Msg,MissingUnit,UsedByUnit) then begin
+    debugln(['TQuickFixUnitNotFound_Search.IsApplicable failed to extract unit names: ',Msg.Msg]);
+    exit;
+  end;
+  Result:=true;
+end;
+
 procedure TQuickFixUnitNotFound_Search.CreateMenuItems(Fixes: TMsgQuickFixes);
 var
   Msg: TMessageLine;
+  MissingUnit: string;
+  UsedByUnit: string;
 begin
   if Fixes.LineCount<>1 then exit;
   Msg:=Fixes.Lines[0];
-  if (Msg.SubTool<>SubToolFPC)
-  or (Msg.MsgID<>10022) // Can't find unit $1 used by $2
-  then exit;
-  Fixes.AddMenuItem(Self,Msg,'Search Unit');
+  if not IsApplicable(Msg,MissingUnit,UsedByUnit) then exit;
+  Fixes.AddMenuItem(Self,Msg,'Search Unit "'+MissingUnit+'"');
 end;
 
 procedure TQuickFixUnitNotFound_Search.QuickFix(Fixes: TMsgQuickFixes;
   Msg: TMessageLine);
 var
-  AnUnitName: String;
+  MissingUnit: String;
+  UsedByUnit: string;
   CodeBuf: TCodeBuffer;
   Dlg: TFindUnitDialog;
 begin
   // get unitname
-  if not REMatches(Msg.Msg,'Can''t find unit ([a-z_0-9]+) ','I') then begin
-    DebugLn('TQuickFixUnitNotFound_Search invalid message ',Msg.Msg);
-    exit;
-  end;
-  AnUnitName:=REVar(1);
-  DebugLn(['TQuickFixUnitNotFound_Search.Execute Unit=',AnUnitName]);
+  if not IsApplicable(Msg,MissingUnit,UsedByUnit) then exit;
+  DebugLn(['TQuickFixUnitNotFound_Search.Execute Unit=',MissingUnit]);
 
-  if (AnUnitName='') or (not IsValidIdent(AnUnitName)) then begin
-    DebugLn(['TQuickFixUnitNotFound_Search.Execute not an identifier "',dbgstr(AnUnitName),'"']);
+  if (MissingUnit='') or (not IsValidIdent(MissingUnit)) then begin
+    DebugLn(['TQuickFixUnitNotFound_Search.Execute not an identifier "',dbgstr(MissingUnit),'"']);
     exit;
   end;
 
@@ -220,7 +234,7 @@ begin
   // show dialog
   Dlg:=TFindUnitDialog.Create(nil);
   try
-    Dlg.InitWithMsg(Msg.Msg,CodeBuf,AnUnitName);
+    Dlg.InitWithMsg(Msg.Msg,CodeBuf,MissingUnit);
     Dlg.ShowModal;
   finally
     Dlg.Free;
