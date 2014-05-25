@@ -79,7 +79,7 @@ type
     function DebugOutTokensAsString: string;
   end;
 
-  TSVGCoordinateKind = (sckUnknown, sckX, sckY, sckXDelta, sckYDelta, sckYSize);
+  TSVGCoordinateKind = (sckUnknown, sckX, sckY, sckXDelta, sckYDelta, sckXSize, sckYSize);
 
   TSVGUnit = (suPX, suMM);
 
@@ -906,7 +906,7 @@ begin
   end
   else if AKey = 'stroke-width' then
   begin
-    ADestEntity.Pen.Width := Round(StringWithUnitToFloat(AValue, sckX));
+    ADestEntity.Pen.Width := Round(StringWithUnitToFloat(AValue, sckXSize));
     Result := Result + [spbfPenWidth];
   end
   else if AKey = 'stroke-opacity' then
@@ -982,8 +982,8 @@ begin
   end
   else if AKey = 'font-size' then
   begin
-    if ADestEntity <> nil then ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue, sckX, suPX));
-    if ADestStyle <> nil then ADestStyle.Font.Size := Round(StringWithUnitToFloat(AValue, sckX, suPX));
+    if ADestEntity <> nil then ADestEntity.Font.Size := Round(StringWithUnitToFloat(AValue, sckXSize, suPX));
+    if ADestStyle <> nil then ADestStyle.Font.Size := Round(StringWithUnitToFloat(AValue, sckXSize, suPX));
     Result := Result + [spbfFontSize];
   end
   else if AKey = 'font-family' then
@@ -2596,7 +2596,7 @@ begin
 
   // Set the coordinates
   ConvertSVGCoordinatesToFPVCoordinates(
-        AData, lx, ly, lParagraph.X, lParagraph.Y);
+        AData, lx, ly, lParagraph.X, lParagraph.Y, False);
 
   // Now add other lines, which appear as <tspan ...>another line</tspan>
   // Example:
@@ -2690,7 +2690,8 @@ function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string;
     begin
       case ACoordKind of
         sckX:      Result := (Result - ViewBox_Left) * Page_Width / ViewBox_Width;
-        sckXDelta: Result := Result * Page_Width / ViewBox_Width;
+        sckXDelta,
+        sckXSize:  Result := Result * Page_Width / ViewBox_Width;
         sckY:      Result := Page_Height - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
         sckYDelta: Result := - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
         sckYSize:  Result := Result * Page_Height / ViewBox_Height;
