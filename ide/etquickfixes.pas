@@ -48,10 +48,11 @@ unit etQuickFixes;
 interface
 
 uses
-  Classes, SysUtils, IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs,
-  MenuIntf, Menus, Dialogs, Controls, etFPCMsgParser, AbstractsMethodsDlg,
-  CodeToolManager, CodeCache, CodeTree, CodeAtom, BasicCodeTools, LazLogger,
-  AvgLvlTree, LazFileUtils;
+  Classes, SysUtils, Menus, Dialogs, Controls,
+  CodeToolManager, CodeCache, CodeTree, CodeAtom, BasicCodeTools,
+  LazLogger, AvgLvlTree, LazFileUtils,
+  IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs, MenuIntf,
+  etFPCMsgParser, AbstractsMethodsDlg;
 
 type
 
@@ -86,7 +87,8 @@ type
 
   TQuickFixUnitNotFound_Remove = class(TMsgQuickFix)
   public
-    function IsApplicable(Msg: TMessageLine): boolean;
+    function IsApplicable(Msg: TMessageLine;
+      out MissingUnitName, UsedByUnit: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -351,19 +353,21 @@ end;
 
 { TQuickFixUnitNotFound_Remove }
 
-function TQuickFixUnitNotFound_Remove.IsApplicable(Msg: TMessageLine): boolean;
-var
-  Unit1: string;
-  Unit2: string;
+function TQuickFixUnitNotFound_Remove.IsApplicable(Msg: TMessageLine; out
+  MissingUnitName, UsedByUnit: string): boolean;
 begin
   Result:=false;
   if (Msg.SubTool<>SubToolFPC)
   or (not Msg.HasSourcePosition)
   or ((Msg.MsgID<>5023) // Unit "$1" not used in $2
-  and (Msg.MsgID<>10022) // Can't find unit $1 used by $2
+  and (Msg.MsgID<>FPCMsgIDCantFindUnitUsedBy) // Can't find unit $1 used by $2
   and (Msg.MsgID<>10023)) // Unit $1 was not found but $2 exists
   then exit;
-  if not IDEFPCParser.GetFPCMsgValues(Msg,Unit1,Unit2) then begin
+
+  MissingUnitName:=Msg.Attribute[FPCMsgAttrMissingUnit];
+  UsedByUnit:=Msg.Attribute[FPCMsgAttrUsedByUnit];
+  if (MissingUnitName='')
+  and not IDEFPCParser.GetFPCMsgValues(Msg,MissingUnitName,UsedByUnit) then begin
     debugln(['TQuickFixUnitNotFound_Remove.IsApplicable failed to extract unit names: ',Msg.Msg]);
     exit;
   end;
@@ -373,14 +377,13 @@ end;
 procedure TQuickFixUnitNotFound_Remove.CreateMenuItems(Fixes: TMsgQuickFixes);
 var
   Msg: TMessageLine;
-  Unit1: String;
-  Unit2: string;
+  MissingUnitName: string;
+  UsedByUnit: string;
 begin
   if Fixes.LineCount<>1 then exit;
   Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg) then exit;
-  if not IDEFPCParser.GetFPCMsgValues(Msg,Unit1,Unit2) then exit;
-  Fixes.AddMenuItem(Self,Msg,'Remove uses "'+Unit1+'"');
+  if not IsApplicable(Msg,MissingUnitName,UsedByUnit) then exit;
+  Fixes.AddMenuItem(Self,Msg,'Remove uses "'+MissingUnitName+'"');
 end;
 
 procedure TQuickFixUnitNotFound_Remove.QuickFix(Fixes: TMsgQuickFixes;
@@ -390,8 +393,7 @@ var
   SrcUnitName: string;
   Code: TCodeBuffer;
 begin
-  if not IsApplicable(Msg) then exit;
-  if not IDEFPCParser.GetFPCMsgValues(Msg,MissingUnitName,SrcUnitName) then begin
+  if not IsApplicable(Msg,MissingUnitName,SrcUnitName) then begin
     debugln(['TQuickFixUnitNotFound_Remove.QuickFix invalid message ',Msg.Msg]);
     exit;
   end;
@@ -674,10 +676,15 @@ begin
 
   // init standard quickfixes
   IDEQuickFixes.RegisterQuickFix(TQuickFix_Hide.Create);
+  IDEQuickFixes.RegisterQuickFix(TQuickFixIdentifierNotFoundAddLocal.Create);
+  IDEQuickFixes.RegisterQuickFix(TQuickFixLocalVariableNotUsed_Remove.Create);
+  IDEQuickFixes.RegisterQuickFix(TQuickFixUnitNotFound_Remove.Create);
+  IDEQuickFixes.RegisterQuickFix(TQuickFixClassWithAbstractMethods.Create);
 end;
 
 destructor TIDEQuickFixes.Destroy;
 begin
+  fMenuItemToInfo.ClearWithFree;
   FreeAndNil(fMenuItemToInfo);
   MsgQuickFixes:=nil;
   IDEQuickFixes:=nil;
@@ -715,7 +722,7 @@ procedure TIDEQuickFixes.ClearLines;
 var
   i: Integer;
 begin
-  fMenuItemToInfo.Clear;
+  fMenuItemToInfo.ClearWithFree;
   for i:=ComponentCount-1 downto 0 do
     if Components[i] is TMenuItem then
       Components[i].Free;

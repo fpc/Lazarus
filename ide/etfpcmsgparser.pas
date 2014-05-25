@@ -40,8 +40,12 @@ uses
 
 const
   FPCMsgIDLogo = 11023;
-  FPCMsgAttrWorkerDirectory = 'WD';
+  FPCMsgIDCantFindUnitUsedBy = 10022;
   FPCMsgIDThereWereErrorsCompiling = 10026;
+
+  FPCMsgAttrWorkerDirectory = 'WD';
+  FPCMsgAttrMissingUnit = 'MissingUnit';
+  FPCMsgAttrUsedByUnit = 'UsedByUnit';
 type
   TFPCMsgFilePool = class;
 
@@ -1654,8 +1658,6 @@ procedure TIDEFPCParser.ImproveMsgUnitNotFound(aSynchronized: boolean;
     end;
   end;
 
-const
-  FPCMsgIDCantFindUnitUsedBy = 10022;
 var
   MissingUnitName: string;
   UsedByUnit: string;
@@ -1680,6 +1682,8 @@ begin
 
   if not GetFPCMsgValues(MsgLine,MissingUnitName,UsedByUnit) then
     exit;
+  MsgLine.Attribute[FPCMsgAttrMissingUnit]:=MissingUnitName;
+  MsgLine.Attribute[FPCMsgAttrUsedByUnit]:=UsedByUnit;
 
   {$IFDEF VerboseQuickFixUnitNotFoundPosition}
   debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Missing="',MissingUnitname,'" used by "',UsedByUnit,'"']);
@@ -2336,8 +2340,9 @@ begin
   Result:=etFPCMsgParser.GetFPCMsgValues(Msg.Msg,GetFPCMsgPattern(Msg),Value1,Value2);
 end;
 
-finalization
+initialization
   IDEFPCParser:=TIDEFPCParser;
+finalization
   FreeAndNil(FPCMsgFilePool)
 
 end.
