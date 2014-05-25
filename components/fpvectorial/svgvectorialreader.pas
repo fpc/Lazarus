@@ -2644,7 +2644,7 @@ begin
     else if lNodeName = 'x' then
       lx := StringWithUnitToFloat(lNodeValue, sckX)
     else if lNodeName = 'y' then
-      ly := StringWithUnitToFloat(lNodeValue, sckYDelta);
+      ly := StringWithUnitToFloat(lNodeValue, sckY);
   end;
 
   if lXLink = '' then Exit; // nothing to insert, so give up
