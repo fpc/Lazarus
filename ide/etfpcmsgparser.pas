@@ -43,6 +43,8 @@ const
   FPCMsgIDCantFindUnitUsedBy = 10022;
   FPCMsgIDLinking = 9015;
   FPCMsgIDErrorWhileLinking = 9013;
+  FPCMsgIDErrorWhileCompilingResources = 9029;
+  FPCMsgIDCallingResourceCompiler = 9028;
   FPCMsgIDThereWereErrorsCompiling = 10026;
 
   FPCMsgAttrWorkerDirectory = 'WD';
@@ -141,6 +143,7 @@ type
     fMsgItemCompilationAborted: TFPCMsgItem;
     fMsgItemThereWereErrorsCompiling: TFPCMsgItem;
     fMsgItemErrorWhileLinking: TFPCMsgItem;
+    fMsgItemErrorWhileCompilingResources: TFPCMsgItem;
     fMissingFPCMsgItem: TFPCMsgItem;
     function FileExists(const Filename: string; aSynchronized: boolean): boolean;
     function CheckForMsgId(p: PChar): boolean; // (MsgId) message
@@ -151,13 +154,13 @@ type
     function CheckForAssemblingState(p: PChar): boolean; // Assembling ..
     function CheckForLinesCompiled(p: PChar): boolean; // ..lines compiled..
     function CheckForExecutableInfo(p: PChar): boolean;
-    function CheckForFollowUpMessages(p: PChar): boolean;
     function CheckForLineProgress(p: PChar): boolean; // 600 206.521/231.648 Kb Used
     function CheckForRecompilingChecksumChangedMessages(p: PChar): boolean;
     function CheckForLoadFromUnit(p: PChar): Boolean;
     function CheckForWindresErrors(p: PChar): boolean;
     function CreateMsgLine: TMessageLine;
     procedure AddLinkingMessages;
+    procedure AddResourceMessages;
     procedure ImproveMsgHiddenByIDEDirective(const SourceOK: Boolean;
       var MsgLine: TMessageLine);
     procedure ImproveMsgSenderNotUsed(aSynchronized: boolean; MsgLine: TMessageLine);
@@ -1010,20 +1013,23 @@ begin
 end;
 
 procedure TIDEFPCParser.InitReading;
-var
-  Item: TFPCMsgItem;
+
+  procedure AddPatternItem(MsgID: integer);
+  var
+    Item: TFPCMsgItem;
+  begin
+    Item:=MsgFile.GetMsg(MsgID);
+    if Item<>nil then
+      fLineToMsgID.AddLines(Item.Pattern,Item.ID);
+  end;
+
 begin
   inherited InitReading;
 
   fLineToMsgID.Clear;
-  // FPC logo lines
-  Item:=MsgFile.GetMsg(FPCMsgIDLogo);
-  if Item<>nil then
-    fLineToMsgID.AddLines(Item.Pattern,Item.ID);
-  // Linking <progname>
-  Item:=MsgFile.GetMsg(FPCMsgIDLinking);
-  if Item<>nil then
-    fLineToMsgID.AddLines(Item.Pattern,Item.ID);
+  AddPatternItem(FPCMsgIDLogo);
+  AddPatternItem(FPCMsgIDLinking);
+  AddPatternItem(FPCMsgIDCallingResourceCompiler);
   //fLineToMsgID.WriteDebugReport;
 
   fLastWorkerImprovedMessage[false]:=-1;
@@ -1290,33 +1296,6 @@ begin
   AddMsgLine(MsgLine);
 end;
 
-function TIDEFPCParser.CheckForFollowUpMessages(p: PChar): boolean;
-var
-  i: Integer;
-  PrevMsgLine: TMessageLine;
-  MsgLine: TMessageLine;
-begin
-  Result:=false;
-  i:=Tool.WorkerMessages.Count-1;
-  if i<0 then exit;
-  PrevMsgLine:=Tool.WorkerMessages[i];
-
-  if (PrevMsgLine.SubTool=SubToolFPCRes)
-  or ((PrevMsgLine.SubTool=SubToolFPC)
-    and ((PrevMsgLine.MsgID=9022)   // (9022) Compiling resource <resource>
-      or (PrevMsgLine.MsgID=9028))) // (9028) Calling resource compiler "/usr/bin/fpcres" with ...
-  then begin
-    // this is a follow up resource compiler warning/error
-    MsgLine:=CreateMsgLine;
-    MsgLine.SubTool:=SubToolFPCRes;
-    MsgLine.Urgency:=PrevMsgLine.Urgency;
-    MsgLine.Msg:=p;
-    //debugln(['TFPCParser.CheckForCompilingResourceErrors ',MsgLine.Msg,' ',dbgs(MsgLine.Urgency)]);
-    AddMsgLine(MsgLine);
-    exit(true);
-  end;
-end;
-
 function TIDEFPCParser.CheckForRecompilingChecksumChangedMessages(p: PChar
   ): boolean;
 // example: Recompiling GtkInt, checksum changed for gdk2x
@@ -1442,6 +1421,35 @@ begin
     MsgLine.MsgID:=0;
     MsgLine.SubTool:=SubToolFPCLinker;
     MsgLine.Urgency:=mluWarning;
+    AddMsgLine(MsgLine);
+  end;
+end;
+
+procedure TIDEFPCParser.AddResourceMessages;
+{  Add messages for all output between "Calling resource compiler " and the
+  current line "Error while compiling resources"
+
+For example:
+  Calling resource compiler "/usr/bin/fpcres" with "-o /home/user/project1.or -a x86_64 -of elf -v "@/home/user/project1.reslst"" as command line
+  Debug: parsing command line parameters
+  ...
+  Error: Error while compiling resources
+}
+var
+  i: Integer;
+  MsgLine: TMessageLine;
+begin
+  // find message "Linking ..."
+  i:=Tool.WorkerMessages.Count-1;
+  while (i>=0) and (Tool.WorkerMessages[i].MsgID<>FPCMsgIDCallingResourceCompiler) do
+    dec(i);
+  if i<0 then exit;
+  MsgLine:=Tool.WorkerMessages[i];
+  for i:=MsgLine.OutputIndex+1 to fOutputIndex-1 do begin
+    MsgLine:=inherited CreateMsgLine(i);
+    MsgLine.MsgID:=0;
+    MsgLine.SubTool:=SubToolFPCRes;
+    MsgLine.Urgency:=mluHint;
     AddMsgLine(MsgLine);
   end;
 end;
@@ -1829,8 +1837,6 @@ begin
 end;
 
 function TIDEFPCParser.CheckForMsgId(p: PChar): boolean;
-const
-  FPCMsgIDErrorWhileCompilingResources = 9029;
 var
   MsgItem: TFPCMsgItem;
   TranslatedItem: TFPCMsgItem;
@@ -2064,8 +2070,6 @@ begin
   if CheckForInfos(p) then exit;
   // check for -vx output
   if CheckForExecutableInfo(p) then exit;
-  // check for follow up errors (fpcres messages)
-  if CheckForFollowUpMessages(p) then exit;
   // check for Recompiling, checksum changed
   if CheckForRecompilingChecksumChangedMessages(p) then exit;
   // check for Load from unit
@@ -2081,9 +2085,18 @@ end;
 
 procedure TIDEFPCParser.AddMsgLine(MsgLine: TMessageLine);
 begin
-  if IsMsgID(MsgLine,FPCMsgIDErrorWhileLinking,fMsgItemErrorWhileLinking) then
-    AddLinkingMessages;
-  if IsMsgID(MsgLine,FPCMsgIDThereWereErrorsCompiling,fMsgItemThereWereErrorsCompiling) then
+  if IsMsgID(MsgLine,FPCMsgIDErrorWhileCompilingResources,
+    fMsgItemErrorWhileCompilingResources)
+  then begin
+    // Error while compiling resources
+    AddResourceMessages;
+    MsgLine.Msg:=MsgLine.Msg+' -> Compile with -vd for more details. Check for duplicates.';
+  end
+  else if IsMsgID(MsgLine,FPCMsgIDErrorWhileLinking,fMsgItemErrorWhileLinking) then
+    AddLinkingMessages
+  else if IsMsgID(MsgLine,FPCMsgIDThereWereErrorsCompiling,
+    fMsgItemThereWereErrorsCompiling)
+  then
     MsgLine.Urgency:=mluVerbose;
   inherited AddMsgLine(MsgLine);
 end;
