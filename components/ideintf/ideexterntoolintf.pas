@@ -138,9 +138,9 @@ type
     function HasSourcePosition: boolean;
     procedure GetAttributes(List: TStrings);
   public
-    property Index: integer read FIndex; // index in Lines  (Note: Lines can have more or less lines than the raw output)
+    property Index: integer read FIndex; // index in Lines (Note: Lines can have more or less items than the raw output has text lines)
     property Urgency: TMessageLineUrgency read FUrgency write SetUrgency;
-    property SubTool: string read FSubTool write SetSubTool; // e.g. FPC, make, linker, windres
+    property SubTool: string read FSubTool write SetSubTool; // e.g. SubToolFPC, SubToolMake, SubToolFPCLinker
     property SubType: PtrUInt read FSubType write SetSubType; // depends on SubTool
     property Msg: string read FMsg write SetMsg;     // improved message without filename, line, column
     property MsgID: integer read FMsgID write SetMsgID;  // message id (depends on parser, e.g. fpc writes them with -vq, MsgID<>0 if valid)
@@ -343,7 +343,7 @@ type
     function ApplyPending: boolean; virtual; // true if something changed (main thread)
     procedure InputClosed; virtual; // called by Tool when source closed (main thread)
     function LineFits(Line: TMessageLine): boolean; virtual; // called by ProcessNewMessages (worker thread)
-    procedure EnterCriticalSection; virtual;
+    procedure EnterCriticalSection; virtual; // Note: when using Tool and View: always lock Tool before View
     procedure LeaveCriticalSection; virtual;
     procedure ConsistencyCheck; virtual;
   public
@@ -442,7 +442,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EnterCriticalSection; virtual; // always use before access
+    procedure EnterCriticalSection; virtual; // always use before access, when using Tool and View: always lock Tool before View
     procedure LeaveCriticalSection; virtual;
     property Thread: TThread read FThread write FThread;
     procedure ConsistencyCheck; virtual;
@@ -2078,15 +2078,14 @@ begin
       //debugln(['TExtToolView.ProcessNewMessages Msg="',SrcMsg.Msg,'" Fits=',LineFits(SrcMsg)]);
       if LineFits(SrcMsg) then begin
         NewProgressLine:=nil;
+        Changed:=true;
+        NewMsg:=PendingLines.CreateLine(-1);
+        NewMsg.Assign(SrcMsg);
+        //debugln(['TExtToolView.ProcessNewMessages NewMsg=',Lines.Count,'="',NewMsg.Msg,'"']);
+        PendingLines.Add(NewMsg);
       end else begin
         NewProgressLine:=SrcMsg;
-        continue;
       end;
-      Changed:=true;
-      NewMsg:=PendingLines.CreateLine(-1);
-      NewMsg.Assign(SrcMsg);
-      //debugln(['TExtToolView.ProcessNewMessages NewMsg=',Lines.Count,'="',NewMsg.Msg,'"']);
-      PendingLines.Add(NewMsg);
     end;
     FLastWorkerMessageCount:=Tool.WorkerMessages.Count-1;
     if (NewProgressLine<>nil) and Running then begin

@@ -1321,7 +1321,6 @@ function TIDEFPCParser.CheckForLinkingErrors(p: PChar): boolean;
 var
   OldStart: PChar;
   MsgLine: TMessageLine;
-  PrevMsgLine: TMessageLine;
 
   procedure AddLinkerMsg;
   begin
@@ -1335,18 +1334,6 @@ var
 begin
   Result:=true;
   OldStart:=p;
-
-  PrevMsgLine:=Tool.WorkerMessages.GetLastLine;
-  if PrevMsgLine<>nil then begin
-    if (PrevMsgLine.SubTool=SubToolFPCLinker)
-    or ((PrevMsgLine.SubTool=SubToolFPC) and (PrevMsgLine.MsgID=9015)) // (9015) Linking <progname>
-    then begin
-      // this is a follow up linker warning/error
-      AddLinkerMsg;
-      MsgLine.Urgency:=PrevMsgLine.Urgency;
-      exit;
-    end;
-  end;
 
   // check "Closing script ppas.sh"
   if CompStr('Closing script ppas.sh',p) then begin

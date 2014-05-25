@@ -150,7 +150,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function LineFits(Line: TMessageLine): boolean; override;
+    function LineFits(Line: TMessageLine): boolean; override; // (worker thread)
     property Control: TMessagesCtrl read FControl;
     function HasContent: boolean;
     function GetShownLineCount(WithHeader, WithProgressLine: boolean): integer;
@@ -1270,20 +1270,19 @@ begin
          // debugln(['TLMsgWndView.RebuildLines i=',i,' Msg="',SrcMsg.Msg,'" Fits=',LineFits(SrcMsg),' ',dbgs(SrcMsg.Flags),' ',SrcMsg.OutputIndex]);
         if LineFits(SrcMsg) then begin
           NewProgressLine:=nil;
+          NewMsg:=Lines.CreateLine(-1);
+          NewMsg.Assign(SrcMsg);
+          // adapt line,col due to src changes
+          Line:=NewMsg.Line;
+          Col:=NewMsg.Column;
+          FPendingChanges.AdaptCaret(NewMsg.GetFullFilename,Line,Col,
+                                     mlfLeftToken in NewMsg.Flags);
+          NewMsg.SetSourcePosition(NewMsg.Filename,Line,Col);
+          //debugln(['TLMsgWndView.RebuildLines NewMsg=',Lines.Count,'="',NewMsg.Msg,'"']);
+          Lines.Add(NewMsg);
         end else begin
           NewProgressLine:=SrcMsg;
-          continue;
         end;
-        NewMsg:=Lines.CreateLine(-1);
-        NewMsg.Assign(SrcMsg);
-        // adapt line,col due to src changes
-        Line:=NewMsg.Line;
-        Col:=NewMsg.Column;
-        FPendingChanges.AdaptCaret(NewMsg.GetFullFilename,Line,Col,
-                                   mlfLeftToken in NewMsg.Flags);
-        NewMsg.SetSourcePosition(NewMsg.Filename,Line,Col);
-        //debugln(['TLMsgWndView.RebuildLines NewMsg=',Lines.Count,'="',NewMsg.Msg,'"']);
-        Lines.Add(NewMsg);
       end;
       FLastWorkerMessageCount:=Tool.WorkerMessages.Count-1;
       if (NewProgressLine<>nil) and Running then begin
