@@ -3959,7 +3959,7 @@ begin
       Color := Palette.DefaultColor
     else
       ColorRefToTQColor(ColorToRGB(LCLObject.Color), Color);
-    Painter := QPainter_create(QWidget_to_QPaintDevice(Widget));
+    Painter := QPainter_create(QWidget_to_QPaintDevice(QWidgetH(Sender)));
     Brush := QBrush_create(@Color, QtSolidPattern);
     try
       QPaintEvent_rect(QPaintEventH(Event), @R);
@@ -6332,7 +6332,7 @@ begin
   if (LCLObject = nil) then
     exit;
   if (QEvent_Type(Event) in [QEventMouseButtonPress, QEventMouseButtonRelease,
-    QEventMouseButtonDblClick, QEventMouseMove, QEventWheel,
+    QEventMouseButtonDblClick, QEventMouseMove, QEventWheel, QEventPaint,
     QEventHoverEnter, QEventHoverMove, QEventHoverLeave, QEventResize]) then
     exit;
   Result := inherited EventFilter(Sender, Event);
@@ -6349,7 +6349,7 @@ begin
   if LCLObject = nil then
     exit;
   BeginEventProcessing;
-  if (QEvent_Type(Event) in [QEventContextMenu, QEventHoverEnter,
+  if (QEvent_Type(Event) in [QEventContextMenu, QEventHoverEnter, QEventPaint,
                              QEventHoverMove, QEventHoverLeave]) then
   begin
     Result := inherited EventFilter(Sender, Event);
@@ -6731,12 +6731,9 @@ end;
 function TQtMainWindow.getClientBounds: TRect;
 begin
   {$IFDEF QTSCROLLABLEFORMS}
-  if Assigned(ScrollArea) and
-    {forms which have parent eg.docked must always provide
-     ScrollArea clientRect, while others provide such info
-     only when they are mapped.}
-    (testAttribute(QtWA_Mapped) or (LCLObject.Parent <> nil)) then
-      Result := ScrollArea.getClientBounds
+  if Assigned(ScrollArea) and not
+    ScrollArea.testAttribute(QtWA_PendingResizeEvent) then
+    Result := ScrollArea.getClientBounds
   else
   {$ENDIF}
   Result:=inherited getClientBounds;
@@ -15697,11 +15694,13 @@ var
   HaveBar: Boolean;
   AOldRect: TRect;
   AOffset: Integer;
+  ASize: TSize;
 begin
   if not QWidget_testAttribute(viewportWidget, QtWA_Mapped) then
   begin
+    ASize := getSize;
     QWidget_contentsRect(Widget, @Result);
-    if (QStyle_styleHint(QApplication_style(),
+    if (ASize.cx > 0) and (ASize.cy > 0) and (QStyle_styleHint(QApplication_style(),
           QStyleSH_ScrollView_FrameOnlyAroundContents) <= 0) then
     begin
       HaveBar := Assigned(FVScrollbar);
@@ -15713,11 +15712,14 @@ begin
         dec(Result.Bottom, horizontalScrollBar.getHeight);
     end;
     OffsetRect(Result, -Result.Left, -Result.Top);
+    {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
+    DebugLn('TQtAbstractScrollArea.GetClientBounds(not mapped): ',dbgsName(LCLObject),':',dbgsName(Self),' ',dbgs(Result),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
+    {$ENDIF}
   end else
   begin
     QWidget_rect(viewportWidget, @Result);
     {$IF DEFINED(VerboseQtResize) OR DEFINED(VerboseQScrollBarShowHide)}
-    // DebugLn('TQtAbstractScrollArea.GetClientBounds(**** OK ***): ',dbgsName(LCLObject),' ',dbgs(Result),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
+    DebugLn('TQtAbstractScrollArea.GetClientBounds: ',dbgsName(LCLObject),':',dbgsName(Self),' ',dbgs(Result),' ChildComplex=',dbgs(Ord(ChildOfComplexWidget)));
     {$ENDIF}
   end;
 end;
