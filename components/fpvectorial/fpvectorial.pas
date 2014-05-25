@@ -527,6 +527,8 @@ type
   TvText = class(TvEntityWithStyle)
   public
     Value: TStringList;
+    Render_NextText_X: Integer;
+    Render_Use_NextText_X: Boolean;
     constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
@@ -3281,6 +3283,7 @@ var
   LowerDim: T3DPoint;
   XAnchorAdjustment: Integer;
   lLongestLine, lLineWidth: Integer;
+  lText: string;
   {$ifdef USE_LCL_CANVAS}
   ACanvas: TCanvas absolute ADest;
   {$endif}
@@ -3318,7 +3321,11 @@ begin
     end;
 
     ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
-    ADest.TextOut(CoordToCanvasX(X)+XAnchorAdjustment, Round(LowerDim.Y), Value.Strings[i]);
+    lText := Value.Strings[i];
+    if not Render_Use_NextText_X then
+      Render_NextText_X := CoordToCanvasX(X)+XAnchorAdjustment;
+    ADest.TextOut(Render_NextText_X, Round(LowerDim.Y), lText);
+    Render_NextText_X := Render_NextText_X + ADest.TextWidth(lText);
   end;
 end;
 
@@ -5330,6 +5337,8 @@ var
   OldTextY: Double = 0.0;
   lEntity: TvEntity;
   lText: TvText absolute lEntity;
+  lPrevText: TvText = nil;
+  lFirstText: Boolean = True;
 begin
   // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   lEntity := GetFirstEntity();
@@ -5339,16 +5348,24 @@ begin
     begin
       // Direct text position setting resets the auto-positioning
       if (OldTextX <> lText.X) or (OldTextY <> lText.Y) then
+      begin
         lCurWidth := 0;
+        lFirstText := True;
+      end;
 
       OldTextX := lText.X;
       OldTextY := lText.Y;
       lText.X := lText.X + X + lCurWidth;
       lText.Y := lText.Y + Y;
+      lText.Render_Use_NextText_X := not lFirstText;
+      if lText.Render_Use_NextText_X then
+        lText.Render_NextText_X := lPrevText.Render_NextText_X;
 
       lText.Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMuly);
       lText.CalculateBoundingBox(ADest, lLeft, lTop, lRight, lBottom);
       lCurWidth := lCurWidth + Abs(lRight - lLeft);
+      lFirstText := False;
+      lPrevText := lText;
 
       lText.X := OldTextX;
       lText.Y := OldTextY;

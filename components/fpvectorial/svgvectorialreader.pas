@@ -2510,7 +2510,7 @@ var
           if lNodeName = 'x' then
           begin
             lCurStyle.PositionSet := True;
-            lCurStyle.X := StringWithUnitToFloat(lNodeValue, sckX);
+            lCurStyle.X := StringWithUnitToFloat(lNodeValue, sckX) - lParagraph.X;
           end
           else if lNodeName = 'y' then
           begin
@@ -2590,13 +2590,14 @@ begin
     end;
   end;
 
-  // Recover the position if there was a transformation matrix
+  // Takes into account a possible transformation matrix
   lx := lx + lParagraph.X;
   ly := ly + lParagraph.Y;
 
-  // Set the coordinates
-  ConvertSVGCoordinatesToFPVCoordinates(
-        AData, lx, ly, lParagraph.X, lParagraph.Y, False);
+  // Set the coordinates -> Don't use ConvertSVGCoordinatesToFPVCoordinates
+  // because StringWithUnitToFloat(..sckX..) already makes all conversions necessary
+  lParagraph.X := lx;
+  lParagraph.Y := ly;
 
   // Now add other lines, which appear as <tspan ...>another line</tspan>
   // Example:
@@ -2683,6 +2684,11 @@ end;
 
 function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string;
   ACoordKind: TSVGCoordinateKind = sckUnknown; ADefaultUnit: TSVGUnit = suPX): Double;
+var
+  UnitStr, ValueStr: string;
+  Len: Integer;
+  LastChar: Char;
+  ViewPortApplied: Boolean = False;
 
   procedure DoViewBoxAdjust();
   begin
@@ -2696,13 +2702,10 @@ function TvSVGVectorialReader.StringWithUnitToFloat(AStr: string;
         sckYDelta: Result := - (Result - ViewBox_Top) * Page_Height / ViewBox_Height;
         sckYSize:  Result := Result * Page_Height / ViewBox_Height;
       end;
+      ViewPortApplied := True;
     end;
   end;
 
-var
-  UnitStr, ValueStr: string;
-  Len: Integer;
-  LastChar: Char;
 begin
   if AStr = '' then Exit(0.0);
 
@@ -2745,6 +2748,9 @@ begin
     Result := StrToFloat(AStr, FPointSeparator);
     DoViewBoxAdjust();
   end;
+  // Finish the adjustment for some cases where this is substituting ConvertSVGCoordinatesToFPVCoordinates
+  if (not ViewPortApplied) and (ACoordKind = sckY) then
+    Result := Page_Height - Result;
 end;
 
 function TvSVGVectorialReader.StringFloatZeroToOneToWord(AStr: string): Word;
@@ -2989,6 +2995,11 @@ begin
     AData.Width := lx2 - lx;
     AData.Height := ly2 - ly;
   end;
+
+  // Make sure the latest page size is syncronized with auto-detected
+  // or ViewBox-only obtained size
+  Page_Width := AData.Width;
+  Page_Height := AData.Height;
 
   // ----------------
   // Now process the elements
