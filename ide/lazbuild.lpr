@@ -757,7 +757,7 @@ var
   TargetExeDir: String;
   CompilePolicy: TPackageUpdatePolicy;
   i,MatchCount: Integer;
-  Note: String;
+  CompileHint: String;
   NeedBuildAllFlag: Boolean;
   SubResult: TModalResult;
   MatrixOption: TBuildMatrixOption;
@@ -843,16 +843,16 @@ var
     else
       CompilerFilename:=Project1.GetCompilerFilename;
     //DebugLn(['TLazBuildApplication.BuildProject CompilerFilename="',CompilerFilename,'" CompilerPath="',Project1.CompilerOptions.CompilerPath,'"']);
-    // Note: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
+    // CompileHint: use absolute paths, same as TBuildManager.DoCheckIfProjectNeedsCompilation
     CompilerParams:=Project1.CompilerOptions.MakeOptionsString(SrcFilename,[ccloAbsolutePaths])
                                            +' '+PrepareCmdLineOption(SrcFilename);
 
     NeedBuildAllFlag:=false;
+    CompileHint:='';
     if (crCompile in Project1.CompilerOptions.CompileReasons) then begin
       // check if project is already uptodate
-      Note:='';
       SubResult:=MainBuildBoss.DoCheckIfProjectNeedsCompilation(Project1,
-                                                           NeedBuildAllFlag,Note);
+                                                           NeedBuildAllFlag,CompileHint);
       if (not BuildAll)
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if SubResult=mrNo then begin
@@ -873,8 +873,8 @@ var
     ToolBefore:=TProjectCompilationToolOptions(
                                       Project1.CompilerOptions.ExecuteBefore);
     if (crCompile in ToolBefore.CompileReasons) then begin
-      if ToolBefore.Execute(
-                       Project1.ProjectDirectory,lisExecutingCommandBefore)<>mrOk
+      if ToolBefore.Execute(Project1.ProjectDirectory,
+        lisProject2+lisExecutingCommandBefore, CompileHint)<>mrOk
       then
         Error(ErrorBuildFailed,'failed "tool before" of project '+AFilename);
     end;
@@ -886,7 +886,7 @@ var
         Error(ErrorBuildFailed,'failed saving statefile of project '+AFilename);
       if TheCompiler.Compile(Project1,
                               WorkingDir,CompilerFilename,CompilerParams,
-                              BuildAll or NeedBuildAllFlag,false,false)<>mrOk
+                              BuildAll or NeedBuildAllFlag,false,false,CompileHint)<>mrOk
       then
         Error(ErrorBuildFailed,'failed compiling of project '+AFilename);
       // compilation succeded -> write state file
@@ -898,8 +898,8 @@ var
     ToolAfter:=TProjectCompilationToolOptions(
                                        Project1.CompilerOptions.ExecuteAfter);
     if (crCompile in ToolAfter.CompileReasons) then begin
-      if ToolAfter.Execute(
-                        Project1.ProjectDirectory,lisExecutingCommandAfter)<>mrOk
+      if ToolAfter.Execute(Project1.ProjectDirectory,
+        lisProject2+lisExecutingCommandAfter,CompileHint)<>mrOk
       then
         Error(ErrorBuildFailed,'failed "tool after" of project '+AFilename);
     end;
