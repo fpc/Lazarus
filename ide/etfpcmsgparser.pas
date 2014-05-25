@@ -179,6 +179,7 @@ type
     procedure InitReading; override; // called if process started, before first line (worker thread)
     procedure Done; override; // called after process stopped (worker thread)
     procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean); override;
+    procedure AddMsgLine(MsgLine: TMessageLine); override;
     procedure ImproveMessages(aSynchronized: boolean); override;
     function GetFPCMsgIDPattern(MsgID: integer): string; override;
     class function IsSubTool(const SubTool: string): boolean; override;
@@ -1199,8 +1200,6 @@ begin
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Msg:=p;
   MsgLine.TranslatedMsg:=TranslatedMsg;
-  if IsMsgID(MsgLine,FPCMsgIDThereWereErrorsCompiling,fMsgItemThereWereErrorsCompiling) then
-    MsgLine.Urgency:=mluVerbose;
   AddMsgLine(MsgLine);
 end;
 
@@ -2125,6 +2124,13 @@ begin
   writeln('TFPCParser.ReadLine UNKNOWN: ',Line);
   {$ENDIF}
   Handled:=false;
+end;
+
+procedure TIDEFPCParser.AddMsgLine(MsgLine: TMessageLine);
+begin
+  if IsMsgID(MsgLine,FPCMsgIDThereWereErrorsCompiling,fMsgItemThereWereErrorsCompiling) then
+    MsgLine.Urgency:=mluVerbose;
+  inherited AddMsgLine(MsgLine);
 end;
 
 function TIDEFPCParser.LongenFilename(MsgLine: TMessageLine; aFilename: string

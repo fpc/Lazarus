@@ -1090,19 +1090,21 @@ begin
 
   // apply pending src changes
   OldUpdateSortedSrcPos:=Lines.UpdateSortedSrcPos;
-  Lines.UpdateSortedSrcPos:=false;
-  try
-    for i:=OldLineCount to Lines.Count-1 do begin
-      MsgLine:=Lines[i];
-      //debugln(['TLMsgWndView.FetchAllPending ',i,' ',MsgLine.Msg]);
-      Line:=MsgLine.Line;
-      Col:=MsgLine.Column;
-      FPendingChanges.AdaptCaret(MsgLine.GetFullFilename,Line,Col,
-        mlfLeftToken in MsgLine.Flags);
-      MsgLine.SetSourcePosition(MsgLine.Filename,Line,Col);
+  if FPendingChanges.Count>0 then begin
+    Lines.UpdateSortedSrcPos:=false;
+    try
+      for i:=OldLineCount to Lines.Count-1 do begin
+        MsgLine:=Lines[i];
+        //debugln(['TLMsgWndView.FetchAllPending ',i,' ',MsgLine.Msg]);
+        Line:=MsgLine.Line;
+        Col:=MsgLine.Column;
+        FPendingChanges.AdaptCaret(MsgLine.GetFullFilename,Line,Col,
+          mlfLeftToken in MsgLine.Flags);
+        MsgLine.SetSourcePosition(MsgLine.Filename,Line,Col);
+      end;
+    finally
+      Lines.UpdateSortedSrcPos:=OldUpdateSortedSrcPos;
     end;
-  finally
-    Lines.UpdateSortedSrcPos:=OldUpdateSortedSrcPos;
   end;
 end;
 
