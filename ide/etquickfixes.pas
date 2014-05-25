@@ -48,10 +48,9 @@ unit etQuickFixes;
 interface
 
 uses
-  Classes, SysUtils, Menus, Dialogs, Controls,
-  CodeToolManager, CodeCache, CodeTree, CodeAtom, BasicCodeTools,
-  LazLogger, AvgLvlTree, LazFileUtils,
-  IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs, MenuIntf,
+  Classes, SysUtils, Menus, Dialogs, Controls, CodeToolManager, CodeCache,
+  CodeTree, CodeAtom, BasicCodeTools, KeywordFuncLists, LazLogger, AvgLvlTree,
+  LazFileUtils, IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs, MenuIntf,
   etFPCMsgParser, AbstractsMethodsDlg;
 
 type
@@ -78,7 +77,7 @@ type
 
   TQuickFixLocalVariableNotUsed_Remove = class(TMsgQuickFix)
   public
-    function IsApplicable(Msg: TMessageLine): boolean;
+    function IsApplicable(Msg: TMessageLine; out Identifier: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -170,34 +169,35 @@ end;
 
 { TQuickFixLocalVariableNotUsed_Remove }
 
-function TQuickFixLocalVariableNotUsed_Remove.IsApplicable(Msg: TMessageLine
-  ): boolean;
+function TQuickFixLocalVariableNotUsed_Remove.IsApplicable(Msg: TMessageLine;
+  out Identifier: string): boolean;
 var
   Code: TCodeBuffer;
   Tool: TCodeTool;
   CleanPos: integer;
   Node: TCodeTreeNode;
-  Identifier: String;
+  Dummy: string;
 begin
   Result:=false;
-  if (Msg.SubTool<>SubToolFPC)
-  or (Msg.MsgID<>5025) // Local variable "$1" not used
-  or (not Msg.HasSourcePosition)
-  then exit;
-  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
+  // Check: Local variable "$1" not used
+  if not TIDEFPCParser.MsgLineIsId(Msg,5025,Identifier,Dummy) then
+    exit;
   if not IsValidIdent(Identifier) then exit;
 
   // check if message position is at end of identifier
-  // (FPC gives position of end of identifier)
+  // (FPC gives position of start or end of identifier)
   Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
   if Code=nil then exit;
   if not CodeToolBoss.Explore(Code,Tool,false) then exit;
   if Tool.CaretToCleanPos(CodeXYPosition(Msg.Column,Msg.Line,Code),CleanPos)<>0 then exit;
   Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
   if Node=nil then exit;
-  if not (Node.Desc in AllPascalStatements) then exit;
+  if not (Node.Desc in [ctnVarDefinition]) then exit;
   Tool.MoveCursorToCleanPos(CleanPos);
-  Tool.ReadPriorAtom;
+  if (CleanPos>Tool.SrcLen) or (not IsIdentChar[Tool.Src[CleanPos]]) then
+    Tool.ReadPriorAtom
+  else
+    Tool.ReadNextAtom;
   if not Tool.AtomIs(Identifier) then exit;
   Tool.ReadPriorAtom;
   if (Tool.CurPos.Flag in [cafPoint,cafRoundBracketClose,cafEdgedBracketClose,
@@ -214,9 +214,7 @@ var
 begin
   if Fixes.LineCount<>1 then exit;
   Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg) then exit;
-  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
-  if Identifier='' then exit;
+  if not IsApplicable(Msg,Identifier) then exit;
   Fixes.AddMenuItem(Self,Msg,'Remove local variable "'+Identifier+'"');
 end;
 
@@ -226,9 +224,7 @@ var
   Identifier: String;
   Code: TCodeBuffer;
 begin
-  if Msg=nil then exit;
-  Identifier:=TFPCParser.GetFPCMsgValue1(Msg);
-  if Identifier='' then exit;
+  if not IsApplicable(Msg,Identifier) then exit;
 
   if not LazarusIDE.BeginCodeTools then begin
     DebugLn(['TQuickFixLocalVariableNotUsed_Remove failed because IDE busy']);
