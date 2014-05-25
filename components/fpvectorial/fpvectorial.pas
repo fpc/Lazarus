@@ -3565,7 +3565,7 @@ begin
   ALeft := X;
   ARight := X + CX;
   ATop := Y;
-  ABottom := Y + CY;
+  ABottom := Y - CY;
 end;
 
 procedure TvRectangle.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
@@ -6199,13 +6199,14 @@ begin
   if MinY = MaxY then MaxY := MinY + Height;
 
   lLeft := CoordToCanvasX(MinX);
-  lTop := CoordToCanvasY(MinY);
+  lTop := CoordToCanvasY(MaxY);
   lRight := CoordToCanvasX(MaxX);
-  lBottom := CoordToCanvasY(MaxY);
+  lBottom := CoordToCanvasY(MinY);
 
   ADest.Brush.Style := bsClear;
   ADest.Pen.FPColor := colBlack;
   ADest.Pen.Style := psSolid;
+  ADest.Pen.Width := 1;
   ADest.Rectangle(lLeft, lTop, lRight, lBottom);
 end;
 
