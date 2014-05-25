@@ -38,6 +38,7 @@ uses
 
 const
   FPCMsgIDLogo = 11023;
+  FPCMsgAttrWorkerDirectory = 'WD';
 type
   TFPCMsgFilePool = class;
 
@@ -124,8 +125,8 @@ type
     fLastWorkerImprovedMessage: array[boolean] of integer;
     fLastSource: TCodeBuffer;
     fFileExists: TFilenameToPointerTree;
-    fIncPathValidForWorkerDir: string;
-    fIncPath: string;
+    fIncludePathValidForWorkerDir: string;
+    fIncludePath: string; // only valid if fIncludePathValidForWorkerDir=Tool.WorkerDirectory
     fFPCMsgItemUnitNotUsed: TFPCMsgItem;
     fFPCMsgItemCantFindUnitUsedBy: TFPCMsgItem;
     fFPCMsgItemCompilationAborted: TFPCMsgItem;
@@ -981,9 +982,10 @@ begin
   if TranslationFilename<>'' then
     LoadMsgFile(TranslationFilename,TranslationFile);
 
-  fIncPathValidForWorkerDir:=Tool.WorkerDirectory;
-  fIncPath:=CodeToolBoss.GetIncludePathForDirectory(
-                           ChompPathDelim(fIncPathValidForWorkerDir));
+  // get include search path
+  fIncludePathValidForWorkerDir:=Tool.WorkerDirectory;
+  fIncludePath:=CodeToolBoss.GetIncludePathForDirectory(
+                           ChompPathDelim(fIncludePathValidForWorkerDir));
 end;
 
 procedure TIDEFPCParser.InitReading;
@@ -2105,11 +2107,27 @@ function TIDEFPCParser.LongenFilename(MsgLine: TMessageLine; aFilename: string
 var
   ShortFilename: String;
   i: Integer;
+  LastMsgLine: TMessageLine;
+  LastFilename: String;
 begin
   Result:=TrimFilename(aFilename);
   if FilenameIsAbsolute(Result) then exit;
   ShortFilename:=Result;
-  // seach file in the last compiling directories
+  // check last message line
+  LastMsgLine:=Tool.WorkerMessages.GetLastLine;
+  if (LastMsgLine<>nil) then begin
+    LastFilename:=LastMsgLine.Filename;
+    if FilenameIsAbsolute(LastFilename) then begin
+      if (length(LastFilename)>length(ShortFilename))
+      and (LastFilename[length(LastFilename)-length(ShortFilename)] in AllowDirectorySeparators)
+      and (CompareFilenames(RightStr(LastFilename,length(ShortFilename)),ShortFilename)=0)
+      then begin
+        Result:=LastFilename;
+        exit;
+      end;
+    end;
+  end;
+  // search file in the last compiling directories
   if DirectoryStack<>nil then begin
     for i:=DirectoryStack.Count-1 downto 0 do begin
       Result:=AppendPathDelim(DirectoryStack[i])+ShortFilename;
@@ -2126,7 +2144,7 @@ begin
   Result:=ShortFilename;
 
   // save Tool.WorkerDirectory for ImproveMessage
-  MsgLine.Attribute['WD']:=Tool.WorkerDirectory;
+  MsgLine.Attribute[FPCMsgAttrWorkerDirectory]:=Tool.WorkerDirectory;
 end;
 
 procedure TIDEFPCParser.ImproveMessages(aSynchronized: boolean);
@@ -2152,19 +2170,19 @@ begin
       // try to find for short file name the full file name
       aFilename:=MsgLine.Filename;
       if not FilenameIsAbsolute(aFilename) then begin
-        MsgWorkerDir:=MsgLine.Attribute['WD'];
-        if fIncPathValidForWorkerDir<>MsgWorkerDir then begin
+        MsgWorkerDir:=MsgLine.Attribute[FPCMsgAttrWorkerDirectory];
+        if fIncludePathValidForWorkerDir<>MsgWorkerDir then begin
           // fetch include path
           if aSynchronized then begin
-            fIncPathValidForWorkerDir:=MsgWorkerDir;
-            fIncPath:=CodeToolBoss.GetIncludePathForDirectory(
+            fIncludePathValidForWorkerDir:=MsgWorkerDir;
+            fIncludePath:=CodeToolBoss.GetIncludePathForDirectory(
                                      ChompPathDelim(MsgWorkerDir));
           end else begin
             NeedSynchronize:=true;
           end;
         end;
-        if fIncPathValidForWorkerDir=MsgWorkerDir then begin
-          aFilename:=SearchFileInPath(aFilename,MsgWorkerDir,fIncPath,';',
+        if fIncludePathValidForWorkerDir=MsgWorkerDir then begin
+          aFilename:=SearchFileInPath(aFilename,MsgWorkerDir,fIncludePath,';',
                                  [sffSearchLoUpCase]);
           if aFilename<>'' then
             MsgLine.Filename:=aFilename;

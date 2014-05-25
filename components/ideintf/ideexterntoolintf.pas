@@ -209,6 +209,7 @@ type
     function Count: integer; inline;
     procedure Clear;
     property Items[Index: integer]: TMessageLine read GetItems; default;
+    function GetLastLine: TMessageLine;
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory; // always trimmed and with trailing /
     function CreateLine(OutputIndex: integer): TMessageLine; // create, but do not yet add it
     procedure Add(MsgLine: TMessageLine);
@@ -1484,6 +1485,14 @@ begin
   FSortedForSrcPos.Clear;
   for c:=low(UrgencyCounts) to high(UrgencyCounts) do UrgencyCounts[c]:=0;
   IncreaseChangeStamp;
+end;
+
+function TMessageLines.GetLastLine: TMessageLine;
+begin
+  if Count>0 then
+    Result:=Items[Count-1]
+  else
+    Result:=nil;
 end;
 
 function TMessageLines.CreateLine(OutputIndex: integer): TMessageLine;
