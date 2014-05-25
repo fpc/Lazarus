@@ -56,12 +56,11 @@ type
   private
     FFileLoader: TDbgFileLoader;
     FImgReader: TDbgImageReader;
+    function GetImage64Bit: Boolean;
   protected
-    FImage64Bit: Boolean  unimplemented;
     FImageBase: QWord unimplemented;
     function GetSection(const AName: String): PDbgImageSection; virtual;
     //procedure SetImageBase(ABase: QWord);
-    //procedure SetImage64Bit(AValue: Boolean);
     property ImgReader: TDbgImageReader read FImgReader write FImgReader;
   public
     constructor Create; virtual;
@@ -73,7 +72,7 @@ type
     destructor Destroy; override;
     function IsValid: Boolean;
     property ImageBase: QWord read FImageBase; unimplemented;
-    Property Image64Bit: Boolean read FImage64Bit; unimplemented;
+    Property Image64Bit: Boolean read GetImage64Bit;
     property Section[const AName: String]: PDbgImageSection read GetSection;
   end;
 
@@ -82,6 +81,18 @@ type
 implementation
 
 { TDbgImageLoader }
+
+function TDbgImageLoader.GetImage64Bit: Boolean;
+begin
+  if not assigned(ImgReader) then
+    {$ifdef cpui386}
+    result := false
+    {$else}
+    result := true
+    {$endif}
+  else
+    result := ImgReader.Image64Bit;
+end;
 
 function TDbgImageLoader.GetSection(const AName: String): PDbgImageSection;
 begin

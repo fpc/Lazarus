@@ -57,10 +57,10 @@ begin
   try
     Result := Assigned(ASource);
     if not Result then Exit;
-    //Result := stream.Read(header, sizeof(header)) = sizeof(header);
     Result := ASource.Read(0, sizeof(header), @header) = sizeof(header);
     if not Result then Exit;
-    Result := (header.magic = MH_CIGAM) or (header.magic = MH_MAGIC);
+    Result := (header.magic = MH_CIGAM) or (header.magic = MH_MAGIC) or
+              (header.magic = MH_CIGAM_64) or (header.magic = MH_MAGIC_64);
   except
     Result := false;
   end;
@@ -133,6 +133,7 @@ begin
       Break;
     end;
   end;
+  SetImage64Bit((fFile.header.cputype and CPU_ARCH_ABI64)=CPU_ARCH_ABI64);
   fileRead := true;
 end;
 

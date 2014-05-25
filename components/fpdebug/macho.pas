@@ -390,6 +390,7 @@ type
     reserved2 : uint32_t;             { reserved (for count or sizeof)  }
     reserved3 : uint32_t;             { reserved  }
   end;
+  psection_64 = ^section_64;
 
   {* The flags field of a section structure is separated into two parts a section
    * type and section attributes.  The section types are mutually exclusive (it
@@ -1137,6 +1138,24 @@ type
 const
   FAT_MAGIC = $cafebabe;
   FAT_CIGAM = $bebafeca;
+
+const
+  CPU_ARCH_MASK  = $ff000000;  { mask for architecture bits }
+  CPU_ARCH_ABI64 = $01000000;  { 64 bit ABI }
+
+  CPU_TYPE_VAX       = 1;
+  CPU_TYPE_MC680x0   = 6;
+  CPU_TYPE_X86       = 7;
+  CPU_TYPE_I386      = CPU_TYPE_X86;
+  CPU_TYPE_X86_64    = CPU_TYPE_X86 and CPU_ARCH_ABI64;
+  CPU_TYPE_MC98000   = 10;
+  CPU_TYPE_HPPA      = 11;
+  CPU_TYPE_ARM       = 12;
+  CPU_TYPE_MC88000   = 13;
+  CPU_TYPE_SPARC     = 14;
+  CPU_TYPE_I860      = 15;
+  CPU_TYPE_POWERPC   = 18;
+  CPU_TYPE_POWERPC64 = CPU_TYPE_POWERPC and CPU_ARCH_ABI64;
 
 type
   fat_header = record

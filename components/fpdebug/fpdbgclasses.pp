@@ -202,6 +202,7 @@ type
 
   TDbgInstance = class(TObject)
   private
+    FMode: TFPDMode;
     FName: String;
     FOnDebugInfoLoaded: TNotifyEvent;
     FProcess: TDbgProcess;
@@ -226,6 +227,7 @@ type
     property DbgInfo: TDbgInfo read FDbgInfo;
     property SymbolTableInfo: TFpSymbolInfo read FSymbolTableInfo;
     property OnDebugInfoLoaded: TNotifyEvent read FOnDebugInfoLoaded write FOnDebugInfoLoaded;
+    property Mode: TFPDMode read FMode;
   end;
 
   { TDbgLibrary }
@@ -620,6 +622,10 @@ end;
 procedure TDbgInstance.LoadInfo;
 begin
   FLoader := InitializeLoader;
+  if FLoader.Image64Bit then
+    FMode:=dm64
+  else
+    FMode:=dm32;
   FDbgInfo := TFpDwarfInfo.Create(FLoader);
   TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
   FSymbolTableInfo := TFpSymbolInfo.Create(FLoader);

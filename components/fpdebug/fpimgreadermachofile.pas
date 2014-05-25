@@ -55,17 +55,23 @@ var
   i   : Integer;
   j   : Integer;
   ofs : Integer;
-  sc  : psection;
+  sc32: psection;
+  sc64: psection_64;
   s   : TMachOsection;
+  hs  : integer;
+  i64 : boolean;
 begin
-  //Stream.Read(header, sizeof(header));
   Result :=  ALoader.Read(0, sizeof(header), @header) = sizeof(header);
   if not Result then Exit;
-  Result := (header.magic = MH_MAGIC) or (header.magic = MH_CIGAM);
+  i64 := (header.magic = MH_CIGAM_64) or (header.magic = MH_MAGIC_64);
+  Result := (header.magic = MH_MAGIC) or (header.magic = MH_CIGAM) or i64;
 
+  if i64 then
+    hs := sizeof(mach_header_64)
+  else
+    hs := SizeOf(mach_header);
   SetLength(cmdbuf, header.sizeofcmds);
-  //Stream.Read(cmdbuf[0], header.sizeofcmds);
-  ALoader.Read(sizeof(header), header.sizeofcmds, @cmdbuf[0]);
+  ALoader.Read(hs, header.sizeofcmds, @cmdbuf[0]);
 
   SetLength(commands, header.ncmds);
   ofs := 0;
@@ -73,13 +79,23 @@ begin
     commands[i] := @cmdbuf[ofs];
 
     if commands[i]^.cmd = LC_SEGMENT then begin
-      sc := @cmdbuf[ofs+sizeof(segment_command)];
+      sc32 := @cmdbuf[ofs+sizeof(segment_command)];
       for j := 0 to psegment_command(commands[i])^.nsects- 1 do begin
         s := TMachOSection.Create;
         s.is32:=true;
-        s.sec32:=sc^;
+        s.sec32:=sc32^;
         sections.add(s);
-        inc(sc);
+        inc(sc32);
+      end;
+    end
+    else if commands[i]^.cmd = LC_SEGMENT_64 then begin
+      sc64 := @cmdbuf[ofs+sizeof(segment_command_64)];
+      for j := 0 to psegment_command_64(commands[i])^.nsects- 1 do begin
+        s := TMachOSection.Create;
+        s.is32:=False;
+        s.sec64:=sc64^;
+        sections.add(s);
+        inc(sc64);
       end;
 
     end;
