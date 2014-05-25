@@ -960,7 +960,6 @@ begin
   // external tools
   {$IFDEF EnableNewExtTools}
   fExternalUserTools:=ExternalUserToolsClass.Create;
-  debugln(['TEnvironmentOptions.Create ',DbgSName(fExternalUserTools),' Class=',DbgSName(ExternalUserToolsClass),' ',dbgs(Pointer(fExternalUserTools))]);
   {$ELSE}
   fExternalTools:=ExternalToolListClass.Create;
   {$ENDIF}
@@ -1393,7 +1392,6 @@ begin
 
       // external tools
       {$IFDEF EnableNewExtTools}
-      debugln(['TEnvironmentOptions.Load fExternalToolMenuItems']);
       fExternalUserTools.Load(FConfigStore,Path+'ExternalTools/');
       {$ELSE}
       fExternalTools.Load(FConfigStore,Path+'ExternalTools/');

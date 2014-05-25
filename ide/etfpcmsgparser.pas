@@ -27,6 +27,8 @@ unit etFPCMsgParser;
 
 {$mode objfpc}{$H+}
 
+{off $DEFINE VerboseQuickFixUnitNotFoundPosition}
+
 interface
 
 uses
@@ -39,6 +41,7 @@ uses
 const
   FPCMsgIDLogo = 11023;
   FPCMsgAttrWorkerDirectory = 'WD';
+  FPCMsgIDThereWereErrorsCompiling = 10026;
 type
   TFPCMsgFilePool = class;
 
@@ -130,6 +133,7 @@ type
     fFPCMsgItemUnitNotUsed: TFPCMsgItem;
     fFPCMsgItemCantFindUnitUsedBy: TFPCMsgItem;
     fFPCMsgItemCompilationAborted: TFPCMsgItem;
+    fFPCMsgItemThereWereErrorsCompiling: TFPCMsgItem;
     fMissingFPCMsgItem: TFPCMsgItem;
     function FileExists(const Filename: string; aSynchronized: boolean): boolean;
     function CheckForMsgId(p: PChar): boolean; // (MsgId) message
@@ -455,7 +459,7 @@ begin
   if p1<1 then exit;
   p2:=Pos('$2',Pattern);
   if p2<=p1+2 then exit;
-  if LeftStr(Pattern,p1)<>LeftStr(Src,p1) then exit;
+  if LeftStr(Pattern,p1-1)<>LeftStr(Src,p1-1) then exit;
   LastPattern:=RightStr(Pattern,length(Pattern)-p2-1);
   if RightStr(Src,length(LastPattern))<>LastPattern then exit;
   MiddlePattern:=copy(Pattern,p1+2,p2-p1-2);
@@ -1083,7 +1087,7 @@ function TIDEFPCParser.CheckForGeneralMessage(p: PChar): boolean;
   Error: /usr/bin/ppc386 returned an error exitcode
 }
 const
-  MsgIDCompilationAborted = 1018;
+  FPCMsgIDCompilationAborted = 1018;
   FrontEndFPCExitCodeError = 'returned an error exitcode';
 var
   MsgLine: TMessageLine;
@@ -1115,7 +1119,7 @@ begin
     MsgType:=mluFatal;
     // check for "Fatal: compilation aborted"
     if fFPCMsgItemCompilationAborted=nil then begin
-      fFPCMsgItemCompilationAborted:=MsgFile.GetMsg(MsgIDCompilationAborted);
+      fFPCMsgItemCompilationAborted:=MsgFile.GetMsg(FPCMsgIDCompilationAborted);
       if fFPCMsgItemCompilationAborted=nil then
         fFPCMsgItemCompilationAborted:=fMissingFPCMsgItem;
     end;
@@ -1131,7 +1135,7 @@ begin
     TranslatedMsg:=p;
     MsgType:=mluError;
     if Pos(FrontEndFPCExitCodeError,TranslatedMsg)>0 then begin
-      fMsgID:=MsgIDCompilationAborted;
+      fMsgID:=FPCMsgIDCompilationAborted;
       CheckFinalNote;
     end;
   end
@@ -1181,7 +1185,7 @@ begin
 
     end;
   end;
-  if (MsgType>=mluError) and (fMsgID=MsgIDCompilationAborted) // fatal: Compilation aborted
+  if (MsgType>=mluError) and (fMsgID=FPCMsgIDCompilationAborted) // fatal: Compilation aborted
   then begin
     CheckFinalNote;
   end;
@@ -1190,6 +1194,8 @@ begin
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Msg:=p;
   MsgLine.TranslatedMsg:=TranslatedMsg;
+  if IsMsgID(MsgLine,FPCMsgIDThereWereErrorsCompiling,fFPCMsgItemThereWereErrorsCompiling) then
+    MsgLine.Urgency:=mluVerbose;
   AddMsgLine(MsgLine);
 end;
 
@@ -1648,6 +1654,8 @@ procedure TIDEFPCParser.ImproveMsgUnitNotFound(aSynchronized: boolean;
     end;
   end;
 
+const
+  FPCMsgIDCantFindUnitUsedBy = 10022;
 var
   MissingUnitName: string;
   UsedByUnit: string;
@@ -1662,7 +1670,8 @@ var
   s: String;
 begin
   if MsgLine.Urgency<mluError then exit;
-  if not IsMsgID(MsgLine,10022,fFPCMsgItemCantFindUnitUsedBy) then // Can't find unit $1 used by $2
+  if not IsMsgID(MsgLine,FPCMsgIDCantFindUnitUsedBy,fFPCMsgItemCantFindUnitUsedBy)
+  then // Can't find unit $1 used by $2
     exit;
   if (not aSynchronized) then begin
     NeedSynchronize:=true;
@@ -1701,7 +1710,7 @@ begin
       NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
       if NewFilename='' then begin
         {$IFDEF VerboseQuickFixUnitNotFoundPosition}
-        debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unit not found: ',UsedByUnit);
+        debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unit not found: ',UsedByUnit]);
         {$ENDIF}
       end;
     end;
@@ -1713,12 +1722,12 @@ begin
     CodeBuf:=CodeToolBoss.LoadFile(Filename,false,false);
     if CodeBuf=nil then begin
       {$IFDEF VerboseQuickFixUnitNotFoundPosition}
-      debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unable to load unit: ',Filename);
+      debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unable to load unit: ',Filename]);
       {$ENDIF}
     end;
   end else begin
     {$IFDEF VerboseQuickFixUnitNotFoundPosition}
-    debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unable to locate UsedByUnit: ',UsedByUnit);
+    debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unable to locate UsedByUnit: ',UsedByUnit]);
     {$ENDIF}
   end;
 
@@ -1741,7 +1750,7 @@ begin
       PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
                         ExtractFilePath(CodeBuf.Filename),MissingUnitname);
       {$IFDEF VerboseQuickFixUnitNotFoundPosition}
-      debugln(['TQuickFixUnitNotFoundPosition.Execute PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(Dir+'test')]);
+      debugln(['TQuickFixUnitNotFoundPosition.Execute PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(CodeBuf.Filename)]);
       {$ENDIF}
       PkgName:='';
       OnlyInstalled:=IsFileInIDESrcDir(CodeBuf.Filename);
@@ -1755,10 +1764,10 @@ begin
         if PPUFilename<>'' then begin
           // there is a ppu file, but the compiler didn't like it
           // => change message
-          s:='Can not find '+MissingUnitname;
+          s:='Cannot find '+MissingUnitname;
           if UsedByUnit<>'' then
             s+=' used by '+UsedByUnit;
-          s+=', ppu='+CreateRelativePath(PPUFilename,ExtractFilePath(CodeBuf.Filename));
+          s+=', incompatible ppu='+CreateRelativePath(PPUFilename,ExtractFilePath(CodeBuf.Filename));
           if PkgName<>'' then
             s+=', package '+PkgName;
         end else if PkgName<>'' then begin
@@ -1771,13 +1780,13 @@ begin
         end;
       end else begin
         // there is no ppu file in the unit path
-        s:='Can not find unit '+MissingUnitname;
+        s:='Cannot find unit '+MissingUnitname;
         if UsedByUnit<>'' then
           s+=' used by '+UsedByUnit;
         if (UsedByOwner is TIDEPackage)
         and (CompareTextCT(TIDEPackage(UsedByOwner).Name,PkgName)=0) then
         begin
-          // two units of a package can not find each other
+          // two units of a package cannot find each other
           s+='. Check search path package '+TIDEPackage(UsedByOwner).Name+', try a clean rebuild, check implementation uses sections.';
         end else begin
           if PkgName<>'' then
@@ -1791,7 +1800,7 @@ begin
       end;
       MsgLine.Msg:=s;
       {$IFDEF VerboseQuickFixUnitNotFoundPosition}
-      debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Msg.Msg="',Msg.Msg,'"']);
+      debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Msg.Msg="',MsgLine.Msg,'"']);
       {$ENDIF}
     end;
   finally
@@ -1856,6 +1865,8 @@ begin
 end;
 
 function TIDEFPCParser.CheckForMsgId(p: PChar): boolean;
+const
+  FPCMsgIDErrorWhileCompilingResources = 9029;
 var
   MsgItem: TFPCMsgItem;
   TranslatedItem: TFPCMsgItem;
@@ -1875,8 +1886,10 @@ begin
   Translate(p,MsgItem,TranslatedItem,TranslatedMsg,MsgType);
   Msg:=p;
   case fMsgID of
-  9029: // Error while compiling resources
+  FPCMsgIDErrorWhileCompilingResources: // Error while compiling resources
     Msg+=' -> Compile with -vd for more details. Check for duplicates.';
+  FPCMsgIDThereWereErrorsCompiling: // There were $1 errors compiling module, stopping
+    MsgType:=mluVerbose;
   end;
   MsgLine:=CreateMsgLine;
   MsgLine.SubTool:=SubToolFPC;
