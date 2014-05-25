@@ -41,6 +41,8 @@ uses
 const
   FPCMsgIDLogo = 11023;
   FPCMsgIDCantFindUnitUsedBy = 10022;
+  FPCMsgIDLinking = 9015;
+  FPCMsgIDErrorWhileLinking = 9013;
   FPCMsgIDThereWereErrorsCompiling = 10026;
 
   FPCMsgAttrWorkerDirectory = 'WD';
@@ -149,13 +151,13 @@ type
     function CheckForAssemblingState(p: PChar): boolean; // Assembling ..
     function CheckForLinesCompiled(p: PChar): boolean; // ..lines compiled..
     function CheckForExecutableInfo(p: PChar): boolean;
-    function CheckForLinkingErrors(p: PChar): boolean;
     function CheckForFollowUpMessages(p: PChar): boolean;
     function CheckForLineProgress(p: PChar): boolean; // 600 206.521/231.648 Kb Used
     function CheckForRecompilingChecksumChangedMessages(p: PChar): boolean;
     function CheckForLoadFromUnit(p: PChar): Boolean;
     function CheckForWindresErrors(p: PChar): boolean;
     function CreateMsgLine: TMessageLine;
+    procedure AddLinkingMessages;
     procedure ImproveMsgHiddenByIDEDirective(const SourceOK: Boolean;
       var MsgLine: TMessageLine);
     procedure ImproveMsgSenderNotUsed(aSynchronized: boolean; MsgLine: TMessageLine);
@@ -1019,7 +1021,7 @@ begin
   if Item<>nil then
     fLineToMsgID.AddLines(Item.Pattern,Item.ID);
   // Linking <progname>
-  Item:=MsgFile.GetMsg(9015);
+  Item:=MsgFile.GetMsg(FPCMsgIDLinking);
   if Item<>nil then
     fLineToMsgID.AddLines(Item.Pattern,Item.ID);
   //fLineToMsgID.WriteDebugReport;
@@ -1288,77 +1290,6 @@ begin
   AddMsgLine(MsgLine);
 end;
 
-function TIDEFPCParser.CheckForLinkingErrors(p: PChar): boolean;
-{ For example:
-  linkerror.o(.text$_main+0x9):linkerror.pas: undefined reference to `NonExistingFunction'
-
-  Closing script ppas.sh
-
-  Mac OS X linker example:
-  ld: framework not found Cocoas
-
-  Multiline Mac OS X linker example:
-  Undefined symbols:
-    "_exterfunc", referenced from:
-        _PASCALMAIN in testld.o
-    "_exterfunc2", referenced from:
-        _PASCALMAIN in testld.o
-  ld: symbol(s) not found
-
-  Linking project1
-  Undefined symbols for architecture x86_64:
-    "_GetCurrentEventButtonState", referenced from:
-        _COCOAINT_TCOCOAWIDGETSET_$__GETKEYSTATE$LONGINT$$SMALLINT in cocoaint.o
-  ld: symbol(s) not found for architecture x86_64
-  An error occurred while linking
-
-  Linking /home/user/project1
-  /usr/bin/ld: warning: /home/user/link.res contains output sections; did you forget -T?
-  /usr/bin/ld: cannot find -la52
-  project1.lpr(20,1) Error: Error while linking
-
-}
-var
-  OldStart: PChar;
-  MsgLine: TMessageLine;
-
-  procedure AddLinkerMsg;
-  begin
-    MsgLine:=CreateMsgLine;
-    MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluWarning;
-    MsgLine.Msg:=OldStart;
-    AddMsgLine(MsgLine);
-  end;
-
-begin
-  Result:=true;
-  OldStart:=p;
-
-  // check "Closing script ppas.sh"
-  if CompStr('Closing script ppas.sh',p) then begin
-    AddLinkerMsg;
-    exit;
-  end;
-
-  // check "name.o("
-  while p^ in ['0'..'9','a'..'z','A'..'Z','_'] do
-    inc(p);
-  if CompStr('.o(',p) then begin
-    AddLinkerMsg;
-    exit;
-  end;
-  p := OldStart;
-
-  // check for "Undefined symbols:"
-  if CompStr('Undefined symbols:', p) then begin
-    AddLinkerMsg;
-    exit;
-  end;
-
-  Result:=false;
-end;
-
 function TIDEFPCParser.CheckForFollowUpMessages(p: PChar): boolean;
 var
   i: Integer;
@@ -1369,18 +1300,6 @@ begin
   i:=Tool.WorkerMessages.Count-1;
   if i<0 then exit;
   PrevMsgLine:=Tool.WorkerMessages[i];
-
-  if (PrevMsgLine.SubTool=SubToolFPCLinker)
-  or ((PrevMsgLine.SubTool=SubToolFPC) and (PrevMsgLine.MsgID=9015)) // (9015) Linking <progname>
-  then begin
-    // this is a follow up linker warning/error
-    MsgLine:=CreateMsgLine;
-    MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=PrevMsgLine.Urgency;
-    MsgLine.Msg:=p;
-    AddMsgLine(MsgLine);
-    exit(true);
-  end;
 
   if (PrevMsgLine.SubTool=SubToolFPCRes)
   or ((PrevMsgLine.SubTool=SubToolFPC)
@@ -1473,6 +1392,58 @@ function TIDEFPCParser.CreateMsgLine: TMessageLine;
 begin
   Result:=inherited CreateMsgLine(fOutputIndex);
   Result.MsgID:=fMsgID;
+end;
+
+procedure TIDEFPCParser.AddLinkingMessages;
+{ Add messages for all output between "Linking ..." and the
+  current line "Error while linking"
+
+For example:
+  Linking /home/user/project1
+  /usr/bin/ld: warning: /home/user/link.res contains output sections; did you forget -T?
+  /usr/bin/ld: cannot find -la52
+  project1.lpr(20,1) Error: Error while linking
+
+  Examples for linking errors:
+  linkerror.o(.text$_main+0x9):linkerror.pas: undefined reference to `NonExistingFunction'
+
+  Closing script ppas.sh
+
+  Mac OS X linker example:
+  ld: framework not found Cocoas
+
+  Multiline Mac OS X linker example:
+  Undefined symbols:
+    "_exterfunc", referenced from:
+        _PASCALMAIN in testld.o
+    "_exterfunc2", referenced from:
+        _PASCALMAIN in testld.o
+  ld: symbol(s) not found
+
+  Linking project1
+  Undefined symbols for architecture x86_64:
+    "_GetCurrentEventButtonState", referenced from:
+        _COCOAINT_TCOCOAWIDGETSET_$__GETKEYSTATE$LONGINT$$SMALLINT in cocoaint.o
+  ld: symbol(s) not found for architecture x86_64
+  An error occurred while linking
+}
+var
+  i: Integer;
+  MsgLine: TMessageLine;
+begin
+  // find message "Linking ..."
+  i:=Tool.WorkerMessages.Count-1;
+  while (i>=0) and (Tool.WorkerMessages[i].MsgID<>FPCMsgIDLinking) do
+    dec(i);
+  if i<0 then exit;
+  MsgLine:=Tool.WorkerMessages[i];
+  for i:=MsgLine.OutputIndex+1 to fOutputIndex-1 do begin
+    MsgLine:=inherited CreateMsgLine(i);
+    MsgLine.MsgID:=0;
+    MsgLine.SubTool:=SubToolFPCLinker;
+    MsgLine.Urgency:=mluWarning;
+    AddMsgLine(MsgLine);
+  end;
 end;
 
 function TIDEFPCParser.IsMsgID(MsgLine: TMessageLine; MsgID: integer;
@@ -1897,8 +1868,6 @@ function TIDEFPCParser.CheckForFileLineColMessage(p: PChar): boolean;
   filename(line,column) Hint: (msgid) message
   filename(line) Hint: (msgid) message
 }
-const
-  FPCMsgIDErrorWhileLinking = 9013;
 var
   FileStartPos: PChar;
   FileEndPos: PChar;
@@ -1913,7 +1882,6 @@ var
   TranslatedMsg: String;
   aFilename: String;
   Column: Integer;
-  PrevMsgLine: TMessageLine;
 begin
   Result:=false;
   FileStartPos:=p;
@@ -2001,16 +1969,6 @@ begin
   MsgLine.Msg:=p;
   MsgLine.TranslatedMsg:=TranslatedMsg;
   //debugln(['TFPCParser.CheckForFileLineColMessage ',dbgs(MsgLine.Urgency)]);
-
-  if IsMsgID(MsgLine,FPCMsgIDErrorWhileLinking,fMsgItemErrorWhileLinking) then
-  begin
-    // error while linking => convert previous linker messages to warnings
-    for i:=Tool.WorkerMessages.Count-1 downto 0 do begin
-      PrevMsgLine:=Tool.WorkerMessages[i];
-      if PrevMsgLine.SubTool<>SubToolFPCLinker then break;
-      PrevMsgLine.Urgency:=mluWarning;
-    end;
-  end;
 
   AddMsgLine(MsgLine);
 end;
@@ -2106,9 +2064,7 @@ begin
   if CheckForInfos(p) then exit;
   // check for -vx output
   if CheckForExecutableInfo(p) then exit;
-  // check for linking errors
-  if CheckForLinkingErrors(p) then exit;
-  // check for follow up errors (linker and fpcres messages)
+  // check for follow up errors (fpcres messages)
   if CheckForFollowUpMessages(p) then exit;
   // check for Recompiling, checksum changed
   if CheckForRecompilingChecksumChangedMessages(p) then exit;
@@ -2125,6 +2081,8 @@ end;
 
 procedure TIDEFPCParser.AddMsgLine(MsgLine: TMessageLine);
 begin
+  if IsMsgID(MsgLine,FPCMsgIDErrorWhileLinking,fMsgItemErrorWhileLinking) then
+    AddLinkingMessages;
   if IsMsgID(MsgLine,FPCMsgIDThereWereErrorsCompiling,fMsgItemThereWereErrorsCompiling) then
     MsgLine.Urgency:=mluVerbose;
   inherited AddMsgLine(MsgLine);
