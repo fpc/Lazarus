@@ -134,10 +134,11 @@ type
     fFileExists: TFilenameToPointerTree;
     fIncludePathValidForWorkerDir: string;
     fIncludePath: string; // only valid if fIncludePathValidForWorkerDir=Tool.WorkerDirectory
-    fFPCMsgItemUnitNotUsed: TFPCMsgItem;
-    fFPCMsgItemCantFindUnitUsedBy: TFPCMsgItem;
-    fFPCMsgItemCompilationAborted: TFPCMsgItem;
-    fFPCMsgItemThereWereErrorsCompiling: TFPCMsgItem;
+    fMsgItemUnitNotUsed: TFPCMsgItem;
+    fMsgItemCantFindUnitUsedBy: TFPCMsgItem;
+    fMsgItemCompilationAborted: TFPCMsgItem;
+    fMsgItemThereWereErrorsCompiling: TFPCMsgItem;
+    fMsgItemErrorWhileLinking: TFPCMsgItem;
     fMissingFPCMsgItem: TFPCMsgItem;
     function FileExists(const Filename: string; aSynchronized: boolean): boolean;
     function CheckForMsgId(p: PChar): boolean; // (MsgId) message
@@ -1122,14 +1123,14 @@ begin
   if ReadString(p,'Fatal: ') then begin
     MsgType:=mluFatal;
     // check for "Fatal: compilation aborted"
-    if fFPCMsgItemCompilationAborted=nil then begin
-      fFPCMsgItemCompilationAborted:=MsgFile.GetMsg(FPCMsgIDCompilationAborted);
-      if fFPCMsgItemCompilationAborted=nil then
-        fFPCMsgItemCompilationAborted:=fMissingFPCMsgItem;
+    if fMsgItemCompilationAborted=nil then begin
+      fMsgItemCompilationAborted:=MsgFile.GetMsg(FPCMsgIDCompilationAborted);
+      if fMsgItemCompilationAborted=nil then
+        fMsgItemCompilationAborted:=fMissingFPCMsgItem;
     end;
     p2:=p;
-    if (fFPCMsgItemCompilationAborted<>fMissingFPCMsgItem)
-    and ReadString(p2,fFPCMsgItemCompilationAborted.Pattern) then
+    if (fMsgItemCompilationAborted<>fMissingFPCMsgItem)
+    and ReadString(p2,fMsgItemCompilationAborted.Pattern) then
       CheckFinalNote;
   end
   else if ReadString(p,'Panic') then
@@ -1198,7 +1199,7 @@ begin
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Msg:=p;
   MsgLine.TranslatedMsg:=TranslatedMsg;
-  if IsMsgID(MsgLine,FPCMsgIDThereWereErrorsCompiling,fFPCMsgItemThereWereErrorsCompiling) then
+  if IsMsgID(MsgLine,FPCMsgIDThereWereErrorsCompiling,fMsgItemThereWereErrorsCompiling) then
     MsgLine.Urgency:=mluVerbose;
   AddMsgLine(MsgLine);
 end;
@@ -1302,73 +1303,65 @@ function TIDEFPCParser.CheckForLinkingErrors(p: PChar): boolean;
         _COCOAINT_TCOCOAWIDGETSET_$__GETKEYSTATE$LONGINT$$SMALLINT in cocoaint.o
   ld: symbol(s) not found for architecture x86_64
   An error occurred while linking
+
+  Linking /home/user/project1
+  /usr/bin/ld: warning: /home/user/link.res contains output sections; did you forget -T?
+  /usr/bin/ld: cannot find -la52
+  project1.lpr(20,1) Error: Error while linking
+
 }
 var
   OldStart: PChar;
   MsgLine: TMessageLine;
-  i: Integer;
   PrevMsgLine: TMessageLine;
-//const
-//  DarwinPrefixLvl1 = '  ';
-//  DarwinPrefixLvl2 = '      ';
+
+  procedure AddLinkerMsg;
+  begin
+    MsgLine:=CreateMsgLine;
+    MsgLine.SubTool:=SubToolFPCLinker;
+    MsgLine.Urgency:=mluWarning;
+    MsgLine.Msg:=OldStart;
+    AddMsgLine(MsgLine);
+  end;
+
 begin
-  Result:=false;
+  Result:=true;
   OldStart:=p;
 
-  i:=Tool.WorkerMessages.Count-1;
-  if i>=0 then begin
-    PrevMsgLine:=Tool.WorkerMessages[i];
+  PrevMsgLine:=Tool.WorkerMessages.GetLastLine;
+  if PrevMsgLine<>nil then begin
     if (PrevMsgLine.SubTool=SubToolFPCLinker)
     or ((PrevMsgLine.SubTool=SubToolFPC) and (PrevMsgLine.MsgID=9015)) // (9015) Linking <progname>
     then begin
       // this is a follow up linker warning/error
-      MsgLine:=CreateMsgLine;
-      MsgLine.SubTool:=SubToolFPCLinker;
+      AddLinkerMsg;
       MsgLine.Urgency:=PrevMsgLine.Urgency;
-      MsgLine.Msg:=OldStart;
-      AddMsgLine(MsgLine);
-      exit(true);
+      exit;
     end;
   end;
 
+  // check "Closing script ppas.sh"
   if CompStr('Closing script ppas.sh',p) then begin
-    MsgLine:=CreateMsgLine;
-    MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluWarning;
-    MsgLine.Msg:=OldStart;
-    AddMsgLine(MsgLine);
-    exit(true);
+    AddLinkerMsg;
+    exit;
   end;
 
+  // check "name.o("
   while p^ in ['0'..'9','a'..'z','A'..'Z','_'] do
     inc(p);
   if CompStr('.o(',p) then begin
-    MsgLine:=CreateMsgLine;
-    MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluWarning;
-    MsgLine.Msg:=OldStart;
-    AddMsgLine(MsgLine);
-    exit(true);
+    AddLinkerMsg;
+    exit;
   end;
   p := OldStart;
-  if CompStr('ld: ',p) then begin
-    Result:=true;
-    MsgLine:=CreateMsgLine;
-    MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluWarning;
-    MsgLine.Msg:=OldStart;
-    AddMsgLine(MsgLine);
-    exit(true);
-  end;
+
+  // check for "Undefined symbols:"
   if CompStr('Undefined symbols:', p) then begin
-    Result:=true;
-    MsgLine:=CreateMsgLine;
-    MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluWarning;
-    MsgLine.Msg:=OldStart;
-    AddMsgLine(MsgLine);
-    exit(true);
+    AddLinkerMsg;
+    exit;
   end;
+
+  Result:=false;
 end;
 
 function TIDEFPCParser.CheckForFollowUpMessages(p: PChar): boolean;
@@ -1555,7 +1548,7 @@ const
 begin
   if aSynchronized then exit;
   if (MsgLine.Urgency<=mluVerbose) then exit;
-  if not IsMsgID(MsgLine,FPCMsgIDUnitNotUsed,fFPCMsgItemUnitNotUsed) then exit;
+  if not IsMsgID(MsgLine,FPCMsgIDUnitNotUsed,fMsgItemUnitNotUsed) then exit;
 
   //debugln(['TIDEFPCParser.ImproveMsgUnitNotUsed ',aSynchronized,' ',MsgLine.Msg]);
   // unit not used
@@ -1672,7 +1665,7 @@ var
   s: String;
 begin
   if MsgLine.Urgency<mluError then exit;
-  if not IsMsgID(MsgLine,FPCMsgIDCantFindUnitUsedBy,fFPCMsgItemCantFindUnitUsedBy)
+  if not IsMsgID(MsgLine,FPCMsgIDCantFindUnitUsedBy,fMsgItemCantFindUnitUsedBy)
   then // Can't find unit $1 used by $2
     exit;
   if (not aSynchronized) then begin
@@ -1908,6 +1901,8 @@ function TIDEFPCParser.CheckForFileLineColMessage(p: PChar): boolean;
   filename(line,column) Hint: (msgid) message
   filename(line) Hint: (msgid) message
 }
+const
+  FPCMsgIDErrorWhileLinking = 9013;
 var
   FileStartPos: PChar;
   FileEndPos: PChar;
@@ -1922,6 +1917,7 @@ var
   TranslatedMsg: String;
   aFilename: String;
   Column: Integer;
+  PrevMsgLine: TMessageLine;
 begin
   Result:=false;
   FileStartPos:=p;
@@ -1998,6 +1994,7 @@ begin
     Column:=Str2Integer(ColStartPos,0)
   else
     Column:=0;
+
   MsgLine:=CreateMsgLine;
   MsgLine.SubTool:=SubToolFPC;
   MsgLine.Urgency:=MsgType;
@@ -2008,6 +2005,17 @@ begin
   MsgLine.Msg:=p;
   MsgLine.TranslatedMsg:=TranslatedMsg;
   //debugln(['TFPCParser.CheckForFileLineColMessage ',dbgs(MsgLine.Urgency)]);
+
+  if IsMsgID(MsgLine,FPCMsgIDErrorWhileLinking,fMsgItemErrorWhileLinking) then
+  begin
+    // error while linking => convert previous linker messages to warnings
+    for i:=Tool.WorkerMessages.Count-1 downto 0 do begin
+      PrevMsgLine:=Tool.WorkerMessages[i];
+      if PrevMsgLine.SubTool<>SubToolFPCLinker then break;
+      PrevMsgLine.Urgency:=mluWarning;
+    end;
+  end;
+
   AddMsgLine(MsgLine);
 end;
 
