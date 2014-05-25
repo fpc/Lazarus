@@ -383,6 +383,7 @@ type
 
   TQuickFixIdentifierNotFound_Search = class(TMsgQuickFix)
   public
+    function IsApplicable(Msg: TMessageLine; out Identifier: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -3228,19 +3229,27 @@ end;
 { TQuickFixIdentifierNotFound_Search }
 
 {$IFDEF EnableNewExtTools}
+
+function TQuickFixIdentifierNotFound_Search.IsApplicable(Msg: TMessageLine; out
+  Identifier: string): boolean;
+var
+  Dummy: string;
+begin
+  Result:=false;
+  Identifier:='';
+  if not Msg.HasSourcePosition then exit;
+  Result:=TIDEFPCParser.MsgLineIsId(Msg,5000,Identifier,Dummy);
+end;
+
 procedure TQuickFixIdentifierNotFound_Search.CreateMenuItems(
   Fixes: TMsgQuickFixes);
 var
   Msg: TMessageLine;
-  Code: TCodeBuffer;
+  Identifier: string;
 begin
   if Fixes.LineCount<>1 then exit;
   Msg:=Fixes.Lines[0];
-  if not Msg.HasSourcePosition then exit;
-  if Msg.SubTool<>SubToolFPC then exit;
-  if Msg.MsgID<>5000 then exit;
-  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
-  if Code=nil then exit;
+  if not IsApplicable(Msg,Identifier) then exit;
   Fixes.AddMenuItem(Self,Msg,lisQuickFixSearchIdentifier);
 end;
 
@@ -3252,20 +3261,13 @@ var
   Caret: TPoint;
   Filename: String;
 begin
-  if not Msg.HasSourcePosition then exit;
+  if not IsApplicable(Msg,Identifier) then exit;
   if not LazarusIDE.BeginCodeTools then begin
     DebugLn(['TQuickFixIdentifierNotFound_Search.Execute failed because IDE busy']);
     exit;
   end;
 
   // get identifier
-  if not REMatches(Msg.Msg,'Identifier not found "([a-z_0-9]+)"','I') then begin
-    DebugLn('TQuickFixIdentifierNotFound_Search invalid message ',Msg.Msg);
-    exit;
-  end;
-  Identifier:=REVar(1);
-  DebugLn(['TQuickFixIdentifierNotFound_Search.Execute Identifier=',Identifier]);
-
   if (Identifier='') or (not IsValidIdent(Identifier)) then begin
     DebugLn(['TQuickFixIdentifierNotFound_Search.Execute not an identifier "',dbgstr(Identifier),'"']);
     exit;

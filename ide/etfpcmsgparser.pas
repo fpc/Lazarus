@@ -156,8 +156,6 @@ type
     function CheckForLoadFromUnit(p: PChar): Boolean;
     function CheckForWindresErrors(p: PChar): boolean;
     function CreateMsgLine: TMessageLine;
-    function IsMsgID(MsgLine: TMessageLine; MsgID: integer;
-      var Item: TFPCMsgItem): boolean;
     procedure ImproveMsgHiddenByIDEDirective(const SourceOK: Boolean;
       var MsgLine: TMessageLine);
     procedure ImproveMsgSenderNotUsed(aSynchronized: boolean; MsgLine: TMessageLine);
@@ -182,6 +180,8 @@ type
     procedure AddMsgLine(MsgLine: TMessageLine); override;
     procedure ImproveMessages(aSynchronized: boolean); override;
     function GetFPCMsgIDPattern(MsgID: integer): string; override;
+    function IsMsgID(MsgLine: TMessageLine; MsgID: integer;
+      var Item: TFPCMsgItem): boolean;
     class function IsSubTool(const SubTool: string): boolean; override;
     class function DefaultSubTool: string; override;
     class function GetMsgExample(SubTool: string; MsgID: integer): string;
@@ -189,6 +189,8 @@ type
     class function GetMsgHint(SubTool: string; MsgID: integer): string;
       override;
     class function Priority: integer; override;
+    class function MsgLineIsId(Msg: TMessageLine; MsgId: integer;
+      out Value1, Value2: string): boolean; override;
     class function GetFPCMsgPattern(Msg: TMessageLine): string; override;
     class function GetFPCMsgValue1(Msg: TMessageLine): string; override;
     class function GetFPCMsgValues(Msg: TMessageLine; out Value1, Value2: string): boolean; override;
@@ -335,6 +337,13 @@ function FPCMsgFits(const Msg, Pattern: string; VarStarts: PPChar;
 { for example:
   Src='A lines compiled, B sec C'
   SrcPattern='$1 lines compiled, $2 sec $3'
+
+  VarStarts and VarEnds can be nil.
+  If you need the boundaries of the parameters allocate VarStarts and VarEnds as
+    VarStarts:=GetMem(SizeOf(PChar)*10);
+    VarEnds:=GetMem(SizeOf(PChar)*10);
+  VarStarts[0] will be $0, VarStarts[1] will be $1 and so forth
+
 }
 var
   MsgPos, PatPos: PChar;
@@ -1485,6 +1494,7 @@ begin
   if MsgLine.MsgID=MsgID then exit(true);
   Result:=false;
   if MsgLine.MsgID<>0 then exit;
+  if MsgLine.SubTool<>SubToolFPC then exit;
   if Item=nil then begin
     Item:=MsgFile.GetMsg(MsgID);
     if Item=nil then
@@ -2311,6 +2321,46 @@ end;
 class function TIDEFPCParser.Priority: integer;
 begin
   Result:=SubToolFPCPriority;
+end;
+
+class function TIDEFPCParser.MsgLineIsId(Msg: TMessageLine; MsgId: integer; out
+  Value1, Value2: string): boolean;
+
+  function GetStr(FromPos, ToPos: PChar): string;
+  begin
+    if (FromPos=nil) or (FromPos=ToPos) then
+      Result:=''
+    else begin
+      SetLength(Result,ToPos-FromPos);
+      Move(FromPos^,Result[1],ToPos-FromPos);
+    end;
+  end;
+
+var
+  aFPCParser: TFPCParser;
+  Pattern: String;
+  VarStarts: PPChar;
+  VarEnds: PPChar;
+  s: String;
+begin
+  Value1:='';
+  Value2:='';
+  if Msg.MsgID=MsgId then exit(true);
+  if Msg.MsgID<>0 then exit(false);
+  if Msg.SubTool<>SubToolFPC then exit(false);
+  aFPCParser:=GetFPCParser(Msg);
+  if aFPCParser=nil then exit;
+  Pattern:=aFPCParser.GetFPCMsgIDPattern(MsgId);
+  VarStarts:=GetMem(SizeOf(PChar)*10);
+  VarEnds:=GetMem(SizeOf(PChar)*10);
+  s:=Msg.Msg;
+  Result:=FPCMsgFits(s,Pattern,VarStarts,VarEnds);
+  if Result then begin
+    Value1:=GetStr(VarStarts[1],VarEnds[1]);
+    Value2:=GetStr(VarStarts[2],VarEnds[2]);
+  end;
+  Freemem(VarStarts);
+  Freemem(VarEnds);
 end;
 
 function TIDEFPCParser.GetFPCMsgIDPattern(MsgID: integer): string;

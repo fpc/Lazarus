@@ -2328,11 +2328,11 @@ begin
   IDEQuickFixes:=TIDEQuickFixes.Create(Self);
   {$ELSE}
   InitStandardIDEQuickFixItems;
+  {$ENDIF}
   InitCodeBrowserQuickFixItems;
   InitFindUnitQuickFixItems;
   InitInspectChecksumChangedQuickFixItems;
   InitUnitDependenciesQuickFixItems;
-  {$ENDIF}
 end;
 
 procedure TMainIDE.SetupStartProject;

@@ -276,6 +276,8 @@ type
   public
     class function GetFPCParser(Msg: TMessageLine): TFPCParser;
     function GetFPCMsgIDPattern(MsgID: integer): string; virtual; abstract;
+    class function MsgLineIsId(Msg: TMessageLine; MsgId: integer;
+      out Value1, Value2: string): boolean; virtual; abstract;
     class function GetFPCMsgPattern(Msg: TMessageLine): string; virtual; abstract;
     class function GetFPCMsgValue1(Msg: TMessageLine): string; virtual; abstract;
     class function GetFPCMsgValues(Msg: TMessageLine; out Value1, Value2: string): boolean; virtual; abstract;
