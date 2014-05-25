@@ -105,7 +105,7 @@ type
 
 const
   MCDefaultBackground = clWindow;
-  MCDefaultHeaderBackgroundRunning = TColor($F0F080); // light aqua
+  MCDefaultHeaderBackgroundRunning = TColor($00F0F0); // yellow
   MCDefaultHeaderBackgroundSuccess = TColor($A0F0A0); // light green
   MCDefaultHeaderBackgroundFailed = TColor($A0A0F0); // light red
   MCDefaultAutoHeaderBackground = TColor($FFC0A0); // light blue
@@ -1500,6 +1500,9 @@ begin
       exit;
     end;
   end;
+  // no views are running
+  // The variable fSomeViewsRunning contains the last state
+  // if fSomeViewsRunning was true, then all views have stopped
   AllViewsStopped:=fSomeViewsRunning;
   fSomeViewsRunning:=false;
   // no views running => update immediately
@@ -2045,12 +2048,12 @@ begin
       // the first two lines are normal messages, not selected
       // => paint view header hint
       NodeRect:=Rect(0,0,ClientWidth,ItemHeight);
-      Canvas.Brush.Color:=AutoHeaderBackground;
-      Canvas.FillRect(NodeRect);
+      Canvas.GradientFill(NodeRect,HeaderBackground[View.ToolState],
+        AutoHeaderBackground,gdVertical);
       Canvas.Pen.Style:=psDash;
       Canvas.Line(NodeRect.Left,NodeRect.Bottom,NodeRect.Right,NodeRect.Bottom);
       Canvas.Pen.Style:=psSolid;
-      DrawText(NodeRect,GetHeaderText(View),false,clDefault);
+      DrawText(NodeRect,'...'+GetHeaderText(View),false,clDefault);
       Canvas.Brush.Color:=BackgroundColor;
     end;
     inc(y,ItemHeight*(View.Lines.Count-j));
@@ -2216,10 +2219,16 @@ begin
 end;
 
 procedure TMessagesCtrl.DoAllViewsStopped;
+var
+  CurLine: TMessageLine;
 begin
   if Assigned(OnAllViewsStopped) then
     OnAllViewsStopped(Self);
   if mcoAutoOpenFirstError in Options then begin
+    CurLine:=GetSelectedMsg;
+    if (CurLine<>nil) and (CurLine.Urgency>=mluError)
+    and CurLine.HasSourcePosition then
+      exit;
     if SelectFirstUrgentMessage(mluError,true) then
       OpenSelection;
   end;
