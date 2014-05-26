@@ -7213,7 +7213,9 @@ begin
           Project1.LastCompilerFilename:=CompilerFilename;
           Project1.LastCompilerParams:=CompilerParams;
           Project1.LastCompilerFileDate:=FileAgeCached(CompilerFilename);
+          {$IFNDEF EnableNewExtTools}
           DoJumpToCompilerMessage(not EnvironmentOptions.ShowCompileDialog);
+          {$ENDIF}
           CompileProgress.Ready(lisInfoBuildError);
           debugln(['TMainIDE.DoBuildProject Compile failed']);
           exit;

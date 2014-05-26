@@ -1505,6 +1505,9 @@ begin
 end;
 
 procedure TMessageLines.Add(MsgLine: TMessageLine);
+var
+  Cnt: Integer;
+  Prev: TMessageLine;
 begin
   if MsgLine.Index>=0 then
     raise Exception.Create('TMessageLines.Add already added');
@@ -1512,6 +1515,17 @@ begin
   MsgLine.FIndex:=fItems.Add(MsgLine);
   FSortedForSrcPos.Add(MsgLine);
   inc(UrgencyCounts[MsgLine.Urgency]);
+
+  // save some memory by combining strings
+  Cnt:=Count;
+  if (Cnt>1) then begin
+    Prev:=Items[Cnt-2];
+    if MsgLine.Filename=Prev.Filename then
+    MsgLine.fFilename:=Prev.Filename;
+    if MsgLine.OriginalLine=Prev.OriginalLine then
+    MsgLine.fOriginalLine:=Prev.OriginalLine;
+  end;
+
   LineChanged(MsgLine);
 end;
 
