@@ -308,6 +308,7 @@ type
 
   TQuickFixCircularUnitReference = class(TMsgQuickFix)
   public
+    function IsApplicable(Msg: TMessageLine; out Unitname1, Unitname2: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -427,19 +428,22 @@ end;
 {$IFDEF EnableNewExtTools}
 { TQuickFixCircularUnitReference }
 
+function TQuickFixCircularUnitReference.IsApplicable(Msg: TMessageLine; out
+  Unitname1, Unitname2: string): boolean;
+begin
+  Result:=IDEFPCParser.MsgLineIsId(Msg,10020,Unitname1,Unitname2);
+end;
+
 procedure TQuickFixCircularUnitReference.CreateMenuItems(
   Fixes: TMsgQuickFixes);
 var
   Msg: TMessageLine;
-  Code: TCodeBuffer;
+  Unitname1: string;
+  Unitname2: string;
 begin
   if Fixes.LineCount<>1 then exit;
   Msg:=Fixes.Lines[0];
-  if not Msg.HasSourcePosition then exit;
-  if Msg.SubTool<>SubToolFPC then exit;
-  if Msg.MsgID<>10020 then exit;
-  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
-  if Code=nil then exit;
+  if not IsApplicable(Msg,Unitname1,Unitname2) then exit;
   Fixes.AddMenuItem(Self,Msg,'Show unit dependencies');
 end;
 
@@ -450,10 +454,7 @@ var
   UnitName2: String;
   Path: TStringList;
 begin
-  if not IDEFPCParser.GetFPCMsgValues(Msg,UnitName1,UnitName2) then begin
-    debugln(['TQuickFixCircularUnitReference.QuickFix invalid message ',Msg.Msg]);
-    exit;
-  end;
+  if not IsApplicable(Msg,UnitName1,UnitName2) then exit;
   ShowUnitDependencies(true,true);
   Path:=TStringList.Create;
   try
