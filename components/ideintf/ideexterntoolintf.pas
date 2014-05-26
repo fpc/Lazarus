@@ -142,9 +142,9 @@ type
     property Urgency: TMessageLineUrgency read FUrgency write SetUrgency;
     property SubTool: string read FSubTool write SetSubTool; // e.g. SubToolFPC, SubToolMake, SubToolFPCLinker
     property SubType: PtrUInt read FSubType write SetSubType; // depends on SubTool
-    property Msg: string read FMsg write SetMsg;     // improved message without filename, line, column
+    property Msg: string read FMsg write SetMsg;     // improved message without filename, line, column, setting it clears TranslatedMsg
     property MsgID: integer read FMsgID write SetMsgID;  // message id (depends on parser, e.g. fpc writes them with -vq, MsgID<>0 if valid)
-    property TranslatedMsg: string read FTranslatedMsg write SetTranslatedMsg; // translated Msg
+    property TranslatedMsg: string read FTranslatedMsg write SetTranslatedMsg; // translated Msg, set this after Msg
     property Filename: string read FFilename write SetFilename; // full file name, relative if not found or not yet searched
     property Line: integer read FLine write SetLine; // valid if >0
     property Column: integer read FColumn write SetColumn; // valid if >0
@@ -1832,6 +1832,7 @@ procedure TMessageLine.SetMsg(AValue: string);
 begin
   if FMsg=AValue then Exit;
   FMsg:=AValue;
+  FTranslatedMsg:='';
   IncreaseChangeStamp;
 end;
 

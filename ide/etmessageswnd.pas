@@ -94,6 +94,7 @@ var
   ImgIDFatal: Integer;
 begin
   IDEMessagesWindow:=Self;
+  Caption:='Messages';
 
   SourceMarks:=TETMarks.Create(Self);
   ImgIDInfo:=IDEImages.LoadImage(12, 'state12x12_information');
