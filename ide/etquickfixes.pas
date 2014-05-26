@@ -98,7 +98,7 @@ type
 
   TQuickFixClassWithAbstractMethods = class(TMsgQuickFix)
   public
-    function IsApplicable(Msg: TMessageLine): boolean;
+    function IsApplicable(Msg: TMessageLine; out aClassName, aMethodName: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -182,7 +182,7 @@ begin
   // Check: Local variable "$1" not used
   if not TIDEFPCParser.MsgLineIsId(Msg,5025,Identifier,Dummy) then
     exit;
-  if not IsValidIdent(Identifier) then exit;
+  if not Msg.HasSourcePosition or not IsValidIdent(Identifier) then exit;
 
   // check if message position is at end of identifier
   // (FPC gives position of start or end of identifier)
@@ -253,21 +253,13 @@ end;
 
 { TQuickFixClassWithAbstractMethods }
 
-function TQuickFixClassWithAbstractMethods.IsApplicable(Msg: TMessageLine
-  ): boolean;
-var
-  aClassName: string;
-  aMethodName: string;
+function TQuickFixClassWithAbstractMethods.IsApplicable(Msg: TMessageLine; out
+  aClassName, aMethodName: string): boolean;
 begin
   Result:=false;
-  if (Msg.SubTool<>SubToolFPC)
-  or (Msg.MsgID<>4046) // Constructing a class "$1" with abstract method "$2"
-  or (not Msg.HasSourcePosition)
-  then exit;
-  if not IDEFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then begin
-    debugln(['TQuickFixClassWithAbstractMethods.IsApplicable can not extract values: ',Msg.Msg]);
-    exit;
-  end;
+  // Check: Constructing a class "$1" with abstract method "$2"
+  if not IDEFPCParser.MsgLineIsId(Msg,4046,aClassname,aMethodName) then exit;
+  if (not Msg.HasSourcePosition) then exit;
   Result:=true;
 end;
 
@@ -280,8 +272,7 @@ var
 begin
   if Fixes.LineCount<>1 then exit;
   Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg) then exit;
-  if not IDEFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then exit;
+  if not IsApplicable(Msg,aClassName,aMethodName) then exit;
   Fixes.AddMenuItem(Self,Msg,'Show abstract methods of "'+aClassName+'"');
 end;
 
@@ -297,11 +288,7 @@ var
   NewY: integer;
   NewTopLine: integer;
 begin
-  if not IsApplicable(Msg) then exit;
-  if not IDEFPCParser.GetFPCMsgValues(Msg,aClassName,aMethodName) then begin
-    debugln(['TQuickFixClassWithAbstractMethods.QuickFix invalid message ',Msg.Msg]);
-    exit;
-  end;
+  if not IsApplicable(Msg,aClassName,aMethodName) then exit;
 
   if not LazarusIDE.BeginCodeTools then begin
     DebugLn(['TQuickFixClassWithAbstractMethods failed because IDE busy']);
@@ -353,6 +340,7 @@ function TQuickFixUnitNotFound_Remove.IsApplicable(Msg: TMessageLine; out
   MissingUnitName, UsedByUnit: string): boolean;
 begin
   Result:=false;
+  if Msg=nil then exit;
   if (Msg.SubTool<>SubToolFPC)
   or (not Msg.HasSourcePosition)
   or ((Msg.MsgID<>5023) // Unit "$1" not used in $2
@@ -423,14 +411,13 @@ var
   CleanPos: integer;
   Node: TCodeTreeNode;
   Identifier: String;
+  Dummy: string;
 begin
   Result:=false;
-  if (Msg.SubTool<>SubToolFPC)
-  or (Msg.MsgID<>5000) // identifier not found "$1"
-  or (not Msg.HasSourcePosition)
-  then exit;
-  Identifier:=IDEFPCParser.GetFPCMsgValue1(Msg);
-  if not IsValidIdent(Identifier) then exit;
+  // check: identifier not found "$1"
+  if not IDEFPCParser.MsgLineIsId(Msg,5000,Identifier,Dummy) then
+    exit;
+  if not Msg.HasSourcePosition or not IsValidIdent(Identifier) then exit;
 
   // check if message position is at end of identifier
   // (FPC gives position of end of identifier)

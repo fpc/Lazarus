@@ -167,6 +167,8 @@ type
     procedure ImproveMsgUnitNotUsed(aSynchronized: boolean; MsgLine: TMessageLine);
     procedure ImproveMsgUnitNotFound(aSynchronized: boolean;
       MsgLine: TMessageLine);
+    procedure ImproveMsgLinkerUndefinedReference(aSynchronized: boolean;
+      MsgLine: TMessageLine);
     procedure Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
       out TranslatedMsg: String; out MsgType: TMessageLineUrgency);
     function LongenFilename(MsgLine: TMessageLine; aFilename: string): string; // (worker thread)
@@ -1386,6 +1388,9 @@ For example:
   Examples for linking errors:
   linkerror.o(.text$_main+0x9):linkerror.pas: undefined reference to `NonExistingFunction'
 
+  /path/lib/x86_64-linux/blaunit.o: In function `FORMCREATE':
+  /path//blaunit.pas:45: undefined reference to `BLAUNIT_BLABLA'
+
   Closing script ppas.sh
 
   Mac OS X linker example:
@@ -1420,7 +1425,7 @@ begin
     MsgLine:=inherited CreateMsgLine(i);
     MsgLine.MsgID:=0;
     MsgLine.SubTool:=SubToolFPCLinker;
-    MsgLine.Urgency:=mluWarning;
+    MsgLine.Urgency:=mluImportant;
     AddMsgLine(MsgLine);
   end;
 end;
@@ -1778,6 +1783,67 @@ begin
   finally
     Owners.Free;
   end;
+end;
+
+procedure TIDEFPCParser.ImproveMsgLinkerUndefinedReference(
+  aSynchronized: boolean; MsgLine: TMessageLine);
+{ For example:
+  /path/lib/x86_64-linux/blaunit.o: In function `FORMCREATE':
+  /path//blaunit.pas:45: undefined reference to `BLAUNIT_BLABLA'
+}
+
+  function CheckForFileAndLineNumber: boolean;
+  var
+    p: PChar;
+    Msg: String;
+    aFilename: String;
+    LineNumber: Integer;
+    i: SizeInt;
+  begin
+    Result:=false;
+    if aSynchronized then exit;
+    if MsgLine.HasSourcePosition then exit;
+    Msg:=MsgLine.Msg;
+    p:=PChar(Msg);
+    // check for "filename:decimals: message"
+    //  or unit1.o(.text+0x3a):unit1.pas:48: undefined reference to `DoesNotExist'
+
+    // read filename
+    repeat
+      if p^=#0 then exit;
+      inc(p);
+    until (p^=':') and (p[1] in ['0'..'9']);
+    aFilename:=LeftStr(Msg,p-PChar(Msg));
+    // check for something):filename
+    i:=Pos('):',aFilename);
+    if i>0 then
+      Delete(aFilename,1,i+1);
+    aFilename:=TrimFilename(aFilename);
+
+    // read line number
+    inc(p);
+    LineNumber:=0;
+    while p^ in ['0'..'9'] do begin
+      LineNumber:=LineNumber*10+ord(p^)-ord('0');
+      if LineNumber>9999999 then exit;
+      inc(p);
+    end;
+    if p^<>':' then exit;
+    inc(p);
+    while p^ in [' '] do inc(p);
+
+    Result:=true;
+    MsgLine.Msg:=copy(Msg,p-PChar(Msg)+1,length(Msg));
+    MsgLine.Filename:=aFilename;
+    MsgLine.Line:=LineNumber;
+    MsgLine.Column:=1;
+    MsgLine.Urgency:=mluError;
+  end;
+
+begin
+  if MsgLine.SubTool<>SubToolFPCLinker then exit;
+
+  if CheckForFileAndLineNumber then exit;
 end;
 
 procedure TIDEFPCParser.Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
@@ -2168,7 +2234,7 @@ begin
     then begin
       // try to find for short file name the full file name
       aFilename:=MsgLine.Filename;
-      if not FilenameIsAbsolute(aFilename) then begin
+      if (not FilenameIsAbsolute(aFilename)) then begin
         MsgWorkerDir:=MsgLine.Attribute[FPCMsgAttrWorkerDirectory];
         if fIncludePathValidForWorkerDir<>MsgWorkerDir then begin
           // fetch include path
@@ -2218,6 +2284,8 @@ begin
       ImproveMsgUnitNotFound(aSynchronized, MsgLine);
       ImproveMsgUnitNotUsed(aSynchronized, MsgLine);
       ImproveMsgSenderNotUsed(aSynchronized, MsgLine);
+    end else if MsgLine.SubTool=SubToolFPCLinker then begin
+      ImproveMsgLinkerUndefinedReference(aSynchronized, MsgLine);
     end;
   end;
   fLastWorkerImprovedMessage[aSynchronized]:=Tool.WorkerMessages.Count-1;

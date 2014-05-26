@@ -3336,18 +3336,18 @@ end;
 
 procedure TMessagesFrame.ShowIDMenuItemClick(Sender: TObject);
 begin
-  if MsgShowIDMenuItem.Checked then
-    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowMessageID]
+  if mcoShowMessageID in MessagesCtrl.Options then
+    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowMessageID]
   else
-    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowMessageID];
+    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowMessageID];
 end;
 
 procedure TMessagesFrame.TranslateMenuItemClick(Sender: TObject);
 begin
-  if MsgTranslateMenuItem.Checked then
-    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowTranslated]
+  if mcoShowTranslated in MessagesCtrl.Options then
+    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowTranslated]
   else
-    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowTranslated];
+    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowTranslated];
 end;
 
 procedure TMessagesFrame.UnhideMsgTypeClick(Sender: TObject);
@@ -3428,7 +3428,7 @@ end;
 
 procedure TMessagesFrame.HideHintsWithoutPosMenuItemClick(Sender: TObject);
 begin
-  MessagesCtrl.ActiveFilter.HideNotesWithoutPos:=MsgHideHintsWithoutPosMenuItem.Checked;
+  MessagesCtrl.ActiveFilter.HideNotesWithoutPos:=not MessagesCtrl.ActiveFilter.HideNotesWithoutPos;
 end;
 
 procedure TMessagesFrame.HideMsgOfTypeMenuItemClick(Sender: TObject);
