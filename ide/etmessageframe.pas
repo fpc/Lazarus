@@ -109,12 +109,6 @@ const
   MCDefaultHeaderBackgroundSuccess = TColor($A0F0A0); // light green
   MCDefaultHeaderBackgroundFailed = TColor($A0A0F0); // light red
   MCDefaultAutoHeaderBackground = TColor($FFC0A0); // light blue
-  MCODefaultWidth = 4;
-  MCODefaultBackgroundColor = TColor($C0C0C0);
-  MCODefaultBorderColor = TColor($404040);
-  MCODefaultVisibleColor = TColor($909090);
-  MCODefaultHeaderColor = TColor($FF0000);
-  MCODefaultErrorColor = TColor($0000FF);
 
 type
   TMessagesCtrl = class;
@@ -189,40 +183,6 @@ type
   end;
 
 type
-
-  { TMsgCtrlOverview }
-
-  TMsgCtrlOverview = class(TPersistent)
-  private
-    FBackgroundColor: TColor;
-    FBorderColor: TColor;
-    FControl: TMessagesCtrl;
-    FErrorColor: TColor;
-    FHeaderColor: TColor;
-    //FPaintedActiveStart: integer;
-    //FPaintedActiveEnd: integer;
-    FVisibleColor: TColor;
-    FWidth: integer;
-    procedure SetBackgroundColor(AValue: TColor);
-    procedure SetBorderColor(AValue: TColor);
-    procedure SetErrorColor(AValue: TColor);
-    procedure SetHeaderColor(AValue: TColor);
-    procedure SetVisibleColor(AValue: TColor);
-    procedure SetWidth(AValue: integer);
-  public
-    constructor Create(aMsgControl: TMessagesCtrl);
-    destructor Destroy; override;
-    property Control: TMessagesCtrl read FControl;
-  published
-    property Width: integer read FWidth write SetWidth;
-    property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor; // default background
-    property BorderColor: TColor read FBorderColor write SetBorderColor; // vertical line separating messages and overview
-    property VisibleColor: TColor read FVisibleColor write SetVisibleColor; // background for visible messages
-    property HeaderColor: TColor read FHeaderColor write SetHeaderColor; // view headers
-    property ErrorColor: TColor read FErrorColor write SetErrorColor; // errors, fatals, panic
-  end;
-
-
   TOnOpenMessageLine = function(Sender: TObject; Msg: TMessageLine): boolean of object;
 
   TMsgCtrlState = (
@@ -269,7 +229,6 @@ type
     FOnAllViewsStopped: TNotifyEvent;
     FOnOpenMessage: TOnOpenMessageLine;
     FOptions: TMsgCtrlOptions;
-    FOverview: TMsgCtrlOverview;
     FScrollLeft: integer;
     FScrollTop: integer;
     fScrollTopMax: integer;
@@ -418,7 +377,6 @@ type
     property OnAllViewsStopped: TNotifyEvent read FOnAllViewsStopped write FOnAllViewsStopped;
     property OnOpenMessage: TOnOpenMessageLine read FOnOpenMessage write FOnOpenMessage;
     property Options: TMsgCtrlOptions read FOptions write SetOptions default MCDefaultOptions;
-    property Overview: TMsgCtrlOverview read FOverview;
     property SearchText: string read FSearchText write SetSearchText;
     property SelectedLine: integer read GetSelectedLine write SetSelectedLine; // -1=header line
     property SelectedView: TLMsgWndView read FSelectedView write SetSelectedView;
@@ -651,67 +609,6 @@ begin
 end;
 
 {$R *.lfm}
-
-{ TMsgCtrlOverview }
-
-procedure TMsgCtrlOverview.SetBackgroundColor(AValue: TColor);
-begin
-  if FBackgroundColor=AValue then Exit;
-  FBackgroundColor:=AValue;
-  Control.Invalidate;
-end;
-
-procedure TMsgCtrlOverview.SetBorderColor(AValue: TColor);
-begin
-  if FBorderColor=AValue then Exit;
-  FBorderColor:=AValue;
-  Control.Invalidate;
-end;
-
-procedure TMsgCtrlOverview.SetErrorColor(AValue: TColor);
-begin
-  if FErrorColor=AValue then Exit;
-  FErrorColor:=AValue;
-  Control.Invalidate;
-end;
-
-procedure TMsgCtrlOverview.SetHeaderColor(AValue: TColor);
-begin
-  if FHeaderColor=AValue then Exit;
-  FHeaderColor:=AValue;
-  Control.Invalidate;
-end;
-
-procedure TMsgCtrlOverview.SetVisibleColor(AValue: TColor);
-begin
-  if FVisibleColor=AValue then Exit;
-  FVisibleColor:=AValue;
-  Control.Invalidate;
-end;
-
-procedure TMsgCtrlOverview.SetWidth(AValue: integer);
-begin
-  if FWidth=AValue then Exit;
-  FWidth:=AValue;
-  Control.Invalidate;
-end;
-
-constructor TMsgCtrlOverview.Create(aMsgControl: TMessagesCtrl);
-begin
-  FControl:=aMsgControl;
-  FWidth:=MCODefaultWidth;
-  FBackgroundColor:=MCODefaultBackgroundColor;
-  FBorderColor:=MCODefaultBorderColor;
-  FVisibleColor:=MCODefaultVisibleColor;
-  FHeaderColor:=MCODefaultHeaderColor;
-  FErrorColor:=MCODefaultErrorColor;
-end;
-
-destructor TMsgCtrlOverview.Destroy;
-begin
-  Control.fOverview:=nil;
-  inherited Destroy;
-end;
 
 { TLMVFilterHideMsgType }
 
@@ -2874,7 +2771,6 @@ begin
   FImageChangeLink.OnChange := @ImageListChange;
   for u:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
     fUrgencyStyles[u]:=TMsgCtrlUrgencyStyle.Create(Self,u);
-  FOverview:=TMsgCtrlOverview.Create(Self);
   ShowHint:=true;
 end;
 
@@ -2886,8 +2782,6 @@ begin
   IdleConnected:=false;
   Images:=nil;
   ClearViews;
-
-  FreeAndNil(FOverview);
 
   FActiveFilter:=nil;
   for i:=0 to FFilters.Count-1 do
