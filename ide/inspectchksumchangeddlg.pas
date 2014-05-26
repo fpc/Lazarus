@@ -127,6 +127,7 @@ type
 
   TQuickFixRecompilingChecksumChanged = class(TMsgQuickFix)
   public
+    function IsApplicable(Msg: TMessageLine; out Unitname1, Unitname2: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -416,16 +417,23 @@ end;
 {$IFDEF EnableNewExtTools}
 { TQuickFixRecompilingChecksumChanged }
 
+function TQuickFixRecompilingChecksumChanged.IsApplicable(Msg: TMessageLine;
+  out Unitname1, Unitname2: string): boolean;
+begin
+  // check: Recompiling $1, checksum changed for $2
+  Result:=IDEFPCParser.MsgLineIsId(Msg,10028,Unitname1,Unitname2);
+end;
+
 procedure TQuickFixRecompilingChecksumChanged.CreateMenuItems(
   Fixes: TMsgQuickFixes);
 var
   Msg: TMessageLine;
+  Unitname1: string;
+  Unitname2: string;
 begin
   if Fixes.LineCount<>1 then exit;
   Msg:=Fixes.Lines[0];
-  if (Msg.SubTool<>SubToolFPC)
-  or (Msg.MsgID<>10028) // Recompiling $1, checksum changed for $2
-  then exit;
+  if not IsApplicable(Msg,Unitname1,Unitname2) then exit;
   Fixes.AddMenuItem(Self,Msg,'Explore message "checksum changed"');
 end;
 
@@ -437,10 +445,7 @@ var
   Dlg: TInspectChksumChgDialog;
 begin
   debugln(['TQuickFixRecompilingChecksumChanged.Execute  ']);
-  if not REMatches(Msg.Msg,'Recompiling ([a-z_][a-z_0-9]*), checksum changed for ([a-z_][a-z_0-9]*)','i')
-  then exit;
-  Unit1:=REVar(1);
-  Unit2:=REVar(2);
+  if not IsApplicable(Msg,Unit1,Unit2) then exit;
   debugln(['TQuickFixRecompilingChecksumChanged.Execute Unit1=',REVar(1),', checksum changed for Unit2=',REVar(2)]);
   Dlg:=TInspectChksumChgDialog.Create(nil);
   try
