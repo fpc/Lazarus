@@ -195,8 +195,8 @@ type
     mcoShowStats, // show numbers of errors, warnings and hints in view header line
     mcoShowTranslated, // show translation (e.g. messages from German message file)
     mcoShowMessageID,  // show message ID
-    mcoAutoOpenFirstError, // when all views stopped, open first error
-    mcoShowMsgIcons
+    mcoShowMsgIcons,
+    mcoAutoOpenFirstError // when all views stopped, open first error
     );
   TMsgCtrlOptions = set of TMsgCtrlOption;
 const
@@ -1137,7 +1137,7 @@ begin
       inc(Result);
     if WithProgressLine then
       inc(Result);
-  end else if SummaryMsg<>'' then begin
+  end else if Caption<>'' then begin
     if WithHeader then
       inc(Result);
   end else if (Result>0) and WithHeader then
@@ -1892,6 +1892,7 @@ begin
     if y>ClientHeight then break;
     View:=Views[i];
     if not View.HasContent then continue;
+
     View.FPaintStamp:=FPaintStamp;
     View.fPaintTop:=y;
 
