@@ -1,0 +1,54 @@
+object MsgWndOptionsFrame: TMsgWndOptionsFrame
+  Left = 0
+  Height = 331
+  Top = 0
+  Width = 470
+  ClientHeight = 331
+  ClientWidth = 470
+  TabOrder = 0
+  DesignLeft = 386
+  DesignTop = 221
+  object MWColorsGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 0
+    Height = 152
+    Top = 0
+    Width = 225
+    Caption = 'MWColorsGroupBox'
+    ClientHeight = 130
+    ClientWidth = 217
+    TabOrder = 0
+    object MWColorListBox: TColorListBox
+      AnchorSideLeft.Control = MWColorsGroupBox
+      AnchorSideTop.Control = MWColorsGroupBox
+      AnchorSideRight.Control = MWColorsGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = MWColorBox
+      Left = 6
+      Height = 92
+      Top = 6
+      Width = 205
+      Style = [cbCustomColors]
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      TabOrder = 0
+    end
+    object MWColorBox: TColorBox
+      AnchorSideLeft.Control = MWColorsGroupBox
+      AnchorSideRight.Control = MWColorsGroupBox
+      AnchorSideRight.Side = asrBottom
+      AnchorSideBottom.Control = MWColorsGroupBox
+      AnchorSideBottom.Side = asrBottom
+      Left = 6
+      Height = 20
+      Top = 104
+      Width = 205
+      Anchors = [akLeft, akRight, akBottom]
+      BorderSpacing.Around = 6
+      ItemHeight = 0
+      TabOrder = 1
+    end
+  end
+end

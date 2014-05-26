@@ -2603,6 +2603,8 @@ function TMessagesCtrl.GetHeaderText(View: TLMsgWndView): string;
 
 begin
   Result:=View.Caption;
+  if Result='' then
+    Result:='Messages';
   if View.SummaryMsg<>'' then
     Result+=': '+View.SummaryMsg;
   if mcoShowStats in Options then begin

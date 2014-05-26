@@ -63,7 +63,7 @@
         <PackageName Value="SynEdit"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="110">
+    <Units Count="111">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -830,6 +830,14 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="DebugAttachDialog"/>
       </Unit109>
+      <Unit110>
+        <Filename Value="frames/msgwnd_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MsgWndOptionsFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="MsgWnd_Options"/>
+      </Unit110>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
