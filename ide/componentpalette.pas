@@ -579,7 +579,11 @@ begin
       ' Range=',ScrollBox.HorzScrollBar.Range,
       ' IsScrollBarVisible=',ScrollBox.HorzScrollBar.IsScrollBarVisible
       ]);}
+    {$IFDEF LCLCarbon}
+    MaxBtnPerRow:=ButtonTree.Count;
+    {$ELSE}
     MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
+    {$ENDIF}
     // If we need to wrap, make sure we have space for the scrollbar
     if MaxBtnPerRow < ButtonTree.Count then
       MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithBar - ButtonX) div ComponentPaletteBtnWidth);
@@ -706,6 +710,11 @@ var
         BorderStyle := bsNone;
         BorderWidth := 0;
         HorzScrollBar.Visible := false;
+        {$IFDEF LCLCarbon}
+        // carbon has not implemented turning scrollbars on and off
+        VertScrollBar.Visible := false;
+        AutoScroll:=false;
+        {$ENDIF}
         VertScrollBar.Increment := ComponentPaletteBtnHeight;
         Parent := aCompPage.PageComponent;
       end;
