@@ -40,6 +40,7 @@ type
 
   TMsgWndOptionsFrame = class(TAbstractIDEOptionsEditor)
     MWDblClickJumpsCheckBox: TCheckBox;
+    MWFocusCheckBox: TCheckBox;
     MWHideIconsCheckBox: TCheckBox;
     MWOptsLeftBevel: TBevel;
     MWColorBox: TColorBox;
@@ -121,6 +122,7 @@ begin
   MWSetDefaultColorsButton.Caption:=lisLazarusDefault;
   MWHideIconsCheckBox.Caption := dlgHideMessagesIcons;
   MWDblClickJumpsCheckBox.Caption:=lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick;
+  MWFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
 end;
 
 function TMsgWndOptionsFrame.GetTitle: String;
@@ -147,6 +149,7 @@ begin
     MWColorListBox.Colors[ord(c)] := o.MsgViewColors[c];
   MWHideIconsCheckBox.Checked := o.HideMessagesIcons;
   MWDblClickJumpsCheckBox.Checked:=o.MsgViewDblClickJumps;
+  MWFocusCheckBox.Checked:=o.MsgViewFocus;
 
   fReady:=true;
 end;
@@ -161,6 +164,7 @@ begin
     o.MsgViewColors[c] := MWColorListBox.Colors[ord(c)];
   o.HideMessagesIcons := MWHideIconsCheckBox.Checked;
   o.MsgViewDblClickJumps := MWDblClickJumpsCheckBox.Checked;
+  o.MsgViewFocus := MWFocusCheckBox.Checked;
 end;
 
 class function TMsgWndOptionsFrame.

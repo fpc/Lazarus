@@ -14,12 +14,12 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 152
+    Height = 172
     Top = 0
     Width = 495
     Anchors = [akTop, akLeft, akRight]
     Caption = 'MWColorsGroupBox'
-    ClientHeight = 135
+    ClientHeight = 155
     ClientWidth = 491
     TabOrder = 0
     object MWColorListBox: TColorListBox
@@ -28,7 +28,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
       AnchorSideRight.Control = MWSetDefaultColorsButton
       AnchorSideBottom.Control = MWColorBox
       Left = 6
-      Height = 88
+      Height = 108
       Top = 6
       Width = 307
       Style = [cbCustomColors]
@@ -48,7 +48,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
       AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 29
-      Top = 100
+      Top = 120
       Width = 479
       Anchors = [akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
@@ -92,11 +92,12 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 70
     Height = 15
-    Top = 158
+    Top = 178
     Width = 93
     BorderSpacing.Left = 10
     BorderSpacing.Top = 6
     BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 6
     Caption = 'MWOptionsLabel'
     ParentColor = False
   end
@@ -106,7 +107,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Side = asrCenter
     Left = 0
     Height = 3
-    Top = 164
+    Top = 184
     Width = 60
   end
   object MWOptsRightBevel: TBevel
@@ -118,7 +119,7 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 173
     Height = 3
-    Top = 164
+    Top = 184
     Width = 322
     Anchors = [akTop, akLeft, akRight]
   end
@@ -128,9 +129,9 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 179
+    Top = 199
     Width = 154
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
     Caption = 'MWHideIconsCheckBox'
     TabOrder = 1
   end
@@ -140,10 +141,22 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 209
+    Top = 223
     Width = 180
-    BorderSpacing.Around = 6
+    BorderSpacing.Left = 6
     Caption = 'MWDblClickJumpsCheckBox'
     TabOrder = 2
+  end
+  object MWFocusCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MWDblClickJumpsCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 24
+    Top = 247
+    Width = 132
+    BorderSpacing.Left = 6
+    Caption = 'MWFocusCheckBox'
+    TabOrder = 3
   end
 end

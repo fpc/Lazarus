@@ -286,11 +286,11 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
   end
   object CheckDiskChangesWithLoadingCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = MsgViewFocusCheckBox
+    AnchorSideTop.Control = lblMisc
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 455
+    Top = 431
     Width = 251
     BorderSpacing.Left = 6
     Caption = 'CheckDiskChangesWithLoadingCheckBox'
@@ -321,18 +321,6 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     Caption = 'ShowHintsForMainSpeedButtonsCheckBox'
     TabOrder = 2
   end
-  object MsgViewFocusCheckBox: TCheckBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = lblMisc
-    AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 24
-    Top = 431
-    Width = 160
-    BorderSpacing.Left = 6
-    Caption = 'MsgViewFocusCheckBox'
-    TabOrder = 3
-  end
   object LanguageComboBox: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = lblLanguage
@@ -349,7 +337,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     BorderSpacing.Right = 6
     ItemHeight = 0
     Style = csDropDownList
-    TabOrder = 4
+    TabOrder = 3
   end
   object AutoSaveIntervalInSecsComboBox: TComboBox
     AnchorSideLeft.Control = Owner
@@ -371,7 +359,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
       '300'
       '120'
     )
-    TabOrder = 5
+    TabOrder = 4
     Visible = False
   end
   object AutoSaveProjectCheckBox: TCheckBox
@@ -385,7 +373,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     BorderSpacing.Left = 6
     Caption = 'AutoSaveProjectCheckBox'
     Enabled = False
-    TabOrder = 6
+    TabOrder = 5
     Visible = False
   end
   object AutoSaveEditorFilesCheckBox: TCheckBox
@@ -399,7 +387,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     BorderSpacing.Left = 6
     Caption = 'AutoSaveEditorFilesCheckBox'
     Enabled = False
-    TabOrder = 7
+    TabOrder = 6
     Visible = False
   end
   object LoadDesktopSettingsFromFileButton: TButton
@@ -420,7 +408,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     BorderSpacing.Right = 6
     Caption = 'LoadDesktopSettingsFromFileButton'
     OnClick = LoadDesktopSettingsFromFileButtonClick
-    TabOrder = 8
+    TabOrder = 7
   end
   object SaveDesktopSettingsToFileButton: TButton
     AnchorSideLeft.Control = Owner
@@ -438,7 +426,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     BorderSpacing.Right = 3
     Caption = 'SaveDesktopSettingsToFileButton'
     OnClick = SaveDesktopSettingsToFileButtonClick
-    TabOrder = 9
+    TabOrder = 8
   end
   object PanelGlyphsButtonsOptions: TPanel
     AnchorSideLeft.Control = lblButtons
@@ -461,7 +449,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     ChildSizing.ControlsPerLine = 3
     ClientHeight = 24
     ClientWidth = 519
-    TabOrder = 10
+    TabOrder = 9
     object rbBtnGlyphShowSystem: TRadioButton
       AnchorSideRight.Side = asrBottom
       Left = 0
@@ -510,7 +498,7 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     ChildSizing.ControlsPerLine = 3
     ClientHeight = 24
     ClientWidth = 519
-    TabOrder = 11
+    TabOrder = 10
     object rbMenuGlyphShowSystem: TRadioButton
       AnchorSideRight.Control = PanelGlyphsMenusOptions
       AnchorSideRight.Side = asrBottom
@@ -564,6 +552,6 @@ object DesktopOptionsFrame: TDesktopOptionsFrame
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'AskSavingOnlySessionCheckBox'
-    TabOrder = 12
+    TabOrder = 11
   end
 end
