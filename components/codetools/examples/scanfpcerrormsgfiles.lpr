@@ -16,7 +16,9 @@ procedure WriteUsage;
 begin
   writeln('Usage:');
   writeln;
-  writeln('  ',ParamStr(0),' <fpcsrcdirectory>/compiler/msg');
+  writeln('  ',ParamStr(0),' <fpcsrcdirectory>/compiler/msg [-v]');
+  writeln('');
+  writeln('  -v  - verbose output, showing exactly what messages are missing and/or mismatched');
 end;
 
 type
@@ -43,7 +45,7 @@ begin
   until false;
 end;
 
-procedure ScanDir(Dir: string);
+procedure ScanDir(Dir: string; ShowVerbose: Boolean = false );
 var
   Info: TSearchRec;
   Filename: TFilename;
@@ -59,6 +61,7 @@ var
   MismatchCount: Integer;
   EnglishParams, TranslatedParams: THaveParams;
   k: integer;
+  msd: String;
 begin
   FPCMsgFileList:=TFilenameToPointerTree.Create(false);
   FPCMsgFileList.FreeValues:=true;
@@ -99,12 +102,14 @@ begin
       GoodCount:=0;
       MissingCount:=0;
       MismatchCount:=0; // id is there, but $ parameters don't fit
+      msd:='';
       for i:=0 to EnglishFile.Count-1 do begin
         EnglishMsg:=EnglishFile[i];
         TranslatedMsg:=aFile.FindWithID(EnglishMsg.ID);
-        if TranslatedMsg=nil then
-          inc(MissingCount)
-        else begin
+        if TranslatedMsg=nil then begin
+          inc(MissingCount);
+          if ShowVerbose then msd:=msd+'    missing: '+IntToStr(EnglishMsg.ID)+' '+EnglishMsg.Pattern+LineEnding;
+        end else begin
           GetHaveParams(EnglishMsg.Pattern,EnglishParams);
           GetHaveParams(TranslatedMsg.Pattern,TranslatedParams);
           k:=9;
@@ -115,10 +120,16 @@ begin
           else begin
             //writeln('Mismatch in ',Filename,' English="',EnglishMsg.Pattern,'" Translated="',TranslatedMsg.Pattern,'"');
             inc(MismatchCount);
+            if ShowVerbose then begin
+              msd:=msd+'   mismatch: '+LineEnding;
+              msd:=msd+'        eng: '+EnglishMsg.Pattern+LineEnding;
+              msd:=msd+'        trn: '+TranslatedMsg.Pattern+LineEnding;
+            end;
           end;
         end;
       end;
       writeln(Filename,' Count=',aFile.Count,' Good=',GoodCount,' Missing=',MissingCount,' Mismatch=',MismatchCount);
+      if ShowVerbose then write(msd);
     end;
 
   finally
@@ -128,8 +139,9 @@ end;
 
 var
   MsgDir: String;
+  ShowVerbose: Boolean = false;
 begin
-  if ParamCount<>1 then begin
+  if ParamCount<1 then begin
     WriteUsage;
     Halt(1);
   end;
@@ -138,6 +150,7 @@ begin
     writeln('Error: directory not found: ',MsgDir);
     Halt(2);
   end;
-  ScanDir(MsgDir);
+  ShowVerbose:=(ParamCount>1) and (LowerCase(ParamStr(2))='-v');
+  ScanDir(MsgDir, ShowVerbose);
 end.
 
