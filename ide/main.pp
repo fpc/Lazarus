@@ -7286,7 +7286,10 @@ end;
 function TMainIDE.DoAbortBuild: TModalResult;
 begin
   Result:=mrOk;
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
   if ToolStatus<>itBuilder then exit;
+  {$ENDIF}
   AbortBuild;
 end;
 

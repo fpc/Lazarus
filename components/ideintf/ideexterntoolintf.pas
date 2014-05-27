@@ -34,6 +34,8 @@ const
   SubToolDefault = 'External Tool';
   SubToolDefaultPriority = 0;
 
+  AbortedExitCode = 12321;
+
 type
   TETShareStringEvent = procedure(var s: string) of object;
 
