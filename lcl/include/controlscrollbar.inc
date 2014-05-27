@@ -331,7 +331,7 @@ begin
     NewRange := 0;
   if FRange = NewRange then
     Exit;
-  FRange := NewValue;
+  FRange := NewRange;
   {$IFDEF VerboseScrollingWinControl}
   //if DebugCondition then
     DebugLn(['TControlScrollBar.SetRange ',dbgs(Kind),' ',Self,' FRange=',FRange]);
