@@ -37,8 +37,9 @@ unit ComponentPalette;
 interface
 
 uses
-  Classes, SysUtils, Controls, Forms, Graphics, ComCtrls, Buttons, FileUtil, Menus,
-  LResources, AVL_Tree, PropEdits, FormEditingIntf, LazIDEIntf, IDEProcs, LCLProc, ExtCtrls,
+  Classes, SysUtils, Controls, Forms, Graphics, ComCtrls, Buttons, FileUtil,
+  LazFileCache, Menus, LResources, AVL_Tree, PropEdits, FormEditingIntf,
+  LazIDEIntf, IDEProcs, LCLProc, ExtCtrls, LCLIntf,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
@@ -59,7 +60,7 @@ type
     OpenPackageMenuItem: TMenuItem;
     OpenUnitMenuItem: TMenuItem;
     procedure ActivePageChanged(Sender: TObject);
-    procedure OnPageResize(Sender: TObject);
+    procedure OnScrollBoxResize(Sender: TObject);
     procedure OpenPackageClicked(Sender: TObject);
     procedure OpenUnitClicked(Sender: TObject);
     procedure ComponentListClicked(Sender: TObject);
@@ -171,16 +172,17 @@ end;
 procedure TComponentPalette.ActivePageChanged(Sender: TObject);
 begin
   if FPageControl=nil then exit;
+  ReAlignButtons(FPageControl.ActivePage);
   if (FSelected<>nil)
   and (FSelected.Page.PageComponent=FPageControl.ActivePage)
   then exit;
   Selected:=nil;
 end;
 
-procedure TComponentPalette.OnPageResize(Sender: TObject);
+procedure TComponentPalette.OnScrollBoxResize(Sender: TObject);
 begin
-  if Sender is TCustomPage then
-    ReAlignButtons(TCustomPage(Sender));
+  if TControl(Sender).Parent is TCustomPage then
+    ReAlignButtons(TCustomPage(TControl(Sender).Parent));
 end;
 
 procedure TComponentPalette.OpenPackageClicked(Sender: TObject);
@@ -537,13 +539,14 @@ var
   j: integer;
   buttonx: integer;
   CurButton: TSpeedButton;
-  Rows: Integer;
   MaxBtnPerRow: Integer;
   ButtonTree: TAVLTree;
   Node: TAVLTreeNode;
   ScrollBox: TScrollBox;
+  //WSClientRect: TRect;
 begin
   //DebugLn(['TComponentPalette.ReAlignButtons ',Page.Caption,' ',Page.ClientWidth]);
+  if not Page.Visible then exit;
   if FPageControl<>nil then
     PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
   ButtonTree:=nil;
@@ -562,20 +565,34 @@ begin
 
     ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
-    MaxBtnPerRow:=((Page.ClientWidth - ButtonX - OVERVIEW_PANEL_WIDTH) div ComponentPaletteBtnWidth);
+    {GetClientRect(ScrollBox.Handle,WSClientRect);
+    debugln(['TComponentPalette.ReAlignButtons ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),
+      ' ClientRect=',dbgs(ScrollBox.ClientRect),' WSClientRect=',dbgs(WSClientRect),
+      ' VertScrollBar.Size=',ScrollBox.VertScrollBar.Size,
+      ' ClientSizeWithoutBar=',ScrollBox.VertScrollBar.ClientSizeWithoutBar,
+      ' IsScrollBarVisible=',ScrollBox.VertScrollBar.IsScrollBarVisible,
+      ' HorzScrollBar.Size=',ScrollBox.HorzScrollBar.Size,
+      ' Page=',ScrollBox.HorzScrollBar.Page,
+      ' Range=',ScrollBox.HorzScrollBar.Range,
+      ' IsScrollBarVisible=',ScrollBox.HorzScrollBar.IsScrollBarVisible
+      ]);}
+    {$IFDEF LCLCarbon}
+    MaxBtnPerRow:=ButtonTree.Count;
+    {$ELSE}
+    MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
+    {$ENDIF}
+    // If we need to wrap, make sure we have space for the scrollbar
+    if MaxBtnPerRow < ButtonTree.Count then
+      MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithBar - ButtonX) div ComponentPaletteBtnWidth);
+    //debugln(['TComponentPalette.ReAlignButtons MaxBtnPerRow=',MaxBtnPerRow,' ButtonTree.Count=',ButtonTree.Count,' ',ButtonX + MaxBtnPerRow * ComponentPaletteBtnWidth]);
     if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
-    Rows:=((ButtonTree.Count-1) div MaxBtnPerRow)+1;
-    //DebugLn(['TComponentPalette.ReAlignButtons ',DbgSName(Page),' PageIndex=',Page.PageIndex,' ClientRect=',dbgs(Page.ClientRect)]);
-    // automatically set optimal row count and re-position controls to use height optimally
-
-    if Rows <= 0 then Rows:= 1; // avoid division by zero
 
     j:=0;
     Node:=ButtonTree.FindLowest;
     while Node<>nil do begin
       CurButton:=TSpeedbutton(Node.Data);
-      CurButton.SetBounds(ButtonX + (j div Rows) * ComponentPaletteBtnWidth,
-                          (j mod Rows) * ComponentPaletteBtnHeight,
+      CurButton.SetBounds(ButtonX + (j mod MaxBtnPerRow) * ComponentPaletteBtnWidth,
+                          (j div MaxBtnPerRow) * ComponentPaletteBtnHeight,
                           CurButton.Width, CurButton.Height);
       //DebugLn(['TComponentPalette.ReAlignButtons ',CurButton.Name,' ',dbgs(CurButton.BoundsRect)]);
       inc(j);
@@ -690,6 +707,11 @@ var
         BorderStyle := bsNone;
         BorderWidth := 0;
         HorzScrollBar.Visible := false;
+        {$IFDEF LCLCarbon}
+        // carbon has not implemented turning scrollbars on and off
+        VertScrollBar.Visible := false;
+        AutoScroll:=false;
+        {$ENDIF}
         VertScrollBar.Increment := ComponentPaletteBtnHeight;
         Parent := aCompPage.PageComponent;
       end;
@@ -797,8 +819,8 @@ var
     CompPage := Pages[aPageIndex];
     if not CompPage.Visible then Exit;
     CurNoteBookPage := CompPage.PageComponent;
-    CurNoteBookPage.OnResize := @OnPageResize;
     CurScrollBox := CurNoteBookPage.Components[0] as TScrollBox;
+    CurScrollBox.OnResize := @OnScrollBoxResize;
     //DebugLn(['TComponentPalette.UpdateNoteBookButtons PAGE=',CompPage.PageName,' PageIndex=',CurNoteBookPage.PageIndex]);
     // create selection button
     CreateSelectionButton(CompPage, IntToStr(aPageIndex), CurScrollBox);
