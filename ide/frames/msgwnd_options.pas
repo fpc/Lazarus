@@ -17,6 +17,11 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  Author: Mattias Gaertner
+
+  Abstract:
+    IDE option frame for Messages window.
 }
 unit MsgWnd_Options;
 
@@ -25,19 +30,37 @@ unit MsgWnd_Options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, IDEOptionsIntf, Forms, Controls, Graphics,
-  Dialogs, StdCtrls, ColorBox;
+  Classes, SysUtils, FileUtil, LazLoggerBase, IDEOptionsIntf, Forms, Controls,
+  Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls, LazarusIDEStrConsts,
+  EnvironmentOpts;
 
 type
 
   { TMsgWndOptionsFrame }
 
   TMsgWndOptionsFrame = class(TAbstractIDEOptionsEditor)
+    MWOptsLeftBevel: TBevel;
     MWColorBox: TColorBox;
     MWColorListBox: TColorListBox;
     MWColorsGroupBox: TGroupBox;
+    MWOptionsLabel: TLabel;
+    MWOptsRightBevel: TBevel;
+    MWSetAllColorsToLabel: TLabel;
+    MWSetDefaultColorsButton: TButton;
+    procedure MWColorBoxChange(Sender: TObject);
+    procedure MWColorListBoxGetColors(Sender: TCustomColorListBox;
+      Items: TStrings);
+    procedure MWColorListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure MWSetDefaultColorsButtonClick(Sender: TObject);
   private
+    fReady: boolean;
   public
+    constructor Create(AOwner: TComponent); override;
+    function GetTitle: String; override;
+    procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
+    procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
+    procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
+    class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
   end;
 
 var
@@ -47,5 +70,100 @@ implementation
 
 {$R *.lfm}
 
+{ TMsgWndOptionsFrame }
+
+procedure TMsgWndOptionsFrame.MWColorListBoxGetColors(
+  Sender: TCustomColorListBox; Items: TStrings);
+begin
+  Items.Add(dlgBackColor);
+  Items.Add('Tool Header: Running');
+  Items.Add('Tool Header: Success');
+  Items.Add('Tool Header: Failed');
+  Items.Add('Tool Header: Scrolled up');
+end;
+
+procedure TMsgWndOptionsFrame.MWColorBoxChange(Sender: TObject);
+var
+  i: Integer;
+begin
+  i:=MWColorListBox.ItemIndex;
+  if not fReady or (i < 0) then
+    exit;
+  MWColorListBox.Colors[i]:=MWColorBox.Selected;
+end;
+
+procedure TMsgWndOptionsFrame.MWColorListBoxSelectionChange(Sender: TObject;
+  User: boolean);
+begin
+  if not (fReady and User) then
+    Exit;
+  MWColorBox.Selected := MWColorListBox.Selected;
+end;
+
+procedure TMsgWndOptionsFrame.MWSetDefaultColorsButtonClick(Sender: TObject);
+var
+  c: TMsgWndColor;
+begin
+  for c in TMsgWndColor do
+    MWColorListBox.Colors[ord(c)]:=MsgWndDefaultColors[c];
+  MWColorBox.Selected := MWColorListBox.Selected;
+end;
+
+constructor TMsgWndOptionsFrame.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  MWOptionsLabel.Caption:=dlgOIOptions;
+  MWColorsGroupBox.Caption:=dlgColors;
+  MWSetAllColorsToLabel.Caption:=lisSetAllColors;
+  MWSetDefaultColorsButton.Caption:=lisLazarusDefault;
+end;
+
+function TMsgWndOptionsFrame.GetTitle: String;
+begin
+  Result:=lisMenuViewMessages;
+end;
+
+procedure TMsgWndOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+begin
+  fReady:=false;
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
+  MWColorsGroupBox.Visible:=false;
+  {$ENDIF}
+end;
+
+procedure TMsgWndOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  o: TEnvironmentOptions;
+  c: TMsgWndColor;
+begin
+  o:=(AOptions as TEnvironmentOptions);
+
+  for c in TMsgWndColor do
+    MWColorListBox.Colors[ord(c)]:=o.MsgViewColors[c];
+
+  fReady:=true;
+end;
+
+procedure TMsgWndOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  o: TEnvironmentOptions;
+  c: TMsgWndColor;
+begin
+  o:=(AOptions as TEnvironmentOptions);
+
+  for c in TMsgWndColor do
+    o.MsgViewColors[c]:=MWColorListBox.Colors[ord(c)];
+end;
+
+class function TMsgWndOptionsFrame.
+  SupportedOptionsClass: TAbstractIDEOptionsClass;
+begin
+  Result := TEnvironmentOptions;
+end;
+
+initialization
+  //RegisterIDEOptionsEditor(GroupEnvironment, TMsgWndOptionsFrame, EnvOptionsMessages);
 end.
 

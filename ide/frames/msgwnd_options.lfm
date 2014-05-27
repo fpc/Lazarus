@@ -1,39 +1,44 @@
 object MsgWndOptionsFrame: TMsgWndOptionsFrame
   Left = 0
-  Height = 331
+  Height = 355
   Top = 0
-  Width = 470
-  ClientHeight = 331
-  ClientWidth = 470
+  Width = 495
+  ClientHeight = 355
+  ClientWidth = 495
   TabOrder = 0
   DesignLeft = 386
   DesignTop = 221
   object MWColorsGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 152
     Top = 0
-    Width = 225
+    Width = 495
+    Anchors = [akTop, akLeft, akRight]
     Caption = 'MWColorsGroupBox'
-    ClientHeight = 130
-    ClientWidth = 217
+    ClientHeight = 135
+    ClientWidth = 491
     TabOrder = 0
     object MWColorListBox: TColorListBox
       AnchorSideLeft.Control = MWColorsGroupBox
       AnchorSideTop.Control = MWColorsGroupBox
-      AnchorSideRight.Control = MWColorsGroupBox
-      AnchorSideRight.Side = asrBottom
+      AnchorSideRight.Control = MWSetDefaultColorsButton
       AnchorSideBottom.Control = MWColorBox
       Left = 6
-      Height = 92
+      Height = 88
       Top = 6
-      Width = 205
+      Width = 307
       Style = [cbCustomColors]
+      OnGetColors = MWColorListBoxGetColors
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
+      OnSelectionChange = MWColorListBoxSelectionChange
       TabOrder = 0
+      TopIndex = -1
     end
     object MWColorBox: TColorBox
       AnchorSideLeft.Control = MWColorsGroupBox
@@ -42,13 +47,79 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
       AnchorSideBottom.Control = MWColorsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
-      Height = 20
-      Top = 104
-      Width = 205
+      Height = 29
+      Top = 100
+      Width = 479
       Anchors = [akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
+      OnChange = MWColorBoxChange
       TabOrder = 1
     end
+    object MWSetDefaultColorsButton: TButton
+      AnchorSideTop.Control = MWSetAllColorsToLabel
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = MWColorsGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 319
+      Height = 27
+      Top = 27
+      Width = 166
+      Anchors = [akTop, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      Caption = 'MWSetDefaultColorsButton'
+      OnClick = MWSetDefaultColorsButtonClick
+      TabOrder = 2
+    end
+    object MWSetAllColorsToLabel: TLabel
+      AnchorSideLeft.Control = MWColorListBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = MWColorListBox
+      Left = 319
+      Height = 15
+      Top = 6
+      Width = 129
+      Caption = 'MWSetAllColorsToLabel'
+      ParentColor = False
+    end
+  end
+  object MWOptionsLabel: TLabel
+    AnchorSideLeft.Control = MWOptsLeftBevel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MWColorsGroupBox
+    AnchorSideTop.Side = asrBottom
+    Left = 70
+    Height = 15
+    Top = 158
+    Width = 93
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 10
+    Caption = 'MWOptionsLabel'
+    ParentColor = False
+  end
+  object MWOptsLeftBevel: TBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MWOptionsLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 0
+    Height = 3
+    Top = 164
+    Width = 60
+  end
+  object MWOptsRightBevel: TBevel
+    AnchorSideLeft.Control = MWOptionsLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MWOptionsLabel
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 173
+    Height = 3
+    Top = 164
+    Width = 322
+    Anchors = [akTop, akLeft, akRight]
   end
 end

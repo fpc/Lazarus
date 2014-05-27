@@ -155,10 +155,11 @@ type
     FOnGetColors: TLBGetColorsEvent;
     FSelected: TColor;
     FStyle: TColorBoxStyle;
-    function GetColor(Index : Integer): TColor;
+    function GetColors(Index : Integer): TColor;
     function GetColorName(Index: Integer): string;
     function GetSelected: TColor;
     procedure SetColorRectWidth(AValue: Integer);
+    procedure SetColors(Index: Integer; AValue: TColor);
     procedure SetDefaultColorColor(const AValue: TColor);
     procedure SetNoneColorColor(const AValue: TColor);
     procedure SetSelected(Value: TColor);
@@ -177,7 +178,7 @@ type
     property ColorRectWidth: Integer read FColorRectWidth write SetColorRectWidth default 14;
     property Style: TColorBoxStyle read FStyle write SetStyle
       default [cbStandardColors, cbExtendedColors, cbSystemColors];
-    property Colors[Index: Integer]: TColor read GetColor;
+    property Colors[Index: Integer]: TColor read GetColors write SetColors;
     property ColorNames[Index: Integer]: string read GetColorName;
     property Selected: TColor read GetSelected write SetSelected default clBlack;
     property DefaultColorColor: TColor read FDefaultColorColor write SetDefaultColorColor default clBlack;
@@ -710,6 +711,13 @@ begin
   Invalidate;
 end;
 
+procedure TCustomColorListBox.SetColors(Index: Integer; AValue: TColor);
+begin
+  if Colors[Index]=AValue then exit;
+  Items.Objects[Index]:=TObject(PtrInt(AValue));
+  Invalidate;
+end;
+
 procedure TCustomColorListBox.SetDefaultColorColor(const AValue: TColor);
 begin
   if FDefaultColorColor <> AValue then
@@ -729,14 +737,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TCustomColorListBox.GetColor
+  Method:   TCustomColorListBox.GetColors
   Params:   Index
   Returns:  Color at position Index
 
   Used as read procedure from Colors property.
 
  ------------------------------------------------------------------------------}
-function TCustomColorListBox.GetColor(Index : Integer): TColor;
+function TCustomColorListBox.GetColors(Index : Integer): TColor;
 begin
   Result := PtrInt(Items.Objects[Index]);
 end;

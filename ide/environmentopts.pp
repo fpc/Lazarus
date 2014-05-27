@@ -171,6 +171,38 @@ const
       'Never'
     );
 
+  { Messages window }
+type
+  TMsgWndColor = (
+    mwBackground,
+    mwRunning,
+    mwSuccess,
+    mwFailed,
+    mwAutoHeader
+    );
+const
+  MsgWndDefBackgroundColor = clWindow;
+  MsgWndDefHeaderBackgroundRunning = TColor($00F0F0); // yellow
+  MsgWndDefHeaderBackgroundSuccess = TColor($A0F0A0); // light green
+  MsgWndDefHeaderBackgroundFailed = TColor($A0A0F0); // light red
+  MsgWndDefAutoHeaderBackground = TColor($FFC0A0); // light blue
+
+  MsgWndDefaultColors: array[TMsgWndColor] of TColor = (
+    MsgWndDefBackgroundColor,         // mwBackground
+    MsgWndDefHeaderBackgroundRunning, // mwRunning
+    MsgWndDefHeaderBackgroundSuccess, // mwSuccess
+    MsgWndDefHeaderBackgroundFailed,  // mwFailed
+    MsgWndDefAutoHeaderBackground     // mwAutoHeader
+    );
+  MsgWndColorNames: array[TMsgWndColor] of string = (
+    'Background',
+    'Running',
+    'Success',
+    'Failed',
+    'AutoHeader'
+    );
+
+  { External Tools - the user menu items in the Tools menu }
 {$IFDEF EnableNewExtTools}
 type
   TBaseExternalUserTools = class
@@ -248,7 +280,6 @@ type
     FIDEDialogLayoutList: TIDEDialogLayoutList;
     FSingleTaskBarButton: boolean;
     FHideIDEOnRun: boolean;
-    FHideMessagesIcons: boolean;
     FComponentPaletteVisible: boolean;
     // CompletionWindow
     FCompletionWindowWidth: Integer;
@@ -301,6 +332,8 @@ type
     // messages
     fMsgViewDblClickJumps: boolean;
     fMsgViewFocus: boolean;
+    FHideMessagesIcons: boolean;
+    fMsgViewColors: array[TMsgWndColor] of TColor;
 
     // compiler + debugger + lazarus files
     FParseValues: array[TEnvOptParseType] of TParseString;
@@ -387,6 +420,7 @@ type
     function GetFPDocPaths: string;
     function GetLazarusDirectory: string;
     function GetMakeFilename: string;
+    function GetMsgViewColors(c: TMsgWndColor): TColor;
     function GetTestBuildDirectory: string;
     procedure SetCompilerFilename(const AValue: string);
     procedure SetCompilerMessagesFilename(AValue: string);
@@ -398,6 +432,7 @@ type
     procedure SetDebuggerFilename(AValue: string);
     procedure SetFPCSourceDirectory(const AValue: string);
     procedure SetLazarusDirectory(const AValue: string);
+    procedure SetMsgViewColors(c: TMsgWndColor; AValue: TColor);
     procedure SetParseValue(o: TEnvOptParseType; const NewValue: string);
 
     procedure InitLayoutList;
@@ -463,7 +498,6 @@ type
     property SingleTaskBarButton: boolean read FSingleTaskBarButton
                                                write FSingleTaskBarButton;
     property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
-    property HideMessagesIcons: boolean read fHideMessagesIcons write fHideMessagesIcons;
     property IDETitleStartsWithProject: boolean read FIDETitleStartsWithProject
                                                write FIDETitleStartsWithProject;
     property IDETitleIncludesBuildMode: boolean read FIDETitleIncludesBuildMode
@@ -676,8 +710,11 @@ type
     
     // messages view
     property MsgViewDblClickJumps: boolean read fMsgViewDblClickJumps
-                                           write fMsgViewDblClickJumps; // true=dbl click jump to error, false=single click jumps
-    property MsgViewFocus: boolean read fMsgViewFocus write fMsgViewFocus; // when showing the message window, focus it
+      write fMsgViewDblClickJumps; // true=dbl click jump to error, false=single click jumps
+    property MsgViewFocus: boolean read fMsgViewFocus
+      write fMsgViewFocus; // when showing the message window, focus it
+    property HideMessagesIcons: boolean read fHideMessagesIcons write fHideMessagesIcons;
+    property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -829,6 +866,7 @@ end;
 constructor TEnvironmentOptions.Create;
 var
   o: TEnvOptParseType;
+  c: TMsgWndColor;
 begin
   inherited Create;
   for o:=low(FParseValues) to high(FParseValues) do
@@ -853,7 +891,6 @@ begin
     IDEWindowIntf.IDEDialogLayoutList:=FIDEDialogLayoutList;
   FSingleTaskBarButton:=false;
   FHideIDEOnRun:=false;
-  FHideMessagesIcons:=false;
   FIDETitleStartsWithProject:=false;
   FIDETitleIncludesBuildMode:=false;
   FIDEProjectDirectoryInIdeTitle:=false;
@@ -910,6 +947,9 @@ begin
   // messages view
   fMsgViewDblClickJumps:=true;
   fMsgViewFocus:=DefaultMsgViewFocus;
+  FHideMessagesIcons:=false;
+  for c:=low(TMsgWndColor) to high(TMsgWndColor) do
+    fMsgViewColors[c]:=MsgWndDefaultColors[c];
 
   // glyphs
   FShowButtonGlyphs := sbgSystem;
@@ -1116,6 +1156,7 @@ var
   Cfg: TXMLOptionsStorage;
   EventType: TDBGEventType;
   NodeName: String;
+  mwc: TMsgWndColor;
 begin
   Cfg:=nil;
   try
@@ -1157,14 +1198,13 @@ begin
       FAutoCloseCompileDialog:=XMLConfig.GetValue(
          Path+'AutoCloseCompileDialog/Value',false);
 
+      // Windows layout
       IDEWindowCreators.SimpleLayoutStorage.LoadFromConfig(Cfg,Path+'Desktop/');
       FIDEDialogLayoutList.LoadFromConfig(FConfigStore, Path+'Desktop/Dialogs/');
       FSingleTaskBarButton := XMLConfig.GetValue(
         Path+'Desktop/SingleTaskBarButton/Value', False);
       FHideIDEOnRun:=XMLConfig.GetValue(
         Path+'Desktop/HideIDEOnRun/Value',false);
-      FHideMessagesIcons:=XMLConfig.GetValue(
-        Path+'Desktop/HideMessagesIcons/Value',false);
       FIDETitleStartsWithProject:=XMLConfig.GetValue(
         Path+'Desktop/IDETitleStartsWithProject/Value',false);
       FIDETitleIncludesBuildMode:=XMLConfig.GetValue(
@@ -1357,6 +1397,11 @@ begin
         Path+'MsgViewDblClickJumps/Value',false);
       fMsgViewFocus:=XMLConfig.GetValue(
         Path+'MsgViewFocus/Value',DefaultMsgViewFocus);
+      FHideMessagesIcons:=XMLConfig.GetValue(
+        Path+'Desktop/HideMessagesIcons/Value',false);
+      for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
+        fMsgViewColors[mwc]:=XMLConfig.GetValue(
+          Path+'MsgView/Colors/'+MsgWndColorNames[mwc],MsgWndDefaultColors[mwc]);
 
       // glyphs
       FShowButtonGlyphs := TApplicationShowGlyphs(XMLConfig.GetValue(Path+'ShowButtonGlyphs/Value',
@@ -1499,6 +1544,7 @@ var
   EventType: TDBGEventType;
   CurLazDir: String;
   BaseDir: String;
+  mwc: TMsgWndColor;
 begin
   Cfg:=nil;
   try
@@ -1533,8 +1579,6 @@ begin
       XMLConfig.SetDeleteValue(Path+'Desktop/SingleTaskBarButton/Value',
                                FSingleTaskBarButton, False);
       XMLConfig.SetDeleteValue(Path+'Desktop/HideIDEOnRun/Value',FHideIDEOnRun,
-                               false);
-      XMLConfig.SetDeleteValue(Path+'Desktop/HideMessagesIcons/Value',FHideMessagesIcons,
                                false);
       XMLConfig.SetDeleteValue(Path+'Desktop/IDETitleStartsWithProject/Value',
                                FIDETitleStartsWithProject,false);
@@ -1727,6 +1771,11 @@ begin
         fMsgViewDblClickJumps,false);
       XMLConfig.SetDeleteValue(Path+'MsgViewFocus/Value',
         fMsgViewFocus,DefaultMsgViewFocus);
+      XMLConfig.SetDeleteValue(Path+'Desktop/HideMessagesIcons/Value',
+        FHideMessagesIcons,false);
+      for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
+        XMLConfig.SetDeleteValue(Path+'MsgView/Colors/'+MsgWndColorNames[mwc],
+        fMsgViewColors[mwc],MsgWndDefaultColors[mwc]);
 
       // glyphs
       XMLConfig.SetDeleteValue(Path+'ShowButtonGlyphs/Value',
@@ -2188,6 +2237,11 @@ begin
   SetParseValue(eopLazarusDirectory,NewValue);
 end;
 
+procedure TEnvironmentOptions.SetMsgViewColors(c: TMsgWndColor; AValue: TColor);
+begin
+  fMsgViewColors[c]:=AValue;
+end;
+
 procedure TEnvironmentOptions.SetParseValue(o: TEnvOptParseType;
   const NewValue: string);
 begin
@@ -2257,6 +2311,11 @@ end;
 function TEnvironmentOptions.GetMakeFilename: string;
 begin
   Result:=FParseValues[eopMakeFilename].UnparsedValue;
+end;
+
+function TEnvironmentOptions.GetMsgViewColors(c: TMsgWndColor): TColor;
+begin
+  Result:=fMsgViewColors[c];
 end;
 
 function TEnvironmentOptions.GetTestBuildDirectory: string;

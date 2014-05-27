@@ -17,6 +17,9 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  Abstract:
+    IDE option frame for Object Inspector.
 }
 unit OI_options;
 
@@ -212,8 +215,7 @@ var
   OIColor: TOIColor;
 begin
   for OIColor := Low(TOIColor) to High(TOIColor) do
-    ColorsListBox.Items.Objects[Ord(OIColor)] := TObject(PtrInt(ASettings.Colors[OIColor]));
-  ColorsListBox.Invalidate;
+    ColorsListBox.Colors[Ord(OIColor)] := ASettings.Colors[OIColor];
 
   OIShowComponentTreeCheckBox.Checked := ASettings.Options[ooShowComponentTree];
   OIShowHintCheckBox.Checked := ASettings.Options[ooShowHints];

@@ -1620,6 +1620,8 @@ resourcestring
   dlgUseSchemeLocal    = 'Use local scheme settings';
   dlgColor = 'Color';
   dlgColors = 'Colors';
+  lisSetAllColors = 'Set all colors:';
+  lisLazarusDefault = 'Lazarus Default';
   dlgColorNotModified = 'Not modified';
   dlgPriorities = 'Priorities';
 

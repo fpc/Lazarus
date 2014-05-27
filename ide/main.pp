@@ -118,7 +118,7 @@ uses
   ChgEncodingDlg, ConvertDelphi, ConvCodeTool, MissingPropertiesDlg, LazXMLForms,
   // environment option frames
   editor_general_options, componentpalette_options, formed_options, OI_options,
-  files_options, desktop_options, window_options,
+  MsgWnd_Options, files_options, desktop_options, window_options,
   Backup_Options, naming_options, fpdoc_options,
   editor_display_options, editor_keymapping_options, editor_mouseaction_options,
   editor_mouseaction_options_advanced, editor_color_options, editor_markup_options,
@@ -11918,6 +11918,7 @@ var
     if not BossResult then begin
       CodeToolBossErrMsg:=CodeToolBoss.ErrorMessage;
       DoJumpToCodeToolBossError;
+      // raise an exception to stop the rename
       raise Exception.Create(ErrorMsg+LineEnding+LineEnding+lisError
                         +CodeToolBossErrMsg+LineEnding+LineEnding+lisSeeMessages);
     end;

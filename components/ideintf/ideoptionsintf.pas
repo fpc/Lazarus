@@ -233,6 +233,7 @@ const
     EnvOptionsCompPalette   = 350;
     EnvOptionsFormEd        = 400;
     EnvOptionsOI            = 500;
+    EnvOptionsMessages      = 550;
     EnvOptionsFpDoc         = 600;
     EnvOptionsBackup        = 700;
     EnvOptionsNaming        = 800;

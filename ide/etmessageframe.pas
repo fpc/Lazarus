@@ -103,13 +103,6 @@ type
   end;
 
 
-const
-  MCDefaultBackground = clWindow;
-  MCDefaultHeaderBackgroundRunning = TColor($00F0F0); // yellow
-  MCDefaultHeaderBackgroundSuccess = TColor($A0F0A0); // light green
-  MCDefaultHeaderBackgroundFailed = TColor($A0A0F0); // light red
-  MCDefaultAutoHeaderBackground = TColor($FFC0A0); // light blue
-
 type
   TMessagesCtrl = class;
 
@@ -366,8 +359,8 @@ type
     function ApplySrcChanges(Changes: TETSrcChanges): boolean; // true if something changed
   public
     // properties
-    property AutoHeaderBackground: TColor read FAutoHeaderBackground write SetAutoHeaderBackground default MCDefaultAutoHeaderBackground;
-    property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default MCDefaultBackground;
+    property AutoHeaderBackground: TColor read FAutoHeaderBackground write SetAutoHeaderBackground default MsgWndDefAutoHeaderBackground;
+    property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default MsgWndDefBackgroundColor;
     property Color default clWindow;
     property FilenameStyle: TMsgCtrlFileNameStyle read FFilenameStyle write SetFilenameStyle;
     property HeaderBackground[aToolState: TLMVToolState]: TColor read GetHeaderBackground write SetHeaderBackground;
@@ -2763,11 +2756,11 @@ begin
   FSelectedView:=nil;
   FSelectedLine:=-1;
   BorderWidth:=0;
-  fBackgroundColor:=MCDefaultBackground;
-  FHeaderBackground[lmvtsRunning]:=MCDefaultHeaderBackgroundRunning;
-  FHeaderBackground[lmvtsSuccess]:=MCDefaultHeaderBackgroundSuccess;
-  FHeaderBackground[lmvtsFailed]:=MCDefaultHeaderBackgroundFailed;
-  FAutoHeaderBackground:=MCDefaultAutoHeaderBackground;
+  fBackgroundColor:=MsgWndDefBackgroundColor;
+  FHeaderBackground[lmvtsRunning]:=MsgWndDefHeaderBackgroundRunning;
+  FHeaderBackground[lmvtsSuccess]:=MsgWndDefHeaderBackgroundSuccess;
+  FHeaderBackground[lmvtsFailed]:=MsgWndDefHeaderBackgroundFailed;
+  FAutoHeaderBackground:=MsgWndDefAutoHeaderBackground;
   TabStop := True;
   ParentColor := False;
   FImageChangeLink := TChangeLink.Create;
