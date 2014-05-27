@@ -39,6 +39,7 @@ type
   { TMsgWndOptionsFrame }
 
   TMsgWndOptionsFrame = class(TAbstractIDEOptionsEditor)
+    MWHideIconsCheckBox: TCheckBox;
     MWOptsLeftBevel: TBevel;
     MWColorBox: TColorBox;
     MWColorListBox: TColorListBox;
@@ -117,6 +118,7 @@ begin
   MWColorsGroupBox.Caption:=dlgColors;
   MWSetAllColorsToLabel.Caption:=lisSetAllColors;
   MWSetDefaultColorsButton.Caption:=lisLazarusDefault;
+  MWHideIconsCheckBox.Caption := dlgHideMessagesIcons;
 end;
 
 function TMsgWndOptionsFrame.GetTitle: String;
@@ -139,9 +141,9 @@ var
   c: TMsgWndColor;
 begin
   o:=(AOptions as TEnvironmentOptions);
-
   for c in TMsgWndColor do
     MWColorListBox.Colors[ord(c)]:=o.MsgViewColors[c];
+  MWHideIconsCheckBox.Checked := o.HideMessagesIcons;
 
   fReady:=true;
 end;
@@ -152,9 +154,9 @@ var
   c: TMsgWndColor;
 begin
   o:=(AOptions as TEnvironmentOptions);
-
   for c in TMsgWndColor do
     o.MsgViewColors[c]:=MWColorListBox.Colors[ord(c)];
+  o.HideMessagesIcons := MWHideIconsCheckBox.Checked;
 end;
 
 class function TMsgWndOptionsFrame.
@@ -164,6 +166,6 @@ begin
 end;
 
 initialization
-  //RegisterIDEOptionsEditor(GroupEnvironment, TMsgWndOptionsFrame, EnvOptionsMessages);
+  RegisterIDEOptionsEditor(GroupEnvironment, TMsgWndOptionsFrame, EnvOptionsMessages);
 end.
 

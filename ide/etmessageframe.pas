@@ -297,6 +297,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure EraseBackground({%H-}DC: HDC); override;
+    procedure ApplyEnvironmentOptions;
 
     // views
     function ViewCount: integer; inline;
@@ -2809,6 +2810,23 @@ begin
   // everything is painted, so erasing the background is not needed
 end;
 
+procedure TMessagesCtrl.ApplyEnvironmentOptions;
+begin
+  BackgroundColor:=EnvironmentOptions.MsgViewColors[mwBackground];
+  AutoHeaderBackground:=EnvironmentOptions.MsgViewColors[mwAutoHeader];
+  HeaderBackground[lmvtsRunning]:=EnvironmentOptions.MsgViewColors[mwRunning];
+  HeaderBackground[lmvtsSuccess]:=EnvironmentOptions.MsgViewColors[mwSuccess];
+  HeaderBackground[lmvtsFailed]:=EnvironmentOptions.MsgViewColors[mwFailed];
+  if EnvironmentOptions.MsgViewDblClickJumps then
+    Options:=Options-[mcoSingleClickOpensFile]
+  else
+    Options:=Options+[mcoSingleClickOpensFile];
+  if EnvironmentOptions.HideMessagesIcons then
+    Options:=Options-[mcoShowMsgIcons]
+  else
+    Options:=Options+[mcoShowMsgIcons];
+end;
+
 function TMessagesCtrl.IndexOfView(View: TLMsgWndView): integer;
 begin
   Result:=FViews.IndexOf(View);
@@ -3634,14 +3652,7 @@ end;
 
 procedure TMessagesFrame.ApplyIDEOptions;
 begin
-  if EnvironmentOptions.MsgViewDblClickJumps then
-    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoSingleClickOpensFile]
-  else
-    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoSingleClickOpensFile];
-  if EnvironmentOptions.HideMessagesIcons then
-    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowMsgIcons]
-  else
-    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowMsgIcons];
+  MessagesCtrl.ApplyEnvironmentOptions;
 end;
 
 function TMessagesFrame.ViewCount: integer;

@@ -46,7 +46,6 @@ type
     HeightEdit: TSpinEdit;
     HeightLabel: TLabel;
     HideIDEOnRunCheckBox: TCheckBox;
-    HideMessagesIconsCheckBox: TCheckBox;
     SplitLabel: TLabel;
     lblWindowCaption: TLabel;
     LeftEdit: TSpinEdit;
@@ -114,7 +113,6 @@ begin
   SingleTaskBarButtonCheckBox.Enabled :=
     WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) = LCL_CAPABILITY_YES;
   HideIDEOnRunCheckBox.Caption := dlgHideIDEOnRun;
-  HideMessagesIconsCheckBox.Caption := dlgHideMessagesIcons;
   TitleStartsWithProjectCheckBox.Caption:=lisIDETitleStartsWithProjectName;
   TitleStartsWithProjectCheckBox.Hint:=lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
   TitleIncludesBuildMode.Caption:=lisIDETitleShowsBuildMode;
@@ -133,7 +131,6 @@ begin
     // window minimizing and hiding
     SingleTaskBarButtonCheckBox.Checked := SingleTaskBarButton;
     HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
-    HideMessagesIconsCheckBox.Checked := HideMessagesIcons;
     TitleStartsWithProjectCheckBox.Checked:=IDETitleStartsWithProject;
     TitleIncludesBuildMode.Checked:=IDETitleIncludesBuildMode;
     ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
@@ -210,7 +207,6 @@ begin
     // window minimizing
     SingleTaskBarButton := SingleTaskBarButtonCheckBox.Checked;
     HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
-    HideMessagesIcons:=HideMessagesIconsCheckBox.Checked;
     IDETitleStartsWithProject:=TitleStartsWithProjectCheckBox.Checked;
     IDETitleIncludesBuildMode := TitleIncludesBuildMode.Checked;
     IDEProjectDirectoryInIdeTitle:=ProjectDirInIdeTitleCheckBox.Checked;

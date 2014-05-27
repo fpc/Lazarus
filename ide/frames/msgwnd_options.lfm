@@ -122,4 +122,16 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     Width = 322
     Anchors = [akTop, akLeft, akRight]
   end
+  object MWHideIconsCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MWOptionsLabel
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 24
+    Top = 179
+    Width = 154
+    BorderSpacing.Around = 6
+    Caption = 'MWHideIconsCheckBox'
+    TabOrder = 1
+  end
 end
