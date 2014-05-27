@@ -134,4 +134,16 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     Caption = 'MWHideIconsCheckBox'
     TabOrder = 1
   end
+  object MWDblClickJumpsCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MWHideIconsCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 24
+    Top = 209
+    Width = 180
+    BorderSpacing.Around = 6
+    Caption = 'MWDblClickJumpsCheckBox'
+    TabOrder = 2
+  end
 end

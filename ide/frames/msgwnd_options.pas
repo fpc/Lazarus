@@ -39,6 +39,7 @@ type
   { TMsgWndOptionsFrame }
 
   TMsgWndOptionsFrame = class(TAbstractIDEOptionsEditor)
+    MWDblClickJumpsCheckBox: TCheckBox;
     MWHideIconsCheckBox: TCheckBox;
     MWOptsLeftBevel: TBevel;
     MWColorBox: TColorBox;
@@ -119,6 +120,7 @@ begin
   MWSetAllColorsToLabel.Caption:=lisSetAllColors;
   MWSetDefaultColorsButton.Caption:=lisLazarusDefault;
   MWHideIconsCheckBox.Caption := dlgHideMessagesIcons;
+  MWDblClickJumpsCheckBox.Caption:=lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick;
 end;
 
 function TMsgWndOptionsFrame.GetTitle: String;
@@ -142,8 +144,9 @@ var
 begin
   o:=(AOptions as TEnvironmentOptions);
   for c in TMsgWndColor do
-    MWColorListBox.Colors[ord(c)]:=o.MsgViewColors[c];
+    MWColorListBox.Colors[ord(c)] := o.MsgViewColors[c];
   MWHideIconsCheckBox.Checked := o.HideMessagesIcons;
+  MWDblClickJumpsCheckBox.Checked:=o.MsgViewDblClickJumps;
 
   fReady:=true;
 end;
@@ -155,8 +158,9 @@ var
 begin
   o:=(AOptions as TEnvironmentOptions);
   for c in TMsgWndColor do
-    o.MsgViewColors[c]:=MWColorListBox.Colors[ord(c)];
+    o.MsgViewColors[c] := MWColorListBox.Colors[ord(c)];
   o.HideMessagesIcons := MWHideIconsCheckBox.Checked;
+  o.MsgViewDblClickJumps := MWDblClickJumpsCheckBox.Checked;
 end;
 
 class function TMsgWndOptionsFrame.
