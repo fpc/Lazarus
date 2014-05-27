@@ -127,7 +127,7 @@ end;
 
 function TMsgWndOptionsFrame.GetTitle: String;
 begin
-  Result:=lisMenuViewMessages;
+  Result:=lisMessagesWindow;
 end;
 
 procedure TMsgWndOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);

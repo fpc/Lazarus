@@ -2826,9 +2826,9 @@ begin
   else
     Options:=Options+[mcoShowMsgIcons];
   if EnvironmentOptions.MsgViewShowTranslations then
-    Options:=Options-[mcoShowTranslated]
+    Options:=Options+[mcoShowTranslated]
   else
-    Options:=Options+[mcoShowTranslated];
+    Options:=Options-[mcoShowTranslated];
 end;
 
 function TMessagesCtrl.IndexOfView(View: TLMsgWndView): integer;

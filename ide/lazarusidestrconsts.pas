@@ -1090,6 +1090,7 @@ resourcestring
   dlgIDEOptions = 'IDE Options';
   dlgBakNoSubDirectory = '(no subdirectory)';
   dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
+  lisMessagesWindow = 'Messages Window';
   lisCheckForDiskFileChangesViaContentRatherThanTimesta = 'Check for disk file'
     +' changes via content rather than timestamp';
   
