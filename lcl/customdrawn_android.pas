@@ -21,7 +21,7 @@ type
 
   TCDDrawerAndroid = class(TCDDrawerCommon)
   private
-    bmpCheckbox, bmpCheckboxChecked: TBitmap;
+    //bmpCheckbox, bmpCheckboxChecked: TBitmap;
     // Alternative checkbox drawing, not currently utilized
     procedure DrawCheckBoxBitmap(ADest: TFPCustomCanvas; ADestPos: TPoint; AState: TCDControlState; ASize: Integer; ABackgroundColor: TFPColor);
     // Makes pixels in each corner transparent for a rounded effect
@@ -500,8 +500,6 @@ begin
 end;
 
 procedure TCDDrawerAndroid.LoadResources;
-var
-  lDPI: Word;
 begin
 (*  {$ifdef CD_UseImageResources}
   bmpCheckbox.LoadFromLazarusResource('android_checkbox');
@@ -579,7 +577,6 @@ var
   lGlyphLeftSpacing: Integer = 0;
   lTextOutPos: TPoint;
   lGlyphCaptionHeight: Integer;
-  lColor: TColor;
   lRect: TRect;
 begin
   if not (ADest is TCanvas) then Exit; // ToDo

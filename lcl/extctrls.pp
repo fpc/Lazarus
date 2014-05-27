@@ -1155,10 +1155,10 @@ type
   private
     FAutoDrag: Boolean;
     FAutoDock: Boolean;
-    FDockingControl: TControl;
+    //FDockingControl: TControl;
     FDragControl: TControl;
-    FDragOffset: TPoint;
-    FDrawing: Boolean;
+    //FDragOffset: TPoint;
+    //FDrawing: Boolean;
     FPicture: TPicture;
     FRowSize: TRowSize;
     FRowSnap: Boolean;

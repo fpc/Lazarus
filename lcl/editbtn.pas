@@ -219,7 +219,6 @@ type
     procedure SetAutoSize(AValue: Boolean); override;
     procedure SetColor(AValue: TColor); override;
     procedure SetCursor(AValue: TCursor); override;
-    procedure SetFocus; override;
 
     property AutoSelect: Boolean read GetAutoSelect write SetAutoSelect default True;
     property AutoSelected: Boolean read GetAutoSelected write SetAutoSelected;
@@ -245,6 +244,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
+    procedure SetFocus; override;
     function Focused: Boolean; override;
     procedure Clear;
     procedure ClearSelection; virtual;

@@ -173,7 +173,7 @@ end;
 procedure TNBPages.Move(CurIndex, NewIndex: Integer);
 var
   APage: TCustomPage;
-  NewControlIndex, NewPageIndex: integer;
+  NewControlIndex: integer;
   ActivePageIndex: Integer;
   ActivePage: TCustomPage;
 begin
@@ -184,8 +184,7 @@ begin
   else
     ActivePage := nil;
   //NewPageIndex := NewIndex;
-
-  APage := TCustomPage(FPageList[CurIndex]);
+APage := TCustomPage(FPageList[CurIndex]);
 
   // calculate new control index (i.e. ZOrderPosition)
   if NewIndex >= FPageList.Count - 1 then

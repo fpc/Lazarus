@@ -402,7 +402,6 @@ procedure TIntfFreeTypeDrawer.UnclippedClearTypePixel(x, y: integer; Cr, Cg, Cb:
 var merge,mergeClearType: TFPColor;
     acc: longword;
     keep,dont_keep: word;
-    p: pointer;
 begin
   Cr := Cr*(color.alpha+1) shr 16;
   Cg := Cg*(color.alpha+1) shr 16;

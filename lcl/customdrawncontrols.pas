@@ -131,8 +131,6 @@ type
 
   TCDButton = class(TCDButtonControl)
   private
-    FShortCut: TShortcut;
-    FShortCutKey2: TShortcut;
     FGlyph: TBitmap;
     FKind: TBitBtnKind;
     FModalResult: TModalResult;
@@ -413,9 +411,8 @@ type
   { TCDGroupBox }
 
   TCDGroupBox = class(TCDControl)
-  private
-    function GetControlId: TCDControlID; override;
   protected
+    function GetControlId: TCDControlID; override;
     procedure RealSetText(const Value: TCaption); override; // to update on caption changes
   public
     constructor Create(AOwner: TComponent); override;
@@ -465,9 +462,8 @@ type
   { TCDStaticText }
 
   TCDStaticText = class(TCDControl)
-  private
-    function GetControlId: TCDControlID; override;
   protected
+    function GetControlId: TCDControlID; override;
     procedure RealSetText(const Value: TCaption); override; // to update on caption changes
   public
     constructor Create(AOwner: TComponent); override;
@@ -515,7 +511,7 @@ type
 
   TCDProgressBar = class(TCDControl)
   private
-    DragDropStarted: boolean;
+    //DragDropStarted: boolean;
     FBarShowText: Boolean;
     // fields
     FMin: integer;
@@ -558,12 +554,12 @@ type
 
   TCDListView = class(TCDScrollableControl)
   private
-    DragDropStarted: boolean;
+    //DragDropStarted: boolean;
     // fields
     FColumns: TListColumns;
-    FIconOptions: TIconOptions;
+    //FIconOptions: TIconOptions;
     FListItems: TCDListItems;
-    FProperties: TListViewProperties;
+    //FProperties: TListViewProperties;
     FShowColumnHeader: Boolean;
     FViewStyle: TViewStyle;
     function GetProperty(AIndex: Integer): Boolean;
@@ -643,9 +639,6 @@ type
     FOnChanging: TNotifyEvent;
     FOnChange: TNotifyEvent;
     FOptions: TCTabControlOptions;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
-    //procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
     procedure SetOptions(AValue: TCTabControlOptions);
     //procedure MouseEnter; override;
     //procedure MouseLeave; override;
@@ -658,6 +651,9 @@ type
     procedure CreateControlStateEx; override;
     procedure PrepareControlStateEx; override;
     procedure CorrectTabIndex();
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
+    //procedure MouseMove(Shift: TShiftState; X, Y: integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: integer); override;
     property Options: TCTabControlOptions read FOptions write SetOptions;
   public
     constructor Create(AOwner: TComponent); override;
@@ -871,8 +867,6 @@ begin
 end;
 
 procedure TCDControl.Paint;
-var
-  ABmp: TBitmap;
 begin
   inherited Paint;
 
@@ -2069,7 +2063,6 @@ procedure TCDButton.SetKind(AKind: TBitBtnKind);
 var
   ACaption: string;
   Shortcutpos: Integer;
-  ShortcutVal: char;
   BitBtnImage: Integer;
   C: TCustomBitmap;
 begin
@@ -2081,8 +2074,8 @@ begin
     Shortcutpos:= DeleteAmpersands(ACaption);
     Caption:= ACaption;
     if Shortcutpos > 0 then begin
-      ShortcutVal:= ACaption[Shortcutpos];
-      end;
+      //ShortcutVal:= ACaption[Shortcutpos];
+    end;
     BitBtnImage:= BitBtnImages[AKind];
     if BitBtnImage <> idButtonBase then begin
       C := GetDefaultButtonIcon(BitBtnImage);
@@ -2701,8 +2694,6 @@ begin
 end;
 
 procedure TCDProgressBar.SetOrientation(AValue: TProgressBarOrientation);
-var
-  lOldWidth: Integer;
 begin
   if FOrientation=AValue then Exit;
   FOrientation:=AValue;
@@ -3010,7 +3001,6 @@ end;
 function TCDCustomTabControl.MousePosToTabIndex(X, Y: Integer): Integer;
 var
   i: Integer;
-  CurPage: TCDTabSheet;
   CurStartLeftPos: Integer = 0;
   VisiblePagesStarted: Boolean = False;
   lLastTab, lTabWidth, lTabHeight: Integer;
@@ -3278,7 +3268,7 @@ end;
 
 procedure TCDPageControl.PositionTabSheet(ATabSheet: TCDTabSheet);
 var
-  lTabHeight, lIndex: Integer;
+  lIndex: Integer;
   lClientArea: TRect;
 begin
   lIndex := FTabs.IndexOfObject(ATabSheet);

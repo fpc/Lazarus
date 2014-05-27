@@ -7003,7 +7003,6 @@ var
   CInc,RInc: Integer;
   NCol,NRow: Integer;
   SelOk: Boolean;
-  i: Integer;
 
   function IsEmptyRow(ARow: Integer): Boolean;
   var

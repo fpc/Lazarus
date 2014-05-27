@@ -847,7 +847,7 @@ var
   lSelLeftPos, lSelLeftPixelPos, lSelLength, lSelRightPos: Integer;
   lTextWidth, lLineHeight, lLineTop: Integer;
   lControlTextLen: PtrInt;
-  lTextLeftSpacing, lTextRightSpacing, lTextTopSpacing, lTextBottomSpacing: Integer;
+  lTextLeftSpacing, lTextTopSpacing, lTextBottomSpacing: Integer;
   lTextColor: TColor;
   i, lVisibleLinesCount: Integer;
 begin
@@ -865,7 +865,7 @@ begin
   ADest.Font.Assign(AStateEx.Font);
   ADest.Font.Color := lTextColor;
   lTextLeftSpacing := GetMeasures(TCDEDIT_LEFT_TEXT_SPACING);
-  lTextRightSpacing := GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
+  //lTextRightSpacing := GetMeasures(TCDEDIT_RIGHT_TEXT_SPACING);
   lTextTopSpacing := GetMeasures(TCDEDIT_TOP_TEXT_SPACING);
   lTextBottomSpacing := GetMeasures(TCDEDIT_BOTTOM_TEXT_SPACING);
 
@@ -950,7 +950,6 @@ procedure TCDDrawerCommon.DrawCheckBoxSquare(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDControlStateEx);
 var
   lHalf, lSquareHalf, lSquareHeight: Integer;
-  lColor: TColor;
 begin
   lHalf := ASize.cy div 2;
   lSquareHalf := GetMeasures(TCDCHECKBOX_SQUARE_HALF_HEIGHT);
@@ -1027,10 +1026,9 @@ procedure TCDDrawerCommon.DrawRadioButtonCircle(ADest: TCanvas;
   ADestPos: TPoint; ASize: TSize; AState: TCDControlState;
   AStateEx: TCDControlStateEx);
 var
-  lHalf, lCircleThird, lCircleHeight: Integer;
-  lColor: TColor;
+  lCircleThird, lCircleHeight: Integer;
 begin
-  lHalf := ASize.cy div 2;
+  //lHalf := ASize.cy div 2;
   lCircleHeight := GetMeasures(TCDRADIOBUTTON_CIRCLE_HEIGHT);
   lCircleThird := lCircleHeight div 3;
 
@@ -1373,7 +1371,6 @@ procedure TCDDrawerCommon.DrawTrackBar(ADest: TCanvas;
 var
   StepsCount, i: Integer;
   lTickmarkLeft, lTickmarkTop: integer; // for drawing the decorative bars
-  dRect: TRect;
   CDBarSpacing: Integer;
   pStepWidth, lTickmarkLeftFloat: Double;
   lPoint: TPoint;
@@ -1455,7 +1452,7 @@ procedure TCDDrawerCommon.DrawProgressBar(ADest: TCanvas;
 var
   lProgPos, lProgMult: TPoint;
   lProgSize: TSize;
-  lProgWidth, i: Integer;
+  lProgWidth: Integer;
 begin
   // Inside area, there is no background because the control occupies the entire area
   ADest.Brush.Color := WIN2000_BTNFACE;
@@ -1527,7 +1524,6 @@ procedure TCDDrawerCommon.DrawReportListView(ADest: TCanvas; ADestPos: TPoint;
   ASize: TSize; AState: TCDControlState; AStateEx: TCDListViewStateEx);
 var
   lColumn: TListColumn;
-  lWidth: TWidth;
   i, j: Integer;
   lCurPos: TPoint;
   lItemSize: TSize;

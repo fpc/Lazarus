@@ -4025,7 +4025,9 @@ end;
 procedure TBookmarkList.Clear;
 var
   i: Integer;
+  {$IFNDEF noautomatedbookmark}
   Bookmark: Pointer;
+  {$ENDIF}
 begin
   for i:=0 to FList.Count-1 do
   begin
@@ -4042,7 +4044,9 @@ end;
 procedure TBookmarkList.Delete;
 var
   i: Integer;
+  {$IFNDEF noautomatedbookmark}
   Bookmark: Pointer;
+  {$ENDIF}
 begin
   for i := 0 to FList.Count - 1 do begin
     FDataset.GotoBookmark(Items[i]);

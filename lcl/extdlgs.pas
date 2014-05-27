@@ -134,7 +134,6 @@ type
     FLayout: TCalculatorLayout;
     FValue: Double;
     FMemory: Double;
-    FTitle: String;
     FPrecision: Byte;
     FBeepOnError: Boolean;
     FCalc: TCalculatorForm;

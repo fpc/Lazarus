@@ -86,11 +86,6 @@ const
     mrYes, mrNo, mrClose, mrAbort, mrRetry,
     mrIgnore, mrAll, mrYesToAll, mrNoToAll);
 
-  ButtonResults : Array[mrNone..mrClose] of Longint = (
-    -1, idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry,
-    idButtonIgnore, idButtonYes, idButtonNo, idButtonAll, idButtonNoToAll,
-    idButtonYesToAll, idButtonClose);
-
 function GetPromptUserButtons(Buttons: TMsgDlgButtons; var CancelValue,
   DefaultIndex, ButtonCount : Longint; UseDefButton: Boolean; DefButton: TMsgDlgBtn) : PLongint;
 var

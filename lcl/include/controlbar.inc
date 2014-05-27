@@ -132,8 +132,6 @@ begin
 end;
 
 procedure TCustomControlBar.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  Cntrl: TControl;
 begin
 //  DebugLn('TCustomControlBar.MouseUp');
   // ToDo

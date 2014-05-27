@@ -703,11 +703,11 @@ var
   lTransparentColor, lBrushColor, lPixelColor: TFPColor;
   lPaintedBitmap: TBitmap;
   x, y: Integer;
-  lDestWidth, lDestHeight, lSrcWidth, lSrcHeight: Integer;
+  lSrcWidth, lSrcHeight: Integer;
 begin
   // Preparation of data
-  lDestWidth := ADestRect.Right - ADestRect.Left;
-  lDestHeight := ADestRect.Bottom - ADestRect.Top;
+  //lDestWidth := ADestRect.Right - ADestRect.Left;
+  //lDestHeight := ADestRect.Bottom - ADestRect.Top;
   lSrcWidth := ASourceRect.Right - ASourceRect.Left;
   lSrcHeight := ASourceRect.Bottom - ASourceRect.Top;
   lTransparentColor := TColorToFPColor(ColorToRGB(ATransparentColor));

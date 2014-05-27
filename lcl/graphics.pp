@@ -757,8 +757,8 @@ type
   private
     FReference: TWSRegionReference;
     // Description of the region
-    RegionOperations: TRegionOperations;
-    SubRegions: array of HRGN;
+    //RegionOperations: TRegionOperations;
+    //SubRegions: array of HRGN;
     procedure AddOperation(AOp: TRegionOperation);
     procedure ClearSubRegions();
     procedure AddSubRegion(AHandle: HRGN);

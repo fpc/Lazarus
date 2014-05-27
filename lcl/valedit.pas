@@ -654,7 +654,6 @@ end;
 
 procedure TValueListStrings.Delete(Index: Integer);
 var
-  i: Integer;
   IsShowingEditor: Boolean;
 begin
   FGrid.InvalidateCachedRow;

@@ -216,8 +216,6 @@ begin
 end;
 
 procedure TPropStorageXMLConfig.LoadFromStream(s: TStream);
-var
-  NewDoc: TXMLDocument;
 begin
   FreeAndNil(Doc);
   ReadXMLFile(Doc,s);

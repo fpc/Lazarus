@@ -758,7 +758,6 @@ end;
 procedure TRasterImage.CreateMask(AColor: TColor);
 var
   IntfImage: TLazIntfImage;
-  x, y: Integer;
   ImgHandle, MskHandle: HBitmap;
   TransColor: TFPColor;
 begin

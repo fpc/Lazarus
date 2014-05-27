@@ -611,7 +611,6 @@ procedure TLazCanvas.CanvasCopyRect(ASource: TLazCanvas; const ADestX, ADestY,
   ASourceX, ASourceY, ASourceWidth, ASourceHeight: Integer);
 var
   x, y, CurDestX, CurDestY, CurSrcX, CurSrcY: Integer;
-  lx, ly: Integer;
   lDrawWidth, lDrawHeight: Integer;
   lColor: TFPColor;
   {$IFDEF lazcanvas_profiling}
