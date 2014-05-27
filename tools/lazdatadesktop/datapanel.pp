@@ -169,7 +169,7 @@ begin
   FExportSB.Top:=4;
   FExportSB.Height:=22;
   FExportSB.Width:=22;
-  P.LoadFromLazarusResource('qrybtn_export');
+  P.LoadFromResourceName(HInstance,'qrybtn_export');
   FExportSB.Glyph.Assign(P);
   FExportSB.Flat:=True;
   FExportSB.OnClick:=@DoExport;
@@ -179,7 +179,7 @@ begin
   FCodeSB.Top:=4;
   FCodeSB.Height:=22;
   FCodeSB.Width:=22;
-  P.LoadFromLazarusResource('qrybtn_code');
+  P.LoadFromResourceName(HInstance,'qrybtn_code');
   FCodeSB.Glyph.Assign(P);
   FCodeSB.Flat:=True;
   FCodeSB.OnClick:=@DoCode;

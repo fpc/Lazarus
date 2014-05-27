@@ -154,7 +154,7 @@ begin
     begin
     P:=TPortableNetworkGraphic.Create;
     try
-      P.LoadFromLazarusResource(ImageNames[i]);
+      P.LoadFromResourceName(HInstance,ImageNames[i]);
       FImgList.Add(P,Nil);
     finally
       P.Free;
