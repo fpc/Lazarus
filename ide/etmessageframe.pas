@@ -2825,6 +2825,10 @@ begin
     Options:=Options-[mcoShowMsgIcons]
   else
     Options:=Options+[mcoShowMsgIcons];
+  if EnvironmentOptions.MsgViewShowTranslations then
+    Options:=Options-[mcoShowTranslated]
+  else
+    Options:=Options+[mcoShowTranslated];
 end;
 
 function TMessagesCtrl.IndexOfView(View: TLMsgWndView): integer;
@@ -3161,7 +3165,9 @@ begin
     MsgFileStyleFullMenuItem.Checked:=MessagesCtrl.FilenameStyle=mcfsFull;
     MsgFileStyleFullMenuItem.OnClick:=@FileStyleMenuItemClick;
 
+    MsgTranslateMenuItem.Checked:=mcoShowTranslated in MessagesCtrl.Options;
     MsgTranslateMenuItem.OnClick:=@TranslateMenuItemClick;
+    MsgShowIDMenuItem.Checked:=mcoShowMessageID in MessagesCtrl.Options;
     MsgShowIDMenuItem.OnClick:=@ShowIDMenuItemClick;
 
 
@@ -3256,6 +3262,7 @@ begin
     MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowTranslated]
   else
     MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowTranslated];
+  EnvironmentOptions.MsgViewShowTranslations:=mcoShowTranslated in MessagesCtrl.Options;
 end;
 
 procedure TMessagesFrame.UnhideMsgTypeClick(Sender: TObject);

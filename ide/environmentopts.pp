@@ -333,6 +333,7 @@ type
     fMsgViewDblClickJumps: boolean;
     fMsgViewFocus: boolean;
     FHideMessagesIcons: boolean;
+    FMsgViewShowTranslations: boolean;
     fMsgViewColors: array[TMsgWndColor] of TColor;
 
     // compiler + debugger + lazarus files
@@ -714,6 +715,8 @@ type
     property MsgViewFocus: boolean read fMsgViewFocus
       write fMsgViewFocus; // when showing the message window, focus it
     property HideMessagesIcons: boolean read fHideMessagesIcons write fHideMessagesIcons;
+    property MsgViewShowTranslations: boolean read FMsgViewShowTranslations
+             write FMsgViewShowTranslations;
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
 
     // glyphs
@@ -948,6 +951,7 @@ begin
   fMsgViewDblClickJumps:=true;
   fMsgViewFocus:=DefaultMsgViewFocus;
   FHideMessagesIcons:=false;
+  FMsgViewShowTranslations:=false;
   for c:=low(TMsgWndColor) to high(TMsgWndColor) do
     fMsgViewColors[c]:=MsgWndDefaultColors[c];
 
@@ -1399,6 +1403,8 @@ begin
         Path+'MsgViewFocus/Value',DefaultMsgViewFocus);
       FHideMessagesIcons:=XMLConfig.GetValue(
         Path+'Desktop/HideMessagesIcons/Value',false);
+      FMsgViewShowTranslations:=XMLConfig.GetValue(
+        Path+'MsgView/ShowTranslations/Value',false);
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         fMsgViewColors[mwc]:=XMLConfig.GetValue(
           Path+'MsgView/Colors/'+MsgWndColorNames[mwc],MsgWndDefaultColors[mwc]);
@@ -1773,6 +1779,8 @@ begin
         fMsgViewFocus,DefaultMsgViewFocus);
       XMLConfig.SetDeleteValue(Path+'Desktop/HideMessagesIcons/Value',
         FHideMessagesIcons,false);
+      XMLConfig.SetDeleteValue(
+        Path+'MsgView/ShowTranslations/Value',FMsgViewShowTranslations,false);
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         XMLConfig.SetDeleteValue(Path+'MsgView/Colors/'+MsgWndColorNames[mwc],
         fMsgViewColors[mwc],MsgWndDefaultColors[mwc]);
