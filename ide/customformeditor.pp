@@ -72,6 +72,7 @@ type
     FStandardDefinePropertiesRegistered: Boolean;
     FDesignerBaseClasses: TFPList; // list of TComponentClass
     FDesignerMediatorClasses: TFPList;// list of TDesignerMediatorClass
+    FOnNodeGetImageIndex: TOnOINodeGetImageEvent;
     function GetPropertyEditorHook: TPropertyEditorHook;
     function FindDefinePropertyNode(const APersistentClassName: string
                                     ): TAVLTreeNode;
@@ -101,6 +102,9 @@ type
     function GetDesignerBaseClasses(Index: integer): TComponentClass; override;
     procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
     function FindNonFormFormNode(LookupRoot: TComponent): TAVLTreeNode;
+
+    //because we only meet ObjInspectore here, not in abstract ancestor
+    procedure DoOnNodeGetImageIndex(APersistent: TPersistent; var AImageIndex: integer); virtual;
   public
     JITFormList: TJITForms;// designed forms
     JITNonFormList: TJITNonFormComponents;// designed custom components like data modules
@@ -248,6 +252,8 @@ type
                                      read FObj_Inspector write SetObj_Inspector;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
     property OnSelectFrame: TSelectFrameEvent read FOnSelectFrame write FOnSelectFrame;
+    property OnNodeGetImageIndex : TOnOINodeGetImageEvent read FOnNodeGetImageIndex
+                                      write FOnNodeGetImageIndex;
   end;
   
   
@@ -2396,15 +2402,30 @@ begin
   if AnObjectInspector=FObj_Inspector then exit;
   if FObj_Inspector<>nil then begin
     FObj_Inspector.OnModified:=nil;
+    FObj_inspector.OnNodeGetImageIndex:= nil;
   end;
 
   FObj_Inspector:=AnObjectInspector;
   
   if FObj_Inspector<>nil then begin
     FObj_Inspector.OnModified:=@OnObjectInspectorModified;
+    FObj_inspector.OnNodeGetImageIndex:= @DoOnNodeGetImageIndex;
   end;
 end;
 
+
+procedure TCustomFormEditor.DoOnNodeGetImageIndex(APersistent: TPersistent;
+  var AImageIndex: integer);
+var
+  DesignerForm : TCustomForm;
+begin
+  DesignerForm := GetDesignerForm(APersistent);
+
+  //ask TMediator
+  if DesignerForm is TNonControlDesignerForm then
+    TNonControlDesignerForm(DesignerForm).Mediator.OiNodeGetImageIndex(APersistent, AImageIndex);
+
+end;
 
 { TDefinePropertiesCacheItem }
 

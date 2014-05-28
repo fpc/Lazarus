@@ -252,6 +252,11 @@ begin
   for i:=0 to ChildCount-1 do
     if Children[i].Owner=Root then
       Proc(Children[i]);
+
+  if Root = self then
+    for i:=0 to ComponentCount-1 do
+      if Components[i].GetParentComponent = nil then
+        Proc(Components[i]);
 end;
 
 constructor TMyWidget.Create(AOwner: TComponent);

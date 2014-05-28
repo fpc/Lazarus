@@ -3617,9 +3617,6 @@ var
 begin
   if Mediator<>nil then begin
     Result:=Mediator.GetComponentOriginOnForm(AComponent);
-    Mediator.GetClientArea(AComponent,CurClientArea,ScrollOffset);
-    inc(Result.X,CurClientArea.Left+ScrollOffset.X);
-    inc(Result.Y,CurClientArea.Top+ScrollOffset.Y);
   end else begin
     Result:=DesignerProcs.GetParentFormRelativeClientOrigin(AComponent);
   end;
@@ -3941,7 +3938,7 @@ begin
   SelectionVisible:=not ControlSelection.OnlyInvisiblePersistentsSelected;
   CompsAreSelected:=ControlSelIsNotEmpty and SelectionVisible
                     and not LookupRootIsSelected;
-  OneControlSelected := ControlSelIsNotEmpty and ControlSelection[0].IsTControl;
+  OneControlSelected := ControlSelIsNotEmpty and not ControlSelection[0].IsNonVisualComponent;
   MultiCompsAreSelected := CompsAreSelected and (ControlSelection.Count>1);
   UnitIsVirtual:=(SrcFile=nil) or not FilenameIsAbsolute(SrcFile.Filename);
 

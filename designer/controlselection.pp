@@ -132,6 +132,7 @@ type
     FUsedLeft: integer;
     FUsedTop: integer;
     FUsedWidth: integer;
+    function GetIsNonVisualComponent: boolean;
     function GetLeft: integer;
     procedure SetLeft(ALeft: integer);
     function GetTop: integer;
@@ -178,7 +179,7 @@ type
     property IsTComponent: boolean read FIsTComponent;
     property IsTControl: boolean read FIsTControl;
     property IsTWinControl: boolean read FIsTWinControl;
-    property IsNonVisualComponent: boolean read FIsNonVisualComponent;
+    property IsNonVisualComponent: boolean read GetIsNonVisualComponent;
     property DesignerForm: TCustomForm read FDesignerForm;
     property MarkerPaintedBounds: TRect read FMarkerPaintedBounds write FMarkerPaintedBounds;
   end;
@@ -347,6 +348,7 @@ type
     procedure SetRubberbandType(const AValue: TRubberbandType);
     procedure SetSnapping(const AValue: boolean);
     procedure SetVisible(const AValue: Boolean);
+    function GetParentFormRelativeBounds(AComponent: TComponent): TRect;
     procedure GetCompSize(var arr: TArrSize);
   protected
     procedure AdjustGrabbers;
@@ -600,12 +602,18 @@ begin
   FIsTComponent:=FPersistent is TComponent;
   FIsTControl:=FPersistent is TControl;
   FIsTWinControl:=FPersistent is TWinControl;
-  FIsNonVisualComponent:=FIsTComponent and (not FIsTControl);
-  if (Owner.Mediator<>nil) and FIsTComponent then
-    FIsNonVisualComponent:=Owner.Mediator.ComponentIsIcon(TComponent(FPersistent));
   FDesignerForm:=GetDesignerForm(FPersistent);
   FIsVisible:=FIsTComponent
               and (not ComponentIsInvisible(TComponent(APersistent)));
+end;
+
+function TSelectedControl.GetIsNonVisualComponent: boolean;
+//recalculate because FIsNonVisualCOmponent doesn't work properly for Non LCL
+begin
+  FIsNonVisualComponent:=FIsTComponent and (not FIsTControl);
+  if (Owner.Mediator<>nil) and FIsTComponent then
+    FIsNonVisualComponent:=Owner.Mediator.ComponentIsIcon(TComponent(FPersistent));
+  Result := FIsNonVisualComponent;
 end;
 
 destructor TSelectedControl.Destroy;
@@ -646,12 +654,20 @@ begin
   if not FIsTComponent then exit;
   if Owner.Mediator <> nil then 
   begin
+    if Owner.Mediator.ComponentIsIcon(TComponent(FPersistent)) then
+    begin
+      Owner.Mediator.SetBounds(TComponent(FPersistent),Rect( ALeft, ATop, ALeft+AWidth, ATop+AHeight));//x2nie
+    end
+    else
+    begin
+
     Owner.Mediator.GetBounds(TComponent(FPersistent),OldBounds);
     ParentOffset:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
     dec(ParentOffset.X,OldBounds.Left);
     dec(ParentOffset.Y,OldBounds.Top);
     Owner.Mediator.SetBounds(TComponent(FPersistent),
       Bounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight));
+    end;
   end 
   else 
   begin
@@ -669,12 +685,20 @@ begin
   if FIsTComponent then
   begin
     if Owner.Mediator<>nil then begin
+      if Owner.Mediator.ComponentIsIcon(TComponent(FPersistent)) then
+      begin
+        GetComponentBounds(TComponent(FPersistent),ALeft, ATop, AWidth, AHeight);//x2nie
+      end
+      else
+      begin
+
       ALeftTop:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
       Owner.Mediator.GetBounds(TComponent(FPersistent),CurBounds);
       ALeft:=ALeftTop.X;
       ATop:=ALeftTop.Y;
       AWidth:=CurBounds.Right-CurBounds.Left;
       AHeight:=CurBounds.Bottom-CurBounds.Top;
+      end;
     end else begin
       ALeftTop := GetParentFormRelativeTopLeft(TComponent(FPersistent));
       ALeft := ALeftTop.X;
@@ -707,11 +731,19 @@ var
 begin
   if not FIsTComponent then exit;
   if Owner.Mediator<>nil then begin
+    if Owner.Mediator.ComponentIsIcon(TComponent(FPersistent)) then
+    begin
+      GetComponentBounds(TComponent(FPersistent),
+                       FOldLeft,FOldTop,FOldWidth,FOldHeight);
+    end
+    else
+    begin
     Owner.Mediator.GetBounds(TComponent(FPersistent),r);
     FOldLeft:=r.Left;
     FOldTop:=r.Top;
     FOldWidth:=r.Right-r.Left;
     FOldHeight:=r.Bottom-r.Top;
+    end;
   end else begin
     GetComponentBounds(TComponent(FPersistent),
                        FOldLeft,FOldTop,FOldWidth,FOldHeight);
@@ -1608,6 +1640,11 @@ begin
     AComponent:=FLookupRoot.Components[i];
     if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
+    if FMediator <> nil then
+    begin
+      CurLeft := FMediator.GetComponentOriginOnForm(AComponent).X;
+    end
+    else
     CurLeft:=GetParentFormRelativeTopLeft(AComponent).X;
     CurDist:=Abs(CurLeft-NearestInt.OldValue);
     if CurDist>MaxDist then continue; // skip components far away
@@ -1618,6 +1655,7 @@ end;
 procedure TControlSelection.FindNearestRightGuideLine(
   var NearestInt: TNearestInt);
 var i, CurRight, MaxDist, CurDist: integer;
+  R : TRect;
   AComponent: TComponent;
 begin
   if (not EnvironmentOptions.SnapToGuideLines) or (FLookupRoot=nil) then exit;
@@ -1627,6 +1665,12 @@ begin
     AComponent:=FLookupRoot.Components[i];
     if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
+    if FMediator <> nil then
+    begin
+      FMediator.GetBounds(AComponent,R);
+      CurRight := FMediator.GetComponentOriginOnForm(AComponent).X+ R.Right;
+    end
+    else
     CurRight:=GetParentFormRelativeTopLeft(AComponent).X
               +GetComponentWidth(AComponent);
     CurDist:=Abs(CurRight-NearestInt.OldValue);
@@ -1646,6 +1690,11 @@ begin
     AComponent:=FLookupRoot.Components[i];
     if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
+    if FMediator <> nil then
+    begin
+      CurTop := FMediator.GetComponentOriginOnForm(AComponent).Y;
+    end
+    else
     CurTop:=GetParentFormRelativeTopLeft(AComponent).Y;
     CurDist:=Abs(CurTop-NearestInt.OldValue);
     if CurDist>MaxDist then continue; // skip components far away
@@ -1656,6 +1705,7 @@ end;
 procedure TControlSelection.FindNearestBottomGuideLine(
   var NearestInt: TNearestInt);
 var i, CurBottom, MaxDist, CurDist: integer;
+  R: TRect;
   AComponent: TComponent;
 begin
   if (not EnvironmentOptions.SnapToGuideLines) or (FLookupRoot=nil) then exit;
@@ -1665,6 +1715,12 @@ begin
     AComponent:=FLookupRoot.Components[i];
     if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
+    if FMediator <> nil then
+    begin
+      FMediator.GetBounds(AComponent,R);
+      CurBottom := FMediator.GetComponentOriginOnForm(AComponent).Y+ R.Bottom;
+    end
+    else
     CurBottom:=GetParentFormRelativeTopLeft(AComponent).Y
               +GetComponentHeight(AComponent);
     CurDist:=Abs(CurBottom-NearestInt.OldValue);
@@ -2099,6 +2155,21 @@ begin
        arr[i, 2] := Items[i].Height;
        arr[i, 3] := Items[i].Width;
      end;
+end;
+
+function TControlSelection.GetParentFormRelativeBounds(AComponent: TComponent
+  ): TRect;
+var R:TRect;
+  P : TPoint;
+begin
+  if FMediator <> nil then
+  begin
+    FMediator.GetBounds(AComponent,R);
+    P := FMediator.GetComponentOriginOnForm(AComponent);
+    Result :=Bounds(P.X, P.Y, R.Right - R.Left, R.Bottom - R.Top); 
+  end
+  else
+    Result := DesignerProcs.GetParentFormRelativeBounds(AComponent);
 end;
 
 function TControlSelection.GetItems(Index:integer):TSelectedControl;
@@ -2835,7 +2906,7 @@ begin
   if cssOnlyNonVisualNeedsUpdate in FStates then begin
     Result:=true;
     for i:=0 to FControls.Count-1 do
-      if Items[i].IsTControl then begin
+      if not Items[i].IsNonVisualComponent then begin
         Result:=false;
         break;
       end;

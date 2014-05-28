@@ -29,11 +29,15 @@ uses
   ObjInspStrConsts, PropEdits, PropEditUtils;
   
 type
+  TCTVGetImageIndexEvent = procedure(APersistent: TPersistent;
+    var AIndex: integer) of object;
+
   { TComponentTreeView }
 
   TComponentTreeView = class(TCustomTreeView)
   private
     FComponentList: TBackupComponentList;
+    FOnComponentGetImageIndex: TCTVGetImageIndexEvent;
     FOnModified: TNotifyEvent;
     FPropertyEditorHook: TPropertyEditorHook;
     FImageList: TImageList;
@@ -65,6 +69,8 @@ type
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnSelectionChanged;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
+    property OnComponentGetImageIndex : TCTVGetImageIndexEvent
+                           read FOnComponentGetImageIndex write FOnComponentGetImageIndex;
   end;
 
 implementation
@@ -546,6 +552,10 @@ begin
   end
   else
     Result := -1;
+
+  //finally, ask the designer such as TDesignerMediator to override it, if any
+  if assigned(OnComponentGetImageIndex) then
+     OnComponentGetImageIndex(APersistent, Result);
 end;
 
 procedure TComponentTreeView.SetPropertyEditorHook(

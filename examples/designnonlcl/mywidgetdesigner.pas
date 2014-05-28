@@ -64,6 +64,8 @@ type
     destructor Destroy; override;
     procedure InvalidateRect(Sender: TObject; ARect: TRect; Erase: boolean);
     property MyForm: TMyForm read FMyForm;
+  public
+    procedure OiNodeGetImageIndex(APersistent: TPersistent; var AIndex: integer); override;
   end;
 
   { TFileDescPascalUnitWithMyForm }
@@ -136,6 +138,21 @@ procedure TMyWidgetMediator.InvalidateRect(Sender: TObject; ARect: TRect;
 begin
   if (LCLForm=nil) or (not LCLForm.HandleAllocated) then exit;
   LCLIntf.InvalidateRect(LCLForm.Handle,@ARect,Erase);
+end;
+
+procedure TMyWidgetMediator.OiNodeGetImageIndex(APersistent: TPersistent;
+  var AIndex: integer);
+begin
+  if Assigned(APersistent) then
+  begin
+    if (APersistent is TMyWidget) and (TMyWidget(APersistent).AcceptChildrenAtDesignTime) then
+      AIndex := 3
+    else
+    if (APersistent is TMyWidget) then
+      AIndex := 2
+    else
+    inherited OiNodeGetImageIndex(APersistent, AIndex);
+  end
 end;
 
 procedure TMyWidgetMediator.SetBounds(AComponent: TComponent; NewBounds: TRect);

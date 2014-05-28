@@ -486,6 +486,7 @@ begin
     if AProject.CompilerOptions.LoadFromFile(AFilename)<>mrOk then
       DebugLn(['TMainIDEBase.DoLoadDefaultCompilerOptions failed']);
   end;
+
   // change target file name
   AFilename:=ExtractFileName(AProject.CompilerOptions.TargetFilename);
   if AFilename='' then
