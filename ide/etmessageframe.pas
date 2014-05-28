@@ -198,13 +198,6 @@ const
 
 type
 
-  TMsgCtrlFileNameStyle = (
-    mcfsShort,   // = ExtractFilename
-    mcfsRelative, // = CreateRelativePath
-    mcfsFull
-    );
-  TMsgCtrlFileNameStyles = set of TMsgCtrlFileNameStyle;
-
   { TMessagesCtrl }
 
   TMessagesCtrl = class(TCustomControl)
@@ -212,7 +205,7 @@ type
     FActiveFilter: TLMsgViewFilter;
     FAutoScrollToNewMessage: boolean;
     FBackgroundColor: TColor;
-    FFilenameStyle: TMsgCtrlFileNameStyle;
+    FFilenameStyle: TMsgWndFileNameStyle;
     FFilters: TFPList; // list of TLMsgViewFilter
     FHeaderBackground: array[TLMVToolState] of TColor;
     FIdleConnected: boolean;
@@ -245,7 +238,7 @@ type
     procedure OnViewChanged(Sender: TObject); // (main thread)
     procedure MsgUpdateTimerTimer(Sender: TObject);
     procedure SetBackgroundColor(AValue: TColor);
-    procedure SetFilenameStyle(AValue: TMsgCtrlFileNameStyle);
+    procedure SetFilenameStyle(AValue: TMsgWndFileNameStyle);
     procedure SetActiveFilter(AValue: TLMsgViewFilter);
     procedure SetHeaderBackground(aToolState: TLMVToolState; AValue: TColor);
     procedure SetIdleConnected(AValue: boolean);
@@ -363,7 +356,7 @@ type
     property AutoHeaderBackground: TColor read FAutoHeaderBackground write SetAutoHeaderBackground default MsgWndDefAutoHeaderBackground;
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default MsgWndDefBackgroundColor;
     property Color default clWindow;
-    property FilenameStyle: TMsgCtrlFileNameStyle read FFilenameStyle write SetFilenameStyle;
+    property FilenameStyle: TMsgWndFileNameStyle read FFilenameStyle write SetFilenameStyle;
     property HeaderBackground[aToolState: TLMVToolState]: TColor read GetHeaderBackground write SetHeaderBackground;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
     property Images: TCustomImageList read FImages write SetImages;
@@ -1459,7 +1452,7 @@ begin
   Invalidate;
 end;
 
-procedure TMessagesCtrl.SetFilenameStyle(AValue: TMsgCtrlFileNameStyle);
+procedure TMessagesCtrl.SetFilenameStyle(AValue: TMsgWndFileNameStyle);
 begin
   if FFilenameStyle=AValue then Exit;
   FFilenameStyle:=AValue;
@@ -2534,8 +2527,8 @@ function TMessagesCtrl.GetLineText(Line: TMessageLine): string;
 begin
   // 'filename(line,column) '
   case FilenameStyle of
-  mcfsShort: Result:=Line.GetShortFilename;
-  mcfsRelative: Result:=Line.GetRelativeFilename
+  mwfsShort: Result:=Line.GetShortFilename;
+  mwfsRelative: Result:=Line.GetRelativeFilename
   else Result:=Line.GetFullFilename;
   end;
   if Line.Line>0 then begin
@@ -2829,6 +2822,7 @@ begin
     Options:=Options+[mcoShowTranslated]
   else
     Options:=Options-[mcoShowTranslated];
+  FilenameStyle:=EnvironmentOptions.MsgViewFilenameStyle;
 end;
 
 function TMessagesCtrl.IndexOfView(View: TLMsgWndView): integer;
@@ -3158,11 +3152,11 @@ begin
     MsgHideNoneMenuItem.Checked:=MinUrgency=mluNone;
     MsgHideNoneMenuItem.OnClick:=@HideUrgencyMenuItemClick;
 
-    MsgFileStyleShortMenuItem.Checked:=MessagesCtrl.FilenameStyle=mcfsShort;
+    MsgFileStyleShortMenuItem.Checked:=MessagesCtrl.FilenameStyle=mwfsShort;
     MsgFileStyleShortMenuItem.OnClick:=@FileStyleMenuItemClick;
-    MsgFileStyleRelativeMenuItem.Checked:=MessagesCtrl.FilenameStyle=mcfsRelative;
+    MsgFileStyleRelativeMenuItem.Checked:=MessagesCtrl.FilenameStyle=mwfsRelative;
     MsgFileStyleRelativeMenuItem.OnClick:=@FileStyleMenuItemClick;
-    MsgFileStyleFullMenuItem.Checked:=MessagesCtrl.FilenameStyle=mcfsFull;
+    MsgFileStyleFullMenuItem.Checked:=MessagesCtrl.FilenameStyle=mwfsFull;
     MsgFileStyleFullMenuItem.OnClick:=@FileStyleMenuItemClick;
 
     MsgTranslateMenuItem.Checked:=mcoShowTranslated in MessagesCtrl.Options;
@@ -3327,11 +3321,12 @@ end;
 procedure TMessagesFrame.FileStyleMenuItemClick(Sender: TObject);
 begin
   if Sender=MsgFileStyleShortMenuItem then
-    MessagesCtrl.FilenameStyle:=mcfsShort
+    MessagesCtrl.FilenameStyle:=mwfsShort
   else if Sender=MsgFileStyleRelativeMenuItem then
-    MessagesCtrl.FilenameStyle:=mcfsRelative
+    MessagesCtrl.FilenameStyle:=mwfsRelative
   else if Sender=MsgFileStyleFullMenuItem then
-    MessagesCtrl.FilenameStyle:=mcfsFull;
+    MessagesCtrl.FilenameStyle:=mwfsFull;
+  EnvironmentOptions.MsgViewFilenameStyle:=MessagesCtrl.FilenameStyle;
 end;
 
 procedure TMessagesFrame.FindMenuItemClick(Sender: TObject);

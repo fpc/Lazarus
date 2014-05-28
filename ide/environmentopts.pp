@@ -173,6 +173,19 @@ const
 
   { Messages window }
 type
+  TMsgWndFileNameStyle = (
+    mwfsShort,    // = ExtractFilename
+    mwfsRelative, // = CreateRelativePath
+    mwfsFull
+    );
+  TMsgWndFileNameStyles = set of TMsgWndFileNameStyle;
+const
+  MsgWndFileNameStyleNames: array[TMsgWndFileNameStyle] of string = (
+    'Short',    // mwfsShort
+    'Relative', // mwfsRelative
+    'Full'      // mwfsFull
+    );
+type
   TMsgWndColor = (
     mwBackground,
     mwRunning,
@@ -334,6 +347,7 @@ type
     fMsgViewFocus: boolean;
     FHideMessagesIcons: boolean;
     FMsgViewShowTranslations: boolean;
+    FMsgViewFilenameStyle: TMsgWndFileNameStyle;
     fMsgViewColors: array[TMsgWndColor] of TColor;
 
     // compiler + debugger + lazarus files
@@ -717,6 +731,8 @@ type
     property HideMessagesIcons: boolean read fHideMessagesIcons write fHideMessagesIcons;
     property MsgViewShowTranslations: boolean read FMsgViewShowTranslations
              write FMsgViewShowTranslations;
+    property MsgViewFilenameStyle: TMsgWndFileNameStyle read FMsgViewFilenameStyle
+                       write FMsgViewFilenameStyle;
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
 
     // glyphs
@@ -736,6 +752,7 @@ function PascalExtToType(const Ext: string): TPascalExtType;
 function AmbiguousFileActionNameToType(const Action: string): TAmbiguousFileAction;
 function CharCaseFileActionNameToType(const Action: string): TCharCaseFileAction;
 function UnitRenameReferencesActionNameToType(const Action: string): TUnitRenameReferencesAction;
+function StrToMsgWndFilenameStyle(const s: string): TMsgWndFileNameStyle;
 
 function CheckExecutable(const OldFilename, NewFilename: string;
   const ErrorCaption, ErrorMsg: string; SearchInPath: boolean = false): boolean;
@@ -799,6 +816,13 @@ begin
     if CompareText(UnitRenameReferencesActionNames[Result],Action)=0 then
       exit;
   Result:=urraAsk;
+end;
+
+function StrToMsgWndFilenameStyle(const s: string): TMsgWndFileNameStyle;
+begin
+  for Result in TMsgWndFileNameStyle do
+    if CompareText(s,MsgWndFileNameStyleNames[Result])=0 then exit;
+  Result:=mwfsShort;
 end;
 
 function CheckExecutable(const OldFilename,
@@ -952,6 +976,7 @@ begin
   fMsgViewFocus:=DefaultMsgViewFocus;
   FHideMessagesIcons:=false;
   FMsgViewShowTranslations:=false;
+  FMsgViewFilenameStyle:=mwfsShort;
   for c:=low(TMsgWndColor) to high(TMsgWndColor) do
     fMsgViewColors[c]:=MsgWndDefaultColors[c];
 
@@ -1405,6 +1430,8 @@ begin
         Path+'Desktop/HideMessagesIcons/Value',false);
       FMsgViewShowTranslations:=XMLConfig.GetValue(
         Path+'MsgView/ShowTranslations/Value',false);
+      FMsgViewFilenameStyle:=StrToMsgWndFilenameStyle(XMLConfig.GetValue(
+        Path+'MsgView/Filename/Style',MsgWndFileNameStyleNames[mwfsShort]));
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         fMsgViewColors[mwc]:=XMLConfig.GetValue(
           Path+'MsgView/Colors/'+MsgWndColorNames[mwc],MsgWndDefaultColors[mwc]);
@@ -1781,6 +1808,9 @@ begin
         FHideMessagesIcons,false);
       XMLConfig.SetDeleteValue(
         Path+'MsgView/ShowTranslations/Value',FMsgViewShowTranslations,false);
+      XMLConfig.SetDeleteValue(Path+'MsgView/Filename/Style',
+        MsgWndFileNameStyleNames[FMsgViewFilenameStyle],
+        MsgWndFileNameStyleNames[mwfsShort]);
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         XMLConfig.SetDeleteValue(Path+'MsgView/Colors/'+MsgWndColorNames[mwc],
         fMsgViewColors[mwc],MsgWndDefaultColors[mwc]);
