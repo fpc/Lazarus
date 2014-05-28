@@ -1220,7 +1220,10 @@ resourcestring
   dlgFpcPath = 'Compiler path (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
   dlgMakePath = 'Make path';
-  dlgCompilerMessages = 'Compiler messages language file';
+  dlgCompilerMessages = 'Compiler messages language file (*.msg)';
+  lisSetThisToTranslateTheCompilerMessagesToAnotherLang = 'Set this to '
+    +'translate the compiler messages to another language (i.e. not English). '
+    +'For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg.';
   dlgDebugType = 'Debugger type and path';
   dlgTestPrjDir = 'Directory for building test projects';
   dlgQShowGrid = 'Show grid';
@@ -2111,6 +2114,7 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisCompilerMessagesFileNotFound = 'Compiler messages file not found:%s%s';
   lisUnableToOpen = 'Unable to open "%s"';
   lisCompilerDoesNotSupportTarget = 'Compiler "%s" does not support target %s-%s';
   lisInvalidMode = 'Invalid mode %s';

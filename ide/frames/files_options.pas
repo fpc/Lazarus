@@ -40,9 +40,9 @@ type
 
   TFilesOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoCloseCompileDialogCheckBox: TCheckBox;
-    CompilerMessagesButton:TButton;
-    CompilerMessagesComboBox:TComboBox;
-    CompilerMessagesLabel:TLabel;
+    CompilerTranslationFileButton:TButton;
+    CompilerTranslationFileComboBox:TComboBox;
+    CompilerTranslationFileLabel:TLabel;
     CompilerPathButton:TButton;
     CompilerPathComboBox:TComboBox;
     CompilerPathLabel:TLabel;
@@ -65,7 +65,7 @@ type
     TestBuildDirButton:TButton;
     TestBuildDirComboBox:TComboBox;
     TestBuildDirLabel:TLabel;
-    procedure CompilerMessagesButtonClick(Sender:TObject);
+    procedure CompilerTranslationFileButtonClick(Sender:TObject);
     procedure FilesButtonClick(Sender: TObject);
     procedure DirectoriesButtonClick(Sender: TObject);
     procedure ShowCompileDialogCheckBoxChange(Sender: TObject);
@@ -92,6 +92,7 @@ type
     function CheckFPCSourceDir(Buttons: TMsgDlgButtons): boolean;
     function CheckTestDir: boolean;
     function CheckMake: boolean;
+    function CheckFPCMsgFile: boolean;
   public
     function Check: Boolean; override;
     function GetTitle: String; override;
@@ -145,7 +146,7 @@ begin
   end;
 end;
 
-procedure TFilesOptionsFrame.CompilerMessagesButtonClick(Sender:TObject);
+procedure TFilesOptionsFrame.CompilerTranslationFileButtonClick(Sender:TObject);
 var
   OpenDialog: TOpenDialog;
   AFilename: string;
@@ -159,7 +160,7 @@ begin
       GetAllFilesMask;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      SetComboBoxText(CompilerMessagesComboBox,AFilename,cstFilename);
+      SetComboBoxText(CompilerTranslationFileComboBox,AFilename,cstFilename);
     end;
     InputHistories.StoreFileDialogSettings(OpenDialog);
   finally
@@ -223,7 +224,6 @@ begin
   ShowCompileDialogCheckBox.Caption:=dlgQShowCompileDialog;
   AutoCloseCompileDialogCheckBox.Caption:=dlgQAutoCloseCompileDialog;
   LazarusDirLabel.Caption:=dlgLazarusDir;
-
   with LazarusDirComboBox.Items do
   begin
     BeginUpdate;
@@ -234,7 +234,6 @@ begin
   CompilerPathLabel.Caption:=Format(dlgFpcPath,[GetDefaultCompilerFilename]);
   FPCSourceDirLabel.Caption:=dlgFpcSrcPath;
   MakePathLabel.Caption:=dlgMakePath;
-
   with MakePathComboBox.Items do
   begin
     BeginUpdate;
@@ -244,17 +243,29 @@ begin
   end;
 
   TestBuildDirLabel.Caption:=dlgTestPrjDir;
-
   with TestBuildDirComboBox.Items do
   begin
     BeginUpdate;
+    {$IFDEF Unix}
+    Add('~/tmp');
     Add('/tmp');
     Add('/var/tmp');
-    Add('c:/tmp');
-    Add('c:/windows/temp');
+    {$ELSE}
+    Add('c:\tmp');
+    Add('c:\windows\temp');
+    {$ENDIF}
     EndUpdate;
   end;
-  CompilerMessagesLabel.Caption:=dlgCompilerMessages;
+
+  CompilerTranslationFileLabel.Caption:=dlgCompilerMessages;
+  CompilerTranslationFileLabel.Hint:=
+    lisSetThisToTranslateTheCompilerMessagesToAnotherLang;
+  CompilerTranslationFileButton.Hint:=CompilerTranslationFileLabel.Hint;
+  CompilerTranslationFileComboBox.Hint:=CompilerTranslationFileLabel.Hint;
+  with CompilerTranslationFileComboBox.Items do
+  begin
+    Add(SetDirSeparators('$(FPCSrcDir)/compiler/msg/errordu.msg'));
+  end;
 end;
 
 function TFilesOptionsFrame.GetTitle: String;
@@ -272,7 +283,7 @@ begin
     FPCSourceDirectory:=FPCSourceDirComboBox.Text;
     MakeFilename:=MakePathComboBox.Text;
     TestBuildDirectory:=TestBuildDirComboBox.Text;
-    CompilerMessagesFilename:=CompilerMessagesComboBox.Text;
+    CompilerMessagesFilename:=CompilerTranslationFileComboBox.Text;
   end;
   // check lazarus directory
   if not CheckLazarusDir([mbIgnore,mbCancel]) then exit;
@@ -284,6 +295,8 @@ begin
   if not CheckMake then exit;
   // check test directory
   if not CheckTestDir then exit;
+  // check fpc messages file
+  if not CheckFPCMsgFile then exit;
   Result := True;
 end;
 
@@ -294,8 +307,13 @@ begin
     // Lazarus dir
     FOldLazarusDir:=LazarusDirectory;
     FOldRealLazarusDir:=GetParsedLazarusDirectory;
-    LazarusDirComboBox.Items.Assign(LazarusDirHistory);
+    if LazarusDirHistory.Count>0 then
+      LazarusDirComboBox.Items.Assign(LazarusDirHistory);
     SetComboBoxText(LazarusDirComboBox,LazarusDirectory,cstFilename,MaxComboBoxCount);
+
+    // compiler filename
+    FOldCompilerFilename:=CompilerFilename;
+    FOldRealCompilerFilename:=GetParsedCompilerFilename;
     with CompilerPathComboBox do
     begin
       Items.BeginUpdate;
@@ -304,35 +322,35 @@ begin
       AddFilenameToList(Items,FindDefaultExecutablePath('fpc'+GetExecutableExt));
       Items.EndUpdate;
     end;
-
-    // compiler filename
-    FOldCompilerFilename:=CompilerFilename;
-    FOldRealCompilerFilename:=GetParsedCompilerFilename;
     SetComboBoxText(CompilerPathComboBox,CompilerFilename,cstFilename,MaxComboBoxCount);
 
     // FPC src dir
     FOldFPCSourceDir:=FPCSourceDirectory;
     FOldRealFPCSourceDir:=GetParsedFPCSourceDirectory;
-    FPCSourceDirComboBox.Items.Assign(FPCSourceDirHistory);
+    if FPCSourceDirHistory.Count>0 then
+      FPCSourceDirComboBox.Items.Assign(FPCSourceDirHistory);
     SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory,cstFilename,MaxComboBoxCount);
 
     // "make"
     FOldMakeFilename:=MakeFilename;
     FOldRealMakeFilename:=GetParsedMakeFilename;
-    MakePathComboBox.Items.Assign(MakeFileHistory);
+    if MakeFileHistory.Count>0 then
+      MakePathComboBox.Items.Assign(MakeFileHistory);
     SetComboBoxText(MakePathComboBox,MakeFilename,cstFilename,MaxComboBoxCount);
 
     // test build dir
     FOldTestDir:=TestBuildDirectory;
     FOldRealTestDir:=GetParsedTestBuildDirectory;
-    TestBuildDirComboBox.Items.Assign(TestBuildDirHistory);
+    if TestBuildDirHistory.Count>0 then
+      TestBuildDirComboBox.Items.Assign(TestBuildDirHistory);
     SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory,cstFilename,MaxComboBoxCount);
 
     // compiler messages file
     fOldCompilerMessagesFilename:=CompilerMessagesFilename;
     fOldRealCompilerMessagesFilename:=GetParsedCompilerMessagesFilename;
-    CompilerMessagesComboBox.Items.Assign(CompilerMessagesFileHistory);
-    SetComboBoxText(CompilerMessagesComboBox,CompilerMessagesFilename,cstFilename,MaxComboBoxCount);
+    if CompilerMessagesFileHistory.Count>0 then
+      CompilerTranslationFileComboBox.Items.Assign(CompilerMessagesFileHistory);
+    SetComboBoxText(CompilerTranslationFileComboBox,CompilerMessagesFilename,cstFilename,MaxComboBoxCount);
 
     // recent files and directories
     FOldMaxRecentOpenFiles := MaxRecentOpenFiles;
@@ -367,8 +385,8 @@ begin
     MakeFileHistory.Assign(MakePathComboBox.Items);
     TestBuildDirHistory.Assign(TestBuildDirComboBox.Items);
     TestBuildDirectory:=TestBuildDirComboBox.Text;
-    CompilerMessagesFileHistory.Assign(CompilerMessagesComboBox.Items);
-    CompilerMessagesFilename:=CompilerMessagesComboBox.Text;
+    CompilerMessagesFileHistory.Assign(CompilerTranslationFileComboBox.Items);
+    CompilerMessagesFilename:=CompilerTranslationFileComboBox.Text;
 
     // recent files and directories
     MaxRecentOpenFiles := MaxRecentOpenFilesSpin.Value;
@@ -496,6 +514,23 @@ begin
   NewMakeFilename:=EnvironmentOptions.GetParsedMakeFilename;
   Result:=CheckExecutable(FOldRealMakeFilename,NewMakeFilename,
     lisCCOWarningCaption, Format(lisThePathOfMakeIsNotCorrect, [NewMakeFilename]));
+end;
+
+function TFilesOptionsFrame.CheckFPCMsgFile: boolean;
+var
+  NewMsgFile: String;
+begin
+  if EnvironmentOptions.CompilerMessagesFilename=FOldCompilerFilename then exit(true);
+  EnvironmentOptions.CompilerMessagesFilename:=CompilerTranslationFileComboBox.Text;
+  NewMsgFile:=EnvironmentOptions.GetParsedCompilerMessagesFilename;
+  if not FileExistsUTF8(NewMsgFile) then begin
+    if IDEMessageDialog(lisCCOErrorCaption, Format(
+      lisCompilerMessagesFileNotFound, [#13, NewMsgFile]), mtError, [mbCancel,
+      mbIgnore])<>mrIgnore
+    then
+      exit(false);
+  end;
+  Result:=true;
 end;
 
 class function TFilesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
