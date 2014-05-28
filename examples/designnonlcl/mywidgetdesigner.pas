@@ -65,7 +65,7 @@ type
     procedure InvalidateRect(Sender: TObject; ARect: TRect; Erase: boolean);
     property MyForm: TMyForm read FMyForm;
   public
-    procedure OiNodeGetImageIndex(APersistent: TPersistent; var AIndex: integer); override;
+    procedure GetObjInspNodeImageIndex(APersistent: TPersistent; var AIndex: integer); override;
   end;
 
   { TFileDescPascalUnitWithMyForm }
@@ -140,18 +140,18 @@ begin
   LCLIntf.InvalidateRect(LCLForm.Handle,@ARect,Erase);
 end;
 
-procedure TMyWidgetMediator.OiNodeGetImageIndex(APersistent: TPersistent;
+procedure TMyWidgetMediator.GetObjInspNodeImageIndex(APersistent: TPersistent;
   var AIndex: integer);
 begin
   if Assigned(APersistent) then
   begin
     if (APersistent is TMyWidget) and (TMyWidget(APersistent).AcceptChildrenAtDesignTime) then
-      AIndex := 3
+      AIndex := FormEditingHook.GetCurrentObjectInspector.ComponentTree.ImgIndexBox
     else
     if (APersistent is TMyWidget) then
-      AIndex := 2
+      AIndex := FormEditingHook.GetCurrentObjectInspector.ComponentTree.ImgIndexControl
     else
-    inherited OiNodeGetImageIndex(APersistent, AIndex);
+      inherited;
   end
 end;
 

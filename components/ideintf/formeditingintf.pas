@@ -78,7 +78,7 @@ type
     procedure MouseDown({%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}p: TPoint; var {%H-}Handled: boolean); virtual;
     procedure MouseMove({%H-}Shift: TShiftState; {%H-}p: TPoint; var {%H-}Handled: boolean); virtual;
     procedure MouseUp({%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}p: TPoint; var {%H-}Handled: boolean); virtual;
-    procedure OiNodeGetImageIndex(APersistent: TPersistent; var AIndex: integer); virtual;
+    procedure GetObjInspNodeImageIndex({%H-}APersistent: TPersistent; var {%H-}AIndex: integer); virtual;
 
     property LCLForm: TForm read FLCLForm write SetLCLForm;
     property Designer: TComponentEditorDesigner read FDesigner write SetDesigner;
@@ -461,9 +461,9 @@ begin
         if ComponentIsIcon(Child) then
           OffsetRect(ChildBounds,ScrollOffset.X,
                                ScrollOffset.Y)
-        else///x2nie
-        OffsetRect(ChildBounds,ClientArea.Left+ScrollOffset.X,
-                               ClientArea.Top+ScrollOffset.Y);
+        else
+          OffsetRect(ChildBounds,ClientArea.Left+ScrollOffset.X,
+                                 ClientArea.Top+ScrollOffset.Y);
         //DebugLn(['TDesignerMediator.ComponentAtPos ChildBounds=',dbgs(ChildBounds),' p=',dbgs(p)]);
         if PtInRect(ChildBounds,p) then begin
           Found:=true;
@@ -531,7 +531,7 @@ begin
 
 end;
 
-procedure TDesignerMediator.OiNodeGetImageIndex(APersistent: TPersistent;
+procedure TDesignerMediator.GetObjInspNodeImageIndex(APersistent: TPersistent;
   var AIndex: integer);
 begin
 

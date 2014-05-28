@@ -63,6 +63,12 @@ type
     procedure UpdateComponentNodesValues; virtual;
     function CreateNodeCaption(APersistent: TPersistent; DefaultName: string = ''): string; virtual;
   public
+    ImgIndexForm: Integer;
+    ImgIndexComponent: Integer;
+    ImgIndexControl: Integer;
+    ImgIndexBox: Integer;
+    ImgIndexCollection: Integer;
+    ImgIndexItem: Integer;
     property Selection: TPersistentSelectionList read GetSelection
                                                  write SetSelection;
     property PropertyEditorHook: TPropertyEditorHook
@@ -535,27 +541,28 @@ function TComponentTreeView.GetImageFor(APersistent: TPersistent): integer;
 begin
   if Assigned(APersistent) then
   begin
-    if (APersistent is TControl) and (csAcceptsControls in TControl(APersistent).ControlStyle) then
-      Result := 3
+    if (APersistent is TControl)
+    and (csAcceptsControls in TControl(APersistent).ControlStyle) then
+      Result := ImgIndexBox
     else
     if (APersistent is TControl) then
-      Result := 2
+      Result := ImgIndexControl
     else
     if (APersistent is TComponent) then
-      Result := 1
+      Result := ImgIndexComponent
     else
     if (APersistent is TCollection) then
-      Result := 4
+      Result := ImgIndexCollection
     else
     if (APersistent is TCollectionItem) then
-      Result := 5;
+      Result := ImgIndexItem;
   end
   else
     Result := -1;
 
-  //finally, ask the designer such as TDesignerMediator to override it, if any
-  if assigned(OnComponentGetImageIndex) then
-     OnComponentGetImageIndex(APersistent, Result);
+  // finally, ask the designer such as TDesignerMediator to override it, if any
+  if Assigned(OnComponentGetImageIndex) then
+    OnComponentGetImageIndex(APersistent, Result);
 end;
 
 procedure TComponentTreeView.SetPropertyEditorHook(
@@ -583,17 +590,17 @@ begin
   Bitmap := TPortableNetworkGraphic.Create;
   try
     Bitmap.LoadFromResourceName(HInstance, 'oi_form');
-    FImageList.Add(Bitmap, nil);
+    ImgIndexForm:=FImageList.Add(Bitmap, nil);
     Bitmap.LoadFromResourceName(HInstance, 'oi_comp');
-    FImageList.Add(Bitmap, nil);
+    ImgIndexComponent:=FImageList.Add(Bitmap, nil);
     Bitmap.LoadFromResourceName(HInstance, 'oi_control');
-    FImageList.Add(Bitmap, nil);
+    ImgIndexControl:=FImageList.Add(Bitmap, nil);
     Bitmap.LoadFromResourceName(HInstance, 'oi_box');
-    FImageList.Add(Bitmap, nil);
+    ImgIndexBox:=FImageList.Add(Bitmap, nil);
     Bitmap.LoadFromResourceName(HInstance, 'oi_collection');
-    FImageList.Add(Bitmap, nil);
+    ImgIndexCollection:=FImageList.Add(Bitmap, nil);
     Bitmap.LoadFromResourceName(HInstance, 'oi_item');
-    FImageList.Add(Bitmap, nil);
+    ImgIndexItem:=FImageList.Add(Bitmap, nil);
   finally
    Bitmap.Free;
   end;

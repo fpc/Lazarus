@@ -656,17 +656,16 @@ begin
   begin
     if Owner.Mediator.ComponentIsIcon(TComponent(FPersistent)) then
     begin
-      Owner.Mediator.SetBounds(TComponent(FPersistent),Rect( ALeft, ATop, ALeft+AWidth, ATop+AHeight));//x2nie
+      Owner.Mediator.SetBounds(TComponent(FPersistent),
+                               Bounds(ALeft, ATop, AWidth, AHeight));
     end
-    else
-    begin
-
-    Owner.Mediator.GetBounds(TComponent(FPersistent),OldBounds);
-    ParentOffset:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
-    dec(ParentOffset.X,OldBounds.Left);
-    dec(ParentOffset.Y,OldBounds.Top);
-    Owner.Mediator.SetBounds(TComponent(FPersistent),
-      Bounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight));
+    else begin
+      Owner.Mediator.GetBounds(TComponent(FPersistent),OldBounds);
+      ParentOffset:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
+      dec(ParentOffset.X,OldBounds.Left);
+      dec(ParentOffset.Y,OldBounds.Top);
+      Owner.Mediator.SetBounds(TComponent(FPersistent),
+        Bounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight));
     end;
   end 
   else 
@@ -687,17 +686,16 @@ begin
     if Owner.Mediator<>nil then begin
       if Owner.Mediator.ComponentIsIcon(TComponent(FPersistent)) then
       begin
-        GetComponentBounds(TComponent(FPersistent),ALeft, ATop, AWidth, AHeight);//x2nie
+        GetComponentBounds(TComponent(FPersistent),ALeft, ATop, AWidth, AHeight);
       end
       else
       begin
-
-      ALeftTop:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
-      Owner.Mediator.GetBounds(TComponent(FPersistent),CurBounds);
-      ALeft:=ALeftTop.X;
-      ATop:=ALeftTop.Y;
-      AWidth:=CurBounds.Right-CurBounds.Left;
-      AHeight:=CurBounds.Bottom-CurBounds.Top;
+        ALeftTop:=Owner.Mediator.GetComponentOriginOnForm(TComponent(FPersistent));
+        Owner.Mediator.GetBounds(TComponent(FPersistent),CurBounds);
+        ALeft:=ALeftTop.X;
+        ATop:=ALeftTop.Y;
+        AWidth:=CurBounds.Right-CurBounds.Left;
+        AHeight:=CurBounds.Bottom-CurBounds.Top;
       end;
     end else begin
       ALeftTop := GetParentFormRelativeTopLeft(TComponent(FPersistent));
@@ -735,14 +733,12 @@ begin
     begin
       GetComponentBounds(TComponent(FPersistent),
                        FOldLeft,FOldTop,FOldWidth,FOldHeight);
-    end
-    else
-    begin
-    Owner.Mediator.GetBounds(TComponent(FPersistent),r);
-    FOldLeft:=r.Left;
-    FOldTop:=r.Top;
-    FOldWidth:=r.Right-r.Left;
-    FOldHeight:=r.Bottom-r.Top;
+    end else begin
+      Owner.Mediator.GetBounds(TComponent(FPersistent),r);
+      FOldLeft:=r.Left;
+      FOldTop:=r.Top;
+      FOldWidth:=r.Right-r.Left;
+      FOldHeight:=r.Bottom-r.Top;
     end;
   end else begin
     GetComponentBounds(TComponent(FPersistent),
@@ -1641,11 +1637,9 @@ begin
     if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     if FMediator <> nil then
-    begin
-      CurLeft := FMediator.GetComponentOriginOnForm(AComponent).X;
-    end
+      CurLeft := FMediator.GetComponentOriginOnForm(AComponent).X
     else
-    CurLeft:=GetParentFormRelativeTopLeft(AComponent).X;
+      CurLeft:=GetParentFormRelativeTopLeft(AComponent).X;
     CurDist:=Abs(CurLeft-NearestInt.OldValue);
     if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurLeft);
@@ -1671,8 +1665,8 @@ begin
       CurRight := FMediator.GetComponentOriginOnForm(AComponent).X+ R.Right;
     end
     else
-    CurRight:=GetParentFormRelativeTopLeft(AComponent).X
-              +GetComponentWidth(AComponent);
+      CurRight:=GetParentFormRelativeTopLeft(AComponent).X
+                +GetComponentWidth(AComponent);
     CurDist:=Abs(CurRight-NearestInt.OldValue);
     if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurRight);
@@ -1691,11 +1685,9 @@ begin
     if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     if FMediator <> nil then
-    begin
-      CurTop := FMediator.GetComponentOriginOnForm(AComponent).Y;
-    end
+      CurTop := FMediator.GetComponentOriginOnForm(AComponent).Y
     else
-    CurTop:=GetParentFormRelativeTopLeft(AComponent).Y;
+      CurTop:=GetParentFormRelativeTopLeft(AComponent).Y;
     CurDist:=Abs(CurTop-NearestInt.OldValue);
     if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurTop);
@@ -1721,8 +1713,8 @@ begin
       CurBottom := FMediator.GetComponentOriginOnForm(AComponent).Y+ R.Bottom;
     end
     else
-    CurBottom:=GetParentFormRelativeTopLeft(AComponent).Y
-              +GetComponentHeight(AComponent);
+     CurBottom:=GetParentFormRelativeTopLeft(AComponent).Y
+                +GetComponentHeight(AComponent);
     CurDist:=Abs(CurBottom-NearestInt.OldValue);
     if CurDist>MaxDist then continue; // skip components far away
     ImproveNearestInt(NearestInt,CurBottom);

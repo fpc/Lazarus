@@ -2423,7 +2423,7 @@ begin
 
   //ask TMediator
   if DesignerForm is TNonControlDesignerForm then
-    TNonControlDesignerForm(DesignerForm).Mediator.OiNodeGetImageIndex(APersistent, AImageIndex);
+    TNonControlDesignerForm(DesignerForm).Mediator.GetObjInspNodeImageIndex(APersistent, AImageIndex);
 
 end;
 

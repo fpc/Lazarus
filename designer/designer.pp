@@ -3611,9 +3611,6 @@ begin
 end;
 
 function TDesigner.GetParentFormRelativeClientOrigin(AComponent: TComponent): TPoint;
-var
-  CurClientArea: TRect;
-  ScrollOffset: TPoint;
 begin
   if Mediator<>nil then begin
     Result:=Mediator.GetComponentOriginOnForm(AComponent);

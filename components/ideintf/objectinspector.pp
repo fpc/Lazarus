@@ -616,6 +616,7 @@ type
     StatusBar: TStatusBar;
     procedure AvailComboBoxCloseUp(Sender: TObject);
     procedure ComponentTreeDblClick(Sender: TObject);
+    procedure ComponentTreeGetNodeImageIndex(APersistent: TPersistent; var AIndex: integer);
     procedure ComponentTreeKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
     procedure OnGridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -637,7 +638,6 @@ type
     procedure OnShowStatusBarPopupMenuItemClick(Sender: TObject);
     procedure OnShowOptionsPopupMenuItemClick(Sender: TObject);
     procedure OnMainPopupMenuPopup(Sender: TObject);
-    procedure OnVTNodeGetImageIndex(APersistent: TPersistent; var AIndex: integer);
     procedure RestrictedPageShow(Sender: TObject);
     procedure WidgetSetRestrictedPaint(Sender: TObject);
     procedure ComponentRestrictedPaint(Sender: TObject);
@@ -4094,7 +4094,7 @@ begin
     OnDblClick := @ComponentTreeDblClick;
     OnKeyDown := @ComponentTreeKeyDown;
     OnSelectionChanged := @ComponentTreeSelectionChanged;
-    OnComponentGetImageIndex := @OnVTNodeGetImageIndex;
+    OnComponentGetImageIndex := @ComponentTreeGetNodeImageIndex;
     OnModified := @DoModified;
     Scrollbars := ssAutoBoth;
     PopupMenu := MainPopupMenu;
@@ -5514,7 +5514,7 @@ begin
   FavoriteGrid.Favorites:=FFavorites;
 end;
 
-procedure TObjectInspectorDlg.OnVTNodeGetImageIndex(
+procedure TObjectInspectorDlg.ComponentTreeGetNodeImageIndex(
   APersistent: TPersistent; var AIndex: integer);
 begin
   //ask TMediator
