@@ -8511,9 +8511,12 @@ begin
     Result:={$I %FPCVersion%}
   else
     Result:='';
-  if not IsFPCExecutable(CompilerFilename,ErrorMsg) then exit;
+  if not IsFPCExecutable(CompilerFilename,ErrorMsg) then
+    exit;
   CfgCache:=ConfigCaches.Find(CompilerFilename,ExtraOptions,TargetOS,TargetCPU,true);
-  if not CfgCache.Update(TestFilename,ExtraOptions) then exit;
+  if CfgCache.NeedsUpdate
+  and not CfgCache.Update(TestFilename,ExtraOptions) then
+    exit;
   if CfgCache.FullVersion='' then exit;
   Result:=CfgCache.FullVersion;
 end;
