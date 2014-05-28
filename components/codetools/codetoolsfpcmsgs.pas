@@ -103,9 +103,6 @@ type
     function MsgTypToSpecialItem(const Typ: string): TFPCMsgItem;
   end;
 
-function CompareFPCMsgId(item1, item2: Pointer): integer;
-function CompareIDWithFPCMsgId(PtrID, Item: Pointer): integer;
-
 type
   TFPCMsgRange = record
     StartPos: integer;
@@ -128,7 +125,39 @@ type
     destructor Destroy; override;
   end;
 
+type
+  TFPCMsgFileToEncoding = record
+    Filename: PChar;
+    Encoding: PChar;
+  end;
+const
+  FPCMsgFileToEncoding: array[1..20] of TFPCMsgFileToEncoding = (
+    (Filename: 'errorct.msg';  Encoding: 'CP1252'), // Catalan
+    (Filename: 'errord.msg';   Encoding: 'CP437'), // German
+    (Filename: 'errorda.msg';  Encoding: 'UTF-8'), // Danish
+    (Filename: 'errordu.msg';  Encoding: 'UTF-8'), // German
+    (Filename: 'errore.msg';   Encoding: 'UTF-8'), // English
+    (Filename: 'errores.msg';  Encoding: 'CP1252'), // Spanish
+    (Filename: 'errorf.msg';   Encoding: 'CP850'), // French
+    (Filename: 'errorfi.msg';  Encoding: 'ISO-8859-1'), // French
+    (Filename: 'errorhe.msg';  Encoding: 'CP1255'), // Hebrew
+    (Filename: 'errorheu.msg'; Encoding: 'UTF-8'), // Hebrew
+    (Filename: 'errorid.msg';  Encoding: 'UTF-8'), // Indonesian
+    (Filename: 'erroriu.msg';  Encoding: 'CP1252'), // Italian
+    (Filename: 'errorn.msg';   Encoding: 'CP850'), // Dutch
+    (Filename: 'errorpl.msg';  Encoding: 'CP852'), // Polish
+    (Filename: 'errorpli.msg'; Encoding: 'ISO-8859-2'), // Polish
+    (Filename: 'errorpt.msg';  Encoding: 'CP850'), // Portuguese
+    (Filename: 'errorptu.msg'; Encoding: 'UTF-8'), // Portuguese
+    (Filename: 'errorr.msg';   Encoding: 'CP866'), // Russian
+    (Filename: 'errorru.msg';  Encoding: 'UTF-8'), // Russian
+    (Filename: 'errorues.msg'; Encoding: 'UTF-8') // Spanish
+  );
+
+function CompareFPCMsgId(item1, item2: Pointer): integer;
+function CompareIDWithFPCMsgId(PtrID, Item: Pointer): integer;
 procedure ExtractFPCMsgParameters(const Mask, Txt: string; var Ranges: TFPCMsgRanges);
+function GetDefaultFPCErrorMsgFileEncoding(Filename: string): string;
 
 function dbgs(i: TfmiSpecialItem): string; overload;
 
@@ -234,6 +263,17 @@ begin
     Ranges.Add(TxtPos-BaseTxtPos,TxtEndPos-BaseTxtPos);
     TxtPos:=TxtEndPos;
   end;
+end;
+
+function GetDefaultFPCErrorMsgFileEncoding(Filename: string): string;
+var
+  i: Integer;
+begin
+  Filename:=ExtractFileNameOnly(Filename);
+  for i:=low(FPCMsgFileToEncoding) to high(FPCMsgFileToEncoding) do
+    if FPCMsgFileToEncoding[i].Filename=Filename then
+      exit(FPCMsgFileToEncoding[i].Encoding);
+  Result:='';
 end;
 
 function dbgs(i: TfmiSpecialItem): string;
