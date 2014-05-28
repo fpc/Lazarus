@@ -467,6 +467,7 @@ end;
 procedure TMainIDEBase.DoMergeDefaultProjectOptions(AProject: TProject);
 var
   AFilename: String;
+  ShortFilename: String;
 begin
   // load default project options if exists
   AFilename:=AppendPathDelim(GetPrimaryConfigPath)+DefaultProjectOptionsFilename;
@@ -491,9 +492,13 @@ begin
     exit; // using default -> ok
   if CompareFilenames(AFilename,ExtractFilename(AProject.ProjectInfoFile))=0
   then exit; // target file name and project name fit -> ok
+
   // change target file to project name
-  AProject.CompilerOptions.TargetFilename:=ExtractFilePath(AProject.CompilerOptions.TargetFilename)
-    +ExtractFileNameOnly(AProject.ProjectInfoFile)+ExtractFileExt(AFilename);
+  ShortFilename:=ExtractFileNameOnly(AProject.ProjectInfoFile);
+  if ShortFilename<>'' then
+    AProject.CompilerOptions.TargetFilename:=
+      ExtractFilePath(AProject.CompilerOptions.TargetFilename)
+        +ShortFilename+ExtractFileExt(AFilename);
   AProject.CompilerOptions.Modified:=false;
 end;
 
