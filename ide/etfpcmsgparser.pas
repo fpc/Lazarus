@@ -36,7 +36,7 @@ uses
   PackageIntf, LazIDEIntf, ProjectIntf, IDEUtils, CompOptsIntf,
   CodeToolsFPCMsgs, CodeToolsStructs, CodeCache, CodeToolManager,
   DirectoryCacher, BasicCodeTools, DefineTemplates, LazUTF8, FileUtil,
-  etMakeMsgParser, EnvironmentOpts;
+  TransferMacros, etMakeMsgParser, EnvironmentOpts;
 
 const
   FPCMsgIDLogo = 11023;
@@ -84,11 +84,18 @@ type
     FFiles: TFPList; // list of TFPCMsgFilePoolItem sorted for loaded
     FOnLoadFile: TETLoadFileEvent;
     fPendingLog: TStrings;
+    fMsgFileStamp: integer;
+    fCurrentEnglishFile: string; // valid only if fMsgFileStamp=CompilerParseStamp
+    fCurrentTranslationFile: string; // valid only if fMsgFileStamp=CompilerParseStamp
     procedure Log(Msg: string; AThread: TThread);
     procedure LogSync;
+    procedure SetDefaultEnglishFile(AValue: string);
+    procedure SetDefaultTranslationFile(AValue: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function LoadCurrentEnglishFile(UpdateFromDisk: boolean;
+      AThread: TThread): TFPCMsgFilePoolItem;
     function LoadFile(aFilename: string; UpdateFromDisk: boolean;
       AThread: TThread): TFPCMsgFilePoolItem;
     procedure UnloadFile(var aFile: TFPCMsgFilePoolItem; AThread: TThread);
@@ -96,8 +103,8 @@ type
     procedure LeaveCriticalSection;
     procedure GetMsgFileNames(CompilerFilename, TargetOS, TargetCPU: string;
       out anEnglishFile, aTranslationFile: string); // (main thread)
-    property DefaultEnglishFile: string read FDefaultEnglishFile write FDefaultEnglishFile;
-    property DefaulTranslationFile: string read FDefaultTranslationFile write FDefaultTranslationFile;
+    property DefaultEnglishFile: string read FDefaultEnglishFile write SetDefaultEnglishFile;
+    property DefaulTranslationFile: string read FDefaultTranslationFile write SetDefaultTranslationFile;
     property OnLoadFile: TETLoadFileEvent read FOnLoadFile write FOnLoadFile; // (main or workerthread)
   end;
 
@@ -697,12 +704,27 @@ begin
   end;
 end;
 
+procedure TFPCMsgFilePool.SetDefaultEnglishFile(AValue: string);
+begin
+  if FDefaultEnglishFile=AValue then Exit;
+  FDefaultEnglishFile:=AValue;
+  fMsgFileStamp:=-1;
+end;
+
+procedure TFPCMsgFilePool.SetDefaultTranslationFile(AValue: string);
+begin
+  if FDefaultTranslationFile=AValue then Exit;
+  FDefaultTranslationFile:=AValue;
+  fMsgFileStamp:=-1;
+end;
+
 constructor TFPCMsgFilePool.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   InitCriticalSection(fCritSec);
   FFiles:=TFPList.Create;
   fPendingLog:=TStringList.Create;
+  fMsgFileStamp:=-1;
 end;
 
 destructor TFPCMsgFilePool.Destroy;
@@ -733,6 +755,19 @@ begin
     LeaveCriticalSection;
   end;
   DoneCriticalsection(fCritSec);
+end;
+
+function TFPCMsgFilePool.LoadCurrentEnglishFile(UpdateFromDisk: boolean;
+  AThread: TThread): TFPCMsgFilePoolItem;
+var
+  anEnglishFile: string;
+  aTranslationFile: string;
+begin
+  Result:=nil;
+  GetMsgFileNames(EnvironmentOptions.GetParsedCompilerFilename,'','',
+    anEnglishFile,aTranslationFile);
+  if not FilenameIsAbsolute(anEnglishFile) then exit;
+  Result:=LoadFile(anEnglishFile,UpdateFromDisk,AThread);
 end;
 
 function TFPCMsgFilePool.LoadFile(aFilename: string; UpdateFromDisk: boolean;
@@ -905,19 +940,41 @@ var
   aFilename: String;
   ErrMsg: string;
 begin
-  anEnglishFile:=DefaultEnglishFile;
-  aTranslationFile:=DefaulTranslationFile;
-  if IsFPCExecutable(CompilerFilename,ErrMsg) then
-    FPCVer:=CodeToolBoss.FPCDefinesCache.GetFPCVersion(CompilerFilename,TargetOS,TargetCPU,false)
-  else
-    FPCVer:='';
-  FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory(FPCVer);
-  if FilenameIsAbsolute(FPCSrcDir) then begin
-    aFilename:=AppendPathDelim(FPCSrcDir)+SetDirSeparators('compiler/msg/errore.msg');
-    if FileExistsCached(aFilename) then
-      anEnglishFile:=aFilename;
-    // ToDo: translation
+  if fMsgFileStamp<>CompilerParseStamp then begin
+    fCurrentEnglishFile:=DefaultEnglishFile;
+    fCurrentTranslationFile:=DefaulTranslationFile;
+    // English msg file
+    // => use fpcsrcdir/compiler/msg/errore.msg
+    // the fpcsrcdir might depend on the FPC version
+    if IsFPCExecutable(CompilerFilename,ErrMsg) then
+      FPCVer:=CodeToolBoss.FPCDefinesCache.GetFPCVersion(CompilerFilename,TargetOS,TargetCPU,false)
+    else
+      FPCVer:='';
+    FPCSrcDir:=EnvironmentOptions.GetParsedFPCSourceDirectory(FPCVer);
+    if FilenameIsAbsolute(FPCSrcDir) then begin
+      // FPCSrcDir exists => use the errore.msg
+      aFilename:=AppendPathDelim(FPCSrcDir)+SetDirSeparators('compiler/msg/errore.msg');
+      if FileExistsCached(aFilename) then
+        fCurrentEnglishFile:=aFilename;
+    end;
+    if not FileExistsCached(fCurrentEnglishFile) then begin
+      // as fallback use the copy in the Codetools directory
+      aFilename:=EnvironmentOptions.GetParsedLazarusDirectory;
+      if FilenameIsAbsolute(aFilename) then begin
+        aFilename:=AppendPathDelim(aFilename)+SetDirSeparators('components/codetools/fpc.errore.msg');
+        if FileExistsCached(aFilename) then
+          fCurrentEnglishFile:=aFilename;
+      end;
+    end;
+    // translation msg file
+    aFilename:=EnvironmentOptions.GetParsedCompilerMessagesFilename;
+    if FilenameIsAbsolute(aFilename) and FileExistsCached(aFilename)
+    and (CompareFilenames(aFilename,fCurrentEnglishFile)<>0) then
+      fCurrentTranslationFile:=aFilename;
+    fMsgFileStamp:=CompilerParseStamp;
   end;
+  anEnglishFile:=fCurrentEnglishFile;
+  aTranslationFile:=fCurrentTranslationFile;
 end;
 
 { TFPCMsgFilePoolItem }
@@ -969,7 +1026,9 @@ procedure TIDEFPCParser.Init;
     else if (aFilename<>'') and (List=nil) then begin
       try
         List:=FPCMsgFilePool.LoadFile(aFilename,true,nil);
+        {$IFDEF VerboseExtToolThread}
         debugln(['LoadMsgFile successfully read ',aFilename]);
+        {$ENDIF}
       except
         on E: Exception do begin
           debugln(['WARNING: TFPCParser.Init failed to load file '+aFilename+': '+E.Message]);
@@ -2310,8 +2369,7 @@ var
 begin
   Result:='';
   if CompareText(SubTool,SubToolFPC)=0 then begin
-    if FPCMsgFilePool=nil then exit;
-    CurMsgFile:=FPCMsgFilePool.LoadFile(FPCMsgFilePool.DefaultEnglishFile,false,nil);
+    CurMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(false,nil);
     if CurMsgFile=nil then exit;
     try
       MsgItem:=CurMsgFile.GetMsg(MsgID);
@@ -2332,7 +2390,7 @@ begin
   Result:='';
   if CompareText(SubTool,SubToolFPC)=0 then begin
     if FPCMsgFilePool=nil then exit;
-    CurMsgFile:=FPCMsgFilePool.LoadFile(FPCMsgFilePool.DefaultEnglishFile,false,nil);
+    CurMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(false,nil);
     if CurMsgFile=nil then exit;
     try
       MsgItem:=CurMsgFile.GetMsg(MsgID);

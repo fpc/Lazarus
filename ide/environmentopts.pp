@@ -620,7 +620,7 @@ type
     property TestBuildDirHistory: TStringList read FTestBuildDirHistory
                                               write FTestBuildDirHistory;
     property CompilerMessagesFilename: string read GetCompilerMessagesFilename
-                                              write SetCompilerMessagesFilename;
+              write SetCompilerMessagesFilename; // non English translation file
     property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory
                                                      write FCompilerMessagesFileHistory;
     // Primary-config verification
