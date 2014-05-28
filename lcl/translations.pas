@@ -109,7 +109,7 @@ type
     procedure RemoveTaggedItems(aTag: Integer);
     procedure RemoveUntaggedModules;
   public
-    constructor Create;
+    constructor Create(Full:Boolean=True);  //when loading from internal resource Full needs to be False
     constructor Create(const AFilename: String; Full:boolean=false);
     constructor Create(AStream: TStream; Full:boolean=false);
     destructor Destroy; override;
@@ -513,10 +513,10 @@ begin
   end;
 end;
 
-constructor TPOFile.Create;
+constructor TPOFile.Create(Full:Boolean=True);
 begin
   inherited Create;
-  FAllEntries:=true;
+  FAllEntries:=Full;
   FItems:=TFPList.Create;
   FIdentifierLowToItem:=TStringToPointerTree.Create(true);
   FIdentLowVarToItem:=TStringHashList.Create(true);
