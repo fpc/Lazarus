@@ -36,7 +36,7 @@ uses
   PackageIntf, LazIDEIntf, ProjectIntf, IDEUtils, CompOptsIntf,
   CodeToolsFPCMsgs, CodeToolsStructs, CodeCache, CodeToolManager,
   DirectoryCacher, BasicCodeTools, DefineTemplates, LazUTF8, FileUtil,
-  TransferMacros, etMakeMsgParser, EnvironmentOpts;
+  LConvEncoding, TransferMacros, etMakeMsgParser, EnvironmentOpts;
 
 const
   FPCMsgIDLogo = 11023;
@@ -793,12 +793,21 @@ var
       Result:=FileExistsUTF8(aFilename);
   end;
 
+  function FileAge: longint;
+  begin
+    if IsMainThread then
+      Result:=FileAgeCached(aFilename)
+    else
+      Result:=FileAgeUTF8(aFilename);
+  end;
+
 var
   Item: TFPCMsgFilePoolItem;
   i: Integer;
   NewItem: TFPCMsgFilePoolItem;
   FileTxt: string;
-  Code: TCodeBuffer;
+  ms: TMemoryStream;
+  Encoding: String;
 begin
   Result:=nil;
   if aFilename='' then exit;
@@ -813,6 +822,7 @@ begin
     end;
   end;
   NewItem:=nil;
+  ms:=nil;
   EnterCriticalsection;
   try
     // search the newest version in cache
@@ -822,18 +832,10 @@ begin
       Result:=Item;
       break;
     end;
-    Code:=nil;
     if UpdateFromDisk then begin
-      if IsMainThread then begin
-        Code:=CodeToolBoss.LoadFile(aFilename,true,false);
-        if (Code<>nil) and (Result<>nil) and (Code.FileDateOnDisk<>Result.LoadedFileAge)
-        then
-          ResultOutdated;
-      end else begin
-        if (Result<>nil)
-        and (FileAgeUTF8(aFilename)<>Result.LoadedFileAge) then
-          ResultOutdated;
-      end;
+      if (Result<>nil)
+      and (FileAge<>Result.LoadedFileAge) then
+        ResultOutdated;
     end else if Result=nil then begin
       // not yet loaded, not yet checked if file exists -> check now
       if not FileExists then
@@ -849,21 +851,20 @@ begin
       //Log('TFPCMsgFilePool.LoadFile '+dbgs(NewItem.FFile<>nil)+' '+aFilename,aThread);
       if Assigned(OnLoadFile) then begin
         OnLoadFile(aFilename,FileTxt);
-        NewItem.FFile.LoadFromText(FileTxt);
-        NewItem.FLoadedFileAge:=FileAgeUTF8(aFilename);
       end else begin
-        if IsMainThread then begin
-          if Code=nil then
-            Code:=CodeToolBoss.LoadFile(aFilename,true,false);
-          if Code=nil then
-            exit;
-          NewItem.FFile.LoadFromText(Code.Source);
-          NewItem.FLoadedFileAge:=Code.FileDateOnDisk;
-        end else begin
-          NewItem.FFile.LoadFromFile(aFilename);
-          NewItem.FLoadedFileAge:=FileAgeUTF8(aFilename);
-        end;
+        ms:=TMemoryStream.Create;
+        ms.LoadFromFile(aFilename);
+        SetLength(FileTxt,ms.Size);
+        ms.Position:=0;
+        if FileTxt<>'' then
+          ms.Read(FileTxt[1],length(FileTxt));
       end;
+      // convert encoding
+      Encoding:=GetDefaultFPCErrorMsgFileEncoding(aFilename);
+      FileTxt:=ConvertEncoding(FileTxt,Encoding,EncodingUTF8);
+      // parse
+      NewItem.FFile.LoadFromText(FileTxt);
+      NewItem.FLoadedFileAge:=FileAge;
       // load successful
       Result:=NewItem;
       NewItem:=nil;
@@ -872,6 +873,7 @@ begin
       //log('TFPCMsgFilePool.LoadFile '+Result.Filename+' '+dbgs(Result.fUseCount),aThread);
     end;
   finally
+    ms.Free;
     FreeAndNil(NewItem);
     LeaveCriticalSection;
   end;
