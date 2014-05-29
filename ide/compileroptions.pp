@@ -43,8 +43,9 @@ interface
 
 uses
   typinfo, Classes, SysUtils, FileProcs, FileUtil, Laz2_XMLCfg, LazFileUtils,
-  InterfaceBase, LCLProc, Forms, Controls, ExprEval, DefineTemplates,
-  CodeToolsCfgScript, CodeToolManager, KeywordFuncLists, BasicCodeTools,
+  AvgLvlTree, Laz2_DOM, InterfaceBase, LCLProc, Forms, Controls, ExprEval,
+  DefineTemplates, CodeToolsCfgScript, CodeToolManager, KeywordFuncLists,
+  BasicCodeTools,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
   IDEOptionsIntf, IDEMsgIntf,
@@ -361,6 +362,62 @@ type
   end;
   TCompilationToolClass = class of TCompilationToolOptions;
 
+{$IFDEF EnableNewExtTools}
+  TCompilerFlagValue = (
+    cfvNone,  // default, do not pass the flag
+    cfvHide,  // pass the flag
+    cfvShow  // pass the -flag
+    );
+
+  TCompilerMsgIdFlag = record
+    MsgId: integer;
+    Flag: TCompilerFlagValue;
+  end;
+  PCompilerMsgIdFlag = ^TCompilerMsgIdFlag;
+
+  { TCompilerMsgIDFlagsEnumerator }
+
+  TCompilerMsgIDFlagsEnumerator = class
+  protected
+    FTree: TAvgLvlTree;
+    FCurrent: TAvgLvlTreeNode;
+    function GetCurrent: PCompilerMsgIdFlag; inline;
+  public
+    constructor Create(Tree: TAvgLvlTree);
+    function GetEnumerator: TCompilerMsgIDFlagsEnumerator; inline;
+    function MoveNext: Boolean;
+    property Current: PCompilerMsgIdFlag read GetCurrent;
+  end;
+
+  { TCompilerMsgIDFlags }
+
+  TCompilerMsgIDFlags = class(TPersistent)
+  private
+    FChangeStamp: int64;
+    fLastSavedStamp: int64;
+    fTree: TAvgLvlTree; // tree of TCompilerMsgIdFlag
+    function FindNode(MsgId: integer): TAvgLvlTreeNode;
+    function GetValues(MsgId: integer): TCompilerFlagValue;
+    function GetModified: boolean;
+    procedure SetModified(AValue: boolean);
+    procedure SetValues(MsgId: integer; AValue: TCompilerFlagValue);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Assign(Source: TPersistent); override;
+    function Equals(Obj: TObject): boolean; override;
+    procedure IncreaseChangeStamp;
+    property Values[MsgId: integer]: TCompilerFlagValue read GetValues write SetValues; default;
+    property Modified: boolean read GetModified write SetModified;
+    function GetEnumerator: TCompilerMsgIDFlagsEnumerator;
+    function GetMsgIdList(Delim: char; aValue: TCompilerFlagValue): string;
+    function CreateDiff(Tool: TCompilerDiffTool; Other: TCompilerMsgIDFlags): boolean;
+    function Count: SizeInt; inline;
+    property ChangeStamp: int64 read FChangeStamp;
+  end;
+
+{$ELSE}
   TCompilerMessagesList = class;
 
   TCompilerMessageState = (
@@ -436,7 +493,7 @@ type
 
 const
   DefaultMsgFileName = '$(FPCMsgFile)';
-
+{$ENDIF}
 type
   { TBaseCompilerOptions }
 
@@ -453,11 +510,16 @@ type
     fExecuteAfter: TCompilationToolOptions;
     FCreateMakefileOnBuild: boolean;
 
+    {$IFDEF EnableNewExtTools}
+    // Turn specific types of compiler messages on or off
+    fMessageFlags: TCompilerMsgIDFlags;
+    {$ELSE}
     // Compiler Messags
     fUseCustomMessages: Boolean; // use messages customization
     fUseMsgFile: Boolean;  // use specified file for messages
     fMsgFileName: String;  // messages file name
     fCompilerMessages: TCompilerMessagesList;
+    {$ENDIF}
 
     procedure OnItemChanged(Sender: TObject);
     procedure SetCreateMakefileOnBuild(AValue: boolean);
@@ -488,10 +550,13 @@ type
     procedure SetTargetProc(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
     procedure SetTargetFilename(const AValue: String); override;
+    {$IFNDEF EnableNewExtTools}
     procedure SetUseMsgFile(AValue: Boolean);
     procedure SetMsgFileName(AValue: String);
-    procedure SetModified(const AValue: boolean); override;
+    {$ENDIF}
   protected
+    function GetModified: boolean; override;
+    procedure SetModified(const AValue: boolean); override;
     procedure ClearInheritedOptions;
     procedure SetDefaultMakeOptionsFlags(const AValue: TCompilerCmdLineOptions);
   public
@@ -580,7 +645,9 @@ type
     function GetCustomOptions(Parsed: TCompilerOptionsParseType): string;
     function TrimCustomOptions(o: string): string; override;
     function GetOptionsForCTDefines: string;
+    {$IFNDEF EnableNewExtTools}
     function GetParsedMsgFilename: string;
+    {$ENDIF}
 
     procedure RenameMacro(const OldName, NewName: string;
               ChangeConditionals: boolean); virtual; // rename macro in paths and options, not in BuildMacros, not in dependencies
@@ -601,10 +668,14 @@ type
     property CreateMakefileOnBuild: boolean read FCreateMakefileOnBuild
                                             write SetCreateMakefileOnBuild;
 
-    // compiler messages
+    // compiler message types by id
+    {$IFDEF EnableNewExtTools}
+    property MessageFlags: TCompilerMsgIDFlags read fMessageFlags;
+    {$ELSE}
     property CompilerMessages: TCompilerMessagesList read fCompilerMessages;
     property UseMsgFile: Boolean read fUseMsgFile write SetUseMsgFile;
     property MsgFileName: String read fMsgFileName write SetMsgFileName;
+    {$ENDIF}
   end;
 
   TBaseCompilerOptionsClass = class of TBaseCompilerOptions;
@@ -682,7 +753,7 @@ var
 var
   OnParseString: TParseStringEvent = nil;
 
-function EnumToStr(opt: TParsedCompilerOptString): string;
+function EnumToStr(opt: TParsedCompilerOptString): string; overload;
 function ParseString(Options: TParsedCompilerOptions;
                      const UnparsedValue: string;
                      PlatformIndependent: boolean): string;
@@ -716,6 +787,10 @@ function LoadXMLCompileReasons(const AConfig: TXMLConfig;
 procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
   const AFlags, DefaultFlags: TCompileReasons);
 
+{$IFDEF EnableNewExtTools}
+function EnumToStr(Flag: TCompilerFlagValue): string; overload;
+function CompareCompMsgIdFlag(Data1, Data2: Pointer): integer;
+{$ELSE}
 const
   MaxMsgParams = 4;
   MaxMsgIndex = 20000;
@@ -725,6 +800,7 @@ const
   symName   = '$Name';
   symItem   = '$Item';
   symLineNo = '$LineNum';
+{$ENDIF}
 
 var
   TestCompilerOptions: TNotifyEvent = nil;
@@ -732,15 +808,11 @@ var
 implementation
 
 const
-  CompilerOptionsVersion = 11;
-  {$IFDEF EnableNewExtTools}
-  etNone = mluNone;
-  etHint = mluHint;
-  etNote = mluNote;
-  etWarning = mluWarning;
-  etError = mluError;
-  etFatal = mluFatal;
-  {$ENDIF}
+  CompilerOptionsVersion = 12;
+  // 12 replaced
+  // 11 Debugging/DebugInfoType/Value
+  // 7  TargetProcessor/Value
+  // 6  SyntaxMode/Value
 
 function EnumToStr(opt: TParsedCompilerOptString): string;
 begin
@@ -1025,6 +1097,73 @@ begin
   AConfig.SetDeleteValue(APath+'Run', crRun in AFlags, crRun in DefaultFlags);
 end;
 
+{$IFDEF EnableNewExtTools}
+function EnumToStr(Flag: TCompilerFlagValue): string;
+begin
+  case Flag of
+  cfvHide: Result:='Hide';
+  cfvShow: Result:='Show';
+  else Result:='Default';
+  end;
+end;
+
+function CompareCompMsgIdFlag(Data1, Data2: Pointer): integer;
+var
+  Flag1: PCompilerMsgIdFlag absolute Data1;
+  Flag2: PCompilerMsgIdFlag absolute Data2;
+begin
+  if Flag1^.MsgId<Flag2^.MsgId then
+    Result:=1
+  else if Flag1^.MsgId>Flag2^.MsgId then
+    Result:=-1
+  else
+    Result:=0;
+end;
+
+{ TCompilerMsgIDFlagsEnumerator }
+
+function TCompilerMsgIDFlagsEnumerator.GetCurrent: PCompilerMsgIdFlag;
+begin
+  Result:=PCompilerMsgIdFlag(FCurrent.Data);
+end;
+
+constructor TCompilerMsgIDFlagsEnumerator.Create(Tree: TAvgLvlTree);
+begin
+  FTree:=Tree;
+end;
+
+function TCompilerMsgIDFlagsEnumerator.
+  GetEnumerator: TCompilerMsgIDFlagsEnumerator;
+begin
+  Result:=Self;
+end;
+
+function TCompilerMsgIDFlagsEnumerator.MoveNext: Boolean;
+begin
+  if FCurrent<>nil then
+    FCurrent:=FCurrent.Successor
+  else
+    FCurrent:=FTree.FindLowest;
+  Result:=FCurrent<>nil;
+end;
+{$ELSE}
+function GetMsgsIndexesWithState(msglist: TCompilerMessagesList;
+  const Separator: string; const State: TCompilerMessageState): string;
+var
+  i : integer;
+begin
+  Result := '';
+  if not Assigned(msglist) then Exit;
+  for i := 0 to msglist.Count - 1 do
+    if msglist.Msg[i].State = State then begin
+      if Result <> '' then
+        Result := Result + Separator + IntToStr(msglist.Msg[i].MsgIndex)
+      else
+        Result := IntToStr(msglist.Msg[i].MsgIndex);
+    end;
+end;
+{$ENDIF}
+
 { TIDECfgScriptEngine }
 
 function TIDECfgScriptEngine.IsCustomFunction(FunctionName: PChar): boolean;
@@ -1084,8 +1223,12 @@ begin
   FExecuteAfter := AToolClass.Create(Self);
   fExecuteAfter.OnChanged := @OnItemChanged;
   fBuildMacros := TIDEBuildMacros.Create(Self);
+  {$IFDEF EnableNewExtTools}
+  fMessageFlags:=TCompilerMsgIDFlags.Create;
+  {$ELSE}
   FCompilerMessages:=TCompilerMessagesList.Create;
   FCompilerMessages.OnChanged := @OnItemChanged;
+  {$ENDIF}
   Clear;
 end;
 
@@ -1099,7 +1242,11 @@ end;
 ------------------------------------------------------------------------------}
 destructor TBaseCompilerOptions.Destroy;
 begin
+  {$IFDEF EnableNewExtTools}
+  FreeAndNil(fMessageFlags);
+  {$ELSE}
   FreeAndNil(FCompilerMessages);
+  {$ENDIF}
   FreeAndNil(fBuildMacros);
   FreeThenNil(fExecuteBefore);
   FreeThenNil(fExecuteAfter);
@@ -1227,6 +1374,7 @@ begin
   IncreaseChangeStamp;
 end;
 
+{$IFNDEF EnableNewExtTools}
 procedure TBaseCompilerOptions.SetUseMsgFile(AValue: Boolean);
 begin
   if fUseMsgFile=AValue then Exit;
@@ -1240,6 +1388,12 @@ begin
   if fMsgFileName=AValue then Exit;
   fMsgFileName:=AValue;
   IncreaseChangeStamp;
+end;
+{$ENDIF}
+
+function TBaseCompilerOptions.GetModified: boolean;
+begin
+  Result:=(inherited GetModified) {$IFDEF EnableNewExtTools}or MessageFlags.Modified{$ENDIF};
 end;
 
 procedure TBaseCompilerOptions.OnItemChanged(Sender: TObject);
@@ -1373,11 +1527,9 @@ end;
 procedure TBaseCompilerOptions.LoadFromXMLConfig(AXMLConfig: TXMLConfig;
   const Path: string);
 var
-  p: String;
-  b, PathDelimChange: boolean;
   FileVersion: Integer;
-  i: LongInt;
-  dit: TCompilerDbgSymbolType;
+  PathDelimChange: boolean;
+  p: String;
 
   function f(const Filename: string): string;
   begin
@@ -1418,19 +1570,75 @@ var
       LinkSmart := aXMLConfig.GetValue(p+'LinkSmart/Value', false);
   end;
 
-  procedure ReadMsgErrorName(t: {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
-    const aPath, SubPath: string);
+  {$IFDEF EnableNewExtTools}
+  procedure ReadListOfMessageFlags(aPath: string; aValue: TCompilerFlagValue);
+  var
+    dNode: TDOMNode;
+    i: Integer;
+    Attr: TDOMNode;
+    aName: DOMString;
+    MsgId: Integer;
+  begin
+    dNode:=aXMLConfig.FindNode(aPath,false);
+    if dNode<>nil then begin
+      for i:=0 to dNode.Attributes.Length-1 do begin
+        Attr:=dNode.Attributes.Item[i];
+        aName:=Attr.NodeName;
+        //debugln(['ReadListOfMessageFlags Attr=',aName,'=',Attr.NodeValue]);
+        if LeftStr(aName,3)<>'idx' then continue;
+        Delete(aName,1,3);
+        MsgId:=StrToIntDef(aName,0);
+        if MsgId<=0 then continue;
+        if Attr.NodeValue<>'True' then continue;
+        MessageFlags[MsgId]:=aValue;
+      end;
+    end;
+  end;
+  {$ELSE}
+  procedure ReadMsgErrorName(t: TFPCErrorType; const aPath, SubPath: string);
   begin
     fCompilerMessages.fErrorNames[t]:=
       aXMLConfig.GetValue(aPath+'CompilerMessages/ErrorNames/'+SubPath,
-      {$IFDEF EnableNewExtTools}
-      MessageLineUrgencyNames[t]
-      {$ELSE}
       FPCErrorTypeNames[t]
-      {$ENDIF}
       );
   end;
 
+  procedure ReadCompilerMessages;
+  var
+    i: integer;
+  begin
+    // messages
+    if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault;
+    UseMsgFile := aXMLConfig.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
+    MsgFileName := aXMLConfig.GetValue(p+'CompilerMessages/MsgFileName/Value', DefaultMsgFileName);
+    if UseMsgFile and FileExistsCached(GetParsedMsgFilename) then
+      fCompilerMessages.LoadMsgFile(GetParsedMsgFilename);
+
+    for i := 0 to fCompilerMessages.Count - 1 do begin
+      with fCompilerMessages.Msg[i] do
+        if aXMLConfig.GetValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), false) then
+          State := msOff
+        else
+        if aXMLConfig.GetValue(p+'CompilerMessages/NonIgnoredMessages/idx'+IntToStr(MsgIndex), false) then
+          State := msOn;
+    end;
+
+    if UseMsgFile then begin
+      // ErrorNames should be stored, because the Message file is not read (or parsed)
+      // on project opening. So errors needs to be initialized properly from the CompilerOptions.xml
+      ReadMsgErrorName(etHint,p,'Hint');
+      ReadMsgErrorName(etNote,p,'Note');
+      ReadMsgErrorName(etWarning,p,'Earning');
+      ReadMsgErrorName(etError,p,'Error');
+      ReadMsgErrorName(etFatal,p,'Fatal');
+    end;
+  end;
+  {$ENDIF}
+
+var
+  b: boolean;
+  dit: TCompilerDbgSymbolType;
+  i: Integer;
 begin
   { Load the compiler options from the XML file }
   p:=Path;
@@ -1581,31 +1789,12 @@ begin
   WriteFPCLogo := aXMLConfig.GetValue(p+'WriteFPCLogo/Value', true);
   StopAfterErrCount := aXMLConfig.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
 
-  // messages
-  if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault;
-  UseMsgFile := aXMLConfig.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
-  MsgFileName := aXMLConfig.GetValue(p+'CompilerMessages/MsgFileName/Value', DefaultMsgFileName);
-  if UseMsgFile and FileExistsCached(GetParsedMsgFilename) then
-    fCompilerMessages.LoadMsgFile(GetParsedMsgFilename);
-
-  for i := 0 to fCompilerMessages.Count - 1 do begin
-    with fCompilerMessages.Msg[i] do
-      if aXMLConfig.GetValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), false) then
-        State := msOff
-      else
-      if aXMLConfig.GetValue(p+'CompilerMessages/NonIgnoredMessages/idx'+IntToStr(MsgIndex), false) then
-        State := msOn;
-  end;
-
-  if UseMsgFile then begin
-    // ErrorNames should be stored, because the Message file is not read (or parsed)
-    // on project opening. So errors needs to be initialized properly from the CompilerOptions.xml
-    ReadMsgErrorName({$IFDEF EnableNewExtTools}mluHint{$ELSE}etHint{$ENDIF},p,'Hint');
-    ReadMsgErrorName({$IFDEF EnableNewExtTools}mluNote{$ELSE}etNote{$ENDIF},p,'Note');
-    ReadMsgErrorName({$IFDEF EnableNewExtTools}mluWarning{$ELSE}etWarning{$ENDIF},p,'Earning');
-    ReadMsgErrorName({$IFDEF EnableNewExtTools}mluError{$ELSE}etError{$ENDIF},p,'Error');
-    ReadMsgErrorName({$IFDEF EnableNewExtTools}mluFatal{$ELSE}etFatal{$ENDIF},p,'Fatal');
-  end;
+  {$IFDEF EnableNewExtTools}
+  ReadListOfMessageFlags(p+'CompilerMessages/IgnoredMessages',cfvHide);
+  ReadListOfMessageFlags(p+'CompilerMessages/NonIgnoredMessages',cfvShow);
+  {$ELSE}
+  ReadCompilerMessages;
+  {$ENDIF}
 
   { Other }
   p:=Path+'Other/';
@@ -1663,22 +1852,50 @@ var
     Result:=SwitchPathDelims(AFilename,UsePathDelim);
   end;
 
-  procedure WriteMsgErrorName(t: {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
-    const aPath, SubPath: string);
+  {$IFDEF EnableNewExtTools}
+  procedure WriteListOfMessageFlags(aPath: string; aValue: TCompilerFlagValue);
+  var
+    Flag: PCompilerMsgIdFlag;
+  begin
+    for Flag in MessageFlags do
+      if Flag^.Flag=aValue then begin
+        //debugln(['WriteListOfMessageFlags aPath=',aPath,' Flag.MsgId=',Flag^.MsgId]);
+        aXMLConfig.SetValue(aPath+'/idx'+IntToStr(Flag^.MsgId), true);
+      end;
+  end;
+  {$ELSE}
+  procedure WriteMsgErrorName(t: TFPCErrorType; const aPath, SubPath: string);
   begin
     aXMLConfig.SetDeleteValue(aPath+'CompilerMessages/ErrorNames/'+SubPath,
       CompilerMessages.ErrorNames[t],
-      {$IFDEF EnableNewExtTools}
-      MessageLineUrgencyNames[t]
-      {$ELSE}
       FPCErrorTypeNames[t]
-      {$ENDIF}
       );
   end;
 
+  procedure WriteCompilerMessages(const p: string);
+  var
+    i: integer;
+  begin
+    for i := 0 to CompilerMessages.Count - 1 do begin
+      with CompilerMessages.Msg[i] do
+      begin
+        aXMLConfig.SetDeleteValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), State = msOff, false);
+        aXMLConfig.SetDeleteValue(p+'CompilerMessages/NonIgnoredMessages/idx'+IntToStr(MsgIndex), State = msOn, false);
+      end;
+    end;
+    aXMLConfig.SetDeleteValue(p+'CompilerMessages/UseMsgFile/Value', UseMsgFile, False);
+    aXMLConfig.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '$(FPCMsgFile)');
+
+    WriteMsgErrorName(etHint,p,'Hint');
+    WriteMsgErrorName(etNote,p,'Note');
+    WriteMsgErrorName(etWarning,p,'Earning');
+    WriteMsgErrorName(etError,p,'Error');
+    WriteMsgErrorName(etFatal,p,'Fatal');
+  end;
+  {$ENDIF}
+
 var
   P, s: string;
-  i: Integer;
 begin
   { Save the compiler options to the XML file }
   p:=Path;
@@ -1792,21 +2009,12 @@ begin
   aXMLConfig.SetDeleteValue(p+'WriteFPCLogo/Value', WriteFPCLogo,true);
   aXMLConfig.SetDeleteValue(p+'ConfigFile/StopAfterErrCount/Value', StopAfterErrCount,1);
 
-  for i := 0 to CompilerMessages.Count - 1 do begin
-    with CompilerMessages.Msg[i] do
-    begin
-      aXMLConfig.SetDeleteValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), State = msOff, false);
-      aXMLConfig.SetDeleteValue(p+'CompilerMessages/NonIgnoredMessages/idx'+IntToStr(MsgIndex), State = msOn, false);
-    end;
-  end;
-  aXMLConfig.SetDeleteValue(p+'CompilerMessages/UseMsgFile/Value', UseMsgFile, False);
-  aXMLConfig.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '$(FPCMsgFile)');
-
-  WriteMsgErrorName({$IFDEF EnableNewExtTools}mluHint{$ELSE}etHint{$ENDIF},p,'Hint');
-  WriteMsgErrorName({$IFDEF EnableNewExtTools}mluNote{$ELSE}etNote{$ENDIF},p,'Note');
-  WriteMsgErrorName({$IFDEF EnableNewExtTools}mluWarning{$ELSE}etWarning{$ENDIF},p,'Earning');
-  WriteMsgErrorName({$IFDEF EnableNewExtTools}mluError{$ELSE}etError{$ENDIF},p,'Error');
-  WriteMsgErrorName({$IFDEF EnableNewExtTools}mluFatal{$ELSE}etFatal{$ENDIF},p,'Fatal');
+  {$IFDEF EnableNewExtTools}
+  WriteListOfMessageFlags(p+'CompilerMessages/IgnoredMessages',cfvHide);
+  WriteListOfMessageFlags(p+'CompilerMessages/NonIgnoredMessages',cfvShow);
+  {$ELSE}
+  WriteCompilerMessages(p);
+  {$ENDIF}
 
   { Other }
   p:=Path+'Other/';
@@ -1836,6 +2044,9 @@ begin
       OnModified(Self);
   end else begin
     FSavedChangeStamp:=ChangeStamp;
+    {$IFDEF EnableNewExtTools}
+    fMessageFlags.Modified:=false;
+    {$ENDIF}
   end;
 end;
 
@@ -2389,10 +2600,12 @@ begin
   Add(GetSyntaxOptionsString);
 end;
 
+{$IFNDEF EnableNewExtTools}
 function TBaseCompilerOptions.GetParsedMsgFilename: string;
 begin
   Result:=ParsedOpts.GetParsedValue(pcosMsgFile);
 end;
+{$ENDIF}
 
 procedure TBaseCompilerOptions.RenameMacro(const OldName, NewName: string;
   ChangeConditionals: boolean);
@@ -2429,21 +2642,6 @@ function TBaseCompilerOptions.MakeOptionsString(
   Flags: TCompilerCmdLineOptions): String;
 begin
   Result:=MakeOptionsString(GetDefaultMainSourceFileName,Flags);
-end;
-
-function GetMsgsIndexesWithState(msglist: TCompilerMessagesList; const Separator: string; const State: TCompilerMessageState): string;
-var
-  i : integer;
-begin
-  Result := '';
-  if not Assigned(msglist) then Exit;
-  for i := 0 to msglist.Count - 1 do
-    if msglist.Msg[i].State = State then begin
-      if Result <> '' then
-        Result := Result + Separator + IntToStr(msglist.Msg[i].MsgIndex)
-      else
-        Result := IntToStr(msglist.Msg[i].MsgIndex);
-    end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3037,6 +3235,14 @@ begin
   // verbosity
   if (WriteFPCLogo) then
     switches := switches + ' -l';
+  {$IFDEF EnableNewExtTools}
+  t := MessageFlags.GetMsgIdList(',',cfvHide);
+  if t <> '' then
+    switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
+  t := MessageFlags.GetMsgIdList(',',cfvShow);
+  if t <> '' then
+    switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
+  {$ELSE}
   t := GetMsgsIndexesWithState(CompilerMessages, ',', msOff);
   if t <> '' then
     switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
@@ -3045,6 +3251,7 @@ begin
     switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
   if fUseMsgFile and FileExistsCached(GetParsedMsgFilename) then
     switches := switches + ' ' + PrepareCmdLineOption('-Fr'+GetParsedMsgFilename);
+  {$ENDIF}
 
 
   { ----------------------------------------------- }
@@ -3299,10 +3506,13 @@ begin
   fShowHintsForSenderNotUsed := false;
   fWriteFPCLogo := true;
   fStopAfterErrCount := 1;
-
+  {$IFDEF EnableNewExtTools}
+  fMessageFlags.Clear;
+  {$ELSE}
   fUseCustomMessages := false;
   fCompilerMessages.Clear;
   fCompilerMessages.SetDefault;
+  {$ENDIF}
 
   // other
   fDontUseConfigFile := false;
@@ -3417,10 +3627,14 @@ begin
   fWriteFPCLogo := CompOpts.fWriteFPCLogo;
 
   // Messages
+  {$IFDEF EnableNewExtTools}
+  fMessageFlags.Assign(CompOpts.fMessageFlags);
+  {$ELSE}
   fUseCustomMessages := CompOpts.fUseCustomMessages;
   fUseMsgFile := CompOpts.fUseMsgFile;
   fMsgFileName := CompOpts.fMsgFileName;
   fCompilerMessages.Assign(CompOpts.fCompilerMessages);
+  {$ENDIF}
 
   // Other
   fDontUseConfigFile := CompOpts.fDontUseConfigFile;
@@ -3474,8 +3688,11 @@ function TBaseCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
     Result:=true;
     Tool.AddDiffItem(PropertyName,CompilationExecutableTypeNames[New]);
   end;
+
+{$IFNDEF EnableNewExtTools}
 var
   i: Integer;
+{$ENDIF}
 begin
   Result:=false;
   //if Tool<>nil then debugln(['TBaseCompilerOptions.CreateDiff ',DbgSName(Self)]);
@@ -3572,8 +3789,11 @@ begin
   if Done(Tool.AddDiff('ShowHintsForSenderNotUsed',fShowHintsForSenderNotUsed,CompOpts.fShowHintsForSenderNotUsed)) then exit;
   if Done(Tool.AddDiff('WriteFPCLogo',fWriteFPCLogo,CompOpts.fWriteFPCLogo)) then exit;
 
-  //messages
+  // messages
   if Tool<>nil then Tool.Path:='Messages';
+  {$IFDEF EnableNewExtTools}
+  if Done(MessageFlags.CreateDiff(Tool,CompOpts.MessageFlags)) then exit;
+  {$ELSE}
   if Done(Tool.AddDiff('UseCustomMessages',fUseCustomMessages,CompOpts.fUseCustomMessages)) then exit;
   if Done(Tool.AddDiff('UseMsgFile',fUseMsgFile,CompOpts.fUseMsgFile)) then exit;
   if Done(Tool.AddDiff('MsgFileName',fMsgFileName,CompOpts.fMsgFileName)) then exit;
@@ -3585,6 +3805,7 @@ begin
         GetEnumName(TypeInfo(TCompilerMessageState),Ord(fCompilerMessages.Msg[i].State)),
         GetEnumName(TypeInfo(TCompilerMessageState),Ord(CompOpts.fCompilerMessages.Msg[i].State)));
     end;
+  {$ENDIF}
 
   // other
   if Tool<>nil then Tool.Path:='Other';
@@ -4556,6 +4777,216 @@ begin
   end;
 end;
 
+{$IFDEF EnableNewExtTools}
+{ TCompilerMsgIDFlags }
+
+function TCompilerMsgIDFlags.Count: SizeInt;
+begin
+  Result:=fTree.Count;
+end;
+
+function TCompilerMsgIDFlags.FindNode(MsgId: integer): TAvgLvlTreeNode;
+var
+  Flag: TCompilerMsgIdFlag;
+begin
+  Flag.MsgId:=MsgId;
+  Result:=fTree.FindKey(@Flag,@CompareCompMsgIdFlag);
+end;
+
+function TCompilerMsgIDFlags.GetValues(MsgId: integer): TCompilerFlagValue;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=FindNode(MsgId);
+  if Node<>nil then
+    Result:=PCompilerMsgIdFlag(Node.Data)^.Flag
+  else
+    Result:=cfvNone;
+end;
+
+function TCompilerMsgIDFlags.GetModified: boolean;
+begin
+  Result:=FChangeStamp<>fLastSavedStamp;
+end;
+
+procedure TCompilerMsgIDFlags.SetModified(AValue: boolean);
+begin
+  if AValue then
+    IncreaseChangeStamp
+  else
+    fLastSavedStamp:=FChangeStamp;
+end;
+
+procedure TCompilerMsgIDFlags.SetValues(MsgId: integer;
+  AValue: TCompilerFlagValue);
+var
+  Node: TAvgLvlTreeNode;
+  Flag: PCompilerMsgIdFlag;
+begin
+  Node:=FindNode(MsgId);
+  if (Node<>nil) then begin
+    Flag:=PCompilerMsgIdFlag(Node.Data);
+    if Flag^.Flag=AValue then
+      exit; // no change
+    if AValue=cfvNone then begin
+      // change to default -> do not store default values => delete
+      Dispose(Flag);
+      fTree.Delete(Node);
+    end
+    else
+      Flag^.Flag:=AValue; // switch
+  end else if AValue=cfvNone then begin
+    // no change
+    exit;
+  end else begin
+    // add new value
+    New(Flag);
+    Flag^.MsgId:=MsgId;
+    Flag^.Flag:=AValue;
+    fTree.Add(Flag);
+    fTree.ConsistencyCheck;
+  end;
+  IncreaseChangeStamp;
+end;
+
+constructor TCompilerMsgIDFlags.Create;
+begin
+  fTree:=TAvgLvlTree.Create(@CompareCompMsgIdFlag);
+end;
+
+destructor TCompilerMsgIDFlags.Destroy;
+begin
+  Clear;
+  FreeAndNil(fTree);
+  inherited Destroy;
+end;
+
+procedure TCompilerMsgIDFlags.Clear;
+var
+  Node: TAvgLvlTreeNode;
+  Flag: PCompilerMsgIdFlag;
+begin
+  Node:=fTree.FindLowest;
+  while Node<>nil do begin
+    Flag:=PCompilerMsgIdFlag(Node.Data);
+    Dispose(Flag);
+    Node:=Node.Successor;
+  end;
+  fTree.Clear;
+end;
+
+procedure TCompilerMsgIDFlags.Assign(Source: TPersistent);
+var
+  Src: TCompilerMsgIDFlags;
+  Node: TAvgLvlTreeNode;
+  SrcFlag, Flag: PCompilerMsgIdFlag;
+begin
+  if Source is TCompilerMsgIDFlags then begin
+    Src:=TCompilerMsgIDFlags(Source);
+    if Equals(Src) then exit;
+    // copy node structure and Data references
+    fTree.Assign(Src.fTree);
+    // clone data
+    Node:=fTree.FindLowest;
+    while Node<>nil do begin
+      SrcFlag:=PCompilerMsgIdFlag(Node.Data);
+      New(Flag);
+      Flag^:=SrcFlag^;
+      Node.Data:=Flag;
+      Node:=Node.Successor;
+    end;
+    IncreaseChangeStamp;
+  end else
+    inherited Assign(Source);
+end;
+
+function TCompilerMsgIDFlags.Equals(Obj: TObject): boolean;
+var
+  Other: TCompilerMsgIDFlags;
+  MyNode: TAvgLvlTreeNode;
+  OtherNode: TAvgLvlTreeNode;
+  MyFlag: PCompilerMsgIdFlag;
+  OtherFlag: PCompilerMsgIdFlag;
+begin
+  if Obj=Self then exit(true);
+  if Obj is TCompilerMsgIDFlags then begin
+    Other:=TCompilerMsgIDFlags(Obj);
+    Result:=false;
+    if Count<>Other.Count then exit;
+    MyNode:=fTree.FindLowest;
+    OtherNode:=Other.fTree.FindLowest;
+    while MyNode<>nil do begin
+      if OtherNode=nil then exit;
+      MyFlag:=PCompilerMsgIdFlag(MyNode.Data);
+      OtherFlag:=PCompilerMsgIdFlag(OtherNode.Data);
+      if (MyFlag^.MsgId<>OtherFlag^.MsgId)
+      or (MyFlag^.Flag<>OtherFlag^.Flag) then exit;
+      MyNode:=MyNode.Successor;
+      OtherNode:=OtherNode.Successor;
+    end;
+    if OtherNode<>nil then exit;
+    Result:=true;
+  end
+  else
+    Result:=inherited Equals(Obj);
+end;
+
+procedure TCompilerMsgIDFlags.IncreaseChangeStamp;
+begin
+  CTIncreaseChangeStamp64(FChangeStamp);
+end;
+
+function TCompilerMsgIDFlags.GetEnumerator: TCompilerMsgIDFlagsEnumerator;
+begin
+  Result:=TCompilerMsgIDFlagsEnumerator.Create(fTree);
+end;
+
+function TCompilerMsgIDFlags.GetMsgIdList(Delim: char;
+  aValue: TCompilerFlagValue): string;
+var
+  Flag: PCompilerMsgIdFlag;
+begin
+  Result:='';
+  for Flag in Self do begin
+    if Flag^.Flag<>aValue then continue;
+    if Result<>'' then
+      Result+=Delim;
+    Result+=IntToStr(Flag^.MsgId);
+  end;
+end;
+
+function TCompilerMsgIDFlags.CreateDiff(Tool: TCompilerDiffTool;
+  Other: TCompilerMsgIDFlags): boolean;
+var
+  Node: TAvgLvlTreeNode;
+  Flag: PCompilerMsgIdFlag;
+  OtherFlag: TCompilerFlagValue;
+begin
+  Result:=false;
+  if Tool=nil then
+    exit(Equals(Other));
+  Result:=Result or Tool.AddDiff('Count',Count,Other.Count);
+  // first all in here
+  Node:=fTree.FindLowest;
+  while Node<>nil do begin
+    Flag:=PCompilerMsgIdFlag(Node.Data);
+    OtherFlag:=Other[Flag^.MsgId];
+    if Flag^.Flag<>OtherFlag then begin
+      Result:=Result or Tool.AddDiff('message id '+IntToStr(Flag^.MsgId),EnumToStr(Flag^.Flag),EnumToStr(OtherFlag));
+    end;
+    Node:=Node.Successor;
+  end;
+  // then all not here
+  Node:=Other.fTree.FindLowest;
+  while Node<>nil do begin
+    Flag:=PCompilerMsgIdFlag(Node.Data);
+    if Values[Flag^.MsgId]=cfvNone then
+      Result:=Result or Tool.AddDiff('message id '+IntToStr(Flag^.MsgId),EnumToStr(cfvNone),EnumToStr(Flag^.Flag));
+    Node:=Node.Successor;
+  end;
+end;
+
+{$ELSE}
 { TCompilerMessagesList }
 
 procedure TCompilerMessagesList.ClearHash;
@@ -4649,7 +5080,7 @@ begin
   Result := fItems.Count;
 end;
 
-function TCompilerMessagesList.GetErrorNames(errtype: {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}): string;
+function TCompilerMessagesList.GetErrorNames(errtype: TFPCErrorType): string;
 begin
   Result := FErrorNames[errtype];
 end;
@@ -4691,7 +5122,7 @@ procedure TCompilerMessagesList.Assign(Src: TCompilerMessagesList);
 var
   i   : Integer;
   m   : TCompilerMessageConfig;
-  err : {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
+  err : TFPCErrorType;
 begin
   if Equals(Src) then
     Exit;
@@ -4780,12 +5211,6 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
     else Result := s;
   end;
 
-  {$IFDEF EnableNewExtTools}
-  function StrToErrType(const msgtype: String): TMessageLineUrgency;
-  begin
-    Result:=FPCMsgTypeToUrgency(msgtype);
-  end;
-  {$ELSE}
   function StrToErrType(const msgtype: String): TFPCErrorType;
   begin
     if length(msgtype)<>1 then
@@ -4801,7 +5226,6 @@ function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
         Result:=etNone;
       end;
   end;
-  {$ENDIF}
 
 var
   temp    : TStringList;
@@ -4813,7 +5237,7 @@ var
   i       : Integer;
   lst     : Boolean;
   b       : array of TCompilerMessageState;
-  err     : {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
+  err     : TFPCErrorType;
 const
   idxFatal   = 01012;
   idxError   = 01013;
@@ -4846,15 +5270,15 @@ begin
 
           if (midx >= idxFatal) and (midx<= idxHint) then begin
             case midx of
-              idxFatal: err := {$IFDEF EnableNewExtTools}mluFatal{$ELSE}etFatal{$ENDIF};
-              idxError: err := {$IFDEF EnableNewExtTools}mluError{$ELSE}etError{$ENDIF};
-              idxWarning: err := {$IFDEF EnableNewExtTools}mluWarning{$ELSE}etWarning{$ENDIF};
-              idxNote: err := {$IFDEF EnableNewExtTools}mluNote{$ELSE}etNote{$ENDIF};
-              idxHint: err := {$IFDEF EnableNewExtTools}mluHint{$ELSE}etHint{$ENDIF};
+              idxFatal: err := etFatal;
+              idxError: err := etError;
+              idxWarning: err := etWarning;
+              idxNote: err := etNote;
+              idxHint: err := etHint;
             else
-              err := {$IFDEF EnableNewExtTools}mluNone{$ELSE}etNone{$ENDIF};
+              err := etNone;
             end;
-            if err <> {$IFDEF EnableNewExtTools}mluNone{$ELSE}etNone{$ENDIF} then begin
+            if err <> etNone then begin
               mtext := Trim(mtext);
               if (length(mtext)>1) and (mtext[length(mtext)]=':') then
                 FErrorNames[err]:=Copy(mtext, 1, length(mtext)-1)
@@ -4879,7 +5303,7 @@ begin
 end;
 
 function TCompilerMessagesList.Add(AMsgIndex: Integer;
-  AMsgType: {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
+  AMsgType: TFPCErrorType;
   const AMsgText: string; DefIgnored: Boolean = false;
   AState: TCompilerMessageState = msDefault): TCompilerMessageConfig;
 var
@@ -4902,7 +5326,7 @@ end;
 procedure TCompilerMessagesList.SetDefault(KeepState: Boolean);
 var
   b   : array of TCompilerMessageState;
-  err : {$IFDEF EnableNewExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF};
+  err : TFPCErrorType;
 begin
   if KeepState then begin
     SetLength(b, MaxMsgIndex);
@@ -4912,11 +5336,7 @@ begin
   try
     Clear;
     for err := low(err) to High(err) do
-      {$IFDEF EnableNewExtTools}
-      FErrorNames[err]:=MessageLineUrgencyNames[err];
-      {$ELSE}
       FErrorNames[err]:=FPCErrorTypeNames[err];
-      {$ENDIF}
 
     Add(02005,etWarning,'Comment level $1 found');
     Add(02008,etNote,'Ignored compiler switch "$1"');
@@ -5277,6 +5697,7 @@ begin
     Result := GetUserText([]);
 end;
 }
+{$ENDIF}
 initialization
   CompilerParseStamp:=1;
   CompilerParseStampIncreased:=nil;

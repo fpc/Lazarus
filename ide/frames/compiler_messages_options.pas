@@ -5,9 +5,13 @@ unit compiler_messages_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, ListFilterEdit, StdCtrls, CheckLst, Dialogs,
-  IDEOptionsIntf, IDEMsgIntf, IDEExternToolIntf,
-  LazarusIDEStrConsts, CompilerOptions, IDEDialogs;
+  Classes, SysUtils, FileUtil, LazFileCache, LazLoggerBase, ListFilterEdit,
+  StdCtrls, CheckLst, Dialogs, IDEOptionsIntf, IDEMsgIntf, IDEExternToolIntf,
+  MacroIntf, IDEDialogs, CodeToolsFPCMsgs, CompilerOptions, LazarusIDEStrConsts
+  {$IFDEF EnableNewExtTools}
+  ,etFPCMsgParser
+  {$ENDIF}
+  ;
 
 type
 
@@ -26,7 +30,7 @@ type
     procedure MsgFileBrowseButtonClick(Sender: TObject);
     procedure UseMsgFileCheckBoxChange(Sender: TObject);
   private
-    TempMessages: TCompilerMessagesList;
+    TempMessages: {$IFDEF EnableNewExtTools}TCompilerMsgIDFlags{$ELSE}TCompilerMessagesList{$ENDIF};
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -45,21 +49,46 @@ implementation
 { TCompilerMessagesOptionsFrame }
 
 procedure TCompilerMessagesOptionsFrame.chklistCompMsgItemClick(Sender: TObject; Index: integer);
+{$IFDEF EnableNewExtTools}
+var
+  MsgId: Integer;
+{$ELSE}
 const
   BoolToMessageState: array[Boolean] of TCompilerMessageState = (msOff, msOn);
 var
   m: TCompilerMessageConfig;
+{$ENDIF}
 begin
-  if (Index >= 0) and (Index < chklistCompMsg.Items.Count) then begin
-    m := TCompilerMessageConfig(chklistCompMsg.Items.Objects[Index]);
-    if (m.DefIgnored <> chklistCompMsg.Checked[Index]) then
-      m.State := msDefault
-    else
-      m.State := BoolToMessageState[chklistCompMsg.Checked[Index]];
-  end;
+  if (Index < 0) or (Index >= chklistCompMsg.Items.Count) then exit;
+  {$IFDEF EnableNewExtTools}
+  MsgId:=Integer(PtrUInt(Pointer(chklistCompMsg.Items.Objects[Index])));
+  if MsgId<=0 then exit;
+  if chklistCompMsg.Checked[Index] then begin
+    // show message, this is the default
+    TempMessages[MsgId]:=cfvNone
+  end else
+    TempMessages[MsgId]:=cfvHide;
+  {$ELSE}
+  m := TCompilerMessageConfig(chklistCompMsg.Items.Objects[Index]);
+  if (m.DefIgnored <> chklistCompMsg.Checked[Index]) then
+    m.State := msDefault
+  else
+    m.State := BoolToMessageState[chklistCompMsg.Checked[Index]];
+  {$ENDIF}
 end;
 
 function TCompilerMessagesOptionsFrame.CheckItem(Item: TObject): Boolean;
+{$IFDEF EnableNewExtTools}
+var
+  MsgId: Integer;
+begin
+  Result:=true;
+  if TempMessages=nil then exit;
+  MsgId:=Integer(PtrUInt(Pointer(Item)));
+  if MsgId<=0 then exit;
+  Result:=TempMessages[MsgId]<>cfvHide;
+end;
+{$ELSE}
 var
   m: TCompilerMessageConfig;
 begin
@@ -69,6 +98,7 @@ begin
   else
     Result := m.State = msOn;
 end;
+{$ENDIF}
 
 procedure TCompilerMessagesOptionsFrame.MsgFileBrowseButtonClick(Sender: TObject
   );
@@ -98,14 +128,24 @@ end;
 constructor TCompilerMessagesOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  {$IFDEF EnableNewExtTools}
+  TempMessages:=TCompilerMsgIDFlags.Create;
+  UseMsgFileCheckBox.Visible:=false;
+  MsgFileEdit.Visible:=false;
+  MsgFileBrowseButton.Visible:=false;
+  {$ELSE}
   TempMessages:=TCompilerMessagesList.Create;
+  {$ENDIF}
 end;
 
 destructor TCompilerMessagesOptionsFrame.Destroy;
 begin
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
   editMsgFilter.Items.Clear;
   chklistCompMsg.Clear;
-  TempMessages.Free;
+  {$ENDIF}
+  FreeAndNil(TempMessages);
   inherited Destroy;
 end;
 
@@ -118,19 +158,56 @@ procedure TCompilerMessagesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDia
 begin
   grpCompilerMessages.Caption:=dlgCompilerMessage;
   lblFilter.Caption:=lisFilter;
+  {$IFDEF EnableNewExtTools}
+  {$ELSE}
   UseMsgFileCheckBox.Caption:=lisUseMessageFile;
   MsgFileBrowseButton.Caption:=lisPathEditBrowse;
+  {$ENDIF}
 end;
 
 procedure TCompilerMessagesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
-  topidx, i: Integer;
-  m: TCompilerMessageConfig;
+  topidx: Integer;
   CompOpts: TBaseCompilerOptions;
+  {$IFDEF EnableNewExtTools}
+  FPCMsgFile: TFPCMsgFilePoolItem;
+  i: Integer;
+  Item: TFPCMsgItem;
+  Urgency: TMessageLineUrgency;
+  s: String;
+  {$ELSE}
+  i: integer;
+  m: TCompilerMessageConfig;
+  {$ENDIF}
 begin
   CompOpts:=AOptions as TBaseCompilerOptions;
-  TempMessages.Assign(CompOpts.CompilerMessages);
+
   topidx := chklistCompMsg.TopIndex;
+  {$IFDEF EnableNewExtTools}
+  TempMessages.Assign(CompOpts.MessageFlags);
+  editMsgFilter.Items.Clear;
+  FPCMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(true,nil);
+  if FPCMsgFile<>nil then begin
+    try
+      for i:=0 to FPCMsgFile.MsgFile.Count-1 do begin
+        Item:=FPCMsgFile.MsgFile[i];
+        if Item.ID<=0 then continue;
+        Urgency:=FPCMsgToMsgUrgency(Item);
+        case Urgency of
+        mluHint: s:='Hint';
+        mluNote: s:='Note';
+        mluWarning: s:='Warning';
+        else continue;
+        end;
+        s+=': '+Item.Pattern;
+        editMsgFilter.Items.AddObject(s,TObject(Pointer(PtrUInt(Item.ID))));
+      end;
+    finally
+      FPCMsgFilePool.UnloadFile(FPCMsgFile,nil);
+    end;
+  end;
+  {$ELSE}
+  TempMessages.Assign(CompOpts.CompilerMessages);
   UseMsgFileCheckBox.Checked:=CompOpts.UseMsgFile;
   MsgFileEdit.Text:=CompOpts.MsgFileName;
   MsgFileEdit.Enabled:=UseMsgFileCheckBox.Checked;
@@ -142,14 +219,12 @@ begin
   begin
     m := TempMessages.Msg[i];
     case m.MsgType of
-    {$IFDEF EnableNewExtTools}mluHint{$ELSE}etHint{$ENDIF}:
-      editMsgFilter.Items.AddObject('(H) '+m.MsgText, m);
-    {$IFDEF EnableNewExtTools}mluNote{$ELSE}etNote{$ENDIF}:
-      editMsgFilter.Items.AddObject('(N) '+m.MsgText, m);
-    {$IFDEF EnableNewExtTools}mluWarning{$ELSE}etWarning{$ENDIF}:
-      editMsgFilter.Items.AddObject('(W) '+m.MsgText, m);
+    etHint: editMsgFilter.Items.AddObject('(H) '+m.MsgText, m);
+    etNote: editMsgFilter.Items.AddObject('(N) '+m.MsgText, m);
+    etWarning: editMsgFilter.Items.AddObject('(W) '+m.MsgText, m);
     end;
   end;
+  {$ENDIF}
   editMsgFilter.InvalidateFilter;
   chkListCompMsg.TopIndex := topidx;
 end;
@@ -158,9 +233,13 @@ procedure TCompilerMessagesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpti
 begin
   with AOptions as TBaseCompilerOptions do
   begin
+    {$IFDEF EnableNewExtTools}
+    MessageFlags.Assign(TempMessages);
+    {$ELSE}
     UseMsgFile:=UseMsgFileCheckBox.Checked;
     MsgFileName:=MsgFileEdit.Text;
     CompilerMessages.Assign(TempMessages);
+    {$ENDIF}
   end;
 end;
 

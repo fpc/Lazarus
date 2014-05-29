@@ -57,7 +57,7 @@ type
 
   TFPCMsgFilePoolItem = class
   private
-    FFile: TFPCMsgFile;
+    FMsgFile: TFPCMsgFile;
     FFilename: string;
     FPool: TFPCMsgFilePool;
     FLoadedFileAge: integer;
@@ -69,6 +69,7 @@ type
     property Filename: string read FFilename;
     property LoadedFileAge: integer read FLoadedFileAge;
     function GetMsg(ID: integer): TFPCMsgItem;
+    property MsgFile: TFPCMsgFile read FMsgFile;
     property UseCount: integer read fUseCount;
   end;
 
@@ -95,9 +96,9 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function LoadCurrentEnglishFile(UpdateFromDisk: boolean;
-      AThread: TThread): TFPCMsgFilePoolItem;
+      AThread: TThread): TFPCMsgFilePoolItem; // don't forget UnloadFile
     function LoadFile(aFilename: string; UpdateFromDisk: boolean;
-      AThread: TThread): TFPCMsgFilePoolItem;
+      AThread: TThread): TFPCMsgFilePoolItem; // don't forget UnloadFile
     procedure UnloadFile(var aFile: TFPCMsgFilePoolItem; AThread: TThread);
     procedure EnterCriticalsection;
     procedure LeaveCriticalSection;
@@ -848,7 +849,7 @@ begin
     end else begin
       // load for the first time
       NewItem:=TFPCMsgFilePoolItem.Create(Self,aFilename);
-      //Log('TFPCMsgFilePool.LoadFile '+dbgs(NewItem.FFile<>nil)+' '+aFilename,aThread);
+      //Log('TFPCMsgFilePool.LoadFile '+dbgs(NewItem.FMsgFile<>nil)+' '+aFilename,aThread);
       if Assigned(OnLoadFile) then begin
         OnLoadFile(aFilename,FileTxt);
       end else begin
@@ -863,7 +864,7 @@ begin
       Encoding:=GetDefaultFPCErrorMsgFileEncoding(aFilename);
       FileTxt:=ConvertEncoding(FileTxt,Encoding,EncodingUTF8);
       // parse
-      NewItem.FFile.LoadFromText(FileTxt);
+      NewItem.FMsgFile.LoadFromText(FileTxt);
       NewItem.FLoadedFileAge:=FileAge;
       // load successful
       Result:=NewItem;
@@ -987,19 +988,19 @@ begin
   inherited Create;
   FPool:=aPool;
   FFilename:=aFilename;
-  FFile:=TFPCMsgFile.Create;
+  FMsgFile:=TFPCMsgFile.Create;
 end;
 
 destructor TFPCMsgFilePoolItem.Destroy;
 begin
-  FreeAndNil(FFile);
+  FreeAndNil(FMsgFile);
   FFilename:='';
   inherited Destroy;
 end;
 
 function TFPCMsgFilePoolItem.GetMsg(ID: integer): TFPCMsgItem;
 begin
-  Result:=FFile.FindWithID(ID);
+  Result:=FMsgFile.FindWithID(ID);
 end;
 
 { TIDEFPCParser }
