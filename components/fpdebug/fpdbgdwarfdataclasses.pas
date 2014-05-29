@@ -4066,7 +4066,7 @@ begin
       AValue := PChar(AAttribute);
     end;
     DW_FORM_strp:   begin
-      AValue := 'TODO';
+      AValue := pchar(PtrUInt(FOwner.Sections[dsStr].RawData)+PDWord(AAttribute)^);
     end;
   else
     Result := False;
@@ -4118,7 +4118,7 @@ begin
       AValue := PChar(AAttribute);
     end;
     DW_FORM_strp:   begin
-      AValue := 'TODO';
+      AValue := PChar(PtrUInt(FOwner.Sections[dsStr].RawData)+PDWord(AAttribute)^);
     end;
   else
     Result := False;
