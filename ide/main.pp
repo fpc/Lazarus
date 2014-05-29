@@ -289,9 +289,13 @@ type
     procedure mnuSourceInsertCVSSourceClick(Sender: TObject);
     // source->insert general
     procedure mnuSourceInsertGPLNoticeClick(Sender: TObject);
+    procedure mnuSourceInsertGPLNoticeTranslatedClick(Sender: TObject);
     procedure mnuSourceInsertLGPLNoticeClick(Sender: TObject);
+    procedure mnuSourceInsertLGPLNoticeTranslatedClick(Sender: TObject);
     procedure mnuSourceInsertModifiedLGPLNoticeClick(Sender: TObject);
+    procedure mnuSourceInsertModifiedLGPLNoticeTranslatedClick(Sender: TObject);
     procedure mnuSourceInsertMITNoticeClick(Sender: TObject);
+    procedure mnuSourceInsertMITNoticeTranslatedClick(Sender: TObject);
     procedure mnuSourceInsertUsernameClick(Sender: TObject);
     procedure mnuSourceInsertDateTimeClick(Sender: TObject);
     procedure mnuSourceInsertChangeLogEntryClick(Sender: TObject);
@@ -2764,9 +2768,13 @@ begin
     itmSourceInsertCVSSource.OnClick:=@mnuSourceInsertCVSSourceClick;
     // insert general
     itmSourceInsertGPLNotice.OnClick:=@mnuSourceInsertGPLNoticeClick;
+    itmSourceInsertGPLNoticeTranslated.OnClick:=@mnuSourceInsertGPLNoticeTranslatedClick;
     itmSourceInsertLGPLNotice.OnClick:=@mnuSourceInsertLGPLNoticeClick;
+    itmSourceInsertLGPLNoticeTranslated.OnClick:=@mnuSourceInsertLGPLNoticeTranslatedClick;
     itmSourceInsertModifiedLGPLNotice.OnClick:=@mnuSourceInsertModifiedLGPLNoticeClick;
+    itmSourceInsertModifiedLGPLNoticeTranslated.OnClick:=@mnuSourceInsertModifiedLGPLNoticeTranslatedClick;
     itmSourceInsertMITNotice.OnClick:=@mnuSourceInsertMITNoticeClick;
+    itmSourceInsertMITNoticeTranslated.OnClick:=@mnuSourceInsertMITNoticeTranslatedClick;
     itmSourceInsertUsername.OnClick:=@mnuSourceInsertUsernameClick;
     itmSourceInsertDateTime.OnClick:=@mnuSourceInsertDateTimeClick;
     itmSourceInsertChangeLogEntry.OnClick:=@mnuSourceInsertChangeLogEntryClick;
@@ -3968,9 +3976,17 @@ begin
       itmSourceInsertCVSSource.Enabled:=Editable;
     //itmSourceInsertGeneral
       itmSourceInsertGPLNotice.Enabled:=Editable;
+      itmSourceInsertGPLNoticeTranslated.Visible:=
+                                  Editable and (EnglishGPLNotice<>lisGPLNotice);
       itmSourceInsertLGPLNotice.Enabled:=Editable;
+      itmSourceInsertLGPLNoticeTranslated.Visible:=
+                                Editable and (EnglishLGPLNotice<>lisLGPLNotice);
       itmSourceInsertModifiedLGPLNotice.Enabled:=Editable;
+      itmSourceInsertModifiedLGPLNoticeTranslated.Visible:=
+                Editable and (EnglishModifiedLGPLNotice<>lisModifiedLGPLNotice);
       itmSourceInsertMITNotice.Enabled:=Editable;
+      itmSourceInsertMITNoticeTranslated.Visible:=
+                                  Editable and (EnglishMITNotice<>lisMITNotice);
       itmSourceInsertUsername.Enabled:=Editable;
       itmSourceInsertDateTime.Enabled:=Editable;
       itmSourceInsertChangeLogEntry.Enabled:=Editable;
@@ -13838,9 +13854,19 @@ begin
   DoSourceEditorCommand(ecInsertGPLNotice);
 end;
 
+procedure TMainIDE.mnuSourceInsertGPLNoticeTranslatedClick(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecInsertGPLNoticeTranslated);
+end;
+
 procedure TMainIDE.mnuSourceInsertLGPLNoticeClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertLGPLNotice);
+end;
+
+procedure TMainIDE.mnuSourceInsertLGPLNoticeTranslatedClick(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecInsertLGPLNoticeTranslated);
 end;
 
 procedure TMainIDE.mnuSourceInsertModifiedLGPLNoticeClick(Sender: TObject);
@@ -13848,9 +13874,20 @@ begin
   DoSourceEditorCommand(ecInsertModifiedLGPLNotice);
 end;
 
+procedure TMainIDE.mnuSourceInsertModifiedLGPLNoticeTranslatedClick(
+  Sender: TObject);
+begin
+  DoSourceEditorCommand(ecInsertModifiedLGPLNoticeTranslated);
+end;
+
 procedure TMainIDE.mnuSourceInsertMITNoticeClick(Sender: TObject);
 begin
   DoSourceEditorCommand(ecInsertMITNotice);
+end;
+
+procedure TMainIDE.mnuSourceInsertMITNoticeTranslatedClick(Sender: TObject);
+begin
+  DoSourceEditorCommand(ecInsertMITNoticeTranslated);
 end;
 
 procedure TMainIDE.mnuSourceInsertUsernameClick(Sender: TObject);

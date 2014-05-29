@@ -482,9 +482,13 @@ begin
     ecSelectParagraph         : Result:= lisMenuSelectParagraph;
     ecInsertCharacter         : Result:= srkmecInsertCharacter;
     ecInsertGPLNotice         : Result:= srkmecInsertGPLNotice;
+    ecInsertGPLNoticeTranslated: Result:= srkmecInsertGPLNoticeTranslated;
     ecInsertLGPLNotice        : Result:= srkmecInsertLGPLNotice;
+    ecInsertLGPLNoticeTranslated: Result:= srkmecInsertLGPLNoticeTranlated;
     ecInsertModifiedLGPLNotice: Result:= srkmecInsertModifiedLGPLNotice;
+    ecInsertModifiedLGPLNoticeTranslated: Result:= srkmecInsertModifiedLGPLNoticeTranslated;
     ecInsertMITNotice         : Result:= srkmecInsertMITNotice;
+    ecInsertMITNoticeTranslated: Result:= srkmecInsertMITNoticeTranslated;
     ecInsertUserName          : Result:= srkmecInsertUserName;
     ecInsertDateTime          : Result:= srkmecInsertDateTime;
     ecInsertChangeLogEntry    : Result:= srkmecInsertChangeLogEntry;
@@ -1414,21 +1418,7 @@ begin
   ecLineBreak:           SetSingle(VK_RETURN,[],     VK_M,[ssCtrl]);
   ecInsertLine:          SetSingle(VK_N,[ssCtrl]);
   ecInsertCharacter:     SetSingle(VK_UNKNOWN,[]);
-  ecInsertGPLNotice:     SetSingle(VK_UNKNOWN,[]);
-  ecInsertLGPLNotice:    SetSingle(VK_UNKNOWN,[]);
-  ecInsertModifiedLGPLNotice:SetSingle(VK_UNKNOWN,[]);
-  ecInsertMITNotice:     SetSingle(VK_UNKNOWN,[]);
-  ecInsertUserName:      SetSingle(VK_UNKNOWN,[]);
-  ecInsertDateTime:      SetSingle(VK_UNKNOWN,[]);
-  ecInsertChangeLogEntry:SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSAuthor:     SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSDate:       SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSHeader:     SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSID:         SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSLog:        SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSName:       SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSRevision:   SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSSource:     SetSingle(VK_UNKNOWN,[]);
+  // all insert text snippet keys have no default key
 
   // command commands
   ecUndo:                SetSingle(VK_BACK,[ssALT],  VK_U,[ssCtrl]);
@@ -2032,23 +2022,8 @@ begin
   ecLineBreak:           SetSingle(VK_RETURN,[]);
   ecInsertLine:          SetSingle(VK_N,[ssShift,ssMeta]);
   ecInsertCharacter:     SetSingle(VK_UNKNOWN,[]);
-  ecInsertGPLNotice:     SetSingle(VK_UNKNOWN,[]);
-  ecInsertLGPLNotice:    SetSingle(VK_UNKNOWN,[]);
-  ecInsertModifiedLGPLNotice:SetSingle(VK_UNKNOWN,[]);
-  ecInsertMITNotice:     SetSingle(VK_UNKNOWN,[]);
-  ecInsertUserName:      SetSingle(VK_UNKNOWN,[]);
-  ecInsertDateTime:      SetSingle(VK_UNKNOWN,[]);
-  ecInsertChangeLogEntry:SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSAuthor:     SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSDate:       SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSHeader:     SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSID:         SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSLog:        SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSName:       SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSRevision:   SetSingle(VK_UNKNOWN,[]);
-  ecInsertCVSSource:     SetSingle(VK_UNKNOWN,[]);
   ecInsertGUID:          SetSingle(VK_G,[ssCtrl,ssShift]);
-  ecInsertFilename:      SetSingle(VK_UNKNOWN,[]);
+  // Note: all insert text snippet keys have no default key
 
   // command commands
   ecUndo:                SetSingle(VK_Z,[ssMeta]);
@@ -2589,9 +2564,13 @@ begin
   AddDefault(C, 'Enclose in $IFDEF', lisEncloseInIFDEF, ecSelectionEncloseIFDEF);
   AddDefault(C, 'Insert from Character Map', lisMenuInsertCharacter, ecInsertCharacter);
   AddDefault(C, 'Insert GPL notice', srkmecInsertGPLNotice, ecInsertGPLNotice);
+  AddDefault(C, 'Insert GPL notice translated', srkmecInsertGPLNoticeTranslated, ecInsertGPLNoticeTranslated);
   AddDefault(C, 'Insert LGPL notice', srkmecInsertLGPLNotice, ecInsertLGPLNotice);
+  AddDefault(C, 'Insert LGPL notice translated', srkmecInsertLGPLNoticeTranlated, ecInsertLGPLNoticeTranslated);
   AddDefault(C, 'Insert modified LGPL notice', srkmecInsertModifiedLGPLNotice, ecInsertModifiedLGPLNotice);
+  AddDefault(C, 'Insert modified LGPL notice translated', srkmecInsertModifiedLGPLNoticeTranslated, ecInsertModifiedLGPLNoticeTranslated);
   AddDefault(C, 'Insert MIT notice', srkmecInsertMITNotice, ecInsertMITNotice);
+  AddDefault(C, 'Insert MIT notice translated', srkmecInsertMITNoticeTranslated, ecInsertMITNoticeTranslated);
   AddDefault(C, 'Insert username', lisKMInsertUsername, ecInsertUserName);
   AddDefault(C, 'Insert date and time', lisKMInsertDateAndTime, ecInsertDateTime);
   AddDefault(C, 'Insert ChangeLog entry', srkmecInsertChangeLogEntry, ecInsertChangeLogEntry);

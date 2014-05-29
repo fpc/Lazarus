@@ -859,9 +859,13 @@ begin
     SubParentMI:=itmSourceInsertGeneral;
       // insert general text sub menu items
       CreateMenuItem(SubParentMI,itmSourceInsertGPLNotice,'itmSourceInsertGPLNotice',lisMenuInsertGPLNotice);
+      CreateMenuItem(SubParentMI,itmSourceInsertGPLNoticeTranslated,'itmSourceInsertGPLNoticeTranslated',lisMenuInsertGPLNoticeTranslated);
       CreateMenuItem(SubParentMI,itmSourceInsertLGPLNotice,'itmSourceInsertLGPLNotice',lisMenuInsertLGPLNotice);
+      CreateMenuItem(SubParentMI,itmSourceInsertLGPLNoticeTranslated,'itmSourceInsertLGPLNoticeTranslated',lisMenuInsertLGPLNoticeTranslated);
       CreateMenuItem(SubParentMI,itmSourceInsertModifiedLGPLNotice,'itmSourceInsertModifiedLGPLNotice',lisMenuInsertModifiedLGPLNotice);
+      CreateMenuItem(SubParentMI,itmSourceInsertModifiedLGPLNoticeTranslated,'itmSourceInsertModifiedLGPLNoticeTranslated',lisMenuInsertModifiedLGPLNoticeTranslated);
       CreateMenuItem(SubParentMI,itmSourceInsertMITNotice,'itmSourceInsertMITNotice',lisMenuInsertMITNotice);
+      CreateMenuItem(SubParentMI,itmSourceInsertMITNoticeTranslated,'itmSourceInsertMITNoticeTranslated',lisMenuInsertMITNoticeTranslated);
       CreateMenuItem(SubParentMI,itmSourceInsertUsername,'itmSourceInsertUsername',lisMenuInsertUsername);
       CreateMenuItem(SubParentMI,itmSourceInsertDateTime,'itmSourceInsertDateTime',lisMenuInsertDateTime);
       CreateMenuItem(SubParentMI,itmSourceInsertChangeLogEntry,'itmSourceInsertChangeLogEntry',lisMenuInsertChangeLogEntry);
@@ -1202,9 +1206,13 @@ begin
     itmSourceInsertCVSSource.Command:=GetCommand(ecInsertCVSSource);
 
     itmSourceInsertGPLNotice.Command:=GetCommand(ecInsertGPLNotice);
+    itmSourceInsertGPLNoticeTranslated.Command:=GetCommand(ecInsertGPLNoticeTranslated);
     itmSourceInsertLGPLNotice.Command:=GetCommand(ecInsertLGPLNotice);
+    itmSourceInsertLGPLNoticeTranslated.Command:=GetCommand(ecInsertLGPLNoticeTranslated);
     itmSourceInsertModifiedLGPLNotice.Command:=GetCommand(ecInsertModifiedLGPLNotice);
+    itmSourceInsertModifiedLGPLNoticeTranslated.Command:=GetCommand(ecInsertModifiedLGPLNoticeTranslated);
     itmSourceInsertMITNotice.Command:=GetCommand(ecInsertMITNotice);
+    itmSourceInsertMITNoticeTranslated.Command:=GetCommand(ecInsertMITNoticeTranslated);
     itmSourceInsertUsername.Command:=GetCommand(ecInsertUserName);
     itmSourceInsertDateTime.Command:=GetCommand(ecInsertDateTime);
     itmSourceInsertChangeLogEntry.Command:=GetCommand(ecInsertChangeLogEntry);

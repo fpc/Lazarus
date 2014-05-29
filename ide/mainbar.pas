@@ -225,9 +225,13 @@ type
         itmSourceInsertCVSSource: TIDEMenuCommand;
       //itmSourceInsertGeneral: TIDEMenuSection;
         itmSourceInsertGPLNotice: TIDEMenuCommand;
+        itmSourceInsertGPLNoticeTranslated: TIDEMenuCommand;
         itmSourceInsertLGPLNotice: TIDEMenuCommand;
+        itmSourceInsertLGPLNoticeTranslated: TIDEMenuCommand;
         itmSourceInsertModifiedLGPLNotice: TIDEMenuCommand;
+        itmSourceInsertModifiedLGPLNoticeTranslated: TIDEMenuCommand;
         itmSourceInsertMITNotice: TIDEMenuCommand;
+        itmSourceInsertMITNoticeTranslated: TIDEMenuCommand;
         itmSourceInsertUsername: TIDEMenuCommand;
         itmSourceInsertDateTime: TIDEMenuCommand;
         itmSourceInsertChangeLogEntry: TIDEMenuCommand;

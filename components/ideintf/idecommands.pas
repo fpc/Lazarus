@@ -39,10 +39,10 @@ const
 
    To add one static key do the following:
      1. Add a constant with a unique value in the list below.
-     1a. Update IDEEditorCommandStrs
-     2. Add it to GetDefaultKeyForCommand to define the default keys+shiftstates
-     3. Add it to EditorCommandToDescriptionString to define the description
-     4. Add it to TKeyCommandRelationList.DefineCommandCategories to define the category.
+     2. Update IDEEditorCommandStrs to define a name (used for configs)
+     3. Add it to GetDefaultKeyForCommand to define the default keys+shiftstates
+     4. Add it to EditorCommandToDescriptionString to define the description
+     5. Add it to TKeyCommandRelationList.DefineCommandCategories to define the category.
   }
   ecNone                    = 0;
   
@@ -95,24 +95,28 @@ const
   ecToggleComment           = ecFirstLazarus + 65;
 
   // insert text
-  ecInsertCharacter         = ecFirstLazarus + 80;
-  ecInsertGPLNotice         = ecFirstLazarus + 81;
-  ecInsertLGPLNotice        = ecFirstLazarus + 82;
-  ecInsertUserName          = ecFirstLazarus + 83;
-  ecInsertDateTime          = ecFirstLazarus + 84;
-  ecInsertChangeLogEntry    = ecFirstLazarus + 85;
-  ecInsertCVSAuthor         = ecFirstLazarus + 86;
-  ecInsertCVSDate           = ecFirstLazarus + 87;
-  ecInsertCVSHeader         = ecFirstLazarus + 88;
-  ecInsertCVSID             = ecFirstLazarus + 89;
-  ecInsertCVSLog            = ecFirstLazarus + 90;
-  ecInsertCVSName           = ecFirstLazarus + 91;
-  ecInsertCVSRevision       = ecFirstLazarus + 92;
-  ecInsertCVSSource         = ecFirstLazarus + 93;
-  ecInsertModifiedLGPLNotice= ecFirstLazarus + 94;
-  ecInsertMITNotice         = ecFirstLazarus + 95;
-  ecInsertGUID              = ecFirstLazarus + 96;
-  ecInsertFilename          = ecFirstLazarus + 97;
+  ecInsertCharacter         = ecFirstLazarus + 70;
+  ecInsertGUID              = ecFirstLazarus + 71;
+  ecInsertFilename          = ecFirstLazarus + 72;
+  ecInsertUserName          = ecFirstLazarus + 73;
+  ecInsertDateTime          = ecFirstLazarus + 74;
+  ecInsertChangeLogEntry    = ecFirstLazarus + 75;
+  ecInsertCVSAuthor         = ecFirstLazarus + 76;
+  ecInsertCVSDate           = ecFirstLazarus + 77;
+  ecInsertCVSHeader         = ecFirstLazarus + 78;
+  ecInsertCVSID             = ecFirstLazarus + 79;
+  ecInsertCVSLog            = ecFirstLazarus + 80;
+  ecInsertCVSName           = ecFirstLazarus + 81;
+  ecInsertCVSRevision       = ecFirstLazarus + 82;
+  ecInsertCVSSource         = ecFirstLazarus + 83;
+  ecInsertGPLNotice         = ecFirstLazarus + 84;
+  ecInsertGPLNoticeTranslated = ecFirstLazarus + 85;
+  ecInsertLGPLNotice        = ecFirstLazarus + 86;
+  ecInsertLGPLNoticeTranslated = ecFirstLazarus + 87;
+  ecInsertModifiedLGPLNotice= ecFirstLazarus + 88;
+  ecInsertModifiedLGPLNoticeTranslated = ecFirstLazarus + 89;
+  ecInsertMITNotice         = ecFirstLazarus + 90;
+  ecInsertMITNoticeTranslated = ecFirstLazarus + 91;
 
   // source tools
   ecWordCompletion          = ecFirstLazarus + 100;
@@ -1215,7 +1219,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..298] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..302] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -1264,8 +1268,8 @@ const
 
   // insert text
     (Value: ecInsertCharacter;                        Name: 'ecInsertCharacter'),
-    (Value: ecInsertGPLNotice;                        Name: 'ecInsertGPLNotice'),
-    (Value: ecInsertLGPLNotice;                       Name: 'ecInsertLGPLNotice'),
+    (Value: ecInsertGUID;                             Name: 'ecInsertGUID'),
+    (Value: ecInsertFilename;                         Name: 'ecInsertFilename'),
     (Value: ecInsertUserName;                         Name: 'ecInsertUserName'),
     (Value: ecInsertDateTime;                         Name: 'ecInsertDateTime'),
     (Value: ecInsertChangeLogEntry;                   Name: 'ecInsertChangeLogEntry'),
@@ -1277,10 +1281,14 @@ const
     (Value: ecInsertCVSName;                          Name: 'ecInsertCVSName'),
     (Value: ecInsertCVSRevision;                      Name: 'ecInsertCVSRevision'),
     (Value: ecInsertCVSSource;                        Name: 'ecInsertCVSSource'),
+    (Value: ecInsertGPLNotice;                        Name: 'ecInsertGPLNotice'),
+    (Value: ecInsertGPLNoticeTranslated;              Name: 'ecInsertGPLNoticeTranslated'),
+    (Value: ecInsertLGPLNotice;                       Name: 'ecInsertLGPLNotice'),
+    (Value: ecInsertLGPLNoticeTranslated;             Name: 'ecInsertLGPLNoticeTranslated'),
     (Value: ecInsertModifiedLGPLNotice;               Name: 'ecInsertModifiedLGPLNotice'),
+    (Value: ecInsertModifiedLGPLNoticeTranslated;     Name: 'ecInsertModifiedLGPLNoticeTranslated'),
     (Value: ecInsertMITNotice;                        Name: 'ecInsertMITNotice'),
-    (Value: ecInsertGUID;                             Name: 'ecInsertGUID'),
-    (Value: ecInsertFilename;                         Name: 'ecInsertFilename'),
+    (Value: ecInsertMITNoticeTranslated;              Name: 'ecInsertMITNoticeTranslated'),
 
   // source tools
     (Value: ecWordCompletion;                         Name: 'ecWordCompletion'),

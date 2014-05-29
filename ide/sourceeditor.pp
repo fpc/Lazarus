@@ -430,10 +430,10 @@ type
     function CommentText(const Txt: string; CommentType: TCommentType): string;
     procedure InsertCharacterFromMap;
     procedure InsertLicenseNotice(const Notice: string; CommentType: TCommentType);
-    procedure InsertGPLNotice(CommentType: TCommentType);
-    procedure InsertLGPLNotice(CommentType: TCommentType);
-    procedure InsertModifiedLGPLNotice(CommentType: TCommentType);
-    procedure InsertMITNotice(CommentType: TCommentType);
+    procedure InsertGPLNotice(CommentType: TCommentType; Translated: boolean);
+    procedure InsertLGPLNotice(CommentType: TCommentType; Translated: boolean);
+    procedure InsertModifiedLGPLNotice(CommentType: TCommentType; Translated: boolean);
+    procedure InsertMITNotice(CommentType: TCommentType; Translated: boolean);
     procedure InsertUsername;
     procedure InsertDateTime;
     procedure InsertChangeLogEntry;
@@ -1327,6 +1327,11 @@ var
 function CompareSrcEditIntfWithFilename(SrcEdit1, SrcEdit2: Pointer): integer;
 function CompareFilenameWithSrcEditIntf(FilenameStr, SrcEdit: Pointer): integer;
 
+var
+  EnglishGPLNotice: string;
+  EnglishLGPLNotice: string;
+  EnglishModifiedLGPLNotice: string;
+  EnglishMITNotice: string;
 
 implementation
 
@@ -3469,16 +3474,24 @@ Begin
     InsertCharacterFromMap;
 
   ecInsertGPLNotice:
-    InsertGPLNotice(comtDefault);
+    InsertGPLNotice(comtDefault,false);
+  ecInsertGPLNoticeTranslated:
+    InsertGPLNotice(comtDefault,true);
 
   ecInsertLGPLNotice:
-    InsertLGPLNotice(comtDefault);
+    InsertLGPLNotice(comtDefault,false);
+  ecInsertLGPLNoticeTranslated:
+    InsertLGPLNotice(comtDefault,true);
 
   ecInsertModifiedLGPLNotice:
-    InsertModifiedLGPLNotice(comtDefault);
+    InsertModifiedLGPLNotice(comtDefault,false);
+  ecInsertModifiedLGPLNoticeTranslated:
+    InsertModifiedLGPLNotice(comtDefault,true);
 
   ecInsertMITNotice:
-    InsertMITNotice(comtDefault);
+    InsertMITNotice(comtDefault,false);
+  ecInsertMITNoticeTranslated:
+    InsertMITNotice(comtDefault,true);
 
   ecInsertUserName:
     InsertUsername;
@@ -3951,24 +3964,52 @@ begin
   FEditor.InsertTextAtCaret(Txt);
 end;
 
-procedure TSourceEditor.InsertGPLNotice(CommentType: TCommentType);
+procedure TSourceEditor.InsertGPLNotice(CommentType: TCommentType;
+  Translated: boolean);
+var
+  s: String;
 begin
-  InsertLicenseNotice(lisGPLNotice, CommentType);
+  if Translated then
+    s:=lisGPLNotice
+  else
+    s:=EnglishGPLNotice;
+  InsertLicenseNotice(s, CommentType);
 end;
 
-procedure TSourceEditor.InsertLGPLNotice(CommentType: TCommentType);
+procedure TSourceEditor.InsertLGPLNotice(CommentType: TCommentType;
+  Translated: boolean);
+var
+  s: String;
 begin
-  InsertLicenseNotice(lisLGPLNotice, CommentType);
+  if Translated then
+    s:=lisLGPLNotice
+  else
+    s:=EnglishLGPLNotice;
+  InsertLicenseNotice(s, CommentType);
 end;
 
-procedure TSourceEditor.InsertModifiedLGPLNotice(CommentType: TCommentType);
+procedure TSourceEditor.InsertModifiedLGPLNotice(CommentType: TCommentType;
+  Translated: boolean);
+var
+  s: String;
 begin
-  InsertLicenseNotice(lisModifiedLGPLNotice, CommentType);
+  if Translated then
+    s:=lisModifiedLGPLNotice
+  else
+    s:=EnglishModifiedLGPLNotice;
+  InsertLicenseNotice(s, CommentType);
 end;
 
-procedure TSourceEditor.InsertMITNotice(CommentType: TCommentType);
+procedure TSourceEditor.InsertMITNotice(CommentType: TCommentType;
+  Translated: boolean);
+var
+  s: String;
 begin
-  InsertLicenseNotice(lisMITNotice, CommentType);
+  if Translated then
+    s:=lisMITNotice
+  else
+    s:=EnglishMITNotice;
+  InsertLicenseNotice(s, CommentType);
 end;
 
 procedure TSourceEditor.InsertUsername;
@@ -8689,10 +8730,21 @@ end;
 procedure InternalInit;
 var h: TLazSyntaxHighlighter;
 begin
+  // fetch the resourcestrings before they are translated
+  EnglishGPLNotice:=lisGPLNotice;
+  EnglishLGPLNotice:=lisLGPLNotice;
+  EnglishModifiedLGPLNotice:=lisModifiedLGPLNotice;
+  EnglishMITNotice:=lisMITNotice;
+
   for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
     Highlighters[h]:=nil;
   IDESearchInText:=@SearchInText;
   PasBeautifier := TSynBeautifierPascal.Create(nil);
+
+  SRCED_LOCK  := DebugLogger.RegisterLogGroup('SRCED_LOCK' {$IFDEF SRCED_LOCK} , True {$ENDIF} );
+  SRCED_OPEN  := DebugLogger.RegisterLogGroup('SRCED_OPEN' {$IFDEF SRCED_OPEN} , True {$ENDIF} );
+  SRCED_CLOSE := DebugLogger.RegisterLogGroup('SRCED_CLOSE' {$IFDEF SRCED_CLOSE} , True {$ENDIF} );
+  SRCED_PAGES := DebugLogger.RegisterLogGroup('SRCED_PAGES' {$IFDEF SRCED_PAGES} , True {$ENDIF} );
 end;
 
 procedure InternalFinal;
@@ -10523,11 +10575,6 @@ begin
 end;
 
 initialization
-  SRCED_LOCK  := DebugLogger.RegisterLogGroup('SRCED_LOCK' {$IFDEF SRCED_LOCK} , True {$ENDIF} );
-  SRCED_OPEN  := DebugLogger.RegisterLogGroup('SRCED_OPEN' {$IFDEF SRCED_OPEN} , True {$ENDIF} );
-  SRCED_CLOSE := DebugLogger.RegisterLogGroup('SRCED_CLOSE' {$IFDEF SRCED_CLOSE} , True {$ENDIF} );
-  SRCED_PAGES := DebugLogger.RegisterLogGroup('SRCED_PAGES' {$IFDEF SRCED_PAGES} , True {$ENDIF} );
-
   InternalInit;
 
 finalization
