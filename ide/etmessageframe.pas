@@ -460,7 +460,9 @@ const
 var
   MsgFindMenuItem: TIDEMenuCommand;
   MsgQuickFixMenuSection: TIDEMenuSection;
-  MsgClearMenuItem: TIDEMenuCommand;
+  MsgAboutSection: TIDEMenuSection;
+    MsgAboutToolMenuItem: TIDEMenuCommand;
+    MsgOpenToolOptionsMenuItem: TIDEMenuCommand;
   MsgHideMsgOfTypeMenuItem: TIDEMenuCommand;
   MsgUnhideMsgTypesMenuSection: TIDEMenuSection;
     MsgUnhideMsgOneTypeMenuSection: TIDEMenuSection;
@@ -484,15 +486,13 @@ var
   MsgSaveToFileMenuSection: TIDEMenuSection;
     MsgSaveAllToFileMenuItem: TIDEMenuCommand;
     MsgSaveShownToFileMenuItem: TIDEMenuCommand;
+  MsgClearMenuItem: TIDEMenuCommand;
   MsgFilenameStyleMenuSection: TIDEMenuSection;
     MsgFileStyleShortMenuItem: TIDEMenuCommand;
     MsgFileStyleRelativeMenuItem: TIDEMenuCommand;
     MsgFileStyleFullMenuItem: TIDEMenuCommand;
   MsgTranslateMenuItem: TIDEMenuCommand;
   MsgShowIDMenuItem: TIDEMenuCommand;
-  MsgAboutSection: TIDEMenuSection;
-    MsgAboutToolMenuItem: TIDEMenuCommand;
-    MsgOpenToolOptionsMenuItem: TIDEMenuCommand;
 
 procedure RegisterStandardMessagesViewMenuItems;
 
@@ -510,7 +510,12 @@ begin
   Root:=MessagesMenuRoot;
   MsgFindMenuItem := RegisterIDEMenuCommand(Root, 'Find', 'Find ...');
   MsgQuickFixMenuSection := RegisterIDEMenuSection(Root, 'Quick Fix');
-  MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', 'Clear');
+  MsgAboutSection:=RegisterIDEMenuSection(Root,'About');
+    Parent:=MsgAboutSection;
+    Parent.ChildsAsSubMenu:=true;
+    Parent.Caption:='About ...';
+    MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Parent, 'About', 'About Tool');
+    MsgOpenToolOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'Open Tool Options', 'Open Tool Options');
   MsgHideMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'HideMsgOfType','');
   MsgUnhideMsgTypesMenuSection:=RegisterIDEMenuSection(Root,'UnhideMsgType');
     Parent:=MsgUnhideMsgTypesMenuSection;
@@ -549,6 +554,7 @@ begin
     Parent.Caption:='Save ...';
     MsgSaveShownToFileMenuItem:=RegisterIDEMenuCommand(Parent,'Save Shown Messages to File','Save Shown Messages to File ...');
     MsgSaveAllToFileMenuItem:=RegisterIDEMenuCommand(Parent,'Save All Messages to File','Save All/Original Messages to File ...');
+  MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', 'Clear');
   MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Root,'Filename Styles');
     Parent:=MsgFilenameStyleMenuSection;
     Parent.ChildsAsSubMenu:=true;
@@ -558,12 +564,6 @@ begin
     MsgFileStyleFullMenuItem:=RegisterIDEMenuCommand(Parent,'Full','Full');
   MsgTranslateMenuItem:=RegisterIDEMenuCommand(Root, 'Translate', 'Translate the English Messages');
   MsgShowIDMenuItem:=RegisterIDEMenuCommand(Root, 'ShowID', 'Show Message Type ID');
-  MsgAboutSection:=RegisterIDEMenuSection(Root,'About');
-    Parent:=MsgAboutSection;
-    Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='About ...';
-    MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Parent, 'About', 'About Tool');
-    MsgOpenToolOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'Open Tool Options', 'Open Tool Options');
 end;
 
 function CompareHideMsgType(HideMsgType1, HideMsgType2: Pointer): integer;

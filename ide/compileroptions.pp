@@ -808,8 +808,7 @@ var
 implementation
 
 const
-  CompilerOptionsVersion = 12;
-  // 12 replaced
+  CompilerOptionsVersion = 11;
   // 11 Debugging/DebugInfoType/Value
   // 7  TargetProcessor/Value
   // 6  SyntaxMode/Value
