@@ -41,7 +41,7 @@ uses
   LazarusIDEStrConsts, LazConfigStorage, HelpIntfs, IDEHelpIntf, BaseIDEIntf,
   IDEMsgIntf, IDEDialogs, IDEExternToolIntf, LazHelpIntf, LazHelpHTML, StdCtrls,
   ButtonPanel, ExtCtrls, Forms, Controls, Graphics, LCLIntf, CodeToolsFPCMsgs,
-  FileProcs, CodeToolManager, CodeCache, DefineTemplates;
+  FileProcs, CodeToolManager, CodeCache, DefineTemplates, EnvironmentOpts;
   
 const
   lihcFPCMessages = 'Free Pascal Compiler messages';
@@ -86,7 +86,6 @@ type
     FAdditionsFile: string;
     FDefaultAdditionsFile: string;
     FFoundAddition: TMessageHelpAddition;
-    FFPCTranslationFile: string;
     FDefaultNode: THelpNode;
     FFoundComment: string;
     FLastMessage: string;
@@ -96,7 +95,6 @@ type
     FMsgFilename: string;
     function GetAdditions(Index: integer): TMessageHelpAddition;
     procedure SetAdditionsFile(AValue: string);
-    procedure SetFPCTranslationFile(const AValue: string);
     procedure SetFoundComment(const AValue: string);
     procedure SetLastMessage(const AValue: string);
   public
@@ -133,8 +131,6 @@ type
     function GetAdditionsFilename: string;
   published
     property AdditionsFile: string read FAdditionsFile write SetAdditionsFile;
-    property FPCTranslationFile: string read FFPCTranslationFile
-                                        write SetFPCTranslationFile;
   end;
 
   { TEditIDEMsgHelpDialog }
@@ -149,7 +145,7 @@ type
     CurMsgGroupBox: TGroupBox;
     CurMsgMemo: TMemo;
     DeleteButton: TButton;
-    FPCMsgFileEdit: TEdit;
+    FPCMsgFileValueLabel: TLabel;
     FPCMsgFileLabel: TLabel;
     GlobalOptionsGroupBox: TGroupBox;
     NameEdit: TEdit;
@@ -171,7 +167,6 @@ type
     procedure DeleteButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FPCMsgFileEditEditingDone(Sender: TObject);
     procedure NameEditChange(Sender: TObject);
     procedure OnlyFPCMsgIDsEditChange(Sender: TObject);
     procedure OnlyRegExEditChange(Sender: TObject);
@@ -448,7 +443,7 @@ begin
   ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
 
   // global options
-  FPCMsgFileEdit.Text:=FPCMsgHelpDB.FPCTranslationFile;
+  FPCMsgFileValueLabel.Caption:=EnvironmentOptions.GetParsedCompilerMessagesFilename;
   AdditionsFileEdit.Text:=FPCMsgHelpDB.AdditionsFile;
 
   // fetch selected message
@@ -511,13 +506,9 @@ var
 begin
   HasChanged:=false;
 
-  Filename:=FPCMsgFileEdit.Text;
+  Filename:=EnvironmentOptions.GetParsedCompilerMessagesFilename;
   if (Filename=fDefaultValue) then
     Filename:='';
-  if FPCMsgHelpDB.FPCTranslationFile<>Filename then begin
-    FPCMsgHelpDB.FPCTranslationFile:=Filename;
-    HasChanged:=true;
-  end;
 
   Filename:=AdditionsFileEdit.Text;
   if (Filename=fDefaultValue)
@@ -564,15 +555,6 @@ end;
 procedure TEditIDEMsgHelpDialog.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(Additions);
-end;
-
-procedure TEditIDEMsgHelpDialog.FPCMsgFileEditEditingDone(Sender: TObject);
-var
-  Filename: TCaption;
-begin
-  Filename:=FPCMsgFileEdit.Text;
-  if (Filename=fDefaultValue) then Filename:='';
-
 end;
 
 procedure TEditIDEMsgHelpDialog.NameEditChange(Sender: TObject);
@@ -743,9 +725,9 @@ begin
         {$IFDEF EnableNewExtTools}
         if Line.MsgID>0 then
           FPCMsg:=MsgFile.FindWithID(Line.MsgID);
-        {$ELSE}
-        FPCMsg:=MsgFile.FindWithMessage(Line.Msg);
         {$ENDIF}
+        if FPCMsg=nil then
+          FPCMsg:=MsgFile.FindWithMessage(Line.Msg);
         if FPCMsg<>nil then begin
           CurFPCId:=FPCMsg.ID;
           sl.Add('FPC Msg='+FPCMsg.GetName);
@@ -843,12 +825,6 @@ begin
   FFoundComment:=AValue;
 end;
 
-procedure TFPCMessagesHelpDatabase.SetFPCTranslationFile(const AValue: string);
-begin
-  if FFPCTranslationFile=AValue then exit;
-  FFPCTranslationFile:=AValue;
-end;
-
 function TFPCMessagesHelpDatabase.GetAdditions(Index: integer
   ): TMessageHelpAddition;
 begin
@@ -895,6 +871,7 @@ var
   MsgItem: TFPCMsgItem;
   i: Integer;
   FPCID: Integer;
+  MsgId: Integer;
 begin
   FFoundAddition:=nil;
   FFoundComment:='';
@@ -906,8 +883,13 @@ begin
 
   // search message in FPC message file
   GetMsgFile;
+  MsgItem:=nil;
   if MsgFile<>nil then begin
-    MsgItem:=MsgFile.FindWithMessage(AMessage);
+    MsgId:=StrToIntDef(MessageParts.Values['MsgId'],0);
+    if MsgId>0 then
+      MsgItem:=MsgFile.FindWithID(MsgId);
+    if MsgItem=nil then
+      MsgItem:=MsgFile.FindWithMessage(AMessage);
     if MsgItem<>nil then begin
       FoundComment:=MsgItem.GetTrimmedComment(true,true);
       FPCID:=MsgItem.ID;
@@ -969,14 +951,12 @@ end;
 procedure TFPCMessagesHelpDatabase.Load(Storage: TConfigStorage);
 begin
   inherited Load(Storage);
-  FPCTranslationFile:=Storage.GetValue('FPCTranslationFile/Value','');
   AdditionsFile:=Storage.GetValue('Additions/Filename','');
 end;
 
 procedure TFPCMessagesHelpDatabase.Save(Storage: TConfigStorage);
 begin
   inherited Save(Storage);
-  Storage.SetDeleteValue('FPCTranslationFile/Value',FPCTranslationFile,'');
   Storage.SetDeleteValue('Additions/Filename',AdditionsFile,'');
 end;
 
@@ -990,10 +970,7 @@ var
   CfgCache: TFPCTargetConfigCache;
 begin
   Result:=nil;
-  Filename:=FPCTranslationFile;
-  if Filename<>'' then
-    IDEMacros.SubstituteMacros(Filename);
-  Filename:=TrimFilename(Filename);
+  Filename:=EnvironmentOptions.GetParsedCompilerMessagesFilename;
   if Filename='' then
     FileName:='errore.msg';
   if not FilenameIsAbsolute(Filename) then

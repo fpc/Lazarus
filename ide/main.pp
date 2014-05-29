@@ -3280,6 +3280,16 @@ end;
 
 procedure TMainIDE.OnProcessIDECommand(Sender: TObject;
   Command: word;  var Handled: boolean);
+
+  function IsOnWindow(Wnd: TWinControl): boolean;
+  begin
+    Result:=false;
+    if Wnd=nil then exit;
+    if not (Sender is TControl) then exit;
+    if Sender=Wnd then exit(true);
+    Result:=Wnd.IsParentOf(TControl(Sender));
+  end;
+
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
@@ -3292,7 +3302,7 @@ begin
   case Command of
   ecEditContextHelp: ShowContextHelpEditor(Sender);
   ecContextHelp:
-    if Sender=MessagesView then
+    if IsOnWindow(MessagesView) then
       HelpBoss.ShowHelpForMessage{$IFDEF EnableNewExtTools}(){$ELSE}(-1){$ENDIF}
     else if Sender is TObjectInspectorDlg then
       HelpBoss.ShowHelpForObjectInspector(Sender);

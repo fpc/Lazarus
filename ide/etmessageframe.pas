@@ -36,8 +36,8 @@ uses
   LazUTF8Classes, LazFileUtils, LazUTF8, AvgLvlTree, SynEdit, LResources, Forms,
   Buttons, ExtCtrls, Controls, LMessages, LCLType, Graphics, LCLIntf, Themes,
   ImgList, GraphType, Menus, Clipbrd, Dialogs, StdCtrls, IDEExternToolIntf,
-  IDEImagesIntf, MenuIntf, PackageIntf, etSrcEditMarks, etQuickFixes,
-  LazarusIDEStrConsts, EnvironmentOpts;
+  IDEImagesIntf, MenuIntf, PackageIntf, IDECommands, etSrcEditMarks,
+  etQuickFixes, LazarusIDEStrConsts, EnvironmentOpts, HelpFPCMessages;
 
 const
   CustomViewCaption = '------------------------------';
@@ -389,8 +389,10 @@ type
     procedure CopyFilenameMenuItemClick(Sender: TObject);
     procedure CopyMsgMenuItemClick(Sender: TObject);
     procedure CopyShownMenuItemClick(Sender: TObject);
+    procedure EditHelpMenuItemClick(Sender: TObject);
     procedure FileStyleMenuItemClick(Sender: TObject);
     procedure FindMenuItemClick(Sender: TObject);
+    procedure HelpMenuItemClick(Sender: TObject);
     procedure HideHintsWithoutPosMenuItemClick(Sender: TObject);
     procedure HideMsgOfTypeMenuItemClick(Sender: TObject);
     procedure HideUrgencyMenuItemClick(Sender: TObject);
@@ -486,6 +488,8 @@ var
   MsgSaveToFileMenuSection: TIDEMenuSection;
     MsgSaveAllToFileMenuItem: TIDEMenuCommand;
     MsgSaveShownToFileMenuItem: TIDEMenuCommand;
+  MsgHelpMenuItem: TIDEMenuCommand;
+  MsgEditHelpMenuItem: TIDEMenuCommand;
   MsgClearMenuItem: TIDEMenuCommand;
   MsgFilenameStyleMenuSection: TIDEMenuSection;
     MsgFileStyleShortMenuItem: TIDEMenuCommand;
@@ -554,6 +558,8 @@ begin
     Parent.Caption:='Save ...';
     MsgSaveShownToFileMenuItem:=RegisterIDEMenuCommand(Parent,'Save Shown Messages to File','Save Shown Messages to File ...');
     MsgSaveAllToFileMenuItem:=RegisterIDEMenuCommand(Parent,'Save All Messages to File','Save All/Original Messages to File ...');
+  MsgHelpMenuItem := RegisterIDEMenuCommand(Root, 'Help for this message',lisHelp);
+  MsgEditHelpMenuItem := RegisterIDEMenuCommand(Root, 'Edit help for messages',lisEditHelp);
   MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', 'Clear');
   MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Root,'Filename Styles');
     Parent:=MsgFilenameStyleMenuSection;
@@ -3079,7 +3085,6 @@ begin
     end;
 
     MsgFindMenuItem.OnClick:=@FindMenuItemClick;
-    MsgClearMenuItem.OnClick:=@ClearMenuItemClick;
 
     // check selection
     View:=MessagesCtrl.SelectedView;
@@ -3137,6 +3142,11 @@ begin
     MsgSaveAllToFileMenuItem.OnClick:=@SaveAllToFileMenuItemClick;
     MsgSaveShownToFileMenuItem.Enabled:=HasViewContent;
     MsgSaveShownToFileMenuItem.OnClick:=@SaveShownToFileMenuItemClick;
+    MsgHelpMenuItem.Enabled:=HasText;
+    MsgHelpMenuItem.OnClick:=@HelpMenuItemClick;
+    MsgEditHelpMenuItem.OnClick:=@EditHelpMenuItemClick;
+    MsgClearMenuItem.OnClick:=@ClearMenuItemClick;
+    MsgClearMenuItem.Enabled:=View<>nil;
 
     MinUrgency:=MessagesCtrl.ActiveFilter.MinUrgency;
     MsgHideWarningsMenuItem.Checked:=MinUrgency in [mluError..mluPanic];
@@ -3318,6 +3328,11 @@ begin
   CopyAllClicked(true);
 end;
 
+procedure TMessagesFrame.EditHelpMenuItemClick(Sender: TObject);
+begin
+  ShowMessageHelpEditor;
+end;
+
 procedure TMessagesFrame.FileStyleMenuItemClick(Sender: TObject);
 begin
   if Sender=MsgFileStyleShortMenuItem then
@@ -3334,6 +3349,11 @@ begin
   MessagesCtrl.StoreSelectedAsSearchStart;
   SearchPanel.Visible:=true;
   SearchEdit.SetFocus;
+end;
+
+procedure TMessagesFrame.HelpMenuItemClick(Sender: TObject);
+begin
+  ExecuteIDECommand(Self, ecContextHelp);
 end;
 
 procedure TMessagesFrame.HideHintsWithoutPosMenuItemClick(Sender: TObject);

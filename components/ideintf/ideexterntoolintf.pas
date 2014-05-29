@@ -2012,7 +2012,10 @@ end;
 
 procedure TMessageLine.GetAttributes(List: TStrings);
 begin
-  List.Assign(fAttributes);
+  if fAttributes<>nil then
+    List.Assign(fAttributes)
+  else
+    List.Clear;
   List.Values['Urgency']:=MessageLineUrgencyNames[Urgency];
   List.Values['SubTool']:=SubTool;
   List.Values['SubType']:=IntToStr(SubType);
