@@ -785,7 +785,7 @@ begin
   then Result := Result or (Int64(-1) shl n);
 end;
 
-function SkipEntryDataForForm(var AEntryData: Pointer; AForm: Cardinal; AddrSize: Byte): Boolean; inline;
+function SkipEntryDataForForm(var AEntryData: Pointer; AForm: Cardinal; AddrSize: Byte; IsDwarf64: boolean): Boolean; inline;
 var
   UValue: QWord;
 begin
@@ -820,15 +820,20 @@ begin
         while (PByte(AEntryData)^ and $80) <> 0 do Inc(AEntryData);
         Inc(AEntryData);
       end;
-    DW_FORM_ref_addr : Inc(AEntryData, AddrSize); // TODO: Dwarf3 depends on FIsDwarf64
+    DW_FORM_strp,
+    DW_FORM_ref_addr : begin
+        if IsDwarf64 then
+          Inc(AEntryData, 8)
+        else
+          Inc(AEntryData, 4);
+      end;
     DW_FORM_string   : begin
         while PByte(AEntryData)^ <> 0 do Inc(AEntryData);
         Inc(AEntryData);
       end;
-    DW_FORM_strp     : Inc(AEntryData, AddrSize);
     DW_FORM_indirect : begin
         while AForm = DW_FORM_indirect do AForm := ULEB128toOrdinal(AEntryData);
-        Result := SkipEntryDataForForm(AEntryData, AForm, AddrSize);
+        Result := SkipEntryDataForForm(AEntryData, AForm, AddrSize, IsDwarf64);
       end;
   else begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Unknown Form: ', AForm]);
@@ -2299,7 +2304,7 @@ begin
   for i := 0 to FAbbrev^.count - 1 do begin
     if FAbbrevData[i].Attribute = AnAttrib then
       exit(i);
-    SkipEntryDataForForm(AInfoPointer, FAbbrevData[i].Form, AddrSize);
+    SkipEntryDataForForm(AInfoPointer, FAbbrevData[i].Form, AddrSize, FCompUnit.IsDwarf64);
   end;
   Result := -1;
 end;
@@ -3331,7 +3336,7 @@ begin
       end;
     end;
   end;
-    
+
   Iter.Free;
 
   for Idx := 0 to FLineNumberMap.Count - 1 do
@@ -3596,7 +3601,7 @@ begin
   if not LocateAttribute(Scope.Entry, DW_AT_identifier_case, AttribList, Attrib, Form)
   and not ReadValue(Attrib, Form, FIdentifierCase)
   then FIdentifierCase := DW_ID_case_sensitive;
-  
+
   if LocateAttribute(Scope.Entry, DW_AT_stmt_list, AttribList, Attrib, Form)
   and ReadValue(Attrib, Form, StatementListOffs)
   then begin
@@ -3620,7 +3625,7 @@ begin
 
   if LocateAttribute(Scope.Entry, DW_AT_high_pc, AttribList, Attrib, Form)
   then ReadValue(Attrib, Form, FMaxPC);
-  
+
   if FMinPC = 0 then FMinPC := FMaxPC;
   if FMaxPC = 0 then FMAxPC := FMinPC;
 end;
@@ -3776,7 +3781,7 @@ begin
     end;
 
     AEntry := AList.List[i];
-    if not SkipEntryDataForForm(AEntry, ADefs[AbrIdx].Form, FAddressSize) then
+    if not SkipEntryDataForForm(AEntry, ADefs[AbrIdx].Form, FAddressSize, IsDwarf64) then
       break;
     AList.List[i+1] := AEntry;
     inc(i);
@@ -3815,7 +3820,7 @@ begin
       Exit;
     end
     else begin
-      if not SkipEntryDataForForm(AEntry, ADefs[n].Form, FAddressSize) then
+      if not SkipEntryDataForForm(AEntry, ADefs[n].Form, FAddressSize, IsDwarf64) then
         break;
     end;
   end;
@@ -3842,7 +3847,7 @@ function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; out
     AddrSize := FAddressSize;
     for idx := 0 to ADef^.Count - 1 do
     begin
-      if not SkipEntryDataForForm(p, ADefs^.Form, AddrSize) then
+      if not SkipEntryDataForForm(p, ADefs^.Form, AddrSize, IsDwarf64) then
         exit(False);
       inc(ADefs);
     end;
