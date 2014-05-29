@@ -110,22 +110,26 @@ type
     procedure Clear;
     procedure FreeAndClear;
     procedure FreeAndDelete(ANode: TAvgLvlTreeNode);
+    function Equals(Obj: TObject): boolean; override; // same as IsEqual(aTree,false)
+    function IsEqual(aTree: TAvgLvlTree; CheckDataPointer: boolean): boolean; // checks only keys or Data (references), not the data itself, O(n)
+    procedure Assign(aTree: TAvgLvlTree); virtual; // clear and copy all Data (references), O(n)
 
     // search
     property Root: TAvgLvlTreeNode read fRoot;
     property Count: SizeInt read FCount;
     function Compare(Data1, Data2: Pointer): integer;
-    function Find(Data: Pointer): TAvgLvlTreeNode;
+    function Find(Data: Pointer): TAvgLvlTreeNode; // O(log(n))
     function FindKey(Key: Pointer;
-                     OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+                     OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode; // O(log(n))
     function FindNearestKey(Key: Pointer;
-                       OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+                       OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode; // O(log(n))
     function FindSuccessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode; inline;
     function FindPrecessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode; inline;
-    function FindLowest: TAvgLvlTreeNode;
-    function FindHighest: TAvgLvlTreeNode;
-    function FindNearest(Data: Pointer): TAvgLvlTreeNode;
-    function FindPointer(Data: Pointer): TAvgLvlTreeNode;
+    function FindLowest: TAvgLvlTreeNode; // O(log(n))
+    function FindHighest: TAvgLvlTreeNode; // O(log(n))
+    function FindNearest(Data: Pointer): TAvgLvlTreeNode; // O(log(n))
+    // search in a tree with duplicates (duplicate means here: Compare function returns 0)
+    function FindPointer(Data: Pointer): TAvgLvlTreeNode; // O(log(n))+k (k= maximum number of same values)
     function FindLeftMost(Data: Pointer): TAvgLvlTreeNode;
     function FindRightMost(Data: Pointer): TAvgLvlTreeNode;
     function FindLeftMostKey(Key: Pointer;
@@ -215,6 +219,9 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure ClearWithFree; // free Values with TObject(Value).Free
+    function Equals(Obj: TObject): boolean; override;
+    function IsEqual(aTree: TPointerToPointerTree): boolean;
+    procedure Assign(aTree: TPointerToPointerTree);
     procedure Remove(Key: Pointer);
     function Contains(const Key: Pointer): Boolean; inline;
     function GetFirst(out Key, Value: Pointer): Boolean;
@@ -1492,6 +1499,72 @@ begin
   OldData.Free;
 end;
 
+function TAvgLvlTree.Equals(Obj: TObject): boolean;
+begin
+  if Obj is TAvgLvlTree then
+    Result:=IsEqual(TAvgLvlTree(Obj),false)
+  else
+    Result:=inherited Equals(Obj);
+end;
+
+function TAvgLvlTree.IsEqual(aTree: TAvgLvlTree; CheckDataPointer: boolean
+  ): boolean;
+var
+  MyNode: TAvgLvlTreeNode;
+  OtherNode: TAvgLvlTreeNode;
+begin
+  if aTree=Self then exit(true);
+  Result:=false;
+  if aTree=nil then exit;
+  if Count<>aTree.Count then exit;
+  if OnCompare<>aTree.OnCompare then exit;
+  if OnObjectCompare<>aTree.OnObjectCompare then exit;
+  if NodeClass<>aTree.NodeClass then exit;
+  MyNode:=FindLowest;
+  OtherNode:=aTree.FindLowest;
+  while MyNode<>nil do begin
+    if OtherNode=nil then exit;
+    if CheckDataPointer then begin
+      if MyNode.Data<>OtherNode.Data then exit;
+    end else begin
+      if Compare(MyNode.Data,OtherNode.Data)<>0 then exit;
+    end;
+    MyNode:=MyNode.Successor;;
+    OtherNode:=OtherNode.Successor;
+  end;
+  if OtherNode<>nil then exit;
+  Result:=true;
+end;
+
+procedure TAvgLvlTree.Assign(aTree: TAvgLvlTree);
+
+  procedure AssignNode(var MyNode: TAvgLvlTreeNode; OtherNode: TAvgLvlTreeNode);
+  begin
+    MyNode:=NodeClass.Create;
+    MyNode.Data:=OtherNode.Data;
+    MyNode.Balance:=OtherNode.Balance;
+    if OtherNode.Left<>nil then begin
+      AssignNode(MyNode.Left,OtherNode.Left);
+      MyNode.Left.Parent:=MyNode;
+    end;
+    if OtherNode.Right<>nil then begin
+      AssignNode(MyNode.Right,OtherNode.Right);
+      MyNode.Right.Parent:=MyNode;
+    end;
+  end;
+
+begin
+  if aTree=nil then
+    raise Exception.Create('TAvgLvlTree.Assign aTree=nil');
+  if IsEqual(aTree,true) then exit;
+  Clear;
+  SetCompares(aTree.OnCompare,aTree.OnObjectCompare);
+  FNodeClass:=aTree.NodeClass;
+  if aTree.Root<>nil then
+    AssignNode(fRoot,aTree.Root);
+  FCount:=aTree.Count;
+end;
+
 procedure TAvgLvlTree.WriteReportToStream(s: TStream);
 
   procedure WriteStr(const Txt: string);
@@ -2157,6 +2230,64 @@ begin
     Node:=Node.Successor;
   end;
   FItems.Clear;
+end;
+
+function TPointerToPointerTree.Equals(Obj: TObject): boolean;
+begin
+  if Obj is TPointerToPointerTree then
+    Result:=IsEqual(TPointerToPointerTree(Obj))
+  else
+    Result:=inherited Equals(Obj);
+end;
+
+function TPointerToPointerTree.IsEqual(aTree: TPointerToPointerTree): boolean;
+var
+  MyNode: TAvgLvlTreeNode;
+  OtherNode: TAvgLvlTreeNode;
+  MyItem: PPointerToPointerItem;
+  OtherItem: PPointerToPointerItem;
+begin
+  if aTree=Self then exit(true);
+  Result:=false;
+  if aTree=nil then exit;
+  if Count<>aTree.Count then exit;
+  if FItems.OnCompare<>aTree.FItems.OnCompare then exit;
+  if FItems.OnObjectCompare<>aTree.FItems.OnObjectCompare then exit;
+  if FItems.NodeClass<>aTree.FItems.NodeClass then exit;
+  MyNode:=FItems.FindLowest;
+  OtherNode:=aTree.FItems.FindLowest;
+  while MyNode<>nil do begin
+    if OtherNode=nil then exit;
+    MyItem:=PPointerToPointerItem(MyNode.Data);
+    OtherItem:=PPointerToPointerItem(OtherNode.Data);
+    if (MyItem^.Key<>OtherItem^.Key)
+    or (MyItem^.Value<>OtherItem^.Value) then exit;
+    MyNode:=MyNode.Successor;
+    OtherNode:=OtherNode.Successor;
+  end;
+  if OtherNode<>nil then exit;
+  Result:=true;
+end;
+
+procedure TPointerToPointerTree.Assign(aTree: TPointerToPointerTree);
+var
+  Node: TAvgLvlTreeNode;
+  SrcItem, MyItem: PPointerToPointerItem;
+begin
+  if aTree=nil then
+    raise Exception.Create('TPointerToPointerTree.Assign aTree=nil');
+  if IsEqual(aTree) then exit;
+  // clear and clone node structure, copying Data references
+  FItems.Assign(aTree.FItems);
+  // clone Data
+  Node:=FItems.FindLowest;
+  while Node<>nil do begin
+    SrcItem:=PPointerToPointerItem(Node.Data);
+    New(MyItem);
+    MyItem^:=SrcItem^;
+    Node.Data:=MyItem;
+    Node:=Node.Successor;
+  end;
 end;
 
 procedure TPointerToPointerTree.Remove(Key: Pointer);
