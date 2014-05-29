@@ -558,32 +558,34 @@ var
     DefStyle: TFontStyles;
   begin
     Result:=False;
-    // *** First find matches in different controls ***
-    // TSynEdit can't be used here in IdeOptionsIntf !
-    //if AControl is TSynEdit then  Found:=SearchSynEdit(AControl)
-    if AControl is TCustomComboBox then
-      Result:=SearchComboBox(TCustomComboBox(AControl))
-    else if AControl is TCustomListBox then
-      Result:=SearchListBox(TCustomListBox(AControl))
-    else if AControl is TCustomListView then
-      Result:=SearchListView(TCustomListView(AControl))
-    else if AControl is TCustomTreeView then
-      Result:=SearchTreeView(TCustomTreeView(AControl))
-    else if AControl is TCustomStringGrid then
-      Result:=SearchStringGrid(TCustomStringGrid(AControl))
-    else if AControl is TCustomMemo then
-      Result:=SearchMemo(TCustomMemo(AControl))
-    else begin
-      Result:=Pos(LowerText, LowerCase(AControl.Caption))>0;
-      // Indicate the match
-      if Result then
-        AControl.Font.Style:=MatchFontStyle
-      // or, remove the indication.
-      else if AControl.Font.Style=MatchFontStyle then begin
-        DefStyle:=[];
-        if FDefaultFonts.Find(AControl.Name, i) then
-          DefStyle:=TDefaultFont(FDefaultFonts.Objects[i]).FStyles;
-        AControl.Font.Style:=DefStyle;
+    if AControl.Visible then begin
+      // *** First find matches in different controls ***
+      // TSynEdit can't be used here in IdeOptionsIntf !
+      //if AControl is TSynEdit then  Found:=SearchSynEdit(AControl)
+      if AControl is TCustomComboBox then
+        Result:=SearchComboBox(TCustomComboBox(AControl))
+      else if AControl is TCustomListBox then
+        Result:=SearchListBox(TCustomListBox(AControl))
+      else if AControl is TCustomListView then
+        Result:=SearchListView(TCustomListView(AControl))
+      else if AControl is TCustomTreeView then
+        Result:=SearchTreeView(TCustomTreeView(AControl))
+      else if AControl is TCustomStringGrid then
+        Result:=SearchStringGrid(TCustomStringGrid(AControl))
+      else if AControl is TCustomMemo then
+        Result:=SearchMemo(TCustomMemo(AControl))
+      else begin
+        Result:=Pos(LowerText, LowerCase(AControl.Caption))>0;
+        // Indicate the match
+        if Result then
+          AControl.Font.Style:=MatchFontStyle
+        // or, remove the indication.
+        else if AControl.Font.Style=MatchFontStyle then begin
+          DefStyle:=[];
+          if FDefaultFonts.Find(AControl.Name, i) then
+            DefStyle:=TDefaultFont(FDefaultFonts.Objects[i]).FStyles;
+          AControl.Font.Style:=DefStyle;
+        end;
       end;
     end;
 
