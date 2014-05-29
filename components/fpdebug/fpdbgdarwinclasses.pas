@@ -39,13 +39,38 @@ type
     __gs: cuint;
   end;
 
+  x86_thread_state64_t = record
+    __rax: cuint64;
+    __rbx: cuint64;
+    __rcx: cuint64;
+    __rdx: cuint64;
+    __rdi: cuint64;
+    __rsi: cuint64;
+    __rbp: cuint64;
+    __rsp: cuint64;
+    __r8: cuint64;
+    __r9: cuint64;
+    __r10: cuint64;
+    __r11: cuint64;
+    __r12: cuint64;
+    __r13: cuint64;
+    __r14: cuint64;
+    __r15: cuint64;
+    __rip: cuint64;
+    __rflags: cuint64;
+    __cs: cuint64;
+    __fs: cuint64;
+    __gs: cuint64;
+  end;
+
 type
 
   { TDbgDarwinThread }
 
   TDbgDarwinThread = class(TDbgThread)
   private
-    FThreadState: x86_thread_state32_t;
+    FThreadState32: x86_thread_state32_t;
+    FThreadState64: x86_thread_state64_t;
     FNeedIPDecrement: boolean;
   protected
     function ReadThreadState: boolean;
@@ -108,13 +133,29 @@ type
 
 const
   x86_THREAD_STATE32    = 1;
+  x86_FLOAT_STATE32     = 2;
+  x86_EXCEPTION_STATE32 = 3;
+  x86_THREAD_STATE64    = 4;
+  x86_FLOAT_STATE64     = 5;
+  x86_EXCEPTION_STATE64 = 6;
+  x86_THREAD_STATE      = 7;
+  x86_FLOAT_STATE       = 8;
+  x86_EXCEPTION_STATE   = 9;
+  x86_DEBUG_STATE32     = 10;
+  x86_DEBUG_STATE64     = 11;
+  x86_DEBUG_STATE       = 12;
+  THREAD_STATE_NONE     = 13;
+  x86_AVX_STATE32       = 16;
+  x86_AVX_STATE64       = 17;
+  x86_AVX_STATE         = 18;
 
   x86_THREAD_STATE32_COUNT: mach_msg_Type_number_t = sizeof(x86_thread_state32_t) div sizeof(cint);
+  x86_THREAD_STATE64_COUNT: mach_msg_Type_number_t = sizeof(x86_thread_state64_t) div sizeof(cint);
 
 function task_for_pid(target_tport: mach_port_name_t; pid: integer; var t: mach_port_name_t): kern_return_t; cdecl external name 'task_for_pid';
 function mach_task_self: mach_port_name_t; cdecl external name 'mach_task_self';
 function mach_error_string(error_value: mach_error_t): pchar; cdecl; external name 'mach_error_string';
-function vm_protect(target_task: vm_map_t; adress: vm_address_t; size: vm_size_t; set_maximum: boolean_t; new_protection: vm_prot_t): kern_return_t; cdecl external name 'vm_protect';
+function mach_vm_protect(target_task: vm_map_t; adress: mach_vm_address_t; size: mach_vm_size_t; set_maximum: boolean_t; new_protection: vm_prot_t): kern_return_t; cdecl external name 'mach_vm_protect';
 function mach_vm_write(target_task: vm_map_t; address: mach_vm_address_t; data: vm_offset_t; dataCnt: mach_msg_Type_number_t): kern_return_t; cdecl external name 'mach_vm_write';
 function mach_vm_read(target_task: vm_map_t; address: mach_vm_address_t; size: mach_vm_size_t; var data: vm_offset_t; var dataCnt: mach_msg_Type_number_t): kern_return_t; cdecl external name 'mach_vm_read';
 
@@ -144,8 +185,16 @@ var
   aKernResult: kern_return_t;
   old_StateCnt: mach_msg_Type_number_t;
 begin
-  old_StateCnt:=x86_THREAD_STATE32_COUNT;
-  aKernResult:=thread_get_state(Id,x86_THREAD_STATE32, @FThreadState,old_StateCnt);
+  if Process.Mode=dm32 then
+    begin
+    old_StateCnt:=x86_THREAD_STATE32_COUNT;
+    aKernResult:=thread_get_state(Id,x86_THREAD_STATE32, @FThreadState32,old_StateCnt);
+    end
+  else
+    begin
+    old_StateCnt:=x86_THREAD_STATE64_COUNT;
+    aKernResult:=thread_get_state(Id,x86_THREAD_STATE64, @FThreadState64,old_StateCnt);
+    end;
   if aKernResult <> KERN_SUCCESS then
     begin
     Log('Failed to call thread_get_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
@@ -164,14 +213,19 @@ begin
   if not FNeedIPDecrement then
     Exit;
 
-  {$ifdef cpui386}
-  Dec(FThreadState.__eip);
-  {$else}
-  Dec(FThreadState.__rip);
-  {$endif}
+  if Process.Mode=dm32 then
+    begin
+    Dec(FThreadState32.__eip);
+    new_StateCnt := x86_THREAD_STATE32_COUNT;
+    aKernResult:=thread_set_state(ID,x86_THREAD_STATE32, @FThreadState32, new_StateCnt);
+    end
+  else
+    begin
+    Dec(FThreadState64.__rip);
+    new_StateCnt := x86_THREAD_STATE64_COUNT;
+    aKernResult:=thread_set_state(ID,x86_THREAD_STATE64, @FThreadState64, new_StateCnt);
+    end;
 
-  new_StateCnt := x86_THREAD_STATE32_COUNT;
-  aKernResult:=thread_set_state(ID,x86_THREAD_STATE32, @FThreadState, new_StateCnt);
   if aKernResult <> KERN_SUCCESS then
     begin
     Log('Failed to call thread_set_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
@@ -180,8 +234,8 @@ end;
 
 procedure TDbgDarwinThread.LoadRegisterValues;
 begin
-  with FThreadState do
-    begin
+  if Process.Mode=dm32 then with FThreadState32 do
+  begin
     FRegisterValueList.DbgRegisterAutoCreate['eax'].SetValue(__eax, IntToStr(__eax),4,0);
     FRegisterValueList.DbgRegisterAutoCreate['ecx'].SetValue(__ecx, IntToStr(__ecx),4,1);
     FRegisterValueList.DbgRegisterAutoCreate['edx'].SetValue(__edx, IntToStr(__edx),4,2);
@@ -198,6 +252,31 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(__ss, IntToStr(__ss),4,0);
     FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(__ds, IntToStr(__ds),4,0);
     FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(__es, IntToStr(__es),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(__fs, IntToStr(__fs),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(__gs, IntToStr(__gs),4,0);
+  end else with FThreadState64 do
+    begin
+    FRegisterValueList.DbgRegisterAutoCreate['rax'].SetValue(__rax, IntToStr(__rax),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['rcx'].SetValue(__rcx, IntToStr(__rcx),4,1);
+    FRegisterValueList.DbgRegisterAutoCreate['rdx'].SetValue(__rdx, IntToStr(__rdx),4,2);
+    FRegisterValueList.DbgRegisterAutoCreate['rbx'].SetValue(__rbx, IntToStr(__rbx),4,3);
+    FRegisterValueList.DbgRegisterAutoCreate['rsp'].SetValue(__rsp, IntToStr(__rsp),4,4);
+    FRegisterValueList.DbgRegisterAutoCreate['rbp'].SetValue(__rbp, IntToStr(__rbp),4,5);
+    FRegisterValueList.DbgRegisterAutoCreate['rsi'].SetValue(__rsi, IntToStr(__rsi),4,6);
+    FRegisterValueList.DbgRegisterAutoCreate['rdi'].SetValue(__rdi, IntToStr(__rdi),4,7);
+    FRegisterValueList.DbgRegisterAutoCreate['rip'].SetValue(__rip, IntToStr(__rip),4,8);
+
+    FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(__rflags);
+
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(__cs, IntToStr(__cs),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r8'].SetValue(__r8, IntToStr(__r8),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r9'].SetValue(__r9, IntToStr(__r9),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r10'].SetValue(__r10, IntToStr(__r10),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r11'].SetValue(__r11, IntToStr(__r11),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r12'].SetValue(__r12, IntToStr(__r12),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r13'].SetValue(__r13, IntToStr(__r13),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r14'].SetValue(__r14, IntToStr(__r14),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r15'].SetValue(__r15, IntToStr(__r15),4,0);
     FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(__fs, IntToStr(__fs),4,0);
     FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(__gs, IntToStr(__gs),4,0);
   end;
@@ -363,7 +442,7 @@ var
   aKernResult: kern_return_t;
 begin
   result := false;
-  aKernResult:=vm_protect(FTaskPort, PtrUInt(AAdress), ASize, boolean_t(false), 7 {VM_PROT_READ + VM_PROT_WRITE + VM_PROT_COPY});
+  aKernResult:=mach_vm_protect(FTaskPort, AAdress, ASize, boolean_t(false), 7 {VM_PROT_READ + VM_PROT_WRITE + VM_PROT_COPY});
   if aKernResult <> KERN_SUCCESS then
     begin
     DebugLn('Failed to call vm_protect for address '+FormatAddress(AAdress)+'. Mach error: '+mach_error_string(aKernResult));
@@ -382,17 +461,26 @@ end;
 
 function TDbgDarwinProcess.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
-  result := TDbgDarwinThread(FMainThread).FThreadState.__eip;
+  if Mode=dm32 then
+    result := TDbgDarwinThread(FMainThread).FThreadState32.__eip
+  else
+    result := TDbgDarwinThread(FMainThread).FThreadState64.__rip;
 end;
 
 function TDbgDarwinProcess.GetStackPointerRegisterValue: TDbgPtr;
 begin
-  result := TDbgDarwinThread(FMainThread).FThreadState.__esp;
+  if Mode=dm32 then
+    result := TDbgDarwinThread(FMainThread).FThreadState32.__esp
+  else
+    result := TDbgDarwinThread(FMainThread).FThreadState64.__rsp;
 end;
 
 function TDbgDarwinProcess.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
-  result := TDbgDarwinThread(FMainThread).FThreadState.__ebp;
+  if Mode=dm32 then
+    result := TDbgDarwinThread(FMainThread).FThreadState32.__ebp
+  else
+    result := TDbgDarwinThread(FMainThread).FThreadState64.__rbp;
 end;
 
 procedure TDbgDarwinProcess.TerminateProcess;
@@ -509,7 +597,7 @@ begin
           result := deBreakpoint;
 
         // Handle the breakpoint also if it is reached by single-stepping.
-        ExceptionAddr:=TDbgDarwinThread(FMainThread).FThreadState.__eip;
+        ExceptionAddr:=GetInstructionPointerRegisterValue;
         if not (FMainThread.SingleStepping or assigned(FCurrentBreakpoint)) then
           begin
           TDbgDarwinThread(FMainThread).FNeedIPDecrement:=true;
