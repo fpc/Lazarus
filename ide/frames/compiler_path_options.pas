@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, LazFileCache, Controls, Dialogs,
   Graphics, Buttons, StdCtrls, LCLType, IDEOptionsIntf, MacroIntf, IDEDialogs,
   CompOptsIntf, Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg,
-  IDEProcs, CheckCompilerOpts, ShowCompilerOpts, MainIntf;
+  IDEProcs, CheckCompilerOpts, ShowCompilerOpts, MainIntf, PackageDefs;
 
 type
 
@@ -745,19 +745,24 @@ begin
 end;
 
 procedure TCompilerPathOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  ProjOpts: TProjectCompilerOptions;
+  PkgDep: TPkgDependency;
 begin
   if not (AOptions is TBaseCompilerOptions) then exit;
   FCompilerOpts := TBaseCompilerOptions(AOptions);
 
   if AOptions is TProjectCompilerOptions then
   begin
+    ProjOpts:=TProjectCompilerOptions(AOptions);
     FHasProjectCompilerOpts:=True;
     ProjTargetFileEdit.Visible:=true;
     ProjTargetFileLabel.Visible:=true;
-    ProjTargetFileEdit.Text:=TProjectCompilerOptions(AOptions).TargetFilename;
-    ProjTargetApplyConventionsCheckBox.Checked:=TProjectCompilerOptions(AOptions).TargetFilenameApplyConventions;
+    ProjTargetFileEdit.Text:=ProjOpts.TargetFilename;
+    ProjTargetApplyConventionsCheckBox.Checked:=ProjOpts.TargetFilenameApplyConventions;
     ProjTargetApplyConventionsCheckBox.Visible:=true;
-    LCLWidgetTypeLabel.Visible:=true;;
+    PkgDep:=ProjOpts.LazProject.FindDependencyByName('LCL');
+    LCLWidgetTypeLabel.Visible:=Assigned(PkgDep);
     UpdateTargetFileLabel;
   end else begin
     FHasProjectCompilerOpts:=False;
@@ -767,17 +772,14 @@ begin
     LCLWidgetTypeLabel.Visible:=false;
   end;
 
-  with AOptions as TBaseCompilerOptions do
-  begin
-    OtherUnitsEdit.Text := OtherUnitFiles;
-    IncludeFilesEdit.Text := IncludePath;
-    LibrariesEdit.Text := Libraries;
-    OtherSourcesEdit.Text := SrcPath;
-    UnitOutputDirEdit.Text := UnitOutputDirectory;
-    DebugPathEdit.Text := DebugPath;
+  OtherUnitsEdit.Text := FCompilerOpts.OtherUnitFiles;
+  IncludeFilesEdit.Text := FCompilerOpts.IncludePath;
+  LibrariesEdit.Text := FCompilerOpts.Libraries;
+  OtherSourcesEdit.Text := FCompilerOpts.SrcPath;
+  UnitOutputDirEdit.Text := FCompilerOpts.UnitOutputDirectory;
+  DebugPathEdit.Text := FCompilerOpts.DebugPath;
 
-    chkUseAsDefault.Visible := CanBeDefaulForProject;
-  end;
+  chkUseAsDefault.Visible := FCompilerOpts.CanBeDefaulForProject;
 end;
 
 procedure TCompilerPathOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);

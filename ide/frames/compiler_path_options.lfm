@@ -15,7 +15,7 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     Left = 0
     Height = 15
     Top = 0
-    Width = 92
+    Width = 100
     Caption = 'OtherUnitsLabel'
     ParentColor = False
   end
@@ -26,8 +26,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 44
-    Width = 95
+    Top = 46
+    Width = 105
     BorderSpacing.Top = 6
     Caption = 'IncludeFilesLabel'
     ParentColor = False
@@ -39,8 +39,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 241
-    Width = 106
+    Top = 251
+    Width = 119
     Caption = 'OtherSourcesLabel'
     ParentColor = False
   end
@@ -51,8 +51,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 88
-    Width = 78
+    Top = 92
+    Width = 86
     BorderSpacing.Top = 6
     Caption = 'LibrariesLabel'
     ParentColor = False
@@ -64,8 +64,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 132
-    Width = 110
+    Top = 138
+    Width = 118
     BorderSpacing.Top = 6
     Caption = 'UnitOutputDirLabel'
     ParentColor = False
@@ -77,8 +77,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 285
-    Width = 92
+    Top = 297
+    Width = 102
     BorderSpacing.Top = 6
     Caption = 'DebugPathLabel'
     ParentColor = False
@@ -89,8 +89,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 329
-    Width = 115
+    Top = 343
+    Width = 122
     Caption = 'LCLWidgetTypeLabel'
     Font.Color = clBlue
     ParentColor = False
@@ -106,7 +106,7 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 23
+    Height = 25
     Top = 15
     Width = 509
     Anchors = [akTop, akLeft, akRight]
@@ -121,8 +121,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 23
-    Top = 59
+    Height = 25
+    Top = 61
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -136,8 +136,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 23
-    Top = 256
+    Height = 25
+    Top = 266
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -151,8 +151,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 23
-    Top = 103
+    Height = 25
+    Top = 107
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -166,8 +166,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 23
-    Top = 147
+    Height = 25
+    Top = 153
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -181,8 +181,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 23
-    Top = 300
+    Height = 25
+    Top = 312
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Bottom = 6
@@ -195,8 +195,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 15
-    Top = 176
-    Width = 108
+    Top = 184
+    Width = 116
     Caption = 'ProjTargetFileLabel'
     ParentColor = False
   end
@@ -207,8 +207,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 23
-    Top = 191
+    Height = 25
+    Top = 199
     Width = 509
     Anchors = [akTop, akLeft, akRight]
     OnChange = ProjTargetFileEditChange
@@ -222,8 +222,8 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     AnchorSideRight.Side = asrBottom
     Left = 0
     Height = 21
-    Top = 214
-    Width = 237
+    Top = 224
+    Width = 257
     BorderSpacing.Bottom = 6
     Caption = 'ProjTargetApplyConventionsCheckBox'
     TabOrder = 5

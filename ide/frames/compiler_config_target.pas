@@ -30,7 +30,7 @@ interface
 uses
   Classes, SysUtils, strutils, FileUtil, Controls, Dialogs, Graphics, StdCtrls,
   LCLProc, IDEOptionsIntf, IDEDialogs, CompilerOptions, LazarusIDEStrConsts,
-  TransferMacros, PackageDefs, compiler_parsing_options;
+  TransferMacros, PackageDefs, Project, compiler_parsing_options;
 
 type
 
@@ -382,6 +382,7 @@ end;
 procedure TCompilerConfigTargetFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   i: Integer;
+  PkgDep: TPkgDependency;
 begin
   FCompOptions:=AOptions as TBaseCompilerOptions;
   FIsPackage:=FCompOptions is TPkgCompilerOptions;
@@ -417,7 +418,8 @@ begin
       UpdateByTargetCPU(TargetCPU);
       UpdateByTargetOS(TargetOS);
       TargetProcComboBox.Text := ProcessorToCaption(TargetProcessor);
-      LCLWidgetTypeLabel.Visible:=true;
+      PkgDep:=(AOptions as TProjectCompilerOptions).LazProject.FindDependencyByName('LCL');
+      LCLWidgetTypeLabel.Visible:=Assigned(PkgDep);
     end;
     chkWin32GraphicApp.Checked := Win32GraphicApp;
     chkWin32GraphicApp.Enabled := NeedsLinkerOpts;
