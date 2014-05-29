@@ -196,8 +196,8 @@ type
 const
   MsgWndDefBackgroundColor = clWindow;
   MsgWndDefHeaderBackgroundRunning = clYellow;
-  MsgWndDefHeaderBackgroundSuccess = clMoneyGreen;
-  MsgWndDefHeaderBackgroundFailed = clRed;
+  MsgWndDefHeaderBackgroundSuccess = TColor($60FF60); // light green
+  MsgWndDefHeaderBackgroundFailed = TColor($6060FF); // light red
   MsgWndDefAutoHeaderBackground = clSkyBlue;
 
   MsgWndDefaultColors: array[TMsgWndColor] of TColor = (

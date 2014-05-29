@@ -3102,14 +3102,14 @@ begin
     if View<>nil then
     begin
       MsgAboutToolMenuItem.Caption:='About '+View.Caption;
-      MsgAboutToolMenuItem.Visible:=true;
+      MsgAboutSection.Visible:=true;
       if View.Tool.Data is TIDEExternalToolData then begin
         ToolData:=TIDEExternalToolData(View.Tool.Data);
         if ToolData.Kind=IDEToolCompilePackage then
           ToolOptionsCaption:='Open Package '+ToolData.ModuleName;
       end;
     end else
-      MsgAboutToolMenuItem.Visible:=false;
+      MsgAboutSection.Visible:=false;
     MsgAboutToolMenuItem.OnClick:=@AboutToolMenuItemClick;
     MsgOpenToolOptionsMenuItem.Visible:=ToolOptionsCaption<>'';
     MsgOpenToolOptionsMenuItem.Caption:=ToolOptionsCaption;
