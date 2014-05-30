@@ -5978,6 +5978,13 @@ images/sourceeditor/bookmark6.png -text
 images/sourceeditor/bookmark7.png -text
 images/sourceeditor/bookmark8.png -text
 images/sourceeditor/bookmark9.png -text
+images/sourceeditor/state11x11_error.png -text svneol=unset#image/png
+images/sourceeditor/state11x11_fatal.png -text svneol=unset#image/png
+images/sourceeditor/state11x11_hint.png -text svneol=unset#image/png
+images/sourceeditor/state11x11_information.png -text svneol=unset#image/png
+images/sourceeditor/state11x11_note.png -text svneol=unset#image/png
+images/sourceeditor/state11x11_unknown.png -text svneol=unset#image/png
+images/sourceeditor/state11x11_warning.png -text svneol=unset#image/png
 images/sourceeditor/tsynsyncroedit.png -text
 images/splash_logo.bat svneol=native#text/x-msdos-program
 images/splash_logo.png -text svneol=unset#image/png
@@ -5986,13 +5993,6 @@ images/splash_logo.xpm -text svneol=native#image/x-xpixmap
 images/splash_source/cheetah.jpg -text svneol=unset#image/jpeg
 images/splash_source/paw.png -text svneol=unset#image/png
 images/states/quickfix12x12.png -text
-images/states/state11x11_error.png -text svneol=unset#image/png
-images/states/state11x11_fatal.png -text svneol=unset#image/png
-images/states/state11x11_hint.png -text svneol=unset#image/png
-images/states/state11x11_information.png -text svneol=unset#image/png
-images/states/state11x11_note.png -text svneol=unset#image/png
-images/states/state11x11_unknown.png -text svneol=unset#image/png
-images/states/state11x11_warning.png -text svneol=unset#image/png
 images/states/state12x12_error.png -text
 images/states/state12x12_fatal.png -text
 images/states/state12x12_hint.png -text
