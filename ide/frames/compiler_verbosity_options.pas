@@ -53,12 +53,16 @@ begin
     Items.Add(dlgShowGeneralInfo + ' (-vi)');
     Items.Add(dlgShowCompilingLineNumbers + ' (-vl)');
     Items.Add(dlgShowCompiledProcedures + ' (-vp)');
+    {$IFNDEF EnableNewExtTools}
     Items.Add(dlgShowFullFileNames + ' (-vb)');
+    {$ENDIF}
     Items.Add(dlgShowConditionals + ' (-vc)');
     Items.Add(dlgShowEverything + ' (-va)');
     Items.Add(dlgShowExecutableInfo + ' (-vx)');
     Items.Add(dlgShowSummary + ' ' + dlgPOIconDescNone);
+    {$IFNDEF EnableNewExtTools}
     Items.Add(dlgShowNothing + ' (-v0)');
+    {$ENDIF}
     Items.Add(dlgHintsUnused + ' ' + dlgPOIconDescNone);
     Items.Add(dlgWriteFPCLogo + ' (-l)');
   end;
@@ -85,12 +89,16 @@ begin
     Checked[i] := ShowGenInfo; i+=1;
     Checked[i] := ShowLineNum; i+=1;
     Checked[i] := ShowCompProc; i+=1;
+    {$IFNDEF EnableNewExtTools}
     Checked[i] := ShowAllProcsOnError; i+=1;
+    {$ENDIF}
     Checked[i] := ShowCond; i+=1;
     Checked[i] := ShowAll; i+=1;
     Checked[i] := ShowExecInfo; i+=1;
     Checked[i] := ShowSummary; i+=1;
+    {$IFNDEF EnableNewExtTools}
     Checked[i] := ShowNothing; i+=1;
+    {$ENDIF}
     Checked[i] := ShowHintsForUnusedUnitsInMainSrc; i+=1;
     Checked[i] := WriteFPCLogo; i+=1;
 
@@ -116,12 +124,16 @@ begin
     ShowGenInfo := Checked[i]; i+=1;
     ShowLineNum := Checked[i]; i+=1;
     ShowCompProc := Checked[i]; i+=1;
+    {$IFNDEF EnableNewExtTools}
     ShowAllProcsOnError := Checked[i]; i+=1;
+    {$ENDIF}
     ShowCond := Checked[i]; i+=1;
     ShowAll := Checked[i]; i+=1;
     ShowExecInfo := Checked[i]; i+=1;
     ShowSummary := Checked[i]; i+=1;
+    {$IFNDEF EnableNewExtTools}
     ShowNothing := Checked[i]; i+=1;
+    {$ENDIF}
     ShowHintsForUnusedUnitsInMainSrc := Checked[i]; i+=1;
     WriteFPCLogo := Checked[i]; i+=1;
     StopAfterErrCount := StrToIntDef(edtErrorCnt.Text, 1);

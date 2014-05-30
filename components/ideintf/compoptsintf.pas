@@ -128,7 +128,9 @@ type
     procedure SetPassLinkerOpt(const AValue: Boolean);
     procedure SetRangeChecks(const AValue: Boolean);
     procedure SetShowAll(const AValue: Boolean);
+    {$IFNDEF EnableNewExtTools}
     procedure SetShowAllProcsOnError(const AValue: Boolean);
+    {$ENDIF}
     procedure SetShowCompProc(const AValue: Boolean);
     procedure SetShowCond(const AValue: Boolean);
     procedure SetShowDebugInfo(const AValue: Boolean);
@@ -140,7 +142,9 @@ type
     procedure SetShowHintsForUnusedUnitsInMainSrc(const AValue: Boolean);
     procedure SetShowLineNum(const AValue: Boolean);
     procedure SetShowNotes(const AValue: Boolean);
+    {$IFNDEF EnableNewExtTools}
     procedure SetShowNothing(const AValue: Boolean);
+    {$ENDIF}
     procedure SetShowSummary(const AValue: Boolean);
     procedure SetShowTriedFiles(const AValue: Boolean);
     procedure SetShowUsedFiles(const AValue: Boolean);
@@ -236,14 +240,18 @@ type
     fShowGenInfo: Boolean;
     fShowLineNum: Boolean;
     fShowAll: Boolean;
+    {$IFNDEF EnableNewExtTools}
     fShowAllProcsOnError: Boolean;
+    {$ENDIF}
     fShowDebugInfo: Boolean;
     fShowUsedFiles: Boolean;
     fShowTriedFiles: Boolean;
     fShowCompProc: Boolean;
     fShowCond: Boolean;
     fShowExecInfo: Boolean;
+    {$IFNDEF EnableNewExtTools}
     fShowNothing: Boolean;
+    {$ENDIF}
     fShowSummary: Boolean;
     fShowHintsForUnusedUnitsInMainSrc: Boolean;
     fShowHintsForSenderNotUsed: Boolean;
@@ -397,8 +405,10 @@ type
     property ShowHints: Boolean read fShowHints write SetShowHints; // -vh
     property ShowGenInfo: Boolean read fShowGenInfo write SetShowGenInfo; // -vi
     property ShowLineNum: Boolean read fShowLineNum write SetShowLineNum; // -vl
+    {$IFNDEF EnableNewExtTools}
     property ShowAllProcsOnError: Boolean
       read fShowAllProcsOnError write SetShowAllProcsOnError; // -vb
+    {$ENDIF}
     property ShowAll: Boolean read fShowAll write SetShowAll; // -va
     property ShowDebugInfo: Boolean read fShowDebugInfo write SetShowDebugInfo; // -vd
     property ShowUsedFiles: Boolean read fShowUsedFiles write SetShowUsedFiles; // -vu
@@ -406,7 +416,9 @@ type
     property ShowCompProc: Boolean read fShowCompProc write SetShowCompProc; // -vp
     property ShowCond: Boolean read fShowCond write SetShowCond; // -vc
     property ShowExecInfo: Boolean read fShowExecInfo write SetShowExecInfo; // -vx
+    {$IFNDEF EnableNewExtTools}
     property ShowNothing: Boolean read fShowNothing write SetShowNothing; // -v0
+    {$ENDIF}
     property ShowSummary: Boolean read FShowSummary write SetShowSummary;
     property ShowHintsForUnusedUnitsInMainSrc: Boolean
       read fShowHintsForUnusedUnitsInMainSrc write SetShowHintsForUnusedUnitsInMainSrc;
@@ -482,12 +494,14 @@ begin
   IncreaseChangeStamp;
 end;
 
+{$IFNDEF EnableNewExtTools}
 procedure TLazCompilerOptions.SetShowAllProcsOnError(const AValue: Boolean);
 begin
   if fShowAllProcsOnError=AValue then exit;
   fShowAllProcsOnError:=AValue;
   IncreaseChangeStamp;
 end;
+{$ENDIF}
 
 procedure TLazCompilerOptions.SetShowCompProc(const AValue: Boolean);
 begin
@@ -567,12 +581,14 @@ begin
   IncreaseChangeStamp;
 end;
 
+{$IFNDEF EnableNewExtTools}
 procedure TLazCompilerOptions.SetShowNothing(const AValue: Boolean);
 begin
   if fShowNothing=AValue then exit;
   fShowNothing:=AValue;
   IncreaseChangeStamp;
 end;
+{$ENDIF}
 
 procedure TLazCompilerOptions.SetShowSummary(const AValue: Boolean);
 begin
