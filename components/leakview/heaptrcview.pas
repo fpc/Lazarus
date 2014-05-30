@@ -85,7 +85,7 @@ resourcestring
   sbtnResolve = 'Resolve';
   schkRaw = 'Raw leak data';
   schkTop = 'Stay on top';
-  sfrmCap = 'LeakView - HeapTrc output viewer';
+  sfrmCap = 'Leaks and Traces - HeapTrc and GDB backtrace output viewer';
   sfrmSelectFileWithDebugInfo = 'Select File with debug info';
 
 var

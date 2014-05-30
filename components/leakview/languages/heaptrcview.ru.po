@@ -44,8 +44,9 @@ msgid "Stay on top"
 msgstr "Поверх других окон"
 
 #: heaptrcview.sfrmcap
-#| msgid "HeapTrcViewForm"
-msgid "LeakView - HeapTrc output viewer"
+#, fuzzy
+#| msgid "LeakView - HeapTrc output viewer"
+msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
 msgstr "LeakView - программа просмотра вывода HeapTrc"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo

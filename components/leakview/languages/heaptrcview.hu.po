@@ -47,7 +47,9 @@ msgid "Stay on top"
 msgstr "Maradjon mindig legfelül"
 
 #: heaptrcview.sfrmcap
-msgid "LeakView - HeapTrc output viewer"
+#, fuzzy
+#| msgid "LeakView - HeapTrc output viewer"
+msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
 msgstr "LeakView - HeapTrc kimenet megjelenítő"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo

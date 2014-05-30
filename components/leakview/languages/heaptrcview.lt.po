@@ -46,7 +46,9 @@ msgid "Stay on top"
 msgstr "Laikyti viršuje"
 
 #: heaptrcview.sfrmcap
-msgid "LeakView - HeapTrc output viewer"
+#, fuzzy
+#| msgid "LeakView - HeapTrc output viewer"
+msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
 msgstr "LeakView - HeapTrc išvesties žiūryklė"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
