@@ -122,6 +122,14 @@ begin
     Result:='';
 end;
 
+function GetPhysicalFilename(const Filename: string;
+  OnError: TPhysicalFilenameOnError): string;
+begin
+  Result:=GetUnixPhysicalFilename(Filename,OnError=pfeException);
+  if (Result='') and (OnError=pfeOriginal) then
+    Result:=Filename;
+end;
+
 function GetUnixPhysicalFilename(const Filename: string;
   ExceptionOnError: boolean): string;
 var

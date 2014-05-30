@@ -250,6 +250,13 @@ begin
   Rslt.Name:=SysToUTF8(Rslt.Name);
 end;
 
+function GetPhysicalFilename(const Filename: string;
+        OnError: TPhysicalFilenameOnError): string;
+begin
+  if OnError=pfeEmpty then ;
+  Result:=Filename;
+end;
+
 function GetAppConfigDirAnsi(Global: Boolean; Create: boolean = false): string;
 begin
   Result := SysToUTF8(SysUtils.GetAppConfigDir(Global));

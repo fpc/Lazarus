@@ -107,6 +107,10 @@ function GetFileDescription(const AFilename: string): string;
 function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string; // if a link is broken returns ''
 function TryReadAllLinks(const Filename: string): string; // if a link is broken returns Filename
+type
+  TPhysicalFilenameOnError = (pfeException,pfeEmpty,pfeOriginal);
+function GetPhysicalFilename(const Filename: string;
+        OnError: TPhysicalFilenameOnError): string;
 {$IFDEF Unix}
 function GetUnixPhysicalFilename(const Filename: string;
                       ExceptionOnError: boolean): string; // if a link is broken returns ''
