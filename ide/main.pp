@@ -67,7 +67,7 @@ uses
   LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages, ComCtrls,
   FileUtil, LResources, StdCtrls, Forms, Buttons, Menus, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process, LazLogger,
-  lazutf8classes,
+  lazutf8classes, LazFileCache,
   // codetools
   FileProcs, CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools,
   CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
@@ -6533,7 +6533,6 @@ var
   DiskFilename: String;
   FileReadable: Boolean;
 begin
-//  Result:=SourceFileMgr.OpenProjectFile(AFileName, Flags);
   Result:=mrCancel;
 
   //debugln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
@@ -6544,19 +6543,21 @@ begin
   //debugln('TMainIDE.DoOpenProjectFile A2 "'+AFileName+'"');
   if not FilenameIsAbsolute(AFilename) then
     RaiseException('TMainIDE.DoOpenProjectFile: buggy ExpandFileNameUTF8');
+  AFilename:=GetPhysicalFilenameCached(AFilename,false);
+
+  // check if it is a directory
+  if DirPathExistsCached(AFileName) then begin
+    debugln(['TMainIDE.DoOpenProjectFile file is a directory']);
+    exit;
+  end;
 
   // check if file exists
-  if not FileExistsUTF8(AFilename) then begin
+  if not FileExistsCached(AFilename) then begin
     ACaption:=lisFileNotFound;
     AText:=Format(lisPkgMangFileNotFound, ['"', AFilename, '"']);
     Result:=IDEMessageDialog(ACaption, AText, mtError, [mbAbort]);
     exit;
   end;
-
-  // check symbolic link
-  Result:=ChooseSymlink(AFilename);
-  if Result<>mrOk then exit;
-  Ext:=lowercase(ExtractFileExt(AFilename));
 
   DiskFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(AFilename);
   if DiskFilename<>AFilename then begin
@@ -6565,6 +6566,7 @@ begin
     AFilename:=DiskFilename;
   end;
 
+  Ext:=lowercase(ExtractFileExt(AFilename));
   // if there is a project info file, load that instead
   if (Ext<>'.lpi') and (FileExistsUTF8(ChangeFileExt(AFileName,'.lpi'))) then
   begin

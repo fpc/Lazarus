@@ -33,15 +33,15 @@ interface
 uses
   AVL_Tree, typinfo, math, Classes, SysUtils, Controls, Forms, Dialogs, LCLIntf,
   LCLType, LCLProc, FileProcs, FileUtil, IDEProcs, DialogProcs, IDEDialogs,
-  LConvEncoding, LResources, PropEdits, DefineTemplates, IDEMsgIntf,
-  IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg, LazIDEIntf,
-  MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf, ProjectIntf, Project,
-  ProjectDefs, ProjectInspector, CompilerOptions, BasePkgManager, PackageIntf,
-  PackageDefs, PackageSystem, SrcEditorIntf, IDEWindowIntf, ComponentReg,
-  SourceEditor, EditorOptions, CustomFormEditor, FormEditor, EmptyMethodsDlg,
-  BaseDebugManager, ControlSelection, TransferMacros, EnvironmentOpts,
-  BuildManager, Designer, EditorMacroListViewer, KeywordFuncLists,
-  FindRenameIdentifier, GenericCheckList,
+  LConvEncoding, LazFileCache, LResources, PropEdits, DefineTemplates,
+  IDEMsgIntf, IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
+  LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf, ProjectIntf,
+  Project, ProjectDefs, ProjectInspector, CompilerOptions, BasePkgManager,
+  PackageIntf, PackageDefs, PackageSystem, SrcEditorIntf, IDEWindowIntf,
+  ComponentReg, SourceEditor, EditorOptions, CustomFormEditor, FormEditor,
+  EmptyMethodsDlg, BaseDebugManager, ControlSelection, TransferMacros,
+  EnvironmentOpts, BuildManager, Designer, EditorMacroListViewer,
+  KeywordFuncLists, FindRenameIdentifier, GenericCheckList,
   {$IFDEF EnableNewExtTools}
   etMessagesWnd,
   {$ELSE}
@@ -1454,7 +1454,7 @@ begin
     AFilename:=DiskFilename;
   end;
 
-  // check if symlink and ask user open the real file instead
+  // check if symlink and ask user if the real file should be opened instead
   ChooseSymlink(AFilename);
 
   FilenameNoPath:=ExtractFilename(AFilename);
@@ -2386,7 +2386,7 @@ begin
       OpenDialog.Filter := lisLazarusProjectInfoFile+' (*.lpi)|*.lpi|'
                           +lisAllFiles+'|'+GetAllFilesMask;
       if OpenDialog.Execute then begin
-        AFilename:=ExpandFileNameUTF8(OpenDialog.Filename);
+        AFilename:=GetPhysicalFilenameCached(ExpandFileNameUTF8(OpenDialog.Filename),false);
         if FileUtil.CompareFileExt(AFilename,'.lpi')<>0 then begin
           // not a lpi file
           // check if it is a program source
