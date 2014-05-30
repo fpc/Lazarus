@@ -3628,7 +3628,7 @@ var
 begin
   Path:=ExtractFilePath(AFilename);
   if (Path<>'') and (not FilenameIsAbsolute(Path)) then
-    Path:=ExpandFileNameUTF8(Path);
+    exit(nil);
   FileNameOnly:=ExtractFilename(AFilename);
   Result:=nil;
   Result:=FOnLoadSource(Self,TrimFilename(Path+FileNameOnly),true);
@@ -3658,10 +3658,7 @@ var PathStart, PathEnd: integer;
   begin
     Result:=false;
     if APath='' then exit;
-    if APath[length(APath)]<>PathDelim then
-      ExpFilename:=APath+PathDelim+AFilename
-    else
-      ExpFilename:=APath+AFilename;
+    ExpFilename:=AppendPathDelim(APath)+AFilename;
     if not FilenameIsAbsolute(ExpFilename) then
       ExpFilename:=ExtractFilePath(FMainSourceFilename)+ExpFilename;
     NewCode:=LoadSourceCaseLoUp(ExpFilename);
