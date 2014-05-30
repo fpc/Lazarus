@@ -138,9 +138,9 @@ function FileDateToDateTimeDef(aFileDate: TCTFileAgeTime; const Default: TDateTi
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 function GetTempFilename(const Path, Prefix: string): string;
 function SearchFileInDir(const Filename, BaseDirectory: string;
-                         SearchCase: TCTSearchFileCase): string;
+                         SearchCase: TCTSearchFileCase): string; // not thread-safe
 function SearchFileInPath(const Filename, BasePath, SearchPath,
-                      Delimiter: string; SearchCase: TCTSearchFileCase): string;
+                      Delimiter: string; SearchCase: TCTSearchFileCase): string; // not thread-safe
 function FindDiskFilename(const Filename: string): string;
 {$IFDEF darwin}
 function GetDarwinSystemFilename(Filename: string): string;
@@ -1088,7 +1088,7 @@ var
   p, StartPos, l: integer;
   CurPath, Base: string;
 begin
-  Base:=ExpandFileNameUTF8(AppendPathDelim(BasePath));
+  Base:=AppendPathDelim(ExpandFileNameUTF8(BasePath));
   // search in current directory
   Result:=SearchPascalUnitInDir(AnUnitName,Base,SearchCase);
   if Result<>'' then exit;
@@ -1102,7 +1102,7 @@ begin
     if CurPath<>'' then begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
-      CurPath:=ExpandFileNameUTF8(AppendPathDelim(CurPath));
+      CurPath:=AppendPathDelim(ResolveDots(CurPath));
       Result:=SearchPascalUnitInDir(AnUnitName,CurPath,SearchCase);
       if Result<>'' then exit;
     end;
@@ -1179,7 +1179,7 @@ var
   p, StartPos, l: integer;
   CurPath, Base: string;
 begin
-  Base:=ExpandFileNameUTF8(AppendPathDelim(BasePath));
+  Base:=AppendPathDelim(ExpandFileNameUTF8(BasePath));
   // search in current directory
   if not FilenameIsAbsolute(Base) then
     Base:='';
@@ -1197,7 +1197,7 @@ begin
     if CurPath<>'' then begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
-      CurPath:=ExpandFileNameUTF8(AppendPathDelim(CurPath));
+      CurPath:=AppendPathDelim(ResolveDots(CurPath));
       if FilenameIsAbsolute(CurPath) then begin
         Result:=SearchPascalFileInDir(ShortFilename,CurPath,SearchCase);
         if Result<>'' then exit;
@@ -1403,23 +1403,21 @@ var
 begin
   //debugln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
   if (Filename='') then begin
-    Result:=Filename;
+    Result:='';
     exit;
   end;
   // check if filename absolute
   if FilenameIsAbsolute(Filename) then begin
     if SearchCase=ctsfcDefault then begin
-      if FileExistsCached(Filename) then begin
-        Result:=ExpandFileNameUTF8(Filename);
-      end else begin
+      Result:=ResolveDots(Filename);
+      if not FileExistsCached(Result) then
         Result:='';
-      end;
     end else
       Result:=SearchFileInPath(ExtractFilename(Filename),
         ExtractFilePath(BasePath),'',';',SearchCase);
     exit;
   end;
-  Base:=ExpandFileNameUTF8(AppendPathDelim(BasePath));
+  Base:=AppendPathDelim(ExpandFileNameUTF8(BasePath));
   // search in current directory
   Result:=SearchFileInDir(Filename,Base,SearchCase);
   if Result<>'' then exit;
@@ -1433,7 +1431,7 @@ begin
     if CurPath<>'' then begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
-      CurPath:=ExpandFileNameUTF8(AppendPathDelim(CurPath));
+      CurPath:=AppendPathDelim(ResolveDots(CurPath));
       Result:=SearchFileInDir(Filename,CurPath,SearchCase);
       if Result<>'' then exit;
     end;
