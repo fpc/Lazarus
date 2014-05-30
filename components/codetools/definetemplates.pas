@@ -1545,7 +1545,7 @@ function ParseFPCVerbose(List: TStrings; const WorkDir: string; out
         Inc(CurPos, 17);
         NewPath:=SetDirSeparators(copy(Line,CurPos,len));
         if not FilenameIsAbsolute(NewPath) then
-          NewPath:=ExpandFileNameUTF8(NewPath);
+          NewPath:=ExpFile(NewPath);
         NewPath:=ChompPathDelim(TrimFilename(NewPath));
         {$IFDEF VerboseFPCSrcScan}
         DebugLn('Using unit path: "',NewPath,'"');
