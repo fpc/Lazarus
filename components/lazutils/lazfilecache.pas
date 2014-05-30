@@ -17,7 +17,8 @@ type
     fsciDirectoryWritable, // file is directory and new files can be created
     fsciText,      // file is text file (not binary)
     fsciExecutable,// file is executable
-    fsciAge        // file age is valid
+    fsciAge,        // file age is valid
+    fsciPhysical    // physical filename is valid
     );
   TFileStateCacheItemFlags = set of TFileStateCacheItemFlag;
 
@@ -28,6 +29,7 @@ type
     FAge: longint;
     FFilename: string;
     FFlags: TFileStateCacheItemFlags;
+    FPhysicalFilename: string;
     FTestedFlags: TFileStateCacheItemFlags;
     FTimeStamp: int64;
   public
@@ -35,6 +37,7 @@ type
     function CalcMemSize: PtrUint;
   public
     property Filename: string read FFilename;
+    property PhysicalFilename: string read FPhysicalFilename;
     property Flags: TFileStateCacheItemFlags read FFlags;
     property TestedFlags: TFileStateCacheItemFlags read FTestedFlags;
     property TimeStamp: int64 read FTimeStamp;
@@ -69,6 +72,7 @@ type
     function FileIsWritableCached(const AFilename: string): boolean;
     function FileIsTextCached(const AFilename: string): boolean;
     function FileAgeCached(const AFileName: string): Longint;
+    function GetPhysicalFilenameCached(const AFileName: string; EmptyOnError: boolean): string;
     function FindFile(const Filename: string;
                       CreateIfNotExists: boolean): TFileStateCacheItem;
     function Check(const Filename: string; AFlag: TFileStateCacheItemFlag;
@@ -91,6 +95,7 @@ function FileIsReadableCached(const AFilename: string): boolean;
 function FileIsWritableCached(const AFilename: string): boolean;
 function FileIsTextCached(const AFilename: string): boolean;
 function FileAgeCached(const AFileName: string): Longint;
+function GetPhysicalFilenameCached(const AFilename: string; EmptyOnError: boolean): string;
 
 procedure InvalidateFileStateCache(const Filename: string = ''); inline;
 function CompareFileStateItems(Data1, Data2: Pointer): integer;
@@ -180,6 +185,23 @@ begin
     Result:=FileAgeUTF8(AFileName);
 end;
 
+function GetPhysicalFilenameCached(const AFilename: string;
+  EmptyOnError: boolean): string;
+var
+  OnError: TPhysicalFilenameOnError;
+begin
+  if FileStateCache<>nil then
+    Result:=FileStateCache.GetPhysicalFilenameCached(AFilename,EmptyOnError)
+  else begin
+    if EmptyOnError then
+      OnError:=pfeEmpty
+    else
+      OnError:=pfeOriginal;
+    writeln('GetPhysicalFilenameCached GGG1');
+    Result:=GetPhysicalFilename(AFilename,OnError);
+  end;
+end;
+
 procedure InvalidateFileStateCache(const Filename: string);
 begin
   FileStateCache.IncreaseTimeStamp(Filename);
@@ -225,7 +247,8 @@ end;
 function TFileStateCacheItem.CalcMemSize: PtrUint;
 begin
   Result:=PtrUInt(InstanceSize)
-    +MemSizeString(FFilename);
+    +MemSizeString(FFilename)
+    +MemSizeString(FPhysicalFilename);
 end;
 
 { TFileStateCache }
@@ -393,22 +416,61 @@ begin
   Include(AFile.FTestedFlags,fsciAge);
 end;
 
+function TFileStateCache.GetPhysicalFilenameCached(const AFileName: string;
+  EmptyOnError: boolean): string;
+{$IFDEF Unix}
+var
+  AFile: TFileStateCacheItem;
+  Dummy: Boolean;
+{$ENDIF}
+begin
+  {$IFDEF Unix}
+  Dummy := False;
+  if Check(AFilename,fsciPhysical,AFile,Dummy) then begin
+    Result:=AFile.PhysicalFilename;
+    exit;
+  end;
+  Result:=ExtractFilePath(AFile.Filename);
+  if Result<>'' then begin
+    // use cache recursively for directory
+    if (Result='.') or (Result='..') or (Result='/') then begin
+      // no query required
+    end else begin
+      Result:=GetPhysicalFilenameCached(Result,true);
+    end;
+    if Result<>'' then begin
+      Result:=AppendPathDelim(Result)+ExtractFilename(AFile.Filename);
+      Result:=ReadAllLinks(Result,false);
+    end;
+  end else begin
+    // no path
+    Result:=ReadAllLinks(AFile.Filename,false);
+  end;
+  AFile.FPhysicalFilename:=Result;
+  Include(AFile.FTestedFlags,fsciPhysical);
+  if (Result='') and (not EmptyOnError) then
+    Result:=AFileName;
+  {$ELSE}
+  Result:=AFileName;
+  {$ENDIF}
+end;
+
 function TFileStateCache.FindFile(const Filename: string;
   CreateIfNotExists: boolean): TFileStateCacheItem;
 var
-  TrimmedFilename: String;
+  NormedFilename: String;
   ANode: TAVLTreeNode;
 begin
   // make filename unique
-  TrimmedFilename:=ChompPathDelim(TrimFilename(Filename));
-  ANode:=FFiles.FindKey(Pointer(TrimmedFilename),
+  NormedFilename:=ChompPathDelim(ResolveDots(Filename));
+  ANode:=FFiles.FindKey(Pointer(NormedFilename),
                         @CompareFilenameWithFileStateCacheItem);
   if ANode<>nil then
     Result:=TFileStateCacheItem(ANode.Data)
   else if CreateIfNotExists then begin
-    Result:=TFileStateCacheItem.Create(TrimmedFilename,FTimeStamp);
+    Result:=TFileStateCacheItem.Create(NormedFilename,FTimeStamp);
     FFiles.Add(Result);
-    if FFiles.FindKey(Pointer(TrimmedFilename),
+    if FFiles.FindKey(Pointer(NormedFilename),
                       @CompareFilenameWithFileStateCacheItem)=nil
     then begin
       //DebugLn(format('FileStateCache.FindFile: "%s"',[FileName]));

@@ -220,18 +220,13 @@ begin
   Result := LazFileUtils.CompareFilenamesIgnoreCase(Filename1, Filename2);
 end;
 
-function CompareFilenames(const Filename1, Filename2: string;
-  ResolveLinks: boolean): integer;
+function ComparePhysicalFilenames(const Filename1, Filename2: string): integer;
 var
   File1: String;
   File2: String;
 begin
-  File1:=Filename1;
-  File2:=Filename2;
-  if ResolveLinks then begin
-    File1:=GetPhysicalFilename(File1,pfeOriginal);
-    File2:=GetPhysicalFilename(File2,pfeOriginal);
-  end;
+  File1:=GetPhysicalFilename(Filename1,pfeOriginal);
+  File2:=GetPhysicalFilename(Filename2,pfeOriginal);
   Result:=CompareFilenames(File1,File2);
 end;
 
@@ -253,7 +248,10 @@ begin
     System.Move(Filename1^,File1[1],Len1);
     SetLength(File2,Len2);
     System.Move(Filename2^,File2[1],Len2);
-    Result:=CompareFilenames(File1,File2,true);
+    if ResolveLinks then
+      Result:=ComparePhysicalFilenames(File1,File2)
+    else
+      Result:=CompareFilenames(File1,File2);
   end else begin
     {$IFDEF NotLiteralFilenames}
     SetLength(File1,Len1);

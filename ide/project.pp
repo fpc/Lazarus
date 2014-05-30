@@ -5675,7 +5675,7 @@ function TProject.UnitInfoWithFilename(const AFilename: string;
     Result:=TheFilename;
     if (pfsfResolveFileLinks in SearchFlags)
     and FilenameIsAbsolute(Result) then
-      Result:=GetPhysicalFilename(Result,pfeOriginal);
+      Result:=GetPhysicalFilenameCached(Result,false);
   end;
 
   function FindFileInList(ListType: TUnitInfoList): TUnitInfo;
@@ -5851,7 +5851,7 @@ function TProject.IndexOfFilename(const AFilename: string;
     Result:=TheFilename;
     if (pfsfResolveFileLinks in SearchFlags)
     and (FilenameIsAbsolute(Result)) then
-      Result:=GetPhysicalFilename(Result,pfeOriginal);
+      Result:=GetPhysicalFilenameCached(Result,false);
   end;
 
 var

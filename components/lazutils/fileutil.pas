@@ -49,8 +49,7 @@ const
 // file attributes and states
 function CompareFilenames(const Filename1, Filename2: string): integer; inline;
 function CompareFilenamesIgnoreCase(const Filename1, Filename2: string): integer; inline;
-function CompareFilenames(const Filename1, Filename2: string;
-                          ResolveLinks: boolean): integer;
+function ComparePhysicalFilenames(const Filename1, Filename2: string): integer;
 function CompareFilenames(Filename1: PChar; Len1: integer;
   Filename2: PChar; Len2: integer; ResolveLinks: boolean): integer;
 function FilenameIsAbsolute(const TheFilename: string):boolean; inline;

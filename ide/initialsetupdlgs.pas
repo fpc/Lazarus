@@ -378,7 +378,7 @@ function SearchLazarusDirectoryCandidates(StopIfFits: boolean): TSDFileInfoList;
     Result:=false;
     Filename:=FindDefaultExecutablePath(Filename);
     if Filename='' then exit;
-    Filename:=GetPhysicalFilename(Filename,pfeEmpty);
+    Filename:=GetPhysicalFilenameCached(Filename,true);
     if Filename='' then exit;
     Result:=CheckDir(ExtractFilePath(Filename),List);
   end;
@@ -400,7 +400,7 @@ begin
     // then check the directory of the executable
     Dir:=ProgramDirectory(true);
     if CheckDir(Dir,Result) then exit;
-    ResolvedDir:=GetPhysicalFilename(Dir,pfeOriginal);
+    ResolvedDir:=GetPhysicalFilenameCached(Dir,false);
     if (ResolvedDir<>Dir) and (CheckDir(ResolvedDir,Result)) then exit;
 
     // check the primary options

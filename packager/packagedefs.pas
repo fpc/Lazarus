@@ -39,11 +39,12 @@ interface
 uses
   Classes, SysUtils, contnrs, typinfo, LCLProc, LCLType, LResources, Graphics,
   Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage, Laz2_XMLCfg,
-  LazFileUtils, BasicCodeTools, CodeToolsCfgScript, DefineTemplates,
-  CodeToolManager, CodeCache, CodeToolsStructs, PropEdits, LazIDEIntf,
-  MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf, EditDefineTree,
-  CompilerOptions, CompOptsModes, IDEOptionDefs, LazarusIDEStrConsts, IDEProcs,
-  ComponentReg, TransferMacros, FileReferenceList, PublishModule;
+  LazFileUtils, LazFileCache, BasicCodeTools, CodeToolsCfgScript,
+  DefineTemplates, CodeToolManager, CodeCache, CodeToolsStructs, PropEdits,
+  LazIDEIntf, MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf,
+  EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs,
+  LazarusIDEStrConsts, IDEProcs, ComponentReg, TransferMacros,
+  FileReferenceList, PublishModule;
 
 type
   TLazPackage = class;
@@ -1759,7 +1760,7 @@ end;
 
 function TPkgFile.GetResolvedFilename: string;
 begin
-  Result:=GetPhysicalFilename(GetFullFilename,pfeOriginal);
+  Result:=GetPhysicalFilenameCached(GetFullFilename,false);
 end;
 
 { TPkgDependency }
@@ -3000,7 +3001,7 @@ end;
 
 function TLazPackage.GetResolvedFilename(ResolveMacros: boolean): string;
 begin
-  Result:=GetPhysicalFilename(GetFullFilename(ResolveMacros),pfeOriginal);
+  Result:=GetPhysicalFilenameCached(GetFullFilename(ResolveMacros),false);
 end;
 
 function TLazPackage.GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;

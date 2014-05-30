@@ -54,7 +54,8 @@ interface
 uses
   Classes, SysUtils, LazUTF8, CodeToolsStrConsts, ExprEval, DirectoryCacher,
   BasicCodeTools, Laz2_XMLCfg, lazutf8classes, LazFileUtils, AVL_Tree, process,
-  CodeToolsStructs, UTF8Process, KeywordFuncLists, LinkScanner, FileProcs;
+  CodeToolsStructs, UTF8Process, LazFileCache, KeywordFuncLists, LinkScanner,
+  FileProcs;
 
 const
   ExternalMacroStart = ExprEval.ExternalMacroStart;
@@ -7713,7 +7714,7 @@ begin
     if Result='' then exit;
   end;
   if ResolveLinks then begin
-    Result:=GetPhysicalFilename(Result,pfeOriginal);
+    Result:=GetPhysicalFilenameCached(Result,false);
   end;
 end;
 
