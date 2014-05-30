@@ -246,11 +246,11 @@ procedure TOpenDialog.DereferenceLinks;
 var i: integer;
 begin
   if Filename<>'' then
-    Filename:=TryReadAllLinks(FileName);
+    Filename:=GetPhysicalFilename(FileName,pfeOriginal);
   if Files<>nil then begin
     for i:=0 to Files.Count-1 do begin
       if Files[i]<>'' then
-        Files[i]:=TryReadAllLinks(Files[i]);
+        Files[i]:=GetPhysicalFilename(Files[i],pfeOriginal);
     end;
   end;
 end;
