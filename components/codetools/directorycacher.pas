@@ -1638,7 +1638,7 @@ var
   Cache: TCTDirectoryCache;
   DiskShortFilename: String;
 begin
-  Result:=ChompPathDelim(TrimFilename(Filename));
+  Result:=ChompPathDelim(ResolveDots(Filename));
   if Result='' then exit;
   //debugln(['TCTDirectoryCachePool.FindDiskFilename Filename=',Result]);
   {$IF defined(NotLiteralFilenames) or defined(CaseInsensitiveFilenames)}
