@@ -48,7 +48,7 @@ uses
   contnrs, StringHashList, Translations, LResources,
   // codetools
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
-  FileProcs, Laz2_XMLCfg, lazutf8classes, LazFileUtils,
+  FileProcs, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache,
   // IDE Interface
   SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf, CompOptsIntf,
   MenuIntf, IDEWindowIntf, PropEdits, MacroIntf, LazIDEIntf,
@@ -2245,7 +2245,7 @@ begin
     if not GlobalMacroList.SubstituteStr(AFilename) then exit(mrCancel);
   end;
 
-  AFilename:=CleanAndExpandFilename(AFilename);
+  AFilename:=GetPhysicalFilenameCached(CleanAndExpandFilename(AFilename),false);
 
   // check file extension
   if (CompareFileExt(AFilename,'.lpk',false)<>0)
