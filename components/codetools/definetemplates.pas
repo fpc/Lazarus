@@ -8653,7 +8653,7 @@ procedure TFPCUnitSetCache.SetCompilerFilename(const AValue: string);
 var
   NewFilename: String;
 begin
-  NewFilename:=TrimAndExpandFilename(AValue);
+  NewFilename:=ResolveDots(AValue);
   if FCompilerFilename=NewFilename then exit;
   FCompilerFilename:=NewFilename;
   ClearConfigCache;
