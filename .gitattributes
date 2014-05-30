@@ -5986,6 +5986,13 @@ images/splash_logo.xpm -text svneol=native#image/x-xpixmap
 images/splash_source/cheetah.jpg -text svneol=unset#image/jpeg
 images/splash_source/paw.png -text svneol=unset#image/png
 images/states/quickfix12x12.png -text
+images/states/state11x11_error.png -text svneol=unset#image/png
+images/states/state11x11_fatal.png -text svneol=unset#image/png
+images/states/state11x11_hint.png -text svneol=unset#image/png
+images/states/state11x11_information.png -text svneol=unset#image/png
+images/states/state11x11_note.png -text svneol=unset#image/png
+images/states/state11x11_unknown.png -text svneol=unset#image/png
+images/states/state11x11_warning.png -text svneol=unset#image/png
 images/states/state12x12_error.png -text
 images/states/state12x12_fatal.png -text
 images/states/state12x12_hint.png -text
