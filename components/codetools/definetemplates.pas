@@ -7712,8 +7712,9 @@ begin
     Result:=Search(GetDefaultCompilerFilename(aTargetCPU,false)+Postfix);
     if Result='' then exit;
   end;
-  if ResolveLinks then
-    Result:=TryReadAllLinks(Result);
+  if ResolveLinks then begin
+    Result:=GetPhysicalFilename(Result,pfeOriginal);
+  end;
 end;
 
 function TFPCTargetConfigCache.GetUnitPaths: string;
