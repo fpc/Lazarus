@@ -37,7 +37,7 @@ uses
   Classes, SysUtils, AVL_Tree,
   // LCL
   LConvEncoding, InterfaceBase, LCLProc, Dialogs, FileUtil, Laz2_XMLCfg,
-  LazUTF8, Forms, Controls,
+  LazUTF8, LazFileUtils, Forms, Controls,
   // codetools
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript, CodeToolsStructs,
@@ -813,7 +813,7 @@ procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
         mtError,[mbOk]);
       exit(false);
     end;
-    Filename:=ReadAllLinks(Cfg.RealCompiler,false);
+    Filename:=GetPhysicalFilename(Cfg.RealCompiler,pfeEmpty);
     if (Filename='') then begin
       IDEMessageDialog('Error','Compiler executable is missing: '+Cfg.RealCompiler,
         mtError,[mbOk]);

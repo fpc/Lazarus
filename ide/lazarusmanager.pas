@@ -92,7 +92,7 @@ uses
   BaseUnix,
 {$ENDIF}
   Classes, SysUtils, Process, UTF8Process,
-  LCLProc, FileProcs, FileUtil, Forms, Controls, Dialogs,
+  LCLProc, FileProcs, FileUtil, LazFileUtils, Forms, Controls, Dialogs,
   IDECmdLine, LazConf, Splash, BaseIDEIntf;
   
 type
@@ -276,10 +276,10 @@ begin
   try
     StartPath:=ExpandFileNameUTF8(ParamStrUTF8(0));
     if FileIsSymlink(StartPath) then
-      StartPath:=ReadAllLinks(StartPath,true);
+      StartPath:=GetPhysicalFilename(StartPath,pfeException);
     DefaultDir:=ExtractFilePath(StartPath);
     if DirectoryExistsUTF8(DefaultDir) then
-      DefaultDir:=ReadAllLinks(DefaultDir,true);
+      DefaultDir:=GetPhysicalFilename(DefaultDir,pfeException);
   except
     on E: Exception do begin
       MessageDlg ('Error',E.Message,mtError,[mbCancel],0);

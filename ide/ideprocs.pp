@@ -31,8 +31,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LCLProc, AvgLvlTree, Laz2_XMLCfg, LazUTF8,
-  lazutf8classes, StdCtrls, ExtCtrls, SourceLog, FileProcs, CodeToolManager,
-  CodeToolsConfig, CodeCache, LazConf;
+  lazutf8classes, LazFileUtils, StdCtrls, ExtCtrls, SourceLog, FileProcs,
+  CodeToolManager, CodeToolsConfig, CodeCache, LazConf;
 
 type
   // comments
@@ -433,7 +433,7 @@ begin
   if List=nil then exit;
   for i:=List.Count-1 downto 0 do begin
     OldFilename:=List[i];
-    NewFilename:=ReadAllLinks(OldFilename,false);
+    NewFilename:=GetPhysicalFilename(OldFilename,pfeEmpty);
     //DebugLn(['ResolveLinksInFileList OldFilename=',OldFilename,' NewFilename=',NewFilename]);
     if NewFilename='' then begin
       if RemoveDanglingLinks then

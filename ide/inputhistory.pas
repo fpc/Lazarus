@@ -114,49 +114,6 @@ type
   end;
   
   
-  { TFPCConfigCacheItem }
-  
-  TFPCConfigCacheItem = class
-  public
-    Options: string;
-    SearchPath: string;
-    FPCSrcDir: string;
-    UnitLinks: string;
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-  end;
-  
-  
-  { TFPCConfigCache }
-  
-  TFPCConfigCache = class
-  private
-    FCompilerAge: longint;
-    FCompilerPath: string;
-    FItems: TList; // list of TFPCConfigCacheItem
-    function GetCount: integer;
-    function GetItems(Index: integer): TFPCConfigCacheItem;
-    procedure SetCompilerPath(const AValue: string);
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Clear;
-    function FindItem(const Options: string): integer;
-    procedure SetItem(const Options, SearchPath, FPCSrcDir, UnitLinks: string);
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-    function Valid(CheckCompiler: boolean): boolean;
-    function UnitLinksNeedUpdate(const Options, SearchPath,
-                                 FPCSrcDir: string): boolean;
-    function GetUnitLinks(const Options: string): string;
-  public
-    property CompilerPath: string read FCompilerPath write SetCompilerPath;
-    property CompilerAge: longint read FCompilerAge;
-    property Count: integer read GetCount;
-    property Items[Index: integer]: TFPCConfigCacheItem read GetItems;
-  end;
-  
-  
   { TInputHistories }
 
   TLazFindInFileSearchOption = (
@@ -221,9 +178,6 @@ type
     FFindInFilesMaskHistory: TStringList;
     FMaxFindHistory: Integer;
     
-    // FPC config cache
-    FFPCConfigCache: TFPCConfigCache;
-
     // various history lists
     FHistoryLists: THistoryLists;
     
@@ -247,13 +201,6 @@ type
     function AddToFindInFilesPathHistory(const APathStr: String): boolean;
     function AddToFindInFilesMaskHistory(const AMaskStr: String): boolean;
 
-    // fpc units
-    function LastFPCUnitLinksValid: boolean;
-    function LastFPCUnitLinksNeedsUpdate(const Options, SearchPath,
-                                         FPCSrcDir: string): boolean;
-    procedure SetLastFPCUnitLinks(const FPCPath, FPCOptions,
-                                  SearchPath, FPCSrcDir, UnitLinks: string);
-    
     // filedialog
     procedure ApplyFileDialogSettings(DestDialog: TFileDialog);
     procedure StoreFileDialogSettings(SourceDialog: TFileDialog);
@@ -278,9 +225,6 @@ type
                read FFindInFilesSearchOptions write FFindInFilesSearchOptions;
     property FindAutoComplete: boolean read FFindAutoComplete
                                        write FFindAutoComplete;
-
-    // FPC config cache
-    property FPCConfigCache: TFPCConfigCache read FFPCConfigCache;
 
     // filedialogs
     property FileDialogSettings: TFileDialogSettings
@@ -425,8 +369,6 @@ begin
   // various history lists
   FHistoryLists:=THistoryLists.Create;
   
-  FFPCConfigCache:=TFPCConfigCache.Create;
-  
   fFileEncodings:=TStringToStringTree.Create({$IFDEF CaseInsensitiveFilenames}false{$ELSE}true{$ENDIF});
 
   FIgnores:=TIHIgnoreIDEQuestionList.Create;
@@ -445,7 +387,6 @@ begin
   FreeAndNil(FReplaceHistory);
   FreeAndNil(FFindInFilesPathHistory);
   FreeAndNil(FFindInFilesMaskHistory);
-  FreeAndNil(FFPCConfigCache);
   FreeAndNil(fFileEncodings);
   inherited Destroy;
 end;
@@ -468,7 +409,6 @@ begin
   FDiffText2OnlySelection:=false;
   FNewProjectType:='';
   FNewFileType:='';
-  FFPCConfigCache.Clear;
   FLastConvertDelphiProject:='';
   FLastConvertDelphiUnit:='';
   FCleanOutputFileMask:=DefaultProjectCleanOutputFileMask;
@@ -512,8 +452,6 @@ begin
       Include(FFindOptions,FindOption);
   end;
 
-  // fpc config cache
-  FFPCConfigCache.LoadFromXMLConfig(XMLConfig,'FPCConfigCache/');
   // file dialog
   with FFileDialogSettings do begin
     Width:=XMLConfig.GetValue(Path+'FileDialog/Width',0);
@@ -588,8 +526,6 @@ begin
       FindOption in LazFindSearchOptionsDefault);
   end;
 
-  // fpc config cache
-  FFPCConfigCache.SaveToXMLConfig(XMLConfig,'FPCConfigCache/');
   // file dialog
   with FFileDialogSettings do begin
     XMLConfig.SetDeleteValue(Path+'FileDialog/Width',Width,0);
@@ -698,24 +634,6 @@ end;
 function TInputHistories.AddToFindInFilesMaskHistory(const AMaskStr: String): boolean;
 begin
   Result:= AddToRecentList(AMaskStr,FFindInFilesMaskHistory,FMaxFindHistory,rltFile);
-end;
-
-function TInputHistories.LastFPCUnitLinksValid: boolean;
-begin
-  Result:=FFPCConfigCache.Valid(false);
-end;
-
-function TInputHistories.LastFPCUnitLinksNeedsUpdate(
-  const Options, SearchPath, FPCSrcDir: string): boolean;
-begin
-  Result:=FFPCConfigCache.UnitLinksNeedUpdate(Options,SearchPath,FPCSrcDir);
-end;
-
-procedure TInputHistories.SetLastFPCUnitLinks(const FPCPath, FPCOptions,
-  SearchPath, FPCSrcDir, UnitLinks: string);
-begin
-  FFPCConfigCache.CompilerPath:=FPCPath;
-  FFPCConfigCache.SetItem(FPCOptions,SearchPath,FPCSrcDir,UnitLinks);
 end;
 
 procedure TInputHistories.ApplyFileDialogSettings(DestDialog: TFileDialog);
@@ -930,176 +848,6 @@ procedure THistoryLists.Add(const ListName, Entry: string;
   ListType: TRecentListType);
 begin
   GetList(ListName,true,ListType).Push(Entry);
-end;
-
-{ TFPCConfigCache }
-
-function TFPCConfigCache.GetCount: integer;
-begin
-  Result:=FItems.Count;
-end;
-
-function TFPCConfigCache.GetItems(Index: integer): TFPCConfigCacheItem;
-begin
-  Result:=TFPCConfigCacheItem(FItems[Index]);
-end;
-
-procedure TFPCConfigCache.SetCompilerPath(const AValue: string);
-var
-  ResolvedFilename: String;
-begin
-  if FCompilerPath=AValue then exit;
-  Clear;
-  FCompilerPath:=AValue;
-  ResolvedFilename:=ReadAllLinks(FCompilerPath,false);
-  if FileExistsCached(ResolvedFilename) then
-    FCompilerAge:=FileAgeCached(ResolvedFilename)
-  else
-    FCompilerAge:=-1;
-end;
-
-constructor TFPCConfigCache.Create;
-begin
-  FItems:=TList.Create;
-  FCompilerAge:=-1;
-end;
-
-destructor TFPCConfigCache.Destroy;
-begin
-  Clear;
-  FItems.Free;
-  inherited Destroy;
-end;
-
-procedure TFPCConfigCache.Clear;
-var
-  i: Integer;
-begin
-  FCompilerPath:='';
-  FCompilerAge:=-1;
-  for i:=0 to FItems.Count-1 do Items[i].Free;
-  FItems.Clear;
-end;
-
-function TFPCConfigCache.FindItem(const Options: string): integer;
-begin
-  Result:=FItems.Count-1;
-  while (Result>=0) and (Options<>Items[Result].Options) do dec(Result);
-end;
-
-procedure TFPCConfigCache.SetItem(const Options, SearchPath, FPCSrcDir, UnitLinks: string);
-var
-  i: Integer;
-  CurItem: TFPCConfigCacheItem;
-begin
-  i:=FindItem(Options);
-  if i<0 then begin
-    CurItem:=TFPCConfigCacheItem.Create;
-    FItems.Add(CurItem);
-  end else
-    CurItem:=Items[i];
-  CurItem.Options:=Options;
-  CurItem.SearchPath:=SearchPath;
-  CurItem.FPCSrcDir:=FPCSrcDir;
-  CurItem.UnitLinks:=UnitLinks;
-end;
-
-procedure TFPCConfigCache.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-var
-  NewCount: Integer;
-  i: Integer;
-  NewItem: TFPCConfigCacheItem;
-  OldCompilerAge: Integer;
-  NewCompilerPath: String;
-begin
-  NewCompilerPath:=XMLConfig.GetValue(Path+'CompilerPath','');
-  OldCompilerAge:=FCompilerAge;
-  FCompilerAge:=XMLConfig.GetValue(Path+'CompilerDate',-1);
-  if FCompilerAge<>OldCompilerAge then Clear;
-  CompilerPath:=NewCompilerPath;
-  NewCount:=XMLConfig.GetValue(Path+'Items/Count',0);
-  for i:=1 to NewCount do begin
-    NewItem:=TFPCConfigCacheItem.Create;
-    NewItem.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
-    FItems.Add(NewItem);
-  end;
-end;
-
-procedure TFPCConfigCache.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
-var
-  i: Integer;
-begin
-  XMLConfig.SetDeleteValue(Path+'CompilerPath',FCompilerPath,'');
-  XMLConfig.SetDeleteValue(Path+'CompilerDate',FCompilerAge,-1);
-  XMLConfig.SetDeleteValue(Path+'Items/Count',Count,0);
-  for i:=1 to Count do begin
-    Items[i-1].SaveToXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
-  end;
-end;
-
-function TFPCConfigCache.Valid(CheckCompiler: boolean): boolean;
-var
-  ResolvedFilename: String;
-begin
-  Result:=(FCompilerPath<>'') and (FCompilerAge>=0);
-  if Result and CheckCompiler then begin
-    ResolvedFilename:=ReadAllLinks(FCompilerPath,false);
-    if FileExistsUTF8(ResolvedFilename)
-    and (FileAgeCached(ResolvedFilename)=FCompilerAge) then
-      exit;
-    FCompilerAge:=-1;
-    Result:=false;
-  end;
-end;
-
-function TFPCConfigCache.UnitLinksNeedUpdate(const Options, SearchPath,
-  FPCSrcDir: string): boolean;
-var
-  i: Integer;
-begin
-  Result:=true;
-  if not Valid(false) then exit;
-  // check if option was already cached
-  i:=FindItem(Options);
-  if i<0 then exit;
-  // check if search path changed
-  if Items[i].SearchPath<>SearchPath then exit;
-  // check if FPCSrcDir changed
-  if Items[i].FPCSrcDir<>FPCSrcDir then exit;
-  // check if compiler changed
-  if not Valid(true) then exit;
-  Result:=false;
-end;
-
-function TFPCConfigCache.GetUnitLinks(const Options: string): string;
-var
-  i: Integer;
-begin
-  i:=FindItem(Options);
-  if i<0 then
-    Result:=''
-  else
-    Result:=Items[i].UnitLinks;
-end;
-
-{ TFPCConfigCacheItem }
-
-procedure TFPCConfigCacheItem.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-begin
-  Options:=XMLConfig.GetValue(Path+'Options/Value','');
-  SearchPath:=LineBreaksToDelimiter(XMLConfig.GetValue(Path+'SearchPath/Value',''),';');
-  FPCSrcDir:=XMLConfig.GetValue(Path+'FPCSrcDir/Value','');
-  UnitLinks:=XMLConfig.GetValue(Path+'UnitLinks/Value','');
-end;
-
-procedure TFPCConfigCacheItem.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string);
-begin
-  XMLConfig.SetDeleteValue(Path+'Options/Value',Options,'');
-  XMLConfig.SetDeleteValue(Path+'SearchPath/Value',SearchPath,'');
-  XMLConfig.SetDeleteValue(Path+'FPCSrcDir/Value',FPCSrcDir,'');
-  XMLConfig.SetDeleteValue(Path+'UnitLinks/Value',UnitLinks,'');
 end;
 
 { TIHIgnoreIDEQuestionList }
