@@ -158,6 +158,7 @@ begin
       end;
     end;
   until false;
+  Result:=ResolveDots(Result);
 end;
 
 function CreateDirUTF8(const NewDir: String): Boolean;

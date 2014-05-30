@@ -229,10 +229,8 @@ begin
   File1:=Filename1;
   File2:=Filename2;
   if ResolveLinks then begin
-    File1:=ReadAllLinks(File1,false);
-    if (File1='') then File1:=Filename1;
-    File2:=ReadAllLinks(File2,false);
-    if (File2='') then File2:=Filename2;
+    File1:=GetPhysicalFilename(File1,pfeOriginal);
+    File2:=GetPhysicalFilename(File2,pfeOriginal);
   end;
   Result:=CompareFilenames(File1,File2);
 end;
@@ -468,7 +466,7 @@ begin
     Result:=SearchFileInPath(Result,'',GetEnvironmentVariableUTF8('PATH'),':',Flags);
   end;
   // resolve links
-  Result:=ReadAllLinks(Result,false);
+  Result:=GetPhysicalFilename(Result,pfeOriginal);
   // extract file path and expand to full name
   Result:=ExpandFileNameUTF8(ExtractFilePath(Result));
 end;
