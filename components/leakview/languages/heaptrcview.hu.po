@@ -20,7 +20,9 @@ msgid "Error while parsing trace file"
 msgstr "Hiba a nyomkövetési fájl kiértékelésekor"
 
 #: heaptrcview.rsleakview
-msgid "Find source lines for leak/stack-traces"
+#, fuzzy
+#| msgid "Find source lines for leak/stack-traces"
+msgid "Leaks and Traces"
 msgstr "Forrás sorainak megkeresése a szivárgás/verem követéséhez"
 
 #: heaptrcview.sbtnclipbrd

@@ -10,7 +10,7 @@ msgid "Error while parsing trace file"
 msgstr ""
 
 #: heaptrcview.rsleakview
-msgid "Find source lines for leak/stack-traces"
+msgid "Leaks and Traces"
 msgstr ""
 
 #: heaptrcview.sbtnclipbrd

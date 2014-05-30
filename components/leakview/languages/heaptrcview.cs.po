@@ -19,8 +19,8 @@ msgstr "Chyba při rozkládání stopovacího souboru"
 
 #: heaptrcview.rsleakview
 #, fuzzy
-#| msgid "Leak View"
-msgid "Find source lines for leak/stack-traces"
+#| msgid "Find source lines for leak/stack-traces"
+msgid "Leaks and Traces"
 msgstr "Prohlížeč úniků"
 
 #: heaptrcview.sbtnclipbrd
