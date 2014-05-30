@@ -146,8 +146,8 @@ function FindDiskFilename(const Filename: string): string;
 function GetDarwinSystemFilename(Filename: string): string;
 {$ENDIF}
 function ReadAllLinks(const Filename: string;
-                      ExceptionOnError: boolean): string; // if a link is broken returns ''
-function TryReadAllLinks(const Filename: string): string; // if a link is broken returns Filename
+                      ExceptionOnError: boolean): string; inline; // if a link is broken returns ''
+function TryReadAllLinks(const Filename: string): string; inline; // if a link is broken returns Filename
 
 const
   CTInvalidChangeStamp = LUInvalidChangeStamp;
@@ -791,64 +791,13 @@ end;
  ------------------------------------------------------------------------------}
 function ReadAllLinks(const Filename: string;
   ExceptionOnError: boolean): string;
-{$IFNDEF WINDOWS}
-var
-  LinkFilename: string;
-  AText: string;
-  Depth: integer;
-{$ENDIF}
 begin
-  Result:=Filename;
-  {$IFDEF WINDOWS}
-
-  {$ELSE}
-  Depth:=0;
-  while Depth<12 do begin
-    inc(Depth);
-    LinkFilename:=FpReadLink(Result);
-    if LinkFilename='' then begin
-      AText:='"'+Filename+'"';
-      case fpGetErrno() of
-      ESysEAcces:
-        AText:='read access denied for '+AText;
-      ESysENoEnt:
-        AText:='a directory component in '+AText
-                            +' does not exist or is a dangling symlink';
-      ESysENotDir:
-        AText:='a directory component in '+AText+' is not a directory';
-      ESysENoMem:
-        AText:='insufficient memory';
-      ESysELoop:
-        AText:=AText+' has a circular symbolic link';
-      else
-        // not a symbolic link, just a regular file
-        exit;
-      end;
-      if (not ExceptionOnError) then begin
-        Result:='';
-        exit;
-      end;
-      raise EFOpenError.Create(AText);
-    end else begin
-      if not FilenameIsAbsolute(LinkFilename) then
-        Result:=ExpandFileNameUTF8(ExtractFilePath(Result)+LinkFilename)
-      else
-        Result:=LinkFilename;
-    end;
-  end;
-  // probably an endless loop
-  if ExceptionOnError then
-    raise EFOpenError.Create('too many links, maybe an endless loop.')
-  else
-    Result:='';
-  {$ENDIF}
+  Result:=LazFileUtils.ReadAllLinks(Filename,ExceptionOnError);
 end;
 
 function TryReadAllLinks(const Filename: string): string;
 begin
-  Result:=ReadAllLinks(Filename,false);
-  if Result='' then
-    Result:=Filename;
+  Result:=LazFileUtils.TryReadAllLinks(Filename);
 end;
 
 {$IFDEF darwin}

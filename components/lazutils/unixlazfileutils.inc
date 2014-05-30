@@ -110,7 +110,7 @@ begin
       raise EFOpenError.Create(AText);
     end else begin
       if not FilenameIsAbsolute(LinkFilename) then
-        Result:=ExpandFileNameUTF8(ExtractFilePath(Result)+LinkFilename)
+        Result:=ResolveDots(ExtractFilePath(Result)+LinkFilename)
       else
         Result:=LinkFilename;
     end;
