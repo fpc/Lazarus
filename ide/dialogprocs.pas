@@ -37,8 +37,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileProcs,
-  FileUtil, LazFileUtils, Laz2_XMLCfg, lazutf8classes, CodeToolsConfig,
-  CodeCache, CodeToolManager, AVL_Tree, LazIDEIntf, IDEProcs,
+  FileUtil, LazFileUtils, Laz2_XMLCfg, lazutf8classes, LazFileCache,
+  CodeToolsConfig, CodeCache, CodeToolManager, AVL_Tree, LazIDEIntf, IDEProcs,
   LazarusIDEStrConsts, IDEDialogs;
 
 type
@@ -89,7 +89,7 @@ function CheckCreatingFile(const AFilename: string;
                            ): TModalResult;
 function CheckFileIsWritable(const Filename: string;
                              ErrorButtons: TMsgDlgButtons): TModalResult;
-function ChooseSymlink(var Filename: string): TModalResult;
+function ChooseSymlink(var Filename: string; AskOnSymlink: boolean): TModalResult;
 function CreateSymlinkInteractive(const LinkFilename, TargetFilename: string;
                                   ErrorButtons: TMsgDlgButtons): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
@@ -506,32 +506,32 @@ begin
   end;
 end;
 
-function ChooseSymlink(var Filename: string): TModalResult;
+function ChooseSymlink(var Filename: string; AskOnSymlink: boolean
+  ): TModalResult;
 var
   TargetFilename: String;
 begin
-  if not FileExistsUTF8(Filename) then exit(mrOk);
-  Result:=mrCancel;
-  try
-    TargetFilename:=ReadAllLinks(Filename,true);
-    if TargetFilename<>Filename then begin
-      case IDEQuestionDialog(lisFileIsSymlink,
-        Format(lisTheFileIsASymlinkOpenInstead,
-          ['"', Filename, '"', LineEnding, LineEnding, '"', TargetFilename, '"']),
-        mtConfirmation, [mbYes, lisOpenTarget, mbNo, lisOpenSymlink, mbCancel])
-      of
-      mrYes: Filename:=TargetFilename;
-      mrNo:  ;
-      else   exit;
-      end;
-    end;
-    Result:=mrOk;
-  except
-    on E: Exception do begin
-      IDEMessageDialog(lisFileLinkError,
-        E.Message,mtError,[mbCancel]);
+  if not FileExistsCached(Filename) then
+    exit(mrOk); // no symlink to choose
+  TargetFilename:=GetPhysicalFilenameCached(Filename,false);
+  if TargetFilename=Filename then begin
+    // no symlink to choose
+  end else if not AskOnSymlink then begin
+    // choose physical file
+    Filename:=TargetFilename;
+  end else begin
+    // ask which filename to use
+    case IDEQuestionDialog(lisFileIsSymlink,
+      Format(lisTheFileIsASymlinkOpenInstead,
+        ['"', Filename, '"', LineEnding, LineEnding, '"', TargetFilename, '"']),
+      mtConfirmation, [mbYes, lisOpenTarget, mbNo, lisOpenSymlink, mbCancel])
+    of
+    mrYes: Filename:=TargetFilename;
+    mrNo:  ;
+    else   exit(mrCancel);
     end;
   end;
+  Result:=mrOk;
 end;
 
 function CreateSymlinkInteractive(const LinkFilename, TargetFilename: string;

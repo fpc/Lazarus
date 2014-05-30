@@ -287,7 +287,6 @@ type
     FAutoSaveProject: boolean;
     FAutoSaveIntervalInSecs: integer;
     FLastSavedProjectFile: string;
-    FAskSaveSessionOnly: boolean;
 
     // window layout
     FIDEDialogLayoutList: TIDEDialogLayoutList;
@@ -338,6 +337,7 @@ type
     FPackageEditorShowDirHierarchy: boolean;
 
     // hints
+    FAskSaveSessionOnly: boolean;
     FCheckDiskChangesWithLoading: boolean;
     FShowHintsForComponentPalette: boolean;
     FShowHintsForMainSpeedButtons: boolean;
@@ -349,6 +349,8 @@ type
     FMsgViewShowTranslations: boolean;
     FMsgViewFilenameStyle: TMsgWndFileNameStyle;
     fMsgViewColors: array[TMsgWndColor] of TColor;
+    FShowCompileDialog: Boolean;       // show dialog during compile
+    FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
 
     // compiler + debugger + lazarus files
     FParseValues: array[TEnvOptParseType] of TParseString;
@@ -356,6 +358,7 @@ type
     FCompilerFileHistory: TStringList;
     FFPCSourceDirHistory: TStringList;
     FMakeFileHistory: TStringList;
+    FTestBuildDirHistory: TStringList;
     FCompilerMessagesFileHistory: TStringList;
     FBuildMatrixOptions: TBuildMatrixOptions;
     FUseBuildModes: Boolean;
@@ -371,9 +374,6 @@ type
     FDebuggerFileHistory: TStringList; // per debugger class
     FDebuggerProperties: TStringList; // per debugger class
     FDebuggerShowStopMessage: Boolean;
-    FShowCompileDialog: Boolean;       // show dialog during compile
-    FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
-    FTestBuildDirHistory: TStringList;
     FDebuggerEventLogClearOnRun: Boolean;
     FDebuggerEventLogCheckLineLimit: Boolean;
     FDebuggerEventLogLineLimit: Integer;
@@ -395,6 +395,8 @@ type
     FRecentPackageFiles: TStringList;
     FMaxRecentPackageFiles: integer;
     FOpenLastProjectAtStart: boolean;
+    // Prevent repopulating Recent project files menu with example projects if it was already cleared up.
+    FAlreadyPopulatedRecentFiles : Boolean;
 
     // backup
     FBackupInfoProjectFiles: TBackupInfo;
@@ -422,9 +424,6 @@ type
     FNewFormTemplate: string;
     FNewUnitTemplate: string;
     FFileDialogFilter: string;
-
-    // Prevent repopulating Recent project files menu with example projects if it was already cleared up.
-    FAlreadyPopulatedRecentFiles : Boolean;
 
     function GetCompilerFilename: string;
     function GetCompilerMessagesFilename: string;

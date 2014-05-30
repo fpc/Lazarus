@@ -1320,6 +1320,7 @@ var
   Reverting: Boolean;
   CanAbort: boolean;
   NewEditorInfo: TUnitEditorInfo;
+  SearchPath: String;
 
   function OpenResource: TModalResult;
   var
@@ -1455,7 +1456,14 @@ begin
   end;
 
   // check if symlink and ask user if the real file should be opened instead
-  ChooseSymlink(AFilename);
+  if FilenameIsAbsolute(AFileName) then begin
+    SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory('');
+    if SearchDirectoryInSearchPath(SearchPath,ExtractFilePath(AFileName))<1 then
+    begin
+      // the file is not in the project search path => check if it is a symlink
+      ChooseSymlink(AFilename,true);
+    end;
+  end;
 
   FilenameNoPath:=ExtractFilename(AFilename);
 
