@@ -994,7 +994,9 @@ msgid "Compiler messages"
 msgstr "Fordító üzenetei"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file"
+#, fuzzy
+#| msgid "Compiler messages language file"
+msgid "Compiler messages language file (*.msg)"
 msgstr "Fordító üzenetek nyelvi fájlja"
 
 #: lazarusidestrconsts.dlgcompileroptions
@@ -4316,6 +4318,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Építés"
 
+#: lazarusidestrconsts.lisbuildide
+msgid "Build IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "IDE építése csomagokkal"
@@ -5898,6 +5904,10 @@ msgstr "Fordító fájlneve"
 #: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgstr "Tipp: A fordító útvonala beállítható a menüben: Eszközök -> Beállítások -> Fájlok -> Fordító útvonala"
+
+#: lazarusidestrconsts.liscompilermessagesfilenotfound
+msgid "Compiler messages file not found:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
@@ -9699,6 +9709,10 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
+#: lazarusidestrconsts.lislazarusdefault
+msgid "Lazarus Default"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Lazarus felület beállításai"
@@ -10575,17 +10589,33 @@ msgstr "Általános dolgok beszúrása"
 msgid "GPL Notice"
 msgstr "GPL megjegyzés"
 
+#: lazarusidestrconsts.lismenuinsertgplnoticetranslated
+msgid "GPL Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertlgplnotice
 msgid "LGPL Notice"
 msgstr "LGPL megjegyzés"
+
+#: lazarusidestrconsts.lismenuinsertlgplnoticetranslated
+msgid "LGPL Notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
 msgstr "MIT megjegyzés"
 
+#: lazarusidestrconsts.lismenuinsertmitnoticetranslated
+msgid "MIT Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL Notice"
 msgstr "Módosított LGPL megjegyzés"
+
+#: lazarusidestrconsts.lismenuinsertmodifiedlgplnoticetranslated
+msgid "Modified LGPL Notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current Username"
@@ -11152,6 +11182,10 @@ msgstr ""
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "Üzenetszerkesztő"
+
+#: lazarusidestrconsts.lismessageswindow
+msgid "Messages Window"
+msgstr ""
 
 #: lazarusidestrconsts.lismethodclassnotfound
 msgid "Method class not found"
@@ -13427,6 +13461,10 @@ msgstr "Unit név már létezik"
 msgid "Project %s"
 msgstr "Projekt: %s"
 
+#: lazarusidestrconsts.lisproject2
+msgid "Project: "
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "A projekt megváltozott"
@@ -14302,9 +14340,17 @@ msgstr "A Lazarus forráskód könyvtárának kiválasztása"
 msgid "Select path to %s"
 msgstr "Útvonal kiválasztása ehhez: %s"
 
+#: lazarusidestrconsts.lissetallcolors
+msgid "Set all colors:"
+msgstr ""
+
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Alapértelmezett beállítása"
+
+#: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
+msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
+msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
@@ -17312,6 +17358,10 @@ msgstr "Teljes fájlnév beszúrása"
 msgid "Insert GPL notice"
 msgstr "GPL megjegyzés beszúrása"
 
+#: lazarusidestrconsts.srkmecinsertgplnoticetranslated
+msgid "Insert GPL notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertguid
 msgid "Insert a GUID"
 msgstr "GUID beszúrása"
@@ -17319,6 +17369,10 @@ msgstr "GUID beszúrása"
 #: lazarusidestrconsts.srkmecinsertlgplnotice
 msgid "Insert LGPL notice"
 msgstr "LGPL megjegyzés beszúrása"
+
+#: lazarusidestrconsts.srkmecinsertlgplnoticetranlated
+msgid "Insert LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
@@ -17328,6 +17382,10 @@ msgstr "Sortörés, kurzor helyben hagyása"
 msgid "Insert MIT notice"
 msgstr "MIT megjegyzés beszúrása"
 
+#: lazarusidestrconsts.srkmecinsertmitnoticetranslated
+msgid "Insert MIT notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Beszúrási mód"
@@ -17335,6 +17393,10 @@ msgstr "Beszúrási mód"
 #: lazarusidestrconsts.srkmecinsertmodifiedlgplnotice
 msgid "Insert modified LGPL notice"
 msgstr "Módosított LGPL megjegyzés beszúrása"
+
+#: lazarusidestrconsts.srkmecinsertmodifiedlgplnoticetranslated
+msgid "Insert modified LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertusername
 msgid "Insert current username"

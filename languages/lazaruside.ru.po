@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-05-18 16:40+0400\n"
+"PO-Revision-Date: 2014-05-31 20:59+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1036,8 +1036,9 @@ msgid "Compiler messages"
 msgstr "Сообщения компилятора"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file"
-msgstr "Языковой файл сообщений компилятора"
+#| msgid "Compiler messages language file"
+msgid "Compiler messages language file (*.msg)"
+msgstr "Языковой файл сообщений компилятора (*.msg)"
 
 #: lazarusidestrconsts.dlgcompileroptions
 msgctxt "lazarusidestrconsts.dlgcompileroptions"
@@ -4481,6 +4482,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Сборка"
 
+#: lazarusidestrconsts.lisbuildide
+msgid "Build IDE"
+msgstr "Сборка IDE"
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "собрать IDE с пакетами"
@@ -5303,7 +5308,7 @@ msgstr "Очищать типичные файлы"
 
 #: lazarusidestrconsts.liscleanlazarussource
 msgid "Clean Lazarus Source"
-msgstr "Очистить каталог исходного кода Lazarus"
+msgstr "Очистка каталога исходного кода Lazarus"
 
 #: lazarusidestrconsts.liscleanonlyonce
 #| msgid "Clean only once"
@@ -5413,7 +5418,7 @@ msgstr "Вкладки"
 
 #: lazarusidestrconsts.liscmprestoredefaults
 msgid "&Restore defaults"
-msgstr "&Вернуть по умолчанию"
+msgstr "Сброс&ить"
 
 #: lazarusidestrconsts.liscoambiguousadditionalcompilerconfigfile
 msgid "Ambiguous additional compiler config file"
@@ -6096,6 +6101,10 @@ msgstr "Имя файла компилятора"
 #| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgstr "Подсказка: Вы можете задать путь компилятора в Сервис -> Параметры -> Файлы -> Путь компилятора"
+
+#: lazarusidestrconsts.liscompilermessagesfilenotfound
+msgid "Compiler messages file not found:%s%s"
+msgstr "Файл сообщений компилятора не найден:%s%s"
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
@@ -8642,7 +8651,7 @@ msgstr "Перейти к выделенной строке"
 
 #: lazarusidestrconsts.lisgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis source is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. %sA copy of the GNU General Public License is available on the World Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also obtain it by writing to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<одна строка с наименованием Программы и кратким описанием ее назначения>%s© <год первого опубликования программы> <имя (наименование) автора или иного правообладателя> <способ связи>%sДанная программа является свободным программным обеспечением. Вы вправе распространять её и/или модифицировать в соответствии с условиями версии 2 либо по вашему выбору с условиями более поздней версии Стандартной Общественной Лицензии GNU, опубликованной Free Software Foundation. %sМы распространяем эту программу в надежде на то, что она будет вам полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЁ НИКАКИХ ГАРАНТИЙ, в том числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной информации ознакомьтесь со Стандартной Общественной Лицензией GNU. %sКопия Стандартной Общественной Лицензии GNU доступна в Интернете по адресу <http://www.gnu.org/copyleft/gpl.html>. Вы также можете получить экземпляр в Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lisgroup
 msgid "Group"
@@ -9978,6 +9987,10 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
+#: lazarusidestrconsts.lislazarusdefault
+msgid "Lazarus Default"
+msgstr "Lazarus по умолчанию"
+
 #: lazarusidestrconsts.lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Установки Рабочего Стола Lazarus"
@@ -10291,7 +10304,7 @@ msgstr "Файл LFM верен"
 
 #: lazarusidestrconsts.lislgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<одна строка с наименованием Библиотеки и кратким описанием её назначения>%s© <год первого опубликования библиотеки> <имя (наименование) автора или иного правообладателя> <способ связи>%sДанная библиотека является свободным программным обеспечением. Вы вправе распространять её и/или модифицировать в соответствии с условиями версии 2 либо по вашему выбору с условиями более поздней версии Стандартной Общественной Лицензии Ограниченного Применения GNU, опубликованной Free Software Foundation. %sМы распространяем эту библиотеку в надежде на то, что она будет вам полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной информации ознакомьтесь со Стандартной Общественной Лицензией Ограниченного Применений GNU. %sВместе с данной библиотекой вы должны были получить экземпляр Стандартной Общественной Лицензии Ограниченного Применения GNU. Если вы его не получили, сообщите об этом в Free Software Foundation, Inc., 59 Temple Place — Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lislibrarypath
 msgid "library path"
@@ -10915,19 +10928,35 @@ msgstr "Вставить общие"
 msgid "GPL Notice"
 msgstr "Заметка о GPL"
 
+#: lazarusidestrconsts.lismenuinsertgplnoticetranslated
+msgid "GPL Notice (translated)"
+msgstr "Заметка о GPL (перевод)"
+
 #: lazarusidestrconsts.lismenuinsertlgplnotice
 #| msgid "LGPL notice"
 msgid "LGPL Notice"
-msgstr "Заметка о LGPL"
+msgstr "Заметка об LGPL"
+
+#: lazarusidestrconsts.lismenuinsertlgplnoticetranslated
+msgid "LGPL Notice (translated)"
+msgstr "Заметка об LGPL (перевод)"
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
 msgstr "Заметка о MIT"
 
+#: lazarusidestrconsts.lismenuinsertmitnoticetranslated
+msgid "MIT Notice (translated)"
+msgstr "Заметка о MIT (перевод)"
+
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 #| msgid "Modified LGPL notice"
 msgid "Modified LGPL Notice"
 msgstr "Заметка о модифицированной LGPL"
+
+#: lazarusidestrconsts.lismenuinsertmodifiedlgplnoticetranslated
+msgid "Modified LGPL Notice (translated)"
+msgstr "Заметка о модифицированной LGPL (перевод)"
 
 #: lazarusidestrconsts.lismenuinsertusername
 #| msgid "Current username"
@@ -11566,6 +11595,10 @@ msgstr "Сообщение не содержит сведений о позиц�
 msgid "Messages Editor"
 msgstr "Редактор сообщений"
 
+#: lazarusidestrconsts.lismessageswindow
+msgid "Messages Window"
+msgstr "Окно сообщений"
+
 #: lazarusidestrconsts.lismethodclassnotfound
 msgid "Method class not found"
 msgstr "Класс метода не найден"
@@ -11623,7 +11656,7 @@ msgstr "Пропустить этот модуль"
 
 #: lazarusidestrconsts.lismitnotice
 msgid "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
-msgstr "<description>%sCopyright (c) <year> <copyright holders>%sPermission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:%sThe above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.%sTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+msgstr "<описание>%s© <год первого опубликования программы> <имя (наименование) автора или иного правообладателя>%sДанная лицензия разрешает лицам, получившим копию данного программного обеспечения и сопутствующей документации (в дальнейшем именуемыми «Программное Обеспечение»), безвозмездно использовать Программное Обеспечение без ограничений, включая неограниченное право на использование, копирование, изменение, добавление, публикацию, распространение, сублицензирование и/или продажу копий Программного Обеспечения, также как и лицам, которым предоставляется данное Программное Обеспечение, при соблюдении следующих условий:%sУказанное выше уведомление об авторском праве и данные условия должны быть включены во все копии или значимые части данного Программного Обеспечения.%sДАННОЕ ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ ПРЕДОСТАВЛЯЕТСЯ «КАК ЕСТЬ», БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ, ЯВНО ВЫРАЖЕННЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ ГАРАНТИЯМИ ТОВАРНОЙ ПРИГОДНОСТИ, СООТВЕТСТВИЯ ПО ЕГО КОНКРЕТНОМУ НАЗНАЧЕНИЮ И ОТСУТСТВИЯ НАРУШЕНИЙ ПРАВ. НИ В КАКОМ СЛУЧАЕ АВТОРЫ ИЛИ ПРАВООБЛАДАТЕЛИ НЕ НЕСУТ ОТВЕТСТВЕННОСТИ ПО ИСКАМ О ВОЗМЕЩЕНИИ УЩЕРБА, УБЫТКОВ ИЛИ ДРУГИХ ТРЕБОВАНИЙ ПО ДЕЙСТВУЮЩИМ КОНТРАКТАМ, ДЕЛИКТАМ ИЛИ ИНОМУ, ВОЗНИКШИМ ИЗ, ИМЕЮЩИМ ПРИЧИНОЙ ИЛИ СВЯЗАННЫМ С ПРОГРАММНЫМ ОБЕСПЕЧЕНИЕМ ИЛИ ИСПОЛЬЗОВАНИЕМ ПРОГРАММНОГО ОБЕСПЕЧЕНИЯ ИЛИ ИНЫМИ ДЕЙСТВИЯМИ С ПРОГРАММНЫМ ОБЕСПЕЧЕНИЕМ."
 
 #: lazarusidestrconsts.lismmadditionsandoverrides
 msgid "Additions and Overrides"
@@ -11779,7 +11812,7 @@ msgstr "(было \"%s\")"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
-msgstr "<description>%sCopyright (C) <year> <name of author> <contact>%sThis library is free software; you can redistribute it and/or modify it under the terms of the GNU Library General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version with the following modification:%sAs a special exception, the copyright holders of this library give you permission to link this library with independent modules to produce an executable, regardless of the license terms of these independent modules,and to copy and distribute the resulting executable under terms of your choice, provided that you also meet, for each linked independent module, the terms and conditions of the license of that module. An independent module is a module which is not derived from or based on this library. If you modify this library, you may extend this exception to your version of the library, but you are not obligated to do so. If you do not wish to do so, delete this exception statement from your version.%sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU Library General Public License along with this library; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA."
+msgstr "<одна строка с наименованием Библиотеки и кратким описанием её назначения>%s© <год первого опубликования библиотеки> <имя (наименование) автора или иного правообладателя> <способ связи>%sДанная библиотека является свободным программным обеспечением. Вы вправе распространять её и/или модифицировать в соответствии с условиями версии 2 либо по вашему выбору с условиями более поздней версии Стандартной Общественной Лицензии Ограниченного Применения GNU, опубликованной Free Software Foundation со слудующим изменением:%sВ качестве особого исключения правообладатели Библиотеки дают вам право компоновать её с независимыми модулями для получения исполнимого файла, невзирая на условия лицензий таких независимых модулей, и копировать и распространять получившийся исполнимый файл на ваших условиях, в том случае, если вы также соблюдаете для каждого скомпонованного независимого модуля условия его лицензии. Независимый модуль — это модуль, не являющийся производным от данной Библиотеки. При внесении изменений в эту Библиотеку вы вправе распространить на свою версию действие этого исключения, но не обязаны делать это. Если вы не желаете это делать, удалите текст этого исключения из своей версии.%sМы распространяем эту библиотеку в надежде на то, что она будет вам полезной, однако НЕ ПРЕДОСТАВЛЯЕМ НА НЕЕ НИКАКИХ ГАРАНТИЙ, в том числе ГАРАНТИИ ТОВАРНОГО СОСТОЯНИЯ ПРИ ПРОДАЖЕ и ПРИГОДНОСТИ ДЛЯ ИСПОЛЬЗОВАНИЯ В КОНКРЕТНЫХ ЦЕЛЯХ. Для получения более подробной информации ознакомьтесь со Стандартной Общественной Лицензией Ограниченного Применений GNU. %sВместе с данной библиотекой вы должны были получить экземпляр Стандартной Общественной Лицензии Ограниченного Применения GNU. Если вы его не получили, сообщите об этом в Free Software Foundation, Inc., 59 Temple Place — Suite 330, Boston, MA 02111-1307, USA."
 
 #: lazarusidestrconsts.lismodify
 msgid "&Modify"
@@ -13895,6 +13928,10 @@ msgstr "Имя модуля уже существует"
 msgid "Project %s"
 msgstr "Проект %s"
 
+#: lazarusidestrconsts.lisproject2
+msgid "Project: "
+msgstr "Проект: "
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Проект изменен"
@@ -14798,9 +14835,17 @@ msgstr "Выберите каталог исходного кода Lazarus"
 msgid "Select path to %s"
 msgstr "Выберите путь к %s"
 
+#: lazarusidestrconsts.lissetallcolors
+msgid "Set all colors:"
+msgstr "Задать все цвета:"
+
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Установить по умолчанию"
+
+#: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
+msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
+msgstr "Задайте это значение для перевода сообщений компилятора на язык, отличный от английского. Например, для русского: $(FPCSrcDir)/compiler/msg/errorru.msg."
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 #| msgid "(Setup default indentation)"
@@ -17880,13 +17925,21 @@ msgstr "Вставить полное имя файла"
 msgid "Insert GPL notice"
 msgstr "Вставить заметку о GPL"
 
+#: lazarusidestrconsts.srkmecinsertgplnoticetranslated
+msgid "Insert GPL notice (translated)"
+msgstr "Вставить заметку о GPL (перевод)"
+
 #: lazarusidestrconsts.srkmecinsertguid
 msgid "Insert a GUID"
 msgstr "GUID"
 
 #: lazarusidestrconsts.srkmecinsertlgplnotice
 msgid "Insert LGPL notice"
-msgstr "Вставить заметку о LGPL"
+msgstr "Вставить заметку об LGPL"
+
+#: lazarusidestrconsts.srkmecinsertlgplnoticetranlated
+msgid "Insert LGPL notice (translated)"
+msgstr "Вставить заметку об LGPL (перевод)"
 
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
@@ -17896,6 +17949,10 @@ msgstr "Разорвать строку, оставить курсор"
 msgid "Insert MIT notice"
 msgstr "Вставить заметку о MIT"
 
+#: lazarusidestrconsts.srkmecinsertmitnoticetranslated
+msgid "Insert MIT notice (translated)"
+msgstr "Вставить заметку о MIT (перевод)"
+
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Режим вставки"
@@ -17903,6 +17960,10 @@ msgstr "Режим вставки"
 #: lazarusidestrconsts.srkmecinsertmodifiedlgplnotice
 msgid "Insert modified LGPL notice"
 msgstr "Вставить заметку о модифицированной LGPL"
+
+#: lazarusidestrconsts.srkmecinsertmodifiedlgplnoticetranslated
+msgid "Insert modified LGPL notice (translated)"
+msgstr "Вставить заметку о модифицированной LGPL (перевод)"
 
 #: lazarusidestrconsts.srkmecinsertusername
 msgid "Insert current username"

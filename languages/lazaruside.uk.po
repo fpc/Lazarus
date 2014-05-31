@@ -1024,7 +1024,9 @@ msgid "Compiler messages"
 msgstr "Повідомлення компілятора"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file"
+#, fuzzy
+#| msgid "Compiler messages language file"
+msgid "Compiler messages language file (*.msg)"
 msgstr "Мовний файл повідомлень компілятора"
 
 #: lazarusidestrconsts.dlgcompileroptions
@@ -4449,6 +4451,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Побудувати"
 
+#: lazarusidestrconsts.lisbuildide
+msgid "Build IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "будувати IDE з пакунками"
@@ -6067,6 +6073,10 @@ msgstr "Назва файлу компілятора"
 #: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgstr "Довідка: Ви можете задати шлях до компілятора в Інструменти->Параметри->Файли->Шлях до компілятора"
+
+#: lazarusidestrconsts.liscompilermessagesfilenotfound
+msgid "Compiler messages file not found:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
@@ -9936,6 +9946,10 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
+#: lazarusidestrconsts.lislazarusdefault
+msgid "Lazarus Default"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Налаштування стільниці Lazarus"
@@ -10855,18 +10869,34 @@ msgstr "Вставити Загальні"
 msgid "GPL Notice"
 msgstr "Примітки GPL"
 
+#: lazarusidestrconsts.lismenuinsertgplnoticetranslated
+msgid "GPL Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertlgplnotice
 #| msgid "LGPL notice"
 msgid "LGPL Notice"
 msgstr "Примітки LGPL"
 
+#: lazarusidestrconsts.lismenuinsertlgplnoticetranslated
+msgid "LGPL Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
+msgstr ""
+
+#: lazarusidestrconsts.lismenuinsertmitnoticetranslated
+msgid "MIT Notice (translated)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL Notice"
 msgstr "Нотатки Зміненої LGPL "
+
+#: lazarusidestrconsts.lismenuinsertmodifiedlgplnoticetranslated
+msgid "Modified LGPL Notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertusername
 #| msgid "Current username"
@@ -11487,6 +11517,10 @@ msgstr "Повідомлення не містить даних про пози�
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "Редактор Повідомлень"
+
+#: lazarusidestrconsts.lismessageswindow
+msgid "Messages Window"
+msgstr ""
 
 #: lazarusidestrconsts.lismethodclassnotfound
 msgid "Method class not found"
@@ -13818,6 +13852,10 @@ msgstr "Назва модуля вже існує"
 msgid "Project %s"
 msgstr "Проект %s"
 
+#: lazarusidestrconsts.lisproject2
+msgid "Project: "
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Проект змінено"
@@ -14715,9 +14753,17 @@ msgstr "Вибрати теку початкових кодів Lazarus"
 msgid "Select path to %s"
 msgstr "Виберіть шлях до %s"
 
+#: lazarusidestrconsts.lissetallcolors
+msgid "Set all colors:"
+msgstr ""
+
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Встановити за замовчуванням"
+
+#: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
+msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
+msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 #, fuzzy
@@ -17792,6 +17838,10 @@ msgstr "Вставити повний Шлях до Файлу"
 msgid "Insert GPL notice"
 msgstr "Вставити примітку про GPL"
 
+#: lazarusidestrconsts.srkmecinsertgplnoticetranslated
+msgid "Insert GPL notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertguid
 msgid "Insert a GUID"
 msgstr "Вставити GUID"
@@ -17799,6 +17849,10 @@ msgstr "Вставити GUID"
 #: lazarusidestrconsts.srkmecinsertlgplnotice
 msgid "Insert LGPL notice"
 msgstr "Вставити примітку про LGPL"
+
+#: lazarusidestrconsts.srkmecinsertlgplnoticetranlated
+msgid "Insert LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
@@ -17808,6 +17862,10 @@ msgstr "Розірвати рядок, залишити курсор"
 msgid "Insert MIT notice"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecinsertmitnoticetranslated
+msgid "Insert MIT notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Режим вставки"
@@ -17815,6 +17873,10 @@ msgstr "Режим вставки"
 #: lazarusidestrconsts.srkmecinsertmodifiedlgplnotice
 msgid "Insert modified LGPL notice"
 msgstr "Вставити змінений LGPL допис"
+
+#: lazarusidestrconsts.srkmecinsertmodifiedlgplnoticetranslated
+msgid "Insert modified LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertusername
 msgid "Insert current username"

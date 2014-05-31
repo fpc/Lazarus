@@ -1029,7 +1029,7 @@ msgid "Compiler messages"
 msgstr "编译信息"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file"
+msgid "Compiler messages language file (*.msg)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcompileroptions
@@ -4551,6 +4551,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "构建"
 
+#: lazarusidestrconsts.lisbuildide
+msgid "Build IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "构建IDE和包"
@@ -6186,6 +6190,10 @@ msgstr "编译器名称"
 #| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgstr "提示: 你可以在 环境->环境选项->文件->编译器路径 设置编译器路径"
+
+#: lazarusidestrconsts.liscompilermessagesfilenotfound
+msgid "Compiler messages file not found:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
@@ -10069,6 +10077,10 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
+#: lazarusidestrconsts.lislazarusdefault
+msgid "Lazarus Default"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Lazarus 桌面设置"
@@ -11049,14 +11061,26 @@ msgstr "普通"
 msgid "GPL Notice"
 msgstr "GPL公约"
 
+#: lazarusidestrconsts.lismenuinsertgplnoticetranslated
+msgid "GPL Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertlgplnotice
 #, fuzzy
 #| msgid "LGPL notice"
 msgid "LGPL Notice"
 msgstr "LGPL公约"
 
+#: lazarusidestrconsts.lismenuinsertlgplnoticetranslated
+msgid "LGPL Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
+msgstr ""
+
+#: lazarusidestrconsts.lismenuinsertmitnoticetranslated
+msgid "MIT Notice (translated)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
@@ -11064,6 +11088,10 @@ msgstr ""
 #| msgid "Modified LGPL notice"
 msgid "Modified LGPL Notice"
 msgstr "修正的LGPL公约"
+
+#: lazarusidestrconsts.lismenuinsertmodifiedlgplnoticetranslated
+msgid "Modified LGPL Notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertusername
 #, fuzzy
@@ -11746,6 +11774,10 @@ msgstr ""
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "信息编辑器"
+
+#: lazarusidestrconsts.lismessageswindow
+msgid "Messages Window"
+msgstr ""
 
 #: lazarusidestrconsts.lismethodclassnotfound
 msgid "Method class not found"
@@ -14103,6 +14135,10 @@ msgstr "单元名已经存在"
 msgid "Project %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisproject2
+msgid "Project: "
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "工程已经更改"
@@ -15016,9 +15052,17 @@ msgstr ""
 msgid "Select path to %s"
 msgstr ""
 
+#: lazarusidestrconsts.lissetallcolors
+msgid "Set all colors:"
+msgstr ""
+
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "设为默认"
+
+#: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
+msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
+msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
@@ -18114,6 +18158,10 @@ msgstr ""
 msgid "Insert GPL notice"
 msgstr "插入 GPL 公告"
 
+#: lazarusidestrconsts.srkmecinsertgplnoticetranslated
+msgid "Insert GPL notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertguid
 msgid "Insert a GUID"
 msgstr "插入 GUID"
@@ -18121,6 +18169,10 @@ msgstr "插入 GUID"
 #: lazarusidestrconsts.srkmecinsertlgplnotice
 msgid "Insert LGPL notice"
 msgstr "插入 LGPL 公告"
+
+#: lazarusidestrconsts.srkmecinsertlgplnoticetranlated
+msgid "Insert LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
@@ -18130,6 +18182,10 @@ msgstr "打断行并保留光标"
 msgid "Insert MIT notice"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecinsertmitnoticetranslated
+msgid "Insert MIT notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
 msgstr "插入模式"
@@ -18137,6 +18193,10 @@ msgstr "插入模式"
 #: lazarusidestrconsts.srkmecinsertmodifiedlgplnotice
 msgid "Insert modified LGPL notice"
 msgstr "插入被修改的LGPL公告"
+
+#: lazarusidestrconsts.srkmecinsertmodifiedlgplnoticetranslated
+msgid "Insert modified LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertusername
 msgid "Insert current username"

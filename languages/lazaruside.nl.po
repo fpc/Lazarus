@@ -1020,7 +1020,7 @@ msgid "Compiler messages"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file"
+msgid "Compiler messages language file (*.msg)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcompileroptions
@@ -4484,6 +4484,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Bouw"
 
+#: lazarusidestrconsts.lisbuildide
+msgid "Build IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr ""
@@ -6097,6 +6101,10 @@ msgstr "Compilerbestandsnaam"
 #| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgstr "Hint: u kunt het pad naar de compiler opgeven in Omgeving -> Omgevingsopties -> Bestanden -> Compiler Pad"
+
+#: lazarusidestrconsts.liscompilermessagesfilenotfound
+msgid "Compiler messages file not found:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
@@ -9930,6 +9938,10 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
+#: lazarusidestrconsts.lislazarusdefault
+msgid "Lazarus Default"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Lazarus Desktop instellingen"
@@ -10896,18 +10908,34 @@ msgstr "Algemeen"
 msgid "GPL Notice"
 msgstr "GPL bericht"
 
+#: lazarusidestrconsts.lismenuinsertgplnoticetranslated
+msgid "GPL Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertlgplnotice
 #, fuzzy
 #| msgid "LGPL notice"
 msgid "LGPL Notice"
 msgstr "LGPL melding"
 
+#: lazarusidestrconsts.lismenuinsertlgplnoticetranslated
+msgid "LGPL Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
 msgstr ""
 
+#: lazarusidestrconsts.lismenuinsertmitnoticetranslated
+msgid "MIT Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL Notice"
+msgstr ""
+
+#: lazarusidestrconsts.lismenuinsertmodifiedlgplnoticetranslated
+msgid "Modified LGPL Notice (translated)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertusername
@@ -11582,6 +11610,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
+msgstr ""
+
+#: lazarusidestrconsts.lismessageswindow
+msgid "Messages Window"
 msgstr ""
 
 #: lazarusidestrconsts.lismethodclassnotfound
@@ -13930,6 +13962,10 @@ msgstr "Unitnaam bestaat al"
 msgid "Project %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisproject2
+msgid "Project: "
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Project is gewijzigd"
@@ -14829,8 +14865,16 @@ msgstr ""
 msgid "Select path to %s"
 msgstr ""
 
+#: lazarusidestrconsts.lissetallcolors
+msgid "Set all colors:"
+msgstr ""
+
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
+msgstr ""
+
+#: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
+msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
 msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
@@ -17905,6 +17949,10 @@ msgstr ""
 msgid "Insert GPL notice"
 msgstr "Invoegen GPL notice"
 
+#: lazarusidestrconsts.srkmecinsertgplnoticetranslated
+msgid "Insert GPL notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertguid
 msgid "Insert a GUID"
 msgstr ""
@@ -17912,6 +17960,10 @@ msgstr ""
 #: lazarusidestrconsts.srkmecinsertlgplnotice
 msgid "Insert LGPL notice"
 msgstr "LGPL melding invoegen"
+
+#: lazarusidestrconsts.srkmecinsertlgplnoticetranlated
+msgid "Insert LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
@@ -17921,12 +17973,20 @@ msgstr "Breek lijn, verlaat cursor"
 msgid "Insert MIT notice"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecinsertmitnoticetranslated
+msgid "Insert MIT notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Invoeg mode"
 
 #: lazarusidestrconsts.srkmecinsertmodifiedlgplnotice
 msgid "Insert modified LGPL notice"
+msgstr ""
+
+#: lazarusidestrconsts.srkmecinsertmodifiedlgplnoticetranslated
+msgid "Insert modified LGPL notice (translated)"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertusername

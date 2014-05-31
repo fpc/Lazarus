@@ -1003,7 +1003,9 @@ msgid "Compiler messages"
 msgstr "Zprávy překladače"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file"
+#, fuzzy
+#| msgid "Compiler messages language file"
+msgid "Compiler messages language file (*.msg)"
 msgstr "Jazykový soubor zpráv překladače"
 
 #: lazarusidestrconsts.dlgcompileroptions
@@ -4331,6 +4333,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Sestavit"
 
+#: lazarusidestrconsts.lisbuildide
+msgid "Build IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "sestavit IDE s balíčky"
@@ -5922,6 +5928,10 @@ msgstr "Jméno souboru překladače"
 #: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgstr "Tip: cestu překladače můžete nastavit v Nástroje -> Nastavení -> Soubory -> Cesta překaldače"
+
+#: lazarusidestrconsts.liscompilermessagesfilenotfound
+msgid "Compiler messages file not found:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
@@ -9730,6 +9740,10 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
+#: lazarusidestrconsts.lislazarusdefault
+msgid "Lazarus Default"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Nastavení plochy Lazarusu"
@@ -10606,17 +10620,33 @@ msgstr "Vložit Obecné"
 msgid "GPL Notice"
 msgstr "Poznámka GPL"
 
+#: lazarusidestrconsts.lismenuinsertgplnoticetranslated
+msgid "GPL Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertlgplnotice
 msgid "LGPL Notice"
 msgstr "Poznámka LGPL"
+
+#: lazarusidestrconsts.lismenuinsertlgplnoticetranslated
+msgid "LGPL Notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
 msgstr "Poznámka MIT"
 
+#: lazarusidestrconsts.lismenuinsertmitnoticetranslated
+msgid "MIT Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL Notice"
 msgstr "Poznámka k upravené LGPL"
+
+#: lazarusidestrconsts.lismenuinsertmodifiedlgplnoticetranslated
+msgid "Modified LGPL Notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current Username"
@@ -11185,6 +11215,10 @@ msgstr "Zpráva neobsahuje informaci o pozici souboru:%s%s"
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "Editor zpráv"
+
+#: lazarusidestrconsts.lismessageswindow
+msgid "Messages Window"
+msgstr ""
 
 #: lazarusidestrconsts.lismethodclassnotfound
 msgid "Method class not found"
@@ -13468,6 +13502,10 @@ msgstr "Jméno jednotky již existuje"
 msgid "Project %s"
 msgstr "Projekt %s"
 
+#: lazarusidestrconsts.lisproject2
+msgid "Project: "
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Projekt změněn"
@@ -14347,9 +14385,17 @@ msgstr "Vybrat zdrojový adresář Lazarusu"
 msgid "Select path to %s"
 msgstr "Vybrat cestu k %s"
 
+#: lazarusidestrconsts.lissetallcolors
+msgid "Set all colors:"
+msgstr ""
+
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Nastavit výchozí"
+
+#: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
+msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
+msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 #| msgid "(Setup default indentation)"
@@ -17361,6 +17407,10 @@ msgstr "Vložit plné jméno souboru"
 msgid "Insert GPL notice"
 msgstr "Vložit GPL poznámku"
 
+#: lazarusidestrconsts.srkmecinsertgplnoticetranslated
+msgid "Insert GPL notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertguid
 msgid "Insert a GUID"
 msgstr "Vložit GUID"
@@ -17368,6 +17418,10 @@ msgstr "Vložit GUID"
 #: lazarusidestrconsts.srkmecinsertlgplnotice
 msgid "Insert LGPL notice"
 msgstr "Vložit poznámku LGPL"
+
+#: lazarusidestrconsts.srkmecinsertlgplnoticetranlated
+msgid "Insert LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
@@ -17377,6 +17431,10 @@ msgstr "Ukončit řádek a nechat kurzor"
 msgid "Insert MIT notice"
 msgstr "Vložit poznámku MIT"
 
+#: lazarusidestrconsts.srkmecinsertmitnoticetranslated
+msgid "Insert MIT notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Režim vkládání"
@@ -17384,6 +17442,10 @@ msgstr "Režim vkládání"
 #: lazarusidestrconsts.srkmecinsertmodifiedlgplnotice
 msgid "Insert modified LGPL notice"
 msgstr "Vložit upravenou poznámku LGPL"
+
+#: lazarusidestrconsts.srkmecinsertmodifiedlgplnoticetranslated
+msgid "Insert modified LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertusername
 msgid "Insert current username"

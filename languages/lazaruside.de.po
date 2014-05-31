@@ -1024,7 +1024,9 @@ msgid "Compiler messages"
 msgstr "Compiler-Meldungen"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file"
+#, fuzzy
+#| msgid "Compiler messages language file"
+msgid "Compiler messages language file (*.msg)"
 msgstr "Compilermeldungen-Sprachdatei"
 
 #: lazarusidestrconsts.dlgcompileroptions
@@ -4480,6 +4482,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Neu kompilieren"
 
+#: lazarusidestrconsts.lisbuildide
+msgid "Build IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "IDE mit allen Packages kompilieren"
@@ -6107,6 +6113,10 @@ msgstr "Compilerdateiname"
 #| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler PathHint: you can set the compiler path in Tools -> Options-> Files -> Compiler PathHint: you can set the compiler path in Tools -> Options-> Files -> Compiler PathHint: you can set the compiler path in Tools -> Options-> Files -> Compiler PathHint: you can set the compiler path in Tools -> Options-> Files -> Compiler PathHint: you can set the compiler path in Tools -> Options-> Files -> Compiler PathHint: you can set the compiler path in Tools -> Options-> Files -> Compiler PathHint: you can set the compiler path in Tools -> Options-> Files -> Compiler PathHint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgstr "Anmerkung: Sie können den Compilerpfad setzen unter Werkzeuge->Einstellungen->Umgebung->Dateien->Compilerpfad"
+
+#: lazarusidestrconsts.liscompilermessagesfilenotfound
+msgid "Compiler messages file not found:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
@@ -9995,6 +10005,10 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr "Lazarus"
 
+#: lazarusidestrconsts.lislazarusdefault
+msgid "Lazarus Default"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Lazarus-Desktop-Einstellungen"
@@ -10934,19 +10948,35 @@ msgstr "Einfügen allgemein"
 msgid "GPL Notice"
 msgstr "GPL-Hinweis"
 
+#: lazarusidestrconsts.lismenuinsertgplnoticetranslated
+msgid "GPL Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertlgplnotice
 #| msgid "LGPL notice"
 msgid "LGPL Notice"
 msgstr "LGPL-Hinweis"
 
+#: lazarusidestrconsts.lismenuinsertlgplnoticetranslated
+msgid "LGPL Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
 msgstr "MIT-Notiz"
+
+#: lazarusidestrconsts.lismenuinsertmitnoticetranslated
+msgid "MIT Notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 #| msgid "Modified LGPL notice"
 msgid "Modified LGPL Notice"
 msgstr "Angepaßter LGPL-Hinweis"
+
+#: lazarusidestrconsts.lismenuinsertmodifiedlgplnoticetranslated
+msgid "Modified LGPL Notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertusername
 #| msgid "Current username"
@@ -11583,6 +11613,10 @@ msgstr "Nachricht enthält keine Datei-Positionsinformation:%s%s"
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "Nachrichten-Editor"
+
+#: lazarusidestrconsts.lismessageswindow
+msgid "Messages Window"
+msgstr ""
 
 #: lazarusidestrconsts.lismethodclassnotfound
 msgid "Method class not found"
@@ -13919,6 +13953,10 @@ msgstr "Unit-Name ist bereits vorhanden"
 msgid "Project %s"
 msgstr "Projekt %s"
 
+#: lazarusidestrconsts.lisproject2
+msgid "Project: "
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Projekt verändert"
@@ -14823,9 +14861,17 @@ msgstr "Lazarus-Quell-Verzeichnis auswählen"
 msgid "Select path to %s"
 msgstr "Wähle Pfad zu %s"
 
+#: lazarusidestrconsts.lissetallcolors
+msgid "Set all colors:"
+msgstr ""
+
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Voreinstellungens setzen"
+
+#: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
+msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
+msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 #| msgid "(Setup default indentation)"
@@ -17916,6 +17962,10 @@ msgstr "Vollen Dateinamen einfügen"
 msgid "Insert GPL notice"
 msgstr "GPL-Hinweis einfügen"
 
+#: lazarusidestrconsts.srkmecinsertgplnoticetranslated
+msgid "Insert GPL notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertguid
 msgid "Insert a GUID"
 msgstr "GUID einfügen"
@@ -17923,6 +17973,10 @@ msgstr "GUID einfügen"
 #: lazarusidestrconsts.srkmecinsertlgplnotice
 msgid "Insert LGPL notice"
 msgstr "LGPL-Hinweis einfügen"
+
+#: lazarusidestrconsts.srkmecinsertlgplnoticetranlated
+msgid "Insert LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
@@ -17932,6 +17986,10 @@ msgstr "Zeilen trennen, Cursor belassen"
 msgid "Insert MIT notice"
 msgstr "MIT-Notiz einfügen"
 
+#: lazarusidestrconsts.srkmecinsertmitnoticetranslated
+msgid "Insert MIT notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Einfügemodus"
@@ -17939,6 +17997,10 @@ msgstr "Einfügemodus"
 #: lazarusidestrconsts.srkmecinsertmodifiedlgplnotice
 msgid "Insert modified LGPL notice"
 msgstr "Hinweis zur modifizierten LGPL einfügen"
+
+#: lazarusidestrconsts.srkmecinsertmodifiedlgplnoticetranslated
+msgid "Insert modified LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertusername
 msgid "Insert current username"

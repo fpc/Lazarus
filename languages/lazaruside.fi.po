@@ -988,7 +988,9 @@ msgid "Compiler messages"
 msgstr "Kääntäjän viestit"
 
 #: lazarusidestrconsts.dlgcompilermessages
-msgid "Compiler messages language file"
+#, fuzzy
+#| msgid "Compiler messages language file"
+msgid "Compiler messages language file (*.msg)"
 msgstr "Kääntäjän viestien kielitiedosto"
 
 #: lazarusidestrconsts.dlgcompileroptions
@@ -4298,6 +4300,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Kokoa"
 
+#: lazarusidestrconsts.lisbuildide
+msgid "Build IDE"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
 msgstr "kokoa IDE paketteineen"
@@ -5875,6 +5881,10 @@ msgstr "Kääntäjän tiedostonimi"
 #: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgstr "Vihje: voit asettaa kääntäjän hakupolun valikosta Työkalut -> Asetukset -> Tiedostot -> Kääntäjän polku"
+
+#: lazarusidestrconsts.liscompilermessagesfilenotfound
+msgid "Compiler messages file not found:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
@@ -9670,6 +9680,10 @@ msgctxt "lazarusidestrconsts.lislazarus"
 msgid "Lazarus"
 msgstr ""
 
+#: lazarusidestrconsts.lislazarusdefault
+msgid "Lazarus Default"
+msgstr ""
+
 #: lazarusidestrconsts.lislazarusdesktopsettings
 msgid "Lazarus Desktop Settings"
 msgstr "Lazaruksen työpöytäasetukset"
@@ -10540,17 +10554,33 @@ msgstr "Liitä kenttiä"
 msgid "GPL Notice"
 msgstr "GPL-ilmoitus"
 
+#: lazarusidestrconsts.lismenuinsertgplnoticetranslated
+msgid "GPL Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertlgplnotice
 msgid "LGPL Notice"
 msgstr "LGPL -ilmoitus"
+
+#: lazarusidestrconsts.lismenuinsertlgplnoticetranslated
+msgid "LGPL Notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertmitnotice
 msgid "MIT Notice"
 msgstr "MIT-ilmoitus"
 
+#: lazarusidestrconsts.lismenuinsertmitnoticetranslated
+msgid "MIT Notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
 msgid "Modified LGPL Notice"
 msgstr "Muunnettu LGPL-ilmoitus"
+
+#: lazarusidestrconsts.lismenuinsertmodifiedlgplnoticetranslated
+msgid "Modified LGPL Notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertusername
 msgid "Current Username"
@@ -11111,6 +11141,10 @@ msgstr "Viestissä ei ole tietoa sijainnista tiedostossa:%s%s"
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "Viestien editori"
+
+#: lazarusidestrconsts.lismessageswindow
+msgid "Messages Window"
+msgstr ""
 
 #: lazarusidestrconsts.lismethodclassnotfound
 msgid "Method class not found"
@@ -13379,6 +13413,10 @@ msgstr "Käännösyksikön nimi on jo olemassa"
 msgid "Project %s"
 msgstr "Projekti %s"
 
+#: lazarusidestrconsts.lisproject2
+msgid "Project: "
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Projekti on muuttunut"
@@ -14252,9 +14290,17 @@ msgstr "Valitse Lazaruksen lähdehakemisto"
 msgid "Select path to %s"
 msgstr "Valitse polku %s:lle"
 
+#: lazarusidestrconsts.lissetallcolors
+msgid "Set all colors:"
+msgstr ""
+
 #: lazarusidestrconsts.lissetdefault
 msgid "Set default"
 msgstr "Aseta oletus"
+
+#: lazarusidestrconsts.lissetthistotranslatethecompilermessagestoanotherlang
+msgid "Set this to translate the compiler messages to another language (i.e. not English). For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg."
+msgstr ""
 
 #: lazarusidestrconsts.lissetupdefaultindentation
 msgid "(Set up default indentation)"
@@ -17263,6 +17309,10 @@ msgstr "Aseta koko tiedostonimi"
 msgid "Insert GPL notice"
 msgstr "Lisää GPL-ilmoitus"
 
+#: lazarusidestrconsts.srkmecinsertgplnoticetranslated
+msgid "Insert GPL notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertguid
 msgid "Insert a GUID"
 msgstr "Lisää GUID"
@@ -17270,6 +17320,10 @@ msgstr "Lisää GUID"
 #: lazarusidestrconsts.srkmecinsertlgplnotice
 msgid "Insert LGPL notice"
 msgstr "Lisää LGPL-ilmoitus"
+
+#: lazarusidestrconsts.srkmecinsertlgplnoticetranlated
+msgid "Insert LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertline
 msgid "Break line, leave cursor"
@@ -17279,6 +17333,10 @@ msgstr "Rivinvaihto ilman kursorinsiirtoa"
 msgid "Insert MIT notice"
 msgstr "Lisää MIT ilmoitus"
 
+#: lazarusidestrconsts.srkmecinsertmitnoticetranslated
+msgid "Insert MIT notice (translated)"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecinsertmode
 msgid "Insert Mode"
 msgstr "Lisäysmoodi"
@@ -17286,6 +17344,10 @@ msgstr "Lisäysmoodi"
 #: lazarusidestrconsts.srkmecinsertmodifiedlgplnotice
 msgid "Insert modified LGPL notice"
 msgstr "Lisää muokattu LGPL-ilmoitus"
+
+#: lazarusidestrconsts.srkmecinsertmodifiedlgplnoticetranslated
+msgid "Insert modified LGPL notice (translated)"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecinsertusername
 msgid "Insert current username"
