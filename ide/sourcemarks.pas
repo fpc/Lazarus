@@ -447,7 +447,7 @@ end;
 function TSourceMark.CompareEditorAndLine(ASrcEditID: TObject;
   ALine: integer): integer;
 begin
-  Result := PtrInt(SourceEditorID) - PtrInt(ASrcEditID);
+  Result := ComparePointers(SourceEditorID,ASrcEditID);
   if Result <> 0 then Exit;
   Result := Line - ALine;
 end;
