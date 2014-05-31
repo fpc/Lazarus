@@ -718,10 +718,12 @@ resourcestring
     +'to project, because there is already a unit with the same name in the Project.';
   lisAddToProject = 'Add %s to project?';
   lisTheFile = 'The file %s%s%s';
+  lisAddToUnitSearchPath = 'Add to unit search path?';
+  lisAddToIncludeSearchPath = 'Add to include search path?';
   lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd =
-    'The new include file is not yet in the include search path.%sAdd directory %s to build modes?';
+    'The new include file is not yet in the include search path.%sAdd directory %s?';
   lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory =
-    'The new unit is not yet in the unit search path.%sAdd directory %s to build modes?';
+    'The new unit is not yet in the unit search path.%sAdd directory %s?';
   lisisAlreadyPartOfTheProject = '%s is already part of the Project.';
   lisRemoveFromProject = 'Remove from Project';
   lisCreateAProjectFirst = 'Create a project first!';

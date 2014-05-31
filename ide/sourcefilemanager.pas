@@ -58,9 +58,12 @@ type
 
   TLazSourceFileManager = class
   private
+    function AddPathToBuildModes(aPath, CurDirectory: string; IsIncludeFile: Boolean): Boolean;
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
     function FileExistsInIDE(const Filename: string;
                              SearchFlags: TProjectFileSearchFlags): boolean;
+    function ShowCheckListBuildModes(DlgMsg: String; out
+      ListForm: TGenericCheckListForm): TModalResult;
   public
     constructor Create;
     destructor Destroy; override;
@@ -2505,28 +2508,73 @@ begin
   PkgBoss.DoCloseAllPackageEditors;
 end;
 
+function TLazSourceFileManager.ShowCheckListBuildModes(DlgMsg: String;
+  out ListForm: TGenericCheckListForm): TModalResult;
+begin
+  ListForm:=TGenericCheckListForm.Create(Nil);
+  //lisApplyForBuildModes = 'Apply for build modes:';
+  ListForm.Caption:=lisAvailableProjectBuildModes;
+  ListForm.InfoLabel.Caption:=DlgMsg;
+  for i:=0 to Project1.BuildModes.Count-1 do begin
+    ListForm.CheckListBox1.Items.Add(Project1.BuildModes[i].Identifier);
+    ListForm.CheckListBox1.Checked[i]:=True;
+  end;
+  Result:=ListForm.ShowModal=mrOK;
+end;
+
+function TLazSourceFileManager.AddPathToBuildModes(aPath, CurDirectory: string;
+  IsIncludeFile: Boolean): Boolean;
+var
+  ListForm: TGenericCheckListForm;
+  DlgCapt, DlgMsg: String;
+  i: Integer;
+  Ok: Boolean;
+begin
+  Result:=True;
+  ListForm:=Nil;
+  try
+    if IsIncludeFile then begin
+      DlgCapt:=lisAddToIncludeSearchPath;
+      DlgMsg:=lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd;
+    end
+    else begin
+      DlgCapt:=lisAddToUnitSearchPath;
+      DlgMsg:=lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory;
+    end;
+    DlgMsg:=Format(DlgMsg,[LineEnding,CurDirectory]);
+    if Project1.BuildModes.Count > 1 then
+      Ok:=ShowCheckListBuildModes(DlgMsg, ListForm)
+    else
+      Ok:=IDEMessageDialog(DlgCapt,DlgMsg,mtConfirmation,[mbYes,mbNo])=mrYes;
+    if not Ok then Exit(False);
+    for i:=0 to Project1.BuildModes.Count-1 do
+      if (ListForm=Nil) or ListForm.CheckListBox1.Checked[i] then
+        with Project1.BuildModes[i].CompilerOptions do
+          if IsIncludeFile then
+            IncludePath:=MergeSearchPaths(IncludePath,aPath)
+          else
+            OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,aPath);
+  finally
+    ListForm.Free;
+  end;
+end;
+
 function TLazSourceFileManager.CheckDirIsInSearchPath(UnitInfo: TUnitInfo;
   AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
 // Check if the given unit's path is on Unit- or Include-search path.
 // Returns true if it is OK to add the unit to current project.
 var
   CurDirectory, CurPath, ShortDir: String;
-  DlgMsg: String;
   Owners: TFPList;
   APackage: TLazPackage;
-  ListForm: TGenericCheckListForm;
   i: Integer;
 begin
   Result:=True;
   if UnitInfo.IsVirtual then exit;
-  if IsIncludeFile then begin
-    CurPath:=Project1.CompilerOptions.GetIncludePath(false);
-    DlgMsg:=lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd;
-  end
-  else begin
+  if IsIncludeFile then
+    CurPath:=Project1.CompilerOptions.GetIncludePath(false)
+  else
     CurPath:=Project1.CompilerOptions.GetUnitPath(false);
-    DlgMsg:=lisTheNewUnitIsNotYetInTheUnitSearchPathAddDirectory;
-  end;
   CurDirectory:=AppendPathDelim(UnitInfo.GetDirectory);
   if SearchDirectoryInSearchPath(CurPath,CurDirectory)<1 then
   begin
@@ -2555,26 +2603,7 @@ begin
     ShortDir:=CurDirectory;
     if (not Project1.IsVirtual) then
       ShortDir:=CreateRelativePath(ShortDir,Project1.ProjectDirectory);
-    ListForm:=TGenericCheckListForm.Create(Nil);
-    try
-      //lisApplyForBuildModes = 'Apply for build modes:';
-      ListForm.Caption:=lisAvailableProjectBuildModes;
-      ListForm.InfoLabel.Caption:=Format(DlgMsg,[LineEnding,CurDirectory]);
-      for i:=0 to Project1.BuildModes.Count-1 do begin
-        ListForm.CheckListBox1.Items.Add(Project1.BuildModes[i].Identifier);
-        ListForm.CheckListBox1.Checked[i]:=True;
-      end;
-      if ListForm.ShowModal<>mrOK then Exit(False);
-      for i:=0 to Project1.BuildModes.Count-1 do
-        if ListForm.CheckListBox1.Checked[i] then
-          with Project1.BuildModes[i].CompilerOptions do
-            if IsIncludeFile then
-              IncludePath:=MergeSearchPaths(IncludePath,ShortDir)
-            else
-              OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,ShortDir);
-    finally
-      ListForm.Free;
-    end;
+    Result:=AddPathToBuildModes(ShortDir,CurDirectory,IsIncludeFile);
   end;
 end;
 
