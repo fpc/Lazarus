@@ -59,31 +59,29 @@ uses
   MemCheck,
 {$ENDIF}
   // fpc packages
-  Math, Classes, SysUtils, Process, AsyncProcess, TypInfo, types, strutils,
-  AVL_Tree, contnrs,
+  Math, Classes, SysUtils, Process, TypInfo, types, strutils, AVL_Tree,
   // lazutils
   LazUTF8, Laz2_XMLCfg, AvgLvlTree,
   // lcl
-  LCLProc, LCLMemManager, LCLType, LCLIntf, LConvEncoding, LMessages, ComCtrls,
-  FileUtil, LResources, StdCtrls, Forms, Buttons, Menus, Controls, GraphType,
+  LCLProc, LCLType, LCLIntf, LConvEncoding, ComCtrls,
+  FileUtil, LResources, Forms, Buttons, Menus, Controls, GraphType,
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process, LazLogger,
   lazutf8classes, LazFileCache,
   // codetools
-  FileProcs, CodeBeautifier, FindDeclarationTool, LinkScanner, BasicCodeTools,
-  CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
-  KeywordFuncLists, CodeTree,
+  FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools,
+  CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists,
   // synedit
   AllSynEdit, SynEditKeyCmds, SynBeautifier, SynEditMarks,
   // IDE interface
-  IDEIntf, BaseIDEIntf, ObjectInspector, PropEdits, PropEditUtils,
-  MacroIntf, IDECommands, IDEWindowIntf, ComponentReg, FormEditingIntf,
+  IDEIntf, ObjectInspector, PropEdits, PropEditUtils,
+  MacroIntf, IDECommands, IDEWindowIntf, ComponentReg,
   SrcEditorIntf, NewItemIntf, IDEExternToolIntf, IDEMsgIntf,
   PackageIntf, ProjectIntf, CompOptsIntf, MenuIntf, LazIDEIntf, IDEDialogs,
   IDEOptionsIntf, IDEImagesIntf, ComponentEditors,
   // protocol
   IDEProtocol,
   // compile
-  Compiler, CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
+  CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
   ApplicationBundle, ImExportCompilerOpts, InfoBuild,
   {$IFDEF EnableNewExtTools}
   ExtTools,
@@ -92,7 +90,7 @@ uses
   ProjectResources, Project, ProjectDefs, NewProjectDlg, 
   PublishProjectDlg, ProjectInspector, PackageDefs,
   // help manager
-  IDEContextHelpEdit, IDEHelpIntf, ExtendedTabControls, IDEHelpManager, CodeHelp, HelpOptions,
+  IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
   // designer
   JITForms, ComponentPalette, ComponentList, CompPagesPopup,
   ObjInspExt, Designer, FormEditor, CustomFormEditor, lfmUnitResource,
@@ -106,8 +104,8 @@ uses
   // packager
   PackageSystem, PkgManager, BasePkgManager, LPKCache,
   // source editing
-  SourceEditor, CodeToolsOptions, IDEOptionDefs, CheckLFMDlg,
-  CodeToolsDefines, DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
+  SourceEditor, CodeToolsOptions, IDEOptionDefs,
+  CodeToolsDefines, DiffDialog, UnitInfoDlg, EditorOptions,
   SourceEditProcs, ViewUnit_dlg, FPDocEditWindow,
   {$IFDEF EnableNewExtTools}
   etQuickFixes, etMessageFrame, etMessagesWnd,
@@ -115,7 +113,7 @@ uses
   OutputFilter, MsgQuickFixes, MsgView,
   {$ENDIF}
   // converter
-  ChgEncodingDlg, ConvertDelphi, ConvCodeTool, MissingPropertiesDlg, LazXMLForms,
+  ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
   // environment option frames
   editor_general_options, componentpalette_options, formed_options, OI_options,
   MsgWnd_Options, files_options, desktop_options, window_options,
@@ -126,7 +124,7 @@ uses
   editor_general_misc_options, editor_dividerdraw_options,
   editor_multiwindow_options, editor_indent_options,
   codetools_general_options, codetools_codecreation_options,
-  codetools_classcompletion_options, atom_checkboxes_options,
+  codetools_classcompletion_options,
   codetools_wordpolicy_options, codetools_linesplitting_options,
   codetools_space_options, codetools_identifiercompletion_options,
   debugger_general_options, debugger_eventlog_options,
@@ -152,7 +150,7 @@ uses
   KeyMapping, IDETranslations, IDEProcs, ExtToolDialog, ExtToolEditDlg,
   JumpHistoryView, ExampleManager,
   BuildLazDialog, BuildProfileManager, BuildManager, CheckCompOptsForNewUnitDlg,
-  MiscOptions, InputHistory, UnitDependencies, ClipBoardHistory,
+  MiscOptions, InputHistory, UnitDependencies,
   IDEFPCInfo, IDEInfoDlg, IDEInfoNeedBuild, ProcessList, InitialSetupDlgs,
   NewDialog, MakeResStrDlg, DialogProcs, FindReplaceDialog, FindInFilesDlg,
   CodeExplorer, BuildFileDlg, ProcedureList, ExtractProcDlg,
