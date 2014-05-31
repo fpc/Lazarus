@@ -29,7 +29,7 @@ unit etSrcEditMarks;
 
 {$IFNDEF EnableNewExtTools}{$Error Wrong}{$ENDIF}
 
-{$DEFINE VerboseETSrcChange}
+{off $DEFINE VerboseETSrcChange}
 
 interface
 
