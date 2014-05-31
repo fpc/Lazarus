@@ -7260,8 +7260,8 @@ end;
  ------------------------------------------------------------------------------}
 function WaitForClipboardAnswer(c: PClipboardEventData): boolean;
 var
-  StartTime, CurTime: TSystemTime;
   Timer: cardinal;
+  StartTime: TDateTime;
 
   function ValidDateSelection : boolean;
   begin
@@ -7281,7 +7281,7 @@ begin
     exit;
   end;
   c^.Waiting:=true;
-  DateTimeToSystemTime(Time,StartTime);
+  StartTime:=Now;
   //DebugLn('[WaitForClipboardAnswer] C');
   Application.ProcessMessages;
   //DebugLn('[WaitForClipboardAnswer] D');
@@ -7309,17 +7309,14 @@ begin
         Result:=(ValidDateSelection);
         exit;
       end;
-      DateTimeToSystemTime(Time,CurTime);
-    until (CurTime.Second*1000+CurTime.MilliSecond
-           -StartTime.Second*1000-StartTime.MilliSecond
-           >1000);
+    until Abs(StartTime-Now)*86400>1.0; // wait at most a second
   finally
     {$IFDEF DEBUG_CLIPBOARD}
     DebugLn('[WaitForClipboardAnswer] H');
     {$ENDIF}
     // stop the timer
     gtk_timeout_remove(Timer);
-//DebugLn('[WaitForClipboardAnswer] END');
+    //DebugLn('[WaitForClipboardAnswer] END');
   end;
   { $IFDEF DEBUG_CLIPBOARD}
   DebugLn('[WaitForClipboardAnswer] WARNING: no answer received in time');
@@ -7341,23 +7338,10 @@ end;
 function RequestSelectionData(ClipboardWidget: PGtkWidget;
   ClipboardType: TClipboardType; FormatID: PtrUInt): TGtkSelectionData;
   
-  function TimeIDExists(TimeID: guint32): boolean;
-  var
-    i: Integer;
-  begin
-    i:=ClipboardSelectionData.Count-1;
-    while (i>=0) do begin
-      if (PClipboardEventData(ClipboardSelectionData[i])^.TimeID=TimeID) then
-        exit(true);
-      dec(i);
-    end;
-    Result:=false;
-  end;
-  
 var
   TimeID: cardinal;
   c: PClipboardEventData;
-  sanity: Integer = 0;
+  StartTime: TDateTime;
 begin
   {$IFDEF DEBUG_CLIPBOARD}
   DebugLn('[RequestSelectionData] FormatID=',dbgs(FormatID));
@@ -7366,36 +7350,37 @@ begin
   if (ClipboardWidget=nil) or (FormatID=0) 
   or (ClipboardTypeAtoms[ClipboardType]=0) then exit;
 
+  if ClipboardSelectionData.Count > 0 then begin
+    { Multiple outstanding requests seems to cause problems, so
+      wait for most recent request (if any) before starting a new one }
+    StartTime := Now;
+    while not WaitForClipboardAnswer(PClipboardEventData(ClipboardSelectionData[ClipboardSelectionData.Count-1])) do begin
+      Application.ProcessMessages;
+      if Now - StartTime > 1000/MSecsPerDay then
+        Exit; { Previous request timed out, so don't wait for another timeout period }
+    end;
+  end;
+  New(c);
+  FillChar(c^,SizeOf(TClipboardEventData),0);
   TimeID:= gdk_event_get_time(gtk_get_current_event);
              // IMPORTANT: To retrieve data from xterm or kde applications
              //            the time id must be 0 or event^.time
-  repeat
-    while TimeIDExists(TimeID) do begin
-      inc(TimeID);
-      if TimeID>1010 then exit;
+  c^.TimeID:=TimeID;
+  ClipboardSelectionData.Add(c);
+  try
+    {$IFDEF DEBUG_CLIPBOARD}
+    DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID), ' Sanity=', IntToStr(Sanity));
+    {$ENDIF}
+    if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
+                             FormatID, TimeID)<>GdkFalse
+    then begin
+      if not WaitForClipboardAnswer(c) then exit;
+      Result:=c^.Data;
     end;
-    New(c);
-    FillChar(c^,SizeOf(TClipboardEventData),0);
-    c^.TimeID:=TimeID;
-    ClipboardSelectionData.Add(c);
-    try
-      {$IFDEF DEBUG_CLIPBOARD}
-      DebugLn('[RequestSelectionData] TimeID=',dbgs(TimeID),' Type=',GdkAtomToStr(ClipboardTypeAtoms[ClipboardType]),' FormatID=',GdkAtomToStr(FormatID), ' Sanity=', IntToStr(Sanity));
-      {$ENDIF}
-      if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
-                               FormatID, TimeID)<>GdkFalse
-      then begin
-        if not WaitForClipboardAnswer(c) then exit;
-        Result:=c^.Data;
-        break;
-      end;
-    finally
-      ClipboardSelectionData.Remove(c);
-      Dispose(c);
-    end;
-    Inc(sanity);
-    sleep(100);
-  until false or (sanity > 10);
+  finally
+    ClipboardSelectionData.Remove(c);
+    Dispose(c);
+  end;
 end;
 
 {------------------------------------------------------------------------------
