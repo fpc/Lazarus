@@ -1271,8 +1271,7 @@ begin
     end;
 
     // add to recent file list
-    if (not AnUnitInfo.IsVirtual)
-    and (not (cfProjectClosing in Flags)) then
+    if (not AnUnitInfo.IsVirtual) and (not (cfProjectClosing in Flags)) then
     begin
       EnvironmentOptions.AddToRecentOpenFiles(AnUnitInfo.Filename);
       MainIDE.SetRecentFilesMenu;
@@ -1579,8 +1578,7 @@ begin
       AFileName:=DiskFilename;
     if NewUnitInfo.IsVirtual then begin
       if (not (ofQuiet in Flags)) then begin
-        IDEMessageDialog(lisRevertFailed, Format(lisFileIsVirtual, ['"', AFilename,
-          '"']),
+        IDEMessageDialog(lisRevertFailed, Format(lisFileIsVirtual, ['"',AFilename,'"']),
           mtInformation,[mbCancel]);
       end;
       Result:=mrCancel;
@@ -1737,8 +1735,7 @@ var
         if ActiveUnitInfo.IsVirtual then
           CurPath:=AppendPathDelim(Project1.ProjectDirectory)+CurPath
         else
-          CurPath:=AppendPathDelim(ExtractFilePath(ActiveUnitInfo.Filename))
-                   +CurPath;
+          CurPath:=AppendPathDelim(ExtractFilePath(ActiveUnitInfo.Filename))+CurPath;
       end;
       for c:=0 to 2 do begin
         // FPC searches first lowercase, then keeping case, then uppercase
@@ -2428,8 +2425,7 @@ begin
 
     if (not DeleteDirectory(ChompPathDelim(DestDir),true)) then begin
       IDEMessageDialog(lisUnableToCleanUpDestinationDirectory,
-        Format(lisUnableToCleanUpPleaseCheckPermissions,
-               ['"', DestDir, '"', LineEnding] ),
+        Format(lisUnableToCleanUpPleaseCheckPermissions,['"',DestDir,'"',LineEnding]),
         mtError,[mbOk]);
       Result:=mrCancel;
       exit;
@@ -2792,10 +2788,8 @@ begin
           AnEditorInfo.WindowID:=-1;
           Continue;
         end;
-        if (SourceEditorManager.SourceWindows[j] <> nil)
-        then
-          SourceEditorManager.SourceWindows[j].PageIndex :=
-            AnEditorInfo.PageIndex;
+        if (SourceEditorManager.SourceWindows[j] <> nil) then
+          SourceEditorManager.SourceWindows[j].PageIndex := AnEditorInfo.PageIndex;
       end;
     end;
     if (Project1.ActiveWindowIndexAtStart<0)
@@ -2891,9 +2885,8 @@ Begin
                               [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert],false)
       then
         exit;
-      if CreateProjectForProgram(PreReadBuf)=mrOk then begin
+      if CreateProjectForProgram(PreReadBuf)=mrOk then
         exit;
-      end;
     end;
   finally
     InputHistories.StoreFileDialogSettings(OpenDialog);
@@ -2966,11 +2959,10 @@ end;
 
 function TLazSourceFileManager.SaveProject(Flags: TSaveFlags):TModalResult;
 var
-  i: integer;
+  i, j: integer;
   AnUnitInfo: TUnitInfo;
   SaveFileFlags: TSaveFlags;
   SrcEdit: TSourceEditor;
-  j: Integer;
 begin
   Result:=mrCancel;
   if not (MainIDE.ToolStatus in [itNone,itDebugger]) then begin
@@ -3042,8 +3034,7 @@ begin
         AnUnitInfo:=AnUnitInfo.NextUnitWithEditorIndex;
       end;
     end else begin
-      if AnUnitInfo.IsVirtual
-      then begin
+      if AnUnitInfo.IsVirtual then begin
         if (sfSaveToTestDir in Flags) then
           Include(SaveFileFlags,sfSaveToTestDir)
         else
@@ -3175,9 +3166,7 @@ begin
             if FileExistsUTF8(LPIFilename) then begin
               if IDEQuestionDialog(lisProjectInfoFileDetected,
                   Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP, [
-                  AFilename]), mtConfirmation,
-                  [mrOk, lisOpenProject2, mrCancel])
-                <>mrOk
+                  AFilename]), mtConfirmation, [mrOk,lisOpenProject2,mrCancel])<>mrOk
               then
                 exit;
               AFilename:=LPIFilename;
@@ -3416,7 +3405,6 @@ begin
   NewCodeBuffer:=CodeToolBoss.CreateFile(NewFilename);
   if NewCodeBuffer=nil then
     exit(mrCancel);
-
   Result:=mrOk;
 end;
 
@@ -3661,8 +3649,7 @@ begin
       SaveDialog.InitialDir:=Project1.ProjectDirectory;
     end;
     // if this is a package file, then start in package directory
-    PkgDefaultDirectory:=
-      PkgBoss.GetDefaultSaveDirectoryForFile(AFilename);
+    PkgDefaultDirectory:=PkgBoss.GetDefaultSaveDirectoryForFile(AFilename);
     if (PkgDefaultDirectory<>'')
     and (not FileIsInPath(SaveDialog.InitialDir,PkgDefaultDirectory)) then
       SaveDialog.InitialDir:=PkgDefaultDirectory;
@@ -4334,8 +4321,7 @@ begin
           // resource code was in the same or in a sub directory of source
           // -> try to keep this relationship
           NewLRSFilePath:=NewFilePath
-                           +copy(LRSCode.Filename,length(OldFilePath)+1,
-                             length(LRSCode.Filename));
+            +copy(LRSCode.Filename,length(OldFilePath)+1,length(LRSCode.Filename));
           if not DirPathExists(NewLRSFilePath) then
             NewLRSFilePath:=NewFilePath;
         end else begin
@@ -4343,8 +4329,7 @@ begin
           // copy resource into the same directory as the source
           NewLRSFilePath:=NewFilePath;
         end;
-        NewLRSFilename:=NewLRSFilePath
-                        +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
+        NewLRSFilename:=NewLRSFilePath+ExtractFileNameOnly(NewFilename)+ResourceFileExt;
       end;
       Result:=ForceDirectoryInteractive(ExtractFilePath(NewLRSFilename),[mbRetry,mbIgnore]);
       if Result=mrCancel then exit;
@@ -4426,12 +4411,10 @@ begin
         and (CompareFilenames(OldFilePath,NewFilePath)=0)
         and (CompareFilenames(AmbiguousFiles[0],ExtractFilename(OldFilename))=0)
         then
-          AmbiguousText:=Format(lisDeleteOldFile, ['"', ExtractFilename(
-            OldFilename), '"'])
+          AmbiguousText:=Format(lisDeleteOldFile, ['"', ExtractFilename(OldFilename), '"'])
         else
-          AmbiguousText:=
-            Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName,
-                   [LineEnding, LineEnding, AmbiguousFiles.Text, LineEnding]);
+          AmbiguousText:=Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName,
+                          [LineEnding, LineEnding, AmbiguousFiles.Text, LineEnding]);
         Result:=IDEMessageDialog(lisAmbiguousFilesFound, AmbiguousText,
           mtWarning,[mbYes,mbNo,mbAbort]);
         if Result=mrAbort then exit;
@@ -4442,8 +4425,7 @@ begin
             if (FileExistsUTF8(AmbiguousFilename))
             and (not DeleteFileUTF8(AmbiguousFilename))
             and (IDEMessageDialog(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
-              ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel])=
-              mrCancel) then
+              ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel])=mrCancel) then
             begin
               Result:=mrCancel;
               exit;
@@ -4473,8 +4455,7 @@ begin
               mtConfirmation,[mbYes,mbNo])=mrYes then
           begin
             Project1.CompilerOptions.OtherUnitFiles:=
-                        RemoveSearchPaths(Project1.CompilerOptions.OtherUnitFiles,
-                                          OldUnitPath);
+              RemoveSearchPaths(Project1.CompilerOptions.OtherUnitFiles, OldUnitPath);
           end;
         end;
       end;
@@ -4627,8 +4608,7 @@ begin
   if ofOnlyIfExists in Flags
   then begin
     IDEMessageDialog(lisFileNotFound,
-      Format(lisFileNotFound2, ['"', AFilename, '"', LineEnding]),
-      mtInformation,[mbCancel]);
+      Format(lisFileNotFound2, ['"',AFilename,'"',LineEnding]), mtInformation,[mbCancel]);
     // cancel loading file
     Exit;
   end;
@@ -4700,8 +4680,7 @@ begin
           AText:=Format(lisTheFileSeemsToBeAProgramCloseCurrentProject,
                         ['"', AFilename, '"', LineEnding, LineEnding]);
           ACaption:=lisProgramDetected;
-          if IDEMessageDialog(ACaption, AText, mtConfirmation,
-              [mbYes, mbNo])=mrYes then
+          if IDEMessageDialog(ACaption, AText, mtConfirmation, [mbYes,mbNo])=mrYes then
           begin
             Handled:=true;
             Result:=CreateProjectForProgram(PreReadBuf);
@@ -5061,7 +5040,6 @@ begin
     DebugLn(['TLazSourceFileManager.LoadLFM LoadIDECodeBuffer failed']);
     exit;
   end;
-
   Result:=LoadLFM(AnUnitInfo,LFMBuf,OpenFlags,CloseFlags);
 end;
 
@@ -5847,8 +5825,7 @@ var
     end;
   end;
 
-  function TryUsedUnitInterface(UnitFilename: string;
-    out TheModalResult: TModalResult): boolean;
+  function TryUsedUnitInterface(UnitFilename: string; out TheModalResult: TModalResult): boolean;
   var
     Code: TCodeBuffer;
     AncestorClassName: string;
@@ -5871,8 +5848,7 @@ var
       debugln(['TLazSourceFileManager.FindComponentClass unable to load ',AnUnitInfo.Filename]);
       exit;
     end;
-    if not CodeToolBoss.FindFormAncestor(Code,AComponentClassName,
-      AncestorClassName,true) then
+    if not CodeToolBoss.FindFormAncestor(Code,AComponentClassName,AncestorClassName,true) then
     begin
       {$IFDEF VerboseLFMSearch}
       debugln(['  TryUsedUnitInterface FindFormAncestor failed for "',AComponentClassName,'"']);
@@ -6264,7 +6240,6 @@ begin
   finally
     Project1.UnlockUnitComponentDependencies;
   end;
-
   Result:=mrOk;
 end;
 
@@ -6678,10 +6653,8 @@ begin
     MainUnitInfo:=Project1.MainUnitInfo;
     if MainUnitInfo.OpenEditorInfoCount > 0 then begin
       MainUnitSrcEdit := TSourceEditor(MainUnitInfo.OpenEditorInfo[0].EditorComponent);
-      if UpdateModified and MainUnitSrcEdit.Modified
-      then begin
+      if UpdateModified and MainUnitSrcEdit.Modified then
         MainUnitSrcEdit.UpdateCodeBuffer;
-      end;
     end;
   end else
     MainUnitInfo:=nil;
@@ -7036,8 +7009,7 @@ begin
   Result:=SaveProject([sfCanAbort]);
   if Result=mrAbort then exit;
   if Result<>mrOk then begin
-    Result:=IDEQuestionDialog(lisChangesWereNotSaved,
-      ContinueText,
+    Result:=IDEQuestionDialog(lisChangesWereNotSaved, ContinueText,
       mtConfirmation, [mrOk, ContinueBtn, mrAbort]);
     if Result<>mrOk then exit(mrCancel);
   end;
@@ -7134,7 +7106,6 @@ begin
       or (CompareFilenames(Files[i],NewFilename)=0) then
         Files.Delete(i);
     end;
-
     //DebugLn(['TLazSourceFileManager.ReplaceUnitUse ',Files.Text]);
 
     // commit source editor to codetools
@@ -7149,10 +7120,8 @@ begin
     end;
 
     // search pascal source references
-    Result:=GatherUnitReferences(Files,OldCode,false,IgnoreErrors,true,
-                                 PascalReferences);
-    if (not IgnoreErrors) and (not Quiet) and (CodeToolBoss.ErrorMessage<>'')
-    then
+    Result:=GatherUnitReferences(Files,OldCode,false,IgnoreErrors,true,PascalReferences);
+    if (not IgnoreErrors) and (not Quiet) and (CodeToolBoss.ErrorMessage<>'') then
       MainIDE.DoJumpToCodeToolBossError;
     if Result<>mrOk then begin
       debugln('TLazSourceFileManager.ReplaceUnitUse GatherUnitReferences failed');

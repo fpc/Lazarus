@@ -179,8 +179,7 @@ type
     procedure OnApplicationIdle(Sender: TObject; var Done: Boolean);
     procedure OnApplicationActivate(Sender: TObject);
     procedure OnApplicationDeActivate(Sender: TObject);
-    procedure OnApplicationKeyDown(Sender: TObject;
-                                   var Key: Word; Shift: TShiftState);
+    procedure OnApplicationKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OnApplicationDropFiles(Sender: TObject; const FileNames: array of String);
     procedure OnApplicationQueryEndSession(var Cancel: Boolean);
     procedure OnApplicationEndSession(Sender: TObject);
@@ -883,7 +882,7 @@ type
                             Flags: TFindSourceFlags): string; override;
     function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
                                         const AFilename:string): TModalResult;
-    function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
+    //function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; override;
     function DoPublishModule(Options: TPublishModuleOptions;
       const SrcDirectory, DestDirectory: string): TModalResult; override;
@@ -910,7 +909,6 @@ type
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
                         Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; override;
     procedure DoJumpToCodeToolBossError; override;
-//    procedure UpdateSourceNames;
     function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override;
         deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
@@ -1302,7 +1300,6 @@ begin
         end;
     end;
   end;
-
 
   Application.ShowButtonGlyphs := EnvironmentOptions.ShowButtonGlyphs;
   Application.ShowMenuGlyphs := EnvironmentOptions.ShowMenuGlyphs;
@@ -1803,8 +1800,7 @@ begin
   IDEWindowCreators.ShowForm(Sender as TObjectInspectorDlg,false);
 end;
 
-procedure TMainIDE.OIRemainingKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TMainIDE.OIRemainingKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
   OnExecuteIDEShortCut(Sender,Key,Shift,nil);
 end;
@@ -1839,9 +1835,8 @@ end;
 
 procedure TMainIDE.OIOnSelectionChange(Sender: TObject);
 begin
-  if not (Sender is TObjectInspectorDlg) then
-    Exit;
-  OIChangedTimer.AutoEnabled:=true;
+  if Sender is TObjectInspectorDlg then
+    OIChangedTimer.AutoEnabled:=true;
 end;
 
 function TMainIDE.OIOnPropertyHint(Sender: TObject;
@@ -2414,31 +2409,30 @@ begin
     // load the cmd line files
     if CmdLineFiles<>nil then begin
       for i:=0 to CmdLineFiles.Count-1 do
-        Begin
-          AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
-          if not FileExistsCached(AFilename) then begin
-            debugln(['WARNING: command line file not found: "',AFilename,'"']);
-            continue;
-          end;
-          if Project1=nil then begin
-            // to open a file a project is needed
-            // => create a project
-            DoNewProject(ProjectDescriptorEmptyProject);
-          end;
-          if CompareFileExt(AFilename,'.lpk',false)=0 then begin
-            if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen],true)
-              =mrAbort
-            then
-              break;
-          end else begin
-            OpenFlags:=[ofAddToRecent,ofRegularFile];
-            if i<CmdLineFiles.Count then
-              Include(OpenFlags,ofMultiOpen);
-            if DoOpenEditorFile(AFilename,-1,-1,OpenFlags)=mrAbort then begin
-              break;
-            end;
+      Begin
+        AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
+        if not FileExistsCached(AFilename) then begin
+          debugln(['WARNING: command line file not found: "',AFilename,'"']);
+          continue;
+        end;
+        if Project1=nil then begin
+          // to open a file a project is needed
+          // => create a project
+          DoNewProject(ProjectDescriptorEmptyProject);
+        end;
+        if CompareFileExt(AFilename,'.lpk',false)=0 then begin
+          if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen],true)=mrAbort
+          then
+            break;
+        end else begin
+          OpenFlags:=[ofAddToRecent,ofRegularFile];
+          if i<CmdLineFiles.Count then
+            Include(OpenFlags,ofMultiOpen);
+          if DoOpenEditorFile(AFilename,-1,-1,OpenFlags)=mrAbort then begin
+            break;
           end;
         end;
+      end;
     end;
 
     if Project1=nil then
@@ -3154,8 +3148,7 @@ begin
   try
     SrcEdit.ExportAsHtml(Filename);
   except
-    IDEMessageDialog(lisCodeToolsDefsWriteError, lisFailedToSaveFile, mtError, [
-      mbOK]);
+    IDEMessageDialog(lisCodeToolsDefsWriteError, lisFailedToSaveFile, mtError, [mbOK]);
   end;
 end;
 
@@ -3461,16 +3454,14 @@ begin
 end;
 
 function TMainIDE.OnIDEMessageDialog(const aCaption, aMsg: string;
-  DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; const HelpKeyword: string
-  ): Integer;
+  DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; const HelpKeyword: string): Integer;
 begin
   Result:=MessageDlg{ !!! DO NOT REPLACE WITH IDEMessageDialog }
             (aCaption,aMsg,DlgType,Buttons,HelpKeyword);
 end;
 
 function TMainIDE.OnIDEQuestionDialog(const aCaption, aMsg: string;
-  DlgType: TMsgDlgType; Buttons: array of const; const HelpKeyword: string
-  ): Integer;
+  DlgType: TMsgDlgType; Buttons: array of const; const HelpKeyword: string): Integer;
 begin
   Result:=QuestionDlg(aCaption,aMsg,DlgType,Buttons,HelpKeyword);
 end;
@@ -4340,11 +4331,8 @@ begin
       lisTheProjectHasNoMainSourceFile, mtError, [mbCancel], '');
     exit;
   end;
-
   if PrepareForCompile<>mrOk then exit;
-
   if ShowBuildProjectDialog(Project1)<>mrOk then exit;
-
   DoBuildProject(crBuild,[]);
 end;
 
@@ -5523,9 +5511,8 @@ begin
   if UpdateSaveAll then
     MainIDEBar.itmProjectSave.Enabled :=
      SourceFileMgr.SomethingOfProjectIsModified  or ((Project1<>nil) and Project1.IsVirtual);
-  MainIDEBar.itmFileSave.Enabled :=
-    ((SrcEdit<>nil) and SrcEdit.Modified)
-    or ((AnUnitInfo<>nil) and (AnUnitInfo.IsVirtual));
+  MainIDEBar.itmFileSave.Enabled := ((SrcEdit<>nil) and SrcEdit.Modified)
+                              or ((AnUnitInfo<>nil) and AnUnitInfo.IsVirtual);
   MainIDEBar.itmFileExportHtml.Enabled := (SrcEdit<>nil);
   if UpdateSaveAll then
     MainIDEBar.itmFileSaveAll.Enabled := MainIDEBar.itmProjectSave.Enabled;
@@ -5573,17 +5560,14 @@ end;
 procedure TMainIDE.OnSaveProjectInfoToXMLConfig(TheProject: TProject;
   XMLConfig: TXMLConfig; WriteFlags: TProjectWriteFlags);
 begin
-  if (TheProject=Project1) and (not (pwfSkipDebuggerSettings in WriteFlags))
-  then
+  if (TheProject=Project1) and (not (pwfSkipDebuggerSettings in WriteFlags)) then
     DebugBoss.SaveProjectSpecificInfo(XMLConfig,WriteFlags);
 
-  if (TheProject=Project1)
-  then
+  if (TheProject=Project1) then
     EditorMacroListViewer.SaveProjectSpecificInfo(XMLConfig, WriteFlags);
 end;
 
-procedure TMainIDE.OnProjectGetTestDirectory(TheProject: TProject;
-  out TestDir: string);
+procedure TMainIDE.OnProjectGetTestDirectory(TheProject: TProject; out TestDir: string);
 begin
   TestDir:=GetTestBuildDirectory;
 end;
@@ -5594,8 +5578,7 @@ begin
   if Project1.IsVirtual then
     CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',VirtualDirectory)
   else
-    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',
-                                Project1.ProjectDirectory)
+    CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',Project1.ProjectDirectory)
 end;
 
 function TMainIDE.DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
@@ -6319,8 +6302,7 @@ begin
 end;
 
 function TMainIDE.DoOpenFileAndJumpToIdentifier(const AFilename,
-  AnIdentifier: string; PageIndex, WindowIndex: integer; Flags: TOpenFlags
-  ): TModalResult;
+  AnIdentifier: string; PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
 var
   ActiveUnitInfo: TUnitInfo;
   ActiveSrcEdit: TSourceEditor;
@@ -8263,12 +8245,12 @@ begin
     end;
   until Result<>mrRetry;
 end;
-
+{
 function TMainIDE.DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
 begin
   Result:=SourceFileMgr.RenameUnitLowerCase(AnUnitInfo, AskUser);
 end;
-
+}
 function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
 begin
   Result:=SourceFileMgr.CheckFilesOnDisk(Instantaneous);
@@ -9551,8 +9533,7 @@ begin
     AddFile(CodeToolsOpts.IndentationFileName);
 end;
 
-function TMainIDE.OnCodeToolBossGetMethodName(const Method: TMethod;
-  PropOwner: TObject): String;
+function TMainIDE.OnCodeToolBossGetMethodName(const Method: TMethod; PropOwner: TObject): String;
 var
   JITMethod: TJITMethod;
   LookupRoot: TPersistent;
@@ -9592,8 +9573,7 @@ begin
   CodeToolBoss.DefineTree.ClearCache;
 end;
 
-procedure TMainIDE.CodeToolBossScannerInit(Self: TCodeToolManager;
-  Scanner: TLinkScanner);
+procedure TMainIDE.CodeToolBossScannerInit(Self: TCodeToolManager; Scanner: TLinkScanner);
 var
   SrcEdit: TSourceEditor;
 begin
@@ -9755,14 +9735,7 @@ begin
     SourceEditorManager.EndAutoFocusLock;
   end;
 end;
-{
-procedure TMainIDE.UpdateSourceNames;
-// Check every unit in sourceeditor if the source name has changed and updates
-// the notebook page names.
-begin
-  SourceFileMgr.UpdateSourceNames;
-end;
-}
+
 function TMainIDE.NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean;
 begin
   Result := NeedSaveSourceEditorChangesToCodeCache(
@@ -10725,7 +10698,7 @@ begin
   debugln(['TMainIDE.OnSrcNotebookEditorActived']);
   {$ENDIF}
   DisplayState:=dsSource;
-   Project1.UpdateVisibleUnit(ASrcEdit, ASrcEdit.SourceNotebook.WindowID);
+  Project1.UpdateVisibleUnit(ASrcEdit, ASrcEdit.SourceNotebook.WindowID);
 
   ActiveUnitInfo := Project1.UnitWithEditorComponent(ASrcEdit);
   if ActiveUnitInfo = nil then Exit;
@@ -10737,15 +10710,13 @@ begin
   MainIDEBar.ToggleFormSpeedBtn.Enabled := MainIDEBar.itmViewToggleFormUnit.Enabled;
 end;
 
-procedure TMainIDE.OnSrcNotebookEditorPlaceBookmark(Sender: TObject;
-  var Mark: TSynEditMark);
+procedure TMainIDE.OnSrcNotebookEditorPlaceBookmark(Sender: TObject; var Mark: TSynEditMark);
 begin
   Project1.UnitWithEditorComponent(TSourceEditor(Sender)).AddBookmark
     (Mark.Column, Mark.Line, Mark.BookmarkNumber);
 end;
 
-procedure TMainIDE.OnSrcNotebookEditorClearBookmark(Sender: TObject;
-  var Mark: TSynEditMark);
+procedure TMainIDE.OnSrcNotebookEditorClearBookmark(Sender: TObject; var Mark: TSynEditMark);
 begin
   Project1.UnitWithEditorComponent(TSourceEditor(Sender)).DeleteBookmark
     (Mark.BookmarkNumber);
@@ -11317,8 +11288,7 @@ var
               if DependingDesigner<>nil then
                 DependingUnit.Modified:=true;
               // replace references, ignoring errors
-              CodeToolBoss.ReplaceWord(DependingUnit.Source,OldName,NewName,
-                                       false);
+              CodeToolBoss.ReplaceWord(DependingUnit.Source,OldName,NewName,false);
             end;
           finally
             if FRenamingComponents<>nil then begin
@@ -11410,8 +11380,7 @@ var
 begin
   DebugLn('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
   if (not IsValidIdent(NewName)) or (NewName='') then
-    raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',
-      Newname, '"']));
+    raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',Newname,'"']));
   if WordIsKeyWord.DoItCaseInsensitive(PChar(NewName))
   or WordIsDelphiKeyWord.DoItCaseInsensitive(PChar(NewName))
   or WordIsPredefinedFPCIdentifier.DoItCaseInsensitive(PChar(NewName))
@@ -11876,10 +11845,9 @@ end;
 procedure TMainIDE.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
 begin
   fUserInputSinceLastIdle:=true;
-  if ToolStatus=itCodeTools then begin
+  if ToolStatus=itCodeTools then
     // abort codetools
     ToolStatus:=itCodeToolAborting;
-  end;
 end;
 
 procedure TMainIDE.OnApplicationIdle(Sender: TObject; var Done: Boolean);
@@ -12025,8 +11993,7 @@ begin
   DoCheckFilesOnDisk;
 end;
 
-procedure TMainIDE.OnApplicationKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TMainIDE.OnApplicationKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 var
   Command: Word;
   aForm: TCustomForm;
@@ -12080,7 +12047,6 @@ begin
     OpenFlags := [ofAddToRecent];
     if Length(FileNames) > 1 then
       Include(OpenFlags, ofRegularFile);
-
     try
       SourceEditorManager.IncUpdateLock;
       for I := 0 to High(FileNames) do
@@ -12097,7 +12063,6 @@ begin
     finally
       SourceEditorManager.DecUpdateLock;
     end;
-
     SetRecentFilesMenu;
     SaveEnvironment;
   end;
@@ -12115,11 +12080,8 @@ end;
 
 procedure TMainIDE.OnScreenChangedForm(Sender: TObject; Form: TCustomForm);
 begin
-  if (Screen.ActiveForm = MainIDEBar) or
-     (WindowMenuActiveForm = Screen.ActiveForm)
-  then
-    exit;
-  WindowMenuActiveForm := Screen.ActiveForm;
+  if (Screen.ActiveForm<>MainIDEBar) and (WindowMenuActiveForm<>Screen.ActiveForm) then
+    WindowMenuActiveForm := Screen.ActiveForm;
 end;
 
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
@@ -12269,8 +12231,7 @@ begin
   DoTestCompilerSettings(Sender as TCompilerOptions);
 end;
 
-function TMainIDE.OnCheckCompOptsAndMainSrcForNewUnit(
-  CompOpts: TLazCompilerOptions): TModalResult;
+function TMainIDE.OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions): TModalResult;
 begin
   Result:=CheckCompOptsAndMainSrcForNewUnit(CompOpts);
 end;
