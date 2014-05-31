@@ -66,7 +66,6 @@ type
       SearchFlags: TProjectFileSearchFlags): boolean;
     procedure RemovePathFromBuildModes(ObsoletePaths: String; pcos: TParsedCompilerOptString);
     function ShowCheckListBuildModes(DlgMsg: String): Boolean;
-    function ShowListedBuildModes(DlgMsg: String; AList: TStringList): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -2678,31 +2677,6 @@ begin
     FListForm.CheckListBox1.Checked[i]:=True;
   end;
   Result:=FListForm.ShowModal=mrOK;
-end;
-
-function TLazSourceFileManager.ShowListedBuildModes(DlgMsg: String; AList: TStringList): Boolean;
-var
-  i: Integer;
-begin
-  if Assigned(FListForm) then
-    FListForm.CheckListBox1.Clear
-  else begin
-    FListForm:=TGenericCheckListForm.Create(Nil);
-    FListForm.Caption:=lisAvailableProjectBuildModes;
-    FListForm.InfoLabel.Caption:=DlgMsg;
-  end;
-  // Fill the CheckListBox with items from AList
-  for i:=0 to AList.Count-1 do begin
-    FListForm.CheckListBox1.Items.Add(AList[i]);
-    FListForm.CheckListBox1.Checked[i]:=True;
-  end;
-  Result:=FListForm.ShowModal=mrOK;
-  AList.Clear;
-  // Copy only checked items back to AList
-  if Result then
-    for i := 0 to FListForm.CheckListBox1.Count-1 do
-      if FListForm.CheckListBox1.Checked[i] then
-        AList.Add(FListForm.CheckListBox1.Items[i]);
 end;
 
 function TLazSourceFileManager.AddPathToBuildModes(aPath, CurDirectory: string;
