@@ -1141,7 +1141,6 @@ type
     procedure OnWordCompletionGetSource(var Source: TStrings; SourceIndex: integer);
     procedure OnSourceCompletionTimer(Sender: TObject);
     // marks
-    function OnSourceMarksGetFilename(ASourceEditor: TObject): string;
     procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TMarksAction);
     {$IFDEF EnableNewExtTools}
     procedure OnSourceMarksGetSynEdit(Sender: TObject; aFilename: string;
@@ -10394,14 +10393,6 @@ begin
   end;
 end;
 
-function TSourceEditorManager.OnSourceMarksGetFilename(ASourceEditor: TObject
-  ): string;
-begin
-  if (ASourceEditor = nil) or (not (ASourceEditor is TSourceEditor)) then
-    RaiseException('TSourceNotebook.OnSourceMarksGetFilename');
-  Result := TSourceEditor(ASourceEditor).Filename;
-end;
-
 procedure TSourceEditorManager.OnSourceMarksAction(AMark: TSourceMark;
   AAction: TMarksAction);
 var
@@ -10478,7 +10469,6 @@ begin
 
   // marks
   SourceEditorMarks:=TSourceMarks.Create(Self);
-  SourceEditorMarks.OnGetFilename:=@OnSourceMarksGetFilename;
   SourceEditorMarks.OnAction:=@OnSourceMarksAction;
   {$IFDEF EnableNewExtTools}
   SourceEditorMarks.ExtToolsMarks.OnGetSynEditOfFile:=@OnSourceMarksGetSynEdit;
@@ -10513,7 +10503,6 @@ end;
 
 destructor TSourceEditorManager.Destroy;
 begin
-  SourceEditorMarks.OnGetFilename := nil;
   SourceEditorMarks.OnAction := nil;
   Application.RemoveAllHandlersOfObject(Self);
   // aWordCompletion is released in InternalFinal

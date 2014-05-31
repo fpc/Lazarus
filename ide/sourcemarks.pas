@@ -201,7 +201,6 @@ type
     fInvalidDisabledBreakPointImg: Integer;
     fItems: TList;// list of TSourceMark
     fMultiBreakPointImg: Integer;
-    FOnGetFilename: TGetFilenameEvent;
     FOnAction: TMarksActionEvent;
     fSortedItems: TAVLTree;// tree of TSourceMark
     fUnknownBreakPointImg: Integer;
@@ -219,7 +218,6 @@ type
     function AddCustomMark(TheOwner: TSourceEditorBase; Data: TObject;
                            MarkClass: TSourceMarkClass): TSourceMark;
     function AddImage(const ResName: string): integer;
-    function GetFilename(AMark: TSourceMark): string;
     procedure Clear;
     procedure Delete(Index: integer);
     procedure Remove(AMark: TSourceMark);
@@ -234,8 +232,6 @@ type
   public
     property ImgList: TImageList read FImgList write FImgList;
     property Items[Index: integer]: TSourceMark read GetItems; default;
-    property OnGetFilename: TGetFilenameEvent read FOnGetFilename
-                                              write FOnGetFilename;
     property OnAction: TMarksActionEvent read FOnAction write FOnAction;
     {$IFDEF EnableNewExtTools}
     property ExtToolsMarks: TETMarks read FExtToolsMarks;
@@ -458,9 +454,7 @@ end;
 
 function TSourceMark.GetFilename: string;
 begin
-  Result:='';
-  if FSourceMarks=nil then exit;
-  Result:=FSourceMarks.GetFilename(Self);
+  Result:=FSourceEditorID.Filename;
 end;
 
 function TSourceMark.GetHint: string;
@@ -825,14 +819,6 @@ end;
 function TSourceMarks.AddImage(const ResName: string): integer;
 begin
   Result := ImgList.AddResourceName(HInstance, Resname);
-end;
-
-function TSourceMarks.GetFilename(AMark: TSourceMark): string;
-begin
-  Result:='';
-  if (AMark=nil) or (not Assigned(OnGetFilename)) then exit;
-  if AMark.SourceEditor=nil then exit;
-  Result:=OnGetFilename(AMark.SourceEditor);
 end;
 
 initialization
