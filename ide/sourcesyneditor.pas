@@ -46,14 +46,21 @@ uses
   {$IFDEF WinIME}
   LazSynIMM,
   {$ENDIF}
-  Classes, SysUtils, Controls, LCLProc, LCLType, Graphics, Menus, LazarusIDEStrConsts,
+  Classes, SysUtils,
+  // LCL
+  Controls, LCLProc, LCLType, Graphics, Menus,
+  // synedit
   SynEdit, SynEditMiscClasses, SynGutter, SynGutterBase, SynEditMarks, SynEditTypes,
   SynGutterLineNumber, SynGutterCodeFolding, SynGutterMarks, SynGutterChanges,
   SynGutterLineOverview, SynEditMarkup, SynEditMarkupGutterMark, SynEditMarkupSpecialLine,
   SynEditTextBuffer, SynEditFoldedView, SynTextDrawer, SynEditTextBase, LazSynEditText,
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea, SynEditHighlighter,
   SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMarkupHighAll, SynEditKeyCmds,
-  SynEditMarkupIfDef, SynEditMiscProcs;
+  SynEditMarkupIfDef, SynEditMiscProcs,
+  {$IFDEF EnableNewExtTools}
+  etSrcEditMarks,
+  {$ENDIF}
+  LazarusIDEStrConsts;
 
 type
 
@@ -2005,10 +2012,19 @@ procedure TIDESynGutterLOvProviderIDEMarks.AdjustColorForMark(AMark: TSynEditMar
   var AColor: TColor; var APriority: Integer);
 var
   i: Integer;
+  {$IFDEF EnableNewExtTools}
+  ETMark: TETMark;
+  {$ENDIF}
 begin
-  inc(APriority, 1);
-  if not AMark.IsBookmark then begin
-    //if (AMark.ImageList = SourceEditorMarks.ImgList) then begin
+  {$IFDEF EnableNewExtTools}
+  if (AMark is TETMark) then begin
+    ETMark:=TETMark(AMark);
+    AColor:=ETMark.SourceMarks.MarkStyles[ETMark.Urgency].Color;
+  end else begin
+  {$ENDIF}
+    inc(APriority, 1);
+    if not AMark.IsBookmark then begin
+      //if (AMark.ImageList = SourceEditorMarks.ImgList) then begin
       i := AMark.ImageIndex;
       if (i = SourceEditorMarks.CurrentLineImg) or
          (i = SourceEditorMarks.CurrentLineBreakPointImg) or
@@ -2030,11 +2046,9 @@ begin
         inc(APriority, 1);
       end;
     end;
-  //  else begin
-  //    AColor := TColor(FRGBBreakColor);
-  //    inc(APriority);
-  //  end;
-  //end;
+  {$IFDEF EnableNewExtTools}
+  end;
+  {$ENDIF}
   inherited AdjustColorForMark(AMark, AColor, APriority);
 end;
 

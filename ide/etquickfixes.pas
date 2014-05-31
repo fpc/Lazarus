@@ -45,6 +45,8 @@ unit etQuickFixes;
 
 {$mode objfpc}{$H+}
 
+{$IFNDEF EnableNewExtTools}{$Error Wrong}{$ENDIF}
+
 interface
 
 uses

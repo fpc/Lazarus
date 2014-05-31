@@ -27,6 +27,10 @@ unit etSrcEditMarks;
 
 {$mode objfpc}{$H+}
 
+{$IFNDEF EnableNewExtTools}{$Error Wrong}{$ENDIF}
+
+{$DEFINE VerboseETSrcChange}
+
 interface
 
 uses
@@ -102,14 +106,10 @@ type
     property Priority: integer read FPriority write FPriority;
   end;
 
-  { TExtToolSynGutterMarkProvider }
+var
+  ExtToolsMarks: TETMarks = nil;
 
-  TExtToolSynGutterMarkProvider = class(TSynGutterLOvProviderBookmarks)
-  protected
-    procedure AdjustColorForMark(AMark: TSynEditMark; var AColor: TColor;
-      var APriority: Integer); override;
-  end;
-
+type
   TETSrcChangeAction = (
     etscaInsert,
     etscaDelete
@@ -128,20 +128,29 @@ type
     function AsString: string;
   end;
 
-  { TETSrcChanges - edits of single file}
+  TETMultiSrcChanges = class;
 
-  TETSrcChanges = class
+  { TETSingleSrcChanges - edits of single file}
+
+  TETSingleSrcChanges = class
   private
     FFilename: string;
     FFirst: TETSrcChange;
     FLast: TETSrcChange;
+    fInPendingTree: boolean;
+    FMultiSrcChanges: TETMultiSrcChanges;
     procedure Append(Change: TETSrcChange);
     procedure Remove(Change: TETSrcChange);
     procedure SetFilename(AValue: string);
+    procedure SetMultiSrcChanges(AValue: TETMultiSrcChanges);
+    procedure SetInPendingTree(AValue: boolean);
+  protected
+    property InPendingTree: boolean read FInPendingTree write SetInPendingTree;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    property MultiSrcChanges: TETMultiSrcChanges read FMultiSrcChanges write SetMultiSrcChanges;
     property First: TETSrcChange read FFirst;
     property Last: TETSrcChange read FLast;
     property Filename: string read FFilename write SetFilename;
@@ -150,46 +159,57 @@ type
     function Add(Action: TETSrcChangeAction; FromPosY, FromPosX, ToPosY, ToPosX: integer): TETSrcChange;
     function AdaptCaret(var Line,Col: integer;
       LeftBound: boolean // true = position is bound to character on the left
-                 ): boolean; // true if changed
+      ): boolean; // true if changed
     procedure ConsistencyCheck;
     procedure WriteDebugReport(Title: string);
   end;
 
   { TETMultiSrcChanges - edits of all files }
 
-  TETMultiSrcChanges = class
+  TETMultiSrcChanges = class(TComponent)
   private
-    fAllChanges: TAvgLvlTree; // tree of TETSrcChanges sorted for Filename
-  public
-    constructor Create;
-    destructor Destroy; override;
-    function Count: integer; inline;
-    procedure Clear;
-    function GetChanges(const aFilename: string; CreateIfNotExists: boolean): TETSrcChanges;
-    function AdaptCaret(const aFilename: string; var Line,Col: integer;
-      LeftBound: boolean // true = position is bound to character on the left
-                 ): boolean;
-    property AllChanges: TAvgLvlTree read fAllChanges; // tree of TETSrcChanges sorted for Filename
-  end;
-
-  { TETSynPlugin - create one per file, not one per synedit }
-
-  TETSynPlugin = class(TLazSynEditPlugin)
-  private
-    FChanges: TETSrcChanges;
-    FOnChanged: TNotifyEvent;
+    fAllChanges: TAvgLvlTree; // tree of TETSingleSrcChanges sorted for Filename
+    FAutoSync: boolean;
+    fPendingChanges: TAvgLvlTree; // tree of TETSingleSrcChanges sorted for Filename
+    FOnSync: TNotifyEvent;
     FSyncQueued: boolean;
     procedure SetSyncQueued(AValue: boolean);
   protected
     procedure DoSync({%H-}Data: PtrInt); // called by Application.QueueAsyncCall
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    function Count: integer; inline;
+    procedure Clear;
+    function GetChanges(const aFilename: string; CreateIfNotExists: boolean): TETSingleSrcChanges;
+    function AdaptCaret(const aFilename: string; var Line,Col: integer;
+      LeftBound: boolean // true = position is bound to character on the left
+                 ): boolean;
+    property AllChanges: TAvgLvlTree read fAllChanges; // tree of TETSingleSrcChanges sorted for Filename
+    property PendingChanges: TAvgLvlTree read fPendingChanges; // tree of TETSingleSrcChanges sorted for Filename
+    property SyncQueued: boolean read FSyncQueued write SetSyncQueued;
+    property OnSync: TNotifyEvent read FOnSync write FOnSync; // called by Application.QueueAsyncCall
+    property AutoSync: boolean read FAutoSync write FAutoSync; // true = call OnSync via Application.QueueAsyncCall
+  end;
+
+  { TETSynPlugin - create one per file, not one per synedit }
+
+  TIsEnabledEvent = function(Sender: TObject): boolean of object;
+
+  TETSynPlugin = class(TLazSynEditPlugin)
+  private
+    FChanges: TETSingleSrcChanges;
+    FEnabled: boolean;
+    FOnIsEnabled: TIsEnabledEvent;
+  protected
     procedure OnLineEdit(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
       aLineBrkCnt: Integer; {%H-}aText: String);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Changes: TETSrcChanges read FChanges;
-    property SyncQueued: boolean read FSyncQueued write SetSyncQueued;
-    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged; // called by Application.QueueAsyncCall
+    property Changes: TETSingleSrcChanges read FChanges write FChanges;
+    property Enabled: boolean read FEnabled write FEnabled;
+    property OnIsEnabled: TIsEnabledEvent read FOnIsEnabled write FOnIsEnabled;
   end;
 
 function IsCaretInFront(Line1, Col1, Line2, Col2: integer): boolean; inline; overload;
@@ -332,8 +352,8 @@ end;
 
 function CompareETSrcChangesFilenames(Changes1, Changes2: Pointer): integer;
 var
-  SrcChanges1: TETSrcChanges absolute Changes1;
-  SrcChanges2: TETSrcChanges absolute Changes2;
+  SrcChanges1: TETSingleSrcChanges absolute Changes1;
+  SrcChanges2: TETSingleSrcChanges absolute Changes2;
 begin
   Result:=CompareFilenames(SrcChanges1.Filename,SrcChanges2.Filename);
 end;
@@ -341,7 +361,7 @@ end;
 function CompareFilenameAndETSrcChanges(aFilenameStr, Changes: Pointer
   ): integer;
 var
-  SrcChanges: TETSrcChanges absolute Changes;
+  SrcChanges: TETSingleSrcChanges absolute Changes;
 begin
   Result:=CompareFilenames(AnsiString(aFilenameStr),SrcChanges.Filename);
 end;
@@ -408,7 +428,7 @@ end;
 
 procedure Test_MergeTETSrcChanges;
 var
-  Changes: TETSrcChanges;
+  Changes: TETSingleSrcChanges;
 
   procedure Check(Title: string; aChanges: array of TETSrcChange);
 
@@ -448,7 +468,7 @@ var
   end;
 
 begin
-  Changes:=TETSrcChanges.Create;
+  Changes:=TETSingleSrcChanges.Create;
   try
     Changes.ConsistencyCheck;
 
@@ -542,41 +562,81 @@ end;
 
 { TETMultiSrcChanges }
 
-constructor TETMultiSrcChanges.Create;
-begin
-  fAllChanges:=TAvgLvlTree.Create(@CompareETSrcChangesFilenames);
-end;
-
-destructor TETMultiSrcChanges.Destroy;
-begin
-  Clear;
-  FreeAndNil(fAllChanges);
-  inherited Destroy;
-end;
-
 // inline
 function TETMultiSrcChanges.Count: integer;
 begin
   Result:=fAllChanges.Count;
 end;
 
+procedure TETMultiSrcChanges.SetSyncQueued(AValue: boolean);
+begin
+  //debugln(['TETMultiSrcChanges.SetSyncQueued ',AValue]);
+  if csDesigning in ComponentState then
+    AValue:=false;
+  if FSyncQueued=AValue then Exit;
+  FSyncQueued:=AValue;
+  if SyncQueued then
+    Application.QueueAsyncCall(@DoSync,0)
+  else
+    Application.RemoveAsyncCalls(Self);
+end;
+
+procedure TETMultiSrcChanges.DoSync(Data: PtrInt);
+var
+  Node: TAvgLvlTreeNode;
+  NextNode: TAvgLvlTreeNode;
+begin
+  //debugln(['TETMultiSrcChanges.DoSync Files=',fPendingChanges.Count]);
+  FSyncQueued:=false;
+  if fPendingChanges.Count=0 then exit;
+  if Assigned(OnSync) then
+    OnSync(Self);
+  // clear pending
+  Node:=fPendingChanges.FindLowest;
+  while Node<>nil do begin
+    NextNode:=Node.Successor;
+    TETSingleSrcChanges(Node.Data).Clear; // this removes Node from fPendingChanges
+    Node:=NextNode;
+  end;
+  fPendingChanges.Clear;
+  //debugln(['TETMultiSrcChanges.DoSync END FSyncQueued=',FSyncQueued,' fPendingChanges=',fPendingChanges.Count]);
+end;
+
+constructor TETMultiSrcChanges.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  fAllChanges:=TAvgLvlTree.Create(@CompareETSrcChangesFilenames);
+  fPendingChanges:=TAvgLvlTree.Create(@CompareETSrcChangesFilenames);
+end;
+
+destructor TETMultiSrcChanges.Destroy;
+begin
+  SyncQueued:=false;
+  Clear;
+  FreeAndNil(fPendingChanges);
+  FreeAndNil(fAllChanges);
+  inherited Destroy;
+end;
+
 procedure TETMultiSrcChanges.Clear;
 begin
+  SyncQueued:=false;
+  fPendingChanges.Clear;
   fAllChanges.FreeAndClear;
 end;
 
 function TETMultiSrcChanges.GetChanges(const aFilename: string;
-  CreateIfNotExists: boolean): TETSrcChanges;
+  CreateIfNotExists: boolean): TETSingleSrcChanges;
 var
   Node: TAvgLvlTreeNode;
 begin
   Node:=fAllChanges.FindKey(Pointer(aFilename),@CompareFilenameAndETSrcChanges);
   if Node<>nil then
-    Result:=TETSrcChanges(Node.Data)
+    Result:=TETSingleSrcChanges(Node.Data)
   else if CreateIfNotExists then begin
-    Result:=TETSrcChanges.Create;
+    Result:=TETSingleSrcChanges.Create;
     Result.Filename:=aFilename;
-    fAllChanges.Add(Result);
+    Result.MultiSrcChanges:=Self;
   end else
     Result:=nil;
 end;
@@ -584,7 +644,7 @@ end;
 function TETMultiSrcChanges.AdaptCaret(const aFilename: string; var Line,
   Col: integer; LeftBound: boolean): boolean;
 var
-  Changes: TETSrcChanges;
+  Changes: TETSingleSrcChanges;
 begin
   Changes:=GetChanges(aFilename,false);
   if Changes=nil then
@@ -623,12 +683,26 @@ begin
   Result+='-To='+IntToStr(ToPos.Y)+','+IntToStr(ToPos.X);
 end;
 
-{ TETSrcChanges }
+{ TETSingleSrcChanges }
 
-procedure TETSrcChanges.Append(Change: TETSrcChange);
+procedure TETSingleSrcChanges.SetInPendingTree(AValue: boolean);
+begin
+  if FMultiSrcChanges=nil then AValue:=false;
+  if FInPendingTree=AValue then Exit;
+  FInPendingTree:=AValue;
+  if fInPendingTree then begin
+    FMultiSrcChanges.fPendingChanges.Add(Self);
+    if FMultiSrcChanges.AutoSync then
+      FMultiSrcChanges.SyncQueued:=true;
+  end else
+    FMultiSrcChanges.fPendingChanges.Remove(Self);
+end;
+
+procedure TETSingleSrcChanges.Append(Change: TETSrcChange);
 begin
   if First=nil then begin
     FFirst:=Change;
+    InPendingTree:=true;
   end else begin
     FLast.Next:=Change;
     Change.Prev:=Last;
@@ -636,10 +710,13 @@ begin
   fLast:=Change;
 end;
 
-procedure TETSrcChanges.Remove(Change: TETSrcChange);
+procedure TETSingleSrcChanges.Remove(Change: TETSrcChange);
 begin
-  if First=Change then
+  if First=Change then begin
     FFirst:=Change.Next;
+    if FFirst=nil then
+      InPendingTree:=false;
+  end;
   if Last=Change then
     fLast:=Change.Prev;
   if Change.Prev<>nil then
@@ -650,28 +727,53 @@ begin
   Change.Next:=nil;
 end;
 
-procedure TETSrcChanges.SetFilename(AValue: string);
+procedure TETSingleSrcChanges.SetFilename(AValue: string);
 var
   HasChanged: Boolean;
 begin
   if FFilename=AValue then Exit;
   HasChanged:=CompareFilenames(FFilename,AValue)<>0;
+  if HasChanged then begin
+    if FMultiSrcChanges<>nil then
+      raise Exception.Create('TETSingleSrcChanges.SetFilename');
+  end;
   FFilename:=AValue;
   if HasChanged then
     Clear;
 end;
 
-constructor TETSrcChanges.Create;
+procedure TETSingleSrcChanges.SetMultiSrcChanges(AValue: TETMultiSrcChanges);
+begin
+  if FMultiSrcChanges=AValue then Exit;
+  if Filename='' then
+    raise Exception.Create('TETSingleSrcChanges.SetMultiSrcChanges empty filename');
+  if (FMultiSrcChanges<>nil) then begin
+    if (csDestroying in FMultiSrcChanges.ComponentState) then begin
+      fInPendingTree:=false;
+    end else begin
+      InPendingTree:=false;
+      FMultiSrcChanges.fAllChanges.Remove(Self);
+    end;
+  end;
+  FMultiSrcChanges:=AValue;
+  if FMultiSrcChanges<>nil then begin
+    FMultiSrcChanges.fAllChanges.Add(Self);
+    InPendingTree:=First<>nil;
+  end;
+end;
+
+constructor TETSingleSrcChanges.Create;
 begin
 end;
 
-destructor TETSrcChanges.Destroy;
+destructor TETSingleSrcChanges.Destroy;
 begin
+  MultiSrcChanges:=nil;
   Clear;
   inherited Destroy;
 end;
 
-procedure TETSrcChanges.Clear;
+procedure TETSingleSrcChanges.Clear;
 var
   Item: TETSrcChange;
   CurItem: TETSrcChange;
@@ -684,9 +786,10 @@ begin
   end;
   fFirst:=nil;
   FLast:=nil;
+  InPendingTree:=false;
 end;
 
-procedure TETSrcChanges.GetRange(out MinY, MaxY, LineDiffBehindMaxY: integer);
+procedure TETSingleSrcChanges.GetRange(out MinY, MaxY, LineDiffBehindMaxY: integer);
 // true if there are changes
 // All changes were done between lines MinY and MaxY (inclusive).
 // Lines behind MaxY are moved by LineDiffBehindMaxY.
@@ -718,16 +821,16 @@ begin
 end;
 
 // inline
-function TETSrcChanges.Add(Action: TETSrcChangeAction; const FromPos,
+function TETSingleSrcChanges.Add(Action: TETSrcChangeAction; const FromPos,
   ToPos: TPoint): TETSrcChange;
 begin
   Result:=Add(Action,FromPos.Y,FromPos.X,ToPos.Y,ToPos.X);
 end;
 
-function TETSrcChanges.Add(Action: TETSrcChangeAction; FromPosY, FromPosX,
+function TETSingleSrcChanges.Add(Action: TETSrcChangeAction; FromPosY, FromPosX,
   ToPosY, ToPosX: integer): TETSrcChange;
 
-  procedure RaiseFromBehindToPos;
+  procedure RaiseFromPosBehindToPos;
   begin
     raise Exception.CreateFmt('TETSrcChanges.Add FromPos=%s,%s behind ToPos=%s,%s',[FromPosY,FromPosX,ToPosY,ToPosX]);
   end;
@@ -738,6 +841,7 @@ function TETSrcChanges.Add(Action: TETSrcChangeAction; FromPosY, FromPosX,
       exit(false);
     // check if addition can be merged
     if Action=etscaInsert then begin
+      // Insertion
       if (Prev.ToPos.Y=Cur.FromPos.Y) and (Prev.ToPos.X=Cur.FromPos.X) then begin
         // Cur is an insert exactly behind Prev insert -> append insert
         Prev.ToPos.Y:=Cur.ToPos.Y;
@@ -757,6 +861,7 @@ function TETSrcChanges.Add(Action: TETSrcChangeAction; FromPosY, FromPosX,
       end;
       // ToDo: insert exactly in front
     end else begin
+      // Deletion
       if IsCaretInFrontOrSame(Cur.FromPos,Prev.FromPos)
       and IsCaretInFrontOrSame(Prev.FromPos,Cur.ToPos) then begin
         // Cur delete extends Prev delete => combine delete
@@ -783,7 +888,7 @@ begin
 
   // consistency check
   if IsCaretInFront(ToPosY,ToPosX,FromPosY,FromPosX) then
-    RaiseFromBehindToPos;
+    RaiseFromPosBehindToPos;
 
   Result:=TETSrcChange.Create(Action, FromPosY, FromPosX, ToPosY, ToPosX);
 
@@ -799,7 +904,7 @@ begin
   end;
 end;
 
-function TETSrcChanges.AdaptCaret(var Line, Col: integer; LeftBound: boolean
+function TETSingleSrcChanges.AdaptCaret(var Line, Col: integer; LeftBound: boolean
   ): boolean;
 var
   Change: TETSrcChange;
@@ -817,7 +922,7 @@ begin
   Result:=(Line<>OldLine) or (Col<>OldCol);
 end;
 
-procedure TETSrcChanges.ConsistencyCheck;
+procedure TETSingleSrcChanges.ConsistencyCheck;
 
   procedure E(Msg: string);
   begin
@@ -827,6 +932,7 @@ procedure TETSrcChanges.ConsistencyCheck;
 var
   Change: TETSrcChange;
   List: TFPList;
+  ReallyInPendingTree: Boolean;
 begin
   if (First=nil)<>(Last=nil) then
     E('(First=nil)<>(Last=nil)');
@@ -853,9 +959,19 @@ begin
   finally
     List.Free;
   end;
+  if MultiSrcChanges<>nil then begin
+    if MultiSrcChanges.fAllChanges.Find(Self)=nil then
+      E('MultiSrcChanges.fAllChanges.Find(Self)=nil');
+    ReallyInPendingTree:=MultiSrcChanges.fPendingChanges.Find(Self)<>nil;
+    if InPendingTree<>ReallyInPendingTree then
+      E('InPendingTree<>ReallyInPendingTree');
+  end else begin
+    if InPendingTree then
+      E('MultiSrcChanges=nil InPendingTree=true');
+  end;
 end;
 
-procedure TETSrcChanges.WriteDebugReport(Title: string);
+procedure TETSingleSrcChanges.WriteDebugReport(Title: string);
 var
   Change: TETSrcChange;
 begin
@@ -868,25 +984,6 @@ begin
 end;
 
 { TETSynPlugin }
-
-procedure TETSynPlugin.DoSync(Data: PtrInt);
-begin
-  FSyncQueued:=false;
-  if FChanges.First=nil then exit;
-  if Assigned(OnChanged) then
-    OnChanged(Self);
-  FChanges.Clear;
-end;
-
-procedure TETSynPlugin.SetSyncQueued(AValue: boolean);
-begin
-  if FSyncQueued=AValue then Exit;
-  FSyncQueued:=AValue;
-  if SyncQueued then
-    Application.QueueAsyncCall(@DoSync,0)
-  else
-    Application.RemoveAsyncCalls(Self);
-end;
 
 procedure TETSynPlugin.OnLineEdit(Sender: TSynEditStrings; aLinePos, aBytePos,
   aCount, aLineBrkCnt: Integer; aText: String);
@@ -906,6 +1003,10 @@ procedure TETSynPlugin.OnLineEdit(Sender: TSynEditStrings; aLinePos, aBytePos,
       LinePos=290 BytePos=1 Count=-69 LineBrkCnt=0 Text=""
 }
 begin
+  if not Enabled then exit;
+  if Changes=nil then exit;
+  if Assigned(OnIsEnabled) and not OnIsEnabled(Self) then exit;
+
   {$IFDEF VerboseETSrcChange}
   debugln(['TETSynPlugin.OnLineEdit LinePos=',aLinePos,' BytePos=',aBytePos,' Count=',aCount,' LineBrkCnt=',aLineBrkCnt,' Text="',dbgstr(aText),'"']);
   {$ENDIF}
@@ -922,24 +1023,20 @@ begin
   end else if aLineBrkCnt<0 then begin
     // delete line breaks / empty lines
     FChanges.Add(etscaDelete,aLinePos,aBytePos,aLinePos-aLineBrkCnt,1);
-  end else
-    exit;
-  SyncQueued:=true;
+  end;
 end;
 
 constructor TETSynPlugin.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FChanges:=TETSrcChanges.Create;
   ViewedTextBuffer.AddEditHandler(@OnLineEdit);
+  FEnabled:=true;
 end;
 
 destructor TETSynPlugin.Destroy;
 begin
-  SyncQueued:=false;
   ViewedTextBuffer.RemoveEditHandler(@OnLineEdit);
   inherited Destroy;
-  FreeAndNil(FChanges);
 end;
 
 { TETMark }
@@ -964,6 +1061,8 @@ var
   u: TMessageLineUrgency;
 begin
   inherited Create(AOwner);
+  if ExtToolsMarks=nil then
+    ExtToolsMarks:=Self;
   for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
     fMarkStyles[u]:=TETMarkStyle.Create(u,clNone);
   fMarkStyles[mluHint].Color:=clGreen;
@@ -978,6 +1077,8 @@ destructor TETMarks.Destroy;
 var
   u: TMessageLineUrgency;
 begin
+  if ExtToolsMarks=Self then
+    ExtToolsMarks:=nil;
   for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
     FreeAndNil(fMarkStyles[u]);
   inherited Destroy;
@@ -1045,21 +1146,6 @@ destructor TETMarkStyle.Destroy;
 begin
   FreeAndNil(FSourceMarkup);
   inherited Destroy;
-end;
-
-{ TExtToolSynGutterMarkProvider }
-
-procedure TExtToolSynGutterMarkProvider.AdjustColorForMark(AMark: TSynEditMark;
-  var AColor: TColor; var APriority: Integer);
-var
-  ETMark: TETMark;
-begin
-  //DebugLn(['TExtToolSynGutterMarkProvider.AdjustColorForMark Line=',AMark.Line,' Color=',AMark.Column]);
-  if (AMark is TETMark) then begin
-    ETMark:=TETMark(AMark);
-    AColor:=ETMark.SourceMarks.MarkStyles[ETMark.Urgency].Color;
-  end else
-    inherited AdjustColorForMark(AMark, AColor, APriority);
 end;
 
 { TLMsgViewLine }

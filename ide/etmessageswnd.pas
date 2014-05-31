@@ -27,6 +27,8 @@ unit etMessagesWnd;
 
 {$mode objfpc}{$H+}
 
+{$IFNDEF EnableNewExtTools}{$Error Wrong}{$ENDIF}
+
 interface
 
 uses
@@ -51,7 +53,6 @@ type
   protected
     function GetViews(Index: integer): TExtToolView; override;
   public
-    SourceMarks: TETMarks;
     procedure ClearCustomMessages(const ViewCaption: string='');
     function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
       aSrcFilename: string=''; LineNumber: integer=0; Column: integer=0;
@@ -85,42 +86,10 @@ implementation
 { TMessagesView }
 
 procedure TMessagesView.FormCreate(Sender: TObject);
-var
-  ImgIDInfo: Integer;
-  ImgIDHint: Integer;
-  ImgIDNote: Integer;
-  ImgIDWarning: Integer;
-  ImgIDError: Integer;
-  ImgIDFatal: Integer;
 begin
   IDEMessagesWindow:=Self;
   Caption:='Messages';
 
-  SourceMarks:=TETMarks.Create(Self);
-  ImgIDInfo:=IDEImages.LoadImage(12, 'state12x12_information');
-  ImgIDHint:=IDEImages.LoadImage(12, 'state12x12_hint');
-  ImgIDNote:=IDEImages.LoadImage(12, 'state12x12_note');
-  ImgIDWarning:=IDEImages.LoadImage(12, 'state12x12_warning');
-  ImgIDError:=IDEImages.LoadImage(12, 'state12x12_error');
-  ImgIDFatal:=IDEImages.LoadImage(12, 'state12x12_fatal');
-  with SourceMarks do begin
-    ImageList:=IDEImages.Images_12;
-    //OnGetSynEditOfFile:=@SourceMarksGetSynEditOfFile;
-    MarkStyles[mluNone].ImageIndex:=-1;
-    MarkStyles[mluProgress].ImageIndex:=-1;
-    MarkStyles[mluDebug].ImageIndex:= ImgIDInfo;
-    MarkStyles[mluVerbose3].ImageIndex:=ImgIDInfo;
-    MarkStyles[mluVerbose2].ImageIndex:=ImgIDInfo;
-    MarkStyles[mluVerbose].ImageIndex:=ImgIDInfo;
-    MarkStyles[mluHint].ImageIndex:=ImgIDHint;
-    MarkStyles[mluNote].ImageIndex:=ImgIDNote;
-    MarkStyles[mluWarning].ImageIndex:=ImgIDWarning;
-    MarkStyles[mluImportant].ImageIndex:=-1;
-    MarkStyles[mluError].ImageIndex:=ImgIDError;
-    MarkStyles[mluFatal].ImageIndex:=ImgIDFatal;
-    MarkStyles[mluPanic].ImageIndex:=ImgIDFatal;
-  end;
-  MessagesFrame1.MessagesCtrl.SourceMarks:=SourceMarks;
   MessagesFrame1.MessagesCtrl.OnOpenMessage:=@OnOpenMessage;
 
   ActiveControl:=MessagesFrame1.MessagesCtrl;

@@ -27,6 +27,8 @@ unit etMessageFrame;
 
 {$mode objfpc}{$H+}
 
+{$IFNDEF EnableNewExtTools}{$Error Wrong}{$ENDIF}
+
 {$I ide.inc}
 
 interface
@@ -142,7 +144,7 @@ type
     function HasContent: boolean;
     function GetShownLineCount(WithHeader, WithProgressLine: boolean): integer;
     procedure RebuildLines; // (main thread)
-    function ApplySrcChanges(Changes: TETSrcChanges): boolean; // true if something changed
+    function ApplySrcChanges(Changes: TETSingleSrcChanges): boolean; // true if something changed
     property ToolState: TLMVToolState read FToolState write SetToolState;
   public
     // requires Enter/LeaveCriticalSection, write only via main thread
@@ -350,7 +352,7 @@ type
     // file
     function OpenSelection: boolean;
     procedure CreateMarksForFile(aSynEdit: TSynEdit; aFilename: string; DeleteOld: boolean);
-    function ApplySrcChanges(Changes: TETSrcChanges): boolean; // true if something changed
+    function ApplySrcChanges(Changes: TETSingleSrcChanges): boolean; // true if something changed
   public
     // properties
     property AutoHeaderBackground: TColor read FAutoHeaderBackground write SetAutoHeaderBackground default MsgWndDefAutoHeaderBackground;
@@ -409,6 +411,7 @@ type
     procedure SearchNextSpeedButtonClick(Sender: TObject);
     procedure SearchPrevSpeedButtonClick(Sender: TObject);
     procedure ShowIDMenuItemClick(Sender: TObject);
+    procedure SrcEditLinesChanged(Sender: TObject);
     procedure TranslateMenuItemClick(Sender: TObject);
     procedure UnhideMsgTypeClick(Sender: TObject);
   private
@@ -440,7 +443,8 @@ type
     // source marks
     procedure CreateMarksForFile(aSynEdit: TSynEdit; aFilename: string;
       DeleteOld: boolean);
-    procedure ApplySrcChanges(Changes: TETSrcChanges);
+    procedure ApplySrcChanges(Changes: TETSingleSrcChanges);
+    procedure ApplyMultiSrcChanges(Changes: TETMultiSrcChanges);
 
     // message lines
     procedure SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
@@ -1097,7 +1101,7 @@ begin
   inherited Create(AOwner);
   Lines.OnMarksFixed:=@OnMarksFixed;
   FFilter:=TLMsgViewFilter.Create;
-  fPendingChanges:=TETMultiSrcChanges.Create;
+  fPendingChanges:=TETMultiSrcChanges.Create(nil);
 end;
 
 destructor TLMsgWndView.Destroy;
@@ -1189,9 +1193,9 @@ begin
   end;
 end;
 
-function TLMsgWndView.ApplySrcChanges(Changes: TETSrcChanges): boolean;
+function TLMsgWndView.ApplySrcChanges(Changes: TETSingleSrcChanges): boolean;
 
-  function ApplyChanges(CurChanges: TETSrcChanges;
+  function ApplyChanges(CurChanges: TETSingleSrcChanges;
     CurLines: TMessageLines): boolean;
   var
     FromY: integer;
@@ -1238,7 +1242,7 @@ function TLMsgWndView.ApplySrcChanges(Changes: TETSrcChanges): boolean;
   end;
 
 var
-  Queue: TETSrcChanges;
+  Queue: TETSingleSrcChanges;
   Change: TETSrcChange;
   Node: TAvgLvlTreeNode;
   aFilename: String;
@@ -1269,7 +1273,7 @@ begin
           // apply all pending changes to Tool.WorkerMessages
           Node:=PendingChanges.AllChanges.FindLowest;
           while Node<>nil do begin
-            ApplyChanges(TETSrcChanges(Node.Data),Tool.WorkerMessages);
+            ApplyChanges(TETSingleSrcChanges(Node.Data),Tool.WorkerMessages);
             Node:=Node.Successor;
           end;
           PendingChanges.Clear;
@@ -2951,11 +2955,12 @@ begin
   end;
 end;
 
-function TMessagesCtrl.ApplySrcChanges(Changes: TETSrcChanges): boolean;
+function TMessagesCtrl.ApplySrcChanges(Changes: TETSingleSrcChanges): boolean;
 var
   i: Integer;
 begin
   Result:=false;
+  //debugln(['TMessagesCtrl.ApplySrcChanges ViewCount=',ViewCount]);
   for i:=0 to ViewCount-1 do
     if Views[i].ApplySrcChanges(Changes) then
       Result:=true;
@@ -3258,6 +3263,13 @@ begin
     MessagesCtrl.Options:=MessagesCtrl.Options-[mcoShowMessageID]
   else
     MessagesCtrl.Options:=MessagesCtrl.Options+[mcoShowMessageID];
+end;
+
+procedure TMessagesFrame.SrcEditLinesChanged(Sender: TObject);
+begin
+  debugln(['TMessagesFrame.SrcEditLinesChanged ',DbgSName(Sender)]);
+  if Sender is TETSynPlugin then
+    ApplySrcChanges(TETSynPlugin(Sender).Changes);
 end;
 
 procedure TMessagesFrame.TranslateMenuItemClick(Sender: TObject);
@@ -3653,6 +3665,7 @@ begin
     Images:=IDEImages.Images_12;
     PopupMenu:=MsgCtrlPopupMenu;
   end;
+  MessagesCtrl.SourceMarks:=ExtToolsMarks;
 
   // search
   SearchPanel.Visible:=false; // by default the search is hidden
@@ -3714,9 +3727,17 @@ begin
   MessagesCtrl.CreateMarksForFile(aSynEdit,aFilename,DeleteOld);
 end;
 
-procedure TMessagesFrame.ApplySrcChanges(Changes: TETSrcChanges);
+procedure TMessagesFrame.ApplySrcChanges(Changes: TETSingleSrcChanges);
 begin
   MessagesCtrl.ApplySrcChanges(Changes);
+end;
+
+procedure TMessagesFrame.ApplyMultiSrcChanges(Changes: TETMultiSrcChanges);
+var
+  Node: TAvgLvlTreeNode;
+begin
+  for Node in Changes.PendingChanges do
+    ApplySrcChanges(TETSingleSrcChanges(Node.Data));
 end;
 
 procedure TMessagesFrame.SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
