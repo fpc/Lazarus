@@ -58,12 +58,15 @@ type
 
   TLazSourceFileManager = class
   private
+    FProject: TProject;
+    FListForm: TGenericCheckListForm;
     function AddPathToBuildModes(aPath, CurDirectory: string; IsIncludeFile: Boolean): Boolean;
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
     function FileExistsInIDE(const Filename: string;
-                             SearchFlags: TProjectFileSearchFlags): boolean;
-    function ShowCheckListBuildModes(DlgMsg: String; out
-      ListForm: TGenericCheckListForm): TModalResult;
+      SearchFlags: TProjectFileSearchFlags): boolean;
+    procedure RemovePathFromBuildModes(ObsoletePaths: String; pcos: TParsedCompilerOptString);
+    function ShowCheckListBuildModes(DlgMsg: String): Boolean;
+    function ShowListedBuildModes(DlgMsg: String; AList: TStringList): Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -2508,30 +2511,55 @@ begin
   PkgBoss.DoCloseAllPackageEditors;
 end;
 
-function TLazSourceFileManager.ShowCheckListBuildModes(DlgMsg: String;
-  out ListForm: TGenericCheckListForm): TModalResult;
+function TLazSourceFileManager.ShowCheckListBuildModes(DlgMsg: String): Boolean;
+var
+  i: Integer;
 begin
-  ListForm:=TGenericCheckListForm.Create(Nil);
+  FListForm:=TGenericCheckListForm.Create(Nil);
   //lisApplyForBuildModes = 'Apply for build modes:';
-  ListForm.Caption:=lisAvailableProjectBuildModes;
-  ListForm.InfoLabel.Caption:=DlgMsg;
+  FListForm.Caption:=lisAvailableProjectBuildModes;
+  FListForm.InfoLabel.Caption:=DlgMsg;
   for i:=0 to Project1.BuildModes.Count-1 do begin
-    ListForm.CheckListBox1.Items.Add(Project1.BuildModes[i].Identifier);
-    ListForm.CheckListBox1.Checked[i]:=True;
+    FListForm.CheckListBox1.Items.Add(Project1.BuildModes[i].Identifier);
+    FListForm.CheckListBox1.Checked[i]:=True;
   end;
-  Result:=ListForm.ShowModal=mrOK;
+  Result:=FListForm.ShowModal=mrOK;
+end;
+
+function TLazSourceFileManager.ShowListedBuildModes(DlgMsg: String; AList: TStringList): Boolean;
+var
+  i: Integer;
+begin
+  if Assigned(FListForm) then
+    FListForm.CheckListBox1.Clear
+  else begin
+    FListForm:=TGenericCheckListForm.Create(Nil);
+    FListForm.Caption:=lisAvailableProjectBuildModes;
+    FListForm.InfoLabel.Caption:=DlgMsg;
+  end;
+  // Fill the CheckListBox with items from AList
+  for i:=0 to AList.Count-1 do begin
+    FListForm.CheckListBox1.Items.Add(AList[i]);
+    FListForm.CheckListBox1.Checked[i]:=True;
+  end;
+  Result:=FListForm.ShowModal=mrOK;
+  AList.Clear;
+  // Copy only checked items back to AList
+  if Result then
+    for i := 0 to FListForm.CheckListBox1.Count-1 do
+      if FListForm.CheckListBox1.Checked[i] then
+        AList.Add(FListForm.CheckListBox1.Items[i]);
 end;
 
 function TLazSourceFileManager.AddPathToBuildModes(aPath, CurDirectory: string;
   IsIncludeFile: Boolean): Boolean;
 var
-  ListForm: TGenericCheckListForm;
   DlgCapt, DlgMsg: String;
   i: Integer;
   Ok: Boolean;
 begin
   Result:=True;
-  ListForm:=Nil;
+  FListForm:=Nil;
   try
     if IsIncludeFile then begin
       DlgCapt:=lisAddToIncludeSearchPath;
@@ -2543,19 +2571,19 @@ begin
     end;
     DlgMsg:=Format(DlgMsg,[LineEnding,CurDirectory]);
     if Project1.BuildModes.Count > 1 then
-      Ok:=ShowCheckListBuildModes(DlgMsg, ListForm)
+      Ok:=ShowCheckListBuildModes(DlgMsg)
     else
       Ok:=IDEMessageDialog(DlgCapt,DlgMsg,mtConfirmation,[mbYes,mbNo])=mrYes;
     if not Ok then Exit(False);
     for i:=0 to Project1.BuildModes.Count-1 do
-      if (ListForm=Nil) or ListForm.CheckListBox1.Checked[i] then
+      if (FListForm=Nil) or FListForm.CheckListBox1.Checked[i] then
         with Project1.BuildModes[i].CompilerOptions do
           if IsIncludeFile then
             IncludePath:=MergeSearchPaths(IncludePath,aPath)
           else
             OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,aPath);
   finally
-    ListForm.Free;
+    FListForm.Free;
   end;
 end;
 
@@ -5549,33 +5577,83 @@ begin
   //DebugLn(['TLazSourceFileManager.UnitComponentIsUsed ',AnUnitInfo.Filename,' ',dbgs(AnUnitInfo.Flags)]);
 end;
 
+procedure TLazSourceFileManager.RemovePathFromBuildModes(ObsoletePaths: String;
+  pcos: TParsedCompilerOptString);
+var
+  bm: TProjectBuildMode;
+  DlgCapt, DlgMsg: String;
+  ProjPaths, CurDir, ResolvedDir, PrevResolvedDir: String;
+  i, p, OldP: Integer;
+  QRes: TModalResult;
+begin
+  if pcos=pcosUnitPath then begin
+    DlgCapt:=lisRemoveUnitPath;
+    DlgMsg:=lisTheDirectoryContainsNoProjectUnitsAnyMoreRemoveThi;
+  end
+  else begin    // pcos=pcosIncludePath
+    DlgCapt:=lisRemoveIncludePath;
+    DlgMsg:=lisTheDirectoryContainsNoProjectIncludeFilesAnyMoreRe;
+  end;
+  QRes:=mrNone;
+  i:=0;
+  // Iterate all build modes until the user chooses to cancel.
+  while (i < FProject.BuildModes.Count) and (QRes in [mrNone,mrYes]) do begin
+    bm:=FProject.BuildModes[i];
+    p:=1;
+    repeat
+      OldP:=p;
+      if pcos=pcosUnitPath then
+        ProjPaths:=bm.CompilerOptions.OtherUnitFiles
+      else
+        ProjPaths:=bm.CompilerOptions.IncludePath;
+      CurDir:=GetNextDirectoryInSearchPath(ProjPaths,p);
+      if CurDir='' then break;
+
+      // Find build modes that have unneeded search paths
+      ResolvedDir:=bm.CompilerOptions.ParsedOpts.DoParseOption(CurDir,pcos,false);
+      if (ResolvedDir<>'')
+      and (SearchDirectoryInSearchPath(ObsoletePaths,ResolvedDir)>0) then begin
+        // Ask confirmation once for each path.
+        // In fact there should be only one path after one source file is removed.
+        if (QRes=mrNone) or ((PrevResolvedDir<>'') and (PrevResolvedDir<>ResolvedDir)) then
+          QRes:=IDEQuestionDialog(DlgCapt,Format(DlgMsg,[CurDir]),mtConfirmation,
+                                  [mrYes,lisRemove,mrNo,lisKeep2], '');
+        if QRes=mrYes then begin
+          // remove
+          if pcos=pcosUnitPath then
+            bm.CompilerOptions.OtherUnitFiles:=RemoveSearchPaths(ProjPaths,CurDir)
+          else
+            bm.CompilerOptions.IncludePath:=RemoveSearchPaths(ProjPaths,CurDir);
+          p:=OldP;
+        end;
+        PrevResolvedDir:=ResolvedDir;
+      end;
+    until false;
+    Inc(i);
+  end;
+end;
+
 function TLazSourceFileManager.RemoveFilesFromProject(AProject: TProject;
   UnitInfos: TFPList): TModalResult;
 var
-  i: Integer;
   AnUnitInfo: TUnitInfo;
-  ShortUnitName: String;
+  ShortUnitName, UnitPath: String;
+  ObsoleteUnitPaths, ObsoleteIncPaths: String;
+  i: Integer;
   Dummy: Boolean;
-  ObsoleteUnitPaths: String;
-  ObsoleteIncPaths: String;
-  p: Integer;
-  ProjUnitPaths: String;
-  CurDir: String;
-  ResolvedDir: String;
-  OldP: LongInt;
-  ProjIncPaths: String;
 begin
   Result:=mrOk;
   if UnitInfos=nil then exit;
   // check if something will change
   i:=UnitInfos.Count-1;
   while (i>=0) and (not TUnitInfo(UnitInfos[i]).IsPartOfProject) do dec(i);
-  if i<0 then exit(mrOk);
+  if i<0 then exit;
   // check ToolStatus
   if (MainIDE.ToolStatus in [itCodeTools,itCodeToolAborting]) then begin
     debugln('TLazSourceFileManager.RemoveUnitsFromProject wrong ToolStatus ',dbgs(ord(MainIDE.ToolStatus)));
     exit;
   end;
+  FProject := AProject;
   // commit changes from source editor to codetools
   SaveSourceEditorChangesToCodeCache(nil);
 
@@ -5587,12 +5665,12 @@ begin
       AnUnitInfo:=TUnitInfo(UnitInfos[i]);
       //debugln(['TLazSourceFileManager.RemoveUnitsFromProject Unit ',AnUnitInfo.Filename]);
       if not AnUnitInfo.IsPartOfProject then continue;
+      UnitPath:=ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename));
       AnUnitInfo.IsPartOfProject:=false;
       AProject.Modified:=true;
       if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
         if FilenameIsAbsolute(AnUnitInfo.Filename) then
-          ObsoleteUnitPaths:=MergeSearchPaths(ObsoleteUnitPaths,
-                          ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename)));
+          ObsoleteUnitPaths:=MergeSearchPaths(ObsoleteUnitPaths,UnitPath);
         // remove from project's unit section
         if (AProject.MainUnitID>=0)
         and (pfMainUnitIsPascalSource in AProject.Flags)
@@ -5604,8 +5682,7 @@ begin
                                       AProject.MainUnitInfo.Source,ShortUnitName);
             if not Dummy then begin
               MainIDE.DoJumpToCodeToolBossError;
-              Result:=mrCancel;
-              exit;
+              exit(mrCancel);
             end;
           end;
         end;
@@ -5617,82 +5694,35 @@ begin
               'T'+AnUnitInfo.ComponentName,AnUnitInfo.ComponentName);
           if not Dummy then begin
             MainIDE.DoJumpToCodeToolBossError;
-            Result:=mrCancel;
-            exit;
+            exit(mrCancel);
           end;
         end;
       end;
-      if CompareFileExt(AnUnitInfo.Filename,'.inc',false)=0 then begin
+      if CompareFileExt(AnUnitInfo.Filename,'.inc',false)=0 then
         // include file
         if FilenameIsAbsolute(AnUnitInfo.Filename) then
-          ObsoleteIncPaths:=MergeSearchPaths(ObsoleteIncPaths,
-                        ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename)));
-      end;
+          ObsoleteIncPaths:=MergeSearchPaths(ObsoleteIncPaths,UnitPath);
     end;
 
-    // removed directories still used fomr ObsoleteUnitPaths, ObsoleteIncPaths
+    // removed directories still used for ObsoleteUnitPaths, ObsoleteIncPaths
     AnUnitInfo:=AProject.FirstPartOfProject;
     while AnUnitInfo<>nil do begin
       if FilenameIsAbsolute(AnUnitInfo.Filename) then begin
+        UnitPath:=ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename));
         if FilenameIsPascalUnit(AnUnitInfo.Filename) then
-          ObsoleteUnitPaths:=RemoveSearchPaths(ObsoleteUnitPaths,
-                        ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename)));
+          ObsoleteUnitPaths:=RemoveSearchPaths(ObsoleteUnitPaths,UnitPath);
         if CompareFileExt(AnUnitInfo.Filename,'.inc',false)=0 then
-          ObsoleteIncPaths:=RemoveSearchPaths(ObsoleteIncPaths,
-                        ChompPathDelim(ExtractFilePath(AnUnitInfo.Filename)));
+          ObsoleteIncPaths:=RemoveSearchPaths(ObsoleteIncPaths,UnitPath);
       end;
       AnUnitInfo:=AnUnitInfo.NextPartOfProject;
     end;
 
     // check if compiler options contain paths of ObsoleteUnitPaths
-    if ObsoleteUnitPaths<>'' then begin
-      ProjUnitPaths:=AProject.CompilerOptions.OtherUnitFiles;
-      p:=1;
-      repeat
-        OldP:=p;
-        CurDir:=GetNextDirectoryInSearchPath(ProjUnitPaths,p);
-        if CurDir='' then break;
-        ResolvedDir:=AProject.CompilerOptions.ParsedOpts.DoParseOption(CurDir,
-                                                            pcosUnitPath,false);
-        if (ResolvedDir<>'')
-        and (SearchDirectoryInSearchPath(ObsoleteUnitPaths,ResolvedDir)>0) then begin
-          if IDEQuestionDialog(lisRemoveUnitPath,
-            Format(lisTheDirectoryContainsNoProjectUnitsAnyMoreRemoveThi, [CurDir]),
-            mtConfirmation, [mrYes, lisRemove, mrNo, lisKeep2], '')=mrYes
-          then begin
-            // remove
-            ProjUnitPaths:=RemoveSearchPaths(ProjUnitPaths,CurDir);
-            p:=OldP;
-          end;
-        end;
-      until false;
-      AProject.CompilerOptions.OtherUnitFiles:=ProjUnitPaths;
-    end;
-
-    // check if compiler options contain paths of ObsoleteIncPaths
-    if ObsoleteIncPaths<>'' then begin
-      ProjIncPaths:=AProject.CompilerOptions.IncludePath;
-      p:=1;
-      repeat
-        OldP:=p;
-        CurDir:=GetNextDirectoryInSearchPath(ProjIncPaths,p);
-        if CurDir='' then break;
-        ResolvedDir:=AProject.CompilerOptions.ParsedOpts.DoParseOption(CurDir,
-                                                         pcosIncludePath,false);
-        if (ResolvedDir<>'')
-        and (SearchDirectoryInSearchPath(ObsoleteIncPaths,ResolvedDir)>0) then begin
-          if IDEQuestionDialog(lisRemoveIncludePath,
-            Format(lisTheDirectoryContainsNoProjectIncludeFilesAnyMoreRe, [CurDir]),
-            mtConfirmation, [mrYes, lisRemove, mrNo, lisKeep2], '')=mrYes
-          then begin
-            // remove
-            ProjIncPaths:=RemoveSearchPaths(ProjIncPaths,CurDir);
-            p:=OldP;
-          end;
-        end;
-      until false;
-      AProject.CompilerOptions.IncludePath:=ProjIncPaths;
-    end;
+    if ObsoleteUnitPaths<>'' then
+      RemovePathFromBuildModes(ObsoleteUnitPaths, pcosUnitPath);
+    // or paths of ObsoleteIncPaths
+    if ObsoleteIncPaths<>'' then
+      RemovePathFromBuildModes(ObsoleteIncPaths, pcosIncludePath);
 
   finally
     // all changes were handled automatically by events, just clear the logs
