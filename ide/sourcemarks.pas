@@ -441,7 +441,7 @@ begin
   if Result <> 0 then exit;
   Result:=Priority-OtherMark.Priority;
   if Result <> 0 then exit;
-  Result := PtrInt(Self) - PtrInt(OtherMark);
+  Result := ComparePointers(Self,OtherMark);
 end;
 
 function TSourceMark.CompareEditorAndLine(ASrcEditID: TObject;
