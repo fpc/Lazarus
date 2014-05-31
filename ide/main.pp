@@ -651,8 +651,6 @@ type
     FUserInputSinceLastIdle: boolean;
     FDesignerToBeFreed: TFilenameToStringTree; // form file names to be freed OnIdle.
     FApplicationIsActivate: boolean;
-    FCheckingFilesOnDisk: boolean;
-    FCheckFilesOnDiskNeeded: boolean;
     fNeedSaveEnvironment: boolean;
     FRemoteControlTimer: TTimer;
     FRemoteControlFileAge: integer;
@@ -2023,7 +2021,7 @@ begin
   if IsClosing then Exit;
   IsClosing := True;
   CanClose := False;
-  FCheckingFilesOnDisk := True;
+  SourceFileMgr.CheckingFilesOnDisk := True;
   try
     // stop debugging/compiling/...
     if (ToolStatus = itExiting)
@@ -2042,7 +2040,7 @@ begin
     CanClose:=(DoCloseProject <> mrAbort);
   finally
     IsClosing := False;
-    FCheckingFilesOnDisk:=false;
+    SourceFileMgr.CheckingFilesOnDisk:=false;
     if not CanClose then
       DoCheckFilesOnDisk(false);
   end;
@@ -8309,85 +8307,8 @@ begin
 end;
 
 function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
-var
-  AnUnitList: TFPList; // list of TUnitInfo
-  APackageList: TStringList; // list of alternative lpkfilename and TLazPackage
-  i: integer;
-  CurUnit: TUnitInfo;
 begin
-  Result:=mrOk;
-  if FCheckingFilesOnDisk then exit;
-  if Project1=nil then exit;
-  if Screen.GetCurrentModalForm<>nil then exit;
-
-  if not Instantaneous then begin
-    FCheckFilesOnDiskNeeded:=true;
-    exit;
-  end;
-  FCheckFilesOnDiskNeeded:=false;
-
-  FCheckingFilesOnDisk:=true;
-  AnUnitList:=nil;
-  APackageList:=nil;
-  try
-    InvalidateFileStateCache;
-
-    if Project1.HasProjectInfoFileChangedOnDisk then begin
-      if IDEQuestionDialog(lisProjectChangedOnDisk,
-        Format(lisTheProjectInformationFileHasChangedOnDisk,
-               ['"', Project1.ProjectInfoFile, '"', LineEnding]),
-        mtConfirmation, [mrYes, lisReopenProject, mrIgnore], '')=mrYes
-      then begin
-        DoOpenProjectFile(Project1.ProjectInfoFile,[]);
-      end else begin
-        Project1.IgnoreProjectInfoFileOnDisk;
-      end;
-      exit(mrOk);
-    end;
-
-    Project1.GetUnitsChangedOnDisk(AnUnitList);
-    PkgBoss.GetPackagesChangedOnDisk(APackageList);
-    if (AnUnitList=nil) and (APackageList=nil) then exit;
-    Result:=ShowDiskDiffsDialog(AnUnitList,APackageList);
-    if Result in [mrYesToAll] then
-      Result:=mrOk;
-
-    // reload units
-    if AnUnitList<>nil then begin
-      for i:=0 to AnUnitList.Count-1 do begin
-        CurUnit:=TUnitInfo(AnUnitList[i]);
-        //DebugLn(['TMainIDE.DoCheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
-        if Result=mrOk then begin
-          if CurUnit.OpenEditorInfoCount > 0 then begin
-            // Revert one Editor-View, the others follow
-            Result:=SourceFileMgr.OpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
-              CurUnit.OpenEditorInfo[0].WindowID, nil, [ofRevert], True);
-            //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoOpenEditorFile=',Result]);
-          end else if CurUnit.IsMainUnit then begin
-            Result:=SourceFileMgr.RevertMainUnit;
-            //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoRevertMainUnit=',Result]);
-          end else
-            Result:=mrIgnore;
-          if Result=mrAbort then exit;
-        end else begin
-          //DebugLn(['TMainIDE.DoCheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
-          CurUnit.IgnoreCurrentFileDateOnDisk;
-          CurUnit.Modified:=True;
-          CurUnit.OpenEditorInfo[0].EditorComponent.Modified:=True;
-        end;
-      end;
-    end;
-
-    // reload packages
-    Result:=PkgBoss.RevertPackages(APackageList);
-    if Result<>mrOk then exit;
-
-    Result:=mrOk;
-  finally
-    FCheckingFilesOnDisk:=false;
-    AnUnitList.Free;
-    APackageList.Free;
-  end;
+  Result:=SourceFileMgr.CheckFilesOnDisk(Instantaneous);
 end;
 
 function TMainIDE.DoPublishModule(Options: TPublishModuleOptions;
@@ -9180,118 +9101,8 @@ end;
 
 function TMainIDE.FindUnitFile(const AFilename: string; TheOwner: TObject;
   Flags: TFindUnitFileFlags): string;
-
-  function FindInBaseIDE: string;
-  var
-    AnUnitName: String;
-    BaseDir: String;
-    UnitInFilename: String;
-  begin
-    AnUnitName:=ExtractFileNameOnly(AFilename);
-    BaseDir:=EnvironmentOptions.GetParsedLazarusDirectory+PathDelim+'ide';
-    UnitInFilename:='';
-    Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                                       BaseDir,AnUnitName,UnitInFilename,true);
-  end;
-
-  function FindInProject(AProject: TProject): string;
-  var
-    AnUnitInfo: TUnitInfo;
-    AnUnitName: String;
-    BaseDir: String;
-    UnitInFilename: String;
-  begin
-    // search in virtual (unsaved) files
-    AnUnitInfo:=AProject.UnitInfoWithFilename(AFilename,
-                                     [pfsfOnlyProjectFiles,pfsfOnlyVirtualFiles]);
-    if AnUnitInfo<>nil then begin
-      Result:=AnUnitInfo.Filename;
-      exit;
-    end;
-
-    // search in search path of project
-    AnUnitName:=ExtractFileNameOnly(AFilename);
-    BaseDir:=AProject.ProjectDirectory;
-    UnitInFilename:='';
-    Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                                       BaseDir,AnUnitName,UnitInFilename,true);
-  end;
-
-  function FindInPackage(APackage: TLazPackage): string;
-  var
-    BaseDir: String;
-    AnUnitName: String;
-    UnitInFilename: String;
-  begin
-    Result:='';
-    BaseDir:=APackage.Directory;
-    if not FilenameIsAbsolute(BaseDir) then exit;
-    // search in search path of package
-    AnUnitName:=ExtractFileNameOnly(AFilename);
-    UnitInFilename:='';
-    Result:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                                       BaseDir,AnUnitName,UnitInFilename,true);
-  end;
-
-var
-  AProject: TProject;
-  i: Integer;
 begin
-  if FilenameIsAbsolute(AFilename) then begin
-    Result:=AFilename;
-    exit;
-  end;
-  Result:='';
-
-  // project
-  AProject:=nil;
-  if TheOwner=nil then begin
-    AProject:=Project1;
-  end else if (TheOwner is TProject) then
-    AProject:=TProject(TheOwner);
-
-  if AProject<>nil then
-  begin
-    Result:=FindInProject(AProject);
-    if Result<>'' then exit;
-  end;
-
-  // package
-  if TheOwner is TLazPackage then begin
-    Result:=FindInPackage(TLazPackage(TheOwner));
-    if Result<>'' then exit;
-  end;
-
-  if TheOwner=Self then begin
-    // search in base IDE
-    Result:=FindInBaseIDE;
-    if Result<>'' then exit;
-
-    // search in installed packages
-    for i:=0 to PackageGraph.Count-1 do
-      if (PackageGraph[i].Installed<>pitNope)
-      and ((not (fuffIgnoreUninstallPackages in Flags))
-           or (PackageGraph[i].AutoInstall<>pitNope))
-      then begin
-        Result:=FindInPackage(PackageGraph[i]);
-        if Result<>'' then exit;
-      end;
-    // search in auto install packages
-    for i:=0 to PackageGraph.Count-1 do
-      if (PackageGraph[i].Installed=pitNope)
-      and (PackageGraph[i].AutoInstall<>pitNope) then begin
-        Result:=FindInPackage(PackageGraph[i]);
-        if Result<>'' then exit;
-      end;
-    // then search in all other open packages
-    for i:=0 to PackageGraph.Count-1 do
-      if (PackageGraph[i].Installed=pitNope)
-      and (PackageGraph[i].AutoInstall=pitNope) then begin
-        Result:=FindInPackage(PackageGraph[i]);
-        if Result<>'' then exit;
-      end;
-  end;
-  Result:='';
+  Result:=SourceFileMgr.FindUnitFile(AFilename, TheOwner, Flags);
 end;
 
 {------------------------------------------------------------------------------
@@ -9311,202 +9122,8 @@ end;
 ------------------------------------------------------------------------------}
 function TMainIDE.FindSourceFile(const AFilename, BaseDirectory: string;
   Flags: TFindSourceFlags): string;
-var
-  CompiledSrcExt: String;
-  BaseDir: String;
-  AlreadySearchedPaths: string;
-  StartUnitPath: String;
-
-  procedure MarkPathAsSearched(const AddSearchPath: string);
-  begin
-    AlreadySearchedPaths:=MergeSearchPaths(AlreadySearchedPaths,AddSearchPath);
-  end;
-
-  function SearchIndirectIncludeFile: string;
-  var
-    UnitPath: String;
-    CurDir: String;
-    AlreadySearchedUnitDirs: String;
-    CompiledUnitPath: String;
-    AllSrcPaths: String;
-    CurSrcPath: String;
-    CurIncPath: String;
-    PathPos: Integer;
-    AllIncPaths: String;
-    SearchPath: String;
-    SearchFile: String;
-  begin
-    if CompiledSrcExt='' then exit;
-    // get unit path for compiled units
-    UnitPath:=BaseDir+';'+StartUnitPath;
-    UnitPath:=TrimSearchPath(UnitPath,BaseDir);
-
-    // Extract all directories with compiled units
-    CompiledUnitPath:='';
-    AlreadySearchedUnitDirs:='';
-    PathPos:=1;
-    while PathPos<=length(UnitPath) do begin
-      CurDir:=GetNextDirectoryInSearchPath(UnitPath,PathPos);
-      // check if directory is already tested
-      if SearchDirectoryInSearchPath(AlreadySearchedUnitDirs,CurDir,1)>0 then
-        continue;
-      AlreadySearchedUnitDirs:=MergeSearchPaths(AlreadySearchedUnitDirs,CurDir);
-      // check if directory contains a compiled unit
-      if FindFirstFileWithExt(CurDir,CompiledSrcExt)<>'' then
-        CompiledUnitPath:=CompiledUnitPath+';'+CurDir;
-    end;
-    {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.SearchIndirectIncludeFile CompiledUnitPath="',CompiledUnitPath,'"']);
-    {$ENDIF}
-
-    // collect all src paths for the compiled units
-    AllSrcPaths:=CompiledUnitPath;
-    PathPos:=1;
-    while PathPos<=length(CompiledUnitPath) do begin
-      CurDir:=GetNextDirectoryInSearchPath(CompiledUnitPath,PathPos);
-      CurSrcPath:=CodeToolBoss.GetCompiledSrcPathForDirectory(CurDir);
-      CurSrcPath:=TrimSearchPath(CurSrcPath,CurDir);
-      AllSrcPaths:=MergeSearchPaths(AllSrcPaths,CurSrcPath);
-    end;
-    {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.SearchIndirectIncludeFile AllSrcPaths="',AllSrcPaths,'"']);
-    {$ENDIF}
-
-    // add fpc src directories
-    // ToDo
-
-    // collect all include paths
-    AllIncPaths:=AllSrcPaths;
-    PathPos:=1;
-    while PathPos<=length(AllSrcPaths) do begin
-      CurDir:=GetNextDirectoryInSearchPath(AllSrcPaths,PathPos);
-      CurIncPath:=CodeToolBoss.GetIncludePathForDirectory(CurDir);
-      CurIncPath:=TrimSearchPath(CurIncPath,CurDir);
-      AllIncPaths:=MergeSearchPaths(AllIncPaths,CurIncPath);
-    end;
-    {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.SearchIndirectIncludeFile AllIncPaths="',AllIncPaths,'"']);
-    {$ENDIF}
-
-    SearchFile:=AFilename;
-    SearchPath:=AllIncPaths;
-    Result:=FileUtil.SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
-    {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.SearchIndirectIncludeFile Result="',Result,'"']);
-    {$ENDIF}
-    MarkPathAsSearched(SearchPath);
-  end;
-
-  function SearchInPath(const TheSearchPath, SearchFile: string;
-    var Filename: string): boolean;
-  var
-    SearchPath: String;
-  begin
-    Filename:='';
-    SearchPath:=RemoveSearchPaths(TheSearchPath,AlreadySearchedPaths);
-    if SearchPath<>'' then begin
-      Filename:=FileUtil.SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
-      {$IFDEF VerboseFindSourceFile}
-      debugln(['TMainIDE.FindSourceFile trying "',SearchPath,'" Filename="',Filename,'"']);
-      {$ENDIF}
-      MarkPathAsSearched(SearchPath);
-    end;
-    Result:=Filename<>'';
-  end;
-
-var
-  SearchPath: String;
-  SearchFile: String;
 begin
-  {$IFDEF VerboseFindSourceFile}
-  debugln(['TMainIDE.FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"']);
-  {$ENDIF}
-  if AFilename='' then exit('');
-
-  if fsfMapTempToVirtualFiles in Flags then
-  begin
-    BaseDir:=GetTestBuildDirectory;
-    if FilenameIsAbsolute(AFilename)
-    and FileIsInPath(AFilename,BaseDir) then
-    begin
-      Result:=CreateRelativePath(AFilename,BaseDir);
-      if (Project1<>nil) and (Project1.UnitInfoWithFilename(Result)<>nil) then
-        exit;
-    end;
-  end;
-
-  if FilenameIsAbsolute(AFilename) then
-  begin
-    Result := AFilename;
-    if not FileExistsCached(Result) then
-      Result := '';
-    Exit;
-  end;
-
-  AlreadySearchedPaths:='';
-  BaseDir:=BaseDirectory;
-  GlobalMacroList.SubstituteStr(BaseDir);
-  BaseDir:=AppendPathDelim(TrimFilename(BaseDir));
-
-  // search file in base directory
-  Result:=TrimFilename(BaseDir+AFilename);
-  {$IFDEF VerboseFindSourceFile}
-  debugln(['TMainIDE.FindSourceFile trying Base "',Result,'"']);
-  {$ENDIF}
-  if FileExistsCached(Result) then exit;
-  MarkPathAsSearched(BaseDir);
-
-  // search file in debug path
-  if fsfUseDebugPath in Flags then begin
-    SearchPath:=EnvironmentOptions.GetParsedDebuggerSearchPath;
-    SearchPath:=MergeSearchPaths(Project1.CompilerOptions.GetDebugPath(false),
-                                 SearchPath);
-    SearchPath:=TrimSearchPath(SearchPath,BaseDir);
-    if SearchInPath(SearchPath,AFilename,Result) then exit;
-  end;
-
-  CompiledSrcExt:=CodeToolBoss.GetCompiledSrcExtForDirectory(BaseDir);
-  StartUnitPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(BaseDir);
-  StartUnitPath:=TrimSearchPath(StartUnitPath,BaseDir);
-
-  // if file is a pascal unit, search via unit and src paths
-  if FilenameIsPascalUnit(AFilename) then begin
-    // first search file in unit path
-    if SearchInPath(StartUnitPath,AFilename,Result) then exit;
-
-    // search unit in fpc source directory
-    Result:=CodeToolBoss.FindUnitInUnitSet(BaseDir,
-                                           ExtractFilenameOnly(AFilename));
-    {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.FindSourceFile tried unitset Result=',Result]);
-    {$ENDIF}
-    if Result<>'' then exit;
-  end;
-
-  if fsfUseIncludePaths in Flags then begin
-    // search in include path
-    if (fsfSearchForProject in Flags) then
-      SearchPath:=Project1.CompilerOptions.GetIncludePath(false)
-    else
-      SearchPath:=CodeToolBoss.GetIncludePathForDirectory(BaseDir);
-    SearchPath:=TrimSearchPath(SearchPath,BaseDir);
-    if SearchInPath(StartUnitPath,AFilename,Result) then exit;
-
-    if not(fsfSkipPackages in Flags) then begin
-      // search include file in source directories of all required packages
-      SearchFile:=AFilename;
-      Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
-      {$IFDEF VerboseFindSourceFile}
-      debugln(['TMainIDE.FindSourceFile trying packages "',SearchPath,'" Result=',Result]);
-      {$ENDIF}
-    end;
-    if Result<>'' then exit;
-
-    Result:=SearchIndirectIncludeFile;
-    if Result<>'' then exit;
-  end;
-
-  Result:='';
+  Result:=SourceFileMgr.FindSourceFile(AFilename, BaseDirectory, Flags);
 end;
 
 //------------------------------------------------------------------------------
@@ -12503,7 +12120,7 @@ begin
       DebugBoss.UpdateButtonsAndMenuItems;
     end;
   end;
-  if FCheckFilesOnDiskNeeded then begin
+  if SourceFileMgr.CheckFilesOnDiskNeeded then begin
     {$IFDEF VerboseIdle}
     debugln(['TMainIDE.OnApplicationIdle FCheckFilesOnDiskNeeded']);
     {$ENDIF}
