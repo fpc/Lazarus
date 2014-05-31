@@ -892,8 +892,7 @@ type
                             Flags: TFindSourceFlags): string; override;
     function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
                                         const AFilename:string): TModalResult;
-    function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo;
-                                   AskUser: boolean): TModalresult;
+    function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; override;
     function DoPublishModule(Options: TPublishModuleOptions;
                              const SrcDirectory, DestDirectory: string
@@ -6671,154 +6670,13 @@ begin
 end;
 
 function TMainIDE.DoAddActiveUnitToProject: TModalResult;
-var
-  ActiveSourceEditor: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  s, ShortUnitName: string;
-  OkToAdd: boolean;
-  Owners: TFPList;
-  i: Integer;
-  APackage: TLazPackage;
-  MsgResult: TModalResult;
 begin
-  Result:=mrCancel;
-  ActiveSourceEditor:=nil;
-  if not BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]) then exit;
-  if (ActiveUnitInfo=nil) then exit;
-  if ActiveUnitInfo.IsPartOfProject then begin
-    if not ActiveUnitInfo.IsVirtual then
-      s:=Format(lisTheFile, ['"', ActiveUnitInfo.Filename, '"'])
-    else
-      s:=Format(lisTheFile, ['"', ActiveSourceEditor.PageName, '"']);
-    s:=Format(lisisAlreadyPartOfTheProject, [s]);
-    IDEMessageDialog(lisInformation, s, mtInformation, [mbOk]);
-    exit;
-  end;
-  if not ActiveUnitInfo.IsVirtual then
-    s:='"'+ActiveUnitInfo.Filename+'"'
-  else
-    s:='"'+ActiveSourceEditor.PageName+'"';
-  if (ActiveUnitInfo.Unit_Name<>'')
-  and (Project1.IndexOfUnitWithName(ActiveUnitInfo.Unit_Name,true,ActiveUnitInfo)>=0) then
-  begin
-    IDEMessageDialog(lisInformation, Format(
-      lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith, [s]),
-      mtInformation, [mbOk]);
-    exit;
-  end;
-
-  Owners:=PkgBoss.GetPossibleOwnersOfUnit(ActiveUnitInfo.Filename,[]);
-  try
-    if (Owners<>nil) then begin
-      for i:=0 to Owners.Count-1 do begin
-        if TObject(Owners[i]) is TLazPackage then begin
-          APackage:=TLazPackage(Owners[i]);
-          MsgResult:=IDEQuestionDialog(lisAddPackageRequirement,
-            Format(lisTheUnitBelongsToPackage, [APackage.IDAsString]),
-            mtConfirmation, [mrYes, lisAddPackageToProject2,
-                            mrIgnore, lisAddUnitNotRecommended, mrCancel],'');
-          case MsgResult of
-            mrYes:
-              begin
-                PkgBoss.AddProjectDependency(Project1,APackage);
-                exit;
-              end;
-            mrIgnore: ;
-          else
-            exit;
-          end;
-        end;
-      end;
-    end;
-  finally
-    Owners.Free;
-  end;
-
-  if FilenameIsPascalUnit(ActiveUnitInfo.Filename)
-  and (EnvironmentOptions.CharcaseFileAction<>ccfaIgnore) then
-  begin
-    // ask user to apply naming conventions
-    Result:=DoRenameUnitLowerCase(ActiveUnitInfo,true);
-    if Result=mrIgnore then Result:=mrOk;
-    if Result<>mrOk then begin
-      debugln('TMainIDE.DoAddActiveUnitToProject A DoRenameUnitLowerCase failed ',ActiveUnitInfo.Filename);
-      exit;
-    end;
-  end;
-
-  if IDEMessageDialog(lisConfirmation, Format(lisAddToProject, [s]),
-    mtConfirmation, [mbYes, mbCancel]) in [mrOk, mrYes]
-  then begin
-    OkToAdd:=True;
-    if FilenameIsPascalUnit(ActiveUnitInfo.Filename) then
-      OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(ActiveUnitInfo,False,False)
-    else if CompareFileExt(ActiveUnitInfo.Filename,'inc',false)=0 then
-      OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(ActiveUnitInfo,False,True);
-    if OkToAdd then begin
-      ActiveUnitInfo.IsPartOfProject:=true;
-      Project1.Modified:=true;
-      if (FilenameIsPascalUnit(ActiveUnitInfo.Filename))
-      and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
-      then begin
-        ActiveUnitInfo.ReadUnitNameFromSource(false);
-        ShortUnitName:=ActiveUnitInfo.CreateUnitName;
-        if (ShortUnitName<>'') then begin
-          if CodeToolBoss.AddUnitToMainUsesSection(Project1.MainUnitInfo.Source,ShortUnitName,'')
-          then
-            Project1.MainUnitInfo.Modified:=true;
-        end;
-      end;
-    end;
-  end;
+  Result:=SourceFileMgr.AddActiveUnitToProject;
 end;
 
 function TMainIDE.DoRemoveFromProjectDialog: TModalResult;
-var
-  ViewUnitEntries: TViewUnitEntries;
-  i:integer;
-  AName: string;
-  AnUnitInfo: TUnitInfo;
-  UnitInfos: TFPList;
-  UEntry: TViewUnitsEntry;
-const
-  MultiSelectCheckedState: Boolean = true;
 Begin
-  if Project1=nil then exit(mrCancel);
-  ViewUnitEntries := TViewUnitEntries.Create;
-  UnitInfos:=nil;
-  try
-    for i := 0 to Project1.UnitCount-1 do
-    begin
-      AnUnitInfo:=Project1.Units[i];
-      if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnitID) then
-      begin
-        AName := Project1.RemoveProjectPathFromFilename(AnUnitInfo.FileName);
-        ViewUnitEntries.Add(AName,AnUnitInfo.FileName,i,false);
-      end;
-    end;
-    if ShowViewUnitsDlg(ViewUnitEntries, true, MultiSelectCheckedState,
-          lisRemoveFromProject, piUnit) <> mrOk then
-      exit(mrOk);
-    { This is where we check what the user selected. }
-    UnitInfos:=TFPList.Create;
-    for UEntry in ViewUnitEntries do
-    begin
-      if UEntry.Selected then
-      begin
-        if UEntry.ID<0 then continue;
-        AnUnitInfo:=Project1.Units[UEntry.ID];
-        if AnUnitInfo.IsPartOfProject then
-          UnitInfos.Add(AnUnitInfo);
-      end;
-    end;
-    if UnitInfos.Count>0 then
-      Result:=SourceFileMgr.RemoveFilesFromProject(Project1,UnitInfos)
-    else
-      Result:=mrOk;
-  finally
-    UnitInfos.Free;
-    ViewUnitEntries.Free;
-  end;
+  Result:=SourceFileMgr.RemoveFromProjectDialog;
 end;
 
 function TMainIDE.DoWarnAmbiguousFiles: TModalResult;
@@ -8445,43 +8303,9 @@ begin
   until Result<>mrRetry;
 end;
 
-function TMainIDE.DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo;
-  AskUser: boolean): TModalresult;
-var
-  OldFilename: String;
-  OldShortFilename: String;
-  NewFilename: String;
-  NewShortFilename: String;
-  LFMCode, LRSCode: TCodeBuffer;
-  NewUnitName: String;
+function TMainIDE.DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
 begin
-  Result:=mrOk;
-  OldFilename:=AnUnitInfo.Filename;
-  // check if file is unit
-  if not FilenameIsPascalUnit(OldFilename) then exit;
-  // check if file is already lowercase (or it does not matter in current OS)
-  OldShortFilename:=ExtractFilename(OldFilename);
-  NewShortFilename:=lowercase(OldShortFilename);
-  if CompareFilenames(OldShortFilename,NewShortFilename)=0 then exit;
-  // create new filename
-  NewFilename:=ExtractFilePath(OldFilename)+NewShortFilename;
-
-  // rename unit
-  if AskUser then begin
-    Result:=IDEQuestionDialog(lisFileNotLowercase,
-      Format(lisTheUnitIsNotLowercaseTheFreePascalCompiler,
-             ['"', OldFilename, '"', LineEnding, LineEnding, LineEnding]),
-      mtConfirmation,[mrYes,mrIgnore,lisNo,mrAbort],'');
-    if Result<>mrYes then exit;
-  end;
-  NewUnitName:=AnUnitInfo.Unit_Name;
-  if NewUnitName='' then begin
-    AnUnitInfo.ReadUnitNameFromSource(false);
-    NewUnitName:=AnUnitInfo.CreateUnitName;
-  end;
-  LFMCode:=nil;
-  LRSCode:=nil;
-  Result:=SourceFileMgr.RenameUnit(AnUnitInfo,NewFilename,NewUnitName,LFMCode,LRSCode);
+  Result:=SourceFileMgr.RenameUnitLowerCase(AnUnitInfo, AskUser);
 end;
 
 function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
