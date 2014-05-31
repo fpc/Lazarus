@@ -2394,6 +2394,8 @@ begin
         if assigned(SharedEdit.FEditPlugin) then
           SharedEdit.FEditPlugin.Changes := ETChanges;
       end;
+      if MessagesView<>nil then
+        MessagesView.MessagesFrame1.CreateMarksForFile(SynEditor,FCodeBuffer.Filename,true);
       {$ENDIF}
       if (FIgnoreCodeBufferLock <= 0) and (not FCodeBuffer.IsEqual(SynEditor.Lines))
       then begin
