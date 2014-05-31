@@ -303,13 +303,13 @@ resourcestring
   lisSourcePaths = 'Source paths';
 
   lisMenuInsertGPLNotice = 'GPL Notice';
-  lisMenuInsertGPLNoticeTranslated = 'translated GPL Notice';
+  lisMenuInsertGPLNoticeTranslated = 'GPL Notice (translated)';
   lisMenuInsertLGPLNotice = 'LGPL Notice';
-  lisMenuInsertLGPLNoticeTranslated = 'translated LGPL Notice';
+  lisMenuInsertLGPLNoticeTranslated = 'LGPL Notice (translated)';
   lisMenuInsertModifiedLGPLNotice = 'Modified LGPL Notice';
-  lisMenuInsertModifiedLGPLNoticeTranslated = 'translated Modified LGPL Notice';
+  lisMenuInsertModifiedLGPLNoticeTranslated = 'Modified LGPL Notice (translated)';
   lisMenuInsertMITNotice = 'MIT Notice';
-  lisMenuInsertMITNoticeTranslated = 'translated MIT Notice';
+  lisMenuInsertMITNoticeTranslated = 'MIT Notice (translated)';
   lisMenuInsertUserName = 'Current Username';
   lisMenuInsertDateTime = 'Current Date and Time';
   lisMenuInsertChangeLogEntry = 'ChangeLog Entry';
@@ -2729,13 +2729,13 @@ resourcestring
   srkmecSelectionTabs2Spaces     = 'Convert tabs to spaces in selection';
   srkmecInsertCharacter          = 'Insert from Charactermap';
   srkmecInsertGPLNotice          = 'Insert GPL notice';
-  srkmecInsertGPLNoticeTranslated = 'Insert GPL notice translated';
+  srkmecInsertGPLNoticeTranslated = 'Insert GPL notice (translated)';
   srkmecInsertLGPLNotice         = 'Insert LGPL notice';
-  srkmecInsertLGPLNoticeTranlated = 'Insert LGPL notice translated';
+  srkmecInsertLGPLNoticeTranlated = 'Insert LGPL notice (translated)';
   srkmecInsertModifiedLGPLNotice = 'Insert modified LGPL notice';
-  srkmecInsertModifiedLGPLNoticeTranslated = 'Insert modified LGPL notice translated';
+  srkmecInsertModifiedLGPLNoticeTranslated = 'Insert modified LGPL notice (translated)';
   srkmecInsertMITNotice          = 'Insert MIT notice';
-  srkmecInsertMITNoticeTranslated = 'Insert MIT notice translated';
+  srkmecInsertMITNoticeTranslated = 'Insert MIT notice (translated)';
   lisKMInsertUsername            = 'Insert username';
   lisKMInsertDateAndTime         = 'Insert date and time';
   srkmecInsertUserName           = 'Insert current username';
