@@ -720,11 +720,6 @@ type
     procedure OnProjectGetTestDirectory(TheProject: TProject; out TestDir: string);
     procedure OnProjectChangeInfoFile(TheProject: TProject);
     procedure OnSaveProjectUnitSessionInfo(AUnitInfo: TUnitInfo);
-
-    // methods for publish project
-    procedure OnCopyFile(const Filename: string; var Copy: boolean; Data: TObject);
-    procedure OnCopyError(const ErrorData: TCopyErrorData;
-        var Handled: boolean; Data: TObject);
   public
     class procedure ParseCmdLineOptions;
 
@@ -891,8 +886,7 @@ type
     function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; override;
     function DoPublishModule(Options: TPublishModuleOptions;
-                             const SrcDirectory, DestDirectory: string
-                             ): TModalResult; override;
+      const SrcDirectory, DestDirectory: string): TModalResult; override;
     procedure PrepareBuildTarget(Quiet: boolean;
                                ScanFPCSrc: TScanModeFPCSources = smsfsBackground); override;
     procedure AbortBuild; override;
@@ -5604,35 +5598,6 @@ begin
                                 Project1.ProjectDirectory)
 end;
 
-procedure TMainIDE.OnCopyFile(const Filename: string; var Copy: boolean; Data: TObject);
-begin
-  if Data=nil then exit;
-  if Data is TPublishModuleOptions then begin
-    Copy:=TPublishModuleOptions(Data).FileCanBePublished(Filename);
-    //writeln('TMainIDE.OnCopyFile "',Filename,'" ',Copy);
-  end;
-end;
-
-procedure TMainIDE.OnCopyError(const ErrorData: TCopyErrorData;
-  var Handled: boolean; Data: TObject);
-begin
-  case ErrorData.Error of
-    ceSrcDirDoesNotExists:
-      IDEMessageDialog(lisCopyError2,
-        Format(lisSourceDirectoryDoesNotExist, ['"', ErrorData.Param1, '"']),
-        mtError,[mbCancel]);
-    ceCreatingDirectory:
-      IDEMessageDialog(lisCopyError2,
-        Format(lisUnableToCreateDirectory, ['"', ErrorData.Param1, '"']),
-        mtError,[mbCancel]);
-    ceCopyFileError:
-      IDEMessageDialog(lisCopyError2,
-        Format(lisUnableToCopyFileTo, ['"', ErrorData.Param1, '"', LineEnding, '"',
-          ErrorData.Param1, '"']),
-        mtError,[mbCancel]);
-  end;
-end;
-
 function TMainIDE.DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
   var NewFilename: string; NewSource: string;
   NewFlags: TNewFlags; NewOwner: TObject): TModalResult;
@@ -8311,141 +8276,8 @@ end;
 
 function TMainIDE.DoPublishModule(Options: TPublishModuleOptions;
   const SrcDirectory, DestDirectory: string): TModalResult;
-var
-  SrcDir, DestDir: string;
-  NewProjectFilename: string;
-  Tool: TIDEExternalToolOptions;
-  CommandAfter, CmdAfterExe, CmdAfterParams: string;
-  CurProject: TProject;
-  TempCmd: String;
-
-  procedure ShowErrorForCommandAfter;
-  begin
-    IDEMessageDialog(lisInvalidCommand,
-      Format(lisTheCommandAfterIsNotExecutable, ['"', CmdAfterExe, '"']),
-      mtError,[mbCancel]);
-  end;
-
 begin
-  //DebugLn('TMainIDE.DoPublishModule A');
-  Result:=mrCancel;
-
-  // do not delete project files
-  DestDir:=TrimAndExpandDirectory(DestDirectory);
-  SrcDir:=TrimAndExpandDirectory(SrcDirectory);
-  if (DestDir='') then begin
-    IDEMessageDialog('Invalid publishing Directory',
-      'Destination directory for publishing is empty.',mtError,
-      [mbCancel]);
-    Result:=mrCancel;
-    exit;
-  end;
-  //DebugLn('TMainIDE.DoPublishModule A SrcDir="',SrcDir,'" DestDir="',DestDir,'"');
-  if CompareFilenames(SrcDir,DestDir)=0
-  then begin
-    IDEMessageDialog(lisInvalidPublishingDirectory,
-      Format(lisSourceDirectoryAndDestinationDirectoryAreTheSameMa, ['"', SrcDir, '"',
-        LineEnding, '"', DestDir, '"', LineEnding, LineEnding, LineEnding, LineEnding, LineEnding]),
-      mtError, [mbCancel]);
-    Result:=mrCancel;
-    exit;
-  end;
-
-  // check command after
-  CommandAfter:=Options.CommandAfter;
-  if not GlobalMacroList.SubstituteStr(CommandAfter) then begin
-    Result:=mrCancel;
-    exit;
-  end;
-  SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
-  if (CmdAfterExe<>'') then begin
-    //DebugLn('TMainIDE.DoPublishModule A CmdAfterExe="',CmdAfterExe,'"');
-    // first look in the project directory
-    TempCmd:=CmdAfterExe;
-    if not FilenameIsAbsolute(TempCmd) then
-      TempCmd:=TrimFilename(AppendPathDelim(Project1.ProjectDirectory)+TempCmd);
-    if FileExistsUTF8(TempCmd) then begin
-      CmdAfterExe:=TempCmd;
-    end else begin
-      TempCmd:=FindDefaultExecutablePath(CmdAfterExe);
-      if TempCmd<>'' then
-        CmdAfterExe:=TempCmd;
-    end;
-    if not FileIsExecutableCached(CmdAfterExe) then begin
-      IDEMessageDialog(lisCommandAfterInvalid,
-        Format(lisTheCommandAfterPublishingIsInvalid,
-               [LineEnding, '"', CmdAfterExe, '"']), mtError, [mbCancel]);
-      Result:=mrCancel;
-      exit;
-    end;
-  end;
-
-  // clear destination directory
-  if DirPathExists(DestDir) then begin
-    // ask user, if destination can be delete
-    if IDEMessageDialog(lisClearDirectory,
-      Format(lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil,
-             [LineEnding, LineEnding, '"', DestDir, '"']), mtConfirmation,
-      [mbYes,mbNo])<>mrYes
-    then
-      exit(mrCancel);
-
-    if (not DeleteDirectory(ChompPathDelim(DestDir),true)) then begin
-      IDEMessageDialog(lisUnableToCleanUpDestinationDirectory,
-        Format(lisUnableToCleanUpPleaseCheckPermissions,
-               ['"', DestDir, '"', LineEnding] ),
-        mtError,[mbOk]);
-      Result:=mrCancel;
-      exit;
-    end;
-  end;
-
-  // copy the directory
-  if not CopyDirectoryWithMethods(SrcDir,DestDir,
-    @OnCopyFile,@OnCopyError,Options) then
-  begin
-    debugln('TMainIDE.DoPublishModule CopyDirectoryWithMethods failed');
-    Result:=mrCancel;
-    exit;
-  end;
-
-  // write a filtered .lpi file
-  if Options is TPublishProjectOptions then begin
-    CurProject:=TProject(TPublishProjectOptions(Options).Owner);
-    NewProjectFilename:=DestDir+ExtractFilename(CurProject.ProjectInfoFile);
-    DeleteFileUTF8(NewProjectFilename);
-    Result:=CurProject.WriteProject(CurProject.PublishOptions.WriteFlags
-           +pwfSkipSessionInfo+[pwfIgnoreModified],
-           NewProjectFilename,nil);
-    if Result<>mrOk then begin
-      debugln('TMainIDE.DoPublishModule CurProject.WriteProject failed');
-      exit;
-    end;
-  end;
-
-  // execute 'CommandAfter'
-  if (CmdAfterExe<>'') then begin
-    if FileIsExecutableCached(CmdAfterExe) then begin
-      Tool:=TIDEExternalToolOptions.Create;
-      Tool.Title:=lisCommandAfterPublishingModule;
-      Tool.WorkingDirectory:=DestDir;
-      Tool.CmdLineParams:=CmdAfterParams;
-      {$IFDEF EnableNewExtTools}
-      Tool.Executable:=CmdAfterExe;
-      if RunExternalTool(Tool) then
-        Result:=mrOk
-      else
-        Result:=mrCancel;
-      {$ELSE}
-      Tool.Filename:=CmdAfterExe;
-      Result:=ExternalTools.Run(Tool,GlobalMacroList,false);
-      if Result<>mrOk then exit;
-      {$ENDIF}
-    end else begin
-      ShowErrorForCommandAfter;
-      exit(mrCancel);
-    end;
-  end;
+  Result:=SourceFileMgr.PublishModule(Options, SrcDirectory, DestDirectory);
 end;
 
 procedure TMainIDE.PrepareBuildTarget(Quiet: boolean;

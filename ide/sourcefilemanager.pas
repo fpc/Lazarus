@@ -49,7 +49,7 @@ uses
   {$ENDIF}
   InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager, CodeToolsStructs,
   ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool, BasicCodeTools,
-  SynEdit, UnitResources, IDEExternToolIntf;
+  SynEdit, UnitResources, IDEExternToolIntf, ExtToolDialog, PublishModule;
 
 
 type
@@ -62,12 +62,19 @@ type
     FListForm: TGenericCheckListForm;
     FCheckingFilesOnDisk: boolean;
     FCheckFilesOnDiskNeeded: boolean;
+    {$IFnDEF EnableNewExtTools}
+    function ExternalTools: TExternalToolList;
+    {$ENDIF}
     function AddPathToBuildModes(aPath, CurDirectory: string; IsIncludeFile: Boolean): Boolean;
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
     function FileExistsInIDE(const Filename: string;
       SearchFlags: TProjectFileSearchFlags): boolean;
     procedure RemovePathFromBuildModes(ObsoletePaths: String; pcos: TParsedCompilerOptString);
     function ShowCheckListBuildModes(DlgMsg: String): Boolean;
+    // methods for publish project
+    procedure OnCopyFile(const Filename: string; var Copy: boolean; Data: TObject);
+    procedure OnCopyError(const ErrorData: TCopyErrorData;
+        var Handled: boolean; Data: TObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -106,6 +113,9 @@ type
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string;
     function CheckFilesOnDisk(Instantaneous: boolean = false): TModalResult;
+    function PublishModule(Options: TPublishModuleOptions;
+      const SrcDirectory, DestDirectory: string): TModalResult;
+
     function AddActiveUnitToProject: TModalResult;
     function RemoveFromProjectDialog: TModalResult;
     function InitNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
@@ -275,6 +285,11 @@ begin
   inherited Destroy;
 end;
 
+
+function TLazSourceFileManager.ExternalTools: TExternalToolList;
+begin
+  Result:=TExternalToolList(EnvironmentOptions.ExternalTools);
+end;
 
 function TLazSourceFileManager.CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
 var
@@ -2066,7 +2081,7 @@ var
         CompiledUnitPath:=CompiledUnitPath+';'+CurDir;
     end;
     {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.SearchIndirectIncludeFile CompiledUnitPath="',CompiledUnitPath,'"']);
+    debugln(['TLazSourceFileManager.SearchIndirectIncludeFile CompiledUnitPath="',CompiledUnitPath,'"']);
     {$ENDIF}
 
     // collect all src paths for the compiled units
@@ -2079,7 +2094,7 @@ var
       AllSrcPaths:=MergeSearchPaths(AllSrcPaths,CurSrcPath);
     end;
     {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.SearchIndirectIncludeFile AllSrcPaths="',AllSrcPaths,'"']);
+    debugln(['TLazSourceFileManager.SearchIndirectIncludeFile AllSrcPaths="',AllSrcPaths,'"']);
     {$ENDIF}
 
     // add fpc src directories
@@ -2095,14 +2110,14 @@ var
       AllIncPaths:=MergeSearchPaths(AllIncPaths,CurIncPath);
     end;
     {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.SearchIndirectIncludeFile AllIncPaths="',AllIncPaths,'"']);
+    debugln(['TLazSourceFileManager.SearchIndirectIncludeFile AllIncPaths="',AllIncPaths,'"']);
     {$ENDIF}
 
     SearchFile:=AFilename;
     SearchPath:=AllIncPaths;
     Result:=FileUtil.SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
     {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.SearchIndirectIncludeFile Result="',Result,'"']);
+    debugln(['TLazSourceFileManager.SearchIndirectIncludeFile Result="',Result,'"']);
     {$ENDIF}
     MarkPathAsSearched(SearchPath);
   end;
@@ -2117,7 +2132,7 @@ var
     if SearchPath<>'' then begin
       Filename:=FileUtil.SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
       {$IFDEF VerboseFindSourceFile}
-      debugln(['TMainIDE.FindSourceFile trying "',SearchPath,'" Filename="',Filename,'"']);
+      debugln(['TLazSourceFileManager.FindSourceFile trying "',SearchPath,'" Filename="',Filename,'"']);
       {$ENDIF}
       MarkPathAsSearched(SearchPath);
     end;
@@ -2129,7 +2144,7 @@ var
   SearchFile: String;
 begin
   {$IFDEF VerboseFindSourceFile}
-  debugln(['TMainIDE.FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"']);
+  debugln(['TLazSourceFileManager.FindSourceFile Filename="',AFilename,'" BaseDirectory="',BaseDirectory,'"']);
   {$ENDIF}
   if AFilename='' then exit('');
 
@@ -2161,7 +2176,7 @@ begin
   // search file in base directory
   Result:=TrimFilename(BaseDir+AFilename);
   {$IFDEF VerboseFindSourceFile}
-  debugln(['TMainIDE.FindSourceFile trying Base "',Result,'"']);
+  debugln(['TLazSourceFileManager.FindSourceFile trying Base "',Result,'"']);
   {$ENDIF}
   if FileExistsCached(Result) then exit;
   MarkPathAsSearched(BaseDir);
@@ -2188,7 +2203,7 @@ begin
     Result:=CodeToolBoss.FindUnitInUnitSet(BaseDir,
                                            ExtractFilenameOnly(AFilename));
     {$IFDEF VerboseFindSourceFile}
-    debugln(['TMainIDE.FindSourceFile tried unitset Result=',Result]);
+    debugln(['TLazSourceFileManager.FindSourceFile tried unitset Result=',Result]);
     {$ENDIF}
     if Result<>'' then exit;
   end;
@@ -2207,7 +2222,7 @@ begin
       SearchFile:=AFilename;
       Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
       {$IFDEF VerboseFindSourceFile}
-      debugln(['TMainIDE.FindSourceFile trying packages "',SearchPath,'" Result=',Result]);
+      debugln(['TLazSourceFileManager.FindSourceFile trying packages "',SearchPath,'" Result=',Result]);
       {$ENDIF}
     end;
     if Result<>'' then exit;
@@ -2267,21 +2282,21 @@ begin
     if AnUnitList<>nil then begin
       for i:=0 to AnUnitList.Count-1 do begin
         CurUnit:=TUnitInfo(AnUnitList[i]);
-        //DebugLn(['TMainIDE.DoCheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
+        //DebugLn(['TLazSourceFileManager.DoCheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
         if Result=mrOk then begin
           if CurUnit.OpenEditorInfoCount > 0 then begin
             // Revert one Editor-View, the others follow
             Result:=OpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
               CurUnit.OpenEditorInfo[0].WindowID, nil, [ofRevert], True);
-            //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoOpenEditorFile=',Result]);
+            //DebugLn(['TLazSourceFileManager.DoCheckFilesOnDisk DoOpenEditorFile=',Result]);
           end else if CurUnit.IsMainUnit then begin
             Result:=RevertMainUnit;
-            //DebugLn(['TMainIDE.DoCheckFilesOnDisk DoRevertMainUnit=',Result]);
+            //DebugLn(['TLazSourceFileManager.DoCheckFilesOnDisk DoRevertMainUnit=',Result]);
           end else
             Result:=mrIgnore;
           if Result=mrAbort then exit;
         end else begin
-          //DebugLn(['TMainIDE.DoCheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
+          //DebugLn(['TLazSourceFileManager.DoCheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
           CurUnit.IgnoreCurrentFileDateOnDisk;
           CurUnit.Modified:=True;
           CurUnit.OpenEditorInfo[0].EditorComponent.Modified:=True;
@@ -2298,6 +2313,174 @@ begin
     FCheckingFilesOnDisk:=false;
     AnUnitList.Free;
     APackageList.Free;
+  end;
+end;
+
+procedure TLazSourceFileManager.OnCopyFile(const Filename: string; var Copy: boolean; Data: TObject);
+begin
+  if Data=nil then exit;
+  if Data is TPublishModuleOptions then begin
+    Copy:=TPublishModuleOptions(Data).FileCanBePublished(Filename);
+    //writeln('TLazSourceFileManager.OnCopyFile "',Filename,'" ',Copy);
+  end;
+end;
+
+procedure TLazSourceFileManager.OnCopyError(const ErrorData: TCopyErrorData;
+  var Handled: boolean; Data: TObject);
+begin
+  case ErrorData.Error of
+    ceSrcDirDoesNotExists:
+      IDEMessageDialog(lisCopyError2,
+        Format(lisSourceDirectoryDoesNotExist, ['"', ErrorData.Param1, '"']),
+        mtError,[mbCancel]);
+    ceCreatingDirectory:
+      IDEMessageDialog(lisCopyError2,
+        Format(lisUnableToCreateDirectory, ['"', ErrorData.Param1, '"']),
+        mtError,[mbCancel]);
+    ceCopyFileError:
+      IDEMessageDialog(lisCopyError2,
+        Format(lisUnableToCopyFileTo, ['"', ErrorData.Param1, '"', LineEnding, '"',
+          ErrorData.Param1, '"']),
+        mtError,[mbCancel]);
+  end;
+end;
+
+function TLazSourceFileManager.PublishModule(Options: TPublishModuleOptions;
+  const SrcDirectory, DestDirectory: string): TModalResult;
+var
+  SrcDir, DestDir: string;
+  NewProjectFilename: string;
+  Tool: TIDEExternalToolOptions;
+  CommandAfter, CmdAfterExe, CmdAfterParams: string;
+  CurProject: TProject;
+  TempCmd: String;
+
+  procedure ShowErrorForCommandAfter;
+  begin
+    IDEMessageDialog(lisInvalidCommand,
+      Format(lisTheCommandAfterIsNotExecutable, ['"', CmdAfterExe, '"']),
+      mtError,[mbCancel]);
+  end;
+
+begin
+  //DebugLn('TLazSourceFileManager.DoPublishModule A');
+  Result:=mrCancel;
+
+  // do not delete project files
+  DestDir:=TrimAndExpandDirectory(DestDirectory);
+  SrcDir:=TrimAndExpandDirectory(SrcDirectory);
+  if (DestDir='') then begin
+    IDEMessageDialog('Invalid publishing Directory',
+      'Destination directory for publishing is empty.',mtError,
+      [mbCancel]);
+    Result:=mrCancel;
+    exit;
+  end;
+  //DebugLn('TLazSourceFileManager.DoPublishModule A SrcDir="',SrcDir,'" DestDir="',DestDir,'"');
+  if CompareFilenames(SrcDir,DestDir)=0
+  then begin
+    IDEMessageDialog(lisInvalidPublishingDirectory,
+      Format(lisSourceDirectoryAndDestinationDirectoryAreTheSameMa, ['"', SrcDir, '"',
+        LineEnding, '"', DestDir, '"', LineEnding, LineEnding, LineEnding, LineEnding, LineEnding]),
+      mtError, [mbCancel]);
+    Result:=mrCancel;
+    exit;
+  end;
+
+  // check command after
+  CommandAfter:=Options.CommandAfter;
+  if not GlobalMacroList.SubstituteStr(CommandAfter) then begin
+    Result:=mrCancel;
+    exit;
+  end;
+  SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
+  if (CmdAfterExe<>'') then begin
+    //DebugLn('TLazSourceFileManager.DoPublishModule A CmdAfterExe="',CmdAfterExe,'"');
+    // first look in the project directory
+    TempCmd:=CmdAfterExe;
+    if not FilenameIsAbsolute(TempCmd) then
+      TempCmd:=TrimFilename(AppendPathDelim(Project1.ProjectDirectory)+TempCmd);
+    if FileExistsUTF8(TempCmd) then begin
+      CmdAfterExe:=TempCmd;
+    end else begin
+      TempCmd:=FindDefaultExecutablePath(CmdAfterExe);
+      if TempCmd<>'' then
+        CmdAfterExe:=TempCmd;
+    end;
+    if not FileIsExecutableCached(CmdAfterExe) then begin
+      IDEMessageDialog(lisCommandAfterInvalid,
+        Format(lisTheCommandAfterPublishingIsInvalid,
+               [LineEnding, '"', CmdAfterExe, '"']), mtError, [mbCancel]);
+      Result:=mrCancel;
+      exit;
+    end;
+  end;
+
+  // clear destination directory
+  if DirPathExists(DestDir) then begin
+    // ask user, if destination can be delete
+    if IDEMessageDialog(lisClearDirectory,
+      Format(lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil,
+             [LineEnding, LineEnding, '"', DestDir, '"']), mtConfirmation,
+      [mbYes,mbNo])<>mrYes
+    then
+      exit(mrCancel);
+
+    if (not DeleteDirectory(ChompPathDelim(DestDir),true)) then begin
+      IDEMessageDialog(lisUnableToCleanUpDestinationDirectory,
+        Format(lisUnableToCleanUpPleaseCheckPermissions,
+               ['"', DestDir, '"', LineEnding] ),
+        mtError,[mbOk]);
+      Result:=mrCancel;
+      exit;
+    end;
+  end;
+
+  // copy the directory
+  if not CopyDirectoryWithMethods(SrcDir,DestDir,
+    @OnCopyFile,@OnCopyError,Options) then
+  begin
+    debugln('TLazSourceFileManager.DoPublishModule CopyDirectoryWithMethods failed');
+    Result:=mrCancel;
+    exit;
+  end;
+
+  // write a filtered .lpi file
+  if Options is TPublishProjectOptions then begin
+    CurProject:=TProject(TPublishProjectOptions(Options).Owner);
+    NewProjectFilename:=DestDir+ExtractFilename(CurProject.ProjectInfoFile);
+    DeleteFileUTF8(NewProjectFilename);
+    Result:=CurProject.WriteProject(CurProject.PublishOptions.WriteFlags
+           +pwfSkipSessionInfo+[pwfIgnoreModified],
+           NewProjectFilename,nil);
+    if Result<>mrOk then begin
+      debugln('TLazSourceFileManager.DoPublishModule CurProject.WriteProject failed');
+      exit;
+    end;
+  end;
+
+  // execute 'CommandAfter'
+  if (CmdAfterExe<>'') then begin
+    if FileIsExecutableCached(CmdAfterExe) then begin
+      Tool:=TIDEExternalToolOptions.Create;
+      Tool.Title:=lisCommandAfterPublishingModule;
+      Tool.WorkingDirectory:=DestDir;
+      Tool.CmdLineParams:=CmdAfterParams;
+      {$IFDEF EnableNewExtTools}
+      Tool.Executable:=CmdAfterExe;
+      if RunExternalTool(Tool) then
+        Result:=mrOk
+      else
+        Result:=mrCancel;
+      {$ELSE}
+      Tool.Filename:=CmdAfterExe;
+      Result:=ExternalTools.Run(Tool,GlobalMacroList,false);
+      if Result<>mrOk then exit;
+      {$ENDIF}
+    end else begin
+      ShowErrorForCommandAfter;
+      exit(mrCancel);
+    end;
   end;
 end;
 
