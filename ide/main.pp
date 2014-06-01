@@ -60,6 +60,9 @@ uses
 {$ENDIF}
   // fpc packages
   Math, Classes, SysUtils, Process, TypInfo, types, strutils, AVL_Tree,
+{$IFDEF UseAsyncProcess}
+  AsyncProcess,
+{$ENDIF}
   // lazutils
   LazUTF8, Laz2_XMLCfg, AvgLvlTree,
   // lcl
