@@ -1094,7 +1094,11 @@ begin
       SetState(dsPause);
       continue:=true;
       exit;
-    end;
+    end
+  else
+    // Debugger returned after a step/next/step-out etc..
+    ALocationAddr := GetLocation;
+
   SetState(dsPause);
   DoCurrent(ALocationAddr);
 end;
