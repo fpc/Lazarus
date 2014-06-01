@@ -285,11 +285,12 @@ begin
   inherited Destroy;
 end;
 
-
+{$IFnDEF EnableNewExtTools}
 function TLazSourceFileManager.ExternalTools: TExternalToolList;
 begin
   Result:=TExternalToolList(EnvironmentOptions.ExternalTools);
 end;
+{$ENDIF}
 
 function TLazSourceFileManager.CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
 var
@@ -6340,6 +6341,7 @@ begin
   QRes:=mrNone;
   i:=0;
   // Iterate all build modes until the user chooses to cancel.
+  PrevResolvedDir:='';
   while (i < FProject.BuildModes.Count) and (QRes in [mrNone,mrYes]) do begin
     bm:=FProject.BuildModes[i];
     p:=1;
