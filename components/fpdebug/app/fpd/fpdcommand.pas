@@ -157,6 +157,7 @@ end;
 
 procedure HandleRun(AParams: String; out CallProcessLoop: boolean);
 begin
+  CallProcessLoop:=false;
   if Assigned(GController.MainProcess)
   then begin
     WriteLN('The debuggee is already running');
@@ -170,10 +171,7 @@ begin
   end;
 
   if not GController.Run then
-    begin
-    writeln('Failed to run '+GController.ExecutableFilename);
-    CallProcessLoop:=false;
-    end
+    writeln('Failed to run '+GController.ExecutableFilename)
   else
     CallProcessLoop:=true;
 end;
