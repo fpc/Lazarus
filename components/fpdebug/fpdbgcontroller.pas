@@ -264,7 +264,7 @@ begin
         end;}
       deBreakpoint :
         begin
-          debugln('Reached breakpoint at %s.',[FormatAddress(FCurrentProcess.GetInstructionPointerRegisterValue)]);
+          // Do nothing
         end;
       deInternalContinue,
       deLoadLibrary:
@@ -282,40 +282,34 @@ begin
   case FPDEvent of
     deCreateProcess:
       begin
-        debugln('Create Process');
         continue:=true;
         if assigned(OnCreateProcessEvent) then
           OnCreateProcessEvent(continue);
       end;
     deBreakpoint:
       begin
-        debugln('Breakpoint');
         continue:=false;
         if assigned(OnHitBreakpointEvent) then
           OnHitBreakpointEvent(continue, FCurrentProcess.CurrentBreakpoint);
       end;
     deExitProcess:
       begin
-        debugln('Exit proces');
         continue := false;
         if assigned(OnProcessExitEvent) then
           OnProcessExitEvent(FExitCode);
       end;
     deException:
       begin
-        debugln('Exception');
         continue:=false;
         if assigned(OnExceptionEvent) then
           OnExceptionEvent(continue, FCurrentProcess.ExceptionClass, FCurrentProcess.ExceptionMessage );
       end;
     deLoadLibrary:
       begin
-        debugln('LoadLibrary');
         continue:=true;
       end;
     deInternalContinue:
       begin
-        debugln('Internal');
         continue := true;
       end;
     else
