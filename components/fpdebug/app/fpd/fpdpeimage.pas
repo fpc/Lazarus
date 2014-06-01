@@ -70,7 +70,7 @@ var
   NtHeaders: TImageNtHeaders64; // read it as 64 bit, so there is enough room. The fields will be decoded manually
   SectionHeader: TImageSectionHeader;
   OH: PImageOptionalHeader64;
-  BytesRead: Cardinal;
+  BytesRead: PtrUInt;
   R: Boolean;
   n: Integer;
   Is64: Boolean;

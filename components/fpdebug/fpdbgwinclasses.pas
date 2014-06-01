@@ -135,6 +135,11 @@ procedure RegisterDbgClasses;
 
 implementation
 
+{$ifdef cpux86_64}
+const
+  FLAG_TRACE_BIT = $100;
+{$endif}
+
 procedure RegisterDbgClasses;
 begin
   OSDbgClasses.DbgThreadClass:=TDbgWinThread;
@@ -239,7 +244,7 @@ end;
 
 function TDbgWinProcess.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
 var
-  BytesRead: Cardinal;
+  BytesRead: PtrUInt;
 begin
   Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @AData, ASize, BytesRead) and (BytesRead = ASize);
 
@@ -249,7 +254,7 @@ end;
 
 function TDbgWinProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
 var
-  BytesWritten: Cardinal;
+  BytesWritten: PtrUInt;
 begin
   Result := WriteProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @AData, ASize, BytesWritten) and (BytesWritten = ASize);
 
@@ -258,7 +263,7 @@ end;
 
 function TDbgWinProcess.ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean;
 var
-  BytesRead: Cardinal;
+  BytesRead: PtrUInt;
   buf: array of Char;
 begin
   SetLength(buf, AMaxSize + 1);
@@ -272,7 +277,7 @@ end;
 
 function TDbgWinProcess.ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean;
 var
-  BytesRead: Cardinal;
+  BytesRead: PtrUInt;
   buf: array of WChar;
 begin
   SetLength(buf, AMaxSize + 1);
@@ -899,7 +904,7 @@ begin
 {$ifdef cpui386}
   Result := GCurrentContext^.Ebp;
 {$else}
-  Result := GCurrentContext^.Rdi;
+  Result := GCurrentContext^.Rbp;
 {$endif}
 end;
 
@@ -908,7 +913,7 @@ begin
 {$ifdef cpui386}
   Result := GCurrentContext^.Esp;
 {$else}
-//  Result := GCurrentContext^.Rdi;
+  Result := GCurrentContext^.Rsp;
 {$endif}
 end;
 
@@ -1007,20 +1012,40 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(SegFs, IntToStr(SegFs),4,0);
     FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),4,0);
   end;
-  FRegisterValueListValid:=true;
 {$else}
-  FRegisterValueListValid := False;
-  {$warning register not ready for 64 bit}
+  with GCurrentContext^ do
+  begin
+    FRegisterValueList.DbgRegisterAutoCreate['rax'].SetValue(rax, IntToStr(rax),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['rcx'].SetValue(rcx, IntToStr(rcx),4,1);
+    FRegisterValueList.DbgRegisterAutoCreate['rdx'].SetValue(rdx, IntToStr(rdx),4,2);
+    FRegisterValueList.DbgRegisterAutoCreate['rbx'].SetValue(rbx, IntToStr(rbx),4,3);
+    FRegisterValueList.DbgRegisterAutoCreate['rsp'].SetValue(rsp, IntToStr(rsp),4,4);
+    FRegisterValueList.DbgRegisterAutoCreate['rbp'].SetValue(rbp, IntToStr(rbp),4,5);
+    FRegisterValueList.DbgRegisterAutoCreate['rsi'].SetValue(rsi, IntToStr(rsi),4,6);
+    FRegisterValueList.DbgRegisterAutoCreate['rdi'].SetValue(rdi, IntToStr(rdi),4,7);
+    FRegisterValueList.DbgRegisterAutoCreate['rip'].SetValue(rip, IntToStr(rip),4,8);
+
+    FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(EFlags);
+
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(SegCs, IntToStr(SegCs),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r8'].SetValue(r8, IntToStr(r8),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r9'].SetValue(r9, IntToStr(r9),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r10'].SetValue(r10, IntToStr(r10),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r11'].SetValue(r11, IntToStr(r11),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r12'].SetValue(r12, IntToStr(r12),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r13'].SetValue(r13, IntToStr(r13),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r14'].SetValue(r14, IntToStr(r14),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['r15'].SetValue(r15, IntToStr(r15),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(SegFs, IntToStr(SegFs),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(SegGs, IntToStr(SegGs),4,0);
+  end;
 {$endif}
+  FRegisterValueListValid:=true;
 end;
 
 procedure TDbgWinThread.SetSingleStep;
 begin
-{$ifdef cpui386}
   GCurrentContext^.EFlags := GCurrentContext^.EFlags or FLAG_TRACE_BIT;
-{$else}
-  {$warning singlestep not ready for 64 bit}
-{$endif}
   FThreadContextChanged:=true;
 end;
 
@@ -1028,7 +1053,7 @@ function TDbgWinThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
 var
   i: integer;
 
-  function SetBreakpoint(var dr: DWORD; ind: byte): boolean;
+  function SetBreakpoint(var dr: {$ifdef cpui386}DWORD{$else}DWORD64{$endif}; ind: byte): boolean;
   begin
     if (Dr=0) and ((GCurrentContext^.Dr7 and (1 shl ind))=0) then
     begin
@@ -1044,7 +1069,6 @@ var
 
 begin
   result := -1;
-{$ifdef cpui386}
   if SetBreakpoint(GCurrentContext^.Dr0, 0) then
     result := 0
   else if SetBreakpoint(GCurrentContext^.Dr1, 1) then
@@ -1055,15 +1079,11 @@ begin
     result := 3
   else
     Process.Log('No hardware breakpoint available.');
-{$else}
-  FRegisterValueListValid := False;
-  {$warning watchpoint not ready for 64 bit}
-{$endif}
 end;
 
 function TDbgWinThread.RemoveWatchpoint(AnId: integer): boolean;
 
-  function RemoveBreakpoint(var dr: DWORD; ind: byte): boolean;
+  function RemoveBreakpoint(var dr: {$ifdef cpui386}DWORD{$else}DWORD64{$endif}; ind: byte): boolean;
   begin
     if (Dr<>0) and ((GCurrentContext^.Dr7 and (1 shl (ind*2)))<>0) then
     begin
@@ -1081,17 +1101,12 @@ function TDbgWinThread.RemoveWatchpoint(AnId: integer): boolean;
   end;
 
 begin
-{$ifdef cpui386}
   case AnId of
     0: result := RemoveBreakpoint(GCurrentContext^.Dr0, 0);
     1: result := RemoveBreakpoint(GCurrentContext^.Dr1, 1);
     2: result := RemoveBreakpoint(GCurrentContext^.Dr2, 2);
     3: result := RemoveBreakpoint(GCurrentContext^.Dr3, 3);
   end
-{$else}
-  FRegisterValueListValid := False;
-  {$warning watchpoint not ready for 64 bit}
-{$endif}
 end;
 
 procedure TDbgWinThread.BeforeContinue;
@@ -1144,6 +1159,7 @@ begin
   dec(GCurrentContext^.Eip);
   {$else}
   Dec(Context^.Rip);
+  dec(GCurrentContext^.Rip);
   {$endif}
 
   if not SetThreadContext(Handle, Context^)
