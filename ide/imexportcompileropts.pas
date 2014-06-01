@@ -170,16 +170,18 @@ function GetXMLPathForCompilerOptions(XMLConfig: TXMLConfig): string;
 var
   FileVersion: Integer;
 begin
-  if XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'' then
-    Result:=''
-  else if XMLConfig.GetValue(
-    'CompilerOptions/SearchPaths/CompilerPath/Value','')<>''
-  then
-    Result:='CompilerOptions/'
-  else if XMLConfig.GetValue(
-    'Package/CompilerOptions/SearchPaths/CompilerPath/Value','')<>''
-  then
-    Result:='Package/CompilerOptions/'
+  if XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'' then begin
+    // old lpi file
+    Result:='';
+  end else if XMLConfig.GetValue('CompilerOptions/SearchPaths/CompilerPath/Value','')<>''
+  then begin
+    // current lpi file
+    Result:='CompilerOptions/';
+  end else if XMLConfig.GetValue('Package/CompilerOptions/SearchPaths/CompilerPath/Value','')<>''
+  then begin
+    // current lpk file
+    Result:='Package/CompilerOptions/';
+  end
   else begin
     // default: depending on file type
     Result:='CompilerOptions/';
