@@ -597,7 +597,10 @@ begin
         X11Raise(QWidget_winID(Widget.Widget));
     end else
     if (TForm(AWinControl).FormStyle = fsSplash) then
+    begin
       QWidget_repaint(Widget.GetContainerWidget);
+      QCoreApplication_processEvents(QEventLoopExcludeUserInputEvents);
+    end;
   end;
   {$ENDIF}
 end;
