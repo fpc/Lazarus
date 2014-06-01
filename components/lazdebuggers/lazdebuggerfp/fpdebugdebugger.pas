@@ -226,7 +226,7 @@ var
   Size, Count: integer;
   ThreadCallStack: TDbgCallstackEntryList;
 begin
-  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause])
+  if (Debugger = nil) or not(Debugger.State = dsPause)
   then begin
     ACallstack.SetCountValidity(ddsInvalid);
     exit;
@@ -285,7 +285,7 @@ var
   tid, idx: Integer;
   cs: TCallStackBase;
 begin
-  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
+  if (Debugger = nil) or not(Debugger.State = dsPause) then begin
     exit;
   end;
 
@@ -450,7 +450,7 @@ end;
 
 procedure TFPBreakpoint.DoStateChange(const AOldState: TDBGState);
 begin
-  if (Debugger.State = dsPause) then
+  if (Debugger.State in [dsPause, dsInternalPause]) then
     begin
     if Enabled and not FIsSet then
       begin
@@ -522,7 +522,7 @@ var
 
 begin
   Result := False;
-  if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then
+  if (Debugger = nil) or not(Debugger.State = dsPause) then
     exit;
 
   AnEntry:=nil;
@@ -1105,8 +1105,9 @@ end;
 
 procedure TFpDebugDebugger.FDbgControllerCreateProcessEvent(var continue: boolean);
 begin
-  // This will trigger setting the breakpoints
-  SetState(dsPause);
+  // This will trigger setting the breakpoints, but won't trigger the evaluation
+  // of the callstack or disassembler.
+  SetState(dsInternalPause);
 
   if not SetSoftwareExceptionBreakpoint then
     debugln('Failed to set software-debug breakpoint');
