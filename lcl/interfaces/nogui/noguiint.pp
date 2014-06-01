@@ -36,6 +36,7 @@ type
   { TNoGUIWidgetSet }
 
   TNoGUIWidgetSet = class(TWidgetSet)
+    procedure NoGUIWidgetSetWakeMainThread(Sender: TObject);
   protected
   public
     procedure PassCmdLineOptions; override;
@@ -69,6 +70,13 @@ implementation
 
 { TNoGUIWidgetSet }
 
+procedure TNoGUIWidgetSet.NoGUIWidgetSetWakeMainThread(Sender: TObject);
+// Called by thread to wake up the main thread
+begin
+  // Nothing to be done. The application must call
+  // Application.ProcessMessages or CheckSynchronize regularly
+end;
+
 procedure TNoGUIWidgetSet.PassCmdLineOptions;
 begin
   inherited PassCmdLineOptions;
@@ -86,7 +94,8 @@ end;
 
 procedure TNoGUIWidgetSet.AppProcessMessages;
 begin
-
+  if IsMultiThread then
+    CheckSynchronize;
 end;
 
 procedure TNoGUIWidgetSet.AppWaitMessage;
@@ -128,6 +137,7 @@ end;
 constructor TNoGUIWidgetSet.Create;
 begin
   inherited Create;
+  WakeMainThread:=@NoGUIWidgetSetWakeMainThread;
 end;
 
 destructor TNoGUIWidgetSet.Destroy;
