@@ -999,7 +999,7 @@ var
 begin
   // Read address of the vmt
   FDbgController.CurrentProcess.ReadAddress(AnAddr, VMTAddr);
-  FDbgController.CurrentProcess.ReadAddress(VMTAddr+3*4, ClassNameAddr);
+  FDbgController.CurrentProcess.ReadAddress(VMTAddr+3*DBGPTRSIZE[FDbgController.CurrentProcess.Mode], ClassNameAddr);
   // read classname (as shortstring)
   FDbgController.CurrentProcess.ReadData(ClassNameAddr, 1, b);
   setlength(result,b);
@@ -1009,12 +1009,12 @@ end;
 function TFpDebugDebugger.ReadAnsiString(AnAddr: TDbgPtr): string;
 var
   StrAddr: TDBGPtr;
-  len: integer;
+  len: TDBGPtr;
 begin
   result := '';
   if not FDbgController.CurrentProcess.ReadAddress(AnAddr, StrAddr) then
     Exit;
-  FDbgController.CurrentProcess.ReadOrdinal(StrAddr-sizeof(len), len);
+  FDbgController.CurrentProcess.ReadAddress(StrAddr-DBGPTRSIZE[FDbgController.CurrentProcess.Mode], len);
   setlength(result, len);
   if not FDbgController.CurrentProcess.ReadData(StrAddr, len, result[1]) then
     result := '';
@@ -1052,7 +1052,7 @@ begin
   AnExceptionLocation:=GetLocationRec(FDbgController.CurrentProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(2).NumValue);
   AnExceptionObjectLocation:=FDbgController.CurrentProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(0).NumValue;
   ExceptionClass := GetClassInstanceName(AnExceptionObjectLocation);
-  ExceptionMessage := ReadAnsiString(AnExceptionObjectLocation+4);
+  ExceptionMessage := ReadAnsiString(AnExceptionObjectLocation+DBGPTRSIZE[FDbgController.CurrentProcess.Mode]);
 
   DoException(deInternal, ExceptionClass, AnExceptionLocation, ExceptionMessage, continue);
 end;
