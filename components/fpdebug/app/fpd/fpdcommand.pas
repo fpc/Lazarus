@@ -661,7 +661,7 @@ begin
   end;
 
   WriteLN('Callstack:');
-  ACallStack := GController.CurrentProcess.MainThread.CreateCallStackEntryList;
+  //ACallStack := GController.CurrentProcess.MainThread.CreateCallStackEntryList;
   try
     for i := 0 to ACallStack.Count-1 do
     begin

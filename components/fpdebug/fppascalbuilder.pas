@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpDbgInfo, FpdMemoryTools,
-  FpErrorMessages, LazLoggerBase, LCLIntf;
+  FpErrorMessages, LazLoggerBase;
 
 type
   TTypeNameFlag = (

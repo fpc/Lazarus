@@ -31,15 +31,13 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
+        <CommandLineParams Value="c:\tmp\lazdebugtest\project1.exe"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="2">
+    <RequiredPackages Count="1">
       <Item1>
         <PackageName Value="fpdebug"/>
       </Item1>
-      <Item2>
-        <PackageName Value="LCLBase"/>
-      </Item2>
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
@@ -63,6 +61,10 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
+    <CodeGeneration>
+      <TargetCPU Value="x86_64"/>
+      <TargetOS Value="win64"/>
+    </CodeGeneration>
     <Linking>
       <Options>
         <PassLinkerOptions Value="True"/>
