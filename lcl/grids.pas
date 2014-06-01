@@ -6804,17 +6804,19 @@ end;
 procedure TCustomGrid.KeyPress(var Key: char);
 begin
   inherited KeyPress(Key);
-  if not EditorMode and EditingAllowed(FCol) then begin
-    if (Key=#13) then begin
-      SelectEditor;
-      EditorShow(True);
-      Key := #0;
-    end else
-    if (Key in [^H, #32..#255]) then begin
-      EditorShowChar(Key);
-      Key := #0;
+  if not EditorKey then
+    // we are interested in these keys only if they came from the grid
+    if not EditorMode and EditingAllowed(FCol) then begin
+      if (Key=#13) then begin
+        SelectEditor;
+        EditorShow(True);
+        Key := #0;
+      end else
+      if (Key in [^H, #32..#255]) then begin
+        EditorShowChar(Key);
+        Key := #0;
+      end;
     end;
-  end;
 end;
 
 { Convert a fisical Mouse coordinate into fisical a cell coordinate }
@@ -7763,7 +7765,7 @@ begin
   KeyPress(Key); // grid must get all keypresses, even if they are from the editor
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyPress: inter Key=',PrintKey);{$Endif}
   case Key of
-    ^C,^V,^X:;
+    #0, ^C,^V,^X:;
 
     ^M:
     begin
