@@ -597,12 +597,7 @@ begin
         X11Raise(QWidget_winID(Widget.Widget));
     end else
     if (TForm(AWinControl).FormStyle = fsSplash) then
-    begin
-      //process only qt sys events
-      QCoreApplication_processEvents(QEventLoopExcludeUserInputEvents);
-      //now send repaint to splash form
-      QWidget_repaint(Widget.Widget);
-    end;
+      QWidget_repaint(Widget.GetContainerWidget);
   end;
   {$ENDIF}
 end;
