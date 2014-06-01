@@ -40,15 +40,17 @@ uses
   {$ENDIF}
   Classes, SysUtils, Process, LCLType, LCLProc, Controls, Forms,
   Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls, ButtonPanel, Menus,
-  LazConfigStorage, FileProcs, UTF8Process,
+  FileProcs,
   IDEExternToolIntf, IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
-  CompOptsIntf, ProjectIntf,
+  {$IFNDEF EnableNewExtTools}
+  LazConfigStorage, UTF8Process, CompOptsIntf,
+  {$ENDIF}
+  ProjectIntf,
   EnvironmentOpts,
   ExtToolEditDlg, KeyMapping, TransferMacros, IDEProcs, LazFileUtils,
-  InfoBuild, CompilerOptions,
-  {$IFDEF EnableNewExtTools}
-  {$ELSE}
-  OutputFilter,
+  CompilerOptions,
+  {$IFNDEF EnableNewExtTools}
+  InfoBuild, OutputFilter,
   {$ENDIF}
   LazarusIDEStrConsts, IDEOptionDefs, EditorOptions;
 

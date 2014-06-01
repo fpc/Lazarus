@@ -203,7 +203,7 @@ begin
         editMsgFilter.Items.AddObject(s,TObject(Pointer(PtrUInt(Item.ID))));
       end;
     finally
-      FPCMsgFilePool.UnloadFile(FPCMsgFile,nil);
+      FPCMsgFilePool.UnloadFile(FPCMsgFile);
     end;
   end;
   {$ELSE}

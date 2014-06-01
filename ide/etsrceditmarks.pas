@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, math, LazLogger, LazFileUtils, AvgLvlTree,
   KeywordFuncLists, Graphics, Controls, Forms, ImgList,
-  SynGutterLineOverview, SynEditMarkupGutterMark,
+  SynEditMarkupGutterMark,
   SynEditMarks, SynEditMiscClasses, SynEditTypes, SynEdit, LazSynEditText,
   IDEExternToolIntf;
 

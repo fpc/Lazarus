@@ -25,6 +25,8 @@
 }
 unit etFPCMsgParser;
 
+{$IFNDEF EnableNewExtTools}{$ERROR Wrong}{$ENDIF}
+
 {$mode objfpc}{$H+}
 
 {off $DEFINE VerboseQuickFixUnitNotFoundPosition}
@@ -100,7 +102,7 @@ type
       AThread: TThread): TFPCMsgFilePoolItem; // don't forget UnloadFile
     function LoadFile(aFilename: string; UpdateFromDisk: boolean;
       AThread: TThread): TFPCMsgFilePoolItem; // don't forget UnloadFile
-    procedure UnloadFile(var aFile: TFPCMsgFilePoolItem; AThread: TThread);
+    procedure UnloadFile(var aFile: TFPCMsgFilePoolItem);
     procedure EnterCriticalsection;
     procedure LeaveCriticalSection;
     procedure GetMsgFileNames(CompilerFilename, TargetOS, TargetCPU: string;
@@ -882,8 +884,7 @@ begin
   end;
 end;
 
-procedure TFPCMsgFilePool.UnloadFile(var aFile: TFPCMsgFilePoolItem;
-  AThread: TThread);
+procedure TFPCMsgFilePool.UnloadFile(var aFile: TFPCMsgFilePoolItem);
 var
   i: Integer;
   Item: TFPCMsgFilePoolItem;
@@ -1013,9 +1014,9 @@ begin
   FreeAndNil(fFileExists);
   FreeAndNil(fLastSource);
   if TranslationFile<>nil then
-    FPCMsgFilePool.UnloadFile(TranslationFile,nil);
+    FPCMsgFilePool.UnloadFile(TranslationFile);
   if MsgFile<>nil then
-    FPCMsgFilePool.UnloadFile(MsgFile,nil);
+    FPCMsgFilePool.UnloadFile(MsgFile);
   FreeAndNil(DirectoryStack);
   FreeAndNil(fLineToMsgID);
   inherited Destroy;
@@ -2384,7 +2385,7 @@ begin
       if MsgItem=nil then exit;
       Result:=MsgItem.GetTrimmedComment(false,true);
     finally
-      FPCMsgFilePool.UnloadFile(CurMsgFile,nil);
+      FPCMsgFilePool.UnloadFile(CurMsgFile);
     end;
   end;
 end;
@@ -2405,7 +2406,7 @@ begin
       if MsgItem=nil then exit;
       Result:=MsgItem.Pattern;
     finally
-      FPCMsgFilePool.UnloadFile(CurMsgFile,nil);
+      FPCMsgFilePool.UnloadFile(CurMsgFile);
     end;
   end;
 end;

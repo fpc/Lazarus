@@ -240,7 +240,7 @@ type
     procedure SetHighlightUserWordCount(AValue: Integer);
     procedure SetShowTopInfo(AValue: boolean);
     procedure SetTopInfoMarkup(AValue: TSynSelectedColor);
-    procedure DoHighlightChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
+    procedure DoHighlightChanged(Sender: TSynEditStrings; {%H-}AIndex, {%H-}ACount : Integer);
     procedure SrcSynCaretChanged(Sender: TObject);
   protected
     procedure DoOnStatusChange(Changes: TSynStatusChanges); override;

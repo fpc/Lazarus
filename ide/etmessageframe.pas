@@ -39,8 +39,9 @@ uses
   LResources, Forms, Buttons, ExtCtrls, Controls, LMessages, LCLType, Graphics,
   LCLIntf, Themes, ImgList, GraphType, Menus, Clipbrd, Dialogs, StdCtrls,
   IDEExternToolIntf, IDEImagesIntf, MenuIntf, PackageIntf, IDECommands,
-  SrcEditorIntf, etSrcEditMarks, etQuickFixes, LazarusIDEStrConsts,
-  EnvironmentOpts, HelpFPCMessages;
+  SrcEditorIntf,
+  LazarusIDEStrConsts, EnvironmentOpts, HelpFPCMessages,
+  etSrcEditMarks, etQuickFixes, ExtTools;
 
 const
   CustomViewCaption = '------------------------------';
@@ -109,33 +110,21 @@ type
 type
   TMessagesCtrl = class;
 
-  TLMVToolState = (
-    lmvtsRunning,
-    lmvtsSuccess,
-    lmvtsFailed
-    );
-  TLMVToolStates = set of TLMVToolState;
-
   { TLMsgWndView }
 
-  TLMsgWndView = class(TExtToolView)
+  TLMsgWndView = class(TLazExtToolView)
   private
     FControl: TMessagesCtrl;
     FFilter: TLMsgViewFilter;
-    FPendingChanges: TETMultiSrcChanges;
-    FToolState: TLMVToolState;
-    procedure SetFilter(AValue: TLMsgViewFilter);
-    procedure OnMarksFixed(ListOfTMessageLine: TFPList); // (main thread) called after mlfFixed was added to these messages
-    procedure SetToolState(AValue: TLMVToolState);
-  protected
-    FAsyncQueued: boolean;
+    fPaintBottom: integer; // only valid if FPaintStamp=Control.FPaintStamp
     FPaintStamp: int64;
     fPaintTop: integer; // only valid if FPaintStamp=Control.FPaintStamp
-    fPaintBottom: integer; // only valid if FPaintStamp=Control.FPaintStamp
-    procedure CallOnChangedInMainThread({%H-}Data: PtrInt); // (main thread)
+    FPendingChanges: TETMultiSrcChanges;
+    procedure SetFilter(AValue: TLMsgViewFilter);
+    procedure OnMarksFixed(ListOfTMessageLine: TFPList); // (main thread) called after mlfFixed was added to these messages
+  protected
+    procedure SetToolState(AValue: TLMVToolState); override;
     procedure FetchAllPending; override; // (main thread)
-    procedure QueueAsyncOnChanged; override; // (worker thread)
-    procedure RemoveAsyncOnChanged; override; // (worker thread)
     procedure ToolExited; override; // (main thread)
   public
     constructor Create(AOwner: TComponent); override;
@@ -146,7 +135,6 @@ type
     function GetShownLineCount(WithHeader, WithProgressLine: boolean): integer;
     procedure RebuildLines; // (main thread)
     function ApplySrcChanges(Changes: TETSingleSrcChanges): boolean; // true if something changed
-    property ToolState: TLMVToolState read FToolState write SetToolState;
   public
     // requires Enter/LeaveCriticalSection, write only via main thread
     property Filter: TLMsgViewFilter read FFilter write SetFilter;
@@ -953,22 +941,14 @@ end;
 
 procedure TLMsgWndView.SetToolState(AValue: TLMVToolState);
 begin
-  if FToolState=AValue then Exit;
-  FToolState:=AValue;
+  if ToolState=AValue then Exit;
+  inherited;
   Control.Invalidate;
 end;
 
 procedure TLMsgWndView.SetFilter(AValue: TLMsgViewFilter);
 begin
   FFilter.Assign(AValue);
-end;
-
-procedure TLMsgWndView.CallOnChangedInMainThread(Data: PtrInt);
-begin
-  FAsyncQueued:=false;
-  if csDestroying in ComponentState then exit;
-  if Assigned(OnChanged) then
-    OnChanged(Self);
 end;
 
 procedure TLMsgWndView.FetchAllPending;
@@ -1002,20 +982,6 @@ begin
       Lines.UpdateSortedSrcPos:=OldUpdateSortedSrcPos;
     end;
   end;
-end;
-
-procedure TLMsgWndView.QueueAsyncOnChanged;
-begin
-  if FAsyncQueued then exit;
-  FAsyncQueued:=true;
-  Application.QueueAsyncCall(@CallOnChangedInMainThread,0);
-end;
-
-procedure TLMsgWndView.RemoveAsyncOnChanged;
-begin
-  if not FAsyncQueued then exit;
-  FAsyncQueued:=false;
-  Application.RemoveAsyncCalls(Self);
 end;
 
 procedure TLMsgWndView.ToolExited;

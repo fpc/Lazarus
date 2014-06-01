@@ -27,6 +27,8 @@ unit etMakeMsgParser;
 
 {$mode objfpc}{$H+}
 
+{$IFNDEF EnableNewExtTools}{$ERROR Wonrg}{$ENDIF}
+
 interface
 
 uses

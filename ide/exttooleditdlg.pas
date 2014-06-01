@@ -42,14 +42,14 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, FileUtil, LazUTF8, LCLType, Controls, Forms, Buttons,
-  StdCtrls, Dialogs, ExtCtrls, LCLProc, ButtonPanel, IDEMsgIntf,
+  StdCtrls, Dialogs, ExtCtrls, LCLProc, ButtonPanel,
   IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs, IDECommands,
   FileProcs, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts, KeyMapping,
   IDEProcs
   {$IFDEF EnableNewExtTools}
   ,LazConfigStorage, contnrs, IDEUtils
   {$ELSE}
-  ,EditMsgScannersDlg
+  ,IDEMsgIntf, EditMsgScannersDlg
   {$ENDIF}
   ;
 

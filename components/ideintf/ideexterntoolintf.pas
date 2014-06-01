@@ -334,7 +334,7 @@ type
     FMessageLineClass: TMessageLineClass;
     procedure CreateLines; virtual;
     procedure FetchAllPending; virtual; // (main thread)
-    procedure ToolExited; virtual;
+    procedure ToolExited; virtual; // (main thread)
     procedure QueueAsyncOnChanged; virtual; abstract; // (worker thread)
     procedure RemoveAsyncOnChanged; virtual; abstract; // (main or worker thread)
   public

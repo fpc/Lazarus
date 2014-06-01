@@ -43,17 +43,22 @@ interface
 
 uses
   typinfo, Classes, SysUtils, FileProcs, FileUtil, Laz2_XMLCfg, LazFileUtils,
-  AvgLvlTree, Laz2_DOM, InterfaceBase, LCLProc, Forms, Controls, ExprEval,
+  {$IFDEF EnableNewExtTools}
+  AvgLvlTree,
+  {$ENDIF}
+  Laz2_DOM, InterfaceBase, LCLProc, Forms, Controls, ExprEval,
   DefineTemplates, CodeToolsCfgScript, CodeToolManager, KeywordFuncLists,
   BasicCodeTools,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
-  IDEOptionsIntf, IDEMsgIntf,
+  IDEOptionsIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, LazConf,
   TransferMacros,
   {$IFDEF EnableNewExtTools}
   etFPCMsgParser,
+  {$ELSE}
+  IDEMsgIntf,
   {$ENDIF}
   ModeMatrixOpts, CompOptsModes, EnvironmentOpts;
 

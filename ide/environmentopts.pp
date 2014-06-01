@@ -41,7 +41,10 @@ uses
   Dialogs, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
-  CompOptsIntf, ComponentReg, IDEExternToolIntf, IDEDialogs, MacroDefIntf,
+  {$IFNDEF EnableNewExtTools}
+  CompOptsIntf,
+  {$ENDIF}
+  ComponentReg, IDEExternToolIntf, IDEDialogs, MacroDefIntf,
   DbgIntfDebuggerBase,
   // IDE
   IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,

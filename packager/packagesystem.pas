@@ -52,7 +52,10 @@ uses
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
   CodeToolManager, DirectoryCacher,
   // IDEIntf,
-  SrcEditorIntf, IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
+  {$IFNDEF EnableNewExtTools}
+  SrcEditorIntf,
+  {$ENDIF}
+  IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf,
   // package registration
   LazarusPackageIntf,
