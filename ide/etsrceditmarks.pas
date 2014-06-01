@@ -34,9 +34,10 @@ unit etSrcEditMarks;
 interface
 
 uses
-  Classes, SysUtils, math, SynGutterLineOverview, SynEditMarkupGutterMark,
+  Classes, SysUtils, math, LazLogger, LazFileUtils, AvgLvlTree,
+  KeywordFuncLists, Graphics, Controls, Forms, ImgList,
+  SynGutterLineOverview, SynEditMarkupGutterMark,
   SynEditMarks, SynEditMiscClasses, SynEditTypes, SynEdit, LazSynEditText,
-  LazLogger, LazFileUtils, AvgLvlTree, Graphics, Controls, Forms, ImgList,
   IDEExternToolIntf;
 
 type
@@ -94,7 +95,7 @@ type
     fMarkStyles: array[TMessageLineUrgency] of TETMarkStyle;
     FOnGetSynEditOfFile: TOnGetSynEditOfFile;
     FPriority: integer;
-    function GetMarkStyles(Urgency: TMessageLineUrgency): TETMarkStyle;
+    function GetMarkStyles(Urgency: TMessageLineUrgency): TETMarkStyle; inline;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1051,6 +1052,7 @@ end;
 
 { TETMarks }
 
+// inline
 function TETMarks.GetMarkStyles(Urgency: TMessageLineUrgency): TETMarkStyle;
 begin
   Result:=fMarkStyles[Urgency];
@@ -1086,6 +1088,10 @@ end;
 
 function TETMarks.CreateMark(MsgLine: TMessageLine; aSynEdit: TSynEdit
   ): TETMark;
+var
+  Line: Integer;
+  Column: Integer;
+  LineSrc: String;
 begin
   Result:=nil;
   if (MsgLine.Line<1) or (MsgLine.Column<1) or (MsgLine.Filename='') then exit;
@@ -1094,11 +1100,29 @@ begin
     OnGetSynEditOfFile(Self,MsgLine.Filename,aSynEdit);
     if (aSynEdit=nil) then exit;
   end;
+  Line:=MsgLine.Line;
+  Column:=MsgLine.Column;
+  if (mlfLeftToken in MsgLine.Flags) then begin
+    // the mark is at the of the token
+    // synedit only supports starts of tokens
+    // => adjust to start of token
+    if (Column>1) and (Line>=1) and (Line<=aSynEdit.Lines.Count) then begin
+      LineSrc:=aSynEdit.Lines[Line-1];
+      if (Column<=length(LineSrc)+1) and (not IsSpaceChar[LineSrc[Column-1]])
+      then begin
+        dec(Column);
+        if IsIdentChar[LineSrc[Column]] then begin
+          while (Column>1) and (IsIdentChar[LineSrc[Column-1]]) do
+            dec(Column);
+        end;
+      end;
+    end;
+  end;
   Result:=TETMark.Create(aSynEdit);
   Result.SourceMarks:=Self;
   Result.MsgLine:=MsgLine;
-  Result.Line:=MsgLine.Line;
-  Result.Column:=MsgLine.Column;
+  Result.Line:=Line;
+  Result.Column:=Column;
   Result.Visible:=true;
   Result.Priority:=Priority;
   Result.Urgency:=MsgLine.Urgency;

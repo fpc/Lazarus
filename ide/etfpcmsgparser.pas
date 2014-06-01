@@ -46,6 +46,7 @@ const
   FPCMsgIDErrorWhileCompilingResources = 9029;
   FPCMsgIDCallingResourceCompiler = 9028;
   FPCMsgIDThereWereErrorsCompiling = 10026;
+  FPCMsgIDIdentifierNotFound = 5000;
 
   FPCMsgAttrWorkerDirectory = 'WD';
   FPCMsgAttrMissingUnit = 'MissingUnit';
@@ -150,6 +151,7 @@ type
     fMsgItemCantFindUnitUsedBy: TFPCMsgItem;
     fMsgItemCompilationAborted: TFPCMsgItem;
     fMsgItemThereWereErrorsCompiling: TFPCMsgItem;
+    fMsgItemIdentifierNotFound: TFPCMsgItem;
     fMsgItemErrorWhileLinking: TFPCMsgItem;
     fMsgItemErrorWhileCompilingResources: TFPCMsgItem;
     fMissingFPCMsgItem: TFPCMsgItem;
@@ -2225,7 +2227,10 @@ begin
   else if IsMsgID(MsgLine,FPCMsgIDThereWereErrorsCompiling,
     fMsgItemThereWereErrorsCompiling)
   then
-    MsgLine.Urgency:=mluVerbose;
+    MsgLine.Urgency:=mluVerbose
+  else if IsMsgID(MsgLine,FPCMsgIDIdentifierNotFound,fMsgItemIdentifierNotFound)
+  then
+    MsgLine.Flags:=MsgLine.Flags+[mlfLeftToken];
   inherited AddMsgLine(MsgLine);
 end;
 
