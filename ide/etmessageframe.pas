@@ -446,7 +446,7 @@ type
       DeleteOld: boolean);
     procedure ApplySrcChanges(Changes: TETSingleSrcChanges);
     procedure ApplyMultiSrcChanges(Changes: TETMultiSrcChanges);
-    procedure SourceEditorPopup(aSrcEdit: TSourceEditorInterface);
+    procedure SourceEditorPopup(MarkLine: TSynEditMarkLine);
 
     // message lines
     procedure SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
@@ -3742,21 +3742,13 @@ begin
     ApplySrcChanges(TETSingleSrcChanges(Node.Data));
 end;
 
-procedure TMessagesFrame.SourceEditorPopup(aSrcEdit: TSourceEditorInterface);
+procedure TMessagesFrame.SourceEditorPopup(MarkLine: TSynEditMarkLine);
 var
-  LineCol: TPoint;
-  aSynEdit: TSynEdit;
-  MarkLine: TSynEditMarkLine;
   i: Integer;
   Mark: TETMark;
 begin
   //debugln(['TMessagesFrame.SourceEditorPopup ']);
   // get all marks of the current source editor line
-  aSynEdit:=TSynEdit(aSrcEdit.EditorControl);
-  if not (aSynEdit is TSynEdit) then exit;
-  LineCol:=aSrcEdit.CursorScreenXY;
-  if LineCol.Y>aSynEdit.Lines.Count then exit;
-  MarkLine:=aSynEdit.Marks.Line[LineCol.Y];
   if MarkLine=nil then exit;
   IDEQuickFixes.ClearLines;
   for i:=0 to MarkLine.Count-1 do begin

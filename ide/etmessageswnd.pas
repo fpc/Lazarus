@@ -33,8 +33,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, IDEMsgIntf, IDEImagesIntf, IDEExternToolIntf,
-  LazIDEIntf, SrcEditorIntf, Forms, Controls, Graphics, Dialogs, LCLProc,
-  etMessageFrame, etSrcEditMarks, etQuickFixes;
+  LazIDEIntf, SrcEditorIntf, SynEditMarks, Forms, Controls, Graphics, Dialogs,
+  LCLProc, etMessageFrame, etSrcEditMarks, etQuickFixes;
 
 type
 
@@ -76,7 +76,7 @@ type
       const ViewCaption: string=''): TMessageLine; override;
 
     // misc
-    procedure SourceEditorPopup(aSrcEdit: TSourceEditorInterface);
+    procedure SourceEditorPopup(MarkLine: TSynEditMarkLine);
 
     // options
     procedure ApplyIDEOptions;
@@ -156,9 +156,9 @@ begin
     LineNumber,Column,ViewCaption);
 end;
 
-procedure TMessagesView.SourceEditorPopup(aSrcEdit: TSourceEditorInterface);
+procedure TMessagesView.SourceEditorPopup(MarkLine: TSynEditMarkLine);
 begin
-  MessagesFrame1.SourceEditorPopup(aSrcEdit);
+  MessagesFrame1.SourceEditorPopup(MarkLine);
 end;
 
 procedure TMessagesView.Clear;

@@ -6409,8 +6409,9 @@ begin
         FreeMem(Marks);
       end;
       {$IFDEF EnableNewExtTools}
-      if MessagesView<>nil then
-        MessagesView.SourceEditorPopup(ASrcEdit);
+      if (EditorCaret.Y<=EditorComp.Lines.Count)
+      and (MessagesView<>nil) then
+        MessagesView.SourceEditorPopup(EditorComp.Marks.Line[EditorCaret.Y]);
       {$ENDIF}
     end;
 
