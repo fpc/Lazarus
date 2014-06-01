@@ -33,8 +33,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, IDEMsgIntf, IDEImagesIntf, IDEExternToolIntf,
-  LazIDEIntf, Forms, Controls, Graphics, Dialogs, LCLProc, etMessageFrame,
-  etSrcEditMarks, etQuickFixes;
+  LazIDEIntf, SrcEditorIntf, Forms, Controls, Graphics, Dialogs, LCLProc,
+  etMessageFrame, etSrcEditMarks, etQuickFixes;
 
 type
 
@@ -53,24 +53,32 @@ type
   protected
     function GetViews(Index: integer): TExtToolView; override;
   public
-    procedure ClearCustomMessages(const ViewCaption: string='');
-    function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
-      aSrcFilename: string=''; LineNumber: integer=0; Column: integer=0;
-      const ViewCaption: string=''): TMessageLine; override;
+    // views
     procedure Clear; override;
     procedure DeleteView(View: TExtToolView); override;
     function FindUnfinishedView: TExtToolView; override;
     function GetSelectedLine: TMessageLine; override;
     function GetView(aCaption: string; CreateIfNotExist: boolean
       ): TExtToolView; override;
+    function ViewCount: integer; override;
     function CreateView(aCaptionPrefix: string): TExtToolView; override;
     function IndexOfView(View: TExtToolView): integer; override;
+
+    // lines
     procedure SelectMsgLine(Msg: TMessageLine); override;
     function SelectFirstUrgentMessage(aMinUrgency: TMessageLineUrgency;
       WithSrcPos: boolean): boolean; override;
     function SelectNextUrgentMessage(aMinUrgency: TMessageLineUrgency;
       WithSrcPos, Downwards: boolean): boolean; override;
-    function ViewCount: integer; override;
+    procedure ClearCustomMessages(const ViewCaption: string='');
+    function AddCustomMessage(TheUrgency: TMessageLineUrgency; Msg: string;
+      aSrcFilename: string=''; LineNumber: integer=0; Column: integer=0;
+      const ViewCaption: string=''): TMessageLine; override;
+
+    // misc
+    procedure SourceEditorPopup(aSrcEdit: TSourceEditorInterface);
+
+    // options
     procedure ApplyIDEOptions;
     property DblClickJumps: boolean read GetDblClickJumps write SetDblClickJumps;
     property HideMessagesIcons: boolean read GetHideMessagesIcons write SetHideMessagesIcons;
@@ -146,6 +154,11 @@ function TMessagesView.AddCustomMessage(TheUrgency: TMessageLineUrgency;
 begin
   Result:=MessagesFrame1.AddCustomMessage(TheUrgency,Msg,aSrcFilename,
     LineNumber,Column,ViewCaption);
+end;
+
+procedure TMessagesView.SourceEditorPopup(aSrcEdit: TSourceEditorInterface);
+begin
+  MessagesFrame1.SourceEditorPopup(aSrcEdit);
 end;
 
 procedure TMessagesView.Clear;

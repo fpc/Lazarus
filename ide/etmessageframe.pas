@@ -35,11 +35,12 @@ interface
 
 uses
   Math, strutils, Classes, SysUtils, UTF8Process, FileProcs, LazFileCache,
-  LazUTF8Classes, LazFileUtils, LazUTF8, AvgLvlTree, SynEdit, LResources, Forms,
-  Buttons, ExtCtrls, Controls, LMessages, LCLType, Graphics, LCLIntf, Themes,
-  ImgList, GraphType, Menus, Clipbrd, Dialogs, StdCtrls, IDEExternToolIntf,
-  IDEImagesIntf, MenuIntf, PackageIntf, IDECommands, etSrcEditMarks,
-  etQuickFixes, LazarusIDEStrConsts, EnvironmentOpts, HelpFPCMessages;
+  LazUTF8Classes, LazFileUtils, LazUTF8, AvgLvlTree, SynEdit, SynEditMarks,
+  LResources, Forms, Buttons, ExtCtrls, Controls, LMessages, LCLType, Graphics,
+  LCLIntf, Themes, ImgList, GraphType, Menus, Clipbrd, Dialogs, StdCtrls,
+  IDEExternToolIntf, IDEImagesIntf, MenuIntf, PackageIntf, IDECommands,
+  SrcEditorIntf, etSrcEditMarks, etQuickFixes, LazarusIDEStrConsts,
+  EnvironmentOpts, HelpFPCMessages;
 
 const
   CustomViewCaption = '------------------------------';
@@ -445,6 +446,7 @@ type
       DeleteOld: boolean);
     procedure ApplySrcChanges(Changes: TETSingleSrcChanges);
     procedure ApplyMultiSrcChanges(Changes: TETMultiSrcChanges);
+    procedure SourceEditorPopup(aSrcEdit: TSourceEditorInterface);
 
     // message lines
     procedure SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
@@ -3738,6 +3740,35 @@ var
 begin
   for Node in Changes.PendingChanges do
     ApplySrcChanges(TETSingleSrcChanges(Node.Data));
+end;
+
+procedure TMessagesFrame.SourceEditorPopup(aSrcEdit: TSourceEditorInterface);
+var
+  LineCol: TPoint;
+  aSynEdit: TSynEdit;
+  MarkLine: TSynEditMarkLine;
+  i: Integer;
+  Mark: TETMark;
+begin
+  //debugln(['TMessagesFrame.SourceEditorPopup ']);
+  // get all marks of the current source editor line
+  aSynEdit:=TSynEdit(aSrcEdit.EditorControl);
+  if not (aSynEdit is TSynEdit) then exit;
+  LineCol:=aSrcEdit.CursorScreenXY;
+  if LineCol.Y>aSynEdit.Lines.Count then exit;
+  MarkLine:=aSynEdit.Marks.Line[LineCol.Y];
+  if MarkLine=nil then exit;
+  IDEQuickFixes.ClearLines;
+  for i:=0 to MarkLine.Count-1 do begin
+    Mark:=TETMark(MarkLine[i]);
+    if not (Mark is TETMark) then continue;
+    //debugln(['TMessagesFrame.SourceEditorPopup ',Mark.Line,',',Mark.Column,' ID=',Mark.MsgLine.MsgID,' Msg=',Mark.MsgLine.Msg]);
+    IDEQuickFixes.AddMsgLine(Mark.MsgLine);
+  end;
+  // create items
+  if IDEQuickFixes.Count>0 then begin
+    IDEQuickFixes.OnPopupMenu(SrcEditMenuSectionFirstDynamic);
+  end;
 end;
 
 procedure TMessagesFrame.SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);

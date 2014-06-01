@@ -1059,6 +1059,9 @@ begin
 end;
 
 constructor TETMarks.Create(AOwner: TComponent);
+const
+  DefMarkColorHint = TColor($00a5ff);
+  DefMarkColorError = clRed;
 var
   u: TMessageLineUrgency;
 begin
@@ -1066,13 +1069,11 @@ begin
   if ExtToolsMarks=nil then
     ExtToolsMarks:=Self;
   for u:=low(TMessageLineUrgency) to high(TMessageLineUrgency) do
-    fMarkStyles[u]:=TETMarkStyle.Create(u,clNone);
-  fMarkStyles[mluHint].Color:=clGreen;
-  fMarkStyles[mluNote].Color:=clGreen;
-  fMarkStyles[mluWarning].Color:=clYellow;
-  fMarkStyles[mluError].Color:=clRed;
-  fMarkStyles[mluFatal].Color:=clRed;
-  fMarkStyles[mluPanic].Color:=clRed;
+    fMarkStyles[u]:=TETMarkStyle.Create(u,DefMarkColorHint);
+  fMarkStyles[mluWarning].Color:=DefMarkColorError;
+  fMarkStyles[mluError].Color:=DefMarkColorError;
+  fMarkStyles[mluFatal].Color:=DefMarkColorError;
+  fMarkStyles[mluPanic].Color:=DefMarkColorError;
 end;
 
 destructor TETMarks.Destroy;

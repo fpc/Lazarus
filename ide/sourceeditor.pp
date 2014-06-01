@@ -6408,6 +6408,10 @@ begin
           Marks[i].CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
         FreeMem(Marks);
       end;
+      {$IFDEF EnableNewExtTools}
+      if MessagesView<>nil then
+        MessagesView.SourceEditorPopup(ASrcEdit);
+      {$ENDIF}
     end;
 
     if Assigned(Manager.OnPopupMenu) then
