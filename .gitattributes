@@ -5242,6 +5242,7 @@ ide/exttooldialog.lfm svneol=native#text/plain
 ide/exttooldialog.pas svneol=native#text/pascal
 ide/exttooleditdlg.lfm svneol=native#text/pascal
 ide/exttooleditdlg.pas svneol=native#text/pascal
+ide/exttools.pas svneol=native#text/plain
 ide/filereferencelist.pas svneol=native#text/pascal
 ide/findinfilesdlg.lfm svneol=native#text/plain
 ide/findinfilesdlg.pas svneol=native#text/pascal
