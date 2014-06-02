@@ -179,6 +179,9 @@ begin
   CaptureExceptions:=false;
   LCLProc.SendApplicationMessageFunction:=nil;
   OnGetApplicationName := nil;
+
+  if Application=Self then
+    Application:=nil;
 end;
 
 procedure TApplication.ActivateHint(CursorPos: TPoint; CheckHintControlChange: Boolean);
