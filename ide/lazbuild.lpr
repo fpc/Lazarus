@@ -184,7 +184,7 @@ type
   end;
 
 var
-  Application: TLazBuildApplication = nil;
+  LazBuildApp: TLazBuildApplication = nil;
 
 const
   ErrorFileNotFound = 1;
@@ -838,7 +838,7 @@ var
     // update all lrs files
     MainBuildBoss.UpdateProjectAutomaticFiles('');
 
-    // create application bundle
+    // create LazBuildApp bundle
     if Project1.UseAppBundle and (Project1.MainUnitID>=0)
     and (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
     then begin
@@ -1151,11 +1151,11 @@ begin
     fCompilerInCfg:=CompilerFilename;
     fLazarusDirInCfg:=LazarusDirectory;
 
-    if Application.HasOption('language') then begin
+    if LazBuildApp.HasOption('language') then begin
       if ConsoleVerbosity>=0 then
         debugln('Note: overriding language with command line: ',
-          Application.GetOptionValue('language'));
-      EnvironmentOptions.LanguageID:=Application.GetOptionValue('language');
+          LazBuildApp.GetOptionValue('language'));
+      EnvironmentOptions.LanguageID:=LazBuildApp.GetOptionValue('language');
     end;
     TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
                              EnvironmentOptions.LanguageID);
@@ -1726,11 +1726,10 @@ begin
   {$IFDEF BuildWidgetSetNoGui}  Result:=lpNoGUI;  {$ENDIF}
 
   FilterConfigFileContent;
-  // free LCL application
-  FreeAndNil(Forms.Application);
-  // start our own application
-  Application:=TLazBuildApplication.Create(nil);
-  Application.Run;
+  // start our own LazBuildApp
+  LazBuildApp:=TLazBuildApplication.Create(nil);
+  LazBuildApp.Run;
+  LazBuildApp.Free;
   Application.Free;
 end.
 
