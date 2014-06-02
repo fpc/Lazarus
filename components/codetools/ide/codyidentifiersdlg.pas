@@ -41,9 +41,10 @@ uses
   Classes, SysUtils, FileProcs, LResources, LCLProc, avl_tree, contnrs, Forms,
   Controls, Graphics, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType,
   Buttons, Menus, PackageIntf, LazIDEIntf, SrcEditorIntf, ProjectIntf,
-  CompOptsIntf, IDEDialogs, CodeCache, BasicCodeTools, CustomCodeTool,
-  CodeToolManager, UnitDictionary, CodeTree, LinkScanner, DefineTemplates,
-  CodeToolsStructs, FindDeclarationTool, CodyStrConsts, CodyUtils, CodyOpts;
+  CompOptsIntf, IDEDialogs, IDEMsgIntf, IDEExternToolIntf, CodeCache,
+  BasicCodeTools, CustomCodeTool, CodeToolManager, UnitDictionary, CodeTree,
+  LinkScanner, DefineTemplates, CodeToolsStructs, FindDeclarationTool,
+  CodyStrConsts, CodyUtils, CodyOpts;
 
 const
   PackageNameFPCSrcDir = 'FPCSrcDir';
@@ -230,6 +231,18 @@ type
     function GetFilterType: TCodyIdentifierFilter;
   end;
 
+  {$IFDEF EnableNewExtTools}
+
+  { TQuickFixIdentifierNotFoundShowDictionary }
+
+  TQuickFixIdentifierNotFoundShowDictionary = class(TMsgQuickFix)
+  public
+    function IsApplicable(Msg: TMessageLine; out Identifer: string): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+  {$ENDIF}
+
 var
   CodyUnitDictionary: TCodyUnitDictionary = nil;
 
@@ -267,6 +280,9 @@ end;
 procedure InitUnitDictionary;
 begin
   CodyUnitDictionary:=TCodyUnitDictionary.Create;
+  {$IFDEF EnableNewExtTools}
+  RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFoundShowDictionary.Create);
+  {$ENDIF}
 end;
 
 function CompareCodyIdentifiersAlphaScopeUse(Item1, Item2: Pointer): integer;
@@ -354,6 +370,49 @@ begin
   else
     exit(0);
 end;
+
+{$IFDEF EnableNewExtTools}
+{ TQuickFixIdentifierNotFoundShowDictionary }
+
+function TQuickFixIdentifierNotFoundShowDictionary.IsApplicable(
+  Msg: TMessageLine; out Identifer: string): boolean;
+var
+  Dummy: string;
+begin
+  Result:=IDEFPCParser.MsgLineIsId(Msg,5000,Identifer,Dummy);
+end;
+
+procedure TQuickFixIdentifierNotFoundShowDictionary.CreateMenuItems(
+  Fixes: TMsgQuickFixes);
+var
+  Msg: TMessageLine;
+  Identifier: string;
+  i: Integer;
+begin
+  for i:=0 to Fixes.Count-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,Identifier) then continue;
+    Fixes.AddMenuItem(Self,Msg,'Show Cody Dictionary for "'+Identifier+'"');
+    exit;
+  end;
+end;
+
+procedure TQuickFixIdentifierNotFoundShowDictionary.QuickFix(
+  Fixes: TMsgQuickFixes; Msg: TMessageLine);
+var
+  Identifier: string;
+  i: Integer;
+begin
+  for i:=0 to Fixes.Count-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,Identifier) then continue;
+    if LazarusIDE.DoOpenFileAndJumpToPos(Msg.GetFullFilename,
+      Point(Msg.Column,Msg.Line),-1,-1,-1,[])<>mrOk then exit;
+    ShowUnitDictionaryDialog(nil);
+    exit;
+  end;
+end;
+{$ENDIF}
 
 { TCodyIdentifier }
 
