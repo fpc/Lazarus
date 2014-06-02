@@ -48,9 +48,9 @@ const
 type
   TLMsgViewFilter = class;
 
-  { TLMVFilterHideMsgType - read/write by main, read by worker thread }
+  { TLMVFilterMsgType - read/write by main, read by worker thread }
 
-  TLMVFilterHideMsgType = class
+  TLMVFilterMsgType = class
   private
     FFilter: TLMsgViewFilter;
     FIndex: integer;
@@ -59,11 +59,11 @@ type
     procedure SetMsgID(AValue: integer);
     procedure SetSubTool(AValue: string);
     procedure Changed;
-    procedure InternalAssign(Src: TLMVFilterHideMsgType);
+    procedure InternalAssign(Src: TLMVFilterMsgType);
   public
     constructor Create(aFilter: TLMsgViewFilter);
-    function IsEqual(Src: TLMVFilterHideMsgType): boolean;
-    procedure Assign(Src: TLMVFilterHideMsgType);
+    function IsEqual(Src: TLMVFilterMsgType): boolean;
+    procedure Assign(Src: TLMVFilterMsgType);
     property Filter: TLMsgViewFilter read FFilter;
     property SubTool: string read FSubTool write SetSubTool;
     property MsgID: integer read FMsgID write SetMsgID;
@@ -75,16 +75,16 @@ type
   TLMsgViewFilter = class
   private
     FCaption: string;
-    FHideNotesWithoutPos: boolean;
+    FFilterNotesWithoutPos: boolean;
     FMinUrgency: TMessageLineUrgency;
     FOnChanged: TNotifyEvent;
-    fHideMsgTypes: array of TLMVFilterHideMsgType; // sorted for SubTool, MsgID
-    function GetHideMsgTypes(Index: integer): TLMVFilterHideMsgType; inline;
+    fFilterMsgTypes: array of TLMVFilterMsgType; // sorted for SubTool, MsgID
+    function GetFilterMsgTypes(Index: integer): TLMVFilterMsgType; inline;
     procedure SetCaption(AValue: string);
-    procedure SetHideNotesWithoutPos(AValue: boolean);
+    procedure SetFilterNotesWithoutPos(AValue: boolean);
     procedure SetMinUrgency(AValue: TMessageLineUrgency);
     procedure Changed;
-    procedure UpdateHideMsgTypeIndex(Item: TLMVFilterHideMsgType);
+    procedure UpdateFilterMsgTypeIndex(Item: TLMVFilterMsgType);
   public
     constructor Create;
     destructor Destroy; override;
@@ -95,13 +95,13 @@ type
     function LineFits(Line: TMessageLine): boolean; virtual;
     property Caption: string read FCaption write SetCaption;
     property MinUrgency: TMessageLineUrgency read FMinUrgency write SetMinUrgency;
-    property HideNotesWithoutPos: boolean read FHideNotesWithoutPos write SetHideNotesWithoutPos;
-    function HideMsgTypeCount: integer; inline;
-    property HideMsgTypes[Index: integer]: TLMVFilterHideMsgType read GetHideMsgTypes;
-    function AddHideMsgType(SubTool: string; MsgID: integer): TLMVFilterHideMsgType;
-    procedure DeleteHideMsgType(Index: integer);
-    procedure ClearHideMsgTypes;
-    function IndexOfHideMsgType(Line: TMessageLine): integer;
+    property FilterNotesWithoutPos: boolean read FFilterNotesWithoutPos write SetFilterNotesWithoutPos;
+    function FilterMsgTypeCount: integer; inline;
+    property FilterMsgTypes[Index: integer]: TLMVFilterMsgType read GetFilterMsgTypes;
+    function AddFilterMsgType(SubTool: string; MsgID: integer): TLMVFilterMsgType;
+    procedure DeleteFilterMsgType(Index: integer);
+    procedure ClearFilterMsgTypes;
+    function IndexOfFilterMsgType(Line: TMessageLine): integer;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     procedure ConsistencyCheck;
   end;
@@ -374,7 +374,7 @@ type
     SearchPrevSpeedButton: TSpeedButton;
     procedure AboutToolMenuItemClick(Sender: TObject);
     procedure AddFilterMenuItemClick(Sender: TObject);
-    procedure ClearHideMsgTypesMenuItemClick(Sender: TObject);
+    procedure ClearFilterMsgTypesMenuItemClick(Sender: TObject);
     procedure ClearMenuItemClick(Sender: TObject);
     procedure CopyAllMenuItemClick(Sender: TObject);
     procedure CopyFilenameMenuItemClick(Sender: TObject);
@@ -384,9 +384,9 @@ type
     procedure FileStyleMenuItemClick(Sender: TObject);
     procedure FindMenuItemClick(Sender: TObject);
     procedure HelpMenuItemClick(Sender: TObject);
-    procedure HideHintsWithoutPosMenuItemClick(Sender: TObject);
-    procedure HideMsgOfTypeMenuItemClick(Sender: TObject);
-    procedure HideUrgencyMenuItemClick(Sender: TObject);
+    procedure FilterHintsWithoutPosMenuItemClick(Sender: TObject);
+    procedure FilterMsgOfTypeMenuItemClick(Sender: TObject);
+    procedure FilterUrgencyMenuItemClick(Sender: TObject);
     procedure HideSearchSpeedButtonClick(Sender: TObject);
     procedure MsgCtrlPopupMenuClose(Sender: TObject);
     procedure MsgCtrlPopupMenuPopup(Sender: TObject);
@@ -402,7 +402,7 @@ type
     procedure ShowIDMenuItemClick(Sender: TObject);
     procedure SrcEditLinesChanged(Sender: TObject);
     procedure TranslateMenuItemClick(Sender: TObject);
-    procedure UnhideMsgTypeClick(Sender: TObject);
+    procedure RemoveFilterMsgTypeClick(Sender: TObject);
   private
     function AllMessagesAsString(const OnlyShown: boolean): String;
     function GetAboutView: TLMsgWndView;
@@ -460,18 +460,18 @@ var
   MsgAboutSection: TIDEMenuSection;
     MsgAboutToolMenuItem: TIDEMenuCommand;
     MsgOpenToolOptionsMenuItem: TIDEMenuCommand;
-  MsgHideMsgOfTypeMenuItem: TIDEMenuCommand;
-  MsgUnhideMsgTypesMenuSection: TIDEMenuSection;
-    MsgUnhideMsgOneTypeMenuSection: TIDEMenuSection;
-    MsgUnhideAllMsgTypesMenuItem: TIDEMenuCommand;
-  MsgHideBelowMenuSection: TIDEMenuSection;
-    MsgHideWarningsMenuItem: TIDEMenuCommand;
-    MsgHideNotesMenuItem: TIDEMenuCommand;
-    MsgHideHintsMenuItem: TIDEMenuCommand;
-    MsgHideVerboseMenuItem: TIDEMenuCommand;
-    MsgHideDebugMenuItem: TIDEMenuCommand;
-    MsgHideNoneMenuItem: TIDEMenuCommand;
-  MsgHideHintsWithoutPosMenuItem: TIDEMenuCommand;
+  MsgFilterMsgOfTypeMenuItem: TIDEMenuCommand;
+  MsgRemoveMsgTypeFilterMenuSection: TIDEMenuSection;
+    MsgRemoveFilterMsgOneTypeMenuSection: TIDEMenuSection;
+    MsgRemoveFilterAllMsgTypesMenuItem: TIDEMenuCommand;
+  MsgFilterBelowMenuSection: TIDEMenuSection;
+    MsgFilterWarningsMenuItem: TIDEMenuCommand;
+    MsgFilterNotesMenuItem: TIDEMenuCommand;
+    MsgFilterHintsMenuItem: TIDEMenuCommand;
+    MsgFilterVerboseMenuItem: TIDEMenuCommand;
+    MsgFilterDebugMenuItem: TIDEMenuCommand;
+    MsgFilterNoneMenuItem: TIDEMenuCommand;
+  MsgFilterHintsWithoutPosMenuItem: TIDEMenuCommand;
   MsgFiltersMenuSection: TIDEMenuSection;
     MsgSelectFilterMenuSection: TIDEMenuSection;
     MsgAddFilterMenuItem: TIDEMenuCommand;
@@ -495,8 +495,8 @@ var
 
 procedure RegisterStandardMessagesViewMenuItems;
 
-function CompareHideMsgType(HideMsgType1, HideMsgType2: Pointer): integer;
-function CompareLineAndHideMsgType(MessageLine1, HideMsgType1: Pointer): integer;
+function CompareFilterMsgType(FilterMsgType1, FilterMsgType2: Pointer): integer;
+function CompareLineAndFilterMsgType(MessageLine1, FilterMsgType1: Pointer): integer;
 
 implementation
 
@@ -515,24 +515,24 @@ begin
     Parent.Caption:='About ...';
     MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Parent, 'About', 'About Tool');
     MsgOpenToolOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'Open Tool Options', 'Open Tool Options');
-  MsgHideMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'HideMsgOfType','');
-  MsgUnhideMsgTypesMenuSection:=RegisterIDEMenuSection(Root,'UnhideMsgType');
-    Parent:=MsgUnhideMsgTypesMenuSection;
+  MsgFilterMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'FilterMsgOfType','');
+  MsgRemoveMsgTypeFilterMenuSection:=RegisterIDEMenuSection(Root,'RemoveMsgTypeFilters');
+    Parent:=MsgRemoveMsgTypeFilterMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='Unhide Messages of Type';
-    MsgUnhideMsgOneTypeMenuSection:=RegisterIDEMenuSection(Parent,'UnhideMsgOfTypeSection');
-    MsgUnhideAllMsgTypesMenuItem:=RegisterIDEMenuCommand(Parent,'Unhide All','Unhide All');
-  MsgHideBelowMenuSection:=RegisterIDEMenuSection(Root,'Hide Below Section');
-    Parent:=MsgHideBelowMenuSection;
+    Parent.Caption:='Remove Message Type Filter';
+    MsgRemoveFilterMsgOneTypeMenuSection:=RegisterIDEMenuSection(Parent,'RemoveOneMsgTypeFilterSection');
+    MsgRemoveFilterAllMsgTypesMenuItem:=RegisterIDEMenuCommand(Parent,'Remove all message type filters','Remove all message type filters');
+  MsgFilterBelowMenuSection:=RegisterIDEMenuSection(Root,'Filter Below Section');
+    Parent:=MsgFilterBelowMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='Hide non urgent Messages ...';
-    MsgHideWarningsMenuItem:=RegisterIDEMenuCommand(Parent,'Hide Warnings','Hide Warnings and below');
-    MsgHideNotesMenuItem:=RegisterIDEMenuCommand(Parent,'Hide Notes','Hide Notes and below');
-    MsgHideHintsMenuItem:=RegisterIDEMenuCommand(Parent,'Hide Hints','Hide Hints and below');
-    MsgHideVerboseMenuItem:=RegisterIDEMenuCommand(Parent,'Hide Verbose Messages','Hide Verbose Messages and below');
-    MsgHideDebugMenuItem:=RegisterIDEMenuCommand(Parent,'Hide Debug Messages','Hide Debug Messages and below');
-    MsgHideNoneMenuItem:=RegisterIDEMenuCommand(Parent,'Hide None, do not hide by urgency','Hide None, do not hide by urgency');
-  MsgHideHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Root, 'Hide Hints without Source Position', 'Hide Hints without Source Position');
+    Parent.Caption:='Filter non urgent Messages ...';
+    MsgFilterWarningsMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Warnings','Filter Warnings and below');
+    MsgFilterNotesMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Notes','Filter Notes and below');
+    MsgFilterHintsMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Hints','Filter Hints and below');
+    MsgFilterVerboseMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Verbose Messages','Filter Verbose Messages and below');
+    MsgFilterDebugMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Debug Messages','Filter Debug Messages and below');
+    MsgFilterNoneMenuItem:=RegisterIDEMenuCommand(Parent,'Filter None, do not filter by urgency','Filter None, do not filter by urgency');
+  MsgFilterHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Root, 'Filter Hints without Source Position', 'Filter Hints without Source Position');
   MsgFiltersMenuSection:=RegisterIDEMenuSection(Root,'Switch Filter Section');
     Parent:=MsgFiltersMenuSection;
     Parent.ChildsAsSubMenu:=true;
@@ -567,10 +567,10 @@ begin
   MsgShowIDMenuItem:=RegisterIDEMenuCommand(Root, 'ShowID', 'Show Message Type ID');
 end;
 
-function CompareHideMsgType(HideMsgType1, HideMsgType2: Pointer): integer;
+function CompareFilterMsgType(FilterMsgType1, FilterMsgType2: Pointer): integer;
 var
-  Item1: TLMVFilterHideMsgType absolute HideMsgType1;
-  Item2: TLMVFilterHideMsgType absolute HideMsgType2;
+  Item1: TLMVFilterMsgType absolute FilterMsgType1;
+  Item2: TLMVFilterMsgType absolute FilterMsgType2;
 begin
   Result:=SysUtils.CompareText(Item1.SubTool,Item2.SubTool);
   if Result<>0 then exit;
@@ -581,11 +581,11 @@ begin
   Result:=0;
 end;
 
-function CompareLineAndHideMsgType(MessageLine1, HideMsgType1: Pointer
+function CompareLineAndFilterMsgType(MessageLine1, FilterMsgType1: Pointer
   ): integer;
 var
   Line: TMessageLine absolute MessageLine1;
-  Item: TLMVFilterHideMsgType absolute HideMsgType1;
+  Item: TLMVFilterMsgType absolute FilterMsgType1;
 begin
   Result:=SysUtils.CompareText(Line.SubTool,Item.SubTool);
   if Result<>0 then exit;
@@ -598,47 +598,47 @@ end;
 
 {$R *.lfm}
 
-{ TLMVFilterHideMsgType }
+{ TLMVFilterMsgType }
 
-procedure TLMVFilterHideMsgType.SetMsgID(AValue: integer);
+procedure TLMVFilterMsgType.SetMsgID(AValue: integer);
 begin
   if FMsgID=AValue then Exit;
   FMsgID:=AValue;
   Changed;
 end;
 
-procedure TLMVFilterHideMsgType.SetSubTool(AValue: string);
+procedure TLMVFilterMsgType.SetSubTool(AValue: string);
 begin
   if FSubTool=AValue then Exit;
   FSubTool:=AValue;
   Changed;
 end;
 
-procedure TLMVFilterHideMsgType.Changed;
+procedure TLMVFilterMsgType.Changed;
 begin
-  Filter.UpdateHideMsgTypeIndex(Self);
+  Filter.UpdateFilterMsgTypeIndex(Self);
   Filter.Changed;
 end;
 
-procedure TLMVFilterHideMsgType.InternalAssign(Src: TLMVFilterHideMsgType);
+procedure TLMVFilterMsgType.InternalAssign(Src: TLMVFilterMsgType);
 begin
   fSubTool:=Src.SubTool;
   fMsgID:=Src.MsgID;
 end;
 
-constructor TLMVFilterHideMsgType.Create(aFilter: TLMsgViewFilter);
+constructor TLMVFilterMsgType.Create(aFilter: TLMsgViewFilter);
 begin
   FFilter:=aFilter;
 end;
 
-function TLMVFilterHideMsgType.IsEqual(Src: TLMVFilterHideMsgType): boolean;
+function TLMVFilterMsgType.IsEqual(Src: TLMVFilterMsgType): boolean;
 begin
   if Self=Src then exit(true);
   Result:=(SubTool=Src.SubTool)
       and (MsgID=Src.MsgID);
 end;
 
-procedure TLMVFilterHideMsgType.Assign(Src: TLMVFilterHideMsgType);
+procedure TLMVFilterMsgType.Assign(Src: TLMVFilterMsgType);
 begin
   if IsEqual(Src) then exit;
   InternalAssign(Src);
@@ -648,15 +648,15 @@ end;
 { TLMsgViewFilter }
 
 // inline
-function TLMsgViewFilter.HideMsgTypeCount: integer;
+function TLMsgViewFilter.FilterMsgTypeCount: integer;
 begin
-  Result:=length(fHideMsgTypes);
+  Result:=length(fFilterMsgTypes);
 end;
 
 // inline
-function TLMsgViewFilter.GetHideMsgTypes(Index: integer): TLMVFilterHideMsgType;
+function TLMsgViewFilter.GetFilterMsgTypes(Index: integer): TLMVFilterMsgType;
 begin
-  Result:=fHideMsgTypes[Index];
+  Result:=fFilterMsgTypes[Index];
 end;
 
 procedure TLMsgViewFilter.SetCaption(AValue: string);
@@ -673,10 +673,10 @@ begin
   Changed;
 end;
 
-procedure TLMsgViewFilter.SetHideNotesWithoutPos(AValue: boolean);
+procedure TLMsgViewFilter.SetFilterNotesWithoutPos(AValue: boolean);
 begin
-  if FHideNotesWithoutPos=AValue then Exit;
-  FHideNotesWithoutPos:=AValue;
+  if FFilterNotesWithoutPos=AValue then Exit;
+  FFilterNotesWithoutPos:=AValue;
   Changed;
 end;
 
@@ -686,7 +686,7 @@ begin
     OnChanged(Self);
 end;
 
-procedure TLMsgViewFilter.UpdateHideMsgTypeIndex(Item: TLMVFilterHideMsgType);
+procedure TLMsgViewFilter.UpdateFilterMsgTypeIndex(Item: TLMVFilterMsgType);
 var
   OldIndex: Integer;
   l: Integer;
@@ -697,16 +697,16 @@ var
   EndIndex: Integer;
   NewIndex: Integer;
 begin
-  if HideMsgTypeCount=1 then exit;
+  if FilterMsgTypeCount=1 then exit;
   OldIndex:=Item.FIndex;
-  if (OldIndex>0) and (CompareHideMsgType(Item,fHideMsgTypes[OldIndex-1])<0)
+  if (OldIndex>0) and (CompareFilterMsgType(Item,fFilterMsgTypes[OldIndex-1])<0)
   then begin
     StartIndex:=0;
     EndIndex:=OldIndex-1;
-  end else if (OldIndex<HideMsgTypeCount-1)
-  and (CompareHideMsgType(Item,fHideMsgTypes[OldIndex+1])>0) then begin
+  end else if (OldIndex<FilterMsgTypeCount-1)
+  and (CompareFilterMsgType(Item,fFilterMsgTypes[OldIndex+1])>0) then begin
     StartIndex:=OldIndex+1;
-    EndIndex:=HideMsgTypeCount-1;
+    EndIndex:=FilterMsgTypeCount-1;
   end else
     exit;
 
@@ -716,7 +716,7 @@ begin
   cmp:=0;
   while l<=r do begin
     m:=(l+r) div 2;
-    cmp:=CompareHideMsgType(Item,fHideMsgTypes[m]);
+    cmp:=CompareFilterMsgType(Item,fFilterMsgTypes[m]);
     if cmp<0 then
       r:=m-1
     else if cmp>0 then
@@ -729,14 +729,14 @@ begin
   else
     NewIndex:=m+1;
   if OldIndex<NewIndex then begin
-    system.Move(fHideMsgTypes[OldIndex+1],fHideMsgTypes[OldIndex],
-      SizeOf(TLMVFilterHideMsgType)*(NewIndex-OldIndex));
+    system.Move(fFilterMsgTypes[OldIndex+1],fFilterMsgTypes[OldIndex],
+      SizeOf(TLMVFilterMsgType)*(NewIndex-OldIndex));
   end else if OldIndex>NewIndex then begin
-    system.Move(fHideMsgTypes[NewIndex],fHideMsgTypes[NewIndex+1],
-      SizeOf(TLMVFilterHideMsgType)*(OldIndex-NewIndex));
+    system.Move(fFilterMsgTypes[NewIndex],fFilterMsgTypes[NewIndex+1],
+      SizeOf(TLMVFilterMsgType)*(OldIndex-NewIndex));
   end else
     exit;
-  fHideMsgTypes[NewIndex]:=Item;
+  fFilterMsgTypes[NewIndex]:=Item;
 
   {$IFDEF CheckExtTools}
   ConsistencyCheck;
@@ -746,27 +746,27 @@ end;
 constructor TLMsgViewFilter.Create;
 begin
   FMinUrgency:=mluHint;
-  FHideNotesWithoutPos:=true;
+  FFilterNotesWithoutPos:=true;
 end;
 
 destructor TLMsgViewFilter.Destroy;
 begin
-  ClearHideMsgTypes;
+  ClearFilterMsgTypes;
   inherited Destroy;
 end;
 
 procedure TLMsgViewFilter.Clear;
 begin
   MinUrgency:=mluHint;
-  HideNotesWithoutPos:=true;
-  ClearHideMsgTypes;
+  FilterNotesWithoutPos:=true;
+  ClearFilterMsgTypes;
 end;
 
 procedure TLMsgViewFilter.SetToFitsAll;
 begin
   MinUrgency:=mluNone;
-  HideNotesWithoutPos:=false;
-  ClearHideMsgTypes;
+  FilterNotesWithoutPos:=false;
+  ClearFilterMsgTypes;
 end;
 
 function TLMsgViewFilter.IsEqual(Src: TLMsgViewFilter): boolean;
@@ -776,11 +776,11 @@ begin
   Result:=false;
   if Self=Src then exit(true);
   if (MinUrgency<>Src.MinUrgency)
-  or (HideNotesWithoutPos<>Src.HideNotesWithoutPos)
-  or (HideMsgTypeCount<>Src.HideMsgTypeCount)
+  or (FilterNotesWithoutPos<>Src.FilterNotesWithoutPos)
+  or (FilterMsgTypeCount<>Src.FilterMsgTypeCount)
   then exit;
-  for i:=0 to HideMsgTypeCount-1 do
-    if not HideMsgTypes[i].IsEqual(Src.HideMsgTypes[i]) then exit;
+  for i:=0 to FilterMsgTypeCount-1 do
+    if not FilterMsgTypes[i].IsEqual(Src.FilterMsgTypes[i]) then exit;
   Result:=true;
 end;
 
@@ -792,18 +792,18 @@ var
 begin
   if IsEqual(Src) then exit;
   fMinUrgency:=Src.MinUrgency;
-  FHideNotesWithoutPos:=Src.HideNotesWithoutPos;
+  FFilterNotesWithoutPos:=Src.FilterNotesWithoutPos;
 
-  // hide msg type
-  NewCnt:=Src.HideMsgTypeCount;
-  OldCnt:=HideMsgTypeCount;
+  // filter msg type
+  NewCnt:=Src.FilterMsgTypeCount;
+  OldCnt:=FilterMsgTypeCount;
   for i:=NewCnt to OldCnt-1 do
-    FreeAndNil(fHideMsgTypes[i]);
-  SetLength(fHideMsgTypes,NewCnt);
+    FreeAndNil(fFilterMsgTypes[i]);
+  SetLength(fFilterMsgTypes,NewCnt);
   for i:=0 to NewCnt-1 do begin
-    if fHideMsgTypes[i]=nil then
-      fHideMsgTypes[i]:=TLMVFilterHideMsgType.Create(Self);
-    fHideMsgTypes[i].InternalAssign(Src.HideMsgTypes[i]);
+    if fFilterMsgTypes[i]=nil then
+      fFilterMsgTypes[i]:=TLMVFilterMsgType.Create(Self);
+    fFilterMsgTypes[i].InternalAssign(Src.FilterMsgTypes[i]);
   end;
 
   Changed;
@@ -817,53 +817,53 @@ begin
 
   if [mlfHiddenByIDEDirective,mlfFixed]*Line.Flags<>[] then exit;
 
-  if HideNotesWithoutPos and (Line.Urgency<=mluNote)
+  if FilterNotesWithoutPos and (Line.Urgency<=mluNote)
   and ((Line.Filename='') or (Line.Line<1)) then exit;
 
-  if IndexOfHideMsgType(Line)>=0 then exit;
+  if IndexOfFilterMsgType(Line)>=0 then exit;
 
   Result:=true;
 end;
 
-function TLMsgViewFilter.AddHideMsgType(SubTool: string;
-  MsgID: integer): TLMVFilterHideMsgType;
+function TLMsgViewFilter.AddFilterMsgType(SubTool: string;
+  MsgID: integer): TLMVFilterMsgType;
 var
   i: Integer;
 begin
-  i:=length(fHideMsgTypes);
-  SetLength(fHideMsgTypes,i+1);
-  Result:=TLMVFilterHideMsgType.Create(Self);
-  fHideMsgTypes[i]:=Result;
+  i:=length(fFilterMsgTypes);
+  SetLength(fFilterMsgTypes,i+1);
+  Result:=TLMVFilterMsgType.Create(Self);
+  fFilterMsgTypes[i]:=Result;
   Result.FSubTool:=SubTool;
   Result.FMsgID:=MsgID;
-  UpdateHideMsgTypeIndex(Result);
+  UpdateFilterMsgTypeIndex(Result);
   Changed;
 end;
 
-procedure TLMsgViewFilter.DeleteHideMsgType(Index: integer);
+procedure TLMsgViewFilter.DeleteFilterMsgType(Index: integer);
 begin
-  if (Index<0) or (Index>=HideMsgTypeCount) then
+  if (Index<0) or (Index>=FilterMsgTypeCount) then
     raise Exception.Create('');
-  fHideMsgTypes[Index].Free;
-  if Index<HideMsgTypeCount-1 then
-    system.Move(fHideMsgTypes[Index+1],fHideMsgTypes[Index],
-      SizeOf(TLMVFilterHideMsgType)*(HideMsgTypeCount-Index-1));
-  SetLength(fHideMsgTypes,length(fHideMsgTypes)-1);
+  fFilterMsgTypes[Index].Free;
+  if Index<FilterMsgTypeCount-1 then
+    system.Move(fFilterMsgTypes[Index+1],fFilterMsgTypes[Index],
+      SizeOf(TLMVFilterMsgType)*(FilterMsgTypeCount-Index-1));
+  SetLength(fFilterMsgTypes,length(fFilterMsgTypes)-1);
   Changed;
 end;
 
-procedure TLMsgViewFilter.ClearHideMsgTypes;
+procedure TLMsgViewFilter.ClearFilterMsgTypes;
 var
   i: Integer;
 begin
-  if HideMsgTypeCount=0 then exit;
-  for i:=0 to HideMsgTypeCount-1 do
-    fHideMsgTypes[i].Free;
-  SetLength(fHideMsgTypes,0);
+  if FilterMsgTypeCount=0 then exit;
+  for i:=0 to FilterMsgTypeCount-1 do
+    fFilterMsgTypes[i].Free;
+  SetLength(fFilterMsgTypes,0);
   Changed;
 end;
 
-function TLMsgViewFilter.IndexOfHideMsgType(Line: TMessageLine): integer;
+function TLMsgViewFilter.IndexOfFilterMsgType(Line: TMessageLine): integer;
 var
   l: Integer;
   r: Integer;
@@ -871,10 +871,10 @@ var
   cmp: Integer;
 begin
   l:=0;
-  r:=HideMsgTypeCount-1;
+  r:=FilterMsgTypeCount-1;
   while l<=r do begin
     m:=(l+r) div 2;
-    cmp:=CompareLineAndHideMsgType(Line,fHideMsgTypes[m]);
+    cmp:=CompareLineAndFilterMsgType(Line,fFilterMsgTypes[m]);
     if cmp<0 then
       r:=m-1
     else if cmp>0 then
@@ -895,8 +895,8 @@ procedure TLMsgViewFilter.ConsistencyCheck;
 var
   i: Integer;
 begin
-  for i:=0 to HideMsgTypeCount-2 do begin
-    if CompareHideMsgType(fHideMsgTypes[i],fHideMsgTypes[i+1])>0 then
+  for i:=0 to FilterMsgTypeCount-2 do begin
+    if CompareFilterMsgType(fFilterMsgTypes[i],fFilterMsgTypes[i+1])>0 then
       E(IntToStr(i));
   end;
 end;
@@ -2963,30 +2963,30 @@ end;
 
 procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
 
-  procedure UpdateUnhideItems;
+  procedure UpdateRemoveMsgTypeFilterItems;
   var
-    HideItem: TLMVFilterHideMsgType;
+    FilterItem: TLMVFilterMsgType;
     i: Integer;
     Item: TIDEMenuCommand;
     Cnt: Integer;
   begin
     // create one menuitem per filter item
-    Cnt:=MessagesCtrl.ActiveFilter.HideMsgTypeCount;
-    MsgUnhideMsgTypesMenuSection.Visible:=Cnt>0;
+    Cnt:=MessagesCtrl.ActiveFilter.FilterMsgTypeCount;
+    MsgRemoveMsgTypeFilterMenuSection.Visible:=Cnt>0;
     for i:=0 to Cnt-1 do begin
-      if i>=MsgUnhideMsgOneTypeMenuSection.Count then begin
-        Item:=RegisterIDEMenuCommand(MsgUnhideMsgOneTypeMenuSection,'MsgUnhideOfType'+IntToStr(i),'');
+      if i>=MsgRemoveFilterMsgOneTypeMenuSection.Count then begin
+        Item:=RegisterIDEMenuCommand(MsgRemoveFilterMsgOneTypeMenuSection,'MsgRemoveMsgOfTypeFilter'+IntToStr(i),'');
         Item.Tag:=i;
-        Item.OnClick:=@UnhideMsgTypeClick;
+        Item.OnClick:=@RemoveFilterMsgTypeClick;
       end else
-        Item:=MsgUnhideMsgOneTypeMenuSection.Items[i] as TIDEMenuCommand;
-      HideItem:=MessagesCtrl.ActiveFilter.HideMsgTypes[i];
-      Item.Caption:=GetMsgPattern(HideItem.SubTool,HideItem.MsgID,40);
+        Item:=MsgRemoveFilterMsgOneTypeMenuSection.Items[i] as TIDEMenuCommand;
+      FilterItem:=MessagesCtrl.ActiveFilter.FilterMsgTypes[i];
+      Item.Caption:=GetMsgPattern(FilterItem.SubTool,FilterItem.MsgID,40);
     end;
     // delete old menu items
-    while MsgUnhideMsgOneTypeMenuSection.Count>Cnt do
-      MsgUnhideMsgOneTypeMenuSection[Cnt].Free;
-    MsgUnhideAllMsgTypesMenuItem.OnClick:=@ClearHideMsgTypesMenuItemClick;
+    while MsgRemoveFilterMsgOneTypeMenuSection.Count>Cnt do
+      MsgRemoveFilterMsgOneTypeMenuSection[Cnt].Free;
+    MsgRemoveFilterAllMsgTypesMenuItem.OnClick:=@ClearFilterMsgTypesMenuItemClick;
   end;
 
   procedure UpdateFilterItems;
@@ -3037,7 +3037,7 @@ var
   HasViewContent: Boolean;
   Running: Boolean;
   MsgType: String;
-  CanHideMsgType: Boolean;
+  CanFilterMsgType: Boolean;
   MinUrgency: TMessageLineUrgency;
   ToolData: TIDEExternalToolData;
   ToolOptionsCaption: String;
@@ -3048,7 +3048,7 @@ begin
     HasText:=false;
     HasFilename:=false;
     MsgType:='';
-    CanHideMsgType:=false;
+    CanFilterMsgType:=false;
     Line:=nil;
     HasViewContent:=false;
     Running:=false;
@@ -3074,7 +3074,7 @@ begin
         HasText:=Line.Msg<>'';
         if (Line.SubTool<>'') and (Line.MsgID<>0) then begin
           MsgType:=GetMsgPattern(Line.SubTool,Line.MsgID,40);
-          CanHideMsgType:=ord(Line.Urgency)<ord(mluError);
+          CanFilterMsgType:=ord(Line.Urgency)<ord(mluError);
         end;
       end;
     end else begin
@@ -3098,15 +3098,15 @@ begin
     MsgOpenToolOptionsMenuItem.Caption:=ToolOptionsCaption;
     MsgOpenToolOptionsMenuItem.OnClick:=@OpenToolsOptionsMenuItemClick;
 
-    if CanHideMsgType then begin
-      MsgHideMsgOfTypeMenuItem.Caption:='Hide all messages of type '+MsgType;
-      MsgHideMsgOfTypeMenuItem.Visible:=true;
+    if CanFilterMsgType then begin
+      MsgFilterMsgOfTypeMenuItem.Caption:='Filter all messages of type '+MsgType;
+      MsgFilterMsgOfTypeMenuItem.Visible:=true;
     end else begin
-      MsgHideMsgOfTypeMenuItem.Visible:=false;
+      MsgFilterMsgOfTypeMenuItem.Visible:=false;
     end;
-    MsgHideMsgOfTypeMenuItem.OnClick:=@HideMsgOfTypeMenuItemClick;
-    MsgHideHintsWithoutPosMenuItem.Checked:=MessagesCtrl.ActiveFilter.HideNotesWithoutPos;
-    MsgHideHintsWithoutPosMenuItem.OnClick:=@HideHintsWithoutPosMenuItemClick;
+    MsgFilterMsgOfTypeMenuItem.OnClick:=@FilterMsgOfTypeMenuItemClick;
+    MsgFilterHintsWithoutPosMenuItem.Checked:=MessagesCtrl.ActiveFilter.FilterNotesWithoutPos;
+    MsgFilterHintsWithoutPosMenuItem.OnClick:=@FilterHintsWithoutPosMenuItemClick;
 
     MsgCopyMsgMenuItem.Enabled:=HasText;
     MsgCopyMsgMenuItem.OnClick:=@CopyMsgMenuItemClick;
@@ -3127,18 +3127,18 @@ begin
     MsgClearMenuItem.Enabled:=View<>nil;
 
     MinUrgency:=MessagesCtrl.ActiveFilter.MinUrgency;
-    MsgHideWarningsMenuItem.Checked:=MinUrgency in [mluError..mluPanic];
-    MsgHideWarningsMenuItem.OnClick:=@HideUrgencyMenuItemClick;
-    MsgHideNotesMenuItem.Checked:=MinUrgency in [mluWarning,mluImportant];
-    MsgHideNotesMenuItem.OnClick:=@HideUrgencyMenuItemClick;
-    MsgHideHintsMenuItem.Checked:=MinUrgency=mluNote;
-    MsgHideHintsMenuItem.OnClick:=@HideUrgencyMenuItemClick;
-    MsgHideVerboseMenuItem.Checked:=MinUrgency=mluHint;
-    MsgHideVerboseMenuItem.OnClick:=@HideUrgencyMenuItemClick;
-    MsgHideDebugMenuItem.Checked:=MinUrgency in [mluProgress..mluVerbose];
-    MsgHideDebugMenuItem.OnClick:=@HideUrgencyMenuItemClick;
-    MsgHideNoneMenuItem.Checked:=MinUrgency=mluNone;
-    MsgHideNoneMenuItem.OnClick:=@HideUrgencyMenuItemClick;
+    MsgFilterWarningsMenuItem.Checked:=MinUrgency in [mluError..mluPanic];
+    MsgFilterWarningsMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterNotesMenuItem.Checked:=MinUrgency in [mluWarning,mluImportant];
+    MsgFilterNotesMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterHintsMenuItem.Checked:=MinUrgency=mluNote;
+    MsgFilterHintsMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterVerboseMenuItem.Checked:=MinUrgency=mluHint;
+    MsgFilterVerboseMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterDebugMenuItem.Checked:=MinUrgency in [mluProgress..mluVerbose];
+    MsgFilterDebugMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterNoneMenuItem.Checked:=MinUrgency=mluNone;
+    MsgFilterNoneMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
 
     MsgFileStyleShortMenuItem.Checked:=MessagesCtrl.FilenameStyle=mwfsShort;
     MsgFileStyleShortMenuItem.OnClick:=@FileStyleMenuItemClick;
@@ -3153,7 +3153,7 @@ begin
     MsgShowIDMenuItem.OnClick:=@ShowIDMenuItemClick;
 
 
-    UpdateUnhideItems;
+    UpdateRemoveMsgTypeFilterItems;
     UpdateFilterItems;
 
     UpdateQuickFixes(Line);
@@ -3254,13 +3254,13 @@ begin
   EnvironmentOptions.MsgViewShowTranslations:=mcoShowTranslated in MessagesCtrl.Options;
 end;
 
-procedure TMessagesFrame.UnhideMsgTypeClick(Sender: TObject);
+procedure TMessagesFrame.RemoveFilterMsgTypeClick(Sender: TObject);
 var
   i: PtrInt;
 begin
   i:=TIDEMenuCommand(Sender).Tag;
-  if i<MessagesCtrl.ActiveFilter.HideMsgTypeCount then
-    MessagesCtrl.ActiveFilter.DeleteHideMsgType(i);
+  if i<MessagesCtrl.ActiveFilter.FilterMsgTypeCount then
+    MessagesCtrl.ActiveFilter.DeleteFilterMsgType(i);
 end;
 
 function TMessagesFrame.AllMessagesAsString(const OnlyShown: boolean): String;
@@ -3341,36 +3341,35 @@ begin
   ExecuteIDECommand(Self, ecContextHelp);
 end;
 
-procedure TMessagesFrame.HideHintsWithoutPosMenuItemClick(Sender: TObject);
+procedure TMessagesFrame.FilterHintsWithoutPosMenuItemClick(Sender: TObject);
 begin
-  MessagesCtrl.ActiveFilter.HideNotesWithoutPos:=not MessagesCtrl.ActiveFilter.HideNotesWithoutPos;
+  MessagesCtrl.ActiveFilter.FilterNotesWithoutPos:=not MessagesCtrl.ActiveFilter.FilterNotesWithoutPos;
 end;
 
-procedure TMessagesFrame.HideMsgOfTypeMenuItemClick(Sender: TObject);
+procedure TMessagesFrame.FilterMsgOfTypeMenuItemClick(Sender: TObject);
 var
   Line: TMessageLine;
 begin
   Line:=MessagesCtrl.GetSelectedMsg;
   if (Line=nil) or (ord(Line.Urgency)>=ord(mluError)) then exit;
-  //debugln(['TMessagesFrame.HideMsgOfTypeMenuItemClick SubTool=',Line.SubTool,' MsgID=',Line.MsgID]);
-  MessagesCtrl.ActiveFilter.AddHideMsgType(Line.SubTool,Line.MsgID);
+  MessagesCtrl.ActiveFilter.AddFilterMsgType(Line.SubTool,Line.MsgID);
 end;
 
-procedure TMessagesFrame.HideUrgencyMenuItemClick(Sender: TObject);
+procedure TMessagesFrame.FilterUrgencyMenuItemClick(Sender: TObject);
 var
   MinUrgency: TMessageLineUrgency;
 begin
-  if Sender=MsgHideWarningsMenuItem then
+  if Sender=MsgFilterWarningsMenuItem then
     MinUrgency:=mluError
-  else if Sender=MsgHideNotesMenuItem then
+  else if Sender=MsgFilterNotesMenuItem then
     MinUrgency:=mluWarning
-  else if Sender=MsgHideHintsMenuItem then
+  else if Sender=MsgFilterHintsMenuItem then
     MinUrgency:=mluNote
-  else if Sender=MsgHideVerboseMenuItem then
+  else if Sender=MsgFilterVerboseMenuItem then
     MinUrgency:=mluHint
-  else if Sender=MsgHideDebugMenuItem then
+  else if Sender=MsgFilterDebugMenuItem then
     MinUrgency:=mluVerbose3
-  else if Sender=MsgHideNoneMenuItem then
+  else if Sender=MsgFilterNoneMenuItem then
     MinUrgency:=mluNone;
   MessagesCtrl.ActiveFilter.MinUrgency:=MinUrgency;
 end;
@@ -3482,9 +3481,9 @@ begin
   MessagesCtrl.ActiveFilter:=NewFilter;
 end;
 
-procedure TMessagesFrame.ClearHideMsgTypesMenuItemClick(Sender: TObject);
+procedure TMessagesFrame.ClearFilterMsgTypesMenuItemClick(Sender: TObject);
 begin
-  MessagesCtrl.ActiveFilter.ClearHideMsgTypes;
+  MessagesCtrl.ActiveFilter.ClearFilterMsgTypes;
 end;
 
 procedure TMessagesFrame.ClearMenuItemClick(Sender: TObject);
