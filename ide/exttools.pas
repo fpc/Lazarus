@@ -29,9 +29,8 @@ unit ExtTools;
 
 {$IFNDEF EnableNewExtTools}{$Error Wrong}{$ENDIF}
 
-{$DEFINE VerboseExtToolAddOutputLines}
-{$DEFINE VerboseExtToolThread}
-{$DEFINE VerboseExtToolConsole}
+{off $DEFINE VerboseExtToolAddOutputLines}
+{off $DEFINE VerboseExtToolThread}
 
 interface
 
