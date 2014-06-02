@@ -892,7 +892,7 @@ begin
     Canvas.Font.Style:=TextGrayStyle;
     Canvas.Pen.Color:=PenColor;
     Details := ThemeServices.GetElementDetails(tttStandardLink);
-    ThemeServices.DrawElement(Canvas.Handle, Details, Canvas.ClipRect);
+    ThemeServices.DrawElement(Canvas.Handle, Details, ClientRect);
   end else begin
     Canvas.Font.Style:=[fsBold];
   end;
