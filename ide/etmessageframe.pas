@@ -3789,6 +3789,7 @@ var
 begin
   Result:=nil;
   View:=GetView(ViewCaption,true);
+  View.Running:=false;
   Result:=View.Lines.CreateLine(-1);
   Result.Msg:=Msg;
   Result.Urgency:=TheUrgency;
