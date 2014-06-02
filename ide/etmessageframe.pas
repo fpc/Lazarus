@@ -287,7 +287,7 @@ type
     function ViewCount: integer; inline;
     property Views[Index: integer]: TLMsgWndView read GetViews;
     function IndexOfView(View: TLMsgWndView): integer;
-    procedure ClearViews; // deletes/frees all views
+    procedure ClearViews(OnlyFinished: boolean); // deletes/frees all views
     procedure RemoveView(View: TLMsgWndView); // remove without free
     function GetView(aCaption: string; CreateIfNotExist: boolean): TLMsgWndView;
     function GetLineAt(Y: integer; out View: TLMsgWndView; out Line: integer): boolean;
@@ -427,7 +427,7 @@ type
     function FindUnfinishedView: TLMsgWndView;
     procedure DeleteView(View: TLMsgWndView); // free view
     function IndexOfView(View: TLMsgWndView): integer;
-    procedure ClearViews; // deletes/frees all views
+    procedure ClearViews(OnlyFinished: boolean); // deletes/frees all views
 
     // source marks
     procedure CreateMarksForFile(aSynEdit: TSynEdit; aFilename: string;
@@ -2749,7 +2749,7 @@ var
 begin
   IdleConnected:=false;
   Images:=nil;
-  ClearViews;
+  ClearViews(false);
 
   FActiveFilter:=nil;
   for i:=0 to FFilters.Count-1 do
@@ -2808,10 +2808,22 @@ begin
   Result:=FViews.IndexOf(View);
 end;
 
-procedure TMessagesCtrl.ClearViews;
+procedure TMessagesCtrl.ClearViews(OnlyFinished: boolean);
+var
+  i: Integer;
+  View: TLMsgWndView;
 begin
-  while ViewCount>0 do
-    Views[0].Free;
+  if OnlyFinished then begin
+    for i:=ViewCount-1 downto 0 do begin
+      if i>=ViewCount then continue;
+      View:=Views[i];
+      if View.HasFinished then
+        View.Free;
+    end;
+  end else begin
+    while ViewCount>0 do
+      Views[0].Free;
+  end;
 end;
 
 procedure TMessagesCtrl.RemoveView(View: TLMsgWndView);
@@ -3484,7 +3496,7 @@ end;
 
 procedure TMessagesFrame.ClearMenuItemClick(Sender: TObject);
 begin
-  MessagesCtrl.ClearViews;
+  MessagesCtrl.ClearViews(true);
 end;
 
 function TMessagesFrame.GetViews(Index: integer): TLMsgWndView;
@@ -3649,7 +3661,7 @@ end;
 destructor TMessagesFrame.Destroy;
 begin
   MessagesCtrl.BeginUpdate;
-  ClearViews;
+  ClearViews(false);
   inherited Destroy;
 end;
 
@@ -3684,9 +3696,9 @@ begin
   Result:=MessagesCtrl.IndexOfView(View);
 end;
 
-procedure TMessagesFrame.ClearViews;
+procedure TMessagesFrame.ClearViews(OnlyFinished: boolean);
 begin
-  MessagesCtrl.ClearViews;
+  MessagesCtrl.ClearViews(OnlyFinished);
 end;
 
 procedure TMessagesFrame.CreateMarksForFile(aSynEdit: TSynEdit;

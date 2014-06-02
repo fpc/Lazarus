@@ -334,7 +334,7 @@ type
     FMessageLineClass: TMessageLineClass;
     procedure CreateLines; virtual;
     procedure FetchAllPending; virtual; // (main thread)
-    procedure ToolExited; virtual; // (main thread)
+    procedure ToolExited; virtual; // (main thread) called by InputClosed
     procedure QueueAsyncOnChanged; virtual; abstract; // (worker thread)
     procedure RemoveAsyncOnChanged; virtual; abstract; // (main or worker thread)
   public
@@ -411,12 +411,14 @@ type
     FWorkerDirectory: string;
     FWorkerMessages: TMessageLines;
     FParsers: TFPList; // list of TExtToolParser
+    FReferences: TStringList;
     FTitle: string;
     FTools: TIDEExternalTools;
     FViews: TFPList; // list of TExtToolView
     function GetCmdLineParams: string;
     function GetParserCount: integer;
     function GetParsers(Index: integer): TExtToolParser;
+    function GetReferences(Index: integer): string;
     function GetViews(Index: integer): TExtToolView;
     procedure SetCmdLineParams(aParams: string);
     procedure SetEnvironmentOverrides(AValue: TStrings);
@@ -441,6 +443,7 @@ type
     procedure DoExecute; virtual; abstract;  // starts thread, returns immediately
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
+    function CanFree: boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -448,6 +451,7 @@ type
     procedure LeaveCriticalSection; virtual;
     property Thread: TThread read FThread write FThread;
     procedure ConsistencyCheck; virtual;
+    procedure AutoFree; // free if not in use
 
     property Title: string read FTitle write SetTitle;
     property Hint: string read FHint write FHint; // this hint is shown in About dialog
@@ -468,6 +472,10 @@ type
     procedure AddHandlerOnAllViewsUpdated(const OnViewsUpdated: TNotifyEvent;
                                   AsFirst: boolean = true);  // called in main thread
     procedure RemoveHandlerOnAllViewsUpdated(const OnViewsUpdated: TNotifyEvent);
+    procedure Reference(Thing: TObject; const Note: string); // add a reference to delay auto freeing, use Release for free
+    procedure Release(Thing: TObject);
+    property References[Index: integer]: string read GetReferences;
+    function ReferenceCount: integer;
 
     // process
     property Process: TProcessUTF8 read FProcess;
@@ -506,10 +514,10 @@ type
     function ViewCount: integer;
     property Views[Index: integer]: TExtToolView read GetViews;
     function AddView(View: TExtToolView): integer; // (main thread) will *not* be freed on destroy
-    procedure DeleteView(View: TExtToolView); // (main thread) disconnect and free
-    procedure RemoveView(View: TExtToolView); // (main thread) disconnect without free
+    procedure DeleteView(View: TExtToolView); // (main thread) disconnect and free, this might free the tool
+    procedure RemoveView(View: TExtToolView); // (main thread) disconnect without free, this might free the tool
     function IndexOfView(View: TExtToolView): integer;
-    procedure ClearViews(Delete: boolean = false); // (main thread)
+    procedure ClearViews(Delete: boolean = false); // (main thread), this might free the tool
     function FindUnfinishedView: TExtToolView;
 
     // dependencies
@@ -942,6 +950,11 @@ begin
   Result:=TExtToolParser(FParsers[Index]);
 end;
 
+function TAbstractExternalTool.GetReferences(Index: integer): string;
+begin
+  Result:=FReferences[Index];
+end;
+
 function TAbstractExternalTool.GetViews(Index: integer): TExtToolView;
 begin
   Result:=TExtToolView(FViews[Index]);
@@ -1018,6 +1031,17 @@ begin
   end;
 end;
 
+function TAbstractExternalTool.CanFree: boolean;
+begin
+  Result:=false;
+  if csDestroying in ComponentState then exit;
+  if (FReferences.Count>0)
+  or (ViewCount>0) then exit;
+  if (Process<>nil) and (Process.Running) then
+    exit;
+  Result:=true;
+end;
+
 constructor TAbstractExternalTool.Create(AOwner: TComponent);
 begin
   if AOwner is TIDEExternalTools then
@@ -1031,6 +1055,7 @@ begin
   FStage:=etsInit;
   FEstimatedLoad:=1;
   FEnvironmentOverrides:=TStringList.Create;
+  FReferences:=TStringList.Create;
 end;
 
 destructor TAbstractExternalTool.Destroy;
@@ -1043,6 +1068,7 @@ begin
     ClearParsers;
     ClearViews;
     Group:=nil;
+    FreeAndNil(FReferences);
     for h:=low(FHandlers) to high(FHandlers) do
       FreeAndNil(FHandlers[h]);
     FWorkerMessages.Clear;
@@ -1079,6 +1105,14 @@ begin
   end;
 end;
 
+procedure TAbstractExternalTool.AutoFree;
+begin
+  if MainThreadID<>GetCurrentThreadId then
+    raise Exception.Create('AutoFree only via main thread');
+  if CanFree then
+    Free;
+end;
+
 procedure TAbstractExternalTool.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TExternalToolHandler;
@@ -1109,6 +1143,38 @@ procedure TAbstractExternalTool.RemoveHandlerOnAllViewsUpdated(
   const OnViewsUpdated: TNotifyEvent);
 begin
   RemoveHandler(ethAllViewsUpdated,TMethod(OnViewsUpdated));
+end;
+
+procedure TAbstractExternalTool.Reference(Thing: TObject; const Note: string);
+var
+  i: Integer;
+begin
+  if csDestroying in ComponentState then
+    raise Exception.Create('too late');
+  if (Note='') or (Thing=nil) then
+    raise Exception.Create('invalid parameters');
+  for i:=0 to FReferences.Count-1 do
+    if FReferences.Objects[i]=Thing then
+      raise Exception.Create('already referenced');
+  FReferences.AddObject(Note,Thing);
+end;
+
+procedure TAbstractExternalTool.Release(Thing: TObject);
+var
+  i: Integer;
+begin
+  for i:=0 to FReferences.Count-1 do
+    if FReferences.Objects[i]=Thing then begin
+      FReferences.Delete(i);
+      AutoFree;
+      exit;
+    end;
+  raise Exception.Create('reference not found');
+end;
+
+function TAbstractExternalTool.ReferenceCount: integer;
+begin
+  Result:=FReferences.Count;
 end;
 
 procedure TAbstractExternalTool.AddHandlerOnNewOutput(
@@ -1224,6 +1290,7 @@ begin
   finally
     View.LeaveCriticalSection;
   end;
+  AutoFree;
 end;
 
 function TAbstractExternalTool.IndexOfView(View: TExtToolView): integer;
@@ -1233,13 +1300,8 @@ end;
 
 procedure TAbstractExternalTool.DeleteView(View: TExtToolView);
 begin
-  EnterCriticalSection;
-  try
-    RemoveView(View);
-    View.Free;
-  finally
-    LeaveCriticalSection;
-  end;
+  RemoveView(View);
+  View.Free;
 end;
 
 procedure TAbstractExternalTool.ClearViews(Delete: boolean);
@@ -2063,6 +2125,8 @@ begin
   // wait for other threads to finish their access
   EnterCriticalSection;
   try
+    if (Tool<>nil) and (not (csDestroying in Tool.ComponentState)) then
+      Tool.RemoveView(Self);
     RemoveAsyncOnChanged;
     ClearLines;
     FreeAndNil(FProgressLine);

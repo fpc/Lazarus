@@ -4486,21 +4486,26 @@ begin
 
   {$IFDEF EnableNewExtTools}
   ExtTool:=ExternalToolList.Add(ToolTitle);
-  ExtTool.Hint:=CompileHint;
-  ExtTool.Process.CurrentDirectory:=WorkingDir;
-  ExtTool.Process.Executable:=ProgramFilename;
-  ExtTool.CmdLineParams:=Params;
-  if ScanForFPCMessages then
-    ExtTool.AddParsers(SubToolFPC);
-  if ScanForMakeMessages then
-    ExtTool.AddParsers(SubToolMake);
-  if ExtTool.ParserCount=0 then
-    ExtTool.AddParsers(SubToolDefault);
-  // run
-  ExtTool.Execute;
-  ExtTool.WaitForExit;
-  if ExtTool.ErrorMessage='' then
-    Result:=mrOK;
+  ExtTool.Reference(Self,ClassName);
+  try
+    ExtTool.Hint:=CompileHint;
+    ExtTool.Process.CurrentDirectory:=WorkingDir;
+    ExtTool.Process.Executable:=ProgramFilename;
+    ExtTool.CmdLineParams:=Params;
+    if ScanForFPCMessages then
+      ExtTool.AddParsers(SubToolFPC);
+    if ScanForMakeMessages then
+      ExtTool.AddParsers(SubToolMake);
+    if ExtTool.ParserCount=0 then
+      ExtTool.AddParsers(SubToolDefault);
+    // run
+    ExtTool.Execute;
+    ExtTool.WaitForExit;
+    if ExtTool.ErrorMessage='' then
+      Result:=mrOK;
+  finally
+    ExtTool.Release(Self);
+  end;
   {$ELSE}
   ExtTool:=TIDEExternalToolOptions.Create;
   try

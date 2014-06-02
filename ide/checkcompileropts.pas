@@ -336,13 +336,18 @@ begin
               +' '+BogusFilename;
     {$IFDEF EnableNewExtTools}
     CompileTool:=ExternalToolList.Add(dlgCCOTestToolCompilingEmptyFile);
-    CompileTool.AddParsers(SubToolFPC);
-    CompileTool.AddParsers(SubToolMake);
-    CompileTool.Process.CurrentDirectory:=TestDir;
-    CompileTool.Process.Executable:=CompilerFilename;
-    CompileTool.CmdLineParams:=CmdLineParams;
-    CompileTool.Execute;
-    CompileTool.WaitForExit;
+    CompileTool.Reference(Self,ClassName);
+    try
+      CompileTool.AddParsers(SubToolFPC);
+      CompileTool.AddParsers(SubToolMake);
+      CompileTool.Process.CurrentDirectory:=TestDir;
+      CompileTool.Process.Executable:=CompilerFilename;
+      CompileTool.CmdLineParams:=CmdLineParams;
+      CompileTool.Execute;
+      CompileTool.WaitForExit;
+    finally
+      CompileTool.Release(Self);
+    end;
     {$ELSE}
     CompileTool:=TExternalToolOptions.Create;
     CompileTool.Title:=dlgCCOTestToolCompilingEmptyFile;

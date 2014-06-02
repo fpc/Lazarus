@@ -163,7 +163,7 @@ end;
 
 procedure TMessagesView.Clear;
 begin
-  MessagesFrame1.ClearViews;
+  MessagesFrame1.ClearViews(true);
 end;
 
 procedure TMessagesView.DeleteView(View: TExtToolView);

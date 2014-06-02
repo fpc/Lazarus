@@ -3571,38 +3571,43 @@ begin
 
         {$IFDEF EnableNewExtTools}
         PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilingPackage, [APackage.IDAsString]));
-        FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
-        //debugln(['TLazPackageGraph.CompilePackage ',APackage.Name,' ',APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc,' ',APackage.MainUnit.Filename]);
-        if (APackage.MainUnit<>nil)
-        and (not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
-          FPCParser.FilesToIgnoreUnitNotUsed.Add(APackage.MainUnit.Filename);
-        FPCParser.HideHintsSenderNotUsed:=not APackage.CompilerOptions.ShowHintsForSenderNotUsed;
-        FPCParser.HideHintsUnitNotUsedInMainSource:=not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
-        PkgCompileTool.AddParsers(SubToolMake);
-        PkgCompileTool.Process.CurrentDirectory:=APackage.Directory;
-        PkgCompileTool.Process.Executable:=CompilerFilename;
-        PkgCompileTool.CmdLineParams:=EffectiveCompilerParams;
-        PkgCompileTool.Hint:=Note;
-        PkgCompileTool.Data:=TIDEExternalToolData.Create(IDEToolCompilePackage,
-          APackage.Name,APackage.Filename);
-        PkgCompileTool.FreeData:=true;
-        // run
-        PkgCompileTool.Execute;
-        PkgCompileTool.WaitForExit;
+        PkgCompileTool.Reference(Self,Classname);
+        try
+          FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
+          //debugln(['TLazPackageGraph.CompilePackage ',APackage.Name,' ',APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc,' ',APackage.MainUnit.Filename]);
+          if (APackage.MainUnit<>nil)
+          and (not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc) then
+            FPCParser.FilesToIgnoreUnitNotUsed.Add(APackage.MainUnit.Filename);
+          FPCParser.HideHintsSenderNotUsed:=not APackage.CompilerOptions.ShowHintsForSenderNotUsed;
+          FPCParser.HideHintsUnitNotUsedInMainSource:=not APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
+          PkgCompileTool.AddParsers(SubToolMake);
+          PkgCompileTool.Process.CurrentDirectory:=APackage.Directory;
+          PkgCompileTool.Process.Executable:=CompilerFilename;
+          PkgCompileTool.CmdLineParams:=EffectiveCompilerParams;
+          PkgCompileTool.Hint:=Note;
+          PkgCompileTool.Data:=TIDEExternalToolData.Create(IDEToolCompilePackage,
+            APackage.Name,APackage.Filename);
+          PkgCompileTool.FreeData:=true;
+          // run
+          PkgCompileTool.Execute;
+          PkgCompileTool.WaitForExit;
 
-        // check if main ppu file was created
-        SrcPPUFile:=APackage.GetSrcPPUFilename;
-        SrcPPUFileExists:=(SrcPPUFile<>'') and FileExistsUTF8(SrcPPUFile);
-        // write state file
-        Result:=SavePackageCompiledState(APackage,
-                          CompilerFilename,CompilerParams,
-                          PkgCompileTool.ErrorMessage='',SrcPPUFileExists,true);
-        if Result<>mrOk then begin
-          DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
-          exit;
+          // check if main ppu file was created
+          SrcPPUFile:=APackage.GetSrcPPUFilename;
+          SrcPPUFileExists:=(SrcPPUFile<>'') and FileExistsUTF8(SrcPPUFile);
+          // write state file
+          Result:=SavePackageCompiledState(APackage,
+                            CompilerFilename,CompilerParams,
+                            PkgCompileTool.ErrorMessage='',SrcPPUFileExists,true);
+          if Result<>mrOk then begin
+            DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
+            exit;
+          end;
+          if PkgCompileTool.ErrorMessage<>'' then
+            exit(mrCancel);
+        finally
+          PkgCompileTool.Release(Self);
         end;
-        if PkgCompileTool.ErrorMessage<>'' then
-          exit(mrCancel);
 
         {$ELSE}
         PkgCompileTool:=TIDEExternalToolOptions.Create;

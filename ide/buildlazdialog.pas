@@ -395,18 +395,23 @@ var
       Params:=Cmd;
     {$IFDEF EnableNewExtTools}
     Tool:=ExternalToolList.Add(CurTitle);
-    Tool.Process.Executable:=Executable;
-    Tool.AddParsers(SubToolFPC);
-    Tool.AddParsers(SubToolMake);
-    Tool.Process.CurrentDirectory:=fWorkingDir;
-    Tool.EnvironmentOverrides:=EnvironmentOverrides;
-    Tool.CmdLineParams:=Params;
-    Tool.Execute;
-    Tool.WaitForExit;
-    if Tool.ErrorMessage='' then
-      exit(mrOk)
-    else
-      exit(mrCancel);
+    Tool.Reference(Self,ClassName);
+    try
+      Tool.Process.Executable:=Executable;
+      Tool.AddParsers(SubToolFPC);
+      Tool.AddParsers(SubToolMake);
+      Tool.Process.CurrentDirectory:=fWorkingDir;
+      Tool.EnvironmentOverrides:=EnvironmentOverrides;
+      Tool.CmdLineParams:=Params;
+      Tool.Execute;
+      Tool.WaitForExit;
+      if Tool.ErrorMessage='' then
+        exit(mrOk)
+      else
+        exit(mrCancel);
+    finally
+      Tool.Release(Self);
+    end;
     {$ELSE}
     if Tool=nil then
       Tool:=TExternalToolOptions.Create;

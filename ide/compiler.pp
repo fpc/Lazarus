@@ -322,21 +322,26 @@ begin
 
   {$IFDEF EnableNewExtTools}
   Tool:=ExternalToolList.Add('Compile Project');
-  Tool.Hint:=aCompileHint;
-  Tool.Process.Executable:=CompilerFilename;
-  Tool.CmdLineParams:=CmdLine;
-  Tool.Process.CurrentDirectory:=WorkingDir;
-  FPCParser:=TFPCParser(Tool.AddParsers(SubToolFPC));
-  FPCParser.HideHintsSenderNotUsed:=not AProject.CompilerOptions.ShowHintsForSenderNotUsed;
-  FPCParser.HideHintsUnitNotUsedInMainSource:=not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
-  if (not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc)
-  and (AProject.MainFilename<>'') then
-    FPCParser.FilesToIgnoreUnitNotUsed.Add(AProject.MainFilename);
-  Tool.AddParsers(SubToolMake);
-  Tool.Execute;
-  Tool.WaitForExit;
-  if Tool.ErrorMessage='' then
-    Result:=mrOK;
+  Tool.Reference(Self,ClassName);
+  try
+    Tool.Hint:=aCompileHint;
+    Tool.Process.Executable:=CompilerFilename;
+    Tool.CmdLineParams:=CmdLine;
+    Tool.Process.CurrentDirectory:=WorkingDir;
+    FPCParser:=TFPCParser(Tool.AddParsers(SubToolFPC));
+    FPCParser.HideHintsSenderNotUsed:=not AProject.CompilerOptions.ShowHintsForSenderNotUsed;
+    FPCParser.HideHintsUnitNotUsedInMainSource:=not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc;
+    if (not AProject.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc)
+    and (AProject.MainFilename<>'') then
+      FPCParser.FilesToIgnoreUnitNotUsed.Add(AProject.MainFilename);
+    Tool.AddParsers(SubToolMake);
+    Tool.Execute;
+    Tool.WaitForExit;
+    if Tool.ErrorMessage='' then
+      Result:=mrOK;
+  finally
+    Tool.Release(Self);
+  end;
   {$ELSE}
   try
     if TheProcess=nil then
