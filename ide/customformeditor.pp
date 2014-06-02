@@ -2418,13 +2418,16 @@ procedure TCustomFormEditor.DoOnNodeGetImageIndex(APersistent: TPersistent;
   var AImageIndex: integer);
 var
   DesignerForm : TCustomForm;
+  Mediator: TDesignerMediator;
 begin
   DesignerForm := GetDesignerForm(APersistent);
 
-  //ask TMediator
-  if DesignerForm is TNonControlDesignerForm then
-    TNonControlDesignerForm(DesignerForm).Mediator.GetObjInspNodeImageIndex(APersistent, AImageIndex);
-
+  // ask TMediator
+  if DesignerForm is TNonControlDesignerForm then begin
+    Mediator:=TNonControlDesignerForm(DesignerForm).Mediator;
+    if Mediator<>nil then
+      Mediator.GetObjInspNodeImageIndex(APersistent, AImageIndex);
+  end;
 end;
 
 { TDefinePropertiesCacheItem }
