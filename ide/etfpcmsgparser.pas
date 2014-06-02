@@ -203,7 +203,7 @@ type
       var Item: TFPCMsgItem): boolean;
     class function IsSubTool(const SubTool: string): boolean; override;
     class function DefaultSubTool: string; override;
-    class function GetMsgExample(SubTool: string; MsgID: integer): string;
+    class function GetMsgPattern(SubTool: string; MsgID: integer): string;
       override;
     class function GetMsgHint(SubTool: string; MsgID: integer): string;
       override;
@@ -2390,7 +2390,7 @@ begin
   end;
 end;
 
-class function TIDEFPCParser.GetMsgExample(SubTool: string; MsgID: integer
+class function TIDEFPCParser.GetMsgPattern(SubTool: string; MsgID: integer
   ): string;
 var
   CurMsgFile: TFPCMsgFilePoolItem;

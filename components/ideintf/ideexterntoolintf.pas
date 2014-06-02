@@ -259,7 +259,7 @@ type
     procedure ImproveMessages({%H-}aSynchronized: boolean); virtual; // (Synchronized=true->main, else worker thread) called after parsers added lines to Tool.WorkerMessages, Tool is in Critical section
     procedure ConsistencyCheck; virtual;
     class function IsSubTool(const SubTool: string): boolean; virtual;
-    class function GetMsgExample({%H-}SubTool: string; {%H-}MsgID: integer): string; virtual;
+    class function GetMsgPattern({%H-}SubTool: string; {%H-}MsgID: integer): string; virtual;
     class function GetMsgHint({%H-}SubTool: string; {%H-}MsgID: integer): string; virtual;
     class function GetMsgParser(Msg: TMessageLine; ParserClass: TClass): TExtToolParser;
     class function DefaultSubTool: string; virtual; abstract;
@@ -509,6 +509,7 @@ type
     function IndexOfParser(Parser: TExtToolParser): integer;
     procedure ClearParsers(Delete: boolean = true);
     function FindParser(aParserClass: TExtToolParserClass): TExtToolParser;
+    function FindParser(const SubTool: string): TExtToolParser;
 
     // viewers
     function ViewCount: integer;
@@ -574,7 +575,7 @@ type
     function FindParser(const SubTool: string): TExtToolParserClass; virtual; abstract; // (main thread)
     function ParserCount: integer; virtual; abstract; // (main thread)
     property Parsers[Index: integer]: TExtToolParserClass read GetParsers; // (main thread)
-    function GetMsgExample(SubTool: string; MsgID: integer): string; virtual; // (main thread)
+    function GetMsgPattern(SubTool: string; MsgID: integer): string; virtual; // (main thread)
     function GetMsgHint(SubTool: string; MsgID: integer): string; virtual; // (main thread)
     function GetMsgTool(Msg: TMessageLine): TAbstractExternalTool; virtual; abstract;
   end;
@@ -1261,6 +1262,21 @@ begin
   Result:=nil;
 end;
 
+function TAbstractExternalTool.FindParser(const SubTool: string
+  ): TExtToolParser;
+var
+  i: Integer;
+  ParserClass: TExtToolParserClass;
+begin
+  for i:=0 to ExternalToolList.ParserCount-1 do begin
+    ParserClass:=ExternalToolList.Parsers[i];
+    if not ParserClass.IsSubTool(SubTool) then continue;
+    Result:=FindParser(ParserClass);
+    if Result<>nil then exit;
+  end;
+  Result:=nil;
+end;
+
 function TAbstractExternalTool.ViewCount: integer;
 begin
   Result:=FViews.Count;
@@ -1380,7 +1396,7 @@ begin
   Result:=CompareText(DefaultSubTool,SubTool)=0;
 end;
 
-class function TExtToolParser.GetMsgExample(SubTool: string; MsgID: integer
+class function TExtToolParser.GetMsgPattern(SubTool: string; MsgID: integer
   ): string;
 begin
   Result:='';
@@ -1445,7 +1461,7 @@ begin
     Items[i].ConsistencyCheck;
 end;
 
-function TIDEExternalTools.GetMsgExample(SubTool: string; MsgID: integer
+function TIDEExternalTools.GetMsgPattern(SubTool: string; MsgID: integer
   ): string;
 var
   Parser: TExtToolParserClass;
@@ -1454,7 +1470,7 @@ begin
   Result:='';
   for i:=0 to ParserCount-1 do begin
     Parser:=Parsers[i];
-    Result:=Parser.GetMsgExample(SubTool,MsgID);
+    Result:=Parser.GetMsgPattern(SubTool,MsgID);
     if Result<>'' then exit;
   end;
 end;

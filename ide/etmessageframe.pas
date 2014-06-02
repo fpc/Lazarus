@@ -410,6 +410,7 @@ type
     procedure SaveClicked(OnlyShown: boolean);
     procedure CopyAllClicked(OnlyShown: boolean);
     procedure CopyMsgToClipboard(OnlyFilename: boolean);
+    function GetMsgPattern(SubTool: string; MsgId: integer; MaxLen: integer): string;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -2964,8 +2965,6 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
 
   procedure UpdateUnhideItems;
   var
-    ExampleMsg: String;
-    s: String;
     HideItem: TLMVFilterHideMsgType;
     i: Integer;
     Item: TIDEMenuCommand;
@@ -2982,13 +2981,7 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
       end else
         Item:=MsgUnhideMsgOneTypeMenuSection.Items[i] as TIDEMenuCommand;
       HideItem:=MessagesCtrl.ActiveFilter.HideMsgTypes[i];
-      s:=HideItem.SubTool;
-      if HideItem.MsgID<>0 then
-        s+='('+IntToStr(HideItem.MsgID)+')';
-      ExampleMsg:=ExternalToolList.GetMsgExample(HideItem.SubTool,HideItem.MsgID);
-      if ExampleMsg<>'' then
-        s+=' '+ExampleMsg;
-      Item.Caption:=s;
+      Item.Caption:=GetMsgPattern(HideItem.SubTool,HideItem.MsgID,40);
     end;
     // delete old menu items
     while MsgUnhideMsgOneTypeMenuSection.Count>Cnt do
@@ -3080,7 +3073,7 @@ begin
         HasFilename:=Line.Filename<>'';
         HasText:=Line.Msg<>'';
         if (Line.SubTool<>'') and (Line.MsgID<>0) then begin
-          MsgType:=Line.SubTool+' '+IntToStr(Line.MsgID);
+          MsgType:=GetMsgPattern(Line.SubTool,Line.MsgID,40);
           CanHideMsgType:=ord(Line.Urgency)<ord(mluError);
         end;
       end;
@@ -3594,6 +3587,21 @@ begin
   end else
     exit;
   Clipboard.AsText:=Txt;
+end;
+
+function TMessagesFrame.GetMsgPattern(SubTool: string; MsgId: integer;
+  MaxLen: integer): string;
+var
+  Pattern: String;
+begin
+  Result:=SubTool;
+  if (MsgID<>0) then
+    Result+='('+IntToStr(MsgID)+')';
+  Pattern:=ExternalToolList.GetMsgPattern(SubTool,MsgID);
+  if Pattern<>'' then
+    Result+=' '+Pattern;
+  if UTF8Length(Result)>MaxLen then
+    Result:=UTF8Copy(Result,1,MaxLen)+'...';
 end;
 
 procedure TMessagesFrame.Notification(AComponent: TComponent;
