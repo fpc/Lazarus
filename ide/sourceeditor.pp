@@ -4008,8 +4008,8 @@ var
 begin
   if ReadOnly then Exit;
   Txt:=CommentText(LCLProc.BreakString(
-           Format(Notice,[#13#13,#13#13,#13#13,#13#13,#13#13]),
-           FEditor.RightEdge-2,0),CommentType);
+            StringReplace(Notice, '%s', sLineBreak, [rfReplaceAll]),
+            FEditor.RightEdge-2,0),CommentType);
   FEditor.InsertTextAtCaret(Txt);
 end;
 
