@@ -1726,10 +1726,11 @@ begin
   {$IFDEF BuildWidgetSetNoGui}  Result:=lpNoGUI;  {$ENDIF}
 
   FilterConfigFileContent;
+  // free LCL Application to help debugging nogui issues
+  Application.Free;
   // start our own LazBuildApp
   LazBuildApp:=TLazBuildApplication.Create(nil);
   LazBuildApp.Run;
   LazBuildApp.Free;
-  Application.Free;
 end.
 
