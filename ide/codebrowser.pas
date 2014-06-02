@@ -3246,11 +3246,14 @@ procedure TQuickFixIdentifierNotFound_Search.CreateMenuItems(
 var
   Msg: TMessageLine;
   Identifier: string;
+  i: Integer;
 begin
-  if Fixes.LineCount<>1 then exit;
-  Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg,Identifier) then exit;
-  Fixes.AddMenuItem(Self,Msg,lisQuickFixSearchIdentifier);
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,Identifier) then continue;
+    Fixes.AddMenuItem(Self,Msg,lisQuickFixSearchIdentifier);
+    exit;
+  end;
 end;
 
 procedure TQuickFixIdentifierNotFound_Search.QuickFix(Fixes: TMsgQuickFixes;

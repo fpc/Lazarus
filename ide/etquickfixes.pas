@@ -70,7 +70,7 @@ type
 
   TQuickFixIdentifierNotFoundAddLocal = class(TMsgQuickFix)
   public
-    function IsApplicable(Msg: TMessageLine): boolean;
+    function IsApplicable(Msg: TMessageLine; out Identifier: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -213,11 +213,14 @@ procedure TQuickFixLocalVariableNotUsed_Remove.CreateMenuItems(
 var
   Msg: TMessageLine;
   Identifier: String;
+  i: Integer;
 begin
-  if Fixes.LineCount<>1 then exit;
-  Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg,Identifier) then exit;
-  Fixes.AddMenuItem(Self,Msg,'Remove local variable "'+Identifier+'"');
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,Identifier) then continue;
+    Fixes.AddMenuItem(Self,Msg,'Remove local variable "'+Identifier+'"');
+    exit;
+  end;
 end;
 
 procedure TQuickFixLocalVariableNotUsed_Remove.QuickFix(Fixes: TMsgQuickFixes;
@@ -271,11 +274,14 @@ var
   Msg: TMessageLine;
   aClassName: string;
   aMethodName: string;
+  i: Integer;
 begin
-  if Fixes.LineCount<>1 then exit;
-  Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg,aClassName,aMethodName) then exit;
-  Fixes.AddMenuItem(Self,Msg,'Show abstract methods of "'+aClassName+'"');
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,aClassName,aMethodName) then continue;
+    Fixes.AddMenuItem(Self,Msg,'Show abstract methods of "'+aClassName+'"');
+    exit;
+  end;
 end;
 
 procedure TQuickFixClassWithAbstractMethods.QuickFix(Fixes: TMsgQuickFixes;
@@ -365,11 +371,14 @@ var
   Msg: TMessageLine;
   MissingUnitName: string;
   UsedByUnit: string;
+  i: Integer;
 begin
-  if Fixes.LineCount<>1 then exit;
-  Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg,MissingUnitName,UsedByUnit) then exit;
-  Fixes.AddMenuItem(Self,Msg,'Remove uses "'+MissingUnitName+'"');
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,MissingUnitName,UsedByUnit) then continue;
+    Fixes.AddMenuItem(Self,Msg,'Remove uses "'+MissingUnitName+'"');
+    exit;
+  end;
 end;
 
 procedure TQuickFixUnitNotFound_Remove.QuickFix(Fixes: TMsgQuickFixes;
@@ -405,17 +414,17 @@ end;
 
 { TQuickFixIdentifierNotFoundAddLocal }
 
-function TQuickFixIdentifierNotFoundAddLocal.IsApplicable(Msg: TMessageLine
-  ): boolean;
+function TQuickFixIdentifierNotFoundAddLocal.IsApplicable(Msg: TMessageLine;
+  out Identifier: string): boolean;
 var
   Code: TCodeBuffer;
   Tool: TCodeTool;
   CleanPos: integer;
   Node: TCodeTreeNode;
-  Identifier: String;
   Dummy: string;
 begin
   Result:=false;
+  Identifier:='';
   // check: identifier not found "$1"
   if not IDEFPCParser.MsgLineIsId(Msg,5000,Identifier,Dummy) then
     exit;
@@ -445,14 +454,15 @@ procedure TQuickFixIdentifierNotFoundAddLocal.CreateMenuItems(
 var
   Msg: TMessageLine;
   Identifier: String;
+  i: Integer;
 begin
-  if Fixes.LineCount<>1 then exit;
-  Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg) then exit;
-  Identifier:=IDEFPCParser.GetFPCMsgValue1(Msg);
-  if Identifier='' then exit;
-  Fixes.AddMenuItem(Self,Msg,'Create local variable "'+Identifier+'"');
-  // ToDo: add private/public variable
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,Identifier) then continue;
+    Fixes.AddMenuItem(Self,Msg,'Create local variable "'+Identifier+'"');
+    // ToDo: add private/public variable
+    exit;
+  end;
 end;
 
 procedure TQuickFixIdentifierNotFoundAddLocal.QuickFix(Fixes: TMsgQuickFixes;
@@ -465,9 +475,7 @@ var
   NewY: integer;
   NewTopLine: integer;
 begin
-  if Msg=nil then exit;
-  Identifier:=IDEFPCParser.GetFPCMsgValue1(Msg);
-  if Identifier='' then exit;
+  if not IsApplicable(Msg,Identifier) then exit;
 
   if not LazarusIDE.BeginCodeTools then begin
     DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute failed because IDE busy']);

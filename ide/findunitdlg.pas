@@ -198,11 +198,14 @@ var
   Msg: TMessageLine;
   MissingUnit: string;
   UsedByUnit: string;
+  i: Integer;
 begin
-  if Fixes.LineCount<>1 then exit;
-  Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg,MissingUnit,UsedByUnit) then exit;
-  Fixes.AddMenuItem(Self,Msg,'Search Unit "'+MissingUnit+'"');
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,MissingUnit,UsedByUnit) then continue;
+    Fixes.AddMenuItem(Self,Msg,'Search Unit "'+MissingUnit+'"');
+    exit;
+  end;
 end;
 
 procedure TQuickFixUnitNotFound_Search.QuickFix(Fixes: TMsgQuickFixes;
@@ -721,11 +724,14 @@ procedure TQuickFixIncludeNotFound_Search.CreateMenuItems(Fixes: TMsgQuickFixes
 var
   IncludeFile: string;
   Msg: TMessageLine;
+  i: Integer;
 begin
-  if Fixes.LineCount<>1 then exit;
-  Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg,IncludeFile) then exit;
-  Fixes.AddMenuItem(Self,Msg,'Search Include File "'+ExtractFilename(IncludeFile)+'"');
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,IncludeFile) then continue;
+    Fixes.AddMenuItem(Self,Msg,'Search Include File "'+ExtractFilename(IncludeFile)+'"');
+    exit;
+  end;
 end;
 
 procedure TQuickFixIncludeNotFound_Search.QuickFix(Fixes: TMsgQuickFixes;

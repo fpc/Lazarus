@@ -440,11 +440,14 @@ var
   Msg: TMessageLine;
   Unitname1: string;
   Unitname2: string;
+  i: Integer;
 begin
-  if Fixes.LineCount<>1 then exit;
-  Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg,Unitname1,Unitname2) then exit;
-  Fixes.AddMenuItem(Self,Msg,'Show unit dependencies');
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,Unitname1,Unitname2) then continue;
+    Fixes.AddMenuItem(Self,Msg,'Show unit dependencies');
+    exit;
+  end;
 end;
 
 procedure TQuickFixCircularUnitReference.QuickFix(Fixes: TMsgQuickFixes;

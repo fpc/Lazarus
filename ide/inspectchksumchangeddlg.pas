@@ -430,11 +430,14 @@ var
   Msg: TMessageLine;
   Unitname1: string;
   Unitname2: string;
+  i: Integer;
 begin
-  if Fixes.LineCount<>1 then exit;
-  Msg:=Fixes.Lines[0];
-  if not IsApplicable(Msg,Unitname1,Unitname2) then exit;
-  Fixes.AddMenuItem(Self,Msg,'Explore message "checksum changed"');
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,Unitname1,Unitname2) then continue;
+    Fixes.AddMenuItem(Self,Msg,'Explore message "checksum changed"');
+    exit;
+  end;
 end;
 
 procedure TQuickFixRecompilingChecksumChanged.QuickFix(Fixes: TMsgQuickFixes;
@@ -444,7 +447,6 @@ var
   Unit2: String;
   Dlg: TInspectChksumChgDialog;
 begin
-  debugln(['TQuickFixRecompilingChecksumChanged.Execute  ']);
   if not IsApplicable(Msg,Unit1,Unit2) then exit;
   debugln(['TQuickFixRecompilingChecksumChanged.Execute Unit1=',REVar(1),', checksum changed for Unit2=',REVar(2)]);
   Dlg:=TInspectChksumChgDialog.Create(nil);

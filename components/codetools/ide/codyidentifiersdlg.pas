@@ -389,7 +389,7 @@ var
   Identifier: string;
   i: Integer;
 begin
-  for i:=0 to Fixes.Count-1 do begin
+  for i:=0 to Fixes.LineCount-1 do begin
     Msg:=Fixes.Lines[i];
     if not IsApplicable(Msg,Identifier) then continue;
     Fixes.AddMenuItem(Self,Msg,'Show Cody Dictionary for "'+Identifier+'"');
@@ -401,16 +401,11 @@ procedure TQuickFixIdentifierNotFoundShowDictionary.QuickFix(
   Fixes: TMsgQuickFixes; Msg: TMessageLine);
 var
   Identifier: string;
-  i: Integer;
 begin
-  for i:=0 to Fixes.Count-1 do begin
-    Msg:=Fixes.Lines[i];
-    if not IsApplicable(Msg,Identifier) then continue;
-    if LazarusIDE.DoOpenFileAndJumpToPos(Msg.GetFullFilename,
-      Point(Msg.Column,Msg.Line),-1,-1,-1,[])<>mrOk then exit;
-    ShowUnitDictionaryDialog(nil);
-    exit;
-  end;
+  if not IsApplicable(Msg,Identifier) then exit;
+  if LazarusIDE.DoOpenFileAndJumpToPos(Msg.GetFullFilename,
+    Point(Msg.Column,Msg.Line),-1,-1,-1,[])<>mrOk then exit;
+  ShowUnitDictionaryDialog(nil);
 end;
 {$ENDIF}
 
