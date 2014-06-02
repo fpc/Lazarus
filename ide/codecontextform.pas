@@ -127,9 +127,13 @@ begin
       Exit;
     if CodeContextFrm = nil then
       CodeContextFrm := TCodeContextFrm.Create(LazarusIDE.OwningComponent);
-    CodeContextFrm.SetCodeContexts(CodeContexts);
-
-    CodeContextFrm.Visible := True;
+    CodeContextFrm.DisableAlign;
+    try
+      CodeContextFrm.SetCodeContexts(CodeContexts);
+      CodeContextFrm.Visible := True;
+    finally
+      CodeContextFrm.EnableAlign;
+    end;
     Result := True;
   finally
     CodeContexts.Free;
