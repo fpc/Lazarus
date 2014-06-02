@@ -567,8 +567,10 @@ begin
   inherited Create(aOwner);
   FWorkerOutput:=TStringList.Create;
   FProcess:=TProcessUTF8.Create(nil);
+  {$IF FPC_FULLVERSION<20604}
   FProcess.InheritHandles:=false;
-  FProcess.Options:= [poUsePipes];
+  {$ENDIF}
+  FProcess.Options:= [poUsePipes{$IFDEF Windows},poStderrToOutPut{$ENDIF}];
   FProcess.ShowWindow := swoHide;
   fExecuteBefore:=TFPList.Create;
   fExecuteAfter:=TFPList.Create;
@@ -1102,6 +1104,9 @@ begin
       end;
 
       // run and detach
+      {$IF FPC_FULLVERSION<20604}
+      Proc.InheritHandles:=false;
+      {$ENDIF}
       Proc.Options:=Proc.Options+[poNoConsole];
       try
         Proc.Execute;
