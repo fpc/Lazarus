@@ -28,8 +28,10 @@ uses
   {$IFDEF unix}
   cthreads,
   {$ENDIF}
-  Classes, SysUtils, CustApp, LCLProc, Dialogs, Forms, Controls, FileUtil,
-  masks, Interfaces, InterfaceBase, UTF8Process, LConvEncoding,
+  Classes, SysUtils,
+  Interfaces, // this includes the NoGUI widgetset
+  CustApp, LCLProc, Dialogs, Forms, Controls,
+  FileUtil, Masks, InterfaceBase, UTF8Process, LConvEncoding,
   // codetools
   CodeCache, CodeToolManager, DefineTemplates, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
