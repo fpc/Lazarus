@@ -46,8 +46,7 @@ uses
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
   Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
-  ExtCtrls, Forms, ComCtrls, Types, LMessages, LCLProc, CalControlWrapper
-  ;
+  ExtCtrls, Forms, ComCtrls, Types, LMessages, LCLProc, CalControlWrapper;
 
 const
   { We will deal with the NullDate value the special way. It will be especially
@@ -245,8 +244,7 @@ type
     procedure MoveSelectionLR(const ToLeft: Boolean);
     procedure DestroyCalendarForm;
     procedure DropDownCalendarForm;
-    procedure UpdateShowArrowButton(NewDateMode: TDTDateMode;
-                                                 NewKind: TDateTimeKind);
+    procedure UpdateShowArrowButton;
     procedure DestroyUpDown;
     procedure DestroyArrowBtn;
     procedure ArrowMouseDown(Sender: TObject; Button: TMouseButton;
@@ -863,7 +861,7 @@ end;
 procedure TCustomDateTimePicker.SetDateMode(const AValue: TDTDateMode);
 begin
   FDateMode := AValue;
-  UpdateShowArrowButton(AValue, FKind);
+  UpdateShowArrowButton;
 end;
 
 procedure TCustomDateTimePicker.SetHideDateTimeParts(AValue: TDateTimeParts);
@@ -1763,7 +1761,7 @@ begin
       MoveSelectionLR(False);
 
     FRecalculatingTextSizesNeeded := True;
-    UpdateShowArrowButton(FDateMode, FKind);
+    UpdateShowArrowButton;
     UpdateDate;
   end;
 end;
@@ -3470,8 +3468,7 @@ begin
   end;
 end;
 
-procedure TCustomDateTimePicker.UpdateShowArrowButton(
-                             NewDateMode: TDTDateMode; NewKind: TDateTimeKind);
+procedure TCustomDateTimePicker.UpdateShowArrowButton;
 
   procedure CreateArrowBtn;
   begin
@@ -3519,12 +3516,12 @@ var
   ReallyShowArrowButton: Boolean;
 
 begin
-  if NewDateMode = dmNone then begin
+  if FDateMode = dmNone then begin
     DestroyArrowBtn;
     DestroyUpDown;
 
   end else begin
-    ReallyShowArrowButton := (NewDateMode = dmComboBox) and
+    ReallyShowArrowButton := (FDateMode = dmComboBox) and
                           not (dtpDay in FEffectiveHideDateTimeParts);
 
     if (ReallyShowArrowButton <> Assigned(FArrowButton)) or
