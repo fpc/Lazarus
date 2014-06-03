@@ -743,7 +743,7 @@ begin
     except
       on E: Exception do begin
         MessageDlg(lisCCOErrorCaption,
-          Format(lisErrorLoadingFile2, [Params.IconFile, LineEnding, E.Message]),
+          Format(lisErrorLoadingFile2,[Params.IconFile]) + LineEnding + E.Message,
         mtError, [mbCancel], 0);
       end;
     end;

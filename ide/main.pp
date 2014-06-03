@@ -6531,7 +6531,7 @@ begin
   end;
   if not FileReadable then begin
     Result:=IDEQuestionDialog(lisUnableToReadFile,
-      Format(lisUnableToReadFilename, ['"', AFilename, '"']),
+      Format(lisUnableToReadFile2, ['"', AFilename, '"']),
       mtError, [mrCancel, lisSkipFile, mrAbort, lisAbortAllLoading]);
     exit;
   end;
@@ -10511,7 +10511,7 @@ begin
       or (CompareCaret(SelectedEndPos,EndPos)<0)
       then begin
         IDEMessageDialog(lisSelectionExceedsStringConstant,
-        Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon2, [LineEnding]),
+        Format(lisHintTheMakeResourcestringFunctionExpectsAStringCon, [LineEnding]),
         mtError,[mbCancel]);
         exit;
       end;

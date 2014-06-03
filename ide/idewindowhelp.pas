@@ -158,8 +158,8 @@ begin
     end;
   except
     on E: Exception do begin
-      IDEMessageDialog(lisCodeToolsDefsWriteError, Format(lisErrorWritingFile2,
-        [Filename+LineEnding+E.Message]),
+      IDEMessageDialog(lisCodeToolsDefsWriteError,
+        Format(lisErrorWritingFile, [Filename+LineEnding+E.Message]),
         mtError,[mbOk]);
     end;
   end;

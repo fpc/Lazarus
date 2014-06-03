@@ -677,7 +677,6 @@ resourcestring
   lisUnableToCreateFile3 = 'Unable to create file%s%s%s%s';
   lisCopyError2 = 'Copy error';
   lisSourceDirectoryDoesNotExist = 'Source directory %s%s%s does not exist.';
-  lisUnableToCreateDirectory = 'Unable to create directory %s%s%s.';
   lisUnableToCopyFileTo = 'Unable to copy file %s%s%s%sto %s%s%s';
   lisSorryThisTypeIsNotYetImplemented = 'Sorry, this type is not yet implemented';
   lisFileHasChangedSave = 'File %s%s%s has changed. Save?';
@@ -696,21 +695,16 @@ resourcestring
   lisUnableToRenameFile = 'Unable to rename file';
   lisUnableToCopyFile = 'Unable to copy file';
   lisWriteError = 'Write Error';
-  lisFileDoesNotLookLikeATextFileOpenItAnyway2 = 'File %s%s%s%sdoes not look '
-    +'like a text file.%sOpen it anyway?';
+  lisFileDoesNotLookLikeATextFileOpenItAnyway =
+    'File %s%s%s%sdoes not look like a text file.%sOpen it anyway?';
   lisUnableToCreateBackupDirectory = 'Unable to create backup directory %s%s%s.';
-  lisSourceAndDestinationAreTheSame =
-    'Source and Destination are the same:%s%s';
+  lisSourceAndDestinationAreTheSame = 'Source and Destination are the same:%s%s';
   lisUnableToRenameFileTo2 = 'Unable to rename file %s%s%s%sto %s%s%s.';
-  lisUnableToCopyFileTo2 = 'Unable to copy file %s%s%s%sto %s%s%s.';
-  lisFileDoesNotLookLikeATextFileOpenItAnyway = 'File %s%s%s%sdoes not look '
-    +'like a text file.%sOpen it anyway?';
   lisInvalidCommand = 'Invalid command';
   lisTheCommandAfterIsNotExecutable = 'The command after %s%s%s is not executable.';
   lisUnableToCleanUpDestinationDirectory = 'Unable to clean up destination directory';
   lisCommandAfterInvalid = 'Command after invalid';
-  lisTheCommandAfterPublishingIsInvalid = 'The command after publishing is '
-    +'invalid:%s%s%s%s';
+  lisTheCommandAfterPublishingIsInvalid = 'The command after publishing is invalid:%s%s%s%s';
   lisUnableToCleanUpPleaseCheckPermissions = 'Unable to clean up %s%s%s.%'
     +'sPlease check permissions.';
   lisCommandAfterPublishingModule = 'Command after publishing module';
@@ -746,12 +740,13 @@ resourcestring
   lisYouCanNotBuildLazarusWhileDebuggingOrCompiling = 'You cannot build '
     +'Lazarus while debugging or compiling.';
   lisReadError = 'Read Error';
-  lisUnableToReadFile2 = 'Unable to read file %s%s%s!';
+  lisUnableToReadFile = 'Unable to read file';
+  lisUnableToReadFile2 = 'Unable to read file %s%s%s.';
   lisUnableToReadTheProjectInfoFile = 'Unable to read the project info file%s%s%s%s.';
   lisUnableToReadLpi = 'Unable to read lpi';
   lisStrangeLpiFile = 'Strange lpi file';
   lisTheFileDoesNotLookLikeALpiFile = 'The file %s does not look like a lpi file.';
-  lisAmbiguousUnitFound2 = 'Ambiguous unit found';
+  lisAmbiguousUnitFound = 'Ambiguous unit found';
   lisTheUnitExistsTwiceInTheUnitPathOfThe = 'The unit %s exists twice in the '
     +'unit path of the %s:';
   lisHintCheckIfTwoPackagesContainAUnitWithTheSameName = 'Hint: Check if two '
@@ -802,9 +797,9 @@ resourcestring
     +'sHint: The "Make Resourcestring" function expects a string constant in a '
     +'single file. Please select the expression and try again.';
   lisSelectionExceedsStringConstant = 'Selection exceeds string constant';
-  lisHintTheMakeResourcestringFunctionExpectsAStringCon2 = 'Hint: The "Make '
-    +'Resourcestring" function expects a string constant.%sPlease select only '
-    +'a string expression and try again.';
+  lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The "Make '
+    +'Resourcestring" function expects a string constant.%sPlease select the '
+    +'expression and try again.';
   lisNoResourceStringSectionFound = 'No ResourceString Section found';
   lisUnableToFindAResourceStringSectionInThisOrAnyOfThe = 'Unable to find a '
     +'ResourceString section in this or any of the used units.';
@@ -2140,7 +2135,6 @@ resourcestring
   lisFailedToCreateApplicationBundleFor = 'Failed to create Application '
     +'Bundle for "%s"';
   lisThisProjectHasNoMainSourceFile = 'This project has no main source file';
-  lisErrorLoadingFile2 = 'Error loading file "%s":%s%s';
   lisNoneClickToChooseOne = 'none, click to choose one';
   lisTreeNeedsRefresh = 'Tree needs refresh';
   lisEMDEmptyMethods = 'Empty Methods';
@@ -2433,11 +2427,9 @@ resourcestring
   uemPrevBookmark = 'Goto Previous Bookmark';
   uemBookmarkN = 'Bookmark';
   lisChangeEncoding = 'Change Encoding';
-  lisEncodingOfFileOnDiskIsNewEncodingIs2 = 'Encoding of file %s%s%s%son disk '
-    +'is %s. New encoding is %s.';
   lisChangeFile = 'Change file';
-  lisEncodingOfFileOnDiskIsNewEncodingIs = 'Encoding of file %s%s%s%son disk '
-    +'is %s. New encoding is %s.';
+  lisEncodingOfFileOnDiskIsNewEncodingIs =
+    'Encoding of file %s%s%s%son disk is %s. New encoding is %s.';
   lisReopenWithAnotherEncoding = 'Reopen with another encoding';
   lisAbandonChanges = 'Abandon changes?';
   lisAllYourModificationsToWillBeLostAndTheFileReopened = 'All your modificatio'
@@ -3134,7 +3126,6 @@ resourcestring
 
   // codetools defines
   lisCodeToolsDefsWriteError = 'Write error';
-  lisErrorWritingFile2 = 'Error writing file %s';
   lisErrorWritingFile = 'Error writing file "%s"';
   lisFPDocErrorWriting = 'Error writing "%s"%s%s';
   lisFPDocFPDocSyntaxError = 'FPDoc syntax error';
@@ -3203,6 +3194,7 @@ resourcestring
   lisCodeToolsDefsKylixMainDirectoryDesc = 'The %s main directory,%swhere '
     +'Borland has installed all %s sources.%sFor example: /home/user/kylix%s';
   lisCodeToolsDefsCreateDefinesForProject = 'Create Defines for %s Project';
+  lisCodeToolsDefsProjectDirectory = 'Project directory';
   lisCodeToolsDefsprojectDirectory2 = '%s project directory';
   lisCodeToolsDefsTheProjectDirectory = 'The %s project directory,%swhich '
     +'contains the .dpr, dpk file.';
@@ -3322,9 +3314,6 @@ resourcestring
   lisSuccess = 'Success';
   lisAllBlocksLooksOk = 'All blocks look ok.';
   lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created for "%s"';
-  lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The "Make '
-    +'Resourcestring" function expects a string constant.%sPlease select the '
-    +'expression and try again.';
 
   // diff dialog
   lisDiffDlgText1 = 'Text1';
@@ -3467,11 +3456,8 @@ resourcestring
     +'yet in the unit path.%sAdd it?';
   lisUnableToCreateFilename = 'Unable to create file %s%s%s.';
   lisUnableToWriteFile = 'Unable to write file';
-  lisUnableToWriteToFile = 'Unable to write to file %s%s%s.';
-  lisUnableToWriteToFile2= 'Unable to write to file "%s".';
+  lisUnableToWriteToFile2 = 'Unable to write to file "%s".';
   lisFileIsNotWritable = 'File is not writable';
-  lisUnableToReadFile = 'Unable to read file';
-  lisUnableToReadFilename = 'Unable to read file %s%s%s.';
   lisErrorDeletingFile = 'Error deleting file';
   lisInvalidMask = 'Invalid Mask';
   lisTheFileMaskIsNotAValidRegularExpression = 'The file mask "%s" is not a '
@@ -3496,8 +3482,6 @@ resourcestring
   lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag = 'The package '
     +'name %s%s%s is invalid.%sPlase choose an existing package.';
   lisProjAddDependencyAlreadyExists = 'Dependency already exists';
-  lisUnableToAddTheDependencyBecauseThePackageHasAlread2 = 'Unable to add the '
-    +'dependency %s, because the package %s has already a dependency to %s';
   lisVersionMismatch = 'Version mismatch';
   lisUnableToAddTheDependencyBecauseThePackageHasAlread = 'Unable to add the '
     +'dependency %s, because the package %s has already a dependency %s';
@@ -3720,7 +3704,6 @@ resourcestring
   lisPkgMangDeleteOldPackageFile = 'Delete Old Package File?';
   lisPkgMangDeleteOldPackageFile2 = 'Delete old package file %s%s%s?';
   lisPkgMangDeleteFailed = 'Delete failed';
-  lisAmbiguousUnitFound = 'Ambiguous Unit found';
   lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac = 'The file %s%s%s%s'
     +'was found in one of the source directories of the package %s and looks '
     +'like a compiled unit. Compiled units must be in the output directory of '
@@ -3773,7 +3756,7 @@ resourcestring
   lisPkgMangUnableToReadStateFileOfPackageError = 'Unable to read state file %'
     +'s%s%s%sof package %s.%sError: %s';
   lisPkgMangUnableToCreateDirectory = 'Unable to create directory';
-  lisUnableToCreateDirectory2 = 'Unable to create directory %s%s%s';
+  lisUnableToCreateDirectory = 'Unable to create directory %s%s%s.';
   lisPkgMangUnableToCreateOutputDirectoryForPackage = 'Unable to create '
     +'output directory %s%s%s%sfor package %s.';
   lisPkgMangUnableToDeleteFilename = 'Unable to delete file';
@@ -3837,6 +3820,7 @@ resourcestring
     +'file for package %s is not a valid executable:%s%s';
   lisPkgMangpackageMainSourceFile = 'package main source file';
   lisErrorLoadingFile = 'Error loading file';
+  lisErrorLoadingFile2 = 'Error loading file "%s":';
   lisLoadingFailed = 'Loading %s failed.';
   lisPkgMangAddingNewDependencyForProjectPackage = '%sAdding new Dependency '
     +'for project %s: package %s%s';

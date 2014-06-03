@@ -6013,7 +6013,7 @@ begin
               mtConfirmation, [mrYes, lisChangeFile, mrCancel], '')
           else
             CurResult:=IDEQuestionDialog(lisChangeEncoding,
-              Format(lisEncodingOfFileOnDiskIsNewEncodingIs2, ['"',
+              Format(lisEncodingOfFileOnDiskIsNewEncodingIs, ['"',
                 SrcEdit.CodeBuffer.Filename, '"', LineEnding, OldEncoding, NewEncoding]),
               mtConfirmation, [mrYes, lisChangeFile, mrOk,
                 lisReopenWithAnotherEncoding, mrCancel], '');

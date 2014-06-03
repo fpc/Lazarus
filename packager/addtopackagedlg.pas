@@ -461,7 +461,7 @@ begin
     DebugLn(['CheckAddingDependency ',LazPackage.Name,' requiring ',NewPkgName,', but is already provided by ',ProvidingAPackage.IDAsString]);
     if WarnIfAlreadyThere then
       IDEMessageDialog(lisProjAddDependencyAlreadyExists,
-        Format(lisUnableToAddTheDependencyBecauseThePackageHasAlread2, [
+        Format(lisUnableToAddTheDependencyBecauseThePackageHasAlread, [
           RequiredPackage.IDAsString, LazPackage.Name, ProvidingAPackage.Name]),
         mtError,[mbCancel]);
     exit(mrIgnore);
@@ -1348,8 +1348,8 @@ begin
   except
     on E: Exception do begin
       IDEMessageDialog(lisCCOErrorCaption,
-        Format(lisErrorLoadingFile2, [AFilename, LineEnding, E.Message]), mtError, [
-          mbCancel]);
+        Format(lisErrorLoadingFile2,[AFilename]) + LineEnding + E.Message,
+        mtError, [mbCancel]);
       ComponentIconSpeedButton.Glyph.Clear;
       FComponentIconFilename:='';
       ComponentIconSpeedButton.Hint:=lisNoneClickToChooseOne;

@@ -1584,9 +1584,8 @@ begin
               if ConsoleVerbosity>=0 then
                 DebugLn(['TBuildManager.CheckUnitPathForAmbiguousPascalFiles CurUnitName="',CurUnitName,'" CurFilename="',CurFilename,'" OtherUnitName="',PUnitFile(ANode.Data)^.FileUnitName,'" OtherFilename="',PUnitFile(ANode.Data)^.Filename,'"']);
               // pascal unit exists twice
-              Result:=IDEQuestionDialog(lisAmbiguousUnitFound2,
-                Format(lisTheUnitExistsTwiceInTheUnitPathOfThe, [CurUnitName,
-                  ContextDescription])
+              Result:=IDEQuestionDialog(lisAmbiguousUnitFound,
+                Format(lisTheUnitExistsTwiceInTheUnitPathOfThe,[CurUnitName,ContextDescription])
                 +LineEnding
                 +LineEnding
                 +'1. "'+PUnitFile(ANode.Data)^.Filename+'"'+LineEnding

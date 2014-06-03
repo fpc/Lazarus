@@ -166,8 +166,7 @@ begin
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
       Result:=IDEMessageDialog(lisUnableToCopyFile,
-        Format(lisUnableToCopyFileTo2,
-               ['"', SrcFilename, '"', LineEnding, '"', DestFilename, '"']),
+        Format(lisUnableToCopyFileTo,['"',SrcFilename,'"',LineEnding,'"',DestFilename,'"']),
         mtError,DlgButtons);
       if (Result<>mrRetry) then exit;
     end;
@@ -206,7 +205,7 @@ begin
         Result:=mrCancel;
       end else begin
         ACaption:=lisFileNotText;
-        AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway2,
+        AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway,
                       ['"', AFilename, '"', LineEnding, LineEnding]);
         Result:=IDEMessageDialogAb(ACaption, AText, mtConfirmation,
                            [mbOk, mbIgnore],ShowAbort);
@@ -278,9 +277,8 @@ begin
       Result:=mrOk;
     end else begin
       ACaption:=lisWriteError;
-      AText:=Format(lisUnableToWriteToFile, ['"', Filename, '"']);
-      Result:=IDEMessageDialog(ACaption,AText,mtError,
-                               [mbAbort, mbRetry, mbIgnore]);
+      AText:=Format(lisUnableToWriteToFile2, [Filename]);
+      Result:=IDEMessageDialog(ACaption,AText,mtError,[mbAbort, mbRetry, mbIgnore]);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
     end;
@@ -412,7 +410,7 @@ begin
       break;
     end else begin
       Result:=IDEMessageDialog(lisUnableToWriteFile,
-        Format(lisUnableToWriteToFile, ['"', Buffer.Filename, '"']),
+        Format(lisUnableToWriteToFile2, [Buffer.Filename]),
         mtError,ErrorButtons+[mbCancel]);
       if Result<>mrRetry then exit;
     end;
@@ -444,8 +442,7 @@ begin
     if WarnOverwrite then begin
       Result:=IDEQuestionDialog(lisOverwriteFile,
         Format(lisAFileAlreadyExistsReplaceIt, ['"', AFilename, '"', LineEnding]),
-        mtConfirmation,
-        [mrYes, lisOverwriteFileOnDisk, mbCancel]);
+        mtConfirmation, [mrYes, lisOverwriteFileOnDisk, mbCancel]);
       if Result=mrCancel then exit;
     end;
     if CreateBackup then begin
@@ -471,8 +468,7 @@ begin
     end;
   except
     Result:=IDEMessageDialog(lisUnableToWriteFile,
-      Format(lisUnableToWriteToFile, ['"', AFilename, '"']), mtError, [
-        mbCancel, mbAbort]);
+      Format(lisUnableToWriteToFile2, [AFilename]), mtError, [mbCancel, mbAbort]);
     exit;
   end;
   // check readable
@@ -487,8 +483,8 @@ begin
     end;
   except
     Result:=IDEMessageDialog(lisUnableToReadFile,
-      Format(lisUnableToReadFilename, ['"', AFilename, '"']), mtError, [
-        mbCancel, mbAbort]);
+      Format(lisUnableToReadFile2, ['"', AFilename, '"']),
+      mtError, [mbCancel, mbAbort]);
     exit;
   end;
   Result:=mrOk;
@@ -500,8 +496,7 @@ begin
   Result:=mrOk;
   while not FileIsWritable(Filename) do begin
     Result:=IDEMessageDialog(lisFileIsNotWritable,
-      Format(lisUnableToWriteToFile, ['"', Filename, '"']),
-      mtError,ErrorButtons+[mbCancel]);
+      Format(lisUnableToWriteToFile2, [Filename]), mtError,ErrorButtons+[mbCancel]);
     if Result<>mrRetry then exit;
   end;
 end;
@@ -570,7 +565,7 @@ begin
       if not DirPathExists(Dir) then begin
         while not CreateDirUTF8(Dir) do begin
           Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
-            Format(lisUnableToCreateDirectory2, ['"', Dir, '"']),
+            Format(lisUnableToCreateDirectory, ['"', Dir, '"']),
             mtError,ErrorButtons+[mbCancel]);
           if Result<>mrRetry then exit;
         end;
