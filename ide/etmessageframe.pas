@@ -3456,7 +3456,7 @@ begin
       Name:='AboutExtToolDlg';
       Width:=500;
       Height:=300;
-      Position:=poMainFormCenter;
+      Position:=poScreenCenter;
       Caption:='About '+View.Caption;
     end;
 
