@@ -47,8 +47,7 @@ type
     OpenRecentButton: TBUTTON;
     RecentListbox: TLISTBOX;
     OpenRecentGroupbox: TGROUPBOX;
-    procedure ImExportCompOptsDlgCLOSE(Sender: TObject;
-                                       var CloseAction: TCloseAction);
+    procedure ImExportCompOptsDlgCLOSE(Sender: TObject; var CloseAction: TCloseAction);
     procedure ImExportCompOptsDlgCREATE(Sender: TObject);
     procedure OpenButtonCLICK(Sender: TObject);
     procedure OpenRecentButtonCLICK(Sender: TObject);
@@ -77,13 +76,51 @@ function ShowImExportCompilerOptionsDialog(
 
 function DoImportCompilerOptions(CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
 function DoExportCompilerOptions(CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
-function GetXMLPathForCompilerOptions(XMLConfig: TXMLConfig): string;
-function ReadIntFromXMLConfig(const Filename, Path: string;
-  DefaultValue, ValueForReadError: integer): integer;
 
 implementation
 
 {$R *.lfm}
+
+function ReadIntFromXMLConfig(const Filename, Path: string;
+  DefaultValue, ValueForReadError: integer): integer;
+var
+  XMLConfig: TXMLConfig;
+begin
+  Result:=ValueForReadError;
+  if FileExistsUTF8(Filename) then
+    try
+      XMLConfig:=TXMLConfig.Create(Filename);
+      Result:=XMLConfig.GetValue(Path,DefaultValue);
+    except
+      Result:=ValueForReadError;
+    end;
+end;
+
+function GetXMLPathForCompilerOptions(XMLConfig: TXMLConfig): string;
+const
+  PathSuffix = 'SearchPaths/CompilerPath/Value';
+var
+  FileVersion: Integer;
+begin
+  if XMLConfig.GetValue(PathSuffix,'')<>'' then
+    // old lpi file
+    Result:=''
+  else if XMLConfig.GetValue('CompilerOptions/'+PathSuffix,'')<>'' then
+    // current lpi file
+    Result:='CompilerOptions/'
+  else if XMLConfig.GetValue('Package/CompilerOptions/'+PathSuffix,'')<>'' then
+    // current lpk file
+    Result:='Package/CompilerOptions/'
+  else begin
+    // default: depending on file type
+    Result:='CompilerOptions/';
+    if CompareFileExt(XMLConfig.Filename,'.lpk',false)=0 then begin
+      FileVersion:=ReadIntFromXMLConfig(XMLConfig.Filename,'Package/Version',0,2);
+      if FileVersion>=2 then
+        Result:='Package/CompilerOptions/';
+    end;
+  end;
+end;
 
 function ShowImExportCompilerOptionsDialog(
   CompOpts: TBaseCompilerOptions; var Filename: string): TImportExportOptionsResult;
@@ -144,51 +181,8 @@ begin
     on E: Exception do
     begin
       Result:=MessageDlg(lisIECOErrorAccessingXml,
-        Format(lisIECOErrorAccessingXmlFile,
-               ['"', Filename, '"', LineEnding, E.Message]),
+        Format(lisIECOErrorAccessingXmlFile, ['"', Filename, '"', LineEnding, E.Message]),
         mtError, [mbCancel], 0);
-    end;
-  end;
-end;
-
-function ReadIntFromXMLConfig(const Filename, Path: string;
-  DefaultValue, ValueForReadError: integer): integer;
-var
-  XMLConfig: TXMLConfig;
-begin
-  Result:=ValueForReadError;
-  if FileExistsUTF8(Filename) then
-    try
-      XMLConfig:=TXMLConfig.Create(Filename);
-      Result:=XMLConfig.GetValue(Path,DefaultValue);
-    except
-      Result:=ValueForReadError;
-    end;
-end;
-
-function GetXMLPathForCompilerOptions(XMLConfig: TXMLConfig): string;
-var
-  FileVersion: Integer;
-begin
-  if XMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'' then begin
-    // old lpi file
-    Result:='';
-  end else if XMLConfig.GetValue('CompilerOptions/SearchPaths/CompilerPath/Value','')<>''
-  then begin
-    // current lpi file
-    Result:='CompilerOptions/';
-  end else if XMLConfig.GetValue('Package/CompilerOptions/SearchPaths/CompilerPath/Value','')<>''
-  then begin
-    // current lpk file
-    Result:='Package/CompilerOptions/';
-  end
-  else begin
-    // default: depending on file type
-    Result:='CompilerOptions/';
-    if CompareFileExt(XMLConfig.Filename,'.lpk',false)=0 then begin
-      FileVersion:=ReadIntFromXMLConfig(XMLConfig.Filename,'Package/Version',0,2);
-      if FileVersion>=2 then
-        Result:='Package/CompilerOptions/';
     end;
   end;
 end;
@@ -319,8 +313,7 @@ procedure TImExportCompOptsDlg.SetFilename(const AValue: string);
 begin
   if FFilename=AValue then exit;
   FFilename:=AValue;
-  InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true,rltFile).
-    AppendEntry(FFilename);
+  InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true,rltFile).AppendEntry(FFilename);
   LoadRecentList;
 end;
 
