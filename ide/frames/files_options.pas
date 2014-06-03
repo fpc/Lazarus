@@ -522,13 +522,15 @@ var
 begin
   if EnvironmentOptions.CompilerMessagesFilename=FOldCompilerFilename then exit(true);
   EnvironmentOptions.CompilerMessagesFilename:=CompilerTranslationFileComboBox.Text;
-  NewMsgFile:=EnvironmentOptions.GetParsedCompilerMessagesFilename;
-  if not FileExistsUTF8(NewMsgFile) then begin
-    if IDEMessageDialog(lisCCOErrorCaption, Format(
-      lisCompilerMessagesFileNotFound, [#13, NewMsgFile]), mtError, [mbCancel,
-      mbIgnore])<>mrIgnore
-    then
-      exit(false);
+  if EnvironmentOptions.CompilerMessagesFilename<>'' then begin
+    NewMsgFile:=EnvironmentOptions.GetParsedCompilerMessagesFilename;
+    if not FileExistsUTF8(NewMsgFile) then begin
+      if IDEMessageDialog(lisCCOErrorCaption, Format(
+        lisCompilerMessagesFileNotFound, [#13, NewMsgFile]), mtError, [mbCancel,
+        mbIgnore])<>mrIgnore
+      then
+        exit(false);
+    end;
   end;
   Result:=true;
 end;
