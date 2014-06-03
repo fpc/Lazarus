@@ -53,6 +53,7 @@ resourcestring
   lisRemove = 'Remove';
   lisBtnRemove = '&Remove';
   lisRename = 'Rename';
+  lisRename2 = 'Rename ...';
   lisReplace = 'Replace';
   lisBtnReplace = '&Replace';
   lisBtnDlgReplace = '&Replace ...';
@@ -3164,9 +3165,7 @@ resourcestring
     +'not contain child nodes.';
   lisCodeToolsDefsCreateFPCMacrosAndPathsForAFPCProjectDirectory = 'Create '
     +'FPC Macros and paths for a fpc project directory';
-  lisCodeToolsDefsProjectDirectory = 'Project directory';
-  lisCodeToolsDefsTheFreePascalProjectDirectory = 'The Free Pascal project '
-    +'directory.';
+  lisCodeToolsDefsTheFreePascalProjectDirectory = 'The Free Pascal project directory.';
   lisCodeToolsDefscompilerPath = 'Compiler path';
   lisCodeToolsDefsThePathToTheFreePascalCompilerForThisProject = 'The path to '
     +'the Free Pascal compiler for this project. Only required if you set the '
@@ -3184,8 +3183,7 @@ resourcestring
     +'or %s/usr/local/bin/fpc @/etc/fpc.cfg%s.';
   lisCodeToolsDefsCreateDefinesForFreePascalSVNSources = 'Create Defines for '
     +'Free Pascal SVN Sources';
-  lisCodeToolsDefsTheFreePascalSVNSourceDir = 'The Free Pascal SVN source '
-    +'directory.';
+  lisCodeToolsDefsTheFreePascalSVNSourceDir = 'The Free Pascal SVN source directory.';
   lisCodeToolsDefsCreateDefinesForDirectory = 'Create Defines for %s Directory';
   lisCodeToolsDefsdirectory = '%s directory';
   lisCodeToolsDefsDelphiMainDirectoryDesc = 'The %s main directory,%swhere '
@@ -3681,6 +3679,7 @@ resourcestring
   lisPkgMangPackagesMustHaveTheExtensionLpk = 'Packages must have the '
     +'extension .lpk';
   lisPkgMangInvalidPackageName = 'Invalid package name';
+  lisPkgMangInvalidPackageName2 = 'Invalid Package Name';
   lisPkgMangThePackageNameIsNotAValidPackageNamePleaseChooseAn = 'The package '
     +'name %s%s%s is not a valid package name%sPlease choose another name (e.'
     +'g. package1.lpk)';
@@ -3767,7 +3766,6 @@ resourcestring
   lisPkgMangUnableToLoadPackage = 'Unable to load package';
   lisPkgMangUnableToOpenThePackage = 'Unable to open the package %s%s%s.%'
     +'sThis package was marked for installation.';
-  lisPkgMangInvalidPackageName2 = 'Invalid Package Name';
   lisOpenPackage2 = 'Open package %s';
   lisPkgMangThePackageNameOfTheFileIsInvalid = 'The package name %s%s%s of%'
     +'sthe file %s%s%s is invalid.';
@@ -3907,8 +3905,7 @@ resourcestring
     +'installed, but the lpk file was not found. All its components are '
     +'deactivated. Please fix this.';
   lisPkgSysPackageFileNotFound = 'Package file not found';
-  lisPkgMangTheFileOfPackageWasNotFound = 'The file "%s" of package %s was not'
-    +' found.';
+  lisPkgMangTheFileOfPackageWasNotFound = 'The file "%s" of package %s was not found.';
   lisPkgSysThePackageIsInstalledButNoValidPackageFileWasFound = 'The package %'
     +'s%s%s is installed, but no valid package file (.lpk) was found.%sA broken '
     +'dummy package was created.';
@@ -5047,12 +5044,12 @@ resourcestring
     +'installing a HTML control like turbopoweriprodsgn';
   lisShowEmptyUnitsPackages = 'Show empty units/packages';
   lisUsePackageInProject = 'Use package %s in project';
+  lisUsePackageInProject2 = 'Use package in project';
   lisUsePackageInPackage = 'Use package %s in package %s';
+  lisUsePackageInPackage2 = 'Use package in package';
   lisRescan = 'Rescan';
   lisUseUnitInUnit = 'Use unit %s in unit %s';
-  lisUsePackageInProject2 = 'Use package in project';
   lisUseIdentifier = 'Use identifier';
-  lisUsePackageInPackage2 = 'Use package in package';
   lisFindMissingUnit = 'Find missing unit';
   lisAskNameOnCreate = 'Ask name on create';
   lisAskForComponentNameAfterPuttingItOnForm = 'Ask for component '
@@ -5086,9 +5083,9 @@ resourcestring
     +'of current unit, project or package';
   lisAddPackageRequirement = 'Add package requirement?';
   lisTheUnitBelongsToPackage = 'The unit belongs to package %s.';
-  lisAddPackageToProject2 = 'Add package to project';
   lisAddUnitNotRecommended = 'Add unit (not recommended)';
   lisAddPackageToProject = 'Add package %s to project?';
+  lisAddPackageToProject2 = 'Add package to project';
   lisOnBreakLineIEReturnOrEnterKey = 'On break line (i.e. return or enter key)';
   lisSetupDefaultIndentation = '(Set up default indentation)';
   lisIndentationForPascalSources = 'Indentation for Pascal sources';
@@ -5453,7 +5450,6 @@ resourcestring
   lisTarget = 'Target:';
   lisDirectives = 'Directives';
   lisRecordedMacros = 'Recorded';
-  lisRename2 = 'Rename ...';
   lisNewMacroName = 'Macro %d';
   lisEditorMacros = 'Editor macros';
   lisPlay = 'Play';
@@ -5533,11 +5529,11 @@ resourcestring
   lisUDScanningUnits = 'Scanning: %s units ...';
   lisUDFile = 'File: %s';
   lisUDInterfaceUses = 'Interface Uses: %s';
+  lisUDInterfaceUses2 = 'interface uses: %s';
   lisUDImplementationUses = 'Implementation Uses: %s';
   lisUDUsedByInterfaces = 'Used by Interfaces: %s';
   lisUDUsedByImplementations = 'Used by Implementations: %s';
   lisUDScanning = 'Scanning ...';
-  lisUDInterfaceUses2 = 'interface uses: %s';
   lisUDImplementationUses2 = 'implementation uses: %s';
   lisUDUsedByInterfaces2 = 'used by interfaces: %s';
   lisUDUsedByImplementations2 = 'used by implementations: %s';
