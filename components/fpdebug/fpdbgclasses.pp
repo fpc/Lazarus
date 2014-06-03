@@ -787,7 +787,7 @@ var
   dw: DWord;
   qw: QWord;
 begin
-  case GMode of
+  case Mode of
     dm32:
       begin
         result := ReadData(AAdress, sizeof(dw), dw);
@@ -1160,7 +1160,7 @@ begin
   if FProcess.ReadData(FProcess.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
   begin
     p := @CodeBin;
-    Disassemble(p, GMode=dm64, ADump, AStatement);
+    Disassemble(p, FProcess.Mode=dm64, ADump, AStatement);
     if copy(AStatement,1,4)='call' then
       CallInstr:=true;
   end;
