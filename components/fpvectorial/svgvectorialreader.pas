@@ -434,6 +434,7 @@ var
   lValue, lStr: string;
   lStrings: TStringList;
   i: Integer;
+  HasAlphaChannel: Boolean = False;
 begin
   Result := colBlack;
   lValue := Trim(LowerCase(AValue));
@@ -443,15 +444,19 @@ begin
   begin
     lStrings := TStringList.Create;
     try
-      lStr := Copy(lValue, 5, Length(lValue)-5);
+      HasAlphaChannel := Copy(lValue, 0, 4) = 'rgba';
+      if HasAlphaChannel then lStr := Copy(lValue, 6, Length(lValue)-6)
+      else lStr := Copy(lValue, 5, Length(lValue)-5);
       lStrings.Delimiter := ',';
       lStrings.StrictDelimiter := True;
       lStrings.DelimitedText := lStr;
-      if lStrings.Count = 3 then
+      if lStrings.Count in [3, 4] then
       begin
         Result.Red := SVGColorValueStrToWord(lStrings.Strings[0]);
         Result.Green := SVGColorValueStrToWord(lStrings.Strings[1]);
         Result.Blue := SVGColorValueStrToWord(lStrings.Strings[2]);
+        if (lStrings.Count = 4) and HasAlphaChannel then
+          Result.alpha := StringFloatZeroToOneToWord(lStrings.Strings[3]);
       end
       else
         raise Exception.Create(Format('[TvSVGVectorialReader.ReadSVGColor] An unexpected number of channels was found: %d', [lStrings.Count]));
