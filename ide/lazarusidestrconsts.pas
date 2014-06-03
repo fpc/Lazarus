@@ -891,14 +891,14 @@ resourcestring
   lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti = 'Export file %s%'
     +'s%s exists.%sOpen file and replace only compiler options?%s(Other '
     +'settings will be kept.)';
-  lisIECOOpenOrLoadCompilerOptions = 'Open or Load Compiler Options';
+  lisIECOLoadOrSaveCompilerOptions = 'Load or Save Compiler Options';
   lisIECOErrorAccessingXml = 'Error accessing xml';
   lisIECOErrorLoadingXml = 'Error loading xml';
   lisIECOErrorLoadingXmlFile = 'Error loading xml file %s%s%s:%s%s';
   lisIECOErrorAccessingXmlFile = 'Error accessing xml file %s%s%s:%s%s';
   lisIECORecentFiles = 'Recent files';
   lisIECOSaveToRecent = 'Save to recent';
-  lisIECOOpenRecent = 'Open recent';
+  lisIECOLoadRecent = 'Load recent';
   lisIECOSaveToFile = 'Save to file';
   lisIECOLoadFromFile = 'Load from file';
   lisLazarusFile = 'Lazarus file';
@@ -2076,7 +2076,9 @@ resourcestring
   lisCOScanForMakeMessages = 'Scan for Make messages';
   dlgUnitOutp = 'Unit output directory (-FU):';
   dlgCOShowOptions = '&Show Options';
-  dlgCOLoadSave = 'Load/Save';
+  lisCompTest = '&Test';
+  lisLoadSave = 'Load/Save';
+  dlgCOLoadSave = 'Compiler options can be saved to an XML file.';
   dlgMainViewForms = 'View Project Forms';
   dlgMainViewUnits = 'View Project Units';
   dlgMainViewFrames = 'View Project Frames';
@@ -4346,7 +4348,6 @@ resourcestring
   lisErrors = 'Errors';
   lisLFMFile = 'LFM file';
   lisRemoveAllInvalidProperties = 'Remove all invalid properties';
-  lisCompTest = '&Test';
 
   lisA2PSwitchPaths = 'Switch Paths';
   lisA2PAddFilesToPackage = 'Add Files to Package';

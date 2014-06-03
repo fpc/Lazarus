@@ -199,10 +199,10 @@ procedure TImExportCompOptsDlg.ImExportCompOptsDlgCREATE(Sender: TObject);
 begin
   ImExportResult:=ieorCancel;
   
-  Caption:=lisIECOOpenOrLoadCompilerOptions;
+  Caption:=lisIECOLoadOrSaveCompilerOptions;
   OpenRecentGroupbox.Caption:=lisIECORecentFiles;
   SaveToRecentButton.Caption:=lisIECOSaveToRecent;
-  OpenRecentButton.Caption:=lisIECOOpenRecent;
+  OpenRecentButton.Caption:=lisIECOLoadRecent;
   SaveButton.Caption:=lisIECOSaveToFile;
   OpenButton.Caption:=lisIECOLoadFromFile;
   CancelButton.Caption:=lisCancel;

@@ -729,7 +729,7 @@ begin
   btnCheck.ModalResult := mrNone;
   btnCheck.OnClick  := @DoCheck;
   btnCheck.LoadGlyphFromStock(idButtonYes);
-  btnLoadSave := CreateButton('...');
+  btnLoadSave := CreateButton(lisLoadSave);
   btnLoadSave.OnClick  := @DoLoadSave;
   btnLoadSave.Hint := dlgCOLoadSave;
   btnLoadSave.LoadGlyphFromStock(idButtonSave);
