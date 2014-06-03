@@ -751,7 +751,6 @@ resourcestring
   lisUnableToReadLpi = 'Unable to read lpi';
   lisStrangeLpiFile = 'Strange lpi file';
   lisTheFileDoesNotLookLikeALpiFile = 'The file %s does not look like a lpi file.';
-  lisUnableToReadTheProjectInfoFile2 = 'Unable to read the project info file%s%s%s%s.';
   lisAmbiguousUnitFound2 = 'Ambiguous unit found';
   lisTheUnitExistsTwiceInTheUnitPathOfThe = 'The unit %s exists twice in the '
     +'unit path of the %s:';
@@ -3143,9 +3142,10 @@ resourcestring
     +'the fpdoc element "%s":%s%s';
   lisChooseAnExampleFile = 'Choose an example file';
   lisPascalFile = 'Pascal file';
-  lisUnableToWriteToFile2 = 'Unable to write to file "%s".';
-  lisUnableToWriteTheProjectSessionFileError = 'Unable to write the project '
-    +'session file%s"%s".%sError: %s';
+  lisUnableToWriteTheProjectInfoFileError = 'Unable to write the project info '
+    +'file%s"%s".%sError: %s';
+  lisUnableToWriteTheProjectSessionFileError = 'Unable to write the project session '
+    +'file%s"%s".%sError: %s';
   lisStopDebugging2 = 'Stop debugging?';
   lisStopCurrentDebuggingAndRebuildProject = 'Stop current debugging and rebuild project?';
   lisErrorWritingPackageListToFile = 'Error writing package list to file%s%s%s%s';
@@ -3468,6 +3468,7 @@ resourcestring
   lisUnableToCreateFilename = 'Unable to create file %s%s%s.';
   lisUnableToWriteFile = 'Unable to write file';
   lisUnableToWriteToFile = 'Unable to write to file %s%s%s.';
+  lisUnableToWriteToFile2= 'Unable to write to file "%s".';
   lisFileIsNotWritable = 'File is not writable';
   lisUnableToReadFile = 'Unable to read file';
   lisUnableToReadFilename = 'Unable to read file %s%s%s.';
@@ -5123,8 +5124,6 @@ resourcestring
   lisPathOfTheInstantfpcCache = 'path of the instantfpc cache';
   lisPrimaryConfigPath = 'Primary config path';
   lisSecondaryConfigPath = 'Secondary config path';
-  lisUnableToWriteTheProjectInfoFileError = 'Unable to write the project info '
-    +'file%s%s%s%s.%sError: %s';
   lisSelected = 'Selected';
   lisSelectedAndChildControls = 'Selected and child controls';
   lisUnableToDelete = 'Unable to delete';
