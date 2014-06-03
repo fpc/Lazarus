@@ -2044,7 +2044,16 @@ begin
           end;
         eopCompilerMessagesFilename:
           // data file
-          ParsedValue:=TrimAndExpandFilename(ParsedValue,GetParsedLazarusDirectory);
+          begin
+            ParsedValue:=TrimAndExpandFilename(ParsedValue,GetParsedLazarusDirectory);
+            if (UnparsedValue='') and (not FileExistsCached(ParsedValue)) then
+            begin
+              // the default errore.msg file does not exist in the fpc sources
+              // => use the fallback of the codetools
+              ParsedValue:=AppendPathDelim(GetParsedLazarusDirectory)
+                +SetDirSeparators('components/codetools/fpc.errore.msg');
+            end;
+          end;
         eopFPDocPaths,eopDebuggerSearchPath:
           // search path
           ParsedValue:=TrimSearchPath(ParsedValue,GetParsedLazarusDirectory,true);
