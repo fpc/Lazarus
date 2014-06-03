@@ -811,15 +811,9 @@ type
     procedure SetStorePathDelim(const AValue: TPathDelimSwitch);
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure SourceDirectoriesChanged(Sender: TObject);
-    procedure UpdateFileBuffer;
     procedure UpdateProjectDirectory;
     procedure UpdateSessionFilename;
     procedure UpdateSourceDirectories;
-    procedure UpdateUsageCounts(const ConfigFilename: string);
-    function UnitMustBeSaved(UnitInfo: TUnitInfo; WriteFlags: TProjectWriteFlags;
-                             SaveSession: boolean): boolean;
-    procedure UpdateVisibleEditor(PgIndex: integer);
-    procedure LoadDefaultSession;
     procedure EditorInfoAdd(EdInfo: TUnitEditorInfo);
     procedure EditorInfoRemove(EdInfo: TUnitEditorInfo);
     procedure OnMacroEngineSubstitution({%H-}TheMacro: TTransferMacro;
@@ -984,7 +978,8 @@ type
     procedure UnlockUnitComponentDependencies;
     procedure UpdateUnitComponentDependencies;
     procedure InvalidateUnitComponentDesignerDependencies;
-    procedure ClearUnitComponentDependencies(ClearTypes: TUnitCompDependencyTypes);
+    procedure ClearUnitComponentDependencies(
+                   ClearTypes: TUnitCompDependencyTypes);
     procedure FindUnitsUsingSubComponent(SubComponent: TComponent;
                      List: TFPList; IgnoreOwner: boolean);
     procedure WriteDebugReportUnitComponentDependencies(Prefix: string);
@@ -1089,64 +1084,11 @@ type
     property UseAsDefault: Boolean read FUseAsDefault write FUseAsDefault; // for dialog only (used to store options once)
   end;
 
-  TOldProjectType = (ptApplication, ptProgram, ptCustomProgram);
-
-  { TProjectStorage }
-
-  TProjectStorage = class
-  private
-    FOwner: TProject;
-    FBuildModes: TProjectBuildModes;
-    FXMLConfig: TXMLConfig;
-    FReadFlags: TProjectReadFlags;
-    FLoadParts: boolean;
-    FFileVersion: Integer;
-    FNewMainUnitID: LongInt;
-    FProjectWriteFlags: TProjectWriteFlags;
-    FGlobalMatrixOptions: TBuildMatrixOptions;
-    FSaveSessionInLPI: Boolean;
-    FModeID, FOptionID: String;
-    // Methods for ReadProject
-    procedure AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string; InSession: boolean);
-    procedure EnableMatrixMode(MatrixOptions: TBuildMatrixOptions);
-    procedure LoadSessionEnabledNonSessionMatrixOptions(const Path: string);
-    procedure LoadOldMacroValues(const Path: string; CurMode: TProjectBuildMode);
-    function LoadOldProjectType(const Path: string): TOldProjectType;
-    procedure LoadBuildModes(const Path: string; LoadData: boolean);
-    procedure LoadFlags(const Path: string);
-    procedure LoadCustomDefines(const Path: string);
-    procedure LoadSessionInfo(const Path: string; Merge: boolean);
-    procedure LoadFromLPI;
-    procedure LoadFromSession;
-    // Methods for WriteProject
-    procedure SaveFlags(const Path: string);
-    procedure SaveSessionEnabledNonSessionMatrixOptions(const Path: string;
-      MatrixOptions: TBuildMatrixOptions; var Cnt: integer);
-    procedure SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
-    procedure SaveBuildModes(const Path: string; SaveData, SaveSession: boolean);
-    procedure SaveUnits(const Path: string; SaveData, SaveSession: boolean);
-    procedure SaveCustomDefines(const Path: string);
-    procedure SaveSessionInfo(const Path: string);
-    procedure SaveToLPI;
-    procedure SaveToSession;
-  public
-    constructor Create(aOwner: TProject);
-    destructor Destroy; override;
-    function DoLoadLPI(Filename: String): TModalResult;
-    function DoLoadSession(Filename: String): TModalResult;
-    function DoWrite(Filename: String; IsLpi: Boolean): TModalResult;
-  public
-    property BuildModes: TProjectBuildModes read FBuildModes;
-  end;
-
-
+  
 const
   ResourceFileExt = '.lrs';
   DefaultProjectOptionsFilename = 'projectoptions.xml';
   DefaultProjectCompilerOptionsFilename = 'compileroptions.xml'; // old way < 0.9.31
-  OldProjectTypeNames : array[TOldProjectType] of string = (
-      'Application', 'Program', 'Custom program'
-    );
 
 var
   Project1: TProject = nil;// the main project
@@ -2597,7 +2539,6 @@ begin
 end;
 
 
-
 {------------------------------------------------------------------------------
                               TProject Class
  ------------------------------------------------------------------------------}
@@ -2672,47 +2613,254 @@ begin
   inherited Destroy;
 end;
 
-function TProject.ReadProject(const NewProjectInfoFile: string;
-  GlobalMatrixOptions: TBuildMatrixOptions; ReadFlags: TProjectReadFlags): TModalResult;
-var
-  Writer: TProjectStorage;
-begin
-  Result := mrCancel;
-  BeginUpdate(true);
-  Writer := TProjectStorage.Create(Self);
-  try
-    Writer.FGlobalMatrixOptions := GlobalMatrixOptions;
-    Writer.FReadFlags := ReadFlags;
-    Writer.FLoadParts := prfLoadParts in ReadFlags;
-    Result:=Writer.DoLoadLPI(NewProjectInfoFile);
-    if Result<>mrOK then Exit;
-
-    // load session file (if available)
-    if (SessionStorage in pssHasSeparateSession)
-    and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0) then
-    begin
-      Result:=Writer.DoLoadSession(ProjectSessionFile);
-      if Result<>mrOK then Exit;
-    end;
-
-  finally
-    Writer.Free;
-    EndUpdate;
-    FAllEditorsInfoList.SortByPageIndex;
-  end;
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject END');{$ENDIF}
-  Result := mrOk;
-end;
-
+{------------------------------------------------------------------------------
+  TProject WriteProject
+ ------------------------------------------------------------------------------}
 function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
   const OverrideProjectInfoFile: string;
   GlobalMatrixOptions: TBuildMatrixOptions): TModalResult;
+
+  procedure SaveFlags(aConfig: TXMLConfig; const Path: string);
+  var f: TProjectFlag;
+  begin
+    for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
+      aConfig.SetDeleteValue(Path+'General/Flags/'
+            +ProjectFlagNames[f]+'/Value', f in Flags, f in DefaultProjectFlags);
+    end;
+  end;
+  
+  procedure UpdateUsageCounts(const ConfigFilename: string);
+  var
+    UnitUsageCount: TDateTime;
+    DiffTime: TDateTime;
+    i: Integer;
+  begin
+    UnitUsageCount:=0;
+    if CompareFileNames(ConfigFilename,fLastReadLPIFilename)=0 then begin
+      DiffTime:=Now-fLastReadLPIFileDate;
+      if DiffTime>0 then
+        UnitUsageCount:= DiffTime*24; // one step every hour
+      fLastReadLPIFileDate:=Now;
+    end;
+    for i:=0 to UnitCount-1 do begin
+      if Units[i].IsPartOfProject then
+        Units[i].UpdateUsageCount(uuIsPartOfProject,UnitUsageCount)
+      else if Units[i].Loaded then
+        Units[i].UpdateUsageCount(uuIsLoaded,UnitUsageCount)
+      else
+        Units[i].UpdateUsageCount(uuNotUsed,UnitUsageCount);
+    end;
+  end;
+  
+  function UnitMustBeSaved(i: integer; {%H-}SaveData, SaveSession: boolean): boolean;
+  begin
+    Result:=false;
+    if not Units[i].IsPartOfProject then begin
+      if not SaveSession then exit;
+      if (pfSaveOnlyProjectUnits in Flags) then exit;
+      if (pwfSaveOnlyProjectUnits in ProjectWriteFlags) then exit;
+      if (not Units[i].Loaded) then begin
+        if (not (pfSaveClosedUnits in Flags)) then exit;
+        if (pwfSkipClosedUnits in ProjectWriteFlags) then exit;
+        if Units[i].fUsageCount<=0 then exit;
+      end;
+    end;
+    Result:=true;
+  end;
+
+  procedure SaveSessionEnabledNonSessionMatrixOptions(aConfig: TXMLConfig;
+    const Path: string; MatrixOptions: TBuildMatrixOptions; var Cnt: integer);
+  var
+    i: Integer;
+    MatrixOption: TBuildMatrixOption;
+    j: Integer;
+    CurMode: TProjectBuildMode;
+    SubPath: String;
+  begin
+    if MatrixOptions=nil then exit;
+    for i:=0 to MatrixOptions.Count-1 do begin
+      MatrixOption:=MatrixOptions[i];
+      //debugln(['SaveSessionEnabledNonSessionMatrixOptions ',MatrixOption.AsString]);
+      for j:=0 to BuildModes.Count-1 do begin
+        CurMode:=BuildModes[j];
+        if not CurMode.InSession then continue;
+        if not MatrixOption.FitsMode(CurMode.Identifier) then continue;
+        inc(Cnt);
+        SubPath:=Path+'Item'+IntToStr(Cnt)+'/';
+        //debugln(['SaveSessionEnabledNonSessionMatrixOptions ModeID="',CurMode.Identifier,'" OptionID="',MatrixOption.ID,'" ',MatrixOption.AsString]);
+        aConfig.SetDeleteValue(SubPath+'Mode',CurMode.Identifier,'');
+        aConfig.SetDeleteValue(SubPath+'Option',MatrixOption.ID,'');
+      end;
+    end;
+  end;
+
+  procedure SaveMacroValuesAtOldPlace(aConfig: TXMLConfig; const Path: string;
+    aMode: TProjectBuildMode);
+  var
+    Cnt: Integer;
+
+    procedure SaveAtOldPlace(MatrixOptions: TBuildMatrixOptions);
+    var
+      i: Integer;
+      MatrixOption: TBuildMatrixOption;
+      SubPath: String;
+    begin
+      for i:=0 to MatrixOptions.Count-1 do
+      begin
+        MatrixOption:=MatrixOptions[i];
+        if (MatrixOption.Typ=bmotIDEMacro)
+        and MatrixOption.FitsTarget(BuildMatrixProjectName)
+        and MatrixOption.FitsMode(aMode.Identifier)
+        then begin
+          inc(Cnt);
+          SubPath:=Path+'Macro'+IntToStr(i+1)+'/';
+          aConfig.SetDeleteValue(SubPath+'Name',MatrixOption.MacroName,'');
+          aConfig.SetDeleteValue(SubPath+'Value',MatrixOption.Value,'');
+        end;
+      end;
+    end;
+
+  begin
+    // for older IDE (<1.1) SaveAtOldPlace the macros at the old place
+    Cnt:=0;
+    SaveAtOldPlace(BuildModes.SessionMatrixOptions);
+    SaveAtOldPlace(BuildModes.SharedMatrixOptions);
+    aConfig.SetDeleteValue(Path+'Count',Cnt,0);
+  end;
+
+  procedure SaveBuildModes(aConfig: TXMLConfig; const Path: string;
+    SaveData, SaveSession: boolean);
+  var
+    CurMode: TProjectBuildMode;
+    i: Integer;
+    Cnt: Integer;
+    SubPath: String;
+  begin
+    // the first build mode is the default mode
+    if SaveData then
+    begin
+      // save the default build mode under the old xml path to let old IDEs
+      // open new projects
+      CurMode:=BuildModes[0];
+      SaveMacroValuesAtOldPlace(aConfig,Path+'MacroValues/',CurMode);
+      CurMode.CompilerOptions.SaveToXMLConfig(aConfig,'CompilerOptions/'); // no Path!
+      // Note: the 0.9.29 reader already supports fetching the default build
+      //       mode from the BuildModes, so in one or two releases we can switch
+    end;
+
+    Cnt:=0;
+    for i:=0 to BuildModes.Count-1 do
+    begin
+      CurMode:=BuildModes[i];
+      //debugln(['SaveBuildModes ',i,'/',BuildModes.Count,' Identifier=',CurMode.Identifier,' InSession=',CurMode.InSession,' SaveSession=',SaveSession,' SaveData=',SaveData]);
+      if (CurMode.InSession and SaveSession)
+        or ((not CurMode.InSession) and SaveData) then
+      begin
+        inc(Cnt);
+        SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
+        aConfig.SetDeleteValue(SubPath+'Name',CurMode.Identifier,'');
+        aConfig.SetDeleteValue(SubPath+'Default',i=0,false);
+        if i>0 then
+        begin
+          SaveMacroValuesAtOldPlace(aConfig,SubPath+'MacroValues/',CurMode);
+          CurMode.CompilerOptions.SaveToXMLConfig(aConfig,SubPath+'CompilerOptions/');
+        end;
+      end;
+    end;
+    aConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
+
+    if SaveData then
+    begin
+      BuildModes.SharedMatrixOptions.SaveToXMLConfig(aConfig,
+        Path+'BuildModes/SharedMatrixOptions/',@BuildModes.IsSharedMode);
+    end;
+
+    //debugln(['SaveBuildModes SaveSession=',SaveSession,' ActiveBuildMode.Identifier=',ActiveBuildMode.Identifier]);
+    if SaveSession then
+    begin
+      // save what mode is currently active in the session
+      aConfig.SetDeleteValue(Path+'BuildModes/Active',
+        ActiveBuildMode.Identifier,'default');
+
+      // save matrix options of session
+      BuildModes.SessionMatrixOptions.SaveToXMLConfig(aConfig,
+        Path+'BuildModes/SessionMatrixOptions/',nil);
+
+      // save what matrix options are enabled in session build modes
+      Cnt:=0;
+      SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
+      SaveSessionEnabledNonSessionMatrixOptions(aConfig,
+        SubPath,BuildModes.SharedMatrixOptions,Cnt);
+      SaveSessionEnabledNonSessionMatrixOptions(aConfig,
+        SubPath,GlobalMatrixOptions,Cnt);
+      aConfig.SetDeleteValue(SubPath+'Count',Cnt,0);
+    end;
+  end;
+
+  procedure SaveUnits(aConfig: TXMLConfig; const Path: string;
+    SaveData, SaveSession: boolean);
+  var
+    i, SaveUnitCount: integer;
+  begin
+    SaveUnitCount:=0;
+    for i:=0 to UnitCount-1 do begin
+      if UnitMustBeSaved(i,SaveData,SaveSession) then begin
+        Units[i].SaveToXMLConfig(
+          aConfig,Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/',
+          SaveData,SaveSession,fCurStorePathDelim);
+        inc(SaveUnitCount);
+      end;
+    end;
+    aConfig.SetDeleteValue(Path+'Units/Count',SaveUnitCount,0);
+  end;
+
+  procedure SaveCustomDefines(aConfig: TXMLConfig; const Path: string);
+  var
+    i: integer;
+  begin
+    for i:=0 to FCustomDefines.Count-1 do begin
+      aConfig.SetDeleteValue(Path+'CustomDefines/Define'+IntToStr(i)+'/Value',
+                             FCustomDefines[i],'');
+    end;
+    aConfig.SetDeleteValue(Path+'CustomDefines/Count',FCustomDefines.Count,0);
+  end;
+
+  procedure SaveSessionInfo(aConfig: TXMLConfig; const Path: string);
+  begin
+    aConfig.DeleteValue(Path+'General/ActiveEditorIndexAtStart/Value');
+    aConfig.SetDeleteValue(Path+'General/ActiveWindowIndexAtStart/Value',
+                           ActiveWindowIndexAtStart,-1);
+    aConfig.SetDeleteValue('SkipCheckLCLInterfaces/Value',
+                           FSkipCheckLCLInterfaces,false);
+    aConfig.SetDeleteValue(Path+'Build/CleanOutputFileMask/Value',
+                 CleanOutputFileMask,DefaultProjectCleanOutputFileMask);
+    aConfig.SetDeleteValue(Path+'Build/CleanSourcesFileMask/Value',
+                 CleanSourcesFileMask,DefaultProjectCleanSourcesFileMask);
+
+    if (not (pfSaveOnlyProjectUnits in Flags))
+    and (not (pwfSkipJumpPoints in ProjectWriteFlags)) then begin
+      if (pfSaveJumpHistory in Flags) then begin
+        FJumpHistory.DeleteInvalidPositions;
+        FJumpHistory.SaveToXMLConfig(aConfig,Path);
+      end
+      else
+        aConfig.DeletePath(Path+'JumpHistory');
+    end;
+
+    // save custom session data
+    SaveStringToStringTree(aConfig,CustomSessionData,Path+'CustomSessionData/');
+  end;
+
 var
-  Writer: TProjectStorage;
   CfgFilename: String;
-  SessFilename: String; // only set if session should be saved to a separate file
-  SessionResult: TModalResult;
-  WriteLPI, WriteLPS: Boolean;
+  Path: String;
+  XMLConfig: TXMLConfig;
+  SaveSessionInfoInLPI: Boolean;
+  CurSessionFilename: String; // only set if session should be saved to a separate file
+  CurFlags: TProjectWriteFlags;
+  SessionSaveResult: TModalResult;
+  WriteLPI: Boolean;
+  WriteLPS: Boolean;
 begin
   Result := mrCancel;
   fCurStorePathDelim:=StorePathDelim;
@@ -2723,78 +2871,244 @@ begin
     CfgFilename := ProjectInfoFile;
   CfgFilename:=SetDirSeparators(CfgFilename);
 
-  SessFilename := '';
+  CurSessionFilename := '';
   if (not (pwfSkipSeparateSessionInfo in ProjectWriteFlags))
   and (SessionStorage in pssHasSeparateSession) then begin
     // save session in separate file .lps
+
     if OverrideProjectInfoFile<>'' then
-      SessFilename := ChangeFileExt(OverrideProjectInfoFile,'.lps')
+      CurSessionFilename := ChangeFileExt(OverrideProjectInfoFile,'.lps')
     else
-      SessFilename := ProjectSessionFile;
-    if (CompareFilenames(SessFilename,CfgFilename)=0) then
-      SessFilename:='';
+      CurSessionFilename := ProjectSessionFile;
+    if (CompareFilenames(CurSessionFilename,CfgFilename)=0) then
+      CurSessionFilename:='';
   end;
-  //DebugLn('TProject.WriteProject Write Session File="',SessFilename,'"');
-  DoDirSeparators(SessFilename);
 
-  Writer := TProjectStorage.Create(Self);
-  try
-    Writer.FProjectWriteFlags := ProjectWriteFlags;
-    Writer.FGlobalMatrixOptions := GlobalMatrixOptions;
-    // first save the .lpi file
-    if (pwfSkipSeparateSessionInfo in ProjectWriteFlags)
-    or (SessionStorage=pssNone) then
-      Writer.FSaveSessionInLPI:=false
-    else
-      Writer.FSaveSessionInLPI:=(SessFilename='') or (CompareFilenames(SessFilename,CfgFilename)=0);
+  // first save the .lpi file
+  if (pwfSkipSeparateSessionInfo in ProjectWriteFlags)
+  or (SessionStorage=pssNone) then
+    SaveSessionInfoInLPI:=false
+  else
+    SaveSessionInfoInLPI:=(CurSessionFilename='')
+                          or (CompareFilenames(CurSessionFilename,CfgFilename)=0);
 
-    // check if modified
-    if not (pwfIgnoreModified in ProjectWriteFlags) then
-    begin
-      WriteLPI:=SomeDataModified or (not FileExistsUTF8(CfgFilename));
-      if (CompareFilenames(ProjectInfoFile,CfgFilename)=0) then
-        // save to default lpi
-        WriteLPI:=WriteLPI or (fProjectInfoFileDate<>FileAgeCached(CfgFilename))
-      else
-        // save to another file
-        WriteLPI:=true;
-      if SessFilename='' then begin
-        WriteLPS:=false;
-        WriteLPI:=WriteLPI or SomeSessionModified;
-      end else begin
-        WriteLPS:=WriteLPI or SomeSessionModified or (not FileExistsUTF8(SessFilename));
-      end;
-      if (not WriteLPI) and (not WriteLPS) then exit(mrOk);
+  // check if modified
+  if not (pwfIgnoreModified in ProjectWriteFlags) then
+  begin
+    WriteLPI:=SomeDataModified or (not FileExistsUTF8(CfgFilename));
+    if (CompareFilenames(ProjectInfoFile,CfgFilename)=0) then begin
+      // save to default lpi
+      WriteLPI:=WriteLPI or (fProjectInfoFileDate<>FileAgeCached(CfgFilename));
     end else begin
+      // save to another file
       WriteLPI:=true;
-      WriteLPS:=true;
     end;
-    //debugln(['TProject.WriteProject WriteLPI=',WriteLPI,' WriteLPS=',WriteLPS,' Modifed=',Modified,' SessionModified=',SessionModified]);
+    if CurSessionFilename='' then begin
+      WriteLPS:=false;
+      WriteLPI:=WriteLPI or SomeSessionModified;
+    end else begin
+      WriteLPS:=WriteLPI or SomeSessionModified
+                or (not FileExistsUTF8(CurSessionFilename));
+    end;
+    if (not WriteLPI) and (not WriteLPS) then exit(mrOk);
+  end else begin
+    WriteLPI:=true;
+    WriteLPS:=true;
+  end;
+  //debugln(['TProject.WriteProject WriteLPI=',WriteLPI,' WriteLPS=',WriteLPS,' Modifed=',Modified,' SessionModified=',SessionModified]);
 
-    // backup
-    if WriteLPI and Assigned(fOnFileBackup) then begin
-      Result:=fOnFileBackup(CfgFilename);
+  // backup
+  if WriteLPI and Assigned(fOnFileBackup) then begin
+    Result:=fOnFileBackup(CfgFilename);
+    if Result=mrAbort then exit;
+  end;
+
+  // increase usage counters
+  UpdateUsageCounts(CfgFilename);
+
+  if WriteLPI then begin
+    repeat
+      try
+        XMLConfig := TCodeBufXMLConfig.CreateWithCache(CfgFilename,false);
+      except
+        on E: Exception do begin
+          DebugLn('Error: ', E.Message);
+          IDEMessageDialog(lisCodeToolsDefsWriteError,
+            Format(lisUnableToWriteTheProjectInfoFileError,
+                   [LineEnding, '"', ProjectInfoFile, '"', LineEnding, E.Message])
+            ,mtError,[mbOk]);
+          Result:=mrCancel;
+          exit;
+        end;
+      end;
+
+      try
+        Path:='ProjectOptions/';
+        // format
+        XMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
+        XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
+        SaveFlags(XMLConfig,Path);
+        XMLConfig.SetDeleteValue(Path+'General/SessionStorage/Value',
+                                 ProjectSessionStorageNames[SessionStorage],
+                                 ProjectSessionStorageNames[DefaultProjectSessionStorage]);
+
+        // general properties
+        XMLConfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few released.
+        XMLConfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
+                                 AutoCreateForms,true);
+        XMLConfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
+        XMLConfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
+
+        // fpdoc
+        XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',
+           SwitchPathDelims(CreateRelativeSearchPath(FPDocPaths,ProjectDirectory),
+                            fCurStorePathDelim), '');
+        XMLConfig.SetDeleteValue(Path+'LazDoc/PackageName',FPDocPackageName,'');
+
+        // i18n
+        XMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
+        XMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/LFM', EnableI18NForLFM, true);
+        XMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',
+           SwitchPathDelims(CreateRelativePath(POOutputDirectory,ProjectDirectory),
+                            fCurStorePathDelim), '');
+
+        // Resources
+        ProjResources.WriteToProjectFile(XMLConfig, Path);
+
+        // save custom data
+        SaveStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
+
+        // Save the macro values and compiler options
+        SaveBuildModes(XMLConfig,Path,true,SaveSessionInfoInLPI);
+
+        // save the Publish Options
+        PublishOptions.SaveToXMLConfig(xmlconfig,Path+'PublishOptions/',fCurStorePathDelim);
+
+        // save the Run and Build parameter options
+        RunParameterOptions.Save(xmlconfig,Path,fCurStorePathDelim);
+
+        // save dependencies
+        SavePkgDependencyList(xmlconfig,Path+'RequiredPackages/',
+          FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
+
+        // save units
+        SaveUnits(XMLConfig,Path,true,SaveSessionInfoInLPI);
+
+        if SaveSessionInfoInLPI then begin
+          // save custom defines
+          SaveCustomDefines(XMLConfig,Path);
+
+          // save session info
+          SaveSessionInfo(XMLConfig,Path);
+        end;
+
+        // notifiy hooks
+        if Assigned(OnSaveProjectInfo) then begin
+          CurFlags:=ProjectWriteFlags;
+          if not SaveSessionInfoInLPI then
+            CurFlags:=CurFlags+[pwfSkipSeparateSessionInfo];
+          OnSaveProjectInfo(Self,XMLConfig,CurFlags);
+        end;
+
+        // save lpi to disk
+        //debugln(['TProject.WriteProject ',DbgSName(xmlconfig),' CfgFilename=',CfgFilename]);
+        XMLConfig.Flush;
+        Modified:=false;
+        if SaveSessionInfoInLPI then
+          SessionModified:=false;
+
+        Result:=mrOk;
+      except
+        on E: Exception do begin
+          Result:=IDEMessageDialog(lisCodeToolsDefsWriteError, Format(
+            lisUnableToWriteToFile2, [CfgFilename]),
+            mtError,[mbRetry,mbAbort]);
+        end;
+      end;
+      if CompareFilenames(ProjectInfoFile,XMLConfig.Filename)=0 then begin
+        // update file buffer
+        fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
+        fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
+        if fProjectInfoFileBuffer<>nil then
+          fProjectInfoFileBufChangeStamp:=fProjectInfoFileBuffer.ChangeStep
+        else
+          fProjectInfoFileBufChangeStamp:=CTInvalidChangeStamp;
+      end;
+      try
+        XMLConfig.Free;
+      except
+      end;
+      XMLConfig:=nil;
+    until Result<>mrRetry;
+  end;
+
+  if (CurSessionFilename<>'') and WriteLPS then begin
+    // save session in separate file .lps
+
+    //DebugLn('TProject.WriteProject Write Session File="',CurSessionFilename,'"');
+
+    CurSessionFilename:=SetDirSeparators(CurSessionFilename);
+    if Assigned(fOnFileBackup) then begin
+      Result:=fOnFileBackup(CurSessionFilename);
       if Result=mrAbort then exit;
     end;
-
-    // increase usage counters
-    UpdateUsageCounts(CfgFilename);
-    if WriteLPI then
-      // Write to LPI
-      Result:=Writer.DoWrite(CfgFilename, True);
-
-    if (SessFilename<>'') and WriteLPS then begin
-      // save session in separate file .lps
-      if Assigned(fOnFileBackup) then begin
-        Result:=fOnFileBackup(SessFilename);
-        if Result=mrAbort then exit;
+    SessionSaveResult:=mrCancel;
+    repeat
+      try
+        XMLConfig := TCodeBufXMLConfig.CreateWithCache(CurSessionFilename,false);
+      except
+        on E: Exception do begin
+          DebugLn('ERROR: ',E.Message);
+          IDEMessageDialog(lisCodeToolsDefsWriteError,
+            Format(lisUnableToWriteTheProjectSessionFileError,
+                   [LineEnding, ProjectSessionFile, LineEnding, E.Message])
+            ,mtError,[mbOk]);
+          Result:=mrCancel;
+          exit;
+        end;
       end;
-      SessionResult:=Writer.DoWrite(SessFilename, False);
-      if (Result=mrOk) and (SessionResult<>mrOk) then
-        Result:=SessionResult;
-    end;
-  finally
-    Writer.Free;
+
+      try
+        Path:='ProjectSession/';
+        fCurStorePathDelim:=SessionStorePathDelim;
+        XMLConfig.SetDeleteValue(Path+'PathDelim/Value',
+                                PathDelimSwitchToDelim[fCurStorePathDelim],'/');
+        XMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
+
+        // Save the session build modes
+        SaveBuildModes(XMLConfig,Path,false,true);
+
+        // save all units
+        SaveUnits(XMLConfig,Path,true,true);
+
+        // save custom defines
+        SaveCustomDefines(XMLConfig,Path);
+
+        // save session info
+        SaveSessionInfo(XMLConfig,Path);
+
+        // notifiy hooks
+        if Assigned(OnSaveProjectInfo) then begin
+          CurFlags:=ProjectWriteFlags+[pwfSkipProjectInfo];
+          OnSaveProjectInfo(Self,XMLConfig,CurFlags);
+        end;
+
+        SessionSaveResult:=mrOk;
+      except
+        on E: Exception do begin
+          SessionSaveResult:=IDEMessageDialog(lisCodeToolsDefsWriteError,
+            Format(lisUnableToWriteToFile2, [CurSessionFilename]),
+            mtError,[mbRetry,mbAbort]);
+        end;
+      end;
+      try
+        XMLConfig.Free;
+      except
+      end;
+      XMLConfig:=nil;
+    until SessionSaveResult<>mrRetry;
+    if (Result=mrOk) and (SessionSaveResult<>mrOk) then
+      Result:=SessionSaveResult;
   end;
 end;
 
@@ -2888,6 +3202,639 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  TProject ReadProject
+ ------------------------------------------------------------------------------}
+function TProject.ReadProject(const NewProjectInfoFile: string;
+  GlobalMatrixOptions: TBuildMatrixOptions; ReadFlags: TProjectReadFlags
+  ): TModalResult;
+type
+  TOldProjectType = (ptApplication, ptProgram, ptCustomProgram);
+const
+  OldProjectTypeNames : array[TOldProjectType] of string = (
+      'Application', 'Program', 'Custom program'
+    );
+var
+  LoadParts: boolean;
+  FileVersion: Integer;
+  NewMainUnitID: LongInt;
+
+  procedure EnableMatrixMode(MatrixOptions: TBuildMatrixOptions;
+    OptionID, ModeID: string);
+  var
+    MatrixOption: TBuildMatrixOption;
+  begin
+    if MatrixOptions=nil then exit;
+    MatrixOption:=MatrixOptions.FindOption(OptionID);
+    if MatrixOption=nil then exit;
+    //debugln(['EnableMatrixMode OptionID=',OptionID,' ModeID=',ModeID,' ',MatrixOption.AsString]);
+    MatrixOption.EnableMode(ModeID);
+  end;
+
+  procedure LoadSessionEnabledNonSessionMatrixOptions(aConfig: TXMLConfig;
+    const Path: string);
+  var
+    Cnt: integer;
+    i: Integer;
+    SubPath: String;
+    ModeID: String;
+    OptionID: String;
+  begin
+    // disable all matrix options in session modes
+    if GlobalMatrixOptions<>nil then
+      GlobalMatrixOptions.DisableModes(@BuildModes.IsSessionMode);
+    BuildModes.SharedMatrixOptions.DisableModes(@BuildModes.IsSessionMode);
+    // load
+    Cnt:=aConfig.GetValue(Path+'Count',0);
+    for i:=1 to Cnt do begin
+      SubPath:=Path+'Item'+IntToStr(i)+'/';
+      ModeID:=aConfig.GetValue(SubPath+'Mode','');
+      if (ModeID='') or (not BuildModes.IsSessionMode(ModeID)) then begin
+        debugln(['LoadSessionEnabledNonSessionMatrixOptions not a session Mode="',dbgstr(ModeID),'" at ',SubPath]);
+        continue;
+      end;
+      OptionID:=aConfig.GetValue(SubPath+'Option','');
+      if OptionID='' then begin
+        debugln(['LoadSessionEnabledNonSessionMatrixOptions invalid option at ',SubPath]);
+        continue;
+      end;
+      EnableMatrixMode(GlobalMatrixOptions,OptionID,ModeID);
+      EnableMatrixMode(BuildModes.SharedMatrixOptions,OptionID,ModeID);
+    end;
+  end;
+
+  procedure AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string;
+    InSession: boolean);
+
+    function FindMacro(MatrixOptions: TBuildMatrixOptions;
+      const MacroName, MacroValue: string): TBuildMatrixOption;
+    var
+      j: Integer;
+    begin
+      j:=MatrixOptions.Count-1;
+      while j>=0 do
+      begin
+        Result:=MatrixOptions[j];
+        if (Result.Typ=bmotIDEMacro)
+        and (Result.Targets='*')
+        and (Result.MacroName=MacroName)
+        and (Result.Value=MacroValue)
+        then
+          exit;
+        dec(j);
+      end;
+      Result:=nil;
+    end;
+
+  var
+    MatrixOptions: TBuildMatrixOptions;
+    MatrixOption: TBuildMatrixOption;
+  begin
+    MatrixOption:=FindMacro(BuildModes.SharedMatrixOptions,MacroName,MacroValue);
+    if MatrixOption=nil then
+      MatrixOption:=FindMacro(BuildModes.SessionMatrixOptions,MacroName,MacroValue);
+    if MatrixOption<>nil then begin
+      // Macro already exists => enable mode for this macro
+      MatrixOption.EnableMode(ModeIdentifier);
+    end else begin
+      // Macro does not yet exist => create
+      if InSession then
+        MatrixOptions:=BuildModes.SessionMatrixOptions
+      else
+        MatrixOptions:=BuildModes.SharedMatrixOptions;
+      MatrixOption:=MatrixOptions.Add(bmotIDEMacro,'*');
+      MatrixOption.MacroName:=MacroName;
+      MatrixOption.Value:=MacroValue;
+      MatrixOption.Modes:=ModeIdentifier;
+    end;
+  end;
+
+  procedure LoadOldMacroValues(aConfig: TXMLConfig; const Path: string;
+    CurMode: TProjectBuildMode);
+  var
+    Cnt: Integer;
+    i: Integer;
+    SubPath: String;
+    MacroName: String;
+    MacroValue: String;
+  begin
+    // load macro values of old IDE (<1.1)
+    Cnt:=aConfig.GetValue(Path+'Count',0);
+    //debugln(['LoadOldMacroValues Cnt=',Cnt]);
+    for i:=1 to Cnt do begin
+      SubPath:=Path+'Macro'+IntToStr(i)+'/';
+      MacroName:=aConfig.GetValue(SubPath+'Name','');
+      if (MacroName='') or not IsValidIdent(MacroName) then continue;
+      MacroValue:=aConfig.GetValue(SubPath+'Value','');
+      //debugln(['LoadOldMacroValues Mode="',CurMode.Identifier,'" ',MacroName,'="',MacroValue,'" session=',CurMode.InSession]);
+      AddMatrixMacro(MacroName,MacroValue,CurMode.Identifier,CurMode.InSession);
+    end;
+  end;
+
+  procedure LoadBuildModes(aConfig: TXMLConfig; const Path: string;
+    LoadData: boolean);
+  var
+    CompOptsPath: String;
+    Cnt: LongInt;
+    i: Integer;
+    SubPath: String;
+    ModeIdentifier: String;
+    CurMode: TProjectBuildMode;
+    MacroValsPath: String;
+    ActiveIdentifier: String;
+    s: String;
+  begin
+    //debugln(['LoadBuildModes LoadData=',LoadData,' LoadParts=',LoadParts,' prfLoadPartBuildModes=',prfLoadPartBuildModes in ReadFlags]);
+    if LoadParts then begin
+      if not (prfLoadPartBuildModes in ReadFlags) then exit;
+      if LoadData then
+        ClearBuildModes;
+    end;
+
+    // load matrices
+    if LoadData then begin
+      // load matrix options of project (not session)
+      BuildModes.SharedMatrixOptions.LoadFromXMLConfig(aConfig,
+                                        Path+'BuildModes/SharedMatrixOptions/');
+      //debugln(['LoadBuildModes BuildModes.SharedMatrixOptions.Count=',BuildModes.SharedMatrixOptions.Count]);
+      //for i:=0 to BuildModes.SharedMatrixOptions.Count-1 do
+      //  debugln(['  ',BuildModes.SharedMatrixOptions[i].AsString]);
+    end;
+    if (not LoadData) and (not LoadParts) then begin
+      // load matrix options of session
+      BuildModes.SessionMatrixOptions.LoadFromXMLConfig(aConfig,
+                                       Path+'BuildModes/SessionMatrixOptions/');
+    end;
+
+    // load build modes
+    Cnt:=aConfig.GetValue(Path+'BuildModes/Count',0);
+    //debugln(['LoadBuildModes Cnt=',Cnt,' LoadData=',LoadData]);
+    if Cnt>0 then begin
+      for i:=1 to Cnt do begin
+        SubPath:=Path+'BuildModes/Item'+IntToStr(i)+'/';
+        ModeIdentifier:=aConfig.GetValue(SubPath+'Name','');
+        if LoadData and (i=1) then begin
+          // load the default mode (it already exists)
+          CurMode:=BuildModes[0];
+          CurMode.Identifier:=ModeIdentifier;
+        end else
+          // add another mode
+          CurMode:=BuildModes.Add(ModeIdentifier);
+
+        if LoadData and (i=1) and aConfig.GetValue(SubPath+'Default',false) then
+        begin
+          // this is the default mode and it is stored at the old xml path
+          CompOptsPath:='CompilerOptions/';
+          // due to an old bug, the XML path can be 'CompilerOptions/' or ''
+          if (FileVersion<3)
+          and (aConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
+            CompOptsPath:='';
+          MacroValsPath:=Path+'MacroValues/';
+        end else begin
+          CompOptsPath:=SubPath+'CompilerOptions/';
+          MacroValsPath:=SubPath+'MacroValues/';
+        end;
+
+        CurMode.InSession:=not LoadData;
+        LoadOldMacroValues(aConfig,MacroValsPath,CurMode);
+        CurMode.CompilerOptions.LoadFromXMLConfig(aConfig,CompOptsPath);
+      end;
+
+    end else if LoadData then begin
+      // no build modes => an old file format
+      CompOptsPath:='CompilerOptions/';
+      // due to a bug in an old version, the XML path can be 'CompilerOptions/' or ''
+      if (FileVersion<3)
+      and (aConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
+        CompOptsPath:='';
+      MacroValsPath:=Path+'MacroValues/';
+      CurMode:=BuildModes[0];
+      LoadOldMacroValues(aConfig,MacroValsPath,CurMode);
+      if aConfig.GetValue(CompOptsPath+'Version/Value', 0)<10 then begin
+        // LCLWidgetType was not a macro but a property of its own
+        s := aConfig.GetValue(CompOptsPath+'LCLWidgetType/Value', '');
+        if (s<>'') and (SysUtils.CompareText(s,'default')<>0) then
+          AddMatrixMacro('LCLWidgetType',s,'default',false);
+      end;
+      CurMode.CompilerOptions.LoadFromXMLConfig(aConfig,CompOptsPath);
+    end;
+
+    if (not LoadData) and (not LoadParts) then begin
+      // load what matrix options are enabled in session build modes
+      SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
+      LoadSessionEnabledNonSessionMatrixOptions(aConfig,SubPath);
+    end;
+
+    // set active mode
+    ActiveIdentifier:=aConfig.GetValue(Path+'BuildModes/Active','default');
+    CurMode:=BuildModes.Find(ActiveIdentifier);
+    if CurMode=nil then
+      CurMode:=BuildModes[0];
+    ActiveBuildMode:=CurMode;
+  end;
+
+  function ReadOldProjectType(aConfig: TXMLConfig;
+    const Path: string): TOldProjectType;
+
+    function OldProjectTypeNameToType(const s: string): TOldProjectType;
+    begin
+      for Result:=Low(TOldProjectType) to High(TOldProjectType) do
+        if (CompareText(OldProjectTypeNames[Result],s)=0) then exit;
+      Result:=ptApplication;
+    end;
+
+  begin
+    if FileVersion<=4 then
+      Result := OldProjectTypeNameToType(aConfig.GetValue(
+                                          Path+'General/ProjectType/Value', ''))
+    else
+      Result := ptCustomProgram;
+  end;
+
+  procedure LoadFlags(aConfig: TXMLConfig; const Path: string);
+  
+    procedure SetFlag(f: TProjectFlag; Value: boolean);
+    begin
+      if Value then Include(FFlags,f) else Exclude(FFlags,f);
+    end;
+  
+  var
+    f: TProjectFlag;
+    OldProjectType: TOldProjectType;
+    DefFlags: TProjectFlags;
+  begin
+    OldProjectType:=ReadOldProjectType(aConfig,Path);
+    DefFlags:=DefaultProjectFlags;
+    if FileVersion<7 then
+      Exclude(DefFlags,pfLRSFilesInOutputDirectory);
+    FFlags:=[];
+    for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
+      SetFlag(f,aConfig.GetValue(
+             Path+'General/Flags/'+ProjectFlagNames[f]+'/Value',f in DefFlags));
+    end;
+    if FileVersion<=3 then begin
+      // set new flags
+      SetFlag(pfMainUnitIsPascalSource, OldProjectType in [ptProgram,ptApplication]);
+      SetFlag(pfMainUnitHasUsesSectionForAllUnits, OldProjectType in [ptProgram,ptApplication]);
+      SetFlag(pfMainUnitHasCreateFormStatements, OldProjectType in [ptApplication]);
+      SetFlag(pfMainUnitHasTitleStatement,OldProjectType in [ptApplication]);
+      SetFlag(pfRunnable, OldProjectType in [ptProgram,ptApplication,ptCustomProgram]);
+    end;
+    FFlags:=FFlags-[pfUseDefaultCompilerOptions];
+  end;
+
+  procedure LoadCustomDefines(aConfig: TXMLConfig; const Path: string; {%H-}Merge: boolean);
+  var
+    Cnt, i: Integer;
+    s: String;
+  begin
+    Cnt := aConfig.GetValue(Path+'CustomDefines/Count', 0);
+    for i := 0 to Cnt-1 do
+    begin
+      s := aConfig.GetValue(Path+'CustomDefines/Define'+IntToStr(i)+'/Value', '');
+      if s <> '' then
+        FCustomDefines.Add(s);
+    end;
+  end;
+
+  procedure LoadSessionInfo(aConfig: TXMLConfig; const Path: string; Merge: boolean);
+  var
+    NewUnitInfo: TUnitInfo;
+    NewUnitCount, i, j: integer;
+    SubPath: String;
+    NewUnitFilename: String;
+    OldUnitInfo: TUnitInfo;
+    MergeUnitInfo: Boolean;
+  begin
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
+    NewUnitCount:=aConfig.GetValue(Path+'Units/Count',0);
+    for i := 0 to NewUnitCount - 1 do begin
+      SubPath:=Path+'Units/Unit'+IntToStr(i)+'/';
+      NewUnitFilename:=aConfig.GetValue(SubPath+'Filename/Value','');
+      OnLoadSaveFilename(NewUnitFilename,true);
+      // load unit and add it
+      OldUnitInfo:=UnitInfoWithFilename(NewUnitFilename);
+      if OldUnitInfo<>nil then begin
+        // unit already exists
+        if Merge then begin
+          NewUnitInfo:=OldUnitInfo;
+          MergeUnitInfo:=true;
+        end else begin
+          // Doppelganger -> inconsistency found, ignore this file
+          debugln('TProject.ReadProject file exists twice in lpi file: ignoring "'+NewUnitFilename+'"');
+          continue;
+        end;
+      end else begin
+        NewUnitInfo:=TUnitInfo.Create(nil);
+        AddFile(NewUnitInfo,false);
+        MergeUnitInfo:=false;
+      end;
+
+      NewUnitInfo.LoadFromXMLConfig(aConfig,SubPath,MergeUnitInfo,Merge,FileVersion);
+      if i=NewMainUnitID then begin
+        MainUnitID:=IndexOf(NewUnitInfo);
+        NewMainUnitID:=-1;
+      end;
+    end;
+
+    // load editor info
+    i := aConfig.GetValue(Path+'General/ActiveEditorIndexAtStart/Value', -1);
+    if (i >= 0) then begin
+      // Load old Config => No WindowIndex
+      j := AllEditorsInfoCount - 1;
+      while j >= 0 do begin
+        if (AllEditorsInfo[j].PageIndex = i) then
+          AllEditorsInfo[j].IsVisibleTab := True;
+        dec(j);
+      end;
+    end;
+
+    ActiveWindowIndexAtStart := aConfig.GetValue(
+       Path+'General/ActiveWindowIndexAtStart/Value', 0);
+    FSkipCheckLCLInterfaces:=aConfig.GetValue(
+       Path+'SkipCheckLCLInterfaces/Value',false);
+    FJumpHistory.LoadFromXMLConfig(aConfig,Path+'');
+    CleanOutputFileMask:=aConfig.GetValue(Path+'Build/CleanOutputFileMask/Value',
+                 DefaultProjectCleanOutputFileMask);
+    CleanSourcesFileMask:=aConfig.GetValue(Path+'Build/CleanSourcesFileMask/Value',
+                 DefaultProjectCleanSourcesFileMask);
+
+    // load custom session data
+    LoadStringToStringTree(aConfig,CustomSessionData,Path+'CustomSessionData/');
+  end;
+  
+  procedure LoadDefaultSession;
+  var
+    AnUnitInfo: TUnitInfo;
+    BestUnitInfo: TUnitInfo;
+  begin
+    if FirstUnitWithEditorIndex<>nil then exit;
+
+    BestUnitInfo:=nil;
+
+    if (MainUnitID>=0) then begin
+      if Requires(PackageGraph.LCLPackage,true)
+      and (Flags*[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]<>[])
+      then begin
+        // this is a probably a LCL project where the main source only contains
+        // automatic code
+      end else
+        BestUnitInfo:=MainUnitInfo;
+    end;
+
+    if BestUnitInfo=nil then begin
+      AnUnitInfo:=FirstPartOfProject;
+      while AnUnitInfo<>nil do begin
+        if FileExistsCached(AnUnitInfo.Filename) then begin
+          if (BestUnitInfo=nil)
+          or (FilenameIsPascalUnit(AnUnitInfo.Filename)
+               and (not FilenameIsPascalUnit(BestUnitInfo.Filename)))
+          then begin
+            BestUnitInfo:=AnUnitInfo;
+          end;
+        end;
+        AnUnitInfo:=AnUnitInfo.NextPartOfProject;
+      end;
+    end;
+    if BestUnitInfo<>nil then begin
+      BestUnitInfo.EditorInfo[0].PageIndex := 0;
+      BestUnitInfo.EditorInfo[0].WindowID := 0;
+      BestUnitInfo.EditorInfo[0].IsVisibleTab := True;
+      ActiveWindowIndexAtStart:=0;
+      BestUnitInfo.Loaded:=true;
+    end;
+  end;
+  
+var
+  Path: String;
+  XMLConfig: TXMLConfig;
+begin
+  Result := mrCancel;
+  LoadParts:=prfLoadParts in ReadFlags;
+  BeginUpdate(true);
+  try
+    if LoadParts then begin
+      // read only parts of the lpi, keep other values
+      try
+        XMLConfig := TCodeBufXMLConfig.CreateWithCache(NewProjectInfoFile,true)
+      except
+        on E: Exception do begin
+          IDEMessageDialog(lisUnableToReadLpi,
+               Format(lisUnableToReadTheProjectInfoFile,
+                      [LineEnding, '"',NewProjectInfoFile, '"'])+LineEnding
+               +E.Message, mtError, [mbOk]);
+          Result:=mrCancel;
+          exit;
+        end;
+      end;
+    end else begin
+      // read the whole lpi, clear any old values
+      Clear;
+      ProjectInfoFile:=NewProjectInfoFile;
+      fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
+      fProjectInfoFileBufChangeStamp:=CTInvalidChangeStamp;
+      try
+        fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
+        {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
+        if fProjectInfoFileBuffer=nil then
+          XMLConfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false)
+        else begin
+          XMLConfig := TCodeBufXMLConfig.CreateWithCache(ProjectInfoFile,false,true,
+                                                   fProjectInfoFileBuffer.Source);
+          fProjectInfoFileBufChangeStamp:=fProjectInfoFileBuffer.ChangeStep;
+        end;
+        {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
+      except
+        on E: Exception do begin
+          IDEMessageDialog(lisUnableToReadLpi,
+               Format(lisUnableToReadTheProjectInfoFile,
+                      [LineEnding, '"',ProjectInfoFile, '"'])+LineEnding
+               +E.Message, mtError, [mbOk]);
+          Result:=mrCancel;
+          exit;
+        end;
+      end;
+
+      fLastReadLPIFilename:=ProjectInfoFile;
+      fLastReadLPIFileDate:=Now;
+      NewMainUnitID:=-1;
+    end;
+
+    try
+      Path:='ProjectOptions/';
+      // get format
+      fStorePathDelim:=CheckPathDelim(
+        XMLConfig.GetValue(Path+'PathDelim/Value', '/'),fPathDelimChanged);
+      fCurStorePathDelim:=StorePathDelim;
+
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
+      FileVersion:= XMLConfig.GetValue(Path+'Version/Value',0);
+      if (Fileversion=0) and (not LoadParts)
+      and (XMLConfig.GetValue(Path+'Units/Count',0)=0) then
+      begin
+        if IDEMessageDialog(lisStrangeLpiFile,
+          Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
+          mtConfirmation,[mbIgnore,mbAbort])<>mrIgnore then exit;
+      end;
+
+      if not LoadParts then begin
+        LoadFlags(XMLConfig,Path);
+        SessionStorage:=StrToProjectSessionStorage(
+                        XMLConfig.GetValue(Path+'General/SessionStorage/Value',
+                     ProjectSessionStorageNames[DefaultProjectSessionStorage]));
+        //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
+      end;
+
+      // load properties
+      // Note: in FileVersion<9 the default value was -1
+      //   Since almost all projects have a MainUnit the value 0 was always
+      //   added to the lpi.
+      //   Changing the default value to 0 avoids the redundancy and
+      //   automatically fixes broken lpi files.
+      if not LoadParts then begin
+        NewMainUnitID := XMLConfig.GetValue(Path+'General/MainUnit/Value', 0);
+        Title := XMLConfig.GetValue(Path+'General/Title/Value', '');
+        UseAppBundle := XMLConfig.GetValue(Path+'General/UseAppBundle/Value', True);
+        AutoCreateForms := XMLConfig.GetValue(Path+'General/AutoCreateForms/Value', true);
+      end;
+
+      // fpdoc
+      if not LoadParts then begin
+        FPDocPaths := SwitchPathDelims(XMLConfig.GetValue(Path+'LazDoc/Paths', ''),
+                               fPathDelimChanged);
+        FPDocPackageName:=XMLConfig.GetValue(Path+'LazDoc/PackageName','');
+      end;
+
+      // i18n
+      if not LoadParts then begin
+        if FileVersion<6 then begin
+          POOutputDirectory := SwitchPathDelims(
+                     XMLConfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
+          EnableI18N := POOutputDirectory <> '';
+        end else begin
+          EnableI18N := XMLConfig.GetValue(Path+'i18n/EnableI18N/Value', False);
+          EnableI18NForLFM := XMLConfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
+          POOutputDirectory := SwitchPathDelims(
+               XMLConfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
+        end;
+        {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
+      end;
+
+      // load MacroValues and compiler options
+      LoadBuildModes(XMLConfig,Path,true);
+
+      // Resources
+      if not LoadParts then
+        ProjResources.ReadFromProjectFile(XMLConfig, Path);
+
+      // load custom data
+      if not LoadParts then
+        LoadStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
+      
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
+      if not LoadParts then begin
+        CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
+                                                                 ProjectDirectory;
+        CodeToolBoss.DefineTree.ClearCache;
+      end;
+
+      // load the dependencies
+      if not LoadParts then
+        LoadPkgDependencyList(XMLConfig,Path+'RequiredPackages/',
+                          FFirstRequiredDependency,pdlRequires,Self,true,false);
+
+      // load the Run and Build parameter Options
+      if not LoadParts then
+        RunParameterOptions.Load(XMLConfig,Path,fPathDelimChanged);
+
+      // load the Publish Options
+      if not LoadParts then
+        PublishOptions.LoadFromXMLConfig(xmlconfig,
+                                       Path+'PublishOptions/',fPathDelimChanged);
+      // load custom defines
+      if not LoadParts then
+        LoadCustomDefines(XMLConfig,Path,false);
+
+      // load session info
+      if not LoadParts then
+        LoadSessionInfo(XMLConfig,Path,false);
+
+      // call hooks to read their info (e.g. DebugBoss)
+      if (not LoadParts) and Assigned(OnLoadProjectInfo) then begin
+        OnLoadProjectInfo(Self,XMLConfig,false);
+      end;
+    finally
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
+      fPathDelimChanged:=false;
+      try
+        XMLConfig.Modified:=false;
+        XMLConfig.Free;
+      except
+      end;
+      XMLConfig:=nil;
+    end;
+
+    // load session file (if available)
+    if (not LoadParts)
+    and (SessionStorage in pssHasSeparateSession)
+    and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0) then begin
+      if FileExistsUTF8(ProjectSessionFile) then begin
+        //DebugLn('TProject.ReadProject loading Session ProjectSessionFile=',ProjectSessionFile);
+        try
+          XMLConfig := TCodeBufXMLConfig.CreateWithCache(ProjectSessionFile);
+
+          Path:='ProjectSession/';
+          SessionStorePathDelim:=CheckPathDelim(
+            XMLConfig.GetValue(Path+'PathDelim/Value', '/'),fPathDelimChanged);
+          fCurStorePathDelim:=SessionStorePathDelim;
+
+          FileVersion:=XMLConfig.GetValue(Path+'Version/Value',0);
+
+          // load MacroValues and compiler options
+          LoadBuildModes(XMLConfig,Path,false);
+
+          // load custom defines
+          LoadCustomDefines(XMLConfig,Path,true);
+
+          // load session info
+          LoadSessionInfo(XMLConfig,Path,true);
+
+          // call hooks to read their info (e.g. DebugBoss)
+          if Assigned(OnLoadProjectInfo) then begin
+            OnLoadProjectInfo(Self,XMLConfig,true);
+          end;
+        except
+          IDEMessageDialog(lisCCOErrorCaption,
+            Format(lisUnableToReadTheProjectInfoFile,
+                   [LineEnding, '"', ProjectInfoFile, '"']),
+            mtError,[mbOk]);
+          Result:=mrCancel;
+          exit;
+        end;
+
+        fPathDelimChanged:=false;
+        try
+          XMLConfig.Modified:=false;
+          XMLConfig.Free;
+        except
+        end;
+        fCurStorePathDelim:=StorePathDelim;
+        XMLConfig:=nil;
+      end else begin
+        // there is no .lps file -> create some defaults
+        LoadDefaultSession;
+      end;
+    end;
+
+  finally
+    EndUpdate;
+    FAllEditorsInfoList.SortByPageIndex;
+  end;
+
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject END');{$ENDIF}
+  Result := mrOk;
+end;
+
+{------------------------------------------------------------------------------
   TProject AddFile
  ------------------------------------------------------------------------------}
 procedure TProject.AddFile(ProjectFile: TLazProjectFile; AddToProjectUsesClause: boolean);
@@ -2906,7 +3853,7 @@ begin
   AnUnit.OnFileBackup:=@OnUnitFileBackup;
   AnUnit.OnLoadSaveFilename:=@OnLoadSaveFilename;
   AnUnit.OnUnitNameChange:=@OnUnitNameChange;
-
+  
   // lock the main unit (when it is changed on disk it should *not* auto revert)
   if MainUnitID=NewIndex then
     MainUnitInfo.IncreaseAutoRevertLock;
@@ -2931,7 +3878,7 @@ begin
   if (Index=MainUnitID) then begin
     raise Exception.Create('ERROR: TProject.RemoveUnit index = MainUnit');
   end;
-
+  
   BeginUpdate(true);
   OldUnitInfo:=Units[Index];
   UnitModified(OldUnitInfo);
@@ -4963,16 +5910,6 @@ begin
   end;
 end;
 
-procedure TProject.UpdateFileBuffer;
-begin
-  fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(ProjectInfoFile,true,true);
-  fProjectInfoFileDate:=FileAgeCached(ProjectInfoFile);
-  if fProjectInfoFileBuffer<>nil then
-    fProjectInfoFileBufChangeStamp:=fProjectInfoFileBuffer.ChangeStep
-  else
-    fProjectInfoFileBufChangeStamp:=CTInvalidChangeStamp;
-end;
-
 procedure TProject.UpdateProjectDirectory;
 var
   i: Integer;
@@ -5020,99 +5957,6 @@ begin
     AnUnitInfo.UpdateSourceDirectoryReference;
   end;
   //DebugLn('TProject.UpdateSourceDirectories B ',UnitCount,' "',fSourceDirectories.CreateSearchPathFromAllFiles,'"');
-end;
-
-procedure TProject.UpdateUsageCounts(const ConfigFilename: string);
-var
-  UnitUsageCount: TDateTime;
-  DiffTime: TDateTime;
-  i: Integer;
-begin
-  UnitUsageCount:=0;
-  if CompareFileNames(ConfigFilename,fLastReadLPIFilename)=0 then begin
-    DiffTime:=Now-fLastReadLPIFileDate;
-    if DiffTime>0 then
-      UnitUsageCount:= DiffTime*24; // one step every hour
-    fLastReadLPIFileDate:=Now;
-  end;
-  for i:=0 to UnitCount-1 do begin
-    if Units[i].IsPartOfProject then
-      Units[i].UpdateUsageCount(uuIsPartOfProject,UnitUsageCount)
-    else if Units[i].Loaded then
-      Units[i].UpdateUsageCount(uuIsLoaded,UnitUsageCount)
-    else
-      Units[i].UpdateUsageCount(uuNotUsed,UnitUsageCount);
-  end;
-end;
-
-function TProject.UnitMustBeSaved(UnitInfo: TUnitInfo; WriteFlags: TProjectWriteFlags;
-  SaveSession: boolean): boolean;
-begin
-  Result:=false;
-  if not UnitInfo.IsPartOfProject then begin
-    if not SaveSession then exit;
-    if (pfSaveOnlyProjectUnits in Flags) then exit;
-    if (pwfSaveOnlyProjectUnits in WriteFlags) then exit;
-    if (not UnitInfo.Loaded) then begin
-      if (not (pfSaveClosedUnits in Flags)) then exit;
-      if (pwfSkipClosedUnits in WriteFlags) then exit;
-      if UnitInfo.fUsageCount<=0 then exit;
-    end;
-  end;
-  Result:=true;
-end;
-
-procedure TProject.UpdateVisibleEditor(PgIndex: integer);
-var
-  i: Integer;
-begin
-  i := AllEditorsInfoCount - 1;
-  while i >= 0 do begin
-    if (AllEditorsInfo[i].PageIndex = PgIndex) then
-      AllEditorsInfo[i].IsVisibleTab := True;
-    dec(i);
-  end;
-end;
-
-procedure TProject.LoadDefaultSession;
-var
-  AnUnitInfo: TUnitInfo;
-  BestUnitInfo: TUnitInfo;
-begin
-  if FirstUnitWithEditorIndex<>nil then exit;
-  BestUnitInfo:=nil;
-
-  if (MainUnitID>=0) then begin
-    if Requires(PackageGraph.LCLPackage,true)
-    and (Flags*[pfMainUnitHasCreateFormStatements,pfMainUnitHasTitleStatement]<>[])
-    then begin
-      // this is a probably a LCL project where the main source only contains
-      // automatic code
-    end else
-      BestUnitInfo:=MainUnitInfo;
-  end;
-
-  if BestUnitInfo=nil then begin
-    AnUnitInfo:=FirstPartOfProject;
-    while AnUnitInfo<>nil do begin
-      if FileExistsCached(AnUnitInfo.Filename) then begin
-        if (BestUnitInfo=nil)
-        or (FilenameIsPascalUnit(AnUnitInfo.Filename)
-             and (not FilenameIsPascalUnit(BestUnitInfo.Filename)))
-        then begin
-          BestUnitInfo:=AnUnitInfo;
-        end;
-      end;
-      AnUnitInfo:=AnUnitInfo.NextPartOfProject;
-    end;
-  end;
-  if BestUnitInfo<>nil then begin
-    BestUnitInfo.EditorInfo[0].PageIndex := 0;
-    BestUnitInfo.EditorInfo[0].WindowID := 0;
-    BestUnitInfo.EditorInfo[0].IsVisibleTab := True;
-    ActiveWindowIndexAtStart:=0;
-    BestUnitInfo.Loaded:=true;
-  end;
 end;
 
 procedure TProject.ClearSourceDirectories;
@@ -5176,895 +6020,6 @@ begin
     AnUnitInfo.fPrev[ListType].fNext[ListType]:=AnUnitInfo.fNext[ListType];
   AnUnitInfo.fNext[ListType]:=nil;
   AnUnitInfo.fPrev[ListType]:=nil;
-end;
-
-{ TProjectStorage }
-
-constructor TProjectStorage.Create(aOwner: TProject);
-begin
-  FOwner := aOwner;
-  FBuildModes := FOwner.BuildModes;
-end;
-
-destructor TProjectStorage.Destroy;
-begin
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------
-  Methods for ReadProject
- ------------------------------------------------------------------------------}
-
-procedure TProjectStorage.AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string;
-  InSession: boolean);
-
-  function FindMacro(MatrixOptions: TBuildMatrixOptions;
-    const MacroName, MacroValue: string): TBuildMatrixOption;
-  var
-    j: Integer;
-  begin
-    j:=MatrixOptions.Count-1;
-    while j>=0 do
-    begin
-      Result:=MatrixOptions[j];
-      if (Result.Typ=bmotIDEMacro)
-      and (Result.Targets='*')
-      and (Result.MacroName=MacroName)
-      and (Result.Value=MacroValue)
-      then
-        exit;
-      dec(j);
-    end;
-    Result:=nil;
-  end;
-
-var
-  MatrixOptions: TBuildMatrixOptions;
-  MatrixOption: TBuildMatrixOption;
-begin
-  MatrixOption:=FindMacro(BuildModes.SharedMatrixOptions,MacroName,MacroValue);
-  if MatrixOption=nil then
-    MatrixOption:=FindMacro(BuildModes.SessionMatrixOptions,MacroName,MacroValue);
-  if MatrixOption<>nil then begin
-    // Macro already exists => enable mode for this macro
-    MatrixOption.EnableMode(ModeIdentifier);
-  end else begin
-    // Macro does not yet exist => create
-    if InSession then
-      MatrixOptions:=BuildModes.SessionMatrixOptions
-    else
-      MatrixOptions:=BuildModes.SharedMatrixOptions;
-    MatrixOption:=MatrixOptions.Add(bmotIDEMacro,'*');
-    MatrixOption.MacroName:=MacroName;
-    MatrixOption.Value:=MacroValue;
-    MatrixOption.Modes:=ModeIdentifier;
-  end;
-end;
-
-procedure TProjectStorage.EnableMatrixMode(MatrixOptions: TBuildMatrixOptions);
-var
-  MatrixOption: TBuildMatrixOption;
-begin
-  if MatrixOptions=nil then exit;
-  MatrixOption:=MatrixOptions.FindOption(FOptionID);
-  if MatrixOption=nil then exit;
-  //debugln(['EnableMatrixMode OptionID=',FOptionID,' ModeID=',FModeID,' ',MatrixOption.AsString]);
-  MatrixOption.EnableMode(FModeID);
-end;
-
-procedure TProjectStorage.LoadSessionEnabledNonSessionMatrixOptions(const Path: string);
-var
-  i, Cnt: integer;
-  SubPath: String;
-begin
-  // disable all matrix options in session modes
-  if FGlobalMatrixOptions<>nil then
-    FGlobalMatrixOptions.DisableModes(@BuildModes.IsSessionMode);
-  BuildModes.SharedMatrixOptions.DisableModes(@BuildModes.IsSessionMode);
-  // load
-  Cnt:=FXMLConfig.GetValue(Path+'Count',0);
-  for i:=1 to Cnt do begin
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    FModeID:=FXMLConfig.GetValue(SubPath+'Mode','');
-    if (FModeID='') or (not BuildModes.IsSessionMode(FModeID)) then begin
-      debugln(['LoadSessionEnabledNonSessionMatrixOptions not a session Mode="',dbgstr(FModeID),'" at ',SubPath]);
-      continue;
-    end;
-    FOptionID:=FXMLConfig.GetValue(SubPath+'Option','');
-    if FOptionID='' then begin
-      debugln(['LoadSessionEnabledNonSessionMatrixOptions invalid option at ',SubPath]);
-      continue;
-    end;
-    EnableMatrixMode(FGlobalMatrixOptions);
-    EnableMatrixMode(BuildModes.SharedMatrixOptions);
-  end;
-end;
-
-procedure TProjectStorage.LoadOldMacroValues(const Path: string; CurMode: TProjectBuildMode);
-var
-  i, Cnt: Integer;
-  SubPath, MacroName, MacroValue: String;
-begin
-  // load macro values of old IDE (<1.1)
-  Cnt:=FXMLConfig.GetValue(Path+'Count',0);
-  //debugln(['LoadOldMacroValues Cnt=',Cnt]);
-  for i:=1 to Cnt do begin
-    SubPath:=Path+'Macro'+IntToStr(i)+'/';
-    MacroName:=FXMLConfig.GetValue(SubPath+'Name','');
-    if (MacroName='') or not IsValidIdent(MacroName) then continue;
-    MacroValue:=FXMLConfig.GetValue(SubPath+'Value','');
-    //debugln(['LoadOldMacroValues Mode="',CurMode.Identifier,'" ',MacroName,'="',MacroValue,'" session=',CurMode.InSession]);
-    AddMatrixMacro(MacroName,MacroValue,CurMode.Identifier,CurMode.InSession);
-  end;
-end;
-
-function TProjectStorage.LoadOldProjectType(const Path: string): TOldProjectType;
-
-  function OldProjectTypeNameToType(const s: string): TOldProjectType;
-  begin
-    for Result:=Low(TOldProjectType) to High(TOldProjectType) do
-      if (CompareText(OldProjectTypeNames[Result],s)=0) then exit;
-    Result:=ptApplication;
-  end;
-
-begin
-  if FFileVersion<=4 then
-    Result:=OldProjectTypeNameToType(FXMLConfig.GetValue(Path+'General/ProjectType/Value', ''))
-  else
-    Result:=ptCustomProgram;
-end;
-
-procedure TProjectStorage.LoadBuildModes(const Path: string; LoadData: boolean);
-var
-  CompOptsPath: String;
-  Cnt: LongInt;
-  i: Integer;
-  SubPath: String;
-  ModeIdentifier: String;
-  CurMode: TProjectBuildMode;
-  MacroValsPath: String;
-  ActiveIdentifier: String;
-  s: String;
-begin
-  //debugln(['LoadBuildModes LoadData=',LoadData,' FLoadParts=',FLoadParts,' prfLoadPartBuildModes=',prfLoadPartBuildModes in ReadFlags]);
-  if FLoadParts then begin
-    if not (prfLoadPartBuildModes in FReadFlags) then exit;
-    if LoadData then
-      FOwner.ClearBuildModes;
-  end;
-
-  // load matrices
-  if LoadData then begin
-    // load matrix options of project (not session)
-    BuildModes.SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig,
-                                      Path+'BuildModes/SharedMatrixOptions/');
-    //debugln(['LoadBuildModes BuildModes.SharedMatrixOptions.Count=',BuildModes.SharedMatrixOptions.Count]);
-    //for i:=0 to BuildModes.SharedMatrixOptions.Count-1 do
-    //  debugln(['  ',BuildModes.SharedMatrixOptions[i].AsString]);
-  end;
-  if (not LoadData) and (not FLoadParts) then begin
-    // load matrix options of session
-    BuildModes.SessionMatrixOptions.LoadFromXMLConfig(FXMLConfig,
-                                     Path+'BuildModes/SessionMatrixOptions/');
-  end;
-
-  // load build modes
-  Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
-  //debugln(['LoadBuildModes Cnt=',Cnt,' LoadData=',LoadData]);
-  if Cnt>0 then begin
-    for i:=1 to Cnt do begin
-      SubPath:=Path+'BuildModes/Item'+IntToStr(i)+'/';
-      ModeIdentifier:=FXMLConfig.GetValue(SubPath+'Name','');
-      if LoadData and (i=1) then begin
-        // load the default mode (it already exists)
-        CurMode:=BuildModes[0];
-        CurMode.Identifier:=ModeIdentifier;
-      end else
-        // add another mode
-        CurMode:=BuildModes.Add(ModeIdentifier);
-
-      if LoadData and (i=1) and FXMLConfig.GetValue(SubPath+'Default',false) then
-      begin
-        // this is the default mode and it is stored at the old xml path
-        CompOptsPath:='CompilerOptions/';
-        // due to an old bug, the XML path can be 'CompilerOptions/' or ''
-        if (FFileVersion<3)
-        and (FXMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
-          CompOptsPath:='';
-        MacroValsPath:=Path+'MacroValues/';
-      end else begin
-        CompOptsPath:=SubPath+'CompilerOptions/';
-        MacroValsPath:=SubPath+'MacroValues/';
-      end;
-
-      CurMode.InSession:=not LoadData;
-      LoadOldMacroValues(MacroValsPath,CurMode);
-      CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig,CompOptsPath);
-    end;
-
-  end else if LoadData then begin
-    // no build modes => an old file format
-    CompOptsPath:='CompilerOptions/';
-    // due to a bug in an old version, the XML path can be 'CompilerOptions/' or ''
-    if (FFileVersion<3)
-    and (FXMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
-      CompOptsPath:='';
-    MacroValsPath:=Path+'MacroValues/';
-    CurMode:=BuildModes[0];
-    LoadOldMacroValues(MacroValsPath,CurMode);
-    if FXMLConfig.GetValue(CompOptsPath+'Version/Value', 0)<10 then begin
-      // LCLWidgetType was not a macro but a property of its own
-      s := FXMLConfig.GetValue(CompOptsPath+'LCLWidgetType/Value', '');
-      if (s<>'') and (SysUtils.CompareText(s,'default')<>0) then
-        AddMatrixMacro('LCLWidgetType',s,'default',false);
-    end;
-    CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig,CompOptsPath);
-  end;
-
-  if (not LoadData) and (not FLoadParts) then begin
-    // load what matrix options are enabled in session build modes
-    SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
-    LoadSessionEnabledNonSessionMatrixOptions(SubPath);
-  end;
-
-  // set active mode
-  ActiveIdentifier:=FXMLConfig.GetValue(Path+'BuildModes/Active','default');
-  CurMode:=BuildModes.Find(ActiveIdentifier);
-  if CurMode=nil then
-    CurMode:=BuildModes[0];
-  FOwner.ActiveBuildMode:=CurMode;
-end;
-
-procedure TProjectStorage.LoadFlags(const Path: string);
-
-  procedure SetFlag(f: TProjectFlag; Value: boolean);
-  begin
-    if Value then Include(FOwner.FFlags,f) else Exclude(FOwner.FFlags,f);
-  end;
-
-var
-  f: TProjectFlag;
-  OldProjectType: TOldProjectType;
-  DefFlags: TProjectFlags;
-begin
-  OldProjectType:=LoadOldProjectType(Path);
-  DefFlags:=DefaultProjectFlags;
-  if FFileVersion<7 then
-    Exclude(DefFlags,pfLRSFilesInOutputDirectory);
-  FOwner.Flags:=[];
-  for f:=Low(TProjectFlag) to High(TProjectFlag) do
-    SetFlag(f,FXMLConfig.GetValue(Path+'General/Flags/'+ProjectFlagNames[f]+'/Value',f in DefFlags));
-  if FFileVersion<=3 then begin
-    // set new flags
-    SetFlag(pfMainUnitIsPascalSource, OldProjectType in [ptProgram,ptApplication]);
-    SetFlag(pfMainUnitHasUsesSectionForAllUnits, OldProjectType in [ptProgram,ptApplication]);
-    SetFlag(pfMainUnitHasCreateFormStatements, OldProjectType in [ptApplication]);
-    SetFlag(pfMainUnitHasTitleStatement,OldProjectType in [ptApplication]);
-    SetFlag(pfRunnable, OldProjectType in [ptProgram,ptApplication,ptCustomProgram]);
-  end;
-  FOwner.Flags:=FOwner.Flags-[pfUseDefaultCompilerOptions];
-end;
-
-procedure TProjectStorage.LoadCustomDefines(const Path: string);
-var
-  Cnt, i: Integer;
-  s: String;
-begin
-  Cnt := FXMLConfig.GetValue(Path+'CustomDefines/Count', 0);
-  for i := 0 to Cnt-1 do
-  begin
-    s := FXMLConfig.GetValue(Path+'CustomDefines/Define'+IntToStr(i)+'/Value', '');
-    if s <> '' then
-      FOwner.CustomDefines.Add(s);
-  end;
-end;
-
-procedure TProjectStorage.LoadSessionInfo(const Path: string; Merge: boolean);
-var
-  NewUnitInfo: TUnitInfo;
-  NewUnitCount, i: integer;
-  SubPath: String;
-  NewUnitFilename: String;
-  OldUnitInfo: TUnitInfo;
-  MergeUnitInfo: Boolean;
-begin
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
-  NewUnitCount:=FXMLConfig.GetValue(Path+'Units/Count',0);
-  for i := 0 to NewUnitCount - 1 do begin
-    SubPath:=Path+'Units/Unit'+IntToStr(i)+'/';
-    NewUnitFilename:=FXMLConfig.GetValue(SubPath+'Filename/Value','');
-    FOwner.OnLoadSaveFilename(NewUnitFilename,true);
-    // load unit and add it
-    OldUnitInfo:=FOwner.UnitInfoWithFilename(NewUnitFilename);
-    if OldUnitInfo<>nil then begin
-      // unit already exists
-      if Merge then begin
-        NewUnitInfo:=OldUnitInfo;
-        MergeUnitInfo:=true;
-      end else begin
-        // Doppelganger -> inconsistency found, ignore this file
-        debugln('TProject.ReadProject file exists twice in lpi file: ignoring "'+NewUnitFilename+'"');
-        continue;
-      end;
-    end else begin
-      NewUnitInfo:=TUnitInfo.Create(nil);
-      FOwner.AddFile(NewUnitInfo,false);
-      MergeUnitInfo:=false;
-    end;
-
-    NewUnitInfo.LoadFromXMLConfig(FXMLConfig,SubPath,MergeUnitInfo,Merge,FFileVersion);
-    if i=FNewMainUnitID then begin
-      FOwner.MainUnitID:=FOwner.IndexOf(NewUnitInfo);
-      FNewMainUnitID:=-1;
-    end;
-  end;
-
-  // load editor info
-  i := FXMLConfig.GetValue(Path+'General/ActiveEditorIndexAtStart/Value', -1);
-  if (i >= 0) then
-    FOwner.UpdateVisibleEditor(i);     // Load old Config => No WindowIndex
-
-  FOwner.ActiveWindowIndexAtStart := FXMLConfig.GetValue(Path+'General/ActiveWindowIndexAtStart/Value', 0);
-  FOwner.FSkipCheckLCLInterfaces:=FXMLConfig.GetValue(Path+'SkipCheckLCLInterfaces/Value',false);
-  FOwner.FJumpHistory.LoadFromXMLConfig(FXMLConfig,Path+'');
-  FOwner.CleanOutputFileMask:=FXMLConfig.GetValue(Path+'Build/CleanOutputFileMask/Value',
-               DefaultProjectCleanOutputFileMask);
-  FOwner.CleanSourcesFileMask:=FXMLConfig.GetValue(Path+'Build/CleanSourcesFileMask/Value',
-               DefaultProjectCleanSourcesFileMask);
-
-  // load custom session data
-  LoadStringToStringTree(FXMLConfig,FOwner.CustomSessionData,Path+'CustomSessionData/');
-end;
-
-procedure TProjectStorage.LoadFromLPI;
-var
-  Path: String;
-begin
-  Path:='ProjectOptions/';
-  with FOwner do begin
-    // get format
-    fStorePathDelim:=CheckPathDelim(FXMLConfig.GetValue(Path+'PathDelim/Value','/'),fPathDelimChanged);
-    fCurStorePathDelim:=StorePathDelim;
-
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
-    FFileVersion:= FXMLConfig.GetValue(Path+'Version/Value',0);
-    if (FFileVersion=0) and (not FLoadParts)
-    and (FXMLConfig.GetValue(Path+'Units/Count',0)=0) then
-      if IDEMessageDialog(lisStrangeLpiFile,
-          Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
-          mtConfirmation,[mbIgnore,mbAbort])<>mrIgnore then exit;
-
-    if not FLoadParts then begin
-      LoadFlags(Path);
-      SessionStorage:=StrToProjectSessionStorage(
-        FXMLConfig.GetValue(Path+'General/SessionStorage/Value',
-                            ProjectSessionStorageNames[DefaultProjectSessionStorage]));
-      //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
-    end;
-
-    // load properties
-    // Note: in FFileVersion<9 the default value was -1
-    //   Since almost all projects have a MainUnit the value 0 was always
-    //   added to the lpi.
-    //   Changing the default value to 0 avoids the redundancy and
-    //   automatically fixes broken lpi files.
-    if not FLoadParts then begin
-      FNewMainUnitID := FXMLConfig.GetValue(Path+'General/MainUnit/Value', 0);
-      Title := FXMLConfig.GetValue(Path+'General/Title/Value', '');
-      UseAppBundle := FXMLConfig.GetValue(Path+'General/UseAppBundle/Value', True);
-      AutoCreateForms := FXMLConfig.GetValue(Path+'General/AutoCreateForms/Value', true);
-    end;
-
-    // fpdoc
-    if not FLoadParts then begin
-      FPDocPaths:=SwitchPathDelims(FXMLConfig.GetValue(Path+'LazDoc/Paths',''),fPathDelimChanged);
-      FPDocPackageName:=FXMLConfig.GetValue(Path+'LazDoc/PackageName','');
-    end;
-
-    // i18n
-    if not FLoadParts then begin
-      if FFileVersion<6 then begin
-        POOutputDirectory := SwitchPathDelims(
-                   FXMLConfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
-        EnableI18N := POOutputDirectory <> '';
-      end else begin
-        EnableI18N := FXMLConfig.GetValue(Path+'i18n/EnableI18N/Value', False);
-        EnableI18NForLFM := FXMLConfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
-        POOutputDirectory := SwitchPathDelims(
-             FXMLConfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
-      end;
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
-    end;
-
-    // load MacroValues and compiler options
-    LoadBuildModes(Path,true);
-    // Resources
-    if not FLoadParts then
-      ProjResources.ReadFromProjectFile(FXMLConfig, Path);
-    // load custom data
-    if not FLoadParts then
-      LoadStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
-    if not FLoadParts then begin
-      CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=ProjectDirectory;
-      CodeToolBoss.DefineTree.ClearCache;
-    end;
-    // load the dependencies
-    if not FLoadParts then
-      LoadPkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
-                        FFirstRequiredDependency,pdlRequires,Self,true,false);
-    // load the Run and Build parameter Options
-    if not FLoadParts then
-      RunParameterOptions.Load(FXMLConfig,Path,fPathDelimChanged);
-    // load the Publish Options
-    if not FLoadParts then
-      PublishOptions.LoadFromXMLConfig(FXMLConfig,Path+'PublishOptions/',fPathDelimChanged);
-    // load custom defines
-    if not FLoadParts then
-      LoadCustomDefines(Path);
-    // load session info
-    if not FLoadParts then
-      LoadSessionInfo(Path,false);
-
-    // call hooks to read their info (e.g. DebugBoss)
-    if (not FLoadParts) and Assigned(OnLoadProjectInfo) then
-      OnLoadProjectInfo(FOwner, FXMLConfig, false);
-  end;
-end;
-
-procedure TProjectStorage.LoadFromSession;
-var
-  Path: String;
-  pds: TPathDelimSwitch;
-begin
-  Path:='ProjectSession/';
-  pds:=CheckPathDelim(FXMLConfig.GetValue(Path+'PathDelim/Value', '/'),
-                      FOwner.fPathDelimChanged);
-  FOwner.SessionStorePathDelim:=pds;
-  FOwner.fCurStorePathDelim:=pds;
-
-  FFileVersion:=FXMLConfig.GetValue(Path+'Version/Value',0);
-
-  // load MacroValues and compiler options
-  LoadBuildModes(Path,false);
-  // load custom defines
-  LoadCustomDefines(Path);
-  // load session info
-  LoadSessionInfo(Path,true);
-
-  // call hooks to read their info (e.g. DebugBoss)
-  if Assigned(FOwner.OnLoadProjectInfo) then
-    FOwner.OnLoadProjectInfo(FOwner,FXMLConfig,true);
-end;
-
-{------------------------------------------------------------------------------
-  Methods for TProject WriteProject
- ------------------------------------------------------------------------------}
-
-procedure TProjectStorage.SaveFlags(const Path: string);
-var
-  f: TProjectFlag;
-begin
-  for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
-    FXMLConfig.SetDeleteValue(Path+'General/Flags/'
-        +ProjectFlagNames[f]+'/Value', f in FOwner.Flags, f in DefaultProjectFlags);
-  end;
-end;
-
-procedure TProjectStorage.SaveSessionEnabledNonSessionMatrixOptions(const Path: string;
-  MatrixOptions: TBuildMatrixOptions; var Cnt: integer);
-var
-  i, j: Integer;
-  MatrixOption: TBuildMatrixOption;
-  CurMode: TProjectBuildMode;
-  SubPath: String;
-begin
-  if MatrixOptions=nil then exit;
-  for i:=0 to MatrixOptions.Count-1 do begin
-    MatrixOption:=MatrixOptions[i];
-    //debugln(['SaveSessionEnabledNonSessionMatrixOptions ',MatrixOption.AsString]);
-    for j:=0 to BuildModes.Count-1 do begin
-      CurMode:=BuildModes[j];
-      if not CurMode.InSession then continue;
-      if not MatrixOption.FitsMode(CurMode.Identifier) then continue;
-      inc(Cnt);
-      SubPath:=Path+'Item'+IntToStr(Cnt)+'/';
-      //debugln(['SaveSessionEnabledNonSessionMatrixOptions ModeID="',CurMode.Identifier,'" OptionID="',MatrixOption.ID,'" ',MatrixOption.AsString]);
-      FXMLConfig.SetDeleteValue(SubPath+'Mode',CurMode.Identifier,'');
-      FXMLConfig.SetDeleteValue(SubPath+'Option',MatrixOption.ID,'');
-    end;
-  end;
-end;
-
-procedure TProjectStorage.SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
-var
-  Cnt: Integer;
-
-  procedure SaveAtOldPlace(MatrixOptions: TBuildMatrixOptions);
-  var
-    i: Integer;
-    MatrixOption: TBuildMatrixOption;
-    SubPath: String;
-  begin
-    for i:=0 to MatrixOptions.Count-1 do
-    begin
-      MatrixOption:=MatrixOptions[i];
-      if (MatrixOption.Typ=bmotIDEMacro)
-      and MatrixOption.FitsTarget(BuildMatrixProjectName)
-      and MatrixOption.FitsMode(aMode.Identifier)
-      then begin
-        inc(Cnt);
-        SubPath:=Path+'Macro'+IntToStr(i+1)+'/';
-        FXMLConfig.SetDeleteValue(SubPath+'Name',MatrixOption.MacroName,'');
-        FXMLConfig.SetDeleteValue(SubPath+'Value',MatrixOption.Value,'');
-      end;
-    end;
-  end;
-
-begin
-  // for older IDE (<1.1) SaveAtOldPlace the macros at the old place
-  Cnt:=0;
-  SaveAtOldPlace(BuildModes.SessionMatrixOptions);
-  SaveAtOldPlace(BuildModes.SharedMatrixOptions);
-  FXMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
-end;
-
-procedure TProjectStorage.SaveBuildModes(const Path: string; SaveData, SaveSession: boolean);
-var
-  CurMode: TProjectBuildMode;
-  i: Integer;
-  Cnt: Integer;
-  SubPath: String;
-begin
-  // the first build mode is the default mode
-  if SaveData then
-  begin
-    // save the default build mode under the old xml path to let old IDEs
-    // open new projects
-    CurMode:=BuildModes[0];
-    SaveMacroValuesAtOldPlace(Path+'MacroValues/',CurMode);
-    CurMode.CompilerOptions.SaveToXMLConfig(FXMLConfig,'CompilerOptions/'); // no Path!
-    // Note: the 0.9.29 reader already supports fetching the default build
-    //       mode from the BuildModes, so in one or two releases we can switch
-  end;
-
-  Cnt:=0;
-  for i:=0 to BuildModes.Count-1 do
-  begin
-    CurMode:=BuildModes[i];
-    //debugln(['SaveBuildModes ',i,'/',BuildModes.Count,' Identifier=',CurMode.Identifier,' InSession=',CurMode.InSession,' SaveSession=',SaveSession,' SaveData=',SaveData]);
-    if (CurMode.InSession and SaveSession)
-      or ((not CurMode.InSession) and SaveData) then
-    begin
-      inc(Cnt);
-      SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
-      FXMLConfig.SetDeleteValue(SubPath+'Name',CurMode.Identifier,'');
-      FXMLConfig.SetDeleteValue(SubPath+'Default',i=0,false);
-      if i>0 then
-      begin
-        SaveMacroValuesAtOldPlace(SubPath+'MacroValues/',CurMode);
-        CurMode.CompilerOptions.SaveToXMLConfig(FXMLConfig,SubPath+'CompilerOptions/');
-      end;
-    end;
-  end;
-  FXMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
-
-  if SaveData then
-  begin
-    BuildModes.SharedMatrixOptions.SaveToXMLConfig(FXMLConfig,
-      Path+'BuildModes/SharedMatrixOptions/',@BuildModes.IsSharedMode);
-  end;
-
-  //debugln(['SaveBuildModes SaveSession=',SaveSession,' ActiveBuildMode.Identifier=',ActiveBuildMode.Identifier]);
-  if SaveSession then
-  begin
-    // save what mode is currently active in the session
-    FXMLConfig.SetDeleteValue(Path+'BuildModes/Active', FOwner.ActiveBuildMode.Identifier,'default');
-
-    // save matrix options of session
-    BuildModes.SessionMatrixOptions.SaveToXMLConfig(FXMLConfig,
-      Path+'BuildModes/SessionMatrixOptions/',nil);
-
-    // save what matrix options are enabled in session build modes
-    Cnt:=0;
-    SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
-    SaveSessionEnabledNonSessionMatrixOptions(SubPath,BuildModes.SharedMatrixOptions,Cnt);
-    SaveSessionEnabledNonSessionMatrixOptions(SubPath,FGlobalMatrixOptions,Cnt);
-    FXMLConfig.SetDeleteValue(SubPath+'Count',Cnt,0);
-  end;
-end;
-
-procedure TProjectStorage.SaveUnits(const Path: string; SaveData, SaveSession: boolean);
-var
-  i, SaveUnitCount: integer;
-begin
-  SaveUnitCount:=0;
-  with FOwner do
-    for i:=0 to UnitCount-1 do
-      if UnitMustBeSaved(Units[i],FProjectWriteFlags,SaveSession) then begin
-        Units[i].SaveToXMLConfig(FXMLConfig,
-          Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/',
-          SaveData,SaveSession,fCurStorePathDelim);
-        inc(SaveUnitCount);
-      end;
-  FXMLConfig.SetDeleteValue(Path+'Units/Count',SaveUnitCount,0);
-end;
-
-procedure TProjectStorage.SaveCustomDefines(const Path: string);
-var
-  i: integer;
-begin
-  for i:=0 to FOwner.FCustomDefines.Count-1 do begin
-    FXMLConfig.SetDeleteValue(Path+'CustomDefines/Define'+IntToStr(i)+'/Value',
-                           FOwner.FCustomDefines[i],'');
-  end;
-  FXMLConfig.SetDeleteValue(Path+'CustomDefines/Count',FOwner.FCustomDefines.Count,0);
-end;
-
-procedure TProjectStorage.SaveSessionInfo(const Path: string);
-begin
-  with FOwner do begin
-    FXMLConfig.DeleteValue(Path+'General/ActiveEditorIndexAtStart/Value');
-    FXMLConfig.SetDeleteValue(Path+'General/ActiveWindowIndexAtStart/Value',
-                           ActiveWindowIndexAtStart,-1);
-    FXMLConfig.SetDeleteValue('SkipCheckLCLInterfaces/Value',
-                           FSkipCheckLCLInterfaces,false);
-    FXMLConfig.SetDeleteValue(Path+'Build/CleanOutputFileMask/Value',
-                 CleanOutputFileMask,DefaultProjectCleanOutputFileMask);
-    FXMLConfig.SetDeleteValue(Path+'Build/CleanSourcesFileMask/Value',
-                 CleanSourcesFileMask,DefaultProjectCleanSourcesFileMask);
-
-    if (not (pfSaveOnlyProjectUnits in Flags))
-    and (not (pwfSkipJumpPoints in FProjectWriteFlags)) then begin
-      if (pfSaveJumpHistory in Flags) then begin
-        FJumpHistory.DeleteInvalidPositions;
-        FJumpHistory.SaveToXMLConfig(FXMLConfig,Path);
-      end
-      else
-        FXMLConfig.DeletePath(Path+'JumpHistory');
-    end;
-
-    // save custom session data
-    SaveStringToStringTree(FXMLConfig,CustomSessionData,Path+'CustomSessionData/');
-  end;
-end;
-
-procedure TProjectStorage.SaveToLPI;
-var
-  Path: String;
-  CurFlags: TProjectWriteFlags;
-begin
-  Path:='ProjectOptions/';
-  // format
-  FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
-  with FOwner do begin
-    FXMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
-    SaveFlags(Path);
-    FXMLConfig.SetDeleteValue(Path+'General/SessionStorage/Value',
-                             ProjectSessionStorageNames[SessionStorage],
-                             ProjectSessionStorageNames[DefaultProjectSessionStorage]);
-    // general properties
-    FXMLConfig.SetValue(Path+'General/MainUnit/Value', MainUnitID); // always write a value to support opening by older IDEs (<=0.9.28). This can be changed in a few released.
-    FXMLConfig.SetDeleteValue(Path+'General/AutoCreateForms/Value',
-                             AutoCreateForms,true);
-    FXMLConfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
-    FXMLConfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
-
-    // fpdoc
-    FXMLConfig.SetDeleteValue(Path+'LazDoc/Paths',
-       SwitchPathDelims(CreateRelativeSearchPath(FPDocPaths,ProjectDirectory),
-                        fCurStorePathDelim), '');
-    FXMLConfig.SetDeleteValue(Path+'LazDoc/PackageName',FPDocPackageName,'');
-
-    // i18n
-    FXMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/Value', EnableI18N, false);
-    FXMLConfig.SetDeleteValue(Path+'i18n/EnableI18N/LFM', EnableI18NForLFM, true);
-    FXMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',
-       SwitchPathDelims(CreateRelativePath(POOutputDirectory,ProjectDirectory),
-                        fCurStorePathDelim), '');
-    // Resources
-    ProjResources.WriteToProjectFile(FXMLConfig, Path);
-    // save custom data
-    SaveStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
-    // Save the macro values and compiler options
-    SaveBuildModes(Path,true,FSaveSessionInLPI);
-    // save the Publish Options
-    PublishOptions.SaveToXMLConfig(FXMLConfig,Path+'PublishOptions/',fCurStorePathDelim);
-    // save the Run and Build parameter options
-    RunParameterOptions.Save(FXMLConfig,Path,fCurStorePathDelim);
-    // save dependencies
-    SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
-      FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
-    // save units
-    SaveUnits(Path,true,FSaveSessionInLPI);
-
-    if FSaveSessionInLPI then begin
-      // save custom defines
-      SaveCustomDefines(Path);
-      // save session info
-      SaveSessionInfo(Path);
-    end;
-
-    // Notifiy hooks
-    if Assigned(OnSaveProjectInfo) then begin
-      CurFlags:=FProjectWriteFlags;
-      if not FSaveSessionInLPI then
-        CurFlags:=CurFlags+[pwfSkipSeparateSessionInfo];
-      OnSaveProjectInfo(FOwner,FXMLConfig,CurFlags);
-    end;
-
-    // save lpi to disk
-    //debugln(['TProject.WriteProject ',DbgSName(FXMLConfig),' FCfgFilename=',FCfgFilename]);
-    FXMLConfig.Flush;
-    Modified:=false;
-    if FSaveSessionInLPI then
-      SessionModified:=false;
-  end;
-end;
-
-procedure TProjectStorage.SaveToSession;
-var
-  Path: String;
-begin
-  Path:='ProjectSession/';
-  FOwner.fCurStorePathDelim:=FOwner.SessionStorePathDelim;
-  FXMLConfig.SetDeleteValue(Path+'PathDelim/Value',
-                          PathDelimSwitchToDelim[FOwner.fCurStorePathDelim],'/');
-  FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
-
-  // Save the session build modes
-  SaveBuildModes(Path,false,true);
-  // save all units
-  SaveUnits(Path,true,true);
-  // save custom defines
-  SaveCustomDefines(Path);
-  // save session info
-  SaveSessionInfo(Path);
-
-  // Notifiy hooks
-  if Assigned(FOwner.OnSaveProjectInfo) then
-    FOwner.OnSaveProjectInfo(FOwner,FXMLConfig,FProjectWriteFlags+[pwfSkipProjectInfo]);
-end;
-
-function TProjectStorage.DoLoadLPI(Filename: String): TModalResult;
-var
-  PIFile: String;
-begin
-  Result:=mrOk;
-  if FLoadParts then begin
-    // read only parts of the lpi, keep other values
-    try
-      FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename,true)
-    except
-      on E: Exception do begin
-        IDEMessageDialog(lisUnableToReadLpi,
-            Format(lisUnableToReadTheProjectInfoFile,[LineEnding, Filename])+LineEnding
-            +E.Message, mtError, [mbOk]);
-        Result:=mrCancel;
-        exit;
-      end;
-    end;
-  end
-  else with FOwner do
-  begin
-    // read the whole lpi, clear any old values
-    Clear;
-    ProjectInfoFile:=Filename;
-    PIFile:=ProjectInfoFile;    // May be different from Filename, setter changed.
-    fProjectInfoFileBuffer:=CodeToolBoss.LoadFile(PIFile,true,true);
-    fProjectInfoFileBufChangeStamp:=CTInvalidChangeStamp;
-    try
-      fProjectInfoFileDate:=FileAgeCached(PIFile);
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
-      if fProjectInfoFileBuffer=nil then
-        FXMLConfig := TCodeBufXMLConfig.CreateWithCache(PIFile,false)
-      else begin
-        FXMLConfig := TCodeBufXMLConfig.CreateWithCache(PIFile,false,true,
-                                                  fProjectInfoFileBuffer.Source);
-        fProjectInfoFileBufChangeStamp:=fProjectInfoFileBuffer.ChangeStep;
-      end;
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
-    except
-      on E: Exception do begin
-        IDEMessageDialog(lisUnableToReadLpi,
-            Format(lisUnableToReadTheProjectInfoFile,[LineEnding,PIFile])+LineEnding
-            +E.Message, mtError, [mbOk]);
-        Result:=mrCancel;
-        exit;
-      end;
-    end;
-
-    fLastReadLPIFilename:=PIFile;
-    fLastReadLPIFileDate:=Now;
-    FNewMainUnitID:=-1;
-  end;
-
-  try
-    LoadFromLPI;
-  finally
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
-    FOwner.fPathDelimChanged:=false;
-    try
-      FXMLConfig.Modified:=false;
-      FXMLConfig.Free;
-    except
-    end;
-    FXMLConfig:=nil;
-  end;
-end;
-
-function TProjectStorage.DoLoadSession(Filename: String): TModalResult;
-begin
-  Result:=mrOK;
-  if FLoadParts then Exit;
-  if FileExistsUTF8(Filename) then
-  begin
-    //DebugLn('TProject.ReadProject loading Session Filename=',Filename);
-    try
-      FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename);
-      LoadFromSession;
-    except
-      IDEMessageDialog(lisCCOErrorCaption,
-        Format(lisUnableToReadTheProjectInfoFile, [LineEnding,FOwner.ProjectInfoFile]),
-        mtError,[mbOk]);
-      Result:=mrCancel;
-      exit;
-    end;
-
-    FOwner.fPathDelimChanged:=false;
-    try
-      FXMLConfig.Modified:=false;
-      FXMLConfig.Free;
-    except
-    end;
-    FOwner.fCurStorePathDelim:=FOwner.StorePathDelim;
-    FXMLConfig:=nil;
-  end else
-    // there is no .lps file -> create some defaults
-    FOwner.LoadDefaultSession;
-end;
-
-function TProjectStorage.DoWrite(Filename: String; IsLpi: Boolean): TModalResult;
-var
-  Msg: String;
-begin
-  repeat
-    try
-      FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename,false);
-    except
-      on E: Exception do begin
-        DebugLn('ERROR: ',E.Message);
-        if IsLpi then
-          Msg:=lisUnableToWriteTheProjectInfoFileError
-        else
-          Msg:=lisUnableToWriteTheProjectSessionFileError;
-        IDEMessageDialog(lisCodeToolsDefsWriteError,
-          Format(Msg, [LineEnding, Filename, LineEnding, E.Message])
-          ,mtError,[mbOk]);
-        Result:=mrCancel;
-        exit;
-      end;
-    end;
-    try
-      // Now actually write the data either to LPI file or to session file.
-      if IsLpi then
-        SaveToLPI
-      else
-        SaveToSession;
-    except
-      on E: Exception do begin
-        Result:=IDEMessageDialog(lisCodeToolsDefsWriteError,
-          Format(lisUnableToWriteToFile2, [Filename]), mtError,[mbRetry,mbAbort]);
-      end;
-    end;
-    if IsLpi and (CompareFilenames(FOwner.ProjectInfoFile,FXMLConfig.Filename)=0) then
-      FOwner.UpdateFileBuffer;
-    try
-      FXMLConfig.Free;
-    except
-    end;
-    FXMLConfig:=nil;
-  until Result<>mrRetry;
 end;
 
 { TProjectCompilationToolOptions }

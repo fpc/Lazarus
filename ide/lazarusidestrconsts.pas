@@ -3134,10 +3134,8 @@ resourcestring
     +'the fpdoc element "%s":%s%s';
   lisChooseAnExampleFile = 'Choose an example file';
   lisPascalFile = 'Pascal file';
-  lisUnableToWriteTheProjectInfoFileError = 'Unable to write the project info '
-    +'file%s"%s".%sError: %s';
-  lisUnableToWriteTheProjectSessionFileError = 'Unable to write the project session '
-    +'file%s"%s".%sError: %s';
+  lisUnableToWriteTheProjectSessionFileError = 'Unable to write the project '
+    +'session file%s"%s".%sError: %s';
   lisStopDebugging2 = 'Stop debugging?';
   lisStopCurrentDebuggingAndRebuildProject = 'Stop current debugging and rebuild project?';
   lisErrorWritingPackageListToFile = 'Error writing package list to file%s%s%s%s';
@@ -5105,6 +5103,8 @@ resourcestring
   lisPathOfTheInstantfpcCache = 'path of the instantfpc cache';
   lisPrimaryConfigPath = 'Primary config path';
   lisSecondaryConfigPath = 'Secondary config path';
+  lisUnableToWriteTheProjectInfoFileError = 'Unable to write the project info '
+    +'file%s%s%s%s.%sError: %s';
   lisSelected = 'Selected';
   lisSelectedAndChildControls = 'Selected and child controls';
   lisUnableToDelete = 'Unable to delete';
