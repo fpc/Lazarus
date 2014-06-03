@@ -813,7 +813,8 @@ type
                                Flags: TOpenFlags): TModalResult; override;
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; override;
-    function DoImExportCompilerOptions(Sender: TObject; out ImportExportResult: TImportExportOptionsResult): TModalResult; override;
+    function DoImExportCompilerOptions(Sender: TObject;
+      out ImportExportResult: TImportExportOptionsResult): TModalResult; override;
     procedure DoShowProjectInspector(Show: boolean); override;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
@@ -6555,8 +6556,7 @@ begin
   Result:=SourceFileMgr.InitOpenedProjectFile(AFileName, Flags);
 end;
 
-function TMainIDE.DoPublishProject(Flags: TSaveFlags;
-  ShowDialog: boolean): TModalResult;
+function TMainIDE.DoPublishProject(Flags: TSaveFlags; ShowDialog: boolean): TModalResult;
 begin
   if Project1=nil then exit(mrCancel);
 
@@ -6575,11 +6575,12 @@ begin
 
   // publish project
   //debugln('TMainIDE.DoPublishProject B');
-  Result:=DoPublishModule(Project1.PublishOptions,Project1.ProjectDirectory,
-                          MainBuildBoss.GetProjectPublishDir);
+  Result:=SourceFileMgr.PublishModule(Project1.PublishOptions,
+    Project1.ProjectDirectory, MainBuildBoss.GetProjectPublishDir);
 end;
 
-function TMainIDE.DoImExportCompilerOptions(Sender: TObject; out ImportExportResult: TImportExportOptionsResult): TModalResult;
+function TMainIDE.DoImExportCompilerOptions(Sender: TObject;
+  out ImportExportResult: TImportExportOptionsResult): TModalResult;
 var
   Options: TCompilerOptions;
   Filename: string;
