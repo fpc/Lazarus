@@ -32,10 +32,14 @@ unit etMessagesWnd;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, IDEMsgIntf, IDEImagesIntf, IDEExternToolIntf,
-  LazIDEIntf, SrcEditorIntf, SynEditMarks, Forms, Controls, Graphics, Dialogs,
-  LCLProc, etMessageFrame, etSrcEditMarks, etQuickFixes;
+  Classes, SysUtils, FileUtil, LazConfigStorage, IDEMsgIntf, IDEImagesIntf,
+  IDEExternToolIntf, LazIDEIntf, SrcEditorIntf, BaseIDEIntf, SynEditMarks,
+  Forms, Controls, Graphics, Dialogs, LCLProc, etMessageFrame, etSrcEditMarks,
+  etQuickFixes;
 
+const
+  MsgWndOptionsFileVersion = 1;
+  MsgWndOptionsFilename = 'messagesoptions.xml';
 type
 
   { TMessagesView }
@@ -79,6 +83,8 @@ type
     procedure SourceEditorPopup(MarkLine: TSynEditMarkLine);
 
     // options
+    procedure LoadOptions;
+    procedure SaveOptions;
     procedure ApplyIDEOptions;
     property DblClickJumps: boolean read GetDblClickJumps write SetDblClickJumps;
     property HideMessagesIcons: boolean read GetHideMessagesIcons write SetHideMessagesIcons;
@@ -101,6 +107,8 @@ begin
   MessagesFrame1.MessagesCtrl.OnOpenMessage:=@OnOpenMessage;
 
   ActiveControl:=MessagesFrame1.MessagesCtrl;
+
+  LoadOptions;
 end;
 
 procedure TMessagesView.FormDestroy(Sender: TObject);
@@ -159,6 +167,33 @@ end;
 procedure TMessagesView.SourceEditorPopup(MarkLine: TSynEditMarkLine);
 begin
   MessagesFrame1.SourceEditorPopup(MarkLine);
+end;
+
+procedure TMessagesView.LoadOptions;
+var
+  Cfg: TConfigStorage;
+  FileVersion: Integer;
+begin
+  Cfg:=GetIDEConfigStorage(MsgWndOptionsFilename,true);
+  try
+    FileVersion:=Cfg.GetValue('Version',0);
+    MessagesFrame1.LoadFromConfig(Cfg,FileVersion);
+  finally
+    Cfg.Free;
+  end;
+end;
+
+procedure TMessagesView.SaveOptions;
+var
+  Cfg: TConfigStorage;
+begin
+  Cfg:=GetIDEConfigStorage(MsgWndOptionsFilename,false);
+  try
+    MessagesFrame1.SaveToConfig(Cfg);
+    Cfg.SetValue('Version',MsgWndOptionsFileVersion);
+  finally
+    Cfg.Free;
+  end;
 end;
 
 procedure TMessagesView.Clear;

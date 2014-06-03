@@ -35,13 +35,12 @@ interface
 
 uses
   Math, strutils, Classes, SysUtils, UTF8Process, FileProcs, LazFileCache,
-  LazUTF8Classes, LazFileUtils, LazUTF8, AvgLvlTree, SynEdit, SynEditMarks,
-  LResources, Forms, Buttons, ExtCtrls, Controls, LMessages, LCLType, Graphics,
-  LCLIntf, Themes, ImgList, GraphType, Menus, Clipbrd, Dialogs, StdCtrls,
-  IDEExternToolIntf, IDEImagesIntf, MenuIntf, PackageIntf, IDECommands,
-  SrcEditorIntf,
-  LazarusIDEStrConsts, EnvironmentOpts, HelpFPCMessages,
-  etSrcEditMarks, etQuickFixes, ExtTools;
+  LazUTF8Classes, LazFileUtils, LazUTF8, AvgLvlTree, LazConfigStorage, SynEdit,
+  SynEditMarks, LResources, Forms, Buttons, ExtCtrls, Controls, LMessages,
+  LCLType, Graphics, LCLIntf, Themes, ImgList, GraphType, Menus, Clipbrd,
+  Dialogs, StdCtrls, IDEExternToolIntf, IDEImagesIntf, MenuIntf, PackageIntf,
+  IDECommands, SrcEditorIntf, LazarusIDEStrConsts, EnvironmentOpts,
+  HelpFPCMessages, etSrcEditMarks, etQuickFixes, ExtTools;
 
 const
   CustomViewCaption = '------------------------------';
@@ -70,7 +69,10 @@ type
     property Index: integer read FIndex;
   end;
 
-  { TLMsgViewFilter - read/write by main thread, read by worker thread }
+  { TLMsgViewFilter
+    Note: The View.Filter is protected by View.Enter/LeaveCriticalSection,
+          read/write by main thread, read by worker thread.
+    }
 
   TLMsgViewFilter = class
   private
@@ -282,6 +284,8 @@ type
     procedure EndUpdate;
     procedure EraseBackground({%H-}DC: HDC); override;
     procedure ApplyEnvironmentOptions;
+    procedure LoadFromConfig(Cfg: TConfigStorage; FileVersion: integer);
+    procedure SaveToConfig(Cfg: TConfigStorage);
 
     // views
     function ViewCount: integer; inline;
@@ -420,6 +424,8 @@ type
     destructor Destroy; override;
 
     procedure ApplyIDEOptions;
+    procedure LoadFromConfig(Cfg: TConfigStorage; FileVersion: integer);
+    procedure SaveToConfig(Cfg: TConfigStorage);
 
     // Views
     function ViewCount: integer;
@@ -2804,6 +2810,17 @@ begin
   FilenameStyle:=EnvironmentOptions.MsgViewFilenameStyle;
 end;
 
+procedure TMessagesCtrl.LoadFromConfig(Cfg: TConfigStorage; FileVersion: integer
+  );
+begin
+
+end;
+
+procedure TMessagesCtrl.SaveToConfig(Cfg: TConfigStorage);
+begin
+
+end;
+
 function TMessagesCtrl.IndexOfView(View: TLMsgWndView): integer;
 begin
   Result:=FViews.IndexOf(View);
@@ -3675,6 +3692,17 @@ end;
 procedure TMessagesFrame.ApplyIDEOptions;
 begin
   MessagesCtrl.ApplyEnvironmentOptions;
+end;
+
+procedure TMessagesFrame.LoadFromConfig(Cfg: TConfigStorage;
+  FileVersion: integer);
+begin
+  MessagesCtrl.LoadFromConfig(Cfg,FileVersion);
+end;
+
+procedure TMessagesFrame.SaveToConfig(Cfg: TConfigStorage);
+begin
+  MessagesCtrl.SaveToConfig(Cfg);
 end;
 
 function TMessagesFrame.ViewCount: integer;

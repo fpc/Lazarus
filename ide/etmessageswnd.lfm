@@ -3,6 +3,7 @@ object MessagesView: TMessagesView
   Height = 128
   Top = 586
   Width = 639
+  BorderStyle = bsSizeToolWin
   Caption = 'MessagesView'
   ClientHeight = 128
   ClientWidth = 639
