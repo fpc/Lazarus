@@ -2290,6 +2290,7 @@ var
   Code: TCodeBuffer;
   SourceOK: Boolean;
   MsgWorkerDir: String;
+  PrevMsgLine: TMessageLine;
 begin
   //debugln(['TIDEFPCParser.ImproveMessages START ',aSynchronized,' Last=',fLastWorkerImprovedMessage[aSynchronized],' Now=',Tool.WorkerMessages.Count]);
   for i:=fLastWorkerImprovedMessage[aSynchronized]+1 to Tool.WorkerMessages.Count-1 do
@@ -2315,7 +2316,18 @@ begin
           end;
         end;
         if fIncludePathValidForWorkerDir=MsgWorkerDir then begin
-          aFilename:=SearchFileInPath(aFilename,MsgWorkerDir,fIncludePath,';',
+          if i>0 then begin
+            PrevMsgLine:=Tool.WorkerMessages[i-1];
+            if (PrevMsgLine.SubTool=SubToolFPC)
+            and FilenameIsAbsolute(PrevMsgLine.Filename)
+            and (CompareFilenames(ExtractFilename(PrevMsgLine.Filename),ExtractFilename(aFilename))=0)
+            then begin
+              // same file as previous message => use it
+              aFilename:=PrevMsgLine.Filename;
+            end;
+          end;
+          if not FilenameIsAbsolute(aFilename) then
+            aFilename:=SearchFileInPath(aFilename,MsgWorkerDir,fIncludePath,';',
                                  [sffSearchLoUpCase]);
           if aFilename<>'' then
             MsgLine.Filename:=aFilename;
