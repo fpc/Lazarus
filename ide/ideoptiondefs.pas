@@ -127,6 +127,7 @@ const
     'JumpHistory',
     'ComponentList'
    );
+{$IFDEF EnableNewExtTools}
 type
   TLMsgViewFilter = class;
 
@@ -219,14 +220,15 @@ type
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
 
+  function CompareFilterMsgType(FilterMsgType1, FilterMsgType2: Pointer): integer;
+  function CompareLineAndFilterMsgType(MessageLine1, FilterMsgType1: Pointer): integer;
+{$ENDIF}
+
 function CreateNiceWindowPosition(Width, Height: integer): TRect;
 function NonModalIDEFormIDToEnum(const FormID: string): TNonModalIDEWindow;
 
 function GetLazIDEConfigStorage(const Filename: string; LoadFromDisk: Boolean
                                 ): TConfigStorage; // load errors: raises exceptions
-
-function CompareFilterMsgType(FilterMsgType1, FilterMsgType2: Pointer): integer;
-function CompareLineAndFilterMsgType(MessageLine1, FilterMsgType1: Pointer): integer;
 
 
 implementation
@@ -321,6 +323,7 @@ begin
   Result:=TXMLOptionsStorage.Create(ConfigFilename,LoadFromDisk);
 end;
 
+{$IFDEF EnableNewExtTools}
 function CompareFilterMsgType(FilterMsgType1, FilterMsgType2: Pointer): integer;
 var
   Item1: TLMVFilterMsgType absolute FilterMsgType1;
@@ -503,6 +506,7 @@ begin
   for i:=1 to Count do
     Filters[i-1].SaveToXMLConfig(XMLConfig,Path+'Filter'+IntToStr(i)+'/');
 end;
+{$ENDIF}
 
 { TXMLOptionsStorage }
 

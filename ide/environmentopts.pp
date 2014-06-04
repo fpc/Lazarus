@@ -354,7 +354,9 @@ type
     fMsgViewColors: array[TMsgWndColor] of TColor;
     FShowCompileDialog: Boolean;       // show dialog during compile
     FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
+    {$IFDEF EnableNewExtTools}
     FMsgViewFilters: TLMsgViewFilters;
+    {$ENDIF}
 
     // compiler + debugger + lazarus files
     FParseValues: array[TEnvOptParseType] of TParseString;
@@ -737,7 +739,9 @@ type
     property MsgViewFilenameStyle: TMsgWndFileNameStyle read FMsgViewFilenameStyle
                        write FMsgViewFilenameStyle;
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
+    {$IFDEF EnableNewExtTools}
     property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters write FMsgViewFilters;
+    {$ENDIF}
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -983,7 +987,9 @@ begin
   FMsgViewFilenameStyle:=mwfsShort;
   for c:=low(TMsgWndColor) to high(TMsgWndColor) do
     fMsgViewColors[c]:=MsgWndDefaultColors[c];
+  {$IFDEF EnableNewExtTools}
   FMsgViewFilters:=TLMsgViewFilters.Create(nil);
+  {$ENDIF}
 
   // glyphs
   FShowButtonGlyphs := sbgSystem;
@@ -1058,8 +1064,8 @@ var
   i: Integer;
 begin
   FreeAndNil(FBuildMatrixOptions);
-  FreeAndNil(FMsgViewFilters);
   {$IFDEF EnableNewExtTools}
+  FreeAndNil(FMsgViewFilters);
   FreeAndNil(fExternalUserTools);
   {$ELSE}
   FreeAndNil(fExternalTools);
