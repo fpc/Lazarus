@@ -354,6 +354,7 @@ type
     fMsgViewColors: array[TMsgWndColor] of TColor;
     FShowCompileDialog: Boolean;       // show dialog during compile
     FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
+    FMsgViewFilters: TLMsgViewFilters;
 
     // compiler + debugger + lazarus files
     FParseValues: array[TEnvOptParseType] of TParseString;
@@ -736,6 +737,7 @@ type
     property MsgViewFilenameStyle: TMsgWndFileNameStyle read FMsgViewFilenameStyle
                        write FMsgViewFilenameStyle;
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
+    property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters write FMsgViewFilters;
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -981,6 +983,7 @@ begin
   FMsgViewFilenameStyle:=mwfsShort;
   for c:=low(TMsgWndColor) to high(TMsgWndColor) do
     fMsgViewColors[c]:=MsgWndDefaultColors[c];
+  FMsgViewFilters:=TLMsgViewFilters.Create(nil);
 
   // glyphs
   FShowButtonGlyphs := sbgSystem;
@@ -1055,6 +1058,7 @@ var
   i: Integer;
 begin
   FreeAndNil(FBuildMatrixOptions);
+  FreeAndNil(FMsgViewFilters);
   {$IFDEF EnableNewExtTools}
   FreeAndNil(fExternalUserTools);
   {$ELSE}
@@ -1437,6 +1441,7 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         fMsgViewColors[mwc]:=XMLConfig.GetValue(
           Path+'MsgView/Colors/'+MsgWndColorNames[mwc],MsgWndDefaultColors[mwc]);
+      MsgViewFilters.LoadFromXMLConfig(XMLConfig,'MsgView/Filters/');
 
       // glyphs
       FShowButtonGlyphs := TApplicationShowGlyphs(XMLConfig.GetValue(Path+'ShowButtonGlyphs/Value',
@@ -1816,6 +1821,7 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         XMLConfig.SetDeleteValue(Path+'MsgView/Colors/'+MsgWndColorNames[mwc],
         fMsgViewColors[mwc],MsgWndDefaultColors[mwc]);
+      MsgViewFilters.SaveToXMLConfig(XMLConfig,'MsgView/Filters/');
 
       // glyphs
       XMLConfig.SetDeleteValue(Path+'ShowButtonGlyphs/Value',
