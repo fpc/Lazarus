@@ -112,6 +112,9 @@ begin
   SingleTaskBarButtonCheckBox.Caption := dlgSingleTaskBarButton;
   SingleTaskBarButtonCheckBox.Enabled :=
     WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) = LCL_CAPABILITY_YES;
+  SingleTaskBarButtonCheckBox.ShowHint:=true;
+  SingleTaskBarButtonCheckBox.Hint:=
+    lisShowOnlyOneButtonInTheTaskbarForTheWholeIDEInstead;
   HideIDEOnRunCheckBox.Caption := dlgHideIDEOnRun;
   TitleStartsWithProjectCheckBox.Caption:=lisIDETitleStartsWithProjectName;
   TitleStartsWithProjectCheckBox.Hint:=lisTitleInTaskbarShowsForExampleProject1LpiLazarus;

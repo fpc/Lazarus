@@ -1172,6 +1172,10 @@ resourcestring
   dlgLoadDFile = 'Load desktop settings from file';
   dlgSingleTaskBarButton  = 'Show single button in TaskBar';
   dlgHideIDEOnRun = 'Hide IDE windows on run';
+  lisShowOnlyOneButtonInTheTaskbarForTheWholeIDEInstead = 'Show only one '
+    +'button in the taskbar for the whole IDE, instead of one per window. Some'
+    +' Linux Window Managers like Cinnamon do not support this and always show'
+    +' one button per window.';
   dlgHideMessagesIcons = 'Hide Messages Icons';
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
   lisIDETitleShowsProjectDir = 'IDE title shows project directory';
