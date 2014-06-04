@@ -8865,6 +8865,9 @@ begin
   Result:=CompleteLocalIdentifierByParameter(CleanCursorPos,OldTopLine,
                                 CursorNode,NewPos,NewTopLine,SourceChangeCache);
   if Result then exit;
+
+  MoveCursorToCleanPos(CleanCursorPos);
+  RaiseException('this syntax is not supported by variable completion');
 end;
 
 function TCodeCompletionCodeTool.AddMethods(CursorPos: TCodeXYPosition;
