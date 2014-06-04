@@ -259,7 +259,8 @@ type
     procedure ImproveMessages({%H-}aSynchronized: boolean); virtual; // (Synchronized=true->main, else worker thread) called after parsers added lines to Tool.WorkerMessages, Tool is in Critical section
     procedure ConsistencyCheck; virtual;
     class function IsSubTool(const SubTool: string): boolean; virtual;
-    class function GetMsgPattern({%H-}SubTool: string; {%H-}MsgID: integer): string; virtual;
+    class function GetMsgPattern({%H-}SubTool: string; {%H-}MsgID: integer;
+      out Urgency: TMessageLineUrgency): string; virtual;
     class function GetMsgHint({%H-}SubTool: string; {%H-}MsgID: integer): string; virtual;
     class function GetMsgParser(Msg: TMessageLine; ParserClass: TClass): TExtToolParser;
     class function DefaultSubTool: string; virtual; abstract;
@@ -575,7 +576,7 @@ type
     function FindParser(const SubTool: string): TExtToolParserClass; virtual; abstract; // (main thread)
     function ParserCount: integer; virtual; abstract; // (main thread)
     property Parsers[Index: integer]: TExtToolParserClass read GetParsers; // (main thread)
-    function GetMsgPattern(SubTool: string; MsgID: integer): string; virtual; // (main thread)
+    function GetMsgPattern(SubTool: string; MsgID: integer; out Urgency: TMessageLineUrgency): string; virtual; // (main thread)
     function GetMsgHint(SubTool: string; MsgID: integer): string; virtual; // (main thread)
     function GetMsgTool(Msg: TMessageLine): TAbstractExternalTool; virtual; abstract;
   end;
@@ -1405,9 +1406,10 @@ begin
   Result:=CompareText(DefaultSubTool,SubTool)=0;
 end;
 
-class function TExtToolParser.GetMsgPattern(SubTool: string; MsgID: integer
-  ): string;
+class function TExtToolParser.GetMsgPattern(SubTool: string; MsgID: integer;
+  out Urgency: TMessageLineUrgency): string;
 begin
+  Urgency:=mluNone;
   Result:='';
 end;
 
@@ -1470,16 +1472,17 @@ begin
     Items[i].ConsistencyCheck;
 end;
 
-function TIDEExternalTools.GetMsgPattern(SubTool: string; MsgID: integer
-  ): string;
+function TIDEExternalTools.GetMsgPattern(SubTool: string; MsgID: integer; out
+  Urgency: TMessageLineUrgency): string;
 var
   Parser: TExtToolParserClass;
   i: Integer;
 begin
   Result:='';
+  Urgency:=mluNone;
   for i:=0 to ParserCount-1 do begin
     Parser:=Parsers[i];
-    Result:=Parser.GetMsgPattern(SubTool,MsgID);
+    Result:=Parser.GetMsgPattern(SubTool,MsgID,Urgency);
     if Result<>'' then exit;
   end;
 end;

@@ -203,8 +203,8 @@ type
       var Item: TFPCMsgItem): boolean;
     class function IsSubTool(const SubTool: string): boolean; override;
     class function DefaultSubTool: string; override;
-    class function GetMsgPattern(SubTool: string; MsgID: integer): string;
-      override;
+    class function GetMsgPattern(SubTool: string; MsgID: integer;
+      out Urgency: TMessageLineUrgency): string; override;
     class function GetMsgHint(SubTool: string; MsgID: integer): string;
       override;
     class function Priority: integer; override;
@@ -2390,13 +2390,14 @@ begin
   end;
 end;
 
-class function TIDEFPCParser.GetMsgPattern(SubTool: string; MsgID: integer
-  ): string;
+class function TIDEFPCParser.GetMsgPattern(SubTool: string; MsgID: integer; out
+  Urgency: TMessageLineUrgency): string;
 var
   CurMsgFile: TFPCMsgFilePoolItem;
   MsgItem: TFPCMsgItem;
 begin
   Result:='';
+  Urgency:=mluNone;
   if CompareText(SubTool,SubToolFPC)=0 then begin
     if FPCMsgFilePool=nil then exit;
     CurMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(false,nil);
@@ -2405,6 +2406,7 @@ begin
       MsgItem:=CurMsgFile.GetMsg(MsgID);
       if MsgItem=nil then exit;
       Result:=MsgItem.Pattern;
+      Urgency:=FPCMsgToMsgUrgency(MsgItem);
     finally
       FPCMsgFilePool.UnloadFile(CurMsgFile);
     end;

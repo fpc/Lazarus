@@ -218,6 +218,7 @@ type
     procedure EndUpdate;
     procedure EraseBackground({%H-}DC: HDC); override;
     procedure ApplyEnvironmentOptions;
+    function UrgencyToStr(Urgency: TMessageLineUrgency): string;
 
     // views
     function ViewCount: integer; inline;
@@ -342,7 +343,8 @@ type
     procedure SaveClicked(OnlyShown: boolean);
     procedure CopyAllClicked(OnlyShown: boolean);
     procedure CopyMsgToClipboard(OnlyFilename: boolean);
-    function GetMsgPattern(SubTool: string; MsgId: integer; MaxLen: integer): string;
+    function GetMsgPattern(SubTool: string; MsgId: integer;
+      WithUrgency: boolean; MaxLen: integer): string;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -1161,6 +1163,15 @@ begin
   if FAutoHeaderBackground=AValue then Exit;
   FAutoHeaderBackground:=AValue;
   Invalidate;
+end;
+
+function TMessagesCtrl.UrgencyToStr(Urgency: TMessageLineUrgency): string;
+begin
+  if (mcoShowTranslated in Options)
+  and (fUrgencyStyles[Urgency].Translated<>'') then
+    Result:=fUrgencyStyles[Urgency].Translated
+  else
+    Result:=MessageLineUrgencyNames[Urgency];
 end;
 
 procedure TMessagesCtrl.WMHScroll(var Msg: TLMScroll);
@@ -2094,14 +2105,8 @@ begin
     Result+=' ';
 
   // 'error: '
-  if Line.Urgency<>mluImportant then begin
-    if (mcoShowTranslated in Options)
-    and (fUrgencyStyles[Line.Urgency].Translated<>'') then
-      Result+=fUrgencyStyles[Line.Urgency].Translated
-    else
-      Result+=MessageLineUrgencyNames[Line.Urgency];
-    Result+=': ';
-  end;
+  if Line.Urgency<>mluImportant then
+    Result+=UrgencyToStr(Line.Urgency)+': ';
 
   // message id
   if (mcoShowMessageID in Options) and (Line.MsgID<>0) then
@@ -2502,7 +2507,7 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
       end else
         Item:=MsgRemoveFilterMsgOneTypeMenuSection.Items[i] as TIDEMenuCommand;
       FilterItem:=MessagesCtrl.ActiveFilter.FilterMsgTypes[i];
-      Item.Caption:=GetMsgPattern(FilterItem.SubTool,FilterItem.MsgID,40);
+      Item.Caption:=GetMsgPattern(FilterItem.SubTool,FilterItem.MsgID,true,40);
     end;
     // delete old menu items
     while MsgRemoveFilterMsgOneTypeMenuSection.Count>Cnt do
@@ -2594,7 +2599,7 @@ begin
         HasFilename:=Line.Filename<>'';
         HasText:=Line.Msg<>'';
         if (Line.SubTool<>'') and (Line.MsgID<>0) then begin
-          MsgType:=GetMsgPattern(Line.SubTool,Line.MsgID,40);
+          MsgType:=GetMsgPattern(Line.SubTool,Line.MsgID,true,40);
           CanFilterMsgType:=ord(Line.Urgency)<ord(mluError);
         end;
       end;
@@ -3110,16 +3115,21 @@ begin
 end;
 
 function TMessagesFrame.GetMsgPattern(SubTool: string; MsgId: integer;
-  MaxLen: integer): string;
+  WithUrgency: boolean; MaxLen: integer): string;
 var
   Pattern: String;
+  Urgency: TMessageLineUrgency;
 begin
   Result:=SubTool;
+  if Result=SubToolFPC then
+    Result:='';
   if (MsgID<>0) then
     Result+='('+IntToStr(MsgID)+')';
-  Pattern:=ExternalToolList.GetMsgPattern(SubTool,MsgID);
+  Pattern:=ExternalToolList.GetMsgPattern(SubTool,MsgID,Urgency);
   if Pattern<>'' then
     Result+=' '+Pattern;
+  if WithUrgency and (not (Urgency in [mluNone,mluImportant])) then
+    Result:=MessagesCtrl.UrgencyToStr(Urgency)+': '+Result;
   if UTF8Length(Result)>MaxLen then
     Result:=UTF8Copy(Result,1,MaxLen)+'...';
 end;
