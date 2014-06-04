@@ -156,7 +156,7 @@ type
     procedure OnSpecialLineMarkup(Sender: TObject; Line: Integer;
       var Special: boolean; aMarkup: TSynSelectedColor);
 
-    function GeneralPage: TEditorGeneralOptionsFrame; inline;
+    function GeneralPage: TEditorGeneralOptionsFrame;
     function DoSynEditMouse(var AnInfo: TSynEditMouseActionInfo;
                          HandleActionProc: TSynEditMouseActionHandler): Boolean;
     procedure LanguageMenuItemClick(Sender: TObject);
@@ -1260,7 +1260,7 @@ begin
   ColorElementTree.Invalidate;
 end;
 
-function TEditorColorOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame; inline;
+function TEditorColorOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame;
 begin
   Result := TEditorGeneralOptionsFrame(FDialog.FindEditor(TEditorGeneralOptionsFrame));
 end;

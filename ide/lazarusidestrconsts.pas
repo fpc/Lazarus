@@ -1177,6 +1177,7 @@ resourcestring
     +' Linux Window Managers like Cinnamon do not support this and always show'
     +' one button per window.';
   dlgHideMessagesIcons = 'Hide Messages Icons';
+  lisEditorColors = 'Editor Colors';
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
   lisIDETitleShowsProjectDir = 'IDE title shows project directory';
   lisIDETitleShowsBuildMode = 'IDE title shows selected build mode';

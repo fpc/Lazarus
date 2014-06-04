@@ -30,9 +30,9 @@ unit MsgWnd_Options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLoggerBase, IDEOptionsIntf, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls, LazarusIDEStrConsts,
-  EnvironmentOpts;
+  Classes, SysUtils, FileUtil, LazLoggerBase, IDEOptionsIntf, SynEdit, Forms,
+  Controls, Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls,
+  LazarusIDEStrConsts, EnvironmentOpts, editor_general_options, EditorOptions;
 
 type
 
@@ -48,15 +48,19 @@ type
     MWColorsGroupBox: TGroupBox;
     MWOptionsLabel: TLabel;
     MWOptsRightBevel: TBevel;
-    MWSetAllColorsToLabel: TLabel;
     MWSetDefaultColorsButton: TButton;
+    MWSetEditorColorsButton: TButton;
+    MWSpeedSetColorsGroupBox: TGroupBox;
     procedure MWColorBoxChange(Sender: TObject);
     procedure MWColorListBoxGetColors(Sender: TCustomColorListBox;
       Items: TStrings);
     procedure MWColorListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure MWSetDefaultColorsButtonClick(Sender: TObject);
+    procedure MWSetEditorColorsButtonClick(Sender: TObject);
   private
     fReady: boolean;
+    FDialog: TAbstractOptionsEditorDialog;
+    function GeneralPage: TEditorGeneralOptionsFrame;
   public
     constructor Create(AOwner: TComponent); override;
     function GetTitle: String; override;
@@ -112,14 +116,38 @@ begin
   MWColorBox.Selected := MWColorListBox.Selected;
 end;
 
+procedure TMsgWndOptionsFrame.MWSetEditorColorsButtonClick(Sender: TObject);
+var
+  Page: TEditorGeneralOptionsFrame;
+begin
+  Page:=GeneralPage;
+  if Page=nil then exit;
+
+  {MWColorListBox.Colors[mwBackground]:=aSynEdit.Color;
+  MWColorListBox.Colors[mwRunning]:=aSynEdit.
+  MWColorListBox.Colors[mwSuccess]:=aSynEdit.
+  MWColorListBox.Colors[mwFailed]:=aSynEdit.
+  MWColorListBox.Colors[mwAutoHeader]:=aSynEdit.}
+
+  MWColorBox.Selected := MWColorListBox.Selected;
+end;
+
+function TMsgWndOptionsFrame.GeneralPage: TEditorGeneralOptionsFrame;
+begin
+  Result:=nil;
+  if FDialog<>nil then
+    Result := TEditorGeneralOptionsFrame(FDialog.FindEditor(TEditorGeneralOptionsFrame));
+end;
+
 constructor TMsgWndOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
   MWOptionsLabel.Caption:=dlgOIOptions;
   MWColorsGroupBox.Caption:=dlgColors;
-  MWSetAllColorsToLabel.Caption:=lisSetAllColors;
+  MWSpeedSetColorsGroupBox.Caption:=lisSetAllColors;
   MWSetDefaultColorsButton.Caption:=lisLazarusDefault;
+  MWSetEditorColorsButton.Caption:=lisEditorColors;
   MWHideIconsCheckBox.Caption := dlgHideMessagesIcons;
   MWDblClickJumpsCheckBox.Caption:=lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick;
   MWFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
@@ -133,6 +161,8 @@ end;
 procedure TMsgWndOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   fReady:=false;
+  FDialog := ADialog;
+  MWSetEditorColorsButton.Visible:=false;
   {$IFDEF EnableNewExtTools}
   {$ELSE}
   MWColorsGroupBox.Visible:=false;

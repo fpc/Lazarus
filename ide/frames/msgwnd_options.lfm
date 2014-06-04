@@ -25,12 +25,12 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     object MWColorListBox: TColorListBox
       AnchorSideLeft.Control = MWColorsGroupBox
       AnchorSideTop.Control = MWColorsGroupBox
-      AnchorSideRight.Control = MWSetDefaultColorsButton
+      AnchorSideRight.Control = MWSpeedSetColorsGroupBox
       AnchorSideBottom.Control = MWColorBox
       Left = 6
       Height = 108
       Top = 6
-      Width = 307
+      Width = 303
       Style = [cbCustomColors]
       OnGetColors = MWColorListBoxGetColors
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -42,47 +42,56 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     end
     object MWColorBox: TColorBox
       AnchorSideLeft.Control = MWColorsGroupBox
-      AnchorSideRight.Control = MWColorsGroupBox
-      AnchorSideRight.Side = asrBottom
+      AnchorSideRight.Control = MWSpeedSetColorsGroupBox
       AnchorSideBottom.Control = MWColorsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 6
       Height = 29
       Top = 120
-      Width = 479
+      Width = 303
       Anchors = [akLeft, akRight, akBottom]
       BorderSpacing.Around = 6
       ItemHeight = 0
       OnChange = MWColorBoxChange
       TabOrder = 1
     end
-    object MWSetDefaultColorsButton: TButton
-      AnchorSideTop.Control = MWSetAllColorsToLabel
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = MWColorsGroupBox
-      AnchorSideRight.Side = asrBottom
-      Left = 319
-      Height = 27
-      Top = 27
-      Width = 166
-      Anchors = [akTop, akRight]
-      AutoSize = True
-      BorderSpacing.Top = 6
-      BorderSpacing.Right = 6
-      Caption = 'MWSetDefaultColorsButton'
-      OnClick = MWSetDefaultColorsButtonClick
-      TabOrder = 2
-    end
-    object MWSetAllColorsToLabel: TLabel
-      AnchorSideLeft.Control = MWColorListBox
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = MWColorListBox
-      Left = 319
-      Height = 15
+    object MWSpeedSetColorsGroupBox: TGroupBox
+      Left = 315
+      Height = 143
       Top = 6
-      Width = 129
-      Caption = 'MWSetAllColorsToLabel'
-      ParentColor = False
+      Width = 170
+      Align = alRight
+      BorderSpacing.Around = 6
+      Caption = 'MWSpeedSetColorsGroupBox'
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 1
+      ClientHeight = 126
+      ClientWidth = 166
+      TabOrder = 2
+      object MWSetEditorColorsButton: TButton
+        Left = 0
+        Height = 27
+        Top = 0
+        Width = 166
+        AutoSize = True
+        Caption = 'MWSetEditorColorsButton'
+        OnClick = MWSetEditorColorsButtonClick
+        TabOrder = 0
+      end
+      object MWSetDefaultColorsButton: TButton
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Side = asrBottom
+        Left = 0
+        Height = 27
+        Top = 33
+        Width = 166
+        AutoSize = True
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        Caption = 'MWSetDefaultColorsButton'
+        OnClick = MWSetDefaultColorsButtonClick
+        TabOrder = 1
+      end
     end
   end
   object MWOptionsLabel: TLabel
