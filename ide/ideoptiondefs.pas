@@ -617,6 +617,7 @@ begin
   Result:=FXMLConfig.Filename;
 end;
 
+{$IFDEF EnableNewExtTools}
 { TLMVFilterMsgType }
 
 procedure TLMVFilterMsgType.SetMsgID(AValue: integer);
@@ -963,6 +964,7 @@ begin
       E(IntToStr(i));
   end;
 end;
+{$ENDIF}
 
 initialization
   DefaultConfigClass:=TXMLOptionsStorage;

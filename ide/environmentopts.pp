@@ -1447,7 +1447,9 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         fMsgViewColors[mwc]:=XMLConfig.GetValue(
           Path+'MsgView/Colors/'+MsgWndColorNames[mwc],MsgWndDefaultColors[mwc]);
+      {$IFDEF EnableNewExtTools}
       MsgViewFilters.LoadFromXMLConfig(XMLConfig,'MsgView/Filters/');
+      {$ENDIF}
 
       // glyphs
       FShowButtonGlyphs := TApplicationShowGlyphs(XMLConfig.GetValue(Path+'ShowButtonGlyphs/Value',
@@ -1827,7 +1829,9 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         XMLConfig.SetDeleteValue(Path+'MsgView/Colors/'+MsgWndColorNames[mwc],
         fMsgViewColors[mwc],MsgWndDefaultColors[mwc]);
+      {$IFDEF EnableNewExtTools}
       MsgViewFilters.SaveToXMLConfig(XMLConfig,'MsgView/Filters/');
+      {$ENDIF}
 
       // glyphs
       XMLConfig.SetDeleteValue(Path+'ShowButtonGlyphs/Value',
