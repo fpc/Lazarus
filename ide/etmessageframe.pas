@@ -2385,6 +2385,7 @@ begin
   FViews.Add(Result);
   FreeNotification(Result);
   Result.OnChanged:=@OnViewChanged;
+  fSomeViewsRunning:=true;
 end;
 
 function TMessagesCtrl.GetLineAt(Y: integer; out View: TLMsgWndView; out
@@ -2706,8 +2707,8 @@ var
 begin
   View:=GetAboutView;
   if View=nil then exit;
-  if not (View.Tool.Data is TIDEExternalToolData) then exit;
   ToolData:=TIDEExternalToolData(View.Tool.Data);
+  if not (ToolData is TIDEExternalToolData) then exit;
   if ToolData.Kind=IDEToolCompilePackage then begin
     PackageEditingInterface.DoOpenPackageFile(ToolData.Filename,
                                               [pofAddToRecent],false);

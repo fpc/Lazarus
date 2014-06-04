@@ -91,6 +91,26 @@ type
     coptParsedPlatformIndependent // all but platform macros resolved
     );
 
+  {$IFDEF EnableNewExtTools}
+  TCompilerFlagValue = (
+    cfvNone,  // default, do not pass the flag
+    cfvHide,  // pass the flag, e.g. -vm5000
+    cfvShow   // pass the -flag, e.g. -vm-5000
+    );
+
+  TAbstractCompilerMsgIDFlags = class(TPersistent)
+  protected
+    function GetValues(MsgId: integer): TCompilerFlagValue; virtual; abstract;
+    function GetModified: boolean; virtual; abstract;
+    procedure SetModified(AValue: boolean); virtual; abstract;
+    procedure SetValues(MsgId: integer; AValue: TCompilerFlagValue); virtual; abstract;
+  public
+    procedure Clear; virtual; abstract;
+    property Values[MsgId: integer]: TCompilerFlagValue read GetValues write SetValues; default;
+    property Modified: boolean read GetModified write SetModified;
+  end;
+  {$ENDIF}
+
 const
   crAll = [crCompile, crBuild, crRun];
 
@@ -257,6 +277,10 @@ type
     fShowHintsForSenderNotUsed: Boolean;
     fWriteFPCLogo: Boolean;
     fStopAfterErrCount: integer;
+    {$IFDEF EnableNewExtTools}
+    // Turn specific types of compiler messages on or off
+    fMessageFlags: TAbstractCompilerMsgIDFlags;
+    {$ENDIF}
 
     // Other:
     fDontUseConfigFile: Boolean;
@@ -426,6 +450,9 @@ type
       read fShowHintsForSenderNotUsed write SetShowHintsForSenderNotUsed;
     property WriteFPCLogo: Boolean read fWriteFPCLogo write SetWriteFPCLogo;
     property StopAfterErrCount: integer read fStopAfterErrCount write SetStopAfterErrCount;
+    {$IFDEF EnableNewExtTools}
+    property MessageFlags: TAbstractCompilerMsgIDFlags read fMessageFlags;
+    {$ENDIF}
 
     // other
     property DontUseConfigFile: Boolean read fDontUseConfigFile write SetDontUseConfigFile;

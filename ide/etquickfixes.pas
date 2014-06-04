@@ -53,15 +53,25 @@ uses
   Classes, SysUtils, Menus, Dialogs, Controls, CodeToolManager, CodeCache,
   CodeTree, CodeAtom, BasicCodeTools, KeywordFuncLists, LazLogger, AvgLvlTree,
   LazFileUtils, IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs, MenuIntf,
-  etFPCMsgParser, AbstractsMethodsDlg;
+  ProjectIntf, PackageIntf, CompOptsIntf, etFPCMsgParser, AbstractsMethodsDlg;
 
 type
 
-  { TQuickFix_Hide - hide via IDE directive %H- }
+  { TQuickFix_HideWithIDEDirective - hide with IDE directive %H- }
 
-  TQuickFix_Hide = class(TMsgQuickFix)
+  TQuickFix_HideWithIDEDirective = class(TMsgQuickFix)
   public
     function IsApplicable(Msg: TMessageLine): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
+  { TQuickFix_HideWithCompilerOption - hide with compiler option -vm<id> }
+
+  TQuickFix_HideWithCompilerOption = class(TMsgQuickFix)
+  public
+    function IsApplicable(Msg: TMessageLine; out ToolData: TIDEExternalToolData;
+      out IDETool: TObject): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -167,6 +177,75 @@ begin
     exit;
   end;
   Result:=true;
+end;
+
+{ TQuickFix_HideWithCompilerOption }
+
+function TQuickFix_HideWithCompilerOption.IsApplicable(Msg: TMessageLine; out
+  ToolData: TIDEExternalToolData; out IDETool: TObject): boolean;
+begin
+  Result:=false;
+  ToolData:=nil;
+  IDETool:=nil;
+  if (Msg.Urgency>=mluError)
+  or (Msg.SubTool<>SubToolFPC)
+  or (Msg.MsgID=0)
+  then exit;
+  ToolData:=Msg.GetToolData;
+  if ToolData=nil then exit;
+  IDETool:=ExternalToolList.GetIDEObject(ToolData);
+  Result:=IDETool<>nil;
+end;
+
+procedure TQuickFix_HideWithCompilerOption.CreateMenuItems(Fixes: TMsgQuickFixes
+  );
+var
+  i: Integer;
+  Msg: TMessageLine;
+  IDETool: TObject;
+  s: String;
+  ToolData: TIDEExternalToolData;
+  CompOpts: TLazCompilerOptions;
+begin
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,ToolData,IDETool) then continue;
+    if IDETool is TLazProject then begin
+      CompOpts:=TLazProject(IDETool).LazCompilerOptions;
+      if CompOpts.MessageFlags[Msg.MsgID]=cfvHide then exit;
+      s:='Hide with project option (-vm'+IntToStr(Msg.MsgID)+')'
+    end else if IDETool is TIDEPackage then begin
+      CompOpts:=TIDEPackage(IDETool).LazCompilerOptions;
+      if CompOpts.MessageFlags[Msg.MsgID]=cfvHide then exit;
+      s:='Hide with package option (-vm'+IntToStr(Msg.MsgID)+')';
+    end;
+    Fixes.AddMenuItem(Self,Msg,s);
+  end;
+  inherited CreateMenuItems(Fixes);
+end;
+
+procedure TQuickFix_HideWithCompilerOption.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  IDETool: TObject;
+  CompOpts: TLazCompilerOptions;
+  Pkg: TIDEPackage;
+  ToolData: TIDEExternalToolData;
+begin
+  if not IsApplicable(Msg,ToolData,IDETool) then exit;
+  if IDETool is TLazProject then begin
+    CompOpts:=TLazProject(IDETool).LazCompilerOptions;
+    CompOpts.MessageFlags[Msg.MsgID]:=cfvHide;
+    Msg.MarkFixed;
+  end else if IDETool is TIDEPackage then begin
+    if PackageEditingInterface.DoOpenPackageFile(ToolData.Filename,
+                                        [pofAddToRecent],false)<>mrOk then exit;
+    Pkg:=PackageEditingInterface.FindPackageWithName(ToolData.ModuleName);
+    if Pkg=nil then exit;
+    CompOpts:=Pkg.LazCompilerOptions;
+    CompOpts.MessageFlags[Msg.MsgID]:=cfvHide;
+    Msg.MarkFixed;
+  end;
 end;
 
 { TQuickFixLocalVariableNotUsed_Remove }
@@ -504,9 +583,9 @@ begin
   Msg.MarkFixed;
 end;
 
-{ TQuickFix_Hide }
+{ TQuickFix_HideWithIDEDirective }
 
-procedure TQuickFix_Hide.QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine);
+procedure TQuickFix_HideWithIDEDirective.QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine);
 var
   Code: TCodeBuffer;
 
@@ -575,7 +654,7 @@ begin
   end;
 end;
 
-function TQuickFix_Hide.IsApplicable(Msg: TMessageLine): boolean;
+function TQuickFix_HideWithIDEDirective.IsApplicable(Msg: TMessageLine): boolean;
 begin
   Result:=false;
   if (Msg.Urgency>=mluError)
@@ -586,7 +665,7 @@ begin
   Result:=true;
 end;
 
-procedure TQuickFix_Hide.CreateMenuItems(Fixes: TMsgQuickFixes);
+procedure TQuickFix_HideWithIDEDirective.CreateMenuItems(Fixes: TMsgQuickFixes);
 var
   Msg: TMessageLine;
   i: Integer;
@@ -670,11 +749,13 @@ begin
   fMenuItemToInfo:=TPointerToPointerTree.Create;
 
   // init standard quickfixes
-  IDEQuickFixes.RegisterQuickFix(TQuickFix_Hide.Create);
+  IDEQuickFixes.RegisterQuickFix(TQuickFix_HideWithIDEDirective.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFixIdentifierNotFoundAddLocal.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFixLocalVariableNotUsed_Remove.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFixUnitNotFound_Remove.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFixClassWithAbstractMethods.Create);
+
+  IDEQuickFixes.RegisterQuickFix(TQuickFix_HideWithCompilerOption.Create);
 end;
 
 destructor TIDEQuickFixes.Destroy;

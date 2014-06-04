@@ -36,6 +36,23 @@ const
 
   AbortedExitCode = 12321;
 
+const
+  IDEToolCompilePackage = 'Package';
+  IDEToolCompileProject = 'Project';
+type
+
+  { TIDEExternalToolData
+    When the IDE compiles a package or a project it creates an instance and sets
+    TAbstractExternalTool.Data. }
+
+  TIDEExternalToolData = class
+  public
+    Kind: string; // e.g. IDEToolCompilePackage or IDEToolCompileProject
+    ModuleName: string; // e.g. the package name
+    Filename: string; // e.g. the lpi or lpk filename
+    constructor Create(aKind, aModuleName, aFilename: string);
+  end;
+
 type
   TETShareStringEvent = procedure(var s: string) of object;
 
@@ -139,6 +156,7 @@ type
     procedure MarkFixed;
     function HasSourcePosition: boolean;
     procedure GetAttributes(List: TStrings);
+    function GetToolData: TIDEExternalToolData; virtual;
   public
     property Index: integer read FIndex; // index in Lines (Note: Lines can have more or less items than the raw output has text lines)
     property Urgency: TMessageLineUrgency read FUrgency write SetUrgency;
@@ -570,6 +588,7 @@ type
     procedure ConsistencyCheck; virtual;
     procedure EnterCriticalSection; virtual; abstract;
     procedure LeaveCriticalSection; virtual; abstract;
+    function GetIDEObject(ToolData: TIDEExternalToolData): TObject; virtual; abstract;
     // parsers
     procedure RegisterParser(Parser: TExtToolParserClass); virtual; abstract; // (main thread)
     procedure UnregisterParser(Parser: TExtToolParserClass); virtual; abstract; // (main thread)
@@ -583,24 +602,6 @@ type
 
 var
   ExternalToolList: TIDEExternalTools = nil; // will be set by the IDE
-
-const
-  IDEToolCompilePackage = 'Package';
-  IDEToolCompileProject = 'Project';
-type
-
-  { TIDEExternalToolData
-    When the IDE compiles a package or a project it creates an instance and sets
-    TAbstractExternalTool.Data. }
-
-  TIDEExternalToolData = class
-  public
-    Kind: string; // e.g. IDEToolCompilePackage or IDEToolCompileProject
-    ModuleName: string; // e.g. the package name
-    Filename: string; // e.g. the lpi or lpk filename
-    constructor Create(aKind, aModuleName, aFilename: string);
-  end;
-
 
 type
   { TIDEExternalToolOptions }
@@ -2115,6 +2116,20 @@ begin
   List.Values['Msg']:=Msg;
   List.Values['MsgID']:=IntToStr(MsgID);
   List.Values['OriginalLine']:=OriginalLine;
+end;
+
+function TMessageLine.GetToolData: TIDEExternalToolData;
+var
+  View: TExtToolView;
+begin
+  Result:=nil;
+  if Lines=nil then exit;
+  View:=TExtToolView(Lines.Owner);
+  if not (View is TExtToolView) then exit;
+  if View.Tool=nil then exit;
+  Result:=TIDEExternalToolData(View.Tool.Data);
+  if not (Result is TIDEExternalToolData) then
+    Result:=nil;
 end;
 
 { TExtToolView }

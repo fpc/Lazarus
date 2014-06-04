@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, FileUtil, LazFileCache, LazLoggerBase, ListFilterEdit,
   StdCtrls, CheckLst, Dialogs, IDEOptionsIntf, IDEMsgIntf, IDEExternToolIntf,
-  MacroIntf, IDEDialogs, CodeToolsFPCMsgs, CompilerOptions, LazarusIDEStrConsts
+  MacroIntf, IDEDialogs, CompOptsIntf, CodeToolsFPCMsgs, CompilerOptions,
+  LazarusIDEStrConsts
   {$IFDEF EnableNewExtTools}
   ,etFPCMsgParser
   {$ENDIF}

@@ -368,12 +368,6 @@ type
   TCompilationToolClass = class of TCompilationToolOptions;
 
 {$IFDEF EnableNewExtTools}
-  TCompilerFlagValue = (
-    cfvNone,  // default, do not pass the flag
-    cfvHide,  // pass the flag
-    cfvShow  // pass the -flag
-    );
-
   TCompilerMsgIdFlag = record
     MsgId: integer;
     Flag: TCompilerFlagValue;
@@ -396,25 +390,24 @@ type
 
   { TCompilerMsgIDFlags }
 
-  TCompilerMsgIDFlags = class(TPersistent)
+  TCompilerMsgIDFlags = class(TAbstractCompilerMsgIDFlags)
   private
     FChangeStamp: int64;
     fLastSavedStamp: int64;
     fTree: TAvgLvlTree; // tree of TCompilerMsgIdFlag
     function FindNode(MsgId: integer): TAvgLvlTreeNode;
-    function GetValues(MsgId: integer): TCompilerFlagValue;
-    function GetModified: boolean;
-    procedure SetModified(AValue: boolean);
-    procedure SetValues(MsgId: integer; AValue: TCompilerFlagValue);
+  protected
+    function GetValues(MsgId: integer): TCompilerFlagValue; override;
+    function GetModified: boolean; override;
+    procedure SetModified(AValue: boolean); override;
+    procedure SetValues(MsgId: integer; AValue: TCompilerFlagValue); override;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Clear;
+    procedure Clear; override;
     procedure Assign(Source: TPersistent); override;
     function Equals(Obj: TObject): boolean; override;
     procedure IncreaseChangeStamp;
-    property Values[MsgId: integer]: TCompilerFlagValue read GetValues write SetValues; default;
-    property Modified: boolean read GetModified write SetModified;
     function GetEnumerator: TCompilerMsgIDFlagsEnumerator;
     function GetMsgIdList(Delim: char; aValue: TCompilerFlagValue): string;
     function CreateDiff(Tool: TCompilerDiffTool; Other: TCompilerMsgIDFlags): boolean;
@@ -516,8 +509,6 @@ type
     FCreateMakefileOnBuild: boolean;
 
     {$IFDEF EnableNewExtTools}
-    // Turn specific types of compiler messages on or off
-    fMessageFlags: TCompilerMsgIDFlags;
     {$ELSE}
     // Compiler Messags
     fUseCustomMessages: Boolean; // use messages customization
@@ -675,7 +666,7 @@ type
 
     // compiler message types by id
     {$IFDEF EnableNewExtTools}
-    property MessageFlags: TCompilerMsgIDFlags read fMessageFlags;
+    function IDEMessageFlags: TCompilerMsgIDFlags; inline;
     {$ELSE}
     property CompilerMessages: TCompilerMessagesList read fCompilerMessages;
     property UseMsgFile: Boolean read fUseMsgFile write SetUseMsgFile;
@@ -1213,6 +1204,12 @@ end;
 
 
 { TBaseCompilerOptions }
+
+// inline
+function TBaseCompilerOptions.IDEMessageFlags: TCompilerMsgIDFlags;
+begin
+  Result:=TCompilerMsgIDFlags(MessageFlags);
+end;
 
 {------------------------------------------------------------------------------
   TBaseCompilerOptions Constructor
@@ -1865,7 +1862,7 @@ var
   var
     Flag: PCompilerMsgIdFlag;
   begin
-    for Flag in MessageFlags do
+    for Flag in IDEMessageFlags do
       if Flag^.Flag=aValue then begin
         //debugln(['WriteListOfMessageFlags aPath=',aPath,' Flag.MsgId=',Flag^.MsgId]);
         aXMLConfig.SetValue(aPath+'/idx'+IntToStr(Flag^.MsgId), true);
@@ -3254,10 +3251,10 @@ begin
   if (WriteFPCLogo) then
     switches := switches + ' -l';
   {$IFDEF EnableNewExtTools}
-  t := MessageFlags.GetMsgIdList(',',cfvHide);
+  t := IDEMessageFlags.GetMsgIdList(',',cfvHide);
   if t <> '' then
     switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
-  t := MessageFlags.GetMsgIdList(',',cfvShow);
+  t := IDEMessageFlags.GetMsgIdList(',',cfvShow);
   if t <> '' then
     switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
   {$ELSE}
@@ -3822,7 +3819,7 @@ begin
   // messages
   if Tool<>nil then Tool.Path:='Messages';
   {$IFDEF EnableNewExtTools}
-  if Done(MessageFlags.CreateDiff(Tool,CompOpts.MessageFlags)) then exit;
+  if Done(IDEMessageFlags.CreateDiff(Tool,CompOpts.IDEMessageFlags)) then exit;
   {$ELSE}
   if Done(Tool.AddDiff('UseCustomMessages',fUseCustomMessages,CompOpts.fUseCustomMessages)) then exit;
   if Done(Tool.AddDiff('UseMsgFile',fUseMsgFile,CompOpts.fUseMsgFile)) then exit;

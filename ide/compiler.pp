@@ -324,6 +324,8 @@ begin
   Tool:=ExternalToolList.Add('Compile Project');
   Tool.Reference(Self,ClassName);
   try
+    Tool.Data:=TIDEExternalToolData.Create(IDEToolCompileProject,'',AProject.ProjectInfoFile);
+    Tool.FreeData:=true;
     Tool.Hint:=aCompileHint;
     Tool.Process.Executable:=CompilerFilename;
     Tool.CmdLineParams:=CmdLine;

@@ -44,7 +44,7 @@ uses
   // IDEIntf
   IDEExternToolIntf, BaseIDEIntf, MacroIntf, IDEMsgIntf,
   // IDE
-  IDEDialogs, CompOptsIntf, TransferMacros;
+  IDEDialogs, CompOptsIntf, PackageIntf, LazIDEIntf, TransferMacros;
 
 type
   TLMVToolState = (
@@ -189,6 +189,7 @@ type
     property RunningTools[Index: integer]: TExternalTool read GetRunningTools;
     procedure EnterCriticalSection; override;
     procedure LeaveCriticalSection; override;
+    function GetIDEObject(ToolData: TIDEExternalToolData): TObject; override;
     // parsers
     function ParserCount: integer; override;
     procedure RegisterParser(Parser: TExtToolParserClass); override;
@@ -1319,6 +1320,17 @@ end;
 procedure TExternalTools.LeaveCriticalSection;
 begin
   System.LeaveCriticalsection(FCritSec);
+end;
+
+function TExternalTools.GetIDEObject(ToolData: TIDEExternalToolData): TObject;
+begin
+  Result:=nil;
+  if ToolData=nil then exit;
+  if ToolData.Kind=IDEToolCompileProject then begin
+    Result:=LazarusIDE.ActiveProject;
+  end else if ToolData.Kind=IDEToolCompilePackage then begin
+    Result:=PackageEditingInterface.FindPackageWithName(ToolData.ModuleName);
+  end;
 end;
 
 procedure TExternalTools.RegisterParser(Parser: TExtToolParserClass);
