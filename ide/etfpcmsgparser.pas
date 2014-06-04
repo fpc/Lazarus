@@ -34,11 +34,12 @@ unit etFPCMsgParser;
 interface
 
 uses
-  Classes, SysUtils, strutils, FileProcs, KeywordFuncLists, IDEExternToolIntf,
-  PackageIntf, LazIDEIntf, ProjectIntf, IDEUtils, CompOptsIntf,
-  CodeToolsFPCMsgs, CodeToolsStructs, CodeCache, CodeToolManager,
-  DirectoryCacher, BasicCodeTools, DefineTemplates, LazUTF8, FileUtil,
-  LConvEncoding, TransferMacros, etMakeMsgParser, EnvironmentOpts;
+  Classes, SysUtils, strutils, math, FileProcs, KeywordFuncLists,
+  IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf, IDEUtils,
+  CompOptsIntf, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache, CodeToolManager,
+  DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog, LazUTF8,
+  FileUtil, LConvEncoding, TransferMacros, etMakeMsgParser, EnvironmentOpts,
+  LCLProc;
 
 const
   FPCMsgIDLogo = 11023;
@@ -141,22 +142,22 @@ type
 
   TIDEFPCParser = class(TFPCParser)
   private
-    fMsgID: Integer; // current message id given by ReadLine (-vq)
-    fOutputIndex: integer; // current OutputIndex given by ReadLine
-    fLineToMsgID: TPatternToMsgIDs;
-    fLastWorkerImprovedMessage: array[boolean] of integer;
-    fLastSource: TCodeBuffer;
+    fCurSource: TCodeBuffer;
     fFileExists: TFilenameToPointerTree;
-    fIncludePathValidForWorkerDir: string;
     fIncludePath: string; // only valid if fIncludePathValidForWorkerDir=Tool.WorkerDirectory
-    fMsgItemUnitNotUsed: TFPCMsgItem;
+    fIncludePathValidForWorkerDir: string;
+    fLastWorkerImprovedMessage: array[boolean] of integer;
+    fLineToMsgID: TPatternToMsgIDs;
+    fMissingFPCMsgItem: TFPCMsgItem;
+    fMsgID: Integer; // current message id given by ReadLine (-vq)
     fMsgItemCantFindUnitUsedBy: TFPCMsgItem;
     fMsgItemCompilationAborted: TFPCMsgItem;
-    fMsgItemThereWereErrorsCompiling: TFPCMsgItem;
-    fMsgItemIdentifierNotFound: TFPCMsgItem;
-    fMsgItemErrorWhileLinking: TFPCMsgItem;
     fMsgItemErrorWhileCompilingResources: TFPCMsgItem;
-    fMissingFPCMsgItem: TFPCMsgItem;
+    fMsgItemErrorWhileLinking: TFPCMsgItem;
+    fMsgItemIdentifierNotFound: TFPCMsgItem;
+    fMsgItemThereWereErrorsCompiling: TFPCMsgItem;
+    fMsgItemUnitNotUsed: TFPCMsgItem;
+    fOutputIndex: integer; // current OutputIndex given by ReadLine
     function FileExists(const Filename: string; aSynchronized: boolean): boolean;
     function CheckForMsgId(p: PChar): boolean; // (MsgId) message
     function CheckForFileLineColMessage(p: PChar): boolean; // the normal messages: filename(y,x): Hint: ..
@@ -180,6 +181,8 @@ type
     procedure ImproveMsgUnitNotFound(aSynchronized: boolean;
       MsgLine: TMessageLine);
     procedure ImproveMsgLinkerUndefinedReference(aSynchronized: boolean;
+      MsgLine: TMessageLine);
+    procedure ImproveMsgIdentifierPosition(SourceOK: boolean; aSynchronized: boolean;
       MsgLine: TMessageLine);
     procedure Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
       out TranslatedMsg: String; out MsgType: TMessageLineUrgency);
@@ -1012,7 +1015,7 @@ destructor TIDEFPCParser.Destroy;
 begin
   FreeAndNil(FFilesToIgnoreUnitNotUsed);
   FreeAndNil(fFileExists);
-  FreeAndNil(fLastSource);
+  FreeAndNil(fCurSource);
   if TranslationFile<>nil then
     FPCMsgFilePool.UnloadFile(TranslationFile);
   if MsgFile<>nil then
@@ -1107,7 +1110,7 @@ end;
 
 procedure TIDEFPCParser.Done;
 begin
-  FreeAndNil(fLastSource);
+  FreeAndNil(fCurSource);
   inherited Done;
 end;
 
@@ -1554,10 +1557,10 @@ begin
   begin
     X:=MsgLine.Column;
     Y:=MsgLine.Line;
-    if (y<=fLastSource.LineCount) and (x-1<=fLastSource.GetLineLength(y-1))
+    if (y<=fCurSource.LineCount) and (x-1<=fCurSource.GetLineLength(y-1))
     then begin
-      p:=PChar(fLastSource.Source)+fLastSource.GetLineStart(y-1)+x-2;
-      //debugln(['TFPCParser.ImproveMessages ',aFilename,' ',Y,',',X,' ',copy(fLastSource.GetLine(y-1),1,x-1),'|',copy(fLastSource.GetLine(y-1),x,100),' p=',p[0],p[1],p[2]]);
+      p:=PChar(fCurSource.Source)+fCurSource.GetLineStart(y-1)+x-2;
+      //debugln(['TFPCParser.ImproveMessages ',aFilename,' ',Y,',',X,' ',copy(fCurSource.GetLine(y-1),1,x-1),'|',copy(fCurSource.GetLine(y-1),x,100),' p=',p[0],p[1],p[2]]);
       if ((p^='{') and (p[1]='%') and (p[2]='H') and (p[3]='-'))
       or ((x>5) and (p[-5]='{') and (p[-4]='%') and (p[-3]='H') and (p[-2]='-')
         and (p[-1]='}'))
@@ -1911,6 +1914,59 @@ begin
   if CheckForFileAndLineNumber then exit;
 end;
 
+procedure TIDEFPCParser.ImproveMsgIdentifierPosition(SourceOK: boolean;
+  aSynchronized: boolean; MsgLine: TMessageLine);
+{ FPC report the token after the identifier
+  => fix the position
+  For example:
+    unit1.pas(42,5) Error: (5000) Identifier not found "i"
+    "  i :="
+}
+var
+  LineRange: TLineRange;
+  Line, Col: Integer;
+  p, AtomEnd: integer;
+  Src: String;
+  Identifier: String;
+begin
+  if (not IsMsgID(MsgLine,FPCMsgIDIdentifierNotFound,fMsgItemIdentifierNotFound))
+  or (MsgLine.Column<1) or (MsgLine.Line<1) then
+    exit;
+  if (MsgLine.Line=1) and (MsgLine.Column=1) then exit;
+  if (not SourceOK) then begin
+    if (not aSynchronized) then
+      NeedSynchronize:=true;
+    exit;
+  end;
+  Line:=MsgLine.Line;
+  //DebuglnThreadLog(['Old Line=',Line,' ',MsgLine.Column]);
+  if Line>=fCurSource.LineCount then exit;
+  Identifier:=GetFPCMsgValue1(MsgLine);
+  if Identifier='' then exit;
+  fCurSource.GetLineRange(Line-1,LineRange);
+  //DebuglnThreadLog(['Old Range=',LineRange.StartPos,'-',LineRange.EndPos,' Str="',copy(fCurSource.Source,LineRange.StartPos,LineRange.EndPos-LineRange.StartPos),'"']);
+  Col:=Min(MsgLine.Column,LineRange.EndPos-LineRange.StartPos+1);
+  p:=LineRange.StartPos+Col-1;
+  Src:=fCurSource.Source;
+  if CompareIdentifiers(PChar(Identifier),@Src[p])=0 then begin
+    // already pointing at the right identifier
+    exit;
+  end;
+  // go to prior token
+  //DebuglnThreadLog(['New Line=',Line,' Col=',Col,' p=',p]);
+  ReadPriorPascalAtom(Src,p,AtomEnd,false);
+  if p<1 then exit;
+  if CompareIdentifiers(PChar(Identifier),@Src[p])<>0 then begin
+    // the prior token is not the identifier neither
+    // => don't know
+    exit;
+  end;
+  fCurSource.AbsoluteToLineCol(p,Line,Col);
+  //DebuglnThreadLog(['New Line=',Line,' Col=',Col,' p=',p]);
+  if (Line<1) or (Col<1) then exit;
+  MsgLine.SetSourcePosition(MsgLine.Filename,Line,Col)
+end;
+
 procedure TIDEFPCParser.Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
   out TranslatedMsg: String; out MsgType: TMessageLineUrgency);
 begin
@@ -1923,7 +1979,7 @@ begin
   if TranslatedItem<>nil then begin
     if System.Pos('$',TranslatedItem.Pattern)<1 then begin
       TranslatedMsg:=TranslatedItem.Pattern;
-      UTF8FixBroken(TranslatedMsg);
+      LazUTF8.UTF8FixBroken(TranslatedMsg);
     end
     else if MsgItem<>nil then
       TranslatedMsg:=TranslateFPCMsg(p,MsgItem.Pattern,TranslatedItem.Pattern);
@@ -2338,8 +2394,8 @@ begin
       SourceOK:=false;
       aFilename:=MsgLine.Filename;
       if FilenameIsAbsolute(aFilename) then begin
-        if (fLastSource<>nil)
-        and (CompareFilenames(aFilename,fLastSource.Filename)=0) then begin
+        if (fCurSource<>nil)
+        and (CompareFilenames(aFilename,fCurSource.Filename)=0) then begin
           SourceOK:=true;
         end else begin
           if aSynchronized then begin
@@ -2347,10 +2403,10 @@ begin
             //debugln(['TFPCParser.ImproveMessages loading ',aFilename]);
             Code:=CodeToolBoss.LoadFile(aFilename,true,false);
             if Code<>nil then begin
-              if fLastSource=nil then
-                fLastSource:=TCodeBuffer.Create;
-              fLastSource.Filename:=aFilename;
-              fLastSource.Source:=Code.Source;
+              if fCurSource=nil then
+                fCurSource:=TCodeBuffer.Create;
+              fCurSource.Filename:=aFilename;
+              fCurSource.Source:=Code.Source;
               SourceOK:=true;
             end;
           end else begin
@@ -2364,6 +2420,7 @@ begin
       ImproveMsgUnitNotFound(aSynchronized, MsgLine);
       ImproveMsgUnitNotUsed(aSynchronized, MsgLine);
       ImproveMsgSenderNotUsed(aSynchronized, MsgLine);
+      ImproveMsgIdentifierPosition(SourceOK, aSynchronized, MsgLine);
     end else if MsgLine.SubTool=SubToolFPCLinker then begin
       ImproveMsgLinkerUndefinedReference(aSynchronized, MsgLine);
     end;

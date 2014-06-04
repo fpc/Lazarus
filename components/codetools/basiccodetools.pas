@@ -346,6 +346,8 @@ procedure ReadRawNextPascalAtom(const Source: string;
 procedure ReadRawNextPascalAtom(var Position: PChar; out AtomStart: PChar;
    const SrcEnd: PChar = nil; NestedComments: boolean = false;
    SkipDirectives: boolean = false);
+procedure ReadPriorPascalAtom(const Source: string;
+  var Position: integer; out AtomEnd: integer; NestedComments: boolean = false);
 function ReadTilPascalBracketClose(const Source: string;
    var Position: integer; NestedComments: boolean = false): boolean;
 function GetAtomLength(p: PChar; NestedComments: boolean): integer;
@@ -2070,6 +2072,380 @@ begin
     end;
   end;
   Position:=Src;
+end;
+
+procedure ReadPriorPascalAtom(const Source: string; var Position: integer; out
+  AtomEnd: integer; NestedComments: boolean);
+var
+  CommentLvl, PrePos, OldPrePos: integer;
+  IsStringConstant: boolean;
+
+  procedure ReadStringConstantBackward;
+  var PrePos: integer;
+  begin
+    while (Position>1) do begin
+      case Source[Position-1] of
+      '''':
+        begin
+          dec(Position);
+          repeat
+            dec(Position);
+          until (Position<1) or (Source[Position] in [#0,#10,#13,'''']);
+        end;
+      '0'..'9','A'..'Z','a'..'z':
+        begin
+          // test if char constant
+          PrePos:=Position-1;
+          while (PrePos>1) and (IsHexNumberChar[Source[PrePos]]) do
+            dec(PrePos);
+          if (PrePos<1) then break;
+          if (Source[PrePos]='$') then begin
+            dec(PrePos);
+            if (PrePos<1) then break;
+          end;
+          if (Source[PrePos]='#') then
+            Position:=PrePos
+          else
+            break;
+        end;
+      else
+        break;
+      end;
+    end;
+  end;
+
+  procedure ReadBackTilCodeLineEnd;
+  begin
+    dec(Position);
+    if (Position>=1) and (Source[Position] in [#10,#13])
+    and (Source[Position+1]<>Source[Position]) then
+      dec(Position);
+
+    // read backwards till line start
+    PrePos:=Position;
+    while (PrePos>=1) and (not (Source[PrePos] in [#10,#13])) do
+      dec(PrePos);
+    // read line forward to find out,
+    // if line ends in comment or string constant
+    IsStringConstant:=false;
+    repeat
+      inc(PrePos);
+      case Source[PrePos] of
+
+      '/':
+        if Source[PrePos+1]='/' then begin
+          // this was a delphi comment -> skip comment
+          Position:=PrePos-1;
+          break;
+        end;
+
+      '{':
+        begin
+          inc(PrePos);
+          if (PrePos<=Position) and (Source[PrePos]=#3) then begin
+            // skip codetools comment
+            inc(PrePos);
+            while (PrePos<=Position) do begin
+              if (Source[PrePos]=#3) and (PrePos<Position)
+              and (Source[PrePos+1]='}') then begin
+                inc(PrePos,2);
+                break;
+              end;
+              inc(PrePos);
+            end;
+          end else begin
+            // skip pascal comment
+            CommentLvl:=1;
+            while (PrePos<=Position) do begin
+              case Source[PrePos] of
+              '{': if NestedComments then inc(CommentLvl);
+              '}':
+                begin
+                  dec(CommentLvl);
+                  if CommentLvl=0 then break;
+                end;
+              end;
+              inc(PrePos);
+            end;
+          end;
+        end;
+
+      '(':
+        if Source[PrePos+1]='*' then begin
+          // skip turbo pascal comment
+          inc(PrePos,2);
+          while (PrePos<Position)
+          and ((Source[PrePos]<>'*') or (Source[PrePos+1]<>')')) do
+            inc(PrePos);
+          inc(PrePos);
+        end;
+
+      '''':
+        begin
+          // a string constant -> skip it
+          OldPrePos:=PrePos;
+          while (PrePos<Position) do begin
+            inc(PrePos);
+            case Source[PrePos] of
+            '''':
+              break;
+
+            #0,#10,#13:
+              begin
+                // string constant right border is the line end
+                // -> last atom of line found
+                IsStringConstant:=true;
+                break;
+              end;
+
+            end;
+          end;
+          if IsStringConstant then break;
+        end;
+
+      #10,#13:
+        // no comment and no string constant found
+        break;
+
+      end;
+    until PrePos>=Position;
+  end;
+
+type
+  TNumberType = (ntDecimal, ntHexadecimal, ntBinary, ntIdentifier,
+    ntCharConstant, ntFloat, ntFloatWithExponent);
+  TNumberTypes = set of TNumberType;
+
+const
+  AllNumberTypes: TNumberTypes = [ntDecimal, ntHexadecimal, ntBinary,
+    ntIdentifier, ntCharConstant, ntFloat, ntFloatWithExponent];
+
+var c1, c2: char;
+  ForbiddenNumberTypes: TNumberTypes;
+begin
+  // Skip all spaces and comments
+  CommentLvl:=0;
+  dec(Position);
+  IsStringConstant:=false;
+  OldPrePos:=0;
+  while Position>=1 do begin
+    if IsCommentEndChar[Source[Position]] then begin
+      case Source[Position] of
+
+      '}':
+        begin
+          dec(Position);
+          if (Position>=1) and (Source[Position]=#3) then begin
+            // codetools skip comment {#3 #3}
+            dec(Position);
+            while (Position>=1) do begin
+              if (Source[Position]=#3) and (Position>1)
+              and (Source[Position-1]='}') then begin
+                dec(Position,2);
+                break;
+              end;
+              dec(Position);
+            end;
+          end else begin
+            // pascal comment {}
+            CommentLvl:=1;
+            while (Position>=1) and (CommentLvl>0) do begin
+              case Source[Position] of
+              '}': if NestedComments then inc(CommentLvl);
+              '{': dec(CommentLvl);
+              end;
+              dec(Position);
+            end;
+          end;
+        end;
+
+      #10,#13: // possible Delphi comment
+        ReadBackTilCodeLineEnd;
+
+      ')': // old turbo pascal comment
+        if (Position>1) and (Source[Position-1]='*') then begin
+          dec(Position,3);
+          while (Position>=1)
+          and ((Source[Position]<>'(') or (Source[Position+1]<>'*')) do
+            dec(Position);
+          dec(Position);
+        end else
+          break;
+
+      end;
+    end else if IsSpaceChar[Source[Position]] then begin
+      repeat
+        dec(Position);
+      until (Position<1) or (Source[Position] in [#10,#13])
+      or (not (IsSpaceChar[Source[Position]]));
+    end else begin
+      break;
+    end;
+  end;
+  // Position now points to the last char of the prior atom
+  AtomEnd:=Position+1;
+  if Position<1 then begin
+    Position:=1;
+    AtomEnd:=1;
+    exit;
+  end;
+  // read atom
+  if IsStringConstant then begin
+    Position:=OldPrePos;
+    if (Position>1) and (Source[Position-1]='''') then begin
+      ReadStringConstantBackward;
+    end;
+    exit;
+  end;
+  c2:=Source[Position];
+  case c2 of
+    '_','A'..'Z','a'..'z':
+      begin
+        // identifier or keyword or hexnumber
+        while (Position>1) do begin
+          if (IsIdentChar[Source[Position-1]]) then
+            dec(Position)
+          else begin
+            case UpChars[Source[Position-1]] of
+            '@':
+              // assembler label
+              if (Position>2)
+              and (Source[Position-2]='@') then
+                dec(Position,2);
+            '$':
+              // hex number
+              dec(Position);
+            end;
+            break;
+          end;
+        end;
+      end;
+    '''':
+      begin
+        inc(Position);
+        ReadStringConstantBackward;
+      end;
+    '0'..'9':
+      begin
+        // could be a decimal number, an identifier, a hex number,
+        // a binary number, a char constant, a float, a float with exponent
+        ForbiddenNumberTypes:=[];
+        while true do begin
+          case UpChars[Source[Position]] of
+          '0'..'1':
+            ;
+          '2'..'9':
+            ForbiddenNumberTypes:=ForbiddenNumberTypes+[ntBinary];
+          'A'..'D','F':
+            ForbiddenNumberTypes:=ForbiddenNumberTypes
+               +[ntBinary,ntDecimal,ntCharConstant,ntFloat,ntFloatWithExponent];
+          'E':
+            ForbiddenNumberTypes:=ForbiddenNumberTypes
+               +[ntBinary,ntDecimal,ntCharConstant,ntFloat];
+          'G'..'Z','_':
+            ForbiddenNumberTypes:=AllNumberTypes-[ntIdentifier];
+          '.':
+            begin
+              // could be the point of a float
+              if (ntFloat in ForbiddenNumberTypes)
+              or (Position<=1) or (Source[Position-1]='.') then begin
+                inc(Position);
+                break;
+              end;
+              dec(Position);
+              // this was the part of a float after the point
+              //  -> read decimal in front
+              ForbiddenNumberTypes:=AllNumberTypes-[ntDecimal];
+            end;
+          '+','-':
+            begin
+              // could be part of an exponent
+              if (ntFloatWithExponent in ForbiddenNumberTypes)
+              or (Position<=1)
+              or (not (Source[Position-1] in ['e','E']))
+              then begin
+                inc(Position);
+                break;
+              end;
+              dec(Position);
+              // this was the exponent of a float -> read the float
+              ForbiddenNumberTypes:=AllNumberTypes-[ntFloat];
+            end;
+          '#': // char constant found
+            begin
+              if (ntCharConstant in ForbiddenNumberTypes) then
+                inc(Position);
+              ReadStringConstantBackward;
+              break;
+            end;
+          '$':
+            begin
+              // hexadecimal number found
+              if (ntHexadecimal in ForbiddenNumberTypes) then
+                inc(Position);
+              break;
+            end;
+          '%':
+            begin
+              // binary number found
+              if (ntBinary in ForbiddenNumberTypes) then
+                inc(Position);
+              break;
+            end;
+          '@':
+            begin
+              if (Position=1) or (Source[Position-1]<>'@')
+              or (([ntIdentifier,ntDecimal]*ForbiddenNumberTypes)=[]) then
+                // atom start found
+                inc(Position)
+              else
+                // label found
+                dec(Position);
+              break;
+            end;
+          else
+            begin
+              inc(Position);
+              break;
+            end;
+          end;
+          if ForbiddenNumberTypes=AllNumberTypes then begin
+            inc(Position);
+            break;
+          end;
+          if Position<=1 then break;
+          dec(Position);
+        end;
+        if IsIdentStartChar[Source[Position]] then begin
+          // it is an identifier
+        end;
+      end;
+
+    ';': ;
+    ':': ;
+    ',': ;
+    '(': ;
+    ')': ;
+    '[': ;
+    ']': ;
+
+    else
+      begin
+        if Position>1 then begin
+          c1:=Source[Position-1];
+          // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
+          if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
+          or ((c1='<') and (c2='>'))
+          or ((c1='>') and (c2='<'))
+          or ((c1='.') and (c2='.'))
+          or ((c1='*') and (c2='*'))
+          or ((c1='@') and (c2='@'))
+          then begin
+            dec(Position);
+          end;
+        end;
+      end;
+  end;
 end;
 
 function ReadTilPascalBracketClose(const Source: string; var Position: integer;
