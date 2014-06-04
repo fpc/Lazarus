@@ -2284,10 +2284,7 @@ begin
   else if IsMsgID(MsgLine,FPCMsgIDThereWereErrorsCompiling,
     fMsgItemThereWereErrorsCompiling)
   then
-    MsgLine.Urgency:=mluVerbose
-  else if IsMsgID(MsgLine,FPCMsgIDIdentifierNotFound,fMsgItemIdentifierNotFound)
-  then
-    MsgLine.Flags:=MsgLine.Flags+[mlfLeftToken];
+    MsgLine.Urgency:=mluVerbose;
   inherited AddMsgLine(MsgLine);
 end;
 

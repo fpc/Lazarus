@@ -430,8 +430,7 @@ begin
     exit;
   if not Msg.HasSourcePosition or not IsValidIdent(Identifier) then exit;
 
-  // check if message position is at end of identifier
-  // (FPC gives position of end of identifier)
+  // check if message position is at identifier
   Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
   if Code=nil then exit;
   if not CodeToolBoss.Explore(Code,Tool,false) then exit;
@@ -440,7 +439,10 @@ begin
   if Node=nil then exit;
   if not (Node.Desc in AllPascalStatements) then exit;
   Tool.MoveCursorToCleanPos(CleanPos);
-  Tool.ReadPriorAtom;
+  if mlfLeftToken in Msg.Flags then
+    Tool.ReadPriorAtom
+  else
+    Tool.ReadNextAtom;
   if not Tool.AtomIs(Identifier) then exit;
   Tool.ReadPriorAtom;
   if (Tool.CurPos.Flag in [cafPoint,cafRoundBracketClose,cafEdgedBracketClose,
