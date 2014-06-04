@@ -10841,7 +10841,7 @@ end;
 
 procedure TGridColumnTitle.SetCaption(const AValue: TCaption);
 begin
-  if (FCaption=nil)or(AValue<>FCaption^) then begin
+  if (FCaption=nil)or(AValue<>StrPas(FCaption)) then begin
     if FCaption<>nil then
       StrDispose(FCaption);
     FCaption := StrNew(PChar(AValue));
