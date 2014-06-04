@@ -566,9 +566,6 @@ begin
   inherited Create(aOwner);
   FWorkerOutput:=TStringList.Create;
   FProcess:=TProcessUTF8.Create(nil);
-  {$IF FPC_FULLVERSION<20604}
-  FProcess.InheritHandles:=false;
-  {$ENDIF}
   FProcess.Options:= [poUsePipes{$IFDEF Windows},poStderrToOutPut{$ENDIF}];
   FProcess.ShowWindow := swoHide;
   fExecuteBefore:=TFPList.Create;
