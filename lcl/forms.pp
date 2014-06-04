@@ -1223,7 +1223,8 @@ type
   TTaskBarBehavior = (
     tbDefault,      // widgetset dependent
     tbMultiButton,  // show buttons for Forms with ShowTaskBar = stDefault
-    tbSingleButton  // hide buttons for Forms with ShowTaskBar = stDefault
+    tbSingleButton  // hide buttons for Forms with ShowTaskBar = stDefault.
+                    // Some Linux window managers do not support it. For example Cinnamon.
   );
 
   { TApplication }
