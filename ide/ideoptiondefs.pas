@@ -188,6 +188,8 @@ type
     procedure ClearFilterMsgTypes;
     function IndexOfFilterMsgType(Line: TMessageLine): integer;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure ConsistencyCheck;
   end;
 
@@ -467,14 +469,39 @@ end;
 
 procedure TLMsgViewFilters.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
+var
+  NewCnt: Integer;
+  ActiveIndex: Integer;
+  i: Integer;
+  Filter: TLMsgViewFilter;
 begin
-
+  Clear;
+  NewCnt:=XMLConfig.GetValue(Path+'Count',1);
+  ActiveIndex:=XMLConfig.GetValue(Path+'Active',1);
+  for i:=1 to NewCnt do begin
+    if i>Count then begin
+      Filter:=TLMsgViewFilter.Create;
+      Add(Filter);
+    end else begin
+      Filter:=Filters[i-1];
+    end;
+    Filter.LoadFromXMLConfig(XMLConfig,Path+'Filter'+IntToStr(i)+'/');
+  end;
+  if (ActiveIndex>0) and (ActiveIndex<=Count) then
+    ActiveFilter:=Filters[ActiveIndex-1];
+  for i:=Count downto NewCnt+1 do
+    Delete(i-1);
 end;
 
 procedure TLMsgViewFilters.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
+var
+  i: Integer;
 begin
-
+  XMLConfig.SetDeleteValue(Path+'Count',Count,1);
+  XMLConfig.SetDeleteValue(Path+'Active',IndexOf(ActiveFilter)+1,1);
+  for i:=1 to Count do
+    Filters[i-1].SaveToXMLConfig(XMLConfig,Path+'Filter'+IntToStr(i)+'/');
 end;
 
 { TXMLOptionsStorage }
@@ -871,6 +898,50 @@ begin
       exit(m);
   end;
   Result:=-1;
+end;
+
+procedure TLMsgViewFilter.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  NewCnt: Integer;
+  i: Integer;
+  p: String;
+  SubTool: String;
+  MsgId: Integer;
+begin
+  fCaption:=XMLConfig.GetValue(Path+'Caption','Default');
+  FMinUrgency:=StrToMsgLineUrgency(XMLConfig.GetValue(Path+'MinUrgency',
+    MessageLineUrgencyNames[mluHint]));
+  FFilterNotesWithoutPos:=XMLConfig.GetValue(Path+'FilterNotesWithoutPos',true);
+  NewCnt:=XMLConfig.GetValue(Path+'MsgType/Count',0);
+  ClearFilterMsgTypes;
+  for i:=1 to NewCnt do begin
+    p:=Path+'MsgType/Item'+IntToStr(i)+'/';
+    SubTool:=XMLConfig.GetValue(p+'SubTool',SubToolFPC);
+    MsgId:=XMLConfig.GetValue(p+'MsgId',0);
+    if (SubTool='') or (MsgId=0) then continue;
+    AddFilterMsgType(SubTool,MsgId);
+  end;
+end;
+
+procedure TLMsgViewFilter.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  i: Integer;
+  p: String;
+  Item: TLMVFilterMsgType;
+begin
+  XMLConfig.SetDeleteValue(Path+'Caption',Caption,'Default');
+  XMLConfig.SetDeleteValue(Path+'MinUrgency',
+    MessageLineUrgencyNames[MinUrgency],MessageLineUrgencyNames[mluHint]);
+  XMLConfig.SetDeleteValue(Path+'FilterNotesWithoutPos',FilterNotesWithoutPos,true);
+  XMLConfig.SetDeleteValue(Path+'MsgType/Count',FilterMsgTypeCount,0);
+  for i:=1 to FilterMsgTypeCount do begin
+    Item:=FilterMsgTypes[i-1];
+    p:=Path+'MsgType/Item'+IntToStr(i)+'/';
+    XMLConfig.SetDeleteValue(p+'SubTool',Item.SubTool,SubToolFPC);
+    XMLConfig.SetDeleteValue(p+'MsgId',Item.MsgID,0);
+  end;
 end;
 
 procedure TLMsgViewFilter.ConsistencyCheck;

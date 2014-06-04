@@ -57,7 +57,7 @@ type
   TMessageLineUrgencies = set of TMessageLineUrgency;
 const
   MessageLineUrgencyNames: array[TMessageLineUrgency] of string = (
-    '?',
+    'None',
     'Progress',
     'Debug',
     'Verbose',
@@ -648,6 +648,8 @@ var
 
 function CompareMsgLinesSrcPos(MsgLine1, MsgLine2: Pointer): integer;
 
+function StrToMsgLineUrgency(const s: string): TMessageLineUrgency;
+
 function dbgs(u: TMessageLineUrgency): string; overload;
 function dbgs(f: TMessageLineFlag): string; overload;
 function dbgs(Flags: TMessageLineFlags): string; overload;
@@ -676,6 +678,13 @@ begin
   else if Line1.Index>Line2.Index then exit(1);
 
   Result:=0;
+end;
+
+function StrToMsgLineUrgency(const s: string): TMessageLineUrgency;
+begin
+  for Result:=Low(TMessageLineUrgency) to high(TMessageLineUrgency) do
+    if SysUtils.CompareText(s,MessageLineUrgencyNames[Result])=0 then exit;
+  Result:=mluNone;
 end;
 
 function dbgs(u: TMessageLineUrgency): string;
