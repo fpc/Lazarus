@@ -325,7 +325,6 @@ type
     procedure FilterMsgOfTypeMenuItemClick(Sender: TObject);
     procedure FilterUrgencyMenuItemClick(Sender: TObject);
     procedure HideSearchSpeedButtonClick(Sender: TObject);
-    procedure MsgCtrlPopupMenuClose(Sender: TObject);
     procedure MsgCtrlPopupMenuPopup(Sender: TObject);
     procedure OnSelectFilterClick(Sender: TObject);
     procedure OpenToolsOptionsMenuItemClick(Sender: TObject);
@@ -3018,11 +3017,6 @@ begin
   SearchPanel.Visible:=false;
   MessagesCtrl.SearchText:='';
   SearchEdit.Text:=GetDefaultSearchText;
-end;
-
-procedure TMessagesFrame.MsgCtrlPopupMenuClose(Sender: TObject);
-begin
-  IDEQuickFixes.ClearLines;
 end;
 
 procedure TMessagesFrame.CopyFilenameMenuItemClick(Sender: TObject);

@@ -125,10 +125,10 @@ type
   public
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
-    procedure OnPopupMenu(aParentMenuItem: TIDEMenuSection);
+    procedure ClearLines;
     procedure SetMsgLines(aMsg: TMessageLine);
     procedure AddMsgLine(aMsg: TMessageLine);
-    procedure ClearLines;
+    procedure OnPopupMenu(aParentMenuItem: TIDEMenuSection);
     function AddMenuItem(Fix: TMsgQuickFix; Msg: TMessageLine; aCaption: string;
       aTag: PtrInt=0): TIDEMenuCommand; override;
     function OpenMsg(Msg: TMessageLine): boolean;

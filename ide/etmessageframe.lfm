@@ -83,7 +83,6 @@ object MessagesFrame: TMessagesFrame
   end
   object MsgCtrlPopupMenu: TPopupMenu
     OnPopup = MsgCtrlPopupMenuPopup
-    OnClose = MsgCtrlPopupMenuClose
     left = 240
     top = 25
   end
