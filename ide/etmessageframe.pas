@@ -1511,10 +1511,15 @@ begin
     if FirstLineIsNotSelectedMessage and SecondLineIsNotSelectedMessage then begin
       // the first two lines are normal messages, not selected
       // => paint view header hint
-      NodeRect:=Rect(0,0,ClientWidth,ItemHeight);
+      NodeRect:=Rect(0,0,ClientWidth,ItemHeight div 2);
+      Canvas.Brush.Color:=HeaderBackground[View.ToolState];
+      Canvas.Brush.Style:=bsSolid;
+      Canvas.FillRect(NodeRect);
+      NodeRect:=Rect(0,NodeRect.Bottom,ClientWidth,ItemHeight);
       Canvas.GradientFill(NodeRect,HeaderBackground[View.ToolState],
         AutoHeaderBackground,gdVertical);
       Canvas.Pen.Style:=psDash;
+      NodeRect:=Rect(0,0,ClientWidth,ItemHeight);
       Canvas.Line(NodeRect.Left,NodeRect.Bottom,NodeRect.Right,NodeRect.Bottom);
       Canvas.Pen.Style:=psSolid;
       DrawText(NodeRect,'...'+GetHeaderText(View),false,clDefault);
