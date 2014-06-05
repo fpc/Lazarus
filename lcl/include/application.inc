@@ -1373,6 +1373,8 @@ procedure TApplication.HideHint;
 begin
   if FHintWindow <> nil then
     FHintWindow.Visible := False;
+  FHintControl := nil;
+  FHintRect := Rect(0,0,0,0);
 end;
 
 {------------------------------------------------------------------------------
