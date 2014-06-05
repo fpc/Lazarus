@@ -46,7 +46,7 @@ uses
 {$ENDIF}
   // FPC + LCL
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
-  Laz2_XMLCfg, LazLogger, LazFileUtils, InterfaceBase,
+  Laz2_XMLCfg, LazLogger, LazFileUtils, InterfaceBase, LazUTF8,
   // codetools
   AVL_Tree, DefineTemplates, CodeCache,
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
@@ -466,14 +466,13 @@ begin
           while (StartPos>1) and (Result[StartPos-1] in [' ',#9]) do
             dec(StartPos);
           //DebugLn(['ExtractFPCParamsForBuildAll Removing: ',copy(Result,StartPos,EndPos-StartPos)]);
-          while (EndPos<=length(Result)) and (Result[EndPos] in [' ',#9]) do
-            inc(EndPos);
           System.Delete(Result,StartPos,EndPos-StartPos);
           EndPos:=StartPos;
         end;
       end;
     end;
   end;
+  Result:=UTF8Trim(Result,[]);
 end;
 
 function ExtractSearchPathsFromFPCParams(const CompParams: string;
@@ -546,7 +545,7 @@ begin
     end;
   end;
   if CreateReduced then
-    AllPaths.Values['Reduced']:=Reduced;
+    AllPaths.Values['Reduced']:=UTF8Trim(Reduced,[]);
 end;
 
 function RemoveFPCVerbosityParams(const CompParams: string): string;
@@ -567,14 +566,13 @@ begin
           while (StartPos>1) and (Result[StartPos-1] in [' ',#9]) do
             dec(StartPos);
           //DebugLn(['ExtractFPCVerbosityParams Removing: ',copy(Result,StartPos,EndPos-StartPos)]);
-          while (EndPos<=length(Result)) and (Result[EndPos] in [' ',#9]) do
-            inc(EndPos);
           System.Delete(Result,StartPos,EndPos-StartPos);
           EndPos:=StartPos;
         end;
       end;
     end;
   end;
+  Result:=UTF8Trim(Result,[]);
 end;
 
 { TLazPackageGraph }
