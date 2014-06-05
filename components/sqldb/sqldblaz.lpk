@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="SQLDBLaz"/>
@@ -14,6 +14,7 @@
         </SyntaxOptions>
       </Parsing>
       <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
