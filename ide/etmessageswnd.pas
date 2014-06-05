@@ -78,6 +78,7 @@ type
 
     // misc
     procedure SourceEditorPopup(MarkLine: TSynEditMarkLine; const LogicalCaretXY: TPoint);
+    procedure SourceEditorHint(MarkLine: TSynEditMarkLine; var HintStr: string);
 
     // options
     procedure ApplyIDEOptions;
@@ -161,6 +162,12 @@ procedure TMessagesView.SourceEditorPopup(MarkLine: TSynEditMarkLine;
   const LogicalCaretXY: TPoint);
 begin
   MessagesFrame1.SourceEditorPopup(MarkLine,LogicalCaretXY);
+end;
+
+procedure TMessagesView.SourceEditorHint(MarkLine: TSynEditMarkLine;
+  var HintStr: string);
+begin
+  MessagesFrame1.SourceEditorHint(MarkLine,HintStr);
 end;
 
 procedure TMessagesView.Clear;

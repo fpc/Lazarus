@@ -7394,8 +7394,10 @@ begin
   AHint:=TheHint;
   FHintMousePos := Mouse.CursorPos;
   if LazarusHelp.CreateHint(FHintWindow,ScreenPos,BaseURL,AHint,HintWinRect) then
+  begin
     FHintWindow.ActivateHint(HintWinRect,aHint);
-  FMouseHideHintTimer.Enabled := True;
+    FMouseHideHintTimer.Enabled := True;
+  end;
 end;
 
 procedure TSourceNotebook.HideHint;
@@ -8627,6 +8629,11 @@ begin
           if HintStr<>'' then HintStr:=HintStr+LineEnding;
           HintStr:=HintStr+CurHint;
         end;
+
+        {$IFDEF EnableNewExtTools}
+        if (MessagesView<>nil) then
+          MessagesView.SourceEditorHint(MLine,HintStr);
+        {$ENDIF}
       end;
 
       if HintStr<>'' then

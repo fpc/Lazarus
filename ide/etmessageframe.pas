@@ -374,6 +374,8 @@ type
     procedure ApplyMultiSrcChanges(Changes: TETMultiSrcChanges);
     procedure SourceEditorPopup(MarkLine: TSynEditMarkLine;
       const LogicalCaretXY: TPoint);
+    procedure SourceEditorHint(MarkLine: TSynEditMarkLine;
+      var HintStr: string);
 
     // message lines
     procedure SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
@@ -3320,6 +3322,25 @@ begin
     IDEQuickFixes.OnPopupMenu(SrcEditMenuSectionFirstDynamic);
     if mcoSrcEditPopupSelect in MessagesCtrl.Options then
       MessagesCtrl.Select(BestMark.MsgLine,true);
+  end;
+end;
+
+procedure TMessagesFrame.SourceEditorHint(MarkLine: TSynEditMarkLine;
+  var HintStr: string);
+var
+  i: Integer;
+  CurMark: TETMark;
+  Msg: TMessageLine;
+  CurHint: String;
+begin
+  if MarkLine=nil then exit;
+  for i:=0 to MarkLine.Count-1 do begin
+    CurMark:=TETMark(MarkLine[i]);
+    if not (CurMark is TETMark) then continue;
+    Msg:=CurMark.MsgLine;
+    CurHint:=MessagesCtrl.UrgencyToStr(Msg.Urgency)+': '+Msg.Msg;
+    if HintStr<>'' then HintStr:=HintStr+LineEnding;
+    HintStr:=HintStr+CurHint;
   end;
 end;
 
