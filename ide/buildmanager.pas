@@ -2515,17 +2515,19 @@ var
   Target: String;
   ActiveMode: String;
 begin
-  if Project1=nil then exit;
   Target:=GetModeMatrixTarget(Sender);
-  ActiveMode:=Project1.ActiveBuildMode.Identifier;
-  //debugln(['TBuildManager.AppendMatrixCustomOption START Types=',bmgtEnvironment in Types,' Target=',Target,' ActiveMode=',ActiveMode,' Options="',Options,'"']);
+  if Project1=nil then
+    ActiveMode:='default'
+  else
+    ActiveMode:=Project1.ActiveBuildMode.Identifier;
   if bmgtEnvironment in Types then
     EnvironmentOptions.BuildMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
-  if bmgtProject in Types then
-    Project1.BuildModes.SharedMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
-  if bmgtSession in Types then
-    Project1.BuildModes.SessionMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
-  //debugln(['TBuildManager.AppendMatrixCustomOption END Types=',bmgtEnvironment in Types,' Target=',Target,' ActiveMode=',ActiveMode,' Options="',Options,'"']);
+  if Project1<>nil then begin
+    if bmgtProject in Types then
+      Project1.BuildModes.SharedMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
+    if bmgtSession in Types then
+      Project1.BuildModes.SessionMatrixOptions.AppendCustomOptions(Target,ActiveMode,Options);
+  end;
 end;
 
 procedure TBuildManager.GetMatrixOutputDirectoryOverride(Sender: TObject;

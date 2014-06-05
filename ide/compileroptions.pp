@@ -997,13 +997,7 @@ end;
 
 function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
 begin
-  Result:=OldOptions;
-  if AddOptions='' then exit;
-  if (OldOptions<>'') and (OldOptions[length(OldOptions)]<>' ')
-  and (AddOptions[1]<>' ') then
-    Result:=Result+' '+AddOptions
-  else
-    Result:=Result+AddOptions;
+  Result:=MergeCustomOptions(OldOptions,AddOptions);
 end;
 
 function MergeCustomOptions(const OldOptions, AddOptions: string): string;
@@ -1012,9 +1006,8 @@ begin
   if AddOptions='' then exit;
   if (OldOptions<>'') and (OldOptions[length(OldOptions)]<>' ')
   and (AddOptions[1]<>' ') then
-    Result:=Result+' '+AddOptions
-  else
-    Result:=Result+AddOptions;
+    Result+=' ';
+  Result+=AddOptions;
 end;
 
 function ConvertSearchPathToCmdLine(
@@ -2225,11 +2218,12 @@ function TBaseCompilerOptions.GetInheritedOption(
 var
   AddOptionsList: TFPList; // list of TAdditionalCompilerOptions
   p: TCompilerOptionsParseType;
-  s: String;
+  ParsedValue, UnparsedValue: String;
 begin
   if (fInheritedOptParseStamps<>CompilerParseStamp)
   then begin
-    // update inherited options
+    // update all three inherited options:
+    // coptUnparsed, coptParsed and coptParsedPlatformIndependent
     ClearInheritedOptions;
     AddOptionsList:=nil;
     GetInheritedCompilerOptions(AddOptionsList);
@@ -2241,19 +2235,21 @@ begin
       AddOptionsList.Free;
     end;
     // add project additions
-    if (Option=icoCustomOptions) and Assigned(OnAppendCustomOption)
-    and (Parsed<>coptParsedPlatformIndependent) // platform independent includes project independent
-    then begin
-      s:='';
-      OnAppendCustomOption(Self,s,bmgtAll);
-      if (Parsed=coptParsed) and Assigned(ParsedOpts.OnLocalSubstitute) then
+    if Assigned(OnAppendCustomOption) then begin
+      UnparsedValue:='';
+      OnAppendCustomOption(Self,UnparsedValue,bmgtAll);
+      if Assigned(ParsedOpts.OnLocalSubstitute) then
       begin
-        //DebugLn(['TParsedCompilerOptions.DoParseOption local "',s,'" ...']);
-        s:=ParsedOpts.OnLocalSubstitute(s,false);
-      end;
-      s:=SpecialCharsToSpaces(s,true);
-      fInheritedOptions[Parsed][Option]:=
-                        MergeCustomOptions(fInheritedOptions[Parsed][Option],s);
+        //DebugLn(['TParsedCompilerOptions.DoParseOption local "',ParsedValue,'" ...']);
+        ParsedValue:=ParsedOpts.OnLocalSubstitute(UnparsedValue,false);
+      end else
+        ParsedValue:=UnparsedValue;
+      ParsedValue:=SpecialCharsToSpaces(ParsedValue,true);
+      UnparsedValue:=SpecialCharsToSpaces(UnparsedValue,true);
+      fInheritedOptions[coptParsed][icoCustomOptions]:=
+        MergeCustomOptions(fInheritedOptions[coptParsed][icoCustomOptions],ParsedValue);
+      fInheritedOptions[coptUnparsed][icoCustomOptions]:=
+        MergeCustomOptions(fInheritedOptions[coptUnparsed][icoCustomOptions],UnparsedValue);
     end;
     fInheritedOptParseStamps:=CompilerParseStamp;
   end;
@@ -2579,14 +2575,8 @@ begin
   // inherited custom options
   InhCustomOptions:=GetInheritedOption(icoCustomOptions,true,Parsed);
 
-  Result:=InhCustomOptions;
   // concatenate
-  if CurCustomOptions<>'' then
-  begin
-    if Result<>'' then
-      Result+=' ';
-    Result+=CurCustomOptions;
-  end;
+  Result:=MergeCustomOptions(InhCustomOptions,CurCustomOptions);
 
   // eliminate line breaks
   Result:=SpecialCharsToSpaces(Result,true);
@@ -3670,8 +3660,7 @@ begin
 
   // Inherited and parser options
   FDefaultMakeOptionsFlags := CompOpts.FDefaultMakeOptionsFlags;
-  fInheritedOptions := CompOpts.fInheritedOptions;
-  fInheritedOptParseStamps := CompOpts.fInheritedOptParseStamps;
+  ClearInheritedOptions;
   ParsedOpts.Assign(CompOpts.ParsedOpts);
   FStorePathDelim := CompOpts.FStorePathDelim;
 
