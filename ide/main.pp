@@ -85,9 +85,11 @@ uses
   IDEProtocol,
   // compile
   CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
-  ApplicationBundle, ImExportCompilerOpts, InfoBuild,
+  ApplicationBundle, ImExportCompilerOpts,
   {$IFDEF EnableNewExtTools}
   ExtTools,
+  {$ELSE}
+  InfoBuild,
   {$ENDIF}
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg, 
@@ -1380,7 +1382,9 @@ begin
   DebuggerOptions := TDebuggerOptions.Create;
 
   MainBuildBoss.SetupInputHistories;
+  {$IFNDEF EnableNewExtTools}
   CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
+  {$ENDIF}
 
   CreateDirUTF8(GetProjectSessionsConfigPath);
 
@@ -4882,7 +4886,9 @@ begin
   if Restore then exit;
   // invalidate cached substituted macros
   IncreaseCompilerParseStamp;
+  {$IFNDEF EnableNewExtTools}
   CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
+  {$ENDIF}
   UpdateDefaultPasFileExt;
   if OldLanguage <> EnvironmentOptions.LanguageID then
   begin
@@ -6844,7 +6850,9 @@ begin
       end;
     end;
 
+    {$IFNDEF EnableNewExtTools}
     CompileProgress.CreateDialog(OwningComponent, Project1.MainFilename, lisInfoBuildCompile);
+    {$ENDIF}
 
     // clear old error lines
     SourceEditorManager.ClearErrorLines;
@@ -6880,7 +6888,9 @@ begin
       if Result <> mrOk then
       begin
         debugln(['TMainIDE.DoBuildProject PkgBoss.DoCompileProjectDependencies failed']);
+        {$IFNDEF EnableNewExtTools}
         CompileProgress.Ready(lisInfoBuildError);
+        {$ENDIF}
         exit;
       end;
       Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiled);
@@ -6895,7 +6905,9 @@ begin
     if Result<>mrOk then
     begin
       debugln(['TMainIDE.DoBuildProject DoWarnAmbiguousFiles negative']);
+      {$IFNDEF EnableNewExtTools}
       CompileProgress.Ready(lisInfoBuildError);
+      {$ENDIF}
       exit;
     end;
 
@@ -6910,14 +6922,18 @@ begin
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if Result=mrNo then begin
           debugln(['TMainIDE.DoBuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
+          {$IFNDEF EnableNewExtTools}
           CompileProgress.Ready(lisInfoBuildError);
+          {$ENDIF}
           Result:=mrOk;
           exit;
         end;
         if Result<>mrYes then
         begin
           debugln(['TMainIDE.DoBuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
+          {$IFNDEF EnableNewExtTools}
           CompileProgress.Ready(lisInfoBuildError);
+          {$ENDIF}
           exit;
         end;
       end;
@@ -6999,7 +7015,9 @@ begin
         if Result<>mrOk then
         begin
           debugln(['TMainIDE.DoBuildProject CompilerOptions.ExecuteBefore.Execute failed']);
+          {$IFNDEF EnableNewExtTools}
           CompileProgress.Ready(lisInfoBuildError);
+          {$ENDIF}
           exit;
         end;
       end;
@@ -7032,7 +7050,9 @@ begin
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,false);
         if Result<>mrOk then begin
           debugln(['TMainIDE.DoBuildProject SaveStateFile before compile failed']);
+          {$IFNDEF EnableNewExtTools}
           CompileProgress.Ready(lisInfoBuildError);
+          {$ENDIF}
           exit;
         end;
 
@@ -7048,8 +7068,8 @@ begin
           Project1.LastCompilerFileDate:=FileAgeCached(CompilerFilename);
           {$IFNDEF EnableNewExtTools}
           DoJumpToCompilerMessage(not EnvironmentOptions.ShowCompileDialog);
-          {$ENDIF}
           CompileProgress.Ready(lisInfoBuildError);
+          {$ENDIF}
           debugln(['TMainIDE.DoBuildProject Compile failed']);
           exit;
         end;
@@ -7057,7 +7077,9 @@ begin
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,true);
         if Result<>mrOk then begin
           debugln(['TMainIDE.DoBuildProject SaveStateFile after compile failed']);
+          {$IFNDEF EnableNewExtTools}
           CompileProgress.Ready(lisInfoBuildError);
+          {$ENDIF}
           exit;
         end;
 
@@ -7065,7 +7087,9 @@ begin
         Result:=UpdateProjectPOFile(Project1);
         if Result<>mrOk then begin
           debugln(['TMainIDE.DoBuildProject UpdateProjectPOFile failed']);
+          {$IFNDEF EnableNewExtTools}
           CompileProgress.Ready(lisInfoBuildError);
+          {$ENDIF}
           exit;
         end;
 
@@ -7092,7 +7116,9 @@ begin
         if Result<>mrOk then
         begin
           debugln(['TMainIDE.DoBuildProject CompilerOptions.ExecuteAfter.Execute failed']);
+          {$IFNDEF EnableNewExtTools}
           CompileProgress.Ready(lisInfoBuildError);
+          {$ENDIF}
           exit;
         end;
       end;
@@ -7103,8 +7129,8 @@ begin
     // add success message
     MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
                                         Project1.GetTitleOrName, '"']),'',-1);
-    {$ENDIF}
     CompileProgress.Ready(lisInfoBuildSuccess);
+    {$ENDIF}
   finally
     // check sources
     DoCheckFilesOnDisk;
@@ -7199,8 +7225,10 @@ begin
   Result := mrCancel;
 
   Result := DebugBoss.StartDebugging;
+  {$IFNDEF EnableNewExtTools}
   if Result = mrOk then
     CompileProgress.Hide();
+  {$ENDIF}
 
   DebugLn('[TMainIDE.DoRunProject] END');
 end;
@@ -7264,7 +7292,9 @@ const
 var CanClose: boolean;
 begin
   DebugLn(['TMainIDE.DoRestart ']);
+  {$IFNDEF EnableNewExtTools}
   CompileProgress.Close;
+  {$ENDIF}
   CanClose:=true;
   MainIDEBar.OnCloseQuery(Self, CanClose);
   if not CanClose then exit;
@@ -7542,12 +7572,11 @@ begin
     DoCheckFilesOnDisk;
     {$IFNDEF EnableNewExtTools}
     MessagesView.EndBlock;
-    {$ENDIF}
-
     if Result in [mrOK, mrIgnore] then
       CompileProgress.Ready(lisinfoBuildSuccess)
     else
       CompileProgress.Ready(lisInfoBuildError);
+    {$ENDIF}
   end;
 end;
 
@@ -7621,7 +7650,9 @@ begin
       BuildLazProfiles.CurrentIndex:=RealCurInd;
     end;
     if MayNeedRestart and BuildLazProfiles.RestartAfterBuild then begin
+      {$IFNDEF EnableNewExtTools}
       CompileProgress.Close;
+      {$ENDIF}
       mnuRestartClicked(nil);
     end;
   end;
@@ -7717,7 +7748,9 @@ begin
     DirectiveList.Free;
   end;
 
+  {$IFNDEF EnableNewExtTools}
   CompileProgress.Close;
+  {$ENDIF}
 end;
 
 function TMainIDE.DoRunFile: TModalResult;

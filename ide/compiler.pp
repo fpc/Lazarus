@@ -43,9 +43,9 @@ uses
   {$IFDEF EnableNewExtTools}
   IDEExternToolIntf,
   {$ELSE}
-  UTF8Process, OutputFilter,
+  UTF8Process, OutputFilter, InfoBuild,
   {$ENDIF}
-  InfoBuild, IDEMsgIntf, CompOptsIntf, LazIDEIntf,
+  IDEMsgIntf, CompOptsIntf, LazIDEIntf,
   DefineTemplates, TransferMacros, EnvironmentOpts, LazFileUtils;
 
 type
@@ -286,7 +286,9 @@ begin
     DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
   // if we want to show the compile progress, it's now time to show the dialog
+  {$IFNDEF EnableNewExtTools}
   CompileProgress.Show;
+  {$ENDIF}
 
   try
     CheckIfFileIsExecutable(CompilerFilename);
