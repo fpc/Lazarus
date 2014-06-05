@@ -349,6 +349,7 @@ type
     fMsgViewDblClickJumps: boolean;
     fMsgViewFocus: boolean;
     FHideMessagesIcons: boolean;
+    FMsgViewStayOnTop: boolean;
     FMsgViewShowTranslations: boolean;
     FMsgViewFilenameStyle: TMsgWndFileNameStyle;
     fMsgViewColors: array[TMsgWndColor] of TColor;
@@ -734,6 +735,7 @@ type
     property MsgViewFocus: boolean read fMsgViewFocus
       write fMsgViewFocus; // when showing the message window, focus it
     property HideMessagesIcons: boolean read fHideMessagesIcons write fHideMessagesIcons;
+    property MsgViewStayOnTop: boolean read FMsgViewStayOnTop write FMsgViewStayOnTop;
     property MsgViewShowTranslations: boolean read FMsgViewShowTranslations
              write FMsgViewShowTranslations;
     property MsgViewFilenameStyle: TMsgWndFileNameStyle read FMsgViewFilenameStyle
@@ -983,6 +985,7 @@ begin
   fMsgViewDblClickJumps:=true;
   fMsgViewFocus:=DefaultMsgViewFocus;
   FHideMessagesIcons:=false;
+  FMsgViewStayOnTop:=false;
   FMsgViewShowTranslations:=false;
   FMsgViewFilenameStyle:=mwfsShort;
   for c:=low(TMsgWndColor) to high(TMsgWndColor) do
@@ -1440,6 +1443,8 @@ begin
         Path+'MsgViewFocus/Value',DefaultMsgViewFocus);
       FHideMessagesIcons:=XMLConfig.GetValue(
         Path+'Desktop/HideMessagesIcons/Value',false);
+      FMsgViewStayOnTop:=XMLConfig.GetValue(
+        Path+'MsgView/StayOnTop/Value',false);
       FMsgViewShowTranslations:=XMLConfig.GetValue(
         Path+'MsgView/ShowTranslations/Value',false);
       FMsgViewFilenameStyle:=StrToMsgWndFilenameStyle(XMLConfig.GetValue(
@@ -1821,6 +1826,8 @@ begin
         fMsgViewFocus,DefaultMsgViewFocus);
       XMLConfig.SetDeleteValue(Path+'Desktop/HideMessagesIcons/Value',
         FHideMessagesIcons,false);
+      XMLConfig.SetDeleteValue(
+        Path+'MsgView/StayOnTop/Value',FMsgViewStayOnTop,false);
       XMLConfig.SetDeleteValue(
         Path+'MsgView/ShowTranslations/Value',FMsgViewShowTranslations,false);
       XMLConfig.SetDeleteValue(Path+'MsgView/Filename/Style',

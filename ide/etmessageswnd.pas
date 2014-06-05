@@ -45,6 +45,7 @@ type
     MessagesFrame1: TMessagesFrame;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure OnMsgCtrlOptsChanged(Sender: TObject);
     function OnOpenMessage(Sender: TObject; Msg: TMessageLine): boolean;
   private
     function GetDblClickJumps: boolean;
@@ -101,6 +102,7 @@ begin
   Caption:='Messages';
 
   MessagesFrame1.MessagesCtrl.OnOpenMessage:=@OnOpenMessage;
+  MessagesFrame1.MessagesCtrl.OnOptionsChanged:=@OnMsgCtrlOptsChanged;
 
   ActiveControl:=MessagesFrame1.MessagesCtrl;
 end;
@@ -108,6 +110,14 @@ end;
 procedure TMessagesView.FormDestroy(Sender: TObject);
 begin
   IDEMessagesWindow:=nil;
+end;
+
+procedure TMessagesView.OnMsgCtrlOptsChanged(Sender: TObject);
+begin
+  if mcoWndStayOnTop in MessagesFrame1.MessagesCtrl.Options then
+    FormStyle:=fsStayOnTop
+  else
+    FormStyle:=fsNormal;
 end;
 
 function TMessagesView.OnOpenMessage(Sender: TObject; Msg: TMessageLine
@@ -253,6 +263,7 @@ end;
 procedure TMessagesView.ApplyIDEOptions;
 begin
   MessagesFrame1.ApplyIDEOptions;
+  OnMsgCtrlOptsChanged(Self);
 end;
 
 function TMessagesView.GetDblClickJumps: boolean;

@@ -120,8 +120,9 @@ type
     mcoShowMessageID,  // show message ID
     mcoShowMsgIcons,
     mcoAutoOpenFirstError, // when all views stopped, open first error
-    mcoSrcEditPopupSelect // when user right clicks on gutter mark,
-                          // scroll and select message of the quickfixes
+    mcoSrcEditPopupSelect, // when user right clicks on gutter mark,
+                           // scroll and select message of the quickfixes
+    mcoWndStayOnTop        // use fsStayOnTop
     );
   TMsgCtrlOptions = set of TMsgCtrlOption;
 const
@@ -146,6 +147,7 @@ type
     FItemHeight: integer;
     FOnAllViewsStopped: TNotifyEvent;
     FOnOpenMessage: TOnOpenMessageLine;
+    FOnOptionsChanged: TNotifyEvent;
     FOptions: TMsgCtrlOptions;
     FScrollLeft: integer;
     FScrollTop: integer;
@@ -291,6 +293,7 @@ type
     property ItemHeight: integer read FItemHeight write SetItemHeight;
     property OnAllViewsStopped: TNotifyEvent read FOnAllViewsStopped write FOnAllViewsStopped;
     property OnOpenMessage: TOnOpenMessageLine read FOnOpenMessage write FOnOpenMessage;
+    Property OnOptionsChanged: TNotifyEvent read FOnOptionsChanged write FOnOptionsChanged;
     property Options: TMsgCtrlOptions read FOptions write SetOptions default MCDefaultOptions;
     property SearchText: string read FSearchText write SetSearchText;
     property SelectedLine: integer read GetSelectedLine write SetSelectedLine; // -1=header line
@@ -342,6 +345,7 @@ type
     procedure SrcEditLinesChanged(Sender: TObject);
     procedure TranslateMenuItemClick(Sender: TObject);
     procedure RemoveFilterMsgTypeClick(Sender: TObject);
+    procedure WndStayOnTopMenuItemClick(Sender: TObject);
   private
     function AllMessagesAsString(const OnlyShown: boolean): String;
     function GetAboutView: TLMsgWndView;
@@ -432,6 +436,7 @@ var
   MsgEditHelpMenuItem: TIDEMenuCommand;
   MsgClearMenuItem: TIDEMenuCommand;
   MsgOptionsMenuSection: TIDEMenuSection;
+    MsgWndStayOnTopMenuItem: TIDEMenuCommand;
     MsgFilenameStyleMenuSection: TIDEMenuSection;
       MsgFileStyleShortMenuItem: TIDEMenuCommand;
       MsgFileStyleRelativeMenuItem: TIDEMenuCommand;
@@ -507,6 +512,7 @@ begin
     Parent:=MsgOptionsMenuSection;
     Parent.ChildsAsSubMenu:=true;
     Parent.Caption:='Options ...';
+    MsgWndStayOnTopMenuItem:=RegisterIDEMenuCommand(Parent,'Window stay on top','Window stays on top');
     MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Parent,'Filename Styles');
       Parent:=MsgFilenameStyleMenuSection;
       Parent.ChildsAsSubMenu:=true;
@@ -1121,6 +1127,8 @@ begin
   FOptions:=NewOptions;
   if [mcoShowStats,mcoShowTranslated,mcoShowMessageID,mcoShowMsgIcons]*ChangedOptions<>[] then
     Invalidate;
+  if Assigned(OnOptionsChanged) then
+    OnOptionsChanged(Self);
 end;
 
 procedure TMessagesCtrl.SetScrollLeft(AValue: integer);
@@ -2753,6 +2761,8 @@ begin
     MsgClearMenuItem.Enabled:=View<>nil;
 
     // Options
+    MsgWndStayOnTopMenuItem.Checked:=mcoWndStayOnTop in MessagesCtrl.Options;
+    MsgWndStayOnTopMenuItem.OnClick:=@WndStayOnTopMenuItemClick;
     MsgFileStyleShortMenuItem.Checked:=MessagesCtrl.FilenameStyle=mwfsShort;
     MsgFileStyleShortMenuItem.OnClick:=@FileStyleMenuItemClick;
     MsgFileStyleRelativeMenuItem.Checked:=MessagesCtrl.FilenameStyle=mwfsRelative;
@@ -2888,7 +2898,7 @@ end;
 
 procedure TMessagesFrame.SrcEditLinesChanged(Sender: TObject);
 begin
-  debugln(['TMessagesFrame.SrcEditLinesChanged ',DbgSName(Sender)]);
+  //debugln(['TMessagesFrame.SrcEditLinesChanged ',DbgSName(Sender)]);
   if Sender is TETSynPlugin then
     ApplySrcChanges(TETSynPlugin(Sender).Changes);
 end;
@@ -2909,6 +2919,15 @@ begin
   i:=TIDEMenuCommand(Sender).Tag;
   if i<MessagesCtrl.ActiveFilter.FilterMsgTypeCount then
     MessagesCtrl.ActiveFilter.DeleteFilterMsgType(i);
+end;
+
+procedure TMessagesFrame.WndStayOnTopMenuItemClick(Sender: TObject);
+begin
+  if mcoWndStayOnTop in MessagesCtrl.Options then
+    MessagesCtrl.Options:=MessagesCtrl.Options-[mcoWndStayOnTop]
+  else
+    MessagesCtrl.Options:=MessagesCtrl.Options+[mcoWndStayOnTop];
+  EnvironmentOptions.MsgViewStayOnTop:=mcoWndStayOnTop in MessagesCtrl.Options;
 end;
 
 function TMessagesFrame.AllMessagesAsString(const OnlyShown: boolean): String;

@@ -4727,10 +4727,6 @@ begin
 
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.Assign(ObjectInspector1);
-  {$IFDEF EnableNewExtTools}
-  if MessagesView<>nil then
-    TheEnvironmentOptions.MsgViewDblClickJumps:=MessagesView.DblClickJumps;
-  {$ENDIF}
 end;
 
 procedure TMainIDE.PackageTranslated(APackage: TLazPackage);
