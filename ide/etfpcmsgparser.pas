@@ -49,6 +49,7 @@ const
   FPCMsgIDErrorWhileCompilingResources = 9029;
   FPCMsgIDCallingResourceCompiler = 9028;
   FPCMsgIDThereWereErrorsCompiling = 10026;
+  FPCMsgIDMethodIdentifierExpected = 3047;
   FPCMsgIDIdentifierNotFound = 5000;
 
   FPCMsgAttrWorkerDirectory = 'WD';
@@ -154,6 +155,7 @@ type
     fMsgItemCompilationAborted: TFPCMsgItem;
     fMsgItemErrorWhileCompilingResources: TFPCMsgItem;
     fMsgItemErrorWhileLinking: TFPCMsgItem;
+    fMsgItemMethodIdentifierExpected: TFPCMsgItem;
     fMsgItemIdentifierNotFound: TFPCMsgItem;
     fMsgItemThereWereErrorsCompiling: TFPCMsgItem;
     fMsgItemUnitNotUsed: TFPCMsgItem;
@@ -1918,9 +1920,12 @@ procedure TIDEFPCParser.ImproveMsgIdentifierPosition(SourceOK: boolean;
   aSynchronized: boolean; MsgLine: TMessageLine);
 { FPC report the token after the identifier
   => fix the position
-  For example:
-    unit1.pas(42,5) Error: (5000) Identifier not found "i"
+  Examples:
     "  i :="
+    unit1.pas(42,5) Error: (5000) Identifier not found "i"
+
+    "procedure TMyClass.DoIt  ;"
+    test.pas(7,26) Error: (3047) method identifier expected
 }
 var
   LineRange: TLineRange;
@@ -1929,37 +1934,63 @@ var
   Src: String;
   Identifier: String;
 begin
-  if (not IsMsgID(MsgLine,FPCMsgIDIdentifierNotFound,fMsgItemIdentifierNotFound))
-  or (MsgLine.Column<1) or (MsgLine.Line<1) then
+  Col:=MsgLine.Column;
+  Line:=MsgLine.Line;
+  if (Col<1) or (Line<1) then
     exit;
-  if (MsgLine.Line=1) and (MsgLine.Column=1) then exit;
+  if (Line=1) and (Col=1) then exit;
+  if (not IsMsgID(MsgLine,FPCMsgIDIdentifierNotFound,fMsgItemIdentifierNotFound))
+  and (not IsMsgID(MsgLine,FPCMsgIDMethodIdentifierExpected,fMsgItemMethodIdentifierExpected))
+  then
+    exit;
   if (not SourceOK) then begin
     if (not aSynchronized) then
       NeedSynchronize:=true;
     exit;
   end;
-  Line:=MsgLine.Line;
   //DebuglnThreadLog(['Old Line=',Line,' ',MsgLine.Column]);
   if Line>=fCurSource.LineCount then exit;
-  Identifier:=GetFPCMsgValue1(MsgLine);
-  if Identifier='' then exit;
+  if MsgLine.MsgID=FPCMsgIDIdentifierNotFound then begin
+    Identifier:=GetFPCMsgValue1(MsgLine);
+    if Identifier='' then exit;
+  end else
+    Identifier:='';
   fCurSource.GetLineRange(Line-1,LineRange);
   //DebuglnThreadLog(['Old Range=',LineRange.StartPos,'-',LineRange.EndPos,' Str="',copy(fCurSource.Source,LineRange.StartPos,LineRange.EndPos-LineRange.StartPos),'"']);
-  Col:=Min(MsgLine.Column,LineRange.EndPos-LineRange.StartPos+1);
+  Col:=Min(Col,LineRange.EndPos-LineRange.StartPos+1);
   p:=LineRange.StartPos+Col-1;
   Src:=fCurSource.Source;
-  if CompareIdentifiers(PChar(Identifier),@Src[p])=0 then begin
-    // already pointing at the right identifier
-    exit;
+  if Identifier<>'' then begin
+    // message is about a specific identifier
+    if CompareIdentifiers(PChar(Identifier),@Src[p])=0 then begin
+      // already pointing at the right identifier
+      exit;
+    end;
+  end else begin
+    // message is about any one identifier
+    if IsIdentStartChar[Src[p]] then begin
+      // already pointing at an identifier
+      exit;
+    end;
   end;
   // go to prior token
   //DebuglnThreadLog(['New Line=',Line,' Col=',Col,' p=',p]);
   ReadPriorPascalAtom(Src,p,AtomEnd,false);
   if p<1 then exit;
-  if CompareIdentifiers(PChar(Identifier),@Src[p])<>0 then begin
-    // the prior token is not the identifier neither
-    // => don't know
-    exit;
+  if Identifier<>'' then begin
+    // message is about a specific identifier
+    if CompareIdentifiers(PChar(Identifier),@Src[p])<>0 then begin
+      // the prior token is not the identifier neither
+      // => don't know
+      exit;
+    end;
+  end else begin
+    // message is about any one identifier
+    if not IsIdentStartChar[Src[p]] then begin
+      // the prior token is not an identifier neither
+      // => don't know
+      exit;
+    end;
   end;
   fCurSource.AbsoluteToLineCol(p,Line,Col);
   //DebuglnThreadLog(['New Line=',Line,' Col=',Col,' p=',p]);
