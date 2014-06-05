@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="lazdatadict"/>
@@ -14,10 +14,11 @@
         </SyntaxOptions>
       </Parsing>
       <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="15">
+    <Files Count="14">
       <Item1>
         <Filename Value="frmconfprojdatadict.lfm"/>
         <Type Value="LFM"/>
@@ -72,13 +73,9 @@
         <UnitName Value="frmgeneratedcode"/>
       </Item13>
       <Item14>
-        <Filename Value="reglazdatadict.lrs"/>
-        <Type Value="LRS"/>
-      </Item14>
-      <Item15>
         <Filename Value="ldd_consts.pas"/>
         <UnitName Value="ldd_consts"/>
-      </Item15>
+      </Item14>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
@@ -104,7 +101,7 @@
       </Item5>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

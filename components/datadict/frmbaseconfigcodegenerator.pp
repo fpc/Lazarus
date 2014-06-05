@@ -260,12 +260,14 @@ end;
 Function TBaseConfigGeneratorForm.MoveFieldUp : Boolean;
 
 begin
+  Result:=false;
   With CLBFields do
     If (ItemIndex>0) then
       begin
       Items.Exchange(ItemIndex,ItemIndex-1);
       FFieldMap.Items[ItemIndex].Index:=ItemIndex-1;
       ItemIndex:=ItemIndex-1;
+      Result:=true;
       end;
 end;
 
