@@ -334,6 +334,8 @@ type
     procedure SearchEditChange(Sender: TObject);
     procedure SearchEditEnter(Sender: TObject);
     procedure SearchEditExit(Sender: TObject);
+    procedure SearchEditKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure SearchNextSpeedButtonClick(Sender: TObject);
     procedure SearchPrevSpeedButtonClick(Sender: TObject);
     procedure ShowIDMenuItemClick(Sender: TObject);
@@ -344,6 +346,7 @@ type
     function AllMessagesAsString(const OnlyShown: boolean): String;
     function GetAboutView: TLMsgWndView;
     function GetViews(Index: integer): TLMsgWndView;
+    procedure HideSearch;
     procedure SaveClicked(OnlyShown: boolean);
     procedure CopyAllClicked(OnlyShown: boolean);
     procedure CopyMsgToClipboard(OnlyFilename: boolean);
@@ -2858,6 +2861,13 @@ begin
     SearchEdit.Text:=GetDefaultSearchText;
 end;
 
+procedure TMessagesFrame.SearchEditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key=VK_ESCAPE) then
+    HideSearch;
+end;
+
 procedure TMessagesFrame.SearchNextSpeedButtonClick(Sender: TObject);
 begin
   MessagesCtrl.SelectNextOccurence(true);
@@ -3014,9 +3024,7 @@ end;
 
 procedure TMessagesFrame.HideSearchSpeedButtonClick(Sender: TObject);
 begin
-  SearchPanel.Visible:=false;
-  MessagesCtrl.SearchText:='';
-  SearchEdit.Text:=GetDefaultSearchText;
+  HideSearch;
 end;
 
 procedure TMessagesFrame.CopyFilenameMenuItemClick(Sender: TObject);
@@ -3128,6 +3136,13 @@ end;
 function TMessagesFrame.GetViews(Index: integer): TLMsgWndView;
 begin
   Result:=MessagesCtrl.Views[Index];
+end;
+
+procedure TMessagesFrame.HideSearch;
+begin
+  SearchPanel.Visible:=false;
+  MessagesCtrl.SearchText:='';
+  SearchEdit.Text:=GetDefaultSearchText;
 end;
 
 procedure TMessagesFrame.SaveClicked(OnlyShown: boolean);
