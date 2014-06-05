@@ -1205,11 +1205,13 @@ end;
 
 { TBaseCompilerOptions }
 
+{$IFDEF EnableNewExtTools}
 // inline
 function TBaseCompilerOptions.IDEMessageFlags: TCompilerMsgIDFlags;
 begin
   Result:=TCompilerMsgIDFlags(MessageFlags);
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   TBaseCompilerOptions Constructor
