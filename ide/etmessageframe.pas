@@ -212,6 +212,7 @@ type
     procedure UpdateScrollBar(InvalidateScrollMax: boolean);
     procedure CreateWnd; override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
       ); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -1608,6 +1609,12 @@ begin
   fScrollTopMax:=-1;
 end;
 
+procedure TMessagesCtrl.MouseMove(Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseMove(Shift, X, Y);
+  //Application.HideHint;
+end;
+
 procedure TMessagesCtrl.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 var
@@ -1699,7 +1706,7 @@ begin
       s+=ExternalToolList.GetMsgHint(MsgLine.SubTool,MsgLine.MsgID);
     end;
     HintInfo^.HintStr:=s;
-    HintInfo^.ReshowTimeout:=500;
+    HintInfo^.ReshowTimeout:=0;
     HintInfo^.HideTimeout:=5000;
   end;
   inherited DoOnShowHint(HintInfo);
