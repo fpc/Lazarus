@@ -23,7 +23,7 @@
         </remark>
         <p>
           For example:<br/>
-          Instead of using the common windows functions SaveDC and RestoreDC use
+          Instead of using the common Windows functions SaveDC and RestoreDC use
           the Canvas.SaveHandleState and Canvas.RestoreHandleState.
         </p>
       </descr>
