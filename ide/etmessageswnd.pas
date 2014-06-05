@@ -77,7 +77,7 @@ type
       const ViewCaption: string=''): TMessageLine; override;
 
     // misc
-    procedure SourceEditorPopup(MarkLine: TSynEditMarkLine);
+    procedure SourceEditorPopup(MarkLine: TSynEditMarkLine; const LogicalCaretXY: TPoint);
 
     // options
     procedure ApplyIDEOptions;
@@ -157,9 +157,10 @@ begin
     LineNumber,Column,ViewCaption);
 end;
 
-procedure TMessagesView.SourceEditorPopup(MarkLine: TSynEditMarkLine);
+procedure TMessagesView.SourceEditorPopup(MarkLine: TSynEditMarkLine;
+  const LogicalCaretXY: TPoint);
 begin
-  MessagesFrame1.SourceEditorPopup(MarkLine);
+  MessagesFrame1.SourceEditorPopup(MarkLine,LogicalCaretXY);
 end;
 
 procedure TMessagesView.Clear;

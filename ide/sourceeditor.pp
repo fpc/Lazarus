@@ -6411,7 +6411,8 @@ begin
       {$IFDEF EnableNewExtTools}
       if (EditorCaret.Y<=EditorComp.Lines.Count)
       and (MessagesView<>nil) then
-        MessagesView.SourceEditorPopup(EditorComp.Marks.Line[EditorCaret.Y]);
+        MessagesView.SourceEditorPopup(EditorComp.Marks.Line[EditorCaret.Y],
+          EditorComp.LogicalCaretXY);
       {$ENDIF}
     end;
 

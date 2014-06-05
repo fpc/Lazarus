@@ -369,7 +369,8 @@ type
       DeleteOld: boolean);
     procedure ApplySrcChanges(Changes: TETSingleSrcChanges);
     procedure ApplyMultiSrcChanges(Changes: TETMultiSrcChanges);
-    procedure SourceEditorPopup(MarkLine: TSynEditMarkLine);
+    procedure SourceEditorPopup(MarkLine: TSynEditMarkLine;
+      const LogicalCaretXY: TPoint);
 
     // message lines
     procedure SelectMsgLine(Msg: TMessageLine; DoScroll: boolean);
@@ -3277,21 +3278,40 @@ begin
     ApplySrcChanges(TETSingleSrcChanges(Node.Data));
 end;
 
-procedure TMessagesFrame.SourceEditorPopup(MarkLine: TSynEditMarkLine);
+procedure TMessagesFrame.SourceEditorPopup(MarkLine: TSynEditMarkLine;
+  const LogicalCaretXY: TPoint);
 var
   i: Integer;
-  Mark: TETMark;
+  CurMark: TETMark;
+  BestMark: TETMark;
 begin
   //debugln(['TMessagesFrame.SourceEditorPopup ']);
-  // get all marks of the current source editor line
+  // show quickfixes for the first TETMark in editor line
   if MarkLine=nil then exit;
   IDEQuickFixes.ClearLines;
+  BestMark:=nil;
   for i:=0 to MarkLine.Count-1 do begin
-    Mark:=TETMark(MarkLine[i]);
-    if not (Mark is TETMark) then continue;
-    //debugln(['TMessagesFrame.SourceEditorPopup ',Mark.Line,',',Mark.Column,' ID=',Mark.MsgLine.MsgID,' Msg=',Mark.MsgLine.Msg]);
-    IDEQuickFixes.AddMsgLine(Mark.MsgLine);
+    CurMark:=TETMark(MarkLine[i]);
+    if not (CurMark is TETMark) then continue;
+    //debugln(['TMessagesFrame.SourceEditorPopup ',CurMark.Line,',',CurMark.Column,' ID=',CurMark.MsgLine.MsgID,' Msg=',CurMark.MsgLine.Msg,' EditorXY=',dbgs(LogicalCaretXY)]);
+    if (BestMark=nil) then
+      BestMark:=CurMark
+    else begin
+      // there are multiple marks in the line
+      if (LogicalCaretXY.Y=MarkLine.LineNum)
+      and (LogicalCaretXY.X=CurMark.Column) then begin
+        // mark at cursor position
+        BestMark:=CurMark;
+        break;
+      end else begin
+        // default: use first in line
+        if CurMark.Column<BestMark.Column then
+          BestMark:=CurMark;
+      end;
+    end;
   end;
+  if BestMark<>nil then
+    IDEQuickFixes.AddMsgLine(BestMark.MsgLine);
   // create items
   if IDEQuickFixes.Count>0 then begin
     IDEQuickFixes.OnPopupMenu(SrcEditMenuSectionFirstDynamic);
