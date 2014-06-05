@@ -420,12 +420,13 @@ var
   MsgHelpMenuItem: TIDEMenuCommand;
   MsgEditHelpMenuItem: TIDEMenuCommand;
   MsgClearMenuItem: TIDEMenuCommand;
-  MsgFilenameStyleMenuSection: TIDEMenuSection;
-    MsgFileStyleShortMenuItem: TIDEMenuCommand;
-    MsgFileStyleRelativeMenuItem: TIDEMenuCommand;
-    MsgFileStyleFullMenuItem: TIDEMenuCommand;
-  MsgTranslateMenuItem: TIDEMenuCommand;
-  MsgShowIDMenuItem: TIDEMenuCommand;
+  MsgOptionsMenuSection: TIDEMenuSection;
+    MsgFilenameStyleMenuSection: TIDEMenuSection;
+      MsgFileStyleShortMenuItem: TIDEMenuCommand;
+      MsgFileStyleRelativeMenuItem: TIDEMenuCommand;
+      MsgFileStyleFullMenuItem: TIDEMenuCommand;
+    MsgTranslateMenuItem: TIDEMenuCommand;
+    MsgShowIDMenuItem: TIDEMenuCommand;
 
 procedure RegisterStandardMessagesViewMenuItems;
 
@@ -487,15 +488,20 @@ begin
   MsgHelpMenuItem := RegisterIDEMenuCommand(Root, 'Help for this message',lisHelp);
   MsgEditHelpMenuItem := RegisterIDEMenuCommand(Root, 'Edit help for messages',lisEditHelp);
   MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', 'Clear');
-  MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Root,'Filename Styles');
-    Parent:=MsgFilenameStyleMenuSection;
+  MsgOptionsMenuSection:=RegisterIDEMenuSection(Root,'Option Section');
+    Parent:=MsgOptionsMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='Filename Style ...';
-    MsgFileStyleShortMenuItem:=RegisterIDEMenuCommand(Parent,'Short','Short, no path');
-    MsgFileStyleRelativeMenuItem:=RegisterIDEMenuCommand(Parent,'Relative','Relative');
-    MsgFileStyleFullMenuItem:=RegisterIDEMenuCommand(Parent,'Full','Full');
-  MsgTranslateMenuItem:=RegisterIDEMenuCommand(Root, 'Translate', 'Translate the English Messages');
-  MsgShowIDMenuItem:=RegisterIDEMenuCommand(Root, 'ShowID', 'Show Message Type ID');
+    Parent.Caption:='Options ...';
+    MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Parent,'Filename Styles');
+      Parent:=MsgFilenameStyleMenuSection;
+      Parent.ChildsAsSubMenu:=true;
+      Parent.Caption:='Filename Style ...';
+      MsgFileStyleShortMenuItem:=RegisterIDEMenuCommand(Parent,'Short','Short, no path');
+      MsgFileStyleRelativeMenuItem:=RegisterIDEMenuCommand(Parent,'Relative','Relative');
+      MsgFileStyleFullMenuItem:=RegisterIDEMenuCommand(Parent,'Full','Full');
+    Parent:=MsgOptionsMenuSection;
+    MsgTranslateMenuItem:=RegisterIDEMenuCommand(Parent, 'Translate', 'Translate the English Messages');
+    MsgShowIDMenuItem:=RegisterIDEMenuCommand(Parent, 'ShowID', 'Show Message Type ID');
 end;
 
 {$R *.lfm}
@@ -2609,6 +2615,8 @@ begin
       View:=MessagesCtrl.GetLastViewWithContent;
     end;
     ToolOptionsCaption:='';
+
+    // About
     if View<>nil then
     begin
       MsgAboutToolMenuItem.Caption:='About '+View.Caption;
@@ -2625,6 +2633,7 @@ begin
     MsgOpenToolOptionsMenuItem.Caption:=ToolOptionsCaption;
     MsgOpenToolOptionsMenuItem.OnClick:=@OpenToolsOptionsMenuItemClick;
 
+    // Filtering
     if CanFilterMsgType then begin
       MsgFilterMsgOfTypeMenuItem.Caption:='Filter all messages of type '+MsgType;
       MsgFilterMsgOfTypeMenuItem.Visible:=true;
@@ -2634,24 +2643,6 @@ begin
     MsgFilterMsgOfTypeMenuItem.OnClick:=@FilterMsgOfTypeMenuItemClick;
     MsgFilterHintsWithoutPosMenuItem.Checked:=MessagesCtrl.ActiveFilter.FilterNotesWithoutPos;
     MsgFilterHintsWithoutPosMenuItem.OnClick:=@FilterHintsWithoutPosMenuItemClick;
-
-    MsgCopyMsgMenuItem.Enabled:=HasText;
-    MsgCopyMsgMenuItem.OnClick:=@CopyMsgMenuItemClick;
-    MsgCopyFilenameMenuItem.Enabled:=HasFilename;
-    MsgCopyFilenameMenuItem.OnClick:=@CopyFilenameMenuItemClick;
-    MsgCopyAllMenuItem.Enabled:=not Running;
-    MsgCopyAllMenuItem.OnClick:=@CopyAllMenuItemClick;
-    MsgCopyShownMenuItem.Enabled:=HasViewContent;
-    MsgCopyShownMenuItem.OnClick:=@CopyShownMenuItemClick;
-    MsgSaveAllToFileMenuItem.Enabled:=not Running;
-    MsgSaveAllToFileMenuItem.OnClick:=@SaveAllToFileMenuItemClick;
-    MsgSaveShownToFileMenuItem.Enabled:=HasViewContent;
-    MsgSaveShownToFileMenuItem.OnClick:=@SaveShownToFileMenuItemClick;
-    MsgHelpMenuItem.Enabled:=HasText;
-    MsgHelpMenuItem.OnClick:=@HelpMenuItemClick;
-    MsgEditHelpMenuItem.OnClick:=@EditHelpMenuItemClick;
-    MsgClearMenuItem.OnClick:=@ClearMenuItemClick;
-    MsgClearMenuItem.Enabled:=View<>nil;
 
     MinUrgency:=MessagesCtrl.ActiveFilter.MinUrgency;
     MsgFilterWarningsMenuItem.Checked:=MinUrgency in [mluError..mluPanic];
@@ -2667,6 +2658,28 @@ begin
     MsgFilterNoneMenuItem.Checked:=MinUrgency=mluNone;
     MsgFilterNoneMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
 
+    // Copying
+    MsgCopyMsgMenuItem.Enabled:=HasText;
+    MsgCopyMsgMenuItem.OnClick:=@CopyMsgMenuItemClick;
+    MsgCopyFilenameMenuItem.Enabled:=HasFilename;
+    MsgCopyFilenameMenuItem.OnClick:=@CopyFilenameMenuItemClick;
+    MsgCopyAllMenuItem.Enabled:=not Running;
+    MsgCopyAllMenuItem.OnClick:=@CopyAllMenuItemClick;
+    MsgCopyShownMenuItem.Enabled:=HasViewContent;
+    MsgCopyShownMenuItem.OnClick:=@CopyShownMenuItemClick;
+
+    // Saving
+    MsgSaveAllToFileMenuItem.Enabled:=not Running;
+    MsgSaveAllToFileMenuItem.OnClick:=@SaveAllToFileMenuItemClick;
+    MsgSaveShownToFileMenuItem.Enabled:=HasViewContent;
+    MsgSaveShownToFileMenuItem.OnClick:=@SaveShownToFileMenuItemClick;
+    MsgHelpMenuItem.Enabled:=HasText;
+    MsgHelpMenuItem.OnClick:=@HelpMenuItemClick;
+    MsgEditHelpMenuItem.OnClick:=@EditHelpMenuItemClick;
+    MsgClearMenuItem.OnClick:=@ClearMenuItemClick;
+    MsgClearMenuItem.Enabled:=View<>nil;
+
+    // Options
     MsgFileStyleShortMenuItem.Checked:=MessagesCtrl.FilenameStyle=mwfsShort;
     MsgFileStyleShortMenuItem.OnClick:=@FileStyleMenuItemClick;
     MsgFileStyleRelativeMenuItem.Checked:=MessagesCtrl.FilenameStyle=mwfsRelative;
