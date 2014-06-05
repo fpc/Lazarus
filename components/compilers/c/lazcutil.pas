@@ -38,22 +38,6 @@ uses
 
 type
 
-  { TGCCMessageScanner }
-
-  TGCCMessageScanner = class(TIDEMsgScanner)
-  public
-    function ParseLine(MsgLine: TIDEMessageLine; var Show: boolean): boolean; override;// true if line was handled
-  end;
-  
-  { TGCCMsgScannerType }
-
-  TGCCMsgScannerType = class(TIDEMsgScannerType)
-  public
-    function ShortDescription: string; override;
-    function Description: string; override;
-    function StartScan(Lines: TIDEMessageLineList): TIDEMsgScanner; override;
-  end;
-
   { TCSrcEditCompletion }
 
   TCSrcEditCompletion = class(TSourceEditorCompletionPlugin)
@@ -92,41 +76,9 @@ procedure Register;
 implementation
 
 procedure Register;
-var
-  Scanner: TGCCMsgScannerType;
 begin
-  Scanner:=TGCCMsgScannerType.Create(nil);
-  Scanner.Name:='GCC';
-  IDEMsgScanners.RegisterType(Scanner);
   CSrcEditCompletion:=TCSrcEditCompletion.Create(nil);
   SourceEditorManagerIntf.RegisterCompletionPlugin(CSrcEditCompletion);
-end;
-
-{ TGCCMessageScanner }
-
-function TGCCMessageScanner.ParseLine(MsgLine: TIDEMessageLine;
-  var Show: boolean): boolean;
-begin
-  DebugLn(['TGCCMessageScanner.ParseLine "',MsgLine.Msg,'"']);
-  Result:=false;
-end;
-
-{ TGCCMsgScannerType }
-
-function TGCCMsgScannerType.ShortDescription: string;
-begin
-  Result:=lcGNUProjectCAndCCompiler;
-end;
-
-function TGCCMsgScannerType.Description: string;
-begin
-  Result:=ShortDescription;
-end;
-
-function TGCCMsgScannerType.StartScan(Lines: TIDEMessageLineList
-  ): TIDEMsgScanner;
-begin
-  Result:=TGCCMessageScanner.Create(Self,Lines);
 end;
 
 { TCSrcEditCompletion }
