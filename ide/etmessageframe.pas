@@ -118,12 +118,15 @@ type
     mcoShowTranslated, // show translation (e.g. messages from German message file)
     mcoShowMessageID,  // show message ID
     mcoShowMsgIcons,
-    mcoAutoOpenFirstError // when all views stopped, open first error
+    mcoAutoOpenFirstError, // when all views stopped, open first error
+    mcoSrcEditPopupSelect // when user right clicks on gutter mark,
+                          // scroll and select message of the quickfixes
     );
   TMsgCtrlOptions = set of TMsgCtrlOption;
 const
   MCDefaultOptions = [mcoShowStats,mcoShowTranslated,
-                      mcoAutoOpenFirstError,mcoShowMsgIcons];
+                      mcoAutoOpenFirstError,mcoShowMsgIcons,
+                      mcoSrcEditPopupSelect];
 
 type
 
@@ -3315,6 +3318,8 @@ begin
   // create items
   if IDEQuickFixes.Count>0 then begin
     IDEQuickFixes.OnPopupMenu(SrcEditMenuSectionFirstDynamic);
+    if mcoSrcEditPopupSelect in MessagesCtrl.Options then
+      MessagesCtrl.Select(BestMark.MsgLine,true);
   end;
 end;
 
