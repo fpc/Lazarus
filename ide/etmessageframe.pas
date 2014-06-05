@@ -39,8 +39,9 @@ uses
   SynEditMarks, LResources, Forms, Buttons, ExtCtrls, Controls, LMessages,
   LCLType, Graphics, LCLIntf, Themes, ImgList, GraphType, Menus, Clipbrd,
   Dialogs, StdCtrls, IDEExternToolIntf, IDEImagesIntf, MenuIntf, PackageIntf,
-  IDECommands, SrcEditorIntf, IDEDialogs, LazarusIDEStrConsts, EnvironmentOpts,
-  HelpFPCMessages, etSrcEditMarks, etQuickFixes, ExtTools, IDEOptionDefs;
+  IDECommands, SrcEditorIntf, IDEDialogs, ProjectIntf, CompOptsIntf,
+  LazarusIDEStrConsts, EnvironmentOpts, HelpFPCMessages, etSrcEditMarks,
+  etQuickFixes, ExtTools, IDEOptionDefs, CompilerOptions;
 
 const
   CustomViewCaption = '------------------------------';
@@ -328,6 +329,7 @@ type
     procedure MsgCtrlPopupMenuPopup(Sender: TObject);
     procedure OnSelectFilterClick(Sender: TObject);
     procedure OpenToolsOptionsMenuItemClick(Sender: TObject);
+    procedure RemoveCompOptHideMsgClick(Sender: TObject);
     procedure SaveAllToFileMenuItemClick(Sender: TObject);
     procedure SaveShownToFileMenuItemClick(Sender: TObject);
     procedure SearchEditChange(Sender: TObject);
@@ -401,6 +403,7 @@ var
     MsgAboutToolMenuItem: TIDEMenuCommand;
     MsgOpenToolOptionsMenuItem: TIDEMenuCommand;
   MsgFilterMsgOfTypeMenuItem: TIDEMenuCommand;
+  MsgRemoveCompOptHideMenuSection: TIDEMenuSection;
   MsgRemoveMsgTypeFilterMenuSection: TIDEMenuSection;
     MsgRemoveFilterMsgOneTypeMenuSection: TIDEMenuSection;
     MsgRemoveFilterAllMsgTypesMenuItem: TIDEMenuCommand;
@@ -454,6 +457,10 @@ begin
     MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Parent, 'About', 'About Tool');
     MsgOpenToolOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'Open Tool Options', 'Open Tool Options');
   MsgFilterMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'FilterMsgOfType','');
+  MsgRemoveCompOptHideMenuSection:=RegisterIDEMenuSection(Root,'RemoveCompOptHideMsg');
+    Parent:=MsgRemoveCompOptHideMenuSection;
+    Parent.ChildsAsSubMenu:=true;
+    Parent.Caption:='Remove Compiler Option Hide Message';
   MsgRemoveMsgTypeFilterMenuSection:=RegisterIDEMenuSection(Root,'RemoveMsgTypeFilters');
     Parent:=MsgRemoveMsgTypeFilterMenuSection;
     Parent.ChildsAsSubMenu:=true;
@@ -2507,6 +2514,59 @@ end;
 
 procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
 
+  procedure UpdateRemoveCompOptHideMsgItems;
+  var
+    i: Integer;
+    View: TLMsgWndView;
+    ToolData: TIDEExternalToolData;
+    IDETool: TObject;
+    CompOpts: TBaseCompilerOptions;
+    Flag: PCompilerMsgIdFlag;
+    Pattern: String;
+    Pkg: TIDEPackage;
+    Cnt: Integer;
+    Item: TIDEMenuCommand;
+    ModuleName: String;
+  begin
+    // create one menuitem per compiler option
+    Cnt:=0;
+    for i:=0 to ViewCount-1 do begin
+      View:=Views[i];
+      if View.Tool=nil then continue;
+      ToolData:=TIDEExternalToolData(View.Tool.Data);
+      if not (ToolData is TIDEExternalToolData) then continue;
+      IDETool:=ExternalTools.GetIDEObject(ToolData);
+      if IDETool=nil then continue;
+      if IDETool is TLazProject then begin
+        CompOpts:=TLazProject(IDETool).LazCompilerOptions as TBaseCompilerOptions;
+        ModuleName:='Project Option';
+      end else if IDETool is TIDEPackage then begin
+        Pkg:=TIDEPackage(IDETool);
+        CompOpts:=Pkg.LazCompilerOptions as TBaseCompilerOptions;
+        ModuleName:='Package "'+Pkg.Name+'" Option';
+      end else
+        continue;
+      for Flag in CompOpts.IDEMessageFlags do begin
+        if Flag^.Flag<>cfvHide then continue;
+        if Cnt>=MsgRemoveCompOptHideMenuSection.Count then begin
+          Item:=RegisterIDEMenuCommand(MsgRemoveCompOptHideMenuSection,'RemoveCompOptHideMsg'+IntToStr(Cnt),'');
+          Item.OnClick:=@RemoveCompOptHideMsgClick;
+        end else begin
+          Item:=MsgRemoveCompOptHideMenuSection.Items[Cnt] as TIDEMenuCommand;
+        end;
+        Item.Tag:=Flag^.MsgId;
+        Item.UserTag:=PtrUInt(ToolData);
+        Pattern:=GetMsgPattern(SubToolFPC,Flag^.MsgID,true,40);
+        Item.Caption:=ModuleName+': '+Pattern;
+        inc(Cnt);
+      end;
+    end;
+    MsgRemoveCompOptHideMenuSection.Visible:=Cnt>0;
+    // delete old menu items
+    while MsgRemoveCompOptHideMenuSection.Count>Cnt do
+      MsgRemoveCompOptHideMenuSection[Cnt].Free;
+  end;
+
   procedure UpdateRemoveMsgTypeFilterItems;
   var
     FilterItem: TLMVFilterMsgType;
@@ -2703,7 +2763,7 @@ begin
     MsgShowIDMenuItem.Checked:=mcoShowMessageID in MessagesCtrl.Options;
     MsgShowIDMenuItem.OnClick:=@ShowIDMenuItemClick;
 
-
+    UpdateRemoveCompOptHideMsgItems;
     UpdateRemoveMsgTypeFilterItems;
     UpdateFilterItems;
 
@@ -2736,6 +2796,34 @@ begin
   if ToolData.Kind=IDEToolCompilePackage then begin
     PackageEditingInterface.DoOpenPackageFile(ToolData.Filename,
                                               [pofAddToRecent],false);
+  end;
+end;
+
+procedure TMessagesFrame.RemoveCompOptHideMsgClick(Sender: TObject);
+var
+  Item: TIDEMenuCommand;
+  MsgId: Integer;
+  ToolData: TIDEExternalToolData;
+  IDETool: TObject;
+  CompOpts: TLazCompilerOptions;
+  Pkg: TIDEPackage;
+begin
+  if not (Sender is TIDEMenuCommand) then exit;
+  Item:=TIDEMenuCommand(Sender);
+  MsgId:=Item.Tag;
+  ToolData:=TIDEExternalToolData(Item.UserTag);
+  IDETool:=ExternalTools.GetIDEObject(ToolData);
+  if IDETool=nil then exit;
+  if IDETool is TLazProject then begin
+    CompOpts:=TLazProject(IDETool).LazCompilerOptions;
+    CompOpts.MessageFlags[MsgID]:=cfvNone;
+  end else if IDETool is TIDEPackage then begin
+    if PackageEditingInterface.DoOpenPackageFile(ToolData.Filename,
+                                        [pofAddToRecent],false)<>mrOk then exit;
+    Pkg:=PackageEditingInterface.FindPackageWithName(ToolData.ModuleName);
+    if Pkg=nil then exit;
+    CompOpts:=Pkg.LazCompilerOptions;
+    CompOpts.MessageFlags[MsgID]:=cfvNone;
   end;
 end;
 
