@@ -1843,15 +1843,16 @@ begin
   
   S := GetSize;
   if (X < 0) or (Y < 0) or (X > S.X - 1) or (Y > S.Y - 1) then Exit;
-  
-  R := Classes.Rect(X, Y, 1, 1);
+
+  R := Classes.Bounds(X, Y, 1, 1);
   if not RawImage_FromBitmap(RawImage, HBITMAP(Bitmap), 0, @R) then Exit;
   IntfImage := TLazIntfImage.Create(RawImage, True);
   try
-    Result := IntfImage.TColors[X, Y];
+    Result := IntfImage.TColors[0, 0];
   finally
     IntfImage.Free;
   end;
+
 end;
 
 {------------------------------------------------------------------------------

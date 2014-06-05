@@ -906,6 +906,7 @@ var	Width, Height: Integer;
 	WorkData: PByte = nil;
 	MaskData: PByte = nil;
 	MaskDataSize, WorkDataSize: PtrUInt;
+	Ptr: PByte;
 
 	function CreateSub(ARect: TRect; ABmp: TCarbonBitMap; BitsPerPixel: Integer; var ImageDataSize: PtrUInt): PByte;
 	var	FullImageData, BytePtr: PByte;
@@ -969,9 +970,24 @@ begin
 	end;
   end
   else begin
-	WorkData := CreateSub(R, ABitmap, ARawImage.Description.BitsPerPixel, WorkDataSize);
+    // TODO: fix CreateSub which is broken at least for one pixel (@ 32bpp)
+    //       In the mean time, here is a shortcut which should be also
+    //       faster than CreateSub.
+    //       Only tested with bitmaps at 32 bits per pixel. See bug #23112
+    if (Width=1) and (Height=1) and (AMask=nil) then
+    begin
+    WorkDataSize := (ARawImage.Description.BitsPerPixel + 7) div 8;
+    WorkData := System.GetMem(WorkDataSize);
+    Ptr := ABitmap.Data;
+    inc(Ptr, ARawImage.Description.BytesPerLine * R.Top);
+    Inc(Ptr, WorkDataSize * R.Left);
+    System.Move(Ptr^, WorkData^, WorkDataSize);
+    end
+    else begin
+	  WorkData := CreateSub(R, ABitmap, ARawImage.Description.BitsPerPixel, WorkDataSize);
     if AMask <> nil then
       MaskData := CreateSub(R, AMask, 1, MaskDataSize);
+    end;
   end;
 
   ARawImage.Description.Width  := Width;
