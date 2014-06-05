@@ -3196,7 +3196,7 @@ begin
     end;
   end else begin
     ReducedParams:=RemoveFPCVerbosityParams(CompilerParams);
-    ReducedLastParams:=RemoveFPCVerbosityParams(CompilerParams);
+    ReducedLastParams:=RemoveFPCVerbosityParams(LastParams);
     if ReducedParams<>ReducedLastParams then begin
       // package was compiled by Lazarus
       DebugLn('TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile  Compiler params changed for ',APackage.IDAsString);
