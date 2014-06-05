@@ -1606,7 +1606,7 @@ end;
 procedure TMessagesCtrl.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
-  fScrollTopMax:=-1;
+  UpdateScrollBar(true);
 end;
 
 procedure TMessagesCtrl.MouseMove(Shift: TShiftState; X, Y: Integer);
