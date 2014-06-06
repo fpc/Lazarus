@@ -15,13 +15,12 @@
         </SyntaxOptions>
       </Parsing>
       <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="DBase (DBF) package for Lazarus
-"/>
-    <License Value="LGPL
-"/>
+    <Description Value="DBase (DBF) package for Lazarus"/>
+    <License Value="LGPL with linking exception (LCL license)"/>
     <Version Minor="1" Release="1"/>
     <Files Count="3">
       <Item1>
