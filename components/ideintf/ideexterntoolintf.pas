@@ -255,6 +255,24 @@ type
     procedure ConsistencyCheck;
   end;
 
+  { The output is parsed in chunks (multiple lines) at a time.
+    First every output line is passed to each parser via ReadLine.
+    After the whole chunk was processed via ReadLine, each parser is called
+    with ImproveMessages up to three times. During ImproveMessages the Tool
+    is locked via its critical section.
+    After ImproveMessages the chunk is passed to the Views.
+  }
+  TExtToolParserSyncPhase = (
+    etpspAfterReadLine,  { (worker thread) after lines were created by parsers
+      via ReadLine and added to Tool.WorkerMessages. In this phase parsers can
+      look what other parsers have created and/or to decide if they need some
+      data from the IDE (NeedSynchronize:=true) }
+    etpspSynchronized,   { (main thread) parsers can collect data from the IDE.
+                          If the data need processing set NeedAfterSync:=true }
+    etpspAfterSync       { (worker thread) use the collected IDE data }
+    );
+  TExtToolParserSyncPhases = set of TExtToolParserSyncPhase;
+
   { TExtToolParser
     Read the output of a tool, for example the output of the Free Pascal compiler.
     It does not filter. Some parsers can work together, for example make and fpc.
@@ -262,6 +280,7 @@ type
     }
   TExtToolParser = class(TComponent)
   private
+    FNeedAfterSync: boolean;
     FNeedSynchronize: boolean;
     FTool: TAbstractExternalTool;
   public
@@ -273,8 +292,9 @@ type
     function CreateMsgLine(OutputIndex: integer): TMessageLine; // (worker thread)
     procedure AddMsgLine(MsgLine: TMessageLine); virtual; // (worker thread)
     property Tool: TAbstractExternalTool read FTool;// set when added to a tool
-    property NeedSynchronize: boolean read FNeedSynchronize write FNeedSynchronize;
-    procedure ImproveMessages({%H-}aSynchronized: boolean); virtual; // (Synchronized=true->main, else worker thread) called after parsers added lines to Tool.WorkerMessages, Tool is in Critical section
+    property NeedSynchronize: boolean read FNeedSynchronize write FNeedSynchronize; // set this in ImproveMessages phase etpspAfterReadLine
+    property NeedAfterSync: boolean read FNeedAfterSync write FNeedAfterSync; // set this in ImproveMessages phase etpspSynchronized
+    procedure ImproveMessages({%H-}aPhase: TExtToolParserSyncPhase); virtual; // Tool.WorkerMessages, Tool is in Critical section
     procedure ConsistencyCheck; virtual;
     class function IsSubTool(const SubTool: string): boolean; virtual;
     class function GetMsgPattern({%H-}SubTool: string; {%H-}MsgID: integer;
@@ -1392,7 +1412,7 @@ begin
   Tool.WorkerMessages.Add(MsgLine);
 end;
 
-procedure TExtToolParser.ImproveMessages(aSynchronized: boolean);
+procedure TExtToolParser.ImproveMessages(aPhase: TExtToolParserSyncPhase);
 begin
 
 end;

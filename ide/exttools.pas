@@ -124,6 +124,7 @@ type
     FThread: TExternalToolThread;
     fExecuteAfter: TFPList; // list of TExternalTool
     fExecuteBefore: TFPList; // list of TExternalTool
+    fNeedAfterSync: boolean;
     fOutputCountNotified: integer;
     procedure ProcessRunning; // (worker thread) after Process.Execute
     procedure ProcessStopped; // (worker thread) when process stopped
@@ -428,10 +429,11 @@ begin
       for i:=0 to ParserCount-1 do begin
         Parser:=Parsers[i];
         Parser.NeedSynchronize:=false;
+        Parser.NeedAfterSync:=false;
         {$IFDEF VerboseExtToolAddOutputLines}
-        DebuglnThreadLog(['TExternalTool.AddOutputLines ',DbgSName(Parser),' IMPROVE threaded ...']);
+        DebuglnThreadLog(['TExternalTool.AddOutputLines ',DbgSName(Parser),' IMPROVE after ReadLine ...']);
         {$ENDIF}
-        Parser.ImproveMessages(false);
+        Parser.ImproveMessages(etpspAfterReadLine);
         if Parser.NeedSynchronize then
           NeedSynchronize:=true;
       end;
@@ -450,6 +452,17 @@ begin
 
   EnterCriticalSection;
   try
+    if fNeedAfterSync then begin
+      for i:=0 to ParserCount-1 do begin
+        Parser:=Parsers[i];
+        if not Parser.NeedAfterSync then continue;
+        {$IFDEF VerboseExtToolAddOutputLines}
+        DebuglnThreadLog(['TExternalTool.AddOutputLines ',DbgSName(Parser),' IMPROVE after sync ...']);
+        {$ENDIF}
+        Parser.ImproveMessages(etpspAfterSync);
+      end;
+    end;
+
     // feed new messages into all viewers
     if OldMsgCount<WorkerMessages.Count then begin
       for i:=0 to ViewCount-1 do begin
@@ -548,14 +561,17 @@ var
 begin
   EnterCriticalSection;
   try
+    fNeedAfterSync:=false;
     for i:=0 to ParserCount-1 do begin
       Parser:=Parsers[i];
       if not Parser.NeedSynchronize then continue;
       {$IFDEF VerboseExtToolAddOutputLines}
       //debugln(['TExternalTool.SynchronizedImproveMessages ',DbgSName(Parser),' ...']);
       {$ENDIF}
-      Parser.ImproveMessages(true);
+      Parser.ImproveMessages(etpspSynchronized);
       Parser.NeedSynchronize:=false;
+      if Parser.NeedAfterSync then
+        fNeedAfterSync:=true;
     end;
   finally
     LeaveCriticalSection;
