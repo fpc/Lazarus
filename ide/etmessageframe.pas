@@ -480,11 +480,23 @@ begin
     Parent.ChildsAsSubMenu:=true;
     Parent.Caption:='Filter non urgent Messages ...';
     MsgFilterWarningsMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Warnings','Filter Warnings and below');
+    MsgFilterWarningsMenuItem.RadioItem:=true;
+    MsgFilterWarningsMenuItem.GroupIndex:=2;
     MsgFilterNotesMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Notes','Filter Notes and below');
+    MsgFilterNotesMenuItem.RadioItem:=true;
+    MsgFilterNotesMenuItem.GroupIndex:=2;
     MsgFilterHintsMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Hints','Filter Hints and below');
+    MsgFilterHintsMenuItem.RadioItem:=true;
+    MsgFilterHintsMenuItem.GroupIndex:=2;
     MsgFilterVerboseMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Verbose Messages','Filter Verbose Messages and below');
+    MsgFilterVerboseMenuItem.RadioItem:=true;
+    MsgFilterVerboseMenuItem.GroupIndex:=2;
     MsgFilterDebugMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Debug Messages','Filter Debug Messages and below');
+    MsgFilterDebugMenuItem.RadioItem:=true;
+    MsgFilterDebugMenuItem.GroupIndex:=2;
     MsgFilterNoneMenuItem:=RegisterIDEMenuCommand(Parent,'Filter None, do not filter by urgency','Filter None, do not filter by urgency');
+    MsgFilterNoneMenuItem.RadioItem:=true;
+    MsgFilterNoneMenuItem.GroupIndex:=2;
   MsgFilterHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Root, 'Filter Hints without Source Position', 'Filter Hints without Source Position');
   MsgFiltersMenuSection:=RegisterIDEMenuSection(Root,'Switch Filter Section');
     Parent:=MsgFiltersMenuSection;
@@ -2738,17 +2750,20 @@ begin
     MsgFilterHintsWithoutPosMenuItem.OnClick:=@FilterHintsWithoutPosMenuItemClick;
 
     MinUrgency:=MessagesCtrl.ActiveFilter.MinUrgency;
-    MsgFilterWarningsMenuItem.Checked:=MinUrgency in [mluError..mluPanic];
+    case MinUrgency of
+    mluNone:                  MsgFilterNoneMenuItem.Checked:=true;
+    mluProgress..mluVerbose:  MsgFilterDebugMenuItem.Checked:=true;
+    mluHint:                  MsgFilterVerboseMenuItem.Checked:=true;
+    mluNote:                  MsgFilterNotesMenuItem.Checked:=true;
+    mluWarning..mluImportant: MsgFilterNotesMenuItem.Checked:=true;
+    else                      MsgFilterWarningsMenuItem.Checked:=true;
+    end;
+
     MsgFilterWarningsMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterNotesMenuItem.Checked:=MinUrgency in [mluWarning,mluImportant];
     MsgFilterNotesMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterHintsMenuItem.Checked:=MinUrgency=mluNote;
     MsgFilterHintsMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterVerboseMenuItem.Checked:=MinUrgency=mluHint;
     MsgFilterVerboseMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterDebugMenuItem.Checked:=MinUrgency in [mluProgress..mluVerbose];
     MsgFilterDebugMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterNoneMenuItem.Checked:=MinUrgency=mluNone;
     MsgFilterNoneMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
 
     // Copying
