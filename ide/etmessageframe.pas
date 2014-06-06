@@ -2662,6 +2662,7 @@ var
   MinUrgency: TMessageLineUrgency;
   ToolData: TIDEExternalToolData;
   ToolOptionsCaption: String;
+  VisibleCnt: Integer;
 begin
   MessagesMenuRoot.MenuItem:=MsgCtrlPopupMenu.Items;
   MessagesMenuRoot.BeginUpdate;
@@ -2717,9 +2718,13 @@ begin
     end else
       MsgAboutSection.Visible:=false;
     MsgAboutToolMenuItem.OnClick:=@AboutToolMenuItemClick;
+    VisibleCnt:=1;
     MsgOpenToolOptionsMenuItem.Visible:=ToolOptionsCaption<>'';
+    if MsgOpenToolOptionsMenuItem.Visible then
+      inc(VisibleCnt);
     MsgOpenToolOptionsMenuItem.Caption:=ToolOptionsCaption;
     MsgOpenToolOptionsMenuItem.OnClick:=@OpenToolsOptionsMenuItemClick;
+    MsgAboutSection.ChildsAsSubMenu:=VisibleCnt>1;
 
     // Filtering
     if CanFilterMsgType then begin
