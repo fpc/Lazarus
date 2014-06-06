@@ -853,6 +853,9 @@ end;
 procedure TfrPreviewForm.MouseWheelDown(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
+  if ssCtrl in shift then
+    BtZoomoutClick(sender)
+  else
   if ssShift in Shift then
     ScrollbarDelta(VScrollbar.SmallChange, 0)
   else
@@ -863,6 +866,9 @@ end;
 procedure TfrPreviewForm.MouseWheelUp(Sender: TObject; Shift: TShiftState;
   MousePos: TPoint; var Handled: Boolean);
 begin
+  if ssCtrl in shift then
+    BtZoomInClick(sender)
+  else
   if ssShift in Shift then
     ScrollbarDelta(-VScrollbar.SmallChange, 0)
   else
