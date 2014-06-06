@@ -7,7 +7,6 @@
     <CompilerOptions>
       <Version Value="10"/>
       <SearchPaths>
-        <OtherUnitFiles Value="/home/michael/public_html/extjs/"/>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
@@ -21,6 +20,7 @@
         </Optimizations>
       </CodeGeneration>
       <Other>
+			  <CustomOptions Value="$(IDEBuildOptions)"/>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
