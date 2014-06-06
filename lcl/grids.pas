@@ -1399,7 +1399,7 @@ type
     property ColCount;
     property ColumnClickSorts;
     property Columns;
-    //property Constraints;
+    property Constraints;
     property DefaultColWidth;
     property DefaultDrawing;
     property DefaultRowHeight;
