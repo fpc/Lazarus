@@ -7364,24 +7364,28 @@ var
   procedure DisableControls;
   var
     i: Integer;
+    b: TfrBand;
   begin
     if DetailCount=0 then
       for i := 1 to MAXBNDS do
       begin
-        if BandExists(Bands[Bnds[i, bpData]]) then
-          Bands[Bnds[i, bpData]].DataSet.DisableControls;
+        b := Bands[Bnds[i, bpData]];
+        if BandExists(b) and (b.DataSet<>nil) then
+          b.DataSet.DisableControls;
       end;
   end;
 
   procedure EnableControls;
   var
     i: Integer;
+    b: TfrBand;
   begin
     if DetailCount=0 then
       for i := 1 to MAXBNDS do
       begin
-        if BandExists(Bands[Bnds[i, bpData]]) then
-          Bands[Bnds[i, bpData]].DataSet.EnableControls;
+        b := Bands[Bnds[i, bpData]];
+        if BandExists(b) and (b.Dataset<>nil) then
+          b.DataSet.EnableControls;
       end;
   end;
 
