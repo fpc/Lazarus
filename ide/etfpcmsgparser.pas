@@ -1892,12 +1892,12 @@ end;
 
 procedure TIDEFPCParser.ImproveMsgLinkerUndefinedReference(
   aPhase: TExtToolParserSyncPhase; MsgLine: TMessageLine);
-{ For example:
-  /path/lib/x86_64-linux/blaunit.o: In function `FORMCREATE':
-  /path//blaunit.pas:45: undefined reference to `BLAUNIT_BLABLA'
-}
 
   function CheckForLinuxLDFileAndLineNumber: boolean;
+  { For example:
+    /path/lib/x86_64-linux/blaunit.o: In function `FORMCREATE':
+    /path//blaunit.pas:45: undefined reference to `BLAUNIT_BLABLA'
+  }
   var
     p: PChar;
     Msg: String;
@@ -1971,7 +1971,44 @@ procedure TIDEFPCParser.ImproveMsgLinkerUndefinedReference(
       end;
     etpspAfterSync: exit;
     end;
-    // in main threads
+    // in main thread
+    CodeToolBoss.FindFPCMangledIdentifier(MangledName,aComplete,aErrorMsg,
+      nil,NewCode,NewX,NewY,NewTopLine);
+    if NewCode=nil then exit;
+    Result:=true;
+    MsgLine.SetSourcePosition(NewCode.Filename,NewY,NewX);
+    MsgLine.Urgency:=mluError;
+  end;
+
+  function CheckForDarwinLDMangledInO: boolean;
+  { For example:
+           _UNIT1_TFORM1_$__FORMCREATE$TOBJECT in unit1.o
+  }
+  var
+    MangledName: string;
+    aUnitName: string;
+    aComplete: boolean;
+    aErrorMsg: string;
+    NewCode: TCodeBuffer;
+    NewX: integer;
+    NewY: integer;
+    NewTopLine: integer;
+  begin
+    Result:=false;
+    if MsgLine.HasSourcePosition then exit;
+    if not etFPCMsgParser.GetFPCMsgValues(MsgLine.Msg,'      _$1 in $2.o',
+      MangledName,aUnitName)
+    then exit;
+    Result:=true;
+    case aPhase of
+    etpspAfterReadLine:
+      begin
+        NeedSynchronize:=true;
+        exit;
+      end;
+    etpspAfterSync: exit;
+    end;
+    // in main thread
     CodeToolBoss.FindFPCMangledIdentifier(MangledName,aComplete,aErrorMsg,
       nil,NewCode,NewX,NewY,NewTopLine);
     if NewCode=nil then exit;
@@ -1985,6 +2022,7 @@ begin
 
   if CheckForLinuxLDFileAndLineNumber then exit;
   if CheckForDarwinLDReferencedFrom then exit;
+  if CheckForDarwinLDMangledInO then exit;
 end;
 
 procedure TIDEFPCParser.ImproveMsgIdentifierPosition(
