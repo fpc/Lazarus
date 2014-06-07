@@ -74,12 +74,13 @@ type
   TLazExtToolConsoleView = class(TLazExtToolView)
   protected
     fWrittenLineCount: integer;
-    procedure FetchAllPending; override; // (main thread)
     procedure ToolExited; override; // (main thread)
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure InputClosed; override;
+    procedure InputClosed; override; // (main thread)
+    procedure ProcessNewMessages({%H-}AThread: TThread); override; // (worker thread, Tool is in Critical section)
+    procedure OnNewOutput(Sender: TObject; {%H-}FirstNewMsgLine: integer); // (main thread)
   end;
 
   { TLazExtToolConsole }
@@ -92,7 +93,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
-    function CreateView(aCaption: string): TLazExtToolConsoleView;
+    function CreateView(Tool: TAbstractExternalTool): TLazExtToolConsoleView;
     function FindUnfinishedView: TLazExtToolConsoleView;
     property Views[Index: integer]: TLazExtToolConsoleView read GetViews;
     function Count: integer; inline;
@@ -243,10 +244,12 @@ begin
   fViews.Clear;
 end;
 
-function TLazExtToolConsole.CreateView(aCaption: string): TLazExtToolConsoleView;
+function TLazExtToolConsole.CreateView(Tool: TAbstractExternalTool
+  ): TLazExtToolConsoleView;
 begin
   Result:=TLazExtToolConsoleView.Create(Self);
-  Result.Caption:=aCaption;
+  Result.Caption:=Tool.Title;
+  Tool.AddHandlerOnNewOutput(@Result.OnNewOutput);
   fViews.Add(Result);
 end;
 
@@ -263,16 +266,6 @@ end;
 
 { TLazExtToolConsoleView }
 
-procedure TLazExtToolConsoleView.FetchAllPending;
-begin
-  inherited FetchAllPending;
-  // write all new original output to console
-  while fWrittenLineCount<Tool.WorkerOutput.Count do begin
-    debugln(Tool.WorkerOutput[fWrittenLineCount]);
-    inc(fWrittenLineCount);
-  end;
-end;
-
 procedure TLazExtToolConsoleView.ToolExited;
 begin
   inherited ToolExited;
@@ -287,6 +280,20 @@ begin
     debugln(Caption,': ERROR: ',Tool.ErrorMessage);
   end else begin
     ToolState:=lmvtsSuccess;
+  end;
+end;
+
+procedure TLazExtToolConsoleView.ProcessNewMessages(AThread: TThread);
+begin
+
+end;
+
+procedure TLazExtToolConsoleView.OnNewOutput(Sender: TObject;
+  FirstNewMsgLine: integer);
+begin
+  while fWrittenLineCount<Tool.WorkerOutput.Count do begin
+    debugln(Tool.WorkerOutput[fWrittenLineCount]);
+    inc(fWrittenLineCount);
   end;
 end;
 
@@ -646,7 +653,7 @@ begin
   if ExtToolConsole<>nil then begin
     // in console mode (lazbuild) all output goes unparsed to console
     ClearParsers;
-    View:=ExtToolConsole.CreateView(Title);
+    View:=ExtToolConsole.CreateView(Self);
   end else if (ViewCount=0) and (ParserCount>0) then begin
     // this tool generates parsed output => auto create view
     if IDEMessagesWindow<>nil then
