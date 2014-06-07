@@ -112,8 +112,6 @@ type
     function TrcNumberAfter(var Num: Int64; const AfterSub: string): Boolean;
     function TrcNumberAfter(var Num: Integer; const AfterSub: string): Boolean;
     function TrcNumFirstAndAfter(var FirstNum, AfterNum: Int64; const AfterSub: string): Boolean;
-    procedure OnFindCTSource(Sender: TObject; SrcType: TCodeTreeNodeDesc;
-      const SrcName: string; out SrcFilename: string);
 
     procedure ParseTraceLine(s: string; var line: TStackLine);
     procedure ParseStackTrace(trace: TStackTrace);
@@ -267,57 +265,6 @@ begin
 end;
 
 { THeapTrcInfo }
-
-procedure THeapTrcInfo.OnFindCTSource(Sender: TObject;
-  SrcType: TCodeTreeNodeDesc; const SrcName: string; out SrcFilename: string);
-var
-  aProject: TLazProject;
-  i: Integer;
-  SrcEdit: TSourceEditorInterface;
-  Code: TCodeBuffer;
-  Tool: TCodeTool;
-begin
-  case SrcType of
-  ctnProgram:
-    begin
-      // check active project
-      aProject:=LazarusIDE.ActiveProject;
-      if (aProject<>nil) and (aProject.MainFile<>nil) then begin
-        SrcFilename:=aProject.MainFile.Filename;
-        if FilenameIsAbsolute(SrcFilename)
-        and ((SrcName='')
-          or (SysUtils.CompareText(ExtractFileNameOnly(SrcFilename),SrcName)=0))
-        then
-          exit; // found
-      end;
-    end;
-  end;
-  // search in source editor
-  for i:=0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
-    SrcEdit:=SourceEditorManagerIntf.SourceEditors[i];
-    SrcFilename:=SrcEdit.FileName;
-    if CompareText(ExtractFileNameOnly(SrcFileName),SrcName)<>0 then
-      continue;
-    case SrcType of
-    ctnUnit:
-      if not FilenameIsPascalUnit(SrcFileName) then
-        continue;
-    else
-      // a pascal program can have any file name
-      // but we don't want to open program.res or program.txt
-      // => check if source is Pascal
-      // => load source and check if codetools can parse at least one node
-      Code:=CodeToolBoss.LoadFile(SrcFilename,true,false);
-      if Code=nil then continue;
-      CodeToolBoss.Explore(Code,Tool,false,true);
-      if (Tool=nil) or (Tool.Tree.Root=nil)  then
-        continue;
-    end;
-    exit; // found
-  end;
-  // not found
-  SrcFilename:='';
-end;
 
 function THeapTrcInfo.PosInTrc(const SubStr: string; CaseSensetive: Boolean): Boolean;
 begin
@@ -549,7 +496,7 @@ procedure THeapTrcInfo.ParseTraceLine(s: string; var line: TStackLine);
       while (i<=length(s)) and (s[i] in ['a'..'z','A'..'Z','0'..'9','_','$','?']) do
         inc(i);
       GDBIdentifier:=copy(s,1,i-1);
-      CodeToolBoss.FindGBDIdentifier(GDBIdentifier,Complete,TheErrorMsg,@OnFindCTSource,
+      CodeToolBoss.FindFPCMangledIdentifier(GDBIdentifier,Complete,TheErrorMsg,nil,
          SrcCode,SrcX,SrcY,SrcTopLine);
       if SrcCode<>nil then begin
         line.FileName:=SrcCode.Filename;
@@ -635,7 +582,7 @@ begin
       while (i<=length(s)) and (s[i] in ['a'..'z','A'..'Z','0'..'9','_','$','?']) do
         inc(i);
       GDBIdentifier:=copy(s,1,i-1);
-      CodeToolBoss.FindGBDIdentifier(GDBIdentifier,Complete,TheErrorMsg,@OnFindCTSource,
+      CodeToolBoss.FindFPCMangledIdentifier(GDBIdentifier,Complete,TheErrorMsg,@OnFindCTSource,
          SrcCode,SrcX,SrcY,SrcTopLine);
       if SrcCode<>nil then begin
         line.FileName:=SrcCode.Filename;

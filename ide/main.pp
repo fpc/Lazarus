@@ -71,8 +71,8 @@ uses
   HelpIntfs, Graphics, ExtCtrls, Dialogs, InterfaceBase, UTF8Process, LazLogger,
   lazutf8classes, LazFileCache,
   // codetools
-  FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools,
-  CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists,
+  FileProcs, FindDeclarationTool, LinkScanner, BasicCodeTools, CodeToolsStructs,
+  CodeToolManager, CodeCache, DefineTemplates, KeywordFuncLists, CodeTree,
   // synedit
   AllSynEdit, SynEditKeyCmds, SynBeautifier, SynEditMarks,
   // IDE interface
@@ -621,6 +621,9 @@ type
                 var CodeBuffers: TFPList; // stopping when CodeBuffers=nil
                 var ExpandedFilenames: TStrings
                 );
+    procedure CodeToolBossFindFPCMangledSource(Sender: TObject;
+      SrcType: TCodeTreeNodeDesc; const SrcName: string; out SrcFilename: string);
+
     function CTMacroFunctionProject(Data: Pointer): boolean;
     procedure OnCompilerParseStampIncreased;
     procedure CodeToolBossScannerInit(Self: TCodeToolManager;
@@ -1989,6 +1992,55 @@ begin
     DoJumpToCodeToolBossError;
     raise Exception.Create(lisUnableToFindMethod+' '+lisPleaseFixTheErrorInTheMessageWindow);
   end;
+end;
+
+procedure TMainIDE.CodeToolBossFindFPCMangledSource(Sender: TObject;
+  SrcType: TCodeTreeNodeDesc; const SrcName: string; out SrcFilename: string);
+var
+  i: Integer;
+  SrcEdit: TSourceEditorInterface;
+  Code: TCodeBuffer;
+  Tool: TCodeTool;
+begin
+  case SrcType of
+  ctnProgram:
+    begin
+      // check active project
+      if (Project1<>nil) and (Project1.MainFile<>nil) then begin
+        SrcFilename:=Project1.MainFile.Filename;
+        if FilenameIsAbsolute(SrcFilename)
+        and ((SrcName='')
+          or (SysUtils.CompareText(ExtractFileNameOnly(SrcFilename),SrcName)=0))
+        then
+          exit; // found
+      end;
+    end;
+  end;
+  // search in source editor
+  for i:=0 to SourceEditorManagerIntf.SourceEditorCount-1 do begin
+    SrcEdit:=SourceEditorManagerIntf.SourceEditors[i];
+    SrcFilename:=SrcEdit.FileName;
+    if CompareText(ExtractFileNameOnly(SrcFileName),SrcName)<>0 then
+      continue;
+    case SrcType of
+    ctnUnit:
+      if not FilenameIsPascalUnit(SrcFileName) then
+        continue;
+    else
+      // a pascal program can have any file name
+      // but we don't want to open program.res or program.txt
+      // => check if source is Pascal
+      // => load source and check if codetools can parse at least one node
+      Code:=CodeToolBoss.LoadFile(SrcFilename,true,false);
+      if Code=nil then continue;
+      CodeToolBoss.Explore(Code,Tool,false,true);
+      if (Tool=nil) or (Tool.Tree.Root=nil)  then
+        continue;
+    end;
+    exit; // found
+  end;
+  // not found
+  SrcFilename:='';
 end;
 
 {------------------------------------------------------------------------------}
@@ -9310,6 +9362,7 @@ begin
     OnGetMethodName:=@OnCodeToolBossGetMethodName;
     OnGetIndenterExamples:=@OnCodeToolBossGetIndenterExamples;
     OnScannerInit:=@CodeToolBossScannerInit;
+    OnFindFPCMangledSource:=@CodeToolBossFindFPCMangledSource;
   end;
 
   CodeToolsOpts.AssignGlobalDefineTemplatesToTree(CodeToolBoss.DefineTree);

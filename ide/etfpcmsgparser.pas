@@ -147,6 +147,8 @@ type
     fFileExists: TFilenameToPointerTree;
     fIncludePath: string; // only valid if fIncludePathValidForWorkerDir=Tool.WorkerDirectory
     fIncludePathValidForWorkerDir: string;
+    fUnitPath: string; // only valid if fUnitPathValidForWorkerDir=Tool.WorkerDirectory
+    fUnitPathValidForWorkerDir: string;
     fLastWorkerImprovedMessage: array[TExtToolParserSyncPhase] of integer;
     fLineToMsgID: TPatternToMsgIDs;
     fMissingFPCMsgItem: TFPCMsgItem;
@@ -160,6 +162,8 @@ type
     fMsgItemThereWereErrorsCompiling: TFPCMsgItem;
     fMsgItemUnitNotUsed: TFPCMsgItem;
     fOutputIndex: integer; // current OutputIndex given by ReadLine
+    procedure FetchIncludePath(aPhase: TExtToolParserSyncPhase; MsgWorkerDir: String);
+    procedure FetchUnitPath(aPhase: TExtToolParserSyncPhase; MsgWorkerDir: String);
     function FileExists(const Filename: string; aSynchronized: boolean): boolean;
     function CheckForMsgId(p: PChar): boolean; // (MsgId) message
     function CheckForFileLineColMessage(p: PChar): boolean; // the normal messages: filename(y,x): Hint: ..
@@ -465,15 +469,21 @@ function GetFPCMsgValue1(const Src, Pattern: string; out Value1: string
 }
 var
   p: SizeInt;
+  l: SizeInt;
 begin
+  Value1:='';
+  Result:=false;
+  if length(Src)<length(Pattern)-2 then exit;
   p:=Pos('$1',Pattern);
-  if p<1 then begin
-    Result:=false;
-    Value1:='';
-  end else begin
-    Value1:=copy(Src,p,length(Src)-length(Pattern)+2);
-    Result:=true;
-  end;
+  if p<1 then exit;
+  // check start pattern
+  if (p>1) and (not CompareMem(Pointer(Src),Pointer(Pattern),p-1)) then exit;
+  // check end pattern
+  l:=length(Pattern)-p-2;
+  if (l>0)
+  and (not CompareMem(Pointer(Src)+length(Src)-l,Pointer(Pattern)+p+2,l)) then exit;
+  Value1:=copy(Src,p,length(Src)-length(Pattern)+2);
+  Result:=true;
 end;
 
 function GetFPCMsgValues(Src, Pattern: string; out Value1, Value2: string
@@ -1083,6 +1093,10 @@ begin
   fIncludePathValidForWorkerDir:=Tool.WorkerDirectory;
   fIncludePath:=CodeToolBoss.GetIncludePathForDirectory(
                            ChompPathDelim(fIncludePathValidForWorkerDir));
+  // get include search path
+  fUnitPathValidForWorkerDir:=Tool.WorkerDirectory;
+  fUnitPath:=CodeToolBoss.GetUnitPathForDirectory(
+                           ChompPathDelim(fUnitPathValidForWorkerDir));
 end;
 
 procedure TIDEFPCParser.InitReading;
@@ -1883,7 +1897,7 @@ procedure TIDEFPCParser.ImproveMsgLinkerUndefinedReference(
   /path//blaunit.pas:45: undefined reference to `BLAUNIT_BLABLA'
 }
 
-  function CheckForLDFileAndLineNumber: boolean;
+  function CheckForLinuxLDFileAndLineNumber: boolean;
   var
     p: PChar;
     Msg: String;
@@ -1925,16 +1939,52 @@ procedure TIDEFPCParser.ImproveMsgLinkerUndefinedReference(
 
     Result:=true;
     MsgLine.Msg:=copy(Msg,p-PChar(Msg)+1,length(Msg));
-    MsgLine.Filename:=aFilename;
-    MsgLine.Line:=LineNumber;
-    MsgLine.Column:=1;
+    MsgLine.SetSourcePosition(aFilename,LineNumber,1);
+    MsgLine.Urgency:=mluError;
+  end;
+
+  function CheckForDarwinLDReferencedFrom: boolean;
+  { For example:
+     "_UNIT1_GIBTESNICHT", referenced from:
+  }
+  var
+    MangledName: string;
+    aComplete: boolean;
+    aErrorMsg: string;
+    NewCode: TCodeBuffer;
+    NewX: integer;
+    NewY: integer;
+    NewTopLine: integer;
+  begin
+    Result:=false;
+    if MsgLine.HasSourcePosition then exit;
+    // check for '  "_FPC-Mangled-Identifier", referenced from:
+    if not etFPCMsgParser.GetFPCMsgValue1(MsgLine.Msg,'  "_$1", referenced from:',
+      MangledName)
+    then exit;
+    Result:=true;
+    case aPhase of
+    etpspAfterReadLine:
+      begin
+        NeedSynchronize:=true;
+        exit;
+      end;
+    etpspAfterSync: exit;
+    end;
+    // in main threads
+    CodeToolBoss.FindFPCMangledIdentifier(MangledName,aComplete,aErrorMsg,
+      nil,NewCode,NewX,NewY,NewTopLine);
+    if NewCode=nil then exit;
+    Result:=true;
+    MsgLine.SetSourcePosition(NewCode.Filename,NewY,NewX);
     MsgLine.Urgency:=mluError;
   end;
 
 begin
   if MsgLine.SubTool<>SubToolFPCLinker then exit;
 
-  if CheckForLDFileAndLineNumber then exit;
+  if CheckForLinuxLDFileAndLineNumber then exit;
+  if CheckForDarwinLDReferencedFrom then exit;
 end;
 
 procedure TIDEFPCParser.ImproveMsgIdentifierPosition(
@@ -2074,6 +2124,48 @@ begin
       fFileExists[Filename]:=Pointer(Self)
     else
       fFileExists[Filename]:=Pointer(fFileExists);
+  end;
+end;
+
+procedure TIDEFPCParser.FetchIncludePath(aPhase: TExtToolParserSyncPhase;
+  MsgWorkerDir: String);
+begin
+  if MsgWorkerDir='' then
+    MsgWorkerDir:=Tool.WorkerDirectory;
+  if fIncludePathValidForWorkerDir<>MsgWorkerDir then begin
+    // fetch include path from IDE
+    case aPhase of
+    etpspAfterReadLine:
+      NeedSynchronize:=true;
+    etpspSynchronized:
+      begin
+        fIncludePathValidForWorkerDir:=MsgWorkerDir;
+        fIncludePath:=CodeToolBoss.GetIncludePathForDirectory(
+                                 ChompPathDelim(MsgWorkerDir));
+        NeedAfterSync:=true;
+      end;
+    end;
+  end;
+end;
+
+procedure TIDEFPCParser.FetchUnitPath(aPhase: TExtToolParserSyncPhase;
+  MsgWorkerDir: String);
+begin
+  if MsgWorkerDir='' then
+    MsgWorkerDir:=Tool.WorkerDirectory;
+  if fUnitPathValidForWorkerDir<>MsgWorkerDir then begin
+    // fetch unit path from IDE
+    case aPhase of
+    etpspAfterReadLine:
+      NeedSynchronize:=true;
+    etpspSynchronized:
+      begin
+        fUnitPathValidForWorkerDir:=MsgWorkerDir;
+        fUnitPath:=CodeToolBoss.GetUnitPathForDirectory(
+                                 ChompPathDelim(MsgWorkerDir));
+        NeedAfterSync:=true;
+      end;
+    end;
   end;
 end;
 
@@ -2426,20 +2518,7 @@ begin
       if (not FilenameIsAbsolute(aFilename)) then begin
         // short file name => 2. try include path
         MsgWorkerDir:=MsgLine.Attribute[FPCMsgAttrWorkerDirectory];
-        if fIncludePathValidForWorkerDir<>MsgWorkerDir then begin
-          // fetch include path from IDE
-          case aPhase of
-          etpspAfterReadLine:
-            NeedSynchronize:=true;
-          etpspSynchronized:
-            begin
-              fIncludePathValidForWorkerDir:=MsgWorkerDir;
-              fIncludePath:=CodeToolBoss.GetIncludePathForDirectory(
-                                       ChompPathDelim(MsgWorkerDir));
-              NeedAfterSync:=true;
-            end;
-          end;
-        end;
+        FetchIncludePath(aPhase,MsgWorkerDir);
         if (aPhase in [etpspAfterReadLine,etpspAfterSync])
         and (fIncludePathValidForWorkerDir=MsgWorkerDir) then begin
           // include path is valid and in worker thread

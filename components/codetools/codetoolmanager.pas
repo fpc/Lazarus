@@ -68,7 +68,7 @@ type
   TOnFindDefineProperty = procedure(Sender: TObject;
     const PersistentClassName, AncestorClassName, Identifier: string;
     var IsDefined: boolean) of object;
-  TOnFindGDBSource = procedure(Sender: TObject; SrcType: TCodeTreeNodeDesc;
+  TOnFindFPCMangledSource = procedure(Sender: TObject; SrcType: TCodeTreeNodeDesc;
     const SrcName: string; out SrcFilename: string) of object;
 
   ECodeToolManagerError = class(Exception);
@@ -109,6 +109,7 @@ type
     FOnAfterApplyChanges: TOnAfterApplyCTChanges;
     FOnBeforeApplyChanges: TOnBeforeApplyCTChanges;
     FOnCheckAbort: TOnCodeToolCheckAbort;
+    FOnFindFPCMangledSource: TOnFindFPCMangledSource;
     FOnGatherExternalChanges: TOnGatherExternalChanges;
     FOnFindDefinePropertyForContext: TOnFindDefinePropertyForContext;
     FOnFindDefineProperty: TOnFindDefineProperty;
@@ -832,10 +833,12 @@ type
           out NewX, NewY, NewTopLine: integer): boolean;
 
     // gdb stacktraces
-    function FindGBDIdentifier(GDBIdentifier: string; out aComplete: boolean;
-          out aMessage: string; const OnFindSource: TOnFindGDBSource;
+    function FindFPCMangledIdentifier(GDBIdentifier: string; out aComplete: boolean;
+          out aMessage: string; const OnFindSource: TOnFindFPCMangledSource;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer): boolean;
+    property OnFindFPCMangledSource: TOnFindFPCMangledSource
+                     read FOnFindFPCMangledSource write FOnFindFPCMangledSource;
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -3830,9 +3833,9 @@ begin
   end;
 end;
 
-function TCodeToolManager.FindGBDIdentifier(GDBIdentifier: string; out
+function TCodeToolManager.FindFPCMangledIdentifier(GDBIdentifier: string; out
   aComplete: boolean; out aMessage: string;
-  const OnFindSource: TOnFindGDBSource; out NewCode: TCodeBuffer; out NewX,
+  const OnFindSource: TOnFindFPCMangledSource; out NewCode: TCodeBuffer; out NewX,
   NewY, NewTopLine: integer): boolean;
 { Examples:
   compiler built-in
@@ -3903,6 +3906,9 @@ var
     // user search
     if Assigned(OnFindSource) then begin
       OnFindSource(Self,ctnUnit,TheUnitName,aFilename);
+      Result:=aFilename<>'';
+    end else if Assigned(OnFindFPCMangledSource) then begin
+      OnFindFPCMangledSource(Self,ctnUnit,TheUnitName,aFilename);
       Result:=aFilename<>'';
     end;
   end;
@@ -4066,12 +4072,13 @@ begin
     end;
     // unknown operator => use only SrcFilename
     //debugln(['TCodeToolManager.FindGBDIdentifier operator not yet supported: ',dbgstr(p^)]);
+    aMessage:='operator not supported: '+dbgstr(p^);
     exit;
   end else begin
     // example: ??
   end;
 
-  aMessage:='unkown identifier "'+GDBIdentifier+'"';
+  aMessage:='unknown identifier "'+GDBIdentifier+'"';
 end;
 
 function TCodeToolManager.CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
