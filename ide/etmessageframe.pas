@@ -3158,7 +3158,8 @@ begin
   Filters:=MessagesCtrl.Filters;
   while Filters.GetFilter(aCaption+IntToStr(i),false)<>nil do
     inc(i);
-  aCaption:=UTF8Trim(InputBox('Create Filter','Name:',aCaption),[]);
+  if not InputQuery('Create Filter','Name:',aCaption) then exit;
+  aCaption:=UTF8Trim(aCaption,[]);
   if aCaption='' then exit;
   if Filters.GetFilter(aCaption,false)<>nil then begin
     IDEMessageDialog('Filter already exists','A filter with the name "'+aCaption+'" already exists.',mtError,[mbCancel],'');
