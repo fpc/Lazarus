@@ -555,7 +555,7 @@ begin
     BuildLazProfiles.CurrentIndex:=i;
   end;
   if ConsoleVerbosity>=0 then
-    debugln(['Building Lazarus IDE with profile "',CurProf.Name,'"']);
+    debugln(['NOTE: Building Lazarus IDE with profile "',CurProf.Name,'"']);
 
   if (Length(OSOverride) <> 0) then
     CurProf.TargetOS:=OSOverride;
@@ -605,7 +605,7 @@ begin
                   Flags+[blfDontBuild]);
       if CurResult<>mrOk then begin
         if ConsoleVerbosity>=-1 then
-          DebugLn('TLazBuildApplication.BuildLazarusIDE: Clean all failed.');
+          DebugLn('ERROR: BuildLazarusIDE: Clean all failed.');
         exit;
       end;
     end;
@@ -614,7 +614,7 @@ begin
     CurResult:=PackageGraph.SaveAutoInstallConfig;
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
-        DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving IDE make config files.');
+        DebugLn('ERROR: BuildLazarusIDE: failed saving IDE make config files.');
       exit;
     end;
 
@@ -622,7 +622,7 @@ begin
     if not CompileAutoInstallPackages(BuildLazProfiles.Current.IdeBuildMode<>bmBuild)
     then begin
       if ConsoleVerbosity>=-1 then
-        DebugLn('TLazBuildApplication.BuildLazarusIDE: Compile AutoInstall Packages failed.');
+        DebugLn('ERROR: BuildLazarusIDE: Compile AutoInstall Packages failed.');
       exit;
     end;
 
@@ -633,7 +633,7 @@ begin
     CurResult:=Builder.SaveIDEMakeOptions(BuildLazProfiles.Current,Flags+[blfBackupOldExe]);
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
-        DebugLn('TLazBuildApplication.BuildLazarusIDE: failed saving idemake.cfg');
+        DebugLn('ERROR: BuildLazarusIDE: failed saving idemake.cfg');
       exit;
     end;
 
@@ -642,7 +642,7 @@ begin
                            Flags+[blfUseMakeIDECfg,blfOnlyIDE]);
     if CurResult<>mrOk then begin
       if ConsoleVerbosity>=-1 then
-        DebugLn('TLazBuildApplication.BuildLazarusIDE: Building IDE failed.');
+        DebugLn('ERROR: BuildLazarusIDE: Building IDE failed.');
       exit;
     end;
 
@@ -1465,8 +1465,6 @@ begin
 
   if BuildIDE then begin
     if not BuildLazarusIDE then begin
-      if ConsoleVerbosity>=-1 then
-        debugln('Failed building Lazarus IDE');
       ExitCode := ErrorBuildFailed;
       exit;
     end;
