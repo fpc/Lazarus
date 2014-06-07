@@ -94,8 +94,8 @@ type
   protected
     function InitializeLoader: TDbgImageLoader; override;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string): TDbgProcess; override;
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer); override;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; override;
+    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -340,16 +340,17 @@ begin
     result := TDbgImageLoader.Create(dSYMFilename)
   else
     begin
-    log('No dSYM bundle ('+dSYMFilename+') found.');
+    log('No dSYM bundle ('+dSYMFilename+') found.', dllInfo);
     result := TDbgImageLoader.Create(Name);
     end;
 end;
 
-constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID, AThreadID: Integer);
+constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID,
+  AThreadID: Integer; AOnLog: TOnLog);
 var
   aKernResult: kern_return_t;
 begin
-  inherited Create(AName, AProcessID, AThreadID);
+  inherited Create(AName, AProcessID, AThreadID, AOnLog);
 
   LoadInfo;
 
@@ -360,7 +361,7 @@ begin
   aKernResult:=task_for_pid(mach_task_self, AProcessID, FTaskPort);
   if aKernResult <> KERN_SUCCESS then
     begin
-    DebugLn('Failed to get task for process '+IntToStr(AProcessID)+'. Probably insufficient rights to debug applications. Mach error: '+mach_error_string(aKernResult));
+    log('Failed to get task for process '+IntToStr(AProcessID)+'. Probably insufficient rights to debug applications. Mach error: '+mach_error_string(aKernResult), dllInfo);
     end;
 end;
 
@@ -370,7 +371,7 @@ begin
   inherited Destroy;
 end;
 
-class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string): TDbgProcess;
+class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess;
 var
   PID: TPid;
   stat: longint;
@@ -407,7 +408,7 @@ begin
     PID:=AProcess.ProcessID;
 
     sleep(100);
-    result := TDbgDarwinProcess.Create(AFileName, Pid,-1);
+    result := TDbgDarwinProcess.Create(AFileName, Pid, -1, AOnLog);
   except
     AProcess.Free;
     raise;

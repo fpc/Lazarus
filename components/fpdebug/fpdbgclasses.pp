@@ -46,7 +46,8 @@ uses
 type
   TFPDEvent = (deExitProcess, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deInternalContinue);
   TFPDMode = (dm32, dm64);
-  TOnLog = procedure(AString: string) of object;
+  TFPDLogLevel = (dllDebug, dllInfo, dllError);
+  TOnLog = procedure(const AString: string; const ALogLevel: TFPDLogLevel) of object;
 
   { TDbgRegisterValue }
 
@@ -278,8 +279,8 @@ type
     function DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
     procedure MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string): TDbgProcess; virtual;
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer); virtual;
+    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; virtual;
+    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); virtual;
     destructor Destroy; override;
     function  AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint; overload;
     function  FindSymbol(const AName: String): TFpDbgSymbol;
@@ -288,8 +289,8 @@ type
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     function  RemoveBreak(const ALocation: TDbgPtr): Boolean;
     procedure RemoveThread(const AID: DWord);
-    procedure Log(AString: string);
-    procedure Log(AString: string; Options: array of const);
+    procedure Log(const AString: string; const ALogLevel: TFPDLogLevel = dllDebug);
+    procedure Log(const AString: string; const Options: array of const; const ALogLevel: TFPDLogLevel = dllDebug);
     function  Pause: boolean; virtual;
     function  RunTo(ASourceFile: string; ALineNr: integer): boolean;
 
@@ -325,7 +326,7 @@ type
     property ExceptionClass: string read FExceptionClass write FExceptionClass;
 
     property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
-    property OnLog: TOnLog read FOnLog write FOnLog;
+    property OnLog: TOnLog read FOnLog;
     property MainThread: TDbgThread read FMainThread;
   end;
   TDbgProcessClass = class of TDbgProcess;
@@ -672,7 +673,7 @@ begin
   FBreakMap.Add(ALocation, Result);
 end;
 
-constructor TDbgProcess.Create(const AName: string; const AProcessID, AThreadID: Integer);
+constructor TDbgProcess.Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog);
 const
   {.$IFDEF CPU64}
   MAP_ID_SIZE = itu8;
@@ -680,6 +681,7 @@ const
 //  MAP_ID_SIZE = itu4;
   {.$ENDIF}
 begin
+  FOnLog:=AOnLog;
   FProcessID := AProcessID;
   FThreadID := AThreadID;
 
@@ -843,15 +845,17 @@ begin
   FThreadMap.Delete(AID);
 end;
 
-procedure TDbgProcess.Log(AString: string);
+procedure TDbgProcess.Log(const AString: string; const ALogLevel: TFPDLogLevel);
 begin
   if assigned(FOnLog) then
-    FOnLog(AString);
+    FOnLog(AString, ALogLevel)
+  else
+    DebugLn(AString);
 end;
 
-procedure TDbgProcess.Log(AString: string; Options: array of const);
+procedure TDbgProcess.Log(const AString: string; const Options: array of const; const ALogLevel: TFPDLogLevel);
 begin
-  Log(Format(AString, Options));
+  Log(Format(AString, Options), ALogLevel);
 end;
 
 function TDbgProcess.Pause: boolean;
@@ -883,9 +887,16 @@ begin
   FExitCode:=AValue;
 end;
 
-class function TDbgProcess.StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string): TDbgProcess;
+resourcestring
+  sNoDebugSupport = 'Debug support is not available for this platform .';
+
+class function TDbgProcess.StartInstance(AFileName: string; AParams,
+  AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess;
 begin
-  DebugLn('Debug support for this platform is not available.');
+  if assigned(AOnLog) then
+    AOnLog(sNoDebugSupport, dllError)
+  else
+    DebugLn(sNoDebugSupport);
   result := nil;
 end;
 

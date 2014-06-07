@@ -45,8 +45,8 @@ type
     FMainProcess: TDbgProcess;
     FCurrentProcess: TDbgProcess;
     FCurrentThread: TDbgThread;
-    procedure Log(AString: string);
-    procedure Log(AString: string; Options: array of const);
+    procedure Log(const AString: string; const ALogLevel: TFPDLogLevel = dllDebug);
+    procedure Log(const AString: string; const Options: array of const; const ALogLevel: TFPDLogLevel = dllDebug);
     function GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
   public
     constructor Create; virtual;
@@ -109,8 +109,6 @@ procedure TDbgController.SetOnLog(AValue: TOnLog);
 begin
   if FOnLog=AValue then Exit;
   FOnLog:=AValue;
-  //if Assigned(FCurrentProcess) then
-  //  FCurrentProcess.OnLog:=FOnLog;
 end;
 
 destructor TDbgController.Destroy;
@@ -142,11 +140,10 @@ begin
     Exit;
     end;
 
-  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory);
+  FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, @Log);
   if assigned(FCurrentProcess) then
     begin
     FCurrentProcess.OnDebugInfoLoaded := @DoOnDebugInfoLoaded;
-    FCurrentProcess.OnLog:=OnLog;
     Log('Got PID: %d, TID: %d', [FCurrentProcess.ProcessID, FCurrentProcess.ThreadID]);
     result := true;
     end;
@@ -317,17 +314,18 @@ begin
   end;
 end;
 
-procedure TDbgController.Log(AString: string);
+procedure TDbgController.Log(const AString: string; const ALogLevel: TFPDLogLevel);
 begin
   if assigned(FOnLog) then
-    FOnLog(AString)
+    FOnLog(AString, ALogLevel)
   else
     DebugLn(AString);
 end;
 
-procedure TDbgController.Log(AString: string; Options: array of const);
+procedure TDbgController.Log(const AString: string;
+  const Options: array of const; const ALogLevel: TFPDLogLevel);
 begin
-  Log(Format(AString, Options));
+  Log(Format(AString, Options), ALogLevel);
 end;
 
 function TDbgController.GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;

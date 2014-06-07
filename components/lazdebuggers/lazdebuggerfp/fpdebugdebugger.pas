@@ -11,6 +11,7 @@ uses
   Maps,
   process,
   LazLogger,
+  Dialogs,
   FpDbgClasses,
   FpDbgInfo,
   FpErrorMessages,
@@ -40,6 +41,13 @@ type
     property DebugLoopStoppedEvent: PRTLEvent read FDebugLoopStoppedEvent;
   end;
 
+  { TFpDbgLogMessage }
+
+  TFpDbgLogMessage = record
+    SyncLogMessage: string;
+    SyncLogLevel: TFPDLogLevel;
+  end;
+
   { TFpDebugDebugger }
 
   TFpDebugDebugger = class(TDebuggerIntf)
@@ -51,6 +59,8 @@ type
     FFpDebugThread: TFpDebugThread;
     FQuickPause: boolean;
     FRaiseExceptionBreakpoint: FpDbgClasses.TDBGBreakPoint;
+    FDbgLogMessageList: array of TFpDbgLogMessage;
+    FLogCritSection: TRTLCriticalSection;
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
     function ReadAnsiString(AnAddr: TDbgPtr): string;
     function SetSoftwareExceptionBreakpoint: boolean;
@@ -64,6 +74,7 @@ type
     function GetDebugInfo: TDbgInfo;
     procedure DoWatchFreed(Sender: TObject);
     procedure ProcessASyncWatches(Data: PtrInt);
+    procedure DoLog;
   protected
     procedure ScheduleWatchValueEval(AWatchValue: TWatchValue);
     function EvaluateExpression(AWatchValue: TWatchValue;
@@ -83,7 +94,7 @@ type
                              const AParams: array of const): Boolean; override;
     function ChangeFileName: Boolean; override;
 
-    procedure OnLog(AString: String);
+    procedure OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
     procedure StartDebugLoop;
     procedure DebugLoopFinished;
     procedure QuickPause;
@@ -991,6 +1002,28 @@ begin
     end;
 end;
 
+procedure TFpDebugDebugger.DoLog;
+var
+  AMessage: TFpDbgLogMessage;
+begin
+  EnterCriticalsection(FLogCritSection);
+  try
+    if length(FDbgLogMessageList) = 0 then
+      Exit;
+    AMessage := FDbgLogMessageList[0];
+    move(FDbgLogMessageList[1], FDbgLogMessageList[0], SizeOf(TFpDbgLogMessage)*high(FDbgLogMessageList));
+    SetLength(FDbgLogMessageList, high(FDbgLogMessageList));
+  finally
+    LeaveCriticalsection(FLogCritSection);
+  end;
+
+  case AMessage.SyncLogLevel of
+    dllDebug: DebugLn(AMessage.SyncLogMessage);
+    dllInfo:  ShowMessage(AMessage.SyncLogMessage);
+    dllError: raise exception.Create(AMessage.SyncLogMessage);
+  end;
+end;
+
 function TFpDebugDebugger.GetClassInstanceName(AnAddr: TDBGPtr): string;
 var
   VMTAddr: TDBGPtr;
@@ -1222,9 +1255,23 @@ begin
   result := true;
 end;
 
-procedure TFpDebugDebugger.OnLog(AString: String);
+procedure TFpDebugDebugger.OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
+var
+  AMessage: TFpDbgLogMessage;
 begin
-  DebugLn(AString);
+  // This function could be running in a thread. Add the log-message to an
+  // array and queue the processing in the main thread. Not an ideal
+  // implementation. But good enough for now.
+  AMessage.SyncLogLevel:=ALogLevel;
+  AMessage.SyncLogMessage:=AString;
+  EnterCriticalsection(FLogCritSection);
+  try
+    setlength(FDbgLogMessageList, length(FDbgLogMessageList)+1);
+    FDbgLogMessageList[high(FDbgLogMessageList)] := AMessage;
+  finally
+    LeaveCriticalsection(FLogCritSection);
+  end;
+  TThread.Queue(nil, @DoLog);
 end;
 
 procedure TFpDebugDebugger.StartDebugLoop;
@@ -1269,6 +1316,7 @@ begin
   inherited Create(AExternalDebugger);
   FWatchEvalList := TList.Create;
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
+  InitCriticalSection(FLogCritSection);
   FDbgController := TDbgController.Create;
   FDbgController.OnLog:=@OnLog;
   FDbgController.OnCreateProcessEvent:=@FDbgControllerCreateProcessEvent;
@@ -1285,6 +1333,7 @@ begin
   FDbgController.Free;
   FPrettyPrinter.Free;
   FWatchEvalList.Free;
+  DoneCriticalsection(FLogCritSection);
   inherited Destroy;
 end;
 
