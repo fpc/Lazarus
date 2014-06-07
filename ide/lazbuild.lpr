@@ -38,7 +38,7 @@ uses
   MacroIntf, PackageIntf, IDEDialogs, ProjectIntf, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf,
   // IDE
-  IDEProcs, InitialSetupDlgs,
+  IDEProcs, InitialSetupProc,
   {$IFDEF EnableNewExtTools}
   ExtTools,
   {$ELSE}

@@ -32,7 +32,7 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, CodeToolManager, DefineTemplates, Forms,
   StdCtrls, Dialogs, Controls, Spin, EnvironmentOpts, MacroIntf,
   LazarusIDEStrConsts, InputHistory, LazConf, IDEProcs, IDEOptionsIntf,
-  IDEDialogs, IDEUtils, InitialSetupDlgs;
+  IDEDialogs, IDEUtils, InitialSetupProc;
 
 type
 

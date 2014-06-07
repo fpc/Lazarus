@@ -8,7 +8,7 @@ uses
   Controls, StdCtrls, Dialogs, IDEOptionsIntf, Project, CompilerOptions,
   CompOptsIntf, IDEDialogs, IDEUtils, FileProcs, DefineTemplates,
   CodeToolManager, PackageDefs, LazarusIDEStrConsts, EnvironmentOpts, LazConf,
-  IDEProcs, InputHistory, InitialSetupDlgs, Classes, sysutils;
+  IDEProcs, InputHistory, InitialSetupProc, Classes, sysutils;
 
 type
 

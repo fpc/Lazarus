@@ -33,7 +33,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, LCLProc, LazHelpHTML, LazHelpIntf, DefineTemplates, CodeToolManager,
   EnvironmentOpts, AboutFrm, LazConf, IDEHelpIntf, IDEWindowIntf, LazIDEIntf,
-  LazarusIDEStrConsts, Project, SourceEditor, InitialSetupDlgs, PackageSystem,
+  LazarusIDEStrConsts, Project, SourceEditor, InitialSetupProc, PackageSystem,
   PackageDefs;
 
 type
