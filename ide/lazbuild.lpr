@@ -1573,10 +1573,17 @@ begin
     // build all
     if HasOption('B','build-all') then
       BuildAll:=true;
-    if HasOption('r','recursive') then
+    if HasOption('r','recursive') then begin
+      BuildAll:=true;
       BuildRecursive:=true;
+    end;
     if HasOption('d','skip-dependencies') then
       SkipDependencies:=true;
+    if BuildRecursive and SkipDependencies then begin
+      writeln('Error: --recursive and --skip-dependencies. You have to make up your mind.');
+      WriteUsage;
+      exit;
+    end;
 
     // overides
     // widgetset
