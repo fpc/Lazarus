@@ -1745,6 +1745,7 @@ var
   s: String;
 begin
   if MsgLine.Urgency<mluError then exit;
+  writeln('TIDEFPCParser.ImproveMsgUnitNotFound ',MsgLine.MsgID);
   if not IsMsgID(MsgLine,FPCMsgIDCantFindUnitUsedBy,fMsgItemCantFindUnitUsedBy)
   then // Can't find unit $1 used by $2
     exit;
@@ -2382,6 +2383,7 @@ procedure TIDEFPCParser.ReadLine(Line: string; OutputIndex: integer;
      Assembling <filename>
      Fatal: <some text>
      Fatal: (message id) <some text>
+     (message id) <some text>
      <filename>(123,45) <ErrorType>: <some text>
      <filename>(123) <ErrorType>: <some text>
      <filename>(456) <ErrorType>: <some text> in line (123)
@@ -2607,13 +2609,13 @@ begin
       end;
 
       ImproveMsgHiddenByIDEDirective(aPhase, MsgLine, SourceOK);
-      ImproveMsgUnitNotFound(aPhase, MsgLine);
       ImproveMsgUnitNotUsed(aPhase, MsgLine);
       ImproveMsgSenderNotUsed(aPhase, MsgLine);
       ImproveMsgIdentifierPosition(aPhase, MsgLine, SourceOK);
     end else if MsgLine.SubTool=SubToolFPCLinker then begin
       ImproveMsgLinkerUndefinedReference(aPhase, MsgLine);
     end;
+    ImproveMsgUnitNotFound(aPhase, MsgLine);
   end;
   fLastWorkerImprovedMessage[aPhase]:=Tool.WorkerMessages.Count-1;
 end;
