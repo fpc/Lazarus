@@ -669,14 +669,12 @@ type
     // Variables used by LoadFromXMLConfig and SaveToXMLConfig
     FXMLConfig: TXMLConfig;
     FGlobalMatrixOptions: TBuildMatrixOptions;
-    FModeID, FOptionID: String;
     function GetItems(Index: integer): TProjectBuildMode;
     function GetModified: boolean;
     procedure OnItemChanged(Sender: TObject);
     procedure SetModified(const AValue: boolean);
     // Used by LoadFromXMLConfig
     procedure AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string; InSession: boolean);
-    procedure EnableMatrixMode(MatrixOptions: TBuildMatrixOptions);
     procedure LoadSessionEnabledNonSessionMatrixOptions(const Path: string);
     procedure LoadOldMacroValues(const Path: string; CurMode: TProjectBuildMode);
     procedure LoadNewFormat(const Path: string; Cnt: Integer; LoadData: boolean);
@@ -7000,21 +6998,11 @@ begin
   end;
 end;
 
-procedure TProjectBuildModes.EnableMatrixMode(MatrixOptions: TBuildMatrixOptions);
-var
-  MatrixOption: TBuildMatrixOption;
-begin
-  if MatrixOptions=nil then exit;
-  MatrixOption:=MatrixOptions.FindOption(FOptionID);
-  if MatrixOption=nil then exit;
-  //debugln(['EnableMatrixMode OptionID=',FOptionID,' ModeID=',FModeID,' ',MatrixOption.AsString]);
-  MatrixOption.EnableMode(FModeID);
-end;
-
 procedure TProjectBuildModes.LoadSessionEnabledNonSessionMatrixOptions(const Path: string);
 var
   i, Cnt: integer;
   SubPath: String;
+  ModeID, OptionID: String;
 begin
   // disable all matrix options in session modes
   if FGlobalMatrixOptions<>nil then
@@ -7024,18 +7012,20 @@ begin
   Cnt:=FXMLConfig.GetValue(Path+'Count',0);
   for i:=1 to Cnt do begin
     SubPath:=Path+'Item'+IntToStr(i)+'/';
-    FModeID:=FXMLConfig.GetValue(SubPath+'Mode','');
-    if (FModeID='') or (not IsSessionMode(FModeID)) then begin
-      debugln(['LoadSessionEnabledNonSessionMatrixOptions not a session Mode="',dbgstr(FModeID),'" at ',SubPath]);
+    ModeID:=FXMLConfig.GetValue(SubPath+'Mode','');
+    if (ModeID='') or (not IsSessionMode(ModeID)) then begin
+      debugln(['LoadSessionEnabledNonSessionMatrixOptions not a session Mode="',dbgstr(ModeID),'" at ',SubPath]);
       continue;
     end;
-    FOptionID:=FXMLConfig.GetValue(SubPath+'Option','');
-    if FOptionID='' then begin
+    OptionID:=FXMLConfig.GetValue(SubPath+'Option','');
+    if OptionID='' then begin
       debugln(['LoadSessionEnabledNonSessionMatrixOptions invalid option at ',SubPath]);
       continue;
     end;
-    EnableMatrixMode(FGlobalMatrixOptions);
-    EnableMatrixMode(SharedMatrixOptions);
+    if Assigned(FGlobalMatrixOptions) then
+      FGlobalMatrixOptions.EnableModeIfOptionFound(ModeID, OptionID);
+    if Assigned(SharedMatrixOptions) then
+      SharedMatrixOptions.EnableModeIfOptionFound(ModeID, OptionID);
   end;
 end;
 

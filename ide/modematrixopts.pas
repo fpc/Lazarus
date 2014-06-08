@@ -148,6 +148,7 @@ type
     procedure GetOutputDirectory(Target, ActiveMode: string; var OutDir: string);
     function FindOption(const ID: string): TBuildMatrixOption;
     function FindMacro(const MacroName, MacroValue: string): TBuildMatrixOption;
+    procedure EnableModeIfOptionFound(ModeID, OptionID: String);
   end;
 
   EMMMacroSyntaxException = class(Exception)
@@ -643,6 +644,15 @@ begin
     dec(i);
   end;
   Result:=nil;
+end;
+
+procedure TBuildMatrixOptions.EnableModeIfOptionFound(ModeID, OptionID: String);
+var
+  Opt: TBuildMatrixOption;
+begin
+  Opt:=FindOption(OptionID);
+  if Assigned(Opt) then
+    Opt.EnableMode(ModeID);
 end;
 
 { TBuildMatrixOption }
