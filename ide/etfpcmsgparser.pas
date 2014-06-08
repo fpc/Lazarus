@@ -1745,7 +1745,6 @@ var
   s: String;
 begin
   if MsgLine.Urgency<mluError then exit;
-  writeln('TIDEFPCParser.ImproveMsgUnitNotFound ',MsgLine.MsgID);
   if not IsMsgID(MsgLine,FPCMsgIDCantFindUnitUsedBy,fMsgItemCantFindUnitUsedBy)
   then // Can't find unit $1 used by $2
     exit;
