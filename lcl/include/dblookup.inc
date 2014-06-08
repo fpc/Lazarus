@@ -141,7 +141,7 @@ begin
   if FListLink.Active and not FListLink.Editing then
   begin
     FetchLookupData;
-    if FControlLink.Active then
+    if Assigned(FControlLink) and FControlLink.Active then
       FControlLink.Reset;
   end;
 end;
@@ -356,7 +356,7 @@ begin
   Key := FListKeys[ValueIndex];
   if ScrollDataset then
     FListLink.DataSet.Locate(FKeyFieldNames, Key, []);
-  if FControlLink.Active then
+  if Assigned(FControlLink) and FControlLink.Active then
   begin
     if VarSameValue(Key, FControlLink.DataSet.FieldValues[FDataFieldNames]) then
       Exit;
