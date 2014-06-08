@@ -666,10 +666,25 @@ type
     fItems: TFPList;
     FLazProject: TProject;
     fOnChanged: TMethodList;
+    // Variables used by LoadFromXMLConfig and SaveToXMLConfig
+    FXMLConfig: TXMLConfig;
+    FGlobalMatrixOptions: TBuildMatrixOptions;
+    FModeID, FOptionID: String;
     function GetItems(Index: integer): TProjectBuildMode;
     function GetModified: boolean;
     procedure OnItemChanged(Sender: TObject);
     procedure SetModified(const AValue: boolean);
+    // Used by LoadFromXMLConfig
+    procedure AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string; InSession: boolean);
+    procedure EnableMatrixMode(MatrixOptions: TBuildMatrixOptions);
+    procedure LoadSessionEnabledNonSessionMatrixOptions(const Path: string);
+    procedure LoadOldMacroValues(const Path: string; CurMode: TProjectBuildMode);
+    procedure LoadNewFormat(const Path: string; Cnt: Integer; LoadData: boolean);
+    procedure LoadOldFormat(const Path: string);
+    // Used by SaveToXMLConfig
+    procedure SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
+    procedure SaveSessionEnabledNonSessionMatrixOptions(const Path: string;
+      MatrixOptions: TBuildMatrixOptions; var Cnt: integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -691,6 +706,11 @@ type
     function IsSessionMode(const ModeIdentifier: string): boolean;
     function IsSharedMode(const ModeIdentifier: string): boolean;
     procedure RenameMatrixMode(const OldName, NewName: string);
+    // load, save
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                LoadData, LoadParts: boolean);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                              SaveData, SaveSession: boolean);
   public
     property Items[Index: integer]: TProjectBuildMode read GetItems; default;
     property ChangeStamp: integer read FChangeStamp;
@@ -785,9 +805,7 @@ type
     FFileVersion: Integer;
     FNewMainUnitID: LongInt;
     FProjectWriteFlags: TProjectWriteFlags;
-    FGlobalMatrixOptions: TBuildMatrixOptions;
     FSaveSessionInLPI: Boolean;
-    FModeID, FOptionID: String;
     procedure ClearBuildModes;
     function GetActiveBuildModeID: string;
     function GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
@@ -838,10 +856,6 @@ type
       const MacroName: string; var s: string;
       const Data: PtrInt; var Handled, Abort: boolean; Depth: integer);
     // Methods for ReadProject
-    procedure AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string; InSession: boolean);
-    procedure EnableMatrixMode(MatrixOptions: TBuildMatrixOptions);
-    procedure LoadSessionEnabledNonSessionMatrixOptions(const Path: string);
-    procedure LoadOldMacroValues(const Path: string; CurMode: TProjectBuildMode);
     function LoadOldProjectType(const Path: string): TOldProjectType;
     procedure LoadBuildModes(const Path: string; LoadData: boolean);
     procedure LoadFlags(const Path: string);
@@ -853,9 +867,6 @@ type
     function DoLoadSession(Filename: String): TModalResult;
     // Methods for WriteProject
     procedure SaveFlags(const Path: string);
-    procedure SaveSessionEnabledNonSessionMatrixOptions(const Path: string;
-      MatrixOptions: TBuildMatrixOptions; var Cnt: integer);
-    procedure SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
     procedure SaveBuildModes(const Path: string; SaveData, SaveSession: boolean);
     procedure SaveUnits(const Path: string; SaveData, SaveSession: boolean);
     procedure SaveCustomDefines(const Path: string);
@@ -2664,109 +2675,6 @@ end;
   Methods for ReadProject
  ------------------------------------------------------------------------------}
 
-procedure TProject.AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string;
-  InSession: boolean);
-
-  function FindMacro(MatrixOptions: TBuildMatrixOptions;
-    const MacroName, MacroValue: string): TBuildMatrixOption;
-  var
-    j: Integer;
-  begin
-    j:=MatrixOptions.Count-1;
-    while j>=0 do
-    begin
-      Result:=MatrixOptions[j];
-      if (Result.Typ=bmotIDEMacro)
-      and (Result.Targets='*')
-      and (Result.MacroName=MacroName)
-      and (Result.Value=MacroValue)
-      then
-        exit;
-      dec(j);
-    end;
-    Result:=nil;
-  end;
-
-var
-  MatrixOptions: TBuildMatrixOptions;
-  MatrixOption: TBuildMatrixOption;
-begin
-  MatrixOption:=FindMacro(BuildModes.SharedMatrixOptions,MacroName,MacroValue);
-  if MatrixOption=nil then
-    MatrixOption:=FindMacro(BuildModes.SessionMatrixOptions,MacroName,MacroValue);
-  if MatrixOption<>nil then begin
-    // Macro already exists => enable mode for this macro
-    MatrixOption.EnableMode(ModeIdentifier);
-  end else begin
-    // Macro does not yet exist => create
-    if InSession then
-      MatrixOptions:=BuildModes.SessionMatrixOptions
-    else
-      MatrixOptions:=BuildModes.SharedMatrixOptions;
-    MatrixOption:=MatrixOptions.Add(bmotIDEMacro,'*');
-    MatrixOption.MacroName:=MacroName;
-    MatrixOption.Value:=MacroValue;
-    MatrixOption.Modes:=ModeIdentifier;
-  end;
-end;
-
-procedure TProject.EnableMatrixMode(MatrixOptions: TBuildMatrixOptions);
-var
-  MatrixOption: TBuildMatrixOption;
-begin
-  if MatrixOptions=nil then exit;
-  MatrixOption:=MatrixOptions.FindOption(FOptionID);
-  if MatrixOption=nil then exit;
-  //debugln(['EnableMatrixMode OptionID=',FOptionID,' ModeID=',FModeID,' ',MatrixOption.AsString]);
-  MatrixOption.EnableMode(FModeID);
-end;
-
-procedure TProject.LoadSessionEnabledNonSessionMatrixOptions(const Path: string);
-var
-  i, Cnt: integer;
-  SubPath: String;
-begin
-  // disable all matrix options in session modes
-  if FGlobalMatrixOptions<>nil then
-    FGlobalMatrixOptions.DisableModes(@BuildModes.IsSessionMode);
-  BuildModes.SharedMatrixOptions.DisableModes(@BuildModes.IsSessionMode);
-  // load
-  Cnt:=FXMLConfig.GetValue(Path+'Count',0);
-  for i:=1 to Cnt do begin
-    SubPath:=Path+'Item'+IntToStr(i)+'/';
-    FModeID:=FXMLConfig.GetValue(SubPath+'Mode','');
-    if (FModeID='') or (not BuildModes.IsSessionMode(FModeID)) then begin
-      debugln(['LoadSessionEnabledNonSessionMatrixOptions not a session Mode="',dbgstr(FModeID),'" at ',SubPath]);
-      continue;
-    end;
-    FOptionID:=FXMLConfig.GetValue(SubPath+'Option','');
-    if FOptionID='' then begin
-      debugln(['LoadSessionEnabledNonSessionMatrixOptions invalid option at ',SubPath]);
-      continue;
-    end;
-    EnableMatrixMode(FGlobalMatrixOptions);
-    EnableMatrixMode(BuildModes.SharedMatrixOptions);
-  end;
-end;
-
-procedure TProject.LoadOldMacroValues(const Path: string; CurMode: TProjectBuildMode);
-var
-  i, Cnt: Integer;
-  SubPath, MacroName, MacroValue: String;
-begin
-  // load macro values of old IDE (<1.1)
-  Cnt:=FXMLConfig.GetValue(Path+'Count',0);
-  //debugln(['LoadOldMacroValues Cnt=',Cnt]);
-  for i:=1 to Cnt do begin
-    SubPath:=Path+'Macro'+IntToStr(i)+'/';
-    MacroName:=FXMLConfig.GetValue(SubPath+'Name','');
-    if (MacroName='') or not IsValidIdent(MacroName) then continue;
-    MacroValue:=FXMLConfig.GetValue(SubPath+'Value','');
-    //debugln(['LoadOldMacroValues Mode="',CurMode.Identifier,'" ',MacroName,'="',MacroValue,'" session=',CurMode.InSession]);
-    AddMatrixMacro(MacroName,MacroValue,CurMode.Identifier,CurMode.InSession);
-  end;
-end;
-
 function TProject.LoadOldProjectType(const Path: string): TOldProjectType;
 
   function OldProjectTypeNameToType(const s: string): TOldProjectType;
@@ -2784,16 +2692,6 @@ begin
 end;
 
 procedure TProject.LoadBuildModes(const Path: string; LoadData: boolean);
-var
-  CompOptsPath: String;
-  Cnt: LongInt;
-  i: Integer;
-  SubPath: String;
-  ModeIdentifier: String;
-  CurMode: TProjectBuildMode;
-  MacroValsPath: String;
-  ActiveIdentifier: String;
-  s: String;
 begin
   //debugln(['LoadBuildModes LoadData=',LoadData,' FLoadParts=',FLoadParts,' prfLoadPartBuildModes=',prfLoadPartBuildModes in ReadFlags]);
   if FLoadParts then begin
@@ -2801,87 +2699,7 @@ begin
     if LoadData then
       ClearBuildModes;
   end;
-
-  // load matrices
-  if LoadData then begin
-    // load matrix options of project (not session)
-    BuildModes.SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig,
-                                      Path+'BuildModes/SharedMatrixOptions/');
-    //debugln(['LoadBuildModes BuildModes.SharedMatrixOptions.Count=',BuildModes.SharedMatrixOptions.Count]);
-    //for i:=0 to BuildModes.SharedMatrixOptions.Count-1 do
-    //  debugln(['  ',BuildModes.SharedMatrixOptions[i].AsString]);
-  end;
-  if (not LoadData) and (not FLoadParts) then begin
-    // load matrix options of session
-    BuildModes.SessionMatrixOptions.LoadFromXMLConfig(FXMLConfig,
-                                     Path+'BuildModes/SessionMatrixOptions/');
-  end;
-
-  // load build modes
-  Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
-  //debugln(['LoadBuildModes Cnt=',Cnt,' LoadData=',LoadData]);
-  if Cnt>0 then begin
-    for i:=1 to Cnt do begin
-      SubPath:=Path+'BuildModes/Item'+IntToStr(i)+'/';
-      ModeIdentifier:=FXMLConfig.GetValue(SubPath+'Name','');
-      if LoadData and (i=1) then begin
-        // load the default mode (it already exists)
-        CurMode:=BuildModes[0];
-        CurMode.Identifier:=ModeIdentifier;
-      end else
-        // add another mode
-        CurMode:=BuildModes.Add(ModeIdentifier);
-
-      if LoadData and (i=1) and FXMLConfig.GetValue(SubPath+'Default',false) then
-      begin
-        // this is the default mode and it is stored at the old xml path
-        CompOptsPath:='CompilerOptions/';
-        // due to an old bug, the XML path can be 'CompilerOptions/' or ''
-        if (FFileVersion<3)
-        and (FXMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
-          CompOptsPath:='';
-        MacroValsPath:=Path+'MacroValues/';
-      end else begin
-        CompOptsPath:=SubPath+'CompilerOptions/';
-        MacroValsPath:=SubPath+'MacroValues/';
-      end;
-
-      CurMode.InSession:=not LoadData;
-      LoadOldMacroValues(MacroValsPath,CurMode);
-      CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig,CompOptsPath);
-    end;
-
-  end else if LoadData then begin
-    // no build modes => an old file format
-    CompOptsPath:='CompilerOptions/';
-    // due to a bug in an old version, the XML path can be 'CompilerOptions/' or ''
-    if (FFileVersion<3)
-    and (FXMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
-      CompOptsPath:='';
-    MacroValsPath:=Path+'MacroValues/';
-    CurMode:=BuildModes[0];
-    LoadOldMacroValues(MacroValsPath,CurMode);
-    if FXMLConfig.GetValue(CompOptsPath+'Version/Value', 0)<10 then begin
-      // LCLWidgetType was not a macro but a property of its own
-      s := FXMLConfig.GetValue(CompOptsPath+'LCLWidgetType/Value', '');
-      if (s<>'') and (SysUtils.CompareText(s,'default')<>0) then
-        AddMatrixMacro('LCLWidgetType',s,'default',false);
-    end;
-    CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig,CompOptsPath);
-  end;
-
-  if (not LoadData) and (not FLoadParts) then begin
-    // load what matrix options are enabled in session build modes
-    SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
-    LoadSessionEnabledNonSessionMatrixOptions(SubPath);
-  end;
-
-  // set active mode
-  ActiveIdentifier:=FXMLConfig.GetValue(Path+'BuildModes/Active','default');
-  CurMode:=BuildModes.Find(ActiveIdentifier);
-  if CurMode=nil then
-    CurMode:=BuildModes[0];
-  ActiveBuildMode:=CurMode;
+  BuildModes.LoadFromXMLConfig(FXMLConfig, Path, LoadData, FLoadParts);
 end;
 
 procedure TProject.LoadFlags(const Path: string);
@@ -3208,7 +3026,7 @@ begin
   Result := mrCancel;
   BeginUpdate(true);
   try
-    FGlobalMatrixOptions := GlobalMatrixOptions;
+    BuildModes.FGlobalMatrixOptions := GlobalMatrixOptions;
     FReadFlags := ReadFlags;
     FLoadParts := prfLoadParts in ReadFlags;
     Result:=DoLoadLPI(NewProjectInfoFile);
@@ -3244,127 +3062,9 @@ begin
   end;
 end;
 
-procedure TProject.SaveSessionEnabledNonSessionMatrixOptions(const Path: string;
-  MatrixOptions: TBuildMatrixOptions; var Cnt: integer);
-var
-  i, j: Integer;
-  MatrixOption: TBuildMatrixOption;
-  CurMode: TProjectBuildMode;
-  SubPath: String;
-begin
-  if MatrixOptions=nil then exit;
-  for i:=0 to MatrixOptions.Count-1 do begin
-    MatrixOption:=MatrixOptions[i];
-    //debugln(['SaveSessionEnabledNonSessionMatrixOptions ',MatrixOption.AsString]);
-    for j:=0 to BuildModes.Count-1 do begin
-      CurMode:=BuildModes[j];
-      if not CurMode.InSession then continue;
-      if not MatrixOption.FitsMode(CurMode.Identifier) then continue;
-      inc(Cnt);
-      SubPath:=Path+'Item'+IntToStr(Cnt)+'/';
-      //debugln(['SaveSessionEnabledNonSessionMatrixOptions ModeID="',CurMode.Identifier,'" OptionID="',MatrixOption.ID,'" ',MatrixOption.AsString]);
-      FXMLConfig.SetDeleteValue(SubPath+'Mode',CurMode.Identifier,'');
-      FXMLConfig.SetDeleteValue(SubPath+'Option',MatrixOption.ID,'');
-    end;
-  end;
-end;
-
-procedure TProject.SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
-var
-  Cnt: Integer;
-
-  procedure SaveAtOldPlace(MatrixOptions: TBuildMatrixOptions);
-  var
-    i: Integer;
-    MatrixOption: TBuildMatrixOption;
-    SubPath: String;
-  begin
-    for i:=0 to MatrixOptions.Count-1 do
-    begin
-      MatrixOption:=MatrixOptions[i];
-      if (MatrixOption.Typ=bmotIDEMacro)
-      and MatrixOption.FitsTarget(BuildMatrixProjectName)
-      and MatrixOption.FitsMode(aMode.Identifier)
-      then begin
-        inc(Cnt);
-        SubPath:=Path+'Macro'+IntToStr(i+1)+'/';
-        FXMLConfig.SetDeleteValue(SubPath+'Name',MatrixOption.MacroName,'');
-        FXMLConfig.SetDeleteValue(SubPath+'Value',MatrixOption.Value,'');
-      end;
-    end;
-  end;
-
-begin
-  // for older IDE (<1.1) SaveAtOldPlace the macros at the old place
-  Cnt:=0;
-  SaveAtOldPlace(BuildModes.SessionMatrixOptions);
-  SaveAtOldPlace(BuildModes.SharedMatrixOptions);
-  FXMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
-end;
-
 procedure TProject.SaveBuildModes(const Path: string; SaveData, SaveSession: boolean);
-var
-  CurMode: TProjectBuildMode;
-  i: Integer;
-  Cnt: Integer;
-  SubPath: String;
 begin
-  // the first build mode is the default mode
-  if SaveData then
-  begin
-    // save the default build mode under the old xml path to let old IDEs
-    // open new projects
-    CurMode:=BuildModes[0];
-    SaveMacroValuesAtOldPlace(Path+'MacroValues/',CurMode);
-    CurMode.CompilerOptions.SaveToXMLConfig(FXMLConfig,'CompilerOptions/'); // no Path!
-    // Note: the 0.9.29 reader already supports fetching the default build
-    //       mode from the BuildModes, so in one or two releases we can switch
-  end;
-
-  Cnt:=0;
-  for i:=0 to BuildModes.Count-1 do
-  begin
-    CurMode:=BuildModes[i];
-    //debugln(['SaveBuildModes ',i,'/',BuildModes.Count,' Identifier=',CurMode.Identifier,' InSession=',CurMode.InSession,' SaveSession=',SaveSession,' SaveData=',SaveData]);
-    if (CurMode.InSession and SaveSession)
-      or ((not CurMode.InSession) and SaveData) then
-    begin
-      inc(Cnt);
-      SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
-      FXMLConfig.SetDeleteValue(SubPath+'Name',CurMode.Identifier,'');
-      FXMLConfig.SetDeleteValue(SubPath+'Default',i=0,false);
-      if i>0 then
-      begin
-        SaveMacroValuesAtOldPlace(SubPath+'MacroValues/',CurMode);
-        CurMode.CompilerOptions.SaveToXMLConfig(FXMLConfig,SubPath+'CompilerOptions/');
-      end;
-    end;
-  end;
-  FXMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
-
-  if SaveData then
-  begin
-    BuildModes.SharedMatrixOptions.SaveToXMLConfig(FXMLConfig,
-      Path+'BuildModes/SharedMatrixOptions/',@BuildModes.IsSharedMode);
-  end;
-
-  //debugln(['SaveBuildModes SaveSession=',SaveSession,' ActiveBuildMode.Identifier=',ActiveBuildMode.Identifier]);
-  if SaveSession then
-  begin
-    // save what mode is currently active in the session
-    FXMLConfig.SetDeleteValue(Path+'BuildModes/Active', ActiveBuildMode.Identifier,'default');
-
-    // save matrix options of session
-    BuildModes.SessionMatrixOptions.SaveToXMLConfig(FXMLConfig,
-      Path+'BuildModes/SessionMatrixOptions/',nil);
-
-    // save what matrix options are enabled in session build modes
-    Cnt:=0;
-    SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
-    SaveSessionEnabledNonSessionMatrixOptions(SubPath,BuildModes.SharedMatrixOptions,Cnt);
-    SaveSessionEnabledNonSessionMatrixOptions(SubPath,FGlobalMatrixOptions,Cnt);
-    FXMLConfig.SetDeleteValue(SubPath+'Count',Cnt,0);
-  end;
+  BuildModes.SaveToXMLConfig(FXMLConfig, Path, SaveData, SaveSession);
 end;
 
 procedure TProject.SaveUnits(const Path: string; SaveData, SaveSession: boolean);
@@ -3591,7 +3291,7 @@ begin
   DoDirSeparators(SessFilename);
 
   FProjectWriteFlags := ProjectWriteFlags;
-  FGlobalMatrixOptions := GlobalMatrixOptions;
+  BuildModes.FGlobalMatrixOptions := GlobalMatrixOptions;
   // first save the .lpi file
   if (pwfSkipSeparateSessionInfo in ProjectWriteFlags)
   or (SessionStorage=pssNone) then
@@ -7241,8 +6941,7 @@ begin
   end;
 end;
 
-function TProjectBuildModes.IsSessionMode(const ModeIdentifier: string
-  ): boolean;
+function TProjectBuildModes.IsSessionMode(const ModeIdentifier: string): boolean;
 var
   i: Integer;
   BuildMode: TProjectBuildMode;
@@ -7255,8 +6954,7 @@ begin
   Result:=false;
 end;
 
-function TProjectBuildModes.IsSharedMode(const ModeIdentifier: string
-  ): boolean;
+function TProjectBuildModes.IsSharedMode(const ModeIdentifier: string): boolean;
 var
   i: Integer;
   BuildMode: TProjectBuildMode;
@@ -7273,6 +6971,331 @@ procedure TProjectBuildModes.RenameMatrixMode(const OldName, NewName: string);
 begin
   SharedMatrixOptions.RenameMode(OldName,NewName);
   SessionMatrixOptions.RenameMode(OldName,NewName);
+end;
+
+// Methods for LoadFromXMLConfig
+
+procedure TProjectBuildModes.AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string;
+  InSession: boolean);
+
+  function FindMacro(MatrixOptions: TBuildMatrixOptions;
+    const MacroName, MacroValue: string): TBuildMatrixOption;
+  var
+    j: Integer;
+  begin
+    j:=MatrixOptions.Count-1;
+    while j>=0 do
+    begin
+      Result:=MatrixOptions[j];
+      if (Result.Typ=bmotIDEMacro)
+      and (Result.Targets='*')
+      and (Result.MacroName=MacroName)
+      and (Result.Value=MacroValue)
+      then
+        exit;
+      dec(j);
+    end;
+    Result:=nil;
+  end;
+
+var
+  MatrixOptions: TBuildMatrixOptions;
+  MatrixOption: TBuildMatrixOption;
+begin
+  MatrixOption:=FindMacro(SharedMatrixOptions,MacroName,MacroValue);
+  if MatrixOption=nil then
+    MatrixOption:=FindMacro(SessionMatrixOptions,MacroName,MacroValue);
+  if MatrixOption<>nil then begin
+    // Macro already exists => enable mode for this macro
+    MatrixOption.EnableMode(ModeIdentifier);
+  end else begin
+    // Macro does not yet exist => create
+    if InSession then
+      MatrixOptions:=SessionMatrixOptions
+    else
+      MatrixOptions:=SharedMatrixOptions;
+    MatrixOption:=MatrixOptions.Add(bmotIDEMacro,'*');
+    MatrixOption.MacroName:=MacroName;
+    MatrixOption.Value:=MacroValue;
+    MatrixOption.Modes:=ModeIdentifier;
+  end;
+end;
+
+procedure TProjectBuildModes.EnableMatrixMode(MatrixOptions: TBuildMatrixOptions);
+var
+  MatrixOption: TBuildMatrixOption;
+begin
+  if MatrixOptions=nil then exit;
+  MatrixOption:=MatrixOptions.FindOption(FOptionID);
+  if MatrixOption=nil then exit;
+  //debugln(['EnableMatrixMode OptionID=',FOptionID,' ModeID=',FModeID,' ',MatrixOption.AsString]);
+  MatrixOption.EnableMode(FModeID);
+end;
+
+procedure TProjectBuildModes.LoadSessionEnabledNonSessionMatrixOptions(const Path: string);
+var
+  i, Cnt: integer;
+  SubPath: String;
+begin
+  // disable all matrix options in session modes
+  if FGlobalMatrixOptions<>nil then
+    FGlobalMatrixOptions.DisableModes(@IsSessionMode);
+  SharedMatrixOptions.DisableModes(@IsSessionMode);
+  // load
+  Cnt:=FXMLConfig.GetValue(Path+'Count',0);
+  for i:=1 to Cnt do begin
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
+    FModeID:=FXMLConfig.GetValue(SubPath+'Mode','');
+    if (FModeID='') or (not IsSessionMode(FModeID)) then begin
+      debugln(['LoadSessionEnabledNonSessionMatrixOptions not a session Mode="',dbgstr(FModeID),'" at ',SubPath]);
+      continue;
+    end;
+    FOptionID:=FXMLConfig.GetValue(SubPath+'Option','');
+    if FOptionID='' then begin
+      debugln(['LoadSessionEnabledNonSessionMatrixOptions invalid option at ',SubPath]);
+      continue;
+    end;
+    EnableMatrixMode(FGlobalMatrixOptions);
+    EnableMatrixMode(SharedMatrixOptions);
+  end;
+end;
+
+procedure TProjectBuildModes.LoadOldMacroValues(const Path: string; CurMode: TProjectBuildMode);
+var
+  i, Cnt: Integer;
+  SubPath, MacroName, MacroValue: String;
+begin
+  // load macro values of old IDE (<1.1)
+  Cnt:=FXMLConfig.GetValue(Path+'Count',0);
+  //debugln(['LoadOldMacroValues Cnt=',Cnt]);
+  for i:=1 to Cnt do begin
+    SubPath:=Path+'Macro'+IntToStr(i)+'/';
+    MacroName:=FXMLConfig.GetValue(SubPath+'Name','');
+    if (MacroName='') or not IsValidIdent(MacroName) then continue;
+    MacroValue:=FXMLConfig.GetValue(SubPath+'Value','');
+    //debugln(['LoadOldMacroValues Mode="',CurMode.Identifier,'" ',MacroName,'="',MacroValue,'" session=',CurMode.InSession]);
+    AddMatrixMacro(MacroName,MacroValue,CurMode.Identifier,CurMode.InSession);
+  end;
+end;
+
+procedure TProjectBuildModes.LoadNewFormat(const Path: string; Cnt: Integer; LoadData: boolean);
+var
+  i: Integer;
+  Ident, SubPath, CompOptsPath, MacroValsPath: String;
+  CurMode: TProjectBuildMode;
+begin
+  for i:=1 to Cnt do begin
+    SubPath:=Path+'BuildModes/Item'+IntToStr(i)+'/';
+    Ident:=FXMLConfig.GetValue(SubPath+'Name','');
+    if LoadData and (i=1) then begin
+      // load the default mode (it already exists)
+      CurMode:=Items[0];
+      CurMode.Identifier:=Ident;
+    end else
+      // add another mode
+      CurMode:=Add(Ident);
+
+    if LoadData and (i=1) and FXMLConfig.GetValue(SubPath+'Default',false) then
+    begin
+      // this is the default mode and it is stored at the old xml path
+      CompOptsPath:='CompilerOptions/';
+      // due to an old bug, the XML path can be 'CompilerOptions/' or ''
+      if (LazProject.FFileVersion<3)
+      and (FXMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
+        CompOptsPath:='';
+      MacroValsPath:=Path+'MacroValues/';
+    end else begin
+      CompOptsPath:=SubPath+'CompilerOptions/';
+      MacroValsPath:=SubPath+'MacroValues/';
+    end;
+
+    CurMode.InSession:=not LoadData;
+    LoadOldMacroValues(MacroValsPath,CurMode);
+    CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig,CompOptsPath);
+  end;
+end;
+
+procedure TProjectBuildModes.LoadOldFormat(const Path: string);
+var
+  Ident, CompOptsPath, MacroValsPath: String;
+  CurMode: TProjectBuildMode;
+begin
+  // no build modes => an old file format
+  CompOptsPath:='CompilerOptions/';
+  // due to a bug in an old version, the XML path can be 'CompilerOptions/' or ''
+  if (LazProject.FFileVersion<3)
+  and (FXMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
+    CompOptsPath:='';
+  MacroValsPath:=Path+'MacroValues/';
+  CurMode:=Items[0];
+  LoadOldMacroValues(MacroValsPath,CurMode);
+  if FXMLConfig.GetValue(CompOptsPath+'Version/Value', 0)<10 then begin
+    // LCLWidgetType was not a macro but a property of its own
+    Ident := FXMLConfig.GetValue(CompOptsPath+'LCLWidgetType/Value', '');
+    if (Ident<>'') and (SysUtils.CompareText(Ident,'default')<>0) then
+      AddMatrixMacro('LCLWidgetType',Ident,'default',false);
+  end;
+  CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig,CompOptsPath);
+end;
+
+// LoadFromXMLConfig itself
+procedure TProjectBuildModes.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; LoadData, LoadParts: boolean);
+var
+  Cnt: Integer;
+  CurMode: TProjectBuildMode;
+begin
+  FXMLConfig := XMLConfig;
+
+  // load matrices
+  if LoadData then
+    // load matrix options of project (not session)
+    SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/')
+  else if not LoadParts then
+    // load matrix options of session
+    SessionMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SessionMatrixOptions/');
+
+  Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
+  //debugln(['LoadBuildModes Cnt=',Cnt,' LoadData=',LoadData]);
+  if Cnt>0 then
+    LoadNewFormat(Path, Cnt, LoadData)
+  else if LoadData then
+    LoadOldFormat(Path);
+
+  if (not LoadData) and (not LoadParts) then
+    // load what matrix options are enabled in session build modes
+    LoadSessionEnabledNonSessionMatrixOptions(Path+'BuildModes/SessionEnabledMatrixOptions/');
+
+  // set active mode
+  CurMode:=Find(FXMLConfig.GetValue(Path+'BuildModes/Active','default'));
+  if CurMode=nil then
+    CurMode:=Items[0];
+  LazProject.ActiveBuildMode:=CurMode;
+end;
+
+// Methods for SaveToXMLConfig
+
+procedure TProjectBuildModes.SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
+var
+  Cnt: Integer;
+
+  procedure SaveAtOldPlace(MatrixOptions: TBuildMatrixOptions);
+  var
+    i: Integer;
+    MatrixOption: TBuildMatrixOption;
+    SubPath: String;
+  begin
+    for i:=0 to MatrixOptions.Count-1 do
+    begin
+      MatrixOption:=MatrixOptions[i];
+      if (MatrixOption.Typ=bmotIDEMacro)
+      and MatrixOption.FitsTarget(BuildMatrixProjectName)
+      and MatrixOption.FitsMode(aMode.Identifier)
+      then begin
+        inc(Cnt);
+        SubPath:=Path+'Macro'+IntToStr(i+1)+'/';
+        FXMLConfig.SetDeleteValue(SubPath+'Name',MatrixOption.MacroName,'');
+        FXMLConfig.SetDeleteValue(SubPath+'Value',MatrixOption.Value,'');
+      end;
+    end;
+  end;
+
+begin
+  // for older IDE (<1.1) SaveAtOldPlace the macros at the old place
+  Cnt:=0;
+  SaveAtOldPlace(SessionMatrixOptions);
+  SaveAtOldPlace(SharedMatrixOptions);
+  FXMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
+end;
+
+procedure TProjectBuildModes.SaveSessionEnabledNonSessionMatrixOptions(const Path: string;
+  MatrixOptions: TBuildMatrixOptions; var Cnt: integer);
+var
+  i, j: Integer;
+  MatrixOption: TBuildMatrixOption;
+  CurMode: TProjectBuildMode;
+  SubPath: String;
+begin
+  if MatrixOptions=nil then exit;
+  for i:=0 to MatrixOptions.Count-1 do begin
+    MatrixOption:=MatrixOptions[i];
+    //debugln(['SaveSessionEnabledNonSessionMatrixOptions ',MatrixOption.AsString]);
+    for j:=0 to Count-1 do begin
+      CurMode:=Items[j];
+      if not CurMode.InSession then continue;
+      if not MatrixOption.FitsMode(CurMode.Identifier) then continue;
+      inc(Cnt);
+      SubPath:=Path+'Item'+IntToStr(Cnt)+'/';
+      //debugln(['SaveSessionEnabledNonSessionMatrixOptions ModeID="',CurMode.Identifier,'" OptionID="',MatrixOption.ID,'" ',MatrixOption.AsString]);
+      FXMLConfig.SetDeleteValue(SubPath+'Mode',CurMode.Identifier,'');
+      FXMLConfig.SetDeleteValue(SubPath+'Option',MatrixOption.ID,'');
+    end;
+  end;
+end;
+
+// SaveToXMLConfig itself
+procedure TProjectBuildModes.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  SaveData, SaveSession: boolean);
+var
+  CurMode: TProjectBuildMode;
+  i: Integer;
+  Cnt: Integer;
+  SubPath: String;
+begin
+  FXMLConfig := XMLConfig;
+
+  // the first build mode is the default mode
+  if SaveData then
+  begin
+    // save the default build mode under the old xml path to let old IDEs
+    // open new projects
+    CurMode:=Items[0];
+    SaveMacroValuesAtOldPlace(Path+'MacroValues/',CurMode);
+    CurMode.CompilerOptions.SaveToXMLConfig(FXMLConfig,'CompilerOptions/'); // no Path!
+    // Note: the 0.9.29 reader already supports fetching the default build
+    //       mode from the BuildModes, so in one or two releases we can switch
+  end;
+
+  Cnt:=0;
+  for i:=0 to Count-1 do
+  begin
+    CurMode:=Items[i];
+    //debugln(['SaveBuildModes ',i,'/',BuildModes.Count,' Identifier=',CurMode.Identifier,' InSession=',CurMode.InSession,' SaveSession=',SaveSession,' SaveData=',SaveData]);
+    if (CurMode.InSession and SaveSession) or ((not CurMode.InSession) and SaveData) then
+    begin
+      inc(Cnt);
+      SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
+      FXMLConfig.SetDeleteValue(SubPath+'Name',CurMode.Identifier,'');
+      FXMLConfig.SetDeleteValue(SubPath+'Default',i=0,false);
+      if i>0 then
+      begin
+        SaveMacroValuesAtOldPlace(SubPath+'MacroValues/',CurMode);
+        CurMode.CompilerOptions.SaveToXMLConfig(FXMLConfig,SubPath+'CompilerOptions/');
+      end;
+    end;
+  end;
+  FXMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
+
+  if SaveData then
+    SharedMatrixOptions.SaveToXMLConfig(FXMLConfig,
+      Path+'BuildModes/SharedMatrixOptions/',@IsSharedMode);
+
+  //debugln(['SaveBuildModes SaveSession=',SaveSession,' ActiveBuildMode.Identifier=',ActiveBuildMode.Identifier]);
+  if SaveSession then
+  begin
+    // save what mode is currently active in the session
+    FXMLConfig.SetDeleteValue(Path+'BuildModes/Active',
+                                LazProject.ActiveBuildMode.Identifier,'default');
+    // save matrix options of session
+    SessionMatrixOptions.SaveToXMLConfig(FXMLConfig, Path+'BuildModes/SessionMatrixOptions/',nil);
+
+    // save what matrix options are enabled in session build modes
+    Cnt:=0;
+    SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
+    SaveSessionEnabledNonSessionMatrixOptions(SubPath,SharedMatrixOptions,Cnt);
+    SaveSessionEnabledNonSessionMatrixOptions(SubPath,FGlobalMatrixOptions,Cnt);
+    FXMLConfig.SetDeleteValue(SubPath+'Count',Cnt,0);
+  end;
 end;
 
 initialization
