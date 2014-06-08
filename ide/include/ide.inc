@@ -30,8 +30,6 @@
 
 { $DEFINE VerboseIDEMultiForm}
 
-{$DEFINE CheckExtTools}
-
 {off $apptype console}
 
 {off $define UseTurbopowerInHelp}
