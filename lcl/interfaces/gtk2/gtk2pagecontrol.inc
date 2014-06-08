@@ -369,7 +369,7 @@ begin
   end;
 
 
-  // For a PageControl the widget must be visible
+  // For a PageNotebook the widget must be visible
   // If not the page control will not use it. It may not even show the tab
   gtk_widget_show(PageWidget);
 
@@ -711,10 +711,10 @@ begin
   if not WSCheckHandleAllocated(AWinControl, 'ShowHide') then
     exit;
 
-  // In a PageControl, the child widget must always be visible
+  // In a PageNoteBook, the child widget must always be visible
   // it will be controlled by gtk_notebook_set_page
   // Making a page invisible, also hides the tab.
-  if (AWinControl.Parent = nil) or (AWinControl.Parent is TPageControl) then
+  if (AWinControl.Parent = nil) or (AWinControl.Parent is TCustomTabControl) then
     exit;
 
   TGtk2WidgetSet(WidgetSet).SetVisible(AWinControl, AWinControl.HandleObjectShouldBeVisible);
