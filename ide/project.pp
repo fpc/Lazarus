@@ -681,8 +681,6 @@ type
     procedure LoadOldFormat(const Path: string);
     // Used by SaveToXMLConfig
     procedure SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
-    procedure SaveSessionEnabledNonSessionMatrixOptions(const Path: string;
-      MatrixOptions: TBuildMatrixOptions; var Cnt: integer);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -7154,31 +7152,6 @@ begin
   FXMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
 end;
 
-procedure TProjectBuildModes.SaveSessionEnabledNonSessionMatrixOptions(const Path: string;
-  MatrixOptions: TBuildMatrixOptions; var Cnt: integer);
-var
-  i, j: Integer;
-  MatrixOption: TBuildMatrixOption;
-  CurMode: TProjectBuildMode;
-  SubPath: String;
-begin
-  if MatrixOptions=nil then exit;
-  for i:=0 to MatrixOptions.Count-1 do begin
-    MatrixOption:=MatrixOptions[i];
-    //debugln(['SaveSessionEnabledNonSessionMatrixOptions ',MatrixOption.AsString]);
-    for j:=0 to Count-1 do begin
-      CurMode:=Items[j];
-      if not CurMode.InSession then continue;
-      if not MatrixOption.FitsMode(CurMode.Identifier) then continue;
-      inc(Cnt);
-      SubPath:=Path+'Item'+IntToStr(Cnt)+'/';
-      //debugln(['SaveSessionEnabledNonSessionMatrixOptions ModeID="',CurMode.Identifier,'" OptionID="',MatrixOption.ID,'" ',MatrixOption.AsString]);
-      FXMLConfig.SetDeleteValue(SubPath+'Mode',CurMode.Identifier,'');
-      FXMLConfig.SetDeleteValue(SubPath+'Option',MatrixOption.ID,'');
-    end;
-  end;
-end;
-
 // SaveToXMLConfig itself
 procedure TProjectBuildModes.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   SaveData, SaveSession: boolean);
@@ -7238,8 +7211,13 @@ begin
     // save what matrix options are enabled in session build modes
     Cnt:=0;
     SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
-    SaveSessionEnabledNonSessionMatrixOptions(SubPath,SharedMatrixOptions,Cnt);
-    SaveSessionEnabledNonSessionMatrixOptions(SubPath,FGlobalMatrixOptions,Cnt);
+    for i:=0 to Count-1 do
+      if Items[i].InSession then
+        SharedMatrixOptions.SaveSessionEnabled(FXMLConfig, SubPath, Items[i].Identifier, Cnt);
+    if Assigned(FGlobalMatrixOptions) then
+      for i:=0 to Count-1 do
+        if Items[i].InSession then
+          FGlobalMatrixOptions.SaveSessionEnabled(FXMLConfig, SubPath, Items[i].Identifier, Cnt);
     FXMLConfig.SetDeleteValue(SubPath+'Count',Cnt,0);
   end;
 end;

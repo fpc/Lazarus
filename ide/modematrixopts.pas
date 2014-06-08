@@ -143,6 +143,7 @@ type
     procedure SaveToXMLConfig(Cfg: TXMLConfig; const aPath: string;
       const SaveMode: TStrToBoolEvent);
     function SaveAtOldXMLConfig(Cfg: TXMLConfig; const Path, ModeIdent: string): integer;
+    procedure SaveSessionEnabled(Cfg: TXMLConfig; const Path, ModeIdent: string; var Cnt: integer);
 
     // queries
     procedure AppendCustomOptions(Target, ActiveMode: string; var Options: string);
@@ -603,6 +604,25 @@ begin
       Cfg.SetDeleteValue(SubPath+'Name',MatrixOption.MacroName,'');
       Cfg.SetDeleteValue(SubPath+'Value',MatrixOption.Value,'');
     end;
+  end;
+end;
+
+procedure TBuildMatrixOptions.SaveSessionEnabled(Cfg: TXMLConfig;
+  const Path, ModeIdent: string; var Cnt: integer);
+var
+  MatrixOption: TBuildMatrixOption;
+  SubPath: String;
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    MatrixOption:=Items[i];
+    //debugln(['SaveSessionEnabled ',MatrixOption.AsString]);
+    if not MatrixOption.FitsMode(ModeIdent) then continue;
+    inc(Cnt);
+    SubPath:=Path+'Item'+IntToStr(Cnt)+'/';
+    //debugln(['SaveSessionEnabled ModeID="',CurMode.Identifier,'" OptionID="',MatrixOption.ID,'" ',MatrixOption.AsString]);
+    Cfg.SetDeleteValue(SubPath+'Mode',ModeIdent,'');
+    Cfg.SetDeleteValue(SubPath+'Option',MatrixOption.ID,'');
   end;
 end;
 
