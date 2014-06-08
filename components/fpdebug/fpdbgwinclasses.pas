@@ -85,6 +85,10 @@ type
     FInfo: TCreateProcessDebugInfo;
     FPauseRequested: boolean;
     FProcProcess: TProcess;
+    function GetFullProcessImageName(AProcessHandle: THandle): string;
+    function GetModuleFileName(AModuleHandle: THandle): string;
+    function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
+    procedure LogLastError;
   protected
     function GetHandle: THandle; override;
     function GetLastEventProcessIdentifier: THandle; override;
@@ -149,14 +153,14 @@ begin
   OSDbgClasses.DbgProcessClass:=TDbgWinProcess;
 end;
 
-procedure LogLastError;
+procedure TDbgWinProcess.LogLastError;
 begin
-  DebugLn('FpDbg-ERROR: ', GetLastErrorText);
+  log('FpDbg-ERROR: %s', [GetLastErrorText], dllInfo);
 end;
 
 function QueryFullProcessImageName(hProcess:HANDLE; dwFlags: DWord; lpExeName:LPTSTR; var lpdwSize:DWORD):BOOL; stdcall; external 'kernel32' name 'QueryFullProcessImageNameA';
 
-function GetFullProcessImageName(AProcessHandle: THandle): string;
+function TDbgWinProcess.GetFullProcessImageName(AProcessHandle: THandle): string;
 var
   s: string;
   len: DWORD;
@@ -172,7 +176,7 @@ begin
   result := s;
 end;
 
-function GetModuleFileName(AModuleHandle: THandle): string;
+function TDbgWinProcess.GetModuleFileName(AModuleHandle: THandle): string;
 var
   s: string;
   len: Integer;
@@ -209,7 +213,7 @@ begin
   end;
 end;
 
-function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
+function TDbgWinProcess.GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
 var
   NamePtr: TDbgPtr;
   S: String;
@@ -254,7 +258,7 @@ begin
   inherited Create(AProcess, ADefaultName, AModuleHandle, ABaseAddr);
   FInfo := AInfo;
 
-  s := GetProcFilename(AProcess, AInfo.lpImageName, AInfo.fUnicode, AInfo.hFile);
+  s := TDbgWinProcess(AProcess).GetProcFilename(AProcess, AInfo.lpImageName, AInfo.fUnicode, AInfo.hFile);
   if s <> ''
   then SetName(s);
 
@@ -746,7 +750,7 @@ function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
       if not ReadString(TDbgPtr(AEvent.DebugString.lpDebugStringData), AEvent.DebugString.nDebugStringLength, S)
       then Exit;
     end;
-    DebugLn('[', IntToStr(AEvent.dwProcessId), ':', IntToSTr(AEvent.dwThreadId), '] ', S);
+    log('[%d:%d]: %s', [AEvent.dwProcessId, AEvent.dwThreadId, S]);
   end;
 
 begin
@@ -760,7 +764,7 @@ begin
       // TODO: move to TDbgThread
 
       if not TDbgWinThread(AThread).ReadThreadState
-      then DebugLn('LOOP: Unable to retrieve thread context');
+      then log('LOOP: Unable to retrieve thread context');
     end;
 
     case MDebugEvent.dwDebugEventCode of
