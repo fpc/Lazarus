@@ -41,7 +41,7 @@ uses
   Dialogs, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   CompOptsIntf,
   {$ENDIF}
   ComponentReg, IDEExternToolIntf, IDEDialogs, MacroDefIntf,
@@ -219,7 +219,7 @@ const
     );
 
   { External Tools - the user menu items in the Tools menu }
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 type
   TBaseExternalUserTools = class
   public
@@ -355,7 +355,7 @@ type
     fMsgViewColors: array[TMsgWndColor] of TColor;
     FShowCompileDialog: Boolean;       // show dialog during compile
     FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     FMsgViewFilters: TLMsgViewFilters;
     {$ENDIF}
 
@@ -410,7 +410,7 @@ type
     FBackupInfoOtherFiles: TBackupInfo;
     
     // external tools
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     fExternalUserTools: TBaseExternalUserTools; // see ExtToolEditDlg.TExternalUserTools
     {$ELSE}
     fExternalTools: TBaseExternalToolList;
@@ -701,7 +701,7 @@ type
                                                write FBackupInfoOtherFiles;
        
     // external tools
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     property ExternalToolMenuItems: TBaseExternalUserTools read fExternalUserTools;
     {$ELSE}
     property ExternalTools: TBaseExternalToolList read fExternalTools
@@ -741,7 +741,7 @@ type
     property MsgViewFilenameStyle: TMsgWndFileNameStyle read FMsgViewFilenameStyle
                        write FMsgViewFilenameStyle;
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters write FMsgViewFilters;
     {$ENDIF}
 
@@ -990,7 +990,7 @@ begin
   FMsgViewFilenameStyle:=mwfsShort;
   for c:=low(TMsgWndColor) to high(TMsgWndColor) do
     fMsgViewColors[c]:=MsgWndDefaultColors[c];
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   FMsgViewFilters:=TLMsgViewFilters.Create(nil);
   {$ENDIF}
 
@@ -1041,7 +1041,7 @@ begin
   end;
   
   // external tools
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   fExternalUserTools:=ExternalUserToolsClass.Create;
   {$ELSE}
   fExternalTools:=ExternalToolListClass.Create;
@@ -1067,7 +1067,7 @@ var
   i: Integer;
 begin
   FreeAndNil(FBuildMatrixOptions);
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   FreeAndNil(FMsgViewFilters);
   FreeAndNil(fExternalUserTools);
   {$ELSE}
@@ -1452,7 +1452,7 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         fMsgViewColors[mwc]:=XMLConfig.GetValue(
           Path+'MsgView/Colors/'+MsgWndColorNames[mwc],MsgWndDefaultColors[mwc]);
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       MsgViewFilters.LoadFromXMLConfig(XMLConfig,'MsgView/Filters/');
       {$ENDIF}
 
@@ -1489,7 +1489,7 @@ begin
       end;
 
       // external tools
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       fExternalUserTools.Load(FConfigStore,Path+'ExternalTools/');
       {$ELSE}
       fExternalTools.Load(FConfigStore,Path+'ExternalTools/');
@@ -1836,7 +1836,7 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         XMLConfig.SetDeleteValue(Path+'MsgView/Colors/'+MsgWndColorNames[mwc],
         fMsgViewColors[mwc],MsgWndDefaultColors[mwc]);
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       MsgViewFilters.SaveToXMLConfig(XMLConfig,'MsgView/Filters/');
       {$ENDIF}
 
@@ -1863,7 +1863,7 @@ begin
       XMLConfig.SetValue(Path+'Recent/AlreadyPopulated', FAlreadyPopulatedRecentFiles);
 
       // external tools
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       fExternalUserTools.Save(FConfigStore,Path+'ExternalTools/');
       {$ELSE}
       fExternalTools.Save(FConfigStore,Path+'ExternalTools/');

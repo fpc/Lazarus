@@ -692,7 +692,7 @@ end;
 
 procedure TEditIDEMsgHelpDialog.UpdateCurMessage;
 var
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   Line: TMessageLine;
   {$ELSE}
   Line: TIDEMessageLine;
@@ -703,7 +703,7 @@ var
 begin
   CurMsg:='';
   CurFPCId:=-1;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   Line:=IDEMessagesWindow.GetSelectedLine;
   {$ELSE}
   Line:=IDEMessagesWindow.GetSelectedLine;
@@ -716,13 +716,13 @@ begin
     sl:=TStringList.Create;
     try
       sl.Add('Msg='+Line.Msg);
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       sl.Add('MsgID='+IntToStr(Line.MsgID));
       {$ENDIF}
       MsgFile:=FPCMsgHelpDB.GetMsgFile;
       if MsgFile<>nil then begin
         FPCMsg:=nil;
-        {$IFDEF EnableNewExtTools}
+        {$IFNDEF EnableOldExtTools}
         if Line.MsgID>0 then
           FPCMsg:=MsgFile.FindWithID(Line.MsgID);
         {$ENDIF}
@@ -733,7 +733,7 @@ begin
           sl.Add('FPC Msg='+FPCMsg.GetName);
         end;
       end;
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       {$ELSE}
       sl.Add('Directory='+Line.Directory);
       if Line.Parts<>nil then

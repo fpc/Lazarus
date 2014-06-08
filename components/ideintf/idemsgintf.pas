@@ -15,11 +15,11 @@ unit IDEMsgIntf;
 
 interface
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 
 uses
   Classes, SysUtils, contnrs, Forms, Menus,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   {$ELSE}
   TextTools,
   {$ENDIF}
@@ -212,7 +212,7 @@ begin
   fItems.Remove(Fix);
 end;
 
-{$ELSE EnableNewExtTools}
+{$ELSE EnableOldExtTools}
 
 uses
   Classes, SysUtils, Forms, LCLProc,
@@ -996,6 +996,6 @@ begin
     Result:=nil;
 end;
 
-{$ENDIF EnableNewExtTools}
+{$Endif EnableOldExtTools}
 end.
 

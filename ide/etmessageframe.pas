@@ -27,7 +27,7 @@ unit etMessageFrame;
 
 {$mode objfpc}{$H+}
 
-{$IFNDEF EnableNewExtTools}{$Error Wrong}{$ENDIF}
+{$IFDEF EnableOldExtTools}{$Error Wrong}{$ENDIF}
 
 {$I ide.inc}
 

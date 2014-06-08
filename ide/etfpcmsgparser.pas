@@ -25,7 +25,7 @@
 }
 unit etFPCMsgParser;
 
-{$IFNDEF EnableNewExtTools}{$ERROR Wrong}{$ENDIF}
+{$IFDEF EnableOldExtTools}{$ERROR Wrong}{$ENDIF}
 
 {$mode objfpc}{$H+}
 

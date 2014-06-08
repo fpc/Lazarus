@@ -27,7 +27,7 @@ unit ExtTools;
 
 {$mode objfpc}{$H+}
 
-{$IFNDEF EnableNewExtTools}{$Error Wrong}{$ENDIF}
+{$IFDEF EnableOldExtTools}{$Error Wrong}{$ENDIF}
 
 {off $DEFINE VerboseExtToolAddOutputLines}
 {off $DEFINE VerboseExtToolThread}

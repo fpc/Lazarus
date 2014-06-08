@@ -38,7 +38,7 @@ uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, Process, LCLProc, Controls,
   Graphics, Forms, CodeToolManager, FileProcs, LazConf, LResources, ProjectIntf,
   ProjectResourcesIntf, IDEMsgIntf, MacroIntf,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
   {$ENDIF}
   LazarusIDEStrConsts, resource, bitmapresource, groupresource,
@@ -189,7 +189,7 @@ begin
     end;
   end
   else
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
     IDEMessagesWindow.AddCustomMessage(mluError,Format(lisFileNotFound2, ['"', Filename, '"', '']));
   {$ELSE}
     IDEMessagesWindow.AddMsg(Format(lisFileNotFound2, ['"', Filename, '"', '']), '', -1);

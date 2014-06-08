@@ -163,7 +163,7 @@ begin
   fReady:=false;
   FDialog := ADialog;
   MWSetEditorColorsButton.Visible:=false;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   {$ELSE}
   MWColorsGroupBox.Visible:=false;
   {$ENDIF}

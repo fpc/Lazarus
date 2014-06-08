@@ -51,7 +51,7 @@ uses
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
   PackageIntf,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
   {$ENDIF}
   // IDE
@@ -190,7 +190,7 @@ type
     // This is used by MakeLazarus and SaveIDEMakeOptions
     function CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
   public
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     ExternalTools: TBaseExternalToolList;
     {$ENDIF}
     constructor Create;
@@ -374,7 +374,7 @@ end;
 function TLazarusBuilder.MakeLazarus(Profile: TBuildLazarusProfile;
   Flags: TBuildLazarusFlags): TModalResult;
 var
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   Tool: TAbstractExternalTool;
   {$ELSE}
   Tool: TExternalToolOptions;
@@ -393,7 +393,7 @@ var
       Params:=Cmd+' '+Params
     else
       Params:=Cmd;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     Tool:=ExternalToolList.Add(CurTitle);
     Tool.Reference(Self,ClassName);
     try
@@ -525,7 +525,7 @@ begin
     Result:=mrOk;
   finally
     EnvironmentOverrides.Free;
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     Tool.Free;
     {$ENDIF}
     if LazarusIDE<>nil then
@@ -736,7 +736,7 @@ begin
     if not (Result in [mrOk,mrIgnore]) then begin
       debugln(['CreateAppleBundle CreateApplicationBundle failed']);
       if IDEMessagesWindow<>nil then
-        {$IFDEF EnableNewExtTools}
+        {$IFNDEF EnableOldExtTools}
         IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle '+BundleDir);
         {$ELSE}
         IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,fTargetDir,-1);
@@ -747,7 +747,7 @@ begin
     if not (Result in [mrOk,mrIgnore]) then begin
       debugln(['CreateAppleBundle CreateAppBundleSymbolicLink failed']);
       if IDEMessagesWindow<>nil then
-        {$IFDEF EnableNewExtTools}
+        {$IFNDEF EnableOldExtTools}
         IDEMessagesWindow.AddCustomMessage(mluError,'failed to create application bundle symlink to '+fTargetFilename);
         {$ELSE}
         IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+fTargetFilename,fTargetDir,-1);

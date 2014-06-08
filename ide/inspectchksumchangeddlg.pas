@@ -121,7 +121,7 @@ type
     property Unit2Files: TICCFiles read FUnit2Files;
   end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 type
   { TQuickFixRecompilingChecksumChanged }
 
@@ -414,7 +414,7 @@ begin
   InfoTreeView.EndUpdate;
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 { TQuickFixRecompilingChecksumChanged }
 
 function TQuickFixRecompilingChecksumChanged.IsApplicable(Msg: TMessageLine;

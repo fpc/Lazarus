@@ -112,7 +112,7 @@ uses
   srceditorintf,
   ProjectIntf,
   IDEMsgIntf,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
   {$ENDIF}
   CodeCache,
@@ -424,7 +424,7 @@ end;
 
 procedure TSQLSyntaxChecker.ShowMessage(const Msg: String);
 begin
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEMessagesWindow.AddCustomMessage(mluImportant,Msg,SourceFileName);
   {$ELSE}
   IDEMessagesWindow.AddMsg(SourceFileName+' : '+Msg,'',0,Nil);
@@ -477,7 +477,7 @@ Var
   S : TStringStream;
 
 begin
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   IDEMessagesWindow.BeginBlock(False);
   {$ENDIF}
   try
@@ -505,7 +505,7 @@ begin
         ShowException('Error during syntax check',E);
     end;
   finally
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     IDEMessagesWindow.EndBlock;
     {$ENDIF}
   end;

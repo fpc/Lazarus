@@ -250,7 +250,7 @@ procedure TJcfIdeMain.LogIDEMessage(const psFile, psMessage: string;
   const piY, piX: integer);
 var
   lazMessages: TIDEMessagesWindowInterface;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   Urgency: TMessageLineUrgency;
   {$ENDIF}
 begin
@@ -262,7 +262,7 @@ begin
   if lazMessages = nil then
     exit;
 
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   case peMessageType of
   mtException,mtInputError,mtParseError: Urgency:=mluError;
   mtCodeWarning: Urgency:=mluWarning;

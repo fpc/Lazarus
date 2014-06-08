@@ -46,14 +46,14 @@ uses
   IDEExternToolIntf, IDEHelpIntf, PropEdits, IDEDialogs, IDECommands,
   FileProcs, TransferMacros, LazarusIDEStrConsts, EnvironmentOpts, KeyMapping,
   IDEProcs
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   ,LazConfigStorage, contnrs, IDEUtils
   {$ELSE}
   ,IDEMsgIntf, EditMsgScannersDlg
   {$ENDIF}
   ;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 const
   ExternalToolOptionsVersion = 3;
   // 3: changed ScanOutputForFPCMessages to scanner SubToolFPC
@@ -197,7 +197,7 @@ type
     procedure ScannersButtonClick(Sender: TObject);
   private
     fAllKeys: TKeyCommandRelationList;
-    fOptions: {$IFDEF EnableNewExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF};
+    fOptions: {$IFNDEF EnableOldExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF};
     fTransferMacros: TTransferMacroList;
     fScanners: TStrings;
     fKeyBox: TShortCutGrabBox;
@@ -208,17 +208,17 @@ type
     procedure UpdateButtons;
     function ScannersToString(List: TStrings): string;
     procedure SetComboBox(AComboBox: TComboBox; const AValue: string);
-    procedure SetOptions(TheOptions: {$IFDEF EnableNewExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF});
+    procedure SetOptions(TheOptions: {$IFNDEF EnableOldExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF});
     procedure SetTransferMacros(TransferMacroList: TTransferMacroList);
   public
-    property Options: {$IFDEF EnableNewExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF} read fOptions write SetOptions;
+    property Options: {$IFNDEF EnableOldExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF} read fOptions write SetOptions;
     property MacroList: TTransferMacroList
            read fTransferMacros write SetTransferMacros;
   end;
 
 
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
-  ExternalToolMenuItem: {$IFDEF EnableNewExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF};
+  ExternalToolMenuItem: {$IFNDEF EnableOldExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF};
   AllKeys: TKeyCommandRelationList):TModalResult;
 
 implementation
@@ -226,7 +226,7 @@ implementation
 {$R *.lfm}
 
 function ShowExtToolOptionDlg(TransferMacroList: TTransferMacroList;
-  ExternalToolMenuItem: {$IFDEF EnableNewExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF};
+  ExternalToolMenuItem: {$IFNDEF EnableOldExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF};
   AllKeys: TKeyCommandRelationList):TModalResult;
 var
   ExternalToolOptionDlg: TExternalToolOptionDlg;
@@ -245,7 +245,7 @@ begin
   end;
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 { TExternalUserTool }
 
 // inline
@@ -672,7 +672,7 @@ begin
     end;
   end;
 end;
-{$ELSE EnableNewExtTools}
+{$ELSE EnableOldExtTools}
 { TExternalToolOptions }
 
 procedure TExternalToolOptions.Assign(Source: TPersistent);
@@ -693,7 +693,7 @@ begin
   fShift:=[];
   inherited Clear;
 end;
-{$ENDIF EnableNewExtTools}
+{$Endif EnableOldExtTools}
 
 { TExternalToolOptionDlg }
 
@@ -705,7 +705,7 @@ End;
 
 procedure TExternalToolOptionDlg.ScannersButtonClick(Sender: TObject);
 begin
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   {$ELSE}
   if ShowEditMsgScannersDialog('Edit tool '+copy(TitleEdit.Text,1,20),
     fScanners)=mrOk
@@ -722,7 +722,7 @@ begin
   WorkingDirEdit.Text:=fOptions.WorkingDirectory;
   fKeyBox.Key:=fOptions.Key;
   fKeyBox.ShiftState:=fOptions.Shift;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   OptionScanOutputForFPCMessagesCheckBox.Checked:=fOptions.HasScanner[SubToolFPC];
   OptionScanOutputForMakeMessagesCheckBox.Checked:=fOptions.HasScanner[SubToolMake];
   {$ELSE}
@@ -743,7 +743,7 @@ begin
   fOptions.Key:=fKeyBox.Key;
   fOptions.Shift:=fKeyBox.ShiftState;
   FOptions.HideMainForm := chkHideMainForm.Checked;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   fOptions.HasScanner[SubToolFPC]:=OptionScanOutputForFPCMessagesCheckBox.Checked;
   fOptions.HasScanner[SubToolMake]:=OptionScanOutputForMakeMessagesCheckBox.Checked;
   {$ELSE}
@@ -755,7 +755,7 @@ end;
 
 procedure TExternalToolOptionDlg.UpdateButtons;
 begin
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   ScannersButton.Visible:=false;
   {$ELSE}
   if IDEMsgScanners.Count>0 then begin
@@ -834,7 +834,7 @@ begin
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
 
-  fOptions:={$IFDEF EnableNewExtTools}TExternalUserTool.Create(nil){$ELSE}TExternalToolOptions.Create{$ENDIF};
+  fOptions:={$IFNDEF EnableOldExtTools}TExternalUserTool.Create(nil){$ELSE}TExternalToolOptions.Create{$ENDIF};
 end;
 
 procedure TExternalToolOptionDlg.FormDestroy(Sender: TObject);
@@ -848,7 +848,7 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TExternalToolOptionDlg.SetOptions(TheOptions: {$IFDEF EnableNewExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF});
+procedure TExternalToolOptionDlg.SetOptions(TheOptions: {$IFNDEF EnableOldExtTools}TExternalUserTool{$ELSE}TExternalToolOptions{$ENDIF});
 begin
   if fOptions=TheOptions then exit;
   fOptions.Assign(TheOptions);
@@ -1001,7 +1001,7 @@ begin
 end;
 
 initialization
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   ExternalUserToolsClass := TExternalUserTools;
   {$ENDIF}
 

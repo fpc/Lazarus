@@ -613,7 +613,7 @@ type
     property OutputDirectory: string read FOutputDirectory write SetOutputDirectory;
   end;
 
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
 const
   SubToolH2Pas = 'h2pas';
 type
@@ -657,7 +657,7 @@ type
     procedure SetProjectHistory(const AValue: TStrings);
     procedure SetWindowBounds(const AValue: TRect);
     procedure Seth2pasFilename(const AValue: string);
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     procedure OnParseH2PasLine(Sender: TObject; Line: TIDEScanMessageLine);
     {$ENDIF}
   public
@@ -678,7 +678,7 @@ type
     function MergeIncludeFiles(AFile: TH2PasFile;
                                TextConverter: TIDETextConverter): TModalResult;
     function GetH2PasFilename: string;
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     function FindH2PasErrorMessage: integer;
     {$ENDIF}
     function FileIsRelated(const aFilename: string): Boolean;
@@ -712,7 +712,7 @@ const
 
 implementation
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 { TH2PasParser }
 
 class function TH2PasParser.DefaultSubTool: string;
@@ -1742,7 +1742,7 @@ end;
 
 { TH2PasConverter }
 
-{$IFNDEF EnableNewExtTools}
+{$IFDEF EnableOldExtTools}
 procedure TH2PasConverter.OnParseH2PasLine(Sender: TObject;
   Line: TIDEScanMessageLine);
 var
@@ -2036,7 +2036,7 @@ var
     end;
     ErrMsg:=ErrMsg+' Error: '+ErrorTool.ErrorMsg+' ('+ErrorTool.Caption+')';
     DebugLn(['TH2PasConverter.ConvertFile Failed: ',ErrMsg]);
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     IDEMessagesWindow.AddCustomMessage(mluError,ErrorTool.ErrorMsg,Filename,Line,Col,ErrorTool.Caption);
     LazarusIDE.DoJumpToCompilerMessage(true);
     {$ELSE}
@@ -2106,7 +2106,7 @@ begin
       Tool.CmdLineParams:=AFile.GetH2PasParameters(Tool.TargetFilename);
       Tool.WorkingDirectory:=Project.BaseDir;
       DebugLn(['TH2PasConverter.ConvertFile Tool.Filename="',Tool.Filename,'" Tool.CmdLineParams="',Tool.CmdLineParams,'"']);
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       Tool.Scanners.Add(SubToolH2Pas);
       if not RunExternalTool(Tool) then
         exit(mrAbort);
@@ -2315,7 +2315,7 @@ begin
   Result:=FindDefaultExecutablePath(h2pasFilename);
 end;
 
-{$IFNDEF EnableNewExtTools}
+{$IFDEF EnableOldExtTools}
 function TH2PasConverter.FindH2PasErrorMessage: integer;
 var
   i: Integer;

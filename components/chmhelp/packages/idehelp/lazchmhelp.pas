@@ -28,7 +28,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, LazLogger, LazFileUtils, LazHelpIntf, HelpIntfs,
   LazConfigStorage, PropEdits, LazIDEIntf, IDEDialogs,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
   {$ENDIF}
   LHelpControl, Controls, UTF8Process, ChmLangRef, ChmLcl, ChmProg;
@@ -253,7 +253,7 @@ var
   LHelpProjectDir: String;
   WS: String;
   PCP: String;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   Tool: TIDEExternalToolOptions;
   {$ELSE}
   Proc: TProcessUTF8;
@@ -291,7 +291,7 @@ begin
   //if Result <> mrYes then
   //  Exit;
 
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   Tool:=TIDEExternalToolOptions.Create;
   try
     Tool.Title:='- Building lhelp -';

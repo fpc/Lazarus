@@ -11,12 +11,12 @@ unit IDEExternToolIntf;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 interface
 
 uses
   Classes, SysUtils, typinfo, UTF8Process, AvgLvlTree,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   {$ELSE}
   LazMethodList, contnrs,
   {$ENDIF}
@@ -2364,7 +2364,7 @@ begin
 end;
 
 end.
-{$ELSE EnableNewExtTools}
+{$ELSE EnableOldExtTools}
 interface
 
 uses

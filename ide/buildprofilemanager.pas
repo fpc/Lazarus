@@ -34,7 +34,7 @@ uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, LazLogger, LazFileUtils, LazUTF8,
   LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls, Buttons, StdCtrls,
   ComCtrls, Contnrs, ButtonPanel, DefineTemplates, IDEImagesIntf,
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   IDEMsgIntf,
   {$ENDIF}
   IDEHelpIntf, IDEDialogs, LazarusIDEStrConsts, LazConf, InterfaceBase,

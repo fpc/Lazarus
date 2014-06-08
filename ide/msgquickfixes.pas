@@ -43,7 +43,7 @@
 *)
 unit MsgQuickFixes;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
   {$ERROR deprecated}
 {$ENDIF}
 

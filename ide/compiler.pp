@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, Process, LCLProc, Forms, Controls, contnrs, strutils, FileUtil,
   LazarusIDEStrConsts, CompilerOptions, Project,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
   {$ELSE}
   UTF8Process, OutputFilter, InfoBuild,
@@ -56,7 +56,7 @@ type
   TCompiler = class(TObject)
   private
     FOnCmdLineCreate : TOnCmdLineCreate;
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     FOutputFilter: TOutputFilter;
     FTheProcess: TProcessUTF8;
     {$ENDIF}
@@ -69,7 +69,7 @@ type
                      const aCompileHint: string
                     ): TModalResult;
     procedure WriteError(const Msg: string);
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     property OutputFilter: TOutputFilter read FOutputFilter write FOutputFilter;
     property TheProcess: TProcessUTF8 read FTheProcess;
     {$ENDIF}
@@ -261,7 +261,7 @@ end;
 ------------------------------------------------------------------------------}
 destructor TCompiler.Destroy;
 begin
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   FreeAndNil(FTheProcess);
   {$ENDIF}
   inherited Destroy;
@@ -276,7 +276,7 @@ function TCompiler.Compile(AProject: TProject; const WorkingDir,
 var
   CmdLine : String;
   Abort : Boolean;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   Tool: TAbstractExternalTool;
   FPCParser: TFPCParser;
   {$ENDIF}
@@ -286,7 +286,7 @@ begin
     DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
 
   // if we want to show the compile progress, it's now time to show the dialog
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   CompileProgress.Show;
   {$ENDIF}
 
@@ -322,7 +322,7 @@ begin
   if ConsoleVerbosity>=0 then
     DebugLn('[TCompiler.Compile] CmdLine="',CompilerFilename+CmdLine,'"');
 
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   Tool:=ExternalToolList.Add('Compile Project');
   Tool.Reference(Self,ClassName);
   try
@@ -402,7 +402,7 @@ end;
 procedure TCompiler.WriteError(const Msg: string);
 begin
   DebugLn('TCompiler.WriteError ',Msg);
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   if IDEMessagesWindow<>nil then
     IDEMessagesWindow.AddCustomMessage(mluError,Msg);
   {$ELSE}

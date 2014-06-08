@@ -42,7 +42,7 @@ uses
   // IDE
   IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf, DialogProcs,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   {$ELSE}
   OutputFilter,
   {$ENDIF}

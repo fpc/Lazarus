@@ -42,14 +42,14 @@ uses
   Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls, ButtonPanel, Menus,
   FileProcs,
   IDEExternToolIntf, IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   LazConfigStorage, UTF8Process, CompOptsIntf,
   {$ENDIF}
   ProjectIntf,
   EnvironmentOpts,
   ExtToolEditDlg, KeyMapping, TransferMacros, IDEProcs, LazFileUtils,
   CompilerOptions,
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   InfoBuild, OutputFilter,
   {$ENDIF}
   LazarusIDEStrConsts, IDEOptionDefs, EditorOptions;
@@ -57,9 +57,9 @@ uses
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 
-{$ELSE EnableNewExtTools}
+{$ELSE EnableOldExtTools}
 
 type
   TOnNeedsOutputFilter = procedure(var OutputFilter: TOutputFilter;
@@ -108,7 +108,7 @@ type
     property OnNeedsOutputFilter: TOnNeedsOutputFilter
       read fOnNeedsOutputFilter write fOnNeedsOutputFilter;
   end;
-{$ENDIF EnableNewExtTools}
+{$Endif EnableOldExtTools}
 type
   { TExternalToolDialog -
     the dialog to edit all external tools }
@@ -143,34 +143,34 @@ type
     procedure MoveDownButtonClick(Sender: TObject);
     procedure ListboxClick(Sender: TObject);
   private
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     fExtToolList: TExternalUserTools;
     {$ELSE}
     fExtToolList: TExternalToolList;
     {$ENDIF}
     fTransferMacros: TTransferMacroList;
     procedure Load;
-    procedure SetExtToolList(NewExtToolList: {$IFDEF EnableNewExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF});
+    procedure SetExtToolList(NewExtToolList: {$IFNDEF EnableOldExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF});
     procedure SetTransferMacros(NewMacros: TTransferMacroList);
     function ToolDescription(Index: integer): string;
     procedure EnableButtons;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
-    property ExtToolList: {$IFDEF EnableNewExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF}
+    property ExtToolList: {$IFNDEF EnableOldExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF}
       read fExtToolList write SetExtToolList;
     property TransferMacros: TTransferMacroList
                                    read fTransferMacros write SetTransferMacros;
   end;
   
-function ShowExtToolDialog(ExtToolList: {$IFDEF EnableNewExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF};
+function ShowExtToolDialog(ExtToolList: {$IFNDEF EnableOldExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF};
   TransferMacros: TTransferMacroList):TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowExtToolDialog(ExtToolList: {$IFDEF EnableNewExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF};
+function ShowExtToolDialog(ExtToolList: {$IFNDEF EnableOldExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF};
   TransferMacros: TTransferMacroList):TModalResult;
 var
   ExternalToolDialog: TExternalToolDialog;
@@ -188,9 +188,9 @@ begin
   end;
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 
-{$ELSE EnableNewExtTools}
+{$ELSE EnableOldExtTools}
 
 { TExternalToolList }
 
@@ -581,7 +581,7 @@ begin
   MoveUpButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
   MoveDownButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
 
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   fExtToolList:=TExternalUserTools.Create;
   {$ELSE}
   fExtToolList:=TExternalToolList.Create;
@@ -594,7 +594,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TExternalToolDialog.SetExtToolList(NewExtToolList: {$IFDEF EnableNewExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF});
+procedure TExternalToolDialog.SetExtToolList(NewExtToolList: {$IFNDEF EnableOldExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF});
 begin
   if fExtToolList=NewExtToolList then exit;
   fExtToolList.Assign(NewExtToolList);
@@ -609,7 +609,7 @@ end;
 
 function TExternalToolDialog.ToolDescription(Index: integer): string;
 begin
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   Result:=fExtToolList[Index].Title;
   {$ELSE}
   Result:=fExtToolList[Index].ShortDescription;
@@ -636,7 +636,7 @@ end;
 procedure TExternalToolDialog.AddButtonClick(Sender: TObject);
 var
   MsgResult: TModalResult;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   NewTool: TExternalUserTool;
   {$ELSE}
   NewTool: TExternalToolOptions;
@@ -648,7 +648,7 @@ begin
                   mtInformation,[mbCancel]);
     exit;
   end;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   NewTool:=TExternalUserTool.Create(nil);
   MsgResult:=ShowExtToolOptionDlg(fTransferMacros, NewTool, EditorOpts.KeyMap);
   {$ELSE}
@@ -673,7 +673,7 @@ end;
 
 procedure TExternalToolDialog.MenuItemCloneClick(Sender: TObject);
 var
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   NewTool, OldTool: TExternalUserTool;
   {$ELSE}
   NewTool, OldTool: TExternalToolOptions;
@@ -682,7 +682,7 @@ begin
   If Listbox.ItemIndex <> -1 Then Begin
     OldTool := fExtToolList.Items[Listbox.ItemIndex];
     If Assigned(OldTool) Then Begin
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       NewTool:=TExternalUserTool.Create(nil);
       {$ELSE}
       NewTool:=TExternalToolOptions.Create;
@@ -716,14 +716,14 @@ end;
 procedure TExternalToolDialog.MenuItemImportClick(Sender: TObject);
 Var
   FileConfig: TXMLOptionsStorage;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   NewToolList: TExternalUserTools;
   {$ELSE}
   NewToolList : TExternalToolList;
   {$ENDIF}
 begin
   If OpenDialog1.Execute Then Begin
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     NewToolList := TExternalUserTools.Create;
     {$ELSE}
     NewToolList := TExternalToolList.Create;
@@ -751,7 +751,7 @@ begin
   i:=Listbox.ItemIndex;
   if i<0 then exit;
   if ShowExtToolOptionDlg(fTransferMacros,fExtToolList[i],
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       EditorOpts.KeyMap
       {$ELSE}
       TExternalToolList(EnvironmentOptions.ExternalTools).fAllKeys
@@ -804,7 +804,7 @@ begin
   EnableButtons;
 end;
 
-{$IFNDEF EnableNewExtTools}
+{$IFDEF EnableOldExtTools}
 initialization
   ExternalToolListClass:=TExternalToolList;
 {$ENDIF}

@@ -14,7 +14,7 @@
 }
 unit OutputFilter;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
   {$ERROR deprecated}
 {$ENDIF}
 

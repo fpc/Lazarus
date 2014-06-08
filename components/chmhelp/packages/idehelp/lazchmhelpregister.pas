@@ -35,7 +35,7 @@ implementation
 uses
   { lazarus }
   LazIDEIntf, MenuIntf, IdeCommands,
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   IDEMsgIntf,
   {$ENDIF}
   { local }

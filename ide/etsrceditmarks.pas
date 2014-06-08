@@ -27,7 +27,7 @@ unit etSrcEditMarks;
 
 {$mode objfpc}{$H+}
 
-{$IFNDEF EnableNewExtTools}{$Error Wrong}{$ENDIF}
+{$IFDEF EnableOldExtTools}{$Error Wrong}{$ENDIF}
 
 {off $DEFINE VerboseETSrcChange}
 

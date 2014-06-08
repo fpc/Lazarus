@@ -32,7 +32,7 @@
 }
 unit MsgView;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
   {$Error obsolete}
 {$ENDIF}
 

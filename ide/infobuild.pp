@@ -27,7 +27,7 @@ unit InfoBuild;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF EnableNewExtTools}{$ERROR Obsolete}{$ENDIF}
+{$IFNDEF EnableOldExtTools}{$ERROR Obsolete}{$ENDIF}
 
 interface
 

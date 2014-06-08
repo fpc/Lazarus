@@ -57,7 +57,7 @@ implementation
 
 uses
   inifiles, IDEMsgIntf,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
   {$ENDIF}
   BaseIDEIntf;
@@ -181,7 +181,7 @@ end;
 procedure TIDEDataDictionary.DDProgress(Sender : TObject; Const Msg : String);
 
 begin
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEMessagesWindow.AddCustomMessage(mluImportant,SLoadingDataDict+Msg);
   {$ELSE}
   IDEMessagesWindow.AddMsg(SLoadingDataDict+Msg,'',2);
@@ -282,7 +282,7 @@ procedure TIDEDataDictionary.Load;
 begin
   If (FFileName<>'') and Active then
     begin
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     IDEMessagesWindow.AddCustomMessage(mluImportant,SLoadingDataDict+SFromfile+FFileName);
     {$ELSE}
     IDEMessagesWindow.BeginBlock(False);
@@ -290,7 +290,7 @@ begin
       IDEMessagesWindow.AddMsg(SLoadingDataDict+SFromfile+FFileName,'',2);
     {$ENDIF}
       FDataDict.LoadFromFile(UTF8ToSys(FFileName));
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     {$ELSE}
     Finally
       IDEMessagesWindow.EndBlock;

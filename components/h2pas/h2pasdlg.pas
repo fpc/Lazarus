@@ -27,7 +27,7 @@ uses
   SynHighlighterCPP, FileProcs, IDEMsgIntf, MenuIntf, IDECommands, BaseIDEIntf,
   IDEDialogs, LazIDEIntf, ProjectIntf, CodeToolManager, SrcEditorIntf,
   IDETextConverter, H2PasStrConsts, H2PasConvert, IDETextConvListEdit,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
   {$ENDIF}
   CompOptsIntf;
@@ -240,7 +240,7 @@ begin
   TextConverterToolClasses.RegisterClass(TFixForwardDefinitions);
   TextConverterToolClasses.RegisterClass(TAddToUsesSection);
 
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   // register h2pas output parser
   ExternalToolList.RegisterParser(TH2PasParser);
   {$ENDIF}

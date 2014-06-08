@@ -64,7 +64,7 @@ uses
   // IDE
   LazConf, LazarusIDEStrConsts, ProjectDefs, Project, PublishModule,
   BuildLazDialog, Compiler, ComponentReg,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   etMessagesWnd,
   {$ELSE}
   OutputFilter, MsgView,
@@ -136,7 +136,7 @@ type
     procedure mnuCenterWindowItemClick(Sender: TObject); virtual;
     procedure mnuWindowSourceItemClick(Sender: TObject); virtual;
 
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     procedure ConnectOutputFilter;
     {$ENDIF}
     procedure UpdateWindowMenu;
@@ -303,7 +303,7 @@ begin
   SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
 
-{$IFNDEF EnableNewExtTools}
+{$IFDEF EnableOldExtTools}
 procedure TMainIDEBase.ConnectOutputFilter;
 begin
   TheOutputFilter.OnAddFilteredLine:=@MessagesView.AddMsg;

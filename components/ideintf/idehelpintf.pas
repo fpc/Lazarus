@@ -59,7 +59,7 @@ type
     function ShowHelpForSourcePosition(const Filename: string;
                                        const CodePos: TPoint;
                                        var ErrMsg: string): TShowHelpResult; virtual; abstract;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     procedure ShowHelpForMessage; virtual; abstract;
     {$ELSE}
     procedure ShowHelpForMessage(Line: integer); virtual; abstract;

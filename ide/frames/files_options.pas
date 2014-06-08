@@ -221,7 +221,7 @@ begin
   MaxRecentOpenFilesLabel.Caption:=dlgMaxRecentFiles;
   MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
   OpenLastProjectAtStartCheckBox.Caption:=dlgQOpenLastPrj;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   ShowCompileDialogCheckBox.Visible:=false;
   AutoCloseCompileDialogCheckBox.Visible:=false;
   {$ELSE}

@@ -39,7 +39,7 @@ uses
   Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus,
   Clipbrd, LvlGraphCtrl, LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
   SrcEditorIntf, IDEImagesIntf, IDECommands, IDEDialogs, IDEMsgIntf, TextTools,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
   {$ENDIF}
   CodeToolManager, DefineTemplates, CodeToolsStructs,
@@ -301,7 +301,7 @@ type
       write SetPendingUnitDependencyRoute; // list of unit names, missing links are automatically found
   end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 type
 
   { TQuickFixCircularUnitReference }
@@ -425,7 +425,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 { TQuickFixCircularUnitReference }
 
 function TQuickFixCircularUnitReference.IsApplicable(Msg: TMessageLine; out

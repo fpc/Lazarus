@@ -231,7 +231,7 @@ type
     function GetFilterType: TCodyIdentifierFilter;
   end;
 
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
 
   { TQuickFixIdentifierNotFoundShowDictionary }
 
@@ -280,7 +280,7 @@ end;
 procedure InitUnitDictionary;
 begin
   CodyUnitDictionary:=TCodyUnitDictionary.Create;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFoundShowDictionary.Create);
   {$ENDIF}
 end;
@@ -371,7 +371,7 @@ begin
     exit(0);
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 { TQuickFixIdentifierNotFoundShowDictionary }
 
 function TQuickFixIdentifierNotFoundShowDictionary.IsApplicable(

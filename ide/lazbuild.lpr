@@ -39,7 +39,7 @@ uses
   CompOptsIntf, LazIDEIntf,
   // IDE
   IDEProcs, InitialSetupProc,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   ExtTools,
   {$ELSE}
   OutputFilter,
@@ -74,7 +74,7 @@ type
     fInitResult: boolean;
     fWidgetsetOverride: String;
     // external tools
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     procedure OnExtToolFreeOutputFilter({%H-}OutputFilter: TOutputFilter;
                                         ErrorOccurred: boolean);
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
@@ -141,7 +141,7 @@ type
     function Init: boolean;
     procedure LoadEnvironmentOptions;
     procedure LoadMiscellaneousOptions;
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     procedure SetupOutputFilter;
     {$ENDIF}
     procedure SetupMacros;
@@ -161,7 +161,7 @@ type
     function ParseParameters: boolean;
     procedure WriteUsage;
     procedure Error(ErrorCode: Byte; const ErrorMsg: string);
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     function OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
     {$ENDIF}
 
@@ -272,7 +272,7 @@ end;
 
 { TLazBuildApplication }
 
-{$IFNDEF EnableNewExtTools}
+{$IFDEF EnableOldExtTools}
 procedure TLazBuildApplication.OnExtToolFreeOutputFilter(
   OutputFilter: TOutputFilter; ErrorOccurred: boolean);
 begin
@@ -595,7 +595,7 @@ begin
   Builder:=TLazarusBuilder.Create;
   try
     Builder.ProfileChanged:=false;
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     Builder.ExternalTools:=EnvironmentOptions.ExternalTools;
     {$ENDIF}
 
@@ -1122,7 +1122,7 @@ begin
   SetupCodetools;
   SetupCompilerFilename;
   SetupPackageSystem;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   MainBuildBoss.SetupExternalTools;
   ExtToolConsole:=TLazExtToolConsole.Create(nil);
   {$ELSE}
@@ -1159,7 +1159,7 @@ begin
     end;
     TranslateResourceStrings(EnvironmentOptions.GetParsedLazarusDirectory,
                              EnvironmentOptions.LanguageID);
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     TExternalToolList(ExternalTools).OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
     TExternalToolList(ExternalTools).OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
     {$ENDIF}
@@ -1186,7 +1186,7 @@ begin
   MiscellaneousOptions.Load;
 end;
 
-{$IFNDEF EnableNewExtTools}
+{$IFDEF EnableOldExtTools}
 procedure TLazBuildApplication.SetupOutputFilter;
 begin
   TheOutputFilter:=TOutputFilter.Create;
@@ -1403,7 +1403,7 @@ begin
   inherited Create(TheOwner);
   SetupDialogs;
   Files:=TStringList.Create;
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   TOutputFilterProcess:=TProcessUTF8;
   RunExternalTool := @OnRunExternalTool;
   {$ENDIF}
@@ -1421,7 +1421,7 @@ begin
 
   FreeThenNil(PkgLinks);
   FreeThenNil(TheCompiler);
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   FreeAndNil(ExtToolConsole);
   {$ELSE}
   FreeThenNil(TheOutputFilter);
@@ -1708,7 +1708,7 @@ begin
   Halt(ErrorCode);
 end;
 
-{$IFNDEF EnableNewExtTools}
+{$IFDEF EnableOldExtTools}
 function TLazBuildApplication.OnRunExternalTool(Tool: TIDEExternalToolOptions
   ): TModalResult;
 begin

@@ -47,7 +47,7 @@ uses
   // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   ObjInspExt, EnvironmentOpts, AboutFrm, Project, MainBar,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   etMessagesWnd,
   {$ELSE}
   OutputFilter, MsgView,
@@ -211,7 +211,7 @@ type
     function ShowHelpForSourcePosition(const Filename: string;
                                        const CodePos: TPoint;
                                        var ErrMsg: string): TShowHelpResult; override;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     procedure ShowHelpForMessage; override;
     {$ELSE}
     procedure ShowHelpForMessage(Line: integer); override;
@@ -1589,7 +1589,7 @@ begin
     CacheWasUsed,AnOwner);
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 procedure TIDEHelpManager.ShowHelpForMessage;
 var
   Line: TMessageLine;
@@ -1602,7 +1602,7 @@ begin
   Line.GetAttributes(Parts);
   ShowHelpOrErrorForMessageLine(Line.Msg,Parts);
 end;
-{$ELSE EnableNewExtTools}
+{$ELSE EnableOldExtTools}
 procedure TIDEHelpManager.ShowHelpForMessage(Line: integer);
   function ParseMessage(MsgItem: TIDEMessageLine): TStringList;
   begin
@@ -1628,7 +1628,7 @@ begin
     ShowHelpOrErrorForMessageLine(MsgItem.Msg,MessageParts);
   end;
 end;
-{$ENDIF EnableNewExtTools}
+{$Endif EnableOldExtTools}
 
 procedure TIDEHelpManager.ShowHelpForObjectInspector(Sender: TObject);
 var

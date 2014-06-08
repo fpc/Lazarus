@@ -22,7 +22,7 @@
 }
 unit EditMsgScannersDlg;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
   {$Error}
 {$ENDIF}
 

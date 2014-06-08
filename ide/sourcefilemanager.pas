@@ -42,7 +42,7 @@ uses
   EmptyMethodsDlg, BaseDebugManager, ControlSelection, TransferMacros,
   EnvironmentOpts, BuildManager, Designer, EditorMacroListViewer, KeywordFuncLists,
   FindRenameIdentifier, GenericCheckList, ViewUnit_Dlg, DiskDiffsDialog,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   etMessagesWnd,
   {$ELSE}
   MsgView,
@@ -62,7 +62,7 @@ type
     FListForm: TGenericCheckListForm;
     FCheckingFilesOnDisk: boolean;
     FCheckFilesOnDiskNeeded: boolean;
-    {$IFnDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     function ExternalTools: TExternalToolList;
     {$ENDIF}
     function AddPathToBuildModes(aPath, CurDirectory: string; IsIncludeFile: Boolean): Boolean;
@@ -285,7 +285,7 @@ begin
   inherited Destroy;
 end;
 
-{$IFnDEF EnableNewExtTools}
+{$IFDEF EnableOldExtTools}
 function TLazSourceFileManager.ExternalTools: TExternalToolList;
 begin
   Result:=TExternalToolList(EnvironmentOptions.ExternalTools);
@@ -1012,7 +1012,7 @@ begin
       if EMacro <> nil then begin
         EMacro.SetFromSource(AEditor.SourceText);
         if EMacro.IsInvalid and (EMacro.ErrorMsg <> '') then
-          {$IFDEF EnableNewExtTools}
+          {$IFNDEF EnableOldExtTools}
           IDEMessagesWindow.AddCustomMessage(mluError,EMacro.ErrorMsg);
           {$ELSE}
           MessagesView.AddMsg(EMacro.ErrorMsg, '', -1);
@@ -2463,7 +2463,7 @@ begin
       Tool.Title:=lisCommandAfterPublishingModule;
       Tool.WorkingDirectory:=DestDir;
       Tool.CmdLineParams:=CmdAfterParams;
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       Tool.Executable:=CmdAfterExe;
       if RunExternalTool(Tool) then
         Result:=mrOk

@@ -42,7 +42,7 @@ uses
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript, CodeToolsStructs,
   // IDEIntf
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   SrcEditorIntf,
   {$ENDIF}
   ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
@@ -51,7 +51,7 @@ uses
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
   EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
   TransferMacros, CompilerOptions,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   ExtTools, etMakeMsgParser, etFPCMsgParser,
   {$ELSE}
   OutputFilter,
@@ -146,7 +146,7 @@ type
     function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     {$ELSE}
     function OnRunCompilerWithOptions(ExtTool: TIDEExternalToolOptions;
                            CompOptions: TBaseCompilerOptions): TModalResult;
@@ -175,7 +175,7 @@ type
     destructor Destroy; override;
     procedure SetupTransferMacros;
     procedure TranslateMacros;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     procedure SetupExternalTools;
     {$ENDIF}
     procedure SetupCompilerInterface;
@@ -241,7 +241,7 @@ type
 var
   MainBuildBoss: TBuildManager = nil;
   TheCompiler: TCompiler = nil;
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   TheOutputFilter: TOutputFilter = nil;
   {$ENDIF}
 
@@ -335,7 +335,7 @@ begin
   FUnitSetChangeStamp:=TFPCUnitSetCache.GetInvalidChangeStamp;
 
   OnBackupFileInteractive:=@BackupFile;
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   RunCompilerWithOptions:=@OnRunCompilerWithOptions;
   {$ENDIF}
 
@@ -346,7 +346,7 @@ end;
 
 destructor TBuildManager.Destroy;
 begin
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   FreeAndNil(ExternalTools);
   {$ELSE}
   RunCompilerWithOptions:=nil;
@@ -503,7 +503,7 @@ begin
   tr('MakeFile',lisTMFunctionChompPathDelimiter);
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 procedure TBuildManager.SetupExternalTools;
 begin
   // setup the external tool queue
@@ -519,7 +519,7 @@ end;
 procedure TBuildManager.SetupCompilerInterface;
 begin
   TheCompiler := TCompiler.Create;
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   with TheCompiler do begin
     OutputFilter:=TheOutputFilter;
   end;
@@ -1367,7 +1367,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
   begin
     Result:=mrOk;
     if Compiling then begin
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       IDEMessagesWindow.AddCustomMessage(mluError,
         Format('ambiguous file found: %s%s%s. Source file is: %s%s%s',
         ['"', AmbiguousFilename, '"', '"', AFilename, '"']));
@@ -2270,8 +2270,8 @@ begin
   end;
 end;
 
-{$IFDEF EnableNewExtTools}
-{$ELSE EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
+{$ELSE EnableOldExtTools}
 function TBuildManager.OnRunCompilerWithOptions(
   ExtTool: TIDEExternalToolOptions; CompOptions: TBaseCompilerOptions): TModalResult;
 begin
@@ -2282,7 +2282,7 @@ begin
   if LazarusIDE<>nil then
     LazarusIDE.DoCheckFilesOnDisk;
 end;
-{$ENDIF EnableNewExtTools}
+{$Endif EnableOldExtTools}
 
 procedure TBuildManager.SetUnitSetCache(const AValue: TFPCUnitSetCache);
 begin

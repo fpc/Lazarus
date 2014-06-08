@@ -301,7 +301,7 @@ var
   TestDir: String;
   BogusFilename: String;
   CmdLineParams: String;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   CompileTool: TAbstractExternalTool;
   {$ELSE}
   CompileTool: TExternalToolOptions;
@@ -334,7 +334,7 @@ begin
     CmdLineParams:=Options.MakeOptionsString(BogusFilename,
               [ccloAddVerboseAll,ccloDoNotAppendOutFileOption,ccloAbsolutePaths])
               +' '+BogusFilename;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     CompileTool:=ExternalToolList.Add(dlgCCOTestToolCompilingEmptyFile);
     CompileTool.Reference(Self,ClassName);
     try
@@ -855,7 +855,7 @@ end;
 function TCheckCompilerOptsDlg.DoTestAll: TModalResult;
 var
   CompilerFilename: String;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   CompileTool: TAbstractExternalTool;
   {$ELSE}
   CompileTool: TExternalToolOptions;

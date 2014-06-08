@@ -42,7 +42,7 @@ uses
   LazIDEIntf, TextTools, IDEMsgIntf, PackageIntf, IDEExternToolIntf,
   // IDE
   DialogProcs, PackageDefs, Project, IDEProcs, LazarusIDEStrConsts,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   etFPCMsgParser,
   {$ELSE}
   MsgQuickFixes,
@@ -118,7 +118,7 @@ type
     property MainOwnerName: string read FMainOwnerName;
   end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 type
   { TQuickFixUnitNotFound_Search - add menu item to open this search dialog }
 
@@ -174,7 +174,7 @@ begin
   // ToDo: implement RegisterIDEMsgQuickFix(TQuickFixIncludeNotFound_Search.Create);
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 { TQuickFixUnitNotFound_Search }
 
 function TQuickFixUnitNotFound_Search.IsApplicable(Msg: TMessageLine; out
@@ -245,7 +245,7 @@ begin
     Dlg.Free;
   end;
 end;
-{$ELSE EnableNewExtTools}
+{$ELSE EnableOldExtTools}
 { TQuickFixUnitNotFound_Search }
 
 constructor TQuickFixUnitNotFound_Search.Create;
@@ -702,7 +702,7 @@ begin
   Caption:='Remove unit from uses clause';
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 { TQuickFixIncludeNotFound_Search }
 
 function TQuickFixIncludeNotFound_Search.IsApplicable(Msg: TMessageLine; out
@@ -766,7 +766,7 @@ begin
   end;
 end;
 
-{$ELSE EnableNewExtTools}
+{$ELSE EnableOldExtTools}
 constructor TQuickFixIncludeNotFound_Search.Create;
 begin
   Name:='Search include file: Error: include file not found';

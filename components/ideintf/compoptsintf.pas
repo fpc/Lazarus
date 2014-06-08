@@ -91,7 +91,7 @@ type
     coptParsedPlatformIndependent // all but platform macros resolved
     );
 
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   TCompilerFlagValue = (
     cfvNone,  // default, do not pass the flag
     cfvHide,  // pass the flag, e.g. -vm5000
@@ -148,7 +148,7 @@ type
     procedure SetPassLinkerOpt(const AValue: Boolean);
     procedure SetRangeChecks(const AValue: Boolean);
     procedure SetShowAll(const AValue: Boolean);
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     procedure SetShowAllProcsOnError(const AValue: Boolean);
     {$ENDIF}
     procedure SetShowCompProc(const AValue: Boolean);
@@ -162,7 +162,7 @@ type
     procedure SetShowHintsForUnusedUnitsInMainSrc(const AValue: Boolean);
     procedure SetShowLineNum(const AValue: Boolean);
     procedure SetShowNotes(const AValue: Boolean);
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     procedure SetShowNothing(const AValue: Boolean);
     {$ENDIF}
     procedure SetShowSummary(const AValue: Boolean);
@@ -260,7 +260,7 @@ type
     fShowGenInfo: Boolean;
     fShowLineNum: Boolean;
     fShowAll: Boolean;
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     fShowAllProcsOnError: Boolean;
     {$ENDIF}
     fShowDebugInfo: Boolean;
@@ -269,7 +269,7 @@ type
     fShowCompProc: Boolean;
     fShowCond: Boolean;
     fShowExecInfo: Boolean;
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     fShowNothing: Boolean;
     {$ENDIF}
     fShowSummary: Boolean;
@@ -277,7 +277,7 @@ type
     fShowHintsForSenderNotUsed: Boolean;
     fWriteFPCLogo: Boolean;
     fStopAfterErrCount: integer;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     // Turn specific types of compiler messages on or off
     fMessageFlags: TAbstractCompilerMsgIDFlags;
     {$ENDIF}
@@ -429,7 +429,7 @@ type
     property ShowHints: Boolean read fShowHints write SetShowHints; // -vh
     property ShowGenInfo: Boolean read fShowGenInfo write SetShowGenInfo; // -vi
     property ShowLineNum: Boolean read fShowLineNum write SetShowLineNum; // -vl
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     property ShowAllProcsOnError: Boolean
       read fShowAllProcsOnError write SetShowAllProcsOnError; // -vb
     {$ENDIF}
@@ -440,7 +440,7 @@ type
     property ShowCompProc: Boolean read fShowCompProc write SetShowCompProc; // -vp
     property ShowCond: Boolean read fShowCond write SetShowCond; // -vc
     property ShowExecInfo: Boolean read fShowExecInfo write SetShowExecInfo; // -vx
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     property ShowNothing: Boolean read fShowNothing write SetShowNothing; // -v0
     {$ENDIF}
     property ShowSummary: Boolean read FShowSummary write SetShowSummary;
@@ -450,7 +450,7 @@ type
       read fShowHintsForSenderNotUsed write SetShowHintsForSenderNotUsed;
     property WriteFPCLogo: Boolean read fWriteFPCLogo write SetWriteFPCLogo;
     property StopAfterErrCount: integer read fStopAfterErrCount write SetStopAfterErrCount;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     property MessageFlags: TAbstractCompilerMsgIDFlags read fMessageFlags;
     {$ENDIF}
 
@@ -521,7 +521,7 @@ begin
   IncreaseChangeStamp;
 end;
 
-{$IFNDEF EnableNewExtTools}
+{$IFDEF EnableOldExtTools}
 procedure TLazCompilerOptions.SetShowAllProcsOnError(const AValue: Boolean);
 begin
   if fShowAllProcsOnError=AValue then exit;
@@ -608,7 +608,7 @@ begin
   IncreaseChangeStamp;
 end;
 
-{$IFNDEF EnableNewExtTools}
+{$IFDEF EnableOldExtTools}
 procedure TLazCompilerOptions.SetShowNothing(const AValue: Boolean);
 begin
   if fShowNothing=AValue then exit;

@@ -42,7 +42,7 @@ uses
   MenuIntf,
   SynEdit, SynEditMarks, SynEditMarkupGutterMark,
   SrcEditorIntf
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   , IDEExternToolIntf, etSrcEditMarks
   {$ENDIF}
   ;
@@ -191,7 +191,7 @@ type
     FCurrentLineBreakPointImg: Integer;
     FCurrentLineImg: Integer;
     FCurrentLineDisabledBreakPointImg: Integer;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     FExtToolsMarks: TETMarks;
     {$ENDIF}
     FSourceLineImg: Integer;
@@ -233,7 +233,7 @@ type
     property ImgList: TImageList read FImgList write FImgList;
     property Items[Index: integer]: TSourceMark read GetItems; default;
     property OnAction: TMarksActionEvent read FOnAction write FOnAction;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     property ExtToolsMarks: TETMarks read FExtToolsMarks;
     {$ENDIF}
   public
@@ -540,7 +540,7 @@ end;
 procedure TSourceMarks.CreateImageList;
 var
   i: Integer;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   ImgIDFatal: Integer;
   ImgIDError: Integer;
   ImgIDWarning: Integer;
@@ -580,7 +580,7 @@ begin
   // load source line
   FSourceLineImg:=AddImage('debugger_source_line');
 
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   ExtToolsMarks.ImageList:=ImgList;
   ImgIDFatal:=AddImage('state11x11_fatal');
   ImgIDError:=AddImage('state11x11_error');
@@ -626,7 +626,7 @@ begin
   inherited Create(TheOwner);
   fItems:=TList.Create;
   fSortedItems:=TAVLTree.Create(@CompareSourceMarks);
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   FExtToolsMarks:=TETMarks.Create(nil);
   {$ENDIF}
   CreateImageList;
@@ -635,7 +635,7 @@ end;
 destructor TSourceMarks.Destroy;
 begin
   Clear;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   FreeAndNil(FExtToolsMarks);
   {$ENDIF}
   FreeThenNil(FItems);

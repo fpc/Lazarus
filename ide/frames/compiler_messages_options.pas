@@ -9,7 +9,7 @@ uses
   StdCtrls, CheckLst, Dialogs, IDEOptionsIntf, IDEMsgIntf, IDEExternToolIntf,
   MacroIntf, IDEDialogs, CompOptsIntf, CodeToolsFPCMsgs, CompilerOptions,
   LazarusIDEStrConsts
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   ,etFPCMsgParser
   {$ENDIF}
   ;
@@ -31,7 +31,7 @@ type
     procedure MsgFileBrowseButtonClick(Sender: TObject);
     procedure UseMsgFileCheckBoxChange(Sender: TObject);
   private
-    TempMessages: {$IFDEF EnableNewExtTools}TCompilerMsgIDFlags{$ELSE}TCompilerMessagesList{$ENDIF};
+    TempMessages: {$IFNDEF EnableOldExtTools}TCompilerMsgIDFlags{$ELSE}TCompilerMessagesList{$ENDIF};
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -50,7 +50,7 @@ implementation
 { TCompilerMessagesOptionsFrame }
 
 procedure TCompilerMessagesOptionsFrame.chklistCompMsgItemClick(Sender: TObject; Index: integer);
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 var
   MsgId: Integer;
 {$ELSE}
@@ -61,7 +61,7 @@ var
 {$ENDIF}
 begin
   if (Index < 0) or (Index >= chklistCompMsg.Items.Count) then exit;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   MsgId:=Integer(PtrUInt(Pointer(chklistCompMsg.Items.Objects[Index])));
   if MsgId<=0 then exit;
   if chklistCompMsg.Checked[Index] then begin
@@ -79,7 +79,7 @@ begin
 end;
 
 function TCompilerMessagesOptionsFrame.CheckItem(Item: TObject): Boolean;
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 var
   MsgId: Integer;
 begin
@@ -129,7 +129,7 @@ end;
 constructor TCompilerMessagesOptionsFrame.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   TempMessages:=TCompilerMsgIDFlags.Create;
   UseMsgFileCheckBox.Visible:=false;
   MsgFileEdit.Visible:=false;
@@ -141,7 +141,7 @@ end;
 
 destructor TCompilerMessagesOptionsFrame.Destroy;
 begin
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   {$ELSE}
   editMsgFilter.Items.Clear;
   chklistCompMsg.Clear;
@@ -159,7 +159,7 @@ procedure TCompilerMessagesOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDia
 begin
   grpCompilerMessages.Caption:=dlgCompilerMessage;
   lblFilter.Caption:=lisFilter;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   {$ELSE}
   UseMsgFileCheckBox.Caption:=lisUseMessageFile;
   MsgFileBrowseButton.Caption:=lisPathEditBrowse;
@@ -170,7 +170,7 @@ procedure TCompilerMessagesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptio
 var
   topidx: Integer;
   CompOpts: TBaseCompilerOptions;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   FPCMsgFile: TFPCMsgFilePoolItem;
   i: Integer;
   Item: TFPCMsgItem;
@@ -184,7 +184,7 @@ begin
   CompOpts:=AOptions as TBaseCompilerOptions;
 
   topidx := chklistCompMsg.TopIndex;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   TempMessages.Assign(CompOpts.MessageFlags);
   editMsgFilter.Items.Clear;
   FPCMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(true,nil);
@@ -234,7 +234,7 @@ procedure TCompilerMessagesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOpti
 begin
   with AOptions as TBaseCompilerOptions do
   begin
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     MessageFlags.Assign(TempMessages);
     {$ELSE}
     UseMsgFile:=UseMsgFileCheckBox.Checked;

@@ -57,7 +57,7 @@ uses
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
   IDEOptionDefs,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   etFPCMsgParser,
   {$ELSE}
   MsgQuickFixes,
@@ -376,7 +376,7 @@ type
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 type
 
   { TQuickFixIdentifierNotFound_Search }
@@ -3228,7 +3228,7 @@ end;
 
 { TQuickFixIdentifierNotFound_Search }
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 
 function TQuickFixIdentifierNotFound_Search.IsApplicable(Msg: TMessageLine; out
   Identifier: string): boolean;
@@ -3381,7 +3381,7 @@ begin
     ShowCodeBrowser(Identifier);
   end;
 end;
-{$ENDIF EnableNewExtTools}
+{$Endif EnableOldExtTools}
 
 end.
 

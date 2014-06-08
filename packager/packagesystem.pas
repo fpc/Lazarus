@@ -52,7 +52,7 @@ uses
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
   CodeToolManager, DirectoryCacher,
   // IDEIntf,
-  {$IFNDEF EnableNewExtTools}
+  {$IFDEF EnableOldExtTools}
   SrcEditorIntf,
   {$ENDIF}
   IDEExternToolIntf, IDEDialogs, IDEMsgIntf, PackageIntf,
@@ -151,7 +151,7 @@ type
     function OpenDependencyWithPackageLink(Dependency: TPkgDependency;
                        PkgLink: TPackageLink; ShowAbort: boolean): TModalResult;
     function DeleteAmbiguousFiles(const Filename: string): TModalResult;
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     procedure AddMessage(TheUrgency: TMessageLineUrgency; const Msg, Filename: string);
     {$ELSE}
     procedure AddMessage(const Msg, Directory: string);
@@ -688,7 +688,7 @@ begin
     Result:=mrOk;
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 procedure TLazPackageGraph.AddMessage(TheUrgency: TMessageLineUrgency;
   const Msg, Filename: string);
 begin
@@ -3406,7 +3406,7 @@ function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
   end;
 
 var
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   PkgCompileTool: TAbstractExternalTool;
   FPCParser: TFPCParser;
   {$ELSE}
@@ -3475,7 +3475,7 @@ begin
       end;
     end;
 
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     {$ELSE}
     BlockBegan:=IDEMessagesWindow<>nil;
     if BlockBegan then
@@ -3567,7 +3567,7 @@ begin
             EffectiveCompilerParams:='-B';
         end;
 
-        {$IFDEF EnableNewExtTools}
+        {$IFNDEF EnableOldExtTools}
         PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilingPackage, [APackage.IDAsString]));
         PkgCompileTool.Reference(Self,Classname);
         try
@@ -3648,7 +3648,7 @@ begin
         Result:=ConvertPackageRSTFiles(APackage);
         if Result<>mrOk then begin
           DebugLn('TLazPackageGraph.CompilePackage ConvertPackageRSTFiles failed: ',APackage.IDAsString);
-          {$IFDEF EnableNewExtTools}
+          {$IFNDEF EnableOldExtTools}
           IDEMessagesWindow.AddCustomMessage(mluError,
             'Updating po files failed for package '+APackage.IDAsString);
           {$ELSE}
@@ -3666,7 +3666,7 @@ begin
           'Package '+APackage.IDAsString+': '+lisExecutingCommandAfter,Note);
         if Result<>mrOk then begin
           DebugLn(['TLazPackageGraph.CompilePackage ExecuteAfter failed: ',APackage.IDAsString]);
-          {$IFDEF EnableNewExtTools}
+          {$IFNDEF EnableOldExtTools}
           // messages window already contains error message
           {$ELSE}
           IDEMessagesWindow.AddMsg(Format(
@@ -3680,7 +3680,7 @@ begin
     finally
       if (LazarusIDE<>nil) then
         LazarusIDE.MainBarSubTitle:='';
-      {$IFNDEF EnableNewExtTools}
+      {$IFDEF EnableOldExtTools}
       if BlockBegan and (IDEMessagesWindow<>nil) then
         IDEMessagesWindow.EndBlock;
       {$ENDIF}
@@ -3852,7 +3852,7 @@ var
   MakefileFPCFilename: String;
   UnitOutputPath: String;
   UnitPath: String;
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   FPCMakeTool: TAbstractExternalTool;
   {$ELSE}
   FPCMakeTool: TIDEExternalToolOptions;
@@ -4057,7 +4057,7 @@ begin
     Executable:='fpcmake'+GetExecutableExt;
 
   // call fpcmake to create the Makefile
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   FPCMakeTool:=ExternalToolList.Add(
     Format(lisIDEInfoCreatingMakefileForPackage, [APackage.IDAsString]));
   FPCMakeTool.Process.CurrentDirectory:=APackage.Directory;
@@ -4619,7 +4619,7 @@ begin
         end;
 
         if (CurUnitName='') or (not IsValidUnitName(CurUnitName)) then begin
-          {$IFDEF EnableNewExtTools}
+          {$IFNDEF EnableOldExtTools}
           AddMessage(mluError,Format('invalid unit name in package %s',[APackage.IDAsString]),CurFile.Filename);
           {$ELSE}
           AddMessage(Format(lisIDEInfoWARNINGUnitNameInvalidPackage, [CurFile.

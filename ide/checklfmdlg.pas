@@ -40,7 +40,7 @@ uses
   // IDE
   PropEdits, IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
   CustomFormEditor, LazarusIDEStrConsts,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
   {$ELSE}
   {$ENDIF}
@@ -418,7 +418,7 @@ begin
   if Code=nil then
     Code:=fPascalBuffer;
   Filename:=ExtractFilename(Code.Filename);
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEMessagesWindow.AddCustomMessage(mluError,ErrorMessage,Filename,Y,X);
   {$ELSE}
   IDEMessagesWindow.AddMsg(Filename
@@ -444,7 +444,7 @@ begin
   CurError:=fLFMTree.FirstError;
   Filename:=ExtractFilename(fLFMBuffer.Filename);
   while CurError<>nil do begin
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     IDEMessagesWindow.AddCustomMessage(mluError,CurError.ErrorMessage,
       Filename,CurError.Caret.Y,CurError.Caret.X);
     {$ELSE}

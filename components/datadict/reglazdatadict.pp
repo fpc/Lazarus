@@ -75,7 +75,7 @@ implementation
 
 uses forms, dialogs, controls,
   IDEMsgIntf,
-  {$IFDEF EnableNewExtTools}
+  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
   {$ENDIF}
   ldd_consts;
@@ -279,14 +279,14 @@ begin
   ASelection:=TPersistentSelectionList.Create;
   try
     GlobalDesignHook.GetSelection(ASelection);
-    {$IFNDEF EnableNewExtTools}
+    {$IFDEF EnableOldExtTools}
     IDEMessagesWindow.BeginBlock(True);
     {$ENDIF}
     For I:=0 to ASelection.Count-1 do
       if (ASelection[i] is TDataset) then
         begin
         DS:=TDataset(ASelection[i]);
-        {$IFDEF EnableNewExtTools}
+        {$IFNDEF EnableOldExtTools}
         IDEMessagesWindow.AddCustomMessage(mluImportant,Format(SApplyingDDToDataset,[DS.Name]));
         {$ELSE}
         IDEMessagesWindow.AddMsg(Format(SApplyingDDToDataset,[DS.Name]),'',i+1);
@@ -304,14 +304,14 @@ begin
   If (FD<>Nil) then
     begin
     If VerboseApply then
-      {$IFDEF EnableNewExtTools}
+      {$IFNDEF EnableOldExtTools}
       IDEMessagesWindow.AddCustomMessage(mluImportant,Format(SApplyingDDToField,[F.FieldName]));
       {$ELSE}
       IDEMessagesWindow.AddMsg(Format(SApplyingDDToField,[F.FieldName]),'',-1)
       {$ENDIF}
     end
   else
-    {$IFDEF EnableNewExtTools}
+    {$IFNDEF EnableOldExtTools}
     IDEMessagesWindow.AddCustomMessage(mluImportant,Format(SWarningNoDDForField,[F.FieldName]));
     {$ELSE}
     IDEMessagesWindow.AddMsg(Format(SWarningNoDDForField,[F.FieldName]),'',-1);

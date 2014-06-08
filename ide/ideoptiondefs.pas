@@ -127,7 +127,7 @@ const
     'JumpHistory',
     'ComponentList'
    );
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 type
   TLMsgViewFilter = class;
 
@@ -323,7 +323,7 @@ begin
   Result:=TXMLOptionsStorage.Create(ConfigFilename,LoadFromDisk);
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 function CompareFilterMsgType(FilterMsgType1, FilterMsgType2: Pointer): integer;
 var
   Item1: TLMVFilterMsgType absolute FilterMsgType1;
@@ -617,7 +617,7 @@ begin
   Result:=FXMLConfig.Filename;
 end;
 
-{$IFDEF EnableNewExtTools}
+{$IFNDEF EnableOldExtTools}
 { TLMVFilterMsgType }
 
 procedure TLMVFilterMsgType.SetMsgID(AValue: integer);
