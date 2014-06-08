@@ -166,7 +166,7 @@ begin
   LazarusTranslations.Add('en');
   // search existing translations
   SearchMask:=AppendPathDelim(LazarusDir)+'languages'+PathDelim+'lazaruside.*.po';
-  //writeln('CollectTranslations ',SearchMask);
+  //debugln('CollectTranslations ',SearchMask);
   if FindFirstUTF8(SearchMask,faAnyFile,FileInfo)=0
   then begin
     repeat
@@ -174,10 +174,10 @@ begin
       then continue;
       ID:=copy(FileInfo.Name,length('lazaruside.')+1,
                length(FileInfo.Name)-length('lazaruside..po'));
-      //writeln('CollectTranslations A ',FileInfo.Name,' ID=',ID);
+      //debugln('CollectTranslations A ',FileInfo.Name,' ID=',ID);
       if (ID<>'') and (Pos('.',ID)<1) and (LazarusTranslations.IndexOf(ID)<0)
       then begin
-        //writeln('CollectTranslations ID=',ID);
+        //debugln('CollectTranslations ID=',ID);
         LazarusTranslations.Add(ID);
       end;
     until FindNextUTF8(FileInfo)<>0;

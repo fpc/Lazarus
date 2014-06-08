@@ -1328,7 +1328,7 @@ function TCodeToolsDefinesEditor.ConsistencyCheck: integer;
   begin
     if ATreeNode=nil then exit(0);
     ADefNode:=TDefineTemplate(ATreeNode.Data);
-//writeln(' CheckNode "',ATreeNode.Text,'" "',ADefNode.Name,'"');
+    //debugln(' CheckNode "',ATreeNode.Text,'" "',ADefNode.Name,'"');
     if ADefNode=nil then begin
       Result:=-1;  exit;
     end;
@@ -1348,11 +1348,6 @@ function TCodeToolsDefinesEditor.ConsistencyCheck: integer;
         DebugLn('ATreeNode.GetNextSibling.Next=',DummyDefNode.Name)
       else
         DebugLn('ATreeNode.GetNextSibling.Next=nil');
-{writeln('=============================================');
-DefineTreeView.WriteDebugReport('TV ',true);
-writeln('=============================================');
-DefineTree.WriteDebugReport;
-writeln('=============================================');}
       Result:=-3;  exit;
     end;
     if (ATreeNode.GetFirstChild<>nil)

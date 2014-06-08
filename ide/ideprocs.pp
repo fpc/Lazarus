@@ -2393,7 +2393,6 @@ begin
   FpStat(SrcFilename,OldInfo{%H-});
   {$ENDIF}
   
-  //writeln('CopyFileWithMethods ',SrcFilename,' ',DestFilename);
   // copy file
   try
     SrcFileStream:=TFileStreamUTF8.Create(SrcFilename,fmOpenRead);

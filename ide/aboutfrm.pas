@@ -245,7 +245,7 @@ begin
   ContributorsFileName:=
     AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)
     +'docs'+PathDelim+'Contributors.txt';
-  //writeln('TAboutForm.LoadContributors ',FileExistsUTF8(ContributorsFileName),' ',ContributorsFileName);
+  //debugln('TAboutForm.LoadContributors ',FileExistsUTF8(ContributorsFileName),' ',ContributorsFileName);
 
   if FileExistsUTF8(ContributorsFileName) then
     LoadStringsFromFileUTF8(Contributors.Lines,ContributorsFileName)

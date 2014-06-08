@@ -2267,7 +2267,6 @@ begin
   FileEndPos:=p;
   inc(p); // skip bracket
   LineStartPos:=p;
-  //writeln('TFPCParser.CheckForFileLineColMessage ',FileStartPos);
   if not ReadDecimal(p) then exit;
   if p^=',' then begin
     if not ReadChar(p,',') then exit;
@@ -2397,7 +2396,6 @@ begin
   fOutputIndex:=OutputIndex;
   fMsgID:=0;
 
-  //writeln('TFPCParser.ReadLine ',Line);
   // skip time [0.000]
   if (p^='[') and (p[1] in ['0'..'9']) then begin
     inc(p,2);
@@ -2450,7 +2448,7 @@ begin
   if CheckForWindresErrors(p) then exit;
 
   {$IFDEF VerboseFPCParser}
-  writeln('TFPCParser.ReadLine UNKNOWN: ',Line);
+  debugln('TFPCParser.ReadLine UNKNOWN: ',Line);
   {$ENDIF}
   Handled:=false;
 end;

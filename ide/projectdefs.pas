@@ -778,7 +778,7 @@ begin
   if Index<0 then Index:=Count;
   if (Index<=Count) then begin
     if (Index>0) and Items[Index-1].IsSimilar(APosition) then begin
-      //writeln('TProjectJumpHistory.InsertSmart Replacing prev: Index=',Index,
+      //debugln('TProjectJumpHistory.InsertSmart Replacing prev: Index=',Index,
       //  ' Old=',Items[Index-1].CaretXY.X,',',Items[Index-1].CaretXY.Y,' ',Items[Index-1].Filename,
       //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
       //  ' ');
@@ -787,7 +787,7 @@ begin
       NewIndex:=Index-1;
       APosition.Free;
     end else if (Index<Count) and Items[Index].IsSimilar(APosition) then begin
-      //writeln('TProjectJumpHistory.InsertSmart Replacing next: Index=',Index,
+      //debugln('TProjectJumpHistory.InsertSmart Replacing next: Index=',Index,
       //  ' Old=',Items[Index].CaretXY.X,',',Items[Index].CaretXY.Y,' ',Items[Index].Filename,
       //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
       //  ' ');
@@ -796,7 +796,7 @@ begin
       NewIndex:=Index;
       APosition.Free;
     end else begin
-      //writeln('TProjectJumpHistory.InsertSmart Adding: Index=',Index,
+      //debugln('TProjectJumpHistory.InsertSmart Adding: Index=',Index,
       //  ' New=',APosition.CaretXY.X,',',APosition.CaretXY.Y,' ',APosition.Filename,
       //  ' ');
       Insert(Index,APosition);
@@ -804,7 +804,7 @@ begin
     end;
     if (HistoryIndex<0) or (HistoryIndex=NewIndex-1) then
       HistoryIndex:=NewIndex;
-    //writeln('  HistoryIndex=',HistoryIndex);
+    //debugln('  HistoryIndex=',HistoryIndex);
   end else begin
     APosition.Free;
   end;

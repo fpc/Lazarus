@@ -227,7 +227,7 @@ var
       s := HistoryList[DlgHistoryIndex[Component]]
     else
       s := DlgUserText[Component];
-    //writeln('  SetHistoryText "',s,'"');
+    //debugln('  SetHistoryText "',s,'"');
     ComponentText[Component]:=s
   end;
 

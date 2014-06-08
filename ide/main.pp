@@ -1973,8 +1973,8 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
     Exit;
   {$IFDEF IDE_DEBUG}
-  WriteLn('');
-  WriteLn('[TMainIDE.OnPropHookCompatibleMethodExists] ************ ',AMethodName);
+  debugln('');
+  debugln('[TMainIDE.OnPropHookCompatibleMethodExists] ************ ',AMethodName);
   {$ENDIF}
   if FormEditor1.ComponentUsesRTTIForMethods(ActiveUnitInfo.Component) then begin
     Result := CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
@@ -2405,7 +2405,7 @@ var
   AFilename: String;
 begin
   {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.SetupStartProject A ***********');
+  debugln('TMainIDE.SetupStartProject A ***********');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject A');{$ENDIF}
   // load command line project or last project or create a new project
@@ -2499,7 +2499,7 @@ begin
       DoNoProjectWizard(nil);
 
     {$IFDEF IDE_DEBUG}
-    writeln('TMainIDE.Create B');
+    debugln('TMainIDE.Create B');
     {$ENDIF}
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject C');{$ENDIF}
   finally
@@ -3713,7 +3713,7 @@ var
   DesignerForm: TCustomForm;
 begin
   {$IFDEF IDE_DEBUG}
-  writeln('[TMainIDE.CreateDesignerForComponent] A ',AComponent.Name,':',AComponent.ClassName);
+  debugln('[TMainIDE.CreateDesignerForComponent] A ',AComponent.Name,':',AComponent.ClassName);
   {$ENDIF}
   // create designer form
   if (AComponent is TCustomForm) then
@@ -3732,7 +3732,7 @@ begin
   // create designer
   DesignerForm.Designer := TDesigner.Create(DesignerForm, TheControlSelection);
   {$IFDEF IDE_DEBUG}
-  writeln('[TMainIDE.CreateDesignerForComponent] B');
+  debugln('[TMainIDE.CreateDesignerForComponent] B');
   {$ENDIF}
   with TDesigner(DesignerForm.Designer) do begin
     TheFormEditor := FormEditor1;
@@ -6793,11 +6793,11 @@ begin
     EnvironmentOptions.LastSavedProjectFile:=RestoreProjectClosed;
   MainIDEBar.OnCloseQuery(Self, Result);
   {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.QuitIDE 1');
+  debugln('TMainIDE.QuitIDE 1');
   {$ENDIF}
   if Result then MainIDEBar.Close;
   {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.QuitIDE 2');
+  debugln('TMainIDE.QuitIDE 2');
   {$ENDIF}
 end;
 
@@ -9223,7 +9223,7 @@ var
   i: integer;
 begin
   {$IFDEF IDE_DEBUG}
-  writeln('[TMainIDE.OnControlSelectionChanged]');
+  debugln('[TMainIDE.OnControlSelectionChanged]');
   {$ENDIF}
   if (TheControlSelection = nil) or (FormEditor1 = nil) then Exit;
 
@@ -9234,7 +9234,7 @@ begin
   FormEditor1.Selection := NewSelection;
   NewSelection.Free;
   {$IFDEF IDE_DEBUG}
-  writeln('[TMainIDE.OnControlSelectionChanged] END');
+  debugln('[TMainIDE.OnControlSelectionChanged] END');
   {$ENDIF}
 end;
 
@@ -9873,8 +9873,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.DoJumpToProcedureSection] ************');
+  debugln('');
+  debugln('[TMainIDE.DoJumpToProcedureSection] ************');
   {$ENDIF}
   LogCaret:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
   if CodeToolBoss.JumpToMethod(ActiveUnitInfo.Source,
@@ -9994,8 +9994,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.DoFindDeclarationAtCaret] ************');
+  debugln('');
+  debugln('[TMainIDE.DoFindDeclarationAtCaret] ************');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoFindDeclarationAtCaret A');{$ENDIF}
   //DebugLn(['TMainIDE.DoFindDeclarationAtCaret LogCaretXY=',dbgs(LogCaretXY),' SynEdit.Log=',dbgs(ActiveSrcEdit.EditorComponent.LogicalCaretXY),' SynEdit.Caret=',dbgs(ActiveSrcEdit.EditorComponent.CaretXY)]);
@@ -10342,8 +10342,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit(false);
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.DoInitIdentCompletion] ************');
+  debugln('');
+  debugln('[TMainIDE.DoInitIdentCompletion] ************');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoInitIdentCompletion A');{$ENDIF}
   LogCaretXY:=ActiveSrcEdit.EditorComponent.LogicalCaretXY;
@@ -10365,8 +10365,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit(false);
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.DoShowCodeContext] ************');
+  debugln('');
+  debugln('[TMainIDE.DoShowCodeContext] ************');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoShowCodeContext A');{$ENDIF}
   Result:=ShowCodeContext(ActiveUnitInfo.Source);
@@ -10387,8 +10387,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.DoGoToPascalBlockOtherEnd] ************');
+  debugln('');
+  debugln('[TMainIDE.DoGoToPascalBlockOtherEnd] ************');
   {$ENDIF}
   if CodeToolBoss.FindBlockCounterPart(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
@@ -10411,8 +10411,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.DoGoToPascalBlockStart] ************');
+  debugln('');
+  debugln('[TMainIDE.DoGoToPascalBlockStart] ************');
   {$ENDIF}
   if CodeToolBoss.FindBlockStart(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
@@ -10439,8 +10439,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.DoJumpToGuessedUnclosedBlock] ************');
+  debugln('');
+  debugln('[TMainIDE.DoJumpToGuessedUnclosedBlock] ************');
   {$ENDIF}
   if FindNextUTF8 then begin
     StartX:=ActiveSrcEdit.EditorComponent.CaretX;
@@ -10471,8 +10471,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.DoJumpToGuessedMisplacedIFDEF] ************');
+  debugln('');
+  debugln('[TMainIDE.DoJumpToGuessedMisplacedIFDEF] ************');
   {$ENDIF}
   if FindNextUTF8 then begin
     StartX:=ActiveSrcEdit.EditorComponent.CaretX;
@@ -10499,8 +10499,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.DoGotoIncludeDirective] ************');
+  debugln('');
+  debugln('[TMainIDE.DoGotoIncludeDirective] ************');
   {$ENDIF}
   if CodeToolBoss.FindEnclosingIncludeDirective(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
@@ -10693,8 +10693,8 @@ begin
     ActiveSrcEdit:=nil;
     if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
     {$IFDEF IDE_DEBUG}
-    writeln('');
-    writeln('[TMainIDE.DoCompleteCodeAtCursor] ************');
+    debugln('');
+    debugln('[TMainIDE.DoCompleteCodeAtCursor] ************');
     {$ENDIF}
     CodeToolBoss.CompleteCode(ActiveUnitInfo.Source,
       ActiveSrcEdit.EditorComponent.CaretX,
@@ -10729,8 +10729,8 @@ begin
   ActiveSrcEdit:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.DoExtractProcFromSelection] ************');
+  debugln('');
+  debugln('[TMainIDE.DoExtractProcFromSelection] ************');
   {$ENDIF}
   BlockBegin:=ActiveSrcEdit.EditorComponent.BlockBegin;
   BlockEnd:=ActiveSrcEdit.EditorComponent.BlockEnd;
@@ -11134,8 +11134,8 @@ begin
   BaseURL:='';
   SmartHintStr := '';
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
+  debugln('');
+  debugln('[TMainIDE.OnSrcNotebookShowHintForSource] ************ ',ActiveUnitInfo.Source.Filename,' X=',CaretPos.X,' Y=',CaretPos.Y);
   {$ENDIF}
   HasHint:=false;
   if EditorOpts.AutoToolTipSymbTools then begin
@@ -11662,8 +11662,8 @@ var
   NewJumpPoint: TProjectJumpHistoryPosition;
 begin
   {$IFDEF VerboseJumpHistory}
-  writeln('');
-  writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,' Col=',ACaretXY.X,' DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  debugln('');
+  debugln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,' Col=',ACaretXY.X,' DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
   {$ENDIF}
   ActiveUnitInfo:=Project1.UnitWithEditorComponent(AEditor);
   if (ActiveUnitInfo=nil) then exit;
@@ -11675,12 +11675,12 @@ begin
   Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
                                    NewJumpPoint);
   {$IFDEF VerboseJumpHistory}
-  writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] B INSERTED');
+  debugln('[TMainIDE.OnSrcNoteBookAddJumpPoint] B INSERTED');
   Project1.JumpHistory.WriteDebugReport;
   {$ENDIF}
   if DeleteForwardHistory then Project1.JumpHistory.DeleteForwardHistory;
   {$IFDEF VerboseJumpHistory}
-  writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  debugln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
   Project1.JumpHistory.WriteDebugReport;
   {$ENDIF}
 end;
@@ -11722,8 +11722,8 @@ begin
   JumpHistory:=Project1.JumpHistory;
 
   {$IFDEF VerboseJumpHistory}
-  writeln('');
-  writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',JumpAction=jhaBack);
+  debugln('');
+  debugln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',JumpAction=jhaBack);
   JumpHistory.WriteDebugReport;
   {$ENDIF}
 
@@ -11743,7 +11743,7 @@ begin
          ASrcEdit.EditorComponent.TopLine
         );
     {$IFDEF VerboseJumpHistory}
-    writeln('  Current Position: ',CursorPoint.Filename,
+    debugln('  Current Position: ',CursorPoint.Filename,
             ' ',CursorPoint.CaretXY.X,',',CursorPoint.CaretXY.Y-1);
     {$ENDIF}
   end;
@@ -11753,7 +11753,7 @@ begin
     // this is the first back jump
     // -> insert current source position into history
     {$IFDEF VerboseJumpHistory}
-    writeln('  First back jump -> add current cursor position');
+    debugln('  First back jump -> add current cursor position');
     {$ENDIF}
     NewJumpPoint:=TProjectJumpHistoryPosition.Create(CursorPoint);
     JumpHistory.InsertSmart(JumpHistory.HistoryIndex+1, NewJumpPoint);
@@ -11771,7 +11771,7 @@ begin
     DestJumpPoint:=JumpHistory[DestIndex];
     UnitIndex:=Project1.IndexOfFilename(DestJumpPoint.Filename);
     {$IFDEF VerboseJumpHistory}
-    writeln(' DestIndex=',DestIndex,' UnitIndex=',UnitIndex);
+    debugln(' DestIndex=',DestIndex,' UnitIndex=',UnitIndex);
     {$ENDIF}
     if (UnitIndex >= 0) and (Project1.Units[UnitIndex].OpenEditorInfoCount > 0)
     and ((CursorPoint=nil) or not DestJumpPoint.IsSimilar(CursorPoint)) then
@@ -11783,7 +11783,7 @@ begin
       if AnEditorInfo <> nil then
         DestEditor:=TSourceEditor(AnEditorInfo.EditorComponent);
       {$IFDEF VerboseJumpHistory}
-      writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] Result Line=',NewCaretXY.Y,' Col=',NewCaretXY.X);
+      debugln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] Result Line=',NewCaretXY.Y,' Col=',NewCaretXY.X);
       {$ENDIF}
       break;
     end;
@@ -11797,9 +11797,9 @@ begin
   CursorPoint.Free;
 
   {$IFDEF VerboseJumpHistory}
-  writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',JumpHistory.Count,',HistoryIndex=',JumpHistory.HistoryIndex);
+  debugln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] END Count=',JumpHistory.Count,',HistoryIndex=',JumpHistory.HistoryIndex);
   JumpHistory.WriteDebugReport;
-  writeln('');
+  debugln('');
   {$ENDIF}
 end;
 
@@ -12522,8 +12522,8 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]) then
     Exit;
   {$IFDEF IDE_DEBUG}
-  WriteLn('');
-  WriteLn('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);
+  debugln('');
+  debugln('[TMainIDE.OnPropHookMethodExists] ************ ',AMethodName);
   {$ENDIF}
   Result := CodeToolBoss.PublishedMethodExists(ActiveUnitInfo.Source,
                         ActiveUnitInfo.Component.ClassName, AMethodName, TypeData,
@@ -12758,8 +12758,8 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
   {$IFDEF IDE_DEBUG}
-  writeln('');
-  writeln('[TMainIDE.OnPropHookRenameMethod] ************');
+  debugln('');
+  debugln('[TMainIDE.OnPropHookRenameMethod] ************');
   {$ENDIF}
   OldChange:=OpenEditorsOnCodeToolChange;
   OpenEditorsOnCodeToolChange:=true;
@@ -12768,8 +12768,8 @@ begin
     BossResult:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
                             ActiveUnitInfo.Component.ClassName,CurName,NewName);
     {$IFDEF IDE_DEBUG}
-    writeln('');
-    writeln('[TMainIDE.OnPropHookRenameMethod] ************2 ');
+    debugln('');
+    debugln('[TMainIDE.OnPropHookRenameMethod] ************2 ');
     {$ENDIF}
     ApplyCodeToolChanges;
     if BossResult then begin
@@ -12880,10 +12880,10 @@ begin
     // create unique name
     if AComponent.Name='' then
       AComponent.Name:=FormEditor1.CreateUniqueComponentName(AComponent);
-    //writeln('TMainIDE.OnPropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
+    //debugln('TMainIDE.OnPropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
     // set component into design mode
     SetDesigning(AComponent,true);
-    //writeln('TMainIDE.OnPropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
+    //debugln('TMainIDE.OnPropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
     // add to source
     ADesigner:=FindRootDesigner(AComponent) as TDesigner;
   end;
@@ -12919,13 +12919,13 @@ begin
   if ObjectInspector1<>nil then
     ObjectInspector1.FillPersistentComboBox;
 
-  //writeln('TMainIDE.OnPropHookPersistentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
+  //debugln('TMainIDE.OnPropHookPersistentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
   // select component
   if Select then begin
     TheControlSelection.AssignPersistent(APersistent);
   end;
   {$IFDEF IDE_DEBUG}
-  writeln('TMainIDE.OnPropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
+  debugln('TMainIDE.OnPropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
   {$ENDIF}
 end;
 

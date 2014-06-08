@@ -410,7 +410,7 @@ begin
   else
     AComboBox.ItemIndex:=i;
   AComboBox.Text:=NewText;
-  //writeln('TCodeToolsDefinesDialog.SetComboBox Text=',AComboBox.Text,' NewText=',NewText);
+  //debugln('TCodeToolsDefinesDialog.SetComboBox Text=',AComboBox.Text,' NewText=',NewText);
 end;
 
 procedure TCodeToolsDefinesDialog.DefineTreeCalculate(DefineTree: TDefineTree;

@@ -196,7 +196,7 @@ var
       dec(CurIndent,FirstLineIndent);
       if CurIndent<0 then CurIndent:=0;
     end;
-    //writeln('AddBeautified A X=',X,' Y=',Y,' CurIndent=',CurIndent,' NewStr="',NewStr,'"');
+    //debugln('AddBeautified A X=',X,' Y=',Y,' CurIndent=',CurIndent,' NewStr="',NewStr,'"');
     dec(CurIndent,GetLineIndent(NewStr,1));
     if CurIndent<0 then CurIndent:=0;
     NewStr:=CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
@@ -219,7 +219,7 @@ var
       X:=LengthOfLastLine+1;
     if (LineEndCnt>0) or (NewSelect.Position=0) then
       TemplateIndent:=GetLineIndent(NewStr,length(NewStr)+1);
-    //writeln('AddBeautified B X=',X,' Y=',Y,' TemplateIndent=',TemplateIndent,' LengthOfLastLine=',LengthOfLastLine,' NewStr="',NewSTr,'"');
+    //debugln('AddBeautified B X=',X,' Y=',Y,' TemplateIndent=',TemplateIndent,' LengthOfLastLine=',LengthOfLastLine,' NewStr="',NewSTr,'"');
     NewSelect.Write(NewStr[1],length(NewStr));
   end;
   
