@@ -211,6 +211,29 @@ function TDFMConverter.FixWideString(aInStream, aOutStream: TMemoryStream): TMod
       Result:=SysToUTF8(chr(c));
   end;
 
+  function FixControlChars(const s:string): string;
+  var
+    i: Integer;
+    InControl: boolean;
+  begin
+    Result := '';
+    InControl := false;
+    for i:=1 to Length(s) do begin
+      if s[i] < #32 then begin
+        if not InControl then
+          result := result + '''';
+        result := result + '#' + IntToStr(ord(s[i]));
+        InControl := true;
+      end else begin
+        if InControl then begin
+          result := result + '''';
+          InControl := false;
+        end;
+        Result := Result + s[i];
+      end;
+    end;
+  end;
+
   function CollectString(const InS: string; var Ind: integer): string;
   // Collect a string composed of quoted strings and unicode numbers like #xxx
   var
@@ -235,7 +258,7 @@ function TDFMConverter.FixWideString(aInStream, aOutStream: TMemoryStream): TMod
       else
         Break;
     until False;
-    Result:=QuotedStr(Result);
+    Result:=FixControlChars(QuotedStr(Result));
   end;
 
 var
