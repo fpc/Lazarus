@@ -21,15 +21,18 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Standard Quick Fixes - tools to fix (compiler) messages.
+    Standard Quick Fixes - tools to help fixing (compiler) messages.
 
   ToDo:
     - TQuickFixIdentifierNotFoundAddLocal: extend with add private/public
+    - local var not used: remove declaration and all assignments
     - There is no method in an ancestor class to be overriden:
       1. option: if the ancestor has a function with the same name: update the parameter list
       2. option: remove the method
       3. option: add a virtual method to the ancestor
-    - complete function implementations with missing parameters
+    - function header doesn't match any method: update from interface/class
+    - function header doesn't match any method: update interface/class
+    - complete function implementation with missing parameters
     - private variable not used => remove
     - Hint: Local variable "Path" does not seem to be initialized
          auto add begin+end
@@ -39,7 +42,8 @@
          record: FillByte(p %H-,SizeOf(p),0)
          set:=[]
          enum:=low(enum);
-
+         default()
+    - Hint: function result does not seem to be initialized, see above for local var
 }
 unit etQuickFixes;
 
@@ -232,12 +236,13 @@ var
   CompOpts: TLazCompilerOptions;
   Pkg: TIDEPackage;
   ToolData: TIDEExternalToolData;
+  i: Integer;
+  CurMsg: TMessageLine;
 begin
   if not IsApplicable(Msg,ToolData,IDETool) then exit;
   if IDETool is TLazProject then begin
     CompOpts:=TLazProject(IDETool).LazCompilerOptions;
     CompOpts.MessageFlags[Msg.MsgID]:=cfvHide;
-    Msg.MarkFixed;
   end else if IDETool is TIDEPackage then begin
     if PackageEditingInterface.DoOpenPackageFile(ToolData.Filename,
                                         [pofAddToRecent],false)<>mrOk then exit;
@@ -245,7 +250,17 @@ begin
     if Pkg=nil then exit;
     CompOpts:=Pkg.LazCompilerOptions;
     CompOpts.MessageFlags[Msg.MsgID]:=cfvHide;
-    Msg.MarkFixed;
+  end else
+    exit;
+  Msg.MarkFixed;
+  // mark all lines of the View with the same message type
+  for i:=0 to Msg.Lines.Count-1 do begin
+    CurMsg:=Msg.Lines[i];
+    if (CurMsg.MsgID<>Msg.MsgID)
+    or (CurMsg.Urgency>=mluError)
+    or (CurMsg.SubTool<>SubToolFPC)
+    then continue;
+    CurMsg.MarkFixed;
   end;
 end;
 
