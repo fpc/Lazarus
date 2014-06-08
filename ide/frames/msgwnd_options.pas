@@ -39,6 +39,7 @@ type
   { TMsgWndOptionsFrame }
 
   TMsgWndOptionsFrame = class(TAbstractIDEOptionsEditor)
+    MWAlwaysDrawFocusedCheckBox: TCheckBox;
     MWDblClickJumpsCheckBox: TCheckBox;
     MWFocusCheckBox: TCheckBox;
     MWHideIconsCheckBox: TCheckBox;
@@ -149,6 +150,9 @@ begin
   MWSetDefaultColorsButton.Caption:=lisLazarusDefault;
   MWSetEditorColorsButton.Caption:=lisEditorColors;
   MWHideIconsCheckBox.Caption := dlgHideMessagesIcons;
+  MWAlwaysDrawFocusedCheckBox.Caption:=lisAlwaysDrawSelectedItemsFocused;
+  MWAlwaysDrawFocusedCheckBox.Hint:=
+    lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN;
   MWDblClickJumpsCheckBox.Caption:=lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick;
   MWFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
 end;
@@ -178,6 +182,7 @@ begin
   for c in TMsgWndColor do
     MWColorListBox.Colors[ord(c)] := o.MsgViewColors[c];
   MWHideIconsCheckBox.Checked := o.HideMessagesIcons;
+  MWAlwaysDrawFocusedCheckBox.Checked := o.MsgViewAlwaysDrawFocused;
   MWDblClickJumpsCheckBox.Checked:=o.MsgViewDblClickJumps;
   MWFocusCheckBox.Checked:=o.MsgViewFocus;
 
@@ -193,6 +198,7 @@ begin
   for c in TMsgWndColor do
     o.MsgViewColors[c] := MWColorListBox.Colors[ord(c)];
   o.HideMessagesIcons := MWHideIconsCheckBox.Checked;
+  o.MsgViewAlwaysDrawFocused := MWAlwaysDrawFocusedCheckBox.Checked;
   o.MsgViewDblClickJumps := MWDblClickJumpsCheckBox.Checked;
   o.MsgViewFocus := MWFocusCheckBox.Checked;
 end;

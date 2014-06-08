@@ -122,7 +122,8 @@ type
     mcoAutoOpenFirstError, // when all views stopped, open first error
     mcoSrcEditPopupSelect, // when user right clicks on gutter mark,
                            // scroll and select message of the quickfixes
-    mcoWndStayOnTop        // use fsStayOnTop
+    mcoWndStayOnTop,       // use fsStayOnTop
+    mcoAlwaysDrawFocused   // draw selected item as focused, even if the window is not
     );
   TMsgCtrlOptions = set of TMsgCtrlOption;
 const
@@ -1158,7 +1159,9 @@ begin
   if FOptions=NewOptions then Exit;
   ChangedOptions:=(FOptions-NewOptions)+(NewOptions-FOptions);
   FOptions:=NewOptions;
-  if [mcoShowStats,mcoShowTranslated,mcoShowMessageID,mcoShowMsgIcons]*ChangedOptions<>[] then
+  if [mcoShowStats,mcoShowTranslated,mcoShowMessageID,mcoShowMsgIcons,
+    mcoAlwaysDrawFocused]*ChangedOptions<>[]
+  then
     Invalidate;
   if Assigned(OnOptionsChanged) then
     OnOptionsChanged(Self);
@@ -1447,7 +1450,7 @@ var
     TextRect:=ARect;
     TextRect.Right:=TextRect.Left+Canvas.TextWidth(aTxt)+2;
     if IsSelected then begin
-      if mcsFocused in FStates then
+      if (mcsFocused in FStates) or (mcoAlwaysDrawFocused in Options) then
         Details := ThemeServices.GetElementDetails(ttItemSelected)
       else
         Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
@@ -2382,24 +2385,29 @@ begin
 end;
 
 procedure TMessagesCtrl.ApplyEnvironmentOptions;
+var
+  NewOptions: TMsgCtrlOptions;
+
+  procedure SetOption(Option: TMsgCtrlOption; State: boolean);
+  begin
+    if State then
+      NewOptions:=NewOptions+[Option]
+    else
+      NewOptions:=NewOptions-[Option];
+  end;
+
 begin
   BackgroundColor:=EnvironmentOptions.MsgViewColors[mwBackground];
   AutoHeaderBackground:=EnvironmentOptions.MsgViewColors[mwAutoHeader];
   HeaderBackground[lmvtsRunning]:=EnvironmentOptions.MsgViewColors[mwRunning];
   HeaderBackground[lmvtsSuccess]:=EnvironmentOptions.MsgViewColors[mwSuccess];
   HeaderBackground[lmvtsFailed]:=EnvironmentOptions.MsgViewColors[mwFailed];
-  if EnvironmentOptions.MsgViewDblClickJumps then
-    Options:=Options-[mcoSingleClickOpensFile]
-  else
-    Options:=Options+[mcoSingleClickOpensFile];
-  if EnvironmentOptions.HideMessagesIcons then
-    Options:=Options-[mcoShowMsgIcons]
-  else
-    Options:=Options+[mcoShowMsgIcons];
-  if EnvironmentOptions.MsgViewShowTranslations then
-    Options:=Options+[mcoShowTranslated]
-  else
-    Options:=Options-[mcoShowTranslated];
+  NewOptions:=Options;
+  SetOption(mcoSingleClickOpensFile,not EnvironmentOptions.MsgViewDblClickJumps);
+  SetOption(mcoShowMsgIcons,not EnvironmentOptions.HideMessagesIcons);
+  SetOption(mcoShowTranslated,EnvironmentOptions.MsgViewShowTranslations);
+  SetOption(mcoAlwaysDrawFocused,EnvironmentOptions.MsgViewAlwaysDrawFocused);
+  Options:=NewOptions;
   FilenameStyle:=EnvironmentOptions.MsgViewFilenameStyle;
 end;
 

@@ -351,6 +351,7 @@ type
     FHideMessagesIcons: boolean;
     FMsgViewStayOnTop: boolean;
     FMsgViewShowTranslations: boolean;
+    FMsgViewAlwaysDrawFocused: boolean;
     FMsgViewFilenameStyle: TMsgWndFileNameStyle;
     fMsgViewColors: array[TMsgWndColor] of TColor;
     FShowCompileDialog: Boolean;       // show dialog during compile
@@ -738,6 +739,8 @@ type
     property MsgViewStayOnTop: boolean read FMsgViewStayOnTop write FMsgViewStayOnTop;
     property MsgViewShowTranslations: boolean read FMsgViewShowTranslations
              write FMsgViewShowTranslations;
+    property MsgViewAlwaysDrawFocused: boolean read FMsgViewAlwaysDrawFocused
+             write FMsgViewAlwaysDrawFocused;
     property MsgViewFilenameStyle: TMsgWndFileNameStyle read FMsgViewFilenameStyle
                        write FMsgViewFilenameStyle;
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
@@ -987,6 +990,7 @@ begin
   FHideMessagesIcons:=false;
   FMsgViewStayOnTop:=false;
   FMsgViewShowTranslations:=false;
+  FMsgViewAlwaysDrawFocused:=false;
   FMsgViewFilenameStyle:=mwfsShort;
   for c:=low(TMsgWndColor) to high(TMsgWndColor) do
     fMsgViewColors[c]:=MsgWndDefaultColors[c];
@@ -1447,6 +1451,8 @@ begin
         Path+'MsgView/StayOnTop/Value',false);
       FMsgViewShowTranslations:=XMLConfig.GetValue(
         Path+'MsgView/ShowTranslations/Value',false);
+      FMsgViewAlwaysDrawFocused:=XMLConfig.GetValue(
+        Path+'MsgView/AlwaysDrawFocused/Value',false);
       FMsgViewFilenameStyle:=StrToMsgWndFilenameStyle(XMLConfig.GetValue(
         Path+'MsgView/Filename/Style',MsgWndFileNameStyleNames[mwfsShort]));
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
@@ -1830,6 +1836,8 @@ begin
         Path+'MsgView/StayOnTop/Value',FMsgViewStayOnTop,false);
       XMLConfig.SetDeleteValue(
         Path+'MsgView/ShowTranslations/Value',FMsgViewShowTranslations,false);
+      XMLConfig.SetDeleteValue(
+        Path+'MsgView/AlwaysDrawFocused/Value',FMsgViewAlwaysDrawFocused,false);
       XMLConfig.SetDeleteValue(Path+'MsgView/Filename/Style',
         MsgWndFileNameStyleNames[FMsgViewFilenameStyle],
         MsgWndFileNameStyleNames[mwfsShort]);

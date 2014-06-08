@@ -142,18 +142,22 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     Width = 154
     BorderSpacing.Left = 6
     Caption = 'MWHideIconsCheckBox'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
   end
   object MWDblClickJumpsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = MWHideIconsCheckBox
+    AnchorSideTop.Control = MWAlwaysDrawFocusedCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 223
+    Top = 247
     Width = 180
     BorderSpacing.Left = 6
     Caption = 'MWDblClickJumpsCheckBox'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 2
   end
   object MWFocusCheckBox: TCheckBox
@@ -162,10 +166,25 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
-    Top = 247
+    Top = 271
     Width = 132
     BorderSpacing.Left = 6
     Caption = 'MWFocusCheckBox'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 3
+  end
+  object MWAlwaysDrawFocusedCheckBox: TCheckBox
+    AnchorSideLeft.Control = MWHideIconsCheckBox
+    AnchorSideTop.Control = MWHideIconsCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 24
+    Top = 223
+    Width = 212
+    Caption = 'MWAlwaysDrawFocusedCheckBox'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 4
   end
 end

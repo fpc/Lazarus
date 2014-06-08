@@ -131,7 +131,7 @@ type
     procedure Delete(Index: integer);
     procedure Move(CurIndex, NewIndex: integer);
     // run
-    function Run(Index: integer; ShowAbort: boolean): TModalResult;
+    function Run(Index: integer; {%H-}ShowAbort: boolean): TModalResult;
     // load/save
     function Load(Config: TConfigStorage): TModalResult;
     function Load(Config: TConfigStorage; const Path: string): TModalResult;
