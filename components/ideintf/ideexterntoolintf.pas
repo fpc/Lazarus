@@ -16,10 +16,6 @@ interface
 
 uses
   Classes, SysUtils, typinfo, UTF8Process, AvgLvlTree,
-  {$IFNDEF EnableOldExtTools}
-  {$ELSE}
-  LazMethodList, contnrs,
-  {$ENDIF}
   ObjInspStrConsts, LazLogger, LazFileUtils, LazFileCache, Menus, LCLProc;
 
 const

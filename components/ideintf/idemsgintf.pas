@@ -19,10 +19,6 @@ interface
 
 uses
   Classes, SysUtils, contnrs, Forms, Menus,
-  {$IFNDEF EnableOldExtTools}
-  {$ELSE}
-  TextTools,
-  {$ENDIF}
   IDECommands, IDEExternToolIntf, MenuIntf;
 
 type
