@@ -429,6 +429,7 @@ resourcestring
   oisUnableToChangeParentOfControlToNewParent = 'Unable to change parent of '
     +'control %s%s%s to new parent %s%s%s.%s%s';
   oisAddCollectionItem = '&Add Item';
+  lisUnableToFindParserForTool = 'unable to find parser for tool "%s"';
 
 implementation
 

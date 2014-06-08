@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
@@ -207,8 +206,7 @@ msgstr "Nem sikerült összegyűjteni a Dataset mezőinek listáját"
 
 #: objinspstrconsts.fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
-msgstr ""
-"A mezők listája nem érhető el, nem lehet többszörös előfordulásokat keresni"
+msgstr "A mezők listája nem érhető el, nem lehet többszörös előfordulásokat keresni"
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -264,6 +262,10 @@ msgstr "IfNDef"
 #: objinspstrconsts.liissetvalue
 msgid "Set value"
 msgstr "Érték megadása"
+
+#: objinspstrconsts.lisunabletofindparserfortool
+msgid "unable to find parser for tool \"%s\""
+msgstr ""
 
 #: objinspstrconsts.nbcesaddpage
 msgid "Add Page"
@@ -1066,34 +1068,20 @@ msgid "Test Input"
 msgstr "Teszt bemenet"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-msgid ""
-"The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore "
-"to force it."
-msgstr ""
-"A(z) %s%s%s azonosító nem metódus.%sKlikkeljen a Mégsé-re a visszavonáshoz,"
-"%svagy a Kihagyás-ra az erőltetéshez."
+msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "A(z) %s%s%s azonosító nem metódus.%sKlikkeljen a Mégsé-re a visszavonáshoz,%svagy a Kihagyás-ra az erőltetéshez."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-msgid ""
-"The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,"
-"%spress Ignore to force it."
-msgstr ""
-"A(z) %s%s%s metódus nem kompatibilis ezzel az eseménnyel (%s).%sKlikkeljen a "
-"Mégsé-re a visszavonáshoz,%svagy a Kihagyás-ra az erőltetéshez."
+msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "A(z) %s%s%s metódus nem kompatibilis ezzel az eseménnyel (%s).%sKlikkeljen a Mégsé-re a visszavonáshoz,%svagy a Kihagyás-ra az erőltetéshez."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid ""
-"The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to "
-"force it."
-msgstr ""
-"A(z) %s%s%s metódus nincs publikálva.%sKlikkeljen a Mégsé-re a "
-"visszavonáshoz,%svagy a Kihagyás-ra az erőltetéshez."
+msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgstr "A(z) %s%s%s metódus nincs publikálva.%sKlikkeljen a Mégsé-re a visszavonáshoz,%svagy a Kihagyás-ra az erőltetéshez."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
-msgstr ""
-"A(z) %s%s%s vezérlő szülőjét nem lehet megváltoztatni az új szülőre: %s%s%s."
-"%s%s"
+msgstr "A(z) %s%s%s vezérlő szülőjét nem lehet megváltoztatni az új szülőre: %s%s%s.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1389,7 +1377,7 @@ msgstr "Betöltés ..."
 msgid "Move Rows/Cols"
 msgstr ""
 "Sorok/Oszlopok\n"
-"mozgatása"
+"mozgatása\n"
 
 #: objinspstrconsts.sccssgedtopendialog
 msgctxt "objinspstrconsts.sccssgedtopendialog"
@@ -1536,278 +1524,193 @@ msgstr "Fül beszúrása"
 msgid "Move tab left"
 msgstr "Fül mozgatása eggyel balra"
 
+~ msgid "OEM 1"
+~ msgstr "OEM 1"
+~ msgid "OEM 2"
+~ msgstr "OEM 2"
+~ msgid "OEM 3"
+~ msgstr "OEM 3"
+~ msgid "OEM 4"
+~ msgstr "OEM 4"
+~ msgid "OEM 5"
+~ msgstr "OEM 5"
+~ msgid "OEM 6"
+~ msgstr "OEM 6"
+~ msgid "OEM 7"
+~ msgstr "OEM 7"
+~ msgid "OEM 8"
+~ msgstr "OEM 8"
+~ msgid "OEM comma"
+~ msgstr "OEM vessző"
+~ msgid "OEM minus"
+~ msgstr "OEM minusz"
+~ msgid "OEM period"
+~ msgstr "OEM pont"
+~ msgid "OEM plus"
+~ msgstr "OEM plusz"
+~ msgid "All"
+~ msgstr "Mind"
+~ msgctxt "objinspstrconsts.oiscancel"
+~ msgid "&Cancel"
+~ msgstr "Mégsem"
+~ msgid "Copy components"
+~ msgstr "Komponensek másolása"
+~ msgid "Cut components"
+~ msgstr "Komponensek kivágása"
+~ msgid "Delete components"
+~ msgstr "Komponensek törlése"
+~ msgid "Edit action list..."
+~ msgstr "Műveletlista szerkesztése..."
+~ msgid "Index out of bounds"
+~ msgstr "Az index kívül esik a határokon"
+~ msgid "not supported"
+~ msgstr "nem támogatott"
+~ msgid "Paste components"
+~ msgstr "Komponensek beillesztése"
+~ msgid "Set to default value"
+~ msgstr "Beállítás alapértelmezett értékre"
+~ msgid "Custom options"
+~ msgstr "Saját beállítások"
+~ msgid "Debug search path"
+~ msgstr "Hibakereső keresési útvonala"
+~ msgid "Include search path"
+~ msgstr "Include fájlok keresési útvonala"
+~ msgid "Library search path"
+~ msgstr "Függvénytár keresési útvonal"
+~ msgid "Linker options"
+~ msgstr "Linker opciók"
+~ msgid "Object search path"
+~ msgstr "Objektum keresési útvonal"
+~ msgid "Result"
+~ msgstr "Eredmény"
+~ msgid "Unit"
+~ msgstr "Unit"
+~ msgid "Unit search path"
+~ msgstr "Unit keresési útvonal"
+~ msgid "Unit source search path"
+~ msgstr "Unit forrás keresési útvonal"
+~ msgid "Add..."
+~ msgstr "Hozzáadás..."
+~ msgctxt "objinspstrconsts.sccsiledtdelete"
+~ msgid "Delete"
+~ msgstr "Törlés"
+~ msgid "Edit ListView Items..."
+~ msgstr "ListView elemek szerkesztése..."
+~ msgid "Edit TreeView Items..."
+~ msgstr "TreeView elemeinek szerkesztése..."
+~ msgid "Alt"
+~ msgstr "Alt"
+~ msgid "Ctrl"
+~ msgstr "Ctrl"
+~ msgid "Accept"
+~ msgstr "Elfogadás"
+~ msgid "Application Key"
+~ msgstr "Alkalmazás gomb"
+~ msgid "Backspace"
+~ msgstr "Backspace"
+~ msgctxt "objinspstrconsts.srvk_cancel"
+~ msgid "Cancel"
+~ msgstr "Mégsem"
+~ msgid "Capital"
+~ msgstr "Capital"
+~ msgctxt "objinspstrconsts.srvk_clear"
+~ msgid "Clear"
+~ msgstr "Clear"
+~ msgid "Cmd"
+~ msgstr "Cmd"
+~ msgid "Control"
+~ msgstr "Control"
+~ msgid "Convert"
+~ msgstr "Convert"
+~ msgctxt "objinspstrconsts.srvk_delete"
+~ msgid "Delete"
+~ msgstr "Törlés"
+~ msgctxt "objinspstrconsts.srvk_down"
+~ msgid "Down"
+~ msgstr "Le"
+~ msgid "End"
+~ msgstr "End"
+~ msgid "Escape"
+~ msgstr "Escape"
+~ msgid "Execute"
+~ msgstr "Execute"
+~ msgid "Hanja"
+~ msgstr "Hanja"
+~ msgctxt "objinspstrconsts.srvk_help"
+~ msgid "Help"
+~ msgstr "Súgó"
+~ msgid "Home"
+~ msgstr "Home"
+~ msgctxt "objinspstrconsts.srvk_insert"
+~ msgid "Insert"
+~ msgstr "Insert"
+~ msgid "Junja"
+~ msgstr "Junja"
+~ msgid "Kana"
+~ msgstr "Kana"
+~ msgid "Mouse Button Left"
+~ msgstr "Bal egérgomb"
+~ msgctxt "objinspstrconsts.srvk_left"
+~ msgid "Left"
+~ msgstr "Balra"
+~ msgid "Left Windows Key"
+~ msgstr "Bal Windows gomb"
+~ msgid "Mouse Button Middle"
+~ msgstr "Középső egérgomb"
+~ msgid "Menu"
+~ msgstr "Menü"
+~ msgid "Meta"
+~ msgstr "Meta"
+~ msgid "Mode Change"
+~ msgstr "Mód váltása"
+~ msgctxt "objinspstrconsts.srvk_next"
+~ msgid "Next"
+~ msgstr "Következő"
+~ msgid "Nonconvert"
+~ msgstr "Nonconvert"
+~ msgid "none"
+~ msgstr "semmi"
+~ msgid "Numlock"
+~ msgstr "Num Lock"
+~ msgid "Numpad %d"
+~ msgstr "Numpad %d"
+~ msgid "Pause key"
+~ msgstr "Pause gomb"
+~ msgid "Print"
+~ msgstr "Nyomtatás"
+~ msgctxt "objinspstrconsts.srvk_prior"
+~ msgid "Prior"
+~ msgstr "Előző"
+~ msgid "Mouse Button Right"
+~ msgstr "Jobb egérgomb"
+~ msgid "Return"
+~ msgstr "Enter"
+~ msgctxt "objinspstrconsts.srvk_right"
+~ msgid "Right"
+~ msgstr "Jobbra"
+~ msgid "Right Windows Key"
+~ msgstr "Jobb Windows gomb"
+~ msgid "Scroll"
+~ msgstr "Görgetés"
+~ msgid "Select"
+~ msgstr "Kijelölés"
+~ msgid "Shift"
+~ msgstr "Shift"
+~ msgid "Snapshot"
+~ msgstr "Snapshot"
+~ msgid "Space key"
+~ msgstr "Szóköz"
+~ msgid "Super"
+~ msgstr "Super"
+~ msgid "Tab"
+~ msgstr "Tab"
+~ msgctxt "objinspstrconsts.srvk_unknown"
+~ msgid "Unknown"
+~ msgstr "Ismeretlen"
+~ msgctxt "objinspstrconsts.srvk_up"
+~ msgid "Up"
+~ msgstr "Fel"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Fül mozgatása eggyel jobbra"
 
-#~ msgid "OEM 1"
-#~ msgstr "OEM 1"
-
-#~ msgid "OEM 2"
-#~ msgstr "OEM 2"
-
-#~ msgid "OEM 3"
-#~ msgstr "OEM 3"
-
-#~ msgid "OEM 4"
-#~ msgstr "OEM 4"
-
-#~ msgid "OEM 5"
-#~ msgstr "OEM 5"
-
-#~ msgid "OEM 6"
-#~ msgstr "OEM 6"
-
-#~ msgid "OEM 7"
-#~ msgstr "OEM 7"
-
-#~ msgid "OEM 8"
-#~ msgstr "OEM 8"
-
-#~ msgid "OEM comma"
-#~ msgstr "OEM vessző"
-
-#~ msgid "OEM minus"
-#~ msgstr "OEM minusz"
-
-#~ msgid "OEM period"
-#~ msgstr "OEM pont"
-
-#~ msgid "OEM plus"
-#~ msgstr "OEM plusz"
-
-#~ msgid "All"
-#~ msgstr "Mind"
-
-#~ msgctxt "objinspstrconsts.oiscancel"
-#~ msgid "&Cancel"
-#~ msgstr "Mégsem"
-
-#~ msgid "Copy components"
-#~ msgstr "Komponensek másolása"
-
-#~ msgid "Cut components"
-#~ msgstr "Komponensek kivágása"
-
-#~ msgid "Delete components"
-#~ msgstr "Komponensek törlése"
-
-#~ msgid "Edit action list..."
-#~ msgstr "Műveletlista szerkesztése..."
-
-#~ msgid "Index out of bounds"
-#~ msgstr "Az index kívül esik a határokon"
-
-#~ msgid "not supported"
-#~ msgstr "nem támogatott"
-
-#~ msgid "Paste components"
-#~ msgstr "Komponensek beillesztése"
-
-#~ msgid "Set to default value"
-#~ msgstr "Beállítás alapértelmezett értékre"
-
-#~ msgid "Custom options"
-#~ msgstr "Saját beállítások"
-
-#~ msgid "Debug search path"
-#~ msgstr "Hibakereső keresési útvonala"
-
-#~ msgid "Include search path"
-#~ msgstr "Include fájlok keresési útvonala"
-
-#~ msgid "Library search path"
-#~ msgstr "Függvénytár keresési útvonal"
-
-#~ msgid "Linker options"
-#~ msgstr "Linker opciók"
-
-#~ msgid "Object search path"
-#~ msgstr "Objektum keresési útvonal"
-
-#~ msgid "Result"
-#~ msgstr "Eredmény"
-
-#~ msgid "Unit"
-#~ msgstr "Unit"
-
-#~ msgid "Unit search path"
-#~ msgstr "Unit keresési útvonal"
-
-#~ msgid "Unit source search path"
-#~ msgstr "Unit forrás keresési útvonal"
-
-#~ msgid "Add..."
-#~ msgstr "Hozzáadás..."
-
-#~ msgctxt "objinspstrconsts.sccsiledtdelete"
-#~ msgid "Delete"
-#~ msgstr "Törlés"
-
-#~ msgid "Edit ListView Items..."
-#~ msgstr "ListView elemek szerkesztése..."
-
-#~ msgid "Edit TreeView Items..."
-#~ msgstr "TreeView elemeinek szerkesztése..."
-
-#~ msgid "Alt"
-#~ msgstr "Alt"
-
-#~ msgid "Ctrl"
-#~ msgstr "Ctrl"
-
-#~ msgid "Accept"
-#~ msgstr "Elfogadás"
-
-#~ msgid "Application Key"
-#~ msgstr "Alkalmazás gomb"
-
-#~ msgid "Backspace"
-#~ msgstr "Backspace"
-
-#~ msgctxt "objinspstrconsts.srvk_cancel"
-#~ msgid "Cancel"
-#~ msgstr "Mégsem"
-
-#~ msgid "Capital"
-#~ msgstr "Capital"
-
-#~ msgctxt "objinspstrconsts.srvk_clear"
-#~ msgid "Clear"
-#~ msgstr "Clear"
-
-#~ msgid "Cmd"
-#~ msgstr "Cmd"
-
-#~ msgid "Control"
-#~ msgstr "Control"
-
-#~ msgid "Convert"
-#~ msgstr "Convert"
-
-#~ msgctxt "objinspstrconsts.srvk_delete"
-#~ msgid "Delete"
-#~ msgstr "Törlés"
-
-#~ msgctxt "objinspstrconsts.srvk_down"
-#~ msgid "Down"
-#~ msgstr "Le"
-
-#~ msgid "End"
-#~ msgstr "End"
-
-#~ msgid "Escape"
-#~ msgstr "Escape"
-
-#~ msgid "Execute"
-#~ msgstr "Execute"
-
-#~ msgid "Hanja"
-#~ msgstr "Hanja"
-
-#~ msgctxt "objinspstrconsts.srvk_help"
-#~ msgid "Help"
-#~ msgstr "Súgó"
-
-#~ msgid "Home"
-#~ msgstr "Home"
-
-#~ msgctxt "objinspstrconsts.srvk_insert"
-#~ msgid "Insert"
-#~ msgstr "Insert"
-
-#~ msgid "Junja"
-#~ msgstr "Junja"
-
-#~ msgid "Kana"
-#~ msgstr "Kana"
-
-#~ msgid "Mouse Button Left"
-#~ msgstr "Bal egérgomb"
-
-#~ msgctxt "objinspstrconsts.srvk_left"
-#~ msgid "Left"
-#~ msgstr "Balra"
-
-#~ msgid "Left Windows Key"
-#~ msgstr "Bal Windows gomb"
-
-#~ msgid "Mouse Button Middle"
-#~ msgstr "Középső egérgomb"
-
-#~ msgid "Menu"
-#~ msgstr "Menü"
-
-#~ msgid "Meta"
-#~ msgstr "Meta"
-
-#~ msgid "Mode Change"
-#~ msgstr "Mód váltása"
-
-#~ msgctxt "objinspstrconsts.srvk_next"
-#~ msgid "Next"
-#~ msgstr "Következő"
-
-#~ msgid "Nonconvert"
-#~ msgstr "Nonconvert"
-
-#~ msgid "none"
-#~ msgstr "semmi"
-
-#~ msgid "Numlock"
-#~ msgstr "Num Lock"
-
-#~ msgid "Numpad %d"
-#~ msgstr "Numpad %d"
-
-#~ msgid "Pause key"
-#~ msgstr "Pause gomb"
-
-#~ msgid "Print"
-#~ msgstr "Nyomtatás"
-
-#~ msgctxt "objinspstrconsts.srvk_prior"
-#~ msgid "Prior"
-#~ msgstr "Előző"
-
-#~ msgid "Mouse Button Right"
-#~ msgstr "Jobb egérgomb"
-
-#~ msgid "Return"
-#~ msgstr "Enter"
-
-#~ msgctxt "objinspstrconsts.srvk_right"
-#~ msgid "Right"
-#~ msgstr "Jobbra"
-
-#~ msgid "Right Windows Key"
-#~ msgstr "Jobb Windows gomb"
-
-#~ msgid "Scroll"
-#~ msgstr "Görgetés"
-
-#~ msgid "Select"
-#~ msgstr "Kijelölés"
-
-#~ msgid "Shift"
-#~ msgstr "Shift"
-
-#~ msgid "Snapshot"
-#~ msgstr "Snapshot"
-
-#~ msgid "Space key"
-#~ msgstr "Szóköz"
-
-#~ msgid "Super"
-#~ msgstr "Super"
-
-#~ msgid "Tab"
-#~ msgstr "Tab"
-
-#~ msgctxt "objinspstrconsts.srvk_unknown"
-#~ msgid "Unknown"
-#~ msgstr "Ismeretlen"
-
-#~ msgctxt "objinspstrconsts.srvk_up"
-#~ msgid "Up"
-#~ msgstr "Fel"

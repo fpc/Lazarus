@@ -261,6 +261,10 @@ msgstr "IfNDef"
 msgid "Set value"
 msgstr "Вказати значення"
 
+#: objinspstrconsts.lisunabletofindparserfortool
+msgid "unable to find parser for tool \"%s\""
+msgstr ""
+
 #: objinspstrconsts.nbcesaddpage
 #| msgid "Add page"
 msgid "Add Page"

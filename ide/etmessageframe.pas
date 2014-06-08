@@ -456,86 +456,104 @@ var
 begin
   MessagesMenuRoot := RegisterIDEMenuRoot(MessagesMenuRootName);
   Root:=MessagesMenuRoot;
-  MsgFindMenuItem := RegisterIDEMenuCommand(Root, 'Find', 'Find ...');
+  MsgFindMenuItem := RegisterIDEMenuCommand(Root, 'Find', lisFind);
   MsgQuickFixMenuSection := RegisterIDEMenuSection(Root, 'Quick Fix');
   MsgAboutSection:=RegisterIDEMenuSection(Root,'About');
     Parent:=MsgAboutSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='About ...';
+    Parent.Caption:=lisAbout;
     MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Parent, 'About', 'About Tool');
     MsgOpenToolOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'Open Tool Options', 'Open Tool Options');
   MsgFilterMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'FilterMsgOfType','');
   MsgRemoveCompOptHideMenuSection:=RegisterIDEMenuSection(Root,'RemoveCompOptHideMsg');
     Parent:=MsgRemoveCompOptHideMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='Remove Compiler Option Hide Message';
+    Parent.Caption:=lisRemoveCompilerOptionHideMessage;
   MsgRemoveMsgTypeFilterMenuSection:=RegisterIDEMenuSection(Root,'RemoveMsgTypeFilters');
     Parent:=MsgRemoveMsgTypeFilterMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='Remove Message Type Filter';
+    Parent.Caption:=lisRemoveMessageTypeFilter;
     MsgRemoveFilterMsgOneTypeMenuSection:=RegisterIDEMenuSection(Parent,'RemoveOneMsgTypeFilterSection');
-    MsgRemoveFilterAllMsgTypesMenuItem:=RegisterIDEMenuCommand(Parent,'Remove all message type filters','Remove all message type filters');
+    MsgRemoveFilterAllMsgTypesMenuItem:=RegisterIDEMenuCommand(Parent, 'Remove'
+      +' all message type filters', lisRemoveAllMessageTypeFilters);
   MsgFilterBelowMenuSection:=RegisterIDEMenuSection(Root,'Filter Below Section');
     Parent:=MsgFilterBelowMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='Filter non urgent Messages ...';
-    MsgFilterWarningsMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Warnings','Filter Warnings and below');
+    Parent.Caption:=lisFilterNonUrgentMessages;
+    MsgFilterWarningsMenuItem:=RegisterIDEMenuCommand(Parent,
+      'Filter Warnings', lisFilterWarningsAndBelow);
     MsgFilterWarningsMenuItem.RadioItem:=true;
     MsgFilterWarningsMenuItem.GroupIndex:=2;
-    MsgFilterNotesMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Notes','Filter Notes and below');
+    MsgFilterNotesMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter Notes',
+      lisFilterNotesAndBelow);
     MsgFilterNotesMenuItem.RadioItem:=true;
     MsgFilterNotesMenuItem.GroupIndex:=2;
-    MsgFilterHintsMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Hints','Filter Hints and below');
+    MsgFilterHintsMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter Hints',
+      lisFilterHintsAndBelow);
     MsgFilterHintsMenuItem.RadioItem:=true;
     MsgFilterHintsMenuItem.GroupIndex:=2;
-    MsgFilterVerboseMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Verbose Messages','Filter Verbose Messages and below');
+    MsgFilterVerboseMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter Verbose '
+      +'Messages', lisFilterVerboseMessagesAndBelow);
     MsgFilterVerboseMenuItem.RadioItem:=true;
     MsgFilterVerboseMenuItem.GroupIndex:=2;
-    MsgFilterDebugMenuItem:=RegisterIDEMenuCommand(Parent,'Filter Debug Messages','Filter Debug Messages and below');
+    MsgFilterDebugMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter Debug '
+      +'Messages', lisFilterDebugMessagesAndBelow);
     MsgFilterDebugMenuItem.RadioItem:=true;
     MsgFilterDebugMenuItem.GroupIndex:=2;
-    MsgFilterNoneMenuItem:=RegisterIDEMenuCommand(Parent,'Filter None, do not filter by urgency','Filter None, do not filter by urgency');
+    MsgFilterNoneMenuItem:=RegisterIDEMenuCommand(Parent, 'Filter None, do not'
+      +' filter by urgency', lisFilterNoneDoNotFilterByUrgency);
     MsgFilterNoneMenuItem.RadioItem:=true;
     MsgFilterNoneMenuItem.GroupIndex:=2;
-  MsgFilterHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Root, 'Filter Hints without Source Position', 'Filter Hints without Source Position');
+  MsgFilterHintsWithoutPosMenuItem:=RegisterIDEMenuCommand(Root, 'Filter Hints'
+    +' without Source Position', lisFilterHintsWithoutSourcePosition);
   MsgFiltersMenuSection:=RegisterIDEMenuSection(Root,'Switch Filter Section');
     Parent:=MsgFiltersMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='Switch Filter Settings ...';
+    Parent.Caption:=lisSwitchFilterSettings;
     MsgSelectFilterMenuSection:=RegisterIDEMenuSection(Parent,'Filters');
-    MsgAddFilterMenuItem:=RegisterIDEMenuCommand(Parent,'Add Filter','Add Filter ...');
+    MsgAddFilterMenuItem:=RegisterIDEMenuCommand(Parent, 'Add Filter',
+      lisAddFilter);
   MsgCopyMenuSection:=RegisterIDEMenuSection(Root,'Copy');
     Parent:=MsgCopyMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='Copy ...';
-    MsgCopyFilenameMenuItem:=RegisterIDEMenuCommand(Parent,'Filename','Copy File Name to Clipboard');
+    Parent.Caption:=lisCopy2;
+    MsgCopyFilenameMenuItem:=RegisterIDEMenuCommand(Parent, 'Filename',
+      lisCopyFileNameToClipboard);
     MsgCopyMsgMenuItem := RegisterIDEMenuCommand(Parent, 'Selected',lisCopySelectedMessagesToClipboard);
     MsgCopyShownMenuItem := RegisterIDEMenuCommand(Parent, 'Shown', lisCopyAllShownMessagesToClipboard);
-    MsgCopyAllMenuItem:=RegisterIDEMenuCommand(Parent,'All','Copy All/Original Messages to Clipboard');
+    MsgCopyAllMenuItem:=RegisterIDEMenuCommand(Parent, 'All',
+      lisCopyAllOriginalMessagesToClipboard);
   MsgSaveToFileMenuSection:=RegisterIDEMenuSection(Root,'Save');
     Parent:=MsgSaveToFileMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='Save ...';
-    MsgSaveShownToFileMenuItem:=RegisterIDEMenuCommand(Parent,'Save Shown Messages to File','Save Shown Messages to File ...');
-    MsgSaveAllToFileMenuItem:=RegisterIDEMenuCommand(Parent,'Save All Messages to File','Save All/Original Messages to File ...');
+    Parent.Caption:=lisDlgSave;
+    MsgSaveShownToFileMenuItem:=RegisterIDEMenuCommand(Parent, 'Save Shown '
+      +'Messages to File', lisSaveShownMessagesToFile);
+    MsgSaveAllToFileMenuItem:=RegisterIDEMenuCommand(Parent, 'Save All '
+      +'Messages to File', lisSaveAllOriginalMessagesToFile);
   MsgHelpMenuItem := RegisterIDEMenuCommand(Root, 'Help for this message',lisHelp);
   MsgEditHelpMenuItem := RegisterIDEMenuCommand(Root, 'Edit help for messages',lisEditHelp);
-  MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', 'Clear');
+  MsgClearMenuItem := RegisterIDEMenuCommand(Root, 'Clear', lisClear);
   MsgOptionsMenuSection:=RegisterIDEMenuSection(Root,'Option Section');
     Parent:=MsgOptionsMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:='Options ...';
-    MsgWndStayOnTopMenuItem:=RegisterIDEMenuCommand(Parent,'Window stay on top','Window stays on top');
+    Parent.Caption:=lisMenuGeneralOptions;
+    MsgWndStayOnTopMenuItem:=RegisterIDEMenuCommand(Parent,
+      'Window stay on top', lisWindowStaysOnTop);
     MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Parent,'Filename Styles');
       Parent:=MsgFilenameStyleMenuSection;
       Parent.ChildsAsSubMenu:=true;
-      Parent.Caption:='Filename Style ...';
-      MsgFileStyleShortMenuItem:=RegisterIDEMenuCommand(Parent,'Short','Short, no path');
-      MsgFileStyleRelativeMenuItem:=RegisterIDEMenuCommand(Parent,'Relative','Relative');
-      MsgFileStyleFullMenuItem:=RegisterIDEMenuCommand(Parent,'Full','Full');
+      Parent.Caption:=lisFilenameStyle;
+      MsgFileStyleShortMenuItem:=RegisterIDEMenuCommand(Parent, 'Short',
+        lisShortNoPath);
+      MsgFileStyleRelativeMenuItem:=RegisterIDEMenuCommand(Parent, 'Relative',
+        lisRelative);
+      MsgFileStyleFullMenuItem:=RegisterIDEMenuCommand(Parent, 'Full', lisFull);
     Parent:=MsgOptionsMenuSection;
-    MsgTranslateMenuItem:=RegisterIDEMenuCommand(Parent, 'Translate', 'Translate the English Messages');
-    MsgShowIDMenuItem:=RegisterIDEMenuCommand(Parent, 'ShowID', 'Show Message Type ID');
+    MsgTranslateMenuItem:=RegisterIDEMenuCommand(Parent, 'Translate',
+      lisTranslateTheEnglishMessages);
+    MsgShowIDMenuItem:=RegisterIDEMenuCommand(Parent, 'ShowID',
+      lisShowMessageTypeID);
 end;
 
 {$R *.lfm}
@@ -668,7 +686,9 @@ begin
           end;
           MsgLine:=PendingLines.CreateLine(-1);
           MsgLine.Urgency:=mluPanic;
-          MsgLine.Msg:='tool stopped with exit code '+IntToStr(ExitStatus)+'. Use context menu to get more information.';
+          MsgLine.Msg:=Format(
+            lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo, [IntToStr(
+            ExitStatus)]);
           PendingLines.Add(MsgLine);
         finally
           LeaveCriticalSection;
@@ -2195,17 +2215,17 @@ function TMessagesCtrl.GetHeaderText(View: TLMsgWndView): string;
         inc(HintCnt,Lines.UrgencyCounts[c]);
     end;
     if ErrCnt>0 then
-      Result+=', Errors:'+IntToStr(ErrCnt);
+      Result+=Format(lisErrors2, [IntToStr(ErrCnt)]);
     if WarnCnt>0 then
-      Result+=', Warnings:'+IntToStr(WarnCnt);
+      Result+=Format(lisWarnings, [IntToStr(WarnCnt)]);
     if HintCnt>0 then
-      Result+=', Hints:'+IntToStr(HintCnt);
+      Result+=Format(lisHints, [IntToStr(HintCnt)]);
   end;
 
 begin
   Result:=View.Caption;
   if Result='' then
-    Result:='Messages';
+    Result:=lisMenuViewMessages;
   if View.SummaryMsg<>'' then
     Result+=': '+View.SummaryMsg;
   if mcoShowStats in Options then begin
@@ -2568,11 +2588,11 @@ procedure TMessagesFrame.MsgCtrlPopupMenuPopup(Sender: TObject);
       if IDETool=nil then continue;
       if IDETool is TLazProject then begin
         CompOpts:=TLazProject(IDETool).LazCompilerOptions as TBaseCompilerOptions;
-        ModuleName:='Project Option';
+        ModuleName:=lisProjectOption;
       end else if IDETool is TIDEPackage then begin
         Pkg:=TIDEPackage(IDETool);
         CompOpts:=Pkg.LazCompilerOptions as TBaseCompilerOptions;
-        ModuleName:='Package "'+Pkg.Name+'" Option';
+        ModuleName:=Format(lisPackageOption, [Pkg.Name]);
       end else
         continue;
       for Flag in CompOpts.IDEMessageFlags do begin
@@ -2720,12 +2740,12 @@ begin
     // About
     if View<>nil then
     begin
-      MsgAboutToolMenuItem.Caption:='About '+View.Caption;
+      MsgAboutToolMenuItem.Caption:=Format(lisAbout2, [View.Caption]);
       MsgAboutSection.Visible:=true;
       if View.Tool.Data is TIDEExternalToolData then begin
         ToolData:=TIDEExternalToolData(View.Tool.Data);
         if ToolData.Kind=IDEToolCompilePackage then
-          ToolOptionsCaption:='Open Package '+ToolData.ModuleName;
+          ToolOptionsCaption:=Format(lisCPOpenPackage, [ToolData.ModuleName]);
       end;
     end else
       MsgAboutSection.Visible:=false;
@@ -2740,7 +2760,8 @@ begin
 
     // Filtering
     if CanFilterMsgType then begin
-      MsgFilterMsgOfTypeMenuItem.Caption:='Filter all messages of type '+MsgType;
+      MsgFilterMsgOfTypeMenuItem.Caption:=Format(lisFilterAllMessagesOfType, [
+        MsgType]);
       MsgFilterMsgOfTypeMenuItem.Visible:=true;
     end else begin
       MsgFilterMsgOfTypeMenuItem.Visible:=false;
@@ -3114,10 +3135,10 @@ begin
       if Tool.Terminated then
         s+='Terminated'+LineEnding+LineEnding
       else
-        s+='Exit Status:'+LineEnding+IntToStr(Proc.ExitStatus)+LineEnding+LineEnding;
+        s+='ExitStatus:'+LineEnding+IntToStr(Proc.ExitStatus)+LineEnding+LineEnding;
     end;
     if Tool.ErrorMessage<>'' then
-      s+='Error: '+Tool.ErrorMessage+LineEnding+LineEnding;
+      s+=lisError+Tool.ErrorMessage+LineEnding+LineEnding;
   end;
 
   Form:=TForm.CreateNew(Self);
@@ -3127,7 +3148,7 @@ begin
       Width:=500;
       Height:=300;
       Position:=poScreenCenter;
-      Caption:='About '+View.Caption;
+      Caption:=Format(lisAbout2, [View.Caption]);
     end;
 
     Memo:=TMemo.Create(Form);
@@ -3153,16 +3174,17 @@ var
   NewFilter: TLMsgViewFilter;
   Filters: TLMsgViewFilters;
 begin
-  aCaption:='Filter';
+  aCaption:=lisFilter;
   i:=1;
   Filters:=MessagesCtrl.Filters;
   while Filters.GetFilter(aCaption+IntToStr(i),false)<>nil do
     inc(i);
-  if not InputQuery('Create Filter','Name:',aCaption) then exit;
+  if not InputQuery(lisCreateFilter, lisCodeToolsDefsName, aCaption) then exit;
   aCaption:=UTF8Trim(aCaption,[]);
   if aCaption='' then exit;
   if Filters.GetFilter(aCaption,false)<>nil then begin
-    IDEMessageDialog('Filter already exists','A filter with the name "'+aCaption+'" already exists.',mtError,[mbCancel],'');
+    IDEMessageDialog(lisFilterAlreadyExists, Format(
+      lisAFilterWithTheNameAlreadyExists, [aCaption]), mtError, [mbCancel], '');
     exit;
   end;
   NewFilter:=Filters.GetFilter(aCaption,true);
@@ -3201,7 +3223,7 @@ var
 begin
   Dlg:=TSaveDialog.Create(nil);
   try
-    Dlg.Title:='Save messages';
+    Dlg.Title:=lisSaveMessages;
     Dlg.FileName:='messages.txt';
     Dlg.Options:=Dlg.Options+[ofPathMustExist,ofCreatePrompt];
     InitIDEFileDialog(Dlg);
@@ -3221,7 +3243,9 @@ begin
       end;
     except
       on E: Exception do begin
-        IDEMessageDialog('Write Error','Unable to write file "'+Filename+'".',mtError,[mbCancel]);
+        IDEMessageDialog(lisWriteError, Format(lisUnableToWriteFile2, [Filename]
+          ),
+          mtError, [mbCancel]);
       end;
     end;
 
@@ -3239,12 +3263,13 @@ begin
   s:=AllMessagesAsString(OnlyShown);
   if length(s)>1000000 then begin
     if length(s)<10000 then
-      Msg:=IntToStr(length(s))+' byte'
+      Msg:=Format(lisByte, [IntToStr(length(s))])
     else if Length(s)<10000000 then
-      Msg:=IntToStr(length(s) div 1000)+' KB'
+      Msg:=Format(lisKB, [IntToStr(length(s) div 1000)])
     else
-      Msg:=IntToStr(length(s) div 1000)+' MB';
-    if IDEMessageDialog('Warning','This will put a lot of text ('+Msg+') on the clipboard.'#13'Proceed?',
+      Msg:=Format(lisMB, [IntToStr(length(s) div 1000)]);
+    if IDEMessageDialog(lisCCOWarningCaption, Format(
+      lisThisWillPutALotOfTextOnTheClipboardProceed, [Msg, #13]),
       mtConfirmation,[mbYes,mbNo])<>mrYes then exit;
   end;
   Clipboard.AsText:=s;
@@ -3337,18 +3362,21 @@ begin
     Parent:=Self;
 
     UrgencyStyles[mluNone].SetValues('?',ImgIDInfo,clDefault);
-    UrgencyStyles[mluProgress].SetValues('Progress',ImgIDInfo,clDefault);
-    UrgencyStyles[mluDebug].SetValues('Debug',ImgIDInfo,clDefault);
-    UrgencyStyles[mluVerbose3].SetValues('Extremely Verbose',ImgIDInfo,clDefault);
-    UrgencyStyles[mluVerbose2].SetValues('Very Verbose',ImgIDInfo,clDefault);
-    UrgencyStyles[mluVerbose].SetValues('Verbose',ImgIDInfo,clDefault);
-    UrgencyStyles[mluHint].SetValues('Hint',ImgIDHint,clDefault);
-    UrgencyStyles[mluNote].SetValues('Note',ImgIDNote,clDefault);
-    UrgencyStyles[mluWarning].SetValues('Warning',ImgIDWarning,clDefault);
-    UrgencyStyles[mluImportant].SetValues('Important',ImgIDInfo,clDefault);
-    UrgencyStyles[mluError].SetValues('Error',ImgIDError,clDefault);
-    UrgencyStyles[mluFatal].SetValues('Fatal',ImgIDFatal,clDefault);
-    UrgencyStyles[mluPanic].SetValues('Panic',ImgIDFatal,clDefault);
+    UrgencyStyles[mluProgress].SetValues(lisPDProgress, ImgIDInfo, clDefault);
+    UrgencyStyles[mluDebug].SetValues(uemDebugWord, ImgIDInfo, clDefault);
+    UrgencyStyles[mluVerbose3].SetValues(lisExtremelyVerbose, ImgIDInfo,
+      clDefault);
+    UrgencyStyles[mluVerbose2].SetValues(lisVeryVerbose, ImgIDInfo, clDefault);
+    UrgencyStyles[mluVerbose].SetValues(lisVerbose, ImgIDInfo, clDefault);
+    UrgencyStyles[mluHint].SetValues(lisHint, ImgIDHint, clDefault);
+    UrgencyStyles[mluNote].SetValues(lisNote, ImgIDNote, clDefault);
+    UrgencyStyles[mluWarning].SetValues(lisCCOWarningCaption, ImgIDWarning,
+      clDefault);
+    UrgencyStyles[mluImportant].SetValues(lisImportant, ImgIDInfo, clDefault);
+    UrgencyStyles[mluError].SetValues(lisCCOErrorCaption, ImgIDError, clDefault
+      );
+    UrgencyStyles[mluFatal].SetValues(lisFatal, ImgIDFatal, clDefault);
+    UrgencyStyles[mluPanic].SetValues(lisPanic, ImgIDFatal, clDefault);
     Images:=IDEImages.Images_12;
     PopupMenu:=MsgCtrlPopupMenu;
   end;
@@ -3356,12 +3384,12 @@ begin
 
   // search
   SearchPanel.Visible:=false; // by default the search is hidden
-  HideSearchSpeedButton.Hint:='Hide Search';
+  HideSearchSpeedButton.Hint:=lisHideSearch;
   HideSearchSpeedButton.LoadGlyphFromResourceName(HInstance, 'debugger_power_grey');
   SearchEdit.Text:=GetDefaultSearchText;
-  SearchNextSpeedButton.Hint:='Find the next occurence of the phrase';
+  SearchNextSpeedButton.Hint:=lisFindTheNextOccurenceOfThePhrase;
   SearchNextSpeedButton.LoadGlyphFromResourceName(HInstance, 'callstack_bottom');
-  SearchPrevSpeedButton.Hint:='Find the previous occurence of the phrase';
+  SearchPrevSpeedButton.Hint:=lisFindThePreviousOccurenceOfThePhrase;
   SearchPrevSpeedButton.LoadGlyphFromResourceName(HInstance, 'callstack_top');
 end;
 
@@ -3495,7 +3523,7 @@ end;
 
 function TMessagesFrame.GetDefaultSearchText: string;
 begin
-  Result:='(Search)';
+  Result:=lisUDSearch;
 end;
 
 function TMessagesFrame.SelectFirstUrgentMessage(

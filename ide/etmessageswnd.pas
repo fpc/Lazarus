@@ -35,7 +35,7 @@ uses
   Classes, SysUtils, FileUtil, LazConfigStorage, IDEMsgIntf, IDEImagesIntf,
   IDEExternToolIntf, LazIDEIntf, SrcEditorIntf, BaseIDEIntf, SynEditMarks,
   Forms, Controls, Graphics, Dialogs, LCLProc, etMessageFrame, etSrcEditMarks,
-  etQuickFixes;
+  etQuickFixes, LazarusIDEStrConsts;
 
 type
 
@@ -99,7 +99,7 @@ implementation
 procedure TMessagesView.FormCreate(Sender: TObject);
 begin
   IDEMessagesWindow:=Self;
-  Caption:='Messages';
+  Caption:=lisMenuViewMessages;
 
   MessagesFrame1.MessagesCtrl.OnOpenMessage:=@OnOpenMessage;
   MessagesFrame1.MessagesCtrl.OnOptionsChanged:=@OnMsgCtrlOptsChanged;

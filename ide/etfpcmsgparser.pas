@@ -39,7 +39,7 @@ uses
   CompOptsIntf, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache, CodeToolManager,
   DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog, LazUTF8,
   FileUtil, LConvEncoding, TransferMacros, etMakeMsgParser, EnvironmentOpts,
-  LCLProc;
+  LCLProc, LazarusIDEStrConsts;
 
 const
   FPCMsgIDLogo = 11023;
@@ -611,11 +611,8 @@ end;
 procedure TPatternToMsgIDs.Add(Pattern: string; MsgID: integer);
 
   procedure RaiseInvalidMsgID;
-  var
-    s: String;
   begin
-    s:='invalid MsgID: '+IntToStr(MsgID);
-    raise Exception.Create(s);
+    raise Exception.Create('invalid MsgID: '+IntToStr(MsgID));
   end;
 
 var
@@ -1419,7 +1416,7 @@ begin
   if WPos=nil then exit;
   Result:=true;
   MsgLine:=CreateMsgLine;
-  MsgLine.SubTool:='windres';
+  MsgLine.SubTool:=SubToolFPCWindRes;
   MsgLine.Urgency:=mluWarning;
   p := wPos + 7;
   if CompStr('.exe', p) then
@@ -1662,7 +1659,7 @@ procedure TIDEFPCParser.ImproveMsgUnitNotFound(aPhase: TExtToolParserSyncPhase;
     LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
     if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,NamePos,InPos)
     then begin
-      DebugLn('QuickFixUnitNotFoundPosition failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
+      DebugLn('TIDEFPCParser.ImproveMsgUnitNotFound failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
       exit;
     end;
     Tool:=CodeToolBoss.CurCodeTool;
@@ -1776,7 +1773,7 @@ begin
     // change to lazarus.pp(1,1)
     Filename:=AppendPathDelim(EnvironmentOptions.GetParsedLazarusDirectory)+'ide'+PathDelim+'lazarus.pp';
     MsgLine.SetSourcePosition(Filename,1,1);
-    MsgLine.Msg:='Can''t find a valid '+MissingUnitname+'.ppu';
+    MsgLine.Msg:=Format(lisCanTFindAValidPpu, [MissingUnitname]);
   end else if SysUtils.CompareText(ExtractFileNameOnly(Filename),UsedByUnit)<>0
   then begin
     // the message belongs to another unit
@@ -1846,37 +1843,39 @@ begin
         if PPUFilename<>'' then begin
           // there is a ppu file, but the compiler didn't like it
           // => change message
-          s:='Cannot find '+MissingUnitname;
+          s:=Format(lisCannotFind, [MissingUnitname]);
           if UsedByUnit<>'' then
-            s+=' used by '+UsedByUnit;
-          s+=', incompatible ppu='+CreateRelativePath(PPUFilename,ExtractFilePath(CodeBuf.Filename));
+            s+=Format(lisUsedBy, [UsedByUnit]);
+          s+=Format(lisIncompatiblePpu, [CreateRelativePath(PPUFilename,
+            ExtractFilePath(CodeBuf.Filename))]);
           if PkgName<>'' then
-            s+=', package '+PkgName;
+            s+=Format(lisPackage3, [PkgName]);
         end else if PkgName<>'' then begin
           // ppu is missing, but the package is known
           // => change message
-          s:='Can''t find ppu of unit '+MissingUnitname;
+          s:=Format(lisCanTFindPpuOfUnit, [MissingUnitname]);
           if UsedByUnit<>'' then
-            s+=' used by '+UsedByUnit;
-          s+='. Maybe package '+PkgName+' needs a clean rebuild.';
+            s+=Format(lisUsedBy, [UsedByUnit]);
+          s+=Format(lisMaybePackageNeedsACleanRebuild, [PkgName]);
         end;
       end else begin
         // there is no ppu file in the unit path
-        s:='Cannot find unit '+MissingUnitname;
+        s:=Format(lisCannotFindUnit, [MissingUnitname]);
         if UsedByUnit<>'' then
-          s+=' used by '+UsedByUnit;
+          s+=Format(lisUsedBy, [UsedByUnit]);
         if (UsedByOwner is TIDEPackage)
         and (CompareTextCT(TIDEPackage(UsedByOwner).Name,PkgName)=0) then
         begin
           // two units of a package cannot find each other
-          s+='. Check search path package '+TIDEPackage(UsedByOwner).Name+', try a clean rebuild, check implementation uses sections.';
+          s+=Format(lisCheckSearchPathPackageTryACleanRebuildCheckImpleme, [
+            TIDEPackage(UsedByOwner).Name]);
         end else begin
           if PkgName<>'' then
-            s+='. Check if package '+PkgName+' is in the dependencies';
+            s+=Format(lisCheckIfPackageIsInTheDependencies, [PkgName]);
           if UsedByOwner is TLazProject then
-            s+=' of the project inspector'
+            s+=lisOfTheProjectInspector
           else if UsedByOwner is TIDEPackage then
-            s+=' of package '+TIDEPackage(UsedByOwner).Name;
+            s+=Format(lisOfPackage, [TIDEPackage(UsedByOwner).Name]);
         end;
         s+='.';
       end;
@@ -2460,7 +2459,8 @@ begin
   then begin
     // Error while compiling resources
     AddResourceMessages;
-    MsgLine.Msg:=MsgLine.Msg+' -> Compile with -vd for more details. Check for duplicates.';
+    MsgLine.Msg:=Format(lisCompileWithVdForMoreDetailsCheckForDuplicates, [
+      MsgLine.Msg]);
   end
   else if IsMsgID(MsgLine,FPCMsgIDErrorWhileLinking,fMsgItemErrorWhileLinking) then
     AddLinkingMessages

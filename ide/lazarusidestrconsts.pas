@@ -62,6 +62,7 @@ resourcestring
   lisOpen = 'Open';
   lisSave = 'Save';
   lisDlgSave = 'Save ...';
+  lisSaveShownMessagesToFile = 'Save Shown Messages to File ...';
   lisSaveAs = 'Save As';
   lisSaveAll = 'Save All';
   lisExportHtml = 'Export as HTML';
@@ -84,6 +85,7 @@ resourcestring
   lisBtnQuit = '&Quit';
   lisRestart = 'Restart';
   lisHelp = 'Help';
+  lisSaveAllOriginalMessagesToFile = 'Save All/Original Messages to File ...';
   lisEnabled = 'Enabled';
   lisBtnEnabled = '&Enabled';
   lisUndo = 'Undo';
@@ -355,8 +357,30 @@ resourcestring
   lisMenuViewUnitInfo = 'Unit Information ...';
   lisMenuViewToggleFormUnit = 'Toggle Form/Unit View';
   lisMenuViewMessages = 'Messages';
+  lisProjectOption = 'Project Option';
+  lisPackageOption = 'Package "%s" Option';
+  lisAbout2 = 'About %s';
   lisCopySelectedMessagesToClipboard = 'Copy Selected Messages to Clipboard';
+  lisCopyFileNameToClipboard = 'Copy File Name to Clipboard';
+  lisFind = 'Find ...';
+  lisAbout = 'About ...';
+  lisRemoveCompilerOptionHideMessage = 'Remove Compiler Option Hide Message';
+  lisRemoveMessageTypeFilter = 'Remove Message Type Filter';
+  lisRemoveAllMessageTypeFilters = 'Remove all message type filters';
+  lisFilterNonUrgentMessages = 'Filter non urgent Messages ...';
+  lisFilterWarningsAndBelow = 'Filter Warnings and below';
+  lisFilterNotesAndBelow = 'Filter Notes and below';
+  lisFilterHintsAndBelow = 'Filter Hints and below';
+  lisFilterVerboseMessagesAndBelow = 'Filter Verbose Messages and below';
+  lisFilterDebugMessagesAndBelow = 'Filter Debug Messages and below';
+  lisFilterNoneDoNotFilterByUrgency = 'Filter None, do not filter by urgency';
+  lisFilterHintsWithoutSourcePosition = 'Filter Hints without Source Position';
+  lisSwitchFilterSettings = 'Switch Filter Settings ...';
+  lisAddFilter = 'Add Filter ...';
+  lisCopy2 = 'Copy ...';
   lisCopyAllShownMessagesToClipboard = 'Copy All Shown Messages to Clipboard';
+  lisCopyAllOriginalMessagesToClipboard = 'Copy All/Original Messages to '
+    +'Clipboard';
   lisCopyAllShownAndHiddenMessagesToClipboard = 'Copy All Shown and Hidden'
                                                +' Messages to Clipboard';
   lisCopyItemToClipboard = 'Copy Item to Clipboard';
@@ -513,6 +537,19 @@ resourcestring
   lisMEProjects = 'Projects';
   lisMEAction = 'Action';
   lisMenuGeneralOptions = 'Options ...';
+  lisWindowStaysOnTop = 'Window stays on top';
+  lisFilenameStyle = 'Filename Style ...';
+  lisShortNoPath = 'Short, no path';
+  lisRelative = 'Relative';
+  lisFull = 'Full';
+  lisTranslateTheEnglishMessages = 'Translate the English Messages';
+  lisShowMessageTypeID = 'Show Message Type ID';
+  lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo = 'tool stopped with '
+    +'exit code %s. Use context menu to get more information.';
+  lisErrors2 = ', Errors:%s';
+  lisWarnings = ', Warnings:%s';
+  lisHints = ', Hints:%s';
+  lisInternalError = 'internal error: %s';
   lisMenuEditCodeTemplates = 'Code Templates ...';
   dlgEdCodeTempl = 'Code Templates';
 
@@ -696,6 +733,8 @@ resourcestring
   lisUnableToRenameFile = 'Unable to rename file';
   lisUnableToCopyFile = 'Unable to copy file';
   lisWriteError = 'Write Error';
+  lisUnableToWriteFile2 = 'Unable to write file "%s".';
+  lisByte = '%s byte';
   lisFileDoesNotLookLikeATextFileOpenItAnyway =
     'File %s%s%s%sdoes not look like a text file.%sOpen it anyway?';
   lisUnableToCreateBackupDirectory = 'Unable to create backup directory %s%s%s.';
@@ -783,6 +822,17 @@ resourcestring
   lisNOTECouldNotCreateDefineTemplateForFreePascal = 'NOTE: Could not create '
     +'Define Template for Free Pascal Sources';
   lisClassNotFound = 'Class not found';
+  lisClassNotFoundAt = 'Class %s not found at %s(%s,%s)';
+  lisRemoveUses = 'Remove uses "%s"';
+  lisCreateLocalVariable = 'Create local variable "%s"';
+  lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated2 = '%s not found in %s at'
+    +' line %s, column %s.%sMaybe the message is outdated.';
+  lisHideAllHintsAndWarningsByInsertingIDEDirectivesH = 'Hide all hints and '
+    +'warnings by inserting IDE directives {%H-}';
+  lisHideMessageAtByInsertingIDEDirectiveH = 'Hide message at %s by inserting '
+    +'IDE directive {%H-}';
+  lisHideMessageByInsertingIDEDirectiveH = 'Hide message by inserting IDE '
+    +'directive {%H-}';
   lisOIFClassNotFound = 'Class %s%s%s not found.';
   lisClassIsNotARegisteredComponentClassUnableToPaste = 'Class %s%s%s is not '
     +'a registered component class.%sUnable to paste.';
@@ -2122,6 +2172,18 @@ resourcestring
   dlgCCOTestMissingPPU = 'Test: Checking missing fpc ppu ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisFatal = 'Fatal';
+  lisPanic = 'Panic';
+  lisFindTheNextOccurenceOfThePhrase = 'Find the next occurence of the phrase';
+  lisHideSearch = 'Hide Search';
+  lisFindThePreviousOccurenceOfThePhrase = 'Find the previous occurence of the'
+    +' phrase';
+  lisInvalidMacrosInExternalTool = 'Invalid macros "%s" in external tool "%s"';
+  lisCanNotExecute = 'can not execute "%s"';
+  lisMissingDirectory = 'missing directory "%s"';
+  lisUnableToExecute = 'unable to execute: %s';
+  lisUnableToReadProcessExitStatus = 'unable to read process ExitStatus';
+  lisFreeingBufferLines = 'freeing buffer lines: %s';
   lisCompilerMessagesFileNotFound = 'Compiler messages file not found:%s%s';
   lisUnableToOpen = 'Unable to open "%s"';
   lisCompilerDoesNotSupportTarget = 'Compiler "%s" does not support target %s-%s';
@@ -2162,6 +2224,11 @@ resourcestring
   lisSAMUnableToShowAbstractMethodsOfTheCurrentClassBecaus = 'Unable to show '
     +'abstract methods of the current class, because';
   lisCCOWarningCaption = 'Warning';
+  lisImportant = 'Important';
+  lisMB = '%s MB';
+  lisKB = '%s KB';
+  lisThisWillPutALotOfTextOnTheClipboardProceed = 'This will put a lot of text'
+    +' (%s) on the clipboard.%sProceed?';
   lisThePathOfMakeIsNotCorrect = 'The path of "make" is not correct: "%s"';
   lisTheCompilerFileDoesNotLookCorrect = 'The compiler file "%s" does not look'
     +' correct:%s%s';
@@ -2246,6 +2313,7 @@ resourcestring
   lisTargetFileNameEmptyUseUnitOutputDirectory = 'Target file name: (-o, empty = '
     +'use unit output directory)';
   lisHint = 'Hint';
+  lisNote = 'Note';
   lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh = 'The %s contains a '
     +'star * character.%sLazarus uses this as normal character and does not '
     +'expand this as file mask.';
@@ -2333,6 +2401,7 @@ resourcestring
   lisShowUnits = 'Show units';
   lisShowIdentifiers = 'Show identifiers';
   lisFilter = 'Filter';
+  lisCreateFilter = 'Create Filter';
   lisIssues = 'Issues';
   lisUseMessageFile = 'Use message file:';
   lisRegularExpression = 'Regular expression';
@@ -2447,6 +2516,9 @@ resourcestring
   uemShowLineNumbers = 'Show Line Numbers';
   lisDisableI18NForLFM = 'Disable I18N for LFM';
   uemDebugWord = 'Debug';
+  lisExtremelyVerbose = 'Extremely Verbose';
+  lisVeryVerbose = 'Very Verbose';
+  lisVerbose = 'Verbose';
   uemToggleBreakpoint = 'Toggle &Breakpoint';
   uemEvaluateModify = '&Evaluate/Modify ...';
   uemAddWatchAtCursor = 'Add &Watch At Cursor';
@@ -3247,6 +3319,10 @@ resourcestring
   lisCodeToolsDefsInsertKylix3ProjectTempl = 'Insert Kylix 3 Project Template';
   lisCodeToolsDefsSelectedNode = 'Selected Node:';
   lisCodeToolsDefsName = 'Name:';
+  lisFilterAlreadyExists = 'Filter already exists';
+  lisAFilterWithTheNameAlreadyExists = 'A filter with the name "%s" already '
+    +'exists.';
+  lisSaveMessages = 'Save messages';
   lisCodeToolsDefsDescription = 'Description:';
   lisCodeToolsDefsVariable = 'Variable:';
   lisCodeToolsDefsValueAsText = 'Value as Text';
@@ -3313,6 +3389,16 @@ resourcestring
   lisMakeResStrSourcePreview = 'Source preview';
   lisNoStringConstantFound = 'No string constant found';
   lisSuccess = 'Success';
+  lisFailedToResolveMacros = 'failed to resolve macros';
+  lisToolHasNoExecutable = 'tool "%s" has no executable';
+  lisCanNotFindExecutable = 'can not find executable "%s"';
+  lisMissingExecutable = 'missing executable "%s"';
+  lisExecutableIsADirectory = 'executable "%s" is a directory';
+  lisExecutableLacksThePermissionToRun = 'executable "%s" lacks the permission'
+    +' to run';
+  lisParser = 'parser "%s": %s';
+  lisAborted = 'Aborted';
+  lisInvalidMacrosIn = 'Invalid macros in "%s"';
   lisAllBlocksLooksOk = 'All blocks look ok.';
   lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created for "%s"';
 
@@ -3537,6 +3623,12 @@ resourcestring
   lisCompPalOpenPackage = 'Open package';
   lisKMOpenPackageFile = 'Open package file';
   lisCPOpenPackage = 'Open Package %s';
+  lisFilterAllMessagesOfType = 'Filter all messages of type %s';
+  lisExecutable3 = 'Executable: ';
+  lisCurrentDirectory2 = 'CurrentDirectory: ';
+  lisDesktop = 'Desktop: ';
+  lisExecutable2 = 'Executable: %s';
+  lisCurrentDirectory = 'CurrentDirectory: %s';
   lisCPOpenUnit = 'Open Unit %s';
   lisCompPalOpenUnit = 'Open unit';
   lisCompPalComponentList = 'View All';
@@ -5598,6 +5690,32 @@ resourcestring
   lisDADImageName = 'Image Name';
   lisDADPID = 'PID';
   lisDADAttach = 'Attach';
+  lisExitCode = 'Exit code %s';
+  lisCanTFindAValidPpu = 'Can''t find a valid %s.ppu';
+  lisCannotFind = 'Cannot find %s';
+  lisUsedBy = ' used by %s';
+  lisCheckSearchPathPackageTryACleanRebuildCheckImpleme = '. Check search path'
+    +' package %s, try a clean rebuild, check implementation uses sections.';
+  lisCheckIfPackageIsInTheDependencies = '. Check if package %s is in the '
+    +'dependencies';
+  lisOfTheProjectInspector = ' of the Project Inspector';
+  lisOfPackage = ' of package %s';
+  lisCompileWithVdForMoreDetailsCheckForDuplicates = '%s -> Compile with -vd '
+    +'for more details. Check for duplicates.';
+  lisMaybePackageNeedsACleanRebuild = '. Maybe package %s needs a clean '
+    +'rebuild.';
+  lisCannotFindUnit = 'Cannot find unit %s';
+  lisIncompatiblePpu = ', incompatible ppu=%s';
+  lisPackage3 = ', package %s';
+  lisCanTFindPpuOfUnit = 'Can''t find ppu of unit %s';
+  lisQuickFixError = 'QuickFix error';
+  lisPositionOutsideOfSource = '%s (position outside of source';
+  lisHideWithProjectOptionVm = 'Hide with project option (-vm%s)';
+  lisHideWithPackageOptionVm = 'Hide with package option (-vm%s)';
+  lisRemoveLocalVariable3 = 'Remove local variable "%s"';
+  lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated = '%s not found in %s at '
+    +'line %s, column %s.%sMaybe the message is outdated.';
+  lisShowAbstractMethodsOf = 'Show abstract methods of "%s"';
 
 implementation
 

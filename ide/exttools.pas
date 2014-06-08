@@ -44,7 +44,8 @@ uses
   // IDEIntf
   IDEExternToolIntf, BaseIDEIntf, MacroIntf, IDEMsgIntf,
   // IDE
-  IDEDialogs, CompOptsIntf, PackageIntf, LazIDEIntf, TransferMacros;
+  IDEDialogs, CompOptsIntf, PackageIntf, LazIDEIntf, TransferMacros,
+  LazarusIDEStrConsts;
 
 type
   TLMVToolState = (
@@ -382,7 +383,7 @@ begin
   EnterCriticalSection;
   try
     if (not Terminated) and (ExitStatus<>0) and (ErrorMessage='') then
-      ErrorMessage:='Exit code '+IntToStr(ExitStatus);
+      ErrorMessage:=Format(lisExitCode, [IntToStr(ExitStatus)]);
     if FStage>=etsStopped then exit;
     FStage:=etsStopped;
   finally
@@ -522,7 +523,7 @@ begin
       if ErrorMessage<>'' then
         View.SummaryMsg:=ErrorMessage
       else
-        View.SummaryMsg:='Success';
+        View.SummaryMsg:=lisSuccess;
       View.InputClosed; // this might delete the view
     end;
   finally
@@ -677,7 +678,7 @@ begin
   begin
     if not ResolveMacros then begin
       if ErrorMessage='' then
-        ErrorMessage:='failed to resolve macros';
+        ErrorMessage:=lisFailedToResolveMacros;
       if CheckError then exit;
     end;
   end;
@@ -696,13 +697,13 @@ begin
     if ExtractFilePath(Process.Executable)<>'' then
       Process.Executable:=AppendPathDelim(GetCurrentDirUTF8)+Process.Executable
     else if Process.Executable='' then begin
-      ErrorMessage:='tool "'+Title+'" has no executable';
+      ErrorMessage:=Format(lisToolHasNoExecutable, [Title]);
       CheckError;
       exit;
     end else begin
       ExeFile:=FindDefaultExecutablePath(Process.Executable,GetCurrentDirUTF8);
       if ExeFile='' then begin
-        ErrorMessage:='can not find executable "'+ExeFile+'"';
+        ErrorMessage:=Format(lisCanNotFindExecutable, [ExeFile]);
         CheckError;
         exit;
       end;
@@ -710,17 +711,17 @@ begin
     end;
   end;
   if not FileExistsUTF8(Process.Executable) then begin
-    ErrorMessage:='missing executable "'+ExeFile+'"';
+    ErrorMessage:=Format(lisMissingExecutable, [ExeFile]);
     CheckError;
     exit;
   end;
   if DirectoryExistsUTF8(Process.Executable) then begin
-    ErrorMessage:='executable "'+ExeFile+'" is a directory';
+    ErrorMessage:=Format(lisExecutableIsADirectory, [ExeFile]);
     CheckError;
     exit;
   end;
   if not FileIsExecutable(Process.Executable) then begin
-    ErrorMessage:='executable "'+ExeFile+'" lacks the permission to run';
+    ErrorMessage:=Format(lisExecutableLacksThePermissionToRun, [ExeFile]);
     CheckError;
     exit;
   end;
@@ -738,7 +739,7 @@ begin
       aParser.Init;
     except
       on E: Exception do begin
-        ErrorMessage:='parser "'+DbgSName(aParser)+'": '+E.Message;
+        ErrorMessage:=Format(lisParser, [DbgSName(aParser), E.Message]);
         CheckError;
         exit;
       end;
@@ -794,7 +795,7 @@ begin
     if Stage=etsStopped then exit;
 
     if ErrorMessage='' then
-      ErrorMessage:='Aborted';
+      ErrorMessage:=lisAborted;
     fTerminated:=true;
     if Stage=etsRunning then
       NeedProcTerminate:=true;
@@ -990,8 +991,9 @@ function TExternalTool.ResolveMacros: boolean;
     Result:=IDEMacros.SubstituteMacros(NewValue);
     if Result then exit;
     if ErrorMessage='' then
-      ErrorMessage:='Invalid macros in "'+aValue+'"';
-    IDEMessageDialog('Error','Invalid macros "'+aValue+'" in external tool "'+Title+'"',
+      ErrorMessage:=Format(lisInvalidMacrosIn, [aValue]);
+    IDEMessageDialog(lisCCOErrorCaption, Format(lisInvalidMacrosInExternalTool,
+      [aValue, Title]),
       mtError,[mbCancel]);
   end;
 
@@ -1541,13 +1543,14 @@ begin
       {$ENDIF}
 
       if not FileIsExecutable(Tool.Process.Executable) then begin
-        Tool.ErrorMessage:='can not execute "'+Tool.Process.Executable+'"';
+        Tool.ErrorMessage:=Format(lisCanNotExecute, [Tool.Process.Executable]);
         Tool.ProcessStopped;
         exit;
       end;
       if not DirectoryExistsUTF8(ChompPathDelim(Tool.Process.CurrentDirectory))
       then begin
-        Tool.ErrorMessage:='missing directory "'+Tool.Process.CurrentDirectory+'"';
+        Tool.ErrorMessage:=Format(lisMissingDirectory, [Tool.Process.
+          CurrentDirectory]);
         Tool.ProcessStopped;
         exit;
       end;
@@ -1574,7 +1577,7 @@ begin
           DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' execute failed: ',E.Message]);
           {$ENDIF}
           if Tool.ErrorMessage='' then
-            Tool.ErrorMessage:='unable to execute: '+E.Message;
+            Tool.ErrorMessage:=Format(lisUnableToExecute, [E.Message]);
         end;
       end;
       // BEWARE: we are now either in the normal thread or in the failed forked thread
@@ -1653,7 +1656,7 @@ begin
         {$ENDIF}
         Tool.ExitStatus:=Tool.Process.ExitStatus;
       except
-        Tool.ErrorMessage:='unable to read process ExitStatus';
+        Tool.ErrorMessage:=lisUnableToReadProcessExitStatus;
       end;
     except
       on E: Exception do begin
@@ -1682,7 +1685,7 @@ begin
         DebuglnThreadLog(['TExternalToolThread.Execute adding pending messages: ',E.Message]);
         {$ENDIF}
         if Tool<>nil then
-          Tool.ErrorMessage:='freeing buffer lines: '+E.Message;
+          Tool.ErrorMessage:=Format(lisFreeingBufferLines, [E.Message]);
       end;
     end;
   end;

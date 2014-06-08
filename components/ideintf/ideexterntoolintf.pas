@@ -20,13 +20,14 @@ uses
   {$ELSE}
   LazMethodList, contnrs,
   {$ENDIF}
-  LazLogger, LazFileUtils, LazFileCache, Menus, LCLProc;
+  ObjInspStrConsts, LazLogger, LazFileUtils, LazFileCache, Menus, LCLProc;
 
 const
   SubToolFPC = 'FPC';
   SubToolFPCPriority = 100;
   SubToolFPCLinker = 'FPCLinker';
   SubToolFPCRes = 'FPCRes';
+  SubToolFPCWindRes = 'FPCWindRes';
 
   SubToolMake = 'make';
   SubToolMakePriority = 1000; // higher than FPC
@@ -1235,7 +1236,7 @@ begin
     Result:=AddParser(ParserClass);
     exit;
   end;
-  raise Exception.Create('unable to find parser for tool "'+SubTool+'"');
+  raise Exception.Create(Format(lisUnableToFindParserForTool, [SubTool]));
 end;
 
 function TAbstractExternalTool.AddParser(ParserClass: TExtToolParserClass

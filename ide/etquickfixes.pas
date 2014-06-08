@@ -53,7 +53,8 @@ uses
   Classes, SysUtils, Menus, Dialogs, Controls, CodeToolManager, CodeCache,
   CodeTree, CodeAtom, BasicCodeTools, KeywordFuncLists, LazLogger, AvgLvlTree,
   LazFileUtils, IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs, MenuIntf,
-  ProjectIntf, PackageIntf, CompOptsIntf, etFPCMsgParser, AbstractsMethodsDlg;
+  ProjectIntf, PackageIntf, CompOptsIntf, etFPCMsgParser, AbstractsMethodsDlg,
+  LazarusIDEStrConsts;
 
 type
 
@@ -150,7 +151,7 @@ type
 
 procedure ShowError(Msg: string);
 begin
-  IDEMessageDialog('QuickFix error',Msg,mtError,[mbCancel]);
+  IDEMessageDialog(lisQuickFixError, Msg, mtError, [mbCancel]);
 end;
 
 function IsIdentifierInCode(Code: TCodeBuffer; X,Y: integer;
@@ -167,7 +168,7 @@ begin
   end;
   Code.LineColToPosition(Y,X,p);
   if p<1 then begin
-    ShowError(ErrorMsg+' (position outside of source');
+    ShowError(Format(lisPositionOutsideOfSource, [ErrorMsg]));
     exit;
   end;
   GetIdentStartEndAtPosition(Code.Source,p,IdentStart,IdentEnd);
@@ -213,11 +214,11 @@ begin
     if IDETool is TLazProject then begin
       CompOpts:=TLazProject(IDETool).LazCompilerOptions;
       if CompOpts.MessageFlags[Msg.MsgID]=cfvHide then exit;
-      s:='Hide with project option (-vm'+IntToStr(Msg.MsgID)+')'
+      s:=Format(lisHideWithProjectOptionVm, [IntToStr(Msg.MsgID)])
     end else if IDETool is TIDEPackage then begin
       CompOpts:=TIDEPackage(IDETool).LazCompilerOptions;
       if CompOpts.MessageFlags[Msg.MsgID]=cfvHide then exit;
-      s:='Hide with package option (-vm'+IntToStr(Msg.MsgID)+')';
+      s:=Format(lisHideWithPackageOptionVm, [IntToStr(Msg.MsgID)]);
     end;
     Fixes.AddMenuItem(Self,Msg,s);
   end;
@@ -297,7 +298,7 @@ begin
   for i:=0 to Fixes.LineCount-1 do begin
     Msg:=Fixes.Lines[i];
     if not IsApplicable(Msg,Identifier) then continue;
-    Fixes.AddMenuItem(Self,Msg,'Remove local variable "'+Identifier+'"');
+    Fixes.AddMenuItem(Self, Msg, Format(lisRemoveLocalVariable3, [Identifier]));
     exit;
   end;
 end;
@@ -319,9 +320,8 @@ begin
   if Code=nil then exit;
 
   if not IsIdentifierInCode(Code,Msg.Column,Msg.Line,Identifier,
-    Identifier+' not found in '+Code.Filename
-       +' at line '+IntToStr(Msg.Line)+', column '+IntToStr(Msg.Column)+'.'
-       +LineEnding+'Maybe the message is outdated.')
+    Format(lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated, [Identifier, Code
+      .Filename, IntToStr(Msg.Line), IntToStr(Msg.Column), LineEnding]))
   then exit;
 
   if not CodeToolBoss.RemoveIdentifierDefinition(Code,Msg.Column,Msg.Line) then
@@ -358,7 +358,8 @@ begin
   for i:=0 to Fixes.LineCount-1 do begin
     Msg:=Fixes.Lines[i];
     if not IsApplicable(Msg,aClassName,aMethodName) then continue;
-    Fixes.AddMenuItem(Self,Msg,'Show abstract methods of "'+aClassName+'"');
+    Fixes.AddMenuItem(Self, Msg, Format(lisShowAbstractMethodsOf, [aClassName])
+      );
     exit;
   end;
 end;
@@ -401,9 +402,9 @@ begin
     if CodeToolBoss.ErrorMessage<>'' then begin
       LazarusIDE.DoJumpToCodeToolBossError
     end else begin
-      IDEMessageDialog('Class not found',
-        'Class '+aClassName+' not found at '
-        +Code.Filename+'('+IntToStr(Msg.Line)+','+IntToStr(Msg.Column)+')',
+      IDEMessageDialog(lisClassNotFound,
+        Format(lisClassNotFoundAt, [aClassName, Code.Filename, IntToStr(Msg.Line
+          ), IntToStr(Msg.Column)]),
         mtError,[mbCancel]);
     end;
     exit;
@@ -455,7 +456,7 @@ begin
   for i:=0 to Fixes.LineCount-1 do begin
     Msg:=Fixes.Lines[i];
     if not IsApplicable(Msg,MissingUnitName,UsedByUnit) then continue;
-    Fixes.AddMenuItem(Self,Msg,'Remove uses "'+MissingUnitName+'"');
+    Fixes.AddMenuItem(Self, Msg, Format(lisRemoveUses, [MissingUnitName]));
     exit;
   end;
 end;
@@ -540,7 +541,7 @@ begin
   for i:=0 to Fixes.LineCount-1 do begin
     Msg:=Fixes.Lines[i];
     if not IsApplicable(Msg,Identifier) then continue;
-    Fixes.AddMenuItem(Self,Msg,'Create local variable "'+Identifier+'"');
+    Fixes.AddMenuItem(Self, Msg, Format(lisCreateLocalVariable, [Identifier]));
     // ToDo: add private/public variable
     exit;
   end;
@@ -567,9 +568,8 @@ begin
   if Code=nil then exit;
 
   if not IsIdentifierInCode(Code,Msg.Column,Msg.Line,Identifier,
-    Identifier+' not found in '+Code.Filename
-       +' at line '+IntToStr(Msg.Line)+', column '+IntToStr(Msg.Column)+'.'
-       +LineEnding+'Maybe the message is outdated.')
+    Format(lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated2, [Identifier,
+      Code.Filename, IntToStr(Msg.Line), IntToStr(Msg.Column), LineEnding]))
   then exit;
 
   if not CodeToolBoss.CreateVariableForIdentifier(Code,Msg.Column,Msg.Line,-1,
@@ -689,7 +689,8 @@ begin
     end;
     if List.Count=0 then exit;
     if List.Count>1 then
-      Fixes.AddMenuItem(Self,nil,'Hide all hints and warnings by inserting IDE directives {%H-}');
+      Fixes.AddMenuItem(Self, nil,
+        lisHideAllHintsAndWarningsByInsertingIDEDirectivesH);
 
     for i:=0 to List.Count-1 do begin
       Msg:=TMessageLine(List[i]);
@@ -700,9 +701,9 @@ begin
       if List.Count>1 then
         aCaption+='('+IntToStr(Msg.Line)+','+IntToStr(Msg.Column)+')';
       if aCaption<>'' then
-        aCaption:='Hide message at '+aCaption+' by inserting IDE directive {%H-}'
+        aCaption:=Format(lisHideMessageAtByInsertingIDEDirectiveH, [aCaption])
       else
-        aCaption:='Hide message by inserting IDE directive {%H-}';
+        aCaption:=lisHideMessageByInsertingIDEDirectiveH;
       Fixes.AddMenuItem(Self,Msg,aCaption);
     end;
   finally
