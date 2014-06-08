@@ -7147,33 +7147,10 @@ end;
 procedure TProjectBuildModes.SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
 var
   Cnt: Integer;
-
-  procedure SaveAtOldPlace(MatrixOptions: TBuildMatrixOptions);
-  var
-    i: Integer;
-    MatrixOption: TBuildMatrixOption;
-    SubPath: String;
-  begin
-    for i:=0 to MatrixOptions.Count-1 do
-    begin
-      MatrixOption:=MatrixOptions[i];
-      if (MatrixOption.Typ=bmotIDEMacro)
-      and MatrixOption.FitsTarget(BuildMatrixProjectName)
-      and MatrixOption.FitsMode(aMode.Identifier)
-      then begin
-        inc(Cnt);
-        SubPath:=Path+'Macro'+IntToStr(i+1)+'/';
-        FXMLConfig.SetDeleteValue(SubPath+'Name',MatrixOption.MacroName,'');
-        FXMLConfig.SetDeleteValue(SubPath+'Value',MatrixOption.Value,'');
-      end;
-    end;
-  end;
-
 begin
-  // for older IDE (<1.1) SaveAtOldPlace the macros at the old place
-  Cnt:=0;
-  SaveAtOldPlace(SessionMatrixOptions);
-  SaveAtOldPlace(SharedMatrixOptions);
+  // for older IDE (<1.1) save the macros at the old place
+  Cnt:=SessionMatrixOptions.SaveAtOldXMLConfig(FXMLConfig, Path, aMode.Identifier);
+  Cnt+=SharedMatrixOptions.SaveAtOldXMLConfig(FXMLConfig, Path, aMode.Identifier);
   FXMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
 end;
 

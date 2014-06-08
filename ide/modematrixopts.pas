@@ -142,6 +142,7 @@ type
     procedure LoadFromXMLConfig(Cfg: TXMLConfig; const aPath: string);
     procedure SaveToXMLConfig(Cfg: TXMLConfig; const aPath: string;
       const SaveMode: TStrToBoolEvent);
+    function SaveAtOldXMLConfig(Cfg: TXMLConfig; const Path, ModeIdent: string): integer;
 
     // queries
     procedure AppendCustomOptions(Target, ActiveMode: string; var Options: string);
@@ -580,6 +581,29 @@ begin
   Cfg.SetDeleteValue(aPath+'Count',Count,0);
   for i:=0 to Count-1 do
     Items[i].SaveToXMLConfig(Cfg,aPath+'Item'+IntToStr(i+1)+'/',SaveMode);
+end;
+
+function TBuildMatrixOptions.SaveAtOldXMLConfig(Cfg: TXMLConfig;
+  const Path, ModeIdent: string): integer;
+var
+  i: Integer;
+  MatrixOption: TBuildMatrixOption;
+  SubPath: String;
+begin
+  Result:=0;
+  for i:=0 to Count-1 do
+  begin
+    MatrixOption:=Items[i];
+    if (MatrixOption.Typ=bmotIDEMacro)
+    and MatrixOption.FitsTarget(BuildMatrixProjectName)
+    and MatrixOption.FitsMode(ModeIdent) then
+    begin
+      inc(Result);
+      SubPath:=Path+'Macro'+IntToStr(i+1)+'/';
+      Cfg.SetDeleteValue(SubPath+'Name',MatrixOption.MacroName,'');
+      Cfg.SetDeleteValue(SubPath+'Value',MatrixOption.Value,'');
+    end;
+  end;
 end;
 
 procedure TBuildMatrixOptions.AppendCustomOptions(Target, ActiveMode: string;
