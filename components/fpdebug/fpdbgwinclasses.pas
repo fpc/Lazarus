@@ -45,6 +45,7 @@ uses
   FpDbgClasses,
   process,
   FpDbgWinExtra,
+  strutils,
   FpDbgInfo,
   FpDbgLoader, FpdMemoryTools,
   DbgIntfBaseTypes,
@@ -152,20 +153,59 @@ begin
   DebugLn('FpDbg-ERROR: ', GetLastErrorText);
 end;
 
-function GetModuleFileName(AModuleHandle: THandle): string;
+function QueryFullProcessImageName(hProcess:HANDLE; dwFlags: DWord; lpExeName:LPTSTR; var lpdwSize:DWORD):BOOL; stdcall; external 'kernel32' name 'QueryFullProcessImageNameA';
+
+function GetFullProcessImageName(AProcessHandle: THandle): string;
 var
   s: string;
-  len: Integer;
+  len: DWORD;
 begin
-  SetLength(S, MAX_PATH);
-  len := windows.GetModuleFileName(AModuleHandle, @S[1], MAX_PATH);
-  if len > 0
-  then SetLength(S, len - 1)
+  len := MAX_PATH;
+  SetLength(S, len);
+  if QueryFullProcessImageName(AProcessHandle, 0, @S[1], len)
+  then SetLength(S, len)
   else begin
     S := '';
     LogLastError;
   end;
   result := s;
+end;
+
+function GetModuleFileName(AModuleHandle: THandle): string;
+var
+  s: string;
+  len: Integer;
+  hMod: THandle;
+  _GetFinalPathNameByHandle: function(hFile: HANDLE; lpFilename:LPTSTR; cchFilePath, dwFlags: DWORD):DWORD; stdcall;
+begin
+  result := '';
+  // GetFinalPathNameByHandle is only available on Windows Vista / Server 2008
+  _GetFinalPathNameByHandle := nil;
+
+  // normally you would load a lib, but since kernel32 is
+  // always loaded we can use this (and we don't have to free it
+  hMod := GetModuleHandle(kernel32);
+  if hMod = 0 then Exit; //????
+
+  pointer(_GetFinalPathNameByHandle) := GetProcAddress(hMod, 'GetFinalPathNameByHandleA');
+  if assigned(_GetFinalPathNameByHandle) then begin
+    SetLength(S, MAX_PATH);
+
+    len := _GetFinalPathNameByHandle(AModuleHandle, @S[1], MAX_PATH, 0);
+    if len > 0
+    then SetLength(S, len - 1)
+    else begin
+      S := '';
+      LogLastError;
+    end;
+    // On some older Windows versions there's a bug in GetFinalPathNameByHandleA,
+    // which leads to a trailing #0.
+    if strutils.RightStr(S,1) =#0 then
+      SetLength(S,length(S)-1);
+    // Remove the \\?\ prefix
+    Delete(S,1,4);
+    result := S;
+  end;
 end;
 
 function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
@@ -174,24 +214,27 @@ var
   S: String;
   W: WideString;
 begin
-  W := '';
+  S := '';
   if (lpImageName<>nil) and AProcess.ReadOrdinal(TDbgPtr(lpImageName), NamePtr)
   then begin
     if fUnicode <> 0
     then begin
-      AProcess.ReadWString(NamePtr, MAX_PATH, W);
+      if AProcess.ReadWString(NamePtr, MAX_PATH, W)
+      then S := W;
     end
     else begin
-      if AProcess.ReadString(NamePtr, MAX_PATH, S)
-      then W := S;
+      AProcess.ReadString(NamePtr, MAX_PATH, S);
     end;
   end;
 
-  if W = ''
+  if S = ''
   then begin
-    W := GetModuleFileName(hFile);
+    if hFile=0 then
+      S := GetFullProcessImageName(AProcess.Handle)
+    else
+      S := GetModuleFileName(hFile);
   end;
-  result := W;
+  result := S;
 end;
 
 { tDbgWinLibrary }
@@ -266,6 +309,7 @@ var
   BytesRead: PtrUInt;
   buf: array of Char;
 begin
+  AData := '';
   SetLength(buf, AMaxSize + 1);
   Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @Buf[0], AMaxSize, BytesRead);
   if not Result then Exit;
@@ -280,6 +324,7 @@ var
   BytesRead: PtrUInt;
   buf: array of WChar;
 begin
+  AData := '';
   SetLength(buf, AMaxSize + 1);
   Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @Buf[0], SizeOf(WChar) * AMaxSize, BytesRead);
   if not Result then Exit;
@@ -839,7 +884,7 @@ var
 begin
   FInfo := AInfo;
 
-  s := GetProcFilename(Self, AInfo.lpImageName, AInfo.fUnicode, AInfo.hFile);
+  s := GetProcFilename(Self, AInfo.lpImageName, AInfo.fUnicode, 0);
   if s <> ''
   then SetName(s);
 
