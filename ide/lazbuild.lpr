@@ -28,7 +28,7 @@ uses
   {$IFDEF unix}
   cthreads,
   {$ENDIF}
-  Classes, SysUtils,
+  Classes, SysUtils, math,
   Interfaces, // this includes the NoGUI widgetset
   CustApp, LCLProc, Dialogs, Forms, Controls,
   FileUtil, Masks, InterfaceBase, UTF8Process, LConvEncoding,
@@ -1503,9 +1503,9 @@ begin
   for i:=1 to ToolParamCount do begin
     p:=ToolParamStr(i);
     if p='--verbose' then
-      inc(ConsoleVerbosity)
+      ConsoleVerbosity:=Max(1,ConsoleVerbosity+1)
     else if (p='-q') or (p='--quiet') then
-      dec(ConsoleVerbosity);
+      ConsoleVerbosity:=Min(0,ConsoleVerbosity-1);
   end;
 
   Options:=TStringList.Create;
