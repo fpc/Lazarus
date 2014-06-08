@@ -52,6 +52,7 @@ type
     procedure GControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
     procedure GControllerCreateProcessEvent(var continue: boolean);
     procedure GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
+    procedure OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
   protected
     Procedure DoRun; override;
   public
@@ -191,6 +192,15 @@ begin
   end;
 end;
 
+procedure TFPDLoop.OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
+begin
+  case ALogLevel of
+    dllDebug : writeln('Debug: '+AString);
+    dllInfo  : writeln(AString);
+    dllError : writeln('Error: '+AString);
+  end;
+end;
+
 procedure TFPDLoop.DoRun;
 var
   S: String;
@@ -214,6 +224,7 @@ end;
 procedure TFPDLoop.Initialize;
 begin
   inherited Initialize;
+  GController.OnLog:=@OnLog;
   GController.OnHitBreakpointEvent:=@GControllerHitBreakpointEvent;
   GController.OnCreateProcessEvent:=@GControllerCreateProcessEvent;
   GController.OnExceptionEvent:=@GControllerExceptionEvent;
