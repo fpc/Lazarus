@@ -490,7 +490,7 @@ type
     procedure LeaveCriticalSection; virtual;
     property Thread: TThread read FThread write FThread;
     procedure ConsistencyCheck; virtual;
-    procedure AutoFree; // free if not in use
+    procedure AutoFree; // (only main thread) free if not in use
 
     property Title: string read FTitle write SetTitle;
     property Hint: string read FHint write FHint; // this hint is shown in About dialog
@@ -605,6 +605,7 @@ type
     procedure Clear; virtual; abstract; // terminate + free all tools
     property Items[Index: integer]: TAbstractExternalTool read GetItems; default;
     function Add(Title: string): TAbstractExternalTool; virtual; abstract;
+    function IndexOf(Tool: TAbstractExternalTool): integer; virtual; abstract;
     procedure ConsistencyCheck; virtual;
     procedure EnterCriticalSection; virtual; abstract;
     procedure LeaveCriticalSection; virtual; abstract;

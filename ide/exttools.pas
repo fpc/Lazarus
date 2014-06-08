@@ -35,7 +35,7 @@ unit ExtTools;
 interface
 
 uses
-  Classes, SysUtils, math, process, Pipes, contnrs, UTF8Process,
+  Classes, SysUtils, math, process, Pipes, UTF8Process,
   LazFileUtils,
   // Codetools
   FileProcs, CodeToolsStructs,
@@ -87,7 +87,7 @@ type
 
   TLazExtToolConsole = class(TComponent)
   private
-    fViews: TObjectList; // list of TLazExtToolConsoleView
+    fViews: TFPList; // list of TLazExtToolConsoleView
     function GetViews(Index: integer): TLazExtToolConsoleView;
   public
     constructor Create(AOwner: TComponent); override;
@@ -181,6 +181,7 @@ type
     constructor Create(aOwner: TComponent); override;
     destructor Destroy; override;
     function Add(Title: string): TAbstractExternalTool; override;
+    function IndexOf(Tool: TAbstractExternalTool): integer; override;
     property MaxProcessCount: integer read FMaxProcessCount write FMaxProcessCount;
     procedure Work;
     function FindNextToolToExec: TExternalTool;
@@ -221,18 +222,21 @@ end;
 constructor TLazExtToolConsole.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fViews:=TObjectList.Create(true);
+  fViews:=TFPList.Create;
   ExtToolConsole:=Self;
 end;
 
 destructor TLazExtToolConsole.Destroy;
 begin
   Clear;
+  FreeAndNil(fViews);
   ExtToolConsole:=nil;
   inherited Destroy;
 end;
 
 procedure TLazExtToolConsole.Clear;
+var
+  i: Integer;
 begin
   while FindUnfinishedView<>nil do begin
     if Application<>nil then
@@ -241,7 +245,12 @@ begin
       CheckSynchronize;
     Sleep(10);
   end;
-  fViews.Clear;
+  for i:=Count-1 downto 0 do begin
+    if i>=Count then continue;
+    Views[i].Free;
+  end;
+  if Count>0 then
+    raise Exception.Create('TLazExtToolConsole.Clear: some views failed to free');
 end;
 
 function TLazExtToolConsole.CreateView(Tool: TAbstractExternalTool
@@ -507,13 +516,14 @@ begin
 
   EnterCriticalSection;
   try
-    for i:=0 to ViewCount-1 do begin
+    for i:=ViewCount-1 downto 0 do begin
+      if i>=ViewCount then continue;
       View:=Views[i];
       if ErrorMessage<>'' then
         View.SummaryMsg:=ErrorMessage
       else
         View.SummaryMsg:='Success';
-      View.InputClosed;
+      View.InputClosed; // this might delete the view
     end;
   finally
     LeaveCriticalSection;
@@ -600,9 +610,9 @@ destructor TExternalTool.Destroy;
 begin
   EnterCriticalSection;
   try
+    FStage:=etsDestroying;
     if Thread is TExternalToolThread then
       TExternalToolThread(Thread).Tool:=nil;
-    FStage:=etsDestroying;
     FreeAndNil(FProcess);
     FreeAndNil(FWorkerOutput);
     FreeAndNil(fExecuteBefore);
@@ -947,7 +957,10 @@ begin
 end;
 
 procedure TExternalTool.WaitForExit;
+var
+  MyTools: TIDEExternalTools;
 begin
+  MyTools:=Tools;
   repeat
     EnterCriticalSection;
     try
@@ -956,11 +969,15 @@ begin
     finally
       LeaveCriticalSection;
     end;
+    // call synchronized tasks, this might free this tool
     if MainThreadID=ThreadID then
       if Application<>nil then
         Application.ProcessMessages
       else
         CheckSynchronize;
+    // check if this tool still exists
+    if MyTools.IndexOf(Self)<0 then exit;
+    // still running => wait
     Sleep(10);
   until false;
 end;
@@ -1268,6 +1285,11 @@ begin
   Result:=TExternalTool.Create(Self);
   Result.Title:=Title;
   fItems.Add(Result);
+end;
+
+function TExternalTools.IndexOf(Tool: TAbstractExternalTool): integer;
+begin
+  Result:=fItems.IndexOf(Tool);
 end;
 
 function TExternalTools.ParserCount: integer;
