@@ -143,6 +143,7 @@ begin
   FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, @Log);
   if assigned(FCurrentProcess) then
     begin
+    FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);
     FCurrentProcess.OnDebugInfoLoaded := @DoOnDebugInfoLoaded;
     Log('Got PID: %d, TID: %d', [FCurrentProcess.ProcessID, FCurrentProcess.ThreadID]);
     result := true;
@@ -190,7 +191,6 @@ end;
 procedure TDbgController.ProcessLoop;
 
 var
-  AFirstLoop: boolean;
   AProcessIdentifier: THandle;
   AThreadIdentifier: THandle;
   AExit: boolean;
@@ -199,24 +199,25 @@ begin
   AExit:=false;
   repeat
     if assigned(FCurrentProcess) and not assigned(FMainProcess) then
-      begin
-      FMainProcess:=FCurrentProcess;
-      AFirstLoop:=true;
-      end
+      FMainProcess:=FCurrentProcess
     else
-      begin
-      AFirstLoop:=false;
       FCurrentProcess.Continue(FCurrentProcess, FCurrentThread);
-      end;
 
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then Continue;
 
     FCurrentProcess := nil;
     FCurrentThread := nil;
-    if not GetProcess(AProcessIdentifier, FCurrentProcess) and not AFirstLoop then Continue;
+    if not GetProcess(AProcessIdentifier, FCurrentProcess) then
+      begin
+      // A second/third etc process has been started.
+      FCurrentProcess := OSDbgClasses.DbgProcessClass.Create('', AProcessIdentifier, AThreadIdentifier, OnLog);
+      FProcessMap.Add(AProcessIdentifier, FCurrentProcess);
+      Continue;
+      end;
 
-    if AFirstLoop then
-      FCurrentProcess := FMainProcess;
+    if FCurrentProcess<>FMainProcess then
+      // Just continue the process. Only the main-process is being debugged.
+      Continue;
 
     if not FCurrentProcess.GetThread(AThreadIdentifier, FCurrentThread)
     then Log('LOOP: Unable to retrieve current thread');
@@ -235,7 +236,7 @@ begin
     case FPDEvent of
       deCreateProcess :
         begin
-          FProcessMap.Add(AProcessIdentifier, FCurrentProcess);
+          // Do nothing
         end;
       deExitProcess :
         begin

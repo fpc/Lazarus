@@ -432,9 +432,13 @@ begin
   case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
    EXCEPTION_BREAKPOINT,
    EXCEPTION_SINGLE_STEP: begin
-     if (AThread.SingleStepping) or assigned(FCurrentBreakpoint) then
-       TDbgWinThread(AThread).SetSingleStep;
-     AThread.BeforeContinue;
+     if assigned(AThread) then begin
+       // The thread is not assigned if the current process is not the main
+       // process. (Only the main process is being 'debugged')
+       if (AThread.SingleStepping) or assigned(FCurrentBreakpoint) then
+         TDbgWinThread(AThread).SetSingleStep;
+       AThread.BeforeContinue;
+     end;
      Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
    end
   else begin
