@@ -219,8 +219,8 @@ begin
       // Just continue the process. Only the main-process is being debugged.
       Continue;
 
-    if not FCurrentProcess.GetThread(AThreadIdentifier, FCurrentThread)
-    then Log('LOOP: Unable to retrieve current thread');
+    if not FCurrentProcess.GetThread(AThreadIdentifier, FCurrentThread) then
+      FCurrentThread := FCurrentProcess.AddThread(AThreadIdentifier);
 
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
     if (FPDEvent<>deInternalContinue) and assigned(FCurrentProcess.RunToBreakpoint) then begin

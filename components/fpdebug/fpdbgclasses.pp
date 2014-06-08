@@ -278,6 +278,8 @@ type
     function GetLastEventProcessIdentifier: THandle; virtual;
     function DoBreak(BreakpointAddress: TDBGPtr; AThreadID: integer): Boolean;
     procedure MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);
+    // Should create a TDbgThread-instance for the given ThreadIdentifier.
+    function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; virtual; abstract;
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; virtual;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); virtual;
@@ -303,6 +305,8 @@ type
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean; virtual;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; virtual; abstract;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
+
+    function AddThread(AThreadIdentifier: THandle): TDbgThread;
 
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
 
@@ -775,8 +779,7 @@ begin
   AThread := nil;
   Result := FThreadMap.GetData(AID, Thread) and (Thread <> nil);
   if Result
-  then AThread := Thread
-  else Log('Unknown thread ID %u for process %u', [AID, FProcessID]);
+  then AThread := Thread;
 end;
 
 function TDbgProcess.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
@@ -821,6 +824,24 @@ end;
 function TDbgProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean;
 begin
   result := false;
+end;
+
+function TDbgProcess.AddThread(AThreadIdentifier: THandle): TDbgThread;
+var
+  IsMainThread: boolean;
+begin
+  result := CreateThread(AthreadIdentifier, IsMainThread);
+  if assigned(result) then
+  begin
+    FThreadMap.Add(AThreadIdentifier, Result);
+    if IsMainThread then
+    begin
+      assert(FMainThread=nil);
+      FMainThread := result;
+    end;
+  end
+  else
+    Log('Unknown thread ID %u for process %u', [AThreadIdentifier, ProcessID]);
 end;
 
 function TDbgProcess.RemoveBreak(const ALocation: TDbgPtr): Boolean;

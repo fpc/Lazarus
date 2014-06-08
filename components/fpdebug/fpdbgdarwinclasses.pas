@@ -93,6 +93,7 @@ type
     procedure OnForkEvent(Sender : TObject);
   protected
     function InitializeLoader: TDbgImageLoader; override;
+    function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; override;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); override;
@@ -345,6 +346,15 @@ begin
     end;
 end;
 
+function TDbgDarwinProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;
+begin
+  IsMainThread:=true;
+  if AthreadIdentifier>-1 then
+    result := TDbgDarwinThread.Create(Self, AthreadIdentifier, AthreadIdentifier)
+  else
+    result := nil;
+end;
+
 constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID,
   AThreadID: Integer; AOnLog: TOnLog);
 var
@@ -525,35 +535,24 @@ var
   aKernResult: kern_return_t;
   act_list: thread_act_array_t;
   act_listCtn: mach_msg_type_number_t;
-  i: Integer;
-  AThread: TDbgThread;
 begin
+  ThreadIdentifier:=-1;
+
   ProcessIdentifier:=FpWaitPid(-1, FStatus, 0);
 
   result := ProcessIdentifier<>-1;
   if not result then
-    writeln('Failed to wait for debug event. Errcode: ', fpgeterrno)
-  else if WIFSTOPPED(FStatus) then
+    Log('Failed to wait for debug event. Errcode: %d', [fpgeterrno])
+  else if (WIFSTOPPED(FStatus)) then
     begin
-    // Read thread-information
     aKernResult := task_threads(FTaskPort, act_list, act_listCtn);
     if aKernResult <> KERN_SUCCESS then
       begin
       Log('Failed to call task_threads. Mach error: '+mach_error_string(aKernResult));
       end;
 
-    for i := 0 to act_listCtn-1 do
-      begin
-      if not GetThread(act_list^[i], AThread) then
-        begin
-        AThread := TDbgDarwinThread.Create(Self, act_list^[i], act_list^[i]);
-        FThreadMap.Add(act_list^[i], AThread);
-        if FMainThread=nil then
-          FMainThread := AThread;
-        end;
-      end;
-    ThreadIdentifier:=act_list^[0];
-    TDbgDarwinThread(FMainThread).ReadThreadState;
+    if act_listCtn>0 then
+      ThreadIdentifier := act_list^[0];
     end
 end;
 
@@ -577,6 +576,7 @@ begin
   else if WIFSTOPPED(FStatus) then
     begin
     writeln('Stopped ',FStatus, ' signal: ',wstopsig(FStatus));
+    TDbgDarwinThread(AThread).ReadThreadState;
     case wstopsig(FStatus) of
       SIGTRAP:
         begin

@@ -104,6 +104,8 @@ type
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; override;
+    function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
+
     procedure StartProcess(const AThreadID: DWORD; const AInfo: TCreateProcessDebugInfo);
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
@@ -115,7 +117,6 @@ type
 
     function AddrOffset: Int64; override;
     function  AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
-    procedure AddThread(const AID: Integer; const AInfo: TCreateThreadDebugInfo);
     procedure RemoveLib(const AInfo: TUnloadDLLDebugInfo);
   end;
 
@@ -433,9 +434,6 @@ function TDbgWinProcess.HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolea
 begin
   Result := False;
   case ADebugEvent.dwDebugEventCode of
-    CREATE_THREAD_DEBUG_EVENT: begin
-      AddThread(ADebugEvent.dwThreadId, ADebugEvent.CreateThread)
-    end;
     EXIT_THREAD_DEBUG_EVENT: begin
       RemoveThread(ADebugEvent.dwThreadId);
     end;
@@ -878,6 +876,24 @@ begin
   end;
 end;
 
+function TDbgWinProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;
+begin
+  case MDebugEvent.dwDebugEventCode of
+    CREATE_THREAD_DEBUG_EVENT :
+      begin
+      result := OSDbgClasses.DbgThreadClass.Create(Self, AThreadIdentifier, MDebugEvent.CreateThread.hThread);
+      IsMainThread := false;
+      end;
+    CREATE_PROCESS_DEBUG_EVENT :
+      begin
+      result := OSDbgClasses.DbgThreadClass.Create(Self, AThreadIdentifier, MDebugEvent.CreateProcessInfo.hThread);
+      IsMainThread := true;
+      end
+  else
+    result := nil;
+  end; {case}
+end;
+
 procedure TDbgWinProcess.StartProcess(const AThreadID: DWORD;const AInfo: TCreateProcessDebugInfo);
 var
   s: string;
@@ -892,9 +908,6 @@ begin
 
   if DbgInfo.HasInfo
   then FSymInstances.Add(Self);
-
-  FMainThread := OSDbgClasses.DbgThreadClass.Create(Self, AThreadID, AInfo.hThread);
-  FThreadMap.Add(FMainThread.ID, FMainThread);
 end;
 
 function TDbgWinProcess.GetInstructionPointerRegisterValue: TDbgPtr;
@@ -955,14 +968,6 @@ begin
   FLibMap.Add(ID, Result);
   if Result.DbgInfo.HasInfo
   then FSymInstances.Add(Result);
-end;
-
-procedure TDbgWinProcess.AddThread(const AID: Integer; const AInfo: TCreateThreadDebugInfo);
-var
-  Thread: TDbgThread;
-begin
-  Thread := OSDbgClasses.DbgThreadClass.Create(Self, AID, AInfo.hThread);
-  FThreadMap.Add(AID, Thread);
 end;
 
 procedure TDbgWinProcess.RemoveLib(const AInfo: TUnloadDLLDebugInfo);
