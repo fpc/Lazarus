@@ -1230,6 +1230,8 @@ var
     EndKeywordEndPos: LongInt;
     IndentWith: LongInt;
     IndentInnerWith: LongInt;
+    KeepBeginEnd: Boolean;
+    NeedBeginEnd: Boolean;
   begin
     SourceChangeCache.MainScanner:=Scanner;
 
@@ -1238,7 +1240,7 @@ var
        or (WithVarNode.PriorBrother.Desc<>ctnWithVariable)
        or (WithVarNode.PriorBrother.FirstChild<>nil))
     then begin
-      // remove With header and footer
+      // remove WITH header and footer
       // e.g. with A do
       //      with A do begin end;
       MoveCursorToNodeStart(WithVarNode.Prior);
@@ -1246,34 +1248,43 @@ var
       DoKeywordEndPos:=0;
       EndKeywordStartPos:=0;
       EndKeywordEndPos:=0;
+      KeepBeginEnd:=false;
       repeat
         ReadNextAtom;
-        if (WithKeywordStartPos=0) and (CurPos.StartPos>=WithVarNode.StartPos)
-        then begin
-          WithKeywordStartPos:=LastAtoms.GetValueAt(0).StartPos;
-        end;
-        if (DoKeywordEndPos=0) and (WithKeywordStartPos>0) and (UpAtomIs('DO'))
+        if (CurPos.StartPos<WithVarNode.StartPos) then begin
+          NeedBeginEnd:=UpAtomIs('DO') or UpAtomIs('THEN') or UpAtomIs('ELSE');
+          if NeedBeginEnd then
+            ReadNextAtom;
+          if UpAtomIs('WITH') then begin
+            WithKeywordStartPos:=CurPos.StartPos;
+            KeepBeginEnd:=NeedBeginEnd;
+          end;
+        end else if (DoKeywordEndPos=0) and (WithKeywordStartPos>0) and UpAtomIs('DO')
         then begin
           DoKeywordEndPos:=CurPos.EndPos;
-          ReadNextAtom;
-          if UpAtomIs('BEGIN') then begin
-            DoKeywordEndPos:=CurPos.EndPos;
-            ReadTilBlockEnd(false,false);
-            EndKeywordStartPos:=CurPos.StartPos;
-            EndKeywordEndPos:=CurPos.EndPos;
+          if (not KeepBeginEnd) then begin
             ReadNextAtom;
-            if CurPos.Flag=cafSemicolon then
+            if UpAtomIs('BEGIN') then begin
+              DoKeywordEndPos:=CurPos.EndPos;
+              ReadTilBlockEnd(false,false);
+              EndKeywordStartPos:=CurPos.StartPos;
               EndKeywordEndPos:=CurPos.EndPos;
+              ReadNextAtom;
+              if CurPos.Flag=cafSemicolon then
+                EndKeywordEndPos:=CurPos.EndPos;
+            end;
           end;
           break;
         end;
       until (CurPos.StartPos>SrcLen) or (CurPos.StartPos>StatementNode.EndPos);
       IndentWith:=Beauty.GetLineIndent(Src,WithKeywordStartPos);
+      // remove 'with .. do [begin]'
       WithKeywordStartPos:=FindLineEndOrCodeInFrontOfPosition(WithKeywordStartPos);
       DoKeywordEndPos:=FindLineEndOrCodeAfterPosition(DoKeywordEndPos);
       if not SourceChangeCache.Replace(gtSpace,gtNone,WithKeywordStartPos,DoKeywordEndPos,'')
       then exit(false);
-      if EndKeywordStartPos>0 then begin
+      if (EndKeywordStartPos>0) and (not KeepBeginEnd) then begin
+        // remove 'end;'
         EndKeywordStartPos:=GetLineStartPosition(Src,EndKeywordStartPos);
         while (EndKeywordStartPos>1) and (Src[EndKeywordStartPos-1] in [#10,#13]) do
           dec(EndKeywordStartPos);
