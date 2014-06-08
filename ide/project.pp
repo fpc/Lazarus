@@ -6977,34 +6977,13 @@ end;
 
 procedure TProjectBuildModes.AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string;
   InSession: boolean);
-
-  function FindMacro(MatrixOptions: TBuildMatrixOptions;
-    const MacroName, MacroValue: string): TBuildMatrixOption;
-  var
-    j: Integer;
-  begin
-    j:=MatrixOptions.Count-1;
-    while j>=0 do
-    begin
-      Result:=MatrixOptions[j];
-      if (Result.Typ=bmotIDEMacro)
-      and (Result.Targets='*')
-      and (Result.MacroName=MacroName)
-      and (Result.Value=MacroValue)
-      then
-        exit;
-      dec(j);
-    end;
-    Result:=nil;
-  end;
-
 var
   MatrixOptions: TBuildMatrixOptions;
   MatrixOption: TBuildMatrixOption;
 begin
-  MatrixOption:=FindMacro(SharedMatrixOptions,MacroName,MacroValue);
+  MatrixOption:=SharedMatrixOptions.FindMacro(MacroName,MacroValue);
   if MatrixOption=nil then
-    MatrixOption:=FindMacro(SessionMatrixOptions,MacroName,MacroValue);
+    MatrixOption:=SessionMatrixOptions.FindMacro(MacroName,MacroValue);
   if MatrixOption<>nil then begin
     // Macro already exists => enable mode for this macro
     MatrixOption.EnableMode(ModeIdentifier);

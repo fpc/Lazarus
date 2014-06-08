@@ -147,6 +147,7 @@ type
     procedure AppendCustomOptions(Target, ActiveMode: string; var Options: string);
     procedure GetOutputDirectory(Target, ActiveMode: string; var OutDir: string);
     function FindOption(const ID: string): TBuildMatrixOption;
+    function FindMacro(const MacroName, MacroValue: string): TBuildMatrixOption;
   end;
 
   EMMMacroSyntaxException = class(Exception)
@@ -621,6 +622,25 @@ begin
   for i:=0 to Count-1 do begin
     Result:=Items[i];
     if Result.ID=ID then exit;
+  end;
+  Result:=nil;
+end;
+
+function TBuildMatrixOptions.FindMacro(const MacroName, MacroValue: string): TBuildMatrixOption;
+var
+  i: Integer;
+begin
+  i:=Count-1;
+  while i>=0 do
+  begin
+    Result:=Items[i];
+    if (Result.Typ=bmotIDEMacro)
+    and (Result.Targets='*')
+    and (Result.MacroName=MacroName)
+    and (Result.Value=MacroValue)
+    then
+      exit;
+    dec(i);
   end;
   Result:=nil;
 end;
