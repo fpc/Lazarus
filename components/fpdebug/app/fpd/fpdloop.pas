@@ -52,6 +52,7 @@ type
     procedure GControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
     procedure GControllerCreateProcessEvent(var continue: boolean);
     procedure GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
+    procedure GControllerProcessExitEvent(ExitCode: DWord);
     procedure OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
   protected
     Procedure DoRun; override;
@@ -65,6 +66,11 @@ uses
   FPDCommand,
   FpDbgUtil,
   FPDGlobal;
+
+resourcestring
+  sBreakpointReached = 'Breakpoint reached at %s.';
+  sProcessPaused = 'Process paused.';
+  sProcessExited = 'Process ended with exit-code %d.';
 
 { TFPDLoop }
 
@@ -82,6 +88,11 @@ begin
   end
   else
     writeln('Program raised exception class '''+ExceptionClass+'''.');
+end;
+
+procedure TFPDLoop.GControllerProcessExitEvent(ExitCode: DWord);
+begin
+  writeln(format(sProcessExited,[ExitCode]));
 end;
 
 procedure TFPDLoop.ShowDisas;
@@ -185,6 +196,10 @@ end;
 
 procedure TFPDLoop.GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
 begin
+  if assigned(Breakpoint) then
+    writeln(Format(sBreakpointReached, [FormatAddress(Breakpoint.Location)]))
+  else
+    writeln(sProcessPaused);
   if not continue then
   begin
     ShowCode;
@@ -228,6 +243,7 @@ begin
   GController.OnHitBreakpointEvent:=@GControllerHitBreakpointEvent;
   GController.OnCreateProcessEvent:=@GControllerCreateProcessEvent;
   GController.OnExceptionEvent:=@GControllerExceptionEvent;
+  GController.OnProcessExitEvent:=@GControllerProcessExitEvent;
 end;
 
 initialization

@@ -93,6 +93,12 @@ var
   MShowCommands: TFPDCommandList;
   MSetCommands: TFPDCommandList;
 
+resourcestring
+  sAddBreakpoint = 'Breakpoint added at address %s.';
+  sAddBreakpointFailed = 'Adding breakpoint at %s failed.';
+  sRemoveBreakpoint = 'Breakpoint removed from address %s.';
+  sRemoveBreakpointFailed = 'Removing breakpoint at %s failed.';
+
 procedure HandleCommand(ACommand: String; out CallProcessLoop: boolean);
 begin
   MCommands.HandleCommand(ACommand, CallProcessLoop);
@@ -189,12 +195,12 @@ var
   AValue: TFpDbgValue;
 
 begin
+  CallProcessLoop:=false;
   if GController.MainProcess = nil
   then begin
     WriteLN('No Process');
     Exit;
   end;
-  CallProcessLoop:=false;
 
   S := AParams;
   P := GetPart([], [' ', #9], S);
@@ -236,13 +242,13 @@ begin
     if Remove
     then begin
       if GController.CurrentProcess.RemoveBreak(Address)
-      then WriteLn('breakpoint removed')
-      else WriteLn('remove breakpoint failed');
+      then WriteLn(format(sRemoveBreakpoint,[FormatAddress(Address)]))
+      else WriteLn(Format(sRemoveBreakpointFailed, [FormatAddress(Address)]));
     end
     else begin
       if GController.CurrentProcess.AddBreak(Address) <> nil
-      then WriteLn('breakpoint added')
-      else WriteLn('add breakpoint failed');
+      then WriteLn(format(sAddBreakpoint, [FormatAddress(Address)]))
+      else WriteLn(Format(sAddBreakpointFailed, [FormatAddress(Address)]));
     end;
   end
   else begin
@@ -264,11 +270,11 @@ begin
     bp := TDbgInstance(GController.CurrentProcess).AddBreak(P, Line);
     if bp = nil
     then begin
-      WriteLn('add breakpoint failed');
+      WriteLn(Format(sAddBreakpointFailed, [S]));
       Exit;
     end;
     
-    WriteLn('breakpoint added at: ', FormatAddress(bp.Location));
+    WriteLn(format(sAddBreakpoint, [FormatAddress(bp.Location)]))
   end;
 end;
 
@@ -579,7 +585,14 @@ end;
 procedure HandleQuit(AParams: String; out CallProcessLoop: boolean);
 begin
   WriteLN('Quitting ...');
-  CallProcessLoop := assigned(GController.MainProcess);
+  if assigned(GController.MainProcess) then
+  begin
+    WriteLn('Killing application ...');
+    GController.Stop;
+    CallProcessLoop:=true;
+  end
+  else
+    CallProcessLoop := false;
   CustomApplication.Terminate;
 end;
 
