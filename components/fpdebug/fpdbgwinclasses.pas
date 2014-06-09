@@ -284,7 +284,6 @@ end;
 
 destructor TDbgWinProcess.Destroy;
 begin
-  CloseHandle(FInfo.hProcess);
   FInfo.hProcess:=0;
   FProcProcess.Free;
   inherited Destroy;
@@ -853,6 +852,9 @@ begin
       EXIT_PROCESS_DEBUG_EVENT: begin
         //DumpEvent('EXIT_PROCESS_DEBUG_EVENT');
         SetExitCode(MDebugEvent.ExitProcess.dwExitCode);
+        // Let the kernel close all debug-handles and close-up the
+        // debuggee.
+        Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
         result := deExitProcess;
       end;
       LOAD_DLL_DEBUG_EVENT: begin
