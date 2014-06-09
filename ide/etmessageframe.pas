@@ -2779,21 +2779,18 @@ begin
     MsgFilterHintsWithoutPosMenuItem.OnClick:=@FilterHintsWithoutPosMenuItemClick;
 
     MinUrgency:=MessagesCtrl.ActiveFilter.MinUrgency;
-    case MinUrgency of
-    mluNone:                  MsgFilterNoneMenuItem.Checked:=true;
-    mluProgress..mluVerbose:  MsgFilterDebugMenuItem.Checked:=true;
-    mluHint:                  MsgFilterVerboseMenuItem.Checked:=true;
-    mluNote:                  MsgFilterNotesMenuItem.Checked:=true;
-    mluWarning..mluImportant: MsgFilterNotesMenuItem.Checked:=true;
-    else                      MsgFilterWarningsMenuItem.Checked:=true;
-    end;
-
-    MsgFilterWarningsMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterNotesMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterHintsMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterVerboseMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
-    MsgFilterDebugMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterNoneMenuItem.Checked:=MinUrgency in [mluNone..mluDebug];
     MsgFilterNoneMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterDebugMenuItem.Checked:=MinUrgency in [mluVerbose3..mluVerbose];
+    MsgFilterDebugMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterVerboseMenuItem.Checked:=MinUrgency=mluHint;
+    MsgFilterVerboseMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterHintsMenuItem.Checked:=MinUrgency=mluNote;
+    MsgFilterHintsMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterNotesMenuItem.Checked:=MinUrgency in [mluWarning..mluImportant];
+    MsgFilterNotesMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
+    MsgFilterWarningsMenuItem.Checked:=MinUrgency>=mluError;
+    MsgFilterWarningsMenuItem.OnClick:=@FilterUrgencyMenuItemClick;
 
     // Copying
     MsgCopyMsgMenuItem.Enabled:=HasText;
@@ -3082,6 +3079,7 @@ procedure TMessagesFrame.FilterUrgencyMenuItemClick(Sender: TObject);
 var
   MinUrgency: TMessageLineUrgency;
 begin
+  //debugln(['TMessagesFrame.FilterUrgencyMenuItemClick ',DbgSName(Sender),' ',(Sender as TIDEMenuCommand).Caption,' ',(Sender as TIDEMenuCommand).Checked]);
   if Sender=MsgFilterWarningsMenuItem then
     MinUrgency:=mluError
   else if Sender=MsgFilterNotesMenuItem then
@@ -3095,6 +3093,7 @@ begin
   else if Sender=MsgFilterNoneMenuItem then
     MinUrgency:=mluNone;
   MessagesCtrl.ActiveFilter.MinUrgency:=MinUrgency;
+  //debugln(['TMessagesFrame.FilterUrgencyMenuItemClick ',MessageLineUrgencyNames[MinUrgency]]);
 end;
 
 procedure TMessagesFrame.HideSearchSpeedButtonClick(Sender: TObject);
