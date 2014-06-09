@@ -22,6 +22,11 @@
 
   Abstract:
     TPackageEditorForm is the form of a package editor.
+
+  ToDo:
+    - Multiselect
+    - UpdateFiles: try to keep selection, if failed -> trigger UpdatePEProperties+UpdateButtons
+    - UpdateRequiredPkgs: try to keep selection, if failed -> trigger UpdatePEProperties+UpdateButtons
 }
 unit PackageEditor;
 
@@ -132,13 +137,27 @@ type
     penDependency
     );
 
+  { TPENodeData }
+
   TPENodeData = class(TTFENodeData)
   public
     Typ: TPENodeType;
     Name: string; // file or package name
     Removed: boolean;
     Next: TPENodeData;
+    constructor Create(aTyp: TPENodeType; aName: string; aRemoved: boolean);
   end;
+
+  TPEFlag = (
+    pefNeedUpdateTitle,
+    pefNeedUpdateButtons,
+    pefNeedUpdateFiles,
+    pefNeedUpdateRequiredPkgs,
+    pefNeedUpdateProperties,
+    pefNeedUpdateApplyDependencyButton,
+    pefNeedUpdateStatusBar
+    );
+  TPEFlags = set of TPEFlag;
 
   { TPackageEditorForm }
 
@@ -216,6 +235,7 @@ type
     procedure MinVersionEditChange(Sender: TObject);
     procedure MoveDownBtnClick(Sender: TObject);
     procedure MoveUpBtnClick(Sender: TObject);
+    procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure PackageEditorFormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -242,8 +262,9 @@ type
     procedure ViewPkgSourceClick(Sender: TObject);
     procedure ViewPkgTodosClick(Sender: TObject);
   private
+    FIdleConnected: boolean;
     FLazPackage: TLazPackage;
-    FNextSelectedPart: TObject;// select this file/dependency on next update
+    FNextSelectedPart: TPENodeData;// select this file/dependency on next update
     FFilesNode: TTreeNode;
     FRequiredPackagesNode: TTreeNode;
     FRemovedFilesNode: TTreeNode;
@@ -255,24 +276,30 @@ type
     FSelectedFile: TPkgFile;
     FSelectedDependency: TPkgDependency;
     FFirstNodeData: array[TPENodeType] of TPENodeData;
+    fUpdateLock: integer;
     procedure FreeNodeData(Typ: TPENodeType);
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
+    procedure SetIdleConnected(AValue: boolean);
     procedure SetShowDirectoryHierarchy(const AValue: boolean);
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
     function OnTreeViewGetImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
-    procedure UpdateTitle;
-    procedure UpdateButtons;
-    procedure UpdateFiles;
-    procedure UpdateRequiredPkgs;
-    procedure UpdateProperties;
-    procedure UpdateApplyDependencyButton;
-    procedure UpdateStatusBar;
+    procedure UpdatePending;
+    function CanUpdate(Flag: TPEFlag): boolean;
+    procedure UpdateTitle(Immediately: boolean = false);
+    procedure UpdateButtons(Immediately: boolean = false);
+    procedure UpdateFiles(Immediately: boolean = false);
+    procedure UpdateRequiredPkgs(Immediately: boolean = false);
+    procedure UpdatePEProperties(Immediately: boolean = false);
+    procedure UpdateApplyDependencyButton(Immediately: boolean = false);
+    procedure UpdateStatusBar(Immediately: boolean = false);
     function GetCurrentDependency(out Removed: boolean): TPkgDependency;
     function GetCurrentFile(out Removed: boolean): TPkgFile;
     function GetNodeData(TVNode: TTreeNode): TPENodeData;
     function GetNodeItem(NodeData: TPENodeData): TObject;
+    function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
+      out Item: TObject): boolean;
     function IsDirectoryNode(Node: TTreeNode): boolean;
     procedure GetDirectorySummary(DirNode: TTreeNode;
         out FileCount, HasRegisterProcCount, AddToUsesPkgSectionCount: integer);
@@ -282,8 +309,10 @@ type
       var IgnoreIncPaths: TFilenameToStringTree);
     function CanBeAddedToProject: boolean;
   protected
+    fFlags: TPEFlags;
     fLastDlgPage: TAddToPkgType;
     procedure SetLazPackage(const AValue: TLazPackage); override;
+    property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -303,6 +332,8 @@ type
     procedure DoOpenPkgFile(PkgFile: TPkgFile);
     procedure UpdateAll(Immediately: boolean); override;
     function ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
+    procedure BeginUdate;
+    procedure EndUpdate;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
@@ -510,6 +541,16 @@ begin
   PkgEditMenuViewPackageSource:=RegisterIDEMenuCommand(AParent,'View Package Source',lisPckEditViewPackageSource);
 end;
 
+{ TPENodeData }
+
+constructor TPENodeData.Create(aTyp: TPENodeType; aName: string;
+  aRemoved: boolean);
+begin
+  Typ:=aTyp;
+  Name:=aName;;
+  Removed:=aRemoved;
+end;
+
 { TPackageEditorForm }
 
 procedure TPackageEditorForm.PublishClick(Sender: TObject);
@@ -524,7 +565,7 @@ var
   Dependency: TPkgDependency;
   Removed: boolean;
 begin
-  ItemsTreeView.OnSelectionChanged:=Nil;
+  BeginUdate;
   try
     PkgFile:=GetCurrentFile(Removed);
     if (PkgFile<>nil) then begin
@@ -543,7 +584,7 @@ begin
         end;
         PkgFile.Filename:=AFilename;
         LazPackage.UnremovePkgFile(PkgFile);
-        UpdateAll(true);
+        UpdateFiles;
       end;
     end else begin
       Dependency:=GetCurrentDependency(Removed);
@@ -552,10 +593,11 @@ begin
         if CheckAddingDependency(LazPackage,Dependency,false,true)<>mrOk then exit;
         LazPackage.RemoveRemovedDependency(Dependency);
         PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
+        UpdateRequiredPkgs;
       end;
     end;
   finally
-    ItemsTreeView.OnSelectionChanged:=@ItemsTreeViewSelectionChanged;
+    EndUpdate;
   end;
 end;
 
@@ -804,7 +846,8 @@ end;
 
 procedure TPackageEditorForm.ItemsTreeViewSelectionChanged(Sender: TObject);
 begin
-  UpdateProperties;
+  if fUpdateLock>0 then exit;
+  UpdatePEProperties;
   UpdateButtons;
 end;
 
@@ -867,6 +910,11 @@ begin
     DoMoveCurrentFile(-1)
   else if Assigned(FSelectedDependency) then
     DoMoveDependency(-1)
+end;
+
+procedure TPackageEditorForm.OnIdle(Sender: TObject; var Done: Boolean);
+begin
+  UpdatePending;
 end;
 
 procedure TPackageEditorForm.MoveDownBtnClick(Sender: TObject);
@@ -995,7 +1043,7 @@ var
   mt: TMsgDlgType;
   Removed: boolean;
 begin
-  ItemsTreeView.OnSelectionChanged:=Nil;
+  BeginUdate;
   try
     ANode:=ItemsTreeView.Selected;
     if (ANode=nil) or LazPackage.ReadOnly then begin
@@ -1022,7 +1070,7 @@ begin
       then
         exit;
       LazPackage.RemoveFile(CurFile);
-      UpdateAll(false);
+      UpdateFiles;
       exit;
     end;
 
@@ -1038,9 +1086,10 @@ begin
       then
         exit;
       PackageGraph.RemoveDependencyFromPackage(LazPackage,CurDependency,true);
+      UpdateRequiredPkgs;
     end;
   finally
-    ItemsTreeView.OnSelectionChanged:=@ItemsTreeViewSelectionChanged;
+    EndUpdate;
   end;
 end;
 
@@ -1069,6 +1118,7 @@ procedure TPackageEditorForm.FormDestroy(Sender: TObject);
 var
   nt: TPENodeType;
 begin
+  FreeAndNil(FNextSelectedPart);
   EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
   EnvironmentOptions.PackageEditorShowDirHierarchy := ShowDirectoryHierarchy;
   FilterEdit.ForceFilter('');
@@ -1150,10 +1200,7 @@ end;
 function TPackageEditorForm.CreateNodeData(Typ: TPENodeType; aName: string;
   aRemoved: boolean): TPENodeData;
 begin
-  Result:=TPENodeData.Create;
-  Result.Name:=aName;
-  Result.Typ:=Typ;
-  Result.Removed:=aRemoved;
+  Result:=TPENodeData.Create(Typ,aName,aRemoved);
   Result.Next:=FFirstNodeData[Typ];
   FFirstNodeData[Typ]:=Result;
 end;
@@ -1177,11 +1224,11 @@ end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
 begin
-  ItemsTreeView.OnSelectionChanged:=Nil;
+  BeginUdate;
   try
     ShowAddDialog(fLastDlgPage);
   finally
-    ItemsTreeView.OnSelectionChanged:=@ItemsTreeViewSelectionChanged;
+    EndUpdate;
   end;
 end;
 
@@ -1209,7 +1256,8 @@ begin
     end;
     LazPackage.Modified:=true;
   end;
-  UpdateAll(true);
+  UpdateFiles;
+  UpdatePEProperties;
 end;
 
 procedure TPackageEditorForm.AddToProjectClick(Sender: TObject);
@@ -1278,7 +1326,8 @@ begin
   if not Removed then begin
     LazPackage.Modified:=true;
   end;
-  UpdateAll(true);
+  UpdateFiles;
+  UpdatePEProperties;
 end;
 
 procedure TPackageEditorForm.ChangeFileTypeMenuItemClick(Sender: TObject);
@@ -1298,7 +1347,8 @@ begin
       if CurFile.FileType<>CurPFT then begin
         CurFile.FileType:=CurPFT;
         LazPackage.Modified:=true;
-        UpdateAll(true);
+        UpdateFiles;
+        UpdatePEProperties;
       end;
       exit;
     end;
@@ -1515,6 +1565,16 @@ begin
   UpdateButtons;
 end;
 
+procedure TPackageEditorForm.SetIdleConnected(AValue: boolean);
+begin
+  if FIdleConnected=AValue then Exit;
+  FIdleConnected:=AValue;
+  if IdleConnected then
+    Application.AddOnIdleHandler(@OnIdle)
+  else
+    Application.AddOnIdleHandler(@OnIdle);
+end;
+
 procedure TPackageEditorForm.SetShowDirectoryHierarchy(const AValue: boolean);
 begin
   //debugln(['TPackageEditorForm.SetShowDirectoryHierachy Old=',FShowDirectoryHierarchy,' New=',AValue]);
@@ -1536,14 +1596,15 @@ end;
 
 procedure TPackageEditorForm.UpdateAll(Immediately: boolean);
 begin
+  if csDestroying in ComponentState then exit;
   if LazPackage=nil then exit;
   Name:=PackageEditorWindowPrefix+LazPackage.Name;
-  UpdateTitle;
-  UpdateButtons;
-  UpdateFiles;
-  UpdateRequiredPkgs;
-  UpdateProperties;
-  UpdateStatusBar;
+  UpdateTitle(Immediately);
+  UpdateButtons(Immediately);
+  UpdateFiles(Immediately);
+  UpdateRequiredPkgs(Immediately);
+  UpdatePEProperties(Immediately);
+  UpdateStatusBar(Immediately);
 end;
 
 function TPackageEditorForm.ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
@@ -1585,19 +1646,23 @@ var
                                 IgnoreUnitPaths);
     // add unit file
     with AddParams do
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,
+      LazPackage.AddFile(UnitFilename,Unit_Name,
                                           FileType,PkgFileFlags,cpNormal);
+    FreeAndNil(FNextSelectedPart);
+    FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-    UpdateAll(false);
+    UpdateFiles;
   end;
 
   procedure AddVirtualUnit(AddParams: TAddToPkgResult);
   begin
     with AddParams do
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
+      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
                                           PkgFileFlags,cpNormal);
+    FreeAndNil(FNextSelectedPart);
+    FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-    UpdateAll(false);
+    UpdateFiles;
   end;
 
   procedure AddNewComponent(AddParams: TAddToPkgResult);
@@ -1605,8 +1670,10 @@ var
     ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'',IgnoreUnitPaths);
     // add file
     with AddParams do
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
+      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
                                               PkgFileFlags,cpNormal);
+    FreeAndNil(FNextSelectedPart);
+    FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
     // add dependency
     if (AddParams.Dependency<>nil)
     and (not PkgDependsOn(AddParams.Dependency.PackageName)) then
@@ -1617,15 +1684,17 @@ var
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
     // open file in editor
     PackageEditors.CreateNewFile(Self,AddParams);
-    UpdateAll(false);
+    UpdateFiles;
   end;
 
   procedure AddRequiredPkg(AddParams: TAddToPkgResult);
   begin
     // add dependency
     PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
-    FNextSelectedPart := AddParams.Dependency;
-    UpdateAll(false);
+    FreeAndNil(FNextSelectedPart);
+    FNextSelectedPart:=TPENodeData.Create(penDependency,
+                                        AddParams.Dependency.PackageName,false);
+    UpdateRequiredPkgs;
   end;
 
   procedure AddFile(AddParams: TAddToPkgResult);
@@ -1635,10 +1704,12 @@ var
       if (CompareFileExt(UnitFilename,'.inc',false)=0)
       or (CompareFileExt(UnitFilename,'.lrs',false)=0) then
         ExtendIncPathForNewIncludeFile(UnitFilename,IgnoreIncPaths);
-      FNextSelectedPart := LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
+      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
                                           PkgFileFlags,cpNormal);
     end;
-    UpdateAll(false);
+    FreeAndNil(FNextSelectedPart);
+    FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
+    UpdateFiles;
   end;
 
   procedure AddNewFile(AddParams: TAddToPkgResult);
@@ -1673,9 +1744,11 @@ var
               Include(NewPkgFileFlags,pffHasRegisterProc);
           end;
         end;
-        FNextSelectedPart := LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,
+        LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,
                                                 NewPkgFileFlags, cpNormal);
-        UpdateAll(true);
+        FreeAndNil(FNextSelectedPart);
+        FNextSelectedPart:=TPENodeData.Create(penFile,NewFilename,false);
+        UpdateFiles;
       end;
     end;
   end;
@@ -1734,24 +1807,38 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.UpdateTitle;
+procedure TPackageEditorForm.BeginUdate;
+begin
+  inc(fUpdateLock);
+end;
+
+procedure TPackageEditorForm.EndUpdate;
+begin
+  if fUpdateLock=0 then
+    RaiseException('');
+  dec(fUpdateLock);
+  UpdatePending;
+end;
+
+procedure TPackageEditorForm.UpdateTitle(Immediately: boolean);
 var
   NewCaption: String;
 begin
-  if LazPackage=nil then exit;
+  if not CanUpdate(pefNeedUpdateTitle) then exit;
   NewCaption:=Format(lisPckEditPackage, [FLazPackage.Name]);
   if LazPackage.Modified then
     NewCaption:=NewCaption+'*';
   Caption:=NewCaption;
 end;
 
-procedure TPackageEditorForm.UpdateButtons;
+procedure TPackageEditorForm.UpdateButtons(Immediately: boolean);
 var
   Removed: boolean;
   CurFile: TPkgFile;
   CurDependency: TPkgDependency;
 begin
-  if LazPackage=nil then exit;
+  if not CanUpdate(pefNeedUpdateButtons) then exit;
+
   CurFile:=GetCurrentFile(Removed);
   if CurFile=nil then
     CurDependency:=GetCurrentDependency(Removed)
@@ -1815,7 +1902,40 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.UpdateFiles;
+procedure TPackageEditorForm.UpdatePending;
+begin
+  if pefNeedUpdateTitle in fFlags then
+    UpdateTitle(true);
+  if pefNeedUpdateButtons in fFlags then
+    UpdateButtons(true);
+  if pefNeedUpdateFiles in fFlags then
+    UpdateFiles(true);
+  if pefNeedUpdateRequiredPkgs in fFlags then
+    UpdateRequiredPkgs(true);
+  if pefNeedUpdateProperties in fFlags then
+    UpdatePEProperties(true);
+  if pefNeedUpdateApplyDependencyButton in fFlags then
+    UpdateApplyDependencyButton(true);
+  if pefNeedUpdateStatusBar in fFlags then
+    UpdateStatusBar(true);
+end;
+
+function TPackageEditorForm.CanUpdate(Flag: TPEFlag): boolean;
+begin
+  Result:=false;
+  if csDestroying in ComponentState then exit;
+  if LazPackage=nil then exit;
+  if fUpdateLock>0 then begin
+    Include(fFlags,Flag);
+    IdleConnected:=true;
+    Result:=false;
+  end else begin
+    Exclude(fFlags,Flag);
+    Result:=true;
+  end;
+end;
+
+procedure TPackageEditorForm.UpdateFiles(Immediately: boolean);
 var
   i: Integer;
   CurFile: TPkgFile;
@@ -1824,25 +1944,36 @@ var
   NodeData: TPENodeData;
   OldFilter : String;
 begin
-  if LazPackage=nil then exit;
+  if not CanUpdate(pefNeedUpdateFiles) then exit;
+
   OldFilter := FilterEdit.ForceFilter('');
 
   // files belonging to package
   FilesBranch:=FilterEdit.GetBranch(FFilesNode);
   FreeNodeData(penFile);
   FilesBranch.Clear;
-  FilterEdit.SelectedPart:=FNextSelectedPart;
+  FilterEdit.SelectedPart:=nil;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
   FilterEdit.SortData:=SortAlphabetically;
   FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
+  debugln(['TPackageEditorForm.UpdateFiles AAA1 ',FNextSelectedPart<>nil]);
+  if FNextSelectedPart<>nil then
+    debugln(['TPackageEditorForm.UpdateFiles AAA2 ',FNextSelectedPart.Typ=penFile,' ',FNextSelectedPart.Name]);
   // collect and sort files
   for i:=0 to LazPackage.FileCount-1 do begin
     CurFile:=LazPackage.Files[i];
     NodeData:=CreateNodeData(penFile,CurFile.Filename,false);
     Filename:=CurFile.GetShortFilename(true);
-    if Filename<>'' then
-      FilesBranch.AddNodeData(Filename, NodeData, CurFile.Filename);
+    if Filename='' then continue;
+    if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penFile)
+    and (FNextSelectedPart.Name=NodeData.Name)
+    then
+      FilterEdit.SelectedPart:=NodeData;
+    FilesBranch.AddNodeData(Filename, NodeData, CurFile.Filename);
   end;
+  debugln(['TPackageEditorForm.UpdateFiles AAA3 ',DbgSName(FilterEdit.SelectedPart)]);
+  if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penFile) then
+    FreeAndNil(FNextSelectedPart);
 
   // removed files
   if LazPackage.RemovedFilesCount>0 then begin
@@ -1870,22 +2001,23 @@ begin
   FilterEdit.Filter := OldFilter;            // This triggers ApplyFilter
 end;
 
-procedure TPackageEditorForm.UpdateRequiredPkgs;
+procedure TPackageEditorForm.UpdateRequiredPkgs(Immediately: boolean);
 var
   CurDependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
   CurNodeText, aFilename, OldFilter: String;
   NodeData: TPENodeData;
 begin
-  if LazPackage=nil then exit;
+  if not CanUpdate(pefNeedUpdateRequiredPkgs) then exit;
+
   OldFilter := FilterEdit.ForceFilter('');
 
   // required packages
   RequiredBranch:=FilterEdit.GetBranch(FRequiredPackagesNode);
   FreeNodeData(penDependency);
   RequiredBranch.Clear;
-  FilterEdit.SelectedPart:=FNextSelectedPart;
   CurDependency:=LazPackage.FirstRequiredDependency;
+  FilterEdit.SelectedPart:=nil;
   while CurDependency<>nil do begin
     CurNodeText:=CurDependency.AsString;
     if CurDependency.DefaultFilename<>'' then begin
@@ -1896,9 +2028,15 @@ begin
         CurNodeText:=Format(lisPckEditDefault, [CurNodeText, aFilename]);
     end;
     NodeData:=CreateNodeData(penDependency,CurDependency.PackageName,false);
+    if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency)
+    and (FNextSelectedPart.Name=NodeData.Name)
+    then
+      FilterEdit.SelectedPart:=NodeData;
     RequiredBranch.AddNodeData(CurNodeText, NodeData);
     CurDependency:=CurDependency.NextRequiresDependency;
   end;
+  if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency) then
+    FreeAndNil(FNextSelectedPart);
 
   // removed required packages
   CurDependency:=LazPackage.FirstRemovedDependency;
@@ -1925,7 +2063,7 @@ begin
   FilterEdit.ForceFilter(OldFilter);
 end;
 
-procedure TPackageEditorForm.UpdateProperties;
+procedure TPackageEditorForm.UpdatePEProperties(Immediately: boolean);
 var
   CurComponent: TPkgComponent;
   CurLine, CurFilename: string;
@@ -1935,7 +2073,8 @@ var
   FileCount, RegCompCnt: integer;
   HasRegisterProcCount, AddToUsesPkgSectionCount: integer;
 begin
-  if LazPackage=nil then exit;
+  if not CanUpdate(pefNeedUpdateProperties) then exit;
+
   FPlugins.Clear;
   FSelectedDependency:=nil;
   FSelectedFile:=GetCurrentFile(Removed);
@@ -2019,14 +2158,15 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.UpdateApplyDependencyButton;
+procedure TPackageEditorForm.UpdateApplyDependencyButton(Immediately: boolean);
 var
   DepencyChanged: Boolean;
   CurDependency: TPkgDependency;
   AVersion: TPkgVersion;
   Removed: boolean;
 begin
-  if LazPackage=nil then exit;
+  if not CanUpdate(pefNeedUpdateApplyDependencyButton) then exit;
+
   DepencyChanged:=false;
   CurDependency:=GetCurrentDependency(Removed);
   if (CurDependency<>nil) then begin
@@ -2054,11 +2194,12 @@ begin
   ApplyDependencyButton.Enabled:=DepencyChanged;
 end;
 
-procedure TPackageEditorForm.UpdateStatusBar;
+procedure TPackageEditorForm.UpdateStatusBar(Immediately: boolean);
 var
   StatusText: String;
 begin
-  if LazPackage=nil then exit;
+  if not CanUpdate(pefNeedUpdateStatusBar) then exit;
+
   if LazPackage.IsVirtual and (not LazPackage.ReadOnly) then begin
     StatusText:=Format(lisPckEditpackageNotSaved, [LazPackage.Name]);
   end else begin
@@ -2132,6 +2273,16 @@ begin
     else
       Result:=LazPackage.FindDependencyByName(NodeData.Name);
   end;
+end;
+
+function TPackageEditorForm.GetNodeDataItem(TVNode: TTreeNode; out
+  NodeData: TPENodeData; out Item: TObject): boolean;
+begin
+  Result:=false;
+  Item:=nil;
+  NodeData:=GetNodeData(TVNode);
+  Item:=GetNodeItem(NodeData);
+  Result:=Item<>nil;
 end;
 
 function TPackageEditorForm.IsDirectoryNode(Node: TTreeNode): boolean;
@@ -2306,7 +2457,6 @@ end;
 procedure TPackageEditorForm.DoPublishProject;
 begin
   PackageEditors.PublishPackage(LazPackage);
-  UpdateAll(true);
 end;
 
 procedure TPackageEditorForm.DoEditVirtualUnit;
@@ -2317,7 +2467,7 @@ begin
   CurFile:=GetCurrentFile(Removed);
   if (CurFile=nil) or Removed then exit;
   if ShowEditVirtualPackageDialog(CurFile)=mrOk then
-    UpdateAll(true);
+    UpdateFiles;
 end;
 
 procedure TPackageEditorForm.DoExpandDirectory;
@@ -2385,7 +2535,7 @@ begin
   CurNode:=ItemsTreeView.Selected;
   if not (IsDirectoryNode(CurNode) or (CurNode=FFilesNode)) then exit;
   Traverse(CurNode);
-  UpdateProperties;
+  UpdatePEProperties;
 end;
 
 procedure TPackageEditorForm.DoMoveCurrentFile(Offset: integer);
@@ -2403,7 +2553,7 @@ begin
   FilesBranch:=FilterEdit.GetExistingBranch(FFilesNode);
   LazPackage.MoveFile(OldIndex,NewIndex);
   FilesBranch.MoveFile(OldIndex,NewIndex);
-  UpdateProperties;
+  UpdatePEProperties;
   UpdateStatusBar;
   FilterEdit.InvalidateFilter;
 end;
@@ -2428,7 +2578,7 @@ var
 begin
   TreeSelection:=ItemsTreeView.StoreCurrentSelection;
   LazPackage.SortFiles;
-  UpdateAll(true);
+  UpdateFiles;
   ItemsTreeView.ApplyStoredSelection(TreeSelection);
 end;
 
