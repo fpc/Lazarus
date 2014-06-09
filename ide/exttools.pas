@@ -1485,7 +1485,7 @@ var
   var
     Count: DWord;
     StartPos: Integer;
-    i: Integer;
+    i: DWord;
   begin
     Result:=false;
     if aStream=nil then exit;
