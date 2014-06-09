@@ -164,9 +164,9 @@ type
     MoreBitBtn: TToolButton;
     HelpBitBtn: TToolButton;
     // items
-    FilesTreeView: TTreeView;
+    ItemsTreeView: TTreeView;
     // properties
-    FilePropsGroupBox: TGroupBox;
+    PropsGroupBox: TGroupBox;
     // file properties
     CallRegisterProcCheckBox: TCheckBox;
     AddToUsesPkgSectionCheckBox: TCheckBox;
@@ -182,7 +182,7 @@ type
     StatusBar: TStatusBar;
     // hidden components
     UsePopupMenu: TPopupMenu;
-    FilesPopupMenu: TPopupMenu;
+    ItemsPopupMenu: TPopupMenu;
     MorePopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
     procedure AddToProjectClick(Sender: TObject);
@@ -202,11 +202,13 @@ type
     procedure DisableI18NForLFMCheckBoxChange(Sender: TObject);
     procedure EditVirtualUnitMenuItemClick(Sender: TObject);
     procedure ExpandDirectoryMenuItemClick(Sender: TObject);
-    procedure FilesPopupMenuPopup(Sender: TObject);
-    procedure FilesTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure ItemsPopupMenuPopup(Sender: TObject);
+    procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MorePopupMenuPopup(Sender: TObject);
-    procedure FilesTreeViewDblClick(Sender: TObject);
-    procedure FilesTreeViewSelectionChanged(Sender: TObject);
+    procedure ItemsTreeViewDblClick(Sender: TObject);
+    procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure FixFilesCaseMenuItemClick(Sender: TObject);
     procedure HelpBitBtnClick(Sender: TObject);
     procedure InstallClick(Sender: TObject);
@@ -264,7 +266,7 @@ type
     procedure UpdateButtons;
     procedure UpdateFiles;
     procedure UpdateRequiredPkgs;
-    procedure UpdateSelectedFile;
+    procedure UpdateProperties;
     procedure UpdateApplyDependencyButton;
     procedure UpdateStatusBar;
     function GetCurrentDependency(out Removed: boolean): TPkgDependency;
@@ -522,7 +524,7 @@ var
   Dependency: TPkgDependency;
   Removed: boolean;
 begin
-  FilesTreeView.OnSelectionChanged:=Nil;
+  ItemsTreeView.OnSelectionChanged:=Nil;
   try
     PkgFile:=GetCurrentFile(Removed);
     if (PkgFile<>nil) then begin
@@ -553,11 +555,11 @@ begin
       end;
     end;
   finally
-    FilesTreeView.OnSelectionChanged:=@FilesTreeViewSelectionChanged;
+    ItemsTreeView.OnSelectionChanged:=@ItemsTreeViewSelectionChanged;
   end;
 end;
 
-procedure TPackageEditorForm.FilesPopupMenuPopup(Sender: TObject);
+procedure TPackageEditorForm.ItemsPopupMenuPopup(Sender: TObject);
 var
   CurDependency: TPkgDependency;
   Removed: boolean;
@@ -609,12 +611,12 @@ var
   end;
 
 begin
-  //debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',FilesPopupMenu.Items.Count]);
-  PackageEditorMenuFilesRoot.MenuItem:=FilesPopupMenu.Items;
-  //debugln(['TPackageEditorForm.FilesPopupMenuPopup START after connect ',FilesPopupMenu.Items.Count]);
+  //debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',ItemsPopupMenu.Items.Count]);
+  PackageEditorMenuFilesRoot.MenuItem:=ItemsPopupMenu.Items;
+  //debugln(['TPackageEditorForm.FilesPopupMenuPopup START after connect ',ItemsPopupMenu.Items.Count]);
   PackageEditorMenuRoot.BeginUpdate;
   try
-    CurNode:=FilesTreeView.Selected;
+    CurNode:=ItemsTreeView.Selected;
     CurDependency:=GetCurrentDependency(Removed);
     Writable:=(not LazPackage.ReadOnly);
     if (CurDependency=nil) then
@@ -676,7 +678,7 @@ begin
   finally
     PackageEditorMenuRoot.EndUpdate;
   end;
-  //debugln(['TPackageEditorForm.FilesPopupMenuPopup END ',FilesPopupMenu.Items.Count]); PackageEditorMenuRoot.WriteDebugReport('  ',true);
+  //debugln(['TPackageEditorForm.FilesPopupMenuPopup END ',ItemsPopupMenu.Items.Count]); PackageEditorMenuRoot.WriteDebugReport('  ',true);
 end;
 
 procedure TPackageEditorForm.MorePopupMenuPopup(Sender: TObject);
@@ -767,12 +769,12 @@ begin
     UsePopupMenu.Items.Delete(UsePopupMenu.Items.Count-1);
 end;
 
-procedure TPackageEditorForm.FilesTreeViewDblClick(Sender: TObject);
+procedure TPackageEditorForm.ItemsTreeViewDblClick(Sender: TObject);
 begin
   OpenFileMenuItemClick(Self);
 end;
 
-procedure TPackageEditorForm.FilesTreeViewKeyDown(Sender: TObject;
+procedure TPackageEditorForm.ItemsTreeViewKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 var
   Handled: Boolean;
@@ -800,9 +802,9 @@ begin
     Key := VK_UNKNOWN;
 end;
 
-procedure TPackageEditorForm.FilesTreeViewSelectionChanged(Sender: TObject);
+procedure TPackageEditorForm.ItemsTreeViewSelectionChanged(Sender: TObject);
 begin
-  UpdateSelectedFile;
+  UpdateProperties;
   UpdateButtons;
 end;
 
@@ -993,9 +995,9 @@ var
   mt: TMsgDlgType;
   Removed: boolean;
 begin
-  FilesTreeView.OnSelectionChanged:=Nil;
+  ItemsTreeView.OnSelectionChanged:=Nil;
   try
-    ANode:=FilesTreeView.Selected;
+    ANode:=ItemsTreeView.Selected;
     if (ANode=nil) or LazPackage.ReadOnly then begin
       UpdateButtons;
       exit;
@@ -1038,7 +1040,7 @@ begin
       PackageGraph.RemoveDependencyFromPackage(LazPackage,CurDependency,true);
     end;
   finally
-    FilesTreeView.OnSelectionChanged:=@FilesTreeViewSelectionChanged;
+    ItemsTreeView.OnSelectionChanged:=@ItemsTreeViewSelectionChanged;
   end;
 end;
 
@@ -1050,6 +1052,33 @@ end;
 procedure TPackageEditorForm.ExpandDirectoryMenuItemClick(Sender: TObject);
 begin
   DoExpandDirectory;
+end;
+
+procedure TPackageEditorForm.FormCreate(Sender: TObject);
+begin
+  FPlugins:=TStringList.Create;
+  {$IFDEF enablePkgEditMultiSelect}
+  ItemsTreeView.MultiSelect:=true;
+  {$ENDIF}
+  SetupComponents;
+  SortAlphabetically := EnvironmentOptions.PackageEditorSortAlphabetically;
+  ShowDirectoryHierarchy := EnvironmentOptions.PackageEditorShowDirHierarchy;
+end;
+
+procedure TPackageEditorForm.FormDestroy(Sender: TObject);
+var
+  nt: TPENodeType;
+begin
+  EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
+  EnvironmentOptions.PackageEditorShowDirHierarchy := ShowDirectoryHierarchy;
+  FilterEdit.ForceFilter('');
+  for nt:=Low(TPENodeType) to High(TPENodeType) do
+    FreeNodeData(nt);
+  if PackageEditorMenuRoot.MenuItem=ItemsPopupMenu.Items then
+    PackageEditorMenuRoot.MenuItem:=nil;
+  PackageEditors.DoFreeEditor(LazPackage);
+  FLazPackage:=nil;
+  FreeAndNil(FPlugins);
 end;
 
 procedure TPackageEditorForm.RevertClick(Sender: TObject);
@@ -1148,11 +1177,11 @@ end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
 begin
-  FilesTreeView.OnSelectionChanged:=Nil;
+  ItemsTreeView.OnSelectionChanged:=Nil;
   try
     ShowAddDialog(fLastDlgPage);
   finally
-    FilesTreeView.OnSelectionChanged:=@FilesTreeViewSelectionChanged;
+    ItemsTreeView.OnSelectionChanged:=@ItemsTreeViewSelectionChanged;
   end;
 end;
 
@@ -1400,7 +1429,7 @@ begin
   ImageIndexConflict        := IDEImages.LoadImage(16, 'pkg_conflict');
   ImageIndexDirectory       := IDEImages.LoadImage(16, 'pkg_files');
 
-  FilesTreeView.Images := IDEImages.Images_16;
+  ItemsTreeView.Images := IDEImages.Images_16;
   ToolBar.Images := IDEImages.Images_16;
   FilterEdit.OnGetImageIndex:=@OnTreeViewGetImageIndex;
 
@@ -1431,16 +1460,16 @@ begin
   MoveUpBtn.Hint:=lisMoveSelectedUp;
   MoveDownBtn.Hint:=lisMoveSelectedDown;
 
-  FilesTreeView.BeginUpdate;
-  FFilesNode:=FilesTreeView.Items.Add(nil, dlgEnvFiles);
+  ItemsTreeView.BeginUpdate;
+  FFilesNode:=ItemsTreeView.Items.Add(nil, dlgEnvFiles);
   FFilesNode.ImageIndex:=ImageIndexFiles;
   FFilesNode.SelectedIndex:=FFilesNode.ImageIndex;
-  FRequiredPackagesNode:=FilesTreeView.Items.Add(nil, lisPckEditRequiredPackages);
+  FRequiredPackagesNode:=ItemsTreeView.Items.Add(nil, lisPckEditRequiredPackages);
   FRequiredPackagesNode.ImageIndex:=ImageIndexRequired;
   FRequiredPackagesNode.SelectedIndex:=FRequiredPackagesNode.ImageIndex;
-  FilesTreeView.EndUpdate;
+  ItemsTreeView.EndUpdate;
 
-  FilePropsGroupBox.Caption:=lisPckEditFileProperties;
+  PropsGroupBox.Caption:=lisPckEditFileProperties;
 
   CallRegisterProcCheckBox.Caption:=lisPckEditRegisterUnit;
   CallRegisterProcCheckBox.Hint:=Format(lisPckEditCallRegisterProcedureOfSelectedUnit, ['"', '"']);
@@ -1461,7 +1490,7 @@ begin
   with FDirSummaryLabel do
   begin
     Name:='DirSummaryLabel';
-    Parent:=FilePropsGroupBox;
+    Parent:=PropsGroupBox;
   end;
 end;
 
@@ -1513,7 +1542,7 @@ begin
   UpdateButtons;
   UpdateFiles;
   UpdateRequiredPkgs;
-  UpdateSelectedFile;
+  UpdateProperties;
   UpdateStatusBar;
 end;
 
@@ -1819,7 +1848,7 @@ begin
   if LazPackage.RemovedFilesCount>0 then begin
     // Create root node for removed dependencies if not done yet.
     if FRemovedFilesNode=nil then begin
-      FRemovedFilesNode:=FilesTreeView.Items.Add(FRequiredPackagesNode,
+      FRemovedFilesNode:=ItemsTreeView.Items.Add(FRequiredPackagesNode,
                                                  lisPckEditRemovedFiles);
       FRemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
       FRemovedFilesNode.SelectedIndex:=FRemovedFilesNode.ImageIndex;
@@ -1875,7 +1904,7 @@ begin
   CurDependency:=LazPackage.FirstRemovedDependency;
   if CurDependency<>nil then begin
     if FRemovedRequiredNode=nil then begin
-      FRemovedRequiredNode:=FilesTreeView.Items.Add(nil,lisPckEditRemovedRequiredPackages);
+      FRemovedRequiredNode:=ItemsTreeView.Items.Add(nil,lisPckEditRemovedRequiredPackages);
       FRemovedRequiredNode.ImageIndex:=ImageIndexRemovedRequired;
       FRemovedRequiredNode.SelectedIndex:=FRemovedRequiredNode.ImageIndex;
     end;
@@ -1896,7 +1925,7 @@ begin
   FilterEdit.ForceFilter(OldFilter);
 end;
 
-procedure TPackageEditorForm.UpdateSelectedFile;
+procedure TPackageEditorForm.UpdateProperties;
 var
   CurComponent: TPkgComponent;
   CurLine, CurFilename: string;
@@ -1912,7 +1941,7 @@ begin
   FSelectedFile:=GetCurrentFile(Removed);
   if FSelectedFile=nil then
     FSelectedDependency:=GetCurrentDependency(Removed);
-  CurNode:=FilesTreeView.Selected;
+  CurNode:=ItemsTreeView.Selected;
   IsDir:=IsDirectoryNode(CurNode) or (CurNode=FFilesNode);
   CurFilename:='';
   HasLFM:=false;
@@ -1943,8 +1972,8 @@ begin
   MoveDownBtn.Enabled:=b and Assigned(CurNode.GetNextVisibleSibling);
 
   if FSelectedFile<>nil then begin
-    FilePropsGroupBox.Enabled:=true;
-    FilePropsGroupBox.Caption:=lisPckEditFileProperties;
+    PropsGroupBox.Enabled:=true;
+    PropsGroupBox.Caption:=lisPckEditFileProperties;
     // set Register Unit checkbox
     CallRegisterProcCheckBox.Enabled:=(not LazPackage.ReadOnly)
                              and (FSelectedFile.FileType in [pftUnit,pftVirtualUnit]);
@@ -1968,8 +1997,8 @@ begin
     RegisteredListBox.Items.Assign(FPlugins);
   end
   else if FSelectedDependency<>nil then begin
-    FilePropsGroupBox.Enabled:=not Removed;
-    FilePropsGroupBox.Caption:=lisPckEditDependencyProperties;
+    PropsGroupBox.Enabled:=not Removed;
+    PropsGroupBox.Caption:=lisPckEditDependencyProperties;
     UseMinVersionCheckBox.Checked:=pdfMinVersion in FSelectedDependency.Flags;
     MinVersionEdit.Text:=FSelectedDependency.MinVersion.AsString;
     MinVersionEdit.Enabled:=pdfMinVersion in FSelectedDependency.Flags;
@@ -1979,14 +2008,14 @@ begin
     UpdateApplyDependencyButton;
   end
   else if IsDir then begin
-    FilePropsGroupBox.Enabled:=true;
+    PropsGroupBox.Enabled:=true;
     GetDirectorySummary(CurNode,FileCount,HasRegisterProcCount,AddToUsesPkgSectionCount);
     FDirSummaryLabel.Caption:='Files: '+IntToStr(FileCount)
              +', has Register procedure: '+IntToStr(HasRegisterProcCount)
              +', in package uses section: '+IntToStr(AddToUsesPkgSectionCount);
   end
   else begin
-    FilePropsGroupBox.Enabled:=false;
+    PropsGroupBox.Enabled:=false;
   end;
 end;
 
@@ -2048,7 +2077,7 @@ var
 begin
   Result:=nil;
   Removed:=false;
-  NodeData:=GetNodeData(FilesTreeView.Selected);
+  NodeData:=GetNodeData(ItemsTreeView.Selected);
   if NodeData=nil then exit;
   if NodeData.Typ<>penDependency then exit;
   Removed:=NodeData.Removed;
@@ -2064,7 +2093,7 @@ var
 begin
   Result:=nil;
   Removed:=false;
-  NodeData:=GetNodeData(FilesTreeView.Selected);
+  NodeData:=GetNodeData(ItemsTreeView.Selected);
   if NodeData=nil then exit;
   if NodeData.Typ<>penFile then exit;
   Removed:=NodeData.Removed;
@@ -2296,11 +2325,11 @@ var
   CurNode: TTreeNode;
 begin
   if not ShowDirectoryHierarchy then exit;
-  CurNode:=FilesTreeView.Selected;
+  CurNode:=ItemsTreeView.Selected;
   if not (IsDirectoryNode(CurNode) or (CurNode=FFilesNode)) then exit;
-  FilesTreeView.BeginUpdate;
+  ItemsTreeView.BeginUpdate;
   CurNode.Expand(true);
-  FilesTreeView.EndUpdate;
+  ItemsTreeView.EndUpdate;
 end;
 
 procedure TPackageEditorForm.DoCollapseDirectory;
@@ -2309,16 +2338,16 @@ var
   Node: TTreeNode;
 begin
   if not ShowDirectoryHierarchy then exit;
-  CurNode:=FilesTreeView.Selected;
+  CurNode:=ItemsTreeView.Selected;
   if not (IsDirectoryNode(CurNode) or (CurNode=FFilesNode)) then exit;
-  FilesTreeView.BeginUpdate;
+  ItemsTreeView.BeginUpdate;
   Node:=CurNode.GetFirstChild;
   while Node<>nil do
   begin
     Node.Collapse(true);
     Node:=Node.GetNextSibling;
   end;
-  FilesTreeView.EndUpdate;
+  ItemsTreeView.EndUpdate;
 end;
 
 procedure TPackageEditorForm.DoUseUnitsInDirectory(Use: boolean);
@@ -2353,10 +2382,10 @@ var
   CurNode: TTreeNode;
 begin
   if not ShowDirectoryHierarchy then exit;
-  CurNode:=FilesTreeView.Selected;
+  CurNode:=ItemsTreeView.Selected;
   if not (IsDirectoryNode(CurNode) or (CurNode=FFilesNode)) then exit;
   Traverse(CurNode);
-  UpdateSelectedFile;
+  UpdateProperties;
 end;
 
 procedure TPackageEditorForm.DoMoveCurrentFile(Offset: integer);
@@ -2374,7 +2403,7 @@ begin
   FilesBranch:=FilterEdit.GetExistingBranch(FFilesNode);
   LazPackage.MoveFile(OldIndex,NewIndex);
   FilesBranch.MoveFile(OldIndex,NewIndex);
-  UpdateSelectedFile;
+  UpdateProperties;
   UpdateStatusBar;
   FilterEdit.InvalidateFilter;
 end;
@@ -2383,24 +2412,24 @@ procedure TPackageEditorForm.DoMoveDependency(Offset: integer);
 var
   OldSelection: TStringList;
 begin
-  FilesTreeView.BeginUpdate;
-  OldSelection:=FilesTreeView.StoreCurrentSelection;
+  ItemsTreeView.BeginUpdate;
+  OldSelection:=ItemsTreeView.StoreCurrentSelection;
   if Offset<0 then
     PackageGraph.MoveRequiredDependencyUp(FSelectedDependency)
   else
     PackageGraph.MoveRequiredDependencyDown(FSelectedDependency);
-  FilesTreeView.ApplyStoredSelection(OldSelection);
-  FilesTreeView.EndUpdate;
+  ItemsTreeView.ApplyStoredSelection(OldSelection);
+  ItemsTreeView.EndUpdate;
 end;
 
 procedure TPackageEditorForm.DoSortFiles;
 var
   TreeSelection: TStringList;
 begin
-  TreeSelection:=FilesTreeView.StoreCurrentSelection;
+  TreeSelection:=ItemsTreeView.StoreCurrentSelection;
   LazPackage.SortFiles;
   UpdateAll(true);
-  FilesTreeView.ApplyStoredSelection(TreeSelection);
+  ItemsTreeView.ApplyStoredSelection(TreeSelection);
 end;
 
 procedure TPackageEditorForm.DoOpenPkgFile(PkgFile: TPkgFile);
@@ -2425,26 +2454,10 @@ end;
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FPlugins:=TStringList.Create;
-  SetupComponents;
-  SortAlphabetically := EnvironmentOptions.PackageEditorSortAlphabetically;
-  ShowDirectoryHierarchy := EnvironmentOptions.PackageEditorShowDirHierarchy;
 end;
 
 destructor TPackageEditorForm.Destroy;
-var
-  nt: TPENodeType;
 begin
-  EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
-  EnvironmentOptions.PackageEditorShowDirHierarchy := ShowDirectoryHierarchy;
-  FilterEdit.ForceFilter('');
-  for nt:=Low(TPENodeType) to High(TPENodeType) do
-    FreeNodeData(nt);
-  if PackageEditorMenuRoot.MenuItem=FilesPopupMenu.Items then
-    PackageEditorMenuRoot.MenuItem:=nil;
-  PackageEditors.DoFreeEditor(LazPackage);
-  FLazPackage:=nil;
-  FreeAndNil(FPlugins);
   inherited Destroy;
 end;
 
