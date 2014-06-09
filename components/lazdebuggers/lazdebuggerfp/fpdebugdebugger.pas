@@ -1080,9 +1080,17 @@ var
   AnExceptionObjectLocation: TDBGPtr;
   ExceptionClass: string;
   ExceptionMessage: string;
+  RegDxDwarfIndex: byte;
 begin
   // Using regvar:
-  AnExceptionLocation:=GetLocationRec(FDbgController.CurrentProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(2).NumValue);
+  // In all their wisdom, people decided to give the (r)dx register dwarf index
+  // 1 on for x86_64 and index 2 for i386.
+  if FDbgController.CurrentProcess.Mode=dm32 then
+    RegDxDwarfIndex:=2
+  else
+    RegDxDwarfIndex:=1;
+
+  AnExceptionLocation:=GetLocationRec(FDbgController.CurrentProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(RegDxDwarfIndex).NumValue);
   AnExceptionObjectLocation:=FDbgController.CurrentProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(0).NumValue;
   ExceptionClass := GetClassInstanceName(AnExceptionObjectLocation);
   ExceptionMessage := ReadAnsiString(AnExceptionObjectLocation+DBGPTRSIZE[FDbgController.CurrentProcess.Mode]);
