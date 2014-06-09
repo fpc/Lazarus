@@ -2164,10 +2164,16 @@ begin
 end;
 
 function TTreeNodes.GetSelections(const AIndex: Integer): TTreeNode;
+
+  procedure RaiseOutOfBounds;
+  begin
+    TreeNodeError('TTreeNodes.GetSelections Index '+IntToStr(AIndex)
+        +' out of bounds (Count='+IntToStr(FSelection.Count)+')');
+  end;
+
 begin
   if (AIndex < 0) or (AIndex > FSelection.Count - 1) then
-    TreeNodeError('TTreeNodes.GetSelections Index '+IntToStr(AIndex)
-      +' out of bounds (Count='+IntToStr(FSelection.Count)+')');
+    RaiseOutOfBounds;
   Result := TTreeNode(FSelection.Items[AIndex]);
 end;
 
