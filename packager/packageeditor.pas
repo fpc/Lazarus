@@ -1041,7 +1041,15 @@ var
   CurDependency: TPkgDependency;
   s: String;
   mt: TMsgDlgType;
-  Removed: boolean;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
+  MainUnitSelected: Boolean;
+  FileWarning: String;
+  FileCount: Integer;
+  PkgCount: Integer;
+  PkgWarning: String;
 begin
   BeginUdate;
   try
@@ -1051,43 +1059,82 @@ begin
       exit;
     end;
 
-    // get current package file
-    CurFile:=GetCurrentFile(Removed);
-    if CurFile<>nil then begin
-      if Removed then exit;
-      // confirm deletion
-      s:='';
-      mt:=mtConfirmation;
-      if CurFile.FileType=pftMainUnit then begin
-        s:=Format(lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas,
-                  [LineEnding+LineEnding, lowercase(LazPackage.Name)]);
-        mt:=mtWarning;
+    // check selection
+    MainUnitSelected:=false;
+    FileWarning:='';
+    FileCount:=0;
+    PkgCount:=0;
+    PkgWarning:='';
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if NodeData.Removed then continue;
+      if Item is TPkgFile then begin
+        CurFile:=TPkgFile(Item);
+        inc(FileCount);
+        if CurFile.FileType=pftMainUnit then
+          MainUnitSelected:=true;
+        if FileWarning='' then
+          FileWarning:=Format(lisPckEditRemoveFileFromPackage,
+            ['"', CurFile.Filename, '"', LineEnding, '"', LazPackage.IDAsString, '"']);
+      end else if Item is TPkgDependency then begin
+        CurDependency:=TPkgDependency(Item);
+        inc(PkgCount);
+        if PkgWarning='' then
+          PkgWarning:=Format(lisPckEditRemoveDependencyFromPackage, ['"',
+            CurDependency.AsString, '"', LineEnding, '"', LazPackage.IDAsString, '"']);
       end;
-      if MessageDlg(lisPckEditRemoveFile2,
-        Format(lisPckEditRemoveFileFromPackage, ['"', CurFile.Filename, '"',
-          LineEnding, '"', LazPackage.IDAsString, '"'])+s,
-        mt,[mbYes,mbNo],0)=mrNo
-      then
-        exit;
-      LazPackage.RemoveFile(CurFile);
-      UpdateFiles;
+    end;
+    if (FileCount=0) and (PkgCount=0) then begin
+      UpdateButtons;
       exit;
     end;
 
-    // get current dependency
-    CurDependency:=GetCurrentDependency(Removed);
-    if (CurDependency<>nil) then begin
-      if Removed then exit;
-      // confirm deletion
-      if MessageDlg(lisPckEditRemoveDependency2,
-        Format(lisPckEditRemoveDependencyFromPackage, ['"',
-          CurDependency.AsString, '"', LineEnding, '"', LazPackage.IDAsString, '"']),
-        mtConfirmation,[mbYes,mbNo],0)=mrNo
-      then
+    // confirm deletion
+    if FileCount>0 then begin
+      s:='';
+      mt:=mtConfirmation;
+      if FileCount=1 then
+        s:=FileWarning
+      else
+        s:=Format(lisRemoveFilesFromPackage, [IntToStr(FileCount), LazPackage.
+          Name]);
+      if MainUnitSelected then begin
+        s+=Format(lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas,
+                  [LineEnding+LineEnding, lowercase(LazPackage.Name)]);
+        mt:=mtWarning;
+      end;
+      if IDEMessageDialog(lisPckEditRemoveFile2,s,mt,[mbYes,mbNo])<>mrYes then
         exit;
-      PackageGraph.RemoveDependencyFromPackage(LazPackage,CurDependency,true);
-      UpdateRequiredPkgs;
     end;
+    if PkgCount>0 then begin
+      s:='';
+      mt:=mtConfirmation;
+      if PkgCount=1 then
+        s:=PkgWarning
+      else
+        s:=Format(lisRemoveDependenciesFromPackage, [IntToStr(PkgCount),
+          LazPackage.Name]);
+      if IDEMessageDialog(lisPckEditRemoveDependencyFromPackage,s,mt,[mbYes,mbNo])<>mrYes then
+        exit;
+    end;
+
+    // remove
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if NodeData.Removed then continue;
+      if Item is TPkgFile then begin
+        CurFile:=TPkgFile(Item);
+        LazPackage.RemoveFile(CurFile);
+        UpdateFiles;
+      end else if Item is TPkgDependency then begin
+        CurDependency:=TPkgDependency(Item);
+        PackageGraph.RemoveDependencyFromPackage(LazPackage,CurDependency,true);
+        UpdateRequiredPkgs;
+      end;
+    end;
+
   finally
     EndUpdate;
   end;
@@ -1985,7 +2032,7 @@ begin
       RemovedBranch.AddNodeData(CurFile.GetShortFilename(true), NodeData);
     end;
   end else begin
-    // No removed dependencies -> delete the root node
+    // No more removed files left -> delete the root node
     if FRemovedFilesNode<>nil then begin
       FilterEdit.DeleteBranch(FRemovedFilesNode);
       FreeAndNil(FRemovedFilesNode);

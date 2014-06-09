@@ -4182,6 +4182,8 @@ resourcestring
   lisPckEditRemoveDependency2 = 'Remove Dependency?';
   lisPckEditRemoveDependencyFromPackage = 'Remove dependency %s%s%s%sfrom '
     +'package %s%s%s?';
+  lisRemoveDependenciesFromPackage =
+    'Remove %s dependencies from package "%s"?';
   lisPckEditInvalidMinimumVersion = 'Invalid minimum version';
   lisPckEditTheMinimumVersionIsNotAValidPackageVersion = 'The minimum '
     +'version %s%s%s is not a valid package version.%s(good example 1.2.3.4)';
@@ -5286,6 +5288,7 @@ resourcestring
   lisChangeBuildMode = 'Change build mode';
   lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas = '%sWarning: This is '
     +'the main unit. The new main unit will be %s.pas.';
+  lisRemoveFilesFromPackage = 'Remove %s files from package "%s"?';
   lisDirectivesForNewUnit = 'Directives for new unit';
   lisRemoveFromInstallList = 'Remove from install list';
   lisKeepInInstallList = 'Keep in install list';
