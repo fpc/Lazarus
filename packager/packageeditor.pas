@@ -30,6 +30,8 @@
     DisableI18NForLFMCheckBox
     readd
     popupmenu
+    replace GetCurrentDependency
+    replace GetCurrentFile
 }
 unit PackageEditor;
 
@@ -566,14 +568,20 @@ var
   PkgFile: TPkgFile;
   AFilename: String;
   Dependency: TPkgDependency;
-  Removed: boolean;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
 begin
   BeginUdate;
   try
-    PkgFile:=GetCurrentFile(Removed);
-    if (PkgFile<>nil) then begin
-      if Removed then begin
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if not NodeData.Removed then continue;
+      if Item is TPkgFile then begin
         // re-add file
+        PkgFile:=TPkgFile(Item);
         AFilename:=PkgFile.GetFullFilename;
         if PkgFile.FileType in PkgFileRealUnitTypes then begin
           if not CheckAddingUnitFilename(LazPackage,d2ptUnit,
@@ -588,10 +596,8 @@ begin
         PkgFile.Filename:=AFilename;
         LazPackage.UnremovePkgFile(PkgFile);
         UpdateFiles;
-      end;
-    end else begin
-      Dependency:=GetCurrentDependency(Removed);
-      if (Dependency<>nil) and Removed then begin
+      end else if Item is TPkgDependency then begin
+        Dependency:=TPkgDependency(Item);
         // re-add dependency
         if CheckAddingDependency(LazPackage,Dependency,false,true)<>mrOk then exit;
         LazPackage.RemoveRemovedDependency(Dependency);
@@ -2234,7 +2240,6 @@ begin
       inc(SelDirCount);
       SingleSelectedDirectory:=TVNode;
       SingleSelected:=TVNode;
-      SingleSelectedRemoved:=NodeData.Removed;
     end;
   end;
 
