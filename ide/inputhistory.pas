@@ -26,7 +26,8 @@
 
   Author: Mattias Gaertner
   
-
+  Abstract:
+    History lists for strings and file names.
 }
 unit InputHistory;
 

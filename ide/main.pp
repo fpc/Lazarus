@@ -4719,6 +4719,7 @@ begin
   end;
 
   if DlgResult in [mrOk,mrYes,mrAll] then begin
+    MiscellaneousOptions.Modified:=true;
     MiscellaneousOptions.Save;
     IncreaseCompilerParseStamp;
     if DlgResult=mrAll then
@@ -7613,8 +7614,10 @@ begin
     Result:=fBuilder.MakeLazarus(BuildLazProfiles.Current, IDEBuildFlags);
     if Result<>mrOk then exit;
 
-    if fBuilder.ProfileChanged then
+    if fBuilder.ProfileChanged then begin
+      MiscellaneousOptions.Modified:=true;
       MiscellaneousOptions.Save;
+    end;
   finally
     MainBuildBoss.SetBuildTargetProject1(true);
     DoCheckFilesOnDisk;

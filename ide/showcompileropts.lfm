@@ -9,20 +9,21 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   ClientWidth = 481
   Constraints.MinHeight = 194
   Constraints.MinWidth = 390
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poOwnerFormCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object CloseButton: TBitBtn
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 400
-    Height = 28
-    Top = 386
-    Width = 75
+    Left = 392
+    Height = 22
+    Top = 392
+    Width = 83
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -35,7 +36,7 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
   object PageControl1: TPageControl
     AnchorSideBottom.Control = CloseButton
     Left = 0
-    Height = 380
+    Height = 386
     Top = 0
     Width = 481
     ActivePage = InheritedParamsTabSheet
@@ -80,13 +81,13 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
     end
     object InheritedParamsTabSheet: TTabSheet
       Caption = 'InheritedParams'
-      ClientHeight = 351
-      ClientWidth = 477
+      ClientHeight = 347
+      ClientWidth = 475
       object InhTreeView: TTreeView
         Left = 0
-        Height = 285
+        Height = 281
         Top = 0
-        Width = 477
+        Width = 475
         Align = alClient
         DefaultItemHeight = 18
         ReadOnly = True
@@ -98,8 +99,8 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
       object InhItemMemo: TMemo
         Left = 0
         Height = 61
-        Top = 290
-        Width = 477
+        Top = 286
+        Width = 475
         Align = alBottom
         ReadOnly = True
         ScrollBars = ssAutoVertical
@@ -109,8 +110,8 @@ object ShowCompilerOptionsDlg: TShowCompilerOptionsDlg
         Cursor = crVSplit
         Left = 0
         Height = 5
-        Top = 285
-        Width = 477
+        Top = 281
+        Width = 475
         Align = alBottom
         ResizeAnchor = akBottom
       end

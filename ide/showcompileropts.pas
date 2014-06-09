@@ -40,7 +40,7 @@ uses
   CodeToolsCfgScript,
   LazIDEIntf, IDEImagesIntf, CompOptsIntf, ProjectIntf,
   LazarusIDEStrConsts, CompilerOptions, TransferMacros,
-  IDEProcs, Project, ModeMatrixOpts, PackageDefs;
+  IDEProcs, Project, ModeMatrixOpts, PackageDefs, MiscOptions;
 
 type
 
@@ -56,6 +56,7 @@ type
     InhTreeView: TTreeView;
     PageControl1: TPageControl;
     RelativePathsCheckBox: TCheckBox;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
@@ -170,12 +171,20 @@ begin
   PageControl1.ActivePage:=CmdLineParamsTabSheet;
   CmdLineParamsTabSheet.Caption:=lisCommandLineParameters;
   RelativePathsCheckBox.Caption:=lisShowRelativePaths;
+  RelativePathsCheckBox.Checked:=not MiscellaneousOptions.ShowCompOptFullFilenames;
 
   InheritedParamsTabSheet.Caption:=lisInheritedParameters;
   InhTreeView.Images := IDEImages.Images_16;
   InhItemMemo.Text := lisSelectANode;
 
   CloseButton.Caption:=lisBtnClose;
+end;
+
+procedure TShowCompilerOptionsDlg.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  MiscellaneousOptions.ShowCompOptFullFilenames:=not RelativePathsCheckBox.Checked;
+  MiscellaneousOptions.Save;
 end;
 
 procedure TShowCompilerOptionsDlg.FormDestroy(Sender: TObject);
@@ -197,6 +206,7 @@ var
   Flags: TCompilerCmdLineOptions;
   CurOptions: String;
 begin
+  if CompilerOpts=nil then exit;
   Flags:=CompilerOpts.DefaultMakeOptionsFlags;
   if not RelativePathsCheckBox.Checked then
     Include(Flags,ccloAbsolutePaths);
@@ -283,6 +293,7 @@ var
   end;
 
 begin
+  if CompilerOpts=nil then exit;
   OptionsList := nil;
   //debugln(['TCompilerInheritedOptionsFrame.UpdateInheritedTree START CompilerOpts=',DbgSName(CompilerOpts)]);
   CompilerOpts.GetInheritedCompilerOptions(OptionsList);
