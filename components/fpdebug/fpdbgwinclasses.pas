@@ -155,7 +155,7 @@ end;
 
 procedure TDbgWinProcess.LogLastError;
 begin
-  log('FpDbg-ERROR: %s', [GetLastErrorText], dllInfo);
+  log('FpDbg-ERROR: %s', [GetLastErrorText], dllDebug);
 end;
 
 function QueryFullProcessImageName(hProcess:HANDLE; dwFlags: DWord; lpExeName:LPTSTR; var lpdwSize:DWORD):BOOL; stdcall; external 'kernel32' name 'QueryFullProcessImageNameA';
