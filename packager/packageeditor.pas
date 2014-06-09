@@ -1257,7 +1257,6 @@ begin
     LazPackage.Modified:=true;
   end;
   UpdateFiles;
-  UpdatePEProperties;
 end;
 
 procedure TPackageEditorForm.AddToProjectClick(Sender: TObject);
@@ -1327,7 +1326,6 @@ begin
     LazPackage.Modified:=true;
   end;
   UpdateFiles;
-  UpdatePEProperties;
 end;
 
 procedure TPackageEditorForm.ChangeFileTypeMenuItemClick(Sender: TObject);
@@ -1348,7 +1346,6 @@ begin
         CurFile.FileType:=CurPFT;
         LazPackage.Modified:=true;
         UpdateFiles;
-        UpdatePEProperties;
       end;
       exit;
     end;
@@ -1956,9 +1953,6 @@ begin
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
   FilterEdit.SortData:=SortAlphabetically;
   FilterEdit.ImageIndexDirectory:=ImageIndexDirectory;
-  debugln(['TPackageEditorForm.UpdateFiles AAA1 ',FNextSelectedPart<>nil]);
-  if FNextSelectedPart<>nil then
-    debugln(['TPackageEditorForm.UpdateFiles AAA2 ',FNextSelectedPart.Typ=penFile,' ',FNextSelectedPart.Name]);
   // collect and sort files
   for i:=0 to LazPackage.FileCount-1 do begin
     CurFile:=LazPackage.Files[i];
@@ -1971,7 +1965,6 @@ begin
       FilterEdit.SelectedPart:=NodeData;
     FilesBranch.AddNodeData(Filename, NodeData, CurFile.Filename);
   end;
-  debugln(['TPackageEditorForm.UpdateFiles AAA3 ',DbgSName(FilterEdit.SelectedPart)]);
   if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penFile) then
     FreeAndNil(FNextSelectedPart);
 
@@ -1999,6 +1992,8 @@ begin
     end;
   end;
   FilterEdit.Filter := OldFilter;            // This triggers ApplyFilter
+
+  UpdatePEProperties(true);
 end;
 
 procedure TPackageEditorForm.UpdateRequiredPkgs(Immediately: boolean);
@@ -2061,6 +2056,8 @@ begin
   end;
   FNextSelectedPart:=nil;
   FilterEdit.ForceFilter(OldFilter);
+
+  UpdatePEProperties(true);
 end;
 
 procedure TPackageEditorForm.UpdatePEProperties(Immediately: boolean);
