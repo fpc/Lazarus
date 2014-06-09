@@ -25,8 +25,11 @@
 
   ToDo:
     - Multiselect
-    - UpdateFiles: try to keep selection, if failed -> trigger UpdatePEProperties+UpdateButtons
-    - UpdateRequiredPkgs: try to keep selection, if failed -> trigger UpdatePEProperties+UpdateButtons
+    CallRegisterProcCheckBox,
+    AddToUsesPkgSectionCheckBox,
+    DisableI18NForLFMCheckBox
+    readd
+    popupmenu
 }
 unit PackageEditor;
 
@@ -269,12 +272,12 @@ type
     FRequiredPackagesNode: TTreeNode;
     FRemovedFilesNode: TTreeNode;
     FRemovedRequiredNode: TTreeNode;
-    FPlugins: TStringList;
+    FPlugins: TStringList; // ComponentClassName, Objects=TPkgComponent
     FShowDirectoryHierarchy: boolean;
     FSortAlphabetically: boolean;
     FDirSummaryLabel: TLabel;
-    FSelectedFile: TPkgFile;
-    FSelectedDependency: TPkgDependency;
+    FSingleSelectedFile: TPkgFile;
+    FSingleSelectedDependency: TPkgDependency;
     FFirstNodeData: array[TPENodeType] of TPENodeData;
     fUpdateLock: integer;
     procedure FreeNodeData(Typ: TPENodeType);
@@ -906,23 +909,25 @@ end;
 procedure TPackageEditorForm.MoveUpBtnClick(Sender: TObject);
 begin
   if SortAlphabetically then exit;
-  if Assigned(FSelectedFile) then
+  if Assigned(FSingleSelectedFile) then
     DoMoveCurrentFile(-1)
-  else if Assigned(FSelectedDependency) then
+  else if Assigned(FSingleSelectedDependency) then
     DoMoveDependency(-1)
 end;
 
 procedure TPackageEditorForm.OnIdle(Sender: TObject; var Done: Boolean);
 begin
+  if fUpdateLock>0 then exit;
+  IdleConnected:=false;
   UpdatePending;
 end;
 
 procedure TPackageEditorForm.MoveDownBtnClick(Sender: TObject);
 begin
   if SortAlphabetically then exit;
-  if Assigned(FSelectedFile) then
+  if Assigned(FSingleSelectedFile) then
     DoMoveCurrentFile(1)
-  else if Assigned(FSelectedDependency) then
+  else if Assigned(FSingleSelectedDependency) then
     DoMoveDependency(1)
 end;
 
@@ -2108,97 +2113,215 @@ begin
 end;
 
 procedure TPackageEditorForm.UpdatePEProperties(Immediately: boolean);
+type
+  TMultiBool = (mubNone, mubAllTrue, mubAllFalse, mubMixed);
+
+  procedure MergeMultiBool(var b: TMultiBool; NewValue: boolean);
+  begin
+    case b of
+    mubNone: if NewValue then b:=mubAllTrue else b:=mubAllFalse;
+    mubAllTrue: if not NewValue then b:=mubMixed;
+    mubAllFalse: if NewValue then b:=mubMixed;
+    mubMixed: ;
+    end;
+  end;
+
+  procedure SetCheckBox(Box: TCheckBox; aVisible: boolean; State: TMultiBool);
+  begin
+    Box.Visible:=aVisible;
+    case State of
+    mubAllTrue:
+      begin
+        Box.State:=cbChecked;
+        Box.AllowGrayed:=false;
+      end;
+    mubAllFalse:
+      begin
+        Box.State:=cbUnchecked;
+        Box.AllowGrayed:=false;
+      end;
+    mubMixed:
+      begin
+        Box.AllowGrayed:=true;
+        Box.State:=cbGrayed;
+      end;
+    end;
+  end;
+
 var
+  CurFile: TPkgFile;
+  CurDependency: TPkgDependency;
   CurComponent: TPkgComponent;
   CurLine, CurFilename: string;
-  CurListIndex, i: Integer;
-  CurNode: TTreeNode;
-  Removed, IsDir, HasLFM, b: Boolean;
-  FileCount, RegCompCnt: integer;
-  HasRegisterProcCount, AddToUsesPkgSectionCount: integer;
+  i, j: Integer;
+  NodeData: TPENodeData;
+  Item: TObject;
+  SelFileCount: Integer;
+  SelDepCount: Integer;
+  SelHasRegisterProc: TMultiBool;
+  SelAddToUsesPkgSection: TMultiBool;
+  SelDisableI18NForLFM: TMultiBool;
+  SelUnitCount: Integer;
+  SelDirCount: Integer;
+  SelHasLFMCount: Integer;
+  OnlyFilesSelected: Boolean;
+  OnlyFilesWithUnitsSelected: Boolean;
+  aVisible: Boolean;
+  TVNode: TTreeNode;
+  SingleSelectedDirectory: TTreeNode;
+  SingleSelectedRemoved: Boolean;
+  SingleSelected: TTreeNode;
+  FileCount: integer;
+  HasRegisterProcCount: integer;
+  AddToUsesPkgSectionCount: integer;
 begin
   if not CanUpdate(pefNeedUpdateProperties) then exit;
 
   FPlugins.Clear;
-  FSelectedDependency:=nil;
-  FSelectedFile:=GetCurrentFile(Removed);
-  if FSelectedFile=nil then
-    FSelectedDependency:=GetCurrentDependency(Removed);
-  CurNode:=ItemsTreeView.Selected;
-  IsDir:=IsDirectoryNode(CurNode) or (CurNode=FFilesNode);
-  CurFilename:='';
-  HasLFM:=false;
-  if (FSelectedFile<>nil) and (FSelectedFile.FileType in PkgFileRealUnitTypes) then
-  begin
-    CurFilename:=FSelectedFile.GetFullFilename;
-    HasLFM:=FilenameIsAbsolute(CurFilename)
-        and FileExistsCached(ChangeFileExt(CurFilename,'.lfm'));
+
+  // check selection
+  FSingleSelectedDependency:=nil;
+  FSingleSelectedFile:=nil;
+  SingleSelectedDirectory:=nil;
+  SingleSelectedRemoved:=false;
+  SingleSelected:=nil;
+  SelFileCount:=0;
+  SelDepCount:=0;
+  SelHasRegisterProc:=mubNone;
+  SelAddToUsesPkgSection:=mubNone;
+  SelDisableI18NForLFM:=mubNone;
+  SelUnitCount:=0;
+  SelHasLFMCount:=0;
+  SelDirCount:=0;
+  for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+    TVNode:=ItemsTreeView.Selections[i];
+    if GetNodeDataItem(TVNode,NodeData,Item) then begin
+      if Item is TPkgFile then begin
+        CurFile:=TPkgFile(Item);
+        inc(SelFileCount);
+        FSingleSelectedFile:=CurFile;
+        SingleSelected:=TVNode;
+        SingleSelectedRemoved:=NodeData.Removed;
+        MergeMultiBool(SelHasRegisterProc,CurFile.HasRegisterProc);
+        if CurFile.FileType in PkgFileUnitTypes then begin
+          inc(SelUnitCount);
+          MergeMultiBool(SelAddToUsesPkgSection,CurFile.AddToUsesPkgSection);
+          if (CurFile.FileType in PkgFileRealUnitTypes) then
+          begin
+            CurFilename:=CurFile.GetFullFilename;
+            if FilenameIsAbsolute(CurFilename)
+                and FileExistsCached(ChangeFileExt(CurFilename,'.lfm'))
+            then begin
+              inc(SelHasLFMCount);
+              MergeMultiBool(SelDisableI18NForLFM,CurFile.DisableI18NForLFM);
+            end;
+          end;
+          // fetch all registered plugins
+          for j:=0 to CurFile.ComponentCount-1 do begin
+            CurComponent:=CurFile.Components[j];
+            CurLine:=CurComponent.ComponentClass.ClassName;
+            FPlugins.AddObject(CurLine,CurComponent);
+          end;
+        end;
+      end else if Item is TPkgDependency then begin
+        inc(SelDepCount);
+        CurDependency:=TPkgDependency(Item);
+        FSingleSelectedDependency:=CurDependency;
+        SingleSelected:=TVNode;
+        SingleSelectedRemoved:=NodeData.Removed;
+      end;
+    end else if IsDirectoryNode(TVNode) or (TVNode=FFilesNode) then begin
+      inc(SelDirCount);
+      SingleSelectedDirectory:=TVNode;
+      SingleSelected:=TVNode;
+      SingleSelectedRemoved:=NodeData.Removed;
+    end;
   end;
 
-  // make components visible
-  UseMinVersionCheckBox.Visible:=FSelectedDependency<>nil;
-  MinVersionEdit.Visible:=FSelectedDependency<>nil;
-  UseMaxVersionCheckBox.Visible:=FSelectedDependency<>nil;
-  MaxVersionEdit.Visible:=FSelectedDependency<>nil;
-  ApplyDependencyButton.Visible:=FSelectedDependency<>nil;
+  if (SelFileCount+SelDepCount+SelDirCount>1) then begin
+    // it is a multi selection
+    FSingleSelectedFile:=nil;
+    FSingleSelectedDependency:=nil;
+    SingleSelectedDirectory:=nil;
+    SingleSelected:=nil;
+  end;
+  OnlyFilesSelected:=(SelFileCount>0) and (SelDepCount=0) and (SelDirCount=0);
+  OnlyFilesWithUnitsSelected:=OnlyFilesSelected and (SelUnitCount>0);
 
-  CallRegisterProcCheckBox.Visible:=FSelectedFile<>nil;
-  AddToUsesPkgSectionCheckBox.Visible:=FSelectedFile<>nil;
-  RegisteredPluginsGroupBox.Visible:=FSelectedFile<>nil;
-  DisableI18NForLFMCheckBox.Visible:=HasLFM and LazPackage.EnableI18N
-                                     and LazPackage.EnableI18NForLFM;
-  FDirSummaryLabel.Visible:=IsDir;
+  //debugln(['TPackageEditorForm.UpdatePEProperties SelFileCount=',SelFileCount,' SelDepCount=',SelDepCount,' SelDirCount=',SelDirCount,' SelUnitCount=',SelUnitCount]);
+  //debugln(['TPackageEditorForm.UpdatePEProperties FSingleSelectedFile=',FSingleSelectedFile<>nil,' FSingleSelectedDependency=',FSingleSelectedDependency<>nil,' SingleSelectedDirectory=',SingleSelectedDirectory<>nil]);
 
-  b:=(Assigned(FSelectedFile) or Assigned(FSelectedDependency))
-      and not (SortAlphabetically or Removed);
-  MoveUpBtn.Enabled  :=b and Assigned(CurNode.GetPrevVisibleSibling);
-  MoveDownBtn.Enabled:=b and Assigned(CurNode.GetNextVisibleSibling);
+  DisableAlign;
+  try
+    // move up/down (only single selection)
+    aVisible:=(not (SortAlphabetically or SingleSelectedRemoved))
+       and ((FSingleSelectedFile<>nil) or (FSingleSelectedDependency<>nil));
+    MoveUpBtn.Enabled  :=aVisible and Assigned(SingleSelected.GetPrevVisibleSibling);
+    MoveDownBtn.Enabled:=aVisible and Assigned(SingleSelected.GetNextVisibleSibling);
 
-  if FSelectedFile<>nil then begin
-    PropsGroupBox.Enabled:=true;
-    PropsGroupBox.Caption:=lisPckEditFileProperties;
-    // set Register Unit checkbox
-    CallRegisterProcCheckBox.Enabled:=(not LazPackage.ReadOnly)
-                             and (FSelectedFile.FileType in [pftUnit,pftVirtualUnit]);
-    CallRegisterProcCheckBox.Checked:=pffHasRegisterProc in FSelectedFile.Flags;
-    AddToUsesPkgSectionCheckBox.Checked:=(pffAddToPkgUsesSection in FSelectedFile.Flags)
-                                              or (FSelectedFile.FileType=pftMainUnit);
-    AddToUsesPkgSectionCheckBox.Enabled:=(not LazPackage.ReadOnly)
-                             and (FSelectedFile.FileType in [pftUnit,pftVirtualUnit]);
-    DisableI18NForLFMCheckBox.Checked:=FSelectedFile.DisableI18NForLFM;
-    DisableI18NForLFMCheckBox.Enabled:=not LazPackage.ReadOnly;
-    // fetch all registered plugins
-    CurListIndex:=0;
-    RegCompCnt:=FSelectedFile.ComponentCount;
-    for i:=0 to RegCompCnt-1 do begin
-      CurComponent:=FSelectedFile.Components[i];
-      CurLine:=CurComponent.ComponentClass.ClassName;
-      FPlugins.AddObject(CurLine,CurComponent);
-      inc(CurListIndex);
-    end;
-    // put them in the RegisteredListBox
+    // Min/Max version of dependency (only single selection)
+    aVisible:=FSingleSelectedDependency<>nil;
+    UseMinVersionCheckBox.Visible:=aVisible;
+    MinVersionEdit.Visible:=aVisible;
+    UseMaxVersionCheckBox.Visible:=aVisible;
+    MaxVersionEdit.Visible:=aVisible;
+    ApplyDependencyButton.Visible:=aVisible;
+
+    // 'RegisterProc' of files (supports multi selection)
+    SetCheckBox(CallRegisterProcCheckBox,OnlyFilesWithUnitsSelected,
+      SelHasRegisterProc);
+    CallRegisterProcCheckBox.Enabled:=(not LazPackage.ReadOnly);
+
+    // 'Add to uses' of files (supports multi selection)
+    SetCheckBox(AddToUsesPkgSectionCheckBox,OnlyFilesWithUnitsSelected,
+      SelAddToUsesPkgSection);
+    AddToUsesPkgSectionCheckBox.Enabled:=(not LazPackage.ReadOnly);
+
+    // disable i18n for lfm (supports multi selection)
+    SetCheckBox(DisableI18NForLFMCheckBox,
+     OnlyFilesWithUnitsSelected and (SelHasLFMCount>0) and LazPackage.EnableI18N
+     and LazPackage.EnableI18NForLFM,
+     SelDisableI18NForLFM);
+    DisableI18NForLFMCheckBox.Enabled:=(not LazPackage.ReadOnly);
+
+    // registered plugins (supports multi selection)
+    RegisteredPluginsGroupBox.Visible:=OnlyFilesWithUnitsSelected;
+    RegisteredPluginsGroupBox.Enabled:=(not LazPackage.ReadOnly);
+    if not RegisteredPluginsGroupBox.Visible then
+      FPlugins.Clear;
     RegisteredListBox.Items.Assign(FPlugins);
-  end
-  else if FSelectedDependency<>nil then begin
-    PropsGroupBox.Enabled:=not Removed;
-    PropsGroupBox.Caption:=lisPckEditDependencyProperties;
-    UseMinVersionCheckBox.Checked:=pdfMinVersion in FSelectedDependency.Flags;
-    MinVersionEdit.Text:=FSelectedDependency.MinVersion.AsString;
-    MinVersionEdit.Enabled:=pdfMinVersion in FSelectedDependency.Flags;
-    UseMaxVersionCheckBox.Checked:=pdfMaxVersion in FSelectedDependency.Flags;
-    MaxVersionEdit.Text:=FSelectedDependency.MaxVersion.AsString;
-    MaxVersionEdit.Enabled:=pdfMaxVersion in FSelectedDependency.Flags;
-    UpdateApplyDependencyButton;
-  end
-  else if IsDir then begin
-    PropsGroupBox.Enabled:=true;
-    GetDirectorySummary(CurNode,FileCount,HasRegisterProcCount,AddToUsesPkgSectionCount);
-    FDirSummaryLabel.Caption:='Files: '+IntToStr(FileCount)
-             +', has Register procedure: '+IntToStr(HasRegisterProcCount)
-             +', in package uses section: '+IntToStr(AddToUsesPkgSectionCount);
-  end
-  else begin
-    PropsGroupBox.Enabled:=false;
+
+    // directory summary (only single selection)
+    FDirSummaryLabel.Visible:=(SelFileCount=0) and (SelDepCount=0) and (SelDirCount=1);
+
+    if SelFileCount>0 then begin
+      PropsGroupBox.Enabled:=true;
+      PropsGroupBox.Caption:=lisPckEditFileProperties;
+    end
+    else if FSingleSelectedDependency<>nil then begin
+      PropsGroupBox.Enabled:=not SingleSelectedRemoved;
+      PropsGroupBox.Caption:=lisPckEditDependencyProperties;
+      UseMinVersionCheckBox.Checked:=pdfMinVersion in FSingleSelectedDependency.Flags;
+      MinVersionEdit.Text:=FSingleSelectedDependency.MinVersion.AsString;
+      MinVersionEdit.Enabled:=pdfMinVersion in FSingleSelectedDependency.Flags;
+      UseMaxVersionCheckBox.Checked:=pdfMaxVersion in FSingleSelectedDependency.Flags;
+      MaxVersionEdit.Text:=FSingleSelectedDependency.MaxVersion.AsString;
+      MaxVersionEdit.Enabled:=pdfMaxVersion in FSingleSelectedDependency.Flags;
+      UpdateApplyDependencyButton;
+    end
+    else if SingleSelectedDirectory<>nil then begin
+      PropsGroupBox.Enabled:=true;
+      GetDirectorySummary(SingleSelectedDirectory,
+        FileCount,HasRegisterProcCount,AddToUsesPkgSectionCount);
+      FDirSummaryLabel.Caption:=Format(
+        lisFilesHasRegisterProcedureInPackageUsesSection, [IntToStr(FileCount),
+        IntToStr(HasRegisterProcCount), IntToStr(AddToUsesPkgSectionCount)]);
+    end
+    else begin
+      PropsGroupBox.Enabled:=false;
+    end;
+  finally
+    EnableAlign;
   end;
 end;
 
@@ -2609,9 +2732,9 @@ begin
   ItemsTreeView.BeginUpdate;
   OldSelection:=ItemsTreeView.StoreCurrentSelection;
   if Offset<0 then
-    PackageGraph.MoveRequiredDependencyUp(FSelectedDependency)
+    PackageGraph.MoveRequiredDependencyUp(FSingleSelectedDependency)
   else
-    PackageGraph.MoveRequiredDependencyDown(FSelectedDependency);
+    PackageGraph.MoveRequiredDependencyDown(FSingleSelectedDependency);
   ItemsTreeView.ApplyStoredSelection(OldSelection);
   ItemsTreeView.EndUpdate;
 end;

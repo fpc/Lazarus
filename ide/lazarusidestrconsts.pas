@@ -4226,6 +4226,8 @@ resourcestring
   lisPckEditRemovedRequiredPackages = 'Removed required packages';
   lisPckEditDefault = '%s, default: %s';
   lisPckEditDependencyProperties = 'Dependency Properties';
+  lisFilesHasRegisterProcedureInPackageUsesSection = 'Files: %s, has Register '
+    +'procedure: %s, in package uses section: %s';
   lisPckEditpackageNotSaved = 'package %s not saved';
   lisPckEditReadOnly = 'Read Only: %s';
   lisPckEditModified = 'Modified: %s';

@@ -33,7 +33,7 @@ end;
 
 function TButtonControl.GetChecked: Boolean;
 begin
-  GetChecked := False;
+  Result := False;
 end;
 
 procedure TButtonControl.SetChecked(Value: Boolean);
