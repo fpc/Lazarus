@@ -1875,11 +1875,14 @@ var
   CursorToLeft: integer;
   NewValue: String;
   OldCompletionType: TCompletionType;
+  prototypeAdded: boolean;
+  SourceNoteBook: TSourceNotebook;
 Begin
   {$IFDEF VerboseIDECompletionBox}
   DebugLnEnter(['TSourceNotebook.ccComplete START']);
   try
   {$ENDIF}
+  prototypeAdded := false;
   OldCompletionType:=CurrentCompletionType;
   case CurrentCompletionType of
 
@@ -1902,6 +1905,8 @@ Begin
           // insert value plus special chars like brackets, semicolons, ...
           if ValueType <> icvNone then
             Editor.TextBetweenPointsEx[SourceStart, SourceEnd, scamEnd] := NewValue;
+          if ValueType in [icvProcWithParams,icvIndexedProp] then
+            prototypeAdded := true;
           if CursorToLeft>0 then
           begin
             NewCaretXY:=Editor.CaretXY;
@@ -1954,7 +1959,16 @@ Begin
   begin
     SourceCompletionCaretXY:=Editor.CaretXY;
     AutoStartCompletionBoxTimer.AutoEnabled:=true;
+  end
+  else if prototypeAdded and EditorOpts.AutoDisplayFunctionPrototypes then
+  begin
+     if Editor.Owner is TSourceNoteBook then
+     begin
+        SourceNoteBook := Editor.Owner as TSourceNoteBook;
+        SourceNotebook.StartShowCodeContext(true);
+     end;
   end;
+
   {$IFDEF VerboseIDECompletionBox}
   finally
     DebugLnExit(['TSourceNotebook.ccComplete END']);
