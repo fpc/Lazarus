@@ -257,29 +257,30 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(__gs, IntToStr(__gs),4,0);
   end else with FThreadState64 do
     begin
-    FRegisterValueList.DbgRegisterAutoCreate['rax'].SetValue(__rax, IntToStr(__rax),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['rcx'].SetValue(__rcx, IntToStr(__rcx),4,1);
-    FRegisterValueList.DbgRegisterAutoCreate['rdx'].SetValue(__rdx, IntToStr(__rdx),4,2);
-    FRegisterValueList.DbgRegisterAutoCreate['rbx'].SetValue(__rbx, IntToStr(__rbx),4,3);
-    FRegisterValueList.DbgRegisterAutoCreate['rsp'].SetValue(__rsp, IntToStr(__rsp),4,4);
-    FRegisterValueList.DbgRegisterAutoCreate['rbp'].SetValue(__rbp, IntToStr(__rbp),4,5);
-    FRegisterValueList.DbgRegisterAutoCreate['rsi'].SetValue(__rsi, IntToStr(__rsi),4,6);
-    FRegisterValueList.DbgRegisterAutoCreate['rdi'].SetValue(__rdi, IntToStr(__rdi),4,7);
-    FRegisterValueList.DbgRegisterAutoCreate['rip'].SetValue(__rip, IntToStr(__rip),4,8);
+    FRegisterValueList.DbgRegisterAutoCreate['rax'].SetValue(__rax, IntToStr(__rax),8,0);
+    FRegisterValueList.DbgRegisterAutoCreate['rbx'].SetValue(__rbx, IntToStr(__rbx),8,3);
+    FRegisterValueList.DbgRegisterAutoCreate['rcx'].SetValue(__rcx, IntToStr(__rcx),8,2);
+    FRegisterValueList.DbgRegisterAutoCreate['rdx'].SetValue(__rdx, IntToStr(__rdx),8,1);
+    FRegisterValueList.DbgRegisterAutoCreate['rsi'].SetValue(__rsi, IntToStr(__rsi),8,4);
+    FRegisterValueList.DbgRegisterAutoCreate['rdi'].SetValue(__rdi, IntToStr(__rdi),8,5);
+    FRegisterValueList.DbgRegisterAutoCreate['rbp'].SetValue(__rbp, IntToStr(__rbp),8,6);
+    FRegisterValueList.DbgRegisterAutoCreate['rsp'].SetValue(__rsp, IntToStr(__rsp),8,7);
 
+    FRegisterValueList.DbgRegisterAutoCreate['r8'].SetValue(__r8, IntToStr(__r8),8,8);
+    FRegisterValueList.DbgRegisterAutoCreate['r9'].SetValue(__r9, IntToStr(__r9),8,9);
+    FRegisterValueList.DbgRegisterAutoCreate['r10'].SetValue(__r10, IntToStr(__r10),8,10);
+    FRegisterValueList.DbgRegisterAutoCreate['r11'].SetValue(__r11, IntToStr(__r11),8,11);
+    FRegisterValueList.DbgRegisterAutoCreate['r12'].SetValue(__r12, IntToStr(__r12),8,12);
+    FRegisterValueList.DbgRegisterAutoCreate['r13'].SetValue(__r13, IntToStr(__r13),8,13);
+    FRegisterValueList.DbgRegisterAutoCreate['r14'].SetValue(__r14, IntToStr(__r14),8,14);
+    FRegisterValueList.DbgRegisterAutoCreate['r15'].SetValue(__r15, IntToStr(__r15),8,15);
+
+    FRegisterValueList.DbgRegisterAutoCreate['rip'].SetValue(__rip, IntToStr(__rip),8,16);
     FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(__rflags);
 
-    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(__cs, IntToStr(__cs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['r8'].SetValue(__r8, IntToStr(__r8),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['r9'].SetValue(__r9, IntToStr(__r9),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['r10'].SetValue(__r10, IntToStr(__r10),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['r11'].SetValue(__r11, IntToStr(__r11),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['r12'].SetValue(__r12, IntToStr(__r12),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['r13'].SetValue(__r13, IntToStr(__r13),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['r14'].SetValue(__r14, IntToStr(__r14),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['r15'].SetValue(__r15, IntToStr(__r15),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(__fs, IntToStr(__fs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(__gs, IntToStr(__gs),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(__cs, IntToStr(__cs),8,43);
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(__fs, IntToStr(__fs),8,46);
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(__gs, IntToStr(__gs),8,47);
   end;
   FRegisterValueListValid:=true;
 end;
