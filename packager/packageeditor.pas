@@ -28,8 +28,6 @@
     CallRegisterProcCheckBox,
     AddToUsesPkgSectionCheckBox,
     DisableI18NForLFMCheckBox
-    readd
-    popupmenu
     replace GetCurrentDependency
     replace GetCurrentFile
 }
@@ -611,13 +609,6 @@ begin
 end;
 
 procedure TPackageEditorForm.ItemsPopupMenuPopup(Sender: TObject);
-var
-  CurDependency: TPkgDependency;
-  Removed: boolean;
-  CurFile: TPkgFile;
-  Writable: Boolean;
-  CurNode: TTreeNode;
-  IsDir: Boolean;
 
   procedure SetItem(Item: TIDEMenuCommand; AnOnClick: TNotifyEvent;
                     aShow: boolean = true; AEnable: boolean = true);
@@ -635,14 +626,15 @@ var
     NewMenuItem: TIDEMenuCommand;
   begin
     PkgEditMenuSectionFileType.Clear;
-    VirtualFileExists:=(CurFile.FileType=pftVirtualUnit)
-                       and FileExistsCached(CurFile.GetFullFilename);
+    if FSingleSelectedFile=nil then exit;
+    VirtualFileExists:=(FSingleSelectedFile.FileType=pftVirtualUnit)
+                    and FileExistsCached(FSingleSelectedFile.GetFullFilename);
     for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
       NewMenuItem:=RegisterIDEMenuCommand(PkgEditMenuSectionFileType,
                       'SetFileType'+IntToStr(ord(CurPFT)),
                       GetPkgFileTypeLocalizedName(CurPFT),
                       @ChangeFileTypeMenuItemClick);
-      if CurPFT=CurFile.FileType then begin
+      if CurPFT=FSingleSelectedFile.FileType then begin
         // menuitem to keep the current type
         NewMenuItem.Enabled:=true;
         NewMenuItem.Checked:=true;
@@ -652,7 +644,7 @@ var
       else if (not (CurPFT in PkgFileUnitTypes)) then
         // all other files can be changed into all non unit types
         NewMenuItem.Enabled:=true
-      else if FilenameIsPascalUnit(CurFile.Filename) then
+      else if FilenameIsPascalUnit(FSingleSelectedFile.Filename) then
         // a pascal file can be changed into anything
         NewMenuItem.Enabled:=true
       else
@@ -661,38 +653,76 @@ var
     end;
   end;
 
+var
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
+  SingleSelectedRemoved: Boolean;
+  SelDepCount: Integer;
+  SelFileCount: Integer;
+  SelDirCount: Integer;
+  SelRemovedFileCount: Integer;
+  Writable: Boolean;
+  CurDependency: TPkgDependency;
+  CurFile: TPkgFile;
 begin
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup START ',ItemsPopupMenu.Items.Count]);
   PackageEditorMenuFilesRoot.MenuItem:=ItemsPopupMenu.Items;
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup START after connect ',ItemsPopupMenu.Items.Count]);
   PackageEditorMenuRoot.BeginUpdate;
   try
-    CurNode:=ItemsTreeView.Selected;
-    CurDependency:=GetCurrentDependency(Removed);
+    SelFileCount:=0;
+    SelDepCount:=0;
+    SelDirCount:=0;
+    SelRemovedFileCount:=0;
+    SingleSelectedRemoved:=false;
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if GetNodeDataItem(TVNode,NodeData,Item) then begin
+        if Item is TPkgFile then begin
+          CurFile:=TPkgFile(Item);
+          inc(SelFileCount);
+          FSingleSelectedFile:=CurFile;
+          SingleSelectedRemoved:=NodeData.Removed;
+          if NodeData.Removed then
+            inc(SelRemovedFileCount);
+        end else if Item is TPkgDependency then begin
+          CurDependency:=TPkgDependency(Item);
+          inc(SelDepCount);
+          FSingleSelectedDependency:=CurDependency;
+          SingleSelectedRemoved:=NodeData.Removed;
+        end;
+      end else if IsDirectoryNode(TVNode) or (TVNode=FFilesNode) then begin
+        inc(SelDirCount);
+      end;
+    end;
+
+    if (SelFileCount+SelDepCount+SelDirCount>1) then begin
+      // it is a multi selection
+      FSingleSelectedFile:=nil;
+      FSingleSelectedDependency:=nil;
+    end;
+
     Writable:=(not LazPackage.ReadOnly);
-    if (CurDependency=nil) then
-      CurFile:=GetCurrentFile(Removed)
-    else
-      CurFile:=nil;
-    IsDir:=IsDirectoryNode(CurNode) or (CurNode=FFilesNode);
 
     PkgEditMenuSectionFileType.Clear;
 
     // items for single files, under section PkgEditMenuSectionFile
-    PkgEditMenuSectionFile.Visible:=CurFile<>nil;
-    if (CurFile<>nil) then begin
+    PkgEditMenuSectionFile.Visible:=SelFileCount>0;
+    if PkgEditMenuSectionFile.Visible then begin
       SetItem(PkgEditMenuOpenFile,@OpenFileMenuItemClick);
-      SetItem(PkgEditMenuReAddFile,@ReAddMenuItemClick,Removed);
-      SetItem(PkgEditMenuRemoveFile,@RemoveBitBtnClick,not Removed,RemoveBitBtn.Enabled);
-      PkgEditMenuSectionFileType.Visible:=true;
+      SetItem(PkgEditMenuReAddFile,@ReAddMenuItemClick,SingleSelectedRemoved);
+      SetItem(PkgEditMenuRemoveFile,@RemoveBitBtnClick,SelRemovedFileCount>0,RemoveBitBtn.Enabled);
       AddFileTypeMenuItem;
       SetItem(PkgEditMenuEditVirtualUnit,@EditVirtualUnitMenuItemClick,
-              (CurFile.FileType=pftVirtualUnit) and not Removed,Writable);
+              (FSingleSelectedFile<>nil) and (FSingleSelectedFile.FileType=pftVirtualUnit)
+              and not SingleSelectedRemoved,Writable);
     end;
 
     // items for directories, under section PkgEditMenuSectionDirectory
-    PkgEditMenuSectionDirectory.Visible:=IsDir and ShowDirectoryHierarchy;
-    if IsDir and ShowDirectoryHierarchy then begin
+    PkgEditMenuSectionDirectory.Visible:=(SelDirCount>0) and ShowDirectoryHierarchy;
+    if PkgEditMenuSectionDirectory.Visible then begin
       SetItem(PkgEditMenuExpandDirectory,@ExpandDirectoryMenuItemClick);
       SetItem(PkgEditMenuCollapseDirectory,@CollapseDirectoryMenuItemClick);
       SetItem(PkgEditMenuUseAllUnitsInDirectory,@UseAllUnitsInDirectoryMenuItemClick);
@@ -700,28 +730,31 @@ begin
     end;
 
     // items for dependencies, under section PkgEditMenuSectionDependency
-    PkgEditMenuSectionDependency.Visible:=(CurDependency<>nil) or (CurNode=FRequiredPackagesNode);
+    PkgEditMenuSectionDependency.Visible:=(SelDepCount>0)
+      or (ItemsTreeView.Selected=FRequiredPackagesNode);
     SetItem(PkgEditMenuOpenPackage,@OpenFileMenuItemClick,
-            (CurDependency<>nil) and (CurDependency.RequiredPackage<>nil),
-            CurDependency<>nil);
+            (FSingleSelectedDependency<>nil) and (FSingleSelectedDependency.RequiredPackage<>nil));
     SetItem(PkgEditMenuRemoveDependency,@RemoveBitBtnClick,
-            (CurDependency<>nil) and (not Removed),
-            RemoveBitBtn.Enabled);
+            (FSingleSelectedDependency<>nil) and (not SingleSelectedRemoved),
+            Writable);
     SetItem(PkgEditMenuReAddDependency,@ReAddMenuItemClick,
-            (CurDependency<>nil) and Removed and AddBitBtn.Enabled,
-            CurDependency<>nil);
+            (FSingleSelectedDependency<>nil) and SingleSelectedRemoved,
+            Writable);
     SetItem(PkgEditMenuDependencyStoreFileNameAsDefault,
             @SetDependencyDefaultFilenameMenuItemClick,
-            (CurDependency<>nil) and (not Removed),
-            (CurDependency<>nil) and Writable and (CurDependency.RequiredPackage<>nil));
+            (FSingleSelectedDependency<>nil) and (not SingleSelectedRemoved),
+            Writable and (FSingleSelectedDependency<>nil)
+            and (FSingleSelectedDependency.RequiredPackage<>nil));
     SetItem(PkgEditMenuDependencyStoreFileNameAsPreferred,
             @SetDependencyPreferredFilenameMenuItemClick,
-            (CurDependency<>nil) and (not Removed),
-            (CurDependency<>nil) and Writable and (CurDependency.RequiredPackage<>nil));
+            (FSingleSelectedDependency<>nil) and (not SingleSelectedRemoved),
+            Writable and (FSingleSelectedDependency<>nil)
+            and (FSingleSelectedDependency.RequiredPackage<>nil));
     SetItem(PkgEditMenuDependencyClearStoredFileName,
             @ClearDependencyFilenameMenuItemClick,
-            (CurDependency<>nil) and (not Removed),
-            (CurDependency<>nil) and Writable and (CurDependency.RequiredPackage<>nil));
+            (FSingleSelectedDependency<>nil) and (not SingleSelectedRemoved),
+            Writable and (FSingleSelectedDependency<>nil)
+            and (FSingleSelectedDependency.RequiredPackage<>nil));
     SetItem(PkgEditMenuCleanDependencies,
             @CleanDependenciesMenuItemClick,LazPackage.FirstRequiredDependency<>nil,
             Writable);
