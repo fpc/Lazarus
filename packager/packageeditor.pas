@@ -332,7 +332,7 @@ type
     procedure DoRevert;
     procedure DoSave(SaveAs: boolean);
     procedure DoSortFiles;
-    procedure DoOpenPkgFile(PkgFile: TPkgFile);
+    function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     procedure UpdateAll(Immediately: boolean); override;
     function ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
     procedure BeginUdate;
@@ -974,16 +974,22 @@ procedure TPackageEditorForm.OpenFileMenuItemClick(Sender: TObject);
 var
   CurFile: TPkgFile;
   CurDependency: TPkgDependency;
-  Removed: boolean;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
 begin
-  CurDependency:=nil;
-  CurFile:=GetCurrentFile(Removed);
-  if Assigned(CurFile) then
-    DoOpenPkgFile(CurFile)
-  else begin
-    CurDependency:=GetCurrentDependency(Removed);
-    if Assigned(CurDependency) then
-      PackageEditors.OpenDependency(Self,CurDependency);
+  for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+    TVNode:=ItemsTreeView.Selections[i];
+    if GetNodeDataItem(TVNode,NodeData,Item) then begin
+      if Item is TPkgFile then begin
+        CurFile:=TPkgFile(Item);
+        if DoOpenPkgFile(CurFile)<>mrOk then exit;
+      end else if Item is TPkgDependency then begin
+        CurDependency:=TPkgDependency(Item);
+        if PackageEditors.OpenDependency(Self,CurDependency)<>mrOk then exit;
+      end;
+    end;
   end;
 end;
 
@@ -2787,9 +2793,9 @@ begin
   ItemsTreeView.ApplyStoredSelection(TreeSelection);
 end;
 
-procedure TPackageEditorForm.DoOpenPkgFile(PkgFile: TPkgFile);
+function TPackageEditorForm.DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
 begin
-  PackageEditors.OpenPkgFile(Self,PkgFile);
+  Result:=PackageEditors.OpenPkgFile(Self,PkgFile);
 end;
 
 procedure TPackageEditorForm.DoFixFilesCase;
