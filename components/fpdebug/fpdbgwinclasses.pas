@@ -454,6 +454,7 @@ class function TDbgWinProcess.StartInstance(AFileName: string; AParams,
 var
   AProcess: TProcess;
 begin
+  result := nil;
   AProcess := TProcess.Create(nil);
   try
     AProcess.Options:=[poDebugProcess, poNewProcessGroup];
@@ -464,12 +465,21 @@ begin
     AProcess.Execute;
 
     result := TDbgWinProcess.Create(AFileName, AProcess.ProcessID, AProcess.ThreadID, AOnLog);
+    TDbgWinProcess(result).FProcProcess := AProcess;
   except
-    AProcess.Free;
-    raise;
+    on E: Exception do
+    begin
+      {$ifdef cpui386}
+      if (E is EProcess) and (GetLastError=50) then
+      begin
+        AOnLog(Format('Failed to start process "%s". Note that on Windows it is not possible to debug a 64-bit application with a 32-bit debugger.'+sLineBreak+'Errormessage: "%s".',[AFileName, E.Message]), dllInfo);
+      end
+      else
+      {$endif i386}
+        AOnLog(Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]), dllInfo);
+      AProcess.Free;
+    end;
   end;
-
-  TDbgWinProcess(result).FProcProcess := AProcess;
 end;
 
 
