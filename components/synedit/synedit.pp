@@ -198,13 +198,13 @@ type
     eoGroupUndo,               // When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
     eoHalfPageScroll,          // When scrolling with <PageUp> and <PageDown> keys, only scroll a half page at a time
     eoHideRightMargin,         // Hides the vertical "right margin" line
-    eoKeepCaretX,              // When moving through lines without "Cursor past EOL" option, keeps the X position of the caret
+    eoKeepCaretX,              // When moving through lines without "Scroll past EOL" option, keeps the X position of the caret
     eoNoCaret,                 // Hides caret (text blinking cursor) totally
     eoNoSelection,             // Disables any text selection
     eoPersistentCaret,         // Do not hide caret when focus is lost from control. (TODO: Windows still hides caret, if another component sets up a caret.)
-    eoScrollByOneLess,         // Makes vertical scrolling less by one line
-    eoScrollPastEof,           // Allows caret to go past the "end of file" position
-    eoScrollPastEol,           // Allows caret to go past the "end of line" position, into white space beyong current line end
+    eoScrollByOneLess,         // Scroll vertically, by <PageUp> and <PageDown> keys, less by one line
+    eoScrollPastEof,           // When scrolling to end-of-file, show last line at the top of the control, instead of the bottom
+    eoScrollPastEol,           // Allows caret to go into empty space beyond end-of-line position
     eoScrollHintFollows,       // The hint, showing vertical scroll position, follows the mouse cursor
     eoShowScrollHint,          // Shows hint, with the current scroll position, when scrolling vertically by dragging the scrollbar slider
     eoShowSpecialChars,        // Shows non-printable characters (spaces, tabulations) with greyed symbols
@@ -246,12 +246,13 @@ type
   TSynEditorOptions2 = set of TSynEditorOption2;
 
   TSynEditorMouseOption = SynEditMouseCmds.TSynEditorMouseOption;
-    //emUseMouseActions,
-    //emAltSetsColumnMode,       // Alt modifier, triggers column mode selection
-    //emDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
-    //emRightMouseMovesCursor,   // When clicking with the right mouse for a popup menu, move the cursor to that location
-    //emDoubleClickSelectsLine,  // Select line on double click
-    //emShowCtrlMouseLinks       // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
+    //emUseMouseActions          // Enable mouse actions
+    //emAltSetsColumnMode        // Allows to activate "column" selection mode, if <Alt> key is pressed and text is being selected with mouse
+    //emDragDropEditing          // Allows to drag-and-drop text blocks within the control
+    //emRightMouseMovesCursor    // When clicking with the right mouse button, for a popup menu, move the caret to clicked position
+    //emDoubleClickSelectsLine   // Selects entire line with double-click, otherwise double-click selects only current word
+    //emShowCtrlMouseLinks       // Pressing <Ctrl> key (SYNEDIT_LINK_MODIFIER) will highlight the word under mouse cursor
+    //emCtrlWheelZoom            // Allows to zoom editor by <Ctrl+MouseWheel> commands
   TSynEditorMouseOptions = SynEditMouseCmds.TSynEditorMouseOptions;
 
   // options for textbuffersharing
