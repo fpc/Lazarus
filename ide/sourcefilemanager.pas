@@ -65,6 +65,7 @@ type
     {$IFDEF EnableOldExtTools}
     function ExternalTools: TExternalToolList;
     {$ENDIF}
+    procedure AskToSaveEditors(EditorList: TList);
     function AddPathToBuildModes(aPath, CurDirectory: string; IsIncludeFile: Boolean): Boolean;
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
     function FileExistsInIDE(const Filename: string;
@@ -133,6 +134,7 @@ type
     function CloseProject: TModalResult;
     procedure OpenProject(aMenuItem: TIDEMenuItem);
     procedure CloseAll;
+    procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook);
     // project inspector
     // Checks if the UnitDirectory is part of the Unit Search Paths, if not,
     // ask the user if he wants to extend dependencies or the Unit Search Paths.
@@ -206,7 +208,6 @@ type
     function UnitComponentIsUsed(AnUnitInfo: TUnitInfo;
                                  CheckHasDesigner: boolean): boolean;
     function RemoveFilesFromProject(AProject: TProject; UnitInfos: TFPList): TModalResult;
-    procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook);
 
     // methods for open project, create project from source
     function CompleteLoadingProjectInfo: TModalResult;
@@ -1264,8 +1265,7 @@ begin
           AText:=Format(lisSourceOfPageHasChangedSave, [TSourceEditor(AEditor).PageName]);
         ACaption:=lisSourceModified;
         Result:=IDEQuestionDialog(ACaption, AText,
-            mtConfirmation, [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort
-              ]);
+            mtConfirmation, [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort]);
       end else
         Result:=mrYes;
       if Result=mrYes then begin
@@ -3429,56 +3429,67 @@ begin
   end;
 end;
 
-procedure TLazSourceFileManager.CloseAll;
+procedure TLazSourceFileManager.AskToSaveEditors(EditorList: TList);
+// Ask from user about saving the changed SourceEditors in EditorList.
 var
-  i, NeedSave, Idx: Integer;
-  r: TModalResult;
   Ed: TSourceEditor;
+  r: TModalResult;
+  i, Remain: Integer;
 begin
-  // Close editor files
-  NeedSave := 0;
-  for i := 0 to SourceEditorManager.UniqueSourceEditorCount - 1 do begin
-    if CheckEditorNeedsSave(SourceEditorManager.UniqueSourceEditors[i], False) then begin
-      inc(NeedSave);
-      if NeedSave = 1 then Idx := i;
-    end;
-  end;
-  if NeedSave = 1 then begin
-    Ed := TSourceEditor(SourceEditorManager.UniqueSourceEditors[Idx]);
+  if EditorList.Count = 1 then begin
+    Ed := TSourceEditor(EditorList[0]);
     r := IDEQuestionDialog(lisSourceModified,
-                     Format(lisSourceOfPageHasChangedSave, [Ed.PageName]),
-                     mtConfirmation,
-                     [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort]);
+           Format(lisSourceOfPageHasChangedSave, [Ed.PageName]),
+           mtConfirmation, [mrYes,lisMenuSave, mrNo,lisDiscardChanges, mrAbort]);
     case r of
       mrYes: SaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
       mrNo: ; // don't save
       mrAbort: exit;
     end;
   end
-  else if NeedSave > 1 then begin
-    for i := 0 to SourceEditorManager.UniqueSourceEditorCount - 1 do begin
-      if CheckEditorNeedsSave(SourceEditorManager.UniqueSourceEditors[i], False) then begin
-        dec(NeedSave);
-        Ed := TSourceEditor(SourceEditorManager.UniqueSourceEditors[i]);
-        r := IDEQuestionDialog(lisSourceModified,
-                         Format(lisSourceOfPageHasChangedSaveExtended, [Ed.PageName, NeedSave]),
-                         mtConfirmation,
-                         [mrYes, lisMenuSave, mrAll, lisSaveAll,
-                          mrNo, lisDiscardChanges, mrIgnore, lisDiscardChangesAll,
-                          mrAbort]);
-        case r of
-          mrYes: SaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
-          mrNo: ; // don't save
-          mrAll: begin
-              MainIDE.DoSaveAll([]);
-              break
-            end;
-          mrIgnore: break; // don't save anymore
-          mrAbort: exit;
-        end;
+  else if EditorList.Count > 1 then
+    for i := 0 to EditorList.Count - 1 do begin
+      Ed := TSourceEditor(EditorList[i]);
+      Remain := EditorList.Count-i-1;    // Remaining number of files to go.
+      r := IDEQuestionDialog(lisSourceModified,
+            Format(lisSourceOfPageHasChangedSaveEx, [Ed.PageName,Remain]),
+            mtConfirmation,
+            [mrYes,lisMenuSave, mrAll,lisSaveAll, mrNo,lisDiscardChanges,
+             mrIgnore,lisDiscardChangesAll, mrAbort]);
+      case r of
+        mrYes: SaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
+        mrNo: ; // don't save
+        mrAll: begin
+            MainIDE.DoSaveAll([]);
+            break;
+          end;
+        mrIgnore: break; // don't save anymore
+        mrAbort: exit;
       end;
     end;
+end;
+
+procedure TLazSourceFileManager.CloseAll;
+// Close editor files
+var
+  Ed: TSourceEditor;
+  EditorList: TList;
+  i: Integer;
+begin
+  EditorList := TList.Create;
+  try
+    // Collect changed editors into a list and save them after asking from user.
+    for i := 0 to SourceEditorManager.UniqueSourceEditorCount - 1 do
+    begin
+      Ed := TSourceEditor(SourceEditorManager.UniqueSourceEditors[i]);
+      if CheckEditorNeedsSave(Ed, False) then
+        EditorList.Add(Ed);
+    end;
+    AskToSaveEditors(EditorList);
+  finally
+    EditorList.Free;
   end;
+  // Now close them all.
   SourceEditorManager.IncUpdateLock;
   try
     while (SourceEditorManager.SourceEditorCount > 0) and
@@ -3490,6 +3501,40 @@ begin
 
   // Close packages
   PkgBoss.DoCloseAllPackageEditors;
+end;
+
+procedure TLazSourceFileManager.InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook);
+// close all source editors except the clicked
+var
+  Ed: TSourceEditor;
+  EditorList: TList;
+  i: Integer;
+begin
+  EditorList := TList.Create;
+  try
+    // Collect changed editors, except the active one, into a list and maybe save them.
+    for i := 0 to SrcNoteBook.EditorCount - 1 do begin
+      Ed := SrcNoteBook.Editors[i];
+      if (i <> PageIndex) and CheckEditorNeedsSave(Ed, True) then
+        EditorList.Add(Ed);
+    end;
+    AskToSaveEditors(EditorList);
+  finally
+    EditorList.Free;
+  end;
+  // Now close all editors except the active one.
+  SourceEditorManager.IncUpdateLock;
+  try
+    repeat
+      i:=SrcNoteBook.PageCount-1;
+      if i=PageIndex then dec(i);
+      if i<0 then break;
+      if CloseEditorFile(SrcNoteBook.FindSourceEditorWithPageIndex(i),[])<>mrOk then exit;
+      if i<PageIndex then PageIndex:=i;
+    until false;
+  finally
+    SourceEditorManager.DecUpdateLock;
+  end;
 end;
 
 function TLazSourceFileManager.ShowCheckListBuildModes(DlgMsg: String): Boolean;
@@ -6703,71 +6748,6 @@ begin
     // all changes were handled automatically by events, just clear the logs
     CodeToolBoss.SourceCache.ClearAllSourceLogEntries;
     AProject.EndUpdate;
-  end;
-end;
-
-procedure TLazSourceFileManager.InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook);
-// close all source editors except the clicked
-var
-  i, NeedSave, Idx: Integer;
-  Ed: TSourceEditor;
-  r: TModalResult;
-begin
-  NeedSave := 0;
-  for i := 0 to SrcNoteBook.EditorCount - 1 do begin
-    //no need for CheckEditorNeedsSave ActiveSourcenoteBook (i = PageIndex)
-    if (i <> PageIndex) and CheckEditorNeedsSave(SrcNoteBook.Editors[i], True) then begin
-      inc(NeedSave);
-      if NeedSave = 1 then Idx := i;
-    end;
-  end;
-  if NeedSave = 1 then begin
-    Ed := SrcNoteBook.Editors[Idx];
-    r := IDEQuestionDialog(lisSourceModified,
-                     Format(lisSourceOfPageHasChangedSave, [Ed.PageName]),
-                     mtConfirmation,
-                     [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort]);
-    case r of
-      mrYes: SaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
-      mrNo: ; // don't save
-      mrAbort: exit;
-    end;
-  end
-  else if NeedSave > 1 then begin
-    for i := 0 to SrcNoteBook.EditorCount - 1 do begin
-      if CheckEditorNeedsSave(SrcNoteBook.Editors[i], True) then begin
-        dec(NeedSave);
-        Ed := SrcNoteBook.Editors[i];
-        r := IDEQuestionDialog(lisSourceModified,
-                         Format(lisSourceOfPageHasChangedSaveExtended, [Ed.PageName, NeedSave]),
-                         mtConfirmation,
-                         [mrYes, lisMenuSave, mrAll, lisSaveAll,
-                          mrNo, lisDiscardChanges, mrIgnore, lisDiscardChangesAll,
-                          mrAbort]);
-        case r of
-          mrYes: SaveEditorFile(Ed, [sfCheckAmbiguousFiles]);
-          mrNo: ; // don't save
-          mrAll: begin
-              MainIDE.DoSaveAll([]);
-              break
-            end;
-          mrIgnore: break; // don't save anymore
-          mrAbort: exit;
-        end;
-      end;
-    end;
-  end;
-  SourceEditorManager.IncUpdateLock;
-  try
-    repeat
-      i:=SrcNoteBook.PageCount-1;
-      if i=PageIndex then dec(i);
-      if i<0 then break;
-      if CloseEditorFile(SrcNoteBook.FindSourceEditorWithPageIndex(i),[])<>mrOk then exit;
-      if i<PageIndex then PageIndex:=i;
-    until false;
-  finally
-    SourceEditorManager.DecUpdateLock;
   end;
 end;
 

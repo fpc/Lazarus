@@ -720,7 +720,7 @@ resourcestring
   lisFileHasChangedSave = 'File "%s" has changed. Save?';
   lisUnitHasChangedSave = 'Unit "%s" has changed. Save?';
   lisSourceOfPageHasChangedSave = 'Source of page "%s" has changed. Save?';
-  lisSourceOfPageHasChangedSaveExtended = 'Sources of more than one page have changed. Save page "%s"? (%d more)';
+  lisSourceOfPageHasChangedSaveEx = 'Sources of pages have changed. Save page "%s"? (%d more)';
   lisSourceModified = 'Source modified';
   lisOpenProject = 'Open Project?';
   lisOpenTheProject = 'Open the project %s?';
