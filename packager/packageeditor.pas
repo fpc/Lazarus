@@ -1456,24 +1456,36 @@ end;
 procedure TPackageEditorForm.ChangeFileTypeMenuItemClick(Sender: TObject);
 var
   CurPFT: TPkgFileType;
-  Removed: boolean;
   CurFile: TPkgFile;
   CurItem: TIDEMenuCommand;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
 begin
   if LazPackage=nil then exit;
   CurItem:=TIDEMenuCommand(Sender);
-  CurFile:=GetCurrentFile(Removed);
-  if CurFile=nil then exit;
   for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
     if CurItem.Caption=GetPkgFileTypeLocalizedName(CurPFT) then begin
-      if (not FilenameIsPascalUnit(CurFile.Filename))
-      and (CurPFT in PkgFileUnitTypes) then exit;
-      if CurFile.FileType<>CurPFT then begin
-        CurFile.FileType:=CurPFT;
-        LazPackage.Modified:=true;
-        UpdateFiles;
+      BeginUdate;
+      try
+        for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+          TVNode:=ItemsTreeView.Selections[i];
+          if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+          if not (Item is TPkgFile) then continue;
+          CurFile:=TPkgFile(Item);
+          if CurFile.FileType=CurPFT then continue;
+          if (not FilenameIsPascalUnit(CurFile.Filename))
+          and (CurPFT in PkgFileUnitTypes) then
+            continue;
+          CurFile.FileType:=CurPFT;
+          if not NodeData.Removed then
+            LazPackage.Modified:=true;
+          UpdateFiles;
+        end;
+      finally
+        EndUpdate;
       end;
-      exit;
     end;
   end;
 end;
