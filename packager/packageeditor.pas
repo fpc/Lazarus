@@ -1437,15 +1437,14 @@ begin
     for i:=0 to ItemsTreeView.SelectionCount-1 do begin
       TVNode:=ItemsTreeView.Selections[i];
       if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-      if Item is TPkgFile then begin
-        CurFile:=TPkgFile(Item);
-        if not (CurFile.FileType in PkgFileUnitTypes) then continue;
-        if CurFile.HasRegisterProc=CallRegisterProcCheckBox.Checked then exit;
-        CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
-        if not NodeData.Removed then
-          LazPackage.Modified:=true;
-        UpdateFiles;
-      end;
+      if not (Item is TPkgFile) then continue;
+      CurFile:=TPkgFile(Item);
+      if not (CurFile.FileType in PkgFileUnitTypes) then continue;
+      if CurFile.HasRegisterProc=CallRegisterProcCheckBox.Checked then exit;
+      CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
+      if not NodeData.Removed then
+        LazPackage.Modified:=true;
+      UpdateFiles;
     end;
   finally
     EndUpdate;
@@ -1984,26 +1983,42 @@ end;
 
 procedure TPackageEditorForm.UpdateButtons(Immediately: boolean);
 var
-  Removed: boolean;
-  CurFile: TPkgFile;
-  CurDependency: TPkgDependency;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
+  Writable: Boolean;
+  ActiveFileCnt: Integer;
+  ActiveDepCount: Integer;
+  FileCount: Integer;
+  DepCount: Integer;
 begin
   if not CanUpdate(pefNeedUpdateButtons) then exit;
 
-  CurFile:=GetCurrentFile(Removed);
-  if CurFile=nil then
-    CurDependency:=GetCurrentDependency(Removed)
-  else
-    CurDependency:=nil;
+  FileCount:=0;
+  DepCount:=0;
+  ActiveFileCnt:=0;
+  ActiveDepCount:=0;
+  for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+    TVNode:=ItemsTreeView.Selections[i];
+    if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+    if Item is TPkgFile then begin
+      inc(FileCount);
+      if not NodeData.Removed then
+        inc(ActiveFileCnt);
+    end else if Item is TPkgDependency then begin
+      inc(DepCount);
+      if not NodeData.Removed then
+        inc(ActiveDepCount);
+    end;
+  end;
 
-  SaveBitBtn.Enabled:=(not LazPackage.ReadOnly)
-                              and (LazPackage.IsVirtual or LazPackage.Modified);
+  Writable:=not LazPackage.ReadOnly;
+  SaveBitBtn.Enabled:=Writable and (LazPackage.IsVirtual or LazPackage.Modified);
   CompileBitBtn.Enabled:=(not LazPackage.IsVirtual) and LazPackage.CompilerOptions.HasCommands;
-  AddBitBtn.Enabled:=not LazPackage.ReadOnly;
-  RemoveBitBtn.Enabled:=(not LazPackage.ReadOnly)
-     and (not Removed)
-     and ((CurFile<>nil) or (CurDependency<>nil));
-  OpenButton.Enabled:=(CurFile<>nil) or (CurDependency<>nil);
+  AddBitBtn.Enabled:=Writable;
+  RemoveBitBtn.Enabled:=Writable and (ActiveFileCnt+ActiveDepCount>0);
+  OpenButton.Enabled:=(FileCount+DepCount>0);
   UseBitBtn.Caption:=lisUseSub;
   UseBitBtn.Hint:=lisClickToSeeThePossibleUses;
   UseBitBtn.OnClick:=nil;
