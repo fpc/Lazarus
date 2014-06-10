@@ -1199,6 +1199,7 @@ procedure TPackageEditorForm.FormDestroy(Sender: TObject);
 var
   nt: TPENodeType;
 begin
+  IdleConnected:=true;
   FreeAndNil(FNextSelectedPart);
   EnvironmentOptions.PackageEditorSortAlphabetically := SortAlphabetically;
   EnvironmentOptions.PackageEditorShowDirHierarchy := ShowDirectoryHierarchy;
@@ -1710,6 +1711,8 @@ end;
 
 procedure TPackageEditorForm.SetIdleConnected(AValue: boolean);
 begin
+  if csDestroying in ComponentState then
+    AValue:=false;
   if FIdleConnected=AValue then Exit;
   FIdleConnected:=AValue;
   if IdleConnected then
