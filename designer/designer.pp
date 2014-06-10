@@ -105,7 +105,6 @@ type
     FGridColor: TColor;
     FLookupRoot: TComponent;
     FMediator: TDesignerMediator;
-    FFreeComponent: boolean;
     FOnPastedComponents: TOnPastedComponents;
     FProcessingDesignerEvent: Integer;
     FOnActivated: TNotifyEvent;
@@ -275,10 +274,8 @@ type
     ControlSelection : TControlSelection;
     DDC: TDesignerDeviceContext;
 
-    constructor Create(TheDesignerForm: TCustomForm;
-       AControlSelection: TControlSelection);
+    constructor Create(TheDesignerForm: TCustomForm; AControlSelection: TControlSelection);
     procedure PrepareFreeDesigner(AFreeComponent: boolean);
-    procedure FinalizeFreeDesigner;
     procedure DisconnectComponent; override;
     destructor Destroy; override;
 
@@ -672,18 +669,11 @@ end;
 
 procedure TDesigner.PrepareFreeDesigner(AFreeComponent: boolean);
 begin
-  FFreeComponent:=AFreeComponent;
-end;
-
-procedure TDesigner.FinalizeFreeDesigner;
-begin
-  //debugln(['TDesigner.FinalizeFreeDesigner Self=',dbgs(Pointer(Self))]);
+  // was FinalizeFreeDesigner
   Include(FFlags, dfDestroyingForm);
   if FLookupRoot is TComponent then
-  begin
     // free or hide the form
-    TheFormEditor.DeleteComponent(TComponent(FLookupRoot),FFreeComponent);
-  end;
+    TheFormEditor.DeleteComponent(TComponent(FLookupRoot),AFreeComponent);
   DisconnectComponent;
   Free;
 end;

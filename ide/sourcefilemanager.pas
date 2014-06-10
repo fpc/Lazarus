@@ -6359,15 +6359,6 @@ end;
 
 function TLazSourceFileManager.CloseUnitComponent(AnUnitInfo: TUnitInfo;
   Flags: TCloseFlags): TModalResult;
-var
-  OldDesigner: TDesigner;
-
-  procedure FreeDesigner(AFreeComponent: boolean);
-  begin
-    AnUnitInfo.LoadedDesigner:=false;
-    OldDesigner.PrepareFreeDesigner(AFreeComponent);
-    OldDesigner.FinalizeFreeDesigner;
-  end;
 
   procedure FreeUnusedComponents;
   var
@@ -6388,6 +6379,7 @@ var
   end;
 
 var
+  OldDesigner: TDesigner;
   AForm: TCustomForm;
   LookupRoot: TComponent;
   ComponentStillUsed: Boolean;
@@ -6424,9 +6416,10 @@ begin
     end;
 
     AForm:=FormEditor1.GetDesignerForm(LookupRoot);
-    OldDesigner:=nil;
     if AForm<>nil then
-      OldDesigner:=TDesigner(AForm.Designer);
+      OldDesigner:=TDesigner(AForm.Designer)
+    else
+      OldDesigner:=nil;
     if MainIDE.LastFormActivated=AForm then
       MainIDE.LastFormActivated:=nil;
     ComponentStillUsed:=(not (cfCloseDependencies in Flags))
@@ -6456,19 +6449,20 @@ begin
       end;
     end else begin
       // component with designer
+      AnUnitInfo.LoadedDesigner:=false;
       if ComponentStillUsed then begin
         // free designer, keep component hidden
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TLazSourceFileManager.CloseUnitComponent hiding component and freeing designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
         {$ENDIF}
-        FreeDesigner(false);
+        OldDesigner.PrepareFreeDesigner(false);
       end else begin
         // free designer and design form
         {$IFDEF VerboseIDEMultiForm}
         DebugLn(['TLazSourceFileManager.CloseUnitComponent freeing component and designer: ',AnUnitInfo.Filename,' ',DbgSName(AnUnitInfo.Component)]);
         {$ENDIF}
         try
-          FreeDesigner(true);
+          OldDesigner.PrepareFreeDesigner(true);
         finally
           AnUnitInfo.Component:=nil;
         end;
