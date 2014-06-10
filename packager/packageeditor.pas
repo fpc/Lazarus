@@ -22,10 +22,6 @@
 
   Abstract:
     TPackageEditorForm is the form of a package editor.
-
-  ToDo:
-    - Multiselect
-    replace GetCurrentDependency
 }
 unit PackageEditor;
 
@@ -293,7 +289,6 @@ type
     procedure UpdatePEProperties(Immediately: boolean = false);
     procedure UpdateApplyDependencyButton(Immediately: boolean = false);
     procedure UpdateStatusBar(Immediately: boolean = false);
-    function GetCurrentDependency(out Removed: boolean): TPkgDependency;
     function GetNodeData(TVNode: TTreeNode): TPENodeData;
     function GetNodeItem(NodeData: TPENodeData): TObject;
     function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
@@ -2511,22 +2506,6 @@ begin
   if LazPackage.Modified then
     StatusText:=Format(lisPckEditModified, [StatusText]);
   StatusBar.SimpleText:=StatusText;
-end;
-
-function TPackageEditorForm.GetCurrentDependency(out Removed: boolean): TPkgDependency;
-var
-  NodeData: TPENodeData;
-begin
-  Result:=nil;
-  Removed:=false;
-  NodeData:=GetNodeData(ItemsTreeView.Selected);
-  if NodeData=nil then exit;
-  if NodeData.Typ<>penDependency then exit;
-  Removed:=NodeData.Removed;
-  if Removed then
-    Result:=LazPackage.FindRemovedDependencyByName(NodeData.Name)
-  else
-    Result:=LazPackage.FindDependencyByName(NodeData.Name);
 end;
 
 function TPackageEditorForm.GetNodeData(TVNode: TTreeNode): TPENodeData;
