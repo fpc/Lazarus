@@ -1190,9 +1190,6 @@ end;
 procedure TPackageEditorForm.FormCreate(Sender: TObject);
 begin
   FPlugins:=TStringList.Create;
-  {$IFDEF enablePkgEditMultiSelect}
-  ItemsTreeView.MultiSelect:=true;
-  {$ENDIF}
   SetupComponents;
   SortAlphabetically := EnvironmentOptions.PackageEditorSortAlphabetically;
   ShowDirectoryHierarchy := EnvironmentOptions.PackageEditorShowDirHierarchy;

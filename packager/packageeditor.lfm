@@ -320,6 +320,7 @@ object PackageEditorForm: TPackageEditorForm
     Align = alClient
     BorderSpacing.Top = 1
     DefaultItemHeight = 18
+    MultiSelect = True
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
     RightClickSelect = True
@@ -327,7 +328,7 @@ object PackageEditorForm: TPackageEditorForm
     OnDblClick = ItemsTreeViewDblClick
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object ItemsPopupMenu: TPopupMenu
     OnPopup = ItemsPopupMenuPopup
