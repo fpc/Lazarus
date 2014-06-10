@@ -2153,7 +2153,7 @@ begin
     end;
   end;
   FilterEdit.Filter := OldFilter;            // This triggers ApplyFilter
-
+  FilterEdit.InvalidateFilter;
   UpdatePEProperties(true);
 end;
 
@@ -2216,8 +2216,8 @@ begin
     end;
   end;
   FNextSelectedPart:=nil;
-  FilterEdit.ForceFilter(OldFilter);
-
+  FilterEdit.Filter := OldFilter;            // This triggers ApplyFilter
+  FilterEdit.InvalidateFilter;
   UpdatePEProperties(true);
 end;
 
