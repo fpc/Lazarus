@@ -115,6 +115,11 @@ type
     function CheckFilesOnDisk(Instantaneous: boolean = false): TModalResult;
     function PublishModule(Options: TPublishModuleOptions;
       const SrcDirectory, DestDirectory: string): TModalResult;
+    function SelectProjectItems(ItemList: TViewUnitEntries; ItemType: TIDEProjectItem;
+      MultiSelect: boolean; var MultiSelectCheckedState: Boolean): TModalResult;
+    function SelectUnitComponents(DlgCaption: string; ItemType: TIDEProjectItem;
+      Files: TStringList; MultiSelect: boolean;
+      var MultiSelectCheckedState: Boolean): TModalResult;
 
     function AddActiveUnitToProject: TModalResult;
     function RemoveFromProjectDialog: TModalResult;
@@ -2434,8 +2439,7 @@ begin
   end;
 
   // copy the directory
-  if not CopyDirectoryWithMethods(SrcDir,DestDir,
-    @OnCopyFile,@OnCopyError,Options) then
+  if not CopyDirectoryWithMethods(SrcDir,DestDir,@OnCopyFile,@OnCopyError,Options) then
   begin
     debugln('TLazSourceFileManager.DoPublishModule CopyDirectoryWithMethods failed');
     Result:=mrCancel;
@@ -2478,6 +2482,240 @@ begin
       ShowErrorForCommandAfter;
       exit(mrCancel);
     end;
+  end;
+end;
+
+function TLazSourceFileManager.SelectProjectItems(ItemList: TViewUnitEntries;
+  ItemType: TIDEProjectItem; MultiSelect: boolean;
+  var MultiSelectCheckedState: Boolean): TModalResult;
+var
+  i: integer;
+  AUnitName, DlgCaption: string;
+  MainUnitInfo: TUnitInfo;
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  CurUnitInfo: TUnitInfo;
+  LFMFilename: String;
+  LFMType: String;
+  LFMComponentName: String;
+  LFMClassName: String;
+  anUnitName: String;
+begin
+  if Project1=nil then exit(mrCancel);
+  MainIDE.GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
+  for i := 0 to Project1.UnitCount - 1 do
+  begin
+    CurUnitInfo:=Project1.Units[i];
+    if not CurUnitInfo.IsPartOfProject then
+      Continue;
+    if ItemType in [piComponent, piFrame] then
+    begin
+      // add all form names of project
+      if CurUnitInfo.ComponentName <> '' then
+      begin
+        if (ItemType = piComponent) or
+           ((ItemType = piFrame) and (CurUnitInfo.ResourceBaseClass = pfcbcFrame)) then
+          ItemList.Add(CurUnitInfo.ComponentName,
+                       CurUnitInfo.Filename, i, CurUnitInfo = ActiveUnitInfo);
+      end else if FilenameIsAbsolute(CurUnitInfo.Filename)
+      and FilenameIsPascalSource(CurUnitInfo.Filename)
+      and FileExistsCached(CurUnitInfo.Filename) then begin
+        // this unit has a lfm, but the lpi does not know a ComponentName
+        // => maybe this component was added without the IDE
+        LFMFilename:=ChangeFileExt(CurUnitInfo.Filename,'.lfm');
+        if FileExistsCached(LFMFilename)
+        and ReadLFMHeaderFromFile(LFMFilename,LFMType,LFMComponentName,LFMClassName)
+        then begin
+          anUnitName:=CurUnitInfo.Unit_Name;
+          if anUnitName='' then
+            anUnitName:=ExtractFileNameOnly(LFMFilename);
+          ItemList.Add(LFMComponentName, CurUnitInfo.Filename,
+            i, CurUnitInfo = ActiveUnitInfo);
+        end;
+      end;
+    end else
+    begin
+      // add all unit names of project
+      if (CurUnitInfo.FileName <> '') then
+      begin
+        AUnitName := ExtractFileName(CurUnitInfo.Filename);
+        if ItemList.Find(AUnitName) = nil then
+          ItemList.Add(AUnitName, CurUnitInfo.Filename,
+                       i, CurUnitInfo = ActiveUnitInfo);
+      end
+      else
+      if Project1.MainUnitID = i then
+      begin
+        MainUnitInfo := Project1.MainUnitInfo;
+        if pfMainUnitIsPascalSource in Project1.Flags then
+        begin
+          AUnitName := ExtractFileName(MainUnitInfo.Filename);
+          if (AUnitName <> '') and (ItemList.Find(AUnitName) = nil) then
+          begin
+            ItemList.Add(AUnitName, MainUnitInfo.Filename,
+                         i, MainUnitInfo = ActiveUnitInfo);
+          end;
+        end;
+      end;
+    end;
+  end;
+  case ItemType of
+    piUnit:      DlgCaption := dlgMainViewUnits;
+    piComponent: DlgCaption := dlgMainViewForms;
+    piFrame:     DlgCaption := dlgMainViewFrames;
+  end;
+  Result := ShowViewUnitsDlg(ItemList, MultiSelect, MultiSelectCheckedState, DlgCaption, ItemType);
+end;
+
+function TLazSourceFileManager.SelectUnitComponents(DlgCaption: string;
+  ItemType: TIDEProjectItem; Files: TStringList; MultiSelect: boolean;
+  var MultiSelectCheckedState: Boolean): TModalResult;
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  UnitToFilename: TStringToStringTree;
+  UnitPath: String;
+
+  function ResourceFits(ResourceBaseClass: TPFComponentBaseClass): boolean;
+  begin
+    case ItemType of
+    piUnit: Result:=true;
+    piComponent: Result:=ResourceBaseClass<>pfcbcNone;
+    piFrame: Result:=ResourceBaseClass=pfcbcFrame;
+    else Result:=false;
+    end;
+  end;
+
+  procedure AddUnit(AnUnitName,AFilename: string);
+  var
+    LFMFilename: String;
+  begin
+    //debugln(['AddUnit ',AFilename]);
+    if not FilenameIsPascalUnit(AFilename) then exit;
+    if CompareFilenames(AFilename,ActiveUnitInfo.Filename)=0 then exit;
+    if (AnUnitName='') then
+      AnUnitName:=ExtractFileNameOnly(AFilename);
+    if (not FilenameIsAbsolute(AFilename)) then begin
+      if (not ActiveUnitInfo.IsVirtual) then
+        exit; // virtual UnitToFilename can not be accessed from disk UnitToFilename
+    end else begin
+      //debugln(['AddUnit unitpath=',UnitPath]);
+      if SearchDirectoryInSearchPath(UnitPath,ExtractFilePath(AFilename))<1 then
+        exit; // not reachable
+    end;
+    if UnitToFilename.Contains(AnUnitName) then exit; // duplicate unit
+    if not FileExistsCached(AFilename) then exit;
+    LFMFilename:=ChangeFileExt(aFilename,'.lfm');
+    if not FileExistsCached(LFMFilename) then exit;
+    UnitToFilename[AnUnitName]:=AFilename;
+  end;
+
+  procedure AddPackage(Pkg: TLazPackage);
+  var
+    i: Integer;
+    PkgFile: TPkgFile;
+  begin
+    //debugln(['AddPackage ',pkg.Name]);
+    for i:=0 to Pkg.FileCount-1 do begin
+      PkgFile:=TPkgFile(Pkg.Files[i]);
+      if not (PkgFile.FileType in PkgFileRealUnitTypes) then continue;
+      if not FilenameIsAbsolute(PkgFile.Filename) then continue;
+      if not ResourceFits(PkgFile.ResourceBaseClass) then begin
+        if PkgFile.ResourceBaseClass<>pfcbcNone then continue;
+        // unknown resource class => check file
+        PkgFile.ResourceBaseClass:=FindLFMBaseClass(PkgFile.Filename);
+        if not ResourceFits(PkgFile.ResourceBaseClass) then continue;
+      end;
+      AddUnit(PkgFile.Unit_Name,PkgFile.Filename);
+    end;
+  end;
+
+var
+  Owners: TFPList;
+  APackage: TLazPackage;
+  AProject: TProject;
+  AnUnitInfo: TUnitInfo;
+  FirstDependency: TPkgDependency;
+  PkgList: TFPList;
+  i: Integer;
+  S2SItem: PStringToStringTreeItem;
+  AnUnitName: String;
+  AFilename: String;
+  UnitList: TViewUnitEntries;
+  Entry: TViewUnitsEntry;
+begin
+  Result:=mrCancel;
+  MainIDE.GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
+  if ActiveUnitInfo=nil then exit;
+  Owners:=PkgBoss.GetPossibleOwnersOfUnit(ActiveUnitInfo.Filename,[]);
+  UnitPath:=CodeToolBoss.GetCompleteSrcPathForDirectory(ExtractFilePath(ActiveUnitInfo.Filename));
+  PkgList:=nil;
+  UnitToFilename:=TStringToStringTree.Create(false);
+  UnitList:=TViewUnitEntries.Create;
+  try
+    // fetch owner of active unit
+    AProject:=nil;
+    APackage:=nil;
+    if (Owners<>nil) then begin
+      for i:=0 to Owners.Count-1 do begin
+        if TObject(Owners[i]) is TProject then begin
+          AProject:=TProject(Owners[i]);
+          break;
+        end else if TObject(Owners[i]) is TLazPackage then begin
+          APackage:=TLazPackage(Owners[i]);
+        end;
+      end;
+    end;
+    if AProject<>nil then begin
+      // add project units
+      //debugln(['TMainIDE.SelectUnitComponents Project=',AProject.ProjectInfoFile]);
+      FirstDependency:=AProject.FirstRequiredDependency;
+      for i:=0 to AProject.UnitCount-1 do begin
+        AnUnitInfo:=AProject.Units[i];
+        if (not AnUnitInfo.IsPartOfProject)
+        or (AnUnitInfo.ComponentName='')
+        then continue;
+        if not ResourceFits(AnUnitInfo.ResourceBaseClass) then begin
+          if AnUnitInfo.ResourceBaseClass<>pfcbcNone then continue;
+          // unknown resource class => check file
+          AnUnitInfo.ResourceBaseClass:=FindLFMBaseClass(AnUnitInfo.Filename);
+          if not ResourceFits(AnUnitInfo.ResourceBaseClass) then continue;
+        end;
+        AddUnit(AnUnitInfo.Unit_Name,AnUnitInfo.Filename);
+      end;
+    end else if APackage<>nil then begin
+      // add package units
+      FirstDependency:=APackage.FirstRequiredDependency;
+      AddPackage(APackage);
+    end else
+      FirstDependency:=nil;
+    // add all units of all used packages
+    PackageGraph.GetAllRequiredPackages(nil,FirstDependency,PkgList);
+    if PkgList<>nil then
+      for i:=0 to PkgList.Count-1 do
+        AddPackage(TLazPackage(PkgList[i]));
+
+    // create Files
+    i:=0;
+    for S2SItem in UnitToFilename do begin
+      AnUnitName:=S2SItem^.Name;
+      AFilename:=S2SItem^.Value;
+      UnitList.Add(AnUnitName,AFilename,i,false);
+      inc(i);
+    end;
+    // show dialog
+    Result := ShowViewUnitsDlg(UnitList, MultiSelect, MultiSelectCheckedState,
+                               DlgCaption, ItemType, ActiveUnitInfo.Filename);
+    // create list of selected files
+    for Entry in UnitList do
+      if Entry.Selected then
+        Files.Add(Entry.Filename);
+
+  finally
+    UnitList.Free;
+    PkgList.Free;
+    Owners.Free;
+    UnitToFilename.Free;
   end;
 end;
 
