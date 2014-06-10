@@ -924,9 +924,6 @@ type
     procedure DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
     function DoFindRenameIdentifier(Rename: boolean): TModalResult;
     function DoFindUsedUnitReferences: boolean;
-    function DoReplaceUnitUse(OldFilename, OldUnitName,
-                              NewFilename, NewUnitName: string;
-                              IgnoreErrors, Quiet, Confirm: boolean): TModalResult;
     function DoShowAbstractMethods: TModalResult;
     function DoRemoveEmptyMethods: TModalResult;
     function DoRemoveUnusedUnits: TModalResult;
@@ -13108,14 +13105,6 @@ begin
   // Some other window has focus -> continue processing shortcut, not handled yet
   if (CurFocusControl=Nil) or (ActiveSourceEditor=Nil) then
     MainIDEBar.mnuMainMenu.ShortcutHandled := false;
-end;
-
-function TMainIDE.DoReplaceUnitUse(OldFilename, OldUnitName, NewFilename,
-  NewUnitName: string; IgnoreErrors, Quiet, Confirm: boolean): TModalResult;
-// Replaces all references to a unit
-begin
-  Result := SourceFileMgr.ReplaceUnitUse(OldFilename, OldUnitName, NewFilename,
-                                           NewUnitName, IgnoreErrors, Quiet, Confirm);
 end;
 
 procedure TMainIDE.StartProtocol;
