@@ -1749,7 +1749,7 @@ begin
   UpdateButtons(Immediately);
   UpdateFiles(Immediately);
   UpdateRequiredPkgs(Immediately);
-  UpdatePEProperties(Immediately);
+  //UpdatePEProperties(Immediately); Already done in UpdateFiles and UpdateRequiredPkgs.
   UpdateStatusBar(Immediately);
 end;
 
@@ -1792,8 +1792,7 @@ var
                                 IgnoreUnitPaths);
     // add unit file
     with AddParams do
-      LazPackage.AddFile(UnitFilename,Unit_Name,
-                                          FileType,PkgFileFlags,cpNormal);
+      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,PkgFileFlags,cpNormal);
     FreeAndNil(FNextSelectedPart);
     FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
@@ -1803,8 +1802,7 @@ var
   procedure AddVirtualUnit(AddParams: TAddToPkgResult);
   begin
     with AddParams do
-      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
-                                          PkgFileFlags,cpNormal);
+      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,PkgFileFlags,cpNormal);
     FreeAndNil(FNextSelectedPart);
     FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
@@ -1816,8 +1814,7 @@ var
     ExtendUnitIncPathForNewUnit(AddParams.UnitFilename,'',IgnoreUnitPaths);
     // add file
     with AddParams do
-      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
-                                              PkgFileFlags,cpNormal);
+      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,PkgFileFlags,cpNormal);
     FreeAndNil(FNextSelectedPart);
     FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
     // add dependency
@@ -1850,8 +1847,7 @@ var
       if (CompareFileExt(UnitFilename,'.inc',false)=0)
       or (CompareFileExt(UnitFilename,'.lrs',false)=0) then
         ExtendIncPathForNewIncludeFile(UnitFilename,IgnoreIncPaths);
-      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,
-                                          PkgFileFlags,cpNormal);
+      LazPackage.AddFile(UnitFilename,Unit_Name,FileType,PkgFileFlags,cpNormal);
     end;
     FreeAndNil(FNextSelectedPart);
     FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
