@@ -26,7 +26,6 @@
   ToDo:
     - Multiselect
     CallRegisterProcCheckBox,
-    AddToUsesPkgSectionCheckBox,
     DisableI18NForLFMCheckBox
     replace GetCurrentDependency
     replace GetCurrentFile
@@ -1334,28 +1333,42 @@ end;
 procedure TPackageEditorForm.AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
 var
   CurFile: TPkgFile;
-  Removed: boolean;
   i: Integer;
   OtherFile: TPkgFile;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
+  j: Integer;
 begin
   if LazPackage=nil then exit;
-  CurFile:=GetCurrentFile(Removed);
-  if (CurFile=nil) then exit;
-  if CurFile.AddToUsesPkgSection=AddToUsesPkgSectionCheckBox.Checked then exit;
-  CurFile.AddToUsesPkgSection:=AddToUsesPkgSectionCheckBox.Checked;
-  if not Removed then begin
-    if CurFile.AddToUsesPkgSection then begin
-      // mark all other units with the same name as unused
-      for i:=0 to LazPackage.FileCount-1 do begin
-        OtherFile:=LazPackage.Files[i];
-        if (OtherFile<>CurFile)
-        and (SysUtils.CompareText(OtherFile.Unit_Name,CurFile.Unit_Name)=0) then
-          OtherFile.AddToUsesPkgSection:=false;
+  BeginUdate;
+  try
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if Item is TPkgFile then begin
+        CurFile:=TPkgFile(Item);
+        if not (CurFile.FileType in PkgFileUnitTypes) then continue;
+        if CurFile.AddToUsesPkgSection=AddToUsesPkgSectionCheckBox.Checked then
+          continue;
+        // change flag
+        CurFile.AddToUsesPkgSection:=AddToUsesPkgSectionCheckBox.Checked;
+        if (not NodeData.Removed) and CurFile.AddToUsesPkgSection then begin
+          // mark all other units with the same name as unused
+          for j:=0 to LazPackage.FileCount-1 do begin
+            OtherFile:=LazPackage.Files[j];
+            if (OtherFile<>CurFile)
+            and (SysUtils.CompareText(OtherFile.Unit_Name,CurFile.Unit_Name)=0) then
+              OtherFile.AddToUsesPkgSection:=false;
+          end;
+        end;
+        LazPackage.Modified:=true;
+        UpdateFiles;
       end;
     end;
-    LazPackage.Modified:=true;
+  finally
+    EndUpdate;
   end;
-  UpdateFiles;
 end;
 
 procedure TPackageEditorForm.AddToProjectClick(Sender: TObject);
