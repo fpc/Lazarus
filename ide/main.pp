@@ -889,9 +889,6 @@ type
                           Flags: TFindUnitFileFlags = []): string; override;
     function FindSourceFile(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string; override;
-    function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
-                                        const AFilename:string): TModalResult;
-    //function DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; override;
     function DoPublishModule(Options: TPublishModuleOptions;
       const SrcDirectory, DestDirectory: string): TModalResult; override;
@@ -947,7 +944,6 @@ type
     procedure DoGoToPascalBlockStart;
     procedure DoJumpToGuessedUnclosedBlock(FindNextUTF8: boolean);
     procedure DoJumpToGuessedMisplacedIFDEF(FindNextUTF8: boolean);
-
     procedure DoGotoIncludeDirective;
 
     // tools
@@ -5258,8 +5254,7 @@ var
     // search in the used units of RootUnitInfo
     CurUnitFilenames:=nil;
     try
-      CTResult:=CodeToolBoss.FindUsedUnitFiles(RootUnitInfo.Source,
-        CurUnitFilenames);
+      CTResult:=CodeToolBoss.FindUsedUnitFiles(RootUnitInfo.Source,CurUnitFilenames);
       if not CTResult then begin
         DebugLn(['TMainIDE.DoFixupComponentReferences.FindUsedUnits failed parsing ',RootUnitInfo.Filename]);
         // ignore the error. This was just a fallback search.
@@ -5403,7 +5398,7 @@ var
 
     // load resource hidden
     Result:=SourceFileMgr.LoadLFM(RefUnitInfo,LFMCode,
-                                    OpenFlags+[ofLoadHiddenResource],[]);
+                                  OpenFlags+[ofLoadHiddenResource],[]);
     //DebugLn(['LoadDependencyHidden ',dbgsname(RefUnitInfo.Component)]);
   end;
 
@@ -6181,9 +6176,7 @@ begin
     Result:=SourceFileMgr.OpenEditorFile(AnUnitInfo.Filename,
                              AnUnitInfo.OpenEditorInfo[0].PageIndex,
                              AnUnitInfo.OpenEditorInfo[0].WindowID,
-                             nil,
-                             [ofRevert],
-                             True); // Reverting one will revert all
+                             nil,[ofRevert],True); // Reverting one will revert all
 end;
 
 function TMainIDE.CreateProjectObject(ProjectDesc,
@@ -8066,37 +8059,6 @@ begin
   ActiveUnitInfo:=nil;
 end;
 
-function TMainIDE.DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
-  const AFilename:string): TModalResult;
-var
-  FileStream: TFileStreamUTF8;
-  ACaption,AText:string;
-begin
-  repeat
-    try
-      FileStream:=TFileStreamUTF8.Create(AFilename,fmOpenRead);
-      try
-        FileStream.Position:=0;
-        MemStream.CopyFrom(FileStream,FileStream.Size);
-        MemStream.Position:=0;
-      finally
-        FileStream.Free;
-      end;
-      Result:=mrOk;
-    except
-      ACaption:=lisReadError;
-      AText:=Format(lisUnableToReadFile2, ['"', AFilename, '"']);
-      result := Application.MessageBox(PChar(aText),pChar(aCaption),mb_IconError+mb_AbortRetryIgnore);
-      if Result=mrAbort then exit;
-    end;
-  until Result<>mrRetry;
-end;
-{
-function TMainIDE.DoRenameUnitLowerCase(AnUnitInfo: TUnitInfo; AskUser: boolean): TModalresult;
-begin
-  Result:=SourceFileMgr.RenameUnitLowerCase(AnUnitInfo, AskUser);
-end;
-}
 function TMainIDE.DoCheckFilesOnDisk(Instantaneous: boolean): TModalResult;
 begin
   Result:=SourceFileMgr.CheckFilesOnDisk(Instantaneous);
@@ -8108,8 +8070,7 @@ begin
   Result:=SourceFileMgr.PublishModule(Options, SrcDirectory, DestDirectory);
 end;
 
-procedure TMainIDE.PrepareBuildTarget(Quiet: boolean;
-  ScanFPCSrc: TScanModeFPCSources);
+procedure TMainIDE.PrepareBuildTarget(Quiet: boolean; ScanFPCSrc: TScanModeFPCSources);
 begin
   MainBuildBoss.SetBuildTargetProject1(Quiet,ScanFPCSrc);
 end;
