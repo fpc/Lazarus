@@ -42,7 +42,7 @@ unit ExtractProcTool;
 interface
 
 uses
-  Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
+  Classes, SysUtils, math, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   CodeCache, CustomCodeTool,
   PascalParserTool, CodeCompletionTool, KeywordFuncLists, BasicCodeTools,
   LinkScanner, AVL_Tree, SourceChanger,
@@ -1091,6 +1091,12 @@ var
   WithVarCache: TFPList; // list of PWithVarCache
   WithVarEndPos: LongInt;
   Beauty: TBeautifyCodeOptions;
+  WithKeyWord, DoKeyWord, BeginKeyWord, EndKeyWord: TAtomPosition;
+  EndSemiColon: integer; // position of the ending semicolon, 0=not there
+  IndentWith: integer; // indent of the line containing the WITH keyword
+  IndentInnerWith: integer; // indent of the first statement in the WITH
+  DeleteHeaderEndPos, DeleteFooterStartPos: integer;
+  KeepBeginEnd: boolean;
 
   procedure AddIdentifier(CleanPos: integer);
   var
@@ -1217,19 +1223,58 @@ var
     until (CurPos.StartPos>=EndPos) or (CurPos.StartPos>SrcLen);
   end;
 
+  function FindBounds: boolean;
+  var
+    p: Integer;
+    NeedBeginEnd: Boolean;
+  begin
+    Result:=false;
+    WithKeyWord:=CleanAtomPosition;
+    DoKeyWord:=CleanAtomPosition;
+    BeginKeyWord:=CleanAtomPosition;
+    EndKeyWord:=CleanAtomPosition;
+    EndSemiColon:=0;
+    KeepBeginEnd:=false;
+    NeedBeginEnd:=false;
+    MoveCursorToNodeStart(WithVarNode.Prior);
+    repeat
+      ReadNextAtom;
+      if (CurPos.StartPos<WithVarNode.StartPos) then begin
+        NeedBeginEnd:=UpAtomIs('DO') or UpAtomIs('THEN') or UpAtomIs('ELSE');
+        if NeedBeginEnd then
+          ReadNextAtom;
+        if UpAtomIs('WITH') then begin
+          WithKeyWord:=CurPos;
+          KeepBeginEnd:=NeedBeginEnd;
+        end;
+      end else if (DoKeyword.EndPos=0) and (WithKeyWord.StartPos>0) and UpAtomIs('DO')
+      then begin
+        DoKeyWord:=CurPos;
+        ReadNextAtom;
+        if UpAtomIs('BEGIN') then begin
+          BeginKeyWord:=CurPos;
+          ReadTilBlockEnd(false,false);
+          EndKeyWord:=CurPos;
+          ReadNextAtom;
+          if CurPos.Flag=cafSemicolon then
+            EndSemiColon:=CurPos.StartPos;
+        end;
+        break;
+      end;
+    until (CurPos.StartPos>SrcLen) or (CurPos.StartPos>StatementNode.EndPos);
+    IndentWith:=Beauty.GetLineIndent(Src,WithKeyWord.StartPos);
+    p:=FindLineEndOrCodeAfterPosition(Max(DoKeyWord.EndPos,BeginKeyWord.EndPos),true,true);
+    IndentInnerWith:=Beauty.GetLineIndent(Src,p);
+    Result:=true;
+  end;
+
   function RemoveWithHeader: boolean;
   var
     StartPos: LongInt;
     EndPos: LongInt;
-    WithKeywordStartPos: Integer;
-    DoKeywordEndPos: Integer;
-    EndKeywordStartPos: LongInt;
-    EndKeywordEndPos: LongInt;
-    IndentWith: LongInt;
-    IndentInnerWith: LongInt;
-    KeepBeginEnd: Boolean;
-    NeedBeginEnd: Boolean;
   begin
+    DeleteHeaderEndPos:=0;
+    DeleteFooterStartPos:=SrcLen;
     if (WithVarNode.FirstChild<>nil)
     and ((WithVarNode.PriorBrother=nil)
        or (WithVarNode.PriorBrother.Desc<>ctnWithVariable)
@@ -1238,62 +1283,24 @@ var
       // remove WITH header and footer
       // e.g. with A do
       //      with A do begin end;
-      MoveCursorToNodeStart(WithVarNode.Prior);
-      WithKeywordStartPos:=0;
-      DoKeywordEndPos:=0;
-      EndKeywordStartPos:=0;
-      EndKeywordEndPos:=0;
-      KeepBeginEnd:=false;
-      repeat
-        ReadNextAtom;
-        if (CurPos.StartPos<WithVarNode.StartPos) then begin
-          NeedBeginEnd:=UpAtomIs('DO') or UpAtomIs('THEN') or UpAtomIs('ELSE');
-          if NeedBeginEnd then
-            ReadNextAtom;
-          if UpAtomIs('WITH') then begin
-            WithKeywordStartPos:=CurPos.StartPos;
-            KeepBeginEnd:=NeedBeginEnd;
-          end;
-        end else if (DoKeywordEndPos=0) and (WithKeywordStartPos>0) and UpAtomIs('DO')
-        then begin
-          DoKeywordEndPos:=CurPos.EndPos;
-          if (not KeepBeginEnd) then begin
-            ReadNextAtom;
-            if UpAtomIs('BEGIN') then begin
-              DoKeywordEndPos:=CurPos.EndPos;
-              ReadTilBlockEnd(false,false);
-              EndKeywordStartPos:=CurPos.StartPos;
-              EndKeywordEndPos:=CurPos.EndPos;
-              ReadNextAtom;
-              if CurPos.Flag=cafSemicolon then
-                EndKeywordEndPos:=CurPos.EndPos;
-            end;
-          end;
-          break;
-        end;
-      until (CurPos.StartPos>SrcLen) or (CurPos.StartPos>StatementNode.EndPos);
-      IndentWith:=Beauty.GetLineIndent(Src,WithKeywordStartPos);
-      // remove 'with .. do [begin]'
-      WithKeywordStartPos:=FindLineEndOrCodeInFrontOfPosition(WithKeywordStartPos);
-      DoKeywordEndPos:=FindLineEndOrCodeAfterPosition(DoKeywordEndPos);
-      if not SourceChangeCache.Replace(gtSpace,gtNone,WithKeywordStartPos,DoKeywordEndPos,'')
+      // remove 'with .. do [begin..end;]'
+      StartPos:=FindLineEndOrCodeInFrontOfPosition(WithKeyword.StartPos);
+      EndPos:=DoKeyWord.EndPos;
+      if (not KeepBeginEnd) and (BeginKeyWord.StartPos>0) then
+        EndPos:=BeginKeyWord.EndPos;
+      EndPos:=FindLineEndOrCodeAfterPosition(EndPos);
+      if not SourceChangeCache.Replace(gtSpace,gtNone,StartPos,EndPos,'')
       then exit(false);
-      if (EndKeywordStartPos>0) and (not KeepBeginEnd) then begin
-        // remove 'end;'
-        EndKeywordStartPos:=GetLineStartPosition(Src,EndKeywordStartPos);
-        while (EndKeywordStartPos>1) and (Src[EndKeywordStartPos-1] in [#10,#13]) do
-          dec(EndKeywordStartPos);
-        EndKeywordEndPos:=FindLineEndOrCodeAfterPosition(EndKeywordEndPos);
-        if not SourceChangeCache.Replace(gtSpace,gtNone,EndKeywordStartPos,EndKeywordEndPos,'')
-        then exit(false);
+      DeleteHeaderEndPos:=EndPos;
 
-        // unindent
-        StartPos:=FindLineEndOrCodeAfterPosition(DoKeywordEndPos,true,true);
-        IndentInnerWith:=Beauty.GetLineIndent(Src,StartPos);
-        if IndentWith<IndentInnerWith then
-          if not SourceChangeCache.IndentBlock(DoKeywordEndPos,EndKeywordStartPos,
-            IndentWith-IndentInnerWith)
-          then exit(false);
+      // remove 'end;'
+      if (not KeepBeginEnd) and (EndKeyWord.StartPos>0) then begin
+        StartPos:=FindLineEndOrCodeInFrontOfPosition(EndKeyWord.StartPos);
+        EndPos:=Max(StatementNode.EndPos,EndSemiColon+1);
+        EndPos:=FindLineEndOrCodeAfterPosition(EndPos);
+        if not SourceChangeCache.Replace(gtSpace,gtNone,StartPos,EndPos,'')
+        then exit(false);
+        DeleteFooterStartPos:=StartPos;
       end;
     end else begin
       // remove only variable
@@ -1343,59 +1350,80 @@ var
     Result:=true;
   end;
 
-  function EncloseSkippedCode: boolean;
+  function UnindentAndEncloseSkippedCode: boolean;
+
+    function UnIndent(FromPos,ToPos: integer): boolean;
+    begin
+      Result:=true;
+      FromPos:=Max(FromPos,DeleteHeaderEndPos);
+      ToPos:=Min(ToPos,DeleteFooterStartPos);
+      if FromPos>=ToPos then exit;
+      if IndentWith>=IndentInnerWith then
+      // unindent
+      FromPos:=FindLineEndOrCodeAfterPosition(FromPos,true,true);
+      //debugln(['UnIndent FromPos=',CleanPosToStr(FromPos),' ToPos=',CleanPosToStr(ToPos),' Src="',dbgstr(Src,FromPos,ToPos),'"']);
+      if not SourceChangeCache.IndentBlock(FromPos,ToPos,IndentWith-IndentInnerWith)
+      then
+        exit(false);
+    end;
+
   var
     p: Integer;
     EndPos: Integer;
     WithHeader: String;
     InsertPos: Integer;
-    Indent: Integer;
     WithFooter: String;
+    StartPos: Integer;
   begin
-    {$IFNDEF ExplodeWithEncloseSkipped}
-    exit(true);
-    {$ENDIF}
     // enclose all $ELSE code in WITH blocks
     WithHeader:='';
     WithFooter:='';
-    p:=StatementNode.StartPos;
+    p:=Max(StatementNode.StartPos,BeginKeyWord.EndPos);
     EndPos:=StatementNode.EndPos;
     if EndPos>SrcLen then EndPos:=SrcLen;
+    StartPos:=p;
     while (p<EndPos) do begin
-      if (Src[p]=#3) and (Src[p-1]='{') then begin
+      if (Src[p]='{') and (Src[p+1]=#3) then begin
+        if not Unindent(StartPos,p) then exit;
         // start of skipped code
         if WithHeader='' then begin
+          // Header: WITH <var> DO [BEGIN]
           WithHeader:=ExtractCode(WithVarNode.StartPos,WithVarEndPos,[]);
           if NeedBrackets(WithVarNode.StartPos,WithVarEndPos) then
             WithHeader:='('+WithHeader+')';
-          WithHeader:=Beauty.BeautifyKeyWord('with')+' '+WithHeader+' '
-          +Beauty.BeautifyKeyWord('do')
-          +' '+Beauty.BeautifyKeyWord('begin')+Beauty.LineEnd;
+          WithHeader:=GetAtom(WithKeyWord)+' '+WithHeader+' '+GetAtom(DoKeyWord)+' ';
+          if BeginKeyWord.StartPos>0 then
+            WithHeader+=GetAtom(BeginKeyWord)
+          else
+            WithHeader+=Beauty.BeautifyKeyWord('begin');
         end;
-        InsertPos:=p+1;
-        Indent:=Beauty.GetLineIndent(Src,p);
-        debugln(['EncloseSkippedCode Header=',dbgstr(WithHeader)]);
-        if not SourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertPos,
-          WithHeader+Beauty.GetIndentStr(Indent))
+        InsertPos:=FindLineEndOrCodeAfterPosition(p+2);
+        //debugln(['EncloseSkippedCode Header=',dbgstr(WithHeader)]);
+        if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
+          Beauty.GetIndentStr(IndentWith)+WithHeader)
         then
           exit(false);
-      end else if (Src[p]=#3) and (Src[p+1]=')') then begin
+        p:=FindCommentEnd(Src,p,Scanner.NestedComments);
         // end of skipped code
-        InsertPos:=p;
-        Indent:=Beauty.GetLineIndent(Src,p);
+        InsertPos:=p-2;
         if WithFooter='' then begin
-          WithFooter:=Beauty.BeautifyKeyWord('end')+';'+Beauty.LineEnd;
+          // Footer: END;
+          if EndKeyWord.StartPos>0 then
+            WithFooter:=GetAtom(EndKeyWord)
+          else
+            WithFooter:=Beauty.BeautifyKeyWord('end');
+          WithFooter+=';';
         end;
-        debugln(['EncloseSkippedCode Footer=',dbgstr(WithFooter)]);
-        if not SourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertPos,
-          WithFooter+Beauty.GetIndentStr(Indent))
+        //debugln(['EncloseSkippedCode Footer=',dbgstr(WithFooter)]);
+        if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
+          Beauty.GetIndentStr(IndentWith)+WithFooter)
         then
           exit(false);
+        StartPos:=p;
       end;
       inc(p);
     end;
-
-    Result:=true;
+    Result:=Unindent(StartPos,p);
   end;
 
 var
@@ -1442,9 +1470,10 @@ begin
 
     // RemoveWithHeader
     SourceChangeCache.MainScanner:=Scanner;
+    if not FindBounds then exit;
     if not RemoveWithHeader then exit;
+    if not UnindentAndEncloseSkippedCode then exit;
     if not PrefixSubIdentifiers then exit;
-    if not EncloseSkippedCode then exit;
 
     Result:=SourceChangeCache.Apply;
     //debugln(['TExtractProcTool.RemoveWithBlock SOURCE:']);
