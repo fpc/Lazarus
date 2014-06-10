@@ -25,7 +25,6 @@
 
   ToDo:
     - Multiselect
-    DisableI18NForLFMCheckBox
     replace GetCurrentDependency
     replace GetCurrentFile
 }
@@ -1550,15 +1549,30 @@ end;
 procedure TPackageEditorForm.DisableI18NForLFMCheckBoxChange(Sender: TObject);
 var
   CurFile: TPkgFile;
-  Removed: boolean;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
 begin
   if LazPackage=nil then exit;
-  CurFile:=GetCurrentFile(Removed);
-  if (CurFile=nil) then exit;
-  if CurFile.DisableI18NForLFM=DisableI18NForLFMCheckBox.Checked then exit;
-  CurFile.DisableI18NForLFM:=DisableI18NForLFMCheckBox.Checked;
-  if not Removed then
-    LazPackage.Modified:=true;
+  BeginUdate;
+  try
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if not (Item is TPkgFile) then continue;
+      CurFile:=TPkgFile(Item);
+      if not (CurFile.FileType in PkgFileUnitTypes) then continue;
+      if CurFile.DisableI18NForLFM=DisableI18NForLFMCheckBox.Checked then
+        continue;
+      CurFile.DisableI18NForLFM:=DisableI18NForLFMCheckBox.Checked;
+      if not NodeData.Removed then
+        LazPackage.Modified:=true;
+      UpdateFiles;
+    end;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
