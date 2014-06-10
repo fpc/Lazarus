@@ -25,7 +25,6 @@
 
   ToDo:
     - Multiselect
-    CallRegisterProcCheckBox,
     DisableI18NForLFMCheckBox
     replace GetCurrentDependency
     replace GetCurrentFile
@@ -1428,17 +1427,30 @@ end;
 procedure TPackageEditorForm.CallRegisterProcCheckBoxChange(Sender: TObject);
 var
   CurFile: TPkgFile;
-  Removed: boolean;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
 begin
   if LazPackage=nil then exit;
-  CurFile:=GetCurrentFile(Removed);
-  if (CurFile=nil) then exit;
-  if CurFile.HasRegisterProc=CallRegisterProcCheckBox.Checked then exit;
-  CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
-  if not Removed then begin
-    LazPackage.Modified:=true;
+  BeginUdate;
+  try
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if Item is TPkgFile then begin
+        CurFile:=TPkgFile(Item);
+        if not (CurFile.FileType in PkgFileUnitTypes) then continue;
+        if CurFile.HasRegisterProc=CallRegisterProcCheckBox.Checked then exit;
+        CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
+        if not NodeData.Removed then
+          LazPackage.Modified:=true;
+        UpdateFiles;
+      end;
+    end;
+  finally
+    EndUpdate;
   end;
-  UpdateFiles;
 end;
 
 procedure TPackageEditorForm.ChangeFileTypeMenuItemClick(Sender: TObject);
