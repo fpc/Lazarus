@@ -1911,8 +1911,10 @@ function TCustomControlFilterEdit.ForceFilter(AFilter: String): String;
 // Apply a new filter immediately without waiting for idle. Returns the previous filter.
 begin
   Result := FFilter;
-  FFilter := AFilter;
-  ApplyFilter(True);
+  if fFilter <> AFilter then begin
+    FFilter := AFilter;
+    ApplyFilter(True);
+  end;
 end;
 
 function TCustomControlFilterEdit.GetDefaultGlyphName: String;
