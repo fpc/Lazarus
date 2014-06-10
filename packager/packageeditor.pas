@@ -1477,6 +1477,7 @@ begin
       finally
         EndUpdate;
       end;
+      exit;
     end;
   end;
 end;
@@ -1489,6 +1490,7 @@ var
   Dependency: TPkgDependency;
 begin
   if LazPackage=nil then exit;
+  BeginUdate;
   ListOfNodeInfos:=nil;
   try
     if ShowCleanPkgDepDlg(LazPackage,ListOfNodeInfos)<>mrOk then exit;
@@ -1500,6 +1502,7 @@ begin
     end;
   finally
     ListOfNodeInfos.Free;
+    EndUpdate;
   end;
 end;
 
@@ -1690,22 +1693,27 @@ end;
 procedure TPackageEditorForm.SetDependencyDefaultFilename(AsPreferred: boolean);
 var
   NewFilename: String;
-  CurDependency: TPkgDependency;
-  Removed: boolean;
 begin
-  CurDependency:=GetCurrentDependency(Removed);
-  if (CurDependency=nil) or Removed then exit;
+  if LazPackage=nil then exit;
+  if FSingleSelectedDependency=nil then exit;
+  if LazPackage.FindDependencyByName(FSingleSelectedDependency.PackageName
+    )<>FSingleSelectedDependency then exit;
   if LazPackage.ReadOnly then exit;
-  if CurDependency.RequiredPackage=nil then exit;
-  NewFilename:=CurDependency.RequiredPackage.Filename;
-  if (NewFilename=CurDependency.DefaultFilename)
-  and (CurDependency.PreferDefaultFilename=AsPreferred) then
+  if FSingleSelectedDependency.RequiredPackage=nil then exit;
+  NewFilename:=FSingleSelectedDependency.RequiredPackage.Filename;
+  if (NewFilename=FSingleSelectedDependency.DefaultFilename)
+  and (FSingleSelectedDependency.PreferDefaultFilename=AsPreferred) then
     exit;
-  CurDependency.DefaultFilename:=NewFilename;
-  CurDependency.PreferDefaultFilename:=AsPreferred;
-  LazPackage.Modified:=true;
-  UpdateRequiredPkgs;
-  UpdateButtons;
+  BeginUdate;
+  try
+    FSingleSelectedDependency.DefaultFilename:=NewFilename;
+    FSingleSelectedDependency.PreferDefaultFilename:=AsPreferred;
+    LazPackage.Modified:=true;
+    UpdateRequiredPkgs;
+    UpdateButtons;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TPackageEditorForm.SetIdleConnected(AValue: boolean);
@@ -2436,38 +2444,55 @@ end;
 
 procedure TPackageEditorForm.UpdateApplyDependencyButton(Immediately: boolean);
 var
-  DepencyChanged: Boolean;
-  CurDependency: TPkgDependency;
+  DependencyChanged: Boolean;
   AVersion: TPkgVersion;
-  Removed: boolean;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
 begin
   if not CanUpdate(pefNeedUpdateApplyDependencyButton) then exit;
 
-  DepencyChanged:=false;
-  CurDependency:=GetCurrentDependency(Removed);
-  if (CurDependency<>nil) then begin
+  FSingleSelectedDependency:=nil;
+  for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+    TVNode:=ItemsTreeView.Selections[i];
+    if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+    if Item is TPkgFile then begin
+      FSingleSelectedDependency:=nil;
+      break;
+    end else if Item is TPkgDependency then begin
+      if FSingleSelectedDependency<>nil then begin
+        FSingleSelectedDependency:=nil;
+        break;
+      end;
+      FSingleSelectedDependency:=TPkgDependency(Item);
+    end;
+  end;
+
+  DependencyChanged:=false;
+  if (FSingleSelectedDependency<>nil) then begin
     // check min version
-    if UseMinVersionCheckBox.Checked<>(pdfMinVersion in CurDependency.Flags) then
-      DepencyChanged:=true;
+    if UseMinVersionCheckBox.Checked<>(pdfMinVersion in FSingleSelectedDependency.Flags) then
+      DependencyChanged:=true;
     if UseMinVersionCheckBox.Checked then begin
       AVersion:=TPkgVersion.Create;
       if AVersion.ReadString(MinVersionEdit.Text)
-      and (AVersion.Compare(CurDependency.MinVersion)<>0) then
-        DepencyChanged:=true;
+      and (AVersion.Compare(FSingleSelectedDependency.MinVersion)<>0) then
+        DependencyChanged:=true;
       AVersion.Free;
     end;
     // check max version
-    if UseMaxVersionCheckBox.Checked<>(pdfMaxVersion in CurDependency.Flags) then
-      DepencyChanged:=true;
+    if UseMaxVersionCheckBox.Checked<>(pdfMaxVersion in FSingleSelectedDependency.Flags) then
+      DependencyChanged:=true;
     if UseMaxVersionCheckBox.Checked then begin
       AVersion:=TPkgVersion.Create;
       if AVersion.ReadString(MaxVersionEdit.Text)
-      and (AVersion.Compare(CurDependency.MaxVersion)<>0) then
-        DepencyChanged:=true;
+      and (AVersion.Compare(FSingleSelectedDependency.MaxVersion)<>0) then
+        DependencyChanged:=true;
       AVersion.Free;
     end;
   end;
-  ApplyDependencyButton.Enabled:=DepencyChanged;
+  ApplyDependencyButton.Enabled:=DependencyChanged;
 end;
 
 procedure TPackageEditorForm.UpdateStatusBar(Immediately: boolean);
