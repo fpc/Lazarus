@@ -615,7 +615,7 @@ var
   RequiredPackages: String;
   Src: String;
 begin
-  //debugln('TLazSourceFileManager.NewEditorFile A NewFilename=',NewFilename);
+  //debugln('TLazSourceFileManager.NewFile A NewFilename=',NewFilename);
   // empty NewFilename is ok, it will be auto generated
   SaveSourceEditorChangesToCodeCache(nil);
 
@@ -727,7 +727,7 @@ begin
   NewUnitInfo.RunFileIfActive:=NewFileDescriptor.RunFileIfActive;
 
   // create source code
-  //debugln('TLazSourceFileManager.NewEditorFile A nfCreateDefaultSrc=',nfCreateDefaultSrc in NewFlags,' ResourceClass=',dbgs(NewFileDescriptor.ResourceClass));
+  //debugln('TLazSourceFileManager.NewFile A nfCreateDefaultSrc=',nfCreateDefaultSrc in NewFlags,' ResourceClass=',dbgs(NewFileDescriptor.ResourceClass));
   if nfCreateDefaultSrc in NewFlags then begin
     if (NewFileDescriptor.ResourceClass<>nil) then begin
       NewUnitInfo.ComponentName:=NewUniqueComponentName(NewFileDescriptor.DefaultResourceName);
@@ -788,7 +788,7 @@ begin
         LFMFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lfm');
         LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
         LFMCode.Source:=LFMSourceText;
-        //debugln('TLazSourceFileManager.NewEditorFile A ',LFMFilename);
+        //debugln('TLazSourceFileManager.NewFile A ',LFMFilename);
         Result:=LoadLFM(NewUnitInfo,LFMCode,[],[]);
         //DebugLn(['TLazSourceFileManager.NewFile ',dbgsName(NewUnitInfo.Component),' ',dbgsName(NewUnitInfo.Component.ClassParent)]);
         // make sure the .lrs file exists
@@ -877,7 +877,7 @@ begin
   end;
 
   Result:=mrOk;
-  //DebugLn('TLazSourceFileManager.NewEditorFile END ',NewUnitInfo.Filename);
+  //DebugLn('TLazSourceFileManager.NewFile END ',NewUnitInfo.Filename);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.NewUnit end');{$ENDIF}
 end;
 
@@ -1382,7 +1382,7 @@ var
           Include(CloseFlags,cfCloseDependencies);
         Result:=LoadLFM(NewUnitInfo,Flags,CloseFlags);
         if Result<>mrOk then begin
-          DebugLn(['OpenResource DoLoadLFM failed']);
+          DebugLn(['TLazSourceFileManager.OpenEditorFile OpenResource LoadLFM failed']);
           exit;
         end;
       end else begin
@@ -1395,7 +1395,7 @@ var
       Result:=CloseUnitComponent(NewUnitInfo,
                                  [cfCloseDependencies,cfSaveDependencies]);
       if Result<>mrOk then begin
-        DebugLn(['OpenResource CloseUnitComponent failed']);
+        DebugLn(['TLazSourceFileManager.OpenEditorFile OpenResource CloseUnitComponent failed']);
       end;
     end else begin
       Result:=mrOk;
@@ -1693,7 +1693,7 @@ begin
     // open file in source notebook
     Result:=OpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
     if Result<>mrOk then begin
-      DebugLn(['TLazSourceFileManager.OpenEditorFile failed DoOpenFileInSourceEditor: ',AFilename]);
+      DebugLn(['TLazSourceFileManager.OpenEditorFile failed OpenFileInSourceEditor: ',AFilename]);
       exit;
     end;
     //debugln('[TLazSourceFileManager.OpenEditorFile] C');
@@ -2285,21 +2285,21 @@ begin
     if AnUnitList<>nil then begin
       for i:=0 to AnUnitList.Count-1 do begin
         CurUnit:=TUnitInfo(AnUnitList[i]);
-        //DebugLn(['TLazSourceFileManager.DoCheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
+        //DebugLn(['TLazSourceFileManager.CheckFilesOnDisk revert ',CurUnit.Filename,' EditorIndex=',CurUnit.EditorIndex]);
         if Result=mrOk then begin
           if CurUnit.OpenEditorInfoCount > 0 then begin
             // Revert one Editor-View, the others follow
             Result:=OpenEditorFile(CurUnit.Filename, CurUnit.OpenEditorInfo[0].PageIndex,
               CurUnit.OpenEditorInfo[0].WindowID, nil, [ofRevert], True);
-            //DebugLn(['TLazSourceFileManager.DoCheckFilesOnDisk DoOpenEditorFile=',Result]);
+            //DebugLn(['TLazSourceFileManager.CheckFilesOnDisk OpenEditorFile=',Result]);
           end else if CurUnit.IsMainUnit then begin
             Result:=RevertMainUnit;
-            //DebugLn(['TLazSourceFileManager.DoCheckFilesOnDisk DoRevertMainUnit=',Result]);
+            //DebugLn(['TLazSourceFileManager.CheckFilesOnDisk RevertMainUnit=',Result]);
           end else
             Result:=mrIgnore;
           if Result=mrAbort then exit;
         end else begin
-          //DebugLn(['TLazSourceFileManager.DoCheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
+          //DebugLn(['TLazSourceFileManager.CheckFilesOnDisk IgnoreCurrentFileDateOnDisk']);
           CurUnit.IgnoreCurrentFileDateOnDisk;
           CurUnit.Modified:=True;
           CurUnit.OpenEditorInfo[0].EditorComponent.Modified:=True;
@@ -2366,7 +2366,7 @@ var
   end;
 
 begin
-  //DebugLn('TLazSourceFileManager.DoPublishModule A');
+  //DebugLn('TLazSourceFileManager.PublishModule A');
   Result:=mrCancel;
 
   // do not delete project files
@@ -2379,7 +2379,7 @@ begin
     Result:=mrCancel;
     exit;
   end;
-  //DebugLn('TLazSourceFileManager.DoPublishModule A SrcDir="',SrcDir,'" DestDir="',DestDir,'"');
+  //DebugLn('TLazSourceFileManager.PublishModule A SrcDir="',SrcDir,'" DestDir="',DestDir,'"');
   if CompareFilenames(SrcDir,DestDir)=0
   then begin
     IDEMessageDialog(lisInvalidPublishingDirectory,
@@ -2398,7 +2398,7 @@ begin
   end;
   SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
   if (CmdAfterExe<>'') then begin
-    //DebugLn('TLazSourceFileManager.DoPublishModule A CmdAfterExe="',CmdAfterExe,'"');
+    //DebugLn('TLazSourceFileManager.PublishModule A CmdAfterExe="',CmdAfterExe,'"');
     // first look in the project directory
     TempCmd:=CmdAfterExe;
     if not FilenameIsAbsolute(TempCmd) then
@@ -2441,7 +2441,7 @@ begin
   // copy the directory
   if not CopyDirectoryWithMethods(SrcDir,DestDir,@OnCopyFile,@OnCopyError,Options) then
   begin
-    debugln('TLazSourceFileManager.DoPublishModule CopyDirectoryWithMethods failed');
+    debugln('TLazSourceFileManager.PublishModule CopyDirectoryWithMethods failed');
     Result:=mrCancel;
     exit;
   end;
@@ -2455,7 +2455,7 @@ begin
            +pwfSkipSessionInfo+[pwfIgnoreModified],
            NewProjectFilename,nil);
     if Result<>mrOk then begin
-      debugln('TLazSourceFileManager.DoPublishModule CurProject.WriteProject failed');
+      debugln('TLazSourceFileManager.PublishModule CurProject.WriteProject failed');
       exit;
     end;
   end;
@@ -2668,7 +2668,7 @@ begin
     end;
     if AProject<>nil then begin
       // add project units
-      //debugln(['TMainIDE.SelectUnitComponents Project=',AProject.ProjectInfoFile]);
+      //debugln(['TLazSourceFileManager.SelectUnitComponents Project=',AProject.ProjectInfoFile]);
       FirstDependency:=AProject.FirstRequiredDependency;
       for i:=0 to AProject.UnitCount-1 do begin
         AnUnitInfo:=AProject.Units[i];
@@ -2902,7 +2902,7 @@ begin
     try
       // create files
       if ProjectDesc.CreateStartFiles(Project1)<>mrOk then begin
-        debugln('TLazSourceFileManager.NewProject ProjectDesc.CreateStartFiles failed');
+        debugln('TLazSourceFileManager.InitNewProject ProjectDesc.CreateStartFiles failed');
       end;
       if (Project1.MainUnitInfo<>nil)
       and ((Project1.FirstUnitWithEditorIndex=nil)
@@ -2915,7 +2915,7 @@ begin
 
       // init resource files
       if not Project1.ProjResources.Regenerate(Project1.MainFilename, True, False,'') then
-        DebugLn('TLazSourceFileManager.NewProject Project1.Resources.Regenerate failed');
+        DebugLn('TLazSourceFileManager.InitNewProject Project1.Resources.Regenerate failed');
     finally
       Project1.EndUpdate;
     end;
@@ -2953,14 +2953,14 @@ begin
       if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
 
       // read project info file
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenProjectFile B3');{$ENDIF}
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.InitOpenedProjectFile B3');{$ENDIF}
       Project1.ReadProject(AFilename,EnvironmentOptions.BuildMatrixOptions);
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenProjectFile B4');{$ENDIF}
+      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.InitOpenedProjectFile B4');{$ENDIF}
       Result:=CompleteLoadingProjectInfo;
     finally
       Project1.EndUpdate;
     end;
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenProjectFile B5');{$ENDIF}
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.InitOpenedProjectFile B5');{$ENDIF}
     if Result<>mrOk then exit;
 
     if Project1.MainUnitID>=0 then begin
@@ -2973,8 +2973,8 @@ begin
       else exit(mrCancel);
       end;
     end;
-    //debugln('TLazSourceFileManager.OpenProjectFile C');
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenProjectFile C');{$ENDIF}
+    //debugln('TLazSourceFileManager.InitOpenedProjectFile C');
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.InitOpenedProjectFile C');{$ENDIF}
     IncreaseCompilerParseStamp;
 
     // restore files
@@ -3011,7 +3011,7 @@ begin
       inc(EditorInfoIndex);
     end; // while EditorInfoIndex < Project1.AllEditorsInfoCount
     Result:=mrCancel;
-    //debugln('TLazSourceFileManager.OpenProjectFile D');
+    //debugln('TLazSourceFileManager.InitOpenedProjectFile D');
 
     // set active editor source editor
     for i := 0 to Project1.AllEditorsInfoCount - 1 do begin
@@ -3060,7 +3060,7 @@ begin
     // select a form (object inspector, formeditor, control selection)
     if MainIDE.LastFormActivated<>nil then begin
       LastDesigner:=TDesigner(MainIDE.LastFormActivated.Designer);
-      debugln(['TLazSourceFileManager.OpenProjectFile select form in designer: ',
+      debugln(['TLazSourceFileManager.InitOpenedProjectFile select form in designer: ',
                DbgSName(MainIDE.LastFormActivated),' ',DbgSName(MainIDE.LastFormActivated.Designer)]);
       LastDesigner.SelectOnlyThisComponent(LastDesigner.LookupRoot);
     end;
@@ -3092,8 +3092,8 @@ begin
       Result:=HandlerResult;
   end;
   if Result=mrAbort then exit;
-  //debugln('TLazSourceFileManager.OpenProjectFile end  CodeToolBoss.ConsistencyCheck=',IntToStr(CodeToolBoss.ConsistencyCheck));
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenProjectFile end');{$ENDIF}
+  //debugln('TLazSourceFileManager.InitOpenedProjectFile end  CodeToolBoss.ConsistencyCheck=',IntToStr(CodeToolBoss.ConsistencyCheck));
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.InitOpenedProjectFile end');{$ENDIF}
 end;
 
 procedure TLazSourceFileManager.NewProjectFromFile;
@@ -3137,7 +3137,7 @@ function TLazSourceFileManager.CreateProjectForProgram(ProgramBuf: TCodeBuffer):
 var
   NewProjectDesc: TProjectDescriptor;
 begin
-  //debugln('[TLazSourceFileManager.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
+  //debugln('[TLazSourceFileManager.CreateProjectForProgram] A ',ProgramBuf.Filename);
   if (Project1 <> nil)
   and (not MainIDE.DoResetToolStatus([rfInteractive, rfSuccessOnTrigger])) then exit;
 
@@ -3166,7 +3166,7 @@ begin
   // create a new project
   Project1:=MainIDE.CreateProjectObject(NewProjectDesc,ProjectDescriptorProgram);
   Result:=InitProjectForProgram(ProgramBuf);
-  //debugln('[TLazSourceFileManager.DoCreateProjectForProgram] END');
+  //debugln('[TLazSourceFileManager.CreateProjectForProgram] END');
 end;
 
 function TLazSourceFileManager.InitProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
@@ -4212,7 +4212,7 @@ begin
         end;
         if ComponentSavingOk then begin
           {$IFDEF IDE_DEBUG}
-          debugln('TLazSourceFileManager.SaveFileResources E ',CompResourceCode);
+          debugln('TLazSourceFileManager.SaveUnitComponent E ',CompResourceCode);
           {$ENDIF}
           // replace lazarus form resource code in include file (.lrs)
           if not (sfSaveToTestDir in Flags) then begin
@@ -4269,7 +4269,7 @@ begin
           end;
           if (LFMCode<>nil) then begin
             {$IFDEF IDE_DEBUG}
-            debugln('TLazSourceFileManager.SaveFileResources E2 LFM=',LFMCode.Filename);
+            debugln('TLazSourceFileManager.SaveUnitComponent E2 LFM=',LFMCode.Filename);
             {$ENDIF}
             if (ResType=rtRes) and (LFMCode.DiskEncoding<>EncodingUTF8) then
             begin
@@ -4344,14 +4344,14 @@ begin
         FreeAndNil(UnitOwners);
       except
         on E: Exception do begin
-          debugln('TLazSourceFileManager.SaveFileResources Error cleaning up: ',E.Message);
+          debugln('TLazSourceFileManager.SaveUnitComponent Error cleaning up: ',E.Message);
         end;
       end;
     end;
   end;
   {$IFDEF IDE_DEBUG}
   if ResourceCode<>nil then
-    debugln('TLazSourceFileManager.SaveFileResources F ',ResourceCode.Modified);
+    debugln('TLazSourceFileManager.SaveUnitComponent F ',ResourceCode.Modified);
   {$ENDIF}
   // save binary stream (.lrs)
   if LRSCode<>nil then begin
@@ -4384,7 +4384,7 @@ begin
 
   Result:=mrOk;
   {$IFDEF IDE_DEBUG}
-  debugln('TLazSourceFileManager.SaveFileResources G ',LFMCode<>nil);
+  debugln('TLazSourceFileManager.SaveUnitComponent G ',LFMCode<>nil);
   {$ENDIF}
 end;
 
@@ -4406,7 +4406,7 @@ begin
     ObjectInspector1.EventGrid.ItemIndex:=-1;
     ObjectInspector1.FavoriteGrid.ItemIndex:=-1;
   end;
-  //debugln('TLazSourceFileManager.RemoveDanglingEvents ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component));
+  //debugln('TLazSourceFileManager.RemoveLooseEvents ',AnUnitInfo.Filename,' ',dbgsName(AnUnitInfo.Component));
   // remove dangling methods
   Result:=RemoveDanglingEvents(AnUnitInfo.Component, AnUnitInfo.Source, True,
                                ComponentModified);
@@ -4947,7 +4947,7 @@ var
   MainUnitInfo: TUnitInfo;
 begin
   {$IFDEF IDE_VERBOSE}
-  debugln(['[TLazSourceFileManager.DoOpenMainUnit] A ProjectLoading=',ofProjectLoading in Flags,' MainUnitID=',Project1.MainUnitID]);
+  debugln(['[TLazSourceFileManager.OpenMainUnit] A ProjectLoading=',ofProjectLoading in Flags,' MainUnitID=',Project1.MainUnitID]);
   {$ENDIF}
   Result:=mrCancel;
   if (Project1=nil) or (Project1.MainUnitID<0) then exit;
@@ -4970,7 +4970,7 @@ begin
 
   Result:=mrOk;
   {$IFDEF IDE_VERBOSE}
-  debugln('[TLazSourceFileManager.DoOpenMainUnit] END');
+  debugln('[TLazSourceFileManager.OpenMainUnit] END');
   {$ENDIF}
 end;
 
@@ -5043,7 +5043,7 @@ begin
   end;
 
   if MainIDE.ToolStatus<>itNone then begin
-    DebugLn(['TLazSourceFileManager.DoCheckLFMInEditor ToolStatus<>itNone']);
+    DebugLn(['TLazSourceFileManager.CheckLFMInEditor ToolStatus<>itNone']);
     Result:=mrCancel;
     exit;
   end;
@@ -5614,7 +5614,7 @@ begin
   begin
     AFilename:=TrimAndExpandFilename(UnitFilename);
     if (AFilename='') or (not FileExistsInIDE(AFilename,[])) then begin
-      DebugLn(['TLazSourceFileManager.DoOpenComponent file not found ',AFilename]);
+      DebugLn(['TLazSourceFileManager.OpenComponent file not found ',AFilename]);
       exit(mrCancel);
     end;
     AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename);
@@ -5632,14 +5632,14 @@ begin
   if not FileExistsInIDE(LFMFilename,[]) then
     LFMFilename:=ChangeFileExt(AFilename,'.dfm');
   if not FileExistsInIDE(LFMFilename,[]) then begin
-    DebugLn(['TLazSourceFileManager.DoOpenComponent file not found ',LFMFilename]);
+    DebugLn(['TLazSourceFileManager.OpenComponent file not found ',LFMFilename]);
     exit(mrCancel);
   end;
 
   // load unit source
   Result:=LoadCodeBuffer(UnitCode,AFilename,[lbfCheckIfText],true);
   if Result<>mrOk then begin
-    debugln('TLazSourceFileManager.DoOpenComponent Failed loading ',AFilename);
+    debugln('TLazSourceFileManager.OpenComponent Failed loading ',AFilename);
     exit;
   end;
 
@@ -5653,14 +5653,14 @@ begin
   // load lfm source
   Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
   if Result<>mrOk then begin
-    debugln('TLazSourceFileManager.DoOpenComponent Failed loading ',LFMFilename);
+    debugln('TLazSourceFileManager.OpenComponent Failed loading ',LFMFilename);
     exit;
   end;
 
   // load resource
   Result:=LoadLFM(AnUnitInfo,LFMCode,OpenFlags,CloseFlags);
   if Result<>mrOk then begin
-    debugln('TLazSourceFileManager.DoOpenComponent DoLoadLFM failed ',LFMFilename);
+    debugln('TLazSourceFileManager.OpenComponent DoLoadLFM failed ',LFMFilename);
     exit;
   end;
 
