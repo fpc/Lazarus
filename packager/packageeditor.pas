@@ -928,6 +928,7 @@ var
   Removed: boolean;
   CurDependency: TPkgDependency;
 begin
+  if LazPackage=nil then exit;
   CurDependency:=GetCurrentDependency(Removed);
   if (CurDependency=nil) or Removed then exit;
   if LazPackage.ReadOnly then exit;
@@ -1321,6 +1322,7 @@ end;
 
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
 begin
+  if LazPackage=nil then exit;
   BeginUdate;
   try
     ShowAddDialog(fLastDlgPage);
@@ -1368,6 +1370,7 @@ var
   Removed: boolean;
   NewDependency: TPkgDependency;
 begin
+  if LazPackage=nil then exit;
   CurDependency:=GetCurrentDependency(Removed);
   if (CurDependency=nil) or Removed then exit;
 
@@ -1432,6 +1435,7 @@ var
   CurFile: TPkgFile;
   CurItem: TIDEMenuCommand;
 begin
+  if LazPackage=nil then exit;
   CurItem:=TIDEMenuCommand(Sender);
   CurFile:=GetCurrentFile(Removed);
   if CurFile=nil then exit;
@@ -1456,6 +1460,7 @@ var
   Info: TCPDNodeInfo;
   Dependency: TPkgDependency;
 begin
+  if LazPackage=nil then exit;
   ListOfNodeInfos:=nil;
   try
     if ShowCleanPkgDepDlg(LazPackage,ListOfNodeInfos)<>mrOk then exit;
@@ -1472,6 +1477,7 @@ end;
 
 procedure TPackageEditorForm.CompileAllCleanClick(Sender: TObject);
 begin
+  if LazPackage=nil then exit;
   if MessageDlg(lisPckEditCompileEverything,
     lisPckEditReCompileThisAndAllRequiredPackages,
     mtConfirmation,[mbYes,mbNo],0)<>mrYes then exit;
