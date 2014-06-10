@@ -192,56 +192,56 @@ type
   TSynStateFlags = set of TSynStateFlag;
 
   TSynEditorOption = (
-    eoAutoIndent,              // Will indent the caret on new lines with the same amount of leading white space as the preceding line
-    eoBracketHighlight,        // Highlight matching bracket
-    eoEnhanceHomeKey,          // home key jumps to line start if nearer, similar to visual studio
+    eoAutoIndent,              // Allows to indent the caret, when new line is created with <Enter>, with the same amount of leading white space as the preceding line
+    eoBracketHighlight,        // Allows to highlight bracket, which matches bracket under caret
+    eoEnhanceHomeKey,          // Toggles behaviour of <Home> key on line with leading spaces. If turned on, key will jump to first non-spacing char, if it's nearer to caret position. (Similar to Visual Studio.)
     eoGroupUndo,               // When undoing/redoing actions, handle all continous changes of the same kind in one call instead undoing/redoing each command separately
-    eoHalfPageScroll,          // When scrolling with page-up and page-down commands, only scroll a half page at a time
-    eoHideRightMargin,         // Hides the right margin line
-    eoKeepCaretX,              // When moving through lines w/o Cursor Past EOL, keeps the X position of the cursor
-    eoNoCaret,                 // Makes it so the caret is never visible
-    eoNoSelection,             // Disables selecting text
-    eoPersistentCaret,         // Do not hide caret when focus lost // TODO: Windows may hide it, if another component sets up a caret
-    eoScrollByOneLess,         // Forces scrolling to be one less
-    eoScrollPastEof,           // Allows the cursor to go past the end of file marker
-    eoScrollPastEol,           // Allows the cursor to go past the last character into the white space at the end of a line
-    eoScrollHintFollows,       // The scroll hint follows the mouse when scrolling vertically
-    eoShowScrollHint,          // Shows a hint of the visible line numbers when scrolling vertically
-    eoShowSpecialChars,        // Shows the special Characters
-    eoSmartTabs,               // When tabbing, the cursor will go to the next non-white space character of the previous line
-    eoTabIndent,               // When active <Tab> and <Shift><Tab> act as block indent, unindent when text is selected
-    eoTabsToSpaces,            // Converts a tab character to a specified number of space characters
-    eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved
+    eoHalfPageScroll,          // When scrolling with <PageUp> and <PageDown> keys, only scroll a half page at a time
+    eoHideRightMargin,         // Hides the vertical "right margin" line
+    eoKeepCaretX,              // When moving through lines without "Cursor past EOL" option, keeps the X position of the caret
+    eoNoCaret,                 // Hides caret (text blinking cursor) totally
+    eoNoSelection,             // Disables any text selection
+    eoPersistentCaret,         // Do not hide caret when focus is lost from control. (TODO: Windows still hides caret, if another component sets up a caret.)
+    eoScrollByOneLess,         // Makes vertical scrolling less by one line
+    eoScrollPastEof,           // Allows caret to go past the "end of file" position
+    eoScrollPastEol,           // Allows caret to go past the "end of line" position, into white space beyong current line end
+    eoScrollHintFollows,       // The hint, showing vertical scroll position, follows the mouse cursor
+    eoShowScrollHint,          // Shows hint, with the current scroll position, when scrolling vertically by dragging the scrollbar slider
+    eoShowSpecialChars,        // Shows non-printable characters (spaces, tabulations) with greyed symbols
+    eoSmartTabs,               // When using <Tab> key, caret will go to the next non-space character of the previous line
+    eoTabIndent,               // Allows keys <Tab> and <Shift+Tab> act as block-indent and block-unindent, for selected blocks
+    eoTabsToSpaces,            // Converts tab characters to a specified number of space characters
+    eoTrimTrailingSpaces,      // Spaces at the end of lines will be trimmed and not saved to file
 
     // Not implemented
     eoAutoSizeMaxScrollWidth,  //TODO Automatically resizes the MaxScrollWidth property when inserting text
     eoDisableScrollArrows,     //TODO Disables the scroll bar arrow buttons when you can't scroll in that direction any more
-    eoHideShowScrollbars,      //TODO if enabled, then the scrollbars will only show when necessary.  If you have ScrollPastEOL, then it the horizontal bar will always be there (it uses MaxLength instead)
-    eoDropFiles,               //TODO Allows the editor accept file drops
-    eoSmartTabDelete,          //TODO similar to Smart Tabs, but when you delete characters
-    eoSpacesToTabs,            // Converts space characters to tabs and spaces
-    eoAutoIndentOnPaste,       // Indent text inserted from clipboard
+    eoHideShowScrollbars,      //TODO If enabled, then the scrollbars will only show when necessary. If you have "Scroll past EOL" option, then the horizontal bar will always be there (it uses MaxLength instead)
+    eoDropFiles,               //TODO Allows control to accept file drag-drop operation
+    eoSmartTabDelete,          //TODO Similar to "Smart tabs", but when you delete characters
+    eoSpacesToTabs,            // Converts long substrings of space characters to tabs and spaces
+    eoAutoIndentOnPaste,       // Allows to indent text pasted from clipboard
     //eoSpecialLineDefaultFg,    //TODO disables the foreground text color override when using the OnSpecialLineColor event
 
     // Only for compatibility, moved to TSynEditorMouseOptions
     // keep in one block
-    eoAltSetsColumnMode,       //
-    eoDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
-    eoRightMouseMovesCursor,   // When clicking with the right mouse for a popup menu, move the cursor to that location
-    eoDoubleClickSelectsLine,  // Select line on double click
-    eoShowCtrlMouseLinks       // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
+    eoAltSetsColumnMode,       // Allows to activate "column" selection mode, if <Alt> key is pressed and text is being selected with mouse
+    eoDragDropEditing,         // Allows to drag-and-drop text blocks within the control
+    eoRightMouseMovesCursor,   // When clicking with the right mouse button, for a popup menu, move the caret to clicked position
+    eoDoubleClickSelectsLine,  // Selects entire line with double-click, otherwise double-click selects only current word
+    eoShowCtrlMouseLinks       // Pressing <Ctrl> key (SYNEDIT_LINK_MODIFIER) will highlight the word under mouse cursor
     );
   TSynEditorOptions = set of TSynEditorOption;
 
   TSynEditorOption2 = (
-    eoCaretSkipsSelection,     // Caret skips selection on VK_LEFT/VK_RIGHT
-    eoCaretSkipTab,            // Caret can not enter tabs
-    eoAlwaysVisibleCaret,      // Move caret to be always visible when scrolling
-    eoEnhanceEndKey,           // end key jumps to visual/hard line end whichever is nearer
-    eoFoldedCopyPaste,         // Remember folds in copy/paste operations
-    eoPersistentBlock,         // Keep block if caret moves away or text is edited
-    eoOverwriteBlock,          // Non persitent block, gets overwritten on insert/del
-    eoAutoHideCursor           // Hide the mouse cursor, on keyboard action
+    eoCaretSkipsSelection,     // Allows <Left> and <Right> keys to move caret to selected block edges, without deselecting the block
+    eoCaretSkipTab,            // Disables caret positioning inside tab-characters internal area
+    eoAlwaysVisibleCaret,      // Keeps caret on currently visible control area, when scrolling control
+    eoEnhanceEndKey,           // Toggles behaviour of <End> key on line with trailing spaces. If turned on, key will jump to last non-spacing char, if it's nearer to caret position.
+    eoFoldedCopyPaste,         // Remember folding states of blocks, on Copy/Paste operations
+    eoPersistentBlock,         // Keeps selection, even if caret moves away or text is edited
+    eoOverwriteBlock,          // Allows to overwrite currently selected block, when pasting or typing new text
+    eoAutoHideCursor           // Hide mouse cursor, when new text is typed
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 
