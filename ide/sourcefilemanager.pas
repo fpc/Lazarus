@@ -1257,12 +1257,11 @@ begin
       if not (cfQuiet in Flags) then begin
         // ask user
         if AnUnitInfo.Filename<>'' then
-          AText:=Format(lisFileHasChangedSave, ['"', AnUnitInfo.Filename, '"'])
+          AText:=Format(lisFileHasChangedSave, [AnUnitInfo.Filename])
         else if AnUnitInfo.Unit_Name<>'' then
-          AText:=Format(lisUnitHasChangedSave, ['"', AnUnitInfo.Unit_name, '"'])
+          AText:=Format(lisUnitHasChangedSave, [AnUnitInfo.Unit_name])
         else
-          AText:=Format(lisSourceOfPageHasChangedSave, ['"',
-            TSourceEditor(AEditor).PageName, '"']);
+          AText:=Format(lisSourceOfPageHasChangedSave, [TSourceEditor(AEditor).PageName]);
         ACaption:=lisSourceModified;
         Result:=IDEQuestionDialog(ACaption, AText,
             mtConfirmation, [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort
@@ -3447,7 +3446,7 @@ begin
   if NeedSave = 1 then begin
     Ed := TSourceEditor(SourceEditorManager.UniqueSourceEditors[Idx]);
     r := IDEQuestionDialog(lisSourceModified,
-                     Format(lisSourceOfPageHasChangedSave, ['"', Ed.PageName, '"']),
+                     Format(lisSourceOfPageHasChangedSave, [Ed.PageName]),
                      mtConfirmation,
                      [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort]);
     case r of
@@ -3462,7 +3461,7 @@ begin
         dec(NeedSave);
         Ed := TSourceEditor(SourceEditorManager.UniqueSourceEditors[i]);
         r := IDEQuestionDialog(lisSourceModified,
-                         Format(lisSourceOfPageHasChangedSaveExtended, ['"', Ed.PageName, '"', NeedSave]),
+                         Format(lisSourceOfPageHasChangedSaveExtended, [Ed.PageName, NeedSave]),
                          mtConfirmation,
                          [mrYes, lisMenuSave, mrAll, lisSaveAll,
                           mrNo, lisDiscardChanges, mrIgnore, lisDiscardChangesAll,
@@ -5736,8 +5735,7 @@ begin
   end;
 
   // try the base designer classes
-  if not FindBaseComponentClass(AncestorClassName,DescendantClassName,
-    AncestorClass) then
+  if not FindBaseComponentClass(AncestorClassName,DescendantClassName,AncestorClass) then
   begin
     DebugLn(['TLazSourceFileManager.LoadAncestorDependencyHidden FindUnitComponentClass failed for AncestorClassName=',AncestorClassName]);
     exit(mrCancel);
@@ -6726,7 +6724,7 @@ begin
   if NeedSave = 1 then begin
     Ed := SrcNoteBook.Editors[Idx];
     r := IDEQuestionDialog(lisSourceModified,
-                     Format(lisSourceOfPageHasChangedSave, ['"', Ed.PageName, '"']),
+                     Format(lisSourceOfPageHasChangedSave, [Ed.PageName]),
                      mtConfirmation,
                      [mrYes, lisMenuSave, mrNo, lisDiscardChanges, mrAbort]);
     case r of
@@ -6741,7 +6739,7 @@ begin
         dec(NeedSave);
         Ed := SrcNoteBook.Editors[i];
         r := IDEQuestionDialog(lisSourceModified,
-                         Format(lisSourceOfPageHasChangedSaveExtended, ['"', Ed.PageName, '"', NeedSave]),
+                         Format(lisSourceOfPageHasChangedSaveExtended, [Ed.PageName, NeedSave]),
                          mtConfirmation,
                          [mrYes, lisMenuSave, mrAll, lisSaveAll,
                           mrNo, lisDiscardChanges, mrIgnore, lisDiscardChangesAll,

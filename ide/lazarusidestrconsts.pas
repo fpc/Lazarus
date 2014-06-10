@@ -717,10 +717,10 @@ resourcestring
   lisSourceDirectoryDoesNotExist = 'Source directory %s%s%s does not exist.';
   lisUnableToCopyFileTo = 'Unable to copy file %s%s%s%sto %s%s%s';
   lisSorryThisTypeIsNotYetImplemented = 'Sorry, this type is not yet implemented';
-  lisFileHasChangedSave = 'File %s%s%s has changed. Save?';
-  lisUnitHasChangedSave = 'Unit %s%s%s has changed. Save?';
-  lisSourceOfPageHasChangedSave = 'Source of page %s%s%s has changed. Save?';
-  lisSourceOfPageHasChangedSaveExtended = 'Sources of more than one page have changed. Save page %s%s%s? (%d more)';
+  lisFileHasChangedSave = 'File "%s" has changed. Save?';
+  lisUnitHasChangedSave = 'Unit "%s" has changed. Save?';
+  lisSourceOfPageHasChangedSave = 'Source of page "%s" has changed. Save?';
+  lisSourceOfPageHasChangedSaveExtended = 'Sources of more than one page have changed. Save page "%s"? (%d more)';
   lisSourceModified = 'Source modified';
   lisOpenProject = 'Open Project?';
   lisOpenTheProject = 'Open the project %s?';
