@@ -1217,11 +1217,8 @@ var
     until (CurPos.StartPos>=EndPos) or (CurPos.StartPos>SrcLen);
   end;
 
-  function Replace: boolean;
+  function RemoveWithHeader: boolean;
   var
-    AVLNode: TAVLTreeNode;
-    CleanPos: LongInt;
-    WithVar: String;
     StartPos: LongInt;
     EndPos: LongInt;
     WithKeywordStartPos: Integer;
@@ -1233,8 +1230,6 @@ var
     KeepBeginEnd: Boolean;
     NeedBeginEnd: Boolean;
   begin
-    SourceChangeCache.MainScanner:=Scanner;
-
     if (WithVarNode.FirstChild<>nil)
     and ((WithVarNode.PriorBrother=nil)
        or (WithVarNode.PriorBrother.Desc<>ctnWithVariable)
@@ -1318,7 +1313,16 @@ var
       if not SourceChangeCache.Replace(gtSpace,gtNone,StartPos,EndPos,'') then
         exit(false);
     end;
+    Result:=true;
+  end;
 
+  function PrefixSubIdentifiers: boolean;
+  var
+    WithVar: String;
+    AVLNode: TAVLTreeNode;
+    CleanPos: Integer;
+  begin
+    // insert all 'variable.'
     if WithIdentifiers<>nil then begin
       WithVar:=ExtractCode(WithVarNode.StartPos,WithVarEndPos,[]);
       if NeedBrackets(WithVarNode.StartPos,WithVarEndPos) then
@@ -1336,7 +1340,62 @@ var
         AVLNode:=WithIdentifiers.FindSuccessor(AVLNode);
       end;
     end;
-    Result:=SourceChangeCache.Apply;
+    Result:=true;
+  end;
+
+  function EncloseSkippedCode: boolean;
+  var
+    p: Integer;
+    EndPos: Integer;
+    WithHeader: String;
+    InsertPos: Integer;
+    Indent: Integer;
+    WithFooter: String;
+  begin
+    {$IFNDEF ExplodeWithEncloseSkipped}
+    exit(true);
+    {$ENDIF}
+    // enclose all $ELSE code in WITH blocks
+    WithHeader:='';
+    WithFooter:='';
+    p:=StatementNode.StartPos;
+    EndPos:=StatementNode.EndPos;
+    if EndPos>SrcLen then EndPos:=SrcLen;
+    while (p<EndPos) do begin
+      if (Src[p]=#3) and (Src[p-1]='{') then begin
+        // start of skipped code
+        if WithHeader='' then begin
+          WithHeader:=ExtractCode(WithVarNode.StartPos,WithVarEndPos,[]);
+          if NeedBrackets(WithVarNode.StartPos,WithVarEndPos) then
+            WithHeader:='('+WithHeader+')';
+          WithHeader:=Beauty.BeautifyKeyWord('with')+' '+WithHeader+' '
+          +Beauty.BeautifyKeyWord('do')
+          +' '+Beauty.BeautifyKeyWord('begin')+Beauty.LineEnd;
+        end;
+        InsertPos:=p+1;
+        Indent:=Beauty.GetLineIndent(Src,p);
+        debugln(['EncloseSkippedCode Header=',dbgstr(WithHeader)]);
+        if not SourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertPos,
+          WithHeader+Beauty.GetIndentStr(Indent))
+        then
+          exit(false);
+      end else if (Src[p]=#3) and (Src[p+1]=')') then begin
+        // end of skipped code
+        InsertPos:=p;
+        Indent:=Beauty.GetLineIndent(Src,p);
+        if WithFooter='' then begin
+          WithFooter:=Beauty.BeautifyKeyWord('end')+';'+Beauty.LineEnd;
+        end;
+        debugln(['EncloseSkippedCode Footer=',dbgstr(WithFooter)]);
+        if not SourceChangeCache.Replace(gtNone,gtNone,InsertPos,InsertPos,
+          WithFooter+Beauty.GetIndentStr(Indent))
+        then
+          exit(false);
+      end;
+      inc(p);
+    end;
+
+    Result:=true;
   end;
 
 var
@@ -1381,9 +1440,15 @@ begin
     debugln(['TExtractProcTool.RemoveWithBlock Statement=',copy(Src,StatementNode.StartPos,StatementNode.EndPos-StatementNode.StartPos)]);
     {$ENDIF}
 
-    // replace
-    Result:=Replace;
+    // RemoveWithHeader
+    SourceChangeCache.MainScanner:=Scanner;
+    if not RemoveWithHeader then exit;
+    if not PrefixSubIdentifiers then exit;
+    if not EncloseSkippedCode then exit;
 
+    Result:=SourceChangeCache.Apply;
+    //debugln(['TExtractProcTool.RemoveWithBlock SOURCE:']);
+    //debugln(TCodeBuffer(Scanner.MainCode).Source);
   finally
     WithIdentifiers.Free;
     if WithVarCache<>nil then begin
