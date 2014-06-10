@@ -2743,13 +2743,13 @@ begin
 end;
 
 procedure TPackageEditorForm.DoEditVirtualUnit;
-var
-  Removed: boolean;
-  CurFile: TPkgFile;
 begin
-  CurFile:=GetCurrentFile(Removed);
-  if (CurFile=nil) or Removed then exit;
-  if ShowEditVirtualPackageDialog(CurFile)=mrOk then
+  if LazPackage=nil then exit;
+  if (FSingleSelectedFile=nil)
+  or (FSingleSelectedFile.FileType<>pftVirtualUnit)
+  or (LazPackage.FindPkgFile(FSingleSelectedFile.Filename,true,true)=nil)
+  then exit;
+  if ShowEditVirtualPackageDialog(FSingleSelectedFile)=mrOk then
     UpdateFiles;
 end;
 
