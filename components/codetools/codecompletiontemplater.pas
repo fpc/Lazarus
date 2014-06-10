@@ -131,7 +131,7 @@ type
   end;
 
 var
-  Expander : TTemplateExpander; // will be set by CodeToolBoss
+  CTTemplateExpander : TTemplateExpander; // will be set by CodeToolBoss
 
 implementation
 

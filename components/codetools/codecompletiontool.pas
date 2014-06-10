@@ -84,7 +84,7 @@ uses
   Classes, SysUtils, FileProcs, CodeToolsStrConsts, CodeTree, CodeAtom,
   CodeCache, CustomCodeTool, PascalParserTool, MethodJumpTool,
   FindDeclarationTool, KeywordFuncLists, CodeToolsStructs, BasicCodeTools,
-  LinkScanner, SourceChanger, CodeGraph, AVL_Tree, codecompletiontemplater;
+  LinkScanner, SourceChanger, CodeGraph, AVL_Tree, CodeCompletionTemplater;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,

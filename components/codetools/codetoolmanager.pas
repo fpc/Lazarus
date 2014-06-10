@@ -46,7 +46,7 @@ uses
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, FindOverloads, CodeBeautifier,
   FindDeclarationCache, DirectoryCacher, AVL_Tree,
-  PPUCodeTools, LFMTrees, DirectivesTree, codecompletiontemplater,
+  PPUCodeTools, LFMTrees, DirectivesTree, CodeCompletionTemplater,
   PascalParserTool, CodeToolsConfig, CustomCodeTool, FindDeclarationTool,
   IdentCompletionTool, StdCodeTools, ResourceCodeTool, CodeToolsStructs,
   CTUnitGraph, CodeTemplatesTool, ExtractProcTool;
@@ -5745,11 +5745,11 @@ begin
   else
     Code:=nil;
   if Code<>nil then begin
-    if Expander=nil then
-      Expander:=TTemplateExpander.Create;
-    Expander.Code:=Code;
+    if CTTemplateExpander=nil then
+      CTTemplateExpander:=TTemplateExpander.Create;
+    CTTemplateExpander.Code:=Code;
   end else begin
-    FreeAndNil(Expander);
+    FreeAndNil(CTTemplateExpander);
   end;
 end;
 
@@ -6346,7 +6346,7 @@ finalization
   OnFindOwnerOfCodeTreeNode:=nil;
   CodeToolBoss.Free;
   CodeToolBoss:=nil;
-  FreeAndNil(Expander);
+  FreeAndNil(CTTemplateExpander);
   {$IFDEF CTDEBUG}
   DebugLn('codetoolmanager.pas - finalization finished');
   {$ENDIF}
