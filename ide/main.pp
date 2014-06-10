@@ -860,9 +860,6 @@ type
     // useful information methods
     procedure GetCurrentUnit(out ActiveSourceEditor: TSourceEditor;
                              out ActiveUnitInfo: TUnitInfo); override;
-    procedure GetUnitWithPageIndex(PageIndex, WindowIndex: integer;
-          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
-          deprecated; // deprecated in 0.9.29 March 2010
     procedure GetDesignerUnit(ADesigner: TDesigner;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); override;
     function GetProjectFileForProjectEditor(AEditor: TSourceEditorInterface): TLazProjectFile; override;
@@ -7951,16 +7948,6 @@ procedure TMainIDE.GetCurrentUnit(out ActiveSourceEditor:TSourceEditor;
   out ActiveUnitInfo:TUnitInfo);
 begin
   ActiveSourceEditor := SourceEditorManager.ActiveEditor;
-  if ActiveSourceEditor=nil then
-    ActiveUnitInfo:=nil
-  else
-    ActiveUnitInfo := Project1.UnitWithEditorComponent(ActiveSourceEditor);
-end;
-
-procedure TMainIDE.GetUnitWithPageIndex(PageIndex, WindowIndex:integer;
-  var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
-begin
-  ActiveSourceEditor := SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex];
   if ActiveSourceEditor=nil then
     ActiveUnitInfo:=nil
   else
