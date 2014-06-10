@@ -2747,7 +2747,7 @@ begin
   if LazPackage=nil then exit;
   if (FSingleSelectedFile=nil)
   or (FSingleSelectedFile.FileType<>pftVirtualUnit)
-  or (LazPackage.FindPkgFile(FSingleSelectedFile.Filename,true,true)=nil)
+  or (LazPackage.IndexOfPkgFile(FSingleSelectedFile)<0)
   then exit;
   if ShowEditVirtualPackageDialog(FSingleSelectedFile)=mrOk then
     UpdateFiles;
@@ -2823,14 +2823,12 @@ end;
 
 procedure TPackageEditorForm.DoMoveCurrentFile(Offset: integer);
 var
-  Removed: Boolean;
   OldIndex, NewIndex: Integer;
-  CurFile: TPkgFile;
   FilesBranch: TTreeFilterBranch;
 begin
-  CurFile:=GetCurrentFile(Removed);
-  if (CurFile=nil) or Removed then exit;
-  OldIndex:=LazPackage.IndexOfPkgFile(CurFile);
+  if (LazPackage=nil) or (FSingleSelectedFile=nil) then exit;
+  OldIndex:=LazPackage.IndexOfPkgFile(FSingleSelectedFile);
+  if OldIndex<0 then exit;
   NewIndex:=OldIndex+Offset;
   if (NewIndex<0) or (NewIndex>=LazPackage.FileCount) then exit;
   FilesBranch:=FilterEdit.GetExistingBranch(FFilesNode);
