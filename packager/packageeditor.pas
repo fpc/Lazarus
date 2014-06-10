@@ -2951,12 +2951,27 @@ end;
 
 function TPackageEditorForm.MoveFiles(SrcPkgEdit: TPackageEditorForm;
   TargetDirectory: string): boolean;
+var
+  Files: TFPList; // list of TPkgFile
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
 begin
   Result:=false;
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPackageEditorForm.MoveFiles Self=',LazPackage.Filename,' Src=',SrcPkgEdit.LazPackage.Filename,' Dir="',TargetDirectory,'"']);
   {$ENDIF}
+  Files:=TFPList.Create;
+  try
+    for i:=0 to SrcPkgEdit.ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=SrcPkgEdit.ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode, NodeData, Item) then continue;
 
+    end;
+  finally
+    Files.Free;
+  end;
 end;
 
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);
