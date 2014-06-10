@@ -306,6 +306,13 @@ type
     procedure ExtendIncPathForNewIncludeFile(const AnIncludeFile: string;
       var IgnoreIncPaths: TFilenameToStringTree);
     function CanBeAddedToProject: boolean;
+    function CheckDrag(Sender, Source: TObject; X, Y: Integer;
+      out SrcPkgEdit: TPackageEditorForm;
+      out aFileCount, aDependencyCount, aDirectoryCount: integer;
+      out TargetTVNode: TTreeNode; out TargetTVType: TTreeViewInsertMarkType
+      ): boolean;
+    function MoveFiles(SrcPkgEdit: TPackageEditorForm;
+      TargetDirectory: string): boolean;
   protected
     fFlags: TPEFlags;
     fLastDlgPage: TAddToPkgType;
@@ -762,158 +769,100 @@ end;
 
 procedure TPackageEditorForm.ItemsTreeViewDragDrop(Sender, Source: TObject; X,
   Y: Integer);
+var
+  SrcPkgEdit: TPackageEditorForm;
+  FileCount: integer;
+  DepCount: integer;
+  DirCount: integer;
+  TargetTVNode: TTreeNode;
+  TargetTVType: TTreeViewInsertMarkType;
+  NodeData: TPENodeData;
+  Item: TObject;
+  PkgFile: TPkgFile;
+  Directory: String;
 begin
+  if not CheckDrag(Sender, Source, X, Y, SrcPkgEdit, FileCount,
+    DepCount, DirCount, TargetTVNode, TargetTVType)
+  then begin
+    ItemsTreeView.SetInsertMark(nil,tvimNone);
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPackageEditorForm.ItemsTreeViewDragDrop failed']);
+    {$ENDIF}
+    exit;
+  end;
 
+  {$IFDEF VerbosePkgEditDrag}
+  debugln(['TPackageEditorForm.ItemsTreeViewDragDrop START']);
+  {$ENDIF}
+  if GetNodeDataItem(TargetTVNode,NodeData,Item) then begin
+    if Item is TPkgFile then begin
+      PkgFile:=TPkgFile(Item);
+      if FileCount=0 then exit;
+      // drag files
+      Directory:=ExtractFilePath(PkgFile.GetFullFilename);
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.ItemsTreeViewDragDrop drag files to directory of ',PkgFile.Filename]);
+      {$ENDIF}
+      MoveFiles(SrcPkgEdit,Directory);
+    end else if Item is TPkgDependency then begin
+      if DepCount=0 then exit;
+      // ToDo: drag dependencies
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.ItemsTreeViewDragDrop todo: drag dependencies']);
+      {$ENDIF}
+    end;
+  end else if IsDirectoryNode(TargetTVNode) or (TargetTVNode=FFilesNode) then begin
+    if FileCount>0 then begin
+      // drag files
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.ItemsTreeViewDragDrop drag files to ',LazPackage.Directory]);
+      {$ENDIF}
+      Directory:=LazPackage.DirectoryExpanded;
+      MoveFiles(SrcPkgEdit,Directory);
+    end else if DirCount>0 then begin
+      // drag directory
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.ItemsTreeViewDragDrop todo: drag directory']);
+      {$ENDIF}
+      MoveFiles(SrcPkgEdit,Directory);
+    end else begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.ItemsTreeViewDragDrop failed: expected files or directory']);
+      {$ENDIF}
+    end;
+  end else if TargetTVNode=FRequiredPackagesNode then begin
+    if DepCount=0 then exit;
+    // ToDo: drag dependencies
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPackageEditorForm.ItemsTreeViewDragDrop todo: drag dependencies']);
+    {$ENDIF}
+  end;
 end;
 
 procedure TPackageEditorForm.ItemsTreeViewDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 var
-  SrcTV: TTreeView;
-  aParent: TWinControl;
   SrcPkgEdit: TPackageEditorForm;
-  i: Integer;
-  TVNode: TTreeNode;
-  NodeData: TPENodeData;
-  Item: TObject;
   FileCount: Integer;
   DepCount: Integer;
   DirCount: Integer;
   TargetTVNode: TTreeNode;
   TargetTVType: TTreeViewInsertMarkType;
 begin
-  Accept:=false;
   //debugln(['TPackageEditorForm.ItemsTreeViewDragOver ',DbgSName(Source),' State=',ord(State),' FromSelf=',Source=ItemsTreeView]);
 
-  if State=dsDragLeave then begin
-    ItemsTreeView.SetInsertMark(nil,tvimNone);
-    exit;
-  end;
-
-  if Source=ItemsTreeView then begin
-    // move items within the package
-    SrcPkgEdit:=Self;
-  end else if (Source is TTreeView) then begin
-    SrcTV:=TTreeView(Source);
-    if SrcTV.Name<>ItemsTreeView.Name then exit;
-    aParent:=SrcTV;
-    repeat
-      if aParent=nil then exit;
-      aParent:=aParent.Parent;
-    until aParent is TPackageEditorForm;
-    // move items to another package
-    SrcPkgEdit:=TPackageEditorForm(aParent);
-    //debugln(['TPackageEditorForm.ItemsTreeViewDragOver from another package editor: ',SrcPkgEdit.LazPackage.Name]);
-  end else
-    exit;
-
-  // check items
-  FileCount:=0;
-  DepCount:=0;
-  DirCount:=0;
-  for i:=0 to SrcPkgEdit.ItemsTreeView.SelectionCount-1 do begin
-    TVNode:=SrcPkgEdit.ItemsTreeView.Selections[i];
-    if SrcPkgEdit.GetNodeDataItem(TVNode,NodeData,Item) then begin
-      if NodeData.Removed then exit; // removed things cannot be moved
-      if Item is TPkgFile then begin
-        inc(FileCount);
-      end else if Item is TPkgDependency then begin
-        inc(DepCount);
-      end;
-    end else if SrcPkgEdit.IsDirectoryNode(TVNode) then begin
-      inc(DirCount);
-    end;
-  end;
-  if FileCount+DepCount+DirCount=0 then begin
-    {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.ItemsTreeViewDragOver failed: nothing useful dragged']);
-    {$ENDIF}
-    exit;
-  end;
-  if DirCount>1 then begin
-    {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.ItemsTreeViewDragOver failed: more than one directory']);
-    {$ENDIF}
-    exit; // only one directory per move
-  end;
-  if Abs(FileCount)+Abs(DepCount)+Abs(DirCount)>1 then begin
-    // more than one type, but only one type can be dragged
-    {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.ItemsTreeViewDragOver failed: more than one type']);
-    {$ENDIF}
-    exit;
-  end;
-
-  ItemsTreeView.GetInsertMarkAt(X,Y,TargetTVNode,TargetTVType);
-  if TargetTVNode=nil then begin
-    if DepCount>0 then begin
-      TargetTVNode:=FRequiredPackagesNode;
-    end else begin
-      TargetTVNode:=FFilesNode;
-    end;
-    TargetTVType:=tvimAsFirstChild;
-  end;
-  if GetNodeDataItem(TargetTVNode,NodeData,Item) then begin
-    if TargetTVType in [tvimNone,tvimAsFirstChild] then
-      TargetTVType:=tvimAsNextSibling;
-    if Item is TPkgFile then begin
-      if FileCount=0 then exit;
-      // ToDo: drag files
-      {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.ItemsTreeViewDragOver todo: drag files']);
-      {$ENDIF}
-      exit;
-    end else if Item is TPkgDependency then begin
-      if DepCount=0 then exit;
-      // ToDo: drag dependencies
-      {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.ItemsTreeViewDragOver todo: drag dependencies']);
-      {$ENDIF}
-      exit;
-    end;
-  end else if IsDirectoryNode(TargetTVNode) or (TargetTVNode=FFilesNode) then begin
-    if TargetTVNode=FFilesNode then
-      TargetTVType:=tvimAsFirstChild;
-    if FileCount>0 then begin
-      // ToDo: drag files
-      {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.ItemsTreeViewDragOver todo: drag files']);
-      {$ENDIF}
-      exit;
-    end else if DirCount>0 then begin
-      // ToDo: drag directory
-      {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.ItemsTreeViewDragOver todo: drag directory']);
-      {$ENDIF}
-      exit;
-    end else begin
-      {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.ItemsTreeViewDragOver failed: expected files or directory']);
-      {$ENDIF}
-      exit;
-    end;
-  end else if TargetTVNode=FRequiredPackagesNode then begin
-    if DepCount=0 then exit;
-    // ToDo: drag dependencies
-    TargetTVType:=tvimAsFirstChild;
-    {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.ItemsTreeViewDragOver todo: drag dependencies']);
-    {$ENDIF}
-    exit;
-  end else begin
-    {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.ItemsTreeViewDragOver failed: invalid target node: ',TargetTVNode.Text]);
-    {$ENDIF}
-    exit;
-  end;
-
-  if (SrcPkgEdit=Self) and (TargetTVNode.Selected or TargetTVNode.MultiSelected)
+  if not CheckDrag(Sender, Source, X, Y, SrcPkgEdit, FileCount,
+    DepCount, DirCount, TargetTVNode, TargetTVType)
   then begin
-    debugln(['TPackageEditorForm.ItemsTreeViewDragOver failed: target is selected']);
+    ItemsTreeView.SetInsertMark(nil,tvimNone);
+    Accept:=false;
     exit;
   end;
 
-  ItemsTreeView.SetInsertMark(TargetTVNode,TargetTVType);
+  if State=dsDragLeave then
+    ItemsTreeView.SetInsertMark(nil,tvimNone)
+  else
+    ItemsTreeView.SetInsertMark(TargetTVNode,TargetTVType);
   Accept:=true;
 end;
 
@@ -2851,6 +2800,163 @@ function TPackageEditorForm.CanBeAddedToProject: boolean;
 begin
   if LazPackage=nil then exit(false);
   Result:=PackageEditors.AddToProject(LazPackage,true)=mrOk;
+end;
+
+function TPackageEditorForm.CheckDrag(Sender, Source: TObject; X, Y: Integer;
+  out SrcPkgEdit: TPackageEditorForm; out aFileCount, aDependencyCount,
+  aDirectoryCount: integer; out TargetTVNode: TTreeNode; out
+  TargetTVType: TTreeViewInsertMarkType): boolean;
+var
+  SrcTV: TTreeView;
+  aParent: TWinControl;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
+begin
+  Result:=false;
+  SrcPkgEdit:=nil;
+  aFileCount:=0;
+  aDependencyCount:=0;
+  aDirectoryCount:=0;
+  TargetTVNode:=nil;
+  TargetTVType:=tvimNone;
+
+  if Source=ItemsTreeView then begin
+    // move items within the package
+    SrcPkgEdit:=Self;
+  end else if (Source is TTreeView) then begin
+    SrcTV:=TTreeView(Source);
+    if SrcTV.Name<>ItemsTreeView.Name then exit;
+    aParent:=SrcTV;
+    repeat
+      if aParent=nil then exit;
+      aParent:=aParent.Parent;
+    until aParent is TPackageEditorForm;
+    // move items to another package
+    SrcPkgEdit:=TPackageEditorForm(aParent);
+    //debugln(['TPackageEditorForm.ItemsTreeViewDragOver from another package editor: ',SrcPkgEdit.LazPackage.Name]);
+  end else
+    exit;
+
+  // check items
+  aFileCount:=0;
+  aDependencyCount:=0;
+  aDirectoryCount:=0;
+  for i:=0 to SrcPkgEdit.ItemsTreeView.SelectionCount-1 do begin
+    TVNode:=SrcPkgEdit.ItemsTreeView.Selections[i];
+    if SrcPkgEdit.GetNodeDataItem(TVNode,NodeData,Item) then begin
+      if NodeData.Removed then exit; // removed things cannot be moved
+      if Item is TPkgFile then begin
+        inc(aFileCount);
+      end else if Item is TPkgDependency then begin
+        inc(aDependencyCount);
+      end;
+    end else if SrcPkgEdit.IsDirectoryNode(TVNode) then begin
+      inc(aDirectoryCount);
+    end;
+  end;
+  if aFileCount+aDependencyCount+aDirectoryCount=0 then begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPackageEditorForm.CheckDrag failed: nothing useful dragged']);
+    {$ENDIF}
+    exit;
+  end;
+  if aDirectoryCount>1 then begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPackageEditorForm.CheckDrag failed: more than one directory']);
+    {$ENDIF}
+    exit; // only one directory per move
+  end;
+  if Abs(aFileCount)+Abs(aDependencyCount)+Abs(aDirectoryCount)>1 then begin
+    // more than one type, but only one type can be dragged
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPackageEditorForm.CheckDrag failed: more than one type']);
+    {$ENDIF}
+    exit;
+  end;
+
+  ItemsTreeView.GetInsertMarkAt(X,Y,TargetTVNode,TargetTVType);
+  if TargetTVNode=nil then begin
+    if aDependencyCount>0 then begin
+      TargetTVNode:=FRequiredPackagesNode;
+    end else begin
+      TargetTVNode:=FFilesNode;
+    end;
+    TargetTVType:=tvimAsFirstChild;
+  end;
+  if GetNodeDataItem(TargetTVNode,NodeData,Item) then begin
+    if TargetTVType in [tvimNone,tvimAsFirstChild] then
+      TargetTVType:=tvimAsNextSibling;
+    if Item is TPkgFile then begin
+      if aFileCount=0 then exit;
+      // drag files
+      {$IFNDEF EnablePkgEditDnd}
+      debugln(['TPackageEditorForm.CheckDrag todo: drag files']);
+      exit;
+      {$ENDIF}
+    end else if Item is TPkgDependency then begin
+      if aDependencyCount=0 then exit;
+      // ToDo: drag dependencies
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.CheckDrag todo: drag dependencies']);
+      {$ENDIF}
+    end;
+  end else if IsDirectoryNode(TargetTVNode) or (TargetTVNode=FFilesNode) then begin
+    if TargetTVNode=FFilesNode then
+      TargetTVType:=tvimAsFirstChild;
+    if aFileCount>0 then begin
+      // drag files
+      {$IFNDEF EnablePkgEditDnd}
+      debugln(['TPackageEditorForm.CheckDrag todo: drag files']);
+      exit;
+      {$ENDIF}
+    end else if aDirectoryCount>0 then begin
+      // ToDo: drag directory
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.CheckDrag todo: drag directory']);
+      {$ENDIF}
+      exit;
+    end else begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.CheckDrag failed: expected files or directory']);
+      {$ENDIF}
+      exit;
+    end;
+  end else if TargetTVNode=FRequiredPackagesNode then begin
+    if aDependencyCount=0 then exit;
+    // ToDo: drag dependencies
+    TargetTVType:=tvimAsFirstChild;
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPackageEditorForm.CheckDrag todo: drag dependencies']);
+    {$ENDIF}
+    exit;
+  end else begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPackageEditorForm.CheckDrag failed: invalid target node: ',TargetTVNode.Text]);
+    {$ENDIF}
+    exit;
+  end;
+
+  if (SrcPkgEdit=Self) and (TargetTVNode.Selected or TargetTVNode.MultiSelected)
+  then begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPackageEditorForm.CheckDrag failed: target is selected']);
+    {$ENDIF}
+    exit;
+  end;
+
+  Result:=true;
+end;
+
+function TPackageEditorForm.MoveFiles(SrcPkgEdit: TPackageEditorForm;
+  TargetDirectory: string): boolean;
+begin
+  Result:=false;
+  {$IFDEF VerbosePkgEditDrag}
+  debugln(['TPackageEditorForm.MoveFiles Self=',LazPackage.Filename,' Src=',SrcPkgEdit.LazPackage.Filename,' Dir="',TargetDirectory,'"']);
+  {$ENDIF}
+
 end;
 
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);
