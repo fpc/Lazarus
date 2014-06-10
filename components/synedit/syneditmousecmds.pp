@@ -41,13 +41,13 @@ uses
 type
 
   TSynEditorMouseOption = (
-    emUseMouseActions,
-    emAltSetsColumnMode,       // Alt modifier, triggers column mode selection
-    emDragDropEditing,         // Allows you to select a block of text and drag it within the document to another location
-    emRightMouseMovesCursor,   // When clicking with the right mouse for a popup menu, move the cursor to that location
-    emDoubleClickSelectsLine,  // Select line on double click
-    emShowCtrlMouseLinks,      // Pressing Ctrl (SYNEDIT_LINK_MODIFIER) will highlight the word under the mouse cursor
-    emCtrlWheelZoom
+    emUseMouseActions,         // Enable mouse actions
+    emAltSetsColumnMode,       // Allows to activate "column" selection mode, if <Alt> key is pressed and text is being selected with mouse
+    emDragDropEditing,         // Allows to drag-and-drop text blocks within the control
+    emRightMouseMovesCursor,   // When clicking with the right mouse button, for a popup menu, move the caret to clicked position
+    emDoubleClickSelectsLine,  // Selects entire line with double-click, otherwise double-click selects only current word
+    emShowCtrlMouseLinks,      // Pressing <Ctrl> key (SYNEDIT_LINK_MODIFIER) will highlight the word under mouse cursor
+    emCtrlWheelZoom            // Allows to zoom editor by <Ctrl+MouseWheel> commands
   );
   TSynEditorMouseOptions = set of TSynEditorMouseOption;
 
