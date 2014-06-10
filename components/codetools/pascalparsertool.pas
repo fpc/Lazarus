@@ -3706,7 +3706,7 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncExports: boolean;
-{ exports keyword  - only allowed in library
+{ exports keyword
 
   examples:
   
@@ -3714,14 +3714,7 @@ function TPascalParserTool.KeyWordFuncExports: boolean;
   exports unit1.blob;
 }
 
-  procedure RaiseExportsOnlyAllowedInLibraries;
-  begin
-    SaveRaiseException(ctsExportsClauseOnlyAllowedInLibraries);
-  end;
-
 begin
-  if not (CurSection in [ctnLibrary,ctnProgram]) then
-    RaiseExportsOnlyAllowedInLibraries;
   CreateChildNode;
   CurNode.Desc:=ctnExportsSection;
   repeat
