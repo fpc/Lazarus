@@ -26,7 +26,6 @@
   ToDo:
     - Multiselect
     replace GetCurrentDependency
-    replace GetCurrentFile
 }
 unit PackageEditor;
 
@@ -295,7 +294,6 @@ type
     procedure UpdateApplyDependencyButton(Immediately: boolean = false);
     procedure UpdateStatusBar(Immediately: boolean = false);
     function GetCurrentDependency(out Removed: boolean): TPkgDependency;
-    function GetCurrentFile(out Removed: boolean): TPkgFile;
     function GetNodeData(TVNode: TTreeNode): TPENodeData;
     function GetNodeItem(NodeData: TPENodeData): TObject;
     function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
@@ -921,18 +919,14 @@ begin
 end;
 
 procedure TPackageEditorForm.ClearDependencyFilenameMenuItemClick(Sender: TObject);
-var
-  Removed: boolean;
-  CurDependency: TPkgDependency;
 begin
   if LazPackage=nil then exit;
-  CurDependency:=GetCurrentDependency(Removed);
-  if (CurDependency=nil) or Removed then exit;
+  if FSingleSelectedDependency=nil then exit;
   if LazPackage.ReadOnly then exit;
-  if CurDependency.RequiredPackage=nil then exit;
-  if CurDependency.DefaultFilename='' then exit;
-  CurDependency.DefaultFilename:='';
-  CurDependency.PreferDefaultFilename:=false;
+  if FSingleSelectedDependency.RequiredPackage=nil then exit;
+  if FSingleSelectedDependency.DefaultFilename='' then exit;
+  FSingleSelectedDependency.DefaultFilename:='';
+  FSingleSelectedDependency.PreferDefaultFilename:=false;
   LazPackage.Modified:=true;
   UpdateRequiredPkgs;
   UpdateButtons;
@@ -1377,17 +1371,16 @@ end;
 
 procedure TPackageEditorForm.ApplyDependencyButtonClick(Sender: TObject);
 var
-  CurDependency: TPkgDependency;
-  Removed: boolean;
   NewDependency: TPkgDependency;
 begin
   if LazPackage=nil then exit;
-  CurDependency:=GetCurrentDependency(Removed);
-  if (CurDependency=nil) or Removed then exit;
+  if FSingleSelectedDependency=nil then exit;
+  if LazPackage.FindDependencyByName(FSingleSelectedDependency.PackageName
+    )<>FSingleSelectedDependency then exit;
 
   NewDependency:=TPkgDependency.Create;
   try
-    NewDependency.Assign(CurDependency);
+    NewDependency.Assign(FSingleSelectedDependency);
 
     // read minimum version
     if UseMinVersionCheckBox.Checked then begin
@@ -1417,7 +1410,7 @@ begin
       NewDependency.Flags:=NewDependency.Flags-[pdfMaxVersion];
     end;
 
-    PackageGraph.ChangeDependency(CurDependency,NewDependency);
+    PackageGraph.ChangeDependency(FSingleSelectedDependency,NewDependency);
   finally
     NewDependency.Free;
   end;
@@ -2509,22 +2502,6 @@ begin
     Result:=LazPackage.FindRemovedDependencyByName(NodeData.Name)
   else
     Result:=LazPackage.FindDependencyByName(NodeData.Name);
-end;
-
-function TPackageEditorForm.GetCurrentFile(out Removed: boolean): TPkgFile;
-var
-  NodeData: TPENodeData;
-begin
-  Result:=nil;
-  Removed:=false;
-  NodeData:=GetNodeData(ItemsTreeView.Selected);
-  if NodeData=nil then exit;
-  if NodeData.Typ<>penFile then exit;
-  Removed:=NodeData.Removed;
-  if Removed then
-    Result:=LazPackage.FindRemovedPkgFile(NodeData.Name)
-  else
-    Result:=LazPackage.FindPkgFile(NodeData.Name,true,true);
 end;
 
 function TPackageEditorForm.GetNodeData(TVNode: TTreeNode): TPENodeData;
