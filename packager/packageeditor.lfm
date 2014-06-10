@@ -320,12 +320,15 @@ object PackageEditorForm: TPackageEditorForm
     Align = alClient
     BorderSpacing.Top = 1
     DefaultItemHeight = 18
+    DragMode = dmAutomatic
     MultiSelect = True
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 2
     OnDblClick = ItemsTreeViewDblClick
+    OnDragDrop = ItemsTreeViewDragDrop
+    OnDragOver = ItemsTreeViewDragOver
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
     Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]

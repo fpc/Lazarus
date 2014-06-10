@@ -219,6 +219,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
+    procedure ItemsTreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure ItemsTreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MorePopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewDblClick(Sender: TObject);
@@ -753,6 +756,39 @@ begin
     PackageEditorMenuRoot.EndUpdate;
   end;
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup END ',ItemsPopupMenu.Items.Count]); PackageEditorMenuRoot.WriteDebugReport('  ',true);
+end;
+
+procedure TPackageEditorForm.ItemsTreeViewDragDrop(Sender, Source: TObject; X,
+  Y: Integer);
+begin
+
+end;
+
+procedure TPackageEditorForm.ItemsTreeViewDragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  SrcTV: TTreeView;
+  aParent: TWinControl;
+  SrcPkgEdit: TPackageEditorForm;
+begin
+  Accept:=false;
+  debugln(['TPackageEditorForm.ItemsTreeViewDragOver ',DbgSName(Source),' State=',ord(State),' FromSelf=',Source=ItemsTreeView]);
+  if Source=ItemsTreeView then begin
+    // move items within the package
+
+  end else if (Source is TTreeView) then begin
+    SrcTV:=TTreeView(Source);
+    if SrcTV.Name<>ItemsTreeView.Name then exit;
+    aParent:=SrcTV;
+    repeat
+      if aParent=nil then exit;
+      aParent:=aParent.Parent;
+    until aParent is TPackageEditorForm;
+    // move items to another package
+    SrcPkgEdit:=TPackageEditorForm(aParent);
+    debugln(['TPackageEditorForm.ItemsTreeViewDragOver from another package editor: ',SrcPkgEdit.LazPackage.Name]);
+
+  end;
 end;
 
 procedure TPackageEditorForm.MorePopupMenuPopup(Sender: TObject);
@@ -1718,7 +1754,7 @@ begin
   if IdleConnected then
     Application.AddOnIdleHandler(@OnIdle)
   else
-    Application.AddOnIdleHandler(@OnIdle);
+    Application.RemoveOnIdleHandler(@OnIdle);
 end;
 
 procedure TPackageEditorForm.SetShowDirectoryHierarchy(const AValue: boolean);
@@ -1745,12 +1781,15 @@ begin
   if csDestroying in ComponentState then exit;
   if LazPackage=nil then exit;
   Name:=PackageEditorWindowPrefix+LazPackage.Name;
-  UpdateTitle(Immediately);
-  UpdateButtons(Immediately);
-  UpdateFiles(Immediately);
-  UpdateRequiredPkgs(Immediately);
-  //UpdatePEProperties(Immediately); Already done in UpdateFiles and UpdateRequiredPkgs.
-  UpdateStatusBar(Immediately);
+  fFlags:=fFlags+[
+    pefNeedUpdateTitle,
+    pefNeedUpdateButtons,
+    pefNeedUpdateFiles,
+    pefNeedUpdateRequiredPkgs,
+    pefNeedUpdateProperties,
+    pefNeedUpdateApplyDependencyButton,
+    pefNeedUpdateStatusBar];
+  UpdatePending;
 end;
 
 function TPackageEditorForm.ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
