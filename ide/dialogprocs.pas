@@ -88,16 +88,16 @@ function CheckCreatingFile(const AFilename: string;
                            CreateBackup: boolean = false
                            ): TModalResult;
 function CheckFileIsWritable(const Filename: string;
-                             ErrorButtons: TMsgDlgButtons): TModalResult;
+                             ErrorButtons: TMsgDlgButtons = []): TModalResult;
+function CheckDirectoryIsWritable(const Filename: string;
+                                  ErrorButtons: TMsgDlgButtons = []): TModalResult;
 function ChooseSymlink(var Filename: string; AskOnSymlink: boolean): TModalResult;
 function CreateSymlinkInteractive(const LinkFilename, TargetFilename: string;
-                                  ErrorButtons: TMsgDlgButtons): TModalResult;
+                                  ErrorButtons: TMsgDlgButtons = []): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
-                                   ErrorButtons: TMsgDlgButtons): TModalResult;
-function CheckDirectoryIsWritable(const Filename: string;
-                                  ErrorButtons: TMsgDlgButtons): TModalResult;
+                                   ErrorButtons: TMsgDlgButtons = []): TModalResult;
 function DeleteFileInteractive(const Filename: string;
-                               ErrorButtons: TMsgDlgButtons): TModalResult;
+                               ErrorButtons: TMsgDlgButtons = []): TModalResult;
 function SaveStringToFile(const Filename, Content: string;
                         ErrorButtons: TMsgDlgButtons; const Context: string = ''
                         ): TModalResult;
@@ -493,12 +493,13 @@ end;
 function CheckFileIsWritable(const Filename: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
 begin
-  Result:=mrOk;
   while not FileIsWritable(Filename) do begin
     Result:=IDEMessageDialog(lisFileIsNotWritable,
-      Format(lisUnableToWriteToFile2, [Filename]), mtError,ErrorButtons+[mbCancel]);
+      Format(lisUnableToWriteToFile2, [Filename]), mtError,
+      ErrorButtons+[mbCancel,mbRetry]);
     if Result<>mrRetry then exit;
   end;
+  Result:=mrOk;
 end;
 
 function ChooseSymlink(var Filename: string; AskOnSymlink: boolean
@@ -538,7 +539,7 @@ begin
     Result:=IDEMessageDialog(lisCodeToolsDefsWriteError, Format(
       lisUnableToCreateLinkWithTarget, ['"',
       LinkFilename, '"', '"', TargetFilename, '"']),
-      mtError,ErrorButtons+[mbCancel],'');
+      mtError,ErrorButtons+[mbCancel,mbRetry],'');
     if Result<>mrRetry then exit;
   end;
   InvalidateFileStateCache;
@@ -580,13 +581,13 @@ end;
 function CheckDirectoryIsWritable(const Filename: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
 begin
-  Result:=mrOk;
   while not DirectoryIsWritable(Filename) do begin
     Result:=IDEMessageDialog(lisDirectoryNotWritable,
       Format(lisTheDirectoryIsNotWritable, ['"', Filename, '"']),
-      mtError,ErrorButtons+[mbCancel]);
+      mtError,ErrorButtons+[mbCancel,mbRetry]);
     if Result<>mrRetry then exit;
   end;
+  Result:=mrOk;
 end;
 
 function DeleteFileInteractive(const Filename: string;

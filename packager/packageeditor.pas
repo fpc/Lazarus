@@ -40,7 +40,7 @@ uses
   IDEImagesIntf, MenuIntf, ExtCtrls, LazIDEIntf, ProjectIntf,
   CodeToolsStructs, FormEditingIntf, TreeFilterEdit, PackageIntf,
   IDEDialogs, IDEHelpIntf, IDEOptionsIntf, IDEProcs, LazarusIDEStrConsts,
-  IDEDefs, CompilerOptions, ComponentReg, EnvironmentOpts,
+  IDEDefs, CompilerOptions, ComponentReg, EnvironmentOpts, DialogProcs,
   PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor,
   MissingPkgFilesDlg, PackageSystem, CleanPkgDeps;
   
@@ -299,6 +299,7 @@ type
     function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
       out Item: TObject): boolean;
     function IsDirectoryNode(Node: TTreeNode): boolean;
+    function GetNodeFilename(Node: TTreeNode): string;
     procedure GetDirectorySummary(DirNode: TTreeNode;
         out FileCount, HasRegisterProcCount, AddToUsesPkgSectionCount: integer);
     procedure ExtendUnitIncPathForNewUnit(const AnUnitFilename,
@@ -787,9 +788,7 @@ begin
     DepCount, DirCount, TargetTVNode, TargetTVType)
   then begin
     ItemsTreeView.SetInsertMark(nil,tvimNone);
-    {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.ItemsTreeViewDragDrop failed']);
-    {$ENDIF}
+    ShowMessage('drop failed, dragover was wrong');
     exit;
   end;
 
@@ -810,35 +809,38 @@ begin
       if DepCount=0 then exit;
       // ToDo: drag dependencies
       {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.ItemsTreeViewDragDrop todo: drag dependencies']);
+      debugln(['TPackageEditorForm.ItemsTreeViewDragDrop: drag dependencies']);
       {$ENDIF}
+      ShowMessage('Not implemented yet: drag dependencies');
     end;
   end else if IsDirectoryNode(TargetTVNode) or (TargetTVNode=FFilesNode) then begin
+    Directory:=GetNodeFilename(TargetTVNode);
     if FileCount>0 then begin
       // drag files
       {$IFDEF VerbosePkgEditDrag}
       debugln(['TPackageEditorForm.ItemsTreeViewDragDrop drag files to ',LazPackage.Directory]);
       {$ENDIF}
-      Directory:=LazPackage.DirectoryExpanded;
       MoveFiles(SrcPkgEdit,Directory);
     end else if DirCount>0 then begin
       // drag directory
       {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.ItemsTreeViewDragDrop todo: drag directory']);
+      debugln(['TPackageEditorForm.ItemsTreeViewDragDrop: drag directory']);
       {$ENDIF}
-      MoveFiles(SrcPkgEdit,Directory);
+      ShowMessage('Not implemented yet: drag directory');
     end else begin
-      {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.ItemsTreeViewDragDrop failed: expected files or directory']);
-      {$ENDIF}
+      ShowMessage('I cannot drag that to a directory');
     end;
   end else if TargetTVNode=FRequiredPackagesNode then begin
     if DepCount=0 then exit;
     // ToDo: drag dependencies
     {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.ItemsTreeViewDragDrop todo: drag dependencies']);
+    debugln(['TPackageEditorForm.ItemsTreeViewDragDrop: drag dependencies']);
     {$ENDIF}
+    ShowMessage('Not implemented yet: drag dependencies');
   end;
+  {$IFDEF VerbosePkgEditDrag}
+  debugln(['TPackageEditorForm.ItemsTreeViewDragDrop END']);
+  {$ENDIF}
 end;
 
 procedure TPackageEditorForm.ItemsTreeViewDragOver(Sender, Source: TObject; X,
@@ -2666,6 +2668,19 @@ begin
   Result:=(Node<>nil) and (Node.Data=nil) and Node.HasAsParent(FFilesNode);
 end;
 
+function TPackageEditorForm.GetNodeFilename(Node: TTreeNode): string;
+var
+  Item: TFileNameItem;
+begin
+  Result:='';
+  if Node=nil then exit;
+  if Node=FFilesNode then
+    exit(LazPackage.DirectoryExpanded);
+  Item:=TFileNameItem(Node.Data);
+  if not (Item is TFileNameItem) then exit;
+  Result:=Item.Filename;
+end;
+
 procedure TPackageEditorForm.GetDirectorySummary(DirNode: TTreeNode; out
   FileCount, HasRegisterProcCount, AddToUsesPkgSectionCount: integer);
 
@@ -2815,6 +2830,7 @@ var
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
+  Directory: String;
 begin
   Result:=false;
   SrcPkgEdit:=nil;
@@ -2823,6 +2839,8 @@ begin
   aDirectoryCount:=0;
   TargetTVNode:=nil;
   TargetTVType:=tvimNone;
+
+  if LazPackage.ReadOnly then exit;
 
   if Source=ItemsTreeView then begin
     // move items within the package
@@ -2840,6 +2858,11 @@ begin
     //debugln(['TPackageEditorForm.ItemsTreeViewDragOver from another package editor: ',SrcPkgEdit.LazPackage.Name]);
   end else
     exit;
+
+  if SrcPkgEdit.LazPackage.ReadOnly then exit;
+  if (SrcPkgEdit<>Self) and (SrcPkgEdit.LazPackage.IsVirtual or LazPackage.IsVirtual)
+  then
+    exit; // no move between virtual packages
 
   // check items
   aFileCount:=0;
@@ -2905,6 +2928,13 @@ begin
       {$ENDIF}
     end;
   end else if IsDirectoryNode(TargetTVNode) or (TargetTVNode=FFilesNode) then begin
+    Directory:=GetNodeFilename(TargetTVNode);
+    if not FilenameIsAbsolute(Directory) then begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.CheckDrag: invalid target directory ',Directory]);
+      {$ENDIF}
+      exit;
+    end;
     if TargetTVNode=FFilesNode then
       TargetTVType:=tvimAsFirstChild;
     if aFileCount>0 then begin
@@ -2961,6 +2991,7 @@ var
   Item: TObject;
 begin
   Result:=false;
+  if not FilenameIsAbsolute(TargetDirectory) then exit;
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPackageEditorForm.MoveFiles Self=',LazPackage.Filename,' Src=',SrcPkgEdit.LazPackage.Filename,' Dir="',TargetDirectory,'"']);
   {$ENDIF}
@@ -2983,12 +3014,110 @@ end;
 
 function TPackageEditorForm.MoveFiles(SrcPkgEdit: TPackageEditorForm;
   PkgFiles: TFPList; TargetDirectory: string): boolean;
+var
+  i: Integer;
+  PkgFile: TPkgFile;
+  OldFilename: String;
+  NewFilename: String;
+  MoveFileCount: Integer;
+  NewFileToOldPkgFile: TFilenameToPointerTree;
+  SrcPackage: TLazPackage;
+  MsgResult: TModalResult;
+  DeleteOld: Boolean;
 begin
   Result:=false;
+  if PkgFiles.Count=0 then exit;
+  if not FilenameIsAbsolute(TargetDirectory) then exit;
+  TargetDirectory:=AppendPathDelim(TargetDirectory);
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPackageEditorForm.MoveFiles Self=',LazPackage.Filename,' Src=',SrcPkgEdit.LazPackage.Filename,' Dir="',TargetDirectory,'" FileCount=',PkgFiles.Count]);
   {$ENDIF}
+  SrcPackage:=SrcPkgEdit.LazPackage;
 
+  NewFileToOldPkgFile:=nil;
+  try
+    // check TargetDirectory
+    if CheckDirectoryIsWritable(TargetDirectory)<>mrOk then exit;
+
+    // check files
+    MoveFileCount:=0;
+    NewFileToOldPkgFile:=TFilenameToPointerTree.Create(false);
+    for i:=0 to PkgFiles.Count-1 do begin
+      PkgFile:=TPkgFile(PkgFiles[i]);
+      OldFilename:=PkgFile.GetFullFilename;
+      NewFilename:=TargetDirectory+ExtractFilename(OldFilename);
+
+      // check if two copied/moved files will get the same new file name
+      if NewFileToOldPkgFile.Contains(NewFilename) then begin
+        IDEMessageDialog('Conflict detected',
+          'Two moved files will have the same file name:'#13
+          +PkgFile.Filename+#13
+          +TPkgFile(NewFileToOldPkgFile[NewFilename]).Filename+#13
+          +'in package '+LazPackage.Name,mtError,[mbCancel]);
+        exit;
+      end;
+      NewFileToOldPkgFile[NewFilename]:=PkgFile;
+
+      if CompareFilenames(NewFilename,OldFilename)<>0 then begin
+        // file be copied/moved to another directory
+        inc(MoveFileCount);
+        // check if new position is free
+        if FileExistsCached(NewFilename) then begin
+          IDEMessageDialog('Conflict detected',
+            'There is already a file'#13
+            +NewFilename+#13
+            +'in package '+LazPackage.Name,mtError,[mbCancel]);
+          exit;
+        end;
+      end;
+    end;
+
+    if (MoveFileCount=0) and (LazPackage=SrcPackage) then begin
+      // change order in package
+      // ToDo: check this case in ItemsTreeViewDragDrop
+      IDEMessageDialog('Not implemented yet',
+        'Changing order via drag and drop is not yet implemented.',
+        mtInformation,[mbOk]);
+      exit;
+    end;
+
+    // ask for confirmation
+    if PkgFiles.Count=MoveFileCount then begin
+      MsgResult:=IDEQuestionDialog('Move or Copy files?',
+        'Move or copy '+IntToStr(MoveFileCount)+' file(s) from package '+SrcPackage.Name+' to the directory'#13
+        +TargetDirectory+#13
+        +'of package '+LazPackage.Name+'.',
+        mtConfirmation,[100,'Move',101,'Copy',mrCancel]);
+      case MsgResult of
+      100: DeleteOld:=true;
+      101: DeleteOld:=false;
+      else exit;
+      end;
+    end else begin
+      if IDEMessageDialog('Move files?',
+        'Move '+IntToStr(MoveFileCount)+' file(s) from package '+SrcPackage.Name+' to the directory'#13
+        +TargetDirectory+#13
+        +'of package '+LazPackage.Name+'.',
+        mtConfirmation,[mbOk,mbCancel])<>mrOK
+      then exit;
+      DeleteOld:=true;
+    end;
+
+    if DeleteOld then begin
+      // close files in source editor
+
+    end;
+
+    ShowMessage('Moving files is not yet implemented');
+
+    // move/copy file
+    // move/copy secondary files (lfm,lrs)
+    // move/copy TPkgFile, make uses-unit unique
+    // if another pkg: clear output dir of SrcPkg
+    // clean up unit/inlude path of SrcPkg
+  finally
+    NewFileToOldPkgFile.Free;
+  end;
 end;
 
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);
