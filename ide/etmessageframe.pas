@@ -3494,8 +3494,9 @@ begin
       end;
     end;
   end;
-  if BestMark<>nil then
-    IDEQuickFixes.AddMsgLine(BestMark.MsgLine);
+  if BestMark=nil then
+    exit;
+  IDEQuickFixes.AddMsgLine(BestMark.MsgLine);
   // create items
   if IDEQuickFixes.Count>0 then begin
     IDEQuickFixes.OnPopupMenu(SrcEditMenuSectionFirstDynamic);
