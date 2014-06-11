@@ -51,7 +51,11 @@ uses
   FileProcs, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache,
   // IDE Interface
   SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf, CompOptsIntf,
-  MenuIntf, IDEWindowIntf, PropEdits, MacroIntf, LazIDEIntf,
+  MenuIntf, IDEWindowIntf,
+  {$IFNDEF EnableOldExtTools}
+  IDEExternToolIntf,
+  {$ENDIF}
+  PropEdits, MacroIntf, LazIDEIntf, IDEMsgIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
   IDEOptionDefs, EnvironmentOpts, MiscOptions, InputHistory,
@@ -205,14 +209,8 @@ type
     function GetPublishPackageDir(APackage: TLazPackage): string;
     function OnRenameFile(const OldFilename, NewFilename: string;
                           IsPartOfProject: boolean): TModalResult; override;
-    function FindIncludeFileInProjectDependencies(Project1: TProject;
+    function FindIncludeFileInProjectDependencies(aProject: TProject;
                           const Filename: string): string; override;
-    function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
-                         ComponentClassnames: TStrings;
-                         Quiet: boolean = false): TModalResult; override;
-    function GetMissingDependenciesForUnit(const UnitFilename: string;
-                         ComponentClassnames: TStrings;
-                         var List: TObjectArray): TModalResult;
     function GetOwnersOfUnit(const UnitFilename: string): TFPList; override;
     procedure ExtendOwnerListWithUsedByOwners(OwnerList: TFPList); override;
     function GetSourceFilesOfOwners(OwnerList: TFPList): TStrings; override;
@@ -220,21 +218,19 @@ type
                                      Flags: TPkgIntfOwnerSearchFlags): TFPList; override;
     function GetPackageOfCurrentSourceEditor(out APackage: TIDEPackage): TPkgFile;
     function GetPackageOfSourceEditor(out APackage: TIDEPackage; ASrcEdit: TObject): TLazPackageFile; override;
-    function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function FindVirtualUnitSource(PkgFile: TPkgFile): string;
     function SearchFile(const AFilename: string;
                         SearchFlags: TSearchIDEFileFlags;
                         InObject: TObject): TPkgFile; override;
     function SearchUnitInDesigntimePackages(const AnUnitName: string;
                         InObject: TObject): TPkgFile; override;
-    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); override;
-    function RevertPackages(APackageList: TStringList): TModalResult; override;
 
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
     procedure DoShowPackageGraph(Show: boolean);
     procedure DoShowPackageGraphPathList(PathList: TFPList); override;
     function ShowBrokenDependenciesReport(Dependencies: TFPList): TModalResult;
+    function CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions): TModalResult; override;
     procedure RebuildDefineTemplates; override;
     procedure LazarusSrcDirChanged; override;
     function GetPackageCount: integer; override;
@@ -249,6 +245,8 @@ type
     function AddDependencyToUnitOwners(const OwnedFilename,
                               RequiredUnitname: string): TModalResult; override;
     function RedirectPackageDependency(APackage: TIDEPackage): TIDEPackage; override;
+    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); override;
+    function RevertPackages(APackageList: TStringList): TModalResult; override;
 
     // project
     function OpenProjectDependencies(AProject: TProject;
@@ -275,6 +273,7 @@ type
                            ADependency: TPkgDependency): TModalResult; override;
 
     // package editors
+    function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
     function DoNewPackage: TModalResult; override;
     function DoShowOpenInstalledPckDlg: TModalResult; override;
     function DoOpenPackage(APackage: TLazPackage; Flags: TPkgOpenFlags;
@@ -329,6 +328,12 @@ type
                               ShowDialog: boolean): TModalResult;
                               
     // components
+    function AddUnitDependenciesForComponentClasses(const UnitFilename: string;
+                         ComponentClassnames: TStrings;
+                         Quiet: boolean = false): TModalResult; override;
+    function GetMissingDependenciesForUnit(const UnitFilename: string;
+                         ComponentClassnames: TStrings;
+                         var List: TObjectArray): TModalResult;
     function GetUsableComponentUnits(CurRoot: TPersistent): TFPList; override; // list of TUnitInfo
     procedure IterateComponentNames(CurRoot: TPersistent; TypeData: PTypeData;
                                     Proc: TGetStrProc); override;
@@ -1280,14 +1285,17 @@ var
   ConflictPkg: TLazPackage;
   s: String;
   Btns: TMsgDlgButtons;
+  PkgList: TFPList;
+  i: Integer;
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TPkgManager.CheckPackageGraphForCompilation A');
   {$ENDIF}
-  PathList:=nil;
   if ShowAbort
   then Btns := [mbCancel] // will be replaced to Ignore
   else Btns := [mbOK];
+  PathList:=nil;
+  PkgList:=nil;
   try
     // check for unsaved packages
     PathList:=PackageGraph.FindUnsavedDependencyPath(APackage,FirstDependency);
@@ -1337,6 +1345,16 @@ begin
       if not ShowAbort then
         Result := mrCancel; // User confirmed error, implicitly cancel the action
       exit;
+    end;
+
+    // check for all used package with wrong
+    PackageGraph.GetAllRequiredPackages(APackage,FirstDependency,PkgList);
+    if (PkgList<>nil) then begin
+      for i:=0 to PkgList.Count-1 do begin
+        Result:=CheckUserSearchPaths(TLazPackage(PkgList[i]).CompilerOptions);
+        if Result<>mrOk then
+          exit(mrCancel);
+      end;
     end;
 
     // check for a package that compiles to the default FPC search path
@@ -1399,6 +1417,7 @@ begin
     end;
 
   finally
+    PkgList.Free;
     PathList.Free;
   end;
   
@@ -2525,6 +2544,154 @@ begin
   Result:=IDEMessageDialog(lisMissingPackages, Msg, mtError, [mbOk]);
 end;
 
+function TPkgManager.CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions
+  ): TModalResult;
+{$IFDEF EnableOldExtTools}
+begin
+  Result:=mrOk;
+end;
+{$ELSE}
+var
+  aPackage: TLazPackage;
+  aProject: TProject;
+  CurUnitPath: String;
+  CurIncPath: String;
+  CurOutPath: String;
+  SrcDirToPkg: TFilenameToPointerTree;
+
+  function CheckPathContainsDirOfOtherPkg(Option: TParsedCompilerOptString
+    ): TModalResult;
+  var
+    aSearchPath: String;
+    p: Integer;
+    Dir: String;
+    OtherPackage: TLazPackage;
+    aType: String;
+    s: String;
+  begin
+    Result:=mrOk;
+    if Option=pcosIncludePath then begin
+      aType:='include';
+      aSearchPath:=CurIncPath
+    end else begin
+      aType:='unit';
+      aSearchPath:=CurUnitPath;
+    end;
+    p:=1;
+    repeat
+      Dir:=GetNextDirectoryInSearchPath(aSearchPath,p);
+      if Dir='' then break;
+      Dir:=ChompPathDelim(Dir);
+      if not FilenameIsAbsolute(Dir) then continue;
+      OtherPackage:=TLazPackage(SrcDirToPkg[Dir]);
+      if (OtherPackage<>nil) and (OtherPackage<>aPackage) then begin
+        // search path contains source directory of another package
+        if Option=pcosIncludePath then;
+        s:=aType+' path of '+aCompilerOptions.GetOwnerName+' contains "'+Dir+'", which belongs to package '+OtherPackage.Name;
+        debugln(['TPkgManager.CheckUserSearchPaths WARNING: ',s]);
+        { ToDo: find out
+           - which path it is in the unparsed path
+           - if there is already the dependency
+           - if the dependency can be added
+           and ask the user to delete the path and to add the dependency
+
+           if the user has already answered this question in the past, just warn }
+        // warn user
+        IDEMessagesWindow.AddCustomMessage(mluWarning,s);
+        exit;
+      end;
+    until false;
+  end;
+
+  function CheckOutPathContainsSources: TModalResult;
+  var
+    Files: TStrings;
+    i: Integer;
+    aFilename: String;
+    s: String;
+  begin
+    Result:=mrOk;
+    if aPackage=nil then exit;
+    if not FilenameIsAbsolute(CurOutPath) then exit;
+    Files:=nil;
+    CodeToolBoss.DirectoryCachePool.GetListing(CurOutPath,Files,false);
+    try
+      for i:=0 to Files.Count-1 do begin
+        aFilename:=Files[i];
+        if FilenameIsPascalUnit(aFilename) then begin
+          // warning: packages output path contain unit source
+          s:='output directory of '+aCompilerOptions.GetOwnerName+' contains Pascal unit source "'+aFilename+'"';
+          debugln(['CheckOutPathContainsSources WARNING: ',s]);
+          { ToDo: if the OutPath is not the default: ask user and change it }
+          IDEMessagesWindow.AddCustomMessage(mluWarning,s);
+          exit;
+        end;
+      end;
+    finally
+      Files.Free;
+    end;
+  end;
+
+  function CheckSrcPathIsInUnitPath: TModalResult;
+  // warn: SrcPath should not contain directories of UnitPath
+  var
+    p: Integer;
+    UnparsedUnitPath: String;
+    UnparsedSrcPath: String;
+    Dir: String;
+    s: String;
+  begin
+    Result:=mrOk;
+    UnparsedUnitPath:=aCompilerOptions.OtherUnitFiles;
+    UnparsedSrcPath:=aCompilerOptions.SrcPath;
+    p:=1;
+    repeat
+      Dir:=GetNextDirectoryInSearchPath(UnparsedSrcPath,p);
+      if Dir='' then exit;
+      if SearchDirectoryInSearchPath(UnparsedUnitPath,Dir)>0 then begin
+        s:='other sources path of '+aCompilerOptions.GetOwnerName+' contains directory "'+Dir+'", which is already in the unit search path.';
+        debugln(['CheckSrcPathIsInUnitPath WARNING: ',s]);
+        { ToDo: ask user and remove dir from unit path }
+        IDEMessagesWindow.AddCustomMessage(mluWarning,s);
+        exit;
+      end;
+    until false;
+  end;
+
+begin
+  Result:=mrOk;
+  if aCompilerOptions.CompilerPath='' then exit; // not a normal Pascal project
+
+  aPackage:=nil;
+  aProject:=nil;
+  if aCompilerOptions.Owner is TLazPackage then
+    aPackage:=TLazPackage(aCompilerOptions.Owner)
+  else if aCompilerOptions.Owner is TProject then
+    aProject:=TProject(aCompilerOptions.Owner);
+  if (aPackage=nil) and (aProject=nil) then exit;
+
+  CurUnitPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
+  CurIncPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
+  CurOutPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
+  //debugln(['TPkgManager.CheckUserSearchPaths UnitPath="',CurUnitPath,'" IncPath="',CurIncPath,'" SrcPath="',CurSrcPath,'" OutPath="',CurOutPath,'"']);
+
+  // create mapping source-directory to package
+  SrcDirToPkg:=PackageGraph.GetMapSourceDirectoryToPackage;
+  try
+    Result:=CheckPathContainsDirOfOtherPkg(pcosUnitPath);
+    if Result<>mrOk then exit;
+
+    Result:=CheckOutPathContainsSources;
+    if Result<>mrOk then exit;
+
+    Result:=CheckSrcPathIsInUnitPath;
+    if Result<>mrOk then exit;
+  finally
+    SrcDirToPkg.Free;
+  end;
+end;
+{$ENDIF}
+
 procedure TPkgManager.RebuildDefineTemplates;
 begin
   PackageGraph.RebuildDefineTemplates;
@@ -2716,7 +2883,12 @@ begin
     Result:=MainIDE.DoSaveForBuild(crCompile);
     if Result<>mrOk then exit;
   end;
-  
+
+  // check user search paths
+  Result:=CheckUserSearchPaths(APackage.CompilerOptions);
+  if Result<>mrOk then exit;
+
+  // compile
   Result:=PackageGraph.CompilePackage(APackage,Flags,false);
 end;
 
@@ -2765,7 +2937,7 @@ end;
     
   Search filename in the include paths of all required packages
 ------------------------------------------------------------------------------}
-function TPkgManager.FindIncludeFileInProjectDependencies(Project1: TProject;
+function TPkgManager.FindIncludeFileInProjectDependencies(aProject: TProject;
   const Filename: string): string;
 var
   APackage: TLazPackage;
@@ -2779,7 +2951,7 @@ begin
     exit;
   end;
   PkgList:=nil;
-  PackageGraph.GetAllRequiredPackages(nil,Project1.FirstRequiredDependency,
+  PackageGraph.GetAllRequiredPackages(nil,aProject.FirstRequiredDependency,
     PkgList,[pirCompileOrder]);
   if PkgList=nil then exit;
   try

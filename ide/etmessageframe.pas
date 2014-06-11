@@ -2750,7 +2750,7 @@ begin
     begin
       MsgAboutToolMenuItem.Caption:=Format(lisAbout2, [View.Caption]);
       MsgAboutSection.Visible:=true;
-      if View.Tool.Data is TIDEExternalToolData then begin
+      if (View.Tool<>nil) and (View.Tool.Data is TIDEExternalToolData) then begin
         ToolData:=TIDEExternalToolData(View.Tool.Data);
         if ToolData.Kind=IDEToolCompilePackage then
           ToolOptionsCaption:=Format(lisCPOpenPackage, [ToolData.ModuleName]);
@@ -2855,7 +2855,7 @@ var
   ToolData: TIDEExternalToolData;
 begin
   View:=GetAboutView;
-  if View=nil then exit;
+  if (View=nil) or (View.Tool=nil) then exit;
   ToolData:=TIDEExternalToolData(View.Tool.Data);
   if not (ToolData is TIDEExternalToolData) then exit;
   if ToolData.Kind=IDEToolCompilePackage then begin

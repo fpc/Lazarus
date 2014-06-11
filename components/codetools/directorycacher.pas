@@ -189,7 +189,7 @@ type
     procedure UpdateListing;
     procedure WriteListing;
     procedure Invalidate; inline;
-    procedure GetFiles(var Files: TStrings; IncludeDirs: boolean = true);
+    procedure GetFiles(var Files: TStrings; IncludeDirs: boolean = true); // relative to Directory
   public
     property Directory: string read FDirectory;
     property RefCount: integer read FRefCount;
@@ -228,7 +228,7 @@ type
     destructor Destroy; override;
     procedure CalcMemSize(Stats: TCTMemStats);
     procedure GetListing(const aDirectory: string; var Files: TStrings;
-                         IncludeDirs: boolean = true);
+                         IncludeDirs: boolean = true); // relative to Directory
     function GetCache(const Directory: string;
                       CreateIfNotExists: boolean = true;
                       DoReference: boolean = true): TCTDirectoryCache;

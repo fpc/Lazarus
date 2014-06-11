@@ -46,7 +46,7 @@ uses
   TypInfo, Classes, SysUtils, Forms, FileUtil, LCLProc,
   LazIDEIntf, PackageIntf, MenuIntf,
   LazarusIDEStrConsts, EnvironmentOpts,
-  PackageDefs, PackageSystem, ComponentReg, Project;
+  CompilerOptions, PackageDefs, PackageSystem, ComponentReg, Project;
 
 type
   { TBasePkgManager }
@@ -80,9 +80,6 @@ type
                                 InObject: TObject): TPkgFile; virtual; abstract;
     function AddDependencyToUnitOwners(const OwnedFilename,
                      RequiredUnitname: string): TModalResult; virtual; abstract;
-    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); virtual; abstract;
-    function RevertPackages(APackageList: TStringList // list of TLazPackage and alternative lpk file name
-        ): TModalResult; virtual; abstract;
 
     // project
     function OpenProjectDependencies(AProject: TProject;
@@ -121,6 +118,10 @@ type
     procedure OpenHiddenModifiedPackages; virtual; abstract;
 
     // package graph
+    procedure GetPackagesChangedOnDisk(out ListOfPackages: TStringList); virtual; abstract;
+    function RevertPackages(APackageList: TStringList // list of TLazPackage and alternative lpk file name
+        ): TModalResult; virtual; abstract;
+    function CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions): TModalResult; virtual; abstract;
     procedure DoShowPackageGraphPathList(PathList: TFPList); virtual; abstract;
     procedure RebuildDefineTemplates; virtual; abstract;
     procedure LazarusSrcDirChanged; virtual; abstract;

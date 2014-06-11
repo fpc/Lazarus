@@ -6622,6 +6622,15 @@ begin
 
   // show messages
   IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
+
+  // clear old error lines
+  SourceEditorManager.ClearErrorLines;
+  SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
+
+  // check common mistakes in search paths
+  Result:=PkgBoss.CheckUserSearchPaths(Project1.CompilerOptions);
+  if Result<>mrOk then exit;
+
   {$IFDEF EnableOldExtTools}
   MessagesView.BeginBlock;
   {$ENDIF}
@@ -6647,10 +6656,6 @@ begin
     {$IFDEF EnableOldExtTools}
     CompileProgress.CreateDialog(OwningComponent, Project1.MainFilename, lisInfoBuildCompile);
     {$ENDIF}
-
-    // clear old error lines
-    SourceEditorManager.ClearErrorLines;
-    SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
 
     // now building can start: call handler
     Result:=DoCallModalFunctionHandler(lihtProjectBuilding);
