@@ -313,6 +313,8 @@ type
       ): boolean;
     function MoveFiles(SrcPkgEdit: TPackageEditorForm;
       TargetDirectory: string): boolean;
+    function MoveFiles(SrcPkgEdit: TPackageEditorForm; PkgFiles: TFPList;
+      TargetDirectory: string): boolean;
   protected
     fFlags: TPEFlags;
     fLastDlgPage: TAddToPkgType;
@@ -2967,11 +2969,26 @@ begin
     for i:=0 to SrcPkgEdit.ItemsTreeView.SelectionCount-1 do begin
       TVNode:=SrcPkgEdit.ItemsTreeView.Selections[i];
       if not GetNodeDataItem(TVNode, NodeData, Item) then continue;
-
+      if NodeData.Removed then continue;
+      if not (Item is TPkgFile) then continue;
+      Files.Add(Item);
     end;
+    if Files.Count=0 then exit(true);
+
+    Result:=MoveFiles(SrcPkgEdit,Files,TargetDirectory);
   finally
     Files.Free;
   end;
+end;
+
+function TPackageEditorForm.MoveFiles(SrcPkgEdit: TPackageEditorForm;
+  PkgFiles: TFPList; TargetDirectory: string): boolean;
+begin
+  Result:=false;
+  {$IFDEF VerbosePkgEditDrag}
+  debugln(['TPackageEditorForm.MoveFiles Self=',LazPackage.Filename,' Src=',SrcPkgEdit.LazPackage.Filename,' Dir="',TargetDirectory,'" FileCount=',PkgFiles.Count]);
+  {$ENDIF}
+
 end;
 
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);
