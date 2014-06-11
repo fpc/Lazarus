@@ -1018,6 +1018,8 @@ begin
   
   SetToCurPage;
   PaintAllowed := True;
+  LastScale := per;
+  LastScaleMode := mode;
 end;
 
 procedure TfrPreviewForm.BtZoomOutClick(Sender: TObject);
@@ -1030,8 +1032,6 @@ begin
     per := (LastScale - 0.1);
     HScrollBar.Position := 0;
     FormResize(nil);
-    LastScale := per;
-    LastScaleMode := mode;
     PBox.Repaint;
   end;
 end;
@@ -1046,8 +1046,6 @@ begin
     per := (LastScale + 0.1);
     HScrollBar.Position := 0;
     FormResize(nil);
-    LastScale := per;
-    LastScaleMode := mode;
     PBox.Repaint;
   end;
 end;
@@ -1260,8 +1258,6 @@ begin
   end;
   HScrollBar.Position := 0;
   FormResize(nil);
-  LastScale := per;
-  LastScaleMode := mode;
   PBox.Repaint;
 end;
 
