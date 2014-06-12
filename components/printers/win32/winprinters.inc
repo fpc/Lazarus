@@ -565,6 +565,7 @@ begin
               if UseUnicode then
               begin
                 PDev.Device := UTF8Encode(widestring(TmpDevModeW^.dmDeviceName));
+                PDev.DefaultPaperName := UTF8Encode(widestring(TmpDevModeW^.dmFormName));
                 PDev.DefaultPaper := TmpDevModeW^.dmPaperSize;
                 PDev.DefaultBin   := TmpDevModeW^.dmDefaultSource;
               end
@@ -575,6 +576,7 @@ begin
                 {$ELSE}
                 PDev.Device := PChar(PByte(TmpDevModeA^.dmDeviceName));
                 {$ENDIF}
+                PDev.DefaultPaperName := StrPas(TmpDevModeA^.dmFormName);
                 PDev.DefaultPaper := TmpDevModeA^.dmPaperSize;
                 PDev.DefaultBin   := TmpDevModeA^.dmDefaultSource;
               end;
@@ -722,24 +724,41 @@ var
   i    : Integer;
   dmW  : PDeviceModeW;
   dmA  : PDeviceModeA;
+  Paper: PtrInt;
+  Lst  : TStrings;
 begin
+  Paper :=-1;
   Result:=inherited DoGetPaperName;
-  if UseUnicode then
+  Lst := PaperSize.SupportedPapers;
+
+  if UseUnicode and GetCurrentDevModeW(dmW) then
+    Paper := dmW^.dmPaperSize
+  else
+  if not UseUnicode and GetCurrentDevModeA(dmA) then
+    Paper := dmA^.dmPaperSize;
+
+  if Paper<>-1 then
   begin
-    if GetCurrentDevModeW(dmW) then
-      with PaperSize.SupportedPapers do begin
-        i := IndexOfObject(TObject(ptrInt(dmW^.dmPaperSize)));
+    i := Lst.IndexOfObject(TObject(Paper));
         if i>=0 then
-          result := PaperSize.SupportedPapers[i];
-      end;
-  end
+      result := lst[i]
   else
   begin
-    if GetCurrentDevModeA(dmA) then
-      with PaperSize.SupportedPapers do begin
-        i := IndexOfObject(TObject(ptrInt(dmA^.dmPaperSize)));
-        if i>=0 then
-          result := PaperSize.SupportedPapers[i];
+      // Weird, selected paper code (size) do not agree with previouly
+      // retrieved paper sizes.
+      //
+      // NOTE.
+      // This problem was observed while trying to print on a just installed CutePDF
+      // printer in Win 7. Once Printer properties dialog were 'navigated' (no
+      // changes were needed) in ctrl panel/devices and printers/CutePDF printer
+      // it started to work normally.
+      if UseUnicode then
+        result :=  UTF8Encode(Widestring(dmW^.dmFormName))
+      else
+        result := StrPas(dmA^.dmFormName);
+      i := Lst.IndexOf(result);
+      if i<0 then
+        result := lst[0];
       end;
   end;
 end;
@@ -756,7 +775,14 @@ begin
     with PaperSize.SupportedPapers do begin
       i:=IndexOfObject(TObject(ptrint(PDev.DefaultPaper)));
       if i<>-1 then
-        Result:= Strings[i];
+        Result:= Strings[i]
+      else
+      begin
+        // See note on doGetPaperName
+        i := IndexOf(PDev.DefaultPaperName);
+        if i<0 then
+          Result := Strings[0];
+      end;
     end;
   end;
 end;

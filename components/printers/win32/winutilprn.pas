@@ -205,7 +205,7 @@ type
     Driver: string;
     Device: string;
     Port: string;
-
+    DefaultPaperName: string;
     DefaultPaper: Short;
     DefaultBin: short;
     DevModeW: PDeviceModeW;
