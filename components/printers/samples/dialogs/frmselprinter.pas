@@ -19,14 +19,14 @@ interface
 
 uses
   Classes, SysUtils, Types, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  PrintersDlgs, StdCtrls, Grids, Menus, EditBtn;
+  PrintersDlgs, StdCtrls, Grids, Menus, EditBtn, ExtCtrls;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
-    Button1: TButton;
+    btnTPrintDialog: TButton;
     Button2: TButton;
     Button3: TButton;
     btnDirectPrint: TButton;
@@ -38,6 +38,8 @@ type
     btnPrintWithDlg: TButton;
     chkOutputFile: TCheckBox;
     chkTestImgs: TCheckBox;
+    comboTests: TComboBox;
+    Label5: TLabel;
     txtPageSetupDlgTitle: TEdit;
     txtPrinterSetupDlgTitle: TEdit;
     txtPrintDialogTitle: TEdit;
@@ -52,7 +54,7 @@ type
     PSD: TPrinterSetupDialog;
     SGrid: TStringGrid;
     procedure btnPrintWithDlgClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure btnTPrintDialogClick(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure btnDirectPrintClick(Sender: TObject);
@@ -75,8 +77,10 @@ type
     function Per(AValue: Double; VertRes:boolean=true): Integer;
     procedure CenterText(const X,Y: Integer; const AText: string);
     function FormatDots(Dots: Integer):string;
-    procedure PrintSamplePage;
+    procedure PrintSamplePage(PrintImgs:boolean);
+    procedure PrintMultiPage;
     procedure doPrintDialog(withSample: boolean);
+    procedure PrintTest;
   public
   
     { public declarations }
@@ -163,7 +167,7 @@ begin
   result := format('%d dots (%f mm, %f in)',[Dots, Dots*25.4/Printer.YDPI, Dots/Printer.YDPI]);
 end;
 
-procedure TForm1.PrintSamplePage;
+procedure TForm1.PrintSamplePage(PrintImgs: boolean);
 var
   Pic: TPicture;
   d, pgw,pgh: Integer;
@@ -212,7 +216,7 @@ begin
     Printer.Canvas.Line(pgw,0,pgw,HIn);
 
     // Image test
-    if chkTestImgs.Checked then
+    if PrintImgs then
     begin
       Pic := TPicture.Create;
       Pic.LoadFromFile('../../../../images/splash_logo.png');
@@ -221,6 +225,59 @@ begin
       // left 3 mm at the right and do it again but using 2 inch tall image
       DrawGraphic(CM(1.5+7)+MM(3), CM(1.5), 0, Inch(2), Pic.Graphic);
       Pic.Free;
+    end;
+
+    Printer.EndDoc;
+
+  except
+    on E:Exception do
+    begin
+      Printer.Abort;
+      Application.MessageBox(pChar(e.message),'Error',mb_iconhand);
+    end;
+  end;
+
+  UpdatePrinterInfo;
+end;
+
+procedure TForm1.PrintMultiPage;
+const
+  PAGE_COUNT = 2;
+  ColorArray: array[1..PAGE_COUNT] of TColor = (clAqua, clLime);
+var
+  pgw, pgh, Hin, Page: Integer;
+  R: TRect;
+  te: TTextStyle;
+begin
+  try
+    Printer.Title := 'Multipage Sample';
+
+    if chkOutputFile.Checked then
+      Printer.FileName := txtOutputFile.FileName
+    else
+      Printer.FileName := '';
+
+    Printer.BeginDoc;
+
+    // some often used consts
+    pgw := Printer.PageWidth-1;
+    pgh := Printer.PageHeight-1;
+    Hin := Inch(0.5);
+
+    Te := Printer.Canvas.TextStyle;
+    Te.Alignment := taCenter;
+    Te.Layout := tlCenter;
+
+    Printer.Canvas.Font.Size:=20;
+
+    for Page:=1 to PAGE_COUNT do begin
+      Printer.Canvas.Pen.Color := clBlack;
+      Printer.Canvas.Brush.Color := ColorArray[Page];
+      R := Rect(0, 0, 3*Hin, Hin);
+      Printer.Canvas.Rectangle(R);
+      Printer.canvas.TextRect(R, R.Left, R.Top, format('Page %d',[Page]), Te);
+      if Page<>PAGE_COUNT then
+        Printer.NewPage;
     end;
 
     Printer.EndDoc;
@@ -315,8 +372,7 @@ end;
 
 procedure TForm1.btnDirectPrintClick(Sender: TObject);
 begin
-  PrintSamplePage;
-  UpdatePrinterInfo;
+  PrintTest;
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
@@ -400,7 +456,7 @@ var
 begin
   rowCount := SGrid.RowCount;
   if SGrid.FixedRows=1 then
-    SGrid.RowHeights[0] := Button1.Height;
+    SGrid.RowHeights[0] := btnTPrintDialog.Height;
   UpdatePrinterInfo;
 end;
 
@@ -415,6 +471,7 @@ var
  s,x : String;
 begin
   PD.Title := txtPrintDialogTitle.Text;
+  PD.PrintToFile := false;
   if PD.Execute then
   begin
     UpdatePrinterInfo;
@@ -424,7 +481,7 @@ begin
     if PD.PrintRange=prSelection then x :='Selection,';
     if PD.PrintToFile then x := x + ' ,PrintToFile,';
     if withSample then
-      PrintSamplePage
+      PrintTest
     else begin
       s := Format(x + ' From : %d to %d,Copies:%d',[PD.FromPage,PD.ToPage,PD.Copies]);
       Application.MessageBox(pChar(s),'Info',mb_iconinformation);
@@ -432,7 +489,19 @@ begin
   end;
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.PrintTest;
+begin
+  case comboTests.ItemIndex of
+    1:
+      PrintSamplePage(true);
+    2:
+      PrintMultiPage;
+    else
+      PrintSamplePage(false);
+  end;
+end;
+
+procedure TForm1.btnTPrintDialogClick(Sender: TObject);
 begin
   doPrintDialog(false);
 end;
