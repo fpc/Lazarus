@@ -3024,6 +3024,7 @@ var
   SrcPackage: TLazPackage;
   MsgResult: TModalResult;
   DeleteOld: Boolean;
+  ChangedFilenames: TFilenameToStringTree; // old to new file name
 begin
   Result:=false;
   if PkgFiles.Count=0 then exit;
@@ -3034,14 +3035,16 @@ begin
   {$ENDIF}
   SrcPackage:=SrcPkgEdit.LazPackage;
 
-  NewFileToOldPkgFile:=nil;
-  try
-    // check TargetDirectory
-    if CheckDirectoryIsWritable(TargetDirectory)<>mrOk then exit;
+  // check TargetDirectory
+  if CheckDirectoryIsWritable(TargetDirectory)<>mrOk then exit;
 
+  NewFileToOldPkgFile:=nil;
+  ChangedFilenames:=nil;
+  try
     // check files
     MoveFileCount:=0;
     NewFileToOldPkgFile:=TFilenameToPointerTree.Create(false);
+    ChangedFilenames:=TFilenameToStringTree.Create(false);
     for i:=0 to PkgFiles.Count-1 do begin
       PkgFile:=TPkgFile(PkgFiles[i]);
       OldFilename:=PkgFile.GetFullFilename;
@@ -3069,6 +3072,9 @@ begin
             +'in package '+LazPackage.Name,mtError,[mbCancel]);
           exit;
         end;
+
+        ChangedFilenames[OldFilename]:=NewFilename;
+
       end;
     end;
 
@@ -3116,6 +3122,7 @@ begin
     // if another pkg: clear output dir of SrcPkg
     // clean up unit/inlude path of SrcPkg
   finally
+    ChangedFilenames.Free;
     NewFileToOldPkgFile.Free;
   end;
 end;

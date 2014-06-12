@@ -63,7 +63,7 @@ end;
 
 function GetUnitResourcefileFormats: TUnitResourcefileFormatArr;
 begin
-  result := GUnitResourcefileFormats;
+  Result := GUnitResourcefileFormats;
 end;
 
 end.

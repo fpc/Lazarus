@@ -31,9 +31,12 @@ interface
 
 uses
   Classes, SysUtils,
-  LCLMemManager,
-  Forms,
-  UnitResources, LazFileCache;
+  // packages
+  LCLMemManager, LResources, Forms, CodeCache, CodeToolManager,
+  // IDEIntf
+  UnitResources, LazFileCache, LazFileUtils, AvgLvlTree,
+  // IDE
+  CheckLFMDlg;
 
 type
 
@@ -56,11 +59,50 @@ type
 
 implementation
 
-uses
-  LResources,
-  CodeCache,
-  CodeToolManager,
-  CheckLFMDlg;
+type
+  TLFMUnitResCacheItem = class
+  public
+    UnitFilename: string;
+    CodeBufStamp: integer;
+    ResourceDirective: string; // '*.lfm' or '*.dfm'
+  end;
+
+var
+  LFMUnitResCache: TAvgLvlTree;
+
+function CompareLFMUnitResCacheItems(Cache1, Cache2: Pointer): integer;
+var
+  Unit1: TLFMUnitResCacheItem absolute Cache1;
+  Unit2: TLFMUnitResCacheItem absolute Cache2;
+begin
+  Result:=CompareFilenames(Unit1.UnitFilename,Unit2.UnitFilename);
+end;
+
+function CompareFilenameWithLFMUnitResCacheItem(aFilename, aCache: Pointer
+  ): integer;
+var
+  Unit1Filename: String;
+  Unit2: TLFMUnitResCacheItem absolute aCache;
+begin
+  Unit1Filename:=AnsiString(aFilename);
+  Result:=CompareFilenames(Unit1Filename,Unit2.UnitFilename);
+end;
+
+function GetLFMUnitResCache(UnitFilename: string; AutoCreate: boolean
+  ): TLFMUnitResCacheItem;
+var
+  Node: TAvgLvlTreeNode;
+begin
+  Node:=LFMUnitResCache.FindKey(Pointer(UnitFilename),@CompareFilenameWithLFMUnitResCacheItem);
+  if Node<>nil then begin
+    Result:=TLFMUnitResCacheItem(Node.Data);
+  end else if AutoCreate then begin
+    Result:=TLFMUnitResCacheItem.Create;
+    Result.UnitFilename:=UnitFilename;
+    LFMUnitResCache.Add(Result);
+  end else
+    Result:=nil;
+end;
 
 { TLFMUnitResourcefileFormat }
 
@@ -69,13 +111,24 @@ var
   NewCode: TCodeBuffer;
   NewX,NewY,NewTopLine: integer;
   CodeBuf: TCodeBuffer;
+  Cache: TLFMUnitResCacheItem;
 begin
   CodeBuf:=Source as TCodeBuffer;
-  Result := CodeToolBoss.FindResourceDirective(CodeBuf,1,1,
-    NewCode,NewX,NewY,NewTopLine, ResourceDirectiveFilename,false);
-  if (not Result) and (ResourceDirectiveFilename<>'*.dfm') then
-    Result := CodeToolBoss.FindResourceDirective(CodeBuf,1,1,
-                   NewCode,NewX,NewY,NewTopLine, '*.dfm',false);
+  Cache:=GetLFMUnitResCache(CodeBuf.Filename,true);
+  if Cache.CodeBufStamp<>CodeBuf.ChangeStep then begin
+    Cache.ResourceDirective:='';
+    Cache.CodeBufStamp:=CodeBuf.ChangeStep;
+    if CodeToolBoss.FindResourceDirective(CodeBuf,1,1,
+      NewCode,NewX,NewY,NewTopLine, ResourceDirectiveFilename,false)
+    then
+      Cache.ResourceDirective:=ResourceDirectiveFilename
+    else if (ResourceDirectiveFilename<>'*.dfm')
+    and CodeToolBoss.FindResourceDirective(CodeBuf,1,1,
+                     NewCode,NewX,NewY,NewTopLine, '*.dfm',false)
+    then
+      Cache.ResourceDirective:='*.dfm';
+  end;
+  Result:=Cache.ResourceDirective<>'';
 end;
 
 class function TLFMUnitResourcefileFormat.ResourceDirectiveFilename: string;
@@ -113,13 +166,13 @@ end;
 class function TLFMUnitResourcefileFormat.GetClassNameFromStream(s: TStream;
   out IsInherited: Boolean): shortstring;
 begin
-  result := GetClassNameFromLRSStream(s,IsInherited);
+  Result := GetClassNameFromLRSStream(s,IsInherited);
 end;
 
 class function TLFMUnitResourcefileFormat.CreateReader(s: TStream;
   var DestroyDriver: boolean): TReader;
 begin
-  result := CreateLRSReader(s,DestroyDriver);
+  Result := CreateLRSReader(s,DestroyDriver);
 end;
 
 class function TLFMUnitResourcefileFormat.QuickCheckResourceBuffer(PascalBuffer,
@@ -133,11 +186,15 @@ end;
 class function TLFMUnitResourcefileFormat.CreateWriter(s: TStream;
   var DestroyDriver: boolean): TWriter;
 begin
-  result := CreateLRSWriter(s, DestroyDriver);
+  Result := CreateLRSWriter(s, DestroyDriver);
 end;
 
 initialization
   RegisterUnitResourcefileFormat(TLFMUnitResourcefileFormat);
   LFMUnitResourceFileFormat:=TLFMUnitResourcefileFormat;
+  LFMUnitResCache:=TAvgLvlTree.Create(@CompareLFMUnitResCacheItems);
+finalization
+  LFMUnitResCache.FreeAndClear;
+  FreeAndNil(LFMUnitResCache);
 end.
 
