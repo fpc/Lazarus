@@ -517,7 +517,7 @@ begin
   MsgCopyMenuSection:=RegisterIDEMenuSection(Root,'Copy');
     Parent:=MsgCopyMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:=lisCopy2;
+    Parent.Caption:=lisCopy;
     MsgCopyFilenameMenuItem:=RegisterIDEMenuCommand(Parent, 'Filename',
       lisCopyFileNameToClipboard);
     MsgCopyMsgMenuItem := RegisterIDEMenuCommand(Parent, 'Selected',lisCopySelectedMessagesToClipboard);
@@ -527,7 +527,7 @@ begin
   MsgSaveToFileMenuSection:=RegisterIDEMenuSection(Root,'Save');
     Parent:=MsgSaveToFileMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:=lisDlgSave;
+    Parent.Caption:=lisSave;
     MsgSaveShownToFileMenuItem:=RegisterIDEMenuCommand(Parent, 'Save Shown '
       +'Messages to File', lisSaveShownMessagesToFile);
     MsgSaveAllToFileMenuItem:=RegisterIDEMenuCommand(Parent, 'Save All '
@@ -538,7 +538,7 @@ begin
   MsgOptionsMenuSection:=RegisterIDEMenuSection(Root,'Option Section');
     Parent:=MsgOptionsMenuSection;
     Parent.ChildsAsSubMenu:=true;
-    Parent.Caption:=lisMenuGeneralOptions;
+    Parent.Caption:=dlgOIOptions;
     MsgWndStayOnTopMenuItem:=RegisterIDEMenuCommand(Parent,
       'Window stay on top', lisWindowStaysOnTop);
     MsgFilenameStyleMenuSection:=RegisterIDEMenuSection(Parent,'Filename Styles');

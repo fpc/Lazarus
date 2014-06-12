@@ -367,7 +367,7 @@ resourcestring
   lisRemoveCompilerOptionHideMessage = 'Remove Compiler Option Hide Message';
   lisRemoveMessageTypeFilter = 'Remove Message Type Filter';
   lisRemoveAllMessageTypeFilters = 'Remove all message type filters';
-  lisFilterNonUrgentMessages = 'Filter non urgent Messages ...';
+  lisFilterNonUrgentMessages = 'Filter non urgent Messages';
   lisFilterWarningsAndBelow = 'Filter Warnings and below';
   lisFilterNotesAndBelow = 'Filter Notes and below';
   lisFilterHintsAndBelow = 'Filter Hints and below';
@@ -375,9 +375,8 @@ resourcestring
   lisFilterDebugMessagesAndBelow = 'Filter Debug Messages and below';
   lisFilterNoneDoNotFilterByUrgency = 'Filter None, do not filter by urgency';
   lisFilterHintsWithoutSourcePosition = 'Filter Hints without Source Position';
-  lisSwitchFilterSettings = 'Switch Filter Settings ...';
+  lisSwitchFilterSettings = 'Switch Filter Settings';
   lisAddFilter = 'Add Filter ...';
-  lisCopy2 = 'Copy ...';
   lisCopyAllShownMessagesToClipboard = 'Copy All Shown Messages to Clipboard';
   lisCopyAllOriginalMessagesToClipboard = 'Copy All/Original Messages to '
     +'Clipboard';
