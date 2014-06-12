@@ -38,11 +38,12 @@ uses
   contnrs,
   // IDEIntf CodeTools
   IDEImagesIntf, MenuIntf, ExtCtrls, LazIDEIntf, ProjectIntf, CodeToolsStructs,
-  CodeToolManager, CodeCache, FormEditingIntf, TreeFilterEdit, PackageIntf,
-  IDEDialogs, IDEHelpIntf, IDEOptionsIntf, IDEProcs, LazarusIDEStrConsts,
-  IDEDefs, CompilerOptions, ComponentReg, UnitResources, SrcEditorIntf,
-  EnvironmentOpts, DialogProcs, PackageDefs, AddToPackageDlg,
-  PkgVirtualUnitEditor, MissingPkgFilesDlg, PackageSystem, CleanPkgDeps;
+  CodeToolManager, CodeCache, CodeTree, FormEditingIntf, TreeFilterEdit,
+  PackageIntf, IDEDialogs, IDEHelpIntf, IDEOptionsIntf, IDEProcs,
+  LazarusIDEStrConsts, IDEDefs, CompilerOptions, ComponentReg, UnitResources,
+  SrcEditorIntf, IDEMsgIntf, IDEExternToolIntf, EnvironmentOpts, DialogProcs,
+  PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor, MissingPkgFilesDlg,
+  PackageSystem, CleanPkgDeps;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
@@ -3015,6 +3016,7 @@ end;
 function TPackageEditorForm.MoveFiles(SrcPkgEdit: TPackageEditorForm;
   PkgFiles: TFPList; TargetDirectory: string): boolean;
 var
+  SrcPackage: TLazPackage;
   AllChangedFilenames: TFilenameToStringTree;
   NewFileToOldPkgFile: TFilenameToPointerTree;
   ChangedFilenames: TFilenameToStringTree; // old to new file name
@@ -3158,28 +3160,107 @@ var
     Result:=true;
   end;
 
+  function CheckUsesSection(Tool: TCodeTool; UsesNode: TCodeTreeNode): boolean;
+  var
+    AnUnitName, AnUnitInFilename: string;
+    NewCode: TCodeBuffer;
+    UnitFilename: string;
+    Node: TCodeTreeNode;
+    ErrorPos: Integer;
+    NewCompiledUnitname: String;
+    CompiledFilename: String;
+    CodePos: TCodeXYPosition;
+    Msg: String;
+    PkgName: String;
+  begin
+    if UsesNode=nil then exit(true);
+    // check that all used units are available in the target package
+    Node:=UsesNode.FirstChild;
+    while Node<>nil do begin
+      // read unit name
+      AnUnitInFilename:='';
+      AnUnitName:=Tool.ExtractUsedUnitName(Node,@AnUnitInFilename);
+      ErrorPos:=Node.StartPos;
+      Node:=Node.NextBrother;
+      if AnUnitName='' then continue;
+      // find unit file
+      PkgName:='';
+      NewCode:=Tool.FindUnitSource(AnUnitName,AnUnitInFilename,false,Node.StartPos);
+      if (NewCode=nil) then begin
+        // no source found
+        // => search for ppu
+        NewCompiledUnitname:=AnUnitName+'.ppu';
+        CompiledFilename:=Tool.DirectoryCache.FindCompiledUnitInCompletePath(
+                                                     NewCompiledUnitname,false);
+        if CompiledFilename='' then begin
+          // unit not found
+          // => moving the unit will not make it worse
+          continue;
+        end;
+        // ToDo: find package
+
+      end else begin
+        // unit found
+        UnitFilename:=NewCode.Filename;
+        if AllChangedFilenames.Contains(UnitFilename) then begin
+          // this unit will be moved too => ok
+          continue;
+        end;
+        // ToDo: find package
+
+      end;
+      if not Tool.CleanPosToCaret(ErrorPos,CodePos) then continue;
+      Msg:='unit '+AnUnitName+' requires package '+PkgName;
+      IDEMessagesWindow.AddCustomMessage(mluError,Msg,
+        CodePos.Code.Filename,CodePos.Y,CodePos.X,'Move Units');
+    end;
+  end;
+
   function CheckUsesSections: boolean;
   var
     i: Integer;
     PkgFile: TPkgFile;
     OldFilename: String;
     Code: TCodeBuffer;
+    Tool: TCodeTool;
   begin
-    Result:=false;
+    if LazPackage=SrcPackage then
+      exit(true);
+    // moving files to another package
+    if PackageGraph.FindDependencyRecursively(
+      LazPackage.FirstRequiredDependency,SrcPackage)<>nil
+    then begin
+      // units are moved to higher level package
+      // => no check needed
+      exit(true);
+    end;
+
+    // check that all used units are available in the target package
+    Result:=true;
     for i:=0 to PkgFiles.Count-1 do begin
       PkgFile:=TPkgFile(PkgFiles[i]);
       if PkgFile.FileType<>pftUnit then continue;
       OldFilename:=PkgFile.GetFullFilename;
       if LoadCodeBuffer(Code,OldFilename,[lbfUpdateFromDisk,lbfCheckIfText],false)<>mrOk
       then exit;
-      // ToDo
+      CodeToolBoss.Explore(Code,Tool,false);
+      if not CheckUsesSection(Tool,Tool.FindMainUsesSection) then
+        Result:=false;
+      if not CheckUsesSection(Tool,Tool.FindImplementationUsesSection) then
+        Result:=false;
     end;
-    Result:=true;
+    if not Result then begin
+      if IDEMessageDialog('Warning',
+        'Moving these units will break their uses sections. See Messages window for details.',
+        mtWarning,[mbIgnore,mbCancel])<>mrIgnore
+      then
+        exit;
+      Result:=true;
+    end;
   end;
 
 var
   MoveFileCount: Integer;
-  SrcPackage: TLazPackage;
   MsgResult: TModalResult;
   DeleteOld: Boolean;
 begin
@@ -3198,6 +3279,8 @@ begin
 
   // check TargetDirectory
   if CheckDirectoryIsWritable(TargetDirectory)<>mrOk then exit;
+
+  IDEMessagesWindow.Clear;
 
   NewFileToOldPkgFile:=TFilenameToPointerTree.Create(false);
   ChangedFilenames:=TFilenameToStringTree.Create(false);
