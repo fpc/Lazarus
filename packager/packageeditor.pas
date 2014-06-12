@@ -37,12 +37,12 @@ uses
   LCLType, LCLProc, Menus, Dialogs, FileUtil, LazFileCache,
   contnrs,
   // IDEIntf CodeTools
-  IDEImagesIntf, MenuIntf, ExtCtrls, LazIDEIntf, ProjectIntf,
-  CodeToolsStructs, FormEditingIntf, TreeFilterEdit, PackageIntf,
-  IDEDialogs, IDEHelpIntf, IDEOptionsIntf, IDEProcs, LazarusIDEStrConsts,
-  IDEDefs, CompilerOptions, ComponentReg, EnvironmentOpts, DialogProcs,
-  PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor,
-  MissingPkgFilesDlg, PackageSystem, CleanPkgDeps;
+  IDEImagesIntf, MenuIntf, ExtCtrls, LazIDEIntf, ProjectIntf, CodeToolsStructs,
+  FormEditingIntf, TreeFilterEdit, PackageIntf, IDEDialogs, IDEHelpIntf,
+  IDEOptionsIntf, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
+  ComponentReg, UnitResources, EnvironmentOpts, DialogProcs, PackageDefs,
+  AddToPackageDlg, PkgVirtualUnitEditor, MissingPkgFilesDlg, PackageSystem,
+  CleanPkgDeps;
   
 const
   PackageEditorMenuRootName = 'PackageEditor';
@@ -3014,6 +3014,15 @@ end;
 
 function TPackageEditorForm.MoveFiles(SrcPkgEdit: TPackageEditorForm;
   PkgFiles: TFPList; TargetDirectory: string): boolean;
+
+  procedure AddResFile(ResFiles: TStringList; ResFile: string);
+  begin
+    if not FilenameIsAbsolute(ResFile) then exit;
+    if IndexInRecentList(ResFiles,rltFile,ResFile)>=0 then exit;
+    if not FileExistsCached(ResFile) then exit;
+    ResFiles.Add(ResFile);
+  end;
+
 var
   i: Integer;
   PkgFile: TPkgFile;
@@ -3025,11 +3034,30 @@ var
   MsgResult: TModalResult;
   DeleteOld: Boolean;
   ChangedFilenames: TFilenameToStringTree; // old to new file name
+  UnitResArr: TUnitResourcefileFormatArr;
+  j: Integer;
+  aFilename: String;
+  UnitFilenameToResFileList: TFilenameToPointerTree; // filename to TStringList
+  ResFileList: TStringList;
 begin
   Result:=false;
+
+  // ignore non existing files
+  for i:=PkgFiles.Count-1 downto 0 do begin
+    PkgFile:=TPkgFile(PkgFiles[i]);
+    OldFilename:=PkgFile.GetFullFilename;
+    if not FileExistsCached(OldFilename) then begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.MoveFiles WARNING: file not found: ',OldFilename]);
+      {$ENDIF}
+      PkgFiles.Delete(i);
+    end;
+  end;
   if PkgFiles.Count=0 then exit;
+
   if not FilenameIsAbsolute(TargetDirectory) then exit;
   TargetDirectory:=AppendPathDelim(TargetDirectory);
+
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPackageEditorForm.MoveFiles Self=',LazPackage.Filename,' Src=',SrcPkgEdit.LazPackage.Filename,' Dir="',TargetDirectory,'" FileCount=',PkgFiles.Count]);
   {$ENDIF}
@@ -3040,14 +3068,19 @@ begin
 
   NewFileToOldPkgFile:=nil;
   ChangedFilenames:=nil;
+  UnitFilenameToResFileList:=nil;
   try
     // check files
     MoveFileCount:=0;
     NewFileToOldPkgFile:=TFilenameToPointerTree.Create(false);
     ChangedFilenames:=TFilenameToStringTree.Create(false);
+    UnitFilenameToResFileList:=TFilenameToPointerTree.Create(false);
+    UnitFilenameToResFileList.FreeValues:=true;
+
     for i:=0 to PkgFiles.Count-1 do begin
       PkgFile:=TPkgFile(PkgFiles[i]);
       OldFilename:=PkgFile.GetFullFilename;
+      if not FileExistsCached(OldFilename) then continue;
       NewFilename:=TargetDirectory+ExtractFilename(OldFilename);
 
       // check if two copied/moved files will get the same new file name
@@ -3064,6 +3097,8 @@ begin
       if CompareFilenames(NewFilename,OldFilename)<>0 then begin
         // file be copied/moved to another directory
         inc(MoveFileCount);
+        ChangedFilenames[OldFilename]:=NewFilename;
+
         // check if new position is free
         if FileExistsCached(NewFilename) then begin
           IDEMessageDialog('Conflict detected',
@@ -3073,10 +3108,24 @@ begin
           exit;
         end;
 
-        ChangedFilenames[OldFilename]:=NewFilename;
-
+        // check resource file
+        if PkgFile.FileType=pftUnit then begin
+          ResFileList:=TStringList.Create;
+          UnitFilenameToResFileList[OldFilename]:=ResFileList;
+          AddResFile(ResFileList,ChangeFileExt(OldFilename,'.lfm'));
+          AddResFile(ResFileList,ChangeFileExt(OldFilename,'.dfm'));
+          AddResFile(ResFileList,ChangeFileExt(OldFilename,'.lrs'));
+          UnitResArr:=GetUnitResourcefileFormats;
+          for j:=0 to length(UnitResArr)-1 do begin
+            aFilename:=UnitResArr[j].GetUnitResourceFilename(OldFilename,true);
+            AddResFile(ResFileList,aFilename);
+          end;
+        end;
       end;
     end;
+
+    // ToDo: remove res files, that are in PkgFiles
+
 
     if (MoveFileCount=0) and (LazPackage=SrcPackage) then begin
       // change order in package
@@ -3110,16 +3159,15 @@ begin
     end;
 
     if DeleteOld then begin
-      // close files in source editor
+      // close files and res files in source editor
 
     end;
 
     ShowMessage('Moving files is not yet implemented');
 
-    // move/copy file
-    // move/copy secondary files (lfm,lrs)
+    // if SrcPkg<>SelfPkg: clear output dir of SrcPkg
+    // move/copy file and res files, Note: some files are res files
     // move/copy TPkgFile, make uses-unit unique
-    // if another pkg: clear output dir of SrcPkg
     // clean up unit/inlude path of SrcPkg
   finally
     ChangedFilenames.Free;

@@ -45,7 +45,7 @@ uses
   // codetools
   CodeAtom, CodeTree, CodeToolManager, FindDeclarationTool, BasicCodeTools,
   KeywordFuncLists, PascalParserTool, CodeCache, CacheCodeTools, CustomCodeTool,
-  FileProcs, CTXMLFixFragment, DefineTemplates,
+  FileProcs, CTXMLFixFragment, DefineTemplates, CodeToolsStructs,
   // synedit
   SynHighlighterPas,
   // IDEIntf
@@ -270,9 +270,9 @@ type
                                     ResolveIncludeFiles: Boolean;
                                     out CacheWasUsed: boolean;
                                     CreateIfNotExists: boolean = false): string;
-    procedure GetFPDocFilenamesForSources(SrcFilenames: TStringToStringTree;
+    procedure GetFPDocFilenamesForSources(SrcFilenames: TFilenameToStringTree;
                       ResolveIncludeFiles: boolean;
-                      var FPDocFilenames: TStringToStringTree // Names=Filename, Values=ModuleName
+                      var FPDocFilenames: TFilenameToStringTree // Filename to ModuleName
                       );
     function GetIDESrcFPDocPath: string; // $(LazarusDir)/docs/xml/ide/
     function IsIDESrcFile(const SrcFilename: string): boolean;
@@ -1177,9 +1177,9 @@ var
   BaseDir: String;
   Code: TCodeBuffer;
   CurUnitName: String;
-  AVLNode: TAvgLvlTreeNode;
   UnitSet: TFPCUnitSetCache;
   IsInFPCSrc: Boolean;
+  AVLNode: TAvgLvlTreeNode;
 begin
   Result:='';
   NewOwner:=nil;
@@ -1767,29 +1767,25 @@ begin
 end;
 
 procedure TCodeHelpManager.GetFPDocFilenamesForSources(
-  SrcFilenames: TStringToStringTree; ResolveIncludeFiles: boolean;
-  var FPDocFilenames: TStringToStringTree);
+  SrcFilenames: TFilenameToStringTree; ResolveIncludeFiles: boolean;
+  var FPDocFilenames: TFilenameToStringTree);
 var
-  Node: TAvgLvlTreeNode;
-  Item: PStringToStringItem;
   SrcFilename: String;
   CacheWasUsed: boolean;
   AnOwner: TObject;
   FPDocFilename: String;
+  S2SItem: PStringToStringTreeItem;
 begin
-  Node:=SrcFilenames.Tree.FindLowest;
-  while Node<>nil do begin
-    Item:=PStringToStringItem(Node.Data);
-    SrcFilename:=Item^.Name;
+  for S2SItem in SrcFilenames do begin
+    SrcFilename:=S2SItem^.Name;
     FPDocFilename:=GetFPDocFilenameForSource(SrcFilename,ResolveIncludeFiles,
                                              CacheWasUsed,AnOwner);
     //DebugLn(['TCodeHelpManager.GetFPDocFilenamesForSources FPDoc=',FPDocFilename,' Src=',SrcFilename]);
     if FPDocFilename<>'' then begin
       if FPDocFilenames=nil then
-        FPDocFilenames:=CreateFilenameToStringTree;
+        FPDocFilenames:=TFilenameToStringTree.Create(false);
       FPDocFilenames[FPDocFilename]:=GetModuleOwnerName(AnOwner);
     end;
-    Node:=SrcFilenames.Tree.FindSuccessor(Node);
   end;
 end;
 

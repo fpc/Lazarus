@@ -158,6 +158,8 @@ const
     'CaseInsensitive',
     'File'
     );
+function IndexInRecentList(List: TStrings; ListType: TRecentListType;
+  const Path: string): integer;
 function StrToRecentListType(s: string): TRecentListType;
 function CompareRecentListItem(s1, s2: string; ListType: TRecentListType): boolean;
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStrings; const Path: string;
@@ -170,6 +172,8 @@ function AddComboTextToRecentList(cb: TCombobox; Max: integer;
 procedure RemoveFromRecentList(const s: string; RecentList: TStrings;
                                ListType: TRecentListType);
 procedure CleanUpRecentList(List: TStrings; ListType: TRecentListType);
+
+// XMLconfig
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string;
                    var ARect:TRect);
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string;
@@ -254,10 +258,6 @@ procedure ReverseList(List: TFPList);
 procedure FreeListObjects(List: TList; FreeList: boolean);
 procedure FreeListObjects(List: TFPList; FreeList: boolean);
 function CompareMemStreamText(s1, s2: TMemoryStream): Boolean;
-
-function CompareStringToStringItemsFilename(Data1, Data2: Pointer): integer;
-function ComparePAnsiStringWithStrToStrItemFilename(Key, Data: Pointer): Integer;
-function CreateFilenameToStringTree: TStringToStringTree;
 
 function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
 
@@ -944,6 +944,14 @@ begin
     until FindNextUTF8(FileInfo)<>0;
   end;
   FindCloseUTF8(FileInfo);
+end;
+
+function IndexInRecentList(List: TStrings; ListType: TRecentListType;
+  const Path: string): integer;
+begin
+  Result:=List.Count-1;
+  while (Result>=0) and (not CompareRecentListItem(List[Result],Path,ListType)) do
+    dec(Result);
 end;
 
 function StrToRecentListType(s: string): TRecentListType;
@@ -2639,23 +2647,6 @@ begin
       until false;
     end;
   end;
-end;
-
-function CompareStringToStringItemsFilename(Data1, Data2: Pointer): integer;
-begin
-  Result:=CompareFilenames(PStringToStringItem(Data1)^.Name,
-                           PStringToStringItem(Data2)^.Name);
-end;
-
-function ComparePAnsiStringWithStrToStrItemFilename(Key, Data: Pointer): Integer;
-begin
-  Result:=CompareFilenames(PAnsiString(Key)^,PStringToStringItem(Data)^.Name);
-end;
-
-function CreateFilenameToStringTree: TStringToStringTree;
-begin
-  Result:=TStringToStringTree.Create(@CompareStringToStringItemsFilename,
-                                   @ComparePAnsiStringWithStrToStrItemFilename);
 end;
 
 function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;

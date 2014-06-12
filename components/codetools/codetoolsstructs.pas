@@ -194,6 +194,7 @@ type
   public
     function GetString(const Name: string; out Value: string): boolean;
     procedure Add(const Name, Value: string); virtual;
+    procedure AddNames(List: TStrings);
     property Strings[const s: string]: string read GetStrings write SetStrings; default;
     function GetNodeData(AVLNode: TAVLTreeNode): PStringToStringTreeItem; inline;
     function AsText: string;
@@ -1053,6 +1054,19 @@ end;
 procedure TStringToStringTree.Add(const Name, Value: string);
 begin
   Strings[Name]:=Value;
+end;
+
+procedure TStringToStringTree.AddNames(List: TStrings);
+var
+  i: Integer;
+  aName: String;
+begin
+  if List=nil then exit;
+  for i:=0 to List.Count-1 do begin
+    aName:=List[i];
+    if not Contains(aName) then
+      Strings[aName]:='';
+  end;
 end;
 
 function TStringToStringTree.GetNodeData(AVLNode: TAVLTreeNode

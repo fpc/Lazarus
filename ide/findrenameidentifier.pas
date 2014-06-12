@@ -35,7 +35,7 @@ uses
   laz2_DOM,
   // codetools
   FileProcs, AVL_Tree, CTUnitGraph, CodeTree, CodeCache,
-  CodeToolManager,
+  CodeToolManager, CodeToolsStructs,
   // IDE
   LazarusIDEStrConsts, IDEProcs, IDEWindowIntf, MiscOptions, DialogProcs,
   LazIDEIntf, IDEDialogs, InputHistory, SearchResultView, CodeHelp, ButtonPanel;
@@ -365,14 +365,13 @@ function GatherFPDocReferencesForPascalFiles(PascalFiles: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
   var ListOfLazFPDocNode: TFPList): TModalResult;
 var
-  PascalFilenames, FPDocFilenames: TStringToStringTree;
+  PascalFilenames, FPDocFilenames: TFilenameToStringTree;
   CacheWasUsed: boolean;
   Chain: TCodeHelpElementChain;
   CHResult: TCodeHelpParseResult;
   CHElement: TCodeHelpElement;
-  AVLNode: TAvgLvlTreeNode;
-  Item: PStringToStringItem;
   FPDocFilename: String;
+  S2SItem: PStringToStringTreeItem;
 begin
   Result:=mrCancel;
   PascalFilenames:=nil;
@@ -381,7 +380,7 @@ begin
     // gather FPDoc files
     CleanUpFileList(PascalFiles);
 
-    PascalFilenames:=CreateFilenameToStringTree;
+    PascalFilenames:=TFilenameToStringTree.Create(false);
     PascalFilenames.AddNames(PascalFiles);
     CodeHelpBoss.GetFPDocFilenamesForSources(PascalFilenames,true,FPDocFilenames);
     if FPDocFilenames=nil then begin
@@ -400,16 +399,13 @@ begin
     DebugLn(['GatherFPDocReferences OwnerName=',CHElement.ElementOwnerName,' FPDocPkg=',CHElement.ElementFPDocPackageName,' Name=',CHElement.ElementName]);
 
     // search FPDoc files
-    AVLNode:=FPDocFilenames.Tree.FindLowest;
-    while AVLNode<>nil do begin
-      Item:=PStringToStringItem(AVLNode.Data);
-      FPDocFilename:=Item^.Name;
+    for S2SItem in FPDocFilenames do begin
+      FPDocFilename:=S2SItem^.Name;
       Result:=GatherReferencesInFPDocFile(
                 CHElement.ElementFPDocPackageName,CHElement.ElementUnitName,
                 CHElement.ElementName,
                 FPDocFilename,ListOfLazFPDocNode);
       if Result<>mrOk then exit;
-      AVLNode:=FPDocFilenames.Tree.FindSuccessor(AVLNode);
     end;
 
     Result:=mrOk;

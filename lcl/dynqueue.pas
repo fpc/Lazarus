@@ -16,7 +16,7 @@ unit DynQueue;
 interface
 
 uses
-  Classes, SysUtils, LCLProc;
+  Classes, SysUtils, LazLoggerBase;
   
 type
   TDynamicQueueItem = record
@@ -437,7 +437,7 @@ var
   DataCount: LongInt;
   DataOffset: Integer;
 begin
-  debugln(['TDynamicDataQueue.WriteDebugReport FItemCapacity=',FItemCapacity,
+  DebugLn(['TDynamicDataQueue.WriteDebugReport FItemCapacity=',FItemCapacity,
     ' FTopIndex=',FTopIndex,' FTopItemSpace=',FTopItemSpace,
     ' FLastIndex=',FLastIndex,' FLastItemSpace=',FLastItemSpace,
     ' Size=',Size,
