@@ -740,26 +740,26 @@ begin
   if Paper<>-1 then
   begin
     i := Lst.IndexOfObject(TObject(Paper));
-        if i>=0 then
+    if i>=0 then
       result := lst[i]
   else
   begin
-      // Weird, selected paper code (size) do not agree with previouly
-      // retrieved paper sizes.
-      //
-      // NOTE.
-      // This problem was observed while trying to print on a just installed CutePDF
-      // printer in Win 7. Once Printer properties dialog were 'navigated' (no
-      // changes were needed) in ctrl panel/devices and printers/CutePDF printer
-      // it started to work normally.
-      if UseUnicode then
-        result :=  UTF8Encode(Widestring(dmW^.dmFormName))
-      else
-        result := StrPas(dmA^.dmFormName);
-      i := Lst.IndexOf(result);
-      if i<0 then
-        result := lst[0];
-      end;
+    // Weird, selected paper code (size) do not agree with previously
+    // retrieved paper sizes.
+    //
+    // NOTE.
+    // This problem was observed while trying to print on a just installed CutePDF
+    // printer in Win 7. Once Printer properties dialog were 'navigated' (no
+    // changes were needed) in ctrl panel/devices and printers/CutePDF printer
+    // it started to work normally.
+    if UseUnicode then
+      result :=  UTF8Encode(Widestring(dmW^.dmFormName))
+    else
+      result := StrPas(dmA^.dmFormName);
+    i := Lst.IndexOf(result);
+    if i<0 then
+      result := lst[0];
+    end;
   end;
 end;
 
