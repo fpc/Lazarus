@@ -799,6 +799,9 @@ begin
     if not (Result in [mrOk,mrIgnore]) then Exit;
   end;
 
+  // write full file names and message ids
+  AppendExtraOption('-vbq');
+
   if fUnitOutDir<>'' then
     // FPC interpretes '\ ' as an escape for a space in a path on Windows,
     // so make sure the directory doesn't end with the path delimiter.

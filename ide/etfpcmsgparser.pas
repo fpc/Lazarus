@@ -29,7 +29,7 @@ unit etFPCMsgParser;
 
 {$mode objfpc}{$H+}
 
-{off $DEFINE VerboseQuickFixUnitNotFoundPosition}
+{off $DEFINE VerboseFPCMsgUnitNotFound}
 
 interface
 
@@ -38,8 +38,9 @@ uses
   IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf, IDEUtils,
   CompOptsIntf, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache, CodeToolManager,
   DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog, LazUTF8,
-  FileUtil, LConvEncoding, TransferMacros, etMakeMsgParser, EnvironmentOpts,
-  LCLProc, LazarusIDEStrConsts;
+  FileUtil, LConvEncoding, LazFileUtils,
+  LazConf, TransferMacros, etMakeMsgParser,
+  EnvironmentOpts, LCLProc, LazarusIDEStrConsts;
 
 const
   FPCMsgIDLogo = 11023;
@@ -1631,13 +1632,13 @@ procedure TIDEFPCParser.ImproveMsgUnitNotFound(aPhase: TExtToolParserSyncPhase;
     Caret: TCodeXYPosition;
     NewFilename: String;
   begin
-    {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+    {$IFDEF VerboseFPCMsgUnitNotFound}
     debugln(['TIDEFPCParser.ImproveMsgUnitNotFound File=',CodeBuf.Filename]);
     {$ENDIF}
     LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
     if not CodeToolBoss.FindUnitInAllUsesSections(CodeBuf,MissingUnitname,NamePos,InPos)
     then begin
-      DebugLn('TIDEFPCParser.ImproveMsgUnitNotFound failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
+      DebugLn('TIDEFPCParser.ImproveMsgUnitNotFound FindUnitInAllUsesSections failed due to syntax errors or '+MissingUnitname+' is not used in '+CodeBuf.Filename);
       exit;
     end;
     Tool:=CodeToolBoss.CurCodeTool;
@@ -1782,14 +1783,16 @@ begin
   MsgLine.Attribute[FPCMsgAttrMissingUnit]:=MissingUnitName;
   MsgLine.Attribute[FPCMsgAttrUsedByUnit]:=UsedByUnit;
 
-  {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+  {$IFDEF VerboseFPCMsgUnitNotFound}
   debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Missing="',MissingUnitname,'" used by "',UsedByUnit,'"']);
   {$ENDIF}
 
   CodeBuf:=nil;
   Filename:=MsgLine.GetFullFilename;
   if (CompareFilenames(ExtractFileName(Filename),'staticpackages.inc')=0)
-  and IsFileInIDESrcDir(Filename) then begin
+  and ((ExtractFilePath(Filename)='')
+    or (CompareFilenames(ExtractFilePath(Filename),AppendPathDelim(GetPrimaryConfigPath))=0))
+  then begin
     // common case: when building the IDE a package unit is missing
     // staticpackages.inc(1,1) Fatal: Can't find unit sqldblaz used by Lazarus
     // change to lazarus.pp(1,1)
@@ -1810,7 +1813,7 @@ begin
     if NewFilename='' then begin
       NewFilename:=LazarusIDE.FindUnitFile(UsedByUnit);
       if NewFilename='' then begin
-        {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+        {$IFDEF VerboseFPCMsgUnitNotFound}
         debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unit not found: ',UsedByUnit]);
         {$ENDIF}
       end;
@@ -1819,24 +1822,24 @@ begin
       Filename:=NewFilename;
   end;
 
-  if Filename<>'' then begin
+  if FilenameIsAbsolute(Filename) then begin
     CodeBuf:=CodeToolBoss.LoadFile(Filename,false,false);
     if CodeBuf=nil then begin
-      {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+      {$IFDEF VerboseFPCMsgUnitNotFound}
       debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unable to load unit: ',Filename]);
       {$ENDIF}
     end;
   end else begin
-    {$IFDEF VerboseQuickFixUnitNotFoundPosition}
-    debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unable to locate UsedByUnit: ',UsedByUnit]);
+    {$IFDEF VerboseFPCMsgUnitNotFound}
+    debugln(['TIDEFPCParser.ImproveMsgUnitNotFound unable to locate UsedByUnit: ',UsedByUnit,' Filename="',MsgLine.Filename,'" Attr[',FPCMsgAttrWorkerDirectory,']=',MsgLine.Attribute[FPCMsgAttrWorkerDirectory],' Tool.WorkerDirectory=',Tool.WorkerDirectory]);
     {$ENDIF}
   end;
 
   // fix line and column
   Owners:=nil;
-  UsedByOwner:=nil;
   PPUFiles:=TStringList.Create;
   try
+    UsedByOwner:=nil;
     if CodeBuf<>nil then begin
       FixSourcePos(CodeBuf,MissingUnitname);
       Owners:=PackageEditingInterface.GetOwnersOfUnit(CodeBuf.Filename);
@@ -1845,13 +1848,13 @@ begin
     end;
 
     // if the ppu exists then improve the message
-    {$IFDEF VerboseQuickFixUnitNotFoundPosition}
-    debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Filename=',CodeBuf.Filename]);
-    {$ENDIF}
-    if FilenameIsAbsolute(CodeBuf.Filename) then begin
+    if (CodeBuf<>nil) and FilenameIsAbsolute(CodeBuf.Filename) then begin
+      {$IFDEF VerboseFPCMsgUnitNotFound}
+      debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Filename=',CodeBuf.Filename]);
+      {$ENDIF}
       PPUFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
                         ExtractFilePath(CodeBuf.Filename),MissingUnitname);
-      {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+      {$IFDEF VerboseFPCMsgUnitNotFound}
       debugln(['TQuickFixUnitNotFoundPosition.Execute PPUFilename=',PPUFilename,' IsFileInIDESrcDir=',IsFileInIDESrcDir(CodeBuf.Filename)]);
       {$ENDIF}
       PkgName:='';
@@ -1889,8 +1892,10 @@ begin
           // two units of a package cannot find each other
           s+=Format(lisCheckSearchPathPackageTryACleanRebuildCheckImpleme, [
             TIDEPackage(UsedByOwner).Name]);
-        end else if (UsedByOwner<>nil) and (PkgName<>'')
-        and PackageEditingInterface.IsOwnerDependingOnPkg(UsedByOwner,PkgName,DepOwner)
+        end else if (PkgName<>'')
+        and (OnlyInstalled
+          or ((UsedByOwner<>nil)
+             and PackageEditingInterface.IsOwnerDependingOnPkg(UsedByOwner,PkgName,DepOwner)))
         then begin
           // ppu file of an used package is missing
           s+=Format(lisCheckIfPackageCreatesPpuCheckNothingDeletesThisFil, [
@@ -1906,7 +1911,7 @@ begin
         s+='.';
       end;
       MsgLine.Msg:=s;
-      {$IFDEF VerboseQuickFixUnitNotFoundPosition}
+      {$IFDEF VerboseFPCMsgUnitNotFound}
       debugln(['TIDEFPCParser.ImproveMsgUnitNotFound Msg.Msg="',MsgLine.Msg,'"']);
       {$ENDIF}
     end;
@@ -2206,6 +2211,9 @@ begin
         fIncludePathValidForWorkerDir:=MsgWorkerDir;
         fIncludePath:=CodeToolBoss.GetIncludePathForDirectory(
                                  ChompPathDelim(MsgWorkerDir));
+        {$IFDEF VerboseFPCMsgUnitNotFound}
+        debugln(['TIDEFPCParser.FetchIncludePath ',fIncludePath]);
+        {$ENDIF}
         NeedAfterSync:=true;
       end;
     end;
@@ -2554,6 +2562,8 @@ var
   SourceOK: Boolean;
   MsgWorkerDir: String;
   PrevMsgLine: TMessageLine;
+  CmdLineParams: String;
+  SrcFilename: String;
 begin
   //debugln(['TIDEFPCParser.ImproveMessages START ',aSynchronized,' Last=',fLastWorkerImprovedMessage[aSynchronized],' Now=',Tool.WorkerMessages.Count]);
   for i:=fLastWorkerImprovedMessage[aPhase]+1 to Tool.WorkerMessages.Count-1 do
@@ -2566,7 +2576,7 @@ begin
     then begin
       aFilename:=MsgLine.Filename;
       if (not FilenameIsAbsolute(aFilename)) then begin
-        // short file name => 1. try to find the full file name
+        // short file name => 1. search the full file name in previous message
         if i>0 then begin
           PrevMsgLine:=Tool.WorkerMessages[i-1];
           if (PrevMsgLine.SubTool=SubToolFPC)
@@ -2580,9 +2590,13 @@ begin
         end;
       end;
       if (not FilenameIsAbsolute(aFilename)) then begin
-        // short file name => 2. try include path
+        // short file name => 2. search in include path
         MsgWorkerDir:=MsgLine.Attribute[FPCMsgAttrWorkerDirectory];
-        FetchIncludePath(aPhase,MsgWorkerDir);
+        FetchIncludePath(aPhase,MsgWorkerDir); // needs Phase etpspAfterReadLine+etpspSynchronized
+        {$IFDEF VerboseFPCMsgUnitNotFound}
+        if aPhase=etpspSynchronized then
+          debugln(['TIDEFPCParser.ImproveMessages IncPath="',fIncludePath,'" aFilename="',aFilename,'" MsgWorkerDir="',MsgWorkerDir,'"']);
+        {$ENDIF}
         if (aPhase in [etpspAfterReadLine,etpspAfterSync])
         and (fIncludePathValidForWorkerDir=MsgWorkerDir) then begin
           // include path is valid and in worker thread
@@ -2591,6 +2605,25 @@ begin
                                  [sffSearchLoUpCase]);
           if aFilename<>'' then
             MsgLine.Filename:=aFilename;
+        end;
+      end;
+      if (not FilenameIsAbsolute(aFilename)) and (aPhase=etpspAfterReadLine)
+      then begin
+        CmdLineParams:=Tool.CmdLineParams;
+        if Pos(CmdLineParams,PathDelim+'fpc'+ExeExt+' ')>0 then begin
+          // short file name => 3. check the cmd line param source file
+          SrcFilename:=GetFPCParameterSrcFile(Tool.CmdLineParams);
+          if (SrcFilename<>'')
+          and ((CompareFilenames(ExtractFilename(SrcFilename),aFilename)=0)
+          or (CompareFilenames(ExtractFileNameOnly(SrcFilename),aFilename)=0))
+          then begin
+            if not FilenameIsAbsolute(SrcFilename) then begin
+              MsgWorkerDir:=MsgLine.Attribute[FPCMsgAttrWorkerDirectory];
+              SrcFilename:=ResolveDots(AppendPathDelim(MsgWorkerDir)+SrcFilename);
+            end;
+            if FilenameIsAbsolute(SrcFilename) then
+              MsgLine.Filename:=SrcFilename;
+          end;
         end;
       end;
 

@@ -199,6 +199,7 @@ function ReadNextFPCParameter(const CmdLine: string; var Position: integer;
 function ExtractFPCParameter(const CmdLine: string; StartPos: integer): string;
 function FindNextFPCParameter(const CmdLine, BeginsWith: string; var Position: integer): integer;
 function GetLastFPCParameter(const CmdLine, BeginsWith: string; CutBegins: boolean = true): string;
+function GetFPCParameterSrcFile(const CmdLine: string): string;
 
 type
   TCTPascalExtType = (petNone, petPAS, petPP, petP);
@@ -1324,6 +1325,22 @@ begin
         System.Delete(Result,1,length(BeginsWith));
     end;
   end;
+end;
+
+function GetFPCParameterSrcFile(const CmdLine: string): string;
+// the source file is the last parameter not starting with minus
+var
+  p: Integer;
+  StartPos: integer;
+begin
+  p:=1;
+  while ReadNextFPCParameter(CmdLine,p,StartPos) do begin
+    if (CmdLine[StartPos]='-') then continue;
+    Result:=ExtractFPCParameter(CmdLine,StartPos);
+    if (Result='') or (Result[1]='-') then continue;
+    exit;
+  end;
+  Result:='';
 end;
 
 function SearchFileInDir(const Filename, BaseDirectory: string;
