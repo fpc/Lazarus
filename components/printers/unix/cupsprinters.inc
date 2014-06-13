@@ -6,7 +6,10 @@
 {**************************************************************
 Implementation for cupsprinter
 ***************************************************************}
-uses udlgSelectPrinter,udlgpropertiesprinter, FileUtil;
+uses
+  {%H-}udlgSelectPrinter, // used to compile it on this target
+  {%H-}udlgpropertiesprinter, // used to compile it on this target
+  FileUtil;
 
 //Return always 72 because, PostScript it's 72 only
 function TCUPSPrinter.GetXDPI: Integer;
@@ -321,6 +324,7 @@ begin
     result := FCachedResolution.Y;
 end;
 
+{$IFDEF DebugCUPS}
 procedure TCUPSPrinter.DebugCapabilities;
 var
   flags: Integer;
@@ -355,7 +359,6 @@ begin
   DumpCap(CUPS_PRINTER_DEFAULT   , 'CUPS_PRINTER_DEFAULT  ', 'Default printer on network');
 end;
 
-{$IFDEF DebugCUPS}
 procedure TCUPSPrinter.DebugPPD;
 const
   arruitypes:array[ppd_ui_t] of string[9] = ('boolean','pickone','pickmany');
@@ -1361,4 +1364,5 @@ FINALIZATION
   //Unload CUPSLib if loaded
   FinalizeCups;
 
-{END.}
+END.
+
