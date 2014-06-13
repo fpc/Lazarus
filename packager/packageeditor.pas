@@ -3211,8 +3211,12 @@ var
       end;
       if not Tool.CleanPosToCaret(ErrorPos,CodePos) then continue;
       Msg:='unit '+AnUnitName+' requires package '+PkgName;
-      IDEMessagesWindow.AddCustomMessage(mluError,Msg,
+      {$IFNDEF EnableOldExtTools}
+      IDEMessagesWindow.AddCustomMessage(mluWarning,Msg,
         CodePos.Code.Filename,CodePos.Y,CodePos.X,'Move Units');
+      {$ELSE}
+      IDEMessagesWindow.AddMsg('Warning: '+Msg,'',-1);
+      {$ENDIF}
     end;
   end;
 
