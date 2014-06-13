@@ -61,7 +61,7 @@ uses
   SrcEditorIntf, MenuIntf, LazIDEIntf, PackageIntf, IDEHelpIntf, IDEImagesIntf,
   IDEWindowIntf, ProjectIntf, MacroDefIntf,
   // IDE units
-  IDEDialogs, LazarusIDEStrConsts, IDECommands, EditorOptions,
+  IDEDialogs, LazarusIDEStrConsts, IDECommands, CompOptsIntf, EditorOptions,
   EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
   IDEHelpManager, MacroPromptDlg, TransferMacros, CodeContextForm,
   SrcEditHintFrm,
@@ -2764,7 +2764,8 @@ begin
       if Filename<>FLastWarnedMainLinkFilename then
       begin
         if FilenameIsPascalSource(Filename) then
-          debugln(['TSourceEditorSharedValues.GetMainLinkScanner not pascal highlighted: ',Filename]);
+          if ConsoleVerbosity>1 then
+            debugln(['TSourceEditorSharedValues.GetMainLinkScanner not Pascal highlighted: ',Filename,' Highligther=',DbgSName(SrcEdit.Highlighter)]);
       end;
       FLastWarnedMainLinkFilename:=Filename;
       exit;
