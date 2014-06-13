@@ -1824,8 +1824,7 @@ begin
           s:=Format(lisCannotFind, [MissingUnitname]);
           if UsedByUnit<>'' then
             s+=Format(lisUsedBy, [UsedByUnit]);
-          s+=Format(lisIncompatiblePpu, [CreateRelativePath(PPUFilename,
-            ExtractFilePath(CodeBuf.Filename))]);
+          s+=Format(lisIncompatiblePpu, [PPUFilename]);
           if PkgName<>'' then
             s+=Format(lisPackage3, [PkgName]);
         end else if PkgName<>'' then begin
