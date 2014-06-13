@@ -140,10 +140,14 @@ type
     FChangeStep: integer;
     FDefaultDirectiveFuncList: TKeyWordFunctionList;
     FDisableUnusedDefines: boolean;
+    FNestedComments: boolean;
+    FParseChangeStep: integer;
     FRemoveDisabledDirectives: boolean;
     FSimplifyExpressions: boolean;
     FUndefH2PasFunctions: boolean;
     FLastErrorMsg: string;
+    fLastErrorPos: integer;
+    fLastErrorXY: TPoint;
     function IfdefDirective: boolean;
     function IfCDirective: boolean;
     function IfndefDirective: boolean;
@@ -157,6 +161,7 @@ type
     function ElseIfDirective: boolean;
     function ElIfCDirective: boolean;
     function DefineDirective: boolean;
+    procedure SetNestedComments(AValue: boolean);
     function UndefDirective: boolean;
     function SetCDirective: boolean;
     function IncludeDirective: boolean;
@@ -182,27 +187,38 @@ type
     Code: TCodeBuffer;
     Src: string;
     SrcLen: integer;
-    NestedComments: boolean;
     Tree: TCodeTree;
     CurNode: TCodeTreeNode;
     SrcPos: Integer;
     AtomStart: integer;
     Macros: TAVLTree;// tree of TCompilerMacroStats
-    ParseChangeStep: integer;
 
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    
+
+    // parsing
     procedure Parse;
     procedure Parse(aCode: TCodeBuffer; aNestedComments: boolean);
+    property NestedComments: boolean read FNestedComments write SetNestedComments;
+    property ParseChangeStep: integer read FParseChangeStep;
     function UpdateNeeded: boolean;
-    procedure ReduceCompilerDirectives(Undefines, Defines: TStrings;
-                                       var Changed: boolean);
-    procedure GatherH2PasFunctions(out ListOfH2PasFunctions: TFPList;
-                                   FindDefNodes: boolean);
-    procedure FixMissingH2PasDirectives(var Changed: boolean);
-    
+    procedure MoveCursorToPos(p: integer);
+    procedure ReadNextAtom;
+    function ReadTilBracketClose(CloseBracket: char): boolean;
+    function AtomIs(const s: shortstring): boolean;
+    function UpAtomIs(const s: shortstring): boolean;
+    function AtomIsIdentifier: boolean;
+    function GetAtom: string;
+
+    // errors
+    property ErrorMsg: string read FLastErrorMsg;
+    property ErrorPos: integer read fLastErrorPos;
+    property ErrorLine: integer read fLastErrorXY.Y;
+    property ErrorColumn: integer read fLastErrorXY.X;
+    function SrcPosToStr(p: integer; WithFilename: boolean = false): string;
+
+    // search
     function FindResourceDirective(const Filename: string = '';
                                    StartPos: integer = 1): TCodeTreeNode;
     function IsResourceDirective(Node: TCodeTreeNode;
@@ -213,6 +229,7 @@ type
     function IsIncludeDirective(Node: TCodeTreeNode;
                                 const Filename: string = ''): boolean;
 
+    // explore
     function GetDirectiveName(Node: TCodeTreeNode): string;
     function GetDirective(Node: TCodeTreeNode): string;
     function GetIfExpression(Node: TCodeTreeNode;
@@ -232,6 +249,13 @@ type
     function NodeStartToCodePos(Node: TCodeTreeNode;
                                 out CodePos: TCodeXYPosition): boolean;
 
+    // refactoring
+    procedure ReduceCompilerDirectives(Undefines, Defines: TStrings;
+                                       var Changed: boolean);
+    procedure GatherH2PasFunctions(out ListOfH2PasFunctions: TFPList;
+                                   FindDefNodes: boolean);
+    procedure FixMissingH2PasDirectives(var Changed: boolean);
+
     procedure CheckAndImproveExpr_Brackets(Node: TCodeTreeNode;
                                            var Changed: boolean);
     procedure CheckAndImproveExpr_IfDefinedMacro(Node: TCodeTreeNode;
@@ -249,13 +273,6 @@ type
                           SubDesc: TCompilerDirectiveNodeDesc): TCodeTreeNode;
     procedure RemoveEmptyNodes(var Changed: boolean);
 
-    procedure MoveCursorToPos(p: integer);
-    procedure ReadNextAtom;
-    function ReadTilBracketClose(CloseBracket: char): boolean;
-    function AtomIs(const s: shortstring): boolean;
-    function UpAtomIs(const s: shortstring): boolean;
-    function AtomIsIdentifier: boolean;
-    function GetAtom: string;
 
     procedure Replace(FromPos, ToPos: integer; const NewSrc: string);
 
@@ -506,6 +523,14 @@ begin
   EndChildNode;
 end;
 
+procedure TCompilerDirectivesTree.SetNestedComments(AValue: boolean);
+begin
+  if FNestedComments=AValue then Exit;
+  FNestedComments:=AValue;
+  FParseChangeStep:=CTInvalidChangeStamp;
+  IncreaseChangeStep;
+end;
+
 function TCompilerDirectivesTree.UndefDirective: boolean;
 // {$undefine macroname}
 begin
@@ -633,7 +658,7 @@ end;
 
 procedure TCompilerDirectivesTree.InitParser;
 begin
-  ParseChangeStep:=Code.ChangeStep;
+  FParseChangeStep:=Code.ChangeStep;
   IncreaseChangeStep;
   InitKeyWordList;
   Src:=Code.Source;
@@ -1595,12 +1620,17 @@ end;
 procedure TCompilerDirectivesTree.RaiseException(const ErrorMsg: string);
 begin
   fLastErrorMsg:=ErrorMsg;
-  raise ECDirectiveParserException.Create(Self,ErrorMsg);
+  fLastErrorPos:=AtomStart;
+  if Code<>nil then
+    Code.AbsoluteToLineCol(AtomStart,fLastErrorXY.Y,fLastErrorXY.X)
+  else
+    fLastErrorXY:=Point(0,0);
+  RaiseLastError;
 end;
 
 procedure TCompilerDirectivesTree.RaiseLastError;
 begin
-  raise ECDirectiveParserException.Create(Self,fLastErrorMsg);
+  raise ECDirectiveParserException.Create(Self, SrcPosToStr(fLastErrorPos)+' Error: '+ErrorMsg);
 end;
 
 procedure TCompilerDirectivesTree.RemoveEmptyNodes(var Changed: boolean);
@@ -1732,10 +1762,10 @@ begin
   Code:=aCode;
   NestedComments:=aNestedComments;
   InitParser;
-  
+
   repeat
     ReadRawNextPascalAtom(Src,SrcPos,AtomStart,NestedComments);
-    //DebugLn(['TCompilerDirectivesTree.Parse ',copy(Src,AtomStart,SrcPos-AtomStart)]);
+    //DebugLn(['TCompilerDirectivesTree.Parse ',NestedComments,' ',copy(Src,AtomStart,SrcPos-AtomStart)]);
     if SrcPos<=SrcLen then begin
       if (Src[AtomStart]='{') and (Src[AtomStart+1]='$') then begin
         // compiler directive
@@ -2273,6 +2303,19 @@ begin
   CodePos.Code:=Code;
   Code.AbsoluteToLineCol(Node.StartPos,CodePos.Y,CodePos.X);
   Result:=true;
+end;
+
+function TCompilerDirectivesTree.SrcPosToStr(p: integer;
+  WithFilename: boolean): string;
+var
+  Line: integer;
+  Column: integer;
+begin
+  if Code=nil then
+    exit('P='+IntToStr(p));
+  Result:=Code.Filename;
+  Code.AbsoluteToLineCol(p,Line,Column);
+  Result+='('+IntToStr(Line)+','+IntToStr(Column)+')';
 end;
 
 function TCompilerDirectivesTree.FindResourceDirective(const Filename: string;
