@@ -286,9 +286,14 @@ begin
 end;
 
 procedure TfrEvForm.ShowVarValue(Value: String);
+var
+    frValue: TfrValue;
 begin
   if Value='' then Exit;
-  with Doc.Values.FindVariable(Value) do
+  frValue := Doc.Values.FindVariable(Value);
+  if frValue=nil then
+    raise EParserError.Create('Undefined symbol: ' + Value);
+  with frValue do
     case Typ of
       vtNotAssigned:
         SetValTo(CurDataSet + '.' + sNotAssigned);
