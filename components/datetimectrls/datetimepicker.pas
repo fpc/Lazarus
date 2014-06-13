@@ -46,7 +46,7 @@ uses
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
   Classes, SysUtils, Controls, LCLType, Graphics, Math, StdCtrls, Buttons,
-  ExtCtrls, Forms, ComCtrls, Types, LMessages, LCLProc, CalControlWrapper;
+  ExtCtrls, Forms, ComCtrls, Types, LMessages, LazUTF8, CalControlWrapper;
 
 const
   { We will deal with the NullDate value the special way. It will be especially
