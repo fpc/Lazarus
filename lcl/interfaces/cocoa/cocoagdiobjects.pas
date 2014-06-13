@@ -1051,7 +1051,8 @@ begin
     S := NSStringUTF8(NewText);
     try
       FTextStorage.beginEditing;
-      FTextStorage.replaceCharactersInRange_withString(GetTextRange, S);
+      if S <> nil then
+        FTextStorage.replaceCharactersInRange_withString(GetTextRange, S);
       updateFont;
       updateColor;
       FTextStorage.endEditing;
