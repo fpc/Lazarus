@@ -104,6 +104,7 @@ type
      function  CupsPapersListValid: boolean;
      function  InternalGetResolution(ForX: boolean): Integer;
      {$IFDEF DebugCUPS}
+     procedure DebugCapabilities;
      procedure DebugPPD;
      {$ENDIF}
   protected

@@ -321,6 +321,40 @@ begin
     result := FCachedResolution.Y;
 end;
 
+procedure TCUPSPrinter.DebugCapabilities;
+var
+  flags: Integer;
+
+  procedure DumpCap(const aFlag: integer; const flagMsg, Desc: string; invert: boolean=false);
+  begin
+    if (invert and (aFlag and Flags=0)) or (not invert and (aFlag and Flags<>0)) then
+      DebugLn(flagMsg, '(',Desc,')');
+  end;
+begin
+  flags := GetAttributeInteger('printer-type',CUPS_PRINTER_LOCAL);
+  DebugLn('=== CAPABILITIES ===');
+  DebugLn;
+  DumpCap(CUPS_PRINTER_CLASS or CUPS_PRINTER_REMOTE, 'CUPS_PRINTER_LOCAL    ', 'Local printer or class    ', true);
+  DumpCap(CUPS_PRINTER_CLASS     , 'CUPS_PRINTER_CLASS    ', 'Printer class             ');
+  DumpCap(CUPS_PRINTER_REMOTE    , 'CUPS_PRINTER_REMOTE   ', 'Remote printer or class   ');
+  DumpCap(CUPS_PRINTER_BW        , 'CUPS_PRINTER_BW       ', 'Can do B&W printing       ');
+  DumpCap(CUPS_PRINTER_COLOR     , 'CUPS_PRINTER_COLOR    ', 'Can do color printing     ');
+  DumpCap(CUPS_PRINTER_DUPLEX    , 'CUPS_PRINTER_DUPLEX   ', 'Can do duplexing          ');
+  DumpCap(CUPS_PRINTER_STAPLE    , 'CUPS_PRINTER_STAPLE   ', 'Can staple output         ');
+  DumpCap(CUPS_PRINTER_COPIES    , 'CUPS_PRINTER_COPIES   ', 'Can do copies             ');
+  DumpCap(CUPS_PRINTER_COLLATE   , 'CUPS_PRINTER_COLLATE  ', 'Can collage copies        ');
+  DumpCap(CUPS_PRINTER_PUNCH     , 'CUPS_PRINTER_PUNCH    ', 'Can punch output          ');
+  DumpCap(CUPS_PRINTER_COVER     , 'CUPS_PRINTER_COVER    ', 'Can cover output          ');
+  DumpCap(CUPS_PRINTER_BIND      , 'CUPS_PRINTER_BIND     ', 'Can bind output           ');
+  DumpCap(CUPS_PRINTER_SORT      , 'CUPS_PRINTER_SORT     ', 'Can sort output           ');
+  DumpCap(CUPS_PRINTER_SMALL     , 'CUPS_PRINTER_SMALL    ', 'Can do Letter/Legal/A4    ');
+  DumpCap(CUPS_PRINTER_MEDIUM    , 'CUPS_PRINTER_MEDIUM   ', 'Can do Tabloid/B/C/A3/A2  ');
+  DumpCap(CUPS_PRINTER_LARGE     , 'CUPS_PRINTER_LARGE    ', 'Can do D/E/A1/A0          ');
+  DumpCap(CUPS_PRINTER_VARIABLE  , 'CUPS_PRINTER_VARIABLE ', 'Can do variable sizes     ');
+  DumpCap(CUPS_PRINTER_IMPLICIT  , 'CUPS_PRINTER_IMPLICIT ', 'Implicit class            ');
+  DumpCap(CUPS_PRINTER_DEFAULT   , 'CUPS_PRINTER_DEFAULT  ', 'Default printer on network');
+end;
+
 {$IFDEF DebugCUPS}
 procedure TCUPSPrinter.DebugPPD;
 const
@@ -448,6 +482,10 @@ begin
        aPrinterName:=fcupsPrinter^.Name
     else
        aPrinterName:='';
+
+    {$IFDEF DebugCUPS}
+    DebugOptions;
+    {$ENDIF}
 
     Result:=cupsdyn.cupsPrintFile(PChar(aPrinterName),PChar(aFileName),
                                   PChar(Self.Title),
@@ -1018,6 +1056,7 @@ begin
       fcupsPPDName:=Fn;
       {$IFDEF DebugCUPS}
       DebugPPD;
+      DebugCapabilities;
       {$ENDIF}
     end;
   end
