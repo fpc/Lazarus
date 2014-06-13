@@ -51,6 +51,7 @@ const
   FPCMsgIDThereWereErrorsCompiling = 10026;
   FPCMsgIDMethodIdentifierExpected = 3047;
   FPCMsgIDIdentifierNotFound = 5000;
+  FPCMsgIDChecksumChanged = 10028;
 
   FPCMsgAttrWorkerDirectory = 'WD';
   FPCMsgAttrMissingUnit = 'MissingUnit';
@@ -160,6 +161,7 @@ type
     fMsgItemMethodIdentifierExpected: TFPCMsgItem;
     fMsgItemIdentifierNotFound: TFPCMsgItem;
     fMsgItemThereWereErrorsCompiling: TFPCMsgItem;
+    fMsgItemChecksumChanged: TFPCMsgItem;
     fMsgItemUnitNotUsed: TFPCMsgItem;
     fOutputIndex: integer; // current OutputIndex given by ReadLine
     procedure FetchIncludePath(aPhase: TExtToolParserSyncPhase; MsgWorkerDir: String);
@@ -174,7 +176,6 @@ type
     function CheckForLinesCompiled(p: PChar): boolean; // ..lines compiled..
     function CheckForExecutableInfo(p: PChar): boolean;
     function CheckForLineProgress(p: PChar): boolean; // 600 206.521/231.648 Kb Used
-    function CheckForRecompilingChecksumChangedMessages(p: PChar): boolean;
     function CheckForLoadFromUnit(p: PChar): Boolean;
     function CheckForWindresErrors(p: PChar): boolean;
     function CreateMsgLine: TMessageLine;
@@ -1382,29 +1383,6 @@ begin
   AddMsgLine(MsgLine);
 end;
 
-function TIDEFPCParser.CheckForRecompilingChecksumChangedMessages(p: PChar
-  ): boolean;
-// example: Recompiling GtkInt, checksum changed for gdk2x
-var
-  OldStart: PChar;
-  MsgLine: TMessageLine;
-begin
-  Result:=fMsgID=10028;
-  if (fMsgID>0) and not Result then exit;
-  OldStart:=p;
-  if not Result then begin
-    if not CompStr('Recompiling ',p) then exit;
-    while not (p^ in [',',#0]) do inc(p);
-    if not CompStr(', checksum changed for ',p) then exit;
-    Result:=true;
-  end;
-  MsgLine:=CreateMsgLine;
-  MsgLine.SubTool :=SubToolFPC;
-  MsgLine.Urgency:=mluVerbose;
-  MsgLine.Msg:=OldStart;
-  AddMsgLine(MsgLine);
-end;
-
 function TIDEFPCParser.CheckForWindresErrors(p: PChar): boolean;
 // example: ...\windres.exe: warning: ...
 var
@@ -2439,8 +2417,6 @@ begin
   if CheckForInfos(p) then exit;
   // check for -vx output
   if CheckForExecutableInfo(p) then exit;
-  // check for Recompiling, checksum changed
-  if CheckForRecompilingChecksumChangedMessages(p) then exit;
   // check for Load from unit
   if CheckForLoadFromUnit(p) then exit;
   // check for windres errors
@@ -2464,6 +2440,8 @@ begin
   end
   else if IsMsgID(MsgLine,FPCMsgIDErrorWhileLinking,fMsgItemErrorWhileLinking) then
     AddLinkingMessages
+  else if IsMsgID(MsgLine,FPCMsgIDChecksumChanged,fMsgItemChecksumChanged) then
+    MsgLine.Urgency:=mluWarning
   else if IsMsgID(MsgLine,FPCMsgIDThereWereErrorsCompiling,
     fMsgItemThereWereErrorsCompiling)
   then
