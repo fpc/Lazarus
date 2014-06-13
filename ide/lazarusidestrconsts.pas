@@ -5715,7 +5715,6 @@ resourcestring
   lisCannotFindUnit = 'Cannot find unit %s';
   lisIncompatiblePpu = ', incompatible ppu=%s';
   lisPackage3 = ', package %s';
-  lisCanTFindPpuOfUnit = 'Can''t find ppu of unit %s';
   lisQuickFixError = 'QuickFix error';
   lisPositionOutsideOfSource = '%s (position outside of source';
   lisHideWithProjectOptionVm = 'Hide with project option (-vm%s)';

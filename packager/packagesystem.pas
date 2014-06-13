@@ -4427,6 +4427,7 @@ begin
   // clean up if wanted
   if CleanUp then begin
     if DeleteAllFilesInOutputDir then begin
+      // delete all files in output directory
       DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(OutputDir,true,false);
       if DirCache<>nil then begin
         CleanFiles:=TStringList.Create;
@@ -4434,6 +4435,8 @@ begin
           DirCache.GetFiles(CleanFiles,false);
           for i:=0 to CleanFiles.Count-1 do begin
             OutputFileName:=AppendPathDelim(OutputDir)+CleanFiles[i];
+            if ConsoleVerbosity>1 then
+              debugln(['clean up '+APackage.IDAsString+': '+OutputFileName]);
             Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
             if Result in [mrCancel,mrAbort] then exit;
           end;
@@ -4441,16 +4444,19 @@ begin
           CleanFiles.Free;
         end;
       end;
-    end;
-    for i:=0 to APackage.FileCount-1 do begin
-      CurFile:=APackage.Files[i];
-      if not (CurFile.FileType in PkgFileUnitTypes) then continue;
-      if not DeleteAllFilesInOutputDir then begin
-        // delete .ppu/.o file of each registered unit
+    end else begin
+      // delete .ppu/.o file of each registered unit
+      for i:=0 to APackage.FileCount-1 do begin
+        CurFile:=APackage.Files[i];
+        if not (CurFile.FileType in PkgFileUnitTypes) then continue;
         OutputFileName:=AppendPathDelim(OutputDir)+CurFile.Unit_Name+'.ppu';
+        if ConsoleVerbosity>1 then
+          debugln(['clean up '+APackage.IDAsString+': '+OutputFileName]);
         Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
         if Result in [mrCancel,mrAbort] then exit;
         OutputFileName:=ChangeFileExt(OutputFileName,'.o');
+        if ConsoleVerbosity>1 then
+          debugln(['clean up '+APackage.IDAsString+': '+OutputFileName]);
         Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
         if Result in [mrCancel,mrAbort] then exit;
       end;

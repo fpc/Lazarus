@@ -1650,30 +1650,71 @@ procedure TIDEFPCParser.ImproveMsgUnitNotFound(aPhase: TExtToolParserSyncPhase;
     end;
   end;
 
-  procedure FindPPUInInstalledPkgs(MissingUnitname: string;
-    var PPUFilename, PkgName: string);
+  procedure FindPPUFiles(MissingUnitname: string; PkgList: TFPList;
+    PPUFiles: TStringList // Strings:PPUFilename, Objects:TIDEPackage
+    );
   var
     i: Integer;
     Pkg: TIDEPackage;
     DirCache: TCTDirectoryCache;
+    PPUFilename: String;
     UnitOutDir: String;
   begin
-    // search ppu in installed packages
-    for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
-      Pkg:=PackageEditingInterface.GetPackages(i);
-      if Pkg.AutoInstall=pitNope then continue;
+    if PkgList=nil then exit;
+    for i:=0 to PkgList.Count-1 do begin
+      Pkg:=TIDEPackage(PkgList[i]);
       UnitOutDir:=Pkg.LazCompilerOptions.GetUnitOutputDirectory(false);
       //debugln(['TQuickFixUnitNotFoundPosition.Execute ',Pkg.Name,' UnitOutDir=',UnitOutDir]);
-      if FilenameIsAbsolute(UnitOutDir) then begin
-        DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(UnitOutDir,true,false);
-        PPUFilename:=DirCache.FindFile(MissingUnitname+'.ppu',ctsfcLoUpCase);
-        //debugln(['TQuickFixUnitNotFoundPosition.Execute ShortPPU=',PPUFilename]);
-        if PPUFilename<>'' then begin
-          PkgName:=Pkg.Name;
-          PPUFilename:=AppendPathDelim(DirCache.Directory)+PPUFilename;
-          break;
-        end;
+      if not FilenameIsAbsolute(UnitOutDir) then continue;
+      DirCache:=CodeToolBoss.DirectoryCachePool.GetCache(UnitOutDir,true,false);
+      PPUFilename:=DirCache.FindFile(MissingUnitname+'.ppu',ctsfcLoUpCase);
+      //debugln(['TQuickFixUnitNotFoundPosition.Execute ShortPPU=',PPUFilename]);
+      if PPUFilename='' then continue;
+      PPUFilename:=AppendPathDelim(DirCache.Directory)+PPUFilename;
+      PPUFiles.AddObject(PPUFilename,Pkg);
+    end;
+  end;
+
+  procedure FindPPUInInstalledPkgs(MissingUnitname: string;
+    PPUFiles: TStringList // Strings:PPUFilename, Objects:TIDEPackage
+    );
+  var
+    i: Integer;
+    Pkg: TIDEPackage;
+    PkgList: TFPList;
+  begin
+    // search ppu in installed packages
+    PkgList:=TFPList.Create;
+    try
+      for i:=0 to PackageEditingInterface.GetPackageCount-1 do begin
+        Pkg:=PackageEditingInterface.GetPackages(i);
+        if Pkg.AutoInstall=pitNope then continue;
+        PkgList.Add(Pkg);
       end;
+      FindPPUFiles(MissingUnitname,PkgList,PPUFiles);
+    finally
+      PkgList.Free;
+    end;
+  end;
+
+  procedure FindPPUInModuleAndDeps(MissingUnitname: string; Module: TObject;
+    PPUFiles: TStringList // Strings:PPUFilename, Objects:TIDEPackage
+    );
+  var
+    PkgList: TFPList;
+  begin
+    PkgList:=nil;
+    try
+      PackageEditingInterface.GetRequiredPackages(Module,PkgList);
+      if (Module is TIDEPackage) then begin
+        if PkgList=nil then
+          PkgList:=TFPList.Create;
+        if PkgList.IndexOf(Module)<0 then
+          PkgList.Add(Module);
+      end;
+      FindPPUFiles(MissingUnitname,PkgList,PPUFiles);
+    finally
+      PkgList.Free;
     end;
   end;
 
@@ -1718,6 +1759,8 @@ var
   PkgName: String;
   OnlyInstalled: Boolean;
   s: String;
+  PPUFiles: TStringList; // Strings:PPUFilename, Objects:TIDEPackage
+  i: Integer;
 begin
   if MsgLine.Urgency<mluError then exit;
   if not IsMsgID(MsgLine,FPCMsgIDCantFindUnitUsedBy,fMsgItemCantFindUnitUsedBy)
@@ -1791,6 +1834,7 @@ begin
   // fix line and column
   Owners:=nil;
   UsedByOwner:=nil;
+  PPUFiles:=TStringList.Create;
   try
     if CodeBuf<>nil then begin
       FixSourcePos(CodeBuf,MissingUnitname);
@@ -1811,29 +1855,27 @@ begin
       {$ENDIF}
       PkgName:='';
       OnlyInstalled:=IsFileInIDESrcDir(CodeBuf.Filename);
-      if OnlyInstalled and (PPUFilename='') then begin
-        FindPPUInInstalledPkgs(MissingUnitname,PPUFilename,PkgName);
-      end;
-
+      if OnlyInstalled then begin
+        FindPPUInInstalledPkgs(MissingUnitname,PPUFiles);
+      end else if UsedByOwner<>nil then
+        FindPPUInModuleAndDeps(MissingUnitName,UsedByOwner,PPUFiles);
       FindPackage(MissingUnitname,PkgName,OnlyInstalled);
-      if PPUFilename<>'' then begin
-        // there is a ppu file in the unit path
-        if PPUFilename<>'' then begin
-          // there is a ppu file, but the compiler didn't like it
-          // => change message
-          s:=Format(lisCannotFind, [MissingUnitname]);
-          if UsedByUnit<>'' then
-            s+=Format(lisUsedBy, [UsedByUnit]);
-          s+=Format(lisIncompatiblePpu, [PPUFilename]);
-          if PkgName<>'' then
-            s+=Format(lisPackage3, [PkgName]);
-        end else if PkgName<>'' then begin
-          // ppu is missing, but the package is known
-          // => change message
-          s:=Format(lisCanTFindPpuOfUnit, [MissingUnitname]);
-          if UsedByUnit<>'' then
-            s+=Format(lisUsedBy, [UsedByUnit]);
-          s+=Format(lisMaybePackageNeedsACleanRebuild, [PkgName]);
+      if PPUFiles.Count>0 then begin
+        // there is a ppu file, but the compiler didn't like it
+        // => change message
+        s:=Format(lisCannotFind, [MissingUnitname]);
+        if UsedByUnit<>'' then
+          s+=Format(lisUsedBy, [UsedByUnit]);
+        s+=Format(lisIncompatiblePpu, [PPUFilename]);
+        if PPUFiles.Count=1 then
+          s+=Format(lisPackage3, [TIDEPackage(PPUFiles.Objects[0]).Name])
+        else begin
+          s+=', multiple packages: ';
+          for i:=0 to PPUFiles.Count-1 do begin
+            if i>0 then
+              s+=', ';
+            s+=TIDEPackage(PPUFiles.Objects[i]).Name;
+          end;
         end;
       end else begin
         // there is no ppu file in the unit path
@@ -1862,6 +1904,7 @@ begin
       {$ENDIF}
     end;
   finally
+    PPUFiles.Free;
     Owners.Free;
   end;
 end;
