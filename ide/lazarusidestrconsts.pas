@@ -5706,6 +5706,9 @@ resourcestring
     +' package %s, try a clean rebuild, check implementation uses sections.';
   lisCheckIfPackageIsInTheDependencies = '. Check if package %s is in the '
     +'dependencies';
+  lisCheckIfPackageCreatesPpuCheckNothingDeletesThisFil = '. Check if package '
+    +'%s creates %s.ppu, check nothing deletes this file and check that no two'
+    +' packages have access to the unit source.';
   lisOfTheProjectInspector = ' of the Project Inspector';
   lisOfPackage = ' of package %s';
   lisCompileWithVdForMoreDetailsCheckForDuplicates = '%s -> Compile with -vd '

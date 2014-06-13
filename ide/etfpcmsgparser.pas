@@ -1761,6 +1761,7 @@ var
   s: String;
   PPUFiles: TStringList; // Strings:PPUFilename, Objects:TIDEPackage
   i: Integer;
+  DepOwner: TObject;
 begin
   if MsgLine.Urgency<mluError then exit;
   if not IsMsgID(MsgLine,FPCMsgIDCantFindUnitUsedBy,fMsgItemCantFindUnitUsedBy)
@@ -1888,6 +1889,12 @@ begin
           // two units of a package cannot find each other
           s+=Format(lisCheckSearchPathPackageTryACleanRebuildCheckImpleme, [
             TIDEPackage(UsedByOwner).Name]);
+        end else if (UsedByOwner<>nil) and (PkgName<>'')
+        and PackageEditingInterface.IsOwnerDependingOnPkg(UsedByOwner,PkgName,DepOwner)
+        then begin
+          // ppu file of an used package is missing
+          s+=Format(lisCheckIfPackageCreatesPpuCheckNothingDeletesThisFil, [
+            PkgName, MissingUnitName]);
         end else begin
           if PkgName<>'' then
             s+=Format(lisCheckIfPackageIsInTheDependencies, [PkgName]);
