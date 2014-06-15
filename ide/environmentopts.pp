@@ -66,6 +66,9 @@ const
   {$ENDIF}
 
   RestoreProjectClosed = '-';
+  DefaultMaxRecentOpenFiles = 10;
+  DefaultMaxRecentProjectFiles = 5;
+  DefaultMaxRecentPackageFiles = 10;
 
   //----------------------------------------------------------------------------
   
@@ -1023,11 +1026,11 @@ begin
 
   // recent files and directories
   FRecentOpenFiles:=TStringList.Create;
-  FMaxRecentOpenFiles:=10;
+  FMaxRecentOpenFiles:=DefaultMaxRecentOpenFiles;
   FRecentProjectFiles:=TStringList.Create;
-  FMaxRecentProjectFiles:=5;
+  FMaxRecentProjectFiles:=DefaultMaxRecentProjectFiles;
   FRecentPackageFiles:=TStringList.Create;
-  FMaxRecentPackageFiles:=10;
+  FMaxRecentPackageFiles:=DefaultMaxRecentPackageFiles;
   FOpenLastProjectAtStart:=true;
 
   // backup
@@ -1470,15 +1473,15 @@ begin
 
       // recent files and directories
       FMaxRecentOpenFiles:=XMLConfig.GetValue(
-        Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles);
+        Path+'Recent/OpenFiles/Max',DefaultMaxRecentOpenFiles);
       LoadRecentList(XMLConfig,FRecentOpenFiles,
         Path+'Recent/OpenFiles/',rltFile);
       FMaxRecentProjectFiles:=XMLConfig.GetValue(
-        Path+'Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
+        Path+'Recent/ProjectFiles/Max',DefaultMaxRecentProjectFiles);
       LoadRecentList(XMLConfig,FRecentProjectFiles,
         Path+'Recent/ProjectFiles/',rltFile);
       FMaxRecentPackageFiles:=XMLConfig.GetValue(
-        Path+'Recent/PackageFiles/Max',FMaxRecentOpenFiles);
+        Path+'Recent/PackageFiles/Max',DefaultMaxRecentPackageFiles);
       LoadRecentList(XMLConfig,FRecentPackageFiles,
         Path+'Recent/PackageFiles/',rltFile);
 
@@ -1855,20 +1858,20 @@ begin
         Ord(FShowMenuGlyphs), Ord(sbgSystem));
 
       // recent files and directories
-      XMLConfig.SetValue(
-        Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles);
+      XMLConfig.SetDeleteValue(
+        Path+'Recent/OpenFiles/Max',FMaxRecentOpenFiles,DefaultMaxRecentOpenFiles);
       SaveRecentList(XMLConfig,FRecentOpenFiles,
         Path+'Recent/OpenFiles/');
-      XMLConfig.SetValue(
-        Path+'Recent/ProjectFiles/Max',FMaxRecentProjectFiles);
+      XMLConfig.SetDeleteValue(
+        Path+'Recent/ProjectFiles/Max',FMaxRecentProjectFiles,DefaultMaxRecentProjectFiles);
       SaveRecentList(XMLConfig,FRecentProjectFiles,
         Path+'Recent/ProjectFiles/');
-      XMLConfig.SetValue(
-        Path+'Recent/PackageFiles/Max',FMaxRecentPackageFiles);
+      XMLConfig.SetDeleteValue(
+        Path+'Recent/PackageFiles/Max',FMaxRecentPackageFiles,DefaultMaxRecentPackageFiles);
       SaveRecentList(XMLConfig,FRecentPackageFiles,
         Path+'Recent/PackageFiles/');
 
-      XMLConfig.SetValue(Path+'Recent/AlreadyPopulated', FAlreadyPopulatedRecentFiles);
+      XMLConfig.SetDeleteValue(Path+'Recent/AlreadyPopulated', FAlreadyPopulatedRecentFiles, false);
 
       // external tools
       {$IFNDEF EnableOldExtTools}
