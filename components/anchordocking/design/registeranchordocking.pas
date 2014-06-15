@@ -547,7 +547,7 @@ begin
       except
         on E: Exception do begin
           IDEMessageDialog(adrsError,
-            Format(adrsErrorWritingWindowLayoutToFile, [Filename, #13, E.Message]),
+            Format(adrsErrorWritingWindowLayoutToFile, [Filename, LineEnding, E.Message]),
             mtError,[mbCancel]);
         end;
       end;
