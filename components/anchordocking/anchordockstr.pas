@@ -59,20 +59,16 @@ resourcestring
   adrsModalFormsCanNotBeMadeDockable = 'modal forms can not be made dockable';
   adrsControlIsAlreadyADocksite = 'control is already a docksite';
   adrsNotSupportedHasParent = 'Not supported: %s has parent %s';
-  adrsAnchorNotFoundNodeAnchors = 'Anchor not found: Node=%s%s%s Anchors[%s]=%'
-    +'s%s%s';
-  adrsAnchorIsNotSplitterNodeAnchors = 'Anchor is not splitter: Node=%s%s%s '
-    +'Anchors[%s]=%s%s%s';
+  adrsAnchorNotFoundNodeAnchors = 'Anchor not found: Node="%s" Anchors[%s]="%s"';
+  adrsAnchorIsNotSplitterNodeAnchors = 'Anchor is not splitter: Node="%s" Anchors[%s]="%s"';
   adrsAFreeSideOfASplitterMustNotBeAnchoredNodeTypeAncho = 'A free side of a '
-    +'splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s';
+    +'splitter must not be anchored: Node="%s" Type=%s Anchors[%s]="%s"';
   adrsAPageMustNotBeAnchoredNodeParentParentTypeAnchors = 'A page must not be '
-    +'anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s';
+    +'anchored: Node="%s" Parent=%s ParentType=%s Anchors[%s]="%s"';
   adrsAnchorToWrongSideOfSplitterNodeAnchors = 'Anchor to wrong side of '
-    +'splitter: Node=%s%s%s Anchors[%s]=%s%s%s';
-  adrsNoChildrenAllowedForNodeType = 'No children allowed for Node=%s%s%s '
-    +'Type=%s';
-  adrsCustomDockSiteCanHaveOnlyOneSite = 'Custom dock site %s%s%s can have '
-    +'only one site.';
+    +'splitter: Node="%s" Anchors[%s]="%s"';
+  adrsNoChildrenAllowedForNodeType = 'No children allowed for Node="%s" Type=%s';
+  adrsCustomDockSiteCanHaveOnlyOneSite = 'Custom dock site "%s" can have only one site.';
   adrsEmptyName = 'Empty name: ';
   adrsDuplicateName = 'Duplicate name: ';
   adrsDragThreshold = 'Drag threshold';
@@ -101,8 +97,7 @@ resourcestring
   adrsHideHeaderCaptionsForSitesWithOnlyOneDockedControl = 'Hide header '
     +'captions for sites with only one docked control, as that is already '
     +'shown in the normal window title';
-  adrsErrorWritingWindowLayoutToFile = 'Error writing window layout to file "%'
-    +'s"%s%s';
+  adrsErrorWritingWindowLayoutToFile = 'Error writing window layout to file "%s"%s%s';
   adrsToUseAnchordockingYouMustFirstUninstall = 'To use anchordocking you '
     +'must first uninstall %s';
   adrsThereIsAnotherDockMasterInstalledOnlyOneDockingPac = 'There is another '

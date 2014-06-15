@@ -1270,34 +1270,29 @@ begin
         Sibling:=Parent.FindChildNode(Anchors[Side],false);
       if (Sibling=nil) then
         raise EAnchorDockLayoutError.Create(
-          Format(adrsAnchorNotFoundNodeAnchors, ['"', Name, '"', dbgs(Side),
-            '"', Anchors[Side], '"']));
+          Format(adrsAnchorNotFoundNodeAnchors, [Name, dbgs(Side), Anchors[Side]]));
       // only anchor to splitter
       if not Sibling.IsSplitter then
         raise EAnchorDockLayoutError.Create(
-          Format(adrsAnchorIsNotSplitterNodeAnchors, ['"', Name, '"', dbgs(Side
-            ), '"', Anchors[Side], '"']));
+          Format(adrsAnchorIsNotSplitterNodeAnchors, [Name, dbgs(Side), Anchors[Side]]));
       // the free sides of a splitter must not be anchored
       if ((NodeType=adltnSplitterVertical) and (Side in [akLeft,akRight]))
       or ((NodeType=adltnSplitterHorizontal) and (Side in [akTop,akBottom]))
       then
         raise EAnchorDockLayoutError.Create(
-          Format(adrsAFreeSideOfASplitterMustNotBeAnchoredNodeTypeAncho, ['"',
-            Name, '"', ADLTreeNodeTypeNames[NodeType], dbgs(Side), '"', Anchors[
-            Side], '"']));
+          Format(adrsAFreeSideOfASplitterMustNotBeAnchoredNodeTypeAncho,
+                 [Name, ADLTreeNodeTypeNames[NodeType], dbgs(Side), Anchors[Side]]));
       // a page must not be anchored
       if (Parent.NodeType=adltnPages) then
         raise EAnchorDockLayoutError.Create(
-          Format(adrsAPageMustNotBeAnchoredNodeParentParentTypeAnchors, ['"',
-            Name, '"', Parent.Name, ADLTreeNodeTypeNames[Parent.NodeType], dbgs(
-            Side), '"', Anchors[Side], '"']));
+          Format(adrsAPageMustNotBeAnchoredNodeParentParentTypeAnchors,
+            [Name, Parent.Name, ADLTreeNodeTypeNames[Parent.NodeType], dbgs(Side), Anchors[Side]]));
       // check if anchored to the wrong side of a splitter
       if ((Sibling.NodeType=adltnSplitterHorizontal) and (Side in [akLeft,akRight]))
       or ((Sibling.NodeType=adltnSplitterVertical) and (Side in [akTop,akBottom]))
       then
         raise EAnchorDockLayoutError.Create(
-          Format(adrsAnchorToWrongSideOfSplitterNodeAnchors, ['"', Name, '"',
-            dbgs(Side), '"', Anchors[Side], '"']));
+          Format(adrsAnchorToWrongSideOfSplitterNodeAnchors, [Name, dbgs(Side), Anchors[Side]]));
     end;
   end;
 
@@ -1306,12 +1301,10 @@ begin
   and (not (NodeType in [adltnLayout,adltnPages,adltnCustomSite]))
   then
     raise EAnchorDockLayoutError.Create(
-      Format(adrsNoChildrenAllowedForNodeType, ['"', Name, '"',
-        ADLTreeNodeTypeNames[NodeType]]));
+      Format(adrsNoChildrenAllowedForNodeType, [Name, ADLTreeNodeTypeNames[NodeType]]));
   if (NodeType=adltnCustomSite) then begin
     if (Count>1) then
-      raise EAnchorDockLayoutError.Create(Format(
-        adrsCustomDockSiteCanHaveOnlyOneSite, ['"', Name, '"']));
+      raise EAnchorDockLayoutError.Create(Format(adrsCustomDockSiteCanHaveOnlyOneSite, [Name]));
   end;
 
   // check if in each corner sits exactly one child
