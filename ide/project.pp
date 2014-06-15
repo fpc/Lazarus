@@ -1294,14 +1294,14 @@ end;
 procedure TUnitEditorInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 begin
   IsVisibleTab := XMLConfig.GetValue(Path+'IsVisibleTab/Value', False);
-  PageIndex    := XMLConfig.GetValue(Path+'EditorIndex/Value',-1);
-  WindowID  := XMLConfig.GetValue(Path+'WindowIndex/Value',-1);
+  PageIndex    := XMLConfig.GetValue(Path+'EditorIndex/Value',0);
+  WindowID  := XMLConfig.GetValue(Path+'WindowIndex/Value',0);
   // update old data
   if (FPageIndex >= 0) and (FWindowID < 0) then
     WindowID := 1;
-  FTopLine  := XMLConfig.GetValue(Path+'TopLine/Value',-1);
-  CursorPos := Point(XMLConfig.GetValue(Path+'CursorPos/X',-1),
-                     XMLConfig.GetValue(Path+'CursorPos/Y',-1));
+  FTopLine  := XMLConfig.GetValue(Path+'TopLine/Value',1);
+  CursorPos := Point(XMLConfig.GetValue(Path+'CursorPos/X',1),
+                     XMLConfig.GetValue(Path+'CursorPos/Y',1));
   FFoldState := XMLConfig.GetValue(Path+'FoldState/Value', '');
   FIsLocked := XMLConfig.GetValue(Path+'IsLocked/Value', False);
   FSyntaxHighlighter := StrToLazSyntaxHighlighter(
@@ -1312,20 +1312,20 @@ end;
 procedure TUnitEditorInfo.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   SaveFold: Boolean);
 begin
-    XMLConfig.SetDeleteValue(Path+'IsVisibleTab/Value', FIsVisibleTab, False);
-    XMLConfig.SetDeleteValue(Path+'EditorIndex/Value', FPageIndex, -1);
-    XMLConfig.SetDeleteValue(Path+'WindowIndex/Value', FWindowID, -1);
-    XMLConfig.SetDeleteValue(Path+'TopLine/Value', FTopLine, -1);
-    XMLConfig.SetDeleteValue(Path+'CursorPos/X', FCursorPos.X, -1);
-    XMLConfig.SetDeleteValue(Path+'CursorPos/Y', FCursorPos.Y, -1);
-    XMLConfig.SetDeleteValue(Path+'IsLocked/Value', FIsLocked, False);
-    if SaveFold then
-      XMLConfig.SetDeleteValue(Path+'FoldState/Value', FoldState, '')
-    else
-      XMLConfig.DeletePath(Path+'FoldState');
-    XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
-                             LazSyntaxHighlighterNames[fSyntaxHighlighter],
-                             LazSyntaxHighlighterNames[UnitInfo.DefaultSyntaxHighlighter]);
+  XMLConfig.SetDeleteValue(Path+'IsVisibleTab/Value', FIsVisibleTab, False);
+  XMLConfig.SetDeleteValue(Path+'EditorIndex/Value', FPageIndex, 0);
+  XMLConfig.SetDeleteValue(Path+'WindowIndex/Value', FWindowID, 0);
+  XMLConfig.SetDeleteValue(Path+'TopLine/Value', FTopLine, 1);
+  XMLConfig.SetDeleteValue(Path+'CursorPos/X', FCursorPos.X, 1);
+  XMLConfig.SetDeleteValue(Path+'CursorPos/Y', FCursorPos.Y, 1);
+  XMLConfig.SetDeleteValue(Path+'IsLocked/Value', FIsLocked, False);
+  if SaveFold then
+    XMLConfig.SetDeleteValue(Path+'FoldState/Value', FoldState, '')
+  else
+    XMLConfig.DeletePath(Path+'FoldState');
+  XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
+                           LazSyntaxHighlighterNames[fSyntaxHighlighter],
+                           LazSyntaxHighlighterNames[UnitInfo.DefaultSyntaxHighlighter]);
 end;
 
 { TUnitEditorInfoList }
