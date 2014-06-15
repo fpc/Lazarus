@@ -3093,7 +3093,7 @@ procedure TProject.SaveSessionInfo(const Path: string);
 begin
   FXMLConfig.DeleteValue(Path+'General/ActiveEditorIndexAtStart/Value');
   FXMLConfig.SetDeleteValue(Path+'General/ActiveWindowIndexAtStart/Value',
-                         ActiveWindowIndexAtStart,-1);
+                         ActiveWindowIndexAtStart,0);
   FXMLConfig.SetDeleteValue('SkipCheckLCLInterfaces/Value',
                          FSkipCheckLCLInterfaces,false);
   FXMLConfig.SetDeleteValue(Path+'Build/CleanOutputFileMask/Value',
