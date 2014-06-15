@@ -23,7 +23,7 @@ type
     procedure btnResetOptionsFilterClick(Sender: TObject);
     procedure cbShowModifiedClick(Sender: TObject);
     procedure edOptionsFilterChange(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     FIdleConnected: Boolean;
     FOptionsReader: TCompilerOptReader;
@@ -66,6 +66,7 @@ end;
 
 destructor TfrmAllCompilerOptions.Destroy;
 begin
+  IdleConnected:=false;
   FGeneratedControls.Clear;
   FreeAndNil(FGeneratedControls);
   inherited Destroy;
@@ -76,7 +77,7 @@ begin
   Result := FOptionsReader.ToCustomOptions(aStrings, cbUseComments.Checked);
 end;
 
-procedure TfrmAllCompilerOptions.FormShow(Sender: TObject);
+procedure TfrmAllCompilerOptions.FormCreate(Sender: TObject);
 begin
   Caption:=lisAllOptions;
   edOptionsFilter.Hint := lisFilterTheAvailableOptionsList;
@@ -110,6 +111,8 @@ end;
 
 procedure TfrmAllCompilerOptions.SetIdleConnected(AValue: Boolean);
 begin
+  if csDestroying in ComponentState then
+    AValue:=false;
   if FIdleConnected = AValue then exit;
   FIdleConnected := AValue;
   if FIdleConnected then
@@ -132,9 +135,10 @@ var
   StartTime: TDateTime;
 begin
   IdleConnected := False;
+  if FOptionsThread=nil then exit;
   Screen.Cursor := crHourGlass;
   try
-    FOptionsThread.WaitFor;            // Make sure the options are read.
+    FOptionsThread.EndParsing;            // Make sure the options are read.
     if FOptionsReader.ErrorMsg <> '' then
       DebugLn(FOptionsReader.ErrorMsg)
     else begin

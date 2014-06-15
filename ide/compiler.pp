@@ -209,6 +209,8 @@ type
     procedure Clear;
     function UpdateTargetParam: Boolean;
     function ReadAndParseOptions: TModalResult;
+    function ParseOptions(OutputI, OutputH: TStringList): TModalResult;
+    procedure ReadCompiler(CompPath, Params: string; out OutputI, OutputH: TStringList);
     function FilterOptions(aFilter: string; aOnlySelected: Boolean): Boolean;
     function FindOptionById(aId: integer): TCompilerOpt;
     function FromCustomOptions(aStrings: TStrings): TModalResult;
@@ -228,12 +230,20 @@ type
   private
     fReader: TCompilerOptReader;
     fReadTime: TDateTime;
+    fCompPath: string;
+    fCompParams: string;
+    fOutputI: TStringList;
+    fOutputH: TStringList;
+    fStartedOnce: boolean;
     function GetErrorMsg: string;
+    procedure Clear; // (main thread)
   protected
     procedure Execute; override;
   public
     constructor Create(aReader: TCompilerOptReader);
     destructor Destroy; override;
+    procedure StartParsing; // (main thread)
+    procedure EndParsing; // (main thread)
   public
     property ReadTime: TDateTime read fReadTime;
     property ErrorMsg: string read GetErrorMsg;
@@ -1166,29 +1176,43 @@ function TCompilerOptReader.ReadAndParseOptions: TModalResult;
 // fpc -Fr$(FPCMsgFile) -h
 // fpc -Fr$(FPCMsgFile) -i
 var
-  Lines: TStringList;
+  OutputI: TStringList;
+  OutputH: TStringList;
+begin
+  if fCompilerExecutable = '' then
+    fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
+  try
+    ReadCompiler(fCompilerExecutable, fParsedTarget, OutputI, OutputH);
+    Result:=ParseOptions(OutputI, OutputH);
+  finally
+    OutputI.Free;
+    OutputH.Free;
+  end;
+end;
+
+function TCompilerOptReader.ParseOptions(OutputI, OutputH: TStringList
+  ): TModalResult;
 begin
   OptionIdCounter := 0;
   fErrorMsg := '';
-  if fCompilerExecutable = '' then
-    fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
+  if OutputI = Nil then Exit(mrCancel);
+  Result := ParseI(OutputI);
+  if Result <> mrOK then Exit;
+  if OutputH = Nil then Exit(mrCancel);
+  Result := ParseH(OutputH);
+end;
+
+procedure TCompilerOptReader.ReadCompiler(CompPath, Params: string; out
+  OutputI, OutputH: TStringList);
+begin
+  OutputH:=nil;
+  OutputI:=nil;
+  if CompPath = '' then
+    CompPath := 'fpc';        // Let's hope "fpc" is found in PATH.
   // FPC with option -i
-  Lines:=RunTool(fCompilerExecutable, fParsedTarget + ' -i');
-  try
-    if Lines = Nil then Exit(mrCancel);
-    Result := ParseI(Lines);
-    if Result <> mrOK then Exit;
-  finally
-    Lines.Free;
-  end;
+  OutputI:=RunTool(CompPath, Params + ' -i');
   // FPC with option -h
-  Lines:=RunTool(fCompilerExecutable, fParsedTarget + ' -h');
-  try
-    if Lines = Nil then Exit(mrCancel);
-    Result := ParseH(Lines);
-  finally
-    Lines.Free;
-  end;
+  OutputH:=RunTool(CompPath, Params + ' -h');
 end;
 
 function TCompilerOptReader.FilterOptions(aFilter: string; aOnlySelected: Boolean): Boolean;
@@ -1364,12 +1388,15 @@ constructor TCompilerOptThread.Create(aReader: TCompilerOptReader);
 begin
   inherited Create(True);
   //FreeOnTerminate:=True;
+  fStartedOnce:=false;
   fReader:=aReader;
-  fReader.UpdateTargetParam;
 end;
 
 destructor TCompilerOptThread.Destroy;
 begin
+  if fStartedOnce then
+    WaitFor;
+  Clear;
   inherited Destroy;
 end;
 
@@ -1378,17 +1405,51 @@ begin
   Result := fReader.ErrorMsg;
 end;
 
+procedure TCompilerOptThread.Clear;
+begin
+  FreeAndNil(fOutputH);
+  FreeAndNil(fOutputI);
+end;
+
+procedure TCompilerOptThread.StartParsing;
+begin
+  if fStartedOnce then
+    WaitFor;
+  fReader.CompilerExecutable:=LazarusIDE.GetFPCompilerFilename;;
+  fReader.UpdateTargetParam;
+  fCompPath:=fReader.CompilerExecutable;
+  fCompParams:=fReader.ParsedTarget;
+  Start;
+  fStartedOnce:=true;
+end;
+
+procedure TCompilerOptThread.EndParsing;
+begin
+  if fStartedOnce then
+    WaitFor;
+  if (fOutputI<>nil) or (fOutputH<>nil) then begin
+    try
+      fReader.ParseOptions(fOutputI,fOutputH);
+    except
+      on E: Exception do
+        fReader.ErrorMsg := 'Error parsing compiler output: '+E.Message;
+    end;
+    Clear;
+  end;
+end;
+
 procedure TCompilerOptThread.Execute;
 var
   StartTime: TDateTime;
 begin
   StartTime := Now;
   try
-    fReader.CompilerExecutable := LazarusIDE.GetFPCompilerFilename;
-    fReader.ReadAndParseOptions;
+    if fOutputI<>nil then exit;
+    if fOutputH<>nil then exit;
+    fReader.ReadCompiler(fCompPath,fCompParams,fOutputI,fOutputH);
   except
     on E: Exception do
-      fReader.ErrorMsg := 'Error parsing options: '+E.Message;
+      fReader.ErrorMsg := 'Error reading compiler: '+E.Message;
   end;
   fReadTime := Now-StartTime;
 end;

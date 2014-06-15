@@ -6,7 +6,7 @@ object frmAllCompilerOptions: TfrmAllCompilerOptions
   Caption = 'frmAllCompilerOptions'
   ClientHeight = 497
   ClientWidth = 622
-  OnShow = FormShow
+  OnCreate = FormCreate
   LCLVersion = '1.3'
   object sbAllOptions: TScrollBox
     Left = 0

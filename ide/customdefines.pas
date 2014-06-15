@@ -161,7 +161,7 @@ begin
   IdleConnected := False;
   Screen.Cursor := crHourGlass;
   try
-    FOptionsThread.WaitFor;            // Make sure the options are read.
+    FOptionsThread.EndParsing;            // Make sure the options are read.
     // Parse and separate defines from other options.
     FOptionsReader.FromCustomOptions(FCustomOptions);
     // Check the found defines in the GUI.

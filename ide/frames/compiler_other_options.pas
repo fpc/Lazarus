@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, math, AVL_Tree, LazLogger, Forms, Controls, Graphics,
   Dialogs, StdCtrls, LCLProc, ComCtrls, LCLType, ExtCtrls, Buttons,
   CodeToolsCfgScript, KeywordFuncLists, LazarusIDEStrConsts,
-  IDEOptionsIntf, CompOptsIntf, IDECommands, Project, PackageDefs,
+  IDEOptionsIntf, CompOptsIntf, IDECommands, LazIDEIntf, Project, PackageDefs,
   CompilerOptions, Compiler, AllCompilerOptions, CustomDefines,
   EditorOptions, SynEdit, SynEditKeyCmds, SynCompletion, SourceSynEditor;
 
@@ -366,18 +366,15 @@ begin
   if Value then begin
     if Assigned(fOptionsThread) then
     begin
-      fOptionsThread.WaitFor;       // Make sure the thread has finished running.
+      fOptionsThread.EndParsing;       // Make sure the thread has finished running.
       if FOptionsReader.UpdateTargetParam then begin
-        // Does not happen because UpdateTargetParam uses global macros
-        //  which change only after closing the options window.
-        // This code is here for future refactoring, to react to changed target in GUI.
         FOptionsReader.Clear;
-        fOptionsThread.Start;       // Read new options.
+        fOptionsThread.StartParsing;   // Read new options.
       end;
     end
     else begin
       fOptionsThread := TCompilerOptThread.Create(FOptionsReader);
-      fOptionsThread.Start;
+      fOptionsThread.StartParsing;
     end;
   end;
 end;
@@ -391,6 +388,8 @@ end;
 
 procedure TCompilerOtherOptionsFrame.SetIdleConnected(AValue: Boolean);
 begin
+  if csDestroying in ComponentState then
+    AValue:=false;
   if FIdleConnected=AValue then exit;
   FIdleConnected:=AValue;
   if FIdleConnected then
@@ -675,6 +674,7 @@ end;
 
 destructor TCompilerOtherOptionsFrame.Destroy;
 begin
+  IdleConnected:=false;
   FreeAndNil(fOptionsThread);
   FreeAndNil(FOptionsReader);
   FreeAndNil(FCompletionHistory);
