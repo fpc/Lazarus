@@ -212,8 +212,7 @@ begin
   ProcName:=GetProcName;
   if (ProcName='') or (not IsValidIdent(ProcName)) then begin
     IDEMessageDialog(lisInvalidProcName,
-      Format(lisSVUOisNotAValidIdentifier, ['"', ProcName, '"']),
-      mtError,[mbCancel]);
+      Format(lisSVUOisNotAValidIdentifier, [ProcName]), mtError,[mbCancel]);
     ModalResult:=mrNone;
     exit;
   end;

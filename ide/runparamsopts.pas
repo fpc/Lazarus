@@ -468,11 +468,10 @@ begin
     OpenDialog.Filename := HostApplicationEdit.Text;
     if OpenDialog.Execute then
     begin
-      if (FileIsExecutable(OpenDialog.Filename)) or
-        (IDEMessageDialog(lisRunParamsFileNotExecutable,
-        Format(lisRunParamsTheHostApplicationIsNotExecutable,
-        ['"', OpenDialog.Filename, '"']), mtWarning, [mbCancel, mbIgnore]) =
-        mrIgnore) then
+      if (FileIsExecutable(OpenDialog.Filename))
+      or (IDEMessageDialog(lisRunParamsFileNotExecutable,
+        Format(lisRunParamsTheHostApplicationIsNotExecutable,[OpenDialog.Filename]),
+        mtWarning, [mbCancel, mbIgnore]) = mrIgnore) then
       begin
         HostApplicationEdit.Text := OpenDialog.Filename;
       end;

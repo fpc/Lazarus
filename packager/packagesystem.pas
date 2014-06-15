@@ -4512,8 +4512,8 @@ var
       if (AmbiguousFilename='') then exit;
       if not YesToAll then
         Result:=IDEMessageDialog(lisAmbiguousUnitFound,
-          Format(lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac, ['"',
-            AmbiguousFilename, '"', LineEnding, APackage.IDAsString, LineEnding, LineEnding]),
+          Format(lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac,
+            [AmbiguousFilename, LineEnding, APackage.IDAsString, LineEnding, LineEnding]),
           mtWarning,[mbYes,mbYesToAll,mbNo,mbAbort])
       else
         Result:=mrYesToAll;

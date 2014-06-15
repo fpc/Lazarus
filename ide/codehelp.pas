@@ -1470,7 +1470,7 @@ begin
         DebugLn(['TCodeHelpManager.LoadFPDocFile '+ADocFile.DocErrorMsg]);
         if not (chofQuiet in Flags) then begin
           IDEMessageDialog(lisErrorReadingXML,
-            Format(lisErrorReadingXmlFile, ['"', CurFilename, '"', LineEnding, E.Message]),
+            Format(lisErrorReadingXmlFile, [CurFilename, LineEnding, E.Message]),
             mtError, [mbCancel]);
         end;
       end;

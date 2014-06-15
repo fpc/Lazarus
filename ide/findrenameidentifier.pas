@@ -584,8 +584,7 @@ begin
   NewIdentifier:=NewEdit.Text;
   if (NewIdentifier='') or (not IsValidIdent(NewIdentifier)) then begin
     IDEMessageDialog(lisFRIInvalidIdentifier,
-      Format(lisSVUOisNotAValidIdentifier, ['"', NewIdentifier, '"']), mtError,
-        [mbCancel]);
+      Format(lisSVUOisNotAValidIdentifier, [NewIdentifier]), mtError, [mbCancel]);
     ModalResult:=mrNone;
     exit;
   end;

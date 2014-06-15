@@ -793,8 +793,7 @@ begin
   except
     on E: Exception do begin
       MessageDlg(lisCodeToolsDefsWriteError,
-        Format(lisErrorWritingPackageListToFile,
-              [LineEnding, AFilename, LineEnding, E.Message]),
+        Format(lisErrorWritingPackageListToFile,[LineEnding,AFilename,LineEnding,E.Message]),
         mtError, [mbCancel], 0);
     end;
   end;
@@ -863,8 +862,7 @@ begin
   except
     on E: Exception do begin
       MessageDlg(lisCodeToolsDefsReadError,
-        Format(lisErrorReadingPackageListFromFile,
-               [LineEnding, AFilename, LineEnding, E.Message]),
+        Format(lisErrorReadingPackageListFromFile,[LineEnding,AFilename,LineEnding,E.Message]),
         mtError, [mbCancel], 0);
     end;
   end;

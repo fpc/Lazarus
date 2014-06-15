@@ -86,7 +86,7 @@ begin
   v:=Trim(VariableEdit.Text);
   if not IsValidIdent(v) then begin
     if IDEMessageDialog(lisSVUOInvalidVariableName,
-      Format(lisSVUOisNotAValidIdentifier, ['"', v, '"']),
+      Format(lisSVUOisNotAValidIdentifier, [v]),
       mtWarning,[mbCancel,mbIgnore])=mrCancel
     then ModalResult := mrNone; //cancel close
   end;

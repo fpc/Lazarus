@@ -1556,8 +1556,8 @@ begin
     on E: Exception do begin
       DebugLn('TDesigner.InvokeComponentEditor ERROR: ',E.Message);
       IDEMessageDialog(Format(lisErrorIn, [CompEditor.ClassName]),
-        Format(lisTheComponentEditorOfClassHasCreatedTheError, ['"',
-          CompEditor.ClassName, '"', LineEnding, '"', E.Message, '"']),
+        Format(lisTheComponentEditorOfClassHasCreatedTheError,
+               [CompEditor.ClassName, LineEnding, E.Message]),
         mtError,[mbOk]);
     end;
   end;
@@ -3168,9 +3168,9 @@ begin
     on E: Exception do begin
       DebugLn('TDesigner.OnComponentEditorVerbMenuItemClick ERROR: ',E.Message);
       IDEMessageDialog(Format(lisErrorIn, [PopupMenuComponentEditor.ClassName]),
-        Format(lisTheComponentEditorOfClassInvokedWithVerbHasCreated, ['"',
-          PopupMenuComponentEditor.ClassName, '"', LineEnding, IntToStr(Verb), '"',
-          VerbCaption, '"', LineEnding, LineEnding, '"', E.Message, '"']),
+        Format(lisTheComponentEditorOfClassInvokedWithVerbHasCreated,
+               [PopupMenuComponentEditor.ClassName, LineEnding, IntToStr(Verb),
+                VerbCaption, LineEnding, LineEnding, E.Message]),
         mtError,[mbOk]);
     end;
   end;

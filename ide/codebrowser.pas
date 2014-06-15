@@ -661,8 +661,7 @@ begin
     end;
     OpenMenuItem.Visible:=true;
     CopyDescriptionMenuItem.Caption:=lisCopyDescription;
-    CopyIdentifierMenuItem.Caption:=Format(lisCopyIdentifier, ['"', Identifier,
-     '"']);
+    CopyIdentifierMenuItem.Caption:=Format(lisCopyIdentifier, [Identifier]);
     CopyDescriptionMenuItem.Visible:=true;
     CopyIdentifierMenuItem.Visible:=Identifier<>'';
     CopySeparatorMenuItem.Visible:=true;

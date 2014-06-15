@@ -759,11 +759,11 @@ resourcestring
   lisBusy = 'Busy';
   lisCanNotTestTheCompilerWhileDebuggingOrCompiling = 'Cannot test the '
     +'compiler while debugging or compiling.';
-  lisProjectSuccessfullyBuilt = 'Project %s%s%s successfully built';
+  lisProjectSuccessfullyBuilt = 'Project "%s" successfully built';
   lisExecutingCommandBefore = 'Executing command before';
   lisProject2 = 'Project: ';
   lisExecutingCommandAfter = 'Executing command after';
-  lisNoProgramFileSFound = 'No program file %s%s%s found.';
+  lisNoProgramFileSFound = 'No program file "%s" found.';
   lisNotNow = 'Not now';
   lisYouCanNotBuildLazarusWhileDebuggingOrCompiling = 'You cannot build '
     +'Lazarus while debugging or compiling.';
@@ -820,13 +820,12 @@ resourcestring
     +'warnings by inserting IDE directives {%H-}';
   lisHideMessageAtByInsertingIDEDirectiveH = 'Hide message at %s by inserting '
     +'IDE directive {%H-}';
-  lisHideMessageByInsertingIDEDirectiveH = 'Hide message by inserting IDE '
-    +'directive {%H-}';
-  lisOIFClassNotFound = 'Class %s%s%s not found.';
-  lisClassIsNotARegisteredComponentClassUnableToPaste = 'Class %s%s%s is not '
+  lisHideMessageByInsertingIDEDirectiveH = 'Hide message by inserting IDE directive {%H-}';
+  lisOIFClassNotFound = 'Class "%s" not found.';
+  lisClassIsNotARegisteredComponentClassUnableToPaste = 'Class "%s" is not '
     +'a registered component class.%sUnable to paste.';
   lisControlNeedsParent = 'Control needs parent';
-  lisTheClassIsATControlAndCanNotBePastedOntoANonContro = 'The class %s%s%s '
+  lisTheClassIsATControlAndCanNotBePastedOntoANonContro = 'The class "%s" '
     +'is a TControl and cannot be pasted onto a non control.%sUnable to paste.';
   lisConversionError = 'Conversion error';
   lisUnableToConvertComponentTextIntoBinaryFormat = 'Unable to convert '
@@ -843,24 +842,23 @@ resourcestring
   lisNoResourceStringSectionFound = 'No ResourceString Section found';
   lisUnableToFindAResourceStringSectionInThisOrAnyOfThe = 'Unable to find a '
     +'ResourceString section in this or any of the used units.';
-  lisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
-    +'valid identifier';
+  lisComponentNameIsNotAValidIdentifier = 'Component name "%s" is not a valid identifier';
   lisComponentNameIsAPascalKeyword = 'Component name "%s" is a Pascal keyword.';
   lisOwnerIsAlreadyUsedByTReaderTWriterPleaseChooseAnot = '''Owner'' is '
     +'already used by TReader/TWriter. Please choose another name.';
   lisDuplicateNameAComponentNamedAlreadyExistsInTheInhe = 'Duplicate name: A '
-    +'component named %s%s%s already exists in the inherited component %s';
-  lisComponentNameIsKeyword = 'Component name %s%s%s is keyword';
+    +'component named "%s" already exists in the inherited component %s';
+  lisComponentNameIsKeyword = 'Component name "%s" is keyword';
   lisThereIsAlreadyAComponentClassWithTheName = 'There is already a component '
     +'class with the name %s.';
   lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus = 'The unit itself '
-    +'has already the name %s%s%s. Pascal identifiers must be unique.';
+    +'has already the name "%s". Pascal identifiers must be unique.';
   lisUnableToRenameVariableInSource = 'Unable to rename variable in source.';
   lisUnableToUpdateCreateFormStatementInProjectSource = 'Unable to update '
     +'CreateForm statement in project source';
-  lisThereIsAlreadyAFormWithTheName = 'There is already a form with the name %s%s%s';
+  lisThereIsAlreadyAFormWithTheName = 'There is already a form with the name "%s"';
   lisThereIsAlreadyAUnitWithTheNamePascalIdentifiersMus = 'There is already a '
-    +'unit with the name %s%s%s. Pascal identifiers must be unique.';
+    +'unit with the name "%s". Pascal identifiers must be unique.';
   lisThisComponentAlreadyContainsAClassWithTheName = 'This component already '
     +'contains a class with the name %s.';
   lisSeeMessages = 'See messages.';
@@ -872,7 +870,7 @@ resourcestring
     +'FPC and the FPC sources from http://sourceforge.net/projects/lazarus/?'
     +'source=directory';
   lisSaveChanges = 'Save changes?';
-  lisSaveFileBeforeClosingForm = 'Save file %s%s%s%sbefore closing form %s%s%s?';
+  lisSaveFileBeforeClosingForm = 'Save file "%s"%sbefore closing form "%s"?';
   lisUnableToRenameFormInSource = 'Unable to rename form in source.';
   lisTheComponentIsInheritedFromToRenameAnInheritedComp = 'The component %s '
     +'is inherited from %s.%sTo rename an inherited component open the '
@@ -883,7 +881,7 @@ resourcestring
   lisPleaseFixTheErrorInTheMessageWindow = 'Please fix the error shown in the'
     +' message window, which is normally below the source editor.';
   lisMethodClassNotFound = 'Method class not found';
-  lisClassOfMethodNotFound = 'Class %s%s%s of method %s%s%s not found.';
+  lisClassOfMethodNotFound = 'Class "%s" of method "%s" not found.';
   lisUnableToRenameMethodPleaseFixTheErrorShownInTheMessag = 'Unable to rename '
     +'method. Please fix the error shown in the message window.';
   lisStopDebugging = 'Stop Debugging?';
@@ -901,7 +899,7 @@ resourcestring
     +'the new FPC resources, which requires at least FPC 2.4';
   lisInfoBuildError = 'Error ...';
   lisCreateDirectory = 'Create directory?';
-  lisTheOutputDirectoryIsMissing = 'The output directory %s%s%s is missing.';
+  lisTheOutputDirectoryIsMissing = 'The output directory "%s" is missing.';
   lisCreateIt = 'Create it';
   lisInfoBuildSuccess = 'Success ...';
   lisInfoBuildAbort = 'Aborted ...';
@@ -928,8 +926,8 @@ resourcestring
   lisIECOLoadOrSaveCompilerOptions = 'Load or Save Compiler Options';
   lisIECOErrorAccessingXml = 'Error accessing xml';
   lisIECOErrorLoadingXml = 'Error loading xml';
-  lisIECOErrorLoadingXmlFile = 'Error loading xml file %s%s%s:%s%s';
-  lisIECOErrorAccessingXmlFile = 'Error accessing xml file %s%s%s:%s%s';
+  lisIECOErrorLoadingXmlFile = 'Error loading xml file "%s":%s%s';
+  lisIECOErrorAccessingXmlFile = 'Error accessing xml file "%s":%s%s';
   lisIECORecentFiles = 'Recent files';
   lisIECOSaveToRecent = 'Save to recent';
   lisIECOLoadRecent = 'Load recent';
@@ -937,7 +935,7 @@ resourcestring
   lisIECOLoadFromFile = 'Load from file';
   lisLazarusFile = 'Lazarus file';
   lisDebugUnableToLoadFile = 'Unable to load file';
-  lisDebugUnableToLoadFile2 = 'Unable to load file %s%s%s.';
+  lisDebugUnableToLoadFile2 = 'Unable to load file "%s".';
   lisOpenProjectFile = 'Open Project File';
   lisLazarusProjectInfoFile = 'Lazarus Project Info file';
   lisAllFiles = 'All Files';
@@ -1355,7 +1353,7 @@ resourcestring
   lisEnvOptDlgInvalidDebuggerFilename = 'Invalid debugger filename';
   lisEnvOptDlgInvalidDebuggerFilenameMsg = 'The debugger file "%s" is not an executable.';
   lisEnvOptDlgDirectoryNotFound = 'Directory not found';
-  lisDirectoryNotFound = 'Directory %s%s%s not found.';
+  lisDirectoryNotFound = 'Directory "%s" not found.';
   lisRemoveFromSearchPath = 'Remove from search path';
   lisTheDirectoryWasNotFound = 'The directory %s was not found.';
   lisInstallationFailed = 'Installation failed';
@@ -2200,7 +2198,7 @@ resourcestring
   lisTreeNeedsRefresh = 'Tree needs refresh';
   lisEMDEmptyMethods = 'Empty Methods';
   lisEMDSearchInTheseClassSections = 'Search in these class sections:';
-  lisUnableToLoadPackage = 'Unable to load package %s%s%s';
+  lisUnableToLoadPackage = 'Unable to load package "%s"';
   lisSAMThisMethodCanNotBeOverriddenBecauseItIsDefinedInTh = 'This method can '
     +'not be overridden because it is defined in the current class';
   lisSAMIsAnAbstractClassItHasAbstractMethods = '%s is an abstract class, it '
@@ -2359,7 +2357,7 @@ resourcestring
   dlgRunOUserOverrides = 'User overrides';
   dlgIncludeSystemVariables = 'Include system variables';
   lisRunParamsFileNotExecutable = 'File not executable';
-  lisRunParamsTheHostApplicationIsNotExecutable = 'The host application %s%s%s is not executable.';
+  lisRunParamsTheHostApplicationIsNotExecutable = 'The host application "%s" is not executable.';
   dlgTextToFind = '&Text to find';
   dlgReplaceWith = '&Replace with';
   dlgFROpts = 'Options';
@@ -2415,7 +2413,7 @@ resourcestring
   lisRoot = 'Root';
   lisCopyDescription = 'Copy description to clipboard';
   lisUseIdentifierInAt = 'Use identifier %s in %s at %s';
-  lisCopyIdentifier = 'Copy %s%s%s to clipboard';
+  lisCopyIdentifier = 'Copy "%s" to clipboard';
   lisExpandAllPackages = 'Expand all packages';
   lisCollapseAllPackages = 'Collapse all packages';
   lisExpandAllUnits = 'Expand all units';
@@ -2496,12 +2494,11 @@ resourcestring
   uemBookmarkN = 'Bookmark';
   lisChangeEncoding = 'Change Encoding';
   lisChangeFile = 'Change file';
-  lisEncodingOfFileOnDiskIsNewEncodingIs =
-    'Encoding of file %s%s%s%son disk is %s. New encoding is %s.';
+  lisEncodingOfFileOnDiskIsNewEncodingIs = 'Encoding of file "%s"%son disk is %s. New encoding is %s.';
   lisReopenWithAnotherEncoding = 'Reopen with another encoding';
   lisAbandonChanges = 'Abandon changes?';
-  lisAllYourModificationsToWillBeLostAndTheFileReopened = 'All your modificatio'
-    +'ns to %s%s%s%swill be lost and the file reopened.';
+  lisAllYourModificationsToWillBeLostAndTheFileReopened = 'All your modifications '
+    +'to "%s"%swill be lost and the file reopened.';
   lisOpenLfm = 'Open %s';
   lisUtf8WithBOM = 'UTF-8 with BOM';
   uemToggleBookmark = '&Toggle Bookmark';
@@ -2559,14 +2556,13 @@ resourcestring
   lisThereWasAnErrorWhileCopyingTheComponentStreamToCli = 'There was an error '
     +'while copying the component stream to clipboard:%s%s';
   lisErrorIn = 'Error in %s';
-  lisTheComponentEditorOfClassInvokedWithVerbHasCreated = 'The component '
-    +'editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the '
-    +'error:%s%s%s%s';
+  lisTheComponentEditorOfClassInvokedWithVerbHasCreated = 'The component editor of '
+    +'class "%s"%sinvoked with verb #%s "%s"%shas created the error:%s"%s"';
   lisReset = 'Reset';
   lisResetLeftTopWidthHeightOfSelectedComponentsToTheir = 'Reset Left, Top, '
     +'Width, Height of selected components to their ancestor values?';
   lisTheComponentEditorOfClassHasCreatedTheError = 'The component editor of '
-    +'class %s%s%s has created the error:%s%s%s%s';
+    +'class "%s" has created the error:%s"%s"';
   fdInvalidMultiselectionText='Multiselected components must be of a single form.';
   lisInvalidDelete = 'Invalid delete';
   lisTheComponentIsInheritedFromToDeleteAnInheritedComp = 'The component %s '
@@ -3345,7 +3341,7 @@ resourcestring
   lisCodeTemplChange = 'Change';
   lisCodeTemplToken = 'Token:';
   lisCodeTemplComment = 'Comment:';
-  lisCodeTemplATokenAlreadyExists = ' A token %s%s%s already exists! ';
+  lisCodeTemplATokenAlreadyExists = ' A token "%s" already exists! ';
   lisCodeTemplError = 'Error';
   lisUnableToFindTheComponentClassItIsNotRegisteredViaR = 'Unable to find the '
     +'component class "%s".%sIt is not registered via RegisterClass and no lfm'
@@ -3368,8 +3364,8 @@ resourcestring
   lisMakeResStrPleaseChooseAResourcestring = 'Please choose a resourcestring '
     +'section from the list.';
   lisMakeResStrResourcestringAlreadyExis = 'Resourcestring already exists';
-  lisMakeResStrChooseAnotherName = 'The resourcestring %s%s%s already exists.%'
-    +'sPlease choose another name.%sUse Ignore to add it anyway.';
+  lisMakeResStrChooseAnotherName = 'The resourcestring "%s" already exists.'
+    +'%sPlease choose another name.%sUse Ignore to add it anyway.';
   lisMakeResStrStringConstantInSource = 'String constant in source';
   lisMakeResStrConversionOptions = 'Conversion Options';
   lisMakeResStrIdentifierPrefix = 'Identifier prefix:';
@@ -3446,8 +3442,7 @@ resourcestring
   lisUESearchStringNotFound = 'Search string ''%s'' not found!';
   lisUESearchStringContinueBeg = 'Continue search from the beginning?';
   lisUESearchStringContinueEnd = 'Continue search from the end?';
-  lisUEReplaceThisOccurrenceOfWith = 'Replace this occurrence of %s%s%s%s '
-    +'with %s%s%s?';
+  lisUEReplaceThisOccurrenceOfWith = 'Replace this occurrence of "%s"%s with "%s"?';
   lisUESearching = 'Searching: %s';
   lisUEModeSeparator = '/';
   lisUEGotoLine = 'Goto line:';
@@ -3464,7 +3459,7 @@ resourcestring
   
   // System Variables Override Dialog
   lisSVUOInvalidVariableName = 'Invalid variable name';
-  lisSVUOisNotAValidIdentifier = '%s%s%s is not a valid identifier.';
+  lisSVUOisNotAValidIdentifier = '"%s" is not a valid identifier.';
   lisFRIIdentifier = 'Identifier: %s';
   lisSVUOOverrideSystemVariable = 'Override system variable';
   
@@ -3550,8 +3545,7 @@ resourcestring
   lisUnableToDeleteAmbiguousFile = 'Unable to delete ambiguous file "%s"';
   lisErrorRenamingFile = 'Error renaming file';
   lisUnableToRenameAmbiguousFileTo = 'Unable to rename ambiguous file "%s"%sto "%s"';
-  lisWarningAmbiguousFileFoundSourceFileIs = 'Warning: ambiguous file found: %'
-    +'s%s%s. Source file is: %s%s%s';
+  lisWarningAmbiguousFileFoundSourceFileIs = 'Warning: ambiguous file found: "%s". Source file is: "%s"';
   lisAmbiguousFileFound = 'Ambiguous file found';
   lisThereIsAFileWithTheSameNameAndASimilarExtension = 'There is a file with '
     +'the same name and a similar extension ond disk%sFile: %s%sAmbiguous '
@@ -3563,7 +3557,7 @@ resourcestring
     +'Version is lower than the Minimim Version.';
   lisProjAddInvalidPackagename = 'Invalid packagename';
   lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag = 'The package '
-    +'name %s%s%s is invalid.%sPlase choose an existing package.';
+    +'name "%s" is invalid.%sPlase choose an existing package.';
   lisProjAddDependencyAlreadyExists = 'Dependency already exists';
   lisVersionMismatch = 'Version mismatch';
   lisUnableToAddTheDependencyBecauseThePackageHasAlread = 'Unable to add the '
@@ -3572,7 +3566,7 @@ resourcestring
   lisUnableToAddTheDependencyBecauseThisWouldCreateA = 'Unable to add the '
     +'dependency %s, because this would create a circular dependency. Dependency %s';
   lisProjAddTheProjectHasAlreadyADependency = 'The project has already a '
-    +'dependency for the package %s%s%s.';
+    +'dependency for the package "%s".';
   lisProjAddPackageNotFound = 'Package not found';
   lisLDTheUnitIsNotOwnedBeAnyPackageOrProjectPleaseAddThe = 'The unit %s is '
     +'not owned be any package or project.%sPlease add the unit to a package '
@@ -3588,23 +3582,22 @@ resourcestring
   lisLDDoesNotHaveAnyValidFPDocPathUnableToCreateTheFpdo = '%s does not have '
     +'any valid FPDoc path.%sUnable to create the fpdoc file for %s';
   lisErrorReadingXML = 'Error reading XML';
-  lisErrorReadingXmlFile = 'Error reading xml file %s%s%s%s%s';
+  lisErrorReadingXmlFile = 'Error reading xml file "%s"%s%s';
   lisPkgThisFileIsNotInAnyLoadedPackage = 'This file is not in any loaded package.';
-  lisProjAddTheDependencyWasNotFound = 'The dependency %s%s%s was not found.%'
-    +'sPlease choose an existing package.';
+  lisProjAddTheDependencyWasNotFound = 'The dependency "%s" was not found.%sPlease choose an existing package.';
   lisProjAddInvalidVersion = 'Invalid version';
-  lisProjAddTheMinimumVersionIsInvalid = 'The Minimum Version %s%s%s is '
+  lisProjAddTheMinimumVersionIsInvalid = 'The Minimum Version "%s" is '
     +'invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10';
-  lisProjAddTheMaximumVersionIsInvalid = 'The Maximum Version %s%s%s is '
+  lisProjAddTheMaximumVersionIsInvalid = 'The Maximum Version "%s" is '
     +'invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10';
   lisProjAddInvalidPascalUnitName = 'Invalid Pascal unit name';
-  lisProjAddTheUnitNameIsNotAValidPascalIdentifier = 'The unit name %s%s%s is '
+  lisProjAddTheUnitNameIsNotAValidPascalIdentifier = 'The unit name "%s" is '
     +'not a valid Pascal identifier.';
   lisProjAddUnitNameAlreadyExists = 'Unit name already exists';
-  lisProjAddTheUnitNameAlreadyExistsInTheProject = 'The unit name %s%s%s '
-    +'already exists in the project%swith file: %s%s%s.';
-  lisProjAddTheUnitNameAlreadyExistsInTheSelection = 'The unit name %s%s%s '
-    +'already exists in the selection%swith file: %s%s%s.';
+  lisProjAddTheUnitNameAlreadyExistsInTheProject = 'The unit name "%s" '
+    +'already exists in the project%swith file: "%s".';
+  lisProjAddTheUnitNameAlreadyExistsInTheSelection = 'The unit name "%s" '
+    +'already exists in the selection%swith file: "%s".';
   lisProjAddToProject = 'Add to Project';
   lisProjAddNewRequirement = 'New Requirement';
   lisProjAddEditorFile = 'Add Editor Files';
@@ -3642,7 +3635,7 @@ resourcestring
   lisCleanUpUnitPath = 'Clean up unit path?';
   lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt =
     'The directory "%s" is no longer needed in the unit path.%sRemove it?';
-  lisTheFileWasNotFoundDoYouWantToLocateItYourself = 'The file %s%s%s%swas '
+  lisTheFileWasNotFoundDoYouWantToLocateItYourself = 'The file "%s"%swas '
     +'not found.%sDo you want to locate it yourself ?%s';
   lisRunToFailed = 'Run-to failed';
   lisDbgMangNoDebuggerSpecified = 'No debugger specified';
@@ -3662,10 +3655,10 @@ resourcestring
     +'s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options';
   lisUnableToRun = 'Unable to run';
   lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP = 'The destination '
-    +'directory %s%s%s does not exist.%sPlease check the project target file '
+    +'directory "%s" does not exist.%sPlease check the project target file '
     +'name Menu > Project > Project Options.';
   lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki = 'The working '
-    +'directory %s%s%s does not exist.%sPlease check the working directory in '
+    +'directory "%s" does not exist.%sPlease check the working directory in '
     +'Menu > Run > Run parameters.';
   lisPleaseOpenAUnitBeforeRun = 'Please open a unit before run.';
   lisHitCount = 'Hitcount';
@@ -3771,30 +3764,29 @@ resourcestring
     +'extension .lpk';
   lisPkgMangInvalidPackageName = 'Invalid package name';
   lisPkgMangInvalidPackageName2 = 'Invalid Package Name';
-  lisPkgMangThePackageNameIsNotAValidPackageNamePleaseChooseAn = 'The package '
-    +'name %s%s%s is not a valid package name%sPlease choose another name (e.'
-    +'g. package1.lpk)';
+  lisPkgMangThePackageNameIsNotAValidPackageNamePleaseChooseAn = 'The package name '
+    +'"%s" is not a valid package name%sPlease choose another name (e.g. package1.lpk)';
   lisPkgMangRenameFileLowercase = 'Rename File lowercase?';
   lisPkgMangShouldTheFileRenamedLowercaseTo = 'Should the file be renamed '
-    +'lowercase to%s%s%s%s?';
+    +'lowercase to%s"%s"?';
   lisPkgMangPackageNameAlreadyExists = 'Package name already exists';
   lisNameConflict = 'Name conflict';
   lisThePackageAlreadyContainsAUnitWithThisName = 'The package already '
     +'contains a unit with this name.';
   lisPkgMangThereIsAlreadyAnotherPackageWithTheName = 'There is already '
-    +'another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s';
+    +'another package with the name "%s".%sConflict package: "%s"%sFile: "%s"';
   lisPkgMangFilenameIsUsedByProject = 'Filename is used by project';
-  lisPkgMangTheFileNameIsPartOfTheCurrentProject = 'The file name %s%s%s is '
+  lisPkgMangTheFileNameIsPartOfTheCurrentProject = 'The file name "%s" is '
     +'part of the current project.%sProjects and Packages should not share files.';
   lisPkgMangFilenameIsUsedByOtherPackage = 'Filename is used by other package';
-  lisPkgMangTheFileNameIsUsedByThePackageInFile = 'The file name %s%s%s is '
-    +'used by%sthe package %s%s%s%sin file %s%s%s.';
+  lisPkgMangTheFileNameIsUsedByThePackageInFile = 'The file name "%s" is '
+    +'used by%sthe package "%s"%sin file "%s".';
   lisPkgMangReplaceFile = 'Replace File';
-  lisPkgMangReplaceExistingFile = 'Replace existing file %s%s%s?';
+  lisPkgMangReplaceExistingFile = 'Replace existing file "%s"?';
   lisPkgMangDeleteOldPackageFile = 'Delete Old Package File?';
-  lisPkgMangDeleteOldPackageFile2 = 'Delete old package file %s%s%s?';
+  lisPkgMangDeleteOldPackageFile2 = 'Delete old package file "%s"?';
   lisPkgMangDeleteFailed = 'Delete failed';
-  lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac = 'The file %s%s%s%s'
+  lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac = 'The file "%s"%s'
     +'was found in one of the source directories of the package %s and looks '
     +'like a compiled unit. Compiled units must be in the output directory of '
     +'the package, otherwise other packages can get problems using this '
@@ -3808,9 +3800,8 @@ resourcestring
   lisPkgMangThereIsAnUnsavedPackageInTheRequiredPackages = 'There is an '
     +'unsaved package in the required packages. See package graph.';
   lisPkgMangBrokenDependency = 'Broken dependency';
-  lisPkgMangTheProjectRequiresThePackageButItWasNotFound = 'The project '
-    +'requires the package %s%s%s.%sBut it was not found. See Project -> '
-    +'Project Inspector.';
+  lisPkgMangTheProjectRequiresThePackageButItWasNotFound = 'The project requires '
+    +'the package "%s".%sBut it was not found. See Project -> Project Inspector.';
   lisPkgMangRequiredPackagesWereNotFound = 'One or more required packages were not '
     +'found. See package graph for details.';
   lisPkgMangCircularDependencies = 'Circular dependencies found';
@@ -3824,17 +3815,17 @@ resourcestring
   lisPkgMangThereIsACircularDependency = 'There is a circular dependency in the '
     +'packages. See package graph.';
   lisPkgMangThereAreTwoUnitsWithTheSameName1From2From = 'There are two units '
-    +'with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s';
+    +'with the same name:%s%s1. "%s" from %s%s2. "%s" from %s%s%s';
   lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2 = 'There is a unit '
-    +'with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s';
+    +'with the same name as a package:%s%s1. "%s" from %s%s2. "%s%s%s';
   lisPkgMangAmbiguousUnitsFound = 'Ambiguous units found';
   lisPkgMangBothPackagesAreConnectedThisMeansEitherOnePackageU = '%sBoth '
     +'packages are connected. This means, either one package uses the other, '
     +'or they are both used by a third package.';
   lisPkgMangThereIsAFPCUnitWithTheSameNameFrom = 'There is a FPC unit with '
-    +'the same name as:%s%s%s%s%s from %s%s%s';
+    +'the same name as:%s%s"%s" from %s%s%s';
   lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage = 'There is a FPC unit '
-    +'with the same name as a package:%s%s%s%s%s%s';
+    +'with the same name as a package:%s%s"%s%s%s';
   lisPkgMangErrorWritingFile = 'Error writing file';
   lisProjMangUnableToWriteStateFileForProjectError = 'Unable to write state '
     +'file for project %s%sError: %s';

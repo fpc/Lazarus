@@ -247,10 +247,8 @@ begin
   if ResStrExistsInAnySection(IdentifierEdit.Text)
   and (not ResStrExistsWithSameValue(IdentifierEdit.Text)) then begin
     if IDEMessageDialog(lisMakeResStrResourcestringAlreadyExis,
-      Format(lisMakeResStrChooseAnotherName, ['"', IdentifierEdit.Text, '"',
-        #13, #13]),
-      mtWarning,[mbOk,mbIgnore])
-      =mrOk
+      Format(lisMakeResStrChooseAnotherName,[IdentifierEdit.Text,LineEnding,LineEnding]),
+      mtWarning,[mbOk,mbIgnore]) = mrOk
     then
       exit;
   end;

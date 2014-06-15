@@ -920,7 +920,7 @@ begin
   if (a<0) or (a=TemplateIndex) then
     ModalResult:=mrOk
   else begin
-    AText:=Format(lisCodeTemplATokenAlreadyExists, ['"', TokenEdit.Text, '"']);
+    AText:=Format(lisCodeTemplATokenAlreadyExists, [TokenEdit.Text]);
     ACaption:=lisCodeTemplError;
     IDEMessageDialog(ACaption,AText,mterror,[mbok]);
   end;

@@ -133,7 +133,7 @@ begin
         if not DirPathExists(CurDir) then
         begin
           DlgResult := QuestionDlg(lisEnvOptDlgDirectoryNotFound,
-            Format(lisDirectoryNotFound, ['"', CurDir, '"']),
+            Format(lisDirectoryNotFound, [CurDir]),
             mtError, [mrIgnore, mrYes, lisRemoveFromSearchPath, mrCancel], 0);
           case DlgResult of
             mrIgnore: ;

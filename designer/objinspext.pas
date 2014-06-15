@@ -331,9 +331,8 @@ begin
       CurClass:=CurClass.ClassParent;
     end;
   end;
-  IDEMessageDialog(lisClassNotFound, Format(lisOIFClassNotFound, ['"', NewClassName,
-    '"']), mtError,
-             [mbOk]);
+  IDEMessageDialog(lisClassNotFound,
+    Format(lisOIFClassNotFound, [NewClassName]), mtError, [mbOk]);
 end;
 
 procedure TOIAddRemoveFavoriteDlg.SetObjectInspector(const AValue: TObjectInspectorDlg);

@@ -543,11 +543,12 @@ begin
       for i:=0 to PkgWithProjOverriddenOutDirs.Count-1 do begin
         CurPkg:=TLazPackage(PkgWithProjOverriddenOutDirs[i]);
         OutDir:=CreateRelativePath(CurPkg.GetOutputDirectory,CurPkg.Directory);
-        s+=CurPkg.Name+': '+OutDir+#13;
+        s+=CurPkg.Name+': '+OutDir+LineEnding;
       end;
       if IDEMessageDialog(lisConfirmation,
-        Format(lisPkgTheProjectOverridesTheOutputDirectoryOfTheFollowin, [#13,
-          #13, #13, s]), mtWarning, [mbOk, mbCancel])<>mrOk
+        Format(lisPkgTheProjectOverridesTheOutputDirectoryOfTheFollowin,
+               [LineEnding, LineEnding, LineEnding, s]),
+        mtWarning, [mbOk, mbCancel])<>mrOk
       then
         exit(mrCancel);
       // remember the answer
@@ -575,7 +576,7 @@ begin
     if OpenResult<>lprSuccess then begin
       if not Quiet then
         IDEMessageDialog(lisCCOErrorCaption,
-          Format(lisUnableToLoadPackage, ['"', CurDependency.AsString, '"']),
+          Format(lisUnableToLoadPackage, [CurDependency.AsString]),
           mtError,[mbCancel]);
       exit;
     end;
@@ -1122,8 +1123,8 @@ begin
       // check filename
       if (NewPkgName='') or (not IsValidUnitName(NewPkgName)) then begin
         Result:=IDEMessageDialog(lisPkgMangInvalidPackageName,
-          Format(lisPkgMangThePackageNameIsNotAValidPackageNamePleaseChooseAn, [
-            '"', NewPkgName, '"', LineEnding]),
+          Format(lisPkgMangThePackageNameIsNotAValidPackageNamePleaseChooseAn,
+                 [NewPkgName, LineEnding]),
           mtInformation,[mbRetry,mbAbort]);
         if Result=mrAbort then exit;
         continue; // try again
@@ -1137,8 +1138,7 @@ begin
         if EnvironmentOptions.CharcaseFileAction = ccfaAsk then
         begin
           if IDEMessageDialog(lisPkgMangRenameFileLowercase,
-            Format(lisPkgMangShouldTheFileRenamedLowercaseTo,
-                   [LineEnding, '"', LowerFilename, '"']),
+            Format(lisPkgMangShouldTheFileRenamedLowercaseTo,[LineEnding, LowerFilename]),
             mtConfirmation,[mbYes,mbNo])=mrYes
           then
             NewFileName:=LowerFilename;
@@ -1166,9 +1166,8 @@ begin
       ConflictPkg:=PackageGraph.FindPackageWithName(NewPkgName,APackage);
       if ConflictPkg<>nil then begin
         Result:=IDEMessageDialog(lisPkgMangPackageNameAlreadyExists,
-          Format(lisPkgMangThereIsAlreadyAnotherPackageWithTheName, ['"',
-            NewPkgName, '"', LineEnding, '"', ConflictPkg.IDAsString, '"', LineEnding, '"',
-            ConflictPkg.Filename, '"']),
+          Format(lisPkgMangThereIsAlreadyAnotherPackageWithTheName,
+            [NewPkgName, LineEnding, ConflictPkg.IDAsString, LineEnding, ConflictPkg.Filename]),
           mtInformation,[mbRetry,mbAbort,mbIgnore]);
         if Result=mrAbort then exit;
         if Result<>mrIgnore then continue; // try again
@@ -1178,8 +1177,7 @@ begin
       if (NewMainUnitFileName<>'')
       and (Project1.ProjectUnitWithFilename(NewMainUnitFileName)<>nil) then begin
         Result:=IDEMessageDialog(lisPkgMangFilenameIsUsedByProject,
-          Format(lisPkgMangTheFileNameIsPartOfTheCurrentProject, ['"',
-            NewFilename, '"', LineEnding]),
+          Format(lisPkgMangTheFileNameIsPartOfTheCurrentProject,[NewFilename,LineEnding]),
           mtInformation,[mbRetry,mbAbort]);
         if Result=mrAbort then exit;
         continue; // try again
@@ -1191,9 +1189,8 @@ begin
         PkgFile:=PackageGraph.FindFileInAllPackages(NewMainUnitFileName,true,false);
         if PkgFile<>nil then begin
           Result:=IDEMessageDialog(lisPkgMangFilenameIsUsedByOtherPackage,
-            Format(lisPkgMangTheFileNameIsUsedByThePackageInFile, ['"',
-              NewFilename, '"', LineEnding, '"', PkgFile.LazPackage.IDAsString, '"',
-              LineEnding, '"', PkgFile.LazPackage.Filename, '"']),
+            Format(lisPkgMangTheFileNameIsUsedByThePackageInFile, [NewFilename, LineEnding,
+                   PkgFile.LazPackage.IDAsString, LineEnding, PkgFile.LazPackage.Filename]),
             mtWarning,[mbRetry,mbAbort]);
           if Result=mrAbort then exit;
           continue; // try again
@@ -1221,14 +1218,14 @@ begin
       begin
         if FileExistsUTF8(NewFileName) then begin
           Result:=IDEMessageDialog(lisPkgMangReplaceFile,
-            Format(lisPkgMangReplaceExistingFile, ['"', NewFilename, '"']),
+            Format(lisPkgMangReplaceExistingFile, [NewFilename]),
             mtConfirmation,[mbOk,mbCancel]);
           if Result<>mrOk then exit;
         end;
         if FileExistsUTF8(NewMainUnitFileName) then
         begin
           Result:=IDEMessageDialog(lisPkgMangReplaceFile,
-            Format(lisPkgMangReplaceExistingFile, ['"', NewFilename, '"']),
+            Format(lisPkgMangReplaceExistingFile, [NewFilename]),
             mtConfirmation,[mbOk,mbCancel]);
           if Result<>mrOk then exit;
         end;
@@ -1257,7 +1254,7 @@ begin
   if FileExistsUTF8(OldPkgFilename)
   and (CompareFilenames(OldPkgFilename,NewFilename)<>0) then begin
     if IDEMessageDialog(lisPkgMangDeleteOldPackageFile,
-      Format(lisPkgMangDeleteOldPackageFile2, ['"', OldPkgFilename, '"']),
+      Format(lisPkgMangDeleteOldPackageFile2, [OldPkgFilename]),
       mtConfirmation,[mbYes,mbNo])=mrYes
     then begin
       if DeleteFileUTF8(OldPkgFilename) then begin
@@ -1317,7 +1314,7 @@ begin
             MainIDE.DoShowProjectInspector(true);
             Result:=IDEMessageDialogAb(lisPkgMangBrokenDependency,
               Format(lisPkgMangTheProjectRequiresThePackageButItWasNotFound,
-                    ['"', Dependency.AsString, '"', LineEnding]),
+                    [Dependency.AsString, LineEnding]),
               mtError,Btns,ShowAbort);
             if not ShowAbort then
               Result := mrCancel; // User confirmed error, implicitly cancel the action
@@ -1377,13 +1374,13 @@ begin
     then begin
       if (PkgFile1<>nil) and (PkgFile2<>nil) then begin
         s:=Format(lisPkgMangThereAreTwoUnitsWithTheSameName1From2From, [LineEnding,
-          LineEnding, '"', PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString,
-          LineEnding, '"', PkgFile2.Filename, '"', PkgFile2.LazPackage.IDAsString,
+          LineEnding, PkgFile1.Filename, PkgFile1.LazPackage.IDAsString,
+          LineEnding, PkgFile2.Filename, PkgFile2.LazPackage.IDAsString,
           LineEnding, LineEnding]);
       end else if (PkgFile1<>nil) and (ConflictPkg<>nil) then begin
         s:=Format(lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2, [LineEnding,
-          LineEnding, '"', PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString,
-          LineEnding, '"', ConflictPkg.IDAsString, LineEnding, LineEnding]);
+          LineEnding, PkgFile1.Filename, PkgFile1.LazPackage.IDAsString,
+          LineEnding, ConflictPkg.IDAsString, LineEnding, LineEnding]);
       end else
         s:='Internal inconsistency FindAmbiguousUnits: '
           +'Please report this bug and how you got here.'+LineEnding;
@@ -1401,10 +1398,10 @@ begin
     then begin
       if (ConflictPkg<>nil) then begin
         s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage, [LineEnding,
-          LineEnding, '"', ConflictPkg.IDAsString, LineEnding, LineEnding]);
+          LineEnding, ConflictPkg.IDAsString, LineEnding, LineEnding]);
       end else if (PkgFile1<>nil) then begin
-        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameFrom, [LineEnding, LineEnding, '"',
-          PkgFile1.Filename, '"', PkgFile1.LazPackage.IDAsString, LineEnding, LineEnding]);
+        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameFrom, [LineEnding, LineEnding,
+          PkgFile1.Filename, PkgFile1.LazPackage.IDAsString, LineEnding, LineEnding]);
       end else
         s:='Internal inconsistency FindFPCConflictUnits: '
           +'Please report this bug and how you got here.'+LineEnding;

@@ -6747,9 +6747,8 @@ begin
     and (not DirPathExistsCached(UnitOutputDirectory)) then begin
       if not FileIsInPath(UnitOutputDirectory,WorkingDir) then begin
         Result:=IDEQuestionDialog(lisCreateDirectory,
-          Format(lisTheOutputDirectoryIsMissing, ['"', UnitOutputDirectory, '"']
-            ),
-          mtConfirmation, [mrYes, lisCreateIt, mrCancel], '');
+          Format(lisTheOutputDirectoryIsMissing, [UnitOutputDirectory]),
+          mtConfirmation, [mrYes, lisCreateIt, mrCancel]);
         if Result<>mrYes then exit;
       end;
       Result:=ForceDirectoryInteractive(UnitOutputDirectory,[mbRetry]);
@@ -6768,9 +6767,8 @@ begin
     and (not DirPathExistsCached(TargetExeDirectory)) then begin
       if not FileIsInPath(TargetExeDirectory,WorkingDir) then begin
         Result:=IDEQuestionDialog(lisCreateDirectory,
-          Format(lisTheOutputDirectoryIsMissing, ['"', TargetExeDirectory, '"']
-            ),
-          mtConfirmation, [mrYes, lisCreateIt, mrCancel], '');
+          Format(lisTheOutputDirectoryIsMissing, [TargetExeDirectory]),
+          mtConfirmation, [mrYes, lisCreateIt, mrCancel]);
         if Result<>mrYes then exit;
       end;
       Result:=ForceDirectoryInteractive(TargetExeDirectory,[mbRetry]);
@@ -6904,8 +6902,7 @@ begin
 
     // execute compilation tool 'After'
     if not (pbfSkipTools in Flags) then begin
-      ToolAfter:=TProjectCompilationToolOptions(
-                                         Project1.CompilerOptions.ExecuteAfter);
+      ToolAfter:=TProjectCompilationToolOptions(Project1.CompilerOptions.ExecuteAfter);
       // no need to check for mrOk, we are exit if it wasn't
       if (AReason in ToolAfter.CompileReasons) then begin
         Result:=Project1.CompilerOptions.ExecuteAfter.Execute(
@@ -6925,8 +6922,7 @@ begin
     Project1.ProjResources.DoAfterBuild(AReason, Project1.IsVirtual);
     {$IFDEF EnableOldExtTools}
     // add success message
-    MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, ['"',
-                                        Project1.GetTitleOrName, '"']),'',-1);
+    MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, [Project1.GetTitleOrName]),'',-1);
     CompileProgress.Ready(lisInfoBuildSuccess);
     {$ENDIF}
   finally
@@ -6996,7 +6992,7 @@ begin
      and not FileExistsUTF8(ProgramFilename)
   then begin
     IDEMessageDialog(lisFileNotFound,
-      Format(lisNoProgramFileSFound, ['"', ProgramFilename, '"']),
+      Format(lisNoProgramFileSFound, [ProgramFilename]),
       mtError,[mbCancel]);
     Exit;
   end;
@@ -8791,8 +8787,7 @@ begin
   ARegComp:=IDEComponentPalette.FindComponent(NewClassName);
   if ARegComp=nil then begin
     IDEMessageDialog(lisClassNotFound,
-      Format(lisClassIsNotARegisteredComponentClassUnableToPaste, ['"',
-        NewClassName, '"', LineEnding]),
+      Format(lisClassIsNotARegisteredComponentClassUnableToPaste,[NewClassName,LineEnding]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -8800,8 +8795,7 @@ begin
   // check if there is a valid parent
   if (ParentControl=nil) and ARegComp.IsTControl then begin
     IDEMessageDialog(lisControlNeedsParent,
-      Format(lisTheClassIsATControlAndCanNotBePastedOntoANonContro, ['"',
-        NewClassName, '"', LineEnding]),
+      Format(lisTheClassIsATControlAndCanNotBePastedOntoANonContro,[NewClassName,LineEnding]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -10949,10 +10943,9 @@ begin
   if AnUnitInfo.NeedsSaveToDisk
   then begin
     case IDEQuestionDialog(lisSaveChanges,
-                    Format(lisSaveFileBeforeClosingForm, ['"',
-                      AnUnitInfo.Filename, '"', LineEnding, '"',
-                      ADesigner.LookupRoot.Name, '"']),
-                   mtConfirmation,[mrYes,mrNoToAll,lisNo,mrCancel],'') of
+          Format(lisSaveFileBeforeClosingForm,
+                 [AnUnitInfo.Filename, LineEnding, ADesigner.LookupRoot.Name]),
+          mtConfirmation,[mrYes,mrNoToAll,lisNo,mrCancel],'') of
       mrYes: begin
         if DoSaveEditorFile(ASrcEdit,[sfCheckAmbiguousFiles])<>mrOk
         then Exit;
@@ -10999,17 +10992,17 @@ var
   begin
     if SysUtils.CompareText(ActiveUnitInfo.Unit_Name,AName)=0 then
       raise Exception.Create(Format(
-        lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus, ['"', AName, '"']));
+        lisTheUnitItselfHasAlreadyTheNamePascalIdentifiersMus, [AName]));
     if ActiveUnitInfo.IsPartOfProject then begin
       // check if component name already exists in project
       i:=Project1.IndexOfUnitWithComponentName(AName,true,ActiveUnitInfo);
       if i>=0 then
-        raise Exception.Create(Format(lisThereIsAlreadyAFormWithTheName, ['"', AName, '"']));
+        raise Exception.Create(Format(lisThereIsAlreadyAFormWithTheName, [AName]));
       // check if pascal identifier already exists in the units
       i:=Project1.IndexOfUnitWithName(AName,true,nil);
       if i>=0 then
         raise Exception.Create(Format(
-          lisThereIsAlreadyAUnitWithTheNamePascalIdentifiersMus, ['"', AName, '"']));
+          lisThereIsAlreadyAUnitWithTheNamePascalIdentifiersMus, [AName]));
     end;
 
     // check if classname
@@ -11025,7 +11018,7 @@ var
 
     // check if keyword
     if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,AName) then
-      raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', AName, '"']));
+      raise Exception.Create(Format(lisComponentNameIsKeyword, [AName]));
 
     // check if registered component class
     RegComp:=IDEComponentPalette.FindComponent(AName);
@@ -11073,9 +11066,8 @@ var
               if (InheritedComponent.Owner<>nil)
               and (InheritedComponent.Owner.FindComponent(NewName)<>nil) then
               begin
-                raise EComponentError.Createfmt(
-                  lisDuplicateNameAComponentNamedAlreadyExistsInTheInhe, ['"',
-                  NewName, '"', dbgsName(InheritedComponent.Owner)]);
+                raise EComponentError.Createfmt(lisDuplicateNameAComponentNamedAlreadyExistsInTheInhe,
+                       [NewName, dbgsName(InheritedComponent.Owner)]);
               end;
             end else begin
               // rename component and references in code
@@ -11176,7 +11168,7 @@ var
 begin
   DebugLn('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
   if (not IsValidIdent(NewName)) or (NewName='') then
-    raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',Newname,'"']));
+    raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, [Newname]));
   if WordIsKeyWord.DoItCaseInsensitive(PChar(NewName))
   or WordIsDelphiKeyWord.DoItCaseInsensitive(PChar(NewName))
   or WordIsPredefinedFPCIdentifier.DoItCaseInsensitive(PChar(NewName))
@@ -12434,8 +12426,7 @@ begin
     ActiveUnitInfo:=Project1.UnitWithComponentClassName(AnInheritedClassName);
     if ActiveUnitInfo=nil then begin
       IDEMessageDialog(lisMethodClassNotFound,
-        Format(lisClassOfMethodNotFound, ['"', AnInheritedClassName, '"', '"',
-          AInheritedMethodName, '"']),
+        Format(lisClassOfMethodNotFound, [AnInheritedClassName, AInheritedMethodName]),
         mtError,[mbCancel],'');
       exit;
     end;

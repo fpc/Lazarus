@@ -3202,8 +3202,7 @@ begin
   CenterCursor(True);
   CenterCursorHoriz(hcmSoftKeepEOL);
 
-  AText:=Format(lisUEReplaceThisOccurrenceOfWith,
-                ['"', Shorten(ASearch), '"', LineEnding, '"', Shorten(AReplace), '"']);
+  AText:=Format(lisUEReplaceThisOccurrenceOfWith,[Shorten(ASearch),LineEnding,Shorten(AReplace)]);
 
   GetDialogPosition(300,150,X,Y);
   a:=MessageDlgPos(AText,mtconfirmation,
@@ -6017,21 +6016,20 @@ begin
             CurResult:=mrCancel
           else
             CurResult:=IDEQuestionDialog(lisChangeEncoding,
-              Format(lisEncodingOfFileOnDiskIsNewEncodingIs, ['"',
-                SrcEdit.CodeBuffer.Filename, '"', LineEnding, OldEncoding, NewEncoding]),
-              mtConfirmation, [mrOk, lisReopenWithAnotherEncoding, mrCancel], '');
+              Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
+                     [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
+              mtConfirmation, [mrOk, lisReopenWithAnotherEncoding, mrCancel]);
         end else begin
           if SrcEdit.CodeBuffer.IsVirtual then
             CurResult:=IDEQuestionDialog(lisChangeEncoding,
-              Format(lisEncodingOfFileOnDiskIsNewEncodingIs, ['"',
-                SrcEdit.CodeBuffer.Filename, '"', LineEnding, OldEncoding, NewEncoding]),
-              mtConfirmation, [mrYes, lisChangeFile, mrCancel], '')
+              Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
+                     [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
+              mtConfirmation, [mrYes, lisChangeFile, mrCancel])
           else
             CurResult:=IDEQuestionDialog(lisChangeEncoding,
-              Format(lisEncodingOfFileOnDiskIsNewEncodingIs, ['"',
-                SrcEdit.CodeBuffer.Filename, '"', LineEnding, OldEncoding, NewEncoding]),
-              mtConfirmation, [mrYes, lisChangeFile, mrOk,
-                lisReopenWithAnotherEncoding, mrCancel], '');
+              Format(lisEncodingOfFileOnDiskIsNewEncodingIs,
+                     [SrcEdit.CodeBuffer.Filename, LineEnding, OldEncoding, NewEncoding]),
+              mtConfirmation, [mrYes,lisChangeFile,mrOk,lisReopenWithAnotherEncoding,mrCancel]);
         end;
         if CurResult=mrYes then begin
           // change file
@@ -6050,7 +6048,7 @@ begin
           if SrcEdit.Modified then begin
             if IDEQuestionDialog(lisAbandonChanges,
               Format(lisAllYourModificationsToWillBeLostAndTheFileReopened,
-                     ['"', SrcEdit.CodeBuffer.Filename, '"', LineEnding]),
+                     [SrcEdit.CodeBuffer.Filename, LineEnding]),
               mtConfirmation,[mbOk,mbAbort],'')<>mrOk
             then begin
               exit;

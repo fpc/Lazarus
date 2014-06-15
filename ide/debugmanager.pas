@@ -727,8 +727,8 @@ begin
 
     if IDEMessageDialog(lisFileNotFound,
       Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself,
-             ['"', SrcFile, '"', LineEnding, LineEnding, LineEnding])
-      ,mtConfirmation, [mbYes, mbNo]) <> mrYes
+             [SrcFile, LineEnding, LineEnding, LineEnding]),
+      mtConfirmation, [mbYes, mbNo]) <> mrYes
     then Exit;
 
     repeat
@@ -1338,7 +1338,7 @@ begin
     then begin
       if not (dlfLoadError in CurrentSourceUnitInfo.Flags) then begin
         IDEMessageDialog(lisDebugUnableToLoadFile,
-                   Format(lisDebugUnableToLoadFile2, ['"', SrcFullName, '"']),
+                   Format(lisDebugUnableToLoadFile2, [SrcFullName]),
                    mtError,[mbCancel]);
         CurrentSourceUnitInfo.Flags := CurrentSourceUnitInfo.Flags + [dlfLoadError];
       end;
@@ -2285,7 +2285,7 @@ begin
       then begin
         IDEMessageDialog(lisUnableToRun,
           Format(lisTheWorkingDirectoryDoesNotExistPleaseCheckTheWorki,
-                 ['"', NewWorkingDir, '"', LineEnding]),
+                 [NewWorkingDir, LineEnding]),
           mtError,[mbCancel]);
         exit;
       end;
@@ -2296,7 +2296,7 @@ begin
         then begin
           IDEMessageDialog(lisUnableToRun,
             Format(lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP,
-                   ['"', NewWorkingDir, '"', LineEnding]),
+                   [NewWorkingDir, LineEnding]),
             mtError,[mbCancel]);
           exit;
         end;

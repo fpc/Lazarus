@@ -1373,7 +1373,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
       {$ELSE}
       TheOutputFilter.ReadConstLine(
         Format(lisWarningAmbiguousFileFoundSourceFileIs,
-        ['"', AmbiguousFilename, '"', '"', AFilename, '"']), true);
+        [AmbiguousFilename, AFilename]), true);
       {$ENDIF}
     end;
   end;

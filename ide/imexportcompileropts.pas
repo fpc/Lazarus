@@ -149,7 +149,7 @@ begin
     on E: Exception do
     begin
       Result:=MessageDlg(lisIECOErrorLoadingXml,
-        Format(lisIECOErrorLoadingXmlFile, ['"', Filename, '"', LineEnding, E.Message]),
+        Format(lisIECOErrorLoadingXmlFile, [Filename, LineEnding, E.Message]),
         mtError, [mbCancel], 0);
     end;
   end;
@@ -181,7 +181,7 @@ begin
     on E: Exception do
     begin
       Result:=MessageDlg(lisIECOErrorAccessingXml,
-        Format(lisIECOErrorAccessingXmlFile, ['"', Filename, '"', LineEnding, E.Message]),
+        Format(lisIECOErrorAccessingXmlFile, [Filename, LineEnding, E.Message]),
         mtError, [mbCancel], 0);
     end;
   end;

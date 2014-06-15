@@ -168,7 +168,7 @@ begin
   if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
     IDEMessageDialog(lisProjAddInvalidPackagename,
       Format(lisProjAddThePackageNameIsInvalidPlaseChooseAnExistingPackag,
-             ['"', NewPkgName, '"', LineEnding]),
+             [NewPkgName, LineEnding]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -176,7 +176,7 @@ begin
   // check if package is already required
   if LazProject.FindDependencyByName(NewPkgName)<>nil then begin
     IDEMessageDialog(lisProjAddDependencyAlreadyExists,
-      Format(lisProjAddTheProjectHasAlreadyADependency, ['"', NewPkgName, '"']),
+      Format(lisProjAddTheProjectHasAlreadyADependency, [NewPkgName]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -185,8 +185,7 @@ begin
   if not PackageGraph.DependencyExists(NewDependency,fpfSearchAllExisting)
   then begin
     IDEMessageDialog(lisProjAddPackageNotFound,
-      Format(lisProjAddTheDependencyWasNotFound,
-             ['"', NewDependency.AsString, '"', LineEnding]),
+      Format(lisProjAddTheDependencyWasNotFound,[NewDependency.AsString, LineEnding]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -260,7 +259,7 @@ begin
       begin
         IDEMessageDialog(lisProjAddInvalidVersion,
           Format(lisProjAddTheMinimumVersionIsInvalid,
-                 ['"', DependMinVersionEdit.Text, '"', LineEnding, LineEnding]),
+                 [DependMinVersionEdit.Text, LineEnding, LineEnding]),
           mtError,[mbCancel]);
         exit;
       end;
@@ -272,7 +271,7 @@ begin
       begin
         IDEMessageDialog(lisProjAddInvalidVersion,
           Format(lisProjAddTheMaximumVersionIsInvalid,
-                 ['"', DependMaxVersionEdit.Text, '"', LineEnding, LineEnding]),
+                 [DependMaxVersionEdit.Text, LineEnding, LineEnding]),
           mtError,[mbCancel]);
         exit;
       end;
@@ -568,8 +567,7 @@ begin
     NewUnitName:=ExtractFileNameOnly(NewFilename);
     if (NewUnitName='') or not (IsValidUnitName(NewUnitName)) then begin
       IDEMessageDialog(lisProjAddInvalidPascalUnitName,
-        Format(lisProjAddTheUnitNameIsNotAValidPascalIdentifier, ['"',
-          NewUnitName, '"']),
+        Format(lisProjAddTheUnitNameIsNotAValidPascalIdentifier, [NewUnitName]),
         mtWarning, [mbIgnore, mbCancel]);
       exit;
     end;
@@ -578,7 +576,7 @@ begin
     if ConflictFile<>nil then begin
       IDEMessageDialog(lisProjAddUnitNameAlreadyExists,
         Format(lisProjAddTheUnitNameAlreadyExistsInTheProject,
-               ['"', NewUnitName, '"', LineEnding, '"', ConflictFile.Filename, '"']),
+               [NewUnitName, LineEnding, ConflictFile.Filename]),
         mtWarning, [mbCancel, mbIgnore]);
       exit;
     end;
@@ -590,7 +588,7 @@ begin
         if CompareText(OtherUnitName, NewUnitName)=0 then begin
           IDEMessageDialog(lisProjAddUnitNameAlreadyExists,
             Format(lisProjAddTheUnitNameAlreadyExistsInTheSelection,
-                   ['"', NewUnitName, '"', LineEnding, '"', OtherFile, '"']),
+                   [NewUnitName, LineEnding, OtherFile]),
             mtWarning, [mbCancel]);
           exit;
         end;
