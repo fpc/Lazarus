@@ -1737,7 +1737,7 @@ begin
     XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                              PFComponentBaseClassNames[FResourceBaseClass],
                              PFComponentBaseClassNames[pfcbcNone]);
-    XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
+    XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,ExtractFileNameOnly(AFilename));
     // save custom data
     SaveStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
   end;
@@ -1812,8 +1812,8 @@ begin
     AFilename:=XMLConfig.GetValue(Path+'ResourceFilename/Value','');
     if (AFilename<>'') and Assigned(fOnLoadSaveFilename) then
       fOnLoadSaveFilename(AFilename,true);
-    if FilenameIsPascalSource(Filename) then
-      fUnitName:=XMLConfig.GetValue(Path+'UnitName/Value','');
+    if FilenameIsPascalSource(AFilename) then
+      fUnitName:=XMLConfig.GetValue(Path+'UnitName/Value',ExtractFileNameOnly(AFilename));
 
     // save custom data
     LoadStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
