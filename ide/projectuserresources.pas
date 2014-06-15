@@ -190,9 +190,9 @@ begin
   end
   else
   {$IFNDEF EnableOldExtTools}
-    IDEMessagesWindow.AddCustomMessage(mluError,Format(lisFileNotFound2, ['"', Filename, '"', '']));
+    IDEMessagesWindow.AddCustomMessage(mluError,Format(lisFileNotFound2, [Filename]));
   {$ELSE}
-    IDEMessagesWindow.AddMsg(Format(lisFileNotFound2, ['"', Filename, '"', '']), '', -1);
+    IDEMessagesWindow.AddMsg(Format(lisFileNotFound2, [Filename]), '', -1);
   {$ENDIF}
 end;
 

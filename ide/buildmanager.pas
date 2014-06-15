@@ -1342,7 +1342,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
   begin
     if not DeleteFileUTF8(AmbiguousFilename) then begin
       Result:=IDEMessageDialog(lisErrorDeletingFile,
-       Format(lisUnableToDeleteAmbiguousFile, ['"', AmbiguousFilename, '"']),
+       Format(lisUnableToDeleteAmbiguousFile, [AmbiguousFilename]),
        mtError,[mbOk,mbAbort]);
     end else
       Result:=mrOk;
@@ -1356,8 +1356,7 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
     if not FileProcs.RenameFileUTF8(AmbiguousFilename,NewFilename) then
     begin
       Result:=IDEMessageDialog(lisErrorRenamingFile,
-       Format(lisUnableToRenameAmbiguousFileTo,
-             ['"', AmbiguousFilename, '"', LineEnding, '"', NewFilename, '"']),
+       Format(lisUnableToRenameAmbiguousFileTo,[AmbiguousFilename,LineEnding,NewFilename]),
        mtError,[mbOk,mbAbort]);
     end else
       Result:=mrOk;
@@ -1369,8 +1368,8 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
     if Compiling then begin
       {$IFNDEF EnableOldExtTools}
       IDEMessagesWindow.AddCustomMessage(mluError,
-        Format('ambiguous file found: %s%s%s. Source file is: %s%s%s',
-        ['"', AmbiguousFilename, '"', '"', AFilename, '"']));
+        Format('ambiguous file found: "%s". Source file is: "%s"',
+               [AmbiguousFilename, AFilename]));
       {$ELSE}
       TheOutputFilter.ReadConstLine(
         Format(lisWarningAmbiguousFileFoundSourceFileIs,
@@ -1475,8 +1474,8 @@ begin
         CurFilename:=ADirectory+FileInfo.Name;
         if EnvironmentOptions.AmbiguousFileAction=afaAsk then begin
           if IDEMessageDialog(lisDeleteAmbiguousFile,
-            Format(lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete, ['"',
-              CurFilename, '"', LineEnding, '"', ShortFilename, '"', LineEnding, LineEnding]),
+            Format(lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete,
+                   [CurFilename, LineEnding, ShortFilename, LineEnding, LineEnding]),
             mtConfirmation,[mbYes,mbNo])=mrNo
           then continue;
         end;
@@ -1484,7 +1483,7 @@ begin
         then begin
           if not DeleteFileUTF8(CurFilename) then begin
             IDEMessageDialog(lisDeleteFileFailed,
-              Format(lisPkgMangUnableToDeleteFile, ['"', CurFilename, '"']),
+              Format(lisPkgMangUnableToDeleteFile, [CurFilename]),
               mtError,[mbOk]);
           end;
         end else if EnvironmentOptions.AmbiguousFileAction=afaAutoRename then
@@ -1678,7 +1677,7 @@ begin
       if not DirPathExists(SubDir) then begin
         if not CreateDirUTF8(SubDir) then begin
           Result:=IDEMessageDialog(lisCCOWarningCaption,
-                   Format(lisUnableToCreateBackupDirectory, ['"',SubDir, '"'])
+                   Format(lisUnableToCreateBackupDirectory, [SubDir])
                    ,mtWarning,[mbAbort,mbRetry,mbIgnore]);
           if Result=mrAbort then exit;
           if Result=mrIgnore then Result:=mrOk;
@@ -1708,10 +1707,8 @@ begin
       if FileExistsUTF8(BackupFilename) then begin
         if not DeleteFileUTF8(BackupFilename) then begin
           ACaption:=lisDeleteFileFailed;
-          AText:=Format(lisUnableToRemoveOldBackupFile, ['"', BackupFilename,
-            '"']);
-          Result:=IDEMessageDialog(ACaption,AText,mtError,
-                                   [mbAbort,mbRetry,mbIgnore]);
+          AText:=Format(lisUnableToRemoveOldBackupFile,[BackupFilename]);
+          Result:=IDEMessageDialog(ACaption,AText,mtError,[mbAbort,mbRetry,mbIgnore]);
           if Result=mrAbort then exit;
           if Result=mrIgnore then Result:=mrOk;
         end;
@@ -1741,10 +1738,8 @@ begin
           if FileExistsUTF8(CounterFilename) then begin
             if not DeleteFileUTF8(CounterFilename) then begin
               ACaption:=lisDeleteFileFailed;
-              AText:=Format(lisUnableToRemoveOldBackupFile, ['"',
-                CounterFilename, '"']);
-              Result:=IDEMessageDialog(ACaption,AText,mtError,
-                                 [mbAbort,mbRetry,mbIgnore]);
+              AText:=Format(lisUnableToRemoveOldBackupFile,[CounterFilename]);
+              Result:=IDEMessageDialog(ACaption,AText,mtError,[mbAbort,mbRetry,mbIgnore]);
               if Result=mrAbort then exit;
               if Result=mrIgnore then Result:=mrOk;
             end;
@@ -1759,8 +1754,8 @@ begin
              BackupFilename+IntToStr(i+1)) then
           begin
             ACaption:=lisRenameFileFailed;
-            AText:=Format(lisUnableToRenameFileTo, ['"', BackupFilename+IntToStr
-              (i), '"', '"', BackupFilename+IntToStr(i+1), '"']);
+            AText:=Format(lisUnableToRenameFileTo,
+                     [BackupFilename+IntToStr(i), BackupFilename+IntToStr(i+1)]);
             Result:=IDEMessageDialog(ACaption,AText,mtError,
                                [mbAbort,mbRetry,mbIgnore]);
             if Result=mrAbort then exit;
@@ -1777,8 +1772,7 @@ begin
     if not IDEProcs.BackupFile(Filename, BackupFilename) then
     begin
       ACaption := lisBackupFileFailed;
-      AText := Format(lisUnableToBackupFileTo, ['"', Filename, '"', '"',
-        BackupFilename, '"']);
+      AText := Format(lisUnableToBackupFileTo, [Filename, BackupFilename]);
       Result := IDEMessageDialog(ACaption,AText,mterror,[mbabort,mbretry,mbignore]);
       if Result = mrAbort then exit;
       if Result = mrIgnore then Result := mrOk;

@@ -1595,9 +1595,8 @@ begin
     NewSource:=CodeToolBoss.LoadFile(Filename,true,Revert);
     if NewSource=nil then begin
       ACaption:=lisCodeToolsDefsReadError;
-      AText:=Format(lisUnableToReadFile2, ['"', Filename, '"']);
-      Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-         ,MB_ABORTRETRYIGNORE);
+      AText:=Format(lisUnableToReadFile2, [Filename]);
+      Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
       if Result in [mrAbort,mrIgnore] then
         exit;
     end else begin
@@ -2930,8 +2929,8 @@ begin
     except
       on E: Exception do begin
         IDEMessageDialog(lisUnableToReadLpi,
-            Format(lisUnableToReadTheProjectInfoFile,[LineEnding, Filename])+LineEnding
-            +E.Message, mtError, [mbOk]);
+            Format(lisUnableToReadTheProjectInfoFile,[LineEnding,Filename])+LineEnding+E.Message,
+            mtError, [mbOk]);
         Result:=mrCancel;
         exit;
       end;
@@ -2958,8 +2957,8 @@ begin
     except
       on E: Exception do begin
         IDEMessageDialog(lisUnableToReadLpi,
-            Format(lisUnableToReadTheProjectInfoFile,[LineEnding,PIFile])+LineEnding
-            +E.Message, mtError, [mbOk]);
+            Format(lisUnableToReadTheProjectInfoFile,[LineEnding,PIFile])+LineEnding+E.Message,
+            mtError, [mbOk]);
         Result:=mrCancel;
         exit;
       end;

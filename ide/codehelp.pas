@@ -1310,7 +1310,7 @@ begin
   Result:=CodeToolBoss.CreateFile(ExpandedFilename);
   if Result=nil then begin
     IDEMessageDialog(lisUnableToCreateFile,
-      Format(lisUnableToCreateFile4, [ExpandedFilename]), mtError, [mbCancel]);
+      Format(lisUnableToCreateFile2, [ExpandedFilename]), mtError, [mbCancel]);
     exit;
   end;
   

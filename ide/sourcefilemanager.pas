@@ -1583,7 +1583,7 @@ begin
       AFileName:=DiskFilename;
     if NewUnitInfo.IsVirtual then begin
       if (not (ofQuiet in Flags)) then begin
-        IDEMessageDialog(lisRevertFailed, Format(lisFileIsVirtual, ['"',AFilename,'"']),
+        IDEMessageDialog(lisRevertFailed, Format(lisFileIsVirtual, [AFilename]),
           mtInformation,[mbCancel]);
       end;
       Result:=mrCancel;
@@ -1636,8 +1636,7 @@ begin
       if (ofRevert in Flags) then begin
         // revert failed, due to missing file
         if not (ofQuiet in Flags) then begin
-          IDEMessageDialog(lisRevertFailed, Format(lisPkgMangFileNotFound, ['"',
-            AFilename, '"']),
+          IDEMessageDialog(lisRevertFailed, Format(lisPkgMangFileNotFound, [AFilename]),
             mtError,[mbCancel]);
         end;
         Result:=mrCancel;
@@ -2262,8 +2261,7 @@ begin
 
     if Project1.HasProjectInfoFileChangedOnDisk then begin
       if IDEQuestionDialog(lisProjectChangedOnDisk,
-        Format(lisTheProjectInformationFileHasChangedOnDisk,
-               ['"', Project1.ProjectInfoFile, '"', LineEnding]),
+        Format(lisTheProjectInformationFileHasChangedOnDisk,[Project1.ProjectInfoFile,LineEnding]),
         mtConfirmation, [mrYes, lisReopenProject, mrIgnore], '')=mrYes
       then begin
         MainIDE.DoOpenProjectFile(Project1.ProjectInfoFile,[]);
@@ -2333,16 +2331,15 @@ begin
   case ErrorData.Error of
     ceSrcDirDoesNotExists:
       IDEMessageDialog(lisCopyError2,
-        Format(lisSourceDirectoryDoesNotExist, ['"', ErrorData.Param1, '"']),
+        Format(lisSourceDirectoryDoesNotExist, [ErrorData.Param1]),
         mtError,[mbCancel]);
     ceCreatingDirectory:
       IDEMessageDialog(lisCopyError2,
-        Format(lisUnableToCreateDirectory, ['"', ErrorData.Param1, '"']),
+        Format(lisUnableToCreateDirectory, [ErrorData.Param1]),
         mtError,[mbCancel]);
     ceCopyFileError:
       IDEMessageDialog(lisCopyError2,
-        Format(lisUnableToCopyFileTo, ['"', ErrorData.Param1, '"', LineEnding, '"',
-          ErrorData.Param1, '"']),
+        Format(lisUnableToCopyFileTo, [ErrorData.Param1, LineEnding, ErrorData.Param1]),
         mtError,[mbCancel]);
   end;
 end;
@@ -2360,7 +2357,7 @@ var
   procedure ShowErrorForCommandAfter;
   begin
     IDEMessageDialog(lisInvalidCommand,
-      Format(lisTheCommandAfterIsNotExecutable, ['"', CmdAfterExe, '"']),
+      Format(lisTheCommandAfterIsNotExecutable, [CmdAfterExe]),
       mtError,[mbCancel]);
   end;
 
@@ -2382,8 +2379,8 @@ begin
   if CompareFilenames(SrcDir,DestDir)=0
   then begin
     IDEMessageDialog(lisInvalidPublishingDirectory,
-      Format(lisSourceDirectoryAndDestinationDirectoryAreTheSameMa, ['"', SrcDir, '"',
-        LineEnding, '"', DestDir, '"', LineEnding, LineEnding, LineEnding, LineEnding, LineEnding]),
+      Format(lisSourceDirectoryAndDestinationDirectoryAreTheSameMa, [SrcDir, LineEnding,
+          DestDir, LineEnding, LineEnding, LineEnding, LineEnding, LineEnding]),
       mtError, [mbCancel]);
     Result:=mrCancel;
     exit;
@@ -2411,8 +2408,8 @@ begin
     end;
     if not FileIsExecutableCached(CmdAfterExe) then begin
       IDEMessageDialog(lisCommandAfterInvalid,
-        Format(lisTheCommandAfterPublishingIsInvalid,
-               [LineEnding, '"', CmdAfterExe, '"']), mtError, [mbCancel]);
+        Format(lisTheCommandAfterPublishingIsInvalid, [LineEnding, CmdAfterExe]),
+        mtError, [mbCancel]);
       Result:=mrCancel;
       exit;
     end;
@@ -2423,14 +2420,13 @@ begin
     // ask user, if destination can be delete
     if IDEMessageDialog(lisClearDirectory,
       Format(lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil,
-             [LineEnding, LineEnding, '"', DestDir, '"']), mtConfirmation,
-      [mbYes,mbNo])<>mrYes
+             [LineEnding, LineEnding, DestDir]), mtConfirmation, [mbYes,mbNo])<>mrYes
     then
       exit(mrCancel);
 
     if (not DeleteDirectory(ChompPathDelim(DestDir),true)) then begin
       IDEMessageDialog(lisUnableToCleanUpDestinationDirectory,
-        Format(lisUnableToCleanUpPleaseCheckPermissions,['"',DestDir,'"',LineEnding]),
+        Format(lisUnableToCleanUpPleaseCheckPermissions, [DestDir, LineEnding]),
         mtError,[mbOk]);
       Result:=mrCancel;
       exit;
@@ -2735,9 +2731,9 @@ begin
   if (ActiveUnitInfo=nil) then exit;
   if ActiveUnitInfo.IsPartOfProject then begin
     if not ActiveUnitInfo.IsVirtual then
-      s:=Format(lisTheFile, ['"', ActiveUnitInfo.Filename, '"'])
+      s:=Format(lisTheFile, [ActiveUnitInfo.Filename])
     else
-      s:=Format(lisTheFile, ['"', ActiveSourceEditor.PageName, '"']);
+      s:=Format(lisTheFile, [ActiveSourceEditor.PageName]);
     s:=Format(lisisAlreadyPartOfTheProject, [s]);
     IDEMessageDialog(lisInformation, s, mtInformation, [mbOk]);
     exit;
@@ -3410,8 +3406,8 @@ begin
               AFilename:=LPIFilename;
             end else begin
               if IDEQuestionDialog(lisFileHasNoProject,
-                Format(lisTheFileIsNotALazarusProjectCreateANewProjectForThi, [
-                  '"', AFilename, '"', LineEnding, '"'+lowercase(SourceType)+'"']),
+                Format(lisTheFileIsNotALazarusProjectCreateANewProjectForThi,
+                       [AFilename, LineEnding, lowercase(SourceType)]),
                 mtConfirmation, [mrYes, lisCreateProject, mrCancel])<>mrYes
               then
                 exit;
@@ -3959,8 +3955,7 @@ begin
   NewFilePath:=ExtractFilePath(NewFilename);
   if not DirPathExists(NewFilePath) then begin
     ACaption:=lisEnvOptDlgDirectoryNotFound;
-    AText:=Format(lisTheDestinationDirectoryDoesNotExist,
-                  [LineEnding, '"', NewFilePath, '"']);
+    AText:=Format(lisTheDestinationDirectoryDoesNotExist, [LineEnding, NewFilePath]);
     Result:=IDEMessageDialogAb(ACaption, AText, mtConfirmation,[mbCancel],CanAbort);
     exit;
   end;
@@ -3986,7 +3981,7 @@ begin
     if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
     begin
       Result:=IDEQuestionDialogAb(lisUnitNameAlreadyExistsCap,
-         Format(lisTheUnitAlreadyExists, ['"', NewUnitName, '"']),
+         Format(lisTheUnitAlreadyExists, [NewUnitName]),
           mtConfirmation, [mrIgnore, lisForceRenaming,
                           mrCancel, lisCancelRenaming,
                           mrAbort, lisAbortAll], not CanAbort);
@@ -4027,7 +4022,7 @@ begin
       or (CompareFilenames(NewFilename,AFilename)<>0))
   and FileExistsUTF8(NewFilename) then begin
     ACaption:=lisOverwriteFile;
-    AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewFilename, '"', LineEnding]);
+    AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewFilename, LineEnding]);
     Result:=IDEQuestionDialogAb(ACaption, AText, mtConfirmation,
       [mrYes, lisOverwriteFileOnDisk, mrCancel,
        mrAbort, lisAbortAll], not CanAbort);
@@ -4271,7 +4266,7 @@ begin
             begin
               ACaption:=lisResourceSaveError;
               AText:=Format(lisUnableToAddResourceHeaderCommentToResourceFile, [
-                LineEnding, '"', LRSCode.FileName, '"', LineEnding]);
+                LineEnding, LRSCode.FileName, LineEnding]);
               Result:=IDEMessageDialog(ACaption,AText,mtError,[mbIgnore,mbAbort]);
               if Result<>mrIgnore then exit;
             end;
@@ -4281,8 +4276,7 @@ begin
             begin
               ACaption:=lisResourceSaveError;
               AText:=Format(lisUnableToAddResourceTFORMDATAToResourceFileProbably,
-                [AnUnitInfo.ComponentName,
-                 LineEnding, '"', LRSCode.FileName, '"', LineEnding] );
+                [AnUnitInfo.ComponentName, LineEnding, LRSCode.FileName, LineEnding] );
               Result:=IDEMessageDialog(ACaption, AText, mtError, [mbIgnore, mbAbort]);
               if Result<>mrIgnore then exit;
             end else begin
@@ -4304,7 +4298,7 @@ begin
             LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
             if LFMCode=nil then begin
               Result:=IDEQuestionDialog(lisUnableToCreateFile,
-                Format(lisUnableToCreateFile2, ['"', LFMFilename, '"']),
+                Format(lisUnableToCreateFile2, [LFMFilename]),
                 mtWarning, [mrIgnore, lisContinueWithoutLoadingForm,
                            mrCancel, lisCancelLoadingUnit,
                            mrAbort, lisAbortAllLoading]);
@@ -4514,13 +4508,11 @@ begin
       // -> remove lfm file, so that it will not be auto loaded on next open
       if (FileExistsUTF8(NewLFMFilename))
       and (not DeleteFileUTF8(NewLFMFilename))
-      and (IDEMessageDialog(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed, [
-        '"', NewLFMFilename, '"']), mtError, [mbIgnore, mbCancel])=mrCancel)
-        then
-      begin
-        Result:=mrCancel;
-        exit;
-      end;
+      and (IDEMessageDialog(lisPkgMangDeleteFailed,
+            Format(lisDeletingOfFileFailed, [NewLFMFilename]),
+            mtError, [mbIgnore, mbCancel])=mrCancel)
+      then
+        exit(mrCancel);
     end;
 
     // create new source with the new filename
@@ -4529,7 +4521,7 @@ begin
     NewSource.Source:=OldSourceCode;
     if NewSource=nil then begin
       Result:=IDEMessageDialog(lisUnableToCreateFile,
-        Format(lisCanNotCreateFile, ['"', NewFilename, '"']),
+        Format(lisCanNotCreateFile, [NewFilename]),
         mtError,[mbCancel,mbAbort]);
       exit;
     end;
@@ -4550,8 +4542,7 @@ begin
       if SearchDirectoryInSearchPath(OldUnitPath,NewFilePath,1)<1 then begin
         //DebugLn('TLazSourceFileManager.RenameUnit NewFilePath="',NewFilePath,'" OldUnitPath="',OldUnitPath,'"');
         if IDEMessageDialog(lisExtendUnitPath,
-          Format(lisTheDirectoryIsNotYetInTheUnitPathAddIt,
-                 ['"', NewFilePath, '"', LineEnding]),
+          Format(lisTheDirectoryIsNotYetInTheUnitPathAddIt,[NewFilePath,LineEnding]),
           mtConfirmation,[mbYes,mbNo])=mrYes then
         begin
           Project1.CompilerOptions.OtherUnitFiles:=
@@ -4694,7 +4685,7 @@ begin
         and (CompareFilenames(OldFilePath,NewFilePath)=0)
         and (CompareFilenames(AmbiguousFiles[0],ExtractFilename(OldFilename))=0)
         then
-          AmbiguousText:=Format(lisDeleteOldFile, ['"', ExtractFilename(OldFilename), '"'])
+          AmbiguousText:=Format(lisDeleteOldFile, [ExtractFilename(OldFilename)])
         else
           AmbiguousText:=Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName,
                           [LineEnding, LineEnding, AmbiguousFiles.Text, LineEnding]);
@@ -4707,12 +4698,11 @@ begin
             AmbiguousFilename:=NewFilePath+AmbiguousFiles[i];
             if (FileExistsUTF8(AmbiguousFilename))
             and (not DeleteFileUTF8(AmbiguousFilename))
-            and (IDEMessageDialog(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
-              ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel])=mrCancel) then
-            begin
-              Result:=mrCancel;
-              exit;
-            end;
+            and (IDEMessageDialog(lisPkgMangDeleteFailed,
+                  Format(lisDeletingOfFileFailed, [AmbiguousFilename]),
+                  mtError, [mbIgnore, mbCancel])=mrCancel)
+            then
+              exit(mrCancel);
           end;
         end;
       finally
@@ -4733,8 +4723,7 @@ begin
                      Project1.CompilerOptions.GetUnitPath(false),OldFilePath,1)<1)
         then begin
           if IDEMessageDialog(lisCleanUpUnitPath,
-              Format(lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt,
-                     ['"', OldFilePath, '"', LineEnding]),
+              Format(lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt,[OldFilePath,LineEnding]),
               mtConfirmation,[mbYes,mbNo])=mrYes then
           begin
             Project1.CompilerOptions.OtherUnitFiles:=
@@ -4747,8 +4736,7 @@ begin
     // delete old pas, .pp, .ppu
     if (CompareFilenames(NewFilename,OldFilename)<>0)
     and OldFileExisted then begin
-      if IDEMessageDialog(lisDeleteOldFile2,
-        Format(lisDeleteOldFile, ['"', OldFilename, '"']),
+      if IDEMessageDialog(lisDeleteOldFile2, Format(lisDeleteOldFile,[OldFilename]),
         mtConfirmation,[mbYes,mbNo])=mrYes then
       begin
         Result:=DeleteFileInteractive(OldFilename,[mbAbort]);
@@ -4855,7 +4843,7 @@ begin
   if AskUser then begin
     Result:=IDEQuestionDialog(lisFileNotLowercase,
       Format(lisTheUnitIsNotLowercaseTheFreePascalCompiler,
-             ['"', OldFilename, '"', LineEnding, LineEnding, LineEnding]),
+             [OldFilename, LineEnding, LineEnding, LineEnding]),
       mtConfirmation,[mrYes,mrIgnore,lisNo,mrAbort],'');
     if Result<>mrYes then exit;
   end;
@@ -4878,7 +4866,7 @@ begin
     // this is a file, that was loaded last time, but was removed from disk
     Result:=IDEQuestionDialog(lisFileNotFound,
       Format(lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject,
-             ['"', AFilename, '"', LineEnding, LineEnding, LineEnding]),
+             [AFilename, LineEnding, LineEnding, LineEnding]),
       mtError, [mrIgnore, lisSkipFileAndContinueLoading,
                 mrAbort, lisAbortLoadingProject]);
     exit;
@@ -4891,14 +4879,14 @@ begin
   if ofOnlyIfExists in Flags
   then begin
     IDEMessageDialog(lisFileNotFound,
-      Format(lisFileNotFound2, ['"',AFilename,'"',LineEnding]), mtInformation,[mbCancel]);
+      Format(lisFileNotFound2, [AFilename])+LineEnding, mtInformation,[mbCancel]);
     // cancel loading file
     Exit;
   end;
 
   if IDEMessageDialog(lisFileNotFound,
-    Format(lisFileNotFoundDoYouWantToCreateIt, ['"',AFilename,'"',LineEnding,LineEnding]),
-    mtInformation,[mbYes,mbNo])=mrYes then
+      Format(lisFileNotFoundDoYouWantToCreateIt,[AFilename,LineEnding])+LineEnding,
+      mtInformation,[mbYes,mbNo])=mrYes then
   begin
     // create new file
     NewFlags:=[nfOpenInEditor,nfCreateDefaultSrc];
@@ -4961,7 +4949,7 @@ begin
           end;
         end else begin
           AText:=Format(lisTheFileSeemsToBeAProgramCloseCurrentProject,
-                        ['"', AFilename, '"', LineEnding, LineEnding]);
+                        [AFilename, LineEnding, LineEnding]);
           ACaption:=lisProgramDetected;
           if IDEMessageDialog(ACaption, AText, mtConfirmation, [mbYes,mbNo])=mrYes then
           begin
@@ -5079,8 +5067,7 @@ begin
   end;
   if UnitFilename='' then begin
     IDEMessageDialog(lisNoPascalFile,
-      Format(lisUnableToFindPascalUnitPasPpForLfmFile,
-             [LineEnding, '"', LFMUnitInfo.Filename, '"']),
+      Format(lisUnableToFindPascalUnitPasPpForLfmFile,[LineEnding, LFMUnitInfo.Filename]),
       mtError,[mbCancel]);
     Result:=mrCancel;
     exit;
@@ -5413,7 +5400,7 @@ begin
       if (NewClassName='') or (LFMType='') then begin
         DebugLn(['TLazSourceFileManager.LoadLFM LFM file corrupt']);
         Result:=IDEMessageDialog(lisLFMFileCorrupt,
-          Format(lisUnableToFindAValidClassnameIn, ['"', LFMBuf.Filename, '"']),
+          Format(lisUnableToFindAValidClassnameIn, [LFMBuf.Filename]),
           mtError,[mbIgnore,mbCancel,mbAbort]);
         exit;
       end;
@@ -5504,7 +5491,7 @@ begin
               DumpExceptionBackTrace;
               ACaption:=lisFormatError;
               AText:=Format(lisUnableToConvertTextFormDataOfFileIntoBinaryStream,
-                [LineEnding, '"', LFMBuf.Filename, '"', LineEnding, E.Message]);
+                [LineEnding, LFMBuf.Filename, LineEnding, E.Message]);
               Result:=IDEMessageDialog(ACaption, AText, mtError, [mbOk, mbCancel]);
               if Result=mrCancel then Result:=mrAbort;
               exit;
@@ -5726,9 +5713,9 @@ begin
     if (DescendantClassName<>'')
     and (SysUtils.CompareText(AComponentClassName,'TCustomForm')=0) then begin
       // this is a common user mistake
-      IDEMessageDialog(lisCodeTemplError, Format(
-        lisTheResourceClassDescendsFromProbablyThisIsATypoFor, ['"',
-        DescendantClassName, '"', '"', AComponentClassName, '"']),
+      IDEMessageDialog(lisCodeTemplError,
+        Format(lisTheResourceClassDescendsFromProbablyThisIsATypoFor,
+               [DescendantClassName, AComponentClassName]),
         mtError,[mbCancel]);
       Result:=false;
       exit;
@@ -6341,9 +6328,8 @@ begin
 
   // check for cycles
   if AnUnitInfo.LoadingComponent then begin
-    Result:=IDEQuestionDialog(lisCodeTemplError, Format(
-      lisUnableToLoadTheComponentClassBecauseItDependsOnIts, ['"',
-      AComponentClassName, '"']),
+    Result:=IDEQuestionDialog(lisCodeTemplError,
+      Format(lisUnableToLoadTheComponentClassBecauseItDependsOnIts, [AComponentClassName]),
       mtError, [mrCancel, lisCancelLoadingThisComponent,
                mrAbort, lisAbortWholeLoading]);
     exit;
@@ -6983,8 +6969,7 @@ begin
         NewProgramName:=ExtractFileNameOnly(AFilename);
         if (NewProgramName='') or (not IsValidUnitName(NewProgramName)) then begin
           Result:=IDEMessageDialog(lisInvalidProjectFilename,
-            Format(lisisAnInvalidProjectNamePleaseChooseAnotherEGProject, ['"',
-              SaveDialog.Filename, '"', LineEnding]),
+            Format(lisisAnInvalidProjectNamePleaseChooseAnotherEGProject,[SaveDialog.Filename,LineEnding]),
             mtInformation,[mbRetry,mbAbort]);
           if Result=mrAbort then exit;
           continue; // try again
@@ -7017,8 +7002,7 @@ begin
           if (CompareFilenames(NewLPIFilename, NewProgramFilename) = 0) then
           begin
             ACaption:=lisChooseADifferentName;
-            AText:=Format(lisTheProjectInfoFileIsEqualToTheProjectMainSource, [
-              '"', NewLPIFilename, '"', LineEnding]);
+            AText:=Format(lisTheProjectInfoFileIsEqualToTheProjectMainSource,[NewLPIFilename,LineEnding]);
             Result:=IDEMessageDialog(ACaption, AText, mtError, [mbAbort,mbRetry]);
             if Result=mrAbort then exit;
             continue; // try again
@@ -7029,8 +7013,7 @@ begin
                                          Project1.MainUnitInfo)>=0) then
           begin
             ACaption:=lisUnitIdentifierExists;
-            AText:=Format(lisThereIsAUnitWithTheNameInTheProjectPleaseChoose, ['"',
-              NewProgramName, '"', LineEnding]);
+            AText:=Format(lisThereIsAUnitWithTheNameInTheProjectPleaseChoose,[NewProgramName,LineEnding]);
             Result:=IDEMessageDialog(ACaption,AText,mtError,[mbRetry,mbAbort]);
             if Result=mrAbort then exit;
             continue; // try again
@@ -7052,7 +7035,7 @@ begin
     if FileExistsUTF8(NewLPIFilename) then
     begin
       ACaption:=lisOverwriteFile;
-      AText:=Format(lisAFileAlreadyExistsReplaceIt, ['"', NewLPIFilename, '"', LineEnding]);
+      AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewLPIFilename, LineEnding]);
       Result:=IDEMessageDialog(ACaption, AText, mtConfirmation, [mbOk, mbCancel]);
       if Result=mrCancel then exit;
     end
@@ -7061,8 +7044,7 @@ begin
       if FileExistsUTF8(NewProgramFilename) then
       begin
         ACaption:=lisOverwriteFile;
-        AText:=Format(lisAFileAlreadyExistsReplaceIt,
-                      ['"', NewProgramFilename, '"', LineEnding]);
+        AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewProgramFilename, LineEnding]);
         Result:=IDEMessageDialog(ACaption, AText, mtConfirmation,[mbOk,mbCancel]);
         if Result=mrCancel then exit;
       end;
@@ -7107,8 +7089,9 @@ begin
       // switch MainUnitInfo.Source to new code
       NewBuf := CodeToolBoss.CreateFile(NewProgramFilename);
       if NewBuf=nil then begin
-        Result:=IDEMessageDialog(lisErrorCreatingFile, Format(lisUnableToCreateFile3, [
-          LineEnding, '"', NewProgramFilename, '"']), mtError, [mbCancel]);
+        Result:=IDEMessageDialog(lisErrorCreatingFile,
+          Format(lisUnableToCreateFile3, [LineEnding, NewProgramFilename]),
+          mtError, [mbCancel]);
         exit;
       end;
 

@@ -198,8 +198,8 @@ resourcestring
   lisProjectMacroProperties = 'Project macro properties';
   lisOpenProject2 = 'Open project';
   lisFileHasNoProject = 'File has no project';
-  lisTheFileIsNotALazarusProjectCreateANewProjectForThi = 'The file %s%s%s is '
-    +'not a Lazarus project.%sCreate a new project for this %s?';
+  lisTheFileIsNotALazarusProjectCreateANewProjectForThi = 'The file "%s" is '
+    +'not a Lazarus project.%sCreate a new project for this "%s"?';
   lisCreateProject = 'Create project';
   lisKMSaveProject = 'Save project';
   lisKMCloseProject = 'Close project';
@@ -579,12 +579,11 @@ resourcestring
   lisDelphiUnit = 'Delphi unit';
   lisDelphiProject = 'Delphi project';
   lisDelphiPackage = 'Delphi package';
-  lisUnableToReadFileError = 'Unable to read file %s%s%s%sError: %s';
   lisFormatError = 'Format error';
   lisLFMFileCorrupt = 'LFM file corrupt';
-  lisUnableToFindAValidClassnameIn = 'Unable to find a valid classname in %s%s%s';
-  lisUnableToConvertFileError = 'Unable to convert file %s%s%s%sError: %s';
-  lisUnableToWriteFileError = 'Unable to write file %s%s%s%sError: %s';
+  lisUnableToFindAValidClassnameIn = 'Unable to find a valid classname in "%s"';
+  lisUnableToConvertFileError = 'Unable to convert file "%s"%sError: %s';
+  lisUnableToWriteFileError = 'Unable to write file "%s"%sError: %s';
   lisMissingUnitsComment = 'Comment Out';
   lisMissingUnitsForDelphi = 'For Delphi only';
   lisMissingUnitsSearch = 'Search Unit Path';
@@ -646,8 +645,7 @@ resourcestring
   lisFilesHaveRightEncoding = '*** All found files already have the right encoding ***';
 
   lisnoname = 'noname';
-  lisTheDestinationDirectoryDoesNotExist = 'The destination directory%s%s%s%s '
-    +'does not exist.';
+  lisTheDestinationDirectoryDoesNotExist = 'The destination directory%s"%s" does not exist.';
   lisRenameFile = 'Rename file?';
   lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC = 'This looks like a '
     +'Pascal file.%sIt is recommended to use lower case filenames, to avoid '
@@ -656,65 +654,60 @@ resourcestring
   lisRenameToLowercase = 'Rename to lowercase';
   lisKeepName = 'Keep name';
   lisOverwriteFile = 'Overwrite file?';
-  lisAFileAlreadyExistsReplaceIt = 'A file %s%s%s already exists.%sReplace it?';
+  lisAFileAlreadyExistsReplaceIt = 'A file "%s" already exists.%sReplace it?';
   lisOverwriteFileOnDisk = 'Overwrite file on disk';
   lisAmbiguousFilesFound = 'Ambiguous files found';
   lisThereAreOtherFilesInTheDirectoryWithTheSameName = 'There are other files '
     +'in the directory with the same name,%swhich only differ in case:%s%s%'
     +'sDelete them?';
-  lisDeleteOldFile = 'Delete old file %s%s%s?';
-  lisDeletingOfFileFailed = 'Deleting of file %s%s%s failed.';
+  lisDeleteOldFile = 'Delete old file "%s"?';
+  lisDeletingOfFileFailed = 'Deleting of file "%s" failed.';
   lisStreamingError = 'Streaming error';
   lisUnableToStreamT = 'Unable to stream %s:T%s.';
   lisPathToInstance = 'Path to failed Instance:';
   lisResourceSaveError = 'Resource save error';
   lisUnableToAddResourceHeaderCommentToResourceFile = 'Unable to add resource '
-    +'header comment to resource file %s%s%s%s.%sProbably a syntax error.';
+    +'header comment to resource file %s"%s".%sProbably a syntax error.';
   lisUnableToAddResourceTFORMDATAToResourceFileProbably = 'Unable to add '
-    +'resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error.';
-  lisUnableToCreateFile2 = 'Unable to create file %s%s%s';
+    +'resource T%s:FORMDATA to resource file %s"%s".%sProbably a syntax error.';
   lisContinueWithoutLoadingForm = 'Continue without loading form';
   lisCancelLoadingUnit = 'Cancel loading unit';
   lisAbortAllLoading = 'Abort all loading';
   lisSkipFile = 'Skip file';
   lisUnableToTransformBinaryComponentStreamOfTIntoText = 'Unable to transform '
     +'binary component stream of %s:T%s into text.';
-  lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject = 'The file %s%s%s%'
-    +'swas not found.%sIgnore will go on loading the project,%sAbort  will '
-    +'stop the loading.';
+  lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject = 'The file "%s"%swas not '
+    +'found.%sIgnore will go on loading the project,%sAbort  will stop the loading.';
   lisSkipFileAndContinueLoading = 'Skip file and continue loading';
   lisAbortLoadingProject = 'Abort loading project';
-  lisFileNotFound2 = 'File %s%s%s not found.%s';
-  lisFileNotFoundDoYouWantToCreateIt = 'File %s%s%s not found.%sDo you want '
-    +'to create it?%s';
+  lisFileNotFound2 = 'File "%s" not found.';
+  lisFileNotFoundDoYouWantToCreateIt = 'File "%s" not found.%sDo you want to create it?';
   lisProjectInfoFileDetected = 'Project info file detected';
   lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP = 'The file %s seems '
     +'to be the program file of an existing Lazarus Project.';
-  lisTheFileSeemsToBeAProgramCloseCurrentProject = 'The file %s%s%s%sseems to '
+  lisTheFileSeemsToBeAProgramCloseCurrentProject = 'The file "%s"%sseems to '
     +'be a program. Close current project and create a new Lazarus project '
     +'for this program?%s"No" will load the file as normal source.';
   lisProgramDetected = 'Program detected';
   lisUnableToConvertTextFormDataOfFileIntoBinaryStream = 'Unable to convert '
-    +'text form data of file %s%s%s%s%sinto binary stream. (%s)';
+    +'text form data of file %s"%s"%sinto binary stream. (%s)';
   lisSaveProject = 'Save project %s (*%s)';
   lisRemoveUnitPath = 'Remove unit path?';
   lisTheDirectoryContainsNoProjectUnitsAnyMoreRemoveThi = 'The directory "%s" '
     +'contains no project units any more. Remove this directory from the '
     +'project''s unit search path?';
   lisInvalidProjectFilename = 'Invalid project filename';
-  lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '%s%s%s is an '
+  lisisAnInvalidProjectNamePleaseChooseAnotherEGProject = '"%s" is an '
     +'invalid project name.%sPlease choose another (e.g. project1.lpi)';
   lisChooseADifferentName = 'Choose a different name';
   lisTheProjectInfoFileIsEqualToTheProjectMainSource = 'The project info '
-    +'file %s%s%s%sis equal to the project main source file!';
+    +'file "%s"%sis equal to the project main source file!';
   lisUnitIdentifierExists = 'Unit identifier exists';
   lisThereIsAUnitWithTheNameInTheProjectPleaseChoose = 'There is a unit with the '
-    +'name %s%s%s in the project.%sPlease choose a different name';
+    +'name "%s" in the project.%sPlease choose a different name';
   lisErrorCreatingFile = 'Error creating file';
-  lisUnableToCreateFile3 = 'Unable to create file%s%s%s%s';
   lisCopyError2 = 'Copy error';
-  lisSourceDirectoryDoesNotExist = 'Source directory %s%s%s does not exist.';
-  lisUnableToCopyFileTo = 'Unable to copy file %s%s%s%sto %s%s%s';
+  lisSourceDirectoryDoesNotExist = 'Source directory "%s" does not exist.';
   lisSorryThisTypeIsNotYetImplemented = 'Sorry, this type is not yet implemented';
   lisFileHasChangedSave = 'File "%s" has changed. Save?';
   lisUnitHasChangedSave = 'Unit "%s" has changed. Save?';
@@ -726,31 +719,27 @@ resourcestring
   lisOpenPackage = 'Open Package?';
   lisOpenThePackage = 'Open the package %s?';
   lisRevertFailed = 'Revert failed';
-  lisFileIsVirtual = 'File %s%s%s is virtual.';
-  lisUnableToWrite = 'Unable to write %s%s%s%s%s.';
+  lisFileIsVirtual = 'File "%s" is virtual.';
   lisFileNotText = 'File not text';
   lisUnableToRenameFile = 'Unable to rename file';
   lisUnableToCopyFile = 'Unable to copy file';
   lisWriteError = 'Write Error';
-  lisUnableToWriteFile2 = 'Unable to write file "%s".';
   lisByte = '%s byte';
   lisFileDoesNotLookLikeATextFileOpenItAnyway =
-    'File %s%s%s%sdoes not look like a text file.%sOpen it anyway?';
-  lisUnableToCreateBackupDirectory = 'Unable to create backup directory %s%s%s.';
+    'File "%s"%sdoes not look like a text file.%sOpen it anyway?';
+  lisUnableToCreateBackupDirectory = 'Unable to create backup directory "%s".';
   lisSourceAndDestinationAreTheSame = 'Source and Destination are the same:%s%s';
-  lisUnableToRenameFileTo2 = 'Unable to rename file %s%s%s%sto %s%s%s.';
   lisInvalidCommand = 'Invalid command';
-  lisTheCommandAfterIsNotExecutable = 'The command after %s%s%s is not executable.';
+  lisTheCommandAfterIsNotExecutable = 'The command after "%s" is not executable.';
   lisUnableToCleanUpDestinationDirectory = 'Unable to clean up destination directory';
   lisCommandAfterInvalid = 'Command after invalid';
-  lisTheCommandAfterPublishingIsInvalid = 'The command after publishing is invalid:%s%s%s%s';
-  lisUnableToCleanUpPleaseCheckPermissions = 'Unable to clean up %s%s%s.%'
-    +'sPlease check permissions.';
+  lisTheCommandAfterPublishingIsInvalid = 'The command after publishing is invalid:%s"%s"';
+  lisUnableToCleanUpPleaseCheckPermissions = 'Unable to clean up "%s".%sPlease check permissions.';
   lisCommandAfterPublishingModule = 'Command after publishing module';
   lisUnableToAddToProjectBecauseThereIsAlreadyAUnitWith = 'Unable to add %s '
     +'to project, because there is already a unit with the same name in the Project.';
   lisAddToProject = 'Add %s to project?';
-  lisTheFile = 'The file %s%s%s';
+  lisTheFile = 'The file "%s"';
   lisAddToUnitSearchPath = 'Add to unit search path?';
   lisAddToIncludeSearchPath = 'Add to include search path?';
   lisTheNewIncludeFileIsNotYetInTheIncludeSearchPathAdd =
@@ -761,7 +750,7 @@ resourcestring
   lisRemoveFromProject = 'Remove from Project';
   lisCreateAProjectFirst = 'Create a project first!';
   lisTheTestDirectoryCouldNotBeFoundSeeIDEOpt = 'The Test Directory '
-    +'could not be found:%s%s%s%s%s(see IDE options)';
+    +'could not be found:%s"%s"%s(see IDE options)';
   lisBuildNewProject = 'Build new project';
   lisTheProjectMustBeSavedBeforeBuildingIfYouSetTheTest = 'The project must '
     +'be saved before building%sIf you set the Test Directory in the '
@@ -780,8 +769,9 @@ resourcestring
     +'Lazarus while debugging or compiling.';
   lisReadError = 'Read Error';
   lisUnableToReadFile = 'Unable to read file';
-  lisUnableToReadFile2 = 'Unable to read file %s%s%s.';
-  lisUnableToReadTheProjectInfoFile = 'Unable to read the project info file%s%s%s%s.';
+  lisUnableToReadFile2 = 'Unable to read file "%s".';
+  lisUnableToReadFileError = 'Unable to read file "%s"%sError: %s';
+  lisUnableToReadTheProjectInfoFile = 'Unable to read the project info file%s"%s".';
   lisUnableToReadLpi = 'Unable to read lpi';
   lisStrangeLpiFile = 'Strange lpi file';
   lisTheFileDoesNotLookLikeALpiFile = 'The file %s does not look like a lpi file.';
@@ -792,27 +782,27 @@ resourcestring
     +'packages contain a unit with the same name.';
   lisIgnoreAll = 'Ignore all';
   lisDeleteFileFailed = 'Delete file failed';
-  lisUnableToRemoveOldBackupFile = 'Unable to remove old backup file %s%s%s!';
+  lisUnableToRemoveOldBackupFile = 'Unable to remove old backup file "%s"!';
   lisRenameFileFailed = 'Rename file failed';
-  lisUnableToRenameFileTo = 'Unable to rename file %s%s%s to %s%s%s!';
+  lisUnableToRenameFileTo = 'Unable to rename file "%s" to "%s"!';
+  lisUnableToRenameFileTo2= 'Unable to rename file "%s"%sto "%s".';
   lisBackupFileFailed = 'Backup file failed';
-  lisUnableToBackupFileTo = 'Unable to backup file %s%s%s to %s%s%s!';
+  lisUnableToBackupFileTo = 'Unable to backup file "%s" to "%s"!';
   lisFileNotLowercase = 'File not lowercase';
-  lisTheUnitIsNotLowercaseTheFreePascalCompiler = 'The unit filename %s%s%s is '
+  lisTheUnitIsNotLowercaseTheFreePascalCompiler = 'The unit filename "%s" is '
     +'not lowercase.%sThe Free Pascal compiler does not search for all cases.'
     +' It is recommended to use lowercase filename.%s%sRename file lowercase?';
   lisDeleteAmbiguousFile = 'Delete ambiguous file?';
   lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
-    +'found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the '
-    +'ambiguous file?';
+    +'found: "%s"%sThis file can be mistaken with "%s"%s%sDelete the ambiguous file?';
   lisLazarusEditorV = 'Lazarus IDE v%s';
   lisnewProject = '(new project)';
   liscompiling = '%s (compiling ...)';
   lisdebugging = '%s (debugging ...)';
   lisRunning = '%s (running ...)';
-  lisUnableToFindFile = 'Unable to find file %s%s%s.';
+  lisUnableToFindFile = 'Unable to find file "%s".';
   lisUnableToFindFileCheckSearchPathInProjectCompilerOption = 'Unable to find '
-    +'file %s%s%s.%sIf it belongs to your project, check search path '
+    +'file "%s".%sIf it belongs to your project, check search path '
     +'in%sProject -> Compiler Options -> Search Paths -> Other Unit Files.'
     +' If this file belongs to a package, check the appropriate package compiler'
     +' options. If this file belongs to Lazarus, make sure compiling clean.'
@@ -1010,7 +1000,7 @@ resourcestring
       +'As Lazarus is growing we need more developers.';
   lisAboutNoContributors = 'Cannot find contributors list.';
   lisUnitNameAlreadyExistsCap = 'Unitname already in project';
-  lisTheUnitAlreadyExists = 'The unit %s%s%s already exists.';
+  lisTheUnitAlreadyExists = 'The unit "%s" already exists.';
   lisForceRenaming = 'Force renaming';
   lisCancelRenaming = 'Cancel renaming';
   lisAbortAll = 'Abort all';
@@ -3365,12 +3355,12 @@ resourcestring
     +'designer.%sThe class %s does not descend from a designable class like '
     +'TForm or TDataModule.';
   lisUnableToLoadTheComponentClassBecauseItDependsOnIts = 'Unable to load the '
-    +'component class %s%s%s, because it depends on itself.';
+    +'component class "%s", because it depends on itself.';
   lisCancelLoadingThisComponent = 'Cancel loading this component';
   lisAbortWholeLoading = 'Abort whole loading';
   lisIgnoreUseTFormAsAncestor = 'Ignore, use TForm as ancestor';
   lisTheResourceClassDescendsFromProbablyThisIsATypoFor = 'The resource '
-    +'class %s%s%s descends from %s%s%s. Probably this is a typo for TForm.';
+    +'class "%s" descends from "%s". Probably this is a typo for TForm.';
 
   // make resource string dialog
   lisMakeResourceString = 'Make ResourceString';
@@ -3541,13 +3531,15 @@ resourcestring
 
   // file checks
   lisUnableToCreateFile = 'Unable to create file';
-  lisUnableToCreateFile4 = 'Unable to create file %s';
-  lisCanNotCreateFile = 'Cannot create file %s%s%s';
+  lisUnableToCreateFile2 = 'Unable to create file "%s"';
+  lisUnableToCreateFile3 = 'Unable to create file%s"%s"';
+  lisUnableToCopyFileTo = 'Unable to copy file "%s"%sto "%s"';
+  lisCanNotCreateFile = 'Cannot create file "%s"';
   lisExtendUnitPath = 'Extend unit path?';
-  lisTheDirectoryIsNotYetInTheUnitPathAddIt = 'The directory %s%s%s is not '
-    +'yet in the unit path.%sAdd it?';
-  lisUnableToCreateFilename = 'Unable to create file %s%s%s.';
+  lisTheDirectoryIsNotYetInTheUnitPathAddIt = 'The directory "%s" is not yet in the unit path.%sAdd it?';
+  lisUnableToWrite2 = 'Unable to write "%s"';
   lisUnableToWriteFile = 'Unable to write file';
+  lisUnableToWriteFile2 = 'Unable to write file "%s".';
   lisUnableToWriteToFile2 = 'Unable to write to file "%s".';
   lisFileIsNotWritable = 'File is not writable';
   lisErrorDeletingFile = 'Error deleting file';
@@ -3555,10 +3547,9 @@ resourcestring
   lisTheFileMaskIsNotAValidRegularExpression = 'The file mask "%s" is not a '
     +'valid regular expression.';
   lisTheFileMaskIsInvalid = 'The file mask "%s" is invalid.';
-  lisUnableToDeleteAmbiguousFile = 'Unable to delete ambiguous file %s%s%s';
+  lisUnableToDeleteAmbiguousFile = 'Unable to delete ambiguous file "%s"';
   lisErrorRenamingFile = 'Error renaming file';
-  lisUnableToRenameAmbiguousFileTo = 'Unable to rename ambiguous file %s%s%s%'
-    +'sto %s%s%s';
+  lisUnableToRenameAmbiguousFileTo = 'Unable to rename ambiguous file "%s"%sto "%s"';
   lisWarningAmbiguousFileFoundSourceFileIs = 'Warning: ambiguous file found: %'
     +'s%s%s. Source file is: %s%s%s';
   lisAmbiguousFileFound = 'Ambiguous file found';
@@ -3649,8 +3640,8 @@ resourcestring
   lisExecutionStopped = 'Execution stopped';
   lisFileNotFound = 'File not found';
   lisCleanUpUnitPath = 'Clean up unit path?';
-  lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt = 'The directory %s%s%'
-    +'s is no longer needed in the unit path.%sRemove it?';
+  lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt =
+    'The directory "%s" is no longer needed in the unit path.%sRemove it?';
   lisTheFileWasNotFoundDoYouWantToLocateItYourself = 'The file %s%s%s%swas '
     +'not found.%sDo you want to locate it yourself ?%s';
   lisRunToFailed = 'Run-to failed';
@@ -3808,7 +3799,7 @@ resourcestring
     +'like a compiled unit. Compiled units must be in the output directory of '
     +'the package, otherwise other packages can get problems using this '
     +'package.%s%sDelete ambiguous file?';
-  lisPkgMangUnableToDeleteFile = 'Unable to delete file %s%s%s.';
+  lisPkgMangUnableToDeleteFile = 'Unable to delete file "%s".';
   lisSkipErrors = 'Skip errors';
   lisDeleteAllTheseFiles = 'Delete all these files?';
   lisPkgMangUnsavedPackage = 'Unsaved package';
@@ -3855,7 +3846,7 @@ resourcestring
   lisPkgMangUnableToReadStateFileOfPackageError = 'Unable to read state file %'
     +'s%s%s%sof package %s.%sError: %s';
   lisPkgMangUnableToCreateDirectory = 'Unable to create directory';
-  lisUnableToCreateDirectory = 'Unable to create directory %s%s%s.';
+  lisUnableToCreateDirectory = 'Unable to create directory "%s".';
   lisPkgMangUnableToCreateOutputDirectoryForPackage = 'Unable to create '
     +'output directory %s%s%s%sfor package %s.';
   lisPkgMangUnableToDeleteFilename = 'Unable to delete file';
@@ -3894,7 +3885,7 @@ resourcestring
   lisPkgMangInvalidPackageFilename = 'Invalid package filename';
   lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName = 'The package '
     +'file name %s%s%s in%s%s%s%s is not a valid Lazarus package name.';
-  lisPkgMangFileNotFound = 'File %s%s%s not found.';
+  lisPkgMangFileNotFound = 'File "%s" not found.';
   lisPkgMangErrorReadingPackage = 'Error Reading Package';
   lisPkgUnableToReadPackageFileError = 'Unable to read package file %s%s%s.%sError: %s';
   lisPkgMangFilenameDiffersFromPackagename =
@@ -4708,15 +4699,13 @@ resourcestring
   rsFilterTheListWithString = 'Filter the lines in list with a string';
 
   // Application Bundle
-  lisUnableToWrite2 = 'Unable to write %s%s%s';
   lisErrorLoadingFrom = 'Error loading %s from%s%s%s%s';
   lisErrorSavingTo = 'Error saving %s to%s%s%s%s';
   lisXMLError = 'XML Error';
   lisXMLParserErrorInFileError = 'XML parser error in file %s%sError: %s';
   lisUnableToWriteXmlStreamToError = 'Unable to write xml stream to %s%sError: %s';
   lisFileIsSymlink = 'File is symlink';
-  lisTheFileIsASymlinkOpenInstead = 'The file %s%s%s is a symlink.%s%sOpen %s%'
-    +'s%s instead?';
+  lisTheFileIsASymlinkOpenInstead = 'The file "%s" is a symlink.%s%sOpen "%s" instead?';
   lisOpenTarget = 'Open target';
   lisOpenSymlink = 'Open symlink';
   lisFileLinkError = 'File link error';
@@ -4908,15 +4897,15 @@ resourcestring
     +'not be deleted, because it is not owned by %s.';
   lisFilter3 = 'Filter: %s';
   lisInvalidPublishingDirectory = 'Invalid publishing Directory';
-  lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory %'
-    +'s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you '
+  lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory '
+    +'"%s"%sand destination directory "%s"%sare the same.%s%sMaybe you '
     +'misunderstand this feature.%sIt will clean/recreate the destination '
     +'directory%sand copies the package/project into it.';
   lisClearDirectory = 'Clear Directory?';
   lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil = 'In order to create '
     +'a clean copy of the project/package, all files in the following '
     +'directory will be deleted and all its content will be lost.%s%sDelete '
-    +'all files in %s%s%s?';
+    +'all files in "%s"?';
   lisFileExtensionOfPrograms = 'File extension of programs';
   lisEveryNThLineNumber = 'Every n-th line number';
   lisShowOverviewGutter = 'Show overview Gutter';
@@ -4972,8 +4961,7 @@ resourcestring
     +'environmentoptions.xml';
   lisOverrideTheProjectBuildMode = '%soverride the project or IDE build mode.';
   lisProjectChangedOnDisk = 'Project changed on disk';
-  lisTheProjectInformationFileHasChangedOnDisk = 'The project information '
-    +'file %s%s%s%shas changed on disk.';
+  lisTheProjectInformationFileHasChangedOnDisk = 'The project information file "%s"%shas changed on disk.';
   lisReopenProject = 'Reopen project';
   rsScanners = 'Scanners';
   rsAvailableScanners = 'Available scanners';
@@ -5132,8 +5120,7 @@ resourcestring
   lisThisFunctionNeedsAnOpenLfmFileInTheSourceEditor = 'This function needs '
     +'an open .lfm file in the source editor.';
   lisNoPascalFile = 'No Pascal file';
-  lisUnableToFindPascalUnitPasPpForLfmFile = 'Unable to find Pascal unit (.'
-    +'pas, .pp) for .lfm file%s%s%s%s';
+  lisUnableToFindPascalUnitPasPpForLfmFile = 'Unable to find Pascal unit (.pas, .pp) for .lfm file%s"%s"';
   lisLFMIsOk = 'LFM is ok';
   lisClassesAndPropertiesExistValuesWereNotChecked = 'Classes and properties '
     +'exist. Values were not checked.';

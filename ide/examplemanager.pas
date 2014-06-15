@@ -279,9 +279,8 @@ begin
       fSelectedFilename:=s;
       ModalResult:=mrYes;      // mrYes means the selected file will be opened.
     end
-    else begin
-      ShowMessage(Format(lisFileNotFound3, [s]));
-    end;
+    else
+      ShowMessage(Format(lisFileNotFound2, [s]));
   end;
 end;
 

@@ -4522,13 +4522,11 @@ var
       if Result in [mrYes,mrYesToAll] then begin
         YesToAll:=Result=mrYesToAll;
         if (not DeleteFileUTF8(AmbiguousFilename))
-        and (IDEMessageDialog(lisPkgMangDeleteFailed, Format(lisDeletingOfFileFailed,
-          ['"', AmbiguousFilename, '"']), mtError, [mbIgnore, mbCancel])
-          <>mrIgnore) then
-        begin
-          Result:=mrCancel;
-          exit;
-        end;
+        and (IDEMessageDialog(lisPkgMangDeleteFailed,
+              Format(lisDeletingOfFileFailed, [AmbiguousFilename]),
+              mtError, [mbIgnore, mbCancel])<>mrIgnore)
+        then
+          exit(mrCancel);
         Result:=mrOk;
       end else
         break;

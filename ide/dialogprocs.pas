@@ -138,8 +138,7 @@ begin
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
       Result:=IDEMessageDialog(lisUnableToRenameFile,
-        Format(lisUnableToRenameFileTo2,
-               ['"', SrcFilename, '"', LineEnding, '"', DestFilename, '"']),
+        Format(lisUnableToRenameFileTo2, [SrcFilename, LineEnding, DestFilename]),
         mtError,DlgButtons);
       if (Result<>mrRetry) then exit;
     end;
@@ -166,7 +165,7 @@ begin
     end else begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
       Result:=IDEMessageDialog(lisUnableToCopyFile,
-        Format(lisUnableToCopyFileTo,['"',SrcFilename,'"',LineEnding,'"',DestFilename,'"']),
+        Format(lisUnableToCopyFileTo, [SrcFilename, LineEnding, DestFilename]),
         mtError,DlgButtons);
       if (Result<>mrRetry) then exit;
     end;
@@ -205,8 +204,7 @@ begin
         Result:=mrCancel;
       end else begin
         ACaption:=lisFileNotText;
-        AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway,
-                      ['"', AFilename, '"', LineEnding, LineEnding]);
+        AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway,[AFilename,LineEnding,LineEnding]);
         Result:=IDEMessageDialogAb(ACaption, AText, mtConfirmation,
                            [mbOk, mbIgnore],ShowAbort);
       end;
@@ -231,10 +229,8 @@ begin
         Result:=mrCancel
       else begin
         ACaption:=lisReadError;
-        AText:=Format(lisUnableToReadFile2, ['"', AFilename, '"']);
-        Result:=IDEMessageDialogAb(ACaption,AText,mtError,
-                                   [mbRetry,mbIgnore],
-                                   ShowAbort);
+        AText:=Format(lisUnableToReadFile2, [AFilename]);
+        Result:=IDEMessageDialogAb(ACaption,AText,mtError,[mbRetry,mbIgnore],ShowAbort);
         if Result=mrAbort then exit;
       end;
     end;
@@ -253,7 +249,7 @@ begin
       Result:=mrOk;
     end else begin
       Result:=IDEMessageDialog(lisCodeToolsDefsWriteError,
-        Format(lisUnableToWrite2, ['"', ACodeBuffer.Filename, '"']),
+        Format(lisUnableToWrite2, [ACodeBuffer.Filename]),
         mtError,[mbAbort,mbRetry,mbIgnore]);
     end;
   until Result<>mrRetry;
@@ -400,7 +396,7 @@ begin
       break;
     end else begin
       Result:=IDEMessageDialog(lisUnableToCreateFile,
-        Format(lisUnableToCreateFilename, ['"', Filename, '"']),
+        Format(lisUnableToCreateFile2, [Filename]),
         mtError,ErrorButtons+[mbCancel]);
       if Result<>mrRetry then exit;
     end;
@@ -433,15 +429,15 @@ begin
       fs.Free;
     except
       Result:=IDEMessageDialog(lisUnableToCreateFile,
-        Format(lisUnableToCreateFilename, ['"', AFilename, '"']), mtError, [
-          mbCancel, mbAbort]);
+        Format(lisUnableToCreateFile2, [AFilename]),
+        mtError, [mbCancel, mbAbort]);
       exit;
     end;
   end else begin
     // file already exists
     if WarnOverwrite then begin
       Result:=IDEQuestionDialog(lisOverwriteFile,
-        Format(lisAFileAlreadyExistsReplaceIt, ['"', AFilename, '"', LineEnding]),
+        Format(lisAFileAlreadyExistsReplaceIt, [AFilename, LineEnding]),
         mtConfirmation, [mrYes, lisOverwriteFileOnDisk, mbCancel]);
       if Result=mrCancel then exit;
     end;
@@ -483,7 +479,7 @@ begin
     end;
   except
     Result:=IDEMessageDialog(lisUnableToReadFile,
-      Format(lisUnableToReadFile2, ['"', AFilename, '"']),
+      Format(lisUnableToReadFile2, [AFilename]),
       mtError, [mbCancel, mbAbort]);
     exit;
   end;
@@ -518,8 +514,7 @@ begin
   end else begin
     // ask which filename to use
     case IDEQuestionDialog(lisFileIsSymlink,
-      Format(lisTheFileIsASymlinkOpenInstead,
-        ['"', Filename, '"', LineEnding, LineEnding, '"', TargetFilename, '"']),
+      Format(lisTheFileIsASymlinkOpenInstead,[Filename,LineEnding,LineEnding,TargetFilename]),
       mtConfirmation, [mbYes, lisOpenTarget, mbNo, lisOpenSymlink, mbCancel])
     of
     mrYes: Filename:=TargetFilename;
@@ -566,7 +561,7 @@ begin
       if not DirPathExists(Dir) then begin
         while not CreateDirUTF8(Dir) do begin
           Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
-            Format(lisUnableToCreateDirectory, ['"', Dir, '"']),
+            Format(lisUnableToCreateDirectory, [Dir]),
             mtError,ErrorButtons+[mbCancel]);
           if Result<>mrRetry then exit;
         end;
@@ -598,7 +593,7 @@ begin
     if not FileExistsUTF8(Filename) then exit;
     if not DeleteFileUTF8(Filename) then begin
       Result:=IDEMessageDialogAb(lisDeleteFileFailed,
-        Format(lisPkgMangUnableToDeleteFile, ['"', Filename, '"']),
+        Format(lisPkgMangUnableToDeleteFile, [Filename]),
         mtError,[mbCancel,mbRetry]+ErrorButtons-[mbAbort],mbAbort in ErrorButtons);
       if Result<>mrRetry then exit;
     end;

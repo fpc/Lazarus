@@ -433,7 +433,7 @@ begin
               break;
             end else begin
               MsgResult:=MessageDlg(lisErrorDeletingFile,
-                Format(lisPkgMangUnableToDeleteFile, ['"', Filename, '"']),
+                Format(lisPkgMangUnableToDeleteFile, [Filename]),
                 mtError,[mbAbort,mbIgnore,mbRetry],0);
               if (MsgResult=mrIgnore) then break;
               if MsgResult=mrAbort then exit;

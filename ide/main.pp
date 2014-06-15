@@ -6300,7 +6300,7 @@ begin
   // check if file exists
   if not FileExistsCached(AFilename) then begin
     ACaption:=lisFileNotFound;
-    AText:=Format(lisPkgMangFileNotFound, ['"', AFilename, '"']);
+    AText:=Format(lisPkgMangFileNotFound, [AFilename]);
     Result:=IDEMessageDialog(ACaption, AText, mtError, [mbAbort]);
     exit;
   end;
@@ -6324,14 +6324,13 @@ begin
   if (not FileUtil.FileIsText(AFilename,FileReadable)) and FileReadable then
   begin
     ACaption:=lisFileNotText;
-    AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway,
-                  ['"', AFilename, '"', LineEnding, LineEnding]);
+    AText:=Format(lisFileDoesNotLookLikeATextFileOpenItAnyway,[AFilename,LineEnding,LineEnding]);
     Result:=IDEMessageDialog(ACaption, AText, mtConfirmation, [mbYes, mbAbort]);
     if Result=mrAbort then exit;
   end;
   if not FileReadable then begin
     Result:=IDEQuestionDialog(lisUnableToReadFile,
-      Format(lisUnableToReadFile2, ['"', AFilename, '"']),
+      Format(lisUnableToReadFile2, [AFilename]),
       mtError, [mrCancel, lisSkipFile, mrAbort, lisAbortAllLoading]);
     exit;
   end;
@@ -6496,7 +6495,7 @@ begin
     if (TestDir<>'') then begin
       IDEMessageDialog(lisCCOErrorCaption,
         Format(lisTheTestDirectoryCouldNotBeFoundSeeIDEOpt,
-          [LineEnding, '"', EnvironmentOptions.TestBuildDirectory, '"', LineEnding]),
+          [LineEnding, EnvironmentOptions.TestBuildDirectory, LineEnding]),
         mtError, [mbCancel]);
       Result:=mrCancel;
       exit;
@@ -8522,12 +8521,12 @@ begin
     end;
   end else begin
     if FilenameIsAbsolute(Filename) then begin
-      IDEMessageDialog(lisInformation, Format(lisUnableToFindFile, ['"',
-        Filename, '"']), mtInformation,[mbOk])
+      IDEMessageDialog(lisInformation,
+        Format(lisUnableToFindFile, [Filename]), mtInformation,[mbOk])
     end else if Filename<>'' then begin
-      IDEMessageDialog(lisInformation, Format(
-        lisUnableToFindFileCheckSearchPathInProjectCompilerOption, ['"',
-        Filename, '"', LineEnding, LineEnding]),
+      IDEMessageDialog(lisInformation,
+        Format(lisUnableToFindFileCheckSearchPathInProjectCompilerOption,
+               [Filename, LineEnding, LineEnding]),
         mtInformation,[mbOk]);
     end;
   end;
@@ -8647,13 +8646,13 @@ begin
       end;
     end else if AFilename<>'' then begin
       if FilenameIsAbsolute(AFilename) then begin
-        IDEMessageDialog(lisInformation, Format(lisUnableToFindFile, ['"',
-          AFilename, '"']), mtInformation,[mbOk]);
+        IDEMessageDialog(lisInformation,
+          Format(lisUnableToFindFile, [AFilename]), mtInformation,[mbOk]);
       end else if AFileName<>'' then begin
-        IDEMessageDialog(lisInformation, Format(
-          lisUnableToFindFileCheckSearchPathInProjectCompilerOption, ['"',
-          AFilename, '"', LineEnding, LineEnding]),
-           mtInformation,[mbOk]);
+        IDEMessageDialog(lisInformation,
+          Format(lisUnableToFindFileCheckSearchPathInProjectCompilerOption,
+                 [AFilename, LineEnding, LineEnding]),
+          mtInformation,[mbOk]);
       end;
     end;
   end;//if

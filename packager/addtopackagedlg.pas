@@ -273,7 +273,7 @@ begin
     if (not FileExistsUTF8(AFilename)) then begin
       if AddFileType=d2ptUnit then begin
         IDEMessageDialog(lisFileNotFound,
-          Format(lisPkgMangFileNotFound, ['"', AFilename, '"']),
+          Format(lisPkgMangFileNotFound, [AFilename]),
           mtError, [mbCancel]);
         exit;
       end;

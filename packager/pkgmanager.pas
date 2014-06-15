@@ -1265,8 +1265,7 @@ begin
                              EnvironmentOptions.RecentPackageFiles,rltFile);
       end else begin
         IDEMessageDialog(lisPkgMangDeleteFailed,
-          Format(lisPkgMangUnableToDeleteFile, ['"', OldPkgFilename, '"']),
-            mtError, [mbOk]);
+          Format(lisPkgMangUnableToDeleteFile, [OldPkgFilename]), mtError, [mbOk]);
       end;
     end;
   end;
@@ -2309,7 +2308,7 @@ begin
     
     if not FileExistsUTF8(AFilename) then begin
       IDEMessageDialog(lisFileNotFound,
-        Format(lisPkgMangFileNotFound, ['"', AFilename, '"']),
+        Format(lisPkgMangFileNotFound, [AFilename]),
         mtError,[mbCancel]);
       RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,rltFile);
       SetRecentPackagesMenu;
