@@ -28,7 +28,7 @@ resourcestring
   oisSelectAll = '&Select all';
   oisUnselectAll = '&Unselect all';
   oisConfirmDelete = 'Confirm delete';
-  oisDeleteItem = 'Delete item %s%s%s?';
+  oisDeleteItem = 'Delete item "%s"?';
   oisUnknown = 'Unknown';
   oisObject = 'Object';
   oisClass = 'Class';
@@ -349,8 +349,7 @@ resourcestring
   oisNone = '(none)';
   oisSelectShortCut = 'Select short cut';
   srGrabKey = 'Grab key';
-  oisComponentNameIsNotAValidIdentifier = 'Component name %s%s%s is not a '
-    +'valid identifier';
+  oisComponentNameIsNotAValidIdentifier = 'Component name "%s" is not a valid identifier';
   oisLoadImageDialog = 'Load Image Dialog';
   oisOK = '&OK';
   oisCancel = 'Cancel';
@@ -365,7 +364,7 @@ resourcestring
   oisPEOpenImageFile = 'Open image file';
   oisPESaveImageAs = 'Save image as';
   oisErrorLoadingImage = 'Error loading image';
-  oisErrorLoadingImage2 = 'Error loading image %s%s%s:%s%s';
+  oisErrorLoadingImage2 = 'Error loading image "%s":%s%s';
   oisOk2 = 'Ok';
   oisCreateANewPascalUnit = 'Create a new pascal unit.';
   rscdColumnEditor = 'Column Editor';
@@ -389,15 +388,14 @@ resourcestring
   fesFlTitle = 'FieldDefs';
   fesNoFieldsNote = 'Field''s list is not available, can''t check for duplicates';
   oisIncompatibleIdentifier = 'Incompatible Identifier';
-  oisIsNotAValidMethodName = '%s%s%s is not a valid method name.';
-  oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn = 'The identifier %s%'
-    +'s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it.';
+  oisIsNotAValidMethodName = '"%s" is not a valid method name.';
+  oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn = 'The identifier "%s" '
+    +'is not a method.%sPress Cancel to undo,%spress Ignore to force it.';
   oisIncompatibleMethod = 'Incompatible Method';
-  oisTheMethodIsNotPublishedPressCancelToUndoPressIgnor = 'The method %s%s%s '
+  oisTheMethodIsNotPublishedPressCancelToUndoPressIgnor = 'The method "%s" '
     +'is not published.%sPress Cancel to undo,%spress Ignore to force it.';
-  oisTheMethodIsIncompatibleToThisEventPressCancelToUnd = 'The method %s%s%s '
-    +'is incompatible to this event (%s).%sPress Cancel to undo,%spress '
-    +'Ignore to force it.';
+  oisTheMethodIsIncompatibleToThisEventPressCancelToUnd = 'The method "%s" '
+    +'is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it.';
   peFilterEditor = 'Filter editor';
   peFilterName = 'Filter name';
   peFilter = 'Filter';
@@ -427,7 +425,7 @@ resourcestring
   oisSelectAllHint = 'Select All Fields';
   oisUnselectAllHint = 'Unselect All';
   oisUnableToChangeParentOfControlToNewParent = 'Unable to change parent of '
-    +'control %s%s%s to new parent %s%s%s.%s%s';
+    +'control "%s" to new parent "%s".%s%s';
   oisAddCollectionItem = '&Add Item';
   lisUnableToFindParserForTool = 'unable to find parser for tool "%s"';
 

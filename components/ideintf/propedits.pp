@@ -4193,8 +4193,8 @@ begin
   if (not IsNil) and (not IsValidIdent(NewValue)) then
   begin
     MessageDlg(oisIncompatibleIdentifier,
-      Format(oisIsNotAValidMethodName,['"',NewValue,'"']), mtError,
-      [mbCancel, mbIgnore], 0);
+      Format(oisIsNotAValidMethodName,[NewValue]),
+      mtError, [mbCancel, mbIgnore], 0);
     exit;
   end;
 
@@ -4208,7 +4208,7 @@ begin
     begin
       if MessageDlg(oisIncompatibleIdentifier,
         Format(oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn,
-               ['"', NewValue, '"', LineEnding, LineEnding]),
+               [NewValue, LineEnding, LineEnding]),
         mtWarning, [mbCancel, mbIgnore], 0)<>mrIgnore
       then
         exit;
@@ -4217,7 +4217,7 @@ begin
     begin
       if MessageDlg(oisIncompatibleMethod,
         Format(oisTheMethodIsNotPublishedPressCancelToUndoPressIgnor,
-               ['"', NewValue, '"', LineEnding, LineEnding]),
+               [NewValue, LineEnding, LineEnding]),
         mtWarning, [mbCancel, mbIgnore], 0)<>mrIgnore
       then
         exit;
@@ -4226,7 +4226,7 @@ begin
     begin
       if MessageDlg(oisIncompatibleMethod,
         Format(oisTheMethodIsIncompatibleToThisEventPressCancelToUnd,
-               ['"', NewValue, '"', GetName, LineEnding, LineEnding]),
+               [NewValue, GetName, LineEnding, LineEnding]),
           mtWarning, [mbCancel, mbIgnore], 0)<>mrIgnore
       then
         exit;
@@ -4570,8 +4570,7 @@ end;
 procedure TComponentNamePropertyEditor.SetValue(const NewValue: ansistring);
 begin
   if (not IsValidIdent(NewValue)) or (NewValue='') then
-    raise Exception.Create(Format(oisComponentNameIsNotAValidIdentifier, ['"',
-      NewValue, '"']));
+    raise Exception.Create(Format(oisComponentNameIsNotAValidIdentifier, [NewValue]));
   inherited SetValue(NewValue);
   PropertyHook.ComponentRenamed(TComponent(GetComponent(0)));
 end;

@@ -126,7 +126,7 @@ begin
   if (I >= 0) and (I < Collection.Count) then
   begin
     if MessageDlg(oisConfirmDelete,
-      Format(oisDeleteItem, ['"', Collection.Items[I].DisplayName, '"']),
+      Format(oisDeleteItem, [Collection.Items[I].DisplayName]),
       mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     begin
       // select other item, or unselect
