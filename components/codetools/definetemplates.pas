@@ -929,7 +929,7 @@ function GetCompiledTargetCPU: string;
 function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean = false): string;
 function GetFPCTargetOS(TargetOS: string): string;
 function GetFPCTargetCPU(TargetCPU: string): string;
-function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean;
+function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
 
 // functions to quickly setup some defines
 function CreateDefinesInDirectories(const SourcePaths, FlagName: string
@@ -940,12 +940,12 @@ function GatherFiles(Directory, ExcludeDirMask, IncludeFileMask: string;
 function GatherFilesInFPCSources(Directory: string;
                             const OnProgress: TDefinePoolProgress): TStringList; // thread safe
 function MakeRelativeFileList(Files: TStrings; out BaseDir: string): TStringList;
-function Compress1FileList(Files: TStrings): TStringList;
-function Decompress1FileList(Files: TStrings): TStringList;
+function Compress1FileList(Files: TStrings): TStringList; // thread-safe
+function Decompress1FileList(Files: TStrings): TStringList; // thread-safe
 function RunTool(const Filename: string; Params: TStrings;
-                 WorkingDirectory: string = ''): TStringList;
+                 WorkingDirectory: string = ''): TStringList; // thread-safe
 function RunTool(const Filename, Params: string;
-                 WorkingDirectory: string = ''): TStringList;
+                 WorkingDirectory: string = ''): TStringList; // thread-safe
 
 type
   // fpc parameter effecting search for compiler
