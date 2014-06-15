@@ -674,7 +674,7 @@ var i, NewCount, NewHistoryIndex: integer;
 begin
   Clear;
   NewCount:=XMLConfig.GetValue(Path+'JumpHistory/Count',0);
-  NewHistoryIndex:=XMLConfig.GetValue(Path+'JumpHistory/HistoryIndex',-1);
+  NewHistoryIndex:=XMLConfig.GetValue(Path+'JumpHistory/HistoryIndex',0);
   NewPosition:=nil;
   for i:=0 to NewCount-1 do begin
     if NewPosition=nil then begin
@@ -702,7 +702,7 @@ procedure TProjectJumpHistory.SaveToXMLConfig(XMLConfig: TXMLConfig;
 var i: integer;
 begin
   XMLConfig.SetValue(Path+'JumpHistory/Count',Count);
-  XMLConfig.SetValue(Path+'JumpHistory/HistoryIndex',HistoryIndex);
+  XMLConfig.SetDeleteValue(Path+'JumpHistory/HistoryIndex',HistoryIndex,0);
   for i:=0 to Count-1 do begin
     Items[i].SaveToXMLConfig(XMLConfig,
                              Path+'JumpHistory/Position'+IntToStr(i+1)+'/');
