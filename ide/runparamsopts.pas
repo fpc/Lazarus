@@ -306,9 +306,9 @@ function TRunParamsOptions.Save(XMLConfig: TXMLConfig; const Path: string;
     for i := 0 to fUserOverrides.Count - 1 do
     begin
       XMLConfig.SetValue(APath + 'Variable' + IntToStr(i) + '/Name',
-        fUserOverrides.Names[i]);
-      XMLConfig.SetValue(APath + 'Variable' + IntToStr(i) + '/Value',
-        fUserOverrides.Values[fUserOverrides.Names[i]]);
+        fUserOverrides.Names[i]); // no default
+      XMLConfig.SetDeleteValue(APath + 'Variable' + IntToStr(i) + '/Value',
+        fUserOverrides.Values[fUserOverrides.Names[i]],'');
     end;
   end;
 

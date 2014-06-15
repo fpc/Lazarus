@@ -701,7 +701,7 @@ procedure TProjectJumpHistory.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var i: integer;
 begin
-  XMLConfig.SetValue(Path+'JumpHistory/Count',Count);
+  XMLConfig.SetDeleteValue(Path+'JumpHistory/Count',Count,0);
   XMLConfig.SetDeleteValue(Path+'JumpHistory/HistoryIndex',HistoryIndex,0);
   for i:=0 to Count-1 do begin
     Items[i].SaveToXMLConfig(XMLConfig,
@@ -911,9 +911,9 @@ end;
 procedure TFileBookmark.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 begin
-  XMLConfig.SetValue(Path+'X',fCursorPos.X);
-  XMLConfig.SetValue(Path+'Y',fCursorPos.Y);
-  XMLConfig.SetValue(Path+'ID',fID);
+  XMLConfig.SetDeleteValue(Path+'X',fCursorPos.X,1);
+  XMLConfig.SetDeleteValue(Path+'Y',fCursorPos.Y,1);
+  XMLConfig.SetDeleteValue(Path+'ID',fID,0);
 end;
 
 procedure TFileBookmark.LoadFromXMLConfig(XMLConfig: TXMLConfig;

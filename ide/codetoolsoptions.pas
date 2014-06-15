@@ -522,8 +522,7 @@ begin
   try
     InvalidateFileStateCache;
     XMLConfig:=TXMLConfig.CreateClean(FFileName);
-    XMLConfig.SetValue('CodeToolsOptions/Version/Value',
-      CodeToolsOptionsVersion);
+    XMLConfig.SetValue('CodeToolsOptions/Version/Value',CodeToolsOptionsVersion);
 
     // General
     XMLConfig.SetDeleteValue('CodeToolsOptions/AdjustTopLineDueToComment/Value',

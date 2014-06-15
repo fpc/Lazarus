@@ -4886,6 +4886,7 @@ begin
     CompilerFileDate:=FileAgeCached(CompilerFilename);
     XMLConfig:=TCodeBufXMLConfig.CreateWithCache(StateFile,false);
     try
+      // always write all values for easy use by other tools and other versions of IDE
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
       XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
       XMLConfig.SetValue('Params/Value',CompilerParams);

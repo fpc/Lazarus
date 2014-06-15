@@ -611,7 +611,7 @@ var
   i: integer;
 begin
   Config.SetValue('Version',ExternalToolOptionsVersion);
-  Config.SetValue('Count',Count);
+  Config.SetDeleteValue('Count',Count,0);
   for i:=1 to Count do begin
     Config.AppendBasePath('Tool'+IntToStr(i)+'/');
     try

@@ -3912,7 +3912,7 @@ procedure TEditorMouseOptions.SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: Strin
       end else
         aXMLConfig.WriteObject(Path + 'M' + IntToStr(i) + '/', MActions[i]);
     end;
-    aXMLConfig.SetValue(Path + 'Count', MActions.Count);
+    aXMLConfig.SetDeleteValue(Path + 'Count', MActions.Count,0);
     for i := MActions.Count to OldCnt do
       aXMLConfig.DeletePath(Path + 'M' + IntToStr(i));
     MAct.Free;
@@ -4005,7 +4005,7 @@ var
       end
       else
         aXMLConfig.WriteObject(Path + 'M' + IntToStr(i) + '/', MActions[i]);
-    aXMLConfig.SetValue(Path + 'Count', MActions.Count);
+    aXMLConfig.SetDeleteValue(Path + 'Count', MActions.Count,0);
   end;
 
 begin
