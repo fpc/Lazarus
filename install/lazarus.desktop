@@ -8,6 +8,7 @@ Icon=lazarus.png
 Categories=Application;IDE;Development;GTK;GUIDesigner;
 StartupWMClass=Lazarus
 MimeType=text/x-pascal;text/lazarus-project-source;text/lazarus-project-information;text/lazarus-form;text/lazarus-resource;text/lazarus-package;text/lazarus-package-link;text/lazarus-code-inlay;
+Keywords=editor;Pascal;IDE;FreePascal;fpc;Design;Designer;
 [Property::X-KDE-NativeExtension]
 Type=QString
 Value=.pas
