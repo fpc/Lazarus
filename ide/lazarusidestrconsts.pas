@@ -3888,7 +3888,7 @@ resourcestring
   lisPkgMangTheFollowingPackagesFailedToLoad = 'The following packages failed to load:';
   lisMissingPackages = 'Missing Packages';
   lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA = 'other sources path '
-    +'of package %s contains directory "%s", which is already in the unit '
+    +'of package "%s" contains directory "%s", which is already in the unit '
     +'search path.';
   lisPkgManginvalidCompilerFilename = 'invalid Compiler filename';
   lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable = 'The compiler '

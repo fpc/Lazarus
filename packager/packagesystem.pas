@@ -251,7 +251,7 @@ type
                       WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
     function FindUnitInAllPackages(const TheUnitName: string;
                                    IgnoreDeleted: boolean): TPkgFile;
-    function GetMapSourceDirectoryToPackage: TFilenameToPointerTree;
+    function GetMapSourceDirectoryToPackage(IgnorePackage: TLazPackage = nil): TFilenameToPointerTree;
     function PackageCanBeReplaced(OldPackage, NewPackage: TLazPackage): boolean;
     function PackageIsNeeded(APackage: TLazPackage): boolean;
     function PackageNameExists(const PkgName: string;
@@ -1284,8 +1284,8 @@ begin
   Result:=nil;
 end;
 
-function TLazPackageGraph.
-  GetMapSourceDirectoryToPackage: TFilenameToPointerTree;
+function TLazPackageGraph.GetMapSourceDirectoryToPackage(
+  IgnorePackage: TLazPackage): TFilenameToPointerTree;
 var
   i: Integer;
   aPackage: TLazPackage;
@@ -1297,6 +1297,7 @@ begin
   for i:=0 to Count-1 do begin
     aPackage:=Packages[i];
     if aPackage.IsVirtual then continue;
+    if aPackage=IgnorePackage then continue;
     SearchPath:=aPackage.SourceDirectories.CreateSearchPathFromAllFiles;
     p:=1;
     repeat

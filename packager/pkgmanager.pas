@@ -2548,6 +2548,7 @@ var
   aProject: TProject;
   CurUnitPath: String;
   CurIncPath: String;
+  CurSrcPath: String;
   CurOutPath: String;
   SrcDirToPkg: TFilenameToPointerTree;
 
@@ -2562,12 +2563,24 @@ var
     s: String;
   begin
     Result:=mrOk;
-    if Option=pcosIncludePath then begin
-      aType:='include';
-      aSearchPath:=CurIncPath
-    end else begin
-      aType:='unit';
-      aSearchPath:=CurUnitPath;
+    case Option of
+    pcosIncludePath:
+      begin
+        aType:='include files search path';
+        aSearchPath:=CurIncPath;
+      end;
+    pcosUnitPath:
+      begin
+        aType:='other unit files search path (aka unit path)';
+        aSearchPath:=CurUnitPath;
+      end;
+    pcosSrcPath:
+      begin
+        aType:='other sources path';
+        aSearchPath:=CurSrcPath;
+      end;
+    else
+      exit;
     end;
     p:=1;
     repeat
@@ -2579,7 +2592,7 @@ var
       if (OtherPackage<>nil) and (OtherPackage<>aPackage) then begin
         // search path contains source directory of another package
         if Option=pcosIncludePath then;
-        s:=aType+' path of '+aCompilerOptions.GetOwnerName+' contains "'+Dir+'", which belongs to package '+OtherPackage.Name;
+        s:=aType+' of "'+aCompilerOptions.GetOwnerName+'" contains "'+Dir+'", which belongs to package "'+OtherPackage.Name+'"';
         debugln(['TPkgManager.CheckUserSearchPaths WARNING: ',s]);
         { ToDo: find out
            - which path it is in the unparsed path
@@ -2666,13 +2679,17 @@ begin
 
   CurUnitPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
   CurIncPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
+  CurSrcPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosSrcPath);
   CurOutPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
-  //debugln(['TPkgManager.CheckUserSearchPaths UnitPath="',CurUnitPath,'" IncPath="',CurIncPath,'" SrcPath="',CurSrcPath,'" OutPath="',CurOutPath,'"']);
+  debugln(['TPkgManager.CheckUserSearchPaths CompOpts=',aCompilerOptions.GetOwnerName,' UnitPath="',CurUnitPath,'" IncPath="',CurIncPath,'" SrcPath="',CurSrcPath,'" OutPath="',CurOutPath,'"']);
 
   // create mapping source-directory to package
-  SrcDirToPkg:=PackageGraph.GetMapSourceDirectoryToPackage;
+  SrcDirToPkg:=PackageGraph.GetMapSourceDirectoryToPackage(aPackage);
   try
     Result:=CheckPathContainsDirOfOtherPkg(pcosUnitPath);
+    if Result<>mrOk then exit;
+
+    Result:=CheckPathContainsDirOfOtherPkg(pcosSrcPath);
     if Result<>mrOk then exit;
 
     Result:=CheckOutPathContainsSources;
@@ -2680,6 +2697,9 @@ begin
 
     Result:=CheckSrcPathIsInUnitPath;
     if Result<>mrOk then exit;
+
+    // ToDo: check if SrcPath is in inherited SrcPath
+    // ToDo: check if UnitPath is in inherited UnitPath
   finally
     SrcDirToPkg.Free;
   end;
