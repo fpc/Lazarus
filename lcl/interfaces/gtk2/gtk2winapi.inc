@@ -4257,7 +4257,7 @@ function TGtk2WidgetSet.GetCaretRespondToFocus(handle: HWND;
   var ShowHideOnFocus: boolean): Boolean;
 begin
   if handle<>0 then begin
-    if gtk_type_is_a({%H-}g_object_type(PGTKObject(handle)), GTKAPIWidget_GetType)
+    if gtk_type_is_a({%H-}g_object_type({%H-}PGTKObject(handle)), GTKAPIWidget_GetType)
     then begin
       GTKAPIWidget_GetCaretRespondToFocus({%H-}PGTKAPIWidget(handle),
         ShowHideOnFocus);
@@ -5247,7 +5247,7 @@ end;
 function TGtk2WidgetSet.GetParent(Handle : HWND): HWND;
 begin
   if Handle <> 0 then
-    Result := {%H-}HWnd(PGtkWidget(Handle)^.Parent)
+    Result := {%H-}HWnd({%H-}PGtkWidget(Handle)^.Parent)
   else
     Result := 0;
 end;
@@ -6008,7 +6008,7 @@ function TGtk2WidgetSet.GetWindowLong(Handle: HWND; int: Integer): PtrInt;
 
   function GetObjectData(Name: PChar): PtrInt;
   begin
-    Result := PtrInt({%H-}PtrUInt({%H-}g_object_get_data(PGObject(Handle),Name)));
+    Result := PtrInt({%H-}PtrUInt({%H-}g_object_get_data({%H-}PGObject(Handle),Name)));
   end;
 var
   WidgetInfo: PWidgetInfo;
@@ -7208,7 +7208,7 @@ begin
     Exit;
   end;
 
-  CurrentGroupIndex := integer({%H-}PtrUInt(g_object_get_data(Pointer(hndMenu), GROUPIDX_DATANAME)));
+  CurrentGroupIndex := integer({%H-}PtrUInt(g_object_get_data({%H-}Pointer(hndMenu), GROUPIDX_DATANAME)));
 
   // Update needed ?
   if GroupIndex = CurrentGroupIndex

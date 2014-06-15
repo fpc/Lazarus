@@ -2999,12 +2999,17 @@ begin
   try
     for i:=0 to SrcPkgEdit.ItemsTreeView.SelectionCount-1 do begin
       TVNode:=SrcPkgEdit.ItemsTreeView.Selections[i];
-      if not GetNodeDataItem(TVNode, NodeData, Item) then continue;
+      if not SrcPkgEdit.GetNodeDataItem(TVNode, NodeData, Item) then continue;
       if NodeData.Removed then continue;
       if not (Item is TPkgFile) then continue;
       Files.Add(Item);
     end;
-    if Files.Count=0 then exit(true);
+    if Files.Count=0 then begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.MoveFiles no file feasable for moving']);
+      {$ENDIF}
+      exit(true);
+    end;
 
     Result:=MoveFiles(SrcPkgEdit,Files,TargetDirectory);
   finally
@@ -3020,8 +3025,7 @@ var
   NewFileToOldPkgFile: TFilenameToPointerTree;
   ChangedFilenames: TFilenameToStringTree; // old to new file name
   UnitFilenameToResFileList: TFilenameToPointerTree; // filename to TStringList
-  TargetPkgList: TFPList;
-  SrcPkgList: TFPList;
+  SrcDirToPkg: TFilenameToPointerTree;
 
   procedure DeleteNonExistingPkgFiles;
   var
@@ -3087,6 +3091,8 @@ var
 
       if CompareFilenames(NewFilename,OldFilename)<>0 then begin
         // file be copied/moved to another directory
+        debugln(['CollectFiles Old="',OldFilename,'"']);
+        debugln(['             New="',NewFilename,'"']);
         inc(MoveFileCount);
         ChangedFilenames[OldFilename]:=NewFilename;
         AllChangedFilenames[OldFilename]:=NewFilename;
@@ -3224,20 +3230,24 @@ var
     Result:=true;
   end;
 
-  function CheckUsesSection(Tool: TCodeTool; UsesNode: TCodeTreeNode): boolean;
+  function CheckUsesSection(Tool: TCodeTool; UsesNode: TCodeTreeNode;
+    NewUnitFilename: string): boolean;
+  // true if no warnings
   var
     AnUnitName, AnUnitInFilename: string;
-    NewCode: TCodeBuffer;
-    UnitFilename: string;
+    OldUsedUnitCode: TCodeBuffer;
+    OldUsedUnitFilename: string;
     Node: TCodeTreeNode;
     ErrorPos: Integer;
-    NewCompiledUnitname: String;
-    CompiledFilename: String;
+    OldCompiledUnitname: String;
     CodePos: TCodeXYPosition;
     Msg: String;
     PkgName: String;
+    UsedPkg: TLazPackage;
+    NewUsedUnitFilename: String;
   begin
-    if UsesNode=nil then exit(true);
+    Result:=true;
+    if UsesNode=nil then exit;
     // check that all used units are available in the target package
     Node:=UsesNode.FirstChild;
     while Node<>nil do begin
@@ -3248,19 +3258,20 @@ var
       Node:=Node.NextBrother;
       if AnUnitName='' then continue;
       // find unit file
-      NewCode:=Tool.FindUnitSource(AnUnitName,AnUnitInFilename,false,Node.StartPos);
-      if (NewCode=nil) then begin
+      OldUsedUnitCode:=Tool.FindUnitSource(AnUnitName,AnUnitInFilename,false,Node.StartPos);
+      if (OldUsedUnitCode=nil) then begin
         // no source found
         // => search for ppu
-        NewCompiledUnitname:=AnUnitName+'.ppu';
-        CompiledFilename:=Tool.DirectoryCache.FindCompiledUnitInCompletePath(
-                                                     NewCompiledUnitname,false);
-        if CompiledFilename='' then begin
+        OldCompiledUnitname:=AnUnitName+'.ppu';
+        OldUsedUnitFilename:=Tool.DirectoryCache.FindCompiledUnitInCompletePath(
+                                                     OldCompiledUnitname,false);
+        if OldUsedUnitFilename='' then begin
           // unit not found
           // (that is ok, e.g. if the unit is used on another platform)
           // => only warn
           Msg:='unit '+AnUnitName+' not found';
           if not Tool.CleanPosToCaret(ErrorPos,CodePos) then continue;
+          Result:=false;
           {$IFNDEF EnableOldExtTools}
           IDEMessagesWindow.AddCustomMessage(mluWarning,Msg,
             CodePos.Code.Filename,CodePos.Y,CodePos.X,'Move Files');
@@ -3269,23 +3280,47 @@ var
           {$ENDIF}
           continue;
         end;
-        UnitFilename:=CompiledFilename;
       end else begin
         // unit found
-        UnitFilename:=NewCode.Filename;
-        if AllChangedFilenames.Contains(UnitFilename) then begin
+        OldUsedUnitFilename:=OldUsedUnitCode.Filename;
+        if AllChangedFilenames.Contains(OldUsedUnitFilename) then begin
           // this unit will be moved too => ok
           continue;
         end;
       end;
-      // UnitFilename is now either a .pas/pp/p or .ppu file
+      // OldUsedUnitFilename is now either a .pas/pp/p or .ppu file
 
-      // ToDo: find package
-      PkgName:='';
-
+      // search unit in new position
+      NewUsedUnitFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+        ExtractFilePath(NewUnitFilename),AnUnitName,AnUnitInFilename);
+      if (NewUsedUnitFilename='') and (AnUnitInFilename='') then
+        NewUsedUnitFilename:=CodeToolBoss.DirectoryCachePool.FindCompiledUnitInCompletePath(
+          ExtractFilePath(NewUnitFilename),AnUnitName);
+      if CompareFilenames(OldUsedUnitFilename,NewUsedUnitFilename)=0 then
+        continue;
+      // not found or a different unit found
 
       if not Tool.CleanPosToCaret(ErrorPos,CodePos) then continue;
-      Msg:='unit '+AnUnitName+' requires package '+PkgName;
+
+      // find package of used unit
+      PkgName:='';
+      UsedPkg:=TLazPackage(SrcDirToPkg[ExtractFilePath(OldUsedUnitFilename)]);
+      if UsedPkg<>nil then
+        PkgName:=UsedPkg.Name;
+
+      if NewUsedUnitFilename='' then begin
+        // at the new position the unit cannot be found
+        if PkgName='' then begin
+          Msg:='unit '+AnUnitName+' not found at new position "'+NewUnitFilename+'"';
+        end else begin
+          Msg:='unit '+AnUnitName+' requires package '+PkgName;
+        end;
+      end else begin
+        // a different unit will be used
+        Msg:='different unit '+AnUnitName+' found at new position "'+NewUnitFilename+'"';
+      end;
+
+      Result:=false;
       {$IFNDEF EnableOldExtTools}
       IDEMessagesWindow.AddCustomMessage(mluWarning,Msg,
         CodePos.Code.Filename,CodePos.Y,CodePos.X,'Move Files');
@@ -3303,6 +3338,7 @@ var
     OldFilename: String;
     Code: TCodeBuffer;
     Tool: TCodeTool;
+    NewFilename: String;
   begin
     if LazPackage=SrcPackage then
       exit(true);
@@ -3321,12 +3357,15 @@ var
       PkgFile:=TPkgFile(PkgFiles[i]);
       if PkgFile.FileType<>pftUnit then continue;
       OldFilename:=PkgFile.GetFullFilename;
+      NewFilename:=ChangedFilenames[OldFilename];
+      if CompareFilenames(ExtractFilePath(OldFilename),ExtractFilePath(NewFilename))=0
+      then continue;
       if LoadCodeBuffer(Code,OldFilename,[lbfUpdateFromDisk,lbfCheckIfText],false)<>mrOk
       then exit;
       CodeToolBoss.Explore(Code,Tool,false);
-      if not CheckUsesSection(Tool,Tool.FindMainUsesSection) then
+      if not CheckUsesSection(Tool,Tool.FindMainUsesSection,NewFilename) then
         Result:=false;
-      if not CheckUsesSection(Tool,Tool.FindImplementationUsesSection) then
+      if not CheckUsesSection(Tool,Tool.FindImplementationUsesSection,NewFilename) then
         Result:=false;
     end;
     if not Result then begin
@@ -3339,6 +3378,64 @@ var
     end;
   end;
 
+  function ExtendSearchPaths: boolean;
+  var
+    i: Integer;
+    PkgFile: TPkgFile;
+    NewDir: String;
+    CurUnitPaths: String;
+    CurIncPaths: String;
+    NewUnitPaths: String;
+    NewIncPaths: String;
+    r: TModalResult;
+    OldFilename: String;
+  begin
+    NewUnitPaths:='';
+    NewIncPaths:='';
+    for i:=0 to PkgFiles.Count-1 do begin
+      PkgFile:=TPkgFile(PkgFiles[i]);
+      OldFilename:=PkgFile.GetFullFilename;
+      NewDir:=ChompPathDelim(ExtractFilePath(ChangedFilenames[OldFilename]));
+      case PkgFile.FileType of
+      pftUnit:
+        MergeSearchPaths(NewUnitPaths,NewDir);
+      pftInclude:
+        MergeSearchPaths(NewIncPaths,NewDir);
+      end;
+    end;
+    // unit paths
+    CurUnitPaths:=LazPackage.CompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
+    NewUnitPaths:=RemoveSearchPaths(NewUnitPaths,CurUnitPaths);
+    if NewUnitPaths<>'' then begin
+      NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,LazPackage.Directory);
+      r:=IDEMessageDialog('Extend Unit Path?',
+        'Extend unit search path of package "'+LazPackage.Name+'" with'
+        +'"'+NewUnitPaths+'"?',mtConfirmation,[mbYes,mbNo,mbCancel]);
+      case r of
+      mrYes: LazPackage.CompilerOptions.OtherUnitFiles:=
+        MergeSearchPaths(LazPackage.CompilerOptions.OtherUnitFiles,NewUnitPaths);
+      mrNo: ;
+      else exit(false);
+      end;
+    end;
+    // include paths
+    CurIncPaths:=LazPackage.CompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
+    NewIncPaths:=RemoveSearchPaths(NewIncPaths,CurIncPaths);
+    if NewIncPaths<>'' then begin
+      NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,LazPackage.Directory);
+      r:=IDEMessageDialog('Extend Include Path?',
+        'Extend include file search path of package "'+LazPackage.Name+'" with'
+        +'"'+NewIncPaths+'"?',mtConfirmation,[mbYes,mbNo,mbCancel]);
+      case r of
+      mrYes: LazPackage.CompilerOptions.IncludePath:=
+        MergeSearchPaths(LazPackage.CompilerOptions.IncludePath,NewUnitPaths);
+      mrNo: ;
+      else exit(false);
+      end;
+    end;
+    Result:=true;
+  end;
+
 var
   MoveFileCount: Integer;
   MsgResult: TModalResult;
@@ -3347,9 +3444,19 @@ begin
   Result:=false;
 
   DeleteNonExistingPkgFiles;
-  if PkgFiles.Count=0 then exit;
+  if PkgFiles.Count=0 then begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPackageEditorForm.MoveFiles PkgFiles.Count=0']);
+    {$ENDIF}
+    exit(true);
+  end;
 
-  if not FilenameIsAbsolute(TargetDirectory) then exit;
+  if not FilenameIsAbsolute(TargetDirectory) then begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPackageEditorForm.MoveFiles invalid target dir=',TargetDirectory]);
+    {$ENDIF}
+    exit;
+  end;
   TargetDirectory:=AppendPathDelim(TargetDirectory);
 
   {$IFDEF VerbosePkgEditDrag}
@@ -3358,7 +3465,10 @@ begin
   SrcPackage:=SrcPkgEdit.LazPackage;
 
   // check TargetDirectory
-  if CheckDirectoryIsWritable(TargetDirectory)<>mrOk then exit;
+  if CheckDirectoryIsWritable(TargetDirectory)<>mrOk then begin
+    debugln(['TPackageEditorForm.MoveFiles not writable TargetDirectory=',TargetDirectory]);
+    exit;
+  end;
 
   IDEMessagesWindow.Clear;
 
@@ -3367,21 +3477,28 @@ begin
   AllChangedFilenames:=TFilenameToStringTree.Create(false);
   UnitFilenameToResFileList:=TFilenameToPointerTree.Create(false);
   UnitFilenameToResFileList.FreeValues:=true;
-  TargetPkgList:=nil;
-  SrcPkgList:=nil;
+  SrcDirToPkg:=nil;
   try
     // collect all affected files including resource files
-    if not CollectFiles(MoveFileCount) then exit;
+    if not CollectFiles(MoveFileCount) then begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.MoveFiles CollectFiles failed']);
+      {$ENDIF}
+      exit;
+    end;
 
     // check if new position is free
-    if not CheckNewFilesDoNotExist then exit;
+    if not CheckNewFilesDoNotExist then begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.MoveFiles CheckNewFilesDoNotExist failed']);
+      {$ENDIF}
+      exit;
+    end;
 
     if (MoveFileCount=0) and (LazPackage=SrcPackage) then begin
       // no move, only change order in package
       // ToDo: check this case in ItemsTreeViewDragDrop
-      IDEMessageDialog('Not implemented yet',
-        'Changing order via drag and drop is not yet implemented.',
-        mtInformation,[mbOk]);
+      ShowMessage('Changing order via drag and drop is not implemented.');
       exit;
     end;
 
@@ -3408,22 +3525,44 @@ begin
     end;
 
     // fetch used packages
-    PackageGraph.GetAllRequiredPackages(LazPackage,nil,TargetPkgList);
-    PackageGraph.GetAllRequiredPackages(SrcPackage,nil,SrcPkgList);
+    SrcDirToPkg:=PackageGraph.GetMapSourceDirectoryToPackage;
 
     // check uses sections
-    if not CheckUsesSections then exit;
+    if not CheckUsesSections then begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.MoveFiles CheckUsesSections failed']);
+      {$ENDIF}
+      exit;
+    end;
 
     if DeleteOld then begin
       // close files and res files in source editor
-      if not CloseSrcEditors then exit;
+      if not CloseSrcEditors then begin
+        {$IFDEF VerbosePkgEditDrag}
+        debugln(['TPackageEditorForm.MoveFiles CloseSrcEditors failed']);
+        {$ENDIF}
+        exit;
+      end;
     end;
 
     if (SrcPackage<>LazPackage) then begin
       // files will be moved to another directory
       // => clear output directory of SrcPackage
       if PackageGraph.PreparePackageOutputDirectory(SrcPackage,true)<>mrOk then
+      begin
+        {$IFDEF VerbosePkgEditDrag}
+        debugln(['TPackageEditorForm.MoveFiles PreparePackageOutputDirectory failed']);
+        {$ENDIF}
         exit;
+      end;
+    end;
+
+    // extend unit/include path of LazPackage
+    if not ExtendSearchPaths then begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPackageEditorForm.MoveFiles ExtendSearchPaths failed']);
+      {$ENDIF}
+      exit;
     end;
 
     ShowMessage('Moving files is not yet implemented');
@@ -3431,13 +3570,11 @@ begin
 
     // move/copy file and res files, Note: some files are res files
     // move/copy TPkgFile, make uses-unit unique
-    // extend unit/include path of LazPackage
     // clean up unit/inlude path of SrcPkg
 
     Result:=true;
   finally
-    TargetPkgList.Free;
-    SrcPkgList.Free;
+    SrcDirToPkg.Free;
     UnitFilenameToResFileList.Free;
     AllChangedFilenames.Free;
     ChangedFilenames.Free;
