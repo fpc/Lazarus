@@ -1256,10 +1256,12 @@ begin
   Result:=TStringList.Create;
   try
     buf:='';
-    DbgOut(['RunTool ',Filename]);
-    for i:=0 to Params.Count-1 do
-      dbgout(' "',Params[i],'"');
-    Debugln;
+    if MainThreadID=GetCurrentThreadId then begin
+      DbgOut(['RunTool ',Filename]);
+      for i:=0 to Params.Count-1 do
+        dbgout(' "',Params[i],'"');
+      Debugln;
+    end;
     TheProcess := TProcessUTF8.Create(nil);
     try
       TheProcess.Executable := Filename;
