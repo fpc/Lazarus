@@ -1041,7 +1041,8 @@ begin
             idButtonNoToAll  : CreateButton(Caption, GTK_RESPONSE_LCL_NOTOALL, BtnID);
             idButtonYesToAll : CreateButton(Caption, GTK_RESPONSE_LCL_YESTOALL, BtnID);
           end;
-        end;
+        end else
+          CreateButton(Caption, GTK_RESPONSE_NONE, BtnID); // user defined buttons
     end;
   end;
 
