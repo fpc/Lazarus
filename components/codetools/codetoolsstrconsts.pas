@@ -57,12 +57,12 @@ ResourceString
   ctsStrExpectedButAtomFound = 'expected %s, but %s found';
   ctsEndOfFile = 'end of file';
   ctsPositionNotInSource = 'Position not in source';
-  ctsInvalidClassName = 'invalid class name=%s%s%s';
+  ctsInvalidClassName = 'invalid class name="%s"';
   ctsSourceOfUnitNotFound = 'source of unit not found: %s';
-  ctsclassNotFound = 'class %s%s%s not found';
-  ctsinvalidClassName2 = 'invalid class name %s%s%s';
-  ctsinvalidVariableName = 'invalid variable name %s%s%s';
-  ctsinvalidVariableType = 'invalid variable type %s%s%s';
+  ctsclassNotFound = 'class "%s" not found';
+  ctsinvalidClassName2 = 'invalid class name "%s"';
+  ctsinvalidVariableName = 'invalid variable name "%s"';
+  ctsinvalidVariableType = 'invalid variable type "%s"';
   ctsClassSNotFound = 'Class %s not found';
   ctsIdentExpectedButEOFFound = 'unexpected end of file (identifier expected)';
   ctsOperatorExpectedButEOFFound = 'unexpected end of file (operator expected)';

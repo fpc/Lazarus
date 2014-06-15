@@ -4405,13 +4405,13 @@ var ClassNode, SectionNode: TCodeTreeNode;
 begin
   Result:=nil;
   if (AClassName='') or (length(AClassName)>255) then
-    RaiseException(Format(ctsinvalidClassName, ['"', AClassName, '"']));
+    RaiseException(Format(ctsinvalidClassName, [AClassName]));
   if AVarName='' then exit;
   BuildTree(lsrImplementationStart);
   ClassNode:=FindClassNodeInInterface(AClassName,true,false,false);
   if ClassNode=nil then begin
     if ExceptionOnClassNotFound then
-      RaiseException(Format(ctsclassNotFound, ['"', AClassName, '"']))
+      RaiseException(Format(ctsclassNotFound, [AClassName]))
     else
       exit;
   end;
@@ -4440,11 +4440,11 @@ var ClassNode, SectionNode: TCodeTreeNode;
 begin
   Result:=false;
   if (AClassName='') or (length(AClassName)>255) then
-    RaiseException(Format(ctsinvalidClassName2, ['"', AClassName, '"']));
+    RaiseException(Format(ctsinvalidClassName2, [AClassName]));
   if (VarName='') or (length(VarName)>255) then
-    RaiseException(Format(ctsinvalidVariableName, ['"', VarName, '"']));
+    RaiseException(Format(ctsinvalidVariableName, [VarName]));
   if (VarType='') or (length(VarType)>255) then
-    RaiseException(Format(ctsinvalidVariableType, ['"', VarType, '"']));
+    RaiseException(Format(ctsinvalidVariableType, [VarType]));
   if (SourceChangeCache=nil) then
     RaiseException('missing SourceChangeCache');
   if FindPublishedVariable(AClassName,VarName,true)<>nil then
@@ -4454,7 +4454,7 @@ begin
   end;
   ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
   if ClassNode=nil then
-    RaiseException(Format(ctsclassNotFound, ['"', AClassName, '"']));
+    RaiseException(Format(ctsclassNotFound, [AClassName]));
   SectionNode:=ClassNode.FirstChild;
   if (SectionNode.NextBrother<>nil)
   and (SectionNode.NextBrother.Desc=ctnClassPublished) then
@@ -4630,7 +4630,7 @@ begin
   Result:=false;
   TreeOfCodeTreeNodeExtension:=nil;
   if (TheClassName='') or (length(TheClassName)>255) then
-    RaiseException(Format(ctsInvalidClassName, ['"', TheClassName, '"']));
+    RaiseException(Format(ctsInvalidClassName, [TheClassName]));
   {$IFDEF VerboseDanglingComponentEvents}
   DebugLn(['TStandardCodeTool.GatherPublishedClassElements BEFORE buildtree']);
   {$ENDIF}
