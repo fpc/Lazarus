@@ -62,6 +62,8 @@ uses
   {$ENDIF}
   ModeMatrixOpts, CompOptsModes, EnvironmentOpts;
 
+const
+  DefaultCompilerPath = '$(CompPath)';
 type
 
   TCheckCompileOptionsMsgLvl = (
@@ -1808,7 +1810,7 @@ begin
   UseCommentsInCustomOptions := aXMLConfig.GetValue(p+'ConfigFile/UseCommentsInCustomOptions/Value', false);
 
   { Compilation }
-  CompilerPath := f(aXMLConfig.GetValue(p+'CompilerPath/Value','$(CompPath)'));
+  CompilerPath := f(aXMLConfig.GetValue(p+'CompilerPath/Value',DefaultCompilerPath));
 
   ExecuteBefore.LoadFromXMLConfig(aXMLConfig,p+'ExecuteBefore/',PathDelimChange);
   ExecuteAfter.LoadFromXMLConfig(aXMLConfig,p+'ExecuteAfter/',PathDelimChange);
@@ -2030,7 +2032,7 @@ begin
   aXMLConfig.SetDeleteValue(p+'ConfigFile/UseCommentsInCustomOptions/Value', UseCommentsInCustomOptions,false);
 
   { Compilation }
-  aXMLConfig.SetDeleteValue(p+'CompilerPath/Value', f(CompilerPath),'');
+  aXMLConfig.SetDeleteValue(p+'CompilerPath/Value', f(CompilerPath),DefaultCompilerPath);
   ExecuteBefore.SaveToXMLConfig(aXMLConfig,p+'ExecuteBefore/',UsePathDelim);
   ExecuteAfter.SaveToXMLConfig(aXMLConfig,p+'ExecuteAfter/',UsePathDelim);
   aXMLConfig.SetDeleteValue(p+'CreateMakefileOnBuild/Value',
@@ -3535,7 +3537,7 @@ begin
   ClearInheritedOptions;
 
   // compilation
-  CompilerPath := '$(CompPath)';
+  CompilerPath := DefaultCompilerPath;
   fExecuteBefore.Clear;
   fExecuteAfter.Clear;
 
