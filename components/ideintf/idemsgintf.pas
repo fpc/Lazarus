@@ -91,7 +91,7 @@ type
     function GetSelectedLine: TMessageLine; virtual; abstract;
 
     procedure BeginBlock(ClearOldBlocks: Boolean = true); deprecated; // not needed anymore
-    procedure AddMsg(const Msg, CurDir: string; OriginalIndex: integer;
+    procedure AddMsg(const Msg, {%H-}CurDir: string; {%H-}OriginalIndex: integer;
       Parts: TStrings = nil); deprecated; // use AddCustomMessages instead or create a new view via GetView or CreateView
     procedure EndBlock; deprecated; // not needed anymore
   end;
