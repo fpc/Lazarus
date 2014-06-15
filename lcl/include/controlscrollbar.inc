@@ -247,7 +247,7 @@ begin
     // I am not positive that this is right, but it appeared to be when I
     // compared results to Delphi 4
     if FSmooth then
-      FIncrement := FPage div 10;
+      FIncrement := Max(low(FIncrement),FPage div 10);
   end;
 end;
 
