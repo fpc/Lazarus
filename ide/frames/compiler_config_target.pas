@@ -187,18 +187,17 @@ begin
 end;
 
 procedure TCompilerConfigTargetFrame.UpdateByTargetOS(aTargetOS: string);
-var
-  DbgMsg: String;
+//var DbgMsg: String;
 begin
-  DbgMsg := '';
+  //DbgMsg := '';
   if aTargetOS = '' then
   begin
     aTargetOS := '$(TargetOS)';
     if not GlobalMacroList.SubstituteStr(aTargetOS) then
       raise Exception.CreateFmt('Cannot substitute macro "%s".', [aTargetOS]);
-    DbgMsg := ' (got by using $(TargetOS) macro)';
+    //DbgMsg := ' (got by using $(TargetOS) macro)';
   end;
-  DebugLn(['TCompilerConfigTargetFrame.UpdateTargetSpecific: TargetOS=',aTargetOS,DbgMsg]);
+  //DebugLn(['TCompilerConfigTargetFrame.UpdateTargetSpecific: TargetOS=',aTargetOS,DbgMsg]);
   // Now hide/show the whole GroupBox because there is only one setting.
   grbTargetOptions.Visible := AnsiStartsText('Win', aTargetOS);
   if grbTargetOptions.Visible then
@@ -266,19 +265,19 @@ var
   end;
 
 var
-  DbgMsg: String;
+  //DbgMsg: String;
   ParsingFrame: TCompilerParsingOptionsFrame;
 begin
   IsIntel := False;
-  DbgMsg := '';
+  //DbgMsg := '';
   if aTargetCPU = '' then
   begin
     aTargetCPU := '$(TargetCPU)';
     if not GlobalMacroList.SubstituteStr(aTargetCPU) then
       raise Exception.CreateFmt('Cannot substitute macro "%s".', [aTargetCPU]);
-    DbgMsg := ' (got by using $(TargetCPU) macro)';
+    //DbgMsg := ' (got by using $(TargetCPU) macro)';
   end;
-  DebugLn(['TCompilerConfigTargetFrame.UpdateTargetProcessorList: TargetCPU=',aTargetCPU,DbgMsg]);
+  //DebugLn(['TCompilerConfigTargetFrame.UpdateTargetProcessorList: TargetCPU=',aTargetCPU,DbgMsg]);
 
   // Update selection list for target processor
   TargetProcComboBox.Clear;
