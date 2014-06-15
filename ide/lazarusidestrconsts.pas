@@ -3755,6 +3755,8 @@ resourcestring
   lisPkgMangPackage = 'Package: %s';
   lisPkgMangProject = 'Project: %s';
   lisPkgMangDependencyWithoutOwner = 'Dependency without Owner: %s';
+  lisLazbuildIsNonInteractiveAbortingNow = '%s%s%s%slazbuild is non '
+    +'interactive, aborting now.';
   lisPkgMangSavePackageLpk = 'Save Package %s (*.lpk)';
   lisPkgMangInvalidPackageFileExtension = 'Invalid package file extension';
   lisPkgMangPackagesMustHaveTheExtensionLpk = 'Packages must have the '
