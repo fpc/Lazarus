@@ -543,9 +543,9 @@ procedure TProjectJumpHistoryPosition.LoadFromXMLConfig(
   XMLConfig: TXMLConfig; const Path: string);
 var AFilename: string;
 begin
-  FCaretXY.Y:=XMLConfig.GetValue(Path+'Caret/Line',0);
-  FCaretXY.X:=XMLConfig.GetValue(Path+'Caret/Column',0);
-  FTopLine:=XMLConfig.GetValue(Path+'Caret/TopLine',0);
+  FCaretXY.Y:=XMLConfig.GetValue(Path+'Caret/Line',1);
+  FCaretXY.X:=XMLConfig.GetValue(Path+'Caret/Column',1);
+  FTopLine:=XMLConfig.GetValue(Path+'Caret/TopLine',1);
   AFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,true);
@@ -560,9 +560,9 @@ begin
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,false);
   XMLConfig.SetValue(Path+'Filename/Value',AFilename);
-  XMLConfig.SetValue(Path+'Caret/Line',FCaretXY.Y);
-  XMLConfig.SetValue(Path+'Caret/Column',FCaretXY.X);
-  XMLConfig.SetValue(Path+'Caret/TopLine',FTopLine);
+  XMLConfig.SetDeleteValue(Path+'Caret/Line',FCaretXY.Y,1);
+  XMLConfig.SetDeleteValue(Path+'Caret/Column',FCaretXY.X,1);
+  XMLConfig.SetDeleteValue(Path+'Caret/TopLine',FTopLine,1);
 end;
 
 { TProjectJumpHistory }
