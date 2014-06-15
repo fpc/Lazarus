@@ -46,6 +46,7 @@ type
     procedure UseXPManifestCheckBoxChange(Sender: TObject);
   private
     FProject: TProject;
+    fIconChanged: boolean;
     procedure SetIconFromStream(Value: TStream);
     function GetIconAsStream: TStream;
   public
@@ -135,6 +136,7 @@ end;
 
 procedure TProjectApplicationOptionsFrame.ClearIconButtonClick(Sender: TObject);
 begin
+  fIconChanged:=true;
   IconImage.Picture.Clear;
 end;
 
@@ -146,17 +148,19 @@ end;
 procedure TProjectApplicationOptionsFrame.DefaultIconButtonClick(Sender: TObject);
 begin
   IconImage.Picture.Icon.LoadFromResourceName(HInstance, 'MAINICONPROJECT');
+  fIconChanged:=true;
 end;
 
 procedure TProjectApplicationOptionsFrame.LoadIconButtonClick(Sender: TObject);
 begin
-  if OpenPictureDialog1.Execute then
-    try
-      IconImage.Picture.LoadFromFile(OpenPictureDialog1.FileName)
-    except
-      on E: Exception do
-        IDEMessageDialog(lisCCOErrorCaption, E.Message, mtError, [mbOK]);
-    end;
+  if not OpenPictureDialog1.Execute then exit;
+  try
+    IconImage.Picture.LoadFromFile(OpenPictureDialog1.FileName);
+    fIconChanged:=true;
+  except
+    on E: Exception do
+      IDEMessageDialog(lisCCOErrorCaption, E.Message, mtError, [mbOK]);
+  end;
 end;
 
 procedure TProjectApplicationOptionsFrame.SaveIconButtonClick(Sender: TObject);
@@ -261,6 +265,7 @@ begin
     finally
       AStream.Free;
     end;
+    fIconChanged:=false;
   end;
 end;
 
@@ -271,11 +276,14 @@ begin
   with AOptions as TProject do
   begin
     Title := TitleEdit.Text;
-    AStream := GetIconAsStream;
-    try
-      ProjResources.ProjectIcon.SetStream(AStream);
-    finally
-      AStream.Free;
+    if fIconChanged then
+    begin
+      AStream := GetIconAsStream;
+      try
+        ProjResources.ProjectIcon.SetStream(AStream);
+      finally
+        AStream.Free;
+      end;
     end;
     UseAppBundle := UseAppBundleCheckBox.Checked;
     with ProjResources.XPManifest do

@@ -298,7 +298,7 @@ type
     function GetUnitOutputDir: string; virtual; abstract;
     function GetUnitPaths: String; virtual; abstract;
     procedure SetCompilerPath(const AValue: String); virtual; abstract;
-    procedure SetConditionals(const AValue: string); virtual; abstract;
+    procedure SetConditionals(AValue: string); virtual; abstract;
     procedure SetCustomOptions(const AValue: string); virtual; abstract;
     procedure SetDebugPath(const AValue: string); virtual; abstract;
     procedure SetIncludePaths(const AValue: String); virtual; abstract;

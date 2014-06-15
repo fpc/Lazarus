@@ -42,14 +42,13 @@ interface
 
 {$I ide.inc}
 
-{off $DEFINE VerboseProjectModified}
-
 uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, TypInfo, FPCAdds, LCLProc, LCLIntf, LCLType, Forms,
   FileUtil, Laz2_XMLCfg, Controls, Dialogs, maps, LazFileUtils, LazFileCache,
+  LazUTF8,
   // codetools
   CodeToolsConfig, ExprEval, DefineTemplates,
   BasicCodeTools, CodeToolsCfgScript, CodeToolManager, CodeCache, FileProcs,
@@ -523,7 +522,7 @@ type
     procedure SetSrcPath(const AValue: string); override;
     procedure SetUnitPaths(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
-    procedure SetConditionals(const AValue: string); override;
+    procedure SetConditionals(AValue: string); override;
     function SubstituteProjectMacros(const s: string;
                                      PlatformIndependent: boolean): string;
   public
@@ -741,6 +740,8 @@ type
     FAllEditorsInfoList: TUnitEditorInfoList;
     FAllEditorsInfoMap: TMap;
     FAutoCreateForms: boolean;
+    FChangeStamp: integer;
+    FChangeStampSaved: integer;
     FEnableI18NForLFM: boolean;
     FLastCompileComplete: boolean;
     FMacroEngine: TTransferMacroList;
@@ -913,6 +914,8 @@ type
     function SomethingModified(CheckData, CheckSession: boolean; Verbose: boolean = false): boolean;
     function SomeDataModified(Verbose: boolean = false): boolean;
     function SomeSessionModified(Verbose: boolean = false): boolean;
+    procedure IncreaseChangeStamp; inline;
+    property ChangeStamp: integer read FChangeStamp;
     procedure MainSourceFilenameChanged;
     procedure GetUnitsChangedOnDisk(var AnUnitList: TFPList);
     function HasProjectInfoFileChangedOnDisk: boolean;
@@ -2541,7 +2544,7 @@ end;
 procedure TUnitInfo.SetModified(const AValue: boolean);
 begin
   if Modified=AValue then exit;
-  {$IFDEF VerboseProjectModified}
+  {$IFDEF VerboseIDEModified}
   debugln(['TUnitInfo.SetModified ',Filename,' new Modified=',AValue]);
   {$ENDIF}
   fModified:=AValue;
@@ -2584,7 +2587,7 @@ end;
 procedure TUnitInfo.SetSessionModified(const AValue: boolean);
 begin
   if FSessionModified=AValue then exit;
-  {$IFDEF VerboseProjectModified}
+  {$IFDEF VerboseIDEModified}
   debugln(['TUnitInfo.SetSessionModified ',Filename,' new Modified=',AValue]);
   {$ENDIF}
   FSessionModified:=AValue;
@@ -3383,7 +3386,13 @@ end;
 procedure TProject.BackupBuildModes;
 begin
   FActiveBuildModeBackup:=BuildModes.IndexOf(ActiveBuildMode);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProject.BackupBuildModes START=====================']);
+  {$ENDIF}
   BuildModesBackup.Assign(BuildModes,true);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProject.BackupBuildModes END===================== Modified=',Modified]);
+  {$ENDIF}
 end;
 
 procedure TProject.RestoreBuildModes;
@@ -3632,9 +3641,12 @@ end;
 
 procedure TProject.UnitModified(AnUnitInfo: TUnitInfo);
 begin
-  if AnUnitInfo.IsPartOfProject then
-    Modified:=true
-  else
+  if AnUnitInfo.IsPartOfProject then begin
+    {$IFDEF VerboseIDEModified}
+    debugln(['TProject.UnitModified ',AnUnitInfo.Filename]);
+    {$ENDIF}
+    Modified:=true;
+  end else
     SessionModified:=true;
 end;
 
@@ -3687,12 +3699,6 @@ begin
   inherited SetFlags(AValue);
 end;
 
-function TProject.GetModified: boolean;
-begin
-  Result:=inherited GetModified
-    or ((BuildModes<>nil) and BuildModes.Modified);
-end;
-
 procedure TProject.SetMainUnitID(const AValue: Integer);
 begin
   if AValue>=UnitCount then
@@ -3711,19 +3717,26 @@ begin
   Result:=Units[Index];
 end;
 
+function TProject.GetModified: boolean;
+begin
+  Result:=(FChangeStamp<>FChangeStampSaved)
+    or ((BuildModes<>nil) and BuildModes.Modified);
+end;
+
 procedure TProject.SetModified(const AValue: boolean);
 begin
-  {$IFDEF VerboseProjectModified}
+  {$IFDEF VerboseIDEModified}
   if Modified<>AValue then begin
-    debugln(['TProject.SetModified ================= ',AValue]);
-    DumpStack;
+    debugln(['TProject.SetModified ================= ',AValue,' ',FChangeStamp]);
+    CTDumpStack;
   end;
   {$ENDIF}
 
   if fDestroying then exit;
-  inherited SetModified(AValue);
-  if not AValue then
-  begin
+  if AValue then
+    IncreaseChangeStamp
+  else begin
+    FChangeStampSaved:=FChangeStamp;
     PublishOptions.Modified := False;
     ProjResources.Modified := False;
     BuildModes.Modified:=false;
@@ -3734,7 +3747,7 @@ end;
 procedure TProject.SetSessionModified(const AValue: boolean);
 begin
   if AValue=SessionModified then exit;
-  {$IFDEF VerboseProjectModified}
+  {$IFDEF VerboseIDEModified}
   debugln(['TProject.SetSessionModified new Modified=',AValue]);
   {$ENDIF}
   inherited SetSessionModified(AValue);
@@ -3840,7 +3853,6 @@ begin
     Result:=CodeToolBoss.AddCreateFormStatement(MainUnitInfo.Source,
       AClassName,AName);
     if Result then begin
-      Modified:=true;
       MainUnitInfo.Modified:=true;
     end;
   end else begin
@@ -3853,7 +3865,6 @@ begin
   Result:=CodeToolBoss.RemoveCreateFormStatement(MainUnitInfo.Source,
               AName);
   if Result then begin
-    Modified:=true;
     MainUnitInfo.Modified:=true;
   end;
 end;
@@ -4046,6 +4057,9 @@ procedure TProject.SetEnableI18N(const AValue: boolean);
 begin
   if FEnableI18N=AValue then exit;
   FEnableI18N:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProject.SetEnableI18N ',AValue]);
+  {$ENDIF}
   Modified:=true;
 end;
 
@@ -4056,6 +4070,9 @@ begin
   NewValue:=ChompPathDelim(TrimFilename(AValue));
   if FPOOutputDirectory=NewValue then exit;
   FPOOutputDirectory:=NewValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProject.SetPOOutputDirectory ',AValue]);
+  {$ENDIF}
   Modified:=true;
 end;
 
@@ -4156,6 +4173,9 @@ begin
   if Assigned(OnChangeProjectInfoFile) then
     OnChangeProjectInfoFile(Self);
   FDefineTemplates.SourceDirectoriesChanged;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProject.SetProjectInfoFile ',NewFilename]);
+  {$ENDIF}
   Modified:=true;
   EndUpdate;
   //DebugLn('TProject.SetProjectInfoFile FDefineTemplates.FUpdateLock=',dbgs(FDefineTemplates.FUpdateLock));
@@ -4165,6 +4185,9 @@ procedure TProject.SetSessionStorage(const AValue: TProjectSessionStorage);
 begin
   if SessionStorage=AValue then exit;
   inherited SetSessionStorage(AValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProject.SetSessionStorage ']);
+  {$ENDIF}
   Modified:=true;
   UpdateSessionFilename;
 end;
@@ -4382,6 +4405,9 @@ begin
   DebugLn(['TProject.AddRequiredDependency ']);
   {$ENDIF}
   IncreaseCompilerParseStamp;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProject.AddRequiredDependency ',Dependency.PackageName]);
+  {$ENDIF}
   Modified:=true;
   EndUpdate;
 end;
@@ -4395,6 +4421,9 @@ begin
   Dependency.Removed:=true;
   FDefineTemplates.CustomDefinesChanged;
   IncreaseCompilerParseStamp;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProject.RemoveRequiredDependency ',Dependency.PackageName]);
+  {$ENDIF}
   Modified:=true;
   EndUpdate;
 end;
@@ -5027,6 +5056,9 @@ begin
     FCompilerOptions:=nil;
     FLazCompilerOptions:=nil;
   end;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProject.SetActiveBuildMode ']);
+  {$ENDIF}
   SessionModified:=true;
   if Self=Project1 then
     IncreaseBuildMacroChangeStamp;
@@ -5058,6 +5090,9 @@ procedure TProject.SetEnableI18NForLFM(const AValue: boolean);
 begin
   if FEnableI18NForLFM=AValue then exit;
   FEnableI18NForLFM:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProject.SetEnableI18NForLFM ',AValue]);
+  {$ENDIF}
   Modified:=true;
 end;
 
@@ -5082,6 +5117,9 @@ procedure TProject.SetStorePathDelim(const AValue: TPathDelimSwitch);
 begin
   if FStorePathDelim=AValue then exit;
   FStorePathDelim:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProject.SetStorePathDelim ']);
+  {$ENDIF}
   Modified:=true;
 end;
 
@@ -5165,6 +5203,11 @@ begin
     end;
   end;
   Result:=false;
+end;
+
+procedure TProject.IncreaseChangeStamp;
+begin
+  LUIncreaseChangeStamp(FChangeStamp);
 end;
 
 procedure TProject.MainSourceFilenameChanged;
@@ -5729,6 +5772,9 @@ procedure TProjectCompilationToolOptions.SetCompileReasons(
 begin
   if FCompileReasons=AValue then exit;
   FCompileReasons:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProjectCompilationToolOptions.SetCompileReasons']);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -5737,6 +5783,9 @@ procedure TProjectCompilationToolOptions.SetDefaultCompileReasons(
 begin
   if FDefaultCompileReasons=AValue then exit;
   FDefaultCompileReasons:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProjectCompilationToolOptions.SetDefaultCompileReasons']);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -5906,14 +5955,12 @@ begin
     LazProject.DefineTemplates.OutputDirectoryChanged;
 end;
 
-procedure TProjectCompilerOptions.SetConditionals(const AValue: string);
-var
-  NewValue: String;
+procedure TProjectCompilerOptions.SetConditionals(AValue: string);
 begin
-  NewValue:=Trim(AValue);
-  if Conditionals=NewValue then exit;
+  AValue:=UTF8Trim(AValue,[]);
+  if Conditionals=AValue then exit;
   InvalidateOptions;
-  inherited SetConditionals(NewValue);
+  inherited SetConditionals(AValue);
 end;
 
 function TProjectCompilerOptions.SubstituteProjectMacros(const s: string;
@@ -6601,11 +6648,17 @@ procedure TProjectBuildMode.SetInSession(const AValue: boolean);
 begin
   if FInSession=AValue then exit;
   FInSession:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProjectBuildMode.SetInSession ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
 procedure TProjectBuildMode.OnItemChanged(Sender: TObject);
 begin
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProjectBuildMode.OnItemChanged ',DbgSName(Sender)]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -6623,6 +6676,9 @@ procedure TProjectBuildMode.SetIdentifier(const AValue: string);
 begin
   if FIdentifier=AValue then exit;
   FIdentifier:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProjectBuildMode.SetIdentifier ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -6701,6 +6757,12 @@ end;
 
 procedure TProjectBuildMode.IncreaseChangeStamp;
 begin
+  {$IFDEF VerboseIDEModified}
+  if not Modified then begin
+    debugln(['TProjectBuildMode.IncreaseChangeStamp ']);
+    CTDumpStack;
+  end;
+  {$ENDIF}
   CTIncreaseChangeStamp64(FChangeStamp);
   if fOnChanged<>nil then fOnChanged.CallNotifyEvents(Self);
 end;
@@ -6751,6 +6813,9 @@ end;
 
 procedure TProjectBuildModes.OnItemChanged(Sender: TObject);
 begin
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProjectBuildModes.OnItemChanged ',DbgSName(Sender)]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -6845,6 +6910,9 @@ begin
   Item:=Items[Index];
   fItems.Delete(Index);
   Item.Free;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProjectBuildModes.Delete ']);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 

@@ -46,7 +46,7 @@ uses
   {$IFNDEF EnableOldExtTools}
   AvgLvlTree,
   {$ENDIF}
-  Laz2_DOM, InterfaceBase, LCLProc, Forms, Controls, ExprEval,
+  Laz2_DOM, LazUTF8, InterfaceBase, LCLProc, Forms, Controls, ExprEval,
   DefineTemplates, CodeToolsCfgScript, CodeToolManager, KeywordFuncLists,
   BasicCodeTools,
   // IDEIntf
@@ -138,7 +138,7 @@ const
     +'//if SrcOS=''win'' then begin'+LineEnding
     +'//  UnitPath += '';win'';'+LineEnding
     +'//  IncPath += '';win'';'+LineEnding
-    +'//end;'+LineEnding
+    +'//end;'
     ;
 
 type
@@ -532,9 +532,9 @@ type
     function GetSrcPath: string; override;
     function GetUnitOutputDir: string; override;
     function GetUnitPaths: String; override;
-    procedure SetBaseDirectory(const AValue: string);
+    procedure SetBaseDirectory(AValue: string);
     procedure SetCompilerPath(const AValue: String); override;
-    procedure SetConditionals(const AValue: string); override;
+    procedure SetConditionals(AValue: string); override;
     procedure SetCustomOptions(const AValue: string); override;
     procedure SetIncludePaths(const AValue: String); override;
     procedure SetLibraryPaths(const AValue: String); override;
@@ -1285,6 +1285,9 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if IncludePath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosIncludePath,NewValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetIncludePaths ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1292,12 +1295,20 @@ procedure TBaseCompilerOptions.SetCompilerPath(const AValue: String);
 begin
   if CompilerPath=AValue then exit;
   ParsedOpts.SetUnparsedValue(pcosCompilerPath,AValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetCompilerPath ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
-procedure TBaseCompilerOptions.SetConditionals(const AValue: string);
+procedure TBaseCompilerOptions.SetConditionals(AValue: string);
 begin
   if FConditionals=AValue then exit;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetConditionals ']);
+  debugln('old:"',dbgstr(FConditionals),'"');
+  debugln('new:"',dbgstr(AValue),'"');
+  {$ENDIF}
   FConditionals:=AValue;
   if ParsedOpts.InvalidateParseOnChange then
     IncreaseBuildMacroChangeStamp;
@@ -1309,6 +1320,9 @@ procedure TBaseCompilerOptions.SetDefaultMakeOptionsFlags(
 begin
   if FDefaultMakeOptionsFlags=AValue then exit;
   FDefaultMakeOptionsFlags:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetDefaultMakeOptionsFlags ']);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1319,6 +1333,9 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if SrcPath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosSrcPath,NewValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetSrcPath ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1329,6 +1346,9 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if DebugPath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosDebugPath,NewValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetDebugPath ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1341,6 +1361,9 @@ begin
   fTargetCPU:=NewValue;
   if ParsedOpts.InvalidateParseOnChange then
     IncreaseBuildMacroChangeStamp;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetTargetCPU ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1350,6 +1373,9 @@ begin
   fTargetProc:=AValue;
   if ParsedOpts.InvalidateParseOnChange then
     IncreaseBuildMacroChangeStamp;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetTargetProc ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1362,6 +1388,9 @@ begin
   fTargetOS:=NewValue;
   if ParsedOpts.InvalidateParseOnChange then
     IncreaseBuildMacroChangeStamp;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetTargetOS ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1369,6 +1398,9 @@ procedure TBaseCompilerOptions.SetTargetFilename(const AValue: String);
 begin
   if fTargetFilename=AValue then exit;
   fTargetFilename:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetTargetFilename ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1396,6 +1428,9 @@ end;
 
 procedure TBaseCompilerOptions.OnItemChanged(Sender: TObject);
 begin
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.OnItemChanged ',DbgSName(Sender)]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1403,6 +1438,9 @@ procedure TBaseCompilerOptions.SetCreateMakefileOnBuild(AValue: boolean);
 begin
   if FCreateMakefileOnBuild=AValue then Exit;
   FCreateMakefileOnBuild:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetCreateMakefileOnBuild ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1456,10 +1494,13 @@ begin
   Result:=ParsedOpts.Values[pcosUnitPath].UnparsedValue;
 end;
 
-procedure TBaseCompilerOptions.SetBaseDirectory(const AValue: string);
+procedure TBaseCompilerOptions.SetBaseDirectory(AValue: string);
 begin
   if BaseDirectory=AValue then exit;
   ParsedOpts.SetUnparsedValue(pcosBaseDir,AValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetBaseDirectory ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1471,6 +1512,9 @@ begin
   NewValue:=Trim(AValue);
   if CustomOptions=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosCustomOptions,NewValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetCustomOptions ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1481,6 +1525,9 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if Libraries=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosLibraryPath,NewValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetLibraryPaths ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1489,6 +1536,9 @@ begin
   if LinkerOptions=AValue then exit;
   fLinkerOptions:=AValue;
   ParsedOpts.SetUnparsedValue(pcosLinkerOptions,AValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetLinkerOptions ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1499,6 +1549,9 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if OtherUnitFiles=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosUnitPath,NewValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetUnitPaths ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1506,6 +1559,9 @@ procedure TBaseCompilerOptions.SetUnitOutputDir(const AValue: string);
 begin
   if UnitOutputDirectory=AValue then exit;
   ParsedOpts.SetUnparsedValue(pcosOutputDir,AValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetUnitOutputDir ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1516,6 +1572,9 @@ begin
   NewValue:=ShortenPath(AValue,false);
   if ObjectPath=NewValue then exit;
   ParsedOpts.SetUnparsedValue(pcosObjectPath,NewValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TBaseCompilerOptions.SetObjectPath ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -1658,7 +1717,8 @@ begin
   SrcPath := sp(aXMLConfig.GetValue(p+'SrcPath/Value', ''));
 
   { Conditionals }
-  FConditionals:=aXMLConfig.GetValue(Path+'Conditionals/Value',DefaultConditionals);
+  FConditionals:=ConvertLineEndings(UTF8Trim(
+    aXMLConfig.GetValue(Path+'Conditionals/Value',DefaultConditionals),[]));
   TIDEBuildMacros(fBuildMacros).LoadFromXMLConfig(aXMLConfig,
                                        Path+'BuildMacros/',PathDelimChange);
 
@@ -4355,6 +4415,9 @@ procedure TCompilationToolOptions.SetCommand(const AValue: string);
 begin
   if FCommand=AValue then exit;
   FCommand:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TCompilationToolOptions.SetCommand ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -4362,6 +4425,9 @@ procedure TCompilationToolOptions.SetScanForFPCMessages(const AValue: boolean);
 begin
   if FScanForFPCMessages=AValue then exit;
   FScanForFPCMessages:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TCompilationToolOptions.SetScanForFPCMessages ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -4369,6 +4435,9 @@ procedure TCompilationToolOptions.SetScanForMakeMessages(const AValue: boolean);
 begin
   if FScanForMakeMessages=AValue then exit;
   FScanForMakeMessages:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TCompilationToolOptions.SetScanForMakeMessages ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -4376,6 +4445,9 @@ procedure TCompilationToolOptions.SetShowAllMessages(const AValue: boolean);
 begin
   if FShowAllMessages=AValue then exit;
   FShowAllMessages:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TCompilationToolOptions.SetShowAllMessages ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -4549,6 +4621,9 @@ begin
   if (AValue='') or (not IsValidIdent(AValue)) then
     raise Exception.Create('TIDEBuildMacro.SetIdentifier invalid identifier: '+AValue);
   FIdentifier:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TIDEBuildMacro.SetIdentifier ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
   IncreaseBuildMacroChangeStamp;
 end;
@@ -4557,6 +4632,9 @@ procedure TIDEBuildMacro.SetDescription(const AValue: string);
 begin
   if FDescription=AValue then exit;
   FDescription:=AValue;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TIDEBuildMacro.SetDescription ',AValue]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -4564,6 +4642,9 @@ procedure TIDEBuildMacro.SetValueDescriptions(const AValue: TStrings);
 begin
   if (FValueDescriptions=AValue) or FValueDescriptions.Equals(AValue) then exit;
   FValueDescriptions.Assign(AValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TIDEBuildMacro.SetValueDescriptions ',AValue.Text]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -4571,6 +4652,9 @@ procedure TIDEBuildMacro.SetValues(const AValue: TStrings);
 begin
   if (FValues=AValue) or FValues.Equals(AValue) then exit;
   FValues.Assign(AValue);
+  {$IFDEF VerboseIDEModified}
+  debugln(['TIDEBuildMacro.SetValues ',AValue.Text]);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -4871,6 +4955,9 @@ begin
     fTree.Add(Flag);
     fTree.ConsistencyCheck;
   end;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TCompilerMsgIDFlags.SetValues ']);
+  {$ENDIF}
   IncreaseChangeStamp;
 end;
 
@@ -4920,6 +5007,9 @@ begin
       Node.Data:=Flag;
       Node:=Node.Successor;
     end;
+    {$IFDEF VerboseIDEModified}
+    debugln(['TCompilerMsgIDFlags.Assign ']);
+    {$ENDIF}
     IncreaseChangeStamp;
   end else
     inherited Assign(Source);

@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, contnrs, typinfo, LCLProc, LCLType, LResources, Graphics,
   Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage, Laz2_XMLCfg,
-  LazFileUtils, LazFileCache, BasicCodeTools, CodeToolsCfgScript,
+  LazFileUtils, LazFileCache, LazUTF8, BasicCodeTools, CodeToolsCfgScript,
   DefineTemplates, CodeToolManager, CodeCache, CodeToolsStructs, PropEdits,
   LazIDEIntf, MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf,
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs,
@@ -354,7 +354,7 @@ type
     procedure SetSrcPath(const AValue: string); override;
     procedure SetUnitPaths(const AValue: string); override;
     procedure SetUnitOutputDir(const AValue: string); override;
-    procedure SetConditionals(const AValue: string); override;
+    procedure SetConditionals(AValue: string); override;
   public
     constructor Create(const AOwner: TObject); override;
     // IDE options
@@ -3997,14 +3997,12 @@ begin
     LazPackage.DefineTemplates.OutputDirectoryChanged;
 end;
 
-procedure TPkgCompilerOptions.SetConditionals(const AValue: string);
-var
-  NewValue: String;
+procedure TPkgCompilerOptions.SetConditionals(AValue: string);
 begin
-  NewValue:=Trim(AValue);
-  if Conditionals=NewValue then exit;
+  AValue:=UTF8Trim(AValue,[]);
+  if Conditionals=AValue then exit;
   InvalidateOptions;
-  inherited SetConditionals(NewValue);
+  inherited SetConditionals(AValue);
 end;
 
 constructor TPkgCompilerOptions.Create(const AOwner: TObject);

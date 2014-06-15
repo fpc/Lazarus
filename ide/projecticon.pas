@@ -264,6 +264,9 @@ begin
     Exit;
   FData := AValue;
   fFileAgeValid := false;
+  {$IFDEF VerboseIDEModified}
+  debugln(['TProjectIcon.SetIconData ']);
+  {$ENDIF}
   Modified := True;
 end;
 

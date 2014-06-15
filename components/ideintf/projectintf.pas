@@ -379,7 +379,6 @@ type
     FCustomSessionData: TStringToStringTree;
     FExecutableType: TProjectExecutableType;
     FFPDocPackageName: string;
-    fModified: boolean;
     FProjectSessionFile: string;
     FSessionModified: boolean;
     FTitle: String;
@@ -400,13 +399,13 @@ type
     function GetFiles(Index: integer): TLazProjectFile; virtual; abstract;
     function GetMainFile: TLazProjectFile; virtual; abstract;
     function GetMainFileID: Integer; virtual; abstract;
-    function GetModified: boolean; virtual;
+    function GetModified: boolean; virtual; abstract;
     function GetProjectInfoFile: string; virtual; abstract;
     function GetUseManifest: boolean; virtual; abstract;
     procedure SetExecutableType(const AValue: TProjectExecutableType); virtual;
     procedure SetFlags(const AValue: TProjectFlags); virtual;
     procedure SetMainFileID(const AValue: Integer); virtual; abstract;
-    procedure SetModified(const AValue: boolean); virtual;
+    procedure SetModified(const AValue: boolean); virtual; abstract;
     procedure SetProjectInfoFile(const NewFilename: string); virtual; abstract;
     procedure SetProjectSessionFile(const AValue: string); virtual;
     procedure SetSessionModified(const AValue: boolean); virtual;
@@ -1047,12 +1046,6 @@ begin
   Modified:=true;
 end;
 
-procedure TLazProject.SetModified(const AValue: boolean);
-begin
-  if fModified=AValue then exit;
-  fModified:=AValue;
-end;
-
 procedure TLazProject.SetSessionModified(const AValue: boolean);
 begin
   if FSessionModified=AValue then exit;
@@ -1099,11 +1092,6 @@ begin
   if FFPDocPackageName=AValue then Exit;
   FFPDocPackageName:=AValue;
   Modified:=true;
-end;
-
-function TLazProject.GetModified: boolean;
-begin
-  Result:=fModified;
 end;
 
 procedure TLazProject.SetExecutableType(const AValue: TProjectExecutableType);
