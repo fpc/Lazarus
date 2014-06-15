@@ -463,10 +463,10 @@ begin
   HelpExeFileName:=GetHelpExe;
   if (not FileExistsUTF8(HelpExeFileName)) and
     ((ExtractFileNameOnly(HelpExeFileName) = 'lhelp') and (CheckBuildLHelp <> mrOK)) then begin
-    IDEMessageDialog(HELP_MissingLhelp, Format(
-      HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
-      [#13, HelpExeFileName, #13, #13, #13,
-      SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]),
+    IDEMessageDialog(HELP_MissingLhelp,
+      Format(HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
+             [LineEnding, HelpExeFileName, LineEnding, LineEnding, LineEnding,
+              SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]),
       mtError,[mbCancel]);
     exit;
   end;
