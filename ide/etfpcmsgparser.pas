@@ -238,7 +238,7 @@ function FPCMsgFits(const Msg, Pattern: string;
   VarStarts: PPChar = nil; VarEnds: PPChar = nil // 10 PChars
   ): boolean;
 function GetFPCMsgValue1(const Src, Pattern: string; out Value1: string): boolean;
-function GetFPCMsgValues(Src, Pattern: string; out Value1, Value2: string): boolean;
+function GetFPCMsgValues2(Src, Pattern: string; out Value1, Value2: string): boolean;
 
 // not thread safe
 function IsFileInIDESrcDir(Filename: string): boolean; // (main thread)
@@ -488,7 +488,7 @@ begin
   Result:=true;
 end;
 
-function GetFPCMsgValues(Src, Pattern: string; out Value1, Value2: string
+function GetFPCMsgValues2(Src, Pattern: string; out Value1, Value2: string
   ): boolean;
 { Pattern: 'Unit $1 was not found but $2 exists'
   Src:     'Unit dialogprocs was not found but dialogpr exists'
@@ -2027,7 +2027,7 @@ procedure TIDEFPCParser.ImproveMsgLinkerUndefinedReference(
   begin
     Result:=false;
     if MsgLine.HasSourcePosition then exit;
-    if not etFPCMsgParser.GetFPCMsgValues(MsgLine.Msg,'      _$1 in $2.o',
+    if not etFPCMsgParser.GetFPCMsgValues2(MsgLine.Msg,'      _$1 in $2.o',
       MangledName,aUnitName)
     then exit;
     Result:=true;
@@ -2816,7 +2816,7 @@ begin
   Result:=false;
   if Msg.MsgID<=0 then exit;
   if Msg.SubTool<>SubToolFPC then exit;
-  Result:=etFPCMsgParser.GetFPCMsgValues(Msg.Msg,GetFPCMsgPattern(Msg),Value1,Value2);
+  Result:=etFPCMsgParser.GetFPCMsgValues2(Msg.Msg,GetFPCMsgPattern(Msg),Value1,Value2);
 end;
 
 initialization

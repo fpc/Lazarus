@@ -62,25 +62,6 @@ uses
 
 type
 
-  { TQuickFix_HideWithIDEDirective - hide with IDE directive %H- }
-
-  TQuickFix_HideWithIDEDirective = class(TMsgQuickFix)
-  public
-    function IsApplicable(Msg: TMessageLine): boolean;
-    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
-  end;
-
-  { TQuickFix_HideWithCompilerOption - hide with compiler option -vm<id> }
-
-  TQuickFix_HideWithCompilerOption = class(TMsgQuickFix)
-  public
-    function IsApplicable(Msg: TMessageLine; out ToolData: TIDEExternalToolData;
-      out IDETool: TObject): boolean;
-    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
-    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
-  end;
-
   { TQuickFixIdentifierNotFoundAddLocal }
 
   TQuickFixIdentifierNotFoundAddLocal = class(TMsgQuickFix)
@@ -116,6 +97,37 @@ type
   TQuickFixClassWithAbstractMethods = class(TMsgQuickFix)
   public
     function IsApplicable(Msg: TMessageLine; out aClassName, aMethodName: string): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
+  { TQuickFixSrcPathOfPkgContains_OpenPkg
+    QuickFix for IDE warning "other sources path of package %s contains directory "%s", ..."
+    Open Package
+    }
+
+  TQuickFixSrcPathOfPkgContains_OpenPkg = class(TMsgQuickFix)
+  public
+    function IsApplicable(Msg: TMessageLine; out PkgName: string): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
+  { TQuickFix_HideWithIDEDirective - hide with IDE directive %H- }
+
+  TQuickFix_HideWithIDEDirective = class(TMsgQuickFix)
+  public
+    function IsApplicable(Msg: TMessageLine): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
+  { TQuickFix_HideWithCompilerOption - hide with compiler option -vm<id> }
+
+  TQuickFix_HideWithCompilerOption = class(TMsgQuickFix)
+  public
+    function IsApplicable(Msg: TMessageLine; out ToolData: TIDEExternalToolData;
+      out IDETool: TObject): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -182,6 +194,63 @@ begin
     exit;
   end;
   Result:=true;
+end;
+
+{ TQuickFixSrcPathOfPkgContains_OpenPkg }
+
+function TQuickFixSrcPathOfPkgContains_OpenPkg.IsApplicable(Msg: TMessageLine;
+  out PkgName: string): boolean;
+var
+  Dir: string;
+  Pattern: String;
+  p: SizeInt;
+begin
+  Result:=false;
+  if Msg=nil then exit;
+  if Msg.MsgID<>0 then exit;
+
+  Pattern:=lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA;
+  p:=Pos('%s',Pattern);
+  if p<1 then begin
+    debugln(['TQuickFixSrcPathOfPkgContains_OpenPkg.IsApplicable resourcestring misses %s: lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA=',lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA]);
+    exit;
+  end;
+  ReplaceSubstring(Pattern,p,2,'$1');
+  p:=Pos('%s',Pattern);
+  if p<1 then begin
+    debugln(['TQuickFixSrcPathOfPkgContains_OpenPkg.IsApplicable resourcestring misses %s: lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA=',lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA]);
+    exit;
+  end;
+  ReplaceSubstring(Pattern,p,2,'$2');
+
+  if not GetFPCMsgValues2(Msg.Msg,Pattern,PkgName,Dir) then exit;
+  if PkgName='' then exit;
+  PkgName:=GetIdentifier(PChar(PkgName));
+  Result:=IsValidIdent(PkgName);
+end;
+
+procedure TQuickFixSrcPathOfPkgContains_OpenPkg.CreateMenuItems(
+  Fixes: TMsgQuickFixes);
+var
+  i: Integer;
+  Msg: TMessageLine;
+  PkgName: string;
+begin
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,PkgName) then continue;
+    Fixes.AddMenuItem(Self, Msg, 'Open package "'+PkgName+'"');
+    exit;
+  end;
+end;
+
+procedure TQuickFixSrcPathOfPkgContains_OpenPkg.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  PkgName: string;
+begin
+  if not IsApplicable(Msg,PkgName) then exit;
+  PackageEditingInterface.DoOpenPackageWithName(PkgName,[pofAddToRecent],false);
 end;
 
 { TQuickFix_HideWithCompilerOption }
@@ -765,12 +834,15 @@ begin
   fMenuItemToInfo:=TPointerToPointerTree.Create;
 
   // init standard quickfixes
-  IDEQuickFixes.RegisterQuickFix(TQuickFix_HideWithIDEDirective.Create);
+  // add them in the order of usefulness
   IDEQuickFixes.RegisterQuickFix(TQuickFixIdentifierNotFoundAddLocal.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFixLocalVariableNotUsed_Remove.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFixUnitNotFound_Remove.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFixClassWithAbstractMethods.Create);
+  IDEQuickFixes.RegisterQuickFix(TQuickFixSrcPathOfPkgContains_OpenPkg.Create);
 
+  // add as last (no fix, just hide message)
+  IDEQuickFixes.RegisterQuickFix(TQuickFix_HideWithIDEDirective.Create);
   IDEQuickFixes.RegisterQuickFix(TQuickFix_HideWithCompilerOption.Create);
 end;
 

@@ -2641,7 +2641,9 @@ var
       Dir:=GetNextDirectoryInSearchPath(UnparsedSrcPath,p);
       if Dir='' then exit;
       if SearchDirectoryInSearchPath(UnparsedUnitPath,Dir)>0 then begin
-        s:='other sources path of '+aCompilerOptions.GetOwnerName+' contains directory "'+Dir+'", which is already in the unit search path.';
+        // Note: when changing this, update TQuickFixSrcPathOfPkgContains_OpenPkg
+        s:=Format(lisOtherSourcesPathOfPackageContainsDirectoryWhichIsA, [
+          aCompilerOptions.GetOwnerName, Dir]);
         debugln(['CheckSrcPathIsInUnitPath WARNING: ',s]);
         { ToDo: ask user and remove dir from unit path }
         IDEMessagesWindow.AddCustomMessage(mluWarning,s);
