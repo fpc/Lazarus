@@ -1460,7 +1460,7 @@ procedure TEditorMacroList.WriteToXmlConf(AConf: TXMLConfig; const APath: String
 var
   i: Integer;
 begin
-  AConf.SetValue(APath + 'EditorMacros/Count', Count);
+  AConf.SetDeleteValue(APath + 'EditorMacros/Count', Count, 0);
   for i := 0 to Count - 1 do
     Macros[i].WriteToXmlConf(AConf, 'EditorMacros/Macro'+IntToStr(i+1)+'/');
 end;
