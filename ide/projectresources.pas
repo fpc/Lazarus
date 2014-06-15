@@ -595,7 +595,7 @@ begin
         if not CodeToolBoss.RemoveUnitFromAllUsesSections(CodeBuf, LazResourcesUnit) then
         begin
           Result := False;
-          Messages.Add(Format(lisCouldNotRemoveFromMainSource, ['"',LazResourcesUnit,'"']));
+          Messages.Add(Format(lisCouldNotRemoveFromMainSource, [LazResourcesUnit]));
           debugln(['TProjectResources.UpdateMainSourceFile removing LResources from all uses sections failed']);
         end;
       end;
@@ -606,7 +606,7 @@ begin
       if not CodeToolBoss.AddUnitToMainUsesSection(CodeBuf, LazResourcesUnit,'') then
       begin
         Result := False;
-        Messages.Add(Format(lisCouldNotAddToMainSource, ['"',LazResourcesUnit,'"']));
+        Messages.Add(Format(lisCouldNotAddToMainSource, [LazResourcesUnit]));
         debugln(['TProjectResources.UpdateMainSourceFile adding LResources to main source failed']);
       end;
     end;
@@ -622,7 +622,7 @@ begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
         begin
           Result := False;
-          Messages.Add(Format(lisCouldNotRemoveRFromMainSource, ['"', Filename, '"']));
+          Messages.Add(Format(lisCouldNotRemoveRFromMainSource, [Filename]));
           debugln(['TProjectResources.UpdateMainSourceFile failed: removing resource directive']);
         end;
       end;
@@ -634,7 +634,7 @@ begin
       if not CodeToolBoss.AddResourceDirective(CodeBuf, Filename, false, Directive) then
       begin
         Result := False;
-        Messages.Add(Format(lisCouldNotAddRToMainSource, ['"', Filename, '"']));
+        Messages.Add(Format(lisCouldNotAddRToMainSource, [Filename]));
         debugln(['TProjectResources.UpdateMainSourceFile failed: adding resource directive']);
       end;
     end;
@@ -652,7 +652,7 @@ begin
         if not CodeToolBoss.RemoveDirective(NewCode, NewX, NewY, true) then
         begin
           Result := False;
-          Messages.Add(Format(lisCouldNotRemoveIFromMainSource, ['"', Filename, '"']));
+          Messages.Add(Format(lisCouldNotRemoveIFromMainSource, [Filename]));
           debugln(['TProjectResources.UpdateMainSourceFile removing include directive from main source failed']);
           Exit;
         end;
@@ -666,7 +666,7 @@ begin
         Filename,'') then
       begin
         Result := False;
-        Messages.Add(Format(lisCouldNotAddIToMainSource, ['"', Filename, '"']));
+        Messages.Add(Format(lisCouldNotAddIToMainSource, [Filename]));
         debugln(['TProjectResources.UpdateMainSourceFile adding include directive to main source failed']);
         Exit;
       end;

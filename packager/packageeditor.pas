@@ -1131,8 +1131,7 @@ begin
   and (not LazPackage.ReadOnly) and LazPackage.Modified then begin
 
     MsgResult:=MessageDlg(lisPkgMangSavePackage,
-      Format(lisPckEditPackageHasChangedSavePackage,
-             ['"',LazPackage.IDAsString,'"',LineEnding]),
+      Format(lisPckEditPackageHasChangedSavePackage, [LazPackage.IDAsString, LineEnding]),
       mtConfirmation,[mbYes,mbNo,mbAbort],0);
     case MsgResult of
       mrYes:
@@ -1229,13 +1228,13 @@ begin
           MainUnitSelected:=true;
         if FileWarning='' then
           FileWarning:=Format(lisPckEditRemoveFileFromPackage,
-            ['"', CurFile.Filename, '"', LineEnding, '"', LazPackage.IDAsString, '"']);
+                           [CurFile.Filename, LineEnding, LazPackage.IDAsString]);
       end else if Item is TPkgDependency then begin
         CurDependency:=TPkgDependency(Item);
         inc(PkgCount);
         if PkgWarning='' then
-          PkgWarning:=Format(lisPckEditRemoveDependencyFromPackage, ['"',
-            CurDependency.AsString, '"', LineEnding, '"', LazPackage.IDAsString, '"']);
+          PkgWarning:=Format(lisPckEditRemoveDependencyFromPackage,
+              [CurDependency.AsString, LineEnding, LazPackage.IDAsString]);
       end;
     end;
     if (FileCount=0) and (PkgCount=0) then begin
@@ -1496,8 +1495,8 @@ begin
       NewDependency.Flags:=NewDependency.Flags+[pdfMinVersion];
       if not NewDependency.MinVersion.ReadString(MinVersionEdit.Text) then begin
         MessageDlg(lisPckEditInvalidMinimumVersion,
-          Format(lisPckEditTheMinimumVersionIsNotAValidPackageVersion, ['"',
-            MinVersionEdit.Text, '"', LineEnding]),
+          Format(lisPckEditTheMinimumVersionIsNotAValidPackageVersion,
+                 [MinVersionEdit.Text, LineEnding]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -1510,8 +1509,8 @@ begin
       NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
       if not NewDependency.MaxVersion.ReadString(MaxVersionEdit.Text) then begin
         MessageDlg(lisPckEditInvalidMaximumVersion,
-          Format(lisPckEditTheMaximumVersionIsNotAValidPackageVersion, ['"',
-            MaxVersionEdit.Text, '"', LineEnding]),
+          Format(lisPckEditTheMaximumVersionIsNotAValidPackageVersion,
+                 [MaxVersionEdit.Text, LineEnding]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -2756,8 +2755,8 @@ begin
     if (IgnoreUnitPaths<>nil) and (IgnoreUnitPaths.Contains(ShortDirectory))
     then exit;
     if MessageDlg(lisPkgEditNewUnitNotInUnitpath,
-        Format(lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage, ['"',
-          AnUnitFilename,'"',LineEnding,LineEnding,LineEnding,'"',ShortDirectory,'"']),
+        Format(lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage,
+               [AnUnitFilename, LineEnding, LineEnding, LineEnding, ShortDirectory]),
         mtConfirmation,[mbYes,mbNo],0)<>mrYes
     then begin
       if IgnoreUnitPaths=nil then

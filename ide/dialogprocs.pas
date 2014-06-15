@@ -531,9 +531,8 @@ begin
   {$IFDEF Unix}
   if FpReadLink(LinkFilename)=TargetFilename then exit(mrOk);
   while FPSymLink(PChar(TargetFilename),PChar(LinkFilename)) <> 0 do begin
-    Result:=IDEMessageDialog(lisCodeToolsDefsWriteError, Format(
-      lisUnableToCreateLinkWithTarget, ['"',
-      LinkFilename, '"', '"', TargetFilename, '"']),
+    Result:=IDEMessageDialog(lisCodeToolsDefsWriteError,
+      Format(lisUnableToCreateLinkWithTarget, [LinkFilename, TargetFilename]),
       mtError,ErrorButtons+[mbCancel,mbRetry],'');
     if Result<>mrRetry then exit;
   end;
@@ -578,7 +577,7 @@ function CheckDirectoryIsWritable(const Filename: string;
 begin
   while not DirectoryIsWritable(Filename) do begin
     Result:=IDEMessageDialog(lisDirectoryNotWritable,
-      Format(lisTheDirectoryIsNotWritable, ['"', Filename, '"']),
+      Format(lisTheDirectoryIsNotWritable, [Filename]),
       mtError,ErrorButtons+[mbCancel,mbRetry]);
     if Result<>mrRetry then exit;
   end;

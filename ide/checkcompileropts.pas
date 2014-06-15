@@ -417,11 +417,9 @@ begin
       p:=1;
       repeat
         SrcDir:=GetNextDirectoryInSearchPath(UnitPath,p);
-        if SearchDirectoryInSearchPath(OtherSrcPath,SrcDir)>0 then begin
-          AddWarning(Format(
-            lisTheUnitSearchPathOfContainsTheSourceDirectoryOfPac, ['"',
-            CurOptions.GetOwnerName, '"', '"', SrcDir, '"', UsedPkg.Name]));
-        end;
+        if SearchDirectoryInSearchPath(OtherSrcPath,SrcDir)>0 then
+          AddWarning(Format(lisTheUnitSearchPathOfContainsTheSourceDirectoryOfPac,
+                            [CurOptions.GetOwnerName, SrcDir, UsedPkg.Name]));
       until p>length(UnitPath);
     end;
   finally

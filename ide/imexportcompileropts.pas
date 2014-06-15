@@ -341,7 +341,7 @@ begin
   if FileExistsUTF8(AFilename) then begin
     MsgResult:=MessageDlg(lisIECOExportFileExists,
       Format(lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti,
-             ['"', AFilename, '"', LineEnding, LineEnding]),
+             [AFilename, LineEnding, LineEnding]),
       mtConfirmation,[mbYes,mbCancel],0);
     if MsgResult<>mrYes then exit;
   end;

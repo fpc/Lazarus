@@ -261,8 +261,7 @@ begin
       AFilename:=LazPackage.Directory+AFilename
     else begin
       IDEMessageDialog(lisA2PInvalidFilename,
-        Format(lisA2PTheFilenameIsAmbiguousPleaseSpecifiyAFilename,
-               ['"', AFilename, '"', LineEnding]),
+        Format(lisA2PTheFilenameIsAmbiguousPleaseSpecifiyAFilename,[AFilename,LineEnding]),
         mtError,[mbCancel]);
       exit;
     end;
@@ -284,9 +283,9 @@ begin
   if FilenameIsAbsolute(AFilename) then begin
     PkgFile:=LazPackage.FindPkgFile(AFilename,true,false);
     if PkgFile<>nil then begin
-      Msg:=Format(lisA2PFileAlreadyExistsInThePackage, ['"',AFilename,'"']);
+      Msg:=Format(lisA2PFileAlreadyExistsInThePackage, [AFilename]);
       if PkgFile.Filename<>AFilename then
-        Msg:=Msg+LineEnding+Format(lisA2PExistingFile2, ['"',PkgFile.Filename,'"']);
+        Msg:=Msg+LineEnding+Format(lisA2PExistingFile2, [PkgFile.Filename]);
       IDEMessageDialog(lisA2PFileAlreadyExists, Msg, mtError, [mbCancel]);
       exit;
     end;
@@ -299,8 +298,7 @@ begin
       OnGetIDEFileInfo(nil,AFilename,[ifsPartOfProject],IDEFileFlags);
       if (ifsPartOfProject in IDEFileFlags) then begin
         IDEMessageDialog(lisA2PFileIsUsed,
-          Format(lisA2PTheFileIsPartOfTheCurrentProjectItIsABadIdea,
-                 ['"', AFilename, '"', LineEnding]),
+          Format(lisA2PTheFileIsPartOfTheCurrentProjectItIsABadIdea,[AFilename,LineEnding]),
           mtError,[mbCancel]);
         exit;
       end;
@@ -322,7 +320,7 @@ begin
     AnUnitName:=ExtractFileNameOnly(AFilename);
     if not IsValidUnitName(AnUnitName) then begin
       IDEMessageDialog(lisA2PFileNotUnit,
-        Format(lisA2PisNotAValidUnitName, ['"', AnUnitName, '"']),
+        Format(lisA2PisNotAValidUnitName, [AnUnitName]),
         mtWarning,[mbCancel]);
       exit;
     end;
@@ -332,7 +330,7 @@ begin
     if PkgFile<>nil then begin
       // a unit with this name already exists in this package => warn
       if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
-        Format(lisA2PTheUnitnameAlreadyExistsInThisPackage, ['"',AnUnitName,'"']),
+        Format(lisA2PTheUnitnameAlreadyExistsInThisPackage, [AnUnitName]),
         mtError,[mbCancel,mbIgnore])<>mrIgnore then exit;
     end else begin
       PkgFile:=PackageGraph.FindUnit(LazPackage,AnUnitName,true,true);
@@ -340,7 +338,7 @@ begin
         // there is already a unit with this name in another package => warn
         if IDEMessageDialog(lisA2PUnitnameAlreadyExists,
           Format(lisA2PTheUnitnameAlreadyExistsInThePackage,
-                 ['"', AnUnitName, '"', LineEnding, PkgFile.LazPackage.IDAsString]),
+                 [AnUnitName, LineEnding, PkgFile.LazPackage.IDAsString]),
           mtWarning,[mbCancel,mbIgnore])<>mrIgnore then exit;
       end;
     end;
@@ -390,8 +388,7 @@ begin
   if (NewPkgName='') or (not IsValidUnitName(NewPkgName)) then begin
     if not Quiet then
       IDEMessageDialog(lisProjAddInvalidPackagename,
-        Format(lisA2PThePackageNameIsInvalidPleaseChooseAnExisting,
-               ['"', NewPkgName, '"', LineEnding]),
+        Format(lisA2PThePackageNameIsInvalidPleaseChooseAnExisting,[NewPkgName,LineEnding]),
         mtError,[mbCancel]);
     exit(mrCancel);
   end;
@@ -403,7 +400,7 @@ begin
   then begin
     if WarnIfAlreadyThere then
       IDEMessageDialog(lisProjAddDependencyAlreadyExists,
-        Format(lisA2PThePackageHasAlreadyADependencyForThe, ['"', NewPkgName, '"']),
+        Format(lisA2PThePackageHasAlreadyADependencyForThe, [NewPkgName]),
         mtError,[mbCancel]);
     exit(mrIgnore);
   end;
@@ -414,7 +411,7 @@ begin
     if not Quiet then
       IDEMessageDialog(lisProjAddPackageNotFound,
         Format(lisA2PNoPackageFoundForDependencyPleaseChooseAnExisting,
-               ['"', NewDependency.AsString, '"', LineEnding]),
+               [NewDependency.AsString, LineEnding]),
         mtError,[mbCancel]);
     exit(mrCancel);
   end;
@@ -659,8 +656,8 @@ begin
           ExtractFileNameOnly(CurParams.UnitFilename))<>0
         then begin
           if IDEMessageDialog(lisA2PInvalidUnitName,
-              Format(lisA2PTheUnitNameAndFilenameDiffer, ['"', CurParams.Unit_Name,
-                     '"', LineEnding, '"', CurParams.UnitFilename, '"']),
+              Format(lisA2PTheUnitNameAndFilenameDiffer,
+                     [CurParams.Unit_Name, LineEnding, CurParams.UnitFilename]),
             mtError,[mbIgnore,mbCancel])<>mrIgnore
           then begin
             FilesListView.Items.Delete(i);
@@ -836,7 +833,7 @@ begin
   // check Ancestor Type
   if not IsValidIdent(Params.AncestorType) then begin
     IDEMessageDialog(lisA2PInvalidAncestorType,
-      Format(lisA2PTheAncestorTypeIsNotAValidPascalIdentifier, ['"',Params.AncestorType, '"']),
+      Format(lisA2PTheAncestorTypeIsNotAValidPascalIdentifier, [Params.AncestorType]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -844,7 +841,7 @@ begin
   // check pagename
   if length(Params.PageName)>100 then begin
     IDEMessageDialog(lisA2PPageNameTooLong,
-      Format(lisA2PThePageNameIsTooLongMax100Chars, ['"', Params.PageName, '"']),
+      Format(lisA2PThePageNameIsTooLongMax100Chars, [Params.PageName]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -853,7 +850,7 @@ begin
   if CompareText(Params.Unit_name,ExtractFileNameOnly(Params.UnitFilename))<>0
   then begin
     IDEMessageDialog(lisA2PUnitNameInvalid,
-      Format(lisA2PTheUnitNameDoesNotCorrespondToTheFilename, ['"',Params.Unit_Name, '"']),
+      Format(lisA2PTheUnitNameDoesNotCorrespondToTheFilename, [Params.Unit_Name]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -861,7 +858,7 @@ begin
   // check classname
   if not IsValidIdent(Params.NewClassName) then begin
     IDEMessageDialog(lisA2PInvalidClassName,
-      Format(lisA2PTheClassNameIsNotAValidPascalIdentifier, ['"',Params.NewClassName, '"']),
+      Format(lisA2PTheClassNameIsNotAValidPascalIdentifier, [Params.NewClassName]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -869,7 +866,7 @@ begin
   // check classname<>ancestortype
   if CompareText(Params.NewClassName,Params.AncestorType)=0 then begin
     IDEMessageDialog(lisA2PInvalidCircularDependency,
-      Format(lisA2PTheClassNameAndAncestorTypeAreTheSame, ['"',Params.NewClassName, '"', '"', Params.AncestorType, '"']),
+      Format(lisA2PTheClassNameAndAncestorTypeAreTheSame,[Params.NewClassName,Params.AncestorType]),
       mtError,[mbCancel]);
     exit;
   end;
@@ -878,8 +875,8 @@ begin
   PkgFile:=PackageGraph.FindUnit(LazPackage,Params.AncestorType,true,true);
   if PkgFile<>nil then begin
     if IDEMessageDialog(lisA2PAmbiguousAncestorType,
-      Format(lisA2PTheAncestorTypeHasTheSameNameAsTheUnit, ['"',Params.AncestorType,
-             '"', LineEnding, '"', PkgFile.Filename, '"']),
+      Format(lisA2PTheAncestorTypeHasTheSameNameAsTheUnit,
+             [Params.AncestorType, LineEnding, PkgFile.Filename]),
       mtError,[mbCancel,mbIgnore])<>mrIgnore
     then
       exit;
@@ -889,8 +886,8 @@ begin
   PkgFile:=PackageGraph.FindUnit(LazPackage,Params.NewClassName,true,true);
   if PkgFile<>nil then begin
     if IDEMessageDialog(lisA2PAmbiguousClassName,
-      Format(lisA2PTheClassNameHasTheSameNameAsTheUnit, ['"',Params.AncestorType,
-             '"', LineEnding, '"', PkgFile.Filename, '"']),
+      Format(lisA2PTheClassNameHasTheSameNameAsTheUnit,
+             [Params.AncestorType, LineEnding, PkgFile.Filename]),
       mtError,[mbCancel,mbIgnore])<>mrIgnore
     then
       exit;
@@ -900,9 +897,8 @@ begin
   PkgComponent:=TPkgComponent(IDEComponentPalette.FindComponent(Params.NewClassname));
   if PkgComponent<>nil then begin
     if IDEMessageDialog(lisA2PClassNameAlreadyExists,
-      Format(lisA2PTheClassNameExistsAlreadyInPackageFile, ['"',Params.NewClassName,
-             '"', LineEnding, PkgComponent.PkgFile.LazPackage.IDAsString,
-             LineEnding, '"', PkgComponent.PkgFile.Filename, '"']),
+      Format(lisA2PTheClassNameExistsAlreadyInPackageFile, [Params.NewClassName, LineEnding,
+        PkgComponent.PkgFile.LazPackage.IDAsString, LineEnding, PkgComponent.PkgFile.Filename]),
       mtError,[mbCancel,mbIgnore])<>mrIgnore
     then
       exit;
@@ -954,8 +950,8 @@ begin
       if not NewDependency.MinVersion.ReadString(DependMinVersionEdit.Text) then
       begin
         IDEMessageDialog(lisProjAddInvalidVersion,
-          Format(lisA2PTheMinimumVersionIsInvalidPleaseUseTheFormatMajor, ['"',
-            DependMinVersionEdit.Text, '"', LineEnding, LineEnding]),
+          Format(lisA2PTheMinimumVersionIsInvalidPleaseUseTheFormatMajor,
+                 [DependMinVersionEdit.Text, LineEnding, LineEnding]),
           mtError,[mbCancel]);
         exit;
       end;
@@ -966,8 +962,8 @@ begin
       if not NewDependency.MaxVersion.ReadString(DependMaxVersionEdit.Text) then
       begin
         IDEMessageDialog(lisProjAddInvalidVersion,
-          Format(lisA2PTheMaximumVersionIsInvalidPleaseUseTheFormatMajor, ['"',
-            DependMaxVersionEdit.Text, '"', LineEnding, LineEnding]),
+          Format(lisA2PTheMaximumVersionIsInvalidPleaseUseTheFormatMajor,
+                 [DependMaxVersionEdit.Text, LineEnding, LineEnding]),
           mtError,[mbCancel]);
         exit;
       end;

@@ -2161,7 +2161,7 @@ begin
         else begin
           IDEMessageDialog(lisLaunchingApplicationInvalid,
             Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
-                   ['"', LaunchingCmdLine, '"', LineEnding, LineEnding, LineEnding]),
+                   [LaunchingCmdLine, LineEnding, LineEnding, LineEnding]),
             mtError, [mbOK]);
           Exit;
         end;
@@ -2175,8 +2175,8 @@ begin
         ClearPathAndExe
       else begin
         IDEMessageDialog(lisDebuggerInvalid,
-          Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro, ['"',
-            EnvironmentOptions.DebuggerFilename, '"', LineEnding, LineEnding, LineEnding]),
+          Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro,
+            [EnvironmentOptions.DebuggerFilename, LineEnding, LineEnding, LineEnding]),
           mtError,[mbOK]);
         Exit;
       end;

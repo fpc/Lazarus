@@ -620,7 +620,7 @@ begin
     if (CurItem=nil) then exit;
     Filename:=TIDEBreakpoint(CurItem.Data).Source;
     if MessageDlg(lisDeleteAllBreakpoints,
-      Format(lisDeleteAllBreakpoints2, ['"', Filename, '"']),
+      Format(lisDeleteAllBreakpoints2, [Filename]),
       mtConfirmation,[mbYes,mbCancel],0)<>mrYes
     then exit;
     for n := lvBreakPoints.Items.Count - 1 downto 0 do

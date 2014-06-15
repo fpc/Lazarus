@@ -141,7 +141,7 @@ begin
     // check package ID
     if not PkgID.StringToID(PackagesComboBox.Text) then begin
       MessageDlg(lisAF2PInvalidPackage,
-        Format(lisAF2PInvalidPackageID, ['"', PackagesComboBox.Text, '"']),
+        Format(lisAF2PInvalidPackageID, [PackagesComboBox.Text]),
         mtError,[mbCancel],0);
       exit;
     end;
@@ -149,7 +149,7 @@ begin
     APackage:=PackageGraph.FindPackageWithID(PkgID);
     if APackage=nil then begin
       MessageDlg(lisProjAddPackageNotFound,
-        Format(lisAF2PPackageNotFound, ['"', PkgID.IDAsString, '"']),
+        Format(lisAF2PPackageNotFound, [PkgID.IDAsString]),
         mtError,[mbCancel],0);
       exit;
     end;
@@ -166,8 +166,7 @@ begin
     PkgFile:=APackage.FindPkgFile(aFilename,true,false);
     if PkgFile<>nil then begin
       MessageDlg(lisPkgMangFileIsAlreadyInPackage,
-        Format(lisAF2PTheFileIsAlreadyInThePackage,
-               ['"', aFilename, '"', LineEnding, APackage.IDAsString]),
+        Format(lisAF2PTheFileIsAlreadyInThePackage,[aFilename,LineEnding,APackage.IDAsString]),
         mtError,[mbCancel],0);
       exit;
     end;

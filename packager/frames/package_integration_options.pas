@@ -241,7 +241,7 @@ function TPackageIntegrationOptionsFrame.ShowMsgPackageTypeMustBeDesign: boolean
 begin
   if MessageDlg(lisPckOptsInvalidPackageType,
     Format(lisPckOptsThePackageHasTheAutoInstallFlagThisMeans,
-           ['"', FLazPackage.IDAsString, '"', LineEnding, LineEnding]),
+           [FLazPackage.IDAsString, LineEnding, LineEnding]),
     mtWarning, [mbIgnore, mbCancel], 0) <> mrIgnore then
   begin
     Result := True;

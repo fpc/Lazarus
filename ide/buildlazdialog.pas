@@ -266,9 +266,8 @@ begin
   if DirectoryIsWritableCached(Dir) then exit(true);
   Result:=false;
   IDEMessageDialog(lisBuildingLazarusFailed,
-             Format(lisThisSetOfOptionsToBuildLazarusIsNotSupportedByThis,
-                    [LineEnding, '"', Dir, '"', LineEnding]),
-             mtError,[mbCancel]);
+    Format(lisThisSetOfOptionsToBuildLazarusIsNotSupportedByThis,[LineEnding,Dir,LineEnding]),
+    mtError,[mbCancel]);
 end;
 
 procedure TLazarusBuilder.CleanLazarusSrcDir(Dir: string; Recursive: boolean = true);
@@ -454,9 +453,8 @@ begin
       Executable:=FindDefaultMakePath;
       if (Executable='') or (not FileExistsUTF8(Executable)) then begin
         IDEMessageDialog(lisMakeNotFound,
-                   Format(lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa,
-                          ['"', '"', LineEnding, LineEnding]),
-                   mtError,[mbCancel]);
+          Format(lisTheProgramMakeWasNotFoundThisToolIsNeededToBuildLa, [LineEnding]),
+          mtError, [mbCancel]);
         exit;
       end;
     end;
@@ -939,7 +937,7 @@ var
 begin
   IDEDialogLayoutList.ApplyLayout(Self,700,480);
 
-  Caption := Format(lisConfigureBuildLazarus, ['"', '"']);
+  Caption := lisConfigureBuildLazarus;
   PageControl1.ActivePage:=BuildTabSheet;
   BuildTabSheet.Caption:=lisBuildCaption;
 

@@ -1933,8 +1933,8 @@ begin
   // check Package Name
   if (APackage.Name='') or (not IsValidUnitName(APackage.Name)) then begin
     Result:=IDEMessageDialog(lisPkgMangInvalidPackageName2,
-      Format(lisPkgMangThePackageNameOfTheFileIsInvalid, ['"', APackage.Name,
-        '"', LineEnding, '"', APackage.Filename, '"']),
+      Format(lisPkgMangThePackageNameOfTheFileIsInvalid,
+             [APackage.Name, LineEnding, APackage.Filename]),
       mtError,[mbCancel,mbAbort]);
     exit;
   end;
@@ -1944,9 +1944,8 @@ begin
   if ConflictPkg<>nil then begin
     if not PackageGraph.PackageCanBeReplaced(ConflictPkg,APackage) then begin
       Result:=IDEMessageDialog(lisPkgMangPackageConflicts,
-        Format(lisPkgMangThereIsAlreadyAPackageLoadedFromFile, ['"',
-          ConflictPkg.IDAsString, '"', LineEnding, '"', ConflictPkg.Filename, '"',
-          LineEnding, LineEnding]),
+        Format(lisPkgMangThereIsAlreadyAPackageLoadedFromFile,
+          [ConflictPkg.IDAsString, LineEnding, ConflictPkg.Filename, LineEnding, LineEnding]),
         mtError,[mbCancel,mbAbort]);
       exit;
     end;
@@ -2266,7 +2265,7 @@ begin
   if (CompareFileExt(AFilename,'.lpk',false)<>0)
   and (not (pofRevert in Flags)) then begin
     DoQuestionDlg(lisPkgMangInvalidFileExtension,
-      Format(lisPkgMangTheFileIsNotALazarusPackage, ['"', AFilename, '"']));
+      Format(lisPkgMangTheFileIsNotALazarusPackage, [AFilename]));
     RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,rltFile);
     SetRecentPackagesMenu;
     exit;
@@ -2278,8 +2277,8 @@ begin
   and ((AlternativePkgName='') or (not IsValidUnitName(AlternativePkgName)))
   then begin
     DoQuestionDlg(lisPkgMangInvalidPackageFilename,
-      Format(lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName, ['"',
-        AlternativePkgName, '"', LineEnding, '"', AFilename, '"']));
+      Format(lisPkgMangThePackageFileNameInIsNotAValidLazarusPackageName,
+             [AlternativePkgName, LineEnding, AFilename]));
     RemoveFromRecentList(AFilename,EnvironmentOptions.RecentPackageFiles,rltFile);
     SetRecentPackagesMenu;
     exit;
@@ -2334,8 +2333,7 @@ begin
       except
         on E: Exception do begin
           DoQuestionDlg(lisPkgMangErrorReadingPackage,
-            Format(lisPkgUnableToReadPackageFileError, ['"', AFilename, '"',
-              LineEnding, E.Message]));
+            Format(lisPkgUnableToReadPackageFileError, [AFilename, LineEnding, E.Message]));
           exit;
         end;
       end;
@@ -2346,9 +2344,8 @@ begin
       // check if package name and file name correspond
       if (SysUtils.CompareText(AlternativePkgName,APackage.Name)<>0) then begin
         Result:=IDEMessageDialog(lisPkgMangFilenameDiffersFromPackagename,
-          Format(lisPkgMangTheFilenameDoesNotCorrespondToThePackage, ['"',
-            ExtractFileName(AFilename), '"', '"', APackage.Name, '"', LineEnding, '"',
-            AlternativePkgName, '"']),
+          Format(lisPkgMangTheFilenameDoesNotCorrespondToThePackage,
+            [ExtractFileName(AFilename), APackage.Name, LineEnding, AlternativePkgName]),
           mtConfirmation,[mbYes,mbCancel,mbAbort]);
         if Result<>mrYes then exit;
         APackage.Name:=AlternativePkgName;
@@ -2459,9 +2456,8 @@ begin
   except
     on E: Exception do begin
       Result:=IDEMessageDialog(lisPkgMangErrorWritingPackage,
-        Format(lisPkgMangUnableToWritePackageToFileError, ['"',
-          APackage.IDAsString, '"', LineEnding, '"', APackage.Filename, '"', LineEnding,
-          E.Message]),
+        Format(lisPkgMangUnableToWritePackageToFileError,
+          [APackage.IDAsString, LineEnding, APackage.Filename, LineEnding, E.Message]),
         mtError,[mbAbort,mbCancel]);
       exit;
     end;
@@ -3720,9 +3716,8 @@ begin
   // check if file is part of project
   if ActiveUnitInfo.IsPartOfProject then begin
     Result:=IDEMessageDialog(lisPkgMangFileIsInProject,
-      Format(lisPkgMangWarningTheFileBelongsToTheCurrentProject,
-             ['"', Filename, '"', LineEnding])
-      ,mtWarning,[mbIgnore,mbCancel]);
+      Format(lisPkgMangWarningTheFileBelongsToTheCurrentProject,[Filename,LineEnding]),
+      mtWarning,[mbIgnore,mbCancel]);
     if Result<>mrIgnore then exit;
   end;
 
@@ -3731,7 +3726,7 @@ begin
   if PkgFile<>nil then begin
     Result:=IDEMessageDialog(lisPkgMangFileIsAlreadyInPackage,
       Format(lisPkgMangTheFileIsAlreadyInThePackage,
-             ['"', Filename, '"', LineEnding, PkgFile.LazPackage.IDAsString]),
+             [Filename, LineEnding, PkgFile.LazPackage.IDAsString]),
       mtWarning,[mbIgnore,mbCancel]);
     if Result<>mrIgnore then exit;
   end;
@@ -4067,7 +4062,7 @@ begin
   // ask user to rebuild Lazarus now
   Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
     Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus,
-           ['"', APackage.IDAsString, '"', LineEnding, LineEnding, LineEnding]),
+           [APackage.IDAsString, LineEnding, LineEnding, LineEnding]),
     mtConfirmation,[mbYes,mbNo]);
   if Result<>mrYes then begin
     Result:=mrOk;
@@ -4149,7 +4144,7 @@ begin
       // ask user to rebuilt Lazarus now
       Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
         Format(lisPkgMangThePackageWasMarkedCurrentlyLazarus,
-               ['"', APackage.IDAsString, '"', LineEnding, LineEnding, LineEnding]),
+               [APackage.IDAsString, LineEnding, LineEnding, LineEnding]),
         mtConfirmation,[mbYes,mbNo]);
       if Result=mrNo then begin
         Result:=mrOk;
@@ -4500,8 +4495,8 @@ begin
       if OldDependency.LoadPackageResult<>lprSuccess then begin
         if not AutoRemove then begin
           Result:=IDEMessageDialog(lisProjAddPackageNotFound,
-            Format(lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound, [
-              '"', OldDependency.AsString, '"', LineEnding]),
+            Format(lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound,
+                   [OldDependency.AsString, LineEnding]),
             mtError,[mbYes,mbYesToAll,mbAbort]);
           case Result of
           mrYes: ;
@@ -4554,8 +4549,8 @@ begin
   TargetDir:=TrimFilename(TargetDir);
   if not ForceDirectory(TargetDir) then begin
     Result:=IDEMessageDialog(lisPkgMangUnableToCreateDirectory,
-      Format(lisPkgMangUnableToCreateTargetDirectoryForLazarus, [LineEnding, '"',
-        TargetDir, '"', LineEnding]),
+      Format(lisPkgMangUnableToCreateTargetDirectoryForLazarus,
+             [LineEnding, TargetDir, LineEnding]),
       mtError,[mbCancel,mbAbort]);
     exit;
   end;

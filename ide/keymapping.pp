@@ -2895,7 +2895,7 @@ begin
   AddDefault(C, 'Detach from program', srkmecDetach, ecDetach);
   AddDefault(C, 'Build File', lisMenuBuildFile, ecBuildFile);
   AddDefault(C, 'Run File', lisMenuRunFile, ecRunFile);
-  AddDefault(C, 'Config "Build File"', Format(lisKMConfigBuildFile, ['"', '"']), ecConfigBuildFile);
+  AddDefault(C, 'Config "Build File"', lisKMConfigBuildFile, ecConfigBuildFile);
   AddDefault(C, 'Inspect', lisKMInspect, ecInspect);
   AddDefault(C, 'Evaluate/Modify', lisKMEvaluateModify, ecEvaluate);
   AddDefault(C, 'Add watch', lisKMAddWatch, ecAddWatch);
@@ -2927,8 +2927,7 @@ begin
   AddDefault(C, 'External Tools settings', lisKMExternalToolsSettings, ecExtToolSettings);
   AddDefault(C, 'Example Projects', lisKMExampleProjects, ecManageExamples);
   AddDefault(C, 'Build Lazarus', lisMenuBuildLazarus, ecBuildLazarus);
-  AddDefault(C, 'Configure "Build Lazarus"',
-    Format(lisConfigureBuildLazarus, ['"', '"']), ecConfigBuildLazarus);
+  AddDefault(C, 'Configure "Build Lazarus"', lisConfigureBuildLazarus, ecConfigBuildLazarus);
   AddDefault(C, 'Diff editor files', lisKMDiffEditorFiles, ecDiff);
   AddDefault(C, 'Convert DFM file to LFM', lisKMConvertDFMFileToLFM, ecConvertDFM2LFM);
   AddDefault(C, 'Convert Delphi unit to Lazarus unit',

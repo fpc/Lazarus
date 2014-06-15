@@ -357,8 +357,7 @@ end;
 
 procedure TOIAddRemoveFavoriteDlg.UpdateLabel;
 begin
-  NoteLabel.Caption:=Format(lisOIFChooseABaseClassForTheFavoriteProperty, [
-    '"', PropertyName, '"']);
+  NoteLabel.Caption:=Format(lisOIFChooseABaseClassForTheFavoriteProperty, [PropertyName]);
 end;
 
 procedure TOIAddRemoveFavoriteDlg.UpdateComboBox;

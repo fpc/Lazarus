@@ -825,7 +825,7 @@ begin
   Result:=PrevResult;
   if Result=mrCancel then begin
     Result:=QuestionDlg(lisConvDelphiFailedConvertingUnit,
-        Format(lisConvDelphiFailedToConvertUnit, [LineEnding,fOrigUnitFilename,LineEnding]),
+        Format(lisConvDelphiFailedToConvertUnit, [fOrigUnitFilename]),
         mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort], 0);
     case Result  of
       mrIgnore : Result:=mrOK;

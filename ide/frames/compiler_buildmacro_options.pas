@@ -142,7 +142,7 @@ begin
         // check syntax
         if (S='') or (not IsValidIdent(S)) then begin
           IDEMessageDialog(lisCCOErrorCaption,
-            Format(lisInvalidMacroTheMacroMustBeAPascalIdentifie, ['"', S, '"']),
+            Format(lisInvalidMacroTheMacroMustBeAPascalIdentifie, [S]),
             mtError,[mbCancel]);
           exit;
         end;
@@ -190,7 +190,7 @@ begin
         or (SysUtils.CompareText('LCLWidgetType',S)=0)
         then begin
           IDEMessageDialog(lisCCOErrorCaption,
-            Format(lisThereIsAlreadyAMacroWithTheName, ['"', S, '"']),
+            Format(lisThereIsAlreadyAMacroWithTheName, [S]),
             mtError,[mbCancel]);
           exit;
         end;
@@ -201,7 +201,7 @@ begin
           Vars:=GetBuildMacroValues(TBaseCompilerOptions(BuildMacros.Owner),false);
           if (Vars<>nil) and Vars.IsDefined(PChar(S)) then begin
             DlgResult:=MessageDlg(lisCCOWarningCaption,
-              Format(lisThereIsAlreadyAMacroWithTheName, ['"', S, '"']),
+              Format(lisThereIsAlreadyAMacroWithTheName, [S]),
               mtWarning,[mbCancel,mbIgnore],0);
             if DlgResult<>mrIgnore then
               exit;
@@ -223,8 +223,7 @@ begin
       Index:=Node.Index;
       Index:=BuildMacro.Values.IndexOf(S);
       if (Index>=0) and (Index<>Node.Index) then begin
-        IDEMessageDialog(lisCCOErrorCaption,
-          Format(lisDuplicateFoundOfValue, ['"', S, '"']),
+        IDEMessageDialog(lisCCOErrorCaption, Format(lisDuplicateFoundOfValue, [S]),
           mtError,[mbCancel]);
         S:=BuildMacro.Values[Node.Index];
         exit;
@@ -296,15 +295,14 @@ begin
   if NodeType=cbmntValue then
   begin
     aValue:=SelTVNode.Text;
-    if IDEMessageDialog(lisConfirmDelete,
-      Format(lisDeleteValue, ['"', aValue, '"']),
+    if IDEMessageDialog(lisConfirmDelete, Format(lisDeleteValue, [aValue]),
       mtConfirmation,[mbYes,mbCancel])<>mrYes
     then exit;
     i:=aBuildMacro.Values.IndexOf(aValue);
     if i>=0 then aBuildMacro.Values.Delete(i);
   end else begin
     if IDEMessageDialog(lisConfirmDelete,
-      Format(lisDeleteMacro, ['"', aBuildMacro.Identifier, '"']),
+      Format(lisDeleteMacro, [aBuildMacro.Identifier]),
       mtConfirmation,[mbYes,mbCancel])<>mrYes
     then exit;
     i:=BuildMacros.IndexOfIdentifier(aBuildMacro.Identifier);
@@ -457,10 +455,9 @@ begin
     BuildMacroDescriptionEdit.Text:=aBuildMacro.Description;
     BMAddMacroValueSpeedButton.Hint:=Format(lisAddValueToMacro, [aBuildMacro.Identifier]);
     if NodeType=cbmntBuildMacro then
-      BMDeleteMacroSpeedButton.Hint:=Format(lisDeleteMacro, ['"',aBuildMacro.Identifier,'"'])
+      BMDeleteMacroSpeedButton.Hint:=Format(lisDeleteMacro, [aBuildMacro.Identifier])
     else
-      BMDeleteMacroSpeedButton.Hint:=Format(lisDeleteValue2, [BuildMacrosTreeView.
-        Selected.Text]);
+      BMDeleteMacroSpeedButton.Hint:=Format(lisDeleteValue2, [BuildMacrosTreeView.Selected.Text]);
   end else begin
     BuildMacroSelectedGroupBox.Caption:=lisNoMacroSelected;
     BuildMacroSelectedGroupBox.Enabled:=false;
