@@ -3021,6 +3021,8 @@ var
   NewFileToOldPkgFile: TFilenameToPointerTree;
   ChangedFilenames: TFilenameToStringTree; // old to new file name
   UnitFilenameToResFileList: TFilenameToPointerTree; // filename to TStringList
+  TargetPkgList: TFPList;
+  SrcPkgList: TFPList;
 
   procedure DeleteNonExistingPkgFiles;
   var
@@ -3124,17 +3126,80 @@ var
     S2SItem: PStringToStringTreeItem;
     OldFilename: String;
     NewFilename: String;
+    ConflictFile: TPkgFile;
+    CurName: String;
+    ShortFilename: String;
+    r: TModalResult;
+    i: Integer;
+    WarnUnitClash: Boolean;
+    WarnNameClash: Boolean;
   begin
+    Result:=false;
+    WarnUnitClash:=true;
+    WarnNameClash:=true;
     for S2SItem in AllChangedFilenames do begin
       OldFilename:=S2SItem^.Name;
       NewFilename:=S2SItem^.Value;
       if CompareFilenames(OldFilename,NewFilename)=0 then continue;
-      if not FileExistsCached(NewFilename) then continue;
-      IDEMessageDialog('Conflict detected',
-        'There is already a file'#13
-        +NewFilename+#13
-        +'in package '+LazPackage.Name,mtError,[mbCancel]);
-      exit(false);
+
+      // check file does not exist
+      if FileExistsCached(NewFilename) then begin
+        IDEMessageDialog('Conflict detected',
+          'There is already a file'#13
+          +NewFilename+#13
+          +'in package '+LazPackage.Name,mtError,[mbCancel]);
+        exit;
+      end;
+
+      if (LazPackage<>SrcPackage) then begin
+        // warn duplicate names
+        if FilenameIsPascalUnit(NewFilename) then begin
+          // warn duplicate unit name
+          CurName:=ExtractFileNameOnly(NewFilename);
+          ConflictFile:=LazPackage.FindUnit(CurName,true);
+          if (ConflictFile<>nil) and WarnUnitClash then begin
+            ShortFilename:=NewFilename;
+            LazPackage.ShortenFilename(ShortFilename,true);
+            r:=IDEMessageDialog('Duplicate Unit',
+              'There is already a unit "'+CurName+'" in package '+LazPackage.Name+#13
+              +'Old: '+ConflictFile.GetShortFilename(true)+#13
+              +'New: '+ShortFilename+#13
+              +'You have to make sure that the unit search path of the package contains only one of them.'#13
+              +#13
+              +'Continue?'
+              ,mtWarning,[mbYes,mbYesToAll,mbCancel]);
+            case r of
+            mrYes: ;
+            mrYesToAll: WarnUnitClash:=false;
+            else exit;
+            end;
+          end;
+        end else begin
+          // warn duplicate file
+          for i:=0 to LazPackage.FileCount-1 do begin
+            if not WarnNameClash then continue;
+            ConflictFile:=LazPackage.Files[i];
+            CurName:=ExtractFilename(NewFilename);
+            if UTF8CompareText(CurName,ExtractFileName(ConflictFile.Filename))<>0
+            then
+              continue;
+            ShortFilename:=NewFilename;
+            LazPackage.ShortenFilename(ShortFilename,true);
+            r:=IDEMessageDialog('Duplicate File Name',
+              'There is already a file "'+CurName+'" in package '+LazPackage.Name+#13
+              +'Old: '+ConflictFile.GetShortFilename(true)+#13
+              +'New: '+ShortFilename+#13
+              +#13
+              +'Continue?'
+              ,mtWarning,[mbYes,mbYesToAll,mbCancel]);
+            case r of
+            mrYes: ;
+            mrYesToAll: WarnNameClash:=false;
+            else exit;
+            end;
+          end;
+        end;
+      end;
     end;
     Result:=true;
   end;
@@ -3184,7 +3249,6 @@ var
       Node:=Node.NextBrother;
       if AnUnitName='' then continue;
       // find unit file
-      PkgName:='';
       NewCode:=Tool.FindUnitSource(AnUnitName,AnUnitInFilename,false,Node.StartPos);
       if (NewCode=nil) then begin
         // no source found
@@ -3194,11 +3258,19 @@ var
                                                      NewCompiledUnitname,false);
         if CompiledFilename='' then begin
           // unit not found
-          // => moving the unit will not make it worse
+          // (that is ok, e.g. if the unit is used on another platform)
+          // => only warn
+          Msg:='unit '+AnUnitName+' not found';
+          if not Tool.CleanPosToCaret(ErrorPos,CodePos) then continue;
+          {$IFNDEF EnableOldExtTools}
+          IDEMessagesWindow.AddCustomMessage(mluWarning,Msg,
+            CodePos.Code.Filename,CodePos.Y,CodePos.X,'Move Files');
+          {$ELSE}
+          IDEMessagesWindow.AddMsg('Warning: '+Msg,'',-1);
+          {$ENDIF}
           continue;
         end;
-        // ToDo: find package
-
+        UnitFilename:=CompiledFilename;
       end else begin
         // unit found
         UnitFilename:=NewCode.Filename;
@@ -3206,14 +3278,18 @@ var
           // this unit will be moved too => ok
           continue;
         end;
-        // ToDo: find package
-
       end;
+      // UnitFilename is now either a .pas/pp/p or .ppu file
+
+      // ToDo: find package
+      PkgName:='';
+
+
       if not Tool.CleanPosToCaret(ErrorPos,CodePos) then continue;
       Msg:='unit '+AnUnitName+' requires package '+PkgName;
       {$IFNDEF EnableOldExtTools}
       IDEMessagesWindow.AddCustomMessage(mluWarning,Msg,
-        CodePos.Code.Filename,CodePos.Y,CodePos.X,'Move Units');
+        CodePos.Code.Filename,CodePos.Y,CodePos.X,'Move Files');
       {$ELSE}
       IDEMessagesWindow.AddMsg('Warning: '+Msg,'',-1);
       {$ENDIF}
@@ -3221,6 +3297,7 @@ var
   end;
 
   function CheckUsesSections: boolean;
+  // check that all used units are available in the target package
   var
     i: Integer;
     PkgFile: TPkgFile;
@@ -3291,6 +3368,8 @@ begin
   AllChangedFilenames:=TFilenameToStringTree.Create(false);
   UnitFilenameToResFileList:=TFilenameToPointerTree.Create(false);
   UnitFilenameToResFileList.FreeValues:=true;
+  TargetPkgList:=nil;
+  SrcPkgList:=nil;
   try
     // collect all affected files including resource files
     if not CollectFiles(MoveFileCount) then exit;
@@ -3329,13 +3408,17 @@ begin
       DeleteOld:=true;
     end;
 
+    // fetch used packages
+    PackageGraph.GetAllRequiredPackages(LazPackage,nil,TargetPkgList);
+    PackageGraph.GetAllRequiredPackages(SrcPackage,nil,SrcPkgList);
+
+    // check uses sections
+    if not CheckUsesSections then exit;
+
     if DeleteOld then begin
       // close files and res files in source editor
       if not CloseSrcEditors then exit;
     end;
-
-    // check uses sections
-    if not CheckUsesSections then exit;
 
     if (SrcPackage<>LazPackage) then begin
       // files will be moved to another directory
@@ -3345,13 +3428,17 @@ begin
     end;
 
     ShowMessage('Moving files is not yet implemented');
+    exit;
 
     // move/copy file and res files, Note: some files are res files
     // move/copy TPkgFile, make uses-unit unique
+    // extend unit/include path of LazPackage
     // clean up unit/inlude path of SrcPkg
 
-    //Result:=true;
+    Result:=true;
   finally
+    TargetPkgList.Free;
+    SrcPkgList.Free;
     UnitFilenameToResFileList.Free;
     AllChangedFilenames.Free;
     ChangedFilenames.Free;
