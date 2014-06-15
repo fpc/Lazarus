@@ -657,9 +657,8 @@ resourcestring
   lisAFileAlreadyExistsReplaceIt = 'A file "%s" already exists.%sReplace it?';
   lisOverwriteFileOnDisk = 'Overwrite file on disk';
   lisAmbiguousFilesFound = 'Ambiguous files found';
-  lisThereAreOtherFilesInTheDirectoryWithTheSameName = 'There are other files '
-    +'in the directory with the same name,%swhich only differ in case:%s%s%'
-    +'sDelete them?';
+  lisThereAreOtherFilesInTheDirectoryWithTheSameName = 'There are other files in '
+    +'the directory with the same name,%swhich only differ in case:%s%s%sDelete them?';
   lisDeleteOldFile = 'Delete old file "%s"?';
   lisDeletingOfFileFailed = 'Deleting of file "%s" failed.';
   lisStreamingError = 'Streaming error';
@@ -832,8 +831,8 @@ resourcestring
     +'component text into binary format:%s%s';
   lisNOTECouldNotCreateDefineTemplateForLazarusSources = 'NOTE: Could not '
     +'create Define Template for Lazarus Sources';
-  lisInvalidExpressionHintTheMakeResourcestringFunction = 'Invalid expression.%'
-    +'sHint: The "Make Resourcestring" function expects a string constant in a '
+  lisInvalidExpressionHintTheMakeResourcestringFunction = 'Invalid expression.%s'
+    +'Hint: The "Make Resourcestring" function expects a string constant in a '
     +'single file. Please select the expression and try again.';
   lisSelectionExceedsStringConstant = 'Selection exceeds string constant';
   lisHintTheMakeResourcestringFunctionExpectsAStringCon = 'Hint: The "Make '
@@ -3261,11 +3260,11 @@ resourcestring
   lisCodeToolsDefsprojectDirectory2 = '%s project directory';
   lisCodeToolsDefsTheProjectDirectory = 'The %s project directory,%swhich '
     +'contains the .dpr, dpk file.';
-  lisCodeToolsDefsDelphiMainDirectoryForProject = 'The %s main directory,%'
-    +'swhere Borland has installed all %s sources,%swhich are used by this %s '
+  lisCodeToolsDefsDelphiMainDirectoryForProject = 'The %s main directory,%s'
+    +'where Borland has installed all %s sources,%swhich are used by this %s '
     +'project.%sFor example: C:/Programme/Borland/Delphi%s';
-  lisCodeToolsDefsKylixMainDirectoryForProject = 'The %s main directory,%'
-    +'swhere Borland has installed all %s sources,%swhich are used by this %s '
+  lisCodeToolsDefsKylixMainDirectoryForProject = 'The %s main directory,%s'
+    +'where Borland has installed all %s sources,%swhich are used by this %s '
     +'project.%sFor example: /home/user/kylix%s';
   lisCodeToolsDefsSaveAndExit = 'Save and Exit';
   lisCodeToolsDefsExitWithoutSave = 'Exit without Save';
@@ -3626,8 +3625,8 @@ resourcestring
   lisMacroPromptEnterRunParameters = 'Enter run parameters';
   
   // debugger
-  lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState = 'Debugger error%'
-    +'sOoops, the debugger entered the error state%sSave your work now !%sHit '
+  lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState = 'Debugger error%s'
+    +'Ooops, the debugger entered the error state%sSave your work now !%sHit '
     +'Stop, and hope the best, we''re pulling the plug.';
   lisExecutionStopped = 'Execution stopped';
   lisFileNotFound = 'File not found';
@@ -3911,9 +3910,8 @@ resourcestring
   lisPkgMangFileIsAlreadyInPackage = 'File is already in package';
   lisPkgMangTheFileIsAlreadyInThePackage = 'The file "%s"%sis already in the package %s.';
   lisPkgMangPackageIsNoDesigntimePackage = 'Package is not a designtime package';
-  lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages = 'The package %'
-    +'s is a runtime only package.%sRuntime only packages cannot be '
-    +'installed in the IDE.';
+  lisPkgMangThePackageIsARuntimeOnlyPackageRuntimeOnlyPackages = 'The package %s '
+    +'is a runtime only package.%sRuntime only packages cannot be installed in the IDE.';
   lisPkgMangAutomaticallyInstalledPackages = 'Automatically installed packages';
   lisPkgMangInstallingThePackageWillAutomaticallyInstallThePac2 = 'Installing '
     +'the package %s will automatically install the packages:';
@@ -3925,8 +3923,8 @@ resourcestring
     +'static linked packages. The real installation needs rebuilding and '
     +'restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?';
   lisPkgMangPackageIsRequired = 'Package is required';
-  lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation = 'The package %'
-    +'s is required by %s, which is marked for installation.%sSee package graph.';
+  lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation = 'The package %s '
+    +'is required by %s, which is marked for installation.%sSee package graph.';
   lisPkgMangUninstallPackage = 'Uninstall package?';
   lisPkgMangUninstallPackage2 = 'Uninstall package %s?';
   lisPkgMangThePackageWasMarkedCurrentlyLazarus = 'The package "%s" was marked.'
@@ -4089,8 +4087,8 @@ resourcestring
   // broken dependencies dialog
   lisBDDChangingThePackageNameOrVersionBreaksDependencies = 'Changing the '
     +'package name or version breaks dependencies. Should these dependencies '
-    +'be changed as well?%sSelect Yes to change all listed dependencies.%'
-    +'sSelect Ignore to break the dependencies and continue.';
+    +'be changed as well?%sSelect Yes to change all listed dependencies.%s'
+    +'Select Ignore to break the dependencies and continue.';
   lisA2PDependency = 'Dependency';
   lisA2PBrokenDependencies = 'Broken Dependencies';
   
@@ -4354,8 +4352,7 @@ resourcestring
   lisReplacedTypeSWithS = 'Replaced type "%s" with "%s".';
   lisRemovedPropertyS = 'Removed property "%s".';
   lisReplacedPropertySWithS = 'Replaced property "%s" with "%s".';
-  lisChangedSCoordOfSFromDToDInsideS = 'Changed %s coord of %s from "%d" to "%'
-    +'d" inside %s.';
+  lisChangedSCoordOfSFromDToDInsideS = 'Changed %s coord of %s from "%d" to "%d" inside %s.';
   lisAddedPropertySForS = 'Added property "%s" for %s.';
 
   // extract proc dialog
@@ -5404,10 +5401,10 @@ resourcestring
     +'FPC sources code browsing and completion will be very limited.';
   lisWithoutAProperMakeExecutableTheCompilingOfTheIDEIs = 'Without a proper "'
     +'make" executable the compiling of the IDE is not possible.';
-  lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh = 'The Lazarus '
-    +'directory contains the sources of the IDE and the package files of LCL '
-    +'and many standard packages. For example it contains the file "ide%'
-    +'slazarus.lpi". The translation files are located there too.';
+  lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh = 'The Lazarus directory '
+    +'contains the sources of the IDE and the package files of LCL and many '
+    +'standard packages. For example it contains the file "ide%slazarus.lpi". '
+    +'The translation files are located there too.';
   lisTheFreePascalCompilerExecutableTypicallyHasTheName = 'The Free Pascal '
     +'compiler executable typically has the name "%s". You can also use the '
     +'target specific compiler like "%s". Please give the full file path.';
