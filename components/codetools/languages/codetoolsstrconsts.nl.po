@@ -94,7 +94,9 @@ msgid "class node without parent node"
 msgstr ""
 
 #: codetoolsstrconsts.ctsclassnotfound
-msgid "class %s%s%s not found"
+#, fuzzy
+#| msgid "class %s%s%s not found"
+msgid "class \"%s\" not found"
 msgstr "klasse %s%s%s niet gevonden"
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
@@ -550,11 +552,15 @@ msgid "interface directory"
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidclassname
-msgid "invalid class name=%s%s%s"
+#, fuzzy
+#| msgid "invalid class name=%s%s%s"
+msgid "invalid class name=\"%s\""
 msgstr "ongeldige klasse naam=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-msgid "invalid class name %s%s%s"
+#, fuzzy
+#| msgid "invalid class name %s%s%s"
+msgid "invalid class name \"%s\""
 msgstr "ongeldige klasse naam %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
@@ -582,11 +588,15 @@ msgid "invalid type"
 msgstr "ongeldig type"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-msgid "invalid variable name %s%s%s"
+#, fuzzy
+#| msgid "invalid variable name %s%s%s"
+msgid "invalid variable name \"%s\""
 msgstr "ongeldige variabele naam %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-msgid "invalid variable type %s%s%s"
+#, fuzzy
+#| msgid "invalid variable type %s%s%s"
+msgid "invalid variable type \"%s\""
 msgstr "ongeldige variabele type %s%s%s"
 
 #: codetoolsstrconsts.ctsjitformdirectory

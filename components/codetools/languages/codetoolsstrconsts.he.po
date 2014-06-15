@@ -94,7 +94,9 @@ msgid "class node without parent node"
 msgstr "צומת של מחלקה ללא הורה"
 
 #: codetoolsstrconsts.ctsclassnotfound
-msgid "class %s%s%s not found"
+#, fuzzy
+#| msgid "class %s%s%s not found"
+msgid "class \"%s\" not found"
 msgstr "המחלקה %s%s%s לא נמצאה"
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
@@ -550,11 +552,15 @@ msgid "interface directory"
 msgstr "תיקיית הממשק"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-msgid "invalid class name=%s%s%s"
+#, fuzzy
+#| msgid "invalid class name=%s%s%s"
+msgid "invalid class name=\"%s\""
 msgstr "שם מחלקה לא חוקי = %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-msgid "invalid class name %s%s%s"
+#, fuzzy
+#| msgid "invalid class name %s%s%s"
+msgid "invalid class name \"%s\""
 msgstr "שם מחלקה לא חוקי %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
@@ -582,11 +588,15 @@ msgid "invalid type"
 msgstr "סוג לא חוקי"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-msgid "invalid variable name %s%s%s"
+#, fuzzy
+#| msgid "invalid variable name %s%s%s"
+msgid "invalid variable name \"%s\""
 msgstr "שם משתנה לא חוקי %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-msgid "invalid variable type %s%s%s"
+#, fuzzy
+#| msgid "invalid variable type %s%s%s"
+msgid "invalid variable type \"%s\""
 msgstr "סוג משתנה לא חוקי %s%s%s"
 
 #: codetoolsstrconsts.ctsjitformdirectory

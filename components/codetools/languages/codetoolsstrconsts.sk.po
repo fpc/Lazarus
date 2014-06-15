@@ -95,7 +95,9 @@ msgid "class node without parent node"
 msgstr ""
 
 #: codetoolsstrconsts.ctsclassnotfound
-msgid "class %s%s%s not found"
+#, fuzzy
+#| msgid "class %s%s%s not found"
+msgid "class \"%s\" not found"
 msgstr "trieda %s%s%s nenájdená"
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
@@ -549,11 +551,15 @@ msgid "interface directory"
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidclassname
-msgid "invalid class name=%s%s%s"
+#, fuzzy
+#| msgid "invalid class name=%s%s%s"
+msgid "invalid class name=\"%s\""
 msgstr "neplatné meno triedy=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-msgid "invalid class name %s%s%s"
+#, fuzzy
+#| msgid "invalid class name %s%s%s"
+msgid "invalid class name \"%s\""
 msgstr "neplatné meno triedy %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
@@ -581,11 +587,15 @@ msgid "invalid type"
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-msgid "invalid variable name %s%s%s"
+#, fuzzy
+#| msgid "invalid variable name %s%s%s"
+msgid "invalid variable name \"%s\""
 msgstr "neplatné meno premennej %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-msgid "invalid variable type %s%s%s"
+#, fuzzy
+#| msgid "invalid variable type %s%s%s"
+msgid "invalid variable type \"%s\""
 msgstr "neplatný typ premennej %s%s%s"
 
 #: codetoolsstrconsts.ctsjitformdirectory

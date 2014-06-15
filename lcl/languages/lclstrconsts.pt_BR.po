@@ -10,15 +10,21 @@ msgstr ""
 "Language-Team: \n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-msgid "Browser %s%s%s not executable."
+#, fuzzy
+#| msgid "Browser %s%s%s not executable."
+msgid "Browser \"%s\" not executable."
 msgstr "Navegador %s%s%s não é executável"
 
 #: lclstrconsts.hhshelpbrowsernotfound
-msgid "Browser %s%s%s not found."
+#, fuzzy
+#| msgid "Browser %s%s%s not found."
+msgid "Browser \"%s\" not found."
 msgstr "Navegador %s%s%s não encontrado"
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-msgid "Error while executing %s%s%s:%s%s"
+#, fuzzy
+#| msgid "Error while executing %s%s%s:%s%s"
+msgid "Error while executing \"%s\":%s%s"
 msgstr "Erro ao executar %s%s%s:%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
@@ -30,7 +36,9 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "Nenhum navegador HTML encontrado.%sFavor definir um em Ferramentas -> Opções -> Ajuda -> Opções de Ajuda"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-msgid "The help database %s%s%s was unable to find file %s%s%s."
+#, fuzzy
+#| msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "O banco de dados de ajuda %s%s%s não pôde encontrar o arquivo %s%s%s."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
@@ -439,10 +447,6 @@ msgstr "ERRO na LCL: "
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
 msgstr "Erro ocorrido em %s no %sEndereço %s%s Quadro %s"
 
-#: lclstrconsts.rserrorreadingproperty
-msgid "Error reading %s%s%s: %s"
-msgstr "Erro na leitura %s%s%s: %s"
-
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
 msgstr "Erro ao salvar \"bitmap\"."
@@ -680,7 +684,9 @@ msgid "Help context %s not found."
 msgstr "Ajuda contextual %s não encontrada."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
+#, fuzzy
+#| msgid "Help context %s not found in Database %s%s%s."
+msgid "Help context %s not found in Database \"%s\"."
 msgstr "Ajuda contextual %s não encontrada no banco de dados %s%s%s."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
@@ -688,27 +694,39 @@ msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "Banco de dados Ajuda %s%s%s não encontra visualizador para página de ajuda do tipo %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
+#, fuzzy
+#| msgid "Help Database %s%s%s not found"
+msgid "Help Database \"%s\" not found"
 msgstr "Banco de dados de ajuda %s%s%s não encontrado"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-msgid "Help for directive %s%s%s not found."
+#, fuzzy
+#| msgid "Help for directive %s%s%s not found."
+msgid "Help for directive \"%s\" not found."
 msgstr "Ajuda para diretiva %s%s%s não encontrada."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-msgid "Help for directive %s%s%s not found in Database %s%s%s."
+#, fuzzy
+#| msgid "Help for directive %s%s%s not found in Database %s%s%s."
+msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr "Ajuda para diretiva %s%s%s não encontrada no Banco de Dados %s%s%s."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-msgid "Help keyword %s%s%s not found."
+#, fuzzy
+#| msgid "Help keyword %s%s%s not found."
+msgid "Help keyword \"%s\" not found."
 msgstr "Palavra-chave Ajuda %s%s%s não encontrada."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-msgid "Help keyword %s%s%s not found in Database %s%s%s."
+#, fuzzy
+#| msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Palavra-chave Ajuda %s%s%s não encontrada no banco de dados %s%s%s."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-msgid "Help node %s%s%s has no Help Database"
+#, fuzzy
+#| msgid "Help node %s%s%s has no Help Database"
+msgid "Help node \"%s\" has no Help Database"
 msgstr "Nó ajuda %s%s%s não tem banco de dados ajuda"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -734,7 +752,9 @@ msgid "Help Selector Error"
 msgstr "Erro no seletor de ajuda"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-msgid "There is no viewer for help type %s%s%s"
+#, fuzzy
+#| msgid "There is no viewer for help type %s%s%s"
+msgid "There is no viewer for help type \"%s\""
 msgstr "Não ha visualizador para tipo ajuda %s%s%s"
 
 #: lclstrconsts.rshelpviewererror

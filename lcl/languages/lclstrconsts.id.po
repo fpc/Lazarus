@@ -11,15 +11,21 @@ msgstr ""
 "X-Poedit-Country: INDONESIA\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-msgid "Browser %s%s%s not executable."
+#, fuzzy
+#| msgid "Browser %s%s%s not executable."
+msgid "Browser \"%s\" not executable."
 msgstr "Browser %s%s%s bukan eksekutabel."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-msgid "Browser %s%s%s not found."
+#, fuzzy
+#| msgid "Browser %s%s%s not found."
+msgid "Browser \"%s\" not found."
 msgstr "Browser %s%s%s tidak ditemukan."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-msgid "Error while executing %s%s%s:%s%s"
+#, fuzzy
+#| msgid "Error while executing %s%s%s:%s%s"
+msgid "Error while executing \"%s\":%s%s"
 msgstr "Kesalahan saat mengeksekusi %s%s%s:%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
@@ -31,7 +37,9 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-msgid "The help database %s%s%s was unable to find file %s%s%s."
+#, fuzzy
+#| msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "Database bantuan %s%s%s tidak bisa menemukan file %s%s%s."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
@@ -441,10 +449,6 @@ msgstr "KESALAHAN dalam LCL: "
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
 msgstr "Kesalahan terjadi dalam %s at %sAlamat %s%s Frame %s"
 
-#: lclstrconsts.rserrorreadingproperty
-msgid "Error reading %s%s%s: %s"
-msgstr "Kesalahan pembacaan %s%s%s: %s"
-
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
 msgstr "Kesalahan ketika menyimpan bitmap"
@@ -685,7 +689,9 @@ msgid "Help context %s not found."
 msgstr "Konteks Bantuan %s tidak ditemukan."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
+#, fuzzy
+#| msgid "Help context %s not found in Database %s%s%s."
+msgid "Help context %s not found in Database \"%s\"."
 msgstr "Konteks Bantuan %s tidak ditemukan dalam Database %s%s%s."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
@@ -693,27 +699,35 @@ msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "Database Bantuan %s%s%s tidak ditemukan peninjau untuk halaman bantuan dari tipe %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
+#, fuzzy
+#| msgid "Help Database %s%s%s not found"
+msgid "Help Database \"%s\" not found"
 msgstr "Database Bantuan %s%s%s tidak ditemukan"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-msgid "Help for directive %s%s%s not found."
+msgid "Help for directive \"%s\" not found."
 msgstr ""
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-msgid "Help for directive %s%s%s not found in Database %s%s%s."
+msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-msgid "Help keyword %s%s%s not found."
+#, fuzzy
+#| msgid "Help keyword %s%s%s not found."
+msgid "Help keyword \"%s\" not found."
 msgstr "Kata kunci Bantuan %s%s%s tidak ditemukan."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-msgid "Help keyword %s%s%s not found in Database %s%s%s."
+#, fuzzy
+#| msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Kata kunci Bantuan %s%s%s tidak ditemukan dalam Database %s%s%s."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-msgid "Help node %s%s%s has no Help Database"
+#, fuzzy
+#| msgid "Help node %s%s%s has no Help Database"
+msgid "Help node \"%s\" has no Help Database"
 msgstr "Node Bantuan %s%s%s tidak mempunyai Database Bantuan"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -741,7 +755,9 @@ msgid "Help Selector Error"
 msgstr "Selektor Bantuan Salah"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-msgid "There is no viewer for help type %s%s%s"
+#, fuzzy
+#| msgid "There is no viewer for help type %s%s%s"
+msgid "There is no viewer for help type \"%s\""
 msgstr "Tidak ada peninjau untuk tipe bantuan %s%s%s"
 
 #: lclstrconsts.rshelpviewererror

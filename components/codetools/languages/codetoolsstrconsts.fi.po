@@ -89,7 +89,7 @@ msgid "class node without parent node"
 msgstr ""
 
 #: codetoolsstrconsts.ctsclassnotfound
-msgid "class %s%s%s not found"
+msgid "class \"%s\" not found"
 msgstr ""
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
@@ -543,11 +543,11 @@ msgid "interface directory"
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidclassname
-msgid "invalid class name=%s%s%s"
+msgid "invalid class name=\"%s\""
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-msgid "invalid class name %s%s%s"
+msgid "invalid class name \"%s\""
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
@@ -575,11 +575,11 @@ msgid "invalid type"
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-msgid "invalid variable name %s%s%s"
+msgid "invalid variable name \"%s\""
 msgstr ""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-msgid "invalid variable type %s%s%s"
+msgid "invalid variable type \"%s\""
 msgstr ""
 
 #: codetoolsstrconsts.ctsjitformdirectory

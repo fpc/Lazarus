@@ -13,11 +13,10 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-msgid ""
-"A free side of a splitter must not be anchored: Node=%s%s%s Type=%s "
-"Anchors[%s]=%s%s%s"
-msgstr ""
-"Volná strana děliče nesmí být ukotvena: Uzel=%s%s%s Typ=%s Kotvy[%s]=%s%s%s"
+#, fuzzy
+#| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
+msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
+msgstr "Volná strana děliče nesmí být ukotvena: Uzel=%s%s%s Typ=%s Kotvy[%s]=%s%s%s"
 
 #: anchordockstr.adrsallfiles
 msgid "All files"
@@ -32,24 +31,28 @@ msgid "Anchor Docking Layout"
 msgstr "Rozložení Kotvení-Dokování"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Kotva není dělič: Uzel=%s%s%s Kotvy[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Kotva nenalezena: Uzel=%s%s%s Kotvy[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Kotva na špatnou stranu děliče: Uzel=%s%s%s Kotvy[%s]=%s%s%s"
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-msgid ""
-"A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]="
-"%s%s%s"
-msgstr ""
-"Stránka nesmí být kotvena: Uzel=%s%s%s Rodič=%s Typ Rodiče=%s Kotvy[%s]=%s%s"
-"%s"
+#, fuzzy
+#| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
+msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
+msgstr "Stránka nesmí být kotvena: Uzel=%s%s%s Rodič=%s Typ Rodiče=%s Kotvy[%s]=%s%s%s"
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -68,7 +71,9 @@ msgid "control is already a docksite"
 msgstr "prvek již je dokován"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-msgid "Custom dock site %s%s%s can have only one site."
+#, fuzzy
+#| msgid "Custom dock site %s%s%s can have only one site."
+msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Vlastní dok %s%s%s může mít pouze jednu stranu."
 
 #: anchordockstr.adrsdockinganchordocking
@@ -93,12 +98,8 @@ msgid "Duplicate name: "
 msgstr "Vícenásobné jméno:"
 
 #: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
-msgid ""
-"Each docked window has a header that allows dragging, has a context menu "
-"with extra layout functions and shows the caption of the docked window"
-msgstr ""
-"Každé dokované okno má hlavičku, která umožňuje přetahování, má kontextové "
-"menu s extra funkcemi rozložení a ukazuje titulek dokoveného okna"
+msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
+msgstr "Každé dokované okno má hlavičku, která umožňuje přetahování, má kontextové menu s extra funkcemi rozložení a ukazuje titulek dokoveného okna"
 
 #: anchordockstr.adrsemptyname
 msgid "Empty name: "
@@ -161,12 +162,8 @@ msgid "Header Style:"
 msgstr "Styl záhlaví:"
 
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
-msgid ""
-"Hide header captions for sites with only one docked control, as that is "
-"already shown in the normal window title"
-msgstr ""
-"Skrýt popisky ze záhlaví, pokud je pouze jedna položka v okně, tzn titulek "
-"je zobrazen v titulku okna"
+msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
+msgstr "Skrýt popisky ze záhlaví, pokud je pouze jedna položka v okně, tzn titulek je zobrazen v titulku okna"
 
 #: anchordockstr.adrsleft
 msgid "left"
@@ -198,15 +195,11 @@ msgstr "nelze ukotvit modální formuláře"
 
 #: anchordockstr.adrsmoveheadertoleftwhenwidthheight100headeralignleft
 msgid "Move header to left when (Width/Height)*100>=HeaderAlignLeft"
-msgstr ""
-"Posunout záhlaví vlevo, pokud poměr (Šířka/Výška)*100 přesáhne zadanou "
-"hodnotu"
+msgstr "Posunout záhlaví vlevo, pokud poměr (Šířka/Výška)*100 přesáhne zadanou hodnotu"
 
 #: anchordockstr.adrsmoveheadertotopwhenwidthheight100headeraligntop
 msgid "Move header to top when (Width/Height)*100<=HeaderAlignTop"
-msgstr ""
-"Posunout záhlaví nahoru, pokud poměr (Šířka/Výška)*100 přesáhne zadanou "
-"hodnotu"
+msgstr "Posunout záhlaví nahoru, pokud poměr (Šířka/Výška)*100 přesáhne zadanou hodnotu"
 
 #: anchordockstr.adrsmovepageleft
 msgid "Move page left"
@@ -229,7 +222,9 @@ msgid "No captions for floating sites"
 msgstr "Skrýt popisky samostatných položek"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-msgid "No children allowed for Node=%s%s%s Type=%s"
+#, fuzzy
+#| msgid "No children allowed for Node=%s%s%s Type=%s"
+msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Žádní potomci nejsou povolení pro Uzel=%s%s%s Typ=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent
@@ -297,14 +292,8 @@ msgid "Tab position"
 msgstr "Pozice záložek"
 
 #: anchordockstr.adrsthereisanotherdockmasterinstalledonlyonedockingpac
-msgid ""
-"There is another dock master installed. Only one docking package can be "
-"installed at a time. Please uninstall the other dock master %s and restart "
-"the IDE"
-msgstr ""
-"Už je instalován jiný správce ukotvení. Může být instalován najednou pouze "
-"jeden ukotvovací balíček. Prosíme odinstalujte jiný správce ukotvení %sa "
-"restartujte IDE"
+msgid "There is another dock master installed. Only one docking package can be installed at a time. Please uninstall the other dock master %s and restart the IDE"
+msgstr "Už je instalován jiný správce ukotvení. Může být instalován najednou pouze jeden ukotvovací balíček. Prosíme odinstalujte jiný správce ukotvení %sa restartujte IDE"
 
 #: anchordockstr.adrstop
 msgid "top"
@@ -317,3 +306,4 @@ msgstr "K použití anchordicking musíte nejdříve odinstalovat %s"
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "Uvolnit"
+

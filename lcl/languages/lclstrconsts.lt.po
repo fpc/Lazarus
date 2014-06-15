@@ -13,15 +13,21 @@ msgstr ""
 "Language: lt\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-msgid "Browser %s%s%s not executable."
+#, fuzzy
+#| msgid "Browser %s%s%s not executable."
+msgid "Browser \"%s\" not executable."
 msgstr "Naršyklė %s%s%s nėra vykdomasis failas."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-msgid "Browser %s%s%s not found."
+#, fuzzy
+#| msgid "Browser %s%s%s not found."
+msgid "Browser \"%s\" not found."
 msgstr "Naršyklė %s%s%s nerasta."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-msgid "Error while executing %s%s%s:%s%s"
+#, fuzzy
+#| msgid "Error while executing %s%s%s:%s%s"
+msgid "Error while executing \"%s\":%s%s"
 msgstr "Įvyko klaida vykdant %s%s%s:%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
@@ -33,7 +39,9 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "Nerasta HTML Naršyklė.%sJą galima nustatyti „Aplinka -> Aplinkos parinktys -> Žinynas -> Žinyno parinktys“"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-msgid "The help database %s%s%s was unable to find file %s%s%s."
+#, fuzzy
+#| msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "Žinyno duomenų bazė %s%s%s nerado failo %s%s%s."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
@@ -442,10 +450,6 @@ msgstr "LCL klaida:"
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
 msgstr "%s įvyko klaida:%sadresas %s%s, kadras %s"
 
-#: lclstrconsts.rserrorreadingproperty
-msgid "Error reading %s%s%s: %s"
-msgstr "Įvyko klaida skaitant %s%s%s: %s"
-
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
 msgstr "Įrašant rastrinį paveikslą įvyko klaida."
@@ -683,7 +687,9 @@ msgid "Help context %s not found."
 msgstr "Žinyno turinys %s nerastas."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
+#, fuzzy
+#| msgid "Help context %s not found in Database %s%s%s."
+msgid "Help context %s not found in Database \"%s\"."
 msgstr "Žinyno turinys %s duomenų bazėje %s%s%s nerastas."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
@@ -691,27 +697,39 @@ msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "Žinyno duomenų bazė %s%s%s nerado žiūryklės %s tipo žinyno lapui."
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
+#, fuzzy
+#| msgid "Help Database %s%s%s not found"
+msgid "Help Database \"%s\" not found"
 msgstr "Žinyno duomenų bazė %s%s%s nerasta."
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-msgid "Help for directive %s%s%s not found."
+#, fuzzy
+#| msgid "Help for directive %s%s%s not found."
+msgid "Help for directive \"%s\" not found."
 msgstr "Žinyne nėra informacijos apie direktyvą %s%s%s."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-msgid "Help for directive %s%s%s not found in Database %s%s%s."
+#, fuzzy
+#| msgid "Help for directive %s%s%s not found in Database %s%s%s."
+msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr "Informacijos apie direktyvą %s%s%s duomenų bazėje %s%s%s nerasta."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-msgid "Help keyword %s%s%s not found."
+#, fuzzy
+#| msgid "Help keyword %s%s%s not found."
+msgid "Help keyword \"%s\" not found."
 msgstr "Žinyno raktažodis %s%s%s nerastas."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-msgid "Help keyword %s%s%s not found in Database %s%s%s."
+#, fuzzy
+#| msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Žinyno raktažodis %s%s%s duomenų bazėje %s%s%s nerastas."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-msgid "Help node %s%s%s has no Help Database"
+#, fuzzy
+#| msgid "Help node %s%s%s has no Help Database"
+msgid "Help node \"%s\" has no Help Database"
 msgstr "Žinyno mazgas %s%s%s neturi žinyno duomenų bazės."
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -737,7 +755,9 @@ msgid "Help Selector Error"
 msgstr "Žinyno parinkiklio klaida"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-msgid "There is no viewer for help type %s%s%s"
+#, fuzzy
+#| msgid "There is no viewer for help type %s%s%s"
+msgid "There is no viewer for help type \"%s\""
 msgstr "Nerasta žiūryklė %s%s%s žinyno tipui."
 
 #: lclstrconsts.rshelpviewererror

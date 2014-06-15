@@ -10,7 +10,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
+msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "No debe anclarse en un lado libre de un splitter: Nodo=%s%s%s Tipo =%s Anclajes[%s]=%s%s%s"
 
 #: anchordockstr.adrsallfiles
@@ -26,19 +28,27 @@ msgid "Anchor Docking Layout"
 msgstr "Diseño de Acoplamiento de Anclaje"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Anclaje no es divisor: Nodo=%s%s%s Anclajes[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Anclaje no encontrado: Nodo=%s%s%s Anclajes[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Anclaje al revés de splitter: Nodo =%s%s%s Anclajes[%s]=%s%s%s"
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
+msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "No debe anclarse en una página: Nodo=%s%s%s Padres=%s Tipo de Padres=%s Anclajes[%s]=%s%s%s"
 
 #: anchordockstr.adrsautomatically
@@ -58,7 +68,9 @@ msgid "control is already a docksite"
 msgstr "control ya es un sitio de anclaje"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-msgid "Custom dock site %s%s%s can have only one site."
+#, fuzzy
+#| msgid "Custom dock site %s%s%s can have only one site."
+msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Sitio de anclaje personalizado %s%s%s puede tener sólo un sitio."
 
 #: anchordockstr.adrsdockinganchordocking
@@ -207,7 +219,9 @@ msgid "No captions for floating sites"
 msgstr "No titulos para sitios flotantes"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-msgid "No children allowed for Node=%s%s%s Type=%s"
+#, fuzzy
+#| msgid "No children allowed for Node=%s%s%s Type=%s"
+msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Hijos no permitidos por Nodo=%s%s%s Tipo=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent

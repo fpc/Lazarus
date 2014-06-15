@@ -403,7 +403,9 @@ msgid "Clear picture"
 msgstr "画像をクリア"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-msgid "Component name %s%s%s is not a valid identifier"
+#, fuzzy
+#| msgid "Component name %s%s%s is not a valid identifier"
+msgid "Component name \"%s\" is not a valid identifier"
 msgstr "コンポーネント名 %s%s%s は、有効な識別子ではありません"
 
 #: objinspstrconsts.oiscomponentrestrictions
@@ -447,7 +449,9 @@ msgid "&Delete"
 msgstr "削除(&D)"
 
 #: objinspstrconsts.oisdeleteitem
-msgid "Delete item %s%s%s?"
+#, fuzzy
+#| msgid "Delete item %s%s%s?"
+msgid "Delete item \"%s\"?"
 msgstr "アイテム %s%s%s を削除しますか。"
 
 #: objinspstrconsts.oisdeleteselectedfields
@@ -475,7 +479,9 @@ msgid "Error loading image"
 msgstr "イメージの読み込み中にエラー"
 
 #: objinspstrconsts.oiserrorloadingimage2
-msgid "Error loading image %s%s%s:%s%s"
+#, fuzzy
+#| msgid "Error loading image %s%s%s:%s%s"
+msgid "Error loading image \"%s\":%s%s"
 msgstr "イメージの読み込み中にエラー %s%s%s:%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
@@ -535,7 +541,9 @@ msgid "Invalid property value"
 msgstr "無効なプロパティ値"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-msgid "%s%s%s is not a valid method name."
+#, fuzzy
+#| msgid "%s%s%s is not a valid method name."
+msgid "\"%s\" is not a valid method name."
 msgstr "%s%s%sは有効なメソッド名ではありません。"
 
 #: objinspstrconsts.oisitemsselected
@@ -1060,19 +1068,27 @@ msgid "Test Input"
 msgstr "入力テスト"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+#, fuzzy
+#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "識別子 %s%s%s は、methodではありません。%s元に戻すに場合は、「キャンセル」を、%s強制する場合は、「無視」を押してください。"
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+#, fuzzy
+#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "method %s%s%s は、このイベント(%s)と互換性がありません。%s元に戻すに場合は、「キャンセル」を、%s強制する場合は、「無視」を押してください。"
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+#, fuzzy
+#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "method %s%s%s は publishedではありません。%s元に戻すに場合は、「キャンセル」を、%s強制する場合は、「無視」を押してください。"
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+#, fuzzy
+#| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
 msgstr "%s%s%s から 新しい親 %s%s%s に親コントロールを変更出来ません。%s%s"
 
 #: objinspstrconsts.oisundo

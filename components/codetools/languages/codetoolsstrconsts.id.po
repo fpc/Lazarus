@@ -95,7 +95,9 @@ msgid "class node without parent node"
 msgstr "node class tanpa node parent"
 
 #: codetoolsstrconsts.ctsclassnotfound
-msgid "class %s%s%s not found"
+#, fuzzy
+#| msgid "class %s%s%s not found"
+msgid "class \"%s\" not found"
 msgstr "kelas %s%s%s tidak ditemukan"
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
@@ -551,11 +553,15 @@ msgid "interface directory"
 msgstr "direktori interface"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-msgid "invalid class name=%s%s%s"
+#, fuzzy
+#| msgid "invalid class name=%s%s%s"
+msgid "invalid class name=\"%s\""
 msgstr "nama kelas tidak benar=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-msgid "invalid class name %s%s%s"
+#, fuzzy
+#| msgid "invalid class name %s%s%s"
+msgid "invalid class name \"%s\""
 msgstr "nama kelas tidak benar %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
@@ -583,11 +589,15 @@ msgid "invalid type"
 msgstr "tipe tidak benar"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-msgid "invalid variable name %s%s%s"
+#, fuzzy
+#| msgid "invalid variable name %s%s%s"
+msgid "invalid variable name \"%s\""
 msgstr "nama variabel tidak benar %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-msgid "invalid variable type %s%s%s"
+#, fuzzy
+#| msgid "invalid variable type %s%s%s"
+msgid "invalid variable type \"%s\""
 msgstr "tipe variabel tidak benar %s%s%s"
 
 #: codetoolsstrconsts.ctsjitformdirectory

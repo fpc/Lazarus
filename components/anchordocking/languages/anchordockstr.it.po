@@ -13,7 +13,9 @@ msgstr ""
 "POT-Creation-Date: \n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
+msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Un lato libero di uno splitter non deve essere ancorato: Nodo=%s%s%s Tipo=%s Ancore[%s]=%s%s%s"
 
 #: anchordockstr.adrsallfiles
@@ -29,19 +31,27 @@ msgid "Anchor Docking Layout"
 msgstr "Posizionamento degli ancoraggi di docking"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "L'ancora non è uno splitter: Nodo=%s%s%s Ancore[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Ancora non trovata: Nodo=%s%s%s Ancore[%s]=%s%s%s"
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "L'ancora è sul lato sbagliato dello splitter: Nodo=%s%s%s Ancore[%s]=%s%s%s"
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
+#, fuzzy
+#| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
+msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Una pagina non deve essere ancorata:Nodo=%s%s%s Padre=%s ParentType=%s Ancore[%s]=%s%s%s"
 
 #: anchordockstr.adrsautomatically
@@ -61,7 +71,9 @@ msgid "control is already a docksite"
 msgstr "Il controllo è già un sito di docking"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-msgid "Custom dock site %s%s%s can have only one site."
+#, fuzzy
+#| msgid "Custom dock site %s%s%s can have only one site."
+msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Il sito di docking personalizzato %s%s%s può avere un solo sito."
 
 #: anchordockstr.adrsdockinganchordocking
@@ -210,7 +222,9 @@ msgid "No captions for floating sites"
 msgstr "Nessun titolo per i siti flottanti"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-msgid "No children allowed for Node=%s%s%s Type=%s"
+#, fuzzy
+#| msgid "No children allowed for Node=%s%s%s Type=%s"
+msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Non sono ammessi figli per il nodo=%s%s%s tipo=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent

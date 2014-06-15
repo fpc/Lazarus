@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
+msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr ""
 
 #: anchordockstr.adrsallfiles
@@ -18,19 +18,19 @@ msgid "Anchor Docking Layout"
 msgstr ""
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr ""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr ""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr ""
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
+msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr ""
 
 #: anchordockstr.adrsautomatically
@@ -50,7 +50,7 @@ msgid "control is already a docksite"
 msgstr ""
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-msgid "Custom dock site %s%s%s can have only one site."
+msgid "Custom dock site \"%s\" can have only one site."
 msgstr ""
 
 #: anchordockstr.adrsdockinganchordocking
@@ -198,7 +198,7 @@ msgid "No captions for floating sites"
 msgstr ""
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-msgid "No children allowed for Node=%s%s%s Type=%s"
+msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr ""
 
 #: anchordockstr.adrsnotsupportedhasparent

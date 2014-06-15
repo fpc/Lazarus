@@ -94,7 +94,9 @@ msgid "class node without parent node"
 msgstr "node classe sense node pare"
 
 #: codetoolsstrconsts.ctsclassnotfound
-msgid "class %s%s%s not found"
+#, fuzzy
+#| msgid "class %s%s%s not found"
+msgid "class \"%s\" not found"
 msgstr "no s'ha trobat la classe %s%s%s"
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
@@ -550,11 +552,15 @@ msgid "interface directory"
 msgstr "directori d'interfície"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-msgid "invalid class name=%s%s%s"
+#, fuzzy
+#| msgid "invalid class name=%s%s%s"
+msgid "invalid class name=\"%s\""
 msgstr "el nom de la classe no és vàlid=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-msgid "invalid class name %s%s%s"
+#, fuzzy
+#| msgid "invalid class name %s%s%s"
+msgid "invalid class name \"%s\""
 msgstr "el nom de la classe no és vàlid: %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
@@ -582,11 +588,15 @@ msgid "invalid type"
 msgstr "el tipus no és vàlid"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-msgid "invalid variable name %s%s%s"
+#, fuzzy
+#| msgid "invalid variable name %s%s%s"
+msgid "invalid variable name \"%s\""
 msgstr "el nom de la variable %s%s%s no és vàlid"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-msgid "invalid variable type %s%s%s"
+#, fuzzy
+#| msgid "invalid variable type %s%s%s"
+msgid "invalid variable type \"%s\""
 msgstr "el tipus de la variable %s%s%s no és vàlid"
 
 #: codetoolsstrconsts.ctsjitformdirectory

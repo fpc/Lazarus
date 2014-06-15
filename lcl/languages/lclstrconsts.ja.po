@@ -12,15 +12,21 @@ msgstr ""
 "Language: ja\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-msgid "Browser %s%s%s not executable."
+#, fuzzy
+#| msgid "Browser %s%s%s not executable."
+msgid "Browser \"%s\" not executable."
 msgstr "ブラウザ %s%s%s が起動できません。"
 
 #: lclstrconsts.hhshelpbrowsernotfound
-msgid "Browser %s%s%s not found."
+#, fuzzy
+#| msgid "Browser %s%s%s not found."
+msgid "Browser \"%s\" not found."
 msgstr "ブラウザ %s%s%s が見つかりません。"
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-msgid "Error while executing %s%s%s:%s%s"
+#, fuzzy
+#| msgid "Error while executing %s%s%s:%s%s"
+msgid "Error while executing \"%s\":%s%s"
 msgstr "%s%s%s を実行中のエラー：%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
@@ -32,7 +38,9 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "HTML ブラウザが見つかりません。%sツール → オプション → ヘルプ → ヘルプオプション でブラウザを設定してください。"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-msgid "The help database %s%s%s was unable to find file %s%s%s."
+#, fuzzy
+#| msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "ヘルプデータベース %s%s%s においてファイル %s%s%s を見つけることができませんでした。"
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
@@ -440,10 +448,6 @@ msgstr "LCL 内エラー："
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
 msgstr "フレーム %4:s %1:sアドレス %2:s%3:s の %0:s においてエラーが発生しました"
 
-#: lclstrconsts.rserrorreadingproperty
-msgid "Error reading %s%s%s: %s"
-msgstr "%s%s%s を読み込み中のエラー：%s"
-
 #: lclstrconsts.rserrorwhilesavingbitmap
 msgid "Error while saving bitmap."
 msgstr "ビットマップ保存中にエラーが発生しました。"
@@ -678,7 +682,9 @@ msgid "Help context %s not found."
 msgstr "ヘルプコンテキスト %s が見つかりません"
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-msgid "Help context %s not found in Database %s%s%s."
+#, fuzzy
+#| msgid "Help context %s not found in Database %s%s%s."
+msgid "Help context %s not found in Database \"%s\"."
 msgstr "ヘルプコンテキスト %s をデータベース %s%s%s から見つけることができませんでした。"
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
@@ -686,27 +692,39 @@ msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "ヘルプデータベース %s%s%s のヘルプページタイプ %s に対するビューアが見つかりません"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-msgid "Help Database %s%s%s not found"
+#, fuzzy
+#| msgid "Help Database %s%s%s not found"
+msgid "Help Database \"%s\" not found"
 msgstr "ヘルプデータベース %s%s%s が見つかりません"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-msgid "Help for directive %s%s%s not found."
+#, fuzzy
+#| msgid "Help for directive %s%s%s not found."
+msgid "Help for directive \"%s\" not found."
 msgstr "ヘルプの %s%s%s 指令が見つかりません。"
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-msgid "Help for directive %s%s%s not found in Database %s%s%s."
+#, fuzzy
+#| msgid "Help for directive %s%s%s not found in Database %s%s%s."
+msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr "ヘルプの %s%s%s 指令をデータベース %s%s%s から見つけることができませんでした。"
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-msgid "Help keyword %s%s%s not found."
+#, fuzzy
+#| msgid "Help keyword %s%s%s not found."
+msgid "Help keyword \"%s\" not found."
 msgstr "ヘルプキーワード %s%s%s が見つかりません。"
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-msgid "Help keyword %s%s%s not found in Database %s%s%s."
+#, fuzzy
+#| msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "ヘルプキーワード %s%s%s をデータベース %s%s%s から見つけることができませんでした。"
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-msgid "Help node %s%s%s has no Help Database"
+#, fuzzy
+#| msgid "Help node %s%s%s has no Help Database"
+msgid "Help node \"%s\" has no Help Database"
 msgstr "ヘルプノード %s%s%s にヘルプデータベースはありません"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
@@ -730,7 +748,9 @@ msgid "Help Selector Error"
 msgstr "ヘルプセレクタエラー"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-msgid "There is no viewer for help type %s%s%s"
+#, fuzzy
+#| msgid "There is no viewer for help type %s%s%s"
+msgid "There is no viewer for help type \"%s\""
 msgstr "ヘルプタイプ %s%s%s に対するビューアがありません"
 
 #: lclstrconsts.rshelpviewererror

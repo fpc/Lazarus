@@ -426,7 +426,9 @@ msgid "Clear picture"
 msgstr "Effacer l'image"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-msgid "Component name %s%s%s is not a valid identifier"
+#, fuzzy
+#| msgid "Component name %s%s%s is not a valid identifier"
+msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Le nom du composant %s%s%s n'est pas un identificateur valide"
 
 #: objinspstrconsts.oiscomponentrestrictions
@@ -476,7 +478,9 @@ msgid "&Delete"
 msgstr "Supprimer les composants"
 
 #: objinspstrconsts.oisdeleteitem
-msgid "Delete item %s%s%s?"
+#, fuzzy
+#| msgid "Delete item %s%s%s?"
+msgid "Delete item \"%s\"?"
 msgstr "Supprimer l'élément %s%s%s ?"
 
 #: objinspstrconsts.oisdeleteselectedfields
@@ -504,7 +508,9 @@ msgid "Error loading image"
 msgstr "Erreur au chargement de l'image"
 
 #: objinspstrconsts.oiserrorloadingimage2
-msgid "Error loading image %s%s%s:%s%s"
+#, fuzzy
+#| msgid "Error loading image %s%s%s:%s%s"
+msgid "Error loading image \"%s\":%s%s"
 msgstr "Erreur au chargement de l'image %s%s%s:%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
@@ -564,7 +570,7 @@ msgid "Invalid property value"
 msgstr "Valeur de propriété incorrecte"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-msgid "%s%s%s is not a valid method name."
+msgid "\"%s\" is not a valid method name."
 msgstr ""
 
 #: objinspstrconsts.oisitemsselected
@@ -1107,19 +1113,25 @@ msgid "Test Input"
 msgstr "Examiner l'entrée"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+#, fuzzy
+#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "L'identificateur %s%s%s n'est pas une méthode.%s Appuyez sur Annuler pour annuler, appuyez sur %s Ignorer pour le forcer."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+#, fuzzy
+#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "La méthode %s%s%s est incompatible avec cet événement (%s). %s Appuyez sur Annuler pour annuler, %s Appuyer sur Ignorer pour la forcer."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+#, fuzzy
+#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "La méthode %s%s%s n'est pas publié.%s Appuyer sur Annuler pour annuler, appuyez sur %s Ignorer et la forcer."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
 msgstr ""
 
 #: objinspstrconsts.oisundo

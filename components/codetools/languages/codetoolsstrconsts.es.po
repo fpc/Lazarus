@@ -94,7 +94,9 @@ msgid "class node without parent node"
 msgstr "nodo class sin nodo parent"
 
 #: codetoolsstrconsts.ctsclassnotfound
-msgid "class %s%s%s not found"
+#, fuzzy
+#| msgid "class %s%s%s not found"
+msgid "class \"%s\" not found"
 msgstr "clase %s%s%s no encontrada"
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
@@ -550,11 +552,15 @@ msgid "interface directory"
 msgstr "directorio de la interfaz"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-msgid "invalid class name=%s%s%s"
+#, fuzzy
+#| msgid "invalid class name=%s%s%s"
+msgid "invalid class name=\"%s\""
 msgstr "nombre de clase inválido=%s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-msgid "invalid class name %s%s%s"
+#, fuzzy
+#| msgid "invalid class name %s%s%s"
+msgid "invalid class name \"%s\""
 msgstr "nombre de clase inválido %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
@@ -582,11 +588,15 @@ msgid "invalid type"
 msgstr "tipo no válido"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-msgid "invalid variable name %s%s%s"
+#, fuzzy
+#| msgid "invalid variable name %s%s%s"
+msgid "invalid variable name \"%s\""
 msgstr "nombre de variable inválido %s%s%s"
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-msgid "invalid variable type %s%s%s"
+#, fuzzy
+#| msgid "invalid variable type %s%s%s"
+msgid "invalid variable type \"%s\""
 msgstr "tipo de variable inválido %s%s%s"
 
 #: codetoolsstrconsts.ctsjitformdirectory

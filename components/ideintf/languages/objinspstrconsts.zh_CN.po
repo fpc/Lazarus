@@ -426,7 +426,9 @@ msgid "Clear picture"
 msgstr "清除图片"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-msgid "Component name %s%s%s is not a valid identifier"
+#, fuzzy
+#| msgid "Component name %s%s%s is not a valid identifier"
+msgid "Component name \"%s\" is not a valid identifier"
 msgstr "组件 %s%s%s 不是一个有效的标识符"
 
 #: objinspstrconsts.oiscomponentrestrictions
@@ -476,7 +478,9 @@ msgid "&Delete"
 msgstr "删除组件"
 
 #: objinspstrconsts.oisdeleteitem
-msgid "Delete item %s%s%s?"
+#, fuzzy
+#| msgid "Delete item %s%s%s?"
+msgid "Delete item \"%s\"?"
 msgstr "删除项目 %s%s%s?"
 
 #: objinspstrconsts.oisdeleteselectedfields
@@ -504,7 +508,9 @@ msgid "Error loading image"
 msgstr "装载图片时错误"
 
 #: objinspstrconsts.oiserrorloadingimage2
-msgid "Error loading image %s%s%s:%s%s"
+#, fuzzy
+#| msgid "Error loading image %s%s%s:%s%s"
+msgid "Error loading image \"%s\":%s%s"
 msgstr "装载图片 %s%s%s:%s%s 时错误"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
@@ -564,7 +570,7 @@ msgid "Invalid property value"
 msgstr "属性值错误"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-msgid "%s%s%s is not a valid method name."
+msgid "\"%s\" is not a valid method name."
 msgstr ""
 
 #: objinspstrconsts.oisitemsselected
@@ -1105,19 +1111,25 @@ msgid "Test Input"
 msgstr "测试输入"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+#, fuzzy
+#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "标识符  %s%s%s 不是一个方法，按取消按钮撤销或按忽略按钮强制执行。"
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+#, fuzzy
+#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "方法 %s%s%s 与此事件(%s)不兼容，按取消按钮撤销或按忽略按钮强制执行。"
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+#, fuzzy
+#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
+msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "方法 %s%s%s 不属于published，按取消按钮撤销或按忽略按钮强制执行。"
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
+msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
 msgstr ""
 
 #: objinspstrconsts.oisundo
