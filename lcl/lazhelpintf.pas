@@ -1379,7 +1379,7 @@ begin
   if HelpDB=nil then begin
     Result:=false;
     HelpResult:=shrDatabaseNotFound;
-    ErrMsg:=Format(rsHelpHelpDatabaseNotFound, ['"', ID, '"']);
+    ErrMsg:=Format(rsHelpHelpDatabaseNotFound, [ID]);
   end else begin
     HelpResult:=shrSuccess;
     Result:=true;
@@ -1491,7 +1491,7 @@ begin
   Viewers:=HelpViewers.GetViewersSupportingMimeType(MimeType);
   try
     if (Viewers=nil) or (Viewers.Count=0) then begin
-      ErrMsg:=Format(rsHelpThereIsNoViewerForHelpType, ['"', MimeType, '"']);
+      ErrMsg:=Format(rsHelpThereIsNoViewerForHelpType, [MimeType]);
       Result:=shrViewerNotFound;
     end else begin
       Viewer:=THelpViewer(Viewers[0]);
@@ -1528,7 +1528,7 @@ begin
   Node:=NodeQuery.Node;
   if Node.Owner=nil then begin
     Result:=shrDatabaseNotFound;
-    ErrMsg:=Format(rsHelpHelpNodeHasNoHelpDatabase, ['"', Node.Title, '"']);
+    ErrMsg:=Format(rsHelpHelpNodeHasNoHelpDatabase, [Node.Title]);
     exit;
   end;
   {$IFDEF VerboseLCLHelp}
@@ -1591,11 +1591,10 @@ begin
     if (Nodes=nil) or (Nodes.Count=0) then begin
       Result:=shrContextNotFound;
       if Query.HelpDatabaseID<>'' then
-        ErrMsg:=Format(rsHelpHelpContextNotFoundInDatabase, [IntToStr(
-          Query.Context), '"', Query.HelpDatabaseID, '"'])
+        ErrMsg:=Format(rsHelpHelpContextNotFoundInDatabase,
+                       [IntToStr(Query.Context), Query.HelpDatabaseID])
       else
-        ErrMsg:=Format(rsHelpHelpContextNotFound,
-                       [IntToStr(Query.Context)]);
+        ErrMsg:=Format(rsHelpHelpContextNotFound, [IntToStr(Query.Context)]);
       exit;
     end;
 
@@ -1631,10 +1630,9 @@ begin
     if (Nodes=nil) or (Nodes.Count=0) then begin
       Result:=shrContextNotFound;
       if Query.HelpDatabaseID<>'' then
-        ErrMsg:=Format(rsHelpHelpKeywordNotFoundInDatabase, ['"',Query.Keyword,
-          '"', '"', Query.HelpDatabaseID, '"'])
+        ErrMsg:=Format(rsHelpHelpKeywordNotFoundInDatabase, [Query.Keyword, Query.HelpDatabaseID])
       else
-        ErrMsg:=Format(rsHelpHelpKeywordNotFound, ['"',Query.Keyword,'"']);
+        ErrMsg:=Format(rsHelpHelpKeywordNotFound, [Query.Keyword]);
       exit;
     end;
 
@@ -1670,10 +1668,9 @@ begin
     if (Nodes=nil) or (Nodes.Count=0) then begin
       Result:=shrContextNotFound;
       if Query.HelpDatabaseID<>'' then
-        ErrMsg:=Format(rsHelpHelpForDirectiveNotFoundInDatabase, ['"',Query.Directive,
-          '"', '"', Query.HelpDatabaseID, '"'])
+        ErrMsg:=Format(rsHelpHelpForDirectiveNotFoundInDatabase, [Query.Directive, Query.HelpDatabaseID])
       else
-        ErrMsg:=Format(rsHelpHelpForDirectiveNotFound, ['"',Query.Directive,'"']);
+        ErrMsg:=Format(rsHelpHelpForDirectiveNotFound, [Query.Directive]);
       exit;
     end;
 

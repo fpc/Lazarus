@@ -190,8 +190,7 @@ begin
     
     if (URLType='file') and (not FileExistsUTF8(URLPath)) then begin
       Result:=shrContextNotFound;
-      ErrMsg:=Format(hhsHelpTheHelpDatabaseWasUnableToFindFile, ['"', ID,
-        '"', '"', URLPath, '"']);
+      ErrMsg:=Format(hhsHelpTheHelpDatabaseWasUnableToFindFile, [ID, URLPath]);
       exit;
     end;
   end;
@@ -337,11 +336,11 @@ begin
     exit;
   end;
   if (not FileExistsUTF8(CommandLine)) then begin
-    ErrMsg:=Format(hhsHelpBrowserNotFound, ['"', CommandLine, '"']);
+    ErrMsg:=Format(hhsHelpBrowserNotFound, [CommandLine]);
     exit;
   end;
   if (not FileIsExecutable(CommandLine)) then begin
-    ErrMsg:=Format(hhsHelpBrowserNotExecutable, ['"', CommandLine, '"']);
+    ErrMsg:=Format(hhsHelpBrowserNotExecutable, [CommandLine]);
     exit;
   end;
   
@@ -376,8 +375,7 @@ begin
     Result:=shrSuccess;
   except
     on E: Exception do begin
-      ErrMsg:=Format(hhsHelpErrorWhileExecuting, ['"', CommandLine, '"', LineEnding,
-        E.Message]);
+      ErrMsg:=Format(hhsHelpErrorWhileExecuting, [CommandLine, LineEnding, E.Message]);
     end;
   end;
 end;

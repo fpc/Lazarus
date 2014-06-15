@@ -228,7 +228,6 @@ resourceString
   rsInvalidPropertyValue = 'Invalid property value';
   rsPropertyDoesNotExist = 'Property %s does not exist';
   rsInvalidStreamFormat = 'Invalid stream format';
-  rsErrorReadingProperty = 'Error reading %s%s%s: %s';
   rsInvalidFormObjectStream = 'invalid Form object stream';
   rsScrollBarOutOfRange = 'ScrollBar property out of range';
   rsInvalidDate = 'Invalid Date : %s';
@@ -387,21 +386,20 @@ resourceString
   rsDocking = 'Docking';
 
   // help
-  rsHelpHelpNodeHasNoHelpDatabase = 'Help node %s%s%s has no Help Database';
-  rsHelpThereIsNoViewerForHelpType = 'There is no viewer for help type %s%s%s';
+  rsHelpHelpNodeHasNoHelpDatabase = 'Help node "%s" has no Help Database';
+  rsHelpThereIsNoViewerForHelpType = 'There is no viewer for help type "%s"';
   rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType = 'Help Database %s%'
     +'s%s did not found a viewer for a help page of type %s';
   rsHelpAlreadyRegistered = '%s: Already registered';
   rsHelpNotRegistered = '%s: Not registered';
-  rsHelpHelpDatabaseNotFound = 'Help Database %s%s%s not found';
-  rsHelpHelpKeywordNotFoundInDatabase = 'Help keyword %s%s%s not found in '
-    +'Database %s%s%s.';
-  rsHelpHelpKeywordNotFound = 'Help keyword %s%s%s not found.';
-  rsHelpHelpForDirectiveNotFoundInDatabase = 'Help for directive %s%s%s not found in '
-    +'Database %s%s%s.';
-  rsHelpHelpForDirectiveNotFound = 'Help for directive %s%s%s not found.';
+  rsHelpHelpDatabaseNotFound = 'Help Database "%s" not found';
+  rsHelpHelpKeywordNotFoundInDatabase = 'Help keyword "%s" not found in Database "%s".';
+  rsHelpHelpKeywordNotFound = 'Help keyword "%s" not found.';
+  rsHelpHelpForDirectiveNotFoundInDatabase = 'Help for directive "%s" not found in '
+    +'Database "%s".';
+  rsHelpHelpForDirectiveNotFound = 'Help for directive "%s" not found.';
   rsHelpHelpContextNotFoundInDatabase = 'Help context %s not found in '
-    +'Database %s%s%s.';
+    +'Database "%s".';
   rsHelpHelpContextNotFound = 'Help context %s not found.';
   rsHelpNoHelpFoundForSource = 'No help found for line %d, column %d of %s.';
   rsHelpNoHelpNodesAvailable = 'No help entries available for this topic';
@@ -414,16 +412,16 @@ resourceString
   rsHelpSelectorError = 'Help Selector Error';
   rsUnknownErrorPleaseReportThisBug = 'Unknown Error, please report this bug';
 
-  hhsHelpTheHelpDatabaseWasUnableToFindFile = 'The help database %s%s%s was '
-    +'unable to find file %s%s%s.';
+  hhsHelpTheHelpDatabaseWasUnableToFindFile = 'The help database "%s" was '
+    +'unable to find file "%s".';
   hhsHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL = 'The macro %s in '
     +'BrowserParams will be replaced by the URL.';
   hhsHelpNoHTMLBrowserFoundPleaseDefineOne = 'No HTML '
     +'Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options';
   hhsHelpNoHTMLBrowserFound = 'Unable to find a HTML browser.';
-  hhsHelpBrowserNotFound = 'Browser %s%s%s not found.';
-  hhsHelpBrowserNotExecutable = 'Browser %s%s%s not executable.';
-  hhsHelpErrorWhileExecuting = 'Error while executing %s%s%s:%s%s';
+  hhsHelpBrowserNotFound = 'Browser "%s" not found.';
+  hhsHelpBrowserNotExecutable = 'Browser "%s" not executable.';
+  hhsHelpErrorWhileExecuting = 'Error while executing "%s":%s%s';
 
   // parser
   SParExpected                  = 'Wrong token type: %s expected';
