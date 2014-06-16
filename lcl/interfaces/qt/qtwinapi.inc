@@ -6625,14 +6625,16 @@ begin
         DstQDC.Rop2 := Integer(Rop);
       try
         RestoreClip := False;
-        if (SrcRect.Left < DstRect.Left) or (SrcRect.Top < DstRect.Top) and
+        if ((SrcRect.Left < DstRect.Left) or (SrcRect.Top < DstRect.Top)) and
           DstQDC.getClipping and DstQDC.getClipRegion.containsRect(SrcRect) then
         begin
           AClipRect := DstQDC.getClipRegion.getBoundingRect;
           OffsetRect(AClipRect, -AClipRect.Left, -AClipRect.Top);
           if (DstRect.Right - DstRect.Left <= AClipRect.Right) and
             (DstRect.Bottom - DstRect.Top <= AClipRect.Bottom) and
-            DstQDC.getClipRegion.containsPoint(DstRect.Left, DstRect.Top) then
+            DstQDC.getClipRegion.containsPoint(DstRect.Left, DstRect.Top) and
+            // issue #26342, unset clipping only when transform is dirty
+            QPaintEngine_testDirty(DstQDC.PaintEngine, QPaintEngineDirtyTransform) then
           begin
             RestoreClip := True;
             DstQDC.setClipping(False);
