@@ -326,6 +326,7 @@ object PackageEditorForm: TPackageEditorForm
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 2
+    OnAdvancedCustomDrawItem = ItemsTreeViewAdvancedCustomDrawItem
     OnDblClick = ItemsTreeViewDblClick
     OnDragDrop = ItemsTreeViewDragDrop
     OnDragOver = ItemsTreeViewDragOver

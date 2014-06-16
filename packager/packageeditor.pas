@@ -142,6 +142,7 @@ type
     Typ: TPENodeType;
     Name: string; // file or package name
     Removed: boolean;
+    FileType: TPkgFileType;
     Next: TPENodeData;
     constructor Create(aTyp: TPENodeType; aName: string; aRemoved: boolean);
   end;
@@ -222,6 +223,9 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ItemsPopupMenuPopup(Sender: TObject);
+    procedure ItemsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
+      Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
+      var PaintImages, DefaultDraw: Boolean);
     procedure ItemsTreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure ItemsTreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
@@ -769,6 +773,30 @@ begin
     PackageEditorMenuRoot.EndUpdate;
   end;
   //debugln(['TPackageEditorForm.FilesPopupMenuPopup END ',ItemsPopupMenu.Items.Count]); PackageEditorMenuRoot.WriteDebugReport('  ',true);
+end;
+
+procedure TPackageEditorForm.ItemsTreeViewAdvancedCustomDrawItem(
+  Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
+  Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
+var
+  NodeData: TPENodeData;
+  r: TRect;
+  y: Integer;
+begin
+  if Stage=cdPostPaint then begin
+    NodeData:=GetNodeData(Node);
+    if (NodeData<>nil) then begin
+      if  (NodeData.Typ=penFile) and (not NodeData.Removed)
+      and (NodeData.FileType<>pftVirtualUnit) and FilenameIsAbsolute(NodeData.Name)
+      and (not FileExistsCached(NodeData.Name))
+      then begin
+        r:=Node.DisplayRect(true);
+        ItemsTreeView.Canvas.Pen.Color:=clRed;
+        y:=(r.Top+r.Bottom) div 2;
+        ItemsTreeView.Canvas.Line(r.Left,y,r.Right,y);
+      end;
+    end;
+  end;
 end;
 
 procedure TPackageEditorForm.ItemsTreeViewDragDrop(Sender, Source: TObject; X,
@@ -2234,6 +2262,7 @@ begin
   for i:=0 to LazPackage.FileCount-1 do begin
     CurFile:=LazPackage.Files[i];
     NodeData:=CreateNodeData(penFile,CurFile.Filename,false);
+    NodeData.FileType:=CurFile.FileType;
     Filename:=CurFile.GetShortFilename(true);
     if Filename='' then continue;
     if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penFile)
@@ -2247,7 +2276,7 @@ begin
 
   // removed files
   if LazPackage.RemovedFilesCount>0 then begin
-    // Create root node for removed dependencies if not done yet.
+    // Create root node for removed files if not done yet.
     if FRemovedFilesNode=nil then begin
       FRemovedFilesNode:=ItemsTreeView.Items.Add(FRequiredPackagesNode,
                                                  lisPckEditRemovedFiles);
