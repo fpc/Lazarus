@@ -217,8 +217,6 @@ begin
 end;
 
 procedure TIDEFPCInfoDialog.GatherIDEVersion(sl: TStrings);
-const
-  LazarusVersionStr= {$I version.inc};
 begin
   sl.Add('Lazarus version: '+GetLazarusVersionString);
   sl.Add('Lazarus svn revision: '+LazarusRevisionStr);
