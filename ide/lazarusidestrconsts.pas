@@ -3546,8 +3546,8 @@ resourcestring
   lisWarningAmbiguousFileFoundSourceFileIs = 'Warning: ambiguous file found: "%s". Source file is: "%s"';
   lisAmbiguousFileFound = 'Ambiguous file found';
   lisThereIsAFileWithTheSameNameAndASimilarExtension = 'There is a file with '
-    +'the same name and a similar extension ond disk%sFile: %s%sAmbiguous '
-    +'File: %s%s%sDelete ambiguous file?';
+    +'the same name and a similar extension on disk%sFile: %s%sAmbiguous '
+    +'File: %s%sDelete ambiguous file?';
 
   // add to project dialog
   lisProjAddInvalidMinMaxVersion = 'Invalid Min-Max version';
@@ -4075,12 +4075,12 @@ resourcestring
   lisA2PClassNameAlreadyExists = 'Class Name already exists';
   lisA2PTheClassNameExistsAlreadyInPackageFile = 'The class name "%s" '
     +'exists already in%sPackage %s%sFile: "%s"';
-  lisA2PTheMinimumVersionIsInvalidPleaseUseTheFormatMajor = 'The Minimum '
-    +'Version "%s" is invalid.%sPlease use the format major.minor.release.'
-    +'build%sFor exmaple: 1.0.20.10';
-  lisA2PTheMaximumVersionIsInvalidPleaseUseTheFormatMajor = 'The Maximum '
-    +'Version "%s" is invalid.%sPlease use the format major.minor.release.'
-    +'build%sFor exmaple: 1.0.20.10';
+  lisA2PTheMinimumVersionIsInvalidPleaseUseTheFormatMajor = 'The Minimum Version "%s" is invalid.'
+    +'%sPlease use the format major.minor.release.build'
+    +'%sFor example: 1.0.20.10';
+  lisA2PTheMaximumVersionIsInvalidPleaseUseTheFormatMajor = 'The Maximum Version "%s" is invalid.'
+    +'%sPlease use the format major.minor.release.build'
+    +'%sFor example: 1.0.20.10';
   lisA2PNewFile = 'New File';
   lisA2PNewComponent = 'New Component';
   lisA2PAddFiles = 'Add Files';
