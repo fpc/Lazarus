@@ -649,6 +649,7 @@ type
       ClickCellPushed: boolean;   // Header Cell is currently pushed?
       FullVisibleGrid: TRect; // visible cells excluding partially visible cells
       MouseCell: TPoint;      // Cell which contains the mouse
+      OldMaxTopLeft: TPoint;  // previous MaxTopleft (before col sizing)
     end;
 
 type
@@ -783,6 +784,7 @@ type
     procedure EditorSetValue;
     function  EditorAlwaysShown: Boolean;
     procedure FixPosition(IsColumn: Boolean; aIndex: Integer);
+    procedure FixScroll;
     function  GetLeftCol: Integer;
     function  GetColCount: Integer;
     function  GetColWidths(Acol: Integer): Integer;
@@ -6010,10 +6012,12 @@ begin
 
     gzFixedCols:
       begin
-        if (goColSizing in Options) and (Cursor=crHSplit) then
+        if (goColSizing in Options) and (Cursor=crHSplit) then begin
 
-          fGridState:= gsColSizing
+          fGridState:= gsColSizing;
+          FGCache.OldMaxTopLeft := FGCache.MaxTopLeft;
 
+        end
         else begin
           // ColMoving or Clicking
           if fGridState<>gsColMoving then begin
@@ -6228,6 +6232,7 @@ begin
           ResizeColumn(Index, OffEnd - X + DeltaOff)
         else
           ResizeColumn(Index, X - OffIni + DeltaOff);
+        FixScroll;
         HeaderSized(True, Index);
       end;
 
@@ -7905,6 +7910,36 @@ begin
   UpdateSelectionRange;
   VisualChange;
   FixEditor;
+end;
+
+procedure TCustomGrid.FixScroll;
+var
+  OldColOffset: Integer;
+  OldTopLeft: TPoint;
+begin
+  // TODO: fix rows too
+  // column handling
+  if FGCache.OldMaxTopLeft.x<>FGCache.MaxTopLeft.x then begin
+    // keeping FullVisibleGrid try to find a better topleft. We care are only
+    // if the grid is smaller than before, comparing GridWidth should work also
+    // but MaxTopLeft has better granularity
+    if FGCache.MaxTopLeft.x<FGCache.OldMaxTopLeft.x then begin
+      OldColOffset := FGCache.TLColOff;
+      OldTopLeft := fTopLeft;
+      FGCache.TLColOff := 0;
+      fTopleft.x := FixedCols;
+      if not ScrollToCell(FGCache.FullVisibleGrid.Right, Row, false) then begin
+        // target cell is now visible ....
+        if OldTopLeft.x<>fTopLeft.x then
+          // but the supposed startig left col is not the same as the current one
+          doTopleftChange(False)
+        else begin
+          FGCache.TLColOff := OldColOffset;
+          fTopLeft := OldTopLeft;
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TCustomGrid.EditorShowChar(Ch: TUTF8Char);
