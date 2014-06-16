@@ -4168,6 +4168,7 @@ resourcestring
   lisPckEditRemoveDependencyFromPackage = 'Remove dependency "%s"'
     +'%sfrom package "%s"?';
   lisRemoveDependenciesFromPackage = 'Remove %s dependencies from package "%s"?';
+  lisRemove2 = 'Remove?';
   lisPckEditInvalidMinimumVersion = 'Invalid minimum version';
   lisPckEditTheMinimumVersionIsNotAValidPackageVersion = 'The minimum '
     +'version "%s" is not a valid package version.%s(good example 1.2.3.4)';

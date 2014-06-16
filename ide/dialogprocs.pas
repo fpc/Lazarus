@@ -136,7 +136,7 @@ begin
       InvalidateFileStateCache(DestFilename);
       break;
     end else begin
-      DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
+      DlgButtons:=[mbRetry]+ExtraButtons;
       Result:=IDEMessageDialog(lisUnableToRenameFile,
         Format(lisUnableToRenameFileTo2, [SrcFilename, LineEnding, DestFilename]),
         mtError,DlgButtons);

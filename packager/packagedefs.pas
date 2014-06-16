@@ -694,6 +694,7 @@ type
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean): TPkgFile;
     function FindUnit(const TheUnitName: string; IgnoreRemoved: boolean;
                       IgnorePkgFile: TPkgFile): TPkgFile;
+    function FindUsedUnit(TheUnitName: string; IgnorePkgFile: TPkgFile = nil): TPkgFile;
     function FindRemovedPkgFile(const AFilename: string): TPkgFile;
     function AddFile(const NewFilename, NewUnitName: string;
                      NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
@@ -701,6 +702,7 @@ type
     function AddRemovedFile(const NewFilename, NewUnitName: string;
                      NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
                      CompPriorityCat: TComponentPriorityCategory): TPkgFile;
+    procedure DeleteFile(PkgFile: TPkgFile); // free TPkgFile
     procedure RemoveFile(PkgFile: TPkgFile); // move file to removed file list
     procedure UnremovePkgFile(PkgFile: TPkgFile); // move file back to file list
     function RemoveNonExistingFiles: boolean; // true if something changed
@@ -1651,20 +1653,32 @@ end;
 
 destructor TPkgFile.Destroy;
 begin
-  Clear;
+  FreeThenNil(FComponents);
+  if (LazPackage<>nil) then begin
+    if (LazPackage.MainUnit=Self) then
+      LazPackage.FMainUnit:=nil;
+    if (not (lpfDestroying in LazPackage.Flags)) then begin
+      if Removed then
+        LazPackage.FRemovedFiles.Remove(Self)
+      else
+        LazPackage.FFiles.Remove(Self);
+    end;
+  end;
   inherited Destroy;
 end;
 
 procedure TPkgFile.Clear;
 begin
   AutoReferenceSourceDir:=false;
-  inherited SetRemoved(false);
-  inherited SetFilename('');
-  FDirectory:='';
-  FFlags:=[];
-  inherited SetFileType(pftUnit);
-  FSourceDirectoryReferenced:=false;
-  FSourceDirNeedReference:=true;
+  if (LazPackage=nil) or (not (lpfDestroying in LazPackage.Flags)) then begin
+    inherited SetRemoved(false);
+    inherited SetFilename('');
+    FDirectory:='';
+    FFlags:=[];
+    inherited SetFileType(pftUnit);
+    FSourceDirectoryReferenced:=false;
+    FSourceDirNeedReference:=true;
+  end;
   FreeThenNil(FComponents);
   if (LazPackage<>nil) and (LazPackage.MainUnit=Self) then
     LazPackage.FMainUnit:=nil;
@@ -3140,6 +3154,21 @@ begin
   Result:=nil;
 end;
 
+function TLazPackage.FindUsedUnit(TheUnitName: string; IgnorePkgFile: TPkgFile
+  ): TPkgFile;
+var
+  i: Integer;
+begin
+  for i:=0 to FileCount-1 do begin
+    Result:=Files[i];
+    if IgnorePkgFile=Result then continue;
+    if not Result.AddToUsesPkgSection then continue;
+    if not (Result.FileType in PkgFileRealUnitTypes) then continue;
+    if SysUtils.CompareText(Result.Unit_Name,TheUnitName)=0 then exit;
+  end;
+  Result:=nil;
+end;
+
 function TLazPackage.FindRemovedPkgFile(const AFilename: string): TPkgFile;
 var
   Cnt: Integer;
@@ -3261,6 +3290,12 @@ begin
     AutoReferenceSourceDir:=true;
   end;
   FRemovedFiles.Add(Result);
+end;
+
+procedure TLazPackage.DeleteFile(PkgFile: TPkgFile);
+begin
+  PkgFile.Free;
+  Modified:=true
 end;
 
 procedure TLazPackage.RemoveFile(PkgFile: TPkgFile);
