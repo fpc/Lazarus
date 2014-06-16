@@ -3776,8 +3776,9 @@ resourcestring
   lisPkgMangPackage = 'Package: %s';
   lisPkgMangProject = 'Project: %s';
   lisPkgMangDependencyWithoutOwner = 'Dependency without Owner: %s';
-  lisLazbuildIsNonInteractiveAbortingNow = '%s%s%s%slazbuild is non '
-    +'interactive, aborting now.';
+  lisLazbuildIsNonInteractiveAbortingNow = '%s'
+    +'%s%s'
+    +'%slazbuild is non interactive, aborting now.';
   lisPkgMangSavePackageLpk = 'Save Package %s (*.lpk)';
   lisPkgMangInvalidPackageFileExtension = 'Invalid package file extension';
   lisPkgMangPackagesMustHaveTheExtensionLpk = 'Packages must have the '
@@ -3871,8 +3872,8 @@ resourcestring
   lisPkgMangUnableToOpenThePackage = 'Unable to open the package "%s".%s'
     +'This package was marked for installation.';
   lisOpenPackage2 = 'Open package %s';
-  lisPkgMangThePackageNameOfTheFileIsInvalid = 'The package name "%s" of%s'
-    +'the file "%s" is invalid.';
+  lisPkgMangThePackageNameOfTheFileIsInvalid = 'The package name "%s" of'
+    +'%sthe file "%s" is invalid.';
   lisPkgMangPackageConflicts = 'Package conflicts';
   lisPkgMangThereIsAlreadyAPackageLoadedFromFile = 'There is already a package "%s" loaded'
     +'%sfrom file "%s".'

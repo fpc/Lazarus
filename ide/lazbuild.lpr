@@ -354,7 +354,7 @@ function TLazBuildApplication.OnIDEMessageDialog(const aCaption, aMsg: string;
 begin
   DumpStack;
   Error(ErrorBuildFailed, Format(lisLazbuildIsNonInteractiveAbortingNow, [
-    aCaption, #13, aMsg, #13]));
+    aCaption, LineEnding, aMsg, LineEnding]));
   Result:=mrCancel;
 end;
 
@@ -364,7 +364,7 @@ function TLazBuildApplication.OnIDEQuestionDialog(const aCaption, aMsg: string;
 begin
   DumpStack;
   Error(ErrorBuildFailed, Format(lisLazbuildIsNonInteractiveAbortingNow, [
-    aCaption, #13, aMsg, #13]));
+    aCaption, LineEnding, aMsg, LineEnding]));
   Result:=mrCancel;
 end;
 
@@ -497,7 +497,7 @@ begin
   if (Result.Name='') or (not IsValidIdent(Result.Name)) then begin
     Error(ErrorPackageNameInvalid,
           Format(lisPkgMangThePackageNameOfTheFileIsInvalid,
-           ['"', Result.Name,'"', #13, '"', Result.Filename, '"']));
+                 [Result.Name, LineEnding, Result.Filename]));
   end;
   // check if Package with same name is already loaded
   ConflictPkg:=PackageGraph.FindPackageWithName(Result.Name,nil);
@@ -669,7 +669,7 @@ begin
       if OldDependency.LoadPackageResult<>lprSuccess then begin
         raise Exception.Create(Format(
             lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound, [
-            '"', OldDependency.AsString, '"', #13]));
+            OldDependency.AsString, LineEnding]));
       end;
     end;
 
