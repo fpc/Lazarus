@@ -864,7 +864,7 @@ function PkgFileTypeIdentToType(const s: string): TPkgFileType;
 function LazPackageTypeIdentToType(const s: string): TLazPackageType;
 function GetPkgFileTypeLocalizedName(FileType: TPkgFileType): string;
 function NameToAutoUpdatePolicy(const s: string): TPackageUpdatePolicy;
-function FileNameToPkgFileType(const AFilename: string): TPkgFileType;
+function FileNameToPkgFileType(AFilename: string): TPkgFileType;
 
 procedure SortDependencyListAlphabetically(Dependencies: TFPList);
 procedure LoadPkgDependencyList(XMLConfig: TXMLConfig; const ThePath: string;
@@ -965,19 +965,35 @@ begin
   Result:=pupAsNeeded;
 end;
 
-function FileNameToPkgFileType(const AFilename: string): TPkgFileType;
+function FileNameToPkgFileType(AFilename: string): TPkgFileType;
+var
+  Code: TCodeBuffer;
+  SrcType: String;
+  HasName: Boolean;
 begin
-  if CompareFileExt(AFilename,'.lfm',true)=0 then
-    Result:=pftLFM
-  else if CompareFileExt(AFilename,'.lrs',true)=0 then
-    Result:=pftLRS
-  else if CompareFileExt(AFilename,'.inc',true)=0 then
-    Result:=pftInclude
-  else if FilenameIsPascalUnit(AFilename) then
-    Result:=pftUnit
-  else if CompareFileExt(AFilename,'.xml',true)=0 then
-    Result:=pftIssues
-  else if FileIsText(AFilename) then
+  HasName:=ExtractFileNameOnly(AFilename)<>'';
+  if HasName then begin
+    if CompareFileExt(AFilename,'.lfm',true)=0 then
+      exit(pftLFM)
+    else if CompareFileExt(AFilename,'.lrs',true)=0 then
+      exit(pftLRS)
+    else if CompareFileExt(AFilename,'.inc',true)=0 then
+      exit(pftInclude)
+    else if CompareFileExt(AFilename,'.xml',true)=0 then
+      exit(pftIssues)
+    else if FilenameIsPascalUnit(AFilename) then begin
+      Result:=pftUnit;
+      AFilename:=CleanAndExpandFilename(AFilename);
+      Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+      if Code<>nil then begin
+        SrcType:=CodeToolBoss.GetSourceType(Code,false);
+        if CompareText(SrcType,'unit')<>0 then
+          Result:=pftInclude;
+      end;
+      exit;
+    end;
+  end;
+  if FileIsText(AFilename) then
     Result:=pftText
   else
     Result:=pftBinary;
