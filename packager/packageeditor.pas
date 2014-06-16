@@ -2756,7 +2756,7 @@ begin
     then exit;
     if MessageDlg(lisPkgEditNewUnitNotInUnitpath,
         Format(lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage,
-               [AnUnitFilename, LineEnding, LineEnding, LineEnding, ShortDirectory]),
+               [AnUnitFilename, LineEnding, LineEnding+LineEnding, ShortDirectory]),
         mtConfirmation,[mbYes,mbNo],0)<>mrYes
     then begin
       if IgnoreUnitPaths=nil then
@@ -4024,7 +4024,7 @@ begin
   if ShouldNotBeInstalled(APackage) then begin
     if IDEQuestionDialog(lisNotAnInstallPackage,
       Format(lisThePackageDoesNotHaveAnyRegisterProcedureWhichTypi,
-             [APackage.Name, LineEnding, LineEnding]),
+             [APackage.Name, LineEnding+LineEnding]),
       mtWarning,
       [mrIgnore, lisInstallItILikeTheFat, mrCancel, lisCancel], '')<>mrIgnore
     then exit(mrCancel);

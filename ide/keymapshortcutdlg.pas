@@ -353,9 +353,10 @@ begin
         ConflictName:=ConflictName
                  +' ('+KeyAndShiftStateToEditorKeyString(ConflictRelation.ShortcutB);
       case IDEMessageDialog(lisPEConflictFound,
-         Format(lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd, [
-           KeyAndShiftStateToEditorKeyString(Key), LineEnding, ConflictName, LineEnding,
-           LineEnding, LineEnding, CurName]), mtConfirmation, [mbYes, mbNo, mbCancel])
+         Format(lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd,
+                [KeyAndShiftStateToEditorKeyString(Key),
+                 LineEnding, ConflictName, LineEnding, LineEnding, CurName]),
+         mtConfirmation, [mbYes, mbNo, mbCancel])
       of
         mrYes:    Result:=mrOK;
         mrCancel: Result:=mrCancel;

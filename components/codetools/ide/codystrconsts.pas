@@ -99,8 +99,9 @@ resourcestring
   crsPleaseSpecifyAType = 'Please specify a type';
   crsPleaseSpecifyALocation = 'Please specify a location';
   crsPleasePlaceTheCursorOfTheSourceEditorAtAnIdentifie = 'Please place the '
-    +'cursor of the source editor at an identifier in a statement.%sFor '
-    +'example:%sMyVar:=3;';
+    +'cursor of the source editor at an identifier in a statement.'
+    +'%sFor example:'
+    +'%sMyVar:=3;';
   crsDeclareVariable3 = 'Declare variable "%s"';
   crsAlreadyDefined = 'Already defined';
   crsInInterface = 'In interface';
@@ -209,8 +210,10 @@ resourcestring
     +'this unit is not available for this target platform.';
   crsExtendUnitPath = 'Extend unit path';
   crsImpossibleDependency = 'Impossible dependency';
-  crsTheUnitIsPartOfItCanNotUseAnotherPackageWithTheSam = 'The unit "%s"%sis '
-    +'part of "%s".%sIt can not use another package with the same name:%s"%s"';
+  crsTheUnitIsPartOfItCanNotUseAnotherPackageWithTheSam = 'The unit "%s"'
+    +'%sis part of "%s".'
+    +'%sIt can not use another package with the same name:'
+    +'%s"%s"';
   crsPackageWithSameName = 'Package with same name';
   crsThereIsAlreadyAnotherPackageLoadedWithTheSameNameO = 'There is already '
     +'another package loaded with the same name.%sOpen package: %s%sNew '

@@ -547,7 +547,7 @@ begin
       end;
       if IDEMessageDialog(lisConfirmation,
         Format(lisPkgTheProjectOverridesTheOutputDirectoryOfTheFollowin,
-               [LineEnding, LineEnding, LineEnding, s]),
+               [LineEnding, LineEnding+LineEnding, s]),
         mtWarning, [mbOk, mbCancel])<>mrOk
       then
         exit(mrCancel);
@@ -1952,7 +1952,7 @@ begin
       Result:=IDEMessageDialog(lisPkgMangSavePackage,
         Format(lisPkgMangLoadingPackageWillReplacePackage, [
           APackage.IDAsString, ConflictPkg.IDAsString, LineEnding,
-          ConflictPkg.Filename, LineEnding, LineEnding, LineEnding, ConflictPkg.Filename]),
+          ConflictPkg.Filename, LineEnding, LineEnding+LineEnding, ConflictPkg.Filename]),
         mtConfirmation,[mbYes,mbNo,mbCancel,mbAbort]);
       if Result=mrNo then Result:=mrOk;
       if Result=mrYes then begin

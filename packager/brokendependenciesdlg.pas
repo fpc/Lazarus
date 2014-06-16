@@ -150,8 +150,8 @@ begin
     Name:='NoteLabel';
     Parent:=Self;
     WordWrap:=true;
-    Caption:=Format(lisBDDChangingThePackageNameOrVersionBreaksDependencies, [
-      LineEnding, LineEnding]);
+    Caption:=Format(lisBDDChangingThePackageNameOrVersionBreaksDependencies,
+                    [LineEnding, LineEnding]);
   end;
 
   DependencyListView:=TListView.Create(Self);

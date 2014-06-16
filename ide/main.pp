@@ -1191,7 +1191,7 @@ procedure TMainIDE.LoadGlobalOptions;
     StartFile: String;
   begin
     Result:=Format(lisIfYouWantToUseTwoDifferentLazarusVersionsYouMustSt,
-              [LineEnding, LineEnding, LineEnding]);
+                   [LineEnding+LineEnding]) + LineEnding;
     StartFile:=Application.ExeName;
     if StartedByStartLazarus then
       StartFile:=ExtractFilePath(StartFile)+'startlazarus'+GetExeExt;
@@ -1304,8 +1304,8 @@ begin
     IsUpgrade:=CompareLazarusVersion(NowVer,OldVer)>0;
     if OldVer='' then
       OldVer:=Format(lisPrior, [GetLazarusVersionString]);
-    s:=Format(lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe, [GetLazarusVersionString,
-      LineEnding, LineEnding, OldVer, LineEnding, GetPrimaryConfigPath, LineEnding] );
+    s:=Format(lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe,
+      [GetLazarusVersionString, LineEnding+LineEnding, OldVer, LineEnding, GetPrimaryConfigPath] );
     if IsUpgrade then
       s+=lisTheOldConfigurationWillBeUpgraded
     else
@@ -2373,7 +2373,7 @@ procedure TMainIDE.SetupStartProject;
     debugln(['AskIfLoadLastFailingProject START']);
     Result:=IDEQuestionDialog(lisOpenProject2,
       Format(lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro,
-             [EnvironmentOptions.LastSavedProjectFile, LineEnding, LineEnding]),
+             [EnvironmentOptions.LastSavedProjectFile, LineEnding+LineEnding]),
       mtWarning,
       [mrYes, lisOpenProjectAgain, mrNoToAll, lisStartWithANewProject])=mrYes;
     debugln(['AskIfLoadLastFailingProject END ',dbgs(Result)]);
@@ -6502,7 +6502,8 @@ begin
     end;
     Result:=IDEMessageDialog(lisBuildNewProject,
        Format(lisTheProjectMustBeSavedBeforeBuildingIfYouSetTheTest,
-              [LineEnding, LineEnding, LineEnding]), mtInformation, [mbYes, mbNo]);
+              [LineEnding, LineEnding, LineEnding]),
+       mtInformation, [mbYes, mbNo]);
     if Result<>mrYes then exit;
     Result:=DoSaveAll([sfCheckAmbiguousFiles]);
     exit;

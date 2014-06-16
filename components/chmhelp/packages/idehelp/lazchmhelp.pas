@@ -39,7 +39,10 @@ resourcestring
   HELP_CATEGORY_IDECMD = 'CHM Help';
   HELP_MissingLhelp = 'Missing lhelp';
   HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro = 'Unable to find '
-    +'the lhelp viewer:%s%s%s%sPlease compile the lhelp project:%s%s';
+    +'the lhelp viewer:'
+    +'%s%s'
+    +'%sPlease compile the lhelp project:'
+    +'%s%s';
 
 type
   
@@ -465,7 +468,7 @@ begin
     ((ExtractFileNameOnly(HelpExeFileName) = 'lhelp') and (CheckBuildLHelp <> mrOK)) then begin
     IDEMessageDialog(HELP_MissingLhelp,
       Format(HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
-             [LineEnding, HelpExeFileName, LineEnding, LineEnding, LineEnding,
+             [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
               SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]),
       mtError,[mbCancel]);
     exit;

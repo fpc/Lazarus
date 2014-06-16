@@ -288,8 +288,9 @@ resourceString
   rsRasterImageSaveInUpdate = 'Cannot save image while update in progress';
   rsNoWidgetSet = 'No widgetset object. '
     +'Please check if the unit "interfaces" was added to the programs uses clause.';
-  rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK = '%s%sPress OK to '
-    +'ignore and risk data corruption.%sPress Cancel to kill the program.';
+  rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK = '%s'
+    +'%sPress OK to ignore and risk data corruption.'
+    +'%sPress Cancel to kill the program.';
   rsCanNotFocus = 'Can not focus';
   rsListIndexExceedsBounds = 'List index exceeds bounds (%d)';
   rsResourceNotFound = 'Resource %s not found';

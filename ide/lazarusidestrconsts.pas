@@ -208,7 +208,8 @@ resourcestring
   lisOpenTheFileAsNormalSource = 'Open the file as normal source';
   lisOpenAsXmlFile = 'Open as XML file';
   lisAnErrorOccuredAtLastStartupWhileLoadingLoadThisPro = 'An error occured '
-    +'at last startup while loading %s!%s%sLoad this project again?';
+    +'at last startup while loading %s!'
+    +'%sLoad this project again?';
   lisOpenProjectAgain = 'Open project again';
   lisStartWithANewProject = 'Start with a new project';
   lisConfigDirectory = 'Lazarus config directory';
@@ -647,10 +648,10 @@ resourcestring
   lisnoname = 'noname';
   lisTheDestinationDirectoryDoesNotExist = 'The destination directory%s"%s" does not exist.';
   lisRenameFile = 'Rename file?';
-  lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC = 'This looks like a '
-    +'Pascal file.%sIt is recommended to use lower case filenames, to avoid '
-    +'various problems on some filesystems and different compilers.%sRename '
-    +'it to lowercase?';
+  lisThisLooksLikeAPascalFileItIsRecommendedToUseLowerC = 'This looks like a Pascal file.'
+    +'%sIt is recommended to use lower case filenames, to avoid '
+    +'various problems on some filesystems and different compilers.'
+    +'%sRename it to lowercase?';
   lisRenameToLowercase = 'Rename to lowercase';
   lisKeepName = 'Keep name';
   lisOverwriteFile = 'Overwrite file?';
@@ -658,7 +659,10 @@ resourcestring
   lisOverwriteFileOnDisk = 'Overwrite file on disk';
   lisAmbiguousFilesFound = 'Ambiguous files found';
   lisThereAreOtherFilesInTheDirectoryWithTheSameName = 'There are other files in '
-    +'the directory with the same name,%swhich only differ in case:%s%s%sDelete them?';
+    +'the directory with the same name,'
+    +'%swhich only differ in case:'
+    +'%s%s'
+    +'%sDelete them?';
   lisDeleteOldFile = 'Delete old file "%s"?';
   lisDeletingOfFileFailed = 'Deleting of file "%s" failed.';
   lisStreamingError = 'Streaming error';
@@ -675,8 +679,9 @@ resourcestring
   lisSkipFile = 'Skip file';
   lisUnableToTransformBinaryComponentStreamOfTIntoText = 'Unable to transform '
     +'binary component stream of %s:T%s into text.';
-  lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject = 'The file "%s" was not '
-    +'found.%sIgnore will go on loading the project,%sAbort  will stop the loading.';
+  lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject = 'The file "%s" was not found.'
+    +'%sIgnore will go on loading the project,'
+    +'%sAbort  will stop the loading.';
   lisSkipFileAndContinueLoading = 'Skip file and continue loading';
   lisAbortLoadingProject = 'Abort loading project';
   lisFileNotFound2 = 'File "%s" not found.';
@@ -684,9 +689,9 @@ resourcestring
   lisProjectInfoFileDetected = 'Project info file detected';
   lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP = 'The file %s seems '
     +'to be the program file of an existing Lazarus Project.';
-  lisTheFileSeemsToBeAProgramCloseCurrentProject = 'The file "%s" seems to '
-    +'be a program.%sClose current project and create a new Lazarus project '
-    +'for this program?%s"No" will load the file as normal source.';
+  lisTheFileSeemsToBeAProgramCloseCurrentProject = 'The file "%s" seems to be a program.'
+    +'%sClose current project and create a new Lazarus project for this program?'
+    +'%s"No" will load the file as normal source.';
   lisProgramDetected = 'Program detected';
   lisUnableToConvertTextFormDataOfFileIntoBinaryStream = 'Unable to convert '
     +'text form data of file %s"%s"%sinto binary stream. (%s)';
@@ -724,8 +729,9 @@ resourcestring
   lisUnableToCopyFile = 'Unable to copy file';
   lisWriteError = 'Write Error';
   lisByte = '%s byte';
-  lisFileDoesNotLookLikeATextFileOpenItAnyway =
-    'File "%s"%sdoes not look like a text file.%sOpen it anyway?';
+  lisFileDoesNotLookLikeATextFileOpenItAnyway = 'File "%s"'
+    +'%sdoes not look like a text file.'
+    +'%sOpen it anyway?';
   lisUnableToCreateBackupDirectory = 'Unable to create backup directory "%s".';
   lisSourceAndDestinationAreTheSame = 'Source and Destination are the same:%s%s';
   lisInvalidCommand = 'Invalid command';
@@ -751,10 +757,10 @@ resourcestring
   lisTheTestDirectoryCouldNotBeFoundSeeIDEOpt = 'The Test Directory '
     +'could not be found:%s"%s"%s(see IDE options)';
   lisBuildNewProject = 'Build new project';
-  lisTheProjectMustBeSavedBeforeBuildingIfYouSetTheTest = 'The project must '
-    +'be saved before building%sIf you set the Test Directory in the '
-    +'IDE options,%syou can create new projects and build them at '
-    +'once.%sSave project?';
+  lisTheProjectMustBeSavedBeforeBuildingIfYouSetTheTest = 'The project must be saved before building'
+    +'%sIf you set the Test Directory in the IDE options,'
+    +'%syou can create new projects and build them at once.'
+    +'%sSave project?';
   lisBusy = 'Busy';
   lisCanNotTestTheCompilerWhileDebuggingOrCompiling = 'Cannot test the '
     +'compiler while debugging or compiling.';
@@ -788,9 +794,10 @@ resourcestring
   lisBackupFileFailed = 'Backup file failed';
   lisUnableToBackupFileTo = 'Unable to backup file "%s" to "%s"!';
   lisFileNotLowercase = 'File not lowercase';
-  lisTheUnitIsNotLowercaseTheFreePascalCompiler = 'The unit filename "%s" is '
-    +'not lowercase.%sThe Free Pascal compiler does not search for all cases.'
-    +' It is recommended to use lowercase filename.%s%sRename file lowercase?';
+  lisTheUnitIsNotLowercaseTheFreePascalCompiler = 'The unit filename "%s" is not lowercase.'
+    +'%sThe Free Pascal compiler does not search for all cases.'
+    +' It is recommended to use lowercase filename.'
+    +'%sRename file lowercase?';
   lisDeleteAmbiguousFile = 'Delete ambiguous file?';
   lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
     +'found: "%s"%sThis file can be mistaken with "%s"%sDelete the ambiguous file?';
@@ -800,9 +807,9 @@ resourcestring
   lisdebugging = '%s (debugging ...)';
   lisRunning = '%s (running ...)';
   lisUnableToFindFile = 'Unable to find file "%s".';
-  lisUnableToFindFileCheckSearchPathInProjectCompilerOption = 'Unable to find '
-    +'file "%s".%sIf it belongs to your project, check search path '
-    +'in%sProject -> Compiler Options -> Search Paths -> Other Unit Files.'
+  lisUnableToFindFileCheckSearchPathInProjectCompilerOption = 'Unable to find file "%s".'
+    +'%sIf it belongs to your project, check search path in'
+    +'%sProject -> Compiler Options -> Search Paths -> Other Unit Files.'
     +' If this file belongs to a package, check the appropriate package compiler'
     +' options. If this file belongs to Lazarus, make sure compiling clean.'
     +' If the file belongs to FPC then check fpc.cfg.'
@@ -920,7 +927,8 @@ resourcestring
   lisPEEditVirtualUnit = 'Edit Virtual Unit';
   lisIECOExportFileExists = 'Export file exists';
   lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti = 'Export file "%s" exists.'
-    +'%sOpen file and replace only compiler options?%s(Other settings will be kept.)';
+    +'%sOpen file and replace only compiler options?'
+    +'%s(Other settings will be kept.)';
   lisIECOLoadOrSaveCompilerOptions = 'Load or Save Compiler Options';
   lisIECOErrorAccessingXml = 'Error accessing xml';
   lisIECOErrorLoadingXml = 'Error loading xml';
@@ -969,15 +977,17 @@ resourcestring
   lisFPCVersion = 'FPC Version: ';
   lisSVNRevision = 'SVN Revision: ';
   lisPrior = 'prior %s';
-  lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe = 'Welcome to Lazarus '
-    +'%s%s%sThere is already a configuration from version %s in%s%s%s';
+  lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe = 'Welcome to Lazarus %s'
+    +'%sThere is already a configuration from version %s in'
+    +'%s%s';
   lisTheOldConfigurationWillBeUpgraded = 'The old configuration will be '
     +'upgraded.';
   lisTheConfigurationWillBeDowngradedConverted = 'The configuration will be '
     +'downgraded/converted.';
   lisIfYouWantToUseTwoDifferentLazarusVersionsYouMustSt = 'If you want to use '
     +'two different Lazarus versions you must start the second Lazarus with '
-    +'the command line parameter primary-config-path or pcp.%s%sFor example:%s';
+    +'the command line parameter primary-config-path or pcp.'
+    +'%sFor example:';
   lisUpgradeConfiguration = 'Upgrade configuration';
   lisUpgrade = 'Upgrade';
   lisDowngradeConfiguration = 'Downgrade configuration';
@@ -2231,11 +2241,10 @@ resourcestring
     +'not use the LCL unit interfaces, which is required by LCLBase.%sYou will '
     +'get strange linker errors if you use the LCL without interfaces.';
   lisAddUnitInterfaces = 'Add unit interfaces';
-  lisCCODatesDiffer = 'The dates of the .ppu files of FPC'
-    +' differ by more than one hour.%s'
-    +'This can mean, they are from two different installations.%s'
-    +'File1: %s%s'
-    +'File2: %s';
+  lisCCODatesDiffer = 'The dates of the .ppu files of FPC differ by more than one hour.'
+    +'%sThis can mean, they are from two different installations.'
+    +'%sFile1: %s'
+    +'%sFile2: %s';
   lisCCOPPUOlderThanCompiler = 'There is a .ppu file older than the compiler itself:%s%s';
   lisCCOPPUExistsTwice = 'ppu exists twice: %s, %s';
   dlgCCOTestSrcInPPUPaths = 'Test: Checking sources in fpc ppu search paths ...';
@@ -2532,9 +2541,9 @@ resourcestring
   uepIns='INS';
   uepOvr='OVR';
   lisUEFontWith = 'Font without UTF-8';
-  lisUETheCurre = 'The current editor font does not support UTF-8, but your '
-    +'system seems to use it.%sThat means non ASCII characters will probably '
-    +'be shown incorrectly.%sYou can select another font in the editor options.';
+  lisUETheCurre = 'The current editor font does not support UTF-8, but your system seems to use it.'
+    +'%sThat means non ASCII characters will probably be shown incorrectly.'
+    +'%sYou can select another font in the editor options.';
   lisUEDoNotSho = 'Do not show this message again.';
   uemHighlighter = 'Highlighter';
   uemEncoding = 'Encoding';
@@ -2554,8 +2563,10 @@ resourcestring
   lisThereWasAnErrorWhileCopyingTheComponentStreamToCli = 'There was an error '
     +'while copying the component stream to clipboard:%s%s';
   lisErrorIn = 'Error in %s';
-  lisTheComponentEditorOfClassInvokedWithVerbHasCreated = 'The component editor of '
-    +'class "%s"%sinvoked with verb #%s "%s"%shas created the error:%s"%s"';
+  lisTheComponentEditorOfClassInvokedWithVerbHasCreated = 'The component editor of class "%s"'
+    +'%sinvoked with verb #%s "%s"'
+    +'%shas created the error:'
+    +'%s"%s"';
   lisReset = 'Reset';
   lisResetLeftTopWidthHeightOfSelectedComponentsToTheir = 'Reset Left, Top, '
     +'Width, Height of selected components to their ancestor values?';
@@ -2593,9 +2604,10 @@ resourcestring
   // keyMapping
   srkmCommand  = 'Command:';
   lisKeyOr2KeySequence = 'Key (or 2 key sequence)';
-  lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd = 'The key %s%sis '
-    +'already assigned to %s.%s%sRemove the old assignment and assign the key '
-    +'to the new function%s%s?';
+  lisTheKeyIsAlreadyAssignedToRemoveTheOldAssignmentAnd = 'The key %s'
+    +'%sis already assigned to %s.'
+    +'%sRemove the old assignment and assign the key to the new function'
+    +'%s%s?';
   lisAlternativeKeyOr2KeySequence = 'Alternative key (or 2 key sequence)';
   srkmConflic  = 'Conflict ';
   srkmEditForCmd = 'Edit keys of command';
@@ -3080,8 +3092,9 @@ resourcestring
   lisConfirmLazarusRebuild = 'Do you want to rebuild Lazarus with profile: %s?';
   lisConfirmation = 'Confirmation';
   lisPkgTheProjectOverridesTheOutputDirectoryOfTheFollowin = 'The project '
-    +'overrides the output directory of the following packages.%sSee Project /'
-    +' Project Options / Additions and Overrides%s%s%s';
+    +'overrides the output directory of the following packages.'
+    +'%sSee Project / Project Options / Additions and Overrides'
+    +'%s%s';
   lisConfirmBuildAllProfiles = 'Lazarus will be rebuilt with the following profiles:%sContinue?';
   lisNoBuildProfilesSelected = 'No profiles are selected to be built.';
   lisCleanLazarusSource = 'Clean Lazarus Source';
@@ -3341,9 +3354,10 @@ resourcestring
   lisCodeTemplComment = 'Comment:';
   lisCodeTemplATokenAlreadyExists = ' A token "%s" already exists! ';
   lisCodeTemplError = 'Error';
-  lisUnableToFindTheComponentClassItIsNotRegisteredViaR = 'Unable to find the '
-    +'component class "%s".%sIt is not registered via RegisterClass and no lfm'
-    +' was found.%sIt is needed by unit:%s%s';
+  lisUnableToFindTheComponentClassItIsNotRegisteredViaR = 'Unable to find the component class "%s".'
+    +'%sIt is not registered via RegisterClass and no lfm was found.'
+    +'%sIt is needed by unit:'
+    +'%s%s';
   lisNoTemplateSelected = 'no template selected';
   lisUnableToOpenDesignerTheClassDoesNotDescendFromADes = 'Unable to open '
     +'designer.%sThe class %s does not descend from a designable class like '
@@ -3363,7 +3377,8 @@ resourcestring
     +'section from the list.';
   lisMakeResStrResourcestringAlreadyExis = 'Resourcestring already exists';
   lisMakeResStrChooseAnotherName = 'The resourcestring "%s" already exists.'
-    +'%sPlease choose another name.%sUse Ignore to add it anyway.';
+    +'%sPlease choose another name.'
+    +'%sUse Ignore to add it anyway.';
   lisMakeResStrStringConstantInSource = 'String constant in source';
   lisMakeResStrConversionOptions = 'Conversion Options';
   lisMakeResStrIdentifierPrefix = 'Identifier prefix:';
@@ -3584,10 +3599,12 @@ resourcestring
   lisPkgThisFileIsNotInAnyLoadedPackage = 'This file is not in any loaded package.';
   lisProjAddTheDependencyWasNotFound = 'The dependency "%s" was not found.%sPlease choose an existing package.';
   lisProjAddInvalidVersion = 'Invalid version';
-  lisProjAddTheMinimumVersionIsInvalid = 'The Minimum Version "%s" is '
-    +'invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10';
-  lisProjAddTheMaximumVersionIsInvalid = 'The Maximum Version "%s" is '
-    +'invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10';
+  lisProjAddTheMinimumVersionIsInvalid = 'The Minimum Version "%s" is invalid.'
+    +'%sPlease use the format major.minor.release.build'
+    +'%sFor exmaple: 1.0.20.10';
+  lisProjAddTheMaximumVersionIsInvalid = 'The Maximum Version "%s" is invalid.'
+    +'%sPlease use the format major.minor.release.build'
+    +'%sFor exmaple: 1.0.20.10';
   lisProjAddInvalidPascalUnitName = 'Invalid Pascal unit name';
   lisProjAddTheUnitNameIsNotAValidPascalIdentifier = 'The unit name "%s" is '
     +'not a valid Pascal identifier.';
@@ -3625,9 +3642,10 @@ resourcestring
   lisMacroPromptEnterRunParameters = 'Enter run parameters';
   
   // debugger
-  lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState = 'Debugger error%s'
-    +'Ooops, the debugger entered the error state%sSave your work now !%sHit '
-    +'Stop, and hope the best, we''re pulling the plug.';
+  lisDebuggerErrorOoopsTheDebuggerEnteredTheErrorState = 'Debugger error'
+    +'%sOoops, the debugger entered the error state'
+    +'%sSave your work now !'
+    +'%sHit Stop, and hope the best, we''re pulling the plug.';
   lisExecutionStopped = 'Execution stopped';
   lisFileNotFound = 'File not found';
   lisCleanUpUnitPath = 'Clean up unit path?';
@@ -3642,14 +3660,17 @@ resourcestring
     +'a Debugger in the debugger options dialog in the menu.';
   lisDbgMangSetTheBreakpointAnyway = 'Set the breakpoint anyway';
   lisLaunchingApplicationInvalid = 'Launching application invalid';
-  lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta = 'The launching application '
-    +'"%s"%sdoes not exist or is not executable.%sSee Run -> Run parameters -> Local';
+  lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta = 'The launching application "%s"'
+    +'%sdoes not exist or is not executable.'
+    +'%sSee Run -> Run parameters -> Local';
   lisTheLaunchingApplicationBundleDoesNotExists = 'The Application Bundle %s'
-    +'%sneeded for execution does not exist or is not executable.%sDo you want to create one?'
+    +'%sneeded for execution does not exist or is not executable.'
+    +'%sDo you want to create one?'
     +'%sSee Project -> Project Options -> Application for settings.';
   lisDebuggerInvalid = 'Debugger invalid';
-  lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger "%s"%s'
-    +'does not exist or is not executable.%sSee Tools -> Options -> Debugger options';
+  lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger "%s"'
+    +'%sdoes not exist or is not executable.'
+    +'%sSee Tools -> Options -> Debugger options';
   lisUnableToRun = 'Unable to run';
   lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP = 'The destination '
     +'directory "%s" does not exist.%sPlease check the project target file '
@@ -3785,11 +3806,11 @@ resourcestring
   lisPkgMangDeleteOldPackageFile = 'Delete Old Package File?';
   lisPkgMangDeleteOldPackageFile2 = 'Delete old package file "%s"?';
   lisPkgMangDeleteFailed = 'Delete failed';
-  lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac = 'The file "%s"%s'
-    +'was found in one of the source directories of the package %s and looks '
+  lisTheFileWasFoundInOneOfTheSourceDirectoriesOfThePac = 'The file "%s"'
+    +'%swas found in one of the source directories of the package %s and looks '
     +'like a compiled unit. Compiled units must be in the output directory of '
-    +'the package, otherwise other packages can get problems using this '
-    +'package.%s%sDelete ambiguous file?';
+    +'the package, otherwise other packages can get problems using this package.'
+    +'%sDelete ambiguous file?';
   lisPkgMangUnableToDeleteFile = 'Unable to delete file "%s".';
   lisSkipErrors = 'Skip errors';
   lisDeleteAllTheseFiles = 'Delete all these files?';
@@ -3858,12 +3879,13 @@ resourcestring
     +'%sSee Package -> Package Graph.'
     +'%sReplace is impossible.';
   lisPkgMangSavePackage = 'Save package?';
-  lisPkgMangLoadingPackageWillReplacePackage = 'Loading package %s will '
-    +'replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave '
-    +'old package %s?';
+  lisPkgMangLoadingPackageWillReplacePackage = 'Loading package %s will replace package %s'
+    +'%sfrom file %s.'
+    +'%sThe old package is modified.'
+    +'%sSave old package %s?';
   lisPkgMangNewPackage = 'NewPackage';
-  lisProbablyYouNeedToInstallSomePackagesForBeforeConti =
-     'Probably you need to install some packages before continuing.'
+  lisProbablyYouNeedToInstallSomePackagesForBeforeConti = 'Probably you need to '
+    +'install some packages before continuing.'
     +'%sWarning:'
     +'%sThe project uses the following design time packages, which might be needed '
     +'to open the form in the designer. If you continue, you might get errors '
@@ -4104,10 +4126,10 @@ resourcestring
   lisMoveSelectedDown = 'Move selected item down (Ctrl+Down)';
 
   // broken dependencies dialog
-  lisBDDChangingThePackageNameOrVersionBreaksDependencies = 'Changing the '
-    +'package name or version breaks dependencies. Should these dependencies '
-    +'be changed as well?%sSelect Yes to change all listed dependencies.%s'
-    +'Select Ignore to break the dependencies and continue.';
+  lisBDDChangingThePackageNameOrVersionBreaksDependencies = 'Changing the package name '
+    +'or version breaks dependencies. Should these dependencies be changed as well?'
+    +'%sSelect Yes to change all listed dependencies.'
+    +'%sSelect Ignore to break the dependencies and continue.';
   lisA2PDependency = 'Dependency';
   lisA2PBrokenDependencies = 'Broken Dependencies';
   
@@ -4217,8 +4239,9 @@ resourcestring
   lisPckEditReadOnly = 'Read Only: %s';
   lisPckEditModified = 'Modified: %s';
   lisPkgEditNewUnitNotInUnitpath = 'New unit not in unitpath';
-  lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage = 'The file "%s"%s'
-    +'is currently not in the unit path of the package.%s%sAdd "%s" to unit path?';
+  lisPkgEditTheFileIsCurrentlyNotInTheUnitpathOfThePackage = 'The file "%s"'
+    +'%sis currently not in the unit path of the package.'
+    +'%sAdd "%s" to unit path?';
   lisPENewFileNotInIncludePath = 'New file not in include path';
   lisPETheFileIsCurrentlyNotInTheIncludePathOfThePackageA = 'The file "%s" is '
     +'currently not in the include path of the package.%sAdd "%s" to the '
@@ -4230,8 +4253,8 @@ resourcestring
   lisThePackageDoesNotHaveAnyRegisterProcedureWhichTypi = 'The package %s '
     +'does not have any "Register" procedure, which typically means, it does '
     +'not provide any IDE addon. Installing it will probably only increase '
-    +'the size of the IDE and may even make it unstable.%s%sHint: If you want '
-    +'to use a package in your project, use the "Add to project" menu item.';
+    +'the size of the IDE and may even make it unstable.'
+    +'%sHint: If you want to use a package in your project, use the "Add to project" menu item.';
   lisInstallItILikeTheFat = 'Install it, I like the fat';
 
   // package options dialog
@@ -4265,9 +4288,9 @@ resourcestring
   lisPckOptsLinker = 'Linker';
   lisPckOptsCustom = 'Custom';
   lisPckOptsInvalidPackageType = 'Invalid package type';
-  lisPckOptsThePackageHasTheAutoInstallFlagThisMeans = 'The package "%s" '
-    +'has the auto install flag.%sThis means it will be installed in the IDE. '
-    +'Installation packages%smust be designtime Packages.';
+  lisPckOptsThePackageHasTheAutoInstallFlagThisMeans = 'The package "%s" has the auto install flag.'
+    +'%sThis means it will be installed in the IDE.'
+    +'%sInstallation packages must be designtime Packages.';
   lisPckOptsPackageOptions = 'Package Options';
 
   // package explorer (package graph)
@@ -4363,14 +4386,16 @@ resourcestring
   lisFixLFMFile = 'Fix LFM file';
   lisMissingEvents = 'Missing Events';
   lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh = 'The following methods '
-    +'used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?';
+    +'used by %s are not in the source'
+    +'%s%s'
+    +'%s%s'
+    +'%sRemove the dangling references?';
   lisLFMFileContainsInvalidProperties = 'The LFM file contains unknown'
     +' properties/classes which do not exist in the LCL. They can be replaced or removed.';
 
   lisFileSIsConvertedToTextFormat = 'File %s is converted to text format.';
   lisFileSHasIncorrectSyntax = 'File %s has incorrect syntax.';
-  lisAddedMissingObjectSToPascalSource = 'Added missing object "%s" to pascal '
-    +'source.';
+  lisAddedMissingObjectSToPascalSource = 'Added missing object "%s" to pascal source.';
   lisReplacedTypeSWithS = 'Replaced type "%s" with "%s".';
   lisRemovedPropertyS = 'Removed property "%s".';
   lisReplacedPropertySWithS = 'Replaced property "%s" with "%s".';
@@ -4690,7 +4715,8 @@ resourcestring
   lisXMLParserErrorInFileError = 'XML parser error in file %s%sError: %s';
   lisUnableToWriteXmlStreamToError = 'Unable to write xml stream to %s%sError: %s';
   lisFileIsSymlink = 'File is symlink';
-  lisTheFileIsASymlinkOpenInstead = 'The file "%s" is a symlink.%s%sOpen "%s" instead?';
+  lisTheFileIsASymlinkOpenInstead = 'The file "%s" is a symlink.'
+    +'%sOpen "%s" instead?';
   lisOpenTarget = 'Open target';
   lisOpenSymlink = 'Open symlink';
   lisFileLinkError = 'File link error';
@@ -4882,15 +4908,15 @@ resourcestring
     +'not be deleted, because it is not owned by %s.';
   lisFilter3 = 'Filter: %s';
   lisInvalidPublishingDirectory = 'Invalid publishing Directory';
-  lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory '
-    +'"%s"%sand destination directory "%s"%sare the same. Maybe you '
-    +'misunderstand this feature.%sIt will clean/recreate the destination '
-    +'directory and copy the package/project into it.';
+  lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory "%s"'
+    +'%sand destination directory "%s"'
+    +'%sare the same. Maybe you misunderstand this feature.'
+    +'%sIt will clean/recreate the destination directory and copy the package/project into it.';
   lisClearDirectory = 'Clear Directory?';
   lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil = 'In order to create '
     +'a clean copy of the project/package, all files in the following '
-    +'directory will be deleted and all its content will be lost.%s%sDelete '
-    +'all files in "%s"?';
+    +'directory will be deleted and all its content will be lost.'
+    +'%sDelete all files in "%s"?';
   lisFileExtensionOfPrograms = 'File extension of programs';
   lisEveryNThLineNumber = 'Every n-th line number';
   lisShowOverviewGutter = 'Show overview Gutter';
@@ -4906,8 +4932,11 @@ resourcestring
   lisMissingIdentifiers = 'Missing identifiers';
   lisChooseAFPDocLink = 'Choose a FPDoc link';
   lisLinkTarget = 'Link target';
-  lisExamplesIdentifierTMyEnumEnumUnitnameIdentifierPac = 'Examples:%sIdentifier%s'
-    +'TMyEnum.Enum%sUnitname.Identifier%s#PackageName.UnitName.Identifier';
+  lisExamplesIdentifierTMyEnumEnumUnitnameIdentifierPac = 'Examples:'
+    +'%sIdentifier'
+    +'%sTMyEnum.Enum'
+    +'%sUnitname.Identifier'
+    +'%s#PackageName.UnitName.Identifier';
   lisTitleLeaveEmptyForDefault = 'Title (leave empty for default)';
   lisPackageUnit = 'package unit';
   lisPackage2 = 'package %s';
@@ -5037,8 +5066,9 @@ resourcestring
   lisCEOtherGroup = 'Other';
   lisCEWrongIndentation = 'Wrong indentation';
   lisTheProjectUsesTargetOSAndCPUTheSystemPpuForThisTar = 'The project uses '
-    +'target OS=%s and CPU=%s.%sThe system.ppu for this target was not found '
-    +'in the FPC binary directories. %sMake sure fpc is installed correctly '
+    +'target OS=%s and CPU=%s.'
+    +'%sThe system.ppu for this target was not found in the FPC binary directories.'
+    +'%sMake sure fpc is installed correctly '
     +'for this target and the fpc.cfg contains the right directories.';
   lisCouldNotRemoveFromMainSource = 'Could not remove "%s" from main source!';
   lisCouldNotAddToMainSource = 'Could not add "%s" to main source!';

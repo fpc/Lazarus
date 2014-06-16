@@ -322,7 +322,7 @@ begin
 
     MsgResult:=IDEQuestionDialog(lisMissingEvents,
       Format(lisTheFollowingMethodsUsedByAreNotInTheSourceRemoveTh, [DbgSName(
-        RootComponent), LineEnding, PascalBuffer.Filename, LineEnding, LineEnding, s, LineEnding])
+        RootComponent), LineEnding, PascalBuffer.Filename, LineEnding+LineEnding, s, LineEnding])
        ,mtConfirmation,
        [mrYes, lisRemoveThem, mrIgnore, lisKeepThemAndContinue, mrCancel]);
      if MsgResult=mrYes then begin

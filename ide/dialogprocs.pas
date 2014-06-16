@@ -514,7 +514,7 @@ begin
   end else begin
     // ask which filename to use
     case IDEQuestionDialog(lisFileIsSymlink,
-      Format(lisTheFileIsASymlinkOpenInstead,[Filename,LineEnding,LineEnding,TargetFilename]),
+      Format(lisTheFileIsASymlinkOpenInstead,[Filename,LineEnding+LineEnding,TargetFilename]),
       mtConfirmation, [mbYes, lisOpenTarget, mbNo, lisOpenSymlink, mbCancel])
     of
     mrYes: Filename:=TargetFilename;

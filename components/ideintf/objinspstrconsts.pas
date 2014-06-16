@@ -389,13 +389,17 @@ resourcestring
   fesNoFieldsNote = 'Field''s list is not available, can''t check for duplicates';
   oisIncompatibleIdentifier = 'Incompatible Identifier';
   oisIsNotAValidMethodName = '"%s" is not a valid method name.';
-  oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn = 'The identifier "%s" '
-    +'is not a method.%sPress Cancel to undo,%spress Ignore to force it.';
+  oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn = 'The identifier "%s" is not a method.'
+    +'%sPress Cancel to undo,'
+    +'%spress Ignore to force it.';
   oisIncompatibleMethod = 'Incompatible Method';
-  oisTheMethodIsNotPublishedPressCancelToUndoPressIgnor = 'The method "%s" '
-    +'is not published.%sPress Cancel to undo,%spress Ignore to force it.';
+  oisTheMethodIsNotPublishedPressCancelToUndoPressIgnor = 'The method "%s" is not published.'
+    +'%sPress Cancel to undo,'
+    +'%spress Ignore to force it.';
   oisTheMethodIsIncompatibleToThisEventPressCancelToUnd = 'The method "%s" '
-    +'is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it.';
+    +'is incompatible to this event (%s).'
+    +'%sPress Cancel to undo,'
+    +'%spress Ignore to force it.';
   peFilterEditor = 'Filter editor';
   peFilterName = 'Filter name';
   peFilter = 'Filter';

@@ -2422,7 +2422,8 @@ begin
     // ask user, if destination can be delete
     if IDEMessageDialog(lisClearDirectory,
       Format(lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil,
-             [LineEnding, LineEnding, DestDir]), mtConfirmation, [mbYes,mbNo])<>mrYes
+             [LineEnding+LineEnding, DestDir]),
+      mtConfirmation, [mbYes,mbNo])<>mrYes
     then
       exit(mrCancel);
 
@@ -4845,7 +4846,7 @@ begin
   if AskUser then begin
     Result:=IDEQuestionDialog(lisFileNotLowercase,
       Format(lisTheUnitIsNotLowercaseTheFreePascalCompiler,
-             [OldFilename, LineEnding, LineEnding, LineEnding]),
+             [OldFilename, LineEnding, LineEnding+LineEnding]),
       mtConfirmation,[mrYes,mrIgnore,lisNo,mrAbort],'');
     if Result<>mrYes then exit;
   end;
