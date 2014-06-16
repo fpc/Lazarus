@@ -1360,6 +1360,7 @@ procedure TPackageEditorForm.FormDropFiles(Sender: TObject;
   const FileNames: array of String);
 begin
   debugln(['TPackageEditorForm.FormDropFiles ',length(FileNames)]);
+  IntfGetDropFilesTarget;
 end;
 
 procedure TPackageEditorForm.RevertClick(Sender: TObject);

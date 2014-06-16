@@ -2830,8 +2830,8 @@ begin
         TCustomForm(LCLObject).IntfDropFiles(Files)
       else
       begin
-        ParentForm := LCLObject.IntfGetDropFilesTarget;
-        if Assigned(ParentForm) then
+        ParentForm := TCustomForm(LCLObject.IntfGetDropFilesTarget);
+        if ParentForm is TCustomForm then
           ParentForm.IntfDropFiles(Files);
       end;
 

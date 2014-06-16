@@ -918,7 +918,7 @@ var
     Drop: HDROP;
     L: LongWord;
     I, C: Integer;
-    aForm: TCustomForm;
+    DropForm: TWinControl;
   {$IFDEF WindowsUnicodeSupport}
     AnsiBuffer: string;
     WideBuffer: WideString;
@@ -958,9 +958,9 @@ var
 
       if Length(Files) > 0 then
       begin
-        aForm := lWinControl.IntfGetDropFilesTarget;
-        if aForm<>nil then
-          aForm.IntfDropFiles(Files);
+        DropForm := lWinControl.IntfGetDropFilesTarget;
+        if DropForm is TCustomForm then
+          TCustomForm(DropForm).IntfDropFiles(Files);
         if Application <> nil then
           Application.IntfDropFiles(Files);
       end;
