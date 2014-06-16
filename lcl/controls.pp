@@ -2193,6 +2193,7 @@ type
     procedure EraseBackground(DC: HDC); virtual;
     function IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
                               RepeatCount: integer; SystemKey: boolean): boolean; virtual;
+    function IntfGetDropFilesTarget: TWinControl; virtual;
     procedure PaintTo(DC: HDC; X, Y: Integer); virtual; overload;
     procedure PaintTo(ACanvas: TCanvas; X, Y: Integer); overload;
     procedure SetShape(AShape: TBitmap); overload;

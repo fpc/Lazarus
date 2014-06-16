@@ -3529,7 +3529,7 @@ begin
     begin
       Form := nil;
       if (TObject(Data) is TWinControl) then
-        Form := (TObject(Data) as TWinControl).GetTopParent;
+        Form := (TObject(Data) as TWinControl).IntfGetDropFilesTarget;
         
       if Form is TCustomForm then
         (Form as TCustomForm).IntfDropFiles(Files)

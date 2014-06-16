@@ -4094,7 +4094,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl SetBorderWidth
 ------------------------------------------------------------------------------}
-procedure TWinControl.SetBorderWidth(value : TBorderWidth);
+procedure TWinControl.SetBorderWidth(Value: TBorderWidth);
 begin
   if FBorderWidth = Value then exit;
   FBorderWidth := Value;
@@ -4411,7 +4411,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl FindChildControl
 ------------------------------------------------------------------------------}
-function TWinControl.FindChildControl(const ControlName: string): TControl;
+function TWinControl.FindChildControl(const ControlName: String): TControl;
 var
   I: Integer;
 begin
@@ -4475,8 +4475,8 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl FindNextControl                                                 }
 {------------------------------------------------------------------------------}
-function TWinControl.FindNextControl(CurrentControl: TWinControl;
-  GoForward, CheckTabStop, CheckParent: boolean): TWinControl;
+function TWinControl.FindNextControl(CurrentControl: TWinControl; GoForward,
+  CheckTabStop, CheckParent: Boolean): TWinControl;
 var
   List: TFPList;
   Next: TWinControl;
@@ -4958,6 +4958,17 @@ begin
   finally
     DecLCLRefCount;
   end;
+end;
+
+function TWinControl.IntfGetDropFilesTarget: TWinControl;
+begin
+  Result:=Self;
+  repeat
+    Result:=GetFirstParentForm(Result);
+    if Result=nil then exit;
+    if TCustomForm(Result).AllowDropFiles then exit;
+    Result:=Result.Parent;
+  until Result=nil;
 end;
 
 procedure TWinControl.PaintTo(DC: HDC; X, Y: Integer);
@@ -5585,7 +5596,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl KeyDown
 ------------------------------------------------------------------------------}
-procedure TWinControl.KeyDown(var Key: Word; shift : TShiftState);
+procedure TWinControl.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if Assigned(FOnKeyDown) then FOnKeyDown(Self, Key, Shift);
 end;
@@ -6386,7 +6397,7 @@ end;
   Params:  NewHandle
   Returns: Nothing
 -------------------------------------------------------------------------------}
-procedure TWincontrol.SetHandle(NewHandle: HWND);
+procedure TWinControl.SetHandle(NewHandle: HWND);
 begin
   //if (NewHandle=0) and (AnsiCompareText(ClassName,'TPAGE')=0) then
   //  RaiseGDBException('TWincontrol.SetHandle');
@@ -6420,7 +6431,7 @@ end;
 {------------------------------------------------------------------------------
   TWinControl CreateParented
 ------------------------------------------------------------------------------}
-constructor TWinControl.CreateParented(AParentWindow: hwnd);
+constructor TWinControl.CreateParented(AParentWindow: HWND);
 begin
   FParentWindow := AParentWindow;
   Create(nil);
@@ -6429,7 +6440,8 @@ end;
 {------------------------------------------------------------------------------
   TWinControl CreateParentedControl
 ------------------------------------------------------------------------------}
-class function TWinControl.CreateParentedControl(AParentWindow: hwnd): TWinControl;
+class function TWinControl.CreateParentedControl(AParentWindow: HWND
+  ): TWinControl;
 begin
   Result := CreateParented(AParentWindow);
 end;
@@ -7134,7 +7146,7 @@ end;
 
   event handler.
  ------------------------------------------------------------------------------}
-procedure TWInControl.WMNotify(var Message: TLMNotify);
+procedure TWinControl.WMNotify(var Message: TLMNotify);
 begin
   if not DoControlMsg(Message.NMHdr^.hwndfrom, Message) then
     inherited;
@@ -7877,7 +7889,7 @@ begin
   end;
 end;
 
-function TWinControl.DoUnDockClientMsg(NewTarget, Client: TControl): boolean;
+function TWinControl.DoUndockClientMsg(NewTarget, Client: TControl): boolean;
 begin
   Result := True;
   {$IFDEF VerboseDocking}
@@ -8127,7 +8139,7 @@ end;
 
   Get the devicecontext for this WinControl.
  ------------------------------------------------------------------------------}
-function TWinControl.GetDeviceContext(var WindowHandle: HWnd): HDC;
+function TWinControl.GetDeviceContext(var WindowHandle: HWND): HDC;
 begin
   Result := GetDC(Handle);
   //DebugLn('[TWinControl.GetDeviceContext] ',ClassName,' DC=',DbgS(Result,8),' Handle=',DbgS(FHandle));
