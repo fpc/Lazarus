@@ -610,12 +610,40 @@ type
 
   TSourceNotebook = class(TSourceEditorWindowInterface)
     StatusBar: TStatusBar;
+    procedure CompleteCodeMenuItemClick(Sender: TObject);
+    procedure DbgPopUpMenuPopup(Sender: TObject);
+    procedure EditorLockClicked(Sender: TObject);
+    procedure EncodingClicked(Sender: TObject);
+    procedure ExtractProcMenuItemClick(Sender: TObject);
+    procedure FindOverloadsMenuItemClick(Sender: TObject);
     procedure FormMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure HighlighterClicked(Sender: TObject);
+    procedure InsertCharacter(const C: TUTF8Char);
+    procedure InvertAssignmentMenuItemClick(Sender: TObject);
+    procedure LineEndingClicked(Sender: TObject);
+    procedure MakeResourceStringMenuItemClick(Sender: TObject);
+    procedure NotebookPageChanged(Sender: TObject);
+    procedure NotebookShowTabHint(Sender: TObject; HintInfo: PHintInfo);
+    procedure OnPopupMenuOpenFile(Sender: TObject);
+    procedure OnPopupOpenPackageFile(Sender: TObject);
+    procedure OnPopupOpenProjectInsp(Sender: TObject);
+    procedure OpenAtCursorClicked(Sender: TObject);
+    procedure RenameIdentifierMenuItemClick(Sender: TObject);
+    procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
+    procedure ShowEmptyMethodsMenuItemClick(Sender: TObject);
+    procedure ShowUnusedUnitsMenuItemClick(Sender: TObject);
+    procedure SourceNotebookDropFiles(Sender: TObject;
+      const FileNames: array of String);
+    procedure SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
+    procedure SrcEditMenuFindInWindowClicked(Sender: TObject);
+    procedure SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
+    procedure SrcPopUpMenuPopup(Sender: TObject);
     procedure StatusBarClick(Sender: TObject);
     procedure StatusBarDblClick(Sender: TObject);
     procedure StatusBarDrawPanel(AStatusBar: TStatusBar; APanel: TStatusPanel;
       const ARect: TRect);
+    procedure TabPopUpMenuPopup(Sender: TObject);
   private
     FNotebook: TExtendedNotebook;
     FBaseCaption: String;
@@ -624,33 +652,6 @@ type
     TabPopUpMenu, SrcPopUpMenu, DbgPopUpMenu: TPopupMenu;
     procedure ApplyPageIndex;
     procedure ExecuteEditorItemClick(Sender: TObject);
-  protected
-    procedure CompleteCodeMenuItemClick(Sender: TObject);
-    procedure ExtractProcMenuItemClick(Sender: TObject);
-    procedure InvertAssignmentMenuItemClick(Sender: TObject);
-    procedure RenameIdentifierMenuItemClick(Sender: TObject);
-    procedure ShowAbstractMethodsMenuItemClick(Sender: TObject);
-    procedure ShowEmptyMethodsMenuItemClick(Sender: TObject);
-    procedure ShowUnusedUnitsMenuItemClick(Sender: TObject);
-    procedure FindOverloadsMenuItemClick(Sender: TObject);
-    procedure MakeResourceStringMenuItemClick(Sender: TObject);
-    procedure LineEndingClicked(Sender: TObject);
-    procedure EncodingClicked(Sender: TObject);
-    procedure HighlighterClicked(Sender: TObject);
-    procedure NotebookPageChanged(Sender: TObject);
-    procedure NotebookShowTabHint(Sender: TObject; HintInfo: PHintInfo);
-    procedure OpenAtCursorClicked(Sender: TObject);
-    procedure OnPopupMenuOpenFile(Sender: TObject);
-    procedure OnPopupOpenPackageFile(Sender: TObject);
-    procedure OnPopupOpenProjectInsp(Sender: TObject);
-    procedure TabPopUpMenuPopup(Sender: TObject);
-    procedure SrcPopUpMenuPopup(Sender: TObject);
-    procedure DbgPopUpMenuPopup(Sender: TObject);
-    procedure InsertCharacter(const C: TUTF8Char);
-    procedure SrcEditMenuCopyToExistingWindowClicked(Sender: TObject);
-    procedure SrcEditMenuMoveToExistingWindowClicked(Sender: TObject);
-    procedure SrcEditMenuFindInWindowClicked(Sender: TObject);
-    procedure EditorLockClicked(Sender: TObject);
   public
     procedure DeleteBreakpointClicked(Sender: TObject);
     procedure ToggleBreakpointClicked(Sender: TObject);
@@ -1130,7 +1131,6 @@ type
   private
     FCodeTemplateModul: TSynEditAutoComplete;
     FGotoDialog: TfrmGoto;
-    procedure OnFilesDroping(Sender: TObject; const FileNames: Array of String);
     procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string;
                                    AnEditor: TCustomSynEdit; var Index:integer);
     procedure OnCodeTemplateExecuteCompletion(
@@ -5814,6 +5814,9 @@ begin
   FHistoryList := TFPList.Create;
   FSrcEditsSortedForFilenames := TAvgLvlTree.Create(@CompareSrcEditIntfWithFilename);
 
+  OnDropFiles:=@SourceNotebookDropFiles;
+  AllowDropFiles:=true;
+
   // popup menu
   BuildPopupMenu;
 
@@ -7657,6 +7660,13 @@ end;
 procedure TSourceNotebook.ShowUnusedUnitsMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecRemoveUnusedUnits);
+end;
+
+procedure TSourceNotebook.SourceNotebookDropFiles(Sender: TObject;
+  const FileNames: array of String);
+begin
+  FManager.ActiveSourceWindow := Self;
+  LazarusIDE.DoDropFiles(Sender,Filenames,WindowID);
 end;
 
 procedure TSourceNotebook.FindOverloadsMenuItemClick(Sender: TObject);
@@ -10260,13 +10270,6 @@ begin
   end;
 end;
 
-procedure TSourceEditorManager.OnFilesDroping(Sender: TObject;
-  const FileNames: array of String);
-begin
-  if Sender is TSourceNotebook then
-    ActiveSourceWindow := TSourceNotebook(Sender);
-end;
-
 procedure TSourceEditorManager.OnCodeTemplateTokenNotFound(Sender: TObject;
   AToken: string; AnEditor: TCustomSynEdit; var Index: integer);
 begin
@@ -10553,7 +10556,6 @@ begin
     Result.Create(Self, AnID)
   else
     Result.Create(Self);
-  Result.OnDropFiles := @OnFilesDroping;
 
   for i := 1 to FUpdateLock do
     Result.IncUpdateLockInternal;

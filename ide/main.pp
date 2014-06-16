@@ -185,7 +185,6 @@ type
     procedure OnApplicationActivate(Sender: TObject);
     procedure OnApplicationDeActivate(Sender: TObject);
     procedure OnApplicationKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure OnApplicationDropFiles(Sender: TObject; const FileNames: array of String);
     procedure OnApplicationQueryEndSession(var Cancel: Boolean);
     procedure OnApplicationEndSession(Sender: TObject);
     procedure OnScreenChangedForm(Sender: TObject; Form: TCustomForm);
@@ -768,6 +767,8 @@ type
     function DoOpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
                               AEditorInfo: TUnitEditorInfo;
                               Flags: TOpenFlags): TModalResult;
+    procedure DoDropFiles(Sender: TObject; const FileNames: array of String;
+      WindowIndex: integer=-1); override;
 
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
@@ -1607,7 +1608,6 @@ begin
   Application.AddOnActivateHandler(@OnApplicationActivate);
   Application.AddOnDeActivateHandler(@OnApplicationDeActivate);
   Application.AddOnKeyDownHandler(@OnApplicationKeyDown);
-  Application.AddOnDropFilesHandler(@OnApplicationDropFiles);
   Application.AddOnQueryEndSessionHandler(@OnApplicationQueryEndSession);
   Application.AddOnEndSessionHandler(@OnApplicationEndSession);
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
@@ -5706,6 +5706,32 @@ function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex, WindowIndex: in
   AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags): TModalResult;
 begin
   Result:=SourceFileMgr.OpenEditorFile(AFileName, PageIndex, WindowIndex, AEditorInfo, Flags);
+end;
+
+procedure TMainIDE.DoDropFiles(Sender: TObject;
+  const FileNames: array of String; WindowIndex: integer);
+var
+  OpenFlags: TOpenFlags;
+  I: Integer;
+  AFilename: String;
+begin
+  //debugln(['TMainIDE.DoDropFiles ',length(Filenames)]);
+  if Length(FileNames) = 0 then exit;
+  OpenFlags := [ofAddToRecent];
+  if Length(FileNames) > 1 then
+    OpenFlags := OpenFlags + [ofRegularFile,ofMultiOpen];
+  SourceEditorManager.IncUpdateLock;
+  try
+    for I := 0 to High(FileNames) do
+    begin
+      AFilename := CleanAndExpandFilename(FileNames[I]);
+      if LazarusIDE.DoOpenEditorFile(AFilename, -1, WindowIndex, OpenFlags) = mrAbort then
+        Break;
+    end;
+  finally
+    SourceEditorManager.DecUpdateLock;
+  end;
+  SetRecentFilesMenu;
 end;
 
 function TMainIDE.DoSelectFrame: TComponentClass;
@@ -11821,39 +11847,6 @@ begin
         aControl:=aControl.Parent;
       end;
     end;
-  end;
-end;
-
-procedure TMainIDE.OnApplicationDropFiles(Sender: TObject; const FileNames: array of String);
-var
-  OpenFlags: TOpenFlags;
-  I: Integer;
-  AFilename: String;
-begin
-  //debugln('TMainIDE.OnApplicationDropFiles FileNames=', dbgs(Length(FileNames)));
-  if Length(FileNames) > 0 then
-  begin
-    OpenFlags := [ofAddToRecent];
-    if Length(FileNames) > 1 then
-      Include(OpenFlags, ofRegularFile);
-    try
-      SourceEditorManager.IncUpdateLock;
-      for I := 0 to High(FileNames) do
-      begin
-        AFilename := CleanAndExpandFilename(FileNames[I]);
-
-        if I < High(FileNames) then
-          Include(OpenFlags, ofMultiOpen)
-        else
-          Exclude(OpenFlags, ofMultiOpen);
-
-        if DoOpenEditorFile(AFilename, -1, -1, OpenFlags) = mrAbort then Break;
-      end;
-    finally
-      SourceEditorManager.DecUpdateLock;
-    end;
-    SetRecentFilesMenu;
-    SaveEnvironment;
   end;
 end;
 

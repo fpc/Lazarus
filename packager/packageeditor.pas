@@ -222,6 +222,7 @@ type
     procedure ExpandDirectoryMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure ItemsPopupMenuPopup(Sender: TObject);
     procedure ItemsTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
@@ -1353,6 +1354,12 @@ begin
   PackageEditors.DoFreeEditor(LazPackage);
   FLazPackage:=nil;
   FreeAndNil(FPlugins);
+end;
+
+procedure TPackageEditorForm.FormDropFiles(Sender: TObject;
+  const FileNames: array of String);
+begin
+  debugln(['TPackageEditorForm.FormDropFiles ',length(FileNames)]);
 end;
 
 procedure TPackageEditorForm.RevertClick(Sender: TObject);

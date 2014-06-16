@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, Menus,
   ComCtrls, ExtCtrls, Dialogs, LMessages,
   // IDEIntf
-  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf,
+  ProjectIntf, NewItemIntf, MenuIntf, LazIDEIntf, SrcEditorIntf,
   EnvironmentOpts, LazarusIDEStrConsts;
 
 type
@@ -373,6 +373,8 @@ type
     // component palette
     ComponentPageControl: TPageControl;
     GlobalMouseSpeedButton: TSpeedButton;
+    procedure MainIDEBarDropFiles(Sender: TObject;
+      const FileNames: array of String);
   private
     FOldWindowState: TWindowState;
     FOnActive: TNotifyEvent;
@@ -396,6 +398,12 @@ var
 implementation
 
 { TMainIDEBar }
+
+procedure TMainIDEBar.MainIDEBarDropFiles(Sender: TObject;
+  const FileNames: array of String);
+begin
+  LazarusIDE.DoDropFiles(Sender,FileNames);
+end;
 
 procedure TMainIDEBar.NewUFDefaultClick(Sender: TObject);
 var
@@ -485,6 +493,8 @@ constructor TMainIDEBar.Create(TheOwner: TComponent);
 begin
   // This form has no resource => must be constructed using CreateNew
   inherited CreateNew(TheOwner, 1);
+  AllowDropFiles:=true;
+  OnDropFiles:=@MainIDEBarDropFiles;
 end;
 
 procedure TMainIDEBar.HideIDE;

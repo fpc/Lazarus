@@ -248,6 +248,8 @@ type
     function DoOpenComponent(const UnitFilename: string; OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags;
                        out Component: TComponent): TModalResult; virtual; abstract;
+    procedure DoDropFiles(Sender: TObject; const FileNames: array of String;
+      WindowIndex: integer = -1); virtual; abstract;
 
     // project
     property ActiveProject: TLazProject read GetActiveProject;

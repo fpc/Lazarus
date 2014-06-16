@@ -2535,6 +2535,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.IntfDropFiles(const FileNames: array of String);
 begin
+  //debugln(['TCustomForm.IntfDropFiles ',DbgSName(Self)]);
   if Assigned(FOnDropFiles) then FOnDropFiles(Self, FileNames);
 end;
 

@@ -3,6 +3,7 @@ object PackageEditorForm: TPackageEditorForm
   Height = 455
   Top = 248
   Width = 464
+  AllowDropFiles = True
   Caption = 'PackageEditorForm'
   ClientHeight = 455
   ClientWidth = 464
@@ -13,6 +14,7 @@ object PackageEditorForm: TPackageEditorForm
   OnCloseQuery = PackageEditorFormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnDropFiles = FormDropFiles
   Position = poScreenCenter
   LCLVersion = '1.3'
   object ToolBar: TToolBar
