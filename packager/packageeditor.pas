@@ -2915,9 +2915,9 @@ begin
   NewUnitPaths:=RemoveSearchPaths(NewUnitPaths,CurUnitPaths);
   if NewUnitPaths<>'' then begin
     NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,LazPackage.Directory);
-    r:=IDEMessageDialog('Extend Unit Path?',
-      'Extend unit search path of package "'+LazPackage.Name+'" with'
-      +'"'+NewUnitPaths+'"?',mtConfirmation,[mbYes,mbNo,mbCancel]);
+    r:=IDEMessageDialog(lisExtendUnitPath2,
+      Format(lisExtendUnitSearchPathOfPackageWith, [LazPackage.Name,
+        NewUnitPaths]), mtConfirmation, [mbYes, mbNo, mbCancel]);
     case r of
     mrYes: LazPackage.CompilerOptions.OtherUnitFiles:=
       MergeSearchPaths(LazPackage.CompilerOptions.OtherUnitFiles,NewUnitPaths);
@@ -2937,9 +2937,9 @@ begin
   NewIncPaths:=RemoveSearchPaths(NewIncPaths,CurIncPaths);
   if NewIncPaths<>'' then begin
     NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,LazPackage.Directory);
-    r:=IDEMessageDialog('Extend Include Path?',
-      'Extend include file search path of package "'+LazPackage.Name+'" with'
-      +'"'+NewIncPaths+'"?',mtConfirmation,[mbYes,mbNo,mbCancel]);
+    r:=IDEMessageDialog(lisExtendIncludePath,
+      Format(lisExtendIncludeFileSearchPathOfPackageWith, [LazPackage.Name,
+        NewIncPaths]), mtConfirmation, [mbYes, mbNo, mbCancel]);
     case r of
     mrYes: LazPackage.CompilerOptions.IncludePath:=
       MergeSearchPaths(LazPackage.CompilerOptions.IncludePath,NewIncPaths);
@@ -3211,11 +3211,10 @@ var
 
       // check if two copied/moved files will get the same new file name
       if NewFileToOldPkgFile.Contains(NewFilename) then begin
-        IDEMessageDialog('Conflict detected',
-          'Two moved files will have the same file name:'#13
-          +PkgFile.Filename+#13
-          +TPkgFile(NewFileToOldPkgFile[NewFilename]).Filename+#13
-          +'in package '+LazPackage.Name,mtError,[mbCancel]);
+        IDEMessageDialog(lisConflictDetected,
+          Format(lisTwoMovedFilesWillHaveTheSameFileNameInPackage, [#13, PkgFile
+            .Filename, #13, TPkgFile(NewFileToOldPkgFile[NewFilename]).
+            Filename, #13, LazPackage.Name]), mtError, [mbCancel]);
         exit;
       end;
       NewFileToOldPkgFile[NewFilename]:=PkgFile;
@@ -3280,10 +3279,9 @@ var
 
       // check file does not exist
       if FileExistsCached(NewFilename) then begin
-        IDEMessageDialog('Conflict detected',
-          'There is already a file'#13
-          +NewFilename+#13
-          +'in package '+LazPackage.Name,mtError,[mbCancel]);
+        IDEMessageDialog(lisConflictDetected,
+          Format(lisThereIsAlreadyAFileInPackage, [#13, NewFilename, #13,
+            LazPackage.Name]), mtError, [mbCancel]);
         exit;
       end;
 
@@ -3296,13 +3294,10 @@ var
           if (ConflictFile<>nil) and WarnUnitClash then begin
             ShortFilename:=NewFilename;
             LazPackage.ShortenFilename(ShortFilename,true);
-            r:=IDEMessageDialog('Duplicate Unit',
-              'There is already a unit "'+CurName+'" in package '+LazPackage.Name+#13
-              +'Old: '+ConflictFile.GetShortFilename(true)+#13
-              +'New: '+ShortFilename+#13
-              +'You have to make sure that the unit search path of the package contains only one of them.'#13
-              +#13
-              +'Continue?'
+            r:=IDEMessageDialog(lisDuplicateUnit,
+              Format(lisThereIsAlreadyAUnitInPackageOldNewYouHaveToMakeSur, [
+                CurName, LazPackage.Name, #13, ConflictFile.GetShortFilename(
+                true), #13, ShortFilename, #13, #13, #13])
               ,mtWarning,[mbYes,mbYesToAll,mbCancel]);
             case r of
             mrYes: ;
@@ -3321,12 +3316,10 @@ var
               continue;
             ShortFilename:=NewFilename;
             LazPackage.ShortenFilename(ShortFilename,true);
-            r:=IDEMessageDialog('Duplicate File Name',
-              'There is already a file "'+CurName+'" in package '+LazPackage.Name+#13
-              +'Old: '+ConflictFile.GetShortFilename(true)+#13
-              +'New: '+ShortFilename+#13
-              +#13
-              +'Continue?'
+            r:=IDEMessageDialog(lisDuplicateFileName,
+              Format(lisThereIsAlreadyAFileInPackageOldNewContinue, [CurName,
+                LazPackage.Name, #13, ConflictFile.GetShortFilename(true), #13,
+                ShortFilename, #13, #13])
               ,mtWarning,[mbYes,mbYesToAll,mbCancel]);
             case r of
             mrYes: ;
@@ -3400,12 +3393,12 @@ var
           // unit not found
           // (that is ok, e.g. if the unit is used on another platform)
           // => only warn
-          Msg:='unit '+AnUnitName+' not found';
+          Msg:=Format(lisUnitNotFound, [AnUnitName]);
           if not Tool.CleanPosToCaret(NamePos,CodePos) then continue;
           Result:=false;
           {$IFNDEF EnableOldExtTools}
           IDEMessagesWindow.AddCustomMessage(mluWarning,Msg,
-            CodePos.Code.Filename,CodePos.Y,CodePos.X,'Move Files');
+            CodePos.Code.Filename, CodePos.Y, CodePos.X, lisMoveFiles);
           {$ELSE}
           IDEMessagesWindow.AddMsg('Warning: '+Msg,'',-1);
           {$ENDIF}
@@ -3442,19 +3435,21 @@ var
       if NewUsedUnitFilename='' then begin
         // at the new position the unit cannot be found
         if PkgName='' then begin
-          Msg:='unit '+AnUnitName+' not found at new position "'+NewUnitFilename+'"';
+          Msg:=Format(lisUnitNotFoundAtNewPosition, [AnUnitName, NewUnitFilename
+            ]);
         end else begin
-          Msg:='unit '+AnUnitName+' requires package '+PkgName;
+          Msg:=Format(lisUnitRequiresPackage, [AnUnitName, PkgName]);
         end;
       end else begin
         // a different unit will be used
-        Msg:='different unit '+AnUnitName+' found at new position "'+NewUnitFilename+'"';
+        Msg:=Format(lisDifferentUnitFoundAtNewPosition, [AnUnitName,
+          NewUnitFilename]);
       end;
 
       Result:=false;
       {$IFNDEF EnableOldExtTools}
       IDEMessagesWindow.AddCustomMessage(mluWarning,Msg,
-        CodePos.Code.Filename,CodePos.Y,CodePos.X,'Move Files');
+        CodePos.Code.Filename, CodePos.Y, CodePos.X, lisMoveFiles);
       {$ELSE}
       IDEMessagesWindow.AddMsg('Warning: '+Msg,'',-1);
       {$ENDIF}
@@ -3500,8 +3495,8 @@ var
         Result:=false;
     end;
     if not Result then begin
-      if IDEMessageDialog('Warning',
-        'Moving these units will break their uses sections. See Messages window for details.',
+      if IDEMessageDialog(lisCCOWarningCaption,
+        lisMovingTheseUnitsWillBreakTheirUsesSectionsSeeMessa,
         mtWarning,[mbIgnore,mbCancel])<>mrIgnore
       then
         exit;
@@ -3573,9 +3568,9 @@ var
         exit;
       end;
     end else begin
-      if IDEMessageDialog('Warning',
-        'File not found:'#13
-        +OldFilename,mtWarning,[mbIgnore,mbCancel])<>mrIgnore
+      if IDEMessageDialog(lisCCOWarningCaption,
+        Format(lisFileNotFound5, [#13, OldFilename]), mtWarning, [mbIgnore,
+          mbCancel])<>mrIgnore
       then
         exit;
     end;
@@ -3727,21 +3722,21 @@ begin
 
     // ask for confirmation
     if PkgFiles.Count=MoveFileCount then begin
-      MsgResult:=IDEQuestionDialog('Move or Copy files?',
-        'Move or copy '+IntToStr(MoveFileCount)+' file(s) from package '+SrcPackage.Name+' to the directory'#13
-        +TargetDirectory+#13
-        +'of package '+LazPackage.Name+'.',
-        mtConfirmation,[100,'Move',101,'Copy',mrCancel]);
+      MsgResult:=IDEQuestionDialog(lisMoveOrCopyFiles,
+        Format(lisMoveOrCopyFileSFromPackageToTheDirectoryOfPackage, [IntToStr(
+          MoveFileCount), SrcPackage.Name, #13, TargetDirectory, #13, LazPackage
+          .Name]),
+        mtConfirmation, [100, lisMove, 101, lisCopy, mrCancel]);
       case MsgResult of
       100: DeleteOld:=true;
       101: DeleteOld:=false;
       else exit;
       end;
     end else begin
-      if IDEMessageDialog('Move files?',
-        'Move '+IntToStr(MoveFileCount)+' file(s) from package '+SrcPackage.Name+' to the directory'#13
-        +TargetDirectory+#13
-        +'of package '+LazPackage.Name+'.',
+      if IDEMessageDialog(lisMoveFiles2,
+        Format(lisMoveFileSFromPackageToTheDirectoryOfPackage, [IntToStr(
+          MoveFileCount), SrcPackage.Name, #13, TargetDirectory, #13, LazPackage
+          .Name]),
         mtConfirmation,[mbOk,mbCancel])<>mrOK
       then exit;
       DeleteOld:=true;
