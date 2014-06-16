@@ -1349,7 +1349,7 @@ function TLazSourceFileManager.OpenEditorFile(AFileName: string; PageIndex,
 var
   UnitIndex: integer;
   UnknownFile, Handled: boolean;
-  NewUnitInfo:TUnitInfo;
+  NewUnitInfo: TUnitInfo;
   NewBuf: TCodeBuffer;
   FilenameNoPath: String;
   LoadBufferFlags: TLoadBufferFlags;
@@ -1427,7 +1427,9 @@ begin
       UseWindowID := False;
       assert((WindowIndex >= 0) and (WindowIndex < SourceEditorManager.SourceWindowCount), 'WindowIndex for revert');
       AFilename := SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex].FileName;
-    end;
+    end
+    else
+      Flags := Flags - [ofRevert]; // No editor exists yet, don't try to revert.
 
     UnitIndex:=Project1.IndexOfFilename(AFilename);
     if (UnitIndex > 0) then begin
