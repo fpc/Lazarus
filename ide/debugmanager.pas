@@ -2717,8 +2717,7 @@ begin
     or (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
   then begin
     if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
-      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,
-             [LineEnding]),
+      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,[LineEnding]),
       mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])
       <>mrIgnore
     then
@@ -2740,8 +2739,7 @@ begin
       or (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
     then begin
       if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
-        Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,
-               [LineEnding]),
+        Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,[LineEnding]),
         mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])<>mrIgnore
       then
         exit;

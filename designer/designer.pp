@@ -2805,8 +2805,8 @@ begin
                                     TComponent(ControlSelection[i].Persistent));
     if AncestorRoot<>nil then begin
       IDEMessageDialog(lisInvalidDelete,
-       Format(lisTheComponentIsInheritedFromToDeleteAnInheritedComp, [dbgsName(
-         ControlSelection[i].Persistent), dbgsName(AncestorRoot), LineEnding]),
+       Format(lisTheComponentIsInheritedFromToDeleteAnInheritedComp,
+         [dbgsName(ControlSelection[i].Persistent), dbgsName(AncestorRoot), LineEnding]),
        mtInformation, [mbOk]);
       exit;
     end;

@@ -459,8 +459,8 @@ resourcestring
   lisContinueAndDoNotAskAgain = 'Continue and do not ask again';
   lisSuspiciousUnitPath = 'Suspicious unit path';
   lisThePackageAddsThePathToTheUnitPathOfTheIDEThisIsPr = 'The package %s '
-    +'adds the path "%s" to the unit path of the IDE.%sThis is probably a '
-    +'misconfiguration of the package.';
+    +'adds the path "%s" to the unit path of the IDE.'
+    +'%sThis is probably a misconfiguration of the package.';
   lisMenuResetDebugger = 'Reset Debugger';
   lisMenuRunParameters = 'Run &Parameters ...';
   lisMenuBuildFile = 'Build File';
@@ -3804,27 +3804,29 @@ resourcestring
   lisPkgMangRequiredPackagesWereNotFound = 'One or more required packages were not '
     +'found. See package graph for details.';
   lisPkgMangCircularDependencies = 'Circular dependencies found';
-  lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec = 'The package '
-    +'%s is compiled automatically and its output directory is "%s", which is '
-    +'in the default unit search path of the compiler. The package uses other '
-    +'packages which also use the default unit search of the compiler. This '
-    +'creates an endless loop.%sYou can fix this issue%sby removing the path from '
-    +'your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of '
-    +'this package%sor by removing dependencies.';
+  lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec = 'The package "%s" '
+    +'is compiled automatically and its output directory is "%s", which is in the '
+    +'default unit search path of the compiler. The package uses other packages which '
+    +'also use the default unit search of the compiler. This creates an endless loop.'
+    +'%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)'
+    +'%sor by disabling the auto update of this package or by removing dependencies.';
   lisPkgMangThereIsACircularDependency = 'There is a circular dependency in the '
     +'packages. See package graph.';
-  lisPkgMangThereAreTwoUnitsWithTheSameName1From2From = 'There are two units '
-    +'with the same name:%s%s1. "%s" from %s%s2. "%s" from %s%s%s';
-  lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2 = 'There is a unit '
-    +'with the same name as a package:%s%s1. "%s" from %s%s2. "%s%s%s';
+  lisPkgMangThereAreTwoUnitsWithTheSameName1From2From = 'There are two units with the same name:'
+    +'%s1. "%s" from %s'
+    +'%s2. "%s" from %s';
+  lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2 = 'There is a unit with the same name as a package:'
+    +'%s1. "%s" from %s'
+    +'%s2. "%s"';
   lisPkgMangAmbiguousUnitsFound = 'Ambiguous units found';
   lisPkgMangBothPackagesAreConnectedThisMeansEitherOnePackageU = '%sBoth '
     +'packages are connected. This means, either one package uses the other, '
     +'or they are both used by a third package.';
   lisPkgMangThereIsAFPCUnitWithTheSameNameFrom = 'There is a FPC unit with '
-    +'the same name as:%s%s"%s" from %s%s%s';
+    +'the same name as:%s"%s" from %s';
   lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage = 'There is a FPC unit '
-    +'with the same name as a package:%s%s"%s%s%s';
+    +'with the same name as a package:'
+    +'%s"%s"';
   lisPkgMangErrorWritingFile = 'Error writing file';
   lisProjMangUnableToWriteStateFileForProjectError = 'Unable to write state '
     +'file for project %s%sError: %s';
@@ -3908,14 +3910,16 @@ resourcestring
   lisPkgMangAddingNewDependencyForPackagePackage = '%sAdding new Dependency '
     +'for package %s: package %s';
   lisPkgMangTheFollowingUnitsWillBeAddedToTheUsesSectionOf = '%sThe following '
-    +'units will be added to the uses section of%s%s:%s%s%s';
+    +'units will be added to the uses section of'
+    +'%s%s:'
+    +'%s%s';
   lisConfirmChanges = 'Confirm changes';
   lisPkgMangFileNotSaved = 'File not saved';
   lisPkgMangPleaseSaveTheFileBeforeAddingItToAPackage = 'Please save the file '
     +'before adding it to a package.';
   lisPkgMangFileIsInProject = 'File is in Project';
-  lisPkgMangWarningTheFileBelongsToTheCurrentProject = 'Warning: The file "%s"%s'
-    +'belongs to the current project.';
+  lisPkgMangWarningTheFileBelongsToTheCurrentProject = 'Warning: The file "%s"'
+    +'%sbelongs to the current project.';
   lisPkgMangFileIsAlreadyInPackage = 'File is already in package';
   lisPkgMangTheFileIsAlreadyInThePackage = 'The file "%s"%sis already in the package %s.';
   lisPkgMangPackageIsNoDesigntimePackage = 'Package is not a designtime package';
@@ -3934,7 +3938,8 @@ resourcestring
     +'%sDo you want to rebuild Lazarus now?';
   lisPkgMangPackageIsRequired = 'Package is required';
   lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation = 'The package %s '
-    +'is required by %s, which is marked for installation.%sSee package graph.';
+    +'is required by %s, which is marked for installation.'
+    +'%sSee package graph.';
   lisPkgMangUninstallPackage = 'Uninstall package?';
   lisPkgMangUninstallPackage2 = 'Uninstall package %s?';
   lisPkgMangThePackageWasMarkedCurrentlyLazarus = 'The package "%s" was marked.'
@@ -3945,15 +3950,16 @@ resourcestring
     +'virtual package. It has no source yet. Please save the package first.';
   lisPkgMangPleaseCompileThePackageFirst = 'Please compile the package first.';
   lisPkgMangThePackageIsMarkedForInstallationButCanNotBeFound = 'The package "%s" '
-    +'is marked for installation, but cannot be found.%sRemove '
-    +'dependency from the installation list of packages?';
+    +'is marked for installation, but cannot be found.'
+    +'%sRemove dependency from the installation list of packages?';
   lisERRORInvalidBuildMode = 'ERROR: invalid build mode "%s"';
   lisAvailableProjectBuildModes = 'Available project build modes:';
   lisThisProjectHasOnlyTheDefaultBuildMode = 'This project has only the default build mode.';
   lisPkgMangstaticPackagesConfigFile = 'static packages config file';
   lisPkgMangUnableToCreateTargetDirectoryForLazarus = 'Unable to create '
-    +'target directory for Lazarus:%s"%s".%sThis directory is needed for '
-    +'the new changed Lazarus IDE with your custom packages.';
+    +'target directory for Lazarus:'
+    +'%s"%s".'
+    +'%sThis directory is needed for the new changed Lazarus IDE with your custom packages.';
   lisPkgMangCompilingPackage = 'Compiling package %s';
   lisPkgMangErrorUpdatingPoFilesFailedForPackage = 'Error: updating po files '
     +'failed for package %s';
@@ -4019,8 +4025,8 @@ resourcestring
   // add to package dialog
   lisA2PInvalidFilename = 'Invalid filename';
   lisA2PTheFilenameIsAmbiguousPleaseSpecifiyAFilename = 'The filename "%s" '
-    +'is ambiguous, because the package has no default directory yet.%s'
-    +'Please specify a filename with full path.';
+    +'is ambiguous, because the package has no default directory yet.'
+    +'%sPlease specify a filename with full path.';
   lisA2PFileNotUnit = 'File not unit';
   lisA2PPascalUnitsMustHaveTheExtensionPPOrPas = 'Pascal units must have the '
     +'extension .pp or .pas';
@@ -4033,12 +4039,14 @@ resourcestring
   lisA2PFileAlreadyExistsInThePackage = 'File "%s" already exists in the package.';
   lisA2PAmbiguousUnitName = 'Ambiguous Unit Name';
   lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent = 'The unit name "%s" is the '
-    +'same as a registered component.%sUsing this can cause strange error messages.';
+    +'same as a registered component.'
+    +'%sUsing this can cause strange error messages.';
   lisA2PExistingFile2 = 'Existing file: "%s"';
   lisA2PFileAlreadyExists = 'File already exists';
   lisA2PFileIsUsed = 'File is used';
   lisA2PTheFileIsPartOfTheCurrentProjectItIsABadIdea = 'The file "%s" is part of the '
-    +'current project.%sIt is a bad idea to share files between projects and packages.';
+    +'current project.'
+    +'%sIt is a bad idea to share files between projects and packages.';
   lisA2PTheMaximumVersionIsLowerThanTheMinimimVersion = 'The Maximum Version '
     +'is lower than the Minimim Version.';
   lisA2PThePackageNameIsInvalidPleaseChooseAnExisting = 'The package name "%s" '
@@ -4151,12 +4159,14 @@ resourcestring
   lisPckEditInstall = 'Install';
   lisPckEditUninstall = 'Uninstall';
   lisPckEditViewPackageSource = 'View Package Source';
-  lisPckEditPackageHasChangedSavePackage = 'Package "%s" has changed.%sSave package?';
+  lisPckEditPackageHasChangedSavePackage = 'Package "%s" has changed.'
+    +'%sSave package?';
   lisPckEditPage = '%s, Page: %s';
   lisPckEditRemoveFile2 = 'Remove file?';
   lisPckEditRemoveFileFromPackage = 'Remove file "%s"%sfrom package "%s"?';
   lisPckEditRemoveDependency2 = 'Remove Dependency?';
-  lisPckEditRemoveDependencyFromPackage = 'Remove dependency "%s"%sfrom package "%s"?';
+  lisPckEditRemoveDependencyFromPackage = 'Remove dependency "%s"'
+    +'%sfrom package "%s"?';
   lisRemoveDependenciesFromPackage = 'Remove %s dependencies from package "%s"?';
   lisPckEditInvalidMinimumVersion = 'Invalid minimum version';
   lisPckEditTheMinimumVersionIsNotAValidPackageVersion = 'The minimum '

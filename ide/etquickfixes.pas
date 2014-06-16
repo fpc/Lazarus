@@ -404,8 +404,8 @@ begin
   if Code=nil then exit;
 
   if not IsIdentifierInCode(Code,Msg.Column,Msg.Line,Identifier,
-    Format(lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated, [Identifier, Code
-      .Filename, IntToStr(Msg.Line), IntToStr(Msg.Column), LineEnding]))
+    Format(lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated,
+           [Identifier, Code.Filename, IntToStr(Msg.Line), IntToStr(Msg.Column), LineEnding]))
   then exit;
 
   if not CodeToolBoss.RemoveIdentifierDefinition(Code,Msg.Column,Msg.Line) then
