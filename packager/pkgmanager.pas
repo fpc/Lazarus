@@ -1359,9 +1359,8 @@ begin
       ConflictPkg:=TObject(PathList[PathList.Count-1]) as TLazPackage;
       DoShowPackageGraphPathList(PathList);
       Result:=IDEMessageDialogAb(lisPkgMangCircularDependencies,
-        Format(lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec, [
-          ConflictPkg.Name, ConflictPkg.GetOutputDirectory, LineEnding+LineEnding,
-          LineEnding, LineEnding, LineEnding]),
+        Format(lisPkgMangThePackageIsCompiledAutomaticallyAndItsOutputDirec,
+          [ConflictPkg.Name, ConflictPkg.GetOutputDirectory, LineEnding+LineEnding, LineEnding]),
         mtError,Btns,ShowAbort);
       if not ShowAbort then
         Result := mrCancel; // User confirmed error, implicitly cancel the action
@@ -1373,14 +1372,13 @@ begin
       PkgFile1,PkgFile2,ConflictPkg)
     then begin
       if (PkgFile1<>nil) and (PkgFile2<>nil) then begin
-        s:=Format(lisPkgMangThereAreTwoUnitsWithTheSameName1From2From, [LineEnding,
-          LineEnding, PkgFile1.Filename, PkgFile1.LazPackage.IDAsString,
-          LineEnding, PkgFile2.Filename, PkgFile2.LazPackage.IDAsString,
-          LineEnding, LineEnding]);
+        s:=Format(lisPkgMangThereAreTwoUnitsWithTheSameName1From2From,
+          [LineEnding+LineEnding, PkgFile1.Filename, PkgFile1.LazPackage.IDAsString,
+           LineEnding, PkgFile2.Filename, PkgFile2.LazPackage.IDAsString]) + LineEnding;
       end else if (PkgFile1<>nil) and (ConflictPkg<>nil) then begin
-        s:=Format(lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2, [LineEnding,
-          LineEnding, PkgFile1.Filename, PkgFile1.LazPackage.IDAsString,
-          LineEnding, ConflictPkg.IDAsString, LineEnding, LineEnding]);
+        s:=Format(lisPkgMangThereIsAUnitWithTheSameNameAsAPackage1From2,
+          [LineEnding+LineEnding, PkgFile1.Filename, PkgFile1.LazPackage.IDAsString,
+           LineEnding, ConflictPkg.IDAsString]) + LineEnding;
       end else
         s:='Internal inconsistency FindAmbiguousUnits: '
           +'Please report this bug and how you got here.'+LineEnding;
@@ -1397,11 +1395,11 @@ begin
       @PackageGraphFindFPCUnit,PkgFile1,ConflictPkg)
     then begin
       if (ConflictPkg<>nil) then begin
-        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage, [LineEnding,
-          LineEnding, ConflictPkg.IDAsString, LineEnding, LineEnding]);
+        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameAsAPackage,
+          [LineEnding+LineEnding, ConflictPkg.IDAsString]) + LineEnding;
       end else if (PkgFile1<>nil) then begin
-        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameFrom, [LineEnding, LineEnding,
-          PkgFile1.Filename, PkgFile1.LazPackage.IDAsString, LineEnding, LineEnding]);
+        s:=Format(lisPkgMangThereIsAFPCUnitWithTheSameNameFrom,
+          [LineEnding+LineEnding, PkgFile1.Filename, PkgFile1.LazPackage.IDAsString]) + LineEnding;
       end else
         s:='Internal inconsistency FindFPCConflictUnits: '
           +'Please report this bug and how you got here.'+LineEnding;
@@ -2115,19 +2113,20 @@ begin
                                               AProject.FirstRequiredDependency);
   if MissingUnits<>nil then begin
     if Interactive then begin 
-      Msg:=Format(lisProbablyYouNeedToInstallSomePackagesForBeforeConti, [LineEnding,
-        LineEnding, LineEnding, LineEnding, LineEnding, LineEnding, LineEnding]);
+      Msg:=Format(lisProbablyYouNeedToInstallSomePackagesForBeforeConti,
+        [LineEnding+LineEnding, LineEnding, LineEnding+LineEnding]) + LineEnding+LineEnding;
       PkgList:=TObjectList.Create(false);
       try
         for i:=0 to MissingUnits.Count-1 do begin
           PkgFile:=TPkgFile(MissingUnits[i]);
           if PkgList.IndexOf(PkgFile.LazPackage)<0 then
             PkgList.Add(PkgFile.LazPackage);
-          Msg:=Format(lisUnitInPackage, [Msg, PkgFile.Unit_Name,
-            PkgFile.LazPackage.IDAsString, LineEnding]);
+          Msg:=Format(lisUnitInPackage,
+            [Msg, PkgFile.Unit_Name, PkgFile.LazPackage.IDAsString]) + LineEnding;
         end;
         Result:=IDEQuestionDialog(lisPackageNeedsInstallation,
-          Msg,mtWarning,[mrIgnore,'Continue without install',mrYes,'Install these packages',mrCancel,'Cancel','IsDefault']);
+          Msg,mtWarning,
+          [mrIgnore,'Continue without install',mrYes,'Install these packages',mrCancel,'Cancel','IsDefault']);
         if Result=mrIgnore then begin
           // continue
         end else if Result=mrYes then
@@ -3101,21 +3100,19 @@ var
         RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
         RequiredPackage:=TLazPackage(RedirectPackageDependency(RequiredPackage));
         if UnitOwner is TProject then begin
-          PackageAdditions:=Format(
-            lisPkgMangAddingNewDependencyForProjectPackage, [PackageAdditions,
-            TProject(UnitOwner).GetTitle, RequiredPackage.Name, LineEnding+LineEnding]);
+          PackageAdditions:=Format(lisPkgMangAddingNewDependencyForProjectPackage,
+            [PackageAdditions, TProject(UnitOwner).GetTitle, RequiredPackage.Name]) + LineEnding+LineEnding;
         end else if UnitOwner is TLazPackage then begin
-          PackageAdditions:=Format(
-            lisPkgMangAddingNewDependencyForPackagePackage, [PackageAdditions,
-            TLazPackage(UnitOwner).Name, RequiredPackage.Name, LineEnding+LineEnding]);
+          PackageAdditions:=Format(lisPkgMangAddingNewDependencyForPackagePackage,
+            [PackageAdditions, TLazPackage(UnitOwner).Name, RequiredPackage.Name]) + LineEnding+LineEnding;
         end;
       end;
     end;
     //DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses PackageAdditions=',PackageAdditions);
     Msg:='';
     if UsesAdditions<>'' then begin
-      Msg:=Format(lisPkgMangTheFollowingUnitsWillBeAddedToTheUsesSectionOf, [
-        Msg, LineEnding, UnitFilename, LineEnding, UsesAdditions, LineEnding+LineEnding]);
+      Msg:=Format(lisPkgMangTheFollowingUnitsWillBeAddedToTheUsesSectionOf,
+        [Msg, LineEnding, UnitFilename, LineEnding, UsesAdditions]) + LineEnding+LineEnding;
     end;
     if PackageAdditions<>'' then begin
       Msg:=Msg+PackageAdditions;
@@ -4084,7 +4081,7 @@ begin
   // ask user to rebuild Lazarus now
   Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
     Format(lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus,
-           [APackage.IDAsString, LineEnding, LineEnding, LineEnding]),
+           [APackage.IDAsString, LineEnding, LineEnding+LineEnding]),
     mtConfirmation,[mbYes,mbNo]);
   if Result<>mrYes then begin
     Result:=mrOk;
@@ -4166,7 +4163,7 @@ begin
       // ask user to rebuilt Lazarus now
       Result:=IDEMessageDialog(lisPkgMangRebuildLazarus,
         Format(lisPkgMangThePackageWasMarkedCurrentlyLazarus,
-               [APackage.IDAsString, LineEnding, LineEnding, LineEnding]),
+               [APackage.IDAsString, LineEnding, LineEnding+LineEnding]),
         mtConfirmation,[mbYes,mbNo]);
       if Result=mrNo then begin
         Result:=mrOk;

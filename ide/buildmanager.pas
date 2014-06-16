@@ -1391,8 +1391,8 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
     afaAsk:
       begin
         Result:=IDEMessageDialog(lisAmbiguousFileFound,
-          Format(lisThereIsAFileWithTheSameNameAndASimilarExtension, [LineEnding,
-               AFilename, LineEnding, AmbiguousFilename, LineEnding, LineEnding]),
+          Format(lisThereIsAFileWithTheSameNameAndASimilarExtension,
+                 [LineEnding, AFilename, LineEnding, AmbiguousFilename, LineEnding+LineEnding]),
           mtWarning,[mbYes,mbIgnore,mbAbort]);
         case Result of
         mrYes:    Result:=DeleteAmbiguousFile(AmbiguousFilename);
@@ -1475,7 +1475,7 @@ begin
         if EnvironmentOptions.AmbiguousFileAction=afaAsk then begin
           if IDEMessageDialog(lisDeleteAmbiguousFile,
             Format(lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete,
-                   [CurFilename, LineEnding, ShortFilename, LineEnding, LineEnding]),
+                   [CurFilename, LineEnding, ShortFilename, LineEnding+LineEnding]),
             mtConfirmation,[mbYes,mbNo])=mrNo
           then continue;
         end;

@@ -2381,8 +2381,8 @@ begin
   if CompareFilenames(SrcDir,DestDir)=0
   then begin
     IDEMessageDialog(lisInvalidPublishingDirectory,
-      Format(lisSourceDirectoryAndDestinationDirectoryAreTheSameMa, [SrcDir, LineEnding,
-          DestDir, LineEnding, LineEnding, LineEnding, LineEnding, LineEnding]),
+      Format(lisSourceDirectoryAndDestinationDirectoryAreTheSameMa,
+             [SrcDir, LineEnding, DestDir, LineEnding, LineEnding]),
       mtError, [mbCancel]);
     Result:=mrCancel;
     exit;
@@ -4868,7 +4868,7 @@ begin
     // this is a file, that was loaded last time, but was removed from disk
     Result:=IDEQuestionDialog(lisFileNotFound,
       Format(lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject,
-             [AFilename, LineEnding, LineEnding, LineEnding]),
+             [AFilename, LineEnding, LineEnding]),
       mtError, [mrIgnore, lisSkipFileAndContinueLoading,
                 mrAbort, lisAbortLoadingProject]);
     exit;
@@ -4887,7 +4887,7 @@ begin
   end;
 
   if IDEMessageDialog(lisFileNotFound,
-      Format(lisFileNotFoundDoYouWantToCreateIt,[AFilename,LineEnding])+LineEnding,
+      Format(lisFileNotFoundDoYouWantToCreateIt,[AFilename,LineEnding]),
       mtInformation,[mbYes,mbNo])=mrYes then
   begin
     // create new file

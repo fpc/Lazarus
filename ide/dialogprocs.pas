@@ -702,7 +702,7 @@ begin
   LazarusIDE.DoJumpToCodeToolBossError;
   if Ask then begin
     Result:=IDEQuestionDialog(lisCCOErrorCaption,
-      Format(lisTheCodetoolsFoundAnError, [LineEnding, ErrMsg, LineEnding]),
+      Format(lisTheCodetoolsFoundAnError, [LineEnding, ErrMsg]),
       mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort]);
     if Result=mrIgnore then Result:=mrCancel;
   end else begin

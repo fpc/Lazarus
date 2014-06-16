@@ -726,8 +726,7 @@ begin
   then begin
 
     if IDEMessageDialog(lisFileNotFound,
-      Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself,
-             [SrcFile, LineEnding, LineEnding, LineEnding]),
+      Format(lisTheFileWasNotFoundDoYouWantToLocateItYourself, [SrcFile, LineEnding]),
       mtConfirmation, [mbYes, mbNo]) <> mrYes
     then Exit;
 
@@ -2138,7 +2137,7 @@ begin
         else
           if IDEMessageDialog(lisLaunchingApplicationInvalid,
             Format(lisTheLaunchingApplicationBundleDoesNotExists,
-              [LaunchingCmdLine, LineEnding, LineEnding, LineEnding, LineEnding]),
+              [LaunchingCmdLine, LineEnding, LineEnding, LineEnding+LineEnding]),
             mtError, [mbYes, mbNo, mbCancel]) = mrYes then
           begin
             if not BuildBoss.CreateProjectApplicationBundle then Exit;
@@ -2161,7 +2160,7 @@ begin
         else begin
           IDEMessageDialog(lisLaunchingApplicationInvalid,
             Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta,
-                   [LaunchingCmdLine, LineEnding, LineEnding, LineEnding]),
+                   [LaunchingCmdLine, LineEnding, LineEnding+LineEnding]),
             mtError, [mbOK]);
           Exit;
         end;
@@ -2176,7 +2175,7 @@ begin
       else begin
         IDEMessageDialog(lisDebuggerInvalid,
           Format(lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro,
-            [EnvironmentOptions.DebuggerFilename, LineEnding, LineEnding, LineEnding]),
+            [EnvironmentOptions.DebuggerFilename, LineEnding, LineEnding+LineEnding]),
           mtError,[mbOK]);
         Exit;
       end;

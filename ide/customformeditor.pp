@@ -2015,7 +2015,7 @@ begin
     LFMFilename:=ChangeFileExt(TUnitInfo(List.ContextObject).Filename,'.lfm');
   end;
   if LFMFilename<>'' then
-    Msg:=Format(lisCFEInFile, [Msg, LFMFilename, LineEnding]);
+    Msg:=Format(lisCFEInFile, [LFMFilename]) + LineEnding;
 
   if List.CurReadErrorMsg<>'' then
     Msg:=Msg+List.CurReadErrorMsg+LineEnding;

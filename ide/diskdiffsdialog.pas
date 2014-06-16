@@ -293,10 +293,8 @@ begin
       APackage:=TLazPackage(FileOwner);
       if AltFilename<>'' then begin
         if CompareFilenames(AltFilename,APackage.Filename)<>0 then
-          Result^.Diff+=Format(lisLpkHasVanishedOnDiskUsingAsAlternative, [
-            LineEnding
-            +AltFilename+LineEnding
-            +LineEnding]);
+          Result^.Diff+=Format(lisLpkHasVanishedOnDiskUsingAsAlternative,
+                               [LineEnding+AltFilename+LineEnding]);
         Filename:=AltFilename;
       end
       else if APackage.LPKSource<>nil then

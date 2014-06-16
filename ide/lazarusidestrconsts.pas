@@ -675,7 +675,7 @@ resourcestring
   lisSkipFile = 'Skip file';
   lisUnableToTransformBinaryComponentStreamOfTIntoText = 'Unable to transform '
     +'binary component stream of %s:T%s into text.';
-  lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject = 'The file "%s"%swas not '
+  lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject = 'The file "%s" was not '
     +'found.%sIgnore will go on loading the project,%sAbort  will stop the loading.';
   lisSkipFileAndContinueLoading = 'Skip file and continue loading';
   lisAbortLoadingProject = 'Abort loading project';
@@ -684,8 +684,8 @@ resourcestring
   lisProjectInfoFileDetected = 'Project info file detected';
   lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP = 'The file %s seems '
     +'to be the program file of an existing Lazarus Project.';
-  lisTheFileSeemsToBeAProgramCloseCurrentProject = 'The file "%s"%sseems to '
-    +'be a program. Close current project and create a new Lazarus project '
+  lisTheFileSeemsToBeAProgramCloseCurrentProject = 'The file "%s" seems to '
+    +'be a program.%sClose current project and create a new Lazarus project '
     +'for this program?%s"No" will load the file as normal source.';
   lisProgramDetected = 'Program detected';
   lisUnableToConvertTextFormDataOfFileIntoBinaryStream = 'Unable to convert '
@@ -793,7 +793,7 @@ resourcestring
     +' It is recommended to use lowercase filename.%s%sRename file lowercase?';
   lisDeleteAmbiguousFile = 'Delete ambiguous file?';
   lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
-    +'found: "%s"%sThis file can be mistaken with "%s"%s%sDelete the ambiguous file?';
+    +'found: "%s"%sThis file can be mistaken with "%s"%sDelete the ambiguous file?';
   lisLazarusEditorV = 'Lazarus IDE v%s';
   lisnewProject = '(new project)';
   liscompiling = '%s (compiling ...)';
@@ -3633,8 +3633,8 @@ resourcestring
   lisCleanUpUnitPath = 'Clean up unit path?';
   lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt =
     'The directory "%s" is no longer needed in the unit path.%sRemove it?';
-  lisTheFileWasNotFoundDoYouWantToLocateItYourself = 'The file "%s"%swas '
-    +'not found.%sDo you want to locate it yourself ?%s';
+  lisTheFileWasNotFoundDoYouWantToLocateItYourself = 'The file "%s" was '
+    +'not found.%sDo you want to locate it yourself?';
   lisRunToFailed = 'Run-to failed';
   lisDbgMangNoDebuggerSpecified = 'No debugger specified';
   lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo = 'There is no '
@@ -3643,13 +3643,13 @@ resourcestring
   lisDbgMangSetTheBreakpointAnyway = 'Set the breakpoint anyway';
   lisLaunchingApplicationInvalid = 'Launching application invalid';
   lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta = 'The launching application '
-    +'"%s"%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local';
+    +'"%s"%sdoes not exist or is not executable.%sSee Run -> Run parameters -> Local';
   lisTheLaunchingApplicationBundleDoesNotExists = 'The Application Bundle %s'
     +'%sneeded for execution does not exist or is not executable.%sDo you want to create one?'
-    +'%s%sSee Project -> Project Options -> Application for settings.';
+    +'%sSee Project -> Project Options -> Application for settings.';
   lisDebuggerInvalid = 'Debugger invalid';
   lisTheDebuggerDoesNotExistsOrIsNotExecutableSeeEnviro = 'The debugger "%s"%s'
-    +'does not exist or is not executable.%s%sSee Tools -> Options -> Debugger options';
+    +'does not exist or is not executable.%sSee Tools -> Options -> Debugger options';
   lisUnableToRun = 'Unable to run';
   lisTheDestinationDirectoryDoesNotExistPleaseCheckTheP = 'The destination '
     +'directory "%s" does not exist.%sPlease check the project target file '
@@ -3851,21 +3851,25 @@ resourcestring
   lisPkgMangThePackageNameOfTheFileIsInvalid = 'The package name "%s" of%s'
     +'the file "%s" is invalid.';
   lisPkgMangPackageConflicts = 'Package conflicts';
-  lisPkgMangThereIsAlreadyAPackageLoadedFromFile = 'There is already a package "%s" '
-    +'loaded%sfrom file "%s".%sSee Package -> Package Graph.%sReplace is impossible.';
+  lisPkgMangThereIsAlreadyAPackageLoadedFromFile = 'There is already a package "%s" loaded'
+    +'%sfrom file "%s".'
+    +'%sSee Package -> Package Graph.'
+    +'%sReplace is impossible.';
   lisPkgMangSavePackage = 'Save package?';
   lisPkgMangLoadingPackageWillReplacePackage = 'Loading package %s will '
     +'replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave '
     +'old package %s?';
   lisPkgMangNewPackage = 'NewPackage';
-  lisProbablyYouNeedToInstallSomePackagesForBeforeConti = 'Probably you need '
-    +'to install some packages before continuing.%s%sWarning:%sThe '
-    +'project uses the following design time packages, which might be needed '
+  lisProbablyYouNeedToInstallSomePackagesForBeforeConti =
+     'Probably you need to install some packages before continuing.'
+    +'%sWarning:'
+    +'%sThe project uses the following design time packages, which might be needed '
     +'to open the form in the designer. If you continue, you might get errors '
     +'about missing components and the form loading will probably create very '
-    +'unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s';
+    +'unpleasant results.'
+    +'%sIt is recommended to cancel and install these packages first.';
   lisPackageNeedsInstallation = 'Package needs installation';
-  lisUnitInPackage = '%s unit %s in package %s%s';
+  lisUnitInPackage = '%s unit %s in package %s';
   lisPkgMangSkipThisPackage = 'Skip this package';
   lisPkgMangInvalidFileExtension = 'Invalid file extension';
   lisPkgMangTheFileIsNotALazarusPackage = 'The file "%s" is not a Lazarus package.';
@@ -3900,9 +3904,9 @@ resourcestring
   lisErrorLoadingFile2 = 'Error loading file "%s":';
   lisLoadingFailed = 'Loading %s failed.';
   lisPkgMangAddingNewDependencyForProjectPackage = '%sAdding new Dependency '
-    +'for project %s: package %s%s';
+    +'for project %s: package %s';
   lisPkgMangAddingNewDependencyForPackagePackage = '%sAdding new Dependency '
-    +'for package %s: package %s%s';
+    +'for package %s: package %s';
   lisPkgMangTheFollowingUnitsWillBeAddedToTheUsesSectionOf = '%sThe following '
     +'units will be added to the uses section of%s%s:%s%s%s';
   lisConfirmChanges = 'Confirm changes';
@@ -3924,9 +3928,10 @@ resourcestring
     +'the package %s will automatically install the package:';
   lisPkgMangRebuildLazarus = 'Rebuild Lazarus?';
   lisPkgMangThePackageWasMarkedForInstallationCurrentlyLazarus = 'The package "%s" '
-    +'was marked for installation.%sCurrently Lazarus only supports '
-    +'static linked packages. The real installation needs rebuilding and '
-    +'restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?';
+    +'was marked for installation.'
+    +'%sCurrently Lazarus only supports static linked packages. '
+    +'The real installation needs rebuilding and restarting of Lazarus.'
+    +'%sDo you want to rebuild Lazarus now?';
   lisPkgMangPackageIsRequired = 'Package is required';
   lisPkgMangThePackageIsRequiredByWhichIsMarkedForInstallation = 'The package %s '
     +'is required by %s, which is marked for installation.%sSee package graph.';
@@ -3934,7 +3939,8 @@ resourcestring
   lisPkgMangUninstallPackage2 = 'Uninstall package %s?';
   lisPkgMangThePackageWasMarkedCurrentlyLazarus = 'The package "%s" was marked.'
     +'%sCurrently Lazarus only supports static linked packages. The real un-installation '
-    +'needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?';
+    +'needs rebuilding and restarting of Lazarus.'
+    +'%sDo you want to rebuild Lazarus now?';
   lisPkgMangThisIsAVirtualPackageItHasNoSourceYetPleaseSaveThe = 'This is a '
     +'virtual package. It has no source yet. Please save the package first.';
   lisPkgMangPleaseCompileThePackageFirst = 'Please compile the package first.';
@@ -4678,7 +4684,7 @@ resourcestring
   lisOpenSymlink = 'Open symlink';
   lisFileLinkError = 'File link error';
   lisWriteErrorFile = 'Write error: %s%sFile: %s%s%s';
-  lisTheCodetoolsFoundAnError = 'The Codetools found an error:%s%s%s';
+  lisTheCodetoolsFoundAnError = 'The Codetools found an error:%s%s';
   lisIgnoreAndContinue = 'Ignore and continue';
   lisNotImplemented = 'Not implemented';
   lisNotImplementedYet = 'Not implemented yet:%s%s';
@@ -4866,9 +4872,9 @@ resourcestring
   lisFilter3 = 'Filter: %s';
   lisInvalidPublishingDirectory = 'Invalid publishing Directory';
   lisSourceDirectoryAndDestinationDirectoryAreTheSameMa = 'Source directory '
-    +'"%s"%sand destination directory "%s"%sare the same.%s%sMaybe you '
+    +'"%s"%sand destination directory "%s"%sare the same. Maybe you '
     +'misunderstand this feature.%sIt will clean/recreate the destination '
-    +'directory%sand copies the package/project into it.';
+    +'directory and copy the package/project into it.';
   lisClearDirectory = 'Clear Directory?';
   lisInOrderToCreateACleanCopyOfTheProjectPackageAllFil = 'In order to create '
     +'a clean copy of the project/package, all files in the following '
@@ -5382,7 +5388,7 @@ resourcestring
   lisCFEStream = '%sStream=%s';
   lisCFERoot = '%sRoot=%s:%s';
   lisCFEClassNotFound = '%s%sClass "%s" not found.';
-  lisCFEInFile = '%sIn file %s%s';
+  lisCFEInFile = 'In file %s';
   lisCFETheComponentEditorOfClassHasCreatedTheError = 'The component editor '
     +'of class "%s"has created the error:%s"%s"';
   lisShowSetupDialogForMostImportantSettings = 'Show setup dialog for most '

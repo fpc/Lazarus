@@ -347,7 +347,7 @@ begin
     if IDEComponentPalette.FindComponent(AnUnitName)<>nil then begin
       if IDEMessageDialog(lisA2PAmbiguousUnitName,
         Format(lisA2PTheUnitNameIsTheSameAsAnRegisteredComponent,
-               ['"', AnUnitName, '"', LineEnding]),
+               [AnUnitName, LineEnding]),
         mtWarning,[mbCancel,mbIgnore])<>mrIgnore
       then
         exit;
