@@ -990,6 +990,7 @@ begin
   Clear;
   fRootOptGroup.Free;
   fGenStrings.Free;
+  CurrentCategories:=nil;
   fSupportedCategories.Free;
   fInvalidOptions.Free;
   fDefines.Free;
@@ -1415,7 +1416,7 @@ procedure TCompilerOptThread.StartParsing;
 begin
   if fStartedOnce then
     WaitFor;
-  fReader.CompilerExecutable:=LazarusIDE.GetFPCompilerFilename;;
+  fReader.CompilerExecutable:=LazarusIDE.GetFPCompilerFilename;
   fReader.UpdateTargetParam;
   fCompPath:=fReader.CompilerExecutable;
   fCompParams:=fReader.ParsedTarget;
