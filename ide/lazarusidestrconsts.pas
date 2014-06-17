@@ -1328,6 +1328,10 @@ resourcestring
   lisAlwaysIgnore = 'Always ignore';
   // OI colors
   dlgBackColor = 'Background';
+  lisToolHeaderRunning = 'Tool Header: Running';
+  lisToolHeaderSuccess = 'Tool Header: Success';
+  lisToolHeaderFailed = 'Tool Header: Failed';
+  lisToolHeaderScrolledUp = 'Tool Header: Scrolled up';
   dlgSubPropColor = 'SubProperties';
   dlgReferenceColor = 'Reference';
   dlgValueColor = 'Value';

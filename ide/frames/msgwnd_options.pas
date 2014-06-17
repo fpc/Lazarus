@@ -84,10 +84,10 @@ procedure TMsgWndOptionsFrame.MWColorListBoxGetColors(
   Sender: TCustomColorListBox; Items: TStrings);
 begin
   Items.Add(dlgBackColor);
-  Items.Add('Tool Header: Running');
-  Items.Add('Tool Header: Success');
-  Items.Add('Tool Header: Failed');
-  Items.Add('Tool Header: Scrolled up');
+  Items.Add(lisToolHeaderRunning);
+  Items.Add(lisToolHeaderSuccess);
+  Items.Add(lisToolHeaderFailed);
+  Items.Add(lisToolHeaderScrolledUp);
 end;
 
 procedure TMsgWndOptionsFrame.MWColorBoxChange(Sender: TObject);
