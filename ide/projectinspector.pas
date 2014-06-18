@@ -31,7 +31,12 @@
     TProjectInspectorForm is the form of the project inspector.
 
   ToDo:
-    - show lfm/lrs files as sub items
+    - draw red line for missing files
+    - drop files
+    - multi select
+      - popup menu
+      - delete files
+      - delete deps
     - dnd move
     - project groups:
       - activate

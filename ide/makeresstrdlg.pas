@@ -441,10 +441,10 @@ var
   NewSource, NewValue: string;
 begin
   GetNewSource(NewSource,NewValue);
-  SrcPreviewSynEdit.Text:=NewSource+#13#10
+  SrcPreviewSynEdit.Text:=NewSource+LineEnding
      +StringOfChar('-',
                   CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.LineLength)
-     +#13#10
+     +LineEnding
      +CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
         GetIdentifier+' = '''+NewValue+'''',0);
 end;
@@ -544,7 +544,7 @@ begin
      Code,EndPos.X,EndPos.Y,FormatStringConstant,FormatParameters,
      StartInStringConst,EndInStringConst)
   then begin
-    SrcPreviewSynEdit.Text:='Error:'#13+CodeToolBoss.ErrorMessage;
+    SrcPreviewSynEdit.Text:=lisCCOErrorCaption+':'#13+CodeToolBoss.ErrorMessage;
     exit;
   end;
   if FormatParameters='' then
