@@ -167,7 +167,9 @@ begin
         begin
           // issue #25473, compositing manager eg. Mutter (Mint 16) makes
           // complete mess with lcl<->gtk2<->x11 when our form is designed.
-          if (csDesigning in ACtl.ComponentState) then
+          if (csDesigning in ACtl.ComponentState) and
+          // issue #26349.This patch is related only to Mint window manager !
+            (Copy(Gtk2WidgetSet.GetWindowManager,1,6) = 'mutter') then
           begin
             gdk_window_get_geometry(event^.configure.window, @winX, @winY, @winW, @winH, nil);
             if (winW <> event^.configure.width) or (winH <> event^.configure.height) then
