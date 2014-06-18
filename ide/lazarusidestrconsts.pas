@@ -5767,6 +5767,8 @@ resourcestring
   lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated = '%s not found in %s at '
     +'line %s, column %s.%sMaybe the message is outdated.';
   lisShowAbstractMethodsOf = 'Show abstract methods of "%s"';
+  lisCopyMoveFileToDirectory = 'Copy/Move File to Directory';
+  lisSelectTargetDirectory = 'Select target directory';
 
 implementation
 

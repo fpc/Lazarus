@@ -50,10 +50,11 @@ const
   PackageEditorMenuFilesRootName = 'PackageEditorFiles';
   PackageEditorWindowPrefix = 'PackageEditor_';
 var
-  // single file
+  // selected files
   PkgEditMenuOpenFile: TIDEMenuCommand;
   PkgEditMenuRemoveFile: TIDEMenuCommand;
   PkgEditMenuReAddFile: TIDEMenuCommand;
+  PkgEditMenuCopyMoveToDirectory: TIDEMenuCommand;
   PkgEditMenuEditVirtualUnit: TIDEMenuCommand;
   PkgEditMenuSectionFileType: TIDEMenuSection;
 
@@ -72,7 +73,7 @@ var
   PkgEditMenuDependencyClearStoredFileName: TIDEMenuCommand;
   PkgEditMenuCleanDependencies: TIDEMenuCommand;
 
-  // multi files
+  // all files
   PkgEditMenuSortFiles: TIDEMenuCommand;
   PkgEditMenuFixFilesCase: TIDEMenuCommand;
   PkgEditMenuShowMissingFiles: TIDEMenuCommand;
@@ -214,6 +215,7 @@ type
     procedure CompileAllCleanClick(Sender: TObject);
     procedure CompileBitBtnClick(Sender: TObject);
     procedure CompileCleanClick(Sender: TObject);
+    procedure CopyMoveToDirMenuItemClick(Sender: TObject);
     procedure CreateMakefileClick(Sender: TObject);
     procedure CreateFpmakeFileClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
@@ -493,12 +495,13 @@ begin
   PackageEditorMenuRoot     :=RegisterIDEMenuRoot(PackageEditorMenuRootName);
   PackageEditorMenuFilesRoot:=RegisterIDEMenuRoot(PackageEditorMenuFilesRootName);
 
-  // register the section for operations on single files
+  // register the section for operations on selected files
   PkgEditMenuSectionFile:=RegisterIDEMenuSection(PackageEditorMenuFilesRoot,'File');
   AParent:=PkgEditMenuSectionFile;
   PkgEditMenuOpenFile:=RegisterIDEMenuCommand(AParent,'Open File',lisOpenFile);
   PkgEditMenuRemoveFile:=RegisterIDEMenuCommand(AParent,'Remove File',lisPckEditRemoveFile);
   PkgEditMenuReAddFile:=RegisterIDEMenuCommand(AParent,'ReAdd File',lisPckEditReAddFile);
+  PkgEditMenuCopyMoveToDirectory:=RegisterIDEMenuCommand(AParent, 'Copy/Move File to Directory', lisCopyMoveFileToDirectory);
   PkgEditMenuEditVirtualUnit:=RegisterIDEMenuCommand(AParent,'Edit Virtual File',lisPEEditVirtualUnit);
   PkgEditMenuSectionFileType:=RegisterIDESubMenu(AParent,'File Type',lisAF2PFileType);
 
@@ -721,11 +724,12 @@ begin
 
     PkgEditMenuSectionFileType.Clear;
 
-    // items for single files, under section PkgEditMenuSectionFile
+    // items for selected files, under section PkgEditMenuSectionFile
     PkgEditMenuSectionFile.Visible:=SelFileCount>0;
     if PkgEditMenuSectionFile.Visible then begin
       SetItem(PkgEditMenuOpenFile,@OpenFileMenuItemClick);
       SetItem(PkgEditMenuReAddFile,@ReAddMenuItemClick,SingleSelectedRemoved);
+      SetItem(PkgEditMenuCopyMoveToDirectory,@CopyMoveToDirMenuItemClick,(SelRemovedFileCount=0) and LazPackage.HasDirectory);
       SetItem(PkgEditMenuRemoveFile,@RemoveBitBtnClick,SelRemovedFileCount>0,RemoveBitBtn.Enabled);
       AddFileTypeMenuItem;
       SetItem(PkgEditMenuEditVirtualUnit,@EditVirtualUnitMenuItemClick,
@@ -1717,6 +1721,24 @@ end;
 procedure TPackageEditorForm.CompileCleanClick(Sender: TObject);
 begin
   DoCompile(true,false);
+end;
+
+procedure TPackageEditorForm.CopyMoveToDirMenuItemClick(Sender: TObject);
+var
+  SelDirDlg: TSelectDirectoryDialog;
+  TargetDir: String;
+begin
+  SelDirDlg:=TSelectDirectoryDialog.Create(nil);
+  try
+    SelDirDlg.InitialDir:=LazPackage.DirectoryExpanded;
+    SelDirDlg.Title:=lisSelectTargetDirectory;
+    SelDirDlg.Options:=SelDirDlg.Options+[ofPathMustExist,ofFileMustExist];
+    if not SelDirDlg.Execute then exit;
+    TargetDir:=CleanAndExpandDirectory(SelDirDlg.FileName);
+    MoveFiles(Self,TargetDir);
+  finally
+    SelDirDlg.Free;
+  end;
 end;
 
 procedure TPackageEditorForm.CompileBitBtnClick(Sender: TObject);
