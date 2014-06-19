@@ -38,8 +38,8 @@ unit ProcessDebugger;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, UTF8Process, DbgIntfDebuggerBase, Process, Debugger, LCLProc,
-  BaseDebugManager, Dialogs, ProcessList;
+  Classes, SysUtils, FileUtil, UTF8Process, LazFileUtils, DbgIntfDebuggerBase,
+  Process, Debugger, LCLProc, BaseDebugManager, Dialogs, ProcessList;
 
 type
 
@@ -107,7 +107,7 @@ begin
 
   if FProcess <> nil
   then begin
-    MessageDlg('Debugger', Format('There is already a process running: %s', [FProcess.CommandLine]), mtError, [mbOK], 0);
+    MessageDlg('Debugger', Format('There is already a process running: %s', [FProcess.{%H-}CommandLine]), mtError, [mbOK], 0);
     Result := False;
     Exit;
   end;
@@ -118,7 +118,8 @@ begin
     TDBGProcess(FProcess).OnDestroy := @ProcessDestroyed;
     GetDefaultProcessList.Add(FProcess);
 
-    FProcess.CommandLine := '"'+FileName + '" ' + Arguments;
+    FProcess.Executable := FileName;
+    SplitCmdLineParams(Arguments,FProcess.Parameters);
     FProcess.CurrentDirectory := WorkingDir;
     FProcess.Environment.Assign(Environment);
     if ShowConsole
