@@ -2523,6 +2523,7 @@ resourcestring
   uemReadOnly = 'Read Only';
   uemShowLineNumbers = 'Show Line Numbers';
   lisDisableI18NForLFM = 'Disable I18N for LFM';
+  lisEnableI18NForLFM = 'Enable I18N for LFM';
   uemDebugWord = 'Debug';
   lisExtremelyVerbose = 'Extremely Verbose';
   lisVeryVerbose = 'Very Verbose';

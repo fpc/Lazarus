@@ -139,7 +139,8 @@ type
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure RemoveNonExistingFilesMenuItemClick(Sender: TObject);
     procedure SortAlphabeticallyButtonClick(Sender: TObject);
-    procedure ToggleI18NForLFMMenuItemClick(Sender: TObject);
+    procedure EnableI18NForLFMMenuItemClick(Sender: TObject);
+    procedure DisableI18NForLFMMenuItemClick(Sender: TObject);
   private
     FIdleConnected: boolean;
     FOnAddDependency: TAddProjInspDepEvent;
@@ -186,6 +187,7 @@ type
     procedure UpdateRequiredPackages;
     procedure OnProjectBeginUpdate(Sender: TObject);
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
+    procedure EnableI18NForSelectedLFM(TheEnable: boolean);
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure IdleHandler(Sender: TObject; var Done: Boolean);
@@ -431,55 +433,90 @@ var
   end;
 
 var
-  CurFile: TUnitInfo;
-  CurDependency: TPkgDependency;
-  Item: TMenuItem;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPINodeData;
+  Item: TObject;
+  CanRemoveCount: Integer;
+  CanOpenCount: Integer;
+  HasLFMCount: Integer;
+  CurUnitInfo: TUnitInfo;
+  DisabledI18NForLFMCount: Integer;
+  CanReAddCount: Integer;
+  SingleSelectedDep: TPkgDependency;
+  DepCount: Integer;
 begin
   ItemCnt:=0;
-  CurFile:=GetSelectedFile;
-  CurDependency:=GetSelectedDependency;
+
+  CanRemoveCount:=0;
+  CanOpenCount:=0;
+  HasLFMCount:=0;
+  DisabledI18NForLFMCount:=0;
+  CanReAddCount:=0;
+  SingleSelectedDep:=nil;
+  DepCount:=0;
+  for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+    TVNode:=ItemsTreeView.Selections[i];
+    if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+    if Item is TUnitInfo then begin
+      CurUnitInfo:=TUnitInfo(Item);
+      inc(CanOpenCount);
+      if CurUnitInfo<>LazProject.MainUnitInfo then
+        inc(CanRemoveCount);
+      if FilenameIsPascalSource(CurUnitInfo.Filename)
+      and FileExistsCached(ChangeFileExt(CurUnitInfo.Filename,'.lfm')) then begin
+        inc(HasLFMCount);
+        if CurUnitInfo.DisableI18NForLFM then
+          inc(DisabledI18NForLFMCount);
+      end;
+    end else if Item is TPkgDependency then begin
+      inc(DepCount);
+      if DepCount=1 then
+        SingleSelectedDep:=TPkgDependency(Item)
+      else
+        SingleSelectedDep:=nil;
+      if NodeData.Removed then begin
+        inc(CanReAddCount);
+      end else begin
+        inc(CanRemoveCount);
+        inc(CanOpenCount);
+      end;
+    end;
+  end;
 
   // Section headers
-  if (CurFile = nil) and (CurDependency = nil) then begin
-    AddPopupMenuItem(lisBtnDlgAdd, @AddBitBtnClick, AddBitBtn.Enabled);
-    AddPopupMenuItem(lisRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick,
-                     not LazProject.IsVirtual);
+  AddPopupMenuItem(lisOpen, @OpenButtonClick, CanOpenCount>0);
+  AddPopupMenuItem(lisBtnDlgAdd, @AddBitBtnClick, AddBitBtn.Enabled);
+  AddPopupMenuItem(lisRemove, @RemoveBitBtnClick, CanRemoveCount>0);
+  AddPopupMenuItem(lisRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick,
+                   not LazProject.IsVirtual);
+
+  // files section
+  if LazProject.EnableI18N and LazProject.EnableI18NForLFM
+  and (HasLFMCount>0) then begin
+    AddPopupMenuItem(lisEnableI18NForLFM,
+      @EnableI18NForLFMMenuItemClick, DisabledI18NForLFMCount<HasLFMCount);
+    AddPopupMenuItem(lisDisableI18NForLFM,
+      @DisableI18NForLFMMenuItemClick, DisabledI18NForLFMCount>0);
   end;
 
-  // Item under files section
-  if CurFile<>nil then begin
-    AddPopupMenuItem(lisOpenFile, @OpenButtonClick, true);
-    AddPopupMenuItem(lisPckEditRemoveFile, @RemoveBitBtnClick, RemoveBitBtn.Enabled);
-    if FilenameIsPascalSource(CurFile.Filename) then begin
-      Item:=AddPopupMenuItem(lisDisableI18NForLFM,@ToggleI18NForLFMMenuItemClick,true);
-      Item.Checked:=CurFile.DisableI18NForLFM;
-      Item.ShowAlwaysCheckable:=true;
-    end;
-  end;
-
-  // Item under required packages section
-  if CurDependency<>nil then begin
-    AddPopupMenuItem(lisMenuOpenPackage, @OpenButtonClick, true);
-    if CurDependency.Removed then begin
-      AddPopupMenuItem(lisPckEditReAddDependency, @ReAddMenuItemClick,
-                       AddBitBtn.Enabled);
-    end else begin
-      AddPopupMenuItem(lisPckEditRemoveDependency, @RemoveBitBtnClick,
-                       RemoveBitBtn.Enabled);
-      AddPopupMenuItem(lisPckEditMoveDependencyUp, @MoveDependencyUpClick,
-                       (CurDependency.PrevRequiresDependency<>nil));
-      AddPopupMenuItem(lisPckEditMoveDependencyDown, @MoveDependencyDownClick,
-                       (CurDependency.NextRequiresDependency<>nil));
-      AddPopupMenuItem(lisPckEditStoreFileNameAsDefaultForThisDependency,
-                       @SetDependencyDefaultFilenameMenuItemClick,
-                       (CurDependency.RequiredPackage<>nil));
-      AddPopupMenuItem(lisPckEditStoreFileNameAsPreferredForThisDependency,
-                       @SetDependencyPreferredFilenameMenuItemClick,
-                       (CurDependency.RequiredPackage<>nil));
-      AddPopupMenuItem(lisPckEditClearDefaultPreferredFilenameOfDependency,
-                       @ClearDependencyFilenameMenuItemClick,
-                       (CurDependency.DefaultFilename<>''));
-    end;
+  // Required packages section
+  if CanReAddCount>0 then
+    AddPopupMenuItem(lisPckEditReAddDependency, @ReAddMenuItemClick, true);
+  if SingleSelectedDep<>nil then begin
+    AddPopupMenuItem(lisPckEditMoveDependencyUp, @MoveDependencyUpClick,
+                     (SingleSelectedDep.PrevRequiresDependency<>nil));
+    AddPopupMenuItem(lisPckEditMoveDependencyDown, @MoveDependencyDownClick,
+                     (SingleSelectedDep.NextRequiresDependency<>nil));
+    AddPopupMenuItem(lisPckEditStoreFileNameAsDefaultForThisDependency,
+                     @SetDependencyDefaultFilenameMenuItemClick,
+                     (SingleSelectedDep.RequiredPackage<>nil));
+    AddPopupMenuItem(lisPckEditStoreFileNameAsPreferredForThisDependency,
+                     @SetDependencyPreferredFilenameMenuItemClick,
+                     (SingleSelectedDep.RequiredPackage<>nil));
+    AddPopupMenuItem(lisPckEditClearDefaultPreferredFilenameOfDependency,
+                     @ClearDependencyFilenameMenuItemClick,
+                     (SingleSelectedDep.DefaultFilename<>''));
   end;
 
   while ItemsPopupMenu.Items.Count>ItemCnt do
@@ -597,13 +634,14 @@ begin
   SortAlphabetically:=SortAlphabeticallyButton.Down;
 end;
 
-procedure TProjectInspectorForm.ToggleI18NForLFMMenuItemClick(Sender: TObject);
-var
-  CurFile: TUnitInfo;
+procedure TProjectInspectorForm.EnableI18NForLFMMenuItemClick(Sender: TObject);
 begin
-  CurFile:=GetSelectedFile;
-  if CurFile=nil then exit;
-  CurFile.DisableI18NForLFM:=not CurFile.DisableI18NForLFM;
+  EnableI18NForSelectedLFM(true);
+end;
+
+procedure TProjectInspectorForm.DisableI18NForLFMMenuItemClick(Sender: TObject);
+begin
+  EnableI18NForSelectedLFM(false);
 end;
 
 procedure TProjectInspectorForm.SetLazProject(const AValue: TProject);
@@ -877,6 +915,24 @@ begin
   EndUpdate;
 end;
 
+procedure TProjectInspectorForm.EnableI18NForSelectedLFM(TheEnable: boolean);
+var
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPINodeData;
+  Item: TObject;
+  CurUnitInfo: TUnitInfo;
+begin
+  for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+    TVNode:=ItemsTreeView.Selections[i];
+    if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+    if not (Item is TUnitInfo) then continue;
+    CurUnitInfo:=TUnitInfo(Item);
+    if not FilenameIsPascalSource(CurUnitInfo.Filename) then continue;
+    CurUnitInfo.DisableI18NForLFM:=not TheEnable;
+  end;
+end;
+
 procedure TProjectInspectorForm.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
@@ -989,19 +1045,39 @@ end;
 
 procedure TProjectInspectorForm.UpdateButtons(Immediately: boolean);
 var
-  CurFile: TUnitInfo;
-  CurDependency: TPkgDependency;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPINodeData;
+  Item: TObject;
+  CanRemoveCount: Integer;
+  CurUnitInfo: TUnitInfo;
+  CanOpenCount: Integer;
 begin
   if not CanUpdate(pifNeedUpdateButtons) then exit;
 
   if LazProject<>nil then begin
     AddBitBtn.Enabled:=true;
-    CurFile:=GetSelectedFile;
-    CurDependency:=GetSelectedDependency;
-    RemoveBitBtn.Enabled:=((CurFile<>nil) and (CurFile<>LazProject.MainUnitInfo))
-                      or ((CurDependency<>nil) and (not CurDependency.Removed));
-    OpenButton.Enabled:=((CurFile<>nil)
-                     or ((CurDependency<>nil) and (not CurDependency.Removed)));
+
+    CanRemoveCount:=0;
+    CanOpenCount:=0;
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if Item is TUnitInfo then begin
+        CurUnitInfo:=TUnitInfo(Item);
+        inc(CanOpenCount);
+        if CurUnitInfo<>LazProject.MainUnitInfo then
+          inc(CanRemoveCount);
+      end else if Item is TPkgDependency then begin
+        if not NodeData.Removed then begin
+          inc(CanRemoveCount);
+          inc(CanOpenCount);
+        end;
+      end;
+    end;
+
+    RemoveBitBtn.Enabled:=(CanRemoveCount>0);
+    OpenButton.Enabled:=(CanOpenCount>0);
     OptionsBitBtn.Enabled:=true;
   end else begin
     AddBitBtn.Enabled:=false;
