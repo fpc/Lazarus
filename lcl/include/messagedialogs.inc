@@ -129,8 +129,8 @@ var
 begin
   Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount,
     False, mbYes);
-  Result := DialogResults[PromptUser(aMsg, DialogIds[DlgType], Btns, ButtonCount,
-    DefaultIndex, CancelValue)];
+  Result := DialogResults[PromptUser(ConvertLineEndings(aMsg),
+    DialogIds[DlgType], Btns, ButtonCount, DefaultIndex, CancelValue)];
   ReallocMem(Btns, 0);
 end;
 
@@ -144,8 +144,8 @@ var
 begin
   Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount,
     False, mbYes);
-  Result := DialogResults[PromptUser(aCaption, aMsg, DialogIds[DlgType], Btns,
-    ButtonCount, DefaultIndex, CancelValue)];
+  Result := DialogResults[PromptUser(aCaption, ConvertLineEndings(aMsg),
+    DialogIds[DlgType], Btns, ButtonCount, DefaultIndex, CancelValue)];
   ReallocMem(Btns, 0);
 end;
 
@@ -159,8 +159,8 @@ var
 begin
   Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount,
     True, DefaultButton);
-  Result := DialogResults[PromptUser(aCaption, aMsg, DialogIds[DlgType], Btns,
-    ButtonCount, DefaultIndex, CancelValue)];
+  Result := DialogResults[PromptUser(aCaption, ConvertLineEndings(aMsg),
+    DialogIds[DlgType], Btns, ButtonCount, DefaultIndex, CancelValue)];
   ReallocMem(Btns, 0);
 end;
 
@@ -181,8 +181,8 @@ var
 begin
   Btns := GetPromptUserButtons(Buttons, CancelValue, DefaultIndex, ButtonCount,
     False, mbYes);
-  Result := DialogResults[PromptUserAtXY(aMsg, DialogIds[DlgType], Btns,
-    ButtonCount, DefaultIndex, CancelValue, X, Y)];
+  Result := DialogResults[PromptUserAtXY(ConvertLineEndings(aMsg),
+    DialogIds[DlgType], Btns, ButtonCount, DefaultIndex, CancelValue, X, Y)];
   ReallocMem(Btns, 0);
 end;
 
@@ -197,17 +197,17 @@ end;
 
 procedure ShowMessage(const aMsg: string);
 begin
-  NotifyUser(aMsg, idDialogBase);
+  NotifyUser(ConvertLineEndings(aMsg), idDialogBase);
 end;
 
 procedure ShowMessageFmt(const aMsg: string; Params: array of const);
 begin
-  NotifyUser(Format(aMsg, Params), idDialogBase);
+  NotifyUser(ConvertLineEndings(Format(aMsg, Params)), idDialogBase);
 end;
 
 procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
 begin
-  NotifyUserAtXY(aMsg, idDialogBase, X, Y);
+  NotifyUserAtXY(ConvertLineEndings(aMsg), idDialogBase, X, Y);
 end;
 
 //----------------------------------------------------------------------------//
@@ -278,7 +278,8 @@ end;
 function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean;
   var Value : String) : Boolean;
 begin
-  Result := LCLIntf.RequestInput(ACaption, APrompt, MaskInput, Value);
+  Result := LCLIntf.RequestInput(ACaption, ConvertLineEndings(APrompt),
+    MaskInput, Value);
 end;
 
 function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
