@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -32,12 +32,6 @@
               </Win32>
             </Options>
           </Linking>
-          <Other>
-            <CompilerMessages>
-              <UseMsgFile Value="True"/>
-            </CompilerMessages>
-            <CompilerPath Value="$(CompPath)"/>
-          </Other>
         </CompilerOptions>
       </Item2>
     </BuildModes>
@@ -60,7 +54,7 @@
       <Unit0>
         <Filename Value="tsqlscriptsample.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="tsqlscriptsample"/>
+        <UnitName Value=""/>
       </Unit0>
       <Unit1>
         <Filename Value="mainform.pas"/>
@@ -68,12 +62,11 @@
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="mainform"/>
       </Unit1>
       <Unit2>
         <Filename Value="dbconfig.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="dbconfig"/>
+        <UnitName Value=""/>
       </Unit2>
       <Unit3>
         <Filename Value="dbconfiggui.pas"/>
@@ -81,7 +74,7 @@
         <ComponentName Value="DBConfigForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="dbconfiggui"/>
+        <UnitName Value=""/>
       </Unit3>
     </Units>
   </ProjectOptions>
@@ -101,12 +94,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

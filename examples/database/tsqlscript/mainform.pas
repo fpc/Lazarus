@@ -20,11 +20,14 @@ type
 
   TForm1 = class(TForm)
     CmdCopyDDL: TButton;
+    CmdOpenSQL: TButton;
     CmdCopyDML: TButton;
     CmdRunScript: TButton;
+    OpenDialog1: TOpenDialog;
     ScriptMemo: TMemo;
     procedure CmdCopyDDLClick(Sender: TObject);
     procedure CmdCopyDMLClick(Sender: TObject);
+    procedure CmdOpenSQLClick(Sender: TObject);
     procedure CmdRunScriptClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -33,7 +36,10 @@ type
     FConn: TSQLConnector;
     FQuery: TSQLQuery;
     FTran: TSQLTransaction;
+    // Run database connection test when asked
     function ConnectionTest(ChosenConfig: TDBConnectionConfig): boolean;
+    // Display script error to the user
+    procedure ShowScriptException(Sender: TObject; Statement: TStrings; TheException: Exception; var Continue: boolean);
   public
     { public declarations }
   end;
@@ -79,7 +85,7 @@ begin
     case LoginForm.ShowModal of
     mrOK:
       begin
-        //user wants to connect, so copy over db info
+        // User wants to connect, so copy over db info
         FConn.ConnectorType:=LoginForm.Config.DBType;
         FConn.HostName:=LoginForm.Config.DBHost;
         FConn.DatabaseName:=LoginForm.Config.DBPath;
@@ -90,7 +96,7 @@ begin
     mrCancel:
       begin
         ShowMessage('You canceled the database login. Application will terminate.');
-        Close;
+        Application.Terminate;
       end;
     end;
   finally
@@ -102,6 +108,7 @@ end;
 
 procedure TForm1.CmdCopyDDLClick(Sender: TObject);
 // Script that sets up tables as used in SQLdb_Tutorial1..3
+// Also includes a photo blob used in the LazReport tutorial
 // Notice we include 2 SQL statements, each terminated with ;
 const ScriptText=
   'CREATE TABLE CUSTOMER '+LineEnding+
@@ -122,6 +129,7 @@ const ScriptText=
   '  JOB_GRADE INTEGER NOT NULL, '+LineEnding+
   '  JOB_COUNTRY VARCHAR(15) NOT NULL, '+LineEnding+
   '  SALARY NUMERIC(10,2) NOT NULL, '+LineEnding+
+  '  PHOTO BLOB SUB_TYPE BINARY, '+LineEnding+
   '  CONSTRAINT CT_EMPLOYEE_PK PRIMARY KEY (EMP_NO) '+LineEnding+
   ');';
 begin
@@ -161,6 +169,15 @@ begin
   Scriptmemo.Lines.Text:=ScriptText;
 end;
 
+procedure TForm1.CmdOpenSQLClick(Sender: TObject);
+begin
+  if OpenDialog1.Execute then
+  begin
+    ScriptMemo.Clear;
+    ScriptMemo.Lines.LoadFromFile(OpenDialog1.FileName);
+  end;
+end;
+
 procedure TForm1.CmdRunScriptClick(Sender: TObject);
 // The heart of the program: runs the script in the memo
 var
@@ -173,8 +190,13 @@ begin
     OurScript.Script.Assign(ScriptMemo.Lines); //Copy over the script itself
     //Now set some options:
     OurScript.UseCommit:=true; //try process any COMMITs inside the script, instead of batching everything together. See readme.txt though
-    OurScript.UseSetTerm:=false; //SET TERM is Firebird specific, used when creating stored procedures etc. It's not needed here
-    OurScript.CommentsInSQL:=true; //Send commits to db server as well; could be useful to troubleshoot by monitoring all SQL statements at the server
+    //SET TERM is Firebird specific, used when creating stored procedures etc.
+    if FConn.ConnectorType='Firebird' then
+      OurScript.UseSetTerm:=true
+    else
+      OurScript.UseSetTerm:=false;
+    OurScript.CommentsInSQL:=false; //Send commits to db server as well; could be useful to troubleshoot by monitoring all SQL statements at the server
+    OurScript.OnException:=@ShowScriptException; //when errors occur, let this procedure handle the error display
     try
       if not(FTran.Active) then
         FTran.StartTransaction; //better safe than sorry
@@ -184,7 +206,8 @@ begin
     except
       on E: EDataBaseError do
       begin
-        ShowMessage('Error running script: '+E.Message);
+        // Error was already displayed via ShowScriptException, so no need for this:
+        //ShowMessage('Error running script: '+E.Message);
         FTran.Rollback;
       end;
     end;
@@ -231,6 +254,16 @@ begin
     Screen.Cursor:=crDefault;
     Conn.Free;
   end;
+end;
+
+procedure TForm1.ShowScriptException(Sender: TObject; Statement: TStrings;
+  TheException: Exception; var Continue: boolean);
+begin
+  // Shows script execution error to user
+  // todo: should really be a separate form with a memo big enough to display a large statement
+  ShowMessage('Script error: '+TheException.Message+LineEnding+
+    Statement.Text);
+  Continue:=false; //indicate script should stop
 end;
 
 end.
