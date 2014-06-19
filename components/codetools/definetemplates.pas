@@ -137,8 +137,17 @@ const
   FPCOperatingSystemAlternative2Names: array[1..2] of shortstring =(
       'bsd', 'linux' // see GetDefaultSrcOS2ForTargetOS
     );
-  FPCProcessorNames: array[1..6] of shortstring =(
-      'i386', 'powerpc', 'm68k', 'x86_64', 'sparc', 'arm'
+  FPCProcessorNames: array[1..10] of shortstring =(
+      'arm',
+      'i386',
+      'i8086',
+      'jvm',
+      'm68k',
+      'mips',
+      'mipsel',
+      'powerpc',
+      'sparc',
+      'x86_64'
     );
   FPCSyntaxModes: array[1..6] of shortstring = (
     'FPC', 'ObjFPC', 'Delphi', 'TP', 'MacPas', 'ISO'
