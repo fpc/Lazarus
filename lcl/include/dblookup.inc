@@ -243,7 +243,11 @@ begin
   if ListLinkDataSet.IsEmpty then
     Exit;
   Bookmark := ListLinkDataSet.GetBookmark;
+  {$ifdef EnableLookupWithBlockRead}
   ListLinkDataSet.BlockReadSize := 1;
+  {$else}
+  ListLinkDataSet.DisableControls;
+  {$endif}
   FControlItems.BeginUpdate;
   try
     //needed to handle sqldb.TSQLQuery that does not has a reliable recordcount after Open
@@ -269,7 +273,11 @@ begin
     FControlItems.EndUpdate;
     ListLinkDataSet.GotoBookmark(Bookmark);
     ListLinkDataSet.FreeBookmark(Bookmark);
+    {$ifdef EnableLookupWithBlockRead}
     ListLinkDataSet.BlockReadSize := 0;
+    {$else}
+    ListLinkDataSet.EnableControls;
+    {$endif}
   end;
 end;
 
