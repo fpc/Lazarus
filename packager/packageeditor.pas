@@ -2189,7 +2189,8 @@ begin
   if fUpdateLock=0 then
     RaiseException('');
   dec(fUpdateLock);
-  UpdatePending;
+  if fUpdateLock=0 then
+    IdleConnected:=true;
 end;
 
 procedure TPackageEditorForm.UpdateTitle(Immediately: boolean);

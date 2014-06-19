@@ -11965,10 +11965,10 @@ var
   OkToAdd: boolean;
 begin
   Result:=mrOk;
+  AnUnitInfo.IsPartOfProject:=true;
   //debugln(['TMainIDE.ProjInspectorAddUnitToProject ',AnUnitInfo.Filename]);
   ActiveSourceEditor:=nil;
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
-  AnUnitInfo.IsPartOfProject:=true;
   OkToAdd:=True;
   if FilenameIsPascalUnit(AnUnitInfo.Filename) then begin
     OkToAdd:=SourceFileMgr.CheckDirIsInSearchPath(AnUnitInfo,False,False);

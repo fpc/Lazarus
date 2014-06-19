@@ -4,9 +4,11 @@ object ProjectInspectorForm: TProjectInspectorForm
   Top = 104
   Width = 425
   ActiveControl = ItemsTreeView
+  AllowDropFiles = True
   Caption = 'ProjectInspectorForm'
   ClientHeight = 474
   ClientWidth = 425
+  OnDropFiles = FormDropFiles
   OnShow = ProjectInspectorFormShow
   LCLVersion = '1.3'
   object ItemsTreeView: TTreeView
