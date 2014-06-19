@@ -2095,6 +2095,7 @@ resourcestring
   dlgHintsParameterSenderNotUsed = 'Show hints for parameter "Sender" not used';
   dlgConfigFiles = 'Config files';
   dlgUseFpcCfg = 'Use standard compiler config file (fpc.cfg)';
+  lisIfNotChecked = 'If not checked:';
   dlgUseCustomConfig = 'Use additional compiler config file';
   lisAllOptions = 'All Options';
   lisFilterTheAvailableOptionsList = 'Filter the available options list';

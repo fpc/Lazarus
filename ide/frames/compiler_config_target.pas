@@ -29,7 +29,8 @@ interface
 
 uses
   Classes, SysUtils, strutils, FileUtil, Controls, Dialogs, Graphics, StdCtrls,
-  LCLProc, IDEOptionsIntf, IDEDialogs, CompilerOptions, LazarusIDEStrConsts,
+  LCLProc, DefineTemplates, IDEOptionsIntf,
+  IDEDialogs, CompilerOptions, LazarusIDEStrConsts,
   TransferMacros, PackageDefs, Project, compiler_parsing_options;
 
 type
@@ -208,67 +209,11 @@ end;
 
 procedure TCompilerConfigTargetFrame.UpdateByTargetCPU(aTargetCPU: string);
 var
-  IsIntel: Boolean;
-
-  procedure Arm(aList: TStrings);
-  begin
-    aList.Add('ARMV3');
-    aList.Add('ARMV4');
-    aList.Add('ARMV5');
-    aList.Add('ARMV6');
-    aList.Add('ARMV7');
-    aList.Add('ARMV7M');
-    aList.Add('CORTEXM3');
-  end;
-
-  procedure Intel_i386(aList: TStrings);
-  begin
-    IsIntel := True;
-    aList.Add(ProcessorToCaption('80386'));
-    aList.Add(ProcessorToCaption('Pentium'));
-    aList.Add(ProcessorToCaption('Pentium2'));
-    aList.Add(ProcessorToCaption('Pentium3'));
-    aList.Add(ProcessorToCaption('Pentium4'));
-    aList.Add(ProcessorToCaption('PentiumM'));
-  end;
-
-  procedure Intel_x86_64(aList: TStrings);
-  begin
-    IsIntel := True;
-    aList.Add('ATHLON64');
-  end;
-
-  procedure PowerPc(aList: TStrings);
-  begin
-    aList.Add('604');
-    aList.Add('750');
-    aList.Add('7400');
-    aList.Add('970');
-  end;
-
-  procedure Sparc(aList: TStrings);
-  begin
-    aList.Add('SPARC V7');
-    aList.Add('SPARC V8');
-    aList.Add('SPARC V9');
-  end;
-
-  procedure Mips(aList: TStrings);
-  begin
-    aList.Add('mips1');
-    aList.Add('mips2');
-    aList.Add('mips3');
-    aList.Add('mips4');
-    aList.Add('mips5');
-    aList.Add('mips32');
-    aList.Add('mips32r2');
-  end;
-
-var
   //DbgMsg: String;
   ParsingFrame: TCompilerParsingOptionsFrame;
+  sl: TStringList;
+  i: Integer;
 begin
-  IsIntel := False;
   //DbgMsg := '';
   if aTargetCPU = '' then
   begin
@@ -280,34 +225,30 @@ begin
   //DebugLn(['TCompilerConfigTargetFrame.UpdateTargetProcessorList: TargetCPU=',aTargetCPU,DbgMsg]);
 
   // Update selection list for target processor
-  TargetProcComboBox.Clear;
-  TargetProcComboBox.Items.Add('('+lisDefault+')');
-  case aTargetCPU of
-    'arm'    : Arm(TargetProcComboBox.Items);
-    'i386'   : Intel_i386(TargetProcComboBox.Items);
-    'm68k'   : begin end;
-    'powerpc': PowerPc(TargetProcComboBox.Items);
-    'sparc'  : Sparc(TargetProcComboBox.Items);
-    'x86_64' : Intel_x86_64(TargetProcComboBox.Items);
-    'mipsel' : Mips(TargetProcComboBox.Items);
-    'mips'   : Mips(TargetProcComboBox.Items);
-    'jvm'    : begin end;
-  end;
+  sl:=TStringList.Create;
+  sl.Add('('+lisDefault+')');
+  GetTargetProcessors(aTargetCPU,sl);
+  for i:=0 to sl.Count-1 do
+    sl[i]:=ProcessorToCaption(sl[i]);
+  TargetProcComboBox.Items.Assign(sl);
+  sl.Free;
   TargetProcComboBox.ItemIndex := 0;
 
   // Update selection list for assembler style
   ParsingFrame := TCompilerParsingOptionsFrame(FDialog.FindEditor(TCompilerParsingOptionsFrame));
   Assert(Assigned(ParsingFrame));
-  ParsingFrame.grpAsmStyle.Visible := IsIntel;
+  ParsingFrame.grpAsmStyle.Visible := (aTargetCPU='i386') or (aTargetCPU='x86_64');
 end;
 
 procedure TCompilerConfigTargetFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
+var
+  s: ShortString;
 begin
   FDialog := ADialog;
 
   // Config
   grbConfigFile.Caption := dlgConfigFiles;
-  chkConfigFile.Caption := dlgUseFpcCfg + ' (If not checked: -n)';
+  chkConfigFile.Caption := dlgUseFpcCfg + ' ('+lisIfNotChecked+' -n)';
   chkCustomConfigFile.Caption := dlgUseCustomConfig + ' (@)';
   edtConfigPath.Text := '';
 
@@ -317,56 +258,18 @@ begin
   with TargetOSComboBox do
   begin
     Items.Add('(' + lisDefault + ')');
-    Items.Add('Darwin');
-    Items.Add('FreeBSD');
-    Items.Add('Linux');
-    Items.Add('NetBSD');
-    Items.Add('OpenBSD');
-    Items.Add('Solaris');
-    Items.Add('Win32');
-    Items.Add('Win64');
-    Items.Add('WinCE');
-    Items.Add('aix');
-    Items.Add('amiga');
-    Items.Add('android');
-    Items.Add('atari');
-    Items.Add('beos');
-    Items.Add('embedded');
-    Items.Add('emx');
-    Items.Add('gba');
-    Items.Add('go32v2');
-    Items.Add('haiku');
-    Items.Add('iphonesim');
-    Items.Add('java');
-    Items.Add('macos');
-    Items.Add('msdos');
-    Items.Add('morphos');
-    Items.Add('nds');
-    Items.Add('netware');
-    Items.Add('netwlibc');
-    Items.Add('os2');
-    Items.Add('palmos');
-    Items.Add('qnx');
-    Items.Add('symbian');
-    Items.Add('watcom');
-    Items.Add('wdosx');
+    for s in FPCOperatingSystemCaptions do
+      Items.Add(s);
     ItemIndex := 0;
   end;
 
+  // Target CPU
   lblTargetCPU.Caption := dlgTargetCPUFamily + ' (-P)';
   with TargetCPUComboBox do
   begin
     Items.Add('(' + lisDefault + ')');
-    Items.Add('arm');
-    Items.Add('i386');
-    Items.Add('m68k');
-    Items.Add('powerpc');
-    Items.Add('sparc');
-    Items.Add('x86_64');
-    Items.Add('mipsel');
-    Items.Add('mips');
-    Items.Add('jvm');
-    Items.Add('i8086');
+    for s in FPCProcessorNames do
+      Items.Add(s);
     ItemIndex := 0;
   end;
 

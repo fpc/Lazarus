@@ -131,7 +131,7 @@ const
      'watcom',
      'wdosx'
     );
-  FPCOperatingSystemCaption: array[1..33] of shortstring =(
+  FPCOperatingSystemCaptions: array[1..33] of shortstring =(
      'AIX',
      'Amiga',
      'Android',
@@ -972,6 +972,7 @@ procedure SplitLazarusCPUOSWidgetCombo(const Combination: string;
 function GetCompiledTargetOS: string;
 function GetCompiledTargetCPU: string;
 function GetDefaultCompilerFilename(const TargetCPU: string = ''; Cross: boolean = false): string;
+procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
 function GetFPCTargetOS(TargetOS: string): string;
 function GetFPCTargetCPU(TargetCPU: string): string;
 function IsFPCExecutable(AFilename: string; out ErrorMsg: string): boolean; // not thread-safe
@@ -2818,6 +2819,73 @@ begin
   else
     Result:='fpc';
   Result:=Result+ExeExt;
+end;
+
+procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
+
+  procedure Arm;
+  begin
+    aList.Add('ARMV3');
+    aList.Add('ARMV4');
+    aList.Add('ARMV5');
+    aList.Add('ARMV6');
+    aList.Add('ARMV7');
+    aList.Add('ARMV7M');
+    aList.Add('CORTEXM3');
+  end;
+
+  procedure Intel_i386;
+  begin
+    aList.Add('80386');
+    aList.Add('Pentium');
+    aList.Add('Pentium2');
+    aList.Add('Pentium3');
+    aList.Add('Pentium4');
+    aList.Add('PentiumM');
+  end;
+
+  procedure Intel_x86_64;
+  begin
+    aList.Add('ATHLON64');
+  end;
+
+  procedure PowerPC;
+  begin
+    aList.Add('604');
+    aList.Add('750');
+    aList.Add('7400');
+    aList.Add('970');
+  end;
+
+  procedure Sparc;
+  begin
+    aList.Add('SPARC V7');
+    aList.Add('SPARC V8');
+    aList.Add('SPARC V9');
+  end;
+
+  procedure Mips;
+  begin
+    aList.Add('mips1');
+    aList.Add('mips2');
+    aList.Add('mips3');
+    aList.Add('mips4');
+    aList.Add('mips5');
+    aList.Add('mips32');
+    aList.Add('mips32r2');
+  end;
+
+begin
+  case TargetCPU of
+    'arm'    : Arm;
+    'i386'   : Intel_i386;
+    'm68k'   : ;
+    'powerpc': PowerPC;
+    'sparc'  : Sparc;
+    'x86_64' : Intel_x86_64;
+    'mipsel','mips' : Mips;
+    'jvm'    : ;
+  end;
 end;
 
 function GetFPCTargetOS(TargetOS: string): string;
