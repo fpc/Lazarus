@@ -204,7 +204,7 @@ type
     procedure UpdatePending;
     function CanUpdate(Flag: TProjectInspectorFlag): boolean;
     function GetSelectedFile: TUnitInfo;
-    function GetSelectedDependency: TPkgDependency;
+    function GetSingleSelectedDependency: TPkgDependency;
   public
     property LazProject: TProject read FLazProject write SetLazProject;
     property OnOpen: TNotifyEvent read FOnOpen write FOnOpen;
@@ -277,7 +277,7 @@ procedure TProjectInspectorForm.MoveDependencyUpClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
 begin
-  Dependency:=GetSelectedDependency;
+  Dependency:=GetSingleSelectedDependency;
   if SortAlphabetically or (Dependency=nil) or Dependency.Removed
   or (Dependency.PrevRequiresDependency=nil) then exit;
   LazProject.MoveRequiredDependencyUp(Dependency);
@@ -287,7 +287,7 @@ procedure TProjectInspectorForm.MoveDependencyDownClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
 begin
-  Dependency:=GetSelectedDependency;
+  Dependency:=GetSingleSelectedDependency;
   if SortAlphabetically or (Dependency=nil) or Dependency.Removed
   or (Dependency.NextRequiresDependency=nil) then exit;
   LazProject.MoveRequiredDependencyDown(Dependency);
@@ -307,7 +307,7 @@ procedure TProjectInspectorForm.ClearDependencyFilenameMenuItemClick(Sender: TOb
 var
   CurDependency: TPkgDependency;
 begin
-  CurDependency:=GetSelectedDependency;
+  CurDependency:=GetSingleSelectedDependency;
   if (CurDependency=nil) then exit;
   if CurDependency.RequiredPackage=nil then exit;
   if CurDependency.DefaultFilename='' then exit;
@@ -571,7 +571,7 @@ procedure TProjectInspectorForm.ReAddMenuItemClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
 begin
-  Dependency:=GetSelectedDependency;
+  Dependency:=GetSingleSelectedDependency;
   if (Dependency=nil) or (not Dependency.Removed)
   or (not CheckAddingDependency(LazProject,Dependency)) then exit;
   BeginUpdate;
@@ -582,27 +582,63 @@ end;
 procedure TProjectInspectorForm.RemoveBitBtnClick(Sender: TObject);
 var
   CurDependency: TPkgDependency;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPINodeData;
+  Item: TObject;
+  Msg: String;
+  DeleteCount: Integer;
   CurFile: TUnitInfo;
 begin
-  CurDependency:=GetSelectedDependency;
-  if (CurDependency<>nil) and (not CurDependency.Removed) then begin
+  BeginUpdate;
+  try
+    // check selection
+    Msg:='';
+    DeleteCount:=0;
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if Item is TUnitInfo then begin
+        CurFile:=TUnitInfo(Item);
+        if CurFile=LazProject.MainUnitInfo then continue;
+        // remove file
+        inc(DeleteCount);
+        Msg:=Format(lisProjInspRemoveFileFromProject, [CurFile.Filename]);
+      end else if Item is TPkgDependency then begin
+        CurDependency:=TPkgDependency(item);
+        if NodeData.Removed then continue;
+        // remove dependency
+        inc(DeleteCount);
+        Msg:=Format(lisProjInspDeleteDependencyFor, [CurDependency.AsString]);
+      end;
+    end;
+
+    // ask for confirmation
+    if DeleteCount=0 then exit;
+    if DeleteCount>1 then
+      Msg:='Remove '+IntToStr(DeleteCount)+' items from project?';
     if IDEMessageDialog(lisProjInspConfirmDeletingDependency,
-      Format(lisProjInspDeleteDependencyFor, [CurDependency.AsString]),
-      mtConfirmation,[mbYes,mbNo])<>mrYes
-    then exit;
-    if Assigned(OnRemoveDependency) then OnRemoveDependency(Self,CurDependency);
-    exit;
-  end;
-  
-  CurFile:=GetSelectedFile;
-  if CurFile<>nil then begin
-    if (not CurFile.IsPartOfProject) or (CurFile=LazProject.MainUnitInfo)
-    then exit;
-    if IDEMessageDialog(lisProjInspConfirmRemovingFile,
-      Format(lisProjInspRemoveFileFromProject, [CurFile.Filename]),
-      mtConfirmation,[mbYes,mbNo])<>mrYes
-    then exit;
-    if Assigned(OnRemoveFile) then OnRemoveFile(Self,CurFile);
+      Msg, mtConfirmation,[mbYes,mbNo])<>mrYes then exit;
+
+    // delete
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if Item is TUnitInfo then begin
+        CurFile:=TUnitInfo(Item);
+        if CurFile=LazProject.MainUnitInfo then continue;
+        // remove file
+        if Assigned(OnRemoveFile) then OnRemoveFile(Self,CurFile);
+      end else if Item is TPkgDependency then begin
+        CurDependency:=TPkgDependency(item);
+        if NodeData.Removed then continue;
+        // remove dependency
+        if Assigned(OnRemoveDependency) then
+          OnRemoveDependency(Self,CurDependency);
+      end;
+    end;
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -686,7 +722,7 @@ var
   NewFilename: String;
   CurDependency: TPkgDependency;
 begin
-  CurDependency:=GetSelectedDependency;
+  CurDependency:=GetSingleSelectedDependency;
   if (CurDependency=nil) then exit;
   if CurDependency.RequiredPackage=nil then exit;
   NewFilename:=CurDependency.RequiredPackage.Filename;
@@ -958,12 +994,13 @@ begin
     Result:=TUnitInfo(Item);
 end;
 
-function TProjectInspectorForm.GetSelectedDependency: TPkgDependency;
+function TProjectInspectorForm.GetSingleSelectedDependency: TPkgDependency;
 var
   Item: TObject;
+  NodeData: TPINodeData;
 begin
   Result:=nil;
-  Item:=GetNodeItem(GetNodeData(ItemsTreeView.Selected));
+  if not GetNodeDataItem(ItemsTreeView.Selected,NodeData,Item) then exit;
   if Item is TPkgDependency then
     Result:=TPkgDependency(Item);
 end;

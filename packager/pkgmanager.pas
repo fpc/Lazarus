@@ -4857,7 +4857,7 @@ var
 begin
   Result:=false;
   if (Sender=nil) or (not (Sender is TProjectInspectorForm)) then exit;
-  Dependency:=TProjectInspectorForm(Sender).GetSelectedDependency;
+  Dependency:=TProjectInspectorForm(Sender).GetSingleSelectedDependency;
   if Dependency=nil then exit;
   // user has selected a dependency -> open package
   Result:=true;
