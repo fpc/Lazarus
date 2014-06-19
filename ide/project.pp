@@ -1739,7 +1739,7 @@ begin
     XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                              PFComponentBaseClassNames[FResourceBaseClass],
                              PFComponentBaseClassNames[pfcbcNone]);
-    XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,ExtractFileNameOnly(AFilename));
+    XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
     // save custom data
     SaveStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
   end;
