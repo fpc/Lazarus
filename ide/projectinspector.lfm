@@ -1,7 +1,7 @@
 object ProjectInspectorForm: TProjectInspectorForm
-  Left = 374
+  Left = 393
   Height = 474
-  Top = 0
+  Top = 104
   Width = 425
   ActiveControl = ItemsTreeView
   Caption = 'ProjectInspectorForm'
@@ -17,11 +17,12 @@ object ProjectInspectorForm: TProjectInspectorForm
     Align = alClient
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Top = 2
-    DefaultItemHeight = 16
+    DefaultItemHeight = 18
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
     RightClickSelect = True
     TabOrder = 0
+    OnAdvancedCustomDrawItem = ItemsTreeViewAdvancedCustomDrawItem
     OnDblClick = ItemsTreeViewDblClick
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
@@ -97,8 +98,8 @@ object ProjectInspectorForm: TProjectInspectorForm
       AnchorSideTop.Control = SortAlphabeticallyButton
       AnchorSideTop.Side = asrCenter
       Left = 91
-      Height = 21
-      Top = 4
+      Height = 25
+      Top = 2
       Width = 311
       UseFormActivate = True
       ButtonWidth = 23
