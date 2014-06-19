@@ -294,7 +294,7 @@ type
     procedure SetupComponents;
     function OnTreeViewGetImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
     procedure UpdatePending;
-    function CanUpdate(Flag: TPEFlag): boolean;
+    function CanUpdate(Flag: TPEFlag; Immediately: boolean): boolean;
     procedure UpdateTitle(Immediately: boolean = false);
     procedure UpdateFiles(Immediately: boolean = false);
     procedure UpdateRequiredPkgs(Immediately: boolean = false);
@@ -2197,7 +2197,7 @@ procedure TPackageEditorForm.UpdateTitle(Immediately: boolean);
 var
   NewCaption: String;
 begin
-  if not CanUpdate(pefNeedUpdateTitle) then exit;
+  if not CanUpdate(pefNeedUpdateTitle,Immediately) then exit;
   NewCaption:=Format(lisPckEditPackage, [FLazPackage.Name]);
   if LazPackage.Modified then
     NewCaption:=NewCaption+'*';
@@ -2216,7 +2216,7 @@ var
   FileCount: Integer;
   DepCount: Integer;
 begin
-  if not CanUpdate(pefNeedUpdateButtons) then exit;
+  if not CanUpdate(pefNeedUpdateButtons,Immediately) then exit;
 
   FileCount:=0;
   DepCount:=0;
@@ -2293,28 +2293,35 @@ end;
 
 procedure TPackageEditorForm.UpdatePending;
 begin
-  if pefNeedUpdateTitle in fFlags then
-    UpdateTitle(true);
-  if pefNeedUpdateFiles in fFlags then
-    UpdateFiles(true);
-  if pefNeedUpdateRequiredPkgs in fFlags then
-    UpdateRequiredPkgs(true);
-  if pefNeedUpdateProperties in fFlags then
-    UpdatePEProperties(true);
-  if pefNeedUpdateButtons in fFlags then
-    UpdateButtons(true);
-  if pefNeedUpdateApplyDependencyButton in fFlags then
-    UpdateApplyDependencyButton(true);
-  if pefNeedUpdateStatusBar in fFlags then
-    UpdateStatusBar(true);
+  ItemsTreeView.BeginUpdate;
+  try
+    if pefNeedUpdateTitle in fFlags then
+      UpdateTitle(true);
+    if pefNeedUpdateFiles in fFlags then
+      UpdateFiles(true);
+    if pefNeedUpdateRequiredPkgs in fFlags then
+      UpdateRequiredPkgs(true);
+    if pefNeedUpdateProperties in fFlags then
+      UpdatePEProperties(true);
+    if pefNeedUpdateButtons in fFlags then
+      UpdateButtons(true);
+    if pefNeedUpdateApplyDependencyButton in fFlags then
+      UpdateApplyDependencyButton(true);
+    if pefNeedUpdateStatusBar in fFlags then
+      UpdateStatusBar(true);
+    IdleConnected:=false;
+  finally
+    ItemsTreeView.EndUpdate;
+  end;
 end;
 
-function TPackageEditorForm.CanUpdate(Flag: TPEFlag): boolean;
+function TPackageEditorForm.CanUpdate(Flag: TPEFlag; Immediately: boolean
+  ): boolean;
 begin
   Result:=false;
   if csDestroying in ComponentState then exit;
   if LazPackage=nil then exit;
-  if fUpdateLock>0 then begin
+  if (fUpdateLock>0) and not Immediately then begin
     Include(fFlags,Flag);
     IdleConnected:=true;
     Result:=false;
@@ -2333,7 +2340,7 @@ var
   NodeData: TPENodeData;
   OldFilter : String;
 begin
-  if not CanUpdate(pefNeedUpdateFiles) then exit;
+  if not CanUpdate(pefNeedUpdateFiles,Immediately) then exit;
 
   OldFilter := FilterEdit.ForceFilter('');
 
@@ -2397,7 +2404,7 @@ var
   CurNodeText, aFilename, OldFilter: String;
   NodeData: TPENodeData;
 begin
-  if not CanUpdate(pefNeedUpdateRequiredPkgs) then exit;
+  if not CanUpdate(pefNeedUpdateRequiredPkgs,Immediately) then exit;
 
   OldFilter := FilterEdit.ForceFilter('');
 
@@ -2518,7 +2525,7 @@ var
   HasRegisterProcCount: integer;
   AddToUsesPkgSectionCount: integer;
 begin
-  if not CanUpdate(pefNeedUpdateProperties) then exit;
+  if not CanUpdate(pefNeedUpdateProperties,Immediately) then exit;
 
   FPlugins.Clear;
 
@@ -2676,7 +2683,7 @@ var
   NodeData: TPENodeData;
   Item: TObject;
 begin
-  if not CanUpdate(pefNeedUpdateApplyDependencyButton) then exit;
+  if not CanUpdate(pefNeedUpdateApplyDependencyButton,Immediately) then exit;
 
   FSingleSelectedDependency:=nil;
   for i:=0 to ItemsTreeView.SelectionCount-1 do begin
@@ -2724,7 +2731,7 @@ procedure TPackageEditorForm.UpdateStatusBar(Immediately: boolean);
 var
   StatusText: String;
 begin
-  if not CanUpdate(pefNeedUpdateStatusBar) then exit;
+  if not CanUpdate(pefNeedUpdateStatusBar,Immediately) then exit;
 
   if LazPackage.IsVirtual and (not LazPackage.ReadOnly) then begin
     StatusText:=Format(lisPckEditpackageNotSaved, [LazPackage.Name]);
@@ -3847,7 +3854,7 @@ begin
     mtConfirmation,[mbYes,mbNo],0)<>mrYes
   then exit;
   PackageEditors.RevertPackage(LazPackage);
-  UpdateAll(true);
+  UpdateAll(false);
 end;
 
 procedure TPackageEditorForm.DoPublishProject;

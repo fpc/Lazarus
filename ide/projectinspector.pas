@@ -80,7 +80,8 @@ type
                            ADependency: TPkgDependency): TModalResult of object;
 
   TProjectInspectorFlag = (
-    pifNeedUpdateItems,
+    pifNeedUpdateFiles,
+    pifNeedUpdateDependencies,
     pifNeedUpdateButtons,
     pifNeedUpdateTitle
     );
@@ -134,7 +135,6 @@ type
     procedure OpenButtonClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure HelpBitBtnClick(Sender: TObject);
-    procedure ProjectInspectorFormShow(Sender: TObject);
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure RemoveNonExistingFilesMenuItemClick(Sender: TObject);
@@ -145,7 +145,6 @@ type
     FIdleConnected: boolean;
     FOnAddDependency: TAddProjInspDepEvent;
     FOnAddUnitToProject: TOnAddUnitToProject;
-    FOnOpen: TNotifyEvent;
     FOnReAddDependency: TAddProjInspDepEvent;
     FOnRemoveDependency: TRemoveProjInspDepEvent;
     FOnRemoveFile: TRemoveProjInspFileEvent;
@@ -183,8 +182,6 @@ type
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
     function OnTreeViewGetImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
-    procedure UpdateProjectFiles;
-    procedure UpdateRequiredPackages;
     procedure OnProjectBeginUpdate(Sender: TObject);
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
     procedure EnableI18NForSelectedLFM(TheEnable: boolean);
@@ -199,15 +196,14 @@ type
     function IsUpdateLocked: boolean; inline;
     procedure UpdateAll(Immediately: boolean = false);
     procedure UpdateTitle(Immediately: boolean = false);
-    procedure UpdateItems(Immediately: boolean = false);
+    procedure UpdateProjectFiles(Immediately: boolean = false);
+    procedure UpdateRequiredPackages(Immediately: boolean = false);
     procedure UpdateButtons(Immediately: boolean = false);
     procedure UpdatePending;
     function CanUpdate(Flag: TProjectInspectorFlag): boolean;
-    function GetSelectedFile: TUnitInfo;
     function GetSingleSelectedDependency: TPkgDependency;
   public
     property LazProject: TProject read FLazProject write SetLazProject;
-    property OnOpen: TNotifyEvent read FOnOpen write FOnOpen;
     property OnShowOptions: TNotifyEvent read FOnShowOptions write FOnShowOptions;
     property OnAddUnitToProject: TOnAddUnitToProject read FOnAddUnitToProject
                                                      write FOnAddUnitToProject;
@@ -306,16 +302,27 @@ end;
 procedure TProjectInspectorForm.ClearDependencyFilenameMenuItemClick(Sender: TObject);
 var
   CurDependency: TPkgDependency;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPINodeData;
+  Item: TObject;
 begin
-  CurDependency:=GetSingleSelectedDependency;
-  if (CurDependency=nil) then exit;
-  if CurDependency.RequiredPackage=nil then exit;
-  if CurDependency.DefaultFilename='' then exit;
-  CurDependency.DefaultFilename:='';
-  CurDependency.PreferDefaultFilename:=false;
-  LazProject.Modified:=true;
-  UpdateRequiredPackages;
-  UpdateButtons;
+  BeginUpdate;
+  try
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if not (Item is TPkgDependency) then continue;
+      CurDependency:=TPkgDependency(Item);
+      if CurDependency.DefaultFilename='' then exit;
+      CurDependency.DefaultFilename:='';
+      CurDependency.PreferDefaultFilename:=false;
+      LazProject.Modified:=true;
+      UpdateRequiredPackages;
+    end;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TProjectInspectorForm.AddBitBtnClick(Sender: TObject);
@@ -347,7 +354,7 @@ begin
         end;
         FNextSelectedPart:=NewFile;
       end;
-      UpdateAll(false);
+      UpdateAll;
       EndUpdate;
     end;
   
@@ -357,7 +364,7 @@ begin
       if Assigned(OnAddDependency) then
         OnAddDependency(Self,AddResult.Dependency);
       FNextSelectedPart:=AddResult.Dependency;
-      UpdateItems(false);
+      UpdateRequiredPackages;
       EndUpdate;
     end;
   
@@ -402,7 +409,7 @@ begin
       if Assigned(OnAddUnitToProject) then begin
         if OnAddUnitToProject(Self,NewFile)<>mrOk then break;
       end;
-      UpdateAll(false);
+      UpdateAll;
     end;
   finally
     EndUpdate;
@@ -445,6 +452,9 @@ var
   CanReAddCount: Integer;
   SingleSelectedDep: TPkgDependency;
   DepCount: Integer;
+  Dependency: TPkgDependency;
+  HasValidDep: Integer;
+  CanClearDep: Integer;
 begin
   ItemCnt:=0;
 
@@ -455,6 +465,8 @@ begin
   CanReAddCount:=0;
   SingleSelectedDep:=nil;
   DepCount:=0;
+  HasValidDep:=0;
+  CanClearDep:=0;
   for i:=0 to ItemsTreeView.SelectionCount-1 do begin
     TVNode:=ItemsTreeView.Selections[i];
     if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
@@ -470,16 +482,21 @@ begin
           inc(DisabledI18NForLFMCount);
       end;
     end else if Item is TPkgDependency then begin
-      inc(DepCount);
-      if DepCount=1 then
-        SingleSelectedDep:=TPkgDependency(Item)
-      else
-        SingleSelectedDep:=nil;
+      Dependency:=TPkgDependency(Item);
       if NodeData.Removed then begin
         inc(CanReAddCount);
       end else begin
+        inc(DepCount);
+        if DepCount=1 then
+          SingleSelectedDep:=Dependency
+        else
+          SingleSelectedDep:=nil;
         inc(CanRemoveCount);
         inc(CanOpenCount);
+        if Dependency.RequiredPackage<>nil then
+          inc(HasValidDep);
+        if (Dependency.DefaultFilename<>'') then
+          inc(CanClearDep);
       end;
     end;
   end;
@@ -508,15 +525,16 @@ begin
                      (SingleSelectedDep.PrevRequiresDependency<>nil));
     AddPopupMenuItem(lisPckEditMoveDependencyDown, @MoveDependencyDownClick,
                      (SingleSelectedDep.NextRequiresDependency<>nil));
+  end;
+  if HasValidDep>0 then begin
     AddPopupMenuItem(lisPckEditStoreFileNameAsDefaultForThisDependency,
-                     @SetDependencyDefaultFilenameMenuItemClick,
-                     (SingleSelectedDep.RequiredPackage<>nil));
+                     @SetDependencyDefaultFilenameMenuItemClick, true);
     AddPopupMenuItem(lisPckEditStoreFileNameAsPreferredForThisDependency,
-                     @SetDependencyPreferredFilenameMenuItemClick,
-                     (SingleSelectedDep.RequiredPackage<>nil));
+                     @SetDependencyPreferredFilenameMenuItemClick, true);
+  end;
+  if CanClearDep>0 then begin
     AddPopupMenuItem(lisPckEditClearDefaultPreferredFilenameOfDependency,
-                     @ClearDependencyFilenameMenuItemClick,
-                     (SingleSelectedDep.DefaultFilename<>''));
+                     @ClearDependencyFilenameMenuItemClick, true);
   end;
 
   while ItemsPopupMenu.Items.Count>ItemCnt do
@@ -548,8 +566,34 @@ begin
 end;
 
 procedure TProjectInspectorForm.OpenButtonClick(Sender: TObject);
+var
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPINodeData;
+  Item: TObject;
+  CurFile: TUnitInfo;
+  CurDependency: TPkgDependency;
 begin
-  if Assigned(OnOpen) then OnOpen(Self);
+  BeginUpdate;
+  try
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if Item is TUnitInfo then begin
+        CurFile:=TUnitInfo(Item);
+        if LazarusIDE.DoOpenEditorFile(CurFile.Filename,-1,-1,[ofAddToRecent])<>mrOk
+        then exit;
+      end else if Item is TPkgDependency then begin
+        CurDependency:=TPkgDependency(Item);
+        if PackageEditingInterface.DoOpenPackageWithName(
+          CurDependency.PackageName,[],false)<>mrOk
+        then
+          exit;
+      end;
+    end;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TProjectInspectorForm.OptionsBitBtnClick(Sender: TObject);
@@ -562,21 +606,29 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TProjectInspectorForm.ProjectInspectorFormShow(Sender: TObject);
-begin
-  UpdateAll(false);
-end;
-
 procedure TProjectInspectorForm.ReAddMenuItemClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPINodeData;
+  Item: TObject;
 begin
-  Dependency:=GetSingleSelectedDependency;
-  if (Dependency=nil) or (not Dependency.Removed)
-  or (not CheckAddingDependency(LazProject,Dependency)) then exit;
   BeginUpdate;
-  if Assigned(OnReAddDependency) then OnReAddDependency(Self,Dependency);
-  EndUpdate;
+  try
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if not NodeData.Removed then continue;
+      if not (Item is TPkgDependency) then continue;
+      Dependency:=TPkgDependency(Item);
+      if not CheckAddingDependency(LazProject,Dependency) then exit;
+      if Assigned(OnReAddDependency) then
+        OnReAddDependency(Self,Dependency);
+    end;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TProjectInspectorForm.RemoveBitBtnClick(Sender: TObject);
@@ -649,19 +701,24 @@ var
   HasChanged: Boolean;
 begin
   if LazProject.IsVirtual then exit;
-  HasChanged:=false;
-  AnUnitInfo:=LazProject.FirstPartOfProject;
-  while AnUnitInfo<>nil do begin
-    NextUnitInfo:=AnUnitInfo.NextPartOfProject;
-    if not (AnUnitInfo.IsVirtual or FileExistsUTF8(AnUnitInfo.Filename)) then begin
-      AnUnitInfo.IsPartOfProject:=false;
-      HasChanged:=true;
+  BeginUpdate;
+  try
+    HasChanged:=false;
+    AnUnitInfo:=LazProject.FirstPartOfProject;
+    while AnUnitInfo<>nil do begin
+      NextUnitInfo:=AnUnitInfo.NextPartOfProject;
+      if not (AnUnitInfo.IsVirtual or FileExistsUTF8(AnUnitInfo.Filename)) then begin
+        AnUnitInfo.IsPartOfProject:=false;
+        HasChanged:=true;
+      end;
+      AnUnitInfo:=NextUnitInfo;
     end;
-    AnUnitInfo:=NextUnitInfo;
-  end;
-  if HasChanged then begin
-    LazProject.Modified:=true;
-    UpdateProjectFiles;
+    if HasChanged then begin
+      LazProject.Modified:=true;
+      UpdateProjectFiles;
+    end;
+  finally
+    EndUpdate;
   end;
 end;
 
@@ -694,7 +751,7 @@ begin
     FLazProject.OnBeginUpdate:=@OnProjectBeginUpdate;
     FLazProject.OnEndUpdate:=@OnProjectEndUpdate;
   end;
-  UpdateAll(false);
+  UpdateAll;
 end;
 
 procedure TProjectInspectorForm.SetShowDirectoryHierarchy(const AValue: boolean);
@@ -721,18 +778,31 @@ procedure TProjectInspectorForm.SetDependencyDefaultFilename(AsPreferred: boolea
 var
   NewFilename: String;
   CurDependency: TPkgDependency;
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPINodeData;
+  Item: TObject;
 begin
-  CurDependency:=GetSingleSelectedDependency;
-  if (CurDependency=nil) then exit;
-  if CurDependency.RequiredPackage=nil then exit;
-  NewFilename:=CurDependency.RequiredPackage.Filename;
-  if (NewFilename=CurDependency.DefaultFilename) // do not use CompareFilenames
-  and (CurDependency.PreferDefaultFilename=AsPreferred) then exit;
-  CurDependency.DefaultFilename:=NewFilename;
-  CurDependency.PreferDefaultFilename:=AsPreferred;
-  LazProject.Modified:=true;
-  UpdateRequiredPackages;
-  UpdateButtons;
+  BeginUpdate;
+  try
+    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+      TVNode:=ItemsTreeView.Selections[i];
+      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if NodeData.Removed then continue;
+      if not (Item is TPkgDependency) then continue;
+      CurDependency:=TPkgDependency(Item);
+      if CurDependency.RequiredPackage=nil then continue;
+      NewFilename:=CurDependency.RequiredPackage.Filename;
+      if (NewFilename=CurDependency.DefaultFilename) // do not use CompareFilenames
+      and (CurDependency.PreferDefaultFilename=AsPreferred) then continue;
+      CurDependency.DefaultFilename:=NewFilename;
+      CurDependency.PreferDefaultFilename:=AsPreferred;
+      LazProject.Modified:=true;
+      UpdateRequiredPackages;
+    end;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TProjectInspectorForm.SetIdleConnected(AValue: boolean);
@@ -841,13 +911,14 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.UpdateProjectFiles;
+procedure TProjectInspectorForm.UpdateProjectFiles(Immediately: boolean);
 var
   CurFile: TUnitInfo;
   FilesBranch: TTreeFilterBranch;
   Filename: String;
   ANodeData : TPINodeData;
 begin
+  if not CanUpdate(pifNeedUpdateFiles) then exit;
   ItemsTreeView.BeginUpdate;
   try
     FilesBranch:=FilterEdit.GetBranch(FFilesNode);
@@ -873,15 +944,17 @@ begin
   finally
     ItemsTreeView.EndUpdate;
   end;
+  UpdateButtons;
 end;
 
-procedure TProjectInspectorForm.UpdateRequiredPackages;
+procedure TProjectInspectorForm.UpdateRequiredPackages(Immediately: boolean);
 var
   Dependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
   NodeText, AFilename: String;
   ANodeData : TPINodeData;
 begin
+  if not CanUpdate(pifNeedUpdateDependencies) then exit;
   ItemsTreeView.BeginUpdate;
   try
     RequiredBranch:=FilterEdit.GetBranch(DependenciesNode);
@@ -937,6 +1010,7 @@ begin
   finally
     ItemsTreeView.EndUpdate;
   end;
+  UpdateButtons;
 end;
 
 procedure TProjectInspectorForm.OnProjectBeginUpdate(Sender: TObject);
@@ -947,7 +1021,7 @@ end;
 procedure TProjectInspectorForm.OnProjectEndUpdate(Sender: TObject;
   ProjectChanged: boolean);
 begin
-  UpdateAll(false);
+  UpdateAll;
   EndUpdate;
 end;
 
@@ -982,16 +1056,6 @@ begin
     exit;
   end;
   UpdatePending;
-end;
-
-function TProjectInspectorForm.GetSelectedFile: TUnitInfo;
-var
-  Item: TObject;
-begin
-  Result:=nil;
-  Item:=GetNodeItem(GetNodeData(ItemsTreeView.Selected));
-  if Item is TUnitInfo then
-    Result:=TUnitInfo(Item);
 end;
 
 function TProjectInspectorForm.GetSingleSelectedDependency: TPkgDependency;
@@ -1045,11 +1109,17 @@ end;
 
 procedure TProjectInspectorForm.UpdateAll(Immediately: boolean);
 begin
-  UpdateItems;
-  UpdateTitle;
-  UpdateButtons;
-  if Immediately then
-    UpdatePending;
+  ItemsTreeView.BeginUpdate;
+  try
+    UpdateTitle;
+    UpdateProjectFiles;
+    UpdateRequiredPackages;
+    UpdateButtons;
+    if Immediately then
+      UpdatePending;
+  finally
+    ItemsTreeView.EndUpdate;
+  end;
 end;
 
 procedure TProjectInspectorForm.UpdateTitle(Immediately: boolean);
@@ -1065,18 +1135,6 @@ begin
     if NewCaption='' then
       NewCaption:=ExtractFilenameOnly(LazProject.ProjectInfoFile);
     Caption:=Format(lisProjInspProjectInspector, [NewCaption]);
-  end;
-end;
-
-procedure TProjectInspectorForm.UpdateItems(Immediately: boolean);
-begin
-  if not CanUpdate(pifNeedUpdateItems) then exit;
-  ItemsTreeView.BeginUpdate;
-  try
-    UpdateProjectFiles;
-    UpdateRequiredPackages;
-  finally
-    ItemsTreeView.EndUpdate;
   end;
 end;
 
@@ -1126,13 +1184,20 @@ end;
 
 procedure TProjectInspectorForm.UpdatePending;
 begin
-  if pifNeedUpdateItems in FFlags then
-    UpdateItems(true);
-  if pifNeedUpdateTitle in FFlags then
-    UpdateTitle(true);
-  if pifNeedUpdateButtons in FFlags then
-    UpdateButtons(true);
-  IdleConnected:=false;
+  ItemsTreeView.BeginUpdate;
+  try
+    if pifNeedUpdateFiles in FFlags then
+      UpdateProjectFiles(true);
+    if pifNeedUpdateDependencies in FFlags then
+      UpdateRequiredPackages(true);
+    if pifNeedUpdateTitle in FFlags then
+      UpdateTitle(true);
+    if pifNeedUpdateButtons in FFlags then
+      UpdateButtons(true);
+    IdleConnected:=false;
+  finally
+    ItemsTreeView.EndUpdate;
+  end;
 end;
 
 function TProjectInspectorForm.CanUpdate(Flag: TProjectInspectorFlag): boolean;

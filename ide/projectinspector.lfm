@@ -1,25 +1,25 @@
 object ProjectInspectorForm: TProjectInspectorForm
   Left = 393
-  Height = 474
+  Height = 456
   Top = 104
-  Width = 425
+  Width = 299
   ActiveControl = ItemsTreeView
   AllowDropFiles = True
   Caption = 'ProjectInspectorForm'
-  ClientHeight = 474
-  ClientWidth = 425
+  ClientHeight = 456
+  ClientWidth = 299
   OnDropFiles = FormDropFiles
-  OnShow = ProjectInspectorFormShow
   LCLVersion = '1.3'
   object ItemsTreeView: TTreeView
     Left = 0
-    Height = 396
+    Height = 378
     Top = 78
-    Width = 425
+    Width = 299
     Align = alClient
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Top = 2
     DefaultItemHeight = 18
+    MultiSelect = True
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
     RightClickSelect = True
@@ -28,16 +28,16 @@ object ProjectInspectorForm: TProjectInspectorForm
     OnDblClick = ItemsTreeViewDblClick
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
-    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+    Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
   end
   object BtnPanel: TPanel
     Left = 0
     Height = 28
     Top = 48
-    Width = 425
+    Width = 299
     Align = alTop
     ClientHeight = 28
-    ClientWidth = 425
+    ClientWidth = 299
     TabOrder = 1
     object OpenButton: TSpeedButton
       AnchorSideLeft.Control = BtnPanel
@@ -102,7 +102,7 @@ object ProjectInspectorForm: TProjectInspectorForm
       Left = 91
       Height = 25
       Top = 2
-      Width = 311
+      Width = 185
       UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 1
@@ -119,7 +119,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     Left = 0
     Height = 48
     Top = 0
-    Width = 425
+    Width = 299
     AutoSize = True
     ButtonHeight = 46
     ShowCaptions = True

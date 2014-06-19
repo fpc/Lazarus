@@ -578,7 +578,6 @@ type
     procedure OnGetDesignerSelection(const ASelection: TPersistentSelectionList);
 
     // project inspector
-    procedure ProjInspectorOpen(Sender: TObject);
     function ProjInspectorAddUnitToProject(Sender: TObject;
                                            AnUnitInfo: TUnitInfo): TModalresult;
     function ProjInspectorRemoveFile(Sender: TObject;
@@ -6427,7 +6426,6 @@ procedure TMainIDE.DoShowProjectInspector(Show: boolean);
 begin
   if ProjInspector=nil then begin
     ProjInspector:=TProjectInspectorForm.Create(OwningComponent);
-    ProjInspector.OnOpen:=@ProjInspectorOpen;
     ProjInspector.OnShowOptions:=@mnuProjectOptionsClicked;
     ProjInspector.OnAddUnitToProject:=@ProjInspectorAddUnitToProject;
     ProjInspector.OnAddDependency:=@PkgBoss.OnProjectInspectorAddDependency;
@@ -12016,17 +12014,6 @@ end;
 function TMainIDE.OnCheckCompOptsAndMainSrcForNewUnit(CompOpts: TLazCompilerOptions): TModalResult;
 begin
   Result:=CheckCompOptsAndMainSrcForNewUnit(CompOpts);
-end;
-
-procedure TMainIDE.ProjInspectorOpen(Sender: TObject);
-var
-  CurUnitInfo: TUnitInfo;
-begin
-  CurUnitInfo:=ProjInspector.GetSelectedFile;
-  if CurUnitInfo<>nil then
-    DoOpenEditorFile(CurUnitInfo.Filename,-1,-1,[ofRegularFile])
-  else
-    PkgBoss.OnProjectInspectorOpen(Sender);
 end;
 
 {$IFNDEF EnableOldExtTools}

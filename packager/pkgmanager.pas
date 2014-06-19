@@ -264,7 +264,6 @@ type
     procedure AddProjectLCLDependency(AProject: TProject); override;
     function AddProjectDependencies(AProject: TProject; const Packages: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
-    function OnProjectInspectorOpen(Sender: TObject): boolean; override;
     function OnProjectInspectorAddDependency(Sender: TObject;
                            ADependency: TPkgDependency): TModalResult; override;
     function OnProjectInspectorRemoveDependency(Sender: TObject;
@@ -960,7 +959,7 @@ begin
     if PackageEditors<>nil then
       PackageEditors.UpdateAllEditors(false);
     if ProjInspector<>nil then
-      ProjInspector.UpdateItems(false);
+      ProjInspector.UpdateRequiredPackages;
     DoCallNotifyHandler(pihtGraphChanged,Self);
   end;
 end;
@@ -4849,21 +4848,6 @@ begin
   finally
     UnitList.Free;
   end;
-end;
-
-function TPkgManager.OnProjectInspectorOpen(Sender: TObject): boolean;
-var
-  Dependency: TPkgDependency;
-begin
-  Result:=false;
-  if (Sender=nil) or (not (Sender is TProjectInspectorForm)) then exit;
-  Dependency:=TProjectInspectorForm(Sender).GetSingleSelectedDependency;
-  if Dependency=nil then exit;
-  // user has selected a dependency -> open package
-  Result:=true;
-  if PackageGraph.OpenDependency(Dependency,false)<>lprSuccess then
-    exit;
-  DoOpenPackage(Dependency.RequiredPackage,[],false);
 end;
 
 function TPkgManager.OnProjectInspectorAddDependency(Sender: TObject;
