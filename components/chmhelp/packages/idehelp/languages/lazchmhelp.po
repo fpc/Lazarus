@@ -18,6 +18,6 @@ msgid "Missing lhelp"
 msgstr ""
 
 #: lazchmhelp.help_unabletofindthelhelpviewerpleasecompilethelhelppro
-msgid "Unable to find the lhelp viewer:%s%s%s%sPlease compile the lhelp project:%s%s"
+msgid "Unable to find the lhelp viewer:%s%s%sPlease compile the lhelp project:%s%s"
 msgstr ""
 
