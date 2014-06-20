@@ -5076,7 +5076,7 @@ resourcestring
   lisConfirmDelete = 'Confirm delete';
   lisDeleteMacro = 'Delete macro "%s"?';
   lisValue2 = 'Value%s';
-  lisDeleteValue = 'Delete value "%s"';
+  lisDeleteValue = 'Delete value "%s"?';
   lisInvalidMacroTheMacroMustBeAPascalIdentifie = 'Invalid '
     +'macro "%s". The macro name must be a Pascal identifier.';
   lisThereIsAlreadyAMacroWithTheName = 'There is already a macro with the name "%s".';
