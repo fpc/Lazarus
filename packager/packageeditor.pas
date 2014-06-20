@@ -151,6 +151,32 @@ type
     constructor Create(aTyp: TPENodeType; aName: string; aRemoved: boolean);
   end;
 
+  { IFilesEditorInterface
+    An editor with a TTreeView with files and dependencies }
+
+  IFilesEditorInterface = interface
+    function FilesEditTreeView: TTreeView;
+    function TVNodeFiles: TTreeNode;
+    function TVNodeRequiredPackages: TTreeNode;
+    function FilesEditForm: TCustomForm;
+    function FilesOwner: TObject; // TProject or TLazPackage
+    function FilesOwnerName: string; // for debugging purposes
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function GetNodeData(TVNode: TTreeNode): TPENodeData;
+    function GetNodeItem(NodeData: TPENodeData): TObject;
+    function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
+      out Item: TObject): boolean;
+    function GetNodeFilename(Node: TTreeNode): string;
+    function IsDirectoryNode(Node: TTreeNode): boolean;
+    function FilesBaseDirectory: string;
+    function FilesOwnerReadOnly: boolean;
+    function FirstRequiredDependency: TPkgDependency;
+    function ExtendUnitSearchPath(NewUnitPaths: string): boolean;
+    function ExtendIncSearchPath(NewIncPaths: string): boolean;
+    procedure UpdateAll(Immediately: boolean = false);
+  end;
+
   TPEFlag = (
     pefNeedUpdateTitle,
     pefNeedUpdateFiles,
@@ -164,7 +190,7 @@ type
 
   { TPackageEditorForm }
 
-  TPackageEditorForm = class(TBasePackageEditor)
+  TPackageEditorForm = class(TBasePackageEditor,IFilesEditorInterface)
     MoveDownBtn: TSpeedButton;
     MoveUpBtn: TSpeedButton;
     DirectoryHierarchyButton: TSpeedButton;
@@ -334,18 +360,29 @@ type
     procedure DoSave(SaveAs: boolean);
     procedure DoSortFiles;
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
-    procedure UpdateAll(Immediately: boolean); override;
     function ShowAddDialog(var DlgPage: TAddToPkgType): TModalResult;
-    procedure BeginUdate;
-    procedure EndUpdate;
+  public
+    // IFilesEditorInterface
+    function FilesEditTreeView: TTreeView;
+    function FilesEditForm: TCustomForm;
+    function FilesOwner: TObject; // = Lazpackage
+    function FilesOwnerName: string;
+    function TVNodeFiles: TTreeNode;
+    function TVNodeRequiredPackages: TTreeNode;
+    function FilesBaseDirectory: string;
+    function FilesOwnerReadOnly: boolean;
+    function FirstRequiredDependency: TPkgDependency;
+    function ExtendUnitSearchPath(NewUnitPaths: string): boolean;
+    function ExtendIncSearchPath(NewIncPaths: string): boolean;
     function GetNodeData(TVNode: TTreeNode): TPENodeData;
     function GetNodeItem(NodeData: TPENodeData): TObject;
     function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
       out Item: TObject): boolean;
-    function IsDirectoryNode(Node: TTreeNode): boolean;
     function GetNodeFilename(Node: TTreeNode): string;
-    function ExtendUnitSearchPath(NewUnitPaths: string): boolean;
-    function ExtendIncSearchPath(NewIncPaths: string): boolean;
+    function IsDirectoryNode(Node: TTreeNode): boolean;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure UpdateAll(Immediately: boolean = false); override;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
@@ -593,7 +630,7 @@ var
   NodeData: TPENodeData;
   Item: TObject;
 begin
-  BeginUdate;
+  BeginUpdate;
   try
     for i:=0 to ItemsTreeView.SelectionCount-1 do begin
       TVNode:=ItemsTreeView.Selections[i];
@@ -1172,7 +1209,7 @@ var
   PkgCount: Integer;
   PkgWarning: String;
 begin
-  BeginUdate;
+  BeginUpdate;
   try
     ANode:=ItemsTreeView.Selected;
     if (ANode=nil) or LazPackage.ReadOnly then begin
@@ -1315,7 +1352,7 @@ begin
   debugln(['TPackageEditorForm.FormDropFiles ',length(FileNames)]);
   {$ENDIF}
   if length(FileNames)=0 then exit;
-  BeginUdate;
+  BeginUpdate;
   try
     NewUnitPaths:='';
     NewIncPaths:='';
@@ -1452,7 +1489,7 @@ end;
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
 begin
   if LazPackage=nil then exit;
-  BeginUdate;
+  BeginUpdate;
   try
     ShowAddDialog(fLastDlgPage);
   finally
@@ -1471,7 +1508,7 @@ var
   j: Integer;
 begin
   if LazPackage=nil then exit;
-  BeginUdate;
+  BeginUpdate;
   try
     for i:=0 to ItemsTreeView.SelectionCount-1 do begin
       TVNode:=ItemsTreeView.Selections[i];
@@ -1563,7 +1600,7 @@ var
   Item: TObject;
 begin
   if LazPackage=nil then exit;
-  BeginUdate;
+  BeginUpdate;
   try
     for i:=0 to ItemsTreeView.SelectionCount-1 do begin
       TVNode:=ItemsTreeView.Selections[i];
@@ -1596,7 +1633,7 @@ begin
   CurItem:=TIDEMenuCommand(Sender);
   for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
     if CurItem.Caption=GetPkgFileTypeLocalizedName(CurPFT) then begin
-      BeginUdate;
+      BeginUpdate;
       try
         for i:=0 to ItemsTreeView.SelectionCount-1 do begin
           TVNode:=ItemsTreeView.Selections[i];
@@ -1628,7 +1665,7 @@ var
   Dependency: TPkgDependency;
 begin
   if LazPackage=nil then exit;
-  BeginUdate;
+  BeginUpdate;
   ListOfNodeInfos:=nil;
   try
     if ShowCleanPkgDepDlg(LazPackage,ListOfNodeInfos)<>mrOk then exit;
@@ -1693,7 +1730,7 @@ var
   Item: TObject;
 begin
   if LazPackage=nil then exit;
-  BeginUdate;
+  BeginUpdate;
   try
     for i:=0 to ItemsTreeView.SelectionCount-1 do begin
       TVNode:=ItemsTreeView.Selections[i];
@@ -1847,7 +1884,7 @@ begin
   if (NewFilename=FSingleSelectedDependency.DefaultFilename)
   and (FSingleSelectedDependency.PreferDefaultFilename=AsPreferred) then
     exit;
-  BeginUdate;
+  BeginUpdate;
   try
     FSingleSelectedDependency.DefaultFilename:=NewFilename;
     FSingleSelectedDependency.PreferDefaultFilename:=AsPreferred;
@@ -2101,7 +2138,7 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.BeginUdate;
+procedure TPackageEditorForm.BeginUpdate;
 begin
   inc(fUpdateLock);
 end;
@@ -2899,6 +2936,51 @@ begin
     else exit(false);
     end;
   end;
+end;
+
+function TPackageEditorForm.FilesEditTreeView: TTreeView;
+begin
+  Result:=ItemsTreeView;
+end;
+
+function TPackageEditorForm.FilesEditForm: TCustomForm;
+begin
+  Result:=Self;
+end;
+
+function TPackageEditorForm.FilesOwner: TObject;
+begin
+  Result:=LazPackage;
+end;
+
+function TPackageEditorForm.FilesOwnerName: string;
+begin
+  Result:=LazPackage.Name;
+end;
+
+function TPackageEditorForm.TVNodeFiles: TTreeNode;
+begin
+  Result:=FFilesNode;
+end;
+
+function TPackageEditorForm.TVNodeRequiredPackages: TTreeNode;
+begin
+  Result:=FRequiredPackagesNode;
+end;
+
+function TPackageEditorForm.FilesBaseDirectory: string;
+begin
+  Result:=LazPackage.Directory;
+end;
+
+function TPackageEditorForm.FilesOwnerReadOnly: boolean;
+begin
+  Result:=LazPackage.ReadOnly;
+end;
+
+function TPackageEditorForm.FirstRequiredDependency: TPkgDependency;
+begin
+  Result:=LazPackage.FirstRequiredDependency;
 end;
 
 function TPackageEditorForm.CanBeAddedToProject: boolean;
