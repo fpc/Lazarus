@@ -4260,9 +4260,13 @@ resourcestring
     +'currently not in the include path of the package.%sAdd "%s" to the '
     +'include path?';
   lisExtendUnitPath2 = 'Extend Unit Path?';
+  lisExtendUnitSearchPathOfProjectWith = 'Extend unit search path of project '
+    +'with%s"%s"?';
   lisExtendUnitSearchPathOfPackageWith = 'Extend unit search path of package "'
     +'%s" with"%s"?';
   lisExtendIncludePath = 'Extend Include Path?';
+  lisExtendIncludeFilesSearchPathOfProjectWith = 'Extend include files search '
+    +'path of project with%s"%s"?';
   lisExtendIncludeFileSearchPathOfPackageWith = 'Extend include file search '
     +'path of package "%s" with"%s"?';
   lisConflictDetected = 'Conflict detected';

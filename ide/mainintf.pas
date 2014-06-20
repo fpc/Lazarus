@@ -64,7 +64,7 @@ uses
   CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDEIntf
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
-  CompOptsIntf, LazIDEIntf,
+  CompOptsIntf, LazIDEIntf, IDEDialogs,
   // IDE
   LazConf, LazarusIDEStrConsts, ProjectDefs, Project, PublishModule, BuildLazDialog,
   TransferMacros, ProgressDlg, EnvironmentOpts, EditorOptions, CompilerOptions,
@@ -176,6 +176,9 @@ type
     function DoPublishModule(Options: TPublishModuleOptions;
                              const SrcDirectory, DestDirectory: string
                              ): TModalResult; virtual; abstract;
+
+    function ExtendProjectUnitSearchPath(AProject: TProject; NewUnitPaths: string): boolean;
+    function ExtendProjectIncSearchPath(AProject: TProject; NewIncPaths: string): boolean;
 
     function DoFixupComponentReferences(RootComponent: TComponent;
                         OpenFlags: TOpenFlags): TModalResult; virtual; abstract;
@@ -365,6 +368,51 @@ begin
   if MainBarSubTitle=AValue then exit;
   inherited SetMainBarSubTitle(AValue);
   UpdateCaption;
+end;
+
+function TMainIDEInterface.ExtendProjectUnitSearchPath(AProject: TProject;
+  NewUnitPaths: string): boolean;
+var
+  CurUnitPaths: String;
+  r: TModalResult;
+begin
+  CurUnitPaths:=AProject.CompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
+  NewUnitPaths:=RemoveSearchPaths(NewUnitPaths,CurUnitPaths);
+  if NewUnitPaths<>'' then begin
+    NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,AProject.ProjectDirectory);
+    r:=IDEMessageDialog(lisExtendUnitPath2,
+      Format(lisExtendUnitSearchPathOfProjectWith, [#13, NewUnitPaths]),
+      mtConfirmation, [mbYes, mbNo, mbCancel]);
+    case r of
+    mrYes: AProject.CompilerOptions.OtherUnitFiles:=
+      MergeSearchPaths(AProject.CompilerOptions.OtherUnitFiles,NewUnitPaths);
+    mrNo: ;
+    else exit(false);
+    end;
+  end;
+  Result:=true;
+end;
+
+function TMainIDEInterface.ExtendProjectIncSearchPath(AProject: TProject;
+  NewIncPaths: string): boolean;
+var
+  CurIncPaths: String;
+  r: TModalResult;
+begin
+  CurIncPaths:=AProject.CompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
+  NewIncPaths:=RemoveSearchPaths(NewIncPaths,CurIncPaths);
+  if NewIncPaths<>'' then begin
+    NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,AProject.ProjectDirectory);
+    r:=IDEMessageDialog(lisExtendIncludePath,
+      Format(lisExtendIncludeFilesSearchPathOfProjectWith, [#13, NewIncPaths]),
+      mtConfirmation, [mbYes, mbNo, mbCancel]);
+    case r of
+    mrYes: AProject.CompilerOptions.IncludePath:=
+      MergeSearchPaths(AProject.CompilerOptions.IncludePath,NewIncPaths);
+    mrNo: ;
+    else exit(false);
+    end;
+  end;
 end;
 
 function TMainIDEInterface.DoJumpToSourcePosition(const Filename: string; NewX, NewY,

@@ -43,7 +43,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  TypInfo, Classes, SysUtils, Forms, FileUtil, LCLProc,
+  TypInfo, Classes, SysUtils, Forms, FileUtil, LCLProc, ComCtrls,
   LazIDEIntf, PackageIntf, MenuIntf,
   LazarusIDEStrConsts, EnvironmentOpts,
   CompilerOptions, PackageDefs, PackageSystem, ComponentReg, Project;
@@ -102,6 +102,11 @@ type
                   ADependency: TPkgDependency): TModalResult; virtual; abstract;
     function OnProjectInspectorReAddDependency(Sender: TObject;
                   ADependency: TPkgDependency): TModalResult; virtual; abstract;
+    procedure OnProjectInspectorDragDropTreeView(Sender, Source: TObject;
+      X, Y: Integer); virtual; abstract;
+    function OnProjectInspectorDragOverTreeView(Sender, Source: TObject;
+      X, Y: Integer; out TargetTVNode: TTreeNode;
+      out TargetTVType: TTreeViewInsertMarkType): boolean; virtual; abstract;
 
     // package editors
     function DoNewPackage: TModalResult; virtual; abstract;

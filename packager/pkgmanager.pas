@@ -287,6 +287,11 @@ type
                            ADependency: TPkgDependency): TModalResult; override;
     function OnProjectInspectorReAddDependency(Sender: TObject;
                            ADependency: TPkgDependency): TModalResult; override;
+    procedure OnProjectInspectorDragDropTreeView(Sender, Source: TObject;
+      X, Y: Integer); override;
+    function OnProjectInspectorDragOverTreeView(Sender, Source: TObject;
+      X, Y: Integer; out TargetTVNode: TTreeNode;
+      out TargetTVType: TTreeViewInsertMarkType): boolean; override;
 
     // package editors
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
@@ -1713,19 +1718,19 @@ begin
   if (Source is TTreeView) then begin
     SrcPkgEdit:=PackageEditors.TreeViewToPkgEditor(TTreeView(Source));
     //debugln(['TPkgManager.ItemsTreeViewDragOver from another package editor: ',SrcPkgEdit.LazPackage.Name]);
+    if (SrcPkgEdit=nil) or SrcPkgEdit.LazPackage.ReadOnly
+    or SrcPkgEdit.LazPackage.IsVirtual then
+      exit;
   end else
-    exit;
-  if (SrcPkgEdit=nil) or SrcPkgEdit.LazPackage.ReadOnly
-  or SrcPkgEdit.LazPackage.IsVirtual then
     exit;
 
   // get target
   if Sender is TTreeView then begin
     TargetPkgEdit:=PackageEditors.TreeViewToPkgEditor(TTreeView(Sender));
+    if (TargetPkgEdit=nil) or TargetPkgEdit.LazPackage.ReadOnly
+    or TargetPkgEdit.LazPackage.IsVirtual then
+      exit;
   end else
-    exit;
-  if (TargetPkgEdit=nil) or TargetPkgEdit.LazPackage.ReadOnly
-  or TargetPkgEdit.LazPackage.IsVirtual then
     exit;
 
   //debugln(['TPkgManager.CheckDrag Src=',SrcPkgEdit.LazPackage.Name,' Target=',TargetPkgEdit.LazPackage.Name]);
@@ -5895,6 +5900,24 @@ begin
   and (not ADependency.RequiredPackage.Missing) then begin
     AddUnitToProjectMainUsesSection(Project1,ADependency.PackageName,'');
   end;
+end;
+
+procedure TPkgManager.OnProjectInspectorDragDropTreeView(Sender,
+  Source: TObject; X, Y: Integer);
+begin
+  {$IFDEF VerbosePkgEditDrag}
+  debugln(['TPkgManager.OnProjectInspectorDragDropTreeView START']);
+  {$ENDIF}
+end;
+
+function TPkgManager.OnProjectInspectorDragOverTreeView(Sender,
+  Source: TObject; X, Y: Integer; out TargetTVNode: TTreeNode; out
+  TargetTVType: TTreeViewInsertMarkType): boolean;
+begin
+  {$IFDEF VerbosePkgEditDrag}
+  debugln(['TPkgManager.OnProjectInspectorDragOverTreeView ']);
+  {$ENDIF}
+  Result:=false;
 end;
 
 function TPkgManager.CanOpenDesignerForm(AnUnitInfo: TUnitInfo;

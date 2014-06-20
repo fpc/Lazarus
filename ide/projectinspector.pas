@@ -58,16 +58,18 @@ unit ProjectInspector;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerboseProjInspDrag}
-
 interface
 
 uses
   Classes, SysUtils, LCLProc, LCLType, Forms, Controls, Buttons, ComCtrls,
-  Menus, Dialogs, FileUtil, LazFileCache, ExtCtrls, Graphics, IDEHelpIntf,
-  IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ProjectIntf, PackageIntf,
-  Project, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, AddToProjectDlg,
-  PackageDefs, TreeFilterEdit, CodeToolManager, CodeCache, EnvironmentOpts;
+  Menus, Dialogs, FileUtil, LazFileCache, ExtCtrls, Graphics,
+  CodeToolManager, CodeCache, TreeFilterEdit,
+  // IDEIntf
+  IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ProjectIntf,
+  PackageIntf,
+  // IDE
+  LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs, EnvironmentOpts,
+  PackageDefs, Project, PackageEditor, AddToProjectDlg;
   
 type
   TOnAddUnitToProject =
@@ -86,19 +88,6 @@ type
     pifNeedUpdateTitle
     );
   TProjectInspectorFlags = set of TProjectInspectorFlag;
-
-  TPINodeType = (
-    pntFile,
-    pntDependency
-    );
-
-  TPINodeData = class(TTFENodeData)
-  public
-    Typ: TPINodeType;
-    Name: string; // file or package name
-    Removed : Boolean;
-    Next : TPINodeData;
-  end;
 
   { TProjectInspectorForm }
 
@@ -125,6 +114,9 @@ type
       Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
       var PaintImages, DefaultDraw: Boolean);
     procedure ItemsTreeViewDblClick(Sender: TObject);
+    procedure ItemsTreeViewDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure ItemsTreeViewDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
     procedure ItemsTreeViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ItemsTreeViewSelectionChanged(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
@@ -145,6 +137,8 @@ type
     FIdleConnected: boolean;
     FOnAddDependency: TAddProjInspDepEvent;
     FOnAddUnitToProject: TOnAddUnitToProject;
+    FOnDragDropTreeView: TDragDropEvent;
+    FOnDragOverTreeView: TOnDragOverTreeView;
     FOnReAddDependency: TAddProjInspDepEvent;
     FOnRemoveDependency: TRemoveProjInspDepEvent;
     FOnRemoveFile: TRemoveProjInspFileEvent;
@@ -168,12 +162,12 @@ type
     ImageIndexBinary: integer;
     ImageIndexDirectory: integer;
     FFlags: TProjectInspectorFlags;
-    FProjectNodeDataList : array [TPINodeType] of TPINodeData;
-    procedure FreeNodeData(Typ: TPINodeType);
-    function CreateNodeData(Typ: TPINodeType; aName: string; aRemoved: boolean): TPINodeData;
-    function GetNodeData(TVNode: TTreeNode): TPINodeData;
-    function GetNodeItem(NodeData: TPINodeData): TObject;
-    function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPINodeData;
+    FProjectNodeDataList : array [TPENodeType] of TPENodeData;
+    procedure FreeNodeData(Typ: TPENodeType);
+    function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
+    function GetNodeData(TVNode: TTreeNode): TPENodeData;
+    function GetNodeItem(NodeData: TPENodeData): TObject;
+    function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
       out Item: TObject): boolean;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
     procedure SetIdleConnected(AValue: boolean);
@@ -202,6 +196,7 @@ type
     procedure UpdatePending;
     function CanUpdate(Flag: TProjectInspectorFlag): boolean;
     function GetSingleSelectedDependency: TPkgDependency;
+    function TreeViewToInspector(TV: TTreeView): TProjectInspectorForm;
   public
     property LazProject: TProject read FLazProject write SetLazProject;
     property OnShowOptions: TNotifyEvent read FOnShowOptions write FOnShowOptions;
@@ -215,6 +210,10 @@ type
                              read FOnRemoveDependency write FOnRemoveDependency;
     property OnReAddDependency: TAddProjInspDepEvent
                              read FOnReAddDependency write FOnReAddDependency;
+    property OnDragDropTreeView: TDragDropEvent read FOnDragDropTreeView
+                                                      write FOnDragDropTreeView;
+    property OnDragOverTreeView: TOnDragOverTreeView read FOnDragOverTreeView
+                                                      write FOnDragOverTreeView;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
     property ShowDirectoryHierarchy: boolean read FShowDirectoryHierarchy write SetShowDirectoryHierarchy;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -239,6 +238,32 @@ end;
 procedure TProjectInspectorForm.ItemsTreeViewDblClick(Sender: TObject);
 begin
   OpenButtonClick(Self);
+end;
+
+procedure TProjectInspectorForm.ItemsTreeViewDragDrop(Sender, Source: TObject;
+  X, Y: Integer);
+begin
+  OnDragDropTreeView(Sender,Source,X,Y);
+end;
+
+procedure TProjectInspectorForm.ItemsTreeViewDragOver(Sender, Source: TObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  TargetTVNode: TTreeNode;
+  TargetTVType: TTreeViewInsertMarkType;
+begin
+  if not OnDragOverTreeView(Sender,Source,X,Y, TargetTVNode, TargetTVType) then
+  begin
+    ItemsTreeView.SetInsertMark(nil,tvimNone);
+    Accept:=false;
+    exit;
+  end;
+
+  if State=dsDragLeave then
+    ItemsTreeView.SetInsertMark(nil,tvimNone)
+  else
+    ItemsTreeView.SetInsertMark(TargetTVNode,TargetTVType);
+  Accept:=true;
 end;
 
 procedure TProjectInspectorForm.ItemsTreeViewKeyDown(Sender: TObject;
@@ -304,7 +329,7 @@ var
   CurDependency: TPkgDependency;
   i: Integer;
   TVNode: TTreeNode;
-  NodeData: TPINodeData;
+  NodeData: TPENodeData;
   Item: TObject;
 begin
   BeginUpdate;
@@ -442,7 +467,7 @@ var
 var
   i: Integer;
   TVNode: TTreeNode;
-  NodeData: TPINodeData;
+  NodeData: TPENodeData;
   Item: TObject;
   CanRemoveCount: Integer;
   CanOpenCount: Integer;
@@ -545,14 +570,14 @@ procedure TProjectInspectorForm.ItemsTreeViewAdvancedCustomDrawItem(
   Sender: TCustomTreeView; Node: TTreeNode; State: TCustomDrawState;
   Stage: TCustomDrawStage; var PaintImages, DefaultDraw: Boolean);
 var
-  NodeData: TPINodeData;
+  NodeData: TPENodeData;
   r: TRect;
   y: Integer;
 begin
   if Stage=cdPostPaint then begin
     NodeData:=GetNodeData(Node);
     if (NodeData<>nil) then begin
-      if  (NodeData.Typ=pntFile) and (not NodeData.Removed)
+      if  (NodeData.Typ=penFile) and (not NodeData.Removed)
       and FilenameIsAbsolute(NodeData.Name)
       and (not FileExistsCached(NodeData.Name))
       then begin
@@ -569,7 +594,7 @@ procedure TProjectInspectorForm.OpenButtonClick(Sender: TObject);
 var
   i: Integer;
   TVNode: TTreeNode;
-  NodeData: TPINodeData;
+  NodeData: TPENodeData;
   Item: TObject;
   CurFile: TUnitInfo;
   CurDependency: TPkgDependency;
@@ -611,7 +636,7 @@ var
   Dependency: TPkgDependency;
   i: Integer;
   TVNode: TTreeNode;
-  NodeData: TPINodeData;
+  NodeData: TPENodeData;
   Item: TObject;
 begin
   BeginUpdate;
@@ -636,7 +661,7 @@ var
   CurDependency: TPkgDependency;
   i: Integer;
   TVNode: TTreeNode;
-  NodeData: TPINodeData;
+  NodeData: TPENodeData;
   Item: TObject;
   Msg: String;
   DeleteCount: Integer;
@@ -780,7 +805,7 @@ var
   CurDependency: TPkgDependency;
   i: Integer;
   TVNode: TTreeNode;
-  NodeData: TPINodeData;
+  NodeData: TPENodeData;
   Item: TObject;
 begin
   BeginUpdate;
@@ -884,12 +909,12 @@ end;
 function TProjectInspectorForm.OnTreeViewGetImageIndex(Str: String; Data: TObject;
                                                 var AIsEnabled: Boolean): Integer;
 var
-  NodeData: TPINodeData;
+  NodeData: TPENodeData;
   Item: TObject;
 begin
   Result := -1;
-  if not (Data is TPINodeData) then exit;
-  NodeData:=TPINodeData(Data);
+  if not (Data is TPENodeData) then exit;
+  NodeData:=TPENodeData(Data);
   Item:=GetNodeItem(NodeData);
   if Item=nil then exit;
 
@@ -916,14 +941,14 @@ var
   CurFile: TUnitInfo;
   FilesBranch: TTreeFilterBranch;
   Filename: String;
-  ANodeData : TPINodeData;
+  ANodeData : TPENodeData;
 begin
   if not CanUpdate(pifNeedUpdateFiles) then exit;
   ItemsTreeView.BeginUpdate;
   try
     FilesBranch:=FilterEdit.GetBranch(FFilesNode);
     FilesBranch.Clear;
-    FreeNodeData(pntFile);
+    FreeNodeData(penFile);
     if LazProject<>nil then begin
       FilterEdit.SelectedPart:=FNextSelectedPart;
       FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
@@ -934,7 +959,7 @@ begin
       while CurFile<>nil do begin
         Filename:=CurFile.GetShortFilename(true);
         if Filename<>'' then Begin
-          ANodeData := CreateNodeData(pntFile, CurFile.Filename, False);
+          ANodeData := CreateNodeData(penFile, CurFile.Filename, False);
           FilesBranch.AddNodeData(Filename, ANodeData, CurFile.Filename);
         end;
         CurFile:=CurFile.NextPartOfProject;
@@ -952,14 +977,14 @@ var
   Dependency: TPkgDependency;
   RequiredBranch, RemovedBranch: TTreeFilterBranch;
   NodeText, AFilename: String;
-  ANodeData : TPINodeData;
+  ANodeData : TPENodeData;
 begin
   if not CanUpdate(pifNeedUpdateDependencies) then exit;
   ItemsTreeView.BeginUpdate;
   try
     RequiredBranch:=FilterEdit.GetBranch(DependenciesNode);
     RequiredBranch.Clear;
-    FreeNodeData(pntDependency);
+    FreeNodeData(penDependency);
     Dependency:=Nil;
     if LazProject<>nil then begin
       // required packages
@@ -975,7 +1000,7 @@ begin
             NodeText:=Format(lisPckEditDefault, [NodeText, AFilename]);
         end;
         // Add the required package under the branch
-        ANodeData := CreateNodeData(pntDependency, Dependency.PackageName, False);
+        ANodeData := CreateNodeData(penDependency, Dependency.PackageName, False);
         RequiredBranch.AddNodeData(NodeText, ANodeData);
         Dependency:=Dependency.NextRequiresDependency;
       end;
@@ -993,7 +1018,7 @@ begin
         RemovedBranch:=FilterEdit.GetBranch(RemovedDependenciesNode);
         // Add all removed dependencies under the branch
         while Dependency<>nil do begin
-          ANodeData := CreateNodeData(pntDependency, Dependency.PackageName, True);
+          ANodeData := CreateNodeData(penDependency, Dependency.PackageName, True);
           RemovedBranch.AddNodeData(Dependency.AsString, ANodeData);
           Dependency:=Dependency.NextRequiresDependency;
         end;
@@ -1029,7 +1054,7 @@ procedure TProjectInspectorForm.EnableI18NForSelectedLFM(TheEnable: boolean);
 var
   i: Integer;
   TVNode: TTreeNode;
-  NodeData: TPINodeData;
+  NodeData: TPENodeData;
   Item: TObject;
   CurUnitInfo: TUnitInfo;
 begin
@@ -1061,12 +1086,21 @@ end;
 function TProjectInspectorForm.GetSingleSelectedDependency: TPkgDependency;
 var
   Item: TObject;
-  NodeData: TPINodeData;
+  NodeData: TPENodeData;
 begin
   Result:=nil;
   if not GetNodeDataItem(ItemsTreeView.Selected,NodeData,Item) then exit;
   if Item is TPkgDependency then
     Result:=TPkgDependency(Item);
+end;
+
+function TProjectInspectorForm.TreeViewToInspector(TV: TTreeView
+  ): TProjectInspectorForm;
+begin
+  if TV=ItemsTreeView then
+    Result:=Self
+  else
+    Result:=nil;
 end;
 
 constructor TProjectInspectorForm.Create(TheOwner: TComponent);
@@ -1083,12 +1117,12 @@ end;
 
 destructor TProjectInspectorForm.Destroy;
 var
-  nt: TPINodeType;
+  nt: TPENodeType;
 begin
   IdleConnected:=false;
   LazProject:=nil;
   inherited Destroy;
-  for nt:=Low(TPINodeType) to High(TPINodeType) do
+  for nt:=Low(TPENodeType) to High(TPENodeType) do
     FreeNodeData(nt);
   if ProjInspector=Self then
     ProjInspector:=nil;
@@ -1142,7 +1176,7 @@ procedure TProjectInspectorForm.UpdateButtons(Immediately: boolean);
 var
   i: Integer;
   TVNode: TTreeNode;
-  NodeData: TPINodeData;
+  NodeData: TPENodeData;
   Item: TObject;
   CanRemoveCount: Integer;
   CurUnitInfo: TUnitInfo;
@@ -1215,10 +1249,10 @@ begin
   end;
 end;
 
-procedure TProjectInspectorForm.FreeNodeData(Typ: TPINodeType);
+procedure TProjectInspectorForm.FreeNodeData(Typ: TPENodeType);
 var
   NodeData,
-  n: TPINodeData;
+  n: TPENodeData;
 begin
   NodeData:=FProjectNodeDataList[Typ];
   while NodeData<>nil do begin
@@ -1229,17 +1263,15 @@ begin
   FProjectNodeDataList[Typ]:=nil;
 End;
 
-function TProjectInspectorForm.CreateNodeData(Typ: TPINodeType; aName: string; aRemoved: boolean): TPINodeData;
+function TProjectInspectorForm.CreateNodeData(Typ: TPENodeType;
+  aName: string; aRemoved: boolean): TPENodeData;
 Begin
-  Result := TPINodeData.Create;
-  Result.Name := aName;
-  Result.Typ := Typ;
-  Result.Removed := aRemoved;
+  Result := TPENodeData.Create(Typ,aName,aRemoved);
   Result.Next := FProjectNodeDataList[Typ];
   FProjectNodeDataList[Typ] := Result;
 end;
 
-function TProjectInspectorForm.GetNodeData(TVNode: TTreeNode): TPINodeData;
+function TProjectInspectorForm.GetNodeData(TVNode: TTreeNode): TPENodeData;
 var
   o: TObject;
 begin
@@ -1248,21 +1280,21 @@ begin
   o:=TObject(TVNode.Data);
   if o is TFileNameItem then
     o:=TObject(TFileNameItem(o).Data);
-  if o is TPINodeData then
-    Result:=TPINodeData(o);
+  if o is TPENodeData then
+    Result:=TPENodeData(o);
 end;
 
-function TProjectInspectorForm.GetNodeItem(NodeData: TPINodeData): TObject;
+function TProjectInspectorForm.GetNodeItem(NodeData: TPENodeData): TObject;
 begin
   Result:=nil;
   if (LazProject=nil) or (NodeData=nil) then exit;
   case NodeData.Typ of
-  pntFile:
+  penFile:
     if NodeData.Removed then
       Result:=nil
     else
       Result:=LazProject.UnitInfoWithFilename(NodeData.Name,[pfsfOnlyProjectFiles]);
-  pntDependency:
+  penDependency:
     if NodeData.Removed then
       Result:=LazProject.FindRemovedDependencyByName(NodeData.Name)
     else
@@ -1271,7 +1303,7 @@ begin
 end;
 
 function TProjectInspectorForm.GetNodeDataItem(TVNode: TTreeNode; out
-  NodeData: TPINodeData; out Item: TObject): boolean;
+  NodeData: TPENodeData; out Item: TObject): boolean;
 begin
   Result:=false;
   Item:=nil;

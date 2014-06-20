@@ -36,8 +36,8 @@ unit DialogProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, FileProcs,
-  FileUtil, LazFileUtils, Laz2_XMLCfg, lazutf8classes, LazFileCache,
+  Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, ComCtrls,
+  FileProcs, FileUtil, LazFileUtils, Laz2_XMLCfg, lazutf8classes, LazFileCache,
   CodeToolsConfig, CodeCache, CodeToolManager, AVL_Tree, LazIDEIntf, IDEProcs,
   LazarusIDEStrConsts, IDEDialogs;
 
@@ -56,6 +56,10 @@ type
   TOnBackupFileInteractive =
                        function(const Filename: string): TModalResult of object;
                        
+  TOnDragOverTreeView = function(Sender, Source: TObject; X, Y: Integer;
+      out TargetTVNode: TTreeNode; out TargetTVType: TTreeViewInsertMarkType
+      ): boolean of object;
+
 var
   OnBackupFileInteractive: TOnBackupFileInteractive = nil;
 

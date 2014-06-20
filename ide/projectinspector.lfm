@@ -26,6 +26,8 @@ object ProjectInspectorForm: TProjectInspectorForm
     TabOrder = 0
     OnAdvancedCustomDrawItem = ItemsTreeViewAdvancedCustomDrawItem
     OnDblClick = ItemsTreeViewDblClick
+    OnDragDrop = ItemsTreeViewDragDrop
+    OnDragOver = ItemsTreeViewDragOver
     OnKeyDown = ItemsTreeViewKeyDown
     OnSelectionChanged = ItemsTreeViewSelectionChanged
     Options = [tvoAllowMultiselect, tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]

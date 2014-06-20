@@ -6432,6 +6432,8 @@ begin
     ProjInspector.OnRemoveFile:=@ProjInspectorRemoveFile;
     ProjInspector.OnRemoveDependency:=@PkgBoss.OnProjectInspectorRemoveDependency;
     ProjInspector.OnReAddDependency:=@PkgBoss.OnProjectInspectorReAddDependency;
+    ProjInspector.OnDragOverTreeView:=@PkgBoss.OnProjectInspectorDragOverTreeView;
+    ProjInspector.OnDragDropTreeView:=@PkgBoss.OnProjectInspectorDragDropTreeView;
 
     ProjInspector.LazProject:=Project1;
   end;

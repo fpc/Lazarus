@@ -34,14 +34,17 @@ interface
 uses
   // LCL FCL
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, Graphics,
-  LCLType, LCLProc, Menus, Dialogs, FileUtil, LazFileCache,
+  LCLType, LCLProc, Menus, Dialogs, FileUtil, LazFileCache, ExtCtrls,
   contnrs,
   // IDEIntf CodeTools
-  IDEImagesIntf, MenuIntf, ExtCtrls, LazIDEIntf, ProjectIntf, CodeToolsStructs,
-  CodeToolManager, CodeCache, CodeTree, FormEditingIntf, TreeFilterEdit,
-  PackageIntf, IDEDialogs, IDEHelpIntf, IDEOptionsIntf, IDEProcs,
-  LazarusIDEStrConsts, IDEDefs, CompilerOptions, ComponentReg, UnitResources,
-  SrcEditorIntf, IDEMsgIntf, IDEExternToolIntf, EnvironmentOpts, DialogProcs,
+  CodeToolManager, CodeCache, CodeTree,
+  TreeFilterEdit,
+  IDEImagesIntf, MenuIntf, LazIDEIntf, ProjectIntf, CodeToolsStructs,
+  FormEditingIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf, SrcEditorIntf,
+  IDEMsgIntf, IDEExternToolIntf,
+  // IDE
+  IDEDialogs, IDEProcs, LazarusIDEStrConsts, IDEDefs,
+  CompilerOptions, ComponentReg, UnitResources, EnvironmentOpts, DialogProcs,
   PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor, MissingPkgFilesDlg,
   PackageSystem, CleanPkgDeps;
   
@@ -108,10 +111,6 @@ type
   TOnDeleteAmbiguousFiles =
     function(Sender: TObject; APackage: TLazPackage;
              const Filename: string): TModalResult of object;
-  TOnDragDropTreeView = procedure(Sender, Source: TObject; X, Y: Integer) of object;
-  TOnDragOverTreeView = function(Sender, Source: TObject; X, Y: Integer;
-      out TargetTVNode: TTreeNode; out TargetTVType: TTreeViewInsertMarkType
-      ): boolean of object;
   TOnFreePkgEditor = procedure(APackage: TLazPackage) of object;
   TOnInstallPackage =
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
@@ -370,7 +369,7 @@ type
     FOnCreateMakefile: TOnCreatePkgMakefile;
     FOnCreateFpmakeFile: TOnCreatePkgFpmakeFile;
     FOnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles;
-    FOnDragDropTreeView: TOnDragDropTreeView;
+    FOnDragDropTreeView: TDragDropEvent;
     FOnDragOverTreeView: TOnDragOverTreeView;
     FOnFreeEditor: TOnFreePkgEditor;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
@@ -439,7 +438,7 @@ type
                                                   write FOnCreateNewFile;
     property OnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles
                      read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
-    property OnDragDropTreeView: TOnDragDropTreeView read FOnDragDropTreeView
+    property OnDragDropTreeView: TDragDropEvent read FOnDragDropTreeView
                                                       write FOnDragDropTreeView;
     property OnDragOverTreeView: TOnDragOverTreeView read FOnDragOverTreeView
                                                       write FOnDragOverTreeView;
@@ -822,10 +821,6 @@ end;
 procedure TPackageEditorForm.ItemsTreeViewDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 var
-  SrcPkgEdit: TPackageEditorForm;
-  FileCount: Integer;
-  DepCount: Integer;
-  DirCount: Integer;
   TargetTVNode: TTreeNode;
   TargetTVType: TTreeViewInsertMarkType;
 begin
