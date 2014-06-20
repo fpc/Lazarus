@@ -8,8 +8,9 @@ uses
   Classes,
   SysUtils,
   Maps,
-  FpDbgUtil,
   LazLogger,
+  DbgIntfBaseTypes,
+  FpDbgDisasX86,
   FpDbgClasses;
 
 type
@@ -18,6 +19,71 @@ type
   TOnHitBreakpointEvent = procedure(var continue: boolean; const Breakpoint: TDbgBreakpoint) of object;
   TOnExceptionEvent = procedure(var continue: boolean; const ExceptionClass, ExceptionMessage: string) of object;
   TOnProcessExitEvent = procedure(ExitCode: DWord) of object;
+
+  TDbgController = class;
+
+  { TDbgControllerCmd }
+
+  TDbgControllerCmd = class
+  protected
+    FController: TDbgController;
+  public
+    constructor Create(AController: TDbgController); virtual;
+    procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); virtual; abstract;
+    procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); virtual; abstract;
+  end;
+
+  { TDbgControllerContinueCmd }
+
+  TDbgControllerContinueCmd = class(TDbgControllerCmd)
+  public
+    procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+    procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); override;
+  end;
+
+  { TDbgControllerStepIntoInstructionCmd }
+
+  TDbgControllerStepIntoInstructionCmd = class(TDbgControllerCmd)
+  public
+    procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+    procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); override;
+  end;
+
+  { TDbgControllerStepOverInstructionCmd }
+
+  TDbgControllerStepOverInstructionCmd = class(TDbgControllerCmd)
+  private
+    FHiddenBreakpoint: TDbgBreakpoint;
+    FIsSet: boolean;
+  public
+    procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+    procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); override;
+  end;
+
+  { TDbgControllerStepOverLineCmd }
+
+  TDbgControllerStepOverLineCmd = class(TDbgControllerStepOverInstructionCmd)
+  private
+    FInfoStored: boolean;
+  public
+    procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+    procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); override;
+  end;
+
+  { TDbgControllerStepIntoLineCmd }
+
+  TDbgControllerStepIntoLineCmd = class(TDbgControllerCmd)
+  private
+    FInfoStored: boolean;
+    FStoredStackFrame: TDBGPtr;
+    FInto: boolean;
+    FHiddenWatchpointInto: integer;
+    FHiddenWatchpointOut: integer;
+  public
+    constructor Create(AController: TDbgController); override;
+    procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+    procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); override;
+  end;
 
   { TDbgController }
 
@@ -45,12 +111,14 @@ type
     FMainProcess: TDbgProcess;
     FCurrentProcess: TDbgProcess;
     FCurrentThread: TDbgThread;
+    FCommand: TDbgControllerCmd;
     procedure Log(const AString: string; const ALogLevel: TFPDLogLevel = dllDebug);
     procedure Log(const AString: string; const Options: array of const; const ALogLevel: TFPDLogLevel = dllDebug);
     function GetProcess(const AProcessIdentifier: THandle; out AProcess: TDbgProcess): Boolean;
   public
     constructor Create; virtual;
     destructor Destroy; override;
+    procedure InitializeCommand(ACommand: TDbgControllerCmd);
     function Run: boolean;
     procedure Stop;
     procedure StepIntoInstr;
@@ -65,6 +133,7 @@ type
     property ExecutableFilename: string read FExecutableFilename write SetExecutableFilename;
     property OnLog: TOnLog read FOnLog write SetOnLog;
     property CurrentProcess: TDbgProcess read FCurrentProcess;
+    property CurrentThread: TDbgThread read FCurrentThread;
     property MainProcess: TDbgProcess read FMainProcess;
     property Params: TStringList read FParams write SetParams;
     property Environment: TStrings read FEnvironment write SetEnvironment;
@@ -78,6 +147,177 @@ type
   end;
 
 implementation
+
+{ TDbgControllerStepIntoLineCmd }
+
+constructor TDbgControllerStepIntoLineCmd.Create(AController: TDbgController);
+begin
+  inherited Create(AController);
+  FHiddenWatchpointInto:=-1;
+  FHiddenWatchpointOut:=-1;
+end;
+
+procedure TDbgControllerStepIntoLineCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
+begin
+  if not FInfoStored then
+  begin
+    FInfoStored:=true;
+    FStoredStackFrame:=AProcess.GetStackBasePointerRegisterValue;
+    AThread.StoreStepInfo;
+  end;
+
+  AProcess.Continue(AProcess, AThread, not FInto);
+end;
+
+procedure TDbgControllerStepIntoLineCmd.ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean);
+begin
+  if (FHiddenWatchpointOut<>-1) and FController.FCurrentThread.RemoveWatchpoint(FHiddenWatchpointOut) then
+    FHiddenWatchpointOut:=-1;
+  if (FHiddenWatchpointInto<>-1) and FController.FCurrentThread.RemoveWatchpoint(FHiddenWatchpointInto) then
+    FHiddenWatchpointInto:=-1;
+
+  Handled := false;
+  Finished := (AnEvent<>deInternalContinue);
+  if Finished then
+  begin
+    if FController.FCurrentThread.CompareStepInfo then
+    begin
+      AnEvent:=deInternalContinue;
+      if not FInto and (FStoredStackFrame<>FController.FCurrentProcess.GetStackBasePointerRegisterValue) then
+      begin
+        // A sub-procedure has been called, with no debug-information. Use hadrware-breakpoints instead of single-
+        // stepping for better performance.
+        FInto:=true;
+      end;
+
+      if FInto then
+      begin
+        FHiddenWatchpointInto := FController.FCurrentThread.AddWatchpoint(FController.FCurrentProcess.GetStackPointerRegisterValue-DBGPTRSIZE[FController.FCurrentProcess.Mode]);
+        FHiddenWatchpointOut := FController.FCurrentThread.AddWatchpoint(FController.FCurrentProcess.GetStackBasePointerRegisterValue+DBGPTRSIZE[FController.FCurrentProcess.Mode]);
+        assert((FHiddenWatchpointInto<>-1) and (FHiddenWatchpointOut<>-1));
+      end;
+
+      Finished:=false;
+    end;
+  end;
+end;
+
+{ TDbgControllerStepOverLineCmd }
+
+procedure TDbgControllerStepOverLineCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
+begin
+  if not FInfoStored then
+  begin
+    FInfoStored:=true;
+    AThread.StoreStepInfo;
+  end;
+
+  inherited DoContinue(AProcess, AThread);
+end;
+
+procedure TDbgControllerStepOverLineCmd.ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean);
+begin
+  inherited ResolveEvent(AnEvent, Handled, Finished);
+  if Finished then
+  begin
+    if FController.FCurrentThread.CompareStepInfo then
+    begin
+      AnEvent:=deInternalContinue;
+      FHiddenBreakpoint:=nil;
+      FIsSet:=false;
+      Finished:=false;
+    end;
+  end;
+end;
+
+
+{ TDbgControllerStepOverInstructionCmd }
+
+procedure TDbgControllerStepOverInstructionCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
+
+var
+  CodeBin: array[0..20] of byte;
+  p: pointer;
+  ADump,
+  AStatement: string;
+  CallInstr: boolean;
+  ALocation: TDbgPtr;
+
+begin
+  if FIsSet then
+    AProcess.Continue(AProcess, AThread, false)
+  else
+  begin
+    CallInstr:=false;
+    if AProcess.ReadData(aProcess.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
+    begin
+      p := @CodeBin;
+      Disassemble(p, AProcess.Mode=dm64, ADump, AStatement);
+      if copy(AStatement,1,4)='call' then
+        CallInstr:=true;
+    end;
+
+    if CallInstr then
+    begin
+      ALocation := AProcess.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin));
+      if not AProcess.HasBreak(ALocation) then
+        FHiddenBreakpoint := AProcess.AddBreak(ALocation);
+    end;
+    FIsSet:=true;
+    AProcess.Continue(AProcess, AThread, not CallInstr);
+  end;
+end;
+
+procedure TDbgControllerStepOverInstructionCmd.ResolveEvent(
+  var AnEvent: TFPDEvent; out Handled, Finished: boolean);
+begin
+  Handled := false;
+  Finished := (AnEvent<>deInternalContinue);
+  if Finished then
+  begin
+    if assigned(FHiddenBreakpoint) then
+    begin
+      FController.FCurrentProcess.RemoveBreak(FHiddenBreakpoint.Location);
+      FHiddenBreakpoint.Free;
+    end;
+  end;
+end;
+
+{ TDbgControllerStepIntoInstructionCmd }
+
+procedure TDbgControllerStepIntoInstructionCmd.DoContinue(
+  AProcess: TDbgProcess; AThread: TDbgThread);
+begin
+  AProcess.Continue(AProcess, AThread, True);
+end;
+
+procedure TDbgControllerStepIntoInstructionCmd.ResolveEvent(
+  var AnEvent: TFPDEvent; out Handled, Finished: boolean);
+begin
+  Handled := false;
+  Finished := (AnEvent<>deInternalContinue);
+end;
+
+{ TDbgControllerContinueCmd }
+
+procedure TDbgControllerContinueCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
+begin
+  AProcess.Continue(AProcess, AThread, False);
+end;
+
+procedure TDbgControllerContinueCmd.ResolveEvent(var AnEvent: TFPDEvent; out
+  Handled, Finished: boolean);
+begin
+  Handled := false;
+  Finished := (AnEvent<>deInternalContinue);
+end;
+
+{ TDbgControllerCmd }
+
+constructor TDbgControllerCmd.Create(AController: TDbgController);
+begin
+  FController := AController;
+end;
 
 { TDbgController }
 
@@ -117,6 +357,13 @@ begin
   FParams.Free;
   FEnvironment.Free;
   inherited Destroy;
+end;
+
+procedure TDbgController.InitializeCommand(ACommand: TDbgControllerCmd);
+begin
+  if assigned(FCommand) then
+    raise exception.create('Prior command not finished yet.');
+  FCommand := ACommand;
 end;
 
 function TDbgController.Run: boolean;
@@ -160,27 +407,27 @@ end;
 
 procedure TDbgController.StepIntoInstr;
 begin
-  FCurrentThread.SingleStep;
+  InitializeCommand(TDbgControllerStepIntoInstructionCmd.Create(self));
 end;
 
 procedure TDbgController.StepOverInstr;
 begin
-  FCurrentThread.StepLine;
+  InitializeCommand(TDbgControllerStepOverInstructionCmd.Create(self));
 end;
 
 procedure TDbgController.Next;
 begin
-  FCurrentThread.Next;
+  InitializeCommand(TDbgControllerStepOverLineCmd.Create(self));
 end;
 
 procedure TDbgController.Step;
 begin
-  FCurrentThread.StepInto;
+  InitializeCommand(TDbgControllerStepIntoLineCmd.Create(self));
 end;
 
 procedure TDbgController.StepOut;
 begin
-  FCurrentThread.StepOut;
+  //FCurrentThread.StepOut;
 end;
 
 procedure TDbgController.Pause;
@@ -194,6 +441,8 @@ var
   AProcessIdentifier: THandle;
   AThreadIdentifier: THandle;
   AExit: boolean;
+  IsHandled: boolean;
+  IsFinished: boolean;
 
 begin
   AExit:=false;
@@ -201,8 +450,12 @@ begin
     if assigned(FCurrentProcess) and not assigned(FMainProcess) then
       FMainProcess:=FCurrentProcess
     else
-      FCurrentProcess.Continue(FCurrentProcess, FCurrentThread);
-
+    begin
+      if not assigned(FCommand) then
+        FCurrentProcess.Continue(FCurrentProcess, FCurrentThread, False)
+      else
+        FCommand.DoContinue(FCurrentProcess, FCurrentThread);
+    end;
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then Continue;
 
     FCurrentProcess := nil;
@@ -223,54 +476,42 @@ begin
       FCurrentThread := FCurrentProcess.AddThread(AThreadIdentifier);
 
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
-    if (FPDEvent<>deInternalContinue) and assigned(FCurrentProcess.RunToBreakpoint) then begin
-      FCurrentProcess.ClearRunToBreakpoint;
+    if assigned(FCommand) then
+      FCommand.ResolveEvent(FPDEvent, IsHandled, IsFinished)
+    else
+    begin
+      IsHandled:=false;
+      IsFinished:=false;
     end;
-    if assigned(FCurrentThread) then
-      begin
-      FCurrentThread.SingleStepping:=false;
-      if not (FPDEvent in [deInternalContinue, deLoadLibrary]) then
-        FCurrentThread.AfterHitBreak;
-      FCurrentThread.ClearHWBreakpoint;
-      end;
-    case FPDEvent of
-      deCreateProcess :
-        begin
-          // Do nothing
-        end;
-      deExitProcess :
-        begin
-          if FCurrentProcess = FMainProcess then FMainProcess := nil;
-          FExitCode:=FCurrentProcess.ExitCode;
+    if not IsHandled then
+    begin
+      case FPDEvent of
+        deExitProcess :
+          begin
+            if FCurrentProcess = FMainProcess then FMainProcess := nil;
+            FExitCode:=FCurrentProcess.ExitCode;
 
-          FProcessMap.Delete(AProcessIdentifier);
-          FCurrentProcess.Free;
-          FCurrentProcess := nil;
-        end;
-{      deLoadLibrary :
-        begin
-          if FCurrentProcess.GetLib(FCurrentProcess.LastEventProcessIdentifier, ALib)
-          and (GImageInfo <> iiNone)
-          then begin
-            WriteLN('Name: ', ALib.Name);
-            //if GImageInfo = iiDetail
-            //then DumpPEImage(Proc.Handle, Lib.BaseAddr);
+            FProcessMap.Delete(AProcessIdentifier);
+            FCurrentProcess.Free;
+            FCurrentProcess := nil;
           end;
-          if GBreakOnLibraryLoad
-          then GState := dsPause;
+  {      deLoadLibrary :
+          begin
+            if FCurrentProcess.GetLib(FCurrentProcess.LastEventProcessIdentifier, ALib)
+            and (GImageInfo <> iiNone)
+            then begin
+              WriteLN('Name: ', ALib.Name);
+              //if GImageInfo = iiDetail
+              //then DumpPEImage(Proc.Handle, Lib.BaseAddr);
+            end;
+            if GBreakOnLibraryLoad
+            then GState := dsPause;
 
-        end;}
-      deBreakpoint :
-        begin
-          // Do nothing
-        end;
-      deInternalContinue,
-      deLoadLibrary:
-        begin
-          if assigned(FCurrentThread) and FCurrentThread.Stepping then
-            FCurrentThread.IntNext;
-        end;
-    end; {case}
+          end;}
+      end; {case}
+    end;
+    if IsFinished then
+      FreeAndNil(FCommand);
     AExit:=true;
   until AExit;
 end;

@@ -37,9 +37,8 @@ unit FpDbgClasses;
 interface
 
 uses
-  Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgWinExtra, FpDbgLoader,
+  Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgLoader,
   FpDbgInfo, FpdMemoryTools, LazLoggerBase, LazClasses, DbgIntfBaseTypes, fgl,
-  FpDbgDisasX86,
   fpDbgSymTableContext,
   FpDbgDwarfDataClasses;
 
@@ -130,11 +129,11 @@ type
 
   TDbgThread = class(TObject)
   private
+    FNextIsSingleStep: boolean;
     FProcess: TDbgProcess;
     FID: Integer;
     FHandle: THandle;
-    FSingleStepping: Boolean;
-    FStepping: Boolean;
+    FNeedIPDecrement: boolean;
     function GetRegisterValueList: TDbgRegisterValueList;
   protected
     FCallStackEntryList: TDbgCallstackEntryList;
@@ -144,13 +143,6 @@ type
     FStoreStepSrcLineNo: integer;
     FStoreStepStackFrame: TDBGPtr;
     FStoreStepFuncAddr: TDBGPtr;
-    FHiddenWatchpointInto: integer;
-    FHiddenWatchpointOut: integer;
-    FHiddenBreakpoint: TDbgBreakpoint;
-    FStepOut: boolean;
-    FInto: boolean;
-    FIntoDepth: boolean;
-    procedure StoreStepInfo;
     procedure LoadRegisterValues; virtual;
     property Process: TDbgProcess read FProcess;
   public
@@ -161,22 +153,13 @@ type
     function RemoveWatchpoint(AnId: integer): boolean; virtual;
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
     procedure ClearCallStack;
-    procedure AfterHitBreak;
-    procedure ClearHWBreakpoint;
     destructor Destroy; override;
-    function SingleStep: Boolean; virtual;
-    function StepLine: Boolean; virtual;
-    function Next: Boolean; virtual;
-    function StepInto: Boolean; virtual;
-    function StepOut: Boolean; virtual;
-    function IntNext: Boolean; virtual;
     function CompareStepInfo: boolean;
+    procedure StoreStepInfo;
     property ID: Integer read FID;
     property Handle: THandle read FHandle;
-    property SingleStepping: boolean read FSingleStepping write FSingleStepping;
-    property Stepping: boolean read FStepping;
+    property NextIsSingleStep: boolean read FNextIsSingleStep write FNextIsSingleStep;
     property RegisterValueList: TDbgRegisterValueList read GetRegisterValueList;
-    property HiddenBreakpoint: TDbgBreakpoint read FHiddenBreakpoint;
     property CallStackEntryList: TDbgCallstackEntryList read FCallStackEntryList;
   end;
   TDbgThreadClass = class of TDbgThread;
@@ -280,6 +263,8 @@ type
     procedure MaskBreakpointsInReadData(const AAdress: TDbgPtr; const ASize: Cardinal; var AData);
     // Should create a TDbgThread-instance for the given ThreadIdentifier.
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; virtual; abstract;
+    // Should analyse why the debugger has stopped.
+    function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
   public
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; virtual;
     constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog); virtual;
@@ -290,6 +275,7 @@ type
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     function  RemoveBreak(const ALocation: TDbgPtr): Boolean;
+    function  HasBreak(const ALocation: TDbgPtr): Boolean;
     procedure RemoveThread(const AID: DWord);
     procedure Log(const AString: string; const ALogLevel: TFPDLogLevel = dllDebug);
     procedure Log(const AString: string; const Options: array of const; const ALogLevel: TFPDLogLevel = dllDebug);
@@ -302,9 +288,9 @@ type
     function ReadString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: String): Boolean; virtual;
     function ReadWString(const AAdress: TDbgPtr; const AMaxSize: Cardinal; out AData: WideString): Boolean; virtual;
 
-    function Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean; virtual;
+    function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; virtual;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; virtual; abstract;
-    function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
+    function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; virtual;
 
     function AddThread(AThreadIdentifier: THandle): TDbgThread;
 
@@ -821,9 +807,53 @@ begin
   result := false;
 end;
 
-function TDbgProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean;
+function TDbgProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
+  SingleStep: boolean): boolean;
 begin
   result := false;
+end;
+
+function TDbgProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
+var
+  CurrentAddr: TDBGPtr;
+begin
+  result := AnalyseDebugEvent(AThread);
+
+  if result = deBreakpoint then
+  begin
+    if assigned(FCurrentBreakpoint) then
+    begin
+      // When a breakpoint has been hit, the debugger always continues with
+      // a single-step to jump over the breakpoint. Thereafter the breakpoint
+      // has to be set again.
+      FCurrentBreakpoint.SetBreak;
+      if not AThread.NextIsSingleStep then
+        // In this case the debugger has to continue. The debugger did only
+        // stop to be able to reset the breakpoint again. It was not a 'normal'
+        // singlestep.
+        result := deInternalContinue;
+    end;
+
+    // Determine the address where the execution has stopped
+    CurrentAddr:=GetInstructionPointerRegisterValue;
+    if not (FMainThread.NextIsSingleStep or assigned(FCurrentBreakpoint)) then
+    begin
+      // The debugger did not stop due to single-stepping, so a breakpoint has
+      // been hit. But breakpoints stop *after* they have been hit. So the
+      // decrement the CurrentAddr.
+      FMainThread.FNeedIPDecrement:=true;
+      dec(CurrentAddr);
+    end
+    else
+      FMainThread.FNeedIPDecrement:=false;
+    FCurrentBreakpoint:=nil;
+    AThread.NextIsSingleStep:=false;
+
+    // Whatever reason there was to change the result to deInternalContinue,
+    // if a breakpoint has been hit, always trigger it...
+    if DoBreak(CurrentAddr, FMainThread.ID) then
+      result := deBreakpoint;
+  end
 end;
 
 function TDbgProcess.AddThread(AThreadIdentifier: THandle): TDbgThread;
@@ -858,6 +888,14 @@ begin
       Result := FBreakMap.Delete(ALocation);
     end;
   end;
+end;
+
+function TDbgProcess.HasBreak(const ALocation: TDbgPtr): Boolean;
+begin
+  if FBreakMap = nil then
+    Result := False
+  else
+    result := FBreakMap.HasId(ALocation);
 end;
 
 procedure TDbgProcess.RemoveThread(const AID: DWord);
@@ -953,7 +991,6 @@ procedure TDbgProcess.MaskBreakpointsInReadData(const AAdress: TDbgPtr; const AS
 var
   BreakLocation: TDBGPtr;
   Bp: TDbgBreakpoint;
-  DataArr: PByteArray;
   Iterator: TMapIterator;
 begin
   iterator := TMapIterator.Create(FBreakMap);
@@ -1002,7 +1039,7 @@ begin
   sym := FProcess.FindSymbol(AnAddr);
   if assigned(sym) then
   begin
-    result := (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line)) or FStepOut) and
+    result := (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line)) {or FStepOut}) and
               (FStoreStepFuncAddr=sym.Address.Address);
     if not result and (FStoreStepFuncAddr<>sym.Address.Address) then
     begin
@@ -1012,7 +1049,7 @@ begin
       // This because when stepping out of a procedure, the first asm-instruction
       // could still be part of the instruction-line that made the call to the
       // procedure in the first place.
-      if (sym is TDbgDwarfSymbolBase) and not FInto then
+      if (sym is TDbgDwarfSymbolBase) {and not FInto} then
       begin
         CU := TDbgDwarfSymbolBase(sym).CompilationUnit;
         if cu.GetLineAddress(sym.FileName, sym.Line)<>AnAddr then
@@ -1047,21 +1084,12 @@ begin
   // Do nothing
 end;
 
-function TDbgThread.IntNext: Boolean;
-begin
-  result := StepLine;
-  FStepping:=result;
-end;
-
 constructor TDbgThread.Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle);
 begin
   FID := AID;
   FHandle := AHandle;
   FProcess := AProcess;
   FRegisterValueList:=TDbgRegisterValueList.Create;
-  FHiddenWatchpointInto:=-1;
-  FHiddenWatchpointOut:=-1;
-
   inherited Create;
 end;
 
@@ -1072,13 +1100,13 @@ end;
 
 function TDbgThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
 begin
-  FProcess.log('Hardware watchpoints are nog available.');
+  FProcess.log('Hardware watchpoints are not available.');
   result := -1;
 end;
 
 function TDbgThread.RemoveWatchpoint(AnId: integer): boolean;
 begin
-  FProcess.log('Hardware watchpoints are nog available.');
+  FProcess.log('Hardware watchpoints are not available: '+self.classname);
   result := false;
 end;
 
@@ -1132,29 +1160,6 @@ begin
     FCallStackEntryList.Clear;
 end;
 
-procedure TDbgThread.AfterHitBreak;
-begin
-  FStepping:=false;
-  FInto:=false;
-  FIntoDepth:=false;
-  FStepOut:=false;
-  FreeAndNil(FHiddenBreakpoint);
-end;
-
-procedure TDbgThread.ClearHWBreakpoint;
-begin
-  if FHiddenWatchpointOut>-1 then
-    begin
-    if RemoveWatchpoint(FHiddenWatchpointOut) then
-      FHiddenWatchpointOut:=-1;
-    end;
-  if FHiddenWatchpointInto>-1 then
-    begin
-    if RemoveWatchpoint(FHiddenWatchpointInto) then
-      FHiddenWatchpointInto:=-1;
-    end;
-end;
-
 destructor TDbgThread.Destroy;
 begin
   FProcess.ThreadDestroyed(Self);
@@ -1162,74 +1167,6 @@ begin
   ClearCallStack;
   FCallStackEntryList.Free;
   inherited;
-end;
-
-function TDbgThread.SingleStep: Boolean;
-begin
-  FSingleStepping := True;
-  Result := true;
-end;
-
-function TDbgThread.StepLine: Boolean;
-
-var
-  CodeBin: array[0..20] of byte;
-  p: pointer;
-  ADump,
-  AStatement: string;
-  CallInstr: boolean;
-
-begin
-  if FInto and FIntoDepth then
-  begin
-    FHiddenWatchpointInto := AddWatchpoint(Process.GetStackPointerRegisterValue-4);
-    FHiddenWatchpointOut := AddWatchpoint(Process.GetStackBasePointerRegisterValue+4);
-    result := (FHiddenWatchpointInto<>-1) and (FHiddenWatchpointOut<>-1);
-    Exit;
-  end;
-
-  CallInstr:=false;
-  if FProcess.ReadData(FProcess.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
-  begin
-    p := @CodeBin;
-    Disassemble(p, FProcess.Mode=dm64, ADump, AStatement);
-    if copy(AStatement,1,4)='call' then
-      CallInstr:=true;
-  end;
-
-  if CallInstr then
-  begin
-    FHiddenBreakpoint := TDbgBreakpoint.Create(FProcess, FProcess.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin)));
-    if FInto then
-    begin
-      FHiddenWatchpointInto := AddWatchpoint(RegisterValueList.FindRegisterByDwarfIndex(4).NumValue-4);
-      FIntoDepth:=true;
-    end;
-  end
-  else
-    SingleStep;
-
-  Result := True;
-end;
-
-function TDbgThread.Next: Boolean;
-begin
-  StoreStepInfo;
-  result := IntNext;
-end;
-
-function TDbgThread.StepInto: Boolean;
-begin
-  StoreStepInfo;
-  FInto:=true;
-  FIntoDepth:=false;
-  result := IntNext;
-end;
-
-function TDbgThread.StepOut: Boolean;
-begin
-  result := next;
-  FStepOut := result;
 end;
 
 { TDbgBreak }
@@ -1259,7 +1196,10 @@ begin
 
   if not Process.GetThread(AThreadId, Thread) then Exit;
 
-  Result := Thread.ResetInstructionPointerAfterBreakpoint;
+  if Thread.FNeedIPDecrement then
+    Result := Thread.ResetInstructionPointerAfterBreakpoint
+  else
+    Result := true;
 end;
 
 procedure TDbgBreakpoint.ResetBreak;

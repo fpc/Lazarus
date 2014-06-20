@@ -47,7 +47,7 @@ uses
   FpDbgWinExtra,
   strutils,
   FpDbgInfo,
-  FpDbgLoader, FpdMemoryTools,
+  FpDbgLoader,
   DbgIntfBaseTypes,
   LazLoggerBase;
 
@@ -85,6 +85,7 @@ type
     FInfo: TCreateProcessDebugInfo;
     FPauseRequested: boolean;
     FProcProcess: TProcess;
+    FJustStarted: boolean;
     function GetFullProcessImageName(AProcessHandle: THandle): string;
     function GetModuleFileName(AModuleHandle: THandle): string;
     function GetProcFilename(AProcess: TDbgProcess; lpImageName: LPVOID; fUnicode: word; hFile: handle): string;
@@ -105,9 +106,9 @@ type
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
     class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory: string; AOnLog: TOnLog): TDbgProcess; override;
-    function Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean; override;
+    function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
-    function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; override;
+    function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
 
     procedure StartProcess(const AThreadID: DWORD; const AInfo: TCreateProcessDebugInfo);
@@ -483,23 +484,23 @@ begin
 end;
 
 
-function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread): boolean;
+function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
+  SingleStep: boolean): boolean;
 begin
+  if assigned(AThread) then
+  begin
+    AThread.NextIsSingleStep:=SingleStep;
+    if SingleStep or assigned(FCurrentBreakpoint) then
+      TDbgWinThread(AThread).SetSingleStep;
+    AThread.BeforeContinue;
+  end;
+
   case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
    EXCEPTION_BREAKPOINT,
    EXCEPTION_SINGLE_STEP: begin
-     if assigned(AThread) then begin
-       // The thread is not assigned if the current process is not the main
-       // process. (Only the main process is being 'debugged')
-       if (AThread.SingleStepping) or assigned(FCurrentBreakpoint) then
-         TDbgWinThread(AThread).SetSingleStep;
-       AThread.BeforeContinue;
-     end;
      Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
    end
   else begin
-     if assigned(AThread) then
-       AThread.BeforeContinue;
      Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_EXCEPTION_NOT_HANDLED);
    end;
   end;
@@ -513,7 +514,7 @@ begin
   ThreadIdentifier:=MDebugEvent.dwThreadId;
 end;
 
-function TDbgWinProcess.ResolveDebugEvent(AThread: TDbgThread): TFPDEvent;
+function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
 
   procedure HandleException(const AEvent: TDebugEvent);
   const
@@ -781,61 +782,16 @@ begin
         //DumpEvent('EXCEPTION_DEBUG_EVENT');
         case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
           EXCEPTION_BREAKPOINT: begin
-            if DoBreak(TDbgPtr(MDebugEvent.Exception.ExceptionRecord.ExceptionAddress), MDebugEvent.dwThreadId)
-            then
-              result := deBreakpoint
-            else if assigned(AThread) and assigned(AThread.HiddenBreakpoint) then begin
-              AThread.HiddenBreakpoint.Hit(AThread.ID);
-              if AThread.Stepping and AThread.CompareStepInfo then
-                result := deInternalContinue
-              else
-                result := deBreakpoint;
-            end else if FPauseRequested
-            then begin
-              result := deBreakpoint;
-              FPauseRequested:=false;
-            end
-            else begin
-              // Unknown breakpoint.
-              if (MDebugEvent.Exception.dwFirstChance <> 0) and (MDebugEvent.Exception.ExceptionRecord.ExceptionFlags = 0)
-              then begin
-                // First chance and breakpoint is continuable -> silently ignore.
-                result := deInternalContinue
-              end else begin
-                // Or else, show an exception
-                result := deException;
-              end;
-            end;
-          end;
-          EXCEPTION_SINGLE_STEP: begin
-            if assigned(FCurrentBreakpoint) then
+            if FJustStarted and (MDebugEvent.Exception.dwFirstChance <> 0) and (MDebugEvent.Exception.ExceptionRecord.ExceptionFlags = 0) then
             begin
-              FCurrentBreakpoint.SetBreak;
-              FCurrentBreakpoint:=nil;
-              if FMainThread.SingleStepping then
-                result := deBreakpoint
-              else
-                result := deInternalContinue;
+              FJustStarted:=false;
+              result := deInternalContinue;
             end
             else
               result := deBreakpoint;
-
-            if AThread.Stepping then
-            begin
-              if AThread.CompareStepInfo then
-                result := deInternalContinue
-              else
-                result := deBreakpoint;
-            end;
-
-            // If there is a breakpoint on this location, handle the breakpoint.
-            // Or else the int3-interrupt instruction won't be cleared and the
-            // breakpoint will be triggered again. (Notice that the location of
-            // the eip-register does not have to be decremented in this case,
-            // see TDbgWinThread.ResetInstructionPointerAfterBreakpoint)
-            if DoBreak(TDbgPtr(MDebugEvent.Exception.ExceptionRecord.ExceptionAddress), MDebugEvent.dwThreadId)
-            then
-              result := deBreakpoint;
+          end;
+          EXCEPTION_SINGLE_STEP: begin
+            result := deBreakpoint;
           end
         else begin
           HandleException(MDebugEvent);
@@ -853,6 +809,7 @@ begin
       CREATE_PROCESS_DEBUG_EVENT: begin
         //DumpEvent('CREATE_PROCESS_DEBUG_EVENT');
         StartProcess(MDebugEvent.dwThreadId, MDebugEvent.CreateProcessInfo);
+        FJustStarted := true;
         result := deCreateProcess;
       end;
       EXIT_THREAD_DEBUG_EVENT: begin
@@ -1082,9 +1039,6 @@ begin
 end;
 
 function TDbgWinThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
-var
-  i: integer;
-
   function SetBreakpoint(var dr: {$ifdef cpui386}DWORD{$else}DWORD64{$endif}; ind: byte): boolean;
   begin
     if (Dr=0) and ((GCurrentContext^.Dr7 and (1 shl ind))=0) then
