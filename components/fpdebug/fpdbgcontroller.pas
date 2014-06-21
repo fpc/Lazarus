@@ -177,13 +177,14 @@ begin
     FHiddenWatchpointInto:=-1;
 
   Handled := false;
-  Finished := (AnEvent<>deInternalContinue);
-  if Finished then
+  Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
+  if (AnEvent=deBreakpoint) and not assigned(FController.FCurrentProcess.CurrentBreakpoint) then
   begin
-    if FController.FCurrentThread.CompareStepInfo then
+    if FController.FCurrentThread.CompareStepInfo<>dcsiNewLine then
     begin
       AnEvent:=deInternalContinue;
-      if not FInto and (FStoredStackFrame<>FController.FCurrentProcess.GetStackBasePointerRegisterValue) then
+
+      if not FInto and (FStoredStackFrame>FController.FCurrentProcess.GetStackBasePointerRegisterValue) then
       begin
         // A sub-procedure has been called, with no debug-information. Use hadrware-breakpoints instead of single-
         // stepping for better performance.
@@ -198,6 +199,22 @@ begin
       end;
 
       Finished:=false;
+    end
+    else
+    begin
+      // Also check if the current instruction is at the start of a new
+      // sourceline. (Dwarf only)
+      // Don't do this while stepping into a procedure, only when stepping out.
+      // This because when stepping out of a procedure, the first asm-instruction
+      // could still be part of the instruction-line that made the call to the
+      // procedure in the first place.
+      if FInto and (FStoredStackFrame<FController.FCurrentProcess.GetStackBasePointerRegisterValue)
+        and not FController.FCurrentThread.IsAtStartOfLine then
+      begin
+        FInto:=false;
+        Finished:=false;
+        AnEvent:=deInternalContinue;
+      end;
     end;
   end;
 end;
@@ -218,9 +235,9 @@ end;
 procedure TDbgControllerStepOverLineCmd.ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean);
 begin
   inherited ResolveEvent(AnEvent, Handled, Finished);
-  if Finished then
+  if (AnEvent=deBreakpoint) and not assigned(FController.CurrentProcess.CurrentBreakpoint) then
   begin
-    if FController.FCurrentThread.CompareStepInfo then
+    if FController.FCurrentThread.CompareStepInfo<>dcsiNewLine then
     begin
       AnEvent:=deInternalContinue;
       FHiddenBreakpoint:=nil;
@@ -272,7 +289,7 @@ procedure TDbgControllerStepOverInstructionCmd.ResolveEvent(
   var AnEvent: TFPDEvent; out Handled, Finished: boolean);
 begin
   Handled := false;
-  Finished := (AnEvent<>deInternalContinue);
+  Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
   if Finished then
   begin
     if assigned(FHiddenBreakpoint) then

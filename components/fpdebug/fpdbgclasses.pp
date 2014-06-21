@@ -46,6 +46,7 @@ type
   TFPDEvent = (deExitProcess, deBreakpoint, deException, deCreateProcess, deLoadLibrary, deInternalContinue);
   TFPDMode = (dm32, dm64);
   TFPDLogLevel = (dllDebug, dllInfo, dllError);
+  TFPDCompareStepInfo = (dcsiNewLine, dcsiSameLine, dcsiNoLineInfo);
   TOnLog = procedure(const AString: string; const ALogLevel: TFPDLogLevel) of object;
 
   { TDbgRegisterValue }
@@ -154,7 +155,8 @@ type
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
     procedure ClearCallStack;
     destructor Destroy; override;
-    function CompareStepInfo: boolean;
+    function CompareStepInfo: TFPDCompareStepInfo;
+    function IsAtStartOfLine: boolean;
     procedure StoreStepInfo;
     property ID: Integer read FID;
     property Handle: THandle read FHandle;
@@ -1029,36 +1031,40 @@ begin
   result := FRegisterValueList;
 end;
 
-function TDbgThread.CompareStepInfo: boolean;
+function TDbgThread.CompareStepInfo: TFPDCompareStepInfo;
 var
   AnAddr: TDBGPtr;
   Sym: TFpDbgSymbol;
-  CU: TDwarfCompilationUnit;
 begin
   AnAddr := FProcess.GetInstructionPointerRegisterValue;
   sym := FProcess.FindSymbol(AnAddr);
   if assigned(sym) then
   begin
-    result := (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line)) {or FStepOut}) and
-              (FStoreStepFuncAddr=sym.Address.Address);
-    if not result and (FStoreStepFuncAddr<>sym.Address.Address) then
-    begin
-      // If the procedure changed, also check if the current instruction
-      // is at the start of a new sourceline. (Dwarf only)
-      // Don't do this while stepping into a procedure, only when stepping out.
-      // This because when stepping out of a procedure, the first asm-instruction
-      // could still be part of the instruction-line that made the call to the
-      // procedure in the first place.
-      if (sym is TDbgDwarfSymbolBase) {and not FInto} then
-      begin
-        CU := TDbgDwarfSymbolBase(sym).CompilationUnit;
-        if cu.GetLineAddress(sym.FileName, sym.Line)<>AnAddr then
-          result := true;
-      end;
-    end;
+    if (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line)) {or FStepOut}) and
+              (FStoreStepFuncAddr=sym.Address.Address) then
+      result := dcsiSameLine
+    else
+      result := dcsiNewLine;
   end
   else
-    result := true;
+    result := dcsiNoLineInfo;
+end;
+
+function TDbgThread.IsAtStartOfLine: boolean;
+var
+  AnAddr: TDBGPtr;
+  Sym: TFpDbgSymbol;
+  CU: TDwarfCompilationUnit;
+begin
+  result := true;
+  AnAddr := FProcess.GetInstructionPointerRegisterValue;
+  sym := FProcess.FindSymbol(AnAddr);
+  if (sym is TDbgDwarfSymbolBase) then
+  begin
+    CU := TDbgDwarfSymbolBase(sym).CompilationUnit;
+    if cu.GetLineAddress(sym.FileName, sym.Line)<>AnAddr then
+      result := false;
+  end;
 end;
 
 procedure TDbgThread.StoreStepInfo;
