@@ -93,8 +93,6 @@ resourcestring
   lisCut = 'Cut';
   lisCopy = 'Copy';
   lisMoveFiles2 = 'Move files?';
-  lisMoveFileSFromPackageToTheDirectoryOfPackage = 'Move %s file(s) from '
-    +'package %s to the directory%s%s%sof package %s.';
   lisPaste = 'Paste';
   lisDown = 'Down';
   lisUp   = 'Up';
@@ -4270,28 +4268,27 @@ resourcestring
   lisExtendIncludeFileSearchPathOfPackageWith = 'Extend include file search '
     +'path of package "%s" with"%s"?';
   lisConflictDetected = 'Conflict detected';
-  lisThereIsAlreadyAFileInPackage =
-    'There is already a file%s%s%sin package %s';
+  lisThereIsAlreadyAFileIn = 'There is already a file%s%s%sin %s';
   lisDuplicateUnit = 'Duplicate Unit';
-  lisThereIsAlreadyAUnitInPackageOldNewYouHaveToMakeSur = 'There is already a '
-    +'unit "%s" in package %s%sOld: %s%sNew: %s%sYou have to make sure that '
-    +'the unit search path of the package contains only one of them.%s%'
-    +'sContinue?';
+  lisThereIsAlreadyAUnitInOldNewYouHaveToMakeSur = 'There is already a '
+    +'unit "%s" in %s%sOld: %s%sNew: %s%sYou have to make sure that '
+    +'the unit search path contains only one of them.%s%sContinue?';
   lisDuplicateFileName = 'Duplicate File Name';
-  lisThereIsAlreadyAFileInPackageOldNewContinue = 'There is already a file "%s'
-    +'" in package %s%sOld: %s%sNew: %s%s%sContinue?';
+  lisThereIsAlreadyAFileInOldNewContinue = 'There is already a file "%s'
+    +'" in %s%sOld: %s%sNew: %s%s%sContinue?';
   lisUnitNotFoundAtNewPosition = 'unit %s not found at new position "%s"';
   lisUnitRequiresPackage = 'unit %s requires package %s';
   lisDifferentUnitFoundAtNewPosition = 'different unit %s found at new '
     +'position "%s"';
   lisMoveFiles = 'Move Files';
   lisUnitNotFound = 'unit %s not found';
-  lisTwoMovedFilesWillHaveTheSameFileNameInPackage = 'Two moved files will '
-    +'have the same file name:%s%s%s%s%sin package %s';
+  lisTwoMovedFilesWillHaveTheSameFileNameIn = 'Two moved files will '
+    +'have the same file name:%s%s%s%s%sin %s';
   lisPkgEditRevertPackage = 'Revert package?';
   lisMoveOrCopyFiles = 'Move or Copy files?';
-  lisMoveOrCopyFileSFromPackageToTheDirectoryOfPackage = 'Move or copy %s file'
-    +'(s) from package %s to the directory%s%s%sof package %s.';
+  lisMoveOrCopyFileSFromToTheDirectoryOfPackage = 'Move or copy %s file'
+    +'(s) from %s to the directory%s%s%sof %s.';
+  lisMoveFileSFromToTheDirectoryOf = 'Move %s file(s) from %s to the directory%s%s%sof %s.';
   lisMove = 'Move';
   lisPkgEditDoYouReallyWantToForgetAllChangesToPackageAnd = 'Do you really '
     +'want to forget all changes to package %s and reload it from file?';

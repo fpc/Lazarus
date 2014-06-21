@@ -203,7 +203,7 @@ type
     function MoveFiles(TargetFilesEdit, SrcFilesEdit: IFilesEditorInterface;
       TargetDirectory: string): boolean;
     function MoveFiles(TargetFilesEdit, SrcFilesEdit: IFilesEditorInterface;
-      PkgFiles: TFPList; TargetDirectory: string): boolean;
+      IDEFiles: TFPList; TargetDirectory: string): boolean;
     function CopyMoveFiles(Sender: TObject): boolean;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -1698,13 +1698,31 @@ function TPkgManager.CheckDrag(Sender, Source: TObject; X, Y: Integer; out
   SrcFilesEdit, TargetFilesEdit: IFilesEditorInterface; out aFileCount,
   aDependencyCount, aDirectoryCount: integer; out TargetTVNode: TTreeNode; out
   TargetTVType: TTreeViewInsertMarkType): boolean;
+
+  function GetFilesEditIntf(o: TObject): IFilesEditorInterface;
+  var
+    PkgEdit: TPackageEditorForm;
+    aProjInsp: TProjectInspectorForm;
+  begin
+    Result:=nil;
+    if o is TTreeView then begin
+      PkgEdit:=PackageEditors.TreeViewToPkgEditor(TTreeView(o));
+      if PkgEdit<>nil then
+        Result:=PkgEdit
+      else begin
+        aProjInsp:=ProjInspector.TreeViewToInspector(TTreeView(o));
+        if aProjInsp<>nil then
+          Result:=aProjInsp;
+      end;
+    end;
+  end;
+
 var
   i: Integer;
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
   Directory: String;
-  SrcPkgEdit: TPackageEditorForm;
 begin
   Result:=false;
   SrcFilesEdit:=nil;
@@ -1716,26 +1734,18 @@ begin
   TargetTVType:=tvimNone;
 
   // get source
-  if (Source is TTreeView) then begin
-    SrcPkgEdit:=PackageEditors.TreeViewToPkgEditor(TTreeView(Source));
-    //debugln(['TPkgManager.ItemsTreeViewDragOver from another package editor: ',SrcFilesEdit.LazPackage.Name]);
-    if (SrcPkgEdit=nil) or SrcPkgEdit.LazPackage.ReadOnly
-    or SrcPkgEdit.LazPackage.IsVirtual then
-      exit;
-    SrcFilesEdit:=SrcPkgEdit;
-  end else
+  SrcFilesEdit:=GetFilesEditIntf(Source);
+  if (SrcFilesEdit=nil) or SrcFilesEdit.FilesOwnerReadOnly
+  or (not FilenameIsAbsolute(SrcFilesEdit.FilesBaseDirectory)) then
     exit;
 
   // get target
-  if Sender is TTreeView then begin
-    TargetFilesEdit:=PackageEditors.TreeViewToPkgEditor(TTreeView(Sender));
-    if (TargetFilesEdit=nil) or TargetFilesEdit.FilesOwnerReadOnly
-    or (not FilenameIsAbsolute(TargetFilesEdit.FilesBaseDirectory)) then
-      exit;
-  end else
+  TargetFilesEdit:=GetFilesEditIntf(Sender);
+  if (TargetFilesEdit=nil) or TargetFilesEdit.FilesOwnerReadOnly
+  or (not FilenameIsAbsolute(TargetFilesEdit.FilesBaseDirectory)) then
     exit;
 
-  //debugln(['TPkgManager.CheckDrag Src=',SrcFilesEdit.LazPackage.Name,' Target=',TargetFilesEdit.LazPackage.Name]);
+  debugln(['TPkgManager.CheckDrag Src=',SrcFilesEdit.FilesOwnerName,' Target=',TargetFilesEdit.FilesOwnerName]);
 
   // check items
   aFileCount:=0;
@@ -1745,7 +1755,10 @@ begin
     TVNode:=SrcFilesEdit.FilesEditTreeView.Selections[i];
     if SrcFilesEdit.GetNodeDataItem(TVNode,NodeData,Item) then begin
       if NodeData.Removed then exit; // removed things cannot be moved
-      if Item is TPkgFile then begin
+      if Item is TIDEOwnedFile then begin
+        if (Item is TUnitInfo) and (TUnitInfo(Item)=TUnitInfo(Item).Project.MainUnitInfo)
+        then
+          continue;
         inc(aFileCount);
       end else if Item is TPkgDependency then begin
         inc(aDependencyCount);
@@ -1879,7 +1892,10 @@ begin
       TVNode:=SrcFilesEdit.FilesEditTreeView.Selections[i];
       if not SrcFilesEdit.GetNodeDataItem(TVNode, NodeData, Item) then continue;
       if NodeData.Removed then continue;
-      if not (Item is TPkgFile) then continue;
+      if not (Item is TIDEOwnedFile) then continue;
+      if (Item is TUnitInfo) and (TUnitInfo(Item)=TUnitInfo(Item).Project.MainUnitInfo)
+      then
+        continue;
       Files.Add(Item);
     end;
     if Files.Count=0 then begin
@@ -1896,34 +1912,51 @@ begin
 end;
 
 function TPkgManager.MoveFiles(TargetFilesEdit, SrcFilesEdit: IFilesEditorInterface;
-  PkgFiles: TFPList; TargetDirectory: string): boolean;
+  IDEFiles: TFPList; TargetDirectory: string): boolean;
 var
   ChangedFilenames: TFilenameToStringTree; // old to new file name
   AllChangedFilenames: TFilenameToStringTree; // including resouce files
-  NewFileToOldPkgFile: TFilenameToPointerTree; // filename to TPkgFile
+  NewFileToOldOwnedFile: TFilenameToPointerTree; // filename to TIDEOwnedFile
   DeleteOld: Boolean;
   UnitFilenameToResFileList: TFilenameToPointerTree; // filename to TStringList
   SrcDirToPkg: TFilenameToPointerTree;
   SrcPackage, TargetPackage: TLazPackage;
+  SrcProject, TargetProject: TProject;
   SrcIsTarget: Boolean;
 
   procedure DeleteNonExistingPkgFiles;
   var
     i: Integer;
-    PkgFile: TPkgFile;
+    CurFile: TIDEOwnedFile;
     aFilename: String;
   begin
     // ignore non existing files
-    for i:=PkgFiles.Count-1 downto 0 do begin
-      PkgFile:=TPkgFile(PkgFiles[i]);
-      aFilename:=PkgFile.GetFullFilename;
+    for i:=IDEFiles.Count-1 downto 0 do begin
+      CurFile:=TIDEOwnedFile(IDEFiles[i]);
+      aFilename:=CurFile.GetFullFilename;
       if not FileExistsCached(aFilename) then begin
         {$IFDEF VerbosePkgEditDrag}
         debugln(['TPackageEditorForm.MoveFiles WARNING: file not found: ',aFilename]);
         {$ENDIF}
-        PkgFiles.Delete(i);
+        IDEFiles.Delete(i);
+      end;
+
+      if (CurFile is TUnitInfo) and (TUnitInfo(CurFile)=TUnitInfo(CurFile).Project.MainUnitInfo)
+      then begin
+        {$IFDEF VerbosePkgEditDrag}
+        debugln(['TPackageEditorForm.MoveFiles WARNING: main unit of project cannot be moved: ',aFilename]);
+        {$ENDIF}
+        IDEFiles.Delete(i);
       end;
     end;
+  end;
+
+  function FileIsUnit(aFile: TIDEOwnedFile): boolean;
+  begin
+    if aFile is TPkgFile then
+      Result:=TPkgFile(aFile).FileType in PkgFileRealUnitTypes
+    else
+      Result:=FilenameIsPascalSource(aFile.Filename);
   end;
 
   procedure AddResFile(ResFiles: TStringList; ResFile: string);
@@ -1942,7 +1975,7 @@ var
   function CollectFiles(out MoveFileCount: integer): boolean;
   var
     i: Integer;
-    PkgFile: TPkgFile;
+    aFile: TIDEOwnedFile;
     OldFilename: String;
     NewFilename: String;
     ResFileList: TStringList;
@@ -1953,20 +1986,20 @@ var
   begin
     Result:=false;
     MoveFileCount:=0;
-    for i:=0 to PkgFiles.Count-1 do begin
-      PkgFile:=TPkgFile(PkgFiles[i]);
-      OldFilename:=PkgFile.GetFullFilename;
+    for i:=0 to IDEFiles.Count-1 do begin
+      aFile:=TIDEOwnedFile(IDEFiles[i]);
+      OldFilename:=aFile.GetFullFilename;
       NewFilename:=TargetDirectory+ExtractFilename(OldFilename);
 
       // check if two copied/moved files will get the same new file name
-      if NewFileToOldPkgFile.Contains(NewFilename) then begin
+      if NewFileToOldOwnedFile.Contains(NewFilename) then begin
         IDEMessageDialog(lisConflictDetected,
-          Format(lisTwoMovedFilesWillHaveTheSameFileNameInPackage, [#13, PkgFile
-            .Filename, #13, TPkgFile(NewFileToOldPkgFile[NewFilename]).
+          Format(lisTwoMovedFilesWillHaveTheSameFileNameIn, [#13, aFile
+            .Filename, #13, TIDEOwnedFile(NewFileToOldOwnedFile[NewFilename]).
             Filename, #13, TargetFilesEdit.FilesOwnerName]), mtError, [mbCancel]);
         exit;
       end;
-      NewFileToOldPkgFile[NewFilename]:=PkgFile;
+      NewFileToOldOwnedFile[NewFilename]:=aFile;
 
       if CompareFilenames(NewFilename,OldFilename)<>0 then begin
         // file be copied/moved to another directory
@@ -1977,7 +2010,7 @@ var
         AllChangedFilenames[OldFilename]:=NewFilename;
 
         // check resource file
-        if PkgFile.FileType in PkgFileRealUnitTypes then begin
+        if FileIsUnit(aFile) then begin
           ResFileList:=TStringList.Create;
           UnitFilenameToResFileList[OldFilename]:=ResFileList;
           AddResFile(ResFileList,ChangeFileExt(OldFilename,'.lfm'));
@@ -1992,7 +2025,7 @@ var
       end;
     end;
 
-    // remove res files, that are in PkgFiles
+    // remove res files, that are in IDEFiles
     for S2PItem in UnitFilenameToResFileList do begin
       OldFilename:=S2PItem^.Name;
       ResFileList:=TStringList(S2PItem^.Value);
@@ -2010,13 +2043,14 @@ var
     S2SItem: PStringToStringTreeItem;
     OldFilename: String;
     NewFilename: String;
-    ConflictFile: TPkgFile;
+    ConflictFile: TIDEOwnedFile;
     CurName: String;
     ShortFilename: String;
     r: TModalResult;
     i: Integer;
     WarnUnitClash: Boolean;
     WarnNameClash: Boolean;
+    Cnt: Integer;
   begin
     Result:=false;
     WarnUnitClash:=true;
@@ -2029,7 +2063,7 @@ var
       // check file does not exist
       if FileExistsCached(NewFilename) then begin
         IDEMessageDialog(lisConflictDetected,
-          Format(lisThereIsAlreadyAFileInPackage, [#13, NewFilename, #13,
+          Format(lisThereIsAlreadyAFileIn, [#13, NewFilename, #13,
             TargetFilesEdit.FilesOwnerName]), mtError, [mbCancel]);
         exit;
       end;
@@ -2039,37 +2073,55 @@ var
         if FilenameIsPascalUnit(NewFilename) then begin
           // warn duplicate unit name
           CurName:=ExtractFileNameOnly(NewFilename);
-          if TargetPackage<>nil then begin
-            ConflictFile:=TargetPackage.FindUnit(CurName,true);
-            if (ConflictFile<>nil) and WarnUnitClash then begin
-              ShortFilename:=NewFilename;
-              TargetPackage.ShortenFilename(ShortFilename,true);
-              r:=IDEMessageDialog(lisDuplicateUnit,
-                Format(lisThereIsAlreadyAUnitInPackageOldNewYouHaveToMakeSur, [
-                  CurName, TargetPackage.Name, #13, ConflictFile.GetShortFilename(
-                  true), #13, ShortFilename, #13, #13, #13])
-                ,mtWarning,[mbYes,mbYesToAll,mbCancel]);
-              case r of
-              mrYes: ;
-              mrYesToAll: WarnUnitClash:=false;
-              else exit;
-              end;
+          if TargetPackage<>nil then
+            ConflictFile:=TargetPackage.FindUnit(CurName,true)
+          else if TargetProject<>nil then
+            ConflictFile:=TargetProject.UnitWithUnitname(CurName)
+          else
+            ConflictFile:=nil;
+          if (ConflictFile<>nil) and WarnUnitClash then begin
+            ShortFilename:=NewFilename;
+            ShortFilename:=CreateRelativePath(ShortFilename,TargetFilesEdit.FilesBaseDirectory);
+            r:=IDEMessageDialog(lisDuplicateUnit,
+              Format(lisThereIsAlreadyAUnitInOldNewYouHaveToMakeSur, [
+                CurName, TargetFilesEdit.FilesOwnerName, #13,
+                ConflictFile.GetShortFilename(true), #13,
+                ShortFilename, #13, #13, #13])
+              ,mtWarning,[mbYes,mbYesToAll,mbCancel]);
+            case r of
+            mrYes: ;
+            mrYesToAll: WarnUnitClash:=false;
+            else exit;
             end;
           end;
-        end else if TargetPackage<>nil then begin
+        end else begin
           // warn duplicate file
-          for i:=0 to TargetPackage.FileCount-1 do begin
+          if TargetPackage<>nil then
+            Cnt:=TargetPackage.FileCount
+          else if TargetProject<>nil then
+            Cnt:=TargetProject.FileCount
+          else
+            Cnt:=0;
+          for i:=0 to Cnt-1 do begin
             if not WarnNameClash then continue;
-            ConflictFile:=TargetPackage.Files[i];
-            CurName:=ExtractFilename(NewFilename);
-            if UTF8CompareText(CurName,ExtractFileName(ConflictFile.Filename))<>0
-            then
+            if TargetPackage<>nil then
+              ConflictFile:=TargetPackage.Files[i]
+            else if TargetProject<>nil then
+              ConflictFile:=TargetProject.Files[i]
+            else
               continue;
+            ShortFilename:=ExtractFilename(NewFilename);
+            CurName:=ExtractFileName(ConflictFile.Filename);
+            if (UTF8CompareText(CurName,ShortFilename)<>0)
+            and (CompareFilenames(CurName,ShortFilename)<>0) then
+              continue;
+            // name clash on this or other platforms => warn
             ShortFilename:=NewFilename;
-            TargetPackage.ShortenFilename(ShortFilename,true);
+            ShortFilename:=CreateRelativePath(ShortFilename,TargetFilesEdit.FilesBaseDirectory);
             r:=IDEMessageDialog(lisDuplicateFileName,
-              Format(lisThereIsAlreadyAFileInPackageOldNewContinue, [CurName,
-                TargetPackage.Name, #13, ConflictFile.GetShortFilename(true), #13,
+              Format(lisThereIsAlreadyAFileInOldNewContinue, [CurName,
+                TargetFilesEdit.FilesOwnerName, #13,
+                ConflictFile.GetShortFilename(true), #13,
                 ShortFilename, #13, #13])
               ,mtWarning,[mbYes,mbYesToAll,mbCancel]);
             case r of
@@ -2100,6 +2152,60 @@ var
         debugln(['CloseSrcEditors failed']);
         {$ENDIF}
         exit(false);
+      end;
+    end;
+    Result:=true;
+  end;
+
+  function ClearOldCompiledFiles: boolean;
+  var
+    OutDir: String;
+    CurFiles: TStrings;
+    OutFilename: String;
+    CurUnitName: String;
+    Ext: String;
+    S2SItem: PStringToStringTreeItem;
+    OldFilename: String;
+    SeparateOutDir: Boolean;
+    r: TModalResult;
+  begin
+    Result:=false;
+    // => clear output directory of Src
+    if SrcPackage<>nil then begin
+      if PackageGraph.PreparePackageOutputDirectory(SrcPackage,true)<>mrOk then
+      begin
+        {$IFDEF VerbosePkgEditDrag}
+        debugln(['TPackageEditorForm.MoveFiles PreparePackageOutputDirectory failed']);
+        {$ENDIF}
+        exit;
+      end;
+    end else if SrcProject<>nil then begin
+      OutDir:=ChompPathDelim(SrcProject.GetOutputDirectory);
+      if not FilenameIsAbsolute(OutDir) then exit(true);
+      CurFiles:=nil;
+      try
+        CodeToolBoss.DirectoryCachePool.GetListing(OutDir,CurFiles,false);
+        for OutFilename in CurFiles do begin
+          CurUnitName:=ExtractFilenameOnly(OutFilename);
+          for S2SItem in ChangedFilenames do begin
+            OldFilename:=S2SItem^.Name;
+            if not FilenameIsPascalSource(OldFilename) then continue;
+            if CompareTextCT(CurUnitName,ExtractFileNameOnly(OldFilename))<>0 then
+              continue;
+            // output filename and source have same unitname
+            SeparateOutDir:=CompareFilenames(ChompPathDelim(ExtractFilePath(OldFilename)),OutDir)<>0;
+            Ext:=lowercase(ExtractFileExt(OutFilename));
+            if (Ext='ppu') or (Ext='o') or (Ext='ppl') or (Ext='rst') or (Ext='lrt')
+            or (SeparateOutDir and ((Ext='lrs') or (Ext='lfm'))) then begin
+              // automatically created file found => delete
+              r:=DeleteFileInteractive(OutFilename,[mbCancel,mbIgnore]);
+              if not (r in [mrOk,mrIgnore]) then exit;
+            end;
+            break;
+          end;
+        end;
+      finally
+        CurFiles.Free;
       end;
     end;
     Result:=true;
@@ -2211,7 +2317,7 @@ var
   // check that all used units are available in the target package
   var
     i: Integer;
-    PkgFile: TPkgFile;
+    aFile: TIDEOwnedFile;
     OldFilename: String;
     Code: TCodeBuffer;
     Tool: TCodeTool;
@@ -2228,12 +2334,12 @@ var
       exit(true);
     end;
 
-    // check that all used units are available in the target package
+    // check that all used units are available in the target
     Result:=true;
-    for i:=0 to PkgFiles.Count-1 do begin
-      PkgFile:=TPkgFile(PkgFiles[i]);
-      if not (PkgFile.FileType in PkgFileRealUnitTypes) then continue;
-      OldFilename:=PkgFile.GetFullFilename;
+    for i:=0 to IDEFiles.Count-1 do begin
+      aFile:=TIDEOwnedFile(IDEFiles[i]);
+      if not FileIsUnit(aFile) then continue;
+      OldFilename:=aFile.GetFullFilename;
       NewFilename:=ChangedFilenames[OldFilename];
       if CompareFilenames(ExtractFilePath(OldFilename),ExtractFilePath(NewFilename))=0
       then continue;
@@ -2258,19 +2364,24 @@ var
   function ExtendSearchPaths: boolean;
   var
     i: Integer;
-    PkgFile: TPkgFile;
+    aFile: TIDEOwnedFile;
     NewDir: String;
     NewUnitPaths: String;
     NewIncPaths: String;
     OldFilename: String;
+    FileType: TPkgFileType;
   begin
     NewUnitPaths:='';
     NewIncPaths:='';
-    for i:=0 to PkgFiles.Count-1 do begin
-      PkgFile:=TPkgFile(PkgFiles[i]);
-      OldFilename:=PkgFile.GetFullFilename;
+    for i:=0 to IDEFiles.Count-1 do begin
+      aFile:=TIDEOwnedFile(IDEFiles[i]);
+      OldFilename:=aFile.GetFullFilename;
       NewDir:=ChompPathDelim(ExtractFilePath(ChangedFilenames[OldFilename]));
-      case PkgFile.FileType of
+      if aFile is TPkgFile then
+        FileType:=TPkgFile(aFile).FileType
+      else
+        FileType:=FileNameToPkgFileType(OldFilename);
+      case FileType of
       pftUnit,pftMainUnit:
         MergeSearchPaths(NewUnitPaths,NewDir);
       pftInclude:
@@ -2291,6 +2402,14 @@ var
     r: TModalResult;
     OldPkgFile: TPkgFile;
     NewPkgFile: TPkgFile;
+    NewFileType: TPkgFileType;
+    NewUnitName: String;
+    NewCompPrio: TComponentPriority;
+    NewResourceBaseClass: TPFComponentBaseClass;
+    NewHasRegisterProc: Boolean;
+    NewAddToUses: Boolean;
+    OldProjFile: TUnitInfo;
+    Code: TCodeBuffer;
   begin
     Result:=false;
     // check if needed
@@ -2333,37 +2452,76 @@ var
         debugln(['MoveOrCopyFile old file not in lpk: "',OldFilename,'" pkg=',SrcPackage.Name]);
         {$ENDIF}
         // this is a resource file
-        // => do not create an entry in the target package
+        // => do not create an entry in the target
+        exit(true);
+      end;
+    end else if SrcProject<>nil then begin
+      OldProjFile:=SrcProject.UnitInfoWithFilename(OldFilename,[pfsfOnlyProjectFiles]);
+      if OldPkgFile=nil then begin
+        {$IFDEF VerbosePkgEditDrag}
+        debugln(['MoveOrCopyFile old file not in lpi: "',OldFilename,'"']);
+        {$ENDIF}
+        // this is a resource file
+        // => do not create an entry in the target
         exit(true);
       end;
     end else begin
       raise Exception.Create('implement me');
     end;
+
     if TargetPackage<>nil then begin
       // create new TPkgFile
+
+      if OldPkgFile<>nil then begin
+        NewUnitName:=OldPkgFile.Unit_Name;
+        NewFileType:=OldPkgFile.FileType;
+        if NewFileType=pftMainUnit then NewFileType:=pftUnit;
+        NewCompPrio:=OldPkgFile.ComponentPriority;
+        NewResourceBaseClass:=OldPkgFile.ResourceBaseClass;
+        NewHasRegisterProc:=OldPkgFile.HasRegisterProc;
+        NewAddToUses:=OldPkgFile.AddToUsesPkgSection;
+      end else begin
+        NewUnitName:=OldProjFile.Unit_Name;
+        NewFileType:=FileNameToPkgFileType(OldFilename);
+        NewCompPrio:=ComponentPriorityNormal;
+        NewResourceBaseClass:=OldProjFile.ResourceBaseClass;
+        NewHasRegisterProc:=false;
+        NewAddToUses:=true;
+        if NewFileType=pftUnit then begin
+          Code:=CodeToolBoss.LoadFile(NewFilename,true,false);
+          if Code<>nil then begin
+            CodeToolBoss.HasInterfaceRegisterProc(Code,NewHasRegisterProc);
+          end;
+        end;
+      end;
+
       NewPkgFile:=TargetPackage.FindPkgFile(NewFilename,true,false);
       if NewPkgFile=nil then begin
         {$IFDEF VerbosePkgEditDrag}
         debugln(['MoveOrCopyFile create new "',NewFilename,'" pkg=',TargetPackage.Name]);
         {$ENDIF}
-        NewPkgFile:=TargetPackage.AddFile(NewFilename,OldPkgFile.Unit_Name,
-          OldPkgFile.FileType,OldPkgFile.Flags,OldPkgFile.ComponentPriority.Category);
+        NewPkgFile:=TargetPackage.AddFile(NewFilename,NewUnitName,
+          NewFileType,[],NewCompPrio.Category);
       end else begin
-        NewPkgFile.Unit_Name:=OldPkgFile.Unit_Name;
-        NewPkgFile.FileType:=OldPkgFile.FileType;
-        NewPkgFile.Flags:=OldPkgFile.Flags;
-        NewPkgFile.ComponentPriority:=OldPkgFile.ComponentPriority;
+        NewPkgFile.Unit_Name:=NewUnitName;
+        NewFileType:=NewFileType;
+        NewPkgFile.FileType:=NewFileType;
       end;
-      NewPkgFile.ResourceBaseClass:=OldPkgFile.ResourceBaseClass;
-      NewPkgFile.HasRegisterProc:=OldPkgFile.HasRegisterProc;
-      if OldPkgFile.AddToUsesPkgSection
+      NewPkgFile.ComponentPriority:=NewCompPrio;
+      NewPkgFile.ResourceBaseClass:=NewResourceBaseClass;
+      NewPkgFile.HasRegisterProc:=NewHasRegisterProc;
+      if NewAddToUses
       and (TargetPackage.FindUsedUnit(ExtractFileNameOnly(NewFilename),NewPkgFile)<>nil)
       then begin
         // another unit with this name is already used
         NewPkgFile.AddToUsesPkgSection:=false;
       end else begin
-        NewPkgFile.AddToUsesPkgSection:=OldPkgFile.AddToUsesPkgSection;
+        NewPkgFile.AddToUsesPkgSection:=NewAddToUses;
       end;
+    end else if TargetProject<>nil then begin
+      // create new TUnitInfo
+
+      raise Exception.Create('implement me');
     end else begin
       raise Exception.Create('implement me');
     end;
@@ -2375,6 +2533,11 @@ var
         debugln(['MoveOrCopyFile delete "',OldPkgFile.Filename,'" pkg=',OldPkgFile.LazPackage.Name]);
         {$ENDIF}
         SrcPackage.DeleteFile(OldPkgFile);
+      end else if OldProjFile<>nil then begin
+        {$IFDEF VerbosePkgEditDrag}
+        debugln(['MoveOrCopyFile delete "',OldProjFile.Filename,'"']);
+        {$ENDIF}
+        raise Exception.Create('implement me');
       end else begin
         raise Exception.Create('implement me');
       end;
@@ -2399,8 +2562,8 @@ var
     OldFilenames:=TStringList.Create;
     MovedFiles:=TFilenameToPointerTree.Create(false);
     try
-      for i:=0 to PkgFiles.Count-1 do
-        OldFilenames.Add(TPkgFile(PkgFiles[i]).GetFullFilename);
+      for i:=0 to IDEFiles.Count-1 do
+        OldFilenames.Add(TIDEOwnedFile(IDEFiles[i]).GetFullFilename);
       for i:=0 to OldFilenames.Count-1 do begin
         OldFilename:=OldFilenames[i];
         if not MoveOrCopyFile(OldFilename,MovedFiles) then exit;
@@ -2425,7 +2588,7 @@ begin
   Result:=false;
 
   DeleteNonExistingPkgFiles;
-  if PkgFiles.Count=0 then begin
+  if IDEFiles.Count=0 then begin
     {$IFDEF VerbosePkgEditDrag}
     debugln(['TPackageEditorForm.MoveFiles PkgFiles.Count=0']);
     {$ENDIF}
@@ -2441,11 +2604,14 @@ begin
   TargetDirectory:=AppendPathDelim(TargetDirectory);
 
   {$IFDEF VerbosePkgEditDrag}
-  debugln(['TPackageEditorForm.MoveFiles Self=',TargetFilesEdit.FilesOwnerName,' Src=',SrcFilesEdit.FilesOwnerName,' Dir="',TargetDirectory,'" FileCount=',PkgFiles.Count]);
+  debugln(['TPackageEditorForm.MoveFiles Self=',TargetFilesEdit.FilesOwnerName,' Src=',SrcFilesEdit.FilesOwnerName,' Dir="',TargetDirectory,'" FileCount=',IDEFiles.Count]);
   {$ENDIF}
   SrcPackage:=nil;
+  SrcProject:=nil;
   if SrcFilesEdit.FilesOwner is TLazPackage then
     SrcPackage:=TLazPackage(SrcFilesEdit.FilesOwner)
+  else if SrcFilesEdit.FilesOwner is TProject then
+    SrcProject:=TProject(SrcFilesEdit.FilesOwner)
   else begin
     {$IFDEF VerbosePkgEditDrag}
     debugln(['TPackageEditorForm.MoveFiles invalid src=',DbgSName(SrcFilesEdit.FilesOwner)]);
@@ -2453,11 +2619,14 @@ begin
     exit;
   end;
   TargetPackage:=nil;
+  TargetProject:=nil;
   if TargetFilesEdit.FilesOwner is TLazPackage then
     TargetPackage:=TLazPackage(TargetFilesEdit.FilesOwner)
+  else if TargetFilesEdit.FilesOwner is TProject then
+    TargetProject:=TProject(TargetFilesEdit.FilesOwner)
   else begin
     {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.MoveFiles invalid src=',DbgSName(TargetFilesEdit.FilesOwner)]);
+    debugln(['TPackageEditorForm.MoveFiles invalid target=',DbgSName(TargetFilesEdit.FilesOwner)]);
     {$ENDIF}
     exit;
   end;
@@ -2472,7 +2641,7 @@ begin
 
   IDEMessagesWindow.Clear;
 
-  NewFileToOldPkgFile:=TFilenameToPointerTree.Create(false);
+  NewFileToOldOwnedFile:=TFilenameToPointerTree.Create(false);
   ChangedFilenames:=TFilenameToStringTree.Create(false);
   AllChangedFilenames:=TFilenameToStringTree.Create(false);
   UnitFilenameToResFileList:=TFilenameToPointerTree.Create(false);
@@ -2503,10 +2672,13 @@ begin
     end;
 
     // ask for confirmation
-    if PkgFiles.Count=MoveFileCount then begin
+    if IDEFiles.Count=MoveFileCount then begin
       MsgResult:=IDEQuestionDialog(lisMoveOrCopyFiles,
-        Format(lisMoveOrCopyFileSFromPackageToTheDirectoryOfPackage, [IntToStr(
-          MoveFileCount), SrcFilesEdit.FilesOwnerName, #13, TargetDirectory, #13, TargetFilesEdit.FilesOwnerName]),
+        Format(lisMoveOrCopyFileSFromToTheDirectoryOfPackage, [
+          IntToStr(MoveFileCount),
+          SrcFilesEdit.FilesOwnerName, #13,
+          TargetDirectory, #13,
+          TargetFilesEdit.FilesOwnerName]),
         mtConfirmation, [100, lisMove, 101, lisCopy, mrCancel]);
       case MsgResult of
       100: DeleteOld:=true;
@@ -2515,8 +2687,11 @@ begin
       end;
     end else begin
       if IDEMessageDialog(lisMoveFiles2,
-        Format(lisMoveFileSFromPackageToTheDirectoryOfPackage, [IntToStr(
-          MoveFileCount), SrcFilesEdit.FilesOwnerName, #13, TargetDirectory, #13, TargetFilesEdit.FilesOwnerName]),
+        Format(lisMoveFileSFromToTheDirectoryOf, [
+          IntToStr(MoveFileCount),
+          SrcFilesEdit.FilesOwnerName, #13,
+          TargetDirectory, #13,
+          TargetFilesEdit.FilesOwnerName]),
         mtConfirmation,[mbOk,mbCancel])<>mrOK
       then exit;
       DeleteOld:=true;
@@ -2545,17 +2720,11 @@ begin
 
     if (not SrcIsTarget) then begin
       // files will be moved to another package/project
-      // => clear output directory of Src
-      if SrcPackage<>nil then begin
-        if PackageGraph.PreparePackageOutputDirectory(SrcPackage,true)<>mrOk then
-        begin
-          {$IFDEF VerbosePkgEditDrag}
-          debugln(['TPackageEditorForm.MoveFiles PreparePackageOutputDirectory failed']);
-          {$ENDIF}
-          exit;
-        end;
-      end else begin
-        raise Exception.Create('implement me');
+      if not ClearOldCompiledFiles then begin
+        {$IFDEF VerbosePkgEditDrag}
+        debugln(['TPackageEditorForm.MoveFiles ClearOldCompiledFiles failed']);
+        {$ENDIF}
+        exit;
       end;
     end;
 
@@ -2581,31 +2750,33 @@ begin
     UnitFilenameToResFileList.Free;
     AllChangedFilenames.Free;
     ChangedFilenames.Free;
-    NewFileToOldPkgFile.Free;
+    NewFileToOldOwnedFile.Free;
   end;
 end;
 
 function TPkgManager.CopyMoveFiles(Sender: TObject): boolean;
 var
   SelDirDlg: TSelectDirectoryDialog;
-  PkgEdit: TPackageEditorForm;
+  FilesEdit: IFilesEditorInterface;
   TargetDir: String;
 begin
   Result:=false;
-  if Sender is TPackageEditorForm then begin
-    PkgEdit:=TPackageEditorForm(Sender);
-  end else begin
+  if Sender is TPackageEditorForm then
+    FilesEdit:=TPackageEditorForm(Sender)
+  else if Sender is TProjectInspectorForm then
+    FilesEdit:=TProjectInspectorForm(Sender)
+  else begin
     debugln(['TPkgManager.CopyMoveFiles wrong Sender: ',DbgSName(Sender)]);
     exit;
   end;
   SelDirDlg:=TSelectDirectoryDialog.Create(nil);
   try
-    SelDirDlg.InitialDir:=PkgEdit.LazPackage.DirectoryExpanded;
+    SelDirDlg.InitialDir:=FilesEdit.FilesBaseDirectory;
     SelDirDlg.Title:=lisSelectTargetDirectory;
     SelDirDlg.Options:=SelDirDlg.Options+[ofPathMustExist,ofFileMustExist];
     if not SelDirDlg.Execute then exit;
     TargetDir:=CleanAndExpandDirectory(SelDirDlg.FileName);
-    Result:=MoveFiles(PkgEdit,PkgEdit,TargetDir);
+    Result:=MoveFiles(FilesEdit,FilesEdit,TargetDir);
   finally
     SelDirDlg.Free;
   end;

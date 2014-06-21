@@ -2955,7 +2955,7 @@ end;
 
 function TPackageEditorForm.FilesOwnerName: string;
 begin
-  Result:=LazPackage.Name;
+  Result:='package '+LazPackage.Name;
 end;
 
 function TPackageEditorForm.TVNodeFiles: TTreeNode;

@@ -6821,6 +6821,7 @@ begin
       end;
     end;
 
+    // update project resource files
     if not Project1.ProjResources.Regenerate(Project1.MainFilename, False, True, TargetExeDirectory)
     then begin
       debugln(['TMainIDE.DoBuildProject ProjResources.Regenerate failed']);
