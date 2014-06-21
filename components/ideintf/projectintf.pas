@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, AvgLvlTree,
-  NewItemIntf, ObjInspStrConsts, IDEOptionsIntf, CompOptsIntf;
+  NewItemIntf, ObjInspStrConsts, IDEOptionsIntf, CompOptsIntf, PackageIntf;
 
 const
   FileDescGroupName = 'File';
@@ -47,14 +47,12 @@ type
 
   { TLazProjectFile }
 
-  TLazProjectFile = class(TPersistent)
+  TLazProjectFile = class(TIDEOwnedFile)
   private
     FCustomData: TStringToStringTree;
     FCustomSessionData: TStringToStringTree;
     FIsPartOfProject: boolean;
   protected
-    function GetFilename: string; virtual; abstract;
-    procedure SetFilename(const AValue: string); virtual; abstract;
     procedure SetIsPartOfProject(const AValue: boolean); virtual;
   public
     constructor Create;
@@ -65,9 +63,8 @@ type
   public
     property IsPartOfProject: boolean read FIsPartOfProject
                                       write SetIsPartOfProject;
-    property Filename: string read GetFilename write SetFilename;
-    property CustomData: TStringToStringTree read FCustomData;
-    property CustomSessionData: TStringToStringTree read FCustomSessionData;
+    property CustomData: TStringToStringTree read FCustomData; // name,value pairs
+    property CustomSessionData: TStringToStringTree read FCustomSessionData; // name,value pairs
   end;
   TLazProjectFileClass = class of TLazProjectFile;
 

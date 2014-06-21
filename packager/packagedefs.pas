@@ -136,6 +136,7 @@ type
     FComponents: TFPList; // list of TPkgComponent
     FDirectory: string;
     FFlags: TPkgFileFlags;
+    fFilename: string;
     fFullFilename: string;
     fFullFilenameStamp: integer;
     FPackage: TLazPackage;
@@ -156,6 +157,7 @@ type
     function GetInUses: boolean; override;
     procedure SetInUses(AValue: boolean); override;
     function GetIDEPackage: TIDEPackage; override;
+    function GetFilename: string; override;
     procedure SetFilename(const AValue: string); override;
     procedure SetRemoved(const AValue: boolean); override;
     procedure SetDisableI18NForLFM(AValue: boolean); override;
@@ -178,6 +180,8 @@ type
     function GetFullFilename: string; override;
     function GetShortFilename(UseUp: boolean): string; override;
     function GetResolvedFilename: string; // GetFullFilename + resolve symlinks
+    function GetFileOwner: TObject; override;
+    function GetFileOwnerName: string; override;
   public
     property AddToUsesPkgSection: boolean
                        read GetAddToUsesPkgSection write SetAddToUsesPkgSection;
@@ -1487,7 +1491,7 @@ begin
   NewFilename:=AValue;
   ForcePathDelims(NewFilename);
   if Filename=NewFilename then exit;
-  inherited SetFilename(NewFilename);
+  fFilename:=NewFilename;
   fFullFilenameStamp:=CTInvalidChangeStamp;
   OldDirectory:=FDirectory;
   FDirectory:=ExtractFilePath(Filename);
@@ -1615,6 +1619,11 @@ begin
   Result:=FPackage;
 end;
 
+function TPkgFile.GetFilename: string;
+begin
+  Result:=fFilename;
+end;
+
 function TPkgFile.HasRegisteredPlugins: boolean;
 begin
   Result:=ComponentCount>0;
@@ -1688,7 +1697,7 @@ begin
   AutoReferenceSourceDir:=false;
   if (LazPackage=nil) or (not (lpfDestroying in LazPackage.Flags)) then begin
     inherited SetRemoved(false);
-    inherited SetFilename('');
+    fFilename:='';
     FDirectory:='';
     FFlags:=[];
     inherited SetFileType(pftUnit);
@@ -1791,6 +1800,19 @@ end;
 function TPkgFile.GetResolvedFilename: string;
 begin
   Result:=GetPhysicalFilenameCached(GetFullFilename,false);
+end;
+
+function TPkgFile.GetFileOwner: TObject;
+begin
+  Result:=LazPackage;
+end;
+
+function TPkgFile.GetFileOwnerName: string;
+begin
+  if LazPackage<>nil then
+    Result:=LazPackage.Name
+  else
+    Result:='';
 end;
 
 { TPkgDependency }

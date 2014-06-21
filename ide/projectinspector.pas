@@ -31,11 +31,6 @@
     TProjectInspectorForm is the form of the project inspector.
 
   ToDo:
-    - drop files
-    - multi select
-      - popup menu
-      - delete files
-      - delete deps
     - dnd move
     - project groups:
       - activate
@@ -69,7 +64,7 @@ uses
   PackageIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs, EnvironmentOpts,
-  PackageDefs, Project, PackageEditor, AddToProjectDlg;
+  PackageDefs, Project, MainIntf, PackageEditor, AddToProjectDlg;
   
 type
   TOnAddUnitToProject =
@@ -91,7 +86,7 @@ type
 
   { TProjectInspectorForm }
 
-  TProjectInspectorForm = class(TForm)
+  TProjectInspectorForm = class(TForm,IFilesEditorInterface)
     BtnPanel: TPanel;
     DirectoryHierarchyButton: TSpeedButton;
     FilterEdit: TTreeFilterEdit;
@@ -149,8 +144,8 @@ type
     FLazProject: TProject;
     FFilesNode: TTreeNode;
     FNextSelectedPart: TObject;// select this file/dependency on next update
-    DependenciesNode: TTreeNode;
-    RemovedDependenciesNode: TTreeNode;
+    FDependenciesNode: TTreeNode;
+    FRemovedDependenciesNode: TTreeNode;
     ImageIndexFiles: integer;
     ImageIndexRequired: integer;
     ImageIndexConflict: integer;
@@ -165,10 +160,6 @@ type
     FProjectNodeDataList : array [TPENodeType] of TPENodeData;
     procedure FreeNodeData(Typ: TPENodeType);
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
-    function GetNodeData(TVNode: TTreeNode): TPENodeData;
-    function GetNodeItem(NodeData: TPENodeData): TObject;
-    function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
-      out Item: TObject): boolean;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
     procedure SetIdleConnected(AValue: boolean);
     procedure SetLazProject(const AValue: TProject);
@@ -185,10 +176,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure BeginUpdate;
-    procedure EndUpdate;
     function IsUpdateLocked: boolean; inline;
-    procedure UpdateAll(Immediately: boolean = false);
     procedure UpdateTitle(Immediately: boolean = false);
     procedure UpdateProjectFiles(Immediately: boolean = false);
     procedure UpdateRequiredPackages(Immediately: boolean = false);
@@ -197,6 +185,28 @@ type
     function CanUpdate(Flag: TProjectInspectorFlag): boolean;
     function GetSingleSelectedDependency: TPkgDependency;
     function TreeViewToInspector(TV: TTreeView): TProjectInspectorForm;
+  public
+    // IFilesEditorInterface
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure UpdateAll(Immediately: boolean = false);
+    function GetNodeData(TVNode: TTreeNode): TPENodeData;
+    function GetNodeItem(NodeData: TPENodeData): TObject;
+    function GetNodeDataItem(TVNode: TTreeNode; out NodeData: TPENodeData;
+      out Item: TObject): boolean;
+    function ExtendIncSearchPath(NewIncPaths: string): boolean;
+    function ExtendUnitSearchPath(NewUnitPaths: string): boolean;
+    function FilesBaseDirectory: string;
+    function FilesEditForm: TCustomForm;
+    function FilesEditTreeView: TTreeView;
+    function FilesOwner: TObject;
+    function FilesOwnerName: string;
+    function FilesOwnerReadOnly: boolean;
+    function FirstRequiredDependency: TPkgDependency;
+    function GetNodeFilename(Node: TTreeNode): string;
+    function IsDirectoryNode(Node: TTreeNode): boolean;
+    function TVNodeFiles: TTreeNode;
+    function TVNodeRequiredPackages: TTreeNode;
   public
     property LazProject: TProject read FLazProject write SetLazProject;
     property OnShowOptions: TNotifyEvent read FOnShowOptions write FOnShowOptions;
@@ -233,6 +243,16 @@ implementation
 function TProjectInspectorForm.IsUpdateLocked: boolean;
 begin
   Result:=FUpdateLock>0;
+end;
+
+function TProjectInspectorForm.TVNodeFiles: TTreeNode;
+begin
+  Result:=FFilesNode;
+end;
+
+function TProjectInspectorForm.TVNodeRequiredPackages: TTreeNode;
+begin
+  Result:=FDependenciesNode;
 end;
 
 procedure TProjectInspectorForm.ItemsTreeViewDblClick(Sender: TObject);
@@ -900,9 +920,9 @@ begin
     FFilesNode:=Items.Add(nil, dlgEnvFiles);
     FFilesNode.ImageIndex:=ImageIndexFiles;
     FFilesNode.SelectedIndex:=FFilesNode.ImageIndex;
-    DependenciesNode:=Items.Add(nil, lisPckEditRequiredPackages);
-    DependenciesNode.ImageIndex:=ImageIndexRequired;
-    DependenciesNode.SelectedIndex:=DependenciesNode.ImageIndex;
+    FDependenciesNode:=Items.Add(nil, lisPckEditRequiredPackages);
+    FDependenciesNode.ImageIndex:=ImageIndexRequired;
+    FDependenciesNode.SelectedIndex:=FDependenciesNode.ImageIndex;
   end;
 end;
 
@@ -982,7 +1002,7 @@ begin
   if not CanUpdate(pifNeedUpdateDependencies) then exit;
   ItemsTreeView.BeginUpdate;
   try
-    RequiredBranch:=FilterEdit.GetBranch(DependenciesNode);
+    RequiredBranch:=FilterEdit.GetBranch(FDependenciesNode);
     RequiredBranch.Clear;
     FreeNodeData(penDependency);
     Dependency:=Nil;
@@ -1009,13 +1029,13 @@ begin
       Dependency:=LazProject.FirstRemovedDependency;
       if Dependency<>nil then begin
         // Create root node for removed dependencies if not done yet.
-        if RemovedDependenciesNode=nil then begin
-          RemovedDependenciesNode:=ItemsTreeView.Items.Add(DependenciesNode,
+        if FRemovedDependenciesNode=nil then begin
+          FRemovedDependenciesNode:=ItemsTreeView.Items.Add(FDependenciesNode,
                                                   lisProjInspRemovedRequiredPackages);
-          RemovedDependenciesNode.ImageIndex:=ImageIndexRemovedRequired;
-          RemovedDependenciesNode.SelectedIndex:=RemovedDependenciesNode.ImageIndex;
+          FRemovedDependenciesNode.ImageIndex:=ImageIndexRemovedRequired;
+          FRemovedDependenciesNode.SelectedIndex:=FRemovedDependenciesNode.ImageIndex;
         end;
-        RemovedBranch:=FilterEdit.GetBranch(RemovedDependenciesNode);
+        RemovedBranch:=FilterEdit.GetBranch(FRemovedDependenciesNode);
         // Add all removed dependencies under the branch
         while Dependency<>nil do begin
           ANodeData := CreateNodeData(penDependency, Dependency.PackageName, True);
@@ -1026,10 +1046,10 @@ begin
     end;
 
     // Dependency is set to removed required packages if there is active project
-    if (Dependency=nil) and (RemovedDependenciesNode<>nil) then begin
+    if (Dependency=nil) and (FRemovedDependenciesNode<>nil) then begin
       // No removed dependencies -> delete the root node
-      FilterEdit.DeleteBranch(RemovedDependenciesNode);
-      FreeThenNil(RemovedDependenciesNode);
+      FilterEdit.DeleteBranch(FRemovedDependenciesNode);
+      FreeThenNil(FRemovedDependenciesNode);
     end;
     FilterEdit.InvalidateFilter;
   finally
@@ -1126,6 +1146,77 @@ begin
     FreeNodeData(nt);
   if ProjInspector=Self then
     ProjInspector:=nil;
+end;
+
+function TProjectInspectorForm.ExtendIncSearchPath(NewIncPaths: string
+  ): boolean;
+begin
+  Result:=MainIDEInterface.ExtendProjectIncSearchPath(LazProject,NewIncPaths);
+end;
+
+function TProjectInspectorForm.ExtendUnitSearchPath(NewUnitPaths: string
+  ): boolean;
+begin
+  Result:=MainIDEInterface.ExtendProjectUnitSearchPath(LazProject,NewUnitPaths);
+end;
+
+function TProjectInspectorForm.FilesBaseDirectory: string;
+begin
+  if LazProject<>nil then
+    Result:=LazProject.ProjectDirectory
+  else
+    Result:='';
+end;
+
+function TProjectInspectorForm.FilesEditForm: TCustomForm;
+begin
+  Result:=Self;
+end;
+
+function TProjectInspectorForm.FilesEditTreeView: TTreeView;
+begin
+  Result:=ItemsTreeView;
+end;
+
+function TProjectInspectorForm.FilesOwner: TObject;
+begin
+  Result:=LazProject;
+end;
+
+function TProjectInspectorForm.FilesOwnerName: string;
+begin
+  Result:='Project';
+end;
+
+function TProjectInspectorForm.FilesOwnerReadOnly: boolean;
+begin
+  Result:=false;
+end;
+
+function TProjectInspectorForm.FirstRequiredDependency: TPkgDependency;
+begin
+  if LazProject<>nil then
+    Result:=LazProject.FirstRequiredDependency
+  else
+    Result:=nil;
+end;
+
+function TProjectInspectorForm.GetNodeFilename(Node: TTreeNode): string;
+var
+  Item: TFileNameItem;
+begin
+  Result:='';
+  if Node=nil then exit;
+  if Node=FFilesNode then
+    exit(FilesBaseDirectory);
+  Item:=TFileNameItem(Node.Data);
+  if not (Item is TFileNameItem) then exit;
+  Result:=Item.Filename;
+end;
+
+function TProjectInspectorForm.IsDirectoryNode(Node: TTreeNode): boolean;
+begin
+  Result:=(Node<>nil) and (Node.Data=nil) and Node.HasAsParent(FFilesNode);
 end;
 
 procedure TProjectInspectorForm.BeginUpdate;

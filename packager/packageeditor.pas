@@ -2757,7 +2757,7 @@ begin
   Result:='';
   if Node=nil then exit;
   if Node=FFilesNode then
-    exit(LazPackage.DirectoryExpanded);
+    exit(FilesBaseDirectory);
   Item:=TFileNameItem(Node.Data);
   if not (Item is TFileNameItem) then exit;
   Result:=Item.Filename;
@@ -2970,7 +2970,7 @@ end;
 
 function TPackageEditorForm.FilesBaseDirectory: string;
 begin
-  Result:=LazPackage.Directory;
+  Result:=LazPackage.DirectoryExpanded;
 end;
 
 function TPackageEditorForm.FilesOwnerReadOnly: boolean;

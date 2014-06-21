@@ -267,7 +267,7 @@ type
     FComponentLastLFMStreamSize: TStreamSeekType;
     FComponentLastLRSStreamSize: TStreamSeekType;
     FDirectives: TStrings;
-    fFileName: string;
+    fFileName: string; // with path = saved, without path = not yet saved
     fFileReadOnly: Boolean;
     FFirstRequiredComponent: TUnitComponentDependency;
     FFirstUsedByComponent: TUnitComponentDependency;
@@ -341,6 +341,8 @@ type
   public
     constructor Create(ACodeBuffer: TCodeBuffer);
     destructor Destroy; override;
+    function GetFileOwner: TObject; override;
+    function GetFileOwnerName: string; override;
 
     function ChangedOnDisk(CompareOnlyLoadSaveTime: boolean): boolean;
     function IsAutoRevertLocked: boolean;
@@ -348,7 +350,8 @@ type
     function IsMainUnit: boolean;
     function IsVirtual: boolean;
     function GetDirectory: string;
-    function GetShortFilename(UseUp: boolean): string;
+    function GetFullFilename: string; override;
+    function GetShortFilename(UseUp: boolean): string; override;
     function NeedsSaveToDisk: boolean;
     function ReadOnly: boolean;
     function ReadUnitSource(ReadUnitName,Revert:boolean): TModalResult;
@@ -1526,6 +1529,19 @@ begin
   inherited Destroy;
 end;
 
+function TUnitInfo.GetFileOwner: TObject;
+begin
+  Result:=Project;
+end;
+
+function TUnitInfo.GetFileOwnerName: string;
+begin
+  if Project<>nil then
+    Result:=ExtractFilename(Project.ProjectInfoFile)
+  else
+    Result:='';
+end;
+
 {------------------------------------------------------------------------------
   TUnitInfo WriteUnitSource
  ------------------------------------------------------------------------------}
@@ -2019,6 +2035,13 @@ begin
   end else  begin
     Result:=ExtractFilePath(Filename);
   end;
+end;
+
+function TUnitInfo.GetFullFilename: string;
+begin
+  Result:=fFilename;
+  // not saved files have file names without path
+  // they exist in the Codetools filename space
 end;
 
 function TUnitInfo.GetShortFilename(UseUp: boolean): string;

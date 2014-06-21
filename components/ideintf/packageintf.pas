@@ -74,27 +74,35 @@ type
 
   TIDEPackage = class;
 
+  {$M+}
+  TIDEOwnedFile = class
+  protected
+    function GetFilename: string; virtual; abstract;
+    procedure SetFilename(const AValue: string); virtual; abstract;
+  public
+    function GetFullFilename: string; virtual; abstract; // if no path, the file was not saved yet
+    function GetShortFilename(UseUp: boolean): string; virtual; abstract;
+    function GetFileOwner: TObject; virtual; abstract;
+    function GetFileOwnerName: string; virtual; abstract;
+    property Filename: string read GetFilename write SetFilename;
+  end;
+  {$M-}
+
   { TLazPackageFile }
 
-  TLazPackageFile = class
+  TLazPackageFile = class(TIDEOwnedFile)
   private
     FDisableI18NForLFM: boolean;
-    FFilename: string;
     FFileType: TPkgFileType;
     FRemoved: boolean;
   protected
     function GetInUses: boolean; virtual; abstract;
     procedure SetInUses(AValue: boolean); virtual; abstract;
-    procedure SetFilename(const AValue: string); virtual;
     function GetIDEPackage: TIDEPackage; virtual; abstract;
     procedure SetRemoved(const AValue: boolean); virtual;
     procedure SetDisableI18NForLFM(AValue: boolean); virtual;
     procedure SetFileType(const AValue: TPkgFileType); virtual;
   public
-    function GetFullFilename: string; virtual; abstract;
-    function GetShortFilename(UseUp: boolean): string; virtual; abstract;
-  public
-    property Filename: string read FFilename write SetFilename; // can contain macros
     property LazPackage: TIDEPackage read GetIDEPackage;
     property Removed: boolean read FRemoved write SetRemoved;
     property DisableI18NForLFM: boolean read FDisableI18NForLFM write SetDisableI18NForLFM;
@@ -798,11 +806,6 @@ end;
 procedure TLazPackageFile.SetFileType(const AValue: TPkgFileType);
 begin
   FFileType:=AValue;
-end;
-
-procedure TLazPackageFile.SetFilename(const AValue: string);
-begin
-  FFilename:=AValue;
 end;
 
 procedure TLazPackageFile.SetRemoved(const AValue: boolean);
