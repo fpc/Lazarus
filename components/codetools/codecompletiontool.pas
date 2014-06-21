@@ -8943,6 +8943,7 @@ begin
         if VirtualToOverride then begin
           VirtualStartPos:=SearchProcSpecifier(FullProcCode,'virtual',
                           VirtualEndPos,NewCodeTool.Scanner.NestedComments);
+          debugln(['TCodeCompletionCodeTool.AddMethods FullProcCode="',FullProcCode,'" VirtualStartPos=',VirtualStartPos]);
           if VirtualStartPos>=1 then begin
             // replace virtual with override
             FullProcCode:=copy(FullProcCode,1,VirtualStartPos-1)

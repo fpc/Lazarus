@@ -1726,7 +1726,8 @@ var
   AtomStart: integer;
 begin
   Result:=FindFirstProcSpecifier(ProcText,NestedComments);
-  while Result<=length(ProcText) do begin
+  repeat
+    if Result>length(ProcText) then exit(-1);
     ReadRawNextPascalAtom(ProcText,Result,AtomStart,NestedComments,true);
     if AtomStart>length(ProcText) then exit(-1);
     if CompareIdentifiers(@ProcText[AtomStart],@Specifier[1])=0 then begin
@@ -1738,7 +1739,7 @@ begin
       then
         exit(-1);
     end;
-  end;
+  until false;
   SpecifierEndPosition:=Result;
   while (SpecifierEndPosition<=length(ProcText))
   and (ProcText[SpecifierEndPosition]<>';') do begin

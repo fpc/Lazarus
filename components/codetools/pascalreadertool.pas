@@ -80,6 +80,8 @@ type
         Attr: TProcHeadAttributes): string;
     function ExtractBrackets(BracketStartPos: integer;
         Attr: TProcHeadAttributes): string;
+    function ExtractIdentifierWithPoints(StartPos: integer;
+        ExceptionOnError: boolean): string;
     function ExtractIdentCharsFromStringConstant(
         StartPos, MinPos, MaxPos, MaxLen: integer): string;
     function ReadStringConstantValue(StartPos: integer): string;
@@ -112,7 +114,7 @@ type
     function PropertyNodeHasParamList(PropNode: TCodeTreeNode): boolean;
     function PropNodeIsTypeLess(PropNode: TCodeTreeNode): boolean;
     function PropertyHasSpecifier(PropNode: TCodeTreeNode;
-                 s: string; ExceptionOnNotFound: boolean = true): boolean;
+                 UpperKeyword: string; ExceptionOnNotFound: boolean = true): boolean;
 
     // procs
     function ExtractProcName(ProcNode: TCodeTreeNode;
@@ -1390,6 +1392,24 @@ begin
     ExtractNextAtom(true,Attr);
   // copy memorystream to Result string
   Result:=GetExtraction(phpInUpperCase in Attr);
+end;
+
+function TPascalReaderTool.ExtractIdentifierWithPoints(StartPos: integer;
+  ExceptionOnError: boolean): string;
+begin
+  Result:='';
+  MoveCursorToCleanPos(StartPos);
+  ReadNextAtom;
+  if not AtomIsIdentifierE(ExceptionOnError) then exit;
+  Result:=GetAtom;
+  repeat
+    ReadNextAtom;
+    if CurPos.Flag<>cafPoint then
+      exit;
+    ReadNextAtom;
+    if not AtomIsIdentifierE(ExceptionOnError) then exit;
+    Result+='.'+GetAtom;
+  until false;
 end;
 
 function TPascalReaderTool.ExtractPropName(PropNode: TCodeTreeNode;
@@ -2867,7 +2887,8 @@ begin
 end;
 
 function TPascalReaderTool.PropertyHasSpecifier(PropNode: TCodeTreeNode;
-  s: string; ExceptionOnNotFound: boolean): boolean;
+  UpperKeyword: string; ExceptionOnNotFound: boolean): boolean;
+// true if cursor is on keyword
 begin
 
   // ToDo: ppu, dcu
@@ -2892,12 +2913,12 @@ begin
     end;
   end;
 
-  s:=UpperCaseStr(s);
+  UpperKeyword:=UpperCaseStr(UpperKeyword);
   // read specifiers
   while not (CurPos.Flag in [cafSemicolon,cafNone]) do begin
     if WordIsPropertySpecifier.DoIdentifier(@Src[CurPos.StartPos])
     then begin
-      if UpAtomIs(s) then exit(true);
+      if UpAtomIs(UpperKeyword) then exit(true);
     end else if CurPos.Flag=cafEdgedBracketOpen then begin
       if not ReadTilBracketClose(ExceptionOnNotFound) then exit;
       ReadNextAtom;
@@ -2909,9 +2930,9 @@ begin
     ReadNextAtom;
     if UpAtomIs('DEFAULT') or UpAtomIs('NODEFAULT') or UpAtomIs('DEPRECATED')
     then begin
-      if CompareIdentifierPtrs(@Src[CurPos.StartPos],Pointer(s))=0 then exit(true);
+      if CompareIdentifierPtrs(@Src[CurPos.StartPos],Pointer(UpperKeyword))=0 then exit(true);
     end else if UpAtomIs('ENUMERATOR') then begin
-      if CompareIdentifierPtrs(@Src[CurPos.StartPos],Pointer(s))=0 then exit(true);
+      if CompareIdentifierPtrs(@Src[CurPos.StartPos],Pointer(UpperKeyword))=0 then exit(true);
       ReadNextAtom;
       if not AtomIsIdentifier then exit;
     end else

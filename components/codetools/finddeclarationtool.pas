@@ -26,7 +26,6 @@
 
 
   ToDo:
-    - find declaration in dead code (started)
     - high type expression evaluation
       (i.e. at the moment: integer+integer=longint
                    wanted: integer+integer=integer)
@@ -693,6 +692,7 @@ type
     function FindClassMember(aClassNode: TCodeTreeNode; Identifier: PChar): TCodeTreeNode;
     function FindForwardIdentifier(Params: TFindDeclarationParams;
       var IsForward: boolean): boolean;
+    function FindNonForwardClass(ForwardNode: TCodeTreeNode): TCodeTreeNode;
     function FindNonForwardClass(Params: TFindDeclarationParams): boolean;
     function FindCodeToolForUsedUnit(const AnUnitName, AnUnitInFilename: string;
       ExceptionOnNotFound: boolean): TFindDeclarationTool;
@@ -5918,24 +5918,26 @@ begin
   Params.Load(OldInput,true);
 end;
 
-function TFindDeclarationTool.FindNonForwardClass(Params: TFindDeclarationParams
-  ): boolean;
+function TFindDeclarationTool.FindNonForwardClass(ForwardNode: TCodeTreeNode
+  ): TCodeTreeNode;
 var
   Node: TCodeTreeNode;
+  Identifier: PChar;
 begin
-  Result:=false;
-  Node:=Params.NewNode;
+  Result:=nil;
+  Node:=ForwardNode;
   if Node.Desc=ctnGenericType then begin
     Node:=Node.FirstChild;
     if Node=nil then exit;
   end else if Node.Desc<>ctnTypeDefinition then
     exit;
   Node:=Node.FirstChild;
+  Identifier:=@Src[Node.StartPos];
   if (Node=nil)
   or (not (Node.Desc in AllClasses))
   or ((ctnsForwardDeclaration and Node.SubDesc)=0) then
     exit;
-  Node:=Params.NewNode;
+  Node:=ForwardNode;
   repeat
     //DebugLn(['TFindDeclarationTool.FindNonForwardClass Node=',dbgstr(copy(Src,Node.StartPos,20))]);
     if Node.NextBrother<>nil then
@@ -5952,12 +5954,25 @@ begin
       if Node=nil then break;
       Node:=Node.FirstChild;
     end;
-    if CompareSrcIdentifiers(Node.StartPos,Params.Identifier) then begin
-      Params.SetResult(Self,Node,Node.StartPos);
-      Result:=true;
+    if CompareSrcIdentifiers(Node.StartPos,Identifier) then begin
+      Result:=Node;
       exit;
     end;
   until false;
+end;
+
+function TFindDeclarationTool.FindNonForwardClass(Params: TFindDeclarationParams
+  ): boolean;
+var
+  Node: TCodeTreeNode;
+begin
+  Node:=FindNonForwardClass(Params.NewNode);
+  if Node<>nil then begin
+    Params.SetResult(Self,Node,Node.StartPos);
+    Result:=true;
+  end else begin
+    Result:=false;
+  end;
 end;
 
 function TFindDeclarationTool.FindIdentifierInWithVarContext(

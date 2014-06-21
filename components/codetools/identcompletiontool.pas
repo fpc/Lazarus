@@ -386,10 +386,6 @@ type
       const FoundContext: TFindContext): TIdentifierFoundResult;
     procedure AddCollectionContext(Tool: TFindDeclarationTool;
       Node: TCodeTreeNode);
-    procedure InitFoundMethods;
-    procedure ClearFoundMethods;
-    function CollectMethods(Params: TFindDeclarationParams;
-      const FoundContext: TFindContext): TIdentifierFoundResult;
     function IsInCompilerDirective(CursorPos: TCodeXYPosition): boolean;
     procedure AddCompilerDirectiveMacros(Directive: string);
   public
@@ -2049,52 +2045,6 @@ begin
   //DebugLn('TIdentCompletionTool.AddCollectionContext ',Node.DescAsString,' ',ExtractNode(Node,[]));
 end;
 
-procedure TIdentCompletionTool.InitFoundMethods;
-begin
-  if FIDTFoundMethods<>nil then ClearFoundMethods;
-  FIDTFoundMethods:=TAVLTree.Create(@CompareCodeTreeNodeExt);
-end;
-
-procedure TIdentCompletionTool.ClearFoundMethods;
-begin
-  if FIDTFoundMethods=nil then exit;
-  FreeAndNil(FIDTFoundMethods);
-end;
-
-function TIdentCompletionTool.CollectMethods(
-  Params: TFindDeclarationParams; const FoundContext: TFindContext
-  ): TIdentifierFoundResult;
-var
-  ProcText: String;
-  AVLNode: TAVLTreeNode;
-  NodeExt: TCodeTreeNodeExtension;
-begin
-  // proceed searching ...
-  Result:=ifrProceedSearch;
-
-  {$IFDEF ShowFoundIdents}
-  //if FoundContext.Tool=Self then
-  DebugLn('::: COLLECT IDENT ',FoundContext.Node.DescAsString,
-    ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"');
-  {$ENDIF}
-  
-  if FoundContext.Node.Desc=ctnProcedure then begin
-    ProcText:=FoundContext.Tool.ExtractProcHead(FoundContext.Node,
-                              [phpWithoutClassKeyword,phpWithHasDefaultValues]);
-    AVLNode:=FindCodeTreeNodeExtAVLNode(FIDTFoundMethods,ProcText);
-    if AVLNode<>nil then begin
-      // method is overriden => ignore
-    end else begin
-      // new method
-      NodeExt:=TCodeTreeNodeExtension.Create;
-      NodeExt.Node:=FoundContext.Node;
-      NodeExt.Data:=FoundContext.Tool;
-      NodeExt.Txt:=ProcText;
-      FIDTFoundMethods.Add(NodeExt);
-    end;
-  end;
-end;
-
 function TIdentCompletionTool.IsInCompilerDirective(CursorPos: TCodeXYPosition
   ): boolean;
 var
@@ -2873,22 +2823,183 @@ end;
 function TIdentCompletionTool.FindAbstractMethods(
   const CursorPos: TCodeXYPosition; out ListOfPCodeXYPosition: TFPList;
   SkipAbstractsInStartClass: boolean): boolean;
+const
+  ProcAttr = [phpWithoutClassKeyword,phpWithHasDefaultValues];
+  FlagIsAbstract = 0;
+  FlagIsImplemented = 1;
+var
+  ImplementedInterfaces: TStringToPointerTree;
+  SearchedAncestors: TAVLTree;
+  Procs: TAVLTree; // tree of TCodeTreeNodeExtension
+
+  procedure AddProc(ATool: TFindDeclarationTool; ProcNode: TCodeTreeNode;
+    IsAbstract: boolean);
+  var
+    ProcText: String;
+    AVLNode: TAVLTreeNode;
+    NodeExt: TCodeTreeNodeExtension;
+  begin
+    ProcText:=ATool.ExtractProcHead(ProcNode,ProcAttr);
+    AVLNode:=FindCodeTreeNodeExtAVLNode(Procs,ProcText);
+    if AVLNode<>nil then begin
+      // known proc
+      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      //debugln(['AddProc "',ProcText,'" WasImplemented=',NodeExt.Flags=1,' IsAbstract=',IsAbstract]);
+      if NodeExt.Flags=FlagIsImplemented then
+        exit; // already implemented
+      if IsAbstract then
+        exit; // already abstract
+      NodeExt.Flags:=FlagIsImplemented;
+      NodeExt.Node:=ProcNode;
+      NodeExt.Data:=ATool;
+    end else begin
+      // new method
+      //debugln(['AddProc "',ProcText,'" New IsAbstract=',IsAbstract]);
+      NodeExt:=TCodeTreeNodeExtension.Create;
+      NodeExt.Node:=ProcNode;
+      NodeExt.Data:=ATool;
+      NodeExt.Txt:=ProcText;
+      if IsAbstract then
+        NodeExt.Flags:=FlagIsAbstract
+      else
+        NodeExt.Flags:=FlagIsImplemented;
+      Procs.Add(NodeExt);
+    end;
+  end;
+
+  procedure CollectImplements(ClassNode: TCodeTreeNode);
+  var
+    Node: TCodeTreeNode;
+    StopNode: TCodeTreeNode;
+    InterfaceName: String;
+  begin
+    Node:=ClassNode.FirstChild;
+    StopNode:=ClassNode.NextSkipChilds;
+    while Node<>StopNode do begin
+      if Node.Desc in AllClassBaseSections then begin
+        Node:=Node.Next;
+        continue;
+      end else if Node.Desc=ctnProperty then begin
+        if PropertyHasSpecifier(Node,'IMPLEMENTS',false) then begin
+          ReadNextAtom;
+          while AtomIsIdentifier do begin
+            InterfaceName:=GetAtom;
+            ReadNextAtom;
+            if CurPos.Flag=cafPoint then begin
+              ReadNextAtom;
+              AtomIsIdentifierE(true);
+              InterfaceName+='.'+GetAtom;
+              ReadNextAtom;
+            end;
+            //debugln(['CollectImplements ',InterfaceName]);
+            ImplementedInterfaces[InterfaceName]:=Node;
+            if CurPos.Flag<>cafComma then break;
+            ReadNextAtom;
+          end;
+        end;
+      end else if Node.Desc=ctnProcedure then begin
+        if ProcNodeHasSpecifier(Node,psABSTRACT) then begin
+          if not SkipAbstractsInStartClass then
+            AddProc(Self,Node,true);
+        end else begin
+          AddProc(Self,Node,false);
+        end;
+      end;
+      Node:=Node.NextSkipChilds;
+    end;
+  end;
+
+  procedure CollectAncestors(aTool: TFindDeclarationTool;
+    ClassNode: TCodeTreeNode; IsStartClass: boolean); forward;
+
+  procedure CollectAncestor(ATool: TFindDeclarationTool;
+    InheritanceNode: TCodeTreeNode; SearchedAncestors: TAVLTree;
+    IsStartClass: boolean);
+  var
+    Params: TFindDeclarationParams;
+    ClassNode: TCodeTreeNode;
+    StopNode: TCodeTreeNode;
+    Node: TCodeTreeNode;
+    IsInterface: Boolean;
+  begin
+    //debugln(['CollectAncestor Ancestor=',ATool.ExtractIdentifierWithPoints(InheritanceNode.StartPos,false)]);
+    Params:=TFindDeclarationParams.Create;
+    try
+      if not ATool.FindAncestorOfClassInheritance(InheritanceNode,Params,true)
+      then exit;
+      ATool:=Params.NewCodeTool;
+      ClassNode:=Params.NewNode;
+      if SearchedAncestors.Find(ClassNode)<>nil then
+        exit; // already searched
+      SearchedAncestors.Add(ClassNode);
+      // check all procs of this ancestor
+      StopNode:=ClassNode.NextSkipChilds;
+      Node:=ClassNode.FirstChild;
+      IsInterface:=ClassNode.Desc in AllClassInterfaces;
+      if IsInterface and (not IsStartClass) then
+        exit;
+      while Node<>StopNode do begin
+        if Node.Desc in AllClassBaseSections then begin
+          Node:=Node.Next;
+          continue;
+        end else if Node.Desc=ctnProcedure then begin
+          if IsInterface
+          or ATool.ProcNodeHasSpecifier(Node,psABSTRACT) then
+            AddProc(ATool,Node,true)
+          else
+            AddProc(ATool,Node,false);
+        end;
+        Node:=Node.NextSkipChilds;
+      end;
+      CollectAncestors(ATool,ClassNode,false);
+    finally
+      Params.Free;
+    end;
+  end;
+
+  procedure CollectAncestors(aTool: TFindDeclarationTool;
+    ClassNode: TCodeTreeNode; IsStartClass: boolean);
+  var
+    InheritanceNode: TCodeTreeNode;
+    AncestorName: String;
+    Node: TCodeTreeNode;
+  begin
+    //debugln(['CollectAncestors of Class=',aTool.ExtractClassName(ClassNode,false)]);
+    InheritanceNode:=ATool.FindInheritanceNode(ClassNode);
+    if (InheritanceNode=nil)
+    or (InheritanceNode.FirstChild=nil) then begin
+      // no ancestors
+      exit;
+    end;
+    Node:=InheritanceNode.FirstChild;
+    while Node<>nil do begin
+      InheritanceNode:=Node;
+      Node:=Node.NextBrother;
+      if InheritanceNode.Desc=ctnIdentifier then begin
+        if IsStartClass then begin
+          AncestorName:=ATool.ExtractIdentifierWithPoints(InheritanceNode.StartPos,true);
+          if ImplementedInterfaces.FindNode(AncestorName)<>nil then
+            continue;
+        end;
+        CollectAncestor(ATool,InheritanceNode,SearchedAncestors,IsStartClass);
+      end;
+    end;
+  end;
+
 var
   CleanCursorPos: integer;
   CursorNode: TCodeTreeNode;
-  Params: TFindDeclarationParams;
+  ClassNode: TCodeTreeNode;
   AVLNode: TAVLTreeNode;
   NodeExt: TCodeTreeNodeExtension;
-  ATool: TFindDeclarationTool;
-  ANode: TCodeTreeNode;
   ProcXYPos: TCodeXYPosition;
-  Skip: Boolean;
-  ClassNode: TCodeTreeNode;
+  ATool: TFindDeclarationTool;
 begin
   Result:=false;
   ListOfPCodeXYPosition:=nil;
-  ActivateGlobalWriteLock;
-  Params:=nil;
+  ImplementedInterfaces:=nil;
+  Procs:=nil;
+  SearchedAncestors:=nil;
   try
     BuildTreeAndGetCleanPos(trTillCursor,lsrEnd,CursorPos,CleanCursorPos,
                             [btSetIgnoreErrorPos]);
@@ -2903,6 +3014,7 @@ begin
       CursorNode:=CursorNode.LastChild
     else
       CursorNode:=FindClassOrInterfaceNode(CursorNode);
+
     if (CursorNode=nil)
     or (not (CursorNode.Desc in AllClassObjects))
     or ((CursorNode.SubDesc and ctnsForwardDeclaration)>0) then begin
@@ -2911,40 +3023,34 @@ begin
     end;
     ClassNode:=CursorNode;
 
-    Params:=TFindDeclarationParams.Create;
-    // gather all identifiers in context
-    Params.ContextNode:=ClassNode;
-    Params.SetIdentifier(Self,nil,@CollectMethods);
-    Params.Flags:=[fdfSearchInAncestors,fdfCollect,fdfFindVariable];
-    InitFoundMethods;
-    FindIdentifierInContext(Params);
+    // search class for implemented interfaces and method
+    ImplementedInterfaces:=TStringToPointerTree.Create(false);
+    Procs:=TAVLTree.Create(@CompareCodeTreeNodeExt);
+    CollectImplements(ClassNode);
 
-    if FIDTFoundMethods<>nil then begin
-      AVLNode:=FIDTFoundMethods.FindLowest;
-      while AVLNode<>nil do begin
-        NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
-        ANode:=NodeExt.Node;
+    // search all ancestors
+    SearchedAncestors:=TAVLTree.Create;
+    SearchedAncestors.Add(ClassNode);
+    CollectAncestors(Self,ClassNode,true);
+
+    // AddCodePosition for each abstract method
+    AVLNode:=Procs.FindLowest;
+    while AVLNode<>nil do begin
+      NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
+      if NodeExt.Flags=FlagIsAbstract then begin
         ATool:=TFindDeclarationTool(NodeExt.Data);
-        //DebugLn(['TIdentCompletionTool.FindAbstractMethods ',NodeExt.Txt,' ',ATool.ProcNodeHasSpecifier(ANode,psABSTRACT)]);
-        Skip:=false;
-        if not ATool.ProcNodeHasSpecifier(ANode,psABSTRACT) then
-          Skip:=true;
-        if SkipAbstractsInStartClass and (ANode.HasAsParent(ClassNode)) then
-          Skip:=true;
-        if not Skip then begin
-          if not ATool.CleanPosToCaret(ANode.StartPos,ProcXYPos) then
-            raise Exception.Create('TIdentCompletionTool.FindAbstractMethods inconsistency');
-          AddCodePosition(ListOfPCodeXYPosition,ProcXYPos);
-        end;
-        AVLNode:=FIDTFoundMethods.FindSuccessor(AVLNode);
+        if not ATool.CleanPosToCaret(NodeExt.Node.StartPos,ProcXYPos) then
+          raise Exception.Create('TIdentCompletionTool.FindAbstractMethods inconsistency');
+        AddCodePosition(ListOfPCodeXYPosition,ProcXYPos);
       end;
+      AVLNode:=Procs.FindSuccessor(AVLNode);
     end;
 
     Result:=true;
   finally
-    Params.Free;
-    ClearFoundMethods;
-    DeactivateGlobalWriteLock;
+    DisposeAVLTree(Procs);
+    ImplementedInterfaces.Free;
+    SearchedAncestors.Free;
   end;
 end;
 

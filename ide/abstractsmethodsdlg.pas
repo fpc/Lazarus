@@ -117,7 +117,7 @@ begin
     
     // check cursor is in a class
     if not CodeToolBoss.FindAbstractMethods(Code,Caret.X,Caret.Y,
-      ListOfPCodeXYPosition,false) then
+      ListOfPCodeXYPosition,true) then
     begin
       DebugLn(['ShowAbstractMethodsDialog CodeToolBoss.FindAbstractMethods failed']);
       if CodeToolBoss.ErrorMessage<>'' then begin
