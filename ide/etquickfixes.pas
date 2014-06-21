@@ -96,7 +96,7 @@ type
 
   TQuickFixClassWithAbstractMethods = class(TMsgQuickFix)
   public
-    function IsApplicable(Msg: TMessageLine; out aClassName, aMethodName: string): boolean;
+    function IsApplicable(Msg: TMessageLine; out aClassName: string): boolean;
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
@@ -155,6 +155,9 @@ type
 var
   IDEQuickFixes: TIDEQuickFixes = nil;
 
+function GetMsgCodetoolPos(Msg: TMessageLine; out Code: TCodeBuffer;
+  out Tool: TCodeTool; out CleanPos: integer; out Node: TCodeTreeNode): boolean;
+
 implementation
 
 type
@@ -194,6 +197,26 @@ begin
     exit;
   end;
   Result:=true;
+end;
+
+function GetMsgCodetoolPos(Msg: TMessageLine; out Code: TCodeBuffer;
+  out Tool: TCodeTool; out CleanPos: integer; out Node: TCodeTreeNode): boolean;
+var
+  Filename: String;
+begin
+  Result:=false;
+  Tool:=nil;
+  CleanPos:=0;
+  Node:=nil;
+  Filename:=TrimFilename(Msg.GetFullFilename);
+  if not FilenameIsAbsolute(Filename) then exit;
+  Code:=CodeToolBoss.LoadFile(Filename,true,false);
+  if Code=nil then exit;
+  CodeToolBoss.Explore(Code,Tool,false);
+  if Tool=nil then exit;
+  if Tool.CaretToCleanPos(CodeXYPosition(Msg.Column,Msg.Line,Code),CleanPos)<>0 then exit;
+  Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
+  Result:=Node<>nil;
 end;
 
 { TQuickFixSrcPathOfPkgContains_OpenPkg }
@@ -338,11 +361,11 @@ end;
 function TQuickFixLocalVariableNotUsed_Remove.IsApplicable(Msg: TMessageLine;
   out Identifier: string): boolean;
 var
-  Code: TCodeBuffer;
   Tool: TCodeTool;
   CleanPos: integer;
   Node: TCodeTreeNode;
   Dummy: string;
+  Code: TCodeBuffer;
 begin
   Result:=false;
   // Check: Local variable "$1" not used
@@ -352,12 +375,7 @@ begin
 
   // check if message position is at end of identifier
   // (FPC gives position of start or end of identifier)
-  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
-  if Code=nil then exit;
-  if not CodeToolBoss.Explore(Code,Tool,false) then exit;
-  if Tool.CaretToCleanPos(CodeXYPosition(Msg.Column,Msg.Line,Code),CleanPos)<>0 then exit;
-  Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
-  if Node=nil then exit;
+  if not GetMsgCodetoolPos(Msg,Code,Tool,CleanPos,Node) then exit;
   if not (Node.Desc in [ctnVarDefinition]) then exit;
   Tool.MoveCursorToCleanPos(CleanPos);
   if (CleanPos>Tool.SrcLen) or (not IsIdentChar[Tool.Src[CleanPos]]) then
@@ -422,13 +440,29 @@ end;
 { TQuickFixClassWithAbstractMethods }
 
 function TQuickFixClassWithAbstractMethods.IsApplicable(Msg: TMessageLine; out
-  aClassName, aMethodName: string): boolean;
+  aClassName: string): boolean;
+var
+  Dummy: string;
+  Tool: TCodeTool;
+  CleanPos: integer;
+  Node: TCodeTreeNode;
+  MissingMethod: string;
+  Code: TCodeBuffer;
 begin
   Result:=false;
-  // Check: Constructing a class "$1" with abstract method "$2"
-  if not IDEFPCParser.MsgLineIsId(Msg,4046,aClassname,aMethodName) then exit;
   if (not Msg.HasSourcePosition) then exit;
-  Result:=true;
+  if IDEFPCParser.MsgLineIsId(Msg,4046,aClassname,Dummy) then begin
+    // Constructing a class "$1" with abstract method "$2"
+    Result:=true;
+  end else if IDEFPCParser.MsgLineIsId(Msg,5042,MissingMethod,Dummy) then begin
+    // No matching implementation for interface method "$1" found
+    // The position is on the 'class' keyword
+    // The MissingMethod is 'interfacename.procname'
+    if not GetMsgCodetoolPos(Msg,Code,Tool,CleanPos,Node) then exit;
+    if not (Node.Desc in AllClassObjects) then exit;
+    aClassName:=Tool.ExtractClassName(Node,false);
+    Result:=aClassName<>'';
+  end;
 end;
 
 procedure TQuickFixClassWithAbstractMethods.CreateMenuItems(
@@ -436,12 +470,11 @@ procedure TQuickFixClassWithAbstractMethods.CreateMenuItems(
 var
   Msg: TMessageLine;
   aClassName: string;
-  aMethodName: string;
   i: Integer;
 begin
   for i:=0 to Fixes.LineCount-1 do begin
     Msg:=Fixes.Lines[i];
-    if not IsApplicable(Msg,aClassName,aMethodName) then continue;
+    if not IsApplicable(Msg,aClassName) then continue;
     Fixes.AddMenuItem(Self, Msg, Format(lisShowAbstractMethodsOf, [aClassName])
       );
     exit;
@@ -453,30 +486,24 @@ procedure TQuickFixClassWithAbstractMethods.QuickFix(Fixes: TMsgQuickFixes;
 var
   Code: TCodeBuffer;
   aClassName: string;
-  aMethodName: string;
   Tool: TCodeTool;
   NewCode: TCodeBuffer;
   NewX: integer;
   NewY: integer;
   NewTopLine: integer;
+  CleanPos: integer;
+  Node: TCodeTreeNode;
 begin
-  if not IsApplicable(Msg,aClassName,aMethodName) then exit;
+  if not IsApplicable(Msg,aClassName) then exit;
 
   if not LazarusIDE.BeginCodeTools then begin
     DebugLn(['TQuickFixClassWithAbstractMethods failed because IDE busy']);
     exit;
   end;
 
-  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
-  if Code=nil then exit;
-
-  // find the class
-
-  // build the tree
-  CodeToolBoss.Explore(Code,Tool,false,true);
-  if Tool=nil then begin
-    DebugLn(['TQuickFixClassWithAbstractMethods no tool for ',Code.Filename]);
-    ShowError('QuickFix: ClassWithAbstractMethods no tool for '+Code.Filename);
+  if not GetMsgCodetoolPos(Msg,Code,Tool,CleanPos,Node) then begin
+    DebugLn(['TQuickFixClassWithAbstractMethods no tool for ',Msg.GetFullFilename]);
+    ShowError('QuickFix: ClassWithAbstractMethods no tool for '+Msg.GetFullFilename);
     exit;
   end;
 
@@ -581,11 +608,11 @@ end;
 function TQuickFixIdentifierNotFoundAddLocal.IsApplicable(Msg: TMessageLine;
   out Identifier: string): boolean;
 var
-  Code: TCodeBuffer;
   Tool: TCodeTool;
   CleanPos: integer;
   Node: TCodeTreeNode;
   Dummy: string;
+  Code: TCodeBuffer;
 begin
   Result:=false;
   Identifier:='';
@@ -595,12 +622,7 @@ begin
   if not Msg.HasSourcePosition or not IsValidIdent(Identifier) then exit;
 
   // check if message position is at identifier
-  Code:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
-  if Code=nil then exit;
-  if not CodeToolBoss.Explore(Code,Tool,false) then exit;
-  if Tool.CaretToCleanPos(CodeXYPosition(Msg.Column,Msg.Line,Code),CleanPos)<>0 then exit;
-  Node:=Tool.FindDeepestNodeAtPos(CleanPos,false);
-  if Node=nil then exit;
+  if not GetMsgCodetoolPos(Msg, Code,Tool, CleanPos, Node) then exit;
   if not (Node.Desc in AllPascalStatements) then exit;
   Tool.MoveCursorToCleanPos(CleanPos);
   if mlfLeftToken in Msg.Flags then
