@@ -81,6 +81,9 @@ implementation
 
 {$R *.lfm}
 
+const
+  DefaultCompilerOptPath = 'CompilerOptions/';
+
 function ReadIntFromXMLConfig(const Filename, Path: string;
   DefaultValue, ValueForReadError: integer): integer;
 var
@@ -98,26 +101,28 @@ end;
 
 function GetXMLPathForCompilerOptions(XMLConfig: TXMLConfig): string;
 const
-  PathSuffix = 'SearchPaths/CompilerPath/Value';
+  OptPathSuffix = 'SearchPaths/CompilerPath/Value';
+  PkgCompilerOptPath = 'Package/CompilerOptions/';
+  PkgVersionPath = 'Package/Version';
 var
   FileVersion: Integer;
 begin
-  if XMLConfig.GetValue(PathSuffix,'')<>'' then
+  if XMLConfig.GetValue(OptPathSuffix,'')<>'' then
     // old lpi file
     Result:=''
-  else if XMLConfig.GetValue('CompilerOptions/'+PathSuffix,'')<>'' then
+  else if XMLConfig.GetValue(DefaultCompilerOptPath+OptPathSuffix,'')<>'' then
     // current lpi file
-    Result:='CompilerOptions/'
-  else if XMLConfig.GetValue('Package/CompilerOptions/'+PathSuffix,'')<>'' then
+    Result:=DefaultCompilerOptPath
+  else if XMLConfig.GetValue(PkgCompilerOptPath+OptPathSuffix,'')<>'' then
     // current lpk file
-    Result:='Package/CompilerOptions/'
+    Result:=PkgCompilerOptPath
   else begin
     // default: depending on file type
-    Result:='CompilerOptions/';
+    Result:=DefaultCompilerOptPath;
     if CompareFileExt(XMLConfig.Filename,'.lpk',false)=0 then begin
-      FileVersion:=ReadIntFromXMLConfig(XMLConfig.Filename,'Package/Version',0,2);
+      FileVersion:=ReadIntFromXMLConfig(XMLConfig.Filename,PkgVersionPath,0,2);
       if FileVersion>=2 then
-        Result:='Package/CompilerOptions/';
+        Result:=PkgCompilerOptPath;   // current lpk file
     end;
   end;
 end;
@@ -171,7 +176,7 @@ begin
     InvalidateFileStateCache;
     XMLConfig:=TXMLConfig.Create(Filename);
     try
-      Path:=GetXMLPathForCompilerOptions(XMLConfig);
+      Path:=DefaultCompilerOptPath; // GetXMLPathForCompilerOptions(XMLConfig);
       CompilerOpts.SaveToXMLConfig(XMLConfig,Path);
       XMLConfig.Flush;
     finally
