@@ -2835,41 +2835,36 @@ begin
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
   FFileVersion:= FXMLConfig.GetValue(Path+'Version/Value',0);
-  if (FFileVersion=0) and (not FLoadParts)
-  and (FXMLConfig.GetValue(Path+'Units/Count',0)=0) then
-    if IDEMessageDialog(lisStrangeLpiFile,
-        Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
-        mtConfirmation,[mbIgnore,mbAbort])<>mrIgnore then exit;
+  if not FLoadParts then
+  begin
+    if (FFileVersion=0) and (FXMLConfig.GetValue(Path+'Units/Count',0)=0) then
+      if IDEMessageDialog(lisStrangeLpiFile,
+          Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
+          mtConfirmation,[mbIgnore,mbAbort])<>mrIgnore
+      then exit;
 
-  if not FLoadParts then begin
     LoadFlags(Path);
     SessionStorage:=StrToProjectSessionStorage(
       FXMLConfig.GetValue(Path+'General/SessionStorage/Value',
                           ProjectSessionStorageNames[DefaultProjectSessionStorage]));
     //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
-  end;
 
-  // load properties
-  // Note: in FFileVersion<9 the default value was -1
-  //   Since almost all projects have a MainUnit the value 0 was always
-  //   added to the lpi.
-  //   Changing the default value to 0 avoids the redundancy and
-  //   automatically fixes broken lpi files.
-  if not FLoadParts then begin
+    // load properties
+    // Note: in FFileVersion<9 the default value was -1
+    //   Since almost all projects have a MainUnit the value 0 was always
+    //   added to the lpi.
+    //   Changing the default value to 0 avoids the redundancy and
+    //   automatically fixes broken lpi files.
     FNewMainUnitID := FXMLConfig.GetValue(Path+'General/MainUnit/Value', 0);
     Title := FXMLConfig.GetValue(Path+'General/Title/Value', '');
     UseAppBundle := FXMLConfig.GetValue(Path+'General/UseAppBundle/Value', True);
     AutoCreateForms := FXMLConfig.GetValue(Path+'General/AutoCreateForms/Value', true);
-  end;
 
-  // fpdoc
-  if not FLoadParts then begin
+    // fpdoc
     FPDocPaths:=SwitchPathDelims(FXMLConfig.GetValue(Path+'LazDoc/Paths',''),fPathDelimChanged);
     FPDocPackageName:=FXMLConfig.GetValue(Path+'LazDoc/PackageName','');
-  end;
 
-  // i18n
-  if not FLoadParts then begin
+    // i18n
     if FFileVersion<6 then begin
       POOutputDirectory := SwitchPathDelims(
                  FXMLConfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
@@ -2882,40 +2877,32 @@ begin
     end;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
   end;
-
   // load MacroValues and compiler options
   LoadBuildModes(Path,true);
   // Resources
   if not FLoadParts then
+  begin
     ProjResources.ReadFromProjectFile(FXMLConfig, Path);
-  // load custom data
-  if not FLoadParts then
+    // load custom data
     LoadStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
-  if not FLoadParts then begin
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
     CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=ProjectDirectory;
     CodeToolBoss.DefineTree.ClearCache;
-  end;
-  // load the dependencies
-  if not FLoadParts then
+    // load the dependencies
     LoadPkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
-                      FFirstRequiredDependency,pdlRequires,Self,true,false);
-  // load the Run and Build parameter Options
-  if not FLoadParts then
+                          FFirstRequiredDependency,pdlRequires,Self,true,false);
+    // load the Run and Build parameter Options
     RunParameterOptions.Load(FXMLConfig,Path,fPathDelimChanged);
-  // load the Publish Options
-  if not FLoadParts then
+    // load the Publish Options
     PublishOptions.LoadFromXMLConfig(FXMLConfig,Path+'PublishOptions/',fPathDelimChanged);
-  // load custom defines
-  if not FLoadParts then
+    // load custom defines
     LoadCustomDefines(Path);
-  // load session info
-  if not FLoadParts then
+    // load session info
     LoadSessionInfo(Path,false);
-
-  // call hooks to read their info (e.g. DebugBoss)
-  if (not FLoadParts) and Assigned(OnLoadProjectInfo) then
-    OnLoadProjectInfo(Self, FXMLConfig, false);
+    // call hooks to read their info (e.g. DebugBoss)
+    if Assigned(OnLoadProjectInfo) then
+      OnLoadProjectInfo(Self, FXMLConfig, false);
+  end;
 end;
 
 procedure TProject.LoadFromSession;
@@ -3012,7 +2999,6 @@ end;
 function TProject.DoLoadSession(Filename: String): TModalResult;
 begin
   Result:=mrOK;
-  if FLoadParts then Exit;
   if FileExistsUTF8(Filename) then
   begin
     //DebugLn('TProject.ReadProject loading Session Filename=',Filename);
@@ -3055,7 +3041,8 @@ begin
 
     // load session file (if available)
     if (SessionStorage in pssHasSeparateSession)
-    and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0) then
+    and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0)
+    and not (prfLoadParts in ReadFlags) then
     begin
       Result:=DoLoadSession(ProjectSessionFile);
       if Result<>mrOK then Exit;
@@ -7214,7 +7201,7 @@ begin
     SessionMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SessionMatrixOptions/');
 
   Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
-  //debugln(['LoadBuildModes Cnt=',Cnt,' LoadData=',LoadData]);
+  //debugln(['TProjectBuildModes.LoadFromXMLConfig Cnt=',Cnt,' LoadData=',LoadData]);
   if Cnt>0 then
     LoadNewFormat(Path, Cnt, LoadData)
   else if LoadData then
