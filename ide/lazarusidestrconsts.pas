@@ -930,14 +930,13 @@ resourcestring
   lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti = 'Export file "%s" exists.'
     +'%sOpen file and replace only compiler options?'
     +'%s(Other settings will be kept.)';
-  lisIECOLoadOrSaveCompilerOptions = 'Load or Save Compiler Options';
+  lisIECOImportCompilerOptions = 'Import Compiler Options';
+  lisIECOExportCompilerOptions = 'Export Compiler Options';
   lisIECOErrorAccessingXml = 'Error accessing xml';
   lisIECOErrorLoadingXml = 'Error loading xml';
   lisIECOErrorLoadingXmlFile = 'Error loading xml file "%s":%s%s';
   lisIECOErrorAccessingXmlFile = 'Error accessing xml file "%s":%s%s';
   lisIECORecentFiles = 'Recent files';
-  lisIECOSaveToRecent = 'Save to recent';
-  lisIECOLoadRecent = 'Load recent';
   lisIECOSaveToFile = 'Save to file';
   lisIECOLoadFromFile = 'Load from file';
   lisLazarusFile = 'Lazarus file';
@@ -2132,7 +2131,6 @@ resourcestring
   dlgUnitOutp = 'Unit output directory (-FU):';
   dlgCOShowOptions = '&Show Options';
   lisCompTest = '&Test';
-  lisLoadSave = 'Load/Save';
   dlgCOLoadSave = 'Compiler options can be saved to an XML file.';
   dlgMainViewForms = 'View Project Forms';
   dlgMainViewUnits = 'View Project Units';

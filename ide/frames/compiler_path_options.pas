@@ -48,6 +48,7 @@ type
     btnShowOptions: TBitBtn;
     btnCheck: TBitBtn;
     btnLoadSave: TBitBtn;
+    btnExport: TBitBtn;
     chkUseAsDefault: TCheckBox;
     function CheckSearchPath(const Context, ExpandedPath: string;
       Level: TCheckCompileOptionsMsgLvl): boolean;
@@ -59,7 +60,8 @@ type
     procedure PathEditBtnExecuted(Sender: TObject);
     procedure DoShowOptions(Sender: TObject);
     procedure DoCheck(Sender: TObject);
-    procedure DoLoadSave(Sender: TObject);
+    procedure DoImport(Sender: TObject);
+    procedure DoExport(Sender: TObject);
   protected
     procedure DoSaveSettings(AOptions: TAbstractIDEOptions);
     procedure UpdateTargetFileLabel;
@@ -246,15 +248,20 @@ begin
   end;
 end;
 
-procedure TCompilerPathOptionsFrame.DoLoadSave(Sender: TObject);
-var
-  ImportExportResult: TImportExportOptionsResult;
+procedure TCompilerPathOptionsFrame.DoImport(Sender: TObject);
 begin
   DoSaveSettings(FCompilerOpts);
-  if (MainIDEInterface.DoImExportCompilerOptions(ImportExportResult) = mrOK)
-  and (ImportExportResult = ieorImport)
+  if (MainIDEInterface.ImportCompilerOptions = mrOK)
   and Assigned(OnLoadIDEOptions) then
     OnLoadIDEOptions(Self, FCompilerOpts);
+end;
+
+procedure TCompilerPathOptionsFrame.DoExport(Sender: TObject);
+begin
+  DoSaveSettings(FCompilerOpts);
+  if (MainIDEInterface.ExportCompilerOptions = mrOK)
+  and Assigned(OnSaveIDEOptions) then
+    OnSaveIDEOptions(Self, FCompilerOpts);
 end;
 
 procedure TCompilerPathOptionsFrame.DoSaveSettings(AOptions: TAbstractIDEOptions);
@@ -725,14 +732,22 @@ begin
   btnShowOptions := CreateButton(dlgCOShowOptions);
   btnShowOptions.LoadGlyphFromResourceName(HInstance, 'menu_compiler_options');
   btnShowOptions.OnClick  := @DoShowOptions;
+  // Check
   btnCheck := CreateButton(lisCompTest);
   btnCheck.ModalResult := mrNone;
   btnCheck.OnClick  := @DoCheck;
   btnCheck.LoadGlyphFromStock(idButtonYes);
-  btnLoadSave := CreateButton(lisLoadSave);
-  btnLoadSave.OnClick  := @DoLoadSave;
+  // Import
+  btnLoadSave := CreateButton(lisImport);
+  btnLoadSave.OnClick  := @DoImport;
   btnLoadSave.Hint := dlgCOLoadSave;
-  btnLoadSave.LoadGlyphFromStock(idButtonSave);
+  btnLoadSave.LoadGlyphFromStock(idButtonOpen);
+  // Export
+  btnExport := CreateButton(lisExport);
+  btnExport.OnClick  := @DoExport;
+  btnExport.Hint := dlgCOLoadSave;
+  btnExport.LoadGlyphFromStock(idButtonSave);
+
   if btnLoadSave.Glyph.Empty then
     btnLoadSave.LoadGlyphFromResourceName(HInstance, 'laz_save');
 

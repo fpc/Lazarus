@@ -32,46 +32,45 @@ unit ImExportCompilerOpts;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, IDEProcs, FileUtil, Laz2_XMLCfg, LazFileCache, LCLType, MainIntf,
-  LazarusIDEStrConsts, InputHistory, Project, CompilerOptions;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
+  IDEProcs, FileUtil, Laz2_XMLCfg, LazFileCache, LCLType, EditBtn, Menus,
+  ExtCtrls, ButtonPanel, MainIntf, LazarusIDEStrConsts, InputHistory, Project,
+  CompilerOptions;
 
 type
   { TImExportCompOptsDlg }
 
   TImExportCompOptsDlg = class(TForm)
-    CancelButton: TBitBtn;
-    OpenButton: TBitBtn;
-    SaveButton: TBitBtn;
-    SaveToRecentButton: TBUTTON;
-    OpenRecentButton: TBUTTON;
-    RecentListbox: TLISTBOX;
-    OpenRecentGroupbox: TGROUPBOX;
+    ButtonPanel1: TButtonPanel;
+    ExportRadioGroup: TRadioGroup;
+    FileLabel: TLabel;
+    FileNameEdit: TFileNameEdit;
+    HistoryLabel: TLabel;
+    MenuItem1: TMenuItem;
+    HistoryButton: TButton;
+    RecentPopupMenu: TPopupMenu;
     procedure ImExportCompOptsDlgCLOSE(Sender: TObject; var CloseAction: TCloseAction);
     procedure ImExportCompOptsDlgCREATE(Sender: TObject);
     procedure OpenButtonCLICK(Sender: TObject);
-    procedure OpenRecentButtonCLICK(Sender: TObject);
-    procedure RecentListboxCLICK(Sender: TObject);
-    procedure RecentListboxDBLCLICK(Sender: TObject);
+    procedure PopupClick(Sender: TObject);
+    procedure HistoryButtonClick(Sender: TObject);
+    procedure RecentSaveButton1Click(Sender: TObject);
     procedure SaveButtonCLICK(Sender: TObject);
-    procedure SaveToRecentButtonCLICK(Sender: TObject);
   private
     FFilename: string;
-    FImExportResult: TImportExportOptionsResult;
+    procedure InitExport;
+    procedure InitImport;
     procedure LoadRecentList;
-    procedure SaveRecentList;
-    procedure UpdateRecentButtons;
+    //procedure SaveRecentList;
     procedure SetFilename(const AValue: string);
-    procedure SetImExportResult(const AValue: TImportExportOptionsResult);
     procedure DoOpenFile(const AFilename: string);
     procedure DoSaveFile(const AFilename: string);
   public
-    property ImExportResult: TImportExportOptionsResult read FImExportResult
-                                                        write SetImExportResult;
     property Filename: string read FFilename write SetFilename;
   end;
 
-function ShowImExportCompilerOptionsDialog(var Filename: string): TImportExportOptionsResult;
+function ShowImportCompilerOptionsDialog(var Filename: string): TModalResult;
+function ShowExportCompilerOptionsDialog(var Filename: string): TModalResult;
 
 function DoImportCompilerOptions(const Filename: string): TModalResult;
 function DoExportCompilerOptions(const Filename: string): TModalResult;
@@ -82,6 +81,36 @@ implementation
 
 const
   DefaultCompilerOptPath = 'CompilerOptions/';
+
+function ShowImportCompilerOptionsDialog(var Filename: string): TModalResult;
+var
+  ImExportCompOptsDlg: TImExportCompOptsDlg;
+begin
+  ImExportCompOptsDlg := TImExportCompOptsDlg.Create(nil);
+  try
+    ImExportCompOptsDlg.InitImport;
+    Result := ImExportCompOptsDlg.ShowModal;
+    if Result = mrOk then
+      Filename := ImExportCompOptsDlg.Filename;
+  finally
+    ImExportCompOptsDlg.Free;
+  end;
+end;
+
+function ShowExportCompilerOptionsDialog(var Filename: string): TModalResult;
+var
+  ImExportCompOptsDlg: TImExportCompOptsDlg;
+begin
+  ImExportCompOptsDlg := TImExportCompOptsDlg.Create(nil);
+  try
+    ImExportCompOptsDlg.InitExport;
+    Result := ImExportCompOptsDlg.ShowModal;
+    if Result = mrOk then
+      Filename := ImExportCompOptsDlg.Filename;
+  finally
+    ImExportCompOptsDlg.Free;
+  end;
+end;
 
 function ReadIntFromXMLConfig(const Filename, Path: string;
   DefaultValue, ValueForReadError: integer): integer;
@@ -124,20 +153,6 @@ begin
         Result:=PkgCompilerOptPath;   // current lpk file
     end;
   end;
-end;
-
-function ShowImExportCompilerOptionsDialog(var Filename: string): TImportExportOptionsResult;
-var
-  ImExportCompOptsDlg: TImExportCompOptsDlg;
-begin
-  Result := ieorCancel;
-  ImExportCompOptsDlg := TImExportCompOptsDlg.Create(nil);
-  if ImExportCompOptsDlg.ShowModal = mrOk then
-  begin
-    Result := ImExportCompOptsDlg.ImExportResult;
-    Filename := ImExportCompOptsDlg.Filename;
-  end;
-  ImExportCompOptsDlg.Free;
 end;
 
 function DoImportCompilerOptions(const Filename: string): TModalResult;
@@ -192,126 +207,105 @@ end;
 
 { TImExportCompOptsDlg }
 
+procedure TImExportCompOptsDlg.InitImport;
+begin
+  Caption:=lisIECOImportCompilerOptions;
+  FileNameEdit.Filter:='XML file (*.xml)|*.xml|'
+                      +'Project file (*.lpi)|*.lpi|'
+                      +'Package file (*.lpk)|*.lpk|'
+                      //+'Session file (*.lps)|*.lps|'
+                      +'All files (*)|*';
+  FileNameEdit.DialogOptions:=FileNameEdit.DialogOptions+[ofFileMustExist];
+  ExportRadioGroup.Visible:=False;
+  with ButtonPanel1 do begin
+    OKButton.Caption:=lisIECOLoadFromFile;
+    OKButton.LoadGlyphFromStock(idButtonOpen);
+    if OKButton.Glyph.Empty then
+      OKButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
+    OKButton.OnClick:=@OpenButtonCLICK;
+  end;
+end;
+
+procedure TImExportCompOptsDlg.InitExport;
+begin
+  Caption:=lisIECOExportCompilerOptions;
+  FileNameEdit.Filter:='XML file (*.xml)|*.xml|All files (*)|*';
+  FileNameEdit.DialogKind:=dkSave;
+  with ButtonPanel1 do begin
+    OKButton.Caption:=lisIECOSaveToFile;
+    OKButton.LoadGlyphFromStock(idButtonSave);
+    if OKButton.Glyph.Empty then
+      OKButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
+    OKButton.OnClick:=@SaveButtonCLICK;
+  end;
+end;
+
 procedure TImExportCompOptsDlg.ImExportCompOptsDlgCREATE(Sender: TObject);
 begin
-  ImExportResult:=ieorCancel;
-  
-  Caption:=lisIECOLoadOrSaveCompilerOptions;
-  OpenRecentGroupbox.Caption:=lisIECORecentFiles;
-  SaveToRecentButton.Caption:=lisIECOSaveToRecent;
-  OpenRecentButton.Caption:=lisIECOLoadRecent;
-  SaveButton.Caption:=lisIECOSaveToFile;
-  OpenButton.Caption:=lisIECOLoadFromFile;
-  CancelButton.Caption:=lisCancel;
-  OpenButton.LoadGlyphFromStock(idButtonOpen);
-  if OpenButton.Glyph.Empty then
-    OpenButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
-  SaveButton.LoadGlyphFromStock(idButtonSave);
-  if SaveButton.Glyph.Empty then
-    SaveButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
+  HistoryLabel.Caption:=lisIECORecentFiles;
+  HistoryLabel.Hint:=lisIECORecentFiles;
+  FileLabel.Caption:=lisFile;
   LoadRecentList;
 end;
 
 procedure TImExportCompOptsDlg.OpenButtonCLICK(Sender: TObject);
-var
-  AFilename: String;
-  OpenDialog: TOpenDialog;
 begin
-  AFilename:='';
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Title:=lisOpenFile;
-    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-      DoOpenFile(AFilename);
-    end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
-  finally
-    OpenDialog.Free;
-  end;
+  DoOpenFile(CleanAndExpandFilename(FileNameEdit.FileName));
 end;
 
-procedure TImExportCompOptsDlg.OpenRecentButtonCLICK(Sender: TObject);
-var
-  i: Integer;
+procedure TImExportCompOptsDlg.PopupClick(Sender: TObject);
 begin
-  i:=RecentListbox.ItemIndex;
-  if i<0 then exit;
-  DoOpenFile(RecentListbox.Items[i]);
+  FileNameEdit.Text := (Sender as TMenuItem).Caption;
 end;
 
-procedure TImExportCompOptsDlg.RecentListboxCLICK(Sender: TObject);
+procedure TImExportCompOptsDlg.HistoryButtonClick(Sender: TObject);
 begin
-  UpdateRecentButtons;
+  RecentPopupMenu.PopUp;
 end;
 
-procedure TImExportCompOptsDlg.RecentListboxDBLCLICK(Sender: TObject);
+procedure TImExportCompOptsDlg.RecentSaveButton1Click(Sender: TObject);
 begin
-  OpenRecentButtonCLICK(Sender);
+  RecentPopupMenu.PopUp;
 end;
 
 procedure TImExportCompOptsDlg.SaveButtonCLICK(Sender: TObject);
-var
-  AFilename: String;
-  SaveDialog: TSaveDialog;
 begin
-  AFilename:='';
-  SaveDialog:=TSaveDialog.Create(nil);
-  try
-    InputHistories.ApplyFileDialogSettings(SaveDialog);
-    SaveDialog.Title:=lisOpenFile;
-    if SaveDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(SaveDialog.Filename);
-      DoSaveFile(AFilename);
-    end;
-    InputHistories.StoreFileDialogSettings(SaveDialog);
-  finally
-    SaveDialog.Free;
-  end;
+  DoSaveFile(CleanAndExpandFilename(FileNameEdit.FileName));
 end;
 
-procedure TImExportCompOptsDlg.SaveToRecentButtonCLICK(Sender: TObject);
-var
-  i: Integer;
+procedure TImExportCompOptsDlg.ImExportCompOptsDlgCLOSE(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  i:=RecentListbox.ItemIndex;
-  if i<0 then exit;
-  DoSaveFile(RecentListbox.Items[i]);
-end;
-
-procedure TImExportCompOptsDlg.ImExportCompOptsDlgCLOSE(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  SaveRecentList;
+  //SaveRecentList;
 end;
 
 procedure TImExportCompOptsDlg.LoadRecentList;
+var
+  sl: TStringList;
+  mi: TMenuItem;
+  i: Integer;
 begin
-  RecentListbox.Items.Assign(
-    InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true,rltFile));
-  if RecentListbox.Items.Count>0 then
-    RecentListbox.ItemIndex:=0;
-  UpdateRecentButtons;
+  sl := TStringList.Create;
+  try
+    RecentPopupMenu.Items.Clear;
+    sl.Assign(InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true,rltFile));
+    for i := 0 to sl.Count-1 do begin
+      mi := TMenuItem.Create(RecentPopupMenu);
+      mi.Caption:=sl[i];
+      mi.OnClick:=@PopupClick;
+      RecentPopupMenu.Items.Add(mi);
+    end;
+  finally
+    sl.Free;
+  end;
 end;
-
+{
 procedure TImExportCompOptsDlg.SaveRecentList;
 begin
   InputHistories.HistoryLists.GetList(hlCompilerOptsImExport,true,rltFile).Assign(
     RecentListbox.Items);
   InputHistories.Save;
 end;
-
-procedure TImExportCompOptsDlg.UpdateRecentButtons;
-var
-  RecentSelected: boolean;
-begin
-  RecentSelected:=RecentListbox.ItemIndex>=0;
-  OpenRecentButton.Enabled:=RecentSelected;
-  SaveToRecentButton.Enabled:=RecentSelected;
-end;
-
+}
 procedure TImExportCompOptsDlg.SetFilename(const AValue: string);
 begin
   if FFilename=AValue then exit;
@@ -320,18 +314,10 @@ begin
   LoadRecentList;
 end;
 
-procedure TImExportCompOptsDlg.SetImExportResult(
-  const AValue: TImportExportOptionsResult);
-begin
-  if FImExportResult=AValue then exit;
-  FImExportResult:=AValue;
-end;
-
 procedure TImExportCompOptsDlg.DoOpenFile(const AFilename: string);
 begin
   if DirPathExists(AFilename) then exit;
   Filename := AFilename;
-  ImExportResult := ieorImport;
   ModalResult := mrOk;
 end;
 
@@ -340,15 +326,17 @@ var
   MsgResult: TModalResult;
 begin
   if DirPathExists(AFilename) then exit;
-  Filename:=AFilename;
-  if FileExistsUTF8(AFilename) then begin
+  if ExtractFileExt(AFilename) = '' then
+    Filename:=AFilename + '.xml'
+  else
+    Filename:=AFilename;
+  if FileExistsUTF8(Filename) then begin
     MsgResult:=MessageDlg(lisIECOExportFileExists,
       Format(lisIECOExportFileExistsOpenFileAndReplaceOnlyCompilerOpti,
-             [AFilename, LineEnding, LineEnding]),
+             [Filename, LineEnding, LineEnding]),
       mtConfirmation,[mbYes,mbCancel],0);
     if MsgResult<>mrYes then exit;
   end;
-  ImExportResult := ieorExport;
   ModalResult := mrOk;
 end;
 
