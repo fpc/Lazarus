@@ -1905,8 +1905,7 @@ begin
         then begin
           // ppu file of an used package is missing
           if (PkgFile<>nil) and (not PkgFile.InUses) then
-            s+=Format(lisFlagUseUnitInPackageOfUnitIsDisabled, [PkgName,
-              MissingUnitName])
+            s+=Format(lisEnableFlagUseUnitOfUnitInPackage, [MissingUnitName, PkgName])
           else
             s+=Format(lisCheckIfPackageCreatesPpuCheckNothingDeletesThisFil, [
               PkgName, MissingUnitName]);
