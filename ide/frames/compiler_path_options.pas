@@ -738,6 +738,7 @@ begin
   btnCheck.OnClick  := @DoCheck;
   btnCheck.LoadGlyphFromStock(idButtonYes);
   // Import
+  ADialog.AddButtonSeparator;
   btnLoadSave := CreateButton(lisImport);
   btnLoadSave.OnClick  := @DoImport;
   btnLoadSave.Hint := dlgCOLoadSave;
@@ -747,6 +748,7 @@ begin
   btnExport.OnClick  := @DoExport;
   btnExport.Hint := dlgCOLoadSave;
   btnExport.LoadGlyphFromStock(idButtonSave);
+  ADialog.AddButtonSeparator;
 
   if btnLoadSave.Glyph.Empty then
     btnLoadSave.LoadGlyphFromResourceName(HInstance, 'laz_save');

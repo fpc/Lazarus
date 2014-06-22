@@ -181,9 +181,9 @@ object IDEOptionsDialog: TIDEOptionsDialog
     Height = 317
     Top = 40
     Width = 424
-    HorzScrollBar.Page = 424
+    HorzScrollBar.Page = 1
     HorzScrollBar.Tracking = True
-    VertScrollBar.Page = 317
+    VertScrollBar.Page = 1
     VertScrollBar.Tracking = True
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Right = 6

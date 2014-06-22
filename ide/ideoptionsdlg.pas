@@ -101,6 +101,7 @@ type
     constructor Create(AOwner: TComponent); override;
     function ShowModal: Integer; override;
     function AddButton: TBitBtn; override;
+    procedure AddButtonSeparator; override;
     function AddControl(AControlClass: TControlClass): TControl; override;
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); override;
     procedure OpenEditor(GroupIndex, AIndex: integer); override;
@@ -663,9 +664,20 @@ begin
   Result := TBitBtn.Create(Self);
   Result.Align := alCustom;
   Result.Default := false;
-  Result.Constraints.MinWidth:=25;
+  Result.Constraints.MinWidth := 25;
   Result.AutoSize := true;
   Result.Parent := ButtonPanel;
+end;
+
+procedure TIDEOptionsDialog.AddButtonSeparator;
+var
+  pnl: TPanel;
+begin
+  pnl := TPanel.Create(Self);
+  pnl.Align := alCustom;
+  pnl.BevelOuter := bvNone;
+  pnl.Width := 6;
+  pnl.Parent := ButtonPanel;
 end;
 
 function TIDEOptionsDialog.AddControl(AControlClass: TControlClass): TControl;
