@@ -39,7 +39,7 @@ interface
 
 {$I ide.inc}
 
-{$DEFINE VerbosePkgEditDrag}
+{off $DEFINE VerbosePkgEditDrag}
 
 uses
   {$IFDEF IDE_MEM_CHECK}
@@ -200,6 +200,7 @@ type
       out aFileCount, aDependencyCount, aDirectoryCount: integer;
       out TargetTVNode: TTreeNode; out TargetTVType: TTreeViewInsertMarkType
       ): boolean;
+    procedure FilesEditDragDrop(Sender, Source: TObject; X, Y: Integer);
     function MoveFiles(TargetFilesEdit, SrcFilesEdit: IFilesEditorInterface;
       TargetDirectory: string): boolean;
     function MoveFiles(TargetFilesEdit, SrcFilesEdit: IFilesEditorInterface;
@@ -853,84 +854,8 @@ end;
 
 procedure TPkgManager.OnPackageEditorDragDropTreeView(Sender, Source: TObject;
   X, Y: Integer);
-var
-  aFileCount: integer;
-  aDependencyCount: integer;
-  aDirectoryCount: integer;
-  TargetTVNode: TTreeNode;
-  TargetTVType: TTreeViewInsertMarkType;
-  NodeData: TPENodeData;
-  Item: TObject;
-  PkgFile: TPkgFile;
-  Directory: String;
-  SrcFilesEdit: IFilesEditorInterface;
-  TargetFilesEdit: IFilesEditorInterface;
 begin
-  if not CheckDrag(Sender, Source, X, Y, SrcFilesEdit, TargetFilesEdit,
-   aFileCount, aDependencyCount, aDirectoryCount, TargetTVNode, TargetTVType)
-  then begin
-    ShowMessage('drop failed, dragover was wrong');
-    exit;
-  end;
-
-  {$IFDEF VerbosePkgEditDrag}
-  debugln(['TPkgManager.OnPackageEditorDragDropTreeView START Src=',SrcFilesEdit.FilesOwnerName,' Target=',TargetFilesEdit.FilesOwnerName,' FileCount=',aFileCount,' DepCount=',aDependencyCount,' DirCount=',aDirectoryCount]);
-  {$ENDIF}
-  if TargetFilesEdit.GetNodeDataItem(TargetTVNode,NodeData,Item) then begin
-    if Item is TPkgFile then begin
-      PkgFile:=TPkgFile(Item);
-      if aFileCount=0 then exit;
-      // drag files
-      Directory:=ExtractFilePath(PkgFile.GetFullFilename);
-      {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPkgManager.OnPackageEditorDragDropTreeView drag files to directory of ',PkgFile.Filename]);
-      {$ENDIF}
-      MoveFiles(TargetFilesEdit,SrcFilesEdit,Directory);
-    end else if Item is TPkgDependency then begin
-      if aDependencyCount=0 then exit;
-      // ToDo: drag dependencies
-      {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPkgManager.OnPackageEditorDragDropTreeView: drag dependencies']);
-      {$ENDIF}
-      ShowMessage('Not implemented yet: drag dependencies');
-    end;
-  end else if TargetFilesEdit.IsDirectoryNode(TargetTVNode)
-  or (TargetTVNode=TargetFilesEdit.TVNodeFiles)
-  then begin
-    Directory:=TargetFilesEdit.GetNodeFilename(TargetTVNode);
-    if aFileCount>0 then begin
-      // drag files
-      {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPkgManager.OnPackageEditorDragDropTreeView drag files to ',TargetFilesEdit.FilesBaseDirectory]);
-      {$ENDIF}
-      MoveFiles(TargetFilesEdit,SrcFilesEdit,Directory);
-    end else if aDirectoryCount>0 then begin
-      // drag directory
-      {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPkgManager.OnPackageEditorDragDropTreeView: drag directory']);
-      {$ENDIF}
-      ShowMessage('Not implemented yet: drag directory');
-    end else begin
-      ShowMessage('I cannot drag that to a directory');
-    end;
-  end else if TargetTVNode=TargetFilesEdit.TVNodeRequiredPackages then begin
-    if aDependencyCount=0 then exit;
-    // ToDo: drag dependencies
-    {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPkgManager.OnPackageEditorDragDropTreeView: drag dependencies']);
-    {$ENDIF}
-    ShowMessage('Not implemented yet: drag dependencies');
-  end else begin
-    {$IFDEF VerbosePkgEditDrag}
-    if TargetTVNode=nil then
-      debugln(['TPkgManager.OnPackageEditorDragDropTreeView TargetTVNode=nil'])
-    else
-      debugln(['TPkgManager.OnPackageEditorDragDropTreeView TargetTVNode="',TargetTVNode.Text,'"']);
-    {$ENDIF}
-  end;
-  {$IFDEF VerbosePkgEditDrag}
-  debugln(['TPkgManager.OnPackageEditorDragDropTreeView END']);
-  {$ENDIF}
+  FilesEditDragDrop(Sender, Source, X, Y);
 end;
 
 function TPkgManager.OnPackageEditorDragOverTreeView(Sender, Source: TObject;
@@ -1817,7 +1742,6 @@ begin
 
   TV:=TargetFilesEdit.FilesEditTreeView;
   TargetTVNode:=TV.GetNodeAt(X,Y);
-  debugln(['TPkgManager.CheckDrag AAA1 TargetTVNode=',TargetTVNode<>nil,' Y=',Y]);
   if TargetTVNode=nil then begin
     if aDependencyCount>0 then begin
       TargetTVNode:=TargetFilesEdit.TVNodeRequiredPackages;
@@ -1826,7 +1750,6 @@ begin
     end;
     TargetTVType:=tvimAsFirstChild;
   end;
-  debugln(['TPkgManager.CheckDrag AAA2 TargetTVNode=',TargetTVNode.Text]);
   if TargetFilesEdit.GetNodeDataItem(TargetTVNode,NodeData,Item) then begin
     // move to specific position is not yet supported
     // => redirect to parent nodes
@@ -1839,7 +1762,6 @@ begin
       or TargetFilesEdit.IsDirectoryNode(TargetTVNode);
     TargetTVType:=tvimAsFirstChild;
   end;
-  debugln(['TPkgManager.CheckDrag AAA3 TargetTVNode=',TargetTVNode.Text]);
   if TargetFilesEdit.IsDirectoryNode(TargetTVNode)
   or (TargetTVNode=TargetFilesEdit.TVNodeFiles)
   then begin
@@ -1890,6 +1812,87 @@ begin
   end;
 
   Result:=true;
+end;
+
+procedure TPkgManager.FilesEditDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+  aFileCount: integer;
+  aDependencyCount: integer;
+  aDirectoryCount: integer;
+  TargetTVNode: TTreeNode;
+  TargetTVType: TTreeViewInsertMarkType;
+  NodeData: TPENodeData;
+  Item: TObject;
+  aFile: TIDEOwnedFile;
+  Directory: String;
+  SrcFilesEdit: IFilesEditorInterface;
+  TargetFilesEdit: IFilesEditorInterface;
+begin
+  if not CheckDrag(Sender, Source, X, Y, SrcFilesEdit, TargetFilesEdit,
+   aFileCount, aDependencyCount, aDirectoryCount, TargetTVNode, TargetTVType)
+  then begin
+    ShowMessage('drop failed, dragover was wrong');
+    exit;
+  end;
+
+  {$IFDEF VerbosePkgEditDrag}
+  debugln(['TPkgManager.FilesEditDragDrop START Src=',SrcFilesEdit.FilesOwnerName,' Target=',TargetFilesEdit.FilesOwnerName,' FileCount=',aFileCount,' DepCount=',aDependencyCount,' DirCount=',aDirectoryCount]);
+  {$ENDIF}
+  if TargetFilesEdit.GetNodeDataItem(TargetTVNode,NodeData,Item) then begin
+    if Item is TIDEOwnedFile then begin
+      aFile:=TIDEOwnedFile(Item);
+      if aFileCount=0 then exit;
+      // drag files
+      Directory:=ExtractFilePath(aFile.GetFullFilename);
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPkgManager.FilesEditDragDrop drag files to directory of ',aFile.Filename]);
+      {$ENDIF}
+      MoveFiles(TargetFilesEdit,SrcFilesEdit,Directory);
+    end else if Item is TPkgDependency then begin
+      if aDependencyCount=0 then exit;
+      // ToDo: drag dependencies
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPkgManager.FilesEditDragDrop: drag dependencies']);
+      {$ENDIF}
+      ShowMessage('Not implemented yet: drag dependencies');
+    end;
+  end else if TargetFilesEdit.IsDirectoryNode(TargetTVNode)
+  or (TargetTVNode=TargetFilesEdit.TVNodeFiles)
+  then begin
+    Directory:=TargetFilesEdit.GetNodeFilename(TargetTVNode);
+    if aFileCount>0 then begin
+      // drag files
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPkgManager.FilesEditDragDrop drag files to ',TargetFilesEdit.FilesBaseDirectory]);
+      {$ENDIF}
+      MoveFiles(TargetFilesEdit,SrcFilesEdit,Directory);
+    end else if aDirectoryCount>0 then begin
+      // drag directory
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPkgManager.FilesEditDragDrop: drag directory']);
+      {$ENDIF}
+      ShowMessage('Not implemented yet: drag directory');
+    end else begin
+      ShowMessage('I cannot drag that to a directory');
+    end;
+  end else if TargetTVNode=TargetFilesEdit.TVNodeRequiredPackages then begin
+    if aDependencyCount=0 then exit;
+    // ToDo: drag dependencies
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPkgManager.FilesEditDragDrop: drag dependencies']);
+    {$ENDIF}
+    ShowMessage('Not implemented yet: drag dependencies');
+  end else begin
+    {$IFDEF VerbosePkgEditDrag}
+    if TargetTVNode=nil then
+      debugln(['TPkgManager.FilesEditDragDrop TargetTVNode=nil'])
+    else
+      debugln(['TPkgManager.FilesEditDragDrop TargetTVNode="',TargetTVNode.Text,'"']);
+    {$ENDIF}
+  end;
+  {$IFDEF VerbosePkgEditDrag}
+  debugln(['TPkgManager.FilesEditDragDrop END']);
+  {$ENDIF}
 end;
 
 function TPkgManager.MoveFiles(TargetFilesEdit, SrcFilesEdit: IFilesEditorInterface;
@@ -2643,9 +2646,9 @@ var
         and (pfMainUnitHasUsesSectionForAllUnits in SrcProject.Flags) then
         begin
           CodeToolBoss.RemoveUnitFromAllUsesSections(
-                         TargetProject.MainUnitInfo.Source,NewUnitName);
+                         SrcProject.MainUnitInfo.Source,NewUnitName);
           CodeToolBoss.SourceChangeCache.Apply;
-          TargetProject.MainUnitInfo.Modified:=true;
+          SrcProject.MainUnitInfo.Modified:=true;
         end;
       end else begin
         raise Exception.Create('implement me');
@@ -6220,6 +6223,10 @@ procedure TPkgManager.OnProjectInspectorDragDropTreeView(Sender,
 begin
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPkgManager.OnProjectInspectorDragDropTreeView START']);
+  {$ENDIF}
+  FilesEditDragDrop(Sender, Source, X, Y);
+  {$IFDEF VerbosePkgEditDrag}
+  debugln(['TPkgManager.OnProjectInspectorDragDropTreeView END']);
   {$ENDIF}
 end;
 

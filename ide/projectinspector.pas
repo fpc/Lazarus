@@ -31,7 +31,6 @@
     TProjectInspectorForm is the form of the project inspector.
 
   ToDo:
-    - dnd move
     - project groups:
       - activate
    popup menu:

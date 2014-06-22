@@ -27,7 +27,7 @@ unit PackageEditor;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerbosePkgEditDrag}
+{off $DEFINE VerbosePkgEditDrag}
 
 interface
 
