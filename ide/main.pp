@@ -818,8 +818,6 @@ type
                                Flags: TOpenFlags): TModalResult; override;
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; override;
-    function ImportCompilerOptions: TModalResult; override;
-    function ExportCompilerOptions: TModalResult; override;
     procedure DoShowProjectInspector(Show: boolean); override;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
@@ -6401,24 +6399,6 @@ begin
   //debugln('TMainIDE.DoPublishProject B');
   Result:=SourceFileMgr.PublishModule(Project1.PublishOptions,
     Project1.ProjectDirectory, MainBuildBoss.GetProjectPublishDir);
-end;
-
-function TMainIDE.ImportCompilerOptions: TModalResult;
-var
-  Filename: string;
-begin
-  Result := ShowImportCompilerOptionsDialog(Filename);
-  if Result = mrOK then
-    Result := DoImportCompilerOptions(Filename);
-end;
-
-function TMainIDE.ExportCompilerOptions: TModalResult;
-var
-  Filename: string;
-begin
-  Result := ShowExportCompilerOptionsDialog(Filename);
-  if Result = mrOK then
-    Result := DoExportCompilerOptions(Filename);
 end;
 
 procedure TMainIDE.DoShowProjectInspector(Show: boolean);

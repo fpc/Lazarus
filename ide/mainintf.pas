@@ -159,9 +159,6 @@ type
         const AFilename: string): TModalResult; virtual; abstract;
 
     procedure DoShowProjectInspector(Show: boolean); virtual; abstract;
-    function ImportCompilerOptions: TModalResult; virtual; abstract;
-    function ExportCompilerOptions: TModalResult; virtual; abstract;
-
     function PrepareForCompile: TModalResult; virtual; abstract; // stop things that interfere with compilation, like debugging
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoExampleManager: TModalResult; virtual; abstract;

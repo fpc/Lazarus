@@ -69,8 +69,8 @@ type
     property Filename: string read FFilename write SetFilename;
   end;
 
-function ShowImportCompilerOptionsDialog(var Filename: string): TModalResult;
-function ShowExportCompilerOptionsDialog(var Filename: string): TModalResult;
+function ShowImportCompilerOptionsDialog: TModalResult;
+function ShowExportCompilerOptionsDialog: TModalResult;
 
 function DoImportCompilerOptions(const Filename: string): TModalResult;
 function DoExportCompilerOptions(const Filename: string): TModalResult;
@@ -82,7 +82,7 @@ implementation
 const
   DefaultCompilerOptPath = 'CompilerOptions/';
 
-function ShowImportCompilerOptionsDialog(var Filename: string): TModalResult;
+function ShowImportCompilerOptionsDialog: TModalResult;
 var
   ImExportCompOptsDlg: TImExportCompOptsDlg;
 begin
@@ -91,13 +91,13 @@ begin
     ImExportCompOptsDlg.InitImport;
     Result := ImExportCompOptsDlg.ShowModal;
     if Result = mrOk then
-      Filename := ImExportCompOptsDlg.Filename;
+      Result := DoImportCompilerOptions(ImExportCompOptsDlg.Filename);
   finally
     ImExportCompOptsDlg.Free;
   end;
 end;
 
-function ShowExportCompilerOptionsDialog(var Filename: string): TModalResult;
+function ShowExportCompilerOptionsDialog: TModalResult;
 var
   ImExportCompOptsDlg: TImExportCompOptsDlg;
 begin
@@ -106,7 +106,7 @@ begin
     ImExportCompOptsDlg.InitExport;
     Result := ImExportCompOptsDlg.ShowModal;
     if Result = mrOk then
-      Filename := ImExportCompOptsDlg.Filename;
+      Result := DoExportCompilerOptions(ImExportCompOptsDlg.Filename);
   finally
     ImExportCompOptsDlg.Free;
   end;

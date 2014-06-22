@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, LCLProc, FileUtil, LazFileCache, Controls, Dialogs,
   Graphics, Buttons, StdCtrls, LCLType, IDEOptionsIntf, MacroIntf, IDEDialogs,
   CompOptsIntf, Project, CompilerOptions, LazarusIDEStrConsts, PathEditorDlg,
-  IDEProcs, CheckCompilerOpts, ShowCompilerOpts, MainIntf, PackageDefs;
+  IDEProcs, CheckCompilerOpts, ShowCompilerOpts, PackageDefs, ImExportCompilerOpts;
 
 type
 
@@ -251,7 +251,7 @@ end;
 procedure TCompilerPathOptionsFrame.DoImport(Sender: TObject);
 begin
   DoSaveSettings(FCompilerOpts);
-  if (MainIDEInterface.ImportCompilerOptions = mrOK)
+  if (ShowImportCompilerOptionsDialog = mrOK)
   and Assigned(OnLoadIDEOptions) then
     OnLoadIDEOptions(Self, FCompilerOpts);
 end;
@@ -259,7 +259,7 @@ end;
 procedure TCompilerPathOptionsFrame.DoExport(Sender: TObject);
 begin
   DoSaveSettings(FCompilerOpts);
-  if (MainIDEInterface.ExportCompilerOptions = mrOK)
+  if (ShowExportCompilerOptionsDialog = mrOK)
   and Assigned(OnSaveIDEOptions) then
     OnSaveIDEOptions(Self, FCompilerOpts);
 end;
