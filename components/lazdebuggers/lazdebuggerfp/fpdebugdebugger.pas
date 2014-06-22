@@ -1177,6 +1177,11 @@ begin
         result := FFpDebugThread.StartSuccesfull;
         if not result then
           begin
+          // TDebuggerIntf.SetFileName has set the state to dsStop, to make sure
+          // that dcRun could be requested. Reset the filename so that the state
+          // is set to dsIdle again and is set to dsStop on the next try
+          // to run.
+          FileName := '';
           FreeDebugThread;
           Exit;
           end;
