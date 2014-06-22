@@ -679,7 +679,8 @@ type
     procedure AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string; InSession: boolean);
     procedure LoadSessionEnabledNonSessionMatrixOptions(const Path: string);
     procedure LoadOldMacroValues(const Path: string; CurMode: TProjectBuildMode);
-    procedure LoadNewFormat(const Path: string; Cnt: Integer; LoadData: boolean);
+    procedure LoadNewCompilerOpts(const Path: string; Cnt: Integer; LoadData: boolean);
+    procedure LoadNewMacroValues(const Path: string; Cnt: Integer);
     procedure LoadOldFormat(const Path: string);
     // Used by SaveToXMLConfig
     procedure SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
@@ -3036,6 +3037,8 @@ begin
     BuildModes.FGlobalMatrixOptions := GlobalMatrixOptions;
     FReadFlags := ReadFlags;
     FLoadParts := prfLoadParts in ReadFlags;
+
+    // load project lpi file
     Result:=DoLoadLPI(NewProjectInfoFile);
     if Result<>mrOK then Exit;
 
@@ -7123,40 +7126,48 @@ begin
   end;
 end;
 
-procedure TProjectBuildModes.LoadNewFormat(const Path: string; Cnt: Integer; LoadData: boolean);
+procedure TProjectBuildModes.LoadNewCompilerOpts(const Path: string; Cnt: Integer; LoadData: boolean);
 var
   i: Integer;
-  Ident, SubPath, CompOptsPath, MacroValsPath: String;
+  Ident, SubPath, CompOptsPath: String;
   CurMode: TProjectBuildMode;
 begin
-  for i:=1 to Cnt do begin
-    SubPath:=Path+'BuildModes/Item'+IntToStr(i)+'/';
+  // This is the default mode and it is stored at the old XML path.
+  // Testing 'Default' XML attribute is not needed because the first mode is always Default.
+  CompOptsPath:='CompilerOptions/';
+  Ident:=FXMLConfig.GetValue(Path+'Item1/Name','');
+  if LoadData then begin
+    CurMode:=Items[0];      // Load to the default mode (it already exists)
+    CurMode.Identifier:=Ident;
+  end
+  else
+    CurMode:=Add(Ident);    // Add a new mode for session.
+  CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig,CompOptsPath);
+
+  // Iterate rest of the modes.
+  for i:=2 to Cnt do
+  begin
+    SubPath:=Path+'Item'+IntToStr(i)+'/';
     Ident:=FXMLConfig.GetValue(SubPath+'Name','');
-    if LoadData and (i=1) then begin
-      // load the default mode (it already exists)
-      CurMode:=Items[0];
-      CurMode.Identifier:=Ident;
-    end else
-      // add another mode
-      CurMode:=Add(Ident);
-
-    if LoadData and (i=1) and FXMLConfig.GetValue(SubPath+'Default',false) then
-    begin
-      // this is the default mode and it is stored at the old xml path
-      CompOptsPath:='CompilerOptions/';
-      // due to an old bug, the XML path can be 'CompilerOptions/' or ''
-      if (LazProject.FFileVersion<3)
-      and (FXMLConfig.GetValue('SearchPaths/CompilerPath/Value','')<>'') then
-        CompOptsPath:='';
-      MacroValsPath:=Path+'MacroValues/';
-    end else begin
-      CompOptsPath:=SubPath+'CompilerOptions/';
-      MacroValsPath:=SubPath+'MacroValues/';
-    end;
-
+    // add another mode
+    CurMode:=Add(Ident);
     CurMode.InSession:=not LoadData;
-    LoadOldMacroValues(MacroValsPath,CurMode);
-    CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig,CompOptsPath);
+    CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig, SubPath+'CompilerOptions/');
+  end;
+end;
+
+procedure TProjectBuildModes.LoadNewMacroValues(const Path: string; Cnt: Integer);
+var
+  i: Integer;
+  SubPath: String;
+begin
+  // First default mode.
+  LoadOldMacroValues(Path+'MacroValues/', Items[0]);
+  // Iterate rest of the modes.
+  for i:=2 to Cnt do
+  begin
+    SubPath:=Path+'BuildModes/Item'+IntToStr(i)+'/';
+    LoadOldMacroValues(SubPath+'MacroValues/', Items[i-1]);
   end;
 end;
 
@@ -7202,8 +7213,10 @@ begin
 
   Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
   //debugln(['TProjectBuildModes.LoadFromXMLConfig Cnt=',Cnt,' LoadData=',LoadData]);
-  if Cnt>0 then
-    LoadNewFormat(Path, Cnt, LoadData)
+  if Cnt>0 then begin
+    LoadNewCompilerOpts(Path+'BuildModes/', Cnt, LoadData);
+    LoadNewMacroValues(Path+'MacroValues/', Cnt);
+  end
   else if LoadData then
     LoadOldFormat(Path);
 
