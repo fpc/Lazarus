@@ -154,7 +154,7 @@ type
     function AdjustCharMix(DesiredIndent: Integer; CharMix, AppendMix: String): String;
     function CreateTabSpaceMix(var DesiredIndent: Integer; OnlyTabs: Boolean): String;
     function GetCharMix(const LinePos: Integer; var Indent: Integer;
-                        var IndentCharsFromLinePos: Integer = 0;
+                        var IndentCharsFromLinePos: Integer;
                         ModifyIndent: Boolean = False): String;
     procedure ApplyIndent(LinePos: Integer; Indent: Integer;
                           RelativeToLinePos: Integer = 0; IndentChars: String = '';
