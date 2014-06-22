@@ -67,7 +67,6 @@
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Lazarus"/>
       </Unit0>
       <Unit1>
         <Filename Value="frames/oi_options.pas"/>
@@ -75,42 +74,36 @@
         <ComponentName Value="OIOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="OI_options"/>
       </Unit1>
       <Unit2>
         <Filename Value="frames/files_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FilesOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="files_options"/>
       </Unit2>
       <Unit3>
         <Filename Value="frames/desktop_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DesktopOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="desktop_options"/>
       </Unit3>
       <Unit4>
         <Filename Value="frames/window_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="WindowOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="window_options"/>
       </Unit4>
       <Unit5>
         <Filename Value="frames/formed_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FormEditorOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="formed_options"/>
       </Unit5>
       <Unit6>
         <Filename Value="frames/backup_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="BackupOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="Backup_Options"/>
       </Unit6>
       <Unit7>
         <Filename Value="frames/naming_options.pas"/>
@@ -118,7 +111,6 @@
         <ComponentName Value="NamingOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="naming_options"/>
       </Unit7>
       <Unit8>
         <Filename Value="frames/fpdoc_options.pas"/>
@@ -126,7 +118,6 @@
         <ComponentName Value="FpDocOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fpdoc_options"/>
       </Unit8>
       <Unit9>
         <Filename Value="frames/editor_indent_options.pas"/>
@@ -134,14 +125,12 @@
         <ComponentName Value="EditorIndentOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_indent_options"/>
       </Unit9>
       <Unit10>
         <Filename Value="frames/editor_display_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditorDisplayOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_display_options"/>
       </Unit10>
       <Unit11>
         <Filename Value="frames/editor_keymapping_options.pas"/>
@@ -149,7 +138,6 @@
         <ComponentName Value="EditorKeymappingOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_keymapping_options"/>
       </Unit11>
       <Unit12>
         <Filename Value="frames/editor_color_options.pas"/>
@@ -157,21 +145,18 @@
         <ComponentName Value="EditorColorOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_color_options"/>
       </Unit12>
       <Unit13>
         <Filename Value="frames/editor_codetools_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditorCodetoolsOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_codetools_options"/>
       </Unit13>
       <Unit14>
         <Filename Value="frames/editor_codefolding_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditorCodefoldingOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_codefolding_options"/>
       </Unit14>
       <Unit15>
         <Filename Value="frames/codetools_general_options.pas"/>
@@ -179,35 +164,30 @@
         <ComponentName Value="CodetoolsGeneralOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_general_options"/>
       </Unit15>
       <Unit16>
         <Filename Value="frames/codetools_codecreation_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodetoolsCodeCreationOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_codecreation_options"/>
       </Unit16>
       <Unit17>
         <Filename Value="frames/codetools_wordpolicy_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodetoolsWordPolicyOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_wordpolicy_options"/>
       </Unit17>
       <Unit18>
         <Filename Value="frames/codetools_linesplitting_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodetoolsLineSplittingOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_linesplitting_options"/>
       </Unit18>
       <Unit19>
         <Filename Value="frames/codetools_space_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodetoolsSpaceOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_space_options"/>
       </Unit19>
       <Unit20>
         <Filename Value="frames/codetools_identifiercompletion_options.pas"/>
@@ -215,7 +195,6 @@
         <ComponentName Value="CodetoolsIndentifierCompletionOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_identifiercompletion_options"/>
       </Unit20>
       <Unit21>
         <Filename Value="frames/editor_general_misc_options.pas"/>
@@ -223,7 +202,6 @@
         <ComponentName Value="EditorGeneralMiscOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_general_misc_options"/>
       </Unit21>
       <Unit22>
         <Filename Value="../debugger/frames/debugger_general_options.pas"/>
@@ -231,48 +209,40 @@
         <ComponentName Value="DebuggerGeneralOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="debugger_general_options"/>
       </Unit22>
       <Unit23>
         <Filename Value="../debugger/frames/debugger_eventlog_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DebuggerEventLogOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="debugger_eventlog_options"/>
       </Unit23>
       <Unit24>
         <Filename Value="../debugger/frames/debugger_language_exceptions_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DebuggerLanguageExceptionsOptions"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="debugger_language_exceptions_options"/>
       </Unit24>
       <Unit25>
         <Filename Value="../debugger/frames/debugger_signals_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DebuggerSignalsOptions"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="debugger_signals_options"/>
       </Unit25>
       <Unit26>
         <Filename Value="projectresources.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ProjectResources"/>
       </Unit26>
       <Unit27>
         <Filename Value="w32manifest.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="W32Manifest"/>
       </Unit27>
       <Unit28>
         <Filename Value="projecticon.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ProjectIcon"/>
       </Unit28>
       <Unit29>
         <Filename Value="w32versioninfo.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="W32VersionInfo"/>
       </Unit29>
       <Unit30>
         <Filename Value="frames/compiler_condtree.pas"/>
@@ -280,7 +250,6 @@
         <ComponentName Value="CompOptsCondTreeFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="Compiler_CondTree"/>
       </Unit30>
       <Unit31>
         <Filename Value="frames/compiler_buildvar_options.pas"/>
@@ -288,7 +257,6 @@
         <ComponentName Value="CompOptBuildVarsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="Compiler_BuildVar_Options"/>
       </Unit31>
       <Unit32>
         <Filename Value="sourceeditor.pp"/>
@@ -296,7 +264,6 @@
         <ComponentName Value="SourceNotebook"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="SourceEditor"/>
       </Unit32>
       <Unit33>
         <Filename Value="componentlist.pas"/>
@@ -304,35 +271,30 @@
         <ComponentName Value="ComponentListForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="ComponentList"/>
       </Unit33>
       <Unit34>
         <Filename Value="frames/codeexplorer_update_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodeExplorerUpdateOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codeexplorer_update_options"/>
       </Unit34>
       <Unit35>
         <Filename Value="frames/codeexplorer_categories_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodeExplorerCategoriesOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codeexplorer_categories_options"/>
       </Unit35>
       <Unit36>
         <Filename Value="frames/codeobserver_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodeObserverOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codeobserver_options"/>
       </Unit36>
       <Unit37>
         <Filename Value="frames/help_general_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="HelpGeneralOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="help_general_options"/>
       </Unit37>
       <Unit38>
         <Filename Value="frames/editor_mouseaction_options.pas"/>
@@ -340,7 +302,6 @@
         <ComponentName Value="EditorMouseOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_mouseaction_options"/>
       </Unit38>
       <Unit39>
         <Filename Value="frames/editor_mouseaction_options_advanced.pas"/>
@@ -348,7 +309,6 @@
         <ComponentName Value="EditorMouseOptionsAdvFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_mouseaction_options_advanced"/>
       </Unit39>
       <Unit40>
         <Filename Value="main.pp"/>
@@ -358,12 +318,10 @@
       <Unit41>
         <Filename Value="../designer/designer.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Designer"/>
       </Unit41>
       <Unit42>
         <Filename Value="../designer/designerprocs.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="DesignerProcs"/>
       </Unit42>
       <Unit43>
         <Filename Value="codebrowser.pas"/>
@@ -371,7 +329,6 @@
         <ComponentName Value="CodeBrowserView"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="CodeBrowser"/>
       </Unit43>
       <Unit44>
         <Filename Value="frames/buildmodeseditor.pas"/>
@@ -379,7 +336,6 @@
         <ComponentName Value="BuildModesEditorFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="BuildModesEditor"/>
       </Unit44>
       <Unit45>
         <Filename Value="project.pp"/>
@@ -389,7 +345,6 @@
       <Unit46>
         <Filename Value="customformeditor.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="CustomFormEditor"/>
       </Unit46>
       <Unit47>
         <Filename Value="aboutfrm.pas"/>
@@ -397,7 +352,6 @@
         <ComponentName Value="AboutForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="AboutFrm"/>
       </Unit47>
       <Unit48>
         <Filename Value="idehelpmanager.pas"/>
@@ -405,14 +359,12 @@
         <ComponentName Value="HelpSelectorDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="IDEHelpManager"/>
       </Unit48>
       <Unit49>
         <Filename Value="../designer/askcompnamedlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="AskCompNameDialog"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="AskCompNameDlg"/>
       </Unit49>
       <Unit50>
         <Filename Value="frames/project_application_options.pas"/>
@@ -420,28 +372,24 @@
         <ComponentName Value="ProjectApplicationOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="project_application_options"/>
       </Unit50>
       <Unit51>
         <Filename Value="frames/project_forms_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ProjectFormsOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="project_forms_options"/>
       </Unit51>
       <Unit52>
         <Filename Value="frames/project_lazdoc_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ProjectFPDocOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="project_lazdoc_options"/>
       </Unit52>
       <Unit53>
         <Filename Value="frames/project_save_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ProjectSaveOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="project_save_options"/>
       </Unit53>
       <Unit54>
         <Filename Value="frames/project_versioninfo_options.pas"/>
@@ -449,21 +397,18 @@
         <ComponentName Value="ProjectVersionInfoOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="project_versioninfo_options"/>
       </Unit54>
       <Unit55>
         <Filename Value="frames/project_i18n_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ProjectI18NOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="project_i18n_options"/>
       </Unit55>
       <Unit56>
         <Filename Value="frames/project_misc_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ProjectMiscOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="project_misc_options"/>
       </Unit56>
       <Unit57>
         <Filename Value="frames/compiler_messages_options.pas"/>
@@ -471,7 +416,6 @@
         <ComponentName Value="CompilerMessagesOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_messages_options"/>
       </Unit57>
       <Unit58>
         <Filename Value="frames/compiler_path_options.pas"/>
@@ -487,7 +431,6 @@
         <ComponentName Value="CompilerParsingOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_parsing_options"/>
       </Unit59>
       <Unit60>
         <Filename Value="frames/compiler_codegen_options.pas"/>
@@ -495,7 +438,6 @@
         <ComponentName Value="CompilerCodegenOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_codegen_options"/>
       </Unit60>
       <Unit61>
         <Filename Value="frames/compiler_linking_options.pas"/>
@@ -503,7 +445,6 @@
         <ComponentName Value="CompilerLinkingOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_linking_options"/>
       </Unit61>
       <Unit62>
         <Filename Value="frames/compiler_verbosity_options.pas"/>
@@ -511,7 +452,6 @@
         <ComponentName Value="CompilerVerbosityOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_verbosity_options"/>
       </Unit62>
       <Unit63>
         <Filename Value="frames/compiler_other_options.pas"/>
@@ -519,14 +459,12 @@
         <ComponentName Value="CompilerOtherOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="Compiler_Other_Options"/>
       </Unit63>
       <Unit64>
         <Filename Value="frames/compiler_inherited_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompilerInheritedOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_inherited_options"/>
       </Unit64>
       <Unit65>
         <Filename Value="frames/compiler_compilation_options.pas"/>
@@ -534,31 +472,26 @@
         <ComponentName Value="CompilerCompilationOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_compilation_options"/>
       </Unit65>
       <Unit66>
         <Filename Value="frames/compiler_conditionals_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CompOptsConditionalsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_conditionals_options"/>
       </Unit66>
       <Unit67>
         <Filename Value="debugmanager.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="DebugManager"/>
       </Unit67>
       <Unit68>
         <Filename Value="progresswnd.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="IDEProgressWindow"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="ProgressWnd"/>
       </Unit68>
       <Unit69>
         <Filename Value="fpcsrcscan.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="FPCSrcScan"/>
       </Unit69>
       <Unit70>
         <Filename Value="idefpcinfo.pas"/>
@@ -566,21 +499,18 @@
         <ComponentName Value="IDEFPCInfoDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="IDEFPCInfo"/>
       </Unit70>
       <Unit71>
         <Filename Value="buildmodediffdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="BuildModeDiffDialog"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="BuildModeDiffDlg"/>
       </Unit71>
       <Unit72>
         <Filename Value="checkcompoptsfornewunitdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CheckCompOptsForNewUnitDialog"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="CheckCompOptsForNewUnitDlg"/>
       </Unit72>
       <Unit73>
         <Filename Value="ideinfodlg.pas"/>
@@ -588,99 +518,84 @@
         <ComponentName Value="IDEInfoDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="IDEInfoDlg"/>
       </Unit73>
       <Unit74>
         <Filename Value="inspectchksumchangeddlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="InspectChksumChgDialog"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="InspectChksumChangedDlg"/>
       </Unit74>
       <Unit75>
         <Filename Value="../packager/missingpkgfilesdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MissingPkgFilesDialog"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="MissingPkgFilesDlg"/>
       </Unit75>
       <Unit76>
         <Filename Value="../packager/frames/package_usage_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PackageUsageOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="package_usage_options"/>
       </Unit76>
       <Unit77>
         <Filename Value="../packager/frames/package_description_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PackageDescriptionOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="package_description_options"/>
       </Unit77>
       <Unit78>
         <Filename Value="../packager/frames/package_integration_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PackageIntegrationOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="package_integration_options"/>
       </Unit78>
       <Unit79>
         <Filename Value="../packager/frames/package_provides_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PackageProvidesOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="package_provides_options"/>
       </Unit79>
       <Unit80>
         <Filename Value="../packager/frames/package_i18n_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PackageI18NOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="package_i18n_options"/>
       </Unit80>
       <Unit81>
         <Filename Value="ideminilibc.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="IDEMiniLibC"/>
       </Unit81>
       <Unit82>
         <Filename Value="buildprojectdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="BuildProjectDlg"/>
       </Unit82>
       <Unit83>
         <Filename Value="ideguicmdline.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="IDEGuiCmdLine"/>
       </Unit83>
       <Unit84>
         <Filename Value="frames/env_file_filters.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FileFiltersOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="env_file_filters"/>
       </Unit84>
       <Unit85>
         <Filename Value="idefpdocfilesearch.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FPDocFileSearchDialog"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="IDEFPDocFileSearch"/>
       </Unit85>
       <Unit86>
         <Filename Value="../packager/newpkgcomponentdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="NewPkgComponentDialog"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="NewPkgComponentDlg"/>
       </Unit86>
       <Unit87>
         <Filename Value="msgview.pp"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="MsgView"/>
       </Unit87>
       <Unit88>
         <Filename Value="frames/editor_multiwindow_options.pas"/>
@@ -688,14 +603,12 @@
         <ComponentName Value="EditorMultiWindowOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_multiwindow_options"/>
       </Unit88>
       <Unit89>
         <Filename Value="ideinfoneedbuild.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="IDEInfoNeedBuildDlg"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="IDEInfoNeedBuild"/>
       </Unit89>
       <Unit90>
         <Filename Value="sourcefilemanager.pas"/>
@@ -705,7 +618,6 @@
       <Unit91>
         <Filename Value="../packager/lpkcache.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="LPKCache"/>
       </Unit91>
       <Unit92>
         <Filename Value="frames/editor_general_options.pas"/>
@@ -713,7 +625,6 @@
         <ComponentName Value="EditorGeneralOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_general_options"/>
       </Unit92>
       <Unit93>
         <Filename Value="frames/editor_markup_options.pas"/>
@@ -721,7 +632,6 @@
         <ComponentName Value="EditorMarkupOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_markup_options"/>
       </Unit93>
       <Unit94>
         <Filename Value="editormacrolistviewer.pas"/>
@@ -729,12 +639,10 @@
         <ComponentName Value="MacroListView"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="EditorMacroListViewer"/>
       </Unit94>
       <Unit95>
         <Filename Value="sourcesyneditor.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="SourceSynEditor"/>
       </Unit95>
       <Unit96>
         <Filename Value="editoroptions.pp"/>
@@ -742,7 +650,6 @@
         <ComponentName Value="EditorOptionsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="EditorOptions"/>
       </Unit96>
       <Unit97>
         <Filename Value="../packager/cleanpkgdeps.pas"/>
@@ -750,12 +657,10 @@
         <ComponentName Value="CleanPkgDepsDlg"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="CleanPkgDeps"/>
       </Unit97>
       <Unit98>
         <Filename Value="modematrixopts.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ModeMatrixOpts"/>
       </Unit98>
       <Unit99>
         <Filename Value="frames/compiler_modematrix.pas"/>
@@ -763,7 +668,6 @@
         <ComponentName Value="CompOptModeMatrixFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="Compiler_ModeMatrix"/>
       </Unit99>
       <Unit100>
         <Filename Value="frames/compiler_config_target.pas"/>
@@ -771,22 +675,18 @@
         <ComponentName Value="CompilerConfigTargetFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_config_target"/>
       </Unit100>
       <Unit101>
         <Filename Value="../converter/convertdelphi.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ConvertDelphi"/>
       </Unit101>
       <Unit102>
         <Filename Value="etfpcmsgparser.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="etFPCMsgParser"/>
       </Unit102>
       <Unit103>
         <Filename Value="etmakemsgparser.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="etMakeMsgParser"/>
       </Unit103>
       <Unit104>
         <Filename Value="etmessageframe.pas"/>
@@ -794,17 +694,14 @@
         <ComponentName Value="MessagesFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="etMessageFrame"/>
       </Unit104>
       <Unit105>
         <Filename Value="etquickfixes.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="etQuickFixes"/>
       </Unit105>
       <Unit106>
         <Filename Value="etsrceditmarks.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="etSrcEditMarks"/>
       </Unit106>
       <Unit107>
         <Filename Value="etmessageswnd.pas"/>
@@ -812,7 +709,6 @@
         <ComponentName Value="MessagesView"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="etMessagesWnd"/>
       </Unit107>
       <Unit108>
         <Filename Value="frames/project_resources_options.pas"/>
@@ -820,7 +716,6 @@
         <ComponentName Value="ResourcesOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="project_resources_options"/>
       </Unit108>
       <Unit109>
         <Filename Value="../debugger/debugattachdialog.pas"/>
@@ -828,7 +723,6 @@
         <ComponentName Value="DebugAttachDialogForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="DebugAttachDialog"/>
       </Unit109>
       <Unit110>
         <Filename Value="frames/msgwnd_options.pas"/>
@@ -836,33 +730,27 @@
         <ComponentName Value="MsgWndOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="MsgWnd_Options"/>
       </Unit110>
       <Unit111>
         <Filename Value="compileroptions.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="CompilerOptions"/>
       </Unit111>
       <Unit112>
         <Filename Value="exttools.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ExtTools"/>
       </Unit112>
       <Unit113>
         <Filename Value="compiler.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Compiler"/>
       </Unit113>
       <Unit114>
         <Filename Value="msgquickfixes.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="MsgQuickFixes"/>
       </Unit114>
       <Unit115>
         <Filename Value="exttooldialog.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="ExtToolDialog"/>
       </Unit115>
       <Unit116>
         <Filename Value="version.inc"/>
@@ -871,85 +759,70 @@
       <Unit117>
         <Filename Value="idecmdline.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="IDECmdLine"/>
       </Unit117>
       <Unit118>
         <Filename Value="lazconf.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="LazConf"/>
       </Unit118>
       <Unit119>
         <Filename Value="initialsetupdlgs.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="InitialSetupDlgs"/>
       </Unit119>
       <Unit120>
         <Filename Value="splash.pp"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="Splash"/>
       </Unit120>
       <Unit121>
         <Filename Value="unitdependencies.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="UnitDependencies"/>
       </Unit121>
       <Unit122>
         <Filename Value="editorfilemanager.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="EditorFileManager"/>
       </Unit122>
       <Unit123>
         <Filename Value="lfmunitresource.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lfmUnitResource"/>
       </Unit123>
       <Unit124>
         <Filename Value="sourcemarks.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="SourceMarks"/>
       </Unit124>
       <Unit125>
         <Filename Value="checklfmdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="CheckLFMDlg"/>
       </Unit125>
       <Unit126>
         <Filename Value="sortselectiondlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="SortSelectionDlg"/>
       </Unit126>
       <Unit127>
         <Filename Value="syncolorattribeditor.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="SynColorAttribEditor"/>
       </Unit127>
       <Unit128>
         <Filename Value="inputhistory.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="InputHistory"/>
       </Unit128>
       <Unit129>
         <Filename Value="makeresstrdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="MakeResStrDlg"/>
       </Unit129>
       <Unit130>
         <Filename Value="ideprocs.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="IDEProcs"/>
       </Unit130>
       <Unit131>
         <Filename Value="environmentopts.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="EnvironmentOpts"/>
       </Unit131>
       <Unit132>
         <Filename Value="lazarusidestrconsts.pas"/>
@@ -960,7 +833,6 @@
         <Filename Value="codetemplatesdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="CodeTemplatesDlg"/>
       </Unit133>
       <Unit134>
         <Filename Value="mainintf.pas"/>
@@ -970,33 +842,27 @@
       <Unit135>
         <Filename Value="mainbase.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="MainBase"/>
       </Unit135>
       <Unit136>
         <Filename Value="buildmanager.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="BuildManager"/>
       </Unit136>
       <Unit137>
         <Filename Value="basebuildmanager.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="BaseBuildManager"/>
       </Unit137>
       <Unit138>
         <Filename Value="buildlazdialog.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
-        <UnitName Value="BuildLazDialog"/>
       </Unit138>
       <Unit139>
         <Filename Value="componentpalette.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ComponentPalette"/>
       </Unit139>
       <Unit140>
         <Filename Value="codecontextform.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="CodeContextForm"/>
       </Unit140>
       <Unit141>
         <Filename Value="mainbar.pas"/>
@@ -1373,7 +1239,10 @@
       <Unit221>
         <Filename Value="ideoptionsdlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="IDEOptionsDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="IDEOptionsDlg"/>
       </Unit221>
       <Unit222>
         <Filename Value="findunitdlg.pas"/>
@@ -1504,12 +1373,14 @@
       <Unit250>
         <Filename Value="imexportcompileropts.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ImExportCompOptsDlg"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ImExportCompilerOpts"/>
       </Unit250>
       <Unit251>
         <Filename Value="initialsetupproc.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="InitialSetupProc"/>
       </Unit251>
     </Units>
   </ProjectOptions>
@@ -1530,9 +1401,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
     <CompileReasons Compile="False" Build="False" Run="False"/>
   </CompilerOptions>
   <Debugging>
