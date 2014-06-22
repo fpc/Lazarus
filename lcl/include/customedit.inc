@@ -76,6 +76,7 @@ begin
   BorderStyle := bsSingle;
   FAutoSelect := True;
   FAutoSelected := False;
+  FTextChangedByRealSetText := False;
   AutoSize := True;
   // Accessibility
   AccessibleRole := larTextEditorSingleline;
@@ -499,8 +500,10 @@ end;
 
 procedure TCustomEdit.RealSetText(const AValue: TCaption);
 begin
-  inherited RealSetText(AValue);
+  FTextChangedByRealSetText := True;
   Modified := False;
+  inherited RealSetText(AValue);
+  FTextChangedByRealSetText := False;
 end;
 
 {------------------------------------------------------------------------------
@@ -539,7 +542,8 @@ begin
   begin
     if ([csLoading,csDestroying]*ComponentState=[]) then
     begin
-      Modified := True;
+      if not FTextChangedByRealSetText then
+        Modified := True;
       Change;
     end;
   end;

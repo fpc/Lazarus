@@ -185,11 +185,15 @@ const
     FMaskIsPushed    : Boolean;
     FSavedMask       : TInternalMask;
     FSavedMaskLength : Integer;
+    FTextChangedBySetText: Boolean;
+    FInSetInheritedText: Boolean;
 
     procedure ClearInternalMask(out AMask: TInternalMask; out ALengthIndicator: Integer);
     procedure AddToMask(Value: TUtf8Char);
+    function GetModified: Boolean;
     procedure SetMask(Value : String);
     function  GetIsMasked : Boolean;
+    procedure SetModified(AValue: Boolean);
     procedure SetSpaceChar(Value : Char);
 
     procedure SetCursorPos;
@@ -261,6 +265,7 @@ const
     constructor Create(TheOwner : TComponent); override;
     procedure Clear;
     procedure ValidateEdit; virtual;
+    property Modified: Boolean read GetModified write SetModified;
     property Text: TCaption read GetText write SetText;
   end;
 
@@ -444,6 +449,8 @@ constructor TCustomMaskEdit.Create(TheOwner: TComponent);
 begin
   Inherited Create(TheOwner);
   FSettingInitialText := False;
+  FTextChangedBySetText := False;
+  FInSetInheritedText := False;
   FRealMask      := '';
   ClearInternalMask(FMask, FMaskLength);
   ClearInternalMask(FSavedMask, FSavedMaskLength);
@@ -471,6 +478,25 @@ procedure TCustomMaskEdit.AddToMask(Value: TUtf8Char);
 begin
   Inc(FMaskLength);
   FMask[FMaskLength] := Value;
+end;
+
+function TCustomMaskEdit.GetModified: Boolean;
+begin
+  //This will make Modified = False inside OnChange when text is set by code
+  //TCustomEdit.RealSetText sets Modified to False.
+  //We handle all input in SetInheritedText (which eventually calls RealSetText),
+  //so inside SetInheritedText Modified must be True,
+  //unless we called SetInheritedText from SetText, in that case it must be False,
+  //in all other cases just return inherited value
+  if FTextChangedBySetText then
+    Result := False
+  else
+  begin
+    if FInSetInheritedText then
+      Result := True
+    else
+      Result := inherited Modified;
+  end;
 end;
 
 // Prepare the real internal Mask
@@ -656,6 +682,11 @@ end;
 function TCustomMaskEdit.GetIsMasked : Boolean;
 begin
   Result := (FMaskLength > 0);
+end;
+
+procedure TCustomMaskEdit.SetModified(AValue: Boolean);
+begin
+  inherited Modified := AValue;
 end;
 
 
@@ -938,6 +969,7 @@ procedure TCustomMaskEdit.SetInheritedText(const Value: TCaption);
 begin
   if (Value <> Inherited Text) then
   begin
+    FInSetInheritedText := True;
     FChangeAllowed := True;
     FCurrentText := Value;
     //protect resetting FChangeAllowed := False against unhandled exceptions in user's
@@ -946,6 +978,7 @@ begin
       Inherited Text := Value;
     finally
       FChangeAllowed := False;
+      FInSetInheritedText := False;
     end;//finally
   end;
 end;
@@ -1280,144 +1313,149 @@ Begin
   end;
   if IsMasked then
   begin
-    if (Value = '') then
-    begin
-      Clear;
-      Exit;
-    end;
-
-    //First setup a "blank" string that contains all literals in the mask
-    S := '';
-    for I := 1 To FMaskLength do  S := S + ClearChar(I);
-
-    if FMaskSave then
-    begin
-      mPrevLit := 0;
-      Stop := False;
-      HasNextLiteral := FindNextMaskLiteral(mPrevLit+1, mNextLit, Literal);
-      //if FMask starts with a literal, then the first CodePoint of Value must be that literal
-      if HasNextLiteral and (mNextLit = 1) and (GetCodePoint(Value, 1) <> Literal) then Stop := True;
-      //debugln('HasNextLiteral = ',dbgs(hasnextliteral),', Stop = ',dbgs(stop));
-      While not Stop do
+    try
+      FTextChangedBySetText := True;
+      if (Value = '') then
       begin
-        if HasNextLiteral then
+        Clear;
+        Exit;
+      end;
+
+      //First setup a "blank" string that contains all literals in the mask
+      S := '';
+      for I := 1 To FMaskLength do  S := S + ClearChar(I);
+
+      if FMaskSave then
+      begin
+        mPrevLit := 0;
+        Stop := False;
+        HasNextLiteral := FindNextMaskLiteral(mPrevLit+1, mNextLit, Literal);
+        //if FMask starts with a literal, then the first CodePoint of Value must be that literal
+        if HasNextLiteral and (mNextLit = 1) and (GetCodePoint(Value, 1) <> Literal) then Stop := True;
+        //debugln('HasNextLiteral = ',dbgs(hasnextliteral),', Stop = ',dbgs(stop));
+        While not Stop do
         begin
-          HasMatchingLiteral := FindMatchingLiteral(Value, Literal, vNextLit);
-          //debugln('mPrevLit = ',dbgs(mprevlit),' mNextLit = ',dbgs(mnextlit));
-          //debugln('HasMatchingLiteral = ',dbgs(hasmatchingliteral));
-          if HasMatchingLiteral then
+          if HasNextLiteral then
           begin
-            //debugln('vNextLit = ',dbgs(vnextlit));
-            Sub := Utf8Copy(Value, 1, vNextLit - 1); //Copy up to, but not including matching literal
-            Utf8Delete(Value, 1, vNextLit); //Remove this bit from Value (including matching literal)
-            if (Utf8Length(Value) = 0) then Stop := True;
-            //debugln('Sub = "',Sub,'", Value = "',Value,'"');
+            HasMatchingLiteral := FindMatchingLiteral(Value, Literal, vNextLit);
+            //debugln('mPrevLit = ',dbgs(mprevlit),' mNextLit = ',dbgs(mnextlit));
+            //debugln('HasMatchingLiteral = ',dbgs(hasmatchingliteral));
+            if HasMatchingLiteral then
+            begin
+              //debugln('vNextLit = ',dbgs(vnextlit));
+              Sub := Utf8Copy(Value, 1, vNextLit - 1); //Copy up to, but not including matching literal
+              Utf8Delete(Value, 1, vNextLit); //Remove this bit from Value (including matching literal)
+              if (Utf8Length(Value) = 0) then Stop := True;
+              //debugln('Sub = "',Sub,'", Value = "',Value,'"');
+            end
+            else
+            begin//HasMatchingLiteral = False
+              Stop := True;
+              Sub := Value;
+              Value := '';
+              //debugln('Sub = "',Sub,'", Value = "',Value,'"');
+            end;
+            //fill S between vPrevLit + 1 and vNextLit - 1, LTR or RTL depending on FTrimType
+            if (FTrimType = metTrimRight) then
+            begin
+              j := 1;
+              for i := (mPrevLit + 1) to (mNextLit - 1) do
+              begin
+                if (J > Utf8Length(Sub)) then Break;
+                if (GetCodePoint(Sub,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetcodePoint(S,i,GetCodePoint(Sub,j));
+                Inc(j);
+              end;
+            end
+            else
+            begin//FTrimType = metTrimLeft
+              j := Utf8Length(Sub);
+              for i := (mNextLit - 1) downto (mPrevLit + 1) do
+              begin
+                if (j < 1) then Break;
+                if (GetCodePoint(Sub,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetCodePoint(S,i, GetCodePoint(Sub,j));
+                Dec(j);
+              end;
+            end;
+            //debugln('S = ',S);
           end
           else
-          begin//HasMatchingLiteral = False
+          begin//HasNextLiteral = False
+            //debugln('No more MaskLiterals at this point');
+            //debugln('mPrevLit = ',dbgs(mprevlit));
             Stop := True;
             Sub := Value;
             Value := '';
             //debugln('Sub = "',Sub,'", Value = "',Value,'"');
+            //fill S from vPrevLit + 1 until end of FMask, LTR or RTL depending on FTrimType
+            if (FTrimType = metTrimRight) then
+            begin
+              j := 1;
+              for i := (mPrevLit + 1) to FMaskLength do
+              begin
+                //debugln('  i = ',dbgs(i),'  j = ',dbgs(j));
+                if (j > Utf8Length(Sub)) then Break;
+                if (GetCodePoint(Sub,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetCodePoint(S,i, GetCodePoint(Sub,j));
+                //debugln('  Sub[j] = "',Sub[j],'" -> S = ',S);
+                Inc(j);
+              end;
+            end
+            else
+            begin//FTrimType = metTrimLeft
+              j := Utf8Length(Sub);
+              for i := FMaskLength downto (mPrevLit + 1) do
+              begin
+                //debugln('  i = ',dbgs(i),'  j = ',dbgs(j));
+                if (j < 1) then Break;
+                if (GetCodePoint(Sub,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetCodePoint(S,i, GetCodePoint(Sub,j));
+                //debugln('  Sub[j] = "',Sub[j],'" -> S = ',S);
+                Dec(j);
+              end;
+            end;
+            //debugln('S = ',S);
           end;
-          //fill S between vPrevLit + 1 and vNextLit - 1, LTR or RTL depending on FTrimType
-          if (FTrimType = metTrimRight) then
+          //debugln('Stop = ',dbgs(stop));
+          if not Stop then
           begin
-            j := 1;
-            for i := (mPrevLit + 1) to (mNextLit - 1) do
+            mPrevLit := mNextLit;
+            HasNextLiteral := FindNextMaskLiteral(mPrevLit + 1, mNextLit, Literal);
+          end;
+        end;//while not Stop
+      end//FMaskSave = True
+      else
+      begin//FMaskSave = False
+        if FTrimType = metTrimRight then
+        begin
+          //fill text from left to rigth, skipping MaskLiterals
+          j := 1;
+          for i := 1 to FMaskLength do
+          begin
+            if not IsLiteral(FMask[i]) then
             begin
-              if (J > Utf8Length(Sub)) then Break;
-              if (GetCodePoint(Sub,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetcodePoint(S,i,GetCodePoint(Sub,j));
+              if (GetCodePoint(Value,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetCodePoint(S,i, GetCodePoint(Value,j));
               Inc(j);
-            end;
-          end
-          else
-          begin//FTrimType = metTrimLeft
-            j := Utf8Length(Sub);
-            for i := (mNextLit - 1) downto (mPrevLit + 1) do
-            begin
-              if (j < 1) then Break;
-              if (GetCodePoint(Sub,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetCodePoint(S,i, GetCodePoint(Sub,j));
-              Dec(j);
+              if j > Utf8Length(Value) then Break;
             end;
           end;
-          //debugln('S = ',S);
         end
         else
-        begin//HasNextLiteral = False
-          //debugln('No more MaskLiterals at this point');
-          //debugln('mPrevLit = ',dbgs(mprevlit));
-          Stop := True;
-          Sub := Value;
-          Value := '';
-          //debugln('Sub = "',Sub,'", Value = "',Value,'"');
-          //fill S from vPrevLit + 1 until end of FMask, LTR or RTL depending on FTrimType
-          if (FTrimType = metTrimRight) then
+        begin
+          //fill text from right to left, skipping MaskLiterals
+          j := Utf8Length(Value);
+          for i := FMaskLength downto 1 do
           begin
-            j := 1;
-            for i := (mPrevLit + 1) to FMaskLength do
+            if not IsLiteral(FMask[i]) then
             begin
-              //debugln('  i = ',dbgs(i),'  j = ',dbgs(j));
-              if (j > Utf8Length(Sub)) then Break;
-              if (GetCodePoint(Sub,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetCodePoint(S,i, GetCodePoint(Sub,j));
-              //debugln('  Sub[j] = "',Sub[j],'" -> S = ',S);
-              Inc(j);
-            end;
-          end
-          else
-          begin//FTrimType = metTrimLeft
-            j := Utf8Length(Sub);
-            for i := FMaskLength downto (mPrevLit + 1) do
-            begin
-              //debugln('  i = ',dbgs(i),'  j = ',dbgs(j));
-              if (j < 1) then Break;
-              if (GetCodePoint(Sub,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetCodePoint(S,i, GetCodePoint(Sub,j));
-              //debugln('  Sub[j] = "',Sub[j],'" -> S = ',S);
+              if (GetCodePoint(Value,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetCodePoint(S,i, GetCodePoint(Value,j));
               Dec(j);
+              if j < 1 then Break;
             end;
           end;
-          //debugln('S = ',S);
         end;
-        //debugln('Stop = ',dbgs(stop));
-        if not Stop then
-        begin
-          mPrevLit := mNextLit;
-          HasNextLiteral := FindNextMaskLiteral(mPrevLit + 1, mNextLit, Literal);
-        end;
-      end;//while not Stop
-    end//FMaskSave = True
-    else
-    begin//FMaskSave = False
-      if FTrimType = metTrimRight then
-      begin
-        //fill text from left to rigth, skipping MaskLiterals
-        j := 1;
-        for i := 1 to FMaskLength do
-        begin
-          if not IsLiteral(FMask[i]) then
-          begin
-            if (GetCodePoint(Value,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetCodePoint(S,i, GetCodePoint(Value,j));
-            Inc(j);
-            if j > Utf8Length(Value) then Break;
-          end;
-        end;
-      end
-      else
-      begin
-        //fill text from right to left, skipping MaskLiterals
-        j := Utf8Length(Value);
-        for i := FMaskLength downto 1 do
-        begin
-          if not IsLiteral(FMask[i]) then
-          begin
-            if (GetCodePoint(Value,j) = #32) then SetCodePoint(S,i,FSpaceChar) else SetCodePoint(S,i, GetCodePoint(Value,j));
-            Dec(j);
-            if j < 1 then Break;
-          end;
-        end;
-      end;
-    end;//FMaskSave = False
-    SetInheritedText(S);
+      end;//FMaskSave = False
+      SetInheritedText(S);
+    finally
+      FTextChangedBySetText := False;
+    end; //try..finally
   end//Ismasked
   else
   begin//not IsMasked
