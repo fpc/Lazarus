@@ -96,6 +96,8 @@ type
                              var {%H-}Abort: boolean): string;
     function MacroFuncLCLWidgetType(const {%H-}Param: string; const Data: PtrInt;
                                     var {%H-}Abort: boolean): string;
+    function MacroFuncLazVer(const {%H-}Param: string; const Data: PtrInt;
+                                    var {%H-}Abort: boolean): string;
     function MacroFuncMake(const {%H-}Param: string; const {%H-}Data: PtrInt;
                            var {%H-}Abort: boolean): string;// make utility
     function MacroFuncMakeExe(const Filename: string; const {%H-}Data: PtrInt;
@@ -434,6 +436,8 @@ begin
                     lisSecondaryConfigPath, @MacroFuncSecondaryConfigPath, []));
   GlobalMacroList.Add(TTransferMacro.Create('FallbackOutputRoot','',
                      lisSecondaryConfigPath, @MacroFuncFallbackOutputRoot, []));
+  GlobalMacroList.Add(TTransferMacro.Create('LAZVer','',
+                     lisLAZVer, @MacroFuncLazVer, []));
 
   // codetools macro functions
   CodeToolBoss.DefineTree.MacroFunctions.AddExtended(
@@ -465,6 +469,7 @@ begin
   tr('TargetOS',lisTargetOS);
   tr('SrcOS',lisSrcOS);
   tr('FPCVer',lisFPCVersionEG222);
+  tr('LAZVer',lisLAZVer);
   tr('Params',lisCommandLineParamsOfProgram);
   tr('ProjFile',lisProjectFilename);
   tr('ProjPath',lisProjectDirectory);
@@ -1991,6 +1996,12 @@ begin
     Result:='%(LCL_PLATFORM)'
   else
     Result:=GetLCLWidgetType;
+end;
+
+function TBuildManager.MacroFuncLazVer(const Param: string; const Data: PtrInt;
+  var Abort: boolean): string;
+begin
+  Result:=LazarusVersionStr;
 end;
 
 function TBuildManager.MacroFuncTargetCPU(const Param: string;
