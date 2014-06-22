@@ -251,7 +251,7 @@ var
   ImportExportResult: TImportExportOptionsResult;
 begin
   DoSaveSettings(FCompilerOpts);
-  if (MainIDEInterface.DoImExportCompilerOptions(FCompilerOpts, ImportExportResult) = mrOK)
+  if (MainIDEInterface.DoImExportCompilerOptions(ImportExportResult) = mrOK)
   and (ImportExportResult = ieorImport)
   and Assigned(OnLoadIDEOptions) then
     OnLoadIDEOptions(Self, FCompilerOpts);

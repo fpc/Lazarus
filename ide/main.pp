@@ -818,7 +818,7 @@ type
                                Flags: TOpenFlags): TModalResult; override;
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; override;
-    function DoImExportCompilerOptions(Sender: TObject;
+    function DoImExportCompilerOptions(
       out ImportExportResult: TImportExportOptionsResult): TModalResult; override;
     procedure DoShowProjectInspector(Show: boolean); override;
     function DoAddActiveUnitToProject: TModalResult;
@@ -6403,22 +6403,18 @@ begin
     Project1.ProjectDirectory, MainBuildBoss.GetProjectPublishDir);
 end;
 
-function TMainIDE.DoImExportCompilerOptions(Sender: TObject;
+function TMainIDE.DoImExportCompilerOptions(
   out ImportExportResult: TImportExportOptionsResult): TModalResult;
 var
-  Options: TCompilerOptions;
+  //Options: TCompilerOptions;
   Filename: string;
 begin
   Result := mrOk;
-  if Sender is TCompilerOptions then
-    Options := TCompilerOptions(Sender)
-  else
-    RaiseException('TMainIDE.OnCompilerOptionsImExport');
-  ImportExportResult := ShowImExportCompilerOptionsDialog(Options, Filename);
+  ImportExportResult := ShowImExportCompilerOptionsDialog(Filename);
   if Filename='' then Exit(mrCancel);
   case ImportExportResult of
-    ieorImport: Result := DoImportCompilerOptions(Options, Filename);
-    ieorExport: Result := DoExportCompilerOptions(Options, Filename);
+    ieorImport: Result := DoImportCompilerOptions(Filename);
+    ieorExport: Result := DoExportCompilerOptions(Filename);
   end;
 end;
 

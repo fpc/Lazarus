@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, IDEProcs, FileUtil, Laz2_XMLCfg, LazFileCache, LCLType, MainIntf,
-  LazarusIDEStrConsts, InputHistory, CompilerOptions;
+  LazarusIDEStrConsts, InputHistory, Project, CompilerOptions;
 
 type
   { TImExportCompOptsDlg }
@@ -71,11 +71,10 @@ type
     property Filename: string read FFilename write SetFilename;
   end;
 
-function ShowImExportCompilerOptionsDialog(
-  CompOpts: TBaseCompilerOptions; var Filename: string): TImportExportOptionsResult;
+function ShowImExportCompilerOptionsDialog(var Filename: string): TImportExportOptionsResult;
 
-function DoImportCompilerOptions(CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
-function DoExportCompilerOptions(CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
+function DoImportCompilerOptions(const Filename: string): TModalResult;
+function DoExportCompilerOptions(const Filename: string): TModalResult;
 
 implementation
 
@@ -127,8 +126,7 @@ begin
   end;
 end;
 
-function ShowImExportCompilerOptionsDialog(
-  CompOpts: TBaseCompilerOptions; var Filename: string): TImportExportOptionsResult;
+function ShowImExportCompilerOptionsDialog(var Filename: string): TImportExportOptionsResult;
 var
   ImExportCompOptsDlg: TImExportCompOptsDlg;
 begin
@@ -142,7 +140,7 @@ begin
   ImExportCompOptsDlg.Free;
 end;
 
-function DoImportCompilerOptions(CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
+function DoImportCompilerOptions(const Filename: string): TModalResult;
 var
   XMLConfig: TXMLConfig;
   Path: String;
@@ -160,13 +158,13 @@ begin
   end;
   try
     Path:=GetXMLPathForCompilerOptions(XMLConfig);
-    CompilerOpts.LoadFromXMLConfig(XMLConfig,Path);
+    Project1.CompilerOptions.LoadFromXMLConfig(XMLConfig,Path);
   finally
     XMLConfig.Free;
   end;
 end;
 
-function DoExportCompilerOptions(CompilerOpts: TBaseCompilerOptions; const Filename: string): TModalResult;
+function DoExportCompilerOptions(const Filename: string): TModalResult;
 var
   XMLConfig: TXMLConfig;
   Path: String;
@@ -176,8 +174,8 @@ begin
     InvalidateFileStateCache;
     XMLConfig:=TXMLConfig.Create(Filename);
     try
-      Path:=DefaultCompilerOptPath; // GetXMLPathForCompilerOptions(XMLConfig);
-      CompilerOpts.SaveToXMLConfig(XMLConfig,Path);
+      Path:=DefaultCompilerOptPath;
+      Project1.CompilerOptions.SaveToXMLConfig(XMLConfig,Path);
       XMLConfig.Flush;
     finally
       XMLConfig.Free;
