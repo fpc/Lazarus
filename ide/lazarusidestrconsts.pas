@@ -4284,6 +4284,8 @@ resourcestring
     +'have the same file name:%s%s%s%s%sin %s';
   lisPkgEditRevertPackage = 'Revert package?';
   lisMoveOrCopyFiles = 'Move or Copy files?';
+  lisTargetIsReadOnly = 'Target is read only';
+  lisTheTargetIsNotWritable = 'The target %s is not writable.';
   lisMoveOrCopyFileSFromToTheDirectoryOfPackage = 'Move or copy %s file'
     +'(s) from %s to the directory%s%s%sof %s.';
   lisMoveFileSFromToTheDirectoryOf = 'Move %s file(s) from %s to the directory%s%s%sof %s.';

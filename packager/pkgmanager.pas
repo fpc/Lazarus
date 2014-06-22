@@ -292,6 +292,7 @@ type
     function OnProjectInspectorDragOverTreeView(Sender, Source: TObject;
       X, Y: Integer; out TargetTVNode: TTreeNode;
       out TargetTVType: TTreeViewInsertMarkType): boolean; override;
+    procedure OnProjectInspectorCopyMoveFiles(Sender: TObject); override;
 
     // package editors
     function DoOpenPkgFile(PkgFile: TPkgFile): TModalResult;
@@ -1936,7 +1937,7 @@ var
       aFilename:=CurFile.GetFullFilename;
       if not FileExistsCached(aFilename) then begin
         {$IFDEF VerbosePkgEditDrag}
-        debugln(['TPackageEditorForm.MoveFiles WARNING: file not found: ',aFilename]);
+        debugln(['TPkgManager.MoveFiles WARNING: file not found: ',aFilename]);
         {$ENDIF}
         IDEFiles.Delete(i);
       end;
@@ -1944,10 +1945,50 @@ var
       if (CurFile is TUnitInfo) and (TUnitInfo(CurFile)=TUnitInfo(CurFile).Project.MainUnitInfo)
       then begin
         {$IFDEF VerbosePkgEditDrag}
-        debugln(['TPackageEditorForm.MoveFiles WARNING: main unit of project cannot be moved: ',aFilename]);
+        debugln(['TPkgManager.MoveFiles WARNING: main unit of project cannot be moved: ',aFilename]);
         {$ENDIF}
         IDEFiles.Delete(i);
       end;
+    end;
+  end;
+
+  function GetPkgProj(FilesEdit: IFilesEditorInterface; out aPkg: TLazPackage;
+    out aProject: TProject): boolean;
+  var
+    MainUnit: TUnitInfo;
+    Code: TCodeBuffer;
+    Tool: TCodeTool;
+  begin
+    Result:=false;
+    aPkg:=nil;
+    aProject:=nil;
+    if not FilenameIsAbsolute(FilesEdit.FilesBaseDirectory) then begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['TPkgManager.MoveFiles base dir not absolute: ',FilesEdit.FilesBaseDirectory]);
+      {$ENDIF}
+      exit;
+    end;
+
+    if FilesEdit.FilesOwner is TLazPackage then begin
+      aPkg:=TLazPackage(FilesEdit.FilesOwner);
+      Result:=true;
+    end else if FilesEdit.FilesOwner is TProject then begin
+      aProject:=TProject(FilesEdit.FilesOwner);
+      MainUnit:=aProject.MainUnitInfo;
+      if (MainUnit<>nil) and (pfMainUnitIsPascalSource in aProject.Flags) then
+      begin
+        // check project main source for syntax errors
+        if LoadCodeBuffer(Code,MainUnit.Filename,[lbfUpdateFromDisk,lbfCheckIfText],false)<>mrOk
+        then exit;
+        if not CodeToolBoss.Explore(Code,Tool,true) then begin
+          {$IFDEF VerbosePkgEditDrag}
+          debugln(['TPkgManager.MoveFiles project main source has errors: ',Code.Filename]);
+          {$ENDIF}
+          LazarusIDE.DoJumpToCodeToolBossError;
+          exit;
+        end;
+      end;
+      Result:=true;
     end;
   end;
 
@@ -2051,6 +2092,7 @@ var
     WarnUnitClash: Boolean;
     WarnNameClash: Boolean;
     Cnt: Integer;
+    SrcEdit: TSourceEditor;
   begin
     Result:=false;
     WarnUnitClash:=true;
@@ -2067,6 +2109,14 @@ var
             TargetFilesEdit.FilesOwnerName]), mtError, [mbCancel]);
         exit;
       end;
+
+      // close source editor
+      repeat
+        SrcEdit:=SourceEditorManager.SourceEditorIntfWithFilename(NewFilename);
+        if SrcEdit=nil then break;
+        if LazarusIDE.DoCloseEditorFile(SrcEdit,[cfSaveFirst,
+          cfCloseDependencies,cfSaveDependencies])<>mrOk then exit;
+      until false;
 
       if (not SrcIsTarget) then begin
         // warn duplicate names
@@ -2175,7 +2225,7 @@ var
       if PackageGraph.PreparePackageOutputDirectory(SrcPackage,true)<>mrOk then
       begin
         {$IFDEF VerbosePkgEditDrag}
-        debugln(['TPackageEditorForm.MoveFiles PreparePackageOutputDirectory failed']);
+        debugln(['TPkgManager.MoveFiles PreparePackageOutputDirectory failed']);
         {$ENDIF}
         exit;
       end;
@@ -2410,6 +2460,7 @@ var
     NewAddToUses: Boolean;
     OldProjFile: TUnitInfo;
     Code: TCodeBuffer;
+    NewProjFile: TUnitInfo;
   begin
     Result:=false;
     // check if needed
@@ -2445,6 +2496,8 @@ var
         exit;
     end;
 
+    OldPkgFile:=nil;
+    OldProjFile:=nil;
     if SrcPackage<>nil then begin
       OldPkgFile:=SrcPackage.FindPkgFile(OldFilename,true,false);
       if OldPkgFile=nil then begin
@@ -2457,7 +2510,7 @@ var
       end;
     end else if SrcProject<>nil then begin
       OldProjFile:=SrcProject.UnitInfoWithFilename(OldFilename,[pfsfOnlyProjectFiles]);
-      if OldPkgFile=nil then begin
+      if OldProjFile=nil then begin
         {$IFDEF VerbosePkgEditDrag}
         debugln(['MoveOrCopyFile old file not in lpi: "',OldFilename,'"']);
         {$ENDIF}
@@ -2469,32 +2522,34 @@ var
       raise Exception.Create('implement me');
     end;
 
-    if TargetPackage<>nil then begin
-      // create new TPkgFile
-
-      if OldPkgFile<>nil then begin
-        NewUnitName:=OldPkgFile.Unit_Name;
-        NewFileType:=OldPkgFile.FileType;
-        if NewFileType=pftMainUnit then NewFileType:=pftUnit;
-        NewCompPrio:=OldPkgFile.ComponentPriority;
-        NewResourceBaseClass:=OldPkgFile.ResourceBaseClass;
-        NewHasRegisterProc:=OldPkgFile.HasRegisterProc;
-        NewAddToUses:=OldPkgFile.AddToUsesPkgSection;
-      end else begin
-        NewUnitName:=OldProjFile.Unit_Name;
-        NewFileType:=FileNameToPkgFileType(OldFilename);
-        NewCompPrio:=ComponentPriorityNormal;
-        NewResourceBaseClass:=OldProjFile.ResourceBaseClass;
-        NewHasRegisterProc:=false;
-        NewAddToUses:=true;
-        if NewFileType=pftUnit then begin
-          Code:=CodeToolBoss.LoadFile(NewFilename,true,false);
-          if Code<>nil then begin
+    if OldPkgFile<>nil then begin
+      NewUnitName:=OldPkgFile.Unit_Name;
+      NewFileType:=OldPkgFile.FileType;
+      if NewFileType=pftMainUnit then NewFileType:=pftUnit;
+      NewCompPrio:=OldPkgFile.ComponentPriority;
+      NewResourceBaseClass:=OldPkgFile.ResourceBaseClass;
+      NewHasRegisterProc:=OldPkgFile.HasRegisterProc;
+      NewAddToUses:=OldPkgFile.AddToUsesPkgSection;
+    end else begin
+      NewUnitName:=OldProjFile.Unit_Name;
+      NewFileType:=FileNameToPkgFileType(OldFilename);
+      NewCompPrio:=ComponentPriorityNormal;
+      NewResourceBaseClass:=OldProjFile.ResourceBaseClass;
+      NewHasRegisterProc:=false;
+      NewAddToUses:=true;
+      if NewFileType=pftUnit then begin
+        Code:=CodeToolBoss.LoadFile(OldFilename,true,false);
+        if (Code<>nil) then begin
+          if TargetPackage<>nil then
             CodeToolBoss.HasInterfaceRegisterProc(Code,NewHasRegisterProc);
-          end;
         end;
       end;
+    end;
 
+    NewPkgFile:=nil;
+    NewProjFile:=nil;
+    if TargetPackage<>nil then begin
+      // create new TPkgFile
       NewPkgFile:=TargetPackage.FindPkgFile(NewFilename,true,false);
       if NewPkgFile=nil then begin
         {$IFDEF VerbosePkgEditDrag}
@@ -2521,23 +2576,53 @@ var
     end else if TargetProject<>nil then begin
       // create new TUnitInfo
 
-      raise Exception.Create('implement me');
+      NewProjFile:=TargetProject.UnitInfoWithFilename(NewFilename);
+      if NewProjFile=nil then begin
+        NewProjFile:=TUnitInfo.Create(nil);
+        NewProjFile.Filename:=NewFilename;
+        TargetProject.AddFile(NewProjFile,false);
+      end;
+      NewProjFile.IsPartOfProject:=true;
+      NewProjFile.ResourceBaseClass:=NewResourceBaseClass;
+      if OldProjFile<>nil then begin
+        NewProjFile.HasResources:=OldProjFile.HasResources;
+        NewProjFile.ComponentName:=OldProjFile.ComponentName;
+        NewProjFile.ComponentResourceName:=OldProjFile.ComponentResourceName;
+        NewProjFile.BuildFileIfActive:=OldProjFile.BuildFileIfActive;
+        NewProjFile.RunFileIfActive:=OldProjFile.RunFileIfActive;
+        NewProjFile.DefaultSyntaxHighlighter:=OldProjFile.DefaultSyntaxHighlighter;
+        NewProjFile.DisableI18NForLFM:=OldProjFile.DisableI18NForLFM;
+        NewProjFile.CustomDefaultHighlighter:=OldProjFile.CustomDefaultHighlighter;
+      end;
+      if (not SrcIsTarget)
+      and (pfMainUnitHasUsesSectionForAllUnits in TargetProject.Flags) then
+      begin
+        CodeToolBoss.AddUnitToMainUsesSection(
+                       TargetProject.MainUnitInfo.Source,NewUnitName,'');
+        CodeToolBoss.SourceChangeCache.Apply;
+        TargetProject.MainUnitInfo.Modified:=true;
+      end;
     end else begin
       raise Exception.Create('implement me');
     end;
 
     // delete old
     if DeleteOld then begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['MoveOrCopyFile delete "',OldFilename,'" from=',SrcFilesEdit.FilesOwnerName]);
+      {$ENDIF}
       if OldPkgFile<>nil then begin
-        {$IFDEF VerbosePkgEditDrag}
-        debugln(['MoveOrCopyFile delete "',OldPkgFile.Filename,'" pkg=',OldPkgFile.LazPackage.Name]);
-        {$ENDIF}
         SrcPackage.DeleteFile(OldPkgFile);
       end else if OldProjFile<>nil then begin
-        {$IFDEF VerbosePkgEditDrag}
-        debugln(['MoveOrCopyFile delete "',OldProjFile.Filename,'"']);
-        {$ENDIF}
-        raise Exception.Create('implement me');
+        OldProjFile.IsPartOfProject:=false;
+        if (not SrcIsTarget)
+        and (pfMainUnitHasUsesSectionForAllUnits in SrcProject.Flags) then
+        begin
+          CodeToolBoss.RemoveUnitFromAllUsesSections(
+                         TargetProject.MainUnitInfo.Source,NewUnitName);
+          CodeToolBoss.SourceChangeCache.Apply;
+          TargetProject.MainUnitInfo.Modified:=true;
+        end;
       end else begin
         raise Exception.Create('implement me');
       end;
@@ -2587,53 +2672,48 @@ var
 begin
   Result:=false;
 
+  {$IFDEF VerbosePkgEditDrag}
+  debugln(['TPkgManager.MoveFiles Self=',TargetFilesEdit.FilesOwnerName,' Src=',SrcFilesEdit.FilesOwnerName,' Dir="',TargetDirectory,'" FileCount=',IDEFiles.Count]);
+  {$ENDIF}
+  if not GetPkgProj(SrcFilesEdit,SrcPackage,SrcProject) then begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPkgManager.MoveFiles invalid src=',DbgSName(SrcFilesEdit.FilesOwner)]);
+    {$ENDIF}
+    exit;
+  end;
+  if not GetPkgProj(TargetFilesEdit,TargetPackage,TargetProject) then begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPkgManager.MoveFiles invalid target=',DbgSName(TargetFilesEdit.FilesOwner)]);
+    {$ENDIF}
+    exit;
+  end;
+
   DeleteNonExistingPkgFiles;
   if IDEFiles.Count=0 then begin
     {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.MoveFiles PkgFiles.Count=0']);
+    debugln(['TPkgManager.MoveFiles PkgFiles.Count=0']);
     {$ENDIF}
     exit(true);
   end;
 
+  if TargetFilesEdit.FilesOwnerReadOnly then begin
+    IDEMessageDialog(lisTargetIsReadOnly,
+      Format(lisTheTargetIsNotWritable, [TargetFilesEdit.FilesOwnerName]),
+        mtError, [mbCancel]);
+    exit;
+  end;
+
   if not FilenameIsAbsolute(TargetDirectory) then begin
     {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.MoveFiles invalid target dir=',TargetDirectory]);
+    debugln(['TPkgManager.MoveFiles invalid target dir=',TargetDirectory]);
     {$ENDIF}
     exit;
   end;
   TargetDirectory:=AppendPathDelim(TargetDirectory);
 
-  {$IFDEF VerbosePkgEditDrag}
-  debugln(['TPackageEditorForm.MoveFiles Self=',TargetFilesEdit.FilesOwnerName,' Src=',SrcFilesEdit.FilesOwnerName,' Dir="',TargetDirectory,'" FileCount=',IDEFiles.Count]);
-  {$ENDIF}
-  SrcPackage:=nil;
-  SrcProject:=nil;
-  if SrcFilesEdit.FilesOwner is TLazPackage then
-    SrcPackage:=TLazPackage(SrcFilesEdit.FilesOwner)
-  else if SrcFilesEdit.FilesOwner is TProject then
-    SrcProject:=TProject(SrcFilesEdit.FilesOwner)
-  else begin
-    {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.MoveFiles invalid src=',DbgSName(SrcFilesEdit.FilesOwner)]);
-    {$ENDIF}
-    exit;
-  end;
-  TargetPackage:=nil;
-  TargetProject:=nil;
-  if TargetFilesEdit.FilesOwner is TLazPackage then
-    TargetPackage:=TLazPackage(TargetFilesEdit.FilesOwner)
-  else if TargetFilesEdit.FilesOwner is TProject then
-    TargetProject:=TProject(TargetFilesEdit.FilesOwner)
-  else begin
-    {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPackageEditorForm.MoveFiles invalid target=',DbgSName(TargetFilesEdit.FilesOwner)]);
-    {$ENDIF}
-    exit;
-  end;
-
   // check TargetDirectory
   if CheckDirectoryIsWritable(TargetDirectory)<>mrOk then begin
-    debugln(['TPackageEditorForm.MoveFiles not writable TargetDirectory=',TargetDirectory]);
+    debugln(['TPkgManager.MoveFiles not writable TargetDirectory=',TargetDirectory]);
     exit;
   end;
 
@@ -2651,7 +2731,7 @@ begin
     // collect all affected files including resource files
     if not CollectFiles(MoveFileCount) then begin
       {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.MoveFiles CollectFiles failed']);
+      debugln(['TPkgManager.MoveFiles CollectFiles failed']);
       {$ENDIF}
       exit;
     end;
@@ -2659,7 +2739,7 @@ begin
     // check if new position is free
     if not CheckNewFilesDoNotExist then begin
       {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.MoveFiles CheckNewFilesDoNotExist failed']);
+      debugln(['TPkgManager.MoveFiles CheckNewFilesDoNotExist failed']);
       {$ENDIF}
       exit;
     end;
@@ -2703,7 +2783,7 @@ begin
     // check uses sections
     if not CheckUsesSections then begin
       {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.MoveFiles CheckUsesSections failed']);
+      debugln(['TPkgManager.MoveFiles CheckUsesSections failed']);
       {$ENDIF}
       exit;
     end;
@@ -2712,7 +2792,7 @@ begin
       // close files and res files in source editor
       if not CloseSrcEditors then begin
         {$IFDEF VerbosePkgEditDrag}
-        debugln(['TPackageEditorForm.MoveFiles CloseSrcEditors failed']);
+        debugln(['TPkgManager.MoveFiles CloseSrcEditors failed']);
         {$ENDIF}
         exit;
       end;
@@ -2722,7 +2802,7 @@ begin
       // files will be moved to another package/project
       if not ClearOldCompiledFiles then begin
         {$IFDEF VerbosePkgEditDrag}
-        debugln(['TPackageEditorForm.MoveFiles ClearOldCompiledFiles failed']);
+        debugln(['TPkgManager.MoveFiles ClearOldCompiledFiles failed']);
         {$ENDIF}
         exit;
       end;
@@ -2731,7 +2811,7 @@ begin
     // extend unit/include path of LazPackage
     if not ExtendSearchPaths then begin
       {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.MoveFiles ExtendSearchPaths failed']);
+      debugln(['TPkgManager.MoveFiles ExtendSearchPaths failed']);
       {$ENDIF}
       exit;
     end;
@@ -2739,7 +2819,7 @@ begin
     // move/copy files
     if not MoveOrCopyFiles then begin
       {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.MoveFiles MoveOrCopyFiles failed']);
+      debugln(['TPkgManager.MoveFiles MoveOrCopyFiles failed']);
       {$ENDIF}
       exit;
     end;
@@ -6122,11 +6202,23 @@ end;
 function TPkgManager.OnProjectInspectorDragOverTreeView(Sender,
   Source: TObject; X, Y: Integer; out TargetTVNode: TTreeNode; out
   TargetTVType: TTreeViewInsertMarkType): boolean;
+var
+  SrcFilesEdit: IFilesEditorInterface;
+  TargetFilesEdit: IFilesEditorInterface;
+  aFileCount: integer;
+  aDependencyCount: integer;
+  aDirectoryCount: integer;
 begin
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPkgManager.OnProjectInspectorDragOverTreeView ']);
   {$ENDIF}
-  Result:=false;
+  Result:=CheckDrag(Sender, Source, X, Y, SrcFilesEdit, TargetFilesEdit,
+    aFileCount, aDependencyCount, aDirectoryCount, TargetTVNode, TargetTVType);
+end;
+
+procedure TPkgManager.OnProjectInspectorCopyMoveFiles(Sender: TObject);
+begin
+  CopyMoveFiles(Sender);
 end;
 
 function TPkgManager.CanOpenDesignerForm(AnUnitInfo: TUnitInfo;

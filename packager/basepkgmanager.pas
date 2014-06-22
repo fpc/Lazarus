@@ -107,6 +107,7 @@ type
     function OnProjectInspectorDragOverTreeView(Sender, Source: TObject;
       X, Y: Integer; out TargetTVNode: TTreeNode;
       out TargetTVType: TTreeViewInsertMarkType): boolean; virtual; abstract;
+    procedure OnProjectInspectorCopyMoveFiles(Sender: TObject); virtual; abstract;
 
     // package editors
     function DoNewPackage: TModalResult; virtual; abstract;

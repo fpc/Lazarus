@@ -6413,6 +6413,7 @@ begin
     ProjInspector.OnReAddDependency:=@PkgBoss.OnProjectInspectorReAddDependency;
     ProjInspector.OnDragOverTreeView:=@PkgBoss.OnProjectInspectorDragOverTreeView;
     ProjInspector.OnDragDropTreeView:=@PkgBoss.OnProjectInspectorDragDropTreeView;
+    ProjInspector.OnCopyMoveFiles:=@PkgBoss.OnProjectInspectorCopyMoveFiles;
 
     ProjInspector.LazProject:=Project1;
   end;

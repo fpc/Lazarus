@@ -102,6 +102,7 @@ type
     OptionsBitBtn: TToolButton;
     HelpBitBtn: TToolButton;
     procedure AddBitBtnClick(Sender: TObject);
+    procedure CopyMoveToDirMenuItemClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
     procedure ItemsPopupMenuPopup(Sender: TObject);
@@ -132,6 +133,7 @@ type
     FIdleConnected: boolean;
     FOnAddDependency: TAddProjInspDepEvent;
     FOnAddUnitToProject: TOnAddUnitToProject;
+    FOnCopyMoveFiles: TNotifyEvent;
     FOnDragDropTreeView: TDragDropEvent;
     FOnDragOverTreeView: TOnDragOverTreeView;
     FOnReAddDependency: TAddProjInspDepEvent;
@@ -224,6 +226,8 @@ type
                                                       write FOnDragDropTreeView;
     property OnDragOverTreeView: TOnDragOverTreeView read FOnDragOverTreeView
                                                       write FOnDragOverTreeView;
+    property OnCopyMoveFiles: TNotifyEvent read FOnCopyMoveFiles
+                                           write FOnCopyMoveFiles;
     property SortAlphabetically: boolean read FSortAlphabetically write SetSortAlphabetically;
     property ShowDirectoryHierarchy: boolean read FShowDirectoryHierarchy write SetShowDirectoryHierarchy;
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
@@ -418,6 +422,11 @@ begin
   AddResult.Free;
 end;
 
+procedure TProjectInspectorForm.CopyMoveToDirMenuItemClick(Sender: TObject);
+begin
+  OnCopyMoveFiles(Self);
+end;
+
 procedure TProjectInspectorForm.DirectoryHierarchyButtonClick(Sender: TObject);
 begin
   ShowDirectoryHierarchy:=DirectoryHierarchyButton.Down;
@@ -450,10 +459,8 @@ begin
         NewFile.Filename:=NewFilename;
         LazProject.AddFile(NewFile,false);
       end;
-      NewFile.IsPartOfProject:=true;
-      if Assigned(OnAddUnitToProject) then begin
-        if OnAddUnitToProject(Self,NewFile)<>mrOk then break;
-      end;
+      if OnAddUnitToProject(Self,NewFile)<>mrOk then
+        break;
       UpdateAll;
     end;
   finally
@@ -500,11 +507,13 @@ var
   Dependency: TPkgDependency;
   HasValidDep: Integer;
   CanClearDep: Integer;
+  CanMoveFileCount: Integer;
 begin
   ItemCnt:=0;
 
   CanRemoveCount:=0;
   CanOpenCount:=0;
+  CanMoveFileCount:=0;
   HasLFMCount:=0;
   DisabledI18NForLFMCount:=0;
   CanReAddCount:=0;
@@ -518,8 +527,10 @@ begin
     if Item is TUnitInfo then begin
       CurUnitInfo:=TUnitInfo(Item);
       inc(CanOpenCount);
-      if CurUnitInfo<>LazProject.MainUnitInfo then
+      if (CurUnitInfo<>LazProject.MainUnitInfo) and (not NodeData.Removed) then begin
         inc(CanRemoveCount);
+        inc(CanMoveFileCount);
+      end;
       if FilenameIsPascalSource(CurUnitInfo.Filename)
       and FileExistsCached(ChangeFileExt(CurUnitInfo.Filename,'.lfm')) then begin
         inc(HasLFMCount);
@@ -546,14 +557,16 @@ begin
     end;
   end;
 
-  // Section headers
+  // general
   AddPopupMenuItem(lisOpen, @OpenButtonClick, CanOpenCount>0);
   AddPopupMenuItem(lisBtnDlgAdd, @AddBitBtnClick, AddBitBtn.Enabled);
   AddPopupMenuItem(lisRemove, @RemoveBitBtnClick, CanRemoveCount>0);
-  AddPopupMenuItem(lisRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick,
-                   not LazProject.IsVirtual);
 
   // files section
+  AddPopupMenuItem(lisCopyMoveFileToDirectory,@CopyMoveToDirMenuItemClick,
+                   (CanMoveFileCount>0));
+  AddPopupMenuItem(lisRemoveNonExistingFiles,@RemoveNonExistingFilesMenuItemClick,
+                   not LazProject.IsVirtual);
   if LazProject.EnableI18N and LazProject.EnableI18NForLFM
   and (HasLFMCount>0) then begin
     AddPopupMenuItem(lisEnableI18NForLFM,
