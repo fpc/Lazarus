@@ -21,11 +21,11 @@ unit Gtk2WSStdCtrls;
 interface
 
 uses
-  // Bindings
+  // RTL
   glib2,  gdk2, gtk2,
-  // RTL, FCL, LCL
-  Classes, SysUtils, Math, Controls, Graphics,
-  StdCtrls, LMessages, LCLType, LCLProc,
+  Classes, SysUtils, Math,
+  // LCL
+  Controls, Graphics, StdCtrls, LMessages, LCLType, LCLProc,
   // Widgetset
   WSControls, WSProc, WSStdCtrls, Gtk2Int, Gtk2Def,
   Gtk2CellRenderer, Gtk2Globals, Gtk2Proc, InterfaceBase,

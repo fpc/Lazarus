@@ -21,6 +21,10 @@ unit Gtk2WSControls;
 interface
 
 uses
+  // RTL
+  Classes, SysUtils,
+  Gtk2, Gdk2, Glib2, gdk2pixbuf,
+  // LCL
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
@@ -29,11 +33,9 @@ uses
 ////////////////////////////////////////////////////
   Controls, ComCtrls,
 ////////////////////////////////////////////////////
-  Classes, SysUtils,
   Graphics,
 
-  gdk2pixbuf,
-  Gtk2, Gdk2, Glib2, Gtk2Globals, Gtk2Def,
+  Gtk2Globals, Gtk2Def,
   Gtk2Proc, LCLType, LCLProc,
   WSControls, WSProc, Gtk2WinapiWindow;
   

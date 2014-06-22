@@ -25,11 +25,13 @@ unit Gtk2WSExtCtrls;
 interface
 
 uses
-  // libs
-  GLib2, Gtk2, Gdk2, Gdk2Pixbuf, Gtk2Int, Gtk2Def,
-  {$ifdef UseStatusIcon}Gtk2Ext, {$endif}
+  // RTL
+  GLib2, Gtk2, Gdk2, Gdk2Pixbuf,
+  Classes, SysUtils, Types,
   // LCL
-  LCLProc, ExtCtrls, Classes, Controls, SysUtils, types, Graphics, LCLType,
+  Gtk2Int, Gtk2Def,
+  {$ifdef UseStatusIcon}Gtk2Ext, {$endif}
+  LCLProc, ExtCtrls, Controls, Graphics, LCLType,
   // widgetset
   WSExtCtrls, WSLCLClasses,
   Gtk2WSControls, Gtk2Proc, Gtk2Globals;

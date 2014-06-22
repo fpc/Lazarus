@@ -21,10 +21,10 @@ unit Gtk2WSSpin;
 interface
 
 uses
-  // Bindings
-  glib2, gtk2,
-  // RTL, FCL, LCL
-  SysUtils, Math, Controls, LCLType, LCLProc, Spin, StdCtrls,
+  // RTL
+  glib2, gtk2, SysUtils, Math,
+  // LCL
+  Controls, LCLType, LCLProc, Spin, StdCtrls,
   // Widgetset
   Gtk2Extra, Gtk2Def, Gtk2WSStdCtrls,
   Gtk2Proc, WSLCLClasses, WSProc, WSSpin;

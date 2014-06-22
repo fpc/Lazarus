@@ -21,10 +21,12 @@ unit Gtk2WSDialogs;
 interface
 
 uses
-  // Bindings
-  Gtk2, Glib2, gdk2, pango, Gtk2Extra,
-  // RTL, FCL and LCL
-  SysUtils, Classes, Graphics, Controls, Dialogs, ExtDlgs, LCLType,
+  // RTL
+  Gtk2, Glib2, gdk2, pango,
+  SysUtils, Classes,
+  // LCL
+  Gtk2Extra,
+  Graphics, Controls, Dialogs, ExtDlgs, LCLType,
   FileUtil, LCLStrConsts, LCLProc, InterfaceBase,
   // Widgetset
   Gtk2Int, Gtk2Globals, Gtk2Def, Gtk2Proc,

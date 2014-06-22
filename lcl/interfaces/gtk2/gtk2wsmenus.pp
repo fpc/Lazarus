@@ -21,9 +21,12 @@ unit Gtk2WSMenus;
 interface
 
 uses
+  // RTL
   glib2, gdk2, gtk2,
+  Classes,
+  // LCL
   Gtk2Int, Gtk2Proc, Gtk2Globals, Gtk2Def, Gtk2Extra,
-  Classes, InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
+  InterfaceBase, Types, LCLProc, LCLType, WSMenus, WSLCLClasses,
   LMessages, Graphics, Menus, Forms, LCLIntf;
 
 type

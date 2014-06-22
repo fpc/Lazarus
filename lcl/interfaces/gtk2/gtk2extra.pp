@@ -1,4 +1,3 @@
-{ $Id$ }
 {
  ---------------------------------------------------------------------------
  gtk2extra.pp  -  GTK(2) widgetset - additional gdk/gtk functions

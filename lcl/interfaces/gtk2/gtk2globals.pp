@@ -13,8 +13,11 @@ unit Gtk2Globals;
 interface
 
 uses
-  SysUtils, Classes, InterfaceBase,
+  // RTL
+  SysUtils, Classes,
   Pango, glib2, gdk2, gtk2,
+  // LCL
+  InterfaceBase,
   LMessages, LCLProc, Controls, ComCtrls, Forms, LCLIntf, LCLType,
   DynHashArray;
 

@@ -20,7 +20,9 @@ unit Gtk2WSButtons;
 interface
 
 uses
+  // RTL
   glib2, gtk2, gdk2, gdk2pixbuf,
+  // LCL
 ////////////////////////////////////////////////////
   LCLType, Controls, Buttons, Graphics, GraphType,
 ////////////////////////////////////////////////////

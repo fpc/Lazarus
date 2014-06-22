@@ -25,6 +25,7 @@ unit Gtk2Debug;
 interface 
 
 uses
+  // RTL
   gdk2pixbuf, gdk2, gtk2,
   sysutils;
 

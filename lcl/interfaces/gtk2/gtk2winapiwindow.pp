@@ -28,9 +28,10 @@ unit Gtk2WinapiWindow;
 interface
 
 uses
-  SysUtils, LCLProc,
-  Gtk2Extra, glib2, gdk2, gtk2,
-  Controls, Gtk2Proc, Gtk2Def;
+  // RTL
+  SysUtils, glib2, gdk2, gtk2,
+  // LCL
+  LCLProc, Gtk2Extra, Controls, Gtk2Proc, Gtk2Def;
 
 { $Define VerboseCaret}
 // the gtk has a function to draw the cursor, but it does not support xor

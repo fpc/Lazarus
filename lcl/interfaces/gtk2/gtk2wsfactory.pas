@@ -3,8 +3,12 @@ unit Gtk2WSFactory;
 {$mode objfpc}{$H+}
 
 interface
+
 uses
-  Classes, Controls, ComCtrls, Calendar, StdCtrls, Spin,
+  // RTL
+  Classes,
+  // LCL
+  Controls, ComCtrls, Calendar, StdCtrls, Spin,
   Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
   PairSplitter, WSLCLClasses;
 
@@ -99,6 +103,7 @@ function RegisterCustomRubberBand: Boolean;
 function RegisterLazDeviceAPIs: Boolean;
 
 implementation
+
 uses
   Gtk2WSButtons,
   Gtk2WSCalendar,

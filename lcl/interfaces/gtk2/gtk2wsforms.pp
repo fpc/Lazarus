@@ -21,12 +21,14 @@ unit Gtk2WSForms;
 interface
 
 uses
-  // Bindings
+  // RTL
   Gtk2, Glib2, Gdk2, Gdk2Pixbuf,
   {$IFDEF HASX}
   Gdk2x, X, XLib,
   {$ENDIF}
-  Math, types, Classes, LazLogger, LCLType, Controls, LMessages, InterfaceBase,
+  Math, types, Classes,
+  // LCL
+  LazLogger, LCLType, Controls, LMessages, InterfaceBase,
   Graphics, Forms, WSForms, WSProc,
   Gtk2Int, Gtk2Proc, Gtk2Def, Gtk2Extra, Gtk2Globals, Gtk2WSControls;
 

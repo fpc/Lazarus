@@ -27,19 +27,19 @@ interface
 {$I gtk2defines.inc}
 
 uses
+  // RTL
   {$ifdef Unix}
   BaseUnix, Unix,
   {$endif}
-  Types, Classes, SysUtils, Math, maps,
+  Types, Classes, SysUtils, Math,
   {$IfNDef GTK2_2}
     {$IfDef HasX}
      XLib, xatom, X, gdk2x, //XUtil,
     {$EndIf}
   {$EndIf}
-
-
+  gdk2pixbuf, gtk2, gdk2, glib2, Pango,
   // LCL
-  FileUtil, Dialogs, Controls, Forms, LCLStrConsts,
+  Maps, FileUtil, Dialogs, Controls, Forms, LCLStrConsts,
   LMessages, LCLProc, LCLIntf, LCLType, DynHashArray, GraphType, GraphMath,
   Graphics, Menus, Themes, WSLCLClasses,
 
@@ -47,7 +47,6 @@ uses
   ComCtrls, Spin,
   ExtCtrls, LResources,
 
-  gdk2pixbuf, gtk2, gdk2, glib2, Pango,
   InterfaceBase,
   Gtk2WinApiWindow,
   Gtk2Globals, Gtk2Proc,

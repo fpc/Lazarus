@@ -21,15 +21,17 @@ unit Gtk2WSCheckLst;
 interface
 
 uses
-
-Gtk2, GLib2, Gtk2Def,
+  // RTL
+  SysUtils, Classes,
+  Gtk2, GLib2, Gtk2Def,
+  // LCL
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  CheckLst, StdCtrls, Controls, LCLType, SysUtils, Classes, LMessages, LCLProc,
+  CheckLst, StdCtrls, Controls, LCLType, LMessages, LCLProc,
 ////////////////////////////////////////////////////
   WSCheckLst, WSLCLClasses;
 

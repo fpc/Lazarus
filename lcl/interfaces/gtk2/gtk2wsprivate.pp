@@ -27,8 +27,9 @@ interface
 uses
   // libs
   Gtk2, Glib2, Gdk2,
+  Classes, SysUtils,
   // LCL
-  LCLType, LMessages, LCLProc, Controls, Classes, SysUtils, Forms,
+  LCLType, LMessages, LCLProc, Controls, Forms,
   // widgetset
   WSControls, WSLCLClasses, WSProc,
   // interface

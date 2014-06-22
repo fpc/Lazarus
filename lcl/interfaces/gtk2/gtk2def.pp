@@ -25,9 +25,11 @@ unit Gtk2Def;
 interface
 
 uses
-  glib2, gdk2pixbuf, pango, gdk2, gtk2,
+  // RTL
+  Classes, SysUtils, glib2, gdk2pixbuf, pango, gdk2, gtk2,
+  // LCL
   Gtk2Extra,
-  Classes, SysUtils, LCLIntf, LCLProc, LCLType, LCLMemManager, DynHashArray,
+  LCLIntf, LCLProc, LCLType, LCLMemManager, DynHashArray,
   GraphType, Gtk2Globals;
 
 {$ifdef TraceGdiCalls}

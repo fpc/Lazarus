@@ -21,10 +21,10 @@ unit Gtk2WSCalendar;
 interface
 
 uses
-  // Bindings
-  glib2, gdk2, gtk2,
+  // RTL
+  glib2, gdk2, gtk2, SysUtils, Types, Classes,
   // RTL, FCL, LCL
-  SysUtils, Types, Classes, Controls, Calendar, LCLType, LMessages,
+  Controls, Calendar, LCLType, LMessages,
   InterfaceBase, LCLProc,
   // Widgetset
   Gtk2Proc, Gtk2Def, Gtk2Int, Gtk2WsControls,

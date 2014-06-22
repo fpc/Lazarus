@@ -1,3 +1,4 @@
+{%MainUnit gtk2wsstdctrls.pp}
 {$IFDEF MEMOHEADER}
 
 type

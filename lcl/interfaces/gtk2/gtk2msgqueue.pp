@@ -20,7 +20,10 @@ unit Gtk2MsgQueue;
 
 interface
 
-uses LazLinkedList, LCLType, LMessages, Gtk2Globals, DynHashArray, Gtk2Proc
+uses
+  // RTL
+  // LCL
+  LazLinkedList, LCLType, LMessages, Gtk2Globals, DynHashArray, Gtk2Proc
 {$IFNDEF USE_GTK_MAIN_OLD_ITERATION}
 , glib2
 {$ENDIF}

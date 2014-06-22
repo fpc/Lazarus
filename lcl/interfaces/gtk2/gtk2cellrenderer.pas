@@ -25,8 +25,12 @@ unit Gtk2CellRenderer;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LCLProc, Controls, StdCtrls, ComCtrls, LMessages,
-  Gtk2Int, gtk2, gdk2, glib2, Gtk2Proc, Gtk2Def;
+  // RTL
+  Classes, SysUtils,
+  gtk2, gdk2, glib2,
+  // LCL
+  LCLType, LCLProc, Controls, StdCtrls, ComCtrls, LMessages,
+  Gtk2Int, Gtk2Proc, Gtk2Def;
   
 type
   PLCLIntfCellRenderer = ^TLCLIntfCellRenderer;
@@ -65,7 +69,9 @@ procedure LCLIntfCellRenderer_CellDataFunc(cell_layout:PGtkCellLayout;
                                            data: gpointer); cdecl;
 
 implementation
-uses Gtk2Extra;
+
+uses
+  Gtk2Extra;
 
 type
   TCustomListViewAccess = class(TCustomListView);

@@ -1,3 +1,4 @@
+{%MainUnit gtk2int.pp}
 {******************************************************************************
                                  gtklistslh.inc
                  TGtkListStringList and TGtkCListStringList

@@ -13,8 +13,10 @@ unit Gtk2FontCache;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLType, AvgLvlTree, Gtk2Def,
-  glib2, pango,
+  // RTL
+  Classes, SysUtils, glib2, pango,
+  // LCL
+  LCLProc, LCLType, AvgLvlTree, Gtk2Def,
   LCLResCache;
   
 type

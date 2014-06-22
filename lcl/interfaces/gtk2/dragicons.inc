@@ -1,4 +1,4 @@
-// included by gtkglobals.pp
+{%MainUnit gtkglobals.pp}
 {
  *****************************************************************************
   This file is part of the Lazarus Component Library (LCL)
