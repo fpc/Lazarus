@@ -5754,6 +5754,8 @@ resourcestring
   lisCheckIfPackageCreatesPpuCheckNothingDeletesThisFil = '. Check if package '
     +'%s creates %s.ppu, check nothing deletes this file and check that no two'
     +' packages have access to the unit source.';
+  lisFlagUseUnitInPackageOfUnitIsDisabled = 'Flag "Use Unit" in package %s of '
+    +'unit %s is disabled';
   lisOfTheProjectInspector = ' of the Project Inspector';
   lisOfPackage = ' of package %s';
   lisCompileWithVdForMoreDetailsCheckForDuplicates = '%s -> Compile with -vd '
