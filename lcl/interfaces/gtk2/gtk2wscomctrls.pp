@@ -22,10 +22,10 @@ interface
 
 uses
   // libs
-  GLib2, Gtk2, Gdk2, Gdk2pixbuf,
+  Math, Sysutils, Classes, GLib2, Gtk2, Gdk2, Gdk2pixbuf,
   // RTL, FCL, LCL
-  ComCtrls, Classes, LCLType, LMessages, Controls, Graphics,
-  StdCtrls, Forms, LCLProc, LCLIntf, ImgList, Math, Sysutils, InterfaceBase,
+  ComCtrls, LCLType, LMessages, Controls, Graphics,
+  StdCtrls, Forms, LCLProc, LCLIntf, ImgList, InterfaceBase,
   // widgetset
   WSComCtrls, WSLCLClasses, WSControls, WSProc,
   // GtkWidgetset

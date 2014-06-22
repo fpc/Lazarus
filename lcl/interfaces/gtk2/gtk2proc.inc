@@ -877,7 +877,7 @@ begin
   else
     PS^.rcPaint := GtkPaintMsg.Data.Rect;
 
-  Result.DC := BeginPaint(THandle({%H-}PtrUInt(Widget)), PS^);
+  Result.DC := BeginPaint(THandle(PtrUInt(Widget)), PS^);
   Result.PaintStruct := PS;
   Result.Result := 0;
   if FreeGtkPaintMsg then

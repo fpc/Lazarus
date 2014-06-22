@@ -7,7 +7,7 @@ interface
 uses
   Windows;
   
-  function GetWin32AppHandle: THandle;
+  function GetWin32AppHandle: THandle; // Beware LCLType.THandle <> Windows.THandle
 
 implementation
 
