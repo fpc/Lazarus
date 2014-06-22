@@ -2019,7 +2019,7 @@ begin
 
   if List.CurReadErrorMsg<>'' then
     Msg:=Msg+List.CurReadErrorMsg+LineEnding;
-  if E is EReadError then;
+  Msg+=E.Message;
   IDEMessageDialog(lisCodeToolsDefsReadError, Msg, mtError, [mbCancel]);
 end;
 
