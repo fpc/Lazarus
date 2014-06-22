@@ -2526,6 +2526,7 @@ begin
   if IsPartOfProject=AValue then exit;
   if Project<>nil then Project.BeginUpdate(true);
   inherited SetIsPartOfProject(AValue);
+  Modified:=true;
   UpdateList(uilPartOfProject,IsPartOfProject);
   if IsPartOfProject then UpdateUsageCount(uuIsPartOfProject,0);
   UpdateSourceDirectoryReference;

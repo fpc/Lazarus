@@ -1724,6 +1724,7 @@ var
   NodeData: TPENodeData;
   Item: TObject;
   Directory: String;
+  TV: TTreeView;
 begin
   Result:=false;
   SrcFilesEdit:=nil;
@@ -1736,17 +1737,37 @@ begin
 
   // get source
   SrcFilesEdit:=GetFilesEditIntf(Source);
-  if (SrcFilesEdit=nil) or SrcFilesEdit.FilesOwnerReadOnly
-  or (not FilenameIsAbsolute(SrcFilesEdit.FilesBaseDirectory)) then
+  if (SrcFilesEdit=nil) then begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPkgManager.CheckDrag failed: unknown src=',DbgSName(Source)]);
+    {$ENDIF}
     exit;
+  end;
+  if SrcFilesEdit.FilesOwnerReadOnly
+  or (not FilenameIsAbsolute(SrcFilesEdit.FilesBaseDirectory)) then begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPkgManager.CheckDrag failed: src=',DbgSName(SrcFilesEdit.FilesOwner),' readonly=',SrcFilesEdit.FilesOwnerReadOnly,' basedir=',SrcFilesEdit.FilesBaseDirectory]);
+    {$ENDIF}
+    exit;
+  end;
 
   // get target
   TargetFilesEdit:=GetFilesEditIntf(Sender);
-  if (TargetFilesEdit=nil) or TargetFilesEdit.FilesOwnerReadOnly
-  or (not FilenameIsAbsolute(TargetFilesEdit.FilesBaseDirectory)) then
+  if (TargetFilesEdit=nil) then begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPkgManager.CheckDrag failed: unknown target=',DbgSName(Sender)]);
+    {$ENDIF}
     exit;
+  end;
+  if TargetFilesEdit.FilesOwnerReadOnly
+  or (not FilenameIsAbsolute(TargetFilesEdit.FilesBaseDirectory)) then begin
+    {$IFDEF VerbosePkgEditDrag}
+    debugln(['TPkgManager.CheckDrag failed: target=',DbgSName(TargetFilesEdit.FilesOwner),' readonly=',SrcFilesEdit.FilesOwnerReadOnly,' basedir=',SrcFilesEdit.FilesBaseDirectory]);
+    {$ENDIF}
+    exit;
+  end;
 
-  debugln(['TPkgManager.CheckDrag Src=',SrcFilesEdit.FilesOwnerName,' Target=',TargetFilesEdit.FilesOwnerName]);
+  //debugln(['TPkgManager.CheckDrag Src=',SrcFilesEdit.FilesOwnerName,' Target=',TargetFilesEdit.FilesOwnerName]);
 
   // check items
   aFileCount:=0;
@@ -1794,7 +1815,9 @@ begin
     exit;
   end;
 
-  TargetFilesEdit.FilesEditTreeView.GetInsertMarkAt(X,Y,TargetTVNode,TargetTVType);
+  TV:=TargetFilesEdit.FilesEditTreeView;
+  TargetTVNode:=TV.GetNodeAt(X,Y);
+  debugln(['TPkgManager.CheckDrag AAA1 TargetTVNode=',TargetTVNode<>nil,' Y=',Y]);
   if TargetTVNode=nil then begin
     if aDependencyCount>0 then begin
       TargetTVNode:=TargetFilesEdit.TVNodeRequiredPackages;
@@ -1803,6 +1826,7 @@ begin
     end;
     TargetTVType:=tvimAsFirstChild;
   end;
+  debugln(['TPkgManager.CheckDrag AAA2 TargetTVNode=',TargetTVNode.Text]);
   if TargetFilesEdit.GetNodeDataItem(TargetTVNode,NodeData,Item) then begin
     // move to specific position is not yet supported
     // => redirect to parent nodes
@@ -1815,18 +1839,18 @@ begin
       or TargetFilesEdit.IsDirectoryNode(TargetTVNode);
     TargetTVType:=tvimAsFirstChild;
   end;
+  debugln(['TPkgManager.CheckDrag AAA3 TargetTVNode=',TargetTVNode.Text]);
   if TargetFilesEdit.IsDirectoryNode(TargetTVNode)
   or (TargetTVNode=TargetFilesEdit.TVNodeFiles)
   then begin
     Directory:=TargetFilesEdit.GetNodeFilename(TargetTVNode);
     if not FilenameIsAbsolute(Directory) then begin
       {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPkgManager.CheckDrag: invalid target directory ',Directory]);
+      debugln(['TPkgManager.CheckDrag: invalid target directory="',Directory,'"']);
       {$ENDIF}
       exit;
     end;
-    if TargetTVNode=TargetFilesEdit.TVNodeFiles then
-      TargetTVType:=tvimAsFirstChild;
+    TargetTVType:=tvimAsFirstChild;
     if aFileCount>0 then begin
       // drag files
     end else if aDirectoryCount>0 then begin

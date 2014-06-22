@@ -19,6 +19,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     Anchors = [akTop, akLeft, akBottom]
     BorderSpacing.Top = 2
     DefaultItemHeight = 18
+    DragMode = dmAutomatic
     MultiSelect = True
     PopupMenu = ItemsPopupMenu
     ReadOnly = True

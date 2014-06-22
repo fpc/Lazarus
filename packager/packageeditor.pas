@@ -2759,8 +2759,15 @@ begin
   if Node=FFilesNode then
     exit(FilesBaseDirectory);
   Item:=TFileNameItem(Node.Data);
-  if not (Item is TFileNameItem) then exit;
-  Result:=Item.Filename;
+  if (Item is TFileNameItem) then begin
+    Result:=Item.Filename;
+  end else if Node.HasAsParent(FFilesNode) then begin
+    // directory node
+    Result:=Node.Text;
+  end else
+    exit;
+  if not FilenameIsAbsolute(Result) then
+    Result:=AppendPathDelim(FilesBaseDirectory)+Result;
 end;
 
 procedure TPackageEditorForm.GetDirectorySummary(DirNode: TTreeNode; out
