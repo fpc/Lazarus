@@ -80,7 +80,7 @@ Type
     property OnTestEnd: TTestEndEvent read FOnTestEnd write FOnTestEnd;
   end;
 
-function ExtractFormatArgs(S: String; out ArgumentError: boolean): String;
+function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;
 function IsMasterPoName(const Fn: String): Boolean;
 function ExtractMasterNameFromChildName(const AChildName: String): String;
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
@@ -116,7 +116,7 @@ const
 
 //Helper functions
 
-function ExtractFormatArgs(S: String; out ArgumentError: boolean): String;
+function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;
 const
   FormatArgs = 'DEFGMNPSUX';
   FormatChar = '%';
@@ -126,9 +126,9 @@ var
   NewStr, Symb: String;
 begin
   NewStr := '';
-  ArgumentError := false;
+  ArgumentError := 0;
   p := UTF8Pos(FormatChar, S);
-  while (Length(S)>0) and (p>0) do
+  while (Length(S)>0) and (p>0) and (ArgumentError=0) do
   begin
     UTF8Delete(S, 1, p);
     if Length(S)>0 then
@@ -144,7 +144,7 @@ begin
       begin
         NewStr := NewStr+Symb;
         if UTF8Pos(Symb, FormatArgs)=0 then
-          ArgumentError := true;
+          ArgumentError := Utf8Length(NewStr);
       end;
       //removing processed symbol
       UTF8Delete(S, 1, 1);
@@ -153,7 +153,7 @@ begin
     end
     else
       //in this case formatting symbol doesn't have its argument
-      ArgumentError := true;
+      ArgumentError := Utf8Length(NewStr) + 1;
   end;
   Result := NewStr;
 end;
@@ -232,16 +232,41 @@ end;
 
 function CompareFormatArgs(S1, S2: String): Boolean;
 var
-  ArgErr1, ArgErr2: boolean;
+  Extr1, Extr2: String;
+  ArgErr1, ArgErr2: Integer;
 begin
   Result := true;
   //do not check arguments if strings are equal to save time and avoid some
   //false positives, e.g. for '{%Region}' string in lazarusidestrconsts
   if S1 <> S2 then
   begin
-    Result := CompareText(ExtractFormatArgs(S1, ArgErr1), ExtractFormatArgs(S2, ArgErr2)) = 0;
-    //setting result to false if invalid arguments were found even if the match
-    Result := Result and not ArgErr1 and not ArgErr2;
+    Extr1 := ExtractFormatArgs(S1, ArgErr1);
+    Extr2 := ExtractFormatArgs(S2, ArgErr2);
+    //writeln('Extr1 = ',Extr1,' ArgErr1 = ',ArgErr1);
+    //writeln('Extr2 = ',Extr1,' ArgErr2 = ',ArgErr2);
+    if (ArgErr1 = 0) then
+    begin
+      if (ArgErr2 = 0) then
+      begin
+        Result := Utf8CompareText(Extr1, Extr2) = 0;
+      end
+      else
+      begin
+        //Extr2 can have dangling %'s
+        //e.g. Extr1 = "%s %d" Extr2 = "%s %d {%H}", it does not make sense, but it's not illegal
+        if (ArgErr2 = Utf8Length(Extr1)+1) and not (ArgErr2 > Utf8Length(Extr2)) then Extr2 := Utf8Copy(Extr2,1,ArgErr2-1);
+        Result := Utf8CompareText(Extr1, Extr2) = 0;
+      end;
+    end
+    else
+    begin  //ArgErr1 <> 0
+      //Assume Extr1 is always legal, otherwise the IDE would crash in it's default language...
+      //Only compare until the last valid argument in Extr1
+      if (ArgErr1 = Utf8Length(Extr1)) then Utf8Delete(Extr1, ArgErr1, 1);
+      if Utf8Length(Extr2) > Utf8Length(Extr1) then Extr2 := Utf8Copy(Extr2, 1, Utf8Length(Extr1));
+      Result := Utf8CompareText(Extr1, Extr2) = 0;
+    end;
+    //writeln('CompareFormatArgs: Result = ',Result);
   end;
 end;
 
