@@ -29,6 +29,7 @@ unit ExtTools;
 
 {$IFDEF EnableOldExtTools}{$Error Wrong}{$ENDIF}
 
+{off $DEFINE VerboseExtToolErrors}
 {off $DEFINE VerboseExtToolAddOutputLines}
 {off $DEFINE VerboseExtToolThread}
 
@@ -378,8 +379,10 @@ procedure TExternalTool.ProcessStopped;
 var
   i: Integer;
 begin
+  {$IFDEF VerboseExtToolErrors}
   if ErrorMessage<>'' then
     DebuglnThreadLog(['TExternalTool.ThreadStopped ',Title,' ErrorMessage=',ErrorMessage]);
+  {$ENDIF}
   EnterCriticalSection;
   try
     if (not Terminated) and (ExitStatus<>0) and (ErrorMessage='') then
@@ -393,8 +396,11 @@ begin
     try
       Parsers[i].Done;
     except
-      on E: Exception do
+      on E: Exception do begin
+        {$IFDEF VerboseExtToolErrors}
         DebuglnThreadLog(['TExternalTool.ProcessStopped ',Title,' Error in ',DbgSName(Parsers[i]),': ',E.Message]);
+        {$ENDIF}
+      end;
     end;
   end;
   try
@@ -1666,7 +1672,9 @@ begin
         if (Tool<>nil) and (Tool.ErrorMessage='') then begin
           Tool.ErrorMessage:=E.Message;
           ErrMsg:=GetExceptionStackTrace;
+          {$IFDEF VerboseExtToolErrors}
           DebuglnThreadLog(ErrMsg);
+          {$ENDIF}
           Tool.ErrorMessage:=E.Message+LineEnding+ErrMsg;
         end;
       end;
