@@ -861,7 +861,6 @@ type
       const Data: PtrInt; var Handled, Abort: boolean; Depth: integer);
     // Methods for ReadProject
     function LoadOldProjectType(const Path: string): TOldProjectType;
-    procedure LoadBuildModes(const Path: string; LoadData: boolean);
     procedure LoadFlags(const Path: string);
     procedure LoadCustomDefines(const Path: string);
     procedure LoadSessionInfo(const Path: string; Merge: boolean);
@@ -2717,20 +2716,6 @@ begin
     Result:=ptCustomProgram;
 end;
 
-procedure TProject.LoadBuildModes(const Path: string; LoadData: boolean);
-begin
-  if FReadFlags <> [prfLoadParts] then begin // prfLoadParts, no prfLoadPartBuildModes
-    if prfLoadParts in FReadFlags then begin
-      if LoadData then
-        ClearBuildModes;
-    end;
-    if LoadData then
-      BuildModes.LoadProjFromXMLConfig(FXMLConfig, Path)
-    else
-      BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, prfLoadParts in FReadFlags);
-  end;
-end;
-
 procedure TProject.LoadFlags(const Path: string);
 
   procedure SetFlag(f: TProjectFlag; Value: boolean);
@@ -2886,7 +2871,11 @@ begin
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
   end;
   // load MacroValues and compiler options
-  LoadBuildModes(Path,true);
+  if FReadFlags <> [prfLoadParts] then begin // Test for: prfLoadParts, no prfLoadPartBuildModes
+    if prfLoadParts in FReadFlags then
+      ClearBuildModes;
+    BuildModes.LoadProjFromXMLConfig(FXMLConfig, Path);
+  end;
   // Resources
   if not (prfLoadParts in FReadFlags) then
   begin
@@ -2927,7 +2916,9 @@ begin
   FFileVersion:=FXMLConfig.GetValue(Path+'Version/Value',0);
 
   // load MacroValues and compiler options
-  LoadBuildModes(Path,false);
+  if FReadFlags <> [prfLoadParts] then // Test for: prfLoadParts, no prfLoadPartBuildModes
+    BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, prfLoadParts in FReadFlags);
+
   // load custom defines
   LoadCustomDefines(Path);
   // load session info
