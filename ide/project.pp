@@ -714,8 +714,10 @@ type
     procedure LoadProjFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadSessionFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                        LoadParts: boolean);
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                              SaveData, SaveSession: boolean);
+    procedure SaveProjToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                  SaveSession: boolean);
+    procedure SaveSessionToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                     SaveSession: boolean);
   public
     property Items[Index: integer]: TProjectBuildMode read GetItems; default;
     property ChangeStamp: integer read FChangeStamp;
@@ -3159,7 +3161,7 @@ begin
   // save custom data
   SaveStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
   // Save the macro values and compiler options
-  BuildModes.SaveToXMLConfig(FXMLConfig, Path, True, FSaveSessionInLPI);
+  BuildModes.SaveProjToXMLConfig(FXMLConfig, Path, FSaveSessionInLPI);
   // save the Publish Options
   PublishOptions.SaveToXMLConfig(FXMLConfig,Path+'PublishOptions/',fCurStorePathDelim);
   // save the Run and Build parameter options
@@ -3204,7 +3206,7 @@ begin
   FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
 
   // Save the session build modes
-  BuildModes.SaveToXMLConfig(FXMLConfig, Path, False, True);
+  BuildModes.SaveSessionToXMLConfig(FXMLConfig, Path, True);
   // save all units
   SaveUnits(Path,true,true);
   // save custom defines
@@ -3296,8 +3298,7 @@ begin
   FProjectWriteFlags := ProjectWriteFlags;
   BuildModes.FGlobalMatrixOptions := GlobalMatrixOptions;
   // first save the .lpi file
-  if (pwfSkipSeparateSessionInfo in ProjectWriteFlags)
-  or (SessionStorage=pssNone) then
+  if (pwfSkipSeparateSessionInfo in ProjectWriteFlags) or (SessionStorage=pssNone) then
     FSaveSessionInLPI:=false
   else
     FSaveSessionInLPI:=(SessFilename='') or (CompareFilenames(SessFilename,CfgFilename)=0);
@@ -7306,28 +7307,38 @@ begin
 end;
 
 // SaveToXMLConfig itself
-procedure TProjectBuildModes.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  SaveData, SaveSession: boolean);
+procedure TProjectBuildModes.SaveProjToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  SaveSession: boolean);
 var
-  CurMode: TProjectBuildMode;
   i, Cnt: Integer;
-  SubPath: String;
 begin
   FXMLConfig := XMLConfig;
-
   // the first build mode is the default mode
-  if SaveData then
-    Items[0].SaveDefaultCompilerOpts(FXMLConfig, Path);
+  Items[0].SaveDefaultCompilerOpts(FXMLConfig, Path);
 
   Cnt:=0;
   for i:=0 to Count-1 do
-    if (Items[i].InSession and SaveSession) or ((not Items[i].InSession) and SaveData) then
+    if (Items[i].InSession and SaveSession) or not Items[i].InSession then
       Items[i].SaveToXMLConfig(FXMLConfig, Path, i=0, Cnt);
   FXMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
 
-  if SaveData then
-    SharedMatrixOptions.SaveToXMLConfig(FXMLConfig,
-      Path+'BuildModes/SharedMatrixOptions/',@IsSharedMode);
+  SharedMatrixOptions.SaveToXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/',@IsSharedMode);
+  if SaveSession then
+    SaveSessionData(Path);
+end;
+
+procedure TProjectBuildModes.SaveSessionToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  SaveSession: boolean);
+var
+  i, Cnt: Integer;
+begin
+  FXMLConfig := XMLConfig;
+
+  Cnt:=0;
+  for i:=0 to Count-1 do
+    if Items[i].InSession and SaveSession then
+      Items[i].SaveToXMLConfig(FXMLConfig, Path, i=0, Cnt);
+  FXMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
 
   if SaveSession then
     SaveSessionData(Path);
