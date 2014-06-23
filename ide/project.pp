@@ -678,8 +678,9 @@ type
     // Used by LoadFromXMLConfig
     procedure AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string; InSession: boolean);
     procedure LoadSessionEnabledNonSessionMatrixOptions(const Path: string);
-    procedure LoadDefaultCompilerOpts(const Path: string; LoadData: boolean);
-    procedure LoadOtherCompilerOpts(const Path: string; Cnt: Integer; LoadData: boolean);
+    procedure LoadDefaultProjCompilerOpts(const Path: string);
+    procedure LoadDefaultSessionCompilerOpts(const Path: string);
+    procedure LoadOtherCompilerOpts(const Path: string; Cnt: Integer; InSession: boolean);
     procedure LoadMacroValues(const Path: string; CurMode: TProjectBuildMode);
     procedure LoadAllMacroValues(const Path: string; Cnt: Integer);
     procedure LoadOldFormat(const Path: string);
@@ -7110,24 +7111,26 @@ begin
   end;
 end;
 
-procedure TProjectBuildModes.LoadDefaultCompilerOpts(const Path: string; LoadData: boolean);
-// Default mode is stored at the old XML path. Testing the 'Default' XML attribute
-//  is not needed because the first mode is always default.
-var
-  Ident: String;
-  CurMode: TProjectBuildMode;
+procedure TProjectBuildModes.LoadDefaultProjCompilerOpts(const Path: string);
+// Project default mode is stored at the old XML path. Testing the 'Default'
+//  XML attribute is not needed because the first mode is always default.
 begin
-  Ident:=FXMLConfig.GetValue(Path+'Item1/Name', '');
-  if LoadData then begin
-    CurMode:=Items[0];      // Load to the default mode (it already exists)
-    CurMode.Identifier:=Ident;
-  end
-  else
-    CurMode:=Add(Ident);    // Add a new mode for session.
-  CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig, 'CompilerOptions/');
+  // Load to the existing mode
+  Items[0].Identifier:=FXMLConfig.GetValue(Path+'Item1/Name', '');
+  Items[0].CompilerOptions.LoadFromXMLConfig(FXMLConfig, 'CompilerOptions/');
 end;
 
-procedure TProjectBuildModes.LoadOtherCompilerOpts(const Path: string; Cnt: Integer; LoadData: boolean);
+procedure TProjectBuildModes.LoadDefaultSessionCompilerOpts(const Path: string);
+// Add a new mode for session compiler options.
+var
+  CurMode: TProjectBuildMode;
+begin
+  CurMode:=Add(FXMLConfig.GetValue(Path+'Item1/Name', ''));
+  CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig, 'CompilerOptions/');
+  CurMode.InSession:=True;
+end;
+
+procedure TProjectBuildModes.LoadOtherCompilerOpts(const Path: string; Cnt: Integer; InSession: boolean);
 // Iterate rest of the modes.
 var
   i: Integer;
@@ -7138,9 +7141,8 @@ begin
   begin
     SubPath:=Path+'Item'+IntToStr(i)+'/';
     Ident:=FXMLConfig.GetValue(SubPath+'Name','');
-    // add another mode
-    CurMode:=Add(Ident);
-    CurMode.InSession:=not LoadData;
+    CurMode:=Add(Ident);                     // add another mode
+    CurMode.InSession:=InSession;
     CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig, SubPath+'CompilerOptions/');
   end;
 end;
@@ -7152,13 +7154,13 @@ var
 begin
   // load macro values of old IDE (<1.1)
   Cnt:=FXMLConfig.GetValue(Path+'Count',0);
-  //debugln(['LoadOldMacroValues Cnt=',Cnt]);
+  //debugln(['LoadMacroValues Cnt=',Cnt]);
   for i:=1 to Cnt do begin
     SubPath:=Path+'Macro'+IntToStr(i)+'/';
     MacroName:=FXMLConfig.GetValue(SubPath+'Name','');
     if (MacroName='') or not IsValidIdent(MacroName) then continue;
     MacroValue:=FXMLConfig.GetValue(SubPath+'Value','');
-    //debugln(['LoadOldMacroValues Mode="',CurMode.Identifier,'" ',MacroName,'="',MacroValue,'" session=',CurMode.InSession]);
+    //debugln(['LoadMacroValues Mode="',CurMode.Identifier,'" ',MacroName,'="',MacroValue,'" session=',CurMode.InSession]);
     AddMatrixMacro(MacroName,MacroValue,CurMode.Identifier,CurMode.InSession);
   end;
 end;
@@ -7221,8 +7223,11 @@ begin
   Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
   //debugln(['TProjectBuildModes.LoadFromXMLConfig Cnt=',Cnt,' LoadData=',LoadData]);
   if Cnt>0 then begin
-    LoadDefaultCompilerOpts(Path+'BuildModes/', LoadData);
-    LoadOtherCompilerOpts(Path+'BuildModes/', Cnt, LoadData);
+    if LoadData then
+      LoadDefaultProjCompilerOpts(Path+'BuildModes/')
+    else
+      LoadDefaultSessionCompilerOpts(Path+'BuildModes/');
+    LoadOtherCompilerOpts(Path+'BuildModes/', Cnt, not LoadData);
     LoadAllMacroValues(Path+'MacroValues/', Cnt);
   end
   else if LoadData then
