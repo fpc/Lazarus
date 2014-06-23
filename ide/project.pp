@@ -709,8 +709,9 @@ type
     function IsSharedMode(const ModeIdentifier: string): boolean;
     procedure RenameMatrixMode(const OldName, NewName: string);
     // load, save
-    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                LoadData, LoadParts: boolean);
+    procedure LoadProjFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadSessionFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                       LoadParts: boolean);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               SaveData, SaveSession: boolean);
   public
@@ -2725,7 +2726,10 @@ begin
     if LoadData then
       ClearBuildModes;
   end;
-  BuildModes.LoadFromXMLConfig(FXMLConfig, Path, LoadData, FLoadParts);
+  if LoadData then
+    BuildModes.LoadProjFromXMLConfig(FXMLConfig, Path)
+  else
+    BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, FLoadParts);
 end;
 
 procedure TProject.LoadFlags(const Path: string);
@@ -7214,37 +7218,48 @@ begin
   LazProject.ActiveBuildMode:=CurMode;
 end;
 
-// LoadFromXMLConfig itself
-procedure TProjectBuildModes.LoadFromXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; LoadData, LoadParts: boolean);
+procedure TProjectBuildModes.LoadProjFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+// Load for project
 var
   Cnt: Integer;
-  CurMode: TProjectBuildMode;
 begin
   FXMLConfig := XMLConfig;
 
-  // load matrices
-  if LoadData then
-    // load matrix options of project (not session)
-    SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/')
-  else if not LoadParts then
-    // load matrix options of session
+  // load matrix options
+  SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/');
+
+  Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
+  if Cnt>0 then begin
+    LoadDefaultProjCompilerOpts(Path+'BuildModes/');
+    LoadOtherCompilerOpts(Path+'BuildModes/', Cnt, False);
+    LoadAllMacroValues(Path+'MacroValues/', Cnt);
+  end
+  else
+    LoadOldFormat(Path);
+
+  SetActiveMode(Path);
+end;
+
+procedure TProjectBuildModes.LoadSessionFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; LoadParts: boolean);
+// Load for session
+var
+  Cnt: Integer;
+begin
+  FXMLConfig := XMLConfig;
+
+  if not LoadParts then
+    // load matrix options
     SessionMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SessionMatrixOptions/');
 
   Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
-  //debugln(['TProjectBuildModes.LoadFromXMLConfig Cnt=',Cnt,' LoadData=',LoadData]);
   if Cnt>0 then begin
-    if LoadData then
-      LoadDefaultProjCompilerOpts(Path+'BuildModes/')
-    else
-      LoadDefaultSessionCompilerOpts(Path+'BuildModes/');
-    LoadOtherCompilerOpts(Path+'BuildModes/', Cnt, not LoadData);
+    LoadDefaultSessionCompilerOpts(Path+'BuildModes/');
+    LoadOtherCompilerOpts(Path+'BuildModes/', Cnt, True);
     LoadAllMacroValues(Path+'MacroValues/', Cnt);
-  end
-  else if LoadData then
-    LoadOldFormat(Path);
+  end;
 
-  if (not LoadData) and (not LoadParts) then
+  if not LoadParts then
     // load what matrix options are enabled in session build modes
     LoadSessionEnabledNonSessionMatrixOptions(Path+'BuildModes/SessionEnabledMatrixOptions/');
 
