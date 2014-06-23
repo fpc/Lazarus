@@ -870,7 +870,6 @@ type
     function DoLoadSession(Filename: String): TModalResult;
     // Methods for WriteProject
     procedure SaveFlags(const Path: string);
-    procedure SaveBuildModes(const Path: string; SaveData, SaveSession: boolean);
     procedure SaveUnits(const Path: string; SaveData, SaveSession: boolean);
     procedure SaveCustomDefines(const Path: string);
     procedure SaveSessionInfo(const Path: string);
@@ -3069,11 +3068,6 @@ begin
   end;
 end;
 
-procedure TProject.SaveBuildModes(const Path: string; SaveData, SaveSession: boolean);
-begin
-  BuildModes.SaveToXMLConfig(FXMLConfig, Path, SaveData, SaveSession);
-end;
-
 procedure TProject.SaveUnits(const Path: string; SaveData, SaveSession: boolean);
 var
   i, SaveUnitCount: integer;
@@ -3163,7 +3157,7 @@ begin
   // save custom data
   SaveStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
   // Save the macro values and compiler options
-  SaveBuildModes(Path,true,FSaveSessionInLPI);
+  BuildModes.SaveToXMLConfig(FXMLConfig, Path, True, FSaveSessionInLPI);
   // save the Publish Options
   PublishOptions.SaveToXMLConfig(FXMLConfig,Path+'PublishOptions/',fCurStorePathDelim);
   // save the Run and Build parameter options
@@ -3208,7 +3202,7 @@ begin
   FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
 
   // Save the session build modes
-  SaveBuildModes(Path,false,true);
+  BuildModes.SaveToXMLConfig(FXMLConfig, Path, False, True);
   // save all units
   SaveUnits(Path,true,true);
   // save custom defines
@@ -7293,7 +7287,6 @@ begin
   for i:=0 to Count-1 do
   begin
     CurMode:=Items[i];
-    //debugln(['SaveBuildModes ',i,'/',BuildModes.Count,' Identifier=',CurMode.Identifier,' InSession=',CurMode.InSession,' SaveSession=',SaveSession,' SaveData=',SaveData]);
     if (CurMode.InSession and SaveSession) or ((not CurMode.InSession) and SaveData) then
     begin
       inc(Cnt);
@@ -7313,7 +7306,6 @@ begin
     SharedMatrixOptions.SaveToXMLConfig(FXMLConfig,
       Path+'BuildModes/SharedMatrixOptions/',@IsSharedMode);
 
-  //debugln(['SaveBuildModes SaveSession=',SaveSession,' ActiveBuildMode.Identifier=',ActiveBuildMode.Identifier]);
   if SaveSession then
   begin
     // save what mode is currently active in the session
