@@ -1782,8 +1782,11 @@ end;
 
 procedure TMainIDE.OIOnDestroy(Sender: TObject);
 begin
-  if ObjectInspector1=Sender then
+  if ObjectInspector1=Sender then begin
     ObjectInspector1:=nil;
+    if FormEditor1<>nil then
+      FormEditor1.Obj_Inspector := nil;
+  end;
 end;
 
 procedure TMainIDE.OIOnAutoShow(Sender: TObject);
@@ -1815,9 +1818,9 @@ var
   Caret: TPoint;
   NewTopLine: integer;
 begin
-  if not BeginCodeTools then exit;
   if Sender=nil then Sender:=ObjectInspector1;
   if Sender is TObjectInspectorDlg then begin
+    if not BeginCodeTools then exit;
     AnInspector:=TObjectInspectorDlg(Sender);
     if FindDeclarationOfOIProperty(AnInspector,nil,Code,Caret,NewTopLine) then
       DoOpenFileAndJumpToPos(Code.Filename,Caret,NewTopLine,-1,-1,[]);
@@ -1842,8 +1845,8 @@ begin
   Result:=false;
   AHint:='';
   HintWinRect:=Rect(0,0,0,0);
-  if not BeginCodeTools then exit;
   if ObjectInspector1=nil then exit;
+  if not BeginCodeTools then exit;
   if FindDeclarationOfOIProperty(ObjectInspector1,PointedRow,Code,Caret,NewTopLine)
   then begin
     if TIDEHelpManager(HelpBoss).GetHintForSourcePosition(Code.Filename,
@@ -2216,6 +2219,17 @@ end;
 
 procedure TMainIDE.SetupObjectInspector;
 begin
+  IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
+
+  IDEWindowCreators.Add(DefaultObjectInspectorName,nil,@CreateIDEWindow,
+   '0','120','+230','-120','',alNone,false,@OnGetLayout);
+
+  ShowAnchorDesigner:=@mnuViewAnchorEditorClicked;
+  ShowTabOrderEditor:=@mnuViewTabOrderClicked;
+end;
+
+procedure TMainIDE.SetupFormEditor;
+begin
   GlobalDesignHook:=TPropertyEditorHook.Create(nil);
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
   GlobalDesignHook.AddHandlerGetMethodName(@OnPropHookGetMethodName);
@@ -2236,17 +2250,6 @@ begin
   GlobalDesignHook.AddHandlerGetComponentNames(@OnPropHookGetComponentNames);
   GlobalDesignHook.AddHandlerGetComponent(@OnPropHookGetComponent);
 
-  IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
-
-  IDEWindowCreators.Add(DefaultObjectInspectorName,nil,@CreateIDEWindow,
-   '0','120','+230','-120','',alNone,false,@OnGetLayout);
-
-  ShowAnchorDesigner:=@mnuViewAnchorEditorClicked;
-  ShowTabOrderEditor:=@mnuViewTabOrderClicked;
-end;
-
-procedure TMainIDE.SetupFormEditor;
-begin
   CreateFormEditor;
   FormEditor1.Obj_Inspector := ObjectInspector1;
   FormEditor1.OnSelectFrame := @OnSelectFrame;
@@ -12496,7 +12499,6 @@ begin
   FormEditor1.UpdateComponentName(AComponent);
   // Component can be renamed in designer and OI must be updated
   if ObjectInspector1<>nil then
-    // This does not update the Name property on Windows. ToDo: find out how to update it.
     ObjectInspector1.Update;
 end;
 
