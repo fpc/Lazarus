@@ -2719,8 +2719,8 @@ end;
 
 procedure TProject.LoadBuildModes(const Path: string; LoadData: boolean);
 begin
+  if FReadFlags = [prfLoadParts] then exit; // prfLoadParts, no prfLoadPartBuildModes
   if prfLoadParts in FReadFlags then begin
-    if not (prfLoadPartBuildModes in FReadFlags) then exit;
     if LoadData then
       ClearBuildModes;
   end;
