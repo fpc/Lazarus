@@ -27,8 +27,8 @@ unit PropEdits;
 interface
 
 uses
-  Classes, TypInfo, SysUtils, types, Forms, Controls, LCLProc, GraphType,
-  FPCAdds, // for StrToQWord in older fpc versions
+  Classes, TypInfo, SysUtils, types, RtlConsts, Forms, Controls, LCLProc,
+  GraphType, FPCAdds, // for StrToQWord in older fpc versions
   StringHashList, ButtonPanel, Graphics, StdCtrls, Buttons, Menus, LCLType,
   ExtCtrls, ComCtrls, LCLIntf, Dialogs, EditBtn, PropertyStorage, Grids, ValEdit,
   FileUtil, FileCtrl, ObjInspStrConsts, PropEditUtils,
@@ -3110,8 +3110,7 @@ procedure TIntegerPropertyEditor.SetValue(const NewValue: AnsiString);
 
   procedure Error(const Args: array of const);
   begin
-    // XXX
-    {raise EPropertyError.CreateResFmt(@SOutOfRange, Args);}
+    raise EPropertyError.CreateResFmt(@SOutOfRange, Args);
   end;
 
 var
