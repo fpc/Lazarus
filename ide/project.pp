@@ -638,8 +638,10 @@ type
                         Tool: TCompilerDiffTool = nil): boolean;
     procedure Assign(Src: TProjectBuildMode); reintroduce;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveMacroValuesAtOldPlace(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveDefaultCompilerOpts(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                              ClearModified: boolean = true);
+                              IsDefault: Boolean; var Cnt: integer);
     property ChangeStamp: int64 read FChangeStamp;
     procedure IncreaseChangeStamp;
     procedure AddOnChangedHandler(const Handler: TNotifyEvent);
@@ -686,7 +688,7 @@ type
     procedure LoadOldFormat(const Path: string);
     procedure SetActiveMode(const Path: string);
     // Used by SaveToXMLConfig
-    procedure SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
+    procedure SaveSessionData(const Path: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -6749,13 +6751,42 @@ begin
   FCompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
 end;
 
-procedure TProjectBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig;
-  const Path: string; ClearModified: boolean);
+procedure TProjectBuildMode.SaveMacroValuesAtOldPlace(XMLConfig: TXMLConfig; const Path: string);
+var
+  Cnt: Integer;
+  Modes: TProjectBuildModes;
 begin
-  XMLConfig.SetDeleteValue('Identifier',Identifier,'');
-  FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
-  if ClearModified then
-    Modified:=false;
+  // for older IDE (<1.1) save the macros at the old place
+  Assert(Assigned(Owner), 'SaveMacroValuesAtOldPlace: Owner not assigned.');
+  Modes := Owner as TProjectBuildModes;
+  Cnt:=Modes.SessionMatrixOptions.SaveAtOldXMLConfig(XMLConfig, Path, Identifier);
+  Cnt+=Modes.SharedMatrixOptions.SaveAtOldXMLConfig(XMLConfig, Path, Identifier);
+  XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
+end;
+
+procedure TProjectBuildMode.SaveDefaultCompilerOpts(XMLConfig: TXMLConfig; const Path: string);
+// Save the default build mode under the old xml path to let old IDEs open new projects
+begin
+  SaveMacroValuesAtOldPlace(XMLConfig,Path+'MacroValues/');
+  CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/'); // no Path!
+  // Note: the 0.9.29 reader already supports fetching the default build
+  //       mode from the BuildModes, so in one or two releases we can switch
+end;
+
+procedure TProjectBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+  IsDefault: Boolean; var Cnt: integer);
+var
+  SubPath: String;
+begin
+  inc(Cnt);
+  SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
+  XMLConfig.SetDeleteValue(SubPath+'Name',Identifier,'');
+  XMLConfig.SetDeleteValue(SubPath+'Default',IsDefault,false);
+  if not IsDefault then
+  begin
+    SaveMacroValuesAtOldPlace(XMLConfig, SubPath+'MacroValues/');
+    CompilerOptions.SaveToXMLConfig(XMLConfig,SubPath+'CompilerOptions/');
+  end;
 end;
 
 procedure TProjectBuildMode.IncreaseChangeStamp;
@@ -7250,14 +7281,28 @@ end;
 
 // Methods for SaveToXMLConfig
 
-procedure TProjectBuildModes.SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
+procedure TProjectBuildModes.SaveSessionData(const Path: string);
 var
-  Cnt: Integer;
+  SubPath: String;
+  i, Cnt: Integer;
 begin
-  // for older IDE (<1.1) save the macros at the old place
-  Cnt:=SessionMatrixOptions.SaveAtOldXMLConfig(FXMLConfig, Path, aMode.Identifier);
-  Cnt+=SharedMatrixOptions.SaveAtOldXMLConfig(FXMLConfig, Path, aMode.Identifier);
-  FXMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
+  // save what mode is currently active in the session
+  FXMLConfig.SetDeleteValue(Path+'BuildModes/Active',
+                              LazProject.ActiveBuildMode.Identifier,'default');
+  // save matrix options of session
+  SessionMatrixOptions.SaveToXMLConfig(FXMLConfig, Path+'BuildModes/SessionMatrixOptions/',nil);
+
+  // save what matrix options are enabled in session build modes
+  Cnt:=0;
+  SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
+  for i:=0 to Count-1 do
+    if Items[i].InSession then
+      SharedMatrixOptions.SaveSessionEnabled(FXMLConfig, SubPath, Items[i].Identifier, Cnt);
+  if Assigned(FGlobalMatrixOptions) then
+    for i:=0 to Count-1 do
+      if Items[i].InSession then
+        FGlobalMatrixOptions.SaveSessionEnabled(FXMLConfig, SubPath, Items[i].Identifier, Cnt);
+  FXMLConfig.SetDeleteValue(SubPath+'Count',Cnt,0);
 end;
 
 // SaveToXMLConfig itself
@@ -7265,41 +7310,19 @@ procedure TProjectBuildModes.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: 
   SaveData, SaveSession: boolean);
 var
   CurMode: TProjectBuildMode;
-  i: Integer;
-  Cnt: Integer;
+  i, Cnt: Integer;
   SubPath: String;
 begin
   FXMLConfig := XMLConfig;
 
   // the first build mode is the default mode
   if SaveData then
-  begin
-    // save the default build mode under the old xml path to let old IDEs
-    // open new projects
-    CurMode:=Items[0];
-    SaveMacroValuesAtOldPlace(Path+'MacroValues/',CurMode);
-    CurMode.CompilerOptions.SaveToXMLConfig(FXMLConfig,'CompilerOptions/'); // no Path!
-    // Note: the 0.9.29 reader already supports fetching the default build
-    //       mode from the BuildModes, so in one or two releases we can switch
-  end;
+    Items[0].SaveDefaultCompilerOpts(FXMLConfig, Path);
 
   Cnt:=0;
   for i:=0 to Count-1 do
-  begin
-    CurMode:=Items[i];
-    if (CurMode.InSession and SaveSession) or ((not CurMode.InSession) and SaveData) then
-    begin
-      inc(Cnt);
-      SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
-      FXMLConfig.SetDeleteValue(SubPath+'Name',CurMode.Identifier,'');
-      FXMLConfig.SetDeleteValue(SubPath+'Default',i=0,false);
-      if i>0 then
-      begin
-        SaveMacroValuesAtOldPlace(SubPath+'MacroValues/',CurMode);
-        CurMode.CompilerOptions.SaveToXMLConfig(FXMLConfig,SubPath+'CompilerOptions/');
-      end;
-    end;
-  end;
+    if (Items[i].InSession and SaveSession) or ((not Items[i].InSession) and SaveData) then
+      Items[i].SaveToXMLConfig(FXMLConfig, Path, i=0, Cnt);
   FXMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
 
   if SaveData then
@@ -7307,25 +7330,7 @@ begin
       Path+'BuildModes/SharedMatrixOptions/',@IsSharedMode);
 
   if SaveSession then
-  begin
-    // save what mode is currently active in the session
-    FXMLConfig.SetDeleteValue(Path+'BuildModes/Active',
-                                LazProject.ActiveBuildMode.Identifier,'default');
-    // save matrix options of session
-    SessionMatrixOptions.SaveToXMLConfig(FXMLConfig, Path+'BuildModes/SessionMatrixOptions/',nil);
-
-    // save what matrix options are enabled in session build modes
-    Cnt:=0;
-    SubPath:=Path+'BuildModes/SessionEnabledMatrixOptions/';
-    for i:=0 to Count-1 do
-      if Items[i].InSession then
-        SharedMatrixOptions.SaveSessionEnabled(FXMLConfig, SubPath, Items[i].Identifier, Cnt);
-    if Assigned(FGlobalMatrixOptions) then
-      for i:=0 to Count-1 do
-        if Items[i].InSession then
-          FGlobalMatrixOptions.SaveSessionEnabled(FXMLConfig, SubPath, Items[i].Identifier, Cnt);
-    FXMLConfig.SetDeleteValue(SubPath+'Count',Cnt,0);
-  end;
+    SaveSessionData(Path);
 end;
 
 initialization
