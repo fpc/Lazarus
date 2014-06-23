@@ -806,7 +806,6 @@ type
     // Variables used by ReadProject / WriteProject
     FXMLConfig: TXMLConfig;
     FReadFlags: TProjectReadFlags;
-    FLoadParts: boolean;
     FFileVersion: Integer;
     FNewMainUnitID: LongInt;
     FProjectWriteFlags: TProjectWriteFlags;
@@ -2720,8 +2719,7 @@ end;
 
 procedure TProject.LoadBuildModes(const Path: string; LoadData: boolean);
 begin
-  //debugln(['LoadBuildModes LoadData=',LoadData,' FLoadParts=',FLoadParts,' prfLoadPartBuildModes=',prfLoadPartBuildModes in ReadFlags]);
-  if FLoadParts then begin
+  if prfLoadParts in FReadFlags then begin
     if not (prfLoadPartBuildModes in FReadFlags) then exit;
     if LoadData then
       ClearBuildModes;
@@ -2729,7 +2727,7 @@ begin
   if LoadData then
     BuildModes.LoadProjFromXMLConfig(FXMLConfig, Path)
   else
-    BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, FLoadParts);
+    BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, prfLoadParts in FReadFlags);
 end;
 
 procedure TProject.LoadFlags(const Path: string);
@@ -2844,7 +2842,7 @@ begin
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
   FFileVersion:= FXMLConfig.GetValue(Path+'Version/Value',0);
-  if not FLoadParts then
+  if not (prfLoadParts in FReadFlags) then
   begin
     if (FFileVersion=0) and (FXMLConfig.GetValue(Path+'Units/Count',0)=0) then
       if IDEMessageDialog(lisStrangeLpiFile,
@@ -2889,7 +2887,7 @@ begin
   // load MacroValues and compiler options
   LoadBuildModes(Path,true);
   // Resources
-  if not FLoadParts then
+  if not (prfLoadParts in FReadFlags) then
   begin
     ProjResources.ReadFromProjectFile(FXMLConfig, Path);
     // load custom data
@@ -2944,7 +2942,7 @@ var
   PIFile: String;
 begin
   Result:=mrOk;
-  if FLoadParts then begin
+  if prfLoadParts in FReadFlags then begin
     // read only parts of the lpi, keep other values
     try
       FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename,true)
@@ -3044,7 +3042,6 @@ begin
   try
     BuildModes.FGlobalMatrixOptions := GlobalMatrixOptions;
     FReadFlags := ReadFlags;
-    FLoadParts := prfLoadParts in ReadFlags;
 
     // load project lpi file
     Result:=DoLoadLPI(NewProjectInfoFile);
