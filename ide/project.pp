@@ -684,6 +684,7 @@ type
     procedure LoadMacroValues(const Path: string; CurMode: TProjectBuildMode);
     procedure LoadAllMacroValues(const Path: string; Cnt: Integer);
     procedure LoadOldFormat(const Path: string);
+    procedure SetActiveMode(const Path: string);
     // Used by SaveToXMLConfig
     procedure SaveMacroValuesAtOldPlace(const Path: string; aMode: TProjectBuildMode);
   public
@@ -7203,6 +7204,16 @@ begin
   CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig,CompOptsPath);
 end;
 
+procedure TProjectBuildModes.SetActiveMode(const Path: string);
+var
+  CurMode: TProjectBuildMode;
+begin
+  CurMode:=Find(FXMLConfig.GetValue(Path+'BuildModes/Active','default'));
+  if CurMode=nil then
+    CurMode:=Items[0];
+  LazProject.ActiveBuildMode:=CurMode;
+end;
+
 // LoadFromXMLConfig itself
 procedure TProjectBuildModes.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string; LoadData, LoadParts: boolean);
@@ -7237,11 +7248,7 @@ begin
     // load what matrix options are enabled in session build modes
     LoadSessionEnabledNonSessionMatrixOptions(Path+'BuildModes/SessionEnabledMatrixOptions/');
 
-  // set active mode
-  CurMode:=Find(FXMLConfig.GetValue(Path+'BuildModes/Active','default'));
-  if CurMode=nil then
-    CurMode:=Items[0];
-  LazProject.ActiveBuildMode:=CurMode;
+  SetActiveMode(Path);
 end;
 
 // Methods for SaveToXMLConfig
