@@ -2719,15 +2719,16 @@ end;
 
 procedure TProject.LoadBuildModes(const Path: string; LoadData: boolean);
 begin
-  if FReadFlags = [prfLoadParts] then exit; // prfLoadParts, no prfLoadPartBuildModes
-  if prfLoadParts in FReadFlags then begin
+  if FReadFlags <> [prfLoadParts] then begin // prfLoadParts, no prfLoadPartBuildModes
+    if prfLoadParts in FReadFlags then begin
+      if LoadData then
+        ClearBuildModes;
+    end;
     if LoadData then
-      ClearBuildModes;
+      BuildModes.LoadProjFromXMLConfig(FXMLConfig, Path)
+    else
+      BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, prfLoadParts in FReadFlags);
   end;
-  if LoadData then
-    BuildModes.LoadProjFromXMLConfig(FXMLConfig, Path)
-  else
-    BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, prfLoadParts in FReadFlags);
 end;
 
 procedure TProject.LoadFlags(const Path: string);
