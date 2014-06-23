@@ -874,7 +874,7 @@ type
     function DoLoadSession(Filename: String): TModalResult;
     // Methods for WriteProject
     procedure SaveFlags(const Path: string);
-    procedure SaveUnits(const Path: string; SaveData, SaveSession: boolean);
+    procedure SaveUnits(const Path: string; SaveSession: boolean);
     procedure SaveCustomDefines(const Path: string);
     procedure SaveSessionInfo(const Path: string);
     procedure SaveToLPI;
@@ -3072,7 +3072,7 @@ begin
   end;
 end;
 
-procedure TProject.SaveUnits(const Path: string; SaveData, SaveSession: boolean);
+procedure TProject.SaveUnits(const Path: string; SaveSession: boolean);
 var
   i, SaveUnitCount: integer;
 begin
@@ -3080,8 +3080,7 @@ begin
   for i:=0 to UnitCount-1 do
     if UnitMustBeSaved(Units[i],FProjectWriteFlags,SaveSession) then begin
       Units[i].SaveToXMLConfig(FXMLConfig,
-        Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/',
-        SaveData,SaveSession,fCurStorePathDelim);
+        Path+'Units/Unit'+IntToStr(SaveUnitCount)+'/',True,SaveSession,fCurStorePathDelim);
       inc(SaveUnitCount);
     end;
   FXMLConfig.SetDeleteValue(Path+'Units/Count',SaveUnitCount,0);
@@ -3170,7 +3169,7 @@ begin
   SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
     FFirstRequiredDependency,pdlRequires,fCurStorePathDelim);
   // save units
-  SaveUnits(Path,true,FSaveSessionInLPI);
+  SaveUnits(Path,FSaveSessionInLPI);
 
   if FSaveSessionInLPI then begin
     // save custom defines
@@ -3208,7 +3207,7 @@ begin
   // Save the session build modes
   BuildModes.SaveSessionToXMLConfig(FXMLConfig, Path, True);
   // save all units
-  SaveUnits(Path,true,true);
+  SaveUnits(Path,true);
   // save custom defines
   SaveCustomDefines(Path);
   // save session info
