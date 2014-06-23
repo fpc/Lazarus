@@ -639,7 +639,6 @@ type
     procedure Assign(Src: TProjectBuildMode); reintroduce;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveMacroValuesAtOldPlace(XMLConfig: TXMLConfig; const Path: string);
-    procedure SaveDefaultCompilerOpts(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               IsDefault: Boolean; var Cnt: integer);
     property ChangeStamp: int64 read FChangeStamp;
@@ -680,8 +679,6 @@ type
     // Used by LoadFromXMLConfig
     procedure AddMatrixMacro(const MacroName, MacroValue, ModeIdentifier: string; InSession: boolean);
     procedure LoadSessionEnabledNonSessionMatrixOptions(const Path: string);
-    procedure LoadDefaultProjCompilerOpts(const Path: string);
-    procedure LoadDefaultSessionCompilerOpts(const Path: string);
     procedure LoadOtherCompilerOpts(const Path: string; Cnt: Integer; InSession: boolean);
     procedure LoadMacroValues(const Path: string; CurMode: TProjectBuildMode);
     procedure LoadAllMacroValues(const Path: string; Cnt: Integer);
@@ -689,6 +686,7 @@ type
     procedure SetActiveMode(const Path: string);
     // Used by SaveToXMLConfig
     procedure SaveSessionData(const Path: string);
+    procedure SaveSharedMatrixOptions(const Path: string);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -711,13 +709,13 @@ type
     function IsSharedMode(const ModeIdentifier: string): boolean;
     procedure RenameMatrixMode(const OldName, NewName: string);
     // load, save
-    procedure LoadProjFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadProjOptsFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadSessionFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                                        LoadParts: boolean);
-    procedure SaveProjToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                  SaveSession: boolean);
-    procedure SaveSessionToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-                                     SaveSession: boolean);
+    procedure SaveProjOptsToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                      SaveSession: boolean);
+    procedure SaveSessionOptsToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
+                                         SaveSession: boolean);
   public
     property Items[Index: integer]: TProjectBuildMode read GetItems; default;
     property ChangeStamp: integer read FChangeStamp;
@@ -2877,7 +2875,9 @@ begin
   if FReadFlags <> [prfLoadParts] then begin // Test for: prfLoadParts, no prfLoadPartBuildModes
     if prfLoadParts in FReadFlags then
       ClearBuildModes;
-    BuildModes.LoadProjFromXMLConfig(FXMLConfig, Path);
+    BuildModes.LoadProjOptsFromXMLConfig(FXMLConfig, Path);
+    // load matrix options
+    BuildModes.SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/');
   end;
   // Resources
   if not (prfLoadParts in FReadFlags) then
@@ -3160,7 +3160,10 @@ begin
   // save custom data
   SaveStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
   // Save the macro values and compiler options
-  BuildModes.SaveProjToXMLConfig(FXMLConfig, Path, FSaveSessionInLPI);
+  BuildModes.SaveProjOptsToXMLConfig(FXMLConfig, Path, FSaveSessionInLPI);
+  BuildModes.SaveSharedMatrixOptions(Path);
+  if FSaveSessionInLPI then
+    BuildModes.SaveSessionData(Path);
   // save the Publish Options
   PublishOptions.SaveToXMLConfig(FXMLConfig,Path+'PublishOptions/',fCurStorePathDelim);
   // save the Run and Build parameter options
@@ -3205,7 +3208,8 @@ begin
   FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
 
   // Save the session build modes
-  BuildModes.SaveSessionToXMLConfig(FXMLConfig, Path, True);
+  BuildModes.SaveSessionOptsToXMLConfig(FXMLConfig, Path, True);
+  BuildModes.SaveSessionData(Path);
   // save all units
   SaveUnits(Path,true);
   // save custom defines
@@ -6764,15 +6768,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'Count',Cnt,0);
 end;
 
-procedure TProjectBuildMode.SaveDefaultCompilerOpts(XMLConfig: TXMLConfig; const Path: string);
-// Save the default build mode under the old xml path to let old IDEs open new projects
-begin
-  SaveMacroValuesAtOldPlace(XMLConfig,Path+'MacroValues/');
-  CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/'); // no Path!
-  // Note: the 0.9.29 reader already supports fetching the default build
-  //       mode from the BuildModes, so in one or two releases we can switch
-end;
-
 procedure TProjectBuildMode.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
   IsDefault: Boolean; var Cnt: integer);
 var
@@ -6781,9 +6776,9 @@ begin
   inc(Cnt);
   SubPath:=Path+'BuildModes/Item'+IntToStr(Cnt)+'/';
   XMLConfig.SetDeleteValue(SubPath+'Name',Identifier,'');
-  XMLConfig.SetDeleteValue(SubPath+'Default',IsDefault,false);
-  if not IsDefault then
-  begin
+  if IsDefault then
+    XMLConfig.SetDeleteValue(SubPath+'Default',True,false)
+  else begin
     SaveMacroValuesAtOldPlace(XMLConfig, SubPath+'MacroValues/');
     CompilerOptions.SaveToXMLConfig(XMLConfig,SubPath+'CompilerOptions/');
   end;
@@ -7129,25 +7124,6 @@ begin
   end;
 end;
 
-procedure TProjectBuildModes.LoadDefaultProjCompilerOpts(const Path: string);
-// Project default mode is stored at the old XML path. Testing the 'Default'
-//  XML attribute is not needed because the first mode is always default.
-begin
-  // Load to the existing mode
-  Items[0].Identifier:=FXMLConfig.GetValue(Path+'Item1/Name', '');
-  Items[0].CompilerOptions.LoadFromXMLConfig(FXMLConfig, 'CompilerOptions/');
-end;
-
-procedure TProjectBuildModes.LoadDefaultSessionCompilerOpts(const Path: string);
-// Add a new mode for session compiler options.
-var
-  CurMode: TProjectBuildMode;
-begin
-  CurMode:=Add(FXMLConfig.GetValue(Path+'Item1/Name', ''));
-  CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig, 'CompilerOptions/');
-  CurMode.InSession:=True;
-end;
-
 procedure TProjectBuildModes.LoadOtherCompilerOpts(const Path: string; Cnt: Integer; InSession: boolean);
 // Iterate rest of the modes.
 var
@@ -7231,19 +7207,19 @@ begin
   LazProject.ActiveBuildMode:=CurMode;
 end;
 
-procedure TProjectBuildModes.LoadProjFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+procedure TProjectBuildModes.LoadProjOptsFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 // Load for project
 var
   Cnt: Integer;
 begin
   FXMLConfig := XMLConfig;
 
-  // load matrix options
-  SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/');
-
   Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
   if Cnt>0 then begin
-    LoadDefaultProjCompilerOpts(Path+'BuildModes/');
+    // Project default mode is stored at the old XML path. Testing the 'Default'
+    //  XML attribute is not needed because the first mode is always default.
+    Items[0].Identifier:=FXMLConfig.GetValue(Path+'BuildModes/Item1/Name', '');
+    Items[0].CompilerOptions.LoadFromXMLConfig(FXMLConfig, 'CompilerOptions/');
     LoadOtherCompilerOpts(Path+'BuildModes/', Cnt, False);
     LoadAllMacroValues(Path+'MacroValues/', Cnt);
   end
@@ -7258,6 +7234,7 @@ procedure TProjectBuildModes.LoadSessionFromXMLConfig(XMLConfig: TXMLConfig;
 // Load for session
 var
   Cnt: Integer;
+  CurMode: TProjectBuildMode;
 begin
   FXMLConfig := XMLConfig;
 
@@ -7267,7 +7244,10 @@ begin
 
   Cnt:=FXMLConfig.GetValue(Path+'BuildModes/Count',0);
   if Cnt>0 then begin
-    LoadDefaultSessionCompilerOpts(Path+'BuildModes/');
+    // Add a new mode for session compiler options.
+    CurMode:=Add(FXMLConfig.GetValue(Path+'BuildModes/Item1/Name', ''));
+    CurMode.CompilerOptions.LoadFromXMLConfig(FXMLConfig, 'CompilerOptions/');
+    CurMode.InSession:=True;
     LoadOtherCompilerOpts(Path+'BuildModes/', Cnt, True);
     LoadAllMacroValues(Path+'MacroValues/', Cnt);
   end;
@@ -7305,29 +7285,34 @@ begin
   FXMLConfig.SetDeleteValue(SubPath+'Count',Cnt,0);
 end;
 
+procedure TProjectBuildModes.SaveSharedMatrixOptions(const Path: string);
+begin
+  SharedMatrixOptions.SaveToXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/',@IsSharedMode);
+end;
+
 // SaveToXMLConfig itself
-procedure TProjectBuildModes.SaveProjToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  SaveSession: boolean);
+procedure TProjectBuildModes.SaveProjOptsToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; SaveSession: boolean);
 var
   i, Cnt: Integer;
 begin
   FXMLConfig := XMLConfig;
-  // the first build mode is the default mode
-  Items[0].SaveDefaultCompilerOpts(FXMLConfig, Path);
+  // Save the default mode under an old xml path to let old IDEs open new projects
+  // Note: the 0.9.29 reader already supports fetching the default build
+  //       mode from the BuildModes, so in one or two releases we can switch
+  //Items[0].SaveDefaultCompilerOpts(FXMLConfig, Path);
+  Items[0].SaveMacroValuesAtOldPlace(XMLConfig,Path+'MacroValues/');
+  Items[0].CompilerOptions.SaveToXMLConfig(XMLConfig,'CompilerOptions/'); // no Path!
 
   Cnt:=0;
   for i:=0 to Count-1 do
-    if (Items[i].InSession and SaveSession) or not Items[i].InSession then
+    if SaveSession or not Items[i].InSession then
       Items[i].SaveToXMLConfig(FXMLConfig, Path, i=0, Cnt);
   FXMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
-
-  SharedMatrixOptions.SaveToXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/',@IsSharedMode);
-  if SaveSession then
-    SaveSessionData(Path);
 end;
 
-procedure TProjectBuildModes.SaveSessionToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
-  SaveSession: boolean);
+procedure TProjectBuildModes.SaveSessionOptsToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string; SaveSession: boolean);
 var
   i, Cnt: Integer;
 begin
@@ -7338,9 +7323,6 @@ begin
     if Items[i].InSession and SaveSession then
       Items[i].SaveToXMLConfig(FXMLConfig, Path, i=0, Cnt);
   FXMLConfig.SetDeleteValue(Path+'BuildModes/Count',Cnt,0);
-
-  if SaveSession then
-    SaveSessionData(Path);
 end;
 
 initialization
