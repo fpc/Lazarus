@@ -932,10 +932,16 @@ resourcestring
     +'%s(Other settings will be kept.)';
   lisIECOImportCompilerOptions = 'Import Compiler Options';
   lisIECOExportCompilerOptions = 'Export Compiler Options';
-  lisIECOErrorAccessingXml = 'Error accessing xml';
-  lisIECOErrorLoadingXml = 'Error loading xml';
-  lisIECOErrorLoadingXmlFile = 'Error loading xml file "%s":%s%s';
-  lisIECOErrorAccessingXmlFile = 'Error accessing xml file "%s":%s%s';
+  lisIECOCompilerOptionsOf = 'Compiler options of';
+  lisIECOCurrentBuildMode = 'Current build mode';
+  lisIECOAllBuildModes = 'All build modes';
+
+  lisIECOErrorOpeningXml = 'Error opening XML';
+  lisIECOErrorOpeningXmlFile = 'Error opening XML file "%s":%s%s';
+  lisSuccesfullyImportedBuildModes = 'Succesfully imported %d BuildModes from "%s".';
+  lisSuccesfullyExportedBuildModes = 'Succesfully exported %d BuildModes to "%s".';
+  lisSuccesfullyImportedCompilerOptions = 'Succesfully imported compiler options from "%s".';
+  lisSuccesfullyExportedCompilerOptions = 'Succesfully exported compiler options to "%s".';
   lisIECORecentFiles = 'Recent files';
   lisIECOSaveToFile = 'Save to file';
   lisIECOLoadFromFile = 'Load from file';
