@@ -112,21 +112,6 @@ begin
   end;
 end;
 
-function ReadIntFromXMLConfig(const Filename, Path: string;
-  DefaultValue, ValueForReadError: integer): integer;
-var
-  XMLConfig: TXMLConfig;
-begin
-  Result:=ValueForReadError;
-  if FileExistsUTF8(Filename) then
-    try
-      XMLConfig:=TXMLConfig.Create(Filename);
-      Result:=XMLConfig.GetValue(Path,DefaultValue);
-    except
-      Result:=ValueForReadError;
-    end;
-end;
-
 function GetXMLPathForCompilerOptions(XMLConfig: TXMLConfig): string;
 const
   OptPathSuffix = 'SearchPaths/CompilerPath/Value';
@@ -147,8 +132,13 @@ begin
   else begin
     // default: depending on file type
     Result:=DefaultCompilerOptPath;
-    if CompareFileExt(XMLConfig.Filename,'.lpk',false)=0 then begin
-      FileVersion:=ReadIntFromXMLConfig(XMLConfig.Filename,PkgVersionPath,0,2);
+    if CompareFileExt(XMLConfig.Filename,'.lpk',false)=0 then
+    begin
+      try
+        FileVersion:=XMLConfig.GetValue(PkgVersionPath,0);
+      except
+        FileVersion:=2;               // On error assume version 2.
+      end;
       if FileVersion>=2 then
         Result:=PkgCompilerOptPath;   // current lpk file
     end;
@@ -186,7 +176,7 @@ var
 begin
   Result:=mrOk;
   try
-    InvalidateFileStateCache;
+    InvalidateFileStateCache(Filename);
     XMLConfig:=TXMLConfig.Create(Filename);
     try
       Path:=DefaultCompilerOptPath;
