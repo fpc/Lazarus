@@ -2916,8 +2916,7 @@ begin
   FFileVersion:=FXMLConfig.GetValue(Path+'Version/Value',0);
 
   // load MacroValues and compiler options
-  if FReadFlags <> [prfLoadParts] then // Test for: prfLoadParts, no prfLoadPartBuildModes
-    BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, prfLoadParts in FReadFlags);
+  BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, prfLoadParts in FReadFlags);
 
   // load custom defines
   LoadCustomDefines(Path);
