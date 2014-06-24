@@ -4119,8 +4119,9 @@ resourcestring
   lisA2PTheClassNameHasTheSameNameAsTheUnit = 'The class name "%s" has the '
     +'same name as%sthe unit "%s".';
   lisA2PClassNameAlreadyExists = 'Class Name already exists';
-  lisA2PTheClassNameExistsAlreadyInPackageFile = 'The class name "%s" '
-    +'exists already in%sPackage %s%sFile: "%s"';
+  lisA2PTheClassNameExistsAlreadyInPackageFile = 'The class name "%s" exists already in'
+    +'%sPackage %s'
+    +'%sFile: "%s"';
   lisA2PTheMinimumVersionIsInvalidPleaseUseTheFormatMajor = 'The Minimum Version "%s" is invalid.'
     +'%sPlease use the format major.minor.release.build'
     +'%sFor example: 1.0.20.10';
