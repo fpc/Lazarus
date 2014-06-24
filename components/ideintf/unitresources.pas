@@ -40,6 +40,7 @@ type
       out LCLVersion: string;
       out MissingClasses: TStrings// e.g. MyFrame2:TMyFrame
       ): TModalResult; virtual; abstract;
+    class function Priority: integer; virtual; // higher priority is tested first
   end;
   TUnitResourcefileFormatClass = class of TUnitResourcefileFormat;
   TUnitResourcefileFormatArr = array of TUnitResourcefileFormatClass;
@@ -56,14 +57,34 @@ var
   GUnitResourcefileFormats: TUnitResourcefileFormatArr;
 
 procedure RegisterUnitResourcefileFormat(AResourceFileFormat: TUnitResourcefileFormatClass);
+var
+  i: Integer;
+  Priority: Integer;
+  l: Integer;
 begin
+  Priority:=AResourceFileFormat.Priority;
+  i:=0;
+  while (i<length(GUnitResourcefileFormats))
+  and (GUnitResourcefileFormats[i].Priority>=Priority) do
+    inc(i);
+  l:=length(GUnitResourcefileFormats)-i;
   SetLength(GUnitResourcefileFormats, length(GUnitResourcefileFormats)+1);
+  if l>0 then
+    System.Move(GUnitResourcefileFormats[i],GUnitResourcefileFormats[i+1],
+      l*SizeOf(TUnitResourcefileFormatClass));
   GUnitResourcefileFormats[high(GUnitResourcefileFormats)] := AResourceFileFormat;
 end;
 
 function GetUnitResourcefileFormats: TUnitResourcefileFormatArr;
 begin
   Result := GUnitResourcefileFormats;
+end;
+
+{ TUnitResourcefileFormat }
+
+class function TUnitResourcefileFormat.Priority: integer;
+begin
+  Result:=0;
 end;
 
 end.
