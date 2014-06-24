@@ -42,6 +42,7 @@ uses
 {$endif}
   LCLProc, FpDbgInfo, FpDbgClasses, DbgIntfBaseTypes, FpDbgUtil, CustApp,
   FpPascalParser,
+  FPDbgController,
   FpPascalBuilder,
   FpErrorMessages;
 
@@ -659,6 +660,25 @@ begin
 {$endif windows}
 end;
 
+procedure HandleShowRegisters(AParams: String; out CallProcessLoop: boolean);
+var
+  ARegisterValue: TDbgRegisterValue;
+  i: Integer;
+begin
+  CallProcessLoop:=false;
+  if (GController.MainProcess = nil)
+  then begin
+    WriteLN('No process');
+    Exit;
+  end;
+
+  for i := 0 to GController.CurrentThread.RegisterValueList.Count-1 do
+  begin
+    ARegisterValue := GController.CurrentThread.RegisterValueList[i];
+    writeln(format('%7s: %s (%s)',[ARegisterValue.Name, FormatAddress(ARegisterValue.NumValue), ARegisterValue.StrValue]));
+  end;
+end;
+
 procedure HandleShowCallStack(AParams: String; out CallProcessLoop: boolean);
 var
   ACallStack: TDbgCallstackEntryList;
@@ -867,6 +887,7 @@ begin
   MShowCommands.AddCommand(['help', 'h', '?'], @HandleShowHelp, 'show help [<info>]: Shows help for info or this help if none given');
   MShowCommands.AddCommand(['file', 'f'], @HandleShowFile, 'show file: Shows the info for the current file');
   MShowCommands.AddCommand(['callstack', 'c'], @HandleShowCallStack,  'show callstack: Shows the callstack');
+  MShowCommands.AddCommand(['registers', 'r'], @HandleShowRegisters,  'show registers: Show the values of all registers');
 
   MSetCommands := TFPDCommandList.Create;
 
