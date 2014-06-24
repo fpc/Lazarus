@@ -3599,6 +3599,7 @@ msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor
 msgstr "Maximiversio \"%s\" on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
+msgctxt "lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maximiversio on pienempi kuin Minimiversio."
 
@@ -3881,6 +3882,7 @@ msgid "Show all"
 msgstr "Näytä kaikki"
 
 #: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
+msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
 msgid "The file \"%s\"%sis already in the package %s."
 msgstr "Tiedosto \"%s\"%son jo paketissa %s."
 
@@ -7630,6 +7632,7 @@ msgid "Working Directory:"
 msgstr "Työhakemisto"
 
 #: lazarusidestrconsts.lisemdall
+msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
 msgstr "Kaikki"
 
@@ -8250,6 +8253,7 @@ msgid "File not found"
 msgstr "Tiedostoa ei löytynyt"
 
 #: lazarusidestrconsts.lisfilenotfound2
+msgctxt "lazarusidestrconsts.lisfilenotfound2"
 msgid "File \"%s\" not found."
 msgstr "Tiedostoa \"%s\" ei löytynyt."
 
@@ -13089,6 +13093,7 @@ msgid "Filename is used by project"
 msgstr "Tiedostonimi on projektin käytössä"
 
 #: lazarusidestrconsts.lispkgmangfilenotfound
+msgctxt "lazarusidestrconsts.lispkgmangfilenotfound"
 msgid "File \"%s\" not found."
 msgstr "Tiedostoa \"%s\" ei löytynyt."
 
@@ -13221,6 +13226,7 @@ msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Kääntäjä paketille %s ei ole suoritettava ohjelma:%s%s"
 
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
+msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
 msgid "The file \"%s\"%sis already in the package %s."
 msgstr "Tiedosto \"%s\"%son jo paketissa %s."
 
@@ -13754,6 +13760,7 @@ msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor
 msgstr "Maximiversio \"%s\" on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
+msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion"
 msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maximiversio on pienempi kuin Minimiversio."
 
