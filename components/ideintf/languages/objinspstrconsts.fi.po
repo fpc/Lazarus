@@ -398,10 +398,8 @@ msgid "Clear picture"
 msgstr "Tyhjennä kuva"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy
-#| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Komponentin nimeksi ei käy %s%s%s (katso kohta Name) koska se ei ole sallittu tunniste"
+msgstr "Komponentin nimi \"%s\" ei ole kelvollinen tunniste"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
@@ -444,10 +442,8 @@ msgid "&Delete"
 msgstr "&Poista"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy
-#| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
-msgstr "Poistetaanko %s%s%s?"
+msgstr "Poistetaanko \"%s\"?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
@@ -474,10 +470,8 @@ msgid "Error loading image"
 msgstr "Virhe kuvaa ladattaessa"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy
-#| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
-msgstr "Virhe kuvaa %s%s%s:%s%s ladattaessa"
+msgstr "Virhe ladattaessa kuvaa \"%s\":%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
@@ -536,10 +530,8 @@ msgid "Invalid property value"
 msgstr "Kelvoton ominaisuuden arvo"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy
-#| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
-msgstr "%s%s%s ei ole sallittu metodin nimi."
+msgstr "\"%s\" ei ole sallittu metodin nimi."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
@@ -1063,28 +1055,20 @@ msgid "Test Input"
 msgstr "Maskin testauspaikka"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy
-#| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Tunniste %s%s%s ei ole metodi.%sPeru peruuttaa komennon,%sOhita pakottaa sen."
+msgstr "Tunniste \"%s\" ei ole metodi.%sPeru peruuttaa komennon,%sOhita pakottaa sen."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy
-#| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Metodi %s%s%s ei sovi tähän tapahtumaan (%s).%sPeru peruuttaa komennon,%sOhita pakottaa sen."
+msgstr "Metodi \"%s\" ei sovi tähän tapahtumaan (%s).%sPeru peruuttaa komennon,%sOhita pakottaa sen."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy
-#| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Metodi %s%s%s ei ole julkaistu.%sPeru peruuttaa komennon,%sOhita pakottaa sen."
+msgstr "Metodi \"%s\" ei ole julkaistu.%sPeru peruuttaa komennon,%sOhita pakottaa sen."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-#, fuzzy
-#| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
-msgstr "Komponentin %s%s%s vanhemman muuttaminen %s%s%s.%s%s:ksi ei onnistu"
+msgstr "Komponentin \"%s\" vanhemman muuttaminen \"%s\":ksi ei onnistu.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"

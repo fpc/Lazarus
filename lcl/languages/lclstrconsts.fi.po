@@ -10,22 +10,16 @@ msgstr ""
 "Language-Team: \n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy
-#| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
-msgstr "Selain %s%s%s ei ole suoritettava ohjelma."
+msgstr "Selain \"%s\" ei ole suoritettava ohjelma."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy
-#| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
-msgstr "Selainta %s%s%s ei löydy."
+msgstr "Selainta \"%s\" ei löydy."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy
-#| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
-msgstr "Virhe suoritettaessa %s%s%s:%s%s"
+msgstr "Virhe suoritettaessa \"%s\":%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
@@ -530,16 +524,12 @@ msgid "First"
 msgstr "Ensimmäinen"
 
 #: lclstrconsts.rsfixedcolstoobig
-#, fuzzy
-#| msgid "FixedCols can't be >= ColCount"
 msgid "FixedCols can't be > ColCount"
-msgstr "FixedCols ei voi olla suurempi kuin kaikkien sarakkeiden määrä (ColCount)"
+msgstr "FixedCols ei voi olla > ColCount"
 
 #: lclstrconsts.rsfixedrowstoobig
-#, fuzzy
-#| msgid "FixedRows can't be >= RowCount"
 msgid "FixedRows can't be > RowCount"
-msgstr "FixedRows ei voi olla suurempi kuin kaikkien rivien määrä (RowCount)"
+msgstr "FixedRows ei voi olla > RowCount"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
