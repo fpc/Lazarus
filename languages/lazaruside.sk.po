@@ -925,9 +925,10 @@ msgstr "Knižnice (-Fl):"
 msgid "Linking"
 msgstr "Linkovanie"
 
-#: lazarusidestrconsts.dlgcoloadsave
+#: lazarusidestrconsts.dlgcoloadsavehint
 #, fuzzy
 #| msgid "Load/Save"
+msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr "Otvoriť/Uložiť"
 

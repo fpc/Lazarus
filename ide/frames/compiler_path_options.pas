@@ -741,12 +741,12 @@ begin
   ADialog.AddButtonSeparator;
   btnLoadSave := CreateButton(lisImport);
   btnLoadSave.OnClick  := @DoImport;
-  btnLoadSave.Hint := dlgCOLoadSave;
+  btnLoadSave.Hint := dlgCOLoadSaveHint;
   btnLoadSave.LoadGlyphFromStock(idButtonOpen);
   // Export
   btnExport := CreateButton(lisExport);
   btnExport.OnClick  := @DoExport;
-  btnExport.Hint := dlgCOLoadSave;
+  btnExport.Hint := dlgCOLoadSaveHint;
   btnExport.LoadGlyphFromStock(idButtonSave);
   ADialog.AddButtonSeparator;
 

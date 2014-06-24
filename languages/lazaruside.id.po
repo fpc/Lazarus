@@ -918,9 +918,10 @@ msgstr "Pustaka (-Fl):"
 msgid "Linking"
 msgstr "Penggabungan"
 
-#: lazarusidestrconsts.dlgcoloadsave
+#: lazarusidestrconsts.dlgcoloadsavehint
 #, fuzzy
 #| msgid "Load/Save"
+msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr "Ambil/Simpan"
 

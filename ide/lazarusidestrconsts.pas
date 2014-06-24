@@ -2138,7 +2138,7 @@ resourcestring
   dlgUnitOutp = 'Unit output directory (-FU):';
   dlgCOShowOptions = '&Show Options';
   lisCompTest = '&Test';
-  dlgCOLoadSave = 'Compiler options can be saved to an XML file.';
+  dlgCOLoadSaveHint = 'Compiler options can be saved to an XML file.';
   dlgMainViewForms = 'View Project Forms';
   dlgMainViewUnits = 'View Project Units';
   dlgMainViewFrames = 'View Project Frames';

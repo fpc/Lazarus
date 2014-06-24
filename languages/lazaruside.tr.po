@@ -900,7 +900,8 @@ msgstr ""
 msgid "Linking"
 msgstr ""
 
-#: lazarusidestrconsts.dlgcoloadsave
+#: lazarusidestrconsts.dlgcoloadsavehint
+msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr ""
 

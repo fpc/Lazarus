@@ -922,9 +922,10 @@ msgstr "Librairies (-Fl):"
 msgid "Linking"
 msgstr "Edition des liens"
 
-#: lazarusidestrconsts.dlgcoloadsave
+#: lazarusidestrconsts.dlgcoloadsavehint
 #, fuzzy
 #| msgid "Load/Save"
+msgctxt "lazarusidestrconsts.dlgcoloadsavehint"
 msgid "Compiler options can be saved to an XML file."
 msgstr "Charger/Enregistrer"
 
