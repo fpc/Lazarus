@@ -5,27 +5,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-05-03 17:10+0400\n"
+"PO-Revision-Date: 2014-06-25 03:30+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
-msgstr "Браузер %s%s%s не является исполнимым файлом."
+msgstr "Браузер \"%s\" не является исполнимым файлом."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
-msgstr "Браузер %s%s%s не найден."
+msgstr "Браузер \"%s\" не найден."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
-msgstr "Ошибка при выполнении %s%s%s:%s%s"
+msgstr "Ошибка при исполнении \"%s\":%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
@@ -36,10 +33,9 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "Браузер HTML не найден.%sЗадайте его в меню Сервис -> Параметры -> Параметры справки"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
-msgstr "База данных справки %s%s%s не смогла найти файл %s%s%s."
+msgstr "База данных справки \"%s\" не смогла найти файл \"%s\"."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
@@ -683,50 +679,43 @@ msgid "Help context %s not found."
 msgstr "Контекст справки %s не найден."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
-msgstr "Контекст справки %s не найден в базе данных %s%s%s."
+msgstr "Контекст справки %s не найден в базе данных \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgstr "База данных справки %s%s%s не нашла программу просмотра для страницы справки типа %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
-msgstr "База данных справки %s%s%s не найдена"
+msgstr "База данных справки \"%s\" не найдена"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-#, fuzzy
 #| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
-msgstr "Справка для директивы %s%s%s не найдена."
+msgstr "Справка для директивы \"%s\" не найдена."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-#, fuzzy
 #| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
-msgstr "Справка для директивы %s%s%s в базе данных %s%s%s не найдена."
+msgstr "Справка для директивы \"%s\" в базе данных \"%s\" не найдена."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
-msgstr "Ключевое слово справки %s%s%s не найдено."
+msgstr "Ключевое слово справки \"%s\" не найдено."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
-msgstr "Ключевое слово справки %s%s%s не найдено в базе данных %s%s%s."
+msgstr "Ключевое слово справки \"%s\" не найдено в базе данных \"%s\"."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
-msgstr "Элемент справки %s%s%s не имеет соответствующей базы данных"
+msgstr "Элемент справки \"%s\" не имеет соответствующей базы данных"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -751,10 +740,9 @@ msgid "Help Selector Error"
 msgstr "Ошибка переключателя справки"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
-msgstr "Отсутствует программа просмотра для типа справки %s%s%s"
+msgstr "Отсутствует программа просмотра для типа справки \"%s\""
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
