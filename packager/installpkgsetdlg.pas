@@ -87,7 +87,7 @@ type
     procedure ExportButtonClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure ImportButtonClick(Sender: TObject);
-    procedure InstallButtonClick(Sender: TObject);
+    procedure SaveAndRebuildButtonClick(Sender: TObject);
     procedure InstallTreeViewDblClick(Sender: TObject);
     procedure InstallPkgSetDialogCreate(Sender: TObject);
     procedure InstallPkgSetDialogDestroy(Sender: TObject);
@@ -226,7 +226,7 @@ begin
   ActiveControl:=AvailableFilterEdit;
 end;
 
-procedure TInstallPkgSetDialog.InstallButtonClick(Sender: TObject);
+procedure TInstallPkgSetDialog.SaveAndRebuildButtonClick(Sender: TObject);
 begin
   if not CheckSelection then exit;
   RebuildIDE:=true;

@@ -524,6 +524,8 @@ procedure TPkgManager.OnCheckInstallPackageList(PkgIDList: TObjectList;
   RemoveConflicts: boolean; out Ok: boolean);
 begin
   Ok:=CheckInstallPackageList(PkgIDList);
+  if Ok then
+    SaveAutoInstallDependencies;
 end;
 
 function TPkgManager.DoBeforeCompilePackages(aPkgList: TFPList): TModalResult;
