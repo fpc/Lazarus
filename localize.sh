@@ -30,21 +30,21 @@ fi
 RSTFILES=(
   ". lazarusidestrconsts lazaruside"
   ". debuggerstrconst"
+  "components/anchordocking anchordockstr"
   "components/codetools codetoolsstrconsts"
+  "components/lazreport/samples/editor maincalleditor calleditorwithpkg"
+  "components/lazreport/source lr_const"
+  "components/memds frmselectdataset"
+  "components/printers/design ideprinting"
+  "components/projecttemplates frmtemplatevariables idetemplateproject projecttemplates"
   "components/tdbf registerdbf"
   "components/turbopower_ipro ipconst"
   "components/turbopower_ipro iputils"
-  "components/lazreport/samples/editor maincalleditor calleditorwithpkg"
-  "components/memds frmselectdataset"
-  "components/printers/design ideprinting"
-  "components/projecttemplates projecttemplates"
-  "components/projecttemplates frmtemplatevariables"
-  "components/projecttemplates idetemplateproject"
-  "tools/lazdatadesktop lazdatadeskstr lazdatadesktop"
   "doceditor lazdemsg lazde"
   "examples/lazresexplorer reconstsunit resexplorer"
   "lcl lclstrconsts"
-)  
+  "tools/lazdatadesktop lazdatadeskstr lazdatadesktop"
+)
 
 set -x
 
