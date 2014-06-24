@@ -606,7 +606,7 @@ begin
   if ManyBuildModes then
     EnvironmentOptions.UseBuildModes := True;
   UseBuildModeCheckBox.Checked:=EnvironmentOptions.UseBuildModes;
-  UseBuildModeCheckBox.Visible := not ManyBuildModes;
+  UseBuildModeCheckBox.Enabled := not ManyBuildModes;
   BuildModeComboBox.Visible := EnvironmentOptions.UseBuildModes;
   BuildModeManageButton.Visible := EnvironmentOptions.UseBuildModes;
   ModeMatrix:=TCompOptModeMatrixFrame(FindEditor(TCompOptModeMatrixFrame));
