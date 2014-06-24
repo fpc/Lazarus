@@ -2,10 +2,10 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
   Left = 416
   Height = 127
   Top = 208
-  Width = 688
+  Width = 746
   Caption = 'ImExportCompOptsDlg'
   ClientHeight = 127
-  ClientWidth = 688
+  ClientWidth = 746
   Constraints.MinHeight = 113
   Constraints.MinWidth = 300
   OnClose = ImExportCompOptsDlgCLOSE
@@ -15,7 +15,7 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     Left = 6
     Height = 41
     Top = 80
-    Width = 676
+    Width = 734
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'

@@ -208,6 +208,7 @@ type
     procedure OpenEditor(AEditor: TAbstractIDEOptionsEditorClass); virtual; abstract;
     procedure OpenEditor(GroupIndex, AIndex: integer); virtual; abstract;
     function ResetFilter: Boolean; virtual; abstract;
+    procedure UpdateBuildModeGUI; virtual; abstract;
   end;
 
 function GetFreeIDEOptionsGroupIndex(AStartIndex: Integer): Integer;

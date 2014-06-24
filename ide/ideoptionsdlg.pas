@@ -109,6 +109,7 @@ type
     function FindEditor(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditor; override;
     function FindEditorClass(GroupIndex, AIndex: integer): TAbstractIDEOptionsEditorClass; override;
     function ResetFilter: Boolean; override;
+    procedure UpdateBuildModeGUI; override;
     procedure ReadAll;
     procedure WriteAll(Restore: boolean);
   public
@@ -157,8 +158,7 @@ begin
     CategoryTree.TopItem:=CategoryTree.Selected.Parent;
   BuildModesManager.OnLoadIDEOptionsHook := @LoadIDEOptions;
   BuildModesManager.OnSaveIDEOptionsHook := @SaveIDEOptions;
-  UpdateBuildModeCombo(BuildModeComboBox);
-  UpdateBuildModeButtons;
+  UpdateBuildModeGUI;
 end;
 
 procedure TIDEOptionsDialog.HelpButtonClick(Sender: TObject);
@@ -748,6 +748,12 @@ function TIDEOptionsDialog.ResetFilter: Boolean;
 begin
   Result := FilterEdit.Filter <> '';
   FilterEdit.ResetFilter;
+end;
+
+procedure TIDEOptionsDialog.UpdateBuildModeGUI;
+begin
+  UpdateBuildModeCombo(BuildModeComboBox);
+  UpdateBuildModeButtons;
 end;
 
 end.

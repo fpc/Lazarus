@@ -33,9 +33,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons,
-  IDEProcs, FileUtil, Laz2_XMLCfg, LazFileCache, LCLType, EditBtn, Menus,
-  ExtCtrls, ButtonPanel, MainIntf, LazarusIDEStrConsts, InputHistory, Project,
-  CompilerOptions;
+  Menus, ExtCtrls, EditBtn, ButtonPanel,
+  IDEProcs, FileUtil, Laz2_XMLCfg, LazFileCache, LCLType, LazarusIDEStrConsts,
+  MainIntf, IDEOptionsIntf, InputHistory, Project, CompilerOptions;
 
 type
   { TImExportCompOptsDlg }
@@ -49,6 +49,8 @@ type
     MenuItem1: TMenuItem;
     HistoryButton: TButton;
     RecentPopupMenu: TPopupMenu;
+    procedure FileNameEditChangeImport(Sender: TObject);
+    procedure FileNameEditChangeExport(Sender: TObject);
     procedure ImExportCompOptsDlgCLOSE(Sender: TObject; var CloseAction: TCloseAction);
     procedure ImExportCompOptsDlgCREATE(Sender: TObject);
     procedure OpenButtonCLICK(Sender: TObject);
@@ -58,6 +60,7 @@ type
     procedure SaveButtonCLICK(Sender: TObject);
   private
     FFilename: string;
+    FParentDialog: TAbstractOptionsEditorDialog;
     procedure HideRadioButtons;
     procedure InitExport;
     procedure InitImport;
@@ -74,6 +77,7 @@ type
 
   TOptsImExport = class
   private
+    fOwner: TImExportCompOptsDlg;
     fXMLConfig: TXMLConfig;
     function GetXMLPathForCompilerOptions: string;
     function OpenXML(const Filename: string): TModalResult;
@@ -81,12 +85,12 @@ type
     function DoImport(const Filename: string): TModalResult;
     function DoExportOptions(const Filename: string): TModalResult;
     function DoExportBuildModes(const Filename: string): TModalResult;
-    constructor Create;
+    constructor Create(aOwner: TImExportCompOptsDlg);
     destructor Destroy; override;
   end;
 
-function ShowImportCompilerOptionsDialog: TModalResult;
-function ShowExportCompilerOptionsDialog: TModalResult;
+function ShowImportCompilerOptionsDialog(aDialog: TAbstractOptionsEditorDialog): TModalResult;
+function ShowExportCompilerOptionsDialog(aDialog: TAbstractOptionsEditorDialog): TModalResult;
 
 
 implementation
@@ -96,17 +100,18 @@ implementation
 const
   DefaultCompilerOptPath = 'CompilerOptions/';
 
-function ShowImportCompilerOptionsDialog: TModalResult;
+function ShowImportCompilerOptionsDialog(aDialog: TAbstractOptionsEditorDialog): TModalResult;
 var
   ImExportCompOptsDlg: TImExportCompOptsDlg;
   Importer: TOptsImExport;
 begin
   ImExportCompOptsDlg := TImExportCompOptsDlg.Create(nil);
   try
+    ImExportCompOptsDlg.FParentDialog := aDialog;
     ImExportCompOptsDlg.InitImport;
     Result := ImExportCompOptsDlg.ShowModal;
     if Result <> mrOk then Exit;
-    Importer := TOptsImExport.Create;
+    Importer := TOptsImExport.Create(ImExportCompOptsDlg);
     try
       Result := Importer.DoImport(ImExportCompOptsDlg.Filename);
     finally
@@ -117,17 +122,18 @@ begin
   end;
 end;
 
-function ShowExportCompilerOptionsDialog: TModalResult;
+function ShowExportCompilerOptionsDialog(aDialog: TAbstractOptionsEditorDialog): TModalResult;
 var
   ImExportCompOptsDlg: TImExportCompOptsDlg;
   Exporter: TOptsImExport;
 begin
   ImExportCompOptsDlg := TImExportCompOptsDlg.Create(nil);
   try
+    ImExportCompOptsDlg.FParentDialog := aDialog;
     ImExportCompOptsDlg.InitExport;
     Result := ImExportCompOptsDlg.ShowModal;
     if Result <> mrOk then Exit;
-    Exporter := TOptsImExport.Create;
+    Exporter := TOptsImExport.Create(ImExportCompOptsDlg);
     try
       case ImExportCompOptsDlg.ExportRadioGroup.ItemIndex of
         0: Result := Exporter.DoExportOptions(ImExportCompOptsDlg.Filename);
@@ -143,9 +149,10 @@ end;
 
 { TOptsImExport }
 
-constructor TOptsImExport.Create;
+constructor TOptsImExport.Create(aOwner: TImExportCompOptsDlg);
 begin
-
+  inherited Create;
+  fOwner := aOwner;
 end;
 
 destructor TOptsImExport.Destroy;
@@ -203,17 +210,23 @@ begin
 end;
 
 function TOptsImExport.DoImport(const Filename: string): TModalResult;
+var
+  Path: String;
 begin
   Result := OpenXML(Filename);
   if Result <> mrOK then Exit;
+  Path := GetXMLPathForCompilerOptions;
   if Assigned(fXMLConfig.FindNode('BuildModes',False)) then begin
     Project1.BuildModes.LoadProjOptsFromXMLConfig(fXMLConfig, '');
+    fOwner.FParentDialog.UpdateBuildModeGUI;
     ShowMessageFmt(lisSuccesfullyImportedBuildModes, [Project1.BuildModes.Count, Filename]);
   end
-  else begin
-    Project1.CompilerOptions.LoadFromXMLConfig(fXMLConfig, GetXMLPathForCompilerOptions);
+  else if Assigned(fXMLConfig.FindNode(Path,False)) then begin
+    Project1.CompilerOptions.LoadFromXMLConfig(fXMLConfig, Path);
     ShowMessageFmt(lisSuccesfullyImportedCompilerOptions, [Filename]);
-  end;
+  end
+  else
+    ShowMessageFmt(lisIECONoCompilerOptionsInFile, [Filename]);
 end;
 
 function TOptsImExport.DoExportOptions(const Filename: string): TModalResult;
@@ -238,7 +251,7 @@ end;
 
 procedure TImExportCompOptsDlg.HideRadioButtons;
 begin
-  Width:=ExportRadioGroup.Left;
+  Width:=FileNameEdit.Left + FileNameEdit.Width + 70; // Room for localized "File"
   ExportRadioGroup.Visible:=False;
 end;
 
@@ -249,14 +262,16 @@ begin
   FileNameEdit.Filter:='XML file (*.xml)|*.xml|'
                       +'Project file (*.lpi)|*.lpi|'
                       +'Package file (*.lpk)|*.lpk|'
-                      //+'Session file (*.lps)|*.lps|'
+                      +'Session file (*.lps)|*.lps|'
                       +'All files (*)|*';
   FileNameEdit.DialogOptions:=FileNameEdit.DialogOptions+[ofFileMustExist];
+  FileNameEdit.OnChange:=@FileNameEditChangeImport;
   with ButtonPanel1 do begin
     OKButton.Caption:=lisIECOLoadFromFile;
     OKButton.LoadGlyphFromStock(idButtonOpen);
     if OKButton.Glyph.Empty then
       OKButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
+    OKButton.Enabled:=False;
     OKButton.OnClick:=@OpenButtonCLICK;
   end;
 end;
@@ -266,6 +281,7 @@ begin
   Caption:=lisIECOExportCompilerOptions;
   FileNameEdit.Filter:='XML file (*.xml)|*.xml|All files (*)|*';
   FileNameEdit.DialogKind:=dkSave;
+  FileNameEdit.OnChange:=@FileNameEditChangeExport;
   if Project1.BuildModes.Count <= 1 then
     HideRadioButtons;
   with ButtonPanel1 do begin
@@ -273,6 +289,7 @@ begin
     OKButton.LoadGlyphFromStock(idButtonSave);
     if OKButton.Glyph.Empty then
       OKButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
+    OKButton.Enabled:=False;
     OKButton.OnClick:=@SaveButtonCLICK;
   end;
 end;
@@ -283,9 +300,19 @@ begin
   HistoryLabel.Hint:=lisIECORecentFiles;
   FileLabel.Caption:=lisFile;
   ExportRadioGroup.Caption:=lisIECOCompilerOptionsOf;
-  ExportRadioGroup.Items.Strings[0] := lisIECOCurrentBuildMode;
-  ExportRadioGroup.Items.Strings[1] := lisIECOAllBuildModes;
+  ExportRadioGroup.Items.Strings[0]:=lisIECOCurrentBuildMode;
+  ExportRadioGroup.Items.Strings[1]:=lisIECOAllBuildModes;
   LoadRecentList;
+end;
+
+procedure TImExportCompOptsDlg.FileNameEditChangeImport(Sender: TObject);
+begin
+  ButtonPanel1.OKButton.Enabled := FileExistsUTF8((Sender as TFileNameEdit).FileName);
+end;
+
+procedure TImExportCompOptsDlg.FileNameEditChangeExport(Sender: TObject);
+begin
+  ButtonPanel1.OKButton.Enabled := (Sender as TFileNameEdit).FileName <> '';
 end;
 
 procedure TImExportCompOptsDlg.OpenButtonCLICK(Sender: TObject);

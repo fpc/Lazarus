@@ -942,6 +942,7 @@ resourcestring
   lisSuccesfullyExportedBuildModes = 'Succesfully exported %d BuildModes to "%s".';
   lisSuccesfullyImportedCompilerOptions = 'Succesfully imported compiler options from "%s".';
   lisSuccesfullyExportedCompilerOptions = 'Succesfully exported compiler options to "%s".';
+  lisIECONoCompilerOptionsInFile = 'File "%s" does not contain compiler options.';
   lisIECORecentFiles = 'Recent files';
   lisIECOSaveToFile = 'Save to file';
   lisIECOLoadFromFile = 'Load from file';
