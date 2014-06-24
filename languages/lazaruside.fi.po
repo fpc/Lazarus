@@ -888,7 +888,9 @@ msgid "Linking"
 msgstr "Linkitys"
 
 #: lazarusidestrconsts.dlgcoloadsave
-msgid "Load/Save"
+#, fuzzy
+#| msgid "Load/Save"
+msgid "Compiler options can be saved to an XML file."
 msgstr "Lataa/Talleta"
 
 #: lazarusidestrconsts.dlgcolor
@@ -3469,7 +3471,9 @@ msgid "Dependency"
 msgstr "Riippuvuus"
 
 #: lazarusidestrconsts.lisa2pexistingfile2
-msgid "Existing file: %s%s%s"
+#, fuzzy
+#| msgid "Existing file: %s%s%s"
+msgid "Existing file: \"%s\""
 msgstr "Olemassaoleva tiedosto: %s%s%s"
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
@@ -3477,7 +3481,9 @@ msgid "File already exists"
 msgstr "Tiedosto on jo olemassa"
 
 #: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
-msgid "File %s%s%s already exists in the package."
+#, fuzzy
+#| msgid "File %s%s%s already exists in the package."
+msgid "File \"%s\" already exists in the package."
 msgstr "Tiedosto %s%s%s on jo paketissa."
 
 #: lazarusidestrconsts.lisa2pfileisused
@@ -3517,7 +3523,9 @@ msgid "Invalid Unit Name"
 msgstr "Kelvoton käännösyksikön nimi"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
-msgid "%s%s%s is not a valid unit name."
+#, fuzzy
+#| msgid "%s%s%s is not a valid unit name."
+msgid "\"%s\" is not a valid unit name."
 msgstr "%s%s%s ei ole kelvollinen käännösyksikön nimi."
 
 #: lazarusidestrconsts.lisa2pnewclassname
@@ -3534,7 +3542,9 @@ msgid "New File"
 msgstr "Uusi tiedosto"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
-msgid "No package found for dependency %s%s%s.%sPlease choose an existing package."
+#, fuzzy
+#| msgid "No package found for dependency %s%s%s.%sPlease choose an existing package."
+msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Riippuvuuden %s%s%s pakettia ei löydy. %sValitse olemassaoleva paketti."
 
 #: lazarusidestrconsts.lisa2ppagenametoolong
@@ -3567,40 +3577,58 @@ msgid "Switch Paths"
 msgstr "Vaihda tiedostopolkua"
 
 #: lazarusidestrconsts.lisa2ptheancestortypehasthesamenameastheunit
-msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
+#, fuzzy
+#| msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
+msgid "The ancestor type \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "Kantatyypillä %s%s%s on sama nimi kuin %skäännösyksiköllä %s%s%s."
 
 #: lazarusidestrconsts.lisa2ptheancestortypeisnotavalidpascalidentifier
-msgid "The ancestor type %s%s%s is not a valid Pascal identifier."
+#, fuzzy
+#| msgid "The ancestor type %s%s%s is not a valid Pascal identifier."
+msgid "The ancestor type \"%s\" is not a valid Pascal identifier."
 msgstr "Kantatyyppi %s%s%s ei ole kelvollinen Pascal-tunniste."
 
 #: lazarusidestrconsts.lisa2ptheclassnameandancestortypearethesame
-msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
+#, fuzzy
+#| msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
+msgid "The class name \"%s\" and ancestor type \"%s\" are the same."
 msgstr "Luokalla %s%s%s ja kantatyypillä %s%s%s on sama nimi."
 
 #: lazarusidestrconsts.lisa2ptheclassnameexistsalreadyinpackagefile
-msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
+#, fuzzy
+#| msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
+msgid "The class name \"%s\" exists already in%sPackage %s%sFile: \"%s\""
 msgstr "Luokka %s%s%s on jo%sPaketissa %s%sTiedostossa: %s%s%s"
 
 #: lazarusidestrconsts.lisa2ptheclassnamehasthesamenameastheunit
-msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
+#, fuzzy
+#| msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
+msgid "The class name \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "Luokalla %s%s%s on sama nimi kuin%skäännösyksiköllä %s%s%s."
 
 #: lazarusidestrconsts.lisa2ptheclassnameisnotavalidpascalidentifier
-msgid "The class name %s%s%s is not a valid Pascal identifier."
+#, fuzzy
+#| msgid "The class name %s%s%s is not a valid Pascal identifier."
+msgid "The class name \"%s\" is not a valid Pascal identifier."
 msgstr "Luokan nimi %s%s%s ei ole kelvollinen Pascal-tunniste."
 
 #: lazarusidestrconsts.lisa2pthefileispartofthecurrentprojectitisabadidea
-msgid "The file %s%s%s is part of the current project.%sIt is a bad idea to share files between projects and packages."
+#, fuzzy
+#| msgid "The file %s%s%s is part of the current project.%sIt is a bad idea to share files between projects and packages."
+msgid "The file \"%s\" is part of the current project.%sIt is a bad idea to share files between projects and packages."
 msgstr "Tiedosto %s%s%s on osa nykyistä projektia.%sOn huono idea jakaa tiedosto projektin ja paketin kesken."
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
-msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+#, fuzzy
+#| msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+msgid "The filename \"%s\" is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "Tiedoston nimi %s%s%s on ristiriitainen, koska paketilla ei ole vielä oletushakemistoa.%sMäärittele koko polku tiedostolle."
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
+#, fuzzy
+#| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
-msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Maximiversio %s%s%s on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
@@ -3609,40 +3637,58 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maximiversio on pienempi kuin Minimiversio."
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
+#, fuzzy
+#| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
-msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Minimiversio %s%s%s on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
-msgid "The package already has a dependency on the package %s%s%s."
+#, fuzzy
+#| msgid "The package already has a dependency on the package %s%s%s."
+msgid "The package already has a dependency on the package \"%s\"."
 msgstr "Paketilla on jo riippuvuus pakettiin %s%s%s."
 
 #: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
+#, fuzzy
+#| msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
+msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
 msgstr "Paketin nimi %s%s%s on kelvoton.%sValitse olemassa oleva paketti."
 
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
-msgid "The page name %s%s%s is too long (max 100 chars)."
+#, fuzzy
+#| msgid "The page name %s%s%s is too long (max 100 chars)."
+msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "Sivun nimi %s%s%s on liian pitkä (max 100 merkkiä)."
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthepackage
-msgid "The unitname %s%s%s already exists in the package:%s%s"
+#, fuzzy
+#| msgid "The unitname %s%s%s already exists in the package:%s%s"
+msgid "The unitname \"%s\" already exists in the package:%s%s"
 msgstr "Käännösyksikkö %s%s%s on jo paketissa:%s%s"
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthispackage
-msgid "The unitname %s%s%s already exists in this package."
+#, fuzzy
+#| msgid "The unitname %s%s%s already exists in this package."
+msgid "The unitname \"%s\" already exists in this package."
 msgstr "Käännösyksikkö %s%s%s on jo tässä paketissa."
 
 #: lazarusidestrconsts.lisa2ptheunitnameandfilenamediffer
-msgid "The unit name %s%s%s%sand filename %s%s%s differ."
+#, fuzzy
+#| msgid "The unit name %s%s%s%sand filename %s%s%s differ."
+msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "Käännösyksikön %s%s%s%sja tiedoston %s%s%s nimet eroavat."
 
 #: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-msgid "The unit name %s%s%s does not correspond to the filename."
+#, fuzzy
+#| msgid "The unit name %s%s%s does not correspond to the filename."
+msgid "The unit name \"%s\" does not correspond to the filename."
 msgstr "Käännösyksikön nimi %s%s%s ei vastaa tiedoston nimeä."
 
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
-msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
+#, fuzzy
+#| msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
+msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "Käännösyksikön nimi %s%s%s on sama kuin rekisteröidyllä komponentilla.%sSen käyttö voi aiheuttaa outoja virheitä."
 
 #: lazarusidestrconsts.lisa2punitfilename2
@@ -3673,6 +3719,10 @@ msgstr "Keskeytä kaikki"
 msgid "Abort all loading"
 msgstr "Keskeytä kaikki lataus"
 
+#: lazarusidestrconsts.lisaborted
+msgid "Aborted"
+msgstr ""
+
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Keskeytä projektin lataaminen"
@@ -3680,6 +3730,14 @@ msgstr "Keskeytä projektin lataaminen"
 #: lazarusidestrconsts.lisabortwholeloading
 msgid "Abort whole loading"
 msgstr "Keskeytä lataus kokonaan"
+
+#: lazarusidestrconsts.lisabout
+msgid "About ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisabout2
+msgid "About %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisaboutdocumentation
 msgid "Documentation:"
@@ -3766,6 +3824,10 @@ msgstr ""
 msgid "Add Files in Directory"
 msgstr "Lisää hakemiston tiedostot"
 
+#: lazarusidestrconsts.lisaddfilter
+msgid "Add Filter ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr "Lisää avainsana \"do\""
@@ -3810,9 +3872,17 @@ msgstr "Osoite:"
 msgid "&Address Breakpoint ..."
 msgstr "&Osoite-keskeytyskohta ..."
 
+#: lazarusidestrconsts.lisaddtoincludesearchpath
+msgid "Add to include search path?"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "Lisätäänkö tiedosto %s projektiin?"
+
+#: lazarusidestrconsts.lisaddtounitsearchpath
+msgid "Add to unit search path?"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -3847,7 +3917,9 @@ msgid "Invalid Package"
 msgstr "Kelvoton paketti"
 
 #: lazarusidestrconsts.lisaf2pinvalidpackageid
-msgid "Invalid package ID: %s%s%s"
+#, fuzzy
+#| msgid "Invalid package ID: %s%s%s"
+msgid "Invalid package ID: \"%s\""
 msgstr "Kelvoton paketin ID: %s%s%s"
 
 #: lazarusidestrconsts.lisaf2ppackageisreadonly
@@ -3855,7 +3927,9 @@ msgid "Package is read only"
 msgstr "Pakettia voidaan vain lukea"
 
 #: lazarusidestrconsts.lisaf2ppackagenotfound
-msgid "Package %s%s%s not found."
+#, fuzzy
+#| msgid "Package %s%s%s not found."
+msgid "Package \"%s\" not found."
 msgstr "Pakettia %s%s%s ei löydy."
 
 #: lazarusidestrconsts.lisaf2pshowall
@@ -3864,8 +3938,10 @@ msgid "Show all"
 msgstr "Näytä kaikki"
 
 #: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
+#, fuzzy
+#| msgid "The file %s%s%s%sis already in the package %s."
 msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file %s%s%s%sis already in the package %s."
+msgid "The file \"%s\"%sis already in the package %s."
 msgstr "Tiedosto %s%s%s%son jo paketissa %s."
 
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
@@ -3877,8 +3953,14 @@ msgid "Unit name: "
 msgstr "Käännösyksikön nimi: "
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-msgid "A file %s%s%s already exists.%sReplace it?"
+#, fuzzy
+#| msgid "A file %s%s%s already exists.%sReplace it?"
+msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Tiedosto %s%s%s on jo olemassa.%skorvataanko se? "
+
+#: lazarusidestrconsts.lisafilterwiththenamealreadyexists
+msgid "A filter with the name \"%s\" already exists."
+msgstr ""
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
 msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
@@ -3921,7 +4003,9 @@ msgid "All parameters of this function are already set at this call. Nothing to 
 msgstr "Kaikki tämän funktion parametrit on jo asetettu. Ei lisättävää."
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
-msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
+#, fuzzy
+#| msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
+msgid "All your modifications to \"%s\"%swill be lost and the file reopened."
 msgstr "Kaikki muutokset tiedostoon %s%s%s%smenetetään ja se avataan uudestaan."
 
 #: lazarusidestrconsts.lisalpha
@@ -3944,6 +4028,10 @@ msgstr "Aina"
 msgid "Always convert suggested default file name to lowercase"
 msgstr "Nimeä aina ehdotettu tiedostonimi pieniksi kirjaimiksi"
 
+#: lazarusidestrconsts.lisalwaysdrawselecteditemsfocused
+msgid "Always draw selected items focused"
+msgstr ""
+
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
 msgstr "Jätä aina huomiotta"
@@ -3957,7 +4045,9 @@ msgid "Ambiguous file found"
 msgstr "Ristiriitainen tiedosto löytyi"
 
 #: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
-msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
+#, fuzzy
+#| msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
+msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "Ristiriitainen tiedosto löytyi: %s%s%s%smikä voi sekoittua tähän: %s%s%s%s%sPoistetaanko?"
 
 #: lazarusidestrconsts.lisambiguousfilesfound
@@ -3965,10 +4055,8 @@ msgid "Ambiguous files found"
 msgstr "Ristiriitaisia tiedostoja löytyi"
 
 #: lazarusidestrconsts.lisambiguousunitfound
-msgid "Ambiguous Unit found"
-msgstr "Ristiriitainen käännösyksikkö löytyi"
-
-#: lazarusidestrconsts.lisambiguousunitfound2
+#, fuzzy
+#| msgid "Ambiguous Unit found"
 msgid "Ambiguous unit found"
 msgstr "Ristiriitainen käännösyksikkö löytyi"
 
@@ -4017,7 +4105,9 @@ msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distan
 msgstr ""
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
-msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
+#, fuzzy
+#| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
+msgid "An error occured at last startup while loading %s!%sLoad this project again?"
 msgstr "Virhe esiintyi, kun avattiin projektia %s!%s%sAvataanko tämä projekti uudelleen?"
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -4349,6 +4439,10 @@ msgstr "Kokoa"
 msgid "Busy"
 msgstr "Varattu"
 
+#: lazarusidestrconsts.lisbyte
+msgid "%s byte"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "%s:n kutsuminen Makefile luomiseksi %s:sta epäonnistui."
@@ -4383,12 +4477,30 @@ msgid "Cannot copy top level component."
 msgstr "Päätason komponenttia ei voida kopioida"
 
 #: lazarusidestrconsts.liscannotcreatefile
-msgid "Cannot create file %s%s%s"
+#, fuzzy
+#| msgid "Cannot create file %s%s%s"
+msgid "Cannot create file \"%s\""
 msgstr "Ei voi luoda tiedostoa %s%s%s"
+
+#: lazarusidestrconsts.liscannotexecute
+msgid "can not execute \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.liscannotfind
+msgid "Cannot find %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscannotfindexecutable
+msgid "can not find executable \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "Lazaruksen käynnistäjää:%s%s ei löydy"
+
+#: lazarusidestrconsts.liscannotfindunit
+msgid "Cannot find unit %s"
+msgstr ""
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
@@ -4397,6 +4509,10 @@ msgstr "Kääntäjää ei voi testata virheenjäljityksen tai käännöksen aika
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
 msgstr "Vain TComponent:sta periytyvän luokka voidaan vaihtaa."
+
+#: lazarusidestrconsts.liscantfindavalidppu
+msgid "Can't find a valid %s.ppu"
+msgstr ""
 
 #: lazarusidestrconsts.liscaptiondiff
 msgctxt "lazarusidestrconsts.liscaptiondiff"
@@ -4816,7 +4932,9 @@ msgid "Error reading %s"
 msgstr "Virhe luettaessa %s"
 
 #: lazarusidestrconsts.liscfeinfile
-msgid "%sIn file %s%s"
+#, fuzzy
+#| msgid "%sIn file %s%s"
+msgid "In file %s"
 msgstr "%s tiedostossa %s%s"
 
 #: lazarusidestrconsts.liscfeinvalidcomponentowner
@@ -4924,6 +5042,14 @@ msgstr "Ruksaa kaikki"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "Tarkista tiedoston muutos sisällön eikä aikaleiman perusteella"
 
+#: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr ""
+
+#: lazarusidestrconsts.lischeckifpackageisinthedependencies
+msgid ". Check if package %s is in the dependencies"
+msgstr ""
+
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
 msgstr "Tarkista onko lähdekoodin seuraava tunnus 'end'. Jos ei, palauttaa rivinloppu + end; + rivinloppu"
@@ -4931,6 +5057,10 @@ msgstr "Tarkista onko lähdekoodin seuraava tunnus 'end'. Jos ei, palauttaa rivi
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Tarkista asetukset"
+
+#: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+msgid ". Check search path package %s, try a clean rebuild, check implementation uses sections."
+msgstr ""
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
@@ -5057,15 +5187,23 @@ msgid "classes.ppu not found. Check your fpc.cfg."
 msgstr "classes.ppu ei löytynyt. Tarkista fpc.cfg."
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
-msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
+#, fuzzy
+#| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
+msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "Luokka %s%s%s ei ole rekisteröity komponentti-luokka.%sLiittäminen ei onnistu."
 
 #: lazarusidestrconsts.lisclassnotfound
 msgid "Class not found"
 msgstr "Luokkaa ei löydy"
 
+#: lazarusidestrconsts.lisclassnotfoundat
+msgid "Class %s not found at %s(%s,%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisclassofmethodnotfound
-msgid "Class %s%s%s of method %s%s%s not found."
+#, fuzzy
+#| msgid "Class %s%s%s of method %s%s%s not found."
+msgid "Class \"%s\" of method \"%s\" not found."
 msgstr "Metodin %s%s%s luokkaa %s%s%s ei löydy."
 
 #: lazarusidestrconsts.liscldirclean
@@ -5377,7 +5515,9 @@ msgid "Add code template"
 msgstr "Lisää koodimalline"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
-msgid " A token %s%s%s already exists! "
+#, fuzzy
+#| msgid " A token %s%s%s already exists! "
+msgid " A token \"%s\" already exists! "
 msgstr " Tunnus %s%s%s on jo olemassa! "
 
 #: lazarusidestrconsts.liscodetemplautocompleteon
@@ -5899,6 +6039,10 @@ msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "Käännä"
 
+#: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgstr ""
+
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
 msgstr "%s (käännetään ...)"
@@ -5929,11 +6073,15 @@ msgid "Component name \"%s\" is a Pascal keyword."
 msgstr "Komponentin nimi \"%s\" on Pascalin avainsana."
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
-msgid "Component name %s%s%s is keyword"
+#, fuzzy
+#| msgid "Component name %s%s%s is keyword"
+msgid "Component name \"%s\" is keyword"
 msgstr "Komponentin nimi %s%s%s on avainsana"
 
 #: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-msgid "Component name %s%s%s is not a valid identifier"
+#, fuzzy
+#| msgid "Component name %s%s%s is not a valid identifier"
+msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Komponentin nimi (name) %s%s%s ei ole sallittu tunniste"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
@@ -5970,7 +6118,9 @@ msgid "Configure Build %s"
 msgstr "Konfiguroi %s:n kokoaminen"
 
 #: lazarusidestrconsts.lisconfigurebuildlazarus
-msgid "Configure %sBuild Lazarus%s"
+#, fuzzy
+#| msgid "Configure %sBuild Lazarus%s"
+msgid "Configure \"Build Lazarus\""
 msgstr "Konfiguroi %sLazaruksen kokoaminen%s"
 
 #: lazarusidestrconsts.lisconfigurelazaruside
@@ -6021,6 +6171,10 @@ msgstr "Vanha pakettien joukko"
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
 msgstr "Ristiriita"
+
+#: lazarusidestrconsts.lisconflictdetected
+msgid "Conflict detected"
+msgstr ""
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -6148,7 +6302,9 @@ msgid "Failed converting unit"
 msgstr "Käännösyksikön muunnos epäonnistui"
 
 #: lazarusidestrconsts.lisconvdelphifailedtoconvertunit
-msgid "Failed to convert unit%s%s%s"
+#, fuzzy
+#| msgid "Failed to convert unit%s%s%s"
+msgid "Failed to convert unit \"%s\""
 msgstr "käännösyksikön%s%s%s muunnos epäonnistui"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -6342,6 +6498,10 @@ msgstr "Kopioi kaikki"
 msgid "Copy All Items to Clipboard"
 msgstr "Kopioi kaikki leikepöydälle"
 
+#: lazarusidestrconsts.liscopyalloriginalmessagestoclipboard
+msgid "Copy All/Original Messages to Clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
 msgstr "Kopioi kaikki tulostus leikepöydälle"
@@ -6366,8 +6526,14 @@ msgstr "Kopiointivirhe"
 msgid "Copy error"
 msgstr "Kopiointivirhe"
 
+#: lazarusidestrconsts.liscopyfilenametoclipboard
+msgid "Copy File Name to Clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyidentifier
-msgid "Copy %s%s%s to clipboard"
+#, fuzzy
+#| msgid "Copy %s%s%s to clipboard"
+msgid "Copy \"%s\" to clipboard"
 msgstr "Kopioi %s%s%s leikepöydälle"
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
@@ -6377,6 +6543,10 @@ msgstr "Kokonaisen lomakkeen kopiointia ei tueta."
 #: lazarusidestrconsts.liscopyitemtoclipboard
 msgid "Copy Item to Clipboard"
 msgstr "Kopioi leikepöydälle"
+
+#: lazarusidestrconsts.liscopymovefiletodirectory
+msgid "Copy/Move File to Directory"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -6403,27 +6573,27 @@ msgid "Skip calling compiler"
 msgstr "Ohita kääntäjän kutsu"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
-msgid "Could not add %s{$I %s%s} to main source!"
+msgid "Could not add \"{$I %s}\" to main source!"
 msgstr ""
 
 #: lazarusidestrconsts.liscouldnotaddrtomainsource
-msgid "Could not add %s{$R %s%s} to main source!"
+msgid "Could not add \"{$R %s}\" to main source!"
 msgstr ""
 
 #: lazarusidestrconsts.liscouldnotaddtomainsource
-msgid "Could not add %s%s%s to main source!"
+msgid "Could not add \"%s\" to main source!"
 msgstr ""
 
 #: lazarusidestrconsts.liscouldnotremovefrommainsource
-msgid "Could not remove %s%s%s from main source!"
+msgid "Could not remove \"%s\" from main source!"
 msgstr ""
 
 #: lazarusidestrconsts.liscouldnotremoveifrommainsource
-msgid "Could not remove %s{$I %s%s} from main source!"
+msgid "Could not remove \"{$I %s}\" from main source!"
 msgstr ""
 
 #: lazarusidestrconsts.liscouldnotremoverfrommainsource
-msgid "Could not remove %s{$R %s%s} from main source!"
+msgid "Could not remove \"{$R %s}\" from main source!"
 msgstr ""
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
@@ -6450,6 +6620,10 @@ msgstr "Luo Debug- ja Release-moodit"
 msgid "Create directory?"
 msgstr "Luo hakemisto?"
 
+#: lazarusidestrconsts.liscreatefilter
+msgid "Create Filter"
+msgstr ""
+
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
 msgstr "Luo funktio"
@@ -6461,6 +6635,10 @@ msgstr "Luo ohje-solmu"
 #: lazarusidestrconsts.liscreateit
 msgid "Create it"
 msgstr "Luo se"
+
+#: lazarusidestrconsts.liscreatelocalvariable
+msgid "Create local variable \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liscreatenewpackage
 msgid "(Create new package)"
@@ -6548,6 +6726,14 @@ msgstr "Valitse koodimakro"
 msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Nykyinen"
+
+#: lazarusidestrconsts.liscurrentdirectory
+msgid "CurrentDirectory: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscurrentdirectory2
+msgid "CurrentDirectory: "
+msgstr ""
 
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
@@ -6926,7 +7112,9 @@ msgid "Unable to load file"
 msgstr "Tiedoston lataus ei onnistu"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile2
-msgid "Unable to load file %s%s%s."
+#, fuzzy
+#| msgid "Unable to load file %s%s%s."
+msgid "Unable to load file \"%s\"."
 msgstr "Tiedoston %s%s%s lataus ei onnistu."
 
 #: lazarusidestrconsts.lisdecimal
@@ -6965,7 +7153,9 @@ msgid "Delete all breakpoints?"
 msgstr "Poista kaikki keskeytyskohdat?"
 
 #: lazarusidestrconsts.lisdeleteallbreakpoints2
-msgid "Delete all breakpoints in file %s%s%s?"
+#, fuzzy
+#| msgid "Delete all breakpoints in file %s%s%s?"
+msgid "Delete all breakpoints in file \"%s\"?"
 msgstr "Poista kaikki keskeytyskohdat tiedostossa %s%s%s?"
 
 #: lazarusidestrconsts.lisdeleteallinsamesource
@@ -7005,7 +7195,9 @@ msgid "Delete file failed"
 msgstr "Tiedoston poistaminen epäonnistui"
 
 #: lazarusidestrconsts.lisdeletemacro
-msgid "Delete macro %s%s%s?"
+#, fuzzy
+#| msgid "Delete macro %s%s%s?"
+msgid "Delete macro \"%s\"?"
 msgstr "Poista makro %s%s%s?"
 
 #: lazarusidestrconsts.lisdeletemode
@@ -7013,7 +7205,9 @@ msgid "Delete mode \"%s\""
 msgstr "Poista moodi \"%s\""
 
 #: lazarusidestrconsts.lisdeleteoldfile
-msgid "Delete old file %s%s%s?"
+#, fuzzy
+#| msgid "Delete old file %s%s%s?"
+msgid "Delete old file \"%s\"?"
 msgstr "Poistetaanko %s%s%s-niminen vanha fiedosto?"
 
 #: lazarusidestrconsts.lisdeleteoldfile2
@@ -7029,7 +7223,9 @@ msgid "Delete selected macro?"
 msgstr "Poista valitut makrot?"
 
 #: lazarusidestrconsts.lisdeletevalue
-msgid "Delete value %s%s%s"
+#, fuzzy
+#| msgid "Delete value %s%s%s"
+msgid "Delete value \"%s\"?"
 msgstr "Poista arvo %s%s%s"
 
 #: lazarusidestrconsts.lisdeletevalue2
@@ -7037,7 +7233,9 @@ msgid "Delete value %s"
 msgstr "Poista arvo %s"
 
 #: lazarusidestrconsts.lisdeletingoffilefailed
-msgid "Deleting of file %s%s%s failed."
+#, fuzzy
+#| msgid "Deleting of file %s%s%s failed."
+msgid "Deleting of file \"%s\" failed."
 msgstr "Tiedoston %s%s%s poistaminen epäonnistui."
 
 #: lazarusidestrconsts.lisdelphi
@@ -7058,6 +7256,10 @@ msgstr "Delphi-käännösyksikkö"
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgstr ""
+
+#: lazarusidestrconsts.lisdesktop
+msgid "Desktop: "
 msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
@@ -7112,6 +7314,10 @@ msgstr "Teksti 1"
 msgid "Text2"
 msgstr "Teksti 2"
 
+#: lazarusidestrconsts.lisdifferentunitfoundatnewposition
+msgid "different unit %s found at new position \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisdigits
 msgid "Digits:"
 msgstr "Numerot"
@@ -7129,7 +7335,9 @@ msgid "Directory: "
 msgstr "Hakemisto: "
 
 #: lazarusidestrconsts.lisdirectorynotfound
-msgid "Directory %s%s%s not found."
+#, fuzzy
+#| msgid "Directory %s%s%s not found."
+msgid "Directory \"%s\" not found."
 msgstr "Hakemistoa %s%s%s ei löydy."
 
 #: lazarusidestrconsts.lisdirectorynotfound2
@@ -7324,6 +7532,10 @@ msgstr "Tahdotko yhä poistua?"
 msgid "Draw grid lines"
 msgstr "Näytä kohdistusviivat"
 
+#: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
+msgid "Draw the selection focused, even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Kopioi valitut komponentit leikepöydälle"
@@ -7364,8 +7576,14 @@ msgstr "Päällekkäinen"
 msgid "Duplicate entry"
 msgstr ""
 
+#: lazarusidestrconsts.lisduplicatefilename
+msgid "Duplicate File Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatefoundofvalue
-msgid "Duplicate found of value %s%s%s."
+#, fuzzy
+#| msgid "Duplicate found of value %s%s%s."
+msgid "Duplicate found of value \"%s\"."
 msgstr "Päällekkäinen arvo %s%s%s."
 
 #: lazarusidestrconsts.lisduplicatename
@@ -7373,7 +7591,9 @@ msgid "Duplicate Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
-msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
+#, fuzzy
+#| msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
+msgid "Duplicate name: A component named \"%s\" already exists in the inherited component %s"
 msgstr "Päällekkäinen nimi: %s%s%s niminen komponentti on jo olemassa perityssä komponentissa %s"
 
 #: lazarusidestrconsts.lisduplicateppufilesdeleteoneormakesureallsearchpaths
@@ -7386,6 +7606,10 @@ msgstr "Päällekkäinen hakupolku"
 
 #: lazarusidestrconsts.lisduplicatesourcesdeleteoneormakesureallsearchpathsh
 msgid "Duplicate sources. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
+msgstr ""
+
+#: lazarusidestrconsts.lisduplicateunit
+msgid "Duplicate Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisedit
@@ -7404,6 +7628,10 @@ msgstr ""
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
 msgstr "Muokkaa näppäimiä"
+
+#: lazarusidestrconsts.liseditorcolors
+msgid "Editor Colors"
+msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -7584,9 +7812,17 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Sallittu"
 
+#: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisenablegroups
 msgid "Enable Groups"
 msgstr "Salli ryhmät"
+
+#: lazarusidestrconsts.lisenablei18nforlfm
+msgid "Enable I18N for LFM"
+msgstr ""
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
@@ -7610,13 +7846,8 @@ msgstr "Kapseloi $IFDEF:n sisään"
 
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
-msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
 msgstr ""
-
-#: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis2
-msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis2"
-msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
-msgstr "Merkistö on tiedostossa %s%s%s%skoodattu %s-koodauksella. Koodaukseksi muunnetaan %s."
 
 #: lazarusidestrconsts.lisendlessloopinmacros
 msgid "Endless loop in macros"
@@ -7727,7 +7958,9 @@ msgid "Error loading file"
 msgstr "Virhe ladattaessa tiedostoa"
 
 #: lazarusidestrconsts.liserrorloadingfile2
-msgid "Error loading file \"%s\":%s%s"
+#, fuzzy
+#| msgid "Error loading file \"%s\":%s%s"
+msgid "Error loading file \"%s\":"
 msgstr "Virhe ladattaessa tiedostoa \"%s\":%s%s"
 
 #: lazarusidestrconsts.liserrorloadingfrom
@@ -7763,7 +7996,9 @@ msgid "Error reading XML"
 msgstr "Virhe luettaessa XML"
 
 #: lazarusidestrconsts.liserrorreadingxmlfile
-msgid "Error reading xml file %s%s%s%s%s"
+#, fuzzy
+#| msgid "Error reading xml file %s%s%s%s%s"
+msgid "Error reading xml file \"%s\"%s%s"
 msgstr "Virhe luettaessa xml-tiedostosta %s%s%s%s%s"
 
 #: lazarusidestrconsts.liserrorrenamingfile
@@ -7774,6 +8009,10 @@ msgstr "Virhe uudelleennimettäessä tiedostoa"
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
 msgstr "Virheet"
+
+#: lazarusidestrconsts.liserrors2
+msgid ", Errors:%s"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -7786,10 +8025,6 @@ msgstr "Virhe nimettäessä komponentti %s %s:ksi"
 #: lazarusidestrconsts.liserrorwritingfile
 msgid "Error writing file \"%s\""
 msgstr "Virhe tallennettaessa tiedosto \"%s\""
-
-#: lazarusidestrconsts.liserrorwritingfile2
-msgid "Error writing file %s"
-msgstr ""
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
@@ -7868,6 +8103,22 @@ msgstr "Poistosuodatin"
 msgid "Executable"
 msgstr "Suoritettava tiedosto"
 
+#: lazarusidestrconsts.lisexecutable2
+msgid "Executable: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutable3
+msgid "Executable: "
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutableisadirectory
+msgid "executable \"%s\" is a directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
+msgid "executable \"%s\" lacks the permission to run"
+msgstr ""
+
 #: lazarusidestrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Suorittaa komennon jälkeen"
@@ -7888,6 +8139,10 @@ msgstr "Ohjelmat"
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "Lopeta"
+
+#: lazarusidestrconsts.lisexitcode
+msgid "Exit code %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
@@ -7930,9 +8185,33 @@ msgstr "Vie pakettiluettelo (*.xml)"
 msgid "Expression:"
 msgstr "Ilmaisu:"
 
+#: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
+msgid "Extend include file search path of package \"%s\" with\"%s\"?"
+msgstr ""
+
+#: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
+msgid "Extend include files search path of project with%s\"%s\"?"
+msgstr ""
+
+#: lazarusidestrconsts.lisextendincludepath
+msgid "Extend Include Path?"
+msgstr ""
+
 #: lazarusidestrconsts.lisextendunitpath
 msgid "Extend unit path?"
 msgstr "Laajennetaanko käännösyksikköjen polkua?"
+
+#: lazarusidestrconsts.lisextendunitpath2
+msgid "Extend Unit Path?"
+msgstr ""
+
+#: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
+msgid "Extend unit search path of package \"%s\" with\"%s\"?"
+msgstr ""
+
+#: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
+msgid "Extend unit search path of project with%s\"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
@@ -7942,6 +8221,10 @@ msgstr "Erota"
 msgctxt "lazarusidestrconsts.lisextractprocedure"
 msgid "Extract Procedure"
 msgstr "Erota aliohjelma"
+
+#: lazarusidestrconsts.lisextremelyverbose
+msgid "Extremely Verbose"
+msgstr ""
 
 #: lazarusidestrconsts.lisexttoolexternaltools
 msgid "External Tools"
@@ -7975,9 +8258,17 @@ msgstr "\"Application Bundle\" luonti \"%s\":lle epäonnistui"
 msgid "Failed to load fold state"
 msgstr "Laskostuksen lataaminen epäonnistui"
 
+#: lazarusidestrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
 msgstr "Tiedoston tallennus epäonnistui."
+
+#: lazarusidestrconsts.lisfatal
+msgid "Fatal"
+msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -7997,13 +8288,10 @@ msgid "File: "
 msgstr "Tiedosto: "
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
+#, fuzzy
+#| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
-msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
-msgstr "Tiedosto %s%s%s%s ei näyttäisi olevan tekstitiedosto.%s Yritetäänkö se silti avata?"
-
-#: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway2
-msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway2"
-msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
+msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
 msgstr "Tiedosto %s%s%s%s ei näyttäisi olevan tekstitiedosto.%s Yritetäänkö se silti avata?"
 
 #: lazarusidestrconsts.lisfileextensionofprograms
@@ -8043,7 +8331,9 @@ msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "Nämä tiedostosuotimet näkyvät kaikissa 'Avaa Tiedosto' -ikkunoissa"
 
 #: lazarusidestrconsts.lisfilehaschangedsave
-msgid "File %s%s%s has changed. Save?"
+#, fuzzy
+#| msgid "File %s%s%s has changed. Save?"
+msgid "File \"%s\" has changed. Save?"
 msgstr "Tiedosto %s%s%s on muuttunut. Talletetaanko?"
 
 #: lazarusidestrconsts.lisfilehasnoproject
@@ -8067,7 +8357,9 @@ msgid "File is symlink"
 msgstr "Tiedosto on symbolinen linkki"
 
 #: lazarusidestrconsts.lisfileisvirtual
-msgid "File %s%s%s is virtual."
+#, fuzzy
+#| msgid "File %s%s%s is virtual."
+msgid "File \"%s\" is virtual."
 msgstr "Tiedosto %s%s%s on virtuaalinen"
 
 #: lazarusidestrconsts.lisfilelinkerror
@@ -8078,12 +8370,19 @@ msgstr "Tiedoston linkkivirhe"
 msgid "Filename/Address"
 msgstr "Tiedoston nimi / osoite"
 
+#: lazarusidestrconsts.lisfilenamestyle
+msgid "Filename Style ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
 msgstr "Tiedostoa ei löytynyt"
 
 #: lazarusidestrconsts.lisfilenotfound2
-msgid "File %s%s%s not found.%s"
+#, fuzzy
+#| msgid "File %s%s%s not found.%s"
+msgctxt "lazarusidestrconsts.lisfilenotfound2"
+msgid "File \"%s\" not found."
 msgstr "Tiedostoa %s%s%s ei löytynyt.%s"
 
 #: lazarusidestrconsts.lisfilenotfound3
@@ -8094,8 +8393,14 @@ msgstr "tiedostoa %s ei löytynyt"
 msgid "file not found"
 msgstr "tiedostoa ei löytynyt"
 
+#: lazarusidestrconsts.lisfilenotfound5
+msgid "File not found:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
-msgid "File %s%s%s not found.%sDo you want to create it?%s"
+#, fuzzy
+#| msgid "File %s%s%s not found.%sDo you want to create it?%s"
+msgid "File \"%s\" not found.%sDo you want to create it?"
 msgstr "Tiedostoa %s%s%s ei löytynyt.%sHaluatko luoda sen?%s"
 
 #: lazarusidestrconsts.lisfilenotlowercase
@@ -8112,6 +8417,10 @@ msgstr "Tiedoston asetukset"
 
 #: lazarusidestrconsts.lisfileshasincorrectsyntax
 msgid "File %s has incorrect syntax."
+msgstr ""
+
+#: lazarusidestrconsts.lisfileshasregisterprocedureinpackageusessection
+msgid "Files: %s, has Register procedure: %s, in package uses section: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfileshaverightencoding
@@ -8142,6 +8451,38 @@ msgstr "Suodatin"
 msgid "Filter: %s"
 msgstr "Suodatin: %s"
 
+#: lazarusidestrconsts.lisfilterallmessagesoftype
+msgid "Filter all messages of type %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilteralreadyexists
+msgid "Filter already exists"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilterdebugmessagesandbelow
+msgid "Filter Debug Messages and below"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilterhintsandbelow
+msgid "Filter Hints and below"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilterhintswithoutsourceposition
+msgid "Filter Hints without Source Position"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilternonedonotfilterbyurgency
+msgid "Filter None, do not filter by urgency"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilternonurgentmessages
+msgid "Filter non urgent Messages"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilternotesandbelow
+msgid "Filter Notes and below"
+msgstr ""
+
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
 msgstr "Suodatinryhmät"
@@ -8149,6 +8490,18 @@ msgstr "Suodatinryhmät"
 #: lazarusidestrconsts.lisfiltertheavailableoptionslist
 msgid "Filter the available options list"
 msgstr "Suodata tarjolla olevat asetukset"
+
+#: lazarusidestrconsts.lisfilterverbosemessagesandbelow
+msgid "Filter Verbose Messages and below"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilterwarningsandbelow
+msgid "Filter Warnings and below"
+msgstr ""
+
+#: lazarusidestrconsts.lisfind
+msgid "Find ..."
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectory
 msgid "D&irectory"
@@ -8201,6 +8554,14 @@ msgstr "Etsi näppäinyhdistelmä"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Etsi puuttuva käännösyksikkö"
+
+#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
+msgid "Find the next occurence of the phrase"
+msgstr ""
+
+#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
+msgid "Find the previous occurence of the phrase"
+msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -8299,6 +8660,10 @@ msgstr "Kehys"
 msgid "&Backward search"
 msgstr "&Taaksepäin haku"
 
+#: lazarusidestrconsts.lisfreeingbufferlines
+msgid "freeing buffer lines: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascal
 msgid "Free Pascal"
 msgstr ""
@@ -8366,6 +8731,10 @@ msgstr "Käy myös kommentit läpi"
 #: lazarusidestrconsts.lisfrisearchwhere
 msgid "Search where"
 msgstr "Mistä etsitään"
+
+#: lazarusidestrconsts.lisfull
+msgid "Full"
+msgstr ""
 
 #: lazarusidestrconsts.lisfunction
 msgctxt "lazarusidestrconsts.lisfunction"
@@ -8466,9 +8835,33 @@ msgstr "Heksadesimaali"
 msgid "Help for Free Pascal Compiler message"
 msgstr "Free Pascal -kääntäjän viestien ohje"
 
+#: lazarusidestrconsts.lishideallhintsandwarningsbyinsertingidedirectivesh
+msgid "Hide all hints and warnings by inserting IDE directives {%H-}"
+msgstr ""
+
+#: lazarusidestrconsts.lishidemessageatbyinsertingidedirectiveh
+msgid "Hide message at %s by inserting IDE directive {%H-}"
+msgstr ""
+
+#: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
+msgid "Hide message by inserting IDE directive {%H-}"
+msgstr ""
+
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
 msgstr "Piilota viesti direktiivin kautta"
+
+#: lazarusidestrconsts.lishidesearch
+msgid "Hide Search"
+msgstr ""
+
+#: lazarusidestrconsts.lishidewithpackageoptionvm
+msgid "Hide with package option (-vm%s)"
+msgstr ""
+
+#: lazarusidestrconsts.lishidewithprojectoptionvm
+msgid "Hide with project option (-vm%s)"
+msgstr ""
 
 #: lazarusidestrconsts.lishint
 msgid "Hint"
@@ -8481,6 +8874,10 @@ msgstr "Vihje: oletusarvo voidaan määritellä ehtolauseessa."
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Vihje: Tarkista sisältääkö kaksi pakettia käännösyksikön samalla nimellä."
+
+#: lazarusidestrconsts.lishints
+msgid ", Hints:%s"
+msgstr ""
 
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
@@ -8500,10 +8897,6 @@ msgstr "Askella yli"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
-msgstr ""
-
-#: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon2
-msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
 msgstr ""
 
 #: lazarusidestrconsts.lishinttoggleformunit
@@ -8615,41 +9008,51 @@ msgstr "IDEn otsikko näyttää projektihakemiston"
 msgid "IDE title starts with project name"
 msgstr "IDEn otsikko alkaa projektin nimellä"
 
-#: lazarusidestrconsts.lisiecoerroraccessingxml
-msgid "Error accessing xml"
+#: lazarusidestrconsts.lisiecoallbuildmodes
+msgid "All build modes"
 msgstr ""
 
-#: lazarusidestrconsts.lisiecoerroraccessingxmlfile
-msgid "Error accessing xml file %s%s%s:%s%s"
+#: lazarusidestrconsts.lisiecocompileroptionsof
+msgid "Compiler options of"
 msgstr ""
 
-#: lazarusidestrconsts.lisiecoerrorloadingxml
-msgid "Error loading xml"
-msgstr "Virhe ladattaessa XML:ää"
+#: lazarusidestrconsts.lisiecocurrentbuildmode
+msgid "Current build mode"
+msgstr ""
 
-#: lazarusidestrconsts.lisiecoerrorloadingxmlfile
-msgid "Error loading xml file %s%s%s:%s%s"
-msgstr "Virhe ladattaessa XML-tiedostoa %s%s%s:%s%s"
+#: lazarusidestrconsts.lisiecoerroropeningxml
+msgid "Error opening XML"
+msgstr ""
+
+#: lazarusidestrconsts.lisiecoerroropeningxmlfile
+msgid "Error opening XML file \"%s\":%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisiecoexportcompileroptions
+msgid "Export Compiler Options"
+msgstr ""
 
 #: lazarusidestrconsts.lisiecoexportfileexists
 msgid "Export file exists"
 msgstr "Vietävä tiedosto on olemassa"
 
 #: lazarusidestrconsts.lisiecoexportfileexistsopenfileandreplaceonlycompileropti
-msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
+#, fuzzy
+#| msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
+msgid "Export file \"%s\" exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
 msgstr "Vietävä tiedosto %s%s%s on olemassa.%sAvaa tiedosto ja korvaa vain kääntäjän asetukset?%s(Muut asetukset säilyvät)"
+
+#: lazarusidestrconsts.lisiecoimportcompileroptions
+msgid "Import Compiler Options"
+msgstr ""
 
 #: lazarusidestrconsts.lisiecoloadfromfile
 msgid "Load from file"
 msgstr "Lataa tiedostosta"
 
-#: lazarusidestrconsts.lisiecoopenorloadcompileroptions
-msgid "Open or Load Compiler Options"
-msgstr "Avaa tai lataa kääntäjän asetukset"
-
-#: lazarusidestrconsts.lisiecoopenrecent
-msgid "Open recent"
-msgstr "Avaa äskeinen"
+#: lazarusidestrconsts.lisieconocompileroptionsinfile
+msgid "File \"%s\" does not contain compiler options."
+msgstr ""
 
 #: lazarusidestrconsts.lisiecorecentfiles
 msgid "Recent files"
@@ -8659,12 +9062,14 @@ msgstr "Äskeiset tiedostot"
 msgid "Save to file"
 msgstr "Tallenna tiedostoon"
 
-#: lazarusidestrconsts.lisiecosavetorecent
-msgid "Save to recent"
-msgstr "Tallenna äskeisiin"
+#: lazarusidestrconsts.lisifnotchecked
+msgid "If not checked:"
+msgstr ""
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
-msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+#, fuzzy
+#| msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Haluttaessa kaksi eri Lazarus versiota, pitää toinen käynnistää parametrin primary-config-path tai pcp kanssa.%s%sEsimerkiksi:%s"
 
 #: lazarusidestrconsts.lisignoreall
@@ -8699,6 +9104,10 @@ msgstr "Luokan toteutusosan kommentti"
 msgctxt "lazarusidestrconsts.lisimport"
 msgid "Import"
 msgstr "Tuo"
+
+#: lazarusidestrconsts.lisimportant
+msgid "Important"
+msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -8739,6 +9148,10 @@ msgstr "Include polut"
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
 msgstr "Mukaanotettavat alihakemistot"
+
+#: lazarusidestrconsts.lisincompatibleppu
+msgid ", incompatible ppu=%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
@@ -8836,7 +9249,7 @@ msgid "Inherited project component"
 msgstr "Periytyvä projektin komponentti"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
-msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisinsert
@@ -8985,6 +9398,10 @@ msgstr "Paketin kääntämisen sijaan tee yksinkertainen Makefile."
 msgid "Interactive"
 msgstr "Vuorovaikutteinen"
 
+#: lazarusidestrconsts.lisinternalerror
+msgid "internal error: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidcommand
 msgid "Invalid command"
 msgstr "Kelvoton komento"
@@ -9009,8 +9426,16 @@ msgstr "Kelvoton suodatin"
 msgid "Invalid line, column in message%s%s"
 msgstr "Kelvoton rivi, sarake viestissä%s%s"
 
+#: lazarusidestrconsts.lisinvalidmacrosin
+msgid "Invalid macros in \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
+msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
-msgid "Invalid macro %s%s%s. The macro name must be a Pascal identifier."
+msgid "Invalid macro \"%s\". The macro name must be a Pascal identifier."
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmacrothenameisakeyword
@@ -9070,7 +9495,9 @@ msgid "%s is already part of the Project."
 msgstr "%s on jo osa projektia."
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
-msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
+#, fuzzy
+#| msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
+msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s on vääränlainen projektin tiedostonimi.%sOle hyvä ja valitse joku muu (esim. projekti1.lpi)"
 
 #: lazarusidestrconsts.lisisathiscirculardependencyisnotallowed
@@ -9097,6 +9524,10 @@ msgstr "Miten onnistuit tekemään sen? Virhe kantahakemistossa:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Hyppyhistoria"
+
+#: lazarusidestrconsts.liskb
+msgid "%s KB"
+msgstr ""
 
 #: lazarusidestrconsts.liskeep2
 msgid "Keep"
@@ -9200,7 +9631,9 @@ msgid "Compile project/program"
 msgstr "Käännä projekti/ohjelma"
 
 #: lazarusidestrconsts.liskmconfigbuildfile
-msgid "Config %sBuild File%s"
+#, fuzzy
+#| msgid "Config %sBuild File%s"
+msgid "Config \"Build File\""
 msgstr "Konfiguroi %sKokoa tiedosto%s"
 
 #: lazarusidestrconsts.liskmconfigurecustomcomponents
@@ -9907,6 +10340,10 @@ msgstr "Päivitä revisiokenttä \"Tietoja Lazaruksesta\" ikkunassa"
 msgid "Clean Up + Build all"
 msgstr "Siivoa + kokoa kaikki"
 
+#: lazarusidestrconsts.lislazver
+msgid "Lazarus Version (e.g. 1.2.4)"
+msgstr ""
+
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL widget type"
 msgstr "LCL-käyttöliittymäkirjasto"
@@ -10135,7 +10572,9 @@ msgid "Append to section"
 msgstr "Lisää osaan"
 
 #: lazarusidestrconsts.lismakeresstrchooseanothername
-msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
+#, fuzzy
+#| msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
+msgid "The resourcestring \"%s\" already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgstr "Resurssiteksti %s%s%s on jo olemassa.%sValitse toinen nimi.%sValitse Ohita lisätäksesi sen joka tapauksessa."
 
 #: lazarusidestrconsts.lismakeresstrconversionoptions
@@ -10203,9 +10642,17 @@ msgstr "Hallinnoi lähdekoodieditoria ..."
 msgid "Max %d"
 msgstr ""
 
+#: lazarusidestrconsts.lismaybepackageneedsacleanrebuild
+msgid ". Maybe package %s needs a clean rebuild."
+msgstr ""
+
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "%s Paketti pitää ehkä kääntää uudelleen."
+
+#: lazarusidestrconsts.lismb
+msgid "%s MB"
+msgstr ""
 
 #: lazarusidestrconsts.lismeaction
 msgctxt "lazarusidestrconsts.lismeaction"
@@ -11150,9 +11597,17 @@ msgstr ""
 msgid "Method class not found"
 msgstr "Metodin luokkaa ei löydy"
 
+#: lazarusidestrconsts.lismissingdirectory
+msgid "missing directory \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Puuttuvia tapahtumia"
+
+#: lazarusidestrconsts.lismissingexecutable
+msgid "missing executable \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -11372,6 +11827,22 @@ msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More >>"
 msgstr "Muut >>"
 
+#: lazarusidestrconsts.lismove
+msgid "Move"
+msgstr ""
+
+#: lazarusidestrconsts.lismovefiles
+msgid "Move Files"
+msgstr ""
+
+#: lazarusidestrconsts.lismovefiles2
+msgid "Move files?"
+msgstr ""
+
+#: lazarusidestrconsts.lismovefilesfromtothedirectoryof
+msgid "Move %s file(s) from %s to the directory%s%s%sof %s."
+msgstr ""
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr "Siirrä \"%s\" yksi pykälä alaspäin"
@@ -11379,6 +11850,14 @@ msgstr "Siirrä \"%s\" yksi pykälä alaspäin"
 #: lazarusidestrconsts.lismoveonepositionup
 msgid "Move \"%s\" one position up"
 msgstr "Siirrä \"%s\" yksi pykälä ylöspäin"
+
+#: lazarusidestrconsts.lismoveorcopyfiles
+msgid "Move or Copy files?"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveorcopyfilesfromtothedirectoryofpackage
+msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s."
+msgstr ""
 
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page"
@@ -11395,6 +11874,10 @@ msgstr "Siirrä valittu kohta ylös (Ctrl+Up)"
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "Siirrä:"
+
+#: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
+msgid "Moving these units will break their uses sections. See Messages window for details."
+msgstr ""
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -11564,7 +12047,9 @@ msgid "No Pascal file"
 msgstr "Ei Pascal-tiedosto"
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
-msgid "No program file %s%s%s found."
+#, fuzzy
+#| msgid "No program file %s%s%s found."
+msgid "No program file \"%s\" found."
 msgstr "Ei löydy ohjelmatiedostoa %s%s%s"
 
 #: lazarusidestrconsts.lisnoresourcestringsectionfound
@@ -11590,6 +12075,10 @@ msgstr "Ei ole asennettava paketti"
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid Pascal identifier"
 msgstr "Ei ole kelvollinen Pascalin tunniste"
+
+#: lazarusidestrconsts.lisnote
+msgid "Note"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotebooktabposbottom
 msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
@@ -11622,6 +12111,16 @@ msgstr "Huom.: Ei voi luoda määritemallinetta Lazarus-koodille"
 #: lazarusidestrconsts.lisnotemplateselected
 msgid "no template selected"
 msgstr "Mallinetta ei ole valittu"
+
+#: lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated
+msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
+msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
+msgstr ""
+
+#: lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated2
+msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated2"
+msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
+msgstr ""
 
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -11675,16 +12174,28 @@ msgstr "Siirry komponenttimuokkaimen suosikit-lehdelle komponentin nimen antamis
 msgid "? (Off)"
 msgstr "? (Pois)"
 
+#: lazarusidestrconsts.lisofpackage
+msgid " of package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
 msgstr "Lisää suosikkiominaisuuksiin"
 
 #: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
-msgid "Choose a base class for the favorite property %s%s%s."
+#, fuzzy
+#| msgid "Choose a base class for the favorite property %s%s%s."
+msgid "Choose a base class for the favorite property \"%s\"."
 msgstr "Valitse kantaluokka suosikkiominaisuudelle %s%s%s."
 
 #: lazarusidestrconsts.lisoifclassnotfound
-msgid "Class %s%s%s not found."
+#, fuzzy
+#| msgid "Class %s%s%s not found."
+msgid "Class \"%s\" not found."
 msgstr "Luokkaa (Class) %s%s%s ei löydy."
 
 #: lazarusidestrconsts.lisoifremovefromfavoriteproperties
@@ -11866,6 +12377,10 @@ msgstr "Asetukset muuttuivat, käännetään kaikki option -B kanssa"
 msgid "or"
 msgstr "tai"
 
+#: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
+msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Syrjäytä kieli. Esim. --language=fi. Mahdolliset arvot selviävät katsomalla languages hakemiston tiedostoja."
@@ -11910,6 +12425,10 @@ msgstr "Paketti"
 msgid "package %s"
 msgstr "Paketti %s"
 
+#: lazarusidestrconsts.lispackage3
+msgid ", package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Paketin tietoja"
@@ -11925,6 +12444,10 @@ msgstr "Paketin nimi sisältää ..."
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr "Paketti pitää asentaa"
+
+#: lazarusidestrconsts.lispackageoption
+msgid "Package \"%s\" Option"
+msgstr ""
 
 #: lazarusidestrconsts.lispackageoutputdirectories
 msgid "Package output directories"
@@ -11942,9 +12465,17 @@ msgstr "paketin käännösyksikkö"
 msgid "Page"
 msgstr "Sivu"
 
+#: lazarusidestrconsts.lispanic
+msgid "Panic"
+msgstr ""
+
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
 msgstr ", jäsennetty"
+
+#: lazarusidestrconsts.lisparser
+msgid "parser \"%s\": %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispascalfile
 msgid "Pascal file"
@@ -12144,7 +12675,9 @@ msgid "Package %s"
 msgstr "Paketti %s"
 
 #: lazarusidestrconsts.lispckeditpackagehaschangedsavepackage
-msgid "Package %s%s%s has changed.%sSave package?"
+#, fuzzy
+#| msgid "Package %s%s%s has changed.%sSave package?"
+msgid "Package \"%s\" has changed.%sSave package?"
 msgstr "Paketti %s%s%s on muuttunut.%sTallennetaanko?"
 
 #: lazarusidestrconsts.lispckeditpackagenotsaved
@@ -12196,7 +12729,9 @@ msgid "Remove Dependency?"
 msgstr "Poista riippuvuus?"
 
 #: lazarusidestrconsts.lispckeditremovedependencyfrompackage
-msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
+#, fuzzy
+#| msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
+msgid "Remove dependency \"%s\"%sfrom package \"%s\"?"
 msgstr "Poista riippuvuus %s%s%s%spaketista %s%s%s?"
 
 #: lazarusidestrconsts.lispckeditremovedfiles
@@ -12217,7 +12752,9 @@ msgid "Remove file?"
 msgstr "Poistetaanko tiedosto?"
 
 #: lazarusidestrconsts.lispckeditremovefilefrompackage
-msgid "Remove file %s%s%s%sfrom package %s%s%s?"
+#, fuzzy
+#| msgid "Remove file %s%s%s%sfrom package %s%s%s?"
+msgid "Remove file \"%s\"%sfrom package \"%s\"?"
 msgstr "Poistetaanko tiedosto %s%s%s%spaketista %s%s%s?"
 
 #: lazarusidestrconsts.lispckeditremoveselecteditem
@@ -12241,11 +12778,15 @@ msgid "Store file name as preferred for this dependency"
 msgstr "Pidä tiedosto suosituksena tälle riippuvuudelle"
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
-msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
+#, fuzzy
+#| msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
+msgid "The maximum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "Maximiversio %s%s%s on kelvoton paketin versioksi.%s(hyvä esimerkki 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedittheminimumversionisnotavalidpackageversion
-msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
+#, fuzzy
+#| msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
+msgid "The minimum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "Pienin versio %s%s%s on kelvoton paketin versioksi.%s(hyvä esimerkki 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedituninstall
@@ -12379,7 +12920,7 @@ msgid "Runtime"
 msgstr "Ajonaikainen"
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
-msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
+msgid "The package \"%s\" has the auto install flag.%sThis means it will be installed in the IDE.%sInstallation packages must be designtime Packages."
 msgstr ""
 
 #: lazarusidestrconsts.lispckoptsthispackageprovidesthesameasthefollowingpackages
@@ -12552,7 +13093,9 @@ msgid "Revert package?"
 msgstr "Palauta paketti?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
+#, fuzzy
+#| msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
+msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "Tiedosto %s%s%s%sei ole paketin hakupolussa.%s%sLisätäänkö %s%s%s polkuun?"
 
 #: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
@@ -12615,11 +13158,15 @@ msgid "Package unit search path. Parameter is package ID"
 msgstr "Paketin käännöshakupolku. Parametri on paketin ID"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
-msgid "%sAdding new Dependency for package %s: package %s%s"
+#, fuzzy
+#| msgid "%sAdding new Dependency for package %s: package %s%s"
+msgid "%sAdding new Dependency for package %s: package %s"
 msgstr "%sLisätään uusi riippuvuus paketille %s: paketti %s%s"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforprojectpackage
-msgid "%sAdding new Dependency for project %s: package %s%s"
+#, fuzzy
+#| msgid "%sAdding new Dependency for project %s: package %s%s"
+msgid "%sAdding new Dependency for project %s: package %s"
 msgstr "%sLisätään uusi riippuvuus projektille %s: paketti %s%s"
 
 #: lazarusidestrconsts.lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
@@ -12659,7 +13206,9 @@ msgid "Delete Old Package File?"
 msgstr "Poistetaanko vanha pakettitiedosto?"
 
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile2
-msgid "Delete old package file %s%s%s?"
+#, fuzzy
+#| msgid "Delete old package file %s%s%s?"
+msgid "Delete old package file \"%s\"?"
 msgstr "Poistetaanko vanha pakettitiedosto %s%s%s?"
 
 #: lazarusidestrconsts.lispkgmangdependencywithoutowner
@@ -12708,7 +13257,10 @@ msgid "Filename is used by project"
 msgstr "Tiedostonimi on projektin käytössä"
 
 #: lazarusidestrconsts.lispkgmangfilenotfound
-msgid "File %s%s%s not found."
+#, fuzzy
+#| msgid "File %s%s%s not found."
+msgctxt "lazarusidestrconsts.lispkgmangfilenotfound"
+msgid "File \"%s\" not found."
 msgstr "Tiedostoa %s%s%s ei löytynyt."
 
 #: lazarusidestrconsts.lispkgmangfilenotsaved
@@ -12748,7 +13300,9 @@ msgid "Invalid Package Name"
 msgstr "Kelvoton paketin nimi"
 
 #: lazarusidestrconsts.lispkgmangloadingpackagewillreplacepackage
-msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
+#, fuzzy
+#| msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
+msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%sSave old package %s?"
 msgstr "Paketin %s lataaminen korvaa paketin %s%stiedostossa %s.%sVanha paketti on muuttunut.%s%sTallennetaanko se %s?"
 
 #: lazarusidestrconsts.lispkgmangnewpackage
@@ -12804,7 +13358,9 @@ msgid "Rename File lowercase?"
 msgstr "Muuta tiedoston nimi pieniksi?"
 
 #: lazarusidestrconsts.lispkgmangreplaceexistingfile
-msgid "Replace existing file %s%s%s?"
+#, fuzzy
+#| msgid "Replace existing file %s%s%s?"
+msgid "Replace existing file \"%s\"?"
 msgstr "Korvaa nykyinen tiedosto %s%s%s?"
 
 #: lazarusidestrconsts.lispkgmangreplacefile
@@ -12824,7 +13380,9 @@ msgid "Save Package %s (*.lpk)"
 msgstr "Tallenna paketti %s (*.lpk)"
 
 #: lazarusidestrconsts.lispkgmangshouldthefilerenamedlowercaseto
-msgid "Should the file be renamed lowercase to%s%s%s%s?"
+#, fuzzy
+#| msgid "Should the file be renamed lowercase to%s%s%s%s?"
+msgid "Should the file be renamed lowercase to%s\"%s\"?"
 msgstr "Pitäisikö tiedoston nimi olla pienillä kirjaimilla:%s%s%s%s?"
 
 #: lazarusidestrconsts.lispkgmangskipthispackage
@@ -12840,24 +13398,34 @@ msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Kääntäjä paketille %s ei ole suoritettava ohjelma:%s%s"
 
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
+#, fuzzy
+#| msgid "The file %s%s%s%sis already in the package %s."
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
-msgid "The file %s%s%s%sis already in the package %s."
+msgid "The file \"%s\"%sis already in the package %s."
 msgstr "Tiedosto %s%s%s%son jo paketissa %s."
 
 #: lazarusidestrconsts.lispkgmangthefileisnotalazaruspackage
-msgid "The file %s%s%s is not a Lazarus package."
+#, fuzzy
+#| msgid "The file %s%s%s is not a Lazarus package."
+msgid "The file \"%s\" is not a Lazarus package."
 msgstr "Tiedosto %s%s%s ei ole Lazarus-paketti."
 
 #: lazarusidestrconsts.lispkgmangthefilenamedoesnotcorrespondtothepackage
-msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
+#, fuzzy
+#| msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
+msgid "The filename \"%s\" does not correspond to the package name \"%s\" in the file.%sChange package name to \"%s\"?"
 msgstr "Tiedoston nimi %s%s%s ei vastaa paketin nimeä %s%s%s tiedostossa.%sVaihda paketin nimeksi %s%s%s?"
 
 #: lazarusidestrconsts.lispkgmangthefilenameispartofthecurrentproject
-msgid "The file name %s%s%s is part of the current project.%sProjects and Packages should not share files."
+#, fuzzy
+#| msgid "The file name %s%s%s is part of the current project.%sProjects and Packages should not share files."
+msgid "The file name \"%s\" is part of the current project.%sProjects and Packages should not share files."
 msgstr "Tiedosto %s%s%s on osa nykyistä projektia.%sProjektin ja paketin ei tulisi jakaa tiedostoja."
 
 #: lazarusidestrconsts.lispkgmangthefilenameisusedbythepackageinfile
-msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
+#, fuzzy
+#| msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
+msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "Tiedosto %s%s%s on käytössä%spaketissa %s%s%s%stiedostossa %s%s%s."
 
 #: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
@@ -12873,15 +13441,21 @@ msgid "The following packages failed to load:"
 msgstr "Seuraavien pakettien lataaminen epäonnistui:"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
-msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
+#, fuzzy
+#| msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
+msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "%sSeuraavat käännösyksiköt lisätään tiedoston %s%s uses-lauseeseen :%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
-msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
+#, fuzzy
+#| msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
+msgid "The package \"%s\" failed to compile.%sRemove it from the installation list?"
 msgstr "Paketin %s%s%s kääntäminen epäonnistui.%sPoistetaanko se asennuksesta?"
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
-msgid "The package file name %s%s%s in%s%s%s%s is not a valid Lazarus package name."
+#, fuzzy
+#| msgid "The package file name %s%s%s in%s%s%s%s is not a valid Lazarus package name."
+msgid "The package file name \"%s\" in%s\"%s\" is not a valid Lazarus package name."
 msgstr "Pakettitiedoston nimi %s%s%s %s%s%s%s:ssa ei ole kelvollinen Lazarus-paketin nimi."
 
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
@@ -12889,11 +13463,15 @@ msgid "The package %s is a runtime only package.%sRuntime only packages cannot b
 msgstr "Paketti %s on vain ajonaikainen.%sAjonaikaisia paketteja ei asenneta IDE:en."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
+#, fuzzy
+#| msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
+msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
 msgstr "Paketti %s on käännetty automaattisesti ja sen käännöshakemisto on \"%s\", mikä on kääntäjän oletus. Paketti käyttää muita paketteja, mitkä myös käyttävät kääntäjän oletusta käännösyksiköiden hakuun. Se synnyttää ikuisen luupin.%sOngelma pitää ratkaista%spoistamalla polku kääntäjän konfiguroinnista (esim. fpc.cfg)%stai kieltämällä paketin automaattinen päivitys%stai poistamalla riippuvuudet."
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-msgid "The package %s%s%s is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
+#, fuzzy
+#| msgid "The package %s%s%s is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
+msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr "Paketti %s%s%s on merkitty asennettavaksi mutta sitä ei löydy.%sPoistetaanko riippuvuus pakettien asennusluettelosta?"
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
@@ -12901,27 +13479,39 @@ msgid "The package %s is required by %s, which is marked for installation.%sSee 
 msgstr "Pakettia %s tarvitaan komponettipaketissa %s, mikä on merkitty asennukseen.%sKatso pakettien kuvauksista"
 
 #: lazarusidestrconsts.lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
-msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
+#, fuzzy
+#| msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
+msgid "The package name \"%s\" is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgstr "%s%s%s ei ole kelvollinen paketin nimi%sValitse toinen nimi (esim. package1.lpk)"
 
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
-msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
+#, fuzzy
+#| msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
+msgid "The package name \"%s\" of%sthe file \"%s\" is invalid."
 msgstr "Paketin nimi %s%s%s (%s)tiedosto %s%s%s on kelvoton."
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
-msgid "The package %s%s%s was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
+#, fuzzy
+#| msgid "The package %s%s%s was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
+msgid "The package \"%s\" was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "Paketti %s%s%s oli merkitty poistettavaksi.%sNykyinen Lazarus tukee ainoastaan staattisesti linkattuja paketteja. Poistaminen vaatii Lazaruksen uudelleenkokoamisen ja käynnistämisen.%s%sTehdäänkö se nyt?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-msgid "The package %s%s%s was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
+#, fuzzy
+#| msgid "The package %s%s%s was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
+msgid "The package \"%s\" was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "Paketti %s%s%s oli merkitty asennettavaksi.%sNykyinen Lazarus tukee ainoastaan staattisesti linkattuja paketteja. Asennus vaatii Lazaruksen uudelleenkokoamisen ja käynnistämisen.%s%sTehdäänkö se nyt?"
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
-msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
+#, fuzzy
+#| msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
+msgid "The project requires the package \"%s\".%sBut it was not found. See Project -> Project Inspector."
 msgstr "Sovellus tarvitsee paketin %s%s%s.%sMutta sitä ei löydy (tai ei ole asennettu). Katso projektivalikon kohtaa -> Projektinhallinta."
 
 #: lazarusidestrconsts.lispkgmangtherearetwounitswiththesamename1from2from
-msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
+#, fuzzy
+#| msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
+msgid "There are two units with the same name:%s1. \"%s\" from %s%s2. \"%s\" from %s"
 msgstr "On kaksi käännösyksikköä samalla nimellä:%s%s1. %s%s%s %s:ssa%s2. %s%s%s from %s%s%s:ssa"
 
 #: lazarusidestrconsts.lispkgmangthereisacirculardependency
@@ -12929,19 +13519,27 @@ msgid "There is a circular dependency in the packages. See package graph."
 msgstr "Paketissa on kehäriippuvuus. Katso pakettikuvaajaa."
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
-msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
+#, fuzzy
+#| msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
+msgid "There is a FPC unit with the same name as a package:%s\"%s\""
 msgstr "FPC:llä on saman niminen käännösyksikkö kuin paketilla:%s%s%s%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenamefrom
-msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
+#, fuzzy
+#| msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
+msgid "There is a FPC unit with the same name as:%s\"%s\" from %s"
 msgstr "FPC:llä on saman niminen käännösyksikkö kuin:%s%s%s%s%s %s%s%s:ssa"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyanotherpackagewiththename
-msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
+#, fuzzy
+#| msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
+msgid "There is already another package with the name \"%s\".%sConflict package: \"%s\"%sFile: \"%s\""
 msgstr "%s%s%s niminen paketti on jo olemassa.%sPaketti: %s%s%s%sTiedosto: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
+#, fuzzy
+#| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
+msgid "There is already a package \"%s\" loaded%sfrom file \"%s\".%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "Paketti %s%s%s on jo ladattu%stiedostosta %s%s%s.%sKatso tarkemmin pakettikuvaajasta.%sKorvaaminen on mahdotonta."
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages
@@ -12949,7 +13547,9 @@ msgid "There is an unsaved package in the required packages. See package graph."
 msgstr "Joku vaadituista paketeista on tallentamatta. Katso pakettikuvaajasta."
 
 #: lazarusidestrconsts.lispkgmangthereisaunitwiththesamenameasapackage1from2
-msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
+#, fuzzy
+#| msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
+msgid "There is a unit with the same name as a package:%s1. \"%s\" from %s%s2. \"%s\""
 msgstr "Käännösuksikkö on saman niminen kuin paketti:%s%s1. %s%s%s %s:sta%s2. %s%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
@@ -12961,19 +13561,27 @@ msgid "Unable to create directory"
 msgstr "Kansion luonti epäonnistui"
 
 #: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-msgid "Unable to create output directory %s%s%s%sfor package %s."
+#, fuzzy
+#| msgid "Unable to create output directory %s%s%s%sfor package %s."
+msgid "Unable to create output directory \"%s\"%sfor package %s."
 msgstr "Käännöshakemiston %s%s%s%sluominen paketille %s ei onnistu."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-msgid "Unable to create package source directory %s%s%s%sfor package %s."
+#, fuzzy
+#| msgid "Unable to create package source directory %s%s%s%sfor package %s."
+msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "Lähdekoodihakemiston %s%s%s%sluominen paketille %s ei onnistu."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
-msgid "Unable to create target directory for Lazarus:%s%s%s%s.%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
+#, fuzzy
+#| msgid "Unable to create target directory for Lazarus:%s%s%s%s.%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
+msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "Kohdehakemiston luominen Lazarusta varten ei onnistu:%s%s%s%s.%sHakemisto tarvitaan"
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefile
-msgid "Unable to delete file %s%s%s."
+#, fuzzy
+#| msgid "Unable to delete file %s%s%s."
+msgid "Unable to delete file \"%s\"."
 msgstr "Tiedoston %s%s%s poistaminen ei onnistu."
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefilename
@@ -12981,7 +13589,9 @@ msgid "Unable to delete file"
 msgstr "Tiedoston poistaminen ei onnistu"
 
 #: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-msgid "Unable to delete old state file %s%s%s%sfor package %s."
+#, fuzzy
+#| msgid "Unable to delete old state file %s%s%s%sfor package %s."
+msgid "Unable to delete old state file \"%s\"%sfor package %s."
 msgstr "Vanhan tilatiedoston %s%s%s%spoistaminen paketille %s ei onnistu."
 
 #: lazarusidestrconsts.lispkgmangunabletoloadpackage
@@ -12989,19 +13599,27 @@ msgid "Unable to load package"
 msgstr "Paketin lataaminen ei onnistu"
 
 #: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
+#, fuzzy
+#| msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
+msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
 msgstr "Ei pystytä avaamaan pakettia %s%s%s.%sPaketti oli merkitty asennettavaksi."
 
 #: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
+#, fuzzy
+#| msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
+msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
 msgstr "Tilatiedoston %s%s%s%slukeminen paketille %s ei onnistu.%sVirhe: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
-msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
+#, fuzzy
+#| msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
+msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "Paketin %s%s%s%skirjoittaminen tiedostoon %s%s%s ei onnistu.%sVirhe: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
+#, fuzzy
+#| msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
+msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
 msgstr "Tilatiedoston %s%s%s%skirjoittaminen paketille %s ei onnistu.%sVirhe: %s"
 
 #: lazarusidestrconsts.lispkgmanguninstallpackage
@@ -13021,7 +13639,9 @@ msgid "Use unit"
 msgstr "Käytä käännösyksikköä"
 
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
-msgid "Warning: The file %s%s%s%sbelongs to the current project."
+#, fuzzy
+#| msgid "Warning: The file %s%s%s%sbelongs to the current project."
+msgid "Warning: The file \"%s\"%sbelongs to the current project."
 msgstr "Varoitus: Tiedosto %s%s%s%skuuluu jo projektiin."
 
 #: lazarusidestrconsts.lispkgmgrkeep
@@ -13053,11 +13673,13 @@ msgid "Cannot register components without unit"
 msgstr "Ei voi rekisteröidä komponenttia ilman käännösyksikköä"
 
 #: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-msgid "Component Class %s%s%s already defined"
+msgid "Component Class \"%s\" already defined"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsysfilename
-msgid "%s%sFile Name: %s%s%s"
+#, fuzzy
+#| msgid "%s%sFile Name: %s%s%s"
+msgid "%s%sFile Name: \"%s\""
 msgstr "%s%sTiedoston nimi: %s%s%s"
 
 #: lazarusidestrconsts.lispkgsysinvalidcomponentclass
@@ -13069,7 +13691,9 @@ msgid "Invalid Unitname: %s"
 msgstr "Kelvoton käännösyksikön nimi: %s"
 
 #: lazarusidestrconsts.lispkgsyslpkfilename
-msgid "%s%slpk file: %s%s%s"
+#, fuzzy
+#| msgid "%s%slpk file: %s%s%s"
+msgid "%s%slpk file: \"%s\""
 msgstr "%s%slpk tiedosto: %s%s%s"
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
@@ -13093,7 +13717,7 @@ msgid "%s%sThe lpk file was not found."
 msgstr "%s%slpk tiedostoa ei löydy."
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
@@ -13105,7 +13729,9 @@ msgid "This package is installed, but the lpk file was not found. All its compon
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsysunitname
-msgid "%s%sUnit Name: %s%s%s"
+#, fuzzy
+#| msgid "%s%sUnit Name: %s%s%s"
+msgid "%s%sUnit Name: \"%s\""
 msgstr "%s%sKäännösyksikön nimi: %s%s%s"
 
 #: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
@@ -13121,7 +13747,7 @@ msgid "The following dependencies are not needed, because of the automatic trans
 msgstr ""
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
-msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s%s"
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
@@ -13133,7 +13759,9 @@ msgid "Transitivity"
 msgstr "Siirtyvyys"
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
-msgid "Unable to read package file %s%s%s.%sError: %s"
+#, fuzzy
+#| msgid "Unable to read package file %s%s%s.%sError: %s"
+msgid "Unable to read package file \"%s\".%sError: %s"
 msgstr "Paketin %s%s%s lukeminen ei onnistu.%sVirhe: %s"
 
 #: lazarusidestrconsts.lisplay
@@ -13250,6 +13878,10 @@ msgstr "Tallenna istunnon tiedot"
 msgid "Save jump history"
 msgstr "Tallenna hyppyhistoria"
 
+#: lazarusidestrconsts.lispositionoutsideofsource
+msgid "%s (position outside of source"
+msgstr ""
+
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Edeltävä sana"
@@ -13280,7 +13912,9 @@ msgid "Private Method"
 msgstr "Yksityinen metodi"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
+#, fuzzy
+#| msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
+msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgstr "Joitain paketteja pitää ehkä asentaa ennen jatkamista.%s%sVaroitus:%sProjekti käyttää seuraavia design-paketteja, joita ehkä tarvitaan avaamaan suunniteltava lomake. Jatkettaessa voi tulla virheitä puuttuvista komponenteista ja lomakkeen lataus epäonnistuu.%s%sOn suositeltavaa peruuttaa ja asentaa nuo paketit ensin.%s%s"
 
 #: lazarusidestrconsts.lisprocedure
@@ -13362,12 +13996,16 @@ msgid "Package not found"
 msgstr "Pakettia ei löytynyt"
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
-msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
+#, fuzzy
+#| msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
+msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
 msgstr "Riippuvuutta %s%s%s ei löytynyt.%sValitse jokin toinen paketti."
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
+#, fuzzy
+#| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
-msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgstr "Maximiversio %s%s%s on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
@@ -13376,28 +14014,36 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maximiversio on pienempi kuin Minimiversio."
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
+#, fuzzy
+#| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
-msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgstr "Minimiversio %s%s%s on kelvoton.%sKäytä muotoa iso.pieni.julkaisu.käännös%sEsim.: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
+msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
-msgid "The project has already a dependency for the package %s%s%s."
+#, fuzzy
+#| msgid "The project has already a dependency for the package %s%s%s."
+msgid "The project has already a dependency for the package \"%s\"."
 msgstr "Projektilla on jo riippuvuus pakettiin %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheproject
-msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
+#, fuzzy
+#| msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
+msgid "The unit name \"%s\" already exists in the project%swith file: \"%s\"."
 msgstr "Käännösyksikkö %s%s%s on jo projektissa%stiedostona: %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
-msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
+msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-msgid "The unit name %s%s%s is not a valid Pascal identifier."
+#, fuzzy
+#| msgid "The unit name %s%s%s is not a valid Pascal identifier."
+msgid "The unit name \"%s\" is not a valid Pascal identifier."
 msgstr "Käännösyksikön nimi %s%s%s ei ole kelvollinen Pascal-tunniste."
 
 #: lazarusidestrconsts.lisprojaddtoproject
@@ -13467,6 +14113,10 @@ msgstr "Projekti"
 msgid "Project macro properties"
 msgstr "Projektin makron ominaisuudet"
 
+#: lazarusidestrconsts.lisprojectoption
+msgid "Project Option"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectoutdir
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr "Projektin käännöshakemisto (esim. ppu hakemisto)"
@@ -13520,7 +14170,9 @@ msgid "Project Src Path"
 msgstr "Projektin Src hakemisto"
 
 #: lazarusidestrconsts.lisprojectsuccessfullybuilt
-msgid "Project %s%s%s successfully built"
+#, fuzzy
+#| msgid "Project %s%s%s successfully built"
+msgid "Project \"%s\" successfully built"
 msgstr "Projekti %s%s%s on onnistuneesti käännetty (built)"
 
 #: lazarusidestrconsts.lisprojectunit
@@ -13686,6 +14338,10 @@ msgstr "Selaa &esimerkkiprojekteja"
 msgid "Create local variable"
 msgstr "Luo paikallinen muuttuja"
 
+#: lazarusidestrconsts.lisquickfixerror
+msgid "QuickFix error"
+msgstr ""
+
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
 msgstr "Nopeat korjaukset"
@@ -13746,6 +14402,10 @@ msgstr "Rekisterit"
 msgid "Regular expression"
 msgstr "Säännöllinen lauseke"
 
+#: lazarusidestrconsts.lisrelative
+msgid "Relative"
+msgstr ""
+
 #: lazarusidestrconsts.lisrelativepaths
 msgid "Relative paths"
 msgstr "Suhteelliset hakupolut"
@@ -13755,16 +14415,36 @@ msgctxt "lazarusidestrconsts.lisremove"
 msgid "Remove"
 msgstr "Poista"
 
+#: lazarusidestrconsts.lisremove2
+msgid "Remove?"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
 msgstr "Poista kaikki vikaantuneet tai toimimattomat ominaisuudet"
+
+#: lazarusidestrconsts.lisremoveallmessagetypefilters
+msgid "Remove all message type filters"
+msgstr ""
 
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
 msgstr "Poista kaikki käännösyksiköt"
 
+#: lazarusidestrconsts.lisremovecompileroptionhidemessage
+msgid "Remove Compiler Option Hide Message"
+msgstr ""
+
+#: lazarusidestrconsts.lisremovedependenciesfrompackage
+msgid "Remove %s dependencies from package \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.lisremovedpropertys
 msgid "Removed property \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lisremovefilesfrompackage
+msgid "Remove %s files from package \"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisremovefrominstalllist
@@ -13791,6 +14471,14 @@ msgstr "Poista paikallinen muuttuja %s"
 msgid "Remove local variable"
 msgstr "Poista paikallinen muuttuja"
 
+#: lazarusidestrconsts.lisremovelocalvariable3
+msgid "Remove local variable \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisremovemessagetypefilter
+msgid "Remove Message Type Filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisremovenonexistingfiles
 msgid "Remove nonexistent files"
 msgstr "Poista olemattomat tiedostot"
@@ -13814,6 +14502,10 @@ msgstr "Poista käännösyksikkö uses-lauseesta"
 #: lazarusidestrconsts.lisremoveunitpath
 msgid "Remove unit path?"
 msgstr "Poista käännösyksikön polku?"
+
+#: lazarusidestrconsts.lisremoveuses
+msgid "Remove uses \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisrename
 msgctxt "lazarusidestrconsts.lisrename"
@@ -14003,7 +14695,9 @@ msgid "File not executable"
 msgstr "Tiedosto ei ole suoritettava"
 
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
-msgid "The host application %s%s%s is not executable."
+#, fuzzy
+#| msgid "The host application %s%s%s is not executable."
+msgid "The host application \"%s\" is not executable."
 msgstr "Isäntäohjelma %s%s%s ei ole suoritettava."
 
 #: lazarusidestrconsts.lisrunstage
@@ -14101,6 +14795,10 @@ msgstr "Tallenna kaikki kääntäjän viestit tiedostoon"
 msgid "Save all modified files"
 msgstr "Tallenna kaikki muuttuneet tiedostot"
 
+#: lazarusidestrconsts.lissavealloriginalmessagestofile
+msgid "Save All/Original Messages to File ..."
+msgstr ""
+
 #: lazarusidestrconsts.lissaveandexitdialog
 msgid "Save and exit dialog"
 msgstr "Tallenna ja poistu"
@@ -14151,7 +14849,9 @@ msgid "Save file as"
 msgstr "Tallenna tiedosto nimellä"
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
-msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
+#, fuzzy
+#| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
+msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Tallennetaanko tiedosto %s%s%s%sennenkuin suljetaan lomake (form) %s%s%s?"
 
 #: lazarusidestrconsts.lissaveinfoofclosededitorfiles
@@ -14161,6 +14861,10 @@ msgstr "Tallenna editorin tiedot suljetuista tiedostoista"
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
 msgstr "Tallenna makro nimellä"
+
+#: lazarusidestrconsts.lissavemessages
+msgid "Save messages"
+msgstr ""
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
@@ -14173,6 +14877,10 @@ msgstr "Tallenna istunnon muutokset projektiin %s?"
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
 msgstr "Tallenna asetukset"
+
+#: lazarusidestrconsts.lissaveshownmessagestofile
+msgid "Save Shown Messages to File ..."
+msgstr ""
 
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
@@ -14290,6 +14998,10 @@ msgstr "Valitse Lazaruksen lähdehakemisto"
 msgid "Select path to %s"
 msgstr "Valitse polku %s:lle"
 
+#: lazarusidestrconsts.lisselecttargetdirectory
+msgid "Select target directory"
+msgstr ""
+
 #: lazarusidestrconsts.lissetallcolors
 msgid "Set all colors:"
 msgstr ""
@@ -14310,9 +15022,17 @@ msgstr "(Aseta oletus sisennys)"
 msgid "Short:"
 msgstr "Lyhyt:"
 
+#: lazarusidestrconsts.lisshortnopath
+msgid "Short, no path"
+msgstr ""
+
 #: lazarusidestrconsts.lisshow
 msgid "Show"
 msgstr "Näytä"
+
+#: lazarusidestrconsts.lisshowabstractmethodsof
+msgid "Show abstract methods of \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
@@ -14355,9 +15075,17 @@ msgstr "Näytä tunnisteet"
 msgid "Show information box"
 msgstr "Näytä lisätieto-osa"
 
+#: lazarusidestrconsts.lisshowmessagetypeid
+msgid "Show Message Type ID"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
 msgstr "Näytä vain muutetut"
+
+#: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
+msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
+msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
@@ -14512,11 +15240,13 @@ msgid "&Source Breakpoint ..."
 msgstr "&Lähdekoodin keskeytyskohta ..."
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
-msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
+msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
 msgstr ""
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
-msgid "Source directory %s%s%s does not exist."
+#, fuzzy
+#| msgid "Source directory %s%s%s does not exist."
+msgid "Source directory \"%s\" does not exist."
 msgstr "Lähdekoodihakemistoa %s%s%s ei ole."
 
 #: lazarusidestrconsts.lissourceeditorwindowmanager
@@ -14528,12 +15258,14 @@ msgid "Source modified"
 msgstr "Lähdekoodi muuttunut"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
-msgid "Source of page %s%s%s has changed. Save?"
+#, fuzzy
+#| msgid "Source of page %s%s%s has changed. Save?"
+msgid "Source of page \"%s\" has changed. Save?"
 msgstr "Sivun %s%s%s lähdekoodi on muuttunut. Tallenna?"
 
-#: lazarusidestrconsts.lissourceofpagehaschangedsaveextended
-msgid "Sources of more than one page have changed. Save page %s%s%s? (%d more)"
-msgstr "Enemmän kuin yhden sivun koodit ovat muuttuneet. Tallenna sivu %s%s%s? (%d lisää)"
+#: lazarusidestrconsts.lissourceofpagehaschangedsaveex
+msgid "Sources of pages have changed. Save page \"%s\"? (%d more)"
+msgstr ""
 
 #: lazarusidestrconsts.lissourcepaths
 msgid "Source paths"
@@ -14621,6 +15353,22 @@ msgstr "Aliohjelman sisäinen aliohjelma"
 msgid "Sub Procedure on same level"
 msgstr ""
 
+#: lazarusidestrconsts.lissuccesfullyexportedbuildmodes
+msgid "Succesfully exported %d BuildModes to \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lissuccesfullyexportedcompileroptions
+msgid "Succesfully exported compiler options to \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lissuccesfullyimportedbuildmodes
+msgid "Succesfully imported %d BuildModes from \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lissuccesfullyimportedcompileroptions
+msgid "Succesfully imported compiler options from \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Onnistui"
@@ -14646,12 +15394,18 @@ msgid "Invalid variable name"
 msgstr "Kelvoton muuttujan nimi"
 
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
-msgid "%s%s%s is not a valid identifier."
+#, fuzzy
+#| msgid "%s%s%s is not a valid identifier."
+msgid "\"%s\" is not a valid identifier."
 msgstr "%s%s%s ei ole laillinen tunniste"
 
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Syrjäytä järjestelmän muuttuja"
+
+#: lazarusidestrconsts.lisswitchfiltersettings
+msgid "Switch Filter Settings"
+msgstr ""
 
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
@@ -14717,6 +15471,10 @@ msgstr "Projektin kohdetiedosto"
 msgid "Target filename + params"
 msgstr "Kohdetiedosto + parametrit"
 
+#: lazarusidestrconsts.listargetisreadonly
+msgid "Target is read only"
+msgstr ""
+
 #: lazarusidestrconsts.listargetos
 msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
@@ -14747,19 +15505,19 @@ msgid "The Application Bundle was created for \"%s\""
 msgstr "\"Application Bundle\" luotiin \"%s\":lle"
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
-msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%sUnable to paste."
+msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr ""
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
-msgid "The Codetools found an error:%s%s%s"
+msgid "The Codetools found an error:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after %s%s%s is not executable."
+msgid "The command after \"%s\" is not executable."
 msgstr ""
 
 #: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s%s%s%s"
+msgid "The command after publishing is invalid:%s\"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
@@ -14771,11 +15529,11 @@ msgid "The component %s can not be deleted, because it is not owned by %s."
 msgstr ""
 
 #: lazarusidestrconsts.listhecomponenteditorofclasshascreatedtheerror
-msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
+msgid "The component editor of class \"%s\" has created the error:%s\"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
-msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
+msgid "The component editor of class \"%s\"%sinvoked with verb #%s \"%s\"%shas created the error:%s\"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
@@ -14806,16 +15564,8 @@ msgstr "%s sisältää tähtimerkin *.%sLazarus kohtelee sitä tavallisena merkk
 msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
 msgstr ""
 
-#: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
-msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr "Käytössä oleva Free Pascalin lähdekoodikansio %s%s%s%sei näytä oikealta. %sValitse Ok käyttääksesi oletuksena olevaa asetusta %s%s%s.%sMuussa tapauksessa tarkista asetukset: Tools -> Asetukset -> Tiedostot"
-
-#: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou
-msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr ""
-
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
+msgid "The debugger \"%s\"%sdoes not exist or is not executable.%sSee Tools -> Options -> Debugger options"
 msgstr ""
 
 #: lazarusidestrconsts.listhedebuggerexecutabletypicallyhasthenamepleasegive
@@ -14827,11 +15577,13 @@ msgid "The default mode must be stored in project, not in session."
 msgstr ""
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
-msgid "The destination directory%s%s%s%s does not exist."
+#, fuzzy
+#| msgid "The destination directory%s%s%s%s does not exist."
+msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Kohdehakemistoa%s%s%s%s ei ole."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
+msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr ""
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
@@ -14843,15 +15595,21 @@ msgid "The directory \"%s\" contains no project units any more. Remove this dire
 msgstr "Hakemistossa \"%s\" ei ole enää käännösyksiköitä. Poistetaanko hakemisto projektin hakupolusta?"
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
-msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
+#, fuzzy
+#| msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
+msgid "The directory \"%s\" is no longer needed in the unit path.%sRemove it?"
 msgstr "Kansiota %s%s%s ei enää tarvita käännösyksikön tiedostopolussa.%sPoistetaanko se?"
 
 #: lazarusidestrconsts.listhedirectoryisnotwritable
-msgid "The directory %s%s%s is not writable."
+#, fuzzy
+#| msgid "The directory %s%s%s is not writable."
+msgid "The directory \"%s\" is not writable."
 msgstr "Hakemistoon %s%s%s ei voi kirjoittaa."
 
 #: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
+#, fuzzy
+#| msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
+msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
 msgstr "Kansio %s%s%s ei vielä ole käännösyksikön polussa.%sLisätäänkö se sinne?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
@@ -14859,7 +15617,9 @@ msgid "The directory %s was not found."
 msgstr "Hakemistoa %s ei loytynyt."
 
 #: lazarusidestrconsts.listhefile
-msgid "The file %s%s%s"
+#, fuzzy
+#| msgid "The file %s%s%s"
+msgid "The file \"%s\""
 msgstr "Tiedosto %s%s%s"
 
 #: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
@@ -14871,11 +15631,15 @@ msgid "The file index is needed for functions like find declaration. While scann
 msgstr ""
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
-msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
+#, fuzzy
+#| msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
+msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "Tiedosto %s%s%s symbolinen linkki.%s%sAvataanko %s%s%s sen sijaan?"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
-msgid "The file %s%s%s is not a Lazarus project.%sCreate a new project for this %s?"
+#, fuzzy
+#| msgid "The file %s%s%s is not a Lazarus project.%sCreate a new project for this %s?"
+msgid "The file \"%s\" is not a Lazarus project.%sCreate a new project for this \"%s\"?"
 msgstr "Tiedosto %s%s%s ei ole Lazarus-projekti.%sLuodaanko uusi projekti sille %s?"
 
 #: lazarusidestrconsts.listhefilemaskisinvalid
@@ -14887,7 +15651,9 @@ msgid "The file mask \"%s\" is not a valid regular expression."
 msgstr "Tiedostomaski \"%s\" ei ole säännöllinen lauseke."
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
-msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
+#, fuzzy
+#| msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
+msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "Tiedosto %s%s%s%s näyttää olevan Pascal-ohjelma. Suljetaanko nykyinen projekti ja avataan tämä uutena projektina?%s\"Ei\"-näppäin lataa sen vain lähdekoodina."
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
@@ -14895,19 +15661,25 @@ msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "Tiedosto %s vaikuttaa Lazarus-projektin ohjelmatiedostolta."
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
+msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
 msgstr ""
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
-msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
+#, fuzzy
+#| msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
+msgid "The file \"%s\" was not found.%sDo you want to locate it yourself?"
 msgstr "Tiedostoa %s%s%s%sei löydy.%sTahdotko etsiä sen itse ?%s"
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
-msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
+#, fuzzy
+#| msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
+msgid "The file \"%s\" was not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Tiedostoa %s%s%s%sei löytynyt.%sOhita-näppäimen nainallus jatkaa projektin lataamista,%sKeskeytä-näppäin keskeyttää sen."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
-msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
+#, fuzzy
+#| msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
+msgid "The following methods used by %s are not in the source%s%s%s%s%sRemove the dangling references?"
 msgstr "Seuraavia metodeja käyttää %s mutta niitä ei löydy lähdekoodista%s%s%s%s%s%sPoistetaanko 'roikkuva' viittaus?"
 
 #: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
@@ -14923,15 +15695,15 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Tunniste on käännösyksikkö. Käytä Tiedosto - Tallenna nimetäksesi sen."
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
+msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
 msgstr ""
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
-msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
+msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
 msgstr ""
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
-msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
+msgid "The launching application \"%s\"%sdoes not exist or is not executable.%sSee Run -> Run parameters -> Local"
 msgstr ""
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
@@ -14956,14 +15728,14 @@ msgstr ""
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
 #, fuzzy
-#| msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
-msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
+#| msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
+msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
 msgstr "Uusi include tiedosto ei ole vielä hakupolussa.%sLisätäänkö hakemisto %s?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 #, fuzzy
-#| msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
-msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
+#| msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Uusi käännösyksikkö ei ole vielä hakupolussa.%sLisätäänkö hakemisto %s?"
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
@@ -14975,7 +15747,9 @@ msgid "The \"Other sources\" contains a directory which is already in the \"Othe
 msgstr "\"Muut lähdekoodit\" sisältää hakemiston, mikä on jo kohdassa \"Muut käännösyksiköt\".%s%s"
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
-msgid "The output directory %s%s%s is missing."
+#, fuzzy
+#| msgid "The output directory %s%s%s is missing."
+msgid "The output directory \"%s\" is missing."
 msgstr "Käännöshakemisto %s%s%s puuttuu."
 
 #: lazarusidestrconsts.listheoutputdirectoryofislistedintheincludesearchpath
@@ -15027,7 +15801,7 @@ msgid "The package %s can not be uninstalled, because it is needed by the IDE it
 msgstr ""
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
-msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgstr ""
 
 #: lazarusidestrconsts.listhepackageisalreadyinthelist
@@ -15043,7 +15817,7 @@ msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "\"make\" komennon polku on väärin: \"%s\""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-msgid "The program %smake%s was not found.%sThis tool is needed to build Lazarus.%s"
+msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
@@ -15059,11 +15833,15 @@ msgid "The project has no main source file."
 msgstr "Projektilla ei ole päätiedostoa."
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
-msgid "The project info file %s%s%s%sis equal to the project main source file!"
+#, fuzzy
+#| msgid "The project info file %s%s%s%sis equal to the project main source file!"
+msgid "The project info file \"%s\"%sis equal to the project main source file!"
 msgstr "Projektin info-tiedosto %s%s%s%son/olisi saman niminen kuin projektin pääohjelman tiedosto!"
 
 #: lazarusidestrconsts.listheprojectinformationfilehaschangedondisk
-msgid "The project information file %s%s%s%shas changed on disk."
+#, fuzzy
+#| msgid "The project information file %s%s%s%shas changed on disk."
+msgid "The project information file \"%s\"%shas changed on disk."
 msgstr "Tallennettuna oleva projektin lpi-tiedosto (project information file) %s%s%s%son muuttunut."
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
@@ -15071,7 +15849,7 @@ msgid "The project must be saved before building%sIf you set the Test Directory 
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
-msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
@@ -15083,7 +15861,9 @@ msgid "There are other files in the directory with the same name,%swhich only di
 msgstr "Kansiossa on muitakin saman nimisiä tiedostoja,%sne eroavat ainoastaan kirjaimien koon perusteella:%s%s%sPoistetaanko ne?"
 
 #: lazarusidestrconsts.listhereisafilewiththesamenameandasimilarextension
-msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
+#, fuzzy
+#| msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
+msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
 msgstr "Löytyy samanniminen tiedosto samantapaisella tiedostopäätteellä%sTiedosto: %s%sRistiriitainen tiedosto: %s%s%sPoistetaanko?"
 
 #: lazarusidestrconsts.listhereisalreadyabuildmodewiththisname
@@ -15098,12 +15878,24 @@ msgstr ""
 msgid "There is already a component with this name"
 msgstr "Samanniminen komponentti on jo olemassa"
 
+#: lazarusidestrconsts.listhereisalreadyafilein
+msgid "There is already a file%s%s%sin %s"
+msgstr ""
+
+#: lazarusidestrconsts.listhereisalreadyafileinoldnewcontinue
+msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
-msgid "There is already a form with the name %s%s%s"
+#, fuzzy
+#| msgid "There is already a form with the name %s%s%s"
+msgid "There is already a form with the name \"%s\""
 msgstr "Projektissa on jo %s%s%s-niminen lomake (form)"
 
 #: lazarusidestrconsts.listhereisalreadyamacrowiththename
-msgid "There is already a macro with the name %s%s%s."
+#, fuzzy
+#| msgid "There is already a macro with the name %s%s%s."
+msgid "There is already a macro with the name \"%s\"."
 msgstr "Makro nimeltä %s%s%s on jo olemassa."
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
@@ -15114,12 +15906,20 @@ msgstr "On jo \"%s\" niminen IDE-makro."
 msgid "There is already a package %s in the list"
 msgstr "Luettelossa on jo paketti %s"
 
+#: lazarusidestrconsts.listhereisalreadyaunitinoldnewyouhavetomakesur
+msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make sure that the unit search path contains only one of them.%s%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
-msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
+#, fuzzy
+#| msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
+msgid "There is already a unit with the name \"%s\". Pascal identifiers must be unique."
 msgstr "On jo käännösyksikkö nimeltään %s%s%s. Pascalin tunnisteiden pitää olla yksilöllisiä."
 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
-msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
+#, fuzzy
+#| msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
+msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Projektissa on käännösyksikkö nimeltään %s%s%s.%sValitse toinen nimi"
 
 #: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
@@ -15131,7 +15931,7 @@ msgid "There must be at least one build mode."
 msgstr "Ainakin yksi koontamoodi tarvitaan."
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
-msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
+msgid "The resource class \"%s\" descends from \"%s\". Probably this is a typo for TForm."
 msgstr ""
 
 #: lazarusidestrconsts.listherewasanerrorduringwritingtheselectedcomponent
@@ -15166,12 +15966,18 @@ msgstr "Näitä käännösyksikköjä ei löydy:"
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr "Free Pascalin pakettien lähdekoodit tarvitaan niiden tutkimista ja koodin täydennystä varten. Niissä on mukana esim. tiedosto \"%s\"."
 
+#: lazarusidestrconsts.listhetargetisnotwritable
+msgid "The target %s is not writable."
+msgstr ""
+
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
-msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
+#, fuzzy
+#| msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
+msgid "The Test Directory could not be found:%s\"%s\"%s(see IDE options)"
 msgstr "Testi hakemistoa ei löydy:%s%s%s%s%s(katso IDE asetukset)"
 
 #: lazarusidestrconsts.listheunitalreadyexists
-msgid "The unit %s%s%s already exists."
+msgid "The unit \"%s\" already exists."
 msgstr ""
 
 #: lazarusidestrconsts.listheunitbelongstopackage
@@ -15187,7 +15993,9 @@ msgid "The unit has this name"
 msgstr "Käännösyksiköllä on tämä nimi"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+#, fuzzy
+#| msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "Käännösyksikön nimi %s%s%s ei ole pienillä kirjaimilla.%sFree Pascal -kääntäjä ei etsi kaikkia variaatioita. On suositeltavaa käyttää vain pieniä kirjaimia.%s%sVaihdetaanko tiedoston nimi?"
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
@@ -15199,15 +16007,17 @@ msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr "Muutkin tiedostot käyttävät käännösyksikköä %s.%sPäivitetäänkö viittaukset niihin automaattisesti?"
 
 #: lazarusidestrconsts.listheunititselfhasalreadythenamepascalidentifiersmus
-msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
+#, fuzzy
+#| msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
+msgid "The unit itself has already the name \"%s\". Pascal identifiers must be unique."
 msgstr "Käännösyksikkö on jo nimeltään %s%s%s. Pascalissa tunnusten pitää olla yksilöllisiä"
 
 #: lazarusidestrconsts.listheunitsearchpathofcontainsthesourcedirectoryofpac
-msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
+msgid "The unit search path of \"%s\" contains the source directory \"%s\" of package %s"
 msgstr ""
 
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
-msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
+msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr ""
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
@@ -15235,7 +16045,7 @@ msgid "This project has only the default build mode."
 msgstr "Projektilla on vain oletus koontamoodi."
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
@@ -15245,6 +16055,10 @@ msgstr "Tästä ei voi tehdä omaa aliohjelmaa.%sValitse ensin jokin muu koodin 
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."
 msgstr "Tämä synnyttää kehäriippuvuuden."
+
+#: lazarusidestrconsts.listhiswillputalotoftextontheclipboardproceed
+msgid "This will put a lot of text (%s) on the clipboard.%sProceed?"
+msgstr ""
 
 #: lazarusidestrconsts.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
@@ -15342,6 +16156,30 @@ msgstr "Polku:"
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Vaihda näyttö tiedostojen täyden polun ja suhteellisen polun välillä"
 
+#: lazarusidestrconsts.listoolhasnoexecutable
+msgid "tool \"%s\" has no executable"
+msgstr ""
+
+#: lazarusidestrconsts.listoolheaderfailed
+msgid "Tool Header: Failed"
+msgstr ""
+
+#: lazarusidestrconsts.listoolheaderrunning
+msgid "Tool Header: Running"
+msgstr ""
+
+#: lazarusidestrconsts.listoolheaderscrolledup
+msgid "Tool Header: Scrolled up"
+msgstr ""
+
+#: lazarusidestrconsts.listoolheadersuccess
+msgid "Tool Header: Success"
+msgstr ""
+
+#: lazarusidestrconsts.listoolstoppedwithexitcodeusecontextmenutogetmoreinfo
+msgid "tool stopped with exit code %s. Use context menu to get more information."
+msgstr ""
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "Yläosan ankkurointi"
@@ -15366,12 +16204,20 @@ msgstr "Tämä on naapurikontrolli, mihin yläreuna on ankkuroitu. Tyhjä tarkoi
 msgid "Top space equally"
 msgstr "Tasaa välit ylhäällä"
 
+#: lazarusidestrconsts.listranslatetheenglishmessages
+msgid "Translate the English Messages"
+msgstr ""
+
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Puu pitää päivittää"
 
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
+msgstr ""
+
+#: lazarusidestrconsts.listwomovedfileswillhavethesamefilenamein
+msgid "Two moved files will have the same file name:%s%s%s%s%sin %s"
 msgstr ""
 
 #: lazarusidestrconsts.listypes
@@ -15523,7 +16369,9 @@ msgid "Not found"
 msgstr "Ei löytynyt"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
-msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
+#, fuzzy
+#| msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
+msgid "Replace this occurrence of \"%s\"%s with \"%s\"?"
 msgstr "Korvataanko tässä esiintyvä %s%s%s%s tekstillä %s%s%s?"
 
 #: lazarusidestrconsts.lisuesearching
@@ -15607,19 +16455,15 @@ msgid "Unable copy components to clipboard"
 msgstr "Komponenttien kopiointi leikepöydälle ei onnistu"
 
 #: lazarusidestrconsts.lisunabletoaddresourceheadercommenttoresourcefile
-msgid "Unable to add resource header comment to resource file %s%s%s%s.%sProbably a syntax error."
+msgid "Unable to add resource header comment to resource file %s\"%s\".%sProbably a syntax error."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoaddresourcetformdatatoresourcefileprobably
-msgid "Unable to add resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error."
+msgid "Unable to add resource T%s:FORMDATA to resource file %s\"%s\".%sProbably a syntax error."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread
 msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread2
-msgid "Unable to add the dependency %s, because the package %s has already a dependency to %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethiswouldcreatea
@@ -15631,7 +16475,9 @@ msgid "Unable to add %s to project, because there is already a unit with the sam
 msgstr "%s:n lisääminen projektiin ei onnistu, koska projektissa on jo samanniminen tiedosto."
 
 #: lazarusidestrconsts.lisunabletobackupfileto
-msgid "Unable to backup file %s%s%s to %s%s%s!"
+#, fuzzy
+#| msgid "Unable to backup file %s%s%s to %s%s%s!"
+msgid "Unable to backup file \"%s\" to \"%s\"!"
 msgstr "Ei voida tehdä varmuuskopiota tiedostosta %s%s%s tiedostoon %s%s%s!"
 
 #: lazarusidestrconsts.lisunabletochangeclassofto
@@ -15647,7 +16493,9 @@ msgid "Unable to clean up destination directory"
 msgstr "Ei voida siivota kohdehakemistoa"
 
 #: lazarusidestrconsts.lisunabletocleanuppleasecheckpermissions
-msgid "Unable to clean up %s%s%s.%sPlease check permissions."
+#, fuzzy
+#| msgid "Unable to clean up %s%s%s.%sPlease check permissions."
+msgid "Unable to clean up \"%s\".%sPlease check permissions."
 msgstr "Ei voida siivota %s%s%s.%sTarkista oikeudet."
 
 #: lazarusidestrconsts.lisunabletoconvertcomponenttextintobinaryformat
@@ -15655,11 +16503,13 @@ msgid "Unable to convert component text into binary format:%s%s"
 msgstr "Ei voida muuntaa komponentin tekstiä binaariseksi:%s%s"
 
 #: lazarusidestrconsts.lisunabletoconvertfileerror
-msgid "Unable to convert file %s%s%s%sError: %s"
+#, fuzzy
+#| msgid "Unable to convert file %s%s%s%sError: %s"
+msgid "Unable to convert file \"%s\"%sError: %s"
 msgstr "Ei voida muuntaa tiedostoa %s%s%s%sVirhe: %s"
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
-msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
+msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletocopyfile
@@ -15667,47 +16517,43 @@ msgid "Unable to copy file"
 msgstr "Tiedoston kopiointi ei onnistunut"
 
 #: lazarusidestrconsts.lisunabletocopyfileto
-msgid "Unable to copy file %s%s%s%sto %s%s%s"
+#, fuzzy
+#| msgid "Unable to copy file %s%s%s%sto %s%s%s"
+msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Tiedoston %s%s%s%skopiointi ei onnistunut tiedostoksi %s%s%s"
 
-#: lazarusidestrconsts.lisunabletocopyfileto2
-msgid "Unable to copy file %s%s%s%sto %s%s%s."
-msgstr "Tiedoston %s%s%s%skopiointi ei onnistunut tiedostoksi %s%s%s."
-
 #: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory %s%s%s."
+#, fuzzy
+#| msgid "Unable to create backup directory %s%s%s."
+msgid "Unable to create backup directory \"%s\"."
 msgstr "Backup-hakemiston %s%s%s luominen ei onnistu."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
-msgid "Unable to create directory %s%s%s."
+#, fuzzy
+#| msgid "Unable to create directory %s%s%s."
+msgid "Unable to create directory \"%s\"."
 msgstr "Hakemiston %s%s%s luominen ei onnistu."
-
-#: lazarusidestrconsts.lisunabletocreatedirectory2
-msgid "Unable to create directory %s%s%s"
-msgstr "Hakemiston %s%s%s luominen ei onnistu"
 
 #: lazarusidestrconsts.lisunabletocreatefile
 msgid "Unable to create file"
 msgstr "Tiedoston luominen ei onnistu."
 
 #: lazarusidestrconsts.lisunabletocreatefile2
-msgid "Unable to create file %s%s%s"
+#, fuzzy
+#| msgid "Unable to create file %s%s%s"
+msgid "Unable to create file \"%s\""
 msgstr "Tiedoston %s%s%s luominen ei onnistu"
 
 #: lazarusidestrconsts.lisunabletocreatefile3
-msgid "Unable to create file%s%s%s%s"
+#, fuzzy
+#| msgid "Unable to create file%s%s%s%s"
+msgid "Unable to create file%s\"%s\""
 msgstr "Tiedoston%s%s%s%s luominen ei onnistu"
 
-#: lazarusidestrconsts.lisunabletocreatefile4
-msgid "Unable to create file %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisunabletocreatefilename
-msgid "Unable to create file %s%s%s."
-msgstr "Tiedoston %s%s%s luominen ei onnistu."
-
 #: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-msgid "Unable to create link %s%s%s with target %s%s%s"
+#, fuzzy
+#| msgid "Unable to create link %s%s%s with target %s%s%s"
+msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Linkin %s%s%s luominen kohteeseen %s%s%s ei onnistu"
 
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
@@ -15727,23 +16573,31 @@ msgid "Unable to delete"
 msgstr "Poistaminen ei onnistu"
 
 #: lazarusidestrconsts.lisunabletodeleteambiguousfile
-msgid "Unable to delete ambiguous file %s%s%s"
+#, fuzzy
+#| msgid "Unable to delete ambiguous file %s%s%s"
+msgid "Unable to delete ambiguous file \"%s\""
 msgstr "Ristiriitaisen tiedoston %s%s%s poistaminen ei onnistu"
+
+#: lazarusidestrconsts.lisunabletoexecute
+msgid "unable to execute: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "Resurssitekstin osiota ei löydy tästä eikä muista käännösyksiköistä."
 
 #: lazarusidestrconsts.lisunabletofindavalidclassnamein
-msgid "Unable to find a valid classname in %s%s%s"
+msgid "Unable to find a valid classname in \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindfile
-msgid "Unable to find file %s%s%s."
+#, fuzzy
+#| msgid "Unable to find file %s%s%s."
+msgid "Unable to find file \"%s\"."
 msgstr "Ei löydetä tiedostoa %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
+msgid "Unable to find file \"%s\".%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -15755,8 +16609,9 @@ msgid "Unable to find method."
 msgstr "Metodia ei löydy."
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
-#| msgid "Unable to find Pascal unit (.pas,.pp) for .lfm file%s%s%s%s"
-msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s%s%s%s"
+#, fuzzy
+#| msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s%s%s%s"
+msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s\"%s\""
 msgstr "Ei löydy Pascal-käännösyksikköä (.pas,.pp) .lfm-tiedostolle%s%s%s%s"
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
@@ -15780,11 +16635,13 @@ msgid "unable to load file %s: %s"
 msgstr "Tiedoston %s: %s lataaminen ei onnistu"
 
 #: lazarusidestrconsts.lisunabletoloadpackage
-msgid "Unable to load package %s%s%s"
+#, fuzzy
+#| msgid "Unable to load package %s%s%s"
+msgid "Unable to load package \"%s\""
 msgstr "Paketin %s%s%s lataaminen ei onnistu"
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
-msgid "Unable to load the component class %s%s%s, because it depends on itself."
+msgid "Unable to load the component class \"%s\", because it depends on itself."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoopen
@@ -15808,33 +16665,36 @@ msgid "Unable to read file"
 msgstr "Tiedoston lukeminen ei onnistu"
 
 #: lazarusidestrconsts.lisunabletoreadfile2
-msgid "Unable to read file %s%s%s!"
+#, fuzzy
+#| msgid "Unable to read file %s%s%s!"
+msgid "Unable to read file \"%s\"."
 msgstr "Ei pystytä lukemaan tiedostoa %s%s%s!"
 
 #: lazarusidestrconsts.lisunabletoreadfileerror
-msgid "Unable to read file %s%s%s%sError: %s"
+#, fuzzy
+#| msgid "Unable to read file %s%s%s%sError: %s"
+msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "Ei pystytä lukemaan tiedostoa%s%s%s%sVirhe: %s"
-
-#: lazarusidestrconsts.lisunabletoreadfilename
-msgid "Unable to read file %s%s%s."
-msgstr "Ei pystytä lukemaan tiedostoa %s%s%s."
 
 #: lazarusidestrconsts.lisunabletoreadlpi
 msgid "Unable to read lpi"
 msgstr "lpi:n lukeminen ei onnistu"
 
-#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
-msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
-msgid "Unable to read the project info file%s%s%s%s."
-msgstr "Ei pystytä lukemaan 'project info file'- tiedostoa%s%s%s%s."
+#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
+msgstr ""
 
-#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile2
-msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile2"
-msgid "Unable to read the project info file%s%s%s%s."
+#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
+#, fuzzy
+#| msgid "Unable to read the project info file%s%s%s%s."
+msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
+msgid "Unable to read the project info file%s\"%s\"."
 msgstr "Ei pystytä lukemaan 'project info file'- tiedostoa%s%s%s%s."
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
-msgid "Unable to remove old backup file %s%s%s!"
+#, fuzzy
+#| msgid "Unable to remove old backup file %s%s%s!"
+msgid "Unable to remove old backup file \"%s\"!"
 msgstr "Vanhan varmuuskopion %s%s%s poisto ei onnistu!"
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
@@ -15842,7 +16702,9 @@ msgid "Unable to remove project title from source.%s%s"
 msgstr "Projektin otsikon %s%s poisto ei onnistu!"
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
-msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
+#, fuzzy
+#| msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
+msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "Ristiriitaisen tiedoston %s%s%s%s nimeäminen %s%s%s:ksi ei onnistu"
 
 #: lazarusidestrconsts.lisunabletorenamefile
@@ -15850,11 +16712,15 @@ msgid "Unable to rename file"
 msgstr "Tiedoston nimeäminen ei onnistu"
 
 #: lazarusidestrconsts.lisunabletorenamefileto
-msgid "Unable to rename file %s%s%s to %s%s%s!"
+#, fuzzy
+#| msgid "Unable to rename file %s%s%s to %s%s%s!"
+msgid "Unable to rename file \"%s\" to \"%s\"!"
 msgstr "Tiedoston %s%s%s nimeäminen %s%s%s:ksi ei onnistu!"
 
 #: lazarusidestrconsts.lisunabletorenamefileto2
-msgid "Unable to rename file %s%s%s%sto %s%s%s."
+#, fuzzy
+#| msgid "Unable to rename file %s%s%s%sto %s%s%s."
+msgid "Unable to rename file \"%s\"%sto \"%s\"."
 msgstr "Tiedoston %s%s%s%s nimeäminen %s%s%s:ksi ei onnistu."
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
@@ -15901,33 +16767,33 @@ msgstr ""
 msgid "Unable to update CreateForm statement in project source"
 msgstr "CreateForm lausekkeen päivitys projektin lähdekoodissa ei onnistu"
 
-#: lazarusidestrconsts.lisunabletowrite
-msgid "Unable to write %s%s%s%s%s."
-msgstr "Kirjoittaminen ei onnistu %s%s%s%s%s."
-
 #: lazarusidestrconsts.lisunabletowrite2
-msgid "Unable to write %s%s%s"
+#, fuzzy
+#| msgid "Unable to write %s%s%s"
+msgid "Unable to write \"%s\""
 msgstr "Kirjoittaminen ei onnistu %s%s%s"
 
 #: lazarusidestrconsts.lisunabletowritefile
 msgid "Unable to write file"
 msgstr "Tallentaminen tiedostoon ei onnistu"
 
+#: lazarusidestrconsts.lisunabletowritefile2
+msgid "Unable to write file \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletowritefileerror
-msgid "Unable to write file %s%s%s%sError: %s"
+#, fuzzy
+#| msgid "Unable to write file %s%s%s%sError: %s"
+msgid "Unable to write file \"%s\"%sError: %s"
 msgstr "Tallentaminen ei onnistunut tiedostoon %s%s%s%sVirheenä oli: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
+msgid "Unable to write the project info file%s\"%s\".%sError: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
 msgstr ""
-
-#: lazarusidestrconsts.lisunabletowritetofile
-msgid "Unable to write to file %s%s%s."
-msgstr "Kirjoittaminen tiedostoon %s%s%s ei onnistu."
 
 #: lazarusidestrconsts.lisunabletowritetofile2
 msgid "Unable to write to file \"%s\"."
@@ -15959,7 +16825,9 @@ msgid "Uninstall selection"
 msgstr "Poista asennuksesta"
 
 #: lazarusidestrconsts.lisunithaschangedsave
-msgid "Unit %s%s%s has changed. Save?"
+#, fuzzy
+#| msgid "Unit %s%s%s has changed. Save?"
+msgid "Unit \"%s\" has changed. Save?"
 msgstr "Käännösyksikkö %s%s%s on muuttunut. Talletetaanko?"
 
 #: lazarusidestrconsts.lisunitidentifierexists
@@ -15967,7 +16835,9 @@ msgid "Unit identifier exists"
 msgstr "Käännösyksikön tunniste on olemassa"
 
 #: lazarusidestrconsts.lisunitinpackage
-msgid "%s unit %s in package %s%s"
+#, fuzzy
+#| msgid "%s unit %s in package %s%s"
+msgid "%s unit %s in package %s"
 msgstr "%s käännösyksikkö %s paketissa %s%s"
 
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
@@ -15981,6 +16851,14 @@ msgstr "Käännösyksikön nimi alkaa ..."
 #: lazarusidestrconsts.lisunitnamecontains
 msgid "Unit name contains ..."
 msgstr "Käännösyksikön nimi sisältää ..."
+
+#: lazarusidestrconsts.lisunitnotfound
+msgid "unit %s not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisunitnotfoundatnewposition
+msgid "unit %s not found at new position \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisunitnotfoundinproject
 msgid "A unit not found in project %s"
@@ -15997,6 +16875,10 @@ msgstr "Käännösyksiköiden polku"
 #: lazarusidestrconsts.lisunitpaths
 msgid "Unit paths"
 msgstr "Käännösyksiköiden polut"
+
+#: lazarusidestrconsts.lisunitrequirespackage
+msgid "unit %s requires package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitsnotfoundinproject
 msgid "Units not found in project %s"
@@ -16063,6 +16945,10 @@ msgstr "Käytä Ansistringia"
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Käytä kommentteja mukautetuissa asetuksissa"
+
+#: lazarusidestrconsts.lisusedby
+msgid " used by %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
@@ -16168,6 +17054,10 @@ msgctxt "lazarusidestrconsts.lisvariable"
 msgid "Variable"
 msgstr "Muuttuja"
 
+#: lazarusidestrconsts.lisverbose
+msgid "Verbose"
+msgstr ""
+
 #: lazarusidestrconsts.lisverifymethodcalls
 msgid "Verify method calls"
 msgstr "Tarkista metodikutsut"
@@ -16187,6 +17077,10 @@ msgstr "Pystysuunta"
 #: lazarusidestrconsts.lisvertoclipboard
 msgid "Copy version information to clipboard"
 msgstr "Kopioi versiotieto leikepöydälle"
+
+#: lazarusidestrconsts.lisveryverbose
+msgid "Very Verbose"
+msgstr ""
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
 msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
@@ -16211,8 +17105,14 @@ msgid "Warning: "
 msgstr "Varoitus: "
 
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
-msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+#, fuzzy
+#| msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "Varoitus: ristiriitainen tiedosto löytyi: %s%s%s. Lähdekooditiedosto on: %s%s%s"
+
+#: lazarusidestrconsts.liswarnings
+msgid ", Warnings:%s"
+msgstr ""
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
@@ -16276,7 +17176,9 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr "Tervetuloa Lazarus IDE:en %s"
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
-msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+#, fuzzy
+#| msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgid "Welcome to Lazarus %s%sThere is already a configuration from version %s in%s%s"
 msgstr "Tervetuloa Lazarukseen %s%s%sAsetukset löytyvät versiosta %s %s%s%s:ssa"
 
 #: lazarusidestrconsts.liswhatneedsbuilding
@@ -16294,6 +17196,10 @@ msgstr "Nykyiset asetukset talletetaan malliksi, mitä käytetään luotaessa uu
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
 msgstr "Kun kursori liikkuu lähdekoodissa, näytä aktiivinen solmu koodin tutkijassa"
+
+#: lazarusidestrconsts.liswindowstaysontop
+msgid "Window stays on top"
+msgstr ""
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "

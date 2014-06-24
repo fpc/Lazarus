@@ -893,7 +893,9 @@ msgid "Linking"
 msgstr "Összefűzés"
 
 #: lazarusidestrconsts.dlgcoloadsave
-msgid "Load/Save"
+#, fuzzy
+#| msgid "Load/Save"
+msgid "Compiler options can be saved to an XML file."
 msgstr "Töltés/Mentés"
 
 #: lazarusidestrconsts.dlgcolor
@@ -3486,7 +3488,9 @@ msgid "Dependency"
 msgstr "Függőség"
 
 #: lazarusidestrconsts.lisa2pexistingfile2
-msgid "Existing file: %s%s%s"
+#, fuzzy
+#| msgid "Existing file: %s%s%s"
+msgid "Existing file: \"%s\""
 msgstr "Létező fájl: %s%s%s"
 
 #: lazarusidestrconsts.lisa2pfilealreadyexists
@@ -3494,7 +3498,9 @@ msgid "File already exists"
 msgstr "Fájl már létezik"
 
 #: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
-msgid "File %s%s%s already exists in the package."
+#, fuzzy
+#| msgid "File %s%s%s already exists in the package."
+msgid "File \"%s\" already exists in the package."
 msgstr "A(z) %s%s%s fájl már létezik a csomagban."
 
 #: lazarusidestrconsts.lisa2pfileisused
@@ -3534,7 +3540,9 @@ msgid "Invalid Unit Name"
 msgstr "Érvényelen unit név"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
-msgid "%s%s%s is not a valid unit name."
+#, fuzzy
+#| msgid "%s%s%s is not a valid unit name."
+msgid "\"%s\" is not a valid unit name."
 msgstr "A(z) %s%s%s érvénytelen unit név."
 
 #: lazarusidestrconsts.lisa2pnewclassname
@@ -3551,7 +3559,9 @@ msgid "New File"
 msgstr "Új fájl"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
-msgid "No package found for dependency %s%s%s.%sPlease choose an existing package."
+#, fuzzy
+#| msgid "No package found for dependency %s%s%s.%sPlease choose an existing package."
+msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "Nem található csomag a(z) %s%s%s függőséghez.%sVálasszon egy létező csomagot!"
 
 #: lazarusidestrconsts.lisa2ppagenametoolong
@@ -3584,40 +3594,58 @@ msgid "Switch Paths"
 msgstr "Útvonalak váltása"
 
 #: lazarusidestrconsts.lisa2ptheancestortypehasthesamenameastheunit
-msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
+#, fuzzy
+#| msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
+msgid "The ancestor type \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "A(z) %s%s%s őstípusnak ugyanaz a neve,%smint a(z) %s%s%s unit-nak."
 
 #: lazarusidestrconsts.lisa2ptheancestortypeisnotavalidpascalidentifier
-msgid "The ancestor type %s%s%s is not a valid Pascal identifier."
+#, fuzzy
+#| msgid "The ancestor type %s%s%s is not a valid Pascal identifier."
+msgid "The ancestor type \"%s\" is not a valid Pascal identifier."
 msgstr "A(z) %s%s%s őstípus nem érvényes pascal azonosító."
 
 #: lazarusidestrconsts.lisa2ptheclassnameandancestortypearethesame
-msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
+#, fuzzy
+#| msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
+msgid "The class name \"%s\" and ancestor type \"%s\" are the same."
 msgstr "A(z) %s%s%s osztálynév és a(z) %s%s%s őstípus megegyezik."
 
 #: lazarusidestrconsts.lisa2ptheclassnameexistsalreadyinpackagefile
-msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
+#, fuzzy
+#| msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
+msgid "The class name \"%s\" exists already in%sPackage %s%sFile: \"%s\""
 msgstr "A(z) %s%s%s osztálynév már létezik a(z)%s%s csomagban %sFájl: %s%s%s"
 
 #: lazarusidestrconsts.lisa2ptheclassnamehasthesamenameastheunit
-msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
+#, fuzzy
+#| msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
+msgid "The class name \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "A(z) %s%s%s osztálynak ugyanaz a neve,%smint a(z) %s%s%s unit-nak."
 
 #: lazarusidestrconsts.lisa2ptheclassnameisnotavalidpascalidentifier
-msgid "The class name %s%s%s is not a valid Pascal identifier."
+#, fuzzy
+#| msgid "The class name %s%s%s is not a valid Pascal identifier."
+msgid "The class name \"%s\" is not a valid Pascal identifier."
 msgstr "A(z) %s%s%s osztálynév nem érvényes pascal azonosító."
 
 #: lazarusidestrconsts.lisa2pthefileispartofthecurrentprojectitisabadidea
-msgid "The file %s%s%s is part of the current project.%sIt is a bad idea to share files between projects and packages."
+#, fuzzy
+#| msgid "The file %s%s%s is part of the current project.%sIt is a bad idea to share files between projects and packages."
+msgid "The file \"%s\" is part of the current project.%sIt is a bad idea to share files between projects and packages."
 msgstr "A(z) %s%s%s fájl már része a jelenlegi projektnek.%sRossz ötlet fájlokat megosztani projektek és csomagok között."
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
-msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+#, fuzzy
+#| msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
+msgid "The filename \"%s\" is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "A(z) %s%s%s fájlnév ellentmondásos, mert a csomagnak még nincs alapértelmezett könyvtára.%sAdjon meg egy fájlnevet teljes elérési úttal!"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
+#, fuzzy
+#| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
-msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "A(z) %s%s%s legnagyobb változatszám érvénytelen.%sHasználja a fő.al.kiadás.építés formátumot!%sPéldául: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionislowerthantheminimimversion
@@ -3626,40 +3654,58 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "A legnagyobb változatszám kisebb, mint a legkisebb változatszám."
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
+#, fuzzy
+#| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
-msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "A(z) %s%s%s legkisebb változatszám érvénytelen.%sHasználja a fő.al.kiadás.építés formátumot!%sPéldául: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
-msgid "The package already has a dependency on the package %s%s%s."
+#, fuzzy
+#| msgid "The package already has a dependency on the package %s%s%s."
+msgid "The package already has a dependency on the package \"%s\"."
 msgstr "A csomaghoz már be van állítva függőségként a(z) %s%s%s csomag."
 
 #: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
+#, fuzzy
+#| msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
+msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
 msgstr "A(z) %s%s%s csomagnév érvénytelen.%sVálasszon egy létező csomagot!"
 
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
-msgid "The page name %s%s%s is too long (max 100 chars)."
+#, fuzzy
+#| msgid "The page name %s%s%s is too long (max 100 chars)."
+msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "A(z) %s%s%s csomagnév túl hosszú (maximum 100 karakter lehet)."
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthepackage
-msgid "The unitname %s%s%s already exists in the package:%s%s"
+#, fuzzy
+#| msgid "The unitname %s%s%s already exists in the package:%s%s"
+msgid "The unitname \"%s\" already exists in the package:%s%s"
 msgstr "A(z) %s%s%s unit név már létezik a(z) %s%s csomagban"
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthispackage
-msgid "The unitname %s%s%s already exists in this package."
+#, fuzzy
+#| msgid "The unitname %s%s%s already exists in this package."
+msgid "The unitname \"%s\" already exists in this package."
 msgstr "A(z) %s%s%s unit név már létezik ebben a csomagban."
 
 #: lazarusidestrconsts.lisa2ptheunitnameandfilenamediffer
-msgid "The unit name %s%s%s%sand filename %s%s%s differ."
+#, fuzzy
+#| msgid "The unit name %s%s%s%sand filename %s%s%s differ."
+msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "A(z) %s%s%s%s unit név és a(z) %s%s%s fájlnév különbözik."
 
 #: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-msgid "The unit name %s%s%s does not correspond to the filename."
+#, fuzzy
+#| msgid "The unit name %s%s%s does not correspond to the filename."
+msgid "The unit name \"%s\" does not correspond to the filename."
 msgstr "A(z) %s%s%s unit név nem tartozik a fájlnévhez."
 
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
-msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
+#, fuzzy
+#| msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
+msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "A(z) %s%s%s unit neve megegyezik egy regisztrált komponens nevével.%sEnnek használata furcsa hibaüzeneteket okozhat."
 
 #: lazarusidestrconsts.lisa2punitfilename2
@@ -3690,6 +3736,10 @@ msgstr "Összes megszakítása"
 msgid "Abort all loading"
 msgstr "Minden betöltés megszakítása"
 
+#: lazarusidestrconsts.lisaborted
+msgid "Aborted"
+msgstr ""
+
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
 msgstr "Projekt betöltés megszakítása"
@@ -3697,6 +3747,14 @@ msgstr "Projekt betöltés megszakítása"
 #: lazarusidestrconsts.lisabortwholeloading
 msgid "Abort whole loading"
 msgstr "Egész betöltés megszakítása"
+
+#: lazarusidestrconsts.lisabout
+msgid "About ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisabout2
+msgid "About %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisaboutdocumentation
 msgid "Documentation:"
@@ -3783,6 +3841,10 @@ msgstr "A(z) \"%s\" tulajdonság hozzá lett adva ehhez: \"%s\""
 msgid "Add Files in Directory"
 msgstr "Fájlok hozzáadása könyvtárból"
 
+#: lazarusidestrconsts.lisaddfilter
+msgid "Add Filter ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr "A \"do\" kulcsszó hozzáadása"
@@ -3828,9 +3890,17 @@ msgctxt "lazarusidestrconsts.lisaddressbreakpoint"
 msgid "&Address Breakpoint ..."
 msgstr "Töréspont adott címen ..."
 
+#: lazarusidestrconsts.lisaddtoincludesearchpath
+msgid "Add to include search path?"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
 msgstr "%s hozzáadása a projekthez?"
+
+#: lazarusidestrconsts.lisaddtounitsearchpath
+msgid "Add to unit search path?"
+msgstr ""
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -3865,7 +3935,9 @@ msgid "Invalid Package"
 msgstr "Érvénytelen csomag"
 
 #: lazarusidestrconsts.lisaf2pinvalidpackageid
-msgid "Invalid package ID: %s%s%s"
+#, fuzzy
+#| msgid "Invalid package ID: %s%s%s"
+msgid "Invalid package ID: \"%s\""
 msgstr "Érvénytelen csomag azonosító: %s%s%s"
 
 #: lazarusidestrconsts.lisaf2ppackageisreadonly
@@ -3873,7 +3945,9 @@ msgid "Package is read only"
 msgstr "A csomag csak olvasható"
 
 #: lazarusidestrconsts.lisaf2ppackagenotfound
-msgid "Package %s%s%s not found."
+#, fuzzy
+#| msgid "Package %s%s%s not found."
+msgid "Package \"%s\" not found."
 msgstr "A(z) %s%s%s csomag nem található."
 
 #: lazarusidestrconsts.lisaf2pshowall
@@ -3882,8 +3956,10 @@ msgid "Show all"
 msgstr "Összes megjelenítése"
 
 #: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
+#, fuzzy
+#| msgid "The file %s%s%s%sis already in the package %s."
 msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
-msgid "The file %s%s%s%sis already in the package %s."
+msgid "The file \"%s\"%sis already in the package %s."
 msgstr "A(z) %s%s%s%s fájl már a(z) %s csomagban van."
 
 #: lazarusidestrconsts.lisaf2pthepackageisreadonly
@@ -3895,8 +3971,14 @@ msgid "Unit name: "
 msgstr "Unit név:"
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-msgid "A file %s%s%s already exists.%sReplace it?"
+#, fuzzy
+#| msgid "A file %s%s%s already exists.%sReplace it?"
+msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "A(z) %s%s%s fájl már létezik.%sLecserélhető?"
+
+#: lazarusidestrconsts.lisafilterwiththenamealreadyexists
+msgid "A filter with the name \"%s\" already exists."
+msgstr ""
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
 msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
@@ -3939,7 +4021,9 @@ msgid "All parameters of this function are already set at this call. Nothing to 
 msgstr "Ezen eljárás minden paramétere be lett már állítva e hívásban. Nincs mit hozzáadni."
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
-msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
+#, fuzzy
+#| msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
+msgid "All your modifications to \"%s\"%swill be lost and the file reopened."
 msgstr "A(z) %s%s%s%s minden módosítása el fog veszni és a fájl újra meg lesz nyitva."
 
 #: lazarusidestrconsts.lisalpha
@@ -3962,6 +4046,10 @@ msgstr "Mindig"
 msgid "Always convert suggested default file name to lowercase"
 msgstr "Mindig legyen kisbetűsre alakítva a javasolt alapértelmezett fájlnév"
 
+#: lazarusidestrconsts.lisalwaysdrawselecteditemsfocused
+msgid "Always draw selected items focused"
+msgstr ""
+
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
 msgstr "Tiltás mindig"
@@ -3975,7 +4063,9 @@ msgid "Ambiguous file found"
 msgstr "Megtévesztő fájl található"
 
 #: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
-msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
+#, fuzzy
+#| msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
+msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "Megtévesztő fájl található: %s%s%s%sEz a fájl összetéveszthető a(z) %s%s%s%s fájllal%sTörli a megtévesztő fájlt?"
 
 #: lazarusidestrconsts.lisambiguousfilesfound
@@ -3983,10 +4073,8 @@ msgid "Ambiguous files found"
 msgstr "Megtévesztő fájlok találhatók"
 
 #: lazarusidestrconsts.lisambiguousunitfound
-msgid "Ambiguous Unit found"
-msgstr "Megtévesztő unit található"
-
-#: lazarusidestrconsts.lisambiguousunitfound2
+#, fuzzy
+#| msgid "Ambiguous Unit found"
 msgid "Ambiguous unit found"
 msgstr "Megtévesztő unit található"
 
@@ -4035,7 +4123,9 @@ msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distan
 msgstr ""
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
-msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
+#, fuzzy
+#| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
+msgid "An error occured at last startup while loading %s!%sLoad this project again?"
 msgstr "Hiba történt a legutóbbi indításkor a(z) %s betöltése közben!%s%sÚjra megnyitja a projektet?"
 
 #: lazarusidestrconsts.lisapplicationclassname
@@ -4367,6 +4457,10 @@ msgstr "Építés"
 msgid "Busy"
 msgstr "Elfoglalt"
 
+#: lazarusidestrconsts.lisbyte
+msgid "%s byte"
+msgstr ""
+
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
 msgstr "%s meghívása Makefile készítéséhez nem sikerült innen: %s"
@@ -4401,12 +4495,30 @@ msgid "Cannot copy top level component."
 msgstr "Legfelső szintű komponenst nem lehet másolni."
 
 #: lazarusidestrconsts.liscannotcreatefile
-msgid "Cannot create file %s%s%s"
+#, fuzzy
+#| msgid "Cannot create file %s%s%s"
+msgid "Cannot create file \"%s\""
 msgstr "A fájl nem hozható létre: %s%s%s"
+
+#: lazarusidestrconsts.liscannotexecute
+msgid "can not execute \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.liscannotfind
+msgid "Cannot find %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscannotfindexecutable
+msgid "can not find executable \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "A Lazarus indító nem található:%s%s"
+
+#: lazarusidestrconsts.liscannotfindunit
+msgid "Cannot find unit %s"
+msgstr ""
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
@@ -4415,6 +4527,10 @@ msgstr "Nem tesztelhető a fordító hibakeresés vagy fordítás közben."
 #: lazarusidestrconsts.liscanonlychangetheclassoftcomponents
 msgid "Can only change the class of TComponents."
 msgstr "Csak TComponent-ek osztálya módosítható"
+
+#: lazarusidestrconsts.liscantfindavalidppu
+msgid "Can't find a valid %s.ppu"
+msgstr ""
 
 #: lazarusidestrconsts.liscaptiondiff
 msgctxt "lazarusidestrconsts.liscaptiondiff"
@@ -4835,7 +4951,9 @@ msgid "Error reading %s"
 msgstr "%s nem olvasható"
 
 #: lazarusidestrconsts.liscfeinfile
-msgid "%sIn file %s%s"
+#, fuzzy
+#| msgid "%sIn file %s%s"
+msgid "In file %s"
 msgstr "%sA fájlban: %s%s"
 
 #: lazarusidestrconsts.liscfeinvalidcomponentowner
@@ -4943,6 +5061,14 @@ msgstr "Mindet kijelöli"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "A fájlok megváltozását a lemezen inkább a tartalom, mint az időbélyeg alapján figyelje"
 
+#: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
+msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
+msgstr ""
+
+#: lazarusidestrconsts.lischeckifpackageisinthedependencies
+msgid ". Check if package %s is in the dependencies"
+msgstr ""
+
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
 msgstr "ellenőrzi, hogy a következő érték a forrásban egy end és, hogy nem ad-e vissza sorvég + end; + sorvéget"
@@ -4950,6 +5076,10 @@ msgstr "ellenőrzi, hogy a következő érték a forrásban egy end és, hogy ne
 #: lazarusidestrconsts.lischeckoptions
 msgid "Check options"
 msgstr "Beállítások ellenőrzése"
+
+#: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+msgid ". Check search path package %s, try a clean rebuild, check implementation uses sections."
+msgstr ""
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
@@ -5076,15 +5206,23 @@ msgid "classes.ppu not found. Check your fpc.cfg."
 msgstr "A classes.ppu nem található. Ellenőrizze az fpc.cfg fájlt!"
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
-msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
+#, fuzzy
+#| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
+msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "A(z) %s%s%s osztály nem egy regisztrált komponens osztály.%sNem lehet beilleszteni."
 
 #: lazarusidestrconsts.lisclassnotfound
 msgid "Class not found"
 msgstr "Osztály nem található"
 
+#: lazarusidestrconsts.lisclassnotfoundat
+msgid "Class %s not found at %s(%s,%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisclassofmethodnotfound
-msgid "Class %s%s%s of method %s%s%s not found."
+#, fuzzy
+#| msgid "Class %s%s%s of method %s%s%s not found."
+msgid "Class \"%s\" of method \"%s\" not found."
 msgstr "A(z) %s%s%s osztály, amely a %s%s%s metódust tartalmazza nem található."
 
 #: lazarusidestrconsts.liscldirclean
@@ -5400,7 +5538,9 @@ msgid "Add code template"
 msgstr "Kód sablon hozzáadása"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
-msgid " A token %s%s%s already exists! "
+#, fuzzy
+#| msgid " A token %s%s%s already exists! "
+msgid " A token \"%s\" already exists! "
 msgstr "A(z) %s%s%s megnevezés már foglalt! "
 
 #: lazarusidestrconsts.liscodetemplautocompleteon
@@ -5922,6 +6062,10 @@ msgctxt "lazarusidestrconsts.liscompilestage"
 msgid "Compile"
 msgstr "Fordítás"
 
+#: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
+msgid "%s -> Compile with -vd for more details. Check for duplicates."
+msgstr ""
+
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
 msgstr "%s (fordítás ...)"
@@ -5952,11 +6096,15 @@ msgid "Component name \"%s\" is a Pascal keyword."
 msgstr "A(z) \"%s\" komponens neve egy pascal kulcsszó"
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
-msgid "Component name %s%s%s is keyword"
+#, fuzzy
+#| msgid "Component name %s%s%s is keyword"
+msgid "Component name \"%s\" is keyword"
 msgstr "A(z) %s%s%s komponens név egy kulcsszó"
 
 #: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-msgid "Component name %s%s%s is not a valid identifier"
+#, fuzzy
+#| msgid "Component name %s%s%s is not a valid identifier"
+msgid "Component name \"%s\" is not a valid identifier"
 msgstr "A(z) %s%s%s komponens azonosító érvénytelen"
 
 #: lazarusidestrconsts.liscomppalcomponentlist
@@ -5995,7 +6143,9 @@ msgid "Configure Build %s"
 msgstr "%s építésének beállítása"
 
 #: lazarusidestrconsts.lisconfigurebuildlazarus
-msgid "Configure %sBuild Lazarus%s"
+#, fuzzy
+#| msgid "Configure %sBuild Lazarus%s"
+msgid "Configure \"Build Lazarus\""
 msgstr "%sLazarus építés%s beállítása"
 
 #: lazarusidestrconsts.lisconfigurelazaruside
@@ -6046,6 +6196,10 @@ msgstr "Régi csomagkészlet"
 #: lazarusidestrconsts.lisconflict
 msgid "Conflict"
 msgstr "Ütközés"
+
+#: lazarusidestrconsts.lisconflictdetected
+msgid "Conflict detected"
+msgstr ""
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -6174,7 +6328,9 @@ msgid "Failed converting unit"
 msgstr "A unit átalakítása sikertelen"
 
 #: lazarusidestrconsts.lisconvdelphifailedtoconvertunit
-msgid "Failed to convert unit%s%s%s"
+#, fuzzy
+#| msgid "Failed to convert unit%s%s%s"
+msgid "Failed to convert unit \"%s\""
 msgstr "A unit átalakítása sikertelen%s%s%s"
 
 #: lazarusidestrconsts.lisconvdelphifixedunitcase
@@ -6368,6 +6524,10 @@ msgstr "Minden másolása"
 msgid "Copy All Items to Clipboard"
 msgstr "Minden elem másolása a vágólapra"
 
+#: lazarusidestrconsts.liscopyalloriginalmessagestoclipboard
+msgid "Copy All/Original Messages to Clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
 msgstr "Minden kimenet másolása a vágólapra"
@@ -6392,8 +6552,14 @@ msgstr "Hiba másolása"
 msgid "Copy error"
 msgstr "Hiba másolása"
 
+#: lazarusidestrconsts.liscopyfilenametoclipboard
+msgid "Copy File Name to Clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyidentifier
-msgid "Copy %s%s%s to clipboard"
+#, fuzzy
+#| msgid "Copy %s%s%s to clipboard"
+msgid "Copy \"%s\" to clipboard"
 msgstr "%s%s%s másolása a vágólapra"
 
 #: lazarusidestrconsts.liscopyingawholeformisnotimplemented
@@ -6403,6 +6569,10 @@ msgstr "A teljes form másolása nem lehetséges."
 #: lazarusidestrconsts.liscopyitemtoclipboard
 msgid "Copy Item to Clipboard"
 msgstr "Elem másolása a vágólapra"
+
+#: lazarusidestrconsts.liscopymovefiletodirectory
+msgid "Copy/Move File to Directory"
+msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 msgid "Copy Selected Items to Clipboard"
@@ -6429,27 +6599,39 @@ msgid "Skip calling compiler"
 msgstr "Kihagyja a fordító hivását"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
-msgid "Could not add %s{$I %s%s} to main source!"
+#, fuzzy
+#| msgid "Could not add %s{$I %s%s} to main source!"
+msgid "Could not add \"{$I %s}\" to main source!"
 msgstr "Nem adható hozzá %s{$I %s%s} a fő forráskódhoz!"
 
 #: lazarusidestrconsts.liscouldnotaddrtomainsource
-msgid "Could not add %s{$R %s%s} to main source!"
+#, fuzzy
+#| msgid "Could not add %s{$R %s%s} to main source!"
+msgid "Could not add \"{$R %s}\" to main source!"
 msgstr "Nem adható hozzá %s{$R %s%s} a fő forráskódhoz!"
 
 #: lazarusidestrconsts.liscouldnotaddtomainsource
-msgid "Could not add %s%s%s to main source!"
+#, fuzzy
+#| msgid "Could not add %s%s%s to main source!"
+msgid "Could not add \"%s\" to main source!"
 msgstr "Nem adható hozzá %s%s%s a fő forráskódhoz!"
 
 #: lazarusidestrconsts.liscouldnotremovefrommainsource
-msgid "Could not remove %s%s%s from main source!"
+#, fuzzy
+#| msgid "Could not remove %s%s%s from main source!"
+msgid "Could not remove \"%s\" from main source!"
 msgstr "Nem távolítható el %s%s%s a fő forráskódból!"
 
 #: lazarusidestrconsts.liscouldnotremoveifrommainsource
-msgid "Could not remove %s{$I %s%s} from main source!"
+#, fuzzy
+#| msgid "Could not remove %s{$I %s%s} from main source!"
+msgid "Could not remove \"{$I %s}\" from main source!"
 msgstr "Nem távolítható el %s{$I %s%s} a főforráskódból!"
 
 #: lazarusidestrconsts.liscouldnotremoverfrommainsource
-msgid "Could not remove %s{$R %s%s} from main source!"
+#, fuzzy
+#| msgid "Could not remove %s{$R %s%s} from main source!"
+msgid "Could not remove \"{$R %s}\" from main source!"
 msgstr "Nem távolítható el %s{$R %s%s} a fő forráskódból!"
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
@@ -6476,6 +6658,10 @@ msgstr "Hibakereső és Kiadási módok létrehozása"
 msgid "Create directory?"
 msgstr "Létrehozza a könyvtárat?"
 
+#: lazarusidestrconsts.liscreatefilter
+msgid "Create Filter"
+msgstr ""
+
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
 msgstr "Függvény létrehozása"
@@ -6487,6 +6673,10 @@ msgstr "Súgó csomópont létrehozása"
 #: lazarusidestrconsts.liscreateit
 msgid "Create it"
 msgstr "Hozza létre"
+
+#: lazarusidestrconsts.liscreatelocalvariable
+msgid "Create local variable \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.liscreatenewpackage
 msgid "(Create new package)"
@@ -6574,6 +6764,14 @@ msgstr "Kód makró kiválasztása"
 msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Jelenlegi"
+
+#: lazarusidestrconsts.liscurrentdirectory
+msgid "CurrentDirectory: %s"
+msgstr ""
+
+#: lazarusidestrconsts.liscurrentdirectory2
+msgid "CurrentDirectory: "
+msgstr ""
 
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
@@ -6953,7 +7151,9 @@ msgid "Unable to load file"
 msgstr "Fájl betöltése nem lehetséges"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile2
-msgid "Unable to load file %s%s%s."
+#, fuzzy
+#| msgid "Unable to load file %s%s%s."
+msgid "Unable to load file \"%s\"."
 msgstr "A(z) %s%s%s fájl betöltése nem lehetséges"
 
 #: lazarusidestrconsts.lisdecimal
@@ -6992,7 +7192,9 @@ msgid "Delete all breakpoints?"
 msgstr "Minden töréspontot töröl?"
 
 #: lazarusidestrconsts.lisdeleteallbreakpoints2
-msgid "Delete all breakpoints in file %s%s%s?"
+#, fuzzy
+#| msgid "Delete all breakpoints in file %s%s%s?"
+msgid "Delete all breakpoints in file \"%s\"?"
 msgstr "Minden töréspontot töröl a(z) %s%s%s fájlban?"
 
 #: lazarusidestrconsts.lisdeleteallinsamesource
@@ -7032,7 +7234,9 @@ msgid "Delete file failed"
 msgstr "Fájl törlés sikertelen"
 
 #: lazarusidestrconsts.lisdeletemacro
-msgid "Delete macro %s%s%s?"
+#, fuzzy
+#| msgid "Delete macro %s%s%s?"
+msgid "Delete macro \"%s\"?"
 msgstr "%s%s%s makró törlése?"
 
 #: lazarusidestrconsts.lisdeletemode
@@ -7040,7 +7244,9 @@ msgid "Delete mode \"%s\""
 msgstr "Mód törlése: \"%s\""
 
 #: lazarusidestrconsts.lisdeleteoldfile
-msgid "Delete old file %s%s%s?"
+#, fuzzy
+#| msgid "Delete old file %s%s%s?"
+msgid "Delete old file \"%s\"?"
 msgstr "Törli a %s%s%s régi fájlt?"
 
 #: lazarusidestrconsts.lisdeleteoldfile2
@@ -7056,7 +7262,9 @@ msgid "Delete selected macro?"
 msgstr "Kijelölt makró törlése?"
 
 #: lazarusidestrconsts.lisdeletevalue
-msgid "Delete value %s%s%s"
+#, fuzzy
+#| msgid "Delete value %s%s%s"
+msgid "Delete value \"%s\"?"
 msgstr "%s%s%s érték törlése"
 
 #: lazarusidestrconsts.lisdeletevalue2
@@ -7064,7 +7272,9 @@ msgid "Delete value %s"
 msgstr "%s érték törlése"
 
 #: lazarusidestrconsts.lisdeletingoffilefailed
-msgid "Deleting of file %s%s%s failed."
+#, fuzzy
+#| msgid "Deleting of file %s%s%s failed."
+msgid "Deleting of file \"%s\" failed."
 msgstr "A(z) %s%s%s fájl törlése sikertelen."
 
 #: lazarusidestrconsts.lisdelphi
@@ -7085,6 +7295,10 @@ msgstr "Delphi unit"
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
+msgstr ""
+
+#: lazarusidestrconsts.lisdesktop
+msgid "Desktop: "
 msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
@@ -7139,6 +7353,10 @@ msgstr "1. szöveg"
 msgid "Text2"
 msgstr "2. szöveg"
 
+#: lazarusidestrconsts.lisdifferentunitfoundatnewposition
+msgid "different unit %s found at new position \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisdigits
 msgid "Digits:"
 msgstr "Számjegyek:"
@@ -7156,7 +7374,9 @@ msgid "Directory: "
 msgstr "Könyvtár:"
 
 #: lazarusidestrconsts.lisdirectorynotfound
-msgid "Directory %s%s%s not found."
+#, fuzzy
+#| msgid "Directory %s%s%s not found."
+msgid "Directory \"%s\" not found."
 msgstr "A(z) %s%s%s könyvtár nem található."
 
 #: lazarusidestrconsts.lisdirectorynotfound2
@@ -7349,6 +7569,10 @@ msgstr "Még mindig ki akar lépni?"
 msgid "Draw grid lines"
 msgstr "Rácsvonalak rajzolása"
 
+#: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
+msgid "Draw the selection focused, even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
+msgstr ""
+
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
 msgstr "Kijelölt komponensek másolása a vágólapra"
@@ -7390,8 +7614,14 @@ msgstr "Kettőzés"
 msgid "Duplicate entry"
 msgstr "Bejegyzés megkettőzése"
 
+#: lazarusidestrconsts.lisduplicatefilename
+msgid "Duplicate File Name"
+msgstr ""
+
 #: lazarusidestrconsts.lisduplicatefoundofvalue
-msgid "Duplicate found of value %s%s%s."
+#, fuzzy
+#| msgid "Duplicate found of value %s%s%s."
+msgid "Duplicate found of value \"%s\"."
 msgstr "A(z) %s%s%s érték többszörösen megtalálható."
 
 #: lazarusidestrconsts.lisduplicatename
@@ -7399,7 +7629,9 @@ msgid "Duplicate Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
-msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
+#, fuzzy
+#| msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
+msgid "Duplicate name: A component named \"%s\" already exists in the inherited component %s"
 msgstr "Többszörös név: A(z) %s%s%s komponens már létezik a(z) %s származtatott komponensben."
 
 #: lazarusidestrconsts.lisduplicateppufilesdeleteoneormakesureallsearchpaths
@@ -7412,6 +7644,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisduplicatesourcesdeleteoneormakesureallsearchpathsh
 msgid "Duplicate sources. Delete one or make sure all search paths have correct order (Hint: FPC uses last path first)."
+msgstr ""
+
+#: lazarusidestrconsts.lisduplicateunit
+msgid "Duplicate Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lisedit
@@ -7430,6 +7666,10 @@ msgstr "Súgó szerkesztése"
 #: lazarusidestrconsts.liseditkey
 msgid "Edit Key"
 msgstr "Billentyű szerkesztése"
+
+#: lazarusidestrconsts.liseditorcolors
+msgid "Editor Colors"
+msgstr ""
 
 #: lazarusidestrconsts.liseditorfiletypes
 #, fuzzy
@@ -7609,9 +7849,17 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Engedélyezve"
 
+#: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
+msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisenablegroups
 msgid "Enable Groups"
 msgstr "Csoportok Engedélyezése"
+
+#: lazarusidestrconsts.lisenablei18nforlfm
+msgid "Enable I18N for LFM"
+msgstr ""
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
@@ -7634,13 +7882,10 @@ msgid "Enclose in $IFDEF"
 msgstr "Közrezárás $IFDEF által"
 
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
+#, fuzzy
+#| msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
-msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
-msgstr "A(z) %s%s%s%s fájl kódolása a lemezen: %s. Az új kódolás: %s."
-
-#: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis2
-msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis2"
-msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
+msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
 msgstr "A(z) %s%s%s%s fájl kódolása a lemezen: %s. Az új kódolás: %s."
 
 #: lazarusidestrconsts.lisendlessloopinmacros
@@ -7752,7 +7997,9 @@ msgid "Error loading file"
 msgstr "Hiba fájl betöltés közben"
 
 #: lazarusidestrconsts.liserrorloadingfile2
-msgid "Error loading file \"%s\":%s%s"
+#, fuzzy
+#| msgid "Error loading file \"%s\":%s%s"
+msgid "Error loading file \"%s\":"
 msgstr "Hiba a fájl betöltése közben: \"%s\":%s%s"
 
 #: lazarusidestrconsts.liserrorloadingfrom
@@ -7788,7 +8035,9 @@ msgid "Error reading XML"
 msgstr "Hiba XML olvasása közben"
 
 #: lazarusidestrconsts.liserrorreadingxmlfile
-msgid "Error reading xml file %s%s%s%s%s"
+#, fuzzy
+#| msgid "Error reading xml file %s%s%s%s%s"
+msgid "Error reading xml file \"%s\"%s%s"
 msgstr "Hiba a(z) %s%s%s%s%s XML fájl beolvasása közben"
 
 #: lazarusidestrconsts.liserrorrenamingfile
@@ -7799,6 +8048,10 @@ msgstr "Hiba fájl átnevezés közben"
 msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
 msgstr "Hibák"
+
+#: lazarusidestrconsts.liserrors2
+msgid ", Errors:%s"
+msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -7811,10 +8064,6 @@ msgstr ""
 #: lazarusidestrconsts.liserrorwritingfile
 msgid "Error writing file \"%s\""
 msgstr "Hiba a fájl írása közben: \"%s\""
-
-#: lazarusidestrconsts.liserrorwritingfile2
-msgid "Error writing file %s"
-msgstr "Hiba a fájl írása közben: %s"
 
 #: lazarusidestrconsts.liserrorwritingpackagelisttofile
 msgid "Error writing package list to file%s%s%s%s"
@@ -7893,6 +8142,22 @@ msgstr "Kizáró szűrő"
 msgid "Executable"
 msgstr "Futtatható"
 
+#: lazarusidestrconsts.lisexecutable2
+msgid "Executable: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutable3
+msgid "Executable: "
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutableisadirectory
+msgid "executable \"%s\" is a directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
+msgid "executable \"%s\" lacks the permission to run"
+msgstr ""
+
 #: lazarusidestrconsts.lisexecutingcommandafter
 msgid "Executing command after"
 msgstr "Utána végrehajtandó parancs végrehajtása"
@@ -7913,6 +8178,10 @@ msgstr "Programok"
 msgctxt "lazarusidestrconsts.lisexit"
 msgid "Exit"
 msgstr "Kilépés"
+
+#: lazarusidestrconsts.lisexitcode
+msgid "Exit code %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
@@ -7955,9 +8224,33 @@ msgstr "Csomaglista exportálása (*.xml)"
 msgid "Expression:"
 msgstr "Kifejezés:"
 
+#: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
+msgid "Extend include file search path of package \"%s\" with\"%s\"?"
+msgstr ""
+
+#: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
+msgid "Extend include files search path of project with%s\"%s\"?"
+msgstr ""
+
+#: lazarusidestrconsts.lisextendincludepath
+msgid "Extend Include Path?"
+msgstr ""
+
 #: lazarusidestrconsts.lisextendunitpath
 msgid "Extend unit path?"
 msgstr "Kiterjeszti a unit útvonalát?"
+
+#: lazarusidestrconsts.lisextendunitpath2
+msgid "Extend Unit Path?"
+msgstr ""
+
+#: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
+msgid "Extend unit search path of package \"%s\" with\"%s\"?"
+msgstr ""
+
+#: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
+msgid "Extend unit search path of project with%s\"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
@@ -7967,6 +8260,10 @@ msgstr "Áthelyezés"
 msgctxt "lazarusidestrconsts.lisextractprocedure"
 msgid "Extract Procedure"
 msgstr "Áthelyezés eljárásba"
+
+#: lazarusidestrconsts.lisextremelyverbose
+msgid "Extremely Verbose"
+msgstr ""
 
 #: lazarusidestrconsts.lisexttoolexternaltools
 msgid "External Tools"
@@ -8000,9 +8297,17 @@ msgstr ""
 msgid "Failed to load fold state"
 msgstr "Összecsukási állapot betöltése sikertelen"
 
+#: lazarusidestrconsts.lisfailedtoresolvemacros
+msgid "failed to resolve macros"
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
 msgstr "A fájl mentése nem sikerült."
+
+#: lazarusidestrconsts.lisfatal
+msgid "Fatal"
+msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -8022,13 +8327,10 @@ msgid "File: "
 msgstr "Fájl:"
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
+#, fuzzy
+#| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
-msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
-msgstr "A(z) %s%s%s%s fájl nem tűnik szövegfájlnak.%sMindenképpen megnyitja?"
-
-#: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway2
-msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway2"
-msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
+msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
 msgstr "A(z) %s%s%s%s fájl nem tűnik szövegfájlnak.%sMindenképpen megnyitja?"
 
 #: lazarusidestrconsts.lisfileextensionofprograms
@@ -8068,7 +8370,9 @@ msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "E fájlszűrők jelennek majd meg a Fájl megnyitása párbeszédben"
 
 #: lazarusidestrconsts.lisfilehaschangedsave
-msgid "File %s%s%s has changed. Save?"
+#, fuzzy
+#| msgid "File %s%s%s has changed. Save?"
+msgid "File \"%s\" has changed. Save?"
 msgstr "A(z) %s%s%s fájl megváltozott. Menti?"
 
 #: lazarusidestrconsts.lisfilehasnoproject
@@ -8092,7 +8396,9 @@ msgid "File is symlink"
 msgstr "A fájl egy szimbolikus hivatkozás"
 
 #: lazarusidestrconsts.lisfileisvirtual
-msgid "File %s%s%s is virtual."
+#, fuzzy
+#| msgid "File %s%s%s is virtual."
+msgid "File \"%s\" is virtual."
 msgstr "A(z) %s%s%s fájl virtuális."
 
 #: lazarusidestrconsts.lisfilelinkerror
@@ -8103,12 +8409,19 @@ msgstr "Fájl összefűzési hiba"
 msgid "Filename/Address"
 msgstr "Fájlnév/Cím"
 
+#: lazarusidestrconsts.lisfilenamestyle
+msgid "Filename Style ..."
+msgstr ""
+
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
 msgstr "Fájl nem található"
 
 #: lazarusidestrconsts.lisfilenotfound2
-msgid "File %s%s%s not found.%s"
+#, fuzzy
+#| msgid "File %s%s%s not found.%s"
+msgctxt "lazarusidestrconsts.lisfilenotfound2"
+msgid "File \"%s\" not found."
 msgstr "A(z) %s%s%s fájl nem található.%s"
 
 #: lazarusidestrconsts.lisfilenotfound3
@@ -8119,8 +8432,14 @@ msgstr "A fájl nem található: %s"
 msgid "file not found"
 msgstr "A fájl nem található"
 
+#: lazarusidestrconsts.lisfilenotfound5
+msgid "File not found:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
-msgid "File %s%s%s not found.%sDo you want to create it?%s"
+#, fuzzy
+#| msgid "File %s%s%s not found.%sDo you want to create it?%s"
+msgid "File \"%s\" not found.%sDo you want to create it?"
 msgstr "A(z) %s%s%s fájl nem található.%sLétre szeretné hozni?%s"
 
 #: lazarusidestrconsts.lisfilenotlowercase
@@ -8138,6 +8457,10 @@ msgstr "Fájl beállítások"
 #: lazarusidestrconsts.lisfileshasincorrectsyntax
 msgid "File %s has incorrect syntax."
 msgstr "A(z) %s fájl szintaxisa helytelen."
+
+#: lazarusidestrconsts.lisfileshasregisterprocedureinpackageusessection
+msgid "Files: %s, has Register procedure: %s, in package uses section: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
@@ -8167,12 +8490,56 @@ msgstr "Szűrő"
 msgid "Filter: %s"
 msgstr "Szűrő: %s"
 
+#: lazarusidestrconsts.lisfilterallmessagesoftype
+msgid "Filter all messages of type %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilteralreadyexists
+msgid "Filter already exists"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilterdebugmessagesandbelow
+msgid "Filter Debug Messages and below"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilterhintsandbelow
+msgid "Filter Hints and below"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilterhintswithoutsourceposition
+msgid "Filter Hints without Source Position"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilternonedonotfilterbyurgency
+msgid "Filter None, do not filter by urgency"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilternonurgentmessages
+msgid "Filter non urgent Messages"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilternotesandbelow
+msgid "Filter Notes and below"
+msgstr ""
+
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
 msgstr "Szűrő készletek"
 
 #: lazarusidestrconsts.lisfiltertheavailableoptionslist
 msgid "Filter the available options list"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilterverbosemessagesandbelow
+msgid "Filter Verbose Messages and below"
+msgstr ""
+
+#: lazarusidestrconsts.lisfilterwarningsandbelow
+msgid "Filter Warnings and below"
+msgstr ""
+
+#: lazarusidestrconsts.lisfind
+msgid "Find ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfiledirectory
@@ -8226,6 +8593,14 @@ msgstr "Billentyűkombináció megkeresése"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Hiányzó unit megkeresése"
+
+#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
+msgid "Find the next occurence of the phrase"
+msgstr ""
+
+#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
+msgid "Find the previous occurence of the phrase"
+msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -8324,6 +8699,10 @@ msgstr "Frame"
 msgid "&Backward search"
 msgstr "Keresés visszafelé"
 
+#: lazarusidestrconsts.lisfreeingbufferlines
+msgid "freeing buffer lines: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfreepascal
 msgid "Free Pascal"
 msgstr "Free Pascal"
@@ -8391,6 +8770,10 @@ msgstr "Keresés a megjegyzésekben is"
 #: lazarusidestrconsts.lisfrisearchwhere
 msgid "Search where"
 msgstr "Keresés, ahol"
+
+#: lazarusidestrconsts.lisfull
+msgid "Full"
+msgstr ""
 
 #: lazarusidestrconsts.lisfunction
 msgctxt "lazarusidestrconsts.lisfunction"
@@ -8492,8 +8875,32 @@ msgstr "Hexadecimális"
 msgid "Help for Free Pascal Compiler message"
 msgstr "Súgó a Free Pascal Compiler üzeneteihez"
 
+#: lazarusidestrconsts.lishideallhintsandwarningsbyinsertingidedirectivesh
+msgid "Hide all hints and warnings by inserting IDE directives {%H-}"
+msgstr ""
+
+#: lazarusidestrconsts.lishidemessageatbyinsertingidedirectiveh
+msgid "Hide message at %s by inserting IDE directive {%H-}"
+msgstr ""
+
+#: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
+msgid "Hide message by inserting IDE directive {%H-}"
+msgstr ""
+
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
+msgstr ""
+
+#: lazarusidestrconsts.lishidesearch
+msgid "Hide Search"
+msgstr ""
+
+#: lazarusidestrconsts.lishidewithpackageoptionvm
+msgid "Hide with package option (-vm%s)"
+msgstr ""
+
+#: lazarusidestrconsts.lishidewithprojectoptionvm
+msgid "Hide with project option (-vm%s)"
 msgstr ""
 
 #: lazarusidestrconsts.lishint
@@ -8507,6 +8914,10 @@ msgstr "Tipp: Az alapértelmezett érték megadható a feltételes definíciókn
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Tipp: Ellenőrizze, hogy két csomag tartalmaz-e egyforma nevű unit-ot."
+
+#: lazarusidestrconsts.lishints
+msgid ", Hints:%s"
+msgstr ""
 
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
@@ -8527,10 +8938,6 @@ msgstr "Átlépni"
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
 msgstr "Tipp: A \"Resourcestring létrehozása\" funkció egy karakterlánc konstanst vár.%sVálassza ki a kifejezést és próbálja újra!"
-
-#: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon2
-msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select only a string expression and try again."
-msgstr "Tipp: A \"Resourcestring létrehozása\" funkció egy karakterlánc konstanst vár.%sCsak egy string kifejezést válasszon ki és próbálja újra!"
 
 #: lazarusidestrconsts.lishinttoggleformunit
 msgid "Toggle Form/Unit"
@@ -8641,41 +9048,51 @@ msgstr "Az IDE címe megjeleníti a projekt könyvtárát"
 msgid "IDE title starts with project name"
 msgstr "Az IDE címe a projekt nevével kezdődik"
 
-#: lazarusidestrconsts.lisiecoerroraccessingxml
-msgid "Error accessing xml"
-msgstr "Hiba XML elérése közben"
+#: lazarusidestrconsts.lisiecoallbuildmodes
+msgid "All build modes"
+msgstr ""
 
-#: lazarusidestrconsts.lisiecoerroraccessingxmlfile
-msgid "Error accessing xml file %s%s%s:%s%s"
-msgstr "Hiba a(z) %s%s%s XML fájl elérése közben:%s%s"
+#: lazarusidestrconsts.lisiecocompileroptionsof
+msgid "Compiler options of"
+msgstr ""
 
-#: lazarusidestrconsts.lisiecoerrorloadingxml
-msgid "Error loading xml"
-msgstr "Hiba XML betöltése közben"
+#: lazarusidestrconsts.lisiecocurrentbuildmode
+msgid "Current build mode"
+msgstr ""
 
-#: lazarusidestrconsts.lisiecoerrorloadingxmlfile
-msgid "Error loading xml file %s%s%s:%s%s"
-msgstr "Hiba a(z) %s%s%s XML fájl betöltése közben:%s%s"
+#: lazarusidestrconsts.lisiecoerroropeningxml
+msgid "Error opening XML"
+msgstr ""
+
+#: lazarusidestrconsts.lisiecoerroropeningxmlfile
+msgid "Error opening XML file \"%s\":%s%s"
+msgstr ""
+
+#: lazarusidestrconsts.lisiecoexportcompileroptions
+msgid "Export Compiler Options"
+msgstr ""
 
 #: lazarusidestrconsts.lisiecoexportfileexists
 msgid "Export file exists"
 msgstr "Export fájl létezik"
 
 #: lazarusidestrconsts.lisiecoexportfileexistsopenfileandreplaceonlycompileropti
-msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
+#, fuzzy
+#| msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
+msgid "Export file \"%s\" exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
 msgstr "A(z) %s%s%s export fájl létezik.%sMegnyitja a fájlt és kicseréli csak a fordító opcióit?%s(A többi beállítás megmarad.)"
+
+#: lazarusidestrconsts.lisiecoimportcompileroptions
+msgid "Import Compiler Options"
+msgstr ""
 
 #: lazarusidestrconsts.lisiecoloadfromfile
 msgid "Load from file"
 msgstr "Beolvasás fájlból"
 
-#: lazarusidestrconsts.lisiecoopenorloadcompileroptions
-msgid "Open or Load Compiler Options"
-msgstr "Fordító beállítások megnyitása vagy betöltése"
-
-#: lazarusidestrconsts.lisiecoopenrecent
-msgid "Open recent"
-msgstr "Legutóbbi megnyitása"
+#: lazarusidestrconsts.lisieconocompileroptionsinfile
+msgid "File \"%s\" does not contain compiler options."
+msgstr ""
 
 #: lazarusidestrconsts.lisiecorecentfiles
 msgid "Recent files"
@@ -8685,12 +9102,14 @@ msgstr "Legutóbbi fájlok"
 msgid "Save to file"
 msgstr "Mentés fájlba"
 
-#: lazarusidestrconsts.lisiecosavetorecent
-msgid "Save to recent"
-msgstr "Mentés a legutóbbiba"
+#: lazarusidestrconsts.lisifnotchecked
+msgid "If not checked:"
+msgstr ""
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
-msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+#, fuzzy
+#| msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
+msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Ha különböző Lazarus változatokat akar használni, a második Lazarus-t a primary-config-path vagy a pcp parancssori paraméterrel kell indítani.%s%sPéldául:%s"
 
 #: lazarusidestrconsts.lisignoreall
@@ -8725,6 +9144,10 @@ msgstr "Kivitelezési megjegyzés az osztályhoz"
 msgctxt "lazarusidestrconsts.lisimport"
 msgid "Import"
 msgstr "Importálás"
+
+#: lazarusidestrconsts.lisimportant
+msgid "Important"
+msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -8765,6 +9188,10 @@ msgstr "Include útvonalak"
 #: lazarusidestrconsts.lisincludesubdirectories
 msgid "Include subdirectories"
 msgstr "Alkönyvtárak belevétele"
+
+#: lazarusidestrconsts.lisincompatibleppu
+msgid ", incompatible ppu=%s"
+msgstr ""
 
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
@@ -8862,7 +9289,9 @@ msgid "Inherited project component"
 msgstr "Örökölt projekt komponens"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
-msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+#, fuzzy
+#| msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
+msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
 msgstr "Azért, hogy egy tiszta másolat jöhessen létre a projektből/csomagból, a következő könyvtár minden elemét törölni kell, és minden tartalma el fog veszni.%s%sMinden fájlt töröl a(z) %s%s%s könyvtárban?"
 
 #: lazarusidestrconsts.lisinsert
@@ -9013,6 +9442,10 @@ msgstr "Csomag fordítása helyett egy egyszerű Makefile létrehozása"
 msgid "Interactive"
 msgstr "Interaktív"
 
+#: lazarusidestrconsts.lisinternalerror
+msgid "internal error: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidcommand
 msgid "Invalid command"
 msgstr "Érvénytelen parancs"
@@ -9037,8 +9470,18 @@ msgstr "Érvénytelen szűrő"
 msgid "Invalid line, column in message%s%s"
 msgstr "Érvénytelen sor, oszlop az üzenetben: %s%s"
 
+#: lazarusidestrconsts.lisinvalidmacrosin
+msgid "Invalid macros in \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisinvalidmacrosinexternaltool
+msgid "Invalid macros \"%s\" in external tool \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
-msgid "Invalid macro %s%s%s. The macro name must be a Pascal identifier."
+#, fuzzy
+#| msgid "Invalid macro %s%s%s. The macro name must be a Pascal identifier."
+msgid "Invalid macro \"%s\". The macro name must be a Pascal identifier."
 msgstr "Érvénytelen makró: %s%s%s. A makró neve csak Pascal azonosító lehet."
 
 #: lazarusidestrconsts.lisinvalidmacrothenameisakeyword
@@ -9098,7 +9541,9 @@ msgid "%s is already part of the Project."
 msgstr "%s már része a projektnek."
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
-msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
+#, fuzzy
+#| msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
+msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s érvénytelen projekt név.%sVálasszon egy másikat! (pl. project1.pli)"
 
 #: lazarusidestrconsts.lisisathiscirculardependencyisnotallowed
@@ -9125,6 +9570,10 @@ msgstr "Hát, ez nagyon furcsa: Hiba az alapkönyvtárban:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Ugrási előzmények"
+
+#: lazarusidestrconsts.liskb
+msgid "%s KB"
+msgstr ""
 
 #: lazarusidestrconsts.liskeep2
 msgid "Keep"
@@ -9228,7 +9677,9 @@ msgid "Compile project/program"
 msgstr "Projekt/Program fordítása"
 
 #: lazarusidestrconsts.liskmconfigbuildfile
-msgid "Config %sBuild File%s"
+#, fuzzy
+#| msgid "Config %sBuild File%s"
+msgid "Config \"Build File\""
 msgstr "%sFájl építés%s beállítása"
 
 #: lazarusidestrconsts.liskmconfigurecustomcomponents
@@ -9940,6 +10391,10 @@ msgctxt "lazarusidestrconsts.lislazcleanupbuildall"
 msgid "Clean Up + Build all"
 msgstr "Tisztítás és minden építése"
 
+#: lazarusidestrconsts.lislazver
+msgid "Lazarus Version (e.g. 1.2.4)"
+msgstr ""
+
 #: lazarusidestrconsts.lislclwidgettype
 msgid "LCL widget type"
 msgstr "LCL ablakelem(ek) típusa"
@@ -10168,7 +10623,9 @@ msgid "Append to section"
 msgstr "Hozzáfűzés részhez"
 
 #: lazarusidestrconsts.lismakeresstrchooseanothername
-msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
+#, fuzzy
+#| msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
+msgid "The resourcestring \"%s\" already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgstr "A(z) %s%s%s ResourceString már létezik.%sVálasszon másik nevet!%sHasználja a Kihagyás-t, ha mindenképpen hozzá szeretné adni!"
 
 #: lazarusidestrconsts.lismakeresstrconversionoptions
@@ -10236,9 +10693,17 @@ msgstr "Forráskód-szerkesztők kezelése ..."
 msgid "Max %d"
 msgstr "Maximum %d"
 
+#: lazarusidestrconsts.lismaybepackageneedsacleanrebuild
+msgid ". Maybe package %s needs a clean rebuild."
+msgstr ""
+
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "%s Talán újra kell fordítani a csomagot."
+
+#: lazarusidestrconsts.lismb
+msgid "%s MB"
+msgstr ""
 
 #: lazarusidestrconsts.lismeaction
 msgctxt "lazarusidestrconsts.lismeaction"
@@ -11191,9 +11656,17 @@ msgstr ""
 msgid "Method class not found"
 msgstr "Metódus osztálya nem található"
 
+#: lazarusidestrconsts.lismissingdirectory
+msgid "missing directory \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
 msgstr "Hiányzó események"
+
+#: lazarusidestrconsts.lismissingexecutable
+msgid "missing executable \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -11413,6 +11886,22 @@ msgctxt "lazarusidestrconsts.lismoresub"
 msgid "More >>"
 msgstr "Tovább >>"
 
+#: lazarusidestrconsts.lismove
+msgid "Move"
+msgstr ""
+
+#: lazarusidestrconsts.lismovefiles
+msgid "Move Files"
+msgstr ""
+
+#: lazarusidestrconsts.lismovefiles2
+msgid "Move files?"
+msgstr ""
+
+#: lazarusidestrconsts.lismovefilesfromtothedirectoryof
+msgid "Move %s file(s) from %s to the directory%s%s%sof %s."
+msgstr ""
+
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
 msgstr "Mozgatás \"%s\" pozícióval lejjebb"
@@ -11420,6 +11909,14 @@ msgstr "Mozgatás \"%s\" pozícióval lejjebb"
 #: lazarusidestrconsts.lismoveonepositionup
 msgid "Move \"%s\" one position up"
 msgstr "Mozgatás \"%s\" pozícióval feljebb"
+
+#: lazarusidestrconsts.lismoveorcopyfiles
+msgid "Move or Copy files?"
+msgstr ""
+
+#: lazarusidestrconsts.lismoveorcopyfilesfromtothedirectoryofpackage
+msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s."
+msgstr ""
 
 #: lazarusidestrconsts.lismovepage
 msgid "Move Page"
@@ -11436,6 +11933,10 @@ msgstr "A kijelölt elem mozgatása felfelé (Ctrl+Fel)"
 #: lazarusidestrconsts.lismoveto
 msgid "Move to: "
 msgstr "Mozgatás ide: "
+
+#: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
+msgid "Moving these units will break their uses sections. See Messages window for details."
+msgstr ""
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -11605,7 +12106,9 @@ msgid "No Pascal file"
 msgstr "Nincs pascal fájl"
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
-msgid "No program file %s%s%s found."
+#, fuzzy
+#| msgid "No program file %s%s%s found."
+msgid "No program file \"%s\" found."
 msgstr "A(z) %s%s%s programfájl nem található."
 
 #: lazarusidestrconsts.lisnoresourcestringsectionfound
@@ -11631,6 +12134,10 @@ msgstr "Nem telepítő csomag"
 #: lazarusidestrconsts.lisnotavalidpascalidentifier
 msgid "Not a valid Pascal identifier"
 msgstr "Nem érvényes pascal azonosító"
+
+#: lazarusidestrconsts.lisnote
+msgid "Note"
+msgstr ""
 
 #: lazarusidestrconsts.lisnotebooktabposbottom
 msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
@@ -11663,6 +12170,16 @@ msgstr "MEGJEGYZÉS: Nem hozható létre definíció sablon a Lazarus forrásokh
 #: lazarusidestrconsts.lisnotemplateselected
 msgid "no template selected"
 msgstr "nincs kiválasztva sablon"
+
+#: lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated
+msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
+msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
+msgstr ""
+
+#: lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated2
+msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated2"
+msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
+msgstr ""
 
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -11716,16 +12233,28 @@ msgstr "Váltás az Objektum felügyelő Kedvencek lapjára komponensnév kéré
 msgid "? (Off)"
 msgstr "? (Ki)"
 
+#: lazarusidestrconsts.lisofpackage
+msgid " of package %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisoftheprojectinspector
+msgid " of the Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
 msgstr "Hozzáadás a kedvenc tulajdonságokhoz"
 
 #: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
-msgid "Choose a base class for the favorite property %s%s%s."
+#, fuzzy
+#| msgid "Choose a base class for the favorite property %s%s%s."
+msgid "Choose a base class for the favorite property \"%s\"."
 msgstr "Válasszon egy alap osztályt a(z) %s%s%s kedvenc tulajdonság számára!"
 
 #: lazarusidestrconsts.lisoifclassnotfound
-msgid "Class %s%s%s not found."
+#, fuzzy
+#| msgid "Class %s%s%s not found."
+msgid "Class \"%s\" not found."
 msgstr "A(z) %s%s%s osztály nem található"
 
 #: lazarusidestrconsts.lisoifremovefromfavoriteproperties
@@ -11909,6 +12438,10 @@ msgstr "A beállítások megváltoztak, tiszta újrafordítás -B használatáva
 msgid "or"
 msgstr "vagy"
 
+#: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
+msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
+msgstr ""
+
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
 msgstr "Nyelv felülbírálása. Például --language=de. A lehetséges értékekért nézze meg a languages könyvtárat."
@@ -11953,6 +12486,10 @@ msgstr "Csomag"
 msgid "package %s"
 msgstr "%s csomag"
 
+#: lazarusidestrconsts.lispackage3
+msgid ", package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lispackageinfo
 msgid "Package info"
 msgstr "Csomag infó"
@@ -11968,6 +12505,10 @@ msgstr "Csomagnév tartalmazza ..."
 #: lazarusidestrconsts.lispackageneedsinstallation
 msgid "Package needs installation"
 msgstr "A csomagot telepíteni kell"
+
+#: lazarusidestrconsts.lispackageoption
+msgid "Package \"%s\" Option"
+msgstr ""
 
 #: lazarusidestrconsts.lispackageoutputdirectories
 msgid "Package output directories"
@@ -11985,10 +12526,18 @@ msgstr "csomag unit"
 msgid "Page"
 msgstr "Oldal"
 
+#: lazarusidestrconsts.lispanic
+msgid "Panic"
+msgstr ""
+
 #: lazarusidestrconsts.lisparsed
 #, fuzzy
 msgid ", parsed "
 msgstr ", elemezve"
+
+#: lazarusidestrconsts.lisparser
+msgid "parser \"%s\": %s"
+msgstr ""
 
 #: lazarusidestrconsts.lispascalfile
 msgid "Pascal file"
@@ -12188,7 +12737,9 @@ msgid "Package %s"
 msgstr "%s csomag"
 
 #: lazarusidestrconsts.lispckeditpackagehaschangedsavepackage
-msgid "Package %s%s%s has changed.%sSave package?"
+#, fuzzy
+#| msgid "Package %s%s%s has changed.%sSave package?"
+msgid "Package \"%s\" has changed.%sSave package?"
 msgstr "A(z) %s%s%s csomag megváltozott.%sElmenti a csomagot?"
 
 #: lazarusidestrconsts.lispckeditpackagenotsaved
@@ -12240,7 +12791,9 @@ msgid "Remove Dependency?"
 msgstr "Eltávolítja a függőséget?"
 
 #: lazarusidestrconsts.lispckeditremovedependencyfrompackage
-msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
+#, fuzzy
+#| msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
+msgid "Remove dependency \"%s\"%sfrom package \"%s\"?"
 msgstr "Eltávolítja a(z) %s%s%s%s függőséget a(z) %s%s%s csomagból?"
 
 #: lazarusidestrconsts.lispckeditremovedfiles
@@ -12261,7 +12814,9 @@ msgid "Remove file?"
 msgstr "Eltávolítja a fájlt?"
 
 #: lazarusidestrconsts.lispckeditremovefilefrompackage
-msgid "Remove file %s%s%s%sfrom package %s%s%s?"
+#, fuzzy
+#| msgid "Remove file %s%s%s%sfrom package %s%s%s?"
+msgid "Remove file \"%s\"%sfrom package \"%s\"?"
 msgstr "Eltávolítja a(z) %s%s%s%s fájlt a(z) %s%s%s csomagból?"
 
 #: lazarusidestrconsts.lispckeditremoveselecteditem
@@ -12285,11 +12840,15 @@ msgid "Store file name as preferred for this dependency"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
-msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
+#, fuzzy
+#| msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
+msgid "The maximum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "A(z) %s%s%s legnagyobb változatszám érvénytelen csomag változatszám.%s(jó példa: 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedittheminimumversionisnotavalidpackageversion
-msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
+#, fuzzy
+#| msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
+msgid "The minimum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "A(z) %s%s%s legkisebb változatszám érvénytelen csomag változatszám.%s(jó példa: 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedituninstall
@@ -12424,7 +12983,9 @@ msgid "Runtime"
 msgstr "Futásidejű"
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
-msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
+#, fuzzy
+#| msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
+msgid "The package \"%s\" has the auto install flag.%sThis means it will be installed in the IDE.%sInstallation packages must be designtime Packages."
 msgstr "A(z) %s%s%s csomagnak van auto install kapcsolója.%sEz azt jelenti, hogy telepítve lesz az IDE-be. A telepítendő csomagoknak%stervezési idejű csomagoknak kell lenniük."
 
 #: lazarusidestrconsts.lispckoptsthispackageprovidesthesameasthefollowingpackages
@@ -12598,7 +13159,7 @@ msgid "Revert package?"
 msgstr "Visszaállítája a csomagot?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
+msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgedtherearemorefunctionsinthepopupmenu
@@ -12661,11 +13222,15 @@ msgid "Package unit search path. Parameter is package ID"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
-msgid "%sAdding new Dependency for package %s: package %s%s"
+#, fuzzy
+#| msgid "%sAdding new Dependency for package %s: package %s%s"
+msgid "%sAdding new Dependency for package %s: package %s"
 msgstr "%sÚj függőség hozzáadása a(z) %s csomaghoz: %s%s csomag"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforprojectpackage
-msgid "%sAdding new Dependency for project %s: package %s%s"
+#, fuzzy
+#| msgid "%sAdding new Dependency for project %s: package %s%s"
+msgid "%sAdding new Dependency for project %s: package %s"
 msgstr "%sÚj függőség hozzáadása a(z) %s projekthez: %s%s csomag"
 
 #: lazarusidestrconsts.lispkgmangaddunittousesclauseofpackagedisablethisonlyforunit
@@ -12705,7 +13270,9 @@ msgid "Delete Old Package File?"
 msgstr "Törli a régi csomag fájlt?"
 
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile2
-msgid "Delete old package file %s%s%s?"
+#, fuzzy
+#| msgid "Delete old package file %s%s%s?"
+msgid "Delete old package file \"%s\"?"
 msgstr "Törli a(z) %s%s%s régi csomagfájlt?"
 
 #: lazarusidestrconsts.lispkgmangdependencywithoutowner
@@ -12754,7 +13321,10 @@ msgid "Filename is used by project"
 msgstr "A fájlnevet egy projekt használja"
 
 #: lazarusidestrconsts.lispkgmangfilenotfound
-msgid "File %s%s%s not found."
+#, fuzzy
+#| msgid "File %s%s%s not found."
+msgctxt "lazarusidestrconsts.lispkgmangfilenotfound"
+msgid "File \"%s\" not found."
 msgstr "A(z) %s%s%s fájl nem található."
 
 #: lazarusidestrconsts.lispkgmangfilenotsaved
@@ -12794,7 +13364,9 @@ msgid "Invalid Package Name"
 msgstr "Érvénytelen csomag név"
 
 #: lazarusidestrconsts.lispkgmangloadingpackagewillreplacepackage
-msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
+#, fuzzy
+#| msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
+msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%sSave old package %s?"
 msgstr "A(z) %s csomag betöltése eltávolítja a(z) %s%scsomagot a(z) %s fájlból.%sA régi csomag megváltozott.%s%sElmenti a(z) %s régi csomagot?"
 
 #: lazarusidestrconsts.lispkgmangnewpackage
@@ -12850,7 +13422,9 @@ msgid "Rename File lowercase?"
 msgstr "A fájl átnevezése kisbetűsre?"
 
 #: lazarusidestrconsts.lispkgmangreplaceexistingfile
-msgid "Replace existing file %s%s%s?"
+#, fuzzy
+#| msgid "Replace existing file %s%s%s?"
+msgid "Replace existing file \"%s\"?"
 msgstr "Kicseréli a létező %s%s%s fájlt?"
 
 #: lazarusidestrconsts.lispkgmangreplacefile
@@ -12870,7 +13444,9 @@ msgid "Save Package %s (*.lpk)"
 msgstr "A(z) %s csomag mentése (*.lpk)"
 
 #: lazarusidestrconsts.lispkgmangshouldthefilerenamedlowercaseto
-msgid "Should the file be renamed lowercase to%s%s%s%s?"
+#, fuzzy
+#| msgid "Should the file be renamed lowercase to%s%s%s%s?"
+msgid "Should the file be renamed lowercase to%s\"%s\"?"
 msgstr "A fájlnév átnevezhető kisbetűsre a következőképpen:%s%s%s%s?"
 
 #: lazarusidestrconsts.lispkgmangskipthispackage
@@ -12886,24 +13462,34 @@ msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "A(z) %s csomaghoz tartozó fordító nem érvényes futtatható fájl:%s%s"
 
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
+#, fuzzy
+#| msgid "The file %s%s%s%sis already in the package %s."
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
-msgid "The file %s%s%s%sis already in the package %s."
+msgid "The file \"%s\"%sis already in the package %s."
 msgstr "A(z) %s%s%s%s fájl mér benne van a(z) %s csomagban."
 
 #: lazarusidestrconsts.lispkgmangthefileisnotalazaruspackage
-msgid "The file %s%s%s is not a Lazarus package."
+#, fuzzy
+#| msgid "The file %s%s%s is not a Lazarus package."
+msgid "The file \"%s\" is not a Lazarus package."
 msgstr "A(z) %s%s%s fájl nem Lazarus csomag."
 
 #: lazarusidestrconsts.lispkgmangthefilenamedoesnotcorrespondtothepackage
-msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
+#, fuzzy
+#| msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
+msgid "The filename \"%s\" does not correspond to the package name \"%s\" in the file.%sChange package name to \"%s\"?"
 msgstr "A(z) %s%s%s fájlnév nem egyezik meg a(z) %s%s%s csomagnévvel a fájlban.%sMegváltoztatja a csomagnevet erre: %s%s%s?"
 
 #: lazarusidestrconsts.lispkgmangthefilenameispartofthecurrentproject
-msgid "The file name %s%s%s is part of the current project.%sProjects and Packages should not share files."
+#, fuzzy
+#| msgid "The file name %s%s%s is part of the current project.%sProjects and Packages should not share files."
+msgid "The file name \"%s\" is part of the current project.%sProjects and Packages should not share files."
 msgstr "A(z) %s%s%s fájlnév része a jelenlegi projektnek.%sA projektek és a csomagok nem oszthatnak meg fájlokat egymás között."
 
 #: lazarusidestrconsts.lispkgmangthefilenameisusedbythepackageinfile
-msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
+#, fuzzy
+#| msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
+msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "A(z) %s%s%s fájlnevet%sa(z) %s%s%s csomag használja%sa(z) %s%s%s fájlban."
 
 #: lazarusidestrconsts.lispkgmangthefileofpackagewasnotfound
@@ -12919,15 +13505,21 @@ msgid "The following packages failed to load:"
 msgstr "A következő csomagok betöltése sikertelen:"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
-msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
+#, fuzzy
+#| msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
+msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "%sA következő unit-ok hozzá lesznek adva a(z) %s%s uses részhez:%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
-msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
+#, fuzzy
+#| msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
+msgid "The package \"%s\" failed to compile.%sRemove it from the installation list?"
 msgstr "A(z) %s%s%s csomagot nem sikerült lefordítani.%sEltávolítja a telepítési listából?"
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
-msgid "The package file name %s%s%s in%s%s%s%s is not a valid Lazarus package name."
+#, fuzzy
+#| msgid "The package file name %s%s%s in%s%s%s%s is not a valid Lazarus package name."
+msgid "The package file name \"%s\" in%s\"%s\" is not a valid Lazarus package name."
 msgstr "A(z) %s%s%s csomag fájlnév%sa(z) %s%s%s fájlban érvénytelen Lazarus csomagnév."
 
 #: lazarusidestrconsts.lispkgmangthepackageisaruntimeonlypackageruntimeonlypackages
@@ -12935,11 +13527,11 @@ msgid "The package %s is a runtime only package.%sRuntime only packages cannot b
 msgstr "A(z) %s csomag csak futásidejű.%sCsak futásidejű csomagok nem telepíthetők az IDE-be."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
+msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-msgid "The package %s%s%s is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
+msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthepackageisrequiredbywhichismarkedforinstallation
@@ -12947,27 +13539,39 @@ msgid "The package %s is required by %s, which is marked for installation.%sSee 
 msgstr "A(z) %s csomag függősége a(z) %s csomagnak, ami meg van jelölve telepítéshez.%sLásd a csomagstruktúrát."
 
 #: lazarusidestrconsts.lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
-msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
+#, fuzzy
+#| msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
+msgid "The package name \"%s\" is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgstr "A(z) %s%s%s csomagnév érvénytelen.%sVálasszon egy másik nevet! (pl. csomag1.lpk)"
 
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
-msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
+#, fuzzy
+#| msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
+msgid "The package name \"%s\" of%sthe file \"%s\" is invalid."
 msgstr "A(z) %s%s%s csomagnév%sa(z) %s%s%s fájlban érvénytelen."
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
-msgid "The package %s%s%s was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
+#, fuzzy
+#| msgid "The package %s%s%s was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
+msgid "The package \"%s\" was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "A(z) %s%s%s csomag meg lett jelölve.%sJelenleg csak statikusan csatolt csomagokat támogat a Lazarus. A valódi eltávolításhoz újra kell építeni és újra kell indítani a Lazarus-t.%s%sÚjra szeretné fordítani a Lazarus-t most?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-msgid "The package %s%s%s was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
+#, fuzzy
+#| msgid "The package %s%s%s was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
+msgid "The package \"%s\" was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "A(z) %s%s%s csomag meg lett jelölve telepítésre.%sJelenleg csak statikusan csatolt csomagokat támogat a Lazarus. A valódi telepítéshez újra kell építeni és újra kell indítani a Lazarus-t.%s%sÚjra szeretné fordítani a Lazarus-t most?"
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
-msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
+#, fuzzy
+#| msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
+msgid "The project requires the package \"%s\".%sBut it was not found. See Project -> Project Inspector."
 msgstr "A projekthez szükséges a(z) %s%s%s csomag.%sDe ez nem található. Ellenőrizze a Projekt -> Projekt felügyelőben."
 
 #: lazarusidestrconsts.lispkgmangtherearetwounitswiththesamename1from2from
-msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
+#, fuzzy
+#| msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
+msgid "There are two units with the same name:%s1. \"%s\" from %s%s2. \"%s\" from %s"
 msgstr "Van két azonos nevű unit:%s%s1. %s%s%s innen: %s%s2. %s%s%s innen: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisacirculardependency
@@ -12975,19 +13579,25 @@ msgid "There is a circular dependency in the packages. See package graph."
 msgstr "A csomagok között körkörös függés áll fenn. Lásd a Csomag-fát!"
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
-msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
+#, fuzzy
+#| msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
+msgid "There is a FPC unit with the same name as a package:%s\"%s\""
 msgstr "Létezik egy FPC unit ugyanazzal a névvel, mint a következő csomag:%s%s%s%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenamefrom
-msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
+#, fuzzy
+#| msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
+msgid "There is a FPC unit with the same name as:%s\"%s\" from %s"
 msgstr "Van egy FPC unit ugyanolyan névvel, mint ez:%s%s%s%s%s innen %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyanotherpackagewiththename
-msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
+#, fuzzy
+#| msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
+msgid "There is already another package with the name \"%s\".%sConflict package: \"%s\"%sFile: \"%s\""
 msgstr "Már létezik egy csomag ezzel a névvel: %s%s%s.%sÜtköző csomag: %s%s%s%sFájl: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
+msgid "There is already a package \"%s\" loaded%sfrom file \"%s\".%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthereisanunsavedpackageintherequiredpackages
@@ -12995,7 +13605,9 @@ msgid "There is an unsaved package in the required packages. See package graph."
 msgstr "Van egy nem mentett csomag a szükséges csomagok között. Lásd a csomag diagramban."
 
 #: lazarusidestrconsts.lispkgmangthereisaunitwiththesamenameasapackage1from2
-msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
+#, fuzzy
+#| msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
+msgid "There is a unit with the same name as a package:%s1. \"%s\" from %s%s2. \"%s\""
 msgstr "Van egy unit ugyanazzal a névvel, mint egy csomag:%s%s1. %s%s%s innen: %s%s2. %s%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthisisavirtualpackageithasnosourceyetpleasesavethe
@@ -13007,19 +13619,27 @@ msgid "Unable to create directory"
 msgstr "Könyvtár létrehozása nem lehetséges"
 
 #: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-msgid "Unable to create output directory %s%s%s%sfor package %s."
+#, fuzzy
+#| msgid "Unable to create output directory %s%s%s%sfor package %s."
+msgid "Unable to create output directory \"%s\"%sfor package %s."
 msgstr "A(z) %s%s%s kimeneti könyvtár létrehozása nem lehetséges%sa(z) %s csomaghoz."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-msgid "Unable to create package source directory %s%s%s%sfor package %s."
+#, fuzzy
+#| msgid "Unable to create package source directory %s%s%s%sfor package %s."
+msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "A(z) %s%s%s forrás könyvtár létrehozása nem lehetséges%sa(z) %s csomaghoz."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
-msgid "Unable to create target directory for Lazarus:%s%s%s%s.%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
+#, fuzzy
+#| msgid "Unable to create target directory for Lazarus:%s%s%s%s.%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
+msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "Ezen Lazarus célkönyvtár létrehozása nem lehetséges:%s%s%s%s.%sEz a könyvtár szükséges az új, megváltozott Lazarus IDE-hez, amely már tartalmazza az egyéni csomagjait."
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefile
-msgid "Unable to delete file %s%s%s."
+#, fuzzy
+#| msgid "Unable to delete file %s%s%s."
+msgid "Unable to delete file \"%s\"."
 msgstr "A(z) %s%s%s fájl törlése nem lehetséges"
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefilename
@@ -13027,7 +13647,9 @@ msgid "Unable to delete file"
 msgstr "Fájl törlése nem lehetséges"
 
 #: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-msgid "Unable to delete old state file %s%s%s%sfor package %s."
+#, fuzzy
+#| msgid "Unable to delete old state file %s%s%s%sfor package %s."
+msgid "Unable to delete old state file \"%s\"%sfor package %s."
 msgstr "A(z) %s%s%s régi állapotfájl törlése nem lehetséges%sa(z) %s csomaghoz."
 
 #: lazarusidestrconsts.lispkgmangunabletoloadpackage
@@ -13035,19 +13657,27 @@ msgid "Unable to load package"
 msgstr "Csomag betöltése nem lehetséges"
 
 #: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
+#, fuzzy
+#| msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
+msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
 msgstr "A(z) %s%s%s csomag megnyitása nem lehetséges.%sEz a csomag meg lett jelölve telepítésre."
 
 #: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
+#, fuzzy
+#| msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
+msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
 msgstr "A(z) %s%s%s%sállapotfájl,ami a(z) %s csomaghoz tartozik nem olvasható.%sHiba: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
-msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
+#, fuzzy
+#| msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
+msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "A(z) %s%s%s csomag írása%sa(z) %s%s%s fájlba nem lehetséges.%sHiba: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
+#, fuzzy
+#| msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
+msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
 msgstr "A(z) %s%s%s%sállapotfájl írása, ami a(z) %s csomaghoz tartozik, nem lehetséges.%sHiba: %s"
 
 #: lazarusidestrconsts.lispkgmanguninstallpackage
@@ -13067,7 +13697,9 @@ msgid "Use unit"
 msgstr "Unit használata"
 
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
-msgid "Warning: The file %s%s%s%sbelongs to the current project."
+#, fuzzy
+#| msgid "Warning: The file %s%s%s%sbelongs to the current project."
+msgid "Warning: The file \"%s\"%sbelongs to the current project."
 msgstr "Figyelmeztetés: A(z) %s%s%s%sfájl a jelenlegi projekthez tartozik."
 
 #: lazarusidestrconsts.lispkgmgrkeep
@@ -13099,11 +13731,15 @@ msgid "Cannot register components without unit"
 msgstr "Unit nélküli komponenseket nem lehet regisztrálni"
 
 #: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-msgid "Component Class %s%s%s already defined"
+#, fuzzy
+#| msgid "Component Class %s%s%s already defined"
+msgid "Component Class \"%s\" already defined"
 msgstr "A(z) %s%s%s komponens osztály már definiálva van"
 
 #: lazarusidestrconsts.lispkgsysfilename
-msgid "%s%sFile Name: %s%s%s"
+#, fuzzy
+#| msgid "%s%sFile Name: %s%s%s"
+msgid "%s%sFile Name: \"%s\""
 msgstr "%s%sFájlnév: %s%s%s"
 
 #: lazarusidestrconsts.lispkgsysinvalidcomponentclass
@@ -13115,7 +13751,9 @@ msgid "Invalid Unitname: %s"
 msgstr "Érvénytelen unit név: %s"
 
 #: lazarusidestrconsts.lispkgsyslpkfilename
-msgid "%s%slpk file: %s%s%s"
+#, fuzzy
+#| msgid "%s%slpk file: %s%s%s"
+msgid "%s%slpk file: \"%s\""
 msgstr "%s%slpk fájl: %s%s%s"
 
 #: lazarusidestrconsts.lispkgsyspackagefilenotfound
@@ -13139,7 +13777,9 @@ msgid "%s%sThe lpk file was not found."
 msgstr "%s%sAz lpk fájl nincs meg."
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
+#, fuzzy
+#| msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
+msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgstr "A(z) %s%s%s csomag telepítve van, de nem található érvényes csomagfájl (.lpk).%sEgy törött, látszólagos csomag lett létrehozva."
 
 #: lazarusidestrconsts.lispkgsysthisisthedefaultpackageusedonlyforcomponents
@@ -13151,7 +13791,9 @@ msgid "This package is installed, but the lpk file was not found. All its compon
 msgstr "Ez a csomag telepítve van, de az .lpk fájl nem található. Minden komponense deaktiválva van. Javítsa!"
 
 #: lazarusidestrconsts.lispkgsysunitname
-msgid "%s%sUnit Name: %s%s%s"
+#, fuzzy
+#| msgid "%s%sUnit Name: %s%s%s"
+msgid "%s%sUnit Name: \"%s\""
 msgstr "%s%sUnit név: %s%s%s"
 
 #: lazarusidestrconsts.lispkgsysunitwasnotfoundinthelpkfileprobablythislpkfilewasn
@@ -13168,7 +13810,7 @@ msgid "The following dependencies are not needed, because of the automatic trans
 msgstr ""
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
-msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s%s"
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
@@ -13180,7 +13822,9 @@ msgid "Transitivity"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
-msgid "Unable to read package file %s%s%s.%sError: %s"
+#, fuzzy
+#| msgid "Unable to read package file %s%s%s.%sError: %s"
+msgid "Unable to read package file \"%s\".%sError: %s"
 msgstr "A(z) %s%s%s csomagfájl nem olvasható.%sHiba: %s"
 
 #: lazarusidestrconsts.lisplay
@@ -13298,6 +13942,10 @@ msgstr "Munkamenet információk mentése ide:"
 msgid "Save jump history"
 msgstr "Ugrási előzmények mentése"
 
+#: lazarusidestrconsts.lispositionoutsideofsource
+msgid "%s (position outside of source"
+msgstr ""
+
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
 msgstr "Megelőző szó"
@@ -13328,7 +13976,7 @@ msgid "Private Method"
 msgstr "\"Private\" metódus"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
+msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgstr ""
 
 #: lazarusidestrconsts.lisprocedure
@@ -13410,12 +14058,16 @@ msgid "Package not found"
 msgstr "Csomag nem található"
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
-msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
+#, fuzzy
+#| msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
+msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
 msgstr "A(z) %s%s%s függőség nem található.%sVálasszon egy létező csomagot!"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
+#, fuzzy
+#| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
-msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgstr "A(z) %s%s%s maximális verziószám érvénytelen.%sHasználja a fő.al.kiadás.építés formátumot!%sPéldául: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionislowerthantheminimimversion
@@ -13424,28 +14076,40 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "A maximális verziószám kisebb, mint a minimális verziószám."
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
+#, fuzzy
+#| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
-msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
+msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgstr "A(z) %s%s%s minimális verziószám érvénytelen.%sHasználja a fő.al.kiadás.építés formátumot!%sPéldául: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
+#, fuzzy
+#| msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
+msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
 msgstr "A(z) %s%s%s csomagnév nem érvényes.%sVálasszon egy létező csomagot!"
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
-msgid "The project has already a dependency for the package %s%s%s."
+#, fuzzy
+#| msgid "The project has already a dependency for the package %s%s%s."
+msgid "The project has already a dependency for the package \"%s\"."
 msgstr "A projektnek már függősége a(z) %s%s%s csomag."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheproject
-msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
+#, fuzzy
+#| msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
+msgid "The unit name \"%s\" already exists in the project%swith file: \"%s\"."
 msgstr "A(z) %s%s%s unit név már létezik a projektben%sa(z) %s%s%s fájllal."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
-msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
+#, fuzzy
+#| msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
+msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "A(z) %s%s%s unit név már létezik a kijelölésben%sa(z) %s%s%s fájllal."
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-msgid "The unit name %s%s%s is not a valid Pascal identifier."
+#, fuzzy
+#| msgid "The unit name %s%s%s is not a valid Pascal identifier."
+msgid "The unit name \"%s\" is not a valid Pascal identifier."
 msgstr "A(z) %s%s%s unit név nem érvényes pascal azonosító."
 
 #: lazarusidestrconsts.lisprojaddtoproject
@@ -13515,6 +14179,10 @@ msgstr "Projekt"
 msgid "Project macro properties"
 msgstr "Projekt makró beállítások"
 
+#: lazarusidestrconsts.lisprojectoption
+msgid "Project Option"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectoutdir
 msgid "Project Output directory (e.g. the ppu directory)"
 msgstr "Projekt kimeneti könyvtára (pl. a .ppu könyvtár)"
@@ -13568,7 +14236,9 @@ msgid "Project Src Path"
 msgstr "Projekt forrás útvonala"
 
 #: lazarusidestrconsts.lisprojectsuccessfullybuilt
-msgid "Project %s%s%s successfully built"
+#, fuzzy
+#| msgid "Project %s%s%s successfully built"
+msgid "Project \"%s\" successfully built"
 msgstr "A projekt építése sikerült: %s%s%s"
 
 #: lazarusidestrconsts.lisprojectunit
@@ -13735,6 +14405,10 @@ msgstr "Példa projektek megjelenítése"
 msgid "Create local variable"
 msgstr "Helyi változó létrehozása"
 
+#: lazarusidestrconsts.lisquickfixerror
+msgid "QuickFix error"
+msgstr ""
+
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
 msgstr "Gyors javítás"
@@ -13795,6 +14469,10 @@ msgstr "Regiszterek"
 msgid "Regular expression"
 msgstr "Reguláris kifejezés"
 
+#: lazarusidestrconsts.lisrelative
+msgid "Relative"
+msgstr ""
+
 #: lazarusidestrconsts.lisrelativepaths
 msgid "Relative paths"
 msgstr "Relatív útvonalak"
@@ -13804,17 +14482,37 @@ msgctxt "lazarusidestrconsts.lisremove"
 msgid "Remove"
 msgstr "Eltávolítás"
 
+#: lazarusidestrconsts.lisremove2
+msgid "Remove?"
+msgstr ""
+
 #: lazarusidestrconsts.lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
 msgstr "Minden érvénytelen tulajdonság eltávolítása"
+
+#: lazarusidestrconsts.lisremoveallmessagetypefilters
+msgid "Remove all message type filters"
+msgstr ""
 
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
 msgstr "Minden unit eltávolítása"
 
+#: lazarusidestrconsts.lisremovecompileroptionhidemessage
+msgid "Remove Compiler Option Hide Message"
+msgstr ""
+
+#: lazarusidestrconsts.lisremovedependenciesfrompackage
+msgid "Remove %s dependencies from package \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.lisremovedpropertys
 msgid "Removed property \"%s\"."
 msgstr "Tulajdonság eltávolítása: \"%s\""
+
+#: lazarusidestrconsts.lisremovefilesfrompackage
+msgid "Remove %s files from package \"%s\"?"
+msgstr ""
 
 #: lazarusidestrconsts.lisremovefrominstalllist
 msgid "Remove from install list"
@@ -13840,6 +14538,14 @@ msgstr "Helyi változó eltávolítása: %s"
 msgid "Remove local variable"
 msgstr "Helyi változó eltávolítása"
 
+#: lazarusidestrconsts.lisremovelocalvariable3
+msgid "Remove local variable \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.lisremovemessagetypefilter
+msgid "Remove Message Type Filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisremovenonexistingfiles
 msgid "Remove nonexistent files"
 msgstr "Nem létező fájlok eltávolítása"
@@ -13863,6 +14569,10 @@ msgstr "Unit eltávolítása a uses részből"
 #: lazarusidestrconsts.lisremoveunitpath
 msgid "Remove unit path?"
 msgstr "Unit útvonal eltávolítása?"
+
+#: lazarusidestrconsts.lisremoveuses
+msgid "Remove uses \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisrename
 msgctxt "lazarusidestrconsts.lisrename"
@@ -14052,7 +14762,9 @@ msgid "File not executable"
 msgstr "A fájl nem futtatható"
 
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
-msgid "The host application %s%s%s is not executable."
+#, fuzzy
+#| msgid "The host application %s%s%s is not executable."
+msgid "The host application \"%s\" is not executable."
 msgstr "A(z) %s%s%s külső alkalmazás nem futtatható fájl."
 
 #: lazarusidestrconsts.lisrunstage
@@ -14150,6 +14862,10 @@ msgstr "Minden üzenet mentése fájlba"
 msgid "Save all modified files"
 msgstr "Minden megváltozott fájl mentése"
 
+#: lazarusidestrconsts.lissavealloriginalmessagestofile
+msgid "Save All/Original Messages to File ..."
+msgstr ""
+
 #: lazarusidestrconsts.lissaveandexitdialog
 msgid "Save and exit dialog"
 msgstr "Mentés és bezárás"
@@ -14200,7 +14916,9 @@ msgid "Save file as"
 msgstr "Fájl mentése másként"
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
-msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
+#, fuzzy
+#| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
+msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Menti a(z) %s%s%s fájlt%s a(z) %s%s%s form bezárása előtt?"
 
 #: lazarusidestrconsts.lissaveinfoofclosededitorfiles
@@ -14210,6 +14928,10 @@ msgstr "Információk mentése a bezárt szerkesztett fájlokról"
 #: lazarusidestrconsts.lissavemacroas
 msgid "Save macro as"
 msgstr "Makró mentése mint"
+
+#: lazarusidestrconsts.lissavemessages
+msgid "Save messages"
+msgstr ""
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
@@ -14222,6 +14944,10 @@ msgstr "Menti a(z) %s projekt munkamenetének változásait?"
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
 msgstr "Beállítások mentése"
+
+#: lazarusidestrconsts.lissaveshownmessagestofile
+msgid "Save Shown Messages to File ..."
+msgstr ""
 
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
@@ -14340,6 +15066,10 @@ msgstr "A Lazarus forráskód könyvtárának kiválasztása"
 msgid "Select path to %s"
 msgstr "Útvonal kiválasztása ehhez: %s"
 
+#: lazarusidestrconsts.lisselecttargetdirectory
+msgid "Select target directory"
+msgstr ""
+
 #: lazarusidestrconsts.lissetallcolors
 msgid "Set all colors:"
 msgstr ""
@@ -14360,9 +15090,17 @@ msgstr "(Alapértelmezett behúzás beállítása)"
 msgid "Short:"
 msgstr "Rövidítés:"
 
+#: lazarusidestrconsts.lisshortnopath
+msgid "Short, no path"
+msgstr ""
+
 #: lazarusidestrconsts.lisshow
 msgid "Show"
 msgstr "Megjelenítés"
+
+#: lazarusidestrconsts.lisshowabstractmethodsof
+msgid "Show abstract methods of \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
@@ -14405,9 +15143,17 @@ msgstr "Azonosítók megjelenítése"
 msgid "Show information box"
 msgstr "Információs ablak megjelenítése"
 
+#: lazarusidestrconsts.lisshowmessagetypeid
+msgid "Show Message Type ID"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
 msgstr "Csak a megváltoztatott megjelenítése"
+
+#: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
+msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
+msgstr ""
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
@@ -14562,11 +15308,15 @@ msgid "&Source Breakpoint ..."
 msgstr "Töréspont a forráskódban ..."
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
-msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
+#, fuzzy
+#| msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
+msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
 msgstr "A(z) %s%s%s forrás könyvtár%sés a(z) %s%s%s célkönyvtár%sazonos.%s%sLehet, hogy félreértette ezt a funkciót.%sEz tisztítja/újra létrehozza a célkönyvtárat%sés belemásolja a csomagot/projektet."
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
-msgid "Source directory %s%s%s does not exist."
+#, fuzzy
+#| msgid "Source directory %s%s%s does not exist."
+msgid "Source directory \"%s\" does not exist."
 msgstr "A(z) %s%s%s forrás könyvtár nem létezik."
 
 #: lazarusidestrconsts.lissourceeditorwindowmanager
@@ -14578,11 +15328,13 @@ msgid "Source modified"
 msgstr "Forrás módosítva"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
-msgid "Source of page %s%s%s has changed. Save?"
+#, fuzzy
+#| msgid "Source of page %s%s%s has changed. Save?"
+msgid "Source of page \"%s\" has changed. Save?"
 msgstr "A(z) %s%s%s oldal forrása megváltozott. Elmenti?"
 
-#: lazarusidestrconsts.lissourceofpagehaschangedsaveextended
-msgid "Sources of more than one page have changed. Save page %s%s%s? (%d more)"
+#: lazarusidestrconsts.lissourceofpagehaschangedsaveex
+msgid "Sources of pages have changed. Save page \"%s\"? (%d more)"
 msgstr ""
 
 #: lazarusidestrconsts.lissourcepaths
@@ -14671,6 +15423,22 @@ msgstr "Al-eljárás"
 msgid "Sub Procedure on same level"
 msgstr "Al-eljárás azonos szinten"
 
+#: lazarusidestrconsts.lissuccesfullyexportedbuildmodes
+msgid "Succesfully exported %d BuildModes to \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lissuccesfullyexportedcompileroptions
+msgid "Succesfully exported compiler options to \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lissuccesfullyimportedbuildmodes
+msgid "Succesfully imported %d BuildModes from \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lissuccesfullyimportedcompileroptions
+msgid "Succesfully imported compiler options from \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Sikerült"
@@ -14696,12 +15464,18 @@ msgid "Invalid variable name"
 msgstr "Érvénytelen változónév"
 
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
-msgid "%s%s%s is not a valid identifier."
+#, fuzzy
+#| msgid "%s%s%s is not a valid identifier."
+msgid "\"%s\" is not a valid identifier."
 msgstr "Érvénytelen azonosító: %s%s%s"
 
 #: lazarusidestrconsts.lissvuooverridesystemvariable
 msgid "Override system variable"
 msgstr "Rendszerváltozó felülbírálása"
+
+#: lazarusidestrconsts.lisswitchfiltersettings
+msgid "Switch Filter Settings"
+msgstr ""
 
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
@@ -14767,6 +15541,10 @@ msgstr "Projekt cél fájlneve"
 msgid "Target filename + params"
 msgstr "Cél fájlnév + paraméterek"
 
+#: lazarusidestrconsts.listargetisreadonly
+msgid "Target is read only"
+msgstr ""
+
 #: lazarusidestrconsts.listargetos
 msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
@@ -14797,21 +15575,25 @@ msgid "The Application Bundle was created for \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
-msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%sUnable to paste."
+msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr ""
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
 #, fuzzy
-#| msgid "The codetools found an error:%s%s%s"
-msgid "The Codetools found an error:%s%s%s"
+#| msgid "The Codetools found an error:%s%s%s"
+msgid "The Codetools found an error:%s%s"
 msgstr "A CodeTools talált egy hibát:%s%s%s"
 
 #: lazarusidestrconsts.listhecommandafterisnotexecutable
-msgid "The command after %s%s%s is not executable."
+#, fuzzy
+#| msgid "The command after %s%s%s is not executable."
+msgid "The command after \"%s\" is not executable."
 msgstr "A(z) %s%s%S utáni parancs nem futtatható."
 
 #: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-msgid "The command after publishing is invalid:%s%s%s%s"
+#, fuzzy
+#| msgid "The command after publishing is invalid:%s%s%s%s"
+msgid "The command after publishing is invalid:%s\"%s\""
 msgstr "A közzétéel utáni parancs érvénytelen:%s%s%s%s"
 
 #: lazarusidestrconsts.listhecompilerfiledoesnotlookcorrect
@@ -14823,11 +15605,15 @@ msgid "The component %s can not be deleted, because it is not owned by %s."
 msgstr "A(z) %s komponens nem törölhető, mert nem a(z) %s birtokolja."
 
 #: lazarusidestrconsts.listhecomponenteditorofclasshascreatedtheerror
-msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
+#, fuzzy
+#| msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
+msgid "The component editor of class \"%s\" has created the error:%s\"%s\""
 msgstr "A(z) %s%s%s osztály komponens szerkesztője ezt a hibát generálta:%s%s%s%s"
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
-msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
+#, fuzzy
+#| msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
+msgid "The component editor of class \"%s\"%sinvoked with verb #%s \"%s\"%shas created the error:%s\"%s\""
 msgstr "A(z) %s%s%s osztály komponens szerkesztője,%sami a #%s %s%s%s parancs által van meghívva,%sa következő hibát generálta:%s%s%s%s"
 
 #: lazarusidestrconsts.listhecomponentisinheritedfromtodeleteaninheritedcomp
@@ -14858,16 +15644,8 @@ msgstr ""
 msgid "The current FPC has no config file. It will probably miss some units. Check your installation of fpc."
 msgstr ""
 
-#: lazarusidestrconsts.listhecurrentfreepascalsourcedirectorydoesnotlookcorr
-msgid "The current Free Pascal source directory %s%s%s%sdoes not look correct.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr ""
-
-#: lazarusidestrconsts.listhecurrentlazarusdirectorydoesnotlookcorrectwithou
-msgid "The current Lazarus directory %s%s%s%sdoes not look correct.%sWithout it You will not be able to create LCL applications.%sChoose Ok to choose the default %s%s%s.%sOtherwise check Tools -> Options -> Files"
-msgstr ""
-
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
+msgid "The debugger \"%s\"%sdoes not exist or is not executable.%sSee Tools -> Options -> Debugger options"
 msgstr ""
 
 #: lazarusidestrconsts.listhedebuggerexecutabletypicallyhasthenamepleasegive
@@ -14879,11 +15657,15 @@ msgid "The default mode must be stored in project, not in session."
 msgstr "Az alapértelmezett módot a projektben kell tárolni és nem a munkamenetben."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
-msgid "The destination directory%s%s%s%s does not exist."
+#, fuzzy
+#| msgid "The destination directory%s%s%s%s does not exist."
+msgid "The destination directory%s\"%s\" does not exist."
 msgstr "A(z)%s%s%s%s célkönyvtár nem létezik."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
+#, fuzzy
+#| msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
+msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "A(z) %s%s%s célkönyvtár nem létezik.%sEllenőrizze a projekt célfájl nevét a menüben itt: Projekt -> Projekt beállítások!"
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
@@ -14895,15 +15677,21 @@ msgid "The directory \"%s\" contains no project units any more. Remove this dire
 msgstr ""
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
-msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
+#, fuzzy
+#| msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
+msgid "The directory \"%s\" is no longer needed in the unit path.%sRemove it?"
 msgstr "A(z) %s%s%s könyvtár többé nem szükséges a unit elérési útban.%sEltávolítja?"
 
 #: lazarusidestrconsts.listhedirectoryisnotwritable
-msgid "The directory %s%s%s is not writable."
+#, fuzzy
+#| msgid "The directory %s%s%s is not writable."
+msgid "The directory \"%s\" is not writable."
 msgstr "A(z) %s%s%s nevű könyvtár nem írható."
 
 #: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
+#, fuzzy
+#| msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
+msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
 msgstr "A(z) %s%s%s könyvtár még nem szerepel a unit elérési útban.%sHozzáadja?"
 
 #: lazarusidestrconsts.listhedirectorywasnotfound
@@ -14911,7 +15699,9 @@ msgid "The directory %s was not found."
 msgstr "A(z) %s könyvtár nem található."
 
 #: lazarusidestrconsts.listhefile
-msgid "The file %s%s%s"
+#, fuzzy
+#| msgid "The file %s%s%s"
+msgid "The file \"%s\""
 msgstr "A(z) %s%s%s fájl"
 
 #: lazarusidestrconsts.listhefiledoesnotlooklikealpifile
@@ -14923,11 +15713,13 @@ msgid "The file index is needed for functions like find declaration. While scann
 msgstr ""
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
-msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
+#, fuzzy
+#| msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
+msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "A(z) %s%s%s fájl egy szimbolikus link.%s%sMegnyitja %s%s%s -t helyette?"
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
-msgid "The file %s%s%s is not a Lazarus project.%sCreate a new project for this %s?"
+msgid "The file \"%s\" is not a Lazarus project.%sCreate a new project for this \"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.listhefilemaskisinvalid
@@ -14939,7 +15731,9 @@ msgid "The file mask \"%s\" is not a valid regular expression."
 msgstr "A fájlmaszk nem egy szabályos reguláris kifejezés: \"%s\""
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
-msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
+#, fuzzy
+#| msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
+msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "A(z) %s%s%s%sfájl egy programnak tűnik. Bezárja a jelenlegi projektet és létrehoz egy új Lazarus projektet ehhez a programhoz?%sHa a \"Nem\"-et választja normál forrásként tölti be a fájlt."
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
@@ -14947,19 +15741,27 @@ msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "A(z) %s fájl egy létező Lazarus projekt program fájljának tűnik."
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
+#, fuzzy
+#| msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
+msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
 msgstr "A(z) %s%s%s%sfájl a(z) %s csomag egyik forráskönyvtárában található és egy lefordított unit-nak látszik. A lefordított unit-oknak a csomag kimeneti könyvtárában kell lenniük, különben más csomagoknak problémái lehetnek ennek a csomagnak a használatával.%s%sTörli a megtévesztő fájlt?"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
-msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
+#, fuzzy
+#| msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
+msgid "The file \"%s\" was not found.%sDo you want to locate it yourself?"
 msgstr "A(z) %s%s%s%sfájl nem található.%sMegkeresi kézzel?%s"
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
-msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
+#, fuzzy
+#| msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
+msgid "The file \"%s\" was not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "A(z) %s%s%s%sfájl nem található.%s\"Kihagyás\"-ra folytatja a projekt betöltését,%s\"Megszakítás\"-ra leállítja a betöltést."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
-msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
+#, fuzzy
+#| msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
+msgid "The following methods used by %s are not in the source%s%s%s%s%sRemove the dangling references?"
 msgstr "A következő, %s által használt metódusok nincsenek a forrásban%s%s%s%s%s%sEltávolítja a függő hivatkozásokat?"
 
 #: lazarusidestrconsts.listhefpcsourcedirectorydoesnotlookcorrect
@@ -14975,15 +15777,21 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Az azonosító egy unit. Használja a Fájl -> Mentés másként menüpontot unit átnevezéshez!"
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
+#, fuzzy
+#| msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
+msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
 msgstr "A(z) %s%sbillentyű már hozzá van rendelve a(z) %s funkcióhoz.%s%sEltávolítja a régebbi hozzárendelést és hozzárendeli a billentyűt a(z) %s%s új funkcióhoz?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
-msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
+#, fuzzy
+#| msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
+msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
 msgstr "A(z) %s alkalmazás köteg,%sami a futtatáshoz szükséges, nem létezik vagy nem futtatható.%sLétre szeretne hozni egyet?%s%sEllenőrizze a Projekt -> Projekt beállítások -> Alkalmazás lapon."
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
-msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
+#, fuzzy
+#| msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
+msgid "The launching application \"%s\"%sdoes not exist or is not executable.%sSee Run -> Run parameters -> Local"
 msgstr "A(z) %s%s%s%sfuttató alkalmazás nem létezik, vagy nem futtatható.%s%sEllenőrizze a Futtatás -> Futtatási paraméterek -> Helyi lapon."
 
 #: lazarusidestrconsts.listhelazarusdirectorycontainsthesourcesoftheideandth
@@ -15007,11 +15815,11 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr ""
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
+msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
 msgstr ""
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
-msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
+msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr ""
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
@@ -15023,7 +15831,9 @@ msgid "The \"Other sources\" contains a directory which is already in the \"Othe
 msgstr "Az \"Egyéb források\" tartalmaz egy könyvtárat, mely már megtalálható az \"Egyéb unit fájlok\" között.%s%s"
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
-msgid "The output directory %s%s%s is missing."
+#, fuzzy
+#| msgid "The output directory %s%s%s is missing."
+msgid "The output directory \"%s\" is missing."
 msgstr "A(z) %s%s%s kimeneti könyvtár hiányzik."
 
 #: lazarusidestrconsts.listheoutputdirectoryofislistedintheincludesearchpath
@@ -15075,7 +15885,9 @@ msgid "The package %s can not be uninstalled, because it is needed by the IDE it
 msgstr "A(z) %s csomag nem távolítható el, mert szükséges az IDE működéséhez."
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
-msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+#, fuzzy
+#| msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
+msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgstr "A(z) %s csomagnak nincs \"Register\" eljárása, ami általában azt jelenti, hogy nem biztosít IDE bővítményt. Telepítése valószínűleg csak növeli az IDE méretét és bizonytalanná teszi a működését.%s%sJavaslat: Ha szükség van egy csomagra a projektben akkor a \"Hozzáadás a projekthez\" menüelem használandó."
 
 #: lazarusidestrconsts.listhepackageisalreadyinthelist
@@ -15091,7 +15903,9 @@ msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "A \"make\" útvonala helytelen: \"%s\""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-msgid "The program %smake%s was not found.%sThis tool is needed to build Lazarus.%s"
+#, fuzzy
+#| msgid "The program %smake%s was not found.%sThis tool is needed to build Lazarus.%s"
+msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
 msgstr "A %smake%s program nem található.%sEz az eszköz szükséges a Lazarus építéséhez.%s"
 
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
@@ -15107,11 +15921,15 @@ msgid "The project has no main source file."
 msgstr "A projektnek nincs fő forrásfájlja."
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
-msgid "The project info file %s%s%s%sis equal to the project main source file!"
+#, fuzzy
+#| msgid "The project info file %s%s%s%sis equal to the project main source file!"
+msgid "The project info file \"%s\"%sis equal to the project main source file!"
 msgstr "A(z) %s%s%s projekt információs fájl%smegegyezik a projekt fő forrás fájljával!"
 
 #: lazarusidestrconsts.listheprojectinformationfilehaschangedondisk
-msgid "The project information file %s%s%s%shas changed on disk."
+#, fuzzy
+#| msgid "The project information file %s%s%s%shas changed on disk."
+msgid "The project information file \"%s\"%shas changed on disk."
 msgstr "A projekt információs fájlja megváltozott a lemezen:%s%s%s%s"
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
@@ -15119,7 +15937,9 @@ msgid "The project must be saved before building%sIf you set the Test Directory 
 msgstr "Építés előtt menteni kell a projektet.%sHa a Teszt könyvtár be van állítva az IDE beállításai között%sakkor a létrehozott projektek azonnal építhetők.%sProjekt mentése?"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
-msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+#, fuzzy
+#| msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories. %sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
+msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr "A projekt a(z) %s cél OS-t és %s cél CPU-t használ.%sA system.ppu ehhez a célhoz nem található az FPC bináris könyvtáraiban. %sGyőződjön meg róla, hogy az FPC megfelelően lett telepítve ehhez a célhoz, és az fpc.cfg a helyes könyvtárakat tartalmazza."
 
 #: lazarusidestrconsts.listheprojectusesthenewfpcresourceswhichrequiresatlea
@@ -15131,7 +15951,9 @@ msgid "There are other files in the directory with the same name,%swhich only di
 msgstr "Más fájlok is vannak a könyvtárban ugyanezzel a névvel,%samelyek csak betűméretben térnek el:%s%s%sTörli őket?"
 
 #: lazarusidestrconsts.listhereisafilewiththesamenameandasimilarextension
-msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
+#, fuzzy
+#| msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
+msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
 msgstr "Van egy fájl ugyanilyen névvel és hasonló kiterjesztéssel a meghajtón%sFájl: %s%sMegtévesztő fájl: %s%s%sTörli a megtévesztő fájlt?"
 
 #: lazarusidestrconsts.listhereisalreadyabuildmodewiththisname
@@ -15146,12 +15968,24 @@ msgstr "Már létezik egy komponens-osztály ezzel a névvel: %s"
 msgid "There is already a component with this name"
 msgstr "Már létezik egy komponens ezzel a névvel"
 
+#: lazarusidestrconsts.listhereisalreadyafilein
+msgid "There is already a file%s%s%sin %s"
+msgstr ""
+
+#: lazarusidestrconsts.listhereisalreadyafileinoldnewcontinue
+msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
-msgid "There is already a form with the name %s%s%s"
+#, fuzzy
+#| msgid "There is already a form with the name %s%s%s"
+msgid "There is already a form with the name \"%s\""
 msgstr "Már létezik egy form %s%s%s névvel"
 
 #: lazarusidestrconsts.listhereisalreadyamacrowiththename
-msgid "There is already a macro with the name %s%s%s."
+#, fuzzy
+#| msgid "There is already a macro with the name %s%s%s."
+msgid "There is already a macro with the name \"%s\"."
 msgstr "Már létezik egy makró %s%s%s névvel"
 
 #: lazarusidestrconsts.listhereisalreadyanidemacrowiththename
@@ -15162,12 +15996,20 @@ msgstr "Már létezik egy IDE makró \"%s\" névvel"
 msgid "There is already a package %s in the list"
 msgstr "Már létezik egy %s nevű csomag a listában"
 
+#: lazarusidestrconsts.listhereisalreadyaunitinoldnewyouhavetomakesur
+msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make sure that the unit search path contains only one of them.%s%sContinue?"
+msgstr ""
+
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
-msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
+#, fuzzy
+#| msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
+msgid "There is already a unit with the name \"%s\". Pascal identifiers must be unique."
 msgstr "Már létezik %s%s%s nevű unit. A Pascal azonosítóknak egyedinek kell lenniük."
 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
-msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
+#, fuzzy
+#| msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
+msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Létezik %s%s%s nevű unit a projektben.%sVálasszon egy eltérő nevet!"
 
 #: lazarusidestrconsts.listhereisnofpcexeinthedirectoryofusuallythemakeexecu
@@ -15179,7 +16021,9 @@ msgid "There must be at least one build mode."
 msgstr "Legalább egy építési módnak lennie kell."
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
-msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
+#, fuzzy
+#| msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
+msgid "The resource class \"%s\" descends from \"%s\". Probably this is a typo for TForm."
 msgstr "A(z) %s%s%s osztály leszármazottja ennek: %s%s%s. Lehetséges, hogy ez csak a TForm elgépelése."
 
 #: lazarusidestrconsts.listherewasanerrorduringwritingtheselectedcomponent
@@ -15214,12 +16058,20 @@ msgstr "E unit-ok nem találhatók:"
 msgid "The sources of the Free Pascal packages are required for browsing and code completion. For example it has the file \"%s\"."
 msgstr ""
 
+#: lazarusidestrconsts.listhetargetisnotwritable
+msgid "The target %s is not writable."
+msgstr ""
+
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
-msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
+#, fuzzy
+#| msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
+msgid "The Test Directory could not be found:%s\"%s\"%s(see IDE options)"
 msgstr "A teszt könyvtár nem található:%s%s%s%s%s(Lásd az IDE beállításait)"
 
 #: lazarusidestrconsts.listheunitalreadyexists
-msgid "The unit %s%s%s already exists."
+#, fuzzy
+#| msgid "The unit %s%s%s already exists."
+msgid "The unit \"%s\" already exists."
 msgstr "A(z) %s%s%s unit már létezik"
 
 #: lazarusidestrconsts.listheunitbelongstopackage
@@ -15235,7 +16087,9 @@ msgid "The unit has this name"
 msgstr "A unit-nak ez a neve"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+#, fuzzy
+#| msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
+msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "A(z) %s%s%s unit fájlneve nem kisbetűs.%sA Free Pascal fordító nem keres minden betűmérettel. Ajánlott csak kisbetűk használata a fájlnévben.%s%sÁtnevezi kisbetűsre?"
 
 #: lazarusidestrconsts.listheunitispartofthefpcsourcesbutthecorrespondingfpd
@@ -15247,15 +16101,21 @@ msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr "A(z) %s unit-ot más fájlok is használjak.%sFrissíti a hivatkozásokat automatikusan?"
 
 #: lazarusidestrconsts.listheunititselfhasalreadythenamepascalidentifiersmus
-msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
+#, fuzzy
+#| msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
+msgid "The unit itself has already the name \"%s\". Pascal identifiers must be unique."
 msgstr "A unit-nak magának már ez a neve: %s%s%s. A Pascal azonosítóknak egyedinek kell lenniük."
 
 #: lazarusidestrconsts.listheunitsearchpathofcontainsthesourcedirectoryofpac
-msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
+#, fuzzy
+#| msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
+msgid "The unit search path of \"%s\" contains the source directory \"%s\" of package %s"
 msgstr "A(z) %s%s%s unit keresési útvonala tartalmazza a(z) %s%s%s könyvtárat, ami a(z) %s csomag forrás könyvtára"
 
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
-msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
+#, fuzzy
+#| msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
+msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "A(z) %s%s%s munkakönyvtár nem létezik.%sEllenőrizze a munkakönyvtárat a menüben itt: Futtatás -> Futtatási paraméterek!"
 
 #: lazarusidestrconsts.listhiscomponentalreadycontainsaclasswiththename
@@ -15283,7 +16143,7 @@ msgid "This project has only the default build mode."
 msgstr "Ez a projekt csak az alapértelmezett építési módot tartalmazza."
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
+msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgstr ""
 
 #: lazarusidestrconsts.listhisstatementcannotbeextractedpleaseselectsomecode
@@ -15293,6 +16153,10 @@ msgstr "Ez állomány nem helyezhető át.%sJelöljön ki kódot, amit új eljá
 #: lazarusidestrconsts.listhiswillcreateacirculardependency
 msgid "This will create a circular dependency."
 msgstr "Ez körkörös függést hoz létre."
+
+#: lazarusidestrconsts.listhiswillputalotoftextontheclipboardproceed
+msgid "This will put a lot of text (%s) on the clipboard.%sProceed?"
+msgstr ""
 
 #: lazarusidestrconsts.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
@@ -15388,6 +16252,30 @@ msgstr "Útvonal:"
 msgid "Toggle showing filenames with full path or with relative path"
 msgstr "Teljes/Részleges elérési út megjelenítésének átkapcsolása fájlneveknél"
 
+#: lazarusidestrconsts.listoolhasnoexecutable
+msgid "tool \"%s\" has no executable"
+msgstr ""
+
+#: lazarusidestrconsts.listoolheaderfailed
+msgid "Tool Header: Failed"
+msgstr ""
+
+#: lazarusidestrconsts.listoolheaderrunning
+msgid "Tool Header: Running"
+msgstr ""
+
+#: lazarusidestrconsts.listoolheaderscrolledup
+msgid "Tool Header: Scrolled up"
+msgstr ""
+
+#: lazarusidestrconsts.listoolheadersuccess
+msgid "Tool Header: Success"
+msgstr ""
+
+#: lazarusidestrconsts.listoolstoppedwithexitcodeusecontextmenutogetmoreinfo
+msgid "tool stopped with exit code %s. Use context menu to get more information."
+msgstr ""
+
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
 msgstr "Felső oldal horgonyozása"
@@ -15412,6 +16300,10 @@ msgstr "Ez az a társvezérlő, amelyikhez a felső oldal horgonyzása történi
 msgid "Top space equally"
 msgstr "Felső oldali távolságok egyenlően"
 
+#: lazarusidestrconsts.listranslatetheenglishmessages
+msgid "Translate the English Messages"
+msgstr ""
+
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
 msgstr "Frissíteni kell a fát"
@@ -15419,6 +16311,10 @@ msgstr "Frissíteni kell a fát"
 #: lazarusidestrconsts.listurbopascal
 msgid "Turbo Pascal"
 msgstr "Turbo Pascal"
+
+#: lazarusidestrconsts.listwomovedfileswillhavethesamefilenamein
+msgid "Two moved files will have the same file name:%s%s%s%s%sin %s"
+msgstr ""
 
 #: lazarusidestrconsts.listypes
 msgid "Types (not removed if no replacement)"
@@ -15569,7 +16465,9 @@ msgid "Not found"
 msgstr "Nem található"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
-msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
+#, fuzzy
+#| msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
+msgid "Replace this occurrence of \"%s\"%s with \"%s\"?"
 msgstr "Kicseréli a(z) %s%s%s%s találatot ezzel: %s%s%s?"
 
 #: lazarusidestrconsts.lisuesearching
@@ -15653,19 +16551,19 @@ msgid "Unable copy components to clipboard"
 msgstr "Komponensek vágólapra másolása nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletoaddresourceheadercommenttoresourcefile
-msgid "Unable to add resource header comment to resource file %s%s%s%s.%sProbably a syntax error."
+#, fuzzy
+#| msgid "Unable to add resource header comment to resource file %s%s%s%s.%sProbably a syntax error."
+msgid "Unable to add resource header comment to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "Forrás fejléc megjegyzés hozzáadása nem lehetséges a(z) %s%s%s%s forrás fájlhoz.%sTalán szintaktikai hiba."
 
 #: lazarusidestrconsts.lisunabletoaddresourcetformdatatoresourcefileprobably
-msgid "Unable to add resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error."
+#, fuzzy
+#| msgid "Unable to add resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error."
+msgid "Unable to add resource T%s:FORMDATA to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "Nem lehetséges forrás T%s:FORMDATA hozzáadása a(z) %s%s%s%s forrás fájlhoz.%sTalán szintaktikai hiba."
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread
 msgid "Unable to add the dependency %s, because the package %s has already a dependency %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisunabletoaddthedependencybecausethepackagehasalread2
-msgid "Unable to add the dependency %s, because the package %s has already a dependency to %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoaddthedependencybecausethiswouldcreatea
@@ -15677,7 +16575,9 @@ msgid "Unable to add %s to project, because there is already a unit with the sam
 msgstr "Nem lehetséges %s hozzáadása a projekthez, mert már van egy ilyen nevű unit a projektben."
 
 #: lazarusidestrconsts.lisunabletobackupfileto
-msgid "Unable to backup file %s%s%s to %s%s%s!"
+#, fuzzy
+#| msgid "Unable to backup file %s%s%s to %s%s%s!"
+msgid "Unable to backup file \"%s\" to \"%s\"!"
 msgstr "Nem lehetséges biztonsági mentés készítése a(z) %s%s%s fájlról %s%s%s -ként!"
 
 #: lazarusidestrconsts.lisunabletochangeclassofto
@@ -15693,7 +16593,9 @@ msgid "Unable to clean up destination directory"
 msgstr "Cél könyvtár tisztítása nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletocleanuppleasecheckpermissions
-msgid "Unable to clean up %s%s%s.%sPlease check permissions."
+#, fuzzy
+#| msgid "Unable to clean up %s%s%s.%sPlease check permissions."
+msgid "Unable to clean up \"%s\".%sPlease check permissions."
 msgstr "A(z) %s%s%s tisztítása nem lehetséges.%sEllenőrizze a jogosultságokat!"
 
 #: lazarusidestrconsts.lisunabletoconvertcomponenttextintobinaryformat
@@ -15701,11 +16603,15 @@ msgid "Unable to convert component text into binary format:%s%s"
 msgstr "A komponens szövegének %s%s bináris formátumra való konvertálása nem lehetséges."
 
 #: lazarusidestrconsts.lisunabletoconvertfileerror
-msgid "Unable to convert file %s%s%s%sError: %s"
+#, fuzzy
+#| msgid "Unable to convert file %s%s%s%sError: %s"
+msgid "Unable to convert file \"%s\"%sError: %s"
 msgstr "A(z) %s%s%s fájl konvertálása nem lehetséges%sHiba: %s"
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
-msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
+#, fuzzy
+#| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
+msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "A(z) %s%s%s%s fájl szövegadatának konvertálása%sbináris adatfolyamra nem lehetséges. (%s)"
 
 #: lazarusidestrconsts.lisunabletocopyfile
@@ -15713,47 +16619,43 @@ msgid "Unable to copy file"
 msgstr "Fájl másolása nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletocopyfileto
-msgid "Unable to copy file %s%s%s%sto %s%s%s"
+#, fuzzy
+#| msgid "Unable to copy file %s%s%s%sto %s%s%s"
+msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "A fájl nem másolható innen: %s%s%s%s ide: %s%s%s"
 
-#: lazarusidestrconsts.lisunabletocopyfileto2
-msgid "Unable to copy file %s%s%s%sto %s%s%s."
-msgstr "A fájl nem másolható innen: %s%s%s%s ide: %s%s%s."
-
 #: lazarusidestrconsts.lisunabletocreatebackupdirectory
-msgid "Unable to create backup directory %s%s%s."
+#, fuzzy
+#| msgid "Unable to create backup directory %s%s%s."
+msgid "Unable to create backup directory \"%s\"."
 msgstr "A(z) %s%s%s biztonsági mentés könyvtár létrehozása nem lehetséges."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
-msgid "Unable to create directory %s%s%s."
+#, fuzzy
+#| msgid "Unable to create directory %s%s%s."
+msgid "Unable to create directory \"%s\"."
 msgstr "A(z) %s%s%s könyvtár létrehozása nem lehetséges."
-
-#: lazarusidestrconsts.lisunabletocreatedirectory2
-msgid "Unable to create directory %s%s%s"
-msgstr "A(z) %s%s%s könyvtár létrehozása nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletocreatefile
 msgid "Unable to create file"
 msgstr "Fájl létrehozása nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletocreatefile2
-msgid "Unable to create file %s%s%s"
+#, fuzzy
+#| msgid "Unable to create file %s%s%s"
+msgid "Unable to create file \"%s\""
 msgstr "A(z) %s%s%s fájl létrehozása nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletocreatefile3
-msgid "Unable to create file%s%s%s%s"
+#, fuzzy
+#| msgid "Unable to create file%s%s%s%s"
+msgid "Unable to create file%s\"%s\""
 msgstr "A(z) %s%s%s%s fájl létrehozása nem lehetséges"
 
-#: lazarusidestrconsts.lisunabletocreatefile4
-msgid "Unable to create file %s"
-msgstr "Fájl létrehozása nem lehetséges: %s"
-
-#: lazarusidestrconsts.lisunabletocreatefilename
-msgid "Unable to create file %s%s%s."
-msgstr "A(z) %s%s%s fájl létrehozása nem lehetséges."
-
 #: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-msgid "Unable to create link %s%s%s with target %s%s%s"
+#, fuzzy
+#| msgid "Unable to create link %s%s%s with target %s%s%s"
+msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Nem lehetséges %s%s%s hivatkozás létrehozása %s%s%s céllal"
 
 #: lazarusidestrconsts.lisunabletocreatenewfilebecausethereisalreadyadirecto
@@ -15773,23 +16675,33 @@ msgid "Unable to delete"
 msgstr "Nem törölhető"
 
 #: lazarusidestrconsts.lisunabletodeleteambiguousfile
-msgid "Unable to delete ambiguous file %s%s%s"
+#, fuzzy
+#| msgid "Unable to delete ambiguous file %s%s%s"
+msgid "Unable to delete ambiguous file \"%s\""
 msgstr "A(z) %s%s%s megtévesztő fájl törlése nem lehetséges"
+
+#: lazarusidestrconsts.lisunabletoexecute
+msgid "unable to execute: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
 msgstr "Nem található ResourceString rész ebben, vagy bármelyik használt unit-ban."
 
 #: lazarusidestrconsts.lisunabletofindavalidclassnamein
-msgid "Unable to find a valid classname in %s%s%s"
+#, fuzzy
+#| msgid "Unable to find a valid classname in %s%s%s"
+msgid "Unable to find a valid classname in \"%s\""
 msgstr "Nem található érvényes osztálynév ebben: %s%s%s"
 
 #: lazarusidestrconsts.lisunabletofindfile
-msgid "Unable to find file %s%s%s."
+#, fuzzy
+#| msgid "Unable to find file %s%s%s."
+msgid "Unable to find file \"%s\"."
 msgstr "A(z) %s%s%s fájl nem található."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
+msgid "Unable to find file \"%s\".%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindinlfmstream
@@ -15801,7 +16713,9 @@ msgid "Unable to find method."
 msgstr "A metódus nem található."
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
-msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s%s%s%s"
+#, fuzzy
+#| msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s%s%s%s"
+msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s\"%s\""
 msgstr "Nem található pascal unit (.pas,.pp) az lfm fájlhoz: %s%s%s%s"
 
 #: lazarusidestrconsts.lisunabletofindthecomponentclassitisnotregisteredviar
@@ -15825,11 +16739,15 @@ msgid "unable to load file %s: %s"
 msgstr "Nem tölthető be a fájl %s: %s"
 
 #: lazarusidestrconsts.lisunabletoloadpackage
-msgid "Unable to load package %s%s%s"
+#, fuzzy
+#| msgid "Unable to load package %s%s%s"
+msgid "Unable to load package \"%s\""
 msgstr "A(z) %s%s%s csomag betöltése nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
-msgid "Unable to load the component class %s%s%s, because it depends on itself."
+#, fuzzy
+#| msgid "Unable to load the component class %s%s%s, because it depends on itself."
+msgid "Unable to load the component class \"%s\", because it depends on itself."
 msgstr "A(z) %s%s%s komponens osztály betöltése nem lehetséges, mert saját magától függ."
 
 #: lazarusidestrconsts.lisunabletoopen
@@ -15853,33 +16771,36 @@ msgid "Unable to read file"
 msgstr "Fájl olvasása nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletoreadfile2
-msgid "Unable to read file %s%s%s!"
+#, fuzzy
+#| msgid "Unable to read file %s%s%s!"
+msgid "Unable to read file \"%s\"."
 msgstr "A(z) %s%s%s fájl olvasása nem lehetséges!"
 
 #: lazarusidestrconsts.lisunabletoreadfileerror
-msgid "Unable to read file %s%s%s%sError: %s"
+#, fuzzy
+#| msgid "Unable to read file %s%s%s%sError: %s"
+msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "A(z) %s%s%s fájl olvasása nem lehetséges%sHiba: %s"
-
-#: lazarusidestrconsts.lisunabletoreadfilename
-msgid "Unable to read file %s%s%s."
-msgstr "A(z) %s%s%s fájl olvasása nem lehetséges."
 
 #: lazarusidestrconsts.lisunabletoreadlpi
 msgid "Unable to read lpi"
 msgstr "Nem olvasható az lpi"
 
-#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
-msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
-msgid "Unable to read the project info file%s%s%s%s."
-msgstr "Nem olvasható a projekt infó fájlja:%s%s%s%s."
+#: lazarusidestrconsts.lisunabletoreadprocessexitstatus
+msgid "unable to read process ExitStatus"
+msgstr ""
 
-#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile2
-msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile2"
-msgid "Unable to read the project info file%s%s%s%s."
+#: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
+#, fuzzy
+#| msgid "Unable to read the project info file%s%s%s%s."
+msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
+msgid "Unable to read the project info file%s\"%s\"."
 msgstr "Nem olvasható a projekt infó fájlja:%s%s%s%s."
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
-msgid "Unable to remove old backup file %s%s%s!"
+#, fuzzy
+#| msgid "Unable to remove old backup file %s%s%s!"
+msgid "Unable to remove old backup file \"%s\"!"
 msgstr "A(z) %s%s%s régi biztonsági mentés fájl törlése nem lehetséges!"
 
 #: lazarusidestrconsts.lisunabletoremoveprojecttitlefromsource
@@ -15887,7 +16808,9 @@ msgid "Unable to remove project title from source.%s%s"
 msgstr "Nem lehet eltávolítani a projekt címét a forrásból.%s%s"
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
-msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
+#, fuzzy
+#| msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
+msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "A(z) %s%s%s megtévesztő fájl átnevezése nem lehetséges%serre: %s%s%s"
 
 #: lazarusidestrconsts.lisunabletorenamefile
@@ -15895,11 +16818,15 @@ msgid "Unable to rename file"
 msgstr "Fájl átnevezése nem lehetséges"
 
 #: lazarusidestrconsts.lisunabletorenamefileto
-msgid "Unable to rename file %s%s%s to %s%s%s!"
+#, fuzzy
+#| msgid "Unable to rename file %s%s%s to %s%s%s!"
+msgid "Unable to rename file \"%s\" to \"%s\"!"
 msgstr "A(z) %s%s%s fájl átnevezése erre: %s%s%s nem lehetséges!"
 
 #: lazarusidestrconsts.lisunabletorenamefileto2
-msgid "Unable to rename file %s%s%s%sto %s%s%s."
+#, fuzzy
+#| msgid "Unable to rename file %s%s%s%sto %s%s%s."
+msgid "Unable to rename file \"%s\"%sto \"%s\"."
 msgstr "A(z) %s%s%s fájl%sátnevezése erre: %s%s%s nem lehetséges."
 
 #: lazarusidestrconsts.lisunabletorenameforminsource
@@ -15946,33 +16873,35 @@ msgstr "A(z) %s:T%s bináris komponens adatfolyamának szövegre alakítása nem
 msgid "Unable to update CreateForm statement in project source"
 msgstr "A CreateForm állomány frissítése nem lehetséges a projekt forrásban"
 
-#: lazarusidestrconsts.lisunabletowrite
-msgid "Unable to write %s%s%s%s%s."
-msgstr "Nem írható: %s%s%s%s%s."
-
 #: lazarusidestrconsts.lisunabletowrite2
-msgid "Unable to write %s%s%s"
+#, fuzzy
+#| msgid "Unable to write %s%s%s"
+msgid "Unable to write \"%s\""
 msgstr "Nem írható: %s%s%s"
 
 #: lazarusidestrconsts.lisunabletowritefile
 msgid "Unable to write file"
 msgstr "Nem írható a fájl"
 
+#: lazarusidestrconsts.lisunabletowritefile2
+msgid "Unable to write file \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lisunabletowritefileerror
-msgid "Unable to write file %s%s%s%sError: %s"
+#, fuzzy
+#| msgid "Unable to write file %s%s%s%sError: %s"
+msgid "Unable to write file \"%s\"%sError: %s"
 msgstr "Nem írható a fájl: %s%s%s%sHiba: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
+#, fuzzy
+#| msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
+msgid "Unable to write the project info file%s\"%s\".%sError: %s"
 msgstr "Nem írható a projekt infó fájlja:%s%s%s%s.%sHiba: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectsessionfileerror
 msgid "Unable to write the project session file%s\"%s\".%sError: %s"
 msgstr "Nem írható a projekt munkamenet fájlja:%s\"%s\".%sHiba: %s"
-
-#: lazarusidestrconsts.lisunabletowritetofile
-msgid "Unable to write to file %s%s%s."
-msgstr "Nem írható a fájl: %s%s%s."
 
 #: lazarusidestrconsts.lisunabletowritetofile2
 msgid "Unable to write to file \"%s\"."
@@ -16004,7 +16933,9 @@ msgid "Uninstall selection"
 msgstr "Kijelölés eltávolítása"
 
 #: lazarusidestrconsts.lisunithaschangedsave
-msgid "Unit %s%s%s has changed. Save?"
+#, fuzzy
+#| msgid "Unit %s%s%s has changed. Save?"
+msgid "Unit \"%s\" has changed. Save?"
 msgstr "A(z) %s%s%s unit megváltozott. Elmenti?"
 
 #: lazarusidestrconsts.lisunitidentifierexists
@@ -16012,7 +16943,9 @@ msgid "Unit identifier exists"
 msgstr "Unit azonosító létezik"
 
 #: lazarusidestrconsts.lisunitinpackage
-msgid "%s unit %s in package %s%s"
+#, fuzzy
+#| msgid "%s unit %s in package %s%s"
+msgid "%s unit %s in package %s"
 msgstr "%s unit %s a(z)%s%s csomagban"
 
 #: lazarusidestrconsts.lisunitnamealreadyexistscap
@@ -16026,6 +16959,14 @@ msgstr "Unit név kezdete ..."
 #: lazarusidestrconsts.lisunitnamecontains
 msgid "Unit name contains ..."
 msgstr "Unit név tartalmazza ..."
+
+#: lazarusidestrconsts.lisunitnotfound
+msgid "unit %s not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisunitnotfoundatnewposition
+msgid "unit %s not found at new position \"%s\""
+msgstr ""
 
 #: lazarusidestrconsts.lisunitnotfoundinproject
 msgid "A unit not found in project %s"
@@ -16042,6 +16983,10 @@ msgstr "unit útvonal"
 #: lazarusidestrconsts.lisunitpaths
 msgid "Unit paths"
 msgstr "Unit útvonalak"
+
+#: lazarusidestrconsts.lisunitrequirespackage
+msgid "unit %s requires package %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisunitsnotfoundinproject
 msgid "Units not found in project %s"
@@ -16108,6 +17053,10 @@ msgstr "ANSI karakterláncok használata"
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Megjegyzések használata az egyéni beállításoknál"
+
+#: lazarusidestrconsts.lisusedby
+msgid " used by %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
@@ -16214,6 +17163,10 @@ msgctxt "lazarusidestrconsts.lisvariable"
 msgid "Variable"
 msgstr "Változó"
 
+#: lazarusidestrconsts.lisverbose
+msgid "Verbose"
+msgstr ""
+
 #: lazarusidestrconsts.lisverifymethodcalls
 msgid "Verify method calls"
 msgstr "Metódus hívások ellenőrzése"
@@ -16233,6 +17186,10 @@ msgstr "Függőleges"
 #: lazarusidestrconsts.lisvertoclipboard
 msgid "Copy version information to clipboard"
 msgstr "Változat információ másolása a vágólapra"
+
+#: lazarusidestrconsts.lisveryverbose
+msgid "Very Verbose"
+msgstr ""
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
 msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
@@ -16257,8 +17214,14 @@ msgid "Warning: "
 msgstr "Figyelmeztetés:"
 
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
-msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+#, fuzzy
+#| msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
+msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "Figyelem: ellentmondásos fájl található: %s%s%s. A forrás fájl: %s%s%s"
+
+#: lazarusidestrconsts.liswarnings
+msgid ", Warnings:%s"
+msgstr ""
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
@@ -16322,7 +17285,9 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr "Üdvözli a Lazarus IDE %s"
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
-msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+#, fuzzy
+#| msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
+msgid "Welcome to Lazarus %s%sThere is already a configuration from version %s in%s%s"
 msgstr "Üdvözöljük! Ez a Lazarus %s%s%s Létezik már egy beállítás a(z) %s változathoz itt: %s%s%s"
 
 #: lazarusidestrconsts.liswhatneedsbuilding
@@ -16339,6 +17304,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr ""
+
+#: lazarusidestrconsts.liswindowstaysontop
+msgid "Window stays on top"
 msgstr ""
 
 #: lazarusidestrconsts.liswithincludes2

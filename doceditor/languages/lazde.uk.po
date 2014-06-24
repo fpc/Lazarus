@@ -28,10 +28,6 @@ msgstr "Додати Всі"
 msgid "Select a new description file"
 msgstr "Виберіть новий файл опису"
 
-#: lazdemsg.sadditionalparams
-msgid "Additional parameters for fpdoc"
-msgstr ""
-
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
 msgid "&Build"
@@ -168,8 +164,8 @@ msgstr " в пакунку "
 
 #: lazdemsg.sfortopic
 #, fuzzy
-#| msgid " in topic"
-msgid " in topic "
+#| msgid " in topic "
+msgid " in topic"
 msgstr " в темі "
 
 #: lazdemsg.shideprotectedmethods
@@ -233,11 +229,6 @@ msgstr "Підкреслений"
 msgid "Variable"
 msgstr "Змінна"
 
-#: lazdemsg.shintinsertbulletedlist
-msgctxt "lazdemsg.shintinsertbulletedlist"
-msgid "Insert bulleted list"
-msgstr ""
-
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
 msgid "New element"
@@ -252,11 +243,6 @@ msgstr "Вставити посилання"
 msgctxt "lazdemsg.shintinsertmodule"
 msgid "New module"
 msgstr "Новий модуль"
-
-#: lazdemsg.shintinsertnumberedlist
-msgctxt "lazdemsg.shintinsertnumberedlist"
-msgid "Insert numbered list"
-msgstr ""
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -308,24 +294,10 @@ msgstr "Про цю програму"
 msgid "Import content file"
 msgstr "Імпорт файлу вмісту"
 
-#: lazdemsg.sinsertbulletedlist
-msgctxt "lazdemsg.sinsertbulletedlist"
-msgid "Insert bulleted list"
-msgstr ""
-
-#: lazdemsg.sinsertexamplecode
-msgid "Insert example code"
-msgstr ""
-
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
 msgid "Insert link"
 msgstr "Вставити посилання"
-
-#: lazdemsg.sinsertnumberedlist
-msgctxt "lazdemsg.sinsertnumberedlist"
-msgid "Insert numbered list"
-msgstr ""
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -343,14 +315,6 @@ msgstr "Редактор Документації Lazarus"
 #: lazdemsg.slinksto
 msgid " links to "
 msgstr " вказує на "
-
-#: lazdemsg.slinktarget
-msgid "Link target"
-msgstr ""
-
-#: lazdemsg.slinktext
-msgid "Link text"
-msgstr ""
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -480,11 +444,6 @@ msgstr "&Про..."
 msgid "&Insert"
 msgstr "Вс&тавити"
 
-#: lazdemsg.smenuinsertbulletedlist
-msgctxt "lazdemsg.smenuinsertbulletedlist"
-msgid "Bulleted list"
-msgstr ""
-
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
 msgstr "&Елемент"
@@ -493,18 +452,9 @@ msgstr "&Елемент"
 msgid "&Link"
 msgstr "&Посилання"
 
-#: lazdemsg.smenuinsertlist
-msgid "List"
-msgstr ""
-
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
 msgstr "&Модуль"
-
-#: lazdemsg.smenuinsertnumberedlist
-msgctxt "lazdemsg.smenuinsertnumberedlist"
-msgid "Numbered list"
-msgstr ""
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
@@ -571,10 +521,6 @@ msgstr "Новий пакунок"
 msgctxt "lazdemsg.snewtopic"
 msgid "New topic"
 msgstr "Нова тема"
-
-#: lazdemsg.snodename
-msgid "Node name"
-msgstr ""
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -674,10 +620,6 @@ msgctxt "lazdemsg.ssave"
 msgid "&Save"
 msgstr "&Зберегти"
 
-#: lazdemsg.ssavebeforebuildquestion
-msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
-msgstr ""
-
 #: lazdemsg.sseealso
 msgid "See Also"
 msgstr "Див Також"
@@ -717,18 +659,6 @@ msgstr "Вихідний код"
 #: lazdemsg.sstartnodenotfound
 msgid "Start element \"%s\" could not be found"
 msgstr "Початковий елемент \"%s\" не знайдено"
-
-#: lazdemsg.stablecols
-msgid "Columns"
-msgstr ""
-
-#: lazdemsg.stableheader
-msgid "Use header row"
-msgstr ""
-
-#: lazdemsg.stablerows
-msgid "Rows"
-msgstr ""
 
 #: lazdemsg.stargetos
 msgid "Target OS"
