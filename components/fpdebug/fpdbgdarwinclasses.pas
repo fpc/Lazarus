@@ -302,15 +302,22 @@ begin
     end;
 end;
 
+type
+  TDr32bitArr = array[0..4] of cuint32;
+  TDr64bitArr = array[0..4] of cuint64;
+
 function TDbgDarwinThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
 
-  function SetBreakpoint(var dr: {$ifdef cpui386}DWORD{$else}DWORD64{$endif}; ind: byte): boolean;
+  function SetBreakpoint32(ind: byte): boolean;
+  var
+    drArr: ^TDr32bitArr;
   begin
-    if (Dr=0) and ((FDebugState32.__dr7 and (1 shl ind))=0) then
+    drArr := @FDebugState32.__dr0;
+    if (drArr^[ind]=0) and ((FDebugState32.__dr7 and (1 shl ind))=0) then
     begin
       FDebugState32.__dr7 := FDebugState32.__dr7 or (1 shl (ind*2));
       FDebugState32.__dr7 := FDebugState32.__dr7 or ($30000 shl (ind*4));
-      Dr:=AnAddr;
+      drArr^[ind]:=AnAddr;
       FDebugStateChanged:=true;
       Result := True;
     end
@@ -320,32 +327,77 @@ function TDbgDarwinThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
     end;
   end;
 
+  function SetBreakpoint64(ind: byte): boolean;
+  var
+    drArr: ^TDr64bitArr;
+  begin
+    drArr := @FDebugState64.__dr0;
+    if (drArr^[ind]=0) and ((FDebugState64.__dr7 and (1 shl ind))=0) then
+    begin
+      FDebugState64.__dr7 := FDebugState64.__dr7 or (1 shl (ind*2));
+      FDebugState64.__dr7 := FDebugState64.__dr7 or ($30000 shl (ind*4));
+      drArr^[ind]:=AnAddr;
+      FDebugStateChanged:=true;
+      Result := True;
+    end
+    else
+    begin
+      result := False;
+    end;
+  end;
+
+var
+  i: integer;
 begin
   result := -1;
   if not ReadDebugState then
     exit;
 
-  if SetBreakpoint(FDebugState32.__dr0, 0) then
-    result := 0
-  else if SetBreakpoint(FDebugState32.__dr1, 1) then
-    result := 1
-  else if SetBreakpoint(FDebugState32.__dr2, 2) then
-    result := 2
-  else if SetBreakpoint(FDebugState32.__dr3, 3) then
-    result := 3
+  i := 0;
+  if Process.Mode=dm32 then
+    while (i<4) and not SetBreakpoint32(i) do
+      inc(i)
   else
-    Process.Log('No hardware breakpoint available.');
+    while (i<4) and not SetBreakpoint64(i) do
+      inc(i);
+  if i=4 then
+    Process.Log('No hardware breakpoint available.')
+  else
+    result := i;
 end;
 
 function TDbgDarwinThread.RemoveWatchpoint(AnId: integer): boolean;
 
-  function RemoveBreakpoint(var dr: {$ifdef cpui386}DWORD{$else}DWORD64{$endif}; ind: byte): boolean;
+  function RemoveBreakpoint32(ind: byte): boolean;
+  var
+    drArr: ^TDr32bitArr;
   begin
-    if (Dr<>0) and ((FDebugState32.__dr7 and (1 shl (ind*2)))<>0) then
+    drArr := @FDebugState32.__dr0;
+    if (drArr^[ind]<>0) and ((FDebugState32.__dr7 and (1 shl (ind*2)))<>0) then
     begin
       FDebugState32.__dr7 := FDebugState32.__dr7 xor (1 shl (ind*2));
       FDebugState32.__dr7 := FDebugState32.__dr7 xor ($30000 shl (ind*4));
-      Dr:=0;
+      drArr^[ind]:=0;
+      FDebugStateChanged:=true;
+      Result := True;
+    end
+    else
+    begin
+      result := False;
+      Process.Log('HW watchpoint %d is not set.',[ind]);
+    end;
+  end;
+
+  function RemoveBreakpoint64(ind: byte): boolean;
+  var
+    drArr: ^TDr64bitArr;
+  begin
+    drArr := @FDebugState64.__dr0;
+    if (drArr^[ind]<>0) and ((FDebugState64.__dr7 and (1 shl (ind*2)))<>0) then
+    begin
+      FDebugState64.__dr7 := FDebugState64.__dr7 xor (1 shl (ind*2));
+      FDebugState64.__dr7 := FDebugState64.__dr7 xor ($30000 shl (ind*4));
+      drArr^[ind]:=0;
       FDebugStateChanged:=true;
       Result := True;
     end
@@ -361,12 +413,10 @@ begin
   if not ReadDebugState then
     exit;
 
-  case AnId of
-    0: result := RemoveBreakpoint(FDebugState32.__dr0, 0);
-    1: result := RemoveBreakpoint(FDebugState32.__dr1, 1);
-    2: result := RemoveBreakpoint(FDebugState32.__dr2, 2);
-    3: result := RemoveBreakpoint(FDebugState32.__dr3, 3);
-  end;
+  if Process.Mode=dm32 then
+    RemoveBreakpoint32(AnId)
+  else
+    RemoveBreakpoint64(AnId);
 end;
 
 procedure TDbgDarwinThread.BeforeContinue;
