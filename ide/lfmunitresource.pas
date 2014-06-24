@@ -34,7 +34,7 @@ uses
   // packages
   LCLMemManager, LResources, Forms, CodeCache, CodeToolManager,
   // IDEIntf
-  UnitResources, LazFileCache, LazFileUtils, AvgLvlTree,
+  UnitResources, SrcEditorIntf, LazFileCache, LazFileUtils, AvgLvlTree,
   // IDE
   CheckLFMDlg;
 
@@ -45,7 +45,7 @@ type
   TLFMUnitResourcefileFormat = class(TUnitResourcefileFormat)
   public
     class function FindResourceDirective(Source: TObject): boolean; override;
-    class function ResourceDirectiveFilename: string; override;
+    class function ResourceDirectiveFilename: string;
     class function GetUnitResourceFilename(AUnitFilename: string; {%H-}Loading: boolean): string; override;
     class procedure TextStreamToBinStream(ATxtStream, ABinStream: TExtMemoryStream); override;
     class procedure BinStreamToTextStream(ABinStream, ATextStream: TExtMemoryStream); override;
@@ -143,7 +143,7 @@ var
 begin
   Result := ChangeFileExt(AUnitFilename,'.lfm');
   if not FileExistsCached(Result)
-  // ToDo: search in source editor
+  and (SourceEditorManagerIntf.SourceEditorIntfWithFilename(Result)=nil)
   then begin
     DFMFilename:=ChangeFileExt(AUnitFilename,'.dfm');
     if FileExistsCached(DFMFilename) then
@@ -179,7 +179,8 @@ class function TLFMUnitResourcefileFormat.QuickCheckResourceBuffer(PascalBuffer,
   LFMBuffer: TObject; out LFMType, LFMComponentName, LFMClassName: string; out
   LCLVersion: string; out MissingClasses: TStrings): TModalResult;
 begin
-  Result := QuickCheckLFMBuffer(PascalBuffer as TCodeBuffer, LFMBuffer as TCodeBuffer, LFMType, LFMComponentName, LFMClassName,
+  Result := QuickCheckLFMBuffer(PascalBuffer as TCodeBuffer,
+    LFMBuffer as TCodeBuffer, LFMType, LFMComponentName, LFMClassName,
     LCLVersion, MissingClasses);
 end;
 

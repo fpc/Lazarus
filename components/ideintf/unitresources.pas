@@ -28,7 +28,6 @@ type
   TUnitResourcefileFormat = class
   public
     class function  FindResourceDirective(Source: TObject): boolean; virtual; abstract;
-    class function  ResourceDirectiveFilename: string; virtual; abstract;
     class function  GetUnitResourceFilename(AUnitFilename: string; Loading: boolean): string; virtual; abstract;
     class procedure TextStreamToBinStream(ATxtStream, ABinStream: TExtMemoryStream); virtual; abstract;
     class procedure BinStreamToTextStream(ABinStream, ATextStream: TExtMemoryStream); virtual; abstract;
