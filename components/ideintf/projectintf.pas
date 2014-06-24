@@ -815,10 +815,9 @@ end;
 
 function TFileDescPascalUnit.CreateSource(const aFilename, aSourceName,
   aResourceName: string): string;
-var
-  LE: string;
+const
+  LE = LineEnding;
 begin
-  LE:=LineEnding;
   Result:=
      'unit '+aSourceName+';'+LE
     +LE
@@ -921,10 +920,9 @@ end;
 
 function TFileDescPascalUnitWithResource.GetInterfaceSource(const Filename,
   SourceName, ResourceName: string): string;
-var
-  LE: string;
+const
+  LE = LineEnding;
 begin
-  LE:=LineEnding;
   Result:=
      'type'+LE
     +'  T'+ResourceName+' = class('+ResourceClass.ClassName+')'+LE
@@ -944,11 +942,11 @@ end;
 
 function TFileDescPascalUnitWithResource.GetImplementationSource(
   const Filename, SourceName, ResourceName: string): string;
+const
+  LE = LineEnding;
 var
   ResourceFilename: String;
-  LE: String;
 begin
-  LE:=LineEnding;
   case GetResourceType of
     rtLRS:
       begin
