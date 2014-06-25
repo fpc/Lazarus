@@ -15,7 +15,7 @@ msgstr " (%d раз)"
 
 #: heaptrcview.rserrorparse
 msgid "Error while parsing trace file"
-msgstr "Ошибка разбора файла стека вызовов"
+msgstr "Ошибка анализа файла стека вызовов"
 
 #: heaptrcview.rsleakview
 #| msgid "Find source lines for leak/stack-traces"

@@ -381,7 +381,7 @@ msgstr "%s в %s"
 
 #: jcfuiconsts.lisedjcfparseerror
 msgid "JCF Parse error"
-msgstr "Ошибка разбора JCF"
+msgstr "Ошибка анализа JCF"
 
 #: jcfuiconsts.lisednear
 msgid "%s near %s"
@@ -595,7 +595,7 @@ msgstr "Параметры компилятора, определённые дл
 
 #: jcfuiconsts.lisprpenablepreprocessorparsing
 msgid "Enable preprocessor parsing"
-msgstr "Включить разбор выражений препроцессора"
+msgstr "Включить анализ выражений препроцессора"
 
 #: jcfuiconsts.lisprppreprocessor
 msgid "PreProcessor"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-06-25 02:54+0400\n"
+"PO-Revision-Date: 2014-06-26 02:04+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1074,7 +1074,7 @@ msgstr "Переполнения"
 
 #: lazarusidestrconsts.dlgcoparsing
 msgid "Parsing"
-msgstr "Обработка"
+msgstr "Анализ"
 
 #: lazarusidestrconsts.dlgcopypastekeepfolds
 msgid "Copy/Paste with fold info"
@@ -8183,7 +8183,7 @@ msgstr "Ошибка при открытии компонента"
 
 #: lazarusidestrconsts.liserrorparsinglfmcomponentstream
 msgid "Error parsing lfm component stream."
-msgstr "Ошибка разбора потока компонента lfm."
+msgstr "Ошибка анализа потока компонента LFM."
 
 #: lazarusidestrconsts.liserrorreadingpackagelistfromfile
 msgid "Error reading package list from file%s%s%s%s"
@@ -12878,7 +12878,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
-msgstr ", обработано "
+msgstr ", проанализировано"
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
@@ -17721,7 +17721,7 @@ msgstr "Файлы XML"
 
 #: lazarusidestrconsts.lisxmlparsererrorinfileerror
 msgid "XML parser error in file %s%sError: %s"
-msgstr "Ошибка разбора XML в файле %s%sОшибка: %s"
+msgstr "Ошибка анализа XML в файле %s%sОшибка: %s"
 
 #: lazarusidestrconsts.lisyoucandisablethisforindividualformsviathepackageed
 msgid "You can disable this for individual forms via the package editor"
