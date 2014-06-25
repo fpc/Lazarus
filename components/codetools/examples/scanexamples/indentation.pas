@@ -42,6 +42,8 @@ begin
       if a=2 then
         ;
     until b=3;
+    while a=3 do
+      Code;
     try
       Code;
     finally
