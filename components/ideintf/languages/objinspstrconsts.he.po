@@ -258,7 +258,7 @@ msgid "Set value"
 msgstr "קבע ערך"
 
 #: objinspstrconsts.lisunabletofindparserfortool
-msgid "unable to find parser for tool \"%s\""
+msgid "Unable to find parser for tool \"%s\""
 msgstr ""
 
 #: objinspstrconsts.nbcesaddpage

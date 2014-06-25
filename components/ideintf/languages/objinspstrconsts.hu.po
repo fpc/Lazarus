@@ -264,7 +264,7 @@ msgid "Set value"
 msgstr "Érték megadása"
 
 #: objinspstrconsts.lisunabletofindparserfortool
-msgid "unable to find parser for tool \"%s\""
+msgid "Unable to find parser for tool \"%s\""
 msgstr ""
 
 #: objinspstrconsts.nbcesaddpage

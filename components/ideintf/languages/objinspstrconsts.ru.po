@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-05-25 17:16+0400\n"
+"PO-Revision-Date: 2014-06-26 01:23+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -264,8 +264,8 @@ msgid "Set value"
 msgstr "Установить значение"
 
 #: objinspstrconsts.lisunabletofindparserfortool
-msgid "unable to find parser for tool \"%s\""
-msgstr ""
+msgid "Unable to find parser for tool \"%s\""
+msgstr "Невозможно найти анализатор для средства \"%s\""
 
 #: objinspstrconsts.nbcesaddpage
 #| msgid "Add page"
@@ -418,10 +418,9 @@ msgid "Clear picture"
 msgstr "Очистить изображение"
 
 #: objinspstrconsts.oiscomponentnameisnotavalididentifier
-#, fuzzy
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Имя компонента %s%s%s не является корректным идентификатором"
+msgstr "Имя компонента \"%s\" не является корректным идентификатором"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
@@ -467,10 +466,9 @@ msgid "&Delete"
 msgstr "&Удалить"
 
 #: objinspstrconsts.oisdeleteitem
-#, fuzzy
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
-msgstr "Удалить элемент %s%s%s?"
+msgstr "Удалить элемент \"%s\"?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
@@ -497,10 +495,9 @@ msgid "Error loading image"
 msgstr "Ошибка загрузки изображения"
 
 #: objinspstrconsts.oiserrorloadingimage2
-#, fuzzy
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
-msgstr "Ошибка загрузки изображения %s%s%s:%s%s"
+msgstr "Ошибка загрузки изображения \"%s\":%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
@@ -560,10 +557,9 @@ msgid "Invalid property value"
 msgstr "Неверное значение свойства"
 
 #: objinspstrconsts.oisisnotavalidmethodname
-#, fuzzy
 #| msgid "%s%s%s is not a valid method name."
 msgid "\"%s\" is not a valid method name."
-msgstr "%s%s%s не является корректным именем метода."
+msgstr "\"%s\" не является корректным именем метода."
 
 #: objinspstrconsts.oisitemsselected
 msgid "%u items selected"
@@ -1098,28 +1094,24 @@ msgid "Test Input"
 msgstr "Тестовый ввод"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy
 #| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Идентификатор %s%s%s не является методом.%sНажмите \"Отмена\" для отмены действия,%sнажмите \"Игнорировать\" для принудительного выполнения."
+msgstr "Идентификатор \"%s\" не является методом.%sНажмите \"Отмена\" для отмены действия,%sнажмите \"Игнорировать\" для принудительного выполнения."
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy
 #| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Метод %s%s%s несовместим с этим событием (%s).%sНажмите \"Отмена\" для отмены действия,%sнажмите \"Игнорировать\" для принудительного выполнения."
+msgstr "Метод \"%s\" несовместим с этим событием (%s).%sНажмите \"Отмена\" для отмены действия,%sнажмите \"Игнорировать\" для принудительного выполнения."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy
 #| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Метод %s%s%s не опубликован.%sНажмите \"Отмена\" для отмены действия,%sнажмите \"Игнорировать\" для принудительного выполнения."
+msgstr "Метод \"%s\" не опубликован.%sНажмите \"Отмена\" для отмены действия,%sнажмите \"Игнорировать\" для принудительного выполнения."
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
-#, fuzzy
 #| msgid "Unable to change parent of control %s%s%s to new parent %s%s%s.%s%s"
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
-msgstr "Невозможно сменить родителя компонента %s%s%s на %s%s%s.%s%s"
+msgstr "Невозможно сменить родителя компонента \"%s\" на \"%s\".%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
