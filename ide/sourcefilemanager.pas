@@ -171,10 +171,10 @@ type
         Flags: TOpenFlags): TModalResult;
     function LoadResourceFile(AnUnitInfo: TUnitInfo; var LFMCode, LRSCode: TCodeBuffer;
         IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
-    function FindBaseComponentClass(const AComponentClassName,
+    function FindBaseComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName,
         DescendantClassName: string; out AComponentClass: TComponentClass): boolean;
     function LoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
-        const DescendantClassName: string; OpenFlags: TOpenFlags;
+        const aComponentClassName: string; OpenFlags: TOpenFlags;
         out AncestorClass: TComponentClass; out AncestorUnitInfo: TUnitInfo): TModalResult;
     function FindComponentClass(AnUnitInfo: TUnitInfo;
         const AComponentClassName: string; Quiet: boolean;
@@ -5391,8 +5391,9 @@ begin
     AnUnitInfo.HasResources:=true;
 
     // find the classname of the LFM, and check for inherited form
-    AnUnitInfo.UnitResourceFileformat.QuickCheckResourceBuffer(AnUnitInfo.Source,LFMBuf,LFMType,LFMComponentName,
-                        NewClassName,LCLVersion,MissingClasses);
+    AnUnitInfo.UnitResourceFileformat.QuickCheckResourceBuffer(
+      AnUnitInfo.Source,LFMBuf,LFMType,LFMComponentName,
+      NewClassName,LCLVersion,MissingClasses);
 
     {$IFDEF VerboseLFMSearch}
     debugln('TLazSourceFileManager.LoadLFM LFM="',LFMBuf.Source,'"');
@@ -5410,7 +5411,7 @@ begin
 
       // load missing component classes (e.g. ancestor and frames)
       Result:=LoadAncestorDependencyHidden(AnUnitInfo,NewClassName,OpenFlags,
-                                             AncestorType,AncestorUnitInfo);
+                                           AncestorType,AncestorUnitInfo);
       if Result<>mrOk then begin
         DebugLn(['TLazSourceFileManager.LoadLFM DoLoadAncestorDependencyHidden failed for ',AnUnitInfo.Filename]);
         exit;
@@ -5511,21 +5512,24 @@ begin
         if NewUnitName='' then
           NewUnitName:=ExtractFileNameOnly(AnUnitInfo.Filename);
         DisableAutoSize:=true;
-        NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream, AnUnitInfo.UnitResourceFileformat,
-                   AncestorType,copy(NewUnitName,1,255),true,true,DisableAutoSize,AnUnitInfo);
+        NewComponent:=FormEditor1.CreateRawComponentFromStream(BinStream,
+          AnUnitInfo.UnitResourceFileformat,
+          AncestorType,copy(NewUnitName,1,255),true,true,DisableAutoSize,AnUnitInfo);
         if (NewComponent is TControl) then begin
           NewControl:=TControl(NewComponent);
           if ofLoadHiddenResource in OpenFlags then
             NewControl.ControlStyle:=NewControl.ControlStyle+[csNoDesignVisible];
           if DisableAutoSize then
             NewControl.EnableAutoSizing;
-          if NewComponent is TFrame then
-            AnUnitInfo.ResourceBaseClass:=pfcbcFrame
-          else if NewComponent is TDataModule then
-            AnUnitInfo.ResourceBaseClass:=pfcbcDataModule
-          else if NewComponent is TForm then
-            AnUnitInfo.ResourceBaseClass:=pfcbcForm;
         end;
+
+        if NewComponent is TFrame then
+          AnUnitInfo.ResourceBaseClass:=pfcbcFrame
+        else if NewComponent is TDataModule then
+          AnUnitInfo.ResourceBaseClass:=pfcbcDataModule
+        else if NewComponent is TForm then
+          AnUnitInfo.ResourceBaseClass:=pfcbcForm;
+
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;
         if (AncestorUnitInfo<>nil) then
@@ -5705,13 +5709,20 @@ begin
     Result:=mrCancel;
 end;
 
-function TLazSourceFileManager.FindBaseComponentClass(const AComponentClassName,
-  DescendantClassName: string;
-  out AComponentClass: TComponentClass): boolean;
+function TLazSourceFileManager.FindBaseComponentClass(AnUnitInfo: TUnitInfo;
+  const AComponentClassName, DescendantClassName: string; out
+  AComponentClass: TComponentClass): boolean;
 // returns false if an error occured
 // Important: returns true even if AComponentClass=nil
 begin
+  AComponentClass:=nil;
   // find the ancestor class
+  if AnUnitInfo.UnitResourceFileformat<>nil then
+  begin
+    AComponentClass:=AnUnitInfo.UnitResourceFileformat.FindComponentClass(AComponentClassName);
+    if AComponentClass<>nil then
+      exit(true);
+  end;
   if AComponentClassName<>'' then begin
     if (DescendantClassName<>'')
     and (SysUtils.CompareText(AComponentClassName,'TCustomForm')=0) then begin
@@ -5743,7 +5754,7 @@ begin
 end;
 
 function TLazSourceFileManager.LoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
-  const DescendantClassName: string;
+  const aComponentClassName: string;
   OpenFlags: TOpenFlags;
   out AncestorClass: TComponentClass;
   out AncestorUnitInfo: TUnitInfo): TModalResult;
@@ -5763,14 +5774,15 @@ begin
     if Result<>mrOk then exit;
     AnUnitInfo.Source:=CodeBuf;
   end;
-  if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,DescendantClassName,
+  if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,aComponentClassName,
                                        AncestorClassName,true)
   then begin
-    DebugLn('TLazSourceFileManager.LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" ClassName=',DescendantClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
+    DebugLn('TLazSourceFileManager.LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" ClassName=',aComponentClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
   end;
 
   // try the base designer classes
-  if not FindBaseComponentClass(AncestorClassName,DescendantClassName,AncestorClass) then
+  if not FindBaseComponentClass(AnUnitInfo,AncestorClassName,
+    aComponentClassName,AncestorClass) then
   begin
     DebugLn(['TLazSourceFileManager.LoadAncestorDependencyHidden FindUnitComponentClass failed for AncestorClassName=',AncestorClassName]);
     exit(mrCancel);
@@ -5788,8 +5800,8 @@ begin
     mrOk: ;
     mrIgnore:
       begin
-        // use TForm as default
-        AncestorClass:=TForm;
+        if AnUnitInfo.UnitResourceFileformat<>nil then
+          AncestorClass:=AnUnitInfo.UnitResourceFileformat.DefaultComponentClass;
         AncestorUnitInfo:=nil;
       end;
     else
@@ -5883,10 +5895,16 @@ var
     {$ENDIF}
     Result:=false;
     TheModalResult:=mrCancel;
-    RegComp:=IDEComponentPalette.FindComponent(aClassName);
-    if RegComp<>nil then
-      FoundComponentClass:=RegComp.ComponentClass
-    else
+    FoundComponentClass:=nil;
+    if AnUnitInfo.UnitResourceFileformat<>nil then
+      FoundComponentClass:=AnUnitInfo.UnitResourceFileformat.FindComponentClass(aClassName);
+    if FoundComponentClass=nil then
+    begin
+      RegComp:=IDEComponentPalette.FindComponent(aClassName);
+      if RegComp<>nil then
+        FoundComponentClass:=RegComp.ComponentClass;
+    end;
+    if FoundComponentClass=nil then
       FoundComponentClass:=FormEditor1.FindDesignerBaseClassByName(aClassName,true);
     if FoundComponentClass<>nil then begin
       DebugLn(['TLazSourceFileManager.FindComponentClass.TryRegisteredClasses found: ',FoundComponentClass.ClassName]);

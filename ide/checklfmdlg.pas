@@ -197,6 +197,7 @@ var
     // search in registered classes
     RegComp:=IDEComponentPalette.FindComponent(ObjNode.TypeName);
     if (RegComp<>nil) and (RegComp.GetUnitName<>'') then exit;
+    // search in global registered classes
     if GetClass(ObjNode.TypeName) <> nil then
       Exit;
     // class is missing

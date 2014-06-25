@@ -41,6 +41,8 @@ type
       out MissingClasses: TStrings// e.g. MyFrame2:TMyFrame
       ): TModalResult; virtual; abstract;
     class function Priority: integer; virtual; // higher priority is tested first
+    class function DefaultComponentClass: TComponentClass; virtual;
+    class function FindComponentClass({%H-}aClassName: string): TComponentClass; virtual;
   end;
   TUnitResourcefileFormatClass = class of TUnitResourcefileFormat;
   TUnitResourcefileFormatArr = array of TUnitResourcefileFormatClass;
@@ -56,6 +58,7 @@ type
     class function GetClassNameFromStream(s: TStream; out IsInherited: Boolean): shortstring; override;
     class function CreateReader(s: TStream; var DestroyDriver: boolean): TReader; override;
     class function CreateWriter(s: TStream; var DestroyDriver: boolean): TWriter; override;
+    class function FindComponentClass(aClassName: string): TComponentClass; override;
   end;
 
 var
@@ -139,11 +142,35 @@ begin
   Result := CreateLRSWriter(s, DestroyDriver);
 end;
 
+class function TCustomLFMUnitResourceFileFormat.FindComponentClass(
+  aClassName: string): TComponentClass;
+begin
+  if CompareText(aClassName,'TForm')=0 then
+    Result:=TForm
+  else if CompareText(aClassName,'TFrame')=0 then
+    Result:=TFrame
+  else if CompareText(aClassName,'TDataModule')=0 then
+    Result:=TDataModule
+  else
+    Result:=nil;
+end;
+
 { TUnitResourcefileFormat }
 
 class function TUnitResourcefileFormat.Priority: integer;
 begin
   Result:=0;
+end;
+
+class function TUnitResourcefileFormat.DefaultComponentClass: TComponentClass;
+begin
+  Result:=TForm;
+end;
+
+class function TUnitResourcefileFormat.FindComponentClass(aClassName: string
+  ): TComponentClass;
+begin
+  Result:=nil;
 end;
 
 end.
