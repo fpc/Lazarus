@@ -19,7 +19,7 @@ unit UnitResources;
 interface
 
 uses
-  Classes, SysUtils, LCLMemManager, Forms;
+  Classes, SysUtils, LCLMemManager, Forms, LResources;
 
 type
 
@@ -30,11 +30,12 @@ type
     class function  FindResourceDirective(Source: TObject): boolean; virtual; abstract;
     class function  GetUnitResourceFilename(AUnitFilename: string; Loading: boolean): string; virtual; abstract;
     class procedure TextStreamToBinStream(ATxtStream, ABinStream: TExtMemoryStream); virtual; abstract;
-    class procedure BinStreamToTextStream(ABinStream, ATextStream: TExtMemoryStream); virtual; abstract;
+    class procedure BinStreamToTextStream(ABinStream, ATxtStream: TExtMemoryStream); virtual; abstract;
     class function  GetClassNameFromStream(s: TStream; out IsInherited: Boolean): shortstring; virtual; abstract;
     class function  CreateReader(s: TStream; var DestroyDriver: boolean): TReader; virtual; abstract;
     class function  CreateWriter(s: TStream; var DestroyDriver: boolean): TWriter; virtual; abstract;
-    class function  QuickCheckResourceBuffer(PascalBuffer, LFMBuffer: TObject; // TCodeBuffer
+    class function  QuickCheckResourceBuffer(
+      PascalBuffer, LFMBuffer: TObject; // TCodeBuffer
       out LFMType, LFMComponentName, LFMClassName: string;
       out LCLVersion: string;
       out MissingClasses: TStrings// e.g. MyFrame2:TMyFrame
@@ -43,6 +44,19 @@ type
   end;
   TUnitResourcefileFormatClass = class of TUnitResourcefileFormat;
   TUnitResourcefileFormatArr = array of TUnitResourcefileFormatClass;
+
+  { TCustomLFMUnitResourceFileFormat }
+
+  TCustomLFMUnitResourceFileFormat = class(TUnitResourcefileFormat)
+  public
+    class function ResourceDirectiveFilename: string; virtual;
+    class function GetUnitResourceFilename(AUnitFilename: string; {%H-}Loading: boolean): string; override;
+    class procedure TextStreamToBinStream(ATxtStream, ABinStream: TExtMemoryStream); override;
+    class procedure BinStreamToTextStream(ABinStream, ATxtStream: TExtMemoryStream); override;
+    class function GetClassNameFromStream(s: TStream; out IsInherited: Boolean): shortstring; override;
+    class function CreateReader(s: TStream; var DestroyDriver: boolean): TReader; override;
+    class function CreateWriter(s: TStream; var DestroyDriver: boolean): TWriter; override;
+  end;
 
 var
   LFMUnitResourceFileFormat: TUnitResourcefileFormatClass = nil;// set by IDE
@@ -77,6 +91,52 @@ end;
 function GetUnitResourcefileFormats: TUnitResourcefileFormatArr;
 begin
   Result := GUnitResourcefileFormats;
+end;
+
+{ TCustomLFMUnitResourceFileFormat }
+
+class function TCustomLFMUnitResourceFileFormat.ResourceDirectiveFilename: string;
+// Note: $R uses fpcres, which supports only a few formats like dfm and lfm.
+// In other words: If you want other formats you need to extend fpcres or use
+// other storages like include files (e.g. like the old lrs format).
+begin
+  Result := '*.lfm';
+end;
+
+class function TCustomLFMUnitResourceFileFormat.GetUnitResourceFilename(
+  AUnitFilename: string; Loading: boolean): string;
+begin
+  Result := ChangeFileExt(AUnitFilename,'.lfm');
+end;
+
+class procedure TCustomLFMUnitResourceFileFormat.TextStreamToBinStream(ATxtStream,
+  ABinStream: TExtMemoryStream);
+begin
+  LRSObjectTextToBinary(ATxtStream,ABinStream);
+end;
+
+class procedure TCustomLFMUnitResourceFileFormat.BinStreamToTextStream(ABinStream,
+  ATxtStream: TExtMemoryStream);
+begin
+  LRSObjectBinaryToText(ABinStream,ATxtStream);
+end;
+
+class function TCustomLFMUnitResourceFileFormat.GetClassNameFromStream(s: TStream;
+  out IsInherited: Boolean): shortstring;
+begin
+  Result := GetClassNameFromLRSStream(s,IsInherited);
+end;
+
+class function TCustomLFMUnitResourceFileFormat.CreateReader(s: TStream;
+  var DestroyDriver: boolean): TReader;
+begin
+  Result := CreateLRSReader(s,DestroyDriver);
+end;
+
+class function TCustomLFMUnitResourceFileFormat.CreateWriter(s: TStream;
+  var DestroyDriver: boolean): TWriter;
+begin
+  Result := CreateLRSWriter(s, DestroyDriver);
 end;
 
 { TUnitResourcefileFormat }
