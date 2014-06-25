@@ -147,7 +147,7 @@ begin
     Writer.WriteRootComponent(AComponent);
     XMLConfig.Flush;
   finally
-    if DestroyDriver then
+    if DestroyDriver and (Writer<>nil) then
       Writer.Driver.Free;
     Writer.Free;
   end;
