@@ -44,58 +44,6 @@ tools\updatepofiles %IDE_RST% languages\lazaruside.po
 tools\updatepofiles %DBGD_RST% languages\debuggerstrconst.po
 @if exist %DBGD_RST% echo RST found
 
-@REM CodeTools
-@set CodeTools_RST=components\codetools\units\%ArchOS%\CodeToolsStrConsts.rst
-tools\updatepofiles %CodeTools_RST% components\codetools\languages\codetoolsstrconsts.po
-@if exist %CodeTools_RST% echo RST found
-
-@REM LCL
-@set LCL_RST=lcl\units\%ArchOS%\lclstrconsts.rst
-tools\updatepofiles %LCL_RST% lcl\languages\lclstrconsts.po
-@if exist %LCL_RST% echo RST found
-
-@REM LazReport
-@set LazReport_RST=components\lazreport\source\lib\%ArchOS%\lr_const.rst
-tools\updatepofiles %LazReport_RST% components\lazreport\source\languages\lr_const.po
-@if exist %LazReport_RST% echo RST found
-
-@REM MemDS
-@set MemDS_RST=components\memds\lib\%ArchOsWS%\frmselectdataset.rst
-tools\updatepofiles %MemDS_RST% components\memds\languages\frmselectdataset.po
-@if exist %MemDS_RST% echo RST found
-
-@REM Printers
-@set Printers_RST=components\printers\design\lib\%ArchOsWS%\ideprinting.rst
-tools\updatepofiles %Printers_RST% components\printers\design\languages\ideprinting.po
-@if exist %Printers_RST% echo RST found
-
-@REM ProjectTemplates
-@set ProjectTemplates_RST=components\projecttemplates\lib\%ArchOsWS%\frmtemplatevariables.rst
-tools\updatepofiles %ProjectTemplates_RST% components\projecttemplates\languages\frmtemplatevariables.po
-@if exist %ProjectTemplates_RST% echo RST found
-
-@set ProjectTemplates_RST=components\projecttemplates\lib\%ArchOsWS%\idetemplateproject.rst
-tools\updatepofiles %ProjectTemplates_RST% components\projecttemplates\languages\idetemplateproject.po
-@if exist %ProjectTemplates_RST% echo RST found
-
-@set ProjectTemplates_RST=components\projecttemplates\lib\%ArchOsWS%\projecttemplates.rst
-tools\updatepofiles %ProjectTemplates_RST% components\projecttemplates\languages\projecttemplates.po
-@if exist %ProjectTemplates_RST% echo RST found
-
-@REM TDBF
-@set TDBF_RST=components\tdbf\lib\%ArchOsWS%\registerdbf.rst
-tools\updatepofiles %TDBF_RST% components\tdbf\languages\registerdbf.po
-@if exist %TDBF_RST% echo RST found
-
-@REM TP_IPro
-@set TP_IPro_RST=components\turbopower_ipro\units\%ArchOsWS%\ipconst.rst
-tools\updatepofiles %TP_IPro_RST% components\turbopower_ipro\languages\ipconst.po
-@if exist %TP_IPro_RST% echo RST found
-
-@set TP_IPro_RST=components\turbopower_ipro\units\%ArchOsWS%\iputils.rst
-tools\updatepofiles %TP_IPro_RST% components\turbopower_ipro\languages\iputils.po
-@if exist %TP_IPro_RST% echo RST found
-
 @REM LazDataDesktop
 @set LazDataDesktop_RST=tools\lazdatadesktop\lib\%ArchOS%\lazdatadeskstr.rst
 tools\updatepofiles %LazDataDesktop_RST% tools\lazdatadesktop\languages\lazdatadesktop.po
