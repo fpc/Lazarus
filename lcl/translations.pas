@@ -160,7 +160,8 @@ procedure TranslateResourceStrings(const BaseFilename, Lang, FallbackLang: strin
 
 function UTF8ToSystemCharSet(const s: string): string; inline;
 
-function UpdatePoFile(Files: TStrings; const POFilename: string): boolean;
+function UpdatePoFile(RSTFiles: TStrings; const POFilename: string): boolean;
+procedure UpdatePoFileTranslations(const BasePOFilename: string; BasePOFile: TPOFile = nil);
 
 implementation
 
@@ -257,63 +258,64 @@ begin
   FindCloseUTF8(FileInfo);
 end;
 
-function UpdatePOFile(Files: TStrings; const POFilename: string): boolean;
+procedure UpdatePoFileTranslations(const BasePOFilename: string; BasePOFile: TPOFile);
+var
+  j: Integer;
+  Lines: TStringList;
+  FreeBasePOFile: Boolean;
+  TranslatedPOFile: TPOFile;
+  E: EPOFileError;
+begin
+  // Update translated PO files
+  FreeBasePOFile := false;
+  Lines := FindAllTranslatedPoFiles(BasePOFilename);
+  try
+    for j:=0 to Lines.Count-1 do begin
+      TranslatedPOFile := TPOFile.Create(Lines[j], true);
+      try
+        TranslatedPOFile.Tag:=1;
+        if BasePOFile=nil then begin
+          BasePOFile := TPOFile.Create(BasePOFilename, true);
+          FreeBasePOFile := true;
+        end;
+        TranslatedPOFile.UpdateTranslation(BasePOFile);
+        try
+          TranslatedPOFile.SaveToFile(Lines[j]);
+        except
+          on Ex: Exception do begin
+            E := EPOFileError.Create(Ex.Message);
+            E.ResFileName:=Lines[j];
+            E.POFileName:=BasePOFileName;
+            raise E;
+          end;
+        end;
+      finally
+        TranslatedPOFile.Free;
+      end;
+    end;
+  finally
+    if FreeBasePOFile then
+      BasePOFile.Free;
+    Lines.Free;
+  end;
+end;
+
+function UpdatePOFile(RSTFiles: TStrings; const POFilename: string): boolean;
 var
   InputLines: TStringList;
   Filename: string;
-  BasePoFile, POFile: TPoFile;
+  BasePoFile: TPoFile;
   i: Integer;
   E: EPOFileError;
-
-  procedure UpdatePoFilesTranslation;
-  var
-    j: Integer;
-    Lines: TStringList;
-  begin
-    // Update translated PO files
-    Lines := FindAllTranslatedPoFiles(POFilename);
-    try
-      for j:=0 to Lines.Count-1 do begin
-        POFile := TPOFile.Create(Lines[j], true);
-        try
-          POFile.Tag:=1;
-          POFile.UpdateTranslation(BasePOFile);
-          try
-            POFile.SaveToFile(Lines[j]);
-          except
-            on Ex: Exception do begin
-              E := EPOFileError.Create(Ex.Message);
-              E.ResFileName:=Lines[j];
-              E.POFileName:=POFileName;
-              raise E;
-            end;
-          end;
-        finally
-          POFile.Free;
-        end;
-      end;
-    finally
-      Lines.Free;
-    end;
-  end;
-
 begin
   Result := false;
 
-  if (Files=nil) or (Files.Count=0) then begin
-
+  if (RSTFiles=nil) or (RSTFiles.Count=0) then begin
     if FileExistsUTF8(POFilename) then begin
-      // just update translated po files
-      BasePOFile := TPOFile.Create(POFilename, true);
-      try
-        UpdatePoFilesTranslation;
-      finally
-        BasePOFile.Free;
-      end;
+      // just update translated po RSTFiles
+      UpdatePoFileTranslations(POFilename);
     end;
-
     exit;
-
   end;
 
   InputLines := TStringList.Create;
@@ -325,9 +327,9 @@ begin
       BasePOFile := TPOFile.Create;
     BasePOFile.Tag:=1;
 
-    // Update po file with lrt or/and rst files
-    for i:=0 to Files.Count-1 do begin
-      Filename:=Files[i];
+    // Update po file with lrt or/and rst RSTFiles
+    for i:=0 to RSTFiles.Count-1 do begin
+      Filename:=RSTFiles[i];
       if (CompareFileExt(Filename,'.lrt')=0) or 
          (CompareFileExt(Filename,'.rst')=0) or 
          (CompareFileExt(Filename,'.rsj')=0) then
@@ -357,7 +359,7 @@ begin
     BasePOFile.SaveToFile(POFilename);
     Result := BasePOFile.Modified;
 
-    UpdatePOFilesTranslation;
+    UpdatePoFileTranslations(POFilename,BasePoFile);
 
   finally
     InputLines.Free;
