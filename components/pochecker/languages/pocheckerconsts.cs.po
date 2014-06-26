@@ -198,8 +198,14 @@ msgstr ""
 "Chyba ukládání souboru:\n"
 "%s\n"
 
+#: pocheckerconsts.sselectalltests
+msgid "Select &All"
+msgstr ""
+
 #: pocheckerconsts.sselectbasictests
-msgid "Select basic tests"
+#, fuzzy
+#| msgid "Select basic tests"
+msgid "Select &Basic"
 msgstr "Vybrat záklaní testy"
 
 #: pocheckerconsts.sselecttesttypes
@@ -221,3 +227,8 @@ msgstr "Překlad"
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics for:"
 msgstr "Statistiky překladu pro:"
+
+#: pocheckerconsts.sunselectalltests
+msgid "&Unselect All"
+msgstr ""
+

@@ -196,13 +196,13 @@ msgstr ""
 "%s\n"
 
 #: pocheckerconsts.sselectalltests
-msgid "Select &All Tests"
+msgid "Select &All"
 msgstr ""
 
 #: pocheckerconsts.sselectbasictests
 #, fuzzy
-#| msgid "Select Basic Tests"
-msgid "Select &Basic Tests"
+#| msgid "Select &Basic Tests"
+msgid "Select &Basic"
 msgstr "Seleccione pruebas básicas"
 
 #: pocheckerconsts.sselecttesttypes
@@ -226,6 +226,6 @@ msgid "Translation statistics for:"
 msgstr ""
 
 #: pocheckerconsts.sunselectalltests
-msgid "&Unselect All Tests"
+msgid "&Unselect All"
 msgstr ""
 
