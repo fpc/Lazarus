@@ -516,6 +516,7 @@ resourcestring
   lisMenuDiff = 'Diff ...';
   lisMenuConvertDFMtoLFM = 'Convert Binary DFM to Text LFM + Check Syntax ...';
   lisMenuCheckLFM = 'Check LFM File in Editor';
+  lisMenuDelphiConversion = 'Delphi Conversion';
   lisMenuConvertDelphiUnit = 'Convert Delphi Unit to Lazarus Unit ...';
   lisMenuConvertDelphiProject = 'Convert Delphi Project to Lazarus Project ...';
   lisMenuConvertDelphiPackage = 'Convert Delphi Package to Lazarus Package ...';

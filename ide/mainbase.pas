@@ -1016,7 +1016,7 @@ begin
     CreateMenuItem(ParentMI,itmToolManageExamples,'itmToolManageExamples',lisMenuExampleProjects, 'camera');
     CreateMenuItem(ParentMI,itmToolDiff,'itmToolDiff',lisMenuDiff, 'menu_tool_diff');
 
-    CreateMenuSeparatorSection(mnuTools,itmDelphiConversion,'itmDelphiConversion');
+    CreateMenuSubSection(mnuTools,itmDelphiConversion,'itmDelphiConversion',lisMenuDelphiConversion,'menu_tool_dfm_to_lfm');
     ParentMI:=itmDelphiConversion;
     CreateMenuItem(ParentMI,itmToolCheckLFM,'itmToolCheckLFM',lisMenuCheckLFM, 'menu_tool_check_lfm');
     CreateMenuItem(ParentMI,itmToolConvertDelphiUnit,'itmToolConvertDelphiUnit',lisMenuConvertDelphiUnit,'menu_tool_dfm_to_lfm');
