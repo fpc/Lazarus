@@ -195,8 +195,14 @@ msgstr ""
 "ファイル保存中のエラー：\n"
 "%s\n"
 
+#: pocheckerconsts.sselectalltests
+msgid "Select All Tests"
+msgstr ""
+
 #: pocheckerconsts.sselectbasictests
-msgid "Select basic tests"
+#, fuzzy
+#| msgid "Select basic tests"
+msgid "Select Basic Tests"
 msgstr "基本テストを選択"
 
 #: pocheckerconsts.sselecttesttypes
@@ -218,4 +224,8 @@ msgstr "訳文"
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics for:"
 msgstr "翻訳状況："
+
+#: pocheckerconsts.sunselectalltests
+msgid "Unselect All Tests"
+msgstr ""
 

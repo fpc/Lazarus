@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -108,9 +107,7 @@ msgstr "A(z) %s azonosító nem található ebben: %s"
 
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
-msgstr ""
-"[Sor: %d] Nem megfelelő és/vagy érvénytelen format() paraméterek a "
-"következőben:"
+msgstr "[Sor: %d] Nem megfelelő és/vagy érvénytelen format() paraméterek a következőben:"
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -198,8 +195,14 @@ msgstr ""
 "Hiba a fájl mentésekor:\n"
 "%s\n"
 
+#: pocheckerconsts.sselectalltests
+msgid "Select All Tests"
+msgstr ""
+
 #: pocheckerconsts.sselectbasictests
-msgid "Select basic tests"
+#, fuzzy
+#| msgid "Select basic tests"
+msgid "Select Basic Tests"
 msgstr "Alapvető tesztek kijelölése"
 
 #: pocheckerconsts.sselecttesttypes
@@ -221,3 +224,8 @@ msgstr "Fordítás"
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics for:"
 msgstr "Fordítási statisztika ehhez:"
+
+#: pocheckerconsts.sunselectalltests
+msgid "Unselect All Tests"
+msgstr ""
+

@@ -194,8 +194,14 @@ msgstr ""
 "Ошибка сохранения файла:\n"
 "%s\n"
 
+#: pocheckerconsts.sselectalltests
+msgid "Select All Tests"
+msgstr ""
+
 #: pocheckerconsts.sselectbasictests
-msgid "Select basic tests"
+#, fuzzy
+#| msgid "Select basic tests"
+msgid "Select Basic Tests"
 msgstr "Выбрать базовые тесты"
 
 #: pocheckerconsts.sselecttesttypes
@@ -217,4 +223,8 @@ msgstr "Перевод"
 #: pocheckerconsts.stranslationstatistics
 msgid "Translation statistics for:"
 msgstr "Статистика перевода для:"
+
+#: pocheckerconsts.sunselectalltests
+msgid "Unselect All Tests"
+msgstr ""
 

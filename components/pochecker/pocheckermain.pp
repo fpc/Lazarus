@@ -130,6 +130,9 @@ begin
   NoErrLabel.Visible := False;
   CurTestHeaderLabel.Caption := sCurrentTest;
   CurPoHeaderLabel.Caption := sCurrentPoFile;
+  SelectAllBtn.Caption := sSelectAllTests;
+  SelectBasicBtn.Caption := sSelectBasicTests;
+  UnselectAllBtn.Caption := sUnselectAllTests;
 end;
 
 
@@ -196,8 +199,8 @@ begin
 end;
 
 
-procedure TPoCheckerForm.OnTestEnd(const ATestName: string;
-  const ErrorCount: integer);
+procedure TPoCheckerForm.OnTestEnd(const ATestName: string; const ErrorCount: integer);
+
 begin
   //CurTestLabel.Caption := '';
   //CurPoLabel.Caption :=  '';
