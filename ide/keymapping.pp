@@ -998,8 +998,8 @@ begin
   ecGotoLineNumber:      SetCombo(VK_G,[ssCtrl],VK_UNKNOWN,[], VK_Q,[SSCtrl],VK_G,[]);
   ecFindNextWordOccurrence:SetSingle(VK_UNKNOWN,[]);
   ecFindPrevWordOccurrence:SetSingle(VK_UNKNOWN,[]);
-  ecJumpBack:            SetSingle(VK_H,[ssCtrl]);
-  ecJumpForward:         SetSingle(VK_H,[ssCtrl,ssShift]);
+  ecJumpBack:            SetSingle(VK_H,[ssCtrl],VK_LEFT,[ssAlt]);
+  ecJumpForward:         SetSingle(VK_H,[ssCtrl,ssShift],VK_RIGHT,[ssAlt]);
   ecAddJumpPoint:        SetSingle(VK_UNKNOWN,[]);
   ecJumpToPrevError:     SetSingle(VK_F8,[ssCtrl, ssShift]);
   ecJumpToNextError:     SetSingle(VK_F8,[ssCtrl]);
