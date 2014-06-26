@@ -23,13 +23,13 @@ const
     optRunAllTestsOnAllChildren: TPoTestOptions = [];
 
     PoTestOptionNames: array[TPoTestOption] of String = (
-      'Check number of items',
-      'Check for incompatible format arguments',
-      'Check missing identifiers',
-      'Check for mismatches in untranslated strings',
-      'Check for duplicate untranslated values',
-      'Check percentage of (un)translated and fuzzy strings',
-      'Find all translated po-files'
+      sCheckNumberOfItems,
+      sCheckForIncompatibleFormatArguments,
+      sCheckMissingIdentifiers,
+      sCheckForMismatchesInUntranslatedStrings,
+      sCheckForDuplicateUntranslatedValues,
+      sCheckStatistics,
+      sFindAllTranslatedPoFiles
     );
 
 Type
