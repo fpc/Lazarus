@@ -58,7 +58,6 @@ ResourceString
   ctsEndOfFile = 'end of file';
   ctsPositionNotInSource = 'Position not in source';
   ctsInvalidClassName = 'invalid class name="%s"';
-  ctsSourceOfUnitNotFound = 'source of unit not found: %s';
   ctsclassNotFound = 'class "%s" not found';
   ctsinvalidClassName2 = 'invalid class name "%s"';
   ctsinvalidVariableName = 'invalid variable name "%s"';

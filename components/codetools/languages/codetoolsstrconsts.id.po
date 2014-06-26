@@ -828,10 +828,6 @@ msgstr "sumber bukan unit"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "sumber tidak ditemukan: unit %s"
 
-#: codetoolsstrconsts.ctssourceofunitnotfound
-msgid "source of unit not found: %s"
-msgstr ""
-
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr "src path untuk unit yang dikompilasi"

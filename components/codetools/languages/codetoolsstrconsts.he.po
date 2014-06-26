@@ -827,10 +827,6 @@ msgstr "הקוד אינו יחידה"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "הקוד לא נמצא: יחידה s%"
 
-#: codetoolsstrconsts.ctssourceofunitnotfound
-msgid "source of unit not found: %s"
-msgstr "הקוד של היחידה לא נמצא: s%"
-
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr "נתיב המקור עבור יחידות מהודרות"

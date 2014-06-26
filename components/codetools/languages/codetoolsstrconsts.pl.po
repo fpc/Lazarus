@@ -831,10 +831,6 @@ msgstr "źródło nie jest modułem"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "nieznaleziono źródła: moduł %s"
 
-#: codetoolsstrconsts.ctssourceofunitnotfound
-msgid "source of unit not found: %s"
-msgstr ""
-
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr "ścieżka źródłowa dla kompilowanych modułów"

@@ -820,10 +820,6 @@ msgstr "исходный код не является модулем"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "не найден исходный код: модуль %s. Проверьте путь к исходному коду FPC."
 
-#: codetoolsstrconsts.ctssourceofunitnotfound
-msgid "source of unit not found: %s"
-msgstr "не найден исходный код модуля: %s"
-
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr "путь к исходным кодам для откомпилированных модулей"

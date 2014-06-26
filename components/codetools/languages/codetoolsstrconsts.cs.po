@@ -828,10 +828,6 @@ msgstr "zdroj není jednotka"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "nenalezen zdroj: jednotka %s"
 
-#: codetoolsstrconsts.ctssourceofunitnotfound
-msgid "source of unit not found: %s"
-msgstr "nenalezen zdroj jednotky: %s"
-
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr "zdrojová cesta pro přeložené jednotky"

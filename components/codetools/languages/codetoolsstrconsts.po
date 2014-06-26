@@ -808,10 +808,6 @@ msgstr ""
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr ""
 
-#: codetoolsstrconsts.ctssourceofunitnotfound
-msgid "source of unit not found: %s"
-msgstr ""
-
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr ""

@@ -828,10 +828,6 @@ msgstr "Quelle ist keine Unit"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "Quelltext nicht gefunden: Unit %s. Überprüfen Sie das FPC-Quelltextverzeichnis."
 
-#: codetoolsstrconsts.ctssourceofunitnotfound
-msgid "source of unit not found: %s"
-msgstr "Quelle der Unit nicht gefunden: %s"
-
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr "Quellpfad für kompilierte Units"

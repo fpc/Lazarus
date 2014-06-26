@@ -828,10 +828,6 @@ msgstr "код не є модулем"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "текст програми не знайдений: модуль %s"
 
-#: codetoolsstrconsts.ctssourceofunitnotfound
-msgid "source of unit not found: %s"
-msgstr "джерело або модуль не знайдені: %s"
-
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr "шлях до текстів програм зібраних модулів"

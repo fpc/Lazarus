@@ -827,10 +827,6 @@ msgstr "broncode is geen unit"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "broncode niet gevonden: unit %s"
 
-#: codetoolsstrconsts.ctssourceofunitnotfound
-msgid "source of unit not found: %s"
-msgstr ""
-
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
 msgstr ""
