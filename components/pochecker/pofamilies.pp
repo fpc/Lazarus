@@ -635,6 +635,7 @@ begin
     ErrorLog.Add('');
     ErrorLog.Add('');
   end;
+  WarningCount := NrTotal;
   DoTestEnd(PoTestOptionNames[ptoCheckFormatArgs], WarningCount);
   //debugln('TPoFamily.CheckIncompatibleFormatArgs: ',Dbgs(ErrorCount),' Errors');
 end;

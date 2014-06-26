@@ -38,8 +38,10 @@ type
   { TPoCheckerForm }
 
   TPoCheckerForm = class(TForm)
+    UnselectAllBtn: TButton;
+    SelectAllBtn: TButton;
+    SelectBasicBtn: TButton;
     FindAllPOsCheckBox: TCheckBox;
-    SelectAllCheckBox: TCheckBox;
     CurTestHeaderLabel: TLabel;
     CurPoHeaderLabel: TLabel;
     CurTestLabel: TLabel;
@@ -56,22 +58,24 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure OpenBtnClick(Sender: TObject);
     procedure RunBtnClick(Sender: TObject);
-    procedure SelectAllCheckBoxClick(Sender: TObject);
+    procedure SelectAllBtnClick(Sender: TObject);
+    procedure SelectBasicBtnClick(Sender: TObject);
+    procedure UnselectAllBtnClick(Sender: TObject);
   private
     PoFamily: TPoFamily;
-    FChosenMasterName: String;
-    FChosenChildName: String;
-    procedure OnTestStart(const ATestName, APoFileName: String);
-    procedure OnTestEnd(const ATestName: String; const ErrorCount: Integer);
+    FChosenMasterName: string;
+    FChosenChildName: string;
+    procedure OnTestStart(const ATestName, APoFileName: string);
+    procedure OnTestEnd(const ATestName: string; const ErrorCount: integer);
     procedure FillTestListBox;
     function GetOptionsFromListBox: TPoTestOptions;
-    procedure ShowError(const Msg: String);
-    function TrySelectFile: Boolean;
+    procedure ShowError(const Msg: string);
+    function TrySelectFile: boolean;
     procedure RunSelectedTests;
     procedure ClearAndDisableStatusPanel;
   public
 
-  end; 
+  end;
 
 var
   PoCheckerForm: TPoCheckerForm;
@@ -106,8 +110,12 @@ begin
   if Lang <> '' then
   begin
     Lang := copy(Lang, 1, 2);
-    Translations.TranslateUnitResourceStrings('PoCheckerConsts', '..'+DirectorySeparator+'languages'+DirectorySeparator+'pocheckerconsts.'+Lang+'.po');
-    Translations.TranslateUnitResourceStrings('LCLStrConsts', '..'+DirectorySeparator+'languages'+DirectorySeparator+'lclstrconsts.'+Lang+'.po');
+    Translations.TranslateUnitResourceStrings('PoCheckerConsts',
+      '..' + DirectorySeparator + 'languages' + DirectorySeparator +
+      'pocheckerconsts.' + Lang + '.po');
+    Translations.TranslateUnitResourceStrings('LCLStrConsts',
+      '..' + DirectorySeparator + 'languages' + DirectorySeparator +
+      'lclstrconsts.' + Lang + '.po');
   end;
   {$ENDIF}
 
@@ -124,10 +132,13 @@ begin
   CurPoHeaderLabel.Caption := sCurrentPoFile;
 end;
 
+
 procedure TPoCheckerForm.FormDestroy(Sender: TObject);
 begin
-  if Assigned(PoFamily) then PoFamily.Free;
+  if Assigned(PoFamily) then
+    PoFamily.Free;
 end;
+
 
 procedure TPoCheckerForm.OpenBtnClick(Sender: TObject);
 begin
@@ -135,46 +146,65 @@ begin
   begin
     RunBtn.Enabled := True;
     TestListBox.Enabled := True;
-    SelectAllCheckBox.Enabled := True;
+    SelectAllBtn.Enabled := True;
+    SelectBasicBtn.Enabled := True;
+    UnselectAllBtn.Enabled := True;
   end
-  else begin
+  else
+  begin
     RunBtn.Enabled := False;
     TestListBox.Enabled := False;
-    SelectAllCheckBox.Enabled := False;
+    SelectAllBtn.Enabled := False;
+    SelectBasicBtn.Enabled := False;
+    UnselectAllBtn.Enabled := False;
   end;
 end;
+
 
 procedure TPoCheckerForm.RunBtnClick(Sender: TObject);
 begin
   RunSelectedTests;
 end;
 
-procedure TPoCheckerForm.SelectAllCheckBoxClick(Sender: TObject);
-var
-  cb: TCheckBox;
-  i: Integer;
+procedure TPoCheckerForm.SelectAllBtnClick(Sender: TObject);
 begin
-  cb := Sender as TCheckBox;
-  // Set / reset "basic" CheckListBox items.
-  for i := 0 to TestListBox.Count - 3 do
-    TestListBox.Checked[i] := cb.Checked;
+  TestListBox.CheckAll(cbChecked, False, False);
 end;
 
-procedure TPoCheckerForm.OnTestStart(const ATestName, APoFileName: String);
+
+procedure TPoCheckerForm.SelectBasicBtnClick(Sender: TObject);
+var
+  i: integer;
+begin
+  // Set / reset "basic" CheckListBox items.
+  for i := 0 to TestListBox.Count - 3 do
+    TestListBox.Checked[i] := True;
+end;
+
+procedure TPoCheckerForm.UnselectAllBtnClick(Sender: TObject);
+begin
+  TestListBox.CheckAll(cbUnchecked, False, False);
+end;
+
+
+procedure TPoCheckerForm.OnTestStart(const ATestName, APoFileName: string);
 begin
   //debugln('OnTestStart: ATestName = "',AtestName,'" APoFileName = "',APoFileName);
   CurTestLabel.Caption := ATestName;
-  CurPoLabel.Caption :=  APoFileName;
+  CurPoLabel.Caption := APoFileName;
   Application.ProcessMessages;
 end;
 
-procedure TPoCheckerForm.OnTestEnd(const ATestName: String; const ErrorCount: Integer);
+
+procedure TPoCheckerForm.OnTestEnd(const ATestName: string;
+  const ErrorCount: integer);
 begin
   //CurTestLabel.Caption := '';
   //CurPoLabel.Caption :=  '';
-  debugln('OnTestEnd [',ATestName,']: ErrorCount = ',DbgS(ErrorCount));
+  debugln('OnTestEnd [', ATestName, ']: ErrorCount = ', DbgS(ErrorCount));
   //Application.ProcessMessages;
 end;
+
 
 procedure TPoCheckerForm.FillTestListBox;
 var
@@ -182,22 +212,28 @@ var
 begin
   for Opt := Low(PoTestOptionNames) to Pred(High(PoTestOptionNames)) do
     case Opt of
-      ptoCheckNrOfItems: TestListBox.Items.Add(sCheckNumberOfItems);
-      ptoCheckFormatArgs: TestListBox.Items.Add(sCheckForIncompatibleFormatArguments);
-      ptoCheckMissingIdentifiers: TestListBox.Items.Add(sCheckMissingIdentifiers);
-      ptoCheckMismatchedOriginals: TestListBox.Items.Add(sCheckForMismatchesInUntranslatedStrings);
-      ptoCheckDuplicateOriginals: TestListBox.Items.Add(sCheckForDuplicateUntranslatedValues);
-      ptoCheckStatistics: TestListBox.Items.Add(sCheckStatistics);
+      ptoCheckNrOfItems:
+        TestListBox.Items.Add(sCheckNumberOfItems);
+      ptoCheckFormatArgs:
+        TestListBox.Items.Add(sCheckForIncompatibleFormatArguments);
+      ptoCheckMissingIdentifiers:
+        TestListBox.Items.Add(sCheckMissingIdentifiers);
+      ptoCheckMismatchedOriginals:
+        TestListBox.Items.Add(sCheckForMismatchesInUntranslatedStrings);
+      ptoCheckDuplicateOriginals:
+        TestListBox.Items.Add(sCheckForDuplicateUntranslatedValues);
+      ptoCheckStatistics:
+        TestListBox.Items.Add(sCheckStatistics);
       else
         TestListBox.Items.Add(PoTestOptionNames[Opt]);
     end;
-  SelectAllCheckBox.Caption := sSelectBasicTests;
 end;
+
 
 function TPoCheckerForm.GetOptionsFromListBox: TPoTestOptions;
 var
   Opt: TPoTestOption;
-  Index: Integer;
+  Index: integer;
 begin
   Result := [];
   for Opt := Low(TpoTestOption) to Pred(High(TPoTestOption)) do
@@ -213,16 +249,18 @@ begin
     Result := Result + [High(TPoTestOption)];
 end;
 
-procedure TPoCheckerForm.ShowError(const Msg: String);
+
+procedure TPoCheckerForm.ShowError(const Msg: string);
 begin
-  MessageDlg('Po-checker', Msg, mtError, [mbOk], 0);
+  MessageDlg('Po-checker', Msg, mtError, [mbOK], 0);
 end;
 
-function TPoCheckerForm.TrySelectFile: Boolean;
+
+function TPoCheckerForm.TrySelectFile: boolean;
 var
-  Fn: String;
-  ShortFn: String;
-  OK: Boolean;
+  Fn: string;
+  ShortFn: string;
+  OK: boolean;
 begin
   NoErrLabel.Visible := False;
   OK := False;
@@ -243,11 +281,13 @@ begin
       begin
         FChosenMasterName := '';
         FChosenChildName := '';
-        ShowError(Format(sNotAProperFileName,[ShortFn]));
+        ShowError(Format(sNotAProperFileName, [ShortFn]));
       end
-      else if not FileExistsUtf8(FChosenMasterName) then
+      else
+      if not FileExistsUtf8(FChosenMasterName) then
       begin
-        ShowError(Format(sCannotFindMaster,[ExtractFileName(FChosenMasterName), ShortFn]));
+        ShowError(Format(sCannotFindMaster,
+          [ExtractFileName(FChosenMasterName), ShortFn]));
         FChosenMasterName := '';
         FChosenChildName := '';
       end;
@@ -265,7 +305,7 @@ begin
         on E: Exception do
         begin
           OK := False;
-          ShowError(Format(sErrorOnCreate,[E.Message]));
+          ShowError(Format(sErrorOnCreate, [E.Message]));
           if Assigned(PoFamily) then
           begin
             try
@@ -273,7 +313,7 @@ begin
             except
               on E: Exception do
               begin
-                ShowError(Format(sErrorOnCleanUp,[E.Message]));
+                ShowError(Format(sErrorOnCleanUp, [E.Message]));
               end;
             end;
           end;
@@ -284,10 +324,11 @@ begin
   Result := OK;
 end;
 
+
 procedure TPoCheckerForm.RunSelectedTests;
 var
   Options: TPoTestOptions;
-  ErrorCount, WarningCount: Integer;
+  ErrorCount, WarningCount: integer;
   SL: TStrings;
   ResultDlg: TResultDlgForm;
 begin
@@ -302,17 +343,18 @@ begin
   SL := TStringList.Create;
   try
     StatusPanel.Enabled := True;
-    if (not (ptoFindAllChildren in Options)) and Assigned(PoFamily.Child)
-        and (PoFamily.ChildName <> FChosenChildName) then
+    if (not (ptoFindAllChildren in Options)) and Assigned(PoFamily.Child) and
+      (PoFamily.ChildName <> FChosenChildName) then
       PoFamily.ChildName := FChosenChildName;
     PoFamily.RunTests(Options, ErrorCount, WarningCount, SL);
-    debugln('RunSelectedTests: ',Format(sTotalErrors,[ErrorCount]));
-    debugln('                  ',Format(sTotalWarnings,[WarningCount]));
-    if (ErrorCount > 0) or (WarningCount > 0) or (ptoCheckStatistics in Options) then
+    debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
+    debugln('                  ', Format(sTotalWarnings, [WarningCount]));
+    if (ErrorCount > 0) or (WarningCount > 0) or
+      (ptoCheckStatistics in Options) then
     begin
-      SL.Add(Format(sTotalErrors,[ErrorCount]));
-      SL.Add(Format(sTotalWarnings,[WarningCount]));
-      ResultDlg := TResultDlgForm.Create(Nil);
+      SL.Add(Format(sTotalErrors, [ErrorCount]));
+      SL.Add(Format(sTotalWarnings, [WarningCount]));
+      ResultDlg := TResultDlgForm.Create(nil);
       try
         ResultDlg.Log.Assign(SL);
         FreeAndNil(SL);                 //No need to keep 2 copies of this data
@@ -329,6 +371,7 @@ begin
   end;
 end;
 
+
 procedure TPoCheckerForm.ClearAndDisableStatusPanel;
 begin
   CurTestLabel.Caption := '';
@@ -337,27 +380,27 @@ begin
 end;
 
 
-function SameItem(Item1, Item2: TPoFileItem): Boolean;
+function SameItem(Item1, Item2: TPoFileItem): boolean;
 begin
   Result := (Item1.Identifier = Item2.Identifier) and
-            (Item1.Original = Item2.Original) and
-            (Item1.Context = Item2.Context) and
-            (Item1.Flags = Item2.Flags) and
-            (Item1.PreviousID = Item2.PreviousID) and
-            (Item1.Translation = Item2.Translation);
+    (Item1.Original = Item2.Original) and (Item1.Context = Item2.Context) and
+    (Item1.Flags = Item2.Flags) and (Item1.PreviousID = Item2.PreviousID) and
+    (Item1.Translation = Item2.Translation);
 end;
+
 
 procedure IDEMenuClicked(Sender: TObject);
 begin
   ShowPoCheckerForm;
 end;
 
+
 procedure Register;
 begin
   {$IFNDEF POCHECKERSTANDALONE}
-  RegisterIDEMenuCommand(itmSecondaryTools, 'mnuPoChecker', rsPoChecker, nil, @IDEMenuClicked);
+  RegisterIDEMenuCommand(itmSecondaryTools, 'mnuPoChecker',
+    rsPoChecker, nil, @IDEMenuClicked);
   {$ENDIF}
 end;
 
 end.
-
