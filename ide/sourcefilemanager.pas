@@ -851,9 +851,20 @@ function TFileOpenClose.FindFile(SearchPath: String): Boolean;
 //  Searches for FileName in SearchPath
 //  If FileName is not found, we'll check extensions pp and pas too
 //  Returns true if found. FFileName contains the full file+path in that case
-var TempFile,TempPath,CurPath,FinalFile, Ext: String;
+var TempFile,TempPath,CurPath: String;
     p,c: Integer;
     PasExt: TPascalExtType;
+
+  function SetFileIfExists(const Ext: String): Boolean;
+  var
+    FinalFile: String;
+  begin
+    FinalFile:=ExpandFileNameUTF8(CurPath+TempFile+Ext);
+    Result:=FileExistsUTF8(FinalFile);
+    if Result then
+      FFileName:=FinalFile;
+  end;
+
 begin
   if SearchPath='' then SearchPath:='.';
   Result:=true;
@@ -879,21 +890,11 @@ begin
         2: TempFile:=UpperCase(FFileName);
       end;
       if ExtractFileExt(TempFile)='' then begin
-        for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do begin
-          Ext:=PascalExtension[PasExt];
-          FinalFile:=ExpandFileNameUTF8(CurPath+TempFile+Ext);
-          if FileExistsUTF8(FinalFile) then begin
-            FFileName:=FinalFile;
-            exit;
-          end;
-        end;
-      end else begin
-        FinalFile:=ExpandFileNameUTF8(CurPath+TempFile);
-        if FileExistsUTF8(FinalFile) then begin
-          FFileName:=FinalFile;
-          exit;
-        end;
-      end;
+        for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do
+          if SetFileIfExists(PascalExtension[PasExt]) then exit;
+      end
+      else
+        if SetFileIfExists('') then exit;
     end;
   end;
   Result:=false;
