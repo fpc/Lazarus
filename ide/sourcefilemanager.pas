@@ -80,6 +80,7 @@ type
     function GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
     // Used by OpenEditorFile
     function OpenResource: TModalResult;
+    function PrepareInternalFile: TModalResult;
     function PrepareRevert: TModalResult;
   public
     constructor Create(AManager: TLazSourceFileManager);
@@ -393,7 +394,7 @@ begin
         FNewEditorInfo := FNewUnitInfo.OpenEditorInfo[0];
         if MacroListViewer.MacroByFullName(FFileName) <> nil then
           FNewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(FFileName).GetAsSource;
-        Result:=FManager.OpenFileInSourceEditor(FNewEditorInfo, FNewEditorInfo.PageIndex,
+        FManager.OpenFileInSourceEditor(FNewEditorInfo, FNewEditorInfo.PageIndex,
           FNewEditorInfo.WindowID, FFlags, True);
       end;
       // else unknown internal file
@@ -401,6 +402,41 @@ begin
     end;
   end;
   exit(mrOk);
+end;
+
+function TFileOpenClose.PrepareInternalFile: TModalResult;
+var
+  NewBuf: TCodeBuffer;
+begin
+  if (copy(FFileName, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
+  then begin
+    FUnitIndex:=Project1.IndexOfFilename(FFilename);
+    if (FUnitIndex < 0) then begin
+      NewBuf := CodeToolBoss.SourceCache.CreateFile(FFileName);
+      if MacroListViewer.MacroByFullName(FFileName) <> nil then
+        NewBuf.Source := MacroListViewer.MacroByFullName(FFileName).GetAsSource;
+      FNewUnitInfo:=TUnitInfo.Create(NewBuf);
+      FNewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
+      Project1.AddFile(FNewUnitInfo,false);
+    end
+    else begin
+      FNewUnitInfo:=Project1.Units[FUnitIndex];
+    end;
+    FNewUnitInfo.Flags := FNewUnitInfo.Flags + [uifInternalFile];
+
+    if FNewUnitInfo.OpenEditorInfoCount > 0 then begin
+      FNewEditorInfo := FNewUnitInfo.OpenEditorInfo[0];
+      SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(FNewEditorInfo.WindowID);
+      SourceEditorManager.ActiveSourceWindow.PageIndex:= FNewEditorInfo.PageIndex;
+    end
+    else begin
+      FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo;
+      FManager.OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags, FUseWindowID);
+    end;
+    //exit(mrIgnore);
+  end;
+  // unknown internal file => ignore
+  exit(mrIgnore);
 end;
 
 function TFileOpenClose.OpenEditorFile(AFileName: string; PageIndex,WindowIndex: integer;
@@ -443,38 +479,9 @@ begin
   end;
 
   if (ofInternalFile in Flags) then begin
-    if (copy(AFileName, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
-    then begin
-      FilenameNoPath := AFileName;
-
-      FUnitIndex:=Project1.IndexOfFilename(AFilename);
-      if (FUnitIndex < 0) then begin
-        NewBuf := CodeToolBoss.SourceCache.CreateFile(AFileName);
-        if MacroListViewer.MacroByFullName(AFileName) <> nil then
-          NewBuf.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
-        FNewUnitInfo:=TUnitInfo.Create(NewBuf);
-        FNewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
-        Project1.AddFile(FNewUnitInfo,false);
-      end
-      else begin
-        FNewUnitInfo:=Project1.Units[FUnitIndex];
-      end;
-      FNewUnitInfo.Flags := FNewUnitInfo.Flags + [uifInternalFile];
-
-      if FNewUnitInfo.OpenEditorInfoCount > 0 then begin
-        FNewEditorInfo := FNewUnitInfo.OpenEditorInfo[0];
-        SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(FNewEditorInfo.WindowID);
-        SourceEditorManager.ActiveSourceWindow.PageIndex:= FNewEditorInfo.PageIndex;
-      end
-      else begin
-        FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo;
-        Result:=FManager.OpenFileInSourceEditor(FNewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
-      end;
-      Result:=mrOK;
-      exit;
-    end;
-    // unknown internal file => ignore
-    exit(mrOK);
+    Result := PrepareInternalFile;
+    if Result = mrIgnore then exit(mrOK);
+    Assert(Result = mrOK);
   end;
 
   // normalize filename
