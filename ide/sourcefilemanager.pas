@@ -76,6 +76,8 @@ type
     function OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
       PageIndex, WindowIndex: integer; Flags: TOpenFlags;
       UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
+    // Used by GetAvailableUnitEditorInfo
+    function AvailSrcWindowIndex(AnUnitInfo: TUnitInfo): Integer;
     // Used by OpenEditorFile
     function OpenResource: TModalResult;
     function ChangeEditorPage: TModalResult;
@@ -520,6 +522,22 @@ begin
   Result:=mrOk;
 end;
 
+function TFileOpenClose.AvailSrcWindowIndex(AnUnitInfo: TUnitInfo): Integer;
+var
+  i: Integer;
+begin
+  Result := -1;
+  i := 0;
+  if AnUnitInfo.OpenEditorInfoCount > 0 then
+    while (i < SourceEditorManager.SourceWindowCount) and
+          (SourceEditorManager.SourceWindowByLastFocused[i].IndexOfEditorInShareWith
+             (TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)) >= 0)
+    do
+      inc(i);
+  if i < SourceEditorManager.SourceWindowCount then
+    Result := SourceEditorManager.IndexOfSourceWindow(SourceEditorManager.SourceWindowByLastFocused[i]);
+end;
+
 function TFileOpenClose.GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
   ACaretPoint: TPoint; WantedTopLine: integer): TUnitEditorInfo;
 
@@ -543,22 +561,6 @@ function TFileOpenClose.GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
       eoeaInViewSoftCenterOnly: if not AEdit.IsCaretOnScreen(ACaretPoint, True) then exit;
     end;
     Result := True;
-  end;
-
-  function AvailSrcWindowIndex: Integer;
-  var
-    i: Integer;
-  begin
-    Result := -1;
-    i := 0;
-    if AnUnitInfo.OpenEditorInfoCount > 0 then
-      while (i < SourceEditorManager.SourceWindowCount) and
-            (SourceEditorManager.SourceWindowByLastFocused[i].IndexOfEditorInShareWith
-               (TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent)) >= 0)
-      do
-        inc(i);
-    if i < SourceEditorManager.SourceWindowCount then
-      Result := SourceEditorManager.IndexOfSourceWindow(SourceEditorManager.SourceWindowByLastFocused[i]);
   end;
 
 var
@@ -646,7 +648,7 @@ begin
         eoeaNoNewTab: ;
         eoeaNewTabInExistingWindowOnly:
           begin
-            w := AvailSrcWindowIndex;
+            w := AvailSrcWindowIndex(AnUnitInfo);
             if w >= 0 then
               if OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w, []) = mrOk then
                 Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
@@ -659,7 +661,7 @@ begin
           end;
         eoeaNewTabInExistingOrNewWindow:
           begin
-            w := AvailSrcWindowIndex;
+            w := AvailSrcWindowIndex(AnUnitInfo);
             if w < 0 then w := SourceEditorManager.SourceWindowCount;
             if OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w, []) = mrOk then
               Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
