@@ -95,8 +95,7 @@ type
     destructor Destroy; override;
     function OpenEditorFile(AFileName: string; APageIndex, AWindowIndex: integer;
       AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean=False): TModalResult;
-    function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
-      ActiveUnitInfo: TUnitInfo): TModalResult;
+    function OpenFileAtCursor: TModalResult;
   end;
 
   { TLazSourceFileManager }
@@ -958,8 +957,7 @@ begin
   end;
 end;
 
-function TFileOpenClose.OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo): TModalResult;
+function TFileOpenClose.OpenFileAtCursor: TModalResult;
 var
   IsIncludeDirective: boolean;
   Found: Boolean;
@@ -969,15 +967,13 @@ var
   SearchPath: String;
 begin
   Result:=mrCancel;
-  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
-  FActiveSrcEdit:=ActiveSrcEdit;
-  FActiveUnitInfo:=ActiveUnitInfo;
-  BaseDir:=ExtractFilePath(ActiveUnitInfo.Filename);
+  if (FActiveSrcEdit=nil) or (FActiveUnitInfo=nil) then exit;
+  BaseDir:=ExtractFilePath(FActiveUnitInfo.Filename);
 
   // parse filename at cursor
   IsIncludeDirective:=false;
   Found:=false;
-  FileName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.LogicalCaretXY,
+  FileName:=GetFilenameAtRowCol(FActiveSrcEdit.EditorComponent.LogicalCaretXY,
                              IsIncludeDirective);
   if FileName='' then exit;
 
@@ -1022,8 +1018,8 @@ begin
   if (not Found) and (System.Pos('.',FileName)>0) and (not IsIncludeDirective) then
   begin
     // for example 'SysUtils.CompareText'
-    FileName:=ActiveSrcEdit.EditorComponent.GetWordAtRowCol(
-      ActiveSrcEdit.EditorComponent.LogicalCaretXY);
+    FileName:=FActiveSrcEdit.EditorComponent.GetWordAtRowCol(
+      FActiveSrcEdit.EditorComponent.LogicalCaretXY);
     if (FileName<>'') and IsValidIdent(FileName) then begin
       // search pascal unit
       AUnitName:=FileName;
@@ -1087,7 +1083,9 @@ var
 begin
   Opener := TFileOpenClose.Create(Self);
   try
-    Result := Opener.OpenFileAtCursor(ActiveSrcEdit, ActiveUnitInfo);
+    Opener.FActiveSrcEdit := ActiveSrcEdit;
+    Opener.FActiveUnitInfo := ActiveUnitInfo;
+    Result := Opener.OpenFileAtCursor;
   finally
     Opener.Free;
   end;
