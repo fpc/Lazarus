@@ -61,11 +61,18 @@ type
   TFileOpenClose = class
   private
     FManager: TLazSourceFileManager;
+    // Used by OpenEditorFile
     FFileName: string;
     FPageIndex, FWindowIndex: integer;
     FEditorInfo: TUnitEditorInfo;
     FFlags: TOpenFlags;
     FUseWindowID: Boolean;
+    // Used by OpenFileAtCursor
+    FActiveSrcEdit: TSourceEditor;
+    FActiveUnitInfo: TUnitInfo;
+    function CheckIfIncludeDirectiveInFront(const Line: string; X: integer): boolean;
+    function FindFile(var CurFileName: String; CurSearchPath: String): Boolean;
+    function GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
     function OpenResource(NewUnitInfo: TUnitInfo): TModalResult;
   public
     constructor Create(AManager: TLazSourceFileManager);
@@ -689,119 +696,118 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenEditorFile END');{$ENDIF}
 end;
 
-function TFileOpenClose.OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo): TModalResult;
-
-  function FindFile(var CurFileName: String; CurSearchPath: String): Boolean;
-  //  Searches for FileName in SearchPath
-  //  If FileName is not found, we'll check extensions pp and pas too
-  //  Returns true if found. FName contains the full file+path in that case
-  var TempFile,TempPath,CurPath,FinalFile, Ext: String;
-      p,c: Integer;
-      PasExt: TPascalExtType;
-  begin
-    if CurSearchPath='' then CurSearchPath:='.';
-    Result:=true;
-    TempPath:=CurSearchPath;
-    while TempPath<>'' do begin
-      p:=pos(';',TempPath);
-      if p=0 then p:=length(TempPath)+1;
-      CurPath:=copy(TempPath,1,p-1);
-      Delete(TempPath,1,p);
-      if CurPath='' then continue;
-      CurPath:=AppendPathDelim(CurPath);
-      if not FilenameIsAbsolute(CurPath) then begin
-        if ActiveUnitInfo.IsVirtual then
-          CurPath:=AppendPathDelim(Project1.ProjectDirectory)+CurPath
-        else
-          CurPath:=AppendPathDelim(ExtractFilePath(ActiveUnitInfo.Filename))+CurPath;
+function TFileOpenClose.FindFile(var CurFileName: String; CurSearchPath: String): Boolean;
+//  Searches for FileName in SearchPath
+//  If FileName is not found, we'll check extensions pp and pas too
+//  Returns true if found. FName contains the full file+path in that case
+var TempFile,TempPath,CurPath,FinalFile, Ext: String;
+    p,c: Integer;
+    PasExt: TPascalExtType;
+begin
+  if CurSearchPath='' then CurSearchPath:='.';
+  Result:=true;
+  TempPath:=CurSearchPath;
+  while TempPath<>'' do begin
+    p:=pos(';',TempPath);
+    if p=0 then p:=length(TempPath)+1;
+    CurPath:=copy(TempPath,1,p-1);
+    Delete(TempPath,1,p);
+    if CurPath='' then continue;
+    CurPath:=AppendPathDelim(CurPath);
+    if not FilenameIsAbsolute(CurPath) then begin
+      if FActiveUnitInfo.IsVirtual then
+        CurPath:=AppendPathDelim(Project1.ProjectDirectory)+CurPath
+      else
+        CurPath:=AppendPathDelim(ExtractFilePath(FActiveUnitInfo.Filename))+CurPath;
+    end;
+    for c:=0 to 2 do begin
+      // FPC searches first lowercase, then keeping case, then uppercase
+      case c of
+        0: TempFile:=LowerCase(CurFileName);
+        1: TempFile:=CurFileName;
+        2: TempFile:=UpperCase(CurFileName);
       end;
-      for c:=0 to 2 do begin
-        // FPC searches first lowercase, then keeping case, then uppercase
-        case c of
-          0: TempFile:=LowerCase(CurFileName);
-          1: TempFile:=CurFileName;
-          2: TempFile:=UpperCase(CurFileName);
-        end;
-        if ExtractFileExt(TempFile)='' then begin
-          for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do begin
-            Ext:=PascalExtension[PasExt];
-            FinalFile:=ExpandFileNameUTF8(CurPath+TempFile+Ext);
-            if FileExistsUTF8(FinalFile) then begin
-              CurFileName:=FinalFile;
-              exit;
-            end;
-          end;
-        end else begin
-          FinalFile:=ExpandFileNameUTF8(CurPath+TempFile);
+      if ExtractFileExt(TempFile)='' then begin
+        for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do begin
+          Ext:=PascalExtension[PasExt];
+          FinalFile:=ExpandFileNameUTF8(CurPath+TempFile+Ext);
           if FileExistsUTF8(FinalFile) then begin
             CurFileName:=FinalFile;
             exit;
           end;
         end;
-      end;
-    end;
-    Result:=false;
-  end;
-
-  function CheckIfIncludeDirectiveInFront(const Line: string;
-    X: integer): boolean;
-  var
-    DirectiveEnd, DirectiveStart: integer;
-    Directive: string;
-  begin
-    Result:=false;
-    DirectiveEnd:=X;
-    while (DirectiveEnd>1) and (Line[DirectiveEnd-1] in [' ',#9]) do
-      dec(DirectiveEnd);
-    DirectiveStart:=DirectiveEnd-1;
-    while (DirectiveStart>0) and (Line[DirectiveStart]<>'$') do
-      dec(DirectiveStart);
-    Directive:=uppercase(copy(Line,DirectiveStart,DirectiveEnd-DirectiveStart));
-    if (Directive='$INCLUDE') or (Directive='$I') then begin
-      if ((DirectiveStart>1) and (Line[DirectiveStart-1]='{'))
-      or ((DirectiveStart>2)
-        and (Line[DirectiveStart-2]='(') and (Line[DirectiveStart-1]='*'))
-      then begin
-        Result:=true;
-      end;
-    end;
-  end;
-
-  function GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
-  var
-    Line: string;
-    Len, Stop: integer;
-    StopChars: set of char;
-  begin
-    Result := '';
-    IsIncludeDirective:=false;
-    if (XY.Y >= 1) and (XY.Y <= ActiveSrcEdit.EditorComponent.Lines.Count) then
-    begin
-      Line := ActiveSrcEdit.EditorComponent.Lines.Strings[XY.Y - 1];
-      Len := Length(Line);
-      if (XY.X >= 1) and (XY.X <= Len + 1) then begin
-        StopChars := [',',';',':','[',']','{','}','(',')','''','"','`'
-                     ,'#','%','=','>'];
-        Stop := XY.X;
-        if Stop>Len then Stop:=Len;
-        while (Stop >= 1) and (not (Line[Stop] in ['''','"','`'])) do
-          dec(Stop);
-        if Stop<1 then
-          StopChars:=StopChars+[' ',#9]; // no quotes in front => use spaces as boundaries
-        Stop := XY.X;
-        while (Stop <= Len) and (not (Line[Stop] in StopChars)) do
-          Inc(Stop);
-        while (XY.X > 1) and (not (Line[XY.X - 1] in StopChars)) do
-          Dec(XY.X);
-        if Stop > XY.X then begin
-          Result := Copy(Line, XY.X, Stop - XY.X);
-          IsIncludeDirective:=CheckIfIncludeDirectiveInFront(Line,XY.X);
+      end else begin
+        FinalFile:=ExpandFileNameUTF8(CurPath+TempFile);
+        if FileExistsUTF8(FinalFile) then begin
+          CurFileName:=FinalFile;
+          exit;
         end;
       end;
     end;
   end;
+  Result:=false;
+end;
 
+function TFileOpenClose.CheckIfIncludeDirectiveInFront(const Line: string;
+  X: integer): boolean;
+var
+  DirectiveEnd, DirectiveStart: integer;
+  Directive: string;
+begin
+  Result:=false;
+  DirectiveEnd:=X;
+  while (DirectiveEnd>1) and (Line[DirectiveEnd-1] in [' ',#9]) do
+    dec(DirectiveEnd);
+  DirectiveStart:=DirectiveEnd-1;
+  while (DirectiveStart>0) and (Line[DirectiveStart]<>'$') do
+    dec(DirectiveStart);
+  Directive:=uppercase(copy(Line,DirectiveStart,DirectiveEnd-DirectiveStart));
+  if (Directive='$INCLUDE') or (Directive='$I') then begin
+    if ((DirectiveStart>1) and (Line[DirectiveStart-1]='{'))
+    or ((DirectiveStart>2)
+      and (Line[DirectiveStart-2]='(') and (Line[DirectiveStart-1]='*'))
+    then begin
+      Result:=true;
+    end;
+  end;
+end;
+
+function TFileOpenClose.GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
+var
+  Line: string;
+  Len, Stop: integer;
+  StopChars: set of char;
+begin
+  Result := '';
+  IsIncludeDirective:=false;
+  if (XY.Y >= 1) and (XY.Y <= FActiveSrcEdit.EditorComponent.Lines.Count) then
+  begin
+    Line := FActiveSrcEdit.EditorComponent.Lines.Strings[XY.Y - 1];
+    Len := Length(Line);
+    if (XY.X >= 1) and (XY.X <= Len + 1) then begin
+      StopChars := [',',';',':','[',']','{','}','(',')','''','"','`'
+                   ,'#','%','=','>'];
+      Stop := XY.X;
+      if Stop>Len then Stop:=Len;
+      while (Stop >= 1) and (not (Line[Stop] in ['''','"','`'])) do
+        dec(Stop);
+      if Stop<1 then
+        StopChars:=StopChars+[' ',#9]; // no quotes in front => use spaces as boundaries
+      Stop := XY.X;
+      while (Stop <= Len) and (not (Line[Stop] in StopChars)) do
+        Inc(Stop);
+      while (XY.X > 1) and (not (Line[XY.X - 1] in StopChars)) do
+        Dec(XY.X);
+      if Stop > XY.X then begin
+        Result := Copy(Line, XY.X, Stop - XY.X);
+        IsIncludeDirective:=CheckIfIncludeDirectiveInFront(Line,XY.X);
+      end;
+    end;
+  end;
+end;
+
+function TFileOpenClose.OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo): TModalResult;
 var
   IsIncludeDirective: boolean;
   Found: Boolean;
@@ -812,6 +818,8 @@ var
 begin
   Result:=mrCancel;
   if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  FActiveSrcEdit:=ActiveSrcEdit;
+  FActiveUnitInfo:=ActiveUnitInfo;
   BaseDir:=ExtractFilePath(ActiveUnitInfo.Filename);
 
   // parse filename at cursor
