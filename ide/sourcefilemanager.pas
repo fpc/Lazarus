@@ -51,12 +51,11 @@ uses
   ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool, BasicCodeTools,
   SynEdit, UnitResources, IDEExternToolIntf, ExtToolDialog, PublishModule;
 
-
 type
 
-  { TFileOpenClose }
+  { TFileOpener }
 
-  TFileOpenClose = class
+  TFileOpener = class
   private
     FFileName: string;
     FUseWindowID: Boolean;
@@ -92,8 +91,7 @@ type
     function FindFile(SearchPath: String): Boolean;
     function GetFilenameAtRowCol(XY: TPoint): string;
   public
-    constructor Create;
-    destructor Destroy; override;
+    // These methods have a global wrapper
     function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
       ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
     function OpenEditorFile(APageIndex, AWindowIndex: integer;
@@ -270,7 +268,7 @@ type
     IgnoreEditor: TSourceEditor): string;
   procedure UpdateDefaultPasFileExt;
 
-  // Wrappers for TFileOpenClose methods.
+  // Wrappers for TFileOpener methods.
   // WindowIndex is WindowID
   function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
     ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
@@ -319,14 +317,14 @@ begin
     LazProjectFileDescriptors.DefaultPascalFileExt:=DefPasExt;
 end;
 
-// Wrappers for TFileOpenClose methods.
+// Wrappers for TFileOpener methods.
 
 function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
   ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
 var
-  Opener: TFileOpenClose;
+  Opener: TFileOpener;
 begin
-  Opener := TFileOpenClose.Create;
+  Opener := TFileOpener.Create;
   try
     Result := Opener.GetAvailableUnitEditorInfo(AnUnitInfo,ACaretPoint,WantedTopLine);
   finally
@@ -337,9 +335,9 @@ end;
 function OpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
 var
-  Opener: TFileOpenClose;
+  Opener: TFileOpener;
 begin
-  Opener := TFileOpenClose.Create;
+  Opener := TFileOpener.Create;
   try
     Opener.FFileName := AFileName;
     Opener.FUseWindowID := UseWindowID;
@@ -351,9 +349,9 @@ end;
 
 function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo): TModalResult;
 var
-  Opener: TFileOpenClose;
+  Opener: TFileOpener;
 begin
-  Opener := TFileOpenClose.Create;
+  Opener := TFileOpener.Create;
   try
     Opener.FActiveSrcEdit := ActiveSrcEdit;
     Opener.FActiveUnitInfo := ActiveUnitInfo;
@@ -366,9 +364,9 @@ end;
 function OpenMainUnit(PageIndex, WindowIndex: integer;
   Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
 var
-  Opener: TFileOpenClose;
+  Opener: TFileOpener;
 begin
-  Opener := TFileOpenClose.Create;
+  Opener := TFileOpener.Create;
   try
     Opener.FPageIndex := PageIndex;
     Opener.FWindowIndex := WindowIndex;
@@ -382,9 +380,9 @@ end;
 
 function RevertMainUnit: TModalResult;
 var
-  Opener: TFileOpenClose;
+  Opener: TFileOpener;
 begin
-  Opener := TFileOpenClose.Create;
+  Opener := TFileOpener.Create;
   try
     Result := Opener.RevertMainUnit;
   finally
@@ -392,19 +390,9 @@ begin
   end;
 end;
 
-{ TFileOpenClose }
+{ TFileOpener }
 
-constructor TFileOpenClose.Create;
-begin
-
-end;
-
-destructor TFileOpenClose.Destroy;
-begin
-  inherited Destroy;
-end;
-
-function TFileOpenClose.OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo): TModalResult;
+function TFileOpener.OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo): TModalResult;
 var
   NewSrcEdit: TSourceEditor;
   AFilename: string;
@@ -418,7 +406,7 @@ var
   AnUnitInfo: TUnitInfo;
   AShareEditor: TSourceEditor;
 begin
-  //debugln(['TFileOpenClose.OpenFileInSourceEditor ',AnEditorInfo.UnitInfo.Filename,' Window=',WindowIndex,'/',SourceEditorManager.SourceWindowCount,' Page=',PageIndex]);
+  //debugln(['TFileOpener.OpenFileInSourceEditor ',AnEditorInfo.UnitInfo.Filename,' Window=',WindowIndex,'/',SourceEditorManager.SourceWindowCount,' Page=',PageIndex]);
   AnUnitInfo := AnEditorInfo.UnitInfo;
   AFilename:=AnUnitInfo.Filename;
   if (FWindowIndex < 0) then
@@ -443,7 +431,7 @@ begin
 
   SrcNotebook.IncUpdateLock;
   try
-    //DebugLn(['TFileOpenClose.OpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
+    //DebugLn(['TFileOpener.OpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
     if (not (ofRevert in FFlags)) or (FPageIndex<0) then begin
       // create a new source editor
 
@@ -480,12 +468,12 @@ begin
       end else
         NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
       AnUnitInfo.ClearModifieds;
-      //DebugLn(['TFileOpenClose.OpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
+      //DebugLn(['TFileOpener.OpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
     end;
 
     NewSrcEdit.IsLocked := AnEditorInfo.IsLocked;
     AnEditorInfo.EditorComponent := NewSrcEdit;
-    //debugln(['TFileOpenClose.OpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
+    //debugln(['TFileOpener.OpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
 
     // restore source editor settings
     DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
@@ -523,7 +511,7 @@ begin
   Result:=mrOk;
 end;
 
-function TFileOpenClose.AvailSrcWindowIndex(AnUnitInfo: TUnitInfo): Integer;
+function TFileOpener.AvailSrcWindowIndex(AnUnitInfo: TUnitInfo): Integer;
 var
   i: Integer;
 begin
@@ -539,7 +527,7 @@ begin
     Result := SourceEditorManager.IndexOfSourceWindow(SourceEditorManager.SourceWindowByLastFocused[i]);
 end;
 
-function TFileOpenClose.GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
+function TFileOpener.GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
   ACaretPoint: TPoint; WantedTopLine: integer): TUnitEditorInfo;
 
   function EditorMatches(AEditInfo: TUnitEditorInfo;
@@ -679,14 +667,14 @@ begin
     Result := AnUnitInfo.OpenEditorInfo[0];
 end;
 
-function TFileOpenClose.OpenResource: TModalResult;
+function TFileOpener.OpenResource: TModalResult;
 var
   CloseFlags: TCloseFlags;
 begin
   // read form data
   if FilenameIsPascalUnit(FFilename) then begin
     // this could be a unit with a form
-    //debugln('TFileOpenClose.OpenResource ',FFilename,' ',OpenFlagsToString(Flags));
+    //debugln('TFileOpener.OpenResource ',FFilename,' ',OpenFlagsToString(Flags));
     if ([ofDoNotLoadResource]*FFlags=[])
     and ( (ofDoLoadResource in FFlags)
        or ((ofProjectLoading in FFlags)
@@ -695,13 +683,13 @@ begin
            and EnvironmentOptions.AutoCreateFormsOnOpen))
     then begin
       // -> try to (re)load the lfm file
-      //debugln(['TFileOpenClose.OpenResource Loading LFM for ',FNewUnitInfo.Filename,' LoadedDesigner=',FNewUnitInfo.LoadedDesigner]);
+      //debugln(['TFileOpener.OpenResource Loading LFM for ',FNewUnitInfo.Filename,' LoadedDesigner=',FNewUnitInfo.LoadedDesigner]);
       CloseFlags:=[cfSaveDependencies];
       if ofRevert in FFlags then
         Include(CloseFlags,cfCloseDependencies);
       Result:=SourceFileMgr.LoadLFM(FNewUnitInfo,FFlags,CloseFlags);
       if Result<>mrOk then begin
-        DebugLn(['TFileOpenClose.OpenResource LoadLFM failed']);
+        DebugLn(['TFileOpener.OpenResource LoadLFM failed']);
         exit;
       end;
     end else begin
@@ -714,7 +702,7 @@ begin
     Result:=SourceFileMgr.CloseUnitComponent(FNewUnitInfo,
                                [cfCloseDependencies,cfSaveDependencies]);
     if Result<>mrOk then begin
-      DebugLn(['TFileOpenClose.OpenResource CloseUnitComponent failed']);
+      DebugLn(['TFileOpener.OpenResource CloseUnitComponent failed']);
     end;
   end else begin
     Result:=mrOk;
@@ -723,7 +711,7 @@ begin
     FNewUnitInfo.LoadedDesigner:=false;
 end;
 
-procedure TFileOpenClose.CheckInternalFile;
+procedure TFileOpener.CheckInternalFile;
 var
   NewBuf: TCodeBuffer;
 begin
@@ -754,7 +742,7 @@ begin
   end;
 end;
 
-function TFileOpenClose.CheckRevert: TModalResult;
+function TFileOpener.CheckRevert: TModalResult;
 // revert: use source editor filename
 begin
   if (FPageIndex>=0) then begin
@@ -787,7 +775,7 @@ begin
   exit(mrOk);
 end;
 
-function TFileOpenClose.PrepareRevert(DiskFilename: String): TModalResult;
+function TFileOpener.PrepareRevert(DiskFilename: String): TModalResult;
 var
   WInd: integer;
   ed: TSourceEditor;
@@ -814,7 +802,7 @@ begin
   exit(mrOK);
 end;
 
-function TFileOpenClose.PrepareFile: TModalResult;
+function TFileOpener.PrepareFile: TModalResult;
 begin
   FUnitIndex:=Project1.IndexOfFilename(FFilename);
   FUnknownFile := (FUnitIndex < 0);
@@ -831,10 +819,10 @@ begin
   Result := mrOK;
 end;
 
-function TFileOpenClose.ChangeEditorPage: TModalResult;
+function TFileOpener.ChangeEditorPage: TModalResult;
 // file already open -> change source notebook page
 begin
-  //DebugLn(['TFileOpenClose.ChangeEditorPage file already open ',FNewUnitInfo.Filename,' WindowIndex=',FNewEditorInfo.WindowID,' PageIndex=',FNewEditorInfo.PageIndex]);
+  //DebugLn(['TFileOpener.ChangeEditorPage file already open ',FNewUnitInfo.Filename,' WindowIndex=',FNewEditorInfo.WindowID,' PageIndex=',FNewEditorInfo.PageIndex]);
   SourceEditorManager.SetWindowByIDAndPage(FNewEditorInfo.WindowID, FNewEditorInfo.PageIndex);
   if ofDoLoadResource in FFlags then
     Result:=OpenResource
@@ -842,7 +830,7 @@ begin
     Result:=mrOk;
 end;
 
-function TFileOpenClose.OpenKnown: TModalResult;
+function TFileOpener.OpenKnown: TModalResult;
 // project knows this file => all the meta data is known -> just load the source
 var
   LoadBufferFlags: TLoadBufferFlags;
@@ -859,7 +847,7 @@ begin
   Result:=LoadCodeBuffer(NewBuf,FFileName,LoadBufferFlags,
                          [ofProjectLoading,ofMultiOpen]*FFlags<>[]);
   if Result<>mrOk then begin
-    DebugLn(['TFileOpenClose.OpenKnownFile failed LoadCodeBuffer: ',FFilename]);
+    DebugLn(['TFileOpener.OpenKnownFile failed LoadCodeBuffer: ',FFilename]);
     exit;
   end;
   FNewUnitInfo.Source:=NewBuf;
@@ -868,7 +856,7 @@ begin
   FNewUnitInfo.Modified:=FNewUnitInfo.Source.FileOnDiskNeedsUpdate;
 end;
 
-function TFileOpenClose.OpenUnknown: TModalResult;
+function TFileOpener.OpenUnknown: TModalResult;
 // open unknown file, Never happens if ofRevert
 begin
   Result:=OpenUnknownFile;
@@ -883,7 +871,7 @@ begin
     FNewEditorInfo := nil;
 end;
 
-function TFileOpenClose.OpenUnknownFile: TModalResult;
+function TFileOpener.OpenUnknownFile: TModalResult;
 var
   Ext, NewProgramName, LPIFilename, ACaption, AText: string;
   PreReadBuf: TCodeBuffer;
@@ -958,7 +946,7 @@ begin
   Result:=mrOk;
 end;
 
-function TFileOpenClose.OpenNotExistingFile: TModalResult;
+function TFileOpener.OpenNotExistingFile: TModalResult;
 var
   NewFlags: TNewFlags;
 begin
@@ -999,7 +987,7 @@ begin
   end;
 end;
 
-function TFileOpenClose.OpenEditorFile(APageIndex, AWindowIndex: integer;
+function TFileOpener.OpenEditorFile(APageIndex, AWindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags): TModalResult;
 var
   s, DiskFilename: String;
@@ -1007,9 +995,9 @@ var
 begin
   {$IFDEF IDE_VERBOSE}
   DebugLn('');
-  DebugLn(['*** TFileOpenClose.OpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags),' Window=',WindowIndex,' Page=',PageIndex]);
+  DebugLn(['*** TFileOpener.OpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags),' Window=',WindowIndex,' Page=',PageIndex]);
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TFileOpenClose.OpenEditorFile START');{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TFileOpener.OpenEditorFile START');{$ENDIF}
   FPageIndex := APageIndex;
   FWindowIndex := AWindowIndex;
   FEditorInfo := AEditorInfo;
@@ -1040,7 +1028,7 @@ begin
   DiskFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(FFilename);
   if DiskFilename<>FFilename then begin
     // the case is different
-    DebugLn(['TFileOpenClose.OpenEditorFile Fixing file name: ',FFilename,' -> ',DiskFilename]);
+    DebugLn(['TFileOpener.OpenEditorFile Fixing file name: ',FFilename,' -> ',DiskFilename]);
     FFilename:=DiskFilename;
   end;
 
@@ -1056,11 +1044,11 @@ begin
   s:=ExtractFilename(FFilename);
   if (s='') or (s='.') or (s='..') then
   begin
-    DebugLn(['TFileOpenClose.OpenEditorFile ignoring special file: ',FFilename]);
+    DebugLn(['TFileOpener.OpenEditorFile ignoring special file: ',FFilename]);
     exit;
   end;
   if DirectoryExistsUTF8(FFileName) then begin
-    debugln(['TFileOpenClose.OpenEditorFile skipping directory ',FFileName]);
+    debugln(['TFileOpener.OpenEditorFile skipping directory ',FFileName]);
     exit(mrCancel);
   end;
 
@@ -1170,18 +1158,18 @@ begin
     // check readonly
     FNewUnitInfo.FileReadOnly:=FileExistsUTF8(FNewUnitInfo.Filename)
                               and (not FileIsWritable(FNewUnitInfo.Filename));
-    //debugln('[TFileOpenClose.OpenEditorFile] B');
+    //debugln('[TFileOpener.OpenEditorFile] B');
     // open file in source notebook
     Result:=OpenFileInSourceEditor(FNewEditorInfo);
     if Result<>mrOk then begin
-      DebugLn(['TFileOpenClose.OpenEditorFile failed OpenFileInSourceEditor: ',FFilename]);
+      DebugLn(['TFileOpener.OpenEditorFile failed OpenFileInSourceEditor: ',FFilename]);
       exit;
     end;
     // open resource component (designer, form, datamodule, ...)
     if FNewUnitInfo.OpenEditorInfoCount = 1 then
       Result:=OpenResource;
     if Result<>mrOk then begin
-      DebugLn(['TFileOpenClose.OpenEditorFile failed OpenResource: ',FFilename]);
+      DebugLn(['TFileOpener.OpenEditorFile failed OpenResource: ',FFilename]);
       exit;
     end;
   finally
@@ -1190,11 +1178,11 @@ begin
   end;
 
   Result:=mrOk;
-  //debugln('TFileOpenClose.OpenEditorFile END "',FFilename,'"');
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TFileOpenClose.OpenEditorFile END');{$ENDIF}
+  //debugln('TFileOpener.OpenEditorFile END "',FFilename,'"');
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TFileOpener.OpenEditorFile END');{$ENDIF}
 end;
 
-function TFileOpenClose.FindFile(SearchPath: String): Boolean;
+function TFileOpener.FindFile(SearchPath: String): Boolean;
 //  Searches for FileName in SearchPath
 //  If FileName is not found, we'll check extensions pp and pas too
 //  Returns true if found. FFileName contains the full file+path in that case
@@ -1247,7 +1235,7 @@ begin
   Result:=false;
 end;
 
-function TFileOpenClose.CheckIfIncludeDirectiveInFront(const Line: string;
+function TFileOpener.CheckIfIncludeDirectiveInFront(const Line: string;
   X: integer): boolean;
 var
   DirectiveEnd, DirectiveStart: integer;
@@ -1271,7 +1259,7 @@ begin
   end;
 end;
 
-function TFileOpenClose.GetFilenameAtRowCol(XY: TPoint): string;
+function TFileOpener.GetFilenameAtRowCol(XY: TPoint): string;
 var
   Line: string;
   Len, Stop: integer;
@@ -1305,7 +1293,7 @@ begin
   end;
 end;
 
-function TFileOpenClose.OpenFileAtCursor: TModalResult;
+function TFileOpener.OpenFileAtCursor: TModalResult;
 var
   Found: Boolean;
   BaseDir: String;
@@ -1386,12 +1374,12 @@ begin
   end;
 end;
 
-function TFileOpenClose.OpenMainUnit: TModalResult;
+function TFileOpener.OpenMainUnit: TModalResult;
 var
   MainUnitInfo: TUnitInfo;
 begin
   {$IFDEF IDE_VERBOSE}
-  debugln(['[TFileOpenClose.OpenMainUnit] A ProjectLoading=',ofProjectLoading in Flags,' MainUnitID=',Project1.MainUnitID]);
+  debugln(['[TFileOpener.OpenMainUnit] A ProjectLoading=',ofProjectLoading in Flags,' MainUnitID=',Project1.MainUnitID]);
   {$ENDIF}
   Result:=mrCancel;
   if (Project1=nil) or (Project1.MainUnitID<0) then exit;
@@ -1413,11 +1401,11 @@ begin
 
   Result:=mrOk;
   {$IFDEF IDE_VERBOSE}
-  debugln('[TFileOpenClose.OpenMainUnit] END');
+  debugln('[TFileOpener.OpenMainUnit] END');
   {$ENDIF}
 end;
 
-function TFileOpenClose.RevertMainUnit: TModalResult;
+function TFileOpener.RevertMainUnit: TModalResult;
 begin
   Result:=mrOk;
   if Project1.MainUnitID<0 then exit;
@@ -2057,8 +2045,7 @@ begin
 
   // if nothing modified then a simple Save can be skipped
   //debugln(['TLazSourceFileManager.SaveEditorFile A ',AnUnitInfo.Filename,' ',AnUnitInfo.NeedsSaveToDisk]);
-  if ([sfSaveToTestDir,sfSaveAs]*Flags=[])
-  and (not AnUnitInfo.NeedsSaveToDisk) then
+  if ([sfSaveToTestDir,sfSaveAs]*Flags=[]) and (not AnUnitInfo.NeedsSaveToDisk) then
   begin
     if AEditor.Modified then
     begin
