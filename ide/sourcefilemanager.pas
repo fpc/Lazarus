@@ -83,7 +83,7 @@ type
     function OpenKnown: TModalResult;
     function OpenUnknown: TModalResult;
     function OpenUnknownFile: TModalResult;
-    function OpenNotExistingFile(const AFileName: string; Flags: TOpenFlags): TModalResult;
+    function OpenNotExistingFile: TModalResult;
     function PrepareFile: TModalResult;
     function PrepareRevert(DiskFilename: String): TModalResult;
     // Used by OpenFileAtCursor
@@ -609,16 +609,15 @@ begin
   Result:=mrOk;
 end;
 
-function TFileOpenClose.OpenNotExistingFile(const AFileName: string;
-  Flags: TOpenFlags): TModalResult;
+function TFileOpenClose.OpenNotExistingFile: TModalResult;
 var
   NewFlags: TNewFlags;
 begin
-  if ofProjectLoading in Flags then begin
+  if ofProjectLoading in FFlags then begin
     // this is a file that was loaded last time, but was removed from disk
     Result:=IDEQuestionDialog(lisFileNotFound,
       Format(lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject,
-             [AFilename, LineEnding, LineEnding]),
+             [FFilename, LineEnding, LineEnding]),
       mtError, [mrIgnore, lisSkipFileAndContinueLoading,
                 mrAbort, lisAbortLoadingProject]);
     exit;
@@ -626,28 +625,28 @@ begin
 
   // Default to cancel
   Result:=mrCancel;
-  if ofQuiet in Flags then Exit;
+  if ofQuiet in FFlags then Exit;
 
-  if ofOnlyIfExists in Flags
-  then begin
+  if ofOnlyIfExists in FFlags then
+  begin
     IDEMessageDialog(lisFileNotFound,
-      Format(lisFileNotFound2, [AFilename])+LineEnding, mtInformation,[mbCancel]);
+      Format(lisFileNotFound2, [FFilename])+LineEnding, mtInformation,[mbCancel]);
     // cancel loading file
     Exit;
   end;
 
   if IDEMessageDialog(lisFileNotFound,
-      Format(lisFileNotFoundDoYouWantToCreateIt,[AFilename,LineEnding]),
+      Format(lisFileNotFoundDoYouWantToCreateIt,[FFilename,LineEnding]),
       mtInformation,[mbYes,mbNo])=mrYes then
   begin
     // create new file
     NewFlags:=[nfOpenInEditor,nfCreateDefaultSrc];
-    if ofAddToProject in Flags then
+    if ofAddToProject in FFlags then
       Include(NewFlags,nfIsPartOfProject);
-    if FilenameIsPascalSource(AFilename) then
-      Result:=MainIDE.DoNewEditorFile(FileDescriptorUnit,AFilename,'',NewFlags)
+    if FilenameIsPascalSource(FFilename) then
+      Result:=MainIDE.DoNewEditorFile(FileDescriptorUnit,FFilename,'',NewFlags)
     else
-      Result:=MainIDE.DoNewEditorFile(FileDescriptorText,AFilename,'',NewFlags);
+      Result:=MainIDE.DoNewEditorFile(FileDescriptorText,FFilename,'',NewFlags);
   end;
 end;
 
@@ -809,7 +808,7 @@ begin
         Result:=mrCancel;
         exit;
       end else begin
-        Result:=OpenNotExistingFile(FFilename,FFlags);
+        Result:=OpenNotExistingFile;
         exit;
       end;
     end;
