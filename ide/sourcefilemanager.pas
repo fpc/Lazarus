@@ -74,7 +74,7 @@ type
     FActiveUnitInfo: TUnitInfo;
     FIsIncludeDirective: boolean;
     function OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
-      PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+      PageIndex, WindowIndex: integer): TModalResult;
     // Used by GetAvailableUnitEditorInfo
     function AvailSrcWindowIndex(AnUnitInfo: TUnitInfo): Integer;
     // Used by OpenEditorFile
@@ -100,7 +100,7 @@ type
     function OpenEditorFile(APageIndex, AWindowIndex: integer;
       AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags): TModalResult;
     function OpenFileAtCursor: TModalResult;
-    function OpenMainUnit(PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+    function OpenMainUnit(PageIndex, WindowIndex: integer): TModalResult;
     function RevertMainUnit: TModalResult;
   end;
 
@@ -372,7 +372,8 @@ begin
   Opener := TFileOpenClose.Create;
   try
     Opener.FUseWindowID := UseWindowID;
-    Result := Opener.OpenMainUnit(PageIndex, WindowIndex, Flags);
+    Opener.FFlags := Flags;
+    Result := Opener.OpenMainUnit(PageIndex, WindowIndex);
   finally
     Opener.Free;
   end;
@@ -403,7 +404,7 @@ begin
 end;
 
 function TFileOpenClose.OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
-  PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
+  PageIndex, WindowIndex: integer): TModalResult;
 var
   NewSrcEdit: TSourceEditor;
   AFilename: string;
@@ -443,7 +444,7 @@ begin
   SrcNotebook.IncUpdateLock;
   try
     //DebugLn(['TFileOpenClose.OpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
-    if (not (ofRevert in Flags)) or (PageIndex<0) then begin
+    if (not (ofRevert in FFlags)) or (PageIndex<0) then begin
       // create a new source editor
 
       // update marks and cursor positions in Project1, so that merging the old
@@ -512,7 +513,7 @@ begin
   end;
 
   // update statusbar and focus editor
-  if (not (ofProjectLoading in Flags)) then begin
+  if (not (ofProjectLoading in FFlags)) then begin
     SourceEditorManager.ActiveEditor := NewSrcEdit;
     SourceEditorManager.ShowActiveWindowOnTop(True);
   end;
@@ -644,6 +645,7 @@ begin
       inc(LockRun);
     until (LockRun > 1) or (Result <> nil);
     FUseWindowID:=False;
+    FFlags:=[];
     if (Result = nil) then
       case Access.SearchOpenNew of
         eoeaNoNewTab: ;
@@ -651,20 +653,20 @@ begin
           begin
             w := AvailSrcWindowIndex(AnUnitInfo);
             if w >= 0 then
-              if OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w, []) = mrOk then
+              if OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w) = mrOk then
                 Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
           end;
         eoeaNewTabInNewWindowOnly:
           begin
             if OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo,
-                                      -1, SourceEditorManager.SourceWindowCount, []) = mrOk then
+                                      -1, SourceEditorManager.SourceWindowCount) = mrOk then
               Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
           end;
         eoeaNewTabInExistingOrNewWindow:
           begin
             w := AvailSrcWindowIndex(AnUnitInfo);
             if w < 0 then w := SourceEditorManager.SourceWindowCount;
-            if OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w, []) = mrOk then
+            if OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w) = mrOk then
               Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
           end;
       end;
@@ -745,7 +747,7 @@ begin
     end
     else begin
       FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo;
-      OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags);
+      OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex);
     end;
   end;
 end;
@@ -772,7 +774,7 @@ begin
         if MacroListViewer.MacroByFullName(FFileName) <> nil then
           FNewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(FFileName).GetAsSource;
         FUseWindowID:=True;
-        OpenFileInSourceEditor(FNewEditorInfo, FNewEditorInfo.PageIndex, FNewEditorInfo.WindowID, FFlags);
+        OpenFileInSourceEditor(FNewEditorInfo, FNewEditorInfo.PageIndex, FNewEditorInfo.WindowID);
       end;
       // else unknown internal file
       exit(mrIgnore);
@@ -1068,7 +1070,7 @@ begin
   if (not (ofRevert in FFlags))
   and (CompareFilenames(Project1.MainFilename,FFilename)=0)
   then begin
-    Result:=OpenMainUnit(FPageIndex,FWindowIndex,FFlags);
+    Result:=OpenMainUnit(FPageIndex,FWindowIndex);
     exit;
   end;
 
@@ -1167,7 +1169,7 @@ begin
                               and (not FileIsWritable(FNewUnitInfo.Filename));
     //debugln('[TFileOpenClose.OpenEditorFile] B');
     // open file in source notebook
-    Result:=OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags);
+    Result:=OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex);
     if Result<>mrOk then begin
       DebugLn(['TFileOpenClose.OpenEditorFile failed OpenFileInSourceEditor: ',FFilename]);
       exit;
@@ -1381,8 +1383,7 @@ begin
   end;
 end;
 
-function TFileOpenClose.OpenMainUnit(PageIndex, WindowIndex: integer;
-  Flags: TOpenFlags): TModalResult;
+function TFileOpenClose.OpenMainUnit(PageIndex, WindowIndex: integer): TModalResult;
 var
   MainUnitInfo: TUnitInfo;
 begin
@@ -1394,7 +1395,7 @@ begin
   MainUnitInfo:=Project1.MainUnitInfo;
 
   // check if main unit is already open in source editor
-  if (MainUnitInfo.OpenEditorInfoCount > 0) and (not (ofProjectLoading in Flags)) then
+  if (MainUnitInfo.OpenEditorInfoCount > 0) and (not (ofProjectLoading in FFlags)) then
   begin
     // already loaded -> switch to source editor
     SourceEditorManager.ActiveEditor := TSourceEditor(MainUnitInfo.OpenEditorInfo[0].EditorComponent);
@@ -1404,7 +1405,7 @@ begin
   end;
 
   // open file in source notebook
-  Result:=OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,PageIndex,WindowIndex,Flags);
+  Result:=OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,PageIndex,WindowIndex);
   if Result<>mrOk then exit;
 
   Result:=mrOk;
