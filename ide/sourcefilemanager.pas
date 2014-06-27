@@ -400,8 +400,7 @@ begin
 
     if FNewUnitInfo.OpenEditorInfoCount > 0 then begin
       FNewEditorInfo := FNewUnitInfo.OpenEditorInfo[0];
-      SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(FNewEditorInfo.WindowID);
-      SourceEditorManager.ActiveSourceWindow.PageIndex:= FNewEditorInfo.PageIndex;
+      SourceEditorManager.SetWindowByIDAndPage(FNewEditorInfo.WindowID, FNewEditorInfo.PageIndex);
     end
     else begin
       FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo;
@@ -468,7 +467,6 @@ begin
   exit(mrOK);
 end;
 
-
 function TFileOpenClose.PrepareFile: TModalResult;
 begin
   FUnitIndex:=Project1.IndexOfFilename(FFilename);
@@ -486,15 +484,11 @@ begin
   Result := mrOK;
 end;
 
-
 function TFileOpenClose.ChangeEditorPage: TModalResult;
 // file already open -> change source notebook page
 begin
   //DebugLn(['TFileOpenClose.ChangeEditorPage file already open ',FNewUnitInfo.Filename,' WindowIndex=',FNewEditorInfo.WindowID,' PageIndex=',FNewEditorInfo.PageIndex]);
-  with SourceEditorManager do begin
-    ActiveSourceWindowIndex := IndexOfSourceWindowWithID(FNewEditorInfo.WindowID);
-    ActiveSourceWindow.PageIndex:= FNewEditorInfo.PageIndex;
-  end;
+  SourceEditorManager.SetWindowByIDAndPage(FNewEditorInfo.WindowID, FNewEditorInfo.PageIndex);
   if ofDoLoadResource in FFlags then
     Result:=OpenResource
   else

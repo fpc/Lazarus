@@ -1057,6 +1057,7 @@ type
     property SourceEditors[Index: integer]: TSourceEditor read GetSrcEditors;   // reintroduced
     property  SourceEditorsByPage[WindowIndex, PageIndex: integer]: TSourceEditor
               read GetSourceEditorsByPage;
+    procedure SetWindowByIDAndPage(AWindowID, APageIndex: integer);
     function  SourceEditorIntfWithFilename(const Filename: string): TSourceEditor; reintroduce;
     function FindSourceEditorWithEditorComponent(EditorComp: TComponent): TSourceEditor; // With SynEdit
   protected
@@ -9675,6 +9676,12 @@ end;
 function TSourceEditorManager.GetActiveSE: TSourceEditor;
 begin
   Result := TSourceEditor(ActiveEditor);
+end;
+
+procedure TSourceEditorManager.SetWindowByIDAndPage(AWindowID, APageIndex: integer);
+begin
+  ActiveSourceWindowIndex := IndexOfSourceWindowWithID(AWindowID);
+  ActiveSourceWindow.PageIndex:= APageIndex;
 end;
 
 function TSourceEditorManager.SourceEditorIntfWithFilename(
