@@ -63,17 +63,24 @@ type
     FManager: TLazSourceFileManager;
     // Used by OpenEditorFile
     FFileName: string;
-    FPageIndex, FWindowIndex: integer;
+    FPageIndex: integer;
+    FWindowIndex: integer;
+    FUnitIndex: integer;
     FEditorInfo: TUnitEditorInfo;
+    FNewEditorInfo: TUnitEditorInfo;
     FFlags: TOpenFlags;
     FUseWindowID: Boolean;
+    FNewUnitInfo: TUnitInfo;
     // Used by OpenFileAtCursor
     FActiveSrcEdit: TSourceEditor;
     FActiveUnitInfo: TUnitInfo;
+    //
     function CheckIfIncludeDirectiveInFront(const Line: string; X: integer): boolean;
     function FindFile(var CurFileName: String; CurSearchPath: String): Boolean;
     function GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
-    function OpenResource(NewUnitInfo: TUnitInfo): TModalResult;
+    // Used by OpenEditorFile
+    function OpenResource: TModalResult;
+    function PrepareRevert: TModalResult;
   public
     constructor Create(AManager: TLazSourceFileManager);
     destructor Destroy; override;
@@ -321,7 +328,7 @@ begin
   inherited Destroy;
 end;
 
-function TFileOpenClose.OpenResource(NewUnitInfo: TUnitInfo): TModalResult;
+function TFileOpenClose.OpenResource: TModalResult;
 var
   CloseFlags: TCloseFlags;
 begin
@@ -332,16 +339,16 @@ begin
     if ([ofDoNotLoadResource]*FFlags=[])
     and ( (ofDoLoadResource in FFlags)
        or ((ofProjectLoading in FFlags)
-           and NewUnitInfo.LoadedDesigner
+           and FNewUnitInfo.LoadedDesigner
            and (not Project1.AutoOpenDesignerFormsDisabled)
            and EnvironmentOptions.AutoCreateFormsOnOpen))
     then begin
       // -> try to (re)load the lfm file
-      //debugln(['TFileOpenClose.OpenResource Loading LFM for ',NewUnitInfo.Filename,' LoadedDesigner=',NewUnitInfo.LoadedDesigner]);
+      //debugln(['TFileOpenClose.OpenResource Loading LFM for ',FNewUnitInfo.Filename,' LoadedDesigner=',FNewUnitInfo.LoadedDesigner]);
       CloseFlags:=[cfSaveDependencies];
       if ofRevert in FFlags then
         Include(CloseFlags,cfCloseDependencies);
-      Result:=FManager.LoadLFM(NewUnitInfo,FFlags,CloseFlags);
+      Result:=FManager.LoadLFM(FNewUnitInfo,FFlags,CloseFlags);
       if Result<>mrOk then begin
         DebugLn(['TFileOpenClose.OpenResource LoadLFM failed']);
         exit;
@@ -349,11 +356,11 @@ begin
     end else begin
       Result:=mrOk;
     end;
-  end else if NewUnitInfo.Component<>nil then begin
+  end else if FNewUnitInfo.Component<>nil then begin
     // this is no pascal source and there is a designer form
     // This can be the case, when the file is renamed and/or reverted
     // -> close form
-    Result:=FManager.CloseUnitComponent(NewUnitInfo,
+    Result:=FManager.CloseUnitComponent(FNewUnitInfo,
                                [cfCloseDependencies,cfSaveDependencies]);
     if Result<>mrOk then begin
       DebugLn(['TFileOpenClose.OpenResource CloseUnitComponent failed']);
@@ -361,23 +368,51 @@ begin
   end else begin
     Result:=mrOk;
   end;
-  if NewUnitInfo.Component=nil then
-    NewUnitInfo.LoadedDesigner:=false;
+  if FNewUnitInfo.Component=nil then
+    FNewUnitInfo.LoadedDesigner:=false;
+end;
+
+function TFileOpenClose.PrepareRevert: TModalResult;
+// revert: use source editor filename
+begin
+  if (FPageIndex>=0) then begin
+    if FUseWindowID then                       // PrepareRevert must have a valid ID
+      FWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(FWindowIndex);
+    FUseWindowID := False;
+    Assert((FWindowIndex >= 0) and (FWindowIndex < SourceEditorManager.SourceWindowCount), 'FWindowIndex for revert');
+    FFilename := SourceEditorManager.SourceEditorsByPage[FWindowIndex, FPageIndex].FileName;
+  end
+  else
+    FFlags := FFlags - [ofRevert];    // No editor exists yet, don't try to revert.
+  FUnitIndex:=Project1.IndexOfFilename(FFilename);
+  if (FUnitIndex > 0) then begin
+    FNewUnitInfo:=Project1.Units[FUnitIndex];
+    if (uifInternalFile in FNewUnitInfo.Flags) then
+    begin
+      if (FNewUnitInfo.OpenEditorInfoCount > 0) then begin
+        FNewEditorInfo := FNewUnitInfo.OpenEditorInfo[0];
+        if MacroListViewer.MacroByFullName(FFileName) <> nil then
+          FNewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(FFileName).GetAsSource;
+        Result:=FManager.OpenFileInSourceEditor(FNewEditorInfo, FNewEditorInfo.PageIndex,
+          FNewEditorInfo.WindowID, FFlags, True);
+      end;
+      // else unknown internal file
+      exit(mrIgnore);
+    end;
+  end;
+  exit(mrOk);
 end;
 
 function TFileOpenClose.OpenEditorFile(AFileName: string; PageIndex,WindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
 var
-  UnitIndex: integer;
   UnknownFile, Handled: boolean;
-  NewUnitInfo: TUnitInfo;
   NewBuf: TCodeBuffer;
   FilenameNoPath: String;
   LoadBufferFlags: TLoadBufferFlags;
   DiskFilename: String;
   Reverting: Boolean;
   CanAbort: boolean;
-  NewEditorInfo: TUnitEditorInfo;
   SearchPath: String;
 begin
   {$IFDEF IDE_VERBOSE}
@@ -391,8 +426,8 @@ begin
   FEditorInfo := AEditorInfo;
   FFlags := Flags;
   FUseWindowID := UseWindowID;
-  Result:=mrCancel;
 
+  Result:=mrCancel;
   CanAbort:=[ofProjectLoading,ofMultiOpen]*Flags<>[];
 
   // replace macros
@@ -402,34 +437,9 @@ begin
   end;
 
   if (ofRevert in Flags) then begin
-    // revert: use source editor filename
-    if (PageIndex>=0) then begin
-      if UseWindowID then
-        WindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(WindowIndex); // Revert must have a valid ID
-      UseWindowID := False;
-      assert((WindowIndex >= 0) and (WindowIndex < SourceEditorManager.SourceWindowCount), 'WindowIndex for revert');
-      AFilename := SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex].FileName;
-    end
-    else
-      Flags := Flags - [ofRevert]; // No editor exists yet, don't try to revert.
-
-    UnitIndex:=Project1.IndexOfFilename(AFilename);
-    if (UnitIndex > 0) then begin
-      NewUnitInfo:=Project1.Units[UnitIndex];
-      if (uifInternalFile in NewUnitInfo.Flags) then
-      begin
-        if (NewUnitInfo.OpenEditorInfoCount > 0) then begin
-          NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
-          if MacroListViewer.MacroByFullName(AFileName) <> nil then
-            NewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
-          Result:=FManager.OpenFileInSourceEditor(NewEditorInfo, NewEditorInfo.PageIndex,
-            NewEditorInfo.WindowID, Flags, True);
-          exit;
-        end;
-        // unknown internal file
-        exit(mrOk);
-      end;
-    end;
+    Result := PrepareRevert;
+    if Result = mrIgnore then exit(mrOK);
+    Assert(Result = mrOK);
   end;
 
   if (ofInternalFile in Flags) then begin
@@ -437,28 +447,28 @@ begin
     then begin
       FilenameNoPath := AFileName;
 
-      UnitIndex:=Project1.IndexOfFilename(AFilename);
-      if (UnitIndex < 0) then begin
+      FUnitIndex:=Project1.IndexOfFilename(AFilename);
+      if (FUnitIndex < 0) then begin
         NewBuf := CodeToolBoss.SourceCache.CreateFile(AFileName);
         if MacroListViewer.MacroByFullName(AFileName) <> nil then
           NewBuf.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
-        NewUnitInfo:=TUnitInfo.Create(NewBuf);
-        NewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
-        Project1.AddFile(NewUnitInfo,false);
+        FNewUnitInfo:=TUnitInfo.Create(NewBuf);
+        FNewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
+        Project1.AddFile(FNewUnitInfo,false);
       end
       else begin
-        NewUnitInfo:=Project1.Units[UnitIndex];
+        FNewUnitInfo:=Project1.Units[FUnitIndex];
       end;
-      NewUnitInfo.Flags := NewUnitInfo.Flags + [uifInternalFile];
+      FNewUnitInfo.Flags := FNewUnitInfo.Flags + [uifInternalFile];
 
-      if NewUnitInfo.OpenEditorInfoCount > 0 then begin
-        NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
-        SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(NewEditorInfo.WindowID);
-        SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
+      if FNewUnitInfo.OpenEditorInfoCount > 0 then begin
+        FNewEditorInfo := FNewUnitInfo.OpenEditorInfo[0];
+        SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(FNewEditorInfo.WindowID);
+        SourceEditorManager.ActiveSourceWindow.PageIndex:= FNewEditorInfo.PageIndex;
       end
       else begin
-        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo;
-        Result:=FManager.OpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
+        FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo;
+        Result:=FManager.OpenFileInSourceEditor(FNewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
       end;
       Result:=mrOK;
       exit;
@@ -552,20 +562,20 @@ begin
 
   // check if the project knows this file
   if (ofRevert in Flags) then begin
-    // revert
+    // PrepareRevert
     UnknownFile := False;
     if UseWindowID then
-      NewEditorInfo := Project1.EditorInfoWithEditorComponent(
+      FNewEditorInfo := Project1.EditorInfoWithEditorComponent(
         SourceEditorManager.SourceEditorsByPage[SourceEditorManager.IndexOfSourceWindowWithID(WindowIndex), PageIndex])
     else
-      NewEditorInfo := Project1.EditorInfoWithEditorComponent(
+      FNewEditorInfo := Project1.EditorInfoWithEditorComponent(
         SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex]);
-    NewUnitInfo := NewEditorInfo.UnitInfo;
-    UnitIndex:=Project1.IndexOf(NewUnitInfo);
-    AFilename:=NewUnitInfo.Filename;
+    FNewUnitInfo := FNewEditorInfo.UnitInfo;
+    FUnitIndex:=Project1.IndexOf(FNewUnitInfo);
+    AFilename:=FNewUnitInfo.Filename;
     if CompareFilenames(AFileName,DiskFilename)=0 then
       AFileName:=DiskFilename;
-    if NewUnitInfo.IsVirtual then begin
+    if FNewUnitInfo.IsVirtual then begin
       if (not (ofQuiet in Flags)) then begin
         IDEMessageDialog(lisRevertFailed, Format(lisFileIsVirtual, [AFilename]),
           mtInformation,[mbCancel]);
@@ -574,34 +584,34 @@ begin
       exit;
     end;
   end else begin
-    UnitIndex:=Project1.IndexOfFilename(AFilename);
-    UnknownFile := (UnitIndex < 0);
-    NewEditorInfo := nil;
+    FUnitIndex:=Project1.IndexOfFilename(AFilename);
+    UnknownFile := (FUnitIndex < 0);
+    FNewEditorInfo := nil;
     if not UnknownFile then begin
-      NewUnitInfo:=Project1.Units[UnitIndex];
+      FNewUnitInfo:=Project1.Units[FUnitIndex];
       if AEditorInfo <> nil then
-        NewEditorInfo := AEditorInfo
+        FNewEditorInfo := AEditorInfo
       else if (ofProjectLoading in Flags) then
-        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
+        FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo
       else
-        NewEditorInfo := NewUnitInfo.EditorInfo[0];
+        FNewEditorInfo := FNewUnitInfo.EditorInfo[0];
     end;
   end;
 
-  if (NewEditorInfo <> nil) and (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
+  if (FNewEditorInfo <> nil) and (ofAddToProject in Flags) and (not FNewUnitInfo.IsPartOfProject) then
   begin
-    NewUnitInfo.IsPartOfProject:=true;
+    FNewUnitInfo.IsPartOfProject:=true;
     Project1.Modified:=true;
   end;
 
-  if (NewEditorInfo <> nil) and (Flags * [ofProjectLoading, ofRevert] = []) and (NewEditorInfo.EditorComponent <> nil) then
+  if (FNewEditorInfo <> nil) and (Flags * [ofProjectLoading, ofRevert] = []) and (FNewEditorInfo.EditorComponent <> nil) then
   begin
-    //DebugLn(['TFileOpenClose.OpenEditorFile file already open ',NewUnitInfo.Filename,' WindowIndex=',NewEditorInfo.WindowID,' PageIndex=',NewEditorInfo.PageIndex]);
+    //DebugLn(['TFileOpenClose.OpenEditorFile file already open ',FNewUnitInfo.Filename,' WindowIndex=',FNewEditorInfo.WindowID,' PageIndex=',FNewEditorInfo.PageIndex]);
     // file already open -> change source notebook page
-    SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(NewEditorInfo.WindowID);
-    SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
+    SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(FNewEditorInfo.WindowID);
+    SourceEditorManager.ActiveSourceWindow.PageIndex:= FNewEditorInfo.PageIndex;
     if ofDoLoadResource in Flags then
-      Result:=OpenResource(NewUnitInfo)
+      Result:=OpenResource
     else
       Result:=mrOk;
     exit;
@@ -610,7 +620,7 @@ begin
   Reverting:=false;
   if ofRevert in Flags then begin
     Reverting:=true;
-    Project1.BeginRevertUnit(NewUnitInfo);
+    Project1.BeginRevertUnit(FNewUnitInfo);
   end;
   try
 
@@ -618,7 +628,7 @@ begin
     if FilenameIsAbsolute(AFilename) and (not FileExistsUTF8(AFilename)) then begin
       // file does not exist
       if (ofRevert in Flags) then begin
-        // revert failed, due to missing file
+        // PrepareRevert failed, due to missing file
         if not (ofQuiet in Flags) then begin
           IDEMessageDialog(lisRevertFailed, Format(lisPkgMangFileNotFound, [AFilename]),
             mtError,[mbCancel]);
@@ -635,20 +645,20 @@ begin
     if UnknownFile then begin
       // open unknown file, Never happens if ofRevert
       Handled:=false;
-      Result:=FManager.OpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
+      Result:=FManager.OpenUnknownFile(AFilename,Flags,FNewUnitInfo,Handled);
       if (Result<>mrOk) or Handled then exit;
       // the file was previously unknown, use the default EditorInfo
       if AEditorInfo <> nil then
-        NewEditorInfo := AEditorInfo
+        FNewEditorInfo := AEditorInfo
       else
-      if NewUnitInfo <> nil then
-        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
+      if FNewUnitInfo <> nil then
+        FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo
       else
-        NewEditorInfo := nil;
+        FNewEditorInfo := nil;
     end else begin
       // project knows this file => all the meta data is known
       // -> just load the source
-      NewUnitInfo:=Project1.Units[UnitIndex];
+      FNewUnitInfo:=Project1.Units[FUnitIndex];
       LoadBufferFlags:=[lbfCheckIfText];
       if FilenameIsAbsolute(AFilename) then begin
         if (not (ofUseCache in Flags)) then
@@ -662,33 +672,33 @@ begin
         exit;
       end;
 
-      NewUnitInfo.Source:=NewBuf;
-      if FilenameIsPascalUnit(NewUnitInfo.Filename) then
-        NewUnitInfo.ReadUnitNameFromSource(false);
-      NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
+      FNewUnitInfo.Source:=NewBuf;
+      if FilenameIsPascalUnit(FNewUnitInfo.Filename) then
+        FNewUnitInfo.ReadUnitNameFromSource(false);
+      FNewUnitInfo.Modified:=FNewUnitInfo.Source.FileOnDiskNeedsUpdate;
     end;
 
     // check readonly
-    NewUnitInfo.FileReadOnly:=FileExistsUTF8(NewUnitInfo.Filename)
-                              and (not FileIsWritable(NewUnitInfo.Filename));
+    FNewUnitInfo.FileReadOnly:=FileExistsUTF8(FNewUnitInfo.Filename)
+                              and (not FileIsWritable(FNewUnitInfo.Filename));
     //debugln('[TFileOpenClose.OpenEditorFile] B');
     // open file in source notebook
-    Result:=FManager.OpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
+    Result:=FManager.OpenFileInSourceEditor(FNewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
     if Result<>mrOk then begin
       DebugLn(['TFileOpenClose.OpenEditorFile failed OpenFileInSourceEditor: ',AFilename]);
       exit;
     end;
     //debugln('[TFileOpenClose.OpenEditorFile] C');
     // open resource component (designer, form, datamodule, ...)
-    if NewUnitInfo.OpenEditorInfoCount = 1 then
-      Result:=OpenResource(NewUnitInfo);
+    if FNewUnitInfo.OpenEditorInfoCount = 1 then
+      Result:=OpenResource;
     if Result<>mrOk then begin
       DebugLn(['TFileOpenClose.OpenEditorFile failed OpenResource: ',AFilename]);
       exit;
     end;
   finally
     if Reverting then
-      Project1.EndRevertUnit(NewUnitInfo);
+      Project1.EndRevertUnit(FNewUnitInfo);
   end;
 
   Result:=mrOk;
