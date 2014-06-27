@@ -70,6 +70,7 @@ type
     FNewEditorInfo: TUnitEditorInfo;
     FFlags: TOpenFlags;
     FUseWindowID: Boolean;
+    FUnknownFile: boolean;
     FNewUnitInfo: TUnitInfo;
     // Used by OpenFileAtCursor
     FActiveSrcEdit: TSourceEditor;
@@ -82,6 +83,7 @@ type
     function OpenResource: TModalResult;
     function PrepareInternalFile: TModalResult;
     function CheckRevert: TModalResult;
+    function PrepareRevert(DiskFilename: String): TModalResult;
   public
     constructor Create(AManager: TLazSourceFileManager);
     destructor Destroy; override;
@@ -403,6 +405,33 @@ begin
   exit(mrOk);
 end;
 
+function TFileOpenClose.PrepareRevert(DiskFilename: String): TModalResult;
+var
+  WInd: integer;
+  ed: TSourceEditor;
+begin
+  FUnknownFile := False;
+  if FUseWindowID then
+    WInd:=SourceEditorManager.IndexOfSourceWindowWithID(FWindowIndex)
+  else
+    WInd:=FWindowIndex;
+  ed := SourceEditorManager.SourceEditorsByPage[WInd, FPageIndex];
+  FNewEditorInfo := Project1.EditorInfoWithEditorComponent(ed);
+  FNewUnitInfo := FNewEditorInfo.UnitInfo;
+  FUnitIndex:=Project1.IndexOf(FNewUnitInfo);
+  FFilename:=FNewUnitInfo.Filename;
+  if CompareFilenames(FFileName,DiskFilename)=0 then
+    FFileName:=DiskFilename;
+  if FNewUnitInfo.IsVirtual then begin
+    if (not (ofQuiet in FFlags)) then begin
+      IDEMessageDialog(lisRevertFailed, Format(lisFileIsVirtual, [FFilename]),
+        mtInformation,[mbCancel]);
+    end;
+    exit(mrCancel);
+  end;
+  exit(mrOK);
+end;
+
 function TFileOpenClose.PrepareInternalFile: TModalResult;
 var
   NewBuf: TCodeBuffer;
@@ -441,7 +470,7 @@ end;
 function TFileOpenClose.OpenEditorFile(AFileName: string; APageIndex, AWindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean): TModalResult;
 var                                                  // WindowIndex is WindowID
-  UnknownFile, Handled: boolean;
+  Handled: boolean;
   NewBuf: TCodeBuffer;
   FilenameNoPath: String;
   LoadBufferFlags: TLoadBufferFlags;
@@ -502,9 +531,8 @@ begin
     end;
   end;
 
-  FilenameNoPath:=ExtractFilename(FFilename);
-
   // check to not open directories
+  FilenameNoPath:=ExtractFilename(FFilename);
   if ((FilenameNoPath='') or (FilenameNoPath='.') or (FilenameNoPath='..')) then
   begin
     DebugLn(['TFileOpenClose.OpenEditorFile ignoring special file: ',FFilename]);
@@ -568,32 +596,13 @@ begin
 
   // check if the project knows this file
   if (ofRevert in FFlags) then begin
-    // PrepareRevert
-    UnknownFile := False;
-    if FUseWindowID then
-      FNewEditorInfo := Project1.EditorInfoWithEditorComponent(
-        SourceEditorManager.SourceEditorsByPage[SourceEditorManager.IndexOfSourceWindowWithID(FWindowIndex), FPageIndex])
-    else
-      FNewEditorInfo := Project1.EditorInfoWithEditorComponent(
-        SourceEditorManager.SourceEditorsByPage[FWindowIndex, FPageIndex]);
-    FNewUnitInfo := FNewEditorInfo.UnitInfo;
-    FUnitIndex:=Project1.IndexOf(FNewUnitInfo);
-    FFilename:=FNewUnitInfo.Filename;
-    if CompareFilenames(FFileName,DiskFilename)=0 then
-      FFileName:=DiskFilename;
-    if FNewUnitInfo.IsVirtual then begin
-      if (not (ofQuiet in FFlags)) then begin
-        IDEMessageDialog(lisRevertFailed, Format(lisFileIsVirtual, [FFilename]),
-          mtInformation,[mbCancel]);
-      end;
-      Result:=mrCancel;
-      exit;
-    end;
+    Result := PrepareRevert(DiskFilename);
+    if Result <> mrOK then exit;
   end else begin
     FUnitIndex:=Project1.IndexOfFilename(FFilename);
-    UnknownFile := (FUnitIndex < 0);
+    FUnknownFile := (FUnitIndex < 0);
     FNewEditorInfo := nil;
-    if not UnknownFile then begin
+    if not FUnknownFile then begin
       FNewUnitInfo:=Project1.Units[FUnitIndex];
       if FEditorInfo <> nil then
         FNewEditorInfo := FEditorInfo
@@ -648,7 +657,7 @@ begin
     end;
 
     // load the source
-    if UnknownFile then begin
+    if FUnknownFile then begin
       // open unknown file, Never happens if ofRevert
       Handled:=false;
       Result:=FManager.OpenUnknownFile(FFilename,FFlags,FNewUnitInfo,Handled);
