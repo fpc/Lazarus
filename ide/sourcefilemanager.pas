@@ -82,6 +82,7 @@ type
     function CheckRevert: TModalResult;
     function OpenKnown: TModalResult;
     function OpenUnknown: TModalResult;
+    function OpenNotExistingFile(const AFileName: string; Flags: TOpenFlags): TModalResult;
     function PrepareFile: TModalResult;
     function PrepareRevert(DiskFilename: String): TModalResult;
     // Used by OpenFileAtCursor
@@ -211,8 +212,6 @@ type
       UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
     function OpenUnknownFile(const AFileName:string; Flags: TOpenFlags;
         var NewUnitInfo: TUnitInfo; var Handled: boolean): TModalResult;
-    function OpenNotExistingFile(const AFileName:string;
-        Flags: TOpenFlags): TModalResult;
     function LoadResourceFile(AnUnitInfo: TUnitInfo; var LFMCode, LRSCode: TCodeBuffer;
         IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
     function FindBaseComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName,
@@ -541,6 +540,48 @@ begin
     FNewEditorInfo := nil;
 end;
 
+function TFileOpenClose.OpenNotExistingFile(const AFileName: string;
+  Flags: TOpenFlags): TModalResult;
+var
+  NewFlags: TNewFlags;
+begin
+  if ofProjectLoading in Flags then begin
+    // this is a file that was loaded last time, but was removed from disk
+    Result:=IDEQuestionDialog(lisFileNotFound,
+      Format(lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject,
+             [AFilename, LineEnding, LineEnding]),
+      mtError, [mrIgnore, lisSkipFileAndContinueLoading,
+                mrAbort, lisAbortLoadingProject]);
+    exit;
+  end;
+
+  // Default to cancel
+  Result:=mrCancel;
+  if ofQuiet in Flags then Exit;
+
+  if ofOnlyIfExists in Flags
+  then begin
+    IDEMessageDialog(lisFileNotFound,
+      Format(lisFileNotFound2, [AFilename])+LineEnding, mtInformation,[mbCancel]);
+    // cancel loading file
+    Exit;
+  end;
+
+  if IDEMessageDialog(lisFileNotFound,
+      Format(lisFileNotFoundDoYouWantToCreateIt,[AFilename,LineEnding]),
+      mtInformation,[mbYes,mbNo])=mrYes then
+  begin
+    // create new file
+    NewFlags:=[nfOpenInEditor,nfCreateDefaultSrc];
+    if ofAddToProject in Flags then
+      Include(NewFlags,nfIsPartOfProject);
+    if FilenameIsPascalSource(AFilename) then
+      Result:=MainIDE.DoNewEditorFile(FileDescriptorUnit,AFilename,'',NewFlags)
+    else
+      Result:=MainIDE.DoNewEditorFile(FileDescriptorText,AFilename,'',NewFlags);
+  end;
+end;
+
 function TFileOpenClose.OpenEditorFile(AFileName: string; APageIndex, AWindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean): TModalResult;
 var                                                  // WindowIndex is WindowID
@@ -699,7 +740,7 @@ begin
         Result:=mrCancel;
         exit;
       end else begin
-        Result:=FManager.OpenNotExistingFile(FFilename,FFlags);
+        Result:=OpenNotExistingFile(FFilename,FFlags);
         exit;
       end;
     end;
@@ -4976,48 +5017,6 @@ begin
   LFMCode:=nil;
   LRSCode:=nil;
   Result:=RenameUnit(AnUnitInfo,NewFilename,NewUnitName,LFMCode,LRSCode);
-end;
-
-function TLazSourceFileManager.OpenNotExistingFile(const AFileName: string;
-  Flags: TOpenFlags): TModalResult;
-var
-  NewFlags: TNewFlags;
-begin
-  if ofProjectLoading in Flags then begin
-    // this is a file, that was loaded last time, but was removed from disk
-    Result:=IDEQuestionDialog(lisFileNotFound,
-      Format(lisTheFileWasNotFoundIgnoreWillGoOnLoadingTheProject,
-             [AFilename, LineEnding, LineEnding]),
-      mtError, [mrIgnore, lisSkipFileAndContinueLoading,
-                mrAbort, lisAbortLoadingProject]);
-    exit;
-  end;
-
-  // Default to cancel
-  Result:=mrCancel;
-  if ofQuiet in Flags then Exit;
-
-  if ofOnlyIfExists in Flags
-  then begin
-    IDEMessageDialog(lisFileNotFound,
-      Format(lisFileNotFound2, [AFilename])+LineEnding, mtInformation,[mbCancel]);
-    // cancel loading file
-    Exit;
-  end;
-
-  if IDEMessageDialog(lisFileNotFound,
-      Format(lisFileNotFoundDoYouWantToCreateIt,[AFilename,LineEnding]),
-      mtInformation,[mbYes,mbNo])=mrYes then
-  begin
-    // create new file
-    NewFlags:=[nfOpenInEditor,nfCreateDefaultSrc];
-    if ofAddToProject in Flags then
-      Include(NewFlags,nfIsPartOfProject);
-    if FilenameIsPascalSource(AFilename) then
-      Result:=MainIDE.DoNewEditorFile(FileDescriptorUnit,AFilename,'',NewFlags)
-    else
-      Result:=MainIDE.DoNewEditorFile(FileDescriptorText,AFilename,'',NewFlags);
-  end;
 end;
 
 function TLazSourceFileManager.OpenUnknownFile(const AFileName: string; Flags: TOpenFlags;
