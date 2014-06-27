@@ -75,15 +75,17 @@ type
     // Used by OpenFileAtCursor
     FActiveSrcEdit: TSourceEditor;
     FActiveUnitInfo: TUnitInfo;
-    //
+    // Used by OpenEditorFile
+    function OpenResource: TModalResult;
+    function ChangeEditorPage: TModalResult;
+    function CheckInternalFile: TModalResult;
+    function CheckRevert: TModalResult;
+    function PrepareFile: TModalResult;
+    function PrepareRevert(DiskFilename: String): TModalResult;
+    // Used by OpenFileAtCursor
     function CheckIfIncludeDirectiveInFront(const Line: string; X: integer): boolean;
     function FindFile(var CurFileName: String; CurSearchPath: String): Boolean;
     function GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
-    // Used by OpenEditorFile
-    function OpenResource: TModalResult;
-    function CheckInternalFile: TModalResult;
-    function CheckRevert: TModalResult;
-    function PrepareRevert(DiskFilename: String): TModalResult;
   public
     constructor Create(AManager: TLazSourceFileManager);
     destructor Destroy; override;
@@ -467,6 +469,39 @@ begin
   exit(mrOK);
 end;
 
+
+function TFileOpenClose.PrepareFile: TModalResult;
+begin
+  FUnitIndex:=Project1.IndexOfFilename(FFilename);
+  FUnknownFile := (FUnitIndex < 0);
+  FNewEditorInfo := nil;
+  if not FUnknownFile then begin
+    FNewUnitInfo := Project1.Units[FUnitIndex];
+    if FEditorInfo <> nil then
+      FNewEditorInfo := FEditorInfo
+    else if (ofProjectLoading in FFlags) then
+      FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo
+    else
+      FNewEditorInfo := FNewUnitInfo.EditorInfo[0];
+  end;
+  Result := mrOK;
+end;
+
+
+function TFileOpenClose.ChangeEditorPage: TModalResult;
+// file already open -> change source notebook page
+begin
+  //DebugLn(['TFileOpenClose.ChangeEditorPage file already open ',FNewUnitInfo.Filename,' WindowIndex=',FNewEditorInfo.WindowID,' PageIndex=',FNewEditorInfo.PageIndex]);
+  with SourceEditorManager do begin
+    ActiveSourceWindowIndex := IndexOfSourceWindowWithID(FNewEditorInfo.WindowID);
+    ActiveSourceWindow.PageIndex:= FNewEditorInfo.PageIndex;
+  end;
+  if ofDoLoadResource in FFlags then
+    Result:=OpenResource
+  else
+    Result:=mrOk;
+end;
+
 function TFileOpenClose.OpenEditorFile(AFileName: string; APageIndex, AWindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean): TModalResult;
 var                                                  // WindowIndex is WindowID
@@ -599,18 +634,8 @@ begin
     Result := PrepareRevert(DiskFilename);
     if Result <> mrOK then exit;
   end else begin
-    FUnitIndex:=Project1.IndexOfFilename(FFilename);
-    FUnknownFile := (FUnitIndex < 0);
-    FNewEditorInfo := nil;
-    if not FUnknownFile then begin
-      FNewUnitInfo:=Project1.Units[FUnitIndex];
-      if FEditorInfo <> nil then
-        FNewEditorInfo := FEditorInfo
-      else if (ofProjectLoading in FFlags) then
-        FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo
-      else
-        FNewEditorInfo := FNewUnitInfo.EditorInfo[0];
-    end;
+    Result := PrepareFile;
+    if Result <> mrOK then exit;
   end;
 
   if (FNewEditorInfo <> nil) and (ofAddToProject in FFlags) and (not FNewUnitInfo.IsPartOfProject) then
@@ -619,16 +644,10 @@ begin
     Project1.Modified:=true;
   end;
 
-  if (FNewEditorInfo <> nil) and (FFlags * [ofProjectLoading, ofRevert] = []) and (FNewEditorInfo.EditorComponent <> nil) then
+  if (FNewEditorInfo <> nil) and (FFlags * [ofProjectLoading, ofRevert] = [])
+  and (FNewEditorInfo.EditorComponent <> nil) then
   begin
-    //DebugLn(['TFileOpenClose.OpenEditorFile file already open ',FNewUnitInfo.Filename,' WindowIndex=',FNewEditorInfo.WindowID,' PageIndex=',FNewEditorInfo.PageIndex]);
-    // file already open -> change source notebook page
-    SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(FNewEditorInfo.WindowID);
-    SourceEditorManager.ActiveSourceWindow.PageIndex:= FNewEditorInfo.PageIndex;
-    if ofDoLoadResource in FFlags then
-      Result:=OpenResource
-    else
-      Result:=mrOk;
+    Result := ChangeEditorPage;
     exit;
   end;
 
