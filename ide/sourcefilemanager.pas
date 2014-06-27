@@ -81,7 +81,7 @@ type
     // Used by OpenEditorFile
     function OpenResource: TModalResult;
     function PrepareInternalFile: TModalResult;
-    function PrepareRevert: TModalResult;
+    function CheckRevert: TModalResult;
   public
     constructor Create(AManager: TLazSourceFileManager);
     destructor Destroy; override;
@@ -372,11 +372,11 @@ begin
     FNewUnitInfo.LoadedDesigner:=false;
 end;
 
-function TFileOpenClose.PrepareRevert: TModalResult;
+function TFileOpenClose.CheckRevert: TModalResult;
 // revert: use source editor filename
 begin
   if (FPageIndex>=0) then begin
-    if FUseWindowID then                       // PrepareRevert must have a valid ID
+    if FUseWindowID then                       // Revert must have a valid ID
       FWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(FWindowIndex);
     FUseWindowID := False;
     Assert((FWindowIndex >= 0) and (FWindowIndex < SourceEditorManager.SourceWindowCount), 'FWindowIndex for revert');
@@ -472,7 +472,7 @@ begin
   end;
 
   if (ofRevert in FFlags) then begin
-    Result := PrepareRevert;
+    Result := CheckRevert;
     if Result = mrIgnore then exit(mrOK);
     Assert(Result = mrOK);
   end;
