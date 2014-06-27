@@ -61,8 +61,8 @@ type
   TFileOpenClose = class
   private
     FManager: TLazSourceFileManager;
-    // Used by OpenEditorFile
     FFileName: string;
+    // Used by OpenEditorFile
     FPageIndex: integer;
     FWindowIndex: integer;
     FUnitIndex: integer;
@@ -89,7 +89,7 @@ type
     function PrepareRevert(DiskFilename: String): TModalResult;
     // Used by OpenFileAtCursor
     function CheckIfIncludeDirectiveInFront(const Line: string; X: integer): boolean;
-    function FindFile(var CurFileName: String; CurSearchPath: String): Boolean;
+    function FindFile(SearchPath: String): Boolean;
     function GetFilenameAtRowCol(XY: TPoint): string;
   public
     constructor Create(AManager: TLazSourceFileManager);
@@ -848,17 +848,17 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenEditorFile END');{$ENDIF}
 end;
 
-function TFileOpenClose.FindFile(var CurFileName: String; CurSearchPath: String): Boolean;
+function TFileOpenClose.FindFile(SearchPath: String): Boolean;
 //  Searches for FileName in SearchPath
 //  If FileName is not found, we'll check extensions pp and pas too
-//  Returns true if found. FName contains the full file+path in that case
+//  Returns true if found. FFileName contains the full file+path in that case
 var TempFile,TempPath,CurPath,FinalFile, Ext: String;
     p,c: Integer;
     PasExt: TPascalExtType;
 begin
-  if CurSearchPath='' then CurSearchPath:='.';
+  if SearchPath='' then SearchPath:='.';
   Result:=true;
-  TempPath:=CurSearchPath;
+  TempPath:=SearchPath;
   while TempPath<>'' do begin
     p:=pos(';',TempPath);
     if p=0 then p:=length(TempPath)+1;
@@ -875,23 +875,23 @@ begin
     for c:=0 to 2 do begin
       // FPC searches first lowercase, then keeping case, then uppercase
       case c of
-        0: TempFile:=LowerCase(CurFileName);
-        1: TempFile:=CurFileName;
-        2: TempFile:=UpperCase(CurFileName);
+        0: TempFile:=LowerCase(FFileName);
+        1: TempFile:=FFileName;
+        2: TempFile:=UpperCase(FFileName);
       end;
       if ExtractFileExt(TempFile)='' then begin
         for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do begin
           Ext:=PascalExtension[PasExt];
           FinalFile:=ExpandFileNameUTF8(CurPath+TempFile+Ext);
           if FileExistsUTF8(FinalFile) then begin
-            CurFileName:=FinalFile;
+            FFileName:=FinalFile;
             exit;
           end;
         end;
       end else begin
         FinalFile:=ExpandFileNameUTF8(CurPath+TempFile);
         if FileExistsUTF8(FinalFile) then begin
-          CurFileName:=FinalFile;
+          FFileName:=FinalFile;
           exit;
         end;
       end;
@@ -962,7 +962,7 @@ function TFileOpenClose.OpenFileAtCursor: TModalResult;
 var
   Found: Boolean;
   BaseDir: String;
-  FileName,NewFilename,InFilename: string;
+  NewFilename,InFilename: string;
   AUnitName: String;
   SearchPath: String;
 begin
@@ -970,14 +970,14 @@ begin
   if (FActiveSrcEdit=nil) or (FActiveUnitInfo=nil) then exit;
   BaseDir:=ExtractFilePath(FActiveUnitInfo.Filename);
 
-  // parse filename at cursor
+  // parse FFileName at cursor
   Found:=false;
-  FileName:=GetFilenameAtRowCol(FActiveSrcEdit.EditorComponent.LogicalCaretXY);
-  if FileName='' then exit;
+  FFileName:=GetFilenameAtRowCol(FActiveSrcEdit.EditorComponent.LogicalCaretXY);
+  if FFileName='' then exit;
 
-  // check if absolute filename
-  if FilenameIsAbsolute(FileName) then begin
-    if FileExistsUTF8(FileName) then
+  // check if absolute FFileName
+  if FilenameIsAbsolute(FFileName) then begin
+    if FileExistsUTF8(FFileName) then
       Found:=true
     else
       exit;
@@ -987,54 +987,54 @@ begin
     if FIsIncludeDirective then begin
       // search include file
       SearchPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
-      if FindFile(FileName,SearchPath) then
+      if FindFile(SearchPath) then
         Found:=true;
-    end else if FilenameIsPascalSource(FileName) or (ExtractFileExt(FileName)='') then
+    end else if FilenameIsPascalSource(FFileName) or (ExtractFileExt(FFileName)='') then
     begin
       // search pascal unit
-      AUnitName:=ExtractFileNameOnly(FileName);
-      InFilename:=FileName;
-      if ExtractFileExt(FileName)='' then InFilename:='';
+      AUnitName:=ExtractFileNameOnly(FFileName);
+      InFilename:=FFileName;
+      if ExtractFileExt(FFileName)='' then InFilename:='';
       NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
                            BaseDir,AUnitName,InFilename,true);
       if NewFilename<>'' then begin
         Found:=true;
-        FileName:=NewFilename;
+        FFileName:=NewFilename;
       end;
     end;
   end;
 
   if (not Found) then begin
     // simple search relative to current unit
-    InFilename:=AppendPathDelim(BaseDir)+FileName;
+    InFilename:=AppendPathDelim(BaseDir)+FFileName;
     if FileExistsCached(InFilename) then begin
       Found:=true;
-      FileName:=InFilename;
+      FFileName:=InFilename;
     end;
   end;
 
-  if (not Found) and (System.Pos('.',FileName)>0) and (not FIsIncludeDirective) then
+  if (not Found) and (System.Pos('.',FFileName)>0) and (not FIsIncludeDirective) then
   begin
     // for example 'SysUtils.CompareText'
-    FileName:=FActiveSrcEdit.EditorComponent.GetWordAtRowCol(
+    FFileName:=FActiveSrcEdit.EditorComponent.GetWordAtRowCol(
       FActiveSrcEdit.EditorComponent.LogicalCaretXY);
-    if (FileName<>'') and IsValidIdent(FileName) then begin
+    if (FFileName<>'') and IsValidIdent(FFileName) then begin
       // search pascal unit
-      AUnitName:=FileName;
+      AUnitName:=FFileName;
       InFilename:='';
       NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
                            BaseDir,AUnitName,InFilename,true);
       if NewFilename<>'' then begin
         Found:=true;
-        FileName:=NewFilename;
+        FFileName:=NewFilename;
       end;
     end;
   end;
 
   if Found then begin
     // open
-    InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FileName));
-    Result:=OpenEditorFile(FileName, -1, -1, nil, [ofAddToRecent]);
+    InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FFileName));
+    Result:=OpenEditorFile(FFileName, -1, -1, nil, [ofAddToRecent]);
   end;
 end;
 
