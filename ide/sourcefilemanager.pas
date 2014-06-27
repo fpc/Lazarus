@@ -97,6 +97,9 @@ type
     function OpenEditorFile(APageIndex, AWindowIndex: integer;
       AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean=False): TModalResult;
     function OpenFileAtCursor: TModalResult;
+    function OpenMainUnit(PageIndex, WindowIndex: integer;
+      Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
+    function RevertMainUnit: TModalResult;
   end;
 
   { TLazSourceFileManager }
@@ -130,6 +133,9 @@ type
       UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
     function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
       ActiveUnitInfo: TUnitInfo): TModalResult;
+    function OpenMainUnit(PageIndex, WindowIndex: integer;
+      Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
+    function RevertMainUnit: TModalResult;
 ///
     procedure AddRecentProjectFileToEnvironment(const AFilename: string);
     procedure UpdateSourceNames;
@@ -229,11 +235,6 @@ type
     function LoadIDECodeBuffer(var ACodeBuffer: TCodeBuffer;
         const AFilename: string; Flags: TLoadBufferFlags; ShowAbort: boolean): TModalResult;
   public
-    function OpenMainUnit(PageIndex, WindowIndex: integer;
-                          Flags: TOpenFlags;
-                          UseWindowID: Boolean = False // WindowIndex is WindowID
-                         ): TModalResult;
-    function RevertMainUnit: TModalResult;
     function CheckLFMInEditor(LFMUnitInfo: TUnitInfo; Quiet: boolean): TModalResult;
     function LoadLFM(AnUnitInfo: TUnitInfo; OpenFlags: TOpenFlags;
                        CloseFlags: TCloseFlags): TModalResult;
@@ -660,7 +661,7 @@ begin
   DebugLn('');
   DebugLn(['*** TFileOpenClose.OpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags),' Window=',WindowIndex,' Page=',PageIndex]);
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenEditorFile START');{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TFileOpenClose.OpenEditorFile START');{$ENDIF}
   FPageIndex := APageIndex;
   FWindowIndex := AWindowIndex;
   FEditorInfo := AEditorInfo;
@@ -844,7 +845,7 @@ begin
 
   Result:=mrOk;
   //debugln('TFileOpenClose.OpenEditorFile END "',FFilename,'"');
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenEditorFile END');{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TFileOpenClose.OpenEditorFile END');{$ENDIF}
 end;
 
 function TFileOpenClose.FindFile(SearchPath: String): Boolean;
@@ -1038,6 +1039,55 @@ begin
   end;
 end;
 
+function TFileOpenClose.OpenMainUnit(PageIndex, WindowIndex: integer;
+  Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
+var
+  MainUnitInfo: TUnitInfo;
+begin
+  {$IFDEF IDE_VERBOSE}
+  debugln(['[TFileOpenClose.OpenMainUnit] A ProjectLoading=',ofProjectLoading in Flags,' MainUnitID=',Project1.MainUnitID]);
+  {$ENDIF}
+  Result:=mrCancel;
+  if (Project1=nil) or (Project1.MainUnitID<0) then exit;
+  MainUnitInfo:=Project1.MainUnitInfo;
+
+  // check if main unit is already open in source editor
+  if (MainUnitInfo.OpenEditorInfoCount > 0) and (not (ofProjectLoading in Flags)) then
+  begin
+    // already loaded -> switch to source editor
+    SourceEditorManager.ActiveEditor := TSourceEditor(MainUnitInfo.OpenEditorInfo[0].EditorComponent);
+    SourceEditorManager.ShowActiveWindowOnTop(True);
+    Result:=mrOk;
+    exit;
+  end;
+
+  // open file in source notebook
+  Result:=FManager.OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,
+                                 PageIndex,WindowIndex,Flags,UseWindowID);
+  if Result<>mrOk then exit;
+
+  Result:=mrOk;
+  {$IFDEF IDE_VERBOSE}
+  debugln('[TFileOpenClose.OpenMainUnit] END');
+  {$ENDIF}
+end;
+
+function TFileOpenClose.RevertMainUnit: TModalResult;
+begin
+  Result:=mrOk;
+  if Project1.MainUnitID<0 then exit;
+  FFileName:='';
+  if Project1.MainUnitInfo.OpenEditorInfoCount > 0 then
+    // main unit is loaded, so we can just revert
+    Result:=OpenEditorFile(Project1.MainUnitInfo.EditorInfo[0].PageIndex,
+      Project1.MainUnitInfo.EditorInfo[0].WindowID, nil, [ofRevert], True)
+  else begin
+    // main unit is only loaded in background
+    // -> just reload the source and update the source name
+    Result:=Project1.MainUnitInfo.ReadUnitSource(true,true);
+  end;
+end;
+
 { TLazSourceFileManager }
 
 constructor TLazSourceFileManager.Create;
@@ -1084,6 +1134,31 @@ begin
     Opener.FActiveSrcEdit := ActiveSrcEdit;
     Opener.FActiveUnitInfo := ActiveUnitInfo;
     Result := Opener.OpenFileAtCursor;
+  finally
+    Opener.Free;
+  end;
+end;
+
+function TLazSourceFileManager.OpenMainUnit(PageIndex, WindowIndex: integer;
+  Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
+var
+  Opener: TFileOpenClose;
+begin
+  Opener := TFileOpenClose.Create(Self);
+  try
+    Result := Opener.OpenMainUnit(PageIndex, WindowIndex, Flags, UseWindowID);
+  finally
+    Opener.Free;
+  end;
+end;
+
+function TLazSourceFileManager.RevertMainUnit: TModalResult;
+var
+  Opener: TFileOpenClose;
+begin
+  Opener := TFileOpenClose.Create(Self);
+  try
+    Result := Opener.RevertMainUnit;
   finally
     Opener.Free;
   end;
@@ -5081,54 +5156,6 @@ begin
   LFMCode:=nil;
   LRSCode:=nil;
   Result:=RenameUnit(AnUnitInfo,NewFilename,NewUnitName,LFMCode,LRSCode);
-end;
-
-function TLazSourceFileManager.OpenMainUnit(PageIndex, WindowIndex: integer;
-  Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
-var
-  MainUnitInfo: TUnitInfo;
-begin
-  {$IFDEF IDE_VERBOSE}
-  debugln(['[TLazSourceFileManager.OpenMainUnit] A ProjectLoading=',ofProjectLoading in Flags,' MainUnitID=',Project1.MainUnitID]);
-  {$ENDIF}
-  Result:=mrCancel;
-  if (Project1=nil) or (Project1.MainUnitID<0) then exit;
-  MainUnitInfo:=Project1.MainUnitInfo;
-
-  // check if main unit is already open in source editor
-  if (MainUnitInfo.OpenEditorInfoCount > 0) and (not (ofProjectLoading in Flags)) then
-  begin
-    // already loaded -> switch to source editor
-    SourceEditorManager.ActiveEditor := TSourceEditor(MainUnitInfo.OpenEditorInfo[0].EditorComponent);
-    SourceEditorManager.ShowActiveWindowOnTop(True);
-    Result:=mrOk;
-    exit;
-  end;
-
-  // open file in source notebook
-  Result:=OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,
-                                 PageIndex,WindowIndex,Flags,UseWindowID);
-  if Result<>mrOk then exit;
-
-  Result:=mrOk;
-  {$IFDEF IDE_VERBOSE}
-  debugln('[TLazSourceFileManager.OpenMainUnit] END');
-  {$ENDIF}
-end;
-
-function TLazSourceFileManager.RevertMainUnit: TModalResult;
-begin
-  Result:=mrOk;
-  if Project1.MainUnitID<0 then exit;
-  if Project1.MainUnitInfo.OpenEditorInfoCount > 0 then
-    // main unit is loaded, so we can just revert
-    Result:=OpenEditorFile('',Project1.MainUnitInfo.EditorInfo[0].PageIndex,
-      Project1.MainUnitInfo.EditorInfo[0].WindowID, nil, [ofRevert], True)
-  else begin
-    // main unit is only loaded in background
-    // -> just reload the source and update the source name
-    Result:=Project1.MainUnitInfo.ReadUnitSource(true,true);
-  end;
 end;
 
 function TLazSourceFileManager.CheckLFMInEditor(
