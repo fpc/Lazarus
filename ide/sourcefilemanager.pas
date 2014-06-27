@@ -54,13 +54,10 @@ uses
 
 type
 
-  TLazSourceFileManager = class;
-
   { TFileOpenClose }
 
   TFileOpenClose = class
   private
-    FManager: TLazSourceFileManager;
     FFileName: string;
     // Used by OpenEditorFile
     FPageIndex: integer;
@@ -95,7 +92,7 @@ type
     function FindFile(SearchPath: String): Boolean;
     function GetFilenameAtRowCol(XY: TPoint): string;
   public
-    constructor Create(AManager: TLazSourceFileManager);
+    constructor Create;
     destructor Destroy; override;
     function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
       ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
@@ -132,18 +129,6 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-///
-    function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
-      ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
-    function OpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
-      AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags;
-      UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
-    function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
-      ActiveUnitInfo: TUnitInfo): TModalResult;
-    function OpenMainUnit(PageIndex, WindowIndex: integer;
-      Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
-    function RevertMainUnit: TModalResult;
-///
     procedure AddRecentProjectFileToEnvironment(const AFilename: string);
     procedure UpdateSourceNames;
     function CheckEditorNeedsSave(AEditor: TSourceEditorInterface;
@@ -286,6 +271,18 @@ type
     IgnoreEditor: TSourceEditor): string;
   procedure UpdateDefaultPasFileExt;
 
+  // Wrappers for TFileOpenClose methods.
+  // WindowIndex is WindowID
+  function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
+    ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
+  function OpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
+    AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
+  function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
+    ActiveUnitInfo: TUnitInfo): TModalResult;
+  function OpenMainUnit(PageIndex, WindowIndex: integer;
+    Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
+  function RevertMainUnit: TModalResult;
+
 
 implementation
 
@@ -323,11 +320,79 @@ begin
     LazProjectFileDescriptors.DefaultPascalFileExt:=DefPasExt;
 end;
 
+// Wrappers for TFileOpenClose methods.
+
+function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
+  ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
+var
+  Opener: TFileOpenClose;
+begin
+  Opener := TFileOpenClose.Create;
+  try
+    Result := Opener.GetAvailableUnitEditorInfo(AnUnitInfo,ACaretPoint,WantedTopLine);
+  finally
+    Opener.Free;
+  end;
+end;
+
+function OpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
+  AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
+var
+  Opener: TFileOpenClose;
+begin
+  Opener := TFileOpenClose.Create;
+  try
+    Opener.FFileName := AFileName;
+    Result := Opener.OpenEditorFile(PageIndex,WindowIndex,AEditorInfo,Flags,UseWindowID);
+  finally
+    Opener.Free;
+  end;
+end;
+
+function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo): TModalResult;
+var
+  Opener: TFileOpenClose;
+begin
+  Opener := TFileOpenClose.Create;
+  try
+    Opener.FActiveSrcEdit := ActiveSrcEdit;
+    Opener.FActiveUnitInfo := ActiveUnitInfo;
+    Result := Opener.OpenFileAtCursor;
+  finally
+    Opener.Free;
+  end;
+end;
+
+function OpenMainUnit(PageIndex, WindowIndex: integer;
+  Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
+var
+  Opener: TFileOpenClose;
+begin
+  Opener := TFileOpenClose.Create;
+  try
+    Result := Opener.OpenMainUnit(PageIndex, WindowIndex, Flags, UseWindowID);
+  finally
+    Opener.Free;
+  end;
+end;
+
+function RevertMainUnit: TModalResult;
+var
+  Opener: TFileOpenClose;
+begin
+  Opener := TFileOpenClose.Create;
+  try
+    Result := Opener.RevertMainUnit;
+  finally
+    Opener.Free;
+  end;
+end;
+
 { TFileOpenClose }
 
-constructor TFileOpenClose.Create(AManager: TLazSourceFileManager);
+constructor TFileOpenClose.Create;
 begin
-  FManager:=AManager;
+
 end;
 
 destructor TFileOpenClose.Destroy;
@@ -381,7 +446,7 @@ begin
 
       // update marks and cursor positions in Project1, so that merging the old
       // settings during restoration will work
-      FManager.SaveSourceEditorProjectSpecificSettings;
+      SourceFileMgr.SaveSourceEditorProjectSpecificSettings;
       AShareEditor := nil;
       if AnUnitInfo.OpenEditorInfoCount > 0 then
         AShareEditor := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
@@ -627,7 +692,7 @@ begin
       CloseFlags:=[cfSaveDependencies];
       if ofRevert in FFlags then
         Include(CloseFlags,cfCloseDependencies);
-      Result:=FManager.LoadLFM(FNewUnitInfo,FFlags,CloseFlags);
+      Result:=SourceFileMgr.LoadLFM(FNewUnitInfo,FFlags,CloseFlags);
       if Result<>mrOk then begin
         DebugLn(['TFileOpenClose.OpenResource LoadLFM failed']);
         exit;
@@ -639,7 +704,7 @@ begin
     // this is no pascal source and there is a designer form
     // This can be the case, when the file is renamed and/or reverted
     // -> close form
-    Result:=FManager.CloseUnitComponent(FNewUnitInfo,
+    Result:=SourceFileMgr.CloseUnitComponent(FNewUnitInfo,
                                [cfCloseDependencies,cfSaveDependencies]);
     if Result<>mrOk then begin
       DebugLn(['TFileOpenClose.OpenResource CloseUnitComponent failed']);
@@ -863,7 +928,7 @@ begin
           ACaption:=lisProgramDetected;
           if IDEMessageDialog(ACaption, AText, mtConfirmation, [mbYes,mbNo])=mrYes then
           begin
-            Result:=FManager.CreateProjectForProgram(PreReadBuf);
+            Result:=SourceFileMgr.CreateProjectForProgram(PreReadBuf);
             if Result = mrOK then
               Result := mrIgnore;
             exit;
@@ -1380,76 +1445,6 @@ begin
   Result:=TExternalToolList(EnvironmentOptions.ExternalTools);
 end;
 {$ENDIF}
-
-// Wrappers for TFileOpenClose methods.
-
-function TLazSourceFileManager.GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
-  ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
-var
-  Opener: TFileOpenClose;
-begin
-  Opener := TFileOpenClose.Create(Self);
-  try
-    Result := Opener.GetAvailableUnitEditorInfo(AnUnitInfo,ACaretPoint,WantedTopLine);
-  finally
-    Opener.Free;
-  end;
-end;
-
-function TLazSourceFileManager.OpenEditorFile(AFileName: string;
-  PageIndex, WindowIndex: integer; AEditorInfo: TUnitEditorInfo;
-  Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
-var
-  Opener: TFileOpenClose;
-begin
-  Opener := TFileOpenClose.Create(Self);
-  try
-    Opener.FFileName := AFileName;
-    Result := Opener.OpenEditorFile(PageIndex,WindowIndex,AEditorInfo,Flags,UseWindowID);
-  finally
-    Opener.Free;
-  end;
-end;
-
-function TLazSourceFileManager.OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo): TModalResult;
-var
-  Opener: TFileOpenClose;
-begin
-  Opener := TFileOpenClose.Create(Self);
-  try
-    Opener.FActiveSrcEdit := ActiveSrcEdit;
-    Opener.FActiveUnitInfo := ActiveUnitInfo;
-    Result := Opener.OpenFileAtCursor;
-  finally
-    Opener.Free;
-  end;
-end;
-
-function TLazSourceFileManager.OpenMainUnit(PageIndex, WindowIndex: integer;
-  Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
-var
-  Opener: TFileOpenClose;
-begin
-  Opener := TFileOpenClose.Create(Self);
-  try
-    Result := Opener.OpenMainUnit(PageIndex, WindowIndex, Flags, UseWindowID);
-  finally
-    Opener.Free;
-  end;
-end;
-
-function TLazSourceFileManager.RevertMainUnit: TModalResult;
-var
-  Opener: TFileOpenClose;
-begin
-  Opener := TFileOpenClose.Create(Self);
-  try
-    Result := Opener.RevertMainUnit;
-  finally
-    Opener.Free;
-  end;
-end;
 
 function TLazSourceFileManager.CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
 var

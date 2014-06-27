@@ -3121,7 +3121,7 @@ var
   ActiveUnitInfo: TUnitInfo;
 begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
-  SourceFileMgr.OpenFileAtCursor(ActiveSrcEdit, ActiveUnitInfo);
+  OpenFileAtCursor(ActiveSrcEdit, ActiveUnitInfo);
 end;
 
 procedure TMainIDE.mnuGotoIncludeDirectiveClicked(Sender: TObject);
@@ -4230,7 +4230,7 @@ end;
 
 procedure TMainIDE.mnuViewProjectSourceClicked(Sender: TObject);
 begin
-  SourceFileMgr.OpenMainUnit(-1,-1,[]);
+  OpenMainUnit(-1,-1,[]);
 end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
@@ -5705,7 +5705,7 @@ end;
 function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags): TModalResult;
 begin
-  Result:=SourceFileMgr.OpenEditorFile(AFileName, PageIndex, WindowIndex, AEditorInfo, Flags);
+  Result:=OpenEditorFile(AFileName, PageIndex, WindowIndex, AEditorInfo, Flags);
 end;
 
 procedure TMainIDE.DoDropFiles(Sender: TObject;
@@ -5795,7 +5795,7 @@ begin
         end else
         begin
           if Project1.MainUnitInfo = AnUnitInfo then
-            Result:=SourceFileMgr.OpenMainUnit(-1,-1,[])
+            Result:=OpenMainUnit(-1,-1,[])
           else
             Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,-1,[ofOnlyIfExists]);
           if Result=mrAbort then exit;
@@ -6193,10 +6193,10 @@ begin
   if (Project1=nil) then exit;
   AnUnitInfo:=Project1.UnitInfoWithFilename(Filename,[]);
   if (AnUnitInfo<>nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then
-    Result:=SourceFileMgr.OpenEditorFile(AnUnitInfo.Filename,
-                             AnUnitInfo.OpenEditorInfo[0].PageIndex,
-                             AnUnitInfo.OpenEditorInfo[0].WindowID,
-                             nil,[ofRevert],True); // Reverting one will revert all
+    Result:=OpenEditorFile(AnUnitInfo.Filename,
+                           AnUnitInfo.OpenEditorInfo[0].PageIndex,
+                           AnUnitInfo.OpenEditorInfo[0].WindowID,
+                           nil,[ofRevert],True); // Reverting one will revert all
 end;
 
 function TMainIDE.CreateProjectObject(ProjectDesc,
@@ -8500,7 +8500,7 @@ begin
       AnUnitInfo:=Project1.UnitInfoWithFilename(SearchedFilename);
     AnEditorInfo := nil;
     if AnUnitInfo <> nil then
-      AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
+      AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
     if AnEditorInfo <> nil then begin
       SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
       Result := True;
@@ -8623,7 +8623,7 @@ begin
         AnUnitInfo := Project1.UnitInfoWithFilename(SearchedFilename);
       AnEditorInfo := nil;
       if AnUnitInfo <> nil then
-        AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
+        AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, LogCaretXY);
       if AnEditorInfo <> nil then begin
         SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
         Result := True;
@@ -9482,7 +9482,7 @@ begin
 
       AnEditorInfo := nil;
       if ActiveUnitInfo <> nil then
-        AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
+        AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
       if AnEditorInfo <> nil then begin
         SourceEditorManager.ActiveEditor := TSourceEditor(AnEditorInfo.EditorComponent);
         Result := mrOK;
@@ -9497,7 +9497,7 @@ begin
       NewSrcEdit := SourceEditorManager.ActiveEditor;
     end
     else begin
-      AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
+      AnEditorInfo := GetAvailableUnitEditorInfo(ActiveUnitInfo, Point(NewX,NewY), NewTopLine);
       if AnEditorInfo <> nil then begin
         NewSrcEdit := TSourceEditor(AnEditorInfo.EditorComponent);
         SourceEditorManager.ActiveEditor := NewSrcEdit;
@@ -9664,7 +9664,7 @@ begin
     AnEditorInfo := nil;
     ActiveSrcEdit := nil;
     if AnUnitInfo <> nil then
-      AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(AnUnitInfo, ErrorCaret);
+      AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, ErrorCaret);
     if AnEditorInfo <> nil then begin
       ActiveSrcEdit := TSourceEditor(AnEditorInfo.EditorComponent);
       SourceEditorManager.ActiveEditor := ActiveSrcEdit;
@@ -10731,7 +10731,7 @@ begin
     AnUnitInfo := TUnitInfo(Project1.Bookmarks.UnitInfoForBookmarkWithIndex(ID));
     if (AnUnitInfo <> nil) and (AnUnitInfo.OpenEditorInfoCount > 0) then begin
       NewXY := Project1.Bookmarks.BookmarkWithID(ID).CursorPos;
-      AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(AnUnitInfo, NewXY);
+      AnEditorInfo := GetAvailableUnitEditorInfo(AnUnitInfo, NewXY);
     end;
     if AnEditorInfo <> nil then
       AnEditor := TSourceEditor(AnEditorInfo.EditorComponent);
@@ -11292,8 +11292,7 @@ begin
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename, '.lfm');
   if not FileExistsUTF8(LFMFilename) then
     LFMFilename:=ChangeFileExt(AnUnitInfo.Filename, '.dfm');
-  SourceFileMgr.OpenEditorFile(LFMFilename, EditorInfo.PageIndex+1,
-                               EditorInfo.WindowID, nil, [], True);
+  OpenEditorFile(LFMFilename, EditorInfo.PageIndex+1, EditorInfo.WindowID, nil, [], True);
 end;
 
 procedure TMainIDE.OnDesignerSaveAsXML(Sender: TObject);
@@ -11492,7 +11491,7 @@ begin
       JumpHistory.HistoryIndex:=DestIndex;
       NewCaretXY:=DestJumpPoint.CaretXY;
       NewTopLine:=DestJumpPoint.TopLine;
-      AnEditorInfo := SourceFileMgr.GetAvailableUnitEditorInfo(Project1.Units[UnitIndex], NewCaretXY);
+      AnEditorInfo := GetAvailableUnitEditorInfo(Project1.Units[UnitIndex], NewCaretXY);
       if AnEditorInfo <> nil then
         DestEditor:=TSourceEditor(AnEditorInfo.EditorComponent);
       {$IFDEF VerboseJumpHistory}
