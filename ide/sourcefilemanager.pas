@@ -78,7 +78,7 @@ type
     // Used by OpenEditorFile
     function OpenResource: TModalResult;
     function ChangeEditorPage: TModalResult;
-    function CheckInternalFile: TModalResult;
+    procedure CheckInternalFile;
     function CheckRevert: TModalResult;
     function OpenKnown: TModalResult;
     function OpenUnknown: TModalResult;
@@ -378,7 +378,7 @@ begin
     FNewUnitInfo.LoadedDesigner:=false;
 end;
 
-function TFileOpenClose.CheckInternalFile: TModalResult;
+procedure TFileOpenClose.CheckInternalFile;
 var
   NewBuf: TCodeBuffer;
 begin
@@ -407,10 +407,7 @@ begin
       FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo;
       FManager.OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags, FUseWindowID);
     end;
-    //exit(mrIgnore);
   end;
-  // unknown internal file => ignore
-  exit(mrIgnore);
 end;
 
 function TFileOpenClose.CheckRevert: TModalResult;
@@ -553,11 +550,8 @@ end;
 function TFileOpenClose.OpenEditorFile(AFileName: string; APageIndex, AWindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean): TModalResult;
 var                                                  // WindowIndex is WindowID
-  FilenameNoPath: String;
-  DiskFilename: String;
+  s, DiskFilename: String;
   Reverting: Boolean;
-  CanAbort: boolean;
-  SearchPath: String;
 begin
   {$IFDEF IDE_VERBOSE}
   DebugLn('');
@@ -572,7 +566,6 @@ begin
   FUseWindowID := AUseWindowID;
 
   Result:=mrCancel;
-  CanAbort:=[ofProjectLoading,ofMultiOpen]*FFlags<>[];
 
   // replace macros
   if ofConvertMacros in FFlags then begin
@@ -587,9 +580,9 @@ begin
   end;
 
   if (ofInternalFile in FFlags) then begin
-    Result := CheckInternalFile;
-    if Result = mrIgnore then exit(mrOK);
-    Assert(Result = mrOK);
+    CheckInternalFile;
+    // unknown internal file => ignore
+    exit(mrOK);
   end;
 
   // normalize filename
@@ -603,17 +596,15 @@ begin
 
   // check if symlink and ask user if the real file should be opened instead
   if FilenameIsAbsolute(FFileName) then begin
-    SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory('');
-    if SearchDirectoryInSearchPath(SearchPath,ExtractFilePath(FFileName))<1 then
-    begin
+    s:=CodeToolBoss.GetCompleteSrcPathForDirectory('');
+    if SearchDirectoryInSearchPath(s,ExtractFilePath(FFileName))<1 then
       // the file is not in the project search path => check if it is a symlink
       ChooseSymlink(FFilename,true);
-    end;
   end;
 
   // check to not open directories
-  FilenameNoPath:=ExtractFilename(FFilename);
-  if ((FilenameNoPath='') or (FilenameNoPath='.') or (FilenameNoPath='..')) then
+  s:=ExtractFilename(FFilename);
+  if (s='') or (s='.') or (s='..') then
   begin
     DebugLn(['TFileOpenClose.OpenEditorFile ignoring special file: ',FFilename]);
     exit;
@@ -666,7 +657,8 @@ begin
           [mrYes, lisCompPalOpenPackage, mrNoToAll, lisOpenAsXmlFile, mrCancel])
       of
         mrYes: begin
-          Result:=PkgBoss.DoOpenPackageFile(FFilename,[pofAddToRecent],CanAbort);
+          Result:=PkgBoss.DoOpenPackageFile(FFilename,[pofAddToRecent],
+                                       [ofProjectLoading,ofMultiOpen]*FFlags<>[]);
           exit;
         end;
         mrCancel: exit(mrCancel);
