@@ -81,7 +81,7 @@ type
     function GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
     // Used by OpenEditorFile
     function OpenResource: TModalResult;
-    function PrepareInternalFile: TModalResult;
+    function CheckInternalFile: TModalResult;
     function CheckRevert: TModalResult;
     function PrepareRevert(DiskFilename: String): TModalResult;
   public
@@ -374,6 +374,41 @@ begin
     FNewUnitInfo.LoadedDesigner:=false;
 end;
 
+function TFileOpenClose.CheckInternalFile: TModalResult;
+var
+  NewBuf: TCodeBuffer;
+begin
+  if (copy(FFileName, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
+  then begin
+    FUnitIndex:=Project1.IndexOfFilename(FFilename);
+    if (FUnitIndex < 0) then begin
+      NewBuf := CodeToolBoss.SourceCache.CreateFile(FFileName);
+      if MacroListViewer.MacroByFullName(FFileName) <> nil then
+        NewBuf.Source := MacroListViewer.MacroByFullName(FFileName).GetAsSource;
+      FNewUnitInfo:=TUnitInfo.Create(NewBuf);
+      FNewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
+      Project1.AddFile(FNewUnitInfo,false);
+    end
+    else begin
+      FNewUnitInfo:=Project1.Units[FUnitIndex];
+    end;
+    FNewUnitInfo.Flags := FNewUnitInfo.Flags + [uifInternalFile];
+
+    if FNewUnitInfo.OpenEditorInfoCount > 0 then begin
+      FNewEditorInfo := FNewUnitInfo.OpenEditorInfo[0];
+      SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(FNewEditorInfo.WindowID);
+      SourceEditorManager.ActiveSourceWindow.PageIndex:= FNewEditorInfo.PageIndex;
+    end
+    else begin
+      FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo;
+      FManager.OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags, FUseWindowID);
+    end;
+    //exit(mrIgnore);
+  end;
+  // unknown internal file => ignore
+  exit(mrIgnore);
+end;
+
 function TFileOpenClose.CheckRevert: TModalResult;
 // revert: use source editor filename
 begin
@@ -432,41 +467,6 @@ begin
   exit(mrOK);
 end;
 
-function TFileOpenClose.PrepareInternalFile: TModalResult;
-var
-  NewBuf: TCodeBuffer;
-begin
-  if (copy(FFileName, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
-  then begin
-    FUnitIndex:=Project1.IndexOfFilename(FFilename);
-    if (FUnitIndex < 0) then begin
-      NewBuf := CodeToolBoss.SourceCache.CreateFile(FFileName);
-      if MacroListViewer.MacroByFullName(FFileName) <> nil then
-        NewBuf.Source := MacroListViewer.MacroByFullName(FFileName).GetAsSource;
-      FNewUnitInfo:=TUnitInfo.Create(NewBuf);
-      FNewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
-      Project1.AddFile(FNewUnitInfo,false);
-    end
-    else begin
-      FNewUnitInfo:=Project1.Units[FUnitIndex];
-    end;
-    FNewUnitInfo.Flags := FNewUnitInfo.Flags + [uifInternalFile];
-
-    if FNewUnitInfo.OpenEditorInfoCount > 0 then begin
-      FNewEditorInfo := FNewUnitInfo.OpenEditorInfo[0];
-      SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(FNewEditorInfo.WindowID);
-      SourceEditorManager.ActiveSourceWindow.PageIndex:= FNewEditorInfo.PageIndex;
-    end
-    else begin
-      FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo;
-      FManager.OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags, FUseWindowID);
-    end;
-    //exit(mrIgnore);
-  end;
-  // unknown internal file => ignore
-  exit(mrIgnore);
-end;
-
 function TFileOpenClose.OpenEditorFile(AFileName: string; APageIndex, AWindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean): TModalResult;
 var                                                  // WindowIndex is WindowID
@@ -507,7 +507,7 @@ begin
   end;
 
   if (ofInternalFile in FFlags) then begin
-    Result := PrepareInternalFile;
+    Result := CheckInternalFile;
     if Result = mrIgnore then exit(mrOK);
     Assert(Result = mrOK);
   end;
