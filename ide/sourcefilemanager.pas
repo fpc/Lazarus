@@ -59,6 +59,7 @@ type
   TFileOpenClose = class
   private
     FFileName: string;
+    FUseWindowID: Boolean;
     // Used by OpenEditorFile
     FPageIndex: integer;
     FWindowIndex: integer;
@@ -66,7 +67,6 @@ type
     FEditorInfo: TUnitEditorInfo;
     FNewEditorInfo: TUnitEditorInfo;
     FFlags: TOpenFlags;
-    FUseWindowID: Boolean;
     FUnknownFile: boolean;
     FNewUnitInfo: TUnitInfo;
     // Used by OpenFileAtCursor
@@ -74,8 +74,7 @@ type
     FActiveUnitInfo: TUnitInfo;
     FIsIncludeDirective: boolean;
     function OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
-      PageIndex, WindowIndex: integer; Flags: TOpenFlags;
-      UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
+      PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
     // Used by GetAvailableUnitEditorInfo
     function AvailSrcWindowIndex(AnUnitInfo: TUnitInfo): Integer;
     // Used by OpenEditorFile
@@ -99,10 +98,9 @@ type
     function GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
       ACaretPoint: TPoint; WantedTopLine: integer = -1): TUnitEditorInfo;
     function OpenEditorFile(APageIndex, AWindowIndex: integer;
-      AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean=False): TModalResult;
+      AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags): TModalResult;
     function OpenFileAtCursor: TModalResult;
-    function OpenMainUnit(PageIndex, WindowIndex: integer;
-      Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
+    function OpenMainUnit(PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
     function RevertMainUnit: TModalResult;
   end;
 
@@ -345,7 +343,8 @@ begin
   Opener := TFileOpenClose.Create;
   try
     Opener.FFileName := AFileName;
-    Result := Opener.OpenEditorFile(PageIndex,WindowIndex,AEditorInfo,Flags,UseWindowID);
+    Opener.FUseWindowID := UseWindowID;
+    Result := Opener.OpenEditorFile(PageIndex,WindowIndex,AEditorInfo,Flags);
   finally
     Opener.Free;
   end;
@@ -372,7 +371,8 @@ var
 begin
   Opener := TFileOpenClose.Create;
   try
-    Result := Opener.OpenMainUnit(PageIndex, WindowIndex, Flags, UseWindowID);
+    Opener.FUseWindowID := UseWindowID;
+    Result := Opener.OpenMainUnit(PageIndex, WindowIndex, Flags);
   finally
     Opener.Free;
   end;
@@ -403,7 +403,7 @@ begin
 end;
 
 function TFileOpenClose.OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
-  PageIndex, WindowIndex: integer; Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
+  PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
 var
   NewSrcEdit: TSourceEditor;
   AFilename: string;
@@ -423,7 +423,7 @@ begin
   if (WindowIndex < 0) then
     SrcNotebook := SourceEditorManager.ActiveOrNewSourceWindow
   else
-  if UseWindowID then begin
+  if FUseWindowID then begin
     SrcNotebook := SourceEditorManager.SourceWindowWithID(WindowIndex);
     WindowIndex := SourceEditorManager.IndexOfSourceWindow(SrcNotebook);
   end
@@ -643,6 +643,7 @@ begin
       end;
       inc(LockRun);
     until (LockRun > 1) or (Result <> nil);
+    FUseWindowID:=False;
     if (Result = nil) then
       case Access.SearchOpenNew of
         eoeaNoNewTab: ;
@@ -744,7 +745,7 @@ begin
     end
     else begin
       FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo;
-      OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags, FUseWindowID);
+      OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags);
     end;
   end;
 end;
@@ -770,8 +771,8 @@ begin
         FNewEditorInfo := FNewUnitInfo.OpenEditorInfo[0];
         if MacroListViewer.MacroByFullName(FFileName) <> nil then
           FNewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(FFileName).GetAsSource;
-        OpenFileInSourceEditor(FNewEditorInfo, FNewEditorInfo.PageIndex,
-          FNewEditorInfo.WindowID, FFlags, True);
+        FUseWindowID:=True;
+        OpenFileInSourceEditor(FNewEditorInfo, FNewEditorInfo.PageIndex, FNewEditorInfo.WindowID, FFlags);
       end;
       // else unknown internal file
       exit(mrIgnore);
@@ -993,7 +994,7 @@ begin
 end;
 
 function TFileOpenClose.OpenEditorFile(APageIndex, AWindowIndex: integer;
-  AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean): TModalResult;
+  AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags): TModalResult;
 var                                                  // WindowIndex is WindowID
   s, DiskFilename: String;
   Reverting: Boolean;
@@ -1007,7 +1008,6 @@ begin
   FWindowIndex := AWindowIndex;
   FEditorInfo := AEditorInfo;
   FFlags := AFlags;
-  FUseWindowID := AUseWindowID;
 
   Result:=mrCancel;
 
@@ -1068,7 +1068,7 @@ begin
   if (not (ofRevert in FFlags))
   and (CompareFilenames(Project1.MainFilename,FFilename)=0)
   then begin
-    Result:=OpenMainUnit(FPageIndex,FWindowIndex,FFlags,FUseWindowID);
+    Result:=OpenMainUnit(FPageIndex,FWindowIndex,FFlags);
     exit;
   end;
 
@@ -1167,7 +1167,7 @@ begin
                               and (not FileIsWritable(FNewUnitInfo.Filename));
     //debugln('[TFileOpenClose.OpenEditorFile] B');
     // open file in source notebook
-    Result:=OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags, FUseWindowID);
+    Result:=OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags);
     if Result<>mrOk then begin
       DebugLn(['TFileOpenClose.OpenEditorFile failed OpenFileInSourceEditor: ',FFilename]);
       exit;
@@ -1376,12 +1376,13 @@ begin
   if Found then begin
     // open, FFileName is set earlier.
     InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FFileName));
+    FUseWindowID:=False;
     Result:=OpenEditorFile(-1, -1, nil, [ofAddToRecent]);
   end;
 end;
 
 function TFileOpenClose.OpenMainUnit(PageIndex, WindowIndex: integer;
-  Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
+  Flags: TOpenFlags): TModalResult;
 var
   MainUnitInfo: TUnitInfo;
 begin
@@ -1403,8 +1404,7 @@ begin
   end;
 
   // open file in source notebook
-  Result:=OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,
-                                 PageIndex,WindowIndex,Flags,UseWindowID);
+  Result:=OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,PageIndex,WindowIndex,Flags);
   if Result<>mrOk then exit;
 
   Result:=mrOk;
@@ -1418,10 +1418,11 @@ begin
   Result:=mrOk;
   if Project1.MainUnitID<0 then exit;
   FFileName:='';
+  FUseWindowID:=True;
   if Project1.MainUnitInfo.OpenEditorInfoCount > 0 then
     // main unit is loaded, so we can just revert
     Result:=OpenEditorFile(Project1.MainUnitInfo.EditorInfo[0].PageIndex,
-      Project1.MainUnitInfo.EditorInfo[0].WindowID, nil, [ofRevert], True)
+      Project1.MainUnitInfo.EditorInfo[0].WindowID, nil, [ofRevert])
   else begin
     // main unit is only loaded in background
     // -> just reload the source and update the source name
