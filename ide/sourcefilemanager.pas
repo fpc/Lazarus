@@ -54,6 +54,29 @@ uses
 
 type
 
+  TLazSourceFileManager = class;
+
+  { TFileOpenClose }
+
+  TFileOpenClose = class
+  private
+    FManager: TLazSourceFileManager;
+    FFileName: string;
+    FPageIndex, FWindowIndex: integer;
+    FEditorInfo: TUnitEditorInfo;
+    FFlags: TOpenFlags;
+    FUseWindowID: Boolean;
+    function OpenResource(NewUnitInfo: TUnitInfo): TModalResult;
+  public
+    constructor Create(AManager: TLazSourceFileManager);
+    destructor Destroy; override;
+    function OpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
+      AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags;
+      UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
+    function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
+      ActiveUnitInfo: TUnitInfo): TModalResult;
+  end;
+
   { TLazSourceFileManager }
 
   TLazSourceFileManager = class
@@ -79,7 +102,13 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
+///
+    function OpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
+      AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags;
+      UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
+    function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
+      ActiveUnitInfo: TUnitInfo): TModalResult;
+///
     procedure AddRecentProjectFileToEnvironment(const AFilename: string);
     procedure UpdateSourceNames;
     function CheckEditorNeedsSave(AEditor: TSourceEditorInterface;
@@ -104,11 +133,6 @@ type
     function CloseEditorFile(AEditor: TSourceEditorInterface;
                                Flags: TCloseFlags):TModalResult;
     function CloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
-    function OpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
-      AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags;
-      UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
-    function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
-      ActiveUnitInfo: TUnitInfo): TModalResult;
     function FindUnitFile(const AFilename: string; TheOwner: TObject = nil;
                           Flags: TFindUnitFileFlags = []): string;
     function FindSourceFile(const AFilename, BaseDirectory: string;
@@ -278,6 +302,587 @@ begin
     LazProjectFileDescriptors.DefaultPascalFileExt:=DefPasExt;
 end;
 
+{ TFileOpenClose }
+
+constructor TFileOpenClose.Create(AManager: TLazSourceFileManager);
+begin
+  FManager:=AManager;
+end;
+
+destructor TFileOpenClose.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function TFileOpenClose.OpenResource(NewUnitInfo: TUnitInfo): TModalResult;
+var
+  CloseFlags: TCloseFlags;
+begin
+  // read form data
+  if FilenameIsPascalUnit(FFilename) then begin
+    // this could be a unit with a form
+    //debugln('TFileOpenClose.OpenResource ',FFilename,' ',OpenFlagsToString(Flags));
+    if ([ofDoNotLoadResource]*FFlags=[])
+    and ( (ofDoLoadResource in FFlags)
+       or ((ofProjectLoading in FFlags)
+           and NewUnitInfo.LoadedDesigner
+           and (not Project1.AutoOpenDesignerFormsDisabled)
+           and EnvironmentOptions.AutoCreateFormsOnOpen))
+    then begin
+      // -> try to (re)load the lfm file
+      //debugln(['TFileOpenClose.OpenResource Loading LFM for ',NewUnitInfo.Filename,' LoadedDesigner=',NewUnitInfo.LoadedDesigner]);
+      CloseFlags:=[cfSaveDependencies];
+      if ofRevert in FFlags then
+        Include(CloseFlags,cfCloseDependencies);
+      Result:=FManager.LoadLFM(NewUnitInfo,FFlags,CloseFlags);
+      if Result<>mrOk then begin
+        DebugLn(['TFileOpenClose.OpenResource LoadLFM failed']);
+        exit;
+      end;
+    end else begin
+      Result:=mrOk;
+    end;
+  end else if NewUnitInfo.Component<>nil then begin
+    // this is no pascal source and there is a designer form
+    // This can be the case, when the file is renamed and/or reverted
+    // -> close form
+    Result:=FManager.CloseUnitComponent(NewUnitInfo,
+                               [cfCloseDependencies,cfSaveDependencies]);
+    if Result<>mrOk then begin
+      DebugLn(['TFileOpenClose.OpenResource CloseUnitComponent failed']);
+    end;
+  end else begin
+    Result:=mrOk;
+  end;
+  if NewUnitInfo.Component=nil then
+    NewUnitInfo.LoadedDesigner:=false;
+end;
+
+function TFileOpenClose.OpenEditorFile(AFileName: string; PageIndex,WindowIndex: integer;
+  AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
+var
+  UnitIndex: integer;
+  UnknownFile, Handled: boolean;
+  NewUnitInfo: TUnitInfo;
+  NewBuf: TCodeBuffer;
+  FilenameNoPath: String;
+  LoadBufferFlags: TLoadBufferFlags;
+  DiskFilename: String;
+  Reverting: Boolean;
+  CanAbort: boolean;
+  NewEditorInfo: TUnitEditorInfo;
+  SearchPath: String;
+begin
+  {$IFDEF IDE_VERBOSE}
+  DebugLn('');
+  DebugLn(['*** TFileOpenClose.OpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags),' Window=',WindowIndex,' Page=',PageIndex]);
+  {$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenEditorFile START');{$ENDIF}
+  FFileName := AFileName;
+  FPageIndex := PageIndex;
+  FWindowIndex := WindowIndex;
+  FEditorInfo := AEditorInfo;
+  FFlags := Flags;
+  FUseWindowID := UseWindowID;
+  Result:=mrCancel;
+
+  CanAbort:=[ofProjectLoading,ofMultiOpen]*Flags<>[];
+
+  // replace macros
+  if ofConvertMacros in Flags then begin
+    if not GlobalMacroList.SubstituteStr(AFilename) then exit;
+    AFilename:=ExpandFileNameUTF8(AFilename);
+  end;
+
+  if (ofRevert in Flags) then begin
+    // revert: use source editor filename
+    if (PageIndex>=0) then begin
+      if UseWindowID then
+        WindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(WindowIndex); // Revert must have a valid ID
+      UseWindowID := False;
+      assert((WindowIndex >= 0) and (WindowIndex < SourceEditorManager.SourceWindowCount), 'WindowIndex for revert');
+      AFilename := SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex].FileName;
+    end
+    else
+      Flags := Flags - [ofRevert]; // No editor exists yet, don't try to revert.
+
+    UnitIndex:=Project1.IndexOfFilename(AFilename);
+    if (UnitIndex > 0) then begin
+      NewUnitInfo:=Project1.Units[UnitIndex];
+      if (uifInternalFile in NewUnitInfo.Flags) then
+      begin
+        if (NewUnitInfo.OpenEditorInfoCount > 0) then begin
+          NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
+          if MacroListViewer.MacroByFullName(AFileName) <> nil then
+            NewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
+          Result:=FManager.OpenFileInSourceEditor(NewEditorInfo, NewEditorInfo.PageIndex,
+            NewEditorInfo.WindowID, Flags, True);
+          exit;
+        end;
+        // unknown internal file
+        exit(mrOk);
+      end;
+    end;
+  end;
+
+  if (ofInternalFile in Flags) then begin
+    if (copy(AFileName, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
+    then begin
+      FilenameNoPath := AFileName;
+
+      UnitIndex:=Project1.IndexOfFilename(AFilename);
+      if (UnitIndex < 0) then begin
+        NewBuf := CodeToolBoss.SourceCache.CreateFile(AFileName);
+        if MacroListViewer.MacroByFullName(AFileName) <> nil then
+          NewBuf.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
+        NewUnitInfo:=TUnitInfo.Create(NewBuf);
+        NewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
+        Project1.AddFile(NewUnitInfo,false);
+      end
+      else begin
+        NewUnitInfo:=Project1.Units[UnitIndex];
+      end;
+      NewUnitInfo.Flags := NewUnitInfo.Flags + [uifInternalFile];
+
+      if NewUnitInfo.OpenEditorInfoCount > 0 then begin
+        NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
+        SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(NewEditorInfo.WindowID);
+        SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
+      end
+      else begin
+        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo;
+        Result:=FManager.OpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
+      end;
+      Result:=mrOK;
+      exit;
+    end;
+    // unknown internal file => ignore
+    exit(mrOK);
+  end;
+
+  // normalize filename
+  AFilename:=TrimFilename(AFilename);
+  DiskFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(AFilename);
+  if DiskFilename<>AFilename then begin
+    // the case is different
+    DebugLn(['TFileOpenClose.OpenEditorFile Fixing file name: ',AFilename,' -> ',DiskFilename]);
+    AFilename:=DiskFilename;
+  end;
+
+  // check if symlink and ask user if the real file should be opened instead
+  if FilenameIsAbsolute(AFileName) then begin
+    SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory('');
+    if SearchDirectoryInSearchPath(SearchPath,ExtractFilePath(AFileName))<1 then
+    begin
+      // the file is not in the project search path => check if it is a symlink
+      ChooseSymlink(AFilename,true);
+    end;
+  end;
+
+  FilenameNoPath:=ExtractFilename(AFilename);
+
+  // check to not open directories
+  if ((FilenameNoPath='') or (FilenameNoPath='.') or (FilenameNoPath='..')) then
+  begin
+    DebugLn(['TFileOpenClose.OpenEditorFile ignoring special file: ',AFilename]);
+    exit;
+  end;
+  if DirectoryExistsUTF8(AFileName) then begin
+    debugln(['TFileOpenClose.OpenEditorFile skipping directory ',AFileName]);
+    exit(mrCancel);
+  end;
+
+  if ([ofAddToRecent,ofRevert,ofVirtualFile]*Flags=[ofAddToRecent])
+  and (AFilename<>'') and FilenameIsAbsolute(AFilename) then
+    EnvironmentOptions.AddToRecentOpenFiles(AFilename);
+
+  // check if this is a hidden unit:
+  // if this is the main unit, it is already
+  // loaded and needs only to be shown in the sourceeditor/formeditor
+  if (not (ofRevert in Flags))
+  and (CompareFilenames(Project1.MainFilename,AFilename)=0)
+  then begin
+    Result:=FManager.OpenMainUnit(PageIndex,WindowIndex,Flags,UseWindowID);
+    exit;
+  end;
+
+  // check for special files
+  if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[])
+  and FilenameIsAbsolute(AFilename) and FileExistsUTF8(AFilename) then begin
+    // check if file is a lazarus project (.lpi)
+    if (CompareFileExt(AFilename,'.lpi',false)=0) then
+    begin
+      case
+        IDEQuestionDialog(
+          lisOpenProject, Format(lisOpenTheProject, [AFilename]), mtConfirmation,
+          [mrYes, lisOpenProject2, mrNoToAll, lisOpenAsXmlFile, mrCancel])
+      of
+        mrYes: begin
+          Result:=MainIDE.DoOpenProjectFile(AFilename,[ofAddToRecent]);
+          exit;
+        end;
+        mrNoToAll: include(Flags, ofRegularFile);
+        mrCancel: exit(mrCancel);
+      end;
+    end;
+
+    // check if file is a lazarus package (.lpk)
+    if (CompareFileExt(AFilename,'.lpk',false)=0) then
+    begin
+      case
+        IDEQuestionDialog(
+          lisOpenPackage, Format(lisOpenThePackage, [AFilename]), mtConfirmation,
+          [mrYes, lisCompPalOpenPackage, mrNoToAll, lisOpenAsXmlFile, mrCancel])
+      of
+        mrYes: begin
+          Result:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent],CanAbort);
+          exit;
+        end;
+        mrCancel: exit(mrCancel);
+      end;
+    end;
+  end;
+
+  // check if the project knows this file
+  if (ofRevert in Flags) then begin
+    // revert
+    UnknownFile := False;
+    if UseWindowID then
+      NewEditorInfo := Project1.EditorInfoWithEditorComponent(
+        SourceEditorManager.SourceEditorsByPage[SourceEditorManager.IndexOfSourceWindowWithID(WindowIndex), PageIndex])
+    else
+      NewEditorInfo := Project1.EditorInfoWithEditorComponent(
+        SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex]);
+    NewUnitInfo := NewEditorInfo.UnitInfo;
+    UnitIndex:=Project1.IndexOf(NewUnitInfo);
+    AFilename:=NewUnitInfo.Filename;
+    if CompareFilenames(AFileName,DiskFilename)=0 then
+      AFileName:=DiskFilename;
+    if NewUnitInfo.IsVirtual then begin
+      if (not (ofQuiet in Flags)) then begin
+        IDEMessageDialog(lisRevertFailed, Format(lisFileIsVirtual, [AFilename]),
+          mtInformation,[mbCancel]);
+      end;
+      Result:=mrCancel;
+      exit;
+    end;
+  end else begin
+    UnitIndex:=Project1.IndexOfFilename(AFilename);
+    UnknownFile := (UnitIndex < 0);
+    NewEditorInfo := nil;
+    if not UnknownFile then begin
+      NewUnitInfo:=Project1.Units[UnitIndex];
+      if AEditorInfo <> nil then
+        NewEditorInfo := AEditorInfo
+      else if (ofProjectLoading in Flags) then
+        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
+      else
+        NewEditorInfo := NewUnitInfo.EditorInfo[0];
+    end;
+  end;
+
+  if (NewEditorInfo <> nil) and (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
+  begin
+    NewUnitInfo.IsPartOfProject:=true;
+    Project1.Modified:=true;
+  end;
+
+  if (NewEditorInfo <> nil) and (Flags * [ofProjectLoading, ofRevert] = []) and (NewEditorInfo.EditorComponent <> nil) then
+  begin
+    //DebugLn(['TFileOpenClose.OpenEditorFile file already open ',NewUnitInfo.Filename,' WindowIndex=',NewEditorInfo.WindowID,' PageIndex=',NewEditorInfo.PageIndex]);
+    // file already open -> change source notebook page
+    SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(NewEditorInfo.WindowID);
+    SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
+    if ofDoLoadResource in Flags then
+      Result:=OpenResource(NewUnitInfo)
+    else
+      Result:=mrOk;
+    exit;
+  end;
+
+  Reverting:=false;
+  if ofRevert in Flags then begin
+    Reverting:=true;
+    Project1.BeginRevertUnit(NewUnitInfo);
+  end;
+  try
+
+    // check if file exists
+    if FilenameIsAbsolute(AFilename) and (not FileExistsUTF8(AFilename)) then begin
+      // file does not exist
+      if (ofRevert in Flags) then begin
+        // revert failed, due to missing file
+        if not (ofQuiet in Flags) then begin
+          IDEMessageDialog(lisRevertFailed, Format(lisPkgMangFileNotFound, [AFilename]),
+            mtError,[mbCancel]);
+        end;
+        Result:=mrCancel;
+        exit;
+      end else begin
+        Result:=FManager.OpenNotExistingFile(AFilename,Flags);
+        exit;
+      end;
+    end;
+
+    // load the source
+    if UnknownFile then begin
+      // open unknown file, Never happens if ofRevert
+      Handled:=false;
+      Result:=FManager.OpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
+      if (Result<>mrOk) or Handled then exit;
+      // the file was previously unknown, use the default EditorInfo
+      if AEditorInfo <> nil then
+        NewEditorInfo := AEditorInfo
+      else
+      if NewUnitInfo <> nil then
+        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
+      else
+        NewEditorInfo := nil;
+    end else begin
+      // project knows this file => all the meta data is known
+      // -> just load the source
+      NewUnitInfo:=Project1.Units[UnitIndex];
+      LoadBufferFlags:=[lbfCheckIfText];
+      if FilenameIsAbsolute(AFilename) then begin
+        if (not (ofUseCache in Flags)) then
+          Include(LoadBufferFlags,lbfUpdateFromDisk);
+        if ofRevert in Flags then
+          Include(LoadBufferFlags,lbfRevert);
+      end;
+      Result:=LoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags,CanAbort);
+      if Result<>mrOk then begin
+        DebugLn(['TFileOpenClose.OpenEditorFile failed LoadCodeBuffer: ',AFilename]);
+        exit;
+      end;
+
+      NewUnitInfo.Source:=NewBuf;
+      if FilenameIsPascalUnit(NewUnitInfo.Filename) then
+        NewUnitInfo.ReadUnitNameFromSource(false);
+      NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
+    end;
+
+    // check readonly
+    NewUnitInfo.FileReadOnly:=FileExistsUTF8(NewUnitInfo.Filename)
+                              and (not FileIsWritable(NewUnitInfo.Filename));
+    //debugln('[TFileOpenClose.OpenEditorFile] B');
+    // open file in source notebook
+    Result:=FManager.OpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
+    if Result<>mrOk then begin
+      DebugLn(['TFileOpenClose.OpenEditorFile failed OpenFileInSourceEditor: ',AFilename]);
+      exit;
+    end;
+    //debugln('[TFileOpenClose.OpenEditorFile] C');
+    // open resource component (designer, form, datamodule, ...)
+    if NewUnitInfo.OpenEditorInfoCount = 1 then
+      Result:=OpenResource(NewUnitInfo);
+    if Result<>mrOk then begin
+      DebugLn(['TFileOpenClose.OpenEditorFile failed OpenResource: ',AFilename]);
+      exit;
+    end;
+  finally
+    if Reverting then
+      Project1.EndRevertUnit(NewUnitInfo);
+  end;
+
+  Result:=mrOk;
+  //debugln('TFileOpenClose.OpenEditorFile END "',AFilename,'"');
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenEditorFile END');{$ENDIF}
+end;
+
+function TFileOpenClose.OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo): TModalResult;
+
+  function FindFile(var CurFileName: String; CurSearchPath: String): Boolean;
+  //  Searches for FileName in SearchPath
+  //  If FileName is not found, we'll check extensions pp and pas too
+  //  Returns true if found. FName contains the full file+path in that case
+  var TempFile,TempPath,CurPath,FinalFile, Ext: String;
+      p,c: Integer;
+      PasExt: TPascalExtType;
+  begin
+    if CurSearchPath='' then CurSearchPath:='.';
+    Result:=true;
+    TempPath:=CurSearchPath;
+    while TempPath<>'' do begin
+      p:=pos(';',TempPath);
+      if p=0 then p:=length(TempPath)+1;
+      CurPath:=copy(TempPath,1,p-1);
+      Delete(TempPath,1,p);
+      if CurPath='' then continue;
+      CurPath:=AppendPathDelim(CurPath);
+      if not FilenameIsAbsolute(CurPath) then begin
+        if ActiveUnitInfo.IsVirtual then
+          CurPath:=AppendPathDelim(Project1.ProjectDirectory)+CurPath
+        else
+          CurPath:=AppendPathDelim(ExtractFilePath(ActiveUnitInfo.Filename))+CurPath;
+      end;
+      for c:=0 to 2 do begin
+        // FPC searches first lowercase, then keeping case, then uppercase
+        case c of
+          0: TempFile:=LowerCase(CurFileName);
+          1: TempFile:=CurFileName;
+          2: TempFile:=UpperCase(CurFileName);
+        end;
+        if ExtractFileExt(TempFile)='' then begin
+          for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do begin
+            Ext:=PascalExtension[PasExt];
+            FinalFile:=ExpandFileNameUTF8(CurPath+TempFile+Ext);
+            if FileExistsUTF8(FinalFile) then begin
+              CurFileName:=FinalFile;
+              exit;
+            end;
+          end;
+        end else begin
+          FinalFile:=ExpandFileNameUTF8(CurPath+TempFile);
+          if FileExistsUTF8(FinalFile) then begin
+            CurFileName:=FinalFile;
+            exit;
+          end;
+        end;
+      end;
+    end;
+    Result:=false;
+  end;
+
+  function CheckIfIncludeDirectiveInFront(const Line: string;
+    X: integer): boolean;
+  var
+    DirectiveEnd, DirectiveStart: integer;
+    Directive: string;
+  begin
+    Result:=false;
+    DirectiveEnd:=X;
+    while (DirectiveEnd>1) and (Line[DirectiveEnd-1] in [' ',#9]) do
+      dec(DirectiveEnd);
+    DirectiveStart:=DirectiveEnd-1;
+    while (DirectiveStart>0) and (Line[DirectiveStart]<>'$') do
+      dec(DirectiveStart);
+    Directive:=uppercase(copy(Line,DirectiveStart,DirectiveEnd-DirectiveStart));
+    if (Directive='$INCLUDE') or (Directive='$I') then begin
+      if ((DirectiveStart>1) and (Line[DirectiveStart-1]='{'))
+      or ((DirectiveStart>2)
+        and (Line[DirectiveStart-2]='(') and (Line[DirectiveStart-1]='*'))
+      then begin
+        Result:=true;
+      end;
+    end;
+  end;
+
+  function GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
+  var
+    Line: string;
+    Len, Stop: integer;
+    StopChars: set of char;
+  begin
+    Result := '';
+    IsIncludeDirective:=false;
+    if (XY.Y >= 1) and (XY.Y <= ActiveSrcEdit.EditorComponent.Lines.Count) then
+    begin
+      Line := ActiveSrcEdit.EditorComponent.Lines.Strings[XY.Y - 1];
+      Len := Length(Line);
+      if (XY.X >= 1) and (XY.X <= Len + 1) then begin
+        StopChars := [',',';',':','[',']','{','}','(',')','''','"','`'
+                     ,'#','%','=','>'];
+        Stop := XY.X;
+        if Stop>Len then Stop:=Len;
+        while (Stop >= 1) and (not (Line[Stop] in ['''','"','`'])) do
+          dec(Stop);
+        if Stop<1 then
+          StopChars:=StopChars+[' ',#9]; // no quotes in front => use spaces as boundaries
+        Stop := XY.X;
+        while (Stop <= Len) and (not (Line[Stop] in StopChars)) do
+          Inc(Stop);
+        while (XY.X > 1) and (not (Line[XY.X - 1] in StopChars)) do
+          Dec(XY.X);
+        if Stop > XY.X then begin
+          Result := Copy(Line, XY.X, Stop - XY.X);
+          IsIncludeDirective:=CheckIfIncludeDirectiveInFront(Line,XY.X);
+        end;
+      end;
+    end;
+  end;
+
+var
+  IsIncludeDirective: boolean;
+  Found: Boolean;
+  BaseDir: String;
+  FileName,NewFilename,InFilename: string;
+  AUnitName: String;
+  SearchPath: String;
+begin
+  Result:=mrCancel;
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  BaseDir:=ExtractFilePath(ActiveUnitInfo.Filename);
+
+  // parse filename at cursor
+  IsIncludeDirective:=false;
+  Found:=false;
+  FileName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.LogicalCaretXY,
+                             IsIncludeDirective);
+  if FileName='' then exit;
+
+  // check if absolute filename
+  if FilenameIsAbsolute(FileName) then begin
+    if FileExistsUTF8(FileName) then
+      Found:=true
+    else
+      exit;
+  end;
+
+  if (not Found) then begin
+    if IsIncludeDirective then begin
+      // search include file
+      SearchPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
+      if FindFile(FileName,SearchPath) then
+        Found:=true;
+    end else if FilenameIsPascalSource(FileName) or (ExtractFileExt(FileName)='') then
+    begin
+      // search pascal unit
+      AUnitName:=ExtractFileNameOnly(FileName);
+      InFilename:=FileName;
+      if ExtractFileExt(FileName)='' then InFilename:='';
+      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                           BaseDir,AUnitName,InFilename,true);
+      if NewFilename<>'' then begin
+        Found:=true;
+        FileName:=NewFilename;
+      end;
+    end;
+  end;
+
+  if (not Found) then begin
+    // simple search relative to current unit
+    InFilename:=AppendPathDelim(BaseDir)+FileName;
+    if FileExistsCached(InFilename) then begin
+      Found:=true;
+      FileName:=InFilename;
+    end;
+  end;
+
+  if (not Found) and (System.Pos('.',FileName)>0) and (not IsIncludeDirective) then
+  begin
+    // for example 'SysUtils.CompareText'
+    FileName:=ActiveSrcEdit.EditorComponent.GetWordAtRowCol(
+      ActiveSrcEdit.EditorComponent.LogicalCaretXY);
+    if (FileName<>'') and IsValidIdent(FileName) then begin
+      // search pascal unit
+      AUnitName:=FileName;
+      InFilename:='';
+      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
+                           BaseDir,AUnitName,InFilename,true);
+      if NewFilename<>'' then begin
+        Found:=true;
+        FileName:=NewFilename;
+      end;
+    end;
+  end;
+
+  if Found then begin
+    // open
+    InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FileName));
+    Result:=OpenEditorFile(FileName, -1, -1, nil, [ofAddToRecent]);
+  end;
+end;
 
 { TLazSourceFileManager }
 
@@ -297,6 +902,36 @@ begin
   Result:=TExternalToolList(EnvironmentOptions.ExternalTools);
 end;
 {$ENDIF}
+
+// Wrappers for TFileOpenClose methods.
+
+function TLazSourceFileManager.OpenEditorFile(AFileName: string;
+  PageIndex, WindowIndex: integer; AEditorInfo: TUnitEditorInfo;
+  Flags: TOpenFlags; UseWindowID: Boolean = False): TModalResult;
+var
+  Opener: TFileOpenClose;
+begin
+  Opener := TFileOpenClose.Create(Self);
+  try
+    Result := Opener.OpenEditorFile(AFileName, PageIndex, WindowIndex, AEditorInfo,
+      Flags, UseWindowID);
+  finally
+    Opener.Free;
+  end;
+end;
+
+function TLazSourceFileManager.OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo): TModalResult;
+var
+  Opener: TFileOpenClose;
+begin
+  Opener := TFileOpenClose.Create(Self);
+  try
+    Result := Opener.OpenFileAtCursor(ActiveSrcEdit, ActiveUnitInfo);
+  finally
+    Opener.Free;
+  end;
+end;
 
 function TLazSourceFileManager.CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
 var
@@ -1341,574 +1976,6 @@ begin
   AnUnitInfo:=Project1.Units[UnitIndex];
   while (AnUnitInfo.OpenEditorInfoCount > 0) and (Result = mrOK) do
     Result:=CloseEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent, Flags);
-end;
-
-function TLazSourceFileManager.OpenEditorFile(AFileName: string; PageIndex,
-  WindowIndex: integer; AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags;
-  UseWindowID: Boolean): TModalResult;
-var
-  UnitIndex: integer;
-  UnknownFile, Handled: boolean;
-  NewUnitInfo: TUnitInfo;
-  NewBuf: TCodeBuffer;
-  FilenameNoPath: String;
-  LoadBufferFlags: TLoadBufferFlags;
-  DiskFilename: String;
-  Reverting: Boolean;
-  CanAbort: boolean;
-  NewEditorInfo: TUnitEditorInfo;
-  SearchPath: String;
-
-  function OpenResource: TModalResult;
-  var
-    CloseFlags: TCloseFlags;
-  begin
-    // read form data
-    if FilenameIsPascalUnit(AFilename) then begin
-      // this could be a unit with a form
-      //debugln('TLazSourceFileManager.OpenEditorFile ',AFilename,' ',OpenFlagsToString(Flags));
-      if ([ofDoNotLoadResource]*Flags=[])
-      and ( (ofDoLoadResource in Flags)
-         or ((ofProjectLoading in Flags)
-             and NewUnitInfo.LoadedDesigner
-             and (not Project1.AutoOpenDesignerFormsDisabled)
-             and EnvironmentOptions.AutoCreateFormsOnOpen))
-      then begin
-        // -> try to (re)load the lfm file
-        //debugln(['TLazSourceFileManager.OpenEditorFile Loading LFM for ',NewUnitInfo.Filename,' LoadedDesigner=',NewUnitInfo.LoadedDesigner]);
-        CloseFlags:=[cfSaveDependencies];
-        if ofRevert in Flags then
-          Include(CloseFlags,cfCloseDependencies);
-        Result:=LoadLFM(NewUnitInfo,Flags,CloseFlags);
-        if Result<>mrOk then begin
-          DebugLn(['TLazSourceFileManager.OpenEditorFile OpenResource LoadLFM failed']);
-          exit;
-        end;
-      end else begin
-        Result:=mrOk;
-      end;
-    end else if NewUnitInfo.Component<>nil then begin
-      // this is no pascal source and there is a designer form
-      // This can be the case, when the file is renamed and/or reverted
-      // -> close form
-      Result:=CloseUnitComponent(NewUnitInfo,
-                                 [cfCloseDependencies,cfSaveDependencies]);
-      if Result<>mrOk then begin
-        DebugLn(['TLazSourceFileManager.OpenEditorFile OpenResource CloseUnitComponent failed']);
-      end;
-    end else begin
-      Result:=mrOk;
-    end;
-    if NewUnitInfo.Component=nil then
-      NewUnitInfo.LoadedDesigner:=false;
-  end;
-
-begin
-  {$IFDEF IDE_VERBOSE}
-  DebugLn('');
-  DebugLn(['*** TLazSourceFileManager.OpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags),' Window=',WindowIndex,' Page=',PageIndex]);
-  {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenEditorFile START');{$ENDIF}
-  Result:=mrCancel;
-
-  CanAbort:=[ofProjectLoading,ofMultiOpen]*Flags<>[];
-
-  // replace macros
-  if ofConvertMacros in Flags then begin
-    if not GlobalMacroList.SubstituteStr(AFilename) then exit;
-    AFilename:=ExpandFileNameUTF8(AFilename);
-  end;
-
-  if (ofRevert in Flags) then begin
-    // revert: use source editor filename
-    if (PageIndex>=0) then begin
-      if UseWindowID then
-        WindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(WindowIndex); // Revert must have a valid ID
-      UseWindowID := False;
-      assert((WindowIndex >= 0) and (WindowIndex < SourceEditorManager.SourceWindowCount), 'WindowIndex for revert');
-      AFilename := SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex].FileName;
-    end
-    else
-      Flags := Flags - [ofRevert]; // No editor exists yet, don't try to revert.
-
-    UnitIndex:=Project1.IndexOfFilename(AFilename);
-    if (UnitIndex > 0) then begin
-      NewUnitInfo:=Project1.Units[UnitIndex];
-      if (uifInternalFile in NewUnitInfo.Flags) then
-      begin
-        if (NewUnitInfo.OpenEditorInfoCount > 0) then begin
-          NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
-          if MacroListViewer.MacroByFullName(AFileName) <> nil then
-            NewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
-          Result:=OpenFileInSourceEditor(NewEditorInfo, NewEditorInfo.PageIndex,
-            NewEditorInfo.WindowID, Flags, True);
-          exit;
-        end;
-        // unknown internal file
-        exit(mrOk);
-      end;
-    end;
-  end;
-
-  if (ofInternalFile in Flags) then begin
-    if (copy(AFileName, 1, length(EditorMacroVirtualDrive)) = EditorMacroVirtualDrive)
-    then begin
-      FilenameNoPath := AFileName;
-
-      UnitIndex:=Project1.IndexOfFilename(AFilename);
-      if (UnitIndex < 0) then begin
-        NewBuf := CodeToolBoss.SourceCache.CreateFile(AFileName);
-        if MacroListViewer.MacroByFullName(AFileName) <> nil then
-          NewBuf.Source := MacroListViewer.MacroByFullName(AFileName).GetAsSource;
-        NewUnitInfo:=TUnitInfo.Create(NewBuf);
-        NewUnitInfo.DefaultSyntaxHighlighter := lshFreePascal;
-        Project1.AddFile(NewUnitInfo,false);
-      end
-      else begin
-        NewUnitInfo:=Project1.Units[UnitIndex];
-      end;
-      NewUnitInfo.Flags := NewUnitInfo.Flags + [uifInternalFile];
-
-      if NewUnitInfo.OpenEditorInfoCount > 0 then begin
-        NewEditorInfo := NewUnitInfo.OpenEditorInfo[0];
-        SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(NewEditorInfo.WindowID);
-        SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
-      end
-      else begin
-        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo;
-        Result:=OpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
-      end;
-      Result:=mrOK;
-      exit;
-    end;
-    // unknown internal file => ignore
-    exit(mrOK);
-  end;
-
-  // normalize filename
-  AFilename:=TrimFilename(AFilename);
-  DiskFilename:=CodeToolBoss.DirectoryCachePool.FindDiskFilename(AFilename);
-  if DiskFilename<>AFilename then begin
-    // the case is different
-    DebugLn(['TLazSourceFileManager.OpenEditorFile Fixing file name: ',AFilename,' -> ',DiskFilename]);
-    AFilename:=DiskFilename;
-  end;
-
-  // check if symlink and ask user if the real file should be opened instead
-  if FilenameIsAbsolute(AFileName) then begin
-    SearchPath:=CodeToolBoss.GetCompleteSrcPathForDirectory('');
-    if SearchDirectoryInSearchPath(SearchPath,ExtractFilePath(AFileName))<1 then
-    begin
-      // the file is not in the project search path => check if it is a symlink
-      ChooseSymlink(AFilename,true);
-    end;
-  end;
-
-  FilenameNoPath:=ExtractFilename(AFilename);
-
-  // check to not open directories
-  if ((FilenameNoPath='') or (FilenameNoPath='.') or (FilenameNoPath='..')) then
-  begin
-    DebugLn(['TLazSourceFileManager.OpenEditorFile ignoring special file: ',AFilename]);
-    exit;
-  end;
-  if DirectoryExistsUTF8(AFileName) then begin
-    debugln(['TLazSourceFileManager.OpenEditorFile skipping directory ',AFileName]);
-    exit(mrCancel);
-  end;
-
-  if ([ofAddToRecent,ofRevert,ofVirtualFile]*Flags=[ofAddToRecent])
-  and (AFilename<>'') and FilenameIsAbsolute(AFilename) then
-    EnvironmentOptions.AddToRecentOpenFiles(AFilename);
-
-  // check if this is a hidden unit:
-  // if this is the main unit, it is already
-  // loaded and needs only to be shown in the sourceeditor/formeditor
-  if (not (ofRevert in Flags))
-  and (CompareFilenames(Project1.MainFilename,AFilename)=0)
-  then begin
-    Result:=OpenMainUnit(PageIndex,WindowIndex,Flags,UseWindowID);
-    exit;
-  end;
-
-  // check for special files
-  if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[])
-  and FilenameIsAbsolute(AFilename) and FileExistsUTF8(AFilename) then begin
-    // check if file is a lazarus project (.lpi)
-    if (CompareFileExt(AFilename,'.lpi',false)=0) then
-    begin
-      case
-        IDEQuestionDialog(
-          lisOpenProject, Format(lisOpenTheProject, [AFilename]), mtConfirmation,
-          [mrYes, lisOpenProject2, mrNoToAll, lisOpenAsXmlFile, mrCancel])
-      of
-        mrYes: begin
-          Result:=MainIDE.DoOpenProjectFile(AFilename,[ofAddToRecent]);
-          exit;
-        end;
-        mrNoToAll: include(Flags, ofRegularFile);
-        mrCancel: exit(mrCancel);
-      end;
-    end;
-
-    // check if file is a lazarus package (.lpk)
-    if (CompareFileExt(AFilename,'.lpk',false)=0) then
-    begin
-      case
-        IDEQuestionDialog(
-          lisOpenPackage, Format(lisOpenThePackage, [AFilename]), mtConfirmation,
-          [mrYes, lisCompPalOpenPackage, mrNoToAll, lisOpenAsXmlFile, mrCancel])
-      of
-        mrYes: begin
-          Result:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent],CanAbort);
-          exit;
-        end;
-        mrCancel: exit(mrCancel);
-      end;
-    end;
-  end;
-
-  // check if the project knows this file
-  if (ofRevert in Flags) then begin
-    // revert
-    UnknownFile := False;
-    if UseWindowID then
-      NewEditorInfo := Project1.EditorInfoWithEditorComponent(
-        SourceEditorManager.SourceEditorsByPage[SourceEditorManager.IndexOfSourceWindowWithID(WindowIndex), PageIndex])
-    else
-      NewEditorInfo := Project1.EditorInfoWithEditorComponent(
-        SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex]);
-    NewUnitInfo := NewEditorInfo.UnitInfo;
-    UnitIndex:=Project1.IndexOf(NewUnitInfo);
-    AFilename:=NewUnitInfo.Filename;
-    if CompareFilenames(AFileName,DiskFilename)=0 then
-      AFileName:=DiskFilename;
-    if NewUnitInfo.IsVirtual then begin
-      if (not (ofQuiet in Flags)) then begin
-        IDEMessageDialog(lisRevertFailed, Format(lisFileIsVirtual, [AFilename]),
-          mtInformation,[mbCancel]);
-      end;
-      Result:=mrCancel;
-      exit;
-    end;
-  end else begin
-    UnitIndex:=Project1.IndexOfFilename(AFilename);
-    UnknownFile := (UnitIndex < 0);
-    NewEditorInfo := nil;
-    if not UnknownFile then begin
-      NewUnitInfo:=Project1.Units[UnitIndex];
-      if AEditorInfo <> nil then
-        NewEditorInfo := AEditorInfo
-      else if (ofProjectLoading in Flags) then
-        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
-      else
-        NewEditorInfo := NewUnitInfo.EditorInfo[0];
-    end;
-  end;
-
-  if (NewEditorInfo <> nil) and (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
-  begin
-    NewUnitInfo.IsPartOfProject:=true;
-    Project1.Modified:=true;
-  end;
-
-  if (NewEditorInfo <> nil) and (Flags * [ofProjectLoading, ofRevert] = []) and (NewEditorInfo.EditorComponent <> nil) then
-  begin
-    //DebugLn(['TLazSourceFileManager.OpenEditorFile file already open ',NewUnitInfo.Filename,' WindowIndex=',NewEditorInfo.WindowID,' PageIndex=',NewEditorInfo.PageIndex]);
-    // file already open -> change source notebook page
-    SourceEditorManager.ActiveSourceWindowIndex := SourceEditorManager.IndexOfSourceWindowWithID(NewEditorInfo.WindowID);
-    SourceEditorManager.ActiveSourceWindow.PageIndex:= NewEditorInfo.PageIndex;
-    if ofDoLoadResource in Flags then
-      Result:=OpenResource
-    else
-      Result:=mrOk;
-    exit;
-  end;
-
-  Reverting:=false;
-  if ofRevert in Flags then begin
-    Reverting:=true;
-    Project1.BeginRevertUnit(NewUnitInfo);
-  end;
-  try
-
-    // check if file exists
-    if FilenameIsAbsolute(AFilename) and (not FileExistsUTF8(AFilename)) then begin
-      // file does not exist
-      if (ofRevert in Flags) then begin
-        // revert failed, due to missing file
-        if not (ofQuiet in Flags) then begin
-          IDEMessageDialog(lisRevertFailed, Format(lisPkgMangFileNotFound, [AFilename]),
-            mtError,[mbCancel]);
-        end;
-        Result:=mrCancel;
-        exit;
-      end else begin
-        Result:=OpenNotExistingFile(AFilename,Flags);
-        exit;
-      end;
-    end;
-
-    // load the source
-    if UnknownFile then begin
-      // open unknown file, Never happens if ofRevert
-      Handled:=false;
-      Result:=OpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
-      if (Result<>mrOk) or Handled then exit;
-      // the file was previously unknown, use the default EditorInfo
-      if AEditorInfo <> nil then
-        NewEditorInfo := AEditorInfo
-      else
-      if NewUnitInfo <> nil then
-        NewEditorInfo := NewUnitInfo.GetClosedOrNewEditorInfo
-      else
-        NewEditorInfo := nil;
-    end else begin
-      // project knows this file => all the meta data is known
-      // -> just load the source
-      NewUnitInfo:=Project1.Units[UnitIndex];
-      LoadBufferFlags:=[lbfCheckIfText];
-      if FilenameIsAbsolute(AFilename) then begin
-        if (not (ofUseCache in Flags)) then
-          Include(LoadBufferFlags,lbfUpdateFromDisk);
-        if ofRevert in Flags then
-          Include(LoadBufferFlags,lbfRevert);
-      end;
-      Result:=LoadCodeBuffer(NewBuf,AFileName,LoadBufferFlags,CanAbort);
-      if Result<>mrOk then begin
-        DebugLn(['TLazSourceFileManager.OpenEditorFile failed LoadCodeBuffer: ',AFilename]);
-        exit;
-      end;
-
-      NewUnitInfo.Source:=NewBuf;
-      if FilenameIsPascalUnit(NewUnitInfo.Filename) then
-        NewUnitInfo.ReadUnitNameFromSource(false);
-      NewUnitInfo.Modified:=NewUnitInfo.Source.FileOnDiskNeedsUpdate;
-    end;
-
-    // check readonly
-    NewUnitInfo.FileReadOnly:=FileExistsUTF8(NewUnitInfo.Filename)
-                              and (not FileIsWritable(NewUnitInfo.Filename));
-    //debugln('[TLazSourceFileManager.OpenEditorFile] B');
-    // open file in source notebook
-    Result:=OpenFileInSourceEditor(NewEditorInfo, PageIndex, WindowIndex, Flags, UseWindowID);
-    if Result<>mrOk then begin
-      DebugLn(['TLazSourceFileManager.OpenEditorFile failed OpenFileInSourceEditor: ',AFilename]);
-      exit;
-    end;
-    //debugln('[TLazSourceFileManager.OpenEditorFile] C');
-    // open resource component (designer, form, datamodule, ...)
-    if NewUnitInfo.OpenEditorInfoCount = 1 then
-      Result:=OpenResource;
-    if Result<>mrOk then begin
-      DebugLn(['TLazSourceFileManager.OpenEditorFile failed OpenResource: ',AFilename]);
-      exit;
-    end;
-  finally
-    if Reverting then
-      Project1.EndRevertUnit(NewUnitInfo);
-  end;
-
-  Result:=mrOk;
-  //debugln('TLazSourceFileManager.OpenEditorFile END "',AFilename,'"');
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenEditorFile END');{$ENDIF}
-end;
-
-function TLazSourceFileManager.OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo): TModalResult;
-var
-  FileName,SearchPath: String;
-
-  function FindFile(var CurFileName: String; CurSearchPath: String): Boolean;
-  //  Searches for FileName in SearchPath
-  //  If FileName is not found, we'll check extensions pp and pas too
-  //  Returns true if found. FName contains the full file+path in that case
-  var TempFile,TempPath,CurPath,FinalFile, Ext: String;
-      p,c: Integer;
-      PasExt: TPascalExtType;
-  begin
-    if CurSearchPath='' then CurSearchPath:='.';
-    Result:=true;
-    TempPath:=CurSearchPath;
-    while TempPath<>'' do begin
-      p:=pos(';',TempPath);
-      if p=0 then p:=length(TempPath)+1;
-      CurPath:=copy(TempPath,1,p-1);
-      Delete(TempPath,1,p);
-      if CurPath='' then continue;
-      CurPath:=AppendPathDelim(CurPath);
-      if not FilenameIsAbsolute(CurPath) then begin
-        if ActiveUnitInfo.IsVirtual then
-          CurPath:=AppendPathDelim(Project1.ProjectDirectory)+CurPath
-        else
-          CurPath:=AppendPathDelim(ExtractFilePath(ActiveUnitInfo.Filename))+CurPath;
-      end;
-      for c:=0 to 2 do begin
-        // FPC searches first lowercase, then keeping case, then uppercase
-        case c of
-          0: TempFile:=LowerCase(CurFileName);
-          1: TempFile:=CurFileName;
-          2: TempFile:=UpperCase(CurFileName);
-        end;
-        if ExtractFileExt(TempFile)='' then begin
-          for PasExt:=Low(TPascalExtType) to High(TPascalExtType) do begin
-            Ext:=PascalExtension[PasExt];
-            FinalFile:=ExpandFileNameUTF8(CurPath+TempFile+Ext);
-            if FileExistsUTF8(FinalFile) then begin
-              CurFileName:=FinalFile;
-              exit;
-            end;
-          end;
-        end else begin
-          FinalFile:=ExpandFileNameUTF8(CurPath+TempFile);
-          if FileExistsUTF8(FinalFile) then begin
-            CurFileName:=FinalFile;
-            exit;
-          end;
-        end;
-      end;
-    end;
-    Result:=false;
-  end;
-
-  function CheckIfIncludeDirectiveInFront(const Line: string;
-    X: integer): boolean;
-  var
-    DirectiveEnd, DirectiveStart: integer;
-    Directive: string;
-  begin
-    Result:=false;
-    DirectiveEnd:=X;
-    while (DirectiveEnd>1) and (Line[DirectiveEnd-1] in [' ',#9]) do
-      dec(DirectiveEnd);
-    DirectiveStart:=DirectiveEnd-1;
-    while (DirectiveStart>0) and (Line[DirectiveStart]<>'$') do
-      dec(DirectiveStart);
-    Directive:=uppercase(copy(Line,DirectiveStart,DirectiveEnd-DirectiveStart));
-    if (Directive='$INCLUDE') or (Directive='$I') then begin
-      if ((DirectiveStart>1) and (Line[DirectiveStart-1]='{'))
-      or ((DirectiveStart>2)
-        and (Line[DirectiveStart-2]='(') and (Line[DirectiveStart-1]='*'))
-      then begin
-        Result:=true;
-      end;
-    end;
-  end;
-
-  function GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
-  var
-    Line: string;
-    Len, Stop: integer;
-    StopChars: set of char;
-  begin
-    Result := '';
-    IsIncludeDirective:=false;
-    if (XY.Y >= 1) and (XY.Y <= ActiveSrcEdit.EditorComponent.Lines.Count) then
-    begin
-      Line := ActiveSrcEdit.EditorComponent.Lines.Strings[XY.Y - 1];
-      Len := Length(Line);
-      if (XY.X >= 1) and (XY.X <= Len + 1) then begin
-        StopChars := [',',';',':','[',']','{','}','(',')','''','"','`'
-                     ,'#','%','=','>'];
-        Stop := XY.X;
-        if Stop>Len then Stop:=Len;
-        while (Stop >= 1) and (not (Line[Stop] in ['''','"','`'])) do
-          dec(Stop);
-        if Stop<1 then
-          StopChars:=StopChars+[' ',#9]; // no quotes in front => use spaces as boundaries
-        Stop := XY.X;
-        while (Stop <= Len) and (not (Line[Stop] in StopChars)) do
-          Inc(Stop);
-        while (XY.X > 1) and (not (Line[XY.X - 1] in StopChars)) do
-          Dec(XY.X);
-        if Stop > XY.X then begin
-          Result := Copy(Line, XY.X, Stop - XY.X);
-          IsIncludeDirective:=CheckIfIncludeDirectiveInFront(Line,XY.X);
-        end;
-      end;
-    end;
-  end;
-
-var
-  IsIncludeDirective: boolean;
-  BaseDir: String;
-  NewFilename: string;
-  Found: Boolean;
-  AUnitName: String;
-  InFilename: String;
-begin
-  Result:=mrCancel;
-  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
-  BaseDir:=ExtractFilePath(ActiveUnitInfo.Filename);
-
-  // parse filename at cursor
-  IsIncludeDirective:=false;
-  Found:=false;
-  FileName:=GetFilenameAtRowCol(ActiveSrcEdit.EditorComponent.LogicalCaretXY,
-                             IsIncludeDirective);
-  if FileName='' then exit;
-
-  // check if absolute filename
-  if FilenameIsAbsolute(FileName) then begin
-    if FileExistsUTF8(FileName) then
-      Found:=true
-    else
-      exit;
-  end;
-
-  if (not Found) then begin
-    if IsIncludeDirective then begin
-      // search include file
-      SearchPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
-      if FindFile(FileName,SearchPath) then
-        Found:=true;
-    end else if FilenameIsPascalSource(FileName) or (ExtractFileExt(FileName)='') then
-    begin
-      // search pascal unit
-      AUnitName:=ExtractFileNameOnly(FileName);
-      InFilename:=FileName;
-      if ExtractFileExt(FileName)='' then InFilename:='';
-      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                           BaseDir,AUnitName,InFilename,true);
-      if NewFilename<>'' then begin
-        Found:=true;
-        FileName:=NewFilename;
-      end;
-    end;
-  end;
-
-  if (not Found) then begin
-    // simple search relative to current unit
-    InFilename:=AppendPathDelim(BaseDir)+FileName;
-    if FileExistsCached(InFilename) then begin
-      Found:=true;
-      FileName:=InFilename;
-    end;
-  end;
-
-  if (not Found) and (System.Pos('.',FileName)>0) and (not IsIncludeDirective) then
-  begin
-    // for example 'SysUtils.CompareText'
-    FileName:=ActiveSrcEdit.EditorComponent.GetWordAtRowCol(
-      ActiveSrcEdit.EditorComponent.LogicalCaretXY);
-    if (FileName<>'') and IsValidIdent(FileName) then begin
-      // search pascal unit
-      AUnitName:=FileName;
-      InFilename:='';
-      NewFilename:=CodeToolBoss.DirectoryCachePool.FindUnitSourceInCompletePath(
-                           BaseDir,AUnitName,InFilename,true);
-      if NewFilename<>'' then begin
-        Found:=true;
-        FileName:=NewFilename;
-      end;
-    end;
-  end;
-
-  if Found then begin
-    // open
-    InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FileName));
-    Result:=OpenEditorFile(FileName, -1, -1, nil, [ofAddToRecent]);
-  end;
 end;
 
 function TLazSourceFileManager.FindUnitFile(const AFilename: string; TheOwner: TObject;
