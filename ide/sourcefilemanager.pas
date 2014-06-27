@@ -76,6 +76,9 @@ type
     FActiveSrcEdit: TSourceEditor;
     FActiveUnitInfo: TUnitInfo;
     FIsIncludeDirective: boolean;
+    function OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
+      PageIndex, WindowIndex: integer; Flags: TOpenFlags;
+      UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
     // Used by OpenEditorFile
     function OpenResource: TModalResult;
     function ChangeEditorPage: TModalResult;
@@ -216,9 +219,6 @@ type
 
     // methods for 'open unit' and 'open main unit'
   private
-    function OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
-      PageIndex, WindowIndex: integer; Flags: TOpenFlags;
-      UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
     function LoadResourceFile(AnUnitInfo: TUnitInfo; var LFMCode, LRSCode: TCodeBuffer;
         IgnoreSourceErrors, AutoCreateResourceCode, ShowAbort: boolean): TModalResult;
     function FindBaseComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName,
@@ -333,6 +333,126 @@ end;
 destructor TFileOpenClose.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TFileOpenClose.OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
+  PageIndex, WindowIndex: integer; Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
+var
+  NewSrcEdit: TSourceEditor;
+  AFilename: string;
+  NewCaretXY: TPoint;
+  NewTopLine: LongInt;
+  NewLeftChar: LongInt;
+  NewErrorLine: LongInt;
+  NewExecutionLine: LongInt;
+  FoldState: String;
+  SrcNotebook: TSourceNotebook;
+  AnUnitInfo: TUnitInfo;
+  AShareEditor: TSourceEditor;
+begin
+  //debugln(['TFileOpenClose.OpenFileInSourceEditor ',AnEditorInfo.UnitInfo.Filename,' Window=',WindowIndex,'/',SourceEditorManager.SourceWindowCount,' Page=',PageIndex]);
+  AnUnitInfo := AnEditorInfo.UnitInfo;
+  AFilename:=AnUnitInfo.Filename;
+  if (WindowIndex < 0) then
+    SrcNotebook := SourceEditorManager.ActiveOrNewSourceWindow
+  else
+  if UseWindowID then begin
+    SrcNotebook := SourceEditorManager.SourceWindowWithID(WindowIndex);
+    WindowIndex := SourceEditorManager.IndexOfSourceWindow(SrcNotebook);
+  end
+  else
+  if (WindowIndex >= SourceEditorManager.SourceWindowCount) then begin
+    SrcNotebook := SourceEditorManager.NewSourceWindow;
+  end
+  else
+    SrcNotebook := SourceEditorManager.SourceWindows[WindowIndex];
+
+  // get syntax highlighter type
+  if (uifInternalFile in AnUnitInfo.Flags) then
+    AnUnitInfo.UpdateDefaultHighlighter(lshFreePascal)
+  else
+    AnUnitInfo.UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(AFilename));
+
+  SrcNotebook.IncUpdateLock;
+  try
+    //DebugLn(['TFileOpenClose.OpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
+    if (not (ofRevert in Flags)) or (PageIndex<0) then begin
+      // create a new source editor
+
+      // update marks and cursor positions in Project1, so that merging the old
+      // settings during restoration will work
+      FManager.SaveSourceEditorProjectSpecificSettings;
+      AShareEditor := nil;
+      if AnUnitInfo.OpenEditorInfoCount > 0 then
+        AShareEditor := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
+      NewSrcEdit:=SrcNotebook.NewFile(
+        CreateSrcEditPageName(AnUnitInfo.Unit_Name, AFilename, AShareEditor),
+        AnUnitInfo.Source, False, AShareEditor);
+      NewSrcEdit.EditorComponent.BeginUpdate;
+      MainIDEBar.itmFileClose.Enabled:=True;
+      MainIDEBar.itmFileCloseAll.Enabled:=True;
+      NewCaretXY := AnEditorInfo.CursorPos;
+      NewTopLine := AnEditorInfo.TopLine;
+      FoldState := AnEditorInfo.FoldState;
+      NewLeftChar:=1;
+      NewErrorLine:=-1;
+      NewExecutionLine:=-1;
+    end else begin
+      // revert code in existing source editor
+      NewSrcEdit:=SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex];
+      NewCaretXY:=NewSrcEdit.EditorComponent.CaretXY;
+      NewTopLine:=NewSrcEdit.EditorComponent.TopLine;
+      FoldState := NewSrcEdit.EditorComponent.FoldState;
+      NewLeftChar:=NewSrcEdit.EditorComponent.LeftChar;
+      NewErrorLine:=NewSrcEdit.ErrorLine;
+      NewExecutionLine:=NewSrcEdit.ExecutionLine;
+      NewSrcEdit.EditorComponent.BeginUpdate;
+      if NewSrcEdit.CodeBuffer=AnUnitInfo.Source then begin
+        AnUnitInfo.Source.AssignTo(NewSrcEdit.EditorComponent.Lines,true);
+      end else
+        NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
+      AnUnitInfo.ClearModifieds;
+      //DebugLn(['TFileOpenClose.OpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
+    end;
+
+    NewSrcEdit.IsLocked := AnEditorInfo.IsLocked;
+    AnEditorInfo.EditorComponent := NewSrcEdit;
+    //debugln(['TFileOpenClose.OpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
+
+    // restore source editor settings
+    DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
+    NewSrcEdit.SyntaxHighlighterType := AnEditorInfo.SyntaxHighlighter;
+    NewSrcEdit.EditorComponent.AfterLoadFromFile;
+    try
+      NewSrcEdit.EditorComponent.FoldState := FoldState;
+    except
+      IDEMessageDialog(lisError, lisFailedToLoadFoldStat, mtError, [mbOK]);
+    end;
+
+    NewSrcEdit.EditorComponent.CaretXY:=NewCaretXY;
+    NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
+    NewSrcEdit.EditorComponent.LeftChar:=NewLeftChar;
+    NewSrcEdit.ErrorLine:=NewErrorLine;
+    NewSrcEdit.ExecutionLine:=NewExecutionLine;
+    NewSrcEdit.ReadOnly:=AnUnitInfo.ReadOnly;
+    NewSrcEdit.Modified:=false;
+
+    // mark unit as loaded
+    NewSrcEdit.EditorComponent.EndUpdate;
+    AnUnitInfo.Loaded:=true;
+  finally
+    SrcNotebook.DecUpdateLock;
+  end;
+
+  // update statusbar and focus editor
+  if (not (ofProjectLoading in Flags)) then begin
+    SourceEditorManager.ActiveEditor := NewSrcEdit;
+    SourceEditorManager.ShowActiveWindowOnTop(True);
+  end;
+  SrcNoteBook.UpdateStatusBar;
+  SrcNotebook.BringToFront;
+
+  Result:=mrOk;
 end;
 
 function TFileOpenClose.GetAvailableUnitEditorInfo(AnUnitInfo: TUnitInfo;
@@ -463,12 +583,12 @@ begin
           begin
             w := AvailSrcWindowIndex;
             if w >= 0 then
-              if FManager.OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w, []) = mrOk then
+              if OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w, []) = mrOk then
                 Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
           end;
         eoeaNewTabInNewWindowOnly:
           begin
-            if FManager.OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo,
+            if OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo,
                                       -1, SourceEditorManager.SourceWindowCount, []) = mrOk then
               Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
           end;
@@ -476,7 +596,7 @@ begin
           begin
             w := AvailSrcWindowIndex;
             if w < 0 then w := SourceEditorManager.SourceWindowCount;
-            if FManager.OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w, []) = mrOk then
+            if OpenFileInSourceEditor(AnUnitInfo.GetClosedOrNewEditorInfo, -1, w, []) = mrOk then
               Result := AnUnitInfo.OpenEditorInfo[0]; // newly opened will be last focused
           end;
       end;
@@ -557,7 +677,7 @@ begin
     end
     else begin
       FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo;
-      FManager.OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags, FUseWindowID);
+      OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags, FUseWindowID);
     end;
   end;
 end;
@@ -583,7 +703,7 @@ begin
         FNewEditorInfo := FNewUnitInfo.OpenEditorInfo[0];
         if MacroListViewer.MacroByFullName(FFileName) <> nil then
           FNewUnitInfo.Source.Source := MacroListViewer.MacroByFullName(FFileName).GetAsSource;
-        FManager.OpenFileInSourceEditor(FNewEditorInfo, FNewEditorInfo.PageIndex,
+        OpenFileInSourceEditor(FNewEditorInfo, FNewEditorInfo.PageIndex,
           FNewEditorInfo.WindowID, FFlags, True);
       end;
       // else unknown internal file
@@ -881,7 +1001,7 @@ begin
   if (not (ofRevert in FFlags))
   and (CompareFilenames(Project1.MainFilename,FFilename)=0)
   then begin
-    Result:=FManager.OpenMainUnit(FPageIndex,FWindowIndex,FFlags,FUseWindowID);
+    Result:=OpenMainUnit(FPageIndex,FWindowIndex,FFlags,FUseWindowID);
     exit;
   end;
 
@@ -980,7 +1100,7 @@ begin
                               and (not FileIsWritable(FNewUnitInfo.Filename));
     //debugln('[TFileOpenClose.OpenEditorFile] B');
     // open file in source notebook
-    Result:=FManager.OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags, FUseWindowID);
+    Result:=OpenFileInSourceEditor(FNewEditorInfo, FPageIndex, FWindowIndex, FFlags, FUseWindowID);
     if Result<>mrOk then begin
       DebugLn(['TFileOpenClose.OpenEditorFile failed OpenFileInSourceEditor: ',FFilename]);
       exit;
@@ -1216,7 +1336,7 @@ begin
   end;
 
   // open file in source notebook
-  Result:=FManager.OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,
+  Result:=OpenFileInSourceEditor(MainUnitInfo.GetClosedOrNewEditorInfo,
                                  PageIndex,WindowIndex,Flags,UseWindowID);
   if Result<>mrOk then exit;
 
@@ -5262,126 +5382,6 @@ begin
   finally
     LFMChecker.Free;
   end;
-  Result:=mrOk;
-end;
-
-function TLazSourceFileManager.OpenFileInSourceEditor(AnEditorInfo: TUnitEditorInfo;
-  PageIndex, WindowIndex: integer; Flags: TOpenFlags; UseWindowID: Boolean): TModalResult;
-var
-  NewSrcEdit: TSourceEditor;
-  AFilename: string;
-  NewCaretXY: TPoint;
-  NewTopLine: LongInt;
-  NewLeftChar: LongInt;
-  NewErrorLine: LongInt;
-  NewExecutionLine: LongInt;
-  FoldState: String;
-  SrcNotebook: TSourceNotebook;
-  AnUnitInfo: TUnitInfo;
-  AShareEditor: TSourceEditor;
-begin
-  //debugln(['TLazSourceFileManager.OpenFileInSourceEditor ',AnEditorInfo.UnitInfo.Filename,' Window=',WindowIndex,'/',SourceEditorManager.SourceWindowCount,' Page=',PageIndex]);
-  AnUnitInfo := AnEditorInfo.UnitInfo;
-  AFilename:=AnUnitInfo.Filename;
-  if (WindowIndex < 0) then
-    SrcNotebook := SourceEditorManager.ActiveOrNewSourceWindow
-  else
-  if UseWindowID then begin
-    SrcNotebook := SourceEditorManager.SourceWindowWithID(WindowIndex);
-    WindowIndex := SourceEditorManager.IndexOfSourceWindow(SrcNotebook);
-  end
-  else
-  if (WindowIndex >= SourceEditorManager.SourceWindowCount) then begin
-    SrcNotebook := SourceEditorManager.NewSourceWindow;
-  end
-  else
-    SrcNotebook := SourceEditorManager.SourceWindows[WindowIndex];
-
-  // get syntax highlighter type
-  if (uifInternalFile in AnUnitInfo.Flags) then
-    AnUnitInfo.UpdateDefaultHighlighter(lshFreePascal)
-  else
-    AnUnitInfo.UpdateDefaultHighlighter(FilenameToLazSyntaxHighlighter(AFilename));
-
-  SrcNotebook.IncUpdateLock;
-  try
-    //DebugLn(['TLazSourceFileManager.OpenFileInSourceEditor Revert=',ofRevert in Flags,' ',AnUnitInfo.Filename,' PageIndex=',PageIndex]);
-    if (not (ofRevert in Flags)) or (PageIndex<0) then begin
-      // create a new source editor
-
-      // update marks and cursor positions in Project1, so that merging the old
-      // settings during restoration will work
-      SaveSourceEditorProjectSpecificSettings;
-      AShareEditor := nil;
-      if AnUnitInfo.OpenEditorInfoCount > 0 then
-        AShareEditor := TSourceEditor(AnUnitInfo.OpenEditorInfo[0].EditorComponent);
-      NewSrcEdit:=SrcNotebook.NewFile(
-        CreateSrcEditPageName(AnUnitInfo.Unit_Name, AFilename, AShareEditor),
-        AnUnitInfo.Source, False, AShareEditor);
-      NewSrcEdit.EditorComponent.BeginUpdate;
-      MainIDEBar.itmFileClose.Enabled:=True;
-      MainIDEBar.itmFileCloseAll.Enabled:=True;
-      NewCaretXY := AnEditorInfo.CursorPos;
-      NewTopLine := AnEditorInfo.TopLine;
-      FoldState := AnEditorInfo.FoldState;
-      NewLeftChar:=1;
-      NewErrorLine:=-1;
-      NewExecutionLine:=-1;
-    end else begin
-      // revert code in existing source editor
-      NewSrcEdit:=SourceEditorManager.SourceEditorsByPage[WindowIndex, PageIndex];
-      NewCaretXY:=NewSrcEdit.EditorComponent.CaretXY;
-      NewTopLine:=NewSrcEdit.EditorComponent.TopLine;
-      FoldState := NewSrcEdit.EditorComponent.FoldState;
-      NewLeftChar:=NewSrcEdit.EditorComponent.LeftChar;
-      NewErrorLine:=NewSrcEdit.ErrorLine;
-      NewExecutionLine:=NewSrcEdit.ExecutionLine;
-      NewSrcEdit.EditorComponent.BeginUpdate;
-      if NewSrcEdit.CodeBuffer=AnUnitInfo.Source then begin
-        AnUnitInfo.Source.AssignTo(NewSrcEdit.EditorComponent.Lines,true);
-      end else
-        NewSrcEdit.CodeBuffer:=AnUnitInfo.Source;
-      AnUnitInfo.ClearModifieds;
-      //DebugLn(['TLazSourceFileManager.OpenFileInSourceEditor NewCaretXY=',dbgs(NewCaretXY),' NewTopLine=',NewTopLine]);
-    end;
-
-    NewSrcEdit.IsLocked := AnEditorInfo.IsLocked;
-    AnEditorInfo.EditorComponent := NewSrcEdit;
-    //debugln(['TLazSourceFileManager.OpenFileInSourceEditor ',AnUnitInfo.Filename,' ',AnUnitInfo.EditorIndex]);
-
-    // restore source editor settings
-    DebugBoss.DoRestoreDebuggerMarks(AnUnitInfo);
-    NewSrcEdit.SyntaxHighlighterType := AnEditorInfo.SyntaxHighlighter;
-    NewSrcEdit.EditorComponent.AfterLoadFromFile;
-    try
-      NewSrcEdit.EditorComponent.FoldState := FoldState;
-    except
-      IDEMessageDialog(lisError, lisFailedToLoadFoldStat, mtError, [mbOK]);
-    end;
-
-    NewSrcEdit.EditorComponent.CaretXY:=NewCaretXY;
-    NewSrcEdit.EditorComponent.TopLine:=NewTopLine;
-    NewSrcEdit.EditorComponent.LeftChar:=NewLeftChar;
-    NewSrcEdit.ErrorLine:=NewErrorLine;
-    NewSrcEdit.ExecutionLine:=NewExecutionLine;
-    NewSrcEdit.ReadOnly:=AnUnitInfo.ReadOnly;
-    NewSrcEdit.Modified:=false;
-
-    // mark unit as loaded
-    NewSrcEdit.EditorComponent.EndUpdate;
-    AnUnitInfo.Loaded:=true;
-  finally
-    SrcNotebook.DecUpdateLock;
-  end;
-
-  // update statusbar and focus editor
-  if (not (ofProjectLoading in Flags)) then begin
-    SourceEditorManager.ActiveEditor := NewSrcEdit;
-    SourceEditorManager.ShowActiveWindowOnTop(True);
-  end;
-  SrcNoteBook.UpdateStatusBar;
-  SrcNotebook.BringToFront;
-
   Result:=mrOk;
 end;
 
