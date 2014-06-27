@@ -83,7 +83,7 @@ type
     function OpenKnown: TModalResult;
     function OpenUnknown: TModalResult;
     function OpenUnknownFile(const AFileName: string; Flags: TOpenFlags;
-        var NewUnitInfo: TUnitInfo; var Handled: boolean): TModalResult;
+        var NewUnitInfo: TUnitInfo): TModalResult;
     function OpenNotExistingFile(const AFileName: string; Flags: TOpenFlags): TModalResult;
     function PrepareFile: TModalResult;
     function PrepareRevert(DiskFilename: String): TModalResult;
@@ -522,13 +522,8 @@ end;
 
 function TFileOpenClose.OpenUnknown: TModalResult;
 // open unknown file, Never happens if ofRevert
-var
-  Handled: boolean;
 begin
-  Handled:=false;
-  Result:=OpenUnknownFile(FFilename,FFlags,FNewUnitInfo,Handled);
-  if Handled then
-    Result := mrIgnore;
+  Result:=OpenUnknownFile(FFilename,FFlags,FNewUnitInfo);
   if Result<>mrOk then exit;
   // the file was previously unknown, use the default EditorInfo
   if FEditorInfo <> nil then
@@ -541,21 +536,21 @@ begin
 end;
 
 function TFileOpenClose.OpenUnknownFile(const AFileName: string; Flags: TOpenFlags;
-  var NewUnitInfo: TUnitInfo; var Handled: boolean): TModalResult;
+  var NewUnitInfo: TUnitInfo): TModalResult;
 var
   Ext, NewProgramName, LPIFilename, ACaption, AText: string;
   PreReadBuf: TCodeBuffer;
   LoadFlags: TLoadBufferFlags;
   SourceType: String;
 begin
-  Handled:=false;
   Ext:=lowercase(ExtractFileExt(AFilename));
 
   if ([ofProjectLoading,ofRegularFile]*Flags=[]) and (MainIDE.ToolStatus=itNone)
   and (Ext='.lpi') then begin
     // this is a project info file -> load whole project
-    Handled:=true;
     Result:=MainIDE.DoOpenProjectFile(AFilename,[ofAddToRecent]);
+    if Result = mrOK then
+      Result := mrIgnore;
     exit;
   end;
 
@@ -584,8 +579,9 @@ begin
                    [AFilename]), mtConfirmation,
               [mrOk, lisOpenProject2, mrCancel, lisOpenTheFileAsNormalSource])=mrOk then
           begin
-            Handled:=true;
             Result:=MainIDE.DoOpenProjectFile(LPIFilename,[ofAddToRecent]);
+            if Result = mrOK then
+              Result := mrIgnore;
             exit;
           end;
         end else begin
@@ -594,8 +590,9 @@ begin
           ACaption:=lisProgramDetected;
           if IDEMessageDialog(ACaption, AText, mtConfirmation, [mbYes,mbNo])=mrYes then
           begin
-            Handled:=true;
             Result:=FManager.CreateProjectForProgram(PreReadBuf);
+            if Result = mrOK then
+              Result := mrIgnore;
             exit;
           end;
         end;
