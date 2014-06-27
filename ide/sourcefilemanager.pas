@@ -82,8 +82,7 @@ type
     function CheckRevert: TModalResult;
     function OpenKnown: TModalResult;
     function OpenUnknown: TModalResult;
-    function OpenUnknownFile(const AFileName: string; Flags: TOpenFlags;
-        var NewUnitInfo: TUnitInfo): TModalResult;
+    function OpenUnknownFile: TModalResult;
     function OpenNotExistingFile(const AFileName: string; Flags: TOpenFlags): TModalResult;
     function PrepareFile: TModalResult;
     function PrepareRevert(DiskFilename: String): TModalResult;
@@ -523,7 +522,7 @@ end;
 function TFileOpenClose.OpenUnknown: TModalResult;
 // open unknown file, Never happens if ofRevert
 begin
-  Result:=OpenUnknownFile(FFilename,FFlags,FNewUnitInfo);
+  Result:=OpenUnknownFile;
   if Result<>mrOk then exit;
   // the file was previously unknown, use the default EditorInfo
   if FEditorInfo <> nil then
@@ -535,20 +534,19 @@ begin
     FNewEditorInfo := nil;
 end;
 
-function TFileOpenClose.OpenUnknownFile(const AFileName: string; Flags: TOpenFlags;
-  var NewUnitInfo: TUnitInfo): TModalResult;
+function TFileOpenClose.OpenUnknownFile: TModalResult;
 var
   Ext, NewProgramName, LPIFilename, ACaption, AText: string;
   PreReadBuf: TCodeBuffer;
   LoadFlags: TLoadBufferFlags;
   SourceType: String;
 begin
-  Ext:=lowercase(ExtractFileExt(AFilename));
+  Ext:=lowercase(ExtractFileExt(FFilename));
 
-  if ([ofProjectLoading,ofRegularFile]*Flags=[]) and (MainIDE.ToolStatus=itNone)
+  if ([ofProjectLoading,ofRegularFile]*FFlags=[]) and (MainIDE.ToolStatus=itNone)
   and (Ext='.lpi') then begin
     // this is a project info file -> load whole project
-    Result:=MainIDE.DoOpenProjectFile(AFilename,[ofAddToRecent]);
+    Result:=MainIDE.DoOpenProjectFile(FFilename,[ofAddToRecent]);
     if Result = mrOK then
       Result := mrIgnore;
     exit;
@@ -556,14 +554,14 @@ begin
 
   // load the source
   LoadFlags := [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert];
-  if ofQuiet in Flags then Include(LoadFlags, lbfQuiet);
-  Result:=LoadCodeBuffer(PreReadBuf,AFileName,LoadFlags,true);
+  if ofQuiet in FFlags then Include(LoadFlags, lbfQuiet);
+  Result:=LoadCodeBuffer(PreReadBuf,FFileName,LoadFlags,true);
   if Result<>mrOk then exit;
-  NewUnitInfo:=nil;
+  FNewUnitInfo:=nil;
 
   // check if unit is a program
-  if ([ofProjectLoading,ofRegularFile]*Flags=[])
-  and FilenameIsPascalSource(AFilename) then begin
+  if ([ofProjectLoading,ofRegularFile]*FFlags=[])
+  and FilenameIsPascalSource(FFilename) then begin
     SourceType:=CodeToolBoss.GetSourceType(PreReadBuf,false);
     if (SysUtils.CompareText(SourceType,'PROGRAM')=0)
     or (SysUtils.CompareText(SourceType,'LIBRARY')=0)
@@ -572,11 +570,11 @@ begin
       if NewProgramName<>'' then begin
         // source is a program
         // either this is a lazarus project or it is not yet a lazarus project ;)
-        LPIFilename:=ChangeFileExt(AFilename,'.lpi');
+        LPIFilename:=ChangeFileExt(FFilename,'.lpi');
         if FileExistsUTF8(LPIFilename) then begin
           if IDEQuestionDialog(lisProjectInfoFileDetected,
             Format(lisTheFileSeemsToBeTheProgramFileOfAnExistingLazarusP,
-                   [AFilename]), mtConfirmation,
+                   [FFilename]), mtConfirmation,
               [mrOk, lisOpenProject2, mrCancel, lisOpenTheFileAsNormalSource])=mrOk then
           begin
             Result:=MainIDE.DoOpenProjectFile(LPIFilename,[ofAddToRecent]);
@@ -586,7 +584,7 @@ begin
           end;
         end else begin
           AText:=Format(lisTheFileSeemsToBeAProgramCloseCurrentProject,
-                        [AFilename, LineEnding, LineEnding]);
+                        [FFilename, LineEnding, LineEnding]);
           ACaption:=lisProgramDetected;
           if IDEMessageDialog(ACaption, AText, mtConfirmation, [mbYes,mbNo])=mrYes then
           begin
@@ -599,13 +597,13 @@ begin
       end;
     end;
   end;
-  NewUnitInfo:=TUnitInfo.Create(PreReadBuf);
-  if FilenameIsPascalSource(NewUnitInfo.Filename) then
-    NewUnitInfo.ReadUnitNameFromSource(true);
-  Project1.AddFile(NewUnitInfo,false);
-  if (ofAddToProject in Flags) and (not NewUnitInfo.IsPartOfProject) then
+  FNewUnitInfo:=TUnitInfo.Create(PreReadBuf);
+  if FilenameIsPascalSource(FNewUnitInfo.Filename) then
+    FNewUnitInfo.ReadUnitNameFromSource(true);
+  Project1.AddFile(FNewUnitInfo,false);
+  if (ofAddToProject in FFlags) and (not FNewUnitInfo.IsPartOfProject) then
   begin
-    NewUnitInfo.IsPartOfProject:=true;
+    FNewUnitInfo.IsPartOfProject:=true;
     Project1.Modified:=true;
   end;
   Result:=mrOk;
