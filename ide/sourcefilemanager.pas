@@ -80,6 +80,8 @@ type
     function ChangeEditorPage: TModalResult;
     function CheckInternalFile: TModalResult;
     function CheckRevert: TModalResult;
+    function OpenKnown: TModalResult;
+    function OpenUnknown: TModalResult;
     function PrepareFile: TModalResult;
     function PrepareRevert(DiskFilename: String): TModalResult;
     // Used by OpenFileAtCursor
@@ -502,13 +504,56 @@ begin
     Result:=mrOk;
 end;
 
+function TFileOpenClose.OpenKnown: TModalResult;
+// project knows this file => all the meta data is known -> just load the source
+var
+  LoadBufferFlags: TLoadBufferFlags;
+  NewBuf: TCodeBuffer;
+begin
+  FNewUnitInfo:=Project1.Units[FUnitIndex];
+  LoadBufferFlags:=[lbfCheckIfText];
+  if FilenameIsAbsolute(FFilename) then begin
+    if (not (ofUseCache in FFlags)) then
+      Include(LoadBufferFlags,lbfUpdateFromDisk);
+    if ofRevert in FFlags then
+      Include(LoadBufferFlags,lbfRevert);
+  end;
+  Result:=LoadCodeBuffer(NewBuf,FFileName,LoadBufferFlags,
+                         [ofProjectLoading,ofMultiOpen]*FFlags<>[]);
+  if Result<>mrOk then begin
+    DebugLn(['TFileOpenClose.OpenKnownFile failed LoadCodeBuffer: ',FFilename]);
+    exit;
+  end;
+  FNewUnitInfo.Source:=NewBuf;
+  if FilenameIsPascalUnit(FNewUnitInfo.Filename) then
+    FNewUnitInfo.ReadUnitNameFromSource(false);
+  FNewUnitInfo.Modified:=FNewUnitInfo.Source.FileOnDiskNeedsUpdate;
+end;
+
+function TFileOpenClose.OpenUnknown: TModalResult;
+// open unknown file, Never happens if ofRevert
+var
+  Handled: boolean;
+begin
+  Handled:=false;
+  Result:=FManager.OpenUnknownFile(FFilename,FFlags,FNewUnitInfo,Handled);
+  if Handled then
+    Result := mrIgnore;
+  if Result<>mrOk then exit;
+  // the file was previously unknown, use the default EditorInfo
+  if FEditorInfo <> nil then
+    FNewEditorInfo := FEditorInfo
+  else
+  if FNewUnitInfo <> nil then
+    FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo
+  else
+    FNewEditorInfo := nil;
+end;
+
 function TFileOpenClose.OpenEditorFile(AFileName: string; APageIndex, AWindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean): TModalResult;
 var                                                  // WindowIndex is WindowID
-  Handled: boolean;
-  NewBuf: TCodeBuffer;
   FilenameNoPath: String;
-  LoadBufferFlags: TLoadBufferFlags;
   DiskFilename: String;
   Reverting: Boolean;
   CanAbort: boolean;
@@ -651,11 +696,9 @@ begin
     exit;
   end;
 
-  Reverting:=false;
-  if ofRevert in FFlags then begin
-    Reverting:=true;
+  Reverting:=ofRevert in FFlags;
+  if Reverting then
     Project1.BeginRevertUnit(FNewUnitInfo);
-  end;
   try
 
     // check if file exists
@@ -676,41 +719,12 @@ begin
     end;
 
     // load the source
-    if FUnknownFile then begin
-      // open unknown file, Never happens if ofRevert
-      Handled:=false;
-      Result:=FManager.OpenUnknownFile(FFilename,FFlags,FNewUnitInfo,Handled);
-      if (Result<>mrOk) or Handled then exit;
-      // the file was previously unknown, use the default EditorInfo
-      if FEditorInfo <> nil then
-        FNewEditorInfo := FEditorInfo
-      else
-      if FNewUnitInfo <> nil then
-        FNewEditorInfo := FNewUnitInfo.GetClosedOrNewEditorInfo
-      else
-        FNewEditorInfo := nil;
-    end else begin
-      // project knows this file => all the meta data is known
-      // -> just load the source
-      FNewUnitInfo:=Project1.Units[FUnitIndex];
-      LoadBufferFlags:=[lbfCheckIfText];
-      if FilenameIsAbsolute(FFilename) then begin
-        if (not (ofUseCache in FFlags)) then
-          Include(LoadBufferFlags,lbfUpdateFromDisk);
-        if ofRevert in FFlags then
-          Include(LoadBufferFlags,lbfRevert);
-      end;
-      Result:=LoadCodeBuffer(NewBuf,FFileName,LoadBufferFlags,CanAbort);
-      if Result<>mrOk then begin
-        DebugLn(['TFileOpenClose.OpenEditorFile failed LoadCodeBuffer: ',FFilename]);
-        exit;
-      end;
-
-      FNewUnitInfo.Source:=NewBuf;
-      if FilenameIsPascalUnit(FNewUnitInfo.Filename) then
-        FNewUnitInfo.ReadUnitNameFromSource(false);
-      FNewUnitInfo.Modified:=FNewUnitInfo.Source.FileOnDiskNeedsUpdate;
-    end;
+    if FUnknownFile then
+      Result := OpenUnknown
+    else
+      Result := OpenKnown;
+    if Result=mrIgnore then exit(mrOK);
+    if Result<>mrOk then exit;
 
     // check readonly
     FNewUnitInfo.FileReadOnly:=FileExistsUTF8(FNewUnitInfo.Filename)
@@ -722,7 +736,6 @@ begin
       DebugLn(['TFileOpenClose.OpenEditorFile failed OpenFileInSourceEditor: ',FFilename]);
       exit;
     end;
-    //debugln('[TFileOpenClose.OpenEditorFile] C');
     // open resource component (designer, form, datamodule, ...)
     if FNewUnitInfo.OpenEditorInfoCount = 1 then
       Result:=OpenResource;
