@@ -75,6 +75,7 @@ type
     // Used by OpenFileAtCursor
     FActiveSrcEdit: TSourceEditor;
     FActiveUnitInfo: TUnitInfo;
+    FIsIncludeDirective: boolean;
     // Used by OpenEditorFile
     function OpenResource: TModalResult;
     function ChangeEditorPage: TModalResult;
@@ -89,7 +90,7 @@ type
     // Used by OpenFileAtCursor
     function CheckIfIncludeDirectiveInFront(const Line: string; X: integer): boolean;
     function FindFile(var CurFileName: String; CurSearchPath: String): Boolean;
-    function GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
+    function GetFilenameAtRowCol(XY: TPoint): string;
   public
     constructor Create(AManager: TLazSourceFileManager);
     destructor Destroy; override;
@@ -923,14 +924,14 @@ begin
   end;
 end;
 
-function TFileOpenClose.GetFilenameAtRowCol(XY: TPoint; var IsIncludeDirective: boolean): string;
+function TFileOpenClose.GetFilenameAtRowCol(XY: TPoint): string;
 var
   Line: string;
   Len, Stop: integer;
   StopChars: set of char;
 begin
   Result := '';
-  IsIncludeDirective:=false;
+  FIsIncludeDirective:=false;
   if (XY.Y >= 1) and (XY.Y <= FActiveSrcEdit.EditorComponent.Lines.Count) then
   begin
     Line := FActiveSrcEdit.EditorComponent.Lines.Strings[XY.Y - 1];
@@ -951,7 +952,7 @@ begin
         Dec(XY.X);
       if Stop > XY.X then begin
         Result := Copy(Line, XY.X, Stop - XY.X);
-        IsIncludeDirective:=CheckIfIncludeDirectiveInFront(Line,XY.X);
+        FIsIncludeDirective:=CheckIfIncludeDirectiveInFront(Line,XY.X);
       end;
     end;
   end;
@@ -959,7 +960,6 @@ end;
 
 function TFileOpenClose.OpenFileAtCursor: TModalResult;
 var
-  IsIncludeDirective: boolean;
   Found: Boolean;
   BaseDir: String;
   FileName,NewFilename,InFilename: string;
@@ -971,10 +971,8 @@ begin
   BaseDir:=ExtractFilePath(FActiveUnitInfo.Filename);
 
   // parse filename at cursor
-  IsIncludeDirective:=false;
   Found:=false;
-  FileName:=GetFilenameAtRowCol(FActiveSrcEdit.EditorComponent.LogicalCaretXY,
-                             IsIncludeDirective);
+  FileName:=GetFilenameAtRowCol(FActiveSrcEdit.EditorComponent.LogicalCaretXY);
   if FileName='' then exit;
 
   // check if absolute filename
@@ -986,7 +984,7 @@ begin
   end;
 
   if (not Found) then begin
-    if IsIncludeDirective then begin
+    if FIsIncludeDirective then begin
       // search include file
       SearchPath:='.;'+CodeToolBoss.DefineTree.GetIncludePathForDirectory(BaseDir);
       if FindFile(FileName,SearchPath) then
@@ -1015,7 +1013,7 @@ begin
     end;
   end;
 
-  if (not Found) and (System.Pos('.',FileName)>0) and (not IsIncludeDirective) then
+  if (not Found) and (System.Pos('.',FileName)>0) and (not FIsIncludeDirective) then
   begin
     // for example 'SysUtils.CompareText'
     FileName:=FActiveSrcEdit.EditorComponent.GetWordAtRowCol(
