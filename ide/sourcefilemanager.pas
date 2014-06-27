@@ -94,7 +94,7 @@ type
   public
     constructor Create(AManager: TLazSourceFileManager);
     destructor Destroy; override;
-    function OpenEditorFile(AFileName: string; APageIndex, AWindowIndex: integer;
+    function OpenEditorFile(APageIndex, AWindowIndex: integer;
       AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean=False): TModalResult;
     function OpenFileAtCursor: TModalResult;
   end;
@@ -125,7 +125,7 @@ type
     constructor Create;
     destructor Destroy; override;
 ///
-    function OpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
+    function OpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
       AEditorInfo: TUnitEditorInfo; Flags: TOpenFlags;
       UseWindowID: Boolean = False): TModalResult;  // WindowIndex is WindowID
     function OpenFileAtCursor(ActiveSrcEdit: TSourceEditor;
@@ -650,7 +650,7 @@ begin
   end;
 end;
 
-function TFileOpenClose.OpenEditorFile(AFileName: string; APageIndex, AWindowIndex: integer;
+function TFileOpenClose.OpenEditorFile(APageIndex, AWindowIndex: integer;
   AEditorInfo: TUnitEditorInfo; AFlags: TOpenFlags; AUseWindowID: Boolean): TModalResult;
 var                                                  // WindowIndex is WindowID
   s, DiskFilename: String;
@@ -661,7 +661,6 @@ begin
   DebugLn(['*** TFileOpenClose.OpenEditorFile START "',AFilename,'" ',OpenFlagsToString(Flags),' Window=',WindowIndex,' Page=',PageIndex]);
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TLazSourceFileManager.OpenEditorFile START');{$ENDIF}
-  FFileName := AFileName;
   FPageIndex := APageIndex;
   FWindowIndex := AWindowIndex;
   FEditorInfo := AEditorInfo;
@@ -1032,9 +1031,9 @@ begin
   end;
 
   if Found then begin
-    // open
+    // open, FFileName is set earlier.
     InputHistories.SetFileDialogSettingsInitialDir(ExtractFilePath(FFileName));
-    Result:=OpenEditorFile(FFileName, -1, -1, nil, [ofAddToRecent]);
+    Result:=OpenEditorFile(-1, -1, nil, [ofAddToRecent]);
   end;
 end;
 
@@ -1067,8 +1066,8 @@ var
 begin
   Opener := TFileOpenClose.Create(Self);
   try
-    Result := Opener.OpenEditorFile(AFileName, PageIndex, WindowIndex, AEditorInfo,
-      Flags, UseWindowID);
+    Opener.FFileName := AFileName;
+    Result := Opener.OpenEditorFile(PageIndex,WindowIndex,AEditorInfo,Flags,UseWindowID);
   finally
     Opener.Free;
   end;
