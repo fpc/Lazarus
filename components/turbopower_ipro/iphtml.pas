@@ -2923,7 +2923,7 @@ type
     {$IFDEF IP_LAZARUS}
     procedure ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
     {$ENDIF}
-    procedure ParseBodyText(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+    procedure ParseBodyText(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseBlock(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseInline(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseHeader(Parent : TIpHtmlNode; EndToken : TIpHtmlToken; Size : Integer);
@@ -5914,23 +5914,6 @@ begin
         if (CurToken <> IpHtmlTagUnknown) and EndFound then
           if succ(CurToken) in IpEndTokenSet then
             PutToken(succ(CurToken));
-
-        (*
-        !!.10 logic moved inside GetChar
-        {clear white space after tag}
-        Ch := GetChar;
-        if (InPre = 0) and (CurToken <> IpHtmlTagPRE) then begin
-          if CurToken in IpEndTokenSet then begin
-            while (Ch > #0) and (Ch < #32) do
-              Ch := GetChar;
-          end else begin
-            while (Ch > #0) and (Ch < #32) do
-              Ch := GetChar;
-          end;
-        end;
-        PutChar(Ch);
-        *)
-
       end;
     end else begin
       CurToken := IpHtmlTagText;
@@ -6267,8 +6250,7 @@ begin
   end;
 end;
 
-procedure TIpHtml.ParseHeader(Parent : TIpHtmlNode; EndToken : TIpHtmlToken;
-  Size : Integer);
+procedure TIpHtml.ParseHeader(Parent : TIpHtmlNode; EndToken : TIpHtmlToken; Size : Integer);
 var
   NewHeader : TIpHtmlNodeHeader;
 begin
@@ -6288,8 +6270,7 @@ begin
       ReportExpectedToken(EndToken);
 end;
 
-procedure TIpHtml.ParseParagraph(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseParagraph(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   NewPara : TIpHtmlNodeP;
 begin
@@ -7012,8 +6993,7 @@ begin
   NextToken;
 end;
 
-procedure TIpHtml.ParseApplet(Parent: TIpHtmlNode;
-        const EndTokens : TIpHtmlTokenSet);
+procedure TIpHtml.ParseApplet(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
 var
   CurApplet : TIpHtmlNodeAPPLET;
   CurParam : TIpHtmlNodePARAM;
@@ -7167,8 +7147,7 @@ begin
   end;
 end;
 
-procedure TIpHtml.ParseTableRows(Parent: TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseTableRows(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 
   procedure FixupPercentages(CurRow: TIpHtmlNodeTR);
   var
@@ -7234,8 +7213,7 @@ begin
     FixupPercentages(CurRow);
 end;
 
-procedure TIpHtml.ParseTableBody(Parent: TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseTableBody(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurHead : TIpHtmlNodeTHEAD;
   CurFoot : TIpHtmlNodeTFOOT;
@@ -7321,8 +7299,7 @@ begin
   end;
 end;
 
-procedure TIpHtml.ParseTABLE(Parent: TIpHtmlNode;
-        const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseTABLE(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurTable : TIpHtmlNodeTABLE;
   CurCaption : TIpHtmlNodeCAPTION;
@@ -7379,8 +7356,7 @@ begin
   EnsureClosure(IpHtmlTagTABLEend, EndTokens);
 end;
 
-procedure TIpHtml.ParseMAP(Parent: TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseMAP(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurMap : TIpHtmlNodeMAP;
 begin
@@ -7424,8 +7400,7 @@ begin
   NextToken;
 end;
 
-procedure TIpHtml.ParseInline(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseInline(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 begin
   case CurToken of
   IpHtmlTagP : ParseParagraph(Parent, EndTokens); {moved from block}
@@ -7478,8 +7453,7 @@ begin
   end;
 end;
 
-procedure TIpHtml.ParseBlock(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseBlock(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 begin
   case CurToken of
   IpHtmlTagH1 : ParseHeader(Parent, IpHtmlTagH1end, 1);
@@ -7493,8 +7467,7 @@ begin
   IpHtmlTagMENU : ParseUnorderedList(Parent, IpHtmlTagMENUend, EndTokens);
   IpHtmlTagUL : ParseUnorderedList(Parent, IpHtmlTagULend, EndTokens);
   IpHtmlTagDL : ParseDefinitionList(Parent, EndTokens);
-  IpHtmlTagOL :
-    ParseOrderedList(Parent,  EndTokens);
+  IpHtmlTagOL : ParseOrderedList(Parent, EndTokens);
   IpHtmlTagPRE : ParsePre(Parent, EndTokens);
   IpHtmlTagBLOCKQUOTE : ParseBlockQuote(Parent, EndTokens);
   IpHtmlTagFORM : ParseForm(Parent, EndTokens);
@@ -7504,8 +7477,7 @@ begin
   IpHtmlTagAPPLET : ParseApplet(Parent, EndTokens);
   IpHtmlTagADDRESS : ParseAddress(Parent);
   IpHtmlTagEof : Exit;
-  IpHtmlTagFRAMESET :
-    ParseFrameSet(Parent, EndTokens + [IpHtmlTagFRAMESETend]);
+  IpHtmlTagFRAMESET : ParseFrameSet(Parent, EndTokens + [IpHtmlTagFRAMESETend]);
   IpHtmlTagUnknown :
     if FlagErrors then
       ReportError(SHtmlUnknownTok)
@@ -7541,8 +7513,7 @@ end;
 {$ENDIF}
 
 
-procedure TIpHtml.ParseBodyText(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseBodyText(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 begin
   Inc(InBlock);
   try
@@ -9878,8 +9849,7 @@ end;
 
 { TIpHtmlNodeFontStyle }
 
-procedure TIpHtmlNodeFontStyle.ApplyProps(
-  const RenderProps: TIpHtmlProps);
+procedure TIpHtmlNodeFontStyle.ApplyProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
   case Style of
@@ -10080,28 +10050,12 @@ begin
   {$ENDIF}
   for i := 0 to Pred(FElementQueue.Count) do begin
     CurWord := PIpHtmlElement(FElementQueue[i]);
-
-// *** Debug ***
-{if CurWord.AnsiWord = '2)' then begin
-  Dec(CurWord.WordRect2.Top, 10);
-  Inc(CurWord.WordRect2.Left, 10);
-end;
-if CurWord.AnsiWord = 'Abanto1' then begin
-  Inc(CurWord.WordRect2.Top, 10);
-  Inc(CurWord.WordRect2.Left, 10);
-end;
-if CurWord.AnsiWord = 'Abanto2' then begin
-  Inc(CurWord.WordRect2.Top, 10);
-  Inc(CurWord.WordRect2.Left, 10);
-end;
-}
     if (CurWord.Props <> nil) and (CurWord.Props <> FCurProps) then
       DoRenderFont(CurWord);
 
     {$IFDEF IP_LAZARUS_DBG}
     //DumpTIpHtmlProps(FCurProps);
     {$endif}
-
     //debugln(['TIpHtmlNodeBlock.RenderQueue ',i,' ',IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect),' CurWord.WordRect2=',dbgs(CurWord.WordRect2),' Owner.PageViewRect=',dbgs(Owner.PageViewRect)]);
     if IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect) then
       case CurWord.ElementType of
@@ -12825,12 +12779,9 @@ begin
         FTableWidth := MaxI2(MinW, MinI2(MaxW, ParentWidth));
     end;
   hlAbsolute :
-    FTableWidth :=
-      MaxI2(Width.LengthValue, MinW);
+    FTableWidth := MaxI2(Width.LengthValue, MinW);
   hlPercent :
-    FTableWidth := MaxI2(MinW,
-      round(
-         (Width.LengthValue * ParentWidth) / 100));
+    FTableWidth := MaxI2(MinW, round((Width.LengthValue * ParentWidth) / 100));
   end;
 
   for i := 0 to Pred(ColCount) do
@@ -13551,7 +13502,6 @@ begin
   end;
 end;
 
-{!!.02 new - logic moved here from .Destroy}
 procedure TIpHtmlNodeIMG.UnloadImage;
 begin
   {$IFDEF IP_LAZARUS}
@@ -14337,8 +14287,8 @@ end;
 
 procedure TIpHtmlNodeINPUT.CreateControl(Parent: TWinControl);
 var
-   iCurFontSize: integer;
-   aCanvas : TCanvas;
+  iCurFontSize: integer;
+  aCanvas : TCanvas;
 
   function OwnerForm: TIpHtmlNode;
   begin
@@ -14626,7 +14576,7 @@ end;
 
 procedure TIpHtmlNodeINPUT.SubmitClick(Sender: TObject);
 var
-   vCancel: boolean;
+  vCancel: boolean;
 begin
   vCancel := False;
   Owner.ControlClick2(Self, vCancel);
@@ -16262,8 +16212,7 @@ begin
     Min := Max;
 end;
 
-procedure TIpHtmlNodeTableHeaderOrCell.Render(
-  const RenderProps: TIpHtmlProps);
+procedure TIpHtmlNodeTableHeaderOrCell.Render(const RenderProps: TIpHtmlProps);
 var
   R : TRect;
 begin
@@ -16495,8 +16444,7 @@ procedure TIpHtmlNodeNv.InvalidateSize;
 begin
 end;
 
-procedure TIpHtmlNodeNv.EnqueueElement(
-  const Entry: PIpHtmlElement);
+procedure TIpHtmlNodeNv.EnqueueElement(const Entry: PIpHtmlElement);
 begin
 end;
 
@@ -17339,7 +17287,7 @@ begin
   {$IFDEF IP_LAZARUS}
   while not (Result is TIpHtmlPanel) do
   {$ELSE}
-  while  Assigned(Result) and (Result.ClassType <> TIpHtmlPanel)  do //JMN
+  while  Assigned(Result) and (Result.ClassType <> TIpHtmlPanel)  do
   {$ENDIF}
     Result := TIpHtmlPanel(Result.Parent);
 end;
@@ -17810,11 +17758,9 @@ begin
     FFramePanel.Parent := FParent;
     FFramePanel.OnResize := FramePanelResize;
     FFramePanel.FullRepaint := False;
-    ColW := CalcMultiLength(FHtml.FrameSet.Cols, FFramePanel.ClientWidth,
-      ColWCount);
+    ColW := CalcMultiLength(FHtml.FrameSet.Cols, FFramePanel.ClientWidth, ColWCount);
     try
-      RowH := CalcMultiLength(FHtml.FrameSet.Rows, FFramePanel.ClientHeight,
-        RowHCount);
+      RowH := CalcMultiLength(FHtml.FrameSet.Rows, FFramePanel.ClientHeight, RowHCount);
       try
         R := 0;
         C := 0;
@@ -18177,14 +18123,13 @@ begin
     FFrames[i].EnumDocuments(Enumerator);
 end;
 
-procedure TIpHtmlFrame.ControlClick(Sender: TIpHtml;
-  Node: TIpHtmlNodeControl);
+procedure TIpHtmlFrame.ControlClick(Sender: TIpHtml; Node: TIpHtmlNodeControl);
 begin
   FViewer.ControlClick(Self, Sender, Node);
 end;
 
-procedure TIpHtmlFrame.ControlClick2(Sender: TIpHtml;
-  Node: TIpHtmlNodeControl; var cancel: boolean);
+procedure TIpHtmlFrame.ControlClick2(Sender: TIpHtml; Node: TIpHtmlNodeControl;
+  var cancel: boolean);
 begin
   FViewer.ControlClick2(Self, Sender, Node, cancel);
 end;
