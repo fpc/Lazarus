@@ -43,7 +43,7 @@
 { Global defines potentially affecting this unit }
 {$I IPDEFINE.INC}
 
-{off $DEFINE IP_LAZARUS_DBG}
+{$DEFINE IP_LAZARUS_DBG}
 
 unit IpHtml;
 
@@ -1402,6 +1402,7 @@ type
     FSizeOfSpace : TSize;
     FSizeOfHyphen : TSize;
     FCanvas: Tcanvas;
+    procedure SetLastWord(AValue: Integer);
     procedure UpdSpaceHyphenSize(aProps: TIpHtmlProps);
     procedure UpdPropMetrics(aProps: TIpHtmlProps);
     function CheckSelection(aSelIndex: Integer): Boolean;
@@ -1426,6 +1427,9 @@ type
     procedure DoQueueElemSoftHyphen;
     function CalcVRemain(aVRemain: integer; var aIdent: integer): integer;
     procedure SetWordInfoLength(NewLength : Integer);
+    {$IFDEF IP_LAZARUS_DBG}
+    procedure DumpQueue(bStart: boolean=true);
+    {$ENDIF}
   protected
     FPageRect : TRect;
     FElementQueue : TFPList; // TList;
@@ -1464,6 +1468,7 @@ type
     property Background : string read FBackground write SetBackground;
     property BgColor : TColor read FBgColor write SetBgColor;
     property TextColor : TColor read FTextColor write SetTextColor;
+    property LastWord : Integer read FLastWord write SetLastWord;
   end;
 
   TIpHtmlDirection = (hdLTR, hdRTL);
@@ -10144,12 +10149,27 @@ begin
     FCanvas.Font.Style := aProps.FontStyle;
     FSizeOfSpace := FCanvas.TextExtent(' ');
     {$IFDEF IP_LAZARUS_DBG}
-    if SizeOfSpace.CX=0 then
+    if FSizeOfSpace.CX=0 then
       DebugLn('TIpHtmlNodeBlock.CalcMinMaxQueueWidth Font not found "',FCanvas.Font.Name,'" Size=',dbgs(FCanvas.Font.Size));
     {$ENDIF}
     FSizeOfHyphen := FCanvas.TextExtent('-');
     aProps.PropA.SetKnownSizeOfSpace(FSizeOfSpace);
     aProps.PropA.KnownSizeOfHyphen := FSizeOfHyphen;
+  end;
+end;
+
+procedure TIpHtmlNodeBlock.SetLastWord(AValue: Integer);
+var
+  Elem: PIpHtmlElement;
+  s: String;
+begin
+  if FLastWord=AValue then Exit;
+  FLastWord:=AValue;
+  if (FLastWord > 0) and (FLastWord < FElementQueue.Count) then begin
+    Elem := PIpHtmlElement(FElementQueue[FLastWord]);
+    WriteStr(s, Elem.ElementType);
+    if Elem.ElementType <> etWord then
+      DebugLn('TIpHtmlNodeBlock.SetLastWord: ElementType=', s);
   end;
 end;
 
@@ -10809,7 +10829,7 @@ begin
   if FLineBreak then
     FMaxDescent := 0;
   Inc(iElem);
-  FLastWord := iElem - 2;
+  LastWord := iElem - 2;
   if PendingLineBreak then
     FLineBreak := True;
   if not FIgnoreHardLF then
@@ -10828,7 +10848,7 @@ begin
   end;
   if FLineBreak then
     FMaxDescent := 0;
-  FLastWord := iElem - 1;
+  LastWord := iElem - 1;
   if not FIgnoreHardLF then begin
     if FLineBreak then  begin
       FMaxAscent := Round (FMaxAscent * Owner.FactBAParag);
@@ -10838,7 +10858,7 @@ begin
     Exit(False);
   end;
   if FLastWord < FFirstWord then begin
-    FLastWord := FFirstWord;
+    LastWord := FFirstWord;
     FCanBreak := True;
     Inc(iElem);
   end;
@@ -10856,7 +10876,7 @@ begin
   if FLineBreak then
     FMaxDescent := 0;
   Inc(iElem);
-  FLastWord := iElem - 2;
+  LastWord := iElem - 2;
   Result := FIgnoreHardLF;
 end;
 
@@ -10925,56 +10945,50 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeBlock.LayoutQueue(const TargetRect: TRect);
-
 {$IFDEF IP_LAZARUS_DBG}
-  procedure DumpQueue(bStart: boolean=true);
-  var
-    i: Integer;
-    CurElem : PIpHtmlElement;
-  begin
-    if bStart then writeln('<<<<<')
-    else writeln('>>>>>');
-    for i := 0 to FElementQueue.Count - 1 do begin
-      CurElem := PIpHtmlElement(FElementQueue[i]);
-      if CurElem.owner <> nil then
-         write(CurElem.owner.classname,':');
-
-      write(
-            CurElem.WordRect2.Left,':',
-            CurElem.WordRect2.Top,':',
-            CurElem.WordRect2.Right,':',
-            CurElem.WordRect2.Bottom,':'
-            );
-      case CurElem.ElementType of
-      etWord :
-        write(' wrd:', CurElem.AnsiWord);
-      etObject :
-        write(' obj');
-      etSoftLF :
-        write(' softlf');
-      etHardLF :
-        write(' hardlf');
-      etClearLeft :
-        write(' clearleft');
-      etClearRight :
-        write(' clearright');
-      etClearBoth :
-        write(' clearboth');
-      etIndent :
-        write(' indent');
-      etOutdent :
-        write(' outdent');
-      etSoftHyphen :
-        write(' softhyphen');
-      end;
-      writeln;
+procedure TIpHtmlNodeBlock.DumpQueue(bStart: boolean=true);
+var
+  i: Integer;
+  CurElem : PIpHtmlElement;
+begin
+  if bStart then WriteLn('<<<<<')
+  else WriteLn('>>>>>');
+  for i := 0 to FElementQueue.Count - 1 do begin
+    CurElem := PIpHtmlElement(FElementQueue[i]);
+    if CurElem.Owner <> nil then
+       write(CurElem.Owner.ClassName,':');
+    with CurElem.WordRect2 do
+      write(Left,':', Top,':', Right,':', Bottom,':');
+    case CurElem.ElementType of
+    etWord :
+      Write(' wrd:', CurElem.AnsiWord);
+    etObject :
+      Write(' obj');
+    etSoftLF :
+      Write(' softlf');
+    etHardLF :
+      Write(' hardlf');
+    etClearLeft :
+      Write(' clearleft');
+    etClearRight :
+      Write(' clearright');
+    etClearBoth :
+      Write(' clearboth');
+    etIndent :
+      Write(' indent');
+    etOutdent :
+      Write(' outdent');
+    etSoftHyphen :
+      Write(' softhyphen');
     end;
-    if bStart then writeln('<<<<<')
-    else writeln('>>>>>');
+    WriteLn;
   end;
-{$endif}
-  
+  if bStart then WriteLn('<<<<<')
+  else WriteLn('>>>>>');
+end;
+{$ENDIF}
+
+procedure TIpHtmlNodeBlock.LayoutQueue(const TargetRect: TRect);
 var
   i, W, X0, ExpLIndent, RectWidth : Integer;
   FirstElem, LastElem : Integer;
@@ -10982,6 +10996,7 @@ var
   Prefor : Boolean;
   CurElem : PIpHtmlElement;
   wi: PWordInfo;
+  x: Integer;
 
   procedure InitInner;
   begin
@@ -11003,7 +11018,7 @@ var
     X0 := TargetRect.Left + FLIdent + ExpLIndent;
     FTextWidth := 0;
     FFirstWord := iElem;
-    FLastWord := iElem-1;
+    LastWord := iElem-1;
     FBaseOffset := 0;
     FSoftBreak := False;
     FHyphenSpace := 0;
@@ -11036,8 +11051,17 @@ begin
           ApplyQueueProps(CurElem, Prefor);
         FSoftLF := False;
         case CurElem.ElementType of
-          etWord :
+          etWord : begin
+            if CurElem.AnsiWord = '1)' then
+              x := 0;
+            if CurElem.AnsiWord = '2)' then
+              x := 1;
+            if Pos('Abanto1', CurElem.AnsiWord) > 0 then
+              x := 2;
+            if Pos('Abanto2', CurElem.AnsiWord) > 0 then
+              x := 3;
             DoQueueElemWord(CurElem);
+          end;
           etObject :
             if not DoQueueElemObject(CurElem) then
               Break;
@@ -11097,7 +11121,7 @@ begin
             FHyphenSpace := 0;
           end;
           Inc(X0, FxySize.cx);
-          FLastWord := iElem;
+          LastWord := iElem;
           Inc(iElem);
         end
         else begin
@@ -11117,7 +11141,7 @@ begin
             if (CurElem.ElementType = etWord)
             and (CurElem.IsBlank <> 0) then begin
               FWordInfo[FLastWord - FFirstWord].Sz.cx := 0;
-              FLastWord := iElem - 2;
+              LastWord := iElem - 2;
             end;
           end;
           FLineBreak := True;
@@ -11127,7 +11151,7 @@ begin
       end;
 
       if FSoftBreak and (FLastBreakpoint > 0) then begin
-        FLastWord := FLastBreakpoint;
+        LastWord := FLastBreakpoint;
         iElem := FLastBreakpoint + 1;
       end;
       OutputQueueLine;
