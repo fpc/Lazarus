@@ -1962,6 +1962,9 @@ var
        (AEvent^.keyval <> GDK_KEY_TAB) then
       Result := Chr(AEvent^.keyval xor $FF00)
     else
+      if (AEvent^.keyval > $60) and (AEvent^.keyval < $7B) then
+        Result := Chr(AEvent^.keyval - $60) //^A .. ^Z
+    else
       Result := #0;
   end;
 
