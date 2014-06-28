@@ -1487,6 +1487,10 @@ type
     function GetAnsiText: string;
     procedure SetAnsiText(const Value: string);
     procedure SetEscapedText(const Value: string);
+    procedure AddAWord(StartP: PAnsiChar);
+    function CutAndAddWord(StartP, EndP: PAnsiChar): PAnsiChar;
+    procedure DoPreformattedWords(N: PAnsiChar);
+    procedure DoNormalWords(N: PAnsiChar);
     procedure BuildWordList;
   protected
     PropsR : TIpHtmlProps; {reference}
@@ -5542,84 +5546,43 @@ begin
   Result := True;
 end;
 
-procedure TrimFormattingPre(const S: string; Target: PAnsiChar);
+procedure TrimFormatting(const S: string; Target: PAnsiChar; PreFormatted: Boolean = False);
 var
   R, W : Integer;
+
+  procedure CopyChar(ch: AnsiChar);
+  begin
+    Target[w] := ch;
+    Inc(w);
+  end;
+
 begin
   r := 1;
   w := 0;
   while r <= length(S) do begin
     case S[r] of
-    #13 :
-      begin
-        Target[w] := LF;
-        Inc(w);
-      end;
-    #10 :
-      if (w = 0) or (Target[w - 1] <> LF) then begin
-        Target[w] := LF;
-        Inc(w);
-      end;
     #0..#8, #11..#12, #14..#31 :
       ;
-    #9, #32 :
-      begin
-        Target[w] := ' ';
-        Inc(w);
-      end;
-    else
-      begin
-        Target[w] := S[r];
-        Inc(w);
-      end;
-    end;
-    Inc(r);
-  end;
-  Target[w] := #0;
-end;
-
-procedure TrimFormattingNormal(const S: string; Target: PAnsiChar);
-var
-  R, W : Integer;
-begin
-  r := 1;
-  w := 0;
-  while r <= length(S) do begin
-    case S[r] of
-    #0..#9, #11..#13, #14..#31 :
-      ;
+    #9 :
+      if PreFormatted then
+        CopyChar(' ');
+    #13 :
+      if PreFormatted then
+        CopyChar(LF);
     #10 :
-      if w > 1 then begin
-        Target[w] := ' ';
-        Inc(w);
+      if PreFormatted then begin
+        if (w = 0) or (Target[w-1] <> LF) then
+          CopyChar(LF);
+      end
+      else begin
+        if w > 1 then
+          CopyChar(' ');
       end;
-    #32 :
-      begin
-        Target[w] := ' ';
-        Inc(w);
-      end;
-    else
-      begin
-        Target[w] := S[r];
-        Inc(w);
-      end;
-    end;
-    Inc(r);
-  end;
-  Target[w] := #0;
-  r := 0;
-  w := 0;
-  while Target[r] <> #0 do begin
-    case Target[r] of
     ' ' :
-      if (w = 0) or (Target[w - 1] <> ' ') then begin
-        Target[w] := ' ';
-        Inc(w);
-      end;
+      if PreFormatted or (w = 0) or (Target[w-1] <> ' ') then
+        CopyChar(' ');
     else
-      if w <> r then
-        Target[w] := Target[r];
-      Inc(w);
+      CopyChar(S[r]);
     end;
     Inc(r);
   end;
@@ -6065,7 +6028,7 @@ begin
   if CurToken = IpHtmlTagText then begin
     Getmem(B, length(GetTokenString) + 1);
     try
-      TrimFormattingNormal(EscapeToAnsi(GetTokenString), B);
+      TrimFormatting(EscapeToAnsi(GetTokenString), B);
       FTitleNode.Title := B;
     finally
       Freemem(B);
@@ -9681,136 +9644,126 @@ begin
   BuildWordList;
 end;
 
-procedure TIpHtmlNodeText.BuildWordList;
+procedure TIpHtmlNodeText.AddAWord(StartP: PAnsiChar);
+begin
+  if FFirstW then
+    Owner.AddWord(StartP, PropsR, Self)
+  else
+    Owner.AddWord(StartP, nil, Self);
+  FFirstW := False;
+end;
+
+function TIpHtmlNodeText.CutAndAddWord(StartP, EndP: PAnsiChar): PAnsiChar;
 var
-  NewEntry : PIpHtmlElement;
-  l : Integer;
-  B, N, N2 : PAnsiChar;
-  First : Boolean;
-  Ch : AnsiChar;
+  EndCh: AnsiChar;
+begin
+  EndCh := EndP^;
+  EndP^ := #0;
+  AddAWord(StartP);
+  EndP^ := EndCh;
+  Result := EndP;
+end;
+
+procedure TIpHtmlNodeText.DoPreformattedWords(N: PAnsiChar);
+var
+  N2: PAnsiChar;
   ImplicitLF: Boolean;
 begin
-  First := True;
   ImplicitLF := False;
-  if PropsR.Preformatted then begin
-    l := length(EscapedText);
-    if l > 0 then begin
-      Getmem(B, l + 1);
-      try
-        TrimFormattingPre(EscapedText, B);
-        N := B;
-        while N^ <> #0 do begin
-          case N^ of
-          CR :
-            ImplicitLF := True;
-          LF :
-            begin
-              EnqueueElement(Owner.HardLF);
-              Inc(N);
-              ImplicitLF := False;
-            end;
-          else
-            begin
-              if ImplicitLF then begin
-                EnqueueElement(Owner.HardLF);
-                Inc(N);
-                ImplicitLF := False;
-              end;
-              N2 := StrScan(N, CR);
-              if N2 <> nil then begin
-                N2^ := #0;
-                if First then
-                  Owner.AddWord(N, PropsR, Self)
-                else
-                  Owner.AddWord(N, nil, Self);
-                N2^ := CR;
-                First := False;
-                N := N2;
-              end else begin
-                N2 := StrScan(N, LF);
-                if N2 <> nil then begin
-                  N2^ := #0;
-                  if First then
-                    Owner.AddWord(N, PropsR, Self)
-                  else
-                    Owner.AddWord(N, nil, Self);
-                  N2^ := LF;
-                  First := False;
-                  N := N2;
-                end else begin
-                  if First then
-                    Owner.AddWord(N, PropsR, Self)
-                  else
-                    Owner.AddWord(N, nil, Self);
-                  First := False;
-                  N^ := #0;
-                end;
-              end;
-            end;
+  while N^ <> #0 do begin
+    case N^ of
+    CR :
+      ImplicitLF := True;
+    LF :
+      begin
+        EnqueueElement(Owner.HardLF);
+        Inc(N);
+        ImplicitLF := False;
+      end;
+    else
+      begin
+        if ImplicitLF then begin
+          EnqueueElement(Owner.HardLF);
+          Inc(N);
+          ImplicitLF := False;
+        end;
+        N2 := StrScan(N, CR);
+        if N2 <> nil then
+          N := CutAndAddWord(N, N2)
+        else begin
+          N2 := StrScan(N, LF);
+          if N2 <> nil then
+            N := CutAndAddWord(N, N2)
+          else begin
+            AddAWord(N);
+            N^ := #0;
           end;
         end;
-      finally
-        FreeMem(B);
       end;
     end;
-  end else begin
-    l := length(EscapedText);
-    if l > 0 then begin
-      Getmem(B, l + 1);
-      try
-        TrimFormattingNormal(EscapedText, B);
-        N := B;
-        while N^ <> #0 do begin
-          case N^ of
-          LF :
-            begin
-              EnqueueElement(Owner.HardLF);
-              Inc(N);
-            end;
-          ' ' :
-            begin
-              if not ElementQueueIsEmpty then begin
-                NewEntry := Owner.NewElement(etWord, Self);
-                NewEntry.AnsiWord := ' ';
-                NewEntry.IsBlank := 1;
-                if First then
-                  NewEntry.Props := PropsR
-                else
-                  NewEntry.Props := nil;
-                EnqueueElement(NewEntry);
-                First := False;
-              end;
-              Inc(N);
-            end;
-          else
-            begin
-              N2 := N;
-              while not (N2^ in [#0, ' ', LF]) do
-                Inc(N2);
-              if N2^ <> #0 then begin
-                Ch := N2^;
-                N2^ := #0;
-                if First then
-                  Owner.AddWord(N, PropsR, Self)
-                else
-                  Owner.AddWord(N, nil, Self);
-                N2^ := Ch;
-                First := False;
-                N := N2;
-              end else begin
-                if First then
-                  Owner.AddWord(N, PropsR, Self)
-                else
-                  Owner.AddWord(N, nil, Self);
-                First := False;
-                N^ := #0;
-              end;
-            end;
-          end;
-        end;
-      finally
-        FreeMem(B);
+  end;
+end;
+
+procedure TIpHtmlNodeText.DoNormalWords(N: PAnsiChar);
+var
+  NewEntry : PIpHtmlElement;
+  N2: PAnsiChar;
+begin
+  while N^ <> #0 do begin
+    case N^ of
+    LF :
+      begin
+        EnqueueElement(Owner.HardLF);
+        Inc(N);
       end;
+    ' ' :
+      begin
+        if not ElementQueueIsEmpty then begin
+          NewEntry := Owner.NewElement(etWord, Self);
+          NewEntry.AnsiWord := ' ';
+          NewEntry.IsBlank := 1;
+          if FFirstW then
+            NewEntry.Props := PropsR
+          else
+            NewEntry.Props := nil;
+          EnqueueElement(NewEntry);
+          FFirstW := False;
+        end;
+        Inc(N);
+      end;
+    else
+      begin
+        N2 := N;
+        while not (N2^ in [#0, ' ', LF]) do
+          Inc(N2);
+        if N2^ <> #0 then
+          N := CutAndAddWord(N, N2)
+        else begin
+          AddAWord(N);
+          N^ := #0;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TIpHtmlNodeText.BuildWordList;
+var
+  l : Integer;
+  B : PAnsiChar;
+begin
+  FFirstW := True;
+  l := length(EscapedText);
+  if l > 0 then begin
+    Getmem(B, l + 1);
+    try
+      TrimFormatting(EscapedText, B, PropsR.Preformatted);
+      if PropsR.Preformatted then
+        DoPreformattedWords(B)
+      else
+        DoNormalWords(B);
+    finally
+      FreeMem(B);
     end;
   end;
 end;
@@ -14836,7 +14789,7 @@ begin
           S := TIpHtmlNodeText(FChildren[0]).EscapedText;
           Getmem(B, length(S) + 1);
           try
-            TrimFormattingNormal(S, B);
+            TrimFormatting(S, B);
             S := Trim(B);
             if Self.Multiple then begin
               j := TListBox(FControl).Items.Add(S);
@@ -14864,7 +14817,7 @@ begin
                 S := TIpHtmlNodeText(FChildren[0]).EscapedText;
                 GetMem(B, length(S) + 1);
                 try
-                  TrimFormattingNormal(S, B);
+                  TrimFormatting(S, B);
                   S := Trim(B);
                   if Self.Multiple then begin
                     k := TListBox(FControl).Items.Add(S);
@@ -14911,7 +14864,7 @@ begin
           S := TIpHtmlNodeText(FChildren[0]).EscapedText;
           GetMem(B, length(S) + 1);
           try
-            TrimFormattingNormal(S, B);
+            TrimFormatting(S, B);
             if Self.Multiple then begin
               j := TListBox(FControl).Items.Add(Trim(B));
               TListBox(FControl).Selected[j] := Selected;
@@ -14936,7 +14889,7 @@ begin
                 S := TIpHtmlNodeText(FChildren[0]).EscapedText;
                 GetMem(B, length(S) + 1);
                 try
-                  TrimFormattingNormal(S, B);
+                  TrimFormatting(S, B);
                   if Self.Multiple then begin
                     k := TListBox(FControl).Items.Add(Trim(B));
                     TListBox(FControl).Selected[k] := Selected;
@@ -15046,7 +14999,7 @@ begin
       S := TIpHtmlNodeText(FChildren[i]).EscapedText;
       Getmem(B, length(S) + 1);
       try
-        TrimFormattingNormal(S, B);
+        TrimFormatting(S, B);
         TMemo(FControl).Lines.Add(B);
       finally
         FreeMem(B);
@@ -15067,7 +15020,7 @@ begin
       S := TIpHtmlNodeText(FChildren[i]).EscapedText;
       GetMem(B, length(S) + 1);
       try
-        TrimFormattingNormal(S, B);
+        TrimFormatting(S, B);
         TMemo(FControl).Lines.Add(B);
       finally
         Freemem(B);
