@@ -563,27 +563,27 @@ begin
       // GetDeviceCaps with the handle and verifying that there is something
       // there.  If this is ok, we can then update the bitmap with the next
       // frame.
-      if GetDeviceCaps (FDrawingCanvas.Handle, HORZSIZE) <> 0 then begin {!!.dg}
-        if Animate and Transparent then                                  {!!.dg}
-          FDrawingCanvas.CopyRect (FDrawingRect, FBitmap.Canvas,         {!!.dg}
-                                   Rect (0, 0,                           {!!.dg}
-                                         FBitmap.Width,                  {!!.dg}
-                                         FBitmap.Height))                {!!.dg}
-        else                                                             {!!.dg}
-          Draw (FDrawingCanvas, FDrawingRect);                           {!!.dg}
-      end;                                                               {!!.dg}
+      if GetDeviceCaps (FDrawingCanvas.Handle, HORZSIZE) <> 0 then begin
+        if Animate and Transparent then
+          FDrawingCanvas.CopyRect (FDrawingRect, FBitmap.Canvas,
+                                   Rect (0, 0,
+                                         FBitmap.Width,
+                                         FBitmap.Height))
+        else
+          Draw (FDrawingCanvas, FDrawingRect);
+      end;
     end;
   end;
 
-  if assigned(FDestinationCanvas) then begin                             {!!.dg}
-    if Animate and Transparent then                                      {!!.dg}
-      FDestinationCanvas.CopyRect (FDestinationRect, FBitmap.Canvas,     {!!.dg}
-                                   Rect (0, 0,                           {!!.dg}
-                                         FBitmap.Width,                  {!!.dg}
-                                         FBitmap.Height))                {!!.dg}
-    else                                                                 {!!.dg}
-      Draw (FDestinationCanvas, DestinationRect);                        {!!.dg}
-  end;                                                                   {!!.dg}
+  if assigned(FDestinationCanvas) then begin
+    if Animate and Transparent then
+      FDestinationCanvas.CopyRect (FDestinationRect, FBitmap.Canvas,
+                                   Rect (0, 0,
+                                         FBitmap.Width,
+                                         FBitmap.Height))
+    else
+      Draw (FDestinationCanvas, DestinationRect);
+  end;
 
   // An alternate way to cause the animation to occur is to use the OnChange
   // event to notify the parent application that the image has changed.  The
@@ -668,7 +668,7 @@ begin
   // However, it gets the timing more accurate.
 
   if UseTransparentCopy then begin
-    if Images[FCurrentFrame].Bitmap <> nil then                        {!!.12}
+    if Images[FCurrentFrame].Bitmap <> nil then
       for x := 0 to Images[FCurrentFrame].Bitmap.Width - 1 do
         for y := 0 to Images[FCurrentFrame].Bitmap.Height - 1 do
           if Images[FCurrentFrame].Bitmap.Canvas.Pixels[x, y] <>

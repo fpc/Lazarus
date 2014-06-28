@@ -67,7 +67,7 @@ const
   CM_IPASYNCRESULT      = IpMsgBase + 0;
   CM_IPSOCKMESSAGE      = IpMsgBase + 1;
   CM_IPSOCKETSTATUS     = IpMsgBase + 2;
-  CM_IPFREESOCKET       = IpMsgBase + 3;                               {!!.02}
+  CM_IPFREESOCKET       = IpMsgBase + 3;
   CM_IPLINEMESSAGE      = IpMsgBase + 4;
   CM_IPTERMDATA         = IpMsgBase + 5;
   CM_IPTERMRESIZE       = IpMsgBase + 6;
@@ -85,9 +85,9 @@ const
   CM_IPRASSTATUS        = IpMsgBase + 18;
   CM_IPFINWHOSERVER     = IpMsgBase + 19;
   CM_IPUTILITYSERVER    = IpMsgBase + 20;
-  CM_IPSMTPEVENT        = IpMsgBase + 21;                              {!!.02}
-  CM_IPPOP3EVENT        = IpMsgBase + 22;                              {!!.02}
-  CM_IPNNTPEVENT        = IpMsgBase + 23;                              {!!.02}
+  CM_IPSMTPEVENT        = IpMsgBase + 21;
+  CM_IPPOP3EVENT        = IpMsgBase + 22;
+  CM_IPNNTPEVENT        = IpMsgBase + 23;
   {$IFDEF IP_LAZARUS}
   CM_IPHOTINVOKE        = IpMsgBase + 24;
   {$ENDIF}
@@ -124,7 +124,7 @@ type
   EIpBaseException = class(Exception);
 
   EIpAccessException = class(EIpBaseException);
-  EIpHtmlException = class(EIpBaseException);                  {!!.02}
+  EIpHtmlException = class(EIpBaseException);
 
   TIpBaseAccess = class
   private
@@ -226,8 +226,8 @@ type
 
   TIpAddrRec = record
     Scheme     : string;
-    UserName   : string;                                                 {!!.03}
-    Password   : string;                                                 {!!.03}
+    UserName   : string;
+    Password   : string;
     Authority  : string;
     Port       : string;
     Path       : string;
@@ -493,8 +493,8 @@ procedure Finalize(var AddrRec: TIpAddrRec);
 begin
   with AddrRec do begin
     Scheme     :='';
-    UserName   :='';                                                 {!!.03}
-    Password   :='';                                                 {!!.03}
+    UserName   :='';
+    Password   :='';
     Authority  :='';
     Port       :='';
     Path       :='';
@@ -1440,9 +1440,9 @@ begin
           if SchemeSeen then
             Rslt.Authority := PotAuth
           else begin
-            if Pos('.', PotAuth) > 0 then                              {!!.12}
-              Rslt.Authority := PotAuth                                {!!.12}
-            else                                                       {!!.12}
+            if Pos('.', PotAuth) > 0 then
+              Rslt.Authority := PotAuth
+            else
               PotPath := PotAuth;
           end;
           PotAuth := '';
@@ -1517,10 +1517,10 @@ begin
         {$IFNDEF IP_LAZARUS}
         '/': { ignore };
         {$ENDIF}
-        '.', '\'{$IFDEF IP_LAZARUS},'/'{$ENDIF}: begin { start of a local path }                      {!!.12}  //JMN
-          PotPath := PotPath + P^;                                     {!!.12}
-          State := psLocalPath;                                        {!!.12}
-        end;                                                           {!!.12}
+        '.', '\'{$IFDEF IP_LAZARUS},'/'{$ENDIF}: begin { start of a local path }
+          PotPath := PotPath + P^;
+          State := psLocalPath;
+        end;
 
         else begin
           if CharPos('@', URL) > 0 then begin
@@ -1609,9 +1609,9 @@ begin
           State := psAuthority;
         end;
 
-        else begin                                                     {!!.12}
-          Rslt.Password := Rslt.Password + P^;                         {!!.12}
-        end;                                                           {!!.12}
+        else begin
+          Rslt.Password := Rslt.Password + P^;
+        end;
       end;
     end;
 
@@ -1780,8 +1780,8 @@ var
   RelPos : Integer;
   ParentPos : Integer;
   Path : string;
-  Scheme : string;                                                     {!!.12}
-  Port : string;                                                       {!!.12}
+  Scheme : string;
+  Port : string;
 begin
   Result := '';
   Path := '';
@@ -1811,31 +1811,30 @@ begin
   IpParseURL(OldURL, OldAddrRec);
   IpParseURL(NewURL, NewAddrRec);
 
-  if OldAddrRec.Scheme = '' then                                       {!!.12}
-    Scheme := ''                                                       {!!.12}
-  else                                                                 {!!.12}
-    Scheme := OldAddrRec.Scheme + '://';                               {!!.12}
+  if OldAddrRec.Scheme = '' then
+    Scheme := ''
+  else
+    Scheme := OldAddrRec.Scheme + '://';
 
-  if OldAddrRec.Port = '' then                                         {!!.12}
-    Port := ''                                                         {!!.12}
-  else                                                                 {!!.12}
-    Port := ':' + OldAddrRec.Port;                                     {!!.12}
+  if OldAddrRec.Port = '' then
+    Port := ''
+  else
+    Port := ':' + OldAddrRec.Port;
 
   if UpperCase(NewAddrRec.Scheme) = 'FILE' then begin
     { New is a local file }
-    Result := NewAddrRec.Scheme + '://' + NewAddrRec.Path;             {!!.14}
+    Result := NewAddrRec.Scheme + '://' + NewAddrRec.Path;
   end else if NewAddrRec.Scheme <> '' then begin
     { New is a full address in its own right }
     Result := NewURL;  { so just return that }
   end else if (NewAddrRec.Scheme = '') and (NewURL[1] = '/') then begin
     { New is probably a direct path off the Root }
-    Result := Scheme + OldAddrRec.Authority + Port; { build Root }     {!!.12}
+    Result := Scheme + OldAddrRec.Authority + Port; { build Root }
     if (NewURL <> '') and (NewURL[1] <> '/') then
       Result := Result + '/';
     Result := Result + NewURL;  { just append }
   end else if (NewAddrRec.Scheme = '') and (NewURL[1] <> '.') then begin
     { New is probably a direct path off the current path }
-{Begin !!.14}
     if UpperCase(OldAddrRec.Scheme) = 'FILE' then begin
       Path := ExtractFilePath(OldAddrRec.Path);
       Result := Scheme + Path;
@@ -1844,7 +1843,7 @@ begin
       Path := ExtractEntityPath(DosToNetPath(OldAddrRec.Path));
       if (Path <> '') and (Path[1] = '/') then
         Path := Copy(Path, 2, Length(Path) - 1);
-      Result := Scheme;                                                {!!.12}
+      Result := Scheme;
 
       if OldAddrRec.Authority <> '' then
         Result := Result + OldAddrRec.Authority + Port + '/';
@@ -1852,7 +1851,6 @@ begin
       if Path <> '' then
         Result := Result + AppendSlash(Path);
     end;
-{End !!.14}
 
     Result := Result + NewURL;
 
@@ -1871,7 +1869,7 @@ begin
     end;
 
     Path := AppendSlash(Copy(Path, 1, ParentPos));
-    Result := Scheme + OldAddrRec.Authority + Path +                     {!!.12}
+    Result := Scheme + OldAddrRec.Authority + Path +
       Copy(NewURL, RelPos, Length(NewURL) - RelPos + 1);
 
     { remove shorthand for current directory if it exists }
@@ -2134,15 +2132,15 @@ function INetDateStrToDateTime(const DateStr: string): TDateTime;
 type
   TINetDateState = (idStart, idStartSp, idDow, idDowSp, idDay1, idDay1Sp,
   idMon1, idMon1Sp, idMon2, idMon2Sp, idDay2, idYr1,
-  idPreTimeSp, idHrs, idMin, idSec, idPostTimeSp, {idGMT,} idYr2,        {!!.12}
-  idEndSp, idAM, idPM, idDaySpace1, IdTimeZoneNum, IdTimeZoneAlpha,      {!!.12}
+  idPreTimeSp, idHrs, idMin, idSec, idPostTimeSp, {idGMT,} idYr2,
+  idEndSp, idAM, idPM, idDaySpace1, IdTimeZoneNum, IdTimeZoneAlpha,
   idError);
 
 const
-  AcceptStates: set of TINetDateState = [{idGMT,} idYr2, idSec,          {!!.12}
-                                         idPostTimeSp, idEndSp,          {!!.12}
-                                         idTimeZoneAlpha,                {!!.12}
-                                         idTimeZoneNum];                 {!!.12}
+  AcceptStates: set of TINetDateState = [{idGMT,} idYr2, idSec,
+                                         idPostTimeSp, idEndSp,
+                                         idTimeZoneAlpha,
+                                         idTimeZoneNum];
 var
   Dow, Day, Mon, Year, Hrs, Min, Sec: string;
   Dy, Mo, Yr: Word;
@@ -2152,7 +2150,7 @@ var
   i : Integer;
   AMPM : Boolean;
   PM : Boolean;
-  TimeZone : string;                                                     {!!.12}
+  TimeZone : string;
 
 procedure ParseDate;
 begin
@@ -2166,10 +2164,10 @@ begin
           Dow := Dow + P^;
         end;
 
-        '0'..'9': begin                                                  {!!.12}
-          State := idDay1;                                               {!!.12}
-          Day := Day + P^;                                               {!!.12}
-        end;                                                             {!!.12}
+        '0'..'9': begin
+          State := idDay1;
+          Day := Day + P^;
+        end;
 
         else
           State := idError;
@@ -2323,9 +2321,9 @@ begin
           Day := Day + P^;
         end;
 
-        ',' : begin                                                      {!!.12}
-          State := idDaySpace1;                                          {!!.12}
-        end;                                                             {!!.12}
+        ',' : begin
+          State := idDaySpace1;
+        end;
 
         ' ': begin
           State := idPreTimeSp;
@@ -2336,20 +2334,20 @@ begin
       end;
     end;
 
-    idDaySpace1 : begin                                                  {!!.12}
-      case P^ of                                                         {!!.12}
-        ' ' : begin                                                      {!!.12}
-        end;                                                             {!!.12}
+    idDaySpace1 : begin
+      case P^ of
+        ' ' : begin
+        end;
 
-        '0'..'9' : begin                                                 {!!.12}
-          Year := Year + P^;                                             {!!.12}
-          State := idYr1;                                                {!!.12}
-        end;                                                             {!!.12}
+        '0'..'9' : begin
+          Year := Year + P^;
+          State := idYr1;
+        end;
 
-        else                                                             {!!.12}
-          State := idError;                                              {!!.12}
-      end;                                                               {!!.12}
-    end;                                                                 {!!.12}
+        else
+          State := idError;
+      end;
+    end;
 
     idYr1: begin    { RFC 822 and 850 year string }
       case P^ of
@@ -2405,10 +2403,10 @@ begin
           Min := Min + P^;
         end;
 
-        ' ' : begin                                                      {!!.12}
-          State := idPostTimeSp;                                         {!!.12}
+        ' ' : begin
+          State := idPostTimeSp;
           Sec := '00';
-        end;                                                             {!!.12}
+        end;
 
         else
           State := idError;
@@ -2425,52 +2423,52 @@ begin
           Sec := Sec + P^;
         end;
 
-        'A', 'a' : begin                                                 {!!.12}
-          AMPM := True;                                                  {!!.12}
-          PM := False;                                                   {!!.12}
-          State := idAM;                                                 {!!.12}
-        end;                                                             {!!.12}
+        'A', 'a' : begin
+          AMPM := True;
+          PM := False;
+          State := idAM;
+        end;
 
-        'P', 'p' : begin                                                 {!!.12}
-          AMPM := True;                                                  {!!.12}
-          PM := True;                                                    {!!.12} 
-          State := idPM;                                                 {!!.12}
-        end;                                                             {!!.12}
+        'P', 'p' : begin
+          AMPM := True;
+          PM := True;
+          State := idPM;
+        end;
 
         else
           State := idError;
       end;
     end;
 
-    idAM : begin { AM string }                                           {!!.12}
-      case P^ of                                                         {!!.12}
-        ' ' : begin                                                      {!!.12}
-          State := idPostTimeSp                                          {!!.12}
-        end;                                                             {!!.12}
+    idAM : begin { AM string }
+      case P^ of
+        ' ' : begin
+          State := idPostTimeSp
+        end;
 
-        'M', 'm' : begin                                                 {!!.12}
-          State := idPostTimeSp;                                         {!!.12}
-        end;                                                             {!!.12}
+        'M', 'm' : begin
+          State := idPostTimeSp;
+        end;
 
-        else                                                             {!!.12}
-          State := idError;                                              {!!.12}
-      end;                                                               {!!.12}
-    end;                                                                 {!!.12}
+        else
+          State := idError;
+      end;
+    end;
 
-    idPM : begin { PM string }                                           {!!.12}
-      case P^ of                                                         {!!.12}
-        ' ' : begin                                                      {!!.12}
-          State := idPostTimeSp                                          {!!.12}
-        end;                                                             {!!.12}
+    idPM : begin { PM string }
+      case P^ of
+        ' ' : begin
+          State := idPostTimeSp
+        end;
 
-        'M', 'm' : begin                                                 {!!.12}
-          State := idPostTimeSp;                                         {!!.12}
-        end;                                                             {!!.12}
+        'M', 'm' : begin
+          State := idPostTimeSp;
+        end;
 
-        else                                                             {!!.12}
-          State := idError;                                              {!!.12}
-      end;                                                               {!!.12}
-    end;                                                                 {!!.12}
+        else
+          State := idError;
+      end;
+    end;
 
     idPostTimeSp: begin   { ignore spaces before after time string }
       case P^ of
@@ -2481,84 +2479,84 @@ begin
           Year := Year + P^;
         end;
 
-        {'G', 'g': begin                                               } {!!.12}
-        {  State := idGMT;                                             } {!!.12}
-        {end;                                                          } {!!.12}
+        {'G', 'g': begin                                               }
+        {  State := idGMT;                                             }
+        {end;                                                          }
 
-        '-' : begin                                                      {!!.12}
-          TimeZone := TimeZone + P^;                                     {!!.12}
-          State := IdTimeZoneNum;                                        {!!.12}
-        end;                                                             {!!.12}
+        '-' : begin
+          TimeZone := TimeZone + P^;
+          State := IdTimeZoneNum;
+        end;
 
-        '+' : begin                                                      {!!.12}
-          TimeZone := TimeZone + P^;                                     {!!.12}
-          State := IdTimeZoneNum;                                        {!!.12}
-        end;                                                             {!!.12}
+        '+' : begin
+          TimeZone := TimeZone + P^;
+          State := IdTimeZoneNum;
+        end;
 
-        'A'..'Z', 'a'..'z' : begin                                       {!!.12}
-          TimeZone := TimeZone + P^;                                     {!!.12}
-          State := IdTimeZoneAlpha;                                      {!!.12}
-        end;                                                             {!!.12}
+        'A'..'Z', 'a'..'z' : begin
+          TimeZone := TimeZone + P^;
+          State := IdTimeZoneAlpha;
+        end;
 
         else
           State := idError;
       end;
     end;
 
-    idTimeZoneNum : begin                                                {!!.12}
-      case P^ of                                                         {!!.12}
-        '0'..'9' : begin                                                 {!!.12}
-          TimeZone := TimeZone + P^;                                     {!!.12}
-        end;                                                             {!!.12}
+    idTimeZoneNum : begin
+      case P^ of
+        '0'..'9' : begin
+          TimeZone := TimeZone + P^;
+        end;
 
-        ' ' : begin                                                      {!!.12}
-          State := idEndSp;                                              {!!.12}
-        end;                                                             {!!.12}
+        ' ' : begin
+          State := idEndSp;
+        end;
 
-        else                                                             {!!.12}
-          State := idError;                                              {!!.12}
-      end;                                                               {!!.12}
-    end;                                                                 {!!.12}
+        else
+          State := idError;
+      end;
+    end;
 
-    idTimeZoneAlpha : begin                                              {!!.12}
-      case P^ of                                                         {!!.12}
-        'A'..'Z', 'a'..'z' : begin                                       {!!.12}
-          TimeZone := TimeZone + P^;                                     {!!.12}
-        end;                                                             {!!.12}
+    idTimeZoneAlpha : begin
+      case P^ of
+        'A'..'Z', 'a'..'z' : begin
+          TimeZone := TimeZone + P^;
+        end;
 
-        ' ' : begin                                                      {!!.12}
-          if UpperCase (TimeZone) = 'AM' then begin                      {!!.12}
-            AMPM := True;                                                {!!.12}
-            PM := False;                                                 {!!.12}
-            State := IdTimeZoneAlpha;                                    {!!.12}
-            TimeZone := '';                                              {!!.12}
-          end else if UpperCase (TimeZone) = 'PM' then begin             {!!.12}
-            AMPM := True;                                                {!!.12}
-            PM := True;                                                  {!!.12}
-            State := IdTimeZoneAlpha;                                    {!!.12}
-            TimeZone := '';                                              {!!.12}
-          end else                                                       {!!.12}
-            State := idEndSp;                                            {!!.12}
-        end;                                                             {!!.12}
+        ' ' : begin
+          if UpperCase (TimeZone) = 'AM' then begin
+            AMPM := True;
+            PM := False;
+            State := IdTimeZoneAlpha;
+            TimeZone := '';
+          end else if UpperCase (TimeZone) = 'PM' then begin
+            AMPM := True;
+            PM := True;
+            State := IdTimeZoneAlpha;
+            TimeZone := '';
+          end else
+            State := idEndSp;
+        end;
 
-        else                                                             {!!.12}
-          State := idError;                                              {!!.12}
-      end;                                                               {!!.12}
-    end;                                                                 {!!.12}
+        else
+          State := idError;
+      end;
+    end;
 
-    {idGMT: begin }   { RFC 822 and 850 should end with "GMT" }          {!!.12}
-    {  case P^ of                                                      } {!!.12}
-    {    'M', 'T': begin                                               } {!!.12}
-    {    end;                                                          } {!!.12}
-    {                                                                  } {!!.12}
-    {    ' ': begin                                                    } {!!.12}
-    {      State := idEndSp;                                           } {!!.12}
-    {    end;                                                          } {!!.12}
-    {                                                                  } {!!.12}
-    {    else                                                          } {!!.12}
-    {      State := idError;                                           } {!!.12}
-    {  end;                                                            } {!!.12}
-    {end;                                                              } {!!.12}
+    {idGMT: begin }   { RFC 822 and 850 should end with "GMT" }
+    {  case P^ of                                                      }
+    {    'M', 'T': begin                                               }
+    {    end;                                                          }
+    {                                                                  }
+    {    ' ': begin                                                    }
+    {      State := idEndSp;                                           }
+    {    end;                                                          }
+    {                                                                  }
+    {    else                                                          }
+    {      State := idError;                                           }
+    {  end;                                                            }
+    {end;                                                              }
 
     idYr2: begin    { ANSI C time ends with Year }
       case P^ of
@@ -2601,9 +2599,9 @@ begin
   Hrs := '';
   Min := '';
   Sec := '';
-  AMPM := False;                                                         {!!.12}
-  PM := False;                                                           {!!.12}
-  TimeZone := '';                                                        {!!.12}
+  AMPM := False;
+  PM := False;
+  TimeZone := '';
 
   { start at first character }
   P := @DateStr[1];
@@ -2617,22 +2615,22 @@ begin
       Inc(P);
   end;
 
-  if State = idTimeZoneAlpha then begin                                  {!!.12}
-    if UpperCase (TimeZone) = 'AM' then begin                            {!!.12}
-      AMPM := True;                                                      {!!.12}
-      PM := False;                                                       {!!.12}
-      TimeZone := '';                                                    {!!.12}
-    end else if UpperCase (TimeZone) = 'PM' then begin                   {!!.12}
-      AMPM := True;                                                      {!!.12}
-      PM := True;                                                        {!!.12}
-      TimeZone := '';                                                    {!!.12}
-    end;                                                                 {!!.12}
-  end;                                                                   {!!.12}
+  if State = idTimeZoneAlpha then begin
+    if UpperCase (TimeZone) = 'AM' then begin
+      AMPM := True;
+      PM := False;
+      TimeZone := '';
+    end else if UpperCase (TimeZone) = 'PM' then begin
+      AMPM := True;
+      PM := True;
+      TimeZone := '';
+    end;
+  end;
 
-  if State = idMin then begin                                            {!!.12}
-    Sec := '00';                                                         {!!.12}
-    State := idSec;                                                      {!!.12}
-  end;                                                                   {!!.12}
+  if State = idMin then begin
+    Sec := '00';
+    State := idSec;
+  end;
 
   { date string terminated prematurely }
   if not (State in AcceptStates) then Exit;
@@ -2658,12 +2656,12 @@ begin
   Mn := StrToIntDef(Min, -1);
   Sc := StrToIntDef(Sec, -1);
 
-  if AMPM then begin                                                     {!!.12}
-    if (Hr < 12) and (PM) then                                           {!!.12}
-      Hr := Hr + 12;                                                     {!!.12}
-    if (Hr = 12) and (not PM) then                                       {!!.12}
-      Hr := 0;                                                           {!!.12}
-  end;                                                                   {!!.12}
+  if AMPM then begin
+    if (Hr < 12) and (PM) then
+      Hr := Hr + 12;
+    if (Hr = 12) and (not PM) then
+      Hr := 0;
+  end;
 
   { check for errors or out of range }
   if (Hr = -1) or (Mn = -1) or (Sc = -1) then Exit;
@@ -2871,7 +2869,7 @@ end;
 
 {***********************************************}
 
-{cookie support}                                                         {!!.02}
+{cookie support}
 
 const
   CookieDefaults: array [1..5] of string[8] =

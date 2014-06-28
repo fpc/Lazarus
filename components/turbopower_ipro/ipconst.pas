@@ -39,7 +39,7 @@ const
   IpCRLF = #13#10;
 
 const
-  ReadLineErr = 8001;                                                  {!!.03}
+  ReadLineErr = 8001;
 
 resourcestring
 
@@ -54,7 +54,7 @@ resourcestring
   SNoTimerErr = 'Not enough system timers available';
   SIndexErr = 'Index out of range';
   SSocksErr = 'SOCKS request refused - %d';
-  SReadLineErr = 'Received line too long, exceeds MaxLineBuf';         {!!.03}
+  SReadLineErr = 'Received line too long, exceeds MaxLineBuf';
   SNoMemoryStreamErr = 'No Memory Stream assigned';
 
   { Event log }
@@ -175,10 +175,10 @@ resourcestring
   SHTMLDefSubmitCaption = 'Submit';
   SHTMLDefResetCaption = 'Reset';
   SHTMLDefBrowseCaption = 'Browse ...';
-  SHTMLInvPicture = 'Invalid picture returned';                {!!.02}
-  SHTMLNoGraphic = 'Picture object contains no graphic object';{!!.02}
-  SHTMLInvGraphic = 'Invalid graphic returned';                {!!.02}
-  SHTMLNoGetImage = 'No OnGetImage event handler assigned';    {!!.02}
+  SHTMLInvPicture = 'Invalid picture returned';
+  SHTMLNoGraphic = 'Picture object contains no graphic object';
+  SHTMLInvGraphic = 'Invalid graphic returned';
+  SHTMLNoGetImage = 'No OnGetImage event handler assigned';
 
   { RAS status messages }
   SRasOpenPort = 'Open port';
@@ -253,8 +253,8 @@ resourcestring
   SBinHexLengthErr = 'Invalid data length';
   SBinHexResourceForkErr = 'Resource fork present';
   SUUEncodeCountErr  = 'Count <> Len or Count > 63';
-  SLineLengthErr = 'Invalid line length for encoded text';           {!!.01}
-  SUnsupportedEncoding = 'Encoding method not supported';            {!!.01}
+  SLineLengthErr = 'Invalid line length for encoded text';
+  SUnsupportedEncoding = 'Encoding method not supported';
   
   { ICMP errors and messages }
   SIpICMP_SUCCESS                  = 'Successful';
@@ -320,14 +320,14 @@ resourcestring
   SssSendEnvelope    = 'Sending Envelope';
   SssSendMessage     = 'Sending Message';
   SssSpecial         = 'Sending special command';
-  SssAuthLogin       = 'Requesting authentication';                      {!!.12}
-  SssAuthUser        = 'Authenticating username';                        {!!.12}
-  SssAuthPass        = 'Authenticating password';                        {!!.12}
+  SssAuthLogin       = 'Requesting authentication';
+  SssAuthUser        = 'Authenticating username';
+  SssAuthPass        = 'Authenticating password';
   { Task descriptions }
   SstNoTask          = 'None';
   SstLogon           = 'Logging on';
   SstSendMail        = 'Sending mail';
-  SstError           = 'An error has occured during this task.';         {!!.11}
+  SstError           = 'An error has occured during this task.';
   { SMTP response codes, used by the TIpSmtpClient.ResultMsg method }
   SSmtpResponse02 = 'Success, ';
   SSmtpResponse04 = 'Transient, ';
@@ -414,9 +414,9 @@ resourcestring
   SLogSendEnvelope    = ' (ssSendEnvelope)';
   SLogSendMessage     = ' (ssSendMessage)';
   SLogSpecial         = ' (ssSpecial)';
-  SLogAuthLogin       = ' (ssAuthLogin)';                                {!!.12}
-  SLogAuthUser        = ' (ssAuthUser)';                                 {!!.12}
-  SLogAuthPass        = ' (ssAuthPass)';                                 {!!.12}
+  SLogAuthLogin       = ' (ssAuthLogin)';
+  SLogAuthUser        = ' (ssAuthUser)';
+  SLogAuthPass        = ' (ssAuthPass)';
   SLogstNoTask        = ' (stNoTask)';
   SLogstLogon         = ' (stLogon)';
   SLogstSendMail      = ' (stSendMail)';
@@ -457,7 +457,7 @@ resourcestring
   SptLogon       = 'Logging on';
   SptList        = 'Retrieving mailbox list';
   SptUIDL        = 'Retrieving mailbox UID list';
-  SptError       = 'An error occured with the last task.';             {!!.11}
+  SptError       = 'An error occured with the last task.';
   SptUnknown     = 'Unknown task';
   SLogPop3Class  = '[POP3] ';
   SLogState      = 'State change: ';
@@ -503,7 +503,7 @@ resourcestring
   SNntpCmdNewGroups       = 'NEWGROUPS';
   SNntpCmdNewNews         = 'NEWNEWS';
   SNntpCmdNext            = 'NEXT';
-  SNntpCmdXOver           = 'XOVER';                                   {!!.12}
+  SNntpCmdXOver           = 'XOVER';
   SNntpCmdPat             = 'PAT';
   SNntpCmdPost            = 'POST';
   SNntpCmdQuit            = 'QUIT';

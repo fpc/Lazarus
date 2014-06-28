@@ -72,7 +72,7 @@ uses
   SysUtils,
   Classes,
   Graphics,
-  {$IFDEF IP_LAZARUS} //JMN
+  {$IFDEF IP_LAZARUS}
     {$IFDEF UseGifImageUnit}
       GifImage,
     {$ELSE}
@@ -103,10 +103,10 @@ uses
   IpUtils,
   Dialogs,
   IpMsg,
-  TypInfo; {!!.10}
+  TypInfo;
 
 type
-  {$IFNDEF IP_LAZARUS} //JMN
+  {$IFNDEF IP_LAZARUS}
     PtrInt = Longint;
   {$ENDIF}
   {Note: Some of the code below relies on the fact that
@@ -852,7 +852,7 @@ const
   IPMAXFRAMES = 256; {maximum number of frames in a single frameset}
   MAXINTS = 4096; {buffer size - this should be way more than needed}
   TINTARRGROWFACTOR = 64;
-  DEFAULT_PRINTMARGIN = 0.5; {inches}                                  {!!.10}
+  DEFAULT_PRINTMARGIN = 0.5; {inches}
   FONTSIZESVALUSARRAY : array[0..6] of integer = (8,10,12,14,18,24,36);
 
 type
@@ -868,7 +868,7 @@ type
   TIpHtmlPoolManager = class
   private
     Root : Pointer;
-    {Top : Pointer;}                                                   {!!.12}
+    {Top : Pointer;}
     NextPage : Pointer;
     Next : Pointer;
     InternalSize : DWord;
@@ -928,7 +928,7 @@ type
     procedure DoChange;
     function GetValue: Integer;
     procedure SetPixelsType(const Value: TIpHtmlPixelsType);
-    procedure SetValue(const Value: Integer); {record}                          {!!.10}
+    procedure SetValue(const Value: Integer);
   public
     property Value: Integer read GetValue write SetValue;
     property PixelsType: TIpHtmlPixelsType read FPixelsType write SetPixelsType;
@@ -943,7 +943,7 @@ type
     FChange: TNotifyEvent;
     procedure SetLengthType(const Value: TIpHtmlLengthType);
     procedure SetLengthValue(const Value: Integer);
-    function GetLengthValue: Integer;{record}                           {!!.10}
+    function GetLengthValue: Integer;
     procedure DoChange;
   public
     property LengthValue : Integer read GetLengthValue write SetLengthValue;
@@ -956,7 +956,7 @@ type
   private
     FLengthValue : Integer;
     FLengthType : TIpHtmlMultiLengthType;
-    function GetLengthValue: Integer;{record}                           {!!.10}
+    function GetLengthValue: Integer;
   public
     property LengthValue: Integer read GetLengthValue write FLengthValue;
     property LengthType: TIpHtmlMultiLengthType read FLengthType write FLengthType;
@@ -964,11 +964,9 @@ type
 
   TIpHtmlMultiLengthList = class(TPersistent)
   private
-    {Entries : Integer;}                                               {!!.10}
-    {Values : array[0..Pred(IPMAXFRAMES)] of TIpHtmlMultiLength;}      {!!.10}
-    List: {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};              {!!.10}
+    List: {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     function GetEntries: Integer;
-    function GetValues(Index: Integer): TIpHtmlMultiLength;{record}    {!!.10}
+    function GetValues(Index: Integer): TIpHtmlMultiLength;
   public
     constructor Create;
     destructor Destroy; override;
@@ -978,14 +976,14 @@ type
     property Entries: Integer read GetEntries;
   end;
 
-  TIpHtmlRelSizeType = (hrsUnspecified, hrsAbsolute, hrsRelative);     {!!.10}
+  TIpHtmlRelSizeType = (hrsUnspecified, hrsAbsolute, hrsRelative);
   TIpHtmlRelSize = class(TPersistent)
   private
     FChange: TNotifyEvent;
     FSizeType : TIpHtmlRelSizeType;
     FValue : Integer;
     procedure SetSizeType(const Value: TIpHtmlRelSizeType);
-    procedure SetValue(const Value: Integer); {record}                         {!!.10}
+    procedure SetValue(const Value: Integer);
     procedure DoChange;
   public
     property SizeType : TIpHtmlRelSizeType read FSizeType write SetSizeType;
@@ -1023,16 +1021,11 @@ type
     property SizeOfSpaceKnown: Boolean read FSizeOfSpaceKnown;
     procedure SetKnownSizeOfSpace(const Size:TSize);
     property KnownSizeOfSpace : TSize read FKnownSizeOfSpace;
-    property BaseFontSize : Integer read FPropRec.BaseFontSize
-      write SetBaseFontSize;
-    property FontName : TFontNameStr read FPropRec.FontName
-      write SetFontName;
-    property FontSize : Integer read FPropRec.FontSize
-      write SetFontSize;
-    property FontStyle : TFontStyles read FPropRec.FontStyle
-      write SetFontStyle;
-    property UseCount : Integer read FUseCount
-      write FUseCount;
+    property BaseFontSize : Integer read FPropRec.BaseFontSize write SetBaseFontSize;
+    property FontName : TFontNameStr read FPropRec.FontName write SetFontName;
+    property FontSize : Integer read FPropRec.FontSize write SetFontSize;
+    property FontStyle : TFontStyles read FPropRec.FontStyle write SetFontStyle;
+    property UseCount : Integer read FUseCount write FUseCount;
     procedure Assign(const Source: TIpHtmlPropA);
     procedure DecUse;
     procedure IncUse;
@@ -1065,8 +1058,7 @@ type
     FUseCount: Integer;
     FOwner: TIpHtml;
   public
-    property FontBaseline : Integer read FPropRec.FontBaseline
-             write FPropRec.FontBaseline;
+    property FontBaseline : Integer read FPropRec.FontBaseline write FPropRec.FontBaseline;
     property FontColor : TColor read FPropRec.FontColor write FPropRec.FontColor;
     property Alignment : TIpHtmlAlign read FPropRec.Alignment write FPropRec.Alignment;
     property VAlignment : TIpHtmlVAlign3 read FPropRec.VAlignment write FPropRec.VAlignment;
@@ -1211,26 +1203,17 @@ type
     FOwner : TIpHtml;
     FParentNode : TIpHtmlNode;
     function PageRectToScreen(const Rect : TRect; var ScreenRect: TRect): Boolean;
-    procedure ScreenLine(
-      StartPoint, EndPoint : TPoint;
-      const Width : Integer;
-      const Color : TColor);
-    procedure ScreenRect(
-      R : TRect;
-      const Color : TColor);
+    procedure ScreenLine(StartPoint, EndPoint: TPoint; const Width: Integer; const Color: TColor);
+    procedure ScreenRect(R : TRect; const Color : TColor);
     {$IFDEF IP_LAZARUS}
-    procedure ScreenFrame(
-      R : TRect;
-      Raised: boolean);
+    procedure ScreenFrame(R : TRect; Raised: boolean);
     {$ENDIF}
-    procedure ScreenPolygon(
-      Points : array of TPoint;
-      const Color : TColor);
+    procedure ScreenPolygon(Points : array of TPoint; const Color : TColor);
     function PagePtToScreen(const Pt: TPoint): TPoint;
     procedure Enqueue; virtual;
     procedure SetProps(const RenderProps: TIpHtmlProps); virtual;
     procedure EnqueueElement(const Entry: PIpHtmlElement); virtual;
-    function ElementQueueIsEmpty: Boolean; virtual;                    {!!.10}
+    function ElementQueueIsEmpty: Boolean; virtual;
     procedure ReportDrawRects(M : TRectMethod); virtual;
     procedure ReportCurDrawRects(Owner: TIpHtmlNode; M : TRectMethod); virtual;
     procedure ReportMapRects(M : TRectMethod); virtual;
@@ -1252,14 +1235,14 @@ type
     property Owner : TIpHtml read FOwner;
     procedure ImageChange(NewPicture : TPicture); virtual;
     procedure GetAttributes(Target: TStrings; IncludeValues,
-      IncludeBlanks: Boolean);                                         {!!.10}
-    procedure SetAttributeValue(const AttrName, NewValue: string);     {!!.10}
+      IncludeBlanks: Boolean);
+    procedure SetAttributeValue(const AttrName, NewValue: string);
   end;
 
   TIpHtmlNodeNv = class(TIpHtmlNode)
   protected
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
-    function ElementQueueIsEmpty: Boolean; override;                   {!!.10}
+    function ElementQueueIsEmpty: Boolean; override;
     procedure ReportDrawRects(M : TRectMethod); override;
     procedure Invalidate; override;
     procedure InvalidateSize; override;
@@ -1304,7 +1287,7 @@ type
     FTitle: string;
     FId: string;
   protected
-    procedure ParseBaseProps(aOwner : TIpHtml); {virtual;}              {!!.12}
+    procedure ParseBaseProps(aOwner : TIpHtml);
     {$IFDEF IP_LAZARUS}
     function SelectCSSFont(const aFont: string): string;
     procedure ApplyCSSProps(const ACSSProps: TCSSProps; const props: TIpHtmlProps);
@@ -1312,7 +1295,7 @@ type
     function ElementName: String;
     function GetFontSizeFromCSS(CurrentFontSize:Integer; aFontSize: string):Integer;
     {$ENDIF}
-  public                      {!!.10}
+  public
     {$IFDEF IP_LAZARUS}
     destructor Destroy; override;
     {$ENDIF}
@@ -1328,7 +1311,7 @@ type
   TIpHtmlNodeInline = class(TIpHtmlNodeCore)
   protected
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
-    function ElementQueueIsEmpty: Boolean; override;                   {!!.10}
+    function ElementQueueIsEmpty: Boolean; override;
     procedure Invalidate; override;
   end;
 
@@ -1347,7 +1330,7 @@ type
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
-    property Align : TIpHtmlImageAlign read FAlignment write SetAlignment; {!!.10}
+    property Align : TIpHtmlImageAlign read FAlignment write SetAlignment;
   end;
 
   TIpHtmlNodeControl = class(TIpHtmlNodeAlignInline)
@@ -1384,22 +1367,17 @@ type
     FBgColor : TColor;
     FTextColor : TColor;
     procedure RenderQueue;
-    procedure CalcMinMaxQueueWidth(const RenderProps: TIpHtmlProps;
-      var Min, Max: Integer);
+    procedure CalcMinMaxQueueWidth(const RenderProps: TIpHtmlProps; var Min, Max: Integer);
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
-    function ElementQueueIsEmpty: Boolean; override;                   {!!.10}
+    function ElementQueueIsEmpty: Boolean; override;
     procedure Render(const RenderProps: TIpHtmlProps); virtual;
-    procedure Layout(const RenderProps: TIpHtmlProps;
-      const TargetRect : TRect); virtual;
+    procedure Layout(const RenderProps: TIpHtmlProps; const TargetRect : TRect); virtual;
     procedure RelocateQueue(const dx, dy: Integer);
-    procedure LayoutQueue(const RenderProps: TIpHtmlProps;
-      const TargetRect : TRect);
-    procedure CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
-      var Min, Max: Integer); virtual;
+    procedure LayoutQueue(const RenderProps: TIpHtmlProps; const TargetRect : TRect);
+    procedure CalcMinMaxWidth(const RenderProps: TIpHtmlProps; var Min, Max: Integer); virtual;
     procedure ClearWordList;
     procedure Invalidate; override;
-    function GetHeight(const RenderProps: TIpHtmlProps;
-      const Width: Integer): Integer; {virtual;}                       {!!.12}
+    function GetHeight(const RenderProps: TIpHtmlProps; const Width: Integer): Integer;
     procedure InvalidateSize; override;
     function Level0: Boolean;
     procedure ReportCurDrawRects(aOwner: TIpHtmlNode; M : TRectMethod); override;
@@ -1426,7 +1404,7 @@ type
     FProfile: string;
     FLang: string;
     FDir: TIpHtmlDirection;
-  public                                                   {!!.10}
+  public
     property Dir : TIpHtmlDirection read FDir write FDir;
     property Lang : string read FLang write FLang;
     property Profile : string read FProfile write FProfile;
@@ -1445,7 +1423,7 @@ type
     procedure Enqueue; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
-    function ElementQueueIsEmpty: Boolean; override;                   {!!.10}
+    function ElementQueueIsEmpty: Boolean; override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
@@ -1492,8 +1470,8 @@ type
     {$ENDIF}
   protected
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
-    function ElementQueueIsEmpty: Boolean; override;                   {!!.10}
-  public                                                   {!!.10}
+    function ElementQueueIsEmpty: Boolean; override;
+  public
     property Media : string read FMedia write FMedia;
     property Title : string read FTitle write FTitle;
     {$IFDEF IP_LAZARUS}
@@ -1543,7 +1521,7 @@ type
     procedure SetListType(const Value: TIpHtmlULType);
   protected
     procedure Enqueue; override;
-  public                                                   {!!.10}
+  public
     property Compact : Boolean read FCompact write FCompact;
     property ListType : TIpHtmlULType read FListType write SetListType;
   end;
@@ -1564,7 +1542,7 @@ type
     Counter : Integer;
     procedure Enqueue; override;
     function GetNumString : string;
-  public                                                   {!!.10}
+  public
     property Compact : Boolean read FCompact write FCompact;
     property Start : Integer read FStart write SetStart;
     property Style : TIpHtmlOLStyle read FOLStyle write SetOLStyle;
@@ -1573,7 +1551,6 @@ type
   TIpHtmlNodeLI = class(TIpHtmlNodeAlignInline)
   private
     FCompact: Boolean;
-    {FDefListType,}                                                    {!!.12}
     FListType : TIpHtmlULType;
     FValue : Integer;
     procedure SetListType(const Value: TIpHtmlULType);
@@ -1586,7 +1563,6 @@ type
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
     function GetDim(ParentWidth: Integer): TSize; override;
     procedure CalcMinMaxWidth(var Min, Max: Integer); override;
-    {property DefListType: TIpHtmlULType read FListType write FDefListType;} {!!.12}
   public
     constructor Create(ParentNode : TIpHtmlNode);
     property Compact : Boolean read FCompact write FCompact;
@@ -1629,7 +1605,7 @@ type
     FVersion: string;
     FDir: TIpHtmlDirection;
   protected
-    function HasBodyNode : Boolean;                                    {!!.12}
+    function HasBodyNode : Boolean;
     procedure Render(const RenderProps: TIpHtmlProps);
     procedure CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
       var Min, Max: Integer);
@@ -1637,7 +1613,7 @@ type
       const Width: Integer): Integer;
     procedure Layout(const RenderProps: TIpHtmlProps;
       const TargetRect : TRect);
-  public                                                   {!!.10}
+  public
     property Dir : TIpHtmlDirection read FDir write FDir;
     property Lang : string read FLang write FLang;
     property Version : string read FVersion write FVersion;
@@ -1646,7 +1622,7 @@ type
   TIpHtmlNodeTITLE = class(TIpHtmlNodeNv)
   private
     FTitle: string;
-  public                                                   {!!.10}
+  public
     property Title : string read FTitle write FTitle;
   end;
 
@@ -1702,7 +1678,7 @@ type
     procedure SetMarginHeight(const Value: Integer);
     procedure SetMarginWidth(const Value: Integer);
     procedure SetScrolling(const Value: TIpHtmlFrameScrolling);
-  public                                                   {!!.10}
+  public
     property FrameBorder : Integer read FFrameBorder write SetFrameBorder;
     property LongDesc : string read FLongDesc write FLongDesc;
     property MarginHeight : Integer read FMarginHeight write SetMarginHeight;
@@ -1738,7 +1714,7 @@ type
     function Successful: Boolean; override;
     procedure AddValues(NameList, ValueList : TStringList); override;
     procedure Reset; override;
-    procedure WidthChanged(Sender: TObject);                           {!!.10}
+    procedure WidthChanged(Sender: TObject);
   public
     destructor Destroy; override;
     property Align : TIpHtmlAlign read FAlign write SetAlign;
@@ -1758,7 +1734,7 @@ type
   private
     FCompact : Boolean;
   protected
-    procedure Enqueue; override;                                       {!!.16}
+    procedure Enqueue; override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     property Compact : Boolean read FCompact write FCompact;
@@ -1807,7 +1783,7 @@ type
     FAlign : TIpHtmlAlign;
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
-  public                                                   {!!.10}
+  public
     constructor Create(ParentNode: TIpHtmlNode);
     property Align : TIpHtmlAlign read FAlign write FAlign;
   end;
@@ -1827,7 +1803,7 @@ type
     FDateTime: string;
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
-  public                                                   {!!.10}
+  public
     property Cite : string read FCite write FCite;
     property DateTime : string read FDateTime write FDateTime;
   end;
@@ -1838,7 +1814,7 @@ type
     FDateTime: string;
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
-  public                                                   {!!.10}
+  public
     property Cite : string read FCite write FCite;
     property DateTime : string read FDateTime write FDateTime;
   end;
@@ -1850,7 +1826,7 @@ type
     FHFStyle : TIpHtmlFontStyles;
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
-  public                                                   {!!.10}
+  public
     property Style : TIpHtmlFontStyles read FHFStyle write FHFStyle;
   end;
 
@@ -1861,7 +1837,7 @@ type
     FPhrStyle : TIpHtmlPhraseStyle;
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
-  public                                                   {!!.10}
+  public
     property Style : TIpHtmlPhraseStyle read FPhrStyle write FPhrStyle;
   end;
 
@@ -1869,7 +1845,7 @@ type
   private
     FColor: TColor;
     FNoShade : Boolean;
-    FSize : TIpHtmlInteger;                                            {!!.10}
+    FSize : TIpHtmlInteger;
     FWidth : TIpHtmlLength;
   protected
     SizeWidth : TIpHtmlPixels;
@@ -1879,13 +1855,13 @@ type
     function GrossDrawRect: TRect;
     procedure CalcMinMaxWidth(var Min, Max: Integer); override;
     procedure Enqueue; override;
-    procedure WidthChanged(Sender: TObject);                           {!!.10}
+    procedure WidthChanged(Sender: TObject);
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     property Color : TColor read FColor write FColor;
     property NoShade  : Boolean read FNoShade write FNoShade;
-    property Size : TIpHtmlInteger read FSize write FSize;             {!!.10}
+    property Size : TIpHtmlInteger read FSize write FSize;
     property Width : TIpHtmlLength read FWidth write FWidth;
   end;
 
@@ -1900,7 +1876,7 @@ type
   protected
     procedure Enqueue; override;
     procedure SetClear(const Value: TIpHtmlBreakClear);
-  public                                                   {!!.10}
+  public
     constructor Create(ParentNode: TIpHtmlNode);
     property Clear : TIpHtmlBreakClear read FClear write SetClear;
     property Id : string read FId write FId;
@@ -1929,7 +1905,6 @@ type
     FHasRef : Boolean;
     FHot: Boolean;
     MapAreaList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
-    {FHasFocus : Boolean;}                                             {!!.12}
     procedure ClearAreaList;
     function PtInRects(const P : TPoint) : Boolean;
     function RelMapPoint(const P: TPoint): TPoint;
@@ -1960,7 +1935,7 @@ type
   private
     FAlt: string;
     FBorder: Integer;
-    FHeight: TIpHtmlPixels{Integer};                                   {!!.10}
+    FHeight: TIpHtmlPixels;
     FHSpace: Integer;
     FIsMap: Boolean;
     FLongDesc: string;
@@ -1985,13 +1960,13 @@ type
     procedure ReportDrawRects(M : TRectMethod); override;
     procedure ReportMapRects(M : TRectMethod); override;
     procedure LoadImage;
-    procedure UnloadImage;                                             {!!.02}
+    procedure UnloadImage;
     function GrossDrawRect: TRect;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
     function GetDim(ParentWidth: Integer): TSize; override;
     procedure CalcMinMaxWidth(var Min, Max: Integer); override;
     function GetHint: string; override;
-    procedure DimChanged(Sender: TObject);                             {!!.10}
+    procedure DimChanged(Sender: TObject);
     procedure InvalidateSize; override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
@@ -2003,7 +1978,7 @@ type
     {$ELSE}
     property Border : Integer read FBorder write SetBorder;
     {$ENDIF}
-    property Height : TIpHtmlPixels{Integer} read FHeight write FHeight; {!!.10}
+    property Height : TIpHtmlPixels read FHeight write FHeight;
     property HSpace : Integer read FHSpace write SetHSpace;
     property IsMap : Boolean read FIsMap write FIsMap;
     property LongDesc : string read FLongDesc write FLongDesc;
@@ -2063,7 +2038,7 @@ type
     FVSpace: Integer;
     FWidth: TIpHtmlLength;
   protected
-    procedure WidthChanged(Sender: TObject);                           {!!.10}
+    procedure WidthChanged(Sender: TObject);
   public
     destructor Destroy; override;
     property Align : TIpHtmlImageAlign read FAlignment write FAlignment;
@@ -2089,7 +2064,7 @@ type
     FValueType: TIpHtmlObjectValueType;
     FValue: string;
     FName: string;
-  public                                                   {!!.10}
+  public
     property Id : string read FId write FId;
     property Name : string read FName write FName;
     property Value : string read FValue write FValue;
@@ -2101,7 +2076,7 @@ type
     FSize: Integer;
   protected
     procedure ApplyProps(const RenderProps: TIpHtmlProps); override;
-  public                                                   {!!.10}
+  public
     property Size : Integer read FSize write FSize;
   end;
 
@@ -2130,7 +2105,7 @@ type
     function GetHint: string; override;
     function PtInRects(const P : TPoint) : Boolean;
   public
-    destructor Destroy; override;                                      {!!.10}
+    destructor Destroy; override;
     {$IF DEFINED(CBuilder) OR DEFINED(IP_LAZARUS)}
     property Rect : TRect read FRect;
     {$ENDIF}
@@ -2152,7 +2127,7 @@ type
     FContent: string;
     FHttpEquiv: string;
     FName: string;
-  public                                                   {!!.10}
+  public
     property Content : string read FContent write FContent;
     property HttpEquiv: string read FHttpEquiv write FHttpEquiv;
     property Name : string read FName write FName;
@@ -2167,7 +2142,7 @@ type
     {$IFDEF IP_LAZARUS}
     FType: string;
     {$ENDIF}
-  public                                                   {!!.10}
+  public
     property HRef : string read FHRef write FHRef;
     property Rel : string read FRel write FRel;
     property Rev : string read FRev write FRev;
@@ -2183,7 +2158,7 @@ type
   TIpHtmlNodeCAPTION = class(TIpHtmlNodeBlock)
   private
     FAlign: TIpHtmlVAlignment2;
-  public                                                   {!!.10}
+  public
     constructor Create(ParentNode: TIpHtmlNode);
     property Align : TIpHtmlVAlignment2 read FAlign write FAlign;
   end;
@@ -2273,8 +2248,7 @@ type
     FMin, FMax : Integer;
     procedure CalcMinMaxColTableWidth(const RenderProps: TIpHtmlProps;
       var Min, Max: Integer);
-    procedure CalcSize(const ParentWidth: Integer;
-       const RenderProps: TIpHtmlProps);
+    procedure CalcSize(const ParentWidth: Integer; const RenderProps: TIpHtmlProps);
     procedure Draw(Block: TIpHtmlNodeBlock); override;
     procedure SetRect(TargetRect: TRect); override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
@@ -2284,8 +2258,8 @@ type
     function GetColCount: Integer;
     procedure Enqueue; override;
     property ColCount : Integer read GetColCount;
-    procedure WidthChanged(Sender: TObject);                           {!!.10}
-    function ExpParentWidth: Integer; override;                        {!!.10}
+    procedure WidthChanged(Sender: TObject);
+    function ExpParentWidth: Integer; override;
     {$IFDEF IP_LAZARUS}
     procedure LoadAndApplyCSSProps; override;
     {$ENDIF}
@@ -2293,18 +2267,16 @@ type
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     property BgColor : TColor read FBgColor write FBgColor;
-    property Border : Integer read FBorder write SetBorder;            {!!.10}
+    property Border : Integer read FBorder write SetBorder;
     property BorderStyle: TCSSBorderStyle read FBorderStyle write FBorderStyle;
     property BorderColor: TColor read FBorderColor write FBorderColor;
-    property CalcMinWidth: Integer read FMin;                          {!!.10}
-    property CalcMaxWidth: Integer read FMax;                          {!!.10}
-    property CalcTableWidth: Integer read FTableWidth;                 {!!.10}
-    property CellPadding : Integer
-                         read FCellPadding write SetCellPadding;       {!!.10}
-    property CellSpacing : Integer
-                         read FCellSpacing write SetCellSpacing;       {!!.10}
-    property Frame : TIpHtmlFrameProp read FFrame write SetFrame;      {!!.10}
-    property Rules : TIpHtmlRules read FRules write SetRules;          {!!.10}
+    property CalcMinWidth: Integer read FMin;
+    property CalcMaxWidth: Integer read FMax;
+    property CalcTableWidth: Integer read FTableWidth;
+    property CellPadding : Integer read FCellPadding write SetCellPadding;
+    property CellSpacing : Integer read FCellSpacing write SetCellSpacing;
+    property Frame : TIpHtmlFrameProp read FFrame write SetFrame;
+    property Rules : TIpHtmlRules read FRules write SetRules;
     property Summary : string read FSummary write FSummary;
     property Width : TIpHtmlLength read FWidth write FWidth;
   end;
@@ -2327,7 +2299,7 @@ type
   private
     FAlign: TIpHtmlAlign;
     FVAlign: TIpHtmlVAlign3;
-  public                                                   {!!.10}
+  public
     property Align : TIpHtmlAlign read FAlign write FAlign;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
   end;
@@ -2349,7 +2321,7 @@ type
     FVAlign: TIpHtmlVAlign3;
     FWidth: TIpHtmlMultiLength;
   public
-    destructor Destroy; override;                                      {!!.10}
+    destructor Destroy; override;
     property Align : TIpHtmlAlign read FAlign write FAlign;
     property Span : Integer read FSpan write FSpan;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
@@ -2391,10 +2363,10 @@ type
   TIpHtmlNodeTableHeaderOrCell = class(TIpHtmlNodeBlock)
   private
     FAlign: TIpHtmlAlign;
-    FCalcWidthMin: Integer;                                            {!!.10}
-    FCalcWidthMax: Integer;                                            {!!.10}
+    FCalcWidthMin: Integer;
+    FCalcWidthMax: Integer;
     FColspan: Integer;
-    FHeight: TIpHtmlPixels{Integer};                                   {!!.10}
+    FHeight: TIpHtmlPixels;
     FNowrap: Boolean;
     FRowspan: Integer;
     FWidth: TIpHtmlLength;
@@ -2406,15 +2378,15 @@ type
     procedure CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
       var Min, Max: Integer); override;
     property PadRect : TRect read FPadRect;
-    procedure DimChanged(Sender: TObject);                             {!!.10}
+    procedure DimChanged(Sender: TObject);
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     property Align : TIpHtmlAlign read FAlign write FAlign;
-    property CalcWidthMin: Integer read FCalcWidthMin;                 {!!.10}
-    property CalcWidthMax: Integer read FCalcWidthMax;                 {!!.10}
+    property CalcWidthMin: Integer read FCalcWidthMin;
+    property CalcWidthMax: Integer read FCalcWidthMax;
     property Colspan : Integer read FColspan write FColspan;
-    property Height : TIpHtmlPixels{Integer} read FHeight write FHeight; {!!.10}
+    property Height : TIpHtmlPixels{Integer} read FHeight write FHeight;
     property Nowrap : Boolean read FNowrap write FNowrap;
     property Rowspan : Integer read FRowspan write FRowspan;
     property VAlign : TIpHtmlVAlign3 read FVAlign write FVAlign;
@@ -2527,7 +2499,7 @@ type
     procedure ButtonClick(Sender: TObject);
     procedure ControlOnEditingDone(Sender: TObject);
     procedure ListBoxSelectionChange(Sender: TObject; User: boolean);
-    procedure setText(aText: string);                           {!!.01}
+    procedure setText(aText: string);
     function getText: string;
   public
     constructor Create(ParentNode : TIpHtmlNode);
@@ -2549,7 +2521,7 @@ type
     FOptionLabel: string;
     FSelected: Boolean;
     FValue: string;
-  public                                                   {!!.10}
+  public
     property Disabled : Boolean read FDisabled write FDisabled;
     property OptionLabel : string read FOptionLabel write FOptionLabel;
     property Selected : Boolean read FSelected write FSelected;
@@ -2560,7 +2532,7 @@ type
   private
     FDisabled: Boolean;
     FGroupLabel: string;
-  public                                                   {!!.10}
+  public
     property Disabled : Boolean read FDisabled write FDisabled;
     property GroupLabel : string read FGroupLabel write FGroupLabel;
   end;
@@ -2579,7 +2551,7 @@ type
     procedure AddValues(NameList, ValueList : TStringList); override;
     procedure Reset; override;
     procedure ControlOnEditingDone(Sender: TObject);
-  public                                                   {!!.10}
+  public
     constructor Create(ParentNode: TIpHtmlNode);
     destructor Destroy; override;
     property Cols : Integer read FCols write FCols;
@@ -2606,15 +2578,14 @@ type
   TIpHtmlNodeLEGEND = class(TIpHtmlNodeCore)
   private
     FAlign: TIpHtmlVAlignment2;
-  public                                                   {!!.10}
+  public
     property Align : TIpHtmlVAlignment2 read FAlign write FAlign;
   end;
 
   TWriteCharProvider = procedure(C : AnsiChar) of object;
 
   TIpHtmlDataGetImageEvent =
-    procedure(Sender: TIpHtmlNode; const URL: string; var Picture: TPicture)
-      of object;
+    procedure(Sender: TIpHtmlNode; const URL: string; var Picture: TPicture) of object;
 
   TIpHtmlScrollEvent =
     procedure(Sender: TIpHtml; const R: TRect{$IFDEF IP_LAZARUS}; ShowAtTop: Boolean{$ENDIF}) of object;
@@ -2623,17 +2594,14 @@ type
     procedure(Sender: TIpHtml; const URL: string) of object;
 
   TPostEvent =
-    procedure(Sender: TIpHtml; const URL: string;
-      FormData: TIpFormDataEntity) of object;     {!!.12}
+    procedure(Sender: TIpHtml; const URL: string; FormData: TIpFormDataEntity) of object;
 
   TIFrameCreateEvent =
-    procedure(Sender: TIpHtml; Parent: TWinControl;
-      Frame: TIpHtmlNodeIFRAME;
+    procedure(Sender: TIpHtml; Parent: TWinControl; Frame: TIpHtmlNodeIFRAME;
       var Control: TWinControl) of object;
 
   TURLCheckEvent =
-    procedure(Sender: TIpHtml; const URL: string;
-      var Visited: Boolean) of object;
+    procedure(Sender: TIpHtml; const URL: string; var Visited: Boolean) of object;
 
   TReportURLEvent =
     procedure(Sender: TIpHtml; const URL: string) of object;
@@ -2695,13 +2663,11 @@ type
     ParmValueArray : array[TIpHtmlAttributesSet] of string;
     FHtml : TIpHtmlNodeHtml;
     CharStack : array [0..7] of AnsiChar;
-    LastWasSpace: Boolean;                                             {!!.10}
-    LastWasClose: Boolean;                                             {!!.10}
+    LastWasSpace: Boolean;
+    LastWasClose: Boolean;
     CharSP : Integer;
     FFlagErrors : Boolean;
     IndexPhrase : string;
-    {Base : string;}                                                   {!!.12}
-    {IsIndexPresent : Boolean;}                                        {!!.12}
     TokenBuffer : TIpHtmlToken;
     FPageRect : TRect;
     HaveToken : Boolean;
@@ -2726,7 +2692,6 @@ type
     HardLF, HardLFClearLeft, SoftHyphen,
     HardLFClearRight, HardLFClearBoth : PIpHtmlElement;
     NameList : TStringList;
-    {PanelWidth : Integer;}                                            {!!.12}
     GifQueue : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     InPre : Integer;
     InBlock : Integer;
@@ -2737,7 +2702,7 @@ type
     GlobalPos, LineNumber, LineOffset : Integer;
     PaintBufferBitmap : TBitmap;
     PaintBuffer : TCanvas;
-    TokenStringBuf : PChar; {array[16383] of AnsiChar;}        {!!.01}
+    TokenStringBuf : PChar; {array[16383] of AnsiChar;}
     TBW : Integer;
     Destroying : Boolean;
     AllSelected : Boolean;
@@ -2759,16 +2724,16 @@ type
     RenderCanvas : TCanvas;
     PageHeight : Integer;
     StartPos : Integer;
-    FFixedTypeface: string;                                            {!!.10}
+    FFixedTypeface: string;
     FDefaultTypeFace: string;
     FDefaultFontSize: integer;
-    ParmBuf: PChar;                                                    {!!.12}
-    ParmBufSize: Integer;                                              {!!.12}
+    ParmBuf: PChar;
+    ParmBufSize: Integer;
     procedure ResetCanvasData;
     procedure ResetCache;
     procedure ResetWordLists;
     procedure ResetBlocks(Node: TIpHtmlNode);
-    procedure ResetImages(Node: TIpHtmlNode);                          {!!.02}
+    procedure ResetImages(Node: TIpHtmlNode);
     procedure ResetElementMetrics(P: Pointer);
     function FindPropARec(var pRec: TIpHtmlPropAFieldsRec): TIpHtmlPropA;
     procedure DelDuplicatePropA(aProp: TIpHtmlPropA);
@@ -2778,15 +2743,13 @@ type
     function CheckKnownURL(URL: string): boolean;
     procedure ReportReference(URL: string);
     procedure PaintSelection;
-    function PageRectToScreen(const Rect: TRect;
-      var ScreenRect: TRect): Boolean;
+    function PageRectToScreen(const Rect: TRect; var ScreenRect: TRect): Boolean;
     function IsWhiteSpace: Boolean;
     function GetTokenString: string;
     procedure ReportError(const ErrorMsg: string);
     procedure ReportExpectedError(const ErrorMsg: string);
     procedure ReportExpectedToken(const Token: TIpHtmlToken);
-    procedure EnsureClosure(const EndToken: TIpHtmlToken;
-      const EndTokens: TIpHtmlTokenSet);
+    procedure EnsureClosure(const EndToken: TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
     function NewElement(EType : TElementType; Own: TIpHtmlNode) : PIpHtmlElement;
     function BuildStandardEntry(EType: TElementType): PIpHtmlElement;
     function ParseDir: TIpHtmlDirection;
@@ -2815,25 +2778,20 @@ type
         DefaultListStyle : TIpHtmlULType);
     procedure ParseUnorderedList(Parent: TIpHtmlNode;
           EndToken : TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseOrderedList(Parent: TIpHtmlNode;
-        const EndTokens : TIpHtmlTokenSet);
-    procedure ParseDefinitionList(Parent: TIpHtmlNode;
-                const EndTokens: TIpHtmlTokenSet);
+    procedure ParseOrderedList(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
+    procedure ParseDefinitionList(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseDefListItems(Parent: TIpHtmlNode;
         const EndTokens: TIpHtmlTokenSet);
     procedure ParsePre(ParentNode : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseDIV(Parent : TIpHtmlNode;
-                const EndTokens: TIpHtmlTokenSet);
-    procedure ParseCENTER(Parent: TIpHtmlNode;
-          const EndTokens: TIpHtmlTokenSet);
+    procedure ParseDIV(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+    procedure ParseCENTER(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseBLOCKQUOTE(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseHR(Parent: TIpHtmlNode);
     procedure ParseFontStyle(Parent: TIpHtmlNode;
       StartToken : TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
     procedure ParsePhraseElement(Parent: TIpHtmlNode;
       StartToken, EndToken: TIpHtmlToken; const EndTokens: TIpHtmlTokenSet);
-    procedure ParseAnchor(Parent: TIpHtmlNode;
-        const EndTokens : TIpHtmlTokenSet);
+    procedure ParseAnchor(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
     procedure ParseIMG(Parent : TIpHtmlNode);
     procedure ParseApplet(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
     procedure ParseOBJECT(Parent : TIpHtmlNode);
@@ -2854,21 +2812,21 @@ type
     function ParseInteger(const AttrNameSet: TIpHtmlAttributesSet;
       aDefault : Integer): Integer;
     function ParseHtmlInteger2(const AttrNameSet: TIpHtmlAttributesSet;
-      aDefault: Integer): TIpHtmlInteger;                               {!!.10}
+      aDefault: Integer): TIpHtmlInteger;
     function ParsePixels(const AttrNameSet: TIpHtmlAttributesSet;
-             const aDefault: string): TIpHtmlPixels; {!!.10}
+             const aDefault: string): TIpHtmlPixels;
     function ParseHyperLength(const AttrNameSet: TIpHtmlAttributesSet;
       const aDefault: string): TIpHtmlLength;
     function ParseHyperMultiLength(const AttrNameSet: TIpHtmlAttributesSet;
       const aDefault: string): TIpHtmlMultiLength;
     function ParseHyperMultiLengthList(const AttrNameSet: TIpHtmlAttributesSet;
-      const aDefault: string): TIpHtmlMultiLengthList;                  {!!.10}
+      const aDefault: string): TIpHtmlMultiLengthList;
     function ParseOLStyle(Default: TIpHtmlOLStyle): TIpHtmlOLStyle;
     function ParseImageAlignment(aDefault: TIpHtmlImageAlign): TIpHtmlImageAlign;
     function ParseVAlignment : TIpHtmlVAlign;
     function ParseVAlignment2 : TIpHtmlVAlignment2;
     function ParseVAlignment3 : TIpHtmlVAlign3;
-    function ParseRelSize{(const Default: string)}: TIpHtmlRelSize;    {!!.10}
+    function ParseRelSize{(const Default: string)}: TIpHtmlRelSize;
     function ParseBRClear: TIpHtmlBreakClear;
     function ParseShape: TIpHtmlMapShape;
     function NextChar : AnsiChar;
@@ -2890,32 +2848,22 @@ type
     procedure ParseBase;
     procedure ParseLink(Parent : TIpHtmlNode);
     procedure ParseMeta(Parent : TIpHtmlNode);
-    procedure ParseBody(Parent : TIpHtmlNode;
-          const EndTokens: TIpHtmlTokenSet);
+    procedure ParseBody(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     {$IFDEF IP_LAZARUS}
     procedure ParseStyleSheet(Parent: TIpHtmlNode; HRef: String);
     {$ENDIF}
-    procedure ParseBodyText(Parent : TIpHtmlNode;
-      const EndTokens: TIpHtmlTokenSet);
-    procedure ParseBlock(Parent: TIpHtmlNode;
-      const EndTokens: TIpHtmlTokenSet);
-    procedure ParseInline(Parent: TIpHtmlNode;
-      const EndTokens: TIpHtmlTokenSet);
-    procedure ParseHeader(Parent : TIpHtmlNode;
-      EndToken : TIpHtmlToken; Size : Integer);
-    procedure ParseText(const EndTokens: TIpHtmlTokenSet;
-         Parent: TIpHtmlNode);
-    procedure ParseFont(Parent : TIpHtmlNode;
-       const EndTokens: TIpHtmlTokenSet);
+    procedure ParseBodyText(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+    procedure ParseBlock(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+    procedure ParseInline(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
+    procedure ParseHeader(Parent : TIpHtmlNode; EndToken : TIpHtmlToken; Size : Integer);
+    procedure ParseText(const EndTokens: TIpHtmlTokenSet; Parent: TIpHtmlNode);
+    procedure ParseFont(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     procedure ParseAddress(Parent: TIpHtmlNode);
-    procedure ParseForm(Parent: TIpHtmlNode;
-        const EndTokens: TIpHtmlTokenSet);
+    procedure ParseForm(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
     function ParseMethod: TIpHtmlFormMethod;
-    procedure ParseTableRow(Parent: TIpHtmlNode;
-        const EndTokens : TIpHtmlTokenSet);
+    procedure ParseTableRow(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
     function ParseInputType : TIpHtmlInputType;
-    procedure ParseFormFields(Parent: TIpHtmlNode;
-          const EndTokens : TIpHtmlTokenSet);
+    procedure ParseFormFields(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
     procedure InvalidateRect(R : TRect);
     procedure SetDefaultProps;
     function BuildPath(const Ext: string): string;
@@ -2932,18 +2880,14 @@ type
     procedure ClearAreaList;
     procedure NextNonBlankToken;
     procedure Get(const URL: string);
-    procedure Post(const URL: string; FormData: TIpFormDataEntity); {!!.12}
+    procedure Post(const URL: string; FormData: TIpFormDataEntity);
     procedure ClearRectList;
-    procedure AddRect(const R: TRect; Node: PIpHtmlElement;
-      Block: TIpHtmlNodeBlock);
-    procedure CreateIFrame(Parent: TWinControl; Frame: TIpHtmlNodeIFRAME;
-      var Control: TWinControl);
+    procedure AddRect(const R: TRect; Node: PIpHtmlElement; Block: TIpHtmlNodeBlock);
+    procedure CreateIFrame(Parent: TWinControl; Frame: TIpHtmlNodeIFRAME; var Control: TWinControl);
     procedure FinalizeRecs(P: Pointer);
     function LinkVisited(const URL: string): Boolean;
-    procedure AddWord(Value: string; Props: TIpHtmlProps;
-      Owner: TIpHtmlNode);
-    procedure AddWordEntry(const Value: string; Props: TIpHtmlProps;
-      Owner: TIpHtmlNode);
+    procedure AddWord(Value: string; Props: TIpHtmlProps; Owner: TIpHtmlNode);
+    procedure AddWordEntry(const Value: string; Props: TIpHtmlProps; Owner: TIpHtmlNode);
     function FindElement(const Name: string): TIpHtmlNode;
     procedure Clear; {clear any contents}
     procedure Home;
@@ -2964,51 +2908,34 @@ type
     procedure ControlOnEditingDone(Sender: TIpHtmlNodeControl);
     procedure ControlOnChange(Sender: TIpHtmlNodeControl);
     procedure ControlCreate(Sender: TIpHtmlNodeControl);
-    property HotNode : TIpHtmlNode read FHotNode;
-    property CurElement : PIpHtmlElement read FCurElement write FCurElement;
-    property HotPoint : TPoint read FHotPoint;
-    property OnInvalidateRect : TInvalidateEvent
-      read FOnInvalidateRect write FOnInvalidateRect;
-    property Target : TCanvas read FTarget;
-    property TextColor : TColor read FTextColor write FTextColor;
-    property LinkColor : TColor read FLinkColor write FLinkColor;
-    property VLinkColor : TColor read FVLinkColor write FVLinkColor;
-    property ALinkColor : TColor read FALinkColor write FALinkColor;
-    property BgColor : TColor read FBgColor write FBgColor;
-    property HasFrames : Boolean read FHasFrames;
-    property OnGetImageX : TIpHtmlDataGetImageEvent
-                read FOnGetImageX write FOnGetImageX;
-    property OnScroll : TIpHtmlScrollEvent
-                read FOnScroll write FOnScroll;
-    property OnInvalidateSize : TNotifyEvent
-                read FOnInvalidateSize write FOnInvalidateSize;
-    property OnGet : TGetEvent
-                read FOnGet write FOnGet;
-    property OnPost : TPostEvent
-                read FOnPost write FOnPost;
-    property OnIFrameCreate : TIFrameCreateEvent
-                read FOnIFrameCreate write FOnIFrameCreate;
-    property OnURLCheck : TURLCheckEvent
-                read FOnURLCheck write FOnURLCheck;
-    property OnReportURL: TReportURLEvent
-                read FOnReportURL write FOnReportURL;
-    property OnControlClick : TControlEvent
-                read FControlClick write FControlClick;
-    property OnControlClick2 : TControlEvent2
-                read FControlClick2 write FControlClick2;
-    property OnControlEditingDone : TControlEvent
-                read FControlOnEditingDone write FControlOnEditingDone;
-    property OnControlChange : TControlEvent
-                read FControlOnChange write FControlOnChange;
-    property OnControlCreate : TControlEvent
-                read FControlCreate write FControlCreate;
-    property CanPaint : Boolean read FCanPaint;
-    property MarginWidth : Integer
-                read FMarginWidth write FMarginWidth default 20;
-    property MarginHeight : Integer
-                read FMarginHeight write FMarginHeight default 20;
-    procedure DoGetImage(Sender: TIpHtmlNode; const URL: string;
-      var Picture: TPicture);
+    property HotNode: TIpHtmlNode read FHotNode;
+    property CurElement: PIpHtmlElement read FCurElement write FCurElement;
+    property HotPoint: TPoint read FHotPoint;
+    property OnInvalidateRect: TInvalidateEvent read FOnInvalidateRect write FOnInvalidateRect;
+    property Target: TCanvas read FTarget;
+    property TextColor: TColor read FTextColor write FTextColor;
+    property LinkColor: TColor read FLinkColor write FLinkColor;
+    property VLinkColor: TColor read FVLinkColor write FVLinkColor;
+    property ALinkColor: TColor read FALinkColor write FALinkColor;
+    property BgColor: TColor read FBgColor write FBgColor;
+    property HasFrames: Boolean read FHasFrames;
+    property OnGetImageX: TIpHtmlDataGetImageEvent read FOnGetImageX write FOnGetImageX;
+    property OnScroll: TIpHtmlScrollEvent read FOnScroll write FOnScroll;
+    property OnInvalidateSize: TNotifyEvent read FOnInvalidateSize write FOnInvalidateSize;
+    property OnGet: TGetEvent read FOnGet write FOnGet;
+    property OnPost: TPostEvent read FOnPost write FOnPost;
+    property OnIFrameCreate: TIFrameCreateEvent read FOnIFrameCreate write FOnIFrameCreate;
+    property OnURLCheck: TURLCheckEvent read FOnURLCheck write FOnURLCheck;
+    property OnReportURL: TReportURLEvent read FOnReportURL write FOnReportURL;
+    property OnControlClick: TControlEvent read FControlClick write FControlClick;
+    property OnControlClick2: TControlEvent2 read FControlClick2 write FControlClick2;
+    property OnControlEditingDone: TControlEvent read FControlOnEditingDone write FControlOnEditingDone;
+    property OnControlChange: TControlEvent read FControlOnChange write FControlOnChange;
+    property OnControlCreate: TControlEvent read FControlCreate write FControlCreate;
+    property CanPaint: Boolean read FCanPaint;
+    property MarginWidth: Integer read FMarginWidth write FMarginWidth default 20;
+    property MarginHeight: Integer read FMarginHeight write FMarginHeight default 20;
+    procedure DoGetImage(Sender: TIpHtmlNode; const URL: string; var Picture: TPicture);
     {$IFOPT C+}
     procedure CheckImage(Picture: TPicture);
     {$ENDIF}
@@ -3029,7 +2956,7 @@ type
     property CurUrl: string read FCurUrl;
     procedure LoadFromStream(S : TStream);
     procedure Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
-      UsePaintBuffer: Boolean; const TopLeft: TPoint);                 {!!.10}
+      UsePaintBuffer: Boolean; const TopLeft: TPoint);
     property TitleNode : TIpHtmlNodeTITLE read FTitleNode;
     {$IFDEF IP_LAZARUS_DBG}
     procedure DebugChild(Node: TIpHtmlNode; const UserData: Pointer);
@@ -3038,7 +2965,7 @@ type
     property ControlsCount: integer read getControlCount;
     property Controls[i:integer]: TIpHtmlNode read getControl;
     property FrameSet : TIpHtmlNodeFRAMESET read FCurFrameSet;
-    property FactBAParag: Real read FFactBAParag write FFactBAParag; //JMN
+    property FactBAParag: Real read FFactBAParag write FFactBAParag;
     property MouseLastPoint : TPoint read FMouseLastPoint;
   end;
 
@@ -3047,7 +2974,7 @@ type
   private
     FAnchor : TIpHtmlNodeA;
   protected
-    {HaveFocus : Boolean;}                                             {!!.12}
+    {HaveFocus : Boolean;}
     procedure CreateParams(var Params: TCreateParams); override;
     {$IFDEF IP_LAZARUS}
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
@@ -3078,11 +3005,6 @@ type
     FControl: TIpHtmlInternalPanel;
     FPageIncrement: TScrollbarInc;
     FCalcRange: Integer;
-    {FDelay: Integer;}                                                 {!!.12}
-    {FColor: TColor;}                                                  {!!.12}
-    {FParentColor: Boolean;}                                           {!!.12}
-    {FPageDiv: Integer;}                                               {!!.12}
-    {FLineDiv: Integer;}                                               {!!.12}
     FUpdateNeeded: Boolean;
     procedure CalcAutoRange;
     function ControlSize(ControlSB, AssumeSB: Boolean): Integer;
@@ -3122,7 +3044,7 @@ type
     procedure SetPageRect(const Value: TRect);
   protected
     FUpdatingScrollbars : Boolean;
-    InPrint: Integer;                                                  {!!.10}
+    InPrint: Integer;
     SettingPageRect : Boolean;
     MouseDownX, MouseDownY : Integer;
     HaveSelection,
@@ -3133,12 +3055,12 @@ type
     CurHint : string;
     HintX, HintY : Integer;
     HintShownHere : Boolean;
-    Printed: Boolean; {!!.10}
+    Printed: Boolean;
     procedure UpdateScrollBars;
     procedure ClearSelection;
     procedure SetSelection;
     procedure ScrollPtInView(P: TPoint);
-    procedure ShowHintNow(const NewHint: string);                      {!!.12}
+    procedure ShowHintNow(const NewHint: string);
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
     {$IFDEF IP_LAZARUS}
@@ -3173,18 +3095,17 @@ type
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure HideHint;
     function HtmlPanel: TIpHtmlCustomPanel;
-    procedure BeginPrint;                                              {!!.10}
+    procedure BeginPrint;
     procedure ResetPrint;
-    procedure EndPrint;                                                {!!.10}
+    procedure EndPrint;
   public
     ViewTop, ViewLeft : Integer;
     HScroll,
     VScroll : TIpHtmlScrollBar;
     PrintPageRect : TRect;
-    PrintWidth, PrintHeight: Integer;                                  {!!.10}
-    PrintTopLeft: TPoint;                                              {!!.10}
-    {PrintBottomRight: TPoint;}                                 {!!.10}{!!.12}
-    PageCount: Integer;                                                {!!.10}
+    PrintWidth, PrintHeight: Integer;
+    PrintTopLeft: TPoint;
+    PageCount: Integer;
     procedure InvalidateSize;
     property Hyper : TIpHtml read FHyper write SetHtml;
     property PageRect : TRect read GetPageRect write SetPageRect;
@@ -3201,7 +3122,7 @@ type
     procedure PrintPages(FromPage, ToPage: Integer);
     procedure PrintPreview;
     function SelectPrinterDlg: boolean;
-    procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF} //JMN
+    procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF}
   end;
 
   { TIpAbstractHtmlDataProvider }
@@ -3249,13 +3170,13 @@ type
     FDataProvider : TIpAbstractHtmlDataProvider;
     FParent : TCustomPanel;
     FName : string;
-    InOpen: Boolean;                                                   {!!.10}
+    InOpen: Boolean;
     procedure InvalidateRect(Sender: TIpHtml; const R : TRect);
     procedure FramePanelResize(Sender: TObject);
     procedure AlignPanels;
     procedure InvalidateSize(Sender: TObject);
     procedure Get(Sender: TIpHtml; const URL: string);
-    procedure Post(Sender: TIpHtml; const URL: string; FormData: TIpFormDataEntity); {!!.12}
+    procedure Post(Sender: TIpHtml; const URL: string; FormData: TIpFormDataEntity);
     procedure IFrameCreate(Sender: TIpHtml; Parent: TWinControl;
       Frame: TIpHtmlNodeIFRAME;
       var Control: TWinControl);
@@ -3268,7 +3189,7 @@ type
     procedure ControlCreate(Sender: TIpHtml; Node: TIpHtmlNodeControl);
     procedure OpenRelativeURL(const URL: string);
     procedure SelectAll;
-    procedure DeselectAll;                                             {!!.10}
+    procedure DeselectAll;
     procedure CopyToClipboard;
     function HaveSelection: Boolean;
     function FindFrame(const FrameName: string): TIpHtmlFrame;
@@ -3344,7 +3265,6 @@ type
     var cancel: boolean)
       of object;
 
-  {!!.10 new}
   TIpHtmlPrintSettings = class(TPersistent)
   private
     FMarginTop: Double;
@@ -3372,21 +3292,21 @@ type
     FControlOnEditingDone : TIpHtmlControlEvent;
     FControlOnChange : TIpHtmlControlEvent;
     FControlCreate : TIpHtmlControlEvent;
-    FCurElementChange: TNotifyEvent;                                   {!!.10}
-    FDocumentOpen: TNotifyEvent;                                       {!!.10}
+    FCurElementChange: TNotifyEvent;
+    FDocumentOpen: TNotifyEvent;
     FAllowTextSelect: Boolean;
     FCurElement : PIpHtmlElement;
-    FPrintSettings: TIpHtmlPrintSettings;                              {!!.10}
-    FFactBAParag: Real; //JMN
+    FPrintSettings: TIpHtmlPrintSettings;
+    FFactBAParag: Real;
     FWantTabs: Boolean;
     procedure SetDataProvider(const AValue: TIpAbstractHtmlDataProvider);
-    procedure SetFactBAParag(const Value: Real); //JMN
+    procedure SetFactBAParag(const Value: Real);
     function FactBAParagNotIs1: Boolean;
-    function GetVScrollPos: Integer; //JMN
-    procedure SetVScrollPos(const Value: Integer); //JMN
+    function GetVScrollPos: Integer;
+    procedure SetVScrollPos(const Value: Integer);
   protected
     FFlagErrors: Boolean;
-    FFixedTypeface: string;                                            {!!.10}
+    FFixedTypeface: string;
     FDefaultTypeFace: string;
     FDefaultFontSize: integer;
     FHotURL: string;
@@ -3394,26 +3314,24 @@ type
     URLStack : TStringList;
     TargetStack : TStringList;
     Stp : Integer;
-    {FCurURL : string;}                                                 {!!.12}
     VisitedList : TStringList;
     FVLinkColor: TColor;
     FLinkColor: TColor;
     FALinkColor: TColor;
     FTextColor: TColor;
-    FBgColor: TColor; //JMN
+    FBgColor: TColor;
     FShowHints: Boolean;
     FMarginHeight: Integer;
     FMarginWidth: Integer;
     FMasterFrame : TIpHtmlFrame;
-    FHotNode : TIpHtmlNode;                                            {!!.12}
+    FHotNode : TIpHtmlNode;
     GetURL : string;
     PostURL : string;
     PostData : TIpFormDataEntity;
     procedure Push(const Target, URL: string);
     function GetTitle: string;
     procedure InternalOpenURL(const Target, HRef: string);
-    procedure URLCheck(Sender: TIpHtml; const URL: string;
-      var Visited: Boolean);
+    procedure URLCheck(Sender: TIpHtml; const URL: string; var Visited: Boolean);
     procedure ReportURL(Sender: TIpHtml; const URL: string);
     procedure Paint; override;
     procedure HotChange(Sender: TObject);
@@ -3422,7 +3340,7 @@ type
     procedure ClientClick(Sender: TObject);
     procedure DoHotChange;
     procedure DoHotClick;
-    procedure DoOnMouseWheel(Shift: TShiftState; Delta, XPos, YPos: SmallInt);  {!!.16}
+    procedure DoOnMouseWheel(Shift: TShiftState; Delta, XPos, YPos: SmallInt);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure WMGetDlgCode(var Msg : TMessage); message WM_GETDLGCODE;
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
@@ -3448,7 +3366,7 @@ type
     function GetPrintPageCount: Integer;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF} //JMN
+    procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF}
 
     procedure CopyToClipboard;
     procedure EnumDocuments(Enumerator: TIpHtmlEnumerator);
@@ -3458,89 +3376,59 @@ type
     function canGoForward : boolean;
     function HaveSelection: Boolean;
     property MasterFrame : TIpHtmlFrame read FMasterFrame;
-    property HotNode : TIpHtmlNode read FHotNode;                      {!!.12}
+    property HotNode : TIpHtmlNode read FHotNode;
     function IsURLHtml(const URL: string): Boolean;
     procedure MakeAnchorVisible(const Name: string);
     {$IF defined(VERSION4) and not defined(IP_LAZARUS)}
-    procedure MouseWheelHandler(Var Message: TMessage); Override;      {!!.16}
+    procedure MouseWheelHandler(Var Message: TMessage); Override;
     {$ENDIF}
     procedure OpenURL(const URL: string);
     procedure Scroll(Action: TIpScrollAction);
     procedure SelectAll;
-    procedure DeselectAll;                                             {!!.10}
+    procedure DeselectAll;
     procedure SetHtml(NewHtml : TIpHtml);
     procedure SetHtmlFromStr(NewHtml : string);
     procedure SetHtmlFromStream(NewHtml : TStream);
     procedure Stop;
-
     procedure Print(FromPg, ToPg: LongInt);
-    procedure PrintPreview;                                            {!!.10}
-
+    procedure PrintPreview;
     function GetContentSize: TSize;
 
-    property VScrollPos: Integer
-                read GetVScrollPos write SetVScrollPos; //JMN
+    property VScrollPos: Integer read GetVScrollPos write SetVScrollPos;
+    property BgColor: TColor read FBgColor write FBgColor default clWhite;
+    property ALinkColor: TColor read FALinkColor write FALinkColor default clRed;
+    property AllowTextSelect: Boolean read FAllowTextSelect write FAllowTextSelect default True;
+    property CurElement: PIpHtmlElement read FCurElement;
+    property DataProvider: TIpAbstractHtmlDataProvider read FDataProvider write SetDataProvider;
+    property FactBAParag: Real read FFactBAParag write SetFactBAParag stored FactBAParagNotIs1;
+    property FlagErrors: Boolean read FFlagErrors write FFlagErrors;
+    property FixedTypeface: string read FFixedTypeface write FFixedTypeface;
+    property DefaultTypeFace: string read FDefaultTypeFace write SetDefaultTypeFace;
+    property DefaultFontSize: integer read FDefaultFontSize write SetDefaultFontSize;
+    property HotURL: string read FHotURL;
+    property LinkColor: TColor read FLinkColor write FLinkColor default clBlue;
+    property MarginHeight: Integer read FMarginHeight write FMarginHeight default 10;
+    property MarginWidth: Integer read FMarginWidth write FMarginWidth default 10;
+    property PrintSettings: TIpHtmlPrintSettings read FPrintSettings write FPrintSettings;
+    property ShowHints: Boolean read FShowHints write FShowHints default True;
+    property TextColor: TColor read FTextColor write FTextColor default clBlack;
+    property Title: string read GetTitle;
+    property VLinkColor: TColor read FVLinkColor write FVLinkColor default clMaroon;
 
-    property BgColor : TColor
-                read FBgColor write FBgColor default clWhite; //JMN
-    property ALinkColor : TColor
-                read FALinkColor write FALinkColor default clRed;
-    property AllowTextSelect: Boolean
-                read FAllowTextSelect write FAllowTextSelect
-                default True;
-    property CurElement : PIpHtmlElement read FCurElement;
-    property DataProvider: TIpAbstractHtmlDataProvider
-                read FDataProvider write SetDataProvider;
-    property FactBAParag: Real
-                read FFactBAParag write SetFactBAParag stored FactBAParagNotIs1; //JMN
-    property FlagErrors : Boolean
-                read FFlagErrors write FFlagErrors;
-    property FixedTypeface: string
-                read FFixedTypeface write FFixedTypeface;              {!!.10}
-    property DefaultTypeFace: string
-                read FDefaultTypeFace write SetDefaultTypeFace;
-    property DefaultFontSize: integer
-                read FDefaultFontSize write SetDefaultFontSize;
-    property HotURL : string read FHotURL;
-    property LinkColor : TColor
-                read FLinkColor write FLinkColor default clBlue;
-    property MarginHeight : Integer
-                read FMarginHeight write FMarginHeight default 10;
-    property MarginWidth : Integer
-                read FMarginWidth write FMarginWidth default 10;
-    property PrintSettings : TIpHtmlPrintSettings                      {!!.10}
-                   read FPrintSettings write FPrintSettings;           {!!.10}
-    property ShowHints: Boolean
-                read FShowHints write FShowHints default True;
-    property TextColor : TColor
-                read FTextColor write FTextColor default clBlack;
-    property Title : string read GetTitle;
-    property VLinkColor : TColor
-                read FVLinkColor write FVLinkColor default clMaroon;
-
-    property OnControlClick : TIpHtmlControlEvent
-                read FControlClick write FControlClick;
-    property OnControlClick2 : TIpHtmlControlEvent2
-                read FControlClick2 write FControlClick2;
-    property OnControlEditingDone : TIpHtmlControlEvent
-                read FControlOnEditingDone write FControlOnEditingDone;
-    property OnControlChange : TIpHtmlControlEvent
-                read FControlOnChange write FControlOnChange;
-    property OnControlCreate : TIpHtmlControlEvent
-                read FControlCreate write FControlCreate;
-    property OnCurElementChange: TNotifyEvent
-                read FCurElementChange write FCurElementChange;        {!!.10}
-    property OnDocumentOpen: TNotifyEvent
-                read FDocumentOpen write FDocumentOpen;                {!!.10}
-    property OnHotChange : TNotifyEvent
-                read FHotChange write FHotChange;
-    property OnHotClick : TNotifyEvent
-                read FHotClick write FHotClick;
+    property OnControlClick: TIpHtmlControlEvent read FControlClick write FControlClick;
+    property OnControlClick2: TIpHtmlControlEvent2 read FControlClick2 write FControlClick2;
+    property OnControlEditingDone: TIpHtmlControlEvent read FControlOnEditingDone
+                                                      write FControlOnEditingDone;
+    property OnControlChange: TIpHtmlControlEvent read FControlOnChange write FControlOnChange;
+    property OnControlCreate: TIpHtmlControlEvent read FControlCreate write FControlCreate;
+    property OnCurElementChange: TNotifyEvent read FCurElementChange write FCurElementChange;
+    property OnDocumentOpen: TNotifyEvent read FDocumentOpen write FDocumentOpen;
+    property OnHotChange: TNotifyEvent read FHotChange write FHotChange;
+    property OnHotClick: TNotifyEvent read FHotClick write FHotClick;
     property CurURL: string read GetCurUrl;
     property WantTabs: Boolean read FWantTabs write FWantTabs default True;
   published
-    property Version : string
-      read GetVersion write SetVersion stored False;
+    property Version: string read GetVersion write SetVersion stored False;
   end;
 
   TIpHtmlPanel = class(TIpHtmlCustomPanel)
@@ -3549,51 +3437,51 @@ type
     property ALinkColor;
     property AllowTextSelect;
     {$IFDEF VERSION4}
-    property Anchors;                                                  {!!.10}
+    property Anchors;
     {$ENDIF}
-    property BorderWidth;                                              {!!.10}
-    property BorderStyle;                                              {!!.10}
+    property BorderWidth;
+    property BorderStyle;
     {$IFDEF VERSION4}
-    property Constraints;                                              {!!.10}
+    property Constraints;
     {$ENDIF}
     property DataProvider;
-    property Enabled;                                                  {!!.10}
-    property FixedTypeface;                                            {!!.10}
+    property Enabled;
+    property FixedTypeface;
     property DefaultTypeFace;
     property DefaultFontSize;
-    property FactBAParag;  //JMN
+    property FactBAParag;
     property FlagErrors;
     property LinkColor;
     property MarginHeight;
     property MarginWidth;
     property PopupMenu;
-    property PrintSettings;                                            {!!.10}
+    property PrintSettings;
     property ShowHints;
     property TabOrder;
     property TabStop;
     property TextColor;
-    property Visible;                                                  {!!.10}
+    property Visible;
     property VLinkColor;
     property WantTabs;
     {$IF defined(VERSION4) and not defined(IP_LAZARUS)}
-    property OnCanResize;                                              {!!.10}
+    property OnCanResize;
     {$ENDIF}
     property OnClick;
     {$IFDEF VERSION4}
-    property OnConstrainedResize;                                      {!!.10}
+    property OnConstrainedResize;
     {$ENDIF}
     {$IFDEF VERSION5}
-    property OnContextPopup;                                           {!!.10}
+    property OnContextPopup;
     {$ENDIF}
     property OnControlClick;
     property OnControlClick2;
     property OnControlChange;
     property OnControlEditingDone;
     property OnControlCreate;
-    property OnCurElementChange;                                       {!!.10}
-    property OnDocumentOpen;                                           {!!.10}
-    property OnEnter;                                                  {!!.10}
-    property OnExit;                                                   {!!.10}
+    property OnCurElementChange;
+    property OnDocumentOpen;
+    property OnEnter;
+    property OnExit;
     property OnHotChange;
     property OnHotClick;
   end;
@@ -3603,8 +3491,8 @@ type
     FDataProvider: TIpAbstractHtmlDataProvider;
     FFlagErrors: Boolean;
     function GetTitle: string;
-    function GetVersion : string;                                      {!!.14}
-    procedure SetVersion(const Value : string);                        {!!.14}
+    function GetVersion : string;
+    procedure SetVersion(const Value : string);
   protected
     URLStack : TStringList;
     TargetStack : TStringList;
@@ -3623,17 +3511,12 @@ type
     procedure Stop;
 
     property MasterFrame : TIpHtmlNVFrame read FMasterFrame;
-    property DataProvider: TIpAbstractHtmlDataProvider
-                read FDataProvider write FDataProvider;
-    property FlagErrors : Boolean
-                read FFlagErrors write FFlagErrors;
+    property DataProvider: TIpAbstractHtmlDataProvider read FDataProvider write FDataProvider;
+    property FlagErrors : Boolean read FFlagErrors write FFlagErrors;
     property Title : string read GetTitle;
     property CurUrl: string read FCurUrl;
-{Begin !!.14}
   published
-    property Version : string
-      read GetVersion write SetVersion stored False;
-{End !!.14}
+    property Version : string read GetVersion write SetVersion stored False;
   end;
 
   TIpHtmlScanner = class(TIpHtmlCustomScanner)
@@ -3643,14 +3526,14 @@ type
   end;
   
 var
-  ScaleFonts : Boolean = False; {true during print preview only}       {!!.10}
+  ScaleFonts : Boolean = False; {true during print preview only}
     {public to let print preview unit access it}
     
 function MaxI2(const I1, I2: Integer) : Integer;
 function MinI2(const I1, I2: Integer) : Integer;
 
 function CalcMultiLength(const List: TIpHtmlMultiLengthList;
-  Avail: Integer; var Sections: Integer): TIntArr;                     {!!.10}
+  Avail: Integer; var Sections: Integer): TIntArr;
 
 function GetAlignmentForStr(str: string;
          pDefault: TIpHtmlAlign = haDefault) : TIpHtmlAlign;
@@ -3664,9 +3547,7 @@ procedure Register;
 implementation
 
 uses
-  Printers,
-  IpHtmlPv,  {!!.10}
-  PrintersDlgs;
+  Printers, IpHtmlPv, PrintersDlgs;
 
 {$R *.res}
 
@@ -3712,9 +3593,9 @@ const
   FSB_REGULAR_MODE            = 0;
 
 var
-  ScaleBitmaps : Boolean = False;                                      {!!.02}
-  BWPrinter: Boolean;                                                  {!!.10}
-  Aspect : Double;                                                     {!!.02}
+  ScaleBitmaps : Boolean = False;
+  BWPrinter: Boolean;
+  Aspect : Double;
 
 {$IFDEF IP_LAZARUS_DBG}
 procedure DumpTIpHtmlProps(aProps: TIpHtmlProps);
@@ -3806,7 +3687,6 @@ begin
   RegisterComponents('IPro', [TIpHtmlPanel]);
 end;
 
-{!!.14 new}
 {$IFNDEF VERSION3ONLY}
 type
   THtmlRadioButton = class(TRadioButton)
@@ -3894,7 +3774,6 @@ begin
   end;
 end;
 
-{!!.02 new}
 procedure GetRelativeAspect(PrinterDC : hDC);
 var
   ScreenDC : hDC;
@@ -3942,7 +3821,7 @@ begin
   finally
     LeaveCriticalSection(Critical);
   end;
-  {Top := Pointer(DWord(Root) + InternalSize * MaxItems);}           {!!.12}
+  {Top := Pointer(DWord(Root) + InternalSize * MaxItems);}
 end;
 
 destructor TIpHtmlPoolManager.Destroy;
@@ -3969,12 +3848,12 @@ begin
 end;
 
 procedure TIpHtmlPoolManager.Grow;
-var                                                                    {!!.10}
-  P: Pointer;                                                          {!!.10}
+var
+  P: Pointer;
 begin
-  P := VirtualAlloc(NextPage, 4096, MEM_COMMIT, PAGE_READWRITE);       {!!.10}
-  if P = nil then                                                      {!!.10}
-    raise Exception.Create('Out of memory');                           {!!.10}
+  P := VirtualAlloc(NextPage, 4096, MEM_COMMIT, PAGE_READWRITE);
+  if P = nil then
+    raise Exception.Create('Out of memory');
   Inc(DWord(NextPage),4096);
 end;
 
@@ -4281,18 +4160,17 @@ type
 
 const
   LF = #10;
-  CR = #13;                                                            {!!.10}
-  {StdIndent = 16;}                                                    {!!.10}
+  CR = #13;
+  {StdIndent = 16;}
   NullRect : TRect = (Left:0; Top:0; Right:0; Bottom:0);
 
 {$IFNDEF IP_LAZARUS}
 //{$R IpHtml.res} // JMN
 {$EndIf}
 
-{!!.10 new}
 function StdIndent: Integer;
 begin
-  if ScaleBitmaps and (Aspect > 0) then                                {!!.12}
+  if ScaleBitmaps and (Aspect > 0) then
     Result := round(16 * Aspect)
   else
     Result := 16;
@@ -4532,7 +4410,7 @@ begin
     if ParentNode is TIpHtmlNodeMulti then
       TIpHtmlNodeMulti(ParentNode).FChildren.Add(Self)
     else
-      raise EIpHtmlException.Create(SHtmlNotContainer);        {!!.02}
+      raise EIpHtmlException.Create(SHtmlNotContainer);
   FParentNode := ParentNode;
   if ParentNode <> nil then
     FOwner := ParentNode.Owner;
@@ -4573,9 +4451,7 @@ begin
   Result := True;
 end;
 
-procedure TIpHtmlNode.ScreenLine(
-  StartPoint, EndPoint : TPoint;
-  const Width : Integer;
+procedure TIpHtmlNode.ScreenLine(StartPoint, EndPoint : TPoint;const Width : Integer;
   const Color : TColor);
 var
   SaveWidth : Integer;
@@ -4594,9 +4470,7 @@ begin
   aPen.Width := SaveWidth;
 end;
 
-procedure TIpHtmlNode.ScreenRect(
-      R : TRect;
-      const Color : TColor);
+procedure TIpHtmlNode.ScreenRect(R : TRect; const Color : TColor);
 begin
   if PageRectToScreen(R, R) then begin
     with Owner.Target do begin
@@ -4609,9 +4483,7 @@ begin
   end;
 end;
 {$IFDEF IP_LAZARUS}
-procedure TIpHtmlNode.ScreenFrame(
-      R : TRect;
-      Raised: boolean);
+procedure TIpHtmlNode.ScreenFrame(R : TRect; Raised: boolean);
 var
   SaveWidth: Integer;
   procedure DoLine(X1,Y1,X2,Y2: Integer; Clr: TColor);
@@ -4644,9 +4516,7 @@ begin
   end;
 end;
 {$ENDIF}
-procedure TIpHtmlNode.ScreenPolygon(
-      Points : array of TPoint;
-      const Color : TColor);
+procedure TIpHtmlNode.ScreenPolygon(Points : array of TPoint; const Color : TColor);
 var
   Pt : TPoint;
   i : Integer;
@@ -4736,7 +4606,6 @@ procedure TIpHtmlNode.EnqueueElement(const Entry: PIpHtmlElement);
 begin
 end;
 
-{!!.10 new}
 function TIpHtmlNode.ElementQueueIsEmpty: Boolean;
 begin
   Result := True;
@@ -4943,8 +4812,8 @@ begin
           GetPropList(C.ClassInfo, tkProperties, PList);
           for I := 0 to LCount-1 do begin
             if PList^[I].PropType^.Kind = tkClass then begin
-              {SubList := TStringList.Create;}                         {!!.12}
-              SubList := nil;                                          {!!.12}
+              {SubList := TStringList.Create;}
+              SubList := nil;
               try
                 O := TObject(GetOrdProp(C, PList^[I]));
                 SubList := GetPropertyList(O, IncludeValues, IncludeBlanks);
@@ -5022,7 +4891,6 @@ begin
   raise Exception.Create('Unknown property:' + PropPath);
 end;
 
-{!!.10 new}
 procedure TIpHtmlNode.GetAttributes(Target: TStrings; IncludeValues, IncludeBlanks: Boolean);
 var
   List : TStringList;
@@ -5056,9 +4924,7 @@ begin
   FChildren := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   //Maybe this will create some unespected behavior (Owner=nil)
   if Owner <> nil then
-  begin
-       FProps := TIpHtmlProps.Create(FOwner);
-  end;
+    FProps := TIpHtmlProps.Create(FOwner);
 end;
 
 destructor TIpHtmlNodeMulti.Destroy;
@@ -5091,23 +4957,9 @@ procedure TIpHtmlNodeMulti.Enqueue;
 var
   i : Integer;
 begin
-  for i := 0 to Pred(FChildren.Count) do begin
+  for i := 0 to Pred(FChildren.Count) do
     TIpHtmlNode(FChildren[i]).Enqueue;
-  end;
 end;
-
-{
-var
-   DebugParseLevel : integer = 1;
-function debugDashs: string;
-var
-   i: integer;
-begin
-     setLength(result, DebugParseLevel);
-     for i:=1 to DebugParseLevel do
-       result[i] := '-';
-end;
-}
 
 procedure TIpHtmlNodeMulti.SetProps(const RenderProps: TIpHtmlProps);
 var
@@ -5221,14 +5073,13 @@ begin
   Owner.Body := Self;
 end;
 
-procedure TIpHtmlNodeBODY.Render(
-  const RenderProps: TIpHtmlProps);
+procedure TIpHtmlNodeBODY.Render(const RenderProps: TIpHtmlProps);
 var
-  MaxX, MaxY: Integer;                                                 {!!.02}
+  MaxX, MaxY: Integer;
   X, Y : Integer;
   P : TPoint;
 begin
-  if ScaleBitmaps then begin                                       {!!.10}
+  if ScaleBitmaps then begin
     Owner.Target.Brush.Color := clWhite;
     Owner.Target.FillRect(Owner.ClientRect);
   end else begin
@@ -5256,15 +5107,15 @@ begin
       if BgPicture = nil then
         Owner.DoGetImage(Self, Owner.BuildPath(Background), BgPicture);
       if (BgPicture <> nil) and (BgPicture.Height>0) and (BgPicture.Width>0) then begin
-        MaxX := MaxI2(PageRect.Right, Owner.ClientRect.Right);           {!!.02}
-        MaxY := MaxI2(PageRect.Bottom, Owner.ClientRect.Bottom);         {!!.02}
+        MaxX := MaxI2(PageRect.Right, Owner.ClientRect.Right);
+        MaxY := MaxI2(PageRect.Bottom, Owner.ClientRect.Bottom);
         Y := 0;
-        while (Y <= MaxY{PageRect.Bottom}) do begin                      {!!.02}
+        while (Y <= MaxY{PageRect.Bottom}) do begin
           if (Y < Owner.PageViewRect.Top - BgPicture.Height)
           or (Y > Owner.PageViewRect.Bottom) then
           else begin
             X := 0;
-            while (X <= MaxX{PageRect.Right}) do begin                   {!!.02}
+            while (X <= MaxX{PageRect.Right}) do begin
               P := PagePtToScreen(Point(X, Y));
               Owner.Target.Draw(P.X, P.Y, BgPicture.Graphic);
               Inc(X, BgPicture.Width);
@@ -5272,10 +5123,10 @@ begin
           end;
           Inc(Y, BgPicture.Height);
         end;
-      end else begin                                                   {!!.12}
-        Owner.Target.Brush.Color := clWhite;                           {!!.12}
-        Owner.Target.FillRect(Owner.ClientRect);                       {!!.12}
-      end;                                                             {!!.12}
+      end else begin
+        Owner.Target.Brush.Color := clWhite;
+        Owner.Target.FillRect(Owner.ClientRect);
+      end;
     end;
   end;
   inherited Render(RenderProps);
@@ -5370,8 +5221,7 @@ begin
   end;
 end;
 
-procedure TIpHtml.AddWordEntry(const Value: string;
-  Props: TIpHtmlProps; Owner: TIpHtmlNode);
+procedure TIpHtml.AddWordEntry(const Value: string; Props: TIpHtmlProps; Owner: TIpHtmlNode);
 var
   Entry :  PIpHtmlElement;
   L : Integer;
@@ -5391,8 +5241,7 @@ begin
   Owner.EnqueueElement(Entry);
 end;
 
-procedure TIpHtml.AddWord(Value: string;
-  Props: TIpHtmlProps; Owner: TIpHtmlNode);
+procedure TIpHtml.AddWord(Value: string; Props: TIpHtmlProps; Owner: TIpHtmlNode);
 var
   P : Integer;
 begin
@@ -5538,11 +5387,11 @@ end;
 
 function TIpHtml.GetChar : AnsiChar;
 var
-  Trimming,                                                            {!!.10}
-  Done: Boolean;                                                       {!!.10}
-begin                                                                  {!!.10}
-  Trimming := False;                                                   {!!.10}
-  repeat                                                               {!!.10}
+  Trimming,
+  Done: Boolean;
+begin
+  Trimming := False;
+  repeat
     Done := True;
     if (CharSP > 0) then begin
       Dec(CharSP);
@@ -5552,7 +5401,6 @@ begin                                                                  {!!.10}
       {if FlagErrors then
         write(Result);}
     end;
-    {!!.10 thru end: new}
     if (InPre = 0) and (CurToken <> IpHtmlTagPRE) then begin
       if (Result <= ' ') and (Result > #0) then begin
         if (Result < ' ') and LastWasClose then begin
@@ -5578,7 +5426,7 @@ end;
 procedure TIpHtml.PutChar(Ch : AnsiChar);
 begin
   if (CharSP >= sizeof(CharStack)) then
-    raise EIpHtmlException.Create(SHtmlCharStackOverfl);       {!!.02}
+    raise EIpHtmlException.Create(SHtmlCharStackOverfl);
   CharStack[CharSP] := Ch;
   Inc(CharSP);
 end;
@@ -5612,7 +5460,7 @@ end;
 procedure TIpHtml.PutToken(Token : TIpHtmlToken);
 begin
   if HaveToken then
-    raise EIpHtmlException.Create(SHtmlTokenStackOverfl);      {!!.02}
+    raise EIpHtmlException.Create(SHtmlTokenStackOverfl);
   TokenBuffer := Token;
   HaveToken := True;
 end;
@@ -5720,10 +5568,10 @@ end;
 
 procedure TIpHtml.ClearParmValueArray;
 var
-   n: TIpHtmlAttributesSet;
+  n: TIpHtmlAttributesSet;
 begin
-   for n:=Low(ParmValueArray) to High(ParmValueArray) do
-       setLength(ParmValueArray[n],0);
+  for n:=Low(ParmValueArray) to High(ParmValueArray) do
+    setLength(ParmValueArray[n],0);
 end;
 
 procedure TIpHtml.ParmValueArrayAdd(const sName, sValue: string);
@@ -5781,8 +5629,7 @@ begin
     //If the Item in the middle has a bigger value than
     //the searched item, then select the first half
     else if vicmp > 0 then
-      vLast := vPivot - 1
-        //else select the second half
+      vLast := vPivot - 1    //else select the second half
     else
       vFirst := vPivot + 1;
   end;
@@ -5791,7 +5638,7 @@ end;
 procedure TIpHtml.NextToken;
 var
   ParmName : string;
-  {ParmBuf : array[0..4095] of AnsiChar;}                              {!!.12}
+  {ParmBuf : array[0..4095] of AnsiChar;}
   PBW : Integer;
   i : Integer;
   Ctl,
@@ -5802,25 +5649,23 @@ var
 
   procedure AddParmChar(const Ch: AnsiChar);
   begin
-    {!!.12 begin}
     if PBW >= ParmBufSize - 1 then begin
       Inc(ParmBufSize, 4096);
       ReallocMem(ParmBuf, ParmBufSize);
     end;
-    {!!.12 end}
     ParmBuf[PBW] := Ch;
     Inc(PBW);
   end;
 
   function ParmString: string;
   begin
-    if PBW = 0 then                                                    {!!.12}
-      Result := ''                                                     {!!.12}
-    else begin                                                         {!!.12}
+    if PBW = 0 then
+      Result := ''
+    else begin
       ParmBuf[PBW] := #0;
       Result := StrPas(ParmBuf);
       PBW := 0;
-    end;                                                               {!!.12}
+    end;
   end;
 
   procedure AddTokenChar(const Ch: AnsiChar);
@@ -5867,13 +5712,13 @@ begin
                 break;
               if Ch = '-' then begin
                 Ch := GetChar;
-                while (Ch = '-') do                                    {!!.12}
-                  Ch := GetChar;                                       {!!.12}
+                while (Ch = '-') do
+                  Ch := GetChar;
                 {if (Ch = #0) or (Ch = '>') then
-                  break;}                                              {!!.12}
-                while not (Ch in [#0,'>']) do                          {!!.12}
-                  Ch := GetChar;                                       {!!.12}
-                break;                                                 {!!.12}
+                  break;}
+                while not (Ch in [#0,'>']) do
+                  Ch := GetChar;
+                break;
               end;
             end;
           until false;
@@ -5967,9 +5812,9 @@ begin
               end;
             '<', '>' :
               begin
-                if InQuote then                                        {!!.01}
-                  AddParmChar(Ch)                                      {!!.01}
-                else begin                                             {!!.01}
+                if InQuote then
+                  AddParmChar(Ch)
+                else begin
                   if InValue then begin
                     if ParmName <> '' then begin
                       ParmValueArrayAdd(UpperCase(ParmName), ParmString);
@@ -5977,7 +5822,7 @@ begin
                     end;
                   end;
                   break;
-                end;                                                   {!!.01}
+                end;
               end;
             '=' :
               begin
@@ -6045,7 +5890,7 @@ begin
         !!.10 logic moved inside GetChar
         {clear white space after tag}
         Ch := GetChar;
-        if (InPre = 0) and (CurToken <> IpHtmlTagPRE) then begin  {!!.03}
+        if (InPre = 0) and (CurToken <> IpHtmlTagPRE) then begin
           if CurToken in IpEndTokenSet then begin
             while (Ch > #0) and (Ch < #32) do
               Ch := GetChar;
@@ -6053,7 +5898,7 @@ begin
             while (Ch > #0) and (Ch < #32) do
               Ch := GetChar;
           end;
-        end;                                              {!!.03}
+        end;
         PutChar(Ch);
         *)
 
@@ -6070,7 +5915,7 @@ begin
           #10,#13 :
             begin
               Ctl := True;
-              if InPre > 0 then                                        {!!.10}
+              if InPre > 0 then
                 AddTokenChar(Ch);
             end
           else
@@ -6080,8 +5925,8 @@ begin
         end;
         if Ch <> #0 then begin
           Ch := GetChar;
-          while (Ch > #0) and (Ch < ' ') do                            {!!.10}
-            Ch := GetChar;                                             {!!.10}
+          while (Ch > #0) and (Ch < ' ') do
+            Ch := GetChar;
           case Ch of
           '/', '!', 'a'..'z','A'..'Z' :
             begin
@@ -6205,7 +6050,7 @@ begin
     repeat
       NextToken;
     until (CurToken = IpHtmlTagSCRIPTend)
-      or (CurToken in EndTokens);                                      {!!.12}
+      or (CurToken in EndTokens);
   EnsureClosure(IpHtmlTagSCRIPTend, EndTokens);
 end;
 
@@ -6229,13 +6074,13 @@ end;
 procedure TIpHtml.ParseIsIndex;
 begin
   IndexPhrase := FindAttribute(htmlAttrPROMPT);
-  {IsIndexPresent := IndexPhrase <> '';}                               {!!.12}
+  {IsIndexPresent := IndexPhrase <> '';}
   NextToken;
 end;
 
 procedure TIpHtml.ParseBase;
 begin
-  {Base := FindAttribute(htmlAttrHREF);}                                     {!!.12}
+  {Base := FindAttribute(htmlAttrHREF);}
   NextToken;
 end;
 
@@ -6336,17 +6181,16 @@ begin
   {$ENDIF}
 end;
 
-procedure TIpHtml.ParseFont(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseFont(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurFONT : TIpHtmlNodeFONT;
 begin
   CurFONT := TIpHtmlNodeFONT.Create(Parent);
-  with CurFONT do begin                                                {!!.10}
+  with CurFONT do begin
     Face := FindAttribute(htmlAttrFACE);
-    Size.Free;                                                         {!!.10}
-    Size := ParseRelSize{('+0')};                                      {!!.10}
-    Size.OnChange := SizeChanged;                                      {!!.10}
+    Size.Free;
+    Size := ParseRelSize{('+0')};
+    Size.OnChange := SizeChanged;
     Color := ColorFromString(FindAttribute(htmlAttrCOLOR));
     ParseBaseProps(Self);
   end;
@@ -6355,23 +6199,21 @@ begin
   EnsureClosure(IpHtmlTagFONTend, EndTokens);
 end;
 
-procedure TIpHtml.ParsePre(ParentNode : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParsePre(ParentNode : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurContainer : TIpHtmlNodePRE;
 begin
   CurContainer := TIpHtmlNodePRE.Create(ParentNode);
   CurContainer.ParseBaseProps(Self);
-  Inc(InPre);                                                          {!!.10}
+  Inc(InPre);
   NextToken;
-  {Inc(InPre);}                                                        {!!.10}
+  {Inc(InPre);}
   ParseBodyText(CurContainer, EndTokens + [IpHtmlTagPREend]);
   Dec(InPre);
   EnsureClosure(IpHtmlTagPREend, EndTokens);
 end;
 
-procedure TIpHtml.ParseText(const EndTokens : TIpHtmlTokenSet;
-  Parent: TIpHtmlNode);
+procedure TIpHtml.ParseText(const EndTokens : TIpHtmlTokenSet; Parent: TIpHtmlNode);
 var
   CurContainer : TIpHtmlNodeText;
 begin
@@ -6463,7 +6305,7 @@ begin
       begin
         NewListItem := TIpHtmlNodeLI.Create(Parent);
         NewListItem.ParseBaseProps(Self);
-        {NewListItem.DefListType := DefaultListStyle;}                 {!!.12}
+        {NewListItem.DefListType := DefaultListStyle;}
         NewListItem.ListType := ParseULStyle(DefaultListStyle);
         NewListItem.Value := ParseInteger(htmlAttrVALUE, -1);
         NewListItem.Compact := ParseBoolean(htmlAttrCOMPACT);
@@ -6473,7 +6315,7 @@ begin
                                   [IpHtmlTagP, IpHtmlTagPend]);
         if CurToken = IpHtmlTagLIend then
           NextToken;
-        SkipTextTokens;                                                {!!.10}  
+        SkipTextTokens;
       end;
     else
       ParseBodyText(Parent, EndTokens + [EndToken, IpHtmlTagLI]);
@@ -6560,8 +6402,7 @@ begin
   end;
 end;
 
-procedure TIpHtml.ParseFormFields(Parent: TIpHtmlNode;
-  const EndTokens : TIpHtmlTokenSet);
+procedure TIpHtml.ParseFormFields(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
 var
   CurSelect : TIpHtmlNodeSELECT;
   CurTextArea : TIpHtmlNodeTEXTAREA;
@@ -6775,8 +6616,7 @@ begin
   end;
 end;
 
-procedure TIpHtml.ParseForm(Parent: TIpHtmlNode;
-        const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseForm(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   NewForm : TIpHtmlNodeFORM;
 begin
@@ -6799,8 +6639,7 @@ begin
   EnsureClosure(IpHtmlTagFORMend, EndTokens);
 end;
 
-procedure TIpHtml.ParseDefListItems(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseDefListItems(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurDT : TIpHtmlNodeDT;
   CurDD : TIpHtmlNodeDD;
@@ -6831,8 +6670,7 @@ begin
   end;
 end;
 
-procedure TIpHtml.ParseDefinitionList(Parent: TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseDefinitionList(Parent: TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   NewDL : TIpHtmlNodeDL;
 begin
@@ -6859,8 +6697,7 @@ begin
   EnsureClosure(IpHtmlTagDIVend, EndTokens);
 end;
 
-procedure TIpHtml.ParseSPAN(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseSPAN(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurSPAN : TIpHtmlNodeSPAN;
 begin
@@ -6874,8 +6711,7 @@ begin
   EnsureClosure(IpHtmlTagSPANend, EndTokens);
 end;
 
-procedure TIpHtml.ParseCENTER(Parent : TIpHtmlNode;
-          const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseCENTER(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurContainer : TIpHtmlNodeDIV;
 begin
@@ -6887,8 +6723,7 @@ begin
   EnsureClosure(IpHtmlTagCENTERend, EndTokens);
 end;
 
-procedure TIpHtml.ParseLEFT(Parent : TIpHtmlNode;
-          const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseLEFT(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurContainer : TIpHtmlNodeDIV;
 begin
@@ -6900,8 +6735,7 @@ begin
   EnsureClosure(IpHtmlTagLEFTend, EndTokens);
 end;
 
-procedure TIpHtml.ParseRIGHT(Parent : TIpHtmlNode;
-          const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseRIGHT(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurContainer : TIpHtmlNodeDIV;
 begin
@@ -6913,8 +6747,7 @@ begin
   EnsureClosure(IpHtmlTagRIGHTend, EndTokens);
 end;
 
-procedure TIpHtml.ParseBLINK(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseBLINK(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   CurBlink : TIpHtmlNodeBLINK;
 begin
@@ -6924,8 +6757,7 @@ begin
   EnsureClosure(IpHtmlTagBLINKend, EndTokens);
 end;
 
-procedure TIpHtml.ParseBLOCKQUOTE(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseBLOCKQUOTE(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   BQ : TIpHtmlNodeBLOCKQUOTE;
 begin
@@ -6936,8 +6768,7 @@ begin
   EnsureClosure(IpHtmlTagBLOCKQUOTEend, EndTokens);
 end;
 
-procedure TIpHtml.ParseQ(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseQ(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   BQ : TIpHtmlNodeQ;
 begin
@@ -6948,8 +6779,7 @@ begin
   EnsureClosure(IpHtmlTagQend, EndTokens);
 end;
 
-procedure TIpHtml.ParseINS(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseINS(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   BQ : TIpHtmlNodeINS;
 begin
@@ -6962,8 +6792,7 @@ begin
   EnsureClosure(IpHtmlTagINSend, EndTokens);
 end;
 
-procedure TIpHtml.ParseDEL(Parent : TIpHtmlNode;
-  const EndTokens: TIpHtmlTokenSet);
+procedure TIpHtml.ParseDEL(Parent : TIpHtmlNode; const EndTokens: TIpHtmlTokenSet);
 var
   BQ : TIpHtmlNodeDEL;
 begin
@@ -7018,10 +6847,10 @@ begin
   with NewRule do begin
     Align := ParseImageAlignment(hiaCenter);
     NoShade := ParseBoolean(htmlAttrNOSHADE);
-    Size := ParseHtmlInteger2(htmlAttrSIZE, 1);                               {!!.10}
-    Size.OnChange := WidthChanged;                                     {!!.10}
+    Size := ParseHtmlInteger2(htmlAttrSIZE, 1);
+    Size.OnChange := WidthChanged;
     Width := ParseHyperLength(htmlAttrWIDTH, '100%');
-    Width.OnChange := WidthChanged;                                    {!!.10}
+    Width.OnChange := WidthChanged;
     Color := ColorFromString(FindAttribute(htmlAttrCOLOR));
     ParseBaseProps(Self);
   end;
@@ -7093,8 +6922,7 @@ begin
       ReportExpectedToken(EndToken);
 end;
 
-procedure TIpHtml.ParseAnchor(Parent : TIpHtmlNode;
-  const EndTokens : TIpHtmlTokenSet);
+procedure TIpHtml.ParseAnchor(Parent : TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
 var
   CurAnchor : TIpHtmlNodeA;
 begin
@@ -7138,11 +6966,11 @@ begin
     Src := FindAttribute(htmlAttrSRC);
     Alt := FindAttribute(htmlAttrALT);
     Align := ParseImageAlignment(hiaBottom);
-    Height := ParsePixels(htmlAttrHEIGHT, '');                               {!!.10}
-      {ParseInteger(htmlAttrHEIGHT, -1);}                                    {!!.10}
-    Height.OnChange := DimChanged;                                     {!!.10}
-    Width := ParseHyperLength(htmlAttrWIDTH, '');                            {!!.10}
-    Width.OnChange := DimChanged;                                      {!!.10}
+    Height := ParsePixels(htmlAttrHEIGHT, '');
+      {ParseInteger(htmlAttrHEIGHT, -1);}
+    Height.OnChange := DimChanged;
+    Width := ParseHyperLength(htmlAttrWIDTH, '');
+    Width.OnChange := DimChanged;
     Border := ParseInteger(htmlAttrBORDER, 0);
     HSpace := ParseInteger(htmlAttrHSPACE, 0);
     VSpace := ParseInteger(htmlAttrVSPACE, 0);
@@ -7169,7 +6997,7 @@ begin
     Name := FindAttribute(htmlAttrNAME);
     Height := ParseInteger(htmlAttrHEIGHT, -1);
     Width := ParseHyperLength(htmlAttrWIDTH, '');
-    Width.OnChange := WidthChanged;                                    {!!.10}
+    Width.OnChange := WidthChanged;
     Align := ParseImageAlignment(hiaBottom);
     HSpace := ParseInteger(htmlAttrHSPACE, 1);
     VSpace := ParseInteger(htmlAttrVSPACE, 1);
@@ -7185,9 +7013,9 @@ begin
     case CurToken of
     IpHtmlTagPARAM :
       begin
-        CurParam := TIpHtmlNodePARAM.Create(CurApplet);                {!!.12}
+        CurParam := TIpHtmlNodePARAM.Create(CurApplet);
         with CurParam do begin
-          {CurParam := TIpHtmlNodePARAM.Create(CurApplet);}            {!!.12}
+          {CurParam := TIpHtmlNodePARAM.Create(CurApplet);}
           Name := FindAttribute(htmlAttrNAME);
           Value := FindAttribute(htmlAttrVALUE);
           Id := FindAttribute(htmlAttrID);
@@ -7218,7 +7046,7 @@ begin
     Align := ParseImageAlignment(hiaBottom);
     Height := ParseInteger(htmlAttrHEIGHT, -1);
     Width := ParseHyperLength(htmlAttrWIDTH, '');
-    Width.OnChange := WidthChanged;                                    {!!.10}
+    Width.OnChange := WidthChanged;
     Border := ParseInteger(htmlAttrBORDER, 0);
     HSpace := ParseInteger(htmlAttrHSPACE, 1);
     VSpace := ParseInteger(htmlAttrVSPACE, 1);
@@ -7252,8 +7080,7 @@ begin
       ReportExpectedToken(IpHtmlTagOBJECTend);
 end;
 
-procedure TIpHtml.ParseTableRow(Parent: TIpHtmlNode;
-  const EndTokens : TIpHtmlTokenSet);
+procedure TIpHtml.ParseTableRow(Parent: TIpHtmlNode; const EndTokens : TIpHtmlTokenSet);
 var
   CurHeader : TIpHtmlNodeTH;
   CurTableCell : TIpHtmlNodeTD;
@@ -7271,9 +7098,9 @@ begin
           Align := ParseCellAlign(haCenter{haDefault});
           VAlign := ParseVAlignment3;
           Width := ParseHyperLength(htmlAttrWIDTH, '');
-          Width.OnChange := DimChanged;                                {!!.10}
-          Height := ParsePixels(htmlAttrHEIGHT, '');                         {!!.10}
-            {ParseInteger(htmlAttrHEIGHT, -1);}                              {!!.10}
+          Width.OnChange := DimChanged;
+          Height := ParsePixels(htmlAttrHEIGHT, '');
+            {ParseInteger(htmlAttrHEIGHT, -1);}
           Height.OnChange := DimChanged;
           BgColor := ColorFromString(FindAttribute(htmlAttrBGCOLOR));
         end;
@@ -7294,9 +7121,9 @@ begin
           Align := ParseCellAlign(haDefault);
           VAlign := ParseVAlignment3;
           Width := ParseHyperLength(htmlAttrWIDTH, '');
-          Width.OnChange := DimChanged;                                {!!.10}
-          Height := ParsePixels(htmlAttrHEIGHT, '');                         {!!.10}
-            {ParseInteger(htmlAttrHEIGHT, -1);}                              {!!.10}
+          Width.OnChange := DimChanged;
+          Height := ParsePixels(htmlAttrHEIGHT, '');
+            {ParseInteger(htmlAttrHEIGHT, -1);}
           Height.OnChange := DimChanged;
           BgColor := ColorFromString(FindAttribute(htmlAttrBGCOLOR));
         end;
@@ -7314,7 +7141,6 @@ end;
 procedure TIpHtml.ParseTableRows(Parent: TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
 
-  {!!.12 new}
   procedure FixupPercentages(CurRow: TIpHtmlNodeTR);
   var
     i, Pt, P0: Integer;
@@ -7344,13 +7170,13 @@ procedure TIpHtml.ParseTableRows(Parent: TIpHtmlNode;
 var
   CurRow : TIpHtmlNodeTR;
 begin
-  CurRow := nil;                                                       {!!.12}
+  CurRow := nil;
   while not (CurToken in EndTokens) do
     case CurToken of
       IpHtmlTagTR :
         begin
-          if CurRow <> nil then                                        {!!.12}
-            FixupPercentages(CurRow);                                  {!!.12}
+          if CurRow <> nil then
+            FixupPercentages(CurRow);
           CurRow := TIpHtmlNodeTR.Create(Parent);
           CurRow.ParseBaseProps(Self);
           CurRow.Align := ParseAlignment;
@@ -7366,8 +7192,8 @@ begin
       IpHtmlTagTH,
       IpHtmlTagTD :
         begin
-          if CurRow <> nil then                                        {!!.12}
-            FixupPercentages(CurRow);                                  {!!.12}
+          if CurRow <> nil then
+            FixupPercentages(CurRow);
           CurRow := TIpHtmlNodeTR.Create(Parent);
           ParseTableRow(CurRow,
                         EndTokens + [IpHtmlTagTR] - [IpHtmlTagTH, IpHtmlTagTD]);
@@ -7375,8 +7201,8 @@ begin
       else
         NextToken;
     end;
-  if CurRow <> nil then                                        {!!.12}
-    FixupPercentages(CurRow);                                  {!!.12}
+  if CurRow <> nil then
+    FixupPercentages(CurRow);
 end;
 
 procedure TIpHtml.ParseTableBody(Parent: TIpHtmlNode;
@@ -7450,7 +7276,7 @@ begin
       Width := ParseHyperMultiLength(htmlAttrWIDTH, '');
     end;
     NextToken;
-    SkipTextTokens;                                                    {!!.10}     
+    SkipTextTokens;
     while CurToken = IpHtmlTagCOL do begin
       CurCol := TIpHtmlNodeCOL.Create(CurColGroup);
       with CurCol do begin
@@ -7476,7 +7302,7 @@ begin
   with CurTable do begin
     Align := ParseImageAlignment(hiaBottom);
     Width := ParseHyperLength(htmlAttrWIDTH, '');
-    Width.OnChange := WidthChanged;                                    {!!.10}
+    Width.OnChange := WidthChanged;
     Border := ParseInteger(htmlAttrBORDER, 0);
     CellSpacing := ParseInteger(htmlAttrCELLSPACING, 2);
     CellPadding := ParseInteger(htmlAttrCELLPADDING, 2);
@@ -7515,7 +7341,7 @@ begin
     CurTable.FCaption := CurCaption;
   end;
   ParseColgroup(CurTable);
-  SkipTextTokens;                                                      {!!.10}
+  SkipTextTokens;
   ParseTableBody(CurTable, EndTokens + [IpHtmlTagTABLEend]
     - [IpHtmlTagTR, IpHtmlTagP, IpHtmlTagPend, IpHTMLTagCENTERend,
        IpHtmlTagLEFTend, IpHtmlTagRIGHTend, IpHtmlTagBLINKend, IpHtmlTagBLOCKQUOTEend
@@ -7573,7 +7399,7 @@ procedure TIpHtml.ParseInline(Parent : TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
 begin
   case CurToken of
-  IpHtmlTagP : ParseParagraph(Parent, EndTokens); {moved from block}  {!!.10}
+  IpHtmlTagP : ParseParagraph(Parent, EndTokens); {moved from block}
   IpHtmlTagFont : ParseFont(Parent, EndTokens);
   IpHtmlTagDIV : ParseDiv(Parent, EndTokens);
   IpHtmlTagSPAN : ParseSpan(Parent, EndTokens);
@@ -7633,7 +7459,7 @@ begin
   IpHtmlTagH4 : ParseHeader(Parent, IpHtmlTagH4end, 4);
   IpHtmlTagH5 : ParseHeader(Parent, IpHtmlTagH5end, 5);
   IpHtmlTagH6 : ParseHeader(Parent, IpHtmlTagH6end, 6);
-  {IpHtmlTagP : ParseParagraph(Parent, EndTokens);} {moved to inline}  {!!.10}
+  {IpHtmlTagP : ParseParagraph(Parent, EndTokens);} {moved to inline}
   IpHtmlTagDIR : ParseUnorderedList(Parent, IpHtmlTagDIRend, EndTokens);
   IpHtmlTagMENU : ParseUnorderedList(Parent, IpHtmlTagMENUend, EndTokens);
   IpHtmlTagUL : ParseUnorderedList(Parent, IpHtmlTagULend, EndTokens);
@@ -7699,7 +7525,7 @@ begin
       IpHtmlTagH4,
       IpHtmlTagH5,
       IpHtmlTagH6,
-      {IpHtmlTagP,}                                                    {!!.10}
+      {IpHtmlTagP,}
       IpHtmlTagDIR,
       IpHtmlTagMENU,
       IpHtmlTagUL,
@@ -7715,7 +7541,6 @@ begin
       IpHtmlTagADDRESS,
       IpHtmlTagFRAMESET :
         ParseBlock(Parent, EndTokens);
-{Begin !!.12}
       IpHtmlTagBODY :
         begin
           if Body = nil then begin
@@ -7726,7 +7551,6 @@ begin
           else
             ParseInline(Parent, EndTokens);
         end;
-{End !!.12}
       IpHtmlTagEof :
         Exit;
       else
@@ -7766,23 +7590,22 @@ begin
   end;
 end;
 
-{!!.10 new}
 function TIpHtml.ParseHtmlInteger2(const AttrNameSet: TIpHtmlAttributesSet;
          aDefault : Integer) : TIpHtmlInteger;
 begin
   Result := TIpHtmlInteger.Create(ParseInteger(AttrNameSet, aDefault));
 end;
 
-function TIpHtml.ParseRelSize{(const Default : string)} : TIpHtmlRelSize; {!!.10}
+function TIpHtml.ParseRelSize{(const Default : string)} : TIpHtmlRelSize;
 var
   S : string;
   Err : Integer;
 begin
-  Result := TIpHtmlRelSize.Create;                                     {!!.10}
-  Result.FSizeType := hrsUnspecified;                                  {!!.10}
+  Result := TIpHtmlRelSize.Create;
+  Result.FSizeType := hrsUnspecified;
   S := FindAttribute(htmlAttrSIZE);
   if length(S) = 0 then
-    Exit; {S := Default;}                                              {!!.10}
+    Exit; {S := Default;}
   Result.Value := 0;
   if (length(S) > 1) and (S[1] = '+') then begin
     Result.SizeType := hrsRelative;
@@ -7798,7 +7621,6 @@ begin
       ReportError(SHtmlInvInt);
 end;
 
-{!!.10 new}
 function TIpHtml.ParsePixels(const AttrNameSet: TIpHtmlAttributesSet;
       const aDefault: string): TIpHtmlPixels;
 var
@@ -7809,10 +7631,10 @@ begin
   S := FindAttribute(AttrNameSet);
   if (S = '') then
     S := aDefault;
-  if S = '' then                                                       {!!.12}
-    Result.PixelsType := hpUndefined                                   {!!.12}
+  if S = '' then
+    Result.PixelsType := hpUndefined
   else begin
-    Result.PixelsType := hpAbsolute;                                   {!!.12}
+    Result.PixelsType := hpAbsolute;
     val(S, Result.FValue, Err);
     if (Err <> 0) or (Result.FValue < 0) then begin
       if FlagErrors then
@@ -7829,7 +7651,7 @@ var
   S : string;
   P, Err : Integer;
 begin
-  Result := TIpHtmlLength.Create;                                      {!!.10}
+  Result := TIpHtmlLength.Create;
   Result.LengthType := hlUndefined;
   S := FindAttribute(AttrNameSet);
   if length(S) = 0 then
@@ -7841,16 +7663,16 @@ begin
     Delete(S, P, 1);
   end else
     Result.LengthType := hlAbsolute;
-  val(S, Result.FLengthValue, Err);                                    {!!.10}
+  val(S, Result.FLengthValue, Err);
   if (Err <> 0) or (Result.LengthValue < 0) then begin
     if FlagErrors then
       ReportError(SHtmlInvInt)
     else
       Result.LengthType := hlUndefined;
-  end else                                                             {!!.12}
-    if (Result.LengthType = hlPercent)                                 {!!.12}
-    and (Result.LengthValue > 100) then                                {!!.12}
-      Result.LengthValue := 100;                                       {!!.12}
+  end else
+    if (Result.LengthType = hlPercent)
+    and (Result.LengthValue > 100) then
+      Result.LengthValue := 100;
 end;
 
 function TIpHtml.ParseHyperMultiLength(const AttrNameSet: TIpHtmlAttributesSet;
@@ -7887,7 +7709,7 @@ begin
 end;
 
 function TIpHtml.ParseHyperMultiLengthList(const AttrNameSet: TIpHtmlAttributesSet;
-      const aDefault: string): TIpHtmlMultiLengthList;                  {!!.10}
+      const aDefault: string): TIpHtmlMultiLengthList;
 var
   S, S2 : string;
   B, E, P, Err : Integer;
@@ -7906,47 +7728,47 @@ begin
       Inc(E);
     until (E > length(S)) or (S[E] = ',');
     S2 := copy(S, B, E - B);
-    NewEntry := TIpHtmlMultiLength.Create;                             {!!.10}
-    {List.Values[List.Entries].LengthType := hmlUndefined;}            {!!.10}
-    NewEntry.LengthType := hmlUndefined;                               {!!.10}
+    NewEntry := TIpHtmlMultiLength.Create;
+    {List.Values[List.Entries].LengthType := hmlUndefined;}
+    NewEntry.LengthType := hmlUndefined;
     P := CharPos('%', S2);
     if P <> 0 then begin
-      {List.Values[List.Entries].LengthType := hmlPercent;}            {!!.10}
-      NewEntry.LengthType := hmlPercent;                               {!!.10}
+      {List.Values[List.Entries].LengthType := hmlPercent;}
+      NewEntry.LengthType := hmlPercent;
       Delete(S2, P, 1);
     end else begin
       P := CharPos('*', S2);
       if P <> 0 then begin
-        {List.Values[List.Entries].LengthType := hmlRelative;}         {!!.10}
-        NewEntry.LengthType := hmlRelative;                            {!!.10}
+        {List.Values[List.Entries].LengthType := hmlRelative;}
+        NewEntry.LengthType := hmlRelative;
         Delete(S2, P, 1);
       end else
-        {List.Values[List.Entries].LengthType := hmlAbsolute;}         {!!.10}
-        NewEntry.LengthType := hmlAbsolute;                            {!!.10}
+        {List.Values[List.Entries].LengthType := hmlAbsolute;}
+        NewEntry.LengthType := hmlAbsolute;
     end;
     if S2 = '' then
-      {List.Values[List.Entries].LengthValue := 0}                     {!!.10}
-      NewEntry.LengthValue := 0                                        {!!.10}
+      {List.Values[List.Entries].LengthValue := 0}
+      NewEntry.LengthValue := 0
     else begin
-      {val(S2, List.Values[List.Entries].FLengthValue, Err);}          {!!.10}
-      val(S2, NewEntry.FLengthValue, Err);                             {!!.10}
+      {val(S2, List.Values[List.Entries].FLengthValue, Err);}
+      val(S2, NewEntry.FLengthValue, Err);
       {if (Err <> 0) or (List.Values[List.Entries].LengthValue < 0) then begin}
-      if (Err <> 0) or (NewEntry.FLengthValue < 0) then begin          {!!.10}
+      if (Err <> 0) or (NewEntry.FLengthValue < 0) then begin
         if FlagErrors then
           ReportError(SHtmlInvInt)
         else
-          {List.Values[List.Entries].LengthType := hmlUndefined;}      {!!.10}
-          NewEntry.LengthType := hmlUndefined;                         {!!.10}
+          {List.Values[List.Entries].LengthType := hmlUndefined;}
+          NewEntry.LengthType := hmlUndefined;
       end;
     end;
-    {Inc(List.Entries);}                                               {!!.10}
+    {Inc(List.Entries);}
     Result.AddEntry(NewEntry);
     B := E + 1;
   end;
 end;
 
 function CalcMultiLength(const List: TIpHtmlMultiLengthList;
-  Avail: Integer; var Sections: Integer): TIntArr; {!!.10}
+  Avail: Integer; var Sections: Integer): TIntArr;
 var
   OrgAvail, i, S : Integer;
 begin
@@ -8004,15 +7826,15 @@ begin
     S := OrgAvail - S;
     if S > 0 then
       for i := 0 to Pred(List.Entries) do begin
-        {Inc(Result[i]);}                                             {!!.10}
-        Result[i] := Result[i] + 1;                                  {!!.10}
+        {Inc(Result[i]);}
+        Result[i] := Result[i] + 1;
         Dec(S);
         if S = 0 then break;
       end;
     if S < 0 then
       for i := 0 to Pred(List.Entries) do begin
-        {Dec(Result[i]);}                                             {!!.10}
-        Result[i] := Result[i] - 1;                                  {!!.10}
+        {Dec(Result[i]);}
+        Result[i] := Result[i] - 1;
         Inc(S);
         if S = 0 then break;
       end;
@@ -8285,9 +8107,9 @@ begin
     Scrolling := ParseFrameScrollingProp;
     Align := ParseAlignment;
     Height := ParseHyperLength(htmlAttrHEIGHT, '');
-    Height.OnChange := WidthChanged;                                   {!!.10}
+    Height.OnChange := WidthChanged;
     Width := ParseHyperLength(htmlAttrWIDTH, '');
-    Width.OnChange := WidthChanged;                                    {!!.10}
+    Width.OnChange := WidthChanged;
     ParseBaseProps(Self);
   end;
   NextToken;
@@ -8317,10 +8139,10 @@ begin
   while CurToken = IpHtmlTagFRAMESET do begin
     FCurFrameSet := TIpHtmlNodeFRAMESET.Create(Parent);
     with FCurFrameSet do begin
-      {ParseHyperMultiLengthList(htmlAttrROWS, '100%', FRows);}              {!!.10}
-      FRows := ParseHyperMultiLengthList(htmlAttrROWS, '100%');              {!!.10}
-      {ParseHyperMultiLengthList(htmlAttrCOLS, '100%', FCols);}              {!!.10}
-      FCols := ParseHyperMultiLengthList(htmlAttrCOLS, '100%');              {!!.10}
+      {ParseHyperMultiLengthList(htmlAttrROWS, '100%', FRows);}
+      FRows := ParseHyperMultiLengthList(htmlAttrROWS, '100%');
+      {ParseHyperMultiLengthList(htmlAttrCOLS, '100%', FCols);}
+      FCols := ParseHyperMultiLengthList(htmlAttrCOLS, '100%');
       Id := FindAttribute(htmlAttrID);
       ClassId := FindAttribute(htmlAttrCLASS);
       Title := FindAttribute(htmlAttrTITLE);
@@ -8340,12 +8162,12 @@ end;
 
 procedure TIpHtml.ParseBody(Parent : TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
-var                                                                    {!!.12}
-  i : Integer;                                                         {!!.12}
-  Node : TIpHtmlNode;                                                  {!!.12}
+var
+  i : Integer;
+  Node : TIpHtmlNode;
 begin
-//  while CurToken = IpHtmlTagText do                                  {Deleted !!.12}
-//    NextToken;                                                       {Deleted !!.12}
+//  while CurToken = IpHtmlTagText do
+//    NextToken;
   if CurToken = IpHtmlTagFRAMESET then begin
     ParseFrameSet(Parent, EndTokens);
     Exit;
@@ -8370,7 +8192,6 @@ begin
     ParseBodyText(Body, EndTokens + [IpHtmlTagBODYend]);
     EnsureClosure(IpHtmlTagBODYend, EndTokens);
   end else begin
-{Begin !!.12}
 //    Body := TIpHtmlNodeBODY.Create(Parent);
 //    ParseBodyText(Body, EndTokens + [IpHtmlTagBODYend]);             
     ParseBodyText(Parent, EndTokens + [IpHtmlTagBODYend]);
@@ -8393,7 +8214,6 @@ begin
             Body.FChildren.Insert(0, Node);
           end;
       end;  { with }
-{End !!.12}
     if CurToken = IpHtmlTagBODYend then
       NextToken;
   end;
@@ -8426,8 +8246,8 @@ var
   ch1,ch2,ch3: AnsiChar;
 {$ENDIF}
 begin
-  Getmem(TokenStringBuf, 65536);                                       {!!.01}
-  try                                                                  {!!.01}
+  Getmem(TokenStringBuf, 65536);
+  try
     CharSP := 0;
     ListLevel := 0;
     StartPos := CharStream.Position;
@@ -8473,15 +8293,15 @@ begin
     if CurToken = IpHtmlTagEOF then Exit;
     //ParseDocType; {may not be present}
     ParseHtml;
-  finally                                                              {!!.01}
-    FreeMem(TokenStringBuf);                                           {!!.01}
-    TokenStringBuf := nil;                                             {!!.01}
-    if ParmBuf <> nil then begin                                       {!!.12}
-      FreeMem(ParmBuf);                                                {!!.12}
-      ParmBuf := nil;                                                  {!!.12}
-      ParmBufSize := 0;                                                {!!.12}
-    end;                                                               {!!.12}
-  end;                                                                 {!!.01}
+  finally
+    FreeMem(TokenStringBuf);
+    TokenStringBuf := nil;
+    if ParmBuf <> nil then begin
+      FreeMem(ParmBuf);
+      ParmBuf := nil;
+      ParmBufSize := 0;
+    end;
+  end;
 end;
 
 constructor TIpHtml.Create;
@@ -8528,7 +8348,7 @@ begin
     {$ENDIF}
   {$ELSE}
   GifImages := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
-  OtherImages := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create; //JMN
+  OtherImages := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   {$ENDIF}
   NameList := TStringList.Create;
   DefaultImage := TPicture.Create;
@@ -8536,9 +8356,9 @@ begin
   try
     {$IFNDEF IP_LAZARUS}
     TmpBitmap := TBitmap.Create;
-    TBitmap(TmpBitmap).LoadFromResourceName (HInstance, 'DEFAULTIMAGE'); //JMN
+    TBitmap(TmpBitmap).LoadFromResourceName (HInstance, 'DEFAULTIMAGE');
     (**
-    TmpBitmap.LoadFromResourceName(FindClassHInstance(                      {!!.06}
+    TmpBitmap.LoadFromResourceName(FindClassHInstance(
       TIpHTMLCustomPanel), 'DEFAULTIMAGE');
     **)
     {$ELSE}
@@ -8554,7 +8374,7 @@ begin
   GifQueue := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   FStartSel.x := -1;
   FEndSel.x := -1;
-  //FixedTypeface := 'Courier New';                                      {!!.10}  //JMN
+  //FixedTypeface := 'Courier New';
   FBgColor := -1;
   FFactBAParag := 1;
 end;
@@ -8572,22 +8392,21 @@ procedure TIpHtml.CheckImage(Picture: TPicture);
 begin
   if Picture <> nil then begin
     if not (Picture is TPicture) then
-      raise EIpHtmlException.Create(SHTMLInvPicture);          {!!.02}
+      raise EIpHtmlException.Create(SHTMLInvPicture);
     if Picture.Graphic = nil then
-      raise EIpHtmlException.Create(SHTMLNoGraphic);           {!!.02}
+      raise EIpHtmlException.Create(SHTMLNoGraphic);
     if not (Picture.Graphic is TGraphic) then
-      raise EIpHtmlException.Create(SHTMLInvGraphic);          {!!.02}
+      raise EIpHtmlException.Create(SHTMLInvGraphic);
   end;
 end;
 {$ENDIF}
 
-procedure TIpHtml.DoGetImage(Sender: TIpHtmlNode; const URL: string;
-      var Picture: TPicture);
+procedure TIpHtml.DoGetImage(Sender: TIpHtmlNode; const URL: string; var Picture: TPicture);
 begin
   if assigned(FOnGetImageX) then
     OnGetImageX(Sender, URL, Picture)
   else
-    raise EIpHtmlException.Create(SHTMLNoGetImage);            {!!.02}
+    raise EIpHtmlException.Create(SHTMLNoGetImage);
   {$IFOPT C+}
   CheckImage(Picture);
   {$ENDIF}
@@ -8631,7 +8450,7 @@ begin
   for i := 0 to Pred(GifImages.Count) do
     if TIpHtmlNodeIMG(GifImages[i]).FPicture <> nil then
       TGifImage(TIpHtmlNodeIMG(GifImages[i]).FPicture.Graphic).PaintStop;
-  for i := 0 to Pred(OtherImages.Count) do //JMN
+  for i := 0 to Pred(OtherImages.Count) do
     if TIpHtmlNodeIMG(OtherImages[i]).FPicture <> nil then
       TIpHtmlNodeIMG(OtherImages[i]).FPicture.Graphic := nil;
  {$ENDIF}
@@ -8651,7 +8470,7 @@ begin
   MapImgList.Free;
   FControlList.Free;
   DefaultProps.Free;
- {$IFDEF IP_LAZARUS} //JMN
+ {$IFDEF IP_LAZARUS}
   FTabList.Free;
   {$IFDEF UseGifImageUnit}
   GifImages.Free;
@@ -8660,7 +8479,7 @@ begin
   {$ENDIF}
  {$ELSE}
   GifImages.Free;
-  OtherImages.Free; //JMN
+  OtherImages.Free;
  {$ENDIF}
   ElementPool.EnumerateItems(FinalizeRecs);
   ElementPool.Free;
@@ -8785,7 +8604,7 @@ begin
   DefaultProps.LinkColor := LinkColor;
   DefaultProps.VLinkColor := VLinkColor;
   DefaultProps.ALinkColor := ALinkColor;
-  DefaultProps.BgColor := BgColor; //JMN
+  DefaultProps.BgColor := BgColor;
   DefaultProps.Preformatted := False;
   DefaultProps.NoBreak := False;
   if Body <> nil then begin
@@ -8816,8 +8635,7 @@ begin
   end;
 end;
 
-function TIpHtml.PageRectToScreen(const Rect: TRect;
-  var ScreenRect: TRect): Boolean;
+function TIpHtml.PageRectToScreen(const Rect: TRect; var ScreenRect: TRect): Boolean;
 {-convert coordinates of rect passed in to screen coordinates and
   return false if entire rect is clipped}
 var
@@ -9073,18 +8891,18 @@ end;
 {$ENDIF}
 
 procedure TIpHtml.Render(TargetCanvas: TCanvas; TargetPageRect : TRect;
-  UsePaintBuffer: Boolean; const TopLeft: TPoint);                 {!!.10}
+  UsePaintBuffer: Boolean; const TopLeft: TPoint);
 var
   i : Integer;
 begin
-  ClientRect.TopLeft := TopLeft; {Point(0, 0);}                        {!!.10}
+  ClientRect.TopLeft := TopLeft; {Point(0, 0);}
   ClientRect.Right := TargetPageRect.Right - TargetPageRect.Left;
   ClientRect.Bottom := TargetPageRect.Bottom - TargetPageRect.Top;
   if not DoneLoading then begin
     TargetCanvas.FillRect(ClientRect);
     Exit;
   end;
- {$IFDEF IP_LAZARUS} //JMN
+ {$IFDEF IP_LAZARUS}
     {$IFDEF UseGifImageUnit}
     for i := 0 to Pred(GifImages.Count) do
       if TIpHtmlNodeIMG(GifImages[i]).FPicture <> nil then
@@ -9179,7 +8997,6 @@ begin
       ResetBlocks(TIpHtmlNodeMulti(Node).ChildNode[i]);
 end;
 
-{!!.02}
 procedure TIpHtml.ResetImages(Node: TIpHtmlNode);
 var
   i : Integer;
@@ -9187,7 +9004,7 @@ begin
   if Node = nil then Exit;
   if Node is TIpHtmlNodeIMG then
     with TIpHtmlNodeIMG(Node) do begin
-      {UnloadImage;}                                                   {!!.10}
+      {UnloadImage;}
       InvalidateSize;
     end
   else
@@ -9201,11 +9018,10 @@ begin
   ResetCache;
   ResetWordLists;
   ResetBlocks(FHtml);
-  ResetImages(FHtml);                                                  {!!.02}
+  ResetImages(FHtml);
 end;
 
-function TIpHtml.GetPageRect(TargetCanvas: TCanvas;  Width,
-  Height : Integer): TRect;
+function TIpHtml.GetPageRect(TargetCanvas: TCanvas; Width, Height : Integer): TRect;
 var
   DefPageRect : TRect;
   Min, Max, W, H : Integer;
@@ -9226,7 +9042,7 @@ begin
       ResetCanvasData;
     PageHeight := Height;
     SetDefaultProps;
-    {PanelWidth := Width;}                                             {!!.12}
+    {PanelWidth := Width;}
     FTarget := TargetCanvas;
     FHtml.CalcMinMaxWidth(DefaultProps, Min, Max);
     //debugln(['TIpHtml.GetPageRect Min=',Min,' Max=',Max]);
@@ -9529,14 +9345,13 @@ begin
     FOnGet(Self, URL);
 end;
 
-procedure TIpHtml.Post(const URL: string; FormData: TIpFormDataEntity); {!!.12}
+procedure TIpHtml.Post(const URL: string; FormData: TIpFormDataEntity);
 begin
   if assigned(FOnPost) then
-    FOnPost(Self, URL, FormData); {!!.12}
+    FOnPost(Self, URL, FormData);
 end;
 
-procedure TIpHtml.AddRect(const R : TRect; Node : PIpHtmlElement;
-  Block: TIpHtmlNodeBlock);
+procedure TIpHtml.AddRect(const R : TRect; Node : PIpHtmlElement; Block: TIpHtmlNodeBlock);
 var
   NewEntry : PIpHtmlRectListEntry;
 begin
@@ -9635,7 +9450,6 @@ begin
   AllSelected := True;
 end;
 
-{!!.10 new}
 procedure TIpHtml.DeselectAll;
 begin
   AllSelected := False;
@@ -9668,9 +9482,8 @@ begin
   Result := AllSelected or ((FEndSel.x > 0) or (FEndSel.y > 0));
 end;
 
-procedure TIpHtml.CreateIFrame(Parent: TWinControl;
-  Frame: TIpHtmlNodeIFRAME;
-      var Control: TWinControl);
+procedure TIpHtml.CreateIFrame(Parent: TWinControl; Frame: TIpHtmlNodeIFRAME;
+  var Control: TWinControl);
 begin
   if assigned(FOnIFrameCreate) then
     FOnIFrameCreate(Self, Parent, Frame, Control);
@@ -9767,7 +9580,7 @@ procedure TIpHtml.ClearGifQueue;
 var
   i : Integer;
 begin
-  if Assigned(GifQueue) then                                           {!!.12}
+  if Assigned(GifQueue) then
     for i := Pred(GifQueue.Count) downto 0 do begin
       TIpHtmlGifQueueEntry(GifQueue[i]).Free;
       GifQueue.Delete(i);
@@ -9809,10 +9622,10 @@ var
   B, N, N2 : PAnsiChar;
   First : Boolean;
   Ch : AnsiChar;
-  ImplicitLF: Boolean;                                                 {!!.10}
+  ImplicitLF: Boolean;
 begin
   First := True;
-  ImplicitLF := False;                                                 {!!.10}
+  ImplicitLF := False;
   if PropsR.Preformatted then begin
     l := length(EscapedText);
     if l > 0 then begin
@@ -9822,31 +9635,31 @@ begin
         N := B;
         while N^ <> #0 do begin
           case N^ of
-          CR :                                                         {!!.10}
-            ImplicitLF := True;                                        {!!.10}
+          CR :
+            ImplicitLF := True;
           LF :
             begin
               EnqueueElement(Owner.HardLF);
               Inc(N);
-              ImplicitLF := False;                                     {!!.10}
+              ImplicitLF := False;
             end;
           else
             begin
-              if ImplicitLF then begin                                 {!!.10}
-                EnqueueElement(Owner.HardLF);                          {!!.10}
-                Inc(N);                                                {!!.10}
-                ImplicitLF := False;                                   {!!.10}
-              end;                                                     {!!.10}
-              N2 := StrScan(N, CR);                                    {!!.10}
-              if N2 <> nil then begin                                  {!!.10}
-                N2^ := #0;                                             {!!.10}
-                if First then                                          {!!.10}
-                  Owner.AddWord(N, PropsR, Self)                       {!!.10}
-                else                                                   {!!.10}
-                  Owner.AddWord(N, nil, Self);                         {!!.10}
-                N2^ := CR;                                             {!!.10}
-                First := False;                                        {!!.10}
-                N := N2;                                               {!!.10}
+              if ImplicitLF then begin
+                EnqueueElement(Owner.HardLF);
+                Inc(N);
+                ImplicitLF := False;
+              end;
+              N2 := StrScan(N, CR);
+              if N2 <> nil then begin
+                N2^ := #0;
+                if First then
+                  Owner.AddWord(N, PropsR, Self)
+                else
+                  Owner.AddWord(N, nil, Self);
+                N2^ := CR;
+                First := False;
+                N := N2;
               end else begin
                 N2 := StrScan(N, LF);
                 if N2 <> nil then begin
@@ -9890,7 +9703,7 @@ begin
             end;
           ' ' :
             begin
-              if not ElementQueueIsEmpty then begin                    {!!.10}
+              if not ElementQueueIsEmpty then begin
                 NewEntry := Owner.NewElement(etWord, Self);
                 NewEntry.AnsiWord := ' ';
                 NewEntry.IsBlank := 1;
@@ -9900,7 +9713,7 @@ begin
                   NewEntry.Props := nil;
                 EnqueueElement(NewEntry);
                 First := False;
-              end;                                                     {!!.10}
+              end;
               Inc(N);
             end;
           else
@@ -9950,7 +9763,6 @@ function FindInnerBlock(Node : TIpHTMLNode): TIpHtmlNodeBlock;
 begin
   while not (Node is TIpHtmlNodeBlock) do
     Node := Node.FParentNode;
-
   Result := TIpHtmlNodeBlock(Node);
 end;
 
@@ -9967,12 +9779,10 @@ begin
   Block := FindInnerBlock(Self);
 
   {we need to clear the queue so that it will be built again}
-
   Block.ClearWordList;
 
   {then, we need to Invalidate the block so that
    the rendering logic recalculates everything}
-
   Block.InvalidateSize;
 end;
 
@@ -9981,7 +9791,6 @@ begin
   ReportCurDrawRects(Self, M);
 end;
 
-{!!.10 new}
 function TIpHtmlNodeText.ElementQueueIsEmpty: Boolean;
 begin
   Result := FParentNode.ElementQueueIsEmpty;
@@ -10002,20 +9811,19 @@ begin
   hrsRelative :
     begin
       TmpSize := Props.BaseFontSize + Size.Value;
-      if TmpSize <= 1 then                                             {!!.10}
-        Props.FontSize := 8                                            {!!.10}
+      if TmpSize <= 1 then
+        Props.FontSize := 8
       else
       if TmpSize > 7 then
-          Props.FontSize := 36
+        Props.FontSize := 36
       else
-        Props.FontSize := FONTSIZESVALUSARRAY[TmpSize-1];                                                         {!!.10}
+        Props.FontSize := FONTSIZESVALUSARRAY[TmpSize-1];
     end;
   end;
   if Color <> -1 then
     Props.FontColor := Color;
 end;
 
-{!!.10 new}
 constructor TIpHtmlNodeFONT.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
@@ -10057,7 +9865,7 @@ begin
   Props.Assign(RenderProps);
   case Style of
   hfsTT :
-    Props.FontName := Owner.FixedTypeface;                             {!!.10}
+    Props.FontName := Owner.FixedTypeface;
   hfsI :
     Props.FontStyle := Props.FontStyle + [fsItalic];
   hfsB :
@@ -10192,6 +10000,20 @@ begin
   for i := 0 to Pred(ElementQueue.Count) do begin
     CurWord := PIpHtmlElement(ElementQueue[i]);
 
+// *** Debug ***
+{if CurWord.AnsiWord = '2)' then begin
+  Dec(CurWord.WordRect2.Top, 10);
+  Inc(CurWord.WordRect2.Left, 10);
+end;
+if CurWord.AnsiWord = 'Abanto1' then begin
+  Inc(CurWord.WordRect2.Top, 10);
+  Inc(CurWord.WordRect2.Left, 10);
+end;
+if CurWord.AnsiWord = 'Abanto2' then begin
+  Inc(CurWord.WordRect2.Top, 10);
+  Inc(CurWord.WordRect2.Left, 10);
+end;
+}
     if (CurWord.Props <> nil) and (CurWord.Props <> LastProp) then begin
 
       {$IFDEF IP_LAZARUS}
@@ -10200,15 +10022,15 @@ begin
       if (LastProp = nil) or not LastProp.AIsEqualTo(CurWord.Props) then
         with CurWord.Props do begin
           aCanvas.Font.Name := FontName;
-          if ScaleFonts then                                           {!!.10}
-            aCanvas.Font.Size := round(FontSize * Aspect)         {!!.10}
-          else                                                         {!!.10}
+          if ScaleFonts then
+            aCanvas.Font.Size := round(FontSize * Aspect)
+          else
             aCanvas.Font.Size := FontSize;
           aCanvas.Font.Style := FontStyle;
         end;
-      if ScaleBitmaps and BWPRinter then                               {!!.10}
-        Owner.Target.Font.Color := clBlack                             {!!.10}
-      else                                                             {!!.10}
+      if ScaleBitmaps and BWPRinter then
+        Owner.Target.Font.Color := clBlack
+      else
         if (LastProp = nil) or not LastProp.BIsEqualTo(CurWord.Props) then
           aCanvas.Font.Color := CurWord.Props.FontColor;
       {$IFDEF IP_LAZARUS}
@@ -10239,8 +10061,8 @@ begin
           end
           else if LastProp.BgColor > 0 then
           begin
-               aCanvas.brush.Style := bsSolid;
-               aCanvas.brush.color := LastProp.BgColor;
+            aCanvas.brush.Style := bsSolid;
+            aCanvas.brush.color := LastProp.BgColor;
           end
           else
           {$ENDIF}
@@ -10249,14 +10071,12 @@ begin
           Owner.PageRectToScreen(CurWord.WordRect2, R);
           {$IFDEF IP_LAZARUS}
           if CurWord.Owner.FParentNode = CurTabFocus then
-          begin
             aCanvas.DrawFocusRect(R);
-          end;
           if aCanvas.Font.color=-1 then
             aCanvas.Font.color:=clBlack;
           {$ENDIF}
-          if CurWord.AnsiWord <> NAnchorChar then //JMN
-               aCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
+          if CurWord.AnsiWord <> NAnchorChar then
+            aCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
           {$IFDEF IP_LAZARUS}
           restoreCanvasProperties;
           {$ENDIF}
@@ -10302,14 +10122,13 @@ begin
   RenderQueue;
 end;
 
-{!!.10 moved here from inside CalcMinMaxQueueWidth}
 procedure TIpHtmlNodeBlock.UpdateCurrent(Start: Integer; CurProps : TIpHtmlProps);
 {- update other words that use same properties as the
   one at Start with their lengths. Cuts down on the number
   of time the font properties need to be changed.}
 var
   i : Integer;
-  CurElement : PIpHtmlElement;                                       {!!.10}
+  CurElement : PIpHtmlElement;
 
     function GetExt(const S: string): TSize;
     begin
@@ -10321,7 +10140,7 @@ begin
   for i := ElementQueue.Count - 1 downto Start + 1 do begin
     CurElement := PIpHtmlElement(ElementQueue[i]);
     {case CurElement.ElementType of
-    etWord :}                                                        {!!.10}
+    etWord :}
     if CurElement.ElementType = etWord then
       if CurElement.IsBlank = 0 then begin
         if (CurElement.Props = nil)
@@ -10333,7 +10152,7 @@ begin
               {Owner.Target.TextExtent(
                 NoBreakToSpace(CurElement.AnsiWord));}
             if  CurElement.AnsiWord = NAnchorChar
-            then  CurElement.Size.cx := 1;// JMN
+            then  CurElement.Size.cx := 1;
             CurElement.SizeProp := CurProps.PropA;
           end;
         end;
@@ -10353,8 +10172,8 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeBlock.CalcMinMaxQueueWidth(
-  const RenderProps: TIpHtmlProps; var Min, Max: Integer);
+procedure TIpHtmlNodeBlock.CalcMinMaxQueueWidth(const RenderProps: TIpHtmlProps;
+  var Min, Max: Integer);
 var
   i,
   TextWidth : Integer;
@@ -10437,37 +10256,6 @@ var
     CurProps := CurElement.Props;
   end;
 
-  (* !!.10 moved up as global method
-  procedure UpdateCurrent(Start: Integer);
-  {- update other words that use same properties as the
-    one at Start with their lengths. Cuts down on the number
-    of time the font properties need to be changed.}
-  var
-    i : Integer;
-    CurElement : PIpHtmlElement;                                       {!!.10}
-  begin
-    for i := Start + 1 to LastElement do begin
-      CurElement := PIpHtmlElement(ElementQueue[i]);
-      {case CurElement.ElementType of
-      etWord :}                                                        {!!.10}
-      if CurElement.ElementType = etWord then
-        if CurElement.IsBlank = 0 then begin
-        if (CurElement.Props = nil)
-        or CurElement.Props.AIsEqualTo(CurProps) then begin
-          {if CurElement.IsBlank = 0 then begin}
-            if (CurElement.SizeProp <> CurProps.PropA) then begin
-              CurElement.Size :=
-                Owner.Target.TextExtent(
-                  NoBreakToSpace(CurElement.AnsiWord));
-              CurElement.SizeProp := CurProps.PropA;
-            end;
-          end;
-        end;
-      {end;}
-    end;
-  end;
-  *)
-
 begin
   aCanvas := Owner.Target;
   Min := 0;
@@ -10528,11 +10316,9 @@ begin
           if (CurElement.SizeProp = CurProps.PropA) then
             MaxW := CurElement.Size.cx
           else begin
-            CurElement.Size :=
-              aCanvas.TextExtent(
-                NoBreakToSpace(CurElement.AnsiWord));
-            if CurElement.AnsiWord = NAnchorChar
-            then  CurElement.Size.cx := 1; //JMN
+            CurElement.Size := aCanvas.TextExtent(NoBreakToSpace(CurElement.AnsiWord));
+            if CurElement.AnsiWord = NAnchorChar then
+              CurElement.Size.cx := 1;
             MaxW := CurElement.Size.cx;
             CurElement.SizeProp := CurProps.PropA;
             UpdateCurrent(i, CurProps);
@@ -10594,7 +10380,7 @@ begin
 end;
 
 procedure TIpHtmlNodeBlock.CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
-      var Min, Max: Integer);
+  var Min, Max: Integer);
 begin
   if RenderProps.IsEqualTo(Props) and (FMin <> -1) and (FMax <> -1) then begin
     Min := FMin;
@@ -10617,8 +10403,7 @@ begin
     ElementQueue.Clear;
 end;
 
-procedure TIpHtmlNodeBlock.EnqueueElement(
-  const Entry: PIpHtmlElement);
+procedure TIpHtmlNodeBlock.EnqueueElement(const Entry: PIpHtmlElement);
 begin
   ElementQueue.Add(Entry);
 end;
@@ -10638,8 +10423,7 @@ begin
     Result := LastH;
     Exit;
   end;
-  Layout(RenderProps,
-      Rect(0, 0, Width, MaxInt));
+  Layout(RenderProps, Rect(0, 0, Width, MaxInt));
   Result := PageRect.Bottom;
   LastH := Result;
   LastW := Width;
@@ -10738,7 +10522,7 @@ var
   CanBreak : Boolean;
   LastBreakpoint : Integer;
   WordInfo : PWordList;
-  {WordInfoCount : Integer;}                                           {!!.12}
+  {WordInfoCount : Integer;}
   WordInfoSize : Integer;
   CurObj : TIpHtmlNodeAlignInline;
   HyphenSpace : Integer;
@@ -10831,7 +10615,7 @@ var
     WDelta, WMod, j : Integer;
     R : TRect;
     CurWordInfo : PWordInfo;
-    dx: Integer;                                                       {!!.12}
+    dx: Integer;
   begin
     WDelta := 0;
     WMod := 0;
@@ -10868,8 +10652,7 @@ var
     end;
 
     if Owner.PageHeight <> 0 then begin
-      {if we're printing, adjust line's vertical offset to not
-       straddle a page boundary}
+      {if we're printing, adjust line's vertical offset to not straddle a page boundary}
       j := Y mod Owner.PageHeight;
       {only do this for 'small' objects, like text lines}
       if (MaxAscent + MaxDescent < 200)
@@ -11021,16 +10804,6 @@ var
   end;
   {$ENDIF}
 
-  {!!.10 rewritten
-  procedure SetWordInfoLength(NewLength : Integer);
-  begin
-    if (WordInfo = nil) or (NewLength > WordInfoSize) then begin
-      WordInfoSize := ((NewLength div 256) + 1) * 256;
-      ReAllocMem(WordInfo, WordInfoSize * sizeof(TWordInfo));
-    end;
-  end;
-  }
-  {!!.10 rewritten}
   procedure SetWordInfoLength(NewLength : Integer);
   var
     NewWordInfoSize: Integer;
@@ -11109,7 +10882,7 @@ begin
   LeftQueue := nil;
   RightQueue := nil;
   WordInfoSize := 0;
-  {WordInfoCount := 0;}                                                {!!.12}
+  {WordInfoCount := 0;}
   WordInfo := nil;
   try
     RectWidth := TargetRect.Right - TargetRect.Left;
@@ -11178,9 +10951,8 @@ begin
     while i <= LastElement do begin
 
       if PendingIndent > PendingOutDent then begin
-        if ExpLIndent < (TargetRect.Right - TargetRect.Left) - LIdent - RIdent then begin
+        if ExpLIndent < (TargetRect.Right - TargetRect.Left) - LIdent - RIdent then
           Inc(ExpLIndent, (PendingIndent - PendingOutdent) * StdIndent);
-        end;
       end else
       if PendingOutdent > PendingIndent then begin
         Dec(ExpLIndent, (PendingOutDent - PendingIndent) * StdIndent);
@@ -11190,15 +10962,10 @@ begin
 
       PendingIndent := 0;
       PendingOutdent := 0;
-
       DoLeftAligned;
       DoRightAligned;
-
-      Width := (TargetRect.Right - TargetRect.Left)
-        - LIdent - RIdent - ExpLIndent;
-
+      Width := (TargetRect.Right - TargetRect.Left) - LIdent - RIdent - ExpLIndent;
       LTrim := LineBreak or (ExpBreak and not PreFor) or (ExpLIndent > 0);
-
       W := Width; {total width we have}
       TextWidth := 0;
       FirstWord := i;
@@ -11350,17 +11117,17 @@ begin
             LastWord := i - 1;
             if not IgnoreHardLF then begin
               if LineBreak then  begin
-                MaxAscent := Round (MaxAscent * Owner.FactBAParag); //JMN
-                MaxDescent := Round (MaxDescent * Owner.FactBAParag);  //JMN
+                MaxAscent := Round (MaxAscent * Owner.FactBAParag);
+                MaxDescent := Round (MaxDescent * Owner.FactBAParag);
               end;
               Inc(i);
               break;
             end;
-            if LastWord < FirstWord then begin                         {!!.01}
-              LastWord := FirstWord;                                   {!!.01}
-              CanBreak := True;                                        {!!.01}
-              Inc(i);                                                  {!!.01}
-            end;                                                       {!!.01}
+            if LastWord < FirstWord then begin
+              LastWord := FirstWord;
+              CanBreak := True;
+              Inc(i);
+            end;
           end;
         etClearLeft, etClearRight, etClearBoth :
           begin
@@ -11396,7 +11163,7 @@ begin
             CurHeight := 1;
             Inc(PendingOutdent);
             CanBreak := True;
-            Size := SizeRec(0, 0);                                     {!!.10}
+            Size := SizeRec(0, 0);
           end;
         etSoftHyphen :
           begin
@@ -11415,14 +11182,13 @@ begin
           end;
         end;
         CanBreak := CanBreak and (Assigned(CurProps) and (not CurProps.NoBreak));
-        if (Size.cx <= W) then begin {!!.10}
+        if (Size.cx <= W) then begin
           if CanBreak then
             LastBreakPoint := i;
           MaxAscent := MaxI2(MaxAscent, CurAscent);
           MaxDescent := MaxI2(MaxDescent, CurDescent);
           MaxHeight := MaxI3(MaxHeight, CurHeight, MaxAscent + MaxDescent);
-          {if word fits on line}
-          {update width and height}
+          {if word fits on line update width and height}
           if (CurElement <> nil) and (CurElement.ElementType = etIndent) then
             Size.cx := MinI2(W, StdIndent - ((X0 - TargetRect.Left) mod StdIndent));
           Dec(W, Size.cx);
@@ -11533,8 +11299,7 @@ begin
       {prepare for next line}
       DoClear;
     end;
-    Inc(Y,
-      MaxI3(MaxAscent div 2 + MaxDescent, VRemainL, VRemainR));
+    Inc(Y, MaxI3(MaxAscent div 2 + MaxDescent, VRemainL, VRemainR));
     VRemainL := 0;
     VRemainR := 0;
     LIdent := 0;
@@ -11544,8 +11309,7 @@ begin
     DoLeftAligned;
     DoRightAligned;
 
-    Inc(Y,
-      MaxI3(MaxAscent + MaxDescent, VRemainL, VRemainR));
+    Inc(Y, MaxI3(MaxAscent + MaxDescent, VRemainL, VRemainR));
 
     FPageRect.Bottom := Y;
     {clean up}
@@ -11584,8 +11348,7 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeBlock.ReportCurDrawRects(aOwner: TIpHtmlNode;
-  M : TRectMethod);
+procedure TIpHtmlNodeBlock.ReportCurDrawRects(aOwner: TIpHtmlNode; M : TRectMethod);
 var
   i : Integer;
   CurElement : PIpHtmlElement;
@@ -11679,7 +11442,6 @@ begin
   end;
 end;
 
-{!!.10 new}
 function TIpHtmlNodeBlock.ElementQueueIsEmpty: Boolean;
 begin
   Result := ElementQueue.Count = 0;
@@ -11710,7 +11472,7 @@ end;
 procedure TIpHtmlNodeP.Enqueue;
 begin
   if FChildren.Count > 0 then begin
-    if not (FParentNode is TIpHtmlNodeLI) then begin                   {!!.10}
+    if not (FParentNode is TIpHtmlNodeLI) then begin
       EnqueueElement(Owner.SoftLF);
       EnqueueElement(Owner.HardLF);
     end;
@@ -11732,7 +11494,6 @@ end;
 
 { TIpHtmlNodeOBJECT }
 
-{!!.10}
 destructor TIpHtmlNodeOBJECT.Destroy;
 begin
   inherited;
@@ -11787,9 +11548,7 @@ function TIpHtmlNodeOL.GetNumString: string;
   end;
 
 begin
-  {$IFDEF IP_LAZARUS}
   Result := ''; // stop warning
-  {$ENDIF}
   case Style of
   olArabic :
     str(Counter, Result);
@@ -11887,10 +11646,10 @@ end;
 
 procedure TIpHtmlNodeLI.CalcMinMaxWidth(var Min, Max: Integer);
 begin
-  if ScaleBitmaps then begin                                           {!!.10}
-    Min := round(8 * Aspect);                                          {!!.10}
-    Max := round(8 * Aspect);                                          {!!.10}
-  end else begin                                                       {!!.10}
+  if ScaleBitmaps then begin
+    Min := round(8 * Aspect);
+    Max := round(8 * Aspect);
+  end else begin
     Min := 8;
     Max := 8;
   end;
@@ -11918,7 +11677,7 @@ begin
       begin
         SaveColor := Owner.Target.Brush.Color;
         Owner.Target.Brush.Color := Props.FontColor;
-        if ScaleBitmaps then                                           {!!.10}
+        if ScaleBitmaps then
           Owner.Target.Ellipse(R.Left, R.Top, R.Left + round(7 * Aspect), R.Top + round(7 * Aspect))
         else
           Owner.Target.Ellipse(R.Left, R.Top, R.Left + 7, R.Top + 7);
@@ -11926,14 +11685,14 @@ begin
       end;
     ulSquare :
       begin
-        if ScaleBitmaps then                                           {!!.10}
+        if ScaleBitmaps then
           Owner.Target.Rectangle(R.Left, R.Top, R.Left + round(7 * Aspect), R.Top + round(7 * Aspect))
         else
           Owner.Target.Rectangle(R.Left, R.Top, R.Left + 7, R.Top + 7);
       end;
     ulCircle :
       begin
-        if ScaleBitmaps then                                           {!!.10}
+        if ScaleBitmaps then
           Owner.Target.Ellipse(R.Left, R.Top, R.Left + round(7 * Aspect), R.Top + round(7 * Aspect))
         else
           Owner.Target.Ellipse(R.Left, R.Top, R.Left + 7, R.Top + 7);
@@ -11966,9 +11725,9 @@ end;
 
 function TIpHtmlNodeLI.GetDim(ParentWidth: Integer): TSize;
 begin
-  if ScaleBitmaps then                                                 {!!.10}
-    Result := SizeRec(round(Aspect * 8), round(Aspect * 8))            {!!.10}
-  else                                                                 {!!.10}
+  if ScaleBitmaps then
+    Result := SizeRec(round(Aspect * 8), round(Aspect * 8))
+  else
     Result := SizeRec(8, 8);
 end;
 
@@ -12125,13 +11884,12 @@ begin
   EnqueueElement(Owner.SoftLF);
 end;
 
-{!!.10 new}
 destructor TIpHtmlNodeHR.Destroy;
 begin
   inherited;
   FWidth.Free;
   SizeWidth.Free;
-  FSize.Free;                                                          {!!.10}
+  FSize.Free;
 end;
 
 procedure TIpHtmlNodeHR.WidthChanged(Sender: TObject);
@@ -12293,13 +12051,13 @@ end;
 
 procedure TIpHtmlNodeA.DoOnBlur;
 begin
-  {FHasFocus := False;}                                                {!!.12}
+  {FHasFocus := False;}
   Hot := False;
 end;
 
 procedure TIpHtmlNodeA.DoOnFocus;
 begin
-  {FHasFocus := True;}                                                 {!!.12}
+  {FHasFocus := True;}
   MakeVisible;
   Hot := True;
 end;
@@ -12458,17 +12216,17 @@ var
       if Rest > 0 then begin
         for i := CurCol to CurCol + ColSpan - 1 do
            {Inc(ColTextWidthMin[i],
-             round(Rest * ColTextWidthMin[i] / MinNow));}              {!!.10}
-           ColTextWidthMin[i] := ColTextWidthMin[i] +                  {!!.10}
-             round(Rest * ColTextWidthMin[i] / MinNow);                {!!.10}
+             round(Rest * ColTextWidthMin[i] / MinNow));}
+           ColTextWidthMin[i] := ColTextWidthMin[i] +
+             round(Rest * ColTextWidthMin[i] / MinNow);
         MinNow := 0;
         for i := CurCol to CurCol + ColSpan - 1 do
           Inc(MinNow, ColTextWidthMin[i]);
         Rest := Min0 - MinNow;
         if Rest > 0 then begin
           for i := CurCol to CurCol + ColSpan - 1 do begin
-            {Inc(ColTextWidthMin[i]);}                                 {!!.10}
-            ColTextWidthMin[i] := ColTextWidthMin[i] + 1;              {!!.10}
+            {Inc(ColTextWidthMin[i]);}
+            ColTextWidthMin[i] := ColTextWidthMin[i] + 1;
             Dec(Rest);
             if rest = 0 then
               break;
@@ -12487,17 +12245,17 @@ var
       if Rest > 0 then begin
         for i := CurCol to CurCol + ColSpan - 1 do
            {Inc(ColTextWidthMax[i],
-             round(Rest * ColTextWidthMax[i] / MinNow))}               {!!.10}
-          ColTextWidthMax[i] := ColTextWidthMax[i] +                   {!!.10}
-            round(Rest * ColTextWidthMax[i] / MinNow);                 {!!.10}
+             round(Rest * ColTextWidthMax[i] / MinNow))}
+          ColTextWidthMax[i] := ColTextWidthMax[i] +
+            round(Rest * ColTextWidthMax[i] / MinNow);
         MinNow := 0;
         for i := CurCol to CurCol + ColSpan - 1 do
           Inc(MinNow, ColTextWidthMax[i]);
         Rest := Max0 - MinNow;
         if Rest > 0 then begin
           for i := CurCol to CurCol + ColSpan - 1 do begin
-            {Inc(ColTextWidthMax[i]);}                                 {!!.10}
-            ColTextWidthMax[i] := ColTextWidthMax[i] + 1;              {!!.10}
+            {Inc(ColTextWidthMax[i]);}
+            ColTextWidthMax[i] := ColTextWidthMax[i] + 1;
             Dec(Rest);
             if rest = 0 then
               break;
@@ -12524,28 +12282,28 @@ var
       for i := CurCol to CurCol + ColSpan - 1 do
         Inc(MinNow, ColTextWidthMin[i]);
       if MinNow = 0 then begin
-        Rest := 0;                                                     {!!.10}
-        for i := CurCol to CurCol + ColSpan - 1 do begin               {!!.10}
+        Rest := 0;
+        for i := CurCol to CurCol + ColSpan - 1 do begin
            ColTextWidthMin[i] := Min0 div ColSpan;
-           Inc(Rest, ColTextWidthMin[i]);                              {!!.10}
+           Inc(Rest, ColTextWidthMin[i]);
         end;
-        ColTextWidthMin[0] := ColTextWidthMin[0] + (Min0 - Rest);      {!!.10}
+        ColTextWidthMin[0] := ColTextWidthMin[0] + (Min0 - Rest);
       end else begin
         Rest := Min0 - MinNow;
         if Rest > 0 then begin
           for i := CurCol to CurCol + ColSpan - 1 do
              {Inc(ColTextWidthMin[i],
-               round(Rest * ColTextWidthMin[i] / MinNow));}            {!!.10}
-            ColTextWidthMin[i] := ColTextWidthMin[i] +                 {!!.10}
-              round(Rest * ColTextWidthMin[i] / MinNow);               {!!.10}
+               round(Rest * ColTextWidthMin[i] / MinNow));}
+            ColTextWidthMin[i] := ColTextWidthMin[i] +
+              round(Rest * ColTextWidthMin[i] / MinNow);
           MinNow := 0;
           for i := CurCol to CurCol + ColSpan - 1 do
             Inc(MinNow, ColTextWidthMin[i]);
           Rest := Min0 - MinNow;
           if Rest > 0 then begin
             for i := CurCol to CurCol + ColSpan - 1 do begin
-              {Inc(ColTextWidthMin[i]);}                               {!!.10}
-              ColTextWidthMin[i] := ColTextWidthMin[i] + 1;            {!!.10}
+              {Inc(ColTextWidthMin[i]);}
+              ColTextWidthMin[i] := ColTextWidthMin[i] + 1;
               Dec(Rest);
               if rest = 0 then
                 break;
@@ -12557,28 +12315,28 @@ var
       for i := CurCol to CurCol + ColSpan - 1 do
         Inc(MinNow, ColTextWidthMax[i]);
       if MinNow = 0 then begin
-        Rest := 0;                                                     {!!.10}
+        Rest := 0;
         for i := CurCol to CurCol + ColSpan - 1 do begin
            ColTextWidthMax[i] := Max0 div ColSpan;
-           Inc(Rest, ColTextWidthMax[i]);                              {!!.10}
+           Inc(Rest, ColTextWidthMax[i]);
         end;
-        ColTextWidthMax[0] := ColTextWidthMax[0] + (Max0 - Rest);      {!!.10}
+        ColTextWidthMax[0] := ColTextWidthMax[0] + (Max0 - Rest);
       end else begin
         Rest := Max0 - MinNow;
         if Rest > 0 then begin
           for i := CurCol to CurCol + ColSpan - 1 do
              {Inc(ColTextWidthMax[i],
-               round(Rest * ColTextWidthMax[i] / MinNow));}            {!!.10}
-            ColTextWidthMax[i] := ColTextWidthMax[i] +                 {!!.10}
-              round(Rest * ColTextWidthMax[i] / MinNow);               {!!.10}
+               round(Rest * ColTextWidthMax[i] / MinNow));}
+            ColTextWidthMax[i] := ColTextWidthMax[i] +
+              round(Rest * ColTextWidthMax[i] / MinNow);
           MinNow := 0;
           for i := CurCol to CurCol + ColSpan - 1 do
             Inc(MinNow, ColTextWidthMax[i]);
           Rest := Max0 - MinNow;
           if Rest > 0 then begin
             for i := CurCol to CurCol + ColSpan - 1 do begin
-              {Inc(ColTextWidthMax[i]);}                               {!!.10}
-              ColTextWidthMax[i] := ColTextWidthMax[i] + 1;            {!!.10}
+              {Inc(ColTextWidthMax[i]);}
+              ColTextWidthMax[i] := ColTextWidthMax[i] + 1;
               Dec(Rest);
               if rest = 0 then
                 break;
@@ -12587,170 +12345,11 @@ var
         end;
       end;
       for i := 0 to Pred(ColCount) do begin
-        {ColTextWidthMin[i] := MinI2(ColTextWidthMin[i], ColTextWidthMax[i]);} {!!.10}
+        {ColTextWidthMin[i] := MinI2(ColTextWidthMin[i], ColTextWidthMax[i]);}
         ColTextWidthMax[i] := MaxI2(ColTextWidthMin[i], ColTextWidthMax[i]);
       end;
     end;
   end;
-
-  (*
-  procedure BumpPercentages;
-  var
-    i, j, k, z : Integer;
-    MaxPercent, Pix : Integer;
-  begin
-    for i := 0 to Pred(ColCount) do
-      RowSp[i] := 0;
-    for z := 0 to Pred(FChildren.Count) do
-      if (TIpHtmlNode(FChildren[z]) is TIpHtmlNodeTHeadFootBody) then
-        with TIpHtmlNodeCore(FChildren[z]) do
-          for i := 0 to Pred(FChildren.Count) do begin
-            if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeTR then
-              with TIpHtmlNodeTR(FChildren[i]) do begin
-                MaxPercent := 0;
-                CurCol := 0;
-                while RowSp[CurCol] <> 0 do begin
-                  Dec(RowSp[CurCol]);
-                  Inc(CurCol);
-                end;
-                for j := 0 to Pred(FChildren.Count) do
-                  if TIpHtmlNode(FChildren[j]) is TIpHtmlNodeTableHeaderOrCell then
-                    with TIpHtmlNodeTableHeaderOrCell(FChildren[j]) do begin
-
-                      case Width.LengthType of
-                      hlPercent :
-                        begin
-                          Pix := 0;
-                          for k := 0 to Pred(ColSpan) do
-                            if RowSp[CurCol + k] = 0 then
-                              Inc(Pix, ColTextWidthMin[CurCol + k]);
-                          Pix := round(100 * Pix / Width.LengthValue);
-                          if Pix > MaxPercent then
-                            MaxPercent := Pix;
-                        end;
-                      end;
-                      for k := 0 to Pred(ColSpan) do begin
-                        while RowSp[CurCol] <> 0 do
-                          Inc(CurCol);
-                        Inc(CurCol);
-                      end;
-                    end;
-                CurCol := 0;
-                while RowSp[CurCol] <> 0 do begin
-                  Dec(RowSp[CurCol]);
-                  Inc(CurCol);
-                end;
-                for j := 0 to Pred(FChildren.Count) do
-                  if TIpHtmlNode(FChildren[j]) is TIpHtmlNodeTableHeaderOrCell then
-                    with TIpHtmlNodeTableHeaderOrCell(FChildren[j]) do begin
-
-                      case Width.LengthType of
-                      hlPercent :
-                        if MaxPercent > 0 then begin
-                          Pix := 0;
-                          for k := 0 to Pred(ColSpan) do
-                            if RowSp[CurCol + k] = 0 then
-                              Inc(Pix, ColTextWidthMin[CurCol + k]);
-                          if Pix < round(Width.LengthValue * MaxPercent / 100) then begin
-                            Pix := (round(MaxPercent * Width.LengthValue / 100) - Pix)
-                              div ColSpan;
-                            for k := 0 to Pred(ColSpan) do
-                              if RowSp[CurCol + k] = 0 then
-                                Inc(ColTextWidthMin[CurCol + k], Pix);
-                          end;
-                        end;
-                      end;
-                      for k := 0 to Pred(ColSpan) do begin
-                        while RowSp[CurCol] <> 0 do begin
-                          Dec(RowSp[CurCol]);
-                          Inc(CurCol);
-                        end;
-                        RowSp[CurCol] := RowSpan - 1;
-                        Inc(CurCol);
-                      end;
-                    end;
-                for j := CurCol to Pred(ColCount) do
-                  if RowSp[j] > 0 then
-                    Dec(RowSp[j]);
-              end;
-          end;
-    for i := 0 to Pred(ColCount) do
-      RowSp[i] := 0;
-    for z := 0 to Pred(FChildren.Count) do
-      if (TIpHtmlNode(FChildren[z]) is TIpHtmlNodeTHeadFootBody) then
-        with TIpHtmlNodeCore(FChildren[z]) do
-          for i := 0 to Pred(FChildren.Count) do begin
-            if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeTR then
-              with TIpHtmlNodeTR(FChildren[i]) do begin
-                MaxPercent := 0;
-                CurCol := 0;
-                while RowSp[CurCol] <> 0 do begin
-                  Dec(RowSp[CurCol]);
-                  Inc(CurCol);
-                end;
-                for j := 0 to Pred(FChildren.Count) do
-                  if TIpHtmlNode(FChildren[j]) is TIpHtmlNodeTableHeaderOrCell then
-                    with TIpHtmlNodeTableHeaderOrCell(FChildren[j]) do begin
-
-                      case Width.LengthType of
-                      hlPercent :
-                        begin
-                          Pix := 0;
-                          for k := 0 to Pred(ColSpan) do
-                            if RowSp[CurCol + k] = 0 then
-                              Inc(Pix, ColTextWidthMax[CurCol + k]);
-                          Pix := round(100 * Pix / Width.LengthValue);
-                          if Pix > MaxPercent then
-                            MaxPercent := Pix;
-                        end;
-                      end;
-                      for k := 0 to Pred(ColSpan) do begin
-                        while RowSp[CurCol] <> 0 do
-                          Inc(CurCol);
-                        Inc(CurCol);
-                      end;
-                    end;
-                CurCol := 0;
-              while RowSp[CurCol] <> 0 do begin
-                Dec(RowSp[CurCol]);
-                Inc(CurCol);
-              end;
-                for j := 0 to Pred(FChildren.Count) do
-                  if TIpHtmlNode(FChildren[j]) is TIpHtmlNodeTableHeaderOrCell then
-                    with TIpHtmlNodeTableHeaderOrCell(FChildren[j]) do begin
-
-                      case Width.LengthType of
-                      hlPercent :
-                        if MaxPercent > 0 then begin
-                          Pix := 0;
-                          for k := 0 to Pred(ColSpan) do
-                            if RowSp[CurCol + k] = 0 then
-                              Inc(Pix, ColTextWidthMax[CurCol + k]);
-                          if Pix < round(Width.LengthValue * MaxPercent / 100) then begin
-                            Pix := (round(MaxPercent * Width.LengthValue / 100) - Pix)
-                              div ColSpan;
-                            for k := 0 to Pred(ColSpan) do
-                              if RowSp[CurCol + k] = 0 then
-                                Inc(ColTextWidthMax[CurCol + k], Pix);
-                          end;
-                        end;
-                      end;
-                      for k := 0 to Pred(ColSpan) do begin
-                        while RowSp[CurCol] <> 0 do begin
-                          Dec(RowSp[CurCol]);
-                          Inc(CurCol);
-                        end;
-                        RowSp[CurCol] := RowSpan - 1;
-                        Inc(CurCol);
-                      end;
-                    end;
-                for j := CurCol to Pred(ColCount) do
-                  if RowSp[j] > 0 then
-                    Dec(RowSp[j]);
-              end;
-          end;
-  end;
-  *)
 
 begin
   if FMin <> -1 then begin
@@ -12764,15 +12363,15 @@ begin
   if ColCount = 0 then
     Exit;
 
-  PendSpanWidthMin := nil;                                             {!!.10}
-  PendSpanWidthMax := nil;                                             {!!.10}
-  PendSpanStart := nil;                                                {!!.10}
-  PendSpanSpan := nil;                                                 {!!.10}
-  try                                                                  {!!.10}
-    PendSpanWidthMin := TIntArr.Create;                                {!!.10}
-    PendSpanWidthMax := TIntArr.Create;                                {!!.10}
-    PendSpanStart := TIntArr.Create;                                   {!!.10}
-    PendSpanSpan := TIntArr.Create;                                    {!!.10}
+  PendSpanWidthMin := nil;
+  PendSpanWidthMax := nil;
+  PendSpanStart := nil;
+  PendSpanSpan := nil;
+  try
+    PendSpanWidthMin := TIntArr.Create;
+    PendSpanWidthMax := TIntArr.Create;
+    PendSpanStart := TIntArr.Create;
+    PendSpanSpan := TIntArr.Create;
 
     {calc col and table widths}
     for i := 0 to Pred(ColCount) do begin
@@ -12789,44 +12388,44 @@ begin
               with TIpHtmlNodeTR(FChildren[i]) do begin
                 CurCol := 0;
                 while RowSp[CurCol] <> 0 do begin
-                  {Dec(RowSp[CurCol]);}                                  {!!.10}
-                  RowSp[CurCol] := RowSp[CurCol] - 1;                    {!!.10}
+                  {Dec(RowSp[CurCol]);}
+                  RowSp[CurCol] := RowSp[CurCol] - 1;
                   Inc(CurCol);
                 end;
                 for j := 0 to Pred(FChildren.Count) do
                   if TIpHtmlNode(FChildren[j]) is TIpHtmlNodeTableHeaderOrCell then
                     with TIpHtmlNodeTableHeaderOrCell(FChildren[j]) do begin
 
-                      while RowSp[CurCol] <> 0 do begin                {!!.10}
-                        RowSp[CurCol] := RowSp[CurCol] - 1;            {!!.10}
-                        Inc(CurCol);                                   {!!.10}
-                      end;                                             {!!.10}
+                      while RowSp[CurCol] <> 0 do begin
+                        RowSp[CurCol] := RowSp[CurCol] - 1;
+                        Inc(CurCol);
+                      end;
 
                       CalcMinMaxWidth(RenderProps, Min0, Max0);
 
                       case Width.LengthType of
                       hlAbsolute :
                         begin
-                          if Width.LengthValue <= ExpParentWidth then  {!!.10}
+                          if Width.LengthValue <= ExpParentWidth then
                             Min0 := MaxI2(Min0, Width.LengthValue
                             {$IFDEF IP_LAZARUS}
-                              - 2*CellPadding - CellSpacing - RUH);    {!!.10}
+                              - 2*CellPadding - CellSpacing - RUH);
                             {$ELSE}
-                              - 2*CellPadding - 2*CS2 - RUH);          {!!.10}
+                              - 2*CellPadding - 2*CS2 - RUH);
                             {$ENDIF}
                           Max0 := Min0;
                         end;
                       end;
 
-                      FCalcWidthMin := Min0;                           {!!.10}
-                      FCalcWidthMax := Max0;                           {!!.10}
+                      FCalcWidthMin := Min0;
+                      FCalcWidthMax := Max0;
 
                       DistributeColSpace(ColSpan);
 
                       for k := 0 to Pred(ColSpan) do begin
                         while RowSp[CurCol] <> 0 do begin
-                          {Dec(RowSp[CurCol]);}                        {!!.10}
-                          RowSp[CurCol] := RowSp[CurCol] - 1;          {!!.10}
+                          {Dec(RowSp[CurCol]);}
+                          RowSp[CurCol] := RowSp[CurCol] - 1;
                           Inc(CurCol);
                         end;
                         RowSp[CurCol] := RowSpan - 1;
@@ -12835,12 +12434,10 @@ begin
                     end;
                 for j := CurCol to Pred(ColCount) do
                   if RowSp[j] > 0 then
-                    {Dec(RowSp[j]);}                                   {!!.10}
-                    RowSp[j] := RowSp[j] - 1;                          {!!.10}
+                    {Dec(RowSp[j]);}
+                    RowSp[j] := RowSp[j] - 1;
               end;
           end;
-
-      {BumpPercentages;} {!!.02}
 
       DistributeSpannedColSpace;
   finally
@@ -12922,56 +12519,17 @@ end;
 
 procedure TIpHtmlNodeTABLE.CalcSize(const ParentWidth: Integer;
   const RenderProps: TIpHtmlProps);
-{const}
-  {MAXCOLS = 16384; 4096;}                                {!!.01}      {!!.10}
-  {MAXSPANROWS = 16384;} {4096;}                          {!!.01}      {!!.10}
-{type}                                                                 {!!.10}
-  {TPRectArray = array[0..Pred(MAXCOLS)] of PRect;
-  PPRectArray = ^TPRectArray;}                                         {!!.10}
-  (* !!.10
-  TColPArr = record
-    ColCount : Integer;
-    Rects : TRectArr; {PPRectArray;}
-  end;
-  TRowSArr = array[0..Pred(MaxSPANROWS)] of TColPArr;
-  PRowSArr = ^TRowSArr;
-  *)
 var
   z, GrossCellSpace, NetCellSpace, CellExtra,
   NetCellSpaceExtraExtra,
-  {maxY, maxYY,}       {moved into DoBlock}                            {!!.12}
   RelCellExtra,
   i, j, CurCol, k,
-  {HA, HB, Y0,}        {moved into DoBlock}                            {!!.12}
   CellSpace,
   MinW, MaxW : Integer;
-  {CellRect1 : TRect;} {moved into DoBlock}                            {!!.12}
   R : TRect;
   TargetRect : TRect;
   RowFixup : TRectRectArr; {PRowSArr;}
   RowFixupCount : Integer;
-  {RowSp2 : TIntArr;}
-  {VA0, VA : TIpHtmlVAlign3;}{moved into DoBlock}                      {!!.12}
-  {AL0, AL : TIpHtmlAlign;} {moved into DoBlock}                       {!!.12}
-
-  (*
-   !!.10 no longer needed:
-  procedure AddSpanRow(Cols: Integer);
-  begin
-    ReAllocMem(RowFixup, (RowFixupCount + 1) * sizeof(TColPArr));
-    with RowFixup[RowFixupCount] do begin
-      ColCount := Cols;
-      Rects := AllocMem(Cols * sizeof(PRect));
-    end;
-    Inc(RowFixupCount);
-  end;
-
-  procedure SetSpanRows(Rows, Cols: Integer);
-  begin
-    while RowFixupCount < Rows do
-      AddSpanRow(Cols);
-  end;
-  *)
 
   function GetSpanBottom(Row, Col: Integer): Integer;
   var
@@ -12982,15 +12540,6 @@ var
       Result := R.Bottom
     else
       Result := 0;
-    (* !!.10 no longer needed:
-    if Row < RowFixupCount then
-      {if RowFixup[Row].Rects[Col] <> nil then}
-        Result := RowFixup[Row].Rects.Rect[Col].Bottom
-      {else
-        Result := 0}
-    else
-      Result := 0;
-    *)
   end;
 
   procedure SetSpanBottom(Row, Col, Value: Integer);
@@ -13000,53 +12549,18 @@ var
     R := RowFixup.Value[Row].Value[Col];
     if R <> nil then
       R^.Bottom := Value;
-    (* !!.10 no longer needed:
-    if Row < RowFixupCount then
-      {if RowFixup[Row].Rects[Col] <> nil then}
-        RowFixup[Row].Rects.Rect[Col].Bottom := Value;
-    *)
   end;
 
   procedure SetSpanRect(Row,Col : Integer; const Rect: PRect);
   begin
-    RowFixup[Row].Value[Col] := Rect;                                  {!!.10}
-    {RowFixup[Row].Rects[Col] := Rect^;}                               {!!.10}
+    RowFixup[Row].Value[Col] := Rect;
   end;
 
   procedure DeleteFirstSpanRow;
-  {var
-    i : Integer;}
   begin
     RowFixup.Delete(0);
-    (* !!.10 no longer needed:
-    if RowFixup <> nil then begin
-      Assert((RowFixupCount = 0) or not IsBadWritePtr(RowFixup[0].Rects, 4));
-      RowFixup[0].Rects.Free;
-      {if RowFixup[0].Rects <> nil then
-        {FreeMem(RowFixup[0].Rects);}
-      Dec(RowFixupCount);
-      for i := 0 to Pred(RowFixupCount) do
-        RowFixup[i] := RowFixup[i + 1];
-      ReAllocMem(RowFixup, RowFixupCount * sizeof(TColPArr));
-      {redundant:
-      if RowFixupCount = 0 then begin
-        FreeMem(RowFixup);
-        RowFixup := nil;
-      end;
-      }
-      Assert((RowFixupCount = 0) or not IsBadWritePtr(RowFixup[0].Rects, 4));
-    end;
-    *)
   end;
 
-  (*
-  procedure DeleteSpanArray;
-  begin
-    while RowFixup <> nil do
-      DeleteFirstSpanRow;
-  end;
-  *)
-  
   procedure AdjustCol(ColSpan, DesiredWidth: Integer);
   var
     i, Rest, WNow, Avail : Integer;
@@ -13063,9 +12577,9 @@ var
       if Rest > 0 then begin
         for i := CurCol to CurCol + ColSpan - 1 do
            {Inc(ColTextWidth[i],
-             round(Rest * ColTextWidth[i] / WNow));}                   {!!.10}
-          ColTextWidth[i] := ColTextWidth[i] +                         {!!.10}
-            round(Rest * ColTextWidth[i] / WNow);                      {!!.10}
+             round(Rest * ColTextWidth[i] / WNow));}
+          ColTextWidth[i] := ColTextWidth[i] +
+            round(Rest * ColTextWidth[i] / WNow);
       end;
     end;
   end;
@@ -13074,13 +12588,13 @@ var
   var
     z, i, j, k, zz : Integer;
     RowSp2 : TIntArr;
-    AL0, AL : TIpHtmlAlign;                                            {!!.12}
-    CellRect1 : TRect;                                                 {!!.12}
-    HA, HB, Y0: Integer;                                               {!!.12}
-    maxY, maxYY: Integer;                                              {!!.12}
-    VA0, VA : TIpHtmlVAlign3;                                          {!!.12}
+    AL0, AL : TIpHtmlAlign;
+    CellRect1 : TRect;
+    HA, HB, Y0: Integer;
+    maxY, maxYY: Integer;
+    VA0, VA : TIpHtmlVAlign3;
   begin
-    RowSp2 := TIntArr.Create;                                          {!!.10}
+    RowSp2 := TIntArr.Create;
     try
       for z := 0 to Pred(FChildren.Count) do
         if (TIpHtmlNode(FChildren[z]) is BlockType) then
@@ -13094,8 +12608,7 @@ var
 
                   CurCol := 0;
                   while RowSp[CurCol] <> 0 do begin
-                    {Dec(RowSp[CurCol]);}                                {!!.10}
-                    RowSp[CurCol] := RowSp[CurCol] - 1;                  {!!.10}
+                    RowSp[CurCol] := RowSp[CurCol] - 1;
                     Inc(CurCol);
                   end;
 
@@ -13121,8 +12634,7 @@ var
                     if TIpHtmlNode(FChildren[j]) is TIpHtmlNodeTableHeaderOrCell then
                       with TIpHtmlNodeTableHeaderOrCell(FChildren[j]) do begin
                         while RowSp[CurCol] <> 0 do begin
-                          {Dec(RowSp[CurCol]);}                          {!!.10}
-                          RowSp[CurCol] := RowSp[CurCol] - 1;            {!!.10}
+                          RowSp[CurCol] := RowSp[CurCol] - 1;
                           Inc(CurCol);
                         end;
 
@@ -13190,13 +12702,11 @@ var
                         Props.Alignment := AL;
                         Layout(Props, CellRect1);
 
-                        {SetSpanRows(MaxI2(RowSpan, RowFixupCount + 1), ColCount);} {!!.10}
+                        if (Height.PixelsType <> hpUndefined) {Height <> -1} then
+                          if PageRect.Bottom - PageRect.Top < Height.Value then
+                            FPageRect.Bottom := CellRect1.Top + Height.Value;
 
-                        if (Height.PixelsType <> hpUndefined) {Height <> -1} then {!!.10}
-                          if PageRect.Bottom - PageRect.Top < Height.Value then   {!!.10}
-                            FPageRect.Bottom := CellRect1.Top + Height.Value;     {!!.10}
-
-                        if (Height.PixelsType = hpUndefined) {Height = -1}        {!!.10}
+                        if (Height.PixelsType = hpUndefined) {Height = -1}
                         and IsRectEmpty(PageRect) then
                           FPadRect.Bottom := CellRect1.Top + CellPadding
                         else begin
@@ -13213,8 +12723,8 @@ var
                   {Adjust any trailing spanning columns}
                   for j := CurCol to Pred(ColCount) do
                     if RowSp[j] > 0 then
-                      {Dec(RowSp[j]);}                                   {!!.10}
-                      RowSp[j] := RowSp[j] - 1;                          {!!.10}
+                      {Dec(RowSp[j]);}
+                      RowSp[j] := RowSp[j] - 1;
 
                   maxYY := 0;
                   maxY := 0;
@@ -13232,8 +12742,8 @@ var
 
                   CurCol := 0;
                   while RowSp[CurCol] <> 0 do begin
-                    {Dec(RowSp[CurCol]);}                                {!!.10}
-                    RowSp[CurCol] := RowSp[CurCol] - 1;                  {!!.10}
+                    {Dec(RowSp[CurCol]);}
+                    RowSp[CurCol] := RowSp[CurCol] - 1;
                     Inc(CurCol);
                   end;
                   {relocate cells which are not top aligned}
@@ -13241,8 +12751,8 @@ var
                     if TIpHtmlNode(FChildren[j]) is TIpHtmlNodeTableHeaderOrCell then
                       with TIpHtmlNodeTableHeaderOrCell(FChildren[j]) do begin
                         while RowSp[CurCol] <> 0 do begin
-                          {Dec(RowSp[CurCol]);}                          {!!.10}
-                          RowSp[CurCol] := RowSp[CurCol] - 1;            {!!.10}
+                          {Dec(RowSp[CurCol]);}
+                          RowSp[CurCol] := RowSp[CurCol] - 1;
                           Inc(CurCol);
                         end;
 
@@ -13319,13 +12829,11 @@ var
 
                           Layout(Props, CellRect1);
 
-                          {SetSpanRows(MaxI2(RowSpan, RowFixupCount + 1), ColCount);} {!!.10}
+                          if Height.PixelsType <> hpUndefined {Height <> -1} then
+                            if PageRect.Bottom - PageRect.Top < Height.Value then
+                              FPageRect.Bottom := CellRect1.Top + Height.Value;
 
-                          if Height.PixelsType <> hpUndefined {Height <> -1} then {!!.10}
-                            if PageRect.Bottom - PageRect.Top < Height.Value then {!!.10}
-                              FPageRect.Bottom := CellRect1.Top + Height.Value;   {!!.10}
-
-                          if (Height.PixelsType = hpUndefined) {(Height = -1)}    {!!.10}
+                          if (Height.PixelsType = hpUndefined) {(Height = -1)}
                           and IsRectEmpty(PageRect) then
                             FPadRect.Bottom := CellRect1.Top + CellPadding
                           else begin
@@ -13356,8 +12864,8 @@ var
                   {Adjust any trailing spanning columns}
                   for j := CurCol to Pred(ColCount) do
                     if RowSp[j] > 0 then
-                      {Dec(RowSp[j]);}                                   {!!.10}
-                      RowSp[j] := RowSp[j] - 1;                          {!!.10}    
+                      {Dec(RowSp[j]);}
+                      RowSp[j] := RowSp[j] - 1;
 
                   {$IFDEF IP_LAZARUS}
                   TargetRect.Top := MaxI2(maxYY, TargetRect.Top) + RUV;
@@ -13391,16 +12899,11 @@ var
 
 var
   P : Integer;
-  {Red : Double;}
 begin
-
   FTableWidth := 0;
-
   if ColCount = 0 then
     Exit;
-
   Props.Assign(RenderProps);
-
   CalcMinMaxColTableWidth(Props, MinW, MaxW);
 
   case Width.LengthType of
@@ -13425,7 +12928,7 @@ begin
                 end;
             end;
       if P <> 0 then
-        FTableWidth := MaxI2(MinW, round((P * ParentWidth) / 100))      {!!.10}
+        FTableWidth := MaxI2(MinW, round((P * ParentWidth) / 100))
       else
         FTableWidth := MaxI2(MinW, MinI2(MaxW, ParentWidth));
     end;
@@ -13433,29 +12936,13 @@ begin
     FTableWidth :=
       MaxI2(Width.LengthValue, MinW);
   hlPercent :
-    FTableWidth := MaxI2(MinW,                                          {!!.10}
+    FTableWidth := MaxI2(MinW,
       round(
          (Width.LengthValue * ParentWidth) / 100));
   end;
 
-  (* !!.13
-  if FTableWidth >= MaxW then begin
-    for i := 0 to Pred(ColCount) do
-      ColTextWidth[i] := ColTextWidthMin[i];
-  end else begin
-    {if TableWidth < MinW then begin
-      Red := TableWidth / MinW;
-      for i := 0 to Pred(ColCount) do begin
-        ColTextWidthMin[i] := round(Red * ColTextWidthMin[i]);
-        ColTextWidth[i] := ColTextWidthMin[i];
-      end;
-    end else}
-      for i := 0 to Pred(ColCount) do
-        ColTextWidth[i] := ColTextWidthMin[i];
-  end;
-  *)
-  for i := 0 to Pred(ColCount) do                                    {!!.13}
-    ColTextWidth[i] := ColTextWidthMin[i];                           {!!.13}
+  for i := 0 to Pred(ColCount) do
+    ColTextWidth[i] := ColTextWidthMin[i];
 
   for z := 0 to Pred(ColCount) do
     RowSp[z] := 0;
@@ -13475,8 +12962,7 @@ begin
                 {distribute extra space}
                 CurCol := 0;
                 while RowSp[CurCol] <> 0 do begin
-                  {Dec(RowSp[CurCol]);}                                {!!.10}
-                  RowSp[CurCol] := RowSp[CurCol] - 1;                  {!!.10} 
+                  RowSp[CurCol] := RowSp[CurCol] - 1;
                   Inc(CurCol);
                 end;
                 for j := 0 to Pred(FChildren.Count) do
@@ -13503,8 +12989,7 @@ begin
 
                       for k := 0 to Pred(ColSpan) do begin
                         while RowSp[CurCol] <> 0 do begin
-                          {Dec(RowSp[CurCol]);}                        {!!.10}
-                          RowSp[CurCol] := RowSp[CurCol] - 1;          {!!.10}
+                          RowSp[CurCol] := RowSp[CurCol] - 1;
                           Inc(CurCol);
                         end;
                         RowSp[CurCol] := RowSpan - 1;
@@ -13513,8 +12998,7 @@ begin
                     end;
                 for j := CurCol to Pred(ColCount) do
                   if RowSp[j] > 0 then
-                    {Dec(RowSp[j]);}                                   {!!.10}
-                    RowSp[j] := RowSp[j] - 1;                          {!!.10}
+                    RowSp[j] := RowSp[j] - 1;
               end;
             end;
         end;
@@ -13546,8 +13030,7 @@ begin
       if (ColTextWidth[i] < ColTextWidthMax[i]) then begin
         ColTextWidth[i] := ColTextWidth[i] + RelCellExtra;
         if NetCellSpaceExtraExtra > 0 then begin
-          {Inc(ColTextWidth[i]);}                                      {!!.10}
-          ColTextWidth[i] := ColTextWidth[i] + 1;                      {!!.10}
+          ColTextWidth[i] := ColTextWidth[i] + 1;
           Dec(NetCellSpaceExtraExtra);
         end;
       end;
@@ -13561,8 +13044,7 @@ begin
     for i := 0 to Pred(ColCount) do begin
       RelCellExtra := MinI2(ColTextWidthMax[i] - ColTextWidth[i], CellExtra);
       if RelCellExtra > 0 then begin
-        {Inc(ColTextWidth[i], RelCellExtra);}                          {!!.10}
-        ColTextWidth[i] := ColTextWidth[i] + RelCellExtra;             {!!.10}
+        ColTextWidth[i] := ColTextWidth[i] + RelCellExtra;
         Dec(CellExtra, RelCellExtra);
       end;
     end;
@@ -13577,8 +13059,7 @@ begin
     for i := 0 to Pred(ColCount) do begin
       ColTextWidth[i] := ColTextWidth[i] + RelCellExtra;
       if NetCellSpaceExtraExtra > 0 then begin
-        {Inc(ColTextWidth[i]);}                                        {!!.10}
-        ColTextWidth[i] := ColTextWidth[i] + 1;                        {!!.10}
+        ColTextWidth[i] := ColTextWidth[i] + 1;
         Dec(NetCellSpaceExtraExtra);
       end;
     end;
@@ -13639,11 +13120,6 @@ begin
     DoBlock(TIpHtmlNodeTHEAD);
     DoBlock(TIpHtmlNodeTBODY);
     DoBlock(TIpHtmlNodeTFOOT);
-
-    {DeleteSpanArray;}                                                 {!!.10}
-
-    {if RowFixup <> nil then
-      FreeMem(RowFixup);}                                              {!!.10}
   finally
     RowFixup.Free;
   end;
@@ -13849,7 +13325,7 @@ procedure TIpHtmlNodeTABLE.SetProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
   Props.NoBreak := False;
-  inherited SetProps(RenderProps);                                     {!!.10}
+  inherited SetProps(RenderProps);
 end;
 
 function TIpHtmlNodeTABLE.GetDim(ParentWidth: Integer): TSize;
@@ -14148,36 +13624,17 @@ end;
 { TIpHtmlNodeIMG }
 
 procedure TIpHtmlNodeIMG.LoadImage;
-{var !!.10 no longer used
-  ScaledImage : TPicture;
-  ScaledBmp : TBitmap;}
 begin
   if Src <> '' then begin
-    if FPicture <> Owner.DefaultImage then begin                       {!!.10}
-      FPicture.Free;                                                   {!!.10}
-      FPicture := nil;                                                 {!!.10}
-    end;                                                               {!!.10}
+    if FPicture <> Owner.DefaultImage then begin
+      FPicture.Free;
+      FPicture := nil;
+    end;
     Owner.DoGetImage(Self, Owner.BuildPath(Src), FPicture);
     if FPicture = nil
       then FPicture := Owner.DefaultImage;
 
-    (* !!.10 no longer used
-    if ScaleBitmaps then begin                                         {!!.02}
-      ScaledImage := TPicture.Create;                                  {!!.02}
-      ScaledBmp := TBitmap.Create;                                     {!!.02}
-      ScaledBmp.Width := round(FPicture.Width * Aspect);               {!!.02}
-      ScaledBmp.Height := round(FPicture.Height * Aspect);             {!!.02}
-      ScaledImage.Graphic := ScaledBmp;                                {!!.02}
-      ScaledImage.Bitmap.Canvas.StretchDraw(                           {!!.02}
-        Rect(0, 0, ScaledBmp.Width - 1, ScaledBmp.Height - 1),         {!!.02}
-        FPicture.Graphic);                                             {!!.02}
-      ScaledBmp.Free;                                                  {!!.10}
-      FPicture.Free;                                                   {!!.02}
-      FPicture := ScaledImage;                                         {!!.02}
-    end;                                                               {!!.02}
-    *)
-
-   {$IFDEF IP_LAZARUS} //JMN
+   {$IFDEF IP_LAZARUS}
       {$IFDEF UseGifImageUnit}
       if (FPicture <> nil)
       and (FPicture.Graphic <> nil)
@@ -14196,7 +13653,7 @@ begin
     and (FPicture.Graphic <> nil) then  begin
       if  FPicture.Graphic is TGifImage
       then  Owner.GifImages.Add(Self)
-      else  Owner.OtherImages.Add(Self); //JMN
+      else  Owner.OtherImages.Add(Self);
     end;
     {$ENDIF}
   end;
@@ -14205,7 +13662,7 @@ end;
 {!!.02 new - logic moved here from .Destroy}
 procedure TIpHtmlNodeIMG.UnloadImage;
 begin
-  {$IFDEF IP_LAZARUS} //JMN
+  {$IFDEF IP_LAZARUS}
     {$IFDEF UseGifImageUnit}
     if (FPicture <> nil)
     and (FPicture.Graphic <> nil)
@@ -14224,7 +13681,7 @@ begin
   and (FPicture.Graphic <> nil)  then  begin
     if  FPicture.Graphic is TGifImage
     then  Owner.GifImages.Remove(Self)
-    else  Owner.OtherImages.Remove(Self); //JMN
+    else  Owner.OtherImages.Remove(Self);
   end;
   {$ENDIF}
   if FPicture <> Owner.DefaultImage then begin
@@ -14235,12 +13692,12 @@ end;
 
 destructor TIpHtmlNodeIMG.Destroy;
 begin
-  UnloadImage;                                                         {!!.02}
+  UnloadImage;
   UseMap := '';
   inherited;
-  FWidth.Free;                                                         {!!.10}
-  SizeWidth.Free;                                                      {!!.10}
-  FHeight.Free;                                                        {!!.10}
+  FWidth.Free;
+  SizeWidth.Free;
+  FHeight.Free;
 end;
 
 {$IFDEF IP_LAZARUS}
@@ -14261,7 +13718,7 @@ begin
   if FPicture = nil then
     LoadImage;
 
-  if (FPicture <> nil) and (FPicture.Graphic = nil) then               {!!.15}
+  if (FPicture <> nil) and (FPicture.Graphic = nil) then
     LoadImage;
   Owner.AddRect(GrossDrawRect, Element, Block);
   TopLeft := GrossDrawRect.TopLeft;
@@ -14336,7 +13793,7 @@ begin
     FPicture.Graphic.Transparent := True;
     NetDrawRect := R;
     if PageRectToScreen(R, R) then begin
-      {$IFDEF IP_LAZARUS} //JMN
+      {$IFDEF IP_LAZARUS}
         {$IFDEF UseGifImageUnit}
         if (FPicture.Graphic is TGifImage)
         and (TGifImage(FPicture.Graphic).Images.Count > 1) then begin
@@ -14363,7 +13820,7 @@ begin
             Owner.Target.StretchDraw(R, FPicture.Graphic);
         end else
           Owner.Target.StretchDraw(R, FPicture.Graphic);
-      {$IFDEF IP_LAZARUS} //JMN
+      {$IFDEF IP_LAZARUS}
       end;
       {$ENDIF}
     end;
@@ -14395,7 +13852,7 @@ begin
   Owner.CheckImage(NewPicture);
   {$ENDIF}
   OldDim := GetDim(-1);
-  {$IFDEF IP_LAZARUS} //JMN
+  {$IFDEF IP_LAZARUS}
     {$IFDEF UseGifImageUnit}
     if (FPicture <> nil)
     and (FPicture.Graphic <> nil)
@@ -14414,13 +13871,13 @@ begin
   and (FPicture.Graphic <> nil) then  begin
     if  FPicture.Graphic is TGifImage
     then  Owner.GifImages.Remove(Self)
-    else  Owner.OtherImages.Remove(Self); //JMN
+    else  Owner.OtherImages.Remove(Self);
   end;
  {$ENDIF}
   if FPicture <> Owner.DefaultImage then
     FPicture.Free;
   FPicture := NewPicture;
-  {$IFDEF IP_LAZARUS} //JMN
+  {$IFDEF IP_LAZARUS}
     {$IFDEF UseGifImageUnit}
     if (FPicture <> nil)
     and (FPicture.Graphic <> nil)
@@ -14439,7 +13896,7 @@ begin
   and (FPicture.Graphic <> nil) then  begin
     if  FPicture.Graphic is TGifImage
     then  Owner.GifImages.Add(Self)
-    else  Owner.OtherImages.Add(Self); //JMN
+    else  Owner.OtherImages.Add(Self);
   end;
  {$ENDIF}
   SizeWidth.PixelsType := hpUndefined;
@@ -14468,7 +13925,7 @@ begin
   if (SizeWidth.PixelsType <> hpAbsolute)
   or ((ParentWidth <> 0) and (SizeWidth.Value <> ParentWidth)) then begin
     DimKnown := True;
-    if (Height.PixelsType <> hpUndefined) {(Height > -1)}              {!!.10}
+    if (Height.PixelsType <> hpUndefined)
     and (Width.LengthType <> hlUndefined) then begin
       case Width.LengthType of
       hlUndefined :
@@ -14481,8 +13938,8 @@ begin
         begin
           FSize := SizeRec(
             round(ParentWidth * Width.LengthValue / 100)
-               - 2*HSpace - 2*Border,                                  {!!.10}
-            Height.Value);                                             {!!.10}
+               - 2*HSpace - 2*Border,
+            Height.Value);
         end;
       end;
     end else
@@ -14495,7 +13952,7 @@ begin
           FSize := SizeRec(100,20)
         else
         {$ENDIF}
-        if ScaleBitmaps then                                         {!!.10}
+        if ScaleBitmaps then
           FSize := SizeRec(round(FPicture.Width * Aspect), round(FPicture.Height * Aspect))
         else
           FSize := SizeRec(FPicture.Width, FPicture.Height)
@@ -14505,7 +13962,7 @@ begin
         else begin
           LoadImage;
           if FPicture <> nil then begin
-            if ScaleBitmaps then                                         {!!.10}
+            if ScaleBitmaps then
               FSize := SizeRec(round(FPicture.Width * Aspect), round(FPicture.Height * Aspect))
             else
               {$IFDEF IP_LAZARUS}
@@ -14530,12 +13987,12 @@ begin
           begin
             FSize := SizeRec(
               round(ParentWidth * Width.LengthValue / 100)
-               - 2*HSpace - 2*Border,                                  {!!.10}
+               - 2*HSpace - 2*Border,
               FSize.cy);
           end;
         end;
-        if Height.PixelsType <> hpUndefined {Height <> -1} then        {!!.10}
-          FSize.cy := Height.Value;                                    {!!.10}
+        if Height.PixelsType <> hpUndefined {Height <> -1} then
+          FSize.cy := Height.Value;
       end;
     end;
     FSize := SizeRec(FSize.cx + 2*HSpace + 2*Border, FSize.cy + 2*VSpace + 2*Border);
@@ -14590,7 +14047,6 @@ begin
   InvalidateSize;
 end;
 
-{!!.10 new}
 constructor TIpHtmlNodeIMG.Create;
 begin
   inherited;
@@ -14708,12 +14164,12 @@ var
       Owner.Get(Action + '?' + URLData);
     hfmPost :
       begin
-        Owner.Post(Action, FormData); {!!.12}
+        Owner.Post(Action, FormData);
         {The Formdata object will be freed by the post logic,
          which is called asynchroneously via PostMessage.
          Clear the pointer to prevent our finalization
          section from stepping on it prematurely.}
-        FormData := nil; {!!.12}
+        FormData := nil;
       end;
     end;
   end;
@@ -14729,18 +14185,18 @@ begin
     VList := TStringList.Create;
     IndentifySuccessfulControls;
     BuildDataset;
-    case Method of  {!!.12}
-    hfmGet :        {!!.12}
+    case Method of
+    hfmGet :
     {if (EncType = '') or
-      (CompareText(EncType, 'application/x-www-form-urlencoded') = 0) then} {!!.12}
+      (CompareText(EncType, 'application/x-www-form-urlencoded') = 0) then}
       URLEncodeDataset;
-    else //hfmPost :       {!!.12}
+    else //hfmPost :
     {else
-    if CompareText(EncType, 'multipart/form-data') = 0 then} {!!.12}
+    if CompareText(EncType, 'multipart/form-data') = 0 then}
       MimeEncodeDataset;
-    end; {!!.12}
+    end;
     {else
-      raise EIpHtmlException.Create(EncType + SHtmlEncNotSupported);} {!!.02} {!!.12}
+      raise EIpHtmlException.Create(EncType + SHtmlEncNotSupported);}
     SubmitDataset;
   finally
     FormData.Free;
@@ -14782,7 +14238,6 @@ begin
   {$ENDIF}
 end;
 
-{!!.16 new}
 procedure TIpHtmlNodeDL.Enqueue;
 begin
   EnqueueElement(Owner.HardLF);
@@ -14819,7 +14274,7 @@ end;
 
 procedure TIpHtmlNodeDD.Enqueue;
 begin
-  EnqueueElement(Owner.HardLF);                                        {!!.16}
+  EnqueueElement(Owner.HardLF);
   EnqueueElement(Owner.LIndent);
   inherited;
   EnqueueElement(Owner.LOutdent);
@@ -14908,7 +14363,6 @@ end;
 
 { TIpHtmlNodeAPPLET }
 
-{!!.10 new}
 destructor TIpHtmlNodeAPPLET.Destroy;
 begin
   inherited;
@@ -14979,13 +14433,11 @@ begin
     end;
   hitRadio :
     begin
-{Begin !!.14}
 {$IFDEF VERSION3ONLY}
       with FControl do
 {$ELSE}
       with THtmlRadioButton(FControl) do
 {$ENDIF}
-{End !!.14}
         Checked := Self.Checked;
     end;
   end;
@@ -15035,7 +14487,7 @@ begin
         setWidhtHeight(Self.Size, 8, 0);
         Enabled := not Self.Disabled;
         ReadOnly := Self.ReadOnly;
-        OnChange := ButtonClick; {!!.03}
+        OnChange := ButtonClick;
         OnEditingDone := ControlOnEditingDone;
       end;
     end;
@@ -15050,7 +14502,7 @@ begin
         Enabled := not Self.Disabled;
         ReadOnly := Self.ReadOnly;
         PasswordChar := '*';
-        OnChange := ButtonClick; {!!.03}
+        OnChange := ButtonClick;
         OnEditingDone := ControlOnEditingDone;
       end;
     end;
@@ -15070,7 +14522,6 @@ begin
     end;
   hitRadio :
     begin
-{Begin !!.14}
 {$IFDEF VERSION3ONLY}
       FControl := TRadioButton.Create(Parent);
 {$ELSE}
@@ -15083,7 +14534,6 @@ begin
 {$ELSE}
       with THtmlRadioButton(FControl) do begin
 {$ENDIF}
-{End !!.14}
         setWidhtHeight(1, 8, 0);
         //Width := 13;
         //if Height < 13 then Height := 13;
@@ -15202,7 +14652,6 @@ begin
   end;
 }
   inherited;
-{Begin !!.14}
 {$IFDEF VERSION3ONLY}
   if FControl is TRadioButton then begin
 {$ELSE}
@@ -15214,7 +14663,6 @@ begin
 {$ELSE}
       THtmlRadioButton(FControl).Color := Props.BgColor;
 {$ENDIF}
-{End !!.14}
   end;
 end;
 
@@ -15245,8 +14693,8 @@ begin
     S := Value;
   hitFile :
     S := 'file://'+FFileEdit.Text;
-  hitHidden :                                                          {!!.15}
-    S := FValue;                                                       {!!.15}
+  hitHidden :
+    S := FValue;
   end;
   if S <> '' then begin
     NameList.Add(Name);
@@ -15256,7 +14704,6 @@ end;
 
 function TIpHtmlNodeINPUT.Successful: Boolean;
 begin
-{Begin !!.15}
   Result :=
     (Name <> '')and
     ( (InputType = hitHidden) or
@@ -15264,7 +14711,6 @@ begin
         (InputType in [hitText, hitPassword, hitCheckbox, hitRadio , hitFile])
       )
     );
-{End !!.15}
   if Result then begin
     case InputType of
     hitText,
@@ -15280,8 +14726,8 @@ begin
 {$ENDIF}
     hitFile :
       Result := FFileEdit.Text <> '';
-    hitHidden :                                                        {!!.15}
-      Result := FValue <> '';                                          {!!.15}
+    hitHidden :
+      Result := FValue <> '';
     end;
   end;
 end;
@@ -15303,9 +14749,9 @@ end;
 procedure TIpHtmlNodeINPUT.getControlValue;
 begin
   case InputType of
-  hitText,                                                             {!!.03}
-  hitPassword :                                                        {!!.03}
-    Value := TEdit(FControl).Text;                                     {!!.03}
+  hitText,
+  hitPassword :
+    Value := TEdit(FControl).Text;
   hitCheckbox :
     Checked := TCheckBox(FControl).Checked;
   hitRadio :
@@ -15437,7 +14883,7 @@ begin
       Height := (4 + aCAnvas.TextHeight('Wy')) * i;
       Enabled := not Self.Disabled;
       ReadOnly := not Self.ComboBox;
-      OnClick := ButtonClick;                                          {!!.01}
+      OnClick := ButtonClick;
       OnEditingDone := ControlOnEditingdone;
     end;
   end;
@@ -15573,19 +15019,14 @@ end;
 
 function TIpHtmlNodeSELECT.Successful: Boolean;
 begin
-  Result :=
-    (Name <> '')
-    and not Disabled;
+  Result := (Name <> '') and not Disabled;
   if Result then
-    if FControl is TListBox then begin
-      Result := TListBox(FControl).SelCount > 0;
-    end
-    else begin
+    if FControl is TListBox then
+      Result := TListBox(FControl).SelCount > 0
+    else
       Result := TComboBox(FControl).ItemIndex <> -1;
-    end;
 end;
 
-{!!.01 - added}
 procedure TIpHtmlNodeSELECT.ButtonClick(Sender: TObject);
 begin
   Owner.ControlClick(Self);
@@ -15593,25 +15034,27 @@ end;
 
 procedure TIpHtmlNodeSELECT.ControlOnEditingDone(Sender: TObject);
 begin
-     Owner.ControlOnEditingDone(Self);
+  Owner.ControlOnEditingDone(Self);
 end;
 
 procedure TIpHtmlNodeSELECT.ListBoxSelectionChange(Sender: TObject; User: boolean);
 begin
-     Owner.ControlOnEditingDone(Self);
+  Owner.ControlOnEditingDone(Self);
 end;
 
 procedure TIpHtmlNodeSELECT.setText(aText: string);
 begin
-     if FComboBox then TComboBox(FControl).Text := aText;
+  if FComboBox then TComboBox(FControl).Text := aText;
 end;
 
 function TIpHtmlNodeSELECT.getText: string;
 begin
-     if FComboBox then
-        result := TComboBox(FControl).Text
-     else if FMultiple then  result := IntToStr(TComboBox(FControl).ItemIndex)
-     else result := IntToStr(TComboBox(FControl).ItemIndex);
+  if FComboBox then
+    result := TComboBox(FControl).Text
+  else if FMultiple then
+    result := IntToStr(TComboBox(FControl).ItemIndex)
+  else
+    result := IntToStr(TComboBox(FControl).ItemIndex);
 end;
 
 { TIpHtmlNodeTEXTAREA }
@@ -15700,38 +15143,32 @@ end;
 
 procedure TIpHtmlNodeTEXTAREA.ControlOnEditingDone(Sender: TObject);
 begin
-     Owner.ControlOnEditingDone(Self);
+  Owner.ControlOnEditingDone(Self);
 end;
 
 { TIpHtmlNodeHtml }
 
-procedure TIpHtmlNodeHtml.CalcMinMaxWidth(
-  const RenderProps: TIpHtmlProps; var Min,
-  Max: Integer);
+procedure TIpHtmlNodeHtml.CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
+  var Min, Max: Integer);
 var
   i : Integer;
 begin
   for i := 0 to FChildren.Count - 1 do
     if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then begin
-      TIpHtmlNodeBody(FChildren[i]).CalcMinMaxWidth(RenderProps,
-        Min, Max);
+      TIpHtmlNodeBody(FChildren[i]).CalcMinMaxWidth(RenderProps, Min, Max);
     end;
 end;
 
-function TIpHtmlNodeHtml.GetHeight(const RenderProps: TIpHtmlProps;
-  const Width: Integer): Integer;
+function TIpHtmlNodeHtml.GetHeight(const RenderProps: TIpHtmlProps; const Width: Integer): Integer;
 var
   i : Integer;
 begin
   Result := 0;
   for i := 0 to FChildren.Count - 1 do
-    if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then begin
-      Result := TIpHtmlNodeBody(FChildren[i]).
-        GetHeight(RenderProps, Width);
-    end;
+    if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then
+      Result := TIpHtmlNodeBody(FChildren[i]).GetHeight(RenderProps, Width);
 end;
 
-{Begin !!.12}
 function TIpHtmlNodeHtml.HasBodyNode : Boolean;
 var
   i : Integer;
@@ -15743,10 +15180,8 @@ begin
       Break;
   end;
 end;
-{End !!.12}
 
-procedure TIpHtmlNodeHtml.Layout(const RenderProps: TIpHtmlProps;
-  const TargetRect: TRect);
+procedure TIpHtmlNodeHtml.Layout(const RenderProps: TIpHtmlProps; const TargetRect: TRect);
 var
   i : Integer;
 begin
@@ -16075,7 +15510,6 @@ end;
 
 { TIpHtmlNodeSTYLE }
 
-{!!.10 new}
 function TIpHtmlNodeSTYLE.ElementQueueIsEmpty: Boolean;
 begin
   Result := True;
@@ -16106,7 +15540,6 @@ begin
   Result := False;
 end;
 
-{!!.10 new}
 destructor TIpHtmlNodeIFRAME.Destroy;
 begin
   inherited;
@@ -16247,7 +15680,6 @@ end;
 
 { TIpHtmlNodeCOL }
 
-{!!.10 new}
 destructor TIpHtmlNodeCOL.Destroy;
 begin
   inherited;
@@ -16256,7 +15688,6 @@ end;
 
 { TIpHtmlNodeCOLGROUP }
 
-{!!.10 new}
 destructor TIpHtmlNodeCOLGROUP.Destroy;
 begin
   inherited;
@@ -16432,9 +15863,7 @@ end;
 
 function TIpHtmlProps.IsEqualTo(Compare: TIpHtmlProps): Boolean;
 begin
-  Result :=
-    (PropA = Compare.PropA)
-    and (PropB = Compare.PropB);
+  Result := (PropA = Compare.PropA) and (PropB = Compare.PropB);
 end;
 
 function TIpHtml.FindPropARec(var pRec: TIpHtmlPropAFieldsRec): TIpHtmlPropA;
@@ -16909,10 +16338,10 @@ begin
         Free;
         Exit;
       end;
-    raise EIpHtmlException.Create(SHtmlInternal);              {!!.02}
+    raise EIpHtmlException.Create(SHtmlInternal);
   end else
     if UseCount < 0 then
-      raise EIpHtmlException.Create(SHtmlInternal);            {!!.02}
+      raise EIpHtmlException.Create(SHtmlInternal);
 end;
 
 procedure TIpHtmlPropB.IncUse;
@@ -16939,8 +16368,8 @@ begin
   if NoWrap then
     Props.NoBreak := True;
   inherited CalcMinMaxWidth(Props, Min, Max);
-  if NoWrap then                                                       {!!.10}
-    Min := Max;                                                        {!!.10}
+  if NoWrap then
+    Min := Max;
 end;
 
 procedure TIpHtmlNodeTableHeaderOrCell.Render(
@@ -16992,7 +16421,7 @@ begin
   FColSpan := 1;
   FAlign := haDefault;
   FVAlign := hva3Middle;
-  {FHeight := -1;}                                                     {!!.10}
+  {FHeight := -1;}
   BgColor := -1;
 end;
 
@@ -17022,11 +16451,10 @@ end;
 destructor TIpHtmlNodeTableHeaderOrCell.Destroy;
 begin
   inherited;
-  FWidth.Free;                                                         {!!.10}
-  FHeight.Free;                                                        {!!.10}
+  FWidth.Free;
+  FHeight.Free;
 end;
 
-{!!.10 new}
 procedure TIpHtmlNodeTableHeaderOrCell.DimChanged(Sender: TObject);
 begin
   InvalidateSize;
@@ -17039,13 +16467,11 @@ begin
   FParentNode.Invalidate;
 end;
 
-procedure TIpHtmlNodeInline.EnqueueElement(
-  const Entry: PIpHtmlElement);
+procedure TIpHtmlNodeInline.EnqueueElement(const Entry: PIpHtmlElement);
 begin
   FParentNode.EnqueueElement(Entry);
 end;
 
-{!!.10 new}
 function TIpHtmlNodeInline.ElementQueueIsEmpty: Boolean;
 begin
   Result := FParentNode.ElementQueueIsEmpty;
@@ -17121,7 +16547,7 @@ begin
       FControl.Left := R.Left;
       FCOntrol.Top := R.Top;
       FControl.Visible := True;
-      Shown := not ScaleBitmaps{True}; {Keep controls hidden during printing} {!!.10}
+      Shown := not ScaleBitmaps{True}; {Keep controls hidden during printing}
     end else
       FControl.Visible := False;
   end;
@@ -17196,7 +16622,6 @@ procedure TIpHtmlNodeNv.Enqueue;
 begin
 end;
 
-{!!.10 new}
 function TIpHtmlNodeNv.ElementQueueIsEmpty: Boolean;
 begin
   Result := True;
@@ -17239,7 +16664,6 @@ end;
 
 { TIpHtmlNodeFRAMESET }
 
-{!!.10 new}
 destructor TIpHtmlNodeFRAMESET.Destroy;
 begin
   inherited;
@@ -17321,18 +16745,18 @@ begin
     FOnClick(Hyper);
 end;
 
-procedure TIpHtmlInternalPanel.ShowHintNow(const NewHint: string);     {!!.12}
+procedure TIpHtmlInternalPanel.ShowHintNow(const NewHint: string);
 var
   Tw,Th : Integer;
   Sc : TPoint;
   {$IFNDEF IP_LAZARUS}
-  IPHC: TIpHtmlCustomPanel; //JMN
+  IPHC: TIpHtmlCustomPanel;
   {$ENDIF}
 begin
   {$IFDEF IP_LAZARUS}
   if HtmlPanel.ShowHints then begin
   {$ELSE}
-  IPHC := HtmlPanel; //JMN
+  IPHC := HtmlPanel;
   if Assigned (IPHC) and IPHC.ShowHints and (NewHint <> CurHint) then begin
   {$ENDIF}
     {$IFDEF IP_LAZARUS}
@@ -17370,7 +16794,7 @@ var
   OldHot : TIpHtmlNode;
   OldCurElement : PIpHtmlElement;
   {$IFNDEF IP_LAZARUS}
-  IPHC: TIpHtmlCustomPanel; //JMN
+  IPHC: TIpHtmlCustomPanel;
   {$ENDIF}
   TmpOwnerNode: TIpHtmlNode;
 begin
@@ -17395,7 +16819,7 @@ begin
       {$IFDEF IP_LAZARUS}
       if HtmlPanel.AllowTextSelect then begin
       {$ELSE}
-      IPHC := HtmlPanel; //JMN
+      IPHC := HtmlPanel;
       if Assigned (IPHC) and IPHC.AllowTextSelect then begin
       {$ENDIF}
         if Hyper.CurElement <> nil then begin
@@ -17471,7 +16895,7 @@ procedure TIpHtmlInternalPanel.MouseDown(Button: TMouseButton; Shift: TShiftStat
   X, Y: Integer);
 {$IFNDEF IP_LAZARUS}
 var
-  IPHC: TIpHtmlCustomPanel; //JMN
+  IPHC: TIpHtmlCustomPanel;
 {$ENDIF}
 begin
   MouseDownX := X;
@@ -17486,7 +16910,7 @@ begin
     HaveSelection := True;
   end;
   {$ELSE}
-  IPHC := HtmlPanel; //JMN
+  IPHC := HtmlPanel;
   if  Assigned (IPHC)
   then  NewSelection := IPHC.AllowTextSelect and (Button = mbLeft);
   {$ENDIF}
@@ -17645,7 +17069,7 @@ var
   CR : TRect;
 begin
   CR := GetClientRect;
-  if not ScaleBitmaps {printing}                                       {!!.10}
+  if not ScaleBitmaps {printing}
   and (Hyper <> nil) then begin
     // update layout
     GetPageRect;
@@ -17656,7 +17080,7 @@ begin
           ViewLeft + (CR.Right - CR.Left),
           ViewTop + (CR.Bottom - CR.Top)),
           True,
-          Point(0, 0))                                                 {!!.10}
+          Point(0, 0))
   end
   else
     Canvas.FillRect(CR);
@@ -17667,7 +17091,6 @@ begin
   {$ENDIF}
 end;
 
-{!!.10 new}
 procedure TIpHtmlInternalPanel.BeginPrint;
 begin
   if InPrint = 0 then begin
@@ -17678,7 +17101,6 @@ begin
   Inc(InPrint);
 end;
 
-{!!.10 new}
 procedure TIpHtmlInternalPanel.EndPrint;
 begin
   Dec(InPrint);
@@ -17734,7 +17156,7 @@ begin
     PrintTopLeft := Point(LMarginPix, TMarginPix);
     {PrintBottomRight := Point(
       Printer.PageWidth - RMarginPix,
-      Printer.PageHeight - BMarginPix);}                {!!.12}
+      Printer.PageHeight - BMarginPix);}
     PrintPageRect := Hyper.GetPageRect(Printer.Canvas, PrintWidth, PrintHeight);
     H := PrintPageRect.Bottom - PrintPageRect.Top;
     PageCount := H div PrintHeight;
@@ -17765,37 +17187,36 @@ var
 begin
   {CR := Rect(0, 0, Printer.PageWidth, 0);}
   if (Hyper <> nil) then begin
-    BeginPrint;                                                        {!!.10}
+    BeginPrint;
     Printer.BeginDoc;
     try
       (*
-      ScaleBitmaps := True;                                            {!!.02}
-      GetRelativeAspect(Printer.Canvas.Handle);                        {!!.02}
+      ScaleBitmaps := True;
+      GetRelativeAspect(Printer.Canvas.Handle);
       PrintPageRect := Hyper.GetPageRect(Printer.Canvas,
         Printer.PageWidth, Printer.PageHeight);
       *)
-      CR := Rect(0, 0, PrintWidth, 0);                                 {!!.10}
+      CR := Rect(0, 0, PrintWidth, 0);
       for i := FromPage to ToPage do begin
-        CR.Top := (i - 1) * PrintHeight;                               {!!.10}
-        CR.Bottom := Cr.Top + PrintHeight;                             {!!.10}
-        Hyper.Render(Printer.Canvas, CR, False, PrintTopLeft);         {!!.10}
+        CR.Top := (i - 1) * PrintHeight;
+        CR.Bottom := Cr.Top + PrintHeight;
+        Hyper.Render(Printer.Canvas, CR, False, PrintTopLeft);
         if i < ToPage then
           Printer.NewPage;
-        Printed := True;                                               {!!.10}
+        Printed := True;
       end;
     finally
-      {ScaleBitmaps := False;}                                         {!!.10}
+      {ScaleBitmaps := False;}
       if Printed then
         Printer.EndDoc
       else
         Printer.Abort;
-      {InvalidateSize;}                                                {!!.10}
-      EndPrint;                                                        {!!.10}
+      {InvalidateSize;}
+      EndPrint;
     end;
   end;
 end;
 
-{!!.10 new}
 procedure TIpHtmlInternalPanel.PrintPreview;
 begin
   if (Hyper <> nil) then begin
@@ -17830,26 +17251,13 @@ begin
 end;
 
 function TIpHtmlInternalPanel.GetPrintPageCount: Integer;
-{var
-  H : Integer;}                                                        {!!.10}
 begin
-  BeginPrint;                                                          {!!.10}
-  try                                                                  {!!.10}
-    Result := PageCount;                                               {!!.10}
-  finally                                                              {!!.10}
-    EndPrint;                                                          {!!.10}
-  end;                                                                 {!!.10}
-  {!!.10
-  SetRectEmpty(PrintPageRect);
-  if Hyper <> nil then begin
-    PrintPageRect := Hyper.GetPageRect(Printer.Canvas,
-      Printer.PageWidth, Printer.PageHeight);
+  BeginPrint;
+  try
+    Result := PageCount;
+  finally
+    EndPrint;
   end;
-  H := PrintPageRect.Bottom - PrintPageRect.Top;
-  Result := H div Printer.PageHeight;
-  if H mod Printer.PageHeight <> 0 then
-    Inc(Result);
-  }
 end;
 
 procedure TIpHtmlInternalPanel.InvalidateSize;
@@ -18057,11 +17465,6 @@ begin
   FPageIncrement := 80;
   FIncrement := FPageIncrement div 10;
   FVisible := True;
-  {FDelay := 10;}                                                      {!!.12}
-  {FLineDiv := 4;}                                                     {!!.12}
-  {FPageDiv := 12;}                                                    {!!.12}
-  {FColor := clBtnHighlight;}                                          {!!.12}
-  {FParentColor := True;}                                              {!!.12}
   FUpdateNeeded := True;
 end;
 
@@ -18285,7 +17688,7 @@ procedure TIpHtmlFocusRect.WMKillFocus(var Message: TLMKillFocus);
 begin
   inherited WMKillFocus(Message);
   Anchor.DoOnBlur;
-  {HaveFocus := False;}                                                {!!.12}
+  {HaveFocus := False;}
 end;
 
 {$ELSE}
@@ -18299,7 +17702,7 @@ procedure TIpHtmlFocusRect.WMKillFocus(var Message: TWMKillFocus);
 begin
   inherited;
   Anchor.DoOnBlur;
-  {HaveFocus := False;}                                                {!!.12}
+  {HaveFocus := False;}
 end;
 
 {$ENDIF}
@@ -18308,7 +17711,7 @@ end;
 
 procedure TIpHtmlFrame.InitHtml;
 begin
-  FHtml.FixedTypeface := Viewer.FixedTypeface;                          {!!.10}
+  FHtml.FixedTypeface := Viewer.FixedTypeface;
   FHtml.DefaultTypeFace := Viewer.DefaultTypeFace;
   FHtml.DefaultFontSize := Viewer.DefaultFontSize;
   FHtml.TextColor := FViewer.TextColor;
@@ -18353,8 +17756,8 @@ destructor TIpHtmlFrame.Destroy;
 var
   i : Integer;
 begin
-  if FFramePanel <> nil then                                            {!!.12}
-    FFramePanel.OnResize := nil;                                        {!!.12}
+  if FFramePanel <> nil then
+    FFramePanel.OnResize := nil;
   for i := 0 to Pred(FFrameCount) do
     FreeAndNil(FFrames[i]);
   if HyperPanel <> nil then begin
@@ -18382,7 +17785,7 @@ end;
 procedure TIpHtmlFrame.InvalidateSize(Sender: TObject);
 begin
   if HyperPanel <> nil then
-    if not InOpen then                                                 {!!.10}
+    if not InOpen then
       HyperPanel.InvalidateSize;
 end;
 
@@ -18407,10 +17810,10 @@ begin
   if (FHtml = nil) or (FHtml.FrameSet = nil) then Exit;
   if FFramePanel = nil then Exit;
   ColW := CalcMultiLength(FHtml.FrameSet.Cols, FFramePanel.ClientWidth,
-    ColWCount);{!!.10}
+    ColWCount);
   try
     RowH := CalcMultiLength(FHtml.FrameSet.Rows, FFramePanel.ClientHeight,
-      RowHCount); {!!.10}
+      RowHCount);
     try
       R := 0;
       C := 0;
@@ -18419,7 +17822,7 @@ begin
       N := 0;
       for i := 0 to Pred(FHtml.FrameSet.ChildCount) do begin
         if FHtml.FrameSet.ChildNode[i] is TIpHtmlNodeFrame then begin
-          if Pnl[N] <> nil then                                            {!!.03}
+          if Pnl[N] <> nil then
             Pnl[N].SetBounds(L, T, ColW[C], RowH[R]);
           Inc(L, ColW[C]);
           if C < ColWCount - 1 then
@@ -18450,9 +17853,9 @@ begin
   else
     St := IpUtils.BuildURL(FCurURL, URL);
   if FDataProvider = nil then
-    raise EIpHtmlException.Create(SHtmlNoDataProvider);        {!!.02}
+    raise EIpHtmlException.Create(SHtmlNoDataProvider);
   if not FDataProvider.DoCheckURL(St, ResourceType) then
-    raise EIpHtmlException.Create(SHtmlResUnavail + St);       {!!.02}
+    raise EIpHtmlException.Create(SHtmlResUnavail + St);
   St := LowerCase(ResourceType);
 
   if ( Pos('text/', St) = 0) and (pos('image/', St) = 0) then begin
@@ -18518,10 +17921,10 @@ begin
     FFramePanel.OnResize := FramePanelResize;
     FFramePanel.FullRepaint := False;
     ColW := CalcMultiLength(FHtml.FrameSet.Cols, FFramePanel.ClientWidth,
-      ColWCount); {!!.10}
+      ColWCount);
     try
       RowH := CalcMultiLength(FHtml.FrameSet.Rows, FFramePanel.ClientHeight,
-        RowHCount); {!!.10}
+        RowHCount);
       try
         R := 0;
         C := 0;
@@ -18537,10 +17940,10 @@ begin
             Pnl[FFrameCount].Parent := FFramePanel;
             Pnl[FFrameCount].FullRepaint := False;
 
-            if CurFrameDef.FrameBorder <> 0 then begin                {!!.02}
-              Pnl[FFrameCount].BorderStyle := bsSingle;                {!!.02}
-              Pnl[FFrameCount].BorderWidth := CurFrameDef.FrameBorder; {!!.02}
-            end;                                                      {!!.02}
+            if CurFrameDef.FrameBorder <> 0 then begin
+              Pnl[FFrameCount].BorderStyle := bsSingle;
+              Pnl[FFrameCount].BorderWidth := CurFrameDef.FrameBorder;
+            end;
 
             Inc(L, ColW[C]);
 
@@ -18631,18 +18034,17 @@ var
   St, ResourceType : string;
   IsImage : Boolean;
 begin
-  InOpen := True;                                                      {!!.10}
-  try                                                                  {!!.10}
+  InOpen := True;
+  try
     if Assigned(FDataProvider) then
       St := FDataProvider.BuildURL(FCurURL, URL)
     else
       St := IpUtils.BuildURL(FCurURL, URL);
 
     if FDataProvider = nil then
-      raise EIpHtmlException.Create(SHtmlNoDataProvider);              {!!.02}
+      raise EIpHtmlException.Create(SHtmlNoDataProvider);
     if not FDataProvider.DoCheckURL(St, ResourceType) then
-      raise EIpHtmlException.Create(SHtmlResUnavail + St);             {!!.02}
-    {if CompareText(St, FCurURL) = 0 then Exit;}                        {!!.12}
+      raise EIpHtmlException.Create(SHtmlResUnavail + St);
     IsImage := False;
     S := nil;
     if pos('image/', LowerCase(ResourceType)) <> 0 then begin
@@ -18674,12 +18076,9 @@ begin
           S.Free;
         end;
     end;
-  finally                                                              {!!.10}
+  finally
     InOpen := False;
-//Already done when:  HyperPanel.Hyper := FHtml;
-//    if HyperPanel <> nil then
-//      HyperPanel.InvalidateSize;                                         {!!.10}
-  end;                                                                 {!!.10}
+  end;
 end;
 
 procedure TIpHtmlFrame.FramePanelResize(Sender: TObject);
@@ -18733,11 +18132,11 @@ begin
 end;
 
 procedure TIpHtmlFrame.Post(Sender: TIpHtml; const URL: string;
-  FormData: TIpFormDataEntity);                                        {!!.12}
+  FormData: TIpFormDataEntity);
 begin
   FViewer.GetURL := '';
   FViewer.PostURL := URL;
-  FViewer.PostData := FormData;                                        {!!.12}
+  FViewer.PostData := FormData;
   PostMessage(FViewer.Handle, CM_IpHttpGetRequest, 0, PtrInt(Self));
 end;
 
@@ -18787,7 +18186,6 @@ begin
   end;
 end;
 
-{!!.10 new}
 procedure TIpHtmlFrame.DeselectAll;
 var
   i : Integer;
@@ -18901,20 +18299,17 @@ begin
   FViewer.ControlClick2(Self, Sender, Node, cancel);
 end;
 
-procedure TIpHtmlFrame.ControlOnChange(Sender: TIpHtml;
-  Node: TIpHtmlNodeControl);
+procedure TIpHtmlFrame.ControlOnChange(Sender: TIpHtml; Node: TIpHtmlNodeControl);
 begin
   FViewer.ControlOnChange(Self, Sender, Node);
 end;
 
-procedure TIpHtmlFrame.ControlOnEditingDone(Sender: TIpHtml;
-  Node: TIpHtmlNodeControl);
+procedure TIpHtmlFrame.ControlOnEditingDone(Sender: TIpHtml; Node: TIpHtmlNodeControl);
 begin
   FViewer.ControlOnEditingdone(Self, Sender, Node);
 end;
 
-procedure TIpHtmlFrame.ControlCreate(Sender: TIpHtml;
-  Node: TIpHtmlNodeControl);
+procedure TIpHtmlFrame.ControlCreate(Sender: TIpHtml; Node: TIpHtmlNodeControl);
 begin
   FViewer.ControlCreate(Self, Sender, Node);
 end;
@@ -19051,9 +18446,9 @@ begin
     St := IpUtils.BuildURL(FCurURL, URL);
 
   if FDataProvider = nil then
-    raise EIpHtmlException.Create(SHtmlNoDataProvider);        {!!.02}
+    raise EIpHtmlException.Create(SHtmlNoDataProvider);
   if not FDataProvider.DoCheckURL(St, ResourceType) then
-    raise EIpHtmlException.Create(SHtmlResUnavail + St);       {!!.02}
+    raise EIpHtmlException.Create(SHtmlResUnavail + St);
   if CompareText(ResourceType, 'text/html') <> 0 then
     Exit;
   if CompareText(St, FCurURL) = 0 then Exit;
@@ -19207,7 +18602,7 @@ end;
 
 function TIpHtmlNVFrame.getFrame(i: integer): TIpHtmlNVFrame;
 begin
-     result := FFrames[i];
+  result := FFrames[i];
 end;
 
 { TIpHtmlCustomPanel }
@@ -19224,7 +18619,6 @@ begin
     FHotClick(Self);
 end;
 
-{New in !!.16}
 procedure TIpHtmlCustomPanel.DoOnMouseWheel(Shift: TShiftState; Delta, XPos, YPos: SmallInt);
 var
   I: Integer;
@@ -19240,7 +18634,6 @@ begin
       Scroll(hsaUp);
   end;
 end;
-{!!.16}
 
 procedure TIpHtmlCustomPanel.HotChange(Sender: TObject);
 var
@@ -19276,8 +18669,8 @@ begin
   P := TIpHtmlInternalPanel(Sender);
   vHtml := P.Hyper;
   FCurElement := vHtml.CurElement;
-  if assigned(FCurElementChange) then                                  {!!.10}
-    FCurElementChange(Self);                                           {!!.10}
+  if assigned(FCurElementChange) then
+    FCurElementChange(Self);
 end;
 
 function TIpHtmlCustomPanel.GetTitle: string;
@@ -19305,22 +18698,22 @@ begin
   FLinkColor := clBlue;
   FVLinkColor := clMaroon;
   FALinkColor := clRed;
-  FBgColor := clWhite;  //JMN
+  FBgColor := clWhite;
   FShowHints := True;
   FMarginWidth := 10;
   FMarginHeight := 10;
   FAllowTextSelect := True;
-  FixedTypeface := 'Courier New';                                      {!!.10}
+  FixedTypeface := 'Courier New';
   DefaultTypeFace := Graphics.DefFontData.Name;
   DefaultFontSize := 12;
-  FPrintSettings := TIpHtmlPrintSettings.Create;                       {!!.10}
+  FPrintSettings := TIpHtmlPrintSettings.Create;
   FFactBAParag := 1;
   FWantTabs := True;
 end;
 
 destructor TIpHtmlCustomPanel.Destroy;
 begin
-  FPrintSettings.Free;                                                 {!!.10}
+  FPrintSettings.Free;
   TargetStack.Free;
   URLStack.Free;
   FMasterFrame.Free;
@@ -19351,8 +18744,8 @@ var
   P : Integer;
   TargetFrame : TIpHtmlFrame;
 begin
-  if HRef = '' then                                                    {!!.12}
-    Exit;                                                              {!!.12}
+  if HRef = '' then
+    Exit;
   if HRef[1] = '#' then begin
     RelURL := copy(HRef, 2, length(HRef) - 1);
     BaseURL := '';
@@ -19375,7 +18768,7 @@ begin
       RelURL := copy(URL, P + 1, length(URL));
     end;
   end;
-  if BaseURL = '' then begin //JMN
+  if BaseURL = '' then begin
     if FMasterFrame <> nil then
       Push('', RelURL);
   end
@@ -19390,9 +18783,9 @@ begin
       if FMasterFrame <> nil then
         Push('', FMasterFrame.FCurURL + FMasterFrame.FCurAnchor);
       if DataProvider = nil then
-        raise EIpHtmlException.Create(SHtmlNoDataProvider);    {!!.02}
+        raise EIpHtmlException.Create(SHtmlNoDataProvider);
       if (FMasterFrame = nil)
-      or ((FMasterFrame <> nil) and (not FMasterFrame.IsExternal(URL))) then begin //JMN
+      or ((FMasterFrame <> nil) and (not FMasterFrame.IsExternal(URL))) then begin
         if (FMasterFrame <> nil)
         and (FMasterFrame.FHtml <> nil) then
           FDataProvider.DoLeave(FMasterFrame.FHtml);
@@ -19408,7 +18801,7 @@ begin
           FMasterFrame := nil;
           raise;
         end;}
-        {FCurURL := URL;}                                               {!!.12}
+        {FCurURL := URL;}
       end;
     end else begin
       Push(Target, TargetFrame.FCurURL +  TargetFrame.FCurAnchor);
@@ -19418,10 +18811,10 @@ begin
   if RelURL <> '' then
     FMasterFrame.MakeAnchorVisible(RelURL)
   else
-    if FMasterFrame <> nil then                                         {!!.02}
+    if FMasterFrame <> nil then
       FMasterFrame.Home;
-  if assigned(FDocumentOpen) then                                      {!!.10}
-    FDocumentOpen(Self);                                               {!!.10}
+  if assigned(FDocumentOpen) then
+    FDocumentOpen(Self);
 end;
 
 procedure TIpHtmlCustomPanel.HotClick(Sender: TObject);
@@ -19506,8 +18899,8 @@ var
   Sz: TSize;
 begin
   if csDesigning in ComponentState then begin
-    Canvas.Brush.Color := clBtnFace;                                   {!!.10}
-    Canvas.FillRect(Canvas.ClipRect);                                  {!!.10}
+    Canvas.Brush.Color := clBtnFace;
+    Canvas.FillRect(Canvas.ClipRect);
     Canvas.Pen.Color := clWhite;
     Sz := Canvas.TextExtent('Html');
     Canvas.Polygon([
@@ -19531,8 +18924,7 @@ begin
     Canvas.Ellipse(
            Width div 2 - Sz.cx, Height div 2 - Sz.cy,
            Width div 2 + Sz.cx, Height div 2 + Sz.cy);
-    Canvas.TextOut(Width div 2 - Sz.cx div 2, Height div 2 - Sz.cy div 2,
-      'Html');
+    Canvas.TextOut(Width div 2 - Sz.cx div 2, Height div 2 - Sz.cy div 2, 'Html');
     Canvas.Brush.Color := clWhite;
     Canvas.Pen.Color := clBlack;
   end;
@@ -19553,17 +18945,17 @@ var
   FB : TIpHtmlFrame;
 begin
   FB := TIpHtmlFrame(Message.lParam);
-  if PostData <> nil then begin  {!!.12}
+  if PostData <> nil then begin
     FB.PostData := PostData;
-    FB.OpenRelativeURL(PostURL); {!!.12}
+    FB.OpenRelativeURL(PostURL);
     {$IFNDEF HtmlWithoutHttp}
-    PostData.Free; {!!.12}
-    PostData := nil; {!!.12}
+    PostData.Free;
+    PostData := nil;
     {$ENDIF}
-  end else                       {!!.12}
+  end else
     FB.OpenRelativeURL(GetURL);
-  if assigned(FDocumentOpen) then                                      {!!.10}
-    FDocumentOpen(Self);                                               {!!.10}
+  if assigned(FDocumentOpen) then
+    FDocumentOpen(Self);
 end;
 
 procedure TIpHtmlCustomPanel.ClientClick(Sender: TObject);
@@ -19573,9 +18965,7 @@ end;
 
 function TIpHtmlCustomPanel.HaveSelection: Boolean;
 begin
-  Result :=
-    (FMasterFrame <> nil)
-    and (FMasterFrame.HaveSelection);
+  Result := (FMasterFrame <> nil) and (FMasterFrame.HaveSelection);
 end;
 
 procedure TIpHtmlCustomPanel.SelectAll;
@@ -19611,10 +19001,10 @@ begin
   FMasterFrame := TIpHtmlFrame.Create(Self, Self, DataProvider, FlagErrors, False,
     MarginWidth, MarginHeight);
   // LazDebug try
-    if NewHtml <> nil then  begin //JMN
+    if NewHtml <> nil then  begin
       NewHtml.FactBAParag := FactBAParag;
-      NewHtml.BgColor := BgColor; //JMN
-      NewHtml.FixedTypeface := FixedTypeface;                          {!!.10}
+      NewHtml.BgColor := BgColor;
+      NewHtml.FixedTypeface := FixedTypeface;
       NewHtml.DefaultTypeFace := DefaultTypeFace;
       NewHtml.DefaultFontSize := FDefaultFontSize;
       FMasterFrame.SetHtml(NewHtml);
@@ -19716,7 +19106,6 @@ begin
     FMasterFrame.Stop;
 end;
 
-{New in !!.16}
 {$IF defined(VERSION4) and not defined(IP_LAZARUS)}
 procedure TIpHtmlCustomPanel.MouseWheelHandler(var Message: TMessage);
 begin
@@ -19728,24 +19117,9 @@ end;
 
 function TIpHtmlCustomPanel.GetPrintPageCount: Integer;
 begin
-  if Assigned(FMasterFrame)
-  and Assigned(FMasterFrame.HyperPanel) then begin
-    { !!.10 logic moved to InternalPanel
-    Printer.BeginDoc;
-    try
-      ScaleBitmaps := True;
-      GetRelativeAspect(Printer.Canvas.Handle);
-    }
-      Result := FMasterFrame.HyperPanel.GetPrintPageCount;
-    {
-      !!.10 logic moved to InternalPanel
-    finally
-      ScaleBitmaps := False;
-      Printer.Abort;
-      MasterFrame.HyperPanel.InvalidateSize;
-    end;
-    }
-  end else
+  if Assigned(FMasterFrame) and Assigned(FMasterFrame.HyperPanel) then
+    Result := FMasterFrame.HyperPanel.GetPrintPageCount
+  else
     Result := 0;
 end;
 
@@ -19808,7 +19182,7 @@ end;
 
 function TIpHtmlCustomPanel.GetCurUrl: string;
 begin
-     result := FMasterFrame.FCurURL;
+  Result := FMasterFrame.FCurURL;
 end;
 
 procedure TIpHtmlCustomPanel.SetVersion(const Value : string);
@@ -19856,20 +19230,19 @@ begin
     PreferredHeight:=r.Bottom-r.Top;
 end;
 
-procedure TIpHtmlCustomPanel.SetFactBAParag(const Value: Real); //JMN
+procedure TIpHtmlCustomPanel.SetFactBAParag(const Value: Real);
 var
   V: Real;
 begin
   V := Value;
-  if  V > 2
-  then  V := 2
-  else if  V < 0
-  then   V := 0;
+  if V > 2 then
+    V := 2
+  else if  V < 0 then
+    V := 0;
   FFactBAParag := V;
 end;
 
-procedure TIpHtmlCustomPanel.SetDataProvider(
-  const AValue: TIpAbstractHtmlDataProvider);
+procedure TIpHtmlCustomPanel.SetDataProvider(const AValue: TIpAbstractHtmlDataProvider);
 begin
   if FDataProvider=AValue then exit;
   //debugln(['TIpHtmlCustomPanel.SetDataProvider Old=',DbgSName(FDataProvider),' ',dbgs(Pointer(FDataProvider)),' New=',DbgSName(AValue),' ',dbgs(Pointer(AValue))]);
@@ -19877,19 +19250,19 @@ begin
   if FDataProvider<>nil then FreeNotification(FDataProvider);
 end;
 
-function TIpHtmlCustomPanel.FactBAParagNotIs1: Boolean; //JMN
+function TIpHtmlCustomPanel.FactBAParagNotIs1: Boolean;
 begin
   Result := FactBAParag <> 1;
 end;
 
-function TIpHtmlCustomPanel.GetVScrollPos: Integer; //JMN
+function TIpHtmlCustomPanel.GetVScrollPos: Integer;
 begin
   if  FMasterFrame <> nil
   then  Result := FMasterFrame.HyperPanel.VScroll.Position
   else  Result := -1;
 end;
 
-procedure TIpHtmlCustomPanel.SetVScrollPos(const Value: Integer); //JMN
+procedure TIpHtmlCustomPanel.SetVScrollPos(const Value: Integer);
 begin
   if  (FMasterFrame <> nil) and (Value >= 0)
   then  FMasterFrame.HyperPanel.VScroll.Position := Value;
@@ -19934,8 +19307,8 @@ var
   P : Integer;
   TargetFrame : TIpHtmlNvFrame;
 begin
-  if HRef = '' then                                                    {!!.12}
-    Exit;                                                              {!!.12}
+  if HRef = '' then
+    Exit;
   if HRef[1] = '#' then begin
     RelURL := copy(HRef, 2, length(HRef) - 1);
     BaseURL := '';
@@ -19966,7 +19339,7 @@ begin
       if FMasterFrame <> nil then
         Push('', FMasterFrame.FCurURL + FMasterFrame.FCurAnchor);
       if DataProvider = nil then
-        raise EIpHtmlException.Create(SHtmlNoDataProvider);    {!!.02}
+        raise EIpHtmlException.Create(SHtmlNoDataProvider);
       if (FMasterFrame <> nil)
       and (FMasterFrame.FHtml <> nil) then
         FDataProvider.DoLeave(FMasterFrame.FHtml);
@@ -20028,7 +19401,6 @@ begin
     FMasterFrame.Stop;
 end;
 
-{Begin !!.14}
 function TIpHtmlCustomScanner.GetVersion : string;
 begin
   Result := IpShortVersion;
@@ -20038,7 +19410,6 @@ procedure TIpHtmlCustomScanner.SetVersion(const Value : string);
 begin
   { Intentionally empty }
 end;
-{End !!.14}
 
 {$IFDEF IP_LAZARUS}
 function LazFlatSB_GetScrollInfo(hWnd: HWND; BarFlag: Integer;
@@ -20096,7 +19467,6 @@ begin
 end;
 
 
-
 { TIntArr }
 
 destructor TIntArr.Destroy;
@@ -20137,8 +19507,8 @@ begin
       {$ELSE}
       Tmp := AllocMem(NewSize * sizeof(Integer));
       move(InternalIntArr^, Tmp^, IntArrSize * sizeof(Integer));
-      IntArrSize := NewSize;                                           {!!.12}
-      {Inc(IntArrSize, NewSize);}                                      {Deleted !!.12}
+      IntArrSize := NewSize;
+      {Inc(IntArrSize, NewSize);}
       Freemem(InternalIntArr);
       InternalIntArr := Tmp;
       {$ENDIF}
@@ -20154,20 +19524,6 @@ begin
   inherited;
   Freemem(InternalRectArr);
 end;
-
-{
-function TRectArr.GetRect(Index: Integer): PRect;
-begin
-  Assert(Self <> nil);
-  if (Index < 0) then begin
-    Result := nil;
-    Exit;
-  end;
-  if (Index >= IntArrSize) then
-    SetValue(Index, NullRect);
-  Result := @InternalRectArr^[Index];
-end;
-}
 
 function TRectArr.GetValue(Index: Integer): PRect;
 begin
