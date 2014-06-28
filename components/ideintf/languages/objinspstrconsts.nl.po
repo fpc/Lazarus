@@ -417,7 +417,7 @@ msgstr "Plaatje wissen"
 #, fuzzy
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
-msgstr "Componentnaam %s%s%s is geen geldige indentifier"
+msgstr "Componentnaam \"%s\" is geen geldige indentifier"
 
 #: objinspstrconsts.oiscomponentrestrictions
 msgid "Component restrictions: "
@@ -463,7 +463,7 @@ msgstr "&Verwijderen"
 #, fuzzy
 #| msgid "Delete item %s%s%s?"
 msgid "Delete item \"%s\"?"
-msgstr "Verwijder onderdelen %s%s%s?"
+msgstr "Verwijder onderdelen \"%s\"?"
 
 #: objinspstrconsts.oisdeleteselectedfields
 msgid "Delete selected field(s)"
@@ -493,7 +493,7 @@ msgstr "Fout bij het laden van het plaatje"
 #, fuzzy
 #| msgid "Error loading image %s%s%s:%s%s"
 msgid "Error loading image \"%s\":%s%s"
-msgstr "Fout bij het laden van plaatje %s%s%s:%s%s"
+msgstr "Fout bij het laden van plaatje \"%s\":%s%s"
 
 #: objinspstrconsts.oiserrorwhiledeletingaction
 msgid "Error while deleting action:%s%s"
