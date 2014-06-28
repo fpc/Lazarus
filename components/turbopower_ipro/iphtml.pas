@@ -10733,6 +10733,25 @@ begin
 end;
 
 function TIpHtmlNodeBlock.DoQueueElemObject(var aCurElem: PIpHtmlElement): boolean;
+
+  procedure ObjectVertical(Ascent, Descent: Integer);
+  begin
+    FExpBreak := False;
+    FLTrim := False;
+    FCurAscent := Ascent;
+    FCurDescent := Descent;
+  end;
+
+  function ObjectHorizontal: boolean;
+  begin
+    aCurElem := nil;
+    FCurHeight := 0;
+    FxySize.cx := 0;
+    Result := FLTrim;
+    if Result then
+      Inc(iElem);
+  end;
+
 var
   CurObj : TIpHtmlNodeAlignInline;
 begin
@@ -10745,58 +10764,27 @@ begin
   FxySize := CurObj.GetDim(FTotWidth);
   FCurHeight := FxySize.cy;
   case Curobj.Align of
-  hiaCenter :
-    begin
-      FExpBreak := False;
-      FLTrim := False;
-      FCurAscent := FMaxAscent;
-      FCurDescent := FxySize.cy - FMaxAscent;
+  hiaCenter : begin
+      ObjectVertical(FMaxAscent, FxySize.cy - FMaxAscent);
       FTempCenter := True;
       FSaveAl := FAl;
       FAl := haCenter;
     end;
   hiaTop :
-    begin
-      FExpBreak := False;
-      FLTrim := False;
-      FCurAscent := -1;
-      FCurDescent := FxySize.cy;
-    end;
+      ObjectVertical(-1, FxySize.cy);
   hiaMiddle :
-    begin
-      FExpBreak := False;
-      FLTrim := False;
-      FCurAscent := FxySize.cy div 2;
-      FCurDescent := FxySize.cy div 2;
-    end;
+      ObjectVertical(FxySize.cy div 2, FxySize.cy div 2);
   hiaBottom :
-    begin
-      FExpBreak := False;
-      FLTrim := False;
-      FCurAscent := FxySize.cy;
-      FCurDescent := 0;
-    end;
-  hiaLeft :
-    begin
+      ObjectVertical(FxySize.cy, 0);
+  hiaLeft : begin
       FLeftQueue.Add(aCurElem);
-      aCurElem := nil;
-      FCurHeight := 0;
-      FxySize.cx := 0;
-      if FLTrim then begin
-        Inc(iElem);
+      if ObjectHorizontal then
         Exit(False);
-      end;
     end;
-  hiaRight :
-    begin
+  hiaRight : begin
       FRightQueue.Add(aCurElem);
-      aCurElem := nil;
-      FCurHeight := 0;
-      FxySize.cx := 0;
-      if FLTrim then begin
-        Inc(iElem);
+      if ObjectHorizontal then
         Exit(False);
-      end;
     end;
   end;
   Result := True;
