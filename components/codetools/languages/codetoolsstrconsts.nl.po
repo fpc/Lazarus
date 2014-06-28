@@ -97,7 +97,7 @@ msgstr ""
 #, fuzzy
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
-msgstr "klasse %s%s%s niet gevonden"
+msgstr "klasse \"%s\" niet gevonden"
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -555,13 +555,13 @@ msgstr ""
 #, fuzzy
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
-msgstr "ongeldige klasse naam=%s%s%s"
+msgstr "ongeldige klasse naam=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
 #, fuzzy
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
-msgstr "ongeldige klasse naam %s%s%s"
+msgstr "ongeldige klasse naam \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
@@ -591,13 +591,13 @@ msgstr "ongeldig type"
 #, fuzzy
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
-msgstr "ongeldige variabele naam %s%s%s"
+msgstr "ongeldige variabele naam \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
 #, fuzzy
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
-msgstr "ongeldige variabele type %s%s%s"
+msgstr "ongeldige variabele type \"%s\""
 
 #: codetoolsstrconsts.ctsjitformdirectory
 msgid "JITForm Directory"
