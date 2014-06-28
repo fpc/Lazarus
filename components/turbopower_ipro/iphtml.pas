@@ -1402,6 +1402,7 @@ type
     FSizeOfSpace : TSize;
     FSizeOfHyphen : TSize;
     FCanvas: Tcanvas;
+    function NextElemIsSoftLF: Boolean;
     procedure SetLastWord(AValue: Integer);
     procedure UpdSpaceHyphenSize(aProps: TIpHtmlProps);
     procedure UpdPropMetrics(aProps: TIpHtmlProps);
@@ -10940,6 +10941,17 @@ begin
   end;
 end;
 
+function TIpHtmlNodeBlock.NextElemIsSoftLF: Boolean;
+var
+  NextElem: PIpHtmlElement;
+begin
+  Result := False;
+  if iElem < FElementQueue.Count-1 then begin
+    NextElem := PIpHtmlElement(FElementQueue[iElem+1]);
+    Result := NextElem.ElementType = etSoftLF;
+  end;
+end;
+
 {$IFDEF IP_LAZARUS_DBG}
 procedure TIpHtmlNodeBlock.DumpQueue(bStart: boolean=true);
 var
@@ -11150,6 +11162,7 @@ begin
               Break;
           etIndent : begin
               DoQueueElemIndentOutdent;
+              if not NextElemIsSoftLF then
                 FIgnoreHardLF := True;
               Inc(PendingIndent);
               FLTrim := True;
