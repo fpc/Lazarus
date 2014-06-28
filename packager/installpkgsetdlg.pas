@@ -720,6 +720,8 @@ begin
     if Info.Description<>'' then
       PkgInfoMemo.Lines.Add(lisPckOptsDescriptionAbstract
                             + ': ' + Info.Description);
+    if Info.License<>'' then
+      PkgInfoMemo.Lines.Add(lisPckOptsLicense + ': ' + Info.License);
     PkgInfoMemo.Lines.Add(Format(lisOIPFilename, [Info.LPKFilename]));
 
     InfoStr:=lisCurrentState;

@@ -4164,6 +4164,7 @@ resourcestring
     +'installed, but the lpk file was not found';
   lisOIPDescriptionDescription = '%sDescription:  %s';
   lisOIPDescription = 'Description:  ';
+  lisOIPLicenseLicense = '%sLicense:  %s';
   lisOIPPleaseSelectAPackage = 'Please select a package';
   lisOIPPackageName = 'Package Name';
   lisOIPState = 'State';

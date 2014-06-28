@@ -115,7 +115,10 @@ begin
       if CurPkg.Missing then
         HintStr:=Format(lisOIPThisPackageIsInstalledButTheLpkFileWasNotFound,[HintStr+LineEnding]);
       HintStr:=Format(lisOIPDescriptionDescription, [HintStr+LineEnding,
-                   BreakString(CurPkg.Description, 60, length(lisOIPDescription))]);
+        BreakString(CurPkg.Description, 60, length(lisOIPDescription))]);
+      if CurPkg.License<>'' then //use same indent as previous entry
+        HintStr:=Format(lisOIPLicenseLicense, [HintStr+LineEnding,
+        BreakString(CurPkg.License, 60, length(lisOIPDescription))]);
       HintMemo.Text:=HintStr;
     end;
   end else begin
