@@ -11118,15 +11118,7 @@ begin
               Break;
           etHardLF :
             if DoQueueElemHardLF then
-            begin
-              Assert(FLastWord < FFirstWord, 'TIpHtmlNodeBlock.LayoutQueue: FLastWord >= FFirstWord');
-              //if FLastWord < FFirstWord then begin
-              FLastWord := FFirstWord;
-              FCanBreak := True;
-              if (FxySize.cx > WW) then
-                Inc(iElem);
-              //end
-            end
+              raise EIpHtmlException.Create('TIpHtmlNodeBlock.LayoutQueue: FIgnoreHardLF is True after all.')
             else
               Break;
           etClearLeft, etClearRight, etClearBoth :
