@@ -1238,6 +1238,8 @@ resourcestring
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
   lisIDETitleShowsProjectDir = 'IDE title shows project directory';
   lisIDETitleShowsBuildMode = 'IDE title shows selected build mode';
+  lisWindowMenuWithNameForDesignedForm = 'Window menu shows designed form''s name instead of caption';
+  lisWindowMenuWithNameForDesignedFormHint = 'Useful especially if the caption is left empty.';
   dlgDesktopHints = 'Hints';
   dlgPalHints = 'Hints for component palette';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';

@@ -38,6 +38,7 @@ type
     ApplyButton: TButton;
     Bevel1: TBevel;
     Bevel2: TBevel;
+    NameForDesignedFormList: TCheckBox;
     TitleIncludesBuildMode: TCheckBox;
     dropSplitterPlacement: TComboBox;
     CustomGeometryRadioButton: TRadioButton;
@@ -120,6 +121,8 @@ begin
   TitleStartsWithProjectCheckBox.Hint:=lisTitleInTaskbarShowsForExampleProject1LpiLazarus;
   TitleIncludesBuildMode.Caption:=lisIDETitleShowsBuildMode;
   TitleIncludesBuildMode.Hint:=lisBuildModeInTitleInExample;
+  NameForDesignedFormList.Caption:=lisWindowMenuWithNameForDesignedForm;
+  NameForDesignedFormList.Hint:=lisWindowMenuWithNameForDesignedFormHint;
   ProjectDirInIdeTitleCheckBox.Caption:=lisIDETitleShowsProjectDir;
   ProjectDirInIdeTitleCheckBox.Hint:=lisProjectDirectoryIsShowedInIdeTitleBar;
 end;
@@ -136,6 +139,7 @@ begin
     HideIDEOnRunCheckBox.Checked := HideIDEOnRun;
     TitleStartsWithProjectCheckBox.Checked:=IDETitleStartsWithProject;
     TitleIncludesBuildMode.Checked:=IDETitleIncludesBuildMode;
+    NameForDesignedFormList.Checked:=IDENameForDesignedFormList;
     ProjectDirInIdeTitleCheckBox.Checked:=IDEProjectDirectoryInIdeTitle;
   end;
 
@@ -212,6 +216,7 @@ begin
     HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
     IDETitleStartsWithProject:=TitleStartsWithProjectCheckBox.Checked;
     IDETitleIncludesBuildMode := TitleIncludesBuildMode.Checked;
+    IDENameForDesignedFormList := NameForDesignedFormList.Checked;
     IDEProjectDirectoryInIdeTitle:=ProjectDirInIdeTitleCheckBox.Checked;
   end;
 end;

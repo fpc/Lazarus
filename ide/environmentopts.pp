@@ -283,6 +283,9 @@ type
     FIDETitleIncludesBuildMode: boolean;
     FIDEProjectDirectoryInIdeTitle: boolean;
 
+    // window menu
+    FIDENameForDesignedFormList: boolean;
+
     // main buttons
     FIDESpeedButtonsVisible: boolean;
     FShowButtonGlyphs: TApplicationShowGlyphs;
@@ -538,6 +541,10 @@ type
                                             write FCompletionWindowWidth;
     property CompletionWindowHeight: Integer read FCompletionWindowHeight
                                              write FCompletionWindowHeight;
+
+    // window menu list
+    property IDENameForDesignedFormList: boolean read FIDENameForDesignedFormList
+                                               write FIDENameForDesignedFormList;
 
     // component palette
     property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions
@@ -940,6 +947,9 @@ begin
   FComponentPaletteVisible:=true;
   FIDESpeedButtonsVisible:=true;
 
+  // window menu
+  FIDENameForDesignedFormList:=false;
+
   // EnvironmentOptionsDialog editor
   FShowGrid:=true;
   FShowBorderSpacing:=false;
@@ -1270,6 +1280,10 @@ begin
         Path+'Desktop/CompletionWindowWidth/Value', 320);
       FCompletionWindowHeight:=XMLConfig.GetValue(
         Path+'Desktop/CompletionWindowHeight/Value', 6);
+
+      // Window menu
+      FIDENameForDesignedFormList:=XMLConfig.GetValue(
+        Path+'Desktop/IDENameForDesignedFormList/Value',false);
 
       // form editor
       FShowGrid:=XMLConfig.GetValue(
@@ -1657,6 +1671,9 @@ begin
       XMLConfig.SetDeleteValue(Path+'Desktop/CompletionWindowHeight/Value',
                                FCompletionWindowHeight, 6);
 
+      // Window menu
+      XMLConfig.SetDeleteValue(Path+'Desktop/IDENameForDesignedFormList/Value',
+                               FIDENameForDesignedFormList,false);
       // form editor
       XMLConfig.SetDeleteValue(Path+'FormEditor/ShowBorderSpacing',
                                FShowBorderSpacing,false);

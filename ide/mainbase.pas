@@ -239,11 +239,12 @@ begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
     Form:=Screen.CustomForms[i];
-    if Form.Caption=(Sender as TIDEMenuCommand).Caption then
-    begin
-      IDEWindowCreators.ShowForm(Form,true);
-      break;
-    end;
+    if (EnvironmentOptions.IDENameForDesignedFormList and (Form.Name=(Sender as TIDEMenuCommand).Caption)) or
+      ((not EnvironmentOptions.IDENameForDesignedFormList) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
+      begin
+        IDEWindowCreators.ShowForm(Form,true);
+        break;
+      end;
     dec(i);
   end;
 end;
@@ -257,7 +258,8 @@ begin
   i:=Screen.CustomFormCount-1;
   while (i>=0) do begin
     Form:=Screen.CustomForms[i];
-    if Form.Caption=(Sender as TIDEMenuCommand).Caption then
+    if (EnvironmentOptions.IDENameForDesignedFormList and (Form.Name=(Sender as TIDEMenuCommand).Caption)) or
+      ((not EnvironmentOptions.IDENameForDesignedFormList) and (Form.Caption=(Sender as TIDEMenuCommand).Caption)) then
     begin
       // show
       if not Form.IsVisible then
@@ -1388,12 +1390,18 @@ begin
   begin
     // in the 'bring to front' list
     CurMenuItem := GetMenuItem(i, itmWindowLists);
-    CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
+    if EnvironmentOptions.IDENameForDesignedFormList and (TCustomForm(WindowsList[i]).Designer<>nil) then
+      CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
+    else
+       CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
     CurMenuItem.MenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
     CurMenuItem.OnClick:=@mnuWindowItemClick;
     // in the 'center' list
     CurMenuItem := GetMenuItem(i, itmCenterWindowLists);
-    CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
+    if EnvironmentOptions.IDENameForDesignedFormList and (TCustomForm(WindowsList[i]).Designer<>nil) then
+      CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Name
+    else
+      CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
     CurMenuItem.OnClick:=@mnuCenterWindowItemClick;
   end;
   //create source page menuitems
