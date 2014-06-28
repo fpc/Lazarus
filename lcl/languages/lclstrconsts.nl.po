@@ -16,19 +16,19 @@ msgstr ""
 #, fuzzy
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
-msgstr "Browser %s%s%s niet uitvoerbaar"
+msgstr "Browser \"%s\" niet uitvoerbaar"
 
 #: lclstrconsts.hhshelpbrowsernotfound
 #, fuzzy
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
-msgstr "Browser %s%s%s niet gevonden"
+msgstr "Browser \"%s\" niet gevonden"
 
 #: lclstrconsts.hhshelperrorwhileexecuting
 #, fuzzy
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
-msgstr "Fout tijdens uitvoeren van %s%s%s:%s%s"
+msgstr "Fout tijdens uitvoeren van \"%s\":%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
@@ -42,7 +42,7 @@ msgstr "Geen HTML browser gevonden.%sDefinieer deze alstublieft via  Hulpmiddele
 #, fuzzy
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
-msgstr "De help database %s%s%s heeft bestand %s%s%s niet kunnen vinden."
+msgstr "De help database \"%s\" heeft bestand \"%s\" niet kunnen vinden."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
@@ -690,7 +690,7 @@ msgstr "Help context %s niet gevonden."
 #, fuzzy
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
-msgstr "Help context %s niet gevonden in Database %s%s%s."
+msgstr "Help context %s niet gevonden in Database \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
@@ -700,37 +700,37 @@ msgstr "Help Database %s%s%s heeft geen viewer gevonden voor help pagina van typ
 #, fuzzy
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
-msgstr "Help Database %s%s%s niet gevonden"
+msgstr "Help Database \"%s\" niet gevonden"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 #, fuzzy
 #| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
-msgstr "Help voor directive %s%s%s niet gevonden."
+msgstr "Help voor directive \"%s\" niet gevonden."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
 #, fuzzy
 #| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
-msgstr "Help voor directive %s%s%s niet gevonden in Database %s%s%s."
+msgstr "Help voor directive \"%s\" niet gevonden in Database \"%s\"."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 #, fuzzy
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
-msgstr "Help sleutelwoord %s%s%s niet gevonden."
+msgstr "Help sleutelwoord \"%s\" niet gevonden."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
 #, fuzzy
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
-msgstr "Help sleutelwoord %s%s%s niet gevonden in Database %s%s%s."
+msgstr "Help sleutelwoord \"%s\" niet gevonden in Database \"%s\"."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 #, fuzzy
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
-msgstr "Help node %s%s%s heeft geen Help Database"
+msgstr "Help node \"%s\" heeft geen Help Database"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -759,7 +759,7 @@ msgstr "Help Selectie fout"
 #, fuzzy
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
-msgstr "Er is geen viewer voor help type %s%s%s"
+msgstr "Er is geen viewer voor help type \"%s\""
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
