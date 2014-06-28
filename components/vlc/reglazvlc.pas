@@ -17,7 +17,7 @@ implementation
 
 Procedure register;
 begin
-  RegisterComponents('Misc',[TLCLVLCPlayer,TVLCMediaListPlayer]);
+  RegisterComponents('Multimedia',[TLCLVLCPlayer,TVLCMediaListPlayer]);
 end;
 
 initialization
