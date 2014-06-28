@@ -43,7 +43,7 @@
 { Global defines potentially affecting this unit }
 {$I IPDEFINE.INC}
 
-{$DEFINE IP_LAZARUS_DBG}
+{off $DEFINE IP_LAZARUS_DBG}
 
 unit IpHtml;
 
@@ -1403,7 +1403,6 @@ type
     FSizeOfHyphen : TSize;
     FCanvas: Tcanvas;
     function NextElemIsSoftLF: Boolean;
-    procedure SetLastWord(AValue: Integer);
     procedure UpdSpaceHyphenSize(aProps: TIpHtmlProps);
     procedure UpdPropMetrics(aProps: TIpHtmlProps);
     function CheckSelection(aSelIndex: Integer): Boolean;
@@ -1469,7 +1468,6 @@ type
     property Background : string read FBackground write SetBackground;
     property BgColor : TColor read FBgColor write SetBgColor;
     property TextColor : TColor read FTextColor write SetTextColor;
-    property LastWord : Integer read FLastWord write SetLastWord;
   end;
 
   TIpHtmlDirection = (hdLTR, hdRTL);
@@ -10159,21 +10157,6 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeBlock.SetLastWord(AValue: Integer);
-var
-  Elem: PIpHtmlElement;
-  s: String;
-begin
-  if FLastWord=AValue then Exit;
-  FLastWord:=AValue;
-  if (FLastWord > 0) and (FLastWord < FElementQueue.Count) then begin
-    Elem := PIpHtmlElement(FElementQueue[FLastWord]);
-    WriteStr(s, Elem.ElementType);
-    if Elem.ElementType <> etWord then
-      DebugLn('TIpHtmlNodeBlock.SetLastWord: ElementType=', s);
-  end;
-end;
-
 procedure TIpHtmlNodeBlock.UpdPropMetrics(aProps: TIpHtmlProps);
 var
   TextMetrics : TLCLTextMetric;  // TTextMetric;
@@ -10831,7 +10814,7 @@ begin
   if FLineBreak then
     FMaxDescent := 0;
   Inc(iElem);
-  LastWord := iElem - 2;
+  FLastWord := iElem - 2;
   if PendingLineBreak then
     FLineBreak := True;
   Result := FIgnoreHardLF;
@@ -10851,7 +10834,7 @@ begin
   end;
   if FLineBreak then
     FMaxDescent := 0;
-  LastWord := iElem - 1;
+  FLastWord := iElem - 1;
   Result := FIgnoreHardLF;
   if not Result then begin
     if FLineBreak then  begin
@@ -10874,7 +10857,7 @@ begin
   if FLineBreak then
     FMaxDescent := 0;
   Inc(iElem);
-  LastWord := iElem - 2;
+  FLastWord := iElem - 2;
   Result := FIgnoreHardLF;
 end;
 
@@ -11003,7 +10986,6 @@ var
   Prefor : Boolean;
   CurElem : PIpHtmlElement;
   wi: PWordInfo;
-  x: Integer;
 
   procedure InitInner;
   begin
@@ -11025,7 +11007,7 @@ var
     X0 := TargetRect.Left + FLIdent + ExpLIndent;
     FTextWidth := 0;
     FFirstWord := iElem;
-    LastWord := iElem-1;
+    FLastWord := iElem-1;
     FBaseOffset := 0;
     FSoftBreak := False;
     FHyphenSpace := 0;
@@ -11069,7 +11051,7 @@ var
     wi^.Hs := FHyphenSpace;
     FHyphenSpace := 0;
     Inc(X0, FxySize.cx);
-    LastWord := iElem;
+    FLastWord := iElem;
   end;
 
   procedure EndRow;
@@ -11092,7 +11074,7 @@ var
       if (CurElem.ElementType = etWord)
       and (CurElem.IsBlank <> 0) then begin
         FWordInfo[FLastWord - FFirstWord].Sz.cx := 0;
-        LastWord := iElem - 2;
+        FLastWord := iElem - 2;
       end;
     end;
     FLineBreak := True;
@@ -11126,18 +11108,8 @@ begin
           ApplyQueueProps(CurElem, Prefor);
         FSoftLF := False;
         case CurElem.ElementType of
-          etWord : begin
-            if CurElem.AnsiWord = '1)' then
-              x := 0;
-            if CurElem.AnsiWord = '2)' then
-              x := 1;
-            if Pos('Abanto1', CurElem.AnsiWord) > 0 then
-              x := 2;
-            if Pos('Abanto2', CurElem.AnsiWord) > 0 then begin
-              x := 3;
-            end;
+          etWord :
             DoQueueElemWord(CurElem);
-          end;
           etObject :
             if not DoQueueElemObject(CurElem) then
               Break;
@@ -11149,7 +11121,7 @@ begin
             begin
               Assert(FLastWord < FFirstWord, 'TIpHtmlNodeBlock.LayoutQueue: FLastWord >= FFirstWord');
               //if FLastWord < FFirstWord then begin
-              LastWord := FFirstWord;
+              FLastWord := FFirstWord;
               FCanBreak := True;
               if (FxySize.cx > WW) then
                 Inc(iElem);
@@ -11187,7 +11159,7 @@ begin
       end;
 
       if FSoftBreak and (FLastBreakpoint > 0) then begin
-        LastWord := FLastBreakpoint;
+        FLastWord := FLastBreakpoint;
         iElem := FLastBreakpoint + 1;
       end;
       OutputQueueLine;
