@@ -3227,6 +3227,7 @@ var
   Msg: String;
 begin
   repeat
+    Result := mrOK;
     try
       FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename,false);
     except
