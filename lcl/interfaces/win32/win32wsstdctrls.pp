@@ -1340,7 +1340,7 @@ end;
 
 class procedure TWin32WSCustomMemo.SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint);
 var
-  CharIndex: Longint;
+  CharIndex: LRESULT;
 begin
   { EM_LINEINDEX returns the char index of a given line }
   CharIndex := Windows.SendMessageW(ACustomEdit.Handle, EM_LINEINDEX, NewPos.Y, 0) + NewPos.X;
