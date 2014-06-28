@@ -854,6 +854,7 @@ const
   TINTARRGROWFACTOR = 64;
   DEFAULT_PRINTMARGIN = 0.5; {inches}
   FONTSIZESVALUSARRAY : array[0..6] of integer = (8,10,12,14,18,24,36);
+  MAXWORDS = 65536;
 
 type
   {$IFDEF IP_LAZARUS}
@@ -1015,9 +1016,7 @@ type
     procedure SetFontStyle(const Value: TFontStyles);
   public
     KnownSizeOfHyphen : TSize;
-    tmAscent,
-    tmDescent,
-    tmHeight : Integer;
+    tmAscent, tmDescent, tmHeight : Integer;
     property SizeOfSpaceKnown: Boolean read FSizeOfSpaceKnown;
     procedure SetKnownSizeOfSpace(const Size:TSize);
     property KnownSizeOfSpace : TSize read FKnownSizeOfSpace;
@@ -1316,6 +1315,7 @@ type
   end;
 
   TIpHtmlImageAlign = (hiaTop, hiaMiddle, hiaBottom, hiaLeft, hiaRight, hiaCenter);
+
   TIpHtmlNodeAlignInline = class(TIpHtmlNodeInline)
   private
     FAlignment: TIpHtmlImageAlign;
@@ -1355,26 +1355,94 @@ type
     property Alt : string read FAlt write FAlt;
   end;
 
+
+  // Used by TIpHtmlNodeBlock
+
+  TWordInfo = record
+    BaseX     : Integer;
+    BOff      : Integer;
+    CurAsc    : Integer;
+    Sz        : TSize;
+    VA        : TIpHtmlVAlign3;
+    Hs        : Integer;
+  end;
+  PWordInfo = ^TWordInfo;
+
+  TWordList = array[0..Pred(MAXWORDS)] of TWordInfo;
+  PWordList = ^TWordList;
+
   { TIpHtmlNodeBlock }
 
   TIpHtmlNodeBlock = class(TIpHtmlNodeCore)
+  private
+    FLeftQueue, FRightQueue : TFPList; // TList;
+    FVRemainL, FVRemainR : Integer;
+    FLIdent, FRIdent : Integer;
+    FTextWidth, FTotWidth : Integer;
+    FFirstWord, FLastWord : Integer;
+    FMaxAscent, FMaxDescent, FMaxHeight : Integer;
+    FBlockAscent, FBlockDescent, FBlockHeight : Integer;
+    FCurAscent, FCurDescent, FCurHeight : Integer;
+    iElem, YYY : Integer;
+    FBaseOffset : Integer;
+    FLineBreak, FExpBreak, FCanBreak : Boolean;
+    FIgnoreHardLF : Boolean;
+    FTempCenter : Boolean;
+    FLTrim : Boolean;
+    FLastBreakpoint : Integer;
+    FHyphenSpace : Integer;
+    FSoftLF, FSoftBreak : Boolean;
+    FAl, FSaveAl : TIpHtmlAlign;
+    FVAL: TIpHtmlVAlign3;
+    FWordInfo : PWordList;
+    FWordInfoSize : Integer;
+    FClear : (cNone, cLeft, cRight, cBoth);
+    FCurProps : TIpHtmlProps;
+    FxySize : TSize;
+    FSizeOfSpace : TSize;
+    FSizeOfHyphen : TSize;
+    FCanvas: Tcanvas;
+    procedure UpdSpaceHyphenSize(aProps: TIpHtmlProps);
+    procedure UpdPropMetrics(aProps: TIpHtmlProps);
+    function CheckSelection(aSelIndex: Integer): Boolean;
+    // Used by RenderQueue :
+    procedure DoRenderFont(var aCurWord: PIpHtmlElement);
+    procedure DoRenderElemWord(aCurWord: PIpHtmlElement; aCurTabFocus: TIpHtmlNode);
+    // Used by LayoutQueue :
+    procedure QueueInit(const TargetRect: TRect);
+    procedure InitMetrics;
+    function QueueLeadingObjects: Integer;
+    function TrimTrailingBlanks(aFirstElem: Integer = 0): Integer;
+    procedure DoQueueAlign(const TargetRect: TRect; aExpLIndent: Integer);
+    procedure OutputQueueLine;
+    procedure DoQueueClear;
+    procedure ApplyQueueProps(aCurElem: PIpHtmlElement; var aPrefor : Boolean);
+    procedure DoQueueElemWord(aCurElem: PIpHtmlElement);
+    function DoQueueElemObject(var aCurElem: PIpHtmlElement): boolean;
+    function DoQueueElemSoftLF(const W: Integer): boolean;
+    function DoQueueElemHardLF: boolean;
+    function DoQueueElemClear(aCurElem: PIpHtmlElement): boolean;
+    procedure DoQueueElemIndentOutdent(aIgnoreHardLF: boolean; var aPending: Integer);
+    procedure DoQueueElemSoftHyphen;
+    function CalcVRemain(aVRemain: integer; var aIdent: integer): integer;
+    procedure SetWordInfoLength(NewLength : Integer);
   protected
     FPageRect : TRect;
-    ElementQueue : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
-    FMin, FMax : Integer;
-    LastW, LastH : Integer;
+    FElementQueue : TFPList; // TList;
+    FBlockMin, FBlockMax : Integer;
+    FLastW, FLastH : Integer;
     FBackground : string;
     FBgColor : TColor;
     FTextColor : TColor;
     procedure RenderQueue;
-    procedure CalcMinMaxQueueWidth(const RenderProps: TIpHtmlProps; var Min, Max: Integer);
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
     function ElementQueueIsEmpty: Boolean; override;
     procedure Render(const RenderProps: TIpHtmlProps); virtual;
     procedure Layout(const RenderProps: TIpHtmlProps; const TargetRect : TRect); virtual;
     procedure RelocateQueue(const dx, dy: Integer);
-    procedure LayoutQueue(const RenderProps: TIpHtmlProps; const TargetRect : TRect);
-    procedure CalcMinMaxWidth(const RenderProps: TIpHtmlProps; var Min, Max: Integer); virtual;
+    procedure LayoutQueue(const TargetRect: TRect);
+    procedure CalcMinMaxQueueWidth(var aMin, aMax: Integer);
+    procedure CalcMinMaxPropWidth(const RenderProps: TIpHtmlProps; var aMin, aMax: Integer); virtual;
     procedure ClearWordList;
     procedure Invalidate; override;
     function GetHeight(const RenderProps: TIpHtmlProps; const Width: Integer): Integer;
@@ -1383,7 +1451,7 @@ type
     procedure ReportCurDrawRects(aOwner: TIpHtmlNode; M : TRectMethod); override;
     property PageRect : TRect read FPageRect;
     procedure AppendSelection(var S : string); override;
-    procedure UpdateCurrent(Start: Integer; CurProps : TIpHtmlProps);
+    procedure UpdateCurrent(Start: Integer; const CurProps : TIpHtmlProps);
     procedure SetBackground(const AValue: string);
     procedure SetBgColor(const AValue: TColor);
     procedure SetTextColor(const AValue: TColor);
@@ -1410,16 +1478,19 @@ type
     property Profile : string read FProfile write FProfile;
   end;
 
+  { TIpHtmlNodeText }
+
   TIpHtmlNodeText = class(TIpHtmlNode)
   private
     FEscapedText : string;
+    FFirstW : Boolean;
     function GetAnsiText: string;
     procedure SetAnsiText(const Value: string);
     procedure SetEscapedText(const Value: string);
+    procedure BuildWordList;
   protected
     PropsR : TIpHtmlProps; {reference}
     procedure ReportDrawRects(M : TRectMethod); override;
-    procedure BuildWordList;
     procedure Enqueue; override;
     procedure SetProps(const RenderProps: TIpHtmlProps); override;
     procedure EnqueueElement(const Entry: PIpHtmlElement); override;
@@ -1607,12 +1678,9 @@ type
   protected
     function HasBodyNode : Boolean;
     procedure Render(const RenderProps: TIpHtmlProps);
-    procedure CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
-      var Min, Max: Integer);
-    function GetHeight(const RenderProps: TIpHtmlProps;
-      const Width: Integer): Integer;
-    procedure Layout(const RenderProps: TIpHtmlProps;
-      const TargetRect : TRect);
+    procedure CalcMinMaxHtmlWidth(const RenderProps: TIpHtmlProps; var Min, Max: Integer);
+    function GetHeight(const RenderProps: TIpHtmlProps; const Width: Integer): Integer;
+    procedure Layout(const RenderProps: TIpHtmlProps; const TargetRect : TRect);
   public
     property Dir : TIpHtmlDirection read FDir write FDir;
     property Lang : string read FLang write FLang;
@@ -2375,8 +2443,7 @@ type
     FPadRect : TRect;
     procedure Render(const RenderProps: TIpHtmlProps); override;
     procedure Layout(const RenderProps: TIpHtmlProps; const TargetRect : TRect); override;
-    procedure CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
-      var Min, Max: Integer); override;
+    procedure CalcMinMaxPropWidth(const RenderProps: TIpHtmlProps; var Min, Max: Integer); override;
     property PadRect : TRect read FPadRect;
     procedure DimChanged(Sender: TObject);
   public
@@ -2685,9 +2752,9 @@ type
       {$ENDIF}
    {$ELSE}
     GifImages : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
-    OtherImages: {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}; //JMN
+    OtherImages: {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
    {$ENDIF}
-    LIndent, LOutdent : PIpHtmlElement;
+    FLIndent, FLOutdent : PIpHtmlElement;
     SoftLF,
     HardLF, HardLFClearLeft, SoftHyphen,
     HardLFClearRight, HardLFClearBoth : PIpHtmlElement;
@@ -3178,8 +3245,7 @@ type
     procedure Get(Sender: TIpHtml; const URL: string);
     procedure Post(Sender: TIpHtml; const URL: string; FormData: TIpFormDataEntity);
     procedure IFrameCreate(Sender: TIpHtml; Parent: TWinControl;
-      Frame: TIpHtmlNodeIFRAME;
-      var Control: TWinControl);
+      Frame: TIpHtmlNodeIFRAME; var Control: TWinControl);
     procedure InitHtml;
     procedure EnumDocuments(Enumerator: TIpHtmlEnumerator);
     procedure ControlClick(Sender: TIpHtml; Node: TIpHtmlNodeControl);
@@ -8323,8 +8389,8 @@ begin
   HardLFClearLeft := BuildStandardEntry(etClearLeft);
   HardLFClearRight := BuildStandardEntry(etClearRight);
   HardLFClearBoth := BuildStandardEntry(etClearBoth);
-  LIndent := BuildStandardEntry(etIndent);
-  LOutdent := BuildStandardEntry(etOutdent);
+  FLIndent := BuildStandardEntry(etIndent);
+  FLOutdent := BuildStandardEntry(etOutdent);
   SoftHyphen := BuildStandardEntry(etSoftHyphen);
   DefaultProps := TIpHtmlProps.Create(Self);
   FHtml := TIpHtmlNodeHtml.Create(nil);
@@ -9044,7 +9110,7 @@ begin
     SetDefaultProps;
     {PanelWidth := Width;}
     FTarget := TargetCanvas;
-    FHtml.CalcMinMaxWidth(DefaultProps, Min, Max);
+    FHtml.CalcMinMaxHtmlWidth(DefaultProps, Min, Max);
     //debugln(['TIpHtml.GetPageRect Min=',Min,' Max=',Max]);
     W := MaxI2(Min + 2 * MarginWidth, Width);
     H := FHtml.GetHeight(DefaultProps, W - 2 * MarginWidth) + 2 * MarginHeight;
@@ -9911,9 +9977,9 @@ end;
 constructor TIpHtmlNodeBlock.Create(ParentNode : TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  ElementQueue := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
-  FMin := -1;
-  FMax := -1;
+  FElementQueue := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
+  FBlockMin := -1;
+  FBlockMax := -1;
   FBgColor := -1;
   FTextColor := -1;
   FBackground := '';
@@ -9922,8 +9988,8 @@ end;
 destructor TIpHtmlNodeBlock.Destroy;
 begin
   ClearWordList;
-  ElementQueue.Free;
-  ElementQueue := nil;
+  FElementQueue.Free;
+  FElementQueue := nil;
   inherited;
 end;
 
@@ -9951,15 +10017,35 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeBlock.RenderQueue;
+procedure TIpHtmlNodeBlock.DoRenderFont(var aCurWord: PIpHtmlElement);
+begin
+  {$IFDEF IP_LAZARUS}
+  FCanvas.Font.BeginUpdate; // for speedup
+  {$ENDIF}
+  if (FCurProps = nil) or not FCurProps.AIsEqualTo(aCurWord.Props) then
+    with aCurWord.Props do begin
+      FCanvas.Font.Name := FontName;
+      if ScaleFonts then
+        FCanvas.Font.Size := round(FontSize * Aspect)
+      else
+        FCanvas.Font.Size := FontSize;
+      FCanvas.Font.Style := FontStyle;
+    end;
+  if ScaleBitmaps and BWPRinter then
+    Owner.Target.Font.Color := clBlack
+  else
+    if (FCurProps = nil) or not FCurProps.BIsEqualTo(aCurWord.Props) then
+      FCanvas.Font.Color := aCurWord.Props.FontColor;
+  {$IFDEF IP_LAZARUS}
+  Owner.Target.Font.EndUpdate;
+  {$ENDIF}
+  FCurProps := aCurWord.Props;
+end;
+
+procedure TIpHtmlNodeBlock.DoRenderElemWord(aCurWord: PIpHtmlElement; aCurTabFocus: TIpHtmlNode);
 var
-  i : Integer;
-  CurWord : PIpHtmlElement;
-  LastProp : TIpHtmlProps;
-  R : TRect;
   P : TPoint;
-  L0 : Boolean;
-  aCanvas : TCanvas;
+  R : TRect;
   {$IFDEF IP_LAZARUS}
   OldBrushcolor: TColor;
   OldFontColor: TColor;
@@ -9968,37 +10054,79 @@ var
 
   procedure saveCanvasProperties;
   begin
-    OldBrushColor := aCanvas.Brush.Color;
-    OldBrushStyle := aCanvas.Brush.Style;
-    OldFontColor := aCanvas.Font.Color;
-    OldFontStyle := aCanvas.Font.Style;
+    OldBrushColor := FCanvas.Brush.Color;
+    OldBrushStyle := FCanvas.Brush.Style;
+    OldFontColor := FCanvas.Font.Color;
+    OldFontStyle := FCanvas.Font.Style;
   end;
 
   procedure restoreCanvasProperties;
   begin
-    aCanvas.Font.Color := OldFontColor;
-    aCanvas.Brush.Color := OldBrushColor;
-    aCanvas.Brush.Style := OldBrushStyle;
-    aCanvas.Font.Style := OldFontStyle;
+    FCanvas.Font.Color := OldFontColor;
+    FCanvas.Brush.Color := OldBrushColor;
+    FCanvas.Brush.Style := OldBrushStyle;
+    FCanvas.Font.Style := OldFontStyle;
   end;
-  var
-    CurTabFocus: TIpHtmlNode;
-
   {$ENDIF}
 
 begin
+  P := Owner.PagePtToScreen(aCurWord.WordRect2.TopLeft);
+  {$IFDEF IP_LAZARUS}
+  //if (LastOwner <> aCurWord.Owner) then LastPoint := P;
+  saveCanvasProperties;
+  if aCurWord.IsSelected or Owner.AllSelected then begin
+    FCanvas.Font.color := clHighlightText;
+    FCanvas.brush.Style := bsSolid;
+    FCanvas.brush.color := clHighLight;
+    Owner.PageRectToScreen(aCurWord.WordRect2, R);
+    FCanvas.FillRect(R);
+  end
+  else if FCurProps.BgColor > 0 then
+  begin
+    FCanvas.brush.Style := bsSolid;
+    FCanvas.brush.color := FCurProps.BgColor;
+  end
+  else
+  {$ENDIF}
+    FCanvas.Brush.Style := bsClear;
+  //debugln(['TIpHtmlNodeBlock.RenderQueue ',aCurWord.AnsiWord]);
+  Owner.PageRectToScreen(aCurWord.WordRect2, R);
+  {$IFDEF IP_LAZARUS}
+  if aCurWord.Owner.FParentNode = aCurTabFocus then
+    FCanvas.DrawFocusRect(R);
+  if FCanvas.Font.color=-1 then
+    FCanvas.Font.color:=clBlack;
+  {$ENDIF}
+  if aCurWord.AnsiWord <> NAnchorChar then
+    FCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(aCurWord.AnsiWord));
+  {$IFDEF IP_LAZARUS}
+  restoreCanvasProperties;
+  {$ENDIF}
+  Owner.AddRect(aCurWord.WordRect2, aCurWord, Self);
+end;
+
+procedure TIpHtmlNodeBlock.RenderQueue;
+var
+  CurWord : PIpHtmlElement;
+  CurTabFocus: TIpHtmlNode;
+  i : Integer;
+  R : TRect;
+  P : TPoint;
+  L0 : Boolean;
+begin
   L0 := Level0;
-  LastProp := nil;
-  aCanvas := Owner.Target;
+  FCurProps := nil;
+  FCanvas := Owner.Target;
   {$IFDEF IP_LAZARUS}
   // to draw focus rect
-  if (FOwner.FTabList.Count > 0) and (FOwner.FTabList.Index <> -1) then
-    CurTabFocus := TIpHtmlNode(FOwner.FTabList[FOwner.FTabList.Index])
+  i := FOwner.FTabList.Index;
+  if (FOwner.FTabList.Count > 0) and (i <> -1) then
+    CurTabFocus := TIpHtmlNode(FOwner.FTabList[i])
   else
     CurTabFocus := nil;
   {$ENDIF}
-  for i := 0 to Pred(ElementQueue.Count) do begin
-    CurWord := PIpHtmlElement(ElementQueue[i]);
+  for i := 0 to Pred(FElementQueue.Count) do begin
+    CurWord := PIpHtmlElement(FElementQueue[i]);
 
 // *** Debug ***
 {if CurWord.AnsiWord = '2)' then begin
@@ -10014,85 +10142,29 @@ if CurWord.AnsiWord = 'Abanto2' then begin
   Inc(CurWord.WordRect2.Left, 10);
 end;
 }
-    if (CurWord.Props <> nil) and (CurWord.Props <> LastProp) then begin
-
-      {$IFDEF IP_LAZARUS}
-      aCanvas.Font.BeginUpdate; // for speedup
-      {$ENDIF}
-      if (LastProp = nil) or not LastProp.AIsEqualTo(CurWord.Props) then
-        with CurWord.Props do begin
-          aCanvas.Font.Name := FontName;
-          if ScaleFonts then
-            aCanvas.Font.Size := round(FontSize * Aspect)
-          else
-            aCanvas.Font.Size := FontSize;
-          aCanvas.Font.Style := FontStyle;
-        end;
-      if ScaleBitmaps and BWPRinter then
-        Owner.Target.Font.Color := clBlack
-      else
-        if (LastProp = nil) or not LastProp.BIsEqualTo(CurWord.Props) then
-          aCanvas.Font.Color := CurWord.Props.FontColor;
-      {$IFDEF IP_LAZARUS}
-      Owner.Target.Font.EndUpdate;
-      {$ENDIF}
-      LastProp := CurWord.Props;
-    end;
+    if (CurWord.Props <> nil) and (CurWord.Props <> FCurProps) then
+      DoRenderFont(CurWord);
 
     {$IFDEF IP_LAZARUS_DBG}
-    //DumpTIpHtmlProps(LastProp);
+    //DumpTIpHtmlProps(FCurProps);
     {$endif}
 
     //debugln(['TIpHtmlNodeBlock.RenderQueue ',i,' ',IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect),' CurWord.WordRect2=',dbgs(CurWord.WordRect2),' Owner.PageViewRect=',dbgs(Owner.PageViewRect)]);
     if IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect) then
       case CurWord.ElementType of
       etWord :
-        begin
-          P := Owner.PagePtToScreen(CurWord.WordRect2.TopLeft);
-          {$IFDEF IP_LAZARUS}
-          //if (LastOwner <> CurWord.Owner) then LastPoint := P;
-          saveCanvasProperties;
-          if CurWord.IsSelected or Owner.AllSelected then begin
-            aCanvas.Font.color := clHighlightText;
-            aCanvas.brush.Style := bsSolid;
-            aCanvas.brush.color := clHighLight;
-            Owner.PageRectToScreen(CurWord.WordRect2, R);
-            aCanvas.FillRect(R);
-          end
-          else if LastProp.BgColor > 0 then
-          begin
-            aCanvas.brush.Style := bsSolid;
-            aCanvas.brush.color := LastProp.BgColor;
-          end
-          else
-          {$ENDIF}
-            aCanvas.Brush.Style := bsClear;
-          //debugln(['TIpHtmlNodeBlock.RenderQueue ',CurWord.AnsiWord]);
-          Owner.PageRectToScreen(CurWord.WordRect2, R);
-          {$IFDEF IP_LAZARUS}
-          if CurWord.Owner.FParentNode = CurTabFocus then
-            aCanvas.DrawFocusRect(R);
-          if aCanvas.Font.color=-1 then
-            aCanvas.Font.color:=clBlack;
-          {$ENDIF}
-          if CurWord.AnsiWord <> NAnchorChar then
-            aCanvas.TextRect(R, P.x, P.y, NoBreakToSpace(CurWord.AnsiWord));
-          {$IFDEF IP_LAZARUS}
-          restoreCanvasProperties;
-          {$ENDIF}
-          Owner.AddRect(CurWord.WordRect2, CurWord, Self);
-        end;
+        DoRenderElemWord(CurWord, CurTabFocus);
       etObject :
         begin
           TIpHtmlNodeAlignInline(CurWord.Owner).Draw(Self);
           //Owner.AddRect(CurWord.WordRect2, CurWord, Self);
-          LastProp := nil;
+          FCurProps := nil;
         end;
       etSoftHyphen :
         begin
           P := Owner.PagePtToScreen(CurWord.WordRect2.TopLeft);
-          aCanvas.Brush.Style := bsClear;
-          aCanvas.TextOut(P.x, P.y, '-');
+          FCanvas.Brush.Style := bsClear;
+          FCanvas.TextOut(P.x, P.y, '-');
           Owner.AddRect(CurWord.WordRect2, CurWord, Self);
         end;
       end
@@ -10117,47 +10189,28 @@ begin
     LoadAndApplyCSSProps;
     SetProps(Props);
   end;
-  if ElementQueue.Count = 0 then
+  if FElementQueue.Count = 0 then
     Enqueue;
   RenderQueue;
 end;
 
-procedure TIpHtmlNodeBlock.UpdateCurrent(Start: Integer; CurProps : TIpHtmlProps);
-{- update other words that use same properties as the
-  one at Start with their lengths. Cuts down on the number
-  of time the font properties need to be changed.}
+procedure TIpHtmlNodeBlock.UpdateCurrent(Start: Integer; const CurProps : TIpHtmlProps);
+{- update other words that use same properties as the one at Start with their lengths.
+  Cuts down on the number of time the font properties need to be changed.}
 var
   i : Integer;
-  CurElement : PIpHtmlElement;
-
-    function GetExt(const S: string): TSize;
-    begin
-      Result := Owner.Target.TextExtent(
-                NoBreakToSpace(S));
-    end;
-
+  CurElem : PIpHtmlElement;
 begin
-  for i := ElementQueue.Count - 1 downto Start + 1 do begin
-    CurElement := PIpHtmlElement(ElementQueue[i]);
-    {case CurElement.ElementType of
-    etWord :}
-    if CurElement.ElementType = etWord then
-      if CurElement.IsBlank = 0 then begin
-        if (CurElement.Props = nil)
-        or CurElement.Props.AIsEqualTo(CurProps) then begin
-          {if CurElement.IsBlank = 0 then begin}
-          if (CurElement.SizeProp <> CurProps.PropA) then begin
-            CurElement.Size :=
-              GetExt(CurElement.AnsiWord);
-              {Owner.Target.TextExtent(
-                NoBreakToSpace(CurElement.AnsiWord));}
-            if  CurElement.AnsiWord = NAnchorChar
-            then  CurElement.Size.cx := 1;
-            CurElement.SizeProp := CurProps.PropA;
-          end;
-        end;
-      end;
-    {end;}
+  for i := FElementQueue.Count - 1 downto Start + 1 do begin
+    CurElem := PIpHtmlElement(FElementQueue[i]);
+    if (CurElem.ElementType = etWord) and (CurElem.IsBlank = 0)
+    and ( (CurElem.Props = nil) or CurElem.Props.AIsEqualTo(CurProps) )
+    and (CurElem.SizeProp <> CurProps.PropA) then begin
+      CurElem.Size := Owner.Target.TextExtent(NoBreakToSpace(CurElem.AnsiWord));
+      if CurElem.AnsiWord = NAnchorChar then
+        CurElem.Size.cx := 1;
+      CurElem.SizeProp := CurProps.PropA;
+    end;
   end;
 end;
 
@@ -10172,123 +10225,105 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeBlock.CalcMinMaxQueueWidth(const RenderProps: TIpHtmlProps;
-  var Min, Max: Integer);
+procedure TIpHtmlNodeBlock.UpdSpaceHyphenSize(aProps: TIpHtmlProps);
+begin
+  if aProps.PropA.SizeOfSpaceKnown then begin
+    FSizeOfSpace := aProps.PropA.KnownSizeOfSpace;
+    FSizeOfHyphen := aProps.PropA.KnownSizeOfHyphen;
+  end else begin
+    Assert(aProps.PropA.tmHeight = 0, 'UpdSpaceHyphenSize: PropA.tmHeight > 0');
+    FCanvas.Font.Name := aProps.FontName;
+    FCanvas.Font.Size := aProps.FontSize;
+    FCanvas.Font.Style := aProps.FontStyle;
+    FSizeOfSpace := FCanvas.TextExtent(' ');
+    {$IFDEF IP_LAZARUS_DBG}
+    if SizeOfSpace.CX=0 then
+      DebugLn('TIpHtmlNodeBlock.CalcMinMaxQueueWidth Font not found "',FCanvas.Font.Name,'" Size=',dbgs(FCanvas.Font.Size));
+    {$ENDIF}
+    FSizeOfHyphen := FCanvas.TextExtent('-');
+    aProps.PropA.SetKnownSizeOfSpace(FSizeOfSpace);
+    aProps.PropA.KnownSizeOfHyphen := FSizeOfHyphen;
+  end;
+end;
+
+procedure TIpHtmlNodeBlock.UpdPropMetrics(aProps: TIpHtmlProps);
 var
-  i,
-  TextWidth : Integer;
-  MinW, MaxW : Integer;
-  CurElement : PIpHtmlElement;
-  CurObj : TIpHtmlNodeAlignInline;
-  LIndent, LIndentP : Integer;
-  LastW,
-  LastElement : Integer;
-  NoBr : Boolean;
-  IndentW : Integer;
+  TextMetrics : TLCLTextMetric;  // TTextMetric;
+begin             // Debug: remove assertions later
+  Assert(aProps.PropA.tmHeight = 0, 'UpdPropMetrics: PropA.tmHeight > 0');
+  Assert(FCanvas.Font.Name = aProps.FontName, 'UpdPropMetrics: FCanvas.Font.Name <> aProps.FontName');
+  Assert(FCanvas.Font.Size = aProps.FontSize, 'UpdPropMetrics: FCanvas.Font.Size <> aProps.FontSize');
+  Assert(FCanvas.Font.Style = aProps.FontStyle, 'UpdPropMetrics: FCanvas.Font.Style <> aProps.FontStyle');
+  {$IFDEF IP_LAZARUS}
+  FCanvas.GetTextMetrics(TextMetrics);
+  aProps.PropA.tmAscent := TextMetrics.Ascender;
+  aProps.PropA.tmDescent := TextMetrics.Descender;
+  aProps.PropA.tmHeight := TextMetrics.Height;
+  {$ELSE}
+  GetTextMetrics(FCanvas.Handle, TextMetrics);
+  aProps.PropA.tmAscent := TextMetrics.tmAscent;
+  aProps.PropA.tmDescent := TextMetrics.tmDescent;
+  aProps.PropA.tmHeight := TextMetrics.tmHeight;
+  {$ENDIF}
+end;
+
+procedure TIpHtmlNodeBlock.CalcMinMaxQueueWidth(var aMin, aMax: Integer);
+var
+  CurElem : PIpHtmlElement;
   CurProps : TIpHtmlProps;
   CurFontName : string;
   CurFontSize : Integer;
   CurFontStyle : TFontStyles;
-  SizeOfSpace : TSize;
-  SizeOfHyphen : TSize;
-  aCanvas: TCanvas;
+  i : Integer;
+  MinW, MaxW, IndentW, TextWidth : Integer;
+  LIndent, LIndentP : Integer;
+  LastW, LastElement : Integer;
+  NoBr : Boolean;
 
-  procedure ApplyProps;
+  procedure ApplyMinMaxProps;
   var
     Changed : Boolean;
-    {$IFDEF IP_LAZARUS}
-    TextMetrics : TLCLTextMetric;
-    {$ELSE}
-    TextMetrics : TTextMetric;
-    {$ENDIF}
   begin
-    with CurElement.Props do begin
-      if (CurProps = nil) or not AIsEqualTo(CurProps) then begin
-        Changed := False;
-
-        if (CurProps = nil) or (CurFontName <> FontName) or (CurFontName = '') then begin
-          aCanvas.Font.Name := FontName;
-          CurFontName := FontName;
-          Changed := True;
-        end;
-        if (CurProps = nil) or (CurFontSize <> FontSize) or (CurFontSize = 0) then begin
-          aCanvas.Font.Size := FontSize;
-          CurFontSize := FontSize;
-          Changed := True;
-        end;
-        if (CurProps = nil) or (CurFontStyle <> FontStyle) then begin
-          aCanvas.Font.Style := FontStyle;
-          CurFontStyle := FontStyle;
-          Changed := True;
-        end;
-        if PropA.SizeOfSpaceKnown then begin
-          SizeOfSpace := PropA.KnownSizeOfSpace;
-          SizeOfHyphen := PropA.KnownSizeOfHyphen;
-        end else begin
-          SizeOfSpace := Owner.Target.TextExtent(' ');
-          {$IFDEF IP_LAZARUS_DBG}
-          if SizeOfSpace.CX=0 then begin
-            DebugLn('TIpHtmlNodeBlock.CalcMinMaxQueueWidth Font not found "',aCanvas.Font.Name,'" Size=',dbgs(aCanvas.Font.Size));
-          end;
-          {$ENDIF}
-          SizeOfHyphen := aCanvas.TextExtent('-');
-          PropA.SetKnownSizeOfSpace(SizeOfSpace);
-          PropA.KnownSizeOfHyphen := SizeOfHyphen;
-        end;
-        if Changed then begin
-          if PropA.tmHeight = 0 then begin
-            {$IFDEF IP_LAZARUS}
-            aCanvas.GetTextMetrics(TextMetrics);
-            PropA.tmAscent := TextMetrics.Ascender;
-            PropA.tmDescent := TextMetrics.Descender;
-            PropA.tmHeight := TextMetrics.Height;
-            {$ELSE}
-            GetTextMetrics(aCanvas.Handle, TextMetrics);
-            PropA.tmAscent := TextMetrics.tmAscent;
-            PropA.tmDescent := TextMetrics.tmDescent;
-            PropA.tmHeight := TextMetrics.tmHeight;
-            {$ENDIF}
-          end;
-        end;
+    if (CurProps = nil) or not CurElem.Props.AIsEqualTo(CurProps) then begin
+      Changed := False;
+      if (CurProps = nil) or (CurFontName <> CurElem.Props.FontName)
+      or (CurFontName = '') then begin
+        CurFontName := CurElem.Props.FontName;
+        FCanvas.Font.Name := CurFontName;
+        Changed := True;
       end;
-      NoBr := NoBreak;
+      if (CurProps = nil) or (CurFontSize <> CurElem.Props.FontSize)
+      or (CurFontSize = 0) then begin
+        CurFontSize := CurElem.Props.FontSize;
+        FCanvas.Font.Size := CurFontSize;
+        Changed := True;
+      end;
+      if (CurProps = nil) or (CurFontStyle <> CurElem.Props.FontStyle) then begin
+        CurFontStyle := CurElem.Props.FontStyle;
+        FCanvas.Font.Style := CurFontStyle;
+        Changed := True;
+      end;
+      UpdSpaceHyphenSize(CurElem.Props);
+      if Changed and (CurElem.Props.PropA.tmHeight = 0) then
+        UpdPropMetrics(CurElem.Props);
     end;
-    CurProps := CurElement.Props;
   end;
 
 begin
-  aCanvas := Owner.Target;
-  Min := 0;
-  Max := 0;
-  if ElementQueue.Count = 0 then Exit;
+  FCanvas := Owner.Target;
+  aMin := 0;
+  aMax := 0;
+  if FElementQueue.Count = 0 then Exit;
   LIndent := 0;
   LIndentP := 0;
-
-  {trim trailing blanks}
-  LastElement := ElementQueue.Count - 1;
-  repeat
-    if (LastElement >= 0) then begin
-      CurElement := PIpHtmlElement(ElementQueue[LastElement]);
-      case CurElement.ElementType of
-      etWord :
-        if CurElement.IsBlank <> 0 then
-          Dec(LastElement)
-        else
-          break
-      else
-        break;
-      end;
-    end else
-      break;
-  until false;
-
+  LastElement := TrimTrailingBlanks;   // Trim trailing blanks
   CurProps := nil;
   CurFontName := '';
   CurFontSize := 0;
   CurFontStyle := [];
-  aCanvas.Font.Style := CurFontStyle;
-  SizeOfSpace := aCanvas.TextExtent(' ');
-  SizeOfHyphen := aCanvas.TextExtent('-');
+  FCanvas.Font.Style := CurFontStyle;
+  FSizeOfSpace := FCanvas.TextExtent(' ');
+  FSizeOfHyphen := FCanvas.TextExtent('-');
   i := 0;
   NoBr := False;
   while i <= LastElement do begin
@@ -10297,30 +10332,30 @@ begin
     LastW := 0;
     while (i <= LastElement) do begin
       MinW := 0;
-      CurElement := PIpHtmlElement(ElementQueue[i]);
-      if CurElement.Props <> nil then
-        ApplyProps;
-      case CurElement.ElementType of
+      CurElem := PIpHtmlElement(FElementQueue[i]);
+      if CurElem.Props <> nil then begin
+        ApplyMinMaxProps;
+        NoBr := CurElem.Props.NoBreak;
+        CurProps := CurElem.Props;
+      end;
+      case CurElem.ElementType of
       etWord :
         begin
         {determine height and width of word}
-        if CurElement.IsBlank <> 0 then begin
-          if NoBr then begin
-            MaxW := SizeOfSpace.cx * CurElement.IsBlank;
-            MinW := MaxW + LastW;
-          end else begin
-            MinW := SizeOfSpace.cx * CurElement.IsBlank;
-            MaxW := MinW;
-          end;
+        if CurElem.IsBlank <> 0 then begin
+          MaxW := FSizeOfSpace.cx * CurElem.IsBlank;
+          MinW := MaxW;
+          if NoBr then
+            MinW := MinW + LastW;
         end else begin
-          if (CurElement.SizeProp = CurProps.PropA) then
-            MaxW := CurElement.Size.cx
+          if (CurElem.SizeProp = CurProps.PropA) then
+            MaxW := CurElem.Size.cx
           else begin
-            CurElement.Size := aCanvas.TextExtent(NoBreakToSpace(CurElement.AnsiWord));
-            if CurElement.AnsiWord = NAnchorChar then
-              CurElement.Size.cx := 1;
-            MaxW := CurElement.Size.cx;
-            CurElement.SizeProp := CurProps.PropA;
+            CurElem.Size := FCanvas.TextExtent(NoBreakToSpace(CurElem.AnsiWord));
+            if CurElem.AnsiWord = NAnchorChar then
+              CurElem.Size.cx := 1;
+            MaxW := CurElem.Size.cx;
+            CurElem.SizeProp := CurProps.PropA;
             UpdateCurrent(i, CurProps);
           end;
           MinW := MaxW + LastW;
@@ -10329,15 +10364,14 @@ begin
         end;
       etObject :
         begin
-          CurObj := TIpHtmlNodeAlignInline(CurElement.Owner);
-          CurObj.CalcMinMaxWidth(MinW, MaxW);
+          TIpHtmlNodeAlignInline(CurElem.Owner).CalcMinMaxWidth(MinW, MaxW);
           LastW := 0;
           CurProps := nil;
         end;
       etSoftLF..etClearBoth :
         begin
-          if TextWidth + IndentW > Max then
-            Max := TextWidth + IndentW;
+          if TextWidth + IndentW > aMax then
+            aMax := TextWidth + IndentW;
           TextWidth := 0;
           MinW := 0;
           MaxW := 0;
@@ -10364,48 +10398,48 @@ begin
         end;
       etSoftHyphen :
         begin
-          MaxW := SizeOfHyphen.cx;
+          MaxW := FSizeOfHyphen.cx;
           MinW := MaxW + LastW;
         end;
       end;
       Inc(MinW, LIndentP);
-      if MinW > Min then
-        Min := MinW;
+      if MinW > aMin then
+        aMin := MinW;
       Inc(TextWidth, MaxW);
       Inc(i);
     end;
 
-    Max := MaxI2(Max, TextWidth + IndentW);
+    aMax := MaxI2(aMax, TextWidth + IndentW);
   end;
 end;
 
-procedure TIpHtmlNodeBlock.CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
-  var Min, Max: Integer);
+procedure TIpHtmlNodeBlock.CalcMinMaxPropWidth(const RenderProps: TIpHtmlProps;
+  var aMin, aMax: Integer);
 begin
-  if RenderProps.IsEqualTo(Props) and (FMin <> -1) and (FMax <> -1) then begin
-    Min := FMin;
-    Max := FMax;
+  if RenderProps.IsEqualTo(Props) and (FBlockMin <> -1) and (FBlockMax <> -1) then begin
+    aMin := FBlockMin;
+    aMax := FBlockMax;
     Exit;
   end;
   Props.Assign(RenderProps);
   LoadAndApplyCSSProps;
   SetProps(Props);
-  if ElementQueue.Count = 0 then
+  if FElementQueue.Count = 0 then
     Enqueue;
-  CalcMinMaxQueueWidth(Props, Min, Max);
-  FMin := Min;
-  FMax := Max;
+  CalcMinMaxQueueWidth(aMin, aMax);
+  FBlockMin := aMin;
+  FBlockMax := aMax;
 end;
 
 procedure TIpHtmlNodeBlock.ClearWordList;
 begin
-  if ElementQueue <> nil then
-    ElementQueue.Clear;
+  if FElementQueue <> nil then
+    FElementQueue.Clear;
 end;
 
 procedure TIpHtmlNodeBlock.EnqueueElement(const Entry: PIpHtmlElement);
 begin
-  ElementQueue.Add(Entry);
+  FElementQueue.Add(Entry);
 end;
 
 procedure TIpHtmlNodeBlock.Invalidate;
@@ -10419,18 +10453,17 @@ end;
 function TIpHtmlNodeBlock.GetHeight(const RenderProps: TIpHtmlProps;
                                     const Width: Integer): Integer;
 begin
-  if LastW = Width then begin
-    Result := LastH;
+  if FLastW = Width then begin
+    Result := FLastH;
     Exit;
   end;
   Layout(RenderProps, Rect(0, 0, Width, MaxInt));
   Result := PageRect.Bottom;
-  LastH := Result;
-  LastW := Width;
+  FLastH := Result;
+  FLastW := Width;
 end;
 
-procedure TIpHtmlNodeBlock.Layout(const RenderProps: TIpHtmlProps;
-  const TargetRect: TRect);
+procedure TIpHtmlNodeBlock.Layout(const RenderProps: TIpHtmlProps; const TargetRect: TRect);
 begin
   if EqualRect(TargetRect, PageRect) then Exit;
   if not RenderProps.IsEqualTo(Props) then
@@ -10439,414 +10472,588 @@ begin
     LoadAndApplyCSSProps;
     SetProps(Props);
   end;
-  if ElementQueue.Count = 0 then
+  if FElementQueue.Count = 0 then
     Enqueue;
   if SameDimensions(TargetRect, PageRect) then
     RelocateQueue(TargetRect.Left - PageRect.Left, TargetRect.Top - PageRect.Top)
   else
-    LayoutQueue(Props, TargetRect);
+    LayoutQueue(TargetRect);
 end;
 
 procedure TIpHtmlNodeBlock.RelocateQueue(const dx, dy: Integer);
 var
   i : Integer;
-  CurElement : PIpHtmlElement;
+  CurElem : PIpHtmlElement;
   R : TRect;
 begin
   OffsetRect(FPageRect, dx, dy);
-  for i := 0 to Pred(ElementQueue.Count) do begin
-    CurElement := PIpHtmlElement(ElementQueue[i]);
-    R := CurElement.WordRect2;
+  for i := 0 to Pred(FElementQueue.Count) do begin
+    CurElem := PIpHtmlElement(FElementQueue[i]);
+    R := CurElem.WordRect2;
     if R.Bottom <> 0 then begin
       OffsetRect(R, dx, dy);
-      SetWordRect(CurElement, R);
+      SetWordRect(CurElem, R);
     end;
   end;
 end;
 
-procedure TIpHtmlNodeBlock.LayoutQueue(
-  const RenderProps: TIpHtmlProps; const TargetRect: TRect);
-type
-  TWordInfo = record
-    BaseX     : Integer;
-    BOff      : Integer;
-    CurAsc    : Integer;
-    Sz        : TSize;
-    VA        : TIpHtmlVAlign3;
-    Hs        : Integer;
-  end;
-  PWordInfo = ^TWordInfo;
-const
-  MAXWORDS = 65536;
-type
-  TWordList = array[0..Pred(MAXWORDS)] of TWordInfo;
-  PWordList = ^TWordList;
-var
-  Y,
-  i, MaxHeight, j,
-  MaxAscent, MaxDescent,
-  TextWidth, Width : Integer;
-  W : Integer;
-  Size : TSize;
-  MaxTextWidth : Integer;
-  CurElement : PIpHtmlElement;
-  Al, SaveAl : TIpHtmlAlign;
-  VAL : TIpHtmlVAlign3;
-  FirstWord, LastWord, {dx,} m, X0 : Integer;
-  CurHeight, CurAscent, CurDescent : Integer;
-  LineBreak : Boolean;
-  LeftQueue : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
-  RightQueue : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
-  tmAscent,
-  tmDescent,
-  tmHeight : Integer;
-  LIdent, RIdent : Integer;
-  VRemainL,
-  VRemainR : Integer;
-  Clear : (cNone, cLeft, cRight, cBoth);
-  BaseOffset : Integer;
-  ExpLIndent,
-  PendingIndent, PendingOutdent : Integer;
-  ExpBreak : Boolean;
-  LTrim : Boolean;
-  RectWidth : Integer;
-  FirstElement, LastElement : Integer;
-  SizeOfSpace : TSize;
-  SizeOfHyphen : TSize;
-  PendingLineBreak : Boolean;
-  Prefor : Boolean;
-  TempCenter : Boolean;
-  CurProps : TIpHtmlProps;
-  SoftBreak : Boolean;
-  IgnoreHardLF : Boolean;
-  CanBreak : Boolean;
-  LastBreakpoint : Integer;
-  WordInfo : PWordList;
-  {WordInfoCount : Integer;}
-  WordInfoSize : Integer;
-  CurObj : TIpHtmlNodeAlignInline;
-  HyphenSpace : Integer;
-  SoftLF : Boolean;
-  HyphensPresent : Boolean;
-  aCanvas: Tcanvas;
+procedure TIpHtmlNodeBlock.QueueInit(const TargetRect: TRect);
+begin
+  FWordInfoSize := 0;
+  FWordInfo := nil;
+  YYY := TargetRect.Top;
+  FLeftQueue := TFPList.Create;
+  FRightQueue := TFPList.Create;
+  //FSizeOfSpace := Owner.Target.TextExtent(' ');
+  //FSizeOfHyphen := Owner.Target.TextExtent('-');
+  FCurProps := nil;
+  FLIdent := 0;
+  FRIdent := 0;
+  FVRemainL := 0;
+  FVRemainR := 0;
+  FClear := cNone;
+  FExpBreak := True;
+  FTempCenter := False;
+  FSaveAl := haLeft;
+  FIgnoreHardLF := False;
+  FLastBreakpoint := 0;
+  FPageRect := TargetRect;
+  FMaxHeight := 0;
+  FMaxAscent := 0;
+  FMaxDescent := 0;
+  FLineBreak := False;
+  FAl := haLeft;
+  FVAL := hva3Top;
+  FCurAscent := 0;
+  FCurDescent := 0;
+  FCurHeight := 0;
+end;
 
-  procedure QueueLeadingObjects;
-  var
-    CurObj : TIpHtmlNodeAlignInline;
-  begin
-    while FirstElement <= LastElement do begin
-      CurElement := PIpHtmlElement(ElementQueue[FirstElement]);
-      case CurElement.ElementType of
+procedure TIpHtmlNodeBlock.InitMetrics;
+{$IFDEF IP_LAZARUS}
+var
+  TextMetrics : TLCLTextMetric;
+begin
+  FCanvas.GetTextMetrics(TextMetrics);
+  FBlockAscent := TextMetrics.Ascender;
+  FBlockDescent := TextMetrics.Descender;
+  FBlockHeight := TextMetrics.Height;
+end;
+{$ELSE}
+var
+  TextMetrics : TTextMetric;
+begin
+  GetTextMetrics(aCanvas.Handle, TextMetrics);
+  BlockAscent := TextMetrics.tmAscent;
+  BlockDescent := TextMetrics.tmDescent;
+  BlockHeight := TextMetrics.tmHeight;
+end;
+{$ENDIF}
+
+function TIpHtmlNodeBlock.QueueLeadingObjects: Integer;
+// Returns the first element index.
+var
+  CurObj : TIpHtmlNodeAlignInline;
+  CurElem : PIpHtmlElement;
+begin
+  Result := 0;
+  while Result <= FElementQueue.Count-1 do begin
+    CurElem := PIpHtmlElement(FElementQueue[Result]);
+    case CurElem.ElementType of
       etObject :
         begin
-          CurObj := TIpHtmlNodeAlignInline(CurElement.Owner);
+          CurObj := TIpHtmlNodeAlignInline(CurElem.Owner);
           case CurObj.Align of
           hiaLeft :
             begin
-              LeftQueue.Add(CurElement);
-              Inc(FirstElement);
+              FLeftQueue.Add(CurElem);
+              Inc(Result);
             end;
           hiaRight :
             begin
-              RightQueue.Add(CurElement);
-              Inc(FirstElement);
+              FRightQueue.Add(CurElem);
+              Inc(Result);
             end;
           else
             break;
           end;
-        end else
+        end
+      else
         break;
-      end;
     end;
   end;
+end;
 
-  procedure DoLeftAligned;
+function TIpHtmlNodeBlock.TrimTrailingBlanks(aFirstElem: Integer): Integer;
+// Trim trailing blanks. Returns the last element index.
+var
+  CurElem: PIpHtmlElement;
+begin
+  Result := FElementQueue.Count - 1;
+  repeat
+    if (Result < aFirstElem) then Break;
+    CurElem := PIpHtmlElement(FElementQueue[Result]);
+    if (CurElem.ElementType <> etWord) or (CurElem.IsBlank = 0) then Break;
+    Dec(Result)
+  until false;
+end;
+
+procedure TIpHtmlNodeBlock.DoQueueAlign(const TargetRect: TRect; aExpLIndent: Integer);
+
+  procedure DoQueueAlignSub(aQueue: TFPList; aRight: Boolean);
   var
-    CurObj : TIpHtmlNodeAlignInline;
+    CurElem: PIpHtmlElement;
+    CurObj: TIpHtmlNodeAlignInline;
+    xLeft, xRight, ySize: Integer;
+    RectWidth: Integer;
   begin
-    if (LeftQueue.Count > 0) and (VRemainL = 0) then begin
-      while LeftQueue.Count > 0 do begin
-        CurElement := LeftQueue[0];
-        CurObj := TIpHtmlNodeAlignInline(CurElement.Owner);
-        Size := CurObj.GetDim(RectWidth);
-        Width := (TargetRect.Right - TargetRect.Left)
-          - LIdent - RIdent - Size.cx - ExpLIndent;
-        if Width < 0 then
+    if aRight then
+      xLeft := FVRemainR
+    else
+      xLeft := FVRemainL;
+    if (aQueue.Count > 0) and (xLeft = 0) then
+      while aQueue.Count > 0 do begin
+        CurElem := aQueue[0];
+        CurObj := TIpHtmlNodeAlignInline(CurElem.Owner);
+        RectWidth := TargetRect.Right - TargetRect.Left;
+        FxySize := CurObj.GetDim(RectWidth);
+        FTotWidth := RectWidth - FLIdent - FRIdent - FxySize.cx - aExpLIndent;
+        if FTotWidth < 0 then
           break;
-        SetWordRect(CurElement,
-          Rect(TargetRect.Left + LIdent,
-            Y,
-            TargetRect.Left + LIdent + Size.cx,
-            Y + Size.cy));
-        Inc(LIdent, Size.cx);
-        VRemainL := MaxI2(VRemainL, Size.cy);
-        LeftQueue.Delete(0);
+        if aRight then begin
+          xRight := TargetRect.Right - FRIdent;
+          xLeft := xRight - FxySize.cx;
+          Inc(FRIdent, FxySize.cx);
+          FVRemainR := MaxI2(FVRemainR, FxySize.cy)
+        end
+        else begin
+          xLeft := TargetRect.Left + FLIdent;
+          xRight := xLeft + FxySize.cx;
+          Inc(FLIdent, FxySize.cx);
+          FVRemainL := MaxI2(FVRemainL, FxySize.cy);
+        end;
+        ySize := FxySize.cy;
+        SetWordRect(CurElem, Rect(xLeft, YYY, xRight, YYY+FxySize.cy));
+        Assert(ySize = FxySize.cy, 'TIpHtmlNodeBlock.DoQueueAligned: ySize <> FSize.cy'); // Can be removed later.
+        aQueue.Delete(0);
       end;
-    end;
   end;
 
-  procedure DoRightAligned;
-  var
-    CurObj : TIpHtmlNodeAlignInline;
-  begin
-    if (RightQueue.Count > 0) and (VRemainR = 0) then begin
-      while RightQueue.Count > 0 do begin
-        CurElement := RightQueue[0];
-        CurObj := TIpHtmlNodeAlignInline(CurElement.Owner);
-        Size := CurObj.GetDim(RectWidth);
-        Width := (TargetRect.Right - TargetRect.Left)
-          - LIdent - RIdent - Size.cx - ExpLIndent;
-        if Width < 0 then
-          break;
-        SetWordRect(CurElement,
-          Rect(TargetRect.Right - RIdent - Size.cx,
-            Y,
-            TargetRect.Right - RIdent,
-            Y + Size.cy));
-        Inc(RIdent, Size.cx);
-        VRemainR := MaxI2(VRemainR, Size.cy);
-        RightQueue.Delete(0);
-      end;
-    end;
-  end;
+begin
+  DoQueueAlignSub(FLeftQueue, False); // Left
+  DoQueueAlignSub(FRightQueue, True); // Right
+end;
 
-  procedure OutputLine;
+procedure TIpHtmlNodeBlock.OutputQueueLine;
+var
+  WDelta, WMod : Integer;
+
+  function CalcDelta: Integer;     // Returns dx
   var
-    WDelta, WMod, j : Integer;
-    R : TRect;
-    CurWordInfo : PWordInfo;
-    dx: Integer;
+    m : Integer;
   begin
     WDelta := 0;
     WMod := 0;
-    case Al of
-    haDefault,
-    haLeft :
-      dx := 0;
-    haCenter :
-      if Width >= TextWidth then
-        dx := (Width - TextWidth) div 2
-      else
-        dx := 0;
-    haRight :
-      if Width >= TextWidth then
-        dx := Width - TextWidth
-      else
-        dx := 0;
-    haChar :
-      if Width >= TextWidth then
-        dx := (Width - TextWidth) div 2
-      else
-        dx := 0;
-    else //haJustify :
-      if i >= ElementQueue.Count then
-        dx := 0
-      else begin
-        dx := 0;
-        m := i - FirstWord - 2;
-        if m > 0 then begin
-          WDelta := (Width - TextWidth) div m;
-          WMod := (Width - TextWidth) mod m;
-        end;
-      end;
-    end;
-
-    if Owner.PageHeight <> 0 then begin
-      {if we're printing, adjust line's vertical offset to not straddle a page boundary}
-      j := Y mod Owner.PageHeight;
-      {only do this for 'small' objects, like text lines}
-      if (MaxAscent + MaxDescent < 200)
-      and (j + MaxAscent + MaxDescent > Owner.PageHeight) then
-        Inc(Y, ((j + MaxAscent + MaxDescent) - Owner.PageHeight));
-    end;
-
-    for j := FirstWord to LastWord do begin
-      CurElement := PIpHtmlElement(ElementQueue[j]);
-      CurWordInfo := @WordInfo[j - FirstWord];
-      if CurWordInfo.Sz.cx <> 0 then begin
-        R.Left := CurWordInfo.BaseX;
-        R.Right := R.Left + CurWordInfo.Sz.cx;
-        case CurWordInfo.VA of
-        hva3Top :
-          begin
-            R.Top := Y;
-            R.Bottom := Y + CurWordInfo.Sz.cy;
-          end;
-        hva3Middle :
-          begin
-            R.Top := Y + (MaxHeight - CurWordInfo.Sz.cy) div 2;
-            R.Bottom := R.Top + CurWordInfo.Sz.cy;
-          end;
-        hva3Bottom :
-          begin
-            R.Top := Y + MaxHeight - CurWordInfo.Sz.cy;
-            R.Bottom := R.Top + CurWordInfo.Sz.cy;
-          end;
-        hva3Default,
-        hva3Baseline :
-          begin
-            if CurWordInfo.CurAsc >= 0 then
-              R.Top := Y + MaxAscent - CurWordInfo.CurAsc
-            else
-              R.Top := Y;
-            R.Bottom := R.Top + CurWordInfo.Sz.cy;
+    Result := 0;
+    case FAl of
+      haUnknown :  // by Juha
+        Assert(False, 'TIpHtmlNodeBlock.OutputQueueLine: Align = Unknown.');
+      haDefault, haLeft :
+        ;
+      haCenter :
+        if FTotWidth >= FTextWidth then
+          Result := (FTotWidth - FTextWidth) div 2;
+      haRight :
+        if FTotWidth >= FTextWidth then
+          Result := FTotWidth - FTextWidth;
+      haChar :
+        if FTotWidth >= FTextWidth then
+          Result := (FTotWidth - FTextWidth) div 2;
+      else //haJustify :
+        if iElem < FElementQueue.Count then begin
+          m := iElem - FFirstWord - 2;
+          if m > 0 then begin
+            WDelta := (FTotWidth - FTextWidth) div m;
+            WMod := (FTotWidth - FTextWidth) mod m;
           end;
         end;
-        if WMod <> 0 then begin
-          OffsetRect(R, dx + WDelta + 1, 0);
-          Dec(WMod);
-        end else
-          OffsetRect(R, dx + WDelta, 0);
-        SetWordRect(CurElement, R);
-      end else
-        SetWordRect(CurElement, NullRect);
     end;
   end;
 
-  procedure DoClear;
-  begin
-    case Clear of
+var
+  j, dx : Integer;
+  R : TRect;
+  CurElem : PIpHtmlElement;
+  CurWordInfo : PWordInfo;
+begin
+  dx := CalcDelta;
+  if Owner.PageHeight <> 0 then begin
+    {if we're printing, adjust line's vertical offset to not straddle a page boundary}
+    j := YYY mod Owner.PageHeight;
+    {only do this for 'small' objects, like text lines}
+    if (FMaxAscent + FMaxDescent < 200)
+    and (j + FMaxAscent + FMaxDescent > Owner.PageHeight) then
+      Inc(YYY, ((j + FMaxAscent + FMaxDescent) - Owner.PageHeight));
+  end;
+
+  for j := FFirstWord to FLastWord do begin
+    CurElem := PIpHtmlElement(FElementQueue[j]);
+    CurWordInfo := @FWordInfo[j - FFirstWord];
+    if CurWordInfo.Sz.cx <> 0 then begin
+      R.Left := CurWordInfo.BaseX;
+      R.Right := R.Left + CurWordInfo.Sz.cx;
+      case CurWordInfo.VA of
+      hva3Top :
+        begin
+          R.Top := YYY;
+          R.Bottom := YYY + CurWordInfo.Sz.cy;
+        end;
+      hva3Middle :
+        begin
+          R.Top := YYY + (FMaxHeight - CurWordInfo.Sz.cy) div 2;
+          R.Bottom := R.Top + CurWordInfo.Sz.cy;
+        end;
+      hva3Bottom :
+        begin
+          R.Top := YYY + FMaxHeight - CurWordInfo.Sz.cy;
+          R.Bottom := R.Top + CurWordInfo.Sz.cy;
+        end;
+      hva3Default,
+      hva3Baseline :
+        begin
+          if CurWordInfo.CurAsc >= 0 then
+            R.Top := YYY + FMaxAscent - CurWordInfo.CurAsc
+          else
+            R.Top := YYY;
+          R.Bottom := R.Top + CurWordInfo.Sz.cy;
+        end;
+      end;
+      if WMod <> 0 then begin
+        OffsetRect(R, dx + WDelta + 1, 0);
+        Dec(WMod);
+      end else
+        OffsetRect(R, dx + WDelta, 0);
+      SetWordRect(CurElem, R);
+    end else
+      SetWordRect(CurElem, NullRect);
+  end;
+
+  if FTempCenter then begin
+    FAl := FSaveAl;
+    FTempCenter := False;
+  end;
+end;
+
+procedure TIpHtmlNodeBlock.DoQueueClear;
+begin
+  case FClear of
     cLeft :
-      if VRemainL > 0 then begin
-        Inc(Y, VRemainL);
-        VRemainL := 0;
-        LIdent := 0;
+      if FVRemainL > 0 then begin
+        Inc(YYY, FVRemainL);
+        FVRemainL := 0;
+        FLIdent := 0;
       end;
     cRight :
-      if VRemainR > 0 then begin
-        Inc(Y, VRemainR);
-        VRemainR := 0;
-        RIdent := 0;
+      if FVRemainR > 0 then begin
+        Inc(YYY, FVRemainR);
+        FVRemainR := 0;
+        FRIdent := 0;
       end;
     cBoth :
       begin
-        Inc(Y,
-          MaxI2(VRemainL, VRemainR));
-        VRemainL := 0;
-        VRemainR := 0;
-        LIdent := 0;
-        RIdent := 0;
+        Inc(YYY, MaxI2(FVRemainL, FVRemainR));
+        FVRemainL := 0;
+        FVRemainR := 0;
+        FLIdent := 0;
+        FRIdent := 0;
+      end;
+  end;
+  FClear := cNone;
+end;
+
+procedure TIpHtmlNodeBlock.ApplyQueueProps(aCurElem: PIpHtmlElement; var aPrefor: Boolean);
+var
+  TextMetrics : TLCLTextMetric;
+begin
+  with aCurElem.Props do begin
+    if (FCurProps = nil) or not AIsEqualTo(FCurProps) then begin
+      UpdSpaceHyphenSize(aCurElem.Props);
+      if PropA.tmHeight = 0 then
+        UpdPropMetrics(aCurElem.Props);
+      FBlockHeight := PropA.tmHeight;
+      FBlockAscent := PropA.tmAscent;
+      FBlockDescent := PropA.tmDescent;
+    end;
+    if (FCurProps = nil) or not BIsEqualTo(FCurProps) then begin
+      FAl := Alignment;
+      FVAL := VAlignment;
+      FBaseOffset := FontBaseline;
+      aPrefor := Preformatted;
+    end;
+  end;
+  FCurProps := aCurElem.Props;
+end;
+
+procedure TIpHtmlNodeBlock.DoQueueElemWord(aCurElem: PIpHtmlElement);
+begin
+  FIgnoreHardLF := False;
+  if FLTrim and (aCurElem.IsBlank <> 0) then
+    FxySize := SizeRec(0, 0)
+  else begin
+    if aCurElem.IsBlank <> 0 then begin
+      FxySize.cx := FSizeOfSpace.cx * aCurElem.IsBlank;
+      FxySize.cy := FSizeOfSpace.cy;
+      FCanBreak := True;
+    end else begin
+      if (aCurElem.SizeProp = FCurProps.PropA) then
+        FxySize := aCurElem.Size
+      else begin
+        FCanvas.Font.Name := FCurProps.FontName;
+        FCanvas.Font.Size := FCurProps.FontSize;
+        FCanvas.Font.Style := FCurProps.FontStyle;
+        aCurElem.Size := FCanvas.TextExtent(NoBreakToSpace(aCurElem.AnsiWord));
+        FxySize := aCurElem.Size;
+        aCurElem.SizeProp := FCurProps.PropA;
       end;
     end;
-    Clear := cNone;
+    FLTrim := False;
+    FLineBreak := False;
+    FExpBreak := False;
   end;
+  FCurAscent := FBlockAscent;
+  FCurDescent := FBlockDescent;
+  FCurHeight := FBlockHeight;
+end;
 
-  procedure ApplyProps;
-  var
-    {$IFDEF IP_LAZARUS}
-    TextMetrics : TLCLTextMetric;
-    {$ELSE}
-    TExtMetrics : TTextMetric;
-    {$ENDIF}
-  begin
-    with CurElement.Props do begin
-      if (CurProps = nil) or not AIsEqualTo(CurProps) then begin
-        if PropA.SizeOfSpaceKnown then begin
-          SizeOfSpace := PropA.KnownSizeOfSpace;
-          SizeOfHyphen := PropA.KnownSizeOfHyphen;
-        end else begin
-          aCanvas.Font.Name := FontName;
-          aCanvas.Font.Size := FontSize;
-          aCanvas.Font.Style := FontStyle;
-          SizeOfSpace := aCanvas.TextExtent(' ');
-          SizeOfHyphen := aCanvas.TextExtent('-');
-          PropA.SetKnownSizeOfSpace(SizeOfSpace);
-          PropA.KnownSizeOfHyphen := SizeOfHyphen;
-        end;
-        if PropA.tmHeight = 0 then begin
-          aCanvas.Font.Name := FontName;
-          aCanvas.Font.Size := FontSize;
-          aCanvas.Font.Style := FontStyle;
-          {$IFDEF IP_LAZARUS}
-          Owner.Target.GetTextMetrics(TextMetrics);
-          PropA.tmAscent := TextMetrics.Ascender;
-          PropA.tmDescent := TextMetrics.Descender;
-          PropA.tmHeight := TextMetrics.Height;
-          {$ELSE}
-          GetTextMetrics(Owner.Target.Handle, TextMetrics);
-          PropA.tmAscent := TextMetrics.tmAscent;
-          PropA.tmDescent := TextMetrics.tmDescent;
-          PropA.tmHeight := TextMetrics.tmHeight;
-          {$ENDIF}
-        end;
-        tmHeight := PropA.tmHeight;
-        tmAscent := PropA.tmAscent;
-        tmDescent := PropA.tmDescent;
-      end;
-      if (CurProps = nil) or not BIsEqualTo(CurProps) then begin
-        Al := Alignment;
-        VAL := VAlignment;
-        BaseOffset := FontBaseline;
-        PreFor := Preformatted;
+function TIpHtmlNodeBlock.DoQueueElemObject(var aCurElem: PIpHtmlElement): boolean;
+var
+  CurObj : TIpHtmlNodeAlignInline;
+begin
+  FIgnoreHardLF := False;
+  FCurAscent := 0;
+  FCurDescent := 0;
+  FCanBreak := True;
+  FLineBreak := False;
+  CurObj := TIpHtmlNodeAlignInline(aCurElem.Owner);
+  FxySize := CurObj.GetDim(FTotWidth);
+  FCurHeight := FxySize.cy;
+  case Curobj.Align of
+  hiaCenter :
+    begin
+      FExpBreak := False;
+      FLTrim := False;
+      FCurAscent := FMaxAscent;
+      FCurDescent := FxySize.cy - FMaxAscent;
+      FTempCenter := True;
+      FSaveAl := FAl;
+      FAl := haCenter;
+    end;
+  hiaTop :
+    begin
+      FExpBreak := False;
+      FLTrim := False;
+      FCurAscent := -1;
+      FCurDescent := FxySize.cy;
+    end;
+  hiaMiddle :
+    begin
+      FExpBreak := False;
+      FLTrim := False;
+      FCurAscent := FxySize.cy div 2;
+      FCurDescent := FxySize.cy div 2;
+    end;
+  hiaBottom :
+    begin
+      FExpBreak := False;
+      FLTrim := False;
+      FCurAscent := FxySize.cy;
+      FCurDescent := 0;
+    end;
+  hiaLeft :
+    begin
+      FLeftQueue.Add(aCurElem);
+      aCurElem := nil;
+      FCurHeight := 0;
+      FxySize.cx := 0;
+      if FLTrim then begin
+        Inc(iElem);
+        Exit(False);
       end;
     end;
-    CurProps := CurElement.Props;
+  hiaRight :
+    begin
+      FRightQueue.Add(aCurElem);
+      aCurElem := nil;
+      FCurHeight := 0;
+      FxySize.cx := 0;
+      if FLTrim then begin
+        Inc(iElem);
+        Exit(False);
+      end;
+    end;
   end;
+  Result := True;
+end;
 
-  procedure InitMetrics;
-  {$IFDEF IP_LAZARUS}
-  var
-    TextMetrics : TLCLTextMetric;
-  begin
-    aCanvas.GetTextMetrics(TextMetrics);
-    tmAscent := TextMetrics.Ascender;
-    tmDescent := TextMetrics.Descender;
-    tmHeight := TextMetrics.Height;
+function TIpHtmlNodeBlock.DoQueueElemSoftLF(const W: Integer): boolean;
+var
+  PendingLineBreak : Boolean;
+begin
+  if FLineBreak or FExpBreak then begin
+    FMaxAscent := 0;
+    FMaxDescent := 0;
+    PendingLineBreak := False;
+  end else begin
+    if FMaxAscent = 0 then begin
+      FMaxAscent := MaxI2(FMaxAscent, FBlockAscent);
+      FMaxDescent := MaxI2(FMaxDescent, FBlockDescent);
+    end;
+    PendingLineBreak := True;
   end;
-  {$ELSE}
-  var
-    TextMetrics : TTextMetric;
-  begin
-    GetTextMetrics(aCanvas.Handle, TextMetrics);
-    tmAscent := TextMetrics.tmAscent;
-    tmDescent := TextMetrics.tmDescent;
-    tmHeight := TextMetrics.tmHeight;
+  FExpBreak := True;
+  if FLineBreak then
+    FMaxDescent := 0;
+  Inc(iElem);
+  FLastWord := iElem - 2;
+  if PendingLineBreak then
+    FLineBreak := True;
+  if not FIgnoreHardLF then
+    Exit(False);
+  FxySize.cx := W + 1;
+  FSoftLF := True;
+  Result := True;
+end;
+
+function TIpHtmlNodeBlock.DoQueueElemHardLF: boolean;
+begin
+  FExpBreak := True;
+  if FMaxAscent = 0 then begin
+    FMaxAscent := MaxI2(FMaxAscent, FBlockAscent);
+    FMaxDescent := MaxI2(FMaxDescent, FBlockDescent);
   end;
+  if FLineBreak then
+    FMaxDescent := 0;
+  FLastWord := iElem - 1;
+  if not FIgnoreHardLF then begin
+    if FLineBreak then  begin
+      FMaxAscent := Round (FMaxAscent * Owner.FactBAParag);
+      FMaxDescent := Round (FMaxDescent * Owner.FactBAParag);
+    end;
+    Inc(iElem);
+    Exit(False);
+  end;
+  if FLastWord < FFirstWord then begin
+    FLastWord := FFirstWord;
+    FCanBreak := True;
+    Inc(iElem);
+  end;
+  Result := True;
+end;
+
+function TIpHtmlNodeBlock.DoQueueElemClear(aCurElem: PIpHtmlElement): boolean;
+begin
+  FExpBreak := True;
+  case aCurElem.ElementType of
+    etClearLeft : FClear := cLeft;
+    etClearRight : FClear := cRight;
+    etClearBoth : FClear := cBoth;
+  end;
+  if FLineBreak then
+    FMaxDescent := 0;
+  Inc(iElem);
+  FLastWord := iElem - 2;
+  Result := FIgnoreHardLF;
+end;
+
+procedure TIpHtmlNodeBlock.DoQueueElemIndentOutdent(aIgnoreHardLF: boolean; var aPending: Integer);
+begin
+  FCurAscent := 1;
+  FCurDescent := 0;
+  FCurHeight := 1;
+  FxySize := SizeRec(0, 0);
+  Inc(aPending);
+  FIgnoreHardLF := aIgnoreHardLF;
+  FCanBreak := True;
+end;
+
+procedure TIpHtmlNodeBlock.DoQueueElemSoftHyphen;
+begin
+  FIgnoreHardLF := False;
+  FxySize := FSizeOfHyphen;
+  FxySize.cy := FSizeOfSpace.cy;
+  FHyphenSpace := FxySize.cx;
+  FCanBreak := True;
+  FLTrim := False;
+  FLineBreak := False;
+  FExpBreak := False;
+  FCurAscent := FBlockAscent;
+  FCurDescent := FBlockDescent;
+  FCurHeight := FBlockHeight;
+end;
+
+function TIpHtmlNodeBlock.CalcVRemain(aVRemain: integer; var aIdent: integer): integer;
+begin
+  if aVRemain > 0 then begin
+    if FSoftBreak and (FTextWidth = 0) and (FMaxAscent + FMaxDescent = 0) then begin
+      Inc(YYY, aVRemain);
+      aVRemain := 0;
+      aIdent := 0;
+    end else begin
+      Dec(aVRemain, FMaxAscent + FMaxDescent);
+      if aVRemain <= 0 then begin
+        aVRemain := 0;
+        aIdent := 0;
+      end;
+    end;
+  end;
+  Result := aVRemain;
+end;
+
+procedure TIpHtmlNodeBlock.SetWordInfoLength(NewLength : Integer);
+var
+  NewWordInfoSize: Integer;
+  {$IFNDEF IP_LAZARUS}
+  NewWordInfo: PWordList;
   {$ENDIF}
-
-  procedure SetWordInfoLength(NewLength : Integer);
-  var
-    NewWordInfoSize: Integer;
-    {$IFNDEF IP_LAZARUS}
-    NewWordInfo: PWordList;
+begin
+  if (FWordInfo = nil) or (NewLength > FWordInfoSize) then begin
+    NewWordInfoSize := ((NewLength div 256) + 1) * 256;
+    {$IFDEF IP_LAZARUS code below does not check if FWordInfo<>nil}
+    ReallocMem(FWordInfo,NewWordInfoSize * sizeof(TWordInfo));
+    {$ELSE}
+    NewWordInfo := AllocMem(NewWordInfoSize * sizeof(TWordInfo));
+    move(WordInfo^, NewWordInfo^, WordInfoSize);
+    Freemem(WordInfo);
+    WordInfo := NewWordInfo;
     {$ENDIF}
-  begin
-    if (WordInfo = nil) or (NewLength > WordInfoSize) then begin
-      NewWordInfoSize := ((NewLength div 256) + 1) * 256;
-      {$IFDEF IP_LAZARUS code below does not check if WordInfo<>nil}
-      ReallocMem(WordInfo,NewWordInfoSize * sizeof(TWordInfo));
-      {$ELSE}
-      NewWordInfo := AllocMem(NewWordInfoSize * sizeof(TWordInfo));
-      move(WordInfo^, NewWordInfo^, WordInfoSize);
-      Freemem(WordInfo);
-      WordInfo := NewWordInfo;
-      {$ENDIF}
-      WordInfoSize := NewWordInfoSize;
-    end;
+    FWordInfoSize := NewWordInfoSize;
   end;
+end;
+
+procedure TIpHtmlNodeBlock.LayoutQueue(const TargetRect: TRect);
 
 {$IFDEF IP_LAZARUS_DBG}
   procedure DumpQueue(bStart: boolean=true);
   var
     i: Integer;
-    CurElement : PIpHtmlElement;
+    CurElem : PIpHtmlElement;
   begin
     if bStart then writeln('<<<<<')
     else writeln('>>>>>');
-    for i := 0 to ElementQueue.Count - 1 do begin
-      CurElement := PIpHtmlElement(ElementQueue[i]);
-      if CurElement.owner <> nil then
-         write(CurElement.owner.classname,':');
+    for i := 0 to FElementQueue.Count - 1 do begin
+      CurElem := PIpHtmlElement(FElementQueue[i]);
+      if CurElem.owner <> nil then
+         write(CurElem.owner.classname,':');
 
       write(
-            CurElement.WordRect2.Left,':',
-            CurElement.WordRect2.Top,':',
-            CurElement.WordRect2.Right,':',
-            CurElement.WordRect2.Bottom,':'
+            CurElem.WordRect2.Left,':',
+            CurElem.WordRect2.Top,':',
+            CurElem.WordRect2.Right,':',
+            CurElem.WordRect2.Bottom,':'
             );
-      case CurElement.ElementType of
+      case CurElem.ElementType of
       etWord :
-        write(' wrd:', CurElement.AnsiWord);
+        write(' wrd:', CurElem.AnsiWord);
       etObject :
         write(' obj');
       etSoftLF :
@@ -10873,451 +11080,191 @@ var
   end;
 {$endif}
   
+var
+  i, W, X0, ExpLIndent, RectWidth : Integer;
+  FirstElem, LastElem : Integer;
+  PendingIndent, PendingOutdent : Integer;
+  Prefor : Boolean;
+  CurElem : PIpHtmlElement;
+  wi: PWordInfo;
+
+  procedure InitInner;
+  begin
+    if PendingIndent > PendingOutdent then begin
+      if ExpLIndent < RectWidth - FLIdent - FRIdent then
+        Inc(ExpLIndent, (PendingIndent - PendingOutdent) * StdIndent);
+    end
+    else if PendingOutdent > PendingIndent then begin
+      Dec(ExpLIndent, (PendingOutdent - PendingIndent) * StdIndent);
+      if ExpLIndent < 0 then
+        ExpLIndent := 0;
+    end;
+    PendingIndent := 0;
+    PendingOutdent := 0;
+    DoQueueAlign(TargetRect, ExpLIndent);
+    FTotWidth := RectWidth - FLIdent - FRIdent - ExpLIndent;
+    FLTrim := FLineBreak or (FExpBreak and not Prefor) or (ExpLIndent > 0);
+    W := FTotWidth; {total width we have}
+    X0 := TargetRect.Left + FLIdent + ExpLIndent;
+    FTextWidth := 0;
+    FFirstWord := iElem;
+    FLastWord := iElem-1;
+    FBaseOffset := 0;
+    FSoftBreak := False;
+    FHyphenSpace := 0;
+  end;
+
 begin
-  aCanvas := Owner.Target;
-  if ElementQueue.Count = 0 then Exit;
+  FCanvas := Owner.Target;
+  if FElementQueue.Count = 0 then Exit;
   {$IFDEF IP_LAZARUS_DBG}
-  //DumpQueue; {debug}
+  DumpQueue; {debug}
   {$endif}
-  LeftQueue := nil;
-  RightQueue := nil;
-  WordInfoSize := 0;
-  {WordInfoCount := 0;}
-  WordInfo := nil;
   try
-    RectWidth := TargetRect.Right - TargetRect.Left;
-    Y := TargetRect.Top;
-    LeftQueue := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
-    RightQueue := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
-    SizeOfSpace := Owner.Target.TextExtent(' ');
-    SizeOfHyphen := Owner.Target.TextExtent('-');
+    QueueInit(TargetRect);
     InitMetrics;
-    CurProps := nil;
-    LIdent := 0;
-    RIdent := 0;
-    VRemainL := 0;
-    VRemainR := 0;
-    Clear := cNone;
+    FirstElem := QueueLeadingObjects;
+    LastElem := TrimTrailingBlanks(FirstElem);
+    DoQueueAlign(TargetRect, 0);
+    Prefor := False;
     ExpLIndent := 0;
     PendingIndent := 0;
     PendingOutdent := 0;
-
-    LastElement := ElementQueue.Count - 1;
-    FirstElement := 0;
-    QueueLeadingObjects;
-
-    Prefor := False;
-    ExpBreak := True;
-    TempCenter := False;
-    SaveAl := haLeft;
-    IgnoreHardLF := False;
-
-    LastBreakpoint := 0;
-
-    FPageRect := TargetRect;
-    i := 0;
-    MaxHeight := 0;
-    MaxAscent := 0;
-    MaxDescent := 0;
-    MaxTextWidth := 0;
-    LineBreak := False;
-    Al := haLeft;
-    VAL := hva3Top;
-
-    {trim trailing blanks}
-    LastElement := ElementQueue.Count - 1;
-    repeat
-      if (LastElement >= FirstElement) then begin
-        CurElement := PIpHtmlElement(ElementQueue[LastElement]);
-        if (CurElement.ElementType = etWord) then
-          if CurElement.IsBlank <> 0 then
-            Dec(LastElement)
-          else
-            break
-        else
-          break;
-      end else
-        break;
-    until false;
-
-    DoLeftAligned;
-    DoRightAligned;
-
-    i := FirstElement;
-    CurAscent := 0;
-    CurDescent := 0;
-    CurHeight := 0;
-
-    while i <= LastElement do begin
-
-      if PendingIndent > PendingOutDent then begin
-        if ExpLIndent < (TargetRect.Right - TargetRect.Left) - LIdent - RIdent then
-          Inc(ExpLIndent, (PendingIndent - PendingOutdent) * StdIndent);
-      end else
-      if PendingOutdent > PendingIndent then begin
-        Dec(ExpLIndent, (PendingOutDent - PendingIndent) * StdIndent);
-        if ExpLIndent < 0 then
-          ExpLIndent := 0;
-      end;
-
-      PendingIndent := 0;
-      PendingOutdent := 0;
-      DoLeftAligned;
-      DoRightAligned;
-      Width := (TargetRect.Right - TargetRect.Left) - LIdent - RIdent - ExpLIndent;
-      LTrim := LineBreak or (ExpBreak and not PreFor) or (ExpLIndent > 0);
-      W := Width; {total width we have}
-      TextWidth := 0;
-      FirstWord := i;
-      LastWord := i-1;
-      BaseOffset := 0;
-      X0 := TargetRect.Left + LIdent + ExpLIndent;
-      SoftBreak := False;
-      HyphenSpace := 0;
-      HyphensPresent := False;
-      while (i < ElementQueue.Count) do begin
-        CanBreak := False;
-        CurElement := PIpHtmlElement(ElementQueue[i]);
-        if CurElement.Props <> nil then
-          ApplyProps;
-        SoftLF := False;
-        case CurElement.ElementType of
-        etWord :
-          begin
-            IgnoreHardLF := False;
-            if LTrim and (CurElement.IsBlank <> 0) then
-              Size := SizeRec(0, 0)
-            else begin
-              if CurElement.IsBlank <> 0 then begin
-                Size.cx := SizeOfSpace.cx * CurElement.IsBlank;
-                Size.cy := SizeOfSpace.cy;
-                CanBreak := True;
-              end else begin
-                if (CurElement.SizeProp = CurProps.PropA) then
-                  Size := CurElement.Size
-                else begin
-                  aCanvas.Font.Name := CurProps.FontName;
-                  aCanvas.Font.Size := CurProps.FontSize;
-                  aCanvas.Font.Style := CurProps.FontStyle;
-                  CurElement.Size :=
-                    aCanvas.TextExtent(
-                      NoBreakToSpace(CurElement.AnsiWord));
-                  Size := CurElement.Size;
-                  CurElement.SizeProp := CurProps.PropA;
-                end;
-              end;
-              LTrim := False;
-              LineBreak := False;
-              ExpBreak := False;
+    RectWidth := TargetRect.Right - TargetRect.Left;
+    iElem := FirstElem;
+    while iElem <= LastElem do begin
+      InitInner;
+      while (iElem < FElementQueue.Count) do begin
+        FCanBreak := False;
+        CurElem := PIpHtmlElement(FElementQueue[iElem]);
+        if CurElem.Props <> nil then
+          ApplyQueueProps(CurElem, Prefor);
+        FSoftLF := False;
+        case CurElem.ElementType of
+          etWord :
+            DoQueueElemWord(CurElem);
+          etObject :
+            if not DoQueueElemObject(CurElem) then
+              Break;
+          etSoftLF :
+            if not DoQueueElemSoftLF(W) then
+              Break;
+          etHardLF :
+            if not DoQueueElemHardLF then
+              Break;
+          etClearLeft, etClearRight, etClearBoth :
+            if not DoQueueElemClear(CurElem) then
+              Break;
+          etIndent : begin
+              DoQueueElemIndentOutdent(True, PendingIndent);
+              FLTrim := True;
             end;
-            CurAscent := tmAscent;
-            CurDescent := tmDescent;
-            CurHeight := tmHeight;
-          end;
-        etObject :
-          begin
-            IgnoreHardLF := False;
-            CurAscent := 0;
-            CurDescent := 0;
-            CanBreak := True;
-            LineBreak := False;
-            CurObj := TIpHtmlNodeAlignInline(CurElement.Owner);
-            Size := CurObj.GetDim(Width);
-            CurHeight := Size.cy;
-            case Curobj.Align of
-            hiaCenter :
-              begin
-                ExpBreak := False;
-                LTrim := False;
-                CurAscent := MaxAscent;
-                CurDescent := Size.cy - MaxAscent;
-                TempCenter := True;
-                SaveAl := Al;
-                Al := haCenter;
-              end;
-            hiaTop :
-              begin
-                ExpBreak := False;
-                LTrim := False;
-                CurAscent := -1;
-                CurDescent := Size.cy;
-              end;
-            hiaMiddle :
-              begin
-                ExpBreak := False;
-                LTrim := False;
-                CurAscent := Size.cy div 2;
-                CurDescent := Size.cy div 2;
-              end;
-            hiaBottom :
-              begin
-                ExpBreak := False;
-                LTrim := False;
-                CurAscent := Size.cy;
-                CurDescent := 0;
-              end;
-            hiaLeft :
-              begin
-                LeftQueue.Add(CurElement);
-                CurElement := nil;
-                CurHeight := 0;
-                Size.cx := 0;
-                if LTrim then begin
-                  Inc(i);
-                  break;
-                end;
-              end;
-            hiaRight :
-              begin
-                RightQueue.Add(CurElement);
-                CurElement := nil;
-                CurHeight := 0;
-                Size.cx := 0;
-                if LTrim then begin
-                  Inc(i);
-                  break;
-                end;
-              end;
-            end;
-          end;
-        etSoftLF :
-          begin
-            PendingLineBreak := False;
-            if LineBreak or ExpBreak then begin
-              MaxAscent := 0;
-              MaxDescent := 0;
-            end else begin
-              if MaxAscent = 0 then begin
-                MaxAscent := MaxI2(MaxAscent, tmAscent);
-                MaxDescent := MaxI2(MaxDescent, tmDescent);
-              end;
-              PendingLineBreak := True;
-            end;
-            ExpBreak := True;
-            if LineBreak then
-              MaxDescent := 0;
-            Inc(i);
-            LastWord := i - 2;
-            if PendingLineBreak then
-              LineBreak := True;
-            if not IgnoreHardLF then
-              break;
-            Size.cx := w + 1;
-            SoftLF := True;
-          end;
-        etHardLF :
-          begin
-            ExpBreak := True;
-            if MaxAscent = 0 then begin
-              MaxAscent := MaxI2(MaxAscent, tmAscent);
-              MaxDescent := MaxI2(MaxDescent, tmDescent);
-            end;
-            if LineBreak then
-              MaxDescent := 0;
-            LastWord := i - 1;
-            if not IgnoreHardLF then begin
-              if LineBreak then  begin
-                MaxAscent := Round (MaxAscent * Owner.FactBAParag);
-                MaxDescent := Round (MaxDescent * Owner.FactBAParag);
-              end;
-              Inc(i);
-              break;
-            end;
-            if LastWord < FirstWord then begin
-              LastWord := FirstWord;
-              CanBreak := True;
-              Inc(i);
-            end;
-          end;
-        etClearLeft, etClearRight, etClearBoth :
-          begin
-            ExpBreak := True;
-            case CurElement.ElementType of
-            etClearLeft : Clear := cLeft;
-            etClearRight : Clear := cRight;
-            etClearBoth : Clear := cBoth;
-            end;
-            if LineBreak then
-              MaxDescent := 0;
-            Inc(i);
-            LastWord := i - 2;
-            if not IgnoreHardLF then
-              break;
-          end;
-        etIndent :
-          begin
-            CurAscent := 1;
-            CurDescent := 0;
-            CurHeight := 1;
-            Size := SizeRec(0, 0);
-            Inc(PendingIndent);
-            LTrim := True;
-            IgnoreHardLF := True;
-            CanBreak := True;
-          end;
-        etOutdent :
-          begin
-            IgnoreHardLF := False;
-            CurAscent := 1;
-            CurDescent := 0;
-            CurHeight := 1;
-            Inc(PendingOutdent);
-            CanBreak := True;
-            Size := SizeRec(0, 0);
-          end;
-        etSoftHyphen :
-          begin
-            IgnoreHardLF := False;
-            Size := SizeOfHyphen;
-            Size.cy := SizeOfSpace.cy;
-            HyphenSpace := Size.cx;
-            HyphensPresent := HyphenSpace > 0;
-            CanBreak := True;
-            LTrim := False;
-            LineBreak := False;
-            ExpBreak := False;
-            CurAscent := tmAscent;
-            CurDescent := tmDescent;
-            CurHeight := tmHeight;
-          end;
+          etOutdent :
+            DoQueueElemIndentOutdent(False, PendingOutdent);
+          etSoftHyphen :
+            DoQueueElemSoftHyphen;
         end;
-        CanBreak := CanBreak and (Assigned(CurProps) and (not CurProps.NoBreak));
-        if (Size.cx <= W) then begin
-          if CanBreak then
-            LastBreakPoint := i;
-          MaxAscent := MaxI2(MaxAscent, CurAscent);
-          MaxDescent := MaxI2(MaxDescent, CurDescent);
-          MaxHeight := MaxI3(MaxHeight, CurHeight, MaxAscent + MaxDescent);
+        FCanBreak := FCanBreak and (Assigned(FCurProps) and (not FCurProps.NoBreak));
+        if (FxySize.cx <= W) then begin
+          if FCanBreak then
+            FLastBreakpoint := iElem;
+          FMaxAscent := MaxI2(FMaxAscent, FCurAscent);
+          FMaxDescent := MaxI2(FMaxDescent, FCurDescent);
+          FMaxHeight := MaxI3(FMaxHeight, FCurHeight, FMaxAscent + FMaxDescent);
           {if word fits on line update width and height}
-          if (CurElement <> nil) and (CurElement.ElementType = etIndent) then
-            Size.cx := MinI2(W, StdIndent - ((X0 - TargetRect.Left) mod StdIndent));
-          Dec(W, Size.cx);
-          Inc(TextWidth, Size.cx);
-          if CurElement <> nil then begin
-            if HyphensPresent then
-              for j := 0 to i - FirstWord - 1 do begin
-                Assert(j < WordInfoSize);
-                with WordInfo[j] do
-                  if Hs > 0 then begin
-                    Inc(W, Hs);
-                    Dec(TextWidth, Hs);
-                    Dec(X0, Hs);
-                    Hs := 0;
-                    Sz.cx := 0;
-                  end;
+          if (CurElem <> nil) and (CurElem.ElementType = etIndent) then begin
+            i := StdIndent;
+            FxySize.cx := MinI2(W, i - ((X0 - TargetRect.Left) mod i));
+          end;
+          Dec(W, FxySize.cx);
+          Inc(FTextWidth, FxySize.cx);
+          if CurElem <> nil then begin
+            if FHyphenSpace > 0 then
+              for i := 0 to iElem - FFirstWord - 1 do begin
+                Assert(i < FWordInfoSize);
+                wi := @FWordInfo[i];
+                if wi^.Hs > 0 then begin
+                  Inc(W, wi^.Hs);
+                  Dec(FTextWidth, wi^.Hs);
+                  Dec(X0, wi^.Hs);
+                  wi^.Hs := 0;
+                  wi^.Sz.cx := 0;
                 end;
-            SetWordInfoLength(i - FirstWord + 1);
-            with WordInfo[i - FirstWord] do begin
-              Sz := SizeRec(Size.cx, CurHeight);
-              BaseX := X0;
-              BOff := BaseOffset;
-              CurAsc := CurAscent + BaseOffset;
-              VA := VAL;
-              Hs := HyphenSpace;
-              HyphenSpace := 0;
+              end;
+            SetWordInfoLength(iElem - FFirstWord + 1);
+            wi := @FWordInfo[iElem - FFirstWord];
+            wi^.Sz := SizeRec(FxySize.cx, FCurHeight);
+            wi^.BaseX := X0;
+            wi^.BOff := FBaseOffset;
+            wi^.CurAsc := FCurAscent + FBaseOffset;
+            wi^.VA := FVAL;
+            wi^.Hs := FHyphenSpace;
+            FHyphenSpace := 0;
+          end;
+          Inc(X0, FxySize.cx);
+          FLastWord := iElem;
+          Inc(iElem);
+        end
+        else begin
+          if (FHyphenSpace > 0) and (CurElem <> nil) then
+            for i := 0 to iElem - FFirstWord - 2 do begin
+              wi := @FWordInfo[i];
+              if wi^.Hs > 0 then begin
+                Dec(FTextWidth, wi^.Hs);
+                wi^.Hs := 0;
+                wi^.Sz.cx := 0;
+              end;
+            end;
+          if FCanBreak then
+            FLastBreakpoint := iElem - 1;
+          if (FLastWord >= 0) and (FLastWord < FElementQueue.Count) then begin
+            CurElem := PIpHtmlElement(FElementQueue[FLastWord]);
+            if (CurElem.ElementType = etWord)
+            and (CurElem.IsBlank <> 0) then begin
+              FWordInfo[FLastWord - FFirstWord].Sz.cx := 0;
+              FLastWord := iElem - 2;
             end;
           end;
-          Inc(X0, Size.cx);
-          LastWord := i;
-          Inc(i);
-        end else begin
-          if HyphensPresent then
-            if CurElement <> nil then begin
-              for j := 0 to i - FirstWord - 2 do
-                with WordInfo[j] do
-                  if Hs > 0 then begin
-                    Dec(TextWidth, Hs);
-                    Hs := 0;
-                    Sz.cx := 0;
-                  end;
-            end;
-          if CanBreak then
-            LastBreakPoint := i - 1;
-          if (LastWord >= 0) and (LastWord < ElementQueue.Count) then begin
-            CurElement := PIpHtmlElement(ElementQueue[Lastword]);
-            if (CurElement.ElementType = etWord)
-            and (CurElement.IsBlank <> 0) then begin
-              WordInfo[LastWord - FirstWord].Sz.cx := 0;
-              LastWord := i - 2;
-            end;
-          end;
-          LineBreak := True;
-          SoftBreak := not SoftLF;
-          break;
+          FLineBreak := True;
+          FSoftBreak := not FSoftLF;
+          Break;
         end;
       end;
 
-      if SoftBreak and (LastBreakPoint > 0) then begin
-        LastWord := LastBreakPoint;
-        i := LastBreakPoint + 1;
+      if FSoftBreak and (FLastBreakpoint > 0) then begin
+        FLastWord := FLastBreakpoint;
+        iElem := FLastBreakpoint + 1;
       end;
+      OutputQueueLine;
+      if (not FExpBreak) and (FTextWidth=0) and (FVRemainL=0) and (FVRemainR=0) then
+        break;
+      Inc(YYY, FMaxAscent + FMaxDescent);
 
-      OutputLine;
-
-      if TempCenter then begin
-        Al := SaveAl;
-        TempCenter := False;
-      end;
-
-      if (TextWidth = 0) then begin
-        if not ExpBreak and (VRemainL = 0) and (VRemainR = 0) then
-          break;
-      end;
-
-      if TextWidth > MaxTextWidth then
-        MaxTextWidth := TextWidth;
-      Inc(Y, MaxAscent + MaxDescent);
-      if VRemainL > 0 then begin
-        if SoftBreak and (TextWidth = 0) and (MaxAscent + MaxDescent = 0) then begin
-          Inc(Y, VRemainL);
-          VRemainL := 0;
-          LIdent := 0;
-        end else begin
-          Dec(VRemainL, MaxAscent + MaxDescent);
-          if VRemainL <= 0 then begin
-            VRemainL := 0;
-            LIdent := 0;
-          end;
-        end;
-      end;
-      if VRemainR > 0 then begin
-        if SoftBreak and (TextWidth = 0) and (MaxAscent + MaxDescent = 0) then begin
-          Inc(Y, VRemainR);
-          VRemainR := 0;
-          RIdent := 0;
-        end else begin
-          Dec(VRemainR, MaxAscent + MaxDescent);
-          if VRemainR <= 0 then begin
-            VRemainR := 0;
-            RIdent := 0;
-          end;
-        end;
-      end;
-      MaxHeight := 0;
-      MaxAscent := 0;
-      MaxDescent := 0;
+      // Calculate VRemainL and VRemainR
+      FVRemainL := CalcVRemain(FVRemainL, FLIdent);
+      FVRemainR := CalcVRemain(FVRemainR, FRIdent);
+      FMaxHeight := 0;
+      FMaxAscent := 0;
+      FMaxDescent := 0;
       {prepare for next line}
-      DoClear;
+      DoQueueClear;
     end;
-    Inc(Y, MaxI3(MaxAscent div 2 + MaxDescent, VRemainL, VRemainR));
-    VRemainL := 0;
-    VRemainR := 0;
-    LIdent := 0;
-    RIdent := 0;
-    MaxDescent := 0;
+    Inc(YYY, MaxI3(FMaxAscent div 2 + FMaxDescent, FVRemainL, FVRemainR));
+    FVRemainL := 0;
+    FVRemainR := 0;
+    FLIdent := 0;
+    FRIdent := 0;
+    FMaxDescent := 0;
 
-    DoLeftAligned;
-    DoRightAligned;
-
-    Inc(Y, MaxI3(MaxAscent + MaxDescent, VRemainL, VRemainR));
-
-    FPageRect.Bottom := Y;
+    DoQueueAlign(TargetRect, ExpLIndent);
+    Inc(YYY, MaxI3(FMaxAscent + FMaxDescent, FVRemainL, FVRemainR));
+    FPageRect.Bottom := YYY;
     {clean up}
   finally
-    LeftQueue.Free;
-    RightQueue.Free;
-    if WordInfo <> nil then
-      FreeMem(WordInfo);
+    FLeftQueue.Free;
+    FRightQueue.Free;
+    if FWordInfo <> nil then
+      FreeMem(FWordInfo);
     {$IFDEF IP_LAZARUS_DBG}
     //DumpQueue(false); {debug}
     {$endif}
@@ -11326,10 +11273,10 @@ end;
 
 procedure TIpHtmlNodeBlock.InvalidateSize;
 begin
-  FMin := -1;
-  FMax := -1;
-  LastW := 0;
-  LastH := 0;
+  FBlockMin := -1;
+  FBlockMax := -1;
+  FLastW := 0;
+  FLastH := 0;
   inherited;
 end;
 
@@ -11351,85 +11298,77 @@ end;
 procedure TIpHtmlNodeBlock.ReportCurDrawRects(aOwner: TIpHtmlNode; M : TRectMethod);
 var
   i : Integer;
-  CurElement : PIpHtmlElement;
+  CurElem : PIpHtmlElement;
 begin
-  for i := 0 to Pred(ElementQueue.Count) do begin
-    CurElement := PIpHtmlElement(ElementQueue[i]);
-    if CurElement.Owner = aOwner then
-      M(CurElement.WordRect2);
+  for i := 0 to Pred(FElementQueue.Count) do begin
+    CurElem := PIpHtmlElement(FElementQueue[i]);
+    if CurElem.Owner = aOwner then
+      M(CurElem.WordRect2);
   end;
+end;
+
+function TIpHtmlNodeBlock.CheckSelection(aSelIndex: Integer): Boolean;
+var
+  CurElem : PIpHtmlElement;
+  R : TRect;
+begin
+  CurElem := PIpHtmlElement(FElementQueue[aSelIndex]);
+  R := CurElem.WordRect2;
+  if (R.Bottom <> 0) and (R.Top > Owner.FStartSel.Y)
+  and (R.Bottom < Owner.FEndSel.Y) then
+    Exit(False)
+  else
+  if PtInRect(R, Owner.FStartSel) or PtInRect(R, Owner.FEndSel) then
+    Exit(False)
+  else
+  if (R.Bottom >= Owner.FStartSel.Y) and (R.Top <= Owner.FEndSel.Y)
+  and (R.Left >= Owner.FStartSel.X) and (R.Right <= Owner.FEndSel.X) then
+    Exit(False);
+  Result := True;
 end;
 
 procedure TIpHtmlNodeBlock.AppendSelection(var S: string);
 var
   LastY, StartSelIndex, EndSelIndex, i : Integer;
-  CurElement : PIpHtmlElement;
+  CurElem : PIpHtmlElement;
   R : TRect;
   LFDone : Boolean;
 begin
   if not Owner.AllSelected then begin
     StartSelIndex := 0;
-    while StartSelIndex < ElementQueue.Count do begin
-      CurElement := PIpHtmlElement(ElementQueue[StartSelIndex]);
-      R := CurElement.WordRect2;
-      if R.Bottom = 0 then
-      else
-      if (R.Top > Owner.FStartSel.y) and (R.Bottom < Owner.FEndSel.y) then
-        break
-      else
-      if PtInRect(R, Owner.FStartSel) or PtInRect(R, Owner.FEndSel) then
-        break
-      else
-      if (R.Bottom < Owner.FStartSel.y) then
-      else
-      if (R.Top > Owner.FEndSel.Y) then
-      else
-        if (R.Left >= Owner.FStartSel.x) and (R.Right <= Owner.FEndSel.x) then
-          break;
+    while StartSelIndex < FElementQueue.Count do begin
+      if not CheckSelection(StartSelIndex) then
+        Break;
       Inc(StartSelIndex);
     end;
-    EndSelIndex := Pred(ElementQueue.Count);
+    EndSelIndex := Pred(FElementQueue.Count);
     while EndSelIndex >= 0 do begin
-      CurElement := PIpHtmlElement(ElementQueue[EndSelIndex]);
-      R := CurElement.WordRect2;
-      if R.Bottom = 0 then
-      else
-      if (R.Top > Owner.FStartSel.y) and (R.Bottom < Owner.FEndSel.y) then
-        break
-      else
-      if PtInRect(R, Owner.FStartSel) or PtInRect(R, Owner.FEndSel) then
-        break
-      else
-      if (R.Bottom < Owner.FStartSel.y) then
-      else
-      if (R.Top > Owner.FEndSel.Y) then
-      else
-        if (R.Left >= Owner.FStartSel.x) and (R.Right <= Owner.FEndSel.x) then
-          break;
+      if not CheckSelection(EndSelIndex) then
+        Break;
       Dec(EndSelIndex);
     end;
   end else begin
     StartSelIndex := 0;
-    EndSelIndex := ElementQueue.Count - 1;
+    EndSelIndex := FElementQueue.Count - 1;
   end;
   LastY := -1;
   LFDone := True;
   for i := StartSelIndex to EndSelIndex do begin
-    CurElement := PIpHtmlElement(ElementQueue[i]);
-    R := CurElement.WordRect2;
+    CurElem := PIpHtmlElement(FElementQueue[i]);
+    R := CurElem.WordRect2;
     if not LFDone and (R.Top <> LastY) then begin
       S := S + #13#10;
       LFDone := True;
     end;
-    case CurElement.ElementType of
+    case CurElem.ElementType of
     etWord :
       begin
-        S := S + NoBreakToSpace(CurElement.AnsiWord);
+        S := S + NoBreakToSpace(CurElem.AnsiWord);
         LFDone := False;
       end;
     etObject :
       begin
-        TIpHtmlNodeAlignInline(CurElement.Owner).AppendSelection(S);
+        TIpHtmlNodeAlignInline(CurElem.Owner).AppendSelection(S);
         LFDone := False;
       end;
     etSoftLF..etClearBoth :
@@ -11444,7 +11383,7 @@ end;
 
 function TIpHtmlNodeBlock.ElementQueueIsEmpty: Boolean;
 begin
-  Result := ElementQueue.Count = 0;
+  Result := FElementQueue.Count = 0;
 end;
 
 { TIpHtmlNodeP }
@@ -11515,7 +11454,7 @@ begin
   if FChildren.Count > 0 then begin
     EnqueueElement(Owner.SoftLF);
   end;
-  FParentNode.EnqueueElement(Owner.LIndent);
+  FParentNode.EnqueueElement(Owner.FLIndent);
   for i := 0 to Pred(FChildren.Count) do
     if TObject(FChildren[i]) is TIpHtmlNodeLI then begin
       Counter := i + 1;
@@ -11523,7 +11462,7 @@ begin
       FParentNode.EnqueueElement(Owner.SoftLF);
     end else
       TIpHtmlNode(FChildren[i]).Enqueue;
-  FParentNode.EnqueueElement(Owner.LOutdent);
+  FParentNode.EnqueueElement(Owner.FLOutdent);
   FParentNode.EnqueueElement(Owner.SoftLF);
 end;
 
@@ -11589,14 +11528,14 @@ begin
     EnqueueElement(Owner.SoftLF);
   end;
   {render list}
-  FParentNode.EnqueueElement(Owner.LIndent);
+  FParentNode.EnqueueElement(Owner.FLIndent);
   for i := 0 to Pred(FChildren.Count) do
     if TObject(FChildren[i]) is TIpHtmlNodeLI then begin
       TIpHtmlNodeLI(FChildren[i]).Enqueue;
       FParentNode.EnqueueElement(Owner.SoftLF);
     end else
       TIpHtmlNode(FChildren[i]).Enqueue;
-  FParentNode.EnqueueElement(Owner.LOutdent);
+  FParentNode.EnqueueElement(Owner.FLOutdent);
   EnqueueElement(Owner.SoftLF);
 end;
 
@@ -11717,10 +11656,10 @@ begin
     EnqueueElement(WordEntry);
   end else
     EnqueueElement(Element);
-  EnqueueElement(Owner.LIndent);
+  EnqueueElement(Owner.FLIndent);
   for i := 0 to Pred(FChildren.Count) do
     TIpHtmlNode(FChildren[i]).Enqueue;
-  EnqueueElement(Owner.LOutdent);
+  EnqueueElement(Owner.FLOutdent);
 end;
 
 function TIpHtmlNodeLI.GetDim(ParentWidth: Integer): TSize;
@@ -12401,7 +12340,7 @@ begin
                         Inc(CurCol);
                       end;
 
-                      CalcMinMaxWidth(RenderProps, Min0, Max0);
+                      CalcMinMaxPropWidth(RenderProps, Min0, Max0);
 
                       case Width.LengthType of
                       hlAbsolute :
@@ -14241,9 +14180,9 @@ end;
 procedure TIpHtmlNodeDL.Enqueue;
 begin
   EnqueueElement(Owner.HardLF);
-  EnqueueElement(Owner.LIndent);
+  EnqueueElement(Owner.FLIndent);
   inherited;
-  EnqueueElement(Owner.LOutdent);
+  EnqueueElement(Owner.FLOutdent);
 end;
 
 { TIpHtmlNodeDT }
@@ -14275,9 +14214,9 @@ end;
 procedure TIpHtmlNodeDD.Enqueue;
 begin
   EnqueueElement(Owner.HardLF);
-  EnqueueElement(Owner.LIndent);
+  EnqueueElement(Owner.FLIndent);
   inherited;
-  EnqueueElement(Owner.LOutdent);
+  EnqueueElement(Owner.FLOutdent);
   EnqueueElement(Owner.HardLF);
 end;
 
@@ -14320,9 +14259,9 @@ end;
 
 procedure TIpHtmlNodeBLOCKQUOTE.Enqueue;
 begin
-  EnqueueElement(Owner.LIndent);
+  EnqueueElement(Owner.FLIndent);
   inherited;
-  EnqueueElement(Owner.LOutdent);
+  EnqueueElement(Owner.FLOutdent);
 end;
 
 { TIpHtmlNodePhrase }
@@ -15148,15 +15087,13 @@ end;
 
 { TIpHtmlNodeHtml }
 
-procedure TIpHtmlNodeHtml.CalcMinMaxWidth(const RenderProps: TIpHtmlProps;
-  var Min, Max: Integer);
+procedure TIpHtmlNodeHtml.CalcMinMaxHtmlWidth(const RenderProps: TIpHtmlProps; var Min, Max: Integer);
 var
   i : Integer;
 begin
   for i := 0 to FChildren.Count - 1 do
-    if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then begin
-      TIpHtmlNodeBody(FChildren[i]).CalcMinMaxWidth(RenderProps, Min, Max);
-    end;
+    if TIpHtmlNode(FChildren[i]) is TIpHtmlNodeBody then
+      TIpHtmlNodeBody(FChildren[i]).CalcMinMaxPropWidth(RenderProps, Min, Max);
 end;
 
 function TIpHtmlNodeHtml.GetHeight(const RenderProps: TIpHtmlProps; const Width: Integer): Integer;
@@ -16351,8 +16288,8 @@ end;
 
 { TIpHtmlNodeTableHeaderOrCell }
 
-procedure TIpHtmlNodeTableHeaderOrCell.CalcMinMaxWidth(
-  const RenderProps: TIpHtmlProps; var Min, Max: Integer);
+procedure TIpHtmlNodeTableHeaderOrCell.CalcMinMaxPropWidth(const RenderProps: TIpHtmlProps;
+  var Min, Max: Integer);
 var
   TmpBGColor, TmpFontColor: TColor;
 begin
@@ -16367,7 +16304,7 @@ begin
   Props.VAlignment := VAlign;
   if NoWrap then
     Props.NoBreak := True;
-  inherited CalcMinMaxWidth(Props, Min, Max);
+  inherited CalcMinMaxPropWidth(Props, Min, Max);
   if NoWrap then
     Min := Max;
 end;
