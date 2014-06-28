@@ -3213,8 +3213,7 @@
       <!-- property Visibility: public -->
       <element name="TCustomForm.AllowDropFiles">
         <short>Specifies whether files can be dropped onto this form.</short>
-        <descr>Set AllowDropFiles event to True to allow dropping files on this form.
-          It is set to False by default.
+        <descr>Allows this form to receive OnDropFiles event, when files are dropped on form via drag-and-drop operation.
         </descr>
         <seealso>
           <link id="TCustomForm.OnDropFiles"/>
