@@ -1423,7 +1423,7 @@ type
     function DoQueueElemSoftLF(const W: Integer): boolean;
     function DoQueueElemHardLF: boolean;
     function DoQueueElemClear(aCurElem: PIpHtmlElement): boolean;
-    procedure DoQueueElemIndentOutdent(aIgnoreHardLF: boolean; var aPending: Integer);
+    procedure DoQueueElemIndentOutdent;
     procedure DoQueueElemSoftHyphen;
     function CalcVRemain(aVRemain: integer; var aIdent: integer): integer;
     procedure SetWordInfoLength(NewLength : Integer);
@@ -10811,6 +10811,7 @@ begin
 end;
 
 function TIpHtmlNodeBlock.DoQueueElemSoftLF(const W: Integer): boolean;
+// Returns FIgnoreHardLF
 var
   PendingLineBreak : Boolean;
 begin
@@ -10832,14 +10833,15 @@ begin
   LastWord := iElem - 2;
   if PendingLineBreak then
     FLineBreak := True;
-  if not FIgnoreHardLF then
-    Exit(False);
-  FxySize.cx := W + 1;
-  FSoftLF := True;
-  Result := True;
+  Result := FIgnoreHardLF;
+  if Result then begin
+    FxySize.cx := W + 1;
+    FSoftLF := True;
+  end;
 end;
 
 function TIpHtmlNodeBlock.DoQueueElemHardLF: boolean;
+// Returns FIgnoreHardLF
 begin
   FExpBreak := True;
   if FMaxAscent = 0 then begin
@@ -10849,23 +10851,18 @@ begin
   if FLineBreak then
     FMaxDescent := 0;
   LastWord := iElem - 1;
-  if not FIgnoreHardLF then begin
+  Result := FIgnoreHardLF;
+  if not Result then begin
     if FLineBreak then  begin
       FMaxAscent := Round (FMaxAscent * Owner.FactBAParag);
       FMaxDescent := Round (FMaxDescent * Owner.FactBAParag);
     end;
     Inc(iElem);
-    Exit(False);
   end;
-  if FLastWord < FFirstWord then begin
-    LastWord := FFirstWord;
-    FCanBreak := True;
-    Inc(iElem);
-  end;
-  Result := True;
 end;
 
 function TIpHtmlNodeBlock.DoQueueElemClear(aCurElem: PIpHtmlElement): boolean;
+// Returns FIgnoreHardLF
 begin
   FExpBreak := True;
   case aCurElem.ElementType of
@@ -10880,14 +10877,12 @@ begin
   Result := FIgnoreHardLF;
 end;
 
-procedure TIpHtmlNodeBlock.DoQueueElemIndentOutdent(aIgnoreHardLF: boolean; var aPending: Integer);
+procedure TIpHtmlNodeBlock.DoQueueElemIndentOutdent;
 begin
   FCurAscent := 1;
   FCurDescent := 0;
   FCurHeight := 1;
   FxySize := SizeRec(0, 0);
-  Inc(aPending);
-  FIgnoreHardLF := aIgnoreHardLF;
   FCanBreak := True;
 end;
 
@@ -10990,7 +10985,7 @@ end;
 
 procedure TIpHtmlNodeBlock.LayoutQueue(const TargetRect: TRect);
 var
-  i, W, X0, ExpLIndent, RectWidth : Integer;
+  WW, X0, ExpLIndent, RectWidth : Integer;
   FirstElem, LastElem : Integer;
   PendingIndent, PendingOutdent : Integer;
   Prefor : Boolean;
@@ -11014,7 +11009,7 @@ var
     DoQueueAlign(TargetRect, ExpLIndent);
     FTotWidth := RectWidth - FLIdent - FRIdent - ExpLIndent;
     FLTrim := FLineBreak or (FExpBreak and not Prefor) or (ExpLIndent > 0);
-    W := FTotWidth; {total width we have}
+    WW := FTotWidth; // total width we have
     X0 := TargetRect.Left + FLIdent + ExpLIndent;
     FTextWidth := 0;
     FFirstWord := iElem;
@@ -11022,6 +11017,74 @@ var
     FBaseOffset := 0;
     FSoftBreak := False;
     FHyphenSpace := 0;
+  end;
+
+  procedure ContinueRow;
+  var
+    i: Integer;
+  begin
+    if FCanBreak then
+      FLastBreakpoint := iElem;
+    FMaxAscent := MaxI2(FMaxAscent, FCurAscent);
+    FMaxDescent := MaxI2(FMaxDescent, FCurDescent);
+    FMaxHeight := MaxI3(FMaxHeight, FCurHeight, FMaxAscent + FMaxDescent);
+    // if word fits on line update width and height
+    if CurElem.ElementType = etIndent then begin
+      i := StdIndent;
+      FxySize.cx := MinI2(WW, i - ((X0 - TargetRect.Left) mod i));
+    end;
+    Dec(WW, FxySize.cx);
+    Inc(FTextWidth, FxySize.cx);
+    if FHyphenSpace > 0 then
+      for i := 0 to iElem - FFirstWord - 1 do begin
+        Assert(i < FWordInfoSize);
+        wi := @FWordInfo[i];
+        if wi^.Hs > 0 then begin
+          Inc(WW, wi^.Hs);
+          Dec(FTextWidth, wi^.Hs);
+          Dec(X0, wi^.Hs);
+          wi^.Hs := 0;
+          wi^.Sz.cx := 0;
+        end;
+      end;
+    SetWordInfoLength(iElem - FFirstWord + 1);
+    wi := @FWordInfo[iElem - FFirstWord];
+    wi^.Sz := SizeRec(FxySize.cx, FCurHeight);
+    wi^.BaseX := X0;
+    wi^.BOff := FBaseOffset;
+    wi^.CurAsc := FCurAscent + FBaseOffset;
+    wi^.VA := FVAL;
+    wi^.Hs := FHyphenSpace;
+    FHyphenSpace := 0;
+    Inc(X0, FxySize.cx);
+    LastWord := iElem;
+  end;
+
+  procedure EndRow;
+  var
+    i: Integer;
+  begin
+    if FHyphenSpace > 0 then
+      for i := 0 to iElem - FFirstWord - 2 do begin
+        wi := @FWordInfo[i];
+        if wi^.Hs > 0 then begin
+          Dec(FTextWidth, wi^.Hs);
+          wi^.Hs := 0;
+          wi^.Sz.cx := 0;
+        end;
+      end;
+    if FCanBreak then
+      FLastBreakpoint := iElem - 1;
+    if (FLastWord >= 0) and (FLastWord < FElementQueue.Count) then begin
+      CurElem := PIpHtmlElement(FElementQueue[FLastWord]);
+      if (CurElem.ElementType = etWord)
+      and (CurElem.IsBlank <> 0) then begin
+        FWordInfo[FLastWord - FFirstWord].Sz.cx := 0;
+        LastWord := iElem - 2;
+      end;
+    end;
+    FLineBreak := True;
+    FSoftBreak := not FSoftLF;
   end;
 
 begin
@@ -11044,7 +11107,7 @@ begin
     iElem := FirstElem;
     while iElem <= LastElem do begin
       InitInner;
-      while (iElem < FElementQueue.Count) do begin
+      while iElem < FElementQueue.Count do begin
         FCanBreak := False;
         CurElem := PIpHtmlElement(FElementQueue[iElem]);
         if CurElem.Props <> nil then
@@ -11058,94 +11121,54 @@ begin
               x := 1;
             if Pos('Abanto1', CurElem.AnsiWord) > 0 then
               x := 2;
-            if Pos('Abanto2', CurElem.AnsiWord) > 0 then
+            if Pos('Abanto2', CurElem.AnsiWord) > 0 then begin
               x := 3;
+            end;
             DoQueueElemWord(CurElem);
           end;
           etObject :
             if not DoQueueElemObject(CurElem) then
               Break;
           etSoftLF :
-            if not DoQueueElemSoftLF(W) then
+            if not DoQueueElemSoftLF(WW) then
               Break;
           etHardLF :
-            if not DoQueueElemHardLF then
+            if DoQueueElemHardLF then
+            begin
+              Assert(FLastWord < FFirstWord, 'TIpHtmlNodeBlock.LayoutQueue: FLastWord >= FFirstWord');
+              //if FLastWord < FFirstWord then begin
+              LastWord := FFirstWord;
+              FCanBreak := True;
+              if (FxySize.cx > WW) then
+                Inc(iElem);
+              //end
+            end
+            else
               Break;
           etClearLeft, etClearRight, etClearBoth :
             if not DoQueueElemClear(CurElem) then
               Break;
           etIndent : begin
-              DoQueueElemIndentOutdent(True, PendingIndent);
+              DoQueueElemIndentOutdent;
+                FIgnoreHardLF := True;
+              Inc(PendingIndent);
               FLTrim := True;
             end;
-          etOutdent :
-            DoQueueElemIndentOutdent(False, PendingOutdent);
+          etOutdent : begin
+              DoQueueElemIndentOutdent;
+              FIgnoreHardLF := False;
+              Inc(PendingOutdent);
+            end;
           etSoftHyphen :
             DoQueueElemSoftHyphen;
         end;
-        FCanBreak := FCanBreak and (Assigned(FCurProps) and (not FCurProps.NoBreak));
-        if (FxySize.cx <= W) then begin
-          if FCanBreak then
-            FLastBreakpoint := iElem;
-          FMaxAscent := MaxI2(FMaxAscent, FCurAscent);
-          FMaxDescent := MaxI2(FMaxDescent, FCurDescent);
-          FMaxHeight := MaxI3(FMaxHeight, FCurHeight, FMaxAscent + FMaxDescent);
-          {if word fits on line update width and height}
-          if (CurElem <> nil) and (CurElem.ElementType = etIndent) then begin
-            i := StdIndent;
-            FxySize.cx := MinI2(W, i - ((X0 - TargetRect.Left) mod i));
-          end;
-          Dec(W, FxySize.cx);
-          Inc(FTextWidth, FxySize.cx);
-          if CurElem <> nil then begin
-            if FHyphenSpace > 0 then
-              for i := 0 to iElem - FFirstWord - 1 do begin
-                Assert(i < FWordInfoSize);
-                wi := @FWordInfo[i];
-                if wi^.Hs > 0 then begin
-                  Inc(W, wi^.Hs);
-                  Dec(FTextWidth, wi^.Hs);
-                  Dec(X0, wi^.Hs);
-                  wi^.Hs := 0;
-                  wi^.Sz.cx := 0;
-                end;
-              end;
-            SetWordInfoLength(iElem - FFirstWord + 1);
-            wi := @FWordInfo[iElem - FFirstWord];
-            wi^.Sz := SizeRec(FxySize.cx, FCurHeight);
-            wi^.BaseX := X0;
-            wi^.BOff := FBaseOffset;
-            wi^.CurAsc := FCurAscent + FBaseOffset;
-            wi^.VA := FVAL;
-            wi^.Hs := FHyphenSpace;
-            FHyphenSpace := 0;
-          end;
-          Inc(X0, FxySize.cx);
-          LastWord := iElem;
+        FCanBreak := FCanBreak and Assigned(FCurProps) and not FCurProps.NoBreak;
+        if (FxySize.cx <= WW) then begin
+          ContinueRow;
           Inc(iElem);
         end
         else begin
-          if (FHyphenSpace > 0) and (CurElem <> nil) then
-            for i := 0 to iElem - FFirstWord - 2 do begin
-              wi := @FWordInfo[i];
-              if wi^.Hs > 0 then begin
-                Dec(FTextWidth, wi^.Hs);
-                wi^.Hs := 0;
-                wi^.Sz.cx := 0;
-              end;
-            end;
-          if FCanBreak then
-            FLastBreakpoint := iElem - 1;
-          if (FLastWord >= 0) and (FLastWord < FElementQueue.Count) then begin
-            CurElem := PIpHtmlElement(FElementQueue[FLastWord]);
-            if (CurElem.ElementType = etWord)
-            and (CurElem.IsBlank <> 0) then begin
-              FWordInfo[FLastWord - FFirstWord].Sz.cx := 0;
-              LastWord := iElem - 2;
-            end;
-          end;
-          FLineBreak := True;
-          FSoftBreak := not FSoftLF;
+          EndRow;
           Break;
         end;
       end;
@@ -11165,7 +11188,7 @@ begin
       FMaxHeight := 0;
       FMaxAscent := 0;
       FMaxDescent := 0;
-      {prepare for next line}
+      // prepare for next line
       DoQueueClear;
     end;
     Inc(YYY, MaxI3(FMaxAscent div 2 + FMaxDescent, FVRemainL, FVRemainR));
@@ -11185,7 +11208,7 @@ begin
     if FWordInfo <> nil then
       FreeMem(FWordInfo);
     {$IFDEF IP_LAZARUS_DBG}
-    //DumpQueue(false); {debug}
+    DumpQueue(false); {debug}
     {$endif}
   end;
 end;
