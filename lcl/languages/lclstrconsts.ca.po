@@ -694,7 +694,9 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Context d'ajuda %s no trobat en la base de dades %s%s%s."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+#, fuzzy
+#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgstr "La base de dades de l'ajuda %s%s%s no ha trobat un visor per una pàgina d'ajuda del tipus %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound

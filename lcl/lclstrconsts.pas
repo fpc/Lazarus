@@ -389,8 +389,8 @@ resourceString
   // help
   rsHelpHelpNodeHasNoHelpDatabase = 'Help node "%s" has no Help Database';
   rsHelpThereIsNoViewerForHelpType = 'There is no viewer for help type "%s"';
-  rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType = 'Help Database %s%'
-    +'s%s did not found a viewer for a help page of type %s';
+  rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType = 'Help Database "%s" '
+    +'did not found a viewer for a help page of type %s';
   rsHelpAlreadyRegistered = '%s: Already registered';
   rsHelpNotRegistered = '%s: Not registered';
   rsHelpHelpDatabaseNotFound = 'Help Database "%s" not found';

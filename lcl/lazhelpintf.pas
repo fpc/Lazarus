@@ -1226,8 +1226,8 @@ begin
   Viewers:=HelpViewers.GetViewersSupportingMimeType(MimeType);
   try
     if (Viewers=nil) or (Viewers.Count=0) then begin
-      ErrMsg:=Format(rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType, [
-        '"', ID, '"', MimeType]);
+      ErrMsg:=Format(rsHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType,
+                     [ID, MimeType]);
       Result:=shrViewerNotFound;
     end else begin
       Viewer:=THelpViewer(Viewers[0]);

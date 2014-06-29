@@ -693,7 +693,9 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Žinyno turinys %s duomenų bazėje %s%s%s nerastas."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+#, fuzzy
+#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgstr "Žinyno duomenų bazė %s%s%s nerado žiūryklės %s tipo žinyno lapui."
 
 #: lclstrconsts.rshelphelpdatabasenotfound

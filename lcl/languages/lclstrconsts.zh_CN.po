@@ -695,7 +695,9 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "没有找到 %s 的帮助内容在数据库 %s%s%s 中."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+#, fuzzy
+#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgstr "帮助数据库 %s%s%s 未找到浏览器可以阅读帮助页 %s 的类型"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
