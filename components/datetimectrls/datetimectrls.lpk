@@ -17,16 +17,10 @@
           <OptimizationLevel Value="2"/>
         </Optimizations>
       </CodeGeneration>
-      <Other>
-        <CompilerMessages>
-          <UseMsgFile Value="True"/>
-        </CompilerMessages>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="TDateTimePicker - the cross-platform control behaving much like VCL's TDateTimePicker. TDBDateTimePicker - the data-aware version of TDateTimePicker"/>
     <License Value="Modified LGPL"/>
-    <Version Major="1" Minor="4" Release="1"/>
+    <Version Major="1" Minor="5" Release="1"/>
     <Files Count="7">
       <Item1>
         <Filename Value="datetimepicker.pas"/>
