@@ -352,6 +352,10 @@ uses
 uses
   FpDbgDarwinClasses;
 {$endif}
+{$ifdef linux}
+uses
+  FpDbgLinuxClasses;
+{$endif}
 
 var
   GOSDbgClasses : TOSDbgClasses;
@@ -370,6 +374,9 @@ begin
     {$ifdef darwin}
     RegisterDbgClasses;
     {$endif darwin}
+    {$ifdef linux}
+    RegisterDbgClasses;
+    {$endif linux}
     end;
   result := GOSDbgClasses;
 end;

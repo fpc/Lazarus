@@ -11,12 +11,6 @@
         <OtherUnitFiles Value="."/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Other>
-        <CompilerMessages>
-          <MsgFileName Value=""/>
-        </CompilerMessages>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="A set of helperclasses for implementing a debugger.
 
@@ -34,7 +28,7 @@ File(s) with other licenses (see also header in file(s):
 
   (Any modifications/translations of this file are from duby)
 "/>
-    <Files Count="29">
+    <Files Count="31">
       <Item1>
         <Filename Value="fpdbgclasses.pp"/>
         <UnitName Value="FpDbgClasses"/>
@@ -154,6 +148,14 @@ File(s) with other licenses (see also header in file(s):
         <Filename Value="fpdbgsymtable.pas"/>
         <UnitName Value="fpDbgSymTable"/>
       </Item29>
+      <Item30>
+        <Filename Value="fpdbglinuxclasses.pas"/>
+        <UnitName Value="FpDbgLinuxClasses"/>
+      </Item30>
+      <Item31>
+        <Filename Value="fpdbglinuxextra.pas"/>
+        <UnitName Value="FpDbgLinuxExtra"/>
+      </Item31>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">
