@@ -696,7 +696,7 @@ msgstr "Help context %s niet gevonden in Database \"%s\"."
 #, fuzzy
 #| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
-msgstr "Help Database %s%s%s heeft geen viewer gevonden voor help pagina van type %s"
+msgstr "Help Database \"%s\" heeft geen viewer gevonden voor help pagina van type %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 #, fuzzy
