@@ -170,19 +170,15 @@ resourceString
   rsqtOptionReverse = '-reverse, sets the application''s layout direction '
     +'to Qt::RightToLeft.';
   // qt X11 options
-  rsqtOptionX11Display = '-display display, sets the X display '
-    +'(default is $DISPLAY).';
+  rsqtOptionX11Display = '-display display, sets the X display (default is $DISPLAY).';
   rsqtOptionX11Geometry = '-geometry geometry, sets the client geometry of '
     +'the first window that is shown.';
   rsqtOptionX11Font = '-fn or -font font, defines the application font. The '
     +'font should be specified using an X logical font description.';
-  rsqtOptionX11BgColor = '-bg or -background color, sets the default '
-    +'background color and an application palette (light and dark '
-    +'shades are calculated).';
-  rsqtOptionX11FgColor = '-fg or -foreground color, sets the default '
-    +'foreground color.';
-  rsqtOptionX11BtnColor = '-btn or -button color, sets the default button '
-    +'color.';
+  rsqtOptionX11BgColor = '-bg or -background color, sets the default background '
+    +'color and an application palette (light and dark shades are calculated).';
+  rsqtOptionX11FgColor = '-fg or -foreground color, sets the default foreground color.';
+  rsqtOptionX11BtnColor = '-btn or -button color, sets the default button color.';
   rsqtOptionX11Name = '-name name, sets the application name.';
   rsqtOptionX11Title = '-title title, sets the application title.';
   rsqtOptionX11Visual = '-visual TrueColor, forces the application to use a '
@@ -399,8 +395,7 @@ resourceString
   rsHelpHelpForDirectiveNotFoundInDatabase = 'Help for directive "%s" not found in '
     +'Database "%s".';
   rsHelpHelpForDirectiveNotFound = 'Help for directive "%s" not found.';
-  rsHelpHelpContextNotFoundInDatabase = 'Help context %s not found in '
-    +'Database "%s".';
+  rsHelpHelpContextNotFoundInDatabase = 'Help context %s not found in Database "%s".';
   rsHelpHelpContextNotFound = 'Help context %s not found.';
   rsHelpNoHelpFoundForSource = 'No help found for line %d, column %d of %s.';
   rsHelpNoHelpNodesAvailable = 'No help entries available for this topic';
@@ -417,8 +412,8 @@ resourceString
     +'unable to find file "%s".';
   hhsHelpTheMacroSInBrowserParamsWillBeReplacedByTheURL = 'The macro %s in '
     +'BrowserParams will be replaced by the URL.';
-  hhsHelpNoHTMLBrowserFoundPleaseDefineOne = 'No HTML '
-    +'Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options';
+  hhsHelpNoHTMLBrowserFoundPleaseDefineOne = 'No HTML Browser found.'
+    +'%sPlease define one in Tools -> Options -> Help -> Help Options';
   hhsHelpNoHTMLBrowserFound = 'Unable to find a HTML browser.';
   hhsHelpBrowserNotFound = 'Browser "%s" not found.';
   hhsHelpBrowserNotExecutable = 'Browser "%s" not executable.';
