@@ -115,7 +115,6 @@ Type
     FActive: Boolean;
     FLinks: TList;
     FSaved: Boolean;
-    FRestored: Boolean;
     FOnSaveProperties: TNotifyEvent;
     FOnRestoreProperties: TNotifyEvent;
     procedure AddLink(ALink: TPropertyStorageLink);
@@ -522,8 +521,7 @@ end;
 
 procedure TCustomPropertyStorage.Save;
 begin
-  if FRestored or not Active then
-    begin
+  if Active then begin
     StorageNeeded(False);
     Try
       if Assigned(FOnSavingProperties) then
@@ -551,7 +549,6 @@ begin
       FStoredValues.RestoreValues;
       RestoreProperties;
       NotifyLinks(poRestore);
-      FRestored:=True;
       if Assigned(FOnRestoreProperties) then
         FOnRestoreProperties(Self);
     finally
