@@ -1501,41 +1501,32 @@ end;
 procedure TPackageEditorForm.AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
 var
   CurFile: TPkgFile;
-  i: Integer;
   OtherFile: TPkgFile;
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
-  j: Integer;
+  i, j: Integer;
 begin
   if LazPackage=nil then exit;
-  BeginUpdate;
-  try
-    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
-      TVNode:=ItemsTreeView.Selections[i];
-      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-      if Item is TPkgFile then begin
-        CurFile:=TPkgFile(Item);
-        if not (CurFile.FileType in PkgFileUnitTypes) then continue;
-        if CurFile.AddToUsesPkgSection=AddToUsesPkgSectionCheckBox.Checked then
-          continue;
-        // change flag
-        CurFile.AddToUsesPkgSection:=AddToUsesPkgSectionCheckBox.Checked;
-        if (not NodeData.Removed) and CurFile.AddToUsesPkgSection then begin
-          // mark all other units with the same name as unused
-          for j:=0 to LazPackage.FileCount-1 do begin
-            OtherFile:=LazPackage.Files[j];
-            if (OtherFile<>CurFile)
-            and (SysUtils.CompareText(OtherFile.Unit_Name,CurFile.Unit_Name)=0) then
-              OtherFile.AddToUsesPkgSection:=false;
-          end;
-        end;
-        LazPackage.Modified:=true;
-        UpdateFiles;
+  for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+    TVNode:=ItemsTreeView.Selections[i];
+    if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+    if not (Item is TPkgFile) then continue;
+    CurFile:=TPkgFile(Item);
+    if not (CurFile.FileType in PkgFileUnitTypes) then continue;
+    if CurFile.AddToUsesPkgSection=AddToUsesPkgSectionCheckBox.Checked then continue;
+    // change flag
+    CurFile.AddToUsesPkgSection:=AddToUsesPkgSectionCheckBox.Checked;
+    if (not NodeData.Removed) and CurFile.AddToUsesPkgSection then begin
+      // mark all other units with the same name as unused
+      for j:=0 to LazPackage.FileCount-1 do begin
+        OtherFile:=LazPackage.Files[j];
+        if (OtherFile<>CurFile)
+        and (CompareText(OtherFile.Unit_Name,CurFile.Unit_Name)=0) then
+          OtherFile.AddToUsesPkgSection:=false;
       end;
     end;
-  finally
-    EndUpdate;
+    LazPackage.ModifySilently;
   end;
 end;
 
