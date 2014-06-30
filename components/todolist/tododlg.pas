@@ -30,8 +30,9 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, TodoList, ToDoListStrConsts, Buttons, ButtonPanel, Menus, MenuIntf,
-  PackageIntf, SrcEditorIntf, IDECommands, LCLType, IDEWindowIntf, LazIDEIntf;
+  ExtCtrls, Buttons, ButtonPanel, Menus, Spin,
+  TodoList, ToDoListStrConsts, IDECommands, LCLType,
+  MenuIntf, PackageIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf;
 
 type
 
@@ -42,13 +43,12 @@ type
     OwnerEdit: TEdit;
     CategoryEdit: TEdit;
     CategoryLabel: TLabel;
-    PriorityEdit: TEdit;
+    PriorityEdit: TSpinEdit;
     PriorityLabel: TLabel;
     OwnerLabel: TLabel;
     TodoLabel: TLabel;
     TodoMemo: TMemo;
     procedure FormCreate(Sender: TObject);
-    procedure PriorityEditKeyPress(Sender: TObject; var Key: char);
   private
 
   public
@@ -153,12 +153,6 @@ end;
 
 { TTodoDialog }
 
-procedure TTodoDialog.PriorityEditKeyPress(Sender: TObject; var Key: char);
-begin
-  if not (Key in ['0'..'9']) then
-    Key := #0;
-end;
-
 procedure TTodoDialog.FormCreate(Sender: TObject);
 begin
   ActiveControl:=TodoMemo;
@@ -185,8 +179,7 @@ begin
     Result.Done        := False;
     Result.Owner       := aTodoDialog.OwnerEdit.Text;
     Result.Text        := aTodoDialog.TodoMemo.Text;
-    if TryStrToInt(aTodoDialog.PriorityEdit.Text, aPriority) then
-      Result.Priority  := aPriority;
+    Result.Priority    := aTodoDialog.PriorityEdit.Value;
   end;
   aTodoDialog.Free;
 end;
