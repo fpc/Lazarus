@@ -2778,7 +2778,7 @@ type
   protected
     function GetOwner: TPersistent; override;
   public
-    constructor Create(AnOwner: TTreeNodes);
+    constructor Create(AnOwner: TTreeNodes); virtual;
     destructor Destroy; override;
     function AlphaSort: Boolean;
     function Bottom: integer;
