@@ -2281,8 +2281,7 @@ begin
   end;
 end;
 
-function TPackageEditorForm.CanUpdate(Flag: TPEFlag; Immediately: boolean
-  ): boolean;
+function TPackageEditorForm.CanUpdate(Flag: TPEFlag; Immediately: boolean): boolean;
 begin
   Result:=false;
   if csDestroying in ComponentState then exit;
@@ -2583,13 +2582,11 @@ begin
     ApplyDependencyButton.Visible:=aVisible;
 
     // 'RegisterProc' of files (supports multi selection)
-    SetCheckBox(CallRegisterProcCheckBox,OnlyFilesWithUnitsSelected,
-      SelHasRegisterProc);
+    SetCheckBox(CallRegisterProcCheckBox,OnlyFilesWithUnitsSelected, SelHasRegisterProc);
     CallRegisterProcCheckBox.Enabled:=(not LazPackage.ReadOnly);
 
     // 'Add to uses' of files (supports multi selection)
-    SetCheckBox(AddToUsesPkgSectionCheckBox,OnlyFilesWithUnitsSelected,
-      SelAddToUsesPkgSection);
+    SetCheckBox(AddToUsesPkgSectionCheckBox,OnlyFilesWithUnitsSelected, SelAddToUsesPkgSection);
     AddToUsesPkgSectionCheckBox.Enabled:=(not LazPackage.ReadOnly);
 
     // disable i18n for lfm (supports multi selection)
