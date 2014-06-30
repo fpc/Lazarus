@@ -650,6 +650,7 @@ type
     procedure LockModified;
     procedure UnlockModified;
     function ReadOnly: boolean; override;
+    procedure ModifySilently; // Set Modified but do not trigger update of editors.
     // streaming
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -680,8 +681,7 @@ type
     function GetFPDocPackageName: string;
     function GetLastCompilerParams(o: TPkgOutputDir): string;
     function NeedsDefineTemplates: boolean;
-    function SubstitutePkgMacros(const s: string;
-                                 PlatformIndependent: boolean): string;
+    function SubstitutePkgMacros(const s: string; PlatformIndependent: boolean): string;
     procedure WriteInheritedUnparsedOptions;
     // files
     function IndexOfPkgFile(PkgFile: TPkgFile): integer;
@@ -2545,23 +2545,28 @@ begin
   FRegistered:=AValue;
 end;
 
+procedure TLazPackage.ModifySilently;
+begin
+  if FModifiedLock>0 then exit;
+  Include(FFlags,lpfModified);
+  Exclude(FFlags,lpfSkipSaving);
+  if FChangeStamp<High(FChangeStamp) then
+    inc(FChangeStamp)
+  else
+    FChangeStamp:=low(FChangeStamp);
+end;
+
 procedure TLazPackage.SetModified(const AValue: boolean);
 var
   OldModified: Boolean;
 begin
   OldModified:=Modified;
-  if AValue and (FModifiedLock>0) then exit;
   if AValue then begin
-    Include(FFlags,lpfModified);
-    if FChangeStamp<High(FChangeStamp) then
-      inc(FChangeStamp)
-    else
-      FChangeStamp:=low(FChangeStamp);
-  end else
-    Exclude(FFlags,lpfModified);
-  Exclude(FFlags,lpfSkipSaving);
-  if not AValue then
-  begin
+    if FModifiedLock>0 then exit;
+    ModifySilently;
+  end
+  else begin
+    FFlags:=FFlags-[lpfModified,lpfSkipSaving];
     PublishOptions.Modified:=false;
     CompilerOptions.Modified:=false;
   end;

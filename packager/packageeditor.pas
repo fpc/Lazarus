@@ -322,6 +322,7 @@ type
     procedure SetSortAlphabetically(const AValue: boolean);
     procedure SetupComponents;
     function OnTreeViewGetImageIndex(Str: String; Data: TObject; var AIsEnabled: Boolean): Integer;
+    procedure UpdateNodeImage(TVNode: TTreeNode; NodeData: TPENodeData);
     procedure UpdatePending;
     function CanUpdate(Flag: TPEFlag; Immediately: boolean): boolean;
     procedure UpdateTitle(Immediately: boolean = false);
@@ -1594,28 +1595,23 @@ end;
 procedure TPackageEditorForm.CallRegisterProcCheckBoxChange(Sender: TObject);
 var
   CurFile: TPkgFile;
-  i: Integer;
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
+  i: Integer;
 begin
   if LazPackage=nil then exit;
-  BeginUpdate;
-  try
-    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
-      TVNode:=ItemsTreeView.Selections[i];
-      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
-      if not (Item is TPkgFile) then continue;
-      CurFile:=TPkgFile(Item);
-      if not (CurFile.FileType in PkgFileUnitTypes) then continue;
-      if CurFile.HasRegisterProc=CallRegisterProcCheckBox.Checked then exit;
-      CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
-      if not NodeData.Removed then
-        LazPackage.Modified:=true;
-      UpdateFiles;
-    end;
-  finally
-    EndUpdate;
+  for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+    TVNode:=ItemsTreeView.Selections[i];
+    if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+    if not (Item is TPkgFile) then continue;
+    CurFile:=TPkgFile(Item);
+    if not (CurFile.FileType in PkgFileUnitTypes) then continue;
+    if CurFile.HasRegisterProc=CallRegisterProcCheckBox.Checked then continue;
+    CurFile.HasRegisterProc:=CallRegisterProcCheckBox.Checked;
+    if not NodeData.Removed then
+      LazPackage.ModifySilently;
+    UpdateNodeImage(TVNode, NodeData);
   end;
 end;
 
@@ -2161,6 +2157,17 @@ begin
   if LazPackage.Modified then
     NewCaption:=NewCaption+'*';
   Caption:=NewCaption;
+end;
+
+procedure TPackageEditorForm.UpdateNodeImage(TVNode: TTreeNode; NodeData: TPENodeData);
+var
+  ena: Boolean;
+  ImgIndex: Integer;
+begin
+  ena := True;                   // String param is not used.
+  ImgIndex:=OnTreeViewGetImageIndex('', NodeData, ena);
+  TVNode.ImageIndex:=ImgIndex;
+  TVNode.SelectedIndex:=ImgIndex;
 end;
 
 procedure TPackageEditorForm.UpdateButtons(Immediately: boolean);
