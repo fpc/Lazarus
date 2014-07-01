@@ -11089,6 +11089,10 @@ msgstr "Конвертувати кодування проектів/пакун�
 msgid "Debug Windows"
 msgstr "Вікна налагодження"
 
+#: lazarusidestrconsts.lismenudelphiconversion
+msgid "Delphi Conversion"
+msgstr ""
+
 #: lazarusidestrconsts.lismenudiff
 msgctxt "lazarusidestrconsts.lismenudiff"
 msgid "Diff ..."
@@ -12615,6 +12619,10 @@ msgstr "встановлено динамічно"
 #: lazarusidestrconsts.lisoipinstalledstatic
 msgid "installed static"
 msgstr "встановлено статично"
+
+#: lazarusidestrconsts.lisoiplicenselicense
+msgid "%sLicense:  %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipmissing
 msgid "missing"
@@ -17736,6 +17744,14 @@ msgstr "Якщо ввімкнено поточні налаштування зб
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
 msgstr "Коли рухається курсор редактора коду, показати поточний вузол в провіднику коду"
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedform
+msgid "Window menu shows designed form's name instead of caption"
+msgstr ""
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
+msgid "Useful especially if the caption is left empty."
+msgstr ""
 
 #: lazarusidestrconsts.liswindowstaysontop
 msgid "Window stays on top"

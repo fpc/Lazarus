@@ -11338,6 +11338,10 @@ msgstr "Convertir Codificación de página de Proyectos/Paquetes ..."
 msgid "Debug Windows"
 msgstr "Ventanas de Depuración"
 
+#: lazarusidestrconsts.lismenudelphiconversion
+msgid "Delphi Conversion"
+msgstr ""
+
 #: lazarusidestrconsts.lismenudiff
 #| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
@@ -12976,6 +12980,10 @@ msgstr "instalado dinámico"
 #: lazarusidestrconsts.lisoipinstalledstatic
 msgid "installed static"
 msgstr "instalado estático"
+
+#: lazarusidestrconsts.lisoiplicenselicense
+msgid "%sLicense:  %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipmissing
 msgid "missing"
@@ -18172,6 +18180,14 @@ msgstr "Cuando esta activado las opciones actuales son guardadas en una plantill
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
 msgstr "Cuando se mueva el cursor en el editor de código fuente, mostrar el nodo actual en el explorador de código"
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedform
+msgid "Window menu shows designed form's name instead of caption"
+msgstr ""
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
+msgid "Useful especially if the caption is left empty."
+msgstr ""
 
 #: lazarusidestrconsts.liswindowstaysontop
 msgid "Window stays on top"

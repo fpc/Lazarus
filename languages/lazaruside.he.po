@@ -11315,6 +11315,10 @@ msgstr "המר את קידוד הפרויקט/חבילה ..."
 msgid "Debug Windows"
 msgstr "חלון ניפוי שגיאות"
 
+#: lazarusidestrconsts.lismenudelphiconversion
+msgid "Delphi Conversion"
+msgstr ""
+
 #: lazarusidestrconsts.lismenudiff
 #, fuzzy
 #| msgid "Diff"
@@ -12968,6 +12972,10 @@ msgstr "הותקן באופן דינמי"
 #: lazarusidestrconsts.lisoipinstalledstatic
 msgid "installed static"
 msgstr "הותקן באופן סטטי"
+
+#: lazarusidestrconsts.lisoiplicenselicense
+msgid "%sLicense:  %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipmissing
 msgid "missing"
@@ -18147,6 +18155,14 @@ msgstr "כאשר מופעל - האפשרויות הנוכחיות נשמרות �
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
 msgstr "כאשר הסמן של עורך הקוד נע, הראה את הצומת הנוכחית בסייר הקוד"
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedform
+msgid "Window menu shows designed form's name instead of caption"
+msgstr ""
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
+msgid "Useful especially if the caption is left empty."
+msgstr ""
 
 #: lazarusidestrconsts.liswindowstaysontop
 msgid "Window stays on top"

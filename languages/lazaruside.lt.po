@@ -11131,6 +11131,10 @@ msgstr "Konvertuoti projektų/paketų koduotę…"
 msgid "Debug Windows"
 msgstr "Derinimo langai"
 
+#: lazarusidestrconsts.lismenudelphiconversion
+msgid "Delphi Conversion"
+msgstr ""
+
 #: lazarusidestrconsts.lismenudiff
 #| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
@@ -12677,6 +12681,10 @@ msgstr "įdiegtas kaip dinaminis"
 #: lazarusidestrconsts.lisoipinstalledstatic
 msgid "installed static"
 msgstr "įdiegtas kaip statinis"
+
+#: lazarusidestrconsts.lisoiplicenselicense
+msgid "%sLicense:  %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipmissing
 msgid "missing"
@@ -17818,6 +17826,14 @@ msgstr "Jei įgalinta, tai dabartinės parinktys bus įrašytos į šabloną, na
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
 msgstr "Pirminio kodo rengyklėje judant žymekliui, kodo tyrinėtojuje rodyti veikiamąjį mazgą"
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedform
+msgid "Window menu shows designed form's name instead of caption"
+msgstr ""
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
+msgid "Useful especially if the caption is left empty."
+msgstr ""
 
 #: lazarusidestrconsts.liswindowstaysontop
 msgid "Window stays on top"

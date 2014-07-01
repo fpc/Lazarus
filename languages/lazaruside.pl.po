@@ -11113,6 +11113,10 @@ msgstr "Konwertuj kodowanie projektów/pakietów ..."
 msgid "Debug Windows"
 msgstr "Okno odpluskwiacza"
 
+#: lazarusidestrconsts.lismenudelphiconversion
+msgid "Delphi Conversion"
+msgstr ""
+
 #: lazarusidestrconsts.lismenudiff
 #| msgid "Diff"
 msgctxt "lazarusidestrconsts.lismenudiff"
@@ -12730,6 +12734,10 @@ msgstr "zainstalowany dynamicznie"
 #: lazarusidestrconsts.lisoipinstalledstatic
 msgid "installed static"
 msgstr "zainstalowany statycznie"
+
+#: lazarusidestrconsts.lisoiplicenselicense
+msgid "%sLicense:  %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipmissing
 msgid "missing"
@@ -17736,6 +17744,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr ""
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedform
+msgid "Window menu shows designed form's name instead of caption"
+msgstr ""
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
+msgid "Useful especially if the caption is left empty."
 msgstr ""
 
 #: lazarusidestrconsts.liswindowstaysontop

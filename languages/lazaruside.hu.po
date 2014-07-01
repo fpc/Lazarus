@@ -10840,6 +10840,10 @@ msgstr "Projekt/Csomag karakterkódolásának átalakítása ..."
 msgid "Debug Windows"
 msgstr "Hibakereső ablakok"
 
+#: lazarusidestrconsts.lismenudelphiconversion
+msgid "Delphi Conversion"
+msgstr ""
+
 #: lazarusidestrconsts.lismenudiff
 msgctxt "lazarusidestrconsts.lismenudiff"
 msgid "Diff ..."
@@ -12289,6 +12293,10 @@ msgstr "dinamikusan telepítve"
 #: lazarusidestrconsts.lisoipinstalledstatic
 msgid "installed static"
 msgstr "statikusan telepítve"
+
+#: lazarusidestrconsts.lisoiplicenselicense
+msgid "%sLicense:  %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipmissing
 msgid "missing"
@@ -17305,6 +17313,14 @@ msgstr ""
 
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
+msgstr ""
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedform
+msgid "Window menu shows designed form's name instead of caption"
+msgstr ""
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
+msgid "Useful especially if the caption is left empty."
 msgstr ""
 
 #: lazarusidestrconsts.liswindowstaysontop

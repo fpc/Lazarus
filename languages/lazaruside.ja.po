@@ -10830,6 +10830,10 @@ msgstr "プロジェクト/パッケージのエンコーディングを変換 .
 msgid "Debug Windows"
 msgstr "デバッグウィンドウ"
 
+#: lazarusidestrconsts.lismenudelphiconversion
+msgid "Delphi Conversion"
+msgstr ""
+
 #: lazarusidestrconsts.lismenudiff
 msgctxt "lazarusidestrconsts.lismenudiff"
 msgid "Diff ..."
@@ -12279,6 +12283,10 @@ msgstr "インストールされた動的の"
 #: lazarusidestrconsts.lisoipinstalledstatic
 msgid "installed static"
 msgstr "インストールされた静的の"
+
+#: lazarusidestrconsts.lisoiplicenselicense
+msgid "%sLicense:  %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipmissing
 msgid "missing"
@@ -17319,6 +17327,14 @@ msgstr "許可されるとき、現在のオプションはテンプレートに
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
 msgstr "ソースエディタのカーソルが動くとき、コードエクスプローラで現在のノードを表示"
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedform
+msgid "Window menu shows designed form's name instead of caption"
+msgstr ""
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
+msgid "Useful especially if the caption is left empty."
+msgstr ""
 
 #: lazarusidestrconsts.liswindowstaysontop
 msgid "Window stays on top"

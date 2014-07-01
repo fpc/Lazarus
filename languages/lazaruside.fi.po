@@ -10648,6 +10648,10 @@ msgstr "Muunna projektin/paketin merkistökoodaus ..."
 msgid "Debug Windows"
 msgstr "Virheenjäljitysikkunat"
 
+#: lazarusidestrconsts.lismenudelphiconversion
+msgid "Delphi Conversion"
+msgstr ""
+
 #: lazarusidestrconsts.lismenudiff
 msgid "Diff ..."
 msgstr "Eroavuudet ..."
@@ -12083,6 +12087,10 @@ msgstr "asennettu dynaaminen"
 #: lazarusidestrconsts.lisoipinstalledstatic
 msgid "installed static"
 msgstr "asennettu staattinen"
+
+#: lazarusidestrconsts.lisoiplicenselicense
+msgid "%sLicense:  %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisoipmissing
 msgid "missing"
@@ -16821,6 +16829,14 @@ msgstr "Nykyiset asetukset talletetaan malliksi, mitä käytetään luotaessa uu
 #: lazarusidestrconsts.liswhenthesourceeditorcursormovesshowthecurrentnodein
 msgid "When the source editor cursor moves, show the current node in the code explorer"
 msgstr "Kun kursori liikkuu lähdekoodissa, näytä aktiivinen solmu koodin tutkijassa"
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedform
+msgid "Window menu shows designed form's name instead of caption"
+msgstr ""
+
+#: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
+msgid "Useful especially if the caption is left empty."
+msgstr ""
 
 #: lazarusidestrconsts.liswindowstaysontop
 msgid "Window stays on top"
