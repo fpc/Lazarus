@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2013-02-11 00:50+0400\n"
-"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"PO-Revision-Date: 2014-06-29 17:31+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -13,10 +13,9 @@ msgstr ""
 "POT-Creation-Date: \n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-#, fuzzy
-#| msgid "A free side of a splitter must not be anchored: Node=%s%s%s Type=%s Anchors[%s]=%s%s%s"
+#| msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
-msgstr "Un lato libero di uno splitter non deve essere ancorato: Nodo=%s%s%s Tipo=%s Ancore[%s]=%s%s%s"
+msgstr "Un lato libero di uno splitter non deve essere ancorato: Nodo=\"%s\" Tipo=%s Ancore[%s]=\"%s\""
 
 #: anchordockstr.adrsallfiles
 msgid "All files"
@@ -31,28 +30,24 @@ msgid "Anchor Docking Layout"
 msgstr "Posizionamento degli ancoraggi di docking"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-#, fuzzy
-#| msgid "Anchor is not splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+#| msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "L'ancora non è uno splitter: Nodo=%s%s%s Ancore[%s]=%s%s%s"
+msgstr "L'ancora non è uno splitter: Nodo=\"%s\" Ancore[%s]=\"%s\""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-#, fuzzy
-#| msgid "Anchor not found: Node=%s%s%s Anchors[%s]=%s%s%s"
+#| msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "Ancora non trovata: Nodo=%s%s%s Ancore[%s]=%s%s%s"
+msgstr "Ancora non trovata: Nodo=\"%s\" Ancore[%s]=\"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-#, fuzzy
-#| msgid "Anchor to wrong side of splitter: Node=%s%s%s Anchors[%s]=%s%s%s"
+#| msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
-msgstr "L'ancora è sul lato sbagliato dello splitter: Nodo=%s%s%s Ancore[%s]=%s%s%s"
+msgstr "L'ancora è sul lato sbagliato dello splitter: Nodo=\"%s\" Ancore[%s]=\"%s\""
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-#, fuzzy
-#| msgid "A page must not be anchored: Node=%s%s%s Parent=%s ParentType=%s Anchors[%s]=%s%s%s"
+#| msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
-msgstr "Una pagina non deve essere ancorata:Nodo=%s%s%s Padre=%s ParentType=%s Ancore[%s]=%s%s%s"
+msgstr "Una pagina non deve essere ancorata:Nodo=\"%s\" Padre=%s ParentType=%s Ancore[%s]=\"%s\""
 
 #: anchordockstr.adrsautomatically
 msgid "Automatically"
@@ -71,14 +66,13 @@ msgid "control is already a docksite"
 msgstr "Il controllo è già un sito di docking"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-#, fuzzy
-#| msgid "Custom dock site %s%s%s can have only one site."
+#| msgid "Custom dock site \"%s\" can have only one site."
 msgid "Custom dock site \"%s\" can have only one site."
-msgstr "Il sito di docking personalizzato %s%s%s può avere un solo sito."
+msgstr "Il sito di docking personalizzato \"%s\" può avere un solo sito."
 
 #: anchordockstr.adrsdockinganchordocking
 msgid "Docking / Anchordocking"
-msgstr ""
+msgstr "Docking/Docking ancorato"
 
 #: anchordockstr.adrsdockingoptions
 msgid "Docking options"
@@ -99,7 +93,7 @@ msgstr "Nome duplicato: "
 
 #: anchordockstr.adrseachdockedwindowhasaheaderthatallowsdragginghasaco
 msgid "Each docked window has a header that allows dragging, has a context menu with extra layout functions and shows the caption of the docked window"
-msgstr ""
+msgstr "Ogni finestra \"docked\" ha un'intestazione che consente il trascinamento e contiene un menu di contesto con ulteriori funzioni di posizionamento e mostra il titolo della finestra"
 
 #: anchordockstr.adrsemptyname
 msgid "Empty name: "
@@ -127,19 +121,19 @@ msgstr "Errore nella scrittura del layout della finestra dal file \"%s\"%s%s"
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
-msgstr ""
+msgstr "Riempi le intestazioni"
 
 #: anchordockstr.adrsfilledheadershint
 msgid "Fill headers of docked controls"
-msgstr ""
+msgstr "Riempi le intestazioni dei controlli \"docked\""
 
 #: anchordockstr.adrsflattenheaders
 msgid "Flatten headers"
-msgstr ""
+msgstr "Rendi piatte le intestazioni"
 
 #: anchordockstr.adrsflattenheadershint
 msgid "Flatten headers of docked controls"
-msgstr ""
+msgstr "Rendi piatte le intestazioni dei controlli \"docked\""
 
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
@@ -159,7 +153,7 @@ msgstr "Posizione testata"
 
 #: anchordockstr.adrsheaderstyle
 msgid "Header Style:"
-msgstr ""
+msgstr "Stile dell'intestazione:"
 
 #: anchordockstr.adrshideheadercaptionsforsiteswithonlyonedockedcontrol
 msgid "Hide header captions for sites with only one docked control, as that is already shown in the normal window title"
@@ -222,10 +216,9 @@ msgid "No captions for floating sites"
 msgstr "Nessun titolo per i siti flottanti"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-#, fuzzy
-#| msgid "No children allowed for Node=%s%s%s Type=%s"
+#| msgid "No children allowed for Node=\"%s\" Type=%s"
 msgid "No children allowed for Node=\"%s\" Type=%s"
-msgstr "Non sono ammessi figli per il nodo=%s%s%s tipo=%s"
+msgstr "Non sono ammessi figli per il nodo=\"%s\" tipo=%s"
 
 #: anchordockstr.adrsnotsupportedhasparent
 msgid "Not supported: %s has parent %s"
@@ -241,7 +234,7 @@ msgstr "Era richiesto %s, invece è stato creato %s"
 
 #: anchordockstr.adrsrestoredefaultlayout
 msgid "Restore default layout"
-msgstr ""
+msgstr "Ripristina disposizione default"
 
 #: anchordockstr.adrsright
 msgid "right"
@@ -277,7 +270,7 @@ msgstr "Mostra titolo delle intestazioni"
 
 #: anchordockstr.adrsshowheaders
 msgid "Show headers"
-msgstr ""
+msgstr "Mostra intestazioni"
 
 #: anchordockstr.adrssplitterthickness
 msgid "Splitter thickness"
