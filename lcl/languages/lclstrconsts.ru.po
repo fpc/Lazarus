@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-06-25 03:30+0400\n"
+"PO-Revision-Date: 2014-07-02 01:34+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -684,10 +684,9 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Контекст справки %s не найден в базе данных \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy
 #| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
-msgstr "База данных справки %s%s%s не нашла программу просмотра для страницы справки типа %s"
+msgstr "База данных справки \"%s\" не нашла программу просмотра для страницы справки типа %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 #| msgid "Help Database %s%s%s not found"
