@@ -16,6 +16,7 @@ Anton A. Panferov
 Anton Kavalenka
 Antonio Galvao
 Arnold Bosch
+Attila Tamás - Hungarian translation
 August Klein
 Bald Zhang
 Bart Broersma
@@ -44,6 +45,7 @@ Daniel Oom
 Daniel Simões de Almeida
 Darek Mazur
 Darius Blaszijk
+Dávid Fehér - Hungarian translation
 David Guadagnini
 David Jenkins
 David Pethes
@@ -93,7 +95,7 @@ Jeffrey A. Wormsley
 Jeroen van Idekinge
 Jesus Reyes
 JiXian Yang
-Joerg Braun - german translation
+Joerg Braun - German translation
 Johannes Muller
 Jonas Maebe
 Joost van der Sluis
@@ -152,7 +154,7 @@ Paul Ishenin
 Paul Michell
 Pawel Trochimczuk
 Peter Dyson
-Peter Gabor
+Péter Gábor
 Petr Kristan
 Philip J. Hess
 Philippe Picard
@@ -171,7 +173,7 @@ Samuel Liddicott
 Sandro Cumerlato
 Sean McIlwain
 Sebastian Gasiorek
-Seppo Suutarla - finnish translation
+Seppo Suutarla - Finnish translation
 Sergio Marcelo
 Shane Miller
 Sileno Goedicke
@@ -179,6 +181,7 @@ Silvio Clecio
 Slavko Fedorik
 Stefan Hille
 Takeda Matsuki
+Tamás Kálcza - Hungarian translation
 Taras Boychuk
 Theo Lustenberger
 Tim P. Launchbury
