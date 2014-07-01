@@ -50,11 +50,11 @@ msgstr "Törlés"
 
 #: messagecomposer.sdlgcaption
 msgid "Dialog caption"
-msgstr "Párbeszédpanel címe"
+msgstr "Párbeszéd címe"
 
 #: messagecomposer.sdlgtype
 msgid "Dialog type"
-msgstr "Párbeszédpanel típusa"
+msgstr "Párbeszéd típusa"
 
 #: messagecomposer.shelpcontext
 msgid "Help context"
@@ -77,8 +77,9 @@ msgid "Kind of message"
 msgstr "Az üzenet típusa"
 
 #: messagecomposer.smaskinput
+#, fuzzy
 msgid "Mask input"
-msgstr ""
+msgstr "Maszk bevitel"
 
 #: messagecomposer.smessagecomposercaption
 msgctxt "messagecomposer.smessagecomposercaption"

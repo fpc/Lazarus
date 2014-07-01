@@ -107,7 +107,9 @@ msgstr "A(z) %s azonosító nem található ebben: %s"
 
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
-msgstr "[Sor: %d] Nem megfelelő és/vagy érvénytelen format() paraméterek a következőben:"
+msgstr ""
+"[Sor: %d] Nem megfelelő és/vagy érvénytelen format() paraméterek a "
+"következőben:"
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -197,13 +199,12 @@ msgstr ""
 
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
-msgstr ""
+msgstr "Összes kijelölése"
 
 #: pocheckerconsts.sselectbasictests
-#, fuzzy
-#| msgid "Select &Basic Tests"
+#| msgid "Select basic tests"
 msgid "Select &Basic"
-msgstr "Alapvető tesztek kijelölése"
+msgstr "Alapvetőek kijelölése"
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
@@ -227,5 +228,4 @@ msgstr "Fordítási statisztika ehhez:"
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
-msgstr ""
-
+msgstr "Kijelölések törlése"

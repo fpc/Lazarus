@@ -267,11 +267,16 @@ msgid "Default printer"
 msgstr "Alapértelmezett nyomtató"
 
 #: lr_const.sdescriptionavg
-msgid "AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> for [BandName] row given. If [1] parameter is used, calculates average for non-visible rows too."
+msgid ""
+"AVG(<Expression> [,BandName [,1]])/Calculates the average of <Expression> "
+"for [BandName] row given. If [1] parameter is used, calculates average for "
+"non-visible rows too."
 msgstr ""
 
 #: lr_const.sdescriptioncopy
-msgid "COPY(<String>, <Position>, <Length>)/Returns <Length> characters from <String> starting at <Position>."
+msgid ""
+"COPY(<String>, <Position>, <Length>)/Returns <Length> characters from "
+"<String> starting at <Position>."
 msgstr ""
 
 #: lr_const.sdescriptioncount
@@ -287,15 +292,21 @@ msgid "DEC(<Value>)/Decrement <Value>."
 msgstr ""
 
 #: lr_const.sdescriptionformatdatetime
-msgid "FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string using mask in <Fmt>."
+msgid ""
+"FORMATDATETIME(<Fmt>, <DateTime>)/Converts a <DateTime> value to a string "
+"using mask in <Fmt>."
 msgstr ""
 
 #: lr_const.sdescriptionformatfloat
-msgid "FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using mask in <Fmt>."
+msgid ""
+"FORMATFLOAT(<Fmt>, <Numeric>)/Converts a <Numeric> value to a string using "
+"mask in <Fmt>."
 msgstr ""
 
 #: lr_const.sdescriptionformattext
-msgid "FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns formatted string."
+msgid ""
+"FORMATTEXT(<Mask>, <String>)/Applies <Mask> to given <String> and returns "
+"formatted string."
 msgstr ""
 
 #: lr_const.sdescriptionfrac
@@ -307,7 +318,10 @@ msgid "INC(<Value>)/Increment <Value>."
 msgstr ""
 
 #: lr_const.sdescriptioninput
-msgid "INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and edit box. If [Default] parameter is set, puts this string in edit box. After user clicks OK, returns input string."
+msgid ""
+"INPUT(<Caption> [,Default])/Shows dialog window with title <Caption> and "
+"edit box. If [Default] parameter is set, puts this string in edit box. After "
+"user clicks OK, returns input string."
 msgstr ""
 
 #: lr_const.sdescriptionint
@@ -323,7 +337,10 @@ msgid "LOWERCASE(<String>)/Converts <String> symbols to lower case."
 msgstr ""
 
 #: lr_const.sdescriptionmax
-msgid "MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> for [BandName] row given. If [1] parameter is used, calculates maximum for non-visible rows too."
+msgid ""
+"MAX(<Expression> [,BandName [,1]])/Calculates the maximum of <Expression> "
+"for [BandName] row given. If [1] parameter is used, calculates maximum for "
+"non-visible rows too."
 msgstr ""
 
 #: lr_const.sdescriptionmaxnum
@@ -331,11 +348,16 @@ msgid "MAXNUM(<Value1>, <Value2>)/Returns max of given values."
 msgstr ""
 
 #: lr_const.sdescriptionmessagebox
-msgid "MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with title, text and buttons."
+msgid ""
+"MESSAGEBOX(<Text>, <Title>, <Buttons>)/Shows standard dialog window with "
+"title, text and buttons."
 msgstr ""
 
 #: lr_const.sdescriptionmin
-msgid "MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> for [BandName] row given. If [1] parameter is used, calculates minimum for non-visible rows too."
+msgid ""
+"MIN(<Expression> [,BandName [,1]])/Calculates the minimum of <Expression> "
+"for [BandName] row given. If [1] parameter is used, calculates minimum for "
+"non-visible rows too."
 msgstr ""
 
 #: lr_const.sdescriptionminnum
@@ -347,7 +369,9 @@ msgid "MONTHOF(<Date>)/Returns month number (1..12) of given <Date>."
 msgstr ""
 
 #: lr_const.sdescriptionnamecase
-msgid "NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol is in upper case."
+msgid ""
+"NAMECASE(<String>)/Converts <String> symbols to lower case, and first symbol "
+"is in upper case."
 msgstr ""
 
 #: lr_const.sdescriptionnewcolumn
@@ -359,11 +383,13 @@ msgid "NEWPAGE/Create new page for current report."
 msgstr ""
 
 #: lr_const.sdescriptionpos
-msgid "POS(<SubString>, <String>)/Returns position of substring in given string."
+msgid ""
+"POS(<SubString>, <String>)/Returns position of substring in given string."
 msgstr ""
 
 #: lr_const.sdescriptionround
-msgid "ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
+msgid ""
+"ROUND(<Value>)/Rounds the floating point <Value> to nearest integer number."
 msgstr ""
 
 #: lr_const.sdescriptionshowband
@@ -387,11 +413,16 @@ msgid "STRTOTIME(<String>)/Converts <String> to time."
 msgstr ""
 
 #: lr_const.sdescriptionsum
-msgid "SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for [BandName] row given. If [1] parameter is used, calculates sum for non-visible rows too."
+msgid ""
+"SUM(<Expression> [,BandName [,1]])/Calculates the sum of <Expression> for "
+"[BandName] row given. If [1] parameter is used, calculates sum for non-"
+"visible rows too."
 msgstr ""
 
 #: lr_const.sdescriptiontrim
-msgid "TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns resulting string."
+msgid ""
+"TRIM(<String>)/Trims all heading and trailing spaces in <String> and returns "
+"resulting string."
 msgstr ""
 
 #: lr_const.sdescriptionuppercase
@@ -1317,7 +1348,6 @@ msgid "&Stretch"
 msgstr "Nyújtás"
 
 #: lr_const.sgroupeditorformadddbfield
-#, fuzzy
 msgctxt "lr_const.sgroupeditorformadddbfield"
 msgid "Insert DB field"
 msgstr "Adatbázis-mező beszúrása"
@@ -1458,8 +1488,9 @@ msgid "LazReport template"
 msgstr "LazReport sablon"
 
 #: lr_const.smathcategory
+#, fuzzy
 msgid "Math"
-msgstr ""
+msgstr "Matematikai"
 
 #: lr_const.smm
 msgid "MM"
@@ -2167,7 +2198,6 @@ msgid "&All"
 msgstr "&Mind"
 
 #: lr_const.sprintformcollate
-#, fuzzy
 msgid "Collate"
 msgstr "Oldalankénti csoportosítás"
 
@@ -2181,8 +2211,12 @@ msgid "Current &page"
 msgstr "Jelenlegi oldal"
 
 #: lr_const.sprintforminfo
-msgid "Enter page numbers and/or page ranges, separated by commas. For example, 1,3,5-12"
-msgstr "Adja meg az oldalak sorszámait és/vagy tartományát, vesszővel elválasztva! Például: 1,3,5-12"
+msgid ""
+"Enter page numbers and/or page ranges, separated by commas. For example, "
+"1,3,5-12"
+msgstr ""
+"Adja meg az oldalak sorszámait és/vagy tartományát, vesszővel elválasztva! "
+"Például: 1,3,5-12"
 
 #: lr_const.sprintformnumber
 msgid "&Numbers:"
@@ -2499,4 +2533,3 @@ msgstr "Szó tördelés"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Igen"
-

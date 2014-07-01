@@ -18,15 +18,15 @@ msgstr "Oktatás"
 
 #: eduoptions.ersaddanentrytothenewdialogtocreateanewprogram
 msgid "Add an entry to the %sNew ...%s dialog to create a new program"
-msgstr ""
+msgstr "Elem hozzáadása az %sÚj ...%s párbeszédhez új program létrehozására"
 
 #: eduoptions.ersaddanidemenuitemtocreateanewprogram
 msgid "Add an IDE menu item to create a new program"
-msgstr ""
+msgstr "IDE menüelem hozzáadása új program létrehozására"
 
 #: eduoptions.ersaddaspeedbuttontotheidetoolbartocreateanewprogram
 msgid "Add a speed button to the IDE toolbar to create a new program"
-msgstr ""
+msgstr "Gyorsgomb hozzáadása az IDE eszköztárához új program létrehozására "
 
 #: eduoptions.ersaddicon
 msgid "Add icon"
@@ -38,7 +38,7 @@ msgstr "Menüelem hozzáadása"
 
 #: eduoptions.ersaddtonewdialog
 msgid "Add to %sNew ...%s dialog"
-msgstr ""
+msgstr "Hozzáadás az %sÚj ...%s párbeszédhez"
 
 #: eduoptions.ersasimpleprogramonlyonefileiscreatedandaddedtothecur
 msgid ""
@@ -175,7 +175,7 @@ msgstr "Objektumfelügyelő-lapok megjelenítése"
 
 #: eduoptions.ersshowselection
 msgid "Show Selection"
-msgstr ""
+msgstr "Kijelölés megjelenítése"
 
 #: eduoptions.erssinglefileprogram
 msgid "Single file program"

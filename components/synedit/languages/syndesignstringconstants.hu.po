@@ -30,7 +30,7 @@ msgstr "Sorszámok"
 
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
-msgstr ""
+msgstr "Sor áttekintés"
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"

@@ -34,15 +34,15 @@ msgstr "Beküldés"
 
 #: svnclasses.rscommitmsg
 msgid "Commit Message"
-msgstr ""
+msgstr "Beküldési üzenet"
 
 #: svnclasses.rscommitmsghistory
 msgid "Commit Message History"
-msgstr ""
+msgstr "Beküldési üzenetek előzményei"
 
 #: svnclasses.rscommitrevision
 msgid "Commit revision"
-msgstr ""
+msgstr "Változat beküldése"
 
 #: svnclasses.rsconflict
 msgid "Conflict"
@@ -70,7 +70,7 @@ msgstr "Törölve"
 
 #: svnclasses.rsdiffactivefile
 msgid "Diff active file"
-msgstr ""
+msgstr "Jelenlegi fájl különbségei"
 
 #: svnclasses.rsedit
 msgid "Edit"
@@ -94,19 +94,19 @@ msgstr "Az index tartományon kívül esik (%d)"
 
 #: svnclasses.rslazarussvncommit
 msgid "LazarusSVN Commit"
-msgstr ""
+msgstr "LazarusSVN beküldés"
 
 #: svnclasses.rslazarussvndiff
 msgid "%s - LazarusSVN Diff ..."
-msgstr ""
+msgstr "%s - LazarusSVN Különbségek ..."
 
 #: svnclasses.rslazarussvnlog
 msgid "%s - LazarusSVN Log ..."
-msgstr ""
+msgstr "%s - LazarusSVN Napló ..."
 
 #: svnclasses.rslazarussvnupdate
 msgid "%s - LazarusSVN Update ..."
-msgstr ""
+msgstr "%s - LazarusSVN Frissítés ..."
 
 #: svnclasses.rsmerged
 msgid "Merged"
@@ -122,7 +122,7 @@ msgstr "(nincs szerző)"
 
 #: svnclasses.rsonlymodifieditemscanbediffed
 msgid "Only modified (M) Items can be diffed"
-msgstr ""
+msgstr "Csak a módosított (M) elemek különbségei vizsgálhatók"
 
 #: svnclasses.rsopenfileineditor
 msgid "Open file in editor"
@@ -195,23 +195,23 @@ msgstr "Beállítások"
 
 #: svnclasses.rsshowdiff
 msgid "Show diff"
-msgstr ""
+msgstr "Különbségek megjelenítése"
 
 #: svnclasses.rsshowdiffbase
 msgid "Show Diff of Local Changes"
-msgstr ""
+msgstr "Helyi változtatások különbségeinek megjelenítése"
 
 #: svnclasses.rsshowdiffcountrev
 msgid "Show Last X Commits"
-msgstr ""
+msgstr "Utolsó X beküldés megjelenítése"
 
 #: svnclasses.rsshowdiffhead
 msgid "Show Diff Against HEAD"
-msgstr ""
+msgstr "Különbségek megjelenítése a HEAD-hez képest"
 
 #: svnclasses.rsshowdiffprev
 msgid "Show Diff Against Previous Version"
-msgstr ""
+msgstr "Különbségek megjelenítése az előző változathoz képest"
 
 #: svnclasses.rsshowlog
 msgid "Show log"

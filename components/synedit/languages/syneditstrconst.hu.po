@@ -650,7 +650,7 @@ msgstr "GEMBASE fájlok (*.dml,*.gem)|*.DML;*.GEM"
 
 #: syneditstrconst.syns_filtergws
 msgid "GW-TEL Script Files (*.gws)|*.gws"
-msgstr "GW-TEL Script fájlok (*.gws)|*.gws"
+msgstr "GW-TEL parancsfájlok (*.gws)|*.gws"
 
 #: syneditstrconst.syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
@@ -666,7 +666,7 @@ msgstr "INI-fájlok (*.ini)|*.ini"
 
 #: syneditstrconst.syns_filterinno
 msgid "Inno Setup Script Files (*.iss)|*.iss"
-msgstr "Inno Setup Script fájlok (*.iss)|*.iss"
+msgstr "Inno Setup parancsfájlok (*.iss)|*.iss"
 
 #: syneditstrconst.syns_filterjava
 msgid "Java Files (*.java)|*.java"
