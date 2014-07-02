@@ -4022,9 +4022,7 @@ var
   Txt: string;
 begin
   if ReadOnly then Exit;
-  Txt:=CommentText(LCLProc.BreakString(
-            StringReplace(Notice, '%s', sLineBreak, [rfReplaceAll]),
-            FEditor.RightEdge-2,0),CommentType);
+  Txt:=CommentText(LCLProc.BreakString(Notice, FEditor.RightEdge-2,0),CommentType);
   FEditor.InsertTextAtCaret(Txt);
 end;
 
