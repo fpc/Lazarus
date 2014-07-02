@@ -107,9 +107,7 @@ msgstr "A(z) %s azonosító nem található ebben: %s"
 
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
-msgstr ""
-"[Sor: %d] Nem megfelelő és/vagy érvénytelen format() paraméterek a "
-"következőben:"
+msgstr "[Sor: %d] Nem megfelelő és/vagy érvénytelen format() paraméterek a következőben:"
 
 #: pocheckerconsts.slineinfilename
 msgid "[Line %d] in %s:"
@@ -229,3 +227,4 @@ msgstr "Fordítási statisztika ehhez:"
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
 msgstr "Kijelölések törlése"
+

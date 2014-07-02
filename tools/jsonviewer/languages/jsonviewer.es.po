@@ -1,4 +1,4 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "Last-Translator: Lucas Martin <codedeep@hotmail.com>\n"
 "PO-Revision-Date: 2012-10-02 20:21+0100\n"

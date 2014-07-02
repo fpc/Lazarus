@@ -61,3 +61,4 @@ msgstr "Aktivní položky:"
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
 msgstr "Nemohu najít <%s>"
+

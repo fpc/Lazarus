@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -63,3 +62,4 @@ msgstr "Eszköztár elemek"
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
 msgstr "Nem található: <%s>"
+
