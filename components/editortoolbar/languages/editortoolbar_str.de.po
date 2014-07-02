@@ -4,10 +4,11 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: editortoolbar_str.rsadddivider
 msgid "Add Divider"
@@ -15,7 +16,7 @@ msgstr "Trenner hinzufügen"
 
 #: editortoolbar_str.rsaddselected
 msgid "Add selected item to toolbar"
-msgstr ""
+msgstr "Gewähltes Element zur Toolbar hinzufügen"
 
 #: editortoolbar_str.rscancel
 msgid "Cancel"
@@ -34,18 +35,17 @@ msgid "Jump To"
 msgstr "Springe zu"
 
 #: editortoolbar_str.rsmenutree
-#, fuzzy
 #| msgid "Menu Tree"
 msgid "Available Menu Items"
-msgstr "Menü-Baum"
+msgstr "Verfügbare Menüelemente"
 
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
-msgstr ""
+msgstr "Gewähltes Toolbar-Element nach unten bewegen"
 
 #: editortoolbar_str.rsmoveselectedup
 msgid "Move selected toolbar item up"
-msgstr ""
+msgstr "Gewähltes Toolbar-Element nach oben bewegen"
 
 #: editortoolbar_str.rsok
 msgid "OK"
@@ -53,13 +53,12 @@ msgstr "OK"
 
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
-msgstr ""
+msgstr "Gewähltes Element aus der Toolbar entfernen"
 
 #: editortoolbar_str.rstoolbar
-#, fuzzy
 #| msgid "Toolbar"
 msgid "Toolbar Items"
-msgstr "Toolbar"
+msgstr "Toolbar-Elemente"
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"

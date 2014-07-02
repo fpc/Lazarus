@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2013-07-14 11:23-0000\n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"PO-Revision-Date: 2014-06-29 15:35+0100\n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -97,10 +97,9 @@ msgid "class node without parent node"
 msgstr "Klassenknoten ohne Elternknoten"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#, fuzzy
 #| msgid "class %s%s%s not found"
 msgid "class \"%s\" not found"
-msgstr "Klasse %s%s%s nicht gefunden"
+msgstr "Klasse \"%s\" nicht gefunden"
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
@@ -345,7 +344,7 @@ msgstr "\"%s\" erwartet"
 
 #: codetoolsstrconsts.ctsexpectedamethodtypebutfound
 msgid "expected a method type, but found %s"
-msgstr ""
+msgstr "einen Methodentyp erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
@@ -554,16 +553,14 @@ msgid "interface directory"
 msgstr "Interface-Verzeichnis"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#, fuzzy
 #| msgid "invalid class name=%s%s%s"
 msgid "invalid class name=\"%s\""
-msgstr "ungültiger Klassenname=%s%s%s"
+msgstr "ungültiger Klassenname=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#, fuzzy
 #| msgid "invalid class name %s%s%s"
 msgid "invalid class name \"%s\""
-msgstr "ungültiger Klassenname %s%s%s"
+msgstr "ungültiger Klassenname \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
@@ -590,16 +587,14 @@ msgid "invalid type"
 msgstr "ungültiger Typ"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#, fuzzy
 #| msgid "invalid variable name %s%s%s"
 msgid "invalid variable name \"%s\""
-msgstr "ungültiger Variablenname %s%s%s"
+msgstr "ungültiger Variablenname \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#, fuzzy
 #| msgid "invalid variable type %s%s%s"
 msgid "invalid variable type \"%s\""
-msgstr "ungültiger Variablentyp %s%s%s"
+msgstr "ungültiger Variablentyp \"%s\""
 
 #: codetoolsstrconsts.ctsjitformdirectory
 msgid "JITForm Directory"
@@ -716,7 +711,7 @@ msgstr "Operator erwartet, aber %s gefunden"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
 msgid "unexpected end of file (operator expected)"
-msgstr ""
+msgstr "unerwartetes Dateiende (Operator erwartet)"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
@@ -837,7 +832,6 @@ msgid "SrcPath Initialization"
 msgstr "Quellpfad-Initialisierung"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#, fuzzy
 #| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
 msgstr "%s erwartet aber %s gefunden"

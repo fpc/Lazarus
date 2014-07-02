@@ -4,10 +4,11 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
@@ -55,10 +56,9 @@ msgid "Empty document"
 msgstr "Leeres Dokument"
 
 #: msgjsonviewer.serrcreatingconfigdir
-#, fuzzy
 #| msgid "Could not create the configuration files directory \"s\""
 msgid "Could not create the configuration files directory \"%s\""
-msgstr "Kann das Konfigurationsdateien-Verzeichnis \"s\" nicht erstellen"
+msgstr "Kann das Konfigurationsdateien-Verzeichnis \"%s\" nicht erstellen"
 
 #: msgjsonviewer.serrinvalidvalue
 msgid "Invalid value or wrong type: \"%s\""
