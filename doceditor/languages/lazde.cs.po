@@ -1,14 +1,16 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: \n"
+"Project-Id-Version: Lazarus Doc Editor\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Václav Valíček <Valicek1994@gmail.com>\n"
-"Language-Team: \n"
+"Last-Translator: Václav Valíček <valicek1994@gmail.com>\n"
+"Language-Team: Václav Valíček <vaclav@valicek.name>\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
+"Language: cs\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: lazdemsg.saboutformcaption
 msgid "About this application"
@@ -118,51 +120,51 @@ msgstr "Nebyl nalezen uzel pro balík \"%s\""
 
 #: lazdemsg.serrnonodefortopic
 msgid "No parent node found to insert topic \"%s\""
-msgstr ""
+msgstr "Nenalezen rodičovský uzel k vložení titulku \"%s\""
 
 #: lazdemsg.serrnopackageformodule
 msgid "No package found to insert module \"%s\""
-msgstr ""
+msgstr "Nenalezen balíček k vložení modulu \"%s\""
 
 #: lazdemsg.serrors
 msgid "Errors"
-msgstr ""
+msgstr "Chyby"
 
 #: lazdemsg.serrunknowndomelement
 msgid "Unknwon DOM element as parent for selected element: \"%s\""
-msgstr ""
+msgstr "Neznámý DOM element jako rodič pro vybraný element \"%s\""
 
 #: lazdemsg.sfilemodified
 msgid "Document \"%s\" was modified, would you like to save it?"
-msgstr ""
+msgstr "Dokument \"%s\" byl upraven, přejete si uložit jej?"
 
 #: lazdemsg.sfilestructure
 msgid "Documentation structure"
-msgstr ""
+msgstr "Struktura dokumentace"
 
 #: lazdemsg.sfiletemplate
 msgid "template.xml"
-msgstr ""
+msgstr "template.xml"
 
 #: lazdemsg.sforfile
 msgid " in file "
-msgstr ""
+msgstr "v souboru"
 
 #: lazdemsg.sformat
 msgid "&Format"
-msgstr ""
+msgstr "&Formát"
 
 #: lazdemsg.sformodule
 msgid " in module "
-msgstr ""
+msgstr "v modulu"
 
 #: lazdemsg.sforpackage
 msgid " in package "
-msgstr ""
+msgstr "v balíčku"
 
 #: lazdemsg.sfortopic
 msgid " in topic"
-msgstr ""
+msgstr "v titulku"
 
 #: lazdemsg.shideprotectedmethods
 msgid "&Hide protected methods"
@@ -260,7 +262,6 @@ msgid "New topic"
 msgstr "Nové téma"
 
 #: lazdemsg.shintmenunewfromfile
-#, fuzzy
 #| msgid "New from file..."
 msgid "New from file ..."
 msgstr "Nový ze souboru ..."
@@ -431,10 +432,9 @@ msgid "&Help"
 msgstr "Nápověda"
 
 #: lazdemsg.smenuhelpabout
-#, fuzzy
 #| msgid "&About..."
 msgid "&About ..."
-msgstr "O aplikaci ..."
+msgstr "O &Aplikaci ..."
 
 #: lazdemsg.smenuinsert
 msgid "&Insert"

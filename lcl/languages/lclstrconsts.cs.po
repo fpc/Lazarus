@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lazarus LCL\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-05-13 10:04+0100\n"
+"PO-Revision-Date: 2014-06-25 15:46+0100\n"
 "Last-Translator: Václav Valíček <valicek1994@gmail.com>\n"
 "Language-Team: Czech <vaclav@valicek.name>\n"
 "MIME-Version: 1.0\n"
@@ -14,22 +14,19 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
-msgstr "Prohlížeč %s%s%s není spustitelný."
+msgstr "Prohlížeč \"%s\" není spustitelný."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
-msgstr "Prohlížeč %s%s%s nenalezen."
+msgstr "Prohlížeč \"%s\" nenalezen."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
-msgstr "Chyba během spouštění %s%s%s:%s%s"
+msgstr "Chyba během spouštění \"%s\":%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
@@ -40,10 +37,9 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "HTML prohlížeč nenalezen%sProsím nastav jeden v Nástroje -> Volby -> Nápověda -> Volby Nápovědy"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
-msgstr "Databáze nápovědy %s%s%s nemůže najít soubor %s%s%s."
+msgstr "Databáze nápovědy \"%s\" nemůže najít soubor \"%s\"."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
@@ -685,52 +681,45 @@ msgid "Help context %s not found."
 msgstr "Kontext nápovědy %s nenalezen."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
-msgstr "Kontext nápovědy %s nenalezen v databázi %s%s%s."
+msgstr "Kontext nápovědy %s nenalezen v databázi \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, fuzzy
 #| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
-msgstr "Databáze nápovědy %s%s%s nenalezla prohlížeč pro stránku nápovědy typu %s"
+msgstr "Databáze nápovědy \"%s\" nenalezla prohlížeč pro stránku nápovědy typu %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
-msgstr "Databáze nápovědy %s%s%s nenalezena"
+msgstr "Databáze nápovědy \"%s\" nenalezena"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-#, fuzzy
 #| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
-msgstr "Nápověda pro direktivu %s%s%s nenalezena"
+msgstr "Nápověda pro direktivu \"%s\" nenalezena"
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-#, fuzzy
 #| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
-msgstr "Nápověda pro direktivu %s%s%s nenalezena v databázi %s%s%s."
+msgstr "Nápověda pro direktivu \"%s\" nenalezena v databázi \"%s\"."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
-msgstr "Klíčové slovo %s%s%s nenalezeno."
+msgstr "Klíčové slovo \"%s\" nenalezeno."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
-msgstr "Klíčové slovo %s%s%s nebylo nalezeno v Databázi %s%s%s"
+msgstr "Klíčové slovo \"%s\" nebylo nalezeno v Databázi \"%s\""
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
-msgstr "Uzel nápovědy %s%s%s nemá Databázi nápovědy"
+msgstr "Uzel nápovědy \"%s\" nemá Databázi nápovědy"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -755,10 +744,9 @@ msgid "Help Selector Error"
 msgstr "Chyba výběru nápovědy"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
-msgstr "Pro typ %s%s%s není prohlížeč"
+msgstr "Pro typ \"%s\" není prohlížeč"
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"

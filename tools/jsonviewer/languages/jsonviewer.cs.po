@@ -1,0 +1,312 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: JsonViewer\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Václav Valíček <valicek1994@gmail.com>\n"
+"Language-Team: Václav Valíček <vaclav@valicek.name>\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: msgjsonviewer.sarray
+msgid "Array (%d elements)"
+msgstr "Pole (%d elementů)"
+
+#: msgjsonviewer.scancelclose
+msgid "Do not close the window"
+msgstr "Nezavírat okno"
+
+#: msgjsonviewer.scancelpaste
+msgid "Do not paste the new data"
+msgstr "Nevkládat nová data"
+
+#: msgjsonviewer.scaption
+msgctxt "msgjsonviewer.scaption"
+msgid "JSON Viewer"
+msgstr "JSON Prohlížeč"
+
+#: msgjsonviewer.sdiscard
+msgid "Discard changes"
+msgstr "Zahodit změny"
+
+#: msgjsonviewer.sdocumentmodified
+msgid "JSON document modified"
+msgstr "JSON dokument upraven"
+
+#: msgjsonviewer.sdocumentmodifiedaction
+msgid ""
+"The JSON data was changed but not saved.\n"
+"What do want to do ?\n"
+msgstr ""
+"Data JSONu byla upravena, ale ne uložena.\n"
+"Co si přejete udělat?\n"
+
+#: msgjsonviewer.sduplicatemembername
+msgid "Duplicate member name \"%s\"."
+msgstr "Duplicitní jméno člena \"%s\"."
+
+#: msgjsonviewer.selement
+msgid "Element nr. %d"
+msgstr "Element # %d"
+
+#: msgjsonviewer.sempty
+msgid "Empty document"
+msgstr "Prázdný dokument"
+
+#: msgjsonviewer.serrcreatingconfigdir
+msgid "Could not create the configuration files directory \"%s\""
+msgstr "Nemohu vytvořit složku konfiguračních souborů \"%s\""
+
+#: msgjsonviewer.serrinvalidvalue
+msgid "Invalid value or wrong type: \"%s\""
+msgstr "Neplatná hodnota nebo špatný typ: \"%s\""
+
+#: msgjsonviewer.serrnovalidjsonclipboard
+msgid "The clipboard does not contain valid JSON data"
+msgstr "Schránka neobsahuje validní JSON data"
+
+#: msgjsonviewer.snewmember
+msgid "New object member"
+msgstr "Nový prvek objektu"
+
+#: msgjsonviewer.snewmembername
+msgid "Enter a name for the new member (type: %s)"
+msgstr "Zadejte jméno pro nového člena (druh: %s)"
+
+#: msgjsonviewer.snomorematches
+msgid "No nodes match the criterium"
+msgstr "Žádné uzly neodpovídají kritériím"
+
+#: msgjsonviewer.snull
+msgid "null"
+msgstr "null"
+
+#: msgjsonviewer.sobject
+msgid "Object (%d members)"
+msgstr "Objekt (%d prvků)"
+
+#: msgjsonviewer.ssavedata
+msgid "Save the changes"
+msgstr "Uložit změny"
+
+#: tmainform.acopy.caption
+msgid "&Copy"
+msgstr "&Kopírovat"
+
+#: tmainform.acopy.hint
+msgid "Copy selected node to clipboard as JSON"
+msgstr "Kopírovat vybraný prvek do schránky jako JSON"
+
+#: tmainform.acut.caption
+msgid "C&ut"
+msgstr "Vyjmo&ut"
+
+#: tmainform.acut.hint
+msgid "Cut selected node to clipboard as JSON"
+msgstr "Vyjmout zvolený prvek do schránky jako JSON"
+
+#: tmainform.adeletevalue.caption
+msgid "&Delete value"
+msgstr "O&dstranit hodnotu"
+
+#: tmainform.adeletevalue.hint
+msgid "Delete the selected value"
+msgstr "Odstranit zvolenou hodnotu"
+
+#: tmainform.aexpandall.caption
+msgid "E&xpand all nodes"
+msgstr "E&xpanze všech uzlů"
+
+#: tmainform.aexpandall.hint
+msgid "Expand all nodes in the document"
+msgstr "Rozbalí všechny uzly v dokumentu"
+
+#: tmainform.aexpandcurrentcontainer.caption
+msgid "Expand &current object/array"
+msgstr "Rozbalit &vybraný objekt/pole"
+
+#: tmainform.aexpandcurrentcontainer.hint
+msgid "Expand all nodes in the current object/array"
+msgstr "Rozbalí všechny uzly v aktuálním objektu/poli"
+
+#: tmainform.afind.caption
+msgid "&Find"
+msgstr "&Najít"
+
+#: tmainform.afindnext.caption
+msgid "Find &next occurrence"
+msgstr "Najít &další výskyt"
+
+#: tmainform.anew.caption
+msgid "&New"
+msgstr "&Nový"
+
+#: tmainform.anew.hint
+msgid "Create new JSON document"
+msgstr "Vytvoří JSON dokument"
+
+#: tmainform.anewarray.caption
+msgid "New &Array"
+msgstr "Nové &Pole"
+
+#: tmainform.anewarray.hint
+msgid "Add a new JSON array"
+msgstr "Přidá nové JSON pole"
+
+#: tmainform.anewbooleanvalue.caption
+msgid "New &boolean value"
+msgstr "Nová boolovská hodnota"
+
+#: tmainform.anewbooleanvalue.hint
+msgid "Add a new boolean value"
+msgstr "Přidá novou hodnotu typu boolean"
+
+#: tmainform.anewnullvalue.caption
+msgid "New N&ull value"
+msgstr "Nová n&ull hodnota"
+
+#: tmainform.anewnullvalue.hint
+msgid "Add a new null value"
+msgstr "Přidá null hodnotu"
+
+#: tmainform.anewnumbervalue.caption
+msgid "&New numerical Value"
+msgstr "&Nová numerická hodnota"
+
+#: tmainform.anewnumbervalue.hint
+msgid "Add a new number value"
+msgstr "Přidá novou číselnou hodnotu"
+
+#: tmainform.anewobject.caption
+msgid "New &Object"
+msgstr "Nový &Objekt"
+
+#: tmainform.anewobject.hint
+msgid "Add a new JSON object"
+msgstr "Přidá nový JSON objekt"
+
+#: tmainform.anewstringvalue.caption
+msgid "New &string value"
+msgstr "Nový řetěze&c"
+
+#: tmainform.anewstringvalue.hint
+msgid "Add a new string value"
+msgstr "Přidá nový řetězec"
+
+#: tmainform.aopen.caption
+msgid "&Open"
+msgstr "&Otevřít"
+
+#: tmainform.aopen.hint
+msgid "Open JSON document from file"
+msgstr "Otevře JSON dokument ze souboru"
+
+#: tmainform.apaste.caption
+msgid "&Paste"
+msgstr "V&ložit"
+
+#: tmainform.apaste.hint
+msgid "Paste JSON data in clipboard as new member"
+msgstr "Vloží JSON data ze schránky jako novou položku"
+
+#: tmainform.apasteasdocument.caption
+msgid "Paste as new document"
+msgstr "Vložit jako nový dokument"
+
+#: tmainform.apasteasdocument.hint
+msgid "Paste JSON data in clipboard as new document"
+msgstr "Vložit JSON data ze schránky jako nový dokument"
+
+#: tmainform.aquit.caption
+msgid "&Quit"
+msgstr "&Konec"
+
+#: tmainform.aquit.hint
+msgid "Exit the program"
+msgstr "Ukončí program"
+
+#: tmainform.asave.caption
+msgid "&Save"
+msgstr "&Uložit"
+
+#: tmainform.asave.hint
+msgid "Save the JSON document to file"
+msgstr "Uloží JSON dokument do souboru"
+
+#: tmainform.asaveas.caption
+msgid "Save &as"
+msgstr "Uložit j&ako"
+
+#: tmainform.asaveas.hint
+msgid "Save JSON document with a new name"
+msgstr "Uloží JSON dokument s novým názvem"
+
+#: tmainform.mainform.caption
+msgctxt "TMAINFORM.MAINFORM.CAPTION"
+msgid "JSON Viewer"
+msgstr "JSON Viewer"
+
+#: tmainform.medit.caption
+msgid "&Edit"
+msgstr "&Editovat"
+
+#: tmainform.menuitem1.caption
+msgctxt "TMAINFORM.MENUITEM1.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: tmainform.menuitem2.caption
+msgctxt "TMAINFORM.MENUITEM2.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: tmainform.menuitem3.caption
+msgctxt "TMAINFORM.MENUITEM3.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: tmainform.menuitem8.caption
+msgctxt "TMAINFORM.MENUITEM8.CAPTION"
+msgid "-"
+msgstr "-"
+
+#: tmainform.mfile.caption
+msgid "&File"
+msgstr "&Soubor"
+
+#: tmainform.midocument.caption
+msgid "&New document with object"
+msgstr "&Nový dokument s objektem"
+
+#: tmainform.miinsert.caption
+msgid "&Values"
+msgstr "&Hodnoty"
+
+#: tmainform.misortmembers.caption
+msgid "Sort object members"
+msgstr "Seřadit členy objektu"
+
+#: tmainform.mistrict.caption
+msgid "&Strict JSON"
+msgstr "&Striktní JSON"
+
+#: tmainform.moptions.caption
+msgid "&Options"
+msgstr "V&olby"
+
+#: tmainform.tbjson.caption
+msgid "TBJSON"
+msgstr "TBJSON"
+
+#: tmainform.toolbutton1.caption
+msgid "ToolButton1"
+msgstr "ToolButton1"
+
+#: tmainform.toolbutton4.caption
+msgid "ToolButton4"
+msgstr "ToolButton4"
+
