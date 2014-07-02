@@ -187,12 +187,15 @@ type
     FFCLHelpDB: THelpDatabase;
     FFCLHelpDBPath: THelpBaseURLObject;
     FHTMLProviders: TLIHProviders;
+    FHtmlHelpProvider: TAbstractIDEHTMLProvider;
+    FHintWindow: THintWindow;
     FLCLHelpDB: THelpDatabase;
     FLCLHelpDBPath: THelpBaseURLObject;
     FMainHelpDB: THelpDatabase;
     FMainHelpDBPath: THelpBasePathObject;
     FRTLHelpDB: THelpDatabase;
     FRTLHelpDBPath: THelpBaseURLObject;
+    function HtmlHelpProvider: TAbstractIDEHTMLProvider;
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
     procedure FindDefaultBrowser(var DefaultBrowser, Params: string);
@@ -282,6 +285,7 @@ implementation
 
 {$R *.lfm}
 
+// Default help control generator if no other is registered.
 function LazCreateIDEHTMLControl(Owner: TComponent;
   var Provider: TAbstractIDEHTMLProvider;
   Flags: TIDEHTMLControlFlags): TControl;
@@ -304,6 +308,7 @@ begin
   end;
 end;
 
+// Default provider generator if no other is registered.
 function LazCreateIDEHTMLProvider(Owner: TComponent): TAbstractIDEHTMLProvider;
 begin
   Result:=TLazIDEHTMLProvider.Create(Owner);
@@ -1661,36 +1666,44 @@ begin
   IDEWindowHelpNodes.InvokeHelp(Sender);
 end;
 
+function TIDEHelpManager.HtmlHelpProvider: TAbstractIDEHTMLProvider;
+var
+  HelpControl: TControl;
+begin
+  Assert(Assigned(FHintWindow), 'TIDEHelpManager.HtmlHelpProvider: FHintWindow is not assigned.');
+  if FHtmlHelpProvider = nil then
+  begin
+    HelpControl := CreateIDEHTMLControl(FHintWindow, FHtmlHelpProvider, [ihcWithClipboardMenu]);
+    HelpControl.Parent := FHintWindow;
+    HelpControl.Align := alClient;
+  end;
+  Result := FHtmlHelpProvider;
+end;
+
 function TIDEHelpManager.CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
   const BaseURL: string; var TheHint: string; out HintWinRect: TRect): boolean;
 var
-  IsHTML: Boolean;
-  Provider: TAbstractIDEHTMLProvider;
-  HTMLControl: TControl;
   ms: TMemoryStream;
   NewWidth, NewHeight: integer;
 begin
-  IsHTML:=SysUtils.CompareText(copy(TheHint,1,6),'<HTML>')=0;
-
-  if aHintWindow.ControlCount>0 then begin
-    aHintWindow.Controls[0].Free;
+  // This test is needed because each editor SourceNotebook have their own HintWindow.
+  // ToDo: Make HintWindow common to all SourceNotebooks.
+  if aHintWindow <> FHintWindow then begin
+    FHtmlHelpProvider := nil;
+    FHintWindow := aHintWindow;
   end;
-  if IsHTML then begin
-    Provider:=nil;
-    HTMLControl:=CreateIDEHTMLControl(aHintWindow,Provider, [ihcWithClipboardMenu]);
-    Provider.BaseURL:=BaseURL;
-    HTMLControl.Parent:=aHintWindow;
-    HTMLControl.Align:=alClient;
+  if CompareText(copy(TheHint,1,6),'<HTML>')=0 then begin  // Text is HTML
     ms:=TMemoryStream.Create;
     try
       if TheHint<>'' then
         ms.Write(TheHint[1],length(TheHint));
       ms.Position:=0;
-      Provider.ControlIntf.SetHTMLContent(ms,'');
+      HtmlHelpProvider.ControlIntf.SetHTMLContent(ms,'');
+      //FHtmlHelpProvider.BaseURL:=BaseURL; //Not needed
     finally
       ms.Free;
     end;
-    Provider.ControlIntf.GetPreferredControlSize(NewWidth,NewHeight);
+    FHtmlHelpProvider.ControlIntf.GetPreferredControlSize(NewWidth,NewHeight);
 
     if NewWidth <= 0 then
       NewWidth := 500

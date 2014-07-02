@@ -715,7 +715,8 @@ type
     procedure DoActiveEditorChanged;
   protected
     States: TSourceNotebookStates;
-    // hintwindow stuff
+    // HintWindow stuff
+    // ToDo: HintWindow should be common to all SourceNotebooks. Only one hint is shown at a time.
     FHintWindow: THintWindow;
     FMouseHintTimer: TIdleTimer;
     FMouseHideHintTimer: TTimer;
@@ -7429,13 +7430,8 @@ begin
     AutoStartCompletionBoxTimer.Enabled:=false;
   if FHintWindow<>nil then begin
     FHintWindow.Visible:=false;
-    FHintWindow.DisableAutoSizing;
-    try
-      while FHintWindow.ControlCount>0 do
-        FHintWindow.Controls[0].Free;
-    finally
-      FHintWindow.EnableAutoSizing;
-    end;
+    Assert(FHintWindow.ControlCount <= 1,
+      'TSourceNotebook.HideHint: FHintWindow.ControlCount = '+IntToStr(FHintWindow.ControlCount));
   end;
 end;
 
