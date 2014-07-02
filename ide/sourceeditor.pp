@@ -820,8 +820,7 @@ type
       read FIncrementalSearchStr write SetIncrementalSearchStr;
 
     // hints
-    procedure ActivateHint(const ScreenPos: TPoint;
-                           const BaseURL, TheHint: string);
+    procedure ActivateHint(const ScreenPos: TPoint; const BaseURL, TheHint: string);
     procedure HideHint;
     procedure MaybeHideHint;
     procedure StartShowCodeContext(JumpToError: boolean);
@@ -7368,8 +7367,7 @@ begin
   DestWin := Manager.SourceWindows[NewWindowIndex];
   if DestWin = self then exit;
 
-  if (OldPageIndex<0) or (OldPageIndex>=PageCount) or
-     (NewPageIndex>DestWin.PageCount)
+  if (OldPageIndex<0) or (OldPageIndex>=PageCount) or (NewPageIndex>DestWin.PageCount)
   then
     exit;
 
