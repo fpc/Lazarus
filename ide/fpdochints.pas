@@ -214,7 +214,6 @@ destructor TFPDocHintProvider.Destroy;
 begin
   // important: free provider before control
   FreeAndNil(FHTMLProvider);
-  FreeAndNil(FHTMLControl);
   FreeAndNil(FTextControl);
   WaitingForIdle:=false;
   inherited Destroy;
