@@ -52,8 +52,7 @@ type
     FURL: string;
     procedure SetIDEProvider(const AValue: TAbstractIDEHTMLProvider);
   protected
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -239,8 +238,7 @@ begin
   //debugln(['TLazIPHtmlControl.DataProviderLeave ']);
 end;
 
-procedure TLazIPHtmlControl.DataProviderReportReference(Sender: TObject;
-  const URL: string);
+procedure TLazIPHtmlControl.DataProviderReportReference(Sender: TObject; const URL: string);
 begin
   //debugln(['TLazIPHtmlControl.DataProviderReportReference URL=',URL]);
 end;
@@ -263,8 +261,7 @@ begin
   IDEProvider.OpenURLAsync(HRef);
 end;
 
-procedure TLazIPHtmlControl.SetIDEProvider(
-  const AValue: TAbstractIDEHTMLProvider);
+procedure TLazIPHtmlControl.SetIDEProvider(const AValue: TAbstractIDEHTMLProvider);
 begin
   if FIDEProvider=AValue then exit;
   //debugln(['TLazIPHtmlControl.SetIDEProvider Old=',DbgSName(FIDEProvider),' New=',DbgSName(FIDEProvider)]);
@@ -278,8 +275,7 @@ begin
   end;
 end;
 
-procedure TLazIPHtmlControl.Notification(AComponent: TComponent;
-  Operation: TOperation);
+procedure TLazIPHtmlControl.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if Operation=opRemove then begin
@@ -361,8 +357,7 @@ begin
   end;
 end;
 
-procedure TLazIPHtmlControl.SetHTMLContent(Stream: TStream; const NewURL: string
-  );
+procedure TLazIPHtmlControl.SetHTMLContent(Stream: TStream; const NewURL: string);
 var
   NewHTML: TIpHtml;
 begin
