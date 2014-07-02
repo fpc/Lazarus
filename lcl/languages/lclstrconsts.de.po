@@ -4,31 +4,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2011-12-06 15:09+0100\n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"PO-Revision-Date: 2014-06-29 15:30+0100\n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
-"X-Poedit-Language: German\n"
-"X-Poedit-Country: GERMANY\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Language: de_DE\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
-msgstr "Browser %s%s%s nicht ausführbar."
+msgstr "Browser \"%s\" nicht ausführbar."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
-msgstr "Browser %s%s%s nicht gefunden."
+msgstr "Browser \"%s\" nicht gefunden."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
-msgstr "Fehler beim Ausführen von %s%s%s:%s%s"
+msgstr "Fehler beim Ausführen von \"%s\":%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
@@ -39,10 +36,9 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
-msgstr "Die Hilfedatenbank %s%s%s konnte die Datei %s%s%s nicht finden."
+msgstr "Die Hilfedatenbank \"%s\" konnte die Datei \"%s\" nicht finden."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
@@ -661,7 +657,7 @@ msgstr "--no-xshm             Abschalten der Verwendung der Shared-Memory-Erweit
 
 #: lclstrconsts.rsgtkoptionsync
 #, fuzzy
-#| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
+#| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server.--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                Aufruf von XSynchronize (Display, True) nachdem die XServer-Verbindung zustandegekommen ist. Dies erleichtert das Debugging des X-Protokolls, weil die X-Anfragepufferung abgeschaltet ist und X-Fehler sofort ankommen, nachdem die Anfrage, die den Fehler erzeugt hat, beim X-Server angekommen ist."
 
@@ -689,10 +685,9 @@ msgid "Help context %s not found."
 msgstr "Hilfekontext %s nicht gefunden."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
-msgstr "Hilfekontext %s nicht in der Datenbank %s%s%s gefunden."
+msgstr "Hilfekontext %s nicht in der Datenbank \"%s\" gefunden."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, fuzzy
@@ -701,40 +696,34 @@ msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgstr "Die Hilfedatenbank %s%s%s fand keinen Betrachter für eine Hilfeseite des Typs %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
-msgstr "Hilfedatenbank %s%s%s nicht gefunden"
+msgstr "Hilfedatenbank \"%s\" nicht gefunden"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-#, fuzzy
 #| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
-msgstr "Hilfe für Direktive %s%s%s nicht gefunden."
+msgstr "Hilfe für Direktive \"%s\" nicht gefunden."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-#, fuzzy
 #| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
-msgstr "Hilfe für Direktive %s%s%s nicht in Datenbank %s%s%s gefunden."
+msgstr "Hilfe für Direktive \"%s\" nicht in Datenbank \"%s\" gefunden."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
-msgstr "Hilfeschlüsselwort %s%s%s nicht gefunden."
+msgstr "Hilfeschlüsselwort \"%s\" nicht gefunden."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
-msgstr "Hilfeschlüsselwort %s nicht in der Datenbank %s%s%s gefunden."
+msgstr "Hilfeschlüsselwort \"%s\" nicht in der Datenbank \"%s\" gefunden."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
-msgstr "Hilfeknoten %s%s%s besitzt keine Hilfedatenbank"
+msgstr "Hilfeknoten \"%s\" besitzt keine Hilfedatenbank"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -759,10 +748,9 @@ msgid "Help Selector Error"
 msgstr "Hilfeauswahlfehler"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
-msgstr "Es gibt keinen Viewer für den Hilfetyp %s%s%s"
+msgstr "Es gibt keinen Viewer für den Hilfetyp \"%s\"."
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
@@ -1071,7 +1059,8 @@ msgid "Post"
 msgstr "Übertragen"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
-#| msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
+#, fuzzy
+#| msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program.%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgstr "%s%sOk übergeht und riskiert Dateninkonsistenz.%sMit Abbrechen wird das Programm abgebrochen."
 
@@ -1082,7 +1071,7 @@ msgstr "Vorher"
 
 #: lclstrconsts.rspromptonreplace
 msgid "Prompt on replace"
-msgstr ""
+msgstr "Beim Ersetzen nachfragen"
 
 #: lclstrconsts.rspropertydoesnotexist
 msgid "Property %s does not exist"
