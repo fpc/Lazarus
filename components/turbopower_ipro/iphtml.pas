@@ -19094,7 +19094,8 @@ begin
   if FDataProvider=AValue then exit;
   //debugln(['TIpHtmlCustomPanel.SetDataProvider Old=',DbgSName(FDataProvider),' ',dbgs(Pointer(FDataProvider)),' New=',DbgSName(AValue),' ',dbgs(Pointer(AValue))]);
   FDataProvider:=AValue;
-  if FDataProvider<>nil then FreeNotification(FDataProvider);
+  if FDataProvider<>nil then
+    FDataProvider.FreeNotification(Self);
 end;
 
 function TIpHtmlCustomPanel.FactBAParagNotIs1: Boolean;
