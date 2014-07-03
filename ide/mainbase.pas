@@ -473,7 +473,7 @@ begin
   if not FileExistsUTF8(AFilename) then
     CopySecondaryConfigFile(DefaultProjectOptionsFilename);
   if FileExistsUTF8(AFilename) then begin
-    if AProject.ReadProject(AFilename,nil,[prfLoadParts,prfLoadPartBuildModes])<>mrOk then
+    if AProject.ReadProject(AFilename,nil,True)<>mrOk then
       DebugLn(['TMainIDEBase.DoLoadDefaultCompilerOptions failed']);
   end else begin
     // old way (<0.9.31)

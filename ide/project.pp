@@ -807,7 +807,7 @@ type
     FUseAsDefault: Boolean;
     // Variables used by ReadProject / WriteProject
     FXMLConfig: TXMLConfig;
-    FReadFlags: TProjectReadFlags;
+    FLoadParts: Boolean;
     FFileVersion: Integer;
     FNewMainUnitID: LongInt;
     FProjectWriteFlags: TProjectWriteFlags;
@@ -929,7 +929,7 @@ type
     procedure IgnoreProjectInfoFileOnDisk;
     function ReadProject(const NewProjectInfoFile: string;
                          GlobalMatrixOptions: TBuildMatrixOptions;
-                         ReadFlags: TProjectReadFlags = []): TModalResult;
+                         LoadParts: Boolean = False): TModalResult;
     function WriteProject(ProjectWriteFlags: TProjectWriteFlags;
                           const OverrideProjectInfoFile: string;
                         GlobalMatrixOptions: TBuildMatrixOptions): TModalResult;
@@ -2829,7 +2829,7 @@ begin
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
   FFileVersion:= FXMLConfig.GetValue(Path+'Version/Value',0);
-  if not (prfLoadParts in FReadFlags) then
+  if not FLoadParts then
   begin
     if (FFileVersion=0) and (FXMLConfig.GetValue(Path+'Units/Count',0)=0) then
       if IDEMessageDialog(lisStrangeLpiFile,
@@ -2872,15 +2872,12 @@ begin
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
   end;
   // load MacroValues and compiler options
-  if FReadFlags <> [prfLoadParts] then begin // Test for: prfLoadParts, no prfLoadPartBuildModes
-    if prfLoadParts in FReadFlags then
-      ClearBuildModes;
-    BuildModes.LoadProjOptsFromXMLConfig(FXMLConfig, Path);
-    // load matrix options
-    BuildModes.SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/');
-  end;
+  ClearBuildModes;
+  BuildModes.LoadProjOptsFromXMLConfig(FXMLConfig, Path);
+  // load matrix options
+  BuildModes.SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/');
   // Resources
-  if not (prfLoadParts in FReadFlags) then
+  if not FLoadParts then
   begin
     ProjResources.ReadFromProjectFile(FXMLConfig, Path);
     // load custom data
@@ -2919,7 +2916,7 @@ begin
   FFileVersion:=FXMLConfig.GetValue(Path+'Version/Value',0);
 
   // load MacroValues and compiler options
-  BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, prfLoadParts in FReadFlags);
+  BuildModes.LoadSessionFromXMLConfig(FXMLConfig, Path, FLoadParts);
 
   // load custom defines
   LoadCustomDefines(Path);
@@ -2936,7 +2933,7 @@ var
   PIFile: String;
 begin
   Result:=mrOk;
-  if prfLoadParts in FReadFlags then begin
+  if FLoadParts then begin
     // read only parts of the lpi, keep other values
     try
       FXMLConfig := TCodeBufXMLConfig.CreateWithCache(Filename,true)
@@ -2977,7 +2974,6 @@ begin
         exit;
       end;
     end;
-
     fLastReadLPIFilename:=PIFile;
     fLastReadLPIFileDate:=Now;
     FNewMainUnitID:=-1;
@@ -3029,13 +3025,13 @@ end;
 
 // Method ReadProject itself
 function TProject.ReadProject(const NewProjectInfoFile: string;
-  GlobalMatrixOptions: TBuildMatrixOptions; ReadFlags: TProjectReadFlags): TModalResult;
+  GlobalMatrixOptions: TBuildMatrixOptions; LoadParts: Boolean): TModalResult;
 begin
   Result := mrCancel;
   BeginUpdate(true);
   try
     BuildModes.FGlobalMatrixOptions := GlobalMatrixOptions;
-    FReadFlags := ReadFlags;
+    FLoadParts := LoadParts;
 
     // load project lpi file
     Result:=DoLoadLPI(NewProjectInfoFile);
@@ -3044,7 +3040,7 @@ begin
     // load session file (if available)
     if (SessionStorage in pssHasSeparateSession)
     and (CompareFilenames(ProjectInfoFile,ProjectSessionFile)<>0)
-    and not (prfLoadParts in ReadFlags) then
+    and not FLoadParts then
     begin
       Result:=DoLoadSession(ProjectSessionFile);
       if Result<>mrOK then Exit;

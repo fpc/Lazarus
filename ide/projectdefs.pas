@@ -46,12 +46,6 @@ uses
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
 
-  TProjectReadFlag = (
-    prfLoadParts,
-    prfLoadPartBuildModes
-    );
-  TProjectReadFlags = set of TProjectReadFlag;
-
   TProjectWriteFlag = (
     pwfSkipClosedUnits,         // skip history data
     pwfSaveOnlyProjectUnits,
