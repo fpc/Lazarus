@@ -2821,75 +2821,71 @@ begin
 end;
 
 procedure TProject.LoadFromLPI;
-var
-  Path: String;
+const
+  Path = 'ProjectOptions/';
 begin
-  Path:='ProjectOptions/';
-  if not FLoadParts then
-  begin
-    if (FFileVersion=0) and (FXMLConfig.GetValue(Path+'Units/Count',0)=0) then
-      if IDEMessageDialog(lisStrangeLpiFile,
-          Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
-          mtConfirmation,[mbIgnore,mbAbort])<>mrIgnore
-      then exit;
+  if (FFileVersion=0) and (FXMLConfig.GetValue(Path+'Units/Count',0)=0) then
+    if IDEMessageDialog(lisStrangeLpiFile,
+        Format(lisTheFileDoesNotLookLikeALpiFile, [ProjectInfoFile]),
+        mtConfirmation,[mbIgnore,mbAbort])<>mrIgnore
+    then exit;
 
-    LoadFlags(Path);
-    SessionStorage:=StrToProjectSessionStorage(
-      FXMLConfig.GetValue(Path+'General/SessionStorage/Value',
-                          ProjectSessionStorageNames[DefaultProjectSessionStorage]));
-    //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
+  LoadFlags(Path);
+  SessionStorage:=StrToProjectSessionStorage(
+    FXMLConfig.GetValue(Path+'General/SessionStorage/Value',
+                        ProjectSessionStorageNames[DefaultProjectSessionStorage]));
+  //DebugLn('TProject.ReadProject SessionStorage=',dbgs(ord(SessionStorage)),' ProjectSessionFile=',ProjectSessionFile);
 
-    // load properties
-    // Note: in FFileVersion<9 the default value was -1
-    //   Since almost all projects have a MainUnit the value 0 was always
-    //   added to the lpi.
-    //   Changing the default value to 0 avoids the redundancy and
-    //   automatically fixes broken lpi files.
-    FNewMainUnitID := FXMLConfig.GetValue(Path+'General/MainUnit/Value', 0);
-    Title := FXMLConfig.GetValue(Path+'General/Title/Value', '');
-    UseAppBundle := FXMLConfig.GetValue(Path+'General/UseAppBundle/Value', True);
-    AutoCreateForms := FXMLConfig.GetValue(Path+'General/AutoCreateForms/Value', true);
+  // load properties
+  // Note: in FFileVersion<9 the default value was -1
+  //   Since almost all projects have a MainUnit the value 0 was always
+  //   added to the lpi.
+  //   Changing the default value to 0 avoids the redundancy and
+  //   automatically fixes broken lpi files.
+  FNewMainUnitID := FXMLConfig.GetValue(Path+'General/MainUnit/Value', 0);
+  Title := FXMLConfig.GetValue(Path+'General/Title/Value', '');
+  UseAppBundle := FXMLConfig.GetValue(Path+'General/UseAppBundle/Value', True);
+  AutoCreateForms := FXMLConfig.GetValue(Path+'General/AutoCreateForms/Value', true);
 
-    // fpdoc
-    FPDocPaths:=SwitchPathDelims(FXMLConfig.GetValue(Path+'LazDoc/Paths',''),fPathDelimChanged);
-    FPDocPackageName:=FXMLConfig.GetValue(Path+'LazDoc/PackageName','');
+  // fpdoc
+  FPDocPaths:=SwitchPathDelims(FXMLConfig.GetValue(Path+'LazDoc/Paths',''),fPathDelimChanged);
+  FPDocPackageName:=FXMLConfig.GetValue(Path+'LazDoc/PackageName','');
 
-    // i18n
-    if FFileVersion<6 then begin
-      POOutputDirectory := SwitchPathDelims(
-                 FXMLConfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
-      EnableI18N := POOutputDirectory <> '';
-    end else begin
-      EnableI18N := FXMLConfig.GetValue(Path+'i18n/EnableI18N/Value', False);
-      EnableI18NForLFM := FXMLConfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
-      POOutputDirectory := SwitchPathDelims(
-           FXMLConfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
-    end;
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
-
-    // Resources
-    ProjResources.ReadFromProjectFile(FXMLConfig, Path);
-
-    // load custom data
-    LoadStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
-    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
-    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=ProjectDirectory;
-    CodeToolBoss.DefineTree.ClearCache;
-    // load the dependencies
-    LoadPkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
-                          FFirstRequiredDependency,pdlRequires,Self,true,false);
-    // load the Run and Build parameter Options
-    RunParameterOptions.Load(FXMLConfig,Path,fPathDelimChanged);
-    // load the Publish Options
-    PublishOptions.LoadFromXMLConfig(FXMLConfig,Path+'PublishOptions/',fPathDelimChanged);
-    // load custom defines
-    LoadCustomDefines(Path);
-    // load session info
-    LoadSessionInfo(Path,false);
-    // call hooks to read their info (e.g. DebugBoss)
-    if Assigned(OnLoadProjectInfo) then
-      OnLoadProjectInfo(Self, FXMLConfig, false);
+  // i18n
+  if FFileVersion<6 then begin
+    POOutputDirectory := SwitchPathDelims(
+               FXMLConfig.GetValue(Path+'RST/OutDir', ''),fPathDelimChanged);
+    EnableI18N := POOutputDirectory <> '';
+  end else begin
+    EnableI18N := FXMLConfig.GetValue(Path+'i18n/EnableI18N/Value', False);
+    EnableI18NForLFM := FXMLConfig.GetValue(Path+'i18n/EnableI18N/LFM', True);
+    POOutputDirectory := SwitchPathDelims(
+         FXMLConfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
   end;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
+
+  // Resources
+  ProjResources.ReadFromProjectFile(FXMLConfig, Path);
+
+  // load custom data
+  LoadStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
+  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=ProjectDirectory;
+  CodeToolBoss.DefineTree.ClearCache;
+  // load the dependencies
+  LoadPkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
+                        FFirstRequiredDependency,pdlRequires,Self,true,false);
+  // load the Run and Build parameter Options
+  RunParameterOptions.Load(FXMLConfig,Path,fPathDelimChanged);
+  // load the Publish Options
+  PublishOptions.LoadFromXMLConfig(FXMLConfig,Path+'PublishOptions/',fPathDelimChanged);
+  // load custom defines
+  LoadCustomDefines(Path);
+  // load session info
+  LoadSessionInfo(Path,false);
+  // call hooks to read their info (e.g. DebugBoss)
+  if Assigned(OnLoadProjectInfo) then
+    OnLoadProjectInfo(Self, FXMLConfig, false);
 end;
 
 procedure TProject.LoadFromSession;
@@ -2975,7 +2971,8 @@ begin
     fCurStorePathDelim:=StorePathDelim;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
     FFileVersion:= FXMLConfig.GetValue('ProjectOptions/Version/Value',0);
-    LoadFromLPI;
+    if not FLoadParts then
+      LoadFromLPI;
     // load MacroValues and compiler options
     ClearBuildModes;
     BuildModes.LoadProjOptsFromXMLConfig(FXMLConfig, ProjOptionsPath);
