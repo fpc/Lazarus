@@ -7066,6 +7066,7 @@ var
   NewLPIFilename, NewProgramFN, NewProgramName, AFilename, NewTargetFN: String;
   AText, ACaption, Ext: string;
   OldSource, OldProjectDir, prDir: string;
+  i: Integer;
 begin
   Project1.BeginUpdate(false);
   try
@@ -7218,7 +7219,8 @@ begin
       // target file is default => change to all build modes, but keep sub directories
       // Note: Extension is appended automatically => do not add it
       NewTargetFN:=ExtractFilePath(Project1.TargetFilename)+ExtractFileNameOnly(NewProgramFN);
-      Project1.TargetFilename:=NewTargetFN;
+      for i := 0 to Project1.BuildModes.Count-1 do
+        Project1.BuildModes[i].CompilerOptions.TargetFilename:=NewTargetFN;
       //DebugLn(['TLazSourceFileManager.ShowSaveProjectAsDialog changed targetfilename to ',Project1.TargetFilename]);
     end;
 
