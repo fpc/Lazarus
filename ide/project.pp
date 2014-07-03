@@ -130,8 +130,7 @@ type
     procedure SetTypes(const AValue: TUnitCompDependencyTypes);
     procedure SetUsedByUnit(const AValue: TUnitInfo);
   public
-    NextDependency, PrevDependency:
-                     array[TUnitCompDependencyList] of TUnitComponentDependency;
+    NextDependency,PrevDependency: array[TUnitCompDependencyList] of TUnitComponentDependency;
     constructor Create;
     destructor Destroy; override;
     procedure ClearComponentProperties;
@@ -2822,7 +2821,7 @@ end;
 
 procedure TProject.LoadFromLPI;
 const
-  Path = 'ProjectOptions/';
+  Path = ProjOptionsPath;
 begin
   if (FFileVersion=0) and (FXMLConfig.GetValue(Path+'Units/Count',0)=0) then
     if IDEMessageDialog(lisStrangeLpiFile,
@@ -2889,11 +2888,11 @@ begin
 end;
 
 procedure TProject.LoadFromSession;
+const
+  Path = 'ProjectSession/';
 var
-  Path: String;
   pds: TPathDelimSwitch;
 begin
-  Path:='ProjectSession/';
   pds:=CheckPathDelim(FXMLConfig.GetValue(Path+'PathDelim/Value', '/'),
                       fPathDelimChanged);
   SessionStorePathDelim:=pds;
@@ -2967,17 +2966,19 @@ begin
 
   try
     // get format
-    fStorePathDelim:=CheckPathDelim(FXMLConfig.GetValue('ProjectOptions/PathDelim/Value','/'),fPathDelimChanged);
+    fStorePathDelim:=CheckPathDelim(FXMLConfig.GetValue(ProjOptionsPath+'PathDelim/Value','/'),
+                                    fPathDelimChanged);
     fCurStorePathDelim:=StorePathDelim;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
-    FFileVersion:= FXMLConfig.GetValue('ProjectOptions/Version/Value',0);
+    FFileVersion:= FXMLConfig.GetValue(ProjOptionsPath+'Version/Value',0);
     if not FLoadParts then
       LoadFromLPI;
     // load MacroValues and compiler options
     ClearBuildModes;
     BuildModes.LoadProjOptsFromXMLConfig(FXMLConfig, ProjOptionsPath);
     // load matrix options
-    BuildModes.SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig, 'ProjectOptions/BuildModes/SharedMatrixOptions/');
+    BuildModes.SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig,
+                              ProjOptionsPath+'BuildModes/SharedMatrixOptions/');
   finally
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
     fPathDelimChanged:=false;
@@ -3117,11 +3118,11 @@ begin
 end;
 
 procedure TProject.SaveToLPI;
+const
+  Path = ProjOptionsPath;
 var
-  Path: String;
   CurFlags: TProjectWriteFlags;
 begin
-  Path:='ProjectOptions/';
   // format
   FXMLConfig.SetValue(Path+'Version/Value',ProjectInfoFileVersion);
   FXMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[fCurStorePathDelim],'/');
@@ -3191,10 +3192,9 @@ begin
 end;
 
 procedure TProject.SaveToSession;
-var
-  Path: String;
+const
+  Path = 'ProjectSession/';
 begin
-  Path:='ProjectSession/';
   fCurStorePathDelim:=SessionStorePathDelim;
   FXMLConfig.SetDeleteValue(Path+'PathDelim/Value',
                           PathDelimSwitchToDelim[fCurStorePathDelim],'/');
@@ -6546,26 +6546,22 @@ begin
   FreeAndNil(FCompProps);
 end;
 
-function TUnitComponentDependency.NextUsedByDependency
-  : TUnitComponentDependency;
+function TUnitComponentDependency.NextUsedByDependency: TUnitComponentDependency;
 begin
   Result:=NextDependency[ucdlUsedBy];
 end;
 
-function TUnitComponentDependency.PrevUsedByDependency
-  : TUnitComponentDependency;
+function TUnitComponentDependency.PrevUsedByDependency: TUnitComponentDependency;
 begin
   Result:=PrevDependency[ucdlUsedBy];
 end;
 
-function TUnitComponentDependency.NextRequiresDependency
-  : TUnitComponentDependency;
+function TUnitComponentDependency.NextRequiresDependency: TUnitComponentDependency;
 begin
   Result:=NextDependency[ucdlRequires];
 end;
 
-function TUnitComponentDependency.PrevRequiresDependency
-  : TUnitComponentDependency;
+function TUnitComponentDependency.PrevRequiresDependency: TUnitComponentDependency;
 begin
   Result:=PrevDependency[ucdlRequires];
 end;
