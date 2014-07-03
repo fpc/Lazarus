@@ -1167,6 +1167,8 @@ implementation
 
 const
   ProjectInfoFileVersion = 9;
+  ProjOptionsPath = 'ProjectOptions/';
+
 
 function AddCompileReasonsDiff(const PropertyName: string;
   const Old, New: TCompileReasons; Tool: TCompilerDiffTool): boolean;
@@ -2823,12 +2825,6 @@ var
   Path: String;
 begin
   Path:='ProjectOptions/';
-  // get format
-  fStorePathDelim:=CheckPathDelim(FXMLConfig.GetValue(Path+'PathDelim/Value','/'),fPathDelimChanged);
-  fCurStorePathDelim:=StorePathDelim;
-
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
-  FFileVersion:= FXMLConfig.GetValue(Path+'Version/Value',0);
   if not FLoadParts then
   begin
     if (FFileVersion=0) and (FXMLConfig.GetValue(Path+'Units/Count',0)=0) then
@@ -2870,16 +2866,10 @@ begin
            FXMLConfig.GetValue(Path+'i18n/OutDir/Value', ''),fPathDelimChanged);
     end;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
-  end;
-  // load MacroValues and compiler options
-  ClearBuildModes;
-  BuildModes.LoadProjOptsFromXMLConfig(FXMLConfig, Path);
-  // load matrix options
-  BuildModes.SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig, Path+'BuildModes/SharedMatrixOptions/');
-  // Resources
-  if not FLoadParts then
-  begin
+
+    // Resources
     ProjResources.ReadFromProjectFile(FXMLConfig, Path);
+
     // load custom data
     LoadStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
@@ -2980,7 +2970,17 @@ begin
   end;
 
   try
+    // get format
+    fStorePathDelim:=CheckPathDelim(FXMLConfig.GetValue('ProjectOptions/PathDelim/Value','/'),fPathDelimChanged);
+    fCurStorePathDelim:=StorePathDelim;
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
+    FFileVersion:= FXMLConfig.GetValue('ProjectOptions/Version/Value',0);
     LoadFromLPI;
+    // load MacroValues and compiler options
+    ClearBuildModes;
+    BuildModes.LoadProjOptsFromXMLConfig(FXMLConfig, ProjOptionsPath);
+    // load matrix options
+    BuildModes.SharedMatrixOptions.LoadFromXMLConfig(FXMLConfig, 'ProjectOptions/BuildModes/SharedMatrixOptions/');
   finally
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
     fPathDelimChanged:=false;
