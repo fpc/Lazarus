@@ -3644,6 +3644,7 @@ begin
     if Result in [mrCancel,mrAbort] then exit;
   end;
 
+  // save virtual files
   if (not (sfDoNotSaveVirtualFiles in Flags)) then
   begin
     // check that all new units are saved first to get valid filenames
@@ -3656,8 +3657,8 @@ begin
       and (AnUnitInfo.OpenEditorInfoCount > 0) then begin
         SaveFileFlags:=[sfSaveAs,sfProjectSaving]+[sfCheckAmbiguousFiles]*Flags;
         if sfSaveToTestDir in Flags then begin
-          if AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual then
-            Include(SaveFileFlags,sfSaveToTestDir);
+          Assert(AnUnitInfo.IsPartOfProject or AnUnitInfo.IsVirtual, 'SaveProject: Not IsPartOfProject or IsVirtual');
+          Include(SaveFileFlags,sfSaveToTestDir);
         end;
         Result:=SaveEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent, SaveFileFlags);
         if Result in [mrCancel,mrAbort] then exit;
@@ -7060,14 +7061,11 @@ var
   MainUnitSrcEdit: TSourceEditor;
   MainUnitInfo: TUnitInfo;
   SaveDialog: TSaveDialog;
-  NewLPIFilename, NewProgramFilename, NewProgramName, AText, ACaption,
-  Ext: string;
   NewBuf: TCodeBuffer;
-  OldProjectDir: string;
   TitleWasDefault: Boolean;
-  OldSource: String;
-  AFilename: String;
-  NewTargetFilename: String;
+  NewLPIFilename, NewProgramFN, NewProgramName, AFilename, NewTargetFN: String;
+  AText, ACaption, Ext: string;
+  OldSource, OldProjectDir, prDir: string;
 begin
   Project1.BeginUpdate(false);
   try
@@ -7113,7 +7111,7 @@ begin
         Result:=mrCancel;
         NewLPIFilename:='';     // the project info file name
         NewProgramName:='';     // the pascal program identifier
-        NewProgramFilename:=''; // the program source filename
+        NewProgramFN:='';       // the program source filename
 
         if not SaveDialog.Execute then begin
           // user cancels
@@ -7154,11 +7152,11 @@ begin
           Ext := ExtractFileExt(Project1.MainUnitInfo.Filename);
           if Ext = '' then Ext := '.pas';
           if UseMainSourceFile then
-            NewProgramFilename := ExtractFileName(AFilename)
+            NewProgramFN := ExtractFileName(AFilename)
           else
-            NewProgramFilename := ExtractFileNameWithoutExt(NewProgramName) + Ext;
-          NewProgramFilename := ExtractFilePath(NewLPIFilename) + NewProgramFilename;
-          if (CompareFilenames(NewLPIFilename, NewProgramFilename) = 0) then
+            NewProgramFN := ExtractFileNameWithoutExt(NewProgramName) + Ext;
+          NewProgramFN := ExtractFilePath(NewLPIFilename) + NewProgramFN;
+          if (CompareFilenames(NewLPIFilename, NewProgramFN) = 0) then
           begin
             ACaption:=lisChooseADifferentName;
             AText:=Format(lisTheProjectInfoFileIsEqualToTheProjectMainSource,[NewLPIFilename,LineEnding]);
@@ -7167,7 +7165,7 @@ begin
             continue; // try again
           end;
           // check programname
-          if FilenameIsPascalUnit(NewProgramFilename)
+          if FilenameIsPascalUnit(NewProgramFN)
           and (Project1.IndexOfUnitWithName(NewProgramName,true,
                                          Project1.MainUnitInfo)>=0) then
           begin
@@ -7179,7 +7177,7 @@ begin
           end;
           Result:=mrOk;
         end else begin
-          NewProgramFilename:='';
+          NewProgramFN:='';
           Result:=mrOk;
         end;
       until Result<>mrRetry;
@@ -7188,7 +7186,7 @@ begin
       SaveDialog.Free;
     end;
 
-    //DebugLn(['TLazSourceFileManager.ShowSaveProjectAsDialog NewLPI=',NewLPIFilename,' NewProgramName=',NewProgramName,' NewMainSource=',NewProgramFilename]);
+    //DebugLn(['TLazSourceFileManager.ShowSaveProjectAsDialog NewLPI=',NewLPIFilename,' NewProgramName=',NewProgramName,' NewMainSource=',NewProgramFN]);
 
     // check if info file or source file already exists
     if FileExistsUTF8(NewLPIFilename) then
@@ -7200,10 +7198,10 @@ begin
     end
     else
     begin
-      if FileExistsUTF8(NewProgramFilename) then
+      if FileExistsUTF8(NewProgramFN) then
       begin
         ACaption:=lisOverwriteFile;
-        AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewProgramFilename, LineEnding]);
+        AText:=Format(lisAFileAlreadyExistsReplaceIt, [NewProgramFN, LineEnding]);
         Result:=IDEMessageDialog(ACaption, AText, mtConfirmation,[mbOk,mbCancel]);
         if Result=mrCancel then exit;
       end;
@@ -7213,15 +7211,14 @@ begin
 
     // set new project target filename
     if (Project1.TargetFilename<>'')
-    and ((SysUtils.CompareText(ExtractFileNameOnly(Project1.TargetFilename),
-                               ExtractFileNameOnly(Project1.ProjectInfoFile))=0)
-        or (Project1.ProjectInfoFile='')) then
+    and ( (CompareText(ExtractFileNameOnly(Project1.TargetFilename),
+                       ExtractFileNameOnly(Project1.ProjectInfoFile))=0)
+        or (Project1.ProjectInfoFile='') ) then
     begin
-      // target file is default => change, but keep sub directories
+      // target file is default => change to all build modes, but keep sub directories
       // Note: Extension is appended automatically => do not add it
-      NewTargetFilename:=ExtractFilePath(Project1.TargetFilename)
-                                         +ExtractFileNameOnly(NewProgramFilename);
-      Project1.TargetFilename:=NewTargetFilename;
+      NewTargetFN:=ExtractFilePath(Project1.TargetFilename)+ExtractFileNameOnly(NewProgramFN);
+      Project1.TargetFilename:=NewTargetFN;
       //DebugLn(['TLazSourceFileManager.ShowSaveProjectAsDialog changed targetfilename to ',Project1.TargetFilename]);
     end;
 
@@ -7235,9 +7232,9 @@ begin
     begin
       GetMainUnit(MainUnitInfo, MainUnitSrcEdit, true);
 
-      if not Project1.ProjResources.RenameDirectives(MainUnitInfo.Filename,NewProgramFilename)
+      if not Project1.ProjResources.RenameDirectives(MainUnitInfo.Filename,NewProgramFN)
       then begin
-        DebugLn(['TLazSourceFileManager.ShowSaveProjectAsDialog failed renaming directives Old="',MainUnitInfo.Filename,'" New="',NewProgramFilename,'"']);
+        DebugLn(['TLazSourceFileManager.ShowSaveProjectAsDialog failed renaming directives Old="',MainUnitInfo.Filename,'" New="',NewProgramFN,'"']);
         // silently ignore
       end;
 
@@ -7246,10 +7243,10 @@ begin
       OldSource := MainUnitInfo.Source.Source;
 
       // switch MainUnitInfo.Source to new code
-      NewBuf := CodeToolBoss.CreateFile(NewProgramFilename);
+      NewBuf := CodeToolBoss.CreateFile(NewProgramFN);
       if NewBuf=nil then begin
         Result:=IDEMessageDialog(lisErrorCreatingFile,
-          Format(lisUnableToCreateFile3, [LineEnding, NewProgramFilename]),
+          Format(lisUnableToCreateFile3, [LineEnding, NewProgramFN]),
           mtError, [mbCancel]);
         exit;
       end;
@@ -7271,25 +7268,15 @@ begin
     end;
 
     // update paths
-    Project1.CompilerOptions.OtherUnitFiles:=
-      RebaseSearchPath(Project1.CompilerOptions.OtherUnitFiles,OldProjectDir,
-                       Project1.ProjectDirectory,true);
-    Project1.CompilerOptions.IncludePath:=
-      RebaseSearchPath(Project1.CompilerOptions.IncludePath,OldProjectDir,
-                       Project1.ProjectDirectory,true);
-    Project1.CompilerOptions.Libraries:=
-      RebaseSearchPath(Project1.CompilerOptions.Libraries,OldProjectDir,
-                       Project1.ProjectDirectory,true);
-    Project1.CompilerOptions.ObjectPath:=
-      RebaseSearchPath(Project1.CompilerOptions.ObjectPath,OldProjectDir,
-                       Project1.ProjectDirectory,true);
-    Project1.CompilerOptions.SrcPath:=
-      RebaseSearchPath(Project1.CompilerOptions.SrcPath,OldProjectDir,
-                       Project1.ProjectDirectory,true);
-    Project1.CompilerOptions.DebugPath:=
-      RebaseSearchPath(Project1.CompilerOptions.DebugPath,OldProjectDir,
-                       Project1.ProjectDirectory,true);
-
+    prDir := Project1.ProjectDirectory;
+    with Project1.CompilerOptions do begin
+      OtherUnitFiles:=RebaseSearchPath(OtherUnitFiles,OldProjectDir,prDir,true);
+      IncludePath   :=RebaseSearchPath(IncludePath,OldProjectDir,prDir,true);
+      Libraries     :=RebaseSearchPath(Libraries,OldProjectDir,prDir,true);
+      ObjectPath    :=RebaseSearchPath(ObjectPath,OldProjectDir,prDir,true);
+      SrcPath       :=RebaseSearchPath(SrcPath,OldProjectDir,prDir,true);
+      DebugPath     :=RebaseSearchPath(DebugPath,OldProjectDir,prDir,true);
+    end;
     // change title
     if TitleWasDefault then begin
       Project1.Title:=Project1.GetDefaultTitle;
