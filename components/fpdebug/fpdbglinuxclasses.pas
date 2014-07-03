@@ -158,6 +158,7 @@ begin
     log('Failed to read thread registers from processid '+inttostr(Process.ProcessID)+'. Errcode: '+inttostr(e));
     result := false;
     end;
+  FUserRegsChanged:=false;
   FRegisterValueListValid:=false;
 end;
 
@@ -184,6 +185,7 @@ begin
       begin
       log('Failed to set thread registers. Errcode: '+inttostr(e));
       end;
+    FUserRegsChanged:=false;
     end;
 end;
 
@@ -237,7 +239,6 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(gs, IntToStr(gs),8,47);
   end;
   FRegisterValueListValid:=true;
-  FUserRegsChanged:=false;
 end;
 
 { TDbgLinuxProcess }
