@@ -1,0 +1,227 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: pocheckerconsts.rspochecker
+msgid "PO File Checker"
+msgstr "Verificatore di files PO"
+
+#: pocheckerconsts.scannotfindmaster
+msgid ""
+"Cannot find master po file:\n"
+"%s\n"
+"for selected file\n"
+"%s\n"
+msgstr ""
+"Non trovato il filemaster po:\n"
+"%s\n"
+"per il file scelto\n"
+"%s\n"
+
+#: pocheckerconsts.scheckforduplicateuntranslatedvalues
+msgid "Check for duplicate untranslated values"
+msgstr "Verifica valori duplicati non tradotti"
+
+#: pocheckerconsts.scheckforincompatibleformatarguments
+msgid "Check for incompatible format arguments"
+msgstr "Verifica argomenti con format incompatibile"
+
+#: pocheckerconsts.scheckformismatchesinuntranslatedstrings
+msgid "Check for mismatches in untranslated strings"
+msgstr "Verifica mancate corrispondenze in stringhe non tradotte"
+
+#: pocheckerconsts.scheckmissingidentifiers
+msgid "Check missing identifiers"
+msgstr "Verifica identificatori mancanti"
+
+#: pocheckerconsts.schecknumberofitems
+msgid "Check number of items"
+msgstr "Verifica il numero di voci"
+
+#: pocheckerconsts.scheckstatistics
+msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr "Verifica le percentuali di stringhe tradotte o incerte"
+
+#: pocheckerconsts.scopycaption
+msgid "Copy to clipboard"
+msgstr "Copia negli appunti"
+
+#: pocheckerconsts.scurrentpofile
+msgid "Current po-file:"
+msgstr "File po corrente:"
+
+#: pocheckerconsts.scurrenttest
+msgid "Current Test:"
+msgstr "Testo corrente:"
+
+#: pocheckerconsts.sduplicatelinenrwithvalue
+msgid "[Line %d] %s"
+msgstr "[Riga %d] %s"
+
+#: pocheckerconsts.sduplicateoriginals
+msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
+msgstr "Il valore (non tradotto) \"%s\" è usato per più di 1 voce:"
+
+#: pocheckerconsts.serroroncleanup
+msgid ""
+"An unrecoverable error occurred\n"
+"%s\n"
+"Please close the program\n"
+msgstr ""
+"Si è prodotto un errore irrecuperabile\n"
+"%s\n"
+"Chiudere il programma\n"
+
+#: pocheckerconsts.serroroncreate
+msgid ""
+"Error creating an instance of TPoFamily:\n"
+"%s\n"
+msgstr ""
+"Errore nel creare una istanza di TPoFamily:\n"
+"%s\n"
+
+#: pocheckerconsts.serrorsbytest
+msgid "Errors / warnings reported by %s for:"
+msgstr "Errori / avvertimenti riportati da %s per:"
+
+#: pocheckerconsts.sfindalltranslatedpofiles
+msgid "Find all translated po-files"
+msgstr "Trova tutti i file po tradotti"
+
+#: pocheckerconsts.sguipofilecheckingtool
+msgid "GUI Po-file checking tool"
+msgstr "Strumento GUI di verifica di file po"
+
+#: pocheckerconsts.sidentifiernotfoundin
+msgid "Identifier [%s] not found in %s"
+msgstr "Identificatore [%s] non trovato in %s"
+
+#: pocheckerconsts.sincompatibleformatargs
+msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
+msgstr "[Riga: %d] Argomenti di format()Incompatibili e/o non validi per:"
+
+#: pocheckerconsts.slineinfilename
+msgid "[Line %d] in %s:"
+msgstr "[Riga %d] in %s:"
+
+#: pocheckerconsts.slinenr
+msgid "[Line: %d]"
+msgstr "[Riga: %d]"
+
+#: pocheckerconsts.smissingmasteridentifier
+msgid "Identifier [%s] found in %s, but it does not exist in %s"
+msgstr "Identificatore [%s] trovato in %s, ma inesistente in %s"
+
+#: pocheckerconsts.snoerrorsfound
+msgid "No errors found"
+msgstr "Nessun errore riscontrato"
+
+#: pocheckerconsts.snotaproperfilename
+msgid ""
+"Selected filename\n"
+"%s\n"
+"does not seem to be a proper name for a po-file\n"
+msgstr ""
+"Il nome selezionato\n"
+"%s\n"
+"non sembra un nome corretto per un file po\n"
+
+#: pocheckerconsts.snotestselected
+msgid "There are no tests selected."
+msgstr "Nessuna verifica selezionata"
+
+#: pocheckerconsts.snrerrorsfound
+msgid "Found %d errors."
+msgstr "Riscontrati %d errori."
+
+#: pocheckerconsts.snrofitemsmismatch
+msgid "Mismatch in number of items for master and child"
+msgstr "Manca corrispondenza nel numero di voci fra master e child"
+
+#: pocheckerconsts.snrofitemsmismatchd
+msgid "%s: %d items"
+msgstr "%s: %d voci"
+
+#: pocheckerconsts.snrwarningsfound
+msgid "Found %d warnings."
+msgstr "Riscontrati %d avvertimenti."
+
+#: pocheckerconsts.sopenapofile
+msgid "&Open a po-file"
+msgstr "&Aprire un file po"
+
+#: pocheckerconsts.soriginal
+msgid "Original"
+msgstr "Originale"
+
+#: pocheckerconsts.spercfuzzy
+msgid "Fuzzy strings: %2.0f%%."
+msgstr "Stringhe incerte: %2.0f%%."
+
+#: pocheckerconsts.sperctranslated
+msgid "Translated strings: %2.0f%%."
+msgstr "Stringhe tradotte: %2.0f%%."
+
+#: pocheckerconsts.spercuntranslated
+msgid "Untranslated strings: %2.0f%%."
+msgstr "Stringhe non tradotte: %2.0f%%."
+
+#: pocheckerconsts.sresults
+msgid "Results"
+msgstr "Risultati"
+
+#: pocheckerconsts.srunselectedtests
+msgid "&Run Selected Tests"
+msgstr "A&vvia la verifica"
+
+#: pocheckerconsts.ssavecaption
+msgid "Save to file"
+msgstr "Salva in un file"
+
+#: pocheckerconsts.ssaveerror
+msgid ""
+"Error saving file:\n"
+"%s\n"
+msgstr ""
+"Errore nel salvare il file:\n"
+"%s\n"
+
+#: pocheckerconsts.sselectalltests
+msgid "Select &All"
+msgstr "Seleziona &Tutto"
+
+#: pocheckerconsts.sselectbasictests
+msgid "Select &Basic"
+msgstr "Seleziona &Base"
+
+#: pocheckerconsts.sselecttesttypes
+msgid "Select test types"
+msgstr "Seleziona i tipi di verifica"
+
+#: pocheckerconsts.stotalerrors
+msgid "Total errors / warnings found: %d"
+msgstr "Totale errori / avvertimenti: %d"
+
+#: pocheckerconsts.stotalwarnings
+msgid "Total warnings found: %d"
+msgstr "Totale avvertimenti: %d"
+
+#: pocheckerconsts.stranslation
+msgid "Translation"
+msgstr "Traduzione"
+
+#: pocheckerconsts.stranslationstatistics
+msgid "Translation statistics for:"
+msgstr "Statistiche di traduzione per:"
+
+#: pocheckerconsts.sunselectalltests
+msgid "&Unselect All"
+msgstr "&Deseleziona tutto"
+
