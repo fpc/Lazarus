@@ -53,8 +53,6 @@ type
     FOnBeforeDrawBar: TBeforeDrawBarEvent;
     FZeroLevel: Double;
 
-    procedure BarOffsetWidth(
-      AX: Double; AIndex: Integer; out AOffset, AWidth: Double);
     function IsZeroLevelStored: boolean;
     procedure SetBarBrush(Value: TBrush);
     procedure SetBarOffsetPercent(AValue: Integer);
@@ -67,6 +65,8 @@ type
   strict protected
     function GetLabelDataPoint(AIndex: Integer): TDoublePoint; override;
   protected
+    procedure BarOffsetWidth(
+      AX: Double; AIndex: Integer; out AOffset, AWidth: Double);
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
     function GetZeroLevel: Double; override;
