@@ -299,6 +299,7 @@ begin
   if aKernResult <> KERN_SUCCESS then
     begin
     Log('Failed to call thread_set_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
+    result := false;
     end;
 end;
 
