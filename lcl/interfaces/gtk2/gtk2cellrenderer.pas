@@ -390,12 +390,20 @@ const
     reserved_2: nil;
     base_class_init_func: nil;
   );
+var
+  IID: TGUID;
+  S: AnsiString;
 begin
   if (crType = 0)
   then begin
-    crType := gtk_type_from_name(CR_NAME);
-    if crType = 0
-    then crType := gtk_type_unique(gtk_cell_renderer_text_get_type, @crInfo);
+    // patch by tk: in case of shared library we must create unique name
+    if CreateGUID(IID) = 0 then
+      S := Format('LCL%d%d%d', [Word(IID.time_low), Word(IID.time_low shr 16), IID.time_mid]);
+    crType := gtk_type_from_name(PAnsiChar(S));
+    if crType = 0 then begin
+      crInfo.type_name:=PAnsiChar(S);
+      crType := gtk_type_unique(gtk_cell_renderer_text_get_type, @crInfo);
+    end;
   end;
   Result := crType;
 end;
