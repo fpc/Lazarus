@@ -31,6 +31,8 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
+        <CommandLineParams Value="~\tmp\LazDebugTest\project1"/>
+        <LaunchingApplication PathPlusParams="\usr\bin\gnome-terminal -e $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -38,16 +40,11 @@
         <PackageName Value="fpdebug"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="2">
+    <Units Count="1">
       <Unit0>
         <Filename Value="fpd.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
-      <Unit1>
-        <Filename Value="..\dbgclasses.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="dbgclasses"/>
-      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -62,16 +59,9 @@
     </SearchPaths>
     <Linking>
       <Options>
-        <PassLinkerOptions Value="True"/>
         <LinkerOptions Value="-sectcreate __TEXT __info_plist Info.plist"/>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <MsgFileName Value=""/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

@@ -1225,7 +1225,7 @@ begin
 
   if not FProcess.WriteData(FLocation, 1, FOrgValue)
   then begin
-    Log('Unable to reset breakpoint at $%p', [FLocation]);
+    Log('Unable to reset breakpoint at %s', [FormatAddress(FLocation)]);
     Exit;
   end;
 end;
