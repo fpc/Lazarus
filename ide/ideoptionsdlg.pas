@@ -226,7 +226,8 @@ begin
     ShowMessage('This will allow changing all build modes at once. Not implemented yet.');
   end
   else begin
-    SwitchBuildMode(BuildModeComboBox.Text,BuildModeSelectPanel.Visible);
+    Assert(BuildModeSelectPanel.Visible, 'BuildModeComboBoxSelect: BuildModeSelectPanel not Visible');
+    SwitchBuildMode(BuildModeComboBox.Text);
   end;
 end;
 

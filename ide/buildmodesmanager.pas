@@ -99,7 +99,7 @@ var
   OnSaveIDEOptionsHook: TOnSaveIDEOptions;
 
 function ShowBuildModesDlg(aShowSession: Boolean): TModalResult;
-procedure SwitchBuildMode(aBuildModeID: string; LoadSaveProjectOptions: boolean);
+procedure SwitchBuildMode(aBuildModeID: string);
 procedure UpdateBuildModeCombo(aCombo: TComboBox);
 
 
@@ -143,14 +143,12 @@ begin
   end;
 end;
 
-procedure SwitchBuildMode(aBuildModeID: string; LoadSaveProjectOptions: boolean);
+procedure SwitchBuildMode(aBuildModeID: string);
 begin
-  if LoadSaveProjectOptions then
-    OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);    // Save changes
-  Project1.ActiveBuildModeID := aBuildModeID;               // Switch
+  OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);    // Save changes
+  Project1.ActiveBuildModeID := aBuildModeID;             // Switch
   IncreaseBuildMacroChangeStamp;
-  if LoadSaveProjectOptions then
-    OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);    // Load options
+  OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);    // Load options
 end;
 
 procedure UpdateBuildModeCombo(aCombo: TComboBox);
