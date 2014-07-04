@@ -150,10 +150,12 @@ File(s) with other licenses (see also header in file(s):
       </Item29>
       <Item30>
         <Filename Value="fpdbglinuxclasses.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpDbgLinuxClasses"/>
       </Item30>
       <Item31>
         <Filename Value="fpdbglinuxextra.pas"/>
+        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="FpDbgLinuxExtra"/>
       </Item31>
     </Files>
