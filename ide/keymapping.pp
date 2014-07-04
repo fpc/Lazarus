@@ -603,6 +603,7 @@ begin
     ecBuild                   : Result:= srkmecBuild;
     ecQuickCompile            : Result:= srkmecQuickCompile;
     ecCleanUpAndBuild         : Result:= srkmecCleanUpAndBuild;
+    ecBuildManyModes          : Result:= srkmecBuildManyModes;
     ecAbortBuild              : Result:= srkmecAbortBuild;
     ecRun                     : Result:= srkmecRun;
     ecPause                   : Result:= srkmecPause;
@@ -1188,6 +1189,7 @@ begin
   ecBuild:               SetSingle(VK_F9,[ssShift]);
   ecQuickCompile:        SetSingle(VK_UNKNOWN,[]);
   ecCleanUpAndBuild:     SetSingle(VK_UNKNOWN,[]);
+  ecBuildManyModes:      SetSingle(VK_UNKNOWN,[]);
   ecAbortBuild:          SetSingle(VK_UNKNOWN,[]);
   ecRun:                 SetSingle(VK_F9,[]);
   ecPause:               SetSingle(VK_UNKNOWN,[]);
@@ -1609,6 +1611,7 @@ begin
   ecBuild:               SetSingle(VK_F9,[ssShift]);
   ecQuickCompile:        SetSingle(VK_UNKNOWN,[]);
   ecCleanUpAndBuild:     SetSingle(VK_UNKNOWN,[]);
+  ecBuildManyModes:      SetSingle(VK_UNKNOWN,[]);
   ecAbortBuild:          SetSingle(VK_UNKNOWN,[]);
   ecRun:                 SetSingle(VK_F9,[]);
   ecPause:               SetSingle(VK_UNKNOWN,[]);
@@ -2220,6 +2223,7 @@ begin
   ecBuild:               SetSingle(VK_UNKNOWN,[]);
   ecQuickCompile:        SetSingle(VK_UNKNOWN,[]);
   ecCleanUpAndBuild:     SetSingle(VK_UNKNOWN,[]);
+  ecBuildManyModes:      SetSingle(VK_UNKNOWN,[]);
   ecAbortBuild:          SetSingle(VK_UNKNOWN,[]);
   ecRun:                 SetSingle(VK_R,[ssMeta]);
   ecPause:               SetSingle(VK_UNKNOWN,[]);
@@ -2378,6 +2382,7 @@ begin
   ecBuild:               SetSingle(VK_F9,[ssShift]);
   ecQuickCompile:        SetSingle(VK_UNKNOWN,[]);
   ecCleanUpAndBuild:     SetSingle(VK_UNKNOWN,[]);
+  ecBuildManyModes:      SetSingle(VK_UNKNOWN,[]);
   ecAbortBuild:          SetSingle(VK_UNKNOWN,[]);
   ecRun:                 SetSingle(VK_F9,[],          VK_F9,[ssMeta]);
   ecPause:               SetSingle(VK_UNKNOWN,[]);
@@ -2875,7 +2880,8 @@ begin
   AddDefault(C, 'Compile project/program', lisKMCompileProjectProgram, ecCompile);
   AddDefault(C, 'Build project/program', lisKMBuildProjectProgram, ecBuild);
   AddDefault(C, 'Quick compile, no linking', lisKMQuickCompileNoLinking, ecQuickCompile);
-  AddDefault(C, 'Clean up and build project/program', lisKMCleanUpAndBuild, ecCleanUpAndBuild);
+  AddDefault(C, 'Clean up and build', lisKMCleanUpAndBuild, ecCleanUpAndBuild);
+  AddDefault(C, 'Build many modes', lisKMBuildManyModes, ecBuildManyModes);
   AddDefault(C, 'Abort building', lisKMAbortBuilding, ecAbortBuild);
   AddDefault(C, 'Run program', lisKMRunProgram, ecRun);
   AddDefault(C, 'Pause program', lisKMPauseProgram, ecPause);

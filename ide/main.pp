@@ -338,6 +338,7 @@ type
     procedure mnuBuildProjectClicked(Sender: TObject);
     procedure mnuQuickCompileProjectClicked(Sender: TObject);
     procedure mnuCleanUpAndBuildProjectClicked(Sender: TObject);
+    procedure mnuBuildManyModesClicked(Sender: TObject);
     procedure mnuAbortBuildProjectClicked(Sender: TObject);
     procedure mnuRunProjectClicked(Sender: TObject);
     procedure mnuPauseProjectClicked(Sender: TObject);
@@ -2843,6 +2844,7 @@ begin
     itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
     itmRunMenuQuickCompile.OnClick := @mnuQuickCompileProjectClicked;
     itmRunMenuCleanUpAndBuild.OnClick := @mnuCleanUpAndBuildProjectClicked;
+    itmRunMenuBuildManyModes.OnClick := @mnuBuildManyModesClicked;
     itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
     itmRunMenuRun.OnClick := @mnuRunProjectClicked;
     itmRunMenuPause.OnClick := @mnuPauseProjectClicked;
@@ -4367,16 +4369,14 @@ end;
 
 procedure TMainIDE.mnuCleanUpAndBuildProjectClicked(Sender: TObject);
 begin
-  if Project1=nil then exit;
-  if Project1.MainUnitInfo=nil then begin
-    // this project has no source to compile
-    IDEMessageDialog(lisCanNotCompileProject,
-      lisTheProjectHasNoMainSourceFile, mtError, [mbCancel], '');
-    exit;
-  end;
-  if PrepareForCompile<>mrOk then exit;
+  if SourceFileMgr.PrepareForCompileWithMsg<>mrOk then exit;
   if ShowBuildProjectDialog(Project1)<>mrOk then exit;
   DoBuildProject(crBuild,[]);
+end;
+
+procedure TMainIDE.mnuBuildManyModesClicked(Sender: TObject);
+begin
+  SourceFileMgr.BuildManyModes;
 end;
 
 procedure TMainIDE.mnuAbortBuildProjectClicked(Sender: TObject);
@@ -6605,14 +6605,7 @@ var
   aCompileHint: String;
   OldToolStatus: TIDEToolStatus;
 begin
-  if (Project1=nil) or (Project1.MainUnitInfo=nil) then begin
-    // this project has no source to compile
-    IDEMessageDialog(lisCanNotCompileProject,
-      lisTheProjectHasNoMainSourceFile, mtError, [mbCancel], '');
-    exit(mrCancel);
-  end;
-
-  Result:=PrepareForCompile;
+  Result:=SourceFileMgr.PrepareForCompileWithMsg;
   if Result<>mrOk then begin
     debugln(['TMainIDE.DoBuildProject PrepareForCompile failed']);
     exit;
@@ -6838,15 +6831,12 @@ begin
         //  Prevent any "Run" command after building, until the debugger is clear.
         OldToolStatus := ToolStatus;
         ToolStatus:=itBuilder;
-
-        {$IFNDEF EnableOldExtTools}
-        {$ELSE}
+        {$IFDEF EnableOldExtTools}
         ConnectOutputFilter;
         for err := Low(TFPCErrorType) to High(TFPCErrorType) do
           with Project1.CompilerOptions.CompilerMessages do 
             TheOutputFilter.ErrorTypeName[err] := ErrorNames[err];
         {$ENDIF}
-
         // compile
         CompilerFilename:=Project1.GetCompilerFilename;
         // Hint: use absolute paths, because some external tools resolve symlinked directories
@@ -6950,8 +6940,7 @@ end;
 function TMainIDE.DoAbortBuild: TModalResult;
 begin
   Result:=mrOk;
-  {$IFNDEF EnableOldExtTools}
-  {$ELSE}
+  {$IFDEF EnableOldExtTools}
   if ToolStatus<>itBuilder then exit;
   {$ENDIF}
   AbortBuild;

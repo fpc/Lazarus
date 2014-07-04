@@ -286,6 +286,7 @@ type
         itmRunMenuBuild: TIDEMenuCommand;
         itmRunMenuQuickCompile: TIDEMenuCommand;
         itmRunMenuCleanUpAndBuild: TIDEMenuCommand;
+        itmRunMenuBuildManyModes: TIDEMenuCommand;
         itmRunMenuAbortBuild: TIDEMenuCommand;
       //itmRunnning: TIDEMenuSection;
         itmRunMenuRun: TIDEMenuCommand;

@@ -49,7 +49,8 @@ uses
   {$ENDIF}
   InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager, CodeToolsStructs,
   ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool, BasicCodeTools,
-  SynEdit, UnitResources, IDEExternToolIntf, ExtToolDialog, PublishModule;
+  SynEdit, UnitResources, IDEExternToolIntf, ExtToolDialog, PublishModule,
+  CompOptsIntf;
 
 type
 
@@ -174,11 +175,13 @@ type
     procedure OpenProject(aMenuItem: TIDEMenuItem);
     procedure CloseAll;
     procedure InvertedFileClose(PageIndex: LongInt; SrcNoteBook: TSourceNotebook);
-    // project inspector
+    // Ensure compilation is OK, build many modes at one go.
+    function PrepareForCompileWithMsg: TModalResult;
+    function BuildManyModes: Boolean;
+    // Project Inspector
     // Checks if the UnitDirectory is part of the Unit Search Paths, if not,
     // ask the user if he wants to extend dependencies or the Unit Search Paths.
     function CheckDirIsInSearchPath(UnitInfo: TUnitInfo; AllowAddingDependencies, IsIncludeFile: Boolean): Boolean;
-
     // methods for 'new unit'
     function CreateNewCodeBuffer(Descriptor: TProjectFileDescriptor;
         NewOwner: TObject; NewFilename: string; var NewCodeBuffer: TCodeBuffer;
@@ -187,7 +190,6 @@ type
         AncestorType: TPersistentClass; ResourceCode: TCodeBuffer;
         UseCreateFormStatements, DisableAutoSize: Boolean): TModalResult;
     function NewUniqueComponentName(Prefix: string): string;
-
     // methods for 'save unit'
     function ShowSaveFileAsDialog(var AFilename: string; AnUnitInfo: TUnitInfo;
         var LFMCode, LRSCode: TCodeBuffer; CanAbort: boolean): TModalResult;
@@ -1553,8 +1555,7 @@ begin
   if (Layout<>nil) and (Layout.WindowPlacement=iwpDefault)
   and ((SrcNoteBook.Top + SrcNoteBook.Height) > MessagesView.Top)
   and (MessagesView.Parent = nil) then
-    SrcNoteBook.Height := Max(50,Min(SrcNoteBook.Height,
-       MessagesView.Top-SrcNoteBook.Top));
+    SrcNoteBook.Height := Max(50,Min(SrcNoteBook.Height,MessagesView.Top-SrcNoteBook.Top));
   if PutOnTop then
   begin
     IDEWindowCreators.ShowForm(MessagesView,true);
@@ -1586,7 +1587,7 @@ function TLazSourceFileManager.NewFile(NewFileDescriptor: TProjectFileDescriptor
   end;
 
 var
-  NewUnitInfo:TUnitInfo;
+  NewUnitInfo: TUnitInfo;
   NewSrcEdit: TSourceEditor;
   NewUnitName: string;
   NewBuffer: TCodeBuffer;
@@ -4006,6 +4007,77 @@ begin
           else
             OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,aPath);
   finally
+    FListForm.Free;
+  end;
+end;
+
+function TLazSourceFileManager.PrepareForCompileWithMsg: TModalResult;
+begin
+  Result:=mrCancel;
+  if Project1=nil then exit;
+  if Project1.MainUnitInfo=nil then
+    // this project has no source to compile
+    IDEMessageDialog(lisCanNotCompileProject,lisTheProjectHasNoMainSourceFile,mtError,[mbCancel])
+  else
+    Result:=MainIDE.PrepareForCompile;
+end;
+
+function TLazSourceFileManager.BuildManyModes(): Boolean;
+var
+  ModeCnt: Integer;
+
+  function BuildOneMode: Boolean;
+  begin
+    Inc(ModeCnt);
+    DebugLn('');
+    DebugLn(Format('Building mode %d: %s ...', [ModeCnt, Project1.ActiveBuildMode.Identifier]));
+    DebugLn('');
+    Result := MainIDE.DoBuildProject(crBuild,[]) = mrOK;
+  end;
+
+var
+  ModeList: TList;
+  md, ActiveMode: TProjectBuildMode;
+  BuildActiveMode: Boolean;
+  i: Integer;
+  Msg: String;
+begin
+  Result := False;
+  ModeCnt := 0;
+  if PrepareForCompileWithMsg <> mrOk then exit;
+  FListForm := Nil;
+  ModeList := TList.Create;
+  try
+    if not ShowCheckListBuildModes(lisBuildFollowingModes) then Exit;
+    ActiveMode := Project1.ActiveBuildMode;
+    BuildActiveMode := False;
+    // Collect modes to be built.
+    for i := 0 to Project1.BuildModes.Count-1 do
+    begin
+      md := Project1.BuildModes[i];
+      if (FListForm=Nil) or FListForm.CheckListBox1.Checked[i] then
+        if md = ActiveMode then
+          BuildActiveMode := True
+        else
+          ModeList.Add(md);
+    end;
+    // Build first the active mode so we don't have to switch many times.
+    if BuildActiveMode then
+      if not BuildOneMode then Exit;
+    // Build rest of the modes.
+    for i := 0 to ModeList.Count-1 do
+    begin
+      Project1.ActiveBuildMode := TProjectBuildMode(ModeList[i]);
+      if not BuildOneMode then Exit;
+    end;
+    // Switch back to original mode.
+    if ModeList.Count > 0 then
+      Project1.ActiveBuildMode := ActiveMode;
+    Msg := Format(lisSelectedModesWereBuilt, [ModeCnt]);
+    IDEMessageDialog(lisSuccess, Msg, mtInformation, [mbOK]);
+    Result:=True;
+  finally
+    ModeList.Free;
     FListForm.Free;
   end;
 end;

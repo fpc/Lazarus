@@ -437,6 +437,7 @@ resourcestring
   lisBFBuildCommand = 'Build Command';
   lisMenuQuickCompile = 'Quick Compile';
   lisMenuCleanUpAndBuild = 'Clean up and Build ...';
+  lisMenuBuildManyModes = 'Build many Modes ...';
   lisMenuAbortBuild = 'Abort Build';
   lisMenuProjectRun = '&Run';
   lisBFAlwaysBuildBeforeRun = 'Always build before run';
@@ -2947,6 +2948,7 @@ resourcestring
   srkmecBuild                     = 'build program/project';
   srkmecQuickCompile              = 'quick compile, no linking';
   srkmecCleanUpAndBuild           = 'clean up and build';
+  srkmecBuildManyModes            = 'build many modes';
   srkmecAbortBuild                = 'abort build';
   srkmecRun                       = 'run program';
   srkmecPause                     = 'pause program';
@@ -3040,6 +3042,7 @@ resourcestring
   lisKMBuildProjectProgram = 'Build project/program';
   lisKMQuickCompileNoLinking = 'Quick compile, no linking';
   lisKMCleanUpAndBuild = 'Clean up and build';
+  lisKMBuildManyModes = 'Build many modes';
   lisKMAbortBuilding = 'Abort building';
   lisKMRunProgram = 'Run program';
   lisKMPauseProgram = 'Pause program';
@@ -5552,6 +5555,8 @@ resourcestring
   lisEventsLogAddComment = 'Add Comment ...';
   lisEventsLogAddComment2 = 'Add Comment';
   lisCleanUpAndBuildProject = 'Clean up and build project';
+  lisBuildFollowingModes = 'Build the following modes';
+  lisSelectedModesWereBuilt  = 'Selected %d modes were succesfully built.';
   lisProjectOutputDirectory = 'Project output directory';
   lisProjectSourceDirectories = 'Project source directories';
   lisPackageOutputDirectories = 'Package output directories';
