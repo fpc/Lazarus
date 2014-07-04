@@ -242,7 +242,7 @@ const
   ecCompile                 = ecFirstLazarus + 400;
   ecBuild                   = ecFirstLazarus + 401;
   ecQuickCompile            = ecFirstLazarus + 402;
-  ecCleanUpCompiled         = ecFirstLazarus + 403;
+  ecCleanUpAndBuild         = ecFirstLazarus + 403;
   ecAbortBuild              = ecFirstLazarus + 404;
   ecRun                     = ecFirstLazarus + 410;
   ecPause                   = ecFirstLazarus + 411;
@@ -1413,7 +1413,7 @@ const
     (Value: ecCompile;                                Name: 'ecCompile'),
     (Value: ecBuild;                                  Name: 'ecBuild'),
     (Value: ecQuickCompile;                           Name: 'ecQuickCompile'),
-    (Value: ecCleanUpCompiled;                        Name: 'ecCleanUpCompiled'),
+    (Value: ecCleanUpAndBuild;                        Name: 'ecCleanUpAndBuild'),
     (Value: ecAbortBuild;                             Name: 'ecAbortBuild'),
     (Value: ecRun;                                    Name: 'ecRun'),
     (Value: ecPause;                                  Name: 'ecPause'),

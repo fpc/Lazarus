@@ -337,7 +337,7 @@ type
     procedure mnuCompileProjectClicked(Sender: TObject);
     procedure mnuBuildProjectClicked(Sender: TObject);
     procedure mnuQuickCompileProjectClicked(Sender: TObject);
-    procedure mnuCleanUpCompiledProjectClicked(Sender: TObject);
+    procedure mnuCleanUpAndBuildProjectClicked(Sender: TObject);
     procedure mnuAbortBuildProjectClicked(Sender: TObject);
     procedure mnuRunProjectClicked(Sender: TObject);
     procedure mnuPauseProjectClicked(Sender: TObject);
@@ -2842,7 +2842,7 @@ begin
     itmRunMenuCompile.OnClick := @mnuCompileProjectClicked;
     itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
     itmRunMenuQuickCompile.OnClick := @mnuQuickCompileProjectClicked;
-    itmRunMenuCleanUpCompiled.OnClick := @mnuCleanUpCompiledProjectClicked;
+    itmRunMenuCleanUpAndBuild.OnClick := @mnuCleanUpAndBuildProjectClicked;
     itmRunMenuAbortBuild.OnClick := @mnuAbortBuildProjectClicked;
     itmRunMenuRun.OnClick := @mnuRunProjectClicked;
     itmRunMenuPause.OnClick := @mnuPauseProjectClicked;
@@ -3382,7 +3382,7 @@ begin
     end;
   ecDetach:                   DebugBoss.Detach;
   ecBuild:                    DoBuildProject(crBuild, [pbfCleanCompile]);
-  ecCleanUpCompiled:          mnuCleanUpCompiledProjectClicked(nil);
+  ecCleanUpAndBuild:          mnuCleanUpAndBuildProjectClicked(nil);
   ecQuickCompile:             DoQuickCompile;
   ecAbortBuild:               DoAbortBuild;
   ecBuildFile:                DoBuildFile(false);
@@ -3845,7 +3845,7 @@ begin
     itmRunMenuCompile.Enabled:=aAllow;
     itmRunMenuBuild.Enabled:=aAllow;
     itmRunMenuQuickCompile.Enabled:=aAllow;
-    itmRunMenuCleanUpCompiled.Enabled:=aAllow;
+    itmRunMenuCleanUpAndBuild.Enabled:=aAllow;
     itmPkgEditInstallPkgs.Enabled:=aAllow;
     itmToolRescanFPCSrcDir.Enabled:=aAllow;
     itmToolBuildLazarus.Enabled:=aAllow;
@@ -4365,7 +4365,7 @@ begin
   DoQuickCompile;
 end;
 
-procedure TMainIDE.mnuCleanUpCompiledProjectClicked(Sender: TObject);
+procedure TMainIDE.mnuCleanUpAndBuildProjectClicked(Sender: TObject);
 begin
   if Project1=nil then exit;
   if Project1.MainUnitInfo=nil then begin

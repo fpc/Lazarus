@@ -602,7 +602,7 @@ begin
     ecCompile                 : Result:= srkmecCompile;
     ecBuild                   : Result:= srkmecBuild;
     ecQuickCompile            : Result:= srkmecQuickCompile;
-    ecCleanUpCompiled         : Result:= srkmecCleanUpCompiled;
+    ecCleanUpAndBuild         : Result:= srkmecCleanUpAndBuild;
     ecAbortBuild              : Result:= srkmecAbortBuild;
     ecRun                     : Result:= srkmecRun;
     ecPause                   : Result:= srkmecPause;
@@ -1187,7 +1187,7 @@ begin
   ecCompile:             SetSingle(VK_F9,[ssCtrl]);
   ecBuild:               SetSingle(VK_F9,[ssShift]);
   ecQuickCompile:        SetSingle(VK_UNKNOWN,[]);
-  ecCleanUpCompiled:     SetSingle(VK_UNKNOWN,[]);
+  ecCleanUpAndBuild:     SetSingle(VK_UNKNOWN,[]);
   ecAbortBuild:          SetSingle(VK_UNKNOWN,[]);
   ecRun:                 SetSingle(VK_F9,[]);
   ecPause:               SetSingle(VK_UNKNOWN,[]);
@@ -1608,7 +1608,7 @@ begin
   ecCompile:             SetSingle(VK_F9,[ssCtrl]);
   ecBuild:               SetSingle(VK_F9,[ssShift]);
   ecQuickCompile:        SetSingle(VK_UNKNOWN,[]);
-  ecCleanUpCompiled:     SetSingle(VK_UNKNOWN,[]);
+  ecCleanUpAndBuild:     SetSingle(VK_UNKNOWN,[]);
   ecAbortBuild:          SetSingle(VK_UNKNOWN,[]);
   ecRun:                 SetSingle(VK_F9,[]);
   ecPause:               SetSingle(VK_UNKNOWN,[]);
@@ -2219,7 +2219,7 @@ begin
   ecCompile:             SetSingle(VK_B,[ssMeta]);
   ecBuild:               SetSingle(VK_UNKNOWN,[]);
   ecQuickCompile:        SetSingle(VK_UNKNOWN,[]);
-  ecCleanUpCompiled:     SetSingle(VK_UNKNOWN,[]);
+  ecCleanUpAndBuild:     SetSingle(VK_UNKNOWN,[]);
   ecAbortBuild:          SetSingle(VK_UNKNOWN,[]);
   ecRun:                 SetSingle(VK_R,[ssMeta]);
   ecPause:               SetSingle(VK_UNKNOWN,[]);
@@ -2377,7 +2377,7 @@ begin
   ecCompile:             SetSingle(VK_F9,[ssCtrl],    VK_F9,[ssCtrl,ssMeta]);
   ecBuild:               SetSingle(VK_F9,[ssShift]);
   ecQuickCompile:        SetSingle(VK_UNKNOWN,[]);
-  ecCleanUpCompiled:     SetSingle(VK_UNKNOWN,[]);
+  ecCleanUpAndBuild:     SetSingle(VK_UNKNOWN,[]);
   ecAbortBuild:          SetSingle(VK_UNKNOWN,[]);
   ecRun:                 SetSingle(VK_F9,[],          VK_F9,[ssMeta]);
   ecPause:               SetSingle(VK_UNKNOWN,[]);
@@ -2875,7 +2875,7 @@ begin
   AddDefault(C, 'Compile project/program', lisKMCompileProjectProgram, ecCompile);
   AddDefault(C, 'Build project/program', lisKMBuildProjectProgram, ecBuild);
   AddDefault(C, 'Quick compile, no linking', lisKMQuickCompileNoLinking, ecQuickCompile);
-  AddDefault(C, 'Clean up and compile project/program', lisKMCleanUpCompiled, ecCleanUpCompiled);
+  AddDefault(C, 'Clean up and build project/program', lisKMCleanUpAndBuild, ecCleanUpAndBuild);
   AddDefault(C, 'Abort building', lisKMAbortBuilding, ecAbortBuild);
   AddDefault(C, 'Run program', lisKMRunProgram, ecRun);
   AddDefault(C, 'Pause program', lisKMPauseProgram, ecPause);
