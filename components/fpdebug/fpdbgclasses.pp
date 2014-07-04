@@ -69,7 +69,7 @@ type
     property DwarfIdx: cardinal read FDwarfIdx;
   end;
 
-  TGDbgRegisterValueList = specialize TFPGList<TDbgRegisterValue>;
+  TGDbgRegisterValueList = specialize TFPGObjectList<TDbgRegisterValue>;
 
   { TDbgRegisterValueList }
 
