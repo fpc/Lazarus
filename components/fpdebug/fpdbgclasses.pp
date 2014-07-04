@@ -1128,8 +1128,6 @@ var
   Address, Frame, LastFrame: QWord;
   Size, Count: integer;
   AnEntry: TDbgCallstackEntry;
-  RegList: TDbgRegisterValueList;
-  EIP, ESP: TDbgRegisterValue;
 begin
   // TODO: use AFrameRequired // check if already partly done
   if FCallStackEntryList = nil then
@@ -1138,10 +1136,6 @@ begin
     exit;
   // TODO: remove, using AFrameRequired
   if FCallStackEntryList.Count > 0 then exit; // allready done
-
-  RegList := GetRegisterValueList;
-  EIP := RegList.FindRegisterByDwarfIndex(8);
-  ESP := RegList.FindRegisterByDwarfIndex(5);
 
   Address := Process.GetInstructionPointerRegisterValue;
   Frame := Process.GetStackBasePointerRegisterValue;
