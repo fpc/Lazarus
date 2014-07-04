@@ -785,7 +785,7 @@ begin
   then Result := Result or (Int64(-1) shl n);
 end;
 
-function SkipEntryDataForForm(var AEntryData: Pointer; AForm: Cardinal; AddrSize: Byte; IsDwarf64: boolean): Boolean; inline;
+function SkipEntryDataForForm(var AEntryData: Pointer; AForm: Cardinal; AddrSize: Byte; IsDwarf64: boolean; Version: word): Boolean; inline;
 var
   UValue: QWord;
 begin
@@ -820,12 +820,24 @@ begin
         while (PByte(AEntryData)^ and $80) <> 0 do Inc(AEntryData);
         Inc(AEntryData);
       end;
-    DW_FORM_strp,
-    DW_FORM_ref_addr : begin
+    DW_FORM_strp: begin
         if IsDwarf64 then
           Inc(AEntryData, 8)
         else
           Inc(AEntryData, 4);
+      end;
+    DW_FORM_ref_addr : begin
+        // In Dwarf-version 3 and higher, the size of a DW_FORM_ref_addr depends
+        // on the Dwarf-format. In prior Dwarf-versions it is equal to the
+        // Addres-size.
+        if Version>2 then begin
+          if IsDwarf64 then
+            Inc(AEntryData, 8)
+          else
+            Inc(AEntryData, 4);
+        end else begin
+          Inc(AEntryData, AddrSize);
+        end;
       end;
     DW_FORM_string   : begin
         while PByte(AEntryData)^ <> 0 do Inc(AEntryData);
@@ -833,7 +845,7 @@ begin
       end;
     DW_FORM_indirect : begin
         while AForm = DW_FORM_indirect do AForm := ULEB128toOrdinal(AEntryData);
-        Result := SkipEntryDataForForm(AEntryData, AForm, AddrSize, IsDwarf64);
+        Result := SkipEntryDataForForm(AEntryData, AForm, AddrSize, IsDwarf64, Version);
       end;
   else begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['Error: Unknown Form: ', AForm]);
@@ -2304,7 +2316,7 @@ begin
   for i := 0 to FAbbrev^.count - 1 do begin
     if FAbbrevData[i].Attribute = AnAttrib then
       exit(i);
-    SkipEntryDataForForm(AInfoPointer, FAbbrevData[i].Form, AddrSize, FCompUnit.IsDwarf64);
+    SkipEntryDataForForm(AInfoPointer, FAbbrevData[i].Form, AddrSize, FCompUnit.IsDwarf64, FCompUnit.Version);
   end;
   Result := -1;
 end;
@@ -3781,7 +3793,7 @@ begin
     end;
 
     AEntry := AList.List[i];
-    if not SkipEntryDataForForm(AEntry, ADefs[AbrIdx].Form, FAddressSize, IsDwarf64) then
+    if not SkipEntryDataForForm(AEntry, ADefs[AbrIdx].Form, FAddressSize, IsDwarf64, Version) then
       break;
     AList.List[i+1] := AEntry;
     inc(i);
@@ -3820,7 +3832,7 @@ begin
       Exit;
     end
     else begin
-      if not SkipEntryDataForForm(AEntry, ADefs[n].Form, FAddressSize, IsDwarf64) then
+      if not SkipEntryDataForForm(AEntry, ADefs[n].Form, FAddressSize, IsDwarf64, Version) then
         break;
     end;
   end;
@@ -3847,7 +3859,7 @@ function TDwarfCompilationUnit.LocateEntry(ATag: Cardinal; out
     AddrSize := FAddressSize;
     for idx := 0 to ADef^.Count - 1 do
     begin
-      if not SkipEntryDataForForm(p, ADefs^.Form, AddrSize, IsDwarf64) then
+      if not SkipEntryDataForForm(p, ADefs^.Form, AddrSize, IsDwarf64, Version) then
         exit(False);
       inc(ADefs);
     end;
