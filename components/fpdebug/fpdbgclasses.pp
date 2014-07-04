@@ -1143,8 +1143,8 @@ begin
   EIP := RegList.FindRegisterByDwarfIndex(8);
   ESP := RegList.FindRegisterByDwarfIndex(5);
 
-  Address := EIP.NumValue; // Process.GetInstructionPointerRegisterValue;
-  Frame := ESP.NumValue; // Process.GetStackBasePointerRegisterValue;
+  Address := Process.GetInstructionPointerRegisterValue;
+  Frame := Process.GetStackBasePointerRegisterValue;
   Size := sizeof(pointer); // TODO: Context.AddressSize
 
   FCallStackEntryList.FreeObjects:=true;
