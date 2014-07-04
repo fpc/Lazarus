@@ -25,8 +25,11 @@ type
 
   { TFpDebugThread }
   TFpDebugDebugger = class;
+  TFpDbgAsyncMethod = procedure() of object;
+
   TFpDebugThread = class(TThread)
   private
+    FAsyncMethod: TFpDbgAsyncMethod;
     FDebugLoopStoppedEvent: PRTLEvent;
     FFpDebugDebugger: TFpDebugDebugger;
     FStartDebugLoopEvent: PRTLEvent;
@@ -39,6 +42,7 @@ type
     property StartSuccesfull: boolean read FStartSuccesfull;
     property StartDebugLoopEvent: PRTLEvent read FStartDebugLoopEvent;
     property DebugLoopStoppedEvent: PRTLEvent read FDebugLoopStoppedEvent;
+    property AsyncMethod: TFpDbgAsyncMethod read FAsyncMethod write FAsyncMethod;
   end;
 
   { TFpDbgLogMessage }
@@ -61,6 +65,14 @@ type
     FRaiseExceptionBreakpoint: FpDbgClasses.TDBGBreakPoint;
     FDbgLogMessageList: array of TFpDbgLogMessage;
     FLogCritSection: TRTLCriticalSection;
+    {$ifdef linux}
+    FCacheLine: cardinal;
+    FCacheFileName: string;
+    FCacheBreakpoint: FpDbgClasses.TDBGBreakPoint;
+    FCacheLocation: TDBGPtr;
+    FCacheBoolean: boolean;
+    FCachePointer: pointer;
+    {$endif linux}
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
     function ReadAnsiString(AnAddr: TDbgPtr): string;
     function SetSoftwareExceptionBreakpoint: boolean;
@@ -95,10 +107,24 @@ type
     function ChangeFileName: Boolean; override;
 
     procedure OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
+    // On Linux, communication with the debuggee is only allowed from within
+    // the thread that created the debuggee. So a method to execute functions
+    // within the debug-thread is necessary.
+    procedure ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod);
     procedure StartDebugLoop;
     procedure DebugLoopFinished;
     procedure QuickPause;
     procedure DoState(const OldState: TDBGState); override;
+    {$ifdef linux}
+    procedure DoAddBreakLine;
+    procedure DoAddBreakLocation;
+    procedure DoReadData;
+    procedure DoPrepareCallStackEntryList;
+    {$endif linux}
+    function AddBreak(const ALocation: TDbgPtr): FpDbgClasses.TDbgBreakpoint; overload;
+    function AddBreak(const AFileName: String; ALine: Cardinal): FpDbgClasses.TDbgBreakpoint; overload;
+    function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
+    procedure PrepareCallStackEntryList;
 
     property DebugInfo: TDbgInfo read GetDebugInfo;
   public
@@ -242,7 +268,7 @@ begin
     ACallstack.SetCountValidity(ddsInvalid);
     exit;
   end;
-  TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.PrepareCallStackEntryList;
+  TFpDebugDebugger(Debugger).PrepareCallStackEntryList;
   ThreadCallStack := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.MainThread.CallStackEntryList;
 
   if ThreadCallStack.Count = 0 then
@@ -430,7 +456,7 @@ begin
   assert(FInternalBreakpoint=nil);
   case Kind of
     bpkAddress:   FInternalBreakpoint := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.AddBreak(Address);
-    bpkSource:    FInternalBreakpoint := TDbgInstance(TFpDebugDebugger(Debugger).FDbgController.CurrentProcess).AddBreak(Source, cardinal(Line));
+    bpkSource:    FInternalBreakpoint := TFpDebugDebugger(Debugger).AddBreak(Source, cardinal(Line));
   else
     Raise Exception.Create('Breakpoints of this kind are not suported.');
   end;
@@ -547,7 +573,7 @@ begin
 
   for i := 0 to ALinesAfter-1 do
     begin
-    if not TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.ReadData(AnAddr,sizeof(CodeBin),CodeBin) then
+    if not TFpDebugDebugger(Debugger).ReadData(AnAddr,sizeof(CodeBin),CodeBin) then
       begin
       DebugLn(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]));
       inc(AnAddr);
@@ -776,8 +802,19 @@ begin
     RTLeventResetEvent(FStartDebugLoopEvent);
     if not terminated then
       begin
-      FFpDebugDebugger.FDbgController.ProcessLoop;
-      Application.QueueAsyncCall(@DoDebugLoopFinishedASync, 0);
+      if assigned(FAsyncMethod) then
+        begin
+        try
+          FAsyncMethod();
+        finally
+          RTLeventSetEvent(FDebugLoopStoppedEvent);
+        end;
+        end
+      else
+        begin
+        FFpDebugDebugger.FDbgController.ProcessLoop;
+        Application.QueueAsyncCall(@DoDebugLoopFinishedASync, 0);
+        end;
       end;
     until Terminated;
     end
@@ -1034,9 +1071,9 @@ begin
   FDbgController.CurrentProcess.ReadAddress(AnAddr, VMTAddr);
   FDbgController.CurrentProcess.ReadAddress(VMTAddr+3*DBGPTRSIZE[FDbgController.CurrentProcess.Mode], ClassNameAddr);
   // read classname (as shortstring)
-  FDbgController.CurrentProcess.ReadData(ClassNameAddr, 1, b);
+  ReadData(ClassNameAddr, 1, b);
   setlength(result,b);
-  FDbgController.CurrentProcess.ReadData(ClassNameAddr+1, b, result[1]);
+  ReadData(ClassNameAddr+1, b, result[1]);
 end;
 
 function TFpDebugDebugger.ReadAnsiString(AnAddr: TDbgPtr): string;
@@ -1049,7 +1086,7 @@ begin
     Exit;
   FDbgController.CurrentProcess.ReadAddress(StrAddr-DBGPTRSIZE[FDbgController.CurrentProcess.Mode], len);
   setlength(result, len);
-  if not FDbgController.CurrentProcess.ReadData(StrAddr, len, result[1]) then
+  if not ReadData(StrAddr, len, result[1]) then
     result := '';
 end;
 
@@ -1067,7 +1104,7 @@ begin
       AValue := AContext.FindSymbol('FPC_RAISEEXCEPTION');
       if assigned(AValue) then
       begin
-        FRaiseExceptionBreakpoint := FDbgController.CurrentProcess.AddBreak(AValue.Address.Address);
+        FRaiseExceptionBreakpoint := AddBreak(AValue.Address.Address);
         if assigned(FRaiseExceptionBreakpoint) then
           result := True;
       end;
@@ -1287,6 +1324,16 @@ begin
   TThread.Queue(nil, @DoLog);
 end;
 
+procedure TFpDebugDebugger.ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod);
+begin
+  assert(not assigned(FFpDebugThread.AsyncMethod));
+  FFpDebugThread.AsyncMethod:=AMethod;
+  RTLeventSetEvent(FFpDebugThread.StartDebugLoopEvent);
+  RTLeventWaitFor(FFpDebugThread.DebugLoopStoppedEvent);
+  RTLeventResetEvent(FFpDebugThread.DebugLoopStoppedEvent);
+  FFpDebugThread.AsyncMethod:=nil;
+end;
+
 procedure TFpDebugDebugger.StartDebugLoop;
 begin
   DebugLn('StartDebugLoop');
@@ -1322,6 +1369,73 @@ begin
     FWatchEvalList.Clear;
     FWatchAsyncQueued := False;
     end;
+end;
+
+{$ifdef linux}
+procedure TFpDebugDebugger.DoAddBreakLine;
+begin
+  FCacheBreakpoint := TDbgInstance(FDbgController.CurrentProcess).AddBreak(FCacheFileName, FCacheLine);
+end;
+
+procedure TFpDebugDebugger.DoAddBreakLocation;
+begin
+  FCacheBreakpoint := FDbgController.CurrentProcess.AddBreak(FCacheLocation);
+end;
+
+procedure TFpDebugDebugger.DoReadData;
+begin
+  FCacheBoolean:=FDbgController.CurrentProcess.ReadData(FCacheLocation, FCacheLine, FCachePointer^);
+end;
+
+procedure TFpDebugDebugger.DoPrepareCallStackEntryList;
+begin
+  FDbgController.CurrentThread.PrepareCallStackEntryList;
+end;
+{$endif linux}
+
+function TFpDebugDebugger.AddBreak(const ALocation: TDbgPtr): FpDbgClasses.TDbgBreakpoint;
+begin
+{$ifdef linux}
+  FCacheLocation:=ALocation;
+  ExecuteInDebugThread(@DoAddBreakLocation);
+  result := FCacheBreakpoint;
+{$else linux}
+  result := FDbgController.CurrentProcess.AddBreak(ALocation);
+{$endif linux}
+end;
+
+function TFpDebugDebugger.AddBreak(const AFileName: String; ALine: Cardinal): FpDbgClasses.TDbgBreakpoint;
+begin
+{$ifdef linux}
+  FCacheFileName:=AFileName;
+  FCacheLine:=ALine;
+  ExecuteInDebugThread(@DoAddBreakLine);
+  result := FCacheBreakpoint;
+{$else linux}
+  result := TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFileName, ALine);
+{$endif linux}
+end;
+
+function TFpDebugDebugger.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
+begin
+{$ifdef linux}
+  FCacheLocation := AAdress;
+  FCacheLine:=ASize;
+  FCachePointer := @AData;
+  ExecuteInDebugThread(@DoReadData);
+  result := FCacheBoolean;
+{$else linux}
+  result:=FDbgController.CurrentProcess.ReadData(AAdress, ASize, AData);
+{$endif linux}
+end;
+
+procedure TFpDebugDebugger.PrepareCallStackEntryList;
+begin
+{$ifdef linux}
+  ExecuteInDebugThread(@DoPrepareCallStackEntryList);
+{$else linux}
+  FDbgController.CurrentThread.PrepareCallStackEntryList;
+{$endif linux}
 end;
 
 constructor TFpDebugDebugger.Create(const AExternalDebugger: String);
