@@ -195,7 +195,6 @@ type
     procedure OnMainBarActive(Sender: TObject);
 
     // file menu
-    procedure mnuFileClicked(Sender: TObject);
     procedure mnuNewUnitClicked(Sender: TObject);
     procedure mnuNewFormClicked(Sender: TObject);
     procedure mnuNewOtherClicked(Sender: TObject);
@@ -213,7 +212,6 @@ type
     procedure mnuQuitClicked(Sender: TObject);
 
     // edit menu
-    procedure mnuEditClicked(Sender: TObject);
     procedure mnuEditUndoClicked(Sender: TObject);
     procedure mnuEditRedoClicked(Sender: TObject);
     procedure mnuEditCutClicked(Sender: TObject);
@@ -268,7 +266,6 @@ type
     procedure mnuViewNeedBuildClicked(Sender: TObject);
 
     // source menu
-    procedure mnuSourceClicked(Sender: TObject);
     procedure mnuSourceCommentBlockClicked(Sender: TObject);
     procedure mnuSourceUncommentBlockClicked(Sender: TObject);
     procedure mnuSourceToggleCommentClicked(Sender: TObject);
@@ -357,13 +354,6 @@ type
     procedure mnuRunFileClicked(Sender: TObject);
     procedure mnuConfigBuildFileClicked(Sender: TObject);
 
-    // project menu
-    procedure mnuProjectClicked(Sender: TObject);
-
-    // package menu
-    procedure mnuPackageClicked(Sender: TObject);
-    // see pkgmanager.pas
-
     // tools menu
     procedure mnuToolDiffClicked(Sender: TObject);
     procedure mnuToolConvertDFMtoLFMClicked(Sender: TObject);
@@ -391,6 +381,15 @@ type
 
     // help menu
     // see helpmanager.pas
+
+    // Handlers called when a menu opens. Can disable sub-items etc.
+    procedure mnuFileClicked(Sender: TObject);      // file menu
+    procedure mnuEditClicked(Sender: TObject);      // edit menu
+    procedure mnuSourceClicked(Sender: TObject);    // source menu
+    procedure mnuProjectClicked(Sender: TObject);   // project menu
+    procedure mnuRunClicked(Sender: TObject);       // run menu
+    procedure mnuPackageClicked(Sender: TObject);   // package menu
+    // see pkgmanager.pas
 
     procedure OpenFilePopupMenuPopup(Sender: TObject);
     procedure mnuOpenFilePopupClick(Sender: TObject);
@@ -2839,6 +2838,7 @@ end;
 procedure TMainIDE.SetupRunMenu;
 begin
   inherited SetupRunMenu;
+  mnuRun.OnClick:=@mnuRunClicked;
   with MainIDEBar do begin
     itmRunMenuCompile.OnClick := @mnuCompileProjectClicked;
     itmRunMenuBuild.OnClick := @mnuBuildProjectClicked;
@@ -3905,6 +3905,20 @@ begin
   QuitIDE;
 end;
 
+{------------------------------------------------------------------------------}
+
+procedure TMainIDE.mnuFileClicked(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+begin
+  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  with MainIDEBar do begin
+    itmFileClose.Enabled := ASrcEdit<>nil;
+    itmFileCloseAll.Enabled := ASrcEdit<>nil;
+  end;
+end;
+
 procedure TMainIDE.mnuEditClicked(Sender: TObject);
 var
   ASrcEdit: TSourceEditor;
@@ -3954,8 +3968,6 @@ begin
     itmEditInsertCharacter.Enabled := Editable;
   end;
 end;
-
-{------------------------------------------------------------------------------}
 
 procedure TMainIDE.mnuSourceClicked(Sender: TObject);
 var
@@ -4044,6 +4056,13 @@ begin
   GetCurrentUnit(ASrcEdit,AUnitInfo);
   NotPartOfProj:=Assigned(AUnitInfo) and not AUnitInfo.IsPartOfProject;
   MainIDEBar.itmProjectAddTo.Enabled:=NotPartOfProj;
+end;
+
+procedure TMainIDE.mnuRunClicked(Sender: TObject);
+begin
+  with MainIDEBar do begin
+    itmRunMenuBuildManyModes.Enabled:=Project1.BuildModes.Count>1;
+  end;
 end;
 
 procedure TMainIDE.mnuPackageClicked(Sender: TObject);
@@ -11914,18 +11933,6 @@ begin
       PropDetails:=Copy(PropDetails, i+1, Length(PropDetails));
   end;
   OI.StatusBar.SimpleText:=PropDetails;  // Show in OI StatusBar
-end;
-
-procedure TMainIDE.mnuFileClicked(Sender: TObject);
-var
-  ASrcEdit: TSourceEditor;
-  AnUnitInfo: TUnitInfo;
-begin
-  GetCurrentUnit(ASrcEdit,AnUnitInfo);
-  with MainIDEBar do begin
-    itmFileClose.Enabled := ASrcEdit<>nil;
-    itmFileCloseAll.Enabled := ASrcEdit<>nil;
-  end;
 end;
 
 function TMainIDE.ProjInspectorAddUnitToProject(Sender: TObject;
