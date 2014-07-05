@@ -205,6 +205,7 @@ var
   I, C: CFIndex;
   NewPrinterName: String;
 begin
+  FPrinterArray := nil;
   if OSError(PMServerCreatePrinterList(kPMServerLocal, FPrinterArray),
     Self, 'DoEnumPrinters', 'PMServerCreatePrinterList') then Exit;
 
@@ -224,7 +225,8 @@ end;
 
 procedure TCarbonPrinter.EndEnumPrinters;
 begin
-  CFRelease(FPrinterArray);
+  if FPrinterArray<>nil then
+    CFRelease(FPrinterArray);
 end;
 
 procedure TCarbonPrinter.BeginEnumPapers(Lst: TStrings);
@@ -236,6 +238,7 @@ var
 const
   SName = 'DoEnumPapers';
 begin
+  FPaperArray := nil;
   if OSError(PMPrinterGetPaperList(GetCurrentPrinter, FPaperArray),
     Self, SName, 'PMPrinterGetPaperList') then Exit;
   FPaperArray := CFRetain(FPaperArray);
@@ -260,7 +263,8 @@ end;
 
 procedure TCarbonPrinter.EndEnumPapers;
 begin
-  CFRelease(FPaperArray);
+  if FPaperArray<>nil then
+    CFRelease(FPaperArray);
 end;
 
 constructor TCarbonPrinter.Create;
