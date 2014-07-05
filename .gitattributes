@@ -4219,11 +4219,9 @@ docs/xml/lcl/actnlist.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/alllclunits.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/arrow.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/asyncprocess.xml svneol=native#text/plain
-docs/xml/lcl/barchart.xml svneol=native#text/plain
 docs/xml/lcl/buttonpanel.xml svneol=native#text/plain
 docs/xml/lcl/buttons.xml svneol=native#text/xml
 docs/xml/lcl/calendar.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/chart.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/checklst.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/clipbrd.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/colorbox.xml svneol=LF#text/xml eol=lf
@@ -4448,10 +4446,6 @@ examples/autosize/childsizinglayout/childsizinglayout.lpi svneol=native#text/pla
 examples/autosize/childsizinglayout/childsizinglayout.lpr svneol=native#text/plain
 examples/autosize/childsizinglayout/mainunit.lfm svneol=native#text/plain
 examples/autosize/childsizinglayout/mainunit.pas svneol=native#text/plain
-examples/barchart/chartdemo.lpi svneol=native#text/plain
-examples/barchart/chartdemo.lpr svneol=native#text/pascal
-examples/barchart/frmmain.lfm svneol=native#text/plain
-examples/barchart/frmmain.pas svneol=native#text/pascal
 examples/bidi/project1.lpi svneol=native#text/plain
 examples/bidi/project1.lpr svneol=native#text/plain
 examples/bidi/unit1.lfm svneol=native#text/plain
@@ -5614,7 +5608,6 @@ images/components/tactionlist.png -text svneol=unset#image/png
 images/components/tapplicationproperties.png -text svneol=unset#image/png
 images/components/tarrow.png -text svneol=unset#image/png
 images/components/tasyncprocess.png -text
-images/components/tbarchart.png -text svneol=unset#image/png
 images/components/tbevel.png -text svneol=unset#image/png
 images/components/tbitbtn.png -text svneol=unset#image/png
 images/components/tbufdataset.png -text svneol=unset#image/png
@@ -6073,7 +6066,6 @@ lcl/actnlist.pas svneol=native#text/pascal
 lcl/alllclunits.pp svneol=native#text/pascal
 lcl/arrow.pp svneol=native#text/pascal
 lcl/asyncprocess.pp svneol=native#text/plain
-lcl/barchart.pp svneol=native#text/pascal
 lcl/btn_icons.res -text
 lcl/buttonpanel.pas svneol=native#text/pascal
 lcl/buttons.pp svneol=native#text/pascal

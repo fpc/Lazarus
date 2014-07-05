@@ -1506,7 +1506,7 @@ begin
         AddRecentProjectInitial('examples/jpeg/',          'jpegexample.lpi');
         AddRecentProjectInitial('examples/sprites/',       'spriteexample.lpi');
         AddRecentProjectInitial('examples/openglcontrol/', 'openglcontrol_demo.lpi');
-        AddRecentProjectInitial('examples/barchart/',      'chartdemo.lpi');
+        AddRecentProjectInitial('examples/imagelist/',     'project1.lpi');
         AddRecentProjectInitial('examples/',               'hello.lpi');
         FAlreadyPopulatedRecentFiles := True;
       end;

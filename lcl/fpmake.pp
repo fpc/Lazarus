@@ -48,7 +48,6 @@ begin
     P.Options.Add('-Fu../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
     P.Options.Add('-Fu.');
     T:=P.Targets.AddUnit('alllclunits.pp');
-    t.Dependencies.AddUnit('barchart');
     t.Dependencies.AddUnit('checklst');
     t.Dependencies.AddUnit('clipbrd');
     t.Dependencies.AddUnit('colorbox');
@@ -164,7 +163,6 @@ begin
     t.Dependencies.AddUnit('customdrawn_winxp');
     t.Dependencies.AddUnit('customdrawn_android');
 
-    T:=P.Targets.AddUnit('barchart.pp');
     T:=P.Targets.AddUnit('checklst.pas');
     T:=P.Targets.AddUnit('clipbrd.pp');
     T:=P.Targets.AddUnit('colorbox.pas');

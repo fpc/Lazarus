@@ -3,7 +3,6 @@ components/tactionlist.png
 components/tapplicationproperties.png
 components/tarrow.png
 components/tasyncprocess.png
-components/tbarchart.png
 components/tbevel.png
 components/tbitbtn.png
 components/tbufdataset.png

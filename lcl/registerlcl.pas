@@ -13,7 +13,7 @@ uses
   LazarusPackageIntf, Menus, Buttons, StdCtrls, ExtCtrls, ComCtrls, MaskEdit,
   CheckLst, Forms, Grids, Controls, Dialogs, Spin, Arrow, Calendar,
   PairSplitter, ExtDlgs, StdActns, DbCtrls, DBGrids, DBActns, EditBtn,
-  ActnList, FileCtrl, Graphics, XMLPropStorage, IniPropStorage, BarChart,
+  ActnList, FileCtrl, Graphics, XMLPropStorage, IniPropStorage,
   ColorBox, ButtonPanel, LResources, LazHelpHTML, PopupNotifier, AsyncProcess,
   UTF8Process, ShellCtrls, ValEdit;
 
@@ -51,7 +51,6 @@ begin
   RegisterUnit('Graphics',@Graphics.Register);
   RegisterUnit('XMLPropStorage',@XMLPropStorage.Register);
   RegisterUnit('IniPropStorage',@IniPropStorage.Register);
-  RegisterUnit('BarChart',@BarChart.Register);
   RegisterUnit('ColorBox',@ColorBox.Register);
   RegisterUnit('ButtonPanel',@ButtonPanel.Register);
   RegisterUnit('LResources',@LResources.Register);
