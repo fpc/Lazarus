@@ -166,7 +166,6 @@ end;
 function ExecuteTodoDialog: TTodoItem;
 var
   aTodoDialog: TTodoDialog;
-  aPriority: integer;
 begin
   Result := nil;
   aTodoDialog := TTodoDialog.Create(nil);
