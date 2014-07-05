@@ -1677,35 +1677,35 @@ begin
 end;
 
 function TTreeNode.DisplayIconLeft: integer;
-begin
-  Result := DisplayExpandSignRight;
-end;
-
-function TTreeNode.DisplayStateIconLeft: integer;
-var
-  TV: TCustomTreeView;
-  ImgIndex: TImageIndex;
-begin
-  Result := DisplayIconLeft;
-  TV := TreeView;
-  if (TV = nil) or (TV.Images = nil) then exit;
-  if (TV.Selected=Self) then
-    ImgIndex:=SelectedIndex
-  else
-    ImgIndex:=ImageIndex;
-  if (ImgIndex<0) or (ImgIndex>=TV.Images.Count) then exit;
-  inc(Result, TV.Images.Width + 2);
-end;
-
-function TTreeNode.DisplayTextLeft: integer;
 var
   TV: TCustomTreeView;
 begin
   Result := DisplayStateIconLeft;
   TV := TreeView;
-  if (TV = nil) or (TV.StateImages = nil) then exit;
-  if (StateIndex<0) or (StateIndex>=TV.StateImages.Count) then exit;
-  inc(Result, TV.StateImages.Width + 2);
+  if (TV = nil) or (TV.StateImages = nil) then Exit;
+  if (StateIndex < 0) or (StateIndex >= TV.StateImages.Count) then Exit;
+  Inc(Result, TV.StateImages.Width + 2);
+end;
+
+function TTreeNode.DisplayStateIconLeft: integer;
+begin
+  Result := DisplayExpandSignRight;
+end;
+
+function TTreeNode.DisplayTextLeft: integer;
+var
+  TV: TCustomTreeView;
+  ImgIndex: TImageIndex;  
+begin
+  Result := DisplayIconLeft;
+  TV := TreeView;
+  if (TV = nil) or (TV.Images = nil) then Exit;
+  if (TV.Selected = Self) then
+    ImgIndex:=SelectedIndex
+  else
+    ImgIndex:=ImageIndex;
+  if (ImgIndex<0) or (ImgIndex>=TV.Images.Count) then Exit;
+  Inc(Result, TV.Images.Width + 2);
 end;
 
 function TTreeNode.DisplayTextRight: integer;
@@ -3822,12 +3822,12 @@ begin
       Include(Result,htOnItem);
       if X<Node.DisplayExpandSignLeft then
         Include(Result,htOnIndent)
-      else if X<Node.DisplayIconLeft then
-        Include(Result,htOnButton)
       else if X<Node.DisplayStateIconLeft then
-        Include(Result,htOnIcon)
-      else if X<Node.DisplayTextLeft then
+        Include(Result,htOnButton)
+      else if X<Node.DisplayIconLeft then
         Include(Result,htOnStateIcon)
+      else if X<Node.DisplayTextLeft then
+        Include(Result,htOnIcon)
       else if X<Node.DisplayTextRight then
         Include(Result,htOnLabel);
     end else
@@ -4929,6 +4929,18 @@ begin
     if HasExpandSign then
       DrawExpandSign(x - Indent + (Indent shr 1), VertMid, Node.Expanded);
 
+    // draw state icon
+    if (StateImages <> nil) then
+    begin
+      if (Node.StateIndex >= 0) and (Node.StateIndex < StateImages.Count) then
+      begin
+        if PaintImages then
+          StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImages.Height) div 2,
+            Node.StateIndex, True);
+        Inc(x, StateImages.Width + 2);
+      end;
+    end;
+
     // draw icon
     if (Images <> nil) then
     begin
@@ -4967,19 +4979,7 @@ begin
                ImgIndex, Node.FNodeEffect);
           end;
        end;
-        inc(x, Images.Width + 2);
-      end;
-    end;
-
-    // draw state icon
-    if (StateImages <> nil) then
-    begin
-      if (Node.StateIndex >= 0) and (Node.StateIndex < StateImages.Count) then
-      begin
-        if PaintImages then
-          StateImages.Draw(Canvas, x + 1, (NodeRect.Top + NodeRect.Bottom - StateImages.Height) div 2,
-            Node.StateIndex, True);
-        inc(x, StateImages.Width + 2);
+       Inc(x, Images.Width + 2);
       end;
     end;
 
