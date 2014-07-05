@@ -798,8 +798,11 @@ var
   NewInd, NewRow: Integer;
   Line: String;
 begin
-  if not ((KeyName = '') and (Value = '')) then
-    Line := KeyName + Strings.NameValueSeparator + Value
+  if not ((KeyName = '') and (Value = '')) then begin
+    Line := Value;
+    Insert(Strings.NameValueSeparator, Line, 1);
+    Insert(KeyName, Line, 1);
+  end
   else
     Line := '';
   if (Row > Strings.Count) or ((Row - FixedRows) >= Strings.Count)
@@ -844,7 +847,9 @@ begin
   end
   else if (Length(Values) = 1) then
     AKey := Values[0];
-  Strings.InsertItem(Index, AKey + Strings.NameValueSeparator + AValue);
+  Insert(Strings.NameValueSeparator, AValue, 1);
+  Insert(AKey, AValue, 1);
+  Strings.InsertItem(Index, AValue);
 end;
 
 procedure TValueListEditor.ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
@@ -1062,8 +1067,11 @@ begin
     Inc(I, FixedRows);
     Cells[1,I]:=AValue;
   end
-  else
-    Strings.Add(Key + Strings.NameValueSeparator + AValue);
+  else begin
+    Insert(Strings.NameValueSeparator, AValue, 1);
+    Insert(Key, AValue, 1);
+    Strings.Add(AValue);
+  end;
 end;
 
 procedure TValueListEditor.ShowColumnTitles;
@@ -1288,8 +1296,11 @@ begin
     //If cells are empty don't store '=' in Strings
     if (Key = '') and (KeyValue = '') then
       Line := ''
-    else
-      Line := Key + Strings.NameValueSeparator + KeyValue;
+    else begin
+      Line := KeyValue;
+      system.Insert(Strings.NameValueSeparator, Line, 1);
+      system.Insert(Key, Line, 1);
+    end;
     // Empty grid: don't add a the line '' to Strings!
     if (Strings.Count = 0) and (Line = '') then Exit;
     if I>=Strings.Count then
