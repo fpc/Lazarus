@@ -2365,32 +2365,9 @@ end;
 class procedure TGtk2WSCustomGroupBox.GetPreferredSize(
   const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
-var
-  Widget: PGtkWidget;
-  border_width: Integer;
 begin
-  Widget := PGtkWidget(GetFrameWidget({%H-}PGTKEventBox(AWinControl.Handle)));
-
-  if Assigned(PGtkFrame(Widget)^.label_widget) then
-  begin
-    PreferredWidth := gtk_widget_get_xthickness(Widget) * 2 +
-                    gtk_widget_get_xthickness(PGtkFrame(Widget)^.label_widget);
-    PreferredHeight := Max(gtk_widget_get_ythickness(Widget),
-                         gtk_widget_get_ythickness(PGtkFrame(Widget)^.label_widget)) +
-                     gtk_widget_get_ythickness(Widget);
-  end else
-  begin
-    PreferredWidth := gtk_widget_get_xthickness(Widget) * 2;
-    PreferredHeight := gtk_widget_get_ythickness(Widget) * 2;
-  end;
-
-  if WithThemeSpace then
-  begin
-    border_width := (PGtkContainer(Widget)^.flag0 and bm_TGtkContainer_border_width) shr
-                    bp_TGtkContainer_border_width;
-    inc(PreferredWidth, border_width);
-    inc(PreferredHeight, 2 * border_width);
-  end;
+  GetGTKDefaultWidgetSize(AWinControl, PreferredWidth, PreferredHeight,
+                          WithThemeSpace);
 end;
 
 class procedure TGtk2WSCustomGroupBox.SetFont(const AWinControl: TWinControl;
