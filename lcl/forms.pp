@@ -1642,6 +1642,9 @@ type
   { TIDesigner }
 
   TIDesigner = class(TObject)
+  protected
+    FLookupRoot: TComponent;
+    FDefaultFormBoundsValid: boolean;
   public
     function IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolean;
       virtual; abstract;
@@ -1654,6 +1657,11 @@ type
     function GetShiftState: TShiftState; virtual; abstract;
     procedure SelectOnlyThisComponent(AComponent: TComponent); virtual; abstract;
     function UniqueName(const BaseName: string): string; virtual; abstract;
+    procedure PrepareFreeDesigner(AFreeComponent: boolean); virtual; abstract;
+  public
+    property LookupRoot: TComponent read FLookupRoot;
+    property DefaultFormBoundsValid: boolean read FDefaultFormBoundsValid
+                                             write FDefaultFormBoundsValid;
   end;
 
 

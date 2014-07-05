@@ -35,22 +35,22 @@ uses
   LCLType, LCLProc, FileProcs, FileUtil, IDEProcs, DialogProcs, IDEDialogs,
   LConvEncoding, LazFileCache, LResources, PropEdits, DefineTemplates,
   IDEMsgIntf, IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
-  LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf, ProjectIntf,
-  Project, ProjectDefs, ProjectInspector, CompilerOptions, BasePkgManager,
-  PackageIntf, PackageDefs, PackageSystem, SrcEditorIntf, IDEWindowIntf,
+  LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf,
+  CompOptsIntf, SrcEditorIntf, IDEWindowIntf,
+  ProjectIntf, Project, ProjectDefs, ProjectInspector,
+  PackageIntf, PackageDefs, PackageSystem, CompilerOptions, BasePkgManager,
   ComponentReg, SourceEditor, EditorOptions, CustomFormEditor, FormEditor,
   EmptyMethodsDlg, BaseDebugManager, ControlSelection, TransferMacros,
-  EnvironmentOpts, BuildManager, Designer, EditorMacroListViewer, KeywordFuncLists,
+  EnvironmentOpts, BuildManager, EditorMacroListViewer, KeywordFuncLists,
   FindRenameIdentifier, GenericCheckList, ViewUnit_Dlg, DiskDiffsDialog,
-  {$IFNDEF EnableOldExtTools}
-  etMessagesWnd,
-  {$ELSE}
-  MsgView,
-  {$ENDIF}
   InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager, CodeToolsStructs,
   ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool, BasicCodeTools,
   SynEdit, UnitResources, IDEExternToolIntf, ExtToolDialog, PublishModule,
-  CompOptsIntf;
+{$IFNDEF EnableOldExtTools}
+  etMessagesWnd;
+{$ELSE}
+  MsgView;
+{$ENDIF}
 
 type
 
@@ -2237,7 +2237,7 @@ begin
     end;
 
     if (AnUnitInfo.Component<>nil) and (MainIDE.LastFormActivated<>nil)
-    and (TDesigner(MainIDE.LastFormActivated.Designer).LookupRoot=AnUnitInfo.Component) then
+    and (MainIDE.LastFormActivated.Designer.LookupRoot=AnUnitInfo.Component) then
       MainIDE.LastFormActivated:=nil;
 
     // save some meta data of the source
@@ -3361,7 +3361,7 @@ function TLazSourceFileManager.InitOpenedProjectFile(AFileName: string;
 var
   EditorInfoIndex, i, j: Integer;
   NewBuf: TCodeBuffer;
-  LastDesigner: TDesigner;
+  LastDesigner: TIDesigner;
   AnUnitInfo: TUnitInfo;
   HandlerResult: TModalResult;
   AnEditorInfo: TUnitEditorInfo;
@@ -3480,7 +3480,7 @@ begin
 
     // select a form (object inspector, formeditor, control selection)
     if MainIDE.LastFormActivated<>nil then begin
-      LastDesigner:=TDesigner(MainIDE.LastFormActivated.Designer);
+      LastDesigner:=MainIDE.LastFormActivated.Designer;
       debugln(['TLazSourceFileManager.InitOpenedProjectFile select form in designer: ',
                DbgSName(MainIDE.LastFormActivated),' ',DbgSName(MainIDE.LastFormActivated.Designer)]);
       LastDesigner.SelectOnlyThisComponent(LastDesigner.LookupRoot);
@@ -4625,7 +4625,7 @@ var
   Writer: TWriter;
   ACaption, AText: string;
   CompResourceCode, LFMFilename, TestFilename: string;
-  ADesigner: TDesigner;
+  ADesigner: TIDesigner;
   Grubber: TLRTGrubber;
   LRTFilename: String;
   AncestorUnit: TUnitInfo;
@@ -4914,7 +4914,7 @@ begin
     end;
   end;
   // mark designer unmodified
-  ADesigner:=FindRootDesigner(AnUnitInfo.Component) as TDesigner;
+  ADesigner:=FindRootDesigner(AnUnitInfo.Component);
   if ADesigner<>nil then
     ADesigner.DefaultFormBoundsValid:=false;
 
@@ -6640,7 +6640,7 @@ function TLazSourceFileManager.CloseUnitComponent(AnUnitInfo: TUnitInfo;
   end;
 
 var
-  OldDesigner: TDesigner;
+  OldDesigner: TIDesigner;
   AForm: TCustomForm;
   LookupRoot: TComponent;
   ComponentStillUsed: Boolean;
@@ -6678,7 +6678,7 @@ begin
 
     AForm:=FormEditor1.GetDesignerForm(LookupRoot);
     if AForm<>nil then
-      OldDesigner:=TDesigner(AForm.Designer)
+      OldDesigner:=AForm.Designer
     else
       OldDesigner:=nil;
     if MainIDE.LastFormActivated=AForm then

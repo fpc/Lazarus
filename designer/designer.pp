@@ -100,10 +100,8 @@ type
     FDesignerPopupMenu: TPopupMenu;
     FDefaultFormBounds: TRect;
     FLastFormBounds: TRect;
-    FDefaultFormBoundsValid: boolean;
     FFlags: TDesignerFlags;
     FGridColor: TColor;
-    FLookupRoot: TComponent;
     FMediator: TDesignerMediator;
     FOnPastedComponents: TOnPastedComponents;
     FProcessingDesignerEvent: Integer;
@@ -275,7 +273,7 @@ type
     DDC: TDesignerDeviceContext;
 
     constructor Create(TheDesignerForm: TCustomForm; AControlSelection: TControlSelection);
-    procedure PrepareFreeDesigner(AFreeComponent: boolean);
+    procedure PrepareFreeDesigner(AFreeComponent: boolean); override;
     procedure DisconnectComponent; override;
     destructor Destroy; override;
 
@@ -346,7 +344,6 @@ type
     property GridSizeY: integer read GetGridSizeY write SetGridSizeY;
     property GridColor: TColor read GetGridColor write SetGridColor;
     property IsControl: Boolean read GetIsControl write SetIsControl;
-    property LookupRoot: TComponent read FLookupRoot;
     property Mediator: TDesignerMediator read FMediator write SetMediator;
     property ProcessingDesignerEvent: Integer read FProcessingDesignerEvent;
     property OnActivated: TNotifyEvent read FOnActivated write FOnActivated;
@@ -386,8 +383,6 @@ type
     property SnapToGrid: boolean read GetSnapToGrid write SetSnapToGrid;
     property TheFormEditor: TCustomFormEditor read FTheFormEditor write FTheFormEditor;
     property DefaultFormBounds: TRect read FDefaultFormBounds write SetDefaultFormBounds;
-    property DefaultFormBoundsValid: boolean read FDefaultFormBoundsValid
-                                             write FDefaultFormBoundsValid;
   end;
 
 const
