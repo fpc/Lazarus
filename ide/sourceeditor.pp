@@ -736,8 +736,6 @@ type
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
-    function GetCompletionBoxPosition: integer; override;
-        deprecated 'use SourceEditorManager';       // deprecated in 0.9.29 March 2010
 
     procedure EditorMouseMove(Sender: TObject; Shift: TShiftstate;
                               X,Y: Integer);
@@ -839,7 +837,6 @@ type
     constructor Create(AOwner: TComponent; AWindowID: Integer); overload;
     destructor Destroy; override;
 
-    property Editors[Index:integer]:TSourceEditor read GetEditors; // !!! not ordered for PageIndex
     function EditorCount: integer;
     function IndexOfEditor(aEditor: TSourceEditorInterface): integer;
     function Count: integer; override;
@@ -849,14 +846,14 @@ type
     function FindSourceEditorWithPageIndex(APageIndex:integer):TSourceEditor;
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
     function FindSourceEditorWithEditorComponent(EditorComp: TComponent): TSourceEditor;
-    function GetActiveSE: TSourceEditor;                                        { $note deprecate and use SetActiveEditor}
+    function GetActiveSE: TSourceEditor; { $note deprecate and use SetActiveEditor}
     procedure CheckCurrentCodeBufferChanged;
     function IndexOfEditorInShareWith(AnOtherEditor: TSourceEditor): Integer;
     procedure MoveEditor(OldPageIndex, NewPageIndex: integer);
     procedure MoveEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
 
     procedure UpdateStatusBar;
-    procedure ClearErrorLines; override;
+    procedure ClearErrorLines; override;      // ToDo: remove. It is deprecated
     procedure ClearExecutionLines;
     procedure ClearExecutionMarks;
 
@@ -865,30 +862,13 @@ type
                       FocusIt: boolean; AShareEditor: TSourceEditor = nil): TSourceEditor;
     procedure CloseFile(APageIndex:integer);
     procedure FocusEditor;
-    property WindowID: Integer read FWindowID; // The number in the Form.Caption minus 1 (0-based)
-                                               // (if multiple Win are open)
-
-  public
-    // These were deprecated at 0.9.29 March 2010
-    function GetEditorControlSettings(EditControl: TControl): boolean; override;
-             deprecated 'use SourceEditorManager';
-    function GetHighlighterSettings(Highlighter: TObject): boolean; override;
-             deprecated 'use SourceEditorManager';
-
-    procedure DeactivateCompletionForm; override;
-             deprecated 'use SourceEditorManager';
-    function CompletionPluginCount: integer; override;
-              deprecated 'use SourceEditorManager';
-    procedure RegisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override;
-              deprecated 'use SourceEditorManager';
-    procedure UnregisterCompletionPlugin(Plugin: TSourceEditorCompletionPlugin); override;
-              deprecated 'use SourceEditorManager';
-
-  public
     function GetCapabilities: TCTabControlCapabilities;
     procedure IncUpdateLock;
     procedure DecUpdateLock;
-
+  public
+    property Editors[Index:integer]:TSourceEditor read GetEditors; // !!! not ordered for PageIndex
+    // The number in the Form.Caption minus 1 (0-based), if multiple Win are open
+    property WindowID: Integer read FWindowID;
     // forwarders to the FNotebook
     property PageIndex: Integer read GetPageIndex write SetPageIndex;
     property PageCount: Integer read GetPageCount;
@@ -5889,11 +5869,6 @@ begin
   DebugLnExit(SRCED_CLOSE, ['TSourceNotebook.Destroy ']);
 end;
 
-procedure TSourceNotebook.DeactivateCompletionForm;
-begin
-  Manager.DeactivateCompletionForm;
-end;
-
 procedure TSourceNotebook.CreateNotebook;
 var
   APage: TTabSheet;
@@ -6554,11 +6529,6 @@ begin
   DebugLnExit(SRCED_PAGES, ['<< TSourceNotebook.SetPageIndex ']);
 end;
 
-function TSourceNotebook.GetCompletionBoxPosition: integer;
-begin
-  Result := Manager.CompletionBoxPosition;
-end;
-
 procedure TSourceNotebook.UpdateHighlightMenuItems;
 var
   h: TLazSyntaxHighlighter;
@@ -6804,25 +6774,6 @@ end;
 function TSourceNotebook.GetActiveCompletionPlugin: TSourceEditorCompletionPlugin;
 begin
   Result := Manager.ActiveCompletionPlugin;
-end;
-
-function TSourceNotebook.CompletionPluginCount: integer;
-begin
-  Result := SourceEditorManager.CompletionPluginCount;
-end;
-
-procedure TSourceNotebook.RegisterCompletionPlugin(
-  Plugin: TSourceEditorCompletionPlugin);
-begin
-  // Deprecated; forward to manager
-  SourceEditorManager.RegisterCompletionPlugin(Plugin);
-end;
-
-procedure TSourceNotebook.UnregisterCompletionPlugin(
-  Plugin: TSourceEditorCompletionPlugin);
-begin
-  // Deprecated; forward to manager
-  SourceEditorManager.UnregisterCompletionPlugin(Plugin);
 end;
 
 function TSourceNotebook.GetCompletionPlugins(Index: integer
@@ -8737,19 +8688,6 @@ begin
   if AEditor=nil then exit;
   EditorOpts.SetMarkupColors(AEditor);
   AEditor.UseIncrementalColor:= snIncrementalFind in States;
-end;
-
-function TSourceNotebook.GetEditorControlSettings(EditControl: TControl
-  ): boolean;
-begin
-  // Deprecated; forward to manager
-  Result := SourceEditorManager.GetEditorControlSettings(EditControl);
-end;
-
-function TSourceNotebook.GetHighlighterSettings(Highlighter: TObject): boolean;
-begin
-  // Deprecated; forward to manager
-  Result := SourceEditorManager.GetHighlighterSettings(Highlighter);
 end;
 
 procedure TSourceNotebook.ClearErrorLines;

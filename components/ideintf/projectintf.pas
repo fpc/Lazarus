@@ -433,7 +433,6 @@ type
     function GetTitle: string; virtual; abstract; // Title with macros resolved
     function GetDefaultTitle: string; // extract name from lpi file name
     function GetTitleOrName: string; // GetTitle, if this is '' then GetDefaultTitle
-    function ShortDescription: string; deprecated; // since 0.9.31, use GetTitleOrName instead
   public
     property MainFileID: Integer read GetMainFileID write SetMainFileID;
     property Files[Index: integer]: TLazProjectFile read GetFiles;
@@ -459,7 +458,6 @@ type
                        // units have their own SessionModified
     property FPDocPaths: string read FFPDocPaths write SetFPDocPaths;
     property FPDocPackageName: string read FFPDocPackageName write SetFPDocPackageName;
-    property LazDocPaths: string read FFPDocPaths write SetFPDocPaths; deprecated;
     property CleanOutputFileMask: string read FCleanOutputFileMask write SetCleanOutputFileMask; // saved in session
     property CleanSourcesFileMask: string read FCleanSourcesFileMask write SetCleanSourcesFileMask; // saved in session
     property CustomData: TStringToStringTree read FCustomData;
@@ -1131,11 +1129,6 @@ begin
   FSessionStorage:=DefaultNewProjectSessionStorage;
   FFPDocPaths:='';
   FFPDocPackageName:='';
-end;
-
-function TLazProject.ShortDescription: string;
-begin
-  Result:=GetTitleOrName;
 end;
 
 procedure TLazProject.ClearModifieds(ClearUnits: boolean);

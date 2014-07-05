@@ -212,35 +212,19 @@ type
     function DoNewFile(NewFileDescriptor: TProjectFileDescriptor;
                        var NewFilename: string; NewSource: string;
                        NewFlags: TNewFlags; NewOwner: TObject): TModalResult; virtual; abstract;
-    function DoSaveEditorFile(PageIndex:integer;
-                              Flags: TSaveFlags): TModalResult; virtual; abstract;
-                              deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function DoSaveEditorFile(AEditor: TSourceEditorInterface;
                               Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoSaveEditorFile(const Filename: string;
                               Flags: TSaveFlags): TModalResult; virtual; abstract;
     function DoSaveAll(Flags: TSaveFlags): TModalResult; virtual; abstract;
-    function DoCloseEditorFile(PageIndex:integer;
-                               Flags: TCloseFlags):TModalResult; virtual; abstract;
-                               deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function DoCloseEditorFile(AEditor: TSourceEditorInterface;
                                Flags: TCloseFlags):TModalResult; virtual; abstract;
     function DoCloseEditorFile(const Filename: string;
                                Flags: TCloseFlags): TModalResult; virtual; abstract;
-    function DoOpenEditorFile(AFileName:string; PageIndex: integer;
-                              Flags: TOpenFlags): TModalResult; virtual; abstract;
-                              deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
     function DoOpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
                               Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
-                       PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
-                       deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
-    function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
                        PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
-    function DoOpenFileAndJumpToPos(const AFilename: string;
-                       const CursorPosition: TPoint; TopLine: integer;
-                       PageIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
-                       deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
     function DoOpenFileAndJumpToPos(const AFilename: string;
                        const CursorPosition: TPoint; TopLine: integer;
                        PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; virtual; abstract;
@@ -289,11 +273,7 @@ type
     function BeginCodeTools: boolean; virtual; abstract;
     procedure DoJumpToCodeToolBossError; virtual; abstract;
 
-    function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract;
-        deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; virtual; abstract;
-    function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; virtual; abstract;  // true if something was saved
-        deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; virtual; abstract; // true if something was saved
 
     property OpenEditorsOnCodeToolChange: boolean read FOpenEditorsOnCodeToolChange
@@ -305,7 +285,7 @@ type
 
     // progress and error messages
     function ShowProgress(const SomeText: string;
-                          Step, MaxStep: integer): boolean; virtual; abstract; // False if canceled by user
+      Step, MaxStep: integer): boolean; virtual; abstract; // False if canceled by user
     function DoJumpToCompilerMessage(FocusEditor: boolean;
                               {$IFNDEF EnableOldExtTools}
                               Msg: TMessageLine = nil // if nil then it jumps to first message
@@ -316,8 +296,9 @@ type
     procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
     procedure DoShowMessagesView(BringToFront: boolean = true); virtual; abstract;
     function DoCheckFilesOnDisk(Instantaneous: boolean = false): TModalResult; virtual; abstract;
+    // call this after changing TargetOS/TargetCPU of the ActiveProject
     procedure PrepareBuildTarget(Quiet: boolean;
-                     ScanFPCSrc: TScanModeFPCSources = smsfsBackground); virtual; abstract; // call this after changing TargetOS/TargetCPU of the ActiveProject
+                     ScanFPCSrc: TScanModeFPCSources = smsfsBackground); virtual; abstract;
     procedure AbortBuild; virtual; abstract;
 
     // search results

@@ -741,26 +741,17 @@ type
     procedure CreateFileDialogFilterForSourceEditorFiles(Filter: string;
         out AllEditorMask, AllMask: string);
 
-    function DoSaveEditorFile(PageIndex:integer;
-                              Flags: TSaveFlags): TModalResult; override;
-                              deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function DoSaveEditorFile(AEditor: TSourceEditorInterface;
                               Flags: TSaveFlags): TModalResult; override;
     function DoSaveEditorFile(const Filename: string;
                               Flags: TSaveFlags): TModalResult; override;
 
-    function DoCloseEditorFile(PageIndex:integer;
-                               Flags: TCloseFlags):TModalResult; override;
-                               deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function DoCloseEditorFile(AEditor: TSourceEditorInterface;
                                Flags: TCloseFlags):TModalResult; override;
     function DoCloseEditorFile(const Filename: string;
                                Flags: TCloseFlags): TModalResult; override;
 
     function DoSaveAll(Flags: TSaveFlags): TModalResult; override;
-    function DoOpenEditorFile(AFileName: string; PageIndex: integer;
-                              Flags: TOpenFlags): TModalResult; override;
-                              deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
     function DoOpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
                               Flags: TOpenFlags): TModalResult; override;
     function DoOpenEditorFile(AFileName:string; PageIndex, WindowIndex: integer;
@@ -770,14 +761,7 @@ type
       WindowIndex: integer=-1); override;
 
     function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
-        PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
-        deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
-    function DoOpenFileAndJumpToIdentifier(const AFilename, AnIdentifier: string;
         PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; override;
-    function DoOpenFileAndJumpToPos(const AFilename: string;
-        const CursorPosition: TPoint; TopLine: integer;
-        PageIndex: integer; Flags: TOpenFlags): TModalResult; override;
-        deprecated 'use method with WindowIndex';   // deprecated in 0.9.29 March 2010
     function DoOpenFileAndJumpToPos(const AFilename: string;
         const CursorPosition: TPoint; TopLine: integer;
         PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult; override;
@@ -910,11 +894,7 @@ type
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
                         Flags: TJumpToCodePosFlags = [jfFocusEditor]): TModalResult; override;
     procedure DoJumpToCodeToolBossError; override;
-    function NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override;
-        deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
-    function SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean; override;
-        deprecated 'use method with EditorObject';   // deprecated in 0.9.29 March 2010
     function SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean; override;
     procedure ApplyCodeToolChanges;
     procedure DoJumpToOtherProcedureSection;
@@ -5655,12 +5635,6 @@ begin
   SourceFileMgr.CreateFileDialogFilterForSourceEditorFiles(Filter, AllEditorMask, AllMask);
 end;
 
-function TMainIDE.DoSaveEditorFile(PageIndex:integer; Flags: TSaveFlags): TModalResult;
-begin
-  Result := DoSaveEditorFile(
-    SourceEditorManager.ActiveSourceWindow.FindSourceEditorWithPageIndex(PageIndex),Flags);
-end;
-
 function TMainIDE.DoSaveEditorFile(AEditor: TSourceEditorInterface; Flags: TSaveFlags): TModalResult;
 begin
   Result:=SourceFileMgr.SaveEditorFile(AEditor, Flags);
@@ -5669,12 +5643,6 @@ end;
 function TMainIDE.DoSaveEditorFile(const Filename: string; Flags: TSaveFlags): TModalResult;
 begin
   Result:=SourceFileMgr.SaveEditorFile(Filename, Flags);
-end;
-
-function TMainIDE.DoCloseEditorFile(PageIndex:integer; Flags: TCloseFlags): TModalResult;
-begin
-  Result := DoCloseEditorFile(
-    SourceEditorManager.ActiveSourceWindow.FindSourceEditorWithPageIndex(PageIndex),Flags);
 end;
 
 function TMainIDE.DoCloseEditorFile(const Filename: string; Flags: TCloseFlags): TModalResult;
@@ -5707,12 +5675,6 @@ begin
   if CurResult=mrAbort then exit(mrAbort);
   if CurResult<>mrOk then Result:=mrCancel;
   UpdateSaveMenuItemsAndButtons(true);
-end;
-
-function TMainIDE.DoOpenEditorFile(AFileName:string; PageIndex: integer;
-  Flags: TOpenFlags):TModalResult;
-begin
-  Result := DoOpenEditorFile(AFileName, PageIndex, SourceEditorManager.ActiveSourceWindowIndex, Flags);
 end;
 
 function TMainIDE.DoOpenEditorFile(AFileName: string; PageIndex, WindowIndex: integer;
@@ -6146,13 +6108,6 @@ begin
 end;
 
 function TMainIDE.DoOpenFileAndJumpToIdentifier(const AFilename,
-  AnIdentifier: string; PageIndex: integer; Flags: TOpenFlags): TModalResult;
-begin
-  Result := DoOpenFileAndJumpToIdentifier(AFilename, AnIdentifier, PageIndex,
-    SourceEditorManager.ActiveSourceWindowIndex, Flags);
-end;
-
-function TMainIDE.DoOpenFileAndJumpToIdentifier(const AFilename,
   AnIdentifier: string; PageIndex, WindowIndex: integer; Flags: TOpenFlags): TModalResult;
 var
   ActiveUnitInfo: TUnitInfo;
@@ -6173,14 +6128,6 @@ begin
     Result:=mrOk;
   end else
     DoJumpToCodeToolBossError;
-end;
-
-function TMainIDE.DoOpenFileAndJumpToPos(const AFilename: string;
-  const CursorPosition: TPoint; TopLine: integer; PageIndex: integer;
-  Flags: TOpenFlags): TModalResult;
-begin
-  Result := DoOpenFileAndJumpToPos(AFilename, CursorPosition, TopLine, PageIndex,
-    SourceEditorManager.ActiveSourceWindowIndex, Flags);
 end;
 
 function TMainIDE.DoOpenFileAndJumpToPos(const AFilename: string;
@@ -9410,12 +9357,6 @@ begin
   end;
 end;
 
-function TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean;
-begin
-  Result := SaveSourceEditorChangesToCodeCache(
-    SourceEditorManager.ActiveSourceWindow.FindSourceEditorWithPageIndex(PageIndex));
-end;
-
 function TMainIDE.SaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
 // save all open sources to code tools cache
 begin
@@ -9538,12 +9479,6 @@ begin
   finally
     SourceEditorManager.EndAutoFocusLock;
   end;
-end;
-
-function TMainIDE.NeedSaveSourceEditorChangesToCodeCache(PageIndex: integer): boolean;
-begin
-  Result := NeedSaveSourceEditorChangesToCodeCache(
-    SourceEditorManager.ActiveSourceWindow.FindSourceEditorWithPageIndex(PageIndex));
 end;
 
 function TMainIDE.NeedSaveSourceEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;

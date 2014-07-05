@@ -295,7 +295,6 @@ const
   ecOpenPackageOfCurUnit    = ecFirstLazarus + 602;
   ecAddCurFileToPkg         = ecFirstLazarus + 603;
   ecNewPkgComponent         = ecFirstLazarus + 604;
-//  ecAddCurUnitToPkg         = ecAddCurFileToPkg deprecated;
   ecPackageGraph            = ecFirstLazarus + 605;
   ecPackageLinks            = ecFirstLazarus + 606;
   ecEditInstallPkgs         = ecFirstLazarus + 607;
