@@ -3401,7 +3401,7 @@ begin
   ecShowAbstractMethods:      DoShowAbstractMethods;
   ecRemoveEmptyMethods:       DoRemoveEmptyMethods;
   ecRemoveUnusedUnits:        DoRemoveUnusedUnits;
-  ecUseUnit: DoUseUnit;
+  ecUseUnit:                  DoUseUnit;
   ecFindOverloads:            DoFindOverloads;
   ecFindBlockOtherEnd:        DoGoToPascalBlockOtherEnd;
   ecFindBlockStart:           DoGoToPascalBlockStart;
@@ -3770,8 +3770,8 @@ procedure TMainIDE.UpdateIDEComponentPalette;
 begin
   IDEComponentPalette.HideControls:=(LastFormActivated<>nil)
     and (LastFormActivated.Designer<>nil)
-    and (TDesigner(LastFormActivated.Designer).LookupRoot<>nil)
-    and not ((LastFormActivated.Designer as TDesigner).LookupRoot is TControl);
+    and (LastFormActivated.Designer.LookupRoot<>nil)
+    and not (LastFormActivated.Designer.LookupRoot is TControl);
   IDEComponentPalette.UpdateVisible;
   TComponentPalette(IDEComponentPalette).OnClassSelected := @ComponentPaletteClassSelected;
   SetupHints;
@@ -8034,7 +8034,7 @@ begin
   if AForm<>nil then begin
     if (AForm.Designer=nil) then
       RaiseException('TMainIDE.GetUnitWithForm AForm.Designer');
-    AComponent:=TDesigner(AForm.Designer).LookupRoot;
+    AComponent:=AForm.Designer.LookupRoot;
     if AComponent=nil then
       RaiseException('TMainIDE.GetUnitWithForm AComponent=nil');
     GetUnitWithPersistent(AComponent,ActiveSourceEditor,ActiveUnitInfo);
@@ -8351,12 +8351,10 @@ var
 begin
   if SourceEditorManager.SourceEditorCount = 0 then exit;
   if LastFormActivated <> nil then begin
-    ActiveUnitInfo := Project1.UnitWithComponent(
-                  TDesigner(LastFormActivated.Designer).LookupRoot);
+    ActiveUnitInfo := Project1.UnitWithComponent(LastFormActivated.Designer.LookupRoot);
     if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.OpenEditorInfoCount > 0) then
-    begin
-      SourceEditorManager.ActiveEditor := TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent);
-    end;
+      SourceEditorManager.ActiveEditor :=
+                 TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent);
   end;
   SourceEditorManager.ShowActiveWindowOnTop(False);
   {$IFDEF VerboseIDEDisplayState}
@@ -8865,11 +8863,8 @@ end;
 
 procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject; APersistent: TPersistent);
 // important: APersistent was freed, do not access it
-var
-  CurDesigner: TDesigner;
 begin
-  CurDesigner := TDesigner(Sender);
-  if dfDestroyingForm in CurDesigner.Flags then exit;
+  if dfDestroyingForm in TDesigner(Sender).Flags then exit;
   if ObjectInspector1<>nil then
     ObjectInspector1.FillPersistentComboBox;
 end;
@@ -12166,11 +12161,9 @@ end;
 
 function TMainIDE.GetProjectFileWithDesigner(ADesigner: TIDesigner): TLazProjectFile;
 var
-  TheDesigner: TDesigner;
   AComponent: TComponent;
 begin
-  TheDesigner:=ADesigner as TDesigner;
-  AComponent:=TheDesigner.LookupRoot;
+  AComponent:=ADesigner.LookupRoot;
   if AComponent=nil then
     RaiseException('TMainIDE.GetProjectFileWithDesigner Designer.LookupRoot=nil');
   Result:=GetProjectFileWithRootComponent(AComponent);
@@ -12614,7 +12607,7 @@ procedure TMainIDE.OnPropHookObjectPropertyChanged(Sender: TObject;
 var
   AnUnitInfo: TUnitInfo;
   NewComponent: TComponent;
-  ReferenceDesigner: TDesigner;
+  ReferenceDesigner: TIDesigner;
   ReferenceUnitInfo: TUnitInfo;
 begin
   // check if a TPersistentPropertyEditor was changed
@@ -12629,7 +12622,7 @@ begin
   // find the reference unit
   if (NewObject is TComponent) then begin
     NewComponent:=TComponent(NewObject);
-    ReferenceDesigner:=TDesigner(FindRootDesigner(NewComponent));
+    ReferenceDesigner:=FindRootDesigner(NewComponent);
     if ReferenceDesigner=nil then exit;
     ReferenceUnitInfo:=Project1.UnitWithComponent(ReferenceDesigner.LookupRoot);
     if ReferenceUnitInfo=nil then begin

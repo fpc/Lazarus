@@ -47,8 +47,7 @@ type
     procedure SetLCLForm(const AValue: TForm); virtual;
     procedure SetRoot(const AValue: TComponent); virtual;
     procedure CollectChildren(Child: TComponent); virtual;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-          override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     class function FormClass: TComponentClass; virtual; abstract;
     class function CreateMediator(TheOwner, aForm: TComponent): TDesignerMediator; virtual;

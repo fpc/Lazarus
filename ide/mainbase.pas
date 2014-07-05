@@ -169,7 +169,7 @@ type
     procedure DoMergeDefaultProjectOptions(AProject: TProject);
     procedure DoSwitchToFormSrc(var ActiveSourceEditor:TSourceEditor;
       var ActiveUnitInfo:TUnitInfo);
-    procedure DoSwitchToFormSrc(ADesigner: TDesigner;
+    procedure DoSwitchToFormSrc(ADesigner: TIDesigner;
       var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
 
     procedure GetUnitInfoForDesigner(ADesigner: TIDesigner;
@@ -335,8 +335,7 @@ begin
 end;
 
 procedure TMainIDEBase.GetUnitInfoForDesigner(ADesigner: TIDesigner;
-  out ActiveSourceEditor: TSourceEditorInterface; out ActiveUnitInfo: TUnitInfo
-  );
+  out ActiveSourceEditor: TSourceEditorInterface; out ActiveUnitInfo: TUnitInfo);
 var
   SrcEdit: TSourceEditor;
 begin
@@ -349,8 +348,7 @@ begin
 end;
 
 procedure TMainIDEBase.GetCurrentUnitInfo(
-  out ActiveSourceEditor: TSourceEditorInterface; out ActiveUnitInfo: TUnitInfo
-  );
+  out ActiveSourceEditor: TSourceEditorInterface; out ActiveUnitInfo: TUnitInfo);
 var
   ASrcEdit: TSourceEditor;
   AnUnitInfo: TUnitInfo;
@@ -508,11 +506,9 @@ begin
   DoSwitchToFormSrc(nil,ActiveSourceEditor,ActiveUnitInfo);
 end;
 
-procedure TMainIDEBase.DoSwitchToFormSrc(ADesigner: TDesigner;
+procedure TMainIDEBase.DoSwitchToFormSrc(ADesigner: TIDesigner;
   var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
 begin
-  ActiveSourceEditor:=nil;
-  ActiveUnitInfo:=nil;
   if (ADesigner<>nil) then
     ActiveUnitInfo:=Project1.UnitWithComponent(ADesigner.LookupRoot)
   else if (GlobalDesignHook.LookupRoot<>nil)
@@ -523,8 +519,9 @@ begin
   if (ActiveUnitInfo<>nil) and (ActiveUnitInfo.OpenEditorInfoCount > 0) then begin
     ActiveSourceEditor := TSourceEditor(ActiveUnitInfo.OpenEditorInfo[0].EditorComponent);
     SourceEditorManagerIntf.ActiveEditor := ActiveSourceEditor;
-    exit;
-  end;
+  end
+  else
+    ActiveSourceEditor:=nil;
 end;
 
 procedure TMainIDEBase.DoMnuWindowClicked(Sender: TObject);

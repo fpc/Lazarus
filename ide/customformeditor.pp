@@ -501,15 +501,12 @@ begin
     FrameComp.OnGetCreationClass:=@FrameCompGetCreationClass;
 end;
 
-procedure TCustomFormEditor.SetSelection(
-  const ASelection: TPersistentSelectionList);
+procedure TCustomFormEditor.SetSelection(const ASelection: TPersistentSelectionList);
 begin
   FSelection.Assign(ASelection);
   if Obj_Inspector=nil then exit;
-  if FSelection.Count>0 then begin
-      Obj_Inspector.PropertyEditorHook.LookupRoot:=
-        GetLookupRootForComponent(FSelection[0]);
-  end;
+  if FSelection.Count>0 then
+    Obj_Inspector.PropertyEditorHook.LookupRoot:=GetLookupRootForComponent(FSelection[0]);
   Obj_Inspector.Selection := FSelection;
 end;
 
@@ -1102,7 +1099,7 @@ begin
   else 
   begin
     AForm := GetDesignerForm(JITNonFormList[Index-JITFormList.Count]);
-    Result := TIDesigner(AForm.Designer);
+    Result := AForm.Designer;
   end;
 end;
 

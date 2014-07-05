@@ -666,9 +666,8 @@ procedure TDesigner.PrepareFreeDesigner(AFreeComponent: boolean);
 begin
   // was FinalizeFreeDesigner
   Include(FFlags, dfDestroyingForm);
-  if FLookupRoot is TComponent then
-    // free or hide the form
-    TheFormEditor.DeleteComponent(TComponent(FLookupRoot),AFreeComponent);
+  // free or hide the form
+  TheFormEditor.DeleteComponent(FLookupRoot,AFreeComponent);
   DisconnectComponent;
   Free;
 end;
@@ -1095,8 +1094,7 @@ begin
       break;
     end;
   end;
-  if (Result=nil)
-  and (FLookupRoot is TWinControl) then
+  if (Result=nil) and (FLookupRoot is TWinControl) then
     Result:=TWinControl(FLookupRoot);
 end;
 
