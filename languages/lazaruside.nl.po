@@ -4555,6 +4555,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Bouw"
 
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -5424,6 +5428,7 @@ msgid "Clean up"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr ""
 
@@ -9808,6 +9813,10 @@ msgstr ""
 msgid "Add watch"
 msgstr ""
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr ""
@@ -9820,8 +9829,9 @@ msgstr ""
 msgid "Classic"
 msgstr "Klassiek"
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcloseproject
@@ -10952,6 +10962,10 @@ msgstr "Bouw Lazarus"
 msgid "Build Lazarus with Profile: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 #, fuzzy
 #| msgid "Check LFM file in editor"
@@ -10964,8 +10978,8 @@ msgstr "Controleer .lfm-bestand in editor"
 msgid "Clean Directory ..."
 msgstr "Maak directory schoon ..."
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-msgid "Clean up Build Files ..."
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
@@ -14738,6 +14752,10 @@ msgstr "Benodigde pakketten verwijderd"
 msgid "Remove file %s from project?"
 msgstr "Verwijder bestand %s van het project?"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "Kan het status bestand %s van project %s%s niet lezen. Fout: %s"
@@ -15508,6 +15526,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
@@ -18437,12 +18459,16 @@ msgstr "Bouw bestand"
 msgid "Build Lazarus"
 msgstr "Bouw Lazarus"
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Karakter"
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall

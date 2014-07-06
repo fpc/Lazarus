@@ -4571,6 +4571,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Bangun"
 
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -5446,6 +5450,7 @@ msgid "Clean up"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr ""
 
@@ -9839,6 +9844,10 @@ msgstr ""
 msgid "Add watch"
 msgstr "Tambah pengawasan"
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Bangun proyek/program"
@@ -9851,8 +9860,9 @@ msgstr ""
 msgid "Classic"
 msgstr "Klasik"
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcloseproject
@@ -11020,6 +11030,10 @@ msgstr "Bangun Lazarus"
 msgid "Build Lazarus with Profile: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 #, fuzzy
 #| msgid "Check LFM file in editor"
@@ -11032,8 +11046,8 @@ msgstr "Periksa file LFM dalam editor"
 msgid "Clean Directory ..."
 msgstr "Bersihkan direktori ..."
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-msgid "Clean up Build Files ..."
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
@@ -14811,6 +14825,10 @@ msgstr "Hapus paket yang diperlukan"
 msgid "Remove file %s from project?"
 msgstr "Hapus file %s dari proyek?"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "Tidak bisa membaca file kondisi %s dari proyek %s%sKesalahan: %s"
@@ -15585,6 +15603,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
@@ -18520,12 +18542,16 @@ msgstr "bangun file"
 msgid "Build Lazarus"
 msgstr "Bangun Lazarus"
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Karakter"
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall

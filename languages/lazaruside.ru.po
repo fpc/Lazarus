@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-03 01:15+0400\n"
+"PO-Revision-Date: 2014-07-07 02:21+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3861,7 +3861,7 @@ msgstr "Прервать всю загрузку"
 
 #: lazarusidestrconsts.lisaborted
 msgid "Aborted"
-msgstr ""
+msgstr "Прервано"
 
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
@@ -3877,7 +3877,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"
-msgstr ""
+msgstr "О \"%s\""
 
 #: lazarusidestrconsts.lisaboutdocumentation
 msgid "Documentation:"
@@ -3968,7 +3968,7 @@ msgstr "Добавить файлы из каталога"
 
 #: lazarusidestrconsts.lisaddfilter
 msgid "Add Filter ..."
-msgstr ""
+msgstr "Добавить фильтр ..."
 
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
@@ -4017,7 +4017,7 @@ msgstr "Точка останова по &адресу ..."
 
 #: lazarusidestrconsts.lisaddtoincludesearchpath
 msgid "Add to include search path?"
-msgstr ""
+msgstr "Добавить к путям поиска включаемых файлов?"
 
 #: lazarusidestrconsts.lisaddtoproject
 msgid "Add %s to project?"
@@ -4025,7 +4025,7 @@ msgstr "Добавить %s к проекту?"
 
 #: lazarusidestrconsts.lisaddtounitsearchpath
 msgid "Add to unit search path?"
-msgstr ""
+msgstr "Добавить к путям поиска модулей?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -4104,7 +4104,7 @@ msgstr "Файл \"%s\" уже существует.%sЗаменить его?"
 
 #: lazarusidestrconsts.lisafilterwiththenamealreadyexists
 msgid "A filter with the name \"%s\" already exists."
-msgstr ""
+msgstr "Фильтр с именем \"%s\" уже имеется."
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
 #| msgid "After cleaning up, switch to automatic clean"
@@ -4175,7 +4175,7 @@ msgstr "Всегда преобразовывать предлагаемое п�
 
 #: lazarusidestrconsts.lisalwaysdrawselecteditemsfocused
 msgid "Always draw selected items focused"
-msgstr ""
+msgstr "Всегда отрисовывать выделенное как находящееся в фокусе"
 
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
@@ -4536,6 +4536,10 @@ msgstr "собрать все файлы проекта/пакета/IDE"
 msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Сборка"
+
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
 
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
@@ -5418,6 +5422,7 @@ msgid "Clean up"
 msgstr "Очистка"
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr "Очистить и собрать"
 
@@ -7736,7 +7741,7 @@ msgstr "Отображать линии сетки"
 
 #: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
 msgid "Draw the selection focused, even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
-msgstr ""
+msgstr "Отрисовывать выделенное как находящееся в фокусе даже если окно сообщений фокуса не имеет. Воспользуйтесь этой возможностью, если используемая тема оформления имеет плохо заметную отрисовку элементов не в фокусе."
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -8700,7 +8705,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfind
 msgid "Find ..."
-msgstr ""
+msgstr "Найти ..."
 
 #: lazarusidestrconsts.lisfindfiledirectory
 msgid "D&irectory"
@@ -9840,6 +9845,10 @@ msgstr "Добавить точку останова с наблюдением"
 msgid "Add watch"
 msgstr "Добавить наблюдение"
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Собрать проект/программу"
@@ -9852,9 +9861,10 @@ msgstr "Выберите схему комбинаций клавиш"
 msgid "Classic"
 msgstr "Классическая"
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
-msgstr "Очистить файлы сборки"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
+msgstr "Очистить и собрать"
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
@@ -11013,6 +11023,10 @@ msgstr "Собрать Lazarus по текущему профилю"
 msgid "Build Lazarus with Profile: %s"
 msgstr "Пересобрать Lazarus по профилю: %s"
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 #| msgid "Check LFM file in editor"
 msgid "Check LFM File in Editor"
@@ -11023,10 +11037,9 @@ msgstr "Проверить файл LFM в редакторе"
 msgid "Clean Directory ..."
 msgstr "Очистить каталог ..."
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-#| msgid "Clean up build files ..."
-msgid "Clean up Build Files ..."
-msgstr "Очистить файлы сборки ..."
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
 #| msgid "Close A&ll Editor Files"
@@ -11110,7 +11123,7 @@ msgstr "Окна отладки"
 
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
-msgstr ""
+msgstr "Преобразование кода на Delphi"
 
 #: lazarusidestrconsts.lismenudiff
 #| msgid "Diff"
@@ -14692,6 +14705,10 @@ msgstr "Удалённые требуемые пакеты"
 msgid "Remove file %s from project?"
 msgstr "Удалить файл %s из проекта?"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr "Удалить %s элемент(ов) из проекта?"
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "Невозможно прочитать файл состояния %s проекта %s%sОшибка: %s"
@@ -15467,6 +15484,10 @@ msgstr "выбран для удаления"
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "(выбран сосед слева)"
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"
@@ -16677,19 +16698,19 @@ msgstr ""
 
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
-msgstr ""
+msgstr "Заголовок средства: завершение с ошибкой"
 
 #: lazarusidestrconsts.listoolheaderrunning
 msgid "Tool Header: Running"
-msgstr ""
+msgstr "Заголовок средства: исполнение"
 
 #: lazarusidestrconsts.listoolheaderscrolledup
 msgid "Tool Header: Scrolled up"
-msgstr ""
+msgstr "Заголовок средства: прокрученный вывод"
 
 #: lazarusidestrconsts.listoolheadersuccess
 msgid "Tool Header: Success"
-msgstr ""
+msgstr "Заголовок средства: успешное завершение"
 
 #: lazarusidestrconsts.listoolstoppedwithexitcodeusecontextmenutogetmoreinfo
 msgid "tool stopped with exit code %s. Use context menu to get more information."
@@ -18397,13 +18418,17 @@ msgstr "Собрать файл"
 msgid "Build Lazarus"
 msgstr "Собрать Lazarus"
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Символ"
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
-msgstr "очистить файлы сборки"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

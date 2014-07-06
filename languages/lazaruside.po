@@ -4330,6 +4330,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr ""
 
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -5187,6 +5191,7 @@ msgid "Clean up"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr ""
 
@@ -9499,6 +9504,10 @@ msgstr ""
 msgid "Add watch"
 msgstr ""
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr ""
@@ -9511,8 +9520,9 @@ msgstr ""
 msgid "Classic"
 msgstr ""
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcloseproject
@@ -10613,6 +10623,10 @@ msgstr ""
 msgid "Build Lazarus with Profile: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
 msgstr ""
@@ -10621,8 +10635,8 @@ msgstr ""
 msgid "Clean Directory ..."
 msgstr ""
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-msgid "Clean up Build Files ..."
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
@@ -14045,6 +14059,10 @@ msgstr ""
 msgid "Remove file %s from project?"
 msgstr ""
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr ""
@@ -14791,6 +14809,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
@@ -17596,12 +17618,16 @@ msgstr ""
 msgid "Build Lazarus"
 msgstr ""
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr ""
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall

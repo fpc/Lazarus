@@ -4626,6 +4626,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "构建"
 
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -5513,6 +5517,7 @@ msgid "Clean up"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr ""
 
@@ -9935,6 +9940,10 @@ msgstr ""
 msgid "Add watch"
 msgstr "增加观察点"
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "构建工程/程序"
@@ -9947,8 +9956,9 @@ msgstr "选择键盘映射方案"
 msgid "Classic"
 msgstr "经典"
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcloseproject
@@ -11123,6 +11133,10 @@ msgstr "构建 Lazarus"
 msgid "Build Lazarus with Profile: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 #, fuzzy
 #| msgid "Check LFM file in editor"
@@ -11135,8 +11149,8 @@ msgstr "在编辑器中检查 LFM 文件"
 msgid "Clean Directory ..."
 msgstr "清除目录 ..."
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-msgid "Clean up Build Files ..."
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
@@ -14937,6 +14951,10 @@ msgstr "移除需要的包"
 msgid "Remove file %s from project?"
 msgstr "从工程移除文件 %s ?"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "无法读取状态文件 %s 关于 %s%s错误: %s"
@@ -15721,6 +15739,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
@@ -18690,12 +18712,16 @@ msgstr "构建文件"
 msgid "Build Lazarus"
 msgstr "构建 Lazarus"
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Char"
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall

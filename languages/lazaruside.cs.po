@@ -14272,6 +14272,10 @@ msgstr "Odstranit požadované balíčky"
 msgid "Remove file %s from project?"
 msgstr "Odstranit soubor %s z projektu?"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "Nelze načíst soubor %s projektu %s%sChyba: %s"

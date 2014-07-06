@@ -4402,6 +4402,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "構築"
 
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -5269,6 +5273,7 @@ msgid "Clean up"
 msgstr "掃除"
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr "掃除して構築"
 
@@ -9650,6 +9655,10 @@ msgstr "データ/監視ポイントを追加"
 msgid "Add watch"
 msgstr "監視追加"
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "プロジェクト/プログラムを構築"
@@ -9662,9 +9671,10 @@ msgstr "キーマッピングスキームを選択"
 msgid "Classic"
 msgstr "クラッシック"
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
-msgstr "掃除してファイルを構築"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
+msgstr "掃除して構築"
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
@@ -10769,6 +10779,10 @@ msgstr "現在のプロファイルで Lazarus を構築"
 msgid "Build Lazarus with Profile: %s"
 msgstr "プロファイル %s で Lazarus を構築"
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
 msgstr "エディタでLFMファイルをチェック"
@@ -10777,9 +10791,9 @@ msgstr "エディタでLFMファイルをチェック"
 msgid "Clean Directory ..."
 msgstr "ディレクトリの中身を掃除 ..."
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-msgid "Clean up Build Files ..."
-msgstr "構築ファイルを掃除 ..."
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
 msgid "Close A&ll"
@@ -14333,6 +14347,10 @@ msgstr "削除された必要パッケージ"
 msgid "Remove file %s from project?"
 msgstr "ファイル %s をプロジェクトから削除してよろしいですか？"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "プロジェクト%s%sの状態ファイル%sを読めません。エラー: %s"
@@ -15084,6 +15102,10 @@ msgstr "アンインストールのために選択されたもの"
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "（選択された左隣）"
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"
@@ -18052,13 +18074,17 @@ msgstr "ファイルを構築"
 msgid "Build Lazarus"
 msgstr "Lazarus を構築"
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Char"
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
-msgstr "構築ファイルを掃除"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

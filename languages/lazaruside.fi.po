@@ -4322,6 +4322,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Kokoa"
 
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -5177,6 +5181,7 @@ msgid "Clean up"
 msgstr "Siivoa"
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr "Siivoa ja kokoa"
 
@@ -9475,6 +9480,10 @@ msgstr ""
 msgid "Add watch"
 msgstr "Lisää vahti"
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Kokoa projekti/ohjelma"
@@ -9487,9 +9496,10 @@ msgstr "Valitse näppäinkartan malli"
 msgid "Classic"
 msgstr "Klassinen"
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
-msgstr "Siivoa kokoamisen tiedostot"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
+msgstr "Siivoa ja kokoa"
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
@@ -10585,6 +10595,10 @@ msgstr "Kokoa Lazarus käyttäen nykyistä profiilia"
 msgid "Build Lazarus with Profile: %s"
 msgstr "Kokoa Lazarus käyttäen profiilia: %s"
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
 msgstr "Tarkista editorissa oleva LFM-tiedosto"
@@ -10593,9 +10607,9 @@ msgstr "Tarkista editorissa oleva LFM-tiedosto"
 msgid "Clean Directory ..."
 msgstr "Siivoa hakemisto ..."
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-msgid "Clean up Build Files ..."
-msgstr "Siivoa käännetyt tiedostot ..."
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
 msgid "Close A&ll"
@@ -14002,6 +14016,10 @@ msgstr "Poistettuja tarvittavia paketteja"
 msgid "Remove file %s from project?"
 msgstr "Poistetaanko tiedosto %s projektista?"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr ""
@@ -14747,6 +14765,10 @@ msgstr "valittu poistettavaksi asennuksesta"
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "(valittu vasen naapuri)"
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"
@@ -17550,13 +17572,17 @@ msgstr "Kokoa tiedosto"
 msgid "Build Lazarus"
 msgstr "Kokoa Lazarus"
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Merkki"
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
-msgstr "siivoa koontatiedostot"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

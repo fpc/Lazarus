@@ -4535,6 +4535,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Munta"
 
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -5404,6 +5408,7 @@ msgid "Clean up"
 msgstr ""
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr ""
 
@@ -9774,6 +9779,10 @@ msgstr ""
 msgid "Add watch"
 msgstr ""
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr ""
@@ -9786,8 +9795,9 @@ msgstr ""
 msgid "Classic"
 msgstr "Clàssic"
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
 msgstr ""
 
 #: lazarusidestrconsts.liskmcloseproject
@@ -10910,6 +10920,10 @@ msgstr "Munta el Lazarus"
 msgid "Build Lazarus with Profile: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 #, fuzzy
 #| msgid "Check LFM file in editor"
@@ -10922,8 +10936,8 @@ msgstr "Comprova el fitxer LFM en l'editor"
 msgid "Clean Directory ..."
 msgstr "Neteja el directori ..."
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-msgid "Clean up Build Files ..."
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
@@ -14684,6 +14698,10 @@ msgstr "S'han eliminat els paquets requerits"
 msgid "Remove file %s from project?"
 msgstr "Voleu eliminar el fitxer %s del projecte?"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr ""
@@ -15450,6 +15468,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
@@ -18355,12 +18377,16 @@ msgstr "munta el fitxer"
 msgid "Build Lazarus"
 msgstr "Munta el Lazarus"
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Caràcter"
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall

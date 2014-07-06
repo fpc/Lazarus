@@ -4655,6 +4655,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Construir"
 
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -5556,6 +5560,7 @@ msgid "Clean up"
 msgstr "Limpiar"
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr "Limpiar y construir"
 
@@ -10051,6 +10056,10 @@ msgstr "Añadir Dato/punto de observación"
 msgid "Add watch"
 msgstr "Añadir punto de observación"
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Construir proyecto/programa"
@@ -10063,9 +10072,10 @@ msgstr "Seleccionar esquema de teclas"
 msgid "Classic"
 msgstr "Clásico"
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
-msgstr "Limpiar archivo de construcción"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
+msgstr "Limpiar y construir"
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
@@ -11251,6 +11261,10 @@ msgstr "Construir Lazarus con el Perfil Actual"
 msgid "Build Lazarus with Profile: %s"
 msgstr "Construir Lazarus con el Perfil: %s"
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 #, fuzzy
 #| msgid "Check LFM file in editor"
@@ -11263,9 +11277,9 @@ msgstr "Verificar archivo LFM en editor"
 msgid "Clean Directory ..."
 msgstr "Limpiar Directorio ..."
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-msgid "Clean up Build Files ..."
-msgstr "Limpiar Archivos de Construcción ..."
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
 #, fuzzy
@@ -15096,6 +15110,10 @@ msgstr "Paquetes requeridos eliminados"
 msgid "Remove file %s from project?"
 msgstr "¿Eliminar el archivo %s del proyecto?"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "No se puede leer el archivo de estado %s del proyecto %s.%sError: %s"
@@ -15891,6 +15909,10 @@ msgstr ""
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "(vecino izquierdo seleccionado)"
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"
@@ -18920,13 +18942,17 @@ msgstr "construir archivo"
 msgid "Build Lazarus"
 msgstr "Construir lazarus"
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Caracter"
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
-msgstr "Limpiar archivos de construcción"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

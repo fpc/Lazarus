@@ -4560,6 +4560,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Daryti"
 
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -5450,6 +5454,7 @@ msgid "Clean up"
 msgstr "Išvalyti"
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr "Išvalyti ir daryti"
 
@@ -9894,6 +9899,10 @@ msgstr "Pridėti stebėjimo tašką"
 msgid "Add watch"
 msgstr "Pridėti stebimąjį"
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Daryti projektą/programą"
@@ -9906,9 +9915,10 @@ msgstr "Rinkitės klavišų priskyrimo schemą"
 msgid "Classic"
 msgstr "Klasikinis"
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
-msgstr "Apvalyti darymo failus"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
+msgstr "Išvalyti ir daryti"
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
@@ -11056,6 +11066,10 @@ msgstr "Daryti Lazarus naudojant veikiamąjį profilį"
 msgid "Build Lazarus with Profile: %s"
 msgstr "Lazarus daryti naudojant profilį: %s"
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 #| msgid "Check LFM file in editor"
 msgid "Check LFM File in Editor"
@@ -11066,9 +11080,9 @@ msgstr "Tikrinti LFM failą rengyklėje"
 msgid "Clean Directory ..."
 msgstr "Apvalyti aplanką…"
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-msgid "Clean up Build Files ..."
-msgstr "Apvalyti darymo failus"
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
 #, fuzzy
@@ -14764,6 +14778,10 @@ msgstr "Pašalinti reikiami paketai"
 msgid "Remove file %s from project?"
 msgstr "Pašalinti failą %s iš projekto?"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "Nepavyko įkelti būsenos failą %s, priklausantį projektui%s.%sKlaida: %s"
@@ -15544,6 +15562,10 @@ msgstr ""
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "(pažymėtas kairysis kaimynas)"
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"
@@ -18561,13 +18583,17 @@ msgstr "daryti failą"
 msgid "Build Lazarus"
 msgstr "Daryti Lazarus"
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Simbolis"
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
-msgstr "apvalyti darymo failus"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

@@ -4534,6 +4534,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Побудувати"
 
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr ""
@@ -5421,6 +5425,7 @@ msgid "Clean up"
 msgstr "Очистка"
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr "Очистити і побудувати"
 
@@ -9857,6 +9862,10 @@ msgstr "Додати Дані/ТочкуОгляду"
 msgid "Add watch"
 msgstr "Додати спостереження"
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Побудувати проект/програму"
@@ -9869,9 +9878,10 @@ msgstr "Вибір схеми розкладки клавіатури"
 msgid "Classic"
 msgstr "Класичний"
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
-msgstr "Очистити файли побудови"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
+msgstr "Очистити і побудувати"
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
@@ -11013,6 +11023,10 @@ msgstr "Побудувати Lazarus з поточним профілем"
 msgid "Build Lazarus with Profile: %s"
 msgstr "Побудувати Lazarus з профілем: %s"
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 #| msgid "Check LFM file in editor"
 msgid "Check LFM File in Editor"
@@ -11023,10 +11037,9 @@ msgstr "Перевірити файл LFM в Редакторі"
 msgid "Clean Directory ..."
 msgstr "Очистити теку ..."
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-#| msgid "Clean up build files ..."
-msgid "Clean up Build Files ..."
-msgstr "Очистити файли побудови ..."
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
 #, fuzzy
@@ -14702,6 +14715,10 @@ msgstr "Видалені необхідні пакунки"
 msgid "Remove file %s from project?"
 msgstr "Видалити файл %s з проекту?"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "Неможливо прочитати файл стану %s проекту %s%sПомилка: %s"
@@ -15474,6 +15491,10 @@ msgstr ""
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "(вибраний лівий сусід)"
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"
@@ -18477,13 +18498,17 @@ msgstr "побудувати файл"
 msgid "Build Lazarus"
 msgstr "Побудувати lazarus"
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Символ"
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
-msgstr "очистити файли побудови"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

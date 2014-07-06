@@ -4341,6 +4341,10 @@ msgctxt "lazarusidestrconsts.lisbuildcaption"
 msgid "Build"
 msgstr "Építés"
 
+#: lazarusidestrconsts.lisbuildfollowingmodes
+msgid "Build the following modes"
+msgstr ""
+
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
 msgstr "IDE építése"
@@ -5198,6 +5202,7 @@ msgid "Clean up"
 msgstr "Tisztítás"
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr "Tisztítás és építés"
 
@@ -9514,6 +9519,10 @@ msgstr "Figyelési pont hozzáadása"
 msgid "Add watch"
 msgstr "Figyelő hozzáadása"
 
+#: lazarusidestrconsts.liskmbuildmanymodes
+msgid "Build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
 msgstr "Projekt/Program építése"
@@ -9526,9 +9535,10 @@ msgstr "Gyorsbillentyű séma hozzáadása"
 msgid "Classic"
 msgstr "Klasszikus"
 
-#: lazarusidestrconsts.liskmcleanupcompiled
-msgid "Clean up build files"
-msgstr "Építési fájlok törlése"
+#: lazarusidestrconsts.liskmcleanupandbuild
+msgctxt "lazarusidestrconsts.liskmcleanupandbuild"
+msgid "Clean up and build"
+msgstr "Tisztítás és építés"
 
 #: lazarusidestrconsts.liskmcloseproject
 msgid "Close project"
@@ -10630,6 +10640,10 @@ msgstr "Lazarus építése a jelenlegi profillal"
 msgid "Build Lazarus with Profile: %s"
 msgstr "Lazarus építése a következő profillal: %s"
 
+#: lazarusidestrconsts.lismenubuildmanymodes
+msgid "Build many Modes ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenuchecklfm
 msgid "Check LFM File in Editor"
 msgstr "LFM fájl ellenőrzése a szerkesztőben"
@@ -10638,9 +10652,9 @@ msgstr "LFM fájl ellenőrzése a szerkesztőben"
 msgid "Clean Directory ..."
 msgstr "Könyvtár tisztítása ..."
 
-#: lazarusidestrconsts.lismenucleanupcompiled
-msgid "Clean up Build Files ..."
-msgstr "Építési fájlok törlése ..."
+#: lazarusidestrconsts.lismenucleanupandbuild
+msgid "Clean up and Build ..."
+msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
 msgid "Close A&ll"
@@ -14065,6 +14079,10 @@ msgstr "Eltávolított szükséges csomagok"
 msgid "Remove file %s from project?"
 msgstr "Eltávolítja a projektből ezt: %s?"
 
+#: lazarusidestrconsts.lisprojinspremoveitemsf
+msgid "Remove %s items from project?"
+msgstr ""
+
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
 msgstr "A(z) %s állapotfájl beolvasása, a(z) %s projektből, nem lehetséges.%sHiba: %s"
@@ -14812,6 +14830,10 @@ msgstr "kijelölve eltávolításra"
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "(kijelölt bal oldali szomszéd)"
+
+#: lazarusidestrconsts.lisselectedmodeswerebuilt
+msgid "Selected %d modes were succesfully built."
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"
@@ -17616,13 +17638,17 @@ msgstr "fájl építése"
 msgid "Build Lazarus"
 msgstr "Lazarus építése"
 
+#: lazarusidestrconsts.srkmecbuildmanymodes
+msgid "build many modes"
+msgstr ""
+
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
 msgstr "Char"
 
-#: lazarusidestrconsts.srkmeccleanupcompiled
-msgid "clean up build files"
-msgstr "építési fájlok törlése"
+#: lazarusidestrconsts.srkmeccleanupandbuild
+msgid "clean up and build"
+msgstr ""
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"
