@@ -112,10 +112,11 @@ type
 
   { TLazPackageID }
 
-  TLazPackageID = class(TAbstractIDEPackageOptions)
+  TLazPackageID = class(TPersistent)
   private
     FIDAsWord: string;
   protected
+    FIDEOptions: TAbstractIDEOptions; //actually TPackageIDEOptions;
     FName: string;
     FVersion: TPkgVersion;
     FIDAsString: string;
@@ -130,9 +131,6 @@ type
     function Compare(PackageID2: TLazPackageID): integer;
     function CompareMask(ExactPackageID: TLazPackageID): integer;
     procedure AssignID(Source: TLazPackageID); virtual;
-    // IDE options
-    class function GetGroupCaption: string; override;
-    class function GetInstance: TAbstractIDEOptions; override;
   public
     property Name: string read FName write SetName;
     property Version: TPkgVersion read FVersion;
@@ -688,16 +686,6 @@ procedure TLazPackageID.AssignID(Source: TLazPackageID);
 begin
   Name:=Source.Name;
   Version.Assign(Source.Version);
-end;
-
-class function TLazPackageID.GetGroupCaption: string;
-begin
-  Result := '';
-end;
-
-class function TLazPackageID.GetInstance: TAbstractIDEOptions;
-begin
-  Result := nil;
 end;
 
 { TIDEPackage }

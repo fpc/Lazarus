@@ -218,23 +218,21 @@ begin
 end;
 
 procedure TPackageIntegrationOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  LazPackage: TLazPackage absolute AOptions;
 begin
-  FLazPackage := LazPackage;
-  FStoredPkgType := LazPackage.PackageType;
+  FLazPackage := (AOptions as TPackageIDEOptions).Package;
+  FStoredPkgType := FLazPackage.PackageType;
   SetSelectedPkgType(FStoredPkgType);
-  case LazPackage.AutoUpdate of
+  case FLazPackage.AutoUpdate of
     pupAsNeeded: UpdateRadioGroup.ItemIndex := 0;
     pupOnRebuildingAll: UpdateRadioGroup.ItemIndex := 1;
     else
       UpdateRadioGroup.ItemIndex := 2;
   end;
-  FPDocSearchPathsEdit.Text:=LazPackage.FPDocPaths;
-  if LazPackage.FPDocPackageName='' then
+  FPDocSearchPathsEdit.Text:=FLazPackage.FPDocPaths;
+  if FLazPackage.FPDocPackageName='' then
     FPDocPackageNameEdit.Text:=lisDefaultPlaceholder
   else
-    FPDocPackageNameEdit.Text:=LazPackage.FPDocPackageName;
+    FPDocPackageNameEdit.Text:=FLazPackage.FPDocPackageName;
 end;
 
 function TPackageIntegrationOptionsFrame.ShowMsgPackageTypeMustBeDesign: boolean;
@@ -278,8 +276,9 @@ end;
 
 procedure TPackageIntegrationOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  LazPackage: TLazPackage absolute AOptions;
+  LazPackage: TLazPackage;
 begin
+  LazPackage := (AOptions as TPackageIDEOptions).Package;
   LazPackage.PackageType := GetSelectedPkgType;
   case UpdateRadioGroup.ItemIndex of
     2: LazPackage.AutoUpdate := pupManually;
@@ -293,7 +292,7 @@ end;
 
 class function TPackageIntegrationOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TLazPackage;
+  Result := TPackageIDEOptions;
 end;
 
 function TPackageIntegrationOptionsFrame.PkgTypeToCaption(t: TLazPackageType

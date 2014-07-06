@@ -41,21 +41,23 @@ end;
 
 procedure TPackageProvidesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
-  LazPackage: TLazPackage absolute AOptions;
+  LazPackage: TLazPackage;
 begin
+  LazPackage := (AOptions as TPackageIDEOptions).Package;
   ProvidesMemo.Lines.Assign(LazPackage.Provides);
 end;
 
 procedure TPackageProvidesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  LazPackage: TLazPackage absolute AOptions;
+  LazPackage: TLazPackage;
 begin
+  LazPackage := (AOptions as TPackageIDEOptions).Package;
   LazPackage.Provides := ProvidesMemo.Lines;
 end;
 
 class function TPackageProvidesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TLazPackage;
+  Result := TPackageIDEOptions;
 end;
 
 initialization

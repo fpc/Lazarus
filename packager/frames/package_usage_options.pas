@@ -248,11 +248,9 @@ begin
 end;
 
 procedure TPackageUsageOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  LazPackage: TLazPackage absolute AOptions;
 begin
-  FLazPackage := LazPackage;
-  with LazPackage.UsageOptions do
+  FLazPackage := (AOptions as TPackageIDEOptions).Package;
+  with FLazPackage.UsageOptions do
   begin
     UnitPathEdit.Text := UnitPath;
     IncludePathEdit.Text := IncludePath;
@@ -261,13 +259,14 @@ begin
     LinkerOptionsMemo.Text := LinkerOptions;
     CustomOptionsMemo.Text := CustomOptions;
   end;
-  AddPackageUnitToProjectCheckBox.Checked := LazPackage.AddToProjectUsesSection;
+  AddPackageUnitToProjectCheckBox.Checked := FLazPackage.AddToProjectUsesSection;
 end;
 
 procedure TPackageUsageOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  LazPackage: TLazPackage absolute AOptions;
+  LazPackage: TLazPackage;
 begin
+  LazPackage := (AOptions as TPackageIDEOptions).Package;
   with LazPackage.UsageOptions do
   begin
     UnitPath := TrimSearchPath(UnitPathEdit.Text, '');
@@ -282,7 +281,7 @@ end;
 
 class function TPackageUsageOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TLazPackage;
+  Result := TPackageIDEOptions;
 end;
 
 initialization

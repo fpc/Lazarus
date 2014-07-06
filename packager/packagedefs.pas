@@ -531,10 +531,22 @@ type
     podFallback // used when podDefault is not writable
     );
 
-  TIterateComponentClassesEvent =
-    procedure(PkgComponent: TPkgComponent) of object;
-  TPkgChangeNameEvent = procedure(Pkg: TLazPackage;
-                                  const OldName: string) of object;
+  TIterateComponentClassesEvent = procedure(PkgComponent: TPkgComponent) of object;
+  TPkgChangeNameEvent = procedure(Pkg: TLazPackage; const OldName: string) of object;
+
+  { TPackageIDEOptions }
+
+  TPackageIDEOptions = class(TAbstractIDEOptions)
+  private
+    FPackage: TLazPackage;
+  public
+    constructor Create(APackage: TLazPackage);
+    destructor Destroy; override;
+    class function GetInstance: TAbstractIDEOptions; override;
+    class function GetGroupCaption: string; override;
+    property Package: TLazPackage read FPackage;
+  end;
+
 
   { TLazPackage }
 
@@ -594,6 +606,7 @@ type
     function GetComponents(Index: integer): TPkgComponent;
     function GetRemovedFiles(Index: integer): TPkgFile;
     function GetFiles(Index: integer): TPkgFile;
+    function GetIDEOptions: TPackageIDEOptions;
     procedure SetAddToProjectUsesSection(const AValue: boolean);
     procedure SetAuthor(const AValue: string);
     procedure SetAutoIncrementVersionOnBuild(const AValue: boolean);
@@ -636,12 +649,10 @@ type
     function GetRemovedPkgFiles(Index: integer): TLazPackageFile; override;
     procedure SetAutoInstall(AValue: TPackageInstallType); override;
   public
-    procedure AssignOptions(Source: TPersistent); override;
     constructor Create;
     destructor Destroy; override;
+    procedure AssignOptions(Source: TPersistent); override;
     // IDE options
-    class function GetGroupCaption: string; override;
-    class function GetInstance: TAbstractIDEOptions; override;
     procedure BackupOptions;
     procedure RestoreOptions;
     // modified
@@ -785,6 +796,7 @@ type
     property Flags: TLazPackageFlags read FFlags write SetFlags;
     property HoldPackageCount: integer read FHoldPackageCount;
     property IconFile: string read FIconFile write SetIconFile;
+    property IDEOptions: TPackageIDEOptions read GetIDEOptions;
     property Installed: TPackageInstallType read FInstalled write SetInstalled;
     property FPDocPaths: string read FFPDocPaths write SetFPDocPaths;
     property FPDocPackageName: string read FFPDocPackageName write SetFPDocPackageName;
@@ -2174,6 +2186,29 @@ begin
   Result:=AFilename;
 end;
 
+{ TPackageIDEOptions }
+
+constructor TPackageIDEOptions.Create(APackage: TLazPackage);
+begin
+  inherited Create;
+  FPackage := APackage;
+end;
+
+destructor TPackageIDEOptions.Destroy;
+begin
+  inherited Destroy;
+end;
+
+class function TPackageIDEOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := Package1.IDEOptions;
+end;
+
+class function TPackageIDEOptions.GetGroupCaption: string;
+begin
+  Result := lisPckOptsPackageOptions;
+end;
+
 { TLazPackage }
 
 procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
@@ -2362,6 +2397,11 @@ end;
 function TLazPackage.GetFiles(Index: integer): TPkgFile;
 begin
   Result:=TPkgFile(FFiles[Index]);
+end;
+
+function TLazPackage.GetIDEOptions: TPackageIDEOptions;
+begin
+  Result := TPackageIDEOptions(FIDEOptions);
 end;
 
 function TLazPackage.GetModified: boolean;
@@ -2611,6 +2651,7 @@ begin
   FRemovedFiles:=TFPList.Create;
   FMacros:=TTransferMacroList.Create;
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
+  FIDEOptions:=TPackageIDEOptions.Create(Self);
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
   FLazCompilerOptions:=FCompilerOptions;
   FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
@@ -2637,20 +2678,11 @@ begin
   FreeAndNil(FFiles);
   FreeAndNil(FComponents);
   FreeAndNil(FCompilerOptions);
+  FreeAndNil(FIDEOptions);
   FreeAndNil(FUsageOptions);
   FreeAndNil(FMacros);
   FreeAndNil(FSourceDirectories);
   inherited Destroy;
-end;
-
-class function TLazPackage.GetGroupCaption: string;
-begin
-  Result := lisPckOptsPackageOptions;
-end;
-
-class function TLazPackage.GetInstance: TAbstractIDEOptions;
-begin
-  Result := Package1;
 end;
 
 procedure TLazPackage.BackupOptions;
@@ -4719,7 +4751,7 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsGroup(GroupPackage, TLazPackage);
+  RegisterIDEOptionsGroup(GroupPackage, TPackageIDEOptions);
   RegisterIDEOptionsGroup(GroupPkgCompiler, TPkgCompilerOptions);
   PackageDependencies:=TAVLTree.Create(@ComparePkgDependencyNames);
 

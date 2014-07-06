@@ -63,8 +63,9 @@ end;
 
 procedure TPackageDescriptionOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
-  LazPackage: TLazPackage absolute AOptions;
+  LazPackage: TLazPackage;
 begin
+  LazPackage := (AOptions as TPackageIDEOptions).Package;
   DescriptionMemo.Text := LazPackage.Description;
   AuthorEdit.Text := LazPackage.Author;
   LicenseMemo.Text := LazPackage.License;
@@ -76,12 +77,13 @@ end;
 
 procedure TPackageDescriptionOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  LazPackage: TLazPackage absolute AOptions;
+  LazPackage: TLazPackage;
   NewVersion: TPkgVersion;
   BrokenDependencies: TFPList;
   RenameDependencies: boolean;
   MsgResult: TModalResult;
 begin
+  LazPackage := (AOptions as TPackageIDEOptions).Package;
   LazPackage.Description := DescriptionMemo.Text;
   LazPackage.Author := AuthorEdit.Text;
   LazPackage.License := LicenseMemo.Text;
@@ -118,7 +120,7 @@ end;
 
 class function TPackageDescriptionOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TLazPackage;
+  Result := TPackageIDEOptions;
 end;
 
 initialization

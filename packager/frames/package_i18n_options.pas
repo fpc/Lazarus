@@ -64,26 +64,24 @@ begin
   EnableI18NCheckBox.Caption := rsEnableI18n;
   I18NGroupBox.Caption := rsI18nOptions;
   PoOutDirlabel.Caption := rsPOOutputDirectory;
-  PoForFormsCheckBox.Caption:=lisCreateUpdatePoFileWhenSavingALfmFile;
-  PoForFormsCheckBox.Hint:=
-    lisYouCanDisableThisForIndividualFormsViaThePackageEd;
+  PoForFormsCheckBox.Caption := lisCreateUpdatePoFileWhenSavingALfmFile;
+  PoForFormsCheckBox.Hint := lisYouCanDisableThisForIndividualFormsViaThePackageEd;
 end;
 
 procedure TPackageI18NOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  LazPackage: TLazPackage absolute AOptions;
 begin
-  FLazPackage := LazPackage;
-  EnableI18NCheckBox.Checked := LazPackage.EnableI18N;
-  I18NGroupBox.Enabled := LazPackage.EnableI18N;
-  POOutDirEdit.Text := LazPackage.POOutputDirectory;
-  PoForFormsCheckBox.Checked:=LazPackage.EnableI18NForLFM;
+  FLazPackage := (AOptions as TPackageIDEOptions).Package;
+  EnableI18NCheckBox.Checked := FLazPackage.EnableI18N;
+  I18NGroupBox.Enabled := FLazPackage.EnableI18N;
+  POOutDirEdit.Text := FLazPackage.POOutputDirectory;
+  PoForFormsCheckBox.Checked:=FLazPackage.EnableI18NForLFM;
 end;
 
 procedure TPackageI18NOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  LazPackage: TLazPackage absolute AOptions;
+  LazPackage: TLazPackage;
 begin
+  LazPackage := (AOptions as TPackageIDEOptions).Package;
   LazPackage.EnableI18N := EnableI18NCheckBox.Checked;
   LazPackage.POOutputDirectory := POOutDirEdit.Text;
   LazPackage.EnableI18NForLFM := PoForFormsCheckBox.Checked;
@@ -91,7 +89,7 @@ end;
 
 class function TPackageI18NOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TLazPackage;
+  Result := TPackageIDEOptions;
 end;
 
 initialization

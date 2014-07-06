@@ -1111,11 +1111,11 @@ const
   );
 begin
   Package1 := LazPackage;
-  Package1.OnBeforeRead:=PackageEditors.OnBeforeReadPackage;
-  Package1.OnAfterWrite:=PackageEditors.OnAfterWritePackage;
+  Package1.IDEOptions.OnBeforeRead:=PackageEditors.OnBeforeReadPackage;
+  Package1.IDEOptions.OnAfterWrite:=PackageEditors.OnAfterWritePackage;
   LazarusIDE.DoOpenIDEOptions(nil,
     Format(lisPckEditCompilerOptionsForPackage, [LazPackage.IDAsString]),
-    [TLazPackage, TPkgCompilerOptions], Settings[LazPackage.ReadOnly]);
+    [TPackageIDEOptions, TPkgCompilerOptions], Settings[LazPackage.ReadOnly]);
   UpdateTitle;
   UpdateButtons;
   UpdateStatusBar;
