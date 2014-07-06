@@ -120,7 +120,7 @@ end;
 
 procedure TProjectFPDocOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProject do begin
+  with (AOptions as TProjectIDEOptions).Project do begin
     SplitString(FPDocPaths, ';', PathsListBox.Items, True);
     if FPDocPackageName='' then
       FPDocPackageNameEdit.Text:=lisDefaultPlaceholder
@@ -131,7 +131,7 @@ end;
 
 procedure TProjectFPDocOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProject do begin
+  with (AOptions as TProjectIDEOptions).Project do begin
     FPDocPaths := StringListToText(PathsListBox.Items, ';', True);
     FPDocPackageName:=GetFPDocPkgNameEditValue;
   end;
@@ -139,7 +139,7 @@ end;
 
 class function TProjectFPDocOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProject;
+  Result := TProjectIDEOptions;
 end;
 
 initialization

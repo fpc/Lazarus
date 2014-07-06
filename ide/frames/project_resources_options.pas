@@ -185,13 +185,12 @@ end;
 
 procedure TResourcesOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
-  Project: TProject absolute AOptions;
   List: TResourceList;
   I: Integer;
 begin
-  FProject := Project;
+  FProject := (AOptions as TProjectIDEOptions).Project;
   lbResources.Items.Clear;
-  List := Project.ProjResources.UserResources.List;
+  List := FProject.ProjResources.UserResources.List;
   lbResources.Items.BeginUpdate;
   try
     for I := 0 to List.Count - 1 do
@@ -204,9 +203,10 @@ end;
 
 procedure TResourcesOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  Project: TProject absolute AOptions;
+  Project: TProject;
   I: Integer;
 begin
+  Project := (AOptions as TProjectIDEOptions).Project;
   Project.ProjResources.UserResources.List.Clear;
   for I := 0 to lbResources.Items.Count - 1 do
     Project.ProjResources.UserResources.List.AddResource(lbResources.Items[I].Caption,
@@ -215,7 +215,7 @@ end;
 
 class function TResourcesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProject;
+  Result := TProjectIDEOptions;
 end;
 
 initialization

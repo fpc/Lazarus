@@ -425,8 +425,7 @@ type
     procedure OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure OnSaveIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
     procedure DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
-      ACaption: String;
-      AOptionsFilter: array of TAbstractIDEOptionsClass;
+      ACaption: String; AOptionsFilter: array of TAbstractIDEOptionsClass;
       ASettings: TIDEOptionsEditorSettings); override;
 
     procedure DoEnvironmentOptionsBeforeRead(Sender: TObject);
@@ -4238,7 +4237,7 @@ procedure TMainIDE.mnuProjectOptionsClicked(Sender: TObject);
 begin
   if Project1=nil then exit;
   DoOpenIDEOptions(nil, Format(dlgProjectOptionsFor, [Project1.GetTitleOrName]),
-    [TAbstractIDEProjectOptions, TProjectCompilerOptions], []);
+    [TProjectIDEOptions, TProjectCompilerOptions], []);
 end;
 
 function TMainIDE.UpdateProjectPOFile(AProject: TProject): TModalResult;
@@ -5004,7 +5003,7 @@ begin
   //debugln(['TMainIDE.DoProjectOptionsBeforeRead ',DbgSName(Sender)]);
   ActiveSrcEdit:=nil;
   BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
-  AProject:=TProject(Sender);
+  AProject:=(Sender as TProjectIDEOptions).Project;
   AProject.BackupSession;
   AProject.BackupBuildModes;
   AProject.UpdateExecutableType;
@@ -5013,7 +5012,7 @@ end;
 
 procedure TMainIDE.DoProjectOptionsAfterWrite(Sender: TObject; Restore: boolean);
 var
-  AProject: TProject absolute Sender;
+  AProject: TProject;
   aFilename: String;
 
   function GetTitle: String;
@@ -5099,6 +5098,7 @@ var
 
 begin
   //debugln(['TMainIDE.DoProjectOptionsAfterWrite ',DbgSName(Sender),' Restore=',Restore]);
+  AProject:=(Sender as TProjectIDEOptions).Project;
   if not Restore then
   begin
     SetTitle;
@@ -6189,8 +6189,8 @@ begin
   Result.OnSaveUnitSessionInfo:=@OnSaveProjectUnitSessionInfo;
   Result.OnGetTestDirectory:=@OnProjectGetTestDirectory;
   Result.OnChangeProjectInfoFile:=@OnProjectChangeInfoFile;
-  Result.OnBeforeRead:=@DoProjectOptionsBeforeRead;
-  Result.OnAfterWrite:=@DoProjectOptionsAfterWrite;
+  Result.IDEOptions.OnBeforeRead:=@DoProjectOptionsBeforeRead;
+  Result.IDEOptions.OnAfterWrite:=@DoProjectOptionsAfterWrite;
 end;
 
 function TMainIDE.DoNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
@@ -9279,8 +9279,7 @@ begin
       Owners.Free;
     end;
   end;
-  if FilenameIsAbsolute(CodeToolsOpts.IndentationFileName)
-  then
+  if FilenameIsAbsolute(CodeToolsOpts.IndentationFileName) then
     AddFile(CodeToolsOpts.IndentationFileName);
 end;
 

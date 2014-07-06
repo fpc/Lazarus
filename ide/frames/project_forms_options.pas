@@ -192,7 +192,7 @@ end;
 
 procedure TProjectFormsOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
-  Project: TProject absolute AOptions;
+  Project: TProject;
 
   procedure FillAutoCreateFormsListbox;
   var
@@ -257,23 +257,24 @@ var
   end;
 
 begin
+  Project := (AOptions as TProjectIDEOptions).Project;
   FillAutoCreateFormsListbox;
   FillAvailFormsListBox;
-
   FormsAutoCreateNewFormsCheckBox.Checked := Project.AutoCreateForms;
 end;
 
 procedure TProjectFormsOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  Project: TProject absolute AOptions;
+  Project: TProject;
 begin
+  Project := (AOptions as TProjectIDEOptions).Project;
   Project.AutoCreateForms := FormsAutoCreateNewFormsCheckBox.Checked;
   Project.TmpAutoCreatedForms := FormsAutoCreatedListBox.Items;
 end;
 
 class function TProjectFormsOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProject;
+  Result := TProjectIDEOptions;
 end;
 
 initialization

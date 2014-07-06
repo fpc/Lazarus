@@ -368,7 +368,7 @@ type
     petUnit
     );
 
-  TLazProject = class(TAbstractIDEProjectOptions)
+  TLazProject = class(TPersistent)
   private
     FCleanOutputFileMask: string;
     FCleanSourcesFileMask: string;
@@ -388,6 +388,7 @@ type
     procedure SetFPDocPaths(const AValue: string);
     procedure SetUseAppBundle(AValue: Boolean);
   protected
+    FIDEOptions: TAbstractIDEOptions; //actually TProjectIDEOptions;
     FLazCompilerOptions: TLazCompilerOptions;
     FFlags: TProjectFlags;
     FResources: TObject;

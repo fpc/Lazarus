@@ -170,7 +170,7 @@ var
   i: integer;
   Attr: TProjectVersionAttribute;
 begin
-  FVersionInfo := (AOptions as TProject).ProjResources.VersionInfo;
+  FVersionInfo := (AOptions as TProjectIDEOptions).Project.ProjResources.VersionInfo;
 
   UseVersionInfoCheckBox.Checked := FVersionInfo.UseVersionInfo;
   MajorVersionSpinEdit.Value := FVersionInfo.MajorVersionNr;
@@ -212,7 +212,7 @@ var
   t: TProjectVersionStringTable;
   attrs: TProjectVersionAttributes;
 begin
-  VersionInfo := (AOptions as TProject).ProjResources.VersionInfo;
+  VersionInfo := (AOptions as TProjectIDEOptions).Project.ProjResources.VersionInfo;
   VersionInfo.UseVersionInfo := UseVersionInfoCheckBox.Checked;
   VersionInfo.AutoIncrementBuild := AutomaticallyIncreaseBuildCheckBox.Checked;
   VersionInfo.MajorVersionNr := MajorVersionSpinEdit.Value;
@@ -240,7 +240,7 @@ end;
 
 class function TProjectVersionInfoOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProject;
+  Result := TProjectIDEOptions;
 end;
 
 initialization

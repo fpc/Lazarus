@@ -104,7 +104,6 @@ type
   TAbstractIDEEnvironmentOptions = class(TAbstractIDEOptions);
   TAbstractIDEHelpOptions = class(TAbstractIDEEnvironmentOptions);
 
-  TAbstractIDEProjectOptions = class(TAbstractIDEOptions);
   TAbstractIDEPackageOptions = class(TAbstractIDEOptions);
   TAbstractIDECompilerOptions = class(TAbstractIDEOptions);
 

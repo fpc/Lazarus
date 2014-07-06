@@ -88,9 +88,9 @@ end;
 
 procedure TProjectSaveOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  if not (AOptions is TProject) then exit;
-  fProject:=TProject(AOptions);
-  with AOptions as TProject do
+  if not (AOptions is TProjectIDEOptions) then exit;
+  fProject:=(AOptions as TProjectIDEOptions).Project;
+  with fProject do
   begin
     SaveClosedUnitInfoCheckBox.Checked := (pfSaveClosedUnits in Flags);
     SaveOnlyProjectUnitInfoCheckBox.Checked := (pfSaveOnlyProjectUnits in Flags);
@@ -104,8 +104,8 @@ procedure TProjectSaveOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   AFlags: TProjectFlags;
 begin
-  if not (AOptions is TProject) then exit;
-  with AOptions as TProject do
+  if not (AOptions is TProjectIDEOptions) then exit;
+  with (AOptions as TProjectIDEOptions).Project do
   begin
     AFlags := Flags;
     if SaveClosedUnitInfoCheckBox.Checked then
@@ -132,7 +132,7 @@ end;
 
 class function TProjectSaveOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProject;
+  Result := TProjectIDEOptions;
 end;
 
 initialization

@@ -74,7 +74,7 @@ end;
 
 procedure TProjectMiscOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProject do
+  with (AOptions as TProjectIDEOptions).Project do
   begin
     MainUnitIsPascalSourceCheckBox.Checked := (pfMainUnitIsPascalSource in Flags);
     MainUnitHasUsesSectionForAllUnitsCheckBox.Checked := (pfMainUnitHasUsesSectionForAllUnits in Flags);
@@ -100,7 +100,7 @@ end;
 
 procedure TProjectMiscOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
-  Project: TProject absolute AOptions;
+  Project: TProject;
   NewFlags: TProjectFlags;
 
   procedure SetProjectFlag(AFlag: TProjectFlag; AValue: Boolean);
@@ -112,6 +112,7 @@ var
   end;
 
 begin
+  Project := (AOptions as TProjectIDEOptions).Project;
   NewFlags := Project.Flags;
   SetProjectFlag(pfMainUnitIsPascalSource,
                  MainUnitIsPascalSourceCheckBox.Checked);
@@ -139,7 +140,7 @@ end;
 
 class function TProjectMiscOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProject;
+  Result := TProjectIDEOptions;
 end;
 
 initialization

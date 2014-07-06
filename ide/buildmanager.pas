@@ -2661,7 +2661,7 @@ procedure TBuildManager.SetBuildTargetProject1(Quiet: boolean;
 begin
   FBuildTarget:=Project1;
   if FBuildTarget<>nil then
-    TProject(FBuildTarget).AddHandlerDestroy(@OnProjectDestroy);
+    TProject(FBuildTarget).IDEOptions.AddHandlerDestroy(@OnProjectDestroy);
   SetBuildTarget('','','',ScanFPCSrc,Quiet);
 end;
 

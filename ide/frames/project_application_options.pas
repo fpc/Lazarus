@@ -246,7 +246,7 @@ procedure TProjectApplicationOptionsFrame.ReadSettings(AOptions: TAbstractIDEOpt
 var
   AStream: TStream;
 begin
-  FProject := AOptions as TProject;
+  FProject := (AOptions as TProjectIDEOptions).Project;
   with FProject do
   begin
     TitleEdit.Text := Title;
@@ -273,7 +273,7 @@ procedure TProjectApplicationOptionsFrame.WriteSettings(AOptions: TAbstractIDEOp
 var
   AStream: TStream;
 begin
-  with AOptions as TProject do
+  with (AOptions as TProjectIDEOptions).Project {AOptions as TProject} do
   begin
     Title := TitleEdit.Text;
     if fIconChanged then
@@ -298,7 +298,7 @@ end;
 
 class function TProjectApplicationOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProject;
+  Result := TProjectIDEOptions;
 end;
 
 initialization

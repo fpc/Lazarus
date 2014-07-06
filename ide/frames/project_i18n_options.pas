@@ -85,7 +85,7 @@ end;
 
 procedure TProjectI18NOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  FProject := AOptions as TProject;
+  FProject := (AOptions as TProjectIDEOptions).Project;
   with FProject do
   begin
     POOutDirEdit.Text := POOutputDirectory;
@@ -97,7 +97,7 @@ end;
 
 procedure TProjectI18NOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  with AOptions as TProject do
+  with (AOptions as TProjectIDEOptions).Project do
   begin
     POOutputDirectory := POOutDirEdit.Text;
     EnableI18N := EnableI18NCheckBox.Checked;
@@ -107,7 +107,7 @@ end;
 
 class function TProjectI18NOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
-  Result := TProject;
+  Result := TProjectIDEOptions;
 end;
 
 initialization

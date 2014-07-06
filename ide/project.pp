@@ -725,6 +725,19 @@ type
     property SessionMatrixOptions: TBuildMatrixOptions read FSessionMatrixOptions;
   end;
 
+  { TProjectIDEOptions }
+
+  TProjectIDEOptions = class(TAbstractIDEOptions)
+  private
+    FProject: TProject;
+  public
+    constructor Create(AProject: TProject);
+    destructor Destroy; override;
+    class function GetInstance: TAbstractIDEOptions; override;
+    class function GetGroupCaption: string; override;
+    property Project: TProject read FProject;
+  end;
+
   { TProject }
   
   TEndUpdateProjectEvent =
@@ -819,6 +832,7 @@ type
     function GetFirstPartOfProject: TUnitInfo;
     function GetFirstUnitWithComponent: TUnitInfo;
     function GetFirstUnitWithEditorIndex: TUnitInfo;
+    function GetIDEOptions: TProjectIDEOptions;
     function GetMainFilename: String;
     function GetMainUnitInfo: TUnitInfo;
     function GetProjResources: TProjectResources;
@@ -904,8 +918,6 @@ type
   public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
-    class function GetInstance: TAbstractIDEOptions; override;
-    class function GetGroupCaption: string; override;
     procedure Clear; override;
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
@@ -1098,6 +1110,7 @@ type
     property FirstRequiredDependency: TPkgDependency read FFirstRequiredDependency;
     property FirstUnitWithComponent: TUnitInfo read GetFirstUnitWithComponent;
     property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
+    property IDEOptions: TProjectIDEOptions read GetIDEOptions;
     property JumpHistory: TProjectJumpHistory read FJumpHistory write FJumpHistory;
     property LastCompilerFileDate: integer read FLastCompilerFileDate
                                           write FLastCompilerFileDate;
@@ -2623,6 +2636,29 @@ begin
 end;
 
 
+{ TProjectIDEOptions }
+
+constructor TProjectIDEOptions.Create(AProject: TProject);
+begin
+  inherited Create;
+  FProject := AProject;
+end;
+
+destructor TProjectIDEOptions.Destroy;
+begin
+  inherited Destroy;
+end;
+
+class function TProjectIDEOptions.GetInstance: TAbstractIDEOptions;
+begin
+  Result := Project1.IDEOptions;
+end;
+
+class function TProjectIDEOptions.GetGroupCaption: string;
+begin
+  Result := dlgProjectOptions;
+end;
+
 
 {------------------------------------------------------------------------------
                               TProject Class
@@ -2661,6 +2697,7 @@ begin
   FSourceDirectories:=TFileReferenceList.Create;
   FSourceDirectories.OnChanged:=@SourceDirectoriesChanged;
   UpdateProjectDirectory;
+  FIDEOptions:=TProjectIDEOptions.Create(Self);
   FPublishOptions:=TPublishProjectOptions.Create(Self);
   FRunParameters:=TRunParamsOptions.Create;
   Title := '';
@@ -2692,6 +2729,7 @@ begin
   FreeThenNil(FJumpHistory);
   FreeThenNil(FSourceDirectories);
   FreeThenNil(FPublishOptions);
+  FreeThenNil(FIDEOptions);
   FreeThenNil(FRunParameters);
   FreeThenNil(FDefineTemplates);
 
@@ -3775,16 +3813,6 @@ begin
   TProjectXPManifest(ProjResources[TProjectXPManifest]).UseManifest:=AValue;
 end;
 
-class function TProject.GetInstance: TAbstractIDEOptions;
-begin
-  Result := Project1;
-end;
-
-class function TProject.GetGroupCaption: string;
-begin
-  Result := dlgProjectOptions;
-end;
-
 function TProject.UnitCount:integer;
 begin
   Result:=FUnitList.Count;
@@ -4132,6 +4160,11 @@ end;
 function TProject.GetFirstUnitWithEditorIndex: TUnitInfo;
 begin
   Result:=fFirst[uilWithEditorIndex];
+end;
+
+function TProject.GetIDEOptions: TProjectIDEOptions;
+begin
+  Result := TProjectIDEOptions(FIDEOptions);
 end;
 
 function TProject.GetMainUnitInfo: TUnitInfo;
@@ -7316,7 +7349,7 @@ begin
 end;
 
 initialization
-  RegisterIDEOptionsGroup(GroupProject, TProject);
+  RegisterIDEOptionsGroup(GroupProject, TProjectIDEOptions);
   RegisterIDEOptionsGroup(GroupCompiler, TProjectCompilerOptions);
 
 end.
