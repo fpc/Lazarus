@@ -20,7 +20,6 @@ type
     class procedure QuickReadXML(s: TStream; out AComponentName, AClassName, ALCLVersion: string);
   public
     class function FindResourceDirective(Source: TObject): boolean; override;
-    class function ResourceDirectiveFilename: string; override;
     class function GetUnitResourceFilename(AUnitFilename: string;
       {%H-}Loading: boolean): string; override;
     class procedure TextStreamToBinStream(ATxtStream, ABinStream: TExtMemoryStream); override;
@@ -617,11 +616,6 @@ var
   nx,ny,nt: integer;
 begin
 //  result := CodeToolBoss.FindResourceDirective(Source as TCodeBuffer,1,1,cb,nx,ny,nt, ResourceDirectiveFilename,false);
-end;
-
-class function TXMLUnitResourcefileFormat.ResourceDirectiveFilename: string;
-begin
-  result := '*.xml';
 end;
 
 class function TXMLUnitResourcefileFormat.GetUnitResourceFilename(
