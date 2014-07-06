@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, contnrs, LCLProc, Forms, LazConfigStorage,
-  NewItemIntf, CompOptsIntf, IDEOptionsIntf;
+  NewItemIntf, ProjPackIntf, CompOptsIntf, IDEOptionsIntf;
   
 const
   PkgDescGroupName = 'Package';
@@ -74,20 +74,6 @@ type
 
   TIDEPackage = class;
 
-  {$M+}
-  TIDEOwnedFile = class
-  protected
-    function GetFilename: string; virtual; abstract;
-    procedure SetFilename(const AValue: string); virtual; abstract;
-  public
-    function GetFullFilename: string; virtual; abstract; // if no path, the file was not saved yet
-    function GetShortFilename(UseUp: boolean): string; virtual; abstract;
-    function GetFileOwner: TObject; virtual; abstract;
-    function GetFileOwnerName: string; virtual; abstract;
-    property Filename: string read GetFilename write SetFilename;
-  end;
-  {$M-}
-
   { TLazPackageFile }
 
   TLazPackageFile = class(TIDEOwnedFile)
@@ -112,11 +98,10 @@ type
 
   { TLazPackageID }
 
-  TLazPackageID = class(TPersistent)
+  TLazPackageID = class(TProjPack)
   private
     FIDAsWord: string;
   protected
-    FIDEOptions: TAbstractIDEOptions; //actually TPackageIDEOptions;
     FName: string;
     FVersion: TPkgVersion;
     FIDAsString: string;

@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, AvgLvlTree,
-  NewItemIntf, ObjInspStrConsts, IDEOptionsIntf, CompOptsIntf, PackageIntf;
+  NewItemIntf, ObjInspStrConsts, ProjPackIntf, IDEOptionsIntf, CompOptsIntf;
 
 const
   FileDescGroupName = 'File';
@@ -368,7 +368,7 @@ type
     petUnit
     );
 
-  TLazProject = class(TPersistent)
+  TLazProject = class(TProjPack)
   private
     FCleanOutputFileMask: string;
     FCleanSourcesFileMask: string;
@@ -388,7 +388,6 @@ type
     procedure SetFPDocPaths(const AValue: string);
     procedure SetUseAppBundle(AValue: Boolean);
   protected
-    FIDEOptions: TAbstractIDEOptions; //actually TProjectIDEOptions;
     FLazCompilerOptions: TLazCompilerOptions;
     FFlags: TProjectFlags;
     FResources: TObject;

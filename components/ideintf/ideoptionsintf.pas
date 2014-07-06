@@ -103,7 +103,6 @@ type
 
   TAbstractIDEEnvironmentOptions = class(TAbstractIDEOptions);
   TAbstractIDEHelpOptions = class(TAbstractIDEEnvironmentOptions);
-  TAbstractIDECompilerOptions = class(TAbstractIDEOptions);
 
   TOnLoadIDEOptions = procedure(Sender: TObject; AOptions: TAbstractIDEOptions) of object;
   TOnSaveIDEOptions = procedure(Sender: TObject; AOptions: TAbstractIDEOptions) of object;

@@ -117,7 +117,7 @@ const
 type
   { TLazCompilerOptions }
 
-  TLazCompilerOptions = class(TAbstractIDECompilerOptions)
+  TLazCompilerOptions = class(TAbstractIDEOptions)
   private
     FOnModified: TNotifyEvent;
     fOwner: TObject;

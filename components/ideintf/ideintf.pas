@@ -19,7 +19,7 @@ uses
   NewItemIntf, ObjectInspector, ObjInspStrConsts, OIFavoriteProperties, 
   PackageIntf, ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, 
   SrcEditorIntf, StatusBarPropEdit, StringsPropEditDlg, TextTools, 
-  TreeViewPropEdit, UnitResources, LazarusPackageIntf;
+  TreeViewPropEdit, UnitResources, ProjPackIntf, LazarusPackageIntf;
 
 implementation
 

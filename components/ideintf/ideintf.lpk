@@ -14,13 +14,12 @@
           <ShowGenInfo Value="False"/>
         </Verbosity>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
     <License Value="Modified LPGL2"/>
     <Version Major="1"/>
-    <Files Count="75">
+    <Files Count="76">
       <Item1>
         <Filename Value="actionseditor.pas"/>
         <UnitName Value="ActionsEditor"/>
@@ -322,6 +321,10 @@
         <Filename Value="unitresources.pas"/>
         <UnitName Value="UnitResources"/>
       </Item75>
+      <Item76>
+        <Filename Value="projpackintf.pas"/>
+        <UnitName Value="projpackintf"/>
+      </Item76>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

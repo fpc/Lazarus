@@ -52,7 +52,7 @@ uses
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
   FileProcs, CodeTree, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache,
   // IDE Interface
-  SrcEditorIntf, NewItemIntf, ProjectIntf, PackageIntf, CompOptsIntf,
+  SrcEditorIntf, NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, CompOptsIntf,
   MenuIntf, IDEWindowIntf,
   {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
