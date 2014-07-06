@@ -1717,6 +1717,7 @@ components/ideintf/oifavoriteproperties.pas svneol=native#text/pascal
 components/ideintf/packageintf.pas svneol=native#text/pascal
 components/ideintf/projectintf.pas svneol=native#text/pascal
 components/ideintf/projectresourcesintf.pas svneol=native#text/pascal
+components/ideintf/projpackintf.pas svneol=native#text/pascal
 components/ideintf/propedits.pp svneol=native#text/pascal
 components/ideintf/propeditutils.pp svneol=native#text/pascal
 components/ideintf/srceditorintf.pas svneol=native#text/pascal
