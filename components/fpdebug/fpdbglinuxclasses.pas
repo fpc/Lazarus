@@ -1,6 +1,7 @@
 unit FpDbgLinuxClasses;
 
 {$mode objfpc}{$H+}
+{$packrecords c}
 
 interface
 
@@ -48,6 +49,43 @@ type
     gs : cuint64;
   end;
 
+  user_fpregs_struct64 = record
+    cwd : word;
+    swd : word;
+    ftw : word;
+    fop : word;
+    rip : qword;
+    rdp : qword;
+    mxcsr : dword;
+    mxcr_mask : dword;
+    st_space : array[0..31] of dword;
+    xmm_space : array[0..63] of dword;
+    padding : array[0..23] of dword;
+  end;
+
+  user64 = record
+    regs : user_regs_struct64;
+    u_fpvalid : longint;
+    i387 : user_fpregs_struct64;
+    u_tsize : qword;
+    u_dsize : qword;
+    u_ssize : qword;
+    start_code : qword;
+    start_stack : qword;
+    signal : int64;
+    reserved : longint;
+//  case a: integer of
+//    0: (
+          u_ar0 : ^user_regs_struct32;
+          __u_ar0_word : qword;
+//       );
+//      1: (u_fpstate : ^user_fpregs_struct32;
+//          __u_fpstate_word : qword);
+    magic : qword;
+    u_comm : array[0..31] of char;
+    u_debugreg : array[0..7] of qword;
+  end;
+
   user_regs_struct32 = record
     ebx: cuint32;
     ecx: cuint32;
@@ -77,10 +115,14 @@ type
     FUserRegsStruct32: user_regs_struct32;
     FUserRegsStruct64: user_regs_struct64;
     FUserRegsChanged: boolean;
+    function ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
+    function WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
   protected
     function ReadThreadState: boolean;
   public
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
+    function AddWatchpoint(AnAddr: TDBGPtr): integer; override;
+    function RemoveWatchpoint(AnId: integer): boolean; override;
     procedure BeforeContinue; override;
     procedure LoadRegisterValues; override;
   end;
@@ -145,6 +187,46 @@ begin
     end
 end;
 
+function TDbgLinuxThread.ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
+var
+  offset: pointer;
+  user64ptr: ^user64;
+  e: integer;
+begin
+  user64ptr:=nil;
+  offset := @(user64ptr^.u_debugreg[ind]);
+  fpseterrno(0);
+  AVal := PtrUInt(fpPTrace(PTRACE_PEEKUSR, Process.ProcessID, offset, nil));
+  e := fpgeterrno;
+  if e <> 0 then
+    begin
+    log('Failed to read dr'+inttostr(ind)+'-debug register. Errcode: '+inttostr(e));
+    result := false;
+    end
+  else
+    result := true;
+end;
+
+function TDbgLinuxThread.WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
+var
+  offset: pointer;
+  user64ptr: ^user64;
+ avalterug: ptruint;
+begin
+  user64ptr:=nil;
+  offset := @(user64ptr^.u_debugreg[ind]);
+  if fpPTrace(PTRACE_POKEUSR, Process.ProcessID, offset, pointer(AVal)) = -1 then
+    begin
+    log('Failed to write dr'+inttostr(ind)+'-debug register. Errcode: '+inttostr(fpgeterrno));
+    result := false;
+    end
+  else
+    result := true;
+
+  avalterug := PtrUInt(fpPTrace(PTRACE_PEEKUSR, Process.ProcessID, offset, nil));
+end;
+
+
 function TDbgLinuxThread.ReadThreadState: boolean;
 var
   e: integer;
@@ -171,6 +253,65 @@ begin
   else
     Dec(FUserRegsStruct64.rip);
   FUserRegsChanged:=true;
+end;
+
+function TDbgLinuxThread.AddWatchpoint(AnAddr: TDBGPtr): integer;
+var
+  dr7: PtrUInt;
+
+  function SetHWBreakpoint(ind: byte): boolean;
+  var
+    Addr: PtrUInt;
+  begin
+    result := false;
+    if ((dr7 and (1 shl ind))=0) then
+    begin
+      if not ReadDebugReg(ind, Addr) or (Addr<>0) then
+        Exit;
+
+      dr7 := dr7 or (1 shl (ind*2));
+      dr7 := dr7 or ($30000 shl (ind*4));
+      if WriteDebugReg(7, dr7) and WriteDebugReg(ind, AnAddr) then
+        result := true;
+    end;
+  end;
+
+var
+  i: integer;
+begin
+  result := -1;
+  if not ReadDebugReg(7, dr7) then
+    Exit;
+
+  i := 0;
+  while (i<4) and not SetHWBreakpoint(i) do
+    inc(i);
+  if i=4 then
+    Process.Log('No hardware breakpoint available.')
+  else
+    result := i;
+end;
+
+function TDbgLinuxThread.RemoveWatchpoint(AnId: integer): boolean;
+var
+  dr7: PtrUInt;
+  addr: PtrUInt;
+begin
+  result := false;
+  if not ReadDebugReg(7, dr7) or not ReadDebugReg(AnId, addr) then
+    Exit;
+
+  if (addr<>0) and ((dr7 and (1 shl (AnId*2)))<>0) then
+  begin
+    dr7 := dr7 xor (1 shl (AnId*2));
+    dr7 := dr7 xor ($30000 shl (AnId*4));
+    if WriteDebugReg(AnId, 0) and WriteDebugReg(7, dr7) then
+      Result := True;
+  end
+  else
+  begin
+    Process.Log('HW watchpoint %d is not set.',[AnId]);
+  end;
 end;
 
 procedure TDbgLinuxThread.BeforeContinue;
