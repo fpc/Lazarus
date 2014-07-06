@@ -725,7 +725,7 @@ begin
     // ask for confirmation
     if DeleteCount=0 then exit;
     if DeleteCount>1 then
-      Msg:='Remove '+IntToStr(DeleteCount)+' items from project?';
+      Msg:=Format(lisProjInspRemoveItemsF, [IntToStr(DeleteCount)]);
     if IDEMessageDialog(lisProjInspConfirmDeletingDependency,
       Msg, mtConfirmation,[mbYes,mbNo])<>mrYes then exit;
 

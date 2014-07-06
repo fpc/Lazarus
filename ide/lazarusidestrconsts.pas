@@ -4347,6 +4347,7 @@ resourcestring
 
   // project inspector
   lisProjInspConfirmDeletingDependency = 'Confirm deleting dependency';
+  lisProjInspRemoveItemsF = 'Remove %s items from project?';
   lisProjInspConfirmRemovingFile = 'Confirm removing file';
   lisProjInspDeleteDependencyFor = 'Delete dependency for %s?';
   lisProjInspRemoveFileFromProject = 'Remove file %s from project?';
