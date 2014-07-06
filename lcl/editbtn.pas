@@ -1810,13 +1810,14 @@ begin
   else
     NewValue:=AValue;
   Button.Enabled:=NewValue<>'';
-  if (NewValue='') and not (Focused or fJustActivated) then begin
-    Text:=rsFilter;
-    Font.Color:=clBtnShadow;
-  end
-  else begin
+  if (NewValue<>'') or Focused or fJustActivated or (csDesigning in ComponentState) then
+  begin
     Text:=NewValue;
     Font.Color:=clDefault;
+  end
+  else begin
+    Text:=rsFilter;
+    Font.Color:=clBtnShadow;
   end;
   if fFilter=NewValue then exit;
   fFilter:=NewValue;
