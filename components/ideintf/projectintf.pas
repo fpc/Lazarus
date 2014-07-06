@@ -415,8 +415,7 @@ type
     destructor Destroy; override;
     procedure Clear; virtual;
     function IsVirtual: boolean; virtual; abstract;
-    function CreateProjectFile(const Filename: string
-                               ): TLazProjectFile; virtual; abstract;
+    function CreateProjectFile(const Filename: string): TLazProjectFile; virtual; abstract;
     procedure AddFile(ProjectFile: TLazProjectFile;
                       AddToProjectUsesClause: boolean); virtual; abstract;
     procedure RemoveUnit(Index: integer; RemoveFromUsesSection: boolean = true); virtual; abstract;
@@ -444,19 +443,13 @@ type
     property ExecutableType: TProjectExecutableType read FExecutableType
                  write SetExecutableType;// read from MainFile, not saved to lpi
     property LazCompilerOptions: TLazCompilerOptions read FLazCompilerOptions;
-    property ProjectInfoFile: string
-                               read GetProjectInfoFile write SetProjectInfoFile;
-    property ProjectSessionFile: string
-                           read FProjectSessionFile write SetProjectSessionFile;
-    property SessionStorage: TProjectSessionStorage read FSessionStorage
-                                                    write SetSessionStorage;
-    property Modified: boolean read GetModified
-                       write SetModified; // project data (not units, session),
-                                          // units have their own Modified
-    property SessionModified: boolean read FSessionModified
-                       write SetSessionModified;
-                       // project session data (not units, data),
-                       // units have their own SessionModified
+    property ProjectInfoFile: string read GetProjectInfoFile write SetProjectInfoFile;
+    property ProjectSessionFile: string read FProjectSessionFile write SetProjectSessionFile;
+    property SessionStorage: TProjectSessionStorage read FSessionStorage write SetSessionStorage;
+    // project data (not units, session), units have their own Modified
+    property Modified: boolean read GetModified write SetModified;
+    // project session data (not units, data), units have their own SessionModified
+    property SessionModified: boolean read FSessionModified write SetSessionModified;
     property FPDocPaths: string read FFPDocPaths write SetFPDocPaths;
     property FPDocPackageName: string read FFPDocPackageName write SetFPDocPackageName;
     property CleanOutputFileMask: string read FCleanOutputFileMask write SetCleanOutputFileMask; // saved in session

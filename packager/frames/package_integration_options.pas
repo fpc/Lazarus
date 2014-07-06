@@ -69,15 +69,13 @@ begin
   end;
 end;
 
-procedure TPackageIntegrationOptionsFrame.FPDocPackageNameEditEnter(
-  Sender: TObject);
+procedure TPackageIntegrationOptionsFrame.FPDocPackageNameEditEnter(Sender: TObject);
 begin
   if FPDocPackageNameEdit.Text=lisDefaultPlaceholder then
     FPDocPackageNameEdit.Text:='';
 end;
 
-procedure TPackageIntegrationOptionsFrame.FPDocPackageNameEditExit(
-  Sender: TObject);
+procedure TPackageIntegrationOptionsFrame.FPDocPackageNameEditExit(Sender: TObject);
 begin
   if GetFPDocPkgNameEditValue='' then
     FPDocPackageNameEdit.Text:=lisDefaultPlaceholder
@@ -175,18 +173,14 @@ end;
 procedure TPackageIntegrationOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   PkgTypeGroupBox.Caption := lisPckOptsPackageType;
-  RunAndDesignTimeRadioButton.Caption:=PkgTypeToCaption(lptRunAndDesignTime);
-  RunAndDesignTimeRadioButton.Hint:=
-    lisRunAndDesignTimePackagesHaveNoLimitations;
-  DesignTimeRadioButton.Caption:=PkgTypeToCaption(lptDesignTime);
-  DesignTimeRadioButton.Hint:=
-    lisDesignTimePackagesAddComponentsAndMenuItemsToTheID;
-  RunTimeRadioButton.Caption:=PkgTypeToCaption(lptRunTime);
-  RunTimeRadioButton.Hint:=
-    lisRunTimePackagesCanBeUsedByProjectsTheyCanNotBeInst;
-  RunTimeOnlyRadioButton.Caption:=PkgTypeToCaption(lptRunTimeOnly);
-  RunTimeOnlyRadioButton.Hint:=
-    lisRunTimeOnlyPackagesAreOnlyForProjectsTheyCanNotBeI;
+  RunAndDesignTimeRadioButton.Caption := PkgTypeToCaption(lptRunAndDesignTime);
+  RunAndDesignTimeRadioButton.Hint := lisRunAndDesignTimePackagesHaveNoLimitations;
+  DesignTimeRadioButton.Caption := PkgTypeToCaption(lptDesignTime);
+  DesignTimeRadioButton.Hint := lisDesignTimePackagesAddComponentsAndMenuItemsToTheID;
+  RunTimeRadioButton.Caption := PkgTypeToCaption(lptRunTime);
+  RunTimeRadioButton.Hint := lisRunTimePackagesCanBeUsedByProjectsTheyCanNotBeInst;
+  RunTimeOnlyRadioButton.Caption := PkgTypeToCaption(lptRunTimeOnly);
+  RunTimeOnlyRadioButton.Hint := lisRunTimeOnlyPackagesAreOnlyForProjectsTheyCanNotBeI;
 
   UpdateRadioGroup.Caption := lisPckOptsUpdateRebuild;
   UpdateRadioGroup.Items[0] := lisPckOptsAutomaticallyRebuildAsNeeded;
@@ -195,10 +189,10 @@ begin
 
   DocGroupBox.Caption := lisCodeHelpGroupBox;
 
-  FPDocPackageNameLabel.Caption:=lisPckPackage;
-  FPDocPackageNameEdit.Hint:=lisPckClearToUseThePackageName;
-  FPDocSearchPathsLabel.Caption:=lisPathEditSearchPaths;
-  FPDocSearchPathsEdit.Hint:=lisPckSearchPathsForFpdocXmlFilesMultiplePathsMustBeSepa;
+  FPDocPackageNameLabel.Caption := lisPckPackage;
+  FPDocPackageNameEdit.Hint := lisPckClearToUseThePackageName;
+  FPDocSearchPathsLabel.Caption := lisPathEditSearchPaths;
+  FPDocSearchPathsEdit.Hint := lisPckSearchPathsForFpdocXmlFilesMultiplePathsMustBeSepa;
 
   FPDocPathButton := TPathEditorButton.Create(Self);
   with FPDocPathButton do
@@ -295,8 +289,7 @@ begin
   Result := TPackageIDEOptions;
 end;
 
-function TPackageIntegrationOptionsFrame.PkgTypeToCaption(t: TLazPackageType
-  ): string;
+function TPackageIntegrationOptionsFrame.PkgTypeToCaption(t: TLazPackageType): string;
 begin
   case t of
   lptRunTime: Result:=lisPckOptsRuntime;
@@ -307,8 +300,7 @@ begin
   end;
 end;
 
-function TPackageIntegrationOptionsFrame.CaptionToPkgType(s: string
-  ): TLazPackageType;
+function TPackageIntegrationOptionsFrame.CaptionToPkgType(s: string): TLazPackageType;
 var
   t: TLazPackageType;
 begin

@@ -2150,8 +2150,7 @@ begin
   if FirstDependency=Self then FirstDependency:=OldNext;
 end;
 
-function TPkgDependency.MakeFilenameRelativeToOwner(const AFilename: string
-  ): string;
+function TPkgDependency.MakeFilenameRelativeToOwner(const AFilename: string): string;
 var
   BaseDir: String;
 begin
@@ -2172,8 +2171,7 @@ begin
   Result:='';
   AFilename:=TrimFilename(DefaultFilename);
   if (CompareFileExt(AFilename,'lpk')<>0)
-  or (SysUtils.CompareText(ExtractFileNameOnly(AFilename),PackageName)<>0)
-  then
+  or (SysUtils.CompareText(ExtractFileNameOnly(AFilename),PackageName)<>0) then
     exit;
   if not FilenameIsAbsolute(AFilename) then begin
     CurDir:=GetDependencyOwnerDirectory(Self);
