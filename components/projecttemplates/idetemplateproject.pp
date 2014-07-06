@@ -340,7 +340,7 @@ begin
       If (FIgnoreExts.IndexOf(E)=-1) then
         begin
         FN:=FProjectDirectory+FTemplate.TargetFileName(FN,FVariables);
-        LazarusIDE.DoOpenEditorFile(FN,-1,[ofProjectLoading,ofQuiet,ofAddToProject]);
+        LazarusIDE.DoOpenEditorFile(FN, -1, -1, [ofProjectLoading,ofQuiet,ofAddToProject]);
         end;
       end;
     end
