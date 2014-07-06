@@ -100,7 +100,6 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       MaxLength = 0
       ParentFont = False
       TabOrder = 4
-      Text = '(filter)'
       FilteredTreeview = InstallTreeView
     end
   end
