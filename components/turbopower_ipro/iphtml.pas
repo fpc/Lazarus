@@ -91,6 +91,7 @@ uses
   GIFImage,
   JPeg, 
   {$ENDIF}
+  iphtmlprop,
   GraphUtil,
   Controls,
   StdCtrls,
@@ -885,20 +886,6 @@ type
 
   TIpHtml = class;
   
-  TIpHtmlAlign = (haDefault, haLeft, haCenter, haRight, haJustify, haChar, haUnknown);
-  TIpHtmlVAlign = (hvaTop, hvaMiddle, hvaBottom);
-  TIpHtmlVAlign3 = (hva3Top, hva3Middle, hva3Bottom, hva3Baseline, hva3Default);
-
-  TIpHtmlElemMarginStyle = (hemsAuto, // use default
-                            hemsPx  // pixel
-                            );
-
-  TIpHtmlElemMargin = record
-    Style: TIpHtmlElemMarginStyle;
-    Size: single; // negative values are not yet supported
-  end;
-
-
   {$IFDEF IP_LAZARUS}
   TIpAbstractHtmlDataProvider = class;
   {$DEFINE CSS_INTERFACE}
@@ -995,183 +982,6 @@ type
   TIpHtmlNode = class;
   TIpHtmlNodeBlock = class;
 
-  TFontNameStr = string[50];
-  TIpHtmlPropAFieldsRec = record
-    BaseFontSize: Integer;
-    FontSize: Integer;
-    FontStyle: TFontStyles;
-    FontName: TFontNameStr;
-  end;
-
-  {display properties that affect the font size}
-  TIpHtmlPropA = class
-  private
-    FPropRec : TIpHtmlPropAFieldsRec;
-    FUseCount: Integer;
-    FKnownSizeOfSpace: TSize;
-    FSizeOfSpaceKnown : Boolean;
-    procedure SetBaseFontSize(const Value: Integer);
-    procedure SetFontName(const Value: TFontNameStr);
-    procedure SetFontSize(const Value: Integer);
-    procedure SetFontStyle(const Value: TFontStyles);
-  public
-    KnownSizeOfHyphen : TSize;
-    tmAscent, tmDescent, tmHeight : Integer;
-    property SizeOfSpaceKnown: Boolean read FSizeOfSpaceKnown;
-    procedure SetKnownSizeOfSpace(const Size:TSize);
-    property KnownSizeOfSpace : TSize read FKnownSizeOfSpace;
-    property BaseFontSize : Integer read FPropRec.BaseFontSize write SetBaseFontSize;
-    property FontName : TFontNameStr read FPropRec.FontName write SetFontName;
-    property FontSize : Integer read FPropRec.FontSize write SetFontSize;
-    property FontStyle : TFontStyles read FPropRec.FontStyle write SetFontStyle;
-    property UseCount : Integer read FUseCount write FUseCount;
-    procedure Assign(const Source: TIpHtmlPropA);
-    procedure DecUse;
-    procedure IncUse;
-    constructor CreateCopy(Source: TIpHtmlPropA);
-  end;
-
-  TIpHtmlPropBFieldsRec = record
-    FontBaseline: Integer;
-    Alignment: TIpHtmlAlign;
-    FontColor: TColor;
-    VAlignment: TIpHtmlVAlign3;
-    LinkColor : TColor;
-    VLinkColor : TColor;
-    ALinkColor : TColor;
-    HoverColor : TColor;
-    HoverBgColor : TColor;
-    BgColor : TColor;
-    Preformatted : Boolean;
-    NoBreak : Boolean;
-    ElemMarginTop: TIpHtmlElemMargin;
-    ElemMarginLeft: TIpHtmlElemMargin;
-    ElemMarginBottom: TIpHtmlElemMargin;
-    ElemMarginRight: TIpHtmlElemMargin;
-  end;
-
-  {display properties that don't affect the font size}
-  TIpHtmlPropB = class
-  private
-    FPropRec : TIpHtmlPropBFieldsRec;
-    FUseCount: Integer;
-    FOwner: TIpHtml;
-  public
-    property FontBaseline : Integer read FPropRec.FontBaseline write FPropRec.FontBaseline;
-    property FontColor : TColor read FPropRec.FontColor write FPropRec.FontColor;
-    property Alignment : TIpHtmlAlign read FPropRec.Alignment write FPropRec.Alignment;
-    property VAlignment : TIpHtmlVAlign3 read FPropRec.VAlignment write FPropRec.VAlignment;
-    property LinkColor : TColor read FPropRec.LinkColor write FPropRec.LinkColor;
-    property VLinkColor : TColor read FPropRec.VLinkColor write FPropRec.VLinkColor;
-    property ALinkColor : TColor read FPropRec.ALinkColor write FPropRec.ALinkColor;
-    property HoverColor : TColor read FPropRec.HoverColor write FPropRec.HoverColor;
-    property HoverBgColor : TColor read FPropRec.HoverBgColor write FPropRec.HoverBgColor;
-    property BgColor : TColor read FPropRec.BgColor write FPropRec.BgColor;
-    property Preformatted : Boolean read FPropRec.Preformatted write FPropRec.Preformatted;
-    property NoBreak : Boolean read FPropRec.NoBreak write FPropRec.NoBreak;
-    property ElemMarginTop: TIpHtmlElemMargin read FPropRec.ElemMarginTop write FPropRec.ElemMarginTop;
-    property ElemMarginLeft: TIpHtmlElemMargin read FPropRec.ElemMarginLeft write FPropRec.ElemMarginLeft;
-    property ElemMarginBottom: TIpHtmlElemMargin read FPropRec.ElemMarginBottom write FPropRec.ElemMarginBottom;
-    property ElemMarginRight: TIpHtmlElemMargin read FPropRec.ElemMarginRight write FPropRec.ElemMarginRight;
-    property UseCount : Integer read FUseCount write FUseCount;
-    procedure Assign(const Source: TIpHtmlPropB);
-    procedure DecUse;
-    procedure IncUse;
-    constructor CreateCopy(Owner: TIpHtml; Source: TIpHtmlPropB);
-    constructor Create(Owner: TIpHtml);
-  end;
-
-  { TIpHtmlProps }
-  
-  TIpHtmlProps = class
-  {-class for holding the currently active style attributes}
-  private
-    function GetAlignment: TIpHtmlAlign;
-    function GetALinkColor: TColor;
-    function GetBaseFontSize: Integer;
-    function GetBgColor: TColor;
-    function GetElemMarginBottom: TIpHtmlElemMargin;
-    function GetElemMarginLeft: TIpHtmlElemMargin;
-    function GetElemMarginRight: TIpHtmlElemMargin;
-    function GetElemMarginTop: TIpHtmlElemMargin;
-    function GetFontBaseline: Integer;
-    function GetFontColor: TColor;
-    function GetFontName: string;
-    function GetFontSize: Integer;
-    function GetFontStyle: TFontStyles;
-    function GetLinkColor: TColor;
-    function GetPreformatted: Boolean;
-    function GetVAlignment: TIpHtmlVAlign3;
-    function GetVLinkColor: TColor;
-    function GetHoverColor: TColor;
-    function GetHoverBgColor: TColor;
-    procedure SetAlignment(const Value: TIpHtmlAlign);
-    procedure SetALinkColor(const Value: TColor);
-    procedure SetBaseFontSize(const Value: Integer);
-    procedure SetBgColor(const Value: TColor);
-    procedure SetElemMarginBottom(const AValue: TIpHtmlElemMargin);
-    procedure SetElemMarginLeft(const AValue: TIpHtmlElemMargin);
-    procedure SetElemMarginRight(const AValue: TIpHtmlElemMargin);
-    procedure SetElemMarginTop(const AValue: TIpHtmlElemMargin);
-    procedure SetFontBaseline(const Value: Integer);
-    procedure SetFontColor(const Value: TColor);
-    procedure SetFontName(const Value: string);
-    procedure SetFontSize(const Value: Integer);
-    procedure SetFontStyle(const Value: TFontStyles);
-    procedure SetLinkColor(const Value: TColor);
-    procedure SetPreformatted(const Value: Boolean);
-    procedure SetVAlignment(const Value: TIpHtmlVAlign3);
-    procedure SetVLinkColor(const Value: TColor);
-    procedure SetHoverColor(const Value: TColor);
-    procedure SetHoverBgColor(const Value: TColor);
-    function GetNoBreak: Boolean;
-    procedure SetNoBreak(const Value: Boolean);
-    procedure CopyPropARecTo(var pRec: TIpHtmlPropAFieldsRec);
-    procedure CopyPropBRecTo(var pRec: TIpHtmlPropBFieldsRec);
-    procedure CopyPropARecFrom(var pRec: TIpHtmlPropAFieldsRec);
-    procedure CopyPropBRecFrom(var pRec: TIpHtmlPropBFieldsRec);
-    procedure FindOrCreatePropA(var pRec: TIpHtmlPropAFieldsRec);
-    procedure FindOrCreatePropB(var pRec: TIpHtmlPropBFieldsRec);
-    procedure SetDelayCache(b: boolean);
-    function getDelayCache: boolean;
-  protected
-    FOwner : TIpHtml;
-    PropA : TIpHtmlPropA;
-    PropB : TIpHtmlPropB;
-    FDelayCache: integer;
-    FDirtyA, FDirtyB: Boolean;
-  public
-    constructor Create(Owner: TIpHtml);
-    destructor Destroy; override;
-    procedure Assign(Source : TIpHtmlProps);
-    procedure CommitCache;
-    function IsEqualTo(Compare: TIpHtmlProps): Boolean;
-    function AIsEqualTo(Compare: TIpHtmlProps): Boolean;
-    function BIsEqualTo(Compare: TIpHtmlProps): Boolean;
-    property BaseFontSize : Integer read GetBaseFontSize write SetBaseFontSize;
-    property FontName : string read GetFontName write SetFontName;
-    property FontSize : Integer read GetFontSize write SetFontSize;
-    property FontBaseline : Integer read GetFontBaseline write SetFontBaseline;
-    property FontStyle : TFontStyles read GetFontStyle write SetFontStyle;
-    property FontColor : TColor read GetFontColor write SetFontColor;
-    property Alignment : TIpHtmlAlign read GetAlignment write SetAlignment;
-    property VAlignment : TIpHtmlVAlign3 read GetVAlignment write SetVAlignment;
-    property LinkColor : TColor read GetLinkColor write SetLinkColor;
-    property VLinkColor : TColor read GetVLinkColor write SetVLinkColor;
-    property ALinkColor : TColor read GetALinkColor write SetALinkColor;
-    property HoverColor : TColor read GetHoverColor write SetHoverColor;
-    property HoverBgColor : TColor read GetHoverBgColor write SetHoverBgColor;
-    property BgColor : TColor read GetBgColor write SetBgColor;
-    property Preformatted : Boolean read GetPreformatted write SetPreformatted;
-    property NoBreak : Boolean read GetNoBreak write SetNoBreak;
-    property ElemMarginTop: TIpHtmlElemMargin read GetElemMarginTop write SetElemMarginTop;
-    property ElemMarginLeft: TIpHtmlElemMargin read GetElemMarginLeft write SetElemMarginLeft;
-    property ElemMarginBottom: TIpHtmlElemMargin read GetElemMarginBottom write SetElemMarginBottom;
-    property ElemMarginRight: TIpHtmlElemMargin read GetElemMarginRight write SetElemMarginRight;
-  public
-    property DelayCache : Boolean read getDelayCache write setDelayCache;
-  end;
-  
   TIpHtmlNodeAlignInline = class;
 
   TElementType = (etWord, etObject, etSoftLF, etHardLF, etClearLeft,
@@ -2790,8 +2600,8 @@ type
     DoneLoading : Boolean;
     ListLevel : Integer;
 
-    PropACache : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
-    PropBCache : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
+    PropACache : TIpHtmlPropsAList;
+    PropBCache : TIpHtmlPropsBList;
     DummyA : TIpHtmlPropA;
     DummyB : TIpHtmlPropB;
 
@@ -2804,16 +2614,10 @@ type
     ParmBuf: PChar;
     ParmBufSize: Integer;
     procedure ResetCanvasData;
-    procedure ResetCache;
     procedure ResetWordLists;
     procedure ResetBlocks(Node: TIpHtmlNode);
     procedure ResetImages(Node: TIpHtmlNode);
     procedure ResetElementMetrics(P: Pointer);
-    function FindPropARec(var pRec: TIpHtmlPropAFieldsRec): TIpHtmlPropA;
-    procedure DelDuplicatePropA(aProp: TIpHtmlPropA);
-    function FindPropBRec(var pRec: TIpHtmlPropBFieldsRec): TIpHtmlPropB;
-    procedure DelDuplicatePropB(aProp: TIpHtmlPropB);
-    procedure ClearCache;
     function CheckKnownURL(URL: string): boolean;
     procedure ReportReference(URL: string);
     procedure PaintSelection;
@@ -2888,7 +2692,7 @@ type
     function ParseHtmlInteger2(const AttrNameSet: TIpHtmlAttributesSet;
       aDefault: Integer): TIpHtmlInteger;
     function ParsePixels(const AttrNameSet: TIpHtmlAttributesSet;
-             const aDefault: string): TIpHtmlPixels;
+      const aDefault: string): TIpHtmlPixels;
     function ParseHyperLength(const AttrNameSet: TIpHtmlAttributesSet;
       const aDefault: string): TIpHtmlLength;
     function ParseHyperMultiLength(const AttrNameSet: TIpHtmlAttributesSet;
@@ -3606,12 +3410,7 @@ function MinI2(const I1, I2: Integer) : Integer;
 
 function CalcMultiLength(const List: TIpHtmlMultiLengthList;
   Avail: Integer; var Sections: Integer): TIntArr;
-
-function GetAlignmentForStr(str: string;
-         pDefault: TIpHtmlAlign = haDefault) : TIpHtmlAlign;
-
-function AreHtmlMarginsEqual(const Margin1, Margin2: TIpHtmlElemMargin): boolean;
-
+function GetAlignmentForStr(str: string; pDefault: TIpHtmlAlign = haDefault): TIpHtmlAlign;
 function dbgs(et: TElementType): string; overload;
 
 procedure Register;
@@ -3741,12 +3540,6 @@ begin
   else
     Result := AColor;
   end;
-end;
-
-function AreHtmlMarginsEqual(const Margin1, Margin2: TIpHtmlElemMargin): boolean;
-begin
-  Result:=(Margin1.Style=Margin2.Style)
-       and (Margin1.Size=Margin2.Size);
 end;
 
 function dbgs(et: TElementType): string;
@@ -4993,7 +4786,8 @@ begin
   FChildren := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   //Maybe this will create some unespected behavior (Owner=nil)
   if Owner <> nil then
-    FProps := TIpHtmlProps.Create(FOwner);
+    FProps := TIpHtmlProps.Create(FOwner.PropACache, FOwner.DummyA,
+                                  FOwner.PropBCache, FOwner.DummyB);
 end;
 
 destructor TIpHtmlNodeMulti.Destroy;
@@ -5251,29 +5045,6 @@ begin
 end;
 
 { TIpHtml }
-
-procedure TIpHtml.ClearCache;
-var
-  i : Integer;
-begin
-  for i := 0 to Pred(PropACache.Count) do begin
-    TIpHtmlPropA(PropACache[i]).Free;
-  end;
-  PropACache.Free;
-  for i := 0 to Pred(PropBCache.Count) do
-    TIpHtmlPropB(PropBCache[i]).Free;
-  PropBCache.Free;
-end;
-
-procedure TIpHtml.ResetCache;
-var
-  i : Integer;
-begin
-  for i := 0 to Pred(PropACache.Count) do begin
-    TIpHtmlPropA(PropACache[i]).FSizeOfSpaceKnown := False;
-    TIpHtmlPropA(PropACache[i]).tmHeight := 0;
-  end;
-end;
 
 procedure TIpHtml.AddWordEntry(const Value: string; Props: TIpHtmlProps; Owner: TIpHtmlNode);
 var
@@ -8251,14 +8022,15 @@ var
   TmpBitmap: TGraphic;
 begin
   inherited Create;
-  PropACache := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
-  PropBCache := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
-  DummyA := TIpHtmlPropA.Create;
+  PropACache := TIpHtmlPropsAList.Create;
+  PropBCache := TIpHtmlPropsBList.Create;
+  DummyA := TIpHtmlPropA.Create(PropACache);
   DummyA.UseCount := 1;
-  DummyB := TIpHtmlPropB.Create(Self);
+  DummyB := TIpHtmlPropB.Create(PropBCache);
   DummyB.UseCount := 1;
   PropACache.Add(DummyA);
   PropBCache.Add(DummyB);
+
   ElementPool := TIpHtmlPoolManager.Create(sizeof(TIpHtmlElement), MaxElements);
   SoftLF := BuildStandardEntry(etSoftLF);
   HardLF := BuildStandardEntry(etHardLF);
@@ -8268,7 +8040,7 @@ begin
   FLIndent := BuildStandardEntry(etIndent);
   FLOutdent := BuildStandardEntry(etOutdent);
   SoftHyphen := BuildStandardEntry(etSoftHyphen);
-  DefaultProps := TIpHtmlProps.Create(Self);
+  DefaultProps := TIpHtmlProps.Create(PropACache, DummyA, PropBCache, DummyB);
   FHtml := TIpHtmlNodeHtml.Create(nil);
   FHtml.FOwner := Self;
   AnchorList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
@@ -8425,7 +8197,8 @@ begin
  {$ENDIF}
   ElementPool.EnumerateItems(FinalizeRecs);
   ElementPool.Free;
-  ClearCache;
+  PropACache.Free;
+  PropBCache.Free;
   inherited;
 end;
 
@@ -8957,7 +8730,7 @@ end;
 
 procedure TIpHtml.ResetCanvasData;
 begin
-  ResetCache;
+  PropACache.ResetCache;
   ResetWordLists;
   ResetBlocks(FHtml);
   ResetImages(FHtml);
@@ -9534,7 +9307,8 @@ end;
 constructor TIpHtmlNodeText.Create(ParentNode : TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  PropsR := TIpHtmlProps.Create(Owner);
+  PropsR := TIpHtmlProps.Create(FOwner.PropACache, FOwner.DummyA,
+                                FOwner.PropBCache, FOwner.DummyB);
 end;
 
 destructor TIpHtmlNodeText.Destroy;
@@ -15440,639 +15214,6 @@ begin
   Props.NoBreak := True;
 end;
 
-{ TIpHtmlProps }
-
-function TIpHtmlProps.AIsEqualTo(Compare: TIpHtmlProps): Boolean;
-begin
-  Result :=
-    (PropA = Compare.PropA);
-end;
-
-procedure TIpHtmlProps.Assign(Source: TIpHtmlProps);
-begin
-  if PropA <> Source.PropA then begin
-    PropA.DecUse;
-    PropA := Source.PropA;
-    PropA.IncUse;
-  end;
-  if PropB <> Source.PropB then begin
-    PropB.DecUse;
-    PropB := Source.PropB;
-    PropB.IncUse;
-  end;
-end;
-
-function TIpHtmlProps.BIsEqualTo(Compare: TIpHtmlProps): Boolean;
-begin
-  Result :=
-    (PropB = Compare.PropB);
-end;
-
-constructor TIpHtmlProps.Create(Owner: TIpHtml);
-begin
-  FOwner := Owner;
-  PropA := Owner.DummyA;
-  PropA.IncUse;
-  PropB := Owner.DummyB;
-  PropB.IncUse;
-  //BgColor := -1;
-end;
-
-destructor TIpHtmlProps.Destroy;
-begin
-  PropA.DecUse;
-  PropB.DecUse;
-  inherited;
-end;
-
-function TIpHtmlProps.GetAlignment: TIpHtmlAlign;
-begin
-  Result := PropB.Alignment;
-end;
-
-function TIpHtmlProps.GetALinkColor: TColor;
-begin
-  Result := PropB.ALinkColor;
-end;
-
-function TIpHtmlProps.GetBaseFontSize: Integer;
-begin
-  Result := PropA.BaseFontSize;
-end;
-
-function TIpHtmlProps.GetBgColor: TColor;
-begin
-  Result := PropB.BgColor;
-end;
-
-function TIpHtmlProps.GetElemMarginBottom: TIpHtmlElemMargin;
-begin
-  Result:=PropB.ElemMarginBottom;
-end;
-
-function TIpHtmlProps.GetElemMarginLeft: TIpHtmlElemMargin;
-begin
-  Result:=PropB.ElemMarginLeft;
-end;
-
-function TIpHtmlProps.GetElemMarginRight: TIpHtmlElemMargin;
-begin
-  Result:=PropB.ElemMarginRight;
-end;
-
-function TIpHtmlProps.GetElemMarginTop: TIpHtmlElemMargin;
-begin
-  Result:=PropB.ElemMarginTop;
-end;
-
-function TIpHtmlProps.GetFontBaseline: Integer;
-begin
-  Result := PropB.FontBaseline;
-end;
-
-function TIpHtmlProps.GetFontColor: TColor;
-begin
-  Result := PropB.FontColor;
-end;
-
-function TIpHtmlProps.GetFontName: string;
-begin
-  Result := PropA.FontName;
-end;
-
-function TIpHtmlProps.GetFontSize: Integer;
-begin
-  Result := PropA.FontSize;
-end;
-
-function TIpHtmlProps.GetFontStyle: TFontStyles;
-begin
-  Result := PropA.FontStyle;
-end;
-
-function TIpHtmlProps.GetLinkColor: TColor;
-begin
-  Result := PropB.LinkColor;
-end;
-
-function TIpHtmlProps.GetNoBreak: Boolean;
-begin
-  Result := PropB.NoBreak;
-end;
-
-function TIpHtmlProps.GetPreformatted: Boolean;
-begin
-  Result := PropB.Preformatted;
-end;
-
-function TIpHtmlProps.GetVAlignment: TIpHtmlVAlign3;
-begin
-  Result := PropB.VAlignment;
-end;
-
-function TIpHtmlProps.GetVLinkColor: TColor;
-begin
-  Result := PropB.VLinkColor;
-end;
-
-function TIpHtmlProps.GetHoverColor: TColor;
-begin
-  Result := PropB.HoverColor;
-end;
-
-function TIpHtmlProps.GetHoverBgColor: TColor;
-begin
-  Result := PropB.HoverBgColor;
-end;
-
-function TIpHtmlProps.IsEqualTo(Compare: TIpHtmlProps): Boolean;
-begin
-  Result := (PropA = Compare.PropA) and (PropB = Compare.PropB);
-end;
-
-function TIpHtml.FindPropARec(var pRec: TIpHtmlPropAFieldsRec): TIpHtmlPropA;
-var
-  i: Integer;
-begin
-  for i := 0 to Pred(PropACache.Count) do begin
-    Result := TIpHtmlPropA(PropACache[i]);
-    if CompareByte(Result.FPropRec, pRec, sizeof(TIpHtmlPropAFieldsRec)) = 0 then
-       exit;
-  end;
-  Result := nil;
-end;
-
-procedure TIpHtml.DelDuplicatePropA(aProp: TIpHtmlPropA);
-var
-  i: Integer;
-  vProp : TIpHtmlPropA;
-begin
-  for i := Pred(PropACache.Count) downto 0 do begin
-    vProp := TIpHtmlPropA(PropACache[i]);
-    if CompareByte(vProp.FPropRec, aProp.FPropRec, sizeof(TIpHtmlPropAFieldsRec)) = 0 then
-       if vProp <> aProp then
-       begin
-         PropACache.Delete(i);
-         exit;
-       end;
-  end;
-end;
-
-function TIpHtml.FindPropBRec(var pRec: TIpHtmlPropBFieldsRec): TIpHtmlPropB;
-var
-  i: Integer;
-begin
-  for i := 0 to Pred(PropBCache.Count) do begin
-    Result := TIpHtmlPropB(PropBCache[i]);
-    if CompareByte(Result.FPropRec, pRec, sizeof(TIpHtmlPropBFieldsRec)) = 0 then
-       exit;
-  end;
-  Result := nil;
-end;
-
-procedure TIpHtml.DelDuplicatePropB(aProp: TIpHtmlPropB);
-var
-  i: Integer;
-  vProp : TIpHtmlPropB;
-begin
-  for i := Pred(PropBCache.Count) downto 0 do begin
-    vProp := TIpHtmlPropB(PropBCache[i]);
-    if CompareByte(vProp.FPropRec, aProp.FPropRec, sizeof(TIpHtmlPropBFieldsRec)) = 0 then
-       if vProp <> aProp then
-       begin
-            PropBCache.Delete(i);
-            exit;
-       end;
-  end;
-end;
-
-procedure TIpHtmlProps.CommitCache;
-begin
-  if FDelayCache > 0 then
-  begin
-    FDelayCache := 1;
-    SetDelayCache(false);
-  end;
-end;
-
-function TIpHtmlProps.GetDelayCache: boolean;
-begin
-  result := FDelayCache > 0;
-end;
-
-procedure TIpHtmlProps.SetDelayCache(b: boolean);
-begin
-  if b then Inc(FDelayCache)
-  else if FDelayCache > 0 then
-    Dec(FDelayCache);
-
-  if (not b) and (FDelayCache = 0) then
-  begin
-      if FDirtyA then
-      begin
-        //Finish/Commit transaction
-        FDirtyA := False;
-      end;
-      if FDirtyB then
-      begin
-        //Finish/Commit transaction
-        FDirtyB := False;
-      end;
-  end;
-end;
-
-procedure TIpHtmlProps.CopyPropARecTo(var pRec: TIpHtmlPropAFieldsRec);
-begin
-    Move(PropA.FPropRec, pRec, sizeof(TIpHtmlPropAFieldsRec))
-end;
-
-procedure TIpHtmlProps.CopyPropBRecTo(var pRec: TIpHtmlPropBFieldsRec);
-begin
-    Move(PropB.FPropRec, pRec, sizeof(TIpHtmlPropBFieldsRec))
-end;
-
-procedure TIpHtmlProps.CopyPropARecFrom(var pRec: TIpHtmlPropAFieldsRec);
-begin
-    Move(pRec, PropA.FPropRec, sizeof(TIpHtmlPropAFieldsRec));
-end;
-
-procedure TIpHtmlProps.CopyPropBRecFrom(var pRec: TIpHtmlPropBFieldsRec);
-begin
-    Move(pRec, PropB.FPropRec, sizeof(TIpHtmlPropBFieldsRec));
-end;
-
-procedure TIpHtmlProps.FindOrCreatePropA(var pRec: TIpHtmlPropAFieldsRec);
-var
-  NewPropA : TIpHtmlPropA;
-begin
-  if FDirtyA then
-    //we are in a transaction updating a new unique entry
-    CopyPropARecFrom(pRec)
-  else
-  begin
-    NewPropA := FOwner.FindPropARec(pRec);
-    if NewPropA = nil then begin
-      NewPropA := TIpHtmlPropA.Create;
-      Move(pRec, NewPropA.FPropRec, sizeof(TIpHtmlPropAFieldsRec));
-      //Start Transaction if DelayCache is set
-      if DelayCache then FDirtyA := True;
-      FOwner.PropACache.Add(NewPropA);
-    end;
-    NewPropA.IncUse;
-    PropA.DecUse;
-    PropA := NewPropA;
-  end;
-end;
-
-procedure TIpHtmlProps.FindOrCreatePropB(var pRec: TIpHtmlPropBFieldsRec);
-var
-  NewPropB : TIpHtmlPropB;
-begin
-  if FDirtyB then
-    //we are in a transaction updating a new unique entry
-    CopyPropBRecFrom(pRec)
-  else
-  begin
-    NewPropB := FOwner.FindPropBRec(pRec);
-    if NewPropB = nil then begin
-      NewPropB := TIpHtmlPropB.Create(FOwner);
-      Move(pRec, NewPropB.FPropRec, sizeof(TIpHtmlPropBFieldsRec));
-      //Start Transaction if DelayCache is set
-      if DelayCache then FDirtyB := True;
-      FOwner.PropBCache.Add(NewPropB);
-    end;
-    NewPropB.IncUse;
-    PropB.DecUse;
-    PropB := NewPropB;
-  end;
-end;
-
-procedure TIpHtmlProps.SetAlignment(const Value: TIpHtmlAlign);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if (Value <> haDefault) and (Value <> Alignment) then begin
-    CopyPropBRecTo(pRec);
-    pRec.Alignment:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetALinkColor(const Value: TColor);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> ALinkColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.ALinkColor:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetBaseFontSize(const Value: Integer);
-var
-  pRec : TIpHtmlPropAFieldsRec;
-begin
-  if Value <> BaseFontSize then begin
-    CopyPropARecTo(pRec);
-    pRec.BaseFontSize:=Value;
-    FindOrCreatePropA(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetBgColor(const Value: TColor);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> BgColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.BgColor:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetFontBaseline(const Value: Integer);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> FontBaseline then begin
-    CopyPropBRecTo(pRec);
-    pRec.FontBaseline:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetFontColor(const Value: TColor);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> FontColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.FontColor:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetFontName(const Value: string);
-var
-  pRec : TIpHtmlPropAFieldsRec;
-begin
-  if Value <> FontName then begin
-    CopyPropARecTo(pRec);
-    pRec.FontName:=Value;
-    FindOrCreatePropA(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetFontSize(const Value: Integer);
-var
-  pRec : TIpHtmlPropAFieldsRec;
-begin
-  if Value <> FontSize then begin
-    CopyPropARecTo(pRec);
-    pRec.FontSize:=Value;
-    FindOrCreatePropA(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetFontStyle(const Value: TFontStyles);
-var
-  pRec : TIpHtmlPropAFieldsRec;
-begin
-  if Value <> FontStyle then begin
-    CopyPropARecTo(pRec);
-    pRec.FontStyle:=Value;
-    FindOrCreatePropA(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetLinkColor(const Value: TColor);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> LinkColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.LinkColor:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetElemMarginBottom(const AValue: TIpHtmlElemMargin);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if AreHtmlMarginsEqual(AValue,ElemMarginBottom) then exit;
-  CopyPropBRecTo(pRec);
-  pRec.ElemMarginBottom:=AValue;
-  FindOrCreatePropB(pRec);
-end;
-
-procedure TIpHtmlProps.SetElemMarginLeft(const AValue: TIpHtmlElemMargin);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if AreHtmlMarginsEqual(AValue,ElemMarginLeft) then exit;
-  CopyPropBRecTo(pRec);
-  pRec.ElemMarginLeft:=AValue;
-  FindOrCreatePropB(pRec);
-end;
-
-procedure TIpHtmlProps.SetElemMarginRight(const AValue: TIpHtmlElemMargin);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if AreHtmlMarginsEqual(AValue,ElemMarginRight) then exit;
-  CopyPropBRecTo(pRec);
-  pRec.ElemMarginRight:=AValue;
-  FindOrCreatePropB(pRec);
-end;
-
-procedure TIpHtmlProps.SetElemMarginTop(const AValue: TIpHtmlElemMargin);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if AreHtmlMarginsEqual(AValue,ElemMarginTop) then exit;
-  CopyPropBRecTo(pRec);
-  pRec.ElemMarginTop:=AValue;
-  FindOrCreatePropB(pRec);
-end;
-
-procedure TIpHtmlProps.SetNoBreak(const Value: Boolean);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> NoBreak then begin
-    CopyPropBRecTo(pRec);
-    pRec.NoBreak:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetPreformatted(const Value: Boolean);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> Preformatted then begin
-    CopyPropBRecTo(pRec);
-    pRec.Preformatted:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetVAlignment(const Value: TIpHtmlVAlign3);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> VAlignment then begin
-    CopyPropBRecTo(pRec);
-    pRec.VAlignment:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetVLinkColor(const Value: TColor);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> VLinkColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.VLinkColor:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetHoverColor(const Value: TColor);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> HoverColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.HoverColor:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-procedure TIpHtmlProps.SetHoverBgColor(const Value: TColor);
-var
-  pRec : TIpHtmlPropBFieldsRec;
-begin
-  if Value <> HoverBgColor then begin
-    CopyPropBRecTo(pRec);
-    pRec.HoverBgColor:=Value;
-    FindOrCreatePropB(pRec);
-  end;
-end;
-
-{ TIpHtmlPropA }
-
-procedure TIpHtmlPropA.Assign(const Source: TIpHtmlPropA);
-begin
-  if Source <> nil then begin
-    Move(Source.FPropRec, FPropRec, sizeof(TIpHtmlPropAFieldsRec));
-  end;
-end;
-
-constructor TIpHtmlPropA.CreateCopy(Source: TIpHtmlPropA);
-begin
-  inherited Create;
-  Assign(Source);
-end;
-
-procedure TIpHtmlPropA.DecUse;
-begin
-  if FUseCount > 0 then Dec(FUseCount);
-end;
-
-procedure TIpHtmlPropA.IncUse;
-begin
-  Inc(FUseCount);
-end;
-
-procedure TIpHtmlPropA.SetBaseFontSize(const Value: Integer);
-begin
-  if Value <> FPropRec.BaseFontSize then begin
-    FPropRec.BaseFontSize := Value;
-    FSizeOfSpaceKnown := False;
-  end;
-end;
-
-procedure TIpHtmlPropA.SetFontName(const Value: TFontNameStr);
-begin
-  if Value <> FPropRec.FontName then begin
-    FPropRec.FontName := Value;
-    FSizeOfSpaceKnown := False;
-  end;
-end;
-
-procedure TIpHtmlPropA.SetFontSize(const Value: Integer);
-begin
-  if Value <> FPropRec.FontSize then begin
-    FPropRec.FontSize := Value;
-    FSizeOfSpaceKnown := False;
-  end;
-end;
-
-procedure TIpHtmlPropA.SetFontStyle(const Value: TFontStyles);
-begin
-  if Value <> FPropRec.FontStyle then begin
-    FPropRec.FontStyle := Value;
-    FSizeOfSpaceKnown := False;
-  end;
-end;
-
-procedure TIpHtmlPropA.SetKnownSizeOfSpace(const Size: TSize);
-begin
-  FKnownSizeOfSpace := Size;
-  FSizeOfSpaceKnown := True;
-end;
-
-{ TIpHtmlPropB }
-
-procedure TIpHtmlPropB.Assign(const Source: TIpHtmlPropB);
-begin
-  if Source <> nil then begin
-    Move(Source.FPropRec, FPropRec, sizeof(TIpHtmlPropBFieldsRec));
-  end;
-end;
-
-constructor TIpHtmlPropB.Create(Owner: TIpHtml);
-begin
-  inherited Create;
-  FPropRec.HoverColor := -1;
-  FPropRec.HoverBgColor := -1;
-  FOwner := Owner;
-end;
-
-constructor TIpHtmlPropB.CreateCopy(Owner: TIpHtml; Source: TIpHtmlPropB);
-begin
-  inherited Create;
-  FOwner := Owner;
-  Assign(Source);
-end;
-
-procedure TIpHtmlPropB.DecUse;
-var
-  i: Integer;
-begin
-  Dec(FUseCount);
-  if UseCount = 0 then begin
-    for i := Pred(FOwner.PropBCache.Count) downto 0 do
-      if TObject(FOwner.PropBCache[i]) = Self then begin
-        FOwner.PropBCache.Delete(i);
-        Free;
-        Exit;
-      end;
-    raise EIpHtmlException.Create(SHtmlInternal);
-  end else
-    if UseCount < 0 then
-      raise EIpHtmlException.Create(SHtmlInternal);
-end;
-
-procedure TIpHtmlPropB.IncUse;
-begin
-  Inc(FUseCount);
-end;
-
 { TIpHtmlNodeTableHeaderOrCell }
 
 procedure TIpHtmlNodeTableHeaderOrCell.CalcMinMaxPropWidth(const RenderProps: TIpHtmlProps;
@@ -16374,8 +15515,7 @@ begin
   end;
 end;
 
-procedure TIpHtmlNodeFRAME.SetScrolling(
-  const Value: TIpHtmlFrameScrolling);
+procedure TIpHtmlNodeFRAME.SetScrolling(const Value: TIpHtmlFrameScrolling);
 begin
   if Value <> FScrolling then begin
     FScrolling := Value;
@@ -16397,7 +15537,8 @@ end;
 constructor TIpHtmlNodeGenInline.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  Props := TIpHtmlProps.Create(Owner);
+  Props := TIpHtmlProps.Create(FOwner.PropACache, FOwner.DummyA,
+                               FOwner.PropBCache, FOwner.DummyB);
 end;
 
 destructor TIpHtmlNodeGenInline.Destroy;
