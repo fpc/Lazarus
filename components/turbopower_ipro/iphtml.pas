@@ -14596,42 +14596,73 @@ end;
 
 procedure TIpHtmlNodeSELECT.CreateControl(Parent: TWinControl);
 var
-  i, j, k, MinW : Integer;
-  S, SelectedText : string;
-  B : PAnsiChar;
-  iCurFontSize: integer;
   aCanvas : TCanvas;
+  SelectedText: string;
+  MinW: Integer;
+
+  procedure AdjustControl;
+  var
+    Sz: Integer;
+  begin
+    Sz := Size;
+    if Sz = -1 then Sz:= 1;
+    FControl.Visible := False;
+    FControl.Parent := Parent;
+    FControl.Height := (4 + aCAnvas.TextHeight('Wy')) * Sz;
+    FControl.Enabled := not Disabled;
+    FControl.OnClick := ButtonClick;
+    adjustFromCss;
+  end;
+
+  procedure CreateControlSub(Opt: TIpHtmlNodeOPTION);
+  var
+    k: Integer;
+    B: PAnsiChar;
+    S: String;
+  begin
+    if (Opt.FChildren.Count > 0)
+    and (TObject(Opt.FChildren[0]) is TIpHtmlNodeText) then begin
+      S := TIpHtmlNodeText(Opt.FChildren[0]).EscapedText;
+      Getmem(B, length(S) + 1);
+      try
+        TrimFormatting(S, B);
+        S := Trim(B);
+        if Multiple then begin
+          k := TListBox(FControl).Items.Add(S);
+          TListBox(FControl).Selected[k] := Opt.Selected;
+        end else begin
+          TComboBox(FControl).Items.Add(S);
+          if Opt.Selected then
+            SelectedText := S;
+        end;
+        MinW := MaxI2(MinW, aCanvas.TextWidth(S));
+      finally
+        FreeMem(B);
+      end;
+    end;
+  end;
+
+var
+  i, j, iCurFontSize: integer;
+  OptGroup: TIpHtmlNodeOPTGROUP;
 begin
   Owner.ControlCreate(Self);
   aCanvas := TFriendPanel(Parent).Canvas;
   iCurFontSize := aCanvas.Font.Size;
-  i := Size;
-  if i = -1 then i:= 1;
-
-  if Self.Multiple then begin
+  if Multiple then begin
     FControl := TListBox.Create(Parent);
-    FControl.Visible := False;
-    FControl.Parent := Parent;
-    adjustFromCss;
+    AdjustControl;
     with TListBox(FControl) do begin
       IntegralHeight := True;
-      Height := (4 + aCAnvas.TextHeight('Wy')) * i;
       MultiSelect := True;
-      Enabled := not Self.Disabled;
-      OnClick := ButtonClick;
       OnSelectionChange := ListBoxSelectionChange;
     end;
   end else begin
     FControl := TComboBox.Create(Parent);
-    FControl.Visible := False;
-    FControl.Parent := Parent;
-    adjustFromCss;
+    AdjustControl;
     with TComboBox(FControl) do begin
       Style := csDropDownList;
-      Height := (4 + aCAnvas.TextHeight('Wy')) * i;
-      Enabled := not Self.Disabled;
-      ReadOnly := not Self.ComboBox;
-      OnClick := ButtonClick;
+      ReadOnly := not FComboBox;
       OnEditingDone := ControlOnEditingdone;
     end;
   end;
@@ -14639,63 +14670,20 @@ begin
   SelectedText := '';
   for i := 0 to Pred(FChildren.Count) do
     if TObject(FChildren[i]) is TIpHtmlNodeOPTION then
-      with TIpHtmlNodeOPTION(FChildren[i]) do begin
-        if (FChildren.Count > 0)
-        and (TObject(FChildren[0]) is TIpHtmlNodeText) then begin
-          S := TIpHtmlNodeText(FChildren[0]).EscapedText;
-          Getmem(B, length(S) + 1);
-          try
-            TrimFormatting(S, B);
-            S := Trim(B);
-            if Self.Multiple then begin
-              j := TListBox(FControl).Items.Add(S);
-              MinW := MaxI2(MinW, aCanvas.TextWidth(S));
-              TListBox(FControl).Selected[j] := Selected;
-            end else begin
-              TComboBox(FControl).Items.Add(S);
-              MinW := MaxI2(MinW, aCanvas.TextWidth(S));
-              if Selected then
-                SelectedText := S;
-            end;
-          finally
-            FreeMem(B);
-          end;
-        end;
-      end
-    else
-    if TObject(FChildren[i]) is TIpHtmlNodeOPTGROUP then
-      with TIpHtmlNodeOPTGROUP(FChildren[i]) do begin
-        for j := 0 to Pred(FChildren.Count) do
-          if TObject(FChildren[j]) is TIpHtmlNodeOPTION then
-            with TIpHtmlNodeOPTION(FChildren[j]) do begin
-              if (FChildren.Count > 0)
-              and (TObject(FChildren[0]) is TIpHtmlNodeText) then begin
-                S := TIpHtmlNodeText(FChildren[0]).EscapedText;
-                GetMem(B, length(S) + 1);
-                try
-                  TrimFormatting(S, B);
-                  S := Trim(B);
-                  if Self.Multiple then begin
-                    k := TListBox(FControl).Items.Add(S);
-                    MinW := MaxI2(MinW, aCanvas.TextWidth(S));
-                    TListBox(FControl).Selected[k] := Selected;
-                  end else begin
-                    TComboBox(FControl).Items.Add(Trim(B));
-                    MinW := MaxI2(MinW, aCanvas.TextWidth(S));
-                    if Selected then
-                      SelectedText := S;
-                  end;
-                finally
-                  FreeMem(B);
-                end;
-              end;
-            end;
-      end;
+      CreateControlSub(TIpHtmlNodeOPTION(FChildren[i]))
+    else if TObject(FChildren[i]) is TIpHtmlNodeOPTGROUP then begin
+      OptGroup := TIpHtmlNodeOPTGROUP(FChildren[i]);
+      for j := 0 to Pred(OptGroup.FChildren.Count) do
+        if TObject(OptGroup.FChildren[j]) is TIpHtmlNodeOPTION then
+          CreateControlSub(TIpHtmlNodeOPTION(OptGroup.FChildren[j]))
+    end;
   if SelectedText <> '' then
     with TComboBox(FControl) do
       ItemIndex := Items.IndexOf(SelectedText);
-  if FComboBox and (Width <> -1) then FControl.Width := Width*aCanvas.TextWidth('0')+ 20
-  else FControl.Width := MinW + 40;
+  if FComboBox and (Width <> -1) then
+    FControl.Width := Width*aCanvas.TextWidth('0')+ 20
+  else
+    FControl.Width := MinW + 40;
   FControl.ShowHint:=True;
   FControl.Hint:= Alt;
   aCanvas.Font.Size := iCurFontSize;
@@ -16287,7 +16275,7 @@ begin
   end;
 end;
 
-function TIpHtmlNodeControl.adjustFromCss:boolean;
+function TIpHtmlNodeControl.adjustFromCss: boolean;
 begin
    result := false;
    {$IFDEF IP_LAZARUS}
