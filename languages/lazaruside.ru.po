@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-07 02:21+0400\n"
+"PO-Revision-Date: 2014-07-08 02:04+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4539,7 +4539,7 @@ msgstr "Сборка"
 
 #: lazarusidestrconsts.lisbuildfollowingmodes
 msgid "Build the following modes"
-msgstr ""
+msgstr "Собрать в следующих режимах"
 
 #: lazarusidestrconsts.lisbuildide
 msgid "Build IDE"
@@ -4594,7 +4594,7 @@ msgstr "Приложение занято"
 
 #: lazarusidestrconsts.lisbyte
 msgid "%s byte"
-msgstr ""
+msgstr "%s байт"
 
 #: lazarusidestrconsts.liscallingtocreatemakefilefromfailed
 msgid "Calling %s to create Makefile from %s failed."
@@ -4642,7 +4642,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liscannotfind
 msgid "Cannot find %s"
-msgstr ""
+msgstr "Невозможно найти %s"
 
 #: lazarusidestrconsts.liscannotfindexecutable
 msgid "can not find executable \"%s\""
@@ -4655,7 +4655,7 @@ msgstr "Невозможно найти программу запуска Lazaru
 
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
-msgstr ""
+msgstr "Невозможно найти модуль %s"
 
 #: lazarusidestrconsts.liscannottestthecompilerwhiledebuggingorcompiling
 msgid "Cannot test the compiler while debugging or compiling."
@@ -4667,7 +4667,7 @@ msgstr "Возможно только изменить класс TComponents."
 
 #: lazarusidestrconsts.liscantfindavalidppu
 msgid "Can't find a valid %s.ppu"
-msgstr ""
+msgstr "Невозможно найти корректный %s.ppu"
 
 #: lazarusidestrconsts.liscaptiondiff
 msgctxt "lazarusidestrconsts.liscaptiondiff"
@@ -5365,7 +5365,7 @@ msgstr "Класс не найден"
 
 #: lazarusidestrconsts.lisclassnotfoundat
 msgid "Class %s not found at %s(%s,%s)"
-msgstr ""
+msgstr "Класс %s не найден в %s(%s,%s)"
 
 #: lazarusidestrconsts.lisclassofmethodnotfound
 #| msgid "Class %s%s%s of method %s%s%s not found."
@@ -6225,7 +6225,7 @@ msgstr "компиляции"
 
 #: lazarusidestrconsts.liscompilewithvdformoredetailscheckforduplicates
 msgid "%s -> Compile with -vd for more details. Check for duplicates."
-msgstr ""
+msgstr "%s -> Соберите с параметром -vd для получения подробностей. Убедитесь в отсутствии дубликатов."
 
 #: lazarusidestrconsts.liscompiling
 msgid "%s (compiling ...)"
@@ -6692,7 +6692,7 @@ msgstr "Копировать все строки в буфер обмена"
 
 #: lazarusidestrconsts.liscopyalloriginalmessagestoclipboard
 msgid "Copy All/Original Messages to Clipboard"
-msgstr ""
+msgstr "Копировать все/исходные сообщения в буфер обмена"
 
 #: lazarusidestrconsts.liscopyalloutputclipboard
 msgid "Copy all output to clipboard"
@@ -6722,7 +6722,7 @@ msgstr "Ошибка копирования"
 
 #: lazarusidestrconsts.liscopyfilenametoclipboard
 msgid "Copy File Name to Clipboard"
-msgstr ""
+msgstr "Копировать имя файла в буфер обмена"
 
 #: lazarusidestrconsts.liscopyidentifier
 #| msgid "Copy %s%s%s to clipboard"
@@ -6740,7 +6740,7 @@ msgstr "Копировать строку в буфер обмена"
 
 #: lazarusidestrconsts.liscopymovefiletodirectory
 msgid "Copy/Move File to Directory"
-msgstr ""
+msgstr "Копировать/переместить файл в каталог"
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
 #| msgid "Copy selected items to clipboard"
@@ -6826,7 +6826,7 @@ msgstr "Создать каталог?"
 
 #: lazarusidestrconsts.liscreatefilter
 msgid "Create Filter"
-msgstr ""
+msgstr "Создание фильтра"
 
 #: lazarusidestrconsts.liscreatefunction
 msgid "Create function"
@@ -6842,7 +6842,7 @@ msgstr "Создать его"
 
 #: lazarusidestrconsts.liscreatelocalvariable
 msgid "Create local variable \"%s\""
-msgstr ""
+msgstr "Создать локальную переменную \"%s\""
 
 #: lazarusidestrconsts.liscreatenewpackage
 msgid "(Create new package)"
@@ -8025,7 +8025,7 @@ msgstr "Включить группы"
 
 #: lazarusidestrconsts.lisenablei18nforlfm
 msgid "Enable I18N for LFM"
-msgstr ""
+msgstr "Включить i18n для LFM"
 
 #: lazarusidestrconsts.lisenableinternationalizationandtranslationsupport
 msgid "Enable internationalization and translation support"
@@ -9240,15 +9240,15 @@ msgstr "Начинать заголовок IDE с имени проекта"
 
 #: lazarusidestrconsts.lisiecoallbuildmodes
 msgid "All build modes"
-msgstr ""
+msgstr "всех режимов сборки"
 
 #: lazarusidestrconsts.lisiecocompileroptionsof
 msgid "Compiler options of"
-msgstr ""
+msgstr "Параметры компилятора"
 
 #: lazarusidestrconsts.lisiecocurrentbuildmode
 msgid "Current build mode"
-msgstr ""
+msgstr "текущего режима сборки"
 
 #: lazarusidestrconsts.lisiecoerroropeningxml
 msgid "Error opening XML"
@@ -9260,7 +9260,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisiecoexportcompileroptions
 msgid "Export Compiler Options"
-msgstr ""
+msgstr "Экспорт параметров компилятора"
 
 #: lazarusidestrconsts.lisiecoexportfileexists
 msgid "Export file exists"
@@ -9273,7 +9273,7 @@ msgstr "Файл экспорта \"%s\" уже существует.%sОткр�
 
 #: lazarusidestrconsts.lisiecoimportcompileroptions
 msgid "Import Compiler Options"
-msgstr ""
+msgstr "Импорт параметров компилятора"
 
 #: lazarusidestrconsts.lisiecoloadfromfile
 msgid "Load from file"
@@ -9766,7 +9766,7 @@ msgstr "История переходов"
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
-msgstr ""
+msgstr "%s кБ"
 
 #: lazarusidestrconsts.liskeep2
 msgid "Keep"
@@ -9847,7 +9847,7 @@ msgstr "Добавить наблюдение"
 
 #: lazarusidestrconsts.liskmbuildmanymodes
 msgid "Build many modes"
-msgstr ""
+msgstr "Собрать в нескольких режимах"
 
 #: lazarusidestrconsts.liskmbuildprojectprogram
 msgid "Build project/program"
@@ -10960,7 +10960,7 @@ msgstr "%s Возможно, вам требуется пересобрать п
 
 #: lazarusidestrconsts.lismb
 msgid "%s MB"
-msgstr ""
+msgstr "%s МБ"
 
 #: lazarusidestrconsts.lismeaction
 msgctxt "lazarusidestrconsts.lismeaction"
@@ -11025,7 +11025,7 @@ msgstr "Пересобрать Lazarus по профилю: %s"
 
 #: lazarusidestrconsts.lismenubuildmanymodes
 msgid "Build many Modes ..."
-msgstr ""
+msgstr "Собрать в нескольких режимах ..."
 
 #: lazarusidestrconsts.lismenuchecklfm
 #| msgid "Check LFM file in editor"
@@ -11039,7 +11039,7 @@ msgstr "Очистить каталог ..."
 
 #: lazarusidestrconsts.lismenucleanupandbuild
 msgid "Clean up and Build ..."
-msgstr ""
+msgstr "Очистить и собрать ..."
 
 #: lazarusidestrconsts.lismenucloseall
 #| msgid "Close A&ll Editor Files"
@@ -14707,7 +14707,7 @@ msgstr "Удалить файл %s из проекта?"
 
 #: lazarusidestrconsts.lisprojinspremoveitemsf
 msgid "Remove %s items from project?"
-msgstr "Удалить %s элемент(ов) из проекта?"
+msgstr "Удалить элементы (%s шт.) из проекта?"
 
 #: lazarusidestrconsts.lisprojmangunabletoreadstatefileofprojecterror
 msgid "Unable to read state file %s of project %s%sError: %s"
@@ -15315,7 +15315,7 @@ msgstr "Сохранить все изменённые файлы"
 
 #: lazarusidestrconsts.lissavealloriginalmessagestofile
 msgid "Save All/Original Messages to File ..."
-msgstr ""
+msgstr "Сохранить все/исходные сообщения в файл ..."
 
 #: lazarusidestrconsts.lissaveandexitdialog
 msgid "Save and exit dialog"
@@ -15398,7 +15398,7 @@ msgstr "Сохранить параметры"
 
 #: lazarusidestrconsts.lissaveshownmessagestofile
 msgid "Save Shown Messages to File ..."
-msgstr ""
+msgstr "Сохранить показанные сообщения в файл ..."
 
 #: lazarusidestrconsts.lissavespace
 msgid "Save "
@@ -17472,7 +17472,7 @@ msgstr "Комментарии в параметрах пользователя"
 
 #: lazarusidestrconsts.lisusedby
 msgid " used by %s"
-msgstr ""
+msgstr ", используемый в %s"
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
