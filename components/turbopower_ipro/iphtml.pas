@@ -14703,64 +14703,55 @@ end;
 
 procedure TIpHtmlNodeSELECT.Reset;
 var
-  i, j, k : Integer;
-  S, SelectedText : string;
-  B : PAnsiChar;
+  SelectedText : string;
+
+  procedure ResetSub(Opt: TIpHtmlNodeOPTION);
+  var
+    k: Integer;
+    B: PAnsiChar;
+    S: String;
+  begin
+    if (Opt.FChildren.Count > 0)
+    and (TObject(Opt.FChildren[0]) is TIpHtmlNodeText) then begin
+      S := TIpHtmlNodeText(Opt.FChildren[0]).EscapedText;
+      GetMem(B, length(S) + 1);
+      try
+        TrimFormatting(S, B);
+        if Multiple then begin
+          k := TListBox(FControl).Items.Add(Trim(B));
+          TListBox(FControl).Selected[k] := Opt.Selected;
+        end else begin
+          TComboBox(FControl).Items.Add(Trim(B));
+          if Opt.Selected then
+            SelectedText := Trim(B);
+        end;
+      finally
+        FreeMem(B);
+      end;
+    end;
+  end;
+
+var
+  i, j: Integer;
+  OptGroup: TIpHtmlNodeOPTGROUP;
 begin
   SelectedText := '';
-  if Self.Multiple then
+  if Multiple then
     TListBox(FControl).Clear
   else
     TComboBox(FControl).Clear;
   for i := 0 to Pred(FChildren.Count) do
     if TObject(FChildren[i]) is TIpHtmlNodeOPTION then
-      with TIpHtmlNodeOPTION(FChildren[i]) do begin
-        if (FChildren.Count > 0)
-        and (TObject(FChildren[0]) is TIpHtmlNodeText) then begin
-          S := TIpHtmlNodeText(FChildren[0]).EscapedText;
-          GetMem(B, length(S) + 1);
-          try
-            TrimFormatting(S, B);
-            if Self.Multiple then begin
-              j := TListBox(FControl).Items.Add(Trim(B));
-              TListBox(FControl).Selected[j] := Selected;
-            end else begin
-              TComboBox(FControl).Items.Add(Trim(B));
-              if Selected then
-                SelectedText := Trim(B);
-            end;
-          finally
-            FreeMem(B);
-          end;
-        end;
-      end
-    else
-    if TObject(FChildren[i]) is TIpHtmlNodeOPTGROUP then
-      with TIpHtmlNodeOPTGROUP(FChildren[i]) do begin
-        for j := 0 to Pred(FChildren.Count) do
-          if TObject(FChildren[j]) is TIpHtmlNodeOPTION then
-            with TIpHtmlNodeOPTION(FChildren[j]) do begin
-              if (FChildren.Count > 0)
-              and (TObject(FChildren[0]) is TIpHtmlNodeText) then begin
-                S := TIpHtmlNodeText(FChildren[0]).EscapedText;
-                GetMem(B, length(S) + 1);
-                try
-                  TrimFormatting(S, B);
-                  if Self.Multiple then begin
-                    k := TListBox(FControl).Items.Add(Trim(B));
-                    TListBox(FControl).Selected[k] := Selected;
-                  end else begin
-                    TComboBox(FControl).Items.Add(Trim(B));
-                    if Selected then
-                      SelectedText := Trim(B);
-                  end;
-                finally
-                  FreeMem(B);
-                end;
-              end;
-            end;
-      end;
-  if not Self.Multiple and (SelectedText <> '') then
+      // Option
+      ResetSub(TIpHtmlNodeOPTION(FChildren[i]))
+    else if TObject(FChildren[i]) is TIpHtmlNodeOPTGROUP then begin
+      // Option Group
+      OptGroup := TIpHtmlNodeOPTGROUP(FChildren[i]);
+      for j := 0 to Pred(OptGroup.FChildren.Count) do
+        if TObject(OptGroup.FChildren[j]) is TIpHtmlNodeOPTION then
+          ResetSub(TIpHtmlNodeOPTION(OptGroup.FChildren[j]));
+    end;
+  if not Multiple and (SelectedText <> '') then
     with TComboBox(FControl) do
       ItemIndex := Items.IndexOf(SelectedText);
 end;
@@ -14820,8 +14811,7 @@ begin
   inherited;
 end;
 
-procedure TIpHtmlNodeTEXTAREA.AddValues(NameList,
-  ValueList: TStringList);
+procedure TIpHtmlNodeTEXTAREA.AddValues(NameList, ValueList: TStringList);
 begin
   NameList.Add(Name);
   ValueList.Add(TMemo(FControl).Text);
