@@ -1145,27 +1145,30 @@ begin
       {$endif}
 
       StartUpdating;
-      edField.Text := FTempText;
-      if edField.Lookup then
-      begin
-        LookupKeyValues := Null;
-        if edField.LookupCache then
-          LookupKeyValues := edField.LookupList.FirstKeyByValue(FTempText)
-        else
+      try
+        edField.Text := FTempText;
+        if edField.Lookup then
         begin
-          LookupGetBookMark(edField);
-          try
-            if edField.LookupDataSet.Locate(edField.LookupResultField,
-              VarArrayOf([FTempText]), []) then
-                LookupKeyValues :=
-                  edField.LookupDataSet.FieldValues[edField.LookupKeyFields];
-          finally
-            LookupGotoBookMark(edField);
+          LookupKeyValues := Null;
+          if edField.LookupCache then
+            LookupKeyValues := edField.LookupList.FirstKeyByValue(FTempText)
+          else
+          begin
+            LookupGetBookMark(edField);
+            try
+              if edField.LookupDataSet.Locate(edField.LookupResultField,
+                VarArrayOf([FTempText]), []) then
+                  LookupKeyValues :=
+                    edField.LookupDataSet.FieldValues[edField.LookupKeyFields];
+            finally
+              LookupGotoBookMark(edField);
+            end;
           end;
+          edField.DataSet.FieldValues[edField.KeyFields] := LookupKeyValues;
         end;
-        edField.DataSet.FieldValues[edField.KeyFields] := LookupKeyValues;
+      finally
+        EndUpdating;
       end;
-      EndUpdating;
 
       EditingColumn(FEditingColumn, False);
       {$ifdef dbgDBGrid}
