@@ -1351,8 +1351,8 @@ begin
   ecCopy:                SetSingle(VK_Insert,[ssCtrl]);
   ecCut:                 SetSingle(VK_Delete,[ssShift]);
   ecPaste:               SetSingle(VK_Insert,[ssShift]);
-  ecNormalSelect:        SetSingle(VK_UNKNOWN,[]);
-  ecColumnSelect:        SetSingle(VK_UNKNOWN,[]);
+  ecNormalSelect:        SetCombo(VK_O,[ssCtrl],VK_K,[]);
+  ecColumnSelect:        SetCombo(VK_O,[ssCtrl],VK_C,[]);
   ecLineSelect:          SetCombo(VK_K,[ssCtrl],VK_L,[]);
   ecSelWordLeft:         SetSingle(VK_LEFT,[ssCtrl,ssShift]);
   ecSelWordRight:        SetSingle(VK_RIGHT,[ssCtrl,ssShift]);
