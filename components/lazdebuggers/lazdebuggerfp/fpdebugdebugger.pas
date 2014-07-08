@@ -18,6 +18,7 @@ uses
   FpPascalBuilder,
   DbgIntfBaseTypes,
   DbgIntfDebuggerBase,
+  FpdMemoryTools,
   FpPascalParser,
   FPDbgController, FpDbgDwarfDataClasses;
 
@@ -65,6 +66,8 @@ type
     FRaiseExceptionBreakpoint: FpDbgClasses.TDBGBreakPoint;
     FDbgLogMessageList: array of TFpDbgLogMessage;
     FLogCritSection: TRTLCriticalSection;
+    FMemReader: TDbgMemReader;
+    FMemManager: TFpDbgMemManager;
     {$ifdef linux}
     FCacheLine: cardinal;
     FCacheFileName: string;
@@ -240,9 +243,46 @@ uses
   FpDbgUtil,
   FpDbgDisasX86;
 
+type
+
+  { TFpDbgMemReader }
+
+  TFpDbgMemReader = class(TDbgMemReader)
+  private
+    FFpDebugDebugger: TFpDebugDebugger;
+  protected
+    function GetDbgProcess: TDbgProcess; override;
+  public
+    constructor create(AFpDebugDebuger: TFpDebugDebugger);
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+  end;
+
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFpDbgMemReader }
+
+function TFpDbgMemReader.GetDbgProcess: TDbgProcess;
+begin
+  result := FFpDebugDebugger.FDbgController.CurrentProcess;
+end;
+
+constructor TFpDbgMemReader.create(AFpDebugDebuger: TFpDebugDebugger);
+begin
+  FFpDebugDebugger := AFpDebugDebuger;
+end;
+
+function TFpDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  result := FFpDebugDebugger.ReadData(AnAddress, ASize, ADest^);
+end;
+
+function TFpDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  result := FFpDebugDebugger.ReadData(AnAddress, ASize, ADest^);
 end;
 
 { TFPCallStackSupplier }
@@ -385,7 +425,11 @@ begin
     end
   else
     RegList := AController.CurrentProcess.MainThread.RegisterValueList;
-  Reg := RegList.FindRegisterByDwarfIndex(8);
+  {$ifdef i386}
+    Reg := RegList.FindRegisterByDwarfIndex(8);
+  {$else}
+    Reg := RegList.FindRegisterByDwarfIndex(16);
+  {$endif}
   if Reg <> nil then
     AContext := AController.CurrentProcess.DbgInfo.FindContext(CurThreadId, CurStackFrame, Reg.NumValue)
   else
@@ -913,7 +957,11 @@ begin
     end
   else
     RegList := AController.CurrentProcess.MainThread.RegisterValueList;
+{$ifdef i386}
   Reg := RegList.FindRegisterByDwarfIndex(8);
+{$else}
+  Reg := RegList.FindRegisterByDwarfIndex(16);
+{$endif}
   if Reg <> nil then
     AContext := ADbgInfo.FindContext(ThreadId, StackFrame, Reg.NumValue)
   else
@@ -1007,6 +1055,7 @@ end;
 
 procedure TFpDebugDebugger.FDbgControllerDebugInfoLoaded(Sender: TObject);
 begin
+  TFpDwarfInfo(FDbgController.CurrentProcess.DbgInfo).MemManager := FMemManager;
   if LineInfo <> nil then begin
     TFpLineInfo(LineInfo).DebugInfoChanged;
   end;
@@ -1444,6 +1493,8 @@ begin
   FWatchEvalList := TList.Create;
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
   InitCriticalSection(FLogCritSection);
+  FMemReader := TFpDbgMemReader.Create(self);
+  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
   FDbgController := TDbgController.Create;
   FDbgController.OnLog:=@OnLog;
   FDbgController.OnCreateProcessEvent:=@FDbgControllerCreateProcessEvent;
@@ -1460,6 +1511,8 @@ begin
   FDbgController.Free;
   FPrettyPrinter.Free;
   FWatchEvalList.Free;
+  FMemManager.Free;
+  FMemReader.Free;
   DoneCriticalsection(FLogCritSection);
   inherited Destroy;
 end;

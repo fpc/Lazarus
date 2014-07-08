@@ -876,11 +876,6 @@ begin
   s := GetProcFilename(Self, AInfo.lpImageName, AInfo.fUnicode, 0);
   if s <> ''
   then SetName(s);
-
-  LoadInfo;
-
-  if DbgInfo.HasInfo
-  then FSymInstances.Add(Self);
 end;
 
 function TDbgWinProcess.GetInstructionPointerRegisterValue: TDbgPtr;

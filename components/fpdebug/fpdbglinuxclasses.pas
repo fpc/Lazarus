@@ -402,11 +402,6 @@ constructor TDbgLinuxProcess.Create(const AName: string; const AProcessID,
   AThreadID: Integer; AOnLog: TOnLog);
 begin
   inherited Create(AName, AProcessID, AThreadID, AOnLog);
-
-  LoadInfo;
-
-  if DbgInfo.HasInfo
-  then FSymInstances.Add(Self);
 end;
 
 destructor TDbgLinuxProcess.Destroy;

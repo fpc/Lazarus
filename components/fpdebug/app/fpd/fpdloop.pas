@@ -38,6 +38,8 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, FpDbgInfo, FpDbgClasses, FpDbgDisasX86, DbgIntfBaseTypes,
+  FpDbgDwarf,
+  FpdMemoryTools,
   CustApp;
 
 type
@@ -47,17 +49,21 @@ type
   TFPDLoop = class(TCustomApplication)
   private
     FLast: string;
+    FMemReader: TDbgMemReader;
+    FMemManager: TFpDbgMemManager;
     procedure ShowDisas;
     procedure ShowCode;
     procedure GControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
     procedure GControllerCreateProcessEvent(var continue: boolean);
     procedure GControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: TDbgBreakpoint);
     procedure GControllerProcessExitEvent(ExitCode: DWord);
+    procedure GControllerDebugInfoLoaded(Sender: TObject);
     procedure OnLog(const AString: string; const ALogLevel: TFPDLogLevel);
   protected
     Procedure DoRun; override;
   public
     procedure Initialize; override;
+    destructor Destroy; override;
   end;
 
 implementation
@@ -67,10 +73,40 @@ uses
   FpDbgUtil,
   FPDGlobal;
 
+type
+
+  { TPDDbgMemReader }
+
+  TPDDbgMemReader = class(TDbgMemReader)
+  protected
+    function GetDbgProcess: TDbgProcess; override;
+  public
+    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
+  end;
+
+
 resourcestring
   sBreakpointReached = 'Breakpoint reached at %s.';
   sProcessPaused = 'Process paused.';
   sProcessExited = 'Process ended with exit-code %d.';
+
+{ TPDDbgMemReader }
+
+function TPDDbgMemReader.GetDbgProcess: TDbgProcess;
+begin
+  result := GController.CurrentProcess;
+end;
+
+function TPDDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^);
+end;
+
+function TPDDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
+begin
+  result := GetDbgProcess.ReadData(AnAddress, ASize, ADest^);
+end;
 
 { TFPDLoop }
 
@@ -93,6 +129,11 @@ end;
 procedure TFPDLoop.GControllerProcessExitEvent(ExitCode: DWord);
 begin
   writeln(format(sProcessExited,[ExitCode]));
+end;
+
+procedure TFPDLoop.GControllerDebugInfoLoaded(Sender: TObject);
+begin
+  TFpDwarfInfo(GController.CurrentProcess.DbgInfo).MemManager := FMemManager;
 end;
 
 procedure TFPDLoop.ShowDisas;
@@ -239,11 +280,21 @@ end;
 procedure TFPDLoop.Initialize;
 begin
   inherited Initialize;
+  FMemReader := TPDDbgMemReader.Create;
+  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
   GController.OnLog:=@OnLog;
   GController.OnHitBreakpointEvent:=@GControllerHitBreakpointEvent;
   GController.OnCreateProcessEvent:=@GControllerCreateProcessEvent;
   GController.OnExceptionEvent:=@GControllerExceptionEvent;
   GController.OnProcessExitEvent:=@GControllerProcessExitEvent;
+  GController.OnDebugInfoLoaded:=@GControllerDebugInfoLoaded;
+end;
+
+destructor TFPDLoop.Destroy;
+begin
+  FMemManager.Free;
+  FMemReader.Free;
+  inherited Destroy;
 end;
 
 initialization

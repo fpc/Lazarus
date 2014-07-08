@@ -115,12 +115,9 @@ type
   { TDbgMemReader }
 
   TDbgMemReader = class(TFpDbgMemReaderBase)
-  private
-    FDbgProcess: TDbgProcess;
+  protected
+    function GetDbgProcess: TDbgProcess; virtual; abstract;
   public
-    constructor Create(ADbgProcess: TDbgProcess);
-    function ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
-    function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean; override;
     function RegisterSize(ARegNum: Cardinal): Integer; override;
   end;
@@ -190,14 +187,12 @@ type
   private
     FMode: TFPDMode;
     FName: String;
-    FOnDebugInfoLoaded: TNotifyEvent;
     FProcess: TDbgProcess;
     FDbgInfo: TDbgInfo;
     FSymbolTableInfo: TFpSymbolInfo;
     FLoader: TDbgImageLoader;
 
   protected
-    procedure LoadInfo; virtual;
     function InitializeLoader: TDbgImageLoader; virtual;
     procedure SetName(const AValue: String);
   public
@@ -208,11 +203,11 @@ type
     function AddrOffset: Int64; virtual;  // gives the offset between  the loaded addresses and the compiled addresses
     function FindSymbol(AAdress: TDbgPtr): TFpDbgSymbol;
     function RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
+    procedure LoadInfo; virtual;
 
     property Process: TDbgProcess read FProcess;
     property DbgInfo: TDbgInfo read FDbgInfo;
     property SymbolTableInfo: TFpSymbolInfo read FSymbolTableInfo;
-    property OnDebugInfoLoaded: TNotifyEvent read FOnDebugInfoLoaded write FOnDebugInfoLoaded;
     property Mode: TFPDMode read FMode;
   end;
 
@@ -239,8 +234,6 @@ type
     FOnLog: TOnLog;
     FProcessID: Integer;
     FThreadID: Integer;
-    FMemReader: TDbgMemReader;
-    FMemManager: TFpDbgMemManager;
 
     procedure ThreadDestroyed(const AThread: TDbgThread);
   protected
@@ -257,7 +250,6 @@ type
 
     FRunToBreakpoint: TDbgBreakpoint;
     FMainThread: TDbgThread;
-    procedure LoadInfo; override;
     function GetHandle: THandle; virtual;
     procedure SetExitCode(AValue: DWord);
     function GetLastEventProcessIdentifier: THandle; virtual;
@@ -295,6 +287,7 @@ type
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; virtual;
 
     function AddThread(AThreadIdentifier: THandle): TDbgThread;
+    procedure LoadInfo; override;
 
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
 
@@ -439,22 +432,6 @@ end;
 
 { TDbgMemReader }
 
-constructor TDbgMemReader.Create(ADbgProcess: TDbgProcess);
-begin
-  FDbgProcess := ADbgProcess;
-end;
-
-function TDbgMemReader.ReadMemory(AnAddress: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
-begin
-  result := FDbgProcess.ReadData(AnAddress, ASize, ADest^);
-end;
-
-function TDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr;
-  ASize: Cardinal; ADest: Pointer): Boolean;
-begin
-  result := FDbgProcess.ReadData(AnAddress, ASize, ADest^);
-end;
-
 function TDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr; AContext: TFpDbgAddressContext): Boolean;
 var
   ARegister: TDbgRegisterValue;
@@ -468,12 +445,12 @@ begin
     StackFrame := 0;
   if StackFrame = 0 then
     begin
-    ARegister:=FDbgProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
+    ARegister:=GetDbgProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
     end
   else
     begin
-    FDbgProcess.MainThread.PrepareCallStackEntryList(StackFrame);
-    AFrame := FDbgProcess.MainThread.CallStackEntryList[StackFrame];
+    GetDbgProcess.MainThread.PrepareCallStackEntryList(StackFrame);
+    AFrame := GetDbgProcess.MainThread.CallStackEntryList[StackFrame];
     if AFrame <> nil then
       ARegister:=AFrame.RegisterValueList.FindRegisterByDwarfIndex(ARegNum)
     else
@@ -492,7 +469,7 @@ function TDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;
 var
   ARegister: TDbgRegisterValue;
 begin
-  ARegister:=FDbgProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
+  ARegister:=GetDbgProcess.MainThread.RegisterValueList.FindRegisterByDwarfIndex(ARegNum);
   if assigned(ARegister) then
     result := ARegister.Size
   else
@@ -629,8 +606,6 @@ begin
   FDbgInfo := TFpDwarfInfo.Create(FLoader);
   TFpDwarfInfo(FDbgInfo).LoadCompilationUnits;
   FSymbolTableInfo := TFpSymbolInfo.Create(FLoader);
-  if Assigned(FOnDebugInfoLoaded) then
-    FOnDebugInfoLoaded(Self);
 end;
 
 function TDbgInstance.RemoveBreak(const AFileName: String; ALine: Cardinal): Boolean;
@@ -689,9 +664,6 @@ begin
   FBreakMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgBreakpoint));
   FCurrentBreakpoint := nil;
 
-  FMemReader := TDbgMemReader.Create(Self);
-  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
-
   FSymInstances := TList.Create;
 
   SetName(AName);
@@ -722,8 +694,6 @@ begin
   FreeAndNil(FThreadMap);
   FreeAndNil(FLibMap);
   FreeAndNil(FSymInstances);
-  FreeAndNil(FMemManager);
-  FreeAndNil(FMemReader);
   inherited;
 end;
 
@@ -977,7 +947,9 @@ end;
 procedure TDbgProcess.LoadInfo;
 begin
   inherited LoadInfo;
-  TFpDwarfInfo(FDbgInfo).MemManager := FMemManager;
+
+  if DbgInfo.HasInfo then
+    FSymInstances.Add(Self);
 end;
 
 function TDbgProcess.GetLastEventProcessIdentifier: THandle;

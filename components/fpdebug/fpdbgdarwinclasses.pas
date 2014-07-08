@@ -572,11 +572,6 @@ var
 begin
   inherited Create(AName, AProcessID, AThreadID, AOnLog);
 
-  LoadInfo;
-
-  if DbgInfo.HasInfo
-  then FSymInstances.Add(Self);
-
   GetDebugAccessRights;
   aKernResult:=task_for_pid(mach_task_self, AProcessID, FTaskPort);
   if aKernResult <> KERN_SUCCESS then

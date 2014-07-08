@@ -408,7 +408,6 @@ begin
   if assigned(FCurrentProcess) then
     begin
     FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);
-    FCurrentProcess.OnDebugInfoLoaded := @DoOnDebugInfoLoaded;
     Log('Got PID: %d, TID: %d', [FCurrentProcess.ProcessID, FCurrentProcess.ThreadID]);
     result := true;
     end;
@@ -538,6 +537,9 @@ begin
   case FPDEvent of
     deCreateProcess:
       begin
+        FCurrentProcess.LoadInfo;
+        DoOnDebugInfoLoaded(self);
+
         continue:=true;
         if assigned(OnCreateProcessEvent) then
           OnCreateProcessEvent(continue);
