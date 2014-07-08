@@ -13,19 +13,19 @@ msgstr ""
 #, fuzzy
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
-msgstr "Navegador %s%s%s no ejecutable."
+msgstr "Navegador \"%s\" no ejecutable."
 
 #: lclstrconsts.hhshelpbrowsernotfound
 #, fuzzy
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
-msgstr "Navegador %s%s%s no encontrado."
+msgstr "Navegador \"%s\" no encontrado."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
 #, fuzzy
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
-msgstr "Error al ejecutar %s%s%s:%s%s"
+msgstr "Error al ejecutar \"%s\":%s%s"
 
 #: lclstrconsts.hhshelpnohtmlbrowserfound
 msgid "Unable to find a HTML browser."
@@ -39,7 +39,7 @@ msgstr "No encontrado un Navegador HTML.%sPor favor definir uno en Herramientas 
 #, fuzzy
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
-msgstr "La base de datos de la ayuda %s%s%s no pudo encontrar el archivo %s%s%s."
+msgstr "La base de datos de la ayuda \"%s\" no pudo encontrar el archivo \"%s\"."
 
 #: lclstrconsts.hhshelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
@@ -689,49 +689,49 @@ msgstr "Contexto de ayuda %s no encontrado."
 #, fuzzy
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
-msgstr "Contexto de ayuda %s no encontrado en la base de datos %s%s%s."
+msgstr "Contexto de ayuda %s no encontrado en la base de datos \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, fuzzy
 #| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
-msgstr "La base de datos de ayuda %s%s%s no encontró un visor para el tipo de página de ayuda %s"
+msgstr "La base de datos de ayuda \"%s\" no encontró un visor para el tipo de página de ayuda %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
 #, fuzzy
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
-msgstr "Base de datos de ayuda %s%s%s no encotrada"
+msgstr "Base de datos de ayuda \"%s\" no encotrada"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
 #, fuzzy
 #| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
-msgstr "Ayuda para directiva %s%s%s no encontrado."
+msgstr "Ayuda para directiva \"%s\" no encontrado."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
 #, fuzzy
 #| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
-msgstr "Ayuda para directiva %s%s%s no encontrada en la base de datos %s%s%s."
+msgstr "Ayuda para directiva \"%s\" no encontrada en la base de datos \"%s\"."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
 #, fuzzy
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
-msgstr "Clave de ayuda %s%s%s no encontrada"
+msgstr "Clave de ayuda \"%s\" no encontrada"
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
 #, fuzzy
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
-msgstr "Clave de ayuda %s%s%s no encontrada en la base de datos %s%s%s."
+msgstr "Clave de ayuda \"%s\" no encontrada en la base de datos \"%s\"."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
 #, fuzzy
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
-msgstr "El nodo de ayuda %s%s%s no tiene base de datos de ayuda"
+msgstr "El nodo de ayuda \"%s\" no tiene base de datos de ayuda"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -761,7 +761,7 @@ msgstr "Error del selector de ayuda"
 #, fuzzy
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
-msgstr "No hay visor de ayuda para el tipo de ayuda %s%s%s"
+msgstr "No hay visor de ayuda para el tipo de ayuda \"%s\""
 
 #: lclstrconsts.rshelpviewererror
 msgid "Help Viewer Error"
