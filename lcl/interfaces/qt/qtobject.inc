@@ -1386,7 +1386,8 @@ begin
     AMask := QBitmap_create();
     QPixmap_mask(APixmap, AMask);
     QWidget_setMask(FDragImageList, AMask);
-    ABrush := QBrush_create(AImage);
+    // issue #26464, use QPixmap instead of QImage in QBrush constructor.
+    ABrush := QBrush_create(APixmap);
     APalette := QWidget_palette(FDragImageList);
     QPalette_setBrush(APalette, QPaletteWindow, ABrush);
     QBrush_destroy(ABrush);
