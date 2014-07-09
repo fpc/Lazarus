@@ -912,6 +912,7 @@ class procedure TGtk2WSOpenDialog.CreatePreviewDialogControl(
 var
   PreviewWidget: PGtkWidget;
   AControl: TPreviewFileControl;
+  Win, SubWin: TWinControl;
   FileChooser: PGtkFileChooser;
 begin
   AControl := PreviewDialog.PreviewFileControl;
@@ -925,9 +926,17 @@ begin
                       PreviewWidget);
   gtk_widget_set_size_request(PreviewWidget,AControl.Width,AControl.Height);
 
-  gtk_file_chooser_set_preview_widget(FileChooser, PreviewWidget);
+  // manually resize the preview objects, it seems, automatic resize is not
+  // working when parent of LCL control is not a LCL control.
+  if (AControl.ControlCount>0) and (AControl.Controls[0] is TWinControl) then begin
+    Win := TWinControl(AControl.Controls[0]);  // groupbox
+    SubWin := TWinControl(Win.Controls[0]);    // image
+    gtk_widget_set_size_request({%H-}PGtkWidget(Win.Handle), AControl.Width, AControl.Height);
+    SubWin.width := AControl.Width-4;          // skip borders
+    SubWin.height := AControl.Height-15;       //
+  end;
 
-  gtk_widget_show(PreviewWidget);
+  gtk_file_chooser_set_preview_widget(FileChooser, PreviewWidget);
 end;
 
 {
