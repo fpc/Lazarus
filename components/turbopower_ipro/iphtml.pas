@@ -119,310 +119,6 @@ type
 // lua lpp.lua onefile-with-lua-inside
 //
 
-(*lua
---
--- the following tables should be ordered
---
-htmlTags = {
-  {'!--', false, 'COMMENT'},
-  {'!DOCTYPE', false, 'DOCTYPE'},
-  {'<eof>', false, 'Eof'},
-  {'<text>', false, 'Text'},
-  {'<unknown>', false, 'Unknown'},
-  {'A', true},
-  {'ABBR', true},
-  {'ACRONYM', true},
-  {'ADDRESS', true},
-  {'APPLET', true},
-  {'AREA', false},
-  {'B', true},
-  {'BASE', false},
-  {'BASEFONT', false},
-  {'BIG', true},
-  {'BLINK', true},
-  {'BLOCKQUOTE', true},
-  {'BODY', true},
-  {'BR', false},
-  {'BUTTON', true},
-  {'CAPTION', true},
-  {'CENTER', true},
-  {'CITE', true},
-  {'CODE', true},
-  {'COL', false},
-  {'COLGROUP', true},
-  {'DD', true},
-  {'DEL', true},
-  {'DFN', true},
-  {'DIR', true},
-  {'DIV', true},
-  {'DL', true},
-  {'DT', true},
-  {'EM', true},
-  {'FIELDSET', true},
-  {'FONT', true},
-  {'FORM', true},
-  {'FRAME', false},
-  {'FRAMESET', true},
-  {'H1', true},
-  {'H2', true},
-  {'H3', true},
-  {'H4', true},
-  {'H5', true},
-  {'H6', true},
-  {'HEAD', true},
-  {'HR', false},
-  {'HTML', true},
-  {'I', true},
-  {'IFRAME', true},
-  {'IMG', false},
-  {'INPUT', false},
-  {'INS', true},
-  {'ISINDEX', false},
-  {'KBD', true},
-  {'LABEL', true},
-  {'LEFT', true},
-  {'LEGEND', true},
-  {'LI', true},
-  {'LINK', false},
-  {'MAP', true},
-  {'MENU', true},
-  {'META', false},
-  {'NOBR', true},
-  {'NOFRAMES', true},
-  {'NOSCRIPT', true},
-  {'OBJECT', true},
-  {'OL', true},
-  {'OPTGROUP', true},
-  {'OPTION', true},
-  {'P', true},
-  {'PARAM', false},
-  {'PRE', true},
-  {'Q', true},
-  {'RIGHT', true},
-  {'S', true},
-  {'SAMP', true},
-  {'SCRIPT', true},
-  {'SELECT', true},
-  {'SMALL', true},
-  {'SPAN', true},
-  {'STRIKE', true},
-  {'STRONG', true},
-  {'STYLE', true},
-  {'SUB', true},
-  {'SUP', true},
-  {'TABLE', true},
-  {'TBODY', true},
-  {'TD', true},
-  {'TEXTAREA', true},
-  {'TFOOT', true},
-  {'TH', true},
-  {'THEAD', true},
-  {'TITLE', true},
-  {'TR', true},
-  {'TT', true},
-  {'U', true},
-  {'UL', true},
-  {'VAR', true},
-}
-
-table.sort(htmlTags, function(a,b) return a[1] < b[1] end)
-
-function getHtmlTagsTable()
-  local k,v, tbl
-  tbl = {}
-  for k,v in(htmlTags) do
-      table.insert(tbl, v[1])
-      if v[2] then table.insert(tbl, '/' .. v[2]) end
-  end
-  table.sort(tbl)
-  return tbl
-end
-
-function genTIpHtmlToken()
-  local k,v, nEnd
-  nEnd = #htmlTags
-  _putsnl_('  TIpHtmlToken = (')
-  for k,v in pairs(htmlTags) do
-      _puts_('\tIpHtmlTag')
-      if v[3] then
-         _puts_(v[3])
-      else
-         _puts_(v[1])
-      end
-      if v[2] then
-         _puts_(', IpHtmlTag' .. v[1] .. 'end' )
-      end
-      if k < nEnd then  _putsnl_(', ') end
-  end
-  _putsnl_('  );')
-end
-
-function genIpEndTokenSet()
-  local k,v, nEnd
-  nEnd = #htmlTags
-  _putsnl_('  IpEndTokenSet : TIpHtmlTokenSet = [')
-  for k,v in pairs(htmlTags) do
-      if v[2] then
-         _puts_('\tIpHtmlTag' .. v[1] .. 'end' )
-         if k < nEnd then  _putsnl_(', ') end
-      end
-  end
-  _putsnl_('  ];')
-end
-
-function genIpHtmlTokens()
-  local k,v, tbl, nEnd, line
-  tbl = {}
-  for k,v in pairs(htmlTags) do
-      line = "\t(pc:'" .. v[1] .. "'; tk:IpHtmlTag"
-      if v[3] then
-         line = line .. v[3]
-      else
-         line = line .. v[1]
-      end
-	  line = line .. ')'
-	  table.insert(tbl, line)
-
-      if v[2] then
-		  line = "\t(pc:'/" .. v[1] .. "'; tk:IpHtmlTag"
-		  if v[3] then
-			 line = line .. v[3]
-		  else
-			 line = line .. v[1]
-		  end
-		  line = line .. 'end)'
-		  table.insert(tbl, line)
-      end
-
-  end
-  table.sort(tbl)
-  nEnd = #tbl
-  _putsnl_('  IpHtmlTokens : array[0..' .. nEnd-1 ..
-	'] of record\n\tpc: PAnsiChar;\n\ttk: TIpHtmlToken;\n  end = ( // alphabetically ordered')
-  _puts_(table.concat(tbl,',\n'))
-  _putsnl_('  );')
-end
-
-htmlNodeAttributes = {
-'ACCEPT',
-'ACCEPT-CHARSET',
-'ACTION',
-'ALIGN',
-'ALINK',
-'ALT',
-'ARCHIVE',
-'BACKGROUND',
-'BGCOLOR',
-'BORDER',
-'CELLPADDING',
-'CELLSPACING',
-'CHECKED',
-'CITE',
-'CLASS',
-'CLASSID',
-'CLEAR',
-'CODE',
-'CODEBASE',
-'CODETYPE',
-'COLOR',
-'COLS',
-'COLSPAN',
-'COMBOBOX',
-'COMPACT',
-'CONTENT',
-'COORDS',
-'DATA',
-'DATETIME',
-'DECLARE',
-'DIR',
-'DISABLED',
-'ENCTYPE',
-'FACE',
-'FRAME',
-'HEIGHT',
-'HREF',
-'HSPACE',
-'HTTP-EQUIV',
-'ID',
-'ISMAP',
-'LABEL',
-'LANG',
-'LANGUAGE',
-'LINK',
-'LONGDESC',
-'MARGINHEIGHT',
-'MARGINWIDTH',
-'MAXLENGTH',
-'MEDIA',
-'METHOD',
-'MULTIPLE',
-'NAME',
-'NOHREF',
-'NORESIZE',
-'NOSHADE',
-'NOWRAP',
-'OBJECT',
-'PROMPT',
-'READONLY',
-'REL',
-'REV',
-'ROWS',
-'ROWSPAN',
-'RULES',
-'SCHEME',
-'SCROLLING',
-'SELECTED',
-'SHAPE',
-'SIZE',
-'SPAN',
-'SRC',
-'STANDBY',
-'START',
-'STYLE',
-'SUMMARY',
-'TABINDEX',
-'TARGET',
-'TEXT',
-'TITLE',
-'TYPE',
-'USEMAP',
-'VALIGN',
-'VALUE',
-'VALUETYPE',
-'VERSION',
-'VLINK',
-'VSPACE',
-'WIDTH',
-}
-
-table.sort(htmlNodeAttributes)
-
-function genHtmlNodeAttributesSet()
-  local k,v, nEnd
-  nEnd = #htmlNodeAttributes
-  _putsnl_('  TIpHtmlAttributesSet = (')
-  for k,v in pairs(htmlNodeAttributes) do
-      if (k % 5) == 0 then _putsnl_('') end
-      _puts_('htmlAttr' .. v:gsub('-', '_') )
-      if k < nEnd then  _puts_(', ') end
-  end
-  _putsnl_('  );')
-end
-
-function genHtmlNodeAttributesNames()
-  local k,v, nEnd
-  nEnd = #htmlNodeAttributes
-  _putsnl_("  TIpHtmlAttributesNames : array[TIpHtmlAttributesSet] of PAnsiChar = (")
-  for k,v in pairs(htmlNodeAttributes) do
-      if (k % 5) == 0 then _putsnl_('') end
-      _puts_("'" .. v .. "'")
-      if k < nEnd then  _puts_(', ') end
-  end
-  _putsnl_('  );')
-end
-
-lua*)
-
 //#genTIpHtmlToken()
 // generated-code:begin
   TIpHtmlToken = (
@@ -531,24 +227,24 @@ lua*)
 //#genHtmlNodeAttributesSet()
 // generated-code:begin
   TIpHtmlAttributesSet = (
-htmlAttrACCEPT, htmlAttrACCEPT_CHARSET, htmlAttrACTION, htmlAttrALIGN, 
-htmlAttrALINK, htmlAttrALT, htmlAttrARCHIVE, htmlAttrBACKGROUND, htmlAttrBGCOLOR, 
-htmlAttrBORDER, htmlAttrCELLPADDING, htmlAttrCELLSPACING, htmlAttrCHECKED, htmlAttrCITE, 
-htmlAttrCLASS, htmlAttrCLASSID, htmlAttrCLEAR, htmlAttrCODE, htmlAttrCODEBASE, 
-htmlAttrCODETYPE, htmlAttrCOLOR, htmlAttrCOLS, htmlAttrCOLSPAN, htmlAttrCOMBOBOX, 
-htmlAttrCOMPACT, htmlAttrCONTENT, htmlAttrCOORDS, htmlAttrDATA, htmlAttrDATETIME, 
-htmlAttrDECLARE, htmlAttrDIR, htmlAttrDISABLED, htmlAttrENCTYPE, htmlAttrFACE, 
-htmlAttrFRAME, htmlAttrHEIGHT, htmlAttrHREF, htmlAttrHSPACE, htmlAttrHTTP_EQUIV, 
-htmlAttrID, htmlAttrISMAP, htmlAttrLABEL, htmlAttrLANG, htmlAttrLANGUAGE, 
-htmlAttrLINK, htmlAttrLONGDESC, htmlAttrMARGINHEIGHT, htmlAttrMARGINWIDTH, htmlAttrMAXLENGTH, 
-htmlAttrMEDIA, htmlAttrMETHOD, htmlAttrMULTIPLE, htmlAttrNAME, htmlAttrNOHREF, 
-htmlAttrNORESIZE, htmlAttrNOSHADE, htmlAttrNOWRAP, htmlAttrOBJECT, htmlAttrPROMPT, 
-htmlAttrREADONLY, htmlAttrREL, htmlAttrREV, htmlAttrROWS, htmlAttrROWSPAN, 
-htmlAttrRULES, htmlAttrSCHEME, htmlAttrSCROLLING, htmlAttrSELECTED, htmlAttrSHAPE, 
-htmlAttrSIZE, htmlAttrSPAN, htmlAttrSRC, htmlAttrSTANDBY, htmlAttrSTART, 
-htmlAttrSTYLE, htmlAttrSUMMARY, htmlAttrTABINDEX, htmlAttrTARGET, htmlAttrTEXT, 
-htmlAttrTITLE, htmlAttrTYPE, htmlAttrUSEMAP, htmlAttrVALIGN, htmlAttrVALUE, 
-htmlAttrVALUETYPE, htmlAttrVERSION, htmlAttrVLINK, htmlAttrVSPACE, htmlAttrWIDTH  );
+    htmlAttrACCEPT, htmlAttrACCEPT_CHARSET, htmlAttrACTION, htmlAttrALIGN,
+    htmlAttrALINK, htmlAttrALT, htmlAttrARCHIVE, htmlAttrBACKGROUND, htmlAttrBGCOLOR,
+    htmlAttrBORDER, htmlAttrCELLPADDING, htmlAttrCELLSPACING, htmlAttrCHECKED, htmlAttrCITE,
+    htmlAttrCLASS, htmlAttrCLASSID, htmlAttrCLEAR, htmlAttrCODE, htmlAttrCODEBASE,
+    htmlAttrCODETYPE, htmlAttrCOLOR, htmlAttrCOLS, htmlAttrCOLSPAN, htmlAttrCOMBOBOX,
+    htmlAttrCOMPACT, htmlAttrCONTENT, htmlAttrCOORDS, htmlAttrDATA, htmlAttrDATETIME,
+    htmlAttrDECLARE, htmlAttrDIR, htmlAttrDISABLED, htmlAttrENCTYPE, htmlAttrFACE,
+    htmlAttrFRAME, htmlAttrHEIGHT, htmlAttrHREF, htmlAttrHSPACE, htmlAttrHTTP_EQUIV,
+    htmlAttrID, htmlAttrISMAP, htmlAttrLABEL, htmlAttrLANG, htmlAttrLANGUAGE,
+    htmlAttrLINK, htmlAttrLONGDESC, htmlAttrMARGINHEIGHT, htmlAttrMARGINWIDTH, htmlAttrMAXLENGTH,
+    htmlAttrMEDIA, htmlAttrMETHOD, htmlAttrMULTIPLE, htmlAttrNAME, htmlAttrNOHREF,
+    htmlAttrNORESIZE, htmlAttrNOSHADE, htmlAttrNOWRAP, htmlAttrOBJECT, htmlAttrPROMPT,
+    htmlAttrREADONLY, htmlAttrREL, htmlAttrREV, htmlAttrROWS, htmlAttrROWSPAN,
+    htmlAttrRULES, htmlAttrSCHEME, htmlAttrSCROLLING, htmlAttrSELECTED, htmlAttrSHAPE,
+    htmlAttrSIZE, htmlAttrSPAN, htmlAttrSRC, htmlAttrSTANDBY, htmlAttrSTART,
+    htmlAttrSTYLE, htmlAttrSUMMARY, htmlAttrTABINDEX, htmlAttrTARGET, htmlAttrTEXT,
+    htmlAttrTITLE, htmlAttrTYPE, htmlAttrUSEMAP, htmlAttrVALIGN, htmlAttrVALUE,
+    htmlAttrVALUETYPE, htmlAttrVERSION, htmlAttrVLINK, htmlAttrVSPACE, htmlAttrWIDTH  );
 // generated-code:end
 
 const
@@ -829,24 +525,24 @@ const
 //#genHtmlNodeAttributesNames()
 // generated-code:begin
   TIpHtmlAttributesNames : array[TIpHtmlAttributesSet] of PAnsiChar = (
-'ACCEPT', 'ACCEPT-CHARSET', 'ACTION', 'ALIGN', 
-'ALINK', 'ALT', 'ARCHIVE', 'BACKGROUND', 'BGCOLOR', 
-'BORDER', 'CELLPADDING', 'CELLSPACING', 'CHECKED', 'CITE', 
-'CLASS', 'CLASSID', 'CLEAR', 'CODE', 'CODEBASE', 
-'CODETYPE', 'COLOR', 'COLS', 'COLSPAN', 'COMBOBOX', 
-'COMPACT', 'CONTENT', 'COORDS', 'DATA', 'DATETIME', 
-'DECLARE', 'DIR', 'DISABLED', 'ENCTYPE', 'FACE', 
-'FRAME', 'HEIGHT', 'HREF', 'HSPACE', 'HTTP-EQUIV', 
-'ID', 'ISMAP', 'LABEL', 'LANG', 'LANGUAGE', 
-'LINK', 'LONGDESC', 'MARGINHEIGHT', 'MARGINWIDTH', 'MAXLENGTH', 
-'MEDIA', 'METHOD', 'MULTIPLE', 'NAME', 'NOHREF', 
-'NORESIZE', 'NOSHADE', 'NOWRAP', 'OBJECT', 'PROMPT', 
-'READONLY', 'REL', 'REV', 'ROWS', 'ROWSPAN', 
-'RULES', 'SCHEME', 'SCROLLING', 'SELECTED', 'SHAPE', 
-'SIZE', 'SPAN', 'SRC', 'STANDBY', 'START', 
-'STYLE', 'SUMMARY', 'TABINDEX', 'TARGET', 'TEXT', 
-'TITLE', 'TYPE', 'USEMAP', 'VALIGN', 'VALUE', 
-'VALUETYPE', 'VERSION', 'VLINK', 'VSPACE', 'WIDTH'  );
+    'ACCEPT', 'ACCEPT-CHARSET', 'ACTION', 'ALIGN',
+    'ALINK', 'ALT', 'ARCHIVE', 'BACKGROUND', 'BGCOLOR',
+    'BORDER', 'CELLPADDING', 'CELLSPACING', 'CHECKED', 'CITE',
+    'CLASS', 'CLASSID', 'CLEAR', 'CODE', 'CODEBASE',
+    'CODETYPE', 'COLOR', 'COLS', 'COLSPAN', 'COMBOBOX',
+    'COMPACT', 'CONTENT', 'COORDS', 'DATA', 'DATETIME',
+    'DECLARE', 'DIR', 'DISABLED', 'ENCTYPE', 'FACE',
+    'FRAME', 'HEIGHT', 'HREF', 'HSPACE', 'HTTP-EQUIV',
+    'ID', 'ISMAP', 'LABEL', 'LANG', 'LANGUAGE',
+    'LINK', 'LONGDESC', 'MARGINHEIGHT', 'MARGINWIDTH', 'MAXLENGTH',
+    'MEDIA', 'METHOD', 'MULTIPLE', 'NAME', 'NOHREF',
+    'NORESIZE', 'NOSHADE', 'NOWRAP', 'OBJECT', 'PROMPT',
+    'READONLY', 'REL', 'REV', 'ROWS', 'ROWSPAN',
+    'RULES', 'SCHEME', 'SCROLLING', 'SELECTED', 'SHAPE',
+    'SIZE', 'SPAN', 'SRC', 'STANDBY', 'START',
+    'STYLE', 'SUMMARY', 'TABINDEX', 'TARGET', 'TEXT',
+    'TITLE', 'TYPE', 'USEMAP', 'VALIGN', 'VALUE',
+    'VALUETYPE', 'VERSION', 'VLINK', 'VSPACE', 'WIDTH'  );
 // generated-code:end
 
 const
@@ -894,7 +590,7 @@ type
   {$ENDIF}
 
   TIpHtmlInteger = class(TPersistent)
-  {!!.10 new - Integer property which can be scaled}
+  { Integer property which can be scaled}
   private
     FValue : Integer;
     FChange: TNotifyEvent;
