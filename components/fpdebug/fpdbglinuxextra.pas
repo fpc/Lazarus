@@ -20,10 +20,12 @@ const
   PTRACE_CONT                                  = 7;
   PTRACE_KILL                                  = 8;
   PTRACE_SINGLESTEP                            = 9;
+{$ifdef linux}
   PTRACE_GETREGS                               = 12;
   PTRACE_SETREGS                               = 13;
   PTRACE_GETFPREGS                             = 14;
   PTRACE_SETFPREGS                             = 15;
+{$endif linux}
   PTRACE_ATTACH                                = 16;
 
   RIP                                          = 16;
@@ -39,17 +41,27 @@ type
                         // return off_t to cint.
   TSysParam  = int64;
 
-const
-  syscall_nr_ptrace                            = 101;
-
+{$ifdef darwin}
+Function ptrace(ptrace_request: cInt; pid: TPid; addr:pointer; data:pointer): cint; cdecl; external clib name 'ptrace';
+{$endif darwin}
+{$ifdef linux}
 function Do_SysCall(sysnr,param1,param2,param3,param4:TSysParam):TSysResult; external name 'FPC_SYSCALL4';
 
+const
+  syscall_nr_ptrace                            = 101;
+{$endif linux}
 
 function fpPTrace(ptrace_request: cint; pid: TPid; addr: Pointer; data: pointer): PtrInt;
+{$ifdef linux}
 var
   res : TSysResult;
   ret : PtrInt;
+{$endif linux}
 begin
+{$ifdef darwin}
+  result := ptrace(ptrace_request, pid, addr, data);
+{$endif}
+{$ifdef linux}
   if (ptrace_request > 0) and (ptrace_request < 4) then
     data := @ret;
 
@@ -61,6 +73,7 @@ begin
     end
   else
     result := res;
+{$endif linux}
 end;
 
 end.
