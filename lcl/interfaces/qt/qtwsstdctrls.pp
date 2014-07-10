@@ -55,6 +55,8 @@ type
     class function GetDefaultClientRect(const AWinControl: TWinControl;
              const aLeft, aTop, aWidth, aHeight: integer; var aClientRect: TRect
              ): boolean; override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+      var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   end;
 
   { TQtWSGroupBox }
@@ -1315,6 +1317,15 @@ begin
                  Max(0, aHeight - dy));
     Result:=true;
   end;
+end;
+
+class procedure TQtWSCustomGroupBox.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  if AWinControl.HandleAllocated then
+    TQtGroupBox(AWinControl.Handle).PreferredSize(PreferredWidth,
+      PreferredHeight, WithThemeSpace);
 end;
 
 { TQtWSCustomComboBox }

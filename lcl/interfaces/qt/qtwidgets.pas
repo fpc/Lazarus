@@ -7730,7 +7730,7 @@ var
   ASize: TSize;
 begin
   QWidget_getContentsMargins(Widget,@L, @T, @R, @B);
-  QWidget_sizeHint(Widget, @ASize);
+  QGroupBox_minimumSizeHint(QGroupBoxH(Widget), @ASize);
   PreferredWidth := ASize.cx + L + R;
   PreferredHeight := ASize.cy + B + T;
   {$IFDEF VerboseQtResize}
