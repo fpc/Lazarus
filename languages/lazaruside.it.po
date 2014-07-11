@@ -3915,7 +3915,10 @@ msgid "Abort whole loading"
 msgstr "Interrompi l'intero caricamento"
 
 #: lazarusidestrconsts.lisabout
-msgid "About ..."
+#, fuzzy
+#| msgid "About ..."
+msgctxt "lazarusidestrconsts.lisabout"
+msgid "About"
 msgstr "A proposito ..."
 
 #: lazarusidestrconsts.lisabout2
@@ -4684,7 +4687,7 @@ msgid "Cannot create file \"%s\""
 msgstr "Impossibile creare il file \"%s\""
 
 #: lazarusidestrconsts.liscannotexecute
-msgid "can not execute \"%s\""
+msgid "cannot execute \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfind
@@ -4692,7 +4695,7 @@ msgid "Cannot find %s"
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindexecutable
-msgid "can not find executable \"%s\""
+msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
@@ -8313,7 +8316,7 @@ msgid "Errors"
 msgstr "Errori"
 
 #: lazarusidestrconsts.liserrors2
-msgid ", Errors:%s"
+msgid ", Errors: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -8681,7 +8684,7 @@ msgid "Filename/Address"
 msgstr "Nome file/Indirizzo"
 
 #: lazarusidestrconsts.lisfilenamestyle
-msgid "Filename Style ..."
+msgid "Filename Style"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfound
@@ -8868,14 +8871,6 @@ msgstr "Trova combinazione di tasti"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Trova unit mancante"
-
-#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
-msgid "Find the next occurence of the phrase"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
-msgid "Find the previous occurence of the phrase"
-msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -9209,7 +9204,7 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Consiglio: Controlla se due package contengono una unit con lo stesso nome."
 
 #: lazarusidestrconsts.lishints
-msgid ", Hints:%s"
+msgid ", Hints: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lishintsaveall
@@ -12014,6 +12009,7 @@ msgid "Tabs to Spaces in Selection"
 msgstr "Trasforma tabulazioni nella selezione in spazi"
 
 #: lazarusidestrconsts.lismenutemplateabout
+msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr "Informazioni"
 
@@ -18029,7 +18025,7 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "Attenzione: trovato file ambiguo: \"%s\". Il file sorgente è: \"%s\""
 
 #: lazarusidestrconsts.liswarnings
-msgid ", Warnings:%s"
+msgid ", Warnings: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-08 02:04+0400\n"
+"PO-Revision-Date: 2014-07-12 02:35+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -3872,12 +3872,13 @@ msgid "Abort whole loading"
 msgstr "Прервать всю загрузку"
 
 #: lazarusidestrconsts.lisabout
-msgid "About ..."
-msgstr ""
+msgctxt "lazarusidestrconsts.lisabout"
+msgid "About"
+msgstr "О действии"
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"
-msgstr "О \"%s\""
+msgstr "О действии \"%s\""
 
 #: lazarusidestrconsts.lisaboutdocumentation
 msgid "Documentation:"
@@ -4637,16 +4638,16 @@ msgid "Cannot create file \"%s\""
 msgstr "Невозможно создать файл \"%s\""
 
 #: lazarusidestrconsts.liscannotexecute
-msgid "can not execute \"%s\""
-msgstr ""
+msgid "cannot execute \"%s\""
+msgstr "невозможно запустить на исполнение \"%s\""
 
 #: lazarusidestrconsts.liscannotfind
 msgid "Cannot find %s"
 msgstr "Невозможно найти %s"
 
 #: lazarusidestrconsts.liscannotfindexecutable
-msgid "can not find executable \"%s\""
-msgstr ""
+msgid "cannot find executable \"%s\""
+msgstr "невозможно найти исполнимый файл \"%s\""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #| msgid "Cannot find lazarus starter:%s%s"
@@ -8213,8 +8214,8 @@ msgid "Errors"
 msgstr "Ошибки"
 
 #: lazarusidestrconsts.liserrors2
-msgid ", Errors:%s"
-msgstr ""
+msgid ", Errors: %s"
+msgstr ", ошибок: %s"
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -8576,8 +8577,8 @@ msgid "Filename/Address"
 msgstr "Имя файла/Адрес"
 
 #: lazarusidestrconsts.lisfilenamestyle
-msgid "Filename Style ..."
-msgstr ""
+msgid "Filename Style"
+msgstr "Стиль имени файла"
 
 #: lazarusidestrconsts.lisfilenotfound
 msgid "File not found"
@@ -8599,7 +8600,7 @@ msgstr "файл не найден"
 
 #: lazarusidestrconsts.lisfilenotfound5
 msgid "File not found:%s%s"
-msgstr ""
+msgstr "Файл не найден:%s%s"
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
 #| msgid "File %s%s%s not found.%sDo you want to create it?%s"
@@ -8661,31 +8662,31 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfilteralreadyexists
 msgid "Filter already exists"
-msgstr ""
+msgstr "Фильтр уже имеется"
 
 #: lazarusidestrconsts.lisfilterdebugmessagesandbelow
 msgid "Filter Debug Messages and below"
-msgstr ""
+msgstr "Не выводить отладочные сообщения и ниже"
 
 #: lazarusidestrconsts.lisfilterhintsandbelow
 msgid "Filter Hints and below"
-msgstr ""
+msgstr "Не выводить подсказки и ниже"
 
 #: lazarusidestrconsts.lisfilterhintswithoutsourceposition
 msgid "Filter Hints without Source Position"
-msgstr ""
+msgstr "Не выводить подсказки без позиции в коде"
 
 #: lazarusidestrconsts.lisfilternonedonotfilterbyurgency
 msgid "Filter None, do not filter by urgency"
-msgstr ""
+msgstr "Выводить все, не фильтровать по важности"
 
 #: lazarusidestrconsts.lisfilternonurgentmessages
 msgid "Filter non urgent Messages"
-msgstr ""
+msgstr "Фильтровать сообщения по важности"
 
 #: lazarusidestrconsts.lisfilternotesandbelow
 msgid "Filter Notes and below"
-msgstr ""
+msgstr "Не выводить замечания и ниже"
 
 #: lazarusidestrconsts.lisfiltersets
 msgid "Filter Sets"
@@ -8697,11 +8698,11 @@ msgstr "Фильтр списка доступных параметров"
 
 #: lazarusidestrconsts.lisfilterverbosemessagesandbelow
 msgid "Filter Verbose Messages and below"
-msgstr ""
+msgstr "Не выводить подробные сообщения и ниже"
 
 #: lazarusidestrconsts.lisfilterwarningsandbelow
 msgid "Filter Warnings and below"
-msgstr ""
+msgstr "Не выводить предупреждения и ниже"
 
 #: lazarusidestrconsts.lisfind
 msgid "Find ..."
@@ -8760,14 +8761,6 @@ msgstr "Найти комбинацию клавиш"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Поиск отсутствующего модуля"
-
-#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
-msgid "Find the next occurence of the phrase"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
-msgid "Find the previous occurence of the phrase"
-msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -8941,7 +8934,7 @@ msgstr "Искать где"
 
 #: lazarusidestrconsts.lisfull
 msgid "Full"
-msgstr ""
+msgstr "Полное"
 
 #: lazarusidestrconsts.lisfunction
 msgctxt "lazarusidestrconsts.lisfunction"
@@ -9082,7 +9075,7 @@ msgstr "Скрыть сообщение с помощью директивы"
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
-msgstr ""
+msgstr "Скрыть средство поиска"
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 msgid "Hide with package option (-vm%s)"
@@ -9105,8 +9098,8 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Подсказка: проверьте, содержат ли два пакета модули с одинаковым именем."
 
 #: lazarusidestrconsts.lishints
-msgid ", Hints:%s"
-msgstr ""
+msgid ", Hints: %s"
+msgstr ", подсказок: %s"
 
 #: lazarusidestrconsts.lishintsaveall
 msgid "Save all"
@@ -10626,7 +10619,7 @@ msgstr "Очистить + Собрать все"
 
 #: lazarusidestrconsts.lislazver
 msgid "Lazarus Version (e.g. 1.2.4)"
-msgstr ""
+msgstr "Версия Lazarus (например, 1.2.4)"
 
 #: lazarusidestrconsts.lislclwidgettype
 #| msgid "LCL Widget Type"
@@ -11793,6 +11786,7 @@ msgid "Tabs to Spaces in Selection"
 msgstr "Преобразовать ТАБ в пробелы в выделенном"
 
 #: lazarusidestrconsts.lismenutemplateabout
+msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr "О проекте"
 
@@ -12045,7 +12039,7 @@ msgstr "Класс метода не найден"
 
 #: lazarusidestrconsts.lismissingdirectory
 msgid "missing directory \"%s\""
-msgstr ""
+msgstr "каталог \"%s\" отсутствует"
 
 #: lazarusidestrconsts.lismissingevents
 msgid "Missing Events"
@@ -12053,7 +12047,7 @@ msgstr "Отсутствующие события"
 
 #: lazarusidestrconsts.lismissingexecutable
 msgid "missing executable \"%s\""
-msgstr ""
+msgstr "исполнимый файл \"%s\" отсутствует"
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -14911,7 +14905,7 @@ msgstr "Регулярное выражение"
 
 #: lazarusidestrconsts.lisrelative
 msgid "Relative"
-msgstr ""
+msgstr "Относительное"
 
 #: lazarusidestrconsts.lisrelativepaths
 msgid "Relative paths"
@@ -15548,7 +15542,7 @@ msgstr "Краткое:"
 
 #: lazarusidestrconsts.lisshortnopath
 msgid "Short, no path"
-msgstr ""
+msgstr "Короткое, без указания пути"
 
 #: lazarusidestrconsts.lisshow
 msgid "Show"
@@ -15601,7 +15595,7 @@ msgstr "Показывать информационную панель"
 
 #: lazarusidestrconsts.lisshowmessagetypeid
 msgid "Show Message Type ID"
-msgstr ""
+msgstr "Выводить идентификатор сообщения"
 
 #: lazarusidestrconsts.lisshowonlymodified
 msgid "Show only modified"
@@ -15929,7 +15923,7 @@ msgstr "Перекрыть системную переменную"
 
 #: lazarusidestrconsts.lisswitchfiltersettings
 msgid "Switch Filter Settings"
-msgstr ""
+msgstr "Настроить переключение фильтров"
 
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
@@ -16000,7 +15994,7 @@ msgstr "Имя исполнимого файла с параметрами"
 
 #: lazarusidestrconsts.listargetisreadonly
 msgid "Target is read only"
-msgstr ""
+msgstr "Цель доступна только для чтения"
 
 #: lazarusidestrconsts.listargetos
 msgctxt "lazarusidestrconsts.listargetos"
@@ -16502,7 +16496,7 @@ msgstr "Исходный код пакетов Free Pascal требуется д
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."
-msgstr ""
+msgstr "Цель %s недоступна для записи."
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
 #| msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
@@ -16694,7 +16688,7 @@ msgstr "Переключение режимов показа имён файло
 
 #: lazarusidestrconsts.listoolhasnoexecutable
 msgid "tool \"%s\" has no executable"
-msgstr ""
+msgstr "средство \"%s\" не имеет исполнимого файла"
 
 #: lazarusidestrconsts.listoolheaderfailed
 msgid "Tool Header: Failed"
@@ -16742,7 +16736,7 @@ msgstr "Равномерно по верхним краям"
 
 #: lazarusidestrconsts.listranslatetheenglishmessages
 msgid "Translate the English Messages"
-msgstr ""
+msgstr "Переводить сообщения с английского"
 
 #: lazarusidestrconsts.listreeneedsrefresh
 msgid "Tree needs refresh"
@@ -17113,7 +17107,7 @@ msgstr "Невозможно удалить файл с дублирующимс
 
 #: lazarusidestrconsts.lisunabletoexecute
 msgid "unable to execute: %s"
-msgstr ""
+msgstr "ошибка процесса исполнения: %s"
 
 #: lazarusidestrconsts.lisunabletofindaresourcestringsectioninthisoranyofthe
 msgid "Unable to find a ResourceString section in this or any of the used units."
@@ -17214,7 +17208,7 @@ msgstr "Невозможно прочитать файл LPI"
 
 #: lazarusidestrconsts.lisunabletoreadprocessexitstatus
 msgid "unable to read process ExitStatus"
-msgstr ""
+msgstr "невозможно прочитать код завершения процесса"
 
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
 #| msgid "Unable to read the project info file%s%s%s%s."
@@ -17305,7 +17299,7 @@ msgstr "Невозможно записать файл"
 
 #: lazarusidestrconsts.lisunabletowritefile2
 msgid "Unable to write file \"%s\"."
-msgstr ""
+msgstr "Невозможно записать файл \"%s\"."
 
 #: lazarusidestrconsts.lisunabletowritefileerror
 #| msgid "Unable to write file %s%s%s%sError: %s"
@@ -17378,11 +17372,11 @@ msgstr "Имя модуля содержит ..."
 
 #: lazarusidestrconsts.lisunitnotfound
 msgid "unit %s not found"
-msgstr ""
+msgstr "модуль %s не найден"
 
 #: lazarusidestrconsts.lisunitnotfoundatnewposition
 msgid "unit %s not found at new position \"%s\""
-msgstr ""
+msgstr "модуль %s не найден по новому местонахождению \"%s\""
 
 #: lazarusidestrconsts.lisunitnotfoundinproject
 msgid "A unit not found in project %s"
@@ -17402,7 +17396,7 @@ msgstr "Пути к модулям"
 
 #: lazarusidestrconsts.lisunitrequirespackage
 msgid "unit %s requires package %s"
-msgstr ""
+msgstr "модуль %s требует пакет %s"
 
 #: lazarusidestrconsts.lisunitsnotfoundinproject
 msgid "Units not found in project %s"
@@ -17641,8 +17635,8 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "Предупреждение: найден файл с дублирующимся именем \"%s\". Исходный файл: \"%s\""
 
 #: lazarusidestrconsts.liswarnings
-msgid ", Warnings:%s"
-msgstr ""
+msgid ", Warnings: %s"
+msgstr ", предупреждений: %s"
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
 msgid "%sWarning: This is the main unit. The new main unit will be %s.pas."
@@ -17737,7 +17731,7 @@ msgstr ""
 
 #: lazarusidestrconsts.liswindowstaysontop
 msgid "Window stays on top"
-msgstr ""
+msgstr "Располагать поверх других окон"
 
 #: lazarusidestrconsts.liswithincludes2
 msgid ", with includes "

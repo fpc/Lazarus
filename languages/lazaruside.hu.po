@@ -3698,7 +3698,10 @@ msgid "Abort whole loading"
 msgstr "Egész betöltés megszakítása"
 
 #: lazarusidestrconsts.lisabout
-msgid "About ..."
+#, fuzzy
+#| msgid "About ..."
+msgctxt "lazarusidestrconsts.lisabout"
+msgid "About"
 msgstr "Névjegy ..."
 
 #: lazarusidestrconsts.lisabout2
@@ -4436,7 +4439,9 @@ msgid "Cannot create file \"%s\""
 msgstr "A fájl nem hozható létre: \"%s\""
 
 #: lazarusidestrconsts.liscannotexecute
-msgid "can not execute \"%s\""
+#, fuzzy
+#| msgid "can not execute \"%s\""
+msgid "cannot execute \"%s\""
 msgstr "nem lehet végrehajtani ezt: \"%s\""
 
 #: lazarusidestrconsts.liscannotfind
@@ -4444,7 +4449,9 @@ msgid "Cannot find %s"
 msgstr "Nem található: %s"
 
 #: lazarusidestrconsts.liscannotfindexecutable
-msgid "can not find executable \"%s\""
+#, fuzzy
+#| msgid "can not find executable \"%s\""
+msgid "cannot find executable \"%s\""
 msgstr "nem található a futtatható \"%s\""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
@@ -7931,7 +7938,9 @@ msgid "Errors"
 msgstr "Hibák"
 
 #: lazarusidestrconsts.liserrors2
-msgid ", Errors:%s"
+#, fuzzy
+#| msgid ", Errors:%s"
+msgid ", Errors: %s"
 msgstr ", Hibák:%s"
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -8285,7 +8294,9 @@ msgid "Filename/Address"
 msgstr "Fájlnév/Cím"
 
 #: lazarusidestrconsts.lisfilenamestyle
-msgid "Filename Style ..."
+#, fuzzy
+#| msgid "Filename Style ..."
+msgid "Filename Style"
 msgstr "Fájlnév stílusa ..."
 
 #: lazarusidestrconsts.lisfilenotfound
@@ -8464,14 +8475,6 @@ msgstr "Billentyűkombináció megkeresése"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Hiányzó unit megkeresése"
-
-#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
-msgid "Find the next occurence of the phrase"
-msgstr "A kifejezés következő előfordulásának keresése"
-
-#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
-msgid "Find the previous occurence of the phrase"
-msgstr "A kifejezés előző előfordulásának keresése"
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -8797,7 +8800,9 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Tipp: Ellenőrizze, hogy két csomag tartalmaz-e egyforma nevű unit-ot."
 
 #: lazarusidestrconsts.lishints
-msgid ", Hints:%s"
+#, fuzzy
+#| msgid ", Hints:%s"
+msgid ", Hints: %s"
 msgstr ", Tippek:%s"
 
 #: lazarusidestrconsts.lishintsaveall
@@ -11313,6 +11318,7 @@ msgid "Tabs to Spaces in Selection"
 msgstr "Tab-ok szóközzé alakítása a kijelölésben"
 
 #: lazarusidestrconsts.lismenutemplateabout
+msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr "Névjegy"
 
@@ -16872,7 +16878,9 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "Figyelem: ellentmondásos fájl található: \"%s\". A forrás fájl: \"%s\""
 
 #: lazarusidestrconsts.liswarnings
-msgid ", Warnings:%s"
+#, fuzzy
+#| msgid ", Warnings:%s"
+msgid ", Warnings: %s"
 msgstr ", Figyelmeztetések:%s"
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas

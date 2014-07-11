@@ -3939,7 +3939,8 @@ msgid "Abort whole loading"
 msgstr "中断整个加载"
 
 #: lazarusidestrconsts.lisabout
-msgid "About ..."
+msgctxt "lazarusidestrconsts.lisabout"
+msgid "About"
 msgstr ""
 
 #: lazarusidestrconsts.lisabout2
@@ -4727,7 +4728,7 @@ msgid "Cannot create file \"%s\""
 msgstr "不能创建文件 %s%s%s"
 
 #: lazarusidestrconsts.liscannotexecute
-msgid "can not execute \"%s\""
+msgid "cannot execute \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfind
@@ -4735,7 +4736,7 @@ msgid "Cannot find %s"
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindexecutable
-msgid "can not find executable \"%s\""
+msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
@@ -8313,7 +8314,7 @@ msgid "Errors"
 msgstr "错误"
 
 #: lazarusidestrconsts.liserrors2
-msgid ", Errors:%s"
+msgid ", Errors: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -8679,7 +8680,7 @@ msgid "Filename/Address"
 msgstr "文件名/地址"
 
 #: lazarusidestrconsts.lisfilenamestyle
-msgid "Filename Style ..."
+msgid "Filename Style"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfound
@@ -8865,14 +8866,6 @@ msgstr "查找关键在组合"
 
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
-msgid "Find the next occurence of the phrase"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
-msgid "Find the previous occurence of the phrase"
 msgstr ""
 
 #: lazarusidestrconsts.lisfirst
@@ -9202,7 +9195,7 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "提示: 两个包包含了同名单元."
 
 #: lazarusidestrconsts.lishints
-msgid ", Hints:%s"
+msgid ", Hints: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lishintsaveall
@@ -11974,6 +11967,7 @@ msgid "Tabs to Spaces in Selection"
 msgstr "转换选区制表符转换为空格"
 
 #: lazarusidestrconsts.lismenutemplateabout
+msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr "关于"
 
@@ -17930,7 +17924,7 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "警告: 发现可疑文件: %s%s%s .源代码文件是:%s%s%s"
 
 #: lazarusidestrconsts.liswarnings
-msgid ", Warnings:%s"
+msgid ", Warnings: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas

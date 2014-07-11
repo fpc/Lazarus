@@ -3881,7 +3881,8 @@ msgid "Abort whole loading"
 msgstr "Nutraukti įkėlimą"
 
 #: lazarusidestrconsts.lisabout
-msgid "About ..."
+msgctxt "lazarusidestrconsts.lisabout"
+msgid "About"
 msgstr ""
 
 #: lazarusidestrconsts.lisabout2
@@ -4662,7 +4663,7 @@ msgid "Cannot create file \"%s\""
 msgstr "Nepavyksta sukurti failą %s%s%s"
 
 #: lazarusidestrconsts.liscannotexecute
-msgid "can not execute \"%s\""
+msgid "cannot execute \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfind
@@ -4670,7 +4671,7 @@ msgid "Cannot find %s"
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindexecutable
-msgid "can not find executable \"%s\""
+msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
@@ -8271,7 +8272,7 @@ msgid "Errors"
 msgstr "Klaidos"
 
 #: lazarusidestrconsts.liserrors2
-msgid ", Errors:%s"
+msgid ", Errors: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -8636,7 +8637,7 @@ msgid "Filename/Address"
 msgstr "Failo pavadinimas/Adresas"
 
 #: lazarusidestrconsts.lisfilenamestyle
-msgid "Filename Style ..."
+msgid "Filename Style"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfound
@@ -8821,14 +8822,6 @@ msgstr "Klavišų kombinacijos paieška"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Ieškoti trūkstamo modulio"
-
-#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
-msgid "Find the next occurence of the phrase"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
-msgid "Find the previous occurence of the phrase"
-msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -9157,7 +9150,7 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Užuomina: Tikrinti ar du paketai turi modulius tuo pačiu pavadinimu."
 
 #: lazarusidestrconsts.lishints
-msgid ", Hints:%s"
+msgid ", Hints: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lishintsaveall
@@ -11827,6 +11820,7 @@ msgid "Tabs to Spaces in Selection"
 msgstr "Pažymėtoje srityje tabuliatorius keisti tarpais"
 
 #: lazarusidestrconsts.lismenutemplateabout
+msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr "Apie"
 
@@ -17804,7 +17798,7 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "Dėmesio: rastas neaiškus failas: %s%s%s. Pirminio kodo failas: %s%s%s"
 
 #: lazarusidestrconsts.liswarnings
-msgid ", Warnings:%s"
+msgid ", Warnings: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas

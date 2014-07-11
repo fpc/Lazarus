@@ -3859,7 +3859,10 @@ msgid "Abort whole loading"
 msgstr "Abbruch beim Laden"
 
 #: lazarusidestrconsts.lisabout
-msgid "About ..."
+#, fuzzy
+#| msgid "About ..."
+msgctxt "lazarusidestrconsts.lisabout"
+msgid "About"
 msgstr "Über ..."
 
 #: lazarusidestrconsts.lisabout2
@@ -4618,7 +4621,9 @@ msgid "Cannot create file \"%s\""
 msgstr "Kann die Datei \"%s\" nicht anlegen"
 
 #: lazarusidestrconsts.liscannotexecute
-msgid "can not execute \"%s\""
+#, fuzzy
+#| msgid "can not execute \"%s\""
+msgid "cannot execute \"%s\""
 msgstr "kann \"%s\" nicht ausführen"
 
 #: lazarusidestrconsts.liscannotfind
@@ -4626,7 +4631,7 @@ msgid "Cannot find %s"
 msgstr "Kann %s nicht finden"
 
 #: lazarusidestrconsts.liscannotfindexecutable
-msgid "can not find executable \"%s\""
+msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
@@ -8184,7 +8189,9 @@ msgid "Errors"
 msgstr "Fehler"
 
 #: lazarusidestrconsts.liserrors2
-msgid ", Errors:%s"
+#, fuzzy
+#| msgid ", Errors:%s"
+msgid ", Errors: %s"
 msgstr ", Fehler: %s"
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -8545,7 +8552,9 @@ msgid "Filename/Address"
 msgstr "Dateiname/Adresse"
 
 #: lazarusidestrconsts.lisfilenamestyle
-msgid "Filename Style ..."
+#, fuzzy
+#| msgid "Filename Style ..."
+msgid "Filename Style"
 msgstr "Dateinamen-Stil ..."
 
 #: lazarusidestrconsts.lisfilenotfound
@@ -8729,14 +8738,6 @@ msgstr "Tastenkombination suchen"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Fehlende Unit suchen"
-
-#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
-msgid "Find the next occurence of the phrase"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
-msgid "Find the previous occurence of the phrase"
-msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -9073,7 +9074,9 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Hinweis: Prüfen Sie, ob zwei Packages Units mit gleichen Namen enthalten."
 
 #: lazarusidestrconsts.lishints
-msgid ", Hints:%s"
+#, fuzzy
+#| msgid ", Hints:%s"
+msgid ", Hints: %s"
 msgstr ", Hinweise: %s"
 
 #: lazarusidestrconsts.lishintsaveall
@@ -11765,6 +11768,7 @@ msgid "Tabs to Spaces in Selection"
 msgstr "Tabulatoren in Auswahl in Leerzeichen umwandeln"
 
 #: lazarusidestrconsts.lismenutemplateabout
+msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr "Über"
 
@@ -17540,7 +17544,9 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "Warnung: Unklarer Dateiname gefunden: \"%s\". Quelldatei ist: \"%s\""
 
 #: lazarusidestrconsts.liswarnings
-msgid ", Warnings:%s"
+#, fuzzy
+#| msgid ", Warnings:%s"
+msgid ", Warnings: %s"
 msgstr ", Warnungen: %s"
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas

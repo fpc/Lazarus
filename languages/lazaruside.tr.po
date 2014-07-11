@@ -3726,7 +3726,8 @@ msgid "Abort whole loading"
 msgstr "Tüm yüklemeyi durdur"
 
 #: lazarusidestrconsts.lisabout
-msgid "About ..."
+msgctxt "lazarusidestrconsts.lisabout"
+msgid "About"
 msgstr ""
 
 #: lazarusidestrconsts.lisabout2
@@ -4490,7 +4491,7 @@ msgid "Cannot create file \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotexecute
-msgid "can not execute \"%s\""
+msgid "cannot execute \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfind
@@ -4498,7 +4499,7 @@ msgid "Cannot find %s"
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindexecutable
-msgid "can not find executable \"%s\""
+msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
@@ -8014,7 +8015,7 @@ msgid "Errors"
 msgstr ""
 
 #: lazarusidestrconsts.liserrors2
-msgid ", Errors:%s"
+msgid ", Errors: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -8374,7 +8375,7 @@ msgid "Filename/Address"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenamestyle
-msgid "Filename Style ..."
+msgid "Filename Style"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfound
@@ -8556,14 +8557,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
-msgid "Find the next occurence of the phrase"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
-msgid "Find the previous occurence of the phrase"
 msgstr ""
 
 #: lazarusidestrconsts.lisfirst
@@ -8892,7 +8885,7 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "İpucu: İki pakette de aynı adlı birim olduğunu denetle."
 
 #: lazarusidestrconsts.lishints
-msgid ", Hints:%s"
+msgid ", Hints: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lishintsaveall
@@ -11601,6 +11594,7 @@ msgid "Tabs to Spaces in Selection"
 msgstr "Seçimdeki sekmeleri boşluklara dönüştür"
 
 #: lazarusidestrconsts.lismenutemplateabout
+msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr "Hakkında"
 
@@ -17318,7 +17312,7 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liswarnings
-msgid ", Warnings:%s"
+msgid ", Warnings: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas

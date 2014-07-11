@@ -3743,7 +3743,8 @@ msgid "Abort whole loading"
 msgstr "読み込みを中止"
 
 #: lazarusidestrconsts.lisabout
-msgid "About ..."
+msgctxt "lazarusidestrconsts.lisabout"
+msgid "About"
 msgstr ""
 
 #: lazarusidestrconsts.lisabout2
@@ -4499,7 +4500,7 @@ msgid "Cannot create file \"%s\""
 msgstr "ファイルを作成できません：%s%s%s"
 
 #: lazarusidestrconsts.liscannotexecute
-msgid "can not execute \"%s\""
+msgid "cannot execute \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfind
@@ -4507,7 +4508,7 @@ msgid "Cannot find %s"
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindexecutable
-msgid "can not find executable \"%s\""
+msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
@@ -8047,7 +8048,7 @@ msgid "Errors"
 msgstr "エラー"
 
 #: lazarusidestrconsts.liserrors2
-msgid ", Errors:%s"
+msgid ", Errors: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -8407,7 +8408,7 @@ msgid "Filename/Address"
 msgstr "ファイル名/アドレス"
 
 #: lazarusidestrconsts.lisfilenamestyle
-msgid "Filename Style ..."
+msgid "Filename Style"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfound
@@ -8590,14 +8591,6 @@ msgstr "キーの組み合わせを検索"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "欠けているUnitを検索"
-
-#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
-msgid "Find the next occurence of the phrase"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
-msgid "Find the previous occurence of the phrase"
-msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -8923,7 +8916,7 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "ヒント： ２つのパッケージが同じ名前のユニットを含んでいないかチェックしてください。"
 
 #: lazarusidestrconsts.lishints
-msgid ", Hints:%s"
+msgid ", Hints: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lishintsaveall
@@ -11452,6 +11445,7 @@ msgid "Tabs to Spaces in Selection"
 msgstr "選択部分のTabをスペースに変換"
 
 #: lazarusidestrconsts.lismenutemplateabout
+msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr "紹介"
 
@@ -17306,7 +17300,7 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "警告：紛らわしいファイルが見つかりました: %s%s%s。ソースファイルは%s%s%sです。"
 
 #: lazarusidestrconsts.liswarnings
-msgid ", Warnings:%s"
+msgid ", Warnings: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas

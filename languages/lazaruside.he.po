@@ -3956,7 +3956,8 @@ msgid "Abort whole loading"
 msgstr "בטל את כל הטעינה"
 
 #: lazarusidestrconsts.lisabout
-msgid "About ..."
+msgctxt "lazarusidestrconsts.lisabout"
+msgid "About"
 msgstr ""
 
 #: lazarusidestrconsts.lisabout2
@@ -4743,7 +4744,7 @@ msgid "Cannot create file \"%s\""
 msgstr "לא יכול לצור את הקובץ s%s%s%"
 
 #: lazarusidestrconsts.liscannotexecute
-msgid "can not execute \"%s\""
+msgid "cannot execute \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfind
@@ -4751,7 +4752,7 @@ msgid "Cannot find %s"
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindexecutable
-msgid "can not find executable \"%s\""
+msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
@@ -8392,7 +8393,7 @@ msgid "Errors"
 msgstr "שגיאות"
 
 #: lazarusidestrconsts.liserrors2
-msgid ", Errors:%s"
+msgid ", Errors: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -8760,7 +8761,7 @@ msgid "Filename/Address"
 msgstr "שם קובץ/כתובת"
 
 #: lazarusidestrconsts.lisfilenamestyle
-msgid "Filename Style ..."
+msgid "Filename Style"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfound
@@ -8947,14 +8948,6 @@ msgstr "חפש צירופי מקשים"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "חפש יחידות חסרות"
-
-#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
-msgid "Find the next occurence of the phrase"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
-msgid "Find the previous occurence of the phrase"
-msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -9286,7 +9279,7 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "טיפ: בדוק אם יש שתי חבילות המכילות יחידות עם אותו שם."
 
 #: lazarusidestrconsts.lishints
-msgid ", Hints:%s"
+msgid ", Hints: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lishintsaveall
@@ -12098,6 +12091,7 @@ msgid "Tabs to Spaces in Selection"
 msgstr "החלף טאבים לרווחים בבחירה"
 
 #: lazarusidestrconsts.lismenutemplateabout
+msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr "אודות"
 
@@ -18133,7 +18127,7 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "אזהרה: נמצא קובץ רב משמעי: %s%s%s. קוד המקור של הקובץ הוא: %s%s%s"
 
 #: lazarusidestrconsts.liswarnings
-msgid ", Warnings:%s"
+msgid ", Warnings: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas

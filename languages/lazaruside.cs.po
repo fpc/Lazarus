@@ -3737,7 +3737,10 @@ msgid "Abort whole loading"
 msgstr "Přerušit celé načítání"
 
 #: lazarusidestrconsts.lisabout
-msgid "About ..."
+#, fuzzy
+#| msgid "About ..."
+msgctxt "lazarusidestrconsts.lisabout"
+msgid "About"
 msgstr "Info ..."
 
 #: lazarusidestrconsts.lisabout2
@@ -4486,7 +4489,9 @@ msgid "Cannot create file \"%s\""
 msgstr "Nelze vytvořit soubor \"%s\""
 
 #: lazarusidestrconsts.liscannotexecute
-msgid "can not execute \"%s\""
+#, fuzzy
+#| msgid "can not execute \"%s\""
+msgid "cannot execute \"%s\""
 msgstr "nelze spustit %s"
 
 #: lazarusidestrconsts.liscannotfind
@@ -4494,7 +4499,9 @@ msgid "Cannot find %s"
 msgstr "Nelze najít %s"
 
 #: lazarusidestrconsts.liscannotfindexecutable
-msgid "can not find executable \"%s\""
+#, fuzzy
+#| msgid "can not find executable \"%s\""
+msgid "cannot find executable \"%s\""
 msgstr "nelze najít spustitelný %s"
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
@@ -8018,7 +8025,9 @@ msgid "Errors"
 msgstr "Chyby"
 
 #: lazarusidestrconsts.liserrors2
-msgid ", Errors:%s"
+#, fuzzy
+#| msgid ", Errors:%s"
+msgid ", Errors: %s"
 msgstr ", Chyby:%s"
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -8376,7 +8385,9 @@ msgid "Filename/Address"
 msgstr "Jméno souboru/Adresa"
 
 #: lazarusidestrconsts.lisfilenamestyle
-msgid "Filename Style ..."
+#, fuzzy
+#| msgid "Filename Style ..."
+msgid "Filename Style"
 msgstr "Styl Cest k Souborům ...."
 
 #: lazarusidestrconsts.lisfilenotfound
@@ -8557,14 +8568,6 @@ msgstr "Najít kombinaci kláves"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Hledat scházející jednotku"
-
-#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
-msgid "Find the next occurence of the phrase"
-msgstr "Najít další výskyt fráze"
-
-#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
-msgid "Find the previous occurence of the phrase"
-msgstr "Najít předchozí výskyt fráze"
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -8894,7 +8897,9 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Tip: Zkontrolujte, zda dva balíčky neobsahují jednotku se stejným jménem."
 
 #: lazarusidestrconsts.lishints
-msgid ", Hints:%s"
+#, fuzzy
+#| msgid ", Hints:%s"
+msgid ", Hints: %s"
 msgstr ",Hintů:%s"
 
 #: lazarusidestrconsts.lishintsaveall
@@ -11423,6 +11428,7 @@ msgid "Tabs to Spaces in Selection"
 msgstr "Tabulátory na mezery ve výběru"
 
 #: lazarusidestrconsts.lismenutemplateabout
+msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr "O aplikaci"
 
@@ -17156,7 +17162,9 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "Varování: víceznačný soubor nalezen: \"%s\". Zdrojový soubor je: \"%s\""
 
 #: lazarusidestrconsts.liswarnings
-msgid ", Warnings:%s"
+#, fuzzy
+#| msgid ", Warnings:%s"
+msgid ", Warnings: %s"
 msgstr "Varování:%s"
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas

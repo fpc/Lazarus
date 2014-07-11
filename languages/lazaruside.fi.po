@@ -3680,7 +3680,8 @@ msgid "Abort whole loading"
 msgstr "Keskeytä lataus kokonaan"
 
 #: lazarusidestrconsts.lisabout
-msgid "About ..."
+msgctxt "lazarusidestrconsts.lisabout"
+msgid "About"
 msgstr ""
 
 #: lazarusidestrconsts.lisabout2
@@ -4417,7 +4418,7 @@ msgid "Cannot create file \"%s\""
 msgstr "Ei voi luoda tiedostoa \"%s\""
 
 #: lazarusidestrconsts.liscannotexecute
-msgid "can not execute \"%s\""
+msgid "cannot execute \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfind
@@ -4425,7 +4426,7 @@ msgid "Cannot find %s"
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindexecutable
-msgid "can not find executable \"%s\""
+msgid "cannot find executable \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
@@ -7897,7 +7898,7 @@ msgid "Errors"
 msgstr "Virheet"
 
 #: lazarusidestrconsts.liserrors2
-msgid ", Errors:%s"
+msgid ", Errors: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liserrorsavingto
@@ -8250,7 +8251,7 @@ msgid "Filename/Address"
 msgstr "Tiedoston nimi / osoite"
 
 #: lazarusidestrconsts.lisfilenamestyle
-msgid "Filename Style ..."
+msgid "Filename Style"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfound
@@ -8429,14 +8430,6 @@ msgstr "Etsi näppäinyhdistelmä"
 #: lazarusidestrconsts.lisfindmissingunit
 msgid "Find missing unit"
 msgstr "Etsi puuttuva käännösyksikkö"
-
-#: lazarusidestrconsts.lisfindthenextoccurenceofthephrase
-msgid "Find the next occurence of the phrase"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindthepreviousoccurenceofthephrase
-msgid "Find the previous occurence of the phrase"
-msgstr ""
 
 #: lazarusidestrconsts.lisfirst
 msgid "First"
@@ -8760,7 +8753,7 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Vihje: Tarkista sisältääkö kaksi pakettia käännösyksikön samalla nimellä."
 
 #: lazarusidestrconsts.lishints
-msgid ", Hints:%s"
+msgid ", Hints: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lishintsaveall
@@ -11263,6 +11256,7 @@ msgid "Tabs to Spaces in Selection"
 msgstr "Muuta tabit välilyönneiksi valinnassa"
 
 #: lazarusidestrconsts.lismenutemplateabout
+msgctxt "lazarusidestrconsts.lismenutemplateabout"
 msgid "About"
 msgstr "Tietoja"
 
@@ -16806,7 +16800,7 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "Varoitus: ristiriitainen tiedosto löytyi: \"%s\". Lähdekooditiedosto on: \"%s\""
 
 #: lazarusidestrconsts.liswarnings
-msgid ", Warnings:%s"
+msgid ", Warnings: %s"
 msgstr ""
 
 #: lazarusidestrconsts.liswarningthisisthemainunitthenewmainunitwillbepas
