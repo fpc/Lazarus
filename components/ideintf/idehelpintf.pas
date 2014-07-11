@@ -152,9 +152,11 @@ type
     FFlags: TIDEHTMLControlFlags;
     FOrigMousePos: TPoint;
     // These will be passed to HintWindow.
-    FWindowName: string;
+    FAutoHide: Boolean;
     FHideInterval: Integer;
+    FWindowName: string;
     function HtmlHelpProvider: TAbstractIDEHTMLProvider;
+    procedure SetAutoHide(AValue: Boolean);
     procedure SetHideInterval(AValue: Integer);
     procedure SetWindowName(AValue: string);
   protected
@@ -170,6 +172,7 @@ type
   public
     property BaseURL: string read FBaseURL write FBaseURL;
     property Flags: TIDEHTMLControlFlags read FFlags write FFlags;
+    property AutoHide: Boolean read FAutoHide write SetAutoHide;
     property HideInterval: Integer read FHideInterval write SetHideInterval;
     property WindowName: string read FWindowName write SetWindowName;
   end;
@@ -271,9 +274,10 @@ begin
   if FHintWindow = nil then
   begin
     FHintWindow := FHintWindowClass.Create(Nil);
+    FHintWindow.AutoHide := FAutoHide;
+    FHintWindow.HideInterval := FHideInterval;
     if FWindowName <> '' then
       FHintWindow.Name := FWindowName;
-    FHintWindow.HideInterval := FHideInterval;
   end;
   Result := FHintWindow;
 end;
@@ -289,7 +293,7 @@ var
 begin
   if FHtmlHelpProvider = nil then
   begin
-    //Include(FFlags, ihcScrollable);  // Debug (memo control does not work)
+    //Include(FFlags, ihcScrollable);  // Debug (memo hint control does not work)
     HelpControl := CreateIDEHTMLControl(HintWindow, FHtmlHelpProvider, FFlags);
     HelpControl.Parent := HintWindow;
     HelpControl.Align := alClient;
@@ -344,6 +348,14 @@ begin
 end;
 
 // Setters
+
+procedure THintWindowManager.SetAutoHide(AValue: Boolean);
+begin
+  if FAutoHide = AValue then Exit;
+  FAutoHide := AValue;
+  if Assigned(FHintWindow) then
+    FHintWindow.AutoHide := FAutoHide;
+end;
 
 procedure THintWindowManager.SetHideInterval(AValue: Integer);
 begin

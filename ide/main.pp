@@ -1824,25 +1824,18 @@ begin
   Result:=false;
   AHint:='';
   HintWinRect:=Rect(0,0,0,0);
-  if ObjectInspector1=nil then exit;
-  if not BeginCodeTools then exit;
-  if FindDeclarationOfOIProperty(ObjectInspector1,PointedRow,Code,Caret,NewTopLine)
-  then begin
-    if TIDEHelpManager(HelpBoss).GetHintForSourcePosition(Code.Filename,
-                                        Caret,BaseURL,aHint)=shrSuccess
-    then begin
-      Result:=HelpBoss.CreateHint(aHintWindow,ScreenPos,BaseURL,aHint,HintWinRect);
-    end;
-  end;
+  if (ObjectInspector1=nil) or not BeginCodeTools then exit;
+  Result:=FindDeclarationOfOIProperty(ObjectInspector1,PointedRow,Code,Caret,NewTopLine)
+    and (TIDEHelpManager(HelpBoss).GetHintForSourcePosition(Code.Filename,Caret,
+                                                            BaseURL,aHint)=shrSuccess);
 end;
 
 procedure TMainIDE.OIOnUpdateRestricted(Sender: TObject);
 begin
-  if Sender = nil then Sender := ObjectInspector1;
+  if Sender = nil then
+    Sender := ObjectInspector1;
   if Sender is TObjectInspectorDlg then
-  begin
     (Sender as TObjectInspectorDlg).RestrictedProps := GetRestrictedProperties;
-  end;
 end;
 
 function TMainIDE.OnPropHookGetMethodName(const Method: TMethod;

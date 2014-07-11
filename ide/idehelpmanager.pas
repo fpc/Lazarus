@@ -224,7 +224,7 @@ type
     procedure ShowHelpForIDEControl(Sender: TControl); override;
     function CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
       const BaseURL: string; var TheHint: string; out HintWinRect: TRect): boolean;
-      override; deprecated;
+      override; deprecated 'Use THintWindowManager class instead';
     function GetHintForSourcePosition(const ExpandedFilename: string;
       const CodePos: TPoint; out BaseURL, HTMLHint: string;
       Flags: TIDEHelpManagerCreateHintFlags = []): TShowHelpResult; override;
@@ -1689,12 +1689,6 @@ var
   ms: TMemoryStream;
   NewWidth, NewHeight: integer;
 begin
-  // This test is needed because each editor SourceNotebook have their own HintWindow.
-  // ToDo: Make HintWindow common to all SourceNotebooks.
-  if aHintWindow <> FHintWindow then begin
-    FHtmlHelpProvider := nil;
-    FHintWindow := aHintWindow;
-  end;
   if CompareText(copy(TheHint,1,6),'<HTML>')=0 then begin  // Text is HTML
     ms:=TMemoryStream.Create;
     try
@@ -1812,6 +1806,9 @@ function TIDEHintWindowManager.SenderIsHintControl(Sender: TObject): Boolean;
   end;
 
 begin
+  if Assigned(FHintWindow) then
+    Assert(FHintWindow.ControlCount < 2,
+      'SenderIsHintControl: ControlCount = ' + IntToStr(FHintWindow.ControlCount));
   Result := Assigned(Sender) and Assigned(FHintWindow) and IsHintControl(FHintWindow);
 end;
 
