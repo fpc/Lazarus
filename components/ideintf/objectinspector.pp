@@ -243,9 +243,7 @@ type
   );
 
   TOIPropertyHint = function(Sender: TObject; PointedRow: TOIPropertyGridRow;
-            ScreenPos: TPoint; aHintWindow: THintWindow;
-            out HintWinRect: TRect; out AHint: string
-             ): boolean of object;
+            out AHint: string): boolean of object;
 
   TOIEditorFilterEvent = procedure(Sender: TObject; aEditor: TPropertyEditor;
             var aShow: boolean) of object;
@@ -711,8 +709,7 @@ type
     procedure OnGridModified(Sender: TObject);
     procedure OnGridSelectionChange(Sender: TObject);
     function OnGridPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
-      ScreenPos: TPoint; aHintWindow: THintWindow;
-      out HintWinRect: TRect; out AHint: string): boolean;
+      out AHint: string): boolean;
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure HookSetSelection(const ASelection: TPersistentSelectionList);
@@ -3223,9 +3220,8 @@ var
   procedure HintByHandler;
   var
     AHint: String;
-    HintRect : TRect;
   begin
-    if OnPropertyHint(Self, PointedRow, Position, FHintManager.HintWindow, HintRect, AHint)
+    if OnPropertyHint(Self, PointedRow, AHint)
     then begin
       FHintIndex := Index;
       FShowingLongHint := True;
@@ -4705,13 +4701,11 @@ begin
 end;
 
 function TObjectInspectorDlg.OnGridPropertyHint(Sender: TObject;
-  PointedRow: TOIPropertyGridRow; ScreenPos: TPoint; aHintWindow: THintWindow;
-  out HintWinRect: TRect; out AHint: string): boolean;
+  PointedRow: TOIPropertyGridRow; out AHint: string): boolean;
 begin
   Result := False;
   if Assigned(FOnPropertyHint) then
-    Result := FOnPropertyHint(Sender, PointedRow, ScreenPos,
-       aHintWindow, HintWinRect, AHint);
+    Result := FOnPropertyHint(Sender, PointedRow, AHint);
 end;
 
 procedure TObjectInspectorDlg.SetAvailComboBoxText;

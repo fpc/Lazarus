@@ -499,15 +499,13 @@ type
     procedure OIOnViewRestricted(Sender: TObject);
     procedure OIOnDestroy(Sender: TObject);
     procedure OIOnAutoShow(Sender: TObject);
-    procedure OIRemainingKeyDown(Sender: TObject; var Key: Word;
-       Shift: TShiftState);
+    procedure OIRemainingKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure OIOnAddToFavorites(Sender: TObject);
     procedure OIOnRemoveFromFavorites(Sender: TObject);
     procedure OIOnFindDeclarationOfProperty(Sender: TObject);
     procedure OIOnSelectionChange(Sender: TObject);
     function OIOnPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
-            ScreenPos: TPoint; aHintWindow: THintWindow;
-            out HintWinRect: TRect; out AHint: string): boolean;
+       out AHint: string): boolean;
     procedure OIOnUpdateRestricted(Sender: TObject);
     function OnPropHookGetMethodName(const Method: TMethod;
                                      PropOwner: TObject): String;
@@ -1812,9 +1810,8 @@ begin
     OIChangedTimer.AutoEnabled:=true;
 end;
 
-function TMainIDE.OIOnPropertyHint(Sender: TObject;
-  PointedRow: TOIPropertyGridRow; ScreenPos: TPoint; aHintWindow: THintWindow;
-  out HintWinRect: TRect; out AHint: string): boolean;
+function TMainIDE.OIOnPropertyHint(Sender: TObject; PointedRow: TOIPropertyGridRow;
+  out AHint: string): boolean;
 var
   Code: TCodeBuffer;
   Caret: TPoint;
@@ -1823,7 +1820,6 @@ var
 begin
   Result:=false;
   AHint:='';
-  HintWinRect:=Rect(0,0,0,0);
   if (ObjectInspector1=nil) or not BeginCodeTools then exit;
   Result:=FindDeclarationOfOIProperty(ObjectInspector1,PointedRow,Code,Caret,NewTopLine)
     and (TIDEHelpManager(HelpBoss).GetHintForSourcePosition(Code.Filename,Caret,
