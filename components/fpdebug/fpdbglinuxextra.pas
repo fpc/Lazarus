@@ -35,20 +35,31 @@ function fpPTrace(ptrace_request: cint; pid: TPid; addr: Pointer; data: pointer)
 implementation
 
 type
-  TSysResult = int64;   // all platforms, cint=32-bit.
-                        // On platforms with off_t =64-bit, people should
-                        // use int64, and typecast all calls that don't
-                        // return off_t to cint.
+  // all platforms, cint=32-bit.
+  // On platforms with off_t =64-bit, people should
+  // use int64, and typecast all calls that don't
+  // return off_t to cint.
+{$ifdef cpux86_64}
+  TSysResult = int64;
   TSysParam  = int64;
+{$else}
+  TSysResult = cint32;
+  TSysParam  = cint32;
+{$endif cpux86_64}
 
 {$ifdef darwin}
 Function ptrace(ptrace_request: cInt; pid: TPid; addr:pointer; data:pointer): cint; cdecl; external clib name 'ptrace';
 {$endif darwin}
 {$ifdef linux}
-function Do_SysCall(sysnr,param1,param2,param3,param4:TSysParam):TSysResult; external name 'FPC_SYSCALL4';
+function Do_SysCall(sysnr,param1,param2,param3,param4:TSysParam):TSysResult; {$ifdef cpui386}register;{$endif} external name 'FPC_SYSCALL4';
 
 const
+{$ifdef cpux86_64}
   syscall_nr_ptrace                            = 101;
+{$else}
+  syscall_nr_ptrace                            = 26;
+{$endif}
+
 {$endif linux}
 
 function fpPTrace(ptrace_request: cint; pid: TPid; addr: Pointer; data: pointer): PtrInt;

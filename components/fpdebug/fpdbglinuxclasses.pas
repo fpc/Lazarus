@@ -233,7 +233,11 @@ var
 begin
   result := true;
   errno:=0;
-  fpPTrace(PTRACE_GETREGS, Process.ProcessID, nil, @FUserRegsStruct64);
+  if Process.Mode=dm32 then
+    fpPTrace(PTRACE_GETREGS, Process.ProcessID, nil, @FUserRegsStruct32)
+  else
+    fpPTrace(PTRACE_GETREGS, Process.ProcessID, nil, @FUserRegsStruct64);
+
   e := fpgeterrno;
   if e <> 0 then
     begin
@@ -320,7 +324,10 @@ var
 begin
   if FUserRegsChanged then
     begin
-    fpPTrace(PTRACE_SETREGS, Process.ProcessID, nil, @FUserRegsStruct64);
+    if Process.Mode=dm32 then
+      fpPTrace(PTRACE_SETREGS, Process.ProcessID, nil, @FUserRegsStruct32)
+    else
+      fpPTrace(PTRACE_SETREGS, Process.ProcessID, nil, @FUserRegsStruct64);
     e := fpgeterrno;
     if e <> 0 then
       begin
