@@ -66,17 +66,14 @@ type
     {$ENDIF}
     procedure ShowHelpForObjectInspector(Sender: TObject); virtual; abstract;
     procedure ShowHelpForIDEControl(Sender: TControl); virtual; abstract;
-    function GetHintForSourcePosition(const ExpandedFilename: string;
-                      const CodePos: TPoint;
-                      out BaseURL, HTMLHint: string;
-                      Flags: TIDEHelpManagerCreateHintFlags = []): TShowHelpResult; virtual; abstract;
     function CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
-                    const BaseURL: string; var TheHint: string;
-                    out HintWinRect: TRect): boolean; virtual; abstract;
-
+      const BaseURL: string; var TheHint: string; out HintWinRect: TRect): boolean;
+      virtual; abstract; deprecated 'Use THintWindowManager class instead';
+    function GetHintForSourcePosition(const ExpandedFilename: string;
+      const CodePos: TPoint; out BaseURL, HTMLHint: string;
+      Flags: TIDEHelpManagerCreateHintFlags = []): TShowHelpResult; virtual; abstract;
     function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
-                            const Filename: string): TPascalHelpContextList; virtual; abstract;
-
+      const Filename: string): TPascalHelpContextList; virtual; abstract;
     // fpdoc
     function GetFPDocFilenameForSource(SrcFilename: string;
       ResolveIncludeFiles: Boolean;
@@ -137,7 +134,6 @@ type
     ihcScrollable,
     ihcWithClipboardMenu
   );
-
   TIDEHTMLControlFlags = set of TIDEHTMLControlFlag;
 
   TCreateIDEHTMLControlEvent =
@@ -146,18 +142,37 @@ type
   TCreateIDEHTMLProviderEvent =
     function(Owner: TComponent): TAbstractIDEHTMLProvider;
 
+  { THintWindowManager }
+
+  THintWindowManager = class
+    FHintWindowClass: THintWindowClass;
+    FHintWindow: THintWindow;
+    FHtmlHelpProvider: TAbstractIDEHTMLProvider;
+    FBaseURL: string;
+    FFlags: TIDEHTMLControlFlags;
+  private
+    function HtmlHelpProvider: TAbstractIDEHTMLProvider;
+  public
+    constructor Create; overload;
+    constructor Create(AHintWindowClass: THintWindowClass); overload;
+    destructor Destroy; override;
+    function ShowHint(ScreenPos: TPoint; TheHint: string): boolean;
+    procedure HideHint;
+  public
+    property BaseURL: string read FBaseURL write FBaseURL;
+    property Flags: TIDEHTMLControlFlags read FFlags write FFlags;
+  end;
+
 var
   CreateIDEHTMLControl: TCreateIDEHTMLControlEvent = nil;// will be set by the IDE
     // and can be overidden by a package like turbopoweriprodsgn.lpk
   CreateIDEHTMLProvider: TCreateIDEHTMLProviderEvent = nil;// will be set by the IDE
 
-var
   FPCKeyWordHelpPrefix: string = 'FPCKeyword_';
   FPCDirectiveHelpPrefix: string = 'FPCDirective_';
   IDEDirectiveHelpPrefix: string = 'IDEDirective_';
 
 implementation
-
 
 { THelpDBIRegExprMessage }
 
@@ -195,8 +210,7 @@ begin
   inherited Destroy;
 end;
 
-function TAbstractIDEHTMLProvider.MakeURLAbsolute(const aBaseURL, aURL: string
-  ): string;
+function TAbstractIDEHTMLProvider.MakeURLAbsolute(const aBaseURL, aURL: string): string;
 var
   URLType: string;
   URLPath: string;
@@ -217,6 +231,88 @@ begin
   end else begin
     Result:=aURL;
   end;
+end;
+
+{ THintWindowManager }
+
+constructor THintWindowManager.Create;
+begin
+  inherited Create;
+  FHintWindowClass := THintWindow;
+  FFlags := [ihcWithClipboardMenu];
+end;
+
+constructor THintWindowManager.Create(AHintWindowClass: THintWindowClass);
+begin
+  Create;  // Constructor above
+  FHintWindowClass := AHintWindowClass;
+end;
+
+destructor THintWindowManager.Destroy;
+begin
+  FreeAndNil(FHintWindow);
+  inherited Destroy;
+end;
+
+function THintWindowManager.HtmlHelpProvider: TAbstractIDEHTMLProvider;
+var
+  HelpControl: TControl;
+begin
+  if FHtmlHelpProvider = nil then
+  begin
+    //Include(FFlags, ihcScrollable);  // Debug (memo control does not work)
+    HelpControl := CreateIDEHTMLControl(FHintWindow, FHtmlHelpProvider, FFlags);
+    HelpControl.Parent := FHintWindow;
+    HelpControl.Align := alClient;
+  end;
+  Result := FHtmlHelpProvider;
+end;
+
+function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string): boolean;
+var
+  ms: TMemoryStream;
+  NewWidth, NewHeight: integer;
+begin
+  Result:=true;
+  if TheHint = '' then exit;
+  if FHintWindow <> nil then
+    FHintWindow.Visible := false;   // ???
+  if FHintWindow = nil then
+    FHintWindow := FHintWindowClass.Create(Nil);
+  if CompareText(copy(TheHint,1,6),'<HTML>')=0 then    // Text is HTML
+  begin
+    HtmlHelpProvider.BaseURL:=FBaseURL;
+    ms:=TMemoryStream.Create;
+    try
+      if TheHint<>'' then
+        ms.Write(TheHint[1],length(TheHint));
+      ms.Position:=0;
+      HtmlHelpProvider.ControlIntf.SetHTMLContent(ms,'');
+    finally
+      ms.Free;
+    end;
+    HtmlHelpProvider.ControlIntf.GetPreferredControlSize(NewWidth,NewHeight);
+    if NewWidth <= 0 then
+      NewWidth := 500;
+    if NewHeight <= 0 then
+      NewHeight := 200;
+    FHintWindow.HintRect := Rect(0, 0, NewWidth, NewHeight);
+    FHintWindow.OffsetHintRect(ScreenPos);
+    //DebugLn('--- ShowHint with HTML formatting ---');
+    FHintWindow.ActivateHint;
+  end
+  else begin                                           // Plain text
+    FHintWindow.CalcHintRect(Screen.Width, TheHint, nil);
+    FHintWindow.OffsetHintRect(ScreenPos);
+    //DebugLn('--- ShowHint plain text ---');
+    FHintWindow.ActivateHint(TheHint);
+  end;
+end;
+
+procedure THintWindowManager.HideHint;
+begin
+  if Assigned(FHintWindow) then
+    FHintWindow.Visible := False;
 end;
 
 end.

@@ -31,7 +31,7 @@ begin
   Canvas.Brush.Style := bsClear;
   FAlignment := taLeftJustify;
   BorderStyle := bsNone;
-  Caption := 'THintWindow';
+  Caption := '';
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
   FHideInterval := 3000;
@@ -53,6 +53,14 @@ Begin
   FHideInterval := Value;
   if Assigned(FAutoHideTimer) then
     FAutoHideTimer.Interval := FHideInterval;
+end;
+
+procedure THintWindow.SetHintRect(AValue: TRect);
+begin
+  FHintRect := AValue;
+  // Add border
+  inc(FHintRect.Right, 4 * HintBorderWidth);
+  inc(FHintRect.Bottom, 4 * HintBorderWidth);
 end;
 
 class procedure THintWindow.WSRegisterClass;
@@ -145,17 +153,14 @@ procedure THintWindow.AutoHideHint(Sender : TObject);
 begin
   if Assigned(FAutoHideTimer) then
     FAutoHideTimer.Enabled := False;
-  if Visible then
-    Visible := False;
+  Visible := False;
 end;
 
 procedure THintWindow.Paint;
-var
-  ARect: TRect;
-  Details: TThemedElementDetails;
-begin
-  ARect := ClientRect;
-  if UseThemes then
+
+  procedure DrawWithThemes(ARect: TRect);
+  var
+    Details: TThemedElementDetails;
   begin
     // draw using themes
     Details := ThemeServices.GetElementDetails(tttStandardNormal);
@@ -163,8 +168,9 @@ begin
 //    ARect := ThemeServices.ContentRect(Canvas.Handle, Details, ARect);
     InflateRect(ARect, -2 * HintBorderWidth, -2 * HintBorderWidth);
     ThemeServices.DrawText(Canvas, Details, Caption, ARect, GetDrawTextFlags, 0);
-  end
-  else
+  end;
+
+  procedure DrawNormal(ARect: TRect);
   begin
     Canvas.Brush.Color := Color;
     Canvas.Pen.Width := 1;
@@ -174,6 +180,14 @@ begin
     DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(Caption),
       Length(Caption), ARect, GetDrawTextFlags);
   end;
+
+begin
+  if ControlCount > 0 then
+    inherited Paint         // The window has a custom control.
+  else if UseThemes then
+    DrawWithThemes(ClientRect)
+  else
+    DrawNormal(ClientRect);
 end;
 
 procedure THintWindow.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
@@ -188,46 +202,39 @@ begin
   Result.CY := 25;
 end;
 
-procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);
-var
-  InvalidateNeeded: Boolean;
-  AMonitor: TMonitor;
-  ABounds: TRect;
+procedure THintWindow.ActivateHint;
 begin
   if FActivating then exit;
   FActivating := True;
   try
-    //debugln('THintWindow.ActivateHint OldHint="',DbgStr(Caption),'" NewHint="',DbgStr(AHint),'"');
-    InvalidateNeeded := Visible and (Caption <> AHint);
-    Caption := AHint;
-    AMonitor := Screen.MonitorFromPoint(ARect.TopLeft);
-    ABounds := AMonitor.BoundsRect;
+    SetBounds(FHintRect.Left, FHintRect.Top,
+              FHintRect.Right - FHintRect.Left, FHintRect.Bottom - FHintRect.Top);
+    Visible := True;
+    FAutoHideTimer.Enabled := False;
+    FAutoHideTimer.Enabled := FAutoHide;
+    Invalidate;
+  finally
+    FActivating := False;
+  end;
+end;
 
-    // offset hint to fit into monitor
-    if ARect.Bottom > ABounds.Bottom then
-    begin
-      ARect.Top := ABounds.Bottom - (ARect.Bottom - ARect.Top);
-      ARect.Bottom := ABounds.Bottom;
+procedure THintWindow.ActivateHint(const AHint: String);
+var
+  InvalidateNeeded: Boolean;
+begin
+  if FActivating then exit;
+  FActivating := True;
+  try
+    if ControlCount > 0 then begin
+      InvalidateNeeded := Visible and (Controls[0].Caption <> AHint);
+      Controls[0].Caption := AHint;
+    end
+    else begin
+      InvalidateNeeded := Visible and (Caption <> AHint);
+      Caption := AHint;
     end;
-    if ARect.Top < ABounds.Top then
-    begin
-      ARect.Bottom := Min(ABounds.Top + (ARect.Bottom - ARect.Top), ABounds.Bottom);
-      ARect.Top := ABounds.Top;
-    end;
-
-    if ARect.Right > ABounds.Right then
-    begin
-      ARect.Left := ABounds.Right - (ARect.Right - ARect.Left);
-      ARect.Right := ABounds.Right;
-    end;
-    if ARect.Left < ABounds.Left then
-    begin
-      ARect.Right:= Min(ABounds.Left + (ARect.Right - ARect.Left), ABounds.Right);
-      ARect.Left := ABounds.Left;
-    end;
-
-    SetBounds(ARect.Left, ARect.Top,
-              ARect.Right - ARect.Left, ARect.Bottom - ARect.Top);
+    SetBounds(FHintRect.Left, FHintRect.Top,
+              FHintRect.Right - FHintRect.Left, FHintRect.Bottom - FHintRect.Top);
     Visible := True;
     FAutoHideTimer.Enabled := False;
     FAutoHideTimer.Enabled := FAutoHide;
@@ -237,9 +244,16 @@ begin
   end;
 end;
 
+procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);
+begin
+  HintRect := ARect;
+  AdjustBoundsForMonitor;
+  ActivateHint(AHint);
+end;
+
 procedure THintWindow.ActivateHintData(ARect: TRect; const AHint: String; AData: pointer);
 begin
-  ActivateHint(ARect, AHint);
+  ActivateHint(ARect, AHint);   // AData is not used now.
 end;
 
 function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
@@ -248,10 +262,7 @@ var
   Flags: Cardinal;
 begin
   if AHint = '' then
-  begin
-    Result := Rect(0, 0, 0, 0);
-    Exit;
-  end;
+    Exit(Rect(0, 0, 0, 0));
   if MaxWidth <= 0 then
     MaxWidth := Screen.Width - 4 * HintBorderWidth;
   Result := Rect(0, 0, MaxWidth, Screen.Height - 4 * HintBorderWidth);
@@ -262,10 +273,47 @@ begin
       ThemeServices.GetElementDetails(tttStandardNormal), AHint, Flags, @Result)
   else
     DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(AHint), Length(AHint),
-           Result, Flags);
-  inc(Result.Right, 4 * HintBorderWidth);
-  inc(Result.Bottom, 4 * HintBorderWidth);
+             Result, Flags);
+  HintRect := Result;      // Adds borders.
   //debugln('THintWindow.CalcHintRect Result=',dbgs(Result));
+end;
+
+procedure THintWindow.AdjustBoundsForMonitor;
+var
+  AMonitor: TMonitor;
+  ABounds: TRect;
+begin
+  AMonitor := Screen.MonitorFromPoint(FHintRect.TopLeft);
+  ABounds := AMonitor.BoundsRect;
+
+  // offset hint to fit into monitor
+  if FHintRect.Bottom > ABounds.Bottom then
+  begin
+    FHintRect.Top := ABounds.Bottom - (FHintRect.Bottom - FHintRect.Top);
+    FHintRect.Bottom := ABounds.Bottom;
+  end;
+  if FHintRect.Top < ABounds.Top then
+  begin
+    FHintRect.Bottom := Min(ABounds.Top + (FHintRect.Bottom - FHintRect.Top), ABounds.Bottom);
+    FHintRect.Top := ABounds.Top;
+  end;
+
+  if FHintRect.Right > ABounds.Right then
+  begin
+    FHintRect.Left := ABounds.Right - (FHintRect.Right - FHintRect.Left);
+    FHintRect.Right := ABounds.Right;
+  end;
+  if FHintRect.Left < ABounds.Left then
+  begin
+    FHintRect.Right:= Min(ABounds.Left + (FHintRect.Right - FHintRect.Left), ABounds.Right);
+    FHintRect.Left := ABounds.Left;
+  end;
+end;
+
+function THintWindow.OffsetHintRect(NewPos: TPoint; dy: Integer): Boolean;
+begin
+  OffsetRect(FHintRect, NewPos.X, NewPos.Y + dy);
+  AdjustBoundsForMonitor;
 end;
 
 procedure THintWindow.InitializeWnd;

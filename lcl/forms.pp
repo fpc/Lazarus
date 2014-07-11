@@ -837,13 +837,17 @@ type
   private
     FActivating: Boolean;
     FAlignment: TAlignment;
+    FHintRect: TRect;
+    FHintData: Pointer;
     FAutoHide: Boolean;
     FAutoHideTimer: TCustomTimer;
     FHideInterval: Integer;
+    procedure AdjustBoundsForMonitor;
     function GetDrawTextFlags: Cardinal;
     procedure SetAutoHide(Value : Boolean);
     procedure AutoHideHint(Sender : TObject);
     procedure SetHideInterval(Value : Integer);
+    procedure SetHintRect(AValue: TRect);
   protected
     class procedure WSRegisterClass; override;
     procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
@@ -854,11 +858,14 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ActivateHint(ARect: TRect; const AHint: String); virtual;
-    procedure ActivateHintData(ARect: TRect; const AHint: String;
-                               AData: pointer); virtual;
+    procedure ActivateHint; virtual;
+    procedure ActivateHint(const AHint: String); virtual;
+    procedure ActivateHint(ARect: TRect; const AHint: String);
+    procedure ActivateHintData(ARect: TRect; const AHint: String; AData: pointer);
+      deprecated 'Set HintData explicitly';
     function CalcHintRect(MaxWidth: Integer; const AHint: String;
                           AData: Pointer): TRect; virtual;
+    function OffsetHintRect(NewPos: TPoint; dy: Integer = 30): Boolean;
     procedure InitializeWnd; override;
     procedure ReleaseHandle;
     procedure Paint; override;
@@ -866,6 +873,8 @@ type
     class function GetControlClassDefaultSize: TSize; override;
   public
     property Alignment: TAlignment read FAlignment write FAlignment;
+    property HintRect: TRect read FHintRect write SetHintRect;
+    property HintData: Pointer read FHintData write FHintData;
     property AutoHide: Boolean read FAutoHide write SetAutoHide;
     property BiDiMode;
     property HideInterval: Integer read FHideInterval write SetHideInterval;

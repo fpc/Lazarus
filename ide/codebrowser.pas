@@ -255,7 +255,7 @@ type
     procedure ShowPrivateCheckBoxChange(Sender: TObject);
     procedure ShowUnitsCheckBoxChange(Sender: TObject);
   private
-    FHintWindow: THintWindow;
+    FHintManager: THintWindowManager;
     FIDEDescription: string;
     FIdleConnected: boolean;
     FOptions: TCodeBrowserViewOptions;
@@ -470,14 +470,14 @@ end;
 
 procedure TCodeBrowserView.FormCreate(Sender: TObject);
 begin
-  FHintWindow := nil;
+  FHintManager:=THintWindowManager.Create;
   FOptions:=TCodeBrowserViewOptions.Create;
   
   FIDEDescription:=lisLazarusIDE;
   FProjectDescription:=dlgProject;
 
   Name:=NonModalIDEWindowNames[nmiwCodeBrowser];
-  Caption := lisCodeBrowser;
+  Caption:=lisCodeBrowser;
 
   ScopeGroupBox.Caption:=dlgScope;
   ScopeWithRequiredPackagesCheckBox.Caption:=lisWithRequiredPackages;
@@ -534,6 +534,7 @@ begin
   FreeAndNil(FParserRoot);
   FreeAndNil(FWorkingParserRoot);
   FreeAndNil(FOptions);
+  FreeAndNil(FHintManager);
   IdleConnected:=false;
 end;
 
@@ -2501,7 +2502,7 @@ begin
       if Line>0 then
         Result:=Result+' ('+IntToStr(Line)+','+IntToStr(Column)+')';
         if GetCodeHelp(TVNode, BaseURL, HTMLHint) then
-           Result := HTMLHint;
+          Result := HTMLHint;
     end;
   end;
 end;
@@ -2903,43 +2904,26 @@ begin
   InvalidateStage(cbwsGetViewOptions);
 end;
 
-procedure TCodeBrowserView.BrowseTreeViewShowHint(Sender: TObject;
-  HintInfo: PHintInfo);
+procedure TCodeBrowserView.BrowseTreeViewShowHint(Sender: TObject; HintInfo: PHintInfo);
 var
   TVNode: TTreeNode;
   HintStr: String;
-  MousePos: TPoint;
   HintWinRect : TRect;
 begin
   //DebugLn(['TCodeBrowserView.BrowseTreeViewShowHint ',dbgs(HintInfo^.CursorPos)]);
   HintStr:='';
-  MousePos:=HintInfo^.CursorPos;
-  TVNode:=BrowseTreeView.GetNodeAt(MousePos.X,MousePos.Y);
-  if TVNode<>nil then begin
+  TVNode:=BrowseTreeView.GetNodeAt(HintInfo^.CursorPos.X, HintInfo^.CursorPos.Y);
+  if TVNode<>nil then
     HintStr:=GetTVNodeHint(TVNode);
-    //DebugLn(['TCodeBrowserView.BrowseTreeViewShowHint HintStr="',HintStr,'"']);
-  end;
-
-  HintInfo^.HintStr:=''; // do not use the normal mechanism
-
-  // open a THintWindow with LazarusHelp instead
-  if hintstr = '' then
-     exit;
+  HintInfo^.HintStr:=''; // do not use the normal mechanism,
+  // ... open a THintWindow with LazarusHelp instead
   if csDestroying in ComponentState then exit;
-  if FHintWindow <> nil then
-    FHintWindow.Visible := false;
-  if FHintWindow = nil then
-    FHintWindow := THintWindow.Create(Self);
-  if LazarusHelp.CreateHint(FHintWindow, HintInfo^.HintPos, '', HintStr, HintWinRect) then
-      FHintWindow.ActivateHint(HintWinRect, HintStr);
+  FHintManager.ShowHint(HintInfo^.HintPos, HintStr);
 end;
 
 procedure TCodeBrowserView.CloseHintWindow;
 begin
-  if FHintWindow <> nil then begin
-    FHintWindow.Close;
-    FHintWindow := nil;
-  end;
+  FHintManager.HideHint;
 end;
 
 procedure TCodeBrowserView.CollapseAllPackagesMenuItemClick(Sender: TObject);
@@ -3178,8 +3162,7 @@ var
   SubPath: String;
 begin
   Clear;
-  WithRequiredPackages:=
-                  ConfigStore.GetValue(Path+'WithRequiredPackages/Value',false);
+  WithRequiredPackages:=ConfigStore.GetValue(Path+'WithRequiredPackages/Value',false);
   Scope:=ConfigStore.GetValue(Path+'Scope/Value','Project');
   ShowPrivate:=ConfigStore.GetValue(Path+'ShowPrivate/Value',false);
   ShowProtected:=ConfigStore.GetValue(Path+'ShowProtected/Value',true);

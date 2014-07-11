@@ -187,14 +187,15 @@ type
     FFCLHelpDB: THelpDatabase;
     FFCLHelpDBPath: THelpBaseURLObject;
     FHTMLProviders: TLIHProviders;
-    FHtmlHelpProvider: TAbstractIDEHTMLProvider;
-    FHintWindow: THintWindow;
     FLCLHelpDB: THelpDatabase;
     FLCLHelpDBPath: THelpBaseURLObject;
     FMainHelpDB: THelpDatabase;
     FMainHelpDBPath: THelpBasePathObject;
     FRTLHelpDB: THelpDatabase;
     FRTLHelpDBPath: THelpBaseURLObject;
+    // Used by CreateHint
+    FHtmlHelpProvider: TAbstractIDEHTMLProvider;
+    FHintWindow: THintWindow;
     function HtmlHelpProvider: TAbstractIDEHTMLProvider;
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
@@ -221,15 +222,12 @@ type
     {$ENDIF}
     procedure ShowHelpForObjectInspector(Sender: TObject); override;
     procedure ShowHelpForIDEControl(Sender: TControl); override;
-
     function CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
-                    const BaseURL: string; var TheHint: string;
-                    out HintWinRect: TRect): boolean; override;
+      const BaseURL: string; var TheHint: string; out HintWinRect: TRect): boolean;
+      override; deprecated;
     function GetHintForSourcePosition(const ExpandedFilename: string;
-                  const CodePos: TPoint;
-                  out BaseURL, HTMLHint: string;
-                  Flags: TIDEHelpManagerCreateHintFlags = []): TShowHelpResult; override;
-
+      const CodePos: TPoint; out BaseURL, HTMLHint: string;
+      Flags: TIDEHelpManagerCreateHintFlags = []): TShowHelpResult; override;
     function ConvertSourcePosToPascalHelpContext(const CaretPos: TPoint;
                const Filename: string): TPascalHelpContextList; override;
     function ConvertCodePosToPascalHelpContext(
