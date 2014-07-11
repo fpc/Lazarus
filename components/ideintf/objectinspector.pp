@@ -807,8 +807,8 @@ uses
 
 type
   TOIHintWindow = class(THintWindow)
-  public
-    property OnMouseDown;
+  //public - For some reason the protected THintWindow.OnMouseDown is available, too.
+  //  property OnMouseDown;
   end;
 
 const
