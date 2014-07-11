@@ -253,8 +253,7 @@ type
     BtnPanel: TButtonPanel;
     NodesGroupBox: TGroupBox;
     NodesListBox: TListBox;
-    procedure HelpSelectorDialogClose(Sender: TObject;
-      var CloseAction: TCloseAction);
+    procedure HelpSelectorDialogClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure NodesListBoxDblClick(Sender: TObject);
   private
     FNodes: THelpNodeQueryList;
@@ -562,8 +561,7 @@ begin
   end;
 end;
 
-procedure TSimpleHTMLControl.SetHTMLContent(Stream: TStream;
-  const NewURL: string);
+procedure TSimpleHTMLControl.SetHTMLContent(Stream: TStream; const NewURL: string);
 begin
   FURL:=NewURL;
   Caption:=HTMLToCaption(Stream,MaxLineCount);
@@ -643,8 +641,7 @@ begin
   end;
 end;
 
-procedure TScrollableHTMLControl.SetHTMLContent(Stream: TStream;
-  const NewURL: string);
+procedure TScrollableHTMLControl.SetHTMLContent(Stream: TStream; const NewURL: string);
 begin
   FURL:=NewURL;
   Caption:=HTMLToCaption(Stream,MaxInt);
@@ -845,8 +842,7 @@ begin
   end;
 end;
 
-function TLazIDEHTMLProvider.GetStream(const URL: string; Shared: Boolean
-  ): TStream;
+function TLazIDEHTMLProvider.GetStream(const URL: string; Shared: Boolean): TStream;
 begin
   Result:=FProviders.GetStream(URL,Shared);
 end;
@@ -1725,9 +1721,9 @@ begin
   Result:=true;
 end;
 
-function TIDEHelpManager.GetHintForSourcePosition(
-  const ExpandedFilename: string; const CodePos: TPoint; out BaseURL,
-  HTMLHint: string; Flags: TIDEHelpManagerCreateHintFlags): TShowHelpResult;
+function TIDEHelpManager.GetHintForSourcePosition(const ExpandedFilename: string;
+  const CodePos: TPoint; out BaseURL, HTMLHint: string;
+  Flags: TIDEHelpManagerCreateHintFlags): TShowHelpResult;
 var
   Code: TCodeBuffer;
   CacheWasUsed: boolean;
