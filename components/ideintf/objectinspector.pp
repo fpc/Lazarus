@@ -3213,33 +3213,13 @@ end;
 
 procedure TOICustomPropertyGrid.HintTimer(Sender: TObject);
 var
-  Position : TPoint;
-  Index: integer;
   PointedRow: TOIpropertyGridRow;
-
-  procedure HintByHandler;
-  var
-    AHint: String;
-  begin
-    if OnPropertyHint(Self, PointedRow, AHint)
-    then begin
-      FHintIndex := Index;
-      FShowingLongHint := True;
-      FHintManager.ShowHint(Position, AHint);
-    end;
-  end;
-
-  procedure HintByEditor(AHint: String);
-  begin
-    FHintIndex := Index;
-    FShowingLongHint := True;
-    FHintManager.ShowHint(Position, AHint);
-  end;
-
-var
   Window: TWinControl;
   HintType: TPropEditHint;
-  ClientPosition: TPoint;
+  Position, ClientPosition: TPoint;
+  Index: integer;
+  AHint: String;
+  OkToShow: Boolean;
 begin
   if FHintTimer <> nil then
     FHintTimer.Enabled := False;
@@ -3255,16 +3235,24 @@ begin
     Exit;
 
   Index := MouseToIndex(ClientPosition.Y, False);
-  if (Index < 0) or (Index >= FRows.Count) then Exit;
-  PointedRow := Rows[Index];
-  if (PointedRow = Nil) or (PointedRow.Editor = Nil)
-  or (Index = ItemIndex) then Exit; // Don't show hint for the selected property.
+  // Don't show hint for the selected property.
+  if (Index < 0) or (Index >= FRows.Count) or (Index = ItemIndex) then Exit;
 
+  PointedRow := Rows[Index];
+  if (PointedRow = Nil) or (PointedRow.Editor = Nil) then Exit;
+
+  // Get hint
+  OkToShow := True;
   HintType := GetHintTypeAt(Index, Position.X);
   if (HintType = pehName) and Assigned(OnPropertyHint) then
-    HintByHandler
+    OkToShow := OnPropertyHint(Self, PointedRow, AHint)
   else
-    HintByEditor(PointedRow.Editor.GetHint(HintType, Position.X, Position.Y));
+    AHint := PointedRow.Editor.GetHint(HintType, Position.X, Position.Y);
+  // Show hint if all is well.
+  if OkToShow and FHintManager.ShowHint(Position, AHint) then begin
+    FHintIndex := Index;
+    FShowingLongHint := True;
+  end;
 end;
 
 procedure TOICustomPropertyGrid.ResetHintTimer;
