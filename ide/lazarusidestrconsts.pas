@@ -2171,10 +2171,7 @@ resourcestring
   lisCCOErrorCaption = 'Error';
   lisFatal = 'Fatal';
   lisPanic = 'Panic';
-  lisFindTheNextOccurenceOfThePhrase = 'Find the next occurence of the phrase';
   lisHideSearch = 'Hide Search';
-  lisFindThePreviousOccurenceOfThePhrase = 'Find the previous occurence of the'
-    +' phrase';
   lisInvalidMacrosInExternalTool = 'Invalid macros "%s" in external tool "%s"';
   lisCanNotExecute = 'can not execute "%s"';
   lisMissingDirectory = 'missing directory "%s"';

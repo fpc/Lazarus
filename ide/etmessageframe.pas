@@ -3394,9 +3394,9 @@ begin
   HideSearchSpeedButton.Hint:=lisHideSearch;
   HideSearchSpeedButton.LoadGlyphFromResourceName(HInstance, 'debugger_power_grey');
   SearchEdit.Text:=GetDefaultSearchText;
-  SearchNextSpeedButton.Hint:=lisFindTheNextOccurenceOfThePhrase;
+  SearchNextSpeedButton.Hint:=lisUDSearchNextOccurrenceOfThisPhrase;
   SearchNextSpeedButton.LoadGlyphFromResourceName(HInstance, 'callstack_bottom');
-  SearchPrevSpeedButton.Hint:=lisFindThePreviousOccurenceOfThePhrase;
+  SearchPrevSpeedButton.Hint:=lisUDSearchPreviousOccurrenceOfThisPhrase;
   SearchPrevSpeedButton.LoadGlyphFromResourceName(HInstance, 'callstack_top');
 end;
 
