@@ -245,6 +245,15 @@ type
     property RTLHelpDBPath: THelpBaseURLObject read FRTLHelpDBPath;
   end;
 
+  { TIDEHintWindowManager }
+
+  TIDEHintWindowManager = class(THintWindowManager)
+  public
+    function HintIsComplex: boolean;
+    function SenderIsHintControl(Sender: TObject): Boolean;
+    function PtIsOnHint(Pt: TPoint): boolean;
+  end;
+
   { THelpSelectorDialog }
   
   THelpSelectorDialog = class(TForm)
@@ -1760,6 +1769,52 @@ begin
   if ACodeTool=nil then ;
   Result:=ConvertCodePosToPascalHelpContext(@CodePos);
 end;
+
+{ TIDEHintWindowManager }
+
+function TIDEHintWindowManager.HintIsComplex: boolean;
+begin
+  if FHintWindow = Nil then Exit(False);
+  Assert(FHintWindow.ControlCount > 0,
+    'HintIsComplex: ControlCount = ' + IntToStr(FHintWindow.ControlCount));
+  Result := FHintWindow.Visible and not (FHintWindow.Controls[0] is TSimpleHTMLControl);
+end;
+
+function TIDEHintWindowManager.PtIsOnHint(Pt: TPoint): boolean;
+begin
+  Result := PtInRect(FHintWindow.BoundsRect, Pt);
+end;
+
+function TIDEHintWindowManager.SenderIsHintControl(Sender: TObject): Boolean;
+// ToDo: simplify. FHintWindow only has one child control.
+
+  function IsHintControl(Control: TWinControl): Boolean;
+  var
+    I: Integer;
+  begin
+    if not Control.Visible then
+      Exit(False);
+    Result := Control = Sender;
+    if Result then
+      Exit;
+    for I := 0 to Control.ControlCount - 1 do
+    begin
+      Result := Control.Controls[I] = Sender;
+      if Result then
+        Exit;
+      if (Control.Controls[I] is TWinControl) then
+      begin
+        Result := IsHintControl(TWinControl(Control.Controls[I]));
+        if Result then
+          Exit;
+      end;
+    end;
+  end;
+
+begin
+  Result := Assigned(Sender) and Assigned(FHintWindow) and IsHintControl(FHintWindow);
+end;
+
 
 end.
 
