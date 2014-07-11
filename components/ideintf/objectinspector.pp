@@ -2194,8 +2194,7 @@ begin
       Index := MouseToIndex(y,false);
       if (Index > -1)
       and (not FShowingLongHint)
-      and ((FHintWindow=nil) or (not FHintWindow.Visible)
-           or (Index<>FHintIndex))
+      and ((FHintWindow=nil) or (not FHintWindow.Visible) or (Index<>FHintIndex))
       then begin
         FHintIndex:=Index;
         FShowingLongHint:=false;
@@ -2204,12 +2203,12 @@ begin
         begin
           // Mouse is over property name...
           fHint := fPropRow.Name;
-          if InitHints and ((Canvas.TextWidth(fHint) + BorderWidth + GetTreeIconX(Index) + Indent) >= SplitterX) then
+          if InitHints
+          and ((Canvas.TextWidth(fHint) + BorderWidth + GetTreeIconX(Index) + Indent) >= SplitterX) then
           begin
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
-            fPoint := ClientToScreen(
-                                   Point(BorderWidth+GetTreeIconX(Index)+Indent,
-                                   fPropRow.Top - TopY-1));
+            fPoint := ClientToScreen(Point(BorderWidth+GetTreeIconX(Index)+Indent,
+                                           fPropRow.Top - TopY-1));
             MoveRect(fHintRect,fPoint.x,fPoint.y);
             FHintWindow.ActivateHint(fHintRect,fHint);
           end;
@@ -2218,9 +2217,10 @@ begin
         begin
           // Mouse is over property value...
           fHint := fPropRow.LastPaintedValue;
-          if length(fHint) > 100 then fHint := copy(fHint, 1, 100) + '...';
-          if (Canvas.TextWidth(fHint) > (ClientWidth - BorderWidth - SplitterX)) and 
-             InitHints then 
+          if length(fHint) > 100 then
+            fHint := copy(fHint, 1, 100) + '...';
+          if InitHints
+          and (Canvas.TextWidth(fHint) > (ClientWidth - BorderWidth - SplitterX)) then
           begin
             fHintRect := FHintWindow.CalcHintRect(0,fHint,nil);
             fpoint := ClientToScreen(Point(SplitterX, fPropRow.Top - TopY - 1));
@@ -3314,11 +3314,11 @@ end;
 procedure TOICustomPropertyGrid.HideHint;
 begin
   if FHintWindow = nil then Exit;
-  FHintWindow.Visible := False;
   FHintIndex := -1;
   FShowingLongHint := False;
-  while FHintWindow.ControlCount > 0 do
-    FHintWindow.Controls[0].Free;
+  FHintWindow.Visible := False;
+  Assert(FHintWindow.ControlCount <= 1,
+    'TOICustomPropertyGrid.HideHint: FHintWindow.ControlCount = '+IntToStr(FHintWindow.ControlCount));
 end;
 
 procedure TOICustomPropertyGrid.ValueControlMouseDown(Sender : TObject;
