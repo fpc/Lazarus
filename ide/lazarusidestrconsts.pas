@@ -365,7 +365,7 @@ resourcestring
   lisCopySelectedMessagesToClipboard = 'Copy Selected Messages to Clipboard';
   lisCopyFileNameToClipboard = 'Copy File Name to Clipboard';
   lisFind = 'Find ...';
-  lisAbout = 'About ...';
+  lisAbout = 'About';
   lisRemoveCompilerOptionHideMessage = 'Remove Compiler Option Hide Message';
   lisRemoveMessageTypeFilter = 'Remove Message Type Filter';
   lisRemoveAllMessageTypeFilters = 'Remove all message type filters';
@@ -541,7 +541,7 @@ resourcestring
   lisMEAction = 'Action';
   lisMenuGeneralOptions = 'Options ...';
   lisWindowStaysOnTop = 'Window stays on top';
-  lisFilenameStyle = 'Filename Style ...';
+  lisFilenameStyle = 'Filename Style';
   lisShortNoPath = 'Short, no path';
   lisRelative = 'Relative';
   lisFull = 'Full';
@@ -549,9 +549,9 @@ resourcestring
   lisShowMessageTypeID = 'Show Message Type ID';
   lisToolStoppedWithExitCodeUseContextMenuToGetMoreInfo = 'tool stopped with '
     +'exit code %s. Use context menu to get more information.';
-  lisErrors2 = ', Errors:%s';
-  lisWarnings = ', Warnings:%s';
-  lisHints = ', Hints:%s';
+  lisErrors2 = ', Errors: %s';
+  lisWarnings = ', Warnings: %s';
+  lisHints = ', Hints: %s';
   lisInternalError = 'internal error: %s';
   lisMenuEditCodeTemplates = 'Code Templates ...';
   dlgEdCodeTempl = 'Code Templates';
@@ -2173,7 +2173,7 @@ resourcestring
   lisPanic = 'Panic';
   lisHideSearch = 'Hide Search';
   lisInvalidMacrosInExternalTool = 'Invalid macros "%s" in external tool "%s"';
-  lisCanNotExecute = 'can not execute "%s"';
+  lisCanNotExecute = 'cannot execute "%s"';
   lisMissingDirectory = 'missing directory "%s"';
   lisUnableToExecute = 'unable to execute: %s';
   lisUnableToReadProcessExitStatus = 'unable to read process ExitStatus';
@@ -3396,7 +3396,7 @@ resourcestring
   lisSuccess = 'Success';
   lisFailedToResolveMacros = 'failed to resolve macros';
   lisToolHasNoExecutable = 'tool "%s" has no executable';
-  lisCanNotFindExecutable = 'can not find executable "%s"';
+  lisCanNotFindExecutable = 'cannot find executable "%s"';
   lisMissingExecutable = 'missing executable "%s"';
   lisExecutableIsADirectory = 'executable "%s" is a directory';
   lisExecutableLacksThePermissionToRun = 'executable "%s" lacks the permission'
