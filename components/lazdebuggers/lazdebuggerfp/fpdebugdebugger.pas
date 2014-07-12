@@ -425,11 +425,10 @@ begin
     end
   else
     RegList := AController.CurrentProcess.MainThread.RegisterValueList;
-  {$ifdef i386}
-    Reg := RegList.FindRegisterByDwarfIndex(8);
-  {$else}
+  if AController.CurrentProcess.Mode=dm32 then
+    Reg := RegList.FindRegisterByDwarfIndex(8)
+  else
     Reg := RegList.FindRegisterByDwarfIndex(16);
-  {$endif}
   if Reg <> nil then
     AContext := AController.CurrentProcess.DbgInfo.FindContext(CurThreadId, CurStackFrame, Reg.NumValue)
   else
@@ -957,11 +956,10 @@ begin
     end
   else
     RegList := AController.CurrentProcess.MainThread.RegisterValueList;
-{$ifdef i386}
-  Reg := RegList.FindRegisterByDwarfIndex(8);
-{$else}
-  Reg := RegList.FindRegisterByDwarfIndex(16);
-{$endif}
+  if AController.CurrentProcess.Mode = dm32 then
+    Reg := RegList.FindRegisterByDwarfIndex(8)
+  else
+    Reg := RegList.FindRegisterByDwarfIndex(16);
   if Reg <> nil then
     AContext := ADbgInfo.FindContext(ThreadId, StackFrame, Reg.NumValue)
   else
