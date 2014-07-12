@@ -715,13 +715,6 @@ type
     procedure DoActiveEditorChanged;
   protected
     States: TSourceNotebookStates;
-    // HintWindow stuff
-    // ToDo: HintWindow should be common to all SourceNotebooks. Only one hint is shown at a time.
-    FHintManager: TIDEHintWindowManager;
-    FMouseHintTimer: TIdleTimer;
-    FMouseHideHintTimer: TTimer;
-    FHintMousePos: TPoint;
-
     procedure Activate; override;
     procedure CreateNotebook;
     function NewSE(Pagenum: Integer; NewPagenum: Integer = -1;
@@ -760,10 +753,7 @@ type
     procedure NotebookDragOver(Sender, Source: TObject;
                                X,Y: Integer; State: TDragState; var Accept: Boolean);
     procedure NotebookEndDrag(Sender, Target: TObject; X,Y: Integer);
-    // hintwindow stuff
-    procedure HintTimer(Sender: TObject);
-    procedure HideHintTimer(Sender: TObject);
-    procedure OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
+
     procedure OnApplicationDeactivate(Sender: TObject);
     procedure ShowSynEditHint(const MousePos: TPoint);
 
@@ -818,10 +808,6 @@ type
     property IncrementalSearchStr: string
       read FIncrementalSearchStr write SetIncrementalSearchStr;
 
-    // hints
-    procedure ActivateHint(const ScreenPos: TPoint; const BaseURL, TheHint: string);
-    procedure HideHint;
-    procedure MaybeHideHint;
     procedure StartShowCodeContext(JumpToError: boolean);
 
     // paste and copy
@@ -1005,8 +991,7 @@ type
   private
     function GetActiveSourceNotebook: TSourceNotebook;
     function GetActiveSrcEditor: TSourceEditor;
-    function GetSourceEditorsByPage(WindowIndex, PageIndex: integer
-      ): TSourceEditor;
+    function GetSourceEditorsByPage(WindowIndex, PageIndex: integer): TSourceEditor;
     function GetSourceNbByLastFocused(Index: Integer): TSourceNotebook;
     function GetSrcEditors(Index: integer): TSourceEditor;
     procedure SetActiveSourceNotebook(const AValue: TSourceNotebook);
@@ -1099,7 +1084,6 @@ type
 
     function FindUniquePageName(FileName:string; IgnoreEditor: TSourceEditor):string;
     function SomethingModified(Verbose: boolean = false): boolean;
-    procedure HideHint;
     procedure OnIdle(Sender: TObject; var Done: Boolean);
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
     procedure LockAllEditorsInSourceChangeCache;
@@ -1107,8 +1091,20 @@ type
     procedure BeginGlobalUpdate;
     procedure EndGlobalUpdate;
     procedure CloseFile(AEditor: TSourceEditorInterface);
+    procedure HideHint;
     // history jumping
     procedure HistoryJump(Sender: TObject; CloseAction: TJumpHistoryAction);
+  private
+    // Hints
+    FHints: TIDEHintWindowManager;
+    FMouseHintTimer: TIdleTimer;
+    FMouseHideHintTimer: TTimer;
+    FHintMousePos: TPoint;
+    procedure HintTimer(Sender: TObject);
+    procedure HideHintTimer(Sender: TObject);
+    procedure ActivateHint(const ScreenPos: TPoint; const BaseURL, TheHint: string);
+    procedure MaybeHideHint;
+    procedure UpdateHintTimer;
   private
     FCodeTemplateModul: TSynEditAutoComplete;
     FGotoDialog: TfrmGoto;
@@ -2941,7 +2937,7 @@ var
 begin
   if SourceNotebook=nil then exit;
   ScreenPos:=EditorComponent.ClientToScreen(ClientPos);
-  SourceNotebook.ActivateHint(ScreenPos,BaseURL,TheHint);
+  Manager.ActivateHint(ScreenPos,BaseURL,TheHint);
 end;
 
 {------------------------------S T A R T  F I N D-----------------------------}
@@ -5799,37 +5795,12 @@ begin
   // popup menu
   BuildPopupMenu;
 
-  // HintTimer
-  FMouseHintTimer := TIdleTimer.Create(Self);
-  with FMouseHintTimer do begin
-    Name := Self.Name+'_MouseHintTimer';
-    Interval := EditorOpts.AutoDelayInMSec;
-    Enabled := False;
-    AutoEnabled := False;
-    OnTimer := @HintTimer;
-  end;
-
-  // Track mouse movements outside the IDE, if hint is visible
-  FMouseHideHintTimer := TTimer.Create(Self);
-  with FMouseHideHintTimer do begin
-    Name := Self.Name+'_MouseHintHideTimer';
-    Interval := 500;
-    Enabled := False;
-    OnTimer := @HideHintTimer;
-  end;
-
-  // HintWindow
-  FHintManager := TIDEHintWindowManager.Create;
-  FHintManager.WindowName := Self.Name+'_HintWindow';
-  FHintManager.HideInterval := 4000;
-
   FUpdateTabAndPageTimer := TTimer.Create(Self);
   FUpdateTabAndPageTimer.Interval := 500;
   FUpdateTabAndPageTimer.OnTimer := @UpdateTabsAndPageTimeReached;
 
   CreateNotebook;
 
-  Application.AddOnUserInputHandler(@OnApplicationUserInput,true);
   Application.AddOnDeactivateHandler(@OnApplicationDeactivate);
   Application.AddOnMinimizeHandler(@OnApplicationDeactivate);
 
@@ -5852,12 +5823,8 @@ begin
   FreeAndNil(FHistoryList);
   FreeAndNil(FSrcEditsSortedForFilenames);
 
-  Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
   Application.RemoveOnDeactivateHandler(@OnApplicationDeactivate);
   Application.RemoveOnMinimizeHandler(@OnApplicationDeactivate);
-  FreeThenNil(FMouseHintTimer);
-  FreeThenNil(FMouseHideHintTimer);
-  FreeThenNil(FHintManager);
   FreeAndNil(FNotebook);
 
   inherited Destroy;
@@ -6712,10 +6679,10 @@ Begin
   SenderDeleted:=(Sender as TControl).Parent=nil;
   if SenderDeleted then exit;
   UpdateStatusBar;
-  if FHintManager.HintIsVisible then
-    HideHint;
-  if Assigned(Manager) then
+  if Assigned(Manager) then begin
+    Manager.FHints.HideIfVisible;
     Manager.DoEditorStatusChanged(FindSourceEditorWithEditorComponent(TSynEdit(Sender)));
+  end;
 End;
 
 procedure TSourceNotebook.DoClose(var CloseAction: TCloseAction);
@@ -7338,85 +7305,6 @@ begin
   end;
   DestWin.NotebookPageChanged(nil); // make sure page SynEdit willl be visible
   DoActiveEditorChanged;
-end;
-
-procedure TSourceNotebook.ActivateHint(const ScreenPos: TPoint;
-  const BaseURL, TheHint: string);
-begin
-  if csDestroying in ComponentState then exit;
-  FHintMousePos := Mouse.CursorPos;
-  FHintManager.BaseURL := BaseURL;
-  if FHintManager.ShowHint(ScreenPos,TheHint) then
-    FMouseHideHintTimer.Enabled := True;
-end;
-
-procedure TSourceNotebook.HideHint;
-begin
-  //DebugLn(['TSourceNotebook.HideHint ']);
-  if FMouseHintTimer<>nil then
-  begin
-    FMouseHintTimer.AutoEnabled := false;
-    FMouseHintTimer.Enabled:=false;
-  end;
-  if FMouseHideHintTimer <> nil then
-    FMouseHideHintTimer.Enabled := False;
-  if AutoStartCompletionBoxTimer<>nil then
-    AutoStartCompletionBoxTimer.Enabled:=false;
-  FHintManager.HideHint;
-end;
-
-procedure TSourceNotebook.MaybeHideHint;
-const
-  MaxJitter = 3;
-var
-  Cur: TPoint;
-  OkX, OkY: Boolean;
-  hw: THintWindow;
-begin
-  FMouseHideHintTimer.Enabled := False;
-  if FHintManager.HintIsVisible then begin
-    hw := FHintManager.HintWindow;
-    Cur := Mouse.CursorPos; // Desktop coordinates
-    OkX := ( (FHintMousePos.x <= hw.Left) and
-             (Cur.x > FHintMousePos.x) and (Cur.x <= hw.Left + hw.Width)
-           ) or
-           ( (FHintMousePos.x >= hw.Left + hw.Width) and
-             (Cur.x < FHintMousePos.x) and (Cur.x >= hw.Left)
-           ) or
-           ( (Cur.x >= hw.Left) and (Cur.x <= hw.Left + hw.Width) );
-    OkY := ( (FHintMousePos.y <= hw.Top) and
-             (Cur.y > FHintMousePos.y) and (Cur.y <= hw.Top + hw.Height)
-           ) or
-           ( (FHintMousePos.y >= hw.Top + hw.Height) and
-             (Cur.y < FHintMousePos.y) and (Cur.y >= hw.Top)
-           ) or
-           ( (Cur.y >= hw.Top) and (Cur.y <= hw.Top + hw.Height) );
-
-    if OkX then FHintMousePos.x := Cur.x;
-    if OkY then FHintMousePos.y := Cur.y;
-
-
-    OkX := OkX or
-           ( (FHintMousePos.x <= hw.Left + MaxJitter) and
-             (Cur.x > FHintMousePos.x - MaxJitter) and (Cur.x <= hw.Left + hw.Width + MaxJitter)
-           ) or
-           ( (FHintMousePos.x >= hw.Left + hw.Width - MaxJitter) and
-             (Cur.x < FHintMousePos.x + MaxJitter) and (Cur.x >= hw.Left - MaxJitter)
-           );
-    OkY := OkY or
-           ( (FHintMousePos.y <= hw.Top + MaxJitter) and
-             (Cur.y > FHintMousePos.y - MaxJitter) and (Cur.y <= hw.Top + hw.Height + MaxJitter)
-           ) or
-           ( (FHintMousePos.y >= hw.Top + hw.Height - MaxJitter) and
-             (Cur.y < FHintMousePos.y + MaxJitter) and (Cur.y >= hw.Top - MaxJitter)
-           );
-
-    if (OkX and OkY) then begin
-      FMouseHideHintTimer.Enabled := True;
-      exit;
-    end;
-  end;
-  HideHint;
 end;
 
 procedure TSourceNotebook.StartShowCodeContext(JumpToError: boolean);
@@ -8115,8 +8003,7 @@ Begin
   try
     Exclude(States, snNotebookPageChangedNeeded);
     SrcEdit:=GetActiveSE;
-    if FHintManager.HintIsVisible then
-      HideHint;
+    Manager.FHints.HideIfVisible;
     if (CodeContextFrm<>nil) then
       CodeContextFrm.Hide;
 
@@ -8304,8 +8191,6 @@ Begin
     FNoteBook.Options:=FNoteBook.Options-[nboShowCloseButtons];
   FNotebook.TabPosition := EditorOpts.TabPosition;
 
-  FMouseHintTimer.Interval:=EditorOpts.AutoDelayInMSec;
-
   Exclude(States,snWarnedFont);
   CheckFont;
   UpdatePageNames;
@@ -8356,13 +8241,9 @@ end;
 procedure TSourceNotebook.EditorMouseMove(Sender: TObject; Shift: TShiftstate;
   X, Y: Integer);
 begin
-  MaybeHideHint;
-
-  if not Visible then exit;
-  if (MainIDEInterface.ToolStatus=itDebugger) then
-    FMouseHintTimer.AutoEnabled := EditorOpts.AutoToolTipExprEval or EditorOpts.AutoToolTipSymbTools
-  else
-    FMouseHintTimer.AutoEnabled := EditorOpts.AutoToolTipSymbTools;
+  Manager.MaybeHideHint;
+  if Visible then
+    Manager.UpdateHintTimer;
 end;
 
 procedure TSourceNotebook.EditorMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -8439,65 +8320,6 @@ begin
   SrcEdit.CursorScreenXY:=Point(Indent+1,SrcEdit.CursorScreenXY.Y);
 end;
 
-procedure TSourceNotebook.HintTimer(Sender: TObject);
-var
-  MousePos: TPoint;
-  AControl: TControl;
-begin
-  FMouseHintTimer.Enabled := False;
-  FMouseHintTimer.AutoEnabled := False;
-  if not IsVisible then exit;
-  MousePos := Mouse.CursorPos;
-  AControl:=FindLCLControl(MousePos);
-  if (AControl=nil) or (not ContainsControl(AControl)) then exit;
-  if AControl is TSynEdit then
-    ShowSynEditHint(MousePos);
-end;
-
-procedure TSourceNotebook.HideHintTimer(Sender: TObject);
-begin
-  if FHintManager.HintIsVisible then begin
-    if ComparePoints(FHintMousePos, Mouse.CursorPos) <> 0 then begin
-      // TODO: introduce property, to indicate if hint is interactive
-      if FHintManager.HintIsComplex then
-        MaybeHideHint
-      else
-        HideHint;
-    end;
-  end
-  else
-    FMouseHideHintTimer.Enabled := false;
-end;
-
-{------------------------------------------------------------------------------
-  procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject;
-    Msg: Cardinal);
-------------------------------------------------------------------------------}
-procedure TSourceNotebook.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);
-begin
-  if FHintManager.HintIsComplex then
-  begin
-    // TODO: introduce property, to indicate if hint is interactive
-    if FHintManager.PtIsOnHint(Mouse.CursorPos) then begin // ignore any action over Hint
-      if FHintManager.HintWindow.Active then
-        exit;
-      if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg = WM_NCMOUSEMOVE)or
-         ((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) {$ENDIF}
-      then
-        exit;
-    end;
-    if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg = WM_NCMOUSEMOVE){$ENDIF} then begin
-      MaybeHideHint;
-      exit;
-    end;
-  end;
-
-  //debugln('TSourceNotebook.OnApplicationUserInput');
-  // don't hide hint if Sender is a hint window or child control
-  if not FHintManager.SenderIsHintControl(Sender) then
-    HideHint;
-end;
-
 procedure TSourceNotebook.OnApplicationDeactivate(Sender: TObject);
 begin
   if (CodeContextFrm<>nil) then
@@ -8561,11 +8383,11 @@ begin
       end;
 
       if HintStr<>'' then
-        ActivateHint(MousePos,'',HintStr);
+        Manager.ActivateHint(MousePos,'',HintStr);
     end;
   end else begin
     // hint for source
-    if assigned(manager) and Assigned(Manager.OnShowHintForSource) then
+    if Assigned(Manager) and Assigned(Manager.OnShowHintForSource) then
       Manager.OnShowHintForSource(ASrcEdit,EditPos,EditCaret);
   end;
 end;
@@ -9688,6 +9510,8 @@ begin
     IndentToTokenStart:=EditorOpts.CodeTemplateIndentToTokenStart;
   end;
 
+  FMouseHintTimer.Interval:=EditorOpts.AutoDelayInMSec;
+
   if FDefaultCompletionForm <> nil then begin
     FDefaultCompletionForm.LongLineHintTime := EditorOpts.CompletionLongLineHintInMSec;
     FDefaultCompletionForm.LongLineHintType := EditorOpts.CompletionLongLineHintType;
@@ -10035,14 +9859,6 @@ begin
   Result:=false;
 end;
 
-procedure TSourceEditorManager.HideHint;
-var
-  i: Integer;
-begin
-  for i := 0 to SourceWindowCount - 1 do
-    SourceWindows[i].HideHint;
-end;
-
 procedure TSourceEditorManager.OnIdle(Sender: TObject; var Done: Boolean);
 var
   SrcEdit: TSourceEditor;
@@ -10085,6 +9901,28 @@ end;
 procedure TSourceEditorManager.OnUserInput(Sender: TObject; Msg: Cardinal);
 begin
   CodeToolsToSrcEditTimer.Enabled:=true;
+  // Hints
+  if FHints.HintIsComplex then
+  begin
+    // TODO: introduce property, to indicate if hint is interactive
+    if FHints.PtIsOnHint(Mouse.CursorPos) then begin // ignore any action over Hint
+      if FHints.HintWindow.Active then
+        exit;
+      if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg = WM_NCMOUSEMOVE)or
+         ((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) {$ENDIF}
+      then
+        exit;
+    end;
+    if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg = WM_NCMOUSEMOVE){$ENDIF} then begin
+      MaybeHideHint;
+      exit;
+    end;
+  end;
+
+  //debugln('TSourceEditorManager.OnUserInput');
+  // don't hide hint if Sender is a hint window or child control
+  if not FHints.SenderIsHintControl(Sender) then
+    HideHint;
 end;
 
 procedure TSourceEditorManager.LockAllEditorsInSourceChangeCache;
@@ -10162,6 +10000,124 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TSourceEditorManager.HintTimer(Sender: TObject);
+var
+  MousePos: TPoint;
+  AControl: TControl;
+begin
+  FMouseHintTimer.Enabled := False;
+  FMouseHintTimer.AutoEnabled := False;
+  if not FActiveWindow.IsVisible then exit;
+  MousePos := Mouse.CursorPos;
+  AControl:=FindLCLControl(MousePos);
+  if (AControl=nil) or (not FActiveWindow.ContainsControl(AControl)) then exit;
+  if AControl is TSynEdit then
+    FActiveWindow.ShowSynEditHint(MousePos);
+end;
+
+procedure TSourceEditorManager.HideHintTimer(Sender: TObject);
+begin
+  if FHints.HintIsVisible then begin
+    if ComparePoints(FHintMousePos, Mouse.CursorPos) <> 0 then begin
+      // TODO: introduce property, to indicate if hint is interactive
+      if FHints.HintIsComplex then
+        MaybeHideHint
+      else
+        HideHint;
+    end;
+  end
+  else
+    FMouseHideHintTimer.Enabled := false;
+end;
+
+procedure TSourceEditorManager.ActivateHint(const ScreenPos: TPoint;
+  const BaseURL, TheHint: string);
+begin
+  if csDestroying in ComponentState then exit;
+  FHintMousePos := Mouse.CursorPos;
+  FHints.BaseURL := BaseURL;
+  if FHints.ShowHint(ScreenPos,TheHint) then
+    FMouseHideHintTimer.Enabled := True;
+end;
+
+procedure TSourceEditorManager.HideHint;
+begin
+  //DebugLn(['TSourceEditorManager.HideHint ']);
+  if FMouseHintTimer<>nil then
+  begin
+    FMouseHintTimer.AutoEnabled := false;
+    FMouseHintTimer.Enabled:=false;
+  end;
+  if FMouseHideHintTimer <> nil then
+    FMouseHideHintTimer.Enabled := False;
+  if AutoStartCompletionBoxTimer<>nil then
+    AutoStartCompletionBoxTimer.Enabled:=false;
+  FHints.HideHint;
+end;
+
+procedure TSourceEditorManager.MaybeHideHint;
+const
+  MaxJitter = 3;
+var
+  Cur: TPoint;
+  OkX, OkY: Boolean;
+  hw: THintWindow;
+begin
+  FMouseHideHintTimer.Enabled := False;
+  if FHints.HintIsVisible then begin
+    hw := FHints.HintWindow;
+    Cur := Mouse.CursorPos; // Desktop coordinates
+    OkX := ( (FHintMousePos.x <= hw.Left) and
+             (Cur.x > FHintMousePos.x) and (Cur.x <= hw.Left + hw.Width)
+           ) or
+           ( (FHintMousePos.x >= hw.Left + hw.Width) and
+             (Cur.x < FHintMousePos.x) and (Cur.x >= hw.Left)
+           ) or
+           ( (Cur.x >= hw.Left) and (Cur.x <= hw.Left + hw.Width) );
+    OkY := ( (FHintMousePos.y <= hw.Top) and
+             (Cur.y > FHintMousePos.y) and (Cur.y <= hw.Top + hw.Height)
+           ) or
+           ( (FHintMousePos.y >= hw.Top + hw.Height) and
+             (Cur.y < FHintMousePos.y) and (Cur.y >= hw.Top)
+           ) or
+           ( (Cur.y >= hw.Top) and (Cur.y <= hw.Top + hw.Height) );
+
+    if OkX then FHintMousePos.x := Cur.x;
+    if OkY then FHintMousePos.y := Cur.y;
+
+
+    OkX := OkX or
+           ( (FHintMousePos.x <= hw.Left + MaxJitter) and
+             (Cur.x > FHintMousePos.x - MaxJitter) and (Cur.x <= hw.Left + hw.Width + MaxJitter)
+           ) or
+           ( (FHintMousePos.x >= hw.Left + hw.Width - MaxJitter) and
+             (Cur.x < FHintMousePos.x + MaxJitter) and (Cur.x >= hw.Left - MaxJitter)
+           );
+    OkY := OkY or
+           ( (FHintMousePos.y <= hw.Top + MaxJitter) and
+             (Cur.y > FHintMousePos.y - MaxJitter) and (Cur.y <= hw.Top + hw.Height + MaxJitter)
+           ) or
+           ( (FHintMousePos.y >= hw.Top + hw.Height - MaxJitter) and
+             (Cur.y < FHintMousePos.y + MaxJitter) and (Cur.y >= hw.Top - MaxJitter)
+           );
+
+    if (OkX and OkY) then begin
+      FMouseHideHintTimer.Enabled := True;
+      exit;
+    end;
+  end;
+  HideHint;
+end;
+
+procedure TSourceEditorManager.UpdateHintTimer;
+begin
+  with EditorOpts do
+    if (MainIDEInterface.ToolStatus=itDebugger) then
+      FMouseHintTimer.AutoEnabled := AutoToolTipExprEval or AutoToolTipSymbTools
+    else
+      FMouseHintTimer.AutoEnabled := AutoToolTipSymbTools;
 end;
 
 procedure TSourceEditorManager.OnCodeTemplateTokenNotFound(Sender: TObject;
@@ -10397,6 +10353,28 @@ begin
   SourceEditorMarks.ExtToolsMarks.OnGetSynEditOfFile:=@OnSourceMarksGetSynEdit;
   {$ENDIF}
 
+  // HintWindow
+  FHints := TIDEHintWindowManager.Create;
+  FHints.WindowName := Self.Name+'_HintWindow';
+  FHints.HideInterval := 4000;
+  // HintTimer
+  FMouseHintTimer := TIdleTimer.Create(Self);
+  with FMouseHintTimer do begin
+    Name := Self.Name+'_MouseHintTimer';
+    Interval := EditorOpts.AutoDelayInMSec;
+    Enabled := False;
+    AutoEnabled := False;
+    OnTimer := @HintTimer;
+  end;
+  // Track mouse movements outside the IDE, if hint is visible
+  FMouseHideHintTimer := TTimer.Create(Self);
+  with FMouseHideHintTimer do begin
+    Name := Self.Name+'_MouseHintHideTimer';
+    Interval := 500;
+    Enabled := False;
+    OnTimer := @HideHintTimer;
+  end;
+
   // code templates
   FCodeTemplateModul:=TSynEditAutoComplete.Create(Self);
   with FCodeTemplateModul do begin
@@ -10426,6 +10404,9 @@ end;
 
 destructor TSourceEditorManager.Destroy;
 begin
+  FreeAndNil(FMouseHideHintTimer);
+  FreeAndNil(FMouseHintTimer);
+  FreeAndNil(FHints);
   SourceEditorMarks.OnAction := nil;
   Application.RemoveAllHandlersOfObject(Self);
   // aWordCompletion is released in InternalFinal

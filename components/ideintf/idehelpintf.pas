@@ -169,6 +169,7 @@ type
     function HintIsVisible: boolean;
     function ShowHint(ScreenPos: TPoint; TheHint: string): boolean;
     procedure HideHint;
+    procedure HideIfVisible;
   public
     property BaseURL: string read FBaseURL write FBaseURL;
     property Flags: TIDEHTMLControlFlags read FFlags write FFlags;
@@ -344,6 +345,12 @@ end;
 procedure THintWindowManager.HideHint;
 begin
   if Assigned(FHintWindow) then
+    FHintWindow.Visible := False;
+end;
+
+procedure THintWindowManager.HideIfVisible;
+begin
+  if HintIsVisible then
     FHintWindow.Visible := False;
 end;
 
