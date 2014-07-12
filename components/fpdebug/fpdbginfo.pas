@@ -211,8 +211,6 @@ type
     property Member[AIndex: Int64]: TFpDbgValue read GetMember;
     property MemberByName[AIndex: String]: TFpDbgValue read GetMemberByName; // Includes inheritance
     //  For Arrays (TODO pointers) only, the values stored in the array
-    property MemberCountEx[AIndex: Array of Int64]: Integer read GetMemberCountEx;
-    property MemberEx[AIndex: Array of Int64]: TFpDbgValue read GetMemberEx;
     property IndexTypeCount: Integer read GetIndexTypeCount;
     property IndexType[AIndex: Integer]: TFpDbgSymbol read GetIndexType;
 
