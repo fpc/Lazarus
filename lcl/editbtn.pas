@@ -1792,7 +1792,7 @@ end;
 procedure TCustomControlFilterEdit.FormActivate(Sender: TObject);
 begin
   fJustActivated:=fParentForm.ActiveControl=Self.FEdit;
-  if fParentForm.ActiveControl=Self.FEdit then
+  if fJustActivated then
     Filter:=Text;
 end;
 
