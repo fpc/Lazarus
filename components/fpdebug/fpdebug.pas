@@ -13,7 +13,7 @@ uses
   FpImgReaderMachoFile, FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, 
   FpdMemoryTools, FpErrorMessages, FPDbgController, FpDbgDwarfVerbosePrinter, 
   FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, fpDbgSymTableContext, 
-  fpDbgSymTable, FpDbgLinuxClasses, FpDbgLinuxExtra, LazarusPackageIntf;
+  fpDbgSymTable, LazarusPackageIntf;
 
 implementation
 
