@@ -25,6 +25,8 @@ const
   PTRACE_SETREGS                               = 13;
   PTRACE_GETFPREGS                             = 14;
   PTRACE_SETFPREGS                             = 15;
+  PTRACE_GETREGSET                             = $4204;
+  PTRACE_SETREGSET                             = $4205;
 {$endif linux}
   PTRACE_ATTACH                                = 16;
 

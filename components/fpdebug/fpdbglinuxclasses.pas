@@ -74,7 +74,7 @@ type
     start_stack : qword;
     signal : int64;
     reserved : longint;
-//  case a: integer of
+//  case integer of
 //    0: (
           u_ar0 : ^user_regs_struct32;
           __u_ar0_word : qword;
@@ -84,6 +84,14 @@ type
     magic : qword;
     u_comm : array[0..31] of char;
     u_debugreg : array[0..7] of qword;
+  end;
+
+  TUserRegs32 = array[0..26] of cuint32;
+  TUserRegs64 = array[0..26] of cuint64;
+  TUserRegs = record
+    case integer of
+      0: (regs32: TUserRegs32);
+      1: (regs64: TUserRegs64);
   end;
 
   user_regs_struct32 = record
@@ -106,14 +114,67 @@ type
     xss: cuint32;
   end;
 
+const
+  R15      = 0;
+  R14      = 1;
+  R13      = 2;
+  R12      = 3;
+  RBP      = 4;
+  RBX      = 5;
+  R11      = 6;
+  R10      = 7;
+  R9       = 8;
+  R8       = 9;
+  RAX      = 10;
+  RCX      = 11;
+  RDX      = 12;
+  RSI      = 13;
+  RDI      = 14;
+  ORIG_RAX = 15;
+  RIP      = 16;
+  CS       = 17;
+  EFLAGS   = 18;
+  RSP      = 19;
+  SS       = 20;
+  FS_BASE  = 21;
+  GS_BASE  = 22;
+  DS       = 23;
+  ES       = 24;
+  FS       = 25;
+  GS       = 26;
+
+  EBX      = 0;
+  ECX      = 1;
+  EDX      = 2;
+  ESI      = 3;
+  EDI      = 4;
+  EBP      = 5;
+  EAX      = 6;
+  XDS      = 7;
+  XES      = 8;
+  XFS      = 9;
+  XGS      = 10;
+  ORIG_EAX = 11;
+  EIP      = 12;
+  XCS      = 13;
+  EFL      = 14;
+  UESP     = 15;
+  XSS      = 16;
+
+  NT_PRSTATUS    = 1;
+  NT_PRFPREG     = 2;
+  NT_PRPSINFO    = 3;
+  NT_TASKSTRUCT  = 4;
+  NT_AUXV        = 6;
+  NT_X86_XSTATE  = $202;
+
 type
 
   { TDbgLinuxThread }
 
   TDbgLinuxThread = class(TDbgThread)
   private
-    FUserRegsStruct32: user_regs_struct32;
-    FUserRegsStruct64: user_regs_struct64;
+    FUserRegs: TUserRegs;
     FUserRegsChanged: boolean;
     function ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
     function WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
@@ -229,19 +290,14 @@ end;
 
 function TDbgLinuxThread.ReadThreadState: boolean;
 var
-  e: integer;
+  io: iovec;
 begin
   result := true;
-  errno:=0;
-  if Process.Mode=dm32 then
-    fpPTrace(PTRACE_GETREGS, Process.ProcessID, nil, @FUserRegsStruct32)
-  else
-    fpPTrace(PTRACE_GETREGS, Process.ProcessID, nil, @FUserRegsStruct64);
-
-  e := fpgeterrno;
-  if e <> 0 then
+  io.iov_base:=@(FUserRegs.regs32[0]);
+  io.iov_len:= sizeof(FUserRegs);
+  if fpPTrace(PTRACE_GETREGSET, Process.ProcessID, pointer(PtrUInt(NT_PRSTATUS)), @io) <> 0 then
     begin
-    log('Failed to read thread registers from processid '+inttostr(Process.ProcessID)+'. Errcode: '+inttostr(e));
+    log('Failed to read thread registers from processid '+inttostr(Process.ProcessID)+'. Errcode: '+inttostr(fpgeterrno));
     result := false;
     end;
   FUserRegsChanged:=false;
@@ -253,9 +309,9 @@ begin
   result := true;
 
   if Process.Mode=dm32 then
-    Dec(FUserRegsStruct32.eip)
+    Dec(FUserRegs.regs32[eip])
   else
-    Dec(FUserRegsStruct64.rip);
+    Dec(FUserRegs.regs64[rip]);
   FUserRegsChanged:=true;
 end;
 
@@ -320,18 +376,16 @@ end;
 
 procedure TDbgLinuxThread.BeforeContinue;
 var
-  e: integer;
+  io: iovec;
 begin
   if FUserRegsChanged then
     begin
-    if Process.Mode=dm32 then
-      fpPTrace(PTRACE_SETREGS, Process.ProcessID, nil, @FUserRegsStruct32)
-    else
-      fpPTrace(PTRACE_SETREGS, Process.ProcessID, nil, @FUserRegsStruct64);
-    e := fpgeterrno;
-    if e <> 0 then
+    io.iov_base:=@(FUserRegs.regs64[0]);
+    io.iov_len:= sizeof(FUserRegs);
+
+    if fpPTrace(PTRACE_SETREGSET, Process.ProcessID, pointer(PtrUInt(NT_PRSTATUS)), @io) <> 0 then
       begin
-      log('Failed to set thread registers. Errcode: '+inttostr(e));
+      log('Failed to set thread registers. Errcode: '+inttostr(fpgeterrno));
       end;
     FUserRegsChanged:=false;
     end;
@@ -339,52 +393,52 @@ end;
 
 procedure TDbgLinuxThread.LoadRegisterValues;
 begin
-  if Process.Mode=dm32 then with FUserRegsStruct32 do
+  if Process.Mode=dm32 then
   begin
-    FRegisterValueList.DbgRegisterAutoCreate['eax'].SetValue(eax, IntToStr(eax),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['ecx'].SetValue(ecx, IntToStr(ecx),4,1);
-    FRegisterValueList.DbgRegisterAutoCreate['edx'].SetValue(edx, IntToStr(edx),4,2);
-    FRegisterValueList.DbgRegisterAutoCreate['ebx'].SetValue(ebx, IntToStr(ebx),4,3);
-    FRegisterValueList.DbgRegisterAutoCreate['esp'].SetValue(esp, IntToStr(esp),4,4);
-    FRegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(ebp, IntToStr(ebp),4,5);
-    FRegisterValueList.DbgRegisterAutoCreate['esi'].SetValue(esi, IntToStr(esi),4,6);
-    FRegisterValueList.DbgRegisterAutoCreate['edi'].SetValue(edi, IntToStr(edi),4,7);
-    FRegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(eip, IntToStr(eip),4,8);
+    FRegisterValueList.DbgRegisterAutoCreate['eax'].SetValue(FUserRegs.regs32[eax], IntToStr(FUserRegs.regs32[eax]),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['ecx'].SetValue(FUserRegs.regs32[ecx], IntToStr(FUserRegs.regs32[ecx]),4,1);
+    FRegisterValueList.DbgRegisterAutoCreate['edx'].SetValue(FUserRegs.regs32[edx], IntToStr(FUserRegs.regs32[edx]),4,2);
+    FRegisterValueList.DbgRegisterAutoCreate['ebx'].SetValue(FUserRegs.regs32[ebx], IntToStr(FUserRegs.regs32[ebx]),4,3);
+    FRegisterValueList.DbgRegisterAutoCreate['esp'].SetValue(FUserRegs.regs32[edi], IntToStr(FUserRegs.regs32[edi]),4,4);
+    FRegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(FUserRegs.regs32[ebp], IntToStr(FUserRegs.regs32[ebp]),4,5);
+    FRegisterValueList.DbgRegisterAutoCreate['esi'].SetValue(FUserRegs.regs32[esi], IntToStr(FUserRegs.regs32[esi]),4,6);
+    FRegisterValueList.DbgRegisterAutoCreate['edi'].SetValue(FUserRegs.regs32[edi], IntToStr(FUserRegs.regs32[edi]),4,7);
+    FRegisterValueList.DbgRegisterAutoCreate['eip'].SetValue(FUserRegs.regs32[eip], IntToStr(FUserRegs.regs32[EIP]),4,8);
 
-    FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(eflags);
+    FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(FUserRegs.regs32[eflags]);
 
-    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(xcs, IntToStr(xcs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(xss, IntToStr(xss),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(xds, IntToStr(xds),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(xes, IntToStr(xes),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(xfs, IntToStr(xfs),4,0);
-    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(xgs, IntToStr(xgs),4,0);
-  end else with FUserRegsStruct64 do
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(FUserRegs.regs32[xcs], IntToStr(FUserRegs.regs32[xcs]),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['ss'].SetValue(FUserRegs.regs32[xss], IntToStr(FUserRegs.regs32[xss]),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['ds'].SetValue(FUserRegs.regs32[xds], IntToStr(FUserRegs.regs32[xds]),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['es'].SetValue(FUserRegs.regs32[xes], IntToStr(FUserRegs.regs32[xes]),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(FUserRegs.regs32[xfs], IntToStr(FUserRegs.regs32[xfs]),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(FUserRegs.regs32[xgs], IntToStr(FUserRegs.regs32[xgs]),4,0);
+  end else
     begin
-    FRegisterValueList.DbgRegisterAutoCreate['rax'].SetValue(rax, IntToStr(rax),8,0);
-    FRegisterValueList.DbgRegisterAutoCreate['rbx'].SetValue(rbx, IntToStr(rbx),8,3);
-    FRegisterValueList.DbgRegisterAutoCreate['rcx'].SetValue(rcx, IntToStr(rcx),8,2);
-    FRegisterValueList.DbgRegisterAutoCreate['rdx'].SetValue(rdx, IntToStr(rdx),8,1);
-    FRegisterValueList.DbgRegisterAutoCreate['rsi'].SetValue(rsi, IntToStr(rsi),8,4);
-    FRegisterValueList.DbgRegisterAutoCreate['rdi'].SetValue(rdi, IntToStr(rdi),8,5);
-    FRegisterValueList.DbgRegisterAutoCreate['rbp'].SetValue(rbp, IntToStr(rbp),8,6);
-    FRegisterValueList.DbgRegisterAutoCreate['rsp'].SetValue(rsp, IntToStr(rsp),8,7);
+    FRegisterValueList.DbgRegisterAutoCreate['rax'].SetValue(FUserRegs.regs64[rax], IntToStr(FUserRegs.regs64[rax]),8,0);
+    FRegisterValueList.DbgRegisterAutoCreate['rbx'].SetValue(FUserRegs.regs64[rbx], IntToStr(FUserRegs.regs64[rbx]),8,3);
+    FRegisterValueList.DbgRegisterAutoCreate['rcx'].SetValue(FUserRegs.regs64[rcx], IntToStr(FUserRegs.regs64[rcx]),8,2);
+    FRegisterValueList.DbgRegisterAutoCreate['rdx'].SetValue(FUserRegs.regs64[rdx], IntToStr(FUserRegs.regs64[rdx]),8,1);
+    FRegisterValueList.DbgRegisterAutoCreate['rsi'].SetValue(FUserRegs.regs64[rsi], IntToStr(FUserRegs.regs64[rsi]),8,4);
+    FRegisterValueList.DbgRegisterAutoCreate['rdi'].SetValue(FUserRegs.regs64[rdi], IntToStr(FUserRegs.regs64[rdi]),8,5);
+    FRegisterValueList.DbgRegisterAutoCreate['rbp'].SetValue(FUserRegs.regs64[rbp], IntToStr(FUserRegs.regs64[rbp]),8,6);
+    FRegisterValueList.DbgRegisterAutoCreate['rsp'].SetValue(FUserRegs.regs64[rsp], IntToStr(FUserRegs.regs64[rsp]),8,7);
 
-    FRegisterValueList.DbgRegisterAutoCreate['r8'].SetValue(r8, IntToStr(r8),8,8);
-    FRegisterValueList.DbgRegisterAutoCreate['r9'].SetValue(r9, IntToStr(r9),8,9);
-    FRegisterValueList.DbgRegisterAutoCreate['r10'].SetValue(r10, IntToStr(r10),8,10);
-    FRegisterValueList.DbgRegisterAutoCreate['r11'].SetValue(r11, IntToStr(r11),8,11);
-    FRegisterValueList.DbgRegisterAutoCreate['r12'].SetValue(r12, IntToStr(r12),8,12);
-    FRegisterValueList.DbgRegisterAutoCreate['r13'].SetValue(r13, IntToStr(r13),8,13);
-    FRegisterValueList.DbgRegisterAutoCreate['r14'].SetValue(r14, IntToStr(r14),8,14);
-    FRegisterValueList.DbgRegisterAutoCreate['r15'].SetValue(r15, IntToStr(r15),8,15);
+    FRegisterValueList.DbgRegisterAutoCreate['r8'].SetValue(FUserRegs.regs64[r8], IntToStr(FUserRegs.regs64[r8]),8,8);
+    FRegisterValueList.DbgRegisterAutoCreate['r9'].SetValue(FUserRegs.regs64[r9], IntToStr(FUserRegs.regs64[r9]),8,9);
+    FRegisterValueList.DbgRegisterAutoCreate['r10'].SetValue(FUserRegs.regs64[r10], IntToStr(FUserRegs.regs64[r10]),8,10);
+    FRegisterValueList.DbgRegisterAutoCreate['r11'].SetValue(FUserRegs.regs64[r11], IntToStr(FUserRegs.regs64[r11]),8,11);
+    FRegisterValueList.DbgRegisterAutoCreate['r12'].SetValue(FUserRegs.regs64[r12], IntToStr(FUserRegs.regs64[r12]),8,12);
+    FRegisterValueList.DbgRegisterAutoCreate['r13'].SetValue(FUserRegs.regs64[r13], IntToStr(FUserRegs.regs64[r13]),8,13);
+    FRegisterValueList.DbgRegisterAutoCreate['r14'].SetValue(FUserRegs.regs64[r14], IntToStr(FUserRegs.regs64[r14]),8,14);
+    FRegisterValueList.DbgRegisterAutoCreate['r15'].SetValue(FUserRegs.regs64[r15], IntToStr(FUserRegs.regs64[r15]),8,15);
 
-    FRegisterValueList.DbgRegisterAutoCreate['rip'].SetValue(rip, IntToStr(rip),8,16);
-    FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(eflags);
+    FRegisterValueList.DbgRegisterAutoCreate['rip'].SetValue(FUserRegs.regs64[rip], IntToStr(FUserRegs.regs64[rip]),8,16);
+    FRegisterValueList.DbgRegisterAutoCreate['eflags'].Setx86EFlagsValue(FUserRegs.regs64[eflags]);
 
-    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(cs, IntToStr(cs),8,43);
-    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(fs, IntToStr(fs),8,46);
-    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(gs, IntToStr(gs),8,47);
+    FRegisterValueList.DbgRegisterAutoCreate['cs'].SetValue(FUserRegs.regs64[cs], IntToStr(FUserRegs.regs64[cs]),8,43);
+    FRegisterValueList.DbgRegisterAutoCreate['fs'].SetValue(FUserRegs.regs64[fs], IntToStr(FUserRegs.regs64[fs]),8,46);
+    FRegisterValueList.DbgRegisterAutoCreate['gs'].SetValue(FUserRegs.regs64[gs], IntToStr(FUserRegs.regs64[gs]),8,47);
   end;
   FRegisterValueListValid:=true;
 end;
@@ -572,25 +626,25 @@ end;
 function TDbgLinuxProcess.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
   if Mode=dm32 then
-    result := TDbgLinuxThread(FMainThread).FUserRegsStruct32.eip
+    result := TDbgLinuxThread(FMainThread).FUserRegs.regs32[eip]
   else
-    result := TDbgLinuxThread(FMainThread).FUserRegsStruct64.rip;
+    result := TDbgLinuxThread(FMainThread).FUserRegs.regs64[rip];
 end;
 
 function TDbgLinuxProcess.GetStackPointerRegisterValue: TDbgPtr;
 begin
   if Mode=dm32 then
-    result := TDbgLinuxThread(FMainThread).FUserRegsStruct32.esp
+    result := TDbgLinuxThread(FMainThread).FUserRegs.regs32[EDI]
   else
-    result := TDbgLinuxThread(FMainThread).FUserRegsStruct64.rsp;
+    result := TDbgLinuxThread(FMainThread).FUserRegs.regs64[rsp];
 end;
 
 function TDbgLinuxProcess.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
   if Mode=dm32 then
-    result := TDbgLinuxThread(FMainThread).FUserRegsStruct32.ebp
+    result := TDbgLinuxThread(FMainThread).FUserRegs.regs32[ebp]
   else
-    result := TDbgLinuxThread(FMainThread).FUserRegsStruct64.rbp;
+    result := TDbgLinuxThread(FMainThread).FUserRegs.regs64[rbp];
 end;
 
 procedure TDbgLinuxProcess.TerminateProcess;
