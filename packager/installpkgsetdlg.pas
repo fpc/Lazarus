@@ -73,8 +73,9 @@ type
     InstalledFilterEdit: TTreeFilterEdit;
     UninstallButton: TBitBtn;
     procedure AddToInstallButtonClick(Sender: TObject);
-    function AvailableFilterEditGetImageIndex(Str: String; Data: TObject;
+    function FilterEditGetImageIndex(Str: String; Data: TObject;
       var AIsEnabled: Boolean): Integer;
+    procedure InstallTreeViewKeyPress(Sender: TObject; var Key: char);
     procedure LPKParsingTimerTimer(Sender: TObject);
     procedure OnAllLPKParsed(Sender: TObject);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
@@ -222,8 +223,6 @@ begin
   LPKInfoCache.StartLPKReaderWithAllAvailable;
 
   UpdateButtonStates;
-
-  ActiveControl:=AvailableFilterEdit;
 end;
 
 procedure TInstallPkgSetDialog.SaveAndRebuildButtonClick(Sender: TObject);
@@ -298,10 +297,16 @@ begin
   AddToInstall;
 end;
 
-function TInstallPkgSetDialog.AvailableFilterEditGetImageIndex(Str: String;
+function TInstallPkgSetDialog.FilterEditGetImageIndex(Str: String;
   Data: TObject; var AIsEnabled: Boolean): Integer;
 begin
   Result:=0;
+end;
+
+procedure TInstallPkgSetDialog.InstallTreeViewKeyPress(Sender: TObject; var Key: char);
+begin
+  if Key = char(VK_RETURN) then
+    AddToUninstall;
 end;
 
 procedure TInstallPkgSetDialog.LPKParsingTimerTimer(Sender: TObject);
@@ -477,8 +482,7 @@ var
   i: Integer;
 begin
   for i:=0 to NewInstalledPackages.Count-1 do
-    if SysUtils.CompareText(TLazPackageID(NewInstalledPackages[i]).Name,PkgName)=0
-    then
+    if SysUtils.CompareText(TLazPackageID(NewInstalledPackages[i]).Name,PkgName)=0 then
       exit(true);
   Result:=false;
 end;
@@ -543,7 +547,7 @@ begin
     finally
       LPKInfoCache.LeaveCritSection;
     end;
-    // fill tree view
+    // fill tree view through FilterEdit
     FilteredBranch := AvailableFilterEdit.GetBranch(Nil); // All items are top level.
     for i:=0 to List.Count-1 do
       FilteredBranch.AddNodeData(List[i],nil);
@@ -555,39 +559,30 @@ end;
 
 procedure TInstallPkgSetDialog.UpdateNewInstalledPackages;
 var
-  s: String;
   NewPackageID: TLazPackageID;
-  i: Integer;
-  sl: TStringList;
-  TVNode: TTreeNode;
   APackage: TLazPackage;
-  ImgIndex: LongInt;
+  FilteredBranch: TTreeFilterBranch;
+  List: TStringList;
+  i: Integer;
 begin
-  sl:=TStringList.Create;
-  for i:=0 to FNewInstalledPackages.Count-1 do begin
-    NewPackageID:=TLazPackageID(FNewInstalledPackages[i]);
-    APackage:=PackageGraph.FindPackageWithName(NewPackageID.Name,nil);
-    if APackage<>nil then
-      NewPackageID:=APackage;
-    s:=NewPackageID.IDAsString;
-    sl.AddObject(s,NewPackageID);
-  end;
-  sl.Sort;
-  InstallTreeView.BeginUpdate;
-  InstallTreeView.Items.Clear;
-  for i:=0 to sl.Count-1 do begin
-    TVNode:=InstallTreeView.Items.Add(nil,sl[i]);
-    NewPackageID:=TLazPackageID(sl.Objects[i]);
-    ImgIndex:=ImgIndexInstallPackage;
-    if NewPackageID is TLazPackage then begin
-      APackage:=TLazPackage(NewPackageID);
-      ImgIndex:=GetPkgImgIndex(APackage.Installed,true);
+  List:=TStringList.Create;
+  try
+    for i:=0 to FNewInstalledPackages.Count-1 do begin
+      NewPackageID:=TLazPackageID(FNewInstalledPackages[i]);
+      APackage:=PackageGraph.FindPackageWithName(NewPackageID.Name,nil);
+      if APackage<>nil then
+        NewPackageID:=APackage;
+      List.Add(NewPackageID.IDAsString);
     end;
-    TVNode.ImageIndex:=ImgIndex;
-    TVNode.SelectedIndex:=ImgIndex;
+    List.Sort;
+    // fill tree view through FilterEdit
+    FilteredBranch := InstalledFilterEdit.GetBranch(Nil); // All items are top level.
+    for i:=0 to List.Count-1 do
+      FilteredBranch.AddNodeData(List[i],nil);
+  finally
+    List.Free;
   end;
-  InstallTreeView.EndUpdate;
-  sl.Free;
+  InstalledFilterEdit.InvalidateFilter;
 end;
 
 procedure TInstallPkgSetDialog.PkgInfosChanged;
