@@ -1395,6 +1395,8 @@ begin
 
   FDbgController.SendEvents(Cont);
 
+  FQuickPause:=false;
+
   if Cont then
     begin
     SetState(dsRun);
