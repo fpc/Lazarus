@@ -623,12 +623,14 @@ begin
 
     sleep(100);
     result := TDbgDarwinProcess.Create(AFileName, Pid, -1, AOnLog);
+    TDbgDarwinProcess(result).FProcProcess := AProcess;
   except
-    AProcess.Free;
-    raise;
+    on E: Exception do
+    begin
+      AOnLog(Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]), dllInfo);
+      AProcess.Free;
+    end;
   end;
-
-  TDbgDarwinProcess(result).FProcProcess := AProcess;
 end;
 
 function TDbgDarwinProcess.ReadData(const AAdress: TDbgPtr;

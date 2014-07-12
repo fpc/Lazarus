@@ -504,12 +504,14 @@ begin
 
     sleep(100);
     result := TDbgLinuxProcess.Create(AFileName, Pid, -1, AOnLog);
+    TDbgLinuxProcess(result).FProcProcess := AProcess;
   except
-    AProcess.Free;
-    raise;
+    on E: Exception do
+    begin
+      AOnLog(Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]), dllInfo);
+      AProcess.Free;
+    end;
   end;
-
-  TDbgLinuxProcess(result).FProcProcess := AProcess;
 end;
 
 function TDbgLinuxProcess.ReadData(const AAdress: TDbgPtr;
