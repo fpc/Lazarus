@@ -949,7 +949,9 @@ begin
   inherited LoadInfo;
 
   if DbgInfo.HasInfo then
-    FSymInstances.Add(Self);
+    FSymInstances.Add(Self)
+  else
+    Log('No Dwarf-debug information available. The debugger will not function properly.',dllInfo);
 end;
 
 function TDbgProcess.GetLastEventProcessIdentifier: THandle;
