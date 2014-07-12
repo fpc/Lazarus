@@ -624,7 +624,7 @@ begin
     else
       begin
       p := @CodeBin;
-      FpDbgDisasX86.Disassemble(p, GMode=dm64, ADump, AStatement);
+      FpDbgDisasX86.Disassemble(p, TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.Mode=dm64, ADump, AStatement);
 
       Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindSymbol(AnAddr);
 
