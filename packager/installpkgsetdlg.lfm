@@ -13,6 +13,7 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
   OnCreate = InstallPkgSetDialogCreate
   OnDestroy = InstallPkgSetDialogDestroy
   OnResize = InstallPkgSetDialogResize
+  OnShow = InstallPkgSetDialogShow
   Position = poScreenCenter
   LCLVersion = '1.3'
   object InstallPkgGroupBox: TGroupBox
@@ -167,7 +168,6 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
       Height = 25
       Top = 3
       Width = 255
-      UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]

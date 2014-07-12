@@ -92,6 +92,7 @@ type
     procedure InstallTreeViewDblClick(Sender: TObject);
     procedure InstallPkgSetDialogCreate(Sender: TObject);
     procedure InstallPkgSetDialogDestroy(Sender: TObject);
+    procedure InstallPkgSetDialogShow(Sender: TObject);
     procedure InstallPkgSetDialogResize(Sender: TObject);
     procedure InstallTreeViewSelectionChanged(Sender: TObject);
     procedure SaveAndExitButtonClick(Sender: TObject);
@@ -223,6 +224,21 @@ begin
   LPKInfoCache.StartLPKReaderWithAllAvailable;
 
   UpdateButtonStates;
+end;
+
+procedure TInstallPkgSetDialog.InstallPkgSetDialogDestroy(Sender: TObject);
+begin
+  LPKInfoCache.EndLPKReader;
+  LPKInfoCache.RemoveOnQueueEmpty(@OnAllLPKParsed);
+  ClearNewInstalledPackages;
+  FreeAndNil(FNewInstalledPackages);
+  IdleConnected:=false;
+end;
+
+procedure TInstallPkgSetDialog.InstallPkgSetDialogShow(Sender: TObject);
+begin
+  InstalledFilterEdit.Filter:='';    // (filter) - text is shown after this.
+  AvailableFilterEdit.Filter:='';
 end;
 
 procedure TInstallPkgSetDialog.SaveAndRebuildButtonClick(Sender: TObject);
@@ -396,15 +412,6 @@ procedure TInstallPkgSetDialog.AvailableTreeViewKeyPress(Sender: TObject; var Ke
 begin
   if Key = char(VK_RETURN) then
     AddToInstall;
-end;
-
-procedure TInstallPkgSetDialog.InstallPkgSetDialogDestroy(Sender: TObject);
-begin
-  LPKInfoCache.EndLPKReader;
-  LPKInfoCache.RemoveOnQueueEmpty(@OnAllLPKParsed);
-  ClearNewInstalledPackages;
-  FreeAndNil(FNewInstalledPackages);
-  IdleConnected:=false;
 end;
 
 procedure TInstallPkgSetDialog.InstallPkgSetDialogResize(Sender: TObject);
