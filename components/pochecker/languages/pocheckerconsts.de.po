@@ -202,7 +202,7 @@ msgstr "&Alle auswählen"
 #: pocheckerconsts.sselectbasictests
 #| msgid "Select &Basic Tests"
 msgid "Select &Basic"
-msgstr "&Basistests auswählen"
+msgstr "&Basistests auswähl."
 
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"

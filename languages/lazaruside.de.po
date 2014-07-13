@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-07 23:06+0100\n"
+"PO-Revision-Date: 2014-07-12 19:24+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -4621,7 +4621,6 @@ msgid "Cannot create file \"%s\""
 msgstr "Kann die Datei \"%s\" nicht anlegen"
 
 #: lazarusidestrconsts.liscannotexecute
-#, fuzzy
 #| msgid "can not execute \"%s\""
 msgid "cannot execute \"%s\""
 msgstr "kann \"%s\" nicht ausführen"
@@ -4632,7 +4631,7 @@ msgstr "Kann %s nicht finden"
 
 #: lazarusidestrconsts.liscannotfindexecutable
 msgid "cannot find executable \"%s\""
-msgstr ""
+msgstr "kann ausführbare Datei \"%s\" nicht finden"
 
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 #| msgid "Cannot find lazarus starter:%s%s"
@@ -6341,7 +6340,7 @@ msgstr "Konflikt"
 
 #: lazarusidestrconsts.lisconflictdetected
 msgid "Conflict detected"
-msgstr ""
+msgstr "Konflikt festgestellt"
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -6820,7 +6819,7 @@ msgstr "Anlegen"
 
 #: lazarusidestrconsts.liscreatelocalvariable
 msgid "Create local variable \"%s\""
-msgstr ""
+msgstr "Erzeuge lokale Variable \"%s\""
 
 #: lazarusidestrconsts.liscreatenewpackage
 msgid "(Create new package)"
@@ -8189,7 +8188,6 @@ msgid "Errors"
 msgstr "Fehler"
 
 #: lazarusidestrconsts.liserrors2
-#, fuzzy
 #| msgid ", Errors:%s"
 msgid ", Errors: %s"
 msgstr ", Fehler: %s"
@@ -8295,7 +8293,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
-msgstr ""
+msgstr "ausführbare Datei \"%s\" ist ein Verzeichnis"
 
 #: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
 msgid "executable \"%s\" lacks the permission to run"
@@ -9074,7 +9072,6 @@ msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Hinweis: Prüfen Sie, ob zwei Packages Units mit gleichen Namen enthalten."
 
 #: lazarusidestrconsts.lishints
-#, fuzzy
 #| msgid ", Hints:%s"
 msgid ", Hints: %s"
 msgstr ", Hinweise: %s"
@@ -9703,7 +9700,6 @@ msgid "%s is already part of the Project."
 msgstr "%s ist bereits im Projekt enthalten."
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
-#, fuzzy
 msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "\"%s\" ist als Projektname ungültig.%sBitte wählen Sie einen anderen (z.B. project1.lpi)"
 
@@ -10672,7 +10668,6 @@ msgid "LFM file"
 msgstr "LFM-Datei"
 
 #: lazarusidestrconsts.lislfmfilecontainsinvalidproperties
-#, fuzzy
 msgid "The LFM file contains unknown properties/classes which do not exist in the LCL. They can be replaced or removed."
 msgstr "Die LFM-Datei enthält unbekannte Eigenschaften/Klassen, die in der LCL nicht existieren. Sie können ersetzt oder entfernt werden."
 
@@ -10857,7 +10852,6 @@ msgid "Append to section"
 msgstr "An Ressourcenstring-Abschnitt anhängen"
 
 #: lazarusidestrconsts.lismakeresstrchooseanothername
-#, fuzzy
 msgid "The resourcestring \"%s\" already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgstr "Der Ressourcenstring \"%s\" ist bereits angelegt.%sBitte wählen Sie einen anderen Namen.%sDrücken Sie »Übergehen«, um ihn trotzdem zuzufügen."
 
@@ -11018,7 +11012,6 @@ msgid "Clean up and Build ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenucloseall
-#, fuzzy
 #| msgid "Close A&ll Editor Files"
 msgid "Close A&ll"
 msgstr "A&lle Editorfenster schließen"
@@ -12030,7 +12023,7 @@ msgstr "Fehlende Events"
 
 #: lazarusidestrconsts.lismissingexecutable
 msgid "missing executable \"%s\""
-msgstr ""
+msgstr "fehlende ausführbare Datei \"%s\""
 
 #: lazarusidestrconsts.lismissingidentifiers
 msgid "Missing identifiers"
@@ -13908,7 +13901,6 @@ msgid "The following packages failed to load:"
 msgstr "Die folgenden Packages konnten nicht geladen werden:"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
-#, fuzzy
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "%sDie folgenden Units werden zum Uses-Abschnitt von%s%s zugefügt:%s%s"
 
@@ -13976,7 +13968,6 @@ msgid "There is a FPC unit with the same name as:%s\"%s\" from %s"
 msgstr "Es gibt eine FPC-Unit mit dem selben Namen wie:%s\"%s\" aus %s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyanotherpackagewiththename
-#, fuzzy
 msgid "There is already another package with the name \"%s\".%sConflict package: \"%s\"%sFile: \"%s\""
 msgstr "Es gibt bereits ein Package mit dem Namen \"%s\".%sPackage-Konflikt: \"%s\"%sDatei: \"%s\""
 
@@ -16048,7 +16039,6 @@ msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Das Zielverzeichnis%s\"%s\" ist nicht vorhanden."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, fuzzy
 msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "Es gibt das Zielverzeichnis \"%s\" nicht.%sBitte prüfen Sie den Namen des Projektziels im Menü Projekt > Projekteinstellungen."
 
@@ -16166,7 +16156,6 @@ msgid "The Lazarus directory \"%s\" does not look correct:%s%s"
 msgstr "Das Lazarus-Verzeichnis \"%s\" sieht nicht korrekt aus:%s%s"
 
 #: lazarusidestrconsts.listhelfmlazarusformfilecontainsinvalidpropertiesthis
-#, fuzzy
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the Pascal code manually."
 msgstr "Die LFM-Datei (Lazarus Form) enthält ungültige Eigenschaften. Das bedeutet beispielsweise, daß einige Eigenschaften/Klassen nicht in der aktuellen LCL enthalten sind. Das wird normalerweise behoben, indem diese Eigenschaften aus der LFM-Datei entfernt und der Pascal-Quelltext manuell korrigiert wird."
 
@@ -16179,13 +16168,12 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr "\"make\" hat typischerweise den Namen \"%s\". Es wird für die Erstellung der IDE benötigt. Bitte geben sie den vollständigen Dateipfad an."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-#, fuzzy
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
 msgstr "Die neue Include-Datei befindet sich noch nicht im Include-Suchpfad.%sVerzeichnis hinzufügen %s?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
-msgstr ""
+msgstr "Die neue Unit ist noch nicht im Unit-Suchpfad.%sVerzeichnis %s hinzufügen?"
 
 #: lazarusidestrconsts.listheoldconfigurationwillbeupgraded
 msgid "The old configuration will be upgraded."
@@ -16294,7 +16282,6 @@ msgid "The project must be saved before building%sIf you set the Test Directory 
 msgstr "Das Projekt muß vor dem Kompilieren gesichert werden.%sWenn Sie das Testverzeichnis in den Umgebungseinstellungen setzen,%skönnen Sie neue Projekte erzeugen und sofort kompilieren.%sProjekt speichern?"
 
 #: lazarusidestrconsts.listheprojectusestargetosandcputhesystemppuforthistar
-#, fuzzy
 msgid "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this target was not found in the FPC binary directories.%sMake sure fpc is installed correctly for this target and the fpc.cfg contains the right directories."
 msgstr "Das Projekt nutzt die Ziele OS=%s und CPU=%s.%sDie system.ppu für dieses Ziel wurde nicht in den Binärverzeichnissen von FPC gefunden. %sStellen Sie sicher, daß fpc für diese Zielplattform richtig installiert ist und daß die fpc.cfg die richtigen Verzeichnisangaben enthält."
 
@@ -16307,7 +16294,6 @@ msgid "There are other files in the directory with the same name,%swhich only di
 msgstr "Das Verzeichnis enthält andere Dateien mit demselben Namen,%sdie sich nur in der Schreibung unterscheiden:%s%s%sSoll diese gelöscht werden?"
 
 #: lazarusidestrconsts.listhereisafilewiththesamenameandasimilarextension
-#, fuzzy
 msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
 msgstr "Es gibt eine Datei mit dem gleichen Namen und einer ähnlichen Endung auf dem Datenträger%sVorhandene Datei: %s%sNeue Datei: %s%sProblematische Datei löschen?"
 
@@ -16354,12 +16340,10 @@ msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make 
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
-#, fuzzy
 msgid "There is already a unit with the name \"%s\". Pascal identifiers must be unique."
 msgstr "Es gibt bereits eine Unit mit dem Namen \"%s\". Pascal-Bezeichner müssen eindeutig sein."
 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
-#, fuzzy
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Es gibt schon eine Unit mit dem Namen \"%s\" im Projekt.%sBitte wählen Sie einen anderen Namen."
 
@@ -16372,7 +16356,6 @@ msgid "There must be at least one build mode."
 msgstr "Es muß wenigstens einen Erstellmodus geben."
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
-#, fuzzy
 msgid "The resource class \"%s\" descends from \"%s\". Probably this is a typo for TForm."
 msgstr "Die Ressourcenklasse \"%s\" ist von \"%s\" abgeleitet. Vielleicht ist das ein Schreibfehler anstelle von TForm?"
 
@@ -16437,7 +16420,6 @@ msgid "The unit has this name"
 msgstr "Die Unit heißt"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-#, fuzzy
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "Der Unitdateiname \"%s\" ist nicht in Kleinbuchstaben.%sDer Free-Pascal-Compiler sucht nicht nach allen Schreibweisen. Es wird empfohlen, Dateinamen in Kleinbuchstaben zu verwenden.%sDatei in Kleinbuchstaben umbenennen?"
 
@@ -16450,17 +16432,14 @@ msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr "Die Unit %s wird von anderen Dateien benötigt.%sVerweise automatisch anpassen?"
 
 #: lazarusidestrconsts.listheunititselfhasalreadythenamepascalidentifiersmus
-#, fuzzy
 msgid "The unit itself has already the name \"%s\". Pascal identifiers must be unique."
 msgstr "Die Unit selbst hat schon den Namen \"%s\". Pascal-Bezeichner müssen eindeutig sein."
 
 #: lazarusidestrconsts.listheunitsearchpathofcontainsthesourcedirectoryofpac
-#, fuzzy
 msgid "The unit search path of \"%s\" contains the source directory \"%s\" of package %s"
 msgstr "Der Unitsuchpfad von \"%s\" enthält das Quellverzeichnis \"%s\" des Packages %s."
 
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
-#, fuzzy
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Das Arbeitsverzeichnis \"%s\" fehlt.%sBitte prüfen Sie das Arbeitsverzeichnis im Menü Start > Startparameter."
 
@@ -16477,9 +16456,8 @@ msgid "this help message"
 msgstr "Diese Hilfeanzeige"
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
-#, fuzzy
 msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
-msgstr "Das sieht wie eine Pascal-Datei aus.%sEs wird empfohlen, Dateinamen in Kleinbuchstaben anzugeben, um diverse Probleme auf einige Dateisystemen und mit verschiedenen Compilern aus dem Weg zu gehen.%sIn Kleinbuchstaben umbenennen?"
+msgstr "Das sieht wie eine Pascal-Datei aus.%sEs wird empfohlen, Dateinamen in Kleinbuchstaben anzugeben, um diverse Probleme auf einigen Dateisystemen und mit verschiedenen Compilern aus dem Weg zu gehen.%sIn Kleinbuchstaben umbenennen?"
 
 #: lazarusidestrconsts.listhisprojecthasnomainsourcefile
 msgid "This project has no main source file"
@@ -16490,7 +16468,6 @@ msgid "This project has only the default build mode."
 msgstr "Dieses Projekt besitzt nur den Vorgabe-Erstellmodus."
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, fuzzy
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgstr "Diese Zusammenstellung von Optionen für das Kompilieren von Lazarus wird von dieser Installation nicht unterstützt.%sDas Verzeichnis \"%s\" ist nicht beschreibbar.%sSuchen Sie auf der Lazarus-Webseite nach anderen Möglichkeiten, Lazarus zu installieren."
 
@@ -16836,7 +16813,6 @@ msgid "Search string '%s' not found!"
 msgstr "Suchbegriff »%s« nicht gefunden!"
 
 #: lazarusidestrconsts.lisuethecurre
-#, fuzzy
 msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
 msgstr "Die aktuelle Editorschriftart unterstützt UTF-8 nicht, aber das System scheint das zu tun.%sDas bedeutet, daß Nicht-ASCII-Zeichen möglicherweise falsch angezeigt werden.%sSie sollten in den Editoreinstellungen eine andere Schriftart einstellen."
 
@@ -16900,9 +16876,8 @@ msgid "Unable copy components to clipboard"
 msgstr "Kann Komponente nicht in die Zwischenablage kopieren"
 
 #: lazarusidestrconsts.lisunabletoaddresourceheadercommenttoresourcefile
-#, fuzzy
 msgid "Unable to add resource header comment to resource file %s\"%s\".%sProbably a syntax error."
-msgstr "Kann den den Ressoucen-Header-Kommentar nicht zu der Ressourcendatei %s\"%s\" hinzufügen.%sMöglicherweise ein Syntaxfehler."
+msgstr "Kann den den Ressourcen-Header-Kommentar nicht zu der Ressourcendatei %s\"%s\" hinzufügen.%sMöglicherweise ein Syntaxfehler."
 
 #: lazarusidestrconsts.lisunabletoaddresourcetformdatatoresourcefileprobably
 #, fuzzy
@@ -16953,9 +16928,8 @@ msgid "Unable to convert file \"%s\"%sError: %s"
 msgstr "Kann Datei \"%s\"nicht konvertieren%sFehler: %s"
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
-#, fuzzy
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
-msgstr "Kann die konvertierten Textformulardaten der Datei %s\"%s\"%snicht in einen Binärstream umwandeln. (%s)"
+msgstr "Kann die Textformulardaten der Datei %s\"%s\"%snicht in einen Binärstream umwandeln. (%s)"
 
 #: lazarusidestrconsts.lisunabletocopyfile
 msgid "Unable to copy file"
@@ -17078,7 +17052,6 @@ msgid "Unable to load package \"%s\""
 msgstr "Fehler beim Laden von Package \"%s\""
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
-#, fuzzy
 msgid "Unable to load the component class \"%s\", because it depends on itself."
 msgstr "Kann die Komponentenklasse \"%s\" nicht laden. Sie hängt von sich selbst ab."
 
@@ -17209,7 +17182,7 @@ msgstr "Kann die Datei nicht schreiben"
 
 #: lazarusidestrconsts.lisunabletowritefile2
 msgid "Unable to write file \"%s\"."
-msgstr ""
+msgstr "Kann Datei \"%s\" nicht schreiben."
 
 #: lazarusidestrconsts.lisunabletowritefileerror
 #| msgid "Unable to write file %s%s%s%sError: %s"
@@ -17544,7 +17517,6 @@ msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "Warnung: Unklarer Dateiname gefunden: \"%s\". Quelldatei ist: \"%s\""
 
 #: lazarusidestrconsts.liswarnings
-#, fuzzy
 #| msgid ", Warnings:%s"
 msgid ", Warnings: %s"
 msgstr ", Warnungen: %s"
