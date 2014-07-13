@@ -28,7 +28,7 @@ interface
 uses
   SysUtils, Types, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
   Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer, Themes,
-  LCLClasses, Menus, PopupNotifier, ImgList, contnrs;
+  LCLClasses, Menus, PopupNotifier, ImgList, contnrs, FGL;
 
 type
 
@@ -1138,16 +1138,74 @@ type
 
   { TControlBar }
 
-  TBandPaintOption = (bpoGrabber, bpoFrame);
+  TBandDrawingStyle = (dsNormal, dsGradient);
+  TBandPaintOption = (bpoGrabber, bpoFrame, bpoGradient, bpoRoundRect);
   TBandPaintOptions = set of TBandPaintOption;
+
   TBandDragEvent = procedure (Sender: TObject; Control: TControl; var Drag: Boolean) of object;
   TBandInfoEvent = procedure (Sender: TObject; Control: TControl;
     var Insets: TRect; var PreferredSize, RowCount: Integer) of object;
   TBandMoveEvent = procedure (Sender: TObject; Control: TControl; var ARect: TRect) of object;
   TBandPaintEvent = procedure (Sender: TObject; Control: TControl; Canvas: TCanvas;
     var ARect: TRect; var Options: TBandPaintOptions) of object;
-  //  TCheckDoAgainEvent = function (cbi: TControlBarInfo; const aPos: TPoint; aWidth: Integer): Boolean; of object;
+
   TRowSize = 1..MaxInt;
+
+  TBandMove = (bmNone, bmReady, bmMoving);
+  TCursorDesign = (cdDefault, cdGrabber, cdRestricted);
+
+{ BiDi is Left to Right:
+  +----------------------------------------------------------------------------+
+  | cBandBorder + |cGrabWidth| + cBandBorder + [ Control.Width ] + cBandBorder |
+  +----------------------------------------------------------------------------+
+  |                cFullGrabber                |                                 }
+
+  { TCtrlBand }
+  TCtrlBand = class
+  private
+    FControl: TControl;
+    FControlHeight: Integer;
+    FControlLeft: Integer;
+    FControlTop: Integer;
+    FControlVisible: Boolean;
+    FControlWidth: Integer;
+    FHeight: Integer;
+    FInitLeft: Integer;
+    FInitTop: Integer;
+    FLeft: Integer;
+    FTop: Integer;
+    FVisible: Boolean;
+    FWidth: Integer;
+    function GetBandRect: TRect;
+    function GetBottom: Integer;
+    function GetRight: Integer;
+    procedure SetBandRect(AValue: TRect);
+    procedure SetRight(AValue: Integer);
+  public
+    property BandRect: TRect read GetBandRect write SetBandRect;
+    property Bottom: Integer read GetBottom;
+    property Control: TControl read FControl write FControl;
+    property ControlHeight: Integer read FControlHeight write FControlHeight;
+    property ControlLeft: Integer read FControlLeft write FControlLeft;
+    property ControlTop: Integer read FControlTop write FControlTop;
+    property ControlWidth: Integer read FControlWidth write FControlWidth;
+    property ControlVisible: Boolean read FControlVisible write FControlVisible;
+    property Height: Integer read FHeight write FHeight;
+    property InitLeft: Integer read FInitLeft write FInitLeft;
+    property InitTop: Integer read FInitTop write FInitTop;
+    property Left: Integer read FLeft write FLeft;
+    property Right: Integer read GetRight write SetRight;
+    property Top: Integer read FTop write FTop;
+    property Visible: Boolean read FVisible write FVisible;
+    property Width: Integer read FWidth write FWidth;
+  end;
+
+  { TCtrlBands }
+
+  TCtrlBands = class (specialize TFPGObjectList<TCtrlBand>)
+  public
+    function GetIndex(AControl: TControl): Integer;
+  end;
 
   { TCustomControlBar }
 
@@ -1155,7 +1213,10 @@ type
   private
     FAutoDrag: Boolean;
     FAutoDock: Boolean;
-    FDragControl: TControl;
+    FDrawingStyle: TBandDrawingStyle;
+    FGradientDirection: TGradientDirection;
+    FGradientEndColor: TColor;
+    FGradientStartColor: TColor;
     FPicture: TPicture;
     FRowSize: TRowSize;
     FRowSnap: Boolean;
@@ -1165,39 +1226,91 @@ type
     FOnBandPaint: TBandPaintEvent;
     FOnCanResize: TCanResizeEvent;
     FOnPaint: TNotifyEvent;
+    procedure SetDrawingStyle(AValue: TBandDrawingStyle);
+    procedure SetGradientDirection(AValue: TGradientDirection);
+    procedure SetGradientEndColor(AValue: TColor);
+    procedure SetGradientStartColor(AValue: TColor);
     procedure SetPicture(aValue: TPicture);
+    procedure SetRowSize(AValue: TRowSize);
+  protected const
+    cBandBorderH: SmallInt = 4;
+    cBandBorderV: SmallInt = 2;
+    cGrabWidth: SmallInt = 3;
   protected
-    procedure AlignControls(aControl: TControl; var aRect: TRect); override;
-    function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
-    procedure CreateParams(var aParams: TCreateParams); override;
-    procedure DoBandMove(aControl: TControl; var aRect: TRect); virtual;
-    procedure DoBandPaint(aControl: TControl; aCanvas: TCanvas;
-      var aRect: TRect; var aOptions: TBandPaintOptions); virtual;
-    function DragControl(aControl: TControl; X, Y: Integer;
+    class var cFullGrabber: SmallInt;
+  protected
+    FBands: TCtrlBands;
+    FBandMove: TBandMove;
+    FCursorLock: Boolean;
+    FDefCursor: TCursor;
+    FHoveredBand: TCtrlBand;
+    FInitDrag: TPoint;
+    FInnerBevelWidth: SmallInt;
+    FLockResize: Boolean;
+    FPrevWidth: Integer;
+    FVisiBands: array of TCtrlBand;
+    FVisiBandsEx: array of TCtrlBand;
+    procedure AlignControlToBand(ABand: TCtrlBand; ARightToLeft: Boolean);
+    procedure AlignControlsToBands;
+    function CalcBandHeight(AControl: TControl): Integer;
+    function CalcBandHeightSnapped(AControl: TControl): Integer;
+    function CalcInnerBevelWidth: Integer;
+    function CalcLowestBandBottomPx: Integer;
+    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: Integer;
+      {%H-}WithThemeSpace: Boolean); override;
+    procedure ChangeCursor(ACursor: TCursorDesign);
+    procedure CheckBandsSizeAndVisibility;
+    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
+    procedure CMBorderChanged(var Message: TLMessage); message CM_BORDERCHANGED;
+    procedure CreateWnd; override;
+    procedure DoBandMove(AControl: TControl; var ARect: TRect); virtual;
+    procedure DoBandPaint(AControl: TControl; ACanvas: TCanvas; var ARect: TRect;
+      var AOptions: TBandPaintOptions); virtual;
+    function DragControl(AControl: TControl; X, Y: Integer;
       KeepCapture: Boolean = False): Boolean; virtual;
-    procedure GetControlInfo(aControl: TControl; var Insets: TRect;
-      var PreferredSize, RowCount: Integer); virtual;
-    function GetPalette: HPALETTE; override;
-    function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject;
-                       ATarget: TControl; ADocking: Boolean): LRESULT; override;
-    procedure DockOver(aSource: TDragDockObject; X, Y: Integer; aState: TDragState;
+    procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
       var Accept: Boolean); override;
+    procedure GetControlInfo(AControl: TControl; var Insets: TRect;
+      var PreferredSize, RowCount: Integer); virtual;
+    class constructor InitializeClass;
+    procedure InitializeBand(ABand: TCtrlBand; AKeepPos: Boolean);
+    procedure InitializeMove(AMovingBand: TCtrlBand);
+    procedure Loaded; override;
+    function IsBandOverlap(ARect, BRect: TRect): Boolean;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MoveBand(AMoveBand: TCtrlBand; X, Y: Integer; ByMouse: Boolean);
+    procedure NormalizeRows;
     procedure Paint; override;
+    procedure PictureChanged(Sender: TObject);
+    procedure Resize; override;
+    procedure SetCursor(Value: TCursor); override;
+    procedure ShiftBands(AFrom, ATo, AShift, ALimit: Integer);
+    procedure SortVisibleBands;
+    procedure WMSize(var Message: TLMSize); message LM_SIZE;
   public
+    FUpdateCount: SmallInt;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
     procedure FlipChildren(AllLevels: Boolean); override;
-    procedure StickControls; virtual;
-    property Picture: TPicture read FPicture write SetPicture;
-  protected
+    function HitTest(X, Y: Integer): TControl;
+    procedure InsertControl(AControl: TControl; Index: Integer); override;
+    function MouseToBandPos(X, Y: Integer; out AGrabber: Boolean): TCtrlBand;
+    procedure RemoveControl(AControl: TControl); override;
+    procedure StickControls;  virtual;
     property AutoDock: Boolean read FAutoDock write FAutoDock default True;
     property AutoDrag: Boolean read FAutoDrag write FAutoDrag default True;
     property AutoSize;
     property DockSite default True;
-    property RowSize: TRowSize read FRowSize write FRowSize default 26;
+    property DrawingStyle: TBandDrawingStyle read FDrawingStyle write SetDrawingStyle default dsNormal;
+    property GradientDirection: TGradientDirection read FGradientDirection write SetGradientDirection default gdVertical;
+    property GradientStartColor: TColor read FGradientStartColor write SetGradientStartColor default clDefault;
+    property GradientEndColor: TColor read FGradientEndColor write SetGradientEndColor default clDefault;
+    property Picture: TPicture read FPicture write SetPicture;
+    property RowSize: TRowSize read FRowSize write SetRowSize default 26;
     property RowSnap: Boolean read FRowSnap write FRowSnap default True;
     property OnBandDrag: TBandDragEvent read FOnBandDrag write FOnBandDrag;
     property OnBandInfo: TBandInfoEvent read FOnBandInfo write FOnBandInfo;
@@ -1216,22 +1329,26 @@ type
     property AutoDock;
     property AutoDrag;
     property AutoSize;
-    property BevelInner;
-    property BevelOuter;
+    property BevelInner default bvRaised;
+    property BevelOuter default bvLowered;
     property BevelWidth;
     property BiDiMode;
     property BorderWidth;
-    property Color nodefault;
+    property Color;
     property Constraints;
     property DockSite;
     property DragCursor;
     property DragKind;
     property DragMode;
+		property DrawingStyle;
     property Enabled;
+    property GradientDirection;
+		property GradientEndColor;
+		property GradientStartColor;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
-//    property Picture;
+    property Picture;
     property PopupMenu;
     property RowSize;
     property RowSnap;
