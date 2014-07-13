@@ -5,7 +5,7 @@ unit chmcontentprovider;
 {$Note Compiling lhelp with search support}
 {$DEFINE CHM_SEARCH}
 
-{$if (fpc_version=2) and (fpc_release>4)}
+{$IF FPC_FULLVERSION>=20400}
 {$Note Compiling lhelp *with* binary index and toc support}
 {$DEFINE CHM_BINARY_INDEX_TOC}
 {$endif}

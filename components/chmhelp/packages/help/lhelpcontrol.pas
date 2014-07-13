@@ -12,7 +12,7 @@ Currently, the only help viewer that supports this protocol is the lhelp CHM hel
 
 {$IFDEF UNIX}
   {$if FPC_FULLVERSION <= 20700}
-       {$DEFINE STALE_PIPE_WORKAROUND}
+    {$DEFINE STALE_PIPE_WORKAROUND}
   {$ENDIF}
 {$ENDIF}
 
@@ -25,7 +25,12 @@ uses
   Classes, SysUtils, FileUtil, LazLogger, SimpleIPC, process, UTF8Process;
 
 const
-  PROTOCOL_VERSION='1'; //IDE<>LHelp communication protocol version. Please update when breaking compatibility
+  PROTOCOL_VERSION='2'; //IDE<>LHelp communication protocol version. Please update when breaking compatibility
+  // Version 1: original version
+  // Version 2:
+  // - support for Proposed extensions in bug 24743:
+  // - openurl: if applicable return error instead of unknown
+  // - openurl: if applicable return invalid url instead of invalid file for openurl
 type
   TRequestType = (rtFile, rtUrl, rtContext, rtMisc {window handling etc});
   TMiscRequests = (mrShow, mrVersion, mrClose);
@@ -113,12 +118,9 @@ end;
 
 function TLHelpConnection.SendMessage(Stream: TStream): TLHelpResponse;
 begin
-  //try
-    fServerOut.SendMessage(mtUnknown, Stream);
-    Result := WaitForMsgResponse;
-  //except
-  //  on EIPCError do Result := srNoAnswer;
-  //end;
+  Result := srNoAnswer;
+  fServerOut.SendMessage(mtUnknown, Stream);
+  Result := WaitForMsgResponse;
 end;
 
 constructor TLHelpConnection.Create;
@@ -225,6 +227,9 @@ begin
   if fServerOut.ServerRunning then begin
     fServerOut.Active := True;
     Result := True;
+  end
+  else begin
+    debugln('Could not get lhelp running with command '+Cmd);
   end;
 end;
 
@@ -238,8 +243,17 @@ begin
     UrlRequest.FileRequest.FileName := HelpFileName+#0;
     UrlRequest.FileRequest.RequestType := rtURL;
     UrlRequest.Url := Url+#0;
-    Stream.Write(UrlRequest,SizeOf(UrlRequest));
-    Result := SendMessage(Stream);
+    Result:=srNoAnswer;
+    try
+      Stream.Write(UrlRequest,SizeOf(UrlRequest));
+      Result := SendMessage(Stream);
+    except
+      // Catch stream read errors etc
+      on E: Exception do
+      begin
+        debugln('Help connection: error '+E.Message+' running UrlRequest command');
+      end;
+    end;
   finally
     Stream.Free;
   end;
@@ -252,12 +266,22 @@ var
   Stream: TMemoryStream;
 begin
   Stream := TMemoryStream.Create;
+  Result := srNoAnswer;
   try
     ContextRequest.FileRequest.FileName := HelpFileName+#0;
     ContextRequest.FileRequest.RequestType := rtContext;
     ContextRequest.HelpContext := Context;
-    Stream.Write(ContextRequest, SizeOf(ContextRequest));
-    Result := SendMessage(Stream);
+    Result := srNoAnswer;
+    try
+      Stream.Write(ContextRequest, SizeOf(ContextRequest));
+      Result := SendMessage(Stream);
+    except
+      // Catch stream read errors etc
+      on E: Exception do
+      begin
+        debugln('Help connection: error '+E.Message+' running ContextRequest command');
+      end;
+    end;
   finally
     Stream.Free;
   end;
@@ -272,8 +296,17 @@ begin
   try
     FileRequest.RequestType := rtFile;
     FileRequest.FileName := HelpFileName+#0;
-    Stream.Write(FileRequest, SizeOf(FileRequest));
-    Result := SendMessage(Stream);
+    Result := srNoAnswer;
+    try
+      Stream.Write(FileRequest, SizeOf(FileRequest));
+      Result := SendMessage(Stream);
+    except
+      // Catch stream read errors etc
+      on E: Exception do
+      begin
+        debugln('Help connection: error '+E.Message+' running FileRequest command');
+      end;
+    end;
   finally
     Stream.Free;
   end;
@@ -287,17 +320,27 @@ begin
   Stream := TMemoryStream.Create;
   try
     MiscRequest.FileRequest.RequestType := rtMisc;
-    MiscRequest.FileRequest.FileName := ''+#0; //i
+    MiscRequest.FileRequest.FileName := ''+#0;
     //CommandID is ord(TMiscRequests)
     MiscRequest.RequestID:=CommandID;
     case CommandID of
-      mrClose: ; //do nothing
-      mrShow: ;  //do nothing
+      mrClose: ; //no arguments required
+      mrShow: ;  //no arguments required
       mrVersion:
         MiscRequest.FileRequest.FileName := PROTOCOL_VERSION+#0;
     end;
-    Stream.Write(MiscRequest, SizeOf(MiscRequest));
-    Result := SendMessage(Stream);
+    try
+      Stream.Write(MiscRequest, SizeOf(MiscRequest));
+      Result := SendMessage(Stream);
+    except
+      // Catch stream read errors etc
+      on E: Exception do
+      begin
+        // When closing, the viewer may not respond in time, which is expected.
+        if CommandID<>mrClose then
+          debugln('Help connection: error '+E.Message+' running MiscRequest command');
+      end;
+    end;
   finally
     Stream.Free;
   end;

@@ -1,4 +1,4 @@
-{ Copyright (C) <2005> <Andrew Haines> lhelp.lpr
+{ Copyright (C) <2005-2014> <Andrew Haines>, Lazarus contributors lhelp.lpr
 
   Lhelp CHM help viewer application
 
