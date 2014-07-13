@@ -33,6 +33,7 @@ interface
 uses
   Classes, SysUtils,
   FpImgReaderBase,
+  fpDbgSymTable,
   FpImgReaderElfTypes, LCLProc;  // these files are part of
 
 
@@ -76,12 +77,43 @@ type
     class function UserName: AnsiString; override;
     constructor Create(ASource: TDbgFileLoader; OwnSource: Boolean); override;
     destructor Destroy; override;
+    procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); override;
 
     //function GetSectionInfo(const SectionName: AnsiString; var Size: int64): Boolean; override;
     //function GetSectionData(const SectionName: AnsiString; Offset, Size: Int64; var Buf: array of byte): Int64; override;
   end;
 
 implementation
+
+type
+  TElf32symbol=record
+    st_name  : longword;
+    st_value : longword;
+    st_size  : longword;
+    st_info  : byte; { bit 0-3: type, 4-7: bind }
+    st_other : byte;
+    st_shndx : word;
+  end;
+  PElf32symbolArray = ^TElf32symbolArray;
+  TElf32symbolArray = array[0..maxSmallint] of TElf32symbol;
+
+  TElf64symbol=record
+    st_name  : longword;
+    st_info  : byte; { bit 0-3: type, 4-7: bind }
+    st_other : byte;
+    st_shndx : word;
+    st_value : qword;
+    st_size  : qword;
+  end;
+  PElf64symbolArray = ^TElf64symbolArray;
+  TElf64symbolArray = array[0..maxSmallint] of TElf64symbol;
+
+
+
+const
+  // Symbol-map section name
+  _symbol        = '.symtab';
+  _symbolstrings = '.strtab';
 
 { TElfFile }
 
@@ -301,6 +333,55 @@ begin
   end;
   FreeAndNil(FSections);
   inherited Destroy;
+end;
+
+procedure TElfDbgSource.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
+var
+  p: PDbgImageSection;
+  ps: PDbgImageSection;
+  SymbolArr32: PElf32symbolArray;
+  SymbolArr64: PElf64symbolArray;
+  SymbolStr: pointer;
+  i,j: integer;
+  SymbolCount: integer;
+  SymbolName: AnsiString;
+begin
+  p := Section[_symbol];
+  ps := Section[_symbolstrings];
+  if assigned(p) and assigned(ps) then
+  begin
+    SymbolStr:=PDbgImageSectionEx(ps)^.Sect.RawData;
+    if Image64Bit then
+    begin
+      SymbolArr64:=PDbgImageSectionEx(p)^.Sect.RawData;
+      SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(TElf64symbol);
+      for i := 0 to SymbolCount-1 do
+      begin
+        begin
+          if SymbolArr64^[i].st_name<>0 then
+            begin
+            SymbolName:=pchar(SymbolStr+SymbolArr64^[i].st_name);
+            AfpSymbolInfo.AddObject(SymbolName, TObject(PtrUInt(SymbolArr64^[i].st_value+ImageBase)));
+            end;
+        end
+      end;
+    end
+    else
+    begin
+      SymbolArr32:=PDbgImageSectionEx(p)^.Sect.RawData;
+      SymbolCount := PDbgImageSectionEx(p)^.Sect.Size div sizeof(TElf32symbol);
+      for i := 0 to SymbolCount-1 do
+      begin
+        begin
+          if SymbolArr32^[i].st_name<>0 then
+            begin
+            SymbolName:=pchar(SymbolStr+SymbolArr32^[i].st_name);
+            AfpSymbolInfo.AddObject(SymbolName, TObject(PtrUInt(SymbolArr32^[i].st_value+ImageBase)));
+            end;
+        end
+      end;
+    end;
+  end;
 end;
 
 initialization
