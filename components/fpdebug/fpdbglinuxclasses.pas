@@ -399,7 +399,7 @@ begin
     FRegisterValueList.DbgRegisterAutoCreate['ecx'].SetValue(FUserRegs.regs32[ecx], IntToStr(FUserRegs.regs32[ecx]),4,1);
     FRegisterValueList.DbgRegisterAutoCreate['edx'].SetValue(FUserRegs.regs32[edx], IntToStr(FUserRegs.regs32[edx]),4,2);
     FRegisterValueList.DbgRegisterAutoCreate['ebx'].SetValue(FUserRegs.regs32[ebx], IntToStr(FUserRegs.regs32[ebx]),4,3);
-    FRegisterValueList.DbgRegisterAutoCreate['esp'].SetValue(FUserRegs.regs32[edi], IntToStr(FUserRegs.regs32[edi]),4,4);
+    FRegisterValueList.DbgRegisterAutoCreate['esp'].SetValue(FUserRegs.regs32[uesp], IntToStr(FUserRegs.regs32[uesp]),4,4);
     FRegisterValueList.DbgRegisterAutoCreate['ebp'].SetValue(FUserRegs.regs32[ebp], IntToStr(FUserRegs.regs32[ebp]),4,5);
     FRegisterValueList.DbgRegisterAutoCreate['esi'].SetValue(FUserRegs.regs32[esi], IntToStr(FUserRegs.regs32[esi]),4,6);
     FRegisterValueList.DbgRegisterAutoCreate['edi'].SetValue(FUserRegs.regs32[edi], IntToStr(FUserRegs.regs32[edi]),4,7);
@@ -636,7 +636,7 @@ end;
 function TDbgLinuxProcess.GetStackPointerRegisterValue: TDbgPtr;
 begin
   if Mode=dm32 then
-    result := TDbgLinuxThread(FMainThread).FUserRegs.regs32[EDI]
+    result := TDbgLinuxThread(FMainThread).FUserRegs.regs32[UESP]
   else
     result := TDbgLinuxThread(FMainThread).FUserRegs.regs64[rsp];
 end;
