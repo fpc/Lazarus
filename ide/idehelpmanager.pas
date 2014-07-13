@@ -1768,10 +1768,9 @@ end;
 
 function TIDEHintWindowManager.HintIsComplex: boolean;
 begin
-  if FHintWindow = Nil then Exit(False);
-  Assert(FHintWindow.ControlCount > 0,
-    'HintIsComplex: ControlCount = ' + IntToStr(FHintWindow.ControlCount));
-  Result := FHintWindow.Visible and not (FHintWindow.Controls[0] is TSimpleHTMLControl);
+  Result := Assigned(FHintWindow) and FHintWindow.Visible
+  and (FHintWindow.ControlCount > 0)
+  and not (FHintWindow.Controls[0] is TSimpleHTMLControl);
 end;
 
 function TIDEHintWindowManager.PtIsOnHint(Pt: TPoint): boolean;
