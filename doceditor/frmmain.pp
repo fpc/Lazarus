@@ -1029,6 +1029,7 @@ begin
   with TListForm.Create(Self) do
   try
     Caption:=SInsertNumberedList;
+    lblItemsCount.Caption:=sItemsCount;
     speItemsCount.Value:=3;
     If ShowModal=mrOK Then
       CurrentEditor.InsertEnumerateList(speItemsCount.Value);
@@ -1042,6 +1043,7 @@ begin
   with TListForm.Create(Self) do
   try
     Caption:=SInsertBulletedList;
+    lblItemsCount.Caption:=sItemsCount;
     speItemsCount.Value:=3;
     If ShowModal=mrOK Then
       CurrentEditor.InsertItemizeList(speItemsCount.Value);

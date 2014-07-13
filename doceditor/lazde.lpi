@@ -58,7 +58,6 @@
       <Unit2>
         <Filename Value="fpdeutil.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="FPDEUtil"/>
       </Unit2>
       <Unit3>
         <Filename Value="frmabout.pp"/>
@@ -66,7 +65,6 @@
         <ComponentName Value="AboutForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="FrmAbout"/>
       </Unit3>
       <Unit4>
         <Filename Value="frmbuild.pp"/>
@@ -82,7 +80,6 @@
         <ComponentName Value="ExampleForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="FrmExample"/>
       </Unit5>
       <Unit6>
         <Filename Value="frmlink.pp"/>
@@ -90,7 +87,6 @@
         <ComponentName Value="LinkForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="FrmLink"/>
       </Unit6>
       <Unit7>
         <Filename Value="frmmain.pp"/>
@@ -106,7 +102,6 @@
         <ComponentName Value="MakeSkelForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="FrmMakeSkel"/>
       </Unit8>
       <Unit9>
         <Filename Value="frmnewnode.pp"/>
@@ -114,7 +109,6 @@
         <ComponentName Value="NewNodeForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmNewNode"/>
       </Unit9>
       <Unit10>
         <Filename Value="frmoptions.pp"/>
@@ -122,7 +116,6 @@
         <ComponentName Value="OptionsForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmOptions"/>
       </Unit10>
       <Unit11>
         <Filename Value="frmsource.pas"/>
@@ -130,7 +123,6 @@
         <ComponentName Value="SourceForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmSource"/>
       </Unit11>
       <Unit12>
         <Filename Value="frmtable.pp"/>
@@ -138,7 +130,6 @@
         <ComponentName Value="TableForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="frmTable"/>
       </Unit12>
       <Unit13>
         <Filename Value="lazdemsg.pp"/>
@@ -148,7 +139,6 @@
       <Unit14>
         <Filename Value="lazdeopts.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="LazDEOpts"/>
       </Unit14>
       <Unit15>
         <Filename Value="frpeditor.pas"/>
@@ -156,7 +146,6 @@
         <ComponentName Value="PackEditorFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="frpeditor"/>
       </Unit15>
       <Unit16>
         <Filename Value="frmlists.pp"/>
@@ -188,10 +177,6 @@
       <ConfigFile>
         <StopAfterErrCount Value="10"/>
       </ConfigFile>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
 </CONFIG>

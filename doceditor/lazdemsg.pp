@@ -48,6 +48,7 @@ ResourceString
   SInsertTable = 'Insert table';
   SInsertBulletedList = 'Insert bulleted list';
   SInsertNumberedList = 'Insert numbered list';
+  sItemsCount = 'Items count';
   SInsertPrintShortLink = 'Insert short description link';
   SInsertExampleCode = 'Insert example code';
   SForFile     = ' in file ';
@@ -237,7 +238,7 @@ ResourceString
 
   //SSaveFileTitle = 'Enter filename to save to';
   //SOpenFileTitle = 'Select file to open';
-  sSelectSomeText        = 'Select some text';
+  sSelectSomeText        = 'Select some text.';
 
   //Options dialog
   sOptDlgOptions         = 'Options';

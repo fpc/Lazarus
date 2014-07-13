@@ -28,6 +28,10 @@ msgctxt "lazdemsg.sadddescriptionfile"
 msgid "Select a new description file"
 msgstr "Выберите новый файл описания"
 
+#: lazdemsg.sadditionalparams
+msgid "Additional parameters for fpdoc"
+msgstr "Дополнительные параметры FPDoc"
+
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
 msgid "&Build"
@@ -158,7 +162,7 @@ msgstr "template.xml"
 
 #: lazdemsg.sforfile
 msgid " in file "
-msgstr " в файле"
+msgstr " в файле "
 
 #: lazdemsg.sformat
 msgctxt "lazdemsg.sformat"
@@ -167,16 +171,15 @@ msgstr "&Формат"
 
 #: lazdemsg.sformodule
 msgid " in module "
-msgstr " в модуле"
+msgstr " в модуле "
 
 #: lazdemsg.sforpackage
 msgid " in package "
-msgstr " в пакете"
+msgstr " в пакете "
 
 #: lazdemsg.sfortopic
-#, fuzzy
-#| msgid " in topic "
-msgid " in topic"
+#| msgid " in topic"
+msgid " in topic "
 msgstr " в теме "
 
 #: lazdemsg.shideprotectedmethods
@@ -241,6 +244,11 @@ msgstr "Подчёркнутый"
 msgid "Variable"
 msgstr "Переменная"
 
+#: lazdemsg.shintinsertbulletedlist
+msgctxt "lazdemsg.shintinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Вставить маркированный список"
+
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
 msgid "New element"
@@ -255,6 +263,11 @@ msgstr "Вставить ссылку"
 msgctxt "lazdemsg.shintinsertmodule"
 msgid "New module"
 msgstr "Новый модуль"
+
+#: lazdemsg.shintinsertnumberedlist
+msgctxt "lazdemsg.shintinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Вставить нумерованный список"
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -306,10 +319,24 @@ msgctxt "lazdemsg.simportcontentfile"
 msgid "Import content file"
 msgstr "Импортировать файл содержимого"
 
+#: lazdemsg.sinsertbulletedlist
+msgctxt "lazdemsg.sinsertbulletedlist"
+msgid "Insert bulleted list"
+msgstr "Вставить маркированный список"
+
+#: lazdemsg.sinsertexamplecode
+msgid "Insert example code"
+msgstr "Вставить образец кода"
+
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
 msgid "Insert link"
 msgstr "Вставить ссылку"
+
+#: lazdemsg.sinsertnumberedlist
+msgctxt "lazdemsg.sinsertnumberedlist"
+msgid "Insert numbered list"
+msgstr "Вставить нумерованный список"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -320,6 +347,10 @@ msgctxt "lazdemsg.sinserttable"
 msgid "Insert table"
 msgstr "Вставить таблицу"
 
+#: lazdemsg.sitemscount
+msgid "Items count"
+msgstr "Число элементов"
+
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
 msgstr "Редактор документации Lazarus"
@@ -327,6 +358,14 @@ msgstr "Редактор документации Lazarus"
 #: lazdemsg.slinksto
 msgid " links to "
 msgstr " ссылается на "
+
+#: lazdemsg.slinktarget
+msgid "Link target"
+msgstr "Объект ссылки"
+
+#: lazdemsg.slinktext
+msgid "Link text"
+msgstr "Текст ссылки"
 
 #: lazdemsg.sload
 msgctxt "lazdemsg.sload"
@@ -456,6 +495,10 @@ msgstr "&О программе ..."
 msgid "&Insert"
 msgstr "&Вставка"
 
+#: lazdemsg.smenuinsertbulletedlist
+msgid "Bulleted list"
+msgstr "Маркированный список"
+
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
 msgstr "&Элемент"
@@ -464,9 +507,17 @@ msgstr "&Элемент"
 msgid "&Link"
 msgstr "&Ссылка"
 
+#: lazdemsg.smenuinsertlist
+msgid "List"
+msgstr "Список"
+
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
 msgstr "&Модуль"
+
+#: lazdemsg.smenuinsertnumberedlist
+msgid "Numbered list"
+msgstr "Нумерованный список"
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
@@ -533,6 +584,10 @@ msgstr "Новый пакет"
 msgctxt "lazdemsg.snewtopic"
 msgid "New topic"
 msgstr "Новая тема"
+
+#: lazdemsg.snodename
+msgid "Node name"
+msgstr "Имя элемента"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -634,6 +689,10 @@ msgctxt "lazdemsg.ssave"
 msgid "&Save"
 msgstr "Со&хранить"
 
+#: lazdemsg.ssavebeforebuildquestion
+msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgstr "В \"%s\" имеются несохранённые изменения.%sСохранить их, чтобы они отображались в собранной документации?"
+
 #: lazdemsg.sseealso
 msgid "See Also"
 msgstr "Секция \"Смотрите также\""
@@ -649,8 +708,9 @@ msgid "Select output file name"
 msgstr "Выберите имя файла вывода"
 
 #: lazdemsg.sselectsometext
-msgid "Select some text"
-msgstr "Выделите какую-нибудь часть текста"
+#| msgid "Select some text"
+msgid "Select some text."
+msgstr "Выделите какую-нибудь часть текста."
 
 #: lazdemsg.sshortdescription
 msgid "Short"
@@ -677,6 +737,18 @@ msgstr "Исходный код"
 #: lazdemsg.sstartnodenotfound
 msgid "Start element \"%s\" could not be found"
 msgstr "Начальный элемент \"%s\" не найден"
+
+#: lazdemsg.stablecols
+msgid "Columns"
+msgstr "Столбцы"
+
+#: lazdemsg.stableheader
+msgid "Use header row"
+msgstr "Использовать строку заголовка"
+
+#: lazdemsg.stablerows
+msgid "Rows"
+msgstr "Строки"
 
 #: lazdemsg.stargetos
 msgctxt "lazdemsg.stargetos"
