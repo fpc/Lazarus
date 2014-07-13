@@ -114,6 +114,52 @@ type
     xss: cuint32;
   end;
 
+  user_fpxregs_struct32 = record
+    cwd : word;
+    swd : word;
+    twd : word;
+    fop : word;
+    fip : longint;
+    fcs : longint;
+    foo : longint;
+    fos : longint;
+    mxcsr : longint;
+    reserved : longint;
+    st_space : array[0..31] of longint;
+    xmm_space : array[0..31] of longint;
+    padding : array[0..55] of longint;
+  end;
+
+  user_fpregs_struct32 = record
+      cwd : longint;
+      swd : longint;
+      twd : longint;
+      fip : longint;
+      fcs : longint;
+      foo : longint;
+      fos : longint;
+      st_space : array[0..19] of longint;
+    end;
+
+  user32 = record
+    regs : user_regs_struct32;
+    u_fpvalid : longint;
+    i387 : user_fpregs_struct32;
+    u_tsize : dword;
+    u_dsize : dword;
+    u_ssize : dword;
+    start_code : dword;
+    start_stack : dword;
+    signal : longint;
+    reserved : longint;
+    u_ar0 : ^user_regs_struct32;
+    u_fpstate : ^user_fpregs_struct32;
+    magic : dword;
+    u_comm : array[0..31] of char;
+    u_debugreg : array[0..7] of longint;
+  end;
+
+
 const
   R15      = 0;
   R14      = 1;
@@ -176,6 +222,7 @@ type
   private
     FUserRegs: TUserRegs;
     FUserRegsChanged: boolean;
+    function GetDebugRegOffset(ind: byte): pointer;
     function ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
     function WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
   protected
@@ -248,16 +295,29 @@ begin
     end
 end;
 
+function TDbgLinuxThread.GetDebugRegOffset(ind: byte): pointer;
+var
+  user64ptr: ^user64;
+  user32ptr: ^user32;
+begin
+  if Process.Mode=dm64 then
+    begin
+    user64ptr:=nil;
+    result := @(user64ptr^.u_debugreg[ind])
+    end
+  else
+    begin
+    user32ptr:=nil;
+    result := @(user32ptr^.u_debugreg[ind])
+    end;
+end;
+
 function TDbgLinuxThread.ReadDebugReg(ind: byte; out AVal: PtrUInt): boolean;
 var
-  offset: pointer;
-  user64ptr: ^user64;
   e: integer;
 begin
-  user64ptr:=nil;
-  offset := @(user64ptr^.u_debugreg[ind]);
   fpseterrno(0);
-  AVal := PtrUInt(fpPTrace(PTRACE_PEEKUSR, Process.ProcessID, offset, nil));
+  AVal := PtrUInt(fpPTrace(PTRACE_PEEKUSR, Process.ProcessID, GetDebugRegOffset(ind), nil));
   e := fpgeterrno;
   if e <> 0 then
     begin
@@ -269,22 +329,14 @@ begin
 end;
 
 function TDbgLinuxThread.WriteDebugReg(ind: byte; AVal: PtrUInt): boolean;
-var
-  offset: pointer;
-  user64ptr: ^user64;
- avalterug: ptruint;
 begin
-  user64ptr:=nil;
-  offset := @(user64ptr^.u_debugreg[ind]);
-  if fpPTrace(PTRACE_POKEUSR, Process.ProcessID, offset, pointer(AVal)) = -1 then
+  if fpPTrace(PTRACE_POKEUSR, Process.ProcessID, GetDebugRegOffset(ind), pointer(AVal)) = -1 then
     begin
     log('Failed to write dr'+inttostr(ind)+'-debug register. Errcode: '+inttostr(fpgeterrno));
     result := false;
     end
   else
     result := true;
-
-  avalterug := PtrUInt(fpPTrace(PTRACE_PEEKUSR, Process.ProcessID, offset, nil));
 end;
 
 
