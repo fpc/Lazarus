@@ -3416,6 +3416,7 @@ var
   MousePos: TQtPoint;
   MButton: QTMouseButton;
   Modifiers: QtKeyboardModifiers;
+  SaveWidget: QWidgetH;
 
   function CheckMouseButtonDown(AButton: Integer): Cardinal;
 
@@ -3565,12 +3566,21 @@ begin
         QtMidButton: Msg.Msg := LM_MBUTTONUP;
       end;
 
+      SaveWidget := nil;
+      if (FChildOfComplexWidget = ccwCustomControl) and (FOwner <> nil) then
+        SaveWidget := Widget;
+
       NotifyApplicationUserInput(LCLObject, Msg.Msg);
+
+      if (SaveWidget <> nil) and (SaveWidget <> Widget) then
+        exit(True);
 
       if not CanSendLCLMessage or (Sender = nil) then
         exit(True);
 
       DeliverMessage(Msg, True);
+      if (SaveWidget <> nil) and (SaveWidget <> Widget) then
+        exit(True);
 
       // Check if our objects exists since LCL can destroy object during
       // mouse events...
@@ -15916,7 +15926,6 @@ begin
   if Sender = viewportWidget then
     inherited SetNoMousePropagation(Sender, False)
   else
-  if Sender = Widget then
     inherited SetNoMousePropagation(Sender, ANoMousePropagation);
 end;
 
