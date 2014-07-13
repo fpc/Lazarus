@@ -195,7 +195,10 @@ begin
       begin
         FHiddenWatchpointInto := FController.FCurrentThread.AddWatchpoint(FController.FCurrentProcess.GetStackPointerRegisterValue-DBGPTRSIZE[FController.FCurrentProcess.Mode]);
         FHiddenWatchpointOut := FController.FCurrentThread.AddWatchpoint(FController.FCurrentProcess.GetStackBasePointerRegisterValue+DBGPTRSIZE[FController.FCurrentProcess.Mode]);
-        assert((FHiddenWatchpointInto<>-1) and (FHiddenWatchpointOut<>-1));
+        // If there are no watchpoints available, keep single stepping. Although
+        // this will be really slow.
+        if (FHiddenWatchpointInto=-1) and (FHiddenWatchpointOut=-1) then
+          FInto := false;
       end;
 
       Finished:=false;
