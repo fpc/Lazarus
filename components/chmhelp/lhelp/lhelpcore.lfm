@@ -5,7 +5,7 @@ object HelpForm: THelpForm
   Width = 758
   ActiveControl = Panel1
   Caption = 'LHelp'
-  ClientHeight = 516
+  ClientHeight = 510
   ClientWidth = 758
   Icon.Data = {
     7E04000000000100010010100000010020006804000016000000280000001000
@@ -238,7 +238,7 @@ object HelpForm: THelpForm
   end
   object PageControl: TPageControl
     Left = 0
-    Height = 484
+    Height = 478
     Top = 32
     Width = 758
     Align = alClient

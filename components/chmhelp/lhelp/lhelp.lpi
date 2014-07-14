@@ -47,6 +47,12 @@
               </Win32>
             </Options>
           </Linking>
+          <Other>
+            <CompilerMessages>
+              <UseMsgFile Value="True"/>
+            </CompilerMessages>
+            <CompilerPath Value="$(CompPath)"/>
+          </Other>
         </CompilerOptions>
       </Item2>
     </BuildModes>
@@ -78,6 +84,7 @@
       <Unit0>
         <Filename Value="lhelp.lpr"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="lhelp"/>
       </Unit0>
       <Unit1>
         <Filename Value="chmdataprovider.pas"/>
@@ -87,12 +94,14 @@
       <Unit2>
         <Filename Value="chmspecialparser.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ChmSpecialParser"/>
       </Unit2>
       <Unit3>
         <Filename Value="chmpopup.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="HelpPopupForm"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ChmPopup"/>
       </Unit3>
       <Unit4>
         <Filename Value="lhelpcore.pas"/>
@@ -105,10 +114,12 @@
       <Unit5>
         <Filename Value="lnethttpdataprovider.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="LNetHTTPDataProvider"/>
       </Unit5>
       <Unit6>
         <Filename Value="basecontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BaseContentProvider"/>
       </Unit6>
       <Unit7>
         <Filename Value="chmcontentprovider.pas"/>
@@ -118,6 +129,7 @@
       <Unit8>
         <Filename Value="httpcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="HTTPContentProvider"/>
       </Unit8>
     </Units>
   </ProjectOptions>
@@ -147,5 +159,11 @@
         </Win32>
       </Options>
     </Linking>
+    <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
   </CompilerOptions>
 </CONFIG>
