@@ -246,7 +246,9 @@ type
     function Filters: TLMsgViewFilters; inline;
 
     // select, search
+    // Note: At the moment only single single selected is implemented
     function HasSelection: boolean;
+    function IsLineSelected(View: TLMsgWndView; LineNumber: integer): boolean;
     procedure Select(View: TLMsgWndView; LineNumber: integer; DoScroll, FullyVisible: boolean);
     function SearchNext(StartView: TLMsgWndView; StartLine: integer;
       SkipStart, Downwards: boolean;
@@ -1659,18 +1661,20 @@ begin
   if not Focused and CanFocus then
     SetFocus;
   inherited MouseDown(Button, Shift, X, Y);
-  if Button=mbLeft then begin
-    if GetLineAt(Y,View,LineNumber) then begin
-      SelectedView:=View;
-      SelectedLine:=LineNumber;
+  if GetLineAt(Y,View,LineNumber) then begin
+    if Button=mbLeft then begin
+      Select(View,LineNumber,true,true);
       StoreSelectedAsSearchStart;
 
       if ((ssDouble in Shift) and (not (mcoSingleClickOpensFile in FOptions)))
       or ((mcoSingleClickOpensFile in FOptions) and ([ssDouble,ssTriple,ssQuad]*Shift=[]))
       then
         OpenSelection;
-    end else begin
-
+    end else if Button=mbRight then begin
+      if not IsLineSelected(View,LineNumber) then begin
+        Select(View,LineNumber,true,true);
+        StoreSelectedAsSearchStart;
+      end;
     end;
   end;
 end;
@@ -2565,6 +2569,12 @@ begin
   View:=SelectedView;
   if View=nil then exit;
   Result:=SelectedLine<View.GetShownLineCount(false,true);
+end;
+
+function TMessagesCtrl.IsLineSelected(View: TLMsgWndView; LineNumber: integer
+  ): boolean;
+begin
+  Result:=(View=SelectedView) and (LineNumber=SelectedLine);
 end;
 
 { TMessagesFrame }
