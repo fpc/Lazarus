@@ -261,6 +261,7 @@ type
     function GetStackPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
     procedure TerminateProcess; override;
+    function Pause: boolean; override;
 
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
@@ -708,6 +709,15 @@ begin
     begin
     log('Failed to send SIGKILL to process %d. Errno: %d',[ProcessID, errno]);
     FIsTerminating:=false;
+    end;
+end;
+
+function TDbgLinuxProcess.Pause: boolean;
+begin
+  result := fpkill(ProcessID, SIGTRAP)=0;
+  if not result then
+    begin
+    log('Failed to send SIGTRAP to process %d. Errno: %d',[ProcessID, errno]);
     end;
 end;
 
