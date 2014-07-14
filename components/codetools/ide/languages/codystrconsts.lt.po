@@ -607,6 +607,10 @@ msgstr "Pažymėkite reiškinį"
 msgid "Show CodeTools Node Info ..."
 msgstr "Rodyti informaciją apie CodeTools mazgą…"
 
+#: codystrconsts.crsshowcodydict
+msgid "Show Cody Dictionary for \"%s\""
+msgstr ""
+
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
 msgstr "Rodyti tik tuos identifikatorius, kuriuose yra filtro tekstas"

@@ -618,6 +618,10 @@ msgstr "Selecionar expressão"
 msgid "Show CodeTools Node Info ..."
 msgstr "Exibir info. do nó das ferramentas de código ..."
 
+#: codystrconsts.crsshowcodydict
+msgid "Show Cody Dictionary for \"%s\""
+msgstr ""
+
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
 msgstr "Exibir apenas identificadores contendo o texto do filtro"

@@ -392,7 +392,7 @@ begin
   for i:=0 to Fixes.LineCount-1 do begin
     Msg:=Fixes.Lines[i];
     if not IsApplicable(Msg,Identifier) then continue;
-    Fixes.AddMenuItem(Self,Msg,'Show Cody Dictionary for "'+Identifier+'"');
+    Fixes.AddMenuItem(Self, Msg, Format(crsShowCodyDict, [Identifier]));
     exit;
   end;
 end;

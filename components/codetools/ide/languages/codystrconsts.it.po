@@ -607,6 +607,10 @@ msgstr ""
 msgid "Show CodeTools Node Info ..."
 msgstr ""
 
+#: codystrconsts.crsshowcodydict
+msgid "Show Cody Dictionary for \"%s\""
+msgstr ""
+
 #: codystrconsts.crsshowonlyidentifierscontainingfiltertext
 msgid "Show only identifiers containing filter text"
 msgstr ""
