@@ -5261,7 +5261,7 @@ msgid "Check options"
 msgstr "Opções verificação"
 
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-msgid ". Check search path package %s, try a clean rebuild, check implementation uses sections."
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ""
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
@@ -6984,14 +6984,6 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Atual"
 
-#: lazarusidestrconsts.liscurrentdirectory
-msgid "CurrentDirectory: %s"
-msgstr ""
-
-#: lazarusidestrconsts.liscurrentdirectory2
-msgid "CurrentDirectory: "
-msgstr ""
-
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
 msgstr "Estado atual:"
@@ -7522,10 +7514,6 @@ msgstr "Unidade Delphi"
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "Pacotes de \"Tempo de projeto\" adicionam componentes e itens de menu à IDE. Eles podem ser usados por projetos, mas não são compilados no projeto. O compilador não encontrará as unidades deste pacote ao compilar o projeto."
-
-#: lazarusidestrconsts.lisdesktop
-msgid "Desktop: "
-msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
@@ -8375,14 +8363,6 @@ msgstr "Filtro de exclusão"
 msgid "Executable"
 msgstr "Executável"
 
-#: lazarusidestrconsts.lisexecutable2
-msgid "Executable: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisexecutable3
-msgid "Executable: "
-msgstr ""
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr ""
@@ -8459,7 +8439,7 @@ msgid "Expression:"
 msgstr "Expressão:"
 
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-msgid "Extend include file search path of package \"%s\" with\"%s\"?"
+msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
@@ -8467,19 +8447,15 @@ msgid "Extend include files search path of project with%s\"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendincludepath
-msgid "Extend Include Path?"
+msgid "Extend include path?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendunitpath
 msgid "Extend unit path?"
 msgstr "Estender caminho da unidade?"
 
-#: lazarusidestrconsts.lisextendunitpath2
-msgid "Extend Unit Path?"
-msgstr ""
-
 #: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-msgid "Extend unit search path of package \"%s\" with\"%s\"?"
+msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
@@ -10999,10 +10975,6 @@ msgstr "Gerenciar Editores de Código ..."
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr "Máximo %d"
-
-#: lazarusidestrconsts.lismaybepackageneedsacleanrebuild
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ""
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."

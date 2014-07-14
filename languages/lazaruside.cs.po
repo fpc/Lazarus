@@ -5071,7 +5071,9 @@ msgid "Check options"
 msgstr "Zkontrolovat nastavení"
 
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-msgid ". Check search path package %s, try a clean rebuild, check implementation uses sections."
+#, fuzzy
+#| msgid ". Check search path package %s, try a clean rebuild, check implementation uses sections."
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr "Zkontrolujte cestu pro hledání balíčku %s, zkuste čisté sestavení, zkontrolujte sekci 'uses' sekce 'implementation'."
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
@@ -6751,14 +6753,6 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Aktuální"
 
-#: lazarusidestrconsts.liscurrentdirectory
-msgid "CurrentDirectory: %s"
-msgstr "Aktuální složka: %s"
-
-#: lazarusidestrconsts.liscurrentdirectory2
-msgid "CurrentDirectory: "
-msgstr "Aktuální složka:"
-
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
 msgstr "Aktuální stav: "
@@ -7277,10 +7271,6 @@ msgstr "Jednotka Delphi"
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "\"Návrhové\" balíky přidávají komponenty a položky do menu IDE. Mohou být použity projekty, ale nemohou být kompilovány do projektu. Kompiler nenajde jednotky balíku během kompilace projektu."
-
-#: lazarusidestrconsts.lisdesktop
-msgid "Desktop: "
-msgstr "Plocha:"
 
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
@@ -8119,14 +8109,6 @@ msgstr "Filtr vyřazení"
 msgid "Executable"
 msgstr "Spustitelný"
 
-#: lazarusidestrconsts.lisexecutable2
-msgid "Executable: %s"
-msgstr "Spustitelný soubor: %s"
-
-#: lazarusidestrconsts.lisexecutable3
-msgid "Executable: "
-msgstr "Spustitelný soubor:"
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr "spustitelný soubor \"%s\" je složka"
@@ -8203,7 +8185,9 @@ msgid "Expression:"
 msgstr "Výraz:"
 
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-msgid "Extend include file search path of package \"%s\" with\"%s\"?"
+#, fuzzy
+#| msgid "Extend include file search path of package \"%s\" with\"%s\"?"
+msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
 msgstr "Rozšiřit cestu pro hledání includů balíčku \"%s\" s \"%s\"?"
 
 #: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
@@ -8211,19 +8195,19 @@ msgid "Extend include files search path of project with%s\"%s\"?"
 msgstr "Rozšířit prohledávanou cestu include projektu s%s\"%s\"?"
 
 #: lazarusidestrconsts.lisextendincludepath
-msgid "Extend Include Path?"
+#, fuzzy
+#| msgid "Extend Include Path?"
+msgid "Extend include path?"
 msgstr "Rozšířit cestu pro hledání includů?"
 
 #: lazarusidestrconsts.lisextendunitpath
 msgid "Extend unit path?"
 msgstr "Rozšířit cestu jednotky?"
 
-#: lazarusidestrconsts.lisextendunitpath2
-msgid "Extend Unit Path?"
-msgstr "Rozšířit cestu pro hledání jednotek?"
-
 #: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-msgid "Extend unit search path of package \"%s\" with\"%s\"?"
+#, fuzzy
+#| msgid "Extend unit search path of package \"%s\" with\"%s\"?"
+msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
 msgstr "Rozšířit cestu pro hledání unit balíčku \"%s\" s \"%s\"?"
 
 #: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
@@ -10688,10 +10672,6 @@ msgstr "Spravovat editory zdrojových kódů ..."
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr "Max %d"
-
-#: lazarusidestrconsts.lismaybepackageneedsacleanrebuild
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ". Možná balíček %s potřebuje čisté sestavení"
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."

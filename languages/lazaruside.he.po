@@ -5347,7 +5347,7 @@ msgid "Check options"
 msgstr "בדוק אפשרויות"
 
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-msgid ". Check search path package %s, try a clean rebuild, check implementation uses sections."
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ""
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
@@ -7092,14 +7092,6 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "נוכחי"
 
-#: lazarusidestrconsts.liscurrentdirectory
-msgid "CurrentDirectory: %s"
-msgstr ""
-
-#: lazarusidestrconsts.liscurrentdirectory2
-msgid "CurrentDirectory: "
-msgstr ""
-
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
 msgstr ""
@@ -7628,10 +7620,6 @@ msgstr "יחידת דלפי"
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
-msgstr ""
-
-#: lazarusidestrconsts.lisdesktop
-msgid "Desktop: "
 msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
@@ -8489,14 +8477,6 @@ msgstr "אל תכלול מסנן"
 msgid "Executable"
 msgstr ""
 
-#: lazarusidestrconsts.lisexecutable2
-msgid "Executable: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisexecutable3
-msgid "Executable: "
-msgstr ""
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr ""
@@ -8574,7 +8554,7 @@ msgid "Expression:"
 msgstr "ביטוי:"
 
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-msgid "Extend include file search path of package \"%s\" with\"%s\"?"
+msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
@@ -8582,19 +8562,15 @@ msgid "Extend include files search path of project with%s\"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendincludepath
-msgid "Extend Include Path?"
+msgid "Extend include path?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendunitpath
 msgid "Extend unit path?"
 msgstr "ייצא את נתיב היחידה"
 
-#: lazarusidestrconsts.lisextendunitpath2
-msgid "Extend Unit Path?"
-msgstr ""
-
 #: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-msgid "Extend unit search path of package \"%s\" with\"%s\"?"
+msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
@@ -11151,10 +11127,6 @@ msgstr ""
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr "מקסימום d%"
-
-#: lazarusidestrconsts.lismaybepackageneedsacleanrebuild
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ""
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."

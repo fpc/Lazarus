@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-12 02:35+0400\n"
+"PO-Revision-Date: 2014-07-15 02:47+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5212,11 +5212,11 @@ msgstr "Проверять изменения файлов на диске по 
 
 #: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
 msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr ""
+msgstr ". Проверьте, что пакет %s создаёт %s.ppu и этот файл ничем не удаляется. Также убедитесь, что два пакета одновременно не имеют доступа к исходному коду модуля."
 
 #: lazarusidestrconsts.lischeckifpackageisinthedependencies
 msgid ". Check if package %s is in the dependencies"
-msgstr ""
+msgstr ". Проверьте, что пакет %s имеется в списке зависимостей"
 
 #: lazarusidestrconsts.lischeckifthenexttokeninsourceisanendandifnotreturnsl
 msgid "check if the next token in source is an end and if not returns lineend + end; + lineend"
@@ -5227,8 +5227,8 @@ msgid "Check options"
 msgstr "Проверка параметров"
 
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-msgid ". Check search path package %s, try a clean rebuild, check implementation uses sections."
-msgstr ""
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
+msgstr ". Проверьте список путей поиска пакета %s, попробуйте пересобрать с очисткой, проверьте выражения Uses в секциях Implementation."
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
@@ -6361,7 +6361,7 @@ msgstr "Конфликт"
 
 #: lazarusidestrconsts.lisconflictdetected
 msgid "Conflict detected"
-msgstr ""
+msgstr "Обнаружен конфликт"
 
 #: lazarusidestrconsts.lisconsoleapplication
 msgid "Console application"
@@ -6932,14 +6932,6 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Текущий"
 
-#: lazarusidestrconsts.liscurrentdirectory
-msgid "CurrentDirectory: %s"
-msgstr ""
-
-#: lazarusidestrconsts.liscurrentdirectory2
-msgid "CurrentDirectory: "
-msgstr ""
-
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
 msgstr "Текущее состояние: "
@@ -7464,10 +7456,6 @@ msgstr "Модуль Delphi"
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "Пакеты времени разработки добавляют компоненты и элементы меню в IDE. Они могут использоваться проектами, но не собираться с ними. Компилятор не найдёт модулей такого пакета при сборке проекта."
 
-#: lazarusidestrconsts.lisdesktop
-msgid "Desktop: "
-msgstr ""
-
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
 msgstr "Каталог назначения"
@@ -7522,7 +7510,7 @@ msgstr "Текст2"
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
-msgstr ""
+msgstr "найден отличающийся модуль %s по новому местонахождению \"%s\""
 
 #: lazarusidestrconsts.lisdigits
 msgid "Digits:"
@@ -7786,7 +7774,7 @@ msgstr "Дублирующийся элемент"
 
 #: lazarusidestrconsts.lisduplicatefilename
 msgid "Duplicate File Name"
-msgstr ""
+msgstr "Дублирующееся имя файла"
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
 #| msgid "Duplicate found of value %s%s%s."
@@ -7816,7 +7804,7 @@ msgstr "Файлы исходного кода дублируются. Удал�
 
 #: lazarusidestrconsts.lisduplicateunit
 msgid "Duplicate Unit"
-msgstr ""
+msgstr "Дублирующийся модуль"
 
 #: lazarusidestrconsts.lisedit
 msgctxt "lazarusidestrconsts.lisedit"
@@ -7837,7 +7825,7 @@ msgstr "Изменить клавиши"
 
 #: lazarusidestrconsts.liseditorcolors
 msgid "Editor Colors"
-msgstr ""
+msgstr "Цвета редактора"
 
 #: lazarusidestrconsts.liseditorfiletypes
 msgid "Editor file types"
@@ -8018,7 +8006,7 @@ msgstr "Включить"
 
 #: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
-msgstr ""
+msgstr ". Включите флаг \"Использовать модуль\" для модуля %s в пакете %s"
 
 #: lazarusidestrconsts.lisenablegroups
 msgid "Enable Groups"
@@ -8310,21 +8298,13 @@ msgstr "Исключающий фильтр"
 msgid "Executable"
 msgstr "Исполнимый файл"
 
-#: lazarusidestrconsts.lisexecutable2
-msgid "Executable: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisexecutable3
-msgid "Executable: "
-msgstr ""
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
-msgstr ""
+msgstr "исполнимый файл \"%s\" является каталогом"
 
 #: lazarusidestrconsts.lisexecutablelacksthepermissiontorun
 msgid "executable \"%s\" lacks the permission to run"
-msgstr ""
+msgstr "исполнимый файл \"%s\" не имеет прав на запуск"
 
 #: lazarusidestrconsts.lisexecutingcommandafter
 msgid "Executing command after"
@@ -8349,7 +8329,7 @@ msgstr "Выход"
 
 #: lazarusidestrconsts.lisexitcode
 msgid "Exit code %s"
-msgstr ""
+msgstr "Код завершения %s"
 
 #: lazarusidestrconsts.lisexpandall
 msgid "Expand All (*)"
@@ -8394,32 +8374,30 @@ msgid "Expression:"
 msgstr "Выражение:"
 
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-msgid "Extend include file search path of package \"%s\" with\"%s\"?"
-msgstr ""
+#| msgid "Extend include file search path of package \"%s\" with\"%s\"?"
+msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
+msgstr "Дополнить список путей поиска включаемых файлов пакета \"%s\" следующими%s\"%s\"?"
 
 #: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
 msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr ""
+msgstr "Дополнить список путей поиска включаемых файлов проекта следующими%s\"%s\"?"
 
 #: lazarusidestrconsts.lisextendincludepath
-msgid "Extend Include Path?"
-msgstr ""
+#| msgid "Extend Include Path?"
+msgid "Extend include path?"
+msgstr "Дополнить пути к включаемым файлам?"
 
 #: lazarusidestrconsts.lisextendunitpath
 msgid "Extend unit path?"
 msgstr "Дополнить пути к модулям?"
 
-#: lazarusidestrconsts.lisextendunitpath2
-msgid "Extend Unit Path?"
-msgstr ""
-
 #: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-msgid "Extend unit search path of package \"%s\" with\"%s\"?"
-msgstr ""
+msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
+msgstr "Дополнить список путей поиска модулей пакета \"%s\" следующими%s\"%s\"?"
 
 #: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
 msgid "Extend unit search path of project with%s\"%s\"?"
-msgstr ""
+msgstr "Дополнить список путей поиска модулей проекта следующими%s\"%s\"?"
 
 #: lazarusidestrconsts.lisextract
 msgid "Extract"
@@ -10943,10 +10921,6 @@ msgstr "Управление редакторами исходного кода 
 msgid "Max %d"
 msgstr "Максимум %d"
 
-#: lazarusidestrconsts.lismaybepackageneedsacleanrebuild
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ""
-
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "%s Возможно, вам требуется пересобрать пакет."
@@ -12665,11 +12639,11 @@ msgstr "? (Выкл.)"
 
 #: lazarusidestrconsts.lisofpackage
 msgid " of package %s"
-msgstr ""
+msgstr " пакета %s"
 
 #: lazarusidestrconsts.lisoftheprojectinspector
 msgid " of the Project Inspector"
-msgstr ""
+msgstr " в инспекторе проекта"
 
 #: lazarusidestrconsts.lisoifaddtofavoriteproperties
 msgid "Add to favorite properties"
@@ -12703,11 +12677,11 @@ msgstr "Описание: "
 
 #: lazarusidestrconsts.lisoipdescriptiondescription
 msgid "%sDescription:  %s"
-msgstr "%sОписание: %s"
+msgstr "%sОписание:  %s"
 
 #: lazarusidestrconsts.lisoipfilename
 msgid "Filename:  %s"
-msgstr "Имя файла: %s"
+msgstr "Имя файла:  %s"
 
 #: lazarusidestrconsts.lisoipinstalleddynamic
 msgid "installed dynamic"
@@ -12719,7 +12693,7 @@ msgstr "установлен статически"
 
 #: lazarusidestrconsts.lisoiplicenselicense
 msgid "%sLicense:  %s"
-msgstr ""
+msgstr "%sЛицензия:  %s"
 
 #: lazarusidestrconsts.lisoipmissing
 msgid "missing"
@@ -16409,11 +16383,11 @@ msgstr "Компонент с таким именем уже имеется"
 
 #: lazarusidestrconsts.listhereisalreadyafilein
 msgid "There is already a file%s%s%sin %s"
-msgstr ""
+msgstr "Файл с именем%s%s%sуже существует в %s"
 
 #: lazarusidestrconsts.listhereisalreadyafileinoldnewcontinue
 msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
-msgstr ""
+msgstr "Файл \"%s\" уже имеется в %s%sСтарый: %s%sНовый: %s%s%sПродолжить?"
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
 #| msgid "There is already a form with the name %s%s%s"
@@ -16435,7 +16409,7 @@ msgstr "Пакет с именем %s уже имеется в списке"
 
 #: lazarusidestrconsts.listhereisalreadyaunitinoldnewyouhavetomakesur
 msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make sure that the unit search path contains only one of them.%s%sContinue?"
-msgstr ""
+msgstr "Модуль \"%s\" уже имеется в %s%sСтарый: %s%sНовый: %s%sУбедитесь, что в каталогах поиска модулей содержится только один из них.%s%sПродолжить?"
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 #| msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
@@ -16748,7 +16722,7 @@ msgstr "Turbo Pascal"
 
 #: lazarusidestrconsts.listwomovedfileswillhavethesamefilenamein
 msgid "Two moved files will have the same file name:%s%s%s%s%sin %s"
-msgstr ""
+msgstr "Два перемещённых файла будут иметь одно и то же имя:%s%s%s%s%sв %s"
 
 #: lazarusidestrconsts.listypes
 msgid "Types (not removed if no replacement)"

@@ -5017,7 +5017,7 @@ msgid "Check options"
 msgstr "Beállítások ellenőrzése"
 
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-msgid ". Check search path package %s, try a clean rebuild, check implementation uses sections."
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ""
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
@@ -6677,14 +6677,6 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Jelenlegi"
 
-#: lazarusidestrconsts.liscurrentdirectory
-msgid "CurrentDirectory: %s"
-msgstr "Jelenlegi könyvtár: %s"
-
-#: lazarusidestrconsts.liscurrentdirectory2
-msgid "CurrentDirectory: "
-msgstr "Jelenlegi könyvtár: "
-
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
 msgstr "Jelenlegi állapot:"
@@ -7196,10 +7188,6 @@ msgstr "Delphi unit"
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr ""
-
-#: lazarusidestrconsts.lisdesktop
-msgid "Desktop: "
-msgstr "Felület: "
 
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
@@ -8032,14 +8020,6 @@ msgstr "Kizáró szűrő"
 msgid "Executable"
 msgstr "Futtatható"
 
-#: lazarusidestrconsts.lisexecutable2
-msgid "Executable: %s"
-msgstr "Futtatható: %s"
-
-#: lazarusidestrconsts.lisexecutable3
-msgid "Executable: "
-msgstr "Futtatható: "
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr "a(z) \"%s\" állomány egy könyvtár"
@@ -8115,7 +8095,9 @@ msgid "Expression:"
 msgstr "Kifejezés:"
 
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-msgid "Extend include file search path of package \"%s\" with\"%s\"?"
+#, fuzzy
+#| msgid "Extend include file search path of package \"%s\" with\"%s\"?"
+msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
 msgstr "Kibővíti a(z) \"%s\" csomag include fájl keresési útvonalát ezzel: \"%s\"?"
 
 #: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
@@ -8123,19 +8105,19 @@ msgid "Extend include files search path of project with%s\"%s\"?"
 msgstr "Kibővíti a projekt include fájl keresési útvonalát ezzel:%s\"%s\"?"
 
 #: lazarusidestrconsts.lisextendincludepath
-msgid "Extend Include Path?"
+#, fuzzy
+#| msgid "Extend Include Path?"
+msgid "Extend include path?"
 msgstr "Include útvonal kibővítése?"
 
 #: lazarusidestrconsts.lisextendunitpath
 msgid "Extend unit path?"
 msgstr "Kibővíti a unit útvonalat?"
 
-#: lazarusidestrconsts.lisextendunitpath2
-msgid "Extend Unit Path?"
-msgstr "Unit útvonal kibővítése?"
-
 #: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-msgid "Extend unit search path of package \"%s\" with\"%s\"?"
+#, fuzzy
+#| msgid "Extend unit search path of package \"%s\" with\"%s\"?"
+msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
 msgstr "Kibővíti a(z) \"%s\" csomag unit keresési útvonalát ezzel: \"%s\"?"
 
 #: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
@@ -10579,10 +10561,6 @@ msgstr "Forráskód-szerkesztők kezelése ..."
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr "Maximum %d"
-
-#: lazarusidestrconsts.lismaybepackageneedsacleanrebuild
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ". A(z) %s csomag talán tiszta újraépítést igényel."
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."

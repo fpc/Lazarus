@@ -5078,7 +5078,7 @@ msgid "Check options"
 msgstr "オプションをチェック"
 
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
-msgid ". Check search path package %s, try a clean rebuild, check implementation uses sections."
+msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ""
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
@@ -6765,14 +6765,6 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "現在"
 
-#: lazarusidestrconsts.liscurrentdirectory
-msgid "CurrentDirectory: %s"
-msgstr ""
-
-#: lazarusidestrconsts.liscurrentdirectory2
-msgid "CurrentDirectory: "
-msgstr ""
-
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
 msgstr "現状："
@@ -7296,10 +7288,6 @@ msgstr "Delphiユニット"
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgstr "\"設計時\"パッケージはコンポーネントとメニューアイテムをIDEに追加します。プロジェクトはそれらを使用できますがプロジェクト内に束ねる(compiled into)ことはできません。コンパイラはプロジェクトをコンパイルする際にこのパッケージのユニットを見つけないでしょう。"
-
-#: lazarusidestrconsts.lisdesktop
-msgid "Desktop: "
-msgstr ""
 
 #: lazarusidestrconsts.lisdestinationdirectory
 msgid "Destination directory"
@@ -8140,14 +8128,6 @@ msgstr "除外フィルタ"
 msgid "Executable"
 msgstr "実行ファイル"
 
-#: lazarusidestrconsts.lisexecutable2
-msgid "Executable: %s"
-msgstr ""
-
-#: lazarusidestrconsts.lisexecutable3
-msgid "Executable: "
-msgstr ""
-
 #: lazarusidestrconsts.lisexecutableisadirectory
 msgid "executable \"%s\" is a directory"
 msgstr ""
@@ -8223,7 +8203,7 @@ msgid "Expression:"
 msgstr "評価"
 
 #: lazarusidestrconsts.lisextendincludefilesearchpathofpackagewith
-msgid "Extend include file search path of package \"%s\" with\"%s\"?"
+msgid "Extend include file search path of package \"%s\" with%s\"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
@@ -8231,19 +8211,15 @@ msgid "Extend include files search path of project with%s\"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendincludepath
-msgid "Extend Include Path?"
+msgid "Extend include path?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendunitpath
 msgid "Extend unit path?"
 msgstr "ユニットのパスを拡張しますか？"
 
-#: lazarusidestrconsts.lisextendunitpath2
-msgid "Extend Unit Path?"
-msgstr ""
-
 #: lazarusidestrconsts.lisextendunitsearchpathofpackagewith
-msgid "Extend unit search path of package \"%s\" with\"%s\"?"
+msgid "Extend unit search path of package \"%s\" with%s\"%s\"?"
 msgstr ""
 
 #: lazarusidestrconsts.lisextendunitsearchpathofprojectwith
@@ -10706,10 +10682,6 @@ msgstr "ソースエディタの管理 ..."
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr "最大 %d"
-
-#: lazarusidestrconsts.lismaybepackageneedsacleanrebuild
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ""
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
