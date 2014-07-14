@@ -3998,7 +3998,7 @@ begin
   CurIncPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosIncludePath);
   CurSrcPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosSrcPath);
   CurOutPath:=aCompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
-  debugln(['TPkgManager.CheckUserSearchPaths CompOpts=',aCompilerOptions.GetOwnerName,' UnitPath="',CurUnitPath,'" IncPath="',CurIncPath,'" SrcPath="',CurSrcPath,'" OutPath="',CurOutPath,'"']);
+  //debugln(['TPkgManager.CheckUserSearchPaths CompOpts=',aCompilerOptions.GetOwnerName,' UnitPath="',CurUnitPath,'" IncPath="',CurIncPath,'" SrcPath="',CurSrcPath,'" OutPath="',CurOutPath,'"']);
 
   // create mapping source-directory to package
   SrcDirToPkg:=PackageGraph.GetMapSourceDirectoryToPackage(aPackage);
