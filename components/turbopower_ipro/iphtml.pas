@@ -10087,8 +10087,6 @@ begin
 end;
 
 procedure TIpHtmlNodeBlock.ApplyQueueProps(aCurElem: PIpHtmlElement; var aPrefor: Boolean);
-var
-  TextMetrics : TLCLTextMetric;
 begin
   with aCurElem.Props do begin
     if (FCurProps = nil) or not AIsEqualTo(FCurProps) then begin
