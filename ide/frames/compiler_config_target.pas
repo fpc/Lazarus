@@ -273,7 +273,7 @@ begin
     ItemIndex := 0;
   end;
 
-  lblTargetProc.Caption := dlgTargetProc;
+  lblTargetProc.Caption := dlgTargetProc+' (-Op)';
   LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSetMacroLCLWidgetType;
 
   // Target options
