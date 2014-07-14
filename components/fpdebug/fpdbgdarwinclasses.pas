@@ -145,7 +145,7 @@ type
 
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; override;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; override;
-    //function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; override;
+    function Pause: boolean; override;
   end;
 
 procedure RegisterDbgClasses;
@@ -762,6 +762,11 @@ begin
     if act_listCtn>0 then
       ThreadIdentifier := act_list^[0];
     end
+end;
+
+function TDbgDarwinProcess.Pause: boolean;
+begin
+  result := FpKill(ProcessID, SIGTRAP)=0;
 end;
 
 function TDbgDarwinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
