@@ -2908,7 +2908,6 @@ procedure TCodeBrowserView.BrowseTreeViewShowHint(Sender: TObject; HintInfo: PHi
 var
   TVNode: TTreeNode;
   HintStr: String;
-  HintWinRect : TRect;
 begin
   //DebugLn(['TCodeBrowserView.BrowseTreeViewShowHint ',dbgs(HintInfo^.CursorPos)]);
   HintStr:='';
