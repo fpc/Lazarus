@@ -1406,7 +1406,7 @@ end;
 
 procedure TFpDebugDebugger.QuickPause;
 begin
-  FQuickPause:=FQuickPause;
+  FQuickPause:=FDbgController.Pause;
 end;
 
 procedure TFpDebugDebugger.DoState(const OldState: TDBGState);

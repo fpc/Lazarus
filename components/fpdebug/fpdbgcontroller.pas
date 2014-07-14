@@ -126,7 +126,7 @@ type
     procedure Next;
     procedure Step;
     procedure StepOut;
-    procedure Pause;
+    function Pause: boolean;
     procedure ProcessLoop;
     procedure SendEvents(out continue: boolean);
 
@@ -449,9 +449,9 @@ begin
   //FCurrentThread.StepOut;
 end;
 
-procedure TDbgController.Pause;
+function TDbgController.Pause: boolean;
 begin
-  FCurrentProcess.Pause;
+  result := FCurrentProcess.Pause;
 end;
 
 procedure TDbgController.ProcessLoop;
