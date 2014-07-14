@@ -3629,11 +3629,6 @@ resourcestring
   lisKMOpenPackageFile = 'Open package file';
   lisCPOpenPackage = 'Open Package %s';
   lisFilterAllMessagesOfType = 'Filter all messages of type %s';
-  lisExecutable3 = 'Executable: ';
-  lisCurrentDirectory2 = 'CurrentDirectory: ';
-  lisDesktop = 'Desktop: ';
-  lisExecutable2 = 'Executable: %s';
-  lisCurrentDirectory = 'CurrentDirectory: %s';
   lisCPOpenUnit = 'Open Unit %s';
   lisCompPalOpenUnit = 'Open unit';
   lisCompPalComponentList = 'View All';
@@ -4250,16 +4245,15 @@ resourcestring
   lisPETheFileIsCurrentlyNotInTheIncludePathOfThePackageA = 'The file "%s" is '
     +'currently not in the include path of the package.%sAdd "%s" to the '
     +'include path?';
-  lisExtendUnitPath2 = 'Extend Unit Path?';
   lisExtendUnitSearchPathOfProjectWith = 'Extend unit search path of project '
     +'with%s"%s"?';
   lisExtendUnitSearchPathOfPackageWith = 'Extend unit search path of package "'
-    +'%s" with"%s"?';
-  lisExtendIncludePath = 'Extend Include Path?';
+    +'%s" with%s"%s"?';
+  lisExtendIncludePath = 'Extend include path?';
   lisExtendIncludeFilesSearchPathOfProjectWith = 'Extend include files search '
     +'path of project with%s"%s"?';
   lisExtendIncludeFileSearchPathOfPackageWith = 'Extend include file search '
-    +'path of package "%s" with"%s"?';
+    +'path of package "%s" with%s"%s"?';
   lisConflictDetected = 'Conflict detected';
   lisThereIsAlreadyAFileIn = 'There is already a file%s%s%sin %s';
   lisDuplicateUnit = 'Duplicate Unit';
@@ -5745,7 +5739,7 @@ resourcestring
   lisCanTFindAValidPpu = 'Can''t find a valid %s.ppu';
   lisCannotFind = 'Cannot find %s';
   lisUsedBy = ' used by %s';
-  lisCheckSearchPathPackageTryACleanRebuildCheckImpleme = '. Check search path'
+  lisCheckSearchPathPackageTryACleanRebuildCheckImpleme = '. Check search path of'
     +' package %s, try a clean rebuild, check implementation uses sections.';
   lisCheckIfPackageIsInTheDependencies = '. Check if package %s is in the '
     +'dependencies';
@@ -5757,8 +5751,6 @@ resourcestring
   lisOfPackage = ' of package %s';
   lisCompileWithVdForMoreDetailsCheckForDuplicates = '%s -> Compile with -vd '
     +'for more details. Check for duplicates.';
-  lisMaybePackageNeedsACleanRebuild = '. Maybe package %s needs a clean '
-    +'rebuild.';
   lisCannotFindUnit = 'Cannot find unit %s';
   lisIncompatiblePpu = ', incompatible ppu=%s';
   lisPackage3 = ', package %s';

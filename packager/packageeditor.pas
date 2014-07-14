@@ -2906,8 +2906,8 @@ begin
   NewUnitPaths:=RemoveSearchPaths(NewUnitPaths,CurUnitPaths);
   if NewUnitPaths<>'' then begin
     NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,LazPackage.Directory);
-    r:=IDEMessageDialog(lisExtendUnitPath2,
-      Format(lisExtendUnitSearchPathOfPackageWith, [LazPackage.Name,
+    r:=IDEMessageDialog(lisExtendUnitPath,
+      Format(lisExtendUnitSearchPathOfPackageWith, [LazPackage.Name, #13,
         NewUnitPaths]), mtConfirmation, [mbYes, mbNo, mbCancel]);
     case r of
     mrYes: LazPackage.CompilerOptions.OtherUnitFiles:=
@@ -2929,7 +2929,7 @@ begin
   if NewIncPaths<>'' then begin
     NewIncPaths:=CreateRelativeSearchPath(NewIncPaths,LazPackage.Directory);
     r:=IDEMessageDialog(lisExtendIncludePath,
-      Format(lisExtendIncludeFileSearchPathOfPackageWith, [LazPackage.Name,
+      Format(lisExtendIncludeFileSearchPathOfPackageWith, [LazPackage.Name, #13,
         NewIncPaths]), mtConfirmation, [mbYes, mbNo, mbCancel]);
     case r of
     mrYes: LazPackage.CompilerOptions.IncludePath:=

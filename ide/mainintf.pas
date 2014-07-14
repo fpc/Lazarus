@@ -371,7 +371,7 @@ begin
   NewUnitPaths:=RemoveSearchPaths(NewUnitPaths,CurUnitPaths);
   if NewUnitPaths<>'' then begin
     NewUnitPaths:=CreateRelativeSearchPath(NewUnitPaths,AProject.ProjectDirectory);
-    r:=IDEMessageDialog(lisExtendUnitPath2,
+    r:=IDEMessageDialog(lisExtendUnitPath,
       Format(lisExtendUnitSearchPathOfProjectWith, [#13, NewUnitPaths]),
       mtConfirmation, [mbYes, mbNo, mbCancel]);
     case r of
