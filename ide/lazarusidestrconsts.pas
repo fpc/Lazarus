@@ -2513,6 +2513,7 @@ resourcestring
   lisEnableI18NForLFM = 'Enable I18N for LFM';
   uemDebugWord = 'Debug';
   lisExtremelyVerbose = 'Extremely Verbose';
+  lisDebug = 'Debug';
   lisVeryVerbose = 'Very Verbose';
   lisVerbose = 'Verbose';
   uemToggleBreakpoint = 'Toggle &Breakpoint';

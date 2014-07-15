@@ -3380,7 +3380,7 @@ begin
 
     UrgencyStyles[mluNone].SetValues('?',ImgIDInfo,clDefault);
     UrgencyStyles[mluProgress].SetValues(lisPDProgress, ImgIDInfo, clDefault);
-    UrgencyStyles[mluDebug].SetValues(uemDebugWord, ImgIDInfo, clDefault);
+    UrgencyStyles[mluDebug].SetValues(lisDebug, ImgIDInfo, clDefault);
     UrgencyStyles[mluVerbose3].SetValues(lisExtremelyVerbose, ImgIDInfo,
       clDefault);
     UrgencyStyles[mluVerbose2].SetValues(lisVeryVerbose, ImgIDInfo, clDefault);
