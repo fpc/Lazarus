@@ -89,7 +89,7 @@ type
     function GetDebugInfo: TDbgInfo;
     procedure DoWatchFreed(Sender: TObject);
     procedure ProcessASyncWatches(Data: PtrInt);
-    procedure DoLog;
+    procedure DoLog(Data: PtrInt);
   protected
     procedure ScheduleWatchValueEval(AWatchValue: TWatchValue);
     function EvaluateExpression(AWatchValue: TWatchValue;
@@ -1086,7 +1086,7 @@ begin
     end;
 end;
 
-procedure TFpDebugDebugger.DoLog;
+procedure TFpDebugDebugger.DoLog(Data: PtrInt);
 var
   AMessage: TFpDbgLogMessage;
 begin
@@ -1368,7 +1368,7 @@ begin
   finally
     LeaveCriticalsection(FLogCritSection);
   end;
-  TThread.Queue(nil, @DoLog);
+  Application.QueueAsyncCall(@DoLog, 0);
 end;
 
 procedure TFpDebugDebugger.ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod);
