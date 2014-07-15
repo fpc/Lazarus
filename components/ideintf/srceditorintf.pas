@@ -202,23 +202,18 @@ type
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; virtual; abstract;
     function GetActiveEditor: TSourceEditorInterface; virtual; abstract;
-    function GetCompletionBoxPosition: integer; virtual; abstract;
-    function GetCompletionPlugins(Index: integer
-      ): TSourceEditorCompletionPlugin; virtual; abstract;
+    function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; virtual; abstract;
     function GetItems(Index: integer): TSourceEditorInterface; virtual; abstract;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
   public
     function SourceEditorIntfWithFilename(const Filename: string): TSourceEditorInterface; virtual; abstract;
-    property ActiveEditor: TSourceEditorInterface
-             read GetActiveEditor write SetActiveEditor;
+    property ActiveEditor: TSourceEditorInterface read GetActiveEditor write SetActiveEditor;
     function Count: integer; virtual; abstract;
     property Items[Index: integer]: TSourceEditorInterface read GetItems; default;
 
     procedure ClearErrorLines; virtual; abstract;
              deprecated 'use SourceEditorManagerIntf';   // deprecated in 0.9.29 March 2010
 
-    property CompletionBoxPosition: integer read GetCompletionBoxPosition;
-    procedure DeactivateCompletionForm; virtual; abstract;
     property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read GetActiveCompletionPlugin;
   end;
 
