@@ -839,7 +839,6 @@ type
     procedure MoveEditor(OldPageIndex, NewWindowIndex, NewPageIndex: integer);
 
     procedure UpdateStatusBar;
-    procedure ClearErrorLines; override;      // ToDo: remove. It is deprecated
     procedure ClearExecutionLines;
     procedure ClearExecutionMarks;
 
@@ -8469,14 +8468,6 @@ begin
   AEditor.UseIncrementalColor:= snIncrementalFind in States;
 end;
 
-procedure TSourceNotebook.ClearErrorLines;
-var
-  i: integer;
-begin
-  for i := 0 to EditorCount - 1 do
-    Editors[i].ErrorLine := -1;
-end;
-
 procedure TSourceNotebook.ClearExecutionLines;
 var
   i: integer;
@@ -9451,10 +9442,15 @@ end;
 
 procedure TSourceEditorManager.ClearErrorLines;
 var
-  i: Integer;
+  i, j: Integer;
+  SrcWin: TSourceNotebook;
 begin
   for i := FSourceWindowList.Count - 1 downto 0 do
-    SourceWindows[i].ClearErrorLines;
+  begin
+    SrcWin := SourceWindows[i];
+    for j := 0 to SrcWin.EditorCount - 1 do
+      SrcWin.Editors[j].ErrorLine := -1;
+  end;
 end;
 
 procedure TSourceEditorManager.ClearExecutionLines;

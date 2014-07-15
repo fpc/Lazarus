@@ -210,10 +210,6 @@ type
     property ActiveEditor: TSourceEditorInterface read GetActiveEditor write SetActiveEditor;
     function Count: integer; virtual; abstract;
     property Items[Index: integer]: TSourceEditorInterface read GetItems; default;
-
-    procedure ClearErrorLines; virtual; abstract;
-             deprecated 'use SourceEditorManagerIntf';   // deprecated in 0.9.29 March 2010
-
     property ActiveCompletionPlugin: TSourceEditorCompletionPlugin read GetActiveCompletionPlugin;
   end;
 
