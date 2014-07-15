@@ -803,6 +803,11 @@ begin
         FExceptionSignal:=SIGSEGV;
         result := deException;
         end;
+      SIGCHLD:
+        begin
+        FExceptionSignal:=SIGCHLD;
+        result := deInternalContinue;
+        end;
       SIGKILL:
         begin
         if FIsTerminating then
