@@ -1,11 +1,13 @@
 {
  /***************************************************************************
-                          Scrollbar - example
+                          Scrollbar - Example
                           ------------------
 
                    Initial Revision  : Thursday Feb 01 2001
-
                    by Shane Miller
+
+                   Second Revision   : Saturday Jul 12 2014
+                   by Jack D Linke
 
  ***************************************************************************/
 
@@ -43,15 +45,20 @@ type
     Button2 : TButton;
     Button3 : TButton;
     Button4 : TButton;
-    Procedure Button1Clicked(sender : tobject);
-    Procedure Button2Clicked(sender : tobject);
-    Procedure Button3Clicked(sender : tobject);
-    Procedure Button4Clicked(sender : tobject);
-    Procedure scrollbar1Changed(sender : tobject);
+    Label1 : TLabel;
+    Label2 : TLabel;
+    Label3 : TLabel;
+    LabelMin : TLabel;
+    LabelMax : TLabel;
+    LabelPos : TLabel;
+    Procedure Button1Clicked(Sender : TObject);
+    Procedure Button2Clicked(Sender : TObject);
+    Procedure Button3Clicked(Sender : TObject);
+    Procedure Button4Clicked(Sender : TObject);
+    Procedure Scrollbar1Changed(Sender : TObject);
     procedure Scrollbar1OnScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
   public
-    constructor Create(AOwner: TComponent); override;	
-    Procedure FormKill(Sender : TObject);
+    constructor Create(AOwner: TComponent); override;
   protected
   end;
 
@@ -60,113 +67,177 @@ var
 
 constructor TForm1.Create(AOwner: TComponent);	
 begin
-   inherited CreateNew(AOwner, 1);
-   Caption := 'Scrollbar Demo v0.1';
-   Height := 350;
+  inherited CreateNew(AOwner, 1);
+  Caption := 'Scrollbar Demo v0.2';
+  Height := 350;
+  Width := 400;
 
-   ScrollBar1 := TSCrollBar.Create(self);
-   with SCrollbar1 do
-    Begin
-      Parent := self;
-      Kind := sbVertical;
-      Left := 100;
-      Top := 50;
-      Width := 15;
-      Height := 300;
-     // align := alRight;
-      visible := True;
-      OnChange := @scrollbar1Changed;
-      OnScroll := @ScrollBar1OnScroll;
-    end;
+  ScrollBar1 := TSCrollBar.Create(self);
+  with Scrollbar1 do
+  Begin
+    Parent := Self;
+    Kind := sbVertical;
+    Left := 100;
+    Top := 50;
+    Width := 15;
+    Height := 300;
+    Visible := True;
+    OnChange := @scrollbar1Changed;
+    OnScroll := @ScrollBar1OnScroll;
+  end;
 
   Button1 := TButton.create(self);
   with Button1 do
-      begin
-     Parent := self;
-     Visible := True;
-     Caption := 'Button1';
-     onclick := @button1clicked;
-     Width := 65;
-      end;
+  begin
+    Parent := self;
+    Visible := True;
+    Caption := 'Swap Orientation';
+    Onclick := @button1clicked;
+    Width := 100;
+  end;
 
   Button2 := TButton.create(self);
   with Button2 do
-      begin
-     Parent := self;
-     Left := 65;
-     Visible := True;
-     Caption := 'Button2';
-     onclick := @button2clicked;
-     Width := 65;
-      end;
+  begin
+    Parent := self;
+    Left := 100;
+    Visible := True;
+    Caption := 'Min + 20';
+    Onclick := @button2clicked;
+    Width := 100;
+  end;
+
   Button3 := TButton.create(self);
   with Button3 do
-      begin
-     Parent := self;
-     Left := 130;
-     Visible := True;
-     Caption := 'Button3';
-     onclick := @button3clicked;
-     Width := 65;
-      end;
+  begin
+    Parent := self;
+    Left := 200;
+    Visible := True;
+    Caption := 'Max + 25';
+    Onclick := @button3clicked;
+    Width := 100;
+  end;
+
   Button4 := TButton.create(self);
   with Button4 do
-      begin
-     Parent := self;
-     Left := 195;
-     Visible := True;
-     Caption := 'Button4';
-     onclick := @button4clicked;
-     Width := 65;
-      end;
+  begin
+    Parent := self;
+    Left := 300;
+    Visible := True;
+    Caption := 'Position + 5';
+    Onclick := @button4clicked;
+    Width := 100;
+  end;
+
+  Label1 := TLabel.create(self);
+  with Label1 do
+  begin
+    Parent := self;
+    Left := 125;
+    Top := 100;
+    Visible := True;
+    Caption := 'Scrollbar1.Min = ';
+    Width := 100;
+  end;
+
+  Label2 := TLabel.create(self);
+  with Label2 do
+  begin
+    Parent := self;
+    Left := 125;
+    Top := 130;
+    Visible := True;
+    Caption := 'Scrollbar1.Max = ';
+    Width := 100;
+  end;
+
+  Label3 := TLabel.create(self);
+  with Label3 do
+  begin
+    Parent := self;
+    Left := 125;
+    Top := 160;
+    Visible := True;
+    Caption := 'Scrollbar1.Position = ';
+    Width := 100;
+  end;
+
+  LabelMin := TLabel.create(self);
+  with LabelMin do
+  begin
+    Parent := self;
+    Left := 250;
+    Top := 100;
+    Visible := True;
+    Caption := IntToStr(Scrollbar1.Min);
+    Width := 100;
+  end;
+
+  LabelMax := TLabel.create(self);
+  with LabelMax do
+  begin
+    Parent := self;
+    Left := 250;
+    Top := 130;
+    Visible := True;
+    Caption := IntToStr(Scrollbar1.Max);
+    Width := 100;
+  end;
+
+  LabelPos := TLabel.create(self);
+  with LabelPos do
+  begin
+    Parent := self;
+    Left := 250;
+    Top := 160;
+    Visible := True;
+    Caption := IntToStr(Scrollbar1.Position);
+    Width := 100;
+  end;
 
 end;
 
-
-procedure TForm1.FormKill(Sender : TObject);
-Begin
-
-End;
-
-Procedure TForm1.Button1Clicked(sender : tobject);
-Begin
+procedure TForm1.Button1Clicked(Sender : TObject);
+begin
   debugln('[Button1Clicked]');
   if ScrollBar1.Kind = sbHorizontal then
     Scrollbar1.Kind := sbVertical else
     Scrollbar1.kind := sbHorizontal;
- 
 end;
 
-Procedure TForm1.Button2Clicked(sender : tobject);
-Begin
-ScrollBar1.Min := ScrollBar1.Min + 20;
+procedure TForm1.Button2Clicked(Sender : TObject);
+begin
+  ScrollBar1.Min := ScrollBar1.Min + 20;
+  LabelMin.Caption := IntToStr(ScrollBar1.Min);
 end;
 
-Procedure TForm1.Button3Clicked(sender : tobject);
-Begin
-ScrollBar1.Max := ScrollBar1.Max + 25;
+procedure TForm1.Button3Clicked(Sender : TObject);
+begin
+  ScrollBar1.Max := ScrollBar1.Max + 25;
+  LabelMax.Caption := IntToStr(ScrollBar1.Max);
 end;
 
-Procedure TForm1.Button4Clicked(sender : tobject);
-Begin
-Scrollbar1.Position := ScrollBar1.Position + 5;
+procedure TForm1.Button4Clicked(Sender : TObject);
+begin
+  Scrollbar1.Position := ScrollBar1.Position + 5;
+  LabelPos.Caption := IntToStr(ScrollBar1.Position);
 end;
 
-Procedure TForm1.scrollbar1Changed(sender : tobject);
-Begin
-Caption := 'Scrollbar Demo - Position = '+Inttostr(Scrollbar1.Position);
-End;
+procedure TForm1.Scrollbar1Changed(Sender : TObject);
+begin
+  LabelMin.Caption := IntToStr(Scrollbar1.Min);
+  LabelMax.Caption := IntToStr(Scrollbar1.Max);
+  LabelPos.Caption := IntToStr(Scrollbar1.Position);
+end;
 
-
-
-Procedure TForm1.Scrollbar1OnScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
-Begin
+procedure TForm1.Scrollbar1OnScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
+begin
   DebugLn('.............Scrolled...............');
-End;
+end;
 
 begin
-   Application.Initialize; { calls InitProcedure which starts up GTK }
-   Application.CreateForm(TForm1, Form1);
-   Application.Run;
+  Application.Initialize; { calls InitProcedure which starts up GTK }
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
 end.
 
