@@ -5,12 +5,15 @@ unit EditorMacroListViewer;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Laz2_XMLCfg, LazUTF8, SynMacroRecorder, SynEdit,
-  SynEditKeyCmds, FileProcs, Forms, Controls, Dialogs, StdCtrls, ButtonPanel,
-  ComCtrls, ExtCtrls, Spin, Menus, LCLType, IDEWindowIntf, IDEImagesIntf,
+  Classes, SysUtils,
+  FileUtil, Laz2_XMLCfg, LazUTF8, LazLoggerBase,
+  LCLType, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, ComCtrls, ExtCtrls,
+  Spin, Menus,
+  SynMacroRecorder, SynEdit, SynEditKeyCmds,
+  IDEWindowIntf, IDEImagesIntf, SrcEditorIntf, IDEHelpIntf, IDECommands,
+  LazIDEIntf,
   LazarusIDEStrConsts, ProjectDefs, LazConf, Project, KeyMapping,
-  KeyMapShortCutDlg, MainIntf, SrcEditorIntf, IDEHelpIntf, IDECommands,
-  LazIDEIntf, IDEDialogs;
+  KeyMapShortCutDlg, MainIntf, IDEDialogs;
 
 type
   TSynEditorMacro = class(TSynMacroRecorder) end;
@@ -353,14 +356,20 @@ var
   XMLConfig: TXMLConfig;
 begin
   MacroListViewer.FIgnoreMacroChanges := True;
+  Filename := TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+GlobalConfFileName);
   try
-    Filename := TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+GlobalConfFileName);
     XMLConfig := TXMLConfig.Create(Filename);
-    EditorMacroListGlob.ReadFromXmlConf(XMLConfig, '');
-    XMLConfig.Free;
-  finally
-    MacroListViewer.FIgnoreMacroChanges := False;
+    try
+      EditorMacroListGlob.ReadFromXmlConf(XMLConfig, '');
+    finally
+      XMLConfig.Free;
+    end;
+  except
+    on E: Exception do begin
+      DebugLn('[EditorMacroListViewer.LoadGlobalInfo]  error reading "',Filename,'": ',E.Message);
+    end;
   end;
+  MacroListViewer.FIgnoreMacroChanges := False;
 end;
 
 procedure SaveGlobalInfo;
@@ -369,9 +378,18 @@ var
   XMLConfig: TXMLConfig;
 begin
   Filename := TrimFilename(AppendPathDelim(GetPrimaryConfigPath)+GlobalConfFileName);
-  XMLConfig := TXMLConfig.CreateClean(Filename);
-  EditorMacroListGlob.WriteToXmlConf(XMLConfig, '');
-  XMLConfig.Free;
+  try
+    XMLConfig := TXMLConfig.CreateClean(Filename);
+    try
+      EditorMacroListGlob.WriteToXmlConf(XMLConfig, '');
+    finally
+      XMLConfig.Free;
+    end;
+  except
+    on E: Exception do begin
+      DebugLn('[EditorMacroListViewer.SaveGlobalInfo]  error writing "',Filename,'": ',E.Message);
+    end;
+  end;
 end;
 
 { TIdeEditorMacroKeyBinding }
