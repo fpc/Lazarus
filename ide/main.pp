@@ -1607,7 +1607,8 @@ destructor TMainIDE.Destroy;
 begin
   ToolStatus:=itExiting;
   {$IFNDEF EnableOldExtTools}
-  ExternalTools.TerminateAll;
+  if Assigned(ExternalTools) then
+    ExternalTools.TerminateAll;
   {$ENDIF}
 
   DebugLn('[TMainIDE.Destroy] A ');
@@ -1681,10 +1682,8 @@ begin
   FreeThenNil(DebuggerOptions);
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(IDECommandScopes);
-
   // free control selection
-  if TheControlSelection<>nil then
-    FreeThenNil(TheControlSelection);
+  FreeThenNil(TheControlSelection);
 
   DebugLn('[TMainIDE.Destroy] B  -> inherited Destroy... ',ClassName);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
