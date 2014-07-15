@@ -832,6 +832,11 @@ begin
           result := deException;
           end;
         end;
+      SIGCHLD:
+        begin
+        FExceptionSignal:=SIGCHLD;
+        result := deInternalContinue;
+        end
       else
         begin
         ExceptionClass:='Unknown exception code '+inttostr(wstopsig(FStatus));
