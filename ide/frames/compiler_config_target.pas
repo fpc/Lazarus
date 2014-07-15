@@ -95,17 +95,17 @@ begin
   if aProcessor = '' then
     Result := '('+lisDefault+')'
   else if CompareText(aProcessor, '80386') = 0 then
-    Result := '386/486 (-Op80386)'
+    Result := '386/486 (-Cp80386)'
   else if CompareText(aProcessor, 'pentium') = 0 then
-    Result := 'Pentium/Pentium MMX (-OpPENTIUM)'
+    Result := 'Pentium/Pentium MMX (-CpPENTIUM)'
   else if CompareText(aProcessor, 'pentium2') = 0 then
-    Result := 'Pentium Pro/Pentium II/C6x86/K6 (-OpPENTIUM2)'
+    Result := 'Pentium Pro/Pentium II/C6x86/K6 (-CpPENTIUM2)'
   else if CompareText(aProcessor, 'pentium3') = 0 then
-    Result := 'Pentium III (-OpPENTIUM3)'
+    Result := 'Pentium III (-CpPENTIUM3)'
   else if CompareText(aProcessor, 'pentium4') = 0 then
-    Result := 'Pentium IV (-OpPENTIUM4)'
+    Result := 'Pentium IV (-CpPENTIUM4)'
   else if CompareText(aProcessor, 'pentiumm') = 0 then
-    Result := 'Pentium M (-OpPENTIUMM)'
+    Result := 'Pentium M (-CpPENTIUMM)'
   else
     Result := aProcessor;
 end;
@@ -115,17 +115,17 @@ function CaptionToProcessor(const aCaption: string): string;
 begin
   if aCaption = '('+lisDefault+')' then
     Result := ''
-  else if Pos('-Op80386', aCaption) > 0 then
+  else if Pos('-Cp80386', aCaption) > 0 then
     Result := '80386'
-  else if Pos('-OpPENTIUMM', aCaption) > 0 then
+  else if Pos('-CpPENTIUMM', aCaption) > 0 then
     Result := 'pentiumm'
-  else if Pos('-OpPENTIUM4', aCaption) > 0 then
+  else if Pos('-CpPENTIUM4', aCaption) > 0 then
     Result := 'pentium4'
-  else if Pos('-OpPENTIUM3', aCaption) > 0 then
+  else if Pos('-CpPENTIUM3', aCaption) > 0 then
     Result := 'pentium3'
-  else if Pos('-OpPENTIUM2', aCaption) > 0 then
+  else if Pos('-CpPENTIUM2', aCaption) > 0 then
     Result := 'pentium2'
-  else if Pos('-OpPENTIUM', aCaption) > 0 then
+  else if Pos('-CpPENTIUM', aCaption) > 0 then
     Result := 'pentium'
   else
     Result := aCaption;
@@ -273,7 +273,7 @@ begin
     ItemIndex := 0;
   end;
 
-  lblTargetProc.Caption := dlgTargetProc+' (-Op)';
+  lblTargetProc.Caption := dlgTargetProc+' (-Cp)';
   LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSetMacroLCLWidgetType;
 
   // Target options

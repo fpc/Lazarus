@@ -3108,7 +3108,7 @@ begin
     switches := switches + ' -P' + CurTargetCPU;
   { TargetProcessor }
   if TargetProcessor<>'' then
-    Switches:=Switches+' -Op'+UpperCase(TargetProcessor);
+    Switches:=Switches+' -Cp'+UpperCase(TargetProcessor);
 
   { --------------- Linking Tab ------------------- }
 
