@@ -5169,8 +5169,8 @@ begin
       begin
         // mousedown occured on expand sign -> expand/collapse
         CursorNode.Expanded:=not CursorNode.Expanded;
-      end else
-      if LogicalX >= CursorNode.DisplayIconLeft then
+      end
+      else if LogicalX >= CursorNode.DisplayIconLeft then
       begin
         // mousedown occured in text or icon
         // -> select node and begin drag operation
