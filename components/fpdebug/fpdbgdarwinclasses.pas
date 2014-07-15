@@ -125,7 +125,9 @@ type
     FIsTerminating: boolean;
     FExceptionSignal: PtrUInt;
     function GetDebugAccessRights: boolean;
+    {$ifndef VER2_6}
     procedure OnForkEvent(Sender : TObject);
+    {$endif}
   protected
     function InitializeLoader: TDbgImageLoader; override;
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
@@ -215,7 +217,11 @@ end;
 
 { TDbgDarwinThread }
 
+{$ifndef VER2_6}
 procedure TDbgDarwinProcess.OnForkEvent(Sender: TObject);
+{$else}
+procedure OnForkEvent;
+{$endif VER2_6}
 begin
   fpPTrace(PTRACE_TRACEME, 0, nil, nil);
 end;

@@ -244,7 +244,9 @@ type
     FProcProcess: TProcess;
     FIsTerminating: boolean;
     FExceptionSignal: PtrUInt;
+    {$ifndef VER2_6}
     procedure OnForkEvent(Sender : TObject);
+    {$endif}
   protected
     function InitializeLoader: TDbgImageLoader; override;
     function CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread; override;
@@ -284,7 +286,11 @@ end;
 
 { TDbgLinuxThread }
 
+{$ifndef VER2_6}
 procedure TDbgLinuxProcess.OnForkEvent(Sender: TObject);
+{$else}
+procedure OnForkEvent;
+{$endif VER2_6}
 var
   e: integer;
 begin
