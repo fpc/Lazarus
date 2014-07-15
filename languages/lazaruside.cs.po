@@ -6970,6 +6970,11 @@ msgstr "Zapnout/Vypnout"
 msgid "Disable/Enable updates for the entire window"
 msgstr "Zakázat/Povolit změny pro celé okno"
 
+#: lazarusidestrconsts.lisdebug
+msgctxt "lazarusidestrconsts.lisdebug"
+msgid "Debug"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -19138,6 +19143,7 @@ msgid "New Window"
 msgstr "Nové okno"
 
 #: lazarusidestrconsts.uemdebugword
+msgctxt "lazarusidestrconsts.uemdebugword"
 msgid "Debug"
 msgstr "Ladění"
 

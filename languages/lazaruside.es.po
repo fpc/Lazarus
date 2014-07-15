@@ -7330,6 +7330,11 @@ msgstr "Encendido/Apagado"
 msgid "Disable/Enable updates for the entire window"
 msgstr "Desactivar/Activar actualiza toda la ventana"
 
+#: lazarusidestrconsts.lisdebug
+msgctxt "lazarusidestrconsts.lisdebug"
+msgid "Debug"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -20244,6 +20249,7 @@ msgid "New Window"
 msgstr "Nueva Ventana"
 
 #: lazarusidestrconsts.uemdebugword
+msgctxt "lazarusidestrconsts.uemdebugword"
 msgid "Debug"
 msgstr "Depurar"
 

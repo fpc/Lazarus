@@ -7313,6 +7313,11 @@ msgstr "מופעל/מופסק"
 msgid "Disable/Enable updates for the entire window"
 msgstr "נטרל/אפשר עידכון של כל החלון"
 
+#: lazarusidestrconsts.lisdebug
+msgctxt "lazarusidestrconsts.lisdebug"
+msgid "Debug"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -20183,6 +20188,7 @@ msgid "New Window"
 msgstr "חלון חדש"
 
 #: lazarusidestrconsts.uemdebugword
+msgctxt "lazarusidestrconsts.uemdebugword"
 msgid "Debug"
 msgstr "נפה שגיאות"
 

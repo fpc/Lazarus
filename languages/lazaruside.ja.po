@@ -6982,6 +6982,11 @@ msgstr "On/Off"
 msgid "Disable/Enable updates for the entire window"
 msgstr "ウィンドウ全体への更新を無効／有効"
 
+#: lazarusidestrconsts.lisdebug
+msgctxt "lazarusidestrconsts.lisdebug"
+msgid "Debug"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -19264,6 +19269,7 @@ msgid "New Window"
 msgstr "新しいウィンドウ"
 
 #: lazarusidestrconsts.uemdebugword
+msgctxt "lazarusidestrconsts.uemdebugword"
 msgid "Debug"
 msgstr "デバッグ"
 

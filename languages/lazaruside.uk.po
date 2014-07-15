@@ -7167,6 +7167,11 @@ msgstr "Вкл/Викл"
 msgid "Disable/Enable updates for the entire window"
 msgstr "Вимкнення/Ввімкнення оновлень всього вікна"
 
+#: lazarusidestrconsts.lisdebug
+msgctxt "lazarusidestrconsts.lisdebug"
+msgid "Debug"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -19728,6 +19733,7 @@ msgid "New Window"
 msgstr "Нове Вікно"
 
 #: lazarusidestrconsts.uemdebugword
+msgctxt "lazarusidestrconsts.uemdebugword"
 msgid "Debug"
 msgstr "Налагодження"
 

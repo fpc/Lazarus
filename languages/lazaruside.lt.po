@@ -7199,6 +7199,11 @@ msgstr "Įj./išj."
 msgid "Disable/Enable updates for the entire window"
 msgstr "Įgalinti arba drausti viso lango naujinimus"
 
+#: lazarusidestrconsts.lisdebug
+msgctxt "lazarusidestrconsts.lisdebug"
+msgid "Debug"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -19808,6 +19813,7 @@ msgid "New Window"
 msgstr "Naujas langas"
 
 #: lazarusidestrconsts.uemdebugword
+msgctxt "lazarusidestrconsts.uemdebugword"
 msgid "Debug"
 msgstr "Derinimas"
 

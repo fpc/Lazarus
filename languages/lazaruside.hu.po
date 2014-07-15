@@ -6894,6 +6894,11 @@ msgstr "Be/Ki"
 msgid "Disable/Enable updates for the entire window"
 msgstr "Frissítés ki-/bekapcsolása a teljes ablak számára"
 
+#: lazarusidestrconsts.lisdebug
+msgctxt "lazarusidestrconsts.lisdebug"
+msgid "Debug"
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -18850,6 +18855,7 @@ msgid "New Window"
 msgstr "Új Ablak"
 
 #: lazarusidestrconsts.uemdebugword
+msgctxt "lazarusidestrconsts.uemdebugword"
 msgid "Debug"
 msgstr "Hibakeresés"
 

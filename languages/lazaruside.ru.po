@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-15 02:47+0400\n"
+"PO-Revision-Date: 2014-07-16 02:07+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7153,6 +7153,11 @@ msgstr "Вкл./выкл."
 msgid "Disable/Enable updates for the entire window"
 msgstr "Отключить/включить обновления для всего окна"
 
+#: lazarusidestrconsts.lisdebug
+msgctxt "lazarusidestrconsts.lisdebug"
+msgid "Debug"
+msgstr "Отладочное"
+
 #: lazarusidestrconsts.lisdebugger
 msgctxt "lazarusidestrconsts.lisdebugger"
 msgid "Debugger"
@@ -8410,7 +8415,7 @@ msgstr "Выделить процедуру"
 
 #: lazarusidestrconsts.lisextremelyverbose
 msgid "Extremely Verbose"
-msgstr ""
+msgstr "Крайне подробное"
 
 #: lazarusidestrconsts.lisexttoolexternaltools
 #| msgid "External tools"
@@ -8455,7 +8460,7 @@ msgstr "Не удалось сохранить файл."
 
 #: lazarusidestrconsts.lisfatal
 msgid "Fatal"
-msgstr ""
+msgstr "Фатальная ошибка"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -9307,7 +9312,7 @@ msgstr "Импортировать"
 
 #: lazarusidestrconsts.lisimportant
 msgid "Important"
-msgstr ""
+msgstr "Важное"
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -12541,7 +12546,7 @@ msgstr "Некорректный идентификатор Паскаля"
 
 #: lazarusidestrconsts.lisnote
 msgid "Note"
-msgstr ""
+msgstr "Замечание"
 
 #: lazarusidestrconsts.lisnotebooktabposbottom
 msgctxt "lazarusidestrconsts.lisnotebooktabposbottom"
@@ -12939,7 +12944,7 @@ msgstr "Вкладка"
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
-msgstr ""
+msgstr "Чрезвычайное"
 
 #: lazarusidestrconsts.lisparsed
 msgid ", parsed "
@@ -17554,7 +17559,7 @@ msgstr "Переменная"
 
 #: lazarusidestrconsts.lisverbose
 msgid "Verbose"
-msgstr ""
+msgstr "Подробное"
 
 #: lazarusidestrconsts.lisverifymethodcalls
 msgid "Verify method calls"
@@ -17578,7 +17583,7 @@ msgstr "Копировать сведения о версии в буфер об
 
 #: lazarusidestrconsts.lisveryverbose
 msgid "Very Verbose"
-msgstr ""
+msgstr "Очень подробное"
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
 #| msgid "Breakpoint Properties..."
@@ -19651,6 +19656,7 @@ msgid "New Window"
 msgstr "Новое окно"
 
 #: lazarusidestrconsts.uemdebugword
+msgctxt "lazarusidestrconsts.uemdebugword"
 msgid "Debug"
 msgstr "Отладка"
 
