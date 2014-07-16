@@ -1707,6 +1707,16 @@ begin
     if not UpAtomIs('OBJECT') then
       SaveRaiseStringExpectedButAtomFound('"object"');
     ReadNextAtom;
+  end
+  else if (cmsBlocks in Scanner.CompilerModeSwitches) and UpAtomIs('IS')
+  then begin
+    // read 'is block'
+    if not (pphIsType in ParseAttr) then
+      SaveRaiseCharExpectedButAtomFound(';');
+    ReadNextAtom;
+    if not UpAtomIs('BLOCK') then
+      SaveRaiseStringExpectedButAtomFound('"block"');
+    ReadNextAtom;
   end;
   // read procedures/method specifiers
   if CurPos.Flag=cafEND then begin

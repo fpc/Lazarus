@@ -183,7 +183,8 @@ type
                              in the (class) constructor and are constant from then on (same as final
                              fields in Java) }
     cmsDefault_unicodestring, { ? see http://wiki.freepascal.org/FPC_JVM/Language }
-    cmsTypeHelpers
+    cmsTypeHelpers,
+    cmsBlocks
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -719,7 +720,9 @@ const
     'SYSTEMCODEPAGE',
     'FINALFIELDS',
     'UNICODESTRINGS',
-    'TYPEHELPERS');
+    'TYPEHELPERS',
+    'BLOCKS'
+    );
 
   // upper case
   PascalCompilerNames: array[TPascalCompiler] of shortstring=(
