@@ -4458,6 +4458,10 @@ msgstr "nem található a futtatható \"%s\""
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "A Lazarus indító nem található:%s%s"
 
+#: lazarusidestrconsts.liscannotfindpp
+msgid "Cannot find PPU of unit %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
 msgstr "Nem található a unit: %s"
@@ -5005,6 +5009,7 @@ msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and
 msgstr ""
 
 #: lazarusidestrconsts.lischeckifpackageisinthedependencies
+msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
 msgid ". Check if package %s is in the dependencies"
 msgstr ". Elenőrizni kell, hogy a(z) %s csomag szerepel-e a függőségek között"
 
@@ -5017,6 +5022,7 @@ msgid "Check options"
 msgstr "Beállítások ellenőrzése"
 
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ""
 
@@ -8186,6 +8192,10 @@ msgstr "A fájl mentése nem sikerült."
 msgid "Fatal"
 msgstr "Végzetes"
 
+#: lazarusidestrconsts.lisfatal2
+msgid "%s(%s,%s) Fatal: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "A tervező sokszínűségének csökkentése"
@@ -10567,6 +10577,10 @@ msgstr "Forráskód-szerkesztők kezelése ..."
 msgid "Max %d"
 msgstr "Maximum %d"
 
+#: lazarusidestrconsts.lismaybepackage
+msgid ". Maybe package %s needs a clean rebuild."
+msgstr ""
+
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "%s Talán újra kell fordítani a csomagot."
@@ -11842,6 +11856,10 @@ msgstr "Ezen unitok áthelyezése törést okoz a uses részükben. Lásd az Üz
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(ms)"
+
+#: lazarusidestrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ""
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"

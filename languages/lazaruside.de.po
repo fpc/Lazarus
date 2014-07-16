@@ -4638,6 +4638,10 @@ msgstr "kann ausführbare Datei \"%s\" nicht finden"
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "Kann Lazarus-Starter %s%s nicht finden"
 
+#: lazarusidestrconsts.liscannotfindpp
+msgid "Cannot find PPU of unit %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
 msgstr "Kann Unit %s nicht finden"
@@ -5197,6 +5201,7 @@ msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and
 msgstr ""
 
 #: lazarusidestrconsts.lischeckifpackageisinthedependencies
+msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
 msgid ". Check if package %s is in the dependencies"
 msgstr ""
 
@@ -5209,6 +5214,7 @@ msgid "Check options"
 msgstr "Einstellungen prüfen"
 
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ""
 
@@ -8435,6 +8441,10 @@ msgstr "Speichern der Datei fehlgeschlagen."
 msgid "Fatal"
 msgstr ""
 
+#: lazarusidestrconsts.lisfatal2
+msgid "%s(%s,%s) Fatal: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Designer möglichst selten neu zeichnen"
@@ -10903,6 +10913,10 @@ msgstr "Quelltexteditoren verwalten ..."
 msgid "Max %d"
 msgstr "Max %d"
 
+#: lazarusidestrconsts.lismaybepackage
+msgid ". Maybe package %s needs a clean rebuild."
+msgstr ""
+
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "%s Vielleicht müssen sie das Package neu kompilieren."
@@ -12312,6 +12326,10 @@ msgstr ""
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(ms)"
+
+#: lazarusidestrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ""
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"

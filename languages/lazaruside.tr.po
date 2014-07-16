@@ -4508,6 +4508,10 @@ msgstr ""
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "Lazarus başlatıcı bulunamıyor:%s%s"
 
+#: lazarusidestrconsts.liscannotfindpp
+msgid "Cannot find PPU of unit %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
 msgstr ""
@@ -5057,6 +5061,7 @@ msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and
 msgstr ""
 
 #: lazarusidestrconsts.lischeckifpackageisinthedependencies
+msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
 msgid ". Check if package %s is in the dependencies"
 msgstr ""
 
@@ -5069,6 +5074,7 @@ msgid "Check options"
 msgstr ""
 
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ""
 
@@ -8257,6 +8263,10 @@ msgstr ""
 msgid "Fatal"
 msgstr ""
 
+#: lazarusidestrconsts.lisfatal2
+msgid "%s(%s,%s) Fatal: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr ""
@@ -10677,6 +10687,10 @@ msgstr ""
 msgid "Max %d"
 msgstr ""
 
+#: lazarusidestrconsts.lismaybepackage
+msgid ". Maybe package %s needs a clean rebuild."
+msgstr ""
+
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr ""
@@ -12136,6 +12150,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
+msgstr ""
+
+#: lazarusidestrconsts.lismultiplepack
+msgid ", multiple packages: "
 msgstr ""
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt

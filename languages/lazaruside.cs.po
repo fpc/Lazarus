@@ -4509,6 +4509,10 @@ msgstr "nelze najít spustitelný %s"
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "Nelze nalézt spouštěč lazarusu:%s%s"
 
+#: lazarusidestrconsts.liscannotfindpp
+msgid "Cannot find PPU of unit %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
 msgstr "Nelze najít unitu %s"
@@ -5059,6 +5063,7 @@ msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and
 msgstr ". Zkontrolujte, jestli balíček %s vytváří %s.ppu, jestli tento soubor nic nemaže a jestli žádné dva balíčky nemají přístup k zdroji unity."
 
 #: lazarusidestrconsts.lischeckifpackageisinthedependencies
+msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
 msgid ". Check if package %s is in the dependencies"
 msgstr ". Zkostrolujte, jestli je balíček %s v seznamu závislostí"
 
@@ -5073,6 +5078,7 @@ msgstr "Zkontrolovat nastavení"
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
 #, fuzzy
 #| msgid ". Check search path package %s, try a clean rebuild, check implementation uses sections."
+msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr "Zkontrolujte cestu pro hledání balíčku %s, zkuste čisté sestavení, zkontrolujte sekci 'uses' sekce 'implementation'."
 
@@ -8276,6 +8282,10 @@ msgstr "Uložení souboru selhalo."
 msgid "Fatal"
 msgstr "Fatální"
 
+#: lazarusidestrconsts.lisfatal2
+msgid "%s(%s,%s) Fatal: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
 msgstr "Redukovat vykreslování návrháře"
@@ -10678,6 +10688,10 @@ msgstr "Spravovat editory zdrojových kódů ..."
 msgid "Max %d"
 msgstr "Max %d"
 
+#: lazarusidestrconsts.lismaybepackage
+msgid ". Maybe package %s needs a clean rebuild."
+msgstr ""
+
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "%s Možná musíte znovu přeložit balíček."
@@ -11965,6 +11979,10 @@ msgstr "Přesunt těchto unit rozbije jejich sekce uses. Podívej se do okna Zpr
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(ms)"
+
+#: lazarusidestrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ""
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"

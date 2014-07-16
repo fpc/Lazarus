@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-16 02:07+0400\n"
+"PO-Revision-Date: 2014-07-16 04:22+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4654,6 +4654,10 @@ msgstr "невозможно найти исполнимый файл \"%s\""
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "Невозможно найти программу запуска Lazarus:%s%s"
 
+#: lazarusidestrconsts.liscannotfindpp
+msgid "Cannot find PPU of unit %s"
+msgstr "Невозможно найти файл PPU модуля %s"
+
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
 msgstr "Невозможно найти модуль %s"
@@ -5215,6 +5219,7 @@ msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and
 msgstr ". Проверьте, что пакет %s создаёт %s.ppu и этот файл ничем не удаляется. Также убедитесь, что два пакета одновременно не имеют доступа к исходному коду модуля."
 
 #: lazarusidestrconsts.lischeckifpackageisinthedependencies
+msgctxt "lazarusidestrconsts.lischeckifpackageisinthedependencies"
 msgid ". Check if package %s is in the dependencies"
 msgstr ". Проверьте, что пакет %s имеется в списке зависимостей"
 
@@ -5227,6 +5232,7 @@ msgid "Check options"
 msgstr "Проверка параметров"
 
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
+msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
 msgstr ". Проверьте список путей поиска пакета %s, попробуйте пересобрать с очисткой, проверьте выражения Uses в секциях Implementation."
 
@@ -8452,7 +8458,7 @@ msgstr "Не удалось загрузить состояние сворачи
 
 #: lazarusidestrconsts.lisfailedtoresolvemacros
 msgid "failed to resolve macros"
-msgstr ""
+msgstr "не удалось раскрыть макрос"
 
 #: lazarusidestrconsts.lisfailedtosavefile
 msgid "Failed to save file."
@@ -8461,6 +8467,10 @@ msgstr "Не удалось сохранить файл."
 #: lazarusidestrconsts.lisfatal
 msgid "Fatal"
 msgstr "Фатальная ошибка"
+
+#: lazarusidestrconsts.lisfatal2
+msgid "%s(%s,%s) Fatal: %s"
+msgstr "%s(%s,%s) Фатальная ошибка: %s"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -8609,7 +8619,7 @@ msgstr "Файл %s имеет некорректный синтаксис."
 
 #: lazarusidestrconsts.lisfileshasregisterprocedureinpackageusessection
 msgid "Files: %s, has Register procedure: %s, in package uses section: %s"
-msgstr ""
+msgstr "Файлов: %s, с процедурой Register: %s, в выражении Uses пакета: %s"
 
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
@@ -8641,7 +8651,7 @@ msgstr "Фильтр: %s"
 
 #: lazarusidestrconsts.lisfilterallmessagesoftype
 msgid "Filter all messages of type %s"
-msgstr ""
+msgstr "Отфильтровывать сообщения типа %s"
 
 #: lazarusidestrconsts.lisfilteralreadyexists
 msgid "Filter already exists"
@@ -8844,7 +8854,7 @@ msgstr "&Назад"
 
 #: lazarusidestrconsts.lisfreeingbufferlines
 msgid "freeing buffer lines: %s"
-msgstr ""
+msgstr "освобождение строк буфера: %s"
 
 #: lazarusidestrconsts.lisfreepascal
 msgid "Free Pascal"
@@ -9042,15 +9052,15 @@ msgstr "Справка по сообщению компилятора Free Pasca
 
 #: lazarusidestrconsts.lishideallhintsandwarningsbyinsertingidedirectivesh
 msgid "Hide all hints and warnings by inserting IDE directives {%H-}"
-msgstr ""
+msgstr "Скрыть все подсказки и предупреждения вставкой директив IDE {%H-}"
 
 #: lazarusidestrconsts.lishidemessageatbyinsertingidedirectiveh
 msgid "Hide message at %s by inserting IDE directive {%H-}"
-msgstr ""
+msgstr "Скрыть сообщение в позиции %s вставкой директивы IDE {%H-}"
 
 #: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
 msgid "Hide message by inserting IDE directive {%H-}"
-msgstr ""
+msgstr "Скрыть сообщение вставкой директивы IDE {%H-}"
 
 #: lazarusidestrconsts.lishidemessageviadirective
 msgid "Hide message via directive"
@@ -9062,11 +9072,11 @@ msgstr "Скрыть средство поиска"
 
 #: lazarusidestrconsts.lishidewithpackageoptionvm
 msgid "Hide with package option (-vm%s)"
-msgstr ""
+msgstr "Скрыть с помощью параметра пакета (-vm%s)"
 
 #: lazarusidestrconsts.lishidewithprojectoptionvm
 msgid "Hide with project option (-vm%s)"
-msgstr ""
+msgstr "Скрыть с помощью параметра проекта (-vm%s)"
 
 #: lazarusidestrconsts.lishint
 msgid "Hint"
@@ -9228,11 +9238,11 @@ msgstr "текущего режима сборки"
 
 #: lazarusidestrconsts.lisiecoerroropeningxml
 msgid "Error opening XML"
-msgstr ""
+msgstr "Ошибка при открытии XML"
 
 #: lazarusidestrconsts.lisiecoerroropeningxmlfile
 msgid "Error opening XML file \"%s\":%s%s"
-msgstr ""
+msgstr "Ошибка при открытии файла XML \"%s\":%s%s"
 
 #: lazarusidestrconsts.lisiecoexportcompileroptions
 msgid "Export Compiler Options"
@@ -9257,7 +9267,7 @@ msgstr "Загрузить из файла"
 
 #: lazarusidestrconsts.lisieconocompileroptionsinfile
 msgid "File \"%s\" does not contain compiler options."
-msgstr ""
+msgstr "Файл \"%s\" не содержит параметров компилятора."
 
 #: lazarusidestrconsts.lisiecorecentfiles
 msgid "Recent files"
@@ -9269,7 +9279,7 @@ msgstr "Сохранить в файл"
 
 #: lazarusidestrconsts.lisifnotchecked
 msgid "If not checked:"
-msgstr ""
+msgstr "если не отмечен:"
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 #| msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
@@ -9357,7 +9367,7 @@ msgstr "Искать в подкаталогах"
 
 #: lazarusidestrconsts.lisincompatibleppu
 msgid ", incompatible ppu=%s"
-msgstr ""
+msgstr ", несовместимый PPU=%s"
 
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
@@ -9614,7 +9624,7 @@ msgstr "Интерактивный режим"
 
 #: lazarusidestrconsts.lisinternalerror
 msgid "internal error: %s"
-msgstr ""
+msgstr "внутренняя ошибка: %s"
 
 #: lazarusidestrconsts.lisinvalidcommand
 msgid "Invalid command"
@@ -9642,11 +9652,11 @@ msgstr "Неверные строка, столбец в сообщении%s%s"
 
 #: lazarusidestrconsts.lisinvalidmacrosin
 msgid "Invalid macros in \"%s\""
-msgstr ""
+msgstr "Некорректный макрос в \"%s\""
 
 #: lazarusidestrconsts.lisinvalidmacrosinexternaltool
 msgid "Invalid macros \"%s\" in external tool \"%s\""
-msgstr ""
+msgstr "Некорректный макрос \"%s\" внешнего средства \"%s\""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
 #| msgid "Invalid macro %s%s%s. The macro name must be a Pascal identifier."
@@ -10925,6 +10935,10 @@ msgstr "Управление редакторами исходного кода 
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr "Максимум %d"
+
+#: lazarusidestrconsts.lismaybepackage
+msgid ". Maybe package %s needs a clean rebuild."
+msgstr ". Возможно, пакет %s требует пересборки с очисткой."
 
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
@@ -12291,19 +12305,19 @@ msgstr "Прочие >>"
 
 #: lazarusidestrconsts.lismove
 msgid "Move"
-msgstr ""
+msgstr "Переместить"
 
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
-msgstr ""
+msgstr "Перемещение файлов"
 
 #: lazarusidestrconsts.lismovefiles2
 msgid "Move files?"
-msgstr ""
+msgstr "Переместить файлы?"
 
 #: lazarusidestrconsts.lismovefilesfromtothedirectoryof
 msgid "Move %s file(s) from %s to the directory%s%s%sof %s."
-msgstr ""
+msgstr "Переместить файлы (%s шт.) из %s в каталог%s%s,%sпринадлежащий %s."
 
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
@@ -12315,11 +12329,11 @@ msgstr "Переместить \"%s\" на позицию вверх"
 
 #: lazarusidestrconsts.lismoveorcopyfiles
 msgid "Move or Copy files?"
-msgstr ""
+msgstr "Переместить или копировать файлы?"
 
 #: lazarusidestrconsts.lismoveorcopyfilesfromtothedirectoryofpackage
 msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s."
-msgstr ""
+msgstr "Переместить или копировать файлы (%s шт.) из %s в каталог%s%s,%sпринадлежащий %s."
 
 #: lazarusidestrconsts.lismovepage
 #| msgid "Move Page ..."
@@ -12345,6 +12359,10 @@ msgstr ""
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(мс)"
+
+#: lazarusidestrconsts.lismultiplepack
+msgid ", multiple packages: "
+msgstr ", несколько пакетов: "
 
 #: lazarusidestrconsts.lismvsavemessagestofiletxt
 msgid "Save messages to file (*.txt)"
@@ -12903,7 +12921,7 @@ msgstr "пакет %s"
 
 #: lazarusidestrconsts.lispackage3
 msgid ", package %s"
-msgstr ""
+msgstr ", пакет %s"
 
 #: lazarusidestrconsts.lispackageinfo
 #| msgid "Package Info"
