@@ -4044,7 +4044,7 @@ begin
   end;
 end;
 
-function TProject.QueryInterface(constref iid: TGuid; out obj): LongInt; stdcall;
+function TProject.QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   if GetInterface(iid, obj) then
     Result := S_OK
@@ -4052,12 +4052,12 @@ begin
     Result := E_NOINTERFACE;
 end;
 
-function TProject._AddRef: LongInt; stdcall;
+function TProject._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TProject._Release: LongInt; stdcall;
+function TProject._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;

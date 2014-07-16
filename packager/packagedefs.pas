@@ -2428,7 +2428,7 @@ begin
   FAutoInstall:=AValue;
 end;
 
-function TLazPackage.QueryInterface(constref iid: TGuid; out obj): LongInt; stdcall;
+function TLazPackage.QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   if GetInterface(iid, obj) then
     Result := S_OK
@@ -2436,12 +2436,12 @@ begin
     Result := E_NOINTERFACE;
 end;
 
-function TLazPackage._AddRef: LongInt; stdcall;
+function TLazPackage._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TLazPackage._Release: LongInt; stdcall;
+function TLazPackage._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
