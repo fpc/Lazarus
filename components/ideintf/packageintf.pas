@@ -100,11 +100,13 @@ type
 
   TLazPackageID = class(TIDEProjPackBase)
   private
+    FIDAsString: string;
     FIDAsWord: string;
+    function GetIDAsString: string;
+    function GetIDAsWord: string;
   protected
     FName: string;
     FVersion: TPkgVersion;
-    FIDAsString: string;
     procedure SetName(const AValue: string); virtual;
     procedure UpdateIDAsString;
     procedure VersionChanged(Sender: TObject); virtual;
@@ -119,8 +121,8 @@ type
   public
     property Name: string read FName write SetName;
     property Version: TPkgVersion read FVersion;
-    property IDAsString: string read FIDAsString;
-    property IDAsWord: string read FIDAsWord;
+    property IDAsString: string read GetIDAsString;
+    property IDAsWord: string read GetIDAsWord;
   end;
 
   TPackageInstallType = (
@@ -570,13 +572,6 @@ end;
 
 { TLazPackageID }
 
-procedure TLazPackageID.SetName(const AValue: string);
-begin
-  if FName=AValue then exit;
-  FName:=AValue;
-  UpdateIDAsString;
-end;
-
 constructor TLazPackageID.Create;
 begin
   FVersion:=TPkgVersion.Create;
@@ -669,6 +664,23 @@ procedure TLazPackageID.AssignID(Source: TLazPackageID);
 begin
   Name:=Source.Name;
   Version.Assign(Source.Version);
+end;
+
+function TLazPackageID.GetIDAsString: string;
+begin
+  Result := FIDAsString;
+end;
+
+function TLazPackageID.GetIDAsWord: string;
+begin
+  Result := FIDAsWord;
+end;
+
+procedure TLazPackageID.SetName(const AValue: string);
+begin
+  if FName=AValue then exit;
+  FName:=AValue;
+  UpdateIDAsString;
 end;
 
 { TIDEPackage }
