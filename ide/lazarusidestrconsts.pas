@@ -5740,6 +5740,7 @@ resourcestring
   lisCanTFindAValidPpu = 'Can''t find a valid %s.ppu';
   lisCannotFind = 'Cannot find %s';
   lisUsedBy = ' used by %s';
+  lisMaybePackage = '. Maybe package %s needs a clean rebuild.';
   lisCheckSearchPathPackageTryACleanRebuildCheckImpleme = '. Check search path of'
     +' package %s, try a clean rebuild, check implementation uses sections.';
   lisCheckIfPackageIsInTheDependencies = '. Check if package %s is in the '
@@ -5750,11 +5751,14 @@ resourcestring
   lisEnableFlagUseUnitOfUnitInPackage = '. Enable flag "Use Unit" of unit %s in package %s';
   lisOfTheProjectInspector = ' of the Project Inspector';
   lisOfPackage = ' of package %s';
+  lisFatal2 = '%s(%s,%s) Fatal: %s';
   lisCompileWithVdForMoreDetailsCheckForDuplicates = '%s -> Compile with -vd '
     +'for more details. Check for duplicates.';
   lisCannotFindUnit = 'Cannot find unit %s';
   lisIncompatiblePpu = ', incompatible ppu=%s';
   lisPackage3 = ', package %s';
+  lisCannotFindPP = 'Cannot find PPU of unit %s';
+  lisMultiplePack = ', multiple packages: ';
   lisQuickFixError = 'QuickFix error';
   lisPositionOutsideOfSource = '%s (position outside of source';
   lisHideWithProjectOptionVm = 'Hide with project option (-vm%s)';

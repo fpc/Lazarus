@@ -1880,7 +1880,7 @@ begin
         if PPUFiles.Count=1 then
           s+=Format(lisPackage3, [TIDEPackage(PPUFiles.Objects[0]).Name])
         else begin
-          s+=', multiple packages: ';
+          s+=lisMultiplePack;
           for i:=0 to PPUFiles.Count-1 do begin
             if i>0 then
               s+=', ';

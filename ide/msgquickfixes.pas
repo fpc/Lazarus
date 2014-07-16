@@ -572,43 +572,43 @@ begin
         if PPUFilename<>'' then begin
           // there is a ppu file, but the compiler didn't like it
           // => change message
-          s:='Can not find '+MissingUnitname;
+          s:=Format(lisCannotFind, [MissingUnitname]);
           if UsedByUnit<>'' then
-            s+=' used by '+UsedByUnit;
-          s+=', ppu='+CreateRelativePath(PPUFilename,Dir);
+            s+=Format(lisUsedBy, [UsedByUnit]);
+          s+=', PPU='+CreateRelativePath(PPUFilename,Dir);
           if PkgName<>'' then
-            s+=', package '+PkgName;
+            s+=Format(lisPackage3, [PkgName]);
         end else if PkgName<>'' then begin
           // ppu is missing, but the package is known
           // => change message
-          s:='Can''t find ppu of unit '+MissingUnitname;
+          s:=Format(lisCannotFindPP, [MissingUnitname]);
           if UsedByUnit<>'' then
-            s+=' used by '+UsedByUnit;
-          s+='. Maybe package '+PkgName+' needs a clean rebuild.';
+            s+=Format(lisUsedBy, [UsedByUnit]);
+          s+=Format(lisMaybePackage, [PkgName]);
         end;
       end else begin
         // there is no ppu file in the unit path
-        s:='Can not find unit '+MissingUnitname;
+        s:=Format(lisCannotFindUnit, [MissingUnitname]);
         if UsedByUnit<>'' then
-          s+=' used by '+UsedByUnit;
+          s+=Format(lisUsedBy, [UsedByUnit]);
         if (UsedByOwner is TIDEPackage)
         and (CompareTextCT(TIDEPackage(UsedByOwner).Name,PkgName)=0) then
         begin
           // two units of a package can not find each other
-          s+='. Check search path package '+TIDEPackage(UsedByOwner).Name+', try a clean rebuild, check implementation uses sections.';
+          s+=Format(lisCheckSearchPathPackageTryACleanRebuildCheckImpleme, [TIDEPackage(UsedByOwner).Name]);
         end else begin
           if PkgName<>'' then
-            s+='. Check if package '+PkgName+' is in the dependencies';
+            s+=Format(lischeckifpackageisinthedependencies, [PkgName]);
           if UsedByOwner is TLazProject then
-            s+=' of the project inspector'
+            s+=lisoftheprojectinspector
           else if UsedByOwner is TIDEPackage then
-            s+=' of package '+TIDEPackage(UsedByOwner).Name;
+            s+=Format(lisOfPackage, [TIDEPackage(UsedByOwner).Name]);
         end;
         s+='.';
       end;
       Msg.GetSourcePosition(Filename,Line,Col);
-      Msg.Msg:=CreateRelativePath(Filename,Msg.Directory)
-          +'('+IntToStr(Line)+','+IntToStr(Col)+') Fatal: '+s;
+      Msg.Msg:=Format(lisFatal2, [CreateRelativePath(Filename, Msg.Directory),
+        IntToStr(Line), IntToStr(Col), s]);
       {$IFDEF VerboseQuickFixUnitNotFoundPosition}
       debugln(['TQuickFixUnitNotFoundPosition.Execute Msg.Msg="',Msg.Msg,'"']);
       {$ENDIF}

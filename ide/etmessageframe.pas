@@ -712,7 +712,7 @@ begin
           if sl[i]='' then continue;
           MsgLine:=PendingLines.CreateLine(-1);
           MsgLine.Urgency:=mluPanic;
-          MsgLine.Msg:='internal error: '+sl[i];
+          MsgLine.Msg:=Format(lisInternalError, [sl[i]]);
           PendingLines.Add(MsgLine);
         end;
       finally
