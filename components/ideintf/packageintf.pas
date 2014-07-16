@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, contnrs, LCLProc, Forms, LazConfigStorage,
-  NewItemIntf, ProjPackIntf, CompOptsIntf, IDEOptionsIntf;
+  NewItemIntf, ProjPackIntf, IDEOptionsIntf;
   
 const
   PkgDescGroupName = 'Package';
