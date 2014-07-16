@@ -98,7 +98,7 @@ type
 
   { TLazPackageID }
 
-  TLazPackageID = class(TProjPack)
+  TLazPackageID = class(TIDEProjPackBase)
   private
     FIDAsWord: string;
   protected

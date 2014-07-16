@@ -368,7 +368,7 @@ type
     petUnit
     );
 
-  TLazProject = class(TProjPack)
+  TLazProject = class(TIDEProjPackBase)
   private
     FCleanOutputFileMask: string;
     FCleanSourcesFileMask: string;

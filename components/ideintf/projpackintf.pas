@@ -43,9 +43,9 @@ type
   end;
   {$M-}
 
-  { TProjPack }
+  { TIDEProjPackBase }
 
-  TProjPack = class(TPersistent)
+  TIDEProjPackBase = class(TPersistent)
   private
   protected
     FIDEOptions: TAbstractIDEOptions; //actually TProjectIDEOptions or TPackageIDEOptions;
@@ -58,14 +58,14 @@ type
 
 implementation
 
-{ TProjPack }
+{ TIDEProjPackBase }
 
-constructor TProjPack.Create;
+constructor TIDEProjPackBase.Create;
 begin
   inherited Create;
 end;
 
-destructor TProjPack.Destroy;
+destructor TIDEProjPackBase.Destroy;
 begin
   inherited Destroy;
 end;
