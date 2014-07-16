@@ -771,7 +771,6 @@ type
     FAutoOpenDesignerFormsDisabled: boolean;
     FBookmarks: TProjectBookmarkList;
     fChanged: boolean;
-    FCompilerOptions: TProjectCompilerOptions;
     fCurStorePathDelim: TPathDelimSwitch; // used by OnLoadSaveFilename
     FDefineTemplates: TProjectDefineTemplates;
     fDestroying: boolean;
@@ -827,6 +826,7 @@ type
     procedure ClearBuildModes;
     function GetActiveBuildModeID: string;
     function GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
+    function GetCompilerOptions: TProjectCompilerOptions;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -1098,7 +1098,7 @@ type
     property BuildModesBackup: TProjectBuildModes read FBuildModesBackup;
     property SkipCheckLCLInterfaces: boolean read FSkipCheckLCLInterfaces
                                              write SetSkipCheckLCLInterfaces;
-    property CompilerOptions: TProjectCompilerOptions read FCompilerOptions;
+    property CompilerOptions: TProjectCompilerOptions read GetCompilerOptions;
     property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
     property Destroying: boolean read fDestroying;
     property EnableI18N: boolean read FEnableI18N write SetEnableI18N;
@@ -4076,12 +4076,12 @@ end;
 
 function TProject.GetTargetFilename: string;
 begin
-  Result:=FCompilerOptions.TargetFilename;
+  Result:=FLazCompilerOptions.TargetFilename;
 end;
 
 procedure TProject.SetTargetFilename(const NewTargetFilename: string);
 begin
-  FCompilerOptions.TargetFilename:=NewTargetFilename;
+  FLazCompilerOptions.TargetFilename:=NewTargetFilename;
 end;
 
 procedure TProject.SetEnableI18N(const AValue: boolean);
@@ -4137,6 +4137,11 @@ end;
 function TProject.GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
 begin
   Result := FAllEditorsInfoList[Index];
+end;
+
+function TProject.GetCompilerOptions: TProjectCompilerOptions;
+begin
+  Result := TProjectCompilerOptions(FLazCompilerOptions);
 end;
 
 procedure TProject.ClearBuildModes;
@@ -5085,13 +5090,9 @@ begin
   if FActiveBuildMode=AValue then exit;
   FActiveBuildMode:=AValue;
   if FActiveBuildMode<>nil then
-  begin
-    FCompilerOptions:=FActiveBuildMode.CompilerOptions;
-    FLazCompilerOptions:=FCompilerOptions;
-  end else begin
-    FCompilerOptions:=nil;
+    FLazCompilerOptions:=FActiveBuildMode.CompilerOptions
+  else
     FLazCompilerOptions:=nil;
-  end;
   {$IFDEF VerboseIDEModified}
   debugln(['TProject.SetActiveBuildMode ']);
   {$ENDIF}

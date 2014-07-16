@@ -557,7 +557,6 @@ type
     FAutoUpdate: TPackageUpdatePolicy;
     FFPDocPackageName: string;
     FOptionsBackup: TLazPackage;
-    FCompilerOptions: TPkgCompilerOptions;
     FComponents: TFPList; // TFPList of TPkgComponent
     FDefineTemplates: TLazPackageDefineTemplates;
     FDescription: string;
@@ -602,6 +601,7 @@ type
     FUserIgnoreChangeStamp: integer;
     FUserReadOnly: boolean;
     function GetAutoIncrementVersionOnBuild: boolean;
+    function GetCompilerOptions: TPkgCompilerOptions;
     function GetComponentCount: integer;
     function GetComponents(Index: integer): TPkgComponent;
     function GetRemovedFiles(Index: integer): TPkgFile;
@@ -770,28 +770,23 @@ type
     property AddToProjectUsesSection: boolean read FAddToProjectUsesSection
                                               write SetAddToProjectUsesSection;
     property Author: string read FAuthor write SetAuthor;
-    property AutoIncrementVersionOnBuild: boolean
-                                           read GetAutoIncrementVersionOnBuild
-                                           write SetAutoIncrementVersionOnBuild;
-    property AutoUpdate: TPackageUpdatePolicy read FAutoUpdate
-                                              write SetAutoUpdate;
-    property CompilerOptions: TPkgCompilerOptions read FCompilerOptions;
+    property AutoIncrementVersionOnBuild: boolean read GetAutoIncrementVersionOnBuild
+                                                 write SetAutoIncrementVersionOnBuild;
+    property AutoUpdate: TPackageUpdatePolicy read FAutoUpdate write SetAutoUpdate;
+    property CompilerOptions: TPkgCompilerOptions read GetCompilerOptions;
     property ComponentCount: integer read GetComponentCount;
     property Components[Index: integer]: TPkgComponent read GetComponents;
     property DefineTemplates: TLazPackageDefineTemplates read FDefineTemplates
                                                          write FDefineTemplates;
     property Description: string read FDescription write SetDescription;
     property Directory: string read FDirectory; // the directory of the .lpk file with macros
-    property Editor: TBasePackageEditor read FPackageEditor
-                                        write SetPackageEditor;
+    property Editor: TBasePackageEditor read FPackageEditor write SetPackageEditor;
     property EnableI18N: Boolean read FEnableI18N write SetEnableI18N;
     property EnableI18NForLFM: boolean read FEnableI18NForLFM write SetEnableI18NForLFM;
     property FileReadOnly: boolean read FFileReadOnly write SetFileReadOnly;
     property Files[Index: integer]: TPkgFile read GetFiles;
-    property FirstRemovedDependency: TPkgDependency
-                                                   read FFirstRemovedDependency;
-    property FirstRequiredDependency: TPkgDependency
-                                                  read FFirstRequiredDependency;
+    property FirstRemovedDependency: TPkgDependency read FFirstRemovedDependency;
+    property FirstRequiredDependency: TPkgDependency read FFirstRequiredDependency;
     property FirstUsedByDependency: TPkgDependency read FFirstUsedByDependency;
     property Flags: TLazPackageFlags read FFlags write SetFlags;
     property HoldPackageCount: integer read FHoldPackageCount;
@@ -808,13 +803,10 @@ type
     property Missing: boolean read FMissing write FMissing; // lpk is missing, Note: virtual packages can have Missing=false
     property OptionsBackup: TLazPackage read FOptionsBackup;
     property OutputStateFile: string read FOutputStateFile write SetOutputStateFile;
-    property PackageType: TLazPackageType read FPackageType
-                                          write SetPackageType;
-    property POOutputDirectory: string read FPOOutputDirectory
-                                       write SetPOOutputDirectory;
+    property PackageType: TLazPackageType read FPackageType write SetPackageType;
+    property POOutputDirectory: string read FPOOutputDirectory write SetPOOutputDirectory;
     property Provides: TStrings read FProvides write SetProvides;
-    property PublishOptions: TPublishPackageOptions
-                                     read fPublishOptions write fPublishOptions;
+    property PublishOptions: TPublishPackageOptions read fPublishOptions write fPublishOptions;
     property Registered: boolean read FRegistered write SetRegistered;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
     property SourceDirectories: TFileReferenceList read FSourceDirectories;
@@ -2310,6 +2302,11 @@ begin
   Result:=lpfAutoIncrementVersionOnBuild in FFlags;
 end;
 
+function TLazPackage.GetCompilerOptions: TPkgCompilerOptions;
+begin
+  Result := TPkgCompilerOptions(FLazCompilerOptions);
+end;
+
 function TLazPackage.GetComponentCount: integer;
 begin
   Result:=FComponents.Count;
@@ -2480,7 +2477,7 @@ begin
   FHasDirectory:=(FDirectory<>'') and (FDirectory[length(FDirectory)]=PathDelim);
   FHasStaticDirectory:=FHasDirectory and FilenameIsAbsolute(FDirectory);
   FUsageOptions.BaseDirectory:=FDirectory;
-  FCompilerOptions.BaseDirectory:=FDirectory;
+  CompilerOptions.BaseDirectory:=FDirectory;
   Modified:=true;
 end;
 
@@ -2650,11 +2647,10 @@ begin
   FMacros:=TTransferMacroList.Create;
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
   FIDEOptions:=TPackageIDEOptions.Create(Self);
-  FCompilerOptions:=TPkgCompilerOptions.Create(Self);
-  FLazCompilerOptions:=FCompilerOptions;
-  FCompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
-  FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacros;
-  FCompilerOptions.DefaultMakeOptionsFlags:=[ccloNoLinkerOpts];
+  FLazCompilerOptions:=TPkgCompilerOptions.Create(Self);
+  CompilerOptions.ParsedOpts.InvalidateParseOnChange:=true;
+  CompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacros;
+  CompilerOptions.DefaultMakeOptionsFlags:=[ccloNoLinkerOpts];
   FUsageOptions:=TPkgAdditionalCompilerOptions.Create(Self);
   FUsageOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacros;
   FDefineTemplates:=TLazPackageDefineTemplates.Create(Self);
@@ -2675,7 +2671,7 @@ begin
   FreeAndNil(FRemovedFiles);
   FreeAndNil(FFiles);
   FreeAndNil(FComponents);
-  FreeAndNil(FCompilerOptions);
+  FreeAndNil(FLazCompilerOptions);
   FreeAndNil(FIDEOptions);
   FreeAndNil(FUsageOptions);
   FreeAndNil(FMacros);
@@ -2733,7 +2729,7 @@ begin
     FAuthor:='';
     FAutoInstall:=pitNope;
     FComponents.Clear;
-    FCompilerOptions.Clear;
+    CompilerOptions.Clear;
     FDescription:='';
     FDirectory:='';
     FDirectoryExpandedChangeStamp:=CTInvalidChangeStamp;
@@ -2766,7 +2762,7 @@ begin
   if not (lpfDestroying in FFlags) then begin
     FFlags:=[lpfAutoIncrementVersionOnBuild];
     FAutoUpdate:=pupAsNeeded;
-    fCompilerOptions.UnitOutputDirectory:=
+    FLazCompilerOptions.UnitOutputDirectory:=
                            'lib'+PathDelim+'$(TargetCPU)-$(TargetOS)'+PathDelim;
     FUsageOptions.UnitPath:='$(PkgOutDir)';
   end else begin
@@ -2914,9 +2910,9 @@ begin
   LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires,Self,false,false);
   if FileVersion<2 then
-    FCompilerOptions.LoadFromXMLConfig(XMLConfig,'CompilerOptions/')
+    CompilerOptions.LoadFromXMLConfig(XMLConfig,'CompilerOptions/')
   else
-    FCompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
+    CompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/',
                                   PathDelimChanged);
   fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/',
@@ -2973,7 +2969,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');
   XMLConfig.SetDeleteValue(Path+'AutoUpdate/Value',AutoUpdateNames[FAutoUpdate],
                            AutoUpdateNames[pupAsNeeded]);
-  FCompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
+  CompilerOptions.SaveToXMLConfig(XMLConfig,Path+'CompilerOptions/');
   XMLConfig.SetDeleteValue(Path+'Description/Value',FDescription,'');
   XMLConfig.SetDeleteValue(Path+'License/Value',FLicense,'');
   PkgVersionSaveToXMLConfig(FVersion,XMLConfig,Path+'Version/');
