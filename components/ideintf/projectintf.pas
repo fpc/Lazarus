@@ -388,7 +388,6 @@ type
     procedure SetFPDocPaths(const AValue: string);
     procedure SetUseAppBundle(AValue: Boolean);
   protected
-    FLazCompilerOptions: TLazCompilerOptions;
     FFlags: TProjectFlags;
     FResources: TObject;
     FRunParameters: TAbstractRunParamsOptions;
@@ -441,7 +440,6 @@ type
     property Flags: TProjectFlags read FFlags write SetFlags;
     property ExecutableType: TProjectExecutableType read FExecutableType
                  write SetExecutableType;// read from MainFile, not saved to lpi
-    property LazCompilerOptions: TLazCompilerOptions read FLazCompilerOptions;
     property ProjectInfoFile: string read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectSessionFile: string read FProjectSessionFile write SetProjectSessionFile;
     property SessionStorage: TProjectSessionStorage read FSessionStorage write SetSessionStorage;

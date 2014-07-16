@@ -137,7 +137,6 @@ type
     FCustomOptions: TConfigStorage;
     FFilename: string;
     FChangeStamp: integer;
-    FLazCompilerOptions: TLazCompilerOptions;
     function GetDirectoryExpanded: string; virtual; abstract;
     function GetFileCount: integer; virtual; abstract;
     function GetPkgFiles(Index: integer): TLazPackageFile; virtual; abstract;
@@ -166,7 +165,6 @@ type
     property Files[Index: integer]: TLazPackageFile read GetPkgFiles;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TLazPackageFile read GetRemovedPkgFiles;
-    property LazCompilerOptions: TLazCompilerOptions read FLazCompilerOptions;
   end;
 
 type

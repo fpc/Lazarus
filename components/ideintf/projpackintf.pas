@@ -25,7 +25,7 @@ unit ProjPackIntf;
 interface
 
 uses
-  Classes, SysUtils, IDEOptionsIntf;
+  Classes, SysUtils, IDEOptionsIntf, CompOptsIntf;
 
 type
 
@@ -49,17 +49,20 @@ type
   private
   protected
     FIDEOptions: TAbstractIDEOptions; //actually TProjectIDEOptions or TPackageIDEOptions;
+    FLazCompilerOptions: TLazCompilerOptions;
+    function GetLazCompilerOptions: TLazCompilerOptions;
   public
-    constructor Create;
-    destructor Destroy; override;
+    //constructor Create;
+    //destructor Destroy; override;
   public
+    property LazCompilerOptions: TLazCompilerOptions read GetLazCompilerOptions;
   end;
 
 
 implementation
 
 { TIDEProjPackBase }
-
+{
 constructor TIDEProjPackBase.Create;
 begin
   inherited Create;
@@ -68,6 +71,11 @@ end;
 destructor TIDEProjPackBase.Destroy;
 begin
   inherited Destroy;
+end;
+}
+function TIDEProjPackBase.GetLazCompilerOptions: TLazCompilerOptions;
+begin
+  Result := FLazCompilerOptions;
 end;
 
 end.
