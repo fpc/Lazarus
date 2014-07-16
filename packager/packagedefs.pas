@@ -41,7 +41,7 @@ uses
   Forms, FileProcs, FileUtil, AVL_Tree, LazConfigStorage, Laz2_XMLCfg,
   LazFileUtils, LazFileCache, LazUTF8, BasicCodeTools, CodeToolsCfgScript,
   DefineTemplates, CodeToolManager, CodeCache, CodeToolsStructs, PropEdits,
-  LazIDEIntf, MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf,
+  LazIDEIntf, MacroIntf, MacroDefIntf, PackageIntf, IDEOptionsIntf, ProjPackBase,
   EditDefineTree, CompilerOptions, CompOptsModes, IDEOptionDefs,
   LazarusIDEStrConsts, IDEProcs, ComponentReg, TransferMacros,
   FileReferenceList, PublishModule;
@@ -423,56 +423,27 @@ type
   
   { TLazPackageDefineTemplates }
   
-  TLazPkgDefineTemplatesFlag = (
-    pdtIDChanged,
-    pdtSourceDirsChanged,
-    pdtOutputDirChanged,
-    pdtCustomDefinesChanged
-    );
-  TLazPkgDefineTemplatesFlags = set of TLazPkgDefineTemplatesFlag;
+  //TLazPkgDefineTemplatesFlag = (
+  //  ptfIDChanged,
+  //  ptfSourceDirsChanged,
+  //  ptfOutputDirChanged,
+  //  ptfCustomDefinesChanged
+  //  );
+  //TLazPkgDefineTemplatesFlags = set of TLazPkgDefineTemplatesFlag;
   
-  TLazPackageDefineTemplates = class
+  TLazPackageDefineTemplates = class(TProjPackDefineTemplates)
   private
-    FActive: boolean;
-    FSrcDirIfDef: TDefineTemplate;
-    FFlags: TLazPkgDefineTemplatesFlags;
-    fLastOutputDirSrcPathIDAsString: string;
-    fLastSourceDirectories: TStringList;
-    fLastSourceDirStamp: integer;
-    fLastSourceDirsIDAsString: string;
-    FLastCustomOptions: string;
-    fLastUnitPath: string;
-    FLazPackage: TLazPackage;
-    FMain: TDefineTemplate;
-    FOutputDir: TDefineTemplate;
-    FOutPutSrcPath: TDefineTemplate;
-    FSrcDirectories: TDefineTemplate;
-    FUpdateLock: integer;
-    procedure SetActive(const AValue: boolean);
-    procedure UpdateMain;
-    procedure UpdateSrcDirIfDef;
-    procedure UpdateOutputDirectory;
-    procedure UpdateSourceDirectories;
-    procedure UpdateDefinesForCustomDefines;
+  protected
+    procedure UpdateMain; override;
+    procedure UpdateSrcDirIfDef; override;
+    procedure UpdateSourceDirectories; override;
+    procedure UpdateOutputDirectory; override;
+    procedure UpdateDefinesForCustomDefines; override;
+    procedure ClearFlags; override;
   public
-    constructor Create(OwnerPackage: TLazPackage);
+    constructor Create(AOwner: IProjPack);
     destructor Destroy; override;
-    procedure Clear;
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    procedure PackageIDChanged;
-    procedure SourceDirectoriesChanged;// a source directory was added/deleted
-    procedure OutputDirectoryChanged;// the path or the defines of the output dir changed
-    procedure CustomDefinesChanged;// the defines of the source dirs changed
-    procedure AllChanged;
-  public
-    property LazPackage: TLazPackage read FLazPackage;
-    property Main: TDefineTemplate read FMain;
-    property SrcDirectories: TDefineTemplate read FSrcDirectories;
-    property OutputDir: TDefineTemplate read FOutputDir;
-    property OutPutSrcPath: TDefineTemplate read FOutPutSrcPath;
-    property CustomDefines: TDefineTemplate read FSrcDirIfDef;
-    property Active: boolean read FActive write SetActive;
+    procedure AllChanged; override;
   end;
   
 
@@ -550,7 +521,7 @@ type
 
   { TLazPackage }
 
-  TLazPackage = class(TIDEPackage)
+  TLazPackage = class(TIDEPackage, IProjPack)
   private
     FAddToProjectUsesSection: boolean;
     FAuthor: string;
@@ -602,11 +573,13 @@ type
     FUserReadOnly: boolean;
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetCompilerOptions: TPkgCompilerOptions;
+    function GetBaseCompilerOptions: TBaseCompilerOptions;
     function GetComponentCount: integer;
     function GetComponents(Index: integer): TPkgComponent;
     function GetRemovedFiles(Index: integer): TPkgFile;
     function GetFiles(Index: integer): TPkgFile;
     function GetIDEOptions: TPackageIDEOptions;
+    function GetSourceDirectories: TFileReferenceList;
     procedure SetAddToProjectUsesSection(const AValue: boolean);
     procedure SetAuthor(const AValue: string);
     procedure SetAutoIncrementVersionOnBuild(const AValue: boolean);
@@ -637,6 +610,7 @@ type
     procedure UpdateSourceDirectories;
     procedure SourceDirectoriesChanged(Sender: TObject);
   protected
+    function GetDefineTemplates: TProjPackDefineTemplates;
     function GetFileCount: integer; override;
     function GetPkgFiles(Index: integer): TLazPackageFile; override;
     function GetDirectoryExpanded: string; override;
@@ -648,6 +622,10 @@ type
     function GetRemovedCount: integer; override;
     function GetRemovedPkgFiles(Index: integer): TLazPackageFile; override;
     procedure SetAutoInstall(AValue: TPackageInstallType); override;
+  public
+    function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+    function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+    function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   public
     constructor Create;
     destructor Destroy; override;
@@ -809,7 +787,7 @@ type
     property PublishOptions: TPublishPackageOptions read fPublishOptions write fPublishOptions;
     property Registered: boolean read FRegistered write SetRegistered;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
-    property SourceDirectories: TFileReferenceList read FSourceDirectories;
+    property SourceDirectories: TFileReferenceList read GetSourceDirectories;
     property StorePathDelim: TPathDelimSwitch read FStorePathDelim write SetStorePathDelim;
     property TopologicalLevel: integer read FTopologicalLevel write FTopologicalLevel;
     property Translated: string read FTranslated write FTranslated;
@@ -2307,6 +2285,12 @@ begin
   Result := TPkgCompilerOptions(FLazCompilerOptions);
 end;
 
+function TLazPackage.GetBaseCompilerOptions: TBaseCompilerOptions;
+// This satisfies the IProjPack interface requirement.
+begin
+  Result := TBaseCompilerOptions(FLazCompilerOptions);
+end;
+
 function TLazPackage.GetComponentCount: integer;
 begin
   Result:=FComponents.Count;
@@ -2379,6 +2363,11 @@ begin
     Result := NIL;
 end;
 
+function TLazPackage.GetDefineTemplates: TProjPackDefineTemplates;
+begin
+  Result:=FDefineTemplates;
+end;
+
 function TLazPackage.GetFileCount: integer;
 begin
   Result:=FFiles.Count;
@@ -2397,6 +2386,11 @@ end;
 function TLazPackage.GetIDEOptions: TPackageIDEOptions;
 begin
   Result := TPackageIDEOptions(FIDEOptions);
+end;
+
+function TLazPackage.GetSourceDirectories: TFileReferenceList;
+begin
+  Result:=FSourceDirectories;
 end;
 
 function TLazPackage.GetModified: boolean;
@@ -2432,6 +2426,24 @@ procedure TLazPackage.SetAutoInstall(AValue: TPackageInstallType);
 begin
   if FAutoInstall=AValue then exit;
   FAutoInstall:=AValue;
+end;
+
+function TLazPackage.QueryInterface(constref iid: TGuid; out obj): LongInt; stdcall;
+begin
+  if GetInterface(iid, obj) then
+    Result := S_OK
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TLazPackage._AddRef: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+function TLazPackage._Release: LongInt; stdcall;
+begin
+  Result := -1;
 end;
 
 procedure TLazPackage.SetAutoUpdate(const AValue: TPackageUpdatePolicy);
@@ -2613,7 +2625,7 @@ procedure TLazPackage.SetName(const AValue: string);
 begin
   if FName=AValue then exit;
   inherited SetName(AValue);
-  FDefineTemplates.PackageIDChanged;
+  FDefineTemplates.IDChanged;
   Modified:=true;
 end;
 
@@ -2804,7 +2816,7 @@ end;
 procedure TLazPackage.VersionChanged(Sender: TObject);
 begin
   inherited VersionChanged(Sender);
-  FDefineTemplates.PackageIDChanged;
+  FDefineTemplates.IDChanged;
   Modified:=true;
 end;
 
@@ -4289,130 +4301,51 @@ end;
 
 { TLazPackageDefineTemplates }
 
-constructor TLazPackageDefineTemplates.Create(OwnerPackage: TLazPackage);
+constructor TLazPackageDefineTemplates.Create(AOwner: IProjPack);
 begin
-  FLazPackage:=OwnerPackage;
+  inherited Create(AOwner);
+  Include(FFlags, ptfIsPackageTemplate);
   fLastSourceDirStamp:=CTInvalidChangeStamp;
 end;
 
 destructor TLazPackageDefineTemplates.Destroy;
 begin
-  Clear;
-  fLastSourceDirectories.Free;
   inherited Destroy;
 end;
 
-procedure TLazPackageDefineTemplates.Clear;
+procedure TLazPackageDefineTemplates.ClearFlags;
 begin
-  if FMain<>nil then begin
-    if (CodeToolBoss<>nil) then
-      CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
-    FMain:=nil;
-    FSrcDirIfDef:=nil;
-    FSrcDirectories:=nil;
-    FOutputDir:=nil;
-    FOutPutSrcPath:=nil;
-    fLastOutputDirSrcPathIDAsString:='';
-    FLastCustomOptions:='';
-    fLastUnitPath:='';
-    fLastSourceDirsIDAsString:='';
-    if fLastSourceDirectories<>nil then
-      fLastSourceDirectories.Clear;
-    FFlags:=FFlags+[pdtIDChanged,pdtOutputDirChanged,pdtSourceDirsChanged,
-                    pdtCustomDefinesChanged];
-  end;
-end;
-
-procedure TLazPackageDefineTemplates.BeginUpdate;
-begin
-  inc(FUpdateLock);
-end;
-
-procedure TLazPackageDefineTemplates.EndUpdate;
-begin
-  if FUpdateLock=0 then RaiseException('TLazPackageDefineTemplates.EndUpdate');
-  dec(FUpdateLock);
-  if FUpdateLock=0 then begin
-    if pdtIDChanged in FFlags then PackageIDChanged;
-    if pdtSourceDirsChanged in FFlags then SourceDirectoriesChanged;
-    if pdtOutputDirChanged in FFlags then OutputDirectoryChanged;
-    if pdtCustomDefinesChanged in FFlags then CustomDefinesChanged;
-  end;
-end;
-
-procedure TLazPackageDefineTemplates.PackageIDChanged;
-begin
-  if FUpdateLock>0 then begin
-    Include(FFlags,pdtIDChanged);
-    exit;
-  end;
-  Exclude(FFlags,pdtIDChanged);
-  UpdateMain;
-  UpdateOutputDirectory;
-  UpdateSourceDirectories;
-  UpdateDefinesForCustomDefines;
-end;
-
-procedure TLazPackageDefineTemplates.SourceDirectoriesChanged;
-begin
-  if FUpdateLock>0 then begin
-    Include(FFlags,pdtSourceDirsChanged);
-    exit;
-  end;
-  Exclude(FFlags,pdtSourceDirsChanged);
-  UpdateSourceDirectories;
-  CodeToolBoss.DefineTree.ClearCache;
-end;
-
-procedure TLazPackageDefineTemplates.OutputDirectoryChanged;
-begin
-  if FUpdateLock>0 then begin
-    Include(FFlags,pdtOutputDirChanged);
-    exit;
-  end;
-  Exclude(FFlags,pdtOutputDirChanged);
-  UpdateOutputDirectory;
-  CodeToolBoss.DefineTree.ClearCache;
-end;
-
-procedure TLazPackageDefineTemplates.CustomDefinesChanged;
-begin
-  if FUpdateLock>0 then begin
-    Include(FFlags,pdtCustomDefinesChanged);
-    exit;
-  end;
-  Exclude(FFlags,pdtCustomDefinesChanged);
-  UpdateDefinesForCustomDefines;
-  CodeToolBoss.DefineTree.ClearCache;
+  FFlags:=FFlags+[ptfIDChanged,ptfOutputDirChanged,ptfSourceDirsChanged,
+                  ptfCustomDefinesChanged];
 end;
 
 procedure TLazPackageDefineTemplates.AllChanged;
 begin
-  PackageIDChanged;
+  IDChanged;
   UpdateSrcDirIfDef;// always create the SrcDirIfDef for IDE add-ons
   SourceDirectoriesChanged;
-  OutputDirectoryChanged;
   CustomDefinesChanged;
+  OutputDirectoryChanged;
 end;
 
 procedure TLazPackageDefineTemplates.UpdateMain;
 begin
-  if (not LazPackage.NeedsDefineTemplates) or (not Active) then exit;
+  if (not Owner.NeedsDefineTemplates) or (not Active) then exit;
   // update the package block define template (the container for all other
   // define templates of the package)
   if FMain=nil then begin
-    FMain:=CreatePackageTemplateWithID(LazPackage.IDAsWord);
-    FMain.SetDefineOwner(LazPackage,false);
+    FMain:=CreatePackageTemplateWithID(Owner.IDAsWord);
+    FMain.SetDefineOwner(Owner as TLazPackage,false);
     FMain.SetFlags([dtfAutoGenerated],[],false);
   end else
-    FMain.Name:=LazPackage.IDAsWord;
+    FMain.Name:=Owner.IDAsWord;
   // ClearCache is here unnessary, because it is only a block
 end;
 
 procedure TLazPackageDefineTemplates.UpdateSrcDirIfDef;
 var
-  NewVariable: String;
   Changed: Boolean;
+  NewVariable: String;
   UnitPathDefTempl: TDefineTemplate;
   IncPathDefTempl: TDefineTemplate;
 begin
@@ -4429,37 +4362,36 @@ begin
     FMain.AddChild(FSrcDirectories);
   end;
   Changed:=false;
-  if FSrcDirIfDef=nil then begin
-    FSrcDirIfDef:=TDefineTemplate.Create('Source Directory Additions',
+  if FSrcDirIf=nil then begin
+    FSrcDirIf:=TDefineTemplate.Create('Source Directory Additions',
       'Additional defines for package source directories',
-      '#PkgSrcMark'+LazPackage.IDAsWord,'',
-      da_IfDef);
-    FMain.AddChild(FSrcDirIfDef);
+      '#PkgSrcMark'+Owner.IDAsWord, '', da_IfDef);
+    FMain.AddChild(FSrcDirIf);
 
     // create unit path template for this directory
     UnitPathDefTempl:=TDefineTemplate.Create('UnitPath', lisPkgDefsUnitPath,
-      '#UnitPath','$(#UnitPath);$PkgUnitPath('+LazPackage.IDAsString+')',
+      '#UnitPath','$(#UnitPath);$PkgUnitPath('+Owner.IDAsString+')',
       da_Define);
-    FSrcDirIfDef.AddChild(UnitPathDefTempl);
+    FSrcDirIf.AddChild(UnitPathDefTempl);
     // create include path template for this directory
     IncPathDefTempl:=TDefineTemplate.Create('IncPath','Include Path',
-      '#IncPath','$(#IncPath);$PkgIncPath('+LazPackage.IDAsString+')',
+      '#IncPath','$(#IncPath);$PkgIncPath('+Owner.IDAsString+')',
       da_Define);
-    FSrcDirIfDef.AddChild(IncPathDefTempl);
+    FSrcDirIf.AddChild(IncPathDefTempl);
 
     Changed:=true;
   end else begin
-    NewVariable:='#PkgSrcMark'+LazPackage.IDAsWord;
-    if NewVariable<>FSrcDirIfDef.Variable then begin
-      FSrcDirIfDef.Variable:=NewVariable;
+    NewVariable:='#PkgSrcMark'+Owner.IDAsWord;
+    if NewVariable<>FSrcDirIf.Variable then begin
+      FSrcDirIf.Variable:=NewVariable;
       // unit path
-      UnitPathDefTempl:=FSrcDirIfDef.FindChildByName('UnitPath');
+      UnitPathDefTempl:=FSrcDirIf.FindChildByName('UnitPath');
       if UnitPathDefTempl<>nil then
-        UnitPathDefTempl.Value:='$(#UnitPath);$PkgUnitPath('+LazPackage.IDAsString+')';
+        UnitPathDefTempl.Value:='$(#UnitPath);$PkgUnitPath('+Owner.IDAsString+')';
       // include path
-      IncPathDefTempl:=FSrcDirIfDef.FindChildByName('IncPath');
+      IncPathDefTempl:=FSrcDirIf.FindChildByName('IncPath');
       if IncPathDefTempl<>nil then
-        IncPathDefTempl.Value:='$(#IncPath);$PkgIncPath('+LazPackage.IDAsString+')';
+        IncPathDefTempl.Value:='$(#IncPath);$PkgIncPath('+Owner.IDAsString+')';
 
       Changed:=true;
     end;
@@ -4468,18 +4400,14 @@ begin
     CodeToolBoss.DefineTree.ClearCache;
 end;
 
-procedure TLazPackageDefineTemplates.SetActive(const AValue: boolean);
-begin
-  if FActive=AValue then exit;
-  FActive:=AValue;
-  if not FActive then Clear else AllChanged;
-end;
-
 procedure TLazPackageDefineTemplates.UpdateOutputDirectory;
+var
+  LazPackage: TLazPackage;
 begin
   if FMain=nil then UpdateMain;
   if FMain=nil then exit;
 
+  LazPackage := Owner as TLazPackage;
   if FOutputDir=nil then begin
     FOutputDir:=TDefineTemplate.Create(PkgOutputDirDefTemplName,
       lisPkgDefsOutputDirectory, '', LazPackage.GetOutputDirectory, da_Directory);
@@ -4492,8 +4420,8 @@ begin
   end;
 
   if (FOutPutSrcPath=nil)
-  or (fLastOutputDirSrcPathIDAsString<>LazPackage.IDAsString) then begin
-    fLastOutputDirSrcPathIDAsString:=LazPackage.IDAsString;
+  or (fLastOutputDirSrcPathIDAsString<>Owner.IDAsString) then begin
+    fLastOutputDirSrcPathIDAsString:=Owner.IDAsString;
     FOutputSrcPath:=TDefineTemplate.Create('CompiledSrcPath',
       lisPkgDefsCompiledSrcPathAddition, CompiledSrcPathMacroName,
       '$PkgSrcPath('+fLastOutputDirSrcPathIDAsString+');'+'$('+CompiledSrcPathMacroName+')',
@@ -4508,29 +4436,27 @@ end;
 procedure TLazPackageDefineTemplates.UpdateSourceDirectories;
 var
   i: Integer;
-  SrcDirDefTempl: TDefineTemplate;
+  SrcDirDefTempl, SrcDirMarkDefTempl: TDefineTemplate;
   IDHasChanged: Boolean;
-  SrcDirMarkDefTempl: TDefineTemplate;
-  CurUnitPath: String;
-  SrcDirs: String;
+  CurUnitPath, SrcDirs: String;
 begin
-  if (not LazPackage.NeedsDefineTemplates) or (not Active) then exit;
+  if (not Owner.NeedsDefineTemplates) or (not Active) then exit;
 
   // quick check if something has changed
-  IDHasChanged:=fLastSourceDirsIDAsString<>LazPackage.IDAsString;
-  CurUnitPath:=LazPackage.CompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
-  SrcDirs:=LazPackage.SourceDirectories.CreateSearchPathFromAllFiles;
+  IDHasChanged:=fLastSourceDirsIDAsString<>Owner.IDAsString;
+  CurUnitPath:=Owner.BaseCompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
+  SrcDirs:=Owner.SourceDirectories.CreateSearchPathFromAllFiles;
   CurUnitPath:=TrimSearchPath(SrcDirs+';'+CurUnitPath+';.',
-                              LazPackage.CompilerOptions.BaseDirectory,true);
+                              Owner.BaseCompilerOptions.BaseDirectory,true);
 
   if (fLastSourceDirectories<>nil)
-  and (fLastSourceDirStamp=LazPackage.SourceDirectories.TimeStamp)
+  and (fLastSourceDirStamp=Owner.SourceDirectories.TimeStamp)
   and (not IDHasChanged)
   and (CurUnitPath=fLastUnitPath) then
     exit;
   //debugln(['TLazPackageDefineTemplates.UpdateSourceDirectories ',LazPackage.Name,' CurUnitPath=',CurUnitPath]);
-  fLastSourceDirStamp:=LazPackage.SourceDirectories.TimeStamp;
-  fLastSourceDirsIDAsString:=LazPackage.IDAsString;
+  fLastSourceDirStamp:=Owner.SourceDirectories.TimeStamp;
+  fLastSourceDirsIDAsString:=Owner.IDAsString;
   fLastUnitPath:=CurUnitPath;
 
   // clear old define templates
@@ -4548,7 +4474,7 @@ begin
   FreeAndNil(fLastSourceDirectories);
   fLastSourceDirectories:=SearchPathToList(CurUnitPath);
   if (fLastSourceDirectories.Count>0)
-  and ((FSrcDirIfDef=nil) or IDHasChanged) then
+  and ((FSrcDirIf=nil) or IDHasChanged) then
     UpdateSrcDirIfDef;
   for i:=0 to fLastSourceDirectories.Count-1 do begin
     // create directory template
@@ -4558,10 +4484,10 @@ begin
     fLastSourceDirectories.Objects[i]:=SrcDirDefTempl;
     // add package source directory marker
     SrcDirMarkDefTempl:=TDefineTemplate.Create('PkgSrcDirMark',
-      lisPkgDefsSrcDirMark,'#PkgSrcMark'+LazPackage.IDAsWord,'',da_Define);
+      lisPkgDefsSrcDirMark,'#PkgSrcMark'+Owner.IDAsWord,'',da_Define);
     SrcDirDefTempl.AddChild(SrcDirMarkDefTempl);
 
-    SrcDirDefTempl.SetDefineOwner(LazPackage,false);
+    SrcDirDefTempl.SetDefineOwner(Owner as TLazPackage,false);
     SrcDirDefTempl.SetFlags([dtfAutoGenerated],[],false);
     // add directory
     FSrcDirectories.AddChild(SrcDirDefTempl);
@@ -4574,24 +4500,24 @@ var
   OptionsDefTempl: TDefineTemplate;
   NewCustomOptions: String;
 begin
-  if (not LazPackage.NeedsDefineTemplates) or (not Active) then exit;
+  if (not Owner.NeedsDefineTemplates) or (not Active) then exit;
 
   // check if something has changed
-  NewCustomOptions:=LazPackage.CompilerOptions.GetOptionsForCTDefines;
+  NewCustomOptions:=Owner.BaseCompilerOptions.GetOptionsForCTDefines;
   if FLastCustomOptions=NewCustomOptions then exit;
 
   FLastCustomOptions:=NewCustomOptions;
   OptionsDefTempl:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
-                          'Custom Options',FLastCustomOptions,false,LazPackage);
+              'Custom Options', FLastCustomOptions, false, Owner as TLazPackage);
   if OptionsDefTempl=nil then begin
     // no custom options -> delete old template
-    if FSrcDirIfDef<>nil then begin
-      if FSrcDirIfDef.DeleteChild('Custom Options') then
+    if FSrcDirIf<>nil then begin
+      if FSrcDirIf.DeleteChild('Custom Options') then
         CodeToolBoss.DefineTree.ClearCache;
     end;
   end else begin
     UpdateSrcDirIfDef;
-    FSrcDirIfDef.ReplaceChild(OptionsDefTempl);
+    FSrcDirIf.ReplaceChild(OptionsDefTempl);
     CodeToolBoss.DefineTree.ClearCache;
   end;
 end;

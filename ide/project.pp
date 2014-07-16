@@ -60,7 +60,7 @@ uses
   // IDE
   CompOptsModes, ProjectResources, LazConf, W32Manifest, ProjectIcon,
   LazarusIDEStrConsts, CompilerOptions,
-  TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs,
+  TransferMacros, EditorOptions, IDEProcs, RunParamsOpts, ProjectDefs, ProjPackBase,
   FileReferenceList, EditDefineTree, ModeMatrixOpts, PackageDefs, PackageSystem;
 
 type
@@ -556,60 +556,21 @@ type
   
   { TProjectDefineTemplates }
 
-  TProjectDefineTemplatesFlag = (
-    ptfFlagsChanged,
-    ptfIDChanged,
-    ptfSourceDirsChanged,
-    ptfOutputDirChanged,
-    ptfCustomDefinesChanged
-    );
-  TProjectDefineTemplatesFlags = set of TProjectDefineTemplatesFlag;
-
-  TProjectDefineTemplates = class
+  TProjectDefineTemplates = class(TProjPackDefineTemplates)
   private
-    FActive: boolean;
-    FSrcDirectories: TDefineTemplate;
-    FSrcDirIf: TDefineTemplate;
-    FFlags: TProjectDefineTemplatesFlags;
-    FMain: TDefineTemplate;
-    FOutputDir: TDefineTemplate;
-    FOutPutSrcPath: TDefineTemplate;
-    FOwnerProject: TProject;
-    FUpdateLock: integer;
-    fLastSourceDirectories: TStringList;
-    fLastOutputDirSrcPathIDAsString: string;
-    fLastSourceDirsIDAsString: string;
-    fLastSourceDirStamp: integer;
-    FLastCustomOptions: string;
-    fLastUnitPath: string;
-    procedure SetActive(const AValue: boolean);
-    procedure UpdateMain;
-    procedure UpdateSrcDirIfDef;
-    procedure UpdateDefinesForOutputDirectory;
-    procedure UpdateSourceDirectories;
-    procedure UpdateDefinesForCustomDefines;
     procedure FixTemplateOrder;
+  protected
+    procedure UpdateMain; override;
+    procedure UpdateSrcDirIfDef; override;
+    procedure UpdateSourceDirectories; override;
+    procedure UpdateOutputDirectory; override;
+    procedure UpdateDefinesForCustomDefines; override;
+    procedure ClearFlags; override;
   public
-    constructor Create(OwnerProject: TProject);
+    constructor Create(AOwner: IProjPack);
     destructor Destroy; override;
-    procedure Clear;
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    procedure AllChanged;
-    procedure ProjectIDChanged;
-    procedure SourceDirectoriesChanged;// a source directory was added/deleted
-    procedure CustomDefinesChanged;// the defines of the source dirs changed
-    procedure OutputDirectoryChanged;// the path or the defines of the output dir changed
+    procedure AllChanged; override;
     procedure UpdateGlobalValues;
-  public
-    property Owner: TProject read FOwnerProject;
-    property Project: TProject read FOwnerProject;
-    property Main: TDefineTemplate read FMain;
-    property SrcDirectories: TDefineTemplate read FSrcDirectories;
-    property OutputDir: TDefineTemplate read FOutputDir;
-    property OutPutSrcPath: TDefineTemplate read FOutPutSrcPath;
-    property CustomDefines: TDefineTemplate read FSrcDirIf;
-    property Active: boolean read FActive write SetActive;
   end;
 
   { TProjectBuildMode }
@@ -752,7 +713,7 @@ type
     
   TOldProjectType = (ptApplication, ptProgram, ptCustomProgram);
 
-  TProject = class(TLazProject)
+  TProject = class(TLazProject, IProjPack)
   private
     FActiveBuildMode: TProjectBuildMode;
     FActiveBuildModeBackup: integer;
@@ -827,6 +788,7 @@ type
     function GetActiveBuildModeID: string;
     function GetAllEditorsInfo(Index: Integer): TUnitEditorInfo;
     function GetCompilerOptions: TProjectCompilerOptions;
+    function GetBaseCompilerOptions: TBaseCompilerOptions;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -837,6 +799,7 @@ type
     function GetMainUnitInfo: TUnitInfo;
     function GetProjResources: TProjectResources;
     function GetRunParameterOptions: TRunParamsOptions;
+    function GetSourceDirectories: TFileReferenceList;
     function GetTargetFilename: string;
     function GetUnits(Index: integer): TUnitInfo;
     function JumpHistoryCheckPosition(
@@ -892,6 +855,7 @@ type
     procedure SaveToSession;
     function DoWrite(Filename: String; IsLpi: Boolean): TModalResult;
   protected
+    function GetDefineTemplates: TProjPackDefineTemplates;
     function GetMainFile: TLazProjectFile; override;
     function GetMainFileID: Integer; override;
     procedure SetMainFileID(const AValue: Integer); override;
@@ -915,6 +879,10 @@ type
     procedure AddToOrRemoveFromComponentList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
+  public
+    function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+    function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+    function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
@@ -953,8 +921,8 @@ type
     // title
     function GetTitle: string; override;
     function TitleIsDefault(Fuzzy: boolean = false): boolean;
-    function IDAsString: string;
-    function IDAsWord: string;
+    function GetIDAsString: string;
+    function GetIDAsWord: string;
 
     // units
     function UnitCount:integer;
@@ -1110,6 +1078,8 @@ type
     property FirstRequiredDependency: TPkgDependency read FFirstRequiredDependency;
     property FirstUnitWithComponent: TUnitInfo read GetFirstUnitWithComponent;
     property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
+    property IDAsString: string read GetIDAsString;
+    property IDAsWord: string read GetIDAsWord;
     property IDEOptions: TProjectIDEOptions read GetIDEOptions;
     property JumpHistory: TProjectJumpHistory read FJumpHistory write FJumpHistory;
     property LastCompilerFileDate: integer read FLastCompilerFileDate
@@ -1144,7 +1114,7 @@ type
     property ProjResources: TProjectResources read GetProjResources;
 
     property RunParameterOptions: TRunParamsOptions read GetRunParameterOptions;
-    property SourceDirectories: TFileReferenceList read FSourceDirectories;
+    property SourceDirectories: TFileReferenceList read GetSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
     property StateFlags: TLazProjectStateFlags read FStateFlags write FStateFlags;
     property SessionStorePathDelim: TPathDelimSwitch read FSessionStorePathDelim write FSessionStorePathDelim;
@@ -3470,12 +3440,12 @@ begin
   Result:=false;
 end;
 
-function TProject.IDAsString: string;
+function TProject.GetIDAsString: string;
 begin
   Result:='Project'; // TODO: see TLazPackage, when this is changed change also TProjectDefineTemplates.UpdateSrcDirIfDef
 end;
 
-function TProject.IDAsWord: string;
+function TProject.GetIDAsWord: string;
 begin
   Result:='Project'; // TODO: see TLazPackage when this is changed change also TProjectDefineTemplates.UpdateSrcDirIfDef
 end;
@@ -4074,6 +4044,24 @@ begin
   end;
 end;
 
+function TProject.QueryInterface(constref iid: TGuid; out obj): LongInt; stdcall;
+begin
+  if GetInterface(iid, obj) then
+    Result := S_OK
+  else
+    Result := E_NOINTERFACE;
+end;
+
+function TProject._AddRef: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
+function TProject._Release: LongInt; stdcall;
+begin
+  Result := -1;
+end;
+
 function TProject.GetTargetFilename: string;
 begin
   Result:=FLazCompilerOptions.TargetFilename;
@@ -4144,6 +4132,12 @@ begin
   Result := TProjectCompilerOptions(FLazCompilerOptions);
 end;
 
+function TProject.GetBaseCompilerOptions: TBaseCompilerOptions;
+// This satisfies the IProjPack interface requirement.
+begin
+  Result := TBaseCompilerOptions(FLazCompilerOptions);
+end;
+
 procedure TProject.ClearBuildModes;
 begin
   ActiveBuildMode:=nil;
@@ -4188,6 +4182,11 @@ end;
 function TProject.GetRunParameterOptions: TRunParamsOptions;
 begin
   Result:=TRunParamsOptions(FRunParameters);
+end;
+
+function TProject.GetSourceDirectories: TFileReferenceList;
+begin
+  Result:=FSourceDirectories;
 end;
 
 function TProject.GetProjectInfoFile:string;
@@ -5756,6 +5755,11 @@ begin
   FDefineTemplates.SourceDirectoriesChanged;
 end;
 
+function TProject.GetDefineTemplates: TProjPackDefineTemplates;
+begin
+  Result:=FDefineTemplates;
+end;
+
 function TProject.GetMainFile: TLazProjectFile;
 begin
   Result:=MainUnitInfo;
@@ -6151,25 +6155,28 @@ end;
 
 { TProjectDefineTemplates }
 
-procedure TProjectDefineTemplates.SetActive(const AValue: boolean);
+constructor TProjectDefineTemplates.Create(AOwner: IProjPack);
 begin
-  if FActive=AValue then exit;
-  FActive:=AValue;
-  if not FActive then Clear else AllChanged;
+  inherited Create(AOwner);
+end;
+
+destructor TProjectDefineTemplates.Destroy;
+begin
+  inherited Destroy;
 end;
 
 procedure TProjectDefineTemplates.UpdateMain;
 begin
-  //DebugLn('TProjectDefineTemplates.UpdateMain ',Project.IDAsString,' Active=',dbgs(Active));
+  if (Owner as TProject).Destroying then exit;
   // update the package block define template (the container for all other
   // define templates of the project)
-  if (FMain=nil) and (not Project.Destroying) then begin
+  if FMain=nil then begin
     // create the main project template
-    FMain:=CreateProjectTemplateWithID(Project.IDAsWord);
-    FMain.SetDefineOwner(Owner,false);
+    FMain:=CreateProjectTemplateWithID(Owner.IDAsWord);
+    FMain.SetDefineOwner(Owner as TProject,false);
     FMain.SetFlags([dtfAutoGenerated],[],false);
   end else
-    FMain.Name:=Project.IDAsWord;
+    FMain.Name:=Owner.IDAsWord;
   // ClearCache is here unnessary, because it is only a block
 end;
 
@@ -6194,8 +6201,8 @@ begin
   end;
 
   Changed:=false;
-  IfValue:='defined(#ProjectSrcMark'+Project.IDAsWord+')';
-  if Project=Project1 then
+  IfValue:='defined(#ProjectSrcMark'+Owner.IDAsWord+')';
+  if (Owner as TProject) = Project1 then
     IfValue:=IfValue+' or defined('+UseDefaultsFlagName+')';
   if FSrcDirIf=nil then begin
     FSrcDirIf:=TDefineTemplate.Create('Source Directory Additions',
@@ -6206,19 +6213,19 @@ begin
     
     // create unit path template for this directory
     UnitPathDefTempl:=TDefineTemplate.Create('UnitPath', lisPkgDefsUnitPath,
-      '#UnitPath','$(#UnitPath);$ProjectUnitPath('+Project.IDAsString+')',
+      '#UnitPath','$(#UnitPath);$ProjectUnitPath('+Owner.IDAsString+')',
       da_Define);
     FSrcDirIf.AddChild(UnitPathDefTempl);
 
     // create include path template for this directory
     IncPathDefTempl:=TDefineTemplate.Create('IncPath','Include Path',
-      '#IncPath','$(#IncPath);$ProjectIncPath('+Project.IDAsString+')',
+      '#IncPath','$(#IncPath);$ProjectIncPath('+Owner.IDAsString+')',
       da_Define);
     FSrcDirIf.AddChild(IncPathDefTempl);
 
     // create src path template for this directory
     SrcPathDefTempl:=TDefineTemplate.Create('SrcPath','Src Path',
-      '#SrcPath','$(#SrcPath);$ProjectSrcPath('+Project.IDAsString+')',
+      '#SrcPath','$(#SrcPath);$ProjectSrcPath('+Owner.IDAsString+')',
       da_Define);
     FSrcDirIf.AddChild(SrcPathDefTempl);
 
@@ -6233,35 +6240,37 @@ begin
     CodeToolBoss.DefineTree.ClearCache;
 end;
 
-procedure TProjectDefineTemplates.UpdateDefinesForOutputDirectory;
+procedure TProjectDefineTemplates.UpdateOutputDirectory;
+var
+  Proj: TProject;
 begin
-  //DebugLn('TProjectDefineTemplates.UpdateDefinesForOutputDirectory ',Project.IDAsString);
-  if (not Project.NeedsDefineTemplates) or (not Active) then exit;
+  Proj := Owner as TProject;
+  //DebugLn('TProjectDefineTemplates.UpdateDefinesForOutputDirectory ',Owner.IDAsString);
+  if (not Owner.NeedsDefineTemplates) or (not Active) then exit;
   if FMain=nil then UpdateMain;
 
   if FOutputDir=nil then begin
-    //DebugLn('TProjectDefineTemplates.UpdateDefinesForOutputDirectory ',Project.IDAsString,' creating FOutputDir');
+    //DebugLn('TProjectDefineTemplates.UpdateDefinesForOutputDirectory ',Owner.IDAsString,' creating FOutputDir');
     FOutputDir:=TDefineTemplate.Create(ProjectOutputDirDefTemplName,
-      'Output directoy of project', '', Project.GetOutputDirectory, da_Directory
-        );
-    FOutputDir.SetDefineOwner(Project,false);
+      'Output directoy of proj', '', Proj.GetOutputDirectory, da_Directory);
+    FOutputDir.SetDefineOwner(Proj,false);
     FOutputDir.SetFlags([dtfAutoGenerated],[],false);
     DisableDefaultsInDirectories(FOutputDir,false);
     FMain.AddChild(FOutputDir);
     FixTemplateOrder;
   end else begin
-    FOutputDir.Value:=Project.GetOutputDirectory;
+    FOutputDir.Value:=Proj.GetOutputDirectory;
   end;
 
   if (FOutPutSrcPath=nil)
-  or (fLastOutputDirSrcPathIDAsString<>Project.IDAsString) then begin
-    fLastOutputDirSrcPathIDAsString:=Project.IDAsString;
+  or (fLastOutputDirSrcPathIDAsString<>Owner.IDAsString) then begin
+    fLastOutputDirSrcPathIDAsString:=Owner.IDAsString;
     FOutputSrcPath:=TDefineTemplate.Create('CompiledSrcPath',
       lisPkgDefsCompiledSrcPathAddition, CompiledSrcPathMacroName,
       '$ProjectSrcPath('+fLastOutputDirSrcPathIDAsString+');'
         +'$('+CompiledSrcPathMacroName+')',
       da_Define);
-    FOutputSrcPath.SetDefineOwner(Project,false);
+    FOutputSrcPath.SetDefineOwner(Proj,false);
     FOutputSrcPath.SetFlags([dtfAutoGenerated],[],false);
     CodeToolBoss.DefineTree.ReplaceChild(FOutputDir,FOutputSrcPath,
       FOutputSrcPath.Name);
@@ -6277,26 +6286,26 @@ var
   SrcDirMarkDefTempl: TDefineTemplate;
   CurUnitPath: String;
 begin
-  //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories ',Project.IDAsString,' Active=',dbgs(Active),' TimeStamp=',dbgs(fLastSourceDirStamp),' Project.TimeStamp=',dbgs(Project.SourceDirectories.TimeStamp));
-  if (not Project.NeedsDefineTemplates) or (not Active) then exit;
+  //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories ',Owner.IDAsString,' Active=',dbgs(Active),' TimeStamp=',dbgs(fLastSourceDirStamp),' Project.TimeStamp=',dbgs(Project.SourceDirectories.TimeStamp));
+  if (not Owner.NeedsDefineTemplates) or (not Active) then exit;
 
   // quick check if something has changed
-  IDHasChanged:=fLastSourceDirsIDAsString<>Project.IDAsString;
-  CurUnitPath:=Project.CompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
+  IDHasChanged:=fLastSourceDirsIDAsString<>Owner.IDAsString;
+  CurUnitPath:=Owner.BaseCompilerOptions.ParsedOpts.GetParsedValue(pcosUnitPath);
   CurUnitPath:=CreateAbsoluteSearchPath(CurUnitPath,
-                                        Project.CompilerOptions.BaseDirectory);
+                                        Owner.BaseCompilerOptions.BaseDirectory);
 
   //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories A');
   if (fLastSourceDirectories<>nil)
-  and (fLastSourceDirStamp=Project.SourceDirectories.TimeStamp)
+  and (fLastSourceDirStamp=Owner.SourceDirectories.TimeStamp)
   and (not IDHasChanged)
   and (CurUnitPath=fLastUnitPath) then
     exit;
-  fLastSourceDirStamp:=Project.SourceDirectories.TimeStamp;
-  fLastSourceDirsIDAsString:=Project.IDAsString;
+  fLastSourceDirStamp:=Owner.SourceDirectories.TimeStamp;
+  fLastSourceDirsIDAsString:=Owner.IDAsString;
   fLastUnitPath:=CurUnitPath;
 
-  NewSourceDirs:=Project.SourceDirectories.CreateFileList;
+  NewSourceDirs:=Owner.SourceDirectories.CreateFileList;
   //DebugLn('TProjectDefineTemplates.UpdateDefinesForSourceDirectories B "',NewSourceDirs.Text,'"');
   try
     MergeSearchPaths(NewSourceDirs,CurUnitPath);
@@ -6333,14 +6342,13 @@ begin
         fLastSourceDirectories[i],'',fLastSourceDirectories[i],da_Directory);
       DisableDefaultsInDirectories(SrcDirDefTempl,false);
       fLastSourceDirectories.Objects[i]:=SrcDirDefTempl;
-      // add project source directory marker
+      // add proj source directory marker
       SrcDirMarkDefTempl:=TDefineTemplate.Create('ProjectSrcDirMark',
-        lisProjProjectSourceDirectoryMark, '#ProjectSrcMark'+Project.IDAsWord,
-          '1',
-        da_Define);
+        lisProjProjectSourceDirectoryMark, '#ProjectSrcMark'+Owner.IDAsWord,
+          '1', da_Define);
       SrcDirDefTempl.AddChild(SrcDirMarkDefTempl);
 
-      SrcDirDefTempl.SetDefineOwner(Project,false);
+      SrcDirDefTempl.SetDefineOwner(Owner as TProject, false);
       SrcDirDefTempl.SetFlags([dtfAutoGenerated],[],false);
       // add directory
       FSrcDirectories.AddChild(SrcDirDefTempl);
@@ -6358,16 +6366,16 @@ var
   NewCustomOptions: String;
   Changed: Boolean;
 begin
-  if (not Project.NeedsDefineTemplates) or (not Active) then exit;
+  if (not Owner.NeedsDefineTemplates) or (not Active) then exit;
 
   // check if something has changed
-  NewCustomOptions:=Project.CompilerOptions.GetOptionsForCTDefines;
+  NewCustomOptions:=Owner.BaseCompilerOptions.GetOptionsForCTDefines;
   if (FLastCustomOptions=NewCustomOptions) then exit;
   Changed:=false;
 
   FLastCustomOptions:=NewCustomOptions;
   OptionsDefTempl:=CodeToolBoss.DefinePool.CreateFPCCommandLineDefines(
-                        'Custom Options',FLastCustomOptions,false,Project);
+                 'Custom Options', FLastCustomOptions, false, Owner as TProject);
   if OptionsDefTempl=nil then begin
     // no custom options -> delete old template
     if FSrcDirIf<>nil then begin
@@ -6389,108 +6397,18 @@ begin
     FSrcDirIf.Parent.MoveToLast(FSrcDirIf);
 end;
 
-constructor TProjectDefineTemplates.Create(OwnerProject: TProject);
+procedure TProjectDefineTemplates.ClearFlags;
 begin
-  inherited Create;
-  FOwnerProject:=OwnerProject;
-end;
-
-destructor TProjectDefineTemplates.Destroy;
-begin
-  Clear;
-  fLastSourceDirectories.Free;
-  inherited Destroy;
-end;
-
-procedure TProjectDefineTemplates.Clear;
-begin
-  if FMain<>nil then begin
-    if (CodeToolBoss<>nil) then
-      CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
-    FMain:=nil;
-    FSrcDirIf:=nil;
-    FSrcDirectories:=nil;
-    FOutPutSrcPath:=nil;
-    FOutputDir:=nil;
-    FFlags:=FFlags+[ptfFlagsChanged];
-    fLastOutputDirSrcPathIDAsString:='';
-    FLastCustomOptions:='';
-    if fLastSourceDirectories<>nil then
-      fLastSourceDirectories.Clear;
-    fLastSourceDirsIDAsString:='';
-    fLastUnitPath:='';
-  end;
-end;
-
-procedure TProjectDefineTemplates.BeginUpdate;
-begin
-  inc(FUpdateLock);
-end;
-
-procedure TProjectDefineTemplates.EndUpdate;
-begin
-  if FUpdateLock=0 then RaiseException('TProjectDefineTemplates.EndUpdate');
-  dec(FUpdateLock);
-  if FUpdateLock=0 then begin
-    if ptfFlagsChanged in FFlags then CustomDefinesChanged;
-    if ptfSourceDirsChanged in FFlags then SourceDirectoriesChanged;
-    if ptfOutputDirChanged in FFlags then OutputDirectoryChanged;
-    if ptfCustomDefinesChanged in FFlags then CustomDefinesChanged;
-  end;
+  FFlags:=FFlags+[ptfFlagsChanged];
 end;
 
 procedure TProjectDefineTemplates.AllChanged;
 begin
-  CustomDefinesChanged;
   SourceDirectoriesChanged;
+  CustomDefinesChanged;
   UpdateGlobalValues;
   UpdateSrcDirIfDef;
   CodeToolBoss.DefineTree.ClearCache;
-end;
-
-procedure TProjectDefineTemplates.ProjectIDChanged;
-begin
-  if FUpdateLock>0 then begin
-    Include(FFlags,ptfIDChanged);
-    exit;
-  end;
-  Exclude(FFlags,ptfIDChanged);
-  UpdateMain;
-  UpdateDefinesForOutputDirectory;
-  UpdateSourceDirectories;
-  UpdateDefinesForCustomDefines;
-end;
-
-procedure TProjectDefineTemplates.SourceDirectoriesChanged;
-begin
-  if FUpdateLock>0 then begin
-    Include(FFlags,ptfSourceDirsChanged);
-    exit;
-  end;
-  Exclude(FFlags,ptfSourceDirsChanged);
-  UpdateSourceDirectories;
-  CodeToolBoss.DefineTree.ClearCache;
-end;
-
-procedure TProjectDefineTemplates.OutputDirectoryChanged;
-begin
-  if FUpdateLock>0 then begin
-    Include(FFlags,ptfOutputDirChanged);
-    exit;
-  end;
-  Exclude(FFlags,ptfOutputDirChanged);
-  UpdateDefinesForOutputDirectory;
-  CodeToolBoss.DefineTree.ClearCache;
-end;
-
-procedure TProjectDefineTemplates.CustomDefinesChanged;
-begin
-  if FUpdateLock>0 then begin
-    Include(FFlags,ptfCustomDefinesChanged);
-    exit;
-  end;
-  Exclude(FFlags,ptfCustomDefinesChanged);
-  UpdateDefinesForCustomDefines; // maybe custom defines changed
 end;
 
 procedure TProjectDefineTemplates.UpdateGlobalValues;
@@ -6500,10 +6418,10 @@ var
 begin
   Changed:=false;
   // the LCLWidgetType, TargetCPU and TargetOS is set by the TBuildManager
-  if Owner.IsVirtual then
+  if (Owner as TProject).IsVirtual then
     NewProjectDir:=VirtualDirectory
   else
-    NewProjectDir:=Owner.ProjectDirectory;
+    NewProjectDir:=(Owner as TProject).ProjectDirectory;
   if CodeToolBoss.SetGlobalValue(ExternalMacroStart+'ProjPath',NewProjectDir)
   then
     Changed:=true;
