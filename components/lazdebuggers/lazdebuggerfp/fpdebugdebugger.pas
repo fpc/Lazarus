@@ -127,6 +127,7 @@ type
     function AddBreak(const ALocation: TDbgPtr): FpDbgClasses.TDbgBreakpoint; overload;
     function AddBreak(const AFileName: String; ALine: Cardinal): FpDbgClasses.TDbgBreakpoint; overload;
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
+    function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
     procedure PrepareCallStackEntryList;
 
     property DebugInfo: TDbgInfo read GetDebugInfo;
@@ -1115,8 +1116,8 @@ var
   b: byte;
 begin
   // Read address of the vmt
-  FDbgController.CurrentProcess.ReadAddress(AnAddr, VMTAddr);
-  FDbgController.CurrentProcess.ReadAddress(VMTAddr+3*DBGPTRSIZE[FDbgController.CurrentProcess.Mode], ClassNameAddr);
+  ReadAddress(AnAddr, VMTAddr);
+  ReadAddress(VMTAddr+3*DBGPTRSIZE[FDbgController.CurrentProcess.Mode], ClassNameAddr);
   // read classname (as shortstring)
   ReadData(ClassNameAddr, 1, b);
   setlength(result,b);
@@ -1129,9 +1130,9 @@ var
   len: TDBGPtr;
 begin
   result := '';
-  if not FDbgController.CurrentProcess.ReadAddress(AnAddr, StrAddr) then
+  if not ReadAddress(AnAddr, StrAddr) then
     Exit;
-  FDbgController.CurrentProcess.ReadAddress(StrAddr-DBGPTRSIZE[FDbgController.CurrentProcess.Mode], len);
+  ReadAddress(StrAddr-DBGPTRSIZE[FDbgController.CurrentProcess.Mode], len);
   setlength(result, len);
   if not ReadData(StrAddr, len, result[1]) then
     result := '';
@@ -1475,6 +1476,25 @@ begin
 {$else linux}
   result:=FDbgController.CurrentProcess.ReadData(AAdress, ASize, AData);
 {$endif linux}
+end;
+
+function TFpDebugDebugger.ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
+var
+  dw: DWord;
+  qw: QWord;
+begin
+  case FDbgController.CurrentProcess.Mode of
+    dm32:
+      begin
+        result := ReadData(AAdress, sizeof(dw), dw);
+        AData:=dw;
+      end;
+    dm64:
+      begin
+        result := ReadData(AAdress, sizeof(qw), qw);
+        AData:=qw;
+      end;
+  end;
 end;
 
 procedure TFpDebugDebugger.PrepareCallStackEntryList;
