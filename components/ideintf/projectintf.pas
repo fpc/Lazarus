@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Controls, Forms, AvgLvlTree,
-  NewItemIntf, ObjInspStrConsts, ProjPackIntf, IDEOptionsIntf, CompOptsIntf;
+  NewItemIntf, ProjPackIntf, IDEOptionsIntf, CompOptsIntf, ObjInspStrConsts;
 
 const
   FileDescGroupName = 'File';
@@ -92,7 +92,7 @@ type
     FIsComponent: boolean;
     FIsPascalUnit: boolean;
     FName: string;
-    FOwner: TObject;
+    FOwner: TIDEProjPackBase;
     FReferenceCount: integer;
     FResourceClass: TPersistentClass;
     FRequiredPackages: string;
@@ -105,7 +105,6 @@ type
     procedure SetDefaultResFileExt(const AValue: string); virtual;
     procedure SetDefaultSourceName(const AValue: string); virtual;
     procedure SetName(const AValue: string); virtual;
-    procedure SetOwner(const AValue: TObject); virtual;
     procedure SetRequiredPackages(const AValue: string); virtual;
     procedure SetResourceClass(const AValue: TPersistentClass); virtual;
   public
@@ -122,7 +121,7 @@ type
     function Init(var {%H-}NewFilename: string; {%H-}NewOwner: TObject;
                   var {%H-}NewSource: string; {%H-}Quiet: boolean): TModalResult; virtual;
   public
-    property Owner: TObject read FOwner write SetOwner; // project, package or nil
+    property Owner: TIDEProjPackBase read FOwner write FOwner; // project, package or nil
     property Name: string read FName write SetName;
     property DefaultFilename: string read FDefaultFilename write SetDefaultFilename;
     property DefaultFileExt: string read FDefaultFileExt write SetDefaultFileExt;
@@ -706,12 +705,6 @@ begin
   FRequiredPackages:=AValue;
 end;
 
-procedure TProjectFileDescriptor.SetOwner(const AValue: TObject);
-begin
-  if FOwner=AValue then exit;
-  FOwner:=AValue;
-end;
-
 procedure TProjectFileDescriptor.SetDefaultFilename(const AValue: string);
 begin
   if FDefaultFilename=AValue then exit;
@@ -839,7 +832,7 @@ function TFileDescPascalUnit.GetUnitDirectives: string;
 begin
   Result:='{$mode objfpc}{$H+}';
   if Owner is TLazProject then
-    Result:=CompilerOptionsToUnitDirectives(TLazProject(Owner).LazCompilerOptions);
+    Result:=CompilerOptionsToUnitDirectives(Owner.LazCompilerOptions);
 end;
 
 function TFileDescPascalUnit.GetInterfaceUsesSection: string;
@@ -864,11 +857,9 @@ begin
   Result:=inherited CheckOwner(Quiet);
   if Result<>mrOK then exit;
   if Owner=nil then exit;
-  if Assigned(CheckCompOptsAndMainSrcForNewUnitEvent) then begin
+  if Assigned(CheckCompOptsAndMainSrcForNewUnitEvent) then
     if Owner is TLazProject then
-      Result:=CheckCompOptsAndMainSrcForNewUnitEvent(
-                                         TLazProject(Owner).LazCompilerOptions);
-  end;
+      Result:=CheckCompOptsAndMainSrcForNewUnitEvent(Owner.LazCompilerOptions);
 end;
 
 class function TFileDescPascalUnit.CompilerOptionsToUnitDirectives(
