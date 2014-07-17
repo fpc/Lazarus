@@ -40,8 +40,9 @@ uses
   // IDEIntf
   ComponentReg, LazIDEIntf, PackageIntf, ProjectIntf,
   // IDE
-  IDEProcs, Project, ProjectDefs, DialogProcs, IDEDialogs, EditorOptions, CompilerOptions,
-  PackageDefs, PackageSystem, PackageEditor, BasePkgManager, LazarusIDEStrConsts,
+  IDEProcs, DialogProcs, IDEDialogs, EditorOptions, CompilerOptions,
+  ProjPackBase, Project, ProjectDefs, PackageDefs, PackageSystem, PackageEditor,
+  BasePkgManager, LazarusIDEStrConsts,
   // Converter
   ConverterTypes, ConvertSettings, ConvCodeTool, MissingUnits, MissingPropertiesDlg,
   UsedUnits;
@@ -163,7 +164,7 @@ type
   TConvertDelphiProjPack = class(TConvertDelphiPBase)
   private
     // Either Project or LazPackage. Typecasted to right types in property getter.
-    fProjPack: TObject;
+    fProjPack: iProjPack;
     fLazPMainFilename: string;         // .lpi or .lpk file name
     fDelphiPFilename: string;          // .dpr or .dpk file name
     fLazPMainSuffix: string;           // '.lpi' or '.lpk' suffix
@@ -197,24 +198,16 @@ type
     function FindAllUnits: TModalResult; virtual; abstract;
     function ConvertAllUnits: TModalResult; virtual; abstract;
     function ExtractOptionsFromDelphiSource: TModalResult; virtual; abstract;
-    // The following protected funcs are needed only because
-    //  Project and LazPackage don't inherit from the same class.
-    function GetCompOpts: TBaseCompilerOptions; virtual; abstract;
-    function GetCustomDefines: TDefineTemplate; virtual; abstract;
-    procedure CustomDefinesChanged; virtual; abstract;
+    // Abstract base for the fake Project / Package virtual methods.
     function GetMainName: string; virtual; abstract;
     function SaveAndMaybeClose(aFilename: string): TModalResult; virtual;
     function ContainsFile(aFileName: string): Boolean; virtual; abstract;
-    procedure AddPackageDependency(const PackageName: string); virtual; abstract;
     function FindDependencyByName(const PackageName: string): TPkgDependency; virtual; abstract;
-    procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); virtual; abstract;
   public
     constructor Create(const AFilename, ADescription: string);
     destructor Destroy; override;
     function Convert: TModalResult;
   public
-    property CompOpts: TBaseCompilerOptions read GetCompOpts;
-    property CustomDefines: TDefineTemplate read GetCustomDefines;
     property MainName: string read GetMainName;
   end;
 
@@ -233,16 +226,11 @@ type
     function FindAllUnits: TModalResult; override;
     function ConvertAllUnits: TModalResult; override;
     function ExtractOptionsFromDelphiSource: TModalResult; override;
-    // Fake Project / Package virtual methods.
-    function GetCompOpts: TBaseCompilerOptions; override;
-    function GetCustomDefines: TDefineTemplate; override;
-    procedure CustomDefinesChanged; override;
+    // Fake Project virtual methods.
     function GetMainName: string; override;
     function SaveAndMaybeClose(Filename: string): TModalResult; override;
     function ContainsFile(aFileName: string): Boolean; override;
-    procedure AddPackageDependency(const PackageName: string); override;
     function FindDependencyByName(const PackageName: string): TPkgDependency; override;
-    procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); override;
   public
     constructor Create(const aProjectFilename: string);
     destructor Destroy; override;
@@ -265,15 +253,10 @@ type
     function FindAllUnits: TModalResult; override;
     function ConvertAllUnits: TModalResult; override;
     function ExtractOptionsFromDelphiSource: TModalResult; override;
-    // Fake Project / Package virtual methods.
-    function GetCompOpts: TBaseCompilerOptions; override;
-    function GetCustomDefines: TDefineTemplate; override;
-    procedure CustomDefinesChanged; override;
+    // Fake Package virtual methods.
     function GetMainName: string; override;
     function ContainsFile(aFileName: string): Boolean; override;
-    procedure AddPackageDependency(const PackageName: string); override;
     function FindDependencyByName(const PackageName: string): TPkgDependency; override;
-    procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean); override;
   public
     constructor Create(const aPackageFilename: string);
     destructor Destroy; override;
@@ -1068,15 +1051,15 @@ begin
   // read config files (they often contain clues about paths, switches and defines)
   Result:=ReadDelphiConfigFiles;
   if Result<>mrOK then exit;
-  RemoveNonExistingFiles(false);
-  CleanUpCompilerOptionsSearchPaths(CompOpts);
+  fProjPack.RemoveNonExistingFiles(false);
+  CleanUpCompilerOptionsSearchPaths(fProjPack.BaseCompilerOptions);
   // LCL dependency should be added automatically later for GUI applications
-  AddPackageDependency('LCL');            // but in some special cases it is not.
+  fProjPack.AddPackageDependency('LCL'); // but in some special cases it is not.
   // ToDo: make an option to add NoGUI to Project.CompilerOptions.LCLWidgetType.
   if fProjPack is TProject then
     PkgBoss.OpenProjectDependencies(fProjPack as TProject, true);
-  CustomDefinesChanged;
-  SetCompilerModeForDefineTempl(CustomDefines);
+  fProjPack.DefineTemplates.CustomDefinesChanged;
+  SetCompilerModeForDefineTempl(fProjPack.DefineTemplates.CustomDefines);
   try
     if Result<>mrOK then exit;
     // get all options from the .dpr or .dpk file
@@ -1095,7 +1078,7 @@ begin
     Result:=ConvertAllUnits;           // convert all files.
     if Result<>mrOK then exit;
   finally
-    UnsetCompilerModeForDefineTempl(CustomDefines);
+    UnsetCompilerModeForDefineTempl(fProjPack.DefineTemplates.CustomDefines);
   end;
   Result:=MaybeDeleteFiles;     // Delete files having same name with a LCL unit.
 end;
@@ -1174,7 +1157,7 @@ var
     if DelphiPkgName='' then exit;
     if System.Pos(';'+lowercase(DelphiPkgName)+';',
                   ';'+lowercase(DelphiPkgNames)+';')>0 then begin
-      AddPackageDependency(LazarusPkgName);
+      fProjPack.AddPackageDependency(LazarusPkgName);
       fSettings.AddLogLine(Format(lisConvDelphiAddedPackageDependency,[LazarusPkgName]));
     end;
   end;
@@ -1198,11 +1181,13 @@ var
 
   procedure AddSearchPath(const SearchPath: string);
   begin
-    CompOpts.IncludePath:=MergeSearchPaths(CompOpts.IncludePath,SearchPath);
-    CompOpts.Libraries:=MergeSearchPaths(CompOpts.Libraries,SearchPath);
-    CompOpts.OtherUnitFiles:=MergeSearchPaths(CompOpts.OtherUnitFiles,SearchPath);
-    CompOpts.ObjectPath:=MergeSearchPaths(CompOpts.ObjectPath,SearchPath);
-    CompOpts.DebugPath:=MergeSearchPaths(CompOpts.DebugPath,SearchPath);
+    with fProjPack.BaseCompilerOptions do begin
+      IncludePath:=MergeSearchPaths(IncludePath,SearchPath);
+      Libraries:=MergeSearchPaths(Libraries,SearchPath);
+      OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,SearchPath);
+      ObjectPath:=MergeSearchPaths(ObjectPath,SearchPath);
+      DebugPath:=MergeSearchPaths(DebugPath,SearchPath);
+    end;
   end;
 
 var
@@ -1217,7 +1202,7 @@ begin
       if fProjPack is TProject then begin
         OutputDir:=ReadDirectory('Directories','OutputDir');
         if (OutputDir<>'') then
-          CompOpts.UnitOutputDirectory:=OutputDir;
+          fProjPack.BaseCompilerOptions.UnitOutputDirectory:=OutputDir;
       end;
 
       // search path
@@ -1228,7 +1213,8 @@ begin
       // debug source dirs
       DebugSourceDirs:=ReadSearchPath('Directories','DebugSourceDirs');
       if DebugSourceDirs<>'' then
-        CompOpts.DebugPath:=MergeSearchPaths(CompOpts.DebugPath,DebugSourceDirs);
+        with fProjPack.BaseCompilerOptions do
+          DebugPath:=MergeSearchPaths(DebugPath,DebugSourceDirs);
 
       // packages
       ReadDelphiPackages;
@@ -1236,7 +1222,7 @@ begin
       if fProjPack is TProject then begin
         if IniFile.ReadString('Linker','ConsoleApp','')='0' then
           // does not need a windows console
-          (fProjPack as TProject).LazCompilerOptions.Win32GraphicApp:=true;
+          fProjPack.BaseCompilerOptions.Win32GraphicApp:=true;
       end;
     finally
       IniFile.Free;
@@ -1268,10 +1254,11 @@ begin
         if (c='U') or (c='I') then begin
           s:=ExpandDelphiSearchPath(copy(Line,4,length(Line)-4), Self);
           if s<>'' then
-            case c of
-              'U': CompOpts.OtherUnitFiles:=MergeSearchPaths(CompOpts.OtherUnitFiles,s);
-              'I': CompOpts.IncludePath:=MergeSearchPaths(CompOpts.IncludePath,s);
-            end;
+            with fProjPack.BaseCompilerOptions do
+              case c of
+                'U': OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,s);
+                'I': IncludePath:=MergeSearchPaths(IncludePath,s);
+              end;
         end
       end;
     finally
@@ -1341,7 +1328,7 @@ function TConvertDelphiProjPack.DoMissingUnits(AUsedUnitsTool: TUsedUnitsTool): 
       sUnitPath:=GetCachedUnitPath(mUnit);
       if sUnitPath<>'' then begin
         // Found from cached paths: add unit path to project's settings.
-        with CompOpts do begin
+        with fProjPack.BaseCompilerOptions do begin
           OtherUnitFiles:=MergeSearchPaths(OtherUnitFiles,sUnitPath);
           IncludePath:=MergeSearchPaths(IncludePath,sUnitPath);
         end;
@@ -1436,7 +1423,7 @@ begin
       s:='LCL';
     Dep:=FindDependencyByName(s);
     if not Assigned(Dep) then begin
-      AddPackageDependency(s);
+      fProjPack.AddPackageDependency(s);
       fSettings.AddLogLine(Format(lisConvDelphiAddedPackageDependency, [s]));
       Dep:=FindDependencyByName(s);
       if Assigned(Dep) then
@@ -1507,7 +1494,7 @@ begin
     if Assigned(Project1) then
       Project1.ProjectInfoFile:=fLazPMainFilename;
   end;
-  LazProject:=Project1;
+  fProjPack:=Project1;
   if Result<>mrOK then exit;
   // save to disk (this makes sure, all editor changes are saved too)
   LazProject.SkipCheckLCLInterfaces:=True; // Don't add Interfaces unit automatically.
@@ -1540,7 +1527,7 @@ begin
   finally
     ConvTool.Free;
   end;
-  CompOpts.Win32GraphicApp := not fIsConsoleApp;
+  fProjPack.BaseCompilerOptions.Win32GraphicApp := not fIsConsoleApp;
   fMainUnitConverter.fUsedUnitsTool.IsConsoleApp:=fIsConsoleApp;
   Result:=LazarusIDE.DoOpenEditorFile(fMainUnitConverter.fLazUnitFilename,0,0,[ofQuiet]);
   if Result<>mrOK then exit;
@@ -1753,9 +1740,6 @@ begin
   Result:=mrOK;
 end;
 
-// The following funcs are needed only because Project and LazPackage
-//  don't inherit from the same class.
-
 function TConvertDelphiProject.GetLazProject: TProject;
 begin
   Result:=fProjPack as TProject;
@@ -1766,26 +1750,21 @@ begin
   fProjPack:=AValue;
 end;
 
-function TConvertDelphiProject.GetCompOpts: TBaseCompilerOptions;
+function TConvertDelphiProject.ContainsFile(aFileName: string): Boolean;
 begin
-  Result:=(fProjPack as TProject).CompilerOptions;
+  Result:=Assigned(LazProject.UnitInfoWithFilename(aFileName));
 end;
 
-function TConvertDelphiProject.GetCustomDefines: TDefineTemplate;
+function TConvertDelphiProject.FindDependencyByName(const PackageName: string): TPkgDependency;
 begin
-  Result:=(fProjPack as TProject).DefineTemplates.CustomDefines;
-end;
-
-procedure TConvertDelphiProject.CustomDefinesChanged;
-begin
-  (fProjPack as TProject).DefineTemplates.CustomDefinesChanged;
+  Result:=LazProject.FindDependencyByName(PackageName);
 end;
 
 function TConvertDelphiProject.GetMainName: string;
 begin
   Result:='';
   if Assigned(LazProject.MainUnitInfo) then
-    Result:=(fProjPack as TProject).MainUnitInfo.Filename;
+    Result:=LazProject.MainUnitInfo.Filename;
 end;
 
 function TConvertDelphiProject.SaveAndMaybeClose(Filename: string): TModalResult;
@@ -1804,26 +1783,6 @@ begin
   if not fSettings.KeepFileOpen then
     Result:=LazarusIDE.DoCloseEditorFile(AnUnitInfo.OpenEditorInfo[0].EditorComponent,
                                          [cfQuiet]);
-end;
-
-function TConvertDelphiProject.ContainsFile(aFileName: string): Boolean;
-begin
-  Result:=Assigned(LazProject.UnitInfoWithFilename(aFileName));
-end;
-
-procedure TConvertDelphiProject.AddPackageDependency(const PackageName: string);
-begin
-  (fProjPack as TProject).AddPackageDependency(PackageName);
-end;
-
-function TConvertDelphiProject.FindDependencyByName(const PackageName: string): TPkgDependency;
-begin
-  Result:=(fProjPack as TProject).FindDependencyByName(PackageName);
-end;
-
-procedure TConvertDelphiProject.RemoveNonExistingFiles(RemoveFromUsesSection: boolean);
-begin
-  (fProjPack as TProject).RemoveNonExistingFiles(RemoveFromUsesSection);
 end;
 
 
@@ -1848,7 +1807,7 @@ var
   PkgName: String;
   CurEditor: TPackageEditorForm;
 begin
-  LazPackage:=nil;
+  fProjPack:=nil;
   if FileExistsUTF8(fLazPMainFilename) then begin
     // there is already a lazarus package file -> open the package editor
     Result:=PackageEditingInterface.DoOpenPackageFile(fLazPMainFilename,[pofAddToRecent],true);
@@ -1856,8 +1815,8 @@ begin
   end;
   // search package in graph
   PkgName:=ExtractFileNameOnly(fLazPMainFilename);
-  LazPackage:=PackageGraph.FindPackageWithName(PkgName,nil);
-  if LazPackage<>nil then begin
+  fProjPack:=PackageGraph.FindPackageWithName(PkgName,nil);
+  if fProjPack<>nil then begin
     // there is already a package loaded with this name ...
     if CompareFilenames(LazPackage.Filename,fLazPMainFilename)<>0 then begin
       // ... but it is not the package file we want -> stop
@@ -1872,11 +1831,11 @@ begin
     end;
   end else begin
     // there is not yet a package with this name -> create a new package with LCL as dependency
-    LazPackage:=PackageGraph.CreateNewPackage(PkgName);
+    fProjPack:=PackageGraph.CreateNewPackage(PkgName);
     PackageGraph.AddDependencyToPackage(LazPackage,
                   PackageGraph.LCLPackage.CreateDependencyWithOwner(LazPackage));
     LazPackage.Filename:=fLazPMainFilename;
-    LazPackage.CompilerOptions.SyntaxMode:='delphi';
+    fProjPack.BaseCompilerOptions.SyntaxMode:='delphi';
     // open a package editor
     CurEditor:=PackageEditors.OpenEditor(LazPackage);
     CurEditor.Show;
@@ -1974,20 +1933,20 @@ begin
         end;
       end;
     finally
-      AllPath:=LazPackage.SourceDirectories.CreateSearchPathFromAllFiles;
+      AllPath:=fProjPack.SourceDirectories.CreateSearchPathFromAllFiles;
       UselessPath:='.;'+VirtualDirectory+';'+VirtualTempDir+';'+LazPackage.Directory;
       // Set unit paths to find all project units
-      NewSearchPath:=MergeSearchPaths(LazPackage.CompilerOptions.OtherUnitFiles,AllPath);
+      NewSearchPath:=MergeSearchPaths(fProjPack.BaseCompilerOptions.OtherUnitFiles,AllPath);
       NewSearchPath:=RemoveSearchPaths(NewSearchPath,UselessPath);
-      LazPackage.CompilerOptions.OtherUnitFiles:=MinimizeSearchPath(
+      fProjPack.BaseCompilerOptions.OtherUnitFiles:=MinimizeSearchPath(
                RemoveNonExistingPaths(NewSearchPath,LazPackage.Directory));
       // Set include path
-      NewSearchPath:=MergeSearchPaths(LazPackage.CompilerOptions.IncludePath,AllPath);
+      NewSearchPath:=MergeSearchPaths(fProjPack.BaseCompilerOptions.IncludePath,AllPath);
       NewSearchPath:=RemoveSearchPaths(NewSearchPath,UselessPath);
-      LazPackage.CompilerOptions.IncludePath:=MinimizeSearchPath(
+      fProjPack.BaseCompilerOptions.IncludePath:=MinimizeSearchPath(
                RemoveNonExistingPaths(NewSearchPath,LazPackage.Directory));
       // Clear caches
-      LazPackage.DefineTemplates.SourceDirectoriesChanged;
+      fProjPack.DefineTemplates.SourceDirectoriesChanged;
       CodeToolBoss.DefineTree.ClearCache;
     end;
     // Save package
@@ -2090,9 +2049,6 @@ begin
   Result:=mrOK;
 end;
 
-// The following funcs are needed only because Project and LazPackage
-//  don't inherit from the same class.
-
 function TConvertDelphiPackage.GetLazPackage: TLazPackage;
 begin
   Result:=fProjPack as TLazPackage;
@@ -2103,44 +2059,19 @@ begin
   fProjPack:=AValue;
 end;
 
-function TConvertDelphiPackage.GetCompOpts: TBaseCompilerOptions;
-begin
-  Result:=(fProjPack as TLazPackage).CompilerOptions;
-end;
-
-function TConvertDelphiPackage.GetCustomDefines: TDefineTemplate;
-begin
-  Result:=(fProjPack as TLazPackage).DefineTemplates.CustomDefines;
-end;
-
-procedure TConvertDelphiPackage.CustomDefinesChanged;
-begin
-  (fProjPack as TLazPackage).DefineTemplates.CustomDefinesChanged;
-end;
-
 function TConvertDelphiPackage.GetMainName: string;
 begin
-  Result:=(fProjPack as TLazPackage).Filename;
+  Result:=LazPackage.Filename;
 end;
 
 function TConvertDelphiPackage.ContainsFile(aFileName: string): Boolean;
 begin
-  Result:=Assigned((fProjPack as TLazPackage).FindPkgFile(aFileName, True, False));
-end;
-
-procedure TConvertDelphiPackage.AddPackageDependency(const PackageName: string);
-begin
-  (fProjPack as TLazPackage).AddPackageDependency(PackageName);
+  Result:=Assigned(LazPackage.FindPkgFile(aFileName, True, False));
 end;
 
 function TConvertDelphiPackage.FindDependencyByName(const PackageName: string): TPkgDependency;
 begin
-  Result:=(fProjPack as TLazPackage).FindDependencyByName(PackageName);
-end;
-
-procedure TConvertDelphiPackage.RemoveNonExistingFiles(RemoveFromUsesSection: boolean);
-begin
-  (fProjPack as TLazPackage).RemoveNonExistingFiles;
+  Result:=LazPackage.FindDependencyByName(PackageName);
 end;
 
 

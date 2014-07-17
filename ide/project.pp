@@ -933,7 +933,8 @@ type
                       AddToProjectUsesClause: boolean); override;
     procedure RemoveUnit(Index: integer;
                          RemoveFromUsesSection: boolean = true); override;
-    procedure RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true);
+    // true if something changed
+    function RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true): boolean;
     function CreateProjectFile(const Filename: string): TLazProjectFile; override;
     procedure UpdateVisibleUnit(AnEditor: TSourceEditorInterface; AWindowID: Integer);
     procedure UpdateAllVisibleUnits;
@@ -3563,18 +3564,21 @@ begin
   end;
 end;
 
-procedure TProject.RemoveNonExistingFiles(RemoveFromUsesSection: boolean);
+function TProject.RemoveNonExistingFiles(RemoveFromUsesSection: boolean): boolean;
 var
   i: Integer;
   AnUnitInfo: TUnitInfo;
 begin
+  Result:=false;
   i:=UnitCount-1;
   while (i>=0) do begin
     if i<UnitCount then begin
       AnUnitInfo:=Units[i];
       if (not AnUnitInfo.IsVirtual) and (i<>MainUnitID) then begin
-        if not FileExistsUTF8(AnUnitInfo.Filename) then
+        if not FileExistsUTF8(AnUnitInfo.Filename) then begin
           RemoveUnit(i,RemoveFromUsesSection);
+          Result:=true;
+        end;
       end;
     end;
     dec(i);

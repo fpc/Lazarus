@@ -423,14 +423,6 @@ type
   
   { TLazPackageDefineTemplates }
   
-  //TLazPkgDefineTemplatesFlag = (
-  //  ptfIDChanged,
-  //  ptfSourceDirsChanged,
-  //  ptfOutputDirChanged,
-  //  ptfCustomDefinesChanged
-  //  );
-  //TLazPkgDefineTemplatesFlags = set of TLazPkgDefineTemplatesFlag;
-  
   TLazPackageDefineTemplates = class(TProjPackDefineTemplates)
   private
   protected
@@ -698,19 +690,20 @@ type
     procedure DeleteFile(PkgFile: TPkgFile); // free TPkgFile
     procedure RemoveFile(PkgFile: TPkgFile); // move file to removed file list
     procedure UnremovePkgFile(PkgFile: TPkgFile); // move file back to file list
-    function RemoveNonExistingFiles: boolean; // true if something changed
+    // True if something changed. Param is ignored here, just to match with interface.
+    function RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true): boolean;
     function GetFileDialogInitialDir(const DefaultDirectory: string): string;
     procedure MoveFile(CurIndex, NewIndex: integer);
     procedure SortFiles;
     function FixFilesCaseSensitivity: boolean;
     function MainUnitHasPkgName: boolean;
     // required dependencies (plus removed required dependencies)
-    function FindDependencyByName(const PkgName: string): TPkgDependency;
+    function FindDependencyByName(const PackageName: string): TPkgDependency;
     function FindRemovedDependencyByName(const PkgName: string): TPkgDependency;
     function RequiredDepByIndex(Index: integer): TPkgDependency;
     function RemovedDepByIndex(Index: integer): TPkgDependency;
     procedure AddRequiredDependency(Dependency: TPkgDependency);
-    procedure AddPackageDependency(const PkgName: string);
+    procedure AddPackageDependency(const PackageName: string);
     procedure RemoveRequiredDependency(Dependency: TPkgDependency);
     procedure DeleteRequiredDependency(Dependency: TPkgDependency);
     procedure DeleteRemovedDependency(Dependency: TPkgDependency);
@@ -3263,18 +3256,14 @@ begin
   Result:=nil;
 end;
 
-function TLazPackage.FindDependencyByName(const PkgName: string
-  ): TPkgDependency;
+function TLazPackage.FindDependencyByName(const PackageName: string): TPkgDependency;
 begin
-  Result:=FindDependencyByNameInList(FFirstRequiredDependency,pdlRequires,
-                                     PkgName);
+  Result:=FindDependencyByNameInList(FFirstRequiredDependency,pdlRequires,PackageName);
 end;
 
-function TLazPackage.FindRemovedDependencyByName(const PkgName: string
-  ): TPkgDependency;
+function TLazPackage.FindRemovedDependencyByName(const PkgName: string): TPkgDependency;
 begin
-  Result:=FindDependencyByNameInList(FFirstRemovedDependency,pdlRequires,
-                                     PkgName);
+  Result:=FindDependencyByNameInList(FFirstRemovedDependency,pdlRequires,PkgName);
 end;
 
 function TLazPackage.RequiredDepByIndex(Index: integer): TPkgDependency;
@@ -3394,7 +3383,8 @@ begin
   PkgFile.Removed:=false;
 end;
 
-function TLazPackage.RemoveNonExistingFiles: boolean;
+function TLazPackage.RemoveNonExistingFiles(RemoveFromUsesSection: boolean): boolean;
+// Param is ignored here, it is just to match with interface.
 var
   i: Integer;
   AFilename: String;
@@ -3569,13 +3559,13 @@ begin
   Modified:=true;
 end;
 
-procedure TLazPackage.AddPackageDependency(const PkgName: string);
+procedure TLazPackage.AddPackageDependency(const PackageName: string);
 var
   Dependency: TPkgDependency;
 begin
-  if FindDependencyByName(PkgName)<>nil then exit;
+  if FindDependencyByName(PackageName)<>nil then exit;
   Dependency:=TPkgDependency.Create;
-  Dependency.PackageName:=PkgName;
+  Dependency.PackageName:=PackageName;
   AddRequiredDependency(Dependency);
 end;
 

@@ -24,10 +24,14 @@ type
     function GetSourceDirectories: TFileReferenceList;
     //function GetOutputDirectory: string;  // Proj/Pack have different params.
     function NeedsDefineTemplates: boolean;
+    procedure AddPackageDependency(const PackageName: string);
+    //function FindDependencyByName(const PackageName: string): TPkgDependency;
+    function RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true): boolean;
 
     property IDAsString: string read GetIDAsString;
     property IDAsWord: string read GetIDAsWord;
     property BaseCompilerOptions: TBaseCompilerOptions read GetBaseCompilerOptions;
+    property DefineTemplates: TProjPackDefineTemplates read GetDefineTemplates;
     property SourceDirectories: TFileReferenceList read GetSourceDirectories;
   end;
 
