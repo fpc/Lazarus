@@ -248,7 +248,6 @@ type
     FLibMap: TMap;    // map LibAddr -> LibObject
     FBreakMap: TMap;  // map BreakAddr -> BreakObject
 
-    FRunToBreakpoint: TDbgBreakpoint;
     FMainThread: TDbgThread;
     function GetHandle: THandle; virtual;
     procedure SetExitCode(AValue: DWord);
@@ -274,7 +273,6 @@ type
     procedure Log(const AString: string; const ALogLevel: TFPDLogLevel = dllDebug);
     procedure Log(const AString: string; const Options: array of const; const ALogLevel: TFPDLogLevel = dllDebug);
     function  Pause: boolean; virtual;
-    function  RunTo(ASourceFile: string; ALineNr: integer): boolean;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; virtual;
     function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean; virtual;
@@ -296,7 +294,6 @@ type
     function GetStackPointerRegisterValue: TDbgPtr; virtual; abstract;
 
     procedure TerminateProcess; virtual; abstract;
-    procedure ClearRunToBreakpoint;
 
     property Handle: THandle read GetHandle;
     property Name: String read FName write SetName;
@@ -304,7 +301,6 @@ type
     property ThreadID: integer read FThreadID;
     property ExitCode: DWord read FExitCode;
     property CurrentBreakpoint: TDbgBreakpoint read FCurrentBreakpoint;
-    property RunToBreakpoint: TDbgBreakpoint read FRunToBreakpoint;
 
     // Properties valid when last event was an deException
     property ExceptionMessage: string read FExceptionMessage write FExceptionMessage;
@@ -901,20 +897,6 @@ begin
   result := false;
 end;
 
-function TDbgProcess.RunTo(ASourceFile: string; ALineNr: integer): boolean;
-var
-  addr: TDBGPtr;
-begin
-  result := false;
-  if not FDbgInfo.HasInfo then Exit;
-  addr := FDbgInfo.GetLineAddress(ASourceFile, ALineNr);
-  if addr = 0 then Exit;
-  result := true;
-  // If there is already a breakpoint on that location, nothing has to be done.
-  if not FBreakMap.HasId(addr) then
-    FRunToBreakpoint := AddBreak(addr);
-end;
-
 function TDbgProcess.GetHandle: THandle;
 begin
   result := 0;
@@ -995,12 +977,6 @@ end;
 function TDbgProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
 begin
   result := false;
-end;
-
-procedure TDbgProcess.ClearRunToBreakpoint;
-begin
-  RemoveBreak(FRunToBreakpoint.Location);
-  FreeAndNil(FRunToBreakpoint);
 end;
 
 { TDbgThread }
@@ -1194,7 +1170,6 @@ begin
   if not FProcess.WriteData(FLocation, 1, FOrgValue)
   then begin
     Log('Unable to reset breakpoint at %s', [FormatAddress(FLocation)]);
-    Exit;
   end;
 end;
 

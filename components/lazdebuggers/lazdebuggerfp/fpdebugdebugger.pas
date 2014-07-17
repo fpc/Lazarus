@@ -1243,6 +1243,7 @@ function TFpDebugDebugger.RequestCommand(const ACommand: TDBGCommand;
   const AParams: array of const): Boolean;
 var
   EvalFlags: TDBGEvaluateFlags;
+  addr: TDBGPtr;
 begin
   result := False;
   case ACommand of
@@ -1309,11 +1310,17 @@ begin
       end;
     dcRunTo:
       begin
-        result := FDbgController.CurrentProcess.RunTo(AnsiString(AParams[0].VAnsiString), AParams[1].VInteger);
-        if result then
+        result := false;
+        if FDbgController.CurrentProcess.DbgInfo.HasInfo then
           begin
-          SetState(dsRun);
-          StartDebugLoop;
+          addr := FDbgController.CurrentProcess.DbgInfo.GetLineAddress(AnsiString(AParams[0].VAnsiString), AParams[1].VInteger);
+          if addr <> 0 then
+            begin
+            result := true;
+            FDbgController.InitializeCommand(TDbgControllerRunToCmd.Create(FDbgController, addr));
+            SetState(dsRun);
+            StartDebugLoop;
+            end;
           end;
       end;
     dcStepOver:

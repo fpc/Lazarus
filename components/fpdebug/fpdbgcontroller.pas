@@ -85,6 +85,19 @@ type
     procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); override;
   end;
 
+  { TDbgControllerRunToCmd }
+
+  TDbgControllerRunToCmd = class(TDbgControllerCmd)
+  private
+    FHiddenBreakpoint: TDbgBreakpoint;
+    FLocation: TDBGPtr;
+    FProcess: TDbgProcess;
+  public
+    constructor Create(AController: TDbgController; ALocation: TDBGPtr);
+    procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
+    procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); override;
+  end;
+
   { TDbgController }
 
   TDbgController = class
@@ -147,6 +160,35 @@ type
   end;
 
 implementation
+
+{ TDbgControllerRunToCmd }
+
+constructor TDbgControllerRunToCmd.Create(AController: TDbgController; ALocation: TDBGPtr);
+begin
+  inherited create(AController);
+  FLocation:=ALocation;
+end;
+
+procedure TDbgControllerRunToCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
+begin
+  FProcess := AProcess;
+  if not assigned(FHiddenBreakpoint) and not AProcess.HasBreak(FLocation) then
+    FHiddenBreakpoint := AProcess.AddBreak(FLocation);
+
+  AProcess.Continue(AProcess, AThread, False);
+end;
+
+procedure TDbgControllerRunToCmd.ResolveEvent(var AnEvent: TFPDEvent; out
+  Handled, Finished: boolean);
+begin
+  Handled := false;
+  Finished := (AnEvent<>deInternalContinue);
+  if Finished and assigned(FHiddenBreakpoint) then
+    begin
+    FProcess.RemoveBreak(FLocation);
+    FHiddenBreakpoint.Free;
+    end;
+end;
 
 { TDbgControllerStepIntoLineCmd }
 
