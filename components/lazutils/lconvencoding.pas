@@ -6972,7 +6972,7 @@ begin
       end;
     end;
 
-    //Exit if encoded succesfully.
+    //Exit if encoded successfully.
     if Encoded = true then begin
       exit;
     end;

@@ -66,7 +66,7 @@ type
   { TLeakInfo }
 
   TLeakInfo = class(TObject)
-    // returns True, if information has been succesfully received, False otherwise
+    // returns True, if information has been successfully received, False otherwise
     // Fills LeakData record
     // if Traces is not nil, fill the list with TStackTrace object. User is responsible for freeing them
     function GetLeakInfo(out LeakData: TLeakStatus; var Traces: TList): Boolean; virtual; abstract;
