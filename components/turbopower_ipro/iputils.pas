@@ -35,24 +35,13 @@ unit IpUtils;
 interface
 
 uses
-  SysUtils,
+  SysUtils, Classes, Controls, Registry, ComCtrls,
   {$IFDEF IP_LAZARUS}
-  LCLType,
-  GraphType,
-  LCLIntf,
-  LMessages,
-  FileUtil, lazutf8classes,
-  LCLProc,
+  LCLType, GraphType, LCLIntf, LMessages, FileUtil, lazutf8classes, LCLProc;
   {$ELSE}
-  Messages,
-  Windows,
-  ExtCtrls,
-  SyncObjs, //JMN
+  Messages, Windows, ExtCtrls, SyncObjs;
   {$ENDIF}
-  Classes,
-  Controls,
-  Registry,
-  ComCtrls;
+
 
 const
   InternetProfessionalVersion = 1.15;
@@ -93,12 +82,6 @@ const
   {$ENDIF}
 
 type
-  { Hack for Delphi 3 compatibility -- THandle is defined as Integer }
-  { in D3, and Cardinal in others -- causing a problem with event    }
-  { properties for applications shared amongst the compilers, such   }
-  { as our examples. }
-  TIpHandle = Cardinal;
-
   TIpLineTerminator = (ltNone, ltCR, ltLF, ltCRLF, ltOther);
 
   TIpCRCByteArray = array[0..Pred(High(LongInt))] of Byte;
@@ -128,16 +111,11 @@ type
 
   TIpBaseAccess = class
   private
-    { Property variables }
-    FModule : TIpHandle;
-    { Internal variables }
    {$IFDEF IP_LAZARUS}
     baPropCS : TCriticalSection;
    {$ELSE}
-    baPropCS : TRTLCriticalSection; //JMN
+    baPropCS : TRTLCriticalSection;
    {$ENDIF}
-  protected
-    property Module : TIpHandle read FModule write FModule;
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -150,7 +128,7 @@ type
    {$IFDEF IP_LAZARUS}
     bpPropCS : TCriticalSection;
    {$ELSE}
-    bpPropCS : TRTLCriticalSection; //JMN
+    bpPropCS : TRTLCriticalSection;
    {$ENDIF}
   public
     constructor Create; virtual;
