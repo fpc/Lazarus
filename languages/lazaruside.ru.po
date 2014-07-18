@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-16 04:22+0400\n"
+"PO-Revision-Date: 2014-07-17 03:43+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8651,7 +8651,7 @@ msgstr "Фильтр: %s"
 
 #: lazarusidestrconsts.lisfilterallmessagesoftype
 msgid "Filter all messages of type %s"
-msgstr "Отфильтровывать сообщения типа %s"
+msgstr "Скрывать сообщения типа \"%s\""
 
 #: lazarusidestrconsts.lisfilteralreadyexists
 msgid "Filter already exists"
@@ -12354,7 +12354,7 @@ msgstr "Переместить в: "
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
-msgstr ""
+msgstr "Перемещение этих модулей приведёт в негодность их выражения Uses. Подробности смотрите в окне сообщений."
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
@@ -12601,12 +12601,7 @@ msgstr "шаблон не выбран"
 #: lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated
 msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
 msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
-msgstr ""
-
-#: lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated2
-msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated2"
-msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
-msgstr ""
+msgstr "Не удалось найти %s в %s на строке %s, в столбце %s.%sВозможно, сообщение утратило актуальность."
 
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -12872,7 +12867,7 @@ msgstr "или"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
-msgstr ""
+msgstr "список путей к \"другим модулям\" пакета \"%s\" содержит каталог \"%s\", уже имеющийся в списке путей поиска модулей."
 
 #: lazarusidestrconsts.lisoverridelanguage
 msgid "Override language. For example --language=de. For possible values see files in the languages directory."
@@ -12942,7 +12937,7 @@ msgstr "Пакет требует установки"
 
 #: lazarusidestrconsts.lispackageoption
 msgid "Package \"%s\" Option"
-msgstr ""
+msgstr "Параметр пакета \"%s\""
 
 #: lazarusidestrconsts.lispackageoutputdirectories
 msgid "Package output directories"
@@ -12970,7 +12965,7 @@ msgstr ", проанализировано"
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
-msgstr ""
+msgstr "анализатор \"%s\": %s"
 
 #: lazarusidestrconsts.lispascalfile
 msgid "Pascal file"
@@ -14359,8 +14354,8 @@ msgid "Save jump history"
 msgstr "Сохранять историю переходов"
 
 #: lazarusidestrconsts.lispositionoutsideofsource
-msgid "%s (position outside of source"
-msgstr ""
+msgid "%s (position outside of source)"
+msgstr "%s (положение вне границ исходного кода)"
 
 #: lazarusidestrconsts.lisprecedingword
 msgid "Preceding word"
@@ -14596,7 +14591,7 @@ msgstr "Свойства макросов проекта"
 
 #: lazarusidestrconsts.lisprojectoption
 msgid "Project Option"
-msgstr ""
+msgstr "Параметр проекта"
 
 #: lazarusidestrconsts.lisprojectoutdir
 msgid "Project Output directory (e.g. the ppu directory)"
@@ -14836,7 +14831,7 @@ msgstr "Создать локальную переменную"
 
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
-msgstr ""
+msgstr "Ошибка при быстром исправлении"
 
 #: lazarusidestrconsts.lisquickfixes
 msgid "Quick fixes"
@@ -14916,7 +14911,7 @@ msgstr "Удалить"
 
 #: lazarusidestrconsts.lisremove2
 msgid "Remove?"
-msgstr ""
+msgstr "Удалить?"
 
 #: lazarusidestrconsts.lisremoveallinvalidproperties
 msgid "Remove all invalid properties"
@@ -14924,7 +14919,7 @@ msgstr "Удалить все некорректные свойства"
 
 #: lazarusidestrconsts.lisremoveallmessagetypefilters
 msgid "Remove all message type filters"
-msgstr ""
+msgstr "Удалить все фильтры для типов сообщений"
 
 #: lazarusidestrconsts.lisremoveallunits
 msgid "Remove all units"
@@ -14932,11 +14927,11 @@ msgstr "Удалить все модули"
 
 #: lazarusidestrconsts.lisremovecompileroptionhidemessage
 msgid "Remove Compiler Option Hide Message"
-msgstr ""
+msgstr "Не скрывать сообщение параметром компилятора"
 
 #: lazarusidestrconsts.lisremovedependenciesfrompackage
 msgid "Remove %s dependencies from package \"%s\"?"
-msgstr ""
+msgstr "Удалить зависимости (%s шт.) пакета \"%s\"?"
 
 #: lazarusidestrconsts.lisremovedpropertys
 msgid "Removed property \"%s\"."
@@ -14944,7 +14939,7 @@ msgstr "Удалено свойство \"%s\"."
 
 #: lazarusidestrconsts.lisremovefilesfrompackage
 msgid "Remove %s files from package \"%s\"?"
-msgstr ""
+msgstr "Удалить файлы (%s шт.) из пакета \"%s\"?"
 
 #: lazarusidestrconsts.lisremovefrominstalllist
 msgid "Remove from install list"
@@ -14973,11 +14968,11 @@ msgstr "Удалить локальную переменную"
 
 #: lazarusidestrconsts.lisremovelocalvariable3
 msgid "Remove local variable \"%s\""
-msgstr ""
+msgstr "Удалить локальную переменную \"%s\""
 
 #: lazarusidestrconsts.lisremovemessagetypefilter
 msgid "Remove Message Type Filter"
-msgstr ""
+msgstr "Удалить фильтр для типа сообщений"
 
 #: lazarusidestrconsts.lisremovenonexistingfiles
 #| msgid "Remove non existing files"
@@ -15006,7 +15001,7 @@ msgstr "Удалить путь к модулям?"
 
 #: lazarusidestrconsts.lisremoveuses
 msgid "Remove uses \"%s\""
-msgstr ""
+msgstr "Удалить \"%s\" из выражения Uses"
 
 #: lazarusidestrconsts.lisrename
 msgctxt "lazarusidestrconsts.lisrename"
@@ -15373,7 +15368,7 @@ msgstr "Сохранить макрос"
 
 #: lazarusidestrconsts.lissavemessages
 msgid "Save messages"
-msgstr ""
+msgstr "Сохранить сообщения"
 
 #: lazarusidestrconsts.lissaveproject
 msgid "Save project %s (*%s)"
@@ -15477,8 +15472,9 @@ msgid "(selected left neighbour)"
 msgstr "(выбран сосед слева)"
 
 #: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were succesfully built."
-msgstr ""
+#| msgid "Selected %d modes were succesfully built."
+msgid "Selected %d modes were successfully built."
+msgstr "Сборка в выбранных режимах (%d шт.) успешно завершена."
 
 #: lazarusidestrconsts.lisselectedrightneighbour
 msgid "(selected right neighbour)"
@@ -15514,7 +15510,7 @@ msgstr "Выберите путь к %s"
 
 #: lazarusidestrconsts.lisselecttargetdirectory
 msgid "Select target directory"
-msgstr ""
+msgstr "Выберите целевой каталог"
 
 #: lazarusidestrconsts.lissetallcolors
 msgid "Set all colors:"
@@ -15547,7 +15543,7 @@ msgstr "Отображать"
 
 #: lazarusidestrconsts.lisshowabstractmethodsof
 msgid "Show abstract methods of \"%s\""
-msgstr ""
+msgstr "Показать абстрактные методы в \"%s\""
 
 #: lazarusidestrconsts.lisshowcomponenttreeinobjectinspector
 msgid "Show component tree"
@@ -15600,7 +15596,7 @@ msgstr "Показывать только изменённые"
 
 #: lazarusidestrconsts.lisshowonlyonebuttoninthetaskbarforthewholeideinstead
 msgid "Show only one button in the taskbar for the whole IDE, instead of one per window. Some Linux Window Managers like Cinnamon do not support this and always show one button per window."
-msgstr ""
+msgstr "Показывать только одну кнопку в панели задач для всей IDE вместо одной на окно. Некоторые оконные менеджеры (например, Cinnamon) не поддерживают данную возможность и всегда показывают по одной кнопке на окно."
 
 #: lazarusidestrconsts.lisshowoverviewgutter
 msgid "Show overview Gutter"
@@ -15777,11 +15773,11 @@ msgstr "Исходный код изменён"
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
 #| msgid "Source of page %s%s%s has changed. Save?"
 msgid "Source of page \"%s\" has changed. Save?"
-msgstr "Исходный код на странице \"%s\" был изменён. Сохранить?"
+msgstr "Исходный код во вкладке редактора \"%s\" был изменён. Сохранить?"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsaveex
 msgid "Sources of pages have changed. Save page \"%s\"? (%d more)"
-msgstr ""
+msgstr "Исходный код был изменён в нескольких вкладках. Сохранить содержимое вкладки \"%s\"? (осталось %d)"
 
 #: lazarusidestrconsts.lissourcepaths
 msgid "Source paths"
@@ -15869,25 +15865,25 @@ msgstr "Подпроцедура"
 msgid "Sub Procedure on same level"
 msgstr "Подпроцедура того же уровня"
 
-#: lazarusidestrconsts.lissuccesfullyexportedbuildmodes
-msgid "Succesfully exported %d BuildModes to \"%s\"."
-msgstr ""
-
-#: lazarusidestrconsts.lissuccesfullyexportedcompileroptions
-msgid "Succesfully exported compiler options to \"%s\"."
-msgstr ""
-
-#: lazarusidestrconsts.lissuccesfullyimportedbuildmodes
-msgid "Succesfully imported %d BuildModes from \"%s\"."
-msgstr ""
-
-#: lazarusidestrconsts.lissuccesfullyimportedcompileroptions
-msgid "Succesfully imported compiler options from \"%s\"."
-msgstr ""
-
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "Успешно"
+
+#: lazarusidestrconsts.lissuccessfullyexportedbuildmodes
+msgid "Successfully exported %d BuildModes to \"%s\"."
+msgstr "Экспорт режимов сборки (%d шт.) в \"%s\" успешно завершён."
+
+#: lazarusidestrconsts.lissuccessfullyexportedcompileroptions
+msgid "Successfully exported compiler options to \"%s\"."
+msgstr "Экспорт параметров компилятора в \"%s\" успешно завершён."
+
+#: lazarusidestrconsts.lissuccessfullyimportedbuildmodes
+msgid "Successfully imported %d BuildModes from \"%s\"."
+msgstr "Импорт режимов сборки (%d шт.) из \"%s\" успешно завершён."
+
+#: lazarusidestrconsts.lissuccessfullyimportedcompileroptions
+msgid "Successfully imported compiler options from \"%s\"."
+msgstr "Импорт параметров компилятора из \"%s\" успешно завершён."
 
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
@@ -16586,7 +16582,7 @@ msgstr "Это действие создаст порочный круг зав�
 
 #: lazarusidestrconsts.listhiswillputalotoftextontheclipboardproceed
 msgid "This will put a lot of text (%s) on the clipboard.%sProceed?"
-msgstr ""
+msgstr "Это действие поместит большое количество текста (%s) в буфер обмена.%sПродолжить?"
 
 #: lazarusidestrconsts.listhreads
 msgctxt "lazarusidestrconsts.listhreads"
@@ -16705,7 +16701,7 @@ msgstr "Заголовок средства: успешное завершени
 
 #: lazarusidestrconsts.listoolstoppedwithexitcodeusecontextmenutogetmoreinfo
 msgid "tool stopped with exit code %s. Use context menu to get more information."
-msgstr ""
+msgstr "средство завершило работу с кодом %s. Для получения дополнительных сведений воспользуйтесь контекстным меню."
 
 #: lazarusidestrconsts.listopanchoring
 msgid "Top anchoring"
@@ -17720,11 +17716,11 @@ msgstr "При перемещении курсора в редакторе ис�
 
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedform
 msgid "Window menu shows designed form's name instead of caption"
-msgstr ""
+msgstr "Отображать в меню \"Окно\" имя разрабатываемой формы вместо её заголовка"
 
 #: lazarusidestrconsts.liswindowmenuwithnamefordesignedformhint
 msgid "Useful especially if the caption is left empty."
-msgstr ""
+msgstr "Параметр особенно полезен при пустом заголовке формы."
 
 #: lazarusidestrconsts.liswindowstaysontop
 msgid "Window stays on top"
@@ -18411,7 +18407,7 @@ msgstr "Собрать Lazarus"
 
 #: lazarusidestrconsts.srkmecbuildmanymodes
 msgid "build many modes"
-msgstr ""
+msgstr "собрать в нескольких режимах"
 
 #: lazarusidestrconsts.srkmecchar
 msgid "Char"
@@ -18419,7 +18415,7 @@ msgstr "Символ"
 
 #: lazarusidestrconsts.srkmeccleanupandbuild
 msgid "clean up and build"
-msgstr ""
+msgstr "очистить и собрать"
 
 #: lazarusidestrconsts.srkmecclearall
 msgid "Delete whole text"

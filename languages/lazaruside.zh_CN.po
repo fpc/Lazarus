@@ -12772,11 +12772,6 @@ msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
 msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
 msgstr ""
 
-#: lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated2
-msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated2"
-msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
-msgstr ""
-
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
 msgstr "尚未实现"
@@ -14589,7 +14584,7 @@ msgid "Save jump history"
 msgstr ""
 
 #: lazarusidestrconsts.lispositionoutsideofsource
-msgid "%s (position outside of source"
+msgid "%s (position outside of source)"
 msgstr ""
 
 #: lazarusidestrconsts.lisprecedingword
@@ -15731,7 +15726,7 @@ msgid "(selected left neighbour)"
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedmodeswerebuilt
-msgid "Selected %d modes were succesfully built."
+msgid "Selected %d modes were successfully built."
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedrightneighbour
@@ -16125,25 +16120,25 @@ msgstr "子程序"
 msgid "Sub Procedure on same level"
 msgstr "子程序相同的等级"
 
-#: lazarusidestrconsts.lissuccesfullyexportedbuildmodes
-msgid "Succesfully exported %d BuildModes to \"%s\"."
-msgstr ""
-
-#: lazarusidestrconsts.lissuccesfullyexportedcompileroptions
-msgid "Succesfully exported compiler options to \"%s\"."
-msgstr ""
-
-#: lazarusidestrconsts.lissuccesfullyimportedbuildmodes
-msgid "Succesfully imported %d BuildModes from \"%s\"."
-msgstr ""
-
-#: lazarusidestrconsts.lissuccesfullyimportedcompileroptions
-msgid "Succesfully imported compiler options from \"%s\"."
-msgstr ""
-
 #: lazarusidestrconsts.lissuccess
 msgid "Success"
 msgstr "成功"
+
+#: lazarusidestrconsts.lissuccessfullyexportedbuildmodes
+msgid "Successfully exported %d BuildModes to \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lissuccessfullyexportedcompileroptions
+msgid "Successfully exported compiler options to \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lissuccessfullyimportedbuildmodes
+msgid "Successfully imported %d BuildModes from \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lissuccessfullyimportedcompileroptions
+msgid "Successfully imported compiler options from \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lissuggestdefaultnameofnewfileinlowercase
 msgid "Suggest default name of new file in lowercase"
