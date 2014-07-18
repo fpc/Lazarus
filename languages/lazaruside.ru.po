@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-17 03:43+0400\n"
+"PO-Revision-Date: 2014-07-19 03:41+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9112,7 +9112,7 @@ msgstr "Шаг в обход"
 
 #: lazarusidestrconsts.lishintthemakeresourcestringfunctionexpectsastringcon
 msgid "Hint: The \"Make Resourcestring\" function expects a string constant.%sPlease select the expression and try again."
-msgstr "Подсказка: функция Создать строку ресурсов требует строковой константы.%sВыберите выражение и попробуйте снова."
+msgstr "Подсказка: функция \"Создать строку ресурсов\" требует строковой константы.%sВыберите выражение и попробуйте снова."
 
 #: lazarusidestrconsts.lishinttoggleformunit
 msgid "Toggle Form/Unit"
@@ -12316,8 +12316,9 @@ msgid "Move files?"
 msgstr "Переместить файлы?"
 
 #: lazarusidestrconsts.lismovefilesfromtothedirectoryof
-msgid "Move %s file(s) from %s to the directory%s%s%sof %s."
-msgstr "Переместить файлы (%s шт.) из %s в каталог%s%s,%sпринадлежащий %s."
+#| msgid "Move %s file(s) from %s to the directory%s%s%sof %s."
+msgid "Move %s file(s) from %s to the directory%s%s%sof %s?"
+msgstr "Переместить файлы (%s шт.) сущности \"%s\" в каталог%s%s,%sпринадлежащий сущности \"%s\"?"
 
 #: lazarusidestrconsts.lismoveonepositiondown
 msgid "Move \"%s\" one position down"
@@ -12332,8 +12333,9 @@ msgid "Move or Copy files?"
 msgstr "Переместить или копировать файлы?"
 
 #: lazarusidestrconsts.lismoveorcopyfilesfromtothedirectoryofpackage
-msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s."
-msgstr "Переместить или копировать файлы (%s шт.) из %s в каталог%s%s,%sпринадлежащий %s."
+#| msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s."
+msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s?"
+msgstr "Переместить или копировать файлы (%s шт.) сущности \"%s\" в каталог%s%s,%sпринадлежащий сущности \"%s\"?"
 
 #: lazarusidestrconsts.lismovepage
 #| msgid "Move Page ..."
@@ -14538,6 +14540,10 @@ msgstr "Проект %s"
 msgid "Project: "
 msgstr "Проект: "
 
+#: lazarusidestrconsts.lisproject3
+msgid "project"
+msgstr "проект"
+
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
 msgstr "Проект изменен"
@@ -16402,11 +16408,11 @@ msgstr "Компонент с таким именем уже имеется"
 
 #: lazarusidestrconsts.listhereisalreadyafilein
 msgid "There is already a file%s%s%sin %s"
-msgstr "Файл с именем%s%s%sуже существует в %s"
+msgstr "Файл с именем%s%s%sуже имеется в сущности \"%s\""
 
 #: lazarusidestrconsts.listhereisalreadyafileinoldnewcontinue
 msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
-msgstr "Файл \"%s\" уже имеется в %s%sСтарый: %s%sНовый: %s%s%sПродолжить?"
+msgstr "Файл \"%s\" уже имеется в сущности \"%s\"%sСтарый: %s%sНовый: %s%s%sПродолжить?"
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
 #| msgid "There is already a form with the name %s%s%s"
@@ -16428,7 +16434,7 @@ msgstr "Пакет с именем %s уже имеется в списке"
 
 #: lazarusidestrconsts.listhereisalreadyaunitinoldnewyouhavetomakesur
 msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make sure that the unit search path contains only one of them.%s%sContinue?"
-msgstr "Модуль \"%s\" уже имеется в %s%sСтарый: %s%sНовый: %s%sУбедитесь, что в каталогах поиска модулей содержится только один из них.%s%sПродолжить?"
+msgstr "Модуль \"%s\" уже имеется в сущности \"%s\"%sСтарый: %s%sНовый: %s%sУбедитесь, что в каталогах поиска модулей содержится только один из них.%s%sПродолжить?"
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
 #| msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
@@ -16489,7 +16495,7 @@ msgstr "Исходный код пакетов Free Pascal требуется д
 
 #: lazarusidestrconsts.listhetargetisnotwritable
 msgid "The target %s is not writable."
-msgstr "Цель %s недоступна для записи."
+msgstr "Цель \"%s\" недоступна для записи."
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
 #| msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
@@ -16741,7 +16747,7 @@ msgstr "Turbo Pascal"
 
 #: lazarusidestrconsts.listwomovedfileswillhavethesamefilenamein
 msgid "Two moved files will have the same file name:%s%s%s%s%sin %s"
-msgstr "Два перемещённых файла будут иметь одно и то же имя:%s%s%s%s%sв %s"
+msgstr "Два перемещённых файла будут иметь одно и то же имя:%s%s%s%s%sв сущности \"%s\""
 
 #: lazarusidestrconsts.listypes
 msgid "Types (not removed if no replacement)"

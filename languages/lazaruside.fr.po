@@ -12496,7 +12496,7 @@ msgid "Move files?"
 msgstr ""
 
 #: lazarusidestrconsts.lismovefilesfromtothedirectoryof
-msgid "Move %s file(s) from %s to the directory%s%s%sof %s."
+msgid "Move %s file(s) from %s to the directory%s%s%sof %s?"
 msgstr ""
 
 #: lazarusidestrconsts.lismoveonepositiondown
@@ -12512,7 +12512,7 @@ msgid "Move or Copy files?"
 msgstr ""
 
 #: lazarusidestrconsts.lismoveorcopyfilesfromtothedirectoryofpackage
-msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s."
+msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s?"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
@@ -14796,6 +14796,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisproject2
 msgid "Project: "
+msgstr ""
+
+#: lazarusidestrconsts.lisproject3
+msgid "project"
 msgstr ""
 
 #: lazarusidestrconsts.lisprojectchanged

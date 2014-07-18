@@ -11814,7 +11814,9 @@ msgid "Move files?"
 msgstr "Fájlok áthelyezése?"
 
 #: lazarusidestrconsts.lismovefilesfromtothedirectoryof
-msgid "Move %s file(s) from %s to the directory%s%s%sof %s."
+#, fuzzy
+#| msgid "Move %s file(s) from %s to the directory%s%s%sof %s."
+msgid "Move %s file(s) from %s to the directory%s%s%sof %s?"
 msgstr "%s fájl áthelyezése innen: %s%s ide:%s%smely a(z) %s könyvtára."
 
 #: lazarusidestrconsts.lismoveonepositiondown
@@ -11830,7 +11832,9 @@ msgid "Move or Copy files?"
 msgstr "Fájlok áthelyezése vagy másolása?"
 
 #: lazarusidestrconsts.lismoveorcopyfilesfromtothedirectoryofpackage
-msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s."
+#, fuzzy
+#| msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s."
+msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s?"
 msgstr "%s fájl áthelyezése vagy másolása innen: %s%s ide:%s%smely a(z) %s könyvtára."
 
 #: lazarusidestrconsts.lismovepage
@@ -13929,6 +13933,10 @@ msgstr "Projekt: %s"
 #: lazarusidestrconsts.lisproject2
 msgid "Project: "
 msgstr "Projekt:"
+
+#: lazarusidestrconsts.lisproject3
+msgid "project"
+msgstr ""
 
 #: lazarusidestrconsts.lisprojectchanged
 msgid "Project changed"
