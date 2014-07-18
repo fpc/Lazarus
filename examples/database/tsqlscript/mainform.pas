@@ -202,7 +202,7 @@ begin
         FTran.StartTransaction; //better safe than sorry
       OurScript.Execute;
       FTran.Commit; //Make sure entire script is committed to the db
-      ShowMessage('Script was succesfully run.');
+      ShowMessage('Script was successfully run.');
     except
       on E: EDataBaseError do
       begin
