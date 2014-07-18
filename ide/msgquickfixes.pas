@@ -980,9 +980,8 @@ begin
     DebugLn(['TQuickFixIdentifierNotFoundAddLocal.Execute Identifier=',Identifier,' ',Dbgs(CodeXY)]);
 
     if not IsIdentifierInCode(CodeXY.Code,CodeXY.X,CodeXY.Y,Identifier,
-      Identifier+' not found in '+CodeBuf.Filename
-         +' at line '+IntToStr(Caret.Y)+', column '+IntToStr(Caret.X)+'.'
-         +LineEnding+'Maybe the message is outdated.')
+      Format(lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated, [Identifier,
+        CodeBuf.Filename, IntToStr(Caret.Y), IntToStr(Caret.X), LineEnding]))
     then exit;
 
     if not CodeToolBoss.CreateVariableForIdentifier(CodeXY.Code,CodeXY.X,CodeXY.Y,-1,
@@ -1128,9 +1127,8 @@ begin
 
     // check if the variable is at that position
     if not IsIdentifierInCode(CodeBuf,Caret.X,Caret.Y,Variable,
-      Variable+' not found in '+CodeBuf.Filename
-         +' at line '+IntToStr(Caret.Y)+', column '+IntToStr(Caret.X)+'.'+LineEnding
-         +'Maybe the message is outdated.')
+      Format(lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated, [Variable,
+        CodeBuf.Filename, IntToStr(Caret.Y), IntToStr(Caret.X), LineEnding]))
     then exit;
 
     if not CodeToolBoss.RemoveIdentifierDefinition(CodeBuf,Caret.X,Caret.Y) then

@@ -674,7 +674,7 @@ begin
   if Code=nil then exit;
 
   if not IsIdentifierInCode(Code,Msg.Column,Msg.Line,Identifier,
-    Format(lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated2, [Identifier,
+    Format(lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated, [Identifier,
       Code.Filename, IntToStr(Msg.Line), IntToStr(Msg.Column), LineEnding]))
   then exit;
 

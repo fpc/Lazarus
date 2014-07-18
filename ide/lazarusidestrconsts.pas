@@ -823,8 +823,6 @@ resourcestring
   lisClassNotFoundAt = 'Class %s not found at %s(%s,%s)';
   lisRemoveUses = 'Remove uses "%s"';
   lisCreateLocalVariable = 'Create local variable "%s"';
-  lisNotFoundInAtLineColumnMaybeTheMessageIsOutdated2 = '%s not found in %s at'
-    +' line %s, column %s.%sMaybe the message is outdated.';
   lisHideAllHintsAndWarningsByInsertingIDEDirectivesH = 'Hide all hints and '
     +'warnings by inserting IDE directives {%H-}';
   lisHideMessageAtByInsertingIDEDirectiveH = 'Hide message at %s by inserting '
@@ -940,10 +938,10 @@ resourcestring
 
   lisIECOErrorOpeningXml = 'Error opening XML';
   lisIECOErrorOpeningXmlFile = 'Error opening XML file "%s":%s%s';
-  lisSuccesfullyImportedBuildModes = 'Succesfully imported %d BuildModes from "%s".';
-  lisSuccesfullyExportedBuildModes = 'Succesfully exported %d BuildModes to "%s".';
-  lisSuccesfullyImportedCompilerOptions = 'Succesfully imported compiler options from "%s".';
-  lisSuccesfullyExportedCompilerOptions = 'Succesfully exported compiler options to "%s".';
+  lisSuccessfullyImportedBuildModes = 'Successfully imported %d BuildModes from "%s".';
+  lisSuccessfullyExportedBuildModes = 'Successfully exported %d BuildModes to "%s".';
+  lisSuccessfullyImportedCompilerOptions = 'Successfully imported compiler options from "%s".';
+  lisSuccessfullyExportedCompilerOptions = 'Successfully exported compiler options to "%s".';
   lisIECONoCompilerOptionsInFile = 'File "%s" does not contain compiler options.';
   lisIECORecentFiles = 'Recent files';
   lisIECOSaveToFile = 'Save to file';
@@ -5549,7 +5547,7 @@ resourcestring
   lisEventsLogAddComment2 = 'Add Comment';
   lisCleanUpAndBuildProject = 'Clean up and build project';
   lisBuildFollowingModes = 'Build the following modes';
-  lisSelectedModesWereBuilt  = 'Selected %d modes were succesfully built.';
+  lisSelectedModesWereBuilt  = 'Selected %d modes were successfully built.';
   lisProjectOutputDirectory = 'Project output directory';
   lisProjectSourceDirectories = 'Project source directories';
   lisPackageOutputDirectories = 'Package output directories';
@@ -5760,7 +5758,7 @@ resourcestring
   lisCannotFindPP = 'Cannot find PPU of unit %s';
   lisMultiplePack = ', multiple packages: ';
   lisQuickFixError = 'QuickFix error';
-  lisPositionOutsideOfSource = '%s (position outside of source';
+  lisPositionOutsideOfSource = '%s (position outside of source)';
   lisHideWithProjectOptionVm = 'Hide with project option (-vm%s)';
   lisHideWithPackageOptionVm = 'Hide with package option (-vm%s)';
   lisRemoveLocalVariable3 = 'Remove local variable "%s"';

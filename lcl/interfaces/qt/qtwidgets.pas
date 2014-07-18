@@ -6233,7 +6233,7 @@ begin
       begin
         WW := TQtWidget(TCustomForm(ActiveChild.LCLObject).ActiveControl.Handle);
         {$IF DEFINED(VerboseFocus) OR DEFINED(DebugQtFocus)}
-        writeln('**** SUCCESFULLY ACTIVATED FOCUS PATCH ****');
+        writeln('**** SUCCESSFULLY ACTIVATED FOCUS PATCH ****');
         {$ENDIF}
         QWidget_setFocus(WW.Widget, QtActiveWindowFocusReason);
       end;

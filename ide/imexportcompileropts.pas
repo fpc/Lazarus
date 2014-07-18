@@ -219,11 +219,11 @@ begin
   if Assigned(fXMLConfig.FindNode('BuildModes',False)) then begin
     Project1.BuildModes.LoadProjOptsFromXMLConfig(fXMLConfig, '');
     fOwner.FParentDialog.UpdateBuildModeGUI;
-    ShowMessageFmt(lisSuccesfullyImportedBuildModes, [Project1.BuildModes.Count, Filename]);
+    ShowMessageFmt(lisSuccessfullyImportedBuildModes, [Project1.BuildModes.Count, Filename]);
   end
   else if Assigned(fXMLConfig.FindNode(Path,False)) then begin
     Project1.CompilerOptions.LoadFromXMLConfig(fXMLConfig, Path);
-    ShowMessageFmt(lisSuccesfullyImportedCompilerOptions, [Filename]);
+    ShowMessageFmt(lisSuccessfullyImportedCompilerOptions, [Filename]);
   end
   else
     ShowMessageFmt(lisIECONoCompilerOptionsInFile, [Filename]);
@@ -235,7 +235,7 @@ begin
   if Result <> mrOK then Exit;
   Project1.CompilerOptions.SaveToXMLConfig(fXMLConfig, DefaultCompilerOptPath);
   fXMLConfig.Flush;
-  ShowMessageFmt(lisSuccesfullyExportedCompilerOptions, [Filename]);
+  ShowMessageFmt(lisSuccessfullyExportedCompilerOptions, [Filename]);
 end;
 
 function TOptsImExport.DoExportBuildModes(const Filename: string): TModalResult;
@@ -244,7 +244,7 @@ begin
   if Result <> mrOK then Exit;
   Project1.BuildModes.SaveProjOptsToXMLConfig(fXMLConfig, '', False);
   fXMLConfig.Flush;
-  ShowMessageFmt(lisSuccesfullyExportedBuildModes, [Project1.BuildModes.Count, Filename]);
+  ShowMessageFmt(lisSuccessfullyExportedBuildModes, [Project1.BuildModes.Count, Filename]);
 end;
 
 { TImExportCompOptsDlg }
