@@ -8,7 +8,8 @@ interface
 
 uses
   IpAnim, IpConst, Ipfilebroker, IpHtml, IpHtmlPv, IpMsg, IpStrms, IpUtils, 
-  IpHtmlTabList, iphtmlprop, LazarusPackageIntf;
+  IpHtmlTabList, iphtmlprop, ipHtmlBlockLayout, ipHtmlTableLayout, 
+  LazarusPackageIntf;
 
 implementation
 
