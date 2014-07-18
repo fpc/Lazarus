@@ -30,6 +30,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
     procedure FormPaint(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure SpinEdit_ZoomChange(Sender: TObject);
     procedure TrackBar_SizeChange(Sender: TObject);
   private
@@ -40,6 +41,7 @@ type
     ftFont1,ftFont2,ftFont3: TFreeTypeFont;
     mx,my: integer; //mouse position
     procedure EraseBackground(DC: HDC); override;
+    procedure SetupFonts;
   end;
 
 var
@@ -54,26 +56,44 @@ begin
   // empty
 end;
 
-procedure TForm1.FormCreate(Sender: TObject);
-begin
-  mx := clientwidth div 2;
-  my := clientheight div 2;
+procedure TForm1.SetupFonts;
+const
+  defFonts:array[1..3] of string[13] = ('arial.ttf','timesi.ttf','verdana.ttf');
+var
+  n: Integer;
+  LastFileName: string;
 
-  lazimg := TLazIntfImage.Create(0,0, [riqfRGB]);
-  drawer := TIntfFreeTypeDrawer.Create(lazimg);
-  ftFont1 := nil;
-  ftFont2 := nil;
-  ftFont3 := nil;
+  function LoadFont: TFreeTypeFont;
+  var
+    FileName: string;
+  begin
+    result := nil;
+    inc(n);
+    FileName := defFonts[n];
+    if not FileExists(FileName) then begin
+      if (ParamCount>=n) then begin
+        FileName := ParamStr(n);
+        if not FileExists(FileName) then
+          exit;
+      end else
+      if LastFileName<>'' then
+        FileName := LastFileName
+      else
+        exit;
+    end;
+    result := TFreeTypeFont.Create;
+    result.Name := FileName;
+    LastFileName:= FileName;
+  end;
+
+begin
 
   try
-    ftFont1 := TFreeTypeFont.Create;
-    ftFont1.Name := 'arial.ttf';
-
-    ftFont2 := TFreeTypeFont.Create;
-    ftFont2.Name := 'timesi.ttf';
-
-    ftFont3 := TFreeTypeFont.Create;
-    ftFont3.Name := 'verdana.ttf';
+    n := 0;
+    LastFileName := '';
+    ftFont1 := LoadFont;
+    ftFont2 := LoadFont;
+    ftFont3 := LoadFont;
   except
     on ex: Exception do
     begin
@@ -86,7 +106,22 @@ begin
     end;
   end;
 
+  if (ftFont1=nil) and (ftFont2=nil) and (ftFont3=nil) then
+    ShowMessage('This program needs up to 3 font filenames on the command line');
+
   UpdateSizeLabel;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  mx := clientwidth div 2;
+  my := clientheight div 2;
+
+  lazimg := TLazIntfImage.Create(0,0, [riqfRGB]);
+  drawer := TIntfFreeTypeDrawer.Create(lazimg);
+  ftFont1 := nil;
+  ftFont2 := nil;
+  ftFont3 := nil;
 end;
 
 procedure TForm1.CheckBox_RectChange(Sender: TObject);
@@ -145,32 +180,40 @@ begin
   x := mx/zoom;
   y := my/zoom;
 
-  ftFont1.Hinted := true;
-  ftFont1.ClearType := true;
-  ftFont1.Quality := grqHighQuality;
-  ftFont1.SmallLinePadding := false;
-  if CheckBox_Rect.Checked then
-    drawer.DrawTextRect(testtext, ftFont1, 0,0, tx/3,ty, colBlack, [ftaLeft, ftaBottom])
-  else
-    drawer.DrawText(ftFont1.Information[ftiFullName], ftFont1, x, y, colBlack, [ftaRight, ftaBottom]);
+  if ftFont1<>nil then
+  begin
+    ftFont1.Hinted := true;
+    ftFont1.ClearType := true;
+    ftFont1.Quality := grqHighQuality;
+    ftFont1.SmallLinePadding := false;
+    if CheckBox_Rect.Checked then
+      drawer.DrawTextRect(testtext, ftFont1, 0,0, tx/3,ty, colBlack, [ftaLeft, ftaBottom])
+    else
+      drawer.DrawText(ftFont1.Information[ftiFullName], ftFont1, x, y, colBlack, [ftaRight, ftaBottom]);
+  end;
 
-  ftFont2.Hinted := false;
-  ftFont2.ClearType := false;
-  ftFont2.Quality := grqHighQuality;
-  if CheckBox_Rect.Checked then
-    drawer.DrawTextRect(testtext, ftFont2, tx/3,0, 2*tx/3,ty, colRed, [ftaCenter, ftaVerticalCenter])
-  else
-    drawer.DrawText(ftFont2.Information[ftiFullName], ftFont2, x, y, colRed, 192, [ftaCenter, ftaBaseline]);
+  if ftFont2<>nil then
+  begin
+    ftFont2.Hinted := false;
+    ftFont2.ClearType := false;
+    ftFont2.Quality := grqHighQuality;
+    if CheckBox_Rect.Checked then
+      drawer.DrawTextRect(testtext, ftFont2, tx/3,0, 2*tx/3,ty, colRed, [ftaCenter, ftaVerticalCenter])
+    else
+      drawer.DrawText(ftFont2.Information[ftiFullName], ftFont2, x, y, colRed, 192, [ftaCenter, ftaBaseline]);
+  end;
 
-  ftFont3.Hinted := false;
-  ftFont3.ClearType := false;
-  ftFont3.Quality := grqMonochrome;
-  if CheckBox_Rect.Checked then
-    drawer.DrawTextRect(testtext, ftFont3, 2*tx/3,0, tx,ty, colBlue, [ftaRight, ftaTop])
-  else
-    drawer.DrawText(ftFont3.Information[ftiFullName]+' '+ftFont3.VersionNumber, ftFont3, x, y, colBlack, 128, [ftaLeft, ftaTop]);
+  if ftFont3<>nil then begin
+    ftFont3.Hinted := false;
+    ftFont3.ClearType := false;
+    ftFont3.Quality := grqMonochrome;
+    if CheckBox_Rect.Checked then
+      drawer.DrawTextRect(testtext, ftFont3, 2*tx/3,0, tx,ty, colBlue, [ftaRight, ftaTop])
+    else
+      drawer.DrawText(ftFont3.Information[ftiFullName]+' '+ftFont3.VersionNumber, ftFont3, x, y, colBlack, 128, [ftaLeft, ftaTop]);
+  end;
 
-  if not CheckBox_Rect.Checked then
+  if (ftFont1<>nil) and not CheckBox_Rect.Checked then
   begin
     p := ftFont1.CharsPosition(ftFont1.Information[ftiFullName],[ftaRight, ftaBottom]);
     for i := 0 to high(p) do
@@ -191,6 +234,11 @@ begin
 
   Canvas.TextOut(0,0, inttostr(round((EndTime-StartTime)*24*60*60*1000))+' ms + '+inttostr(round((EndTime2-EndTime)*24*60*60*1000))+' ms');
 
+end;
+
+procedure TForm1.FormShow(Sender: TObject);
+begin
+  SetupFonts;
 end;
 
 procedure TForm1.SpinEdit_ZoomChange(Sender: TObject);
