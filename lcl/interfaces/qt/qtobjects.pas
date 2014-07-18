@@ -417,7 +417,9 @@ type
       lineWidth: Integer = 1; FillBrush: QBrushH = nil);
     procedure qDrawShadeRect(x, y, w, h: integer; Palette: QPaletteH = nil; Sunken: Boolean = False;
       lineWidth: Integer = 1; midLineWidth: Integer = 0; FillBrush: QBrushH = nil);
-    procedure qDrawWinPanel(x, y, w, h: integer; Palette: QPaletteH = nil; Sunken: Boolean = False;
+    procedure qDrawWinPanel(x, y, w, h: integer;
+      ATransparent: boolean;
+      Palette: QPaletteH = nil; Sunken: Boolean = False;
       lineWidth: Integer = 1; FillBrush: QBrushH = nil);
     
     procedure drawPoint(x1: Integer; y1: Integer);
@@ -2496,7 +2498,8 @@ begin
 end;
 
 procedure TQtDeviceContext.qDrawWinPanel(x, y, w, h: integer;
-  Palette: QPaletteH; Sunken: Boolean; lineWidth: Integer; FillBrush: QBrushH);
+  ATransparent: boolean; Palette: QPaletteH; Sunken: Boolean;
+  lineWidth: Integer; FillBrush: QBrushH);
 var
   i: integer;
   AppPalette: QPaletteH;
@@ -2530,13 +2533,13 @@ begin
     q_DrawWinPanel(Widget, x, y, w, h, Palette, Sunken, FillBrush)
   else
   begin
-    if (FillBrush = nil) and Assigned(Parent) and
-      QObject_inherits(Parent,'QFrame') then
+    // issue #26491, draw opaque TCustomPanel if csOpaque is setted up in control style
+    // otherwise use brush and painter backgroundmode settings.
+    if not ATransparent and (FillBrush = nil) and Assigned(Parent) then
       q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, QPalette_background(Palette))
     else
       q_DrawShadePanel(Widget, x, y, w, h, Palette, Sunken, 1, FillBrush);
   end;
-
 
   if AppPalette <> nil then
   begin
