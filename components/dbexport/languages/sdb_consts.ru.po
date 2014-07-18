@@ -75,8 +75,9 @@ msgid "Execute ..."
 msgstr "Выполнение ..."
 
 #: sdb_consts.snrecordsexported
-msgid "Succesfully exported %d records."
-msgstr "Успешно экспортировано записей: %d."
+#| msgid "Succesfully exported %d records."
+msgid "Successfully exported %d records."
+msgstr "Экспорт записей (%d шт.) успешно завершён."
 
 #: sdb_consts.sprogress
 msgid "Exporting %d records"

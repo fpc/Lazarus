@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -77,9 +76,12 @@ msgid "Execute ..."
 msgstr "Végrehajtás ..."
 
 #: sdb_consts.snrecordsexported
-msgid "Succesfully exported %d records."
+#, fuzzy
+#| msgid "Succesfully exported %d records."
+msgid "Successfully exported %d records."
 msgstr "%d rekord sikeresen exportálva"
 
 #: sdb_consts.sprogress
 msgid "Exporting %d records"
 msgstr "%d rekord exportálása"
+

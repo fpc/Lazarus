@@ -1,4 +1,4 @@
-# Valdas Jankūnas <zmuogs@gmail.com>, 2010, 2012.
+ Valdas Jankūnas <zmuogs@gmail.com>, 2010, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9,8 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.5\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Language: lt\n"
 
 #: sdb_consts.scancelrecordsexported
@@ -79,11 +78,12 @@ msgid "Execute ..."
 msgstr "Vykdyti…"
 
 #: sdb_consts.snrecordsexported
-msgid "Succesfully exported %d records."
+#, fuzzy
+#| msgid "Succesfully exported %d records."
+msgid "Successfully exported %d records."
 msgstr "Sėkmingai eksportuota laukų: %s."
 
 #: sdb_consts.sprogress
 msgid "Exporting %d records"
 msgstr "Eksportuojama įrašų: %s"
-
 

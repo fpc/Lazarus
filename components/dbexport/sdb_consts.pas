@@ -30,7 +30,7 @@ resourcestring
   SErrOpeningDataset = 'Could not open dataset for exporting: %s';
 
   // fpdataexporter
-  SNRecordsExported = 'Succesfully exported %d records.';
+  SNRecordsExported = 'Successfully exported %d records.';
   SCancelRecordsExported = 'Exported %d before user canceled.';
 
   // Select Data Export Format form
