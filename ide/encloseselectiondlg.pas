@@ -248,13 +248,14 @@ var
     IndentStr: String;
     MinX: Integer;
     MaxX: Integer;
+    l: Integer;
   begin
     IndentStr:=GetIndentStr(TemplateIndent-OldSelectionIndent);
     for CurY:=SelectionStart.Y to SelectionEnd.Y do begin
       CurLine:=Source[CurY-1];
       //debugln(['InsertSelection CurY=',CurY,' CurLine="',dbgstr(CurLine),'"']);
       MinX:=1;
-      MaxX:=length(CurLine);
+      MaxX:=length(CurLine)+1;
       if (CurY=SelectionStart.Y) then begin
         MinX:=SelectionStart.X;
         if MinX<=OldSelectionIndent then
@@ -264,7 +265,7 @@ var
       end;
       if (CurY=SelectionEnd.Y) and (MaxX>SelectionEnd.X) then
         MaxX:=SelectionEnd.X;
-      //debugln(['InsertSelection CurY=',CurY,' Range=',MinX,'-',MaxX,' Indent="',length(IndentStr),'" "',copy(CurLine,MinX,MaxX-MinX+1),'"']);
+      //debugln(['InsertSelection CurY=',CurY,' Range=',MinX,'-',MaxX,' Indent="',length(IndentStr),'" "',copy(CurLine,MinX,MaxX-MinX),'"']);
       X:=1;
       // write indent
       if (IndentStr<>'') and (CurY<>SelectionStart.Y) then begin
@@ -272,9 +273,10 @@ var
         inc(X,length(IndentStr));
       end;
       // write line
-      if MaxX>=MinX then begin
-        NewSelect.Write(CurLine[MinX],MaxX-MinX+1);
-        inc(X,MaxX-MinX+1);
+      l:=MaxX-MinX;
+      if l>0 then begin
+        NewSelect.Write(CurLine[MinX],l);
+        inc(X,l);
       end;
       // write line break and adjust cursor
       if CurY<SelectionEnd.Y then begin
@@ -328,6 +330,7 @@ var
         OldSelectionIndent:=CurIndent;
         break;
       end;
+      inc(CurY);
     end;
   end;
   
