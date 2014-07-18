@@ -724,7 +724,8 @@ msgid "Run query"
 msgstr "Запрос"
 
 #: lazdatadeskstr.srowsaffected
-msgid "Query executed succesfully: %d rows affected."
+#| msgid "Query executed succesfully: %d rows affected."
+msgid "Query executed successfully: %d rows affected."
 msgstr "Запрос успешно выполнен: затронутых строк - %d."
 
 #: lazdatadeskstr.ssave

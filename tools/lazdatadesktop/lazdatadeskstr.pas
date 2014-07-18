@@ -112,7 +112,7 @@ resourcestring
 
   // Query panel
   SSQLFilters = 'SQL files|*.sql|All files|*.*';
-  SRowsAffected = 'Query executed succesfully: %d rows affected.';
+  SRowsAffected = 'Query executed successfully: %d rows affected.';
   SErrNoEngine = 'No database engine !';
   SExecute = 'Execute SQL';
   SHintExecute = 'Execute SQL statement';

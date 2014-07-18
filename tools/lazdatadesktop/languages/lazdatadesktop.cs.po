@@ -724,7 +724,9 @@ msgid "Run query"
 msgstr "Spustit dotaz"
 
 #: lazdatadeskstr.srowsaffected
-msgid "Query executed succesfully: %d rows affected."
+#, fuzzy
+#| msgid "Query executed succesfully: %d rows affected."
+msgid "Query executed successfully: %d rows affected."
 msgstr "Dotaz vykonán úspěšně: %d záznamů ovlivněno"
 
 #: lazdatadeskstr.ssave
