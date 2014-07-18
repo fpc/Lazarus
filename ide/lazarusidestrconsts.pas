@@ -426,6 +426,7 @@ resourcestring
   lisMenuPublishProject = 'Publish Project ...';
   lisPublishProject = 'Publish Project';
   lisMenuProjectInspector = 'Project Inspector';
+  lisProject3 = 'project';
   lisKMRemoveActiveFileFromProject = 'Remove Active File from Project';
   lisKMViewProjectSource = 'View Project Source';
   lisMenuAddToProject = 'Add Editor File to Project';
@@ -4275,8 +4276,8 @@ resourcestring
   lisTargetIsReadOnly = 'Target is read only';
   lisTheTargetIsNotWritable = 'The target %s is not writable.';
   lisMoveOrCopyFileSFromToTheDirectoryOfPackage = 'Move or copy %s file'
-    +'(s) from %s to the directory%s%s%sof %s.';
-  lisMoveFileSFromToTheDirectoryOf = 'Move %s file(s) from %s to the directory%s%s%sof %s.';
+    +'(s) from %s to the directory%s%s%sof %s?';
+  lisMoveFileSFromToTheDirectoryOf = 'Move %s file(s) from %s to the directory%s%s%sof %s?';
   lisMove = 'Move';
   lisPkgEditDoYouReallyWantToForgetAllChangesToPackageAnd = 'Do you really '
     +'want to forget all changes to package %s and reload it from file?';

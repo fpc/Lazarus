@@ -1197,7 +1197,7 @@ end;
 
 function TProjectInspectorForm.FilesOwnerName: string;
 begin
-  Result:='project';
+  Result:=lisProject3;
 end;
 
 function TProjectInspectorForm.FilesOwnerReadOnly: boolean;
