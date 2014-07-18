@@ -52,26 +52,14 @@ interface
 uses
   {$IFDEF IP_LAZARUS}
   //MemCheck,
-  Types,
-  LCLType,
-  LCLPRoc,
-  GraphType,
-  LCLIntf,
-  LResources,
-  LMessages,
-  LCLMemManager,
-  Translations,
-  FileUtil,
-  LConvEncoding,
-  contnrs,
+  Types, contnrs,
+  LCLType, LCLPRoc, GraphType, LCLIntf, LResources, LMessages, LCLMemManager,
+  Translations, FileUtil, LConvEncoding,
   IpHtmlTabList,
   {$ELSE}
   Windows,
   {$ENDIF}
-  Messages,
-  SysUtils,
-  Classes,
-  Graphics,
+  Messages, SysUtils, Classes, Graphics,
   {$IFDEF IP_LAZARUS}
     {$IFDEF UseGifImageUnit}
       GifImage,
@@ -88,462 +76,20 @@ uses
       IpPNGImg,
     {$ENDIF}
   {$ELSE}
-  GIFImage,
-  JPeg, 
+  GIFImage, JPeg,
   {$ENDIF}
-  iphtmlprop,
-  GraphUtil,
-  Controls,
-  StdCtrls,
-  ExtCtrls,
-  Buttons,
-  Forms,
-  ClipBrd,
-  IpConst,
-  IpStrms,
-  IpUtils,
-  Dialogs,
-  IpMsg,
-  TypInfo;
+  TypInfo,
+  GraphUtil, Controls, StdCtrls, ExtCtrls, Buttons, Forms, ClipBrd, Dialogs,
+  IpConst, IpStrms, IpUtils, iphtmlprop, IpMsg;
 
 type
   {$IFNDEF IP_LAZARUS}
     PtrInt = Longint;
   {$ENDIF}
   {Note: Some of the code below relies on the fact that
-   the end tag (when present) immediately follows the
-   start tag.}
+   the end tag (when present) immediately follows the start tag.}
 
-//
-// To preprocess this file use on command line
-// lua lpp.lua onefile-with-lua-inside
-//
-
-//#genTIpHtmlToken()
-// generated-code:begin
-  TIpHtmlToken = (
-	IpHtmlTagCOMMENT, 
-	IpHtmlTagDOCTYPE, 
-	IpHtmlTagEof, 
-	IpHtmlTagText, 
-	IpHtmlTagUnknown, 
-	IpHtmlTagA, IpHtmlTagAend, 
-	IpHtmlTagABBR, IpHtmlTagABBRend, 
-	IpHtmlTagACRONYM, IpHtmlTagACRONYMend, 
-	IpHtmlTagADDRESS, IpHtmlTagADDRESSend, 
-	IpHtmlTagAPPLET, IpHtmlTagAPPLETend, 
-	IpHtmlTagAREA, 
-	IpHtmlTagB, IpHtmlTagBend, 
-	IpHtmlTagBASE, 
-	IpHtmlTagBASEFONT, 
-	IpHtmlTagBIG, IpHtmlTagBIGend, 
-	IpHtmlTagBLINK, IpHtmlTagBLINKend, 
-	IpHtmlTagBLOCKQUOTE, IpHtmlTagBLOCKQUOTEend, 
-	IpHtmlTagBODY, IpHtmlTagBODYend, 
-	IpHtmlTagBR, 
-	IpHtmlTagBUTTON, IpHtmlTagBUTTONend, 
-	IpHtmlTagCAPTION, IpHtmlTagCAPTIONend, 
-	IpHtmlTagCENTER, IpHtmlTagCENTERend, 
-	IpHtmlTagCITE, IpHtmlTagCITEend, 
-	IpHtmlTagCODE, IpHtmlTagCODEend, 
-	IpHtmlTagCOL, 
-	IpHtmlTagCOLGROUP, IpHtmlTagCOLGROUPend, 
-	IpHtmlTagDD, IpHtmlTagDDend, 
-	IpHtmlTagDEL, IpHtmlTagDELend, 
-	IpHtmlTagDFN, IpHtmlTagDFNend, 
-	IpHtmlTagDIR, IpHtmlTagDIRend, 
-	IpHtmlTagDIV, IpHtmlTagDIVend, 
-	IpHtmlTagDL, IpHtmlTagDLend, 
-	IpHtmlTagDT, IpHtmlTagDTend, 
-	IpHtmlTagEM, IpHtmlTagEMend, 
-	IpHtmlTagFIELDSET, IpHtmlTagFIELDSETend, 
-	IpHtmlTagFONT, IpHtmlTagFONTend, 
-	IpHtmlTagFORM, IpHtmlTagFORMend, 
-	IpHtmlTagFRAME, 
-	IpHtmlTagFRAMESET, IpHtmlTagFRAMESETend, 
-	IpHtmlTagH1, IpHtmlTagH1end, 
-	IpHtmlTagH2, IpHtmlTagH2end, 
-	IpHtmlTagH3, IpHtmlTagH3end, 
-	IpHtmlTagH4, IpHtmlTagH4end, 
-	IpHtmlTagH5, IpHtmlTagH5end, 
-	IpHtmlTagH6, IpHtmlTagH6end, 
-	IpHtmlTagHEAD, IpHtmlTagHEADend, 
-	IpHtmlTagHR, 
-	IpHtmlTagHTML, IpHtmlTagHTMLend, 
-	IpHtmlTagI, IpHtmlTagIend, 
-	IpHtmlTagIFRAME, IpHtmlTagIFRAMEend, 
-	IpHtmlTagIMG, 
-	IpHtmlTagINPUT, 
-	IpHtmlTagINS, IpHtmlTagINSend, 
-	IpHtmlTagISINDEX, 
-	IpHtmlTagKBD, IpHtmlTagKBDend, 
-	IpHtmlTagLABEL, IpHtmlTagLABELend, 
-	IpHtmlTagLEFT, IpHtmlTagLEFTend, 
-	IpHtmlTagLEGEND, IpHtmlTagLEGENDend, 
-	IpHtmlTagLI, IpHtmlTagLIend, 
-	IpHtmlTagLINK, 
-	IpHtmlTagMAP, IpHtmlTagMAPend, 
-	IpHtmlTagMENU, IpHtmlTagMENUend, 
-	IpHtmlTagMETA, 
-	IpHtmlTagNOBR, IpHtmlTagNOBRend, 
-	IpHtmlTagNOFRAMES, IpHtmlTagNOFRAMESend, 
-	IpHtmlTagNOSCRIPT, IpHtmlTagNOSCRIPTend, 
-	IpHtmlTagOBJECT, IpHtmlTagOBJECTend, 
-	IpHtmlTagOL, IpHtmlTagOLend, 
-	IpHtmlTagOPTGROUP, IpHtmlTagOPTGROUPend, 
-	IpHtmlTagOPTION, IpHtmlTagOPTIONend, 
-	IpHtmlTagP, IpHtmlTagPend, 
-	IpHtmlTagPARAM, 
-	IpHtmlTagPRE, IpHtmlTagPREend, 
-	IpHtmlTagQ, IpHtmlTagQend, 
-	IpHtmlTagRIGHT, IpHtmlTagRIGHTend, 
-	IpHtmlTagS, IpHtmlTagSend, 
-	IpHtmlTagSAMP, IpHtmlTagSAMPend, 
-	IpHtmlTagSCRIPT, IpHtmlTagSCRIPTend, 
-	IpHtmlTagSELECT, IpHtmlTagSELECTend, 
-	IpHtmlTagSMALL, IpHtmlTagSMALLend, 
-	IpHtmlTagSPAN, IpHtmlTagSPANend, 
-	IpHtmlTagSTRIKE, IpHtmlTagSTRIKEend, 
-	IpHtmlTagSTRONG, IpHtmlTagSTRONGend, 
-	IpHtmlTagSTYLE, IpHtmlTagSTYLEend, 
-	IpHtmlTagSUB, IpHtmlTagSUBend, 
-	IpHtmlTagSUP, IpHtmlTagSUPend, 
-	IpHtmlTagTABLE, IpHtmlTagTABLEend, 
-	IpHtmlTagTBODY, IpHtmlTagTBODYend, 
-	IpHtmlTagTD, IpHtmlTagTDend, 
-	IpHtmlTagTEXTAREA, IpHtmlTagTEXTAREAend, 
-	IpHtmlTagTFOOT, IpHtmlTagTFOOTend, 
-	IpHtmlTagTH, IpHtmlTagTHend, 
-	IpHtmlTagTHEAD, IpHtmlTagTHEADend, 
-	IpHtmlTagTITLE, IpHtmlTagTITLEend, 
-	IpHtmlTagTR, IpHtmlTagTRend, 
-	IpHtmlTagTT, IpHtmlTagTTend, 
-	IpHtmlTagU, IpHtmlTagUend, 
-	IpHtmlTagUL, IpHtmlTagULend, 
-	IpHtmlTagVAR, IpHtmlTagVARend  );
-// generated-code:end
-  TIpHtmlTokenSet = set of TIpHtmlToken;
-
-//#genHtmlNodeAttributesSet()
-// generated-code:begin
-  TIpHtmlAttributesSet = (
-    htmlAttrACCEPT, htmlAttrACCEPT_CHARSET, htmlAttrACTION, htmlAttrALIGN,
-    htmlAttrALINK, htmlAttrALT, htmlAttrARCHIVE, htmlAttrBACKGROUND, htmlAttrBGCOLOR,
-    htmlAttrBORDER, htmlAttrCELLPADDING, htmlAttrCELLSPACING, htmlAttrCHECKED, htmlAttrCITE,
-    htmlAttrCLASS, htmlAttrCLASSID, htmlAttrCLEAR, htmlAttrCODE, htmlAttrCODEBASE,
-    htmlAttrCODETYPE, htmlAttrCOLOR, htmlAttrCOLS, htmlAttrCOLSPAN, htmlAttrCOMBOBOX,
-    htmlAttrCOMPACT, htmlAttrCONTENT, htmlAttrCOORDS, htmlAttrDATA, htmlAttrDATETIME,
-    htmlAttrDECLARE, htmlAttrDIR, htmlAttrDISABLED, htmlAttrENCTYPE, htmlAttrFACE,
-    htmlAttrFRAME, htmlAttrHEIGHT, htmlAttrHREF, htmlAttrHSPACE, htmlAttrHTTP_EQUIV,
-    htmlAttrID, htmlAttrISMAP, htmlAttrLABEL, htmlAttrLANG, htmlAttrLANGUAGE,
-    htmlAttrLINK, htmlAttrLONGDESC, htmlAttrMARGINHEIGHT, htmlAttrMARGINWIDTH, htmlAttrMAXLENGTH,
-    htmlAttrMEDIA, htmlAttrMETHOD, htmlAttrMULTIPLE, htmlAttrNAME, htmlAttrNOHREF,
-    htmlAttrNORESIZE, htmlAttrNOSHADE, htmlAttrNOWRAP, htmlAttrOBJECT, htmlAttrPROMPT,
-    htmlAttrREADONLY, htmlAttrREL, htmlAttrREV, htmlAttrROWS, htmlAttrROWSPAN,
-    htmlAttrRULES, htmlAttrSCHEME, htmlAttrSCROLLING, htmlAttrSELECTED, htmlAttrSHAPE,
-    htmlAttrSIZE, htmlAttrSPAN, htmlAttrSRC, htmlAttrSTANDBY, htmlAttrSTART,
-    htmlAttrSTYLE, htmlAttrSUMMARY, htmlAttrTABINDEX, htmlAttrTARGET, htmlAttrTEXT,
-    htmlAttrTITLE, htmlAttrTYPE, htmlAttrUSEMAP, htmlAttrVALIGN, htmlAttrVALUE,
-    htmlAttrVALUETYPE, htmlAttrVERSION, htmlAttrVLINK, htmlAttrVSPACE, htmlAttrWIDTH  );
-// generated-code:end
-
-const
-//#genIpEndTokenSet()
-// generated-code:begin
-  IpEndTokenSet : TIpHtmlTokenSet = [
-	IpHtmlTagAend, 
-	IpHtmlTagABBRend, 
-	IpHtmlTagACRONYMend, 
-	IpHtmlTagADDRESSend, 
-	IpHtmlTagAPPLETend, 
-	IpHtmlTagBend, 
-	IpHtmlTagBIGend, 
-	IpHtmlTagBLINKend, 
-	IpHtmlTagBLOCKQUOTEend, 
-	IpHtmlTagBODYend, 
-	IpHtmlTagBUTTONend, 
-	IpHtmlTagCAPTIONend, 
-	IpHtmlTagCENTERend, 
-	IpHtmlTagCITEend, 
-	IpHtmlTagCODEend, 
-	IpHtmlTagCOLGROUPend, 
-	IpHtmlTagDDend, 
-	IpHtmlTagDELend, 
-	IpHtmlTagDFNend, 
-	IpHtmlTagDIRend, 
-	IpHtmlTagDIVend, 
-	IpHtmlTagDLend, 
-	IpHtmlTagDTend, 
-	IpHtmlTagEMend, 
-	IpHtmlTagFIELDSETend, 
-	IpHtmlTagFONTend, 
-	IpHtmlTagFORMend, 
-	IpHtmlTagFRAMESETend, 
-	IpHtmlTagH1end, 
-	IpHtmlTagH2end, 
-	IpHtmlTagH3end, 
-	IpHtmlTagH4end, 
-	IpHtmlTagH5end, 
-	IpHtmlTagH6end, 
-	IpHtmlTagHEADend, 
-	IpHtmlTagHTMLend, 
-	IpHtmlTagIend, 
-	IpHtmlTagIFRAMEend, 
-	IpHtmlTagINSend, 
-	IpHtmlTagKBDend, 
-	IpHtmlTagLABELend, 
-	IpHtmlTagLEFTend, 
-	IpHtmlTagLEGENDend, 
-	IpHtmlTagLIend, 
-	IpHtmlTagMAPend, 
-	IpHtmlTagMENUend, 
-	IpHtmlTagNOBRend, 
-	IpHtmlTagNOFRAMESend, 
-	IpHtmlTagNOSCRIPTend, 
-	IpHtmlTagOBJECTend, 
-	IpHtmlTagOLend, 
-	IpHtmlTagOPTGROUPend, 
-	IpHtmlTagOPTIONend, 
-	IpHtmlTagPend, 
-	IpHtmlTagPREend, 
-	IpHtmlTagQend, 
-	IpHtmlTagRIGHTend, 
-	IpHtmlTagSend, 
-	IpHtmlTagSAMPend, 
-	IpHtmlTagSCRIPTend, 
-	IpHtmlTagSELECTend, 
-	IpHtmlTagSMALLend, 
-	IpHtmlTagSPANend, 
-	IpHtmlTagSTRIKEend, 
-	IpHtmlTagSTRONGend, 
-	IpHtmlTagSTYLEend, 
-	IpHtmlTagSUBend, 
-	IpHtmlTagSUPend, 
-	IpHtmlTagTABLEend, 
-	IpHtmlTagTBODYend, 
-	IpHtmlTagTDend, 
-	IpHtmlTagTEXTAREAend, 
-	IpHtmlTagTFOOTend, 
-	IpHtmlTagTHend, 
-	IpHtmlTagTHEADend, 
-	IpHtmlTagTITLEend, 
-	IpHtmlTagTRend, 
-	IpHtmlTagTTend, 
-	IpHtmlTagUend, 
-	IpHtmlTagULend, 
-	IpHtmlTagVARend  ];
-// generated-code:end
-
-//#genIpHtmlTokens()
-// generated-code:begin
-  IpHtmlTokens : array[0..179] of record
-	pc: PAnsiChar;
-	tk: TIpHtmlToken;
-  end = ( // alphabetically ordered
-	(pc:'!--'; tk:IpHtmlTagCOMMENT),
-	(pc:'!DOCTYPE'; tk:IpHtmlTagDOCTYPE),
-	(pc:'/A'; tk:IpHtmlTagAend),
-	(pc:'/ABBR'; tk:IpHtmlTagABBRend),
-	(pc:'/ACRONYM'; tk:IpHtmlTagACRONYMend),
-	(pc:'/ADDRESS'; tk:IpHtmlTagADDRESSend),
-	(pc:'/APPLET'; tk:IpHtmlTagAPPLETend),
-	(pc:'/B'; tk:IpHtmlTagBend),
-	(pc:'/BIG'; tk:IpHtmlTagBIGend),
-	(pc:'/BLINK'; tk:IpHtmlTagBLINKend),
-	(pc:'/BLOCKQUOTE'; tk:IpHtmlTagBLOCKQUOTEend),
-	(pc:'/BODY'; tk:IpHtmlTagBODYend),
-	(pc:'/BUTTON'; tk:IpHtmlTagBUTTONend),
-	(pc:'/CAPTION'; tk:IpHtmlTagCAPTIONend),
-	(pc:'/CENTER'; tk:IpHtmlTagCENTERend),
-	(pc:'/CITE'; tk:IpHtmlTagCITEend),
-	(pc:'/CODE'; tk:IpHtmlTagCODEend),
-	(pc:'/COLGROUP'; tk:IpHtmlTagCOLGROUPend),
-	(pc:'/DD'; tk:IpHtmlTagDDend),
-	(pc:'/DEL'; tk:IpHtmlTagDELend),
-	(pc:'/DFN'; tk:IpHtmlTagDFNend),
-	(pc:'/DIR'; tk:IpHtmlTagDIRend),
-	(pc:'/DIV'; tk:IpHtmlTagDIVend),
-	(pc:'/DL'; tk:IpHtmlTagDLend),
-	(pc:'/DT'; tk:IpHtmlTagDTend),
-	(pc:'/EM'; tk:IpHtmlTagEMend),
-	(pc:'/FIELDSET'; tk:IpHtmlTagFIELDSETend),
-	(pc:'/FONT'; tk:IpHtmlTagFONTend),
-	(pc:'/FORM'; tk:IpHtmlTagFORMend),
-	(pc:'/FRAMESET'; tk:IpHtmlTagFRAMESETend),
-	(pc:'/H1'; tk:IpHtmlTagH1end),
-	(pc:'/H2'; tk:IpHtmlTagH2end),
-	(pc:'/H3'; tk:IpHtmlTagH3end),
-	(pc:'/H4'; tk:IpHtmlTagH4end),
-	(pc:'/H5'; tk:IpHtmlTagH5end),
-	(pc:'/H6'; tk:IpHtmlTagH6end),
-	(pc:'/HEAD'; tk:IpHtmlTagHEADend),
-	(pc:'/HTML'; tk:IpHtmlTagHTMLend),
-	(pc:'/I'; tk:IpHtmlTagIend),
-	(pc:'/IFRAME'; tk:IpHtmlTagIFRAMEend),
-	(pc:'/INS'; tk:IpHtmlTagINSend),
-	(pc:'/KBD'; tk:IpHtmlTagKBDend),
-	(pc:'/LABEL'; tk:IpHtmlTagLABELend),
-	(pc:'/LEFT'; tk:IpHtmlTagLEFTend),
-	(pc:'/LEGEND'; tk:IpHtmlTagLEGENDend),
-	(pc:'/LI'; tk:IpHtmlTagLIend),
-	(pc:'/MAP'; tk:IpHtmlTagMAPend),
-	(pc:'/MENU'; tk:IpHtmlTagMENUend),
-	(pc:'/NOBR'; tk:IpHtmlTagNOBRend),
-	(pc:'/NOFRAMES'; tk:IpHtmlTagNOFRAMESend),
-	(pc:'/NOSCRIPT'; tk:IpHtmlTagNOSCRIPTend),
-	(pc:'/OBJECT'; tk:IpHtmlTagOBJECTend),
-	(pc:'/OL'; tk:IpHtmlTagOLend),
-	(pc:'/OPTGROUP'; tk:IpHtmlTagOPTGROUPend),
-	(pc:'/OPTION'; tk:IpHtmlTagOPTIONend),
-	(pc:'/P'; tk:IpHtmlTagPend),
-	(pc:'/PRE'; tk:IpHtmlTagPREend),
-	(pc:'/Q'; tk:IpHtmlTagQend),
-	(pc:'/RIGHT'; tk:IpHtmlTagRIGHTend),
-	(pc:'/S'; tk:IpHtmlTagSend),
-	(pc:'/SAMP'; tk:IpHtmlTagSAMPend),
-	(pc:'/SCRIPT'; tk:IpHtmlTagSCRIPTend),
-	(pc:'/SELECT'; tk:IpHtmlTagSELECTend),
-	(pc:'/SMALL'; tk:IpHtmlTagSMALLend),
-	(pc:'/SPAN'; tk:IpHtmlTagSPANend),
-	(pc:'/STRIKE'; tk:IpHtmlTagSTRIKEend),
-	(pc:'/STRONG'; tk:IpHtmlTagSTRONGend),
-	(pc:'/STYLE'; tk:IpHtmlTagSTYLEend),
-	(pc:'/SUB'; tk:IpHtmlTagSUBend),
-	(pc:'/SUP'; tk:IpHtmlTagSUPend),
-	(pc:'/TABLE'; tk:IpHtmlTagTABLEend),
-	(pc:'/TBODY'; tk:IpHtmlTagTBODYend),
-	(pc:'/TD'; tk:IpHtmlTagTDend),
-	(pc:'/TEXTAREA'; tk:IpHtmlTagTEXTAREAend),
-	(pc:'/TFOOT'; tk:IpHtmlTagTFOOTend),
-	(pc:'/TH'; tk:IpHtmlTagTHend),
-	(pc:'/THEAD'; tk:IpHtmlTagTHEADend),
-	(pc:'/TITLE'; tk:IpHtmlTagTITLEend),
-	(pc:'/TR'; tk:IpHtmlTagTRend),
-	(pc:'/TT'; tk:IpHtmlTagTTend),
-	(pc:'/U'; tk:IpHtmlTagUend),
-	(pc:'/UL'; tk:IpHtmlTagULend),
-	(pc:'/VAR'; tk:IpHtmlTagVARend),
-	(pc:'<eof>'; tk:IpHtmlTagEof),
-	(pc:'<text>'; tk:IpHtmlTagText),
-	(pc:'<unknown>'; tk:IpHtmlTagUnknown),
-	(pc:'A'; tk:IpHtmlTagA),
-	(pc:'ABBR'; tk:IpHtmlTagABBR),
-	(pc:'ACRONYM'; tk:IpHtmlTagACRONYM),
-	(pc:'ADDRESS'; tk:IpHtmlTagADDRESS),
-	(pc:'APPLET'; tk:IpHtmlTagAPPLET),
-	(pc:'AREA'; tk:IpHtmlTagAREA),
-	(pc:'B'; tk:IpHtmlTagB),
-	(pc:'BASE'; tk:IpHtmlTagBASE),
-	(pc:'BASEFONT'; tk:IpHtmlTagBASEFONT),
-	(pc:'BIG'; tk:IpHtmlTagBIG),
-	(pc:'BLINK'; tk:IpHtmlTagBLINK),
-	(pc:'BLOCKQUOTE'; tk:IpHtmlTagBLOCKQUOTE),
-	(pc:'BODY'; tk:IpHtmlTagBODY),
-	(pc:'BR'; tk:IpHtmlTagBR),
-	(pc:'BUTTON'; tk:IpHtmlTagBUTTON),
-	(pc:'CAPTION'; tk:IpHtmlTagCAPTION),
-	(pc:'CENTER'; tk:IpHtmlTagCENTER),
-	(pc:'CITE'; tk:IpHtmlTagCITE),
-	(pc:'CODE'; tk:IpHtmlTagCODE),
-	(pc:'COL'; tk:IpHtmlTagCOL),
-	(pc:'COLGROUP'; tk:IpHtmlTagCOLGROUP),
-	(pc:'DD'; tk:IpHtmlTagDD),
-	(pc:'DEL'; tk:IpHtmlTagDEL),
-	(pc:'DFN'; tk:IpHtmlTagDFN),
-	(pc:'DIR'; tk:IpHtmlTagDIR),
-	(pc:'DIV'; tk:IpHtmlTagDIV),
-	(pc:'DL'; tk:IpHtmlTagDL),
-	(pc:'DT'; tk:IpHtmlTagDT),
-	(pc:'EM'; tk:IpHtmlTagEM),
-	(pc:'FIELDSET'; tk:IpHtmlTagFIELDSET),
-	(pc:'FONT'; tk:IpHtmlTagFONT),
-	(pc:'FORM'; tk:IpHtmlTagFORM),
-	(pc:'FRAME'; tk:IpHtmlTagFRAME),
-	(pc:'FRAMESET'; tk:IpHtmlTagFRAMESET),
-	(pc:'H1'; tk:IpHtmlTagH1),
-	(pc:'H2'; tk:IpHtmlTagH2),
-	(pc:'H3'; tk:IpHtmlTagH3),
-	(pc:'H4'; tk:IpHtmlTagH4),
-	(pc:'H5'; tk:IpHtmlTagH5),
-	(pc:'H6'; tk:IpHtmlTagH6),
-	(pc:'HEAD'; tk:IpHtmlTagHEAD),
-	(pc:'HR'; tk:IpHtmlTagHR),
-	(pc:'HTML'; tk:IpHtmlTagHTML),
-	(pc:'I'; tk:IpHtmlTagI),
-	(pc:'IFRAME'; tk:IpHtmlTagIFRAME),
-	(pc:'IMG'; tk:IpHtmlTagIMG),
-	(pc:'INPUT'; tk:IpHtmlTagINPUT),
-	(pc:'INS'; tk:IpHtmlTagINS),
-	(pc:'ISINDEX'; tk:IpHtmlTagISINDEX),
-	(pc:'KBD'; tk:IpHtmlTagKBD),
-	(pc:'LABEL'; tk:IpHtmlTagLABEL),
-	(pc:'LEFT'; tk:IpHtmlTagLEFT),
-	(pc:'LEGEND'; tk:IpHtmlTagLEGEND),
-	(pc:'LI'; tk:IpHtmlTagLI),
-	(pc:'LINK'; tk:IpHtmlTagLINK),
-	(pc:'MAP'; tk:IpHtmlTagMAP),
-	(pc:'MENU'; tk:IpHtmlTagMENU),
-	(pc:'META'; tk:IpHtmlTagMETA),
-	(pc:'NOBR'; tk:IpHtmlTagNOBR),
-	(pc:'NOFRAMES'; tk:IpHtmlTagNOFRAMES),
-	(pc:'NOSCRIPT'; tk:IpHtmlTagNOSCRIPT),
-	(pc:'OBJECT'; tk:IpHtmlTagOBJECT),
-	(pc:'OL'; tk:IpHtmlTagOL),
-	(pc:'OPTGROUP'; tk:IpHtmlTagOPTGROUP),
-	(pc:'OPTION'; tk:IpHtmlTagOPTION),
-	(pc:'P'; tk:IpHtmlTagP),
-	(pc:'PARAM'; tk:IpHtmlTagPARAM),
-	(pc:'PRE'; tk:IpHtmlTagPRE),
-	(pc:'Q'; tk:IpHtmlTagQ),
-	(pc:'RIGHT'; tk:IpHtmlTagRIGHT),
-	(pc:'S'; tk:IpHtmlTagS),
-	(pc:'SAMP'; tk:IpHtmlTagSAMP),
-	(pc:'SCRIPT'; tk:IpHtmlTagSCRIPT),
-	(pc:'SELECT'; tk:IpHtmlTagSELECT),
-	(pc:'SMALL'; tk:IpHtmlTagSMALL),
-	(pc:'SPAN'; tk:IpHtmlTagSPAN),
-	(pc:'STRIKE'; tk:IpHtmlTagSTRIKE),
-	(pc:'STRONG'; tk:IpHtmlTagSTRONG),
-	(pc:'STYLE'; tk:IpHtmlTagSTYLE),
-	(pc:'SUB'; tk:IpHtmlTagSUB),
-	(pc:'SUP'; tk:IpHtmlTagSUP),
-	(pc:'TABLE'; tk:IpHtmlTagTABLE),
-	(pc:'TBODY'; tk:IpHtmlTagTBODY),
-	(pc:'TD'; tk:IpHtmlTagTD),
-	(pc:'TEXTAREA'; tk:IpHtmlTagTEXTAREA),
-	(pc:'TFOOT'; tk:IpHtmlTagTFOOT),
-	(pc:'TH'; tk:IpHtmlTagTH),
-	(pc:'THEAD'; tk:IpHtmlTagTHEAD),
-	(pc:'TITLE'; tk:IpHtmlTagTITLE),
-	(pc:'TR'; tk:IpHtmlTagTR),
-	(pc:'TT'; tk:IpHtmlTagTT),
-	(pc:'U'; tk:IpHtmlTagU),
-	(pc:'UL'; tk:IpHtmlTagUL),
-	(pc:'VAR'; tk:IpHtmlTagVAR)  );
-// generated-code:end
-
-//#genHtmlNodeAttributesNames()
-// generated-code:begin
-  TIpHtmlAttributesNames : array[TIpHtmlAttributesSet] of PAnsiChar = (
-    'ACCEPT', 'ACCEPT-CHARSET', 'ACTION', 'ALIGN',
-    'ALINK', 'ALT', 'ARCHIVE', 'BACKGROUND', 'BGCOLOR',
-    'BORDER', 'CELLPADDING', 'CELLSPACING', 'CHECKED', 'CITE',
-    'CLASS', 'CLASSID', 'CLEAR', 'CODE', 'CODEBASE',
-    'CODETYPE', 'COLOR', 'COLS', 'COLSPAN', 'COMBOBOX',
-    'COMPACT', 'CONTENT', 'COORDS', 'DATA', 'DATETIME',
-    'DECLARE', 'DIR', 'DISABLED', 'ENCTYPE', 'FACE',
-    'FRAME', 'HEIGHT', 'HREF', 'HSPACE', 'HTTP-EQUIV',
-    'ID', 'ISMAP', 'LABEL', 'LANG', 'LANGUAGE',
-    'LINK', 'LONGDESC', 'MARGINHEIGHT', 'MARGINWIDTH', 'MAXLENGTH',
-    'MEDIA', 'METHOD', 'MULTIPLE', 'NAME', 'NOHREF',
-    'NORESIZE', 'NOSHADE', 'NOWRAP', 'OBJECT', 'PROMPT',
-    'READONLY', 'REL', 'REV', 'ROWS', 'ROWSPAN',
-    'RULES', 'SCHEME', 'SCROLLING', 'SELECTED', 'SHAPE',
-    'SIZE', 'SPAN', 'SRC', 'STANDBY', 'START',
-    'STYLE', 'SUMMARY', 'TABINDEX', 'TARGET', 'TEXT',
-    'TITLE', 'TYPE', 'USEMAP', 'VALIGN', 'VALUE',
-    'VALUETYPE', 'VERSION', 'VLINK', 'VSPACE', 'WIDTH'  );
-// generated-code:end
+{$I ipHtmlTokens.inc}
 
 const
   IPMAXFRAMES = 256; {maximum number of frames in a single frameset}
@@ -2211,7 +1757,7 @@ type
     FLinkColor: TColor;
     FALinkColor: TColor;
     FTextColor: TColor;
-    FBgColor: TColor; //JMN
+    FBgColor: TColor;
     FFactBAParag: Real;
     FHasFrames : Boolean;
     FOnGetImageX : TIpHtmlDataGetImageEvent;
@@ -3570,7 +3116,7 @@ Const
     (Size: 6; Name: 'ugrave'; Value: #249; ValueUtf8: #$C3#$B9),
     (Size: 6; Name: 'Yacute'; Value: #221; ValueUtf8: #$C3#$9D),
     (Size: 6; Name: 'yacute'; Value: #253; ValueUtf8: #$C3#$BD),
-    (Size: 6; Name: 'xxxxxx'; Value: NAnchorChar; ValueUtf8: NAnchorChar) //JMN
+    (Size: 6; Name: 'xxxxxx'; Value: NAnchorChar; ValueUtf8: NAnchorChar)
     );
 {$IFDEF IP_LAZARUS}
 function ParseConstant(const S: string; onUtf8: boolean=false): string;
@@ -3726,7 +3272,7 @@ const
   NullRect : TRect = (Left:0; Top:0; Right:0; Bottom:0);
 
 {$IFNDEF IP_LAZARUS}
-//{$R IpHtml.res} // JMN
+//{$R IpHtml.res}
 {$EndIf}
 
 function StdIndent: Integer;
@@ -4798,7 +4344,7 @@ procedure TIpHtml.Clear;
 var
   i : Integer;
 begin
-  {$IFDEF IP_LAZARUS} //JMN
+  {$IFDEF IP_LAZARUS}
     {$IFDEF UseGifImageUnit}
     for i := 0 to Pred(GifImages.Count) do
       if TIpHtmlNodeIMG(GifImages[i]).FPicture <> nil then
@@ -7549,7 +7095,7 @@ end;
 procedure TIpHtml.ParseFrameSet(Parent : TIpHtmlNode;
   const EndTokens: TIpHtmlTokenSet);
 begin
- {$IFDEF IP_LAZARUS_DBG} //JMN
+ {$IFDEF IP_LAZARUS_DBG}
   DebugLn('TIpHtml.ParseFrameSet A');
  {$ENDIF}
   FHasFrames := True;
@@ -7844,7 +7390,7 @@ destructor TIpHtml.Destroy;
 var
   i : Integer;
 begin
- {$IFDEF IP_LAZARUS} //JMN
+ {$IFDEF IP_LAZARUS}
  FCSS.Free;
     {$IFDEF UseGifImageUnit}
     for i := 0 to Pred(GifImages.Count) do
