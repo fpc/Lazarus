@@ -1823,18 +1823,13 @@ type
     RectList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     FStartSel, FEndSel : TPoint;
     ElementPool : TIpHtmlPoolManager;
-
     AnchorList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     FControlList : {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif};
     FCURURL : string;
     DoneLoading : Boolean;
     ListLevel : Integer;
-
     PropACache : TIpHtmlPropsAList;
     PropBCache : TIpHtmlPropsBList;
-    DummyA : TIpHtmlPropA;
-    DummyB : TIpHtmlPropB;
-
     RenderCanvas : TCanvas;
     FPageHeight : Integer;
     StartPos : Integer;
@@ -4053,8 +4048,7 @@ begin
   FChildren := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   //Maybe this will create some unespected behavior (Owner=nil)
   if Owner <> nil then
-    FProps := TIpHtmlProps.Create(FOwner.PropACache, FOwner.DummyA,
-                                  FOwner.PropBCache, FOwner.DummyB);
+    FProps := TIpHtmlProps.Create(FOwner.PropACache, FOwner.PropBCache);
 end;
 
 destructor TIpHtmlNodeMulti.Destroy;
@@ -7287,13 +7281,6 @@ begin
   inherited Create;
   PropACache := TIpHtmlPropsAList.Create;
   PropBCache := TIpHtmlPropsBList.Create;
-  DummyA := TIpHtmlPropA.Create(PropACache);
-  DummyA.UseCount := 1;
-  DummyB := TIpHtmlPropB.Create(PropBCache);
-  DummyB.UseCount := 1;
-  PropACache.Add(DummyA);
-  PropBCache.Add(DummyB);
-
   ElementPool := TIpHtmlPoolManager.Create(sizeof(TIpHtmlElement), MaxElements);
   SoftLF := BuildStandardEntry(etSoftLF);
   HardLF := BuildStandardEntry(etHardLF);
@@ -7303,7 +7290,7 @@ begin
   FLIndent := BuildStandardEntry(etIndent);
   FLOutdent := BuildStandardEntry(etOutdent);
   SoftHyphen := BuildStandardEntry(etSoftHyphen);
-  DefaultProps := TIpHtmlProps.Create(PropACache, DummyA, PropBCache, DummyB);
+  DefaultProps := TIpHtmlProps.Create(PropACache, PropBCache);
   FHtml := TIpHtmlNodeHtml.Create(nil);
   FHtml.FOwner := Self;
   AnchorList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
@@ -8565,8 +8552,7 @@ end;
 constructor TIpHtmlNodeText.Create(ParentNode : TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  PropsR := TIpHtmlProps.Create(FOwner.PropACache, FOwner.DummyA,
-                                FOwner.PropBCache, FOwner.DummyB);
+  PropsR := TIpHtmlProps.Create(FOwner.PropACache, FOwner.PropBCache);
 end;
 
 destructor TIpHtmlNodeText.Destroy;
@@ -12549,8 +12535,7 @@ end;
 constructor TIpHtmlNodeGenInline.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  Props := TIpHtmlProps.Create(FOwner.PropACache, FOwner.DummyA,
-                               FOwner.PropBCache, FOwner.DummyB);
+  Props := TIpHtmlProps.Create(FOwner.PropACache, FOwner.PropBCache);
 end;
 
 destructor TIpHtmlNodeGenInline.Destroy;

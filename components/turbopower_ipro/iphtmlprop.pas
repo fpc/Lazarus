@@ -183,8 +183,7 @@ type
     function getDelayCache: boolean;
   protected
   public
-    constructor Create(APropsAList: TIpHtmlPropsAList; APropA: TIpHtmlPropA;
-                       APropsBList: TIpHtmlPropsBList; APropB: TIpHtmlPropB);
+    constructor Create(APropsAList: TIpHtmlPropsAList; APropsBList: TIpHtmlPropsBList);
     destructor Destroy; override;
     procedure Assign(Source : TIpHtmlProps);
     procedure CommitCache;
@@ -221,6 +220,7 @@ type
 
   TIpHtmlPropsAList = class(TObjectList)
   private
+    FDummyA : TIpHtmlPropA;
     function GetItem(Index: Integer): TIpHtmlPropA;
     procedure SetItem(Index: Integer; AValue: TIpHtmlPropA);
   public
@@ -233,6 +233,7 @@ type
 
   TIpHtmlPropsBList = class(TObjectList)
   private
+    FDummyB : TIpHtmlPropB;
     function GetItem(Index: Integer): TIpHtmlPropB;
     procedure SetItem(Index: Integer; AValue: TIpHtmlPropB);
   public
@@ -357,14 +358,13 @@ end;
 
 { TIpHtmlProps }
 
-constructor TIpHtmlProps.Create(APropsAList: TIpHtmlPropsAList; APropA: TIpHtmlPropA;
-                                APropsBList: TIpHtmlPropsBList; APropB: TIpHtmlPropB);
+constructor TIpHtmlProps.Create(APropsAList: TIpHtmlPropsAList; APropsBList: TIpHtmlPropsBList);
 begin
   FPropsACache := APropsAList;
   FPropsBCache := APropsBList;
-  FPropA := APropA;
+  FPropA := FPropsACache.FDummyA;
   FPropA.IncUse;
-  FPropB := APropB;
+  FPropB := FPropsBCache.FDummyB;
   FPropB.IncUse;
   //BgColor := -1;
 end;
@@ -827,6 +827,9 @@ end;
 constructor TIpHtmlPropsAList.Create;
 begin
   inherited Create;
+  FDummyA := TIpHtmlPropA.Create(Self);
+  FDummyA.UseCount := 1;
+  Add(FDummyA);
 end;
 
 destructor TIpHtmlPropsAList.Destroy;
@@ -874,6 +877,9 @@ end;
 constructor TIpHtmlPropsBList.Create;
 begin
   inherited Create;
+  FDummyB := TIpHtmlPropB.Create(Self);
+  FDummyB.UseCount := 1;
+  Add(FDummyB);
 end;
 
 destructor TIpHtmlPropsBList.Destroy;
