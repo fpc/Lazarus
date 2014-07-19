@@ -763,13 +763,13 @@ type
     procedure SetVlink(const Value: TColor);
   protected
     BGPicture : TPicture;
-    procedure Render(RenderProps: TIpHtmlProps); override;
   public
     constructor Create(ParentNode : TIpHtmlNode);
     destructor Destroy; override;
     procedure ImageChange(NewPicture : TPicture); override;
     {$IFDEF IP_LAZARUS}
     procedure LoadAndApplyCSSProps; override;
+    procedure Render(RenderProps: TIpHtmlProps); override;
     {$ENDIF}
     property ALink : TColor read Falink write SetAlink;
     property Link : TColor read FLink write SetLink;
