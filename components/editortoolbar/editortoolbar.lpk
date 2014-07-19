@@ -3,7 +3,7 @@
   <Package Version="4">
     <Name Value="editortoolbar"/>
     <AddToProjectUsesSection Value="True"/>
-    <Author Value="Graeme Geldenhuys"/>
+    <Author Value="Graeme Geldenhuys, Giuliano Colla"/>
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
@@ -19,7 +19,7 @@
 "/>
     <License Value="GPL
 "/>
-    <Version Minor="4"/>
+    <Version Minor="5"/>
     <Files Count="4">
       <Item1>
         <Filename Value="jumpto_impl.pas"/>
@@ -63,7 +63,7 @@
       </Item5>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)/"/>
+      <UnitPath Value="$(PkgOutDir)"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>

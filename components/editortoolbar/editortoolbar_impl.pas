@@ -425,7 +425,7 @@ begin
   //MenuIcon:= 'menu_editor_toolbar'; TODO!
   if uEditorToolbarList = nil then begin
     TEditorToolbarList.Create;
-    MenuCommand:= RegisterIDEMenuCommand(itmViewMainWindows,'EditorToolBar',rsEditorToolbar,nil,@ConfigureToolbar);
+    MenuCommand:= RegisterIDEMenuCommand(itmViewSecondaryWindows,'EditorToolBar',rsEditorToolbar,nil,@ConfigureToolbar);
     MenuCommand.ImageIndex := IDEImages.LoadImage(16, MenuIcon);
   end;
 

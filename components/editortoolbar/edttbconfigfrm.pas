@@ -228,7 +228,7 @@ end;
 procedure TEdtTbConfigForm.btnOKClick(Sender: TObject);
 begin
   SaveSettings;
-  if not FToolBarShow then ShowMessage(Format(rsWarning,[sMenuView,rsEditorToolbar]));
+  if not FToolBarShow then ShowMessageFmt(rsWarning,[sMenuView,rsEditorToolbar]);
 end;
 
 procedure TEdtTbConfigForm.SetupCaptions;
@@ -274,21 +274,23 @@ var
   cfg: TConfigStorage;
   value: string;
   mi: TIDEMenuItem;
+  ms: TIDEMenuSection;
 begin
   cfg := GetIDEConfigStorage(cSettingsFile, True);
   try
     c := cfg.GetValue('Count', 0);
+
     if c = 0 then begin
       // Let's provide a Jump Back/Jump Forward as a starting default
-      value := 'IDEMainMenu/Search/itmJumpings/itmJumpBack';
-      mi := IDEMenuRoots.FindByPath(value, false);
+      ms := itmJumpings;
+      mi := ms.FindByName('itmJumpBack');
       if Assigned(mi) then
         lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
-      value := 'IDEMainMenu/Search/itmJumpings/itmJumpForward';
-      mi := IDEMenuRoots.FindByPath(value, false);
+      mi := ms.FindByName('itmJumpForward');
       if Assigned(mi) then
         lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
     end
+
     else begin
      for i := 0 to c - 1 do
      begin
@@ -374,12 +376,15 @@ begin
   end;
 end;
 
+{TEdtTbConfigForm.Setup - called if no user items in config. }
 class procedure TEdtTbConfigForm.Setup;
 var
   frm: TEdtTbConfigForm;
 begin
+  // Create inserts the default Items
   frm := TEdtTbConfigForm.Create(nil);
   try
+    // Must save them, less they're inserted twice
     frm.SaveSettings;
   finally
     frm.Free;
