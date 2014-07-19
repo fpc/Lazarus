@@ -1310,8 +1310,9 @@ begin
       if Assigned(OnPositionChanged) then OnPositionChanged(Self);
     end;
   end;
-  if Showing then
-    ShowItemHint(Position);
+  // ToDo by Juha: Fix THintWindow to show long completion lines again. Disabled temporarily.
+  //if Showing then
+  //  ShowItemHint(Position);
 end;
 
 procedure TSynBaseCompletionForm.StringListChange(Sender: TObject);
