@@ -384,8 +384,8 @@ type
     FCombinedCSSProps: TCSSProps; // props from all matching CSS selectors plus inline CSS combined
     FHoverPropsLookupDone: Boolean;
     FHoverPropsRef: TCSSProps; // props for :hover (this is only a cached reference, we don't own it)
-    FElementName: String;
     {$ENDIF}
+    FElementName: String;
     FStyle: string;
     FClassId: string;
     FTitle: string;
@@ -4179,9 +4179,7 @@ end;
 constructor TIpHtmlNodeBODY.Create(ParentNode : TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$IFDEF IP_LAZARUS}
   FElementName := 'body';
-  {$ENDIF}
   FLink := -1;
   FVLink := -1;
   FALink := -1;
@@ -5258,9 +5256,7 @@ var
   NewHeader : TIpHtmlNodeHeader;
 begin
   NewHeader := TIpHtmlNodeHeader.Create(Parent);
-  {$IFDEF IP_LAZARUS}
   NewHeader.FElementName := 'h'+IntToStr(Size);
-  {$ENDIF}
   NewHeader.ParseBaseProps(Self);
   NewHeader.Size := Size;
   NewHeader.Align := ParseAlignment;
@@ -8827,46 +8823,49 @@ procedure TIpHtmlNodeFontStyle.ApplyProps(const RenderProps: TIpHtmlProps);
 begin
   Props.Assign(RenderProps);
   case Style of
-  hfsTT :
-    Props.FontName := Owner.FixedTypeface;
-  hfsI :
-    Props.FontStyle := Props.FontStyle + [fsItalic];
-  hfsB :
-    Props.FontStyle := Props.FontStyle + [fsBold];
-  hfsU :
-    Props.FontStyle := Props.FontStyle + [fsUnderline];
-  hfsSTRIKE,
-  hfsS :
-    Props.FontStyle := Props.FontStyle + [fsStrikeout];
-  hfsBIG :
-    Props.FontSize := Props.FontSize + 2;
-  hfsSMALL :
-    Props.FontSize := Props.FontSize - 2;
-  hfsSUB :
-    begin
+  hfsTT : begin
+      Props.FontName := Owner.FixedTypeface;
+      FElementName := 'tt';
+    end;
+  hfsI : begin
+      Props.FontStyle := Props.FontStyle + [fsItalic];
+      FElementName := 'i';
+    end;
+  hfsB : begin
+      Props.FontStyle := Props.FontStyle + [fsBold];
+      FElementName := 'b';
+  end;
+  hfsU : begin
+      Props.FontStyle := Props.FontStyle + [fsUnderline];
+      FElementName := 'u';
+    end;
+  hfsSTRIKE : begin
+      Props.FontStyle := Props.FontStyle + [fsStrikeout];
+      FElementName := 'strike';
+    end;
+  hfsS : begin
+      Props.FontStyle := Props.FontStyle + [fsStrikeout];
+      FElementName := 's';
+    end;
+  hfsBIG : begin
+      Props.FontSize := Props.FontSize + 2;
+      FElementName := 'big';
+    end;
+  hfsSMALL : begin
+      Props.FontSize := Props.FontSize - 2;
+      FElementName := 'small';
+    end;
+  hfsSUB : begin
       Props.FontSize := Props.FontSize - 4;
       Props.FontBaseline := Props.FontBaseline - 2;
+      FElementName := 'sub';
     end;
-  hfsSUP :
-    begin
+  hfsSUP : begin
       Props.FontSize := Props.FontSize - 4;
       Props.FontBaseline := Props.FontBaseline + 4;
+      FElementName := 'sup';
     end;
   end;
-  {$IFDEF IP_LAZARUS}
-  case Style of
-    hfsTT    : FElementName := 'tt';
-    hfsI     : FElementName := 'i';
-    hfsB     : FElementName := 'b';
-    hfsU     : FElementName := 'u';
-    hfsSTRIKE: FElementName := 'strike';
-    hfsS     : FElementName := 's';
-    hfsBIG   : FElementName := 'big';
-    hfsSMALL : FElementName := 'small';
-    hfsSUB   : FElementName := 'sub';
-    hfsSUP   : FElementName := 'sup';
-  end;
-  {$ENDIF}
 end;
 
 { TIpHtmlNodeBlock }
@@ -9094,9 +9093,7 @@ end;
 constructor TIpHtmlNodeP.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'p';
-  {$ENDIF}
 end;
 
 destructor TIpHtmlNodeP.Destroy;
@@ -9300,9 +9297,7 @@ end;
 constructor TIpHtmlNodeLI.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'li';
-  {$ENDIF}
   Align := hiaBottom;
   WordEntry := Owner.NewElement(etWord, Self);
   WordEntry.Props := Props;
@@ -9419,9 +9414,7 @@ end;
 constructor TIpHtmlNodeBR.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$ifdef IP_LAZARUS}
   FElementName := 'br';
-  {$endif}
 end;
 
 { TIpHtmlNodeHR }
@@ -9601,9 +9594,7 @@ end;
 constructor TIpHtmlNodeA.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$IFDEF IP_LAZARUS}
   FElementName := 'a';
-  {$ENDIF}
   AreaList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
   MapAreaList := {$ifdef IP_LAZARUS}TFPList{$else}TList{$endif}.Create;
 end;
@@ -9759,9 +9750,7 @@ end;
 constructor TIpHtmlNodeDIV.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'div';
-  {$ENDIF}
 end;
 
 destructor TIpHtmlNodeDIV.Destroy;
@@ -9816,9 +9805,7 @@ end;
 constructor TIpHtmlNodeSPAN.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$IFDEF IP_LAZARUS}
   FElementName := 'span';
-  {$ENDIF}
 end;
 
 { TIpHtmlNodeTABLE }
@@ -9826,9 +9813,7 @@ end;
 constructor TIpHtmlNodeTABLE.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$IFDEF IP_LAZARUS}
   FElementName := 'table';
-  {$ENDIF}
   BgColor := -1;
   SizeWidth := TIpHtmlPixels.Create;
   SizeWidth.PixelsType := hpUndefined;
@@ -10220,9 +10205,7 @@ end;
 constructor TIpHtmlNodeTR.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$IFDEF IP_LAZARUS}
   FElementName := 'tr';
-  {$ENDIF}
   FAlign := haDefault;
   FValign := hvaMiddle;
 end;
@@ -10705,9 +10688,7 @@ end;
 constructor TIpHtmlNodeIMG.Create;
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'img';
-  {$ENDIF}
   SizeWidth := TIpHtmlPixels.Create;
 end;
 
@@ -10727,9 +10708,7 @@ end;
 constructor TIpHtmlNodeFORM.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$IFDEF IP_LAZARUS}
   FElementName := 'form';
-  {$ENDIF}  
 end;
 
 destructor TIpHtmlNodeFORM.Destroy;
@@ -10882,9 +10861,7 @@ end;
 constructor TIpHtmlNodeDL.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'dl';
-  {$ENDIF}
 end;
 
 procedure TIpHtmlNodeDL.Enqueue;
@@ -10900,9 +10877,7 @@ end;
 constructor TIpHtmlNodeDT.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'dt';
-  {$ENDIF}
 end;
 
 procedure TIpHtmlNodeDT.Enqueue;
@@ -10916,9 +10891,7 @@ end;
 constructor TIpHtmlNodeDD.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'dd';
-  {$ENDIF}
 end;
 
 procedure TIpHtmlNodeDD.Enqueue;
@@ -10935,9 +10908,7 @@ end;
 constructor TIpHtmlNodePRE.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$IFDEF IP_LAZARUS}
   FElementName := 'pre';
-  {$ENDIF}
 end;
 
 destructor TIpHtmlNodePRE.Destroy;
@@ -10994,7 +10965,6 @@ begin
     Props.FontStyle := Props.FontStyle + [fsItalic];
   end;
   
-  {$IFDEF IP_LAZARUS}
   case Style of
     hpsEM      : FElementName := 'em';
     hpsSTRONG  : FElementName := 'strong';
@@ -11007,7 +10977,6 @@ begin
     hpsABBR    : FElementName := 'abbr';
     hpsACRONYM : FElementName := 'acronym';
   end;
-  {$ENDIF}
 end;
 
 { TIpHtmlNodeAPPLET }
@@ -11445,9 +11414,7 @@ end;
 constructor TIpHtmlNodeINPUT.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'input';
-  {$ENDIF}
 end;
 
 destructor TIpHtmlNodeINPUT.Destroy;
@@ -11461,9 +11428,7 @@ end;
 constructor TIpHtmlNodeSELECT.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'select';
-  {$ENDIF}
   FWidth := -1;
   FSize := -1;
 end;
@@ -11686,9 +11651,7 @@ end;
 constructor TIpHtmlNodeTEXTAREA.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'textarea';
-  {$ENDIF}
 end;
 
 destructor TIpHtmlNodeTEXTAREA.Destroy;
@@ -12112,9 +12075,7 @@ end;
 constructor TIpHtmlNodeTHEAD.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'thead';
-  {$ENDIF}
   FVAlign := hva3Middle;
 end;
 
@@ -12123,9 +12084,7 @@ end;
 constructor TIpHtmlNodeTBODY.Create(ParentNode: TIpHtmlNode);
 begin
   inherited;
-  {$IFDEF IP_LAZARUS}
   FElementName := 'tbody';
-  {$ENDIF}
   FVAlign := hva3Middle;
 end;
 
@@ -12223,9 +12182,7 @@ end;
 constructor TIpHtmlNodeBUTTON.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$IFDEF IP_LAZARUS}
   FElementName := 'button';
-  {$ENDIF}
   Owner.FControlList.Add(Self);
 end;
 
@@ -15416,10 +15373,10 @@ end;
 
 procedure TRectArr.SetValue(Index: Integer; Value: PRect);
 var
-  {$IFNDEF IP_LAZARUS}
-  Tmp: PInternalRectArr;
-  {$ELSE}
+  {$IFDEF IP_LAZARUS}
   P: Pointer;
+  {$ELSE}
+  Tmp: PInternalRectArr;
   {$ENDIF}
   NewSize: Integer;
 begin
@@ -15475,10 +15432,10 @@ end;
 
 function TRectRectArr.GetValue(Index: Integer): TRectArr;
 var
-  {$IFNDEF IP_LAZARUS}
-  Tmp: PInternalRectRectArr;
-  {$ELSE}
+  {$IFDEF IP_LAZARUS}
   P: ^Pointer;
+  {$ELSE}
+  Tmp: PInternalRectRectArr;
   {$ENDIF}
   NewSize: Integer;
 begin
@@ -15532,9 +15489,7 @@ end;
 constructor TIpHtmlNodeTH.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$IFDEF IP_LAZARUS}
   FElementName := 'th';
-  {$ENDIF}
 end;
 
 { TIpHtmlNodeTD }
@@ -15542,9 +15497,7 @@ end;
 constructor TIpHtmlNodeTD.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$IFDEF IP_LAZARUS}
   FElementName := 'td';
-  {$ENDIF}
 end;
 
 { TIpHtmlNodeCAPTION }
@@ -15552,9 +15505,7 @@ end;
 constructor TIpHtmlNodeCAPTION.Create(ParentNode: TIpHtmlNode);
 begin
   inherited Create(ParentNode);
-  {$IFDEF IP_LAZARUS}
   FElementName := 'caption';
-  {$ENDIF}
 end;
 
 initialization
