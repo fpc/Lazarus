@@ -21,6 +21,17 @@ resourcestring
   rsRemoveSelected          = 'Remove selected item from toolbar';
   rsMoveSelectedUp          = 'Move selected toolbar item up';
   rsMoveSelectedDown        = 'Move selected toolbar item down';
+  rsPosition                = 'Position';
+  rsTop                     = 'Top';
+  rsBottom                  = 'Bottom';
+  rsLeft                    = 'Left';
+  rsRight                   = 'Right';
+  rsVisible                 = 'Visible';
+  rsShowHide                = 'Show/Hide Toolbar';
+  rsWarning                 = 'You''ve chosen to hide the toolbar. ' +
+    'You may access the toolbar configuration via "%s" -> "%s" main menu';
+  rsEditorToolbar           = 'Editor ToolBar';
+  rsMenuView                = 'View';
 
 implementation
 

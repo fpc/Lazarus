@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2011-04-18 11:18+0200\n"
-"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"PO-Revision-Date: 2014-07-17 19:57+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -9,6 +9,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.5.1\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
 
 #: editortoolbar_str.rsadddivider
 msgid "Add Divider"
@@ -16,7 +18,11 @@ msgstr "Aggiungi divisore"
 
 #: editortoolbar_str.rsaddselected
 msgid "Add selected item to toolbar"
-msgstr ""
+msgstr "Aggiungere alla barra degli strumenti"
+
+#: editortoolbar_str.rsbottom
+msgid "Bottom"
+msgstr "Basso"
 
 #: editortoolbar_str.rscancel
 msgid "Cancel"
@@ -26,6 +32,10 @@ msgstr "Annulla"
 msgid "Configure Toolbar"
 msgstr "Configura la toolbar"
 
+#: editortoolbar_str.rseditortoolbar
+msgid "Editor ToolBar"
+msgstr "Barra strumenti dell'editor"
+
 #: editortoolbar_str.rseditortoolbarconfigform
 msgid "Editor Toolbar Configuration"
 msgstr "Editor di configurazione toolbar"
@@ -34,33 +44,64 @@ msgstr "Editor di configurazione toolbar"
 msgid "Jump To"
 msgstr "Salta a"
 
+#: editortoolbar_str.rsleft
+msgid "Left"
+msgstr "Sinistra"
+
 #: editortoolbar_str.rsmenutree
-#, fuzzy
 #| msgid "Menu Tree"
 msgid "Available Menu Items"
-msgstr "Albero dei menu"
+msgstr "Voci disponibili"
+
+#: editortoolbar_str.rsmenuview
+msgid "View"
+msgstr "Visualizza"
 
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
-msgstr ""
+msgstr "Spostare in basso"
 
 #: editortoolbar_str.rsmoveselectedup
 msgid "Move selected toolbar item up"
-msgstr ""
+msgstr "Spostare in alto"
 
 #: editortoolbar_str.rsok
 msgid "OK"
 msgstr "OK"
 
+#: editortoolbar_str.rsposition
+msgid "Position"
+msgstr "Posizione"
+
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
-msgstr ""
+msgstr "Rimuovere dalla barra degli strumenti"
+
+#: editortoolbar_str.rsright
+msgid "Right"
+msgstr "Destra"
+
+#: editortoolbar_str.rsshowhide
+msgid "Show/Hide Toolbar"
+msgstr "Mostra/nascondi la barra"
 
 #: editortoolbar_str.rstoolbar
-#, fuzzy
 #| msgid "Toolbar"
 msgid "Toolbar Items"
-msgstr "Toolbar"
+msgstr "Contenuto della barra"
+
+#: editortoolbar_str.rstop
+msgid "Top"
+msgstr "Alto"
+
+#: editortoolbar_str.rsvisible
+msgid "Visible"
+msgstr "Visibile"
+
+#: editortoolbar_str.rswarning
+#| msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via %s -> %s main menu"
+msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu"
+msgstr "Avete deciso di nascondere la barra strumenti. Potrete accedere alla configurazione della barra da \"%s\" -> \"%s\" nel menu principale"
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"

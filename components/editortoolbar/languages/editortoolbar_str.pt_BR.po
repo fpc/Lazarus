@@ -17,6 +17,10 @@ msgstr "Adicionar Divisor"
 msgid "Add selected item to toolbar"
 msgstr "Adicionar item selecionado à barra de ferramentas"
 
+#: editortoolbar_str.rsbottom
+msgid "Bottom"
+msgstr ""
+
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr "Cancelar"
@@ -24,6 +28,10 @@ msgstr "Cancelar"
 #: editortoolbar_str.rsconfiguretoo
 msgid "Configure Toolbar"
 msgstr "Configurar barra de ferramentas"
+
+#: editortoolbar_str.rseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
 
 #: editortoolbar_str.rseditortoolbarconfigform
 msgid "Editor Toolbar Configuration"
@@ -33,10 +41,18 @@ msgstr "Configuração do editor da barra de ferramentas"
 msgid "Jump To"
 msgstr "Saltar para"
 
+#: editortoolbar_str.rsleft
+msgid "Left"
+msgstr ""
+
 #: editortoolbar_str.rsmenutree
 #| msgid "Menu Tree"
 msgid "Available Menu Items"
 msgstr "Itens disponíveis de menu"
+
+#: editortoolbar_str.rsmenuview
+msgid "View"
+msgstr ""
 
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
@@ -50,14 +66,38 @@ msgstr "Mover item selecionado da barra de ferramentas acima"
 msgid "OK"
 msgstr "OK"
 
+#: editortoolbar_str.rsposition
+msgid "Position"
+msgstr ""
+
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Excluir item selecionado da barra de ferramentas"
+
+#: editortoolbar_str.rsright
+msgid "Right"
+msgstr ""
+
+#: editortoolbar_str.rsshowhide
+msgid "Show/Hide Toolbar"
+msgstr ""
 
 #: editortoolbar_str.rstoolbar
 #| msgid "Toolbar"
 msgid "Toolbar Items"
 msgstr "Itens da barra ferramentas"
+
+#: editortoolbar_str.rstop
+msgid "Top"
+msgstr ""
+
+#: editortoolbar_str.rsvisible
+msgid "Visible"
+msgstr ""
+
+#: editortoolbar_str.rswarning
+msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu"
+msgstr ""
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"

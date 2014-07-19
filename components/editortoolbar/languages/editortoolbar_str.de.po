@@ -18,6 +18,10 @@ msgstr "Trenner hinzufügen"
 msgid "Add selected item to toolbar"
 msgstr "Gewähltes Element zur Toolbar hinzufügen"
 
+#: editortoolbar_str.rsbottom
+msgid "Bottom"
+msgstr ""
+
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -25,6 +29,10 @@ msgstr "Abbrechen"
 #: editortoolbar_str.rsconfiguretoo
 msgid "Configure Toolbar"
 msgstr "Toolbar konfigurieren"
+
+#: editortoolbar_str.rseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
 
 #: editortoolbar_str.rseditortoolbarconfigform
 msgid "Editor Toolbar Configuration"
@@ -34,10 +42,18 @@ msgstr "Editor-Toolbar-Konfiguration"
 msgid "Jump To"
 msgstr "Springe zu"
 
+#: editortoolbar_str.rsleft
+msgid "Left"
+msgstr ""
+
 #: editortoolbar_str.rsmenutree
 #| msgid "Menu Tree"
 msgid "Available Menu Items"
 msgstr "Verfügbare Menüelemente"
+
+#: editortoolbar_str.rsmenuview
+msgid "View"
+msgstr ""
 
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
@@ -51,14 +67,38 @@ msgstr "Gewähltes Toolbar-Element nach oben bewegen"
 msgid "OK"
 msgstr "OK"
 
+#: editortoolbar_str.rsposition
+msgid "Position"
+msgstr ""
+
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Gewähltes Element aus der Toolbar entfernen"
+
+#: editortoolbar_str.rsright
+msgid "Right"
+msgstr ""
+
+#: editortoolbar_str.rsshowhide
+msgid "Show/Hide Toolbar"
+msgstr ""
 
 #: editortoolbar_str.rstoolbar
 #| msgid "Toolbar"
 msgid "Toolbar Items"
 msgstr "Toolbar-Elemente"
+
+#: editortoolbar_str.rstop
+msgid "Top"
+msgstr ""
+
+#: editortoolbar_str.rsvisible
+msgid "Visible"
+msgstr ""
+
+#: editortoolbar_str.rswarning
+msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu"
+msgstr ""
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"

@@ -19,6 +19,10 @@ msgstr "Pridėti skyriklį"
 msgid "Add selected item to toolbar"
 msgstr "Pažymėtą elementą įdėti į įrankių juostą"
 
+#: editortoolbar_str.rsbottom
+msgid "Bottom"
+msgstr ""
+
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr "Atsisakyti"
@@ -26,6 +30,10 @@ msgstr "Atsisakyti"
 #: editortoolbar_str.rsconfiguretoo
 msgid "Configure Toolbar"
 msgstr "Derinti įrankių juostą"
+
+#: editortoolbar_str.rseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
 
 #: editortoolbar_str.rseditortoolbarconfigform
 msgid "Editor Toolbar Configuration"
@@ -35,9 +43,17 @@ msgstr "Rengyklės įrankių juostos sąranka"
 msgid "Jump To"
 msgstr "Šokti į"
 
+#: editortoolbar_str.rsleft
+msgid "Left"
+msgstr ""
+
 #: editortoolbar_str.rsmenutree
 msgid "Available Menu Items"
 msgstr "Esami meniu elementai"
+
+#: editortoolbar_str.rsmenuview
+msgid "View"
+msgstr ""
 
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
@@ -51,13 +67,37 @@ msgstr "Pažymėtą įrankių juostos elementą perkelti aukštyn"
 msgid "OK"
 msgstr "Tinka"
 
+#: editortoolbar_str.rsposition
+msgid "Position"
+msgstr ""
+
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Iš įrankių juostos pašalinti pažymėtą elementą"
 
+#: editortoolbar_str.rsright
+msgid "Right"
+msgstr ""
+
+#: editortoolbar_str.rsshowhide
+msgid "Show/Hide Toolbar"
+msgstr ""
+
 #: editortoolbar_str.rstoolbar
 msgid "Toolbar Items"
 msgstr "Įrankių juostos elementai"
+
+#: editortoolbar_str.rstop
+msgid "Top"
+msgstr ""
+
+#: editortoolbar_str.rsvisible
+msgid "Visible"
+msgstr ""
+
+#: editortoolbar_str.rswarning
+msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu"
+msgstr ""
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"

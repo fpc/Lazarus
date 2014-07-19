@@ -39,12 +39,18 @@ type
     btnCancel: TButton;
     btnAddDivider: TButton;
     btnRemove: TSpeedButton;
+    cbPos: TComboBox;
+    cbVisible: TCheckBox;
+    lblpos: TLabel;
     lblMenuTree: TLabel;
     lblToolbar: TLabel;
     lbToolbar: TListBox;
     pnlButtons: TPanel;
     FilterEdit: TTreeFilterEdit;
     TV: TTreeView;
+    procedure btnCancelClick(Sender: TObject);
+    procedure cbPosChange(Sender: TObject);
+    procedure cbVisibleChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure lbToolbarSelectionChange(Sender: TObject; User: boolean);
     procedure btnAddClick(Sender: TObject);
@@ -55,6 +61,8 @@ type
     procedure btnRemoveClick(Sender: TObject);
     procedure TVSelectionChanged(Sender: TObject);
   private
+    FToolBarPos: string;
+    FToolBarShow: boolean;
     procedure SetupCaptions;
     procedure LoadCategories;
     procedure LoadSettings;
@@ -62,8 +70,13 @@ type
     procedure AddMenuItem(ParentNode: TTreeNode; Item: TIDEMenuItem);
   public
     class function Execute: boolean;
+    class procedure Setup;
   end; 
 
+Var
+  sPosValues: array[0..3] of string = ('Top','Bottom','Right','Left');
+  sLocalizedPosValues: array[0..3] of string;
+  sMenuView: string = 'View';
 
 implementation
 
@@ -71,6 +84,34 @@ implementation
 
 uses
   editortoolbar_impl, LazConfigStorage, BaseIDEIntf, LazIDEIntf, IDEImagesIntf;
+
+{
+Function IndexFromLocalized (var AValue: string): Integer;
+var
+  i:Integer;
+begin
+ for i:= 0 to 3 do begin
+   if AValue = sLocalizedPosValues[i] then begin
+    Result := I;
+    exit;
+   end;
+ end;
+ Result := 0; // default is Top
+end;
+}
+
+Function IndexFromEnglish (var AValue: string): Integer;
+var
+  i:Integer;
+begin
+ for i:= 0 to 3 do begin
+   if AValue = sPosValues[i] then begin
+    Result := I;
+    exit;
+   end;
+ end;
+ Result := 0; // default is Top
+end;
 
 { TEdtTbConfigForm }
 
@@ -89,11 +130,31 @@ begin
   btnRemove.Hint   := rsRemoveSelected;
   btnMoveUp.Hint   := rsMoveSelectedUp;
   btnMoveDown.Hint := rsMoveSelectedDown;
+  cbVisible.Hint   := rsShowHide;
 
   TV.Images := IDEImages.Images_16;
   SetupCaptions;
   LoadCategories;
   LoadSettings;
+end;
+
+procedure TEdtTbConfigForm.cbPosChange(Sender: TObject);
+var
+  i: Integer;
+begin
+  i:= cbPos.ItemIndex;
+  if i >= 0 then begin
+    FToolbarPos:= sPosValues[i];
+  end;
+end;
+
+procedure TEdtTbConfigForm.btnCancelClick(Sender: TObject);
+begin
+end;
+
+procedure TEdtTbConfigForm.cbVisibleChange(Sender: TObject);
+begin
+  FToolBarShow:= cbVisible.Checked;
 end;
 
 procedure TEdtTbConfigForm.lbToolbarSelectionChange(Sender: TObject; User: boolean);
@@ -167,9 +228,12 @@ end;
 procedure TEdtTbConfigForm.btnOKClick(Sender: TObject);
 begin
   SaveSettings;
+  if not FToolBarShow then ShowMessage(Format(rsWarning,[sMenuView,rsEditorToolbar]));
 end;
 
 procedure TEdtTbConfigForm.SetupCaptions;
+var
+  i: integer;
 begin
   Caption               := rsEditorToolbarConfigForm;
   btnOK.Caption         := rsOK;
@@ -177,6 +241,16 @@ begin
   btnAddDivider.Caption := rsAddDivider;
   lblMenuTree.Caption   := rsMenuTree;
   lblToolbar.Caption    := rsToolbar;
+  lblpos.Caption        := rsPosition;
+  cbVisible.Caption     := rsVisible;
+  sLocalizedPosValues[0] := rsTop;
+  sLocalizedPosValues[1] := rsBottom;
+  sLocalizedPosValues[2] := rsRight;
+  sLocalizedPosValues[3] := rsLeft;
+  for i := 0 to 3 do
+  begin
+   cbPos.Items[i] := sLocalizedPosValues[i]; // localized
+  end;
 end;
 
 procedure TEdtTbConfigForm.LoadCategories;
@@ -204,25 +278,44 @@ begin
   cfg := GetIDEConfigStorage(cSettingsFile, True);
   try
     c := cfg.GetValue('Count', 0);
-    for i := 0 to c - 1 do
-    begin
-      value := cfg.GetValue('Button' + Format('%2.2d', [i+1]) + '/Value', '');
-      if value <> '' then
-      begin
-       if value = cDivider then
+    if c = 0 then begin
+      // Let's provide a Jump Back/Jump Forward as a starting default
+      value := 'IDEMainMenu/Search/itmJumpings/itmJumpBack';
+      mi := IDEMenuRoots.FindByPath(value, false);
+      if Assigned(mi) then
+        lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
+      value := 'IDEMainMenu/Search/itmJumpings/itmJumpForward';
+      mi := IDEMenuRoots.FindByPath(value, false);
+      if Assigned(mi) then
+        lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
+    end
+    else begin
+     for i := 0 to c - 1 do
+     begin
+       value := cfg.GetValue('Button' + Format('%2.2d', [i+1]) + '/Value', '');
+       if value <> '' then
        begin
-         lbToolbar.Items.Add(value);
-         Continue;
+        if value = cDivider then
+        begin
+          lbToolbar.Items.Add(value);
+          Continue;
+        end;
+
+        mi := IDEMenuRoots.FindByPath(value, false);
+        if Assigned(mi) then
+          lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
        end;
-      
-       mi := IDEMenuRoots.FindByPath(value, false);
-       if Assigned(mi) then
-         lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
-      end;
+     end;
     end;
+    value := cfg.GetValue('Position','Top');
+    FToolbarPos:= value;
+    FToolBarShow:= cfg.GetValue('Visible',true);
   finally
     cfg.Free;
   end;
+  i := IndexFromEnglish(FToolBarPos);
+  cbPos.Text:= sLocalizedPosValues[i];
+  cbVisible.Checked:= FToolBarShow;
 end;
 
 procedure TEdtTbConfigForm.SaveSettings;
@@ -240,6 +333,8 @@ begin
       else
         cfg.SetDeleteValue('Button' + Format('%2.2d', [i+1]) + '/Value', TIDEMenuItem(lbToolbar.Items.Objects[i]).GetPath, '');
     end;
+    cfg.SetValue('Position', FToolbarPos);
+    cfg.SetValue('Visible',FToolBarShow);
     cfg.WriteToDisk;
   finally
     cfg.Free;
@@ -257,6 +352,8 @@ begin
   n.SelectedIndex := Item.ImageIndex;
   if Item is TIDEMenuSection then
   begin
+    // get the caption of the View entry for the appropriate Warning
+    if Item.Name = 'View' then sMenuView:= Item.Caption;
     sec := (Item as TIDEMenuSection);
     for i := 0 to sec.Count-1 do
       AddMenuItem(n, sec.Items[i]);
@@ -275,6 +372,19 @@ begin
   finally
     frm.Free;
   end;
+end;
+
+class procedure TEdtTbConfigForm.Setup;
+var
+  frm: TEdtTbConfigForm;
+begin
+  frm := TEdtTbConfigForm.Create(nil);
+  try
+    frm.SaveSettings;
+  finally
+    frm.Free;
+  end;
+
 end;
 
 end.

@@ -19,6 +19,10 @@ msgstr "Elválasztó hozzáadása"
 msgid "Add selected item to toolbar"
 msgstr "A kijelölt elem hozzáadása az eszköztárhoz"
 
+#: editortoolbar_str.rsbottom
+msgid "Bottom"
+msgstr ""
+
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr "Mégsem"
@@ -26,6 +30,10 @@ msgstr "Mégsem"
 #: editortoolbar_str.rsconfiguretoo
 msgid "Configure Toolbar"
 msgstr "Eszköztár beállítása"
+
+#: editortoolbar_str.rseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
 
 #: editortoolbar_str.rseditortoolbarconfigform
 msgid "Editor Toolbar Configuration"
@@ -35,9 +43,17 @@ msgstr "Szerkesztő Eszköztár Beállítása"
 msgid "Jump To"
 msgstr "Ugrás ide:"
 
+#: editortoolbar_str.rsleft
+msgid "Left"
+msgstr ""
+
 #: editortoolbar_str.rsmenutree
 msgid "Available Menu Items"
 msgstr "Elérhető menüelemek"
+
+#: editortoolbar_str.rsmenuview
+msgid "View"
+msgstr ""
 
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
@@ -51,13 +67,37 @@ msgstr "A kijelöl eszköztárelem mozgatása felfelé"
 msgid "OK"
 msgstr "OK"
 
+#: editortoolbar_str.rsposition
+msgid "Position"
+msgstr ""
+
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "A kijelölt elem eltávolítása az eszköztárról"
 
+#: editortoolbar_str.rsright
+msgid "Right"
+msgstr ""
+
+#: editortoolbar_str.rsshowhide
+msgid "Show/Hide Toolbar"
+msgstr ""
+
 #: editortoolbar_str.rstoolbar
 msgid "Toolbar Items"
 msgstr "Eszköztár elemek"
+
+#: editortoolbar_str.rstop
+msgid "Top"
+msgstr ""
+
+#: editortoolbar_str.rsvisible
+msgid "Visible"
+msgstr ""
+
+#: editortoolbar_str.rswarning
+msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu"
+msgstr ""
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"

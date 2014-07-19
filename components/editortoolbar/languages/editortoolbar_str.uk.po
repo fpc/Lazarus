@@ -17,6 +17,10 @@ msgstr "Додати Роздільник"
 msgid "Add selected item to toolbar"
 msgstr ""
 
+#: editortoolbar_str.rsbottom
+msgid "Bottom"
+msgstr ""
+
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr "Скасувати"
@@ -24,6 +28,10 @@ msgstr "Скасувати"
 #: editortoolbar_str.rsconfiguretoo
 msgid "Configure Toolbar"
 msgstr "Налаштувати Панель Інструментів"
+
+#: editortoolbar_str.rseditortoolbar
+msgid "Editor ToolBar"
+msgstr ""
 
 #: editortoolbar_str.rseditortoolbarconfigform
 msgid "Editor Toolbar Configuration"
@@ -33,11 +41,19 @@ msgstr "Налаштування Панелі Інструментів Реда�
 msgid "Jump To"
 msgstr "Перейти До"
 
+#: editortoolbar_str.rsleft
+msgid "Left"
+msgstr ""
+
 #: editortoolbar_str.rsmenutree
 #, fuzzy
 #| msgid "Menu Tree"
 msgid "Available Menu Items"
 msgstr "Дерево Меню"
+
+#: editortoolbar_str.rsmenuview
+msgid "View"
+msgstr ""
 
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
@@ -51,8 +67,20 @@ msgstr ""
 msgid "OK"
 msgstr "Гаразд"
 
+#: editortoolbar_str.rsposition
+msgid "Position"
+msgstr ""
+
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
+msgstr ""
+
+#: editortoolbar_str.rsright
+msgid "Right"
+msgstr ""
+
+#: editortoolbar_str.rsshowhide
+msgid "Show/Hide Toolbar"
 msgstr ""
 
 #: editortoolbar_str.rstoolbar
@@ -60,6 +88,18 @@ msgstr ""
 #| msgid "Toolbar"
 msgid "Toolbar Items"
 msgstr "Панель Інструментів"
+
+#: editortoolbar_str.rstop
+msgid "Top"
+msgstr ""
+
+#: editortoolbar_str.rsvisible
+msgid "Visible"
+msgstr ""
+
+#: editortoolbar_str.rswarning
+msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu"
+msgstr ""
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"

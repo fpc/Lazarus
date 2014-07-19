@@ -42,7 +42,6 @@ const
   cSettingsFile = 'editortoolbar.xml';
   cDivider      = '---------------';
 
-
 type
 
   { TEditorToolbar }
@@ -90,6 +89,10 @@ type
 
 procedure Register;
 
+var
+  sToolbarPos: string;
+  bToolBarShow: boolean;
+
 implementation
 
 {$R toolbar.res}    // all required images
@@ -120,6 +123,12 @@ type
 
 var
   uEditorToolbarList: TEditorToolbarList;
+
+procedure ConfigureToolbar (Sender:TObject);
+begin
+  if TEdtTbConfigForm.Execute then
+    uEditorToolbarList.ReloadAll;
+end;
 
 procedure TEditToolBarToolButton.Click;
 begin
@@ -176,6 +185,8 @@ end;
 
 procedure TEditorToolbar.CreateEditorToolbar(AW: TForm; var ATB: TToolbar);
 begin
+  { It must be created with Align = alTop, so that the first positioning
+  of buttons is correct. }
   ATB := TToolbar.Create(AW);
   ATB.Parent   := AW;
   ATB.Height   := 26;
@@ -202,6 +213,9 @@ end;
 constructor TEditorToolbar.Create(AOwner: TComponent);
 var
   T: TJumpType;
+  c: integer;
+  cfg: TConfigStorage;
+  value: string;
 begin
   uEditorToolbarList.AddBar(Self);
   if assigned(TB) then exit;
@@ -215,6 +229,17 @@ begin
     PM.Items.Add(CreateJumpItem(T, FWindow));
 
   AddStaticItems;
+  // Let's verify if it's a first start
+  c:= 0; // Just in case...
+  cfg := GetIDEConfigStorage(cSettingsFile, True);
+  try
+    c := cfg.GetValue('Count', 0);
+  finally
+    cfg.Free;
+  end;
+  if c = 0 then
+    TEdtTbConfigForm.Setup;
+
   AddCustomItems;
 end;
 
@@ -278,6 +303,29 @@ var
   cfg: TConfigStorage;
   value: string;
   mi: TIDEMenuItem;
+
+procedure SetTbPos;
+begin
+case sToolbarPos of
+    'Top': begin
+      TB.Align:= alTop;
+      TB.Height:= 26;
+      end;
+    'Bottom': begin
+      TB.Align:= alBottom;
+      TB.Height:= 26;
+      end;
+    'Left': begin
+      TB.Align:= alLeft;
+      TB.Width:= 26;
+      end;
+    'Right': begin
+      TB.Align:= alRight;
+      TB.Width:= 26;
+      end;
+  end;
+end;
+
 begin
   cfg := GetIDEConfigStorage(cSettingsFile, True);
   TB.BeginUpdate;
@@ -297,11 +345,15 @@ begin
             AddButton(mi);
         end;
        end;
-  end;
+    end;
+    sToolbarPos := cfg.GetValue('Position','Top');
+    bToolBarShow:= cfg.GetValue('Visible',true);
+    SetTbPos;
   finally
     cfg.Free;
     TB.EndUpdate;
   end;
+  TB.Visible:= bToolBarShow;
 end;
 
 procedure TEditorToolbar.AddDivider;
@@ -365,14 +417,25 @@ begin
 end;
 
 procedure Register;
+var
+  MenuCommand:TIDEMenuCommand;
+  MenuIcon: string;
 begin
-  if uEditorToolbarList = nil then
+  MenuIcon:= 'menu_editor_options';
+  //MenuIcon:= 'menu_editor_toolbar'; TODO!
+  if uEditorToolbarList = nil then begin
     TEditorToolbarList.Create;
+    MenuCommand:= RegisterIDEMenuCommand(itmViewMainWindows,'EditorToolBar',rsEditorToolbar,nil,@ConfigureToolbar);
+    MenuCommand.ImageIndex := IDEImages.LoadImage(16, MenuIcon);
+  end;
+
 end;
 
 
 initialization
   uEditorToolbarList := nil;
+  sToolbarPos:= 'Top';
+  bToolBarShow:= True;
 
 finalization
   uEditorToolbarList.Free;
