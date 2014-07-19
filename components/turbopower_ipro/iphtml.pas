@@ -89,7 +89,7 @@ type
   {Note: Some of the code below relies on the fact that
    the end tag (when present) immediately follows the start tag.}
 
-{$I ipHtmlTokens.inc}
+{$I iphtmlgenerated.inc}
 
 const
   IPMAXFRAMES = 256; {maximum number of frames in a single frameset}

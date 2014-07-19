@@ -3806,6 +3806,7 @@ components/turbopower_ipro/ipfilebroker.pas svneol=native#text/plain
 components/turbopower_ipro/iphtml.pas svneol=native#text/pascal
 components/turbopower_ipro/iphtml.res -text
 components/turbopower_ipro/iphtmlblocklayout.pas svneol=native#text/pascal
+components/turbopower_ipro/iphtmlgenerated.inc svneol=native#text/plain
 components/turbopower_ipro/iphtmlprop.pas svneol=native#text/pascal
 components/turbopower_ipro/iphtmlpv.lfm svneol=native#text/plain
 components/turbopower_ipro/iphtmlpv.pas svneol=native#text/pascal

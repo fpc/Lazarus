@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="TurboPowerIPro"/>
@@ -17,10 +17,6 @@
         <Verbosity>
           <ShowHints Value="False"/>
         </Verbosity>
-        <CompilerMessages>
-          <UseMsgFile Value="True"/>
-        </CompilerMessages>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Turbopower Internet Pro - Lazarus Package
@@ -77,7 +73,7 @@
       </Item11>
       <Item12>
         <Filename Value="iphtmltablist.pas"/>
-        <UnitName Value="iphtmltablist"/>
+        <UnitName Value="IpHtmlTabList"/>
       </Item12>
       <Item13>
         <Filename Value="iphtmlprop.pas"/>
@@ -85,15 +81,15 @@
       </Item13>
       <Item14>
         <Filename Value="iphtmlblocklayout.pas"/>
-        <UnitName Value="iphtmlblocklayout"/>
+        <UnitName Value="ipHtmlBlockLayout"/>
       </Item14>
       <Item15>
-        <Filename Value="ipHtmlTokens.inc"/>
-        <Type Value="Include"/>
+        <Filename Value="iphtmltablelayout.pas"/>
+        <UnitName Value="ipHtmlTableLayout"/>
       </Item15>
       <Item16>
-        <Filename Value="iphtmltablelayout.pas"/>
-        <UnitName Value="iphtmltablelayout"/>
+        <Filename Value="iphtmlgenerated.inc"/>
+        <Type Value="Binary"/>
       </Item16>
     </Files>
     <i18n>
