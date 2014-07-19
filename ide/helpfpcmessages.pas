@@ -1098,8 +1098,7 @@ begin
   end;
   Result:=TrimFilename(Result);
   if not FilenameIsAbsolute(Result) then begin
-    LazDir:='$(LazarusDir)';
-    IDEMacros.SubstituteMacros(LazDir);
+    LazDir:=EnvironmentOptions.GetParsedLazarusDirectory;
     Result:=TrimFilename(AppendPathDelim(LazDir)+Result);
   end;
 end;
