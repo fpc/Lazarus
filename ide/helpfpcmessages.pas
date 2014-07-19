@@ -418,27 +418,29 @@ end;
 { TEditIDEMsgHelpDialog }
 
 procedure TEditIDEMsgHelpDialog.FormCreate(Sender: TObject);
+var
+  s: String;
 begin
-  fDefaultValue:='(default)';
-  Caption:='Edit additional help for messages';
+  fDefaultValue:=lisDefaultPlaceholder;
+  Caption:=lisEditAdditionalHelpForMessages;
 
-  GlobalOptionsGroupBox.Caption:='Global settings';
-  FPCMsgFileLabel.Caption:='FPC message file:';
-  AdditionsFileLabel.Caption:='Config file of additions:';
+  GlobalOptionsGroupBox.Caption:=lisGlobalSettings;
+  FPCMsgFileLabel.Caption:=lisFPCMessageFile2;
+  AdditionsFileLabel.Caption:=lisConfigFileOfAdditions;
 
-  CurMsgGroupBox.Caption:='Selected message in messages window:';
+  CurMsgGroupBox.Caption:=lisSelectedMessageInMessagesWindow;
 
-  AllGroupBox.Caption:='Additions';
-  AddButton.Caption:='Create new addition';
+  AllGroupBox.Caption:=lisAdditions;
+  AddButton.Caption:=lisCreateNewAddition;
 
-  NameLabel.Caption:='Name:';
-  OnlyFPCMsgIDsLabel.Caption:='Only messages with these FPC IDs (comma separated):';
-  OnlyRegExLabel.Caption:='Only messages fitting this regular expression:';
-  URLLabel.Caption:='URL on wiki (the base url is '
-              +(FPCMessagesHelpDB as THTMLHelpDatabase).GetEffectiveBaseURL+')';
-  TestURLButton.Caption:='Test URL';
+  NameLabel.Caption:=lisCodeToolsDefsName;
+  OnlyFPCMsgIDsLabel.Caption:=lisOnlyMessagesWithTheseFPCIDsCommaSeparated;
+  OnlyRegExLabel.Caption:=lisOnlyMessagesFittingThisRegularExpression;
+  s:=(FPCMessagesHelpDB as THTMLHelpDatabase).GetEffectiveBaseURL;
+  URLLabel.Caption:=Format(lisURLOnWikiTheBaseUrlIs, [s]);
+  TestURLButton.Caption:=lisTestURL;
 
-  DeleteButton.Caption:='Delete this addition';
+  DeleteButton.Caption:=lisDeleteThisAddition;
 
   ButtonPanel1.OKButton.OnClick:=@ButtonPanel1OKButtonClick;
 
@@ -537,8 +539,9 @@ var
   NewIndex: Integer;
 begin
   if CurAddition=nil then exit;
-  if IDEMessageDialog('Delete?',
-    'Delete addition "'+CurAddition.Name+'"?',mtConfirmation,[mbYes,mbNo])<>mrYes
+  if IDEMessageDialog(lisDelete2,
+    Format(lisDeleteAddition, [CurAddition.Name]), mtConfirmation, [mbYes, mbNo]
+      )<>mrYes
   then exit;
   NewIndex:=AllListBox.ItemIndex;
   i:=Additions.IndexOf(CurAddition);
@@ -652,7 +655,7 @@ begin
   else
     CurAddition:=nil;
   if CurAddition=nil then begin
-    CurGroupBox.Caption:='(None selected)';
+    CurGroupBox.Caption:=lisNoneSelected;
     CurGroupBox.Enabled:=false;
     NameEdit.Text:='';
     OnlyFPCMsgIDsEdit.Text:='';
@@ -665,7 +668,7 @@ begin
     OnlyRegExEdit.Font.Color:=clDefault;
     URLEdit.Font.Color:=clDefault;
   end else begin
-    CurGroupBox.Caption:='Selected addition:';
+    CurGroupBox.Caption:=lisSelectedAddition;
     CurGroupBox.Enabled:=true;
     NameEdit.Text:=CurAddition.Name;
     NameLabel.Font.Color:=clDefault;
@@ -709,7 +712,7 @@ begin
   Line:=IDEMessagesWindow.GetSelectedLine;
   {$ENDIF}
   if Line=nil then begin
-    CurMsgMemo.Text:='(no message selected)';
+    CurMsgMemo.Text:=lisNoMessageSelected;
     CurMsgMemo.Enabled:=false;
   end else begin
     CurMsg:=Line.Msg;
@@ -754,9 +757,9 @@ begin
   else begin
     AdditionFitsMsgLabel.Visible:=true;
     if CurAddition.Fits(CurFPCId,CurMsg) then begin
-      AdditionFitsMsgLabel.Caption:='Addition fits the current message';
+      AdditionFitsMsgLabel.Caption:=lisAdditionFitsTheCurrentMessage;
     end else begin
-      AdditionFitsMsgLabel.Caption:='Addition does not fit the current message';
+      AdditionFitsMsgLabel.Caption:=lisAdditionDoesNotFitTheCurrentMessage;
     end;
   end;
 end;
@@ -852,7 +855,7 @@ begin
   fAdditions:=TMessageHelpAdditions.Create;
   FAdditionsChangeStep:=CTInvalidChangeStamp;
   FMsgFileChangeStep:=CTInvalidChangeStamp;
-  FDefaultNode:=THelpNode.CreateURL(Self,'FPC messages: Appendix',
+  FDefaultNode:=THelpNode.CreateURL(Self, lisFPCMessagesAppendix,
      'http://lazarus-ccr.sourceforge.net/fpcdoc/user/userap3.html#x81-168000C');
 end;
 
@@ -931,10 +934,11 @@ begin
         IDEMessageDialog(lisHFMHelpForFreePascalCompilerMessage, FoundComment,
                    mtInformation,[mbOk]);
       end else begin
-        if IDEQuestionDialog(lisHFMHelpForFreePascalCompilerMessage, FoundComment
-                   +LineEnding+LineEnding+'There are additional notes for this message on'
-                   +LineEnding+URL,
-                   mtInformation,[mrYes,'Open URL',mrClose,'Close'])=mrYes then
+        if IDEQuestionDialog(lisHFMHelpForFreePascalCompilerMessage, Format(
+          lisThereAreAdditionalNotesForThisMessageOn, [FoundComment
+                   +LineEnding+LineEnding, LineEnding+URL]),
+                   mtInformation, [mrYes, lisOpenURL, mrClose, lisClose])=mrYes
+                     then
         begin
           if not OpenURL(URL) then
             exit(shrViewerError);

@@ -3322,6 +3322,21 @@ resourcestring
   lisCodeToolsDefsInsertKylix3ProjectTempl = 'Insert Kylix 3 Project Template';
   lisCodeToolsDefsSelectedNode = 'Selected Node:';
   lisCodeToolsDefsName = 'Name:';
+  lisOnlyMessagesWithTheseFPCIDsCommaSeparated = 'Only messages with these FPC'
+    +' IDs (comma separated):';
+  lisOnlyMessagesFittingThisRegularExpression = 'Only messages fitting this '
+    +'regular expression:';
+  lisURLOnWikiTheBaseUrlIs = 'URL on wiki (the base url is %s)';
+  lisTestURL = 'Test URL';
+  lisDeleteThisAddition = 'Delete this addition';
+  lisDelete2 = 'Delete?';
+  lisDeleteAddition = 'Delete addition "%s"?';
+  lisNoneSelected = '(None selected)';
+  lisSelectedAddition = 'Selected addition:';
+  lisNoMessageSelected = '(no message selected)';
+  lisAdditionFitsTheCurrentMessage = 'Addition fits the current message';
+  lisAdditionDoesNotFitTheCurrentMessage = 'Addition does not fit the current '
+    +'message';
   lisFilterAlreadyExists = 'Filter already exists';
   lisAFilterWithTheNameAlreadyExists = 'A filter with the name "%s" already '
     +'exists.';
@@ -4589,6 +4604,13 @@ resourcestring
     +'is project file name.';
   lisCodeHelpDeletePathButton = 'Remove path';
   lisDefaultPlaceholder = '(default)';
+  lisEditAdditionalHelpForMessages = 'Edit additional help for messages';
+  lisGlobalSettings = 'Global settings';
+  lisFPCMessageFile2 = 'FPC message file:';
+  lisConfigFileOfAdditions = 'Config file of additions:';
+  lisSelectedMessageInMessagesWindow = 'Selected message in messages window:';
+  lisAdditions = 'Additions';
+  lisCreateNewAddition = 'Create new addition';
   lisCodeHelpConfirmreplace = 'Confirm replace';
   lisCodeHelpGroupBox = 'FPDoc settings';
   lisCodeHelpHintBoldFormat = 'Insert bold formatting tag';
@@ -4683,6 +4705,10 @@ resourcestring
   lisDebugOptionsFrmDuplicateExceptionName = 'Duplicate Exception name';
   dlgDebugOptionsPathEditorDlgCaption = 'Path Editor';
   lisHFMHelpForFreePascalCompilerMessage = 'Help for Free Pascal Compiler message';
+  lisThereAreAdditionalNotesForThisMessageOn = '%sThere are additional notes '
+    +'for this message on%s';
+  lisOpenURL = 'Open URL';
+  lisFPCMessagesAppendix = 'FPC messages: Appendix';
   lisRelativePaths = 'Relative paths';
   lisInheritedParameters = 'Inherited parameters';
   lisShowRelativePaths = 'Show relative paths';
