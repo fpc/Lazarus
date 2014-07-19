@@ -14,6 +14,7 @@ uses
   Dialogs,
   FpDbgClasses,
   FpDbgInfo,
+  contnrs,
   FpErrorMessages,
   FpPascalBuilder,
   DbgIntfBaseTypes,
@@ -232,7 +233,14 @@ type
   { TFPBreakpoints }
 
   TFPBreakpoints = class(TDBGBreakPoints)
+  private
+    FDelayedRemoveBreakpointList: TObjectList;
+  protected
+    procedure DoStateChange(const AOldState: TDBGState); override;
+    procedure AddBreakpointToDelayedRemoveList(ABreakpoint: FpDbgClasses.TDBGBreakPoint);
   public
+    constructor Create(const ADebugger: TDebuggerIntf; const ABreakPointClass: TDBGBreakPointClass);
+    destructor Destroy; override;
     function Find(AIntBReakpoint: FpDbgClasses.TDbgBreakpoint): TDBGBreakPoint;
   end;
 
@@ -480,6 +488,42 @@ end;
 
 { TFPBreakpoints }
 
+procedure TFPBreakpoints.DoStateChange(const AOldState: TDBGState);
+var
+  ABrkPoint: FpDbgClasses.TDbgBreakpoint;
+  i: Integer;
+begin
+  inherited DoStateChange(AOldState);
+  if Debugger.State in [dsPause, dsInternalPause] then
+  begin
+    if FDelayedRemoveBreakpointList.Count>0 then
+      for i := FDelayedRemoveBreakpointList.Count-1 downto 0 do
+      begin
+        ABrkPoint := FpDbgClasses.TDbgBreakpoint(FDelayedRemoveBreakpointList[i]);
+        TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(ABrkPoint.Location);
+        FreeAndNil(ABrkPoint);
+        FDelayedRemoveBreakpointList.Delete(i);
+      end;
+  end;
+end;
+
+procedure TFPBreakpoints.AddBreakpointToDelayedRemoveList(ABreakpoint: FpDbgClasses.TDBGBreakPoint);
+begin
+  FDelayedRemoveBreakpointList.Add(ABreakpoint);
+end;
+
+constructor TFPBreakpoints.Create(const ADebugger: TDebuggerIntf; const ABreakPointClass: TDBGBreakPointClass);
+begin
+  inherited create(ADebugger, ABreakPointClass);
+  FDelayedRemoveBreakpointList := TObjectList.Create(false);
+end;
+
+destructor TFPBreakpoints.Destroy;
+begin
+  FDelayedRemoveBreakpointList.Free;
+  inherited Destroy;
+end;
+
 function TFPBreakpoints.Find(AIntBReakpoint: FpDbgClasses.TDbgBreakpoint): TDBGBreakPoint;
 var
   i: integer;
@@ -525,7 +569,14 @@ end;
 
 destructor TFPBreakpoint.Destroy;
 begin
-  ResetBreak;
+  if (Debugger.State = dsRun) and assigned(FInternalBreakpoint) then
+    begin
+    TFPBreakpoints(Collection).AddBreakpointToDelayedRemoveList(FInternalBreakpoint);
+    FInternalBreakpoint:=nil;
+    TFpDebugDebugger(Debugger).QuickPause;
+    end
+  else
+    ResetBreak;
   inherited Destroy;
 end;
 
