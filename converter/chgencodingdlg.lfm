@@ -10,7 +10,7 @@ object ChgEncodingDialog: TChgEncodingDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object FilesGroupBox: TGroupBox
     Left = 6
     Height = 164
@@ -230,14 +230,12 @@ object ChgEncodingDialog: TChgEncodingDialog
         item
           AutoSize = True
           Caption = 'Files'
-          MinWidth = 75
-          Width = 100
+          Width = 32
         end      
         item
           AutoSize = True
           Caption = 'Encoding'
-          MinWidth = 75
-          Width = 100
+          Width = 615
         end>
       SortType = stText
       TabOrder = 0
