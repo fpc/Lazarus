@@ -1614,7 +1614,7 @@ begin
     if sym = nil then
       Exit;
 
-    result.SrcFile := sym.FileName;
+    result.SrcFile := ExtractFileName(sym.FileName);
     result.SrcLine := sym.Line;
     result.SrcFullName := sym.FileName;
 

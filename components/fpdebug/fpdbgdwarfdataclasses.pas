@@ -474,6 +474,7 @@ type
     
     FInfoData: Pointer;
     FFileName: String;
+    FCompDir:  String;
     FUnitName: String;
     FIdentifierCase: Integer;
     FProducer: String;
@@ -538,6 +539,7 @@ type
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
+    function FullFileName(const AFileName:string): String;
 
     property Valid: Boolean read FValid;
     property FileName: String read FFileName;
@@ -3246,7 +3248,7 @@ end;
 procedure TDwarfLineInfoStateMachine.SetFileName(AIndex: Cardinal);
 begin
   if (Aindex > 0) and (AIndex <= FOwner.FLineInfo.FileNames.Count)
-  then FFileName := FOwner.FLineInfo.FileNames[AIndex - 1]
+  then FFileName := FOwner.FullFileName(FOwner.FLineInfo.FileNames[AIndex - 1])
   else FFileName := Format('Unknown fileindex(%u)', [AIndex]);
 end;
 
@@ -3359,6 +3361,13 @@ function TDwarfCompilationUnit.GetAddressMap: TMap;
 begin
   BuildAddressMap;
   Result := FAddressMap;
+end;
+
+function TDwarfCompilationUnit.FullFileName(const AFileName: String): String;
+begin
+  Result := AFileName;
+  if FCompDir = '' then exit;
+  Result := LazFileUtils.ResolveDots(FCompDir+AFileName);
 end;
 
 function TDwarfCompilationUnit.GetUnitName: String;
@@ -3603,6 +3612,9 @@ begin
   /// TODO: (dafHasName in Abbrev.flags)
   if LocateAttribute(Scope.Entry, DW_AT_name, AttribList, Attrib, Form)
   then ReadValue(Attrib, Form, FFileName);
+
+  if LocateAttribute(Scope.Entry, DW_AT_comp_dir, AttribList, Attrib, Form)
+  then ReadValue(Attrib, Form, FCompDir);
 
   if LocateAttribute(Scope.Entry, DW_AT_producer, AttribList, Attrib, Form)
   then ReadValue(Attrib, Form, FProducer);
