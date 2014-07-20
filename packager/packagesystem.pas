@@ -3385,6 +3385,7 @@ begin
   GetAllRequiredPackages(APackage,FirstDependency,PkgList,ReqFlags,Policy);
   if PkgList<>nil then begin
     //DebugLn('TLazPackageGraph.CompileRequiredPackages B Count=',IntToStr(PkgList.Count));
+    BeginUpdate(false);
     try
       Flags:=[pcfDoNotCompileDependencies,pcfDoNotSaveEditorFiles];
       for i:=PkgList.Count-1 downto 0 do begin
@@ -3410,7 +3411,8 @@ begin
         inc(i);
       end;
     finally
-      PkgList.Free;
+      FreeAndNil(PkgList);
+      EndUpdate;
     end;
   end;
   {$IFDEF VerbosePkgCompile}

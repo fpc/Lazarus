@@ -43,23 +43,15 @@ interface
 
 uses
   typinfo, Classes, SysUtils, FileProcs, FileUtil, Laz2_XMLCfg, LazFileUtils,
-  {$IFNDEF EnableOldExtTools}
-  AvgLvlTree,
-  {$ENDIF}
-  Laz2_DOM, LazUTF8, InterfaceBase, LCLProc, Forms, Controls, ExprEval,
+  AvgLvlTree, Laz2_DOM, LazUTF8,
+  InterfaceBase, LCLProc, Forms, Controls, ExprEval,
   DefineTemplates, CodeToolsCfgScript, CodeToolManager, KeywordFuncLists,
   BasicCodeTools,
   // IDEIntf
   ProjectIntf, MacroIntf, IDEExternToolIntf, SrcEditorIntf, CompOptsIntf,
   IDEOptionsIntf,
   // IDE
-  LazarusIDEStrConsts, IDEProcs, LazConf,
-  TransferMacros,
-  {$IFNDEF EnableOldExtTools}
-  etFPCMsgParser,
-  {$ELSE}
-  IDEMsgIntf,
-  {$ENDIF}
+  LazarusIDEStrConsts, IDEProcs, LazConf, TransferMacros, etFPCMsgParser,
   ModeMatrixOpts, CompOptsModes, EnvironmentOpts;
 
 const
@@ -355,6 +347,7 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string;
                               UsePathDelim: TPathDelimSwitch); virtual;
     function Execute(const WorkingDir, ToolTitle, CompileHint: string): TModalResult;
+    function CreateExtTool(const WorkingDir, ToolTitle, CompileHint: string): TAbstractExternalTool;
     property ChangeStamp: int64 read FChangeStamp;
     procedure IncreaseChangeStamp;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
@@ -369,7 +362,6 @@ type
   end;
   TCompilationToolClass = class of TCompilationToolOptions;
 
-{$IFNDEF EnableOldExtTools}
   TCompilerMsgIdFlag = record
     MsgId: integer;
     Flag: TCompilerFlagValue;
@@ -417,83 +409,6 @@ type
     property ChangeStamp: int64 read FChangeStamp;
   end;
 
-{$ELSE}
-  TCompilerMessagesList = class;
-
-  TCompilerMessageState = (
-    msDefault,
-    msOn,
-    msOff
-  );
-
-  { TCompilerMessageConfig }
-
-  TCompilerMessageConfig = class
-  private
-    fOwner  : TCompilerMessagesList;
-  public
-    MsgIndex : integer;       // message index
-    MsgText  : String;        // message text
-    DefIgnored : Boolean;     // is message ignored by default (based on the message file)
-    State    : TCompilerMessageState;  // user state of the message
-    MsgType  : {$IFNDEF EnableOldExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}; // type of message (error, warning, etc)
-    constructor Create(AOwner: TCompilerMessagesList);
-//    function GetUserText: string; overload;
-//    function GetUserText(const ReplaceParams: array of string): string; overload;
-  end;
-
-  { TCompilerMessagesList }
-
-  TCompilerMessagesList = class
-  private
-    fItems      : TFPList;
-    fHash       : array of array of TCompilerMessageConfig;
-    FChangeStamp: int64;
-    FOnChanged  : TNotifyEvent;
-  protected
-    fUsedMsgFile: string;
-    fUpdating   : Integer;
-    FErrorNames : array [{$IFNDEF EnableOldExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}] of string;
-
-    procedure ClearHash;
-    procedure AddHash(Msg: TCompilerMessageConfig);
-    function FindHash(AIndex: integer):TCompilerMessageConfig ;
-    function GetMsgConfigByIndex(AIndex: Integer): TCompilerMessageConfig;
-    function GetMsgConfig(i: Integer): TCompilerMessageConfig;
-    procedure SetMsgState(i: Integer; const AValue: TCompilerMessageState);
-    function GetMsgState(i: Integer): TCompilerMessageState;
-    procedure GetStateArray(var b: array of TCompilerMessageState);    // array must be large enough
-    procedure SetStateArray(const b: array of TCompilerMessageState);  // to store b[MaxMsgIndex], or function fail
-    function GetCount: Integer;
-    function GetErrorNames(errtype: {$IFNDEF EnableOldExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}): string;
-    procedure IncreaseChangeStamp;
-    property ChangeStamp: int64 read FChangeStamp;
-    property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
-  public
-    constructor Create;
-    destructor Destroy; override;
-    procedure Clear;
-    procedure Assign(Src: TCompilerMessagesList);
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    function LoadMsgFile(const FileName: string): Boolean;
-    function Add(AMsgIndex: Integer; AMsgType: {$IFNDEF EnableOldExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}; const AMsgText: string;
-      DefIgnored: Boolean = false; AState: TCompilerMessageState = msDefault): TCompilerMessageConfig;
-    procedure SetDefault(KeepState: Boolean=true);
-//    function GetParams(MsgIndex: Integer; var prms: array of string; out PrmCount: Integer): Integer;
-    function Equals(Obj: TObject): boolean; override;
-
-    property Msg[i: Integer]: TCompilerMessageConfig read GetMsgConfig;
-    property MsgByIndex[AIndex: Integer]:  TCompilerMessageConfig read GetMsgConfigByIndex;
-    property MsgState[i: Integer]: TCompilerMessageState read GetMsgState write SetMsgState;
-    property Count: Integer read GetCount;
-    property UsedMsgFile : string read fUsedMsgFile;
-    property ErrorNames[errtype: {$IFNDEF EnableOldExtTools}TMessageLineUrgency{$ELSE}TFPCErrorType{$ENDIF}]: string read GetErrorNames;
-  end;
-
-const
-  DefaultMsgFileName = '$(FPCMsgFile)';
-{$ENDIF}
 type
   { TBaseCompilerOptions }
 
@@ -509,15 +424,6 @@ type
     fExecuteBefore: TCompilationToolOptions;
     fExecuteAfter: TCompilationToolOptions;
     FCreateMakefileOnBuild: boolean;
-
-    {$IFNDEF EnableOldExtTools}
-    {$ELSE}
-    // Compiler Messags
-    fUseCustomMessages: Boolean; // use messages customization
-    fUseMsgFile: Boolean;  // use specified file for messages
-    fMsgFileName: String;  // messages file name
-    fCompilerMessages: TCompilerMessagesList;
-    {$ENDIF}
 
     procedure OnItemChanged(Sender: TObject);
     procedure SetCreateMakefileOnBuild(AValue: boolean);
@@ -548,10 +454,6 @@ type
     procedure SetTargetProc(const AValue: string); override;
     procedure SetTargetOS(const AValue: string); override;
     procedure SetTargetFilename(const AValue: String); override;
-    {$IFDEF EnableOldExtTools}
-    procedure SetUseMsgFile(AValue: Boolean);
-    procedure SetMsgFileName(AValue: String);
-    {$ENDIF}
   protected
     function GetModified: boolean; override;
     procedure SetModified(const AValue: boolean); override;
@@ -643,9 +545,6 @@ type
     function GetCustomOptions(Parsed: TCompilerOptionsParseType): string;
     function TrimCustomOptions(o: string): string; override;
     function GetOptionsForCTDefines: string;
-    {$IFDEF EnableOldExtTools}
-    function GetParsedMsgFilename: string;
-    {$ENDIF}
 
     procedure RenameMacro(const OldName, NewName: string;
               ChangeConditionals: boolean); virtual; // rename macro in paths and options, not in BuildMacros, not in dependencies
@@ -667,13 +566,7 @@ type
                                             write SetCreateMakefileOnBuild;
 
     // compiler message types by id
-    {$IFNDEF EnableOldExtTools}
     function IDEMessageFlags: TCompilerMsgIDFlags; inline;
-    {$ELSE}
-    property CompilerMessages: TCompilerMessagesList read fCompilerMessages;
-    property UseMsgFile: Boolean read fUseMsgFile write SetUseMsgFile;
-    property MsgFileName: String read fMsgFileName write SetMsgFileName;
-    {$ENDIF}
   end;
 
   TBaseCompilerOptionsClass = class of TBaseCompilerOptions;
@@ -741,13 +634,6 @@ const
     'Run'
     );
 
-{$IFDEF EnableOldExtTools}
-type
-  TRunCompilerWithOptions = function(ExtTool: TIDEExternalToolOptions;
-                ACompilerOptions: TBaseCompilerOptions): TModalResult of object;
-var
-  RunCompilerWithOptions: TRunCompilerWithOptions = nil;
-{$ENDIF}
 var
   OnParseString: TParseStringEvent = nil;
 
@@ -785,20 +671,8 @@ function LoadXMLCompileReasons(const AConfig: TXMLConfig;
 procedure SaveXMLCompileReasons(const AConfig: TXMLConfig; const APath: String;
   const AFlags, DefaultFlags: TCompileReasons);
 
-{$IFNDEF EnableOldExtTools}
 function EnumToStr(Flag: TCompilerFlagValue): string; overload;
 function CompareCompMsgIdFlag(Data1, Data2: Pointer): integer;
-{$ELSE}
-const
-  MaxMsgParams = 4;
-  MaxMsgIndex = 20000;
-
-  symFile   = '$FileName';
-  symClass  = '$Class';
-  symName   = '$Name';
-  symItem   = '$Item';
-  symLineNo = '$LineNum';
-{$ENDIF}
 
 var
   TestCompilerOptions: TNotifyEvent = nil;
@@ -1087,7 +961,6 @@ begin
   AConfig.SetDeleteValue(APath+'Run', crRun in AFlags, crRun in DefaultFlags);
 end;
 
-{$IFNDEF EnableOldExtTools}
 function EnumToStr(Flag: TCompilerFlagValue): string;
 begin
   case Flag of
@@ -1136,23 +1009,6 @@ begin
     FCurrent:=FTree.FindLowest;
   Result:=FCurrent<>nil;
 end;
-{$ELSE}
-function GetMsgsIndexesWithState(msglist: TCompilerMessagesList;
-  const Separator: string; const State: TCompilerMessageState): string;
-var
-  i : integer;
-begin
-  Result := '';
-  if not Assigned(msglist) then Exit;
-  for i := 0 to msglist.Count - 1 do
-    if msglist.Msg[i].State = State then begin
-      if Result <> '' then
-        Result := Result + Separator + IntToStr(msglist.Msg[i].MsgIndex)
-      else
-        Result := IntToStr(msglist.Msg[i].MsgIndex);
-    end;
-end;
-{$ENDIF}
 
 { TIDECfgScriptEngine }
 
@@ -1200,13 +1056,11 @@ end;
 
 { TBaseCompilerOptions }
 
-{$IFNDEF EnableOldExtTools}
 // inline
 function TBaseCompilerOptions.IDEMessageFlags: TCompilerMsgIDFlags;
 begin
   Result:=TCompilerMsgIDFlags(MessageFlags);
 end;
-{$ENDIF}
 
 {------------------------------------------------------------------------------
   TBaseCompilerOptions Constructor
@@ -1221,12 +1075,7 @@ begin
   FExecuteAfter := AToolClass.Create(Self);
   fExecuteAfter.OnChanged := @OnItemChanged;
   fBuildMacros := TIDEBuildMacros.Create(Self);
-  {$IFNDEF EnableOldExtTools}
   fMessageFlags:=TCompilerMsgIDFlags.Create;
-  {$ELSE}
-  FCompilerMessages:=TCompilerMessagesList.Create;
-  FCompilerMessages.OnChanged := @OnItemChanged;
-  {$ENDIF}
   Clear;
 end;
 
@@ -1240,11 +1089,7 @@ end;
 ------------------------------------------------------------------------------}
 destructor TBaseCompilerOptions.Destroy;
 begin
-  {$IFNDEF EnableOldExtTools}
   FreeAndNil(fMessageFlags);
-  {$ELSE}
-  FreeAndNil(FCompilerMessages);
-  {$ENDIF}
   FreeAndNil(fBuildMacros);
   FreeThenNil(fExecuteBefore);
   FreeThenNil(fExecuteAfter);
@@ -1404,26 +1249,9 @@ begin
   IncreaseChangeStamp;
 end;
 
-{$IFDEF EnableOldExtTools}
-procedure TBaseCompilerOptions.SetUseMsgFile(AValue: Boolean);
-begin
-  if fUseMsgFile=AValue then Exit;
-  fUseMsgFile:=AValue;
-  IncreaseChangeStamp;
-end;
-
-procedure TBaseCompilerOptions.SetMsgFileName(AValue: String);
-begin
-  AValue:=TrimFilename(AValue);
-  if fMsgFileName=AValue then Exit;
-  fMsgFileName:=AValue;
-  IncreaseChangeStamp;
-end;
-{$ENDIF}
-
 function TBaseCompilerOptions.GetModified: boolean;
 begin
-  Result:=(inherited GetModified) {$IFNDEF EnableOldExtTools}or MessageFlags.Modified{$ENDIF};
+  Result:=(inherited GetModified) or MessageFlags.Modified;
 end;
 
 procedure TBaseCompilerOptions.OnItemChanged(Sender: TObject);
@@ -1627,7 +1455,6 @@ var
       LinkSmart := aXMLConfig.GetValue(p+'LinkSmart/Value', false);
   end;
 
-  {$IFNDEF EnableOldExtTools}
   procedure ReadListOfMessageFlags(aPath: string; aValue: TCompilerFlagValue);
   var
     dNode: TDOMNode;
@@ -1651,46 +1478,6 @@ var
       end;
     end;
   end;
-  {$ELSE}
-  procedure ReadMsgErrorName(t: TFPCErrorType; const aPath, SubPath: string);
-  begin
-    fCompilerMessages.fErrorNames[t]:=
-      aXMLConfig.GetValue(aPath+'CompilerMessages/ErrorNames/'+SubPath,
-      FPCErrorTypeNames[t]
-      );
-  end;
-
-  procedure ReadCompilerMessages;
-  var
-    i: integer;
-  begin
-    // messages
-    if fCompilerMessages.Count = 0 then fCompilerMessages.SetDefault;
-    UseMsgFile := aXMLConfig.GetValue(p+'CompilerMessages/UseMsgFile/Value', False);
-    MsgFileName := aXMLConfig.GetValue(p+'CompilerMessages/MsgFileName/Value', DefaultMsgFileName);
-    if UseMsgFile and FileExistsCached(GetParsedMsgFilename) then
-      fCompilerMessages.LoadMsgFile(GetParsedMsgFilename);
-
-    for i := 0 to fCompilerMessages.Count - 1 do begin
-      with fCompilerMessages.Msg[i] do
-        if aXMLConfig.GetValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), false) then
-          State := msOff
-        else
-        if aXMLConfig.GetValue(p+'CompilerMessages/NonIgnoredMessages/idx'+IntToStr(MsgIndex), false) then
-          State := msOn;
-    end;
-
-    if UseMsgFile then begin
-      // ErrorNames should be stored, because the Message file is not read (or parsed)
-      // on project opening. So errors needs to be initialized properly from the CompilerOptions.xml
-      ReadMsgErrorName(etHint,p,'Hint');
-      ReadMsgErrorName(etNote,p,'Note');
-      ReadMsgErrorName(etWarning,p,'Earning');
-      ReadMsgErrorName(etError,p,'Error');
-      ReadMsgErrorName(etFatal,p,'Fatal');
-    end;
-  end;
-  {$ENDIF}
 
 var
   b: boolean;
@@ -1833,30 +1620,20 @@ begin
   ShowGenInfo := aXMLConfig.GetValue(p+'Verbosity/ShowGenInfo/Value', true);
   ShowLineNum := aXMLConfig.GetValue(p+'Verbosity/ShoLineNum/Value', false);
   ShowAll := aXMLConfig.GetValue(p+'Verbosity/ShowAll/Value', false);
-  {$IFDEF EnableOldExtTools}
-  ShowAllProcsOnError := aXMLConfig.GetValue(p+'Verbosity/ShowAllProcsOnError/Value', false);
-  {$ENDIF}
   ShowDebugInfo := aXMLConfig.GetValue(p+'Verbosity/ShowDebugInfo/Value', false);
   ShowUsedFiles := aXMLConfig.GetValue(p+'Verbosity/ShowUsedFiles/Value', false);
   ShowTriedFiles := aXMLConfig.GetValue(p+'Verbosity/ShowTriedFiles/Value', false);
   ShowCompProc := aXMLConfig.GetValue(p+'Verbosity/ShowCompProc/Value', false);
   ShowCond := aXMLConfig.GetValue(p+'Verbosity/ShowCond/Value', false);
   ShowExecInfo := aXMLConfig.GetValue(p+'Verbosity/ShowExecInfo/Value', false);
-  {$IFDEF EnableOldExtTools}
-  ShowNothing := aXMLConfig.GetValue(p+'Verbosity/ShowNothing/Value', false);
-  {$ENDIF}
   ShowSummary := aXMLConfig.GetValue(p+'Verbosity/ShowSummary/Value', false);
   ShowHintsForUnusedUnitsInMainSrc := aXMLConfig.GetValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', false);
   ShowHintsForSenderNotUsed := aXMLConfig.GetValue(p+'Verbosity/ShowHintsForSenderNotUsed/Value', false);
   WriteFPCLogo := aXMLConfig.GetValue(p+'WriteFPCLogo/Value', true);
   StopAfterErrCount := aXMLConfig.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
 
-  {$IFNDEF EnableOldExtTools}
   ReadListOfMessageFlags(p+'CompilerMessages/IgnoredMessages',cfvHide);
   ReadListOfMessageFlags(p+'CompilerMessages/NonIgnoredMessages',cfvShow);
-  {$ELSE}
-  ReadCompilerMessages;
-  {$ENDIF}
 
   { Other }
   p:=Path+'Other/';
@@ -1914,7 +1691,6 @@ var
     Result:=SwitchPathDelims(AFilename,UsePathDelim);
   end;
 
-  {$IFNDEF EnableOldExtTools}
   procedure WriteListOfMessageFlags(aPath: string; aValue: TCompilerFlagValue);
   var
     Flag: PCompilerMsgIdFlag;
@@ -1925,36 +1701,6 @@ var
         aXMLConfig.SetValue(aPath+'/idx'+IntToStr(Flag^.MsgId), true);
       end;
   end;
-  {$ELSE}
-  procedure WriteMsgErrorName(t: TFPCErrorType; const aPath, SubPath: string);
-  begin
-    aXMLConfig.SetDeleteValue(aPath+'CompilerMessages/ErrorNames/'+SubPath,
-      CompilerMessages.ErrorNames[t],
-      FPCErrorTypeNames[t]
-      );
-  end;
-
-  procedure WriteCompilerMessages(const p: string);
-  var
-    i: integer;
-  begin
-    for i := 0 to CompilerMessages.Count - 1 do begin
-      with CompilerMessages.Msg[i] do
-      begin
-        aXMLConfig.SetDeleteValue(p+'CompilerMessages/IgnoredMessages/idx'+IntToStr(MsgIndex), State = msOff, false);
-        aXMLConfig.SetDeleteValue(p+'CompilerMessages/NonIgnoredMessages/idx'+IntToStr(MsgIndex), State = msOn, false);
-      end;
-    end;
-    aXMLConfig.SetDeleteValue(p+'CompilerMessages/UseMsgFile/Value', UseMsgFile, False);
-    aXMLConfig.SetDeleteValue(p+'CompilerMessages/MsgFileName/Value', MsgFileName, '$(FPCMsgFile)');
-
-    WriteMsgErrorName(etHint,p,'Hint');
-    WriteMsgErrorName(etNote,p,'Note');
-    WriteMsgErrorName(etWarning,p,'Earning');
-    WriteMsgErrorName(etError,p,'Error');
-    WriteMsgErrorName(etFatal,p,'Fatal');
-  end;
-  {$ENDIF}
 
 var
   P, s: string;
@@ -2057,30 +1803,20 @@ begin
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowGenInfo/Value', ShowGenInfo,true);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShoLineNum/Value', ShowLineNum,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowAll/Value', ShowAll,false);
-  {$IFDEF EnableOldExtTools}
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowAllProcsOnError/Value', ShowAllProcsOnError,false);
-  {$ENDIF}
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowDebugInfo/Value', ShowDebugInfo,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowUsedFiles/Value', ShowUsedFiles,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowTriedFiles/Value', ShowTriedFiles,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowCompProc/Value', ShowCompProc,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowCond/Value', ShowCond,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowExecInfo/Value', ShowExecInfo,false);
-  {$IFDEF EnableOldExtTools}
-  aXMLConfig.SetDeleteValue(p+'Verbosity/ShowNothing/Value', ShowNothing,false);
-  {$ENDIF}
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowSummary/Value', ShowSummary,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', ShowHintsForUnusedUnitsInMainSrc,false);
   aXMLConfig.SetDeleteValue(p+'Verbosity/ShowHintsForSenderNotUsed/Value', ShowHintsForSenderNotUsed,false);
   aXMLConfig.SetDeleteValue(p+'WriteFPCLogo/Value', WriteFPCLogo,true);
   aXMLConfig.SetDeleteValue(p+'ConfigFile/StopAfterErrCount/Value', StopAfterErrCount,1);
 
-  {$IFNDEF EnableOldExtTools}
   WriteListOfMessageFlags(p+'CompilerMessages/IgnoredMessages',cfvHide);
   WriteListOfMessageFlags(p+'CompilerMessages/NonIgnoredMessages',cfvShow);
-  {$ELSE}
-  WriteCompilerMessages(p);
-  {$ENDIF}
 
   { Other }
   p:=Path+'Other/';
@@ -2110,9 +1846,7 @@ begin
       OnModified(Self);
   end else begin
     FSavedChangeStamp:=ChangeStamp;
-    {$IFNDEF EnableOldExtTools}
     fMessageFlags.Modified:=false;
-    {$ENDIF}
   end;
 end;
 
@@ -2663,13 +2397,6 @@ begin
   Add(GetSyntaxOptionsString);
 end;
 
-{$IFDEF EnableOldExtTools}
-function TBaseCompilerOptions.GetParsedMsgFilename: string;
-begin
-  Result:=ParsedOpts.GetParsedValue(pcosMsgFile);
-end;
-{$ENDIF}
-
 procedure TBaseCompilerOptions.RenameMacro(const OldName, NewName: string;
   ChangeConditionals: boolean);
 var
@@ -3214,10 +2941,6 @@ begin
     tempsw := tempsw + 'i';
   if (ShowLineNum) then
     tempsw := tempsw + 'l';
-  {$IFDEF EnableOldExtTools}
-  if (ShowAllProcsOnError) then
-    tempsw := tempsw + 'b';
-  {$ENDIF}
   if (ShowDebugInfo) then
     tempsw := tempsw + 'd';
   if (ShowUsedFiles) then
@@ -3230,16 +2953,10 @@ begin
     tempsw := tempsw + 'c';
   if (ShowExecInfo) then
     tempsw := tempsw + 'x';
-  {$IFDEF EnableOldExtTools}
-  if ShowNothing then
-    tempsw := '0';
-  {$ENDIF}
 
   if ShowAll or (ccloAddVerboseAll in Flags) then
     tempsw := 'a';
-  {$IFNDEF EnableOldExtTools}
   tempsw := tempsw + 'bq'; // full file names and message ids
-  {$ENDIF}
 
   if (tempsw <> '') then begin
     tempsw := '-v' + tempsw;
@@ -3304,23 +3021,12 @@ begin
   // verbosity
   if (WriteFPCLogo) then
     switches := switches + ' -l';
-  {$IFNDEF EnableOldExtTools}
   t := IDEMessageFlags.GetMsgIdList(',',cfvHide);
   if t <> '' then
     switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
   t := IDEMessageFlags.GetMsgIdList(',',cfvShow);
   if t <> '' then
     switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
-  {$ELSE}
-  t := GetMsgsIndexesWithState(CompilerMessages, ',', msOff);
-  if t <> '' then
-    switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
-  t := GetMsgsIndexesWithState(CompilerMessages, ',', msOn);
-  if t <> '' then
-    switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
-  if fUseMsgFile and FileExistsCached(GetParsedMsgFilename) then
-    switches := switches + ' ' + PrepareCmdLineOption('-Fr'+GetParsedMsgFilename);
-  {$ENDIF}
 
 
   { ----------------------------------------------- }
@@ -3562,30 +3268,18 @@ begin
   fShowGenInfo := true;
   fShowLineNum := false;
   fShowAll := false;
-  {$IFDEF EnableOldExtTools}
-  fShowAllProcsOnError := false;
-  {$ENDIF}
   fShowDebugInfo := false;
   fShowUsedFiles := false;
   fShowTriedFiles := false;
   fShowCompProc := false;
   fShowCond := false;
   fShowExecInfo := false;
-  {$IFDEF EnableOldExtTools}
-  fShowNothing := false;
-  {$ENDIF}
   fShowSummary := false;
   fShowHintsForUnusedUnitsInMainSrc := false;
   fShowHintsForSenderNotUsed := false;
   fWriteFPCLogo := true;
   fStopAfterErrCount := 1;
-  {$IFNDEF EnableOldExtTools}
   fMessageFlags.Clear;
-  {$ELSE}
-  fUseCustomMessages := false;
-  fCompilerMessages.Clear;
-  fCompilerMessages.SetDefault;
-  {$ENDIF}
 
   // other
   fDontUseConfigFile := false;
@@ -3686,32 +3380,19 @@ begin
   fShowGenInfo := CompOpts.fShowGenInfo;
   fShowLineNum := CompOpts.fShowLineNum;
   fShowAll := CompOpts.fShowAll;
-  {$IFDEF EnableOldExtTools}
-  fShowAllProcsOnError := CompOpts.fShowAllProcsOnError;
-  {$ENDIF}
   fShowDebugInfo := CompOpts.fShowDebugInfo;
   fShowUsedFiles := CompOpts.fShowUsedFiles;
   fShowTriedFiles := CompOpts.fShowTriedFiles;
   fShowCompProc := CompOpts.fShowCompProc;
   fShowCond := CompOpts.fShowCond;
   fShowCond := CompOpts.fShowExecInfo;
-  {$IFDEF EnableOldExtTools}
-  fShowNothing := CompOpts.fShowNothing;
-  {$ENDIF}
   fShowSummary := CompOpts.FShowSummary;
   fShowHintsForUnusedUnitsInMainSrc := CompOpts.fShowHintsForUnusedUnitsInMainSrc;
   fShowHintsForSenderNotUsed := CompOpts.fShowHintsForSenderNotUsed;
   fWriteFPCLogo := CompOpts.fWriteFPCLogo;
 
   // Messages
-  {$IFNDEF EnableOldExtTools}
   fMessageFlags.Assign(CompOpts.fMessageFlags);
-  {$ELSE}
-  fUseCustomMessages := CompOpts.fUseCustomMessages;
-  fUseMsgFile := CompOpts.fUseMsgFile;
-  fMsgFileName := CompOpts.fMsgFileName;
-  fCompilerMessages.Assign(CompOpts.fCompilerMessages);
-  {$ENDIF}
 
   // Other
   fDontUseConfigFile := CompOpts.fDontUseConfigFile;
@@ -3765,10 +3446,6 @@ function TBaseCompilerOptions.CreateDiff(CompOpts: TBaseCompilerOptions;
     Tool.AddDiffItem(PropertyName,CompilationExecutableTypeNames[New]);
   end;
 
-{$IFDEF EnableOldExtTools}
-var
-  i: Integer;
-{$ENDIF}
 begin
   Result:=false;
   //if Tool<>nil then debugln(['TBaseCompilerOptions.CreateDiff ',DbgSName(Self)]);
@@ -3852,18 +3529,12 @@ begin
   if Done(Tool.AddDiff('ShowGenInfo',fShowGenInfo,CompOpts.fShowGenInfo)) then exit;
   if Done(Tool.AddDiff('ShowLineNum',fShowLineNum,CompOpts.fShowLineNum)) then exit;
   if Done(Tool.AddDiff('ShowAll',fShowAll,CompOpts.fShowAll)) then exit;
-  {$IFDEF EnableOldExtTools}
-  if Done(Tool.AddDiff('ShowAllProcsOnError',fShowAllProcsOnError,CompOpts.fShowAllProcsOnError)) then exit;
-  {$ENDIF}
   if Done(Tool.AddDiff('ShowDebugInfo',fShowDebugInfo,CompOpts.fShowDebugInfo)) then exit;
   if Done(Tool.AddDiff('ShowUsedFiles',fShowUsedFiles,CompOpts.fShowUsedFiles)) then exit;
   if Done(Tool.AddDiff('ShowTriedFiles',fShowTriedFiles,CompOpts.fShowTriedFiles)) then exit;
   if Done(Tool.AddDiff('ShowCompProc',fShowCompProc,CompOpts.fShowCompProc)) then exit;
   if Done(Tool.AddDiff('ShowCond',fShowCond,CompOpts.fShowCond)) then exit;
   if Done(Tool.AddDiff('ShowExecInfo',fShowExecInfo,CompOpts.fShowExecInfo)) then exit;
-  {$IFDEF EnableOldExtTools}
-  if Done(Tool.AddDiff('ShowNothing',fShowNothing,CompOpts.fShowNothing)) then exit;
-  {$ENDIF}
   if Done(Tool.AddDiff('ShowSummary',fShowSummary,CompOpts.fShowSummary)) then exit;
   if Done(Tool.AddDiff('ShowHintsForUnusedUnitsInMainSrc',fShowHintsForUnusedUnitsInMainSrc,CompOpts.fShowHintsForUnusedUnitsInMainSrc)) then exit;
   if Done(Tool.AddDiff('ShowHintsForSenderNotUsed',fShowHintsForSenderNotUsed,CompOpts.fShowHintsForSenderNotUsed)) then exit;
@@ -3871,21 +3542,7 @@ begin
 
   // messages
   if Tool<>nil then Tool.Path:='Messages';
-  {$IFNDEF EnableOldExtTools}
   if Done(IDEMessageFlags.CreateDiff(Tool,CompOpts.IDEMessageFlags)) then exit;
-  {$ELSE}
-  if Done(Tool.AddDiff('UseCustomMessages',fUseCustomMessages,CompOpts.fUseCustomMessages)) then exit;
-  if Done(Tool.AddDiff('UseMsgFile',fUseMsgFile,CompOpts.fUseMsgFile)) then exit;
-  if Done(Tool.AddDiff('MsgFileName',fMsgFileName,CompOpts.fMsgFileName)) then exit;
-  for i:=0 to fCompilerMessages.Count-1 do
-    if fCompilerMessages.Msg[i].State<>CompOpts.fCompilerMessages.Msg[i].State
-    then begin
-      Result:=true;
-      Tool.AddDiff('State'+IntToStr(fCompilerMessages.Msg[i].MsgIndex),
-        GetEnumName(TypeInfo(TCompilerMessageState),Ord(fCompilerMessages.Msg[i].State)),
-        GetEnumName(TypeInfo(TCompilerMessageState),Ord(CompOpts.fCompilerMessages.Msg[i].State)));
-    end;
-  {$ENDIF}
 
   // other
   if Tool<>nil then Tool.Path:='Other';
@@ -4522,44 +4179,16 @@ end;
 function TCompilationToolOptions.Execute(const WorkingDir, ToolTitle,
   CompileHint: string): TModalResult;
 var
-  ProgramFilename, Params: string;
-  Filename: String;
-  CurCommand: String;
-  {$IFNDEF EnableOldExtTools}
   ExtTool: TAbstractExternalTool;
-  {$ELSE}
-  ExtTool: TIDEExternalToolOptions;
-  {$ENDIF}
 begin
   Result:=mrCancel;
-
-  CurCommand:=GetParsedCommand;
-  if CurCommand='' then
-    exit(mrOk);
 
   if SourceEditorManagerIntf<>nil then
     SourceEditorManagerIntf.ClearErrorLines;
 
-  SplitCmdLine(CurCommand,ProgramFilename,Params);
-  if not FilenameIsAbsolute(ProgramFilename) then begin
-    Filename:=FindProgram(ProgramFilename,WorkingDir,true);
-    if Filename<>'' then ProgramFilename:=Filename;
-  end;
-
-  {$IFNDEF EnableOldExtTools}
-  ExtTool:=ExternalToolList.Add(ToolTitle);
+  ExtTool:=CreateExtTool(WorkingDir,ToolTitle,CompileHint);
   ExtTool.Reference(Self,ClassName);
   try
-    ExtTool.Hint:=CompileHint;
-    ExtTool.Process.CurrentDirectory:=WorkingDir;
-    ExtTool.Process.Executable:=ProgramFilename;
-    ExtTool.CmdLineParams:=Params;
-    if ScanForFPCMessages then
-      ExtTool.AddParsers(SubToolFPC);
-    if ScanForMakeMessages then
-      ExtTool.AddParsers(SubToolMake);
-    if ExtTool.ParserCount=0 then
-      ExtTool.AddParsers(SubToolDefault);
     // run
     ExtTool.Execute;
     ExtTool.WaitForExit;
@@ -4568,24 +4197,35 @@ begin
   finally
     ExtTool.Release(Self);
   end;
-  {$ELSE}
-  ExtTool:=TIDEExternalToolOptions.Create;
-  try
-    ExtTool.Title:=ToolTitle;
-    ExtTool.WorkingDirectory:=WorkingDir;
-    ExtTool.CmdLineParams:=Params;
-    ExtTool.Filename:=ProgramFilename;
-    ExtTool.ScanOutputForFPCMessages:=ScanForFPCMessages;
-    ExtTool.ScanOutputForMakeMessages:=ScanForMakeMessages;
-    ExtTool.ScanOutput:=true;
-    ExtTool.ShowAllOutput:=ShowAllMessages;
-    // run
-    Result:=RunExternalTool(ExtTool);
-  finally
-    // clean up
-    ExtTool.Free;
+end;
+
+function TCompilationToolOptions.CreateExtTool(const WorkingDir, ToolTitle,
+  CompileHint: string): TAbstractExternalTool;
+var
+  CurCommand: String;
+  ProgramFilename: string;
+  Params: string;
+  Filename: String;
+begin
+  CurCommand:=GetParsedCommand;
+  if CurCommand='' then
+    exit(nil);
+  SplitCmdLine(CurCommand,ProgramFilename,Params);
+  if not FilenameIsAbsolute(ProgramFilename) then begin
+    Filename:=FindProgram(ProgramFilename,WorkingDir,true);
+    if Filename<>'' then ProgramFilename:=Filename;
   end;
-  {$ENDIF}
+  Result:=ExternalToolList.Add(ToolTitle);
+  Result.Hint:=CompileHint;
+  Result.Process.CurrentDirectory:=WorkingDir;
+  Result.Process.Executable:=ProgramFilename;
+  Result.CmdLineParams:=Params;
+  if ScanForFPCMessages then
+    Result.AddParsers(SubToolFPC);
+  if ScanForMakeMessages then
+    Result.AddParsers(SubToolMake);
+  if Result.ParserCount=0 then
+    Result.AddParsers(SubToolDefault);
 end;
 
 procedure TCompilationToolOptions.IncreaseChangeStamp;
@@ -4886,7 +4526,6 @@ begin
   end;
 end;
 
-{$IFNDEF EnableOldExtTools}
 { TCompilerMsgIDFlags }
 
 function TCompilerMsgIDFlags.Count: SizeInt;
@@ -5101,718 +4740,6 @@ begin
   end;
 end;
 
-{$ELSE}
-{ TCompilerMessagesList }
-
-procedure TCompilerMessagesList.ClearHash;
-var
-  i : integer;
-begin
-  for i := 0 to length(fHash) - 1 do
-    SetLength(fHash[i], 0);
-end;
-
-procedure TCompilerMessagesList.AddHash(Msg: TCompilerMessageConfig);
-var
-  idx : Integer;
-  sub : Integer;
-begin
-  idx := Msg.MsgIndex div 1000;
-  sub := Msg.MsgIndex mod 1000;
-  while length(fHash) <= idx do
-    if length(FHash) = 0
-      then SetLength(fHash, 16)
-      else SetLength(fHash, length(fHash)*2);
-
-  while length(fHash[idx]) <= sub do
-    if length(fHash[idx]) = 0
-      then SetLength(fHash[idx], 16)
-      else SetLength(fHash[idx], length(fHash[idx])*2);
-
-  fHash[idx][sub] := Msg;
-end;
-
-function TCompilerMessagesList.FindHash(AIndex: integer): TCompilerMessageConfig;
-var
-  idx : Integer;
-  sub : Integer;
-begin
-  idx := AIndex div 1000;
-  sub := AIndex mod 1000;
-  Result := nil;
-  if (idx >= 0) and (idx < length(fHash)) then
-    if (sub >= 0) and (sub < length(fHash[idx])) then
-      Result := fHash[idx][sub];
-end;
-
-function TCompilerMessagesList.GetMsgConfigByIndex(AIndex: Integer): TCompilerMessageConfig;
-begin
-  Result := FindHash(Aindex);
-end;
-
-function TCompilerMessagesList.GetMsgConfig(i: Integer): TCompilerMessageConfig;
-begin
-  Result := TCompilerMessageConfig(fItems[i]);
-end;
-
-procedure TCompilerMessagesList.SetMsgState(i: Integer; const AValue: TCompilerMessageState);
-begin
-  msg[i].State := AValue;
-end;
-
-function TCompilerMessagesList.GetMsgState(i: Integer): TCompilerMessageState;
-begin
-  Result := msg[i].State;
-end;
-
-procedure TCompilerMessagesList.GetStateArray(var b: array of TCompilerMessageState);
-var
-  i   : Integer;
-  idx : Integer;
-begin
-  FillChar(b[0], length(b)*sizeof(TCompilerMessageState), 0);
-  for i := 0 to Count - 1 do begin
-    idx := msg[i].MsgIndex;
-    if (idx >= 0) and (idx < length(b)) then
-      b[idx] := msg[i].State;
-  end;
-end;
-
-procedure TCompilerMessagesList.SetStateArray(const b: array of TCompilerMessageState);
-var
-  i   : Integer;
-  idx : Integer;
-begin
-  for i := 0 to Count - 1 do begin
-    idx := msg[i].MsgIndex;
-    if (idx >= 0) and (idx < length(b)) then
-      msg[i].State := b[idx];
-  end;
-end;
-
-function TCompilerMessagesList.GetCount: Integer;
-begin
-  Result := fItems.Count;
-end;
-
-function TCompilerMessagesList.GetErrorNames(errtype: TFPCErrorType): string;
-begin
-  Result := FErrorNames[errtype];
-end;
-
-procedure TCompilerMessagesList.IncreaseChangeStamp;
-begin
-  CTIncreaseChangeStamp64(FChangeStamp);
-  if assigned(OnChanged) then OnChanged(Self);
-end;
-
-constructor TCompilerMessagesList.Create;
-begin
-  inherited Create;
-  FChangeStamp:=CTInvalidChangeStamp;
-  fItems := TFPList.Create;
-end;
-
-destructor TCompilerMessagesList.Destroy;
-begin
-  Clear;
-  FreeAndNil(fItems);
-  inherited Destroy;
-end;
-
-procedure TCompilerMessagesList.Clear;
-var
-  i : integer;
-  obj : TCompilerMessageConfig;
-begin
-  for i := 0 to fItems.Count - 1 do begin
-    obj := TCompilerMessageConfig(fItems[i]);
-    if Assigned(obj) then obj.Free;
-  end;
-  fItems.Clear;
-  ClearHash;
-end;
-
-procedure TCompilerMessagesList.Assign(Src: TCompilerMessagesList);
-var
-  i   : Integer;
-  m   : TCompilerMessageConfig;
-  err : TFPCErrorType;
-begin
-  if Equals(Src) then
-    Exit;
-  BeginUpdate;
-  try
-    Clear;
-    fUsedMsgFile := Src.fUsedMsgFile;
-    for i := 0 to Src.Count - 1 do begin
-      with Src.Msg[i]do begin
-        m := TCompilerMessageConfig.Create(Self);
-        m.MsgIndex := MsgIndex;
-        m.MsgText := MsgText;
-        m.DefIgnored := DefIgnored;
-        m.State := State;
-        m.MsgType := MsgType;
-        fItems.Add(m);
-        AddHash(m);
-      end;
-    end;
-    for err := Low(err) to High(err) do  FErrorNames[err] := Src.FErrorNames[err];
-  finally
-    EndUpdate;
-  end;
-  IncreaseChangeStamp;
-end;
-
-procedure TCompilerMessagesList.BeginUpdate;
-begin
-  inc(fUpdating);
-end;
-
-procedure TCompilerMessagesList.EndUpdate;
-begin
-  dec(fUpdating);
-end;
-
-function TCompilerMessagesList.LoadMsgFile(const FileName: string): Boolean;
-
-  function IsMsgLine(const s: string; out msgIdx: Integer; out msgType, msgText: string;
-    out Ignore: Boolean; out isMultiLine: Boolean): Boolean;
-  var
-    i   : Integer;
-    p   : Integer;
-    err : Integer;
-    sub : string;
-  begin
-    Result := (s <> '')  and not(s[1] in ['#',';','%']);
-    if not Result then Exit;
-
-    p := Pos('=', s);
-    Result := p > 0;
-    if not Result then Exit;
-  
-    sub := Copy(s, p+1, 5);
-    Result := length(sub) = 5;
-    if not Result then Exit;
-     
-    val( sub, msgIdx, err);
-    Result := err = 0;
-    if not Result then Exit;
-  
-    inc(p, 6);
-    Result := s[p] = '_';
-    if not Result then Exit;
-    inc(p);
-    i := p;
-    while (p <= length(s)) and (s[p] <> '_') do inc(p);
-    msgType := Copy(s, i, p-i);
-    Ignore := (Length(msgType) >= 2) and (msgType[1] = '-');
-    isMultiLine := msgType = '[';
-    if isMultiLine then
-      msgType := ''
-    else
-    if Ignore then
-      Delete(msgType, 1, 1);
-
-    inc(p);
-    msgText := Copy(s, p, length(s) - p + 1);
-    Result := true;
-  end;
-
-  function GetNextMultiLine(const s: string; var EndOfMultiLine: Boolean): string;
-  begin
-    EndOfMultiLine := s = ']';
-    if EndOfMultiLine then Result := ''
-    else Result := s;
-  end;
-
-  function StrToErrType(const msgtype: String): TFPCErrorType;
-  begin
-    if length(msgtype)<>1 then
-      Result:=etNone
-    else
-      case UpperCase(msgtype)[1] of
-        'W':Result:=etWarning;
-        'H':Result:=etHint;
-        'N':Result:=etNote;
-        'F':Result:=etFatal;
-        'E':Result:=etError;
-      else
-        Result:=etNone;
-      end;
-  end;
-
-var
-  temp    : TStringList;
-  isMln   : Boolean;
-  midx    : Integer;
-  mtype   : string;
-  mtext   : string;
-  mignore : Boolean;
-  i       : Integer;
-  lst     : Boolean;
-  b       : array of TCompilerMessageState;
-  err     : TFPCErrorType;
-const
-  idxFatal   = 01012;
-  idxError   = 01013;
-  idxWarning = 01014;
-  idxNote    = 01015;
-  idxHint    = 01016;
-begin
-  BeginUpdate;
-  try
-    SetLength(b, MaxMsgIndex);
-    GetStateArray(b);
-
-    SetDefault(false);
-
-    temp := TStringList.Create;
-    try
-      temp.LoadFromFile(FileName);
-      i := 0;
-      while i < temp.Count do begin
-        if IsMsgLine(temp[i], midx, mtype, mtext, mignore, isMln) then begin
-          if isMln then begin
-            lst := false;
-            while (i < temp.Count) and (not lst) do begin
-              inc(i);
-              mtext:=mtext+#10+GetNextMultiLine(temp[i], lst);
-            end;
-          end;
-
-          Add(midx, StrToErrType(mtype), mtext, mignore, b[midx]);
-
-          if (midx >= idxFatal) and (midx<= idxHint) then begin
-            case midx of
-              idxFatal: err := etFatal;
-              idxError: err := etError;
-              idxWarning: err := etWarning;
-              idxNote: err := etNote;
-              idxHint: err := etHint;
-            else
-              err := etNone;
-            end;
-            if err <> etNone then begin
-              mtext := Trim(mtext);
-              if (length(mtext)>1) and (mtext[length(mtext)]=':') then
-                FErrorNames[err]:=Copy(mtext, 1, length(mtext)-1)
-              else
-                FErrorNames[err]:=mtext;
-            end;
-          end;
-
-        end;
-        inc(i);
-      end;
-      Result := true;
-      fUsedMsgFile := FileName;
-    finally
-      temp.Free;
-      SetStateArray(b);
-      EndUpdate;
-    end;
-  except
-    Result := false;
-  end;
-end;
-
-function TCompilerMessagesList.Add(AMsgIndex: Integer;
-  AMsgType: TFPCErrorType;
-  const AMsgText: string; DefIgnored: Boolean = false;
-  AState: TCompilerMessageState = msDefault): TCompilerMessageConfig;
-var
-  msgconf : TCompilerMessageConfig;
-begin
-  msgconf := FindHash(AMsgIndex);
-  if not Assigned(msgConf) then begin
-    msgconf := TCompilerMessageConfig.Create(Self);
-    msgconf.MsgIndex := AMsgIndex;
-    fItems.Add(msgconf);
-    AddHash(msgconf);
-  end;
-  msgconf.MsgType := AMsgType;
-  msgconf.MsgText := AMsgText;
-  msgconf.DefIgnored := DefIgnored;
-  msgconf.State := AState;
-  Result := msgconf;
-end;
-
-procedure TCompilerMessagesList.SetDefault(KeepState: Boolean);
-var
-  b   : array of TCompilerMessageState;
-  err : TFPCErrorType;
-begin
-  if KeepState then begin
-    SetLength(b, MaxMsgIndex);
-    GetStateArray(b)
-  end;
-  BeginUpdate;
-  try
-    Clear;
-    for err := low(err) to High(err) do
-      FErrorNames[err]:=FPCErrorTypeNames[err];
-
-    Add(02005,etWarning,'Comment level $1 found');
-    Add(02008,etNote,'Ignored compiler switch "$1"');
-    Add(02009,etWarning,'Illegal compiler switch "$1"');
-    Add(02010,etWarning,'Misplaced global compiler switch');
-    Add(02020,etWarning,'Macro contents are limited to 255 characters in length');
-    Add(02030,etWarning,'Expanding of macros exceeds a depth of 16.');
-    Add(02031,etWarning,'compiler switches aren'#039't supported in // styled comments');
-    Add(02041,etWarning,'Unsupported switch "$1"');
-    Add(02042,etWarning,'Illegal compiler directive "$1"');
-    Add(02044,etWarning,'Unsupported application type: "$1"');
-    Add(02045,etWarning,'APPTYPE is not supported by the target OS');
-    Add(02046,etWarning,'DESCRIPTION is not supported by the target OS');
-    Add(02047,etNote,'VERSION is not supported by target OS');
-    Add(02048,etNote,'VERSION only for exes or DLLs');
-    Add(02049,etWarning,'Wrong format for VERSION directive "$1"');
-    Add(02051,etWarning,'ASM reader switch is not possible inside asm statement, "$1" will be effective only for next');
-    Add(02057,etWarning,'Macro support has been turned off');
-    Add(02059,etWarning,'APPID is only supported for PalmOS');
-    Add(02060,etWarning,'APPNAME is only supported for PalmOS');
-    Add(02073,etNote,'APPTYPE is not supported by the target OS');
-    Add(02075,etWarning,'SETPEFLAGS is not supported by the target OS');
-    Add(02076,etWarning,'IMAGEBASE is not supported by the target OS');
-    Add(02077,etWarning,'MINSTACKSIZE is not supported by the target OS');
-    Add(02078,etWarning,'MAXSTACKSIZE is not supported by the target OS');
-    Add(02081,etWarning,'PIC directive or switch ignored');
-    Add(02082,etWarning,'The switch "$1" is not supported by the currently selected target');
-    Add(02084,etWarning,'Framework-related options are only supported for Darwin/Mac OS X');
-    Add(02086,etWarning,'Overriding name of "main" procedure multiple times, was previously set to "$1"');
-    Add(02087,etWarning,'Illegal identifier "$1" for $WARN directive');
-    Add(02090,etWarning,'Directive "$1" is ignored for the the current target platform');
-    Add(02091,etWarning,'Current system codepage "$1" is not available for the compiler. Switching default codepage back to "$2".');
-
-    Add(03005,etWarning,'Procedure type "$1" ignored');
-    Add(03011,etWarning,'Relocatable DLL or executable $1 debug info does not work, disabled.');
-    Add(03012,etWarning,'To allow debugging for win32 code you need to disable relocation with -WN option');
-    Add(03018,etWarning,'Constructor should be public');
-    Add(03019,etWarning,'Destructor should be public');
-    Add(03020,etNote,'Class should have one destructor only');
-    Add(03023,etNote,'The object "$1" has no VMT');
-    Add(03031,etNote,'Values in enumeration types have to be ascending');
-    Add(03036,etWarning,'range check error while evaluating constants');
-    Add(03042,etWarning,'use extended syntax of NEW and DISPOSE for instances of objects');
-    Add(03043,etWarning,'use of NEW or DISPOSE for untyped pointers is meaningless');
-    Add(03057,etWarning,'An inherited method is hidden by "$1"');
-    Add(03060,etWarning,'Stored property directive is not yet implemented');
-    Add(03094,etWarning,'Unknown procedure directive had to be ignored: "$1"');
-    Add(03100,etWarning,'Virtual methods are used without a constructor in "$1"');
-    Add(03123,etWarning,'"$1" not yet supported inside inline procedure/function');
-    Add(03124,etWarning,'Inlining disabled');
-    Add(03126,etHint,'may be pointer dereference is missing');
-    Add(03141,etWarning,'string "$1" is longer than "$2"');
-    Add(03149,etWarning,'Don'#39't load OBJPAS unit manually, use \{\$mode objfpc\} or \{\$mode delphi\} instead');
-    Add(03168,etWarning,'Procedure named "$1" not found that is suitable for implementing the $2.$3');
-    Add(03175,etWarning,'Some fields coming before "$1" weren'#39't initialized');
-    Add(03177,etWarning,'Some fields coming after "$1" weren'#39't initialized');
-    Add(03182,etWarning,'Overriding calling convention "$1" with "$2"');
-    Add(03186,etWarning,'Use of unsupported feature!');
-    Add(03187,etHint,'C arrays are passed by reference');
-    Add(03189,etHint,'Type "$1" redefinition');
-    Add(03190,etWarning,'cdecl'#39'ared functions have no high parameter');
-    Add(03191,etWarning,'cdecl'#39'ared functions do not support open strings');
-    Add(03195,etWarning,'Calling convention directive ignored: "$1"');
-    Add(03211,etWarning,'Implicit uses of Variants unit');
-    Add(03218,etWarning,'Overridden methods must have a related return type. This code may crash, it depends on a Delphi parser bug ("$2" is overridden by "$1" which has another return type)');
-    Add(03226,etWarning,'Don'#39't load LINEINFO unit manually, Use the -gl compiler switch instead');
-    Add(03237,etWarning,'Register list is ignored for pure assembler routines');
-    Add(03270,etHint,'Defining a new Objective-C root class. To derive from another root class (e.g., NSObject), specify it as the parent class.');
-    Add(03274,etHint,'Inherited methods can only be overridden in Objective-C and Java, add "override" (inherited method defined in $1).');
-    Add(03280,etHint,'Replaced methods can only be reintroduced in Objective-C, add "reintroduce" (replaced method defined in $1).');
-
-    Add(04014,etWarning,'Automatic type conversion from floating type to COMP which is an integer type');
-    Add(04015,etHint,'use DIV instead to get an integer result');
-    Add(04022,etWarning,'lo/hi(dword/qword) returns the upper/lower word/dword');
-    Add(04035,etWarning,'Mixing signed expressions and longwords gives a 64bit result');
-    Add(04036,etWarning,'Mixing signed expressions and cardinals here may cause a range check error');
-    Add(04040,etWarning,'Class types "$1" and "$2" are not related');
-    Add(04043,etWarning,'String literal has more characters than short string length');
-    Add(04044,etWarning,'Comparison is always false due to range of values');
-    Add(04045,etWarning,'Comparison is always true due to range of values');
-    Add(04046,etWarning,'Constructing a class "$1" with abstract method "$2"');
-    Add(04047,etHint,'The left operand of the IN operator should be byte sized');
-    Add(04048,etWarning,'Type size mismatch, possible loss of data / range check error');
-    Add(04049,etHint,'Type size mismatch, possible loss of data / range check error');
-    Add(04055,etHint,'Conversion between ordinals and pointers is not portable');
-    Add(04056,etWarning,'Conversion between ordinals and pointers is not portable');
-    Add(04059,etWarning,'Converting constant real value to double for C variable argument, add explicit typecast to prevent this.');
-    Add(04066,etWarning,'Arithmetic "$1" on untyped pointer is unportable to {$T+}, suggest typecast');
-    Add(04079,etHint,'Converting the operands to "$1" before doing the add could prevent overflow errors.');
-    Add(04080,etHint,'Converting the operands to "$1" before doing the subtract could prevent overflow errors.');
-    Add(04081,etHint,'Converting the operands to "$1" before doing the multiply could prevent overflow errors.');
-    Add(04082,etWarning,'Converting pointers to signed integers may result in wrong comparison results and range errors, use an unsigned type instead.');
-    Add(04090,etWarning,'Converting 0 to NIL');
-    Add(04095,etWarning,'Coerced univ parameter type in procedural variable may cause crash or memory corruption: $1 to $2');
-    Add(04104,etWarning,'Implicit string type conversion from "$1" to "$2"');
-    Add(04105,etWarning,'Implicit string type conversion with potential data loss from "$1" to "$2"');
-    Add(04106,etWarning,'Explicit string typecast from "$1" to "$2"');
-    Add(04107,etWarning,'Explicit string typecast with potential data loss from "$1" to "$2"');
-    Add(04108,etWarning,'Unicode constant cast with potential data loss');
-    Add(04110,etWarning,'range check error while evaluating constants ($1 must be between $2 and $3)');
-    Add(04116,etWarning,'The interface method "$1" raises the visibility of "$2" to public when accessed via an interface instance');
-
-    Add(05003,etHint,'Identifier already defined in $1 at line $2');
-    Add(05014,etWarning,'Label not defined "$1"');
-    Add(05023,etHint,'Unit "$1" not used in $2');
-    Add(05024,etHint,'Parameter "$1" not used');
-    Add(05025,etNote,'Local variable "$1" not used');
-    Add(05026,etHint,'Value parameter "$1" is assigned but never used');
-    Add(05027,etNote,'Local variable "$1" is assigned but never used');
-    Add(05028,etHint,'Local $1 "$2" is not used');
-    Add(05029,etNote,'Private field "$1.$2" is never used');
-    Add(05030,etNote,'Private field "$1.$2" is assigned but never used');
-    Add(05031,etNote,'Private method "$1.$2" never used');
-    Add(05033,etWarning,'Function result does not seem to be set');
-    Add(05034,etWarning,'Type "$1" is not aligned correctly in current record for C');
-    Add(05036,etWarning,'Local variable "$1" does not seem to be initialized');
-    Add(05037,etWarning,'Variable "$1" does not seem to be initialized');
-    Add(05039,etHint,'Found declaration: $1');
-    Add(05043,etWarning,'Symbol "$1" is deprecated');
-    Add(05044,etWarning,'Symbol "$1" is not portable');
-    Add(05055,etWarning,'Symbol "$1" is not implemented');
-    Add(05057,etHint,'Local variable "$1" does not seem to be initialized');
-    Add(05058,etHint,'Variable "$1" does not seem to be initialized');
-    Add(05059,etWarning,'Function result variable does not seem to initialized');
-    Add(05060,etHint,'Function result variable does not seem to be initialized');
-    Add(05061,etWarning,'Variable "$1" read but nowhere assigned');
-    Add(05062,etHint,'Found abstract method: $1');
-    Add(05063,etWarning,'Symbol "$1" is experimental');
-    Add(05064,etWarning,'Forward declaration "$1" not resolved, assumed external');
-    Add(05065,etWarning,'Symbol "$1" is belongs to a library');
-    Add(05066,etWarning,'Symbol "$1" is deprecated: "$2"');
-    Add(05071,etNote,'Private type "$1.$2" never used');
-    Add(05072,etNote,'Private const "$1.$2" never used');
-    Add(05073,etNote,'Private property "$1.$2" never used');
-    Add(05074,etWarning,'Unit "$1" is deprecated');
-    Add(05075,etWarning,'Unit "$1" is deprecated: "$2"');
-    Add(05076,etWarning,'Unit "$1" is not portable');
-    Add(05077,etWarning,'Unit "$1" is belongs to a library');
-    Add(05078,etWarning,'Unit "$1" is not implemented');
-    Add(05079,etWarning,'Unit "$1" is experimental');
-    Add(05084,etWarning,'Possible library conflict: symbol "$1" from library "$2" also found in library "$3"');
-
-    Add(06016,etWarning,'Possible illegal call of constructor or destructor');
-    Add(06017,etNote,'Inefficient code');
-    Add(06018,etWarning,'unreachable code');
-    Add(06041,etWarning,'Parameters size exceeds limit for certain cpu'#39's');
-    Add(06042,etWarning,'Local variable size exceed limit for certain cpu'#39's');
-    Add(06048,etHint,'Inherited call to abstract method ignored');
-  
-    Add(07018,etWarning,'Possible error in object field handling');
-    Add(07023,etWarning,'@CODE and @DATA not supported');
-    Add(07029,etWarning,'Fwait can cause emulation problems with emu387');
-    Add(07030,etWarning,'$1 without operand translated into $1P');
-    Add(07031,etWarning,'ENTER instruction is not supported by Linux kernel');
-    Add(07032,etWarning,'Calling an overload function in assembler');
-    Add(07039,etHint,'$1 translated to $2');
-    Add(07040,etWarning,'$1 is associated to an overloaded function');
-    Add(07043,etWarning,'Procedures can'#39't return any value in asm code');
-    Add(07046,etWarning,'Size suffix and destination or source size do not match');
-    Add(07052,etWarning,'constant with symbol $1 for address which is not on a pointer');
-    Add(07058,etWarning,'NEAR ignored');
-    Add(07059,etWarning,'FAR ignored');
-    Add(07066,etWarning,'Modulo not supported');
-    Add(07072,etWarning,'Identifier $1 supposed external');
-    Add(07079,etWarning,'32bit constant created for address');
-    Add(07080,etNote,'.align is target specific, use .balign or .p2align');
-    //Add(07086,etWarning,'"$1" without operand translated into "$1 %st,%st(1)"');
-    //Add(07087,etWarning,'"$1 %st(n)" translated into "$1 %st,%st(n)"');
-    //Add(07088,etWarning,'"$1 %st(n)" translated into "$1 %st(n),%st"');
-    Add(07093,etWarning,'ALIGN not supported');
-    Add(07098,etWarning,'No size specified and unable to determine the size of the operands, using DWORD as default');
-    Add(07101,etWarning,'No size specified and unable to determine the size of the operands, using BYTE as default');
-    Add(07102,etWarning,'Use of +offset(%ebp) for parameters invalid here');
-    Add(07103,etWarning,'Use of +offset(%ebp) is not compatible with regcall convention');
-    Add(07104,etWarning,'Use of -offset(%ebp) is not recommended for local variable access');
-    Add(07105,etWarning,'Use of -offset(%esp), access may cause a crash or value may be lost');
-    Add(07110,etWarning,'@GOTPCREL is useless and potentially dangereous for local symbols');
-    Add(07111,etWarning,'Constant with general purpose segment register');
-    Add(07119,etWarning,'Exported/global symbols should accessed via the GOT');
-
-    Add(09000,etWarning,'Source operating system redefined');
-    Add(09011,etWarning,'Object $1 not found, Linking may fail !');
-    Add(09012,etWarning,'Library $1 not found, Linking may fail !');
-    Add(09201,etWarning,'Object file "$1" contains 32-bit absolute relocation to symbol "$2".');
-
-    Add(10023,etWarning,'Unit $1 was not found but $2 exists');
-    Add(10025,etWarning,'Compiling the system unit requires the -Us switch');
-    Add(10040,etWarning,'Can'#039't recompile unit $1, but found modifed include files');
-
-    Add(11001,etWarning,'Only one source file supported, changing source file to compile from "$1" into "$2"');
-    Add(11002,etWarning,'DEF file can be created only for OS/2');
-    Add(11007,etHint,'-? writes help pages');
-    Add(11011,etWarning,'Target is already set to: $1');
-    Add(11012,etWarning,'Shared libs not supported on DOS platform, reverting to static');
-    Add(11017,etHint,'Try recompiling with -dGDB');
-    Add(11018,etWarning,'You are using the obsolete switch $1');
-    Add(11019,etWarning,'You are using the obsolete switch $1, please use $2');
-    Add(11020,etNote,'Switching assembler to default source writing assembler');
-    Add(11021,etWarning,'Assembler output selected "$1" is not compatible with "$2"');
-    Add(11022,etWarning,'"$1" assembler use forced');
-    Add(11041,etWarning,'Assembler output selected "$1" cannot generate debug info, debugging disabled');
-    Add(11042,etWarning,'Use of ppc386.cfg is deprecated, please use fpc.cfg instead');
-    Add(11046,etNote,'DWARF debug information cannot be used with smart linking on this target, switching to static linking');
-    Add(11047,etWarning,'Option "$1" is ignored for the current target platform.');
-    Add(11048,etWarning,'Disabling external debug information because it is unsupported for the selected target/debug format combination.');
-    Add(11049,etNote,'DWARF debug information cannot be used with smart linking with external assembler, disabling static library creation.');
-    Add(12004,etWarning,'No handler registered for whole program optimization section "$2" at line $1 of wpo feedback file, ignoring');
-    Add(12012,etWarning,'Overriding previously read information for "$1" from feedback input file using information in section "$2"');
-
-  finally
-    EndUpdate; 
-    if KeepState then
-      SetStateArray(b);
-  end; 
-end;
-{
-function TCompilerMessagesList.GetParams(MsgIndex: Integer;
-  var prms: array of string; out PrmCount: Integer): Integer;
-
-  procedure SetParams(const Src: array of string);
-  var
-    i : integer;
-  begin
-    PrmCount := length(src);
-    if PrmCount > length(prms) then
-      Result := length(Prms)
-    else
-      Result := PrmCount;
-    for i := 0 to PrmCount - 1 do
-      Prms[i] := Src[i];
-  end;
-
-begin
-  case MsgIndex of 
-    3005: SetParams([symName]);
-    3011: SetParams([symFile]);
-    3023, 3057, 3094, 3100, 3123, 3175, 3177, 3189 : SetParams([symName]);
-    3141, 3182: SetParams([symName, symName]); 
-    3168: SetParams([symName, symName, symName]);
-    3195: SetParams([symName]);
-    3218: SetParams([symName, symName]);
-    4040: SetParams([symClass, symClass]);
-    4046: SetParams([symClass, symName]);
-    4066, 4079,4080, 4081: SetParams([symName]);
-    5003: SetParams([symName, symLineNo]);
-    5014: SetParams([symName]);
-    5023: SetParams([symName, symName]);
-    5024,5025,5026,5027: SetParams([symName]);
-    5028: SetParams([symItem, symName]);
-    5029: SetParams([symClass, symName]);
-    5030: SetParams([symClass, symName]);
-    5031: SetParams([symClass, symName]);
-    5034,5036,5037,5039,
-    5043,5044,5055,5057,
-    5058,5061,5062,5063,
-    5064,7030: SetParams([symName]);
-    7039: SetParams([symName, symName]);
-    7040,9011: SetParams([symName]);
-    9012: SetParams([symFile]);
-  else
-    PrmCount := 0;
-    Result := 0;
-  end;
-end;
-}
-function TCompilerMessagesList.Equals(Obj: TObject): boolean;
-var
-  ObjList: TCompilerMessagesList absolute Obj;
-  i: integer;
-begin
-  Result := inherited Equals(Obj);
-  if not Result and (Obj is TCompilerMessagesList) then
-  begin
-    Result := ObjList.Count = Count;
-    if Result then
-      for i := 0 to Count - 1 do
-        if Msg[i].State <> ObjList.Msg[i].State then
-        begin
-          Result := False;
-          Exit;
-        end;
-  end;
-end;
-
-{ TCompilerMessageConfig }
-
-constructor TCompilerMessageConfig.Create(AOwner: TCompilerMessagesList);
-begin
-  fOwner:=AOwner;
-end;
-{
-function TCompilerMessageConfig.GetUserText(const ReplaceParams: array of string): string;
-
-  function GetNextNumber(var index: Integer; var Num : Integer): Boolean;
-  var
-    i : integer;
-    err:Integer;
-  begin
-    i := index;
-    while (i <= length(MsgText)) and (MsgText[i] in ['0'..'9']) do inc (i);
-    Result := i - index > 0;
-    if Result then begin
-      Val(Copy(MsgText, Index, i - Index), Num, err);
-      if err=0 then ;
-      index := i;
-    end;
-  end;
-
-var
-  j   : Integer;
-  i   : Integer;
-  nm  : Integer;
-  p   : Integer;
-begin
-  DebugLn(['TCompilerMessageConfig.GetUserText: MsgIndex=', MsgIndex, ', ReplaceParamCnt=', Length(ReplaceParams)]);
-  if length(ReplaceParams)=0 then begin
-    Result:=MsgText;
-    Exit;
-  end;
-  i := 1;
-  p := 1;
-  Result := '';
-  while i <= length(MsgText) do begin
-    if MsgText[i] = '$' then begin
-      j := i + 1;
-      nm := 0;
-      if GetNextNumber(j, nm) then begin
-        Result := Result + Copy(MsgText, p, i - p);
-        if nm <= length(ReplaceParams) then begin
-          Result := Result + ReplaceParams[nm-1];
-          DebugLn(['TCompilerMessageConfig.GetUserText: param ', nm-1, ' =', ReplaceParams[nm-1]]);
-        end
-        else
-          Result:=Result+'$'+IntToStr(nm);
-        p := j;
-        i := p;
-      end else
-        inc(i);
-    end else
-      inc(i);
-  end;
-  if p < length(MsgText) then
-    Result := Result + Copy(MsgText, p, length(MsgText) - p + 1);
-end;
-
-function TCompilerMessageConfig.GetUserText: string;
-var
-  prm : array of string;
-  cnt : Integer;
-begin
-  raise Exception.Create('TCompilerMessageConfig.GetUserText is called after all!');
-  if Assigned(fOwner) then begin
-    SetLength(prm, MaxMsgParams);
-    fOwner.GetParams(MsgIndex, prm, cnt);
-    SetLength(prm, cnt);
-    Result := GetUserText(prm);
-  end else
-    Result := GetUserText([]);
-end;
-}
-{$ENDIF}
 initialization
   CompilerParseStamp:=1;
   CompilerParseStampIncreased:=nil;
