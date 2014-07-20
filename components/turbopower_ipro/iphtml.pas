@@ -12623,11 +12623,9 @@ begin
       Tw := HintWindow.Canvas.TextWidth(NewHint);
       Th := HintWindow.Canvas.TextHeight(NewHint);
       Sc := ClientToScreen(Point(HintX,HintY));
-      HintWindow.ActivateHint(Rect(Sc.X + 6,
-                                   Sc.Y + 16 - 6,
-                                   Sc.X + Tw + 18,
-                                   Sc.Y + Th + 16 + 6),
-                              NewHint);
+      HintWindow.ActivateWithBounds(Rect(Sc.X + 6, Sc.Y + 16 - 6,
+                                         Sc.X + Tw + 18, Sc.Y + Th + 16 + 6),
+                                    NewHint);
     end else
       HideHint;
     {$ELSE}
@@ -12635,11 +12633,9 @@ begin
       Tw := HintWindow.Canvas.TextWidth(NewHint);
       Th := HintWindow.Canvas.TextHeight(NewHint);
       Sc := ClientToScreen(Point(HintX,HintY));
-      HintWindow.ActivateHint(Rect(Sc.X + 4,
-                                   Sc.Y + 16,
-                                   Sc.X + Tw + 12,
-                                   Sc.Y + Th + 16),
-                              NewHint);
+      HintWindow.ActivateWithBounds(Rect(Sc.X + 4, Sc.Y + 16,
+                                         Sc.X + Tw + 12, Sc.Y + Th + 16),
+                                    NewHint);
     end else
       HideHint;
     {$ENDIF}

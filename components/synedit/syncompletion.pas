@@ -74,15 +74,12 @@ type
   TSynBaseCompletionHint = class(THintWindow)
   private
     FCompletionForm: TSynBaseCompletionForm;
-    FDisplayRect: TRect;
     FIndex: Integer;
   public
     constructor Create(AOwner: TComponent); override;
-    function CalcHintRect(MaxWidth: Integer; const AHint: string;
-      AData: Pointer): TRect; override;
+    function CalcHintRect(MaxWidth: Integer; const AHint: string): TRect; override;
     procedure Paint; override;
     property Index: Integer read FIndex write FIndex;
-    property DisplayRect: TRect read FDisplayRect write FDisplayRect;
   end;
 
 
@@ -688,7 +685,7 @@ begin
     // CalcHintRect uses the current index
     FHint.Index := AIndex;
     // calculate the size
-    R := FHint.CalcHintRect(Monitor.Width, ItemList[AIndex], nil);
+    R := FHint.CalcHintRect(Monitor.Width, ItemList[AIndex]);
 
     if (R.Right <= Scroll.Left) then begin
       FHint.Hide;
@@ -699,21 +696,22 @@ begin
     M := Monitor;
     P := ClientToScreen(Point(0, (AIndex - Scroll.Position) * FFontHeight));
     case FLongLineHintType of
-      sclpExtendHalfLeft:      MinLeft := Max(M.Left,  P.X - ClientWidth div 2); // ClientWidth may be too much, if part of the ClientWidth extends to another screen.
+      // ClientWidth may be too much, if part of the ClientWidth extends to another screen.
+      sclpExtendHalfLeft:      MinLeft := Max(M.Left,  P.X - ClientWidth div 2);
       sclpExtendUnlimitedLeft: MinLeft := M.Left;
       else                     MinLeft := P.X;
     end;
     P.X := Max(MinLeft,
-               Min(P.X,                              // Start at drop-down Left boundary
-                   M.Left + M.Width - R.Right - 1    // Or push left, if hitting right Monitor border
-                  )
+               Min(P.X,          // Start at drop-down Left boundary
+                   M.Left + M.Width - R.Right - 1
+                  )              // Or push left, if hitting right Monitor border
               );
     P.Y := Max(M.Top, Min(P.Y, M.Top + M.Height - R.Bottom - 1));
     // actually Width and Height
     R.Right := Min(r.Right, M.Left + M.Width - 1 - P.X);
     R.Bottom := Min(r.Bottom, M.Top + M.Height - 1 - P.Y);
 
-    FHint.DisplayRect := Bounds(P.X, P.Y, R.Right, R.Bottom);
+    FHint.HintRect := Bounds(P.X, P.Y, R.Right, R.Bottom);
 
     if (not FHint.IsVisible) and (FLongLineHintTime > 0) then
       FHintTimer.Enabled := True
@@ -728,12 +726,10 @@ end;
 procedure TSynBaseCompletionForm.OnHintTimer(Sender: TObject);
 begin
   FHintTimer.Enabled := False;
-  FHint.ActivateHint(FHint.DisplayRect, ItemList[FHint.Index]);
-  FHint.Invalidate;
+  FHint.ActivateText(ItemList[FHint.Index]);
 end;
 
-procedure TSynBaseCompletionForm.KeyDown(var Key: Word;
-  Shift: TShiftState);
+procedure TSynBaseCompletionForm.KeyDown(var Key: Word; Shift: TShiftState);
 var
   i: integer;
   Handled: Boolean;
@@ -1311,8 +1307,8 @@ begin
     end;
   end;
   // ToDo by Juha: Fix THintWindow to show long completion lines again. Disabled temporarily.
-  //if Showing then
-  //  ShowItemHint(Position);
+  if Showing then
+    ShowItemHint(Position);
 end;
 
 procedure TSynBaseCompletionForm.StringListChange(Sender: TObject);
@@ -2158,8 +2154,7 @@ begin
   Visible := False;
 end;
 
-function TSynBaseCompletionHint.CalcHintRect(MaxWidth: Integer;
-  const AHint: string; AData: Pointer): TRect;
+function TSynBaseCompletionHint.CalcHintRect(MaxWidth: Integer; const AHint: string): TRect;
 var
   P: TPoint;
 begin

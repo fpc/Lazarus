@@ -842,12 +842,13 @@ type
     FAutoHide: Boolean;
     FAutoHideTimer: TCustomTimer;
     FHideInterval: Integer;
+    procedure ActivateSub(InvalidateNeeded: Boolean);
     procedure AdjustBoundsForMonitor;
     function GetDrawTextFlags: Cardinal;
     procedure SetAutoHide(Value : Boolean);
     procedure AutoHideHint(Sender : TObject);
     procedure SetHideInterval(Value : Integer);
-    procedure SetHintRect(AValue: TRect);
+    procedure SetHintRectAdjust(AValue: TRect);
   protected
     class procedure WSRegisterClass; override;
     procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
@@ -858,13 +859,12 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ActivateHint; virtual;
-    procedure ActivateHint(const AHint: String); virtual;
-    procedure ActivateHint(ARect: TRect; const AHint: String);
-    procedure ActivateHintData(ARect: TRect; const AHint: String; AData: pointer);
+    procedure ActivateRendered;
+    procedure ActivateText(const AHint: String);
+    procedure ActivateWithBounds(ARect: TRect; const AHint: String);
+    procedure ActivateWithData(ARect: TRect; const AHint: String; AData: pointer);
       deprecated 'Set HintData explicitly';
-    function CalcHintRect(MaxWidth: Integer; const AHint: String;
-                          AData: Pointer): TRect; virtual;
+    function CalcHintRect(MaxWidth: Integer; const AHint: String): TRect; virtual;
     function OffsetHintRect(NewPos: TPoint; dy: Integer = 30): Boolean;
     procedure InitializeWnd; override;
     procedure ReleaseHandle;
@@ -873,7 +873,8 @@ type
     class function GetControlClassDefaultSize: TSize; override;
   public
     property Alignment: TAlignment read FAlignment write FAlignment;
-    property HintRect: TRect read FHintRect write SetHintRect;
+    property HintRect: TRect read FHintRect write FHintRect;
+    property HintRectAdjust: TRect read FHintRect write SetHintRectAdjust;
     property HintData: Pointer read FHintData write FHintData;
     property AutoHide: Boolean read FAutoHide write SetAutoHide;
     property BiDiMode;

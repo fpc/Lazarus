@@ -12,8 +12,8 @@
 {
    use:
    HintWindow := THintWindow.Create(nil);
-   Rect := HintWindow.CalcHintRect(0,'This is the hint',nil);
-   HintWindow.ActivateHint(Rect,'This is the hint');
+   Rect := HintWindow.CalcHintRect(0,'This is the hint');
+   HintWindow.ActivateWithBounds(Rect,'This is the hint');
 
 }
 
@@ -55,7 +55,7 @@ Begin
     FAutoHideTimer.Interval := FHideInterval;
 end;
 
-procedure THintWindow.SetHintRect(AValue: TRect);
+procedure THintWindow.SetHintRectAdjust(AValue: TRect);
 begin
   FHintRect := AValue;
   // Add border
@@ -202,23 +202,32 @@ begin
   Result.CY := 25;
 end;
 
-procedure THintWindow.ActivateHint;
+procedure THintWindow.ActivateSub(InvalidateNeeded: Boolean);
+begin
+  SetBounds(FHintRect.Left, FHintRect.Top,
+            FHintRect.Right - FHintRect.Left, FHintRect.Bottom - FHintRect.Top);
+  Visible := True;
+  FAutoHideTimer.Enabled := False;
+  FAutoHideTimer.Enabled := FAutoHide;
+  if InvalidateNeeded then
+    Invalidate;
+end;
+
+procedure THintWindow.ActivateRendered;
+// Shows hint contents which are rendered to Controls[0] added by a rendering provider
 begin
   if FActivating then exit;
   FActivating := True;
   try
-    SetBounds(FHintRect.Left, FHintRect.Top,
-              FHintRect.Right - FHintRect.Left, FHintRect.Bottom - FHintRect.Top);
-    Visible := True;
-    FAutoHideTimer.Enabled := False;
-    FAutoHideTimer.Enabled := FAutoHide;
-    Invalidate;
+    Assert(ControlCount > 0, 'THintWindow.ActivateRendered: ControlCount = 0');
+    ActivateSub(True);
   finally
     FActivating := False;
   end;
 end;
 
-procedure THintWindow.ActivateHint(const AHint: String);
+procedure THintWindow.ActivateText(const AHint: String);
+// Shows simple text hint.
 var
   InvalidateNeeded: Boolean;
 begin
@@ -233,33 +242,28 @@ begin
       InvalidateNeeded := Visible and (Caption <> AHint);
       Caption := AHint;
     end;
-    SetBounds(FHintRect.Left, FHintRect.Top,
-              FHintRect.Right - FHintRect.Left, FHintRect.Bottom - FHintRect.Top);
-    Visible := True;
-    FAutoHideTimer.Enabled := False;
-    FAutoHideTimer.Enabled := FAutoHide;
-    if InvalidateNeeded then Invalidate;
+    ActivateSub(InvalidateNeeded);
   finally
     FActivating := False;
   end;
 end;
 
-procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);
+procedure THintWindow.ActivateWithBounds(ARect: TRect; const AHint: String);
 begin
   HintRect := ARect;
-  AdjustBoundsForMonitor;
-  ActivateHint(AHint);
+  ActivateText(AHint);
 end;
 
-procedure THintWindow.ActivateHintData(ARect: TRect; const AHint: String; AData: pointer);
+procedure THintWindow.ActivateWithData(ARect: TRect; const AHint: String; AData: pointer);
 begin
-  ActivateHint(ARect, AHint);   // AData is not used now.
+  HintRectAdjust := ARect;
+  ActivateText(AHint);                // AData is not used now.
 end;
 
-function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
-  AData: Pointer): TRect;
+function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String): TRect;
 var
   Flags: Cardinal;
+  uh: HDC;
 begin
   if AHint = '' then
     Exit(Rect(0, 0, 0, 0));
@@ -268,13 +272,13 @@ begin
   Result := Rect(0, 0, MaxWidth, Screen.Height - 4 * HintBorderWidth);
   Flags := DT_CALCRECT or DT_NOPREFIX or DT_WORDBREAK;
   if UseRightToLeftAlignment then Flags := Flags or DT_RTLREADING;
+  uh := Canvas.GetUpdatedHandle([csFontValid]);
   if UseThemes then
-    Result := ThemeServices.GetTextExtent(Canvas.GetUpdatedHandle([csFontValid]),
+    Result := ThemeServices.GetTextExtent(uh,
       ThemeServices.GetElementDetails(tttStandardNormal), AHint, Flags, @Result)
   else
-    DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(AHint), Length(AHint),
-             Result, Flags);
-  HintRect := Result;      // Adds borders.
+    DrawText(uh, PChar(AHint), Length(AHint), Result, Flags);
+  HintRectAdjust := Result;      // Adds borders.
   //debugln('THintWindow.CalcHintRect Result=',dbgs(Result));
 end;
 

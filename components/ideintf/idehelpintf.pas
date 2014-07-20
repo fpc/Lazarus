@@ -328,16 +328,16 @@ begin
       NewWidth := 500;
     if NewHeight <= 0 then
       NewHeight := 200;
-    HintWindow.HintRect := Rect(0, 0, NewWidth, NewHeight);
+    HintWindow.HintRectAdjust := Rect(0, 0, NewWidth, NewHeight);
     HintWindow.OffsetHintRect(ScreenPos);
     //DebugLn('--- ShowHint with HTML formatting ---');
-    HintWindow.ActivateHint;
+    HintWindow.ActivateRendered;
   end
   else begin                                           // Plain text
-    HintWindow.CalcHintRect(Screen.Width, TheHint, nil);
+    HintWindow.CalcHintRect(Screen.Width, TheHint);
     HintWindow.OffsetHintRect(ScreenPos);
     //DebugLn('--- ShowHint plain text ---');
-    HintWindow.ActivateHint(TheHint);
+    HintWindow.ActivateText(TheHint);
   end;
   Result:=True;
 end;
