@@ -1768,14 +1768,13 @@ end;
 
 function TIDEHintWindowManager.HintIsComplex: boolean;
 begin
-  Result := Assigned(FHintWindow) and FHintWindow.Visible
-  and (FHintWindow.ControlCount > 0)
-  and not (FHintWindow.Controls[0] is TSimpleHTMLControl);
+  Result := HintIsVisible and (CurHintWindow.ControlCount > 0)
+  and not (CurHintWindow.Controls[0] is TSimpleHTMLControl);
 end;
 
 function TIDEHintWindowManager.PtIsOnHint(Pt: TPoint): boolean;
 begin
-  Result := PtInRect(FHintWindow.BoundsRect, Pt);
+  Result := PtInRect(CurHintWindow.BoundsRect, Pt);
 end;
 
 function TIDEHintWindowManager.SenderIsHintControl(Sender: TObject): Boolean;
@@ -1805,10 +1804,10 @@ function TIDEHintWindowManager.SenderIsHintControl(Sender: TObject): Boolean;
   end;
 
 begin
-  if Assigned(FHintWindow) then
-    Assert(FHintWindow.ControlCount < 2,
-      'SenderIsHintControl: ControlCount = ' + IntToStr(FHintWindow.ControlCount));
-  Result := Assigned(Sender) and Assigned(FHintWindow) and IsHintControl(FHintWindow);
+  if Assigned(CurHintWindow) then
+    Assert(CurHintWindow.ControlCount < 2,
+      'SenderIsHintControl: ControlCount = ' + IntToStr(CurHintWindow.ControlCount));
+  Result := Assigned(Sender) and Assigned(CurHintWindow) and IsHintControl(CurHintWindow);
 end;
 
 

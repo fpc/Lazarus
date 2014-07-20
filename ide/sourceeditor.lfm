@@ -8,7 +8,7 @@ object SourceNotebook: TSourceNotebook
   ClientHeight = 300
   ClientWidth = 400
   OnMouseUp = FormMouseUp
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object StatusBar: TStatusBar
     Left = 0
     Height = 21

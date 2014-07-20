@@ -142,11 +142,17 @@ type
   TCreateIDEHTMLProviderEvent =
     function(Owner: TComponent): TAbstractIDEHTMLProvider;
 
+
   { THintWindowManager }
 
   THintWindowManager = class
   private
-    FHintWindowClass: THintWindowClass;
+    // 2 HintWindows, one for simple text and one for rendered hint with child control.
+    // Only one is visible at a time.
+    FHintTextW: THintWindow;
+    FHintRenderW: THintWindowRendered;
+    FCurrentHintW: THintWindow;  // One of the windows or Nil.
+    // Provider for the rendered hint.
     FHtmlHelpProvider: TAbstractIDEHTMLProvider;
     FBaseURL: string;
     FFlags: TIDEHTMLControlFlags;
@@ -154,27 +160,30 @@ type
     // These will be passed to HintWindow.
     FAutoHide: Boolean;
     FHideInterval: Integer;
+    FOnMouseDown: TMouseEvent;
     FWindowName: string;
     function HtmlHelpProvider: TAbstractIDEHTMLProvider;
+    function HintTextWindow: THintWindow;
+    function HintRenderWindow: THintWindowRendered;
     procedure SetAutoHide(AValue: Boolean);
     procedure SetHideInterval(AValue: Integer);
+    procedure SetOnMouseDown(AValue: TMouseEvent);
     procedure SetWindowName(AValue: string);
   protected
-    FHintWindow: THintWindow;
   public
     constructor Create; overload;
-    constructor Create(AHintWindowClass: THintWindowClass); overload;
     destructor Destroy; override;
-    function HintWindow: THintWindow;
     function HintIsVisible: boolean;
     function ShowHint(ScreenPos: TPoint; TheHint: string): boolean;
     procedure HideHint;
     procedure HideIfVisible;
   public
+    property CurHintWindow: THintWindow read FCurrentHintW;
     property BaseURL: string read FBaseURL write FBaseURL;
     property Flags: TIDEHTMLControlFlags read FFlags write FFlags;
     property AutoHide: Boolean read FAutoHide write SetAutoHide;
     property HideInterval: Integer read FHideInterval write SetHideInterval;
+    property OnMouseDown: TMouseEvent read FOnMouseDown write SetOnMouseDown;
     property WindowName: string read FWindowName write SetWindowName;
   end;
 
@@ -253,39 +262,50 @@ end;
 constructor THintWindowManager.Create;
 begin
   inherited Create;
-  FHintWindowClass := THintWindow;
   FFlags := [ihcWithClipboardMenu];
   FHideInterval := 3000;
 end;
 
-constructor THintWindowManager.Create(AHintWindowClass: THintWindowClass);
-begin
-  Create;  // Constructor above
-  FHintWindowClass := AHintWindowClass;
-end;
-
 destructor THintWindowManager.Destroy;
 begin
-  FreeAndNil(FHintWindow);
+  FreeAndNil(FHintRenderW);
+  FreeAndNil(FHintTextW);
   inherited Destroy;
 end;
 
-function THintWindowManager.HintWindow: THintWindow;
+function THintWindowManager.HintTextWindow: THintWindow;
 begin
-  if FHintWindow = nil then
+  if FHintTextW = nil then
   begin
-    FHintWindow := FHintWindowClass.Create(Nil);
-    FHintWindow.AutoHide := FAutoHide;
-    FHintWindow.HideInterval := FHideInterval;
+    FHintTextW := THintWindow.Create(Nil);
+    FHintTextW.AutoHide := FAutoHide;
+    FHintTextW.HideInterval := FHideInterval;
+    FHintTextW.OnMouseDown := FOnMouseDown;
     if FWindowName <> '' then
-      FHintWindow.Name := FWindowName;
+      FHintTextW.Name := FWindowName;
   end;
-  Result := FHintWindow;
+  FCurrentHintW := FHintTextW;
+  Result := FHintTextW;
+end;
+
+function THintWindowManager.HintRenderWindow: THintWindowRendered;
+begin
+  if FHintRenderW = nil then
+  begin
+    FHintRenderW := THintWindowRendered.Create(Nil);
+    FHintRenderW.AutoHide := FAutoHide;
+    FHintRenderW.HideInterval := FHideInterval;
+    FHintRenderW.OnMouseDown := FOnMouseDown;
+    if FWindowName <> '' then
+      FHintRenderW.Name := FWindowName;
+  end;
+  FCurrentHintW := FHintRenderW;
+  Result := FHintRenderW;
 end;
 
 function THintWindowManager.HintIsVisible: boolean;
 begin
-  Result := Assigned(FHintWindow) and FHintWindow.Visible;
+  Result := Assigned(FCurrentHintW) and FCurrentHintW.Visible;
 end;
 
 function THintWindowManager.HtmlHelpProvider: TAbstractIDEHTMLProvider;
@@ -295,8 +315,8 @@ begin
   if FHtmlHelpProvider = nil then
   begin
     //Include(FFlags, ihcScrollable);  // Debug (memo hint control does not work)
-    HelpControl := CreateIDEHTMLControl(HintWindow, FHtmlHelpProvider, FFlags);
-    HelpControl.Parent := HintWindow;
+    HelpControl := CreateIDEHTMLControl(HintRenderWindow, FHtmlHelpProvider, FFlags);
+    HelpControl.Parent := HintRenderWindow;
     HelpControl.Align := alClient;
   end;
   Result := FHtmlHelpProvider;
@@ -306,12 +326,15 @@ function THintWindowManager.ShowHint(ScreenPos: TPoint; TheHint: string): boolea
 var
   ms: TMemoryStream;
   NewWidth, NewHeight: integer;
-begin
-  if TheHint = '' then Exit(False);
-  FOrigMousePos := Mouse.CursorPos;
-  if FHintWindow <> nil then
-    FHintWindow.Visible := false;   // ???
-  if CompareText(copy(TheHint,1,6),'<HTML>')=0 then    // Text is HTML
+
+  procedure DoText;
+  begin
+    HintTextWindow.CalcHintRect(Screen.Width, TheHint);
+    HintTextWindow.OffsetHintRect(ScreenPos);
+    HintTextWindow.ActivateText(TheHint);
+  end;
+
+  procedure DoHtml;
   begin
     HtmlHelpProvider.BaseURL:=FBaseURL;
     ms:=TMemoryStream.Create;
@@ -328,56 +351,65 @@ begin
       NewWidth := 500;
     if NewHeight <= 0 then
       NewHeight := 200;
-    HintWindow.HintRectAdjust := Rect(0, 0, NewWidth, NewHeight);
-    HintWindow.OffsetHintRect(ScreenPos);
-    //DebugLn('--- ShowHint with HTML formatting ---');
-    HintWindow.ActivateRendered;
-  end
-  else begin                                           // Plain text
-    HintWindow.CalcHintRect(Screen.Width, TheHint);
-    HintWindow.OffsetHintRect(ScreenPos);
-    //DebugLn('--- ShowHint plain text ---');
-    HintWindow.ActivateText(TheHint);
+    HintRenderWindow.HintRectAdjust := Rect(0, 0, NewWidth, NewHeight);
+    HintRenderWindow.OffsetHintRect(ScreenPos);
+    HintRenderWindow.ActivateRendered;
   end;
+
+begin
+  if TheHint = '' then Exit(False);
+  FOrigMousePos := Mouse.CursorPos;
+  if FHintTextW <> nil then
+    FHintTextW.Visible := false;
+  if FHintRenderW <> nil then
+    FHintRenderW.Visible := false;
+  if CompareText(copy(TheHint,1,6),'<HTML>')=0 then // Text is HTML
+    DoHtml
+  else                                              // Plain text
+    DoText;
   Result:=True;
 end;
 
 procedure THintWindowManager.HideHint;
 begin
-  if Assigned(FHintWindow) then
-    FHintWindow.Visible := False;
+  if Assigned(FCurrentHintW) then
+    FCurrentHintW.Visible := False;
 end;
 
 procedure THintWindowManager.HideIfVisible;
 begin
   if HintIsVisible then
-    FHintWindow.Visible := False;
+    FCurrentHintW.Visible := False;
 end;
 
 // Setters
 
 procedure THintWindowManager.SetAutoHide(AValue: Boolean);
 begin
-  if FAutoHide = AValue then Exit;
   FAutoHide := AValue;
-  if Assigned(FHintWindow) then
-    FHintWindow.AutoHide := FAutoHide;
+  if Assigned(FHintTextW) then FHintTextW.AutoHide := FAutoHide;
+  if Assigned(FHintRenderW) then FHintRenderW.AutoHide := FAutoHide;
 end;
 
 procedure THintWindowManager.SetHideInterval(AValue: Integer);
 begin
-  if FHideInterval = AValue then Exit;
   FHideInterval := AValue;
-  if Assigned(FHintWindow) then
-    FHintWindow.HideInterval := FHideInterval;
+  if Assigned(FHintTextW) then FHintTextW.HideInterval := FHideInterval;
+  if Assigned(FHintRenderW) then FHintRenderW.HideInterval := FHideInterval;
+end;
+
+procedure THintWindowManager.SetOnMouseDown(AValue: TMouseEvent);
+begin
+  FOnMouseDown:=AValue;
+  if Assigned(FHintTextW) then FHintTextW.OnMouseDown := FOnMouseDown;
+  if Assigned(FHintRenderW) then FHintRenderW.OnMouseDown := FOnMouseDown;
 end;
 
 procedure THintWindowManager.SetWindowName(AValue: string);
 begin
-  if FWindowName = AValue then Exit;
   FWindowName := AValue;
-  if Assigned(FHintWindow) then
-    FHintWindow.Name := FWindowName;
+  if Assigned(FHintTextW) then FHintTextW.Name := FWindowName;
+  if Assigned(FHintRenderW) then FHintRenderW.Name := FWindowName;
 end;
 
 end.

@@ -805,12 +805,6 @@ implementation
 uses
   math;
 
-type
-  TOIHintWindow = class(THintWindow)
-  //public - For some reason the protected THintWindow.OnMouseDown is available, too.
-  //  property OnMouseDown;
-  end;
-
 const
   DefaultOIPageNames: array[TObjectInspectorPage] of shortstring = (
     'PropertyPage',
@@ -984,7 +978,7 @@ begin
     Parent:=Self;
   end;
 
-  FHintManager := THintWindowManager.Create(TOIHintWindow);
+  FHintManager := THintWindowManager.Create;
   FActiveRowBmp := CreateBitmapFromResourceName(HInstance, 'pg_active_row');
 
   if DefItemHeight<3 then
@@ -1039,7 +1033,7 @@ begin
     FHintTimer.Enabled := False;
     FHintTimer.OnTimer := @HintTimer;
 
-    TOIHintWindow(FHintManager.HintWindow).OnMouseDown := @HintMouseDown;
+    FHintManager.OnMouseDown := @HintMouseDown;
     FHintManager.WindowName := 'This_is_a_hint_window';
     FHintManager.HideInterval := 4000;
     FHintManager.AutoHide := True;
@@ -2418,7 +2412,7 @@ var
   pos: TPoint;
 begin
   if FHintManager.HintIsVisible then begin
-    pos := ScreenToClient(FHintManager.HintWindow.ClientToScreen(Point(X, Y)));
+    pos := ScreenToClient(FHintManager.CurHintWindow.ClientToScreen(Point(X, Y)));
     MouseDown(Button, Shift, pos.X, pos.Y);
   end;
 end;

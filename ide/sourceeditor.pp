@@ -9902,7 +9902,7 @@ begin
   begin
     // TODO: introduce property, to indicate if hint is interactive
     if FHints.PtIsOnHint(Mouse.CursorPos) then begin // ignore any action over Hint
-      if FHints.HintWindow.Active then
+      if FHints.CurHintWindow.Active then
         exit;
       if (Msg = WM_MOUSEMOVE) {$IFDEF WINDOWS} or (Msg = WM_NCMOUSEMOVE)or
          ((Msg >= WM_MOUSEFIRST) and (Msg <= WM_MOUSELAST)) {$ENDIF}
@@ -10063,7 +10063,7 @@ var
 begin
   FMouseHideHintTimer.Enabled := False;
   if FHints.HintIsVisible then begin
-    hw := FHints.HintWindow;
+    hw := FHints.CurHintWindow;
     Cur := Mouse.CursorPos; // Desktop coordinates
     OkX := ( (FHintMousePos.x <= hw.Left) and
              (Cur.x > FHintMousePos.x) and (Cur.x <= hw.Left + hw.Width)

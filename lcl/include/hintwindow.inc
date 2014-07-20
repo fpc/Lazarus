@@ -213,36 +213,15 @@ begin
     Invalidate;
 end;
 
-procedure THintWindow.ActivateRendered;
-// Shows hint contents which are rendered to Controls[0] added by a rendering provider
-begin
-  if FActivating then exit;
-  FActivating := True;
-  try
-    Assert(ControlCount > 0, 'THintWindow.ActivateRendered: ControlCount = 0');
-    ActivateSub(True);
-  finally
-    FActivating := False;
-  end;
-end;
-
 procedure THintWindow.ActivateText(const AHint: String);
 // Shows simple text hint.
-var
-  InvalidateNeeded: Boolean;
 begin
   if FActivating then exit;
   FActivating := True;
   try
-    if ControlCount > 0 then begin
-      InvalidateNeeded := Visible and (Controls[0].Caption <> AHint);
-      Controls[0].Caption := AHint;
-    end
-    else begin
-      InvalidateNeeded := Visible and (Caption <> AHint);
-      Caption := AHint;
-    end;
-    ActivateSub(InvalidateNeeded);
+    Assert(ControlCount = 0, 'THintWindow.ActivateRendered: ControlCount > 0');
+    Caption := AHint;
+    ActivateSub(Visible and (Caption <> AHint));
   finally
     FActivating := False;
   end;
@@ -331,5 +310,31 @@ begin
   if HandleAllocated then
     DestroyHandle;
 end;
+
+{ THintWindowRendered }
+
+constructor THintWindowRendered.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+end;
+
+destructor THintWindowRendered.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure THintWindowRendered.ActivateRendered;
+// Shows hint contents which are rendered to Controls[0] by a rendering provider
+begin
+  if FActivating then exit;
+  FActivating := True;
+  try
+    Assert(ControlCount > 0, 'THintWindowRendered.ActivateRendered: ControlCount = 0');
+    ActivateSub(True);
+  finally
+    FActivating := False;
+  end;
+end;
+
 
 // included by forms.pp

@@ -834,6 +834,7 @@ type
   { THintWindow }
 
   THintWindow = class(TCustomForm)
+  // For simple text hint without child controls.
   private
     FActivating: Boolean;
     FAlignment: TAlignment;
@@ -842,7 +843,6 @@ type
     FAutoHide: Boolean;
     FAutoHideTimer: TCustomTimer;
     FHideInterval: Integer;
-    procedure ActivateSub(InvalidateNeeded: Boolean);
     procedure AdjustBoundsForMonitor;
     function GetDrawTextFlags: Cardinal;
     procedure SetAutoHide(Value : Boolean);
@@ -852,6 +852,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
+    procedure ActivateSub(InvalidateNeeded: Boolean);
     procedure DoShowWindow; override;
     procedure UpdateRegion;
     procedure SetColor(Value: TColor); override;
@@ -859,7 +860,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ActivateRendered;
     procedure ActivateText(const AHint: String);
     procedure ActivateWithBounds(ARect: TRect; const AHint: String);
     procedure ActivateWithData(ARect: TRect; const AHint: String; AData: pointer);
@@ -872,6 +872,7 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     class function GetControlClassDefaultSize: TSize; override;
   public
+    property OnMouseDown;  // Public access may be needed.
     property Alignment: TAlignment read FAlignment write FAlignment;
     property HintRect: TRect read FHintRect write FHintRect;
     property HintRectAdjust: TRect read FHintRect write SetHintRectAdjust;
@@ -882,6 +883,17 @@ type
   end;
 
   THintWindowClass = class of THintWindow;
+
+  { THintWindowRendered }
+
+  THintWindowRendered = class(THintWindow)
+  // For rendered hint with a child control added by an external provider.
+  private
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure ActivateRendered;
+  end;
 
   { TMonitor }
 
