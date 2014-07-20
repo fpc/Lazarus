@@ -573,7 +573,7 @@ end;
 
 destructor TFPBreakpoint.Destroy;
 begin
-  if (Debugger.State = dsRun) and assigned(FInternalBreakpoint) then
+  if assigned(Debugger) and (Debugger.State = dsRun) and assigned(FInternalBreakpoint) then
     begin
     TFPBreakpoints(Collection).AddBreakpointToDelayedRemoveList(FInternalBreakpoint);
     FInternalBreakpoint:=nil;
