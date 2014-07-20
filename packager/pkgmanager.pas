@@ -54,9 +54,7 @@ uses
   // IDE Interface
   SrcEditorIntf, NewItemIntf, ProjPackIntf, ProjectIntf, PackageIntf, CompOptsIntf,
   MenuIntf, IDEWindowIntf,
-  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
-  {$ENDIF}
   PropEdits, MacroIntf, LazIDEIntf, IDEMsgIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, IDECommands,
@@ -2328,12 +2326,8 @@ var
           Msg:=Format(lisUnitNotFound, [AnUnitName]);
           if not Tool.CleanPosToCaret(NamePos,CodePos) then continue;
           Result:=false;
-          {$IFNDEF EnableOldExtTools}
           IDEMessagesWindow.AddCustomMessage(mluWarning,Msg,
             CodePos.Code.Filename, CodePos.Y, CodePos.X, lisMoveFiles);
-          {$ELSE}
-          IDEMessagesWindow.AddMsg('Warning: '+Msg,'',-1);
-          {$ENDIF}
           continue;
         end;
       end else begin
@@ -2379,12 +2373,8 @@ var
       end;
 
       Result:=false;
-      {$IFNDEF EnableOldExtTools}
       IDEMessagesWindow.AddCustomMessage(mluWarning,Msg,
         CodePos.Code.Filename, CodePos.Y, CodePos.X, lisMoveFiles);
-      {$ELSE}
-      IDEMessagesWindow.AddMsg('Warning: '+Msg,'',-1);
-      {$ENDIF}
     end;
   end;
 
@@ -3855,11 +3845,6 @@ end;
 
 function TPkgManager.CheckUserSearchPaths(aCompilerOptions: TBaseCompilerOptions
   ): TModalResult;
-{$IFDEF EnableOldExtTools}
-begin
-  Result:=mrOk;
-end;
-{$ELSE}
 var
   aPackage: TLazPackage;
   aProject: TProject;
@@ -4021,7 +4006,6 @@ begin
     SrcDirToPkg.Free;
   end;
 end;
-{$ENDIF}
 
 procedure TPkgManager.RebuildDefineTemplates;
 begin

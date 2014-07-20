@@ -86,11 +86,7 @@ uses
   // compile
   CompilerOptions, CheckCompilerOpts, BuildProjectDlg,
   ApplicationBundle, ImExportCompilerOpts,
-  {$IFNDEF EnableOldExtTools}
   ExtTools,
-  {$ELSE}
-  InfoBuild,
-  {$ENDIF}
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg, 
   PublishProjectDlg, ProjectInspector, PackageDefs,
@@ -112,11 +108,7 @@ uses
   SourceEditor, CodeToolsOptions, IDEOptionDefs,
   CodeToolsDefines, DiffDialog, UnitInfoDlg, EditorOptions,
   SourceEditProcs, ViewUnit_dlg, FPDocEditWindow,
-  {$IFNDEF EnableOldExtTools}
   etQuickFixes, etMessageFrame, etMessagesWnd,
-  {$ELSE}
-  OutputFilter, MsgQuickFixes, MsgView,
-  {$ENDIF}
   // converter
   ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
   // environment option frames
@@ -400,9 +392,6 @@ type
     fBuilder: TLazarusBuilder;
     procedure AllowCompilation(aAllow: Boolean);
     function DoBuildLazarusSub(Flags: TBuildLazarusFlags): TModalResult;
-    {$IFDEF EnableOldExtTools}
-    function ExternalTools: TExternalToolList;
-    {$ENDIF}
   public
     // Global IDE events
     procedure OnProcessIDECommand(Sender: TObject; Command: word;
@@ -624,11 +613,6 @@ type
     procedure CodeToolBossScannerInit(Self: TCodeToolManager;
       Scanner: TLinkScanner);
 
-    // MessagesView events
-    {$IFDEF EnableOldExtTools}
-    procedure MessagesViewSelectionChanged(sender: TObject);
-    {$ENDIF}
-
     // SearchResultsView events
     procedure SearchResultsViewSelectionChanged(sender: TObject);
 
@@ -636,14 +620,7 @@ type
     procedure JumpHistoryViewSelectionChanged(sender: TObject);
 
     // External Tools events
-    {$IFNDEF EnableOldExtTools}
     procedure FPCMsgFilePoolLoadFile(aFilename: string; out s: string);
-    {$ELSE}
-    procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
-                                         var Abort: boolean);
-    procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
-                                        ErrorOccurred: boolean);
-    {$ENDIF}
 
     procedure OnGetLayout(Sender: TObject; aFormName: string;
             out aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
@@ -694,9 +671,6 @@ type
     procedure SetupDialogs;
     procedure SetupComponentPalette;
     procedure SetupHints;
-    {$IFDEF EnableOldExtTools}
-    procedure SetupOutputFilter;
-    {$ENDIF}
     procedure SetupObjectInspector;
     procedure SetupFormEditor;
     procedure SetupSourceNotebook;
@@ -822,9 +796,6 @@ type
 
     // external tools
     function PrepareForCompile: TModalResult; override;
-    {$IFDEF EnableOldExtTools}
-    function OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
-    {$ENDIF}
     function DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; override;
     function DoExampleManager: TModalResult; override;
@@ -926,12 +897,7 @@ type
     function DoConvertDelphiPackage(const DelphiFilename: string): TModalResult;
 
     // message view
-    function DoJumpToCompilerMessage(FocusEditor: boolean;
-      {$IFNDEF EnableOldExtTools}
-      Msg: TMessageLine = nil
-      {$ELSE}
-      Index:integer = -1
-      {$ENDIF}
+    function DoJumpToCompilerMessage(FocusEditor: boolean; Msg: TMessageLine = nil
       ): boolean; override;
     procedure DoJumpToNextError(DirectionDown: boolean); override;
     procedure DoShowMessagesView(BringToFront: boolean = true); override;
@@ -1300,10 +1266,6 @@ begin
     end;
   end;
 
-  {$IFDEF EnableOldExtTools}
-  ExternalTools.OnNeedsOutputFilter := @OnExtToolNeedsOutputFilter;
-  ExternalTools.OnFreeOutputFilter := @OnExtToolFreeOutputFilter;
-  {$ENDIF}
   UpdateDefaultPasFileExt;
   LoadFileDialogFilter;
 
@@ -1318,12 +1280,8 @@ begin
   SetupIDEMsgQuickFixItems;
   EditorOpts.Load;
 
-  {$IFNDEF EnableOldExtTools}
   ExternalUserTools:=TExternalUserTools(EnvironmentOptions.ExternalToolMenuItems);
   ExternalUserTools.LoadShortCuts(EditorOpts.KeyMap);
-  {$ELSE}
-  ExternalTools.LoadShortCuts(EditorOpts.KeyMap);
-  {$ENDIF}
 
   MiscellaneousOptions := TMiscellaneousOptions.Create;
   MiscellaneousOptions.Load;
@@ -1343,9 +1301,6 @@ begin
   DebuggerOptions := TDebuggerOptions.Create;
 
   MainBuildBoss.SetupInputHistories;
-  {$IFDEF EnableOldExtTools}
-  CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
-  {$ENDIF}
 
   CreateDirUTF8(GetProjectSessionsConfigPath);
 
@@ -1440,17 +1395,6 @@ begin
   FWaitForClose := False;
 
   SetupDialogs;
-  {$IFDEF EnableOldExtTools}
-  RunExternalTool:=@OnRunExternalTool;
-  {$IFDEF UseAsyncProcess}
-  if Widgetset.GetLCLCapability(lcAsyncProcess) = 1 then
-    TOutputFilterProcess := TAsyncProcess
-  else
-    TOutputFilterProcess := TProcessUTF8;
-  {$ELSE}
-  TOutputFilterProcess := TProcessUTF8;
-  {$ENDIF}
-  {$ENDIF}
 
   MainBuildBoss:=TBuildManager.Create(nil);
   MainBuildBoss.HasGUI:=true;
@@ -1482,9 +1426,7 @@ begin
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create CODETOOLS');{$ENDIF}
 
-  {$IFNDEF EnableOldExtTools}
   MainBuildBoss.SetupExternalTools;
-  {$ENDIF}
 
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
@@ -1548,9 +1490,6 @@ begin
   HelpBoss.ConnectMainBarEvents;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create MANAGERS');{$ENDIF}
   // setup the IDE components
-  {$IFDEF EnableOldExtTools}
-  SetupOutputFilter;
-  {$ENDIF}
   MainBuildBoss.SetupCompilerInterface;
   SetupObjectInspector;
   SetupFormEditor;
@@ -1606,10 +1545,8 @@ end;
 destructor TMainIDE.Destroy;
 begin
   ToolStatus:=itExiting;
-  {$IFNDEF EnableOldExtTools}
   if Assigned(ExternalTools) then
     ExternalTools.TerminateAll;
-  {$ENDIF}
 
   DebugLn('[TMainIDE.Destroy] A ');
 
@@ -1651,13 +1588,7 @@ begin
   // free IDE parts
   FreeFormEditor;
   FreeTextConverters;
-  {$IFNDEF EnableOldExtTools}
   FreeThenNil(IDEQuickFixes);
-  {$ELSE}
-  FreeStandardIDEQuickFixItems;
-  FreeThenNil(IDEMsgScanners);
-  FreeThenNil(TheOutputFilter);
-  {$ENDIF}
   FreeThenNil(GlobalDesignHook);
   FreeThenNil(LPKInfoCache);
   FreeThenNil(PkgBoss);
@@ -1699,11 +1630,7 @@ end;
 procedure TMainIDE.CreateOftenUsedForms;
 begin
   MessagesView:=TMessagesView.Create(nil);
-  {$IFNDEF EnableOldExtTools}
   MessagesView.ApplyIDEOptions;
-  {$ELSE}
-  MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
-  {$ENDIF}
 
   LazFindReplaceDialog:=TLazFindReplaceDialog.Create(nil);
 end;
@@ -2175,15 +2102,6 @@ begin
   end;
 end;
 
-{$IFDEF EnableOldExtTools}
-procedure TMainIDE.SetupOutputFilter;
-begin
-  TheOutputFilter:=TOutputFilter.Create;
-  TheOutputFilter.OnGetIncludePath:=@CodeToolBoss.GetIncludePathForDirectory;
-  IDEMsgScanners:=TMessageScanners.Create;
-end;
-{$ENDIF}
-
 procedure TMainIDE.SetupObjectInspector;
 begin
   IDECmdScopeObjectInspectorOnly.AddWindowClass(TObjectInspectorDlg);
@@ -2322,11 +2240,7 @@ end;
 
 procedure TMainIDE.SetupIDEMsgQuickFixItems;
 begin
-  {$IFNDEF EnableOldExtTools}
   IDEQuickFixes:=TIDEQuickFixes.Create(Self);
-  {$ELSE}
-  InitStandardIDEQuickFixItems;
-  {$ENDIF}
   InitCodeBrowserQuickFixItems;
   InitFindUnitQuickFixItems;
   InitInspectChecksumChangedQuickFixItems;
@@ -3297,7 +3211,7 @@ begin
   ecEditContextHelp: ShowContextHelpEditor(Sender);
   ecContextHelp:
     if IsOnWindow(MessagesView) then
-      HelpBoss.ShowHelpForMessage{$IFNDEF EnableOldExtTools}(){$ELSE}(-1){$ENDIF}
+      HelpBoss.ShowHelpForMessage()
     else if Sender is TObjectInspectorDlg then
       HelpBoss.ShowHelpForObjectInspector(Sender);
   ecSave:
@@ -4467,14 +4381,12 @@ end;
 
 procedure TMainIDE.mnuToolConfigureUserExtToolsClicked(Sender: TObject);
 begin
-  if ShowExtToolDialog(
-    {$IFNDEF EnableOldExtTools}ExternalUserTools{$ELSE}ExternalTools{$ENDIF},
-    GlobalMacroList)=mrOk then
+  if ShowExtToolDialog(ExternalUserTools,GlobalMacroList)=mrOk then
   begin
     // save to environment options
     SaveEnvironment(true);
     // save shortcuts to editor options
-    {$IFNDEF EnableOldExtTools}ExternalUserTools{$ELSE}ExternalTools{$ENDIF}.SaveShortCuts(EditorOpts.KeyMap);
+    ExternalUserTools.SaveShortCuts(EditorOpts.KeyMap);
     UpdateExternalUserToolsInMenu;
   end;
 end;
@@ -4720,15 +4632,9 @@ begin
   if not (Sender is TIDEMenuItem) then exit;
   Index:=itmCustomTools.IndexOf(TIDEMenuItem(Sender))-1;
   if (Index<0)
-  {$IFNDEF EnableOldExtTools}
   or (Index>=ExternalUserTools.Count)
-  {$ELSE}
-  or (Index>=ExternalTools.Count)
-  {$ENDIF}
   then exit;
-  {$IFNDEF EnableOldExtTools}
   IDEMessagesWindow.Clear;
-  {$ENDIF}
   DoRunExternalTool(Index,false);
 end;
 
@@ -4762,10 +4668,8 @@ procedure TMainIDE.LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOption
 begin
   if ObjectInspector1<>nil then
     TheEnvironmentOptions.ObjectInspectorOptions.AssignTo(ObjectInspector1);
-  {$IFNDEF EnableOldExtTools}
   if MessagesView<>nil then
     MessagesView.ApplyIDEOptions;
-  {$ENDIF}
 end;
 
 procedure TMainIDE.OnLoadIDEOptions(Sender: TObject; AOptions: TAbstractIDEOptions);
@@ -4895,18 +4799,13 @@ var
 
   procedure UpdateMessagesView;
   begin
-    {$IFNDEF EnableOldExtTools}
     MessagesView.ApplyIDEOptions;
-    {$ENDIF}
   end;
 
 begin
   if Restore then exit;
   // invalidate cached substituted macros
   IncreaseCompilerParseStamp;
-  {$IFDEF EnableOldExtTools}
-  CompileProgress.SetEnabled(EnvironmentOptions.ShowCompileDialog);
-  {$ENDIF}
   UpdateDefaultPasFileExt;
   if OldLanguage <> EnvironmentOptions.LanguageID then
   begin
@@ -6551,9 +6450,6 @@ var
   NeedBuildAllFlag: Boolean;
   UnitOutputDirectory: String;
   TargetExeName: String;
-  {$IFDEF EnableOldExtTools}
-  err: TFPCErrorType;
-  {$ENDIF}
   TargetExeDirectory: String;
   FPCVersion, FPCRelease, FPCPatch: integer;
   aCompileHint: String;
@@ -6587,9 +6483,6 @@ begin
   Result:=PkgBoss.CheckUserSearchPaths(Project1.CompilerOptions);
   if Result<>mrOk then exit;
 
-  {$IFDEF EnableOldExtTools}
-  MessagesView.BeginBlock;
-  {$ENDIF}
   try
     Result:=DoSaveForBuild(AReason);
     if Result<>mrOk then begin
@@ -6608,10 +6501,6 @@ begin
         exit(mrCancel);
       end;
     end;
-
-    {$IFDEF EnableOldExtTools}
-    CompileProgress.CreateDialog(OwningComponent, Project1.MainFilename, lisInfoBuildCompile);
-    {$ENDIF}
 
     // now building can start: call handler
     Result:=DoCallModalFunctionHandler(lihtProjectBuilding);
@@ -6643,9 +6532,6 @@ begin
       if Result <> mrOk then
       begin
         debugln(['TMainIDE.DoBuildProject PkgBoss.DoCompileProjectDependencies failed']);
-        {$IFDEF EnableOldExtTools}
-        CompileProgress.Ready(lisInfoBuildError);
-        {$ENDIF}
         exit;
       end;
       Result:=DoCallModalFunctionHandler(lihtProjectDependenciesCompiled);
@@ -6660,9 +6546,6 @@ begin
     if Result<>mrOk then
     begin
       debugln(['TMainIDE.DoBuildProject DoWarnAmbiguousFiles negative']);
-      {$IFDEF EnableOldExtTools}
-      CompileProgress.Ready(lisInfoBuildError);
-      {$ENDIF}
       exit;
     end;
 
@@ -6677,18 +6560,12 @@ begin
       and (not (pfAlwaysBuild in Project1.Flags)) then begin
         if Result=mrNo then begin
           debugln(['TMainIDE.DoBuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation nothing to be done']);
-          {$IFDEF EnableOldExtTools}
-          CompileProgress.Ready(lisInfoBuildError);
-          {$ENDIF}
           Result:=mrOk;
           exit;
         end;
         if Result<>mrYes then
         begin
           debugln(['TMainIDE.DoBuildProject MainBuildBoss.DoCheckIfProjectNeedsCompilation failed']);
-          {$IFDEF EnableOldExtTools}
-          CompileProgress.Ready(lisInfoBuildError);
-          {$ENDIF}
           exit;
         end;
       end;
@@ -6769,9 +6646,6 @@ begin
         if Result<>mrOk then
         begin
           debugln(['TMainIDE.DoBuildProject CompilerOptions.ExecuteBefore.Execute failed']);
-          {$IFDEF EnableOldExtTools}
-          CompileProgress.Ready(lisInfoBuildError);
-          {$ENDIF}
           exit;
         end;
       end;
@@ -6785,12 +6659,6 @@ begin
         //  Prevent any "Run" command after building, until the debugger is clear.
         OldToolStatus := ToolStatus;
         ToolStatus:=itBuilder;
-        {$IFDEF EnableOldExtTools}
-        ConnectOutputFilter;
-        for err := Low(TFPCErrorType) to High(TFPCErrorType) do
-          with Project1.CompilerOptions.CompilerMessages do 
-            TheOutputFilter.ErrorTypeName[err] := ErrorNames[err];
-        {$ENDIF}
         // compile
         CompilerFilename:=Project1.GetCompilerFilename;
         // Hint: use absolute paths, because some external tools resolve symlinked directories
@@ -6801,9 +6669,6 @@ begin
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,false);
         if Result<>mrOk then begin
           debugln(['TMainIDE.DoBuildProject SaveStateFile before compile failed']);
-          {$IFDEF EnableOldExtTools}
-          CompileProgress.Ready(lisInfoBuildError);
-          {$ENDIF}
           exit;
         end;
 
@@ -6817,10 +6682,6 @@ begin
           Project1.LastCompilerFilename:=CompilerFilename;
           Project1.LastCompilerParams:=CompilerParams;
           Project1.LastCompilerFileDate:=FileAgeCached(CompilerFilename);
-          {$IFDEF EnableOldExtTools}
-          DoJumpToCompilerMessage(not EnvironmentOptions.ShowCompileDialog);
-          CompileProgress.Ready(lisInfoBuildError);
-          {$ENDIF}
           debugln(['TMainIDE.DoBuildProject Compile failed']);
           exit;
         end;
@@ -6828,9 +6689,6 @@ begin
         Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,true);
         if Result<>mrOk then begin
           debugln(['TMainIDE.DoBuildProject SaveStateFile after compile failed']);
-          {$IFDEF EnableOldExtTools}
-          CompileProgress.Ready(lisInfoBuildError);
-          {$ENDIF}
           exit;
         end;
 
@@ -6838,9 +6696,6 @@ begin
         Result:=UpdateProjectPOFile(Project1);
         if Result<>mrOk then begin
           debugln(['TMainIDE.DoBuildProject UpdateProjectPOFile failed']);
-          {$IFDEF EnableOldExtTools}
-          CompileProgress.Ready(lisInfoBuildError);
-          {$ENDIF}
           exit;
         end;
 
@@ -6866,26 +6721,15 @@ begin
         if Result<>mrOk then
         begin
           debugln(['TMainIDE.DoBuildProject CompilerOptions.ExecuteAfter.Execute failed']);
-          {$IFDEF EnableOldExtTools}
-          CompileProgress.Ready(lisInfoBuildError);
-          {$ENDIF}
           exit;
         end;
       end;
     end;
 
     Project1.ProjResources.DoAfterBuild(AReason, Project1.IsVirtual);
-    {$IFDEF EnableOldExtTools}
-    // add success message
-    MessagesView.AddMsg(Format(lisProjectSuccessfullyBuilt, [Project1.GetTitleOrName]),'',-1);
-    CompileProgress.Ready(lisInfoBuildSuccess);
-    {$ENDIF}
   finally
     // check sources
     DoCheckFilesOnDisk;
-    {$IFDEF EnableOldExtTools}
-    MessagesView.EndBlock;
-    {$ENDIF}
   end;
   IDEWindowCreators.ShowForm(MessagesView,EnvironmentOptions.MsgViewFocus);
   Result:=mrOk;
@@ -6894,9 +6738,6 @@ end;
 function TMainIDE.DoAbortBuild: TModalResult;
 begin
   Result:=mrOk;
-  {$IFDEF EnableOldExtTools}
-  if ToolStatus<>itBuilder then exit;
-  {$ENDIF}
   AbortBuild;
 end;
 
@@ -6973,10 +6814,6 @@ begin
   Result := mrCancel;
 
   Result := DebugBoss.StartDebugging;
-  {$IFDEF EnableOldExtTools}
-  if Result = mrOk then
-    CompileProgress.Hide();
-  {$ENDIF}
 
   DebugLn('[TMainIDE.DoRunProject] END');
 end;
@@ -7040,9 +6877,6 @@ const
 var CanClose: boolean;
 begin
   DebugLn(['TMainIDE.DoRestart ']);
-  {$IFDEF EnableOldExtTools}
-  CompileProgress.Close;
-  {$ENDIF}
   CanClose:=true;
   MainIDEBar.OnCloseQuery(Self, CanClose);
   if not CanClose then exit;
@@ -7173,11 +7007,7 @@ end;
 function TMainIDE.DoRunExternalTool(Index: integer; ShowAbort: Boolean): TModalResult;
 begin
   SourceEditorManager.ClearErrorLines;
-  {$IFNDEF EnableOldExtTools}
   Result:=ExternalUserTools.Run(Index,ShowAbort);
-  {$ELSE}
-  Result:=ExternalTools.Run(Index,GlobalMacroList,ShowAbort);
-  {$ENDIF}
   DoCheckFilesOnDisk;
 end;
 
@@ -7240,12 +7070,7 @@ begin
 
   if fBuilder=Nil then
     fBuilder:=TLazarusBuilder.Create;
-  {$IFNDEF EnableOldExtTools}
   IDEMessagesWindow.Clear;
-  {$ELSE}
-  MessagesView.BeginBlock;
-  fBuilder.ExternalTools:=ExternalTools;
-  {$ENDIF}
   fBuilder.ProfileChanged:=false;
   with MiscellaneousOptions do
   try
@@ -7320,22 +7145,8 @@ begin
   finally
     MainBuildBoss.SetBuildTargetProject1(true);
     DoCheckFilesOnDisk;
-    {$IFDEF EnableOldExtTools}
-    MessagesView.EndBlock;
-    if Result in [mrOK, mrIgnore] then
-      CompileProgress.Ready(lisinfoBuildSuccess)
-    else
-      CompileProgress.Ready(lisInfoBuildError);
-    {$ENDIF}
   end;
 end;
-
-{$IFDEF EnableOldExtTools}
-function TMainIDE.ExternalTools: TExternalToolList;
-begin
-  Result:=TExternalToolList(EnvironmentOptions.ExternalTools);
-end;
-{$ENDIF}
 
 function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
 begin
@@ -7400,9 +7211,6 @@ begin
       BuildLazProfiles.CurrentIndex:=RealCurInd;
     end;
     if MayNeedRestart and BuildLazProfiles.RestartAfterBuild then begin
-      {$IFDEF EnableOldExtTools}
-      CompileProgress.Close;
-      {$ENDIF}
       mnuRestartClicked(nil);
     end;
   end;
@@ -7471,7 +7279,6 @@ begin
       ExtTool.Title:='Build File '+ActiveUnitInfo.Filename;
       ExtTool.WorkingDirectory:=BuildWorkingDir;
       ExtTool.CmdLineParams:=Params;
-      {$IFNDEF EnableOldExtTools}
       ExtTool.Executable:=ProgramFilename;
       if idedbsfFPC in BuildScan then
         ExtTool.Scanners.Add(SubToolFPC);
@@ -7482,14 +7289,6 @@ begin
         Result:=mrOk
       else
         Result:=mrCancel;
-      {$ELSE}
-      ExtTool.Filename:=ProgramFilename;
-      ExtTool.ScanOutputForFPCMessages:=idedbsfFPC in BuildScan;
-      ExtTool.ScanOutputForMakeMessages:=idedbsfMake in BuildScan;
-      ExtTool.ScanOutput:=true;
-      // run
-      Result:=ExternalTools.Run(ExtTool,GlobalMacroList,true);
-      {$ENDIF}
     finally
       // clean up
       ExtTool.Free;
@@ -7497,10 +7296,6 @@ begin
   finally
     DirectiveList.Free;
   end;
-
-  {$IFDEF EnableOldExtTools}
-  CompileProgress.Close;
-  {$ENDIF}
 end;
 
 function TMainIDE.DoRunFile: TModalResult;
@@ -7518,9 +7313,6 @@ var
   ProgramFilename: string;
   Params: string;
   ExtTool: TIDEExternalToolOptions;
-  {$IFDEF EnableOldExtTools}
-  Filename: String;
-  {$ENDIF}
   DirectiveList: TStringList;
 begin
   Result:=mrCancel;
@@ -7574,33 +7366,17 @@ begin
     SourceEditorManager.ClearErrorLines;
 
     SplitCmdLine(RunCommand,ProgramFilename,Params);
-    {$IFDEF EnableOldExtTools}
-    if not FilenameIsAbsolute(ProgramFilename) then begin
-      Filename:=FindProgram(ProgramFilename,RunWorkingDir,true);
-      if Filename<>'' then ProgramFilename:=Filename;
-    end;
-    if ProgramFilename='' then begin
-      Result:=mrCancel;
-      exit;
-    end;
-    {$ENDIF}
 
     ExtTool:=TIDEExternalToolOptions.Create;
     try
       ExtTool.Title:='Run File '+ActiveUnitInfo.Filename;
       ExtTool.WorkingDirectory:=RunWorkingDir;
       ExtTool.CmdLineParams:=Params;
-      {$IFNDEF EnableOldExtTools}
       ExtTool.Executable:=ProgramFilename;
       if RunExternalTool(ExtTool) then
         Result:=mrOk
       else
         Result:=mrCancel;
-      {$ELSE}
-      ExtTool.Filename:=ProgramFilename;
-      // run
-      Result:=ExternalTools.Run(ExtTool,GlobalMacroList,false);
-      {$ENDIF}
     finally
       // clean up
       ExtTool.Free;
@@ -7792,19 +7568,11 @@ var
   var
     CurMenuItem: TIDEMenuItem;
     i: Integer;
-    {$IFNDEF EnableOldExtTools}
     ExtTool: TExternalUserTool;
-    {$ELSE}
-    ExtTool: TExternalToolOptions;
-    {$ENDIF}
   begin
     for i:=0 to ToolCount-1 do begin
       CurMenuItem:=itmCustomTools[i+1]; // Note: the first menu item is the "Configure"
-      {$IFNDEF EnableOldExtTools}
       ExtTool:=ExternalUserTools[i];
-      {$ELSE}
-      ExtTool:=ExternalTools[i];
-      {$ENDIF}
       CurMenuItem.Caption:=ExtTool.Title;
       if CurMenuItem is TIDEMenuCommand then
         TIDEMenuCommand(CurMenuItem).Command:=
@@ -7814,11 +7582,7 @@ var
   end;
 
 begin
-  {$IFNDEF EnableOldExtTools}
   ToolCount:=ExternalUserTools.Count;
-  {$ELSE}
-  ToolCount:=ExternalTools.Count;
-  {$ENDIF}
   CreateToolMenuItems;
   SetToolMenuItems;
 end;
@@ -7846,15 +7610,6 @@ begin
     IDEMessagesWindow.Clear;
 end;
 
-{$IFDEF EnableOldExtTools}
-function TMainIDE.OnRunExternalTool(Tool: TIDEExternalToolOptions): TModalResult;
-begin
-  SourceEditorManager.ClearErrorLines;
-  Result:=ExternalTools.Run(Tool,GlobalMacroList,false);
-  DoCheckFilesOnDisk;
-end;
-{$ENDIF}
-
 function TMainIDE.DoCheckSyntax: TModalResult;
 var
   ActiveUnitInfo:TUnitInfo;
@@ -7879,14 +7634,8 @@ begin
     NewTopLine,ErrorMsg) then
   begin
     SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
-    {$IFNDEF EnableOldExtTools}
     MessagesView.ClearCustomMessages;
     MessagesView.AddCustomMessage(mluImportant,lisMenuQuickSyntaxCheckOk);
-    {$ELSE}
-    MessagesView.ClearTillLastSeparator;
-    MessagesView.AddSeparator;
-    MessagesView.AddMsg(lisMenuQuickSyntaxCheckOk,'',-1);
-    {$ENDIF}
   end else begin
     DoJumpToCodeToolBossError;
   end;
@@ -8015,12 +7764,7 @@ end;
 
 procedure TMainIDE.AbortBuild;
 begin
-  {$IFNDEF EnableOldExtTools}
   ExternalTools.TerminateAll;
-  {$ELSE}
-  if TheOutputFilter<>nil then
-    TheOutputFilter.StopExecute:=true;
-  {$ENDIF}
 end;
 
 procedure TMainIDE.UpdateCaption;
@@ -8324,38 +8068,9 @@ begin
   end;
 end;
 
-{$IFDEF EnableOldExtTools}
-function GetFPCMessage(ALine: TLazMessageLine; var FileName: String;
-  var CaretPos: TPoint; var ErrType: TFPCErrorType): Boolean;
-begin
-  Result := Assigned(ALine.Parts);
-  if Result and (ALine.Filename = '') then
-    ALine.UpdateSourcePosition;
-  FileName:=ALine.Filename;
-  CaretPos.x:=ALine.Column;
-  CaretPos.y:=ALine.LineNumber;
-  if not Result then
-    Exit;
-  ErrType:=FPCErrorTypeNameToType(ALine.Parts.Values['Type']);
-end;
-{$ENDIF}
-
 function TMainIDE.DoJumpToCompilerMessage(FocusEditor: boolean;
-  {$IFNDEF EnableOldExtTools}
-  Msg: TMessageLine
-  {$ELSE}
-  Index:integer
-  {$ENDIF}
-  ): boolean;
+  Msg: TMessageLine): boolean;
 var
-  {$IFNDEF EnableOldExtTools}
-  {$ELSE}
-  MaxMessages: integer;
-  MsgType: TFPCErrorType;
-  MsgLine: TLazMessageLine;
-  CurDir: string;
-  NewFilename: String;
-  {$ENDIF}
   Filename, SearchedFilename: string;
   LogCaretXY: TPoint;
   TopLine: integer;
@@ -8369,7 +8084,6 @@ begin
   if Screen.GetCurrentModalForm<>nil then
     exit;
 
-  {$IFNDEF EnableOldExtTools}
   if Msg=nil then begin
     if MessagesView.SelectFirstUrgentMessage(mluError,true) then
       Msg:=MessagesView.GetSelectedLine;
@@ -8388,41 +8102,6 @@ begin
   Filename:=Msg.GetFullFilename;
   LogCaretXY.Y:=Msg.Line;
   LogCaretXY.X:=Msg.Column;
-
-  {$ELSE}
-  MaxMessages:=MessagesView.VisibleItemCount;
-  if Index>=MaxMessages then exit;
-  if (Index<0) then begin
-    // search relevant message (first error, first fatal)
-    Index:=0;
-    while (Index<MaxMessages) do begin
-      // ParseFPCMessage doesn't support multilingual messages, by GetFPCMessage
-      MsgLine:=MessagesView.VisibleItems[Index];
-      if GetFPCMessage(MsgLine,Filename,LogCaretXY,MsgType) then
-      begin
-        if MsgType in [etError,etFatal,etPanic] then break;
-      end;
-      inc(Index);
-    end;
-    if Index>=MaxMessages then exit;
-  end;
-  MessagesView.SelectedMessageIndex:=Index;
-
-  // first try the plugins
-  if MessagesView.ExecuteMsgLinePlugin(imqfoJump) then exit;
-
-  // jump to source position
-  MsgLine:=MessagesView.VisibleItems[Index];
-  if not GetFPCMessage(MsgLine,Filename,LogCaretXY,MsgType) then exit;
-  //debugln(['TMainIDE.DoJumpToCompilerMessage Index=',Index,' MsgFile=',MsgLine.Filename,' MsgY=',MsgLine.LineNumber,' File=',Filename,' XY=',dbgs(LogCaretXY),' ',MsgLine.Parts.Text]);
-  CurDir:=MsgLine.Directory;
-  if (not FilenameIsAbsolute(Filename)) and (CurDir<>'') then begin
-    // the directory was just hidden, re-append it
-    NewFilename:=AppendPathDelim(CurDir)+Filename;
-    if FileExistsUTF8(NewFilename) then
-      Filename:=NewFilename;
-  end;
-  {$ENDIF}
 
   OpenFlags:=[ofOnlyIfExists,ofRegularFile];
   if MainBuildBoss.IsTestUnitFilename(Filename) then begin
@@ -8482,56 +8161,13 @@ end;
 
 procedure TMainIDE.DoJumpToNextError(DirectionDown: boolean);
 var
-  {$IFNDEF EnableOldExtTools}
   Msg: TMessageLine;
-  {$ELSE}
-  Index: integer;
-  MaxMessages: integer;
-  Filename: string;
-  LogCaretXY: TPoint;
-  MsgType: TFPCErrorType;
-  OldIndex: integer;
-  RoundCount: Integer;
-  {$ENDIF}
 begin
-  {$IFNDEF EnableOldExtTools}
   if not MessagesView.SelectNextUrgentMessage(mluError,true,DirectionDown) then
     exit;
   Msg:=MessagesView.GetSelectedLine;
   if Msg=nil then exit;
   DoJumpToCompilerMessage(true,Msg);
-  {$ELSE}
-  // search relevant message (next error, fatal or panic)
-  MaxMessages:=MessagesView.VisibleItemCount;
-  OldIndex:=MessagesView.SelectedMessageIndex;
-  Index:=OldIndex;
-  RoundCount:=0;
-  while (Index>=0) and (Index<MaxMessages) do begin
-    // goto to next message
-    if DirectionDown then begin
-      inc(Index);
-      if Index>=MaxMessages then begin
-        inc(RoundCount);
-        Index:=0;
-      end;
-    end else begin
-      dec(Index);
-      if Index<0 then begin
-        inc(RoundCount);
-        Index:=MaxMessages-1;
-      end;
-    end;
-    if(Index=OldIndex) or (RoundCount>1) then exit;
-
-    // check if it is an error
-    if GetFPCMessage(MessagesView.VisibleItems[Index],Filename,LogCaretXY,MsgType) then
-    begin
-      if MsgType in [etError,etFatal,etPanic] then break;
-    end;
-  end;
-  MessagesView.SelectedMessageIndex:=Index;
-  DoJumpToCompilerMessage(true,Index);
-  {$ENDIF}
 end;
 
 function TMainIDE.DoJumpToSearchResult(FocusEditor: boolean): boolean;
@@ -8609,14 +8245,7 @@ end;
 procedure TMainIDE.DoShowMessagesView(BringToFront: boolean);
 begin
   //debugln('TMainIDE.DoShowMessagesView');
-  {$IFNDEF EnableOldExtTools}
   MessagesView.ApplyIDEOptions;
-  {$ELSE}
-  if EnvironmentOptions.HideMessagesIcons then
-    MessagesView.MessageTreeView.Images := nil
-  else
-    MessagesView.MessageTreeView.Images := IDEImages.Images_12;
-  {$ENDIF}
 
   // don't move the messagesview, if it was already visible.
   IDEWindowCreators.ShowForm(MessagesView,BringToFront);
@@ -9538,9 +9167,7 @@ var
   ErrorTopLine: integer;
   AnUnitInfo: TUnitInfo;
   AnEditorInfo: TUnitEditorInfo;
-  {$IFNDEF EnableOldExtTools}
   Msg: TMessageLine;
-  {$ENDIF}
 begin
   if (Screen.GetCurrentModalForm<>nil) or (CodeToolBoss.ErrorMessage='') then
   begin
@@ -9551,7 +9178,6 @@ begin
   // syntax error -> show error and jump
   // show error in message view
   SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
-  {$IFNDEF EnableOldExtTools}
   MessagesView.ClearCustomMessages;
   if CodeToolBoss.ErrorCode<>nil then begin
     Msg:=MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,
@@ -9560,20 +9186,6 @@ begin
     Msg.Flags:=Msg.Flags+[mlfLeftToken];
   end else
     MessagesView.AddCustomMessage(mluError,CodeToolBoss.ErrorMessage,'Codetools');
-  {$ELSE}
-  MessagesView.ClearTillLastSeparator;
-  MessagesView.AddSeparator;
-  if CodeToolBoss.ErrorCode<>nil then begin
-    MessagesView.AddMsg(Project1.RemoveProjectPathFromFilename(
-       CodeToolBoss.ErrorCode.Filename)
-      +'('+IntToStr(CodeToolBoss.ErrorLine)
-      +','+IntToStr(CodeToolBoss.ErrorColumn)
-      +') Error: '+CodeToolBoss.ErrorMessage,
-      Project1.ProjectDirectory,-1);
-  end else
-    MessagesView.AddMsg(CodeToolBoss.ErrorMessage,Project1.ProjectDirectory,-1);
-  MessagesView.SelectedMessageIndex:=MessagesView.MsgCount-1;
-  {$ENDIF}
 
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
@@ -10393,13 +10005,6 @@ begin
 end;
 
 //-----------------------------------------------------------------------------
-
-{$IFDEF EnableOldExtTools}
-procedure TMainIDE.MessagesViewSelectionChanged(sender: TObject);
-begin
-  DoJumpToCompilerMessage(True,TMessagesView(Sender).SelectedMessageIndex);
-end;
-{$ENDIF}
 
 procedure TMainIDE.SearchResultsViewSelectionChanged(sender: TObject);
 begin
@@ -11591,9 +11196,6 @@ begin
     SaveEnvironment(true);
 
   GetDefaultProcessList.FreeStoppedProcesses;
-  {$IFDEF EnableOldExtTools}
-  ExternalTools.FreeStoppedProcesses;
-  {$ENDIF}
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
 
   if Assigned(FDesignerToBeFreed) then begin
@@ -11914,7 +11516,6 @@ begin
   Result:=CheckCompOptsAndMainSrcForNewUnit(CompOpts);
 end;
 
-{$IFNDEF EnableOldExtTools}
 procedure TMainIDE.FPCMsgFilePoolLoadFile(aFilename: string; out s: string);
 // Note: called by any thread
 var
@@ -11933,32 +11534,6 @@ begin
     fs.Free;
   end;
 end;
-{$ELSE}
-procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
-  var Abort: boolean);
-begin
-  OutputFilter:=TheOutputFilter;
-  if ToolStatus<>itNone then begin
-    Abort:=true;
-    exit;
-  end;
-  SourceEditorManager.ClearErrorLines;
-
-  ToolStatus:=itBuilder;
-  MessagesView.Clear;
-  SourceFileMgr.ArrangeSourceEditorAndMessageView(false);
-  ConnectOutputFilter;
-end;
-
-procedure TMainIDE.OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
-  ErrorOccurred: boolean);
-begin
-  if ToolStatus=itBuilder then
-    ToolStatus:=itNone;
-  if ErrorOccurred then
-    DoJumpToCompilerMessage(true);
-end;
-{$ENDIF}
 
 procedure TMainIDE.OnGetLayout(Sender: TObject; aFormName: string; out
   aBounds: TRect; out DockSibling: string; out DockAlign: TAlign);
