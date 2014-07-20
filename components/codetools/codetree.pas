@@ -139,8 +139,9 @@ const
   ctnGenericParams      = 93; // parent = ctnGenericType, children = ctnGenericParameter
   ctnGenericParameter   = 94; // can has a child ctnGenericConstraint
   ctnGenericConstraint  = 95; // parent = ctnGenericParameter
-  ctnConstant           = 96;
-  ctnHintModifier       = 97; // deprecated, platform, unimplemented, library, experimental
+  ctnReferenceTo        = 96; // 1. child = ctnProcedure
+  ctnConstant           = 97;
+  ctnHintModifier       = 98; // deprecated, platform, unimplemented, library, experimental
 
   ctnBeginBlock         =100;
   ctnAsmBlock           =101;
@@ -443,6 +444,7 @@ begin
   ctnGenericParams: Result:='Generic Type Params';
   ctnGenericParameter: Result:='Generic Type Parameter';
   ctnGenericConstraint: Result:='Generic Type Parameter Constraint';
+  ctnReferenceTo: Result:='Reference To';
   ctnConstant: Result:='Constant';
   ctnHintModifier: Result:='Hint Modifier';
 

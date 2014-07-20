@@ -165,6 +165,7 @@ type
     function KeyWordFuncSpecialize: boolean;
     function KeyWordFuncTypeArray: boolean;
     function KeyWordFuncTypeProc: boolean;
+    function KeyWordFuncTypeReferenceTo: boolean;
     function KeyWordFuncTypeSet: boolean;
     function KeyWordFuncTypeLabel: boolean;
     function KeyWordFuncTypeType: boolean;
@@ -416,7 +417,8 @@ begin
     'R': if CompareSrcIdentifiers('PROCEDURE',p) then exit(KeyWordFuncTypeProc);
     end;
   'R':
-    if CompareSrcIdentifiers('RECORD',p) then exit(KeyWordFuncTypeClass);
+    if CompareSrcIdentifiers('RECORD',p) then exit(KeyWordFuncTypeClass)
+    else if CompareSrcIdentifiers('REFERENCE',p) then exit(KeyWordFuncTypeReferenceTo);
   'S':
     case UpChars[p[1]] of
     'E': if CompareSrcIdentifiers('SET',p) then exit(KeyWordFuncTypeSet);
@@ -4505,6 +4507,23 @@ begin
   CurNode.EndPos:=CurPos.StartPos;
   EndChildNode;
   Result:=true;
+end;
+
+function TPascalParserTool.KeyWordFuncTypeReferenceTo: boolean;
+begin
+  if cmsBlocks in Scanner.CompilerModeSwitches then begin
+    CreateChildNode;
+    CurNode.Desc:=ctnReferenceTo;
+    if not ReadNextUpAtomIs('TO') then
+      SaveRaiseStringExpectedButAtomFound('"to"');
+    ReadNextAtom;
+    if (not UpAtomIs('PROCEDURE')) and (not UpAtomIs('FUNCTION')) then
+      SaveRaiseStringExpectedButAtomFound('"procedure"');
+    Result:=KeyWordFuncTypeProc;
+    EndChildNode;
+  end else begin
+    Result:=KeyWordFuncTypeDefault;
+  end;
 end;
 
 function TPascalParserTool.KeyWordFuncTypeSet: boolean;
