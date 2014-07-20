@@ -57,10 +57,7 @@ uses
   SynPluginTemplateEdit, SynPluginSyncroEdit, LazSynTextArea, SynEditHighlighter,
   SynEditHighlighterFoldBase, SynHighlighterPas, SynEditMarkupHighAll, SynEditKeyCmds,
   SynEditMarkupIfDef, SynEditMiscProcs,
-  {$IFNDEF EnableOldExtTools}
-  etSrcEditMarks,
-  {$ENDIF}
-  LazarusIDEStrConsts;
+  etSrcEditMarks, LazarusIDEStrConsts;
 
 type
 
@@ -2012,16 +2009,12 @@ procedure TIDESynGutterLOvProviderIDEMarks.AdjustColorForMark(AMark: TSynEditMar
   var AColor: TColor; var APriority: Integer);
 var
   i: Integer;
-  {$IFNDEF EnableOldExtTools}
   ETMark: TETMark;
-  {$ENDIF}
 begin
-  {$IFNDEF EnableOldExtTools}
   if (AMark is TETMark) then begin
     ETMark:=TETMark(AMark);
     AColor:=ETMark.SourceMarks.MarkStyles[ETMark.Urgency].Color;
   end else begin
-  {$ENDIF}
     inc(APriority, 1);
     if not AMark.IsBookmark then begin
       //if (AMark.ImageList = SourceEditorMarks.ImgList) then begin
@@ -2046,9 +2039,7 @@ begin
         inc(APriority, 1);
       end;
     end;
-  {$IFNDEF EnableOldExtTools}
   end;
-  {$ENDIF}
   inherited AdjustColorForMark(AMark, AColor, APriority);
 end;
 

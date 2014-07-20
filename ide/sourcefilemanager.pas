@@ -46,11 +46,7 @@ uses
   InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager, CodeToolsStructs,
   ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool, BasicCodeTools,
   SynEdit, UnitResources, IDEExternToolIntf, ExtToolDialog, PublishModule,
-{$IFNDEF EnableOldExtTools}
   etMessagesWnd;
-{$ELSE}
-  MsgView;
-{$ENDIF}
 
 type
 
@@ -110,9 +106,6 @@ type
     FListForm: TGenericCheckListForm;
     FCheckingFilesOnDisk: boolean;
     FCheckFilesOnDiskNeeded: boolean;
-    {$IFDEF EnableOldExtTools}
-    function ExternalTools: TExternalToolList;
-    {$ENDIF}
     procedure AskToSaveEditors(EditorList: TList);
     function AddPathToBuildModes(aPath, CurDirectory: string; IsIncludeFile: Boolean): Boolean;
     function CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
@@ -1436,13 +1429,6 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF EnableOldExtTools}
-function TLazSourceFileManager.ExternalTools: TExternalToolList;
-begin
-  Result:=TExternalToolList(EnvironmentOptions.ExternalTools);
-end;
-{$ENDIF}
-
 function TLazSourceFileManager.CheckMainSrcLCLInterfaces(Silent: boolean): TModalResult;
 var
   MainUnitInfo: TUnitInfo;
@@ -2010,11 +1996,7 @@ begin
       if EMacro <> nil then begin
         EMacro.SetFromSource(AEditor.SourceText);
         if EMacro.IsInvalid and (EMacro.ErrorMsg <> '') then
-          {$IFNDEF EnableOldExtTools}
           IDEMessagesWindow.AddCustomMessage(mluError,EMacro.ErrorMsg);
-          {$ELSE}
-          MessagesView.AddMsg(EMacro.ErrorMsg, '', -1);
-          {$ENDIF}
       end;
       MacroListViewer.UpdateDisplay;
       AnUnitInfo.ClearModifieds;
@@ -2888,17 +2870,11 @@ begin
       Tool.Title:=lisCommandAfterPublishingModule;
       Tool.WorkingDirectory:=DestDir;
       Tool.CmdLineParams:=CmdAfterParams;
-      {$IFNDEF EnableOldExtTools}
       Tool.Executable:=CmdAfterExe;
       if RunExternalTool(Tool) then
         Result:=mrOk
       else
         Result:=mrCancel;
-      {$ELSE}
-      Tool.Filename:=CmdAfterExe;
-      Result:=ExternalTools.Run(Tool,GlobalMacroList,false);
-      if Result<>mrOk then exit;
-      {$ENDIF}
     end else begin
       ShowErrorForCommandAfter;
       exit(mrCancel);

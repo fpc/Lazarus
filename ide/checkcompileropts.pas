@@ -301,11 +301,7 @@ var
   TestDir: String;
   BogusFilename: String;
   CmdLineParams: String;
-  {$IFNDEF EnableOldExtTools}
   CompileTool: TAbstractExternalTool;
-  {$ELSE}
-  CompileTool: TExternalToolOptions;
-  {$ENDIF}
 begin
   // compile bogus file
   FTest:=cotCompileBogusFiles;
@@ -334,7 +330,6 @@ begin
     CmdLineParams:=Options.MakeOptionsString(BogusFilename,
               [ccloAddVerboseAll,ccloDoNotAppendOutFileOption,ccloAbsolutePaths])
               +' '+BogusFilename;
-    {$IFNDEF EnableOldExtTools}
     CompileTool:=ExternalToolList.Add(dlgCCOTestToolCompilingEmptyFile);
     CompileTool.Reference(Self,ClassName);
     try
@@ -348,18 +343,6 @@ begin
     finally
       CompileTool.Release(Self);
     end;
-    {$ELSE}
-    CompileTool:=TExternalToolOptions.Create;
-    CompileTool.Title:=dlgCCOTestToolCompilingEmptyFile;
-    CompileTool.ScanOutputForFPCMessages:=true;
-    CompileTool.ScanOutputForMakeMessages:=true;
-    CompileTool.WorkingDirectory:=TestDir;
-    CompileTool.Filename:=CompilerFilename;
-    CompileTool.CmdLineParams:=CmdLineParams;
-    TestMemo.Lines.Text:=CompileTool.Filename+' '+CompileTool.CmdLineParams;
-    Result:=EnvironmentOptions.ExternalTools.Run(CompileTool,MacroList,false);
-    FreeThenNil(CompileTool);
-    {$ENDIF}
   finally
     DeleteFileUTF8(BogusFilename);
   end;
@@ -853,11 +836,7 @@ end;
 function TCheckCompilerOptsDlg.DoTestAll: TModalResult;
 var
   CompilerFilename: String;
-  {$IFNDEF EnableOldExtTools}
   CompileTool: TAbstractExternalTool;
-  {$ELSE}
-  CompileTool: TExternalToolOptions;
-  {$ENDIF}
   CompilerFiles: TStrings;
   FPCCfgUnitPath: string;
   TargetUnitPath: String;
