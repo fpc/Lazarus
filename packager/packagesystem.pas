@@ -3537,20 +3537,7 @@ begin
 
       if (not APackage.CompilerOptions.SkipCompiler)
       and (not (pcfDoNotCompilePackage in Flags)) then begin
-        // check compiler filename
         CompilerFilename:=APackage.GetCompilerFilename;
-        try
-          CheckIfFileIsExecutable(CompilerFilename);
-        except
-          on e: Exception do begin
-            DebugLn(['TLazPackageGraph.CompilePackage ',APackage.IDAsString,' ',e.Message]);
-            Result:=IDEMessageDialog(lisPkgManginvalidCompilerFilename,
-              Format(lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable, [
-                APackage.IDAsString, LineEnding, E.Message]),
-              mtError,[mbCancel,mbAbort]);
-            exit;
-          end;
-        end;
 
         // change compiler parameters for compiling clean
         CompilerParams:=GetPackageCompilerParams(APackage);
