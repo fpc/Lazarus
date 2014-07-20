@@ -35,9 +35,6 @@ implementation
 uses
   { lazarus }
   LazIDEIntf, MenuIntf, IdeCommands,
-  {$IFDEF EnableOldExtTools}
-  IDEMsgIntf,
-  {$ENDIF}
   { local }
   LazCHMHelp, InterfaceBase;
 

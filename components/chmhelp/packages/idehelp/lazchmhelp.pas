@@ -27,10 +27,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazLogger, LazFileUtils, LazHelpIntf, HelpIntfs,
-  LazConfigStorage, PropEdits, LazIDEIntf, IDEDialogs,
-  {$IFNDEF EnableOldExtTools}
-  IDEExternToolIntf,
-  {$ENDIF}
+  LazConfigStorage, PropEdits, LazIDEIntf, IDEDialogs, IDEExternToolIntf,
   LHelpControl, Controls, UTF8Process, ChmLangRef, ChmLcl, ChmProg;
   
 resourcestring
@@ -256,15 +253,7 @@ var
   LHelpProjectDir: String;
   WS: String;
   PCP: String;
-  {$IFNDEF EnableOldExtTools}
   Tool: TIDEExternalToolOptions;
-  {$ELSE}
-  Proc: TProcessUTF8;
-  Buffer: array[0..511] of char;
-  BufP: Integer;
-  BufC: Char;
-  LastWasEOL: Boolean;
-  {$ENDIF}
 begin
   Result := mrCancel;
 
@@ -294,7 +283,6 @@ begin
   //if Result <> mrYes then
   //  Exit;
 
-  {$IFNDEF EnableOldExtTools}
   Tool:=TIDEExternalToolOptions.Create;
   try
     Tool.Title:='- Building lhelp -';
@@ -308,77 +296,6 @@ begin
   finally
     Tool.Free;
   end;
-
-  {$ELSE}
-  Proc := TProcessUTF8.Create(nil);
-  {$if FPC_FULLVERSION<20604}
-  Proc.InheritHandles := false;
-  {$endif}
-  {$if (fpc_version=2) and (fpc_release<5)}
-  Proc.CommandLine := Lazbuild+' '+WS+' '+PCP+' '+LHelpProject;
-  {$else}
-  Proc.Executable := Lazbuild;
-  Proc.Parameters.Add(WS);
-  Proc.Parameters.Add(PCP);
-  Proc.Parameters.Add(LHelpProject);
-  {$endif}
-  Proc.Options := [poUsePipes, poStderrToOutPut];
-  debugln(['TChmHelpViewer.CheckBuildLHelp running "',Lazbuild,' ',WS,' ',PCP,' ',LHelpProject,'" ...']);
-  Proc.Execute;
-
-
-  BufP := 0;
-  LastWasEOL:= False;
-
-  IDEMessagesWindow.BeginBlock;
-  IDEMessagesWindow.AddMsg('- Building lhelp -','',0);
-
-
-  while Proc.Running do begin
-    while Proc.Output.NumBytesAvailable > 0 do
-    begin
-      BufC := Char(Proc.Output.ReadByte);
-      if LastWasEOL then
-      begin
-        if not(BufC in [#13, #10]) then
-        begin
-
-          IDEMessagesWindow.AddMsg(PChar(@Buffer[0]),LHelpProjectDir,1);
-          Buffer[0] := BufC;
-          BufP := 1;
-          LastWasEOL:=False;
-        end;
-        Continue;
-      end;
-
-      if BufC in [#13, #10] then
-      begin
-        LastWasEOL:=True;
-        Buffer[BufP] := #0;
-        Inc(BufP);
-      end
-      else
-      begin
-        Buffer[BufP] := BufC;
-        Inc(BufP);
-      end;
-    end;
-    Sleep(20);
-    Application.ProcessMessages;
-  end;
-
-  if BufP > 0 then
-    IDEMessagesWindow.AddMsg(PChar(@Buffer[0]),LHelpProjectDir,0);
-
-
-  if Proc.ExitStatus = 0 then
-    Result := mrOK;
-  Proc.Free;
-
-  IDEMessagesWindow.EndBlock;
-
-  if Result = mrOK then ;
-  {$ENDIF}
 end;
 
 function TChmHelpViewer.GetLazBuildEXE(out ALazBuild: String): Boolean;

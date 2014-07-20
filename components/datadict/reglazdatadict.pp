@@ -75,9 +75,7 @@ implementation
 
 uses forms, dialogs, controls,
   IDEMsgIntf,
-  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
-  {$ENDIF}
   ldd_consts;
 
 
@@ -279,18 +277,11 @@ begin
   ASelection:=TPersistentSelectionList.Create;
   try
     GlobalDesignHook.GetSelection(ASelection);
-    {$IFDEF EnableOldExtTools}
-    IDEMessagesWindow.BeginBlock(True);
-    {$ENDIF}
     For I:=0 to ASelection.Count-1 do
       if (ASelection[i] is TDataset) then
         begin
         DS:=TDataset(ASelection[i]);
-        {$IFNDEF EnableOldExtTools}
         IDEMessagesWindow.AddCustomMessage(mluImportant,Format(SApplyingDDToDataset,[DS.Name]));
-        {$ELSE}
-        IDEMessagesWindow.AddMsg(Format(SApplyingDDToDataset,[DS.Name]),'',i+1);
-        {$ENDIF}
         IDEDataDictionary.Dictionary.ApplyToDataset(DS,@ApplyDDToField);
         end;
   finally
@@ -304,18 +295,10 @@ begin
   If (FD<>Nil) then
     begin
     If VerboseApply then
-      {$IFNDEF EnableOldExtTools}
       IDEMessagesWindow.AddCustomMessage(mluImportant,Format(SApplyingDDToField,[F.FieldName]));
-      {$ELSE}
-      IDEMessagesWindow.AddMsg(Format(SApplyingDDToField,[F.FieldName]),'',-1)
-      {$ENDIF}
     end
   else
-    {$IFNDEF EnableOldExtTools}
     IDEMessagesWindow.AddCustomMessage(mluImportant,Format(SWarningNoDDForField,[F.FieldName]));
-    {$ELSE}
-    IDEMessagesWindow.AddMsg(Format(SWarningNoDDForField,[F.FieldName]),'',-1);
-    {$ENDIF}
 end;
 
 Procedure TIDEDataDictCommandHandler.DesignSQL(Sender : TObject);

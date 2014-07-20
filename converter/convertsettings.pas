@@ -105,7 +105,7 @@ type
     function RenameFile(const SrcFilename, DestFilename: string): TModalResult;
     function MaybeBackupFile(const AFilename: string): TModalResult;
     procedure ClearLog;
-    function AddLogLine(const ALine: string {$IFNDEF EnableOldExtTools}; Urgency: TMessageLineUrgency = mluHint{$ENDIF}): integer;
+    function AddLogLine(const ALine: string; Urgency: TMessageLineUrgency = mluHint): integer;
     function SaveLog: Boolean;
   public
     property MainFilenames: TStringlist read fMainFilenames;
@@ -787,17 +787,11 @@ begin
 end;
 
 function TConvertSettings.AddLogLine(
-  const ALine: string
-  {$IFNDEF EnableOldExtTools}; Urgency: TMessageLineUrgency{$ENDIF}
+  const ALine: string; Urgency: TMessageLineUrgency
   ): integer;
 begin
-  {$IFNDEF EnableOldExtTools}
   IDEMessagesWindow.AddCustomMessage(Urgency,aLine); // Show in message window
   Result:=fLog.Add(MessageLineUrgencyNames[Urgency]+': '+ALine);// and store for log.
-  {$ELSE}
-  IDEMessagesWindow.AddMsg(ALine, '', -1);   // Show in message window
-  Result:=fLog.Add(ALine);                   // and store for log.
-  {$ENDIF}
 end;
 
 function TConvertSettings.SaveLog: Boolean;
@@ -810,11 +804,7 @@ begin
   Code.Assign(fLog);
   Result:=SaveCodeBuffer(Code)=mrOk;
   if Result then
-    {$IFNDEF EnableOldExtTools}
     IDEMessagesWindow.AddCustomMessage(mluHint,'This log was saved to '+aFilename); // Show in message window
-    {$ELSE}
-    IDEMessagesWindow.AddMsg('This log was saved to '+aFilename, '', -1);
-    {$ENDIF}
 end;
 
 function TConvertSettings.GetBackupPath: String;

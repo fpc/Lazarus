@@ -112,9 +112,7 @@ uses
   srceditorintf,
   ProjectIntf,
   IDEMsgIntf,
-  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
-  {$ENDIF}
   CodeCache,
   CodeToolManager;
 
@@ -424,11 +422,7 @@ end;
 
 procedure TSQLSyntaxChecker.ShowMessage(const Msg: String);
 begin
-  {$IFNDEF EnableOldExtTools}
   IDEMessagesWindow.AddCustomMessage(mluImportant,Msg,SourceFileName);
-  {$ELSE}
-  IDEMessagesWindow.AddMsg(SourceFileName+' : '+Msg,'',0,Nil);
-  {$ENDIF}
 end;
 
 procedure TSQLSyntaxChecker.ShowMessage(const Fmt: String; Args: array of const);
@@ -477,37 +471,28 @@ Var
   S : TStringStream;
 
 begin
-  {$IFDEF EnableOldExtTools}
-  IDEMessagesWindow.BeginBlock(False);
-  {$ENDIF}
   try
-    try
-    Handled:=False;
-    result:=mrNone;
-    AE:=SourceEditorManagerIntf.ActiveEditor;
-    If (AE<>Nil) then
+  Handled:=False;
+  result:=mrNone;
+  AE:=SourceEditorManagerIntf.ActiveEditor;
+  If (AE<>Nil) then
+    begin
+    E:=ExtractFileExt(AE.FileName);
+    FSFN:=ExtractFileName(AE.FileName);
+    Handled:=CompareText(E,'.sql')=0;
+    If Handled then
       begin
-      E:=ExtractFileExt(AE.FileName);
-      FSFN:=ExtractFileName(AE.FileName);
-      Handled:=CompareText(E,'.sql')=0;
-      If Handled then
-        begin
-        S:=TStringStream.Create(AE.SourceText);
-        try
-          Result:=CheckSQL(S);
-        finally
-          S.Free;
-        end;
-        end;
+      S:=TStringStream.Create(AE.SourceText);
+      try
+        Result:=CheckSQL(S);
+      finally
+        S.Free;
       end;
-    except
-      On E : Exception do
-        ShowException('Error during syntax check',E);
+      end;
     end;
-  finally
-    {$IFDEF EnableOldExtTools}
-    IDEMessagesWindow.EndBlock;
-    {$ENDIF}
+  except
+    On E : Exception do
+      ShowException('Error during syntax check',E);
   end;
 end;
 

@@ -6,9 +6,7 @@ interface
 
 uses
   Classes, SysUtils, SrcEditorIntf, IDEMsgIntf, LazIDEIntf, IDEOptionsIntf,
-  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
-  {$ENDIF}
   Controls, SynEdit, EMScriptClasses, EMSStrings, Laz2_XMLCfg, uPSRuntime,
   uPSUtils, LazLoggerBase, LazFileUtils;
 
@@ -300,11 +298,7 @@ begin
       Exec.RunScript;
     except
       on e: Exception do
-        {$IFNDEF EnableOldExtTools}
         IDEMessagesWindow.AddCustomMessage(mluError,Format('%s: %s', [e.ClassName, e.Message]));
-        {$ELSE}
-        IDEMessagesWindow.AddMsg(Format('%s: %s', [e.ClassName, e.Message]), '', -1);
-        {$ENDIF}
     end;
     if Exec.ExceptionCode <> erNoError then begin
       ExObj := Exec.ExceptionObject;
@@ -318,11 +312,7 @@ begin
       y := 0;
       Exec.TranslatePositionEx(Exec.ExceptionProcNo, Exec.ExceptionPos, i, x, y, s2);
       if IDEMessagesWindow <> nil then
-        {$IFNDEF EnableOldExtTools}
         IDEMessagesWindow.AddCustomMessage(mluError,Format('%s: "%s" at %d/%d', [s, Exec.ExceptionString, x,y]));
-        {$ELSE}
-        IDEMessagesWindow.AddMsg(Format('%s: "%s" at %d/%d', [s, Exec.ExceptionString, x,y]), '', -1);
-        {$ENDIF}
     end;
 
   finally

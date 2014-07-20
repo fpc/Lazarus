@@ -231,8 +231,6 @@ type
     function GetFilterType: TCodyIdentifierFilter;
   end;
 
-  {$IFNDEF EnableOldExtTools}
-
   { TQuickFixIdentifierNotFoundShowDictionary }
 
   TQuickFixIdentifierNotFoundShowDictionary = class(TMsgQuickFix)
@@ -241,7 +239,6 @@ type
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
-  {$ENDIF}
 
 var
   CodyUnitDictionary: TCodyUnitDictionary = nil;
@@ -280,9 +277,7 @@ end;
 procedure InitUnitDictionary;
 begin
   CodyUnitDictionary:=TCodyUnitDictionary.Create;
-  {$IFNDEF EnableOldExtTools}
   RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFoundShowDictionary.Create);
-  {$ENDIF}
 end;
 
 function CompareCodyIdentifiersAlphaScopeUse(Item1, Item2: Pointer): integer;
@@ -371,7 +366,6 @@ begin
     exit(0);
 end;
 
-{$IFNDEF EnableOldExtTools}
 { TQuickFixIdentifierNotFoundShowDictionary }
 
 function TQuickFixIdentifierNotFoundShowDictionary.IsApplicable(
@@ -407,7 +401,6 @@ begin
     Point(Msg.Column,Msg.Line),-1,-1,-1,[])<>mrOk then exit;
   ShowUnitDictionaryDialog(nil);
 end;
-{$ENDIF}
 
 { TCodyIdentifier }
 

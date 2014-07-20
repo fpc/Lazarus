@@ -59,11 +59,7 @@ type
     function ShowHelpForSourcePosition(const Filename: string;
                                        const CodePos: TPoint;
                                        var ErrMsg: string): TShowHelpResult; virtual; abstract;
-    {$IFNDEF EnableOldExtTools}
     procedure ShowHelpForMessage; virtual; abstract;
-    {$ELSE}
-    procedure ShowHelpForMessage(Line: integer); virtual; abstract;
-    {$ENDIF}
     procedure ShowHelpForObjectInspector(Sender: TObject); virtual; abstract;
     procedure ShowHelpForIDEControl(Sender: TControl); virtual; abstract;
     function CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;

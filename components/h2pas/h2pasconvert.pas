@@ -613,7 +613,6 @@ type
     property OutputDirectory: string read FOutputDirectory write SetOutputDirectory;
   end;
 
-  {$IFNDEF EnableOldExtTools}
 const
   SubToolH2Pas = 'h2pas';
 type
@@ -625,7 +624,6 @@ type
     procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean
       ); override; // (worker thread)
   end;
-  {$ENDIF}
 
   { TH2PasTool }
 
@@ -657,9 +655,6 @@ type
     procedure SetProjectHistory(const AValue: TStrings);
     procedure SetWindowBounds(const AValue: TRect);
     procedure Seth2pasFilename(const AValue: string);
-    {$IFDEF EnableOldExtTools}
-    procedure OnParseH2PasLine(Sender: TObject; Line: TIDEScanMessageLine);
-    {$ENDIF}
   public
     constructor Create;
     destructor Destroy; override;
@@ -678,9 +673,6 @@ type
     function MergeIncludeFiles(AFile: TH2PasFile;
                                TextConverter: TIDETextConverter): TModalResult;
     function GetH2PasFilename: string;
-    {$IFDEF EnableOldExtTools}
-    function FindH2PasErrorMessage: integer;
-    {$ENDIF}
     function FileIsRelated(const aFilename: string): Boolean;
   public
     property Project: TH2PasProject read FProject write SetProject;
@@ -712,7 +704,6 @@ const
 
 implementation
 
-{$IFNDEF EnableOldExtTools}
 { TH2PasParser }
 
 class function TH2PasParser.DefaultSubTool: string;
@@ -757,7 +748,6 @@ begin
   MsgLine.Urgency:=mluError;
   MsgLine.Msg:=Msg;
 end;
-{$ENDIF}
 
 { TH2PasFile }
 
@@ -1742,28 +1732,6 @@ end;
 
 { TH2PasConverter }
 
-{$IFDEF EnableOldExtTools}
-procedure TH2PasConverter.OnParseH2PasLine(Sender: TObject;
-  Line: TIDEScanMessageLine);
-var
-  Tool: TH2PasTool;
-  LineNumber: String;
-  MsgType: String;
-  Msg: String;
-begin
-  if Line.Tool is TH2PasTool then begin
-    Tool:=TH2PasTool(Line.Tool);
-    if REMatches(Line.Line,'^at line ([0-9]+) (error) : (.*)$') then begin
-      LineNumber:=REVar(1);
-      MsgType:=REVar(2);
-      Msg:=REVar(3);
-      Line.Line:=Tool.TargetFilename+'('+LineNumber+') '+MsgType+': '+Msg;
-    end;
-    //DebugLn(['TH2PasConverter.OnParseH2PasLine ',Line.Line]);
-  end;
-end;
-{$ENDIF}
-
 function TH2PasConverter.GetCurrentProjectFilename: string;
 begin
   if FProjectHistory.Count>0 then
@@ -2036,13 +2004,8 @@ var
     end;
     ErrMsg:=ErrMsg+' Error: '+ErrorTool.ErrorMsg+' ('+ErrorTool.Caption+')';
     DebugLn(['TH2PasConverter.ConvertFile Failed: ',ErrMsg]);
-    {$IFNDEF EnableOldExtTools}
     IDEMessagesWindow.AddCustomMessage(mluError,ErrorTool.ErrorMsg,Filename,Line,Col,ErrorTool.Caption);
     LazarusIDE.DoJumpToCompilerMessage(true);
-    {$ELSE}
-    IDEMessagesWindow.AddMsg(ErrMsg,BaseDir,-1);
-    LazarusIDE.DoJumpToCompilerMessage(true, IDEMessagesWindow.LinesCount-1);
-    {$ENDIF}
     Result:=mrAbort;
   end;
 
@@ -2106,20 +2069,11 @@ begin
       Tool.CmdLineParams:=AFile.GetH2PasParameters(Tool.TargetFilename);
       Tool.WorkingDirectory:=Project.BaseDir;
       DebugLn(['TH2PasConverter.ConvertFile Tool.Filename="',Tool.Filename,'" Tool.CmdLineParams="',Tool.CmdLineParams,'"']);
-      {$IFNDEF EnableOldExtTools}
       Tool.Scanners.Add(SubToolH2Pas);
       if not RunExternalTool(Tool) then
         exit(mrAbort);
       if IDEMessagesWindow.SelectFirstUrgentMessage(mluError,false) then
         exit(mrAbort);
-      {$ELSE}
-      Tool.ScanOutput:=true;
-      Tool.ShowAllOutput:=true;
-      Tool.OnParseLine:=@OnParseH2PasLine;
-      Result:=RunExternalTool(Tool);
-      if Result<>mrOk then exit(mrAbort);
-      if FindH2PasErrorMessage>=0 then exit(mrAbort);
-      {$ENDIF}
     finally
       Tool.Free;
     end;
@@ -2314,23 +2268,6 @@ function TH2PasConverter.GetH2PasFilename: string;
 begin
   Result:=FindDefaultExecutablePath(h2pasFilename);
 end;
-
-{$IFDEF EnableOldExtTools}
-function TH2PasConverter.FindH2PasErrorMessage: integer;
-var
-  i: Integer;
-  Line: TIDEMessageLine;
-begin
-  for i:=0 to IDEMessagesWindow.LinesCount-1 do begin
-    Line:=IDEMessagesWindow.Lines[i];
-    if REMatches(Line.Msg,'^(.*)\([0-9]+\)') then begin
-      Result:=i;
-      exit;
-    end;
-  end;
-  Result:=-1;
-end;
-{$ENDIF}
 
 function TH2PasConverter.FileIsRelated(const aFilename: string): Boolean;
 begin

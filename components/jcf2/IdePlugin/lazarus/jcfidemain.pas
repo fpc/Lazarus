@@ -250,9 +250,7 @@ procedure TJcfIdeMain.LogIDEMessage(const psFile, psMessage: string;
   const piY, piX: integer);
 var
   lazMessages: TIDEMessagesWindowInterface;
-  {$IFNDEF EnableOldExtTools}
   Urgency: TMessageLineUrgency;
-  {$ENDIF}
 begin
   { no empty lines in this log }
   if psMessage = '' then
@@ -262,7 +260,6 @@ begin
   if lazMessages = nil then
     exit;
 
-  {$IFNDEF EnableOldExtTools}
   case peMessageType of
   mtException,mtInputError,mtParseError: Urgency:=mluError;
   mtCodeWarning: Urgency:=mluWarning;
@@ -270,14 +267,6 @@ begin
   mtProgress: Urgency:=mluProgress;
   end;
   lazMessages.AddCustomMessage(Urgency,psMessage, psFile, piY, piX, 'JCF')
-  {$ELSE}
-  if (piY >= 0) and (piX >= 0) then
-    lazMessages.AddMsg('JCF: ' + psMessage, psFile, 0)
-    //lazMessages.AddToolMessage(psFile, psMessage, 'JCF', piY, piX)
-  else
-    lazMessages.AddMsg('JCF: ' + psFile + ' ' + psMessage, '', 0);
-    //lazMessages.AddTitleMessage('JCF: ' + psFile + ' ' + psMessage);
-  {$ENDIF}
 end;
 
 procedure TJcfIdeMain.MakeEditorConverter;

@@ -18,10 +18,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, PropEdits, LazHelpHTML,
   IDEOptionsIntf, CompOptsIntf, ProjectIntf,
-  {$IFNDEF EnableOldExtTools}
-  IDEExternToolIntf,
-  {$ENDIF}
-  SrcEditorIntf;
+  IDEExternToolIntf, SrcEditorIntf;
 
 type
   // open file flags
@@ -287,11 +284,7 @@ type
     function ShowProgress(const SomeText: string;
       Step, MaxStep: integer): boolean; virtual; abstract; // False if canceled by user
     function DoJumpToCompilerMessage(FocusEditor: boolean;
-                              {$IFNDEF EnableOldExtTools}
                               Msg: TMessageLine = nil // if nil then it jumps to first message
-                              {$ELSE}
-                              Index:integer = -1
-                              {$ENDIF}
                               ): boolean; virtual; abstract;
     procedure DoJumpToNextError(DirectionDown: boolean); virtual; abstract;
     procedure DoShowMessagesView(BringToFront: boolean = true); virtual; abstract;

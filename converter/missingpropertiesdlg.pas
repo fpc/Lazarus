@@ -42,10 +42,6 @@ uses
   // IDE
   IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf, DialogProcs,
   CustomFormEditor, LazarusIDEStrConsts, IDEProcs,
-  {$IFNDEF EnableOldExtTools}
-  {$ELSE}
-  OutputFilter,
-  {$ENDIF}
   EditorOptions, CheckLFMDlg, IDEMsgIntf, Project, SourceMarks,
   // Converter
   ConverterTypes, ConvertSettings, ReplaceNamesUnit,
