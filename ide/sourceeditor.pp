@@ -64,13 +64,7 @@ uses
   IDEDialogs, LazarusIDEStrConsts, IDECommands, CompOptsIntf, EditorOptions,
   EnvironmentOpts, WordCompletion, FindReplaceDialog, IDEProcs, IDEOptionDefs,
   IDEHelpManager, MacroPromptDlg, TransferMacros, CodeContextForm,
-  SrcEditHintFrm,
-  {$IFNDEF EnableOldExtTools}
-  etMessagesWnd, etSrcEditMarks,
-  {$ELSE}
-  MsgView,
-  {$ENDIF}
-  InputHistory,
+  SrcEditHintFrm, etMessagesWnd, etSrcEditMarks, InputHistory,
   CodeMacroPrompt, CodeTemplatesDlg, CodeToolsOptions,
   SortSelectionDlg, EncloseSelectionDlg, ConDef, InvertAssignTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, SearchFrm,
@@ -105,32 +99,6 @@ type
     hcmSoft,            // Soft Center (distance to screen edge) Caret
     hcmSoftKeepEOL      // Soft Center (distance to screen edge) Caret, but keep EOL at right border
   );
-
-  {$IFDEF EnableOldExtTools}
-  TOnLinesInsertedDeleted = procedure(Sender : TObject;
-             FirstLine,Count : Integer) of Object;
-
-  { TSynEditPlugin1 }
-
-  TSynEditPlugin1 = class(TLazSynEditPlugin)
-  private
-    FEnabled: Boolean;
-    FOnLinesInserted : TOnLinesInsertedDeleted;
-    FOnLinesDeleted : TOnLinesInsertedDeleted;
-  protected
-    Procedure LineCountChanged(Sender: TSynEditStrings; AIndex, ACount : Integer);
-    function OwnedByEditor: Boolean; override;
-  public
-    property OnLinesInserted : TOnLinesInsertedDeleted
-      read FOnLinesinserted write FOnLinesInserted;
-    property OnLinesDeleted : TOnLinesInsertedDeleted
-      read FOnLinesDeleted write FOnLinesDeleted;
-    property Enabled: Boolean read FEnabled write FEnabled;
-
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-  end;
-  {$ENDIF}
 
   { TSourceEditCompletion }
 
@@ -253,13 +221,8 @@ type
     FEditor: TIDESynEditor;
     FTempCaret: TPoint;
     FTempTopLine: Integer;
-    {$IFNDEF EnableOldExtTools}
     FEditPlugin: TETSynPlugin; // used to update the "Messages Window"
                                // when text is inserted/deleted
-    {$ELSE}
-    FEditPlugin: TSynEditPlugin1;  // used to get the LinesInserted and
-                                   //   LinesDeleted messages
-    {$ENDIF}
     FOnIfdefNodeStateRequest: TSynMarkupIfdefStateRequest;
     FLastIfDefNodeScannerStep: integer;
 
@@ -356,12 +319,7 @@ type
     procedure StartIdentCompletionBox(JumpToError: boolean);
     procedure StartWordCompletionBox(JumpToError: boolean);
 
-    {$IFNDEF EnableOldExtTools}
     function IsFirstShared(Sender: TObject): boolean;
-    {$ELSE}
-    procedure LinesInserted(sender: TObject; FirstLine, Count: Integer);
-    procedure LinesDeleted(sender: TObject; FirstLine, Count: Integer);
-    {$ENDIF}
 
     function GetFilename: string; override;
     function GetEditorControl: TWinControl; override;
@@ -889,9 +847,7 @@ type
     fProducers: TFPList; // list of TSourceMarklingProducer
     FChangeNotifyLists: Array [TsemChangeReason] of TMethodList;
     FHandlers: array[TSrcEditMangerHandlerType] of TMethodList;
-    {$IFNDEF EnableOldExtTools}
     FChangesQueuedForMsgWnd: TETMultiSrcChanges;// source editor changes waiting to be applied to the Messages window
-    {$ENDIF}
     function  GetActiveSourceWindow: TSourceEditorWindowInterface; override;
     procedure SetActiveSourceWindow(const AValue: TSourceEditorWindowInterface); override;
     function  GetSourceWindows(Index: integer): TSourceEditorWindowInterface; override;
@@ -903,9 +859,7 @@ type
     function  GetSourceEditors(Index: integer): TSourceEditorInterface; override;
     function  GetUniqueSourceEditors(Index: integer): TSourceEditorInterface; override;
     function GetMarklingProducers(Index: integer): TSourceMarklingProducer; override;
-    {$IFNDEF EnableOldExtTools}
     procedure SyncMessageWnd(Sender: TObject);
-    {$ENDIF}
   public
     procedure BeginAutoFocusLock;
     procedure EndAutoFocusLock;
@@ -1118,10 +1072,8 @@ type
     procedure OnSourceCompletionTimer(Sender: TObject);
     // marks
     procedure OnSourceMarksAction(AMark: TSourceMark; AAction: TMarksAction);
-    {$IFNDEF EnableOldExtTools}
     procedure OnSourceMarksGetSynEdit(Sender: TObject; aFilename: string;
       var aSynEdit: TSynEdit);
-    {$ENDIF}
     property CodeTemplateModul: TSynEditAutoComplete
                                read FCodeTemplateModul write FCodeTemplateModul;
     // goto dialog
@@ -2329,19 +2281,15 @@ var
   i: Integer;
   SrcEdit: TSourceEditor;
   SharedEdit: TSourceEditor;
-  {$IFNDEF EnableOldExtTools}
   ETChanges: TETSingleSrcChanges;
-  {$ENDIF}
 begin
   if FCodeBuffer = AValue then exit;
   if FCodeBuffer<>nil then begin
-    {$IFNDEF EnableOldExtTools}
     for i := 0 to FSharedEditorList.Count - 1 do begin
       SharedEdit := SharedEditors[i];
       if SharedEdit.FEditPlugin<>nil then
         SharedEdit.FEditPlugin.Changes:=nil;
     end;
-    {$ENDIF}
     FCodeBuffer.RemoveChangeHook(@OnCodeBufferChanged);
     if FCodeBuffer.Scanner<>nil then
       DisconnectScanner(FCodeBuffer.Scanner);
@@ -2375,7 +2323,6 @@ begin
       FCodeBuffer.AddChangeHook(@OnCodeBufferChanged);
       if FCodeBuffer.Scanner<>nil then
         ConnectScanner(FCodeBuffer.Scanner);
-      {$IFNDEF EnableOldExtTools}
       ETChanges := SourceEditorManager.FChangesQueuedForMsgWnd.GetChanges(
                                                      FCodeBuffer.Filename,true);
       for i := 0 to FSharedEditorList.Count - 1 do begin
@@ -2385,7 +2332,6 @@ begin
       end;
       if MessagesView<>nil then
         MessagesView.MessagesFrame1.CreateMarksForFile(SynEditor,FCodeBuffer.Filename,true);
-      {$ENDIF}
       if (FIgnoreCodeBufferLock <= 0) and (not FCodeBuffer.IsEqual(SynEditor.Lines))
       then begin
         {$IFDEF IDE_DEBUG}
@@ -2836,15 +2782,8 @@ Begin
       FEditor.Beautifier := ASharedEditor.EditorComponent.Beautifier;
   end;
 
-  {$IFNDEF EnableOldExtTools}
   FEditPlugin := TETSynPlugin.Create(FEditor);
   FEditPlugin.OnIsEnabled:=@IsFirstShared;
-  {$ELSE}
-  FEditPlugin := TSynEditPlugin1.Create(FEditor);
-  // IMPORTANT: when you add/remove events below, don't forget updating UnbindEditor
-  FEditPlugin.OnLinesInserted := @LinesInserted;
-  FEditPlugin.OnLinesDeleted := @LinesDeleted;
-  {$ENDIF}
 end;
 
 destructor TSourceEditor.Destroy;
@@ -5664,31 +5603,10 @@ begin
   Result := FEditor.GetWordAtRowCol(ACaretPos);
 end;
 
-{$IFNDEF EnableOldExtTools}
 function TSourceEditor.IsFirstShared(Sender: TObject): boolean;
 begin
   Result:=SharedEditors[0]=Self;
 end;
-
-{$ELSE}
-procedure TSourceEditor.LinesDeleted(sender: TObject; FirstLine, Count: Integer
-  );
-begin
-  // notify the notebook that lines were deleted.
-  // marks will use this to update themselves
-  if (Self = FSharedValues.SharedEditors[0]) then
-    MessagesView.SrcEditLinesInsertedDeleted(Filename,FirstLine,-Count);
-end;
-
-procedure TSourceEditor.LinesInserted(sender: TObject; FirstLine, Count: Integer
-  );
-begin
-  // notify the notebook that lines were Inserted.
-  // marks will use this to update themselves
-  if (Self = FSharedValues.SharedEditors[0]) then
-    MessagesView.SrcEditLinesInsertedDeleted(Filename,FirstLine,Count);
-end;
-{$ENDIF}
 
 procedure TSourceEditor.SetVisible(Value: boolean);
 begin
@@ -5729,12 +5647,7 @@ begin
       TSynPluginSyncronizedEditBase(EditorComponent.Plugin[i]).OnDeactivate := nil;
     end;
   if FEditPlugin<>nil then begin
-    {$IFNDEF EnableOldExtTools}
     FEditPlugin.Enabled:=false;
-    {$ELSE}
-    FEditPlugin.OnLinesInserted := nil;
-    FEditPlugin.OnLinesDeleted := nil;
-  {$ENDIF}
   end;
 end;
 
@@ -6359,12 +6272,10 @@ begin
           Marks[i].CreatePopupMenuItems(@AddUserDefinedPopupMenuItem);
         FreeMem(Marks);
       end;
-      {$IFNDEF EnableOldExtTools}
       if (EditorCaret.Y<=EditorComp.Lines.Count)
       and (MessagesView<>nil) then
         MessagesView.SourceEditorPopup(EditorComp.Marks.Line[EditorCaret.Y],
           EditorComp.LogicalCaretXY);
-      {$ENDIF}
     end;
 
     if Assigned(Manager.OnPopupMenu) then
@@ -8375,10 +8286,8 @@ begin
           HintStr:=HintStr+CurHint;
         end;
 
-        {$IFNDEF EnableOldExtTools}
         if (MessagesView<>nil) then
           MessagesView.SourceEditorHint(MLine,HintStr);
-        {$ENDIF}
       end;
 
       if HintStr<>'' then
@@ -8483,40 +8392,6 @@ begin
   for i := 0 to EditorCount - 1 do
     Editors[i].ClearExecutionMarks;
 end;
-
-{$IFDEF EnableOldExtTools}
-{ TSynEditPlugin1 }
-
-constructor TSynEditPlugin1.Create(AOwner: TComponent);
-Begin
-  inherited Create(AOwner);
-  FEnabled := True;
-  ViewedTextBuffer.AddChangeHandler(senrLineCount, @LineCountChanged);
-end;
-
-destructor TSynEditPlugin1.Destroy;
-begin
-  ViewedTextBuffer.RemoveChangeHandler(senrLineCount, @LineCountChanged);
-  inherited Destroy;
-end;
-
-procedure TSynEditPlugin1.LineCountChanged(Sender: TSynEditStrings; AIndex, ACount: Integer);
-begin
-  if not FEnabled then exit;
-  if ACount < 0 then begin
-    if Assigned(OnLinesDeleted) then
-      OnLinesDeleted(self, AIndex+1, -ACount);
-  end else begin
-    if Assigned(OnLinesInserted) then
-      OnLinesInserted(self, AIndex+1, ACount);
-  end;
-end;
-
-function TSynEditPlugin1.OwnedByEditor: Boolean;
-begin
-  Result := True;
-end;
-{$ENDIF}
 
 //-----------------------------------------------------------------------------
 
@@ -8837,12 +8712,10 @@ begin
   Result:=TSourceMarklingProducer(fProducers[Index]);
 end;
 
-{$IFNDEF EnableOldExtTools}
 procedure TSourceEditorManagerBase.SyncMessageWnd(Sender: TObject);
 begin
   MessagesView.MessagesFrame1.ApplyMultiSrcChanges(Sender as TETMultiSrcChanges);
 end;
-{$ENDIF}
 
 procedure TSourceEditorManagerBase.BeginAutoFocusLock;
 begin
@@ -9018,11 +8891,9 @@ begin
   FUpdateLock := 0;
   FActiveEditorLock := 0;
   fProducers := TFPList.Create;
-  {$IFNDEF EnableOldExtTools}
   FChangesQueuedForMsgWnd:=TETMultiSrcChanges.Create(Self);
   FChangesQueuedForMsgWnd.AutoSync:=true;
   FChangesQueuedForMsgWnd.OnSync:=@SyncMessageWnd;
-  {$ENDIF}
   inherited;
 end;
 
@@ -9032,9 +8903,7 @@ var
   cr: TsemChangeReason;
   h: TSrcEditMangerHandlerType;
 begin
-  {$IFNDEF EnableOldExtTools}
   FreeAndNil(FChangesQueuedForMsgWnd);
-  {$ENDIF}
   for i:=MarklingProducerCount-1 downto 0 do
     MarklingProducers[i].Free;
   FreeAndNil(fProducers);
@@ -10284,7 +10153,6 @@ begin
     Editor.UpdateExecutionSourceMark;
 end;
 
-{$IFNDEF EnableOldExtTools}
 procedure TSourceEditorManager.OnSourceMarksGetSynEdit(Sender: TObject;
   aFilename: string; var aSynEdit: TSynEdit);
 var
@@ -10294,7 +10162,6 @@ begin
   if SrcEdit=nil then exit;
   aSynEdit:=SrcEdit.EditorComponent;
 end;
-{$ENDIF}
 
 function TSourceEditorManager.GotoDialog: TfrmGoto;
 begin
@@ -10345,9 +10212,7 @@ begin
   // marks
   SourceEditorMarks:=TSourceMarks.Create(Self);
   SourceEditorMarks.OnAction:=@OnSourceMarksAction;
-  {$IFNDEF EnableOldExtTools}
   SourceEditorMarks.ExtToolsMarks.OnGetSynEditOfFile:=@OnSourceMarksGetSynEdit;
-  {$ENDIF}
 
   // HintWindow
   FHints := TIDEHintWindowManager.Create;

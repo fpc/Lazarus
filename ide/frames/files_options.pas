@@ -221,13 +221,8 @@ begin
   MaxRecentOpenFilesLabel.Caption:=dlgMaxRecentFiles;
   MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
   OpenLastProjectAtStartCheckBox.Caption:=dlgQOpenLastPrj;
-  {$IFNDEF EnableOldExtTools}
   ShowCompileDialogCheckBox.Visible:=false;
   AutoCloseCompileDialogCheckBox.Visible:=false;
-  {$ELSE}
-  ShowCompileDialogCheckBox.Caption:=dlgQShowCompileDialog;
-  AutoCloseCompileDialogCheckBox.Caption:=dlgQAutoCloseCompileDialog;
-  {$ENDIF}
   LazarusDirLabel.Caption:=dlgLazarusDir;
   with LazarusDirComboBox.Items do
   begin

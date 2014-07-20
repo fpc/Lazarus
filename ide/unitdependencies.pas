@@ -39,9 +39,7 @@ uses
   Forms, Controls, ExtCtrls, ComCtrls, StdCtrls, Buttons, Dialogs, Menus,
   Clipbrd, LvlGraphCtrl, LazIDEIntf, ProjectIntf, IDEWindowIntf, PackageIntf,
   SrcEditorIntf, IDEImagesIntf, IDECommands, IDEDialogs, IDEMsgIntf, TextTools,
-  {$IFNDEF EnableOldExtTools}
   IDEExternToolIntf,
-  {$ENDIF}
   CodeToolManager, DefineTemplates, CodeToolsStructs,
   CTUnitGraph, CTUnitGroupGraph, FileProcs, CodeCache, LazarusIDEStrConsts,
   UnusedUnitsDlg;
@@ -301,7 +299,6 @@ type
       write SetPendingUnitDependencyRoute; // list of unit names, missing links are automatically found
   end;
 
-{$IFNDEF EnableOldExtTools}
 type
 
   { TQuickFixCircularUnitReference }
@@ -312,18 +309,6 @@ type
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
-{$ELSE}
-type
-
-  { TQuickFixCircularUnitReference }
-
-  TQuickFixCircularUnitReference = class(TIDEMsgQuickFixItem)
-  public
-    constructor Create;
-    function IsApplicable(Line: TIDEMessageLine): boolean; override;
-    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
-  end;
-{$ENDIF}
 
 var
   UnitDependenciesWindow: TUnitDependenciesWindow;
@@ -425,7 +410,6 @@ begin
   inherited Destroy;
 end;
 
-{$IFNDEF EnableOldExtTools}
 { TQuickFixCircularUnitReference }
 
 function TQuickFixCircularUnitReference.IsApplicable(Msg: TMessageLine; out
@@ -469,67 +453,6 @@ begin
     Path.Free;
   end;
 end;
-{$ELSE}
-{ TQuickFixCircularUnitReference }
-
-constructor TQuickFixCircularUnitReference.Create;
-begin
-  Name:='Show unit dependencies';
-  Caption:='Show unit dependencies';
-  Steps:=[imqfoMenuItem];
-end;
-
-function TQuickFixCircularUnitReference.IsApplicable(Line: TIDEMessageLine
-  ): boolean;
-const
-  SearchStr = ') Fatal: Circular unit reference between ';
-var
-  Msg: String;
-  p: integer;
-  Code: TCodeBuffer;
-  Filename: string;
-  Caret: TPoint;
-begin
-  Result:=false;
-  if (Line.Parts=nil) then exit;
-  Msg:=Line.Msg;
-  p:=System.Pos(SearchStr,Msg);
-  if p<1 then exit;
-  inc(p,length(SearchStr));
-  Line.GetSourcePosition(Filename,Caret.Y,Caret.X);
-  if (Filename='') or (Caret.X<1) or (Caret.Y<1) then exit;
-  Code:=CodeToolBoss.LoadFile(Filename,true,false);
-  if Code=nil then exit;
-  Result:=true;
-end;
-
-procedure TQuickFixCircularUnitReference.Execute(const Msg: TIDEMessageLine;
-  Step: TIMQuickFixStep);
-var
-  UnitName1: String;
-  UnitName2: String;
-  Path: TStringList;
-begin
-  if Step<>imqfoMenuItem then exit;
-  if not REMatches(Msg.Msg,'Fatal: Circular unit reference between ([a-z_0-9.]+) and ([a-z_0-9.]+)','I')
-  then begin
-    debugln(['TQuickFixCircularUnitReference.Execute invalid message ',Msg.Msg]);
-    exit;
-  end;
-  UnitName1:=REVar(1);
-  UnitName2:=REVar(2);
-  ShowUnitDependencies(true,true);
-  Path:=TStringList.Create;
-  try
-    Path.Add(UnitName1);
-    Path.Add(UnitName2);
-    Path.Add(UnitName1);
-    UnitDependenciesWindow.PendingUnitDependencyRoute:=Path;
-  finally
-    Path.Free;
-  end;
-end;
-{$ENDIF}
 
 { TUDNode }
 

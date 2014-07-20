@@ -56,13 +56,7 @@ uses
   IDEExternToolIntf,
   // IDE
   Project, DialogProcs, PackageSystem, PackageDefs, LazarusIDEStrConsts,
-  IDEOptionDefs,
-  {$IFNDEF EnableOldExtTools}
-  etFPCMsgParser,
-  {$ELSE}
-  MsgQuickFixes,
-  {$ENDIF}
-  BasePkgManager, AddToProjectDlg,
+  IDEOptionDefs, etFPCMsgParser, BasePkgManager, AddToProjectDlg,
   EnvironmentOpts;
 
 
@@ -376,7 +370,6 @@ type
     property IdleConnected: boolean read FIdleConnected write SetIdleConnected;
   end;
 
-{$IFNDEF EnableOldExtTools}
 type
 
   { TQuickFixIdentifierNotFound_Search }
@@ -387,17 +380,6 @@ type
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
-{$ELSE}
-type
-  { TQuickFixIdentifierNotFound_Search - add menu item to open codebrowser }
-
-  TQuickFixIdentifierNotFound_Search = class(TIDEMsgQuickFixItem)
-  public
-    constructor Create;
-    function IsApplicable(Line: TIDEMessageLine): boolean; override;
-    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
-  end;
-{$ENDIF}
 var
   CodeBrowserView: TCodeBrowserView = nil;
   
@@ -3209,8 +3191,6 @@ end;
 
 { TQuickFixIdentifierNotFound_Search }
 
-{$IFNDEF EnableOldExtTools}
-
 function TQuickFixIdentifierNotFound_Search.IsApplicable(Msg: TMessageLine; out
   Identifier: string): boolean;
 var
@@ -3279,90 +3259,6 @@ begin
   CodeBrowserView.SetFilterToSimpleIdentifier(Identifier);
   IDEWindowCreators.ShowForm(CodeBrowserView,true);
 end;
-{$ELSE}
-constructor TQuickFixIdentifierNotFound_Search.Create;
-begin
-  Name:='Search identifier: Error: Identifier not found "identifier"';
-  Caption:=lisQuickFixSearchIdentifier;
-  Steps:=[imqfoMenuItem];
-end;
-
-function TQuickFixIdentifierNotFound_Search.IsApplicable(Line: TIDEMessageLine
-  ): boolean;
-const
-  SearchStr = ') Error: Identifier not found "';
-var
-  Msg: String;
-  p: integer;
-  Code: TCodeBuffer;
-  Filename: string;
-  Caret: TPoint;
-begin
-  Result:=false;
-  if (Line.Parts=nil) then exit;
-  Msg:=Line.Msg;
-  p:=System.Pos(SearchStr,Msg);
-  if p<1 then exit;
-  inc(p,length(SearchStr));
-  Line.GetSourcePosition(Filename,Caret.Y,Caret.X);
-  if (Filename='') or (Caret.X<1) or (Caret.Y<1) then exit;
-  Code:=CodeToolBoss.LoadFile(Filename,true,false);
-  if Code=nil then exit;
-  Result:=true;
-end;
-
-procedure TQuickFixIdentifierNotFound_Search.Execute(
-  const Msg: TIDEMessageLine; Step: TIMQuickFixStep);
-var
-  Identifier: String;
-  CodeBuf: TCodeBuffer;
-  Filename, KnownFilename: string;
-  Caret: TPoint;
-begin
-  if Step=imqfoMenuItem then begin
-    DebugLn(['TQuickFixIdentifierNotFound_Search.Execute Dir=',Msg.Directory,' Msg=',Msg.Msg,' Filename=',Msg.Parts.Values['Filename']]);
-    // get source position
-    // (FPC reports position right after the unknown identifier
-    //  for example right after FilenameIsAbsolute)
-    if not GetMsgLineFile(Msg,CodeBuf,false) then exit;
-    Msg.GetSourcePosition(Filename,Caret.Y,Caret.X);
-    if not LazarusIDE.BeginCodeTools then begin
-      DebugLn(['TQuickFixIdentifierNotFound_Search.Execute failed because IDE busy']);
-      exit;
-    end;
-
-    // get identifier
-    if not REMatches(Msg.Msg,'Error: Identifier not found "([a-z_0-9]+)"','I') then begin
-      DebugLn('TQuickFixIdentifierNotFound_Search invalid message ',Msg.Msg);
-      exit;
-    end;
-    Identifier:=REVar(1);
-    DebugLn(['TQuickFixIdentifierNotFound_Search.Execute Identifier=',Identifier]);
-
-    if (Identifier='') or (not IsValidIdent(Identifier)) then begin
-      DebugLn(['TQuickFixIdentifierNotFound_Search.Execute not an identifier "',dbgstr(Identifier),'"']);
-      exit;
-    end;
-
-    KnownFilename:= LazarusIDE.FindSourceFile(Filename, Project1.ProjectDirectory,
-                      [fsfSearchForProject, fsfUseIncludePaths, fsfMapTempToVirtualFiles]);
-
-    if (KnownFilename <> '') and (KnownFilename <> Filename) then begin
-      if LazarusIDE.DoOpenFileAndJumpToPos(KnownFilename,Caret,-1,-1,-1,OpnFlagsPlainFile)<>mrOk
-      then
-      if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Caret,-1,-1,-1,OpnFlagsPlainFile)<>mrOk
-      then exit;
-    end
-    else
-    if LazarusIDE.DoOpenFileAndJumpToPos(Filename,Caret,-1,-1,-1,OpnFlagsPlainFile
-      )<>mrOk
-    then exit;
-
-    // start code browser
-    ShowCodeBrowser(Identifier);
-  end;
-end;
-{$Endif EnableOldExtTools}
 
 end.
 

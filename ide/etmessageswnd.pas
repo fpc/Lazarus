@@ -27,8 +27,6 @@ unit etMessagesWnd;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF EnableOldExtTools}{$Error Wrong}{$ENDIF}
-
 interface
 
 uses

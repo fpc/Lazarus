@@ -25,8 +25,6 @@
 }
 unit etFPCMsgParser;
 
-{$IFDEF EnableOldExtTools}{$ERROR Wrong}{$ENDIF}
-
 {$mode objfpc}{$H+}
 
 {off $DEFINE VerboseFPCMsgUnitNotFound}

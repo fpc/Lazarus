@@ -167,10 +167,6 @@ begin
   fReady:=false;
   FDialog := ADialog;
   MWSetEditorColorsButton.Visible:=false;
-  {$IFNDEF EnableOldExtTools}
-  {$ELSE}
-  MWColorsGroupBox.Visible:=false;
-  {$ENDIF}
 end;
 
 procedure TMsgWndOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);

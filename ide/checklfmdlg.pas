@@ -32,20 +32,17 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, Math, TypInfo, LCLProc, LResources, Forms, Controls,
-  Graphics, Dialogs, Buttons, StdCtrls, contnrs,
+  Classes, SysUtils, Math, TypInfo, contnrs,
+  LCLProc, LResources, Forms, Controls,
+  Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls,
   // components
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
   SynEditMiscClasses, LFMTrees,
   // IDE
-  PropEdits, IDEDialogs, ComponentReg, PackageIntf, IDEWindowIntf,
+  IDEExternToolIntf, PackageIntf, IDEWindowIntf, PropEdits, PropEditUtils, IDEMsgIntf,
+  IDEDialogs, ComponentReg,
   CustomFormEditor, LazarusIDEStrConsts,
-  {$IFNDEF EnableOldExtTools}
-  IDEExternToolIntf,
-  {$ELSE}
-  {$ENDIF}
-  IDEProcs, IDEOptionDefs, EditorOptions, SourceMarks, ExtCtrls, JITForms,
-  PropEditUtils, IDEMsgIntf;
+  IDEProcs, IDEOptionDefs, EditorOptions, SourceMarks, JITForms;
 
 type
 
@@ -419,14 +416,7 @@ begin
   if Code=nil then
     Code:=fPascalBuffer;
   Filename:=ExtractFilename(Code.Filename);
-  {$IFNDEF EnableOldExtTools}
   IDEMessagesWindow.AddCustomMessage(mluError,ErrorMessage,Filename,Y,X);
-  {$ELSE}
-  IDEMessagesWindow.AddMsg(Filename
-       +'('+IntToStr(Y)+','+IntToStr(X)+')'
-       +' Error: '+ErrorMessage,
-       ExtractFilePath(Code.Filename),-1);
-  {$ENDIF}
   Application.ProcessMessages;
 end;
 
@@ -445,15 +435,8 @@ begin
   CurError:=fLFMTree.FirstError;
   Filename:=ExtractFilename(fLFMBuffer.Filename);
   while CurError<>nil do begin
-    {$IFNDEF EnableOldExtTools}
     IDEMessagesWindow.AddCustomMessage(mluError,CurError.ErrorMessage,
       Filename,CurError.Caret.Y,CurError.Caret.X);
-    {$ELSE}
-    IDEMessagesWindow.AddMsg(Filename
-         +'('+IntToStr(CurError.Caret.Y)+','+IntToStr(CurError.Caret.X)+')'
-         +' Error: '+CurError.ErrorMessage,
-         ExtractFilePath(fLFMBuffer.Filename),-1);
-    {$ENDIF}
     CurError:=CurError.NextError;
   end;
   Application.ProcessMessages;

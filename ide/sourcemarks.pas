@@ -41,11 +41,8 @@ uses
   Classes, SysUtils, AVL_Tree, Graphics, Controls, LCLProc,
   MenuIntf,
   SynEdit, SynEditMarks, SynEditMarkupGutterMark,
-  SrcEditorIntf
-  {$IFNDEF EnableOldExtTools}
-  , IDEExternToolIntf, etSrcEditMarks
-  {$ENDIF}
-  ;
+  SrcEditorIntf, IDEExternToolIntf,
+  etSrcEditMarks;
   
 type
   TAdditionalHilightAttribute =
@@ -191,9 +188,7 @@ type
     FCurrentLineBreakPointImg: Integer;
     FCurrentLineImg: Integer;
     FCurrentLineDisabledBreakPointImg: Integer;
-    {$IFNDEF EnableOldExtTools}
     FExtToolsMarks: TETMarks;
-    {$ENDIF}
     FSourceLineImg: Integer;
     FImgList: TImageList;
     fInactiveBreakPointImg: Integer;
@@ -233,9 +228,7 @@ type
     property ImgList: TImageList read FImgList write FImgList;
     property Items[Index: integer]: TSourceMark read GetItems; default;
     property OnAction: TMarksActionEvent read FOnAction write FOnAction;
-    {$IFNDEF EnableOldExtTools}
     property ExtToolsMarks: TETMarks read FExtToolsMarks;
-    {$ENDIF}
   public
     // icon index
     property ActiveBreakPointImg: Integer read fActiveBreakPointImg;
@@ -540,13 +533,11 @@ end;
 procedure TSourceMarks.CreateImageList;
 var
   i: Integer;
-  {$IFNDEF EnableOldExtTools}
   ImgIDFatal: Integer;
   ImgIDError: Integer;
   ImgIDWarning: Integer;
   ImgIDNote: Integer;
   ImgIDHint: Integer;
-  {$ENDIF}
 begin
   // create default mark icons
   ImgList:=TImageList.Create(Self);
@@ -580,7 +571,6 @@ begin
   // load source line
   FSourceLineImg:=AddImage('debugger_source_line');
 
-  {$IFNDEF EnableOldExtTools}
   ExtToolsMarks.ImageList:=ImgList;
   ImgIDFatal:=AddImage('state11x11_fatal');
   ImgIDError:=AddImage('state11x11_error');
@@ -600,7 +590,6 @@ begin
   ExtToolsMarks.MarkStyles[mluError].ImageIndex:=ImgIDError;
   ExtToolsMarks.MarkStyles[mluFatal].ImageIndex:=ImgIDFatal;
   ExtToolsMarks.MarkStyles[mluPanic].ImageIndex:=ImgIDFatal;
-  {$ENDIF}
 end;
 
 function TSourceMarks.FindFirstMarkNode(ASrcEditID: TObject; ALine: integer
@@ -626,18 +615,14 @@ begin
   inherited Create(TheOwner);
   fItems:=TList.Create;
   fSortedItems:=TAVLTree.Create(@CompareSourceMarks);
-  {$IFNDEF EnableOldExtTools}
   FExtToolsMarks:=TETMarks.Create(nil);
-  {$ENDIF}
   CreateImageList;
 end;
 
 destructor TSourceMarks.Destroy;
 begin
   Clear;
-  {$IFNDEF EnableOldExtTools}
   FreeAndNil(FExtToolsMarks);
-  {$ENDIF}
   FreeThenNil(FItems);
   FreeThenNil(fSortedItems);
   inherited Destroy;

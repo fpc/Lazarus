@@ -63,12 +63,7 @@ uses
   IDECommands, IDEMsgIntf, IDEWindowIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, ProjectDefs, Project, PublishModule,
-  BuildLazDialog, Compiler, ComponentReg,
-  {$IFNDEF EnableOldExtTools}
-  etMessagesWnd,
-  {$ELSE}
-  OutputFilter, MsgView,
-  {$ENDIF}
+  BuildLazDialog, Compiler, ComponentReg, etMessagesWnd,
   TransferMacros, ObjectInspector, PropEdits, IDEDefs,
   EnvironmentOpts, EditorOptions, CompilerOptions, KeyMapping, IDEProcs,
   Debugger, IDEOptionDefs, CodeToolsDefines, Splash, Designer,
@@ -136,9 +131,6 @@ type
     procedure mnuCenterWindowItemClick(Sender: TObject); virtual;
     procedure mnuWindowSourceItemClick(Sender: TObject); virtual;
 
-    {$IFDEF EnableOldExtTools}
-    procedure ConnectOutputFilter;
-    {$ENDIF}
     procedure UpdateWindowMenu;
 
   public
@@ -301,17 +293,6 @@ begin
   SourceEditorManager.ActiveEditor := SourceEditorManager.SourceEditors[i];
   SourceEditorManager.ShowActiveWindowOnTop(True);
 end;
-
-{$IFDEF EnableOldExtTools}
-procedure TMainIDEBase.ConnectOutputFilter;
-begin
-  TheOutputFilter.OnAddFilteredLine:=@MessagesView.AddMsg;
-  TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
-  TheOutputFilter.OnEndReading:=@MessagesView.CollectLineParts;
-  TheOutputFilter.OnBeginUpdate:=@MessagesView.BeginUpdateNotification;
-  TheOutputFilter.OnEndUpdate:=@MessagesView.EndUpdateNotification;
-end;
-{$ENDIF}
 
 procedure TMainIDEBase.SetToolStatus(const AValue: TIDEToolStatus);
 begin

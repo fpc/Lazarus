@@ -1410,13 +1410,8 @@ begin
     if ADocFile.DocErrorMsg<>'' then begin
       if not (chofQuiet in Flags) then begin
         // for example: Filename(y,x) Error: description
-        {$IFNDEF EnableOldExtTools}
         IDEMessagesWindow.AddCustomMessage(mluError,ADocFile.DocErrorMsg,
           ADocFile.CodeBuffer.Filename,0,0,'FPDoc');
-        {$ELSE}
-        IDEMessagesWindow.AddMsg(ADocFile.DocErrorMsg,
-                              ExtractFilePath(ADocFile.CodeBuffer.Filename),-1);
-        {$ENDIF}
       end;
       // no update needed
       exit(chprFailed);
@@ -1457,12 +1452,8 @@ begin
         DebugLn(['TCodeHelpManager.LoadFPDocFile ',E.Message]);
         if not (chofQuiet in Flags) then begin
           // for example: Filename(y,x) Error: description
-          {$IFNDEF EnableOldExtTools}
           IDEMessagesWindow.AddCustomMessage(mluError,ADocFile.DocErrorMsg,
             CurFilename,0,0,'FPDoc');
-          {$ELSE}
-          IDEMessagesWindow.AddMsg(ADocFile.DocErrorMsg,ExtractFilePath(CurFilename),-1);
-          {$ENDIF}
         end;
       end;
       on E: Exception do begin
