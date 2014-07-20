@@ -8,8 +8,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, LazClasses, LazLoggerBase, DbgInfoReader,
-  TextTools, LazIDEIntf, ProjectIntf, SrcEditorIntf, CodeToolManager, CodeCache,
-  CodeTree;
+  TextTools, LazIDEIntf, ProjectIntf, CodeToolManager, CodeCache;
 
 type
   { TStackLine }
