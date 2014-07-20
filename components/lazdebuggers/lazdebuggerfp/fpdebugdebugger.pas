@@ -124,9 +124,11 @@ type
     procedure DoAddBreakLocation;
     procedure DoReadData;
     procedure DoPrepareCallStackEntryList;
+    procedure DoFreeBreakpoint;
     {$endif linux}
     function AddBreak(const ALocation: TDbgPtr): FpDbgClasses.TDbgBreakpoint; overload;
     function AddBreak(const AFileName: String; ALine: Cardinal): FpDbgClasses.TDbgBreakpoint; overload;
+    procedure FreeBreakpoint(const ABreakpoint: FpDbgClasses.TDbgBreakpoint);
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
     function ReadAddress(const AAdress: TDbgPtr; out AData: TDBGPtr): Boolean;
     procedure PrepareCallStackEntryList;
@@ -501,7 +503,8 @@ begin
       begin
         ABrkPoint := FpDbgClasses.TDbgBreakpoint(FDelayedRemoveBreakpointList[i]);
         TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(ABrkPoint.Location);
-        FreeAndNil(ABrkPoint);
+        TFpDebugDebugger(Debugger).FreeBreakpoint(ABrkPoint);
+        ABrkPoint := nil;
         FDelayedRemoveBreakpointList.Delete(i);
       end;
   end;
@@ -543,7 +546,7 @@ procedure TFPBreakpoint.SetBreak;
 begin
   assert(FInternalBreakpoint=nil);
   case Kind of
-    bpkAddress:   FInternalBreakpoint := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.AddBreak(Address);
+    bpkAddress:   FInternalBreakpoint := TFpDebugDebugger(Debugger).AddBreak(Address);
     bpkSource:    FInternalBreakpoint := TFpDebugDebugger(Debugger).AddBreak(Source, cardinal(Line));
   else
     Raise Exception.Create('Breakpoints of this kind are not suported.');
@@ -562,7 +565,8 @@ begin
   if assigned(Debugger) and assigned(FInternalBreakpoint) then
     begin
     TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.RemoveBreak(FInternalBreakpoint.Location);
-    FreeAndNil(FInternalBreakpoint);
+    TFpDebugDebugger(Debugger).FreeBreakpoint(FInternalBreakpoint);
+    FInternalBreakpoint := nil;
     end;
   FIsSet:=false;
 end;
@@ -1498,6 +1502,12 @@ procedure TFpDebugDebugger.DoPrepareCallStackEntryList;
 begin
   FDbgController.CurrentThread.PrepareCallStackEntryList;
 end;
+
+procedure TFpDebugDebugger.DoFreeBreakpoint;
+begin
+  FCacheBreakpoint.Free;
+end;
+
 {$endif linux}
 
 function TFpDebugDebugger.AddBreak(const ALocation: TDbgPtr): FpDbgClasses.TDbgBreakpoint;
@@ -1520,6 +1530,16 @@ begin
   result := FCacheBreakpoint;
 {$else linux}
   result := TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFileName, ALine);
+{$endif linux}
+end;
+
+procedure TFpDebugDebugger.FreeBreakpoint(const ABreakpoint: FpDbgClasses.TDbgBreakpoint);
+begin
+{$ifdef linux}
+  FCacheBreakpoint:=ABreakpoint;
+  ExecuteInDebugThread(@DoFreeBreakpoint);
+{$else linux}
+  ABreakpoint.Free;
 {$endif linux}
 end;
 
