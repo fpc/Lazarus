@@ -3,7 +3,6 @@
 // Open a given URL with the default browser
 function OpenURL(AURL: String): Boolean;
 var
-  cf: CFStringRef;
   url: CFURLRef;
 begin
   if AURL = '' then
