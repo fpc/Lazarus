@@ -1716,6 +1716,7 @@ begin
     TheHint:='';
   end else begin
     HintWinRect := aHintWindow.CalcHintRect(Screen.Width, TheHint);
+    aHintWindow.HintRectAdjust := HintWinRect;      // Adds borders.
   end;
   OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);
 

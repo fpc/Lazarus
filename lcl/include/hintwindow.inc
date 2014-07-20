@@ -257,7 +257,6 @@ begin
       ThemeServices.GetElementDetails(tttStandardNormal), AHint, Flags, @Result)
   else
     DrawText(uh, PChar(AHint), Length(AHint), Result, Flags);
-  HintRectAdjust := Result;      // Adds borders.
   //debugln('THintWindow.CalcHintRect Result=',dbgs(Result));
 end;
 

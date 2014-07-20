@@ -328,8 +328,11 @@ var
   NewWidth, NewHeight: integer;
 
   procedure DoText;
+  var
+    HintWinRect: TRect;
   begin
-    HintTextWindow.CalcHintRect(Screen.Width, TheHint);
+    HintWinRect := HintTextWindow.CalcHintRect(Screen.Width, TheHint);
+    HintTextWindow.HintRectAdjust := HintWinRect;      // Adds borders.
     HintTextWindow.OffsetHintRect(ScreenPos);
     HintTextWindow.ActivateText(TheHint);
   end;
