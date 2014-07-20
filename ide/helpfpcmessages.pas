@@ -695,22 +695,14 @@ end;
 
 procedure TEditIDEMsgHelpDialog.UpdateCurMessage;
 var
-  {$IFNDEF EnableOldExtTools}
   Line: TMessageLine;
-  {$ELSE}
-  Line: TIDEMessageLine;
-  {$ENDIF}
   sl: TStringList;
   MsgFile: TFPCMsgFile;
   FPCMsg: TFPCMsgItem;
 begin
   CurMsg:='';
   CurFPCId:=-1;
-  {$IFNDEF EnableOldExtTools}
   Line:=IDEMessagesWindow.GetSelectedLine;
-  {$ELSE}
-  Line:=IDEMessagesWindow.GetSelectedLine;
-  {$ENDIF}
   if Line=nil then begin
     CurMsgMemo.Text:=lisNoMessageSelected;
     CurMsgMemo.Enabled:=false;
@@ -719,16 +711,12 @@ begin
     sl:=TStringList.Create;
     try
       sl.Add('Msg='+Line.Msg);
-      {$IFNDEF EnableOldExtTools}
       sl.Add('MsgID='+IntToStr(Line.MsgID));
-      {$ENDIF}
       MsgFile:=FPCMsgHelpDB.GetMsgFile;
       if MsgFile<>nil then begin
         FPCMsg:=nil;
-        {$IFNDEF EnableOldExtTools}
         if Line.MsgID>0 then
           FPCMsg:=MsgFile.FindWithID(Line.MsgID);
-        {$ENDIF}
         if FPCMsg=nil then
           FPCMsg:=MsgFile.FindWithMessage(Line.Msg);
         if FPCMsg<>nil then begin
@@ -736,12 +724,6 @@ begin
           sl.Add('FPC Msg='+FPCMsg.GetName);
         end;
       end;
-      {$IFNDEF EnableOldExtTools}
-      {$ELSE}
-      sl.Add('Directory='+Line.Directory);
-      if Line.Parts<>nil then
-        sl.AddStrings(Line.Parts);
-      {$ENDIF}
       CurMsgMemo.Text:=sl.Text;
     finally
       sl.Free;

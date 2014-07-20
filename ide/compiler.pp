@@ -39,13 +39,8 @@ interface
 
 uses
   Classes, SysUtils, Process, LCLProc, Forms, Controls, contnrs, strutils, FileUtil,
+  IDEExternToolIntf, IDEMsgIntf, CompOptsIntf, LazIDEIntf,
   LazarusIDEStrConsts, CompilerOptions, Project,
-  {$IFNDEF EnableOldExtTools}
-  IDEExternToolIntf,
-  {$ELSE}
-  UTF8Process, OutputFilter, InfoBuild,
-  {$ENDIF}
-  IDEMsgIntf, CompOptsIntf, LazIDEIntf,
   DefineTemplates, TransferMacros, EnvironmentOpts, LazFileUtils;
 
 type
@@ -56,10 +51,6 @@ type
   TCompiler = class(TObject)
   private
     FOnCmdLineCreate : TOnCmdLineCreate;
-    {$IFDEF EnableOldExtTools}
-    FOutputFilter: TOutputFilter;
-    FTheProcess: TProcessUTF8;
-    {$ENDIF}
   public
     constructor Create;
     destructor Destroy; override;
@@ -69,10 +60,6 @@ type
                      const aCompileHint: string
                     ): TModalResult;
     procedure WriteError(const Msg: string);
-    {$IFDEF EnableOldExtTools}
-    property OutputFilter: TOutputFilter read FOutputFilter write FOutputFilter;
-    property TheProcess: TProcessUTF8 read FTheProcess;
-    {$ENDIF}
   end;
 
   // Following classes are for compiler options parsed from "fpc -h" and "fpc -i".
@@ -271,9 +258,6 @@ end;
 ------------------------------------------------------------------------------}
 destructor TCompiler.Destroy;
 begin
-  {$IFDEF EnableOldExtTools}
-  FreeAndNil(FTheProcess);
-  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -286,19 +270,12 @@ function TCompiler.Compile(AProject: TProject; const WorkingDir,
 var
   CmdLine : String;
   Abort : Boolean;
-  {$IFNDEF EnableOldExtTools}
   Tool: TAbstractExternalTool;
   FPCParser: TFPCParser;
-  {$ENDIF}
 begin
   Result:=mrCancel;
   if ConsoleVerbosity>=0 then
     DebugLn('TCompiler.Compile WorkingDir="',WorkingDir,'" CompilerFilename="',CompilerFilename,'" CompilerParams="',CompilerParams,'"');
-
-  // if we want to show the compile progress, it's now time to show the dialog
-  {$IFDEF EnableOldExtTools}
-  CompileProgress.Show;
-  {$ENDIF}
 
   try
     CheckIfFileIsExecutable(CompilerFilename);
@@ -332,7 +309,6 @@ begin
   if ConsoleVerbosity>=0 then
     DebugLn('[TCompiler.Compile] CmdLine="',CompilerFilename+CmdLine,'"');
 
-  {$IFNDEF EnableOldExtTools}
   Tool:=ExternalToolList.Add('Compile Project');
   Tool.Reference(Self,ClassName);
   try
@@ -356,55 +332,6 @@ begin
   finally
     Tool.Release(Self);
   end;
-  {$ELSE}
-  try
-    if TheProcess=nil then
-      FTheProcess := TOutputFilterProcess.Create(nil);
-    TheProcess.CommandLine := CompilerFilename+CmdLine;
-    TheProcess.Options:= [poUsePipes, poStdErrToOutput];
-    TheProcess.ShowWindow := swoHide;
-    Result:=mrOk;
-    try
-      TheProcess.CurrentDirectory:=WorkingDir;
-
-      if OutputFilter<>nil then begin
-        if BuildAll and Assigned(IDEMessagesWindow) then
-          IDEMessagesWindow.AddMsg(lisOptionsChangedRecompilingCleanWithB,
-            WorkingDir, -1);
-        OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
-        OutputFilter.CompilerOptions:=AProject.CompilerOptions;
-        if not OutputFilter.Execute(TheProcess,Self) then
-          if OutputFilter.Aborted then
-            Result := mrAbort
-          else
-            Result := mrCancel;
-      end else begin
-        TheProcess.Execute;
-      end;
-    finally
-      if TheProcess.Running
-      then begin
-        TheProcess.WaitOnExit;
-        if not (TheProcess.ExitStatus in [0,1]) then  begin
-          WriteError(Format(listCompilerInternalError,[TheProcess.ExitStatus]));
-          Result:=mrCancel;
-        end;
-      end;
-    end;
-  except
-    on e: EOutputFilterError do begin
-      Result:=mrCancel;
-      exit;
-    end;
-    on e: Exception do begin
-      if ConsoleVerbosity>=-1 then
-        DebugLn('[TCompiler.Compile] exception "',E.Message,'"');
-      WriteError(E.Message);
-      Result:=mrCancel;
-      exit;
-    end;
-  end;
-  {$ENDIF}
   if ConsoleVerbosity>=0 then
     DebugLn('[TCompiler.Compile] end');
 end;
@@ -412,13 +339,8 @@ end;
 procedure TCompiler.WriteError(const Msg: string);
 begin
   DebugLn('TCompiler.WriteError ',Msg);
-  {$IFNDEF EnableOldExtTools}
   if IDEMessagesWindow<>nil then
     IDEMessagesWindow.AddCustomMessage(mluError,Msg);
-  {$ELSE}
-  if OutputFilter <> nil then
-    OutputFilter.ReadConstLine(Msg, True);
-  {$ENDIF}
 end;
 
 // Compiler options parsed from "fpc -h" and "fpc -i".
