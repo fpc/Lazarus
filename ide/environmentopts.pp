@@ -41,9 +41,6 @@ uses
   Dialogs, LazConfigStorage, Laz2_XMLCfg, LazUTF8,
   // IDEIntf
   ProjectIntf, ObjectInspector, IDEWindowIntf, IDEOptionsIntf,
-  {$IFDEF EnableOldExtTools}
-  CompOptsIntf,
-  {$ENDIF}
   ComponentReg, IDEExternToolIntf, IDEDialogs, MacroDefIntf,
   DbgIntfDebuggerBase,
   // IDE
@@ -222,7 +219,6 @@ const
     );
 
   { External Tools - the user menu items in the Tools menu }
-{$IFNDEF EnableOldExtTools}
 type
   TBaseExternalUserTools = class
   public
@@ -233,21 +229,6 @@ type
   TExternalUserToolsClass = class of TBaseExternalUserTools;
 var
   ExternalUserToolsClass: TExternalUserToolsClass; // set by ExtToolEditDlg to TExternalUserTools
-{$ELSE}
-type
-  TBaseExternalToolList = class(TList)
-  public
-    function Load(Config: TConfigStorage; const Path: string): TModalResult; virtual; abstract;
-    function Save(Config: TConfigStorage; const Path: string): TModalResult; virtual; abstract;
-    function Run(ExtTool: TIDEExternalToolOptions;
-                 Macros: TTransferMacroList;
-                 ShowAbort: boolean;
-                 CompilerOptions: TLazCompilerOptions = nil): TModalResult; virtual; abstract;
-  end;
-  TExternalToolListClass = class of TBaseExternalToolList;
-var
-  ExternalToolListClass: TExternalToolListClass; // set by ExtToolDialog
-{$ENDIF}
 
 type
   TEnvOptParseType = (
@@ -362,9 +343,7 @@ type
     fMsgViewColors: array[TMsgWndColor] of TColor;
     FShowCompileDialog: Boolean;       // show dialog during compile
     FAutoCloseCompileDialog: Boolean;  // auto close dialog after succesed compile
-    {$IFNDEF EnableOldExtTools}
     FMsgViewFilters: TLMsgViewFilters;
-    {$ENDIF}
 
     // compiler + debugger + lazarus files
     FParseValues: array[TEnvOptParseType] of TParseString;
@@ -417,12 +396,8 @@ type
     FBackupInfoOtherFiles: TBackupInfo;
     
     // external tools
-    {$IFNDEF EnableOldExtTools}
     fExternalUserTools: TBaseExternalUserTools; // see ExtToolEditDlg.TExternalUserTools
-    {$ELSE}
-    fExternalTools: TBaseExternalToolList;
-    {$ENDIF}
-    
+
     // naming conventions
     fPascalFileExtension: TPascalExtType;
     fCharcaseFileAction : TCharCaseFileAction;
@@ -712,12 +687,7 @@ type
                                                write FBackupInfoOtherFiles;
        
     // external tools
-    {$IFNDEF EnableOldExtTools}
     property ExternalToolMenuItems: TBaseExternalUserTools read fExternalUserTools;
-    {$ELSE}
-    property ExternalTools: TBaseExternalToolList read fExternalTools
-                                                  write fExternalTools;
-    {$ENDIF}
 
     // naming conventions
     property PascalFileExtension: TPascalExtType read fPascalFileExtension
@@ -754,9 +724,7 @@ type
     property MsgViewFilenameStyle: TMsgWndFileNameStyle read FMsgViewFilenameStyle
                        write FMsgViewFilenameStyle;
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
-    {$IFNDEF EnableOldExtTools}
     property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters write FMsgViewFilters;
-    {$ENDIF}
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
@@ -1007,9 +975,7 @@ begin
   FMsgViewFilenameStyle:=mwfsShort;
   for c:=low(TMsgWndColor) to high(TMsgWndColor) do
     fMsgViewColors[c]:=MsgWndDefaultColors[c];
-  {$IFNDEF EnableOldExtTools}
   FMsgViewFilters:=TLMsgViewFilters.Create(nil);
-  {$ENDIF}
 
   // glyphs
   FShowButtonGlyphs := sbgSystem;
@@ -1058,12 +1024,8 @@ begin
   end;
   
   // external tools
-  {$IFNDEF EnableOldExtTools}
   fExternalUserTools:=ExternalUserToolsClass.Create;
-  {$ELSE}
-  fExternalTools:=ExternalToolListClass.Create;
-  {$ENDIF}
-  
+
   // naming
   fPascalFileExtension:=petPAS;
   fCharcaseFileAction:=ccfaAutoRename;
@@ -1084,12 +1046,8 @@ var
   i: Integer;
 begin
   FreeAndNil(FBuildMatrixOptions);
-  {$IFNDEF EnableOldExtTools}
   FreeAndNil(FMsgViewFilters);
   FreeAndNil(fExternalUserTools);
-  {$ELSE}
-  FreeAndNil(fExternalTools);
-  {$ENDIF}
   FreeAndNil(FRecentOpenFiles);
   FreeAndNil(FRecentProjectFiles);
   FreeAndNil(FRecentPackageFiles);
@@ -1475,9 +1433,7 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         fMsgViewColors[mwc]:=XMLConfig.GetValue(
           Path+'MsgView/Colors/'+MsgWndColorNames[mwc],MsgWndDefaultColors[mwc]);
-      {$IFNDEF EnableOldExtTools}
       MsgViewFilters.LoadFromXMLConfig(XMLConfig,'MsgView/Filters/');
-      {$ENDIF}
 
       // glyphs
       FShowButtonGlyphs := TApplicationShowGlyphs(XMLConfig.GetValue(Path+'ShowButtonGlyphs/Value',
@@ -1512,11 +1468,7 @@ begin
       end;
 
       // external tools
-      {$IFNDEF EnableOldExtTools}
       fExternalUserTools.Load(FConfigStore,Path+'ExternalTools/');
-      {$ELSE}
-      fExternalTools.Load(FConfigStore,Path+'ExternalTools/');
-      {$ENDIF}
 
       // naming
       LoadPascalFileExt(Path+'');
@@ -1864,9 +1816,7 @@ begin
       for mwc:=low(TMsgWndColor) to high(TMsgWndColor) do
         XMLConfig.SetDeleteValue(Path+'MsgView/Colors/'+MsgWndColorNames[mwc],
         fMsgViewColors[mwc],MsgWndDefaultColors[mwc]);
-      {$IFNDEF EnableOldExtTools}
       MsgViewFilters.SaveToXMLConfig(XMLConfig,'MsgView/Filters/');
-      {$ENDIF}
 
       // glyphs
       XMLConfig.SetDeleteValue(Path+'ShowButtonGlyphs/Value',
@@ -1891,11 +1841,7 @@ begin
       XMLConfig.SetDeleteValue(Path+'Recent/AlreadyPopulated', FAlreadyPopulatedRecentFiles, false);
 
       // external tools
-      {$IFNDEF EnableOldExtTools}
       fExternalUserTools.Save(FConfigStore,Path+'ExternalTools/');
-      {$ELSE}
-      fExternalTools.Save(FConfigStore,Path+'ExternalTools/');
-      {$ENDIF}
 
       // naming
       XMLConfig.SetDeleteValue(Path+'Naming/PascalFileExtension',

@@ -27,8 +27,6 @@ unit etMessageFrame;
 
 {$mode objfpc}{$H+}
 
-{$IFDEF EnableOldExtTools}{$Error Wrong}{$ENDIF}
-
 {$I ide.inc}
 
 interface

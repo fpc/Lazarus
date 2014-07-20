@@ -37,10 +37,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Laz2_XMLCfg, Process, LCLProc, Controls,
   Graphics, Forms, CodeToolManager, FileProcs, LazConf, LResources, ProjectIntf,
-  ProjectResourcesIntf, IDEMsgIntf, MacroIntf,
-  {$IFNDEF EnableOldExtTools}
-  IDEExternToolIntf,
-  {$ENDIF}
+  ProjectResourcesIntf, IDEMsgIntf, MacroIntf, IDEExternToolIntf,
   LazarusIDEStrConsts, resource, bitmapresource, groupresource,
   groupiconresource, groupcursorresource;
    
@@ -189,11 +186,7 @@ begin
     end;
   end
   else
-  {$IFNDEF EnableOldExtTools}
     IDEMessagesWindow.AddCustomMessage(mluError,Format(lisFileNotFound2, [Filename]));
-  {$ELSE}
-    IDEMessagesWindow.AddMsg(Format(lisFileNotFound2, [Filename]), '', -1);
-  {$ENDIF}
 end;
 
 function TResourceItem.GetRealFileName(ProjectDirectory: String): String;

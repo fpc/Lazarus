@@ -42,73 +42,15 @@ uses
   Buttons, StdCtrls, ComCtrls, Dialogs, ExtCtrls, ButtonPanel, Menus,
   FileProcs,
   IDEExternToolIntf, IDEImagesIntf, IDEDialogs, IDEHelpIntf, IDECommands,
-  {$IFDEF EnableOldExtTools}
-  LazConfigStorage, UTF8Process, CompOptsIntf,
-  {$ENDIF}
   ProjectIntf,
   EnvironmentOpts,
   ExtToolEditDlg, KeyMapping, TransferMacros, IDEProcs, LazFileUtils,
   CompilerOptions,
-  {$IFDEF EnableOldExtTools}
-  InfoBuild, OutputFilter,
-  {$ENDIF}
   LazarusIDEStrConsts, IDEOptionDefs, EditorOptions;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
 
-{$IFNDEF EnableOldExtTools}
-
-{$ELSE EnableOldExtTools}
-
-type
-  TOnNeedsOutputFilter = procedure(var OutputFilter: TOutputFilter;
-                           var Abort: boolean) of object;
-  TOnFreeOutputFilter = procedure(OutputFilter: TOutputFilter;
-                           ErrorOccurred: boolean) of object;
-
-  { TExternalToolList -
-    the storage object for all external tools }
-
-  TExternalToolList = class(TBaseExternalToolList)
-  private
-    fOnFreeOutputFilter: TOnFreeOutputFilter;
-    fOnNeedsOutputFilter: TOnNeedsOutputFilter;
-    fRunningTools: TList; // list of TProcess
-    fAllKeys: TKeyCommandRelationList;
-    function GetToolOpts(Index: integer): TExternalToolOptions;
-    procedure SetToolOpts(Index: integer; NewTool: TExternalToolOptions);
-    procedure AddRunningTool(TheProcess: TProcess; ExecuteProcess: boolean);
-  public
-    procedure Add(NewTool: TExternalToolOptions);
-    procedure Assign(Source: TExternalToolList);
-    procedure Clear; override;
-    constructor Create;
-    procedure Delete(Index: integer); 
-    destructor Destroy; override;
-    procedure FreeStoppedProcesses;
-    procedure Insert(Index: integer; NewTool: TExternalToolOptions);
-    function Load(Config: TConfigStorage): TModalResult;
-    function Load(Config: TConfigStorage; const Path: string): TModalResult; override;
-    procedure LoadShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
-    function Run(ExtTool: TIDEExternalToolOptions;
-                 Macros: TTransferMacroList;
-                 ShowAbort: boolean;
-                 CompilerOptions: TLazCompilerOptions = nil): TModalResult; override;
-    function Run(Index: integer; Macros: TTransferMacroList;
-                 ShowAbort: boolean): TModalResult;
-    function Save(Config: TConfigStorage): TModalResult;
-    function Save(Config: TConfigStorage; const Path: string): TModalResult; override;
-    procedure SaveShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
-    
-    property Items[Index: integer]: TExternalToolOptions
-      read GetToolOpts write SetToolOpts; default;
-    property OnFreeOutputFilter: TOnFreeOutputFilter
-      read fOnFreeOutputFilter write fOnFreeOutputFilter;
-    property OnNeedsOutputFilter: TOnNeedsOutputFilter
-      read fOnNeedsOutputFilter write fOnNeedsOutputFilter;
-  end;
-{$Endif EnableOldExtTools}
 type
   { TExternalToolDialog -
     the dialog to edit all external tools }
@@ -143,34 +85,29 @@ type
     procedure MoveDownButtonClick(Sender: TObject);
     procedure ListboxClick(Sender: TObject);
   private
-    {$IFNDEF EnableOldExtTools}
     fExtToolList: TExternalUserTools;
-    {$ELSE}
-    fExtToolList: TExternalToolList;
-    {$ENDIF}
     fTransferMacros: TTransferMacroList;
     procedure Load;
-    procedure SetExtToolList(NewExtToolList: {$IFNDEF EnableOldExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF});
+    procedure SetExtToolList(NewExtToolList: TExternalUserTools);
     procedure SetTransferMacros(NewMacros: TTransferMacroList);
     function ToolDescription(Index: integer): string;
     procedure EnableButtons;
   public
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
-    property ExtToolList: {$IFNDEF EnableOldExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF}
-      read fExtToolList write SetExtToolList;
+    property ExtToolList: TExternalUserTools read fExtToolList write SetExtToolList;
     property TransferMacros: TTransferMacroList
                                    read fTransferMacros write SetTransferMacros;
   end;
   
-function ShowExtToolDialog(ExtToolList: {$IFNDEF EnableOldExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF};
+function ShowExtToolDialog(ExtToolList: TExternalUserTools;
   TransferMacros: TTransferMacroList):TModalResult;
 
 implementation
 
 {$R *.lfm}
 
-function ShowExtToolDialog(ExtToolList: {$IFNDEF EnableOldExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF};
+function ShowExtToolDialog(ExtToolList: TExternalUserTools;
   TransferMacros: TTransferMacroList):TModalResult;
 var
   ExternalToolDialog: TExternalToolDialog;
@@ -187,369 +124,6 @@ begin
     ExternalToolDialog.Free;
   end;
 end;
-
-{$IFNDEF EnableOldExtTools}
-
-{$ELSE EnableOldExtTools}
-
-{ TExternalToolList }
-
-function TExternalToolList.GetToolOpts(Index: integer): TExternalToolOptions;
-begin
-  Result:=TExternalToolOptions(inherited Items[Index]);
-end;
-
-procedure TExternalToolList.SetToolOpts(Index: integer; 
-  NewTool: TExternalToolOptions);
-begin
-  inherited Items[Index]:=NewTool;
-end;
-
-procedure TExternalToolList.Add(NewTool: TExternalToolOptions);
-begin
-  inherited Add(NewTool);
-end;
-
-procedure TExternalToolList.Assign(Source: TExternalToolList);
-var
-  i: integer;
-begin
-  if Source=Self then exit;
-  Clear;
-  if Source=nil then exit;
-  Count:=Source.Count;
-  for i:=0 to Count-1 do begin
-    Items[i]:=TExternalToolOptions.Create;
-    Items[i].Assign(Source[i]);
-  end;
-end;
-
-constructor TExternalToolList.Create;
-begin
-  inherited Create;
-  Clear;
-end;
-
-procedure TExternalToolList.Delete(Index: integer); 
-begin
-  Items[Index].Free;
-  inherited Delete(Index);
-end;
-
-destructor TExternalToolList.Destroy;
-var
-  i: Integer;
-begin
-  FreeStoppedProcesses;
-  if fRunningTools<>nil then begin
-    for i:=0 to fRunningTools.Count-1 do
-      TProcess(fRunningTools[i]).Free;
-    fRunningTools.Free;
-  end;
-  fAllKeys.Free;
-  inherited Destroy;
-end;
-
-procedure TExternalToolList.Clear; 
-var
-  i: integer;
-begin
-  for i:=0 to Count-1 do
-    TExternalToolOptions(Items[i]).Free;
-  inherited Clear;
-end;
-
-procedure TExternalToolList.Insert(Index: integer; NewTool: TExternalToolOptions);
-begin
-  inherited Insert(Index,NewTool);
-end;
-
-function TExternalToolList.Load(Config: TConfigStorage): TModalResult;
-var
-  i: integer;
-  NewTool: TExternalToolOptions;
-begin
-  Clear;
-  Count:=Config.GetValue('Count',0);
-  for i:=0 to Count-1 do begin
-    NewTool:=TExternalToolOptions.Create;
-    Items[i]:=NewTool;
-    Config.AppendBasePath('Tool'+IntToStr(i+1)+'/');
-    try
-      if NewTool.Load(Config)<>mrOk then exit;
-    finally
-      Config.UndoAppendBasePath;
-    end;
-  end;
-  Result:=mrOk;
-end;
-
-function TExternalToolList.Load(Config: TConfigStorage; const Path: string
-  ): TModalResult;
-begin
-  if Path<>'' then
-    Config.AppendBasePath(Path);
-  try
-    Result:=Load(Config);
-  finally
-    if Path<>'' then
-      Config.UndoAppendBasePath;
-  end;
-end;
-
-procedure TExternalToolList.LoadShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
-var
-  i: integer;
-  KeyCommandRelation: TKeyCommandRelation;
-begin
-  if not assigned(fAllKeys) then
-    fAllKeys:=TKeyCommandRelationList.Create;
-  fAllKeys.Assign(KeyCommandRelationList);
-  for i:=0 to Count-1 do begin
-    KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
-    if KeyCommandRelation<>nil then begin
-      Items[i].Key:=KeyCommandRelation.ShortcutA.Key1;
-      Items[i].Shift:=KeyCommandRelation.ShortcutA.Shift1;
-    end else begin
-      Items[i].Key:=VK_UNKNOWN;
-      Items[i].Shift:=[];
-    end;
-  end;
-end;
-
-function TExternalToolList.Run(Index: integer;
-  Macros: TTransferMacroList; ShowAbort: boolean): TModalResult;
-begin
-  Result:=mrCancel;
-  if (Index<0) or (Index>=Count) then exit;
-  Result:=Run(Items[Index],Macros,ShowAbort);
-end;
-
-function TExternalToolList.Run(ExtTool: TIDEExternalToolOptions;
-  Macros: TTransferMacroList; ShowAbort: boolean;
-  CompilerOptions: TLazCompilerOptions): TModalResult;
-var
-  WorkingDir, Filename, Params, CmdLine, Title: string;
-  TheProcess: TProcessUTF8;
-  Abort, ErrorOccurred: boolean;
-  NewFilename: String;
-  TheOutputFilter: TOutputFilter;
-begin
-  Result:=mrCancel;
-  if ExtTool=nil then exit;
-  TheOutputFilter:=nil;
-  Filename:=ExtTool.Filename;
-  WorkingDir:=ExtTool.WorkingDirectory;
-  Params:=ExtTool.CmdLineParams;
-  Title:=ExtTool.Title;
-  if Title='' then Title:=Filename;
-  if (not Macros.SubstituteStr(Filename)) then exit;
-  if (not Macros.SubstituteStr(WorkingDir)) then exit;
-  if (not Macros.SubstituteStr(Params)) then exit;
-
-  // expand working directory
-  WorkingDir:=TrimAndExpandDirectory(WorkingDir);
-  if (WorkingDir<>'')
-  and (not DirPathExists(WorkingDir)) then begin
-    Result:=IDEMessageDialogAb(lisExtToolFailedToRunTool,
-      Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', LineEnding,
-        Format(lisWorkingDirectoryNotFound, [WorkingDir])]),
-      mtError,[mbCancel],ShowAbort);
-    CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', LineEnding,
-        Format(lisWorkingDirectoryNotFound, [WorkingDir])]);
-    exit;
-  end;
-
-  // expand file name
-  if not FilenameIsAbsolute(Filename) then begin
-    NewFilename:=FindProgram(Filename,GetCurrentDirUTF8,false);
-    if NewFilename='' then begin
-      Result:=IDEMessageDialogAb(lisExtToolFailedToRunTool,
-        Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', LineEnding,
-          Format(lisProgramNotFound, [Filename])]),
-        mtError,[mbCancel],ShowAbort);
-      CompileProgress.Ready(lisExtToolUnableToRunTheTool, ['"', Title, '"', LineEnding,
-          Format(lisProgramNotFound, [Filename])]);
-      exit;
-    end;
-    Filename:=NewFilename;
-  end;
-  WorkingDir:=TrimFilename(WorkingDir);
-  Filename:=TrimFilename(Filename);
-  CmdLine:=Filename;
-  if Params<>'' then
-    CmdLine:=CmdLine+' '+Params;
-  DebugLn('[TExternalToolList.Run] CmdLine="',CmdLine,'" WorkDir="',WorkingDir,'"');
-  TheProcess:=nil;
-  try
-    try
-      CheckIfFileIsExecutable(Filename);
-      TheProcess := TOutputFilterProcess.Create(nil);
-      TheProcess.Executable := FileName;
-      SplitCmdLineParams(Params,TheProcess.Parameters);
-      TheProcess.Options:= [poUsePipes,poStdErrToOutPut];
-      if ExtTool.HideMainForm then
-        TheProcess.ShowWindow := swoHide
-      else
-        TheProcess.ShowWindow := swoShowNormal;
-      TheProcess.CurrentDirectory := WorkingDir;
-      if ExtTool.EnvironmentOverrides.Count>0 then
-        ExtTool.AssignEnvironmentTo(TheProcess.Environment);
-      if (ExtTool.NeedsOutputFilter) and (TheOutputFilter=nil)
-      and Assigned(OnNeedsOutputFilter) then begin
-        Abort:=false;
-        OnNeedsOutputFilter(TheOutputFilter,Abort);
-        if Abort then begin
-          CompileProgress.Ready(lisInfoBuildAbort);
-          Result:=mrAbort;
-          exit;
-        end;
-      end;
-      if TheOutputFilter<>nil then begin
-        ErrorOccurred:=false;
-        try
-          TheOutputFilter.CompilerOptions:=CompilerOptions as TBaseCompilerOptions;
-          TheOutputFilter.Options:=[ofoExceptionOnError,ofoMakeFilenamesAbsolute];
-          if ExtTool.ScanOutputForFPCMessages then
-            TheOutputFilter.Options:=TheOutputFilter.Options+[ofoSearchForFPCMessages];
-          if ExtTool.ScanOutputForMakeMessages then
-            TheOutputFilter.Options:=TheOutputFilter.Options+[ofoSearchForMakeMessages];
-          if ExtTool.ShowAllOutput then
-            TheOutputFilter.Options:=TheOutputFilter.Options+[ofoShowAll];
-          try
-            Result:=mrCancel;
-            try
-              if TheOutputFilter.Execute(TheProcess,Self,ExtTool) then begin
-                TheOutputFilter.ReadConstLine(Format(lisExtToolTitleCompleted,[Title]),true);
-              end;
-              if TheOutputFilter.ErrorExists then begin
-                ErrorOccurred:=true;
-              end;
-            finally
-              TheProcess.WaitOnExit;
-              FreeAndNil(TheProcess);
-            end;
-            if ErrorOccurred then
-              Result:=mrCancel
-            else if TheOutputFilter.Aborted then
-              Result:=mrAbort
-            else
-              Result:=mrOk;
-          except
-            on e: EOutputFilterError do begin
-              DebugLn('TExternalToolList.Run Exception: ',E.Message);
-              ErrorOccurred:=true;
-            end
-            else
-              raise
-          end;
-        finally
-          if Assigned(OnFreeOutputFilter) then
-            OnFreeOutputFilter(TheOutputFilter,ErrorOccurred);
-        end;
-      end else begin
-        AddRunningTool(TheProcess,true);
-        TheProcess:=nil;
-        Result:=mrOk;
-      end;
-    finally
-      FreeAndNil(TheProcess);
-    end;
-  except
-    on e: Exception do begin
-      DebugLn('TExternalToolList.Run ',lisExtToolFailedToRunTool, ' ', E.Message);
-      DumpExceptionBackTrace;
-      Result:=IDEMessageDialogAb(lisExtToolFailedToRunTool,
-        Format(lisExtToolUnableToRunTheTool, ['"', Title, '"', LineEnding, e.Message]),
-        mtError,[mbCancel],ShowAbort);
-      CompileProgress.Ready(lisExtToolUnableToRunTheTool,
-                            ['"', Title, '"', LineEnding, e.Message]);
-    end;
-  end;
-end;
-
-function TExternalToolList.Save(Config: TConfigStorage): TModalResult;
-var
-  i: integer;
-begin
-  Config.SetValue('Count',Count);
-  for i:=0 to Count-1 do begin
-    Config.AppendBasePath('Tool'+IntToStr(i+1)+'/');
-    try
-      if Items[i].Save(Config)<>mrOk then exit;
-    finally
-      Config.UndoAppendBasePath;
-    end;
-  end;
-  Result:=mrOk;
-end;
-
-function TExternalToolList.Save(Config: TConfigStorage; const Path: string): TModalResult;
-begin
-  if Path<>'' then
-    Config.AppendBasePath(Path);
-  try
-    Result:=Save(Config);
-  finally
-    if Path<>'' then
-      Config.UndoAppendBasePath;
-  end;
-end;
-
-procedure TExternalToolList.SaveShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
-var
-  i: integer;
-  KeyCommandRelation: TKeyCommandRelation;
-begin
-  KeyCommandRelationList.ExtToolCount:=Count;
-  for i:=0 to Count-1 do begin
-    KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
-    if KeyCommandRelation<>nil then begin
-      KeyCommandRelation.ShortcutA:=IDEShortCut(Items[i].Key,Items[i].Shift,
-                                           VK_UNKNOWN,[]);
-    end else begin
-      DebugLn('[TExternalToolList.SaveShortCuts] Error: '
-        +'unable to save shortcut for external tool "',Items[i].Title,'"');
-    end;
-  end;
-end;
-
-procedure TExternalToolList.AddRunningTool(TheProcess: TProcess;
-  ExecuteProcess: boolean);
-begin
-  if fRunningTools=nil then fRunningTools:=TList.Create;
-  fRunningTools.Add(TheProcess);
-  if ExecuteProcess then
-    TheProcess.Execute;
-end;
-
-procedure TExternalToolList.FreeStoppedProcesses;
-var
-  i: integer;
-  TheProcess: TProcess;
-begin
-  if fRunningTools=nil then exit;
-  i:=fRunningTools.Count-1;
-  while i>=0 do begin
-    try
-      TheProcess:=TProcess(fRunningTools[i]);
-      if not TheProcess.Running then begin
-        try
-          TheProcess.WaitOnExit;
-          TheProcess.Free;
-        finally
-          fRunningTools.Delete(i);
-        end;
-      end;
-    except
-      on E: Exception do begin
-        DebugLn('Error freeing stopped process: ',E.Message);
-      end;
-    end;
-    dec(i);
-  end;
-end;
-{$ENDIF}
 
 { TExternalToolDialog }
 
@@ -581,11 +155,7 @@ begin
   MoveUpButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_up');
   MoveDownButton.ImageIndex := IDEImages.LoadImage(16, 'arrow_down');
 
-  {$IFNDEF EnableOldExtTools}
   fExtToolList:=TExternalUserTools.Create;
-  {$ELSE}
-  fExtToolList:=TExternalToolList.Create;
-  {$ENDIF}
 end;
 
 destructor TExternalToolDialog.Destroy;
@@ -594,7 +164,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TExternalToolDialog.SetExtToolList(NewExtToolList: {$IFNDEF EnableOldExtTools}TExternalUserTools{$ELSE}TExternalToolList{$ENDIF});
+procedure TExternalToolDialog.SetExtToolList(NewExtToolList: TExternalUserTools);
 begin
   if fExtToolList=NewExtToolList then exit;
   fExtToolList.Assign(NewExtToolList);
@@ -609,13 +179,7 @@ end;
 
 function TExternalToolDialog.ToolDescription(Index: integer): string;
 begin
-  {$IFNDEF EnableOldExtTools}
   Result:=fExtToolList[Index].Title;
-  {$ELSE}
-  Result:=fExtToolList[Index].ShortDescription;
-  if Result='' then
-    Result:=fExtToolList[Index].Title;
-  {$ENDIF}
   if Result='' then
     Result:=ExtractFilename(fExtToolList[Index].Filename);
   //DebugLn(['TExternalToolDialog.ToolDescription Index=',Index,' Result=',Result,' Cmd="',fExtToolList[Index].Filename,' ',fExtToolList[Index].CmdLineParams,'"']);
@@ -636,11 +200,7 @@ end;
 procedure TExternalToolDialog.AddButtonClick(Sender: TObject);
 var
   MsgResult: TModalResult;
-  {$IFNDEF EnableOldExtTools}
   NewTool: TExternalUserTool;
-  {$ELSE}
-  NewTool: TExternalToolOptions;
-  {$ENDIF}
 begin
   if fExtToolList.Count>=MaxExtTools then begin
     IDEMessageDialog(lisExtToolMaximumToolsReached,
@@ -648,14 +208,8 @@ begin
                   mtInformation,[mbCancel]);
     exit;
   end;
-  {$IFNDEF EnableOldExtTools}
   NewTool:=TExternalUserTool.Create(nil);
   MsgResult:=ShowExtToolOptionDlg(fTransferMacros, NewTool, EditorOpts.KeyMap);
-  {$ELSE}
-  NewTool:=TExternalToolOptions.Create;
-  MsgResult:=ShowExtToolOptionDlg(fTransferMacros, NewTool,
-          TExternalToolList(EnvironmentOptions.ExternalTools).fAllKeys);
-  {$ENDIF}
   if MsgResult=mrOk then
   begin
     fExtToolList.Add(NewTool);
@@ -673,20 +227,12 @@ end;
 
 procedure TExternalToolDialog.MenuItemCloneClick(Sender: TObject);
 var
-  {$IFNDEF EnableOldExtTools}
   NewTool, OldTool: TExternalUserTool;
-  {$ELSE}
-  NewTool, OldTool: TExternalToolOptions;
-  {$ENDIF}
 begin
   If Listbox.ItemIndex <> -1 Then Begin
     OldTool := fExtToolList.Items[Listbox.ItemIndex];
     If Assigned(OldTool) Then Begin
-      {$IFNDEF EnableOldExtTools}
       NewTool:=TExternalUserTool.Create(nil);
-      {$ELSE}
-      NewTool:=TExternalToolOptions.Create;
-      {$ENDIF}
       NewTool.Assign(OldTool);
       fExtToolList.Add(NewTool);
       Listbox.Items.Add(ToolDescription(fExtToolList.Count-1));
@@ -716,18 +262,10 @@ end;
 procedure TExternalToolDialog.MenuItemImportClick(Sender: TObject);
 Var
   FileConfig: TXMLOptionsStorage;
-  {$IFNDEF EnableOldExtTools}
   NewToolList: TExternalUserTools;
-  {$ELSE}
-  NewToolList : TExternalToolList;
-  {$ENDIF}
 begin
   If OpenDialog1.Execute Then Begin
-    {$IFNDEF EnableOldExtTools}
     NewToolList := TExternalUserTools.Create;
-    {$ELSE}
-    NewToolList := TExternalToolList.Create;
-    {$ENDIF}
     FileConfig := TXMLOptionsStorage.Create(OpenDialog1.FileName, True);
     NewToolList.Load(FileConfig);
     SetExtToolList(NewToolList);
@@ -750,14 +288,8 @@ var
 begin
   i:=Listbox.ItemIndex;
   if i<0 then exit;
-  if ShowExtToolOptionDlg(fTransferMacros,fExtToolList[i],
-      {$IFNDEF EnableOldExtTools}
-      EditorOpts.KeyMap
-      {$ELSE}
-      TExternalToolList(EnvironmentOptions.ExternalTools).fAllKeys
-      {$ENDIF}
-      )=mrOk then
-  begin
+  if ShowExtToolOptionDlg(fTransferMacros,fExtToolList[i],EditorOpts.KeyMap)=mrOk
+  then begin
     Listbox.Items[i]:=ToolDescription(i);
     EnableButtons;
   end;
@@ -803,10 +335,5 @@ procedure TExternalToolDialog.ListboxClick(Sender: TObject);
 begin
   EnableButtons;
 end;
-
-{$IFDEF EnableOldExtTools}
-initialization
-  ExternalToolListClass:=TExternalToolList;
-{$ENDIF}
 
 end.

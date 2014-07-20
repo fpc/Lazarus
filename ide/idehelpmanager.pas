@@ -46,12 +46,7 @@ uses
   IDEExternToolIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
-  ObjInspExt, EnvironmentOpts, AboutFrm, Project, MainBar,
-  {$IFNDEF EnableOldExtTools}
-  etMessagesWnd,
-  {$ELSE}
-  OutputFilter, MsgView,
-  {$ENDIF}
+  ObjInspExt, EnvironmentOpts, AboutFrm, Project, MainBar, etMessagesWnd,
   IDEFPDocFileSearch, PackageDefs, PackageSystem,
   HelpOptions, MainIntf, LazConf, HelpFPCMessages, CodeHelp,
   IDEContextHelpEdit, IDEWindowHelp, CodeBrowser;
@@ -215,11 +210,7 @@ type
     function ShowHelpForSourcePosition(const Filename: string;
                                        const CodePos: TPoint;
                                        var ErrMsg: string): TShowHelpResult; override;
-    {$IFNDEF EnableOldExtTools}
     procedure ShowHelpForMessage; override;
-    {$ELSE}
-    procedure ShowHelpForMessage(Line: integer); override;
-    {$ENDIF}
     procedure ShowHelpForObjectInspector(Sender: TObject); override;
     procedure ShowHelpForIDEControl(Sender: TControl); override;
     function CreateHint(aHintWindow: THintWindow; ScreenPos: TPoint;
@@ -1597,7 +1588,6 @@ begin
     CacheWasUsed,AnOwner);
 end;
 
-{$IFNDEF EnableOldExtTools}
 procedure TIDEHelpManager.ShowHelpForMessage;
 var
   Line: TMessageLine;
@@ -1610,33 +1600,6 @@ begin
   Line.GetAttributes(Parts);
   ShowHelpOrErrorForMessageLine(Line.Msg,Parts);
 end;
-{$ELSE EnableOldExtTools}
-procedure TIDEHelpManager.ShowHelpForMessage(Line: integer);
-  function ParseMessage(MsgItem: TIDEMessageLine): TStringList;
-  begin
-    Result:=TStringList.Create;
-    Result.Values['Message']:=MsgItem.Msg;
-    if MsgItem.Parts<>nil then
-      Result.Assign(MsgItem.Parts);
-  end;
-var
-  MsgItem: TIDEMessageLine;
-  MessageParts: TStringList;
-begin
-  //debugln('TIDEHelpManager.ShowHelpForMessage A Line=',dbgs(Line));
-  if MessagesView=nil then exit;
-  if Line<0 then
-    Line:=MessagesView.SelectedMessageIndex;
-  //DebugLn('TIDEHelpManager.ShowHelpForMessage B Line=',dbgs(Line),' ',dbgs(MessagesView.VisibleItemCount));
-  if (Line<0) or (Line>=MessagesView.VisibleItemCount) then exit;
-  MsgItem:=MessagesView.VisibleItems[Line];
-  if MsgItem=nil then exit;
-  if MsgItem.Msg<>'' then begin
-    MessageParts:=ParseMessage(MsgItem);
-    ShowHelpOrErrorForMessageLine(MsgItem.Msg,MessageParts);
-  end;
-end;
-{$Endif EnableOldExtTools}
 
 procedure TIDEHelpManager.ShowHelpForObjectInspector(Sender: TObject);
 var

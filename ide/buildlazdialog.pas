@@ -50,10 +50,7 @@ uses
   CodeToolManager,
   // IDEIntf
   LazIDEIntf, IDEMsgIntf, IDEHelpIntf, IDEImagesIntf, IDEWindowIntf, IDEDialogs,
-  PackageIntf,
-  {$IFNDEF EnableOldExtTools}
-  IDEExternToolIntf,
-  {$ENDIF}
+  PackageIntf, IDEExternToolIntf,
   // IDE
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, DialogProcs,
   MainBar, ExtToolEditDlg, EnvironmentOpts,
@@ -190,9 +187,6 @@ type
     // This is used by MakeLazarus and SaveIDEMakeOptions
     function CreateIDEMakeOptions(Flags: TBuildLazarusFlags): TModalResult;
   public
-    {$IFDEF EnableOldExtTools}
-    ExternalTools: TBaseExternalToolList;
-    {$ENDIF}
     constructor Create;
     function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
     function MakeLazarus(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
@@ -373,11 +367,7 @@ end;
 function TLazarusBuilder.MakeLazarus(Profile: TBuildLazarusProfile;
   Flags: TBuildLazarusFlags): TModalResult;
 var
-  {$IFNDEF EnableOldExtTools}
   Tool: TAbstractExternalTool;
-  {$ELSE}
-  Tool: TExternalToolOptions;
-  {$ENDIF}
   Executable, CmdLineParams, Cmd: String;
   EnvironmentOverrides: TStringList;
 
@@ -392,7 +382,6 @@ var
       Params:=Cmd+' '+Params
     else
       Params:=Cmd;
-    {$IFNDEF EnableOldExtTools}
     Tool:=ExternalToolList.Add(CurTitle);
     Tool.Reference(Self,ClassName);
     try
@@ -411,18 +400,6 @@ var
     finally
       Tool.Release(Self);
     end;
-    {$ELSE}
-    if Tool=nil then
-      Tool:=TExternalToolOptions.Create;
-    Tool.Title:=CurTitle;
-    Tool.Filename:=Executable;
-    Tool.WorkingDirectory:=fWorkingDir;
-    Tool.ScanOutputForFPCMessages:=true;
-    Tool.ScanOutputForMakeMessages:=true;
-    Tool.CmdLineParams:=Params;
-    Tool.EnvironmentOverrides.Assign(EnvironmentOverrides);
-    Result:=ExternalTools.Run(Tool,fMacros,false);
-    {$ENDIF}
   end;
 
 var
@@ -523,9 +500,6 @@ begin
     Result:=mrOk;
   finally
     EnvironmentOverrides.Free;
-    {$IFDEF EnableOldExtTools}
-    Tool.Free;
-    {$ENDIF}
     if LazarusIDE<>nil then
       LazarusIDE.MainBarSubTitle:='';
   end;
@@ -734,22 +708,14 @@ begin
     if not (Result in [mrOk,mrIgnore]) then begin
       debugln(['CreateAppleBundle CreateApplicationBundle failed']);
       if IDEMessagesWindow<>nil then
-        {$IFNDEF EnableOldExtTools}
         IDEMessagesWindow.AddCustomMessage(mluError,'to create application bundle '+BundleDir);
-        {$ELSE}
-        IDEMessagesWindow.AddMsg('Error: failed to create application bundle '+BundleDir,fTargetDir,-1);
-        {$ENDIF}
       exit;
     end;
     Result:=CreateAppBundleSymbolicLink(fTargetFilename);
     if not (Result in [mrOk,mrIgnore]) then begin
       debugln(['CreateAppleBundle CreateAppBundleSymbolicLink failed']);
       if IDEMessagesWindow<>nil then
-        {$IFNDEF EnableOldExtTools}
         IDEMessagesWindow.AddCustomMessage(mluError,'failed to create application bundle symlink to '+fTargetFilename);
-        {$ELSE}
-        IDEMessagesWindow.AddMsg('Error: failed to create application bundle symlink to '+fTargetFilename,fTargetDir,-1);
-        {$ENDIF}
       exit;
     end;
   end;

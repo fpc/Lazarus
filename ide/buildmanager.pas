@@ -42,20 +42,13 @@ uses
   ExprEval, BasicCodeTools, CodeToolManager, DefineTemplates, CodeCache,
   FileProcs, CodeToolsCfgScript, CodeToolsStructs,
   // IDEIntf
-  {$IFDEF EnableOldExtTools}
-  SrcEditorIntf,
-  {$ENDIF}
   ProjectIntf, MacroIntf, IDEDialogs, IDEExternToolIntf,
   CompOptsIntf, LazIDEIntf, MacroDefIntf, IDEMsgIntf,
   // IDE
   LazarusIDEStrConsts, DialogProcs, IDEProcs, CodeToolsOptions, InputHistory,
   EditDefineTree, ProjectResources, MiscOptions, LazConf, EnvironmentOpts,
   TransferMacros, CompilerOptions,
-  {$IFNDEF EnableOldExtTools}
   ExtTools, etMakeMsgParser, etFPCMsgParser,
-  {$ELSE}
-  OutputFilter,
-  {$ENDIF}
   Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle;
   
@@ -148,11 +141,6 @@ type
     function CTMacroFuncProjectUnitPath(Data: Pointer): boolean;
     function CTMacroFuncProjectIncPath(Data: Pointer): boolean;
     function CTMacroFuncProjectSrcPath(Data: Pointer): boolean;
-    {$IFNDEF EnableOldExtTools}
-    {$ELSE}
-    function OnRunCompilerWithOptions(ExtTool: TIDEExternalToolOptions;
-                           CompOptions: TBaseCompilerOptions): TModalResult;
-    {$ENDIF}
     procedure OnProjectDestroy(Sender: TObject);
     procedure SetUnitSetCache(const AValue: TFPCUnitSetCache);
   protected
@@ -177,9 +165,7 @@ type
     destructor Destroy; override;
     procedure SetupTransferMacros;
     procedure TranslateMacros;
-    {$IFNDEF EnableOldExtTools}
     procedure SetupExternalTools;
-    {$ENDIF}
     procedure SetupCompilerInterface;
     procedure SetupInputHistories;
 
@@ -243,9 +229,6 @@ type
 var
   MainBuildBoss: TBuildManager = nil;
   TheCompiler: TCompiler = nil;
-  {$IFDEF EnableOldExtTools}
-  TheOutputFilter: TOutputFilter = nil;
-  {$ENDIF}
 
 implementation
 
@@ -337,9 +320,6 @@ begin
   FUnitSetChangeStamp:=TFPCUnitSetCache.GetInvalidChangeStamp;
 
   OnBackupFileInteractive:=@BackupFile;
-  {$IFDEF EnableOldExtTools}
-  RunCompilerWithOptions:=@OnRunCompilerWithOptions;
-  {$ENDIF}
 
   GetBuildMacroValues:=@OnGetBuildMacroValues;
   OnAppendCustomOption:=@AppendMatrixCustomOption;
@@ -348,11 +328,7 @@ end;
 
 destructor TBuildManager.Destroy;
 begin
-  {$IFNDEF EnableOldExtTools}
   FreeAndNil(ExternalTools);
-  {$ELSE}
-  RunCompilerWithOptions:=nil;
-  {$ENDIF}
 
   GetBuildMacroValues:=nil;
   OnAppendCustomOption:=nil;
@@ -508,7 +484,6 @@ begin
   tr('MakeFile',lisTMFunctionChompPathDelimiter);
 end;
 
-{$IFNDEF EnableOldExtTools}
 procedure TBuildManager.SetupExternalTools;
 begin
   // setup the external tool queue
@@ -519,16 +494,10 @@ begin
 
   FPCMsgFilePool:=TFPCMsgFilePool.Create(nil);
 end;
-{$ENDIF}
 
 procedure TBuildManager.SetupCompilerInterface;
 begin
   TheCompiler := TCompiler.Create;
-  {$IFDEF EnableOldExtTools}
-  with TheCompiler do begin
-    OutputFilter:=TheOutputFilter;
-  end;
-  {$ENDIF}
 end;
 
 procedure TBuildManager.SetupInputHistories;
@@ -1371,15 +1340,9 @@ function TBuildManager.CheckAmbiguousSources(const AFilename: string;
   begin
     Result:=mrOk;
     if Compiling then begin
-      {$IFNDEF EnableOldExtTools}
       IDEMessagesWindow.AddCustomMessage(mluError,
         Format('ambiguous file found: "%s". Source file is: "%s"',
                [AmbiguousFilename, AFilename]));
-      {$ELSE}
-      TheOutputFilter.ReadConstLine(
-        Format(lisWarningAmbiguousFileFoundSourceFileIs,
-        [AmbiguousFilename, AFilename]), true);
-      {$ENDIF}
     end;
   end;
 
@@ -2274,20 +2237,6 @@ begin
     Result:=true;
   end;
 end;
-
-{$IFNDEF EnableOldExtTools}
-{$ELSE EnableOldExtTools}
-function TBuildManager.OnRunCompilerWithOptions(
-  ExtTool: TIDEExternalToolOptions; CompOptions: TBaseCompilerOptions): TModalResult;
-begin
-  if SourceEditorManagerIntf<>nil then
-    SourceEditorManagerIntf.ClearErrorLines;
-  Result:=EnvironmentOptions.ExternalTools.Run(ExtTool,GlobalMacroList,false,
-                                               CompOptions);
-  if LazarusIDE<>nil then
-    LazarusIDE.DoCheckFilesOnDisk;
-end;
-{$Endif EnableOldExtTools}
 
 procedure TBuildManager.SetUnitSetCache(const AValue: TFPCUnitSetCache);
 begin

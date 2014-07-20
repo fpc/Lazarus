@@ -121,7 +121,6 @@ type
     property Unit2Files: TICCFiles read FUnit2Files;
   end;
 
-{$IFNDEF EnableOldExtTools}
 type
   { TQuickFixRecompilingChecksumChanged }
 
@@ -131,17 +130,6 @@ type
     procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
     procedure QuickFix(Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
   end;
-{$ELSE}
-type
-  { TQuickFixRecompilingChecksumChanged }
-
-  TQuickFixRecompilingChecksumChanged = class(TIDEMsgQuickFixItem)
-  public
-    constructor Create;
-    function IsApplicable(Line: TIDEMessageLine): boolean; override;
-    procedure Execute(const Msg: TIDEMessageLine; Step: TIMQuickFixStep); override;
-  end;
-{$ENDIF}
 
 procedure InitInspectChecksumChangedQuickFixItems;
 
@@ -414,7 +402,6 @@ begin
   InfoTreeView.EndUpdate;
 end;
 
-{$IFNDEF EnableOldExtTools}
 { TQuickFixRecompilingChecksumChanged }
 
 function TQuickFixRecompilingChecksumChanged.IsApplicable(Msg: TMessageLine;
@@ -457,46 +444,6 @@ begin
     Dlg.Free;
   end;
 end;
-{$ELSE}
-constructor TQuickFixRecompilingChecksumChanged.Create;
-begin
-  Name:='Show dialog for message Recompiling Unit1, checksum changed for Unit1';
-  Caption:='Explore message "checksum changed"';
-  Steps:=[imqfoMenuItem];
-end;
-
-function TQuickFixRecompilingChecksumChanged.IsApplicable(Line: TIDEMessageLine
-  ): boolean;
-begin
-  Result:=false;
-  if not REMatches(Line.Msg,'Recompiling ([a-z_][a-z_0-9]*), checksum changed for ([a-z_][a-z_0-9]*)','i')
-  then exit;
-  Result:=true;
-end;
-
-procedure TQuickFixRecompilingChecksumChanged.Execute(
-  const Msg: TIDEMessageLine; Step: TIMQuickFixStep);
-var
-  Dlg: TInspectChksumChgDialog;
-  Unit1, Unit2: string;
-begin
-  if Step=imqfoMenuItem then begin
-    debugln(['TQuickFixRecompilingChecksumChanged.Execute  ']);
-    if not REMatches(Msg.Msg,'Recompiling ([a-z_][a-z_0-9]*), checksum changed for ([a-z_][a-z_0-9]*)','i')
-    then exit;
-    Unit1:=REVar(1);
-    Unit2:=REVar(2);
-    debugln(['TQuickFixRecompilingChecksumChanged.Execute Unit1=',REVar(1),', checksum changed for Unit2=',REVar(2)]);
-    Dlg:=TInspectChksumChgDialog.Create(nil);
-    try
-      Dlg.InitWithMsg(Msg.Msg,Unit1,Unit2);
-      Dlg.ShowModal;
-    finally
-      Dlg.Free;
-    end;
-  end;
-end;
-{$ENDIF}
 
 end.
 
