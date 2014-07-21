@@ -47,6 +47,7 @@ type
     lbToolbar: TListBox;
     pnlButtons: TPanel;
     FilterEdit: TTreeFilterEdit;
+    Splitter1: TSplitter;
     TV: TTreeView;
     procedure btnCancelClick(Sender: TObject);
     procedure cbPosChange(Sender: TObject);
