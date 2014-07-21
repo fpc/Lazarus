@@ -4181,19 +4181,20 @@ function TCompilationToolOptions.Execute(const WorkingDir, ToolTitle,
 var
   ExtTool: TAbstractExternalTool;
 begin
-  Result:=mrCancel;
-
   if SourceEditorManagerIntf<>nil then
     SourceEditorManagerIntf.ClearErrorLines;
 
   ExtTool:=CreateExtTool(WorkingDir,ToolTitle,CompileHint);
+  if ExtTool=nil then exit(mrOk);
   ExtTool.Reference(Self,ClassName);
   try
     // run
     ExtTool.Execute;
     ExtTool.WaitForExit;
     if ExtTool.ErrorMessage='' then
-      Result:=mrOK;
+      Result:=mrOk
+    else
+      Result:=mrCancel;
   finally
     ExtTool.Release(Self);
   end;
