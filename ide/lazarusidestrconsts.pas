@@ -382,14 +382,11 @@ resourcestring
   lisCopyAllShownMessagesToClipboard = 'Copy All Shown Messages to Clipboard';
   lisCopyAllOriginalMessagesToClipboard = 'Copy All/Original Messages to '
     +'Clipboard';
-  lisCopyAllShownAndHiddenMessagesToClipboard = 'Copy All Shown and Hidden'
-                                               +' Messages to Clipboard';
   lisCopyItemToClipboard = 'Copy Item to Clipboard';
   lisCopySelectedItemToClipboard = 'Copy Selected Items to Clipboard';
   lisCopyAllItemsToClipboard = 'Copy All Items to Clipboard';
   lisExpandAll = 'Expand All (*)';
   lisCollapseAll = 'Collapse All (/)';
-  lisSaveAllMessagesToFile = 'Save All Messages to File';
   lisEditHelp = 'Edit help';
   lisMenuViewSearchResults = 'Search Results';
   lisMenuViewAnchorEditor = 'Anchor Editor';
@@ -768,7 +765,6 @@ resourcestring
   lisBusy = 'Busy';
   lisCanNotTestTheCompilerWhileDebuggingOrCompiling = 'Cannot test the '
     +'compiler while debugging or compiling.';
-  lisProjectSuccessfullyBuilt = 'Project "%s" successfully built';
   lisExecutingCommandBefore = 'Executing command before';
   lisProject2 = 'Project: ';
   lisExecutingCommandAfter = 'Executing command after';
@@ -895,26 +891,12 @@ resourcestring
   lisStopDebugging = 'Stop Debugging?';
   lisStopTheDebugging = 'Stop the debugging?';
   lisCannotFindLazarusStarter = 'Cannot find Lazarus starter:%s%s';
-  lisInfoBuildLines  = 'Lines:';
-  lisInfoBuildErrors = 'Errors:';
-  lisInfoBuildHint = 'Hints:';
-  lisInfoBuildWarning = 'Warnings:';
-  lisInfoBuildProject   = 'Project:';
-  listInfoBuildCompiling = 'Compiling:';
-  lisInfoBuildCompile = 'Compiling ...';
   lisFPCTooOld = 'FPC too old';
   lisTheProjectUsesTheNewFPCResourcesWhichRequiresAtLea = 'The project uses '
     +'the new FPC resources, which requires at least FPC 2.4';
-  lisInfoBuildError = 'Error ...';
   lisCreateDirectory = 'Create directory?';
   lisTheOutputDirectoryIsMissing = 'The output directory "%s" is missing.';
   lisCreateIt = 'Create it';
-  lisInfoBuildSuccess = 'Success ...';
-  lisInfoBuildAbort = 'Aborted ...';
-  lisInfoBuildCaption = 'Compile Project';
-  lisInfoBuildMakeAbort = 'Abort';
-  lisInfoBuildNote = 'Notes:';
-  listInfoBuildAutoCloseOnSuccess = '&Automatically close on success';
 
   // file dialogs
   lisOpenFile = 'Open File';
@@ -1262,8 +1244,6 @@ resourcestring
   dlgMaxRecentFiles = 'Max recent files';
   dlgMaxRecentProjs = 'Max recent project files';
   dlgQOpenLastPrj = 'Open last project at start';
-  dlgQShowCompileDialog = 'Show compile dialog';
-  dlgQAutoCloseCompileDialog = 'Auto close compile dialog';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
   dlgFpcPath = 'Compiler path (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
@@ -2070,7 +2050,6 @@ resourcestring
   dlgShowNotes = 'Show notes';
   dlgShowHint = 'Show hints';
   dlgShowGeneralInfo = 'Show general info';
-  dlgShowFullFileNames = 'Show full file names';
   dlgShowEverything ='Show everything';
   dlgShowSummary ='Show summary';
   dlgShowDebugInfo = 'Show debug info';
@@ -2079,7 +2058,6 @@ resourcestring
   dlgShowCompiledProcedures = 'Show compiled procedures';
   dlgShowConditionals = 'Show conditionals';
   dlgShowExecutableInfo = 'Show executable info (Win32 only)';
-  dlgShowNothing = 'Show nothing (only errors)';
   dlgWriteFPCLogo = 'Write FPC logo';
   dlgHintsUnused = 'Show hints for unused units in main';
   dlgHintsParameterSenderNotUsed = 'Show hints for parameter "Sender" not used';
@@ -2187,12 +2165,8 @@ resourcestring
   lisThereIsAlreadyAnIDEMacroWithTheName = 'There is already an IDE macro '
     +'with the name "%s"';
   lisInvalidLineColumnInMessage = 'Invalid line, column in message%s%s';
-  lisUnableToLoadFile = 'Unable to load file:%s%s';
   lisQuickFixRemoveUnit = 'Quick fix: Remove unit';
-  lisQuickFixCreateLocalVariable = 'Create local variable';
   lisQuickFixSearchIdentifier = 'Search identifier';
-  lisMessageContainsNoFilePositionInformation = 'Message contains no file '
-    +'position information:%s%s';
   lisFailedToCreateApplicationBundleFor = 'Failed to create Application '
     +'Bundle for "%s"';
   lisThisProjectHasNoMainSourceFile = 'This project has no main source file';
@@ -2398,7 +2372,6 @@ resourcestring
   lisFilter = 'Filter';
   lisCreateFilter = 'Create Filter';
   lisIssues = 'Issues';
-  lisUseMessageFile = 'Use message file:';
   lisRegularExpression = 'Regular expression';
   lisInvalidFilter = 'Invalid filter';
   lisInvalidExpression = 'Invalid expression:%s%s%s%s';
@@ -3170,7 +3143,6 @@ resourcestring
 
   // compiler
   lisCompilerErrorInvalidCompiler = 'Error: invalid compiler: %s';
-  listCompilerInternalError = 'Internal compiler error! (%d)';
   lisOptionsChangedRecompilingCleanWithB = 'Options changed, recompiling '
     +'clean with -B';
   lisCompilerHintYouCanSetTheCompilerPath = 'Hint: you can set the compiler '
@@ -3738,10 +3710,6 @@ resourcestring
   lisEdtDefuseHeapTrcUnit = 'use HeapTrc unit';
   
   // external tools
-  lisExtToolFailedToRunTool = 'Failed to run tool';
-  lisExtToolUnableToRunTheTool = 'Unable to run the tool %s%s%s:%s%s';
-  lisProgramNotFound = 'Program %s not found';
-  lisWorkingDirectoryNotFound = 'Working directory %s not found';
   lisExtToolExternalTools = 'External Tools';
   lisTheseSettingsAreStoredWithTheProject = 'These settings are stored with '
     +'the project.';
@@ -3749,7 +3717,6 @@ resourcestring
   lisRemoveThem = 'Remove them';
   lisExtToolMaximumToolsReached = 'Maximum Tools reached';
   lisExtToolThereIsAMaximumOfTools = 'There is a maximum of %s tools.';
-  lisExtToolTitleCompleted = '"%s" completed';
 
   // edit external tools
   lisEdtExtToolEditTool = 'Edit Tool';
@@ -4951,8 +4918,6 @@ resourcestring
   lisExceptionDialog = 'Debugger Exception Notification';
   lisIgnoreExceptionType = 'Ignore this exception type';
 
-  lisetEditCustomScanners = 'Edit custom scanners (%s)';
-  
   // ProjectWizard Dialog
   lisProjectWizard = 'Project Wizard';
   lisPWNewProject = '&New Project';
@@ -5037,8 +5002,6 @@ resourcestring
   lisProjectChangedOnDisk = 'Project changed on disk';
   lisTheProjectInformationFileHasChangedOnDisk = 'The project information file "%s"%shas changed on disk.';
   lisReopenProject = 'Reopen project';
-  rsScanners = 'Scanners';
-  rsAvailableScanners = 'Available scanners';
   rsSelectAnInheritedEntry = 'Select an inherited entry';
 
   // New console application dialog (CustomApplicationOptionsForm.pas)
@@ -5273,14 +5236,10 @@ resourcestring
   lisSelected = 'Selected';
   lisSelectedAndChildControls = 'Selected and child controls';
   lisUnableToDelete = 'Unable to delete';
-  lisSearchUnit = 'Search unit';
 
   //Jump History dialog
   lisJHJumpHistory = 'Jump History';
-  lisRemoveUnitFromUsesSection = 'Remove unit from uses section';
   lisRemoveLocalVariable = 'Remove local variable %s';
-  lisHideMessageViaDirective = 'Hide message via directive';
-  lisRemoveLocalVariable2 = 'Remove local variable';
   lisNoHints = 'no hints';
   lisAllParametersOfThisFunctionAreAlreadySetAtThisCall = 'All parameters of '
     +'this function are already set at this call. Nothing to add.';
@@ -5765,7 +5724,6 @@ resourcestring
   lisCanTFindAValidPpu = 'Can''t find a valid %s.ppu';
   lisCannotFind = 'Cannot find %s';
   lisUsedBy = ' used by %s';
-  lisMaybePackage = '. Maybe package %s needs a clean rebuild.';
   lisCheckSearchPathPackageTryACleanRebuildCheckImpleme = '. Check search path of'
     +' package %s, try a clean rebuild, check implementation uses sections.';
   lisCheckIfPackageIsInTheDependencies = '. Check if package %s is in the '
@@ -5776,13 +5734,11 @@ resourcestring
   lisEnableFlagUseUnitOfUnitInPackage = '. Enable flag "Use Unit" of unit %s in package %s';
   lisOfTheProjectInspector = ' of the Project Inspector';
   lisOfPackage = ' of package %s';
-  lisFatal2 = '%s(%s,%s) Fatal: %s';
   lisCompileWithVdForMoreDetailsCheckForDuplicates = '%s -> Compile with -vd '
     +'for more details. Check for duplicates.';
   lisCannotFindUnit = 'Cannot find unit %s';
   lisIncompatiblePpu = ', incompatible ppu=%s';
   lisPackage3 = ', package %s';
-  lisCannotFindPP = 'Cannot find PPU of unit %s';
   lisMultiplePack = ', multiple packages: ';
   lisQuickFixError = 'QuickFix error';
   lisPositionOutsideOfSource = '%s (position outside of source)';
