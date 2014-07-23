@@ -62,7 +62,7 @@ uses
   {$IFDEF BigIDE}
     allsyneditdsgn, RunTimeTypeInfoControls, Printer4Lazarus, Printers4LazIDE,
     LeakView, MemDSLaz, SDFLaz, InstantFPCLaz, ExternHelp,
-    TurboPowerIPro, {$ifdef UseTurbopowerInHelp}TurboPowerIProDsgn,{$endif}
+    TurboPowerIPro, TurboPowerIProDsgn,
     jcfidelazarus, chmhelppkg,
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
     TodoListLaz,

@@ -32,8 +32,6 @@
 
 {off $apptype console}
 
-{off $define UseTurbopowerInHelp}
-
 // debug form load/save
 { $DEFINE VerboseJITForms}
 { $DEFINE VerboseFormEditor}
