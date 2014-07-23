@@ -103,6 +103,22 @@ type
   TPkgDeleteAmbiguousFiles = function(const Filename: string): TModalResult of object;
   TOnBeforeCompilePackages = function(aPkgList: TFPList): TModalResult of object;
 
+  { TLazPkgGraphBuildItem }
+
+  TLazPkgGraphBuildItem = class
+  private
+    fTools: TFPList; // list of TExternalTools
+    function GetTools(Index: integer): TAbstractExternalTool;
+  public
+    LazPackage: TLazPackage;
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    function Add(Tool: TAbstractExternalTool): integer;
+    function Count: integer; inline;
+    property Tools[Index: integer]: TAbstractExternalTool read GetTools; default;
+  end;
+
   { TLazPackageGraph }
 
   TLazPackageGraph = class
@@ -311,7 +327,8 @@ type
                                 SkipDesignTimePackages: boolean;
                                 Policy: TPackageUpdatePolicy): TModalResult;
     function CompilePackage(APackage: TLazPackage; Flags: TPkgCompileFlags;
-                            ShowAbort: boolean): TModalResult;
+                            ShowAbort: boolean;
+                            BuildItem: TLazPkgGraphBuildItem = nil): TModalResult;
     function ConvertPackageRSTFiles(APackage: TLazPackage): TModalResult;
     function WriteMakefileCompiled(APackage: TLazPackage;
       TargetCompiledFile, UnitPath, IncPath, OtherOptions: string): TModalResult;
@@ -567,6 +584,49 @@ begin
     end;
   end;
   Result:=UTF8Trim(Result,[]);
+end;
+
+{ TLazPkgGraphBuildItem }
+
+// inline
+function TLazPkgGraphBuildItem.Count: integer;
+begin
+  Result:=fTools.Count;
+end;
+
+function TLazPkgGraphBuildItem.GetTools(Index: integer): TAbstractExternalTool;
+begin
+  Result:=TAbstractExternalTool(fTools[Index]);
+end;
+
+constructor TLazPkgGraphBuildItem.Create;
+begin
+  fTools:=TFPList.Create;
+end;
+
+destructor TLazPkgGraphBuildItem.Destroy;
+begin
+  Clear;
+  FreeAndNil(fTools);
+  inherited Destroy;
+end;
+
+procedure TLazPkgGraphBuildItem.Clear;
+var
+  i: Integer;
+  Tool: TAbstractExternalTool;
+begin
+  for i:=Count-1 downto 0 do begin
+    Tool:=Tools[i];
+    Tool.Release(Self);
+  end;
+  fTools.Clear;
+end;
+
+function TLazPkgGraphBuildItem.Add(Tool: TAbstractExternalTool): integer;
+begin
+  Tool.Reference(Self,'TLazPkgGraphBuildItem.Add');
+  Result:=fTools.Add(Tool);
 end;
 
 { TLazPackageGraph }
@@ -3405,7 +3465,8 @@ begin
 end;
 
 function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
-  Flags: TPkgCompileFlags; ShowAbort: boolean): TModalResult;
+  Flags: TPkgCompileFlags; ShowAbort: boolean; BuildItem: TLazPkgGraphBuildItem
+  ): TModalResult;
 
   function GetIgnoreIdentifier: string;
   begin
@@ -3424,6 +3485,8 @@ var
   SrcPPUFileExists: Boolean;
   CompilerParams: String;
   Note: String;
+  WorkingDir: String;
+  ToolTitle: String;
 begin
   Result:=mrCancel;
 
@@ -3524,11 +3587,19 @@ begin
 
       // run compilation tool 'Before'
       if not (pcfDoNotCompilePackage in Flags) then begin
-        Result:=APackage.CompilerOptions.ExecuteBefore.Execute(APackage.Directory,
-          'Package '+APackage.IDAsString+': '+lisExecutingCommandBefore,Note);
-        if Result<>mrOk then begin
-          DebugLn(['TLazPackageGraph.CompilePackage ExecuteBefore failed: ',APackage.IDAsString]);
-          exit;
+        WorkingDir:=APackage.Directory;
+        ToolTitle:='Package '+APackage.IDAsString+': '+lisExecutingCommandBefore;
+        if BuildItem<>nil then
+        begin
+          BuildItem.Add(APackage.CompilerOptions.ExecuteBefore.CreateExtTool(
+                              WorkingDir,ToolTitle,Note));
+        end else begin
+          Result:=APackage.CompilerOptions.ExecuteBefore.Execute(WorkingDir,
+            ToolTitle,Note);
+          if Result<>mrOk then begin
+            DebugLn(['TLazPackageGraph.CompilePackage ExecuteBefore failed: ',APackage.IDAsString]);
+            exit;
+          end;
         end;
       end;
 
@@ -3550,7 +3621,10 @@ begin
         end;
 
         PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilingPackage, [APackage.IDAsString]));
-        PkgCompileTool.Reference(Self,Classname);
+        if BuildItem<>nil then
+          BuildItem.Add(PkgCompileTool)
+        else
+          PkgCompileTool.Reference(Self,Classname);
         try
           FPCParser:=TFPCParser(PkgCompileTool.AddParsers(SubToolFPC));
           //debugln(['TLazPackageGraph.CompilePackage ',APackage.Name,' ',APackage.CompilerOptions.ShowHintsForUnusedUnitsInMainSrc,' ',APackage.MainUnit.Filename]);
@@ -3567,25 +3641,28 @@ begin
           PkgCompileTool.Data:=TIDEExternalToolData.Create(IDEToolCompilePackage,
             APackage.Name,APackage.Filename);
           PkgCompileTool.FreeData:=true;
-          // run
-          PkgCompileTool.Execute;
-          PkgCompileTool.WaitForExit;
-
-          // check if main ppu file was created
-          SrcPPUFile:=APackage.GetSrcPPUFilename;
-          SrcPPUFileExists:=(SrcPPUFile<>'') and FileExistsUTF8(SrcPPUFile);
-          // write state file
-          Result:=SavePackageCompiledState(APackage,
-                            CompilerFilename,CompilerParams,
-                            PkgCompileTool.ErrorMessage='',SrcPPUFileExists,true);
-          if Result<>mrOk then begin
-            DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
-            exit;
+          if BuildItem=nil then
+          begin
+            // run
+            PkgCompileTool.Execute;
+            PkgCompileTool.WaitForExit;
+            // check if main ppu file was created
+            SrcPPUFile:=APackage.GetSrcPPUFilename;
+            SrcPPUFileExists:=(SrcPPUFile<>'') and FileExistsUTF8(SrcPPUFile);
+            // write state file
+            Result:=SavePackageCompiledState(APackage,
+                              CompilerFilename,CompilerParams,
+                              PkgCompileTool.ErrorMessage='',SrcPPUFileExists,true);
+            if Result<>mrOk then begin
+              DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
+              exit;
+            end;
+            if PkgCompileTool.ErrorMessage<>'' then
+              exit(mrCancel);
           end;
-          if PkgCompileTool.ErrorMessage<>'' then
-            exit(mrCancel);
         finally
-          PkgCompileTool.Release(Self);
+          if BuildItem=nil then
+            PkgCompileTool.Release(Self);
         end;
       end;
 
@@ -3602,12 +3679,20 @@ begin
 
       // run compilation tool 'After'
       if not (pcfDoNotCompilePackage in Flags) then begin
-        Result:=APackage.CompilerOptions.ExecuteAfter.Execute(APackage.Directory,
-          'Package '+APackage.IDAsString+': '+lisExecutingCommandAfter,Note);
-        if Result<>mrOk then begin
-          DebugLn(['TLazPackageGraph.CompilePackage ExecuteAfter failed: ',APackage.IDAsString]);
-          // Note: messages window already contains error message
-          exit;
+        WorkingDir:=APackage.Directory;
+        ToolTitle:='Package '+APackage.IDAsString+': '+lisExecutingCommandAfter;
+        if BuildItem<>nil then
+        begin
+          BuildItem.Add(APackage.CompilerOptions.ExecuteAfter.CreateExtTool(
+                              WorkingDir,ToolTitle,Note));
+        end else begin
+          Result:=APackage.CompilerOptions.ExecuteAfter.Execute(WorkingDir,
+                                       ToolTitle,Note);
+          if Result<>mrOk then begin
+            DebugLn(['TLazPackageGraph.CompilePackage ExecuteAfter failed: ',APackage.IDAsString]);
+            // Note: messages window already contains error message
+            exit;
+          end;
         end;
       end;
       Result:=mrOk;

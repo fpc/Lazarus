@@ -654,6 +654,8 @@ var
   i: Integer;
   aParser: TExtToolParser;
 begin
+  if Terminated then exit;
+
   // set Stage to etsStarting
   EnterCriticalSection;
   try
