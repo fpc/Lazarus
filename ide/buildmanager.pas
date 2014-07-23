@@ -451,6 +451,7 @@ begin
   tr('SrcOS',lisSrcOS);
   tr('FPCVer',lisFPCVersionEG222);
   tr('LAZVer',lisLAZVer);
+  tr('FPC_FULLVERSION',lisFPCFullVersionEG20701);
   tr('Params',lisCommandLineParamsOfProgram);
   tr('ProjFile',lisProjectFilename);
   tr('ProjPath',lisProjectDirectory);
