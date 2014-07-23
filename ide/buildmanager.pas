@@ -64,6 +64,7 @@ type
     FFPCSrcScans: TFPCSrcScans;
     // Macro FPCVer
     FFPCVer: string;
+    FFPC_FULLVERSION: integer;
     FFPCVerChangeStamp: integer;
     // Macro InstantFPCCache
     FMacroInstantFPCCache: string;
@@ -86,6 +87,8 @@ type
     function MacroFuncFPCMsgFile(const {%H-}Param: string; const {%H-}Data: PtrInt;
                           var {%H-}Abort: boolean): string;
     function MacroFuncFPCVer(const {%H-}Param: string; const {%H-}Data: PtrInt;
+                             var {%H-}Abort: boolean): string;
+    function MacroFuncFPC_FULLVERSION(const {%H-}Param: string; const {%H-}Data: PtrInt;
                              var {%H-}Abort: boolean): string;
     function MacroFuncLCLWidgetType(const {%H-}Param: string; const Data: PtrInt;
                                     var {%H-}Abort: boolean): string;
@@ -370,6 +373,8 @@ begin
                       lisSrcOS,@MacroFuncSrcOS,[]));
   GlobalMacroList.Add(TTransferMacro.Create('FPCVer','',
                       lisFPCVersionEG222, @MacroFuncFPCVer, []));
+  GlobalMacroList.Add(TTransferMacro.Create('FPC_FULLVERSION','',
+                      lisFPCFullVersionEG20701, @MacroFuncFPC_FULLVERSION, []));
   GlobalMacroList.Add(TTransferMacro.Create('Params','',
                       lisCommandLineParamsOfProgram,@MacroFuncParams,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjFile','',
@@ -2034,7 +2039,7 @@ end;
 function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 
-  function Compute: string;
+  procedure Compute;
   var
     TargetOS: String;
     TargetCPU: String;
@@ -2042,9 +2047,10 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
     ConfigCache: TFPCTargetConfigCache;
     s: string;
   begin
+    FFPC_FULLVERSION:=0;
     if OverrideFPCVer<>'' then
-      exit(OverrideFPCVer);
-    Result:={$I %FPCVERSION%};   // Version.Release.Patch
+      FFPCVer:=OverrideFPCVer;
+    FFPCVer:={$I %FPCVERSION%};   // Version.Release.Patch
     if CodeToolBoss<>nil then begin
       // fetch the FPC version from the current compiler
       // Not from the fpc.exe, but from the real compiler
@@ -2062,20 +2068,29 @@ function TBuildManager.MacroFuncFPCVer(const Param: string; const Data: PtrInt;
         then
           exit;
       end;
-      Result:=ConfigCache.GetFPCVer;
+      FFPCVer:=ConfigCache.GetFPCVer;
+      FFPC_FULLVERSION:=ConfigCache.GetFPC_FULLVERSION;
     end;
   end;
 
 begin
   if FFPCVerChangeStamp<>CompilerParseStamp then
   begin
-    FFPCVer:=Compute;
+    Compute;
     FFPCVerChangeStamp:=CompilerParseStamp;
-    {$IFDEF VerboseFPCSrcScan}
-    debugln(['TBuildManager.MacroFuncFPCVer ',FFPCVer]);
-    {$ENDIF}
+    { $IFDEF VerboseFPCSrcScan}
+    debugln(['TBuildManager.MacroFuncFPCVer FPCVer=',FFPCVer,' FPC_FULLVERSION=',FFPC_FULLVERSION]);
+    { $ENDIF}
   end;
   Result:=FFPCVer;
+end;
+
+function TBuildManager.MacroFuncFPC_FULLVERSION(const Param: string;
+  const Data: PtrInt; var Abort: boolean): string;
+begin
+  if FFPCVerChangeStamp<>CompilerParseStamp then
+    MacroFuncFPCVer(Param,Data,Abort);
+  Result:=IntToStr(FFPC_FULLVERSION);
 end;
 
 function TBuildManager.MacroFuncParams(const Param: string; const Data: PtrInt;

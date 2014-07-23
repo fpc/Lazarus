@@ -4093,6 +4093,7 @@ begin
   inherited Create(AOwner);
   if AOwner<>nil then
     FLazPackage := AOwner as TLazPackage;
+  ParsedOpts.MacroValues.ProjValuesAvailable:=true;
 end;
 
 class function TPkgCompilerOptions.GetGroupCaption: string;

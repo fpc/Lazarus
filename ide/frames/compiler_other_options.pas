@@ -542,6 +542,8 @@ begin
   AddWord('GetIDEValue(''LCLWidgetType'')');
   AddWord('GetEnv(''USER'')');
   AddWord('GetEnv(''HOME'')');
+  if FCompOptions is TPkgCompilerOptions then
+    AddWord('GetProjValue(''FPC_FULLVERSION'')');
 
   // add result variables
   for pcov:=low(ParsedCompilerOptsVars) to high(ParsedCompilerOptsVars) do

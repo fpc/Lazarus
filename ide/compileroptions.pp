@@ -138,10 +138,14 @@ type
   { TIDECfgScriptEngine }
 
   TIDECfgScriptEngine = class(TCTConfigScriptEngine)
+  private
+    FProjValuesAvailable: boolean;
   protected
     function IsCustomFunction(FunctionName: PChar): boolean; override;
     procedure RunCustomSimpleFunction(FunctionName: PChar;
       Value: PCTCfgScriptVariable); override;
+  public
+    property ProjValuesAvailable: boolean read FProjValuesAvailable write FProjValuesAvailable;
   end;
 
 type
@@ -1018,6 +1022,7 @@ begin
   'G':
     if (CompareIdentifiers(FunctionName,'GetIDEValue')=0)
     or (CompareIdentifiers(FunctionName,'GetEnv')=0)
+    or (ProjValuesAvailable and (CompareIdentifiers(FunctionName,'GetProjValue')=0))
     then exit(true);
   end;
   Result:=false;
@@ -1027,6 +1032,7 @@ procedure TIDECfgScriptEngine.RunCustomSimpleFunction(FunctionName: PChar;
   Value: PCTCfgScriptVariable);
 var
   VarName: String;
+  s: String;
 begin
   case UpChars[FunctionName^] of
   'G':
@@ -1049,6 +1055,16 @@ begin
     begin
       VarName:=GetCTCSVariableAsString(Value);
       SetCTCSVariableAsString(Value,GetEnvironmentVariableUTF8(VarName));
+    end else if ProjValuesAvailable
+    and (CompareIdentifiers(FunctionName,'GetProjValue')=0) then
+    begin
+      VarName:=GetCTCSVariableAsString(Value);
+      if CompareIdentifiers(PChar(VarName),'FPC_FULLVERSION')=0 then
+      begin
+        s:='$(FPC_FULLVERSION)';
+        GlobalMacroList.SubstituteStr(s);
+        SetCTCSVariableAsNumber(Value,StrToIntDef(s,0));
+      end;
     end;
   end;
 end;

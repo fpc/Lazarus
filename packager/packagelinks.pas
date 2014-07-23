@@ -94,7 +94,7 @@ type
     procedure SetFilename(const AValue: string);
     procedure SetOrigin(const AValue: TPkgLinkOrigin);
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     function MakeSense: boolean;
     function GetEffectiveFilename: string;

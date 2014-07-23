@@ -4953,6 +4953,7 @@ resourcestring
   lisTheUnitSearchPathOfContainsTheSourceDirectoryOfPac = 'The unit search '
     +'path of "%s" contains the source directory "%s" of package %s';
   lisFPCVersionEG222 = 'FPC Version (e.g. 2.2.2)';
+  lisFPCFullVersionEG20701 = 'FPC version as one number (e.g. 20701)';
   lisLAZVer = 'Lazarus Version (e.g. 1.2.4)';
   lisMissingIdentifiers = 'Missing identifiers';
   lisChooseAFPDocLink = 'Choose a FPDoc link';

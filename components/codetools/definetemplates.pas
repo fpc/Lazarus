@@ -772,6 +772,7 @@ type
     function GetUnitPaths: string;
     function GetFPCVerNumbers(out FPCVersion, FPCRelease, FPCPatch: integer): boolean;
     function GetFPCVer: string; // e.g. 2.7.1
+    function GetFPC_FULLVERSION: integer; // e.g. 20701
     function IndexOfUsedCfgFile: integer;
     procedure IncreaseChangeStamp;
     property ChangeStamp: integer read FChangeStamp;
@@ -7865,6 +7866,24 @@ begin
     Result:=IntToStr(FPCVersion)+'.'+IntToStr(FPCRelease)+'.'+IntToStr(FPCPatch)
   else
     Result:='';
+end;
+
+function TFPCTargetConfigCache.GetFPC_FULLVERSION: integer;
+var
+  v: String;
+  FPCVersion: integer;
+  FPCRelease: integer;
+  FPCPatch: integer;
+begin
+  if Defines<>nil then
+    Result:=StrToIntDef(Defines['FPC_FULLVERSION'],0)
+  else
+    Result:=0;
+  if Result=0 then begin
+    v:={$I %FPCVERSION%};
+    SplitFPCVersion(v,FPCVersion,FPCRelease,FPCPatch);
+    Result:=(FPCVersion*100+FPCRelease)*100+FPCPatch;
+  end;
 end;
 
 function TFPCTargetConfigCache.IndexOfUsedCfgFile: integer;

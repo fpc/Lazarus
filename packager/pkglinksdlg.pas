@@ -53,7 +53,7 @@ type
     FLPKInfo: TLPKInfo;
     FVisible: boolean;
   public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property Origin;
