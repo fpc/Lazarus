@@ -515,7 +515,7 @@ type
     // process
     property Process: TProcessUTF8 read FProcess;
     property EnvironmentOverrides: TStrings read FEnvironmentOverrides
-      write SetEnvironmentOverrides; // if not empty, then this and IDE's environemnt will be merged and replace Process.Environment
+      write SetEnvironmentOverrides; // if not empty, then this and IDE's environment will be merged and replace Process.Environment
     property CmdLineParams: string read GetCmdLineParams write SetCmdLineParams;
     function ResolveMacros: boolean; virtual; abstract; // resolve macros in Process.Executable, Process.CurrentDirectory, Process.Params, Process.Environment on Execute
     property ResolveMacrosOnExecute: boolean read FResolveMacrosOnExecute

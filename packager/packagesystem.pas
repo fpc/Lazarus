@@ -105,18 +105,23 @@ type
 
   { TLazPkgGraphBuildItem }
 
-  TLazPkgGraphBuildItem = class
+  TLazPkgGraphBuildItem = class(TComponent)
   private
+    FLazPackage: TLazPackage;
     fTools: TFPList; // list of TExternalTools
     function GetTools(Index: integer): TAbstractExternalTool;
+    procedure SetLazPackage(AValue: TLazPackage);
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation);
+      override;
   public
-    LazPackage: TLazPackage;
-    constructor Create;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
     function Add(Tool: TAbstractExternalTool): integer;
     function Count: integer; inline;
     property Tools[Index: integer]: TAbstractExternalTool read GetTools; default;
+    property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
 
   { TLazPackageGraph }
@@ -599,8 +604,29 @@ begin
   Result:=TAbstractExternalTool(fTools[Index]);
 end;
 
-constructor TLazPkgGraphBuildItem.Create;
+procedure TLazPkgGraphBuildItem.SetLazPackage(AValue: TLazPackage);
 begin
+  if FLazPackage=AValue then Exit;
+  if FLazPackage<>nil then
+    FLazPackage.RemoveFreeNotification(Self);
+  FLazPackage:=AValue;
+  if FLazPackage<>nil then
+    FLazPackage.FreeNotification(Self);
+end;
+
+procedure TLazPkgGraphBuildItem.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if Operation=opRemove then begin
+    if LazPackage=AComponent then
+      LazPackage:=nil;
+  end;
+end;
+
+constructor TLazPkgGraphBuildItem.Create(AOwner: TComponent);
+begin
+  inherited;
   fTools:=TFPList.Create;
 end;
 
@@ -618,6 +644,7 @@ var
 begin
   for i:=Count-1 downto 0 do begin
     Tool:=Tools[i];
+    Tool.Data:=nil;
     Tool.Release(Self);
   end;
   fTools.Clear;
@@ -625,7 +652,10 @@ end;
 
 function TLazPkgGraphBuildItem.Add(Tool: TAbstractExternalTool): integer;
 begin
+  if Tool.Data<>nil then
+    raise Exception.Create('');
   Tool.Reference(Self,'TLazPkgGraphBuildItem.Add');
+  Tool.Data:=Self;
   Result:=fTools.Add(Tool);
 end;
 
