@@ -29,7 +29,7 @@ resourcestring
   rsVisible                 = 'Visible';
   rsShowHide                = 'Show/Hide Toolbar';
   rsWarning                 = 'You''ve chosen to hide the toolbar. ' +
-    'You may access the toolbar configuration via "%s" -> "%s" main menu';
+    'You may access the toolbar configuration via "%s" -> "%s" main menu.';
   rsEditorToolbar           = 'Editor ToolBar';
   rsMenuView                = 'View';
 
