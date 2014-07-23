@@ -408,7 +408,7 @@ type
     procedure SetTitle(const AValue: String); virtual;
     procedure SetUseManifest(AValue: boolean); virtual; abstract;
   public
-    constructor Create({%H-}ProjectDescription: TProjectDescriptor); virtual;
+    constructor Create({%H-}ProjectDescription: TProjectDescriptor); virtual; reintroduce;
     destructor Destroy; override;
     procedure Clear; virtual;
     function IsVirtual: boolean; virtual; abstract;
@@ -1085,7 +1085,7 @@ end;
 
 constructor TLazProject.Create(ProjectDescription: TProjectDescriptor);
 begin
-  inherited Create;
+  inherited Create(nil);
   FSessionStorage:=DefaultNewProjectSessionStorage;
   FCleanOutputFileMask:=DefaultProjectCleanOutputFileMask;
   FCleanSourcesFileMask:=DefaultProjectCleanSourcesFileMask;

@@ -880,10 +880,6 @@ type
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
   public
-    function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-    function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-    function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-  public
     constructor Create(ProjectDescription: TProjectDescriptor); override;
     destructor Destroy; override;
     procedure Clear; override;
@@ -4046,24 +4042,6 @@ begin
   end else begin
     AddToList(AnUnitInfo,uilPartOfProject);
   end;
-end;
-
-function TProject.QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-begin
-  if GetInterface(iid, obj) then
-    Result := S_OK
-  else
-    Result := E_NOINTERFACE;
-end;
-
-function TProject._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-begin
-  Result := -1;
-end;
-
-function TProject._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-begin
-  Result := -1;
 end;
 
 function TProject.GetTargetFilename: string;

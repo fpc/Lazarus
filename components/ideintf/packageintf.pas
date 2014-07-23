@@ -105,21 +105,19 @@ type
     function GetIDAsString: string;
     function GetIDAsWord: string;
   protected
-    FName: string;
     FVersion: TPkgVersion;
-    procedure SetName(const AValue: string); virtual;
+    procedure SetName(const NewName: TComponentName); override;
     procedure UpdateIDAsString;
     procedure VersionChanged(Sender: TObject); virtual;
   public
     procedure AssignOptions(Source: TPersistent); virtual;
-    constructor Create;
+    constructor Create; virtual; reintroduce;
     destructor Destroy; override;
     function StringToID(const s: string): boolean;
     function Compare(PackageID2: TLazPackageID): integer;
     function CompareMask(ExactPackageID: TLazPackageID): integer;
     procedure AssignID(Source: TLazPackageID); virtual;
   public
-    property Name: string read FName write SetName;
     property Version: TPkgVersion read FVersion;
     property IDAsString: string read GetIDAsString;
     property IDAsWord: string read GetIDAsWord;
@@ -152,7 +150,7 @@ type
     procedure AssignOptions(Source: TPersistent); override;
     function IsVirtual: boolean; virtual; abstract;
     function ReadOnly: boolean; virtual; abstract;
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     procedure ClearCustomOptions;
   public
@@ -574,6 +572,7 @@ end;
 
 constructor TLazPackageID.Create;
 begin
+  inherited Create(nil);
   FVersion:=TPkgVersion.Create;
   FVersion.OnChange:=@VersionChanged;
 end;
@@ -611,7 +610,7 @@ begin
   begin
     aSource:=TLazPackageID(Source);
     FVersion.Assign(aSource.Version);
-    Name:=aSource.FName;
+    Name:=aSource.Name;
     UpdateIDAsString;
   end else
     raise Exception.Create('TLazPackageID.AssignOptions: can not copy from '+DbgSName(Source));
@@ -676,10 +675,10 @@ begin
   Result := FIDAsWord;
 end;
 
-procedure TLazPackageID.SetName(const AValue: string);
+procedure TLazPackageID.SetName(const NewName: TComponentName);
 begin
-  if FName=AValue then exit;
-  FName:=AValue;
+  if Name=NewName then exit;
+  inherited SetName(NewName);
   UpdateIDAsString;
 end;
 

@@ -609,17 +609,13 @@ type
     function GetModified: boolean; override;
     procedure SetFilename(const AValue: string); override;
     procedure SetModified(const AValue: boolean); override;
-    procedure SetName(const AValue: string); override;
+    procedure SetName(const NewName: TComponentName); override;
     procedure VersionChanged(Sender: TObject); override;
     function GetRemovedCount: integer; override;
     function GetRemovedPkgFiles(Index: integer): TLazPackageFile; override;
     procedure SetAutoInstall(AValue: TPackageInstallType); override;
   public
-    function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-    function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-    function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-  public
-    constructor Create;
+    constructor Create; override;
     destructor Destroy; override;
     procedure AssignOptions(Source: TPersistent); override;
     // IDE options
@@ -2421,24 +2417,6 @@ begin
   FAutoInstall:=AValue;
 end;
 
-function TLazPackage.QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-begin
-  if GetInterface(iid, obj) then
-    Result := S_OK
-  else
-    Result := E_NOINTERFACE;
-end;
-
-function TLazPackage._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-begin
-  Result := -1;
-end;
-
-function TLazPackage._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
-begin
-  Result := -1;
-end;
-
 procedure TLazPackage.SetAutoUpdate(const AValue: TPackageUpdatePolicy);
 begin
   if AValue=AutoUpdate then exit;
@@ -2614,10 +2592,10 @@ begin
     Editor.UpdateAll(false);
 end;
 
-procedure TLazPackage.SetName(const AValue: string);
+procedure TLazPackage.SetName(const NewName: TComponentName);
 begin
-  if FName=AValue then exit;
-  inherited SetName(AValue);
+  if Name=NewName then exit;
+  inherited SetName(NewName);
   FDefineTemplates.IDChanged;
   Modified:=true;
 end;
@@ -2747,7 +2725,7 @@ begin
     FFilename:='';
     FIconFile:='';
     FInstalled:=pitNope;
-    FName:='';
+    Name:='';
     FPackageType:=lptRunAndDesignTime;
     FRegistered:=false;
     FFPDocPaths:='';
@@ -2968,7 +2946,7 @@ begin
   UsePathDelim:=StorePathDelim;
   XMLConfig.SetValue(Path+'Version',LazPkgXMLFileVersion);
   XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[UsePathDelim],'/');
-  XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
+  XMLConfig.SetDeleteValue(Path+'Name/Value',Name,'');
   XMLConfig.SetDeleteValue(Path+'AddToProjectUsesSection/Value',
                            FAddToProjectUsesSection,false);
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');
@@ -2981,7 +2959,6 @@ begin
   SaveFiles(Path+'Files/',FFiles);
   SaveFlags(Path);
   XMLConfig.SetDeleteValue(Path+'IconFile/Value',f(FIconFile),'');
-  XMLConfig.SetDeleteValue(Path+'Name/Value',FName,'');
   XMLConfig.SetDeleteValue(Path+'OutputStateFile/Value',f(OutputStateFile),'');
   XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',f(FFPDocPaths),'');
   XMLConfig.SetDeleteValue(Path+'LazDoc/PackageName',FFPDocPackageName,'');

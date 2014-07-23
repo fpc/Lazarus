@@ -45,15 +45,12 @@ type
 
   { TIDEProjPackBase }
 
-  TIDEProjPackBase = class(TPersistent)
+  TIDEProjPackBase = class(TComponent)
   private
   protected
     FIDEOptions: TAbstractIDEOptions; //actually TProjectIDEOptions or TPackageIDEOptions;
     FLazCompilerOptions: TLazCompilerOptions;
     function GetLazCompilerOptions: TLazCompilerOptions;
-  public
-    //constructor Create;
-    //destructor Destroy; override;
   public
     property LazCompilerOptions: TLazCompilerOptions read GetLazCompilerOptions;
   end;
@@ -62,17 +59,7 @@ type
 implementation
 
 { TIDEProjPackBase }
-{
-constructor TIDEProjPackBase.Create;
-begin
-  inherited Create;
-end;
 
-destructor TIDEProjPackBase.Destroy;
-begin
-  inherited Destroy;
-end;
-}
 function TIDEProjPackBase.GetLazCompilerOptions: TLazCompilerOptions;
 begin
   Result := FLazCompilerOptions;
