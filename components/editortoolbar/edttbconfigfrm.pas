@@ -77,7 +77,6 @@ type
 Var
   sPosValues: array[0..3] of string = ('Top','Bottom','Right','Left');
   sLocalizedPosValues: array[0..3] of string;
-  sMenuView: string = 'View';
 
 implementation
 
@@ -229,7 +228,7 @@ end;
 procedure TEdtTbConfigForm.btnOKClick(Sender: TObject);
 begin
   SaveSettings;
-  if not FToolBarShow then ShowMessageFmt(rsWarning,[sMenuView,rsEditorToolbar]);
+  if not FToolBarShow then ShowMessageFmt(rsWarning,[rsMenuView,rsEditorToolbar]);
 end;
 
 procedure TEdtTbConfigForm.SetupCaptions;
@@ -355,8 +354,6 @@ begin
   n.SelectedIndex := Item.ImageIndex;
   if Item is TIDEMenuSection then
   begin
-    // get the caption of the View entry for the appropriate Warning
-    if Item.Name = 'View' then sMenuView:= Item.Caption;
     sec := (Item as TIDEMenuSection);
     for i := 0 to sec.Count-1 do
       AddMenuItem(n, sec.Items[i]);
