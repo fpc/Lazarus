@@ -86,7 +86,7 @@ msgid "Visible"
 msgstr ""
 
 #: editortoolbar_str.rswarning
-msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu"
+msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu."
 msgstr ""
 
 #: editortoolbar_str.serrcouldnotfind

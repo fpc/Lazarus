@@ -19,7 +19,7 @@ msgstr "Добавить выбранный элемент на панель"
 
 #: editortoolbar_str.rsbottom
 msgid "Bottom"
-msgstr ""
+msgstr "Снизу"
 
 #: editortoolbar_str.rscancel
 msgid "Cancel"
@@ -31,7 +31,7 @@ msgstr "Настроить инструментальную панель"
 
 #: editortoolbar_str.rseditortoolbar
 msgid "Editor ToolBar"
-msgstr ""
+msgstr "Инструментальная панель редактора"
 
 #: editortoolbar_str.rseditortoolbarconfigform
 msgid "Editor Toolbar Configuration"
@@ -43,7 +43,7 @@ msgstr "Перейти к ..."
 
 #: editortoolbar_str.rsleft
 msgid "Left"
-msgstr ""
+msgstr "Слева"
 
 #: editortoolbar_str.rsmenutree
 #| msgid "Menu Tree"
@@ -52,7 +52,7 @@ msgstr "Доступные элементы меню"
 
 #: editortoolbar_str.rsmenuview
 msgid "View"
-msgstr ""
+msgstr "Вид"
 
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
@@ -68,7 +68,7 @@ msgstr "ОК"
 
 #: editortoolbar_str.rsposition
 msgid "Position"
-msgstr ""
+msgstr "Положение"
 
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
@@ -76,11 +76,11 @@ msgstr "Удалить выбранный элемент с панели"
 
 #: editortoolbar_str.rsright
 msgid "Right"
-msgstr ""
+msgstr "Справа"
 
 #: editortoolbar_str.rsshowhide
 msgid "Show/Hide Toolbar"
-msgstr ""
+msgstr "Показывать/скрывать инструментальную панель"
 
 #: editortoolbar_str.rstoolbar
 #| msgid "Toolbar"
@@ -89,15 +89,16 @@ msgstr "Элементы панели"
 
 #: editortoolbar_str.rstop
 msgid "Top"
-msgstr ""
+msgstr "Сверху"
 
 #: editortoolbar_str.rsvisible
 msgid "Visible"
-msgstr ""
+msgstr "Отображать"
 
 #: editortoolbar_str.rswarning
-msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu"
-msgstr ""
+#| msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu"
+msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu."
+msgstr "Вы скрыли инструментальную панель. Для доступа к диалогу её настройки вызовите \"%s\" -> \"%s\" главного меню."
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
