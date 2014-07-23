@@ -587,14 +587,10 @@ procedure TLazPackageID.UpdateIDAsString;
 begin
   FIDAsString:=Version.AsString;
   if FIDAsString<>'' then
-    FIDAsString:=Name+' '+FIDAsString
-  else
-    FIDAsString:=FIDAsString;
+    FIDAsString:=Name+' '+FIDAsString;
   FIDAsWord:=Version.AsWord;
   if FIDAsWord<>'' then
-    FIDAsWord:=Name+FIDAsWord
-  else
-    FIDAsWord:=FIDAsWord;
+    FIDAsWord:=Name+FIDAsWord;
 end;
 
 procedure TLazPackageID.VersionChanged(Sender: TObject);
