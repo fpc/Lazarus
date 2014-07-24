@@ -262,6 +262,10 @@ msgstr ""
 msgid "Date and time"
 msgstr "Data ir laikas"
 
+#: lr_const.sdbfield
+msgid "DB field"
+msgstr ""
+
 #: lr_const.sdefaultprinter
 msgid "Default printer"
 msgstr "Numatytas spausdintuvas"
@@ -1157,6 +1161,10 @@ msgstr "&Kopijuoti"
 msgid "C&ut"
 msgstr "Iš&kirpti"
 
+#: lr_const.sfrdesignerform_datainsp
+msgid "&Data inspector"
+msgstr ""
+
 #: lr_const.sfrdesignerform_delete
 msgid "&Delete"
 msgstr "Paša&linti"
@@ -1314,6 +1322,10 @@ msgstr "nuo"
 msgid "FR variables"
 msgstr "FR kintamieji"
 
+#: lr_const.sfunctions
+msgid "Functions"
+msgstr ""
+
 #: lr_const.sgeditorformcapt
 msgid "Picture"
 msgstr "Paveikslas"
@@ -1421,6 +1433,14 @@ msgstr "Įterpti diagramos objektą"
 #: lr_const.sinscheckbox
 msgid "Insert CheckBox object"
 msgstr "Įterpti žymimojo langelio objektą"
+
+#: lr_const.sinsert
+msgid "Insert"
+msgstr ""
+
+#: lr_const.sinsertexpression
+msgid "Insert Expression"
+msgstr ""
 
 #: lr_const.sinsertfields
 msgid "Insert DB fields"
@@ -2499,6 +2519,10 @@ msgstr "Kintamieji"
 #: lr_const.svarformcat
 msgid "&Category:"
 msgstr "&Kategorija:"
+
+#: lr_const.svariable
+msgid "Variable"
+msgstr ""
 
 #: lr_const.svbandeditorformbnd
 msgid "Bands"

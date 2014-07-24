@@ -261,6 +261,10 @@ msgstr ""
 msgid "Date and time"
 msgstr "Datum a čas:"
 
+#: lr_const.sdbfield
+msgid "DB field"
+msgstr ""
+
 #: lr_const.sdefaultprinter
 msgid "Default printer"
 msgstr "Výchozí tiskárna"
@@ -1180,6 +1184,10 @@ msgstr "Kopírovat"
 msgid "C&ut"
 msgstr "Vyjmout"
 
+#: lr_const.sfrdesignerform_datainsp
+msgid "&Data inspector"
+msgstr ""
+
 #: lr_const.sfrdesignerform_delete
 msgid "&Delete"
 msgstr "Odstranit"
@@ -1328,6 +1336,10 @@ msgstr "z"
 msgid "FR variables"
 msgstr "FR proměnné"
 
+#: lr_const.sfunctions
+msgid "Functions"
+msgstr ""
+
 #: lr_const.sgeditorformcapt
 msgid "Picture"
 msgstr "Obrázek"
@@ -1432,6 +1444,14 @@ msgstr "Vložit objekt grafu"
 #: lr_const.sinscheckbox
 msgid "Insert CheckBox object"
 msgstr "Vložit objekt zaškrtávacího pole"
+
+#: lr_const.sinsert
+msgid "Insert"
+msgstr ""
+
+#: lr_const.sinsertexpression
+msgid "Insert Expression"
+msgstr ""
 
 #: lr_const.sinsertfields
 msgid "Insert DB fields"
@@ -2508,6 +2528,10 @@ msgstr "Proměnné"
 #: lr_const.svarformcat
 msgid "&Category:"
 msgstr "Katorgorie:"
+
+#: lr_const.svariable
+msgid "Variable"
+msgstr ""
 
 #: lr_const.svbandeditorformbnd
 msgid "Bands"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-04-23 02:20+0400\n"
+"PO-Revision-Date: 2014-07-25 01:32+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -259,6 +259,10 @@ msgstr "d mmmm yyyy"
 #: lr_const.sdatetimecategory
 msgid "Date and time"
 msgstr "Дата и время"
+
+#: lr_const.sdbfield
+msgid "DB field"
+msgstr "Поле БД"
 
 #: lr_const.sdefaultprinter
 msgid "Default printer"
@@ -1154,6 +1158,10 @@ msgstr "&Копировать"
 msgid "C&ut"
 msgstr "&Вырезать"
 
+#: lr_const.sfrdesignerform_datainsp
+msgid "&Data inspector"
+msgstr "Инспектор &данных"
+
 #: lr_const.sfrdesignerform_delete
 msgid "&Delete"
 msgstr "&Удалить"
@@ -1311,6 +1319,10 @@ msgstr "из"
 msgid "FR variables"
 msgstr "Переменные FR"
 
+#: lr_const.sfunctions
+msgid "Functions"
+msgstr "Функции"
+
 #: lr_const.sgeditorformcapt
 msgid "Picture"
 msgstr "Изображение"
@@ -1418,6 +1430,14 @@ msgstr "Вставить объект Chart"
 #: lr_const.sinscheckbox
 msgid "Insert CheckBox object"
 msgstr "Вставить объект CheckBox"
+
+#: lr_const.sinsert
+msgid "Insert"
+msgstr "Вставить"
+
+#: lr_const.sinsertexpression
+msgid "Insert Expression"
+msgstr "Вставить выражение"
 
 #: lr_const.sinsertfields
 msgid "Insert DB fields"
@@ -2490,6 +2510,10 @@ msgstr "Переменные"
 #: lr_const.svarformcat
 msgid "&Category:"
 msgstr "&Категория"
+
+#: lr_const.svariable
+msgid "Variable"
+msgstr "Переменная"
 
 #: lr_const.svbandeditorformbnd
 msgid "Bands"

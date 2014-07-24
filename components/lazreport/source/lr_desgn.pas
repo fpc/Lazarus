@@ -3137,6 +3137,7 @@ begin
   Pan5.Caption :=     sFRDesignerForm_Insp;
   Pan6.Caption :=     sFRDesignerForm_AlignPalette;
   Pan7.Caption :=     sFRDesignerForm_Tools3;
+  MenuItem2.Caption:= sFRDesignerForm_DataInsp;
   N34.Caption :=      sFRDesignerForm_About;
   N22.Caption :=      sFRDesignerForm_Help1;
   N35.Caption :=      sFRDesignerForm_Help2;

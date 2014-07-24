@@ -190,6 +190,9 @@ resourcestring
 
   sVar1 = 'Page#';
   sVar2 = 'Expression';
+  sInsert = 'Insert';
+  sDBField = 'DB field';
+  sVariable = 'Variable';
   sVar3 = 'Date';
   sVar4 = 'Time';
   sVar5 = 'Line#';
@@ -557,6 +560,7 @@ resourcestring
   sFRDesignerForm_Insp = 'Object &Inspector';
   sFRDesignerForm_AlignPalette = '&Alignment palette';
   sFRDesignerForm_Tools3 = 'Too&ls';
+  sFRDesignerForm_DataInsp = '&Data inspector';
   sFRDesignerForm_About = '&About ...';
   sFRDesignerForm_SaveAs = 'Save &as ...';
   sFRDesignerForm_BeforePrintScript = '&Before print script ...';
@@ -789,6 +793,9 @@ resourcestring
   sTimeFormat2 = 'h:nn:ss';
   sTimeFormat3 = 'hh:nn';
   sTimeFormat4 = 'h:nn';
+
+  sInsertExpression = 'Insert Expression';
+  sFunctions = 'Functions';
 
 const
   frRes = 53000;

@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, LR_Class, Buttons, ButtonPanel;
+  ExtCtrls, LR_Class, Buttons, ButtonPanel, LR_Const;
 
 type
 
@@ -60,6 +60,7 @@ begin
     ListBox1.ItemIndex:=0;
   ListBox1Click(nil);
   CurentFunctionDescription:=nil;
+  Caption:=sFunctions;
 end;
 
 procedure TLR_FunctEditorForm.FormClose(Sender: TObject;

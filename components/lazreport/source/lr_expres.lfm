@@ -7,11 +7,12 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
   Caption = 'Insert Expression'
   ClientHeight = 393
   ClientWidth = 438
+  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.29'
+  LCLVersion = '1.3'
   object Label1: TLabel
     Left = 0
-    Height = 16
+    Height = 13
     Top = 0
     Width = 438
     Align = alTop
@@ -21,23 +22,23 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
   object GroupBox1: TGroupBox
     Left = 5
     Height = 80
-    Top = 263
+    Top = 267
     Width = 428
     Align = alBottom
     BorderSpacing.Around = 5
     Caption = 'Insert'
-    ClientHeight = 64
-    ClientWidth = 426
+    ClientHeight = 62
+    ClientWidth = 424
     TabOrder = 0
     object Panel1: TPanel
       Left = 0
       Height = 34
       Top = 0
-      Width = 426
+      Width = 424
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 34
-      ClientWidth = 426
+      ClientWidth = 424
       TabOrder = 0
       object BitBtn1: TBitBtn
         Left = 294
@@ -46,7 +47,6 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
         Width = 127
         BorderSpacing.InnerBorder = 2
         Caption = 'Function'
-        NumGlyphs = 0
         OnClick = BitBtn1Click
         TabOrder = 2
         TabStop = False
@@ -58,7 +58,6 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
         Width = 134
         BorderSpacing.InnerBorder = 2
         Caption = 'Variable'
-        NumGlyphs = 0
         OnClick = BitBtn2Click
         TabOrder = 1
         TabStop = False
@@ -70,7 +69,6 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
         Width = 134
         BorderSpacing.InnerBorder = 2
         Caption = 'DB fields'
-        NumGlyphs = 0
         OnClick = BitBtn3Click
         TabOrder = 0
         TabStop = False
@@ -78,19 +76,19 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button1: TButton
       Left = 0
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
       BorderSpacing.InnerBorder = 2
       Caption = '+'
       OnClick = Button13Click
-      TabOrder = 8
+      TabOrder = 9
       TabStop = False
     end
     object Button2: TButton
       Left = 30
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
@@ -102,7 +100,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button3: TButton
       Left = 60
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
@@ -114,7 +112,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button4: TButton
       Left = 90
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
@@ -126,7 +124,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button5: TButton
       Left = 120
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
@@ -138,31 +136,31 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button6: TButton
       Left = 150
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
       BorderSpacing.InnerBorder = 2
       Caption = '<>'
       OnClick = Button13Click
-      TabOrder = 9
+      TabOrder = 13
       TabStop = False
     end
     object Button7: TButton
       Left = 180
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
       BorderSpacing.InnerBorder = 2
       Caption = '>'
       OnClick = Button13Click
-      TabOrder = 12
+      TabOrder = 8
       TabStop = False
     end
     object Button8: TButton
       Left = 210
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
@@ -174,7 +172,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button9: TButton
       Left = 240
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
@@ -186,7 +184,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button10: TButton
       Left = 270
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
@@ -198,19 +196,19 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button11: TButton
       Left = 360
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
       BorderSpacing.InnerBorder = 2
       Caption = 'not'
       OnClick = Button13Click
-      TabOrder = 13
+      TabOrder = 12
       TabStop = False
     end
     object Button12: TButton
       Left = 330
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
@@ -222,7 +220,7 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button13: TButton
       Left = 300
-      Height = 30
+      Height = 28
       Top = 34
       Width = 30
       Align = alLeft
@@ -234,9 +232,9 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     end
     object Button14: TButton
       Left = 390
-      Height = 30
+      Height = 28
       Top = 34
-      Width = 36
+      Width = 34
       Align = alClient
       Caption = 'mod'
       OnClick = Button13Click
@@ -245,8 +243,8 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
   end
   inline Memo1: TSynEdit
     Left = 0
-    Height = 242
-    Top = 16
+    Height = 249
+    Top = 13
     Width = 438
     Align = alClient
     Font.Height = -16
@@ -256,30 +254,19 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
     ParentColor = False
     ParentFont = False
     TabOrder = 1
-    Gutter.Width = 61
+    Gutter.Width = 59
     Gutter.MouseActions = <    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccAny
         ClickDir = cdDown
-        Command = 13
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcOnMainGutterClick
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbRight
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 12
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcContextMenu
       end>
+    RightGutter.Width = 0
+    RightGutter.MouseActions = <>
     Keystrokes = <    
       item
         Command = ecUp
@@ -603,137 +590,110 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
       end>
     MouseActions = <    
       item
-        Shift = []
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 1
+        Command = emcStartSelections
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssShift]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 1
+        Command = emcStartSelections
         MoveCaret = True
         Option = 1
-        Priority = 0
       end    
       item
         Shift = [ssAlt]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 3
+        Command = emcStartColumnSelections
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssShift, ssAlt]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 3
+        Command = emcStartColumnSelections
         MoveCaret = True
         Option = 1
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbRight
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 12
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcContextMenu
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccDouble
         ClickDir = cdDown
-        Command = 6
+        Command = emcSelectWord
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccTriple
         ClickDir = cdDown
-        Command = 7
+        Command = emcSelectLine
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccQuad
         ClickDir = cdDown
-        Command = 8
+        Command = emcSelectPara
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbMiddle
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 10
+        Command = emcPasteSelection
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssCtrl]
         ShiftMask = [ssShift, ssAlt, ssCtrl]
-        Button = mbLeft
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 11
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcMouseLink
       end>
+    MouseTextActions = <>
     MouseSelActions = <    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 9
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcStartDragMove
       end>
+    VisibleSpecialChars = [vscSpace, vscTabAtLast]
+    SelectedColor.FrameEdges = sfeAround
+    SelectedColor.BackPriority = 50
+    SelectedColor.ForePriority = 50
+    SelectedColor.FramePriority = 50
+    SelectedColor.BoldPriority = 50
+    SelectedColor.ItalicPriority = 50
+    SelectedColor.UnderlinePriority = 50
+    SelectedColor.StrikeOutPriority = 50
+    IncrementColor.FrameEdges = sfeAround
+    HighlightAllColor.FrameEdges = sfeAround
     BracketHighlightStyle = sbhsBoth
+    BracketMatchColor.Background = clNone
+    BracketMatchColor.Foreground = clNone
+    BracketMatchColor.FrameEdges = sfeAround
+    BracketMatchColor.Style = [fsBold]
+    FoldedCodeColor.Background = clNone
+    FoldedCodeColor.Foreground = clGray
+    FoldedCodeColor.FrameColor = clGray
+    FoldedCodeColor.FrameEdges = sfeAround
+    MouseLinkColor.Background = clNone
+    MouseLinkColor.Foreground = clBlue
+    MouseLinkColor.FrameEdges = sfeAround
+    LineHighlightColor.Background = clNone
+    LineHighlightColor.Foreground = clNone
+    LineHighlightColor.FrameEdges = sfeAround
     inline SynGutterPartList1: TSynGutterPartList
       object SynGutterMarks1: TSynGutterMarks
-        Width = 23
+        Width = 24
+        MouseActions = <>
       end
       object SynGutterLineNumber1: TSynGutterLineNumber
-        Width = 21
+        Width = 19
         MouseActions = <>
         MarkupInfo.Background = clBtnFace
         MarkupInfo.Foreground = clNone
+        MarkupInfo.FrameEdges = sfeAround
         DigitCount = 2
         ShowOnlyLineNumbersMultiplesOf = 1
         ZeroStart = False
@@ -741,35 +701,29 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
       end
       object SynGutterChanges1: TSynGutterChanges
         Width = 4
+        MouseActions = <>
         ModifiedColor = 59900
         SavedColor = clGreen
       end
       object SynGutterSeparator1: TSynGutterSeparator
         Width = 2
+        MouseActions = <>
+        MarkupInfo.Background = clWhite
+        MarkupInfo.Foreground = clGray
+        MarkupInfo.FrameEdges = sfeAround
       end
       object SynGutterCodeFolding1: TSynGutterCodeFolding
         MouseActions = <        
           item
-            Shift = []
-            ShiftMask = []
             Button = mbRight
-            ClickCount = ccSingle
-            ClickDir = cdUp
-            Command = 16
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldContextMenu
           end        
           item
-            Shift = []
             ShiftMask = [ssShift]
             Button = mbMiddle
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldCollaps
           end        
           item
             Shift = [ssShift]
@@ -777,72 +731,55 @@ object lrExpresionEditorForm: TlrExpresionEditorForm
             Button = mbMiddle
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
+            Command = emcCodeFoldCollaps
             Option = 1
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 0
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcNone
           end>
         MarkupInfo.Background = clNone
         MarkupInfo.Foreground = clGray
+        MarkupInfo.FrameEdges = sfeAround
         MouseActionsExpanded = <        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldCollaps
           end>
         MouseActionsCollapsed = <        
           item
             Shift = [ssCtrl]
             ShiftMask = [ssCtrl]
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 15
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldExpand
           end        
           item
-            Shift = []
             ShiftMask = [ssCtrl]
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 15
-            MoveCaret = False
+            Command = emcCodeFoldExpand
             Option = 1
-            Priority = 0
           end>
       end
     end
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 349
+    Height = 34
+    Top = 353
     Width = 426
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CloseButton.Enabled = False
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 2
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end

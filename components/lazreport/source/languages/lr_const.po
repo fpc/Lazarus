@@ -255,6 +255,10 @@ msgstr ""
 msgid "Date and time"
 msgstr ""
 
+#: lr_const.sdbfield
+msgid "DB field"
+msgstr ""
+
 #: lr_const.sdefaultprinter
 msgid "Default printer"
 msgstr ""
@@ -1137,6 +1141,10 @@ msgstr ""
 msgid "C&ut"
 msgstr ""
 
+#: lr_const.sfrdesignerform_datainsp
+msgid "&Data inspector"
+msgstr ""
+
 #: lr_const.sfrdesignerform_delete
 msgid "&Delete"
 msgstr ""
@@ -1285,6 +1293,10 @@ msgstr ""
 msgid "FR variables"
 msgstr ""
 
+#: lr_const.sfunctions
+msgid "Functions"
+msgstr ""
+
 #: lr_const.sgeditorformcapt
 msgid "Picture"
 msgstr ""
@@ -1388,6 +1400,14 @@ msgstr ""
 
 #: lr_const.sinscheckbox
 msgid "Insert CheckBox object"
+msgstr ""
+
+#: lr_const.sinsert
+msgid "Insert"
+msgstr ""
+
+#: lr_const.sinsertexpression
+msgid "Insert Expression"
 msgstr ""
 
 #: lr_const.sinsertfields
@@ -2452,6 +2472,10 @@ msgstr ""
 
 #: lr_const.svarformcat
 msgid "&Category:"
+msgstr ""
+
+#: lr_const.svariable
+msgid "Variable"
 msgstr ""
 
 #: lr_const.svbandeditorformbnd

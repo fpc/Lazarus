@@ -260,6 +260,10 @@ msgstr ""
 msgid "Date and time"
 msgstr "Tanggal dan jam"
 
+#: lr_const.sdbfield
+msgid "DB field"
+msgstr ""
+
 #: lr_const.sdefaultprinter
 msgid "Default printer"
 msgstr "Printer standar"
@@ -1156,6 +1160,10 @@ msgstr "&Duplikat"
 msgid "C&ut"
 msgstr "C&ut"
 
+#: lr_const.sfrdesignerform_datainsp
+msgid "&Data inspector"
+msgstr ""
+
 #: lr_const.sfrdesignerform_delete
 msgid "&Delete"
 msgstr "&Hapus"
@@ -1322,6 +1330,10 @@ msgstr "dari"
 msgid "FR variables"
 msgstr "Variabel FR"
 
+#: lr_const.sfunctions
+msgid "Functions"
+msgstr ""
+
 #: lr_const.sgeditorformcapt
 msgid "Picture"
 msgstr "Gambar"
@@ -1432,6 +1444,14 @@ msgstr "Sisipkan obyek Chart"
 #: lr_const.sinscheckbox
 msgid "Insert CheckBox object"
 msgstr "Sisipkan obyek KotakCentang"
+
+#: lr_const.sinsert
+msgid "Insert"
+msgstr ""
+
+#: lr_const.sinsertexpression
+msgid "Insert Expression"
+msgstr ""
 
 #: lr_const.sinsertfields
 msgid "Insert DB fields"
@@ -2508,6 +2528,10 @@ msgstr "Variabel"
 #: lr_const.svarformcat
 msgid "&Category:"
 msgstr "&Kategori:"
+
+#: lr_const.svariable
+msgid "Variable"
+msgstr ""
 
 #: lr_const.svbandeditorformbnd
 msgid "Bands"

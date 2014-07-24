@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  Buttons, ExtCtrls, ButtonPanel, SynEdit;
+  Buttons, ExtCtrls, ButtonPanel, SynEdit, LR_Const;
 
 type
 
@@ -39,6 +39,7 @@ type
     procedure BitBtn2Click(Sender: TObject);
     procedure BitBtn3Click(Sender: TObject);
     procedure Button13Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     procedure AddWord(S:string);
   public
@@ -56,6 +57,16 @@ uses LR_Var, LR_Flds, lr_funct_editor_unit, lr_funct_editor_unit1, LR_Class;
 procedure TlrExpresionEditorForm.Button13Click(Sender: TObject);
 begin
   AddWord((Sender as TButton).Caption);
+end;
+
+procedure TlrExpresionEditorForm.FormCreate(Sender: TObject);
+begin
+  Caption := sInsertExpression;
+  Label1.Caption := sVar2;
+  GroupBox1.Caption := sInsert;
+  BitBtn3.Caption := sDBField;
+  BitBtn2.Caption := sVariable;
+  BitBtn1.Caption := sEditorFormFunction;
 end;
 
 procedure TlrExpresionEditorForm.BitBtn2Click(Sender: TObject);
