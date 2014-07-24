@@ -3682,7 +3682,7 @@ begin
             // write state file
             Result:=SavePackageCompiledState(APackage,
                               CompilerFilename,CompilerParams,
-                              PkgCompileTool.ErrorMessage='',SrcPPUFileExists,true);
+                              PkgCompileTool.ErrorMessage='',SrcPPUFileExists,false);
             if Result<>mrOk then begin
               DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
               exit;

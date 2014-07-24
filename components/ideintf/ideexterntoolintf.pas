@@ -421,8 +421,7 @@ type
 
   TExternalToolHandler = (
     ethNewOutput,
-    ethStopped,
-    ethAllViewsUpdated
+    ethStopped
     );
 
   TIDEExternalTools = class;
@@ -499,14 +498,11 @@ type
     // handlers
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
     procedure AddHandlerOnNewOutput(const OnNewOutput: TExternalToolNewOutputEvent;
-                                    AsFirst: boolean = true); // called in main thread
+                                    AsFirst: boolean = true); // called in main thread, Sender=Tool
     procedure RemoveHandlerOnNewOutput(const OnNewOutput: TExternalToolNewOutputEvent);
     procedure AddHandlerOnStopped(const OnStopped: TNotifyEvent;
-                                  AsFirst: boolean = true);  // called in main thread
+                                  AsFirst: boolean = true);  // called in main thread, Sender=Tool
     procedure RemoveHandlerOnStopped(const OnStopped: TNotifyEvent);
-    procedure AddHandlerOnAllViewsUpdated(const OnViewsUpdated: TNotifyEvent;
-                                  AsFirst: boolean = true);  // called in main thread
-    procedure RemoveHandlerOnAllViewsUpdated(const OnViewsUpdated: TNotifyEvent);
     procedure Reference(Thing: TObject; const Note: string); // add a reference to delay auto freeing, use Release for free
     procedure Release(Thing: TObject);
     property References[Index: integer]: string read GetReferences;
@@ -1160,18 +1156,6 @@ procedure TAbstractExternalTool.RemoveHandlerOnStopped(
   const OnStopped: TNotifyEvent);
 begin
   RemoveHandler(ethStopped,TMethod(OnStopped));
-end;
-
-procedure TAbstractExternalTool.AddHandlerOnAllViewsUpdated(
-  const OnViewsUpdated: TNotifyEvent; AsFirst: boolean);
-begin
-  AddHandler(ethAllViewsUpdated,TMethod(OnViewsUpdated),AsFirst);
-end;
-
-procedure TAbstractExternalTool.RemoveHandlerOnAllViewsUpdated(
-  const OnViewsUpdated: TNotifyEvent);
-begin
-  RemoveHandler(ethAllViewsUpdated,TMethod(OnViewsUpdated));
 end;
 
 procedure TAbstractExternalTool.Reference(Thing: TObject; const Note: string);
