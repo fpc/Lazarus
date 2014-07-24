@@ -2899,10 +2899,6 @@ msgstr "השלמת תכונות"
 msgid "Property Name"
 msgstr "שם התכונה"
 
-#: lazarusidestrconsts.dlgqautoclosecompiledialog
-msgid "Auto close compile dialog"
-msgstr "סגור אוטומטית את תיבת הדושיח של ההידור"
-
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
 msgstr "פתח את הפרויקט האחרון בהתחלה"
@@ -2910,10 +2906,6 @@ msgstr "פתח את הפרויקט האחרון בהתחלה"
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
 msgstr "הראה את ריווחי הגבול"
-
-#: lazarusidestrconsts.dlgqshowcompiledialog
-msgid "Show compile dialog"
-msgstr "הראה את תיבת הדושיח של ההידור"
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
@@ -3127,10 +3119,6 @@ msgstr "הראה הכל"
 msgid "Show executable info (Win32 only)"
 msgstr "הראה מידע קובץ ריצה (win32 בלבד)"
 
-#: lazarusidestrconsts.dlgshowfullfilenames
-msgid "Show full file names"
-msgstr ""
-
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "הראה מידע כללי"
@@ -3156,10 +3144,6 @@ msgstr "הראה מספרי שורה"
 #| msgid "Show Notes"
 msgid "Show notes"
 msgstr "הראה הערות"
-
-#: lazarusidestrconsts.dlgshownothing
-msgid "Show nothing (only errors)"
-msgstr "אל תראה כלום (רק שגיאות)"
 
 #: lazarusidestrconsts.dlgshowsummary
 msgid "Show summary"
@@ -4056,6 +4040,18 @@ msgstr ""
 msgid "Add Filter ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisadditiondoesnotfitthecurrentmessage
+msgid "Addition does not fit the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditionfitsthecurrentmessage
+msgid "Addition fits the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditions
+msgid "Additions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr ""
@@ -4760,10 +4756,6 @@ msgstr ""
 #| msgid "Cannot find lazarus starter:%s%s"
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "לא יכול למצוא את מאתחל לזארוס: s%s%"
-
-#: lazarusidestrconsts.liscannotfindpp
-msgid "Cannot find PPU of unit %s"
-msgstr ""
 
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
@@ -6447,6 +6439,10 @@ msgstr "התניות"
 msgid "Lazarus config directory"
 msgstr "ספריית הגדרות לזרוס"
 
+#: lazarusidestrconsts.lisconfigfileofadditions
+msgid "Config file of additions:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
 msgstr "מגדיר את הבנייה של %s"
@@ -6851,12 +6847,6 @@ msgstr ""
 msgid "Copy all output to clipboard"
 msgstr "העתק את כל הפלט ללוח הזמני"
 
-#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
-#, fuzzy
-#| msgid "Copy all shown and hidden messages to clipboard"
-msgid "Copy All Shown and Hidden Messages to Clipboard"
-msgstr "העתק את כל ההודעות הגלויות והנסתרות ללוח הזמני"
-
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 #, fuzzy
 #| msgid "Copy all shown messages to clipboard"
@@ -7009,6 +6999,10 @@ msgstr "צור זאת"
 
 #: lazarusidestrconsts.liscreatelocalvariable
 msgid "Create local variable \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewaddition
+msgid "Create new addition"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatenewpackage
@@ -7519,6 +7513,14 @@ msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "מחק"
 
+#: lazarusidestrconsts.lisdelete2
+msgid "Delete?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeleteaddition
+msgid "Delete addition \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
 msgstr "מחק& הכל"
@@ -7595,6 +7597,10 @@ msgstr "מחק את הקבצים שנבחרו"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletethisaddition
+msgid "Delete this addition"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletevalue
@@ -7995,6 +8001,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"
 msgstr "עריכה"
+
+#: lazarusidestrconsts.liseditadditionalhelpformessages
+msgid "Edit additional help for messages"
+msgstr ""
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -8411,10 +8421,6 @@ msgstr "שגיאה בקריאת קובץ  \"%s\""
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "שגיאה בכתיבת רשימת חבילות לקובץ s%s%%s%"
 
-#: lazarusidestrconsts.liseteditcustomscanners
-msgid "Edit custom scanners (%s)"
-msgstr "ערוך את סורקים מותאמים אישית (s%)"
-
 #: lazarusidestrconsts.lisevalexpression
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
@@ -8607,10 +8613,6 @@ msgstr ""
 msgid "External Tools"
 msgstr "כלים חצוניים"
 
-#: lazarusidestrconsts.lisexttoolfailedtoruntool
-msgid "Failed to run tool"
-msgstr "נכשל בהרצת הכלי"
-
 #: lazarusidestrconsts.lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
 msgstr "הגעת לממספר הכלים המירבי"
@@ -8618,14 +8620,6 @@ msgstr "הגעת לממספר הכלים המירבי"
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr "יש מקסימום של %s למספר הכלים"
-
-#: lazarusidestrconsts.lisexttooltitlecompleted
-msgid "\"%s\" completed"
-msgstr "\"%s\" הסתיים"
-
-#: lazarusidestrconsts.lisexttoolunabletorunthetool
-msgid "Unable to run the tool %s%s%s:%s%s"
-msgstr "לא ניתן להריץ את הכלי %s%s%s:%s%s"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
@@ -8645,10 +8639,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfatal
 msgid "Fatal"
-msgstr ""
-
-#: lazarusidestrconsts.lisfatal2
-msgid "%s(%s,%s) Fatal: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
@@ -8976,12 +8966,24 @@ msgstr ""
 msgid "fpc.cfg is missing."
 msgstr ""
 
+#: lazarusidestrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake נכשל"
 
 #: lazarusidestrconsts.lisfpcmessagefile
 msgid "FPC message file"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessagefile2
+msgid "FPC message file:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessagesappendix
+msgid "FPC messages: Appendix"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
@@ -9129,6 +9131,10 @@ msgstr "כללי"
 msgid "get word at current cursor position"
 msgstr "קח את המילה שבמקום הנוכחי של הסמן"
 
+#: lazarusidestrconsts.lisglobalsettings
+msgid "Global settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisgotoline
 #, fuzzy
 #| msgid "Goto line"
@@ -9240,10 +9246,6 @@ msgstr ""
 #: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr ""
-
-#: lazarusidestrconsts.lishidemessageviadirective
-msgid "Hide message via directive"
-msgstr "הסתר הודעה דרך הוראת מהדר"
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
@@ -9560,65 +9562,6 @@ msgstr "זיהוי לקוד פסקל"
 #: lazarusidestrconsts.lisindex
 msgid "Index"
 msgstr "אינדקס"
-
-#: lazarusidestrconsts.lisinfobuildabort
-#, fuzzy
-#| msgid "Aborted..."
-msgid "Aborted ..."
-msgstr "מבוטל ..."
-
-#: lazarusidestrconsts.lisinfobuildcaption
-msgid "Compile Project"
-msgstr "הדר פרויקט"
-
-#: lazarusidestrconsts.lisinfobuildcompile
-#, fuzzy
-#| msgid "Compiling..."
-msgctxt "lazarusidestrconsts.lisinfobuildcompile"
-msgid "Compiling ..."
-msgstr "מהדר..."
-
-#: lazarusidestrconsts.lisinfobuilderror
-#, fuzzy
-#| msgid "Error..."
-msgid "Error ..."
-msgstr "שגיאה..."
-
-#: lazarusidestrconsts.lisinfobuilderrors
-msgid "Errors:"
-msgstr "שגיאות:"
-
-#: lazarusidestrconsts.lisinfobuildhint
-msgid "Hints:"
-msgstr "טיפים:"
-
-#: lazarusidestrconsts.lisinfobuildlines
-msgctxt "lazarusidestrconsts.lisinfobuildlines"
-msgid "Lines:"
-msgstr "שורות:"
-
-#: lazarusidestrconsts.lisinfobuildmakeabort
-msgctxt "lazarusidestrconsts.lisinfobuildmakeabort"
-msgid "Abort"
-msgstr "בטל"
-
-#: lazarusidestrconsts.lisinfobuildnote
-msgid "Notes:"
-msgstr "הערות:"
-
-#: lazarusidestrconsts.lisinfobuildproject
-msgid "Project:"
-msgstr "פרוייקט:"
-
-#: lazarusidestrconsts.lisinfobuildsuccess
-#, fuzzy
-#| msgid "Success..."
-msgid "Success ..."
-msgstr "הצלחה ..."
-
-#: lazarusidestrconsts.lisinfobuildwarning
-msgid "Warnings:"
-msgstr "אזהרות:"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
@@ -11143,10 +11086,6 @@ msgstr ""
 msgid "Max %d"
 msgstr "מקסימום d%"
 
-#: lazarusidestrconsts.lismaybepackage
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ""
-
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "יתכן שתצטרך להדר מחדש את החבילה."
@@ -12330,10 +12269,6 @@ msgstr "אחר"
 msgid "Projects"
 msgstr ""
 
-#: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
-msgid "Message contains no file position information:%s%s"
-msgstr "ההודעה אינה מכילה מידע על מיקום הקובץ: s%s%"
-
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "עורך הודעות"
@@ -12809,6 +12744,10 @@ msgstr "אין קובץ LFM"
 msgid "No macro selected"
 msgstr "לא נבחר מאקרו"
 
+#: lazarusidestrconsts.lisnomessageselected
+msgid "(no message selected)"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "ללא שם"
@@ -12820,6 +12759,10 @@ msgstr "ללא"
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
 msgstr "ללא, הקלק כדי לבחור אחד"
+
+#: lazarusidestrconsts.lisnoneselected
+msgid "(None selected)"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
@@ -13070,6 +13013,14 @@ msgstr "? (דלוק)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "בסוף השורה (למשל: מקש  return או enter)"
 
+#: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
+msgid "Only messages fitting this regular expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
+msgid "Only messages with these FPC IDs (comma separated):"
+msgstr ""
+
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "חפש רק מילים שלמות"
@@ -13160,6 +13111,10 @@ msgstr "האם לפתוח את החבילה %s?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "האם לפתוח את הפרויקט %s?"
+
+#: lazarusidestrconsts.lisopenurl
+msgid "Open URL"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenxml
 msgid "Open XML"
@@ -14782,10 +14737,6 @@ msgstr "תוכנה"
 msgid "Program detected"
 msgstr "תוכנית התגלתה"
 
-#: lazarusidestrconsts.lisprogramnotfound
-msgid "Program %s not found"
-msgstr ""
-
 #: lazarusidestrconsts.lisprogramprogramdescriptor
 msgid "A Free Pascal command line program with some useful settings added."
 msgstr ""
@@ -15036,12 +14987,6 @@ msgstr ""
 msgid "Project Src Path"
 msgstr "נתיב קוד המקור של הפרויקט"
 
-#: lazarusidestrconsts.lisprojectsuccessfullybuilt
-#, fuzzy
-#| msgid "Project %s%s%s successfully built"
-msgid "Project \"%s\" successfully built"
-msgstr "הפרויקט %s%s%s נבנה בהצלחה"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr "יחידת הפרוייקט"
@@ -15226,10 +15171,6 @@ msgstr "פתח פרוייקט אחרון"
 msgid "View &Example Projects"
 msgstr ""
 
-#: lazarusidestrconsts.lisquickfixcreatelocalvariable
-msgid "Create local variable"
-msgstr "צור משתנה מקומי"
-
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
 msgstr ""
@@ -15365,10 +15306,6 @@ msgstr "להסיר נתיב \"כלול\" ?"
 msgid "Remove local variable %s"
 msgstr "הסר משתנה מקומי s%"
 
-#: lazarusidestrconsts.lisremovelocalvariable2
-msgid "Remove local variable"
-msgstr "הסר משתנה מקומי"
-
 #: lazarusidestrconsts.lisremovelocalvariable3
 msgid "Remove local variable \"%s\""
 msgstr ""
@@ -15394,10 +15331,6 @@ msgstr "הסר אותם"
 #: lazarusidestrconsts.lisremovethepathsfromothersources
 msgid "Remove the paths from \"Other sources\""
 msgstr "הסר את הנתיבים מ \"Other sources\""
-
-#: lazarusidestrconsts.lisremoveunitfromusessection
-msgid "Remove unit from uses section"
-msgstr "הסר יחידה מסעיף \"משתמש ב\""
 
 #: lazarusidestrconsts.lisremoveunitpath
 msgid "Remove unit path?"
@@ -15694,12 +15627,6 @@ msgstr "שמור הכל"
 msgid "Save All Checked"
 msgstr ""
 
-#: lazarusidestrconsts.lissaveallmessagestofile
-#, fuzzy
-#| msgid "Save all messages to file"
-msgid "Save All Messages to File"
-msgstr "שמור את כל ההודעות לקובץ"
-
 #: lazarusidestrconsts.lissaveallmodified
 #, fuzzy
 #| msgid "save all modified files"
@@ -15815,10 +15742,6 @@ msgstr ""
 msgid "Search paths"
 msgstr ""
 
-#: lazarusidestrconsts.lissearchunit
-msgid "Search unit"
-msgstr "חפש יחידה"
-
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "תיקיית הגדרות משנית, המיקום בו לזרוס יחפש את תבנית קבצי ההגדרות . ברירת המחדל היא "
@@ -15856,6 +15779,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "נבחר"
 
+#: lazarusidestrconsts.lisselectedaddition
+msgid "Selected addition:"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedandchildcontrols
 msgid "Selected and child controls"
 msgstr ""
@@ -15879,6 +15806,10 @@ msgstr ""
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "(שכן שמאלי שנבחר)"
+
+#: lazarusidestrconsts.lisselectedmessageinmessageswindow
+msgid "Selected message in messages window:"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedmodeswerebuilt
 msgid "Selected %d modes were successfully built."
@@ -16411,10 +16342,6 @@ msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
 msgstr "מערכת ההפעלה המיועדת"
 
-#: lazarusidestrconsts.listcompilerinternalerror
-msgid "Internal compiler error! (%d)"
-msgstr "שגיאת מהדר פנימית! (%d)"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr "תא בר עריכה"
@@ -16431,6 +16358,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "תיקיית ביקורת"
+
+#: lazarusidestrconsts.listesturl
+msgid "Test URL"
+msgstr ""
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
@@ -16830,6 +16761,10 @@ msgstr "הפרוייקט משתמש כמטרה במערכת ההפעלה = s% ו
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr "הפרוייקט משתמש במשאבי FPC חדשים, אשר דורשים לפחות FPC 2.4"
 
+#: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
+msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "יש קבצים נוספים בתיקייה בעלי אותו שם, אשר נבדלים רק בראשיות: האם למחוק אותם?"
@@ -17079,14 +17014,6 @@ msgstr "מקור"
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "מצב"
-
-#: lazarusidestrconsts.listinfobuildautocloseonsuccess
-msgid "&Automatically close on success"
-msgstr "סגור אוטומטית אם הפעולה הצליחה"
-
-#: lazarusidestrconsts.listinfobuildcompiling
-msgid "Compiling:"
-msgstr "מהדר את:"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -17619,10 +17546,6 @@ msgstr "לא ניתן לקבל מידע על שינויים בעורך."
 msgid "Unable to get source for designer."
 msgstr "לא ניתן לקבל את הקוד של המתכנן."
 
-#: lazarusidestrconsts.lisunabletoloadfile
-msgid "Unable to load file:%s%s"
-msgstr "לא יכול לטעון קובץ: s%s%"
-
 #: lazarusidestrconsts.lisunabletoloadfile2
 msgid "unable to load file %s: %s"
 msgstr ""
@@ -17926,6 +17849,10 @@ msgstr "מחרוזת באותיות ראשיות"
 msgid "Uppercase string given as parameter"
 msgstr "מחרוזת באותיות ראשיות ניתנה כפרמטר"
 
+#: lazarusidestrconsts.lisurlonwikithebaseurlis
+msgid "URL on wiki (the base url is %s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr "הודעת \"איך להשתמש\" (אפשרות h-)"
@@ -17974,10 +17901,6 @@ msgstr "השתמש במסנן \"כלול\""
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "יישום משגר"
-
-#: lazarusidestrconsts.lisusemessagefile
-msgid "Use message file:"
-msgstr ""
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
@@ -18289,10 +18212,6 @@ msgstr "תיקיית עבודה לבנייה"
 msgid "Working directory for run"
 msgstr "תיקיית עבודה לריצה"
 
-#: lazarusidestrconsts.lisworkingdirectorynotfound
-msgid "Working directory %s not found"
-msgstr ""
-
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "שגיאת כתיבה"
@@ -18419,10 +18338,6 @@ msgstr ""
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "הגדל אוטומטית את מספר הבנייה"
-
-#: lazarusidestrconsts.rsavailablescanners
-msgid "Available scanners"
-msgstr "סורקים קיימים"
 
 #: lazarusidestrconsts.rsbuild
 #| msgid "Build:"
@@ -18685,10 +18600,6 @@ msgstr "סוג"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "עידכון:"
-
-#: lazarusidestrconsts.rsscanners
-msgid "Scanners"
-msgstr "סורקים"
 
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"

@@ -2869,10 +2869,6 @@ msgstr "属性自动完成"
 msgid "Property Name"
 msgstr "属性名称"
 
-#: lazarusidestrconsts.dlgqautoclosecompiledialog
-msgid "Auto close compile dialog"
-msgstr ""
-
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
 msgstr "在启动时打开上次的工程"
@@ -2880,10 +2876,6 @@ msgstr "在启动时打开上次的工程"
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
 msgstr "显示边距"
-
-#: lazarusidestrconsts.dlgqshowcompiledialog
-msgid "Show compile dialog"
-msgstr "显示编译对话框"
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
@@ -3103,10 +3095,6 @@ msgstr "显示所有"
 msgid "Show executable info (Win32 only)"
 msgstr "显示可执行程序信息 (只适用于 Win32 平台)"
 
-#: lazarusidestrconsts.dlgshowfullfilenames
-msgid "Show full file names"
-msgstr ""
-
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "显示基本信息 "
@@ -3132,10 +3120,6 @@ msgstr "显示行号"
 #| msgid "Show Notes"
 msgid "Show notes"
 msgstr "显示注释"
-
-#: lazarusidestrconsts.dlgshownothing
-msgid "Show nothing (only errors)"
-msgstr "只显示错误"
 
 #: lazarusidestrconsts.dlgshowsummary
 msgid "Show summary"
@@ -4040,6 +4024,18 @@ msgstr ""
 msgid "Add Filter ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisadditiondoesnotfitthecurrentmessage
+msgid "Addition does not fit the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditionfitsthecurrentmessage
+msgid "Addition fits the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditions
+msgid "Additions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr ""
@@ -4744,10 +4740,6 @@ msgstr ""
 #| msgid "Cannot find lazarus starter:%s%s"
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "找不到 Lazarus 启动程序:%s%s"
-
-#: lazarusidestrconsts.liscannotfindpp
-msgid "Cannot find PPU of unit %s"
-msgstr ""
 
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
@@ -6418,6 +6410,10 @@ msgstr "条件"
 msgid "Lazarus config directory"
 msgstr "Lazarus 配置文件目录"
 
+#: lazarusidestrconsts.lisconfigfileofadditions
+msgid "Config file of additions:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
 msgstr "配置构建 %s"
@@ -6814,10 +6810,6 @@ msgstr ""
 msgid "Copy all output to clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
-msgid "Copy All Shown and Hidden Messages to Clipboard"
-msgstr ""
-
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy All Shown Messages to Clipboard"
 msgstr ""
@@ -6950,6 +6942,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscreatelocalvariable
 msgid "Create local variable \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewaddition
+msgid "Create new addition"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatenewpackage
@@ -7458,6 +7454,14 @@ msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "删除"
 
+#: lazarusidestrconsts.lisdelete2
+msgid "Delete?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeleteaddition
+msgid "Delete addition \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
 msgstr "删除所有(&D)"
@@ -7532,6 +7536,10 @@ msgstr "删除选中的文件"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletethisaddition
+msgid "Delete this addition"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletevalue
@@ -7920,6 +7928,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"
 msgstr "编辑"
+
+#: lazarusidestrconsts.liseditadditionalhelpformessages
+msgid "Edit additional help for messages"
+msgstr ""
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -8332,10 +8344,6 @@ msgstr ""
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "将包列表信息写入文件 %s%s%s%s 时错误"
 
-#: lazarusidestrconsts.liseteditcustomscanners
-msgid "Edit custom scanners (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisevalexpression
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
@@ -8526,10 +8534,6 @@ msgstr ""
 msgid "External Tools"
 msgstr "外部工具"
 
-#: lazarusidestrconsts.lisexttoolfailedtoruntool
-msgid "Failed to run tool"
-msgstr "运行工具失败"
-
 #: lazarusidestrconsts.lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
 msgstr "已经达到最大工具"
@@ -8537,14 +8541,6 @@ msgstr "已经达到最大工具"
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr "最大限制为 %s 个工具."
-
-#: lazarusidestrconsts.lisexttooltitlecompleted
-msgid "\"%s\" completed"
-msgstr "\"%s\" 完成"
-
-#: lazarusidestrconsts.lisexttoolunabletorunthetool
-msgid "Unable to run the tool %s%s%s:%s%s"
-msgstr "无法运行工具 %s%s%s:%s%s"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
@@ -8564,10 +8560,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfatal
 msgid "Fatal"
-msgstr ""
-
-#: lazarusidestrconsts.lisfatal2
-msgid "%s(%s,%s) Fatal: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
@@ -8895,12 +8887,24 @@ msgstr ""
 msgid "fpc.cfg is missing."
 msgstr ""
 
+#: lazarusidestrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake 失败"
 
 #: lazarusidestrconsts.lisfpcmessagefile
 msgid "FPC message file"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessagefile2
+msgid "FPC message file:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessagesappendix
+msgid "FPC messages: Appendix"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
@@ -9048,6 +9052,10 @@ msgstr "普通"
 msgid "get word at current cursor position"
 msgstr ""
 
+#: lazarusidestrconsts.lisglobalsettings
+msgid "Global settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisgotoline
 msgid "Goto Line"
 msgstr ""
@@ -9155,10 +9163,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
 msgid "Hide message by inserting IDE directive {%H-}"
-msgstr ""
-
-#: lazarusidestrconsts.lishidemessageviadirective
-msgid "Hide message via directive"
 msgstr ""
 
 #: lazarusidestrconsts.lishidesearch
@@ -9474,65 +9478,6 @@ msgstr ""
 #: lazarusidestrconsts.lisindex
 msgid "Index"
 msgstr "索引"
-
-#: lazarusidestrconsts.lisinfobuildabort
-#, fuzzy
-#| msgid "Aborted..."
-msgid "Aborted ..."
-msgstr "中止..."
-
-#: lazarusidestrconsts.lisinfobuildcaption
-msgid "Compile Project"
-msgstr "编译工程"
-
-#: lazarusidestrconsts.lisinfobuildcompile
-#, fuzzy
-#| msgid "Compiling..."
-msgctxt "lazarusidestrconsts.lisinfobuildcompile"
-msgid "Compiling ..."
-msgstr "编译..."
-
-#: lazarusidestrconsts.lisinfobuilderror
-#, fuzzy
-#| msgid "Error..."
-msgid "Error ..."
-msgstr "错误..."
-
-#: lazarusidestrconsts.lisinfobuilderrors
-msgid "Errors:"
-msgstr "错误:"
-
-#: lazarusidestrconsts.lisinfobuildhint
-msgid "Hints:"
-msgstr "提示:"
-
-#: lazarusidestrconsts.lisinfobuildlines
-msgctxt "lazarusidestrconsts.lisinfobuildlines"
-msgid "Lines:"
-msgstr "行:"
-
-#: lazarusidestrconsts.lisinfobuildmakeabort
-msgctxt "lazarusidestrconsts.lisinfobuildmakeabort"
-msgid "Abort"
-msgstr "(中止)"
-
-#: lazarusidestrconsts.lisinfobuildnote
-msgid "Notes:"
-msgstr "注释:"
-
-#: lazarusidestrconsts.lisinfobuildproject
-msgid "Project:"
-msgstr ""
-
-#: lazarusidestrconsts.lisinfobuildsuccess
-#, fuzzy
-#| msgid "Success..."
-msgid "Success ..."
-msgstr "成功..."
-
-#: lazarusidestrconsts.lisinfobuildwarning
-msgid "Warnings:"
-msgstr "警告:"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
@@ -11040,10 +10985,6 @@ msgstr ""
 msgid "Max %d"
 msgstr ""
 
-#: lazarusidestrconsts.lismaybepackage
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ""
-
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr ""
@@ -12204,10 +12145,6 @@ msgstr "其余的"
 msgid "Projects"
 msgstr ""
 
-#: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
-msgid "Message contains no file position information:%s%s"
-msgstr ""
-
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "信息编辑器"
@@ -12681,6 +12618,10 @@ msgstr ""
 msgid "No macro selected"
 msgstr ""
 
+#: lazarusidestrconsts.lisnomessageselected
+msgid "(no message selected)"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "noname"
@@ -12691,6 +12632,10 @@ msgstr "%s 没有"
 
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
+msgstr ""
+
+#: lazarusidestrconsts.lisnoneselected
+msgid "(None selected)"
 msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
@@ -12936,6 +12881,14 @@ msgstr "? (开启)"
 msgid "On break line (i.e. return or enter key)"
 msgstr ""
 
+#: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
+msgid "Only messages fitting this regular expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
+msgid "Only messages with these FPC IDs (comma separated):"
+msgstr ""
+
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "仅搜索整个单词"
@@ -13026,6 +12979,10 @@ msgstr "打开包 %s ?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "打开工程 %s?"
+
+#: lazarusidestrconsts.lisopenurl
+msgid "Open URL"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenxml
 msgid "Open XML"
@@ -14640,10 +14597,6 @@ msgstr "程序"
 msgid "Program detected"
 msgstr "检测到程序"
 
-#: lazarusidestrconsts.lisprogramnotfound
-msgid "Program %s not found"
-msgstr ""
-
 #: lazarusidestrconsts.lisprogramprogramdescriptor
 msgid "A Free Pascal command line program with some useful settings added."
 msgstr ""
@@ -14892,12 +14845,6 @@ msgstr ""
 msgid "Project Src Path"
 msgstr "工程源代码路径"
 
-#: lazarusidestrconsts.lisprojectsuccessfullybuilt
-#, fuzzy
-#| msgid "Project %s%s%s successfully built"
-msgid "Project \"%s\" successfully built"
-msgstr "工程 %s%s%s 成功的编译了 :)"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr ""
@@ -15080,10 +15027,6 @@ msgstr "打开最近的文件"
 msgid "View &Example Projects"
 msgstr ""
 
-#: lazarusidestrconsts.lisquickfixcreatelocalvariable
-msgid "Create local variable"
-msgstr ""
-
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
 msgstr ""
@@ -15219,10 +15162,6 @@ msgstr ""
 msgid "Remove local variable %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisremovelocalvariable2
-msgid "Remove local variable"
-msgstr ""
-
 #: lazarusidestrconsts.lisremovelocalvariable3
 msgid "Remove local variable \"%s\""
 msgstr ""
@@ -15245,10 +15184,6 @@ msgstr "移除"
 
 #: lazarusidestrconsts.lisremovethepathsfromothersources
 msgid "Remove the paths from \"Other sources\""
-msgstr ""
-
-#: lazarusidestrconsts.lisremoveunitfromusessection
-msgid "Remove unit from uses section"
 msgstr ""
 
 #: lazarusidestrconsts.lisremoveunitpath
@@ -15543,12 +15478,6 @@ msgstr "全选"
 msgid "Save All Checked"
 msgstr ""
 
-#: lazarusidestrconsts.lissaveallmessagestofile
-#, fuzzy
-#| msgid "Save all messages to file"
-msgid "Save All Messages to File"
-msgstr "保存所有消息到文件"
-
 #: lazarusidestrconsts.lissaveallmodified
 #, fuzzy
 #| msgid "save all modified files"
@@ -15664,10 +15593,6 @@ msgstr ""
 msgid "Search paths"
 msgstr ""
 
-#: lazarusidestrconsts.lissearchunit
-msgid "Search unit"
-msgstr ""
-
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "副配置文件目录,Lazarus 搜索的配置模板目录.默认"
@@ -15705,6 +15630,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectedaddition
+msgid "Selected addition:"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedandchildcontrols
 msgid "Selected and child controls"
 msgstr ""
@@ -15727,6 +15656,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedmessageinmessageswindow
+msgid "Selected message in messages window:"
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedmodeswerebuilt
@@ -16253,10 +16186,6 @@ msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
 msgstr "目标操作系统"
 
-#: lazarusidestrconsts.listcompilerinternalerror
-msgid "Internal compiler error! (%d)"
-msgstr "内部编译错误! (%d)"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr ""
@@ -16272,6 +16201,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "测试目录"
+
+#: lazarusidestrconsts.listesturl
+msgid "Test URL"
+msgstr ""
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
@@ -16647,6 +16580,10 @@ msgstr ""
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr ""
 
+#: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
+msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "此目录下另有一个文件有相同的名字,%s而且只有大小写不同:%s%s%s删除他们么?"
@@ -16890,14 +16827,6 @@ msgstr "源代码"
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "状态"
-
-#: lazarusidestrconsts.listinfobuildautocloseonsuccess
-msgid "&Automatically close on success"
-msgstr ""
-
-#: lazarusidestrconsts.listinfobuildcompiling
-msgid "Compiling:"
-msgstr ""
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -17426,10 +17355,6 @@ msgstr "无法收集编辑器更改."
 msgid "Unable to get source for designer."
 msgstr "无法获取设计器的源代码."
 
-#: lazarusidestrconsts.lisunabletoloadfile
-msgid "Unable to load file:%s%s"
-msgstr ""
-
 #: lazarusidestrconsts.lisunabletoloadfile2
 msgid "unable to load file %s: %s"
 msgstr ""
@@ -17729,6 +17654,10 @@ msgstr ""
 msgid "Uppercase string given as parameter"
 msgstr ""
 
+#: lazarusidestrconsts.lisurlonwikithebaseurlis
+msgid "URL on wiki (the base url is %s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr ""
@@ -17777,10 +17706,6 @@ msgstr "使用包含过滤器"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "运行程序"
-
-#: lazarusidestrconsts.lisusemessagefile
-msgid "Use message file:"
-msgstr ""
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
@@ -18086,10 +18011,6 @@ msgstr "程序构建的工作目录"
 msgid "Working directory for run"
 msgstr "程序运行的工作目录"
 
-#: lazarusidestrconsts.lisworkingdirectorynotfound
-msgid "Working directory %s not found"
-msgstr ""
-
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "写入错误"
@@ -18214,10 +18135,6 @@ msgstr ""
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "构建编号自动递增"
-
-#: lazarusidestrconsts.rsavailablescanners
-msgid "Available scanners"
-msgstr ""
 
 #: lazarusidestrconsts.rsbuild
 #, fuzzy
@@ -18480,10 +18397,6 @@ msgstr "类型"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
-msgstr ""
-
-#: lazarusidestrconsts.rsscanners
-msgid "Scanners"
 msgstr ""
 
 #: lazarusidestrconsts.rsselectaninheritedentry

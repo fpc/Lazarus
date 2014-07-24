@@ -2828,10 +2828,6 @@ msgstr "Propertie completering"
 msgid "Property Name"
 msgstr "Propertie naam"
 
-#: lazarusidestrconsts.dlgqautoclosecompiledialog
-msgid "Auto close compile dialog"
-msgstr ""
-
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
 msgstr "Open laatste project bij start"
@@ -2839,10 +2835,6 @@ msgstr "Open laatste project bij start"
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
 msgstr "Toon \"\"border spacing\"\""
-
-#: lazarusidestrconsts.dlgqshowcompiledialog
-msgid "Show compile dialog"
-msgstr ""
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
@@ -3056,10 +3048,6 @@ msgstr "Toon alles"
 msgid "Show executable info (Win32 only)"
 msgstr "Toon info uitvoerbaar bestand (Win32)"
 
-#: lazarusidestrconsts.dlgshowfullfilenames
-msgid "Show full file names"
-msgstr ""
-
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "Toon algemene info"
@@ -3085,10 +3073,6 @@ msgstr "Toon regelnummers"
 #| msgid "Show Notes"
 msgid "Show notes"
 msgstr "Toon notities"
-
-#: lazarusidestrconsts.dlgshownothing
-msgid "Show nothing (only errors)"
-msgstr "Toon niets (alleen fouten)"
 
 #: lazarusidestrconsts.dlgshowsummary
 msgid "Show summary"
@@ -3979,6 +3963,18 @@ msgstr ""
 msgid "Add Filter ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisadditiondoesnotfitthecurrentmessage
+msgid "Addition does not fit the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditionfitsthecurrentmessage
+msgid "Addition fits the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditions
+msgid "Additions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr ""
@@ -4673,10 +4669,6 @@ msgstr ""
 #| msgid "Cannot find lazarus starter:%s%s"
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "Kan Lazarus Starter niet vinden:%s%s"
-
-#: lazarusidestrconsts.liscannotfindpp
-msgid "Cannot find PPU of unit %s"
-msgstr ""
 
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
@@ -6323,6 +6315,10 @@ msgstr ""
 msgid "Lazarus config directory"
 msgstr "Lazarus configuratie directorie"
 
+#: lazarusidestrconsts.lisconfigfileofadditions
+msgid "Config file of additions:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
 msgstr ""
@@ -6715,10 +6711,6 @@ msgstr ""
 msgid "Copy all output to clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
-msgid "Copy All Shown and Hidden Messages to Clipboard"
-msgstr ""
-
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy All Shown Messages to Clipboard"
 msgstr ""
@@ -6851,6 +6843,10 @@ msgstr ""
 
 #: lazarusidestrconsts.liscreatelocalvariable
 msgid "Create local variable \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewaddition
+msgid "Create new addition"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatenewpackage
@@ -7359,6 +7355,14 @@ msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "Verwijder"
 
+#: lazarusidestrconsts.lisdelete2
+msgid "Delete?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeleteaddition
+msgid "Delete addition \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
 msgstr ""
@@ -7431,6 +7435,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletethisaddition
+msgid "Delete this addition"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletevalue
@@ -7813,6 +7821,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"
 msgstr "Bewerken"
+
+#: lazarusidestrconsts.liseditadditionalhelpformessages
+msgid "Edit additional help for messages"
+msgstr ""
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -8221,10 +8233,6 @@ msgstr ""
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Error bij schrijven pakketlijst naar bestand%s%s%s%s"
 
-#: lazarusidestrconsts.liseteditcustomscanners
-msgid "Edit custom scanners (%s)"
-msgstr ""
-
 #: lazarusidestrconsts.lisevalexpression
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
@@ -8415,10 +8423,6 @@ msgstr ""
 msgid "External Tools"
 msgstr "Externe gereedschappen"
 
-#: lazarusidestrconsts.lisexttoolfailedtoruntool
-msgid "Failed to run tool"
-msgstr "Fout bij uitvoeren tool"
-
 #: lazarusidestrconsts.lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
 msgstr "Maximum aantal Hulpmiddelen bereikt"
@@ -8426,14 +8430,6 @@ msgstr "Maximum aantal Hulpmiddelen bereikt"
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr "Er is een maximum van %s hulpmiddelen"
-
-#: lazarusidestrconsts.lisexttooltitlecompleted
-msgid "\"%s\" completed"
-msgstr ""
-
-#: lazarusidestrconsts.lisexttoolunabletorunthetool
-msgid "Unable to run the tool %s%s%s:%s%s"
-msgstr "Kan het hulpmiddel %s%s%s:%s%s niet uitvoeren"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
@@ -8453,10 +8449,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfatal
 msgid "Fatal"
-msgstr ""
-
-#: lazarusidestrconsts.lisfatal2
-msgid "%s(%s,%s) Fatal: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
@@ -8780,12 +8772,24 @@ msgstr ""
 msgid "fpc.cfg is missing."
 msgstr ""
 
+#: lazarusidestrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcmessagefile
 msgid "FPC message file"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessagefile2
+msgid "FPC message file:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessagesappendix
+msgid "FPC messages: Appendix"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
@@ -8933,6 +8937,10 @@ msgstr "Algemeen"
 msgid "get word at current cursor position"
 msgstr ""
 
+#: lazarusidestrconsts.lisglobalsettings
+msgid "Global settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisgotoline
 msgid "Goto Line"
 msgstr ""
@@ -9038,10 +9046,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
 msgid "Hide message by inserting IDE directive {%H-}"
-msgstr ""
-
-#: lazarusidestrconsts.lishidemessageviadirective
-msgid "Hide message via directive"
 msgstr ""
 
 #: lazarusidestrconsts.lishidesearch
@@ -9354,57 +9358,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisindex
 msgid "Index"
-msgstr ""
-
-#: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted ..."
-msgstr ""
-
-#: lazarusidestrconsts.lisinfobuildcaption
-msgid "Compile Project"
-msgstr ""
-
-#: lazarusidestrconsts.lisinfobuildcompile
-msgctxt "lazarusidestrconsts.lisinfobuildcompile"
-msgid "Compiling ..."
-msgstr ""
-
-#: lazarusidestrconsts.lisinfobuilderror
-msgid "Error ..."
-msgstr ""
-
-#: lazarusidestrconsts.lisinfobuilderrors
-msgid "Errors:"
-msgstr ""
-
-#: lazarusidestrconsts.lisinfobuildhint
-msgid "Hints:"
-msgstr ""
-
-#: lazarusidestrconsts.lisinfobuildlines
-msgctxt "lazarusidestrconsts.lisinfobuildlines"
-msgid "Lines:"
-msgstr "Regels:"
-
-#: lazarusidestrconsts.lisinfobuildmakeabort
-msgctxt "lazarusidestrconsts.lisinfobuildmakeabort"
-msgid "Abort"
-msgstr "Afbreken"
-
-#: lazarusidestrconsts.lisinfobuildnote
-msgid "Notes:"
-msgstr ""
-
-#: lazarusidestrconsts.lisinfobuildproject
-msgid "Project:"
-msgstr ""
-
-#: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success ..."
-msgstr ""
-
-#: lazarusidestrconsts.lisinfobuildwarning
-msgid "Warnings:"
 msgstr ""
 
 #: lazarusidestrconsts.lisinformation
@@ -10871,10 +10824,6 @@ msgstr ""
 msgid "Max %d"
 msgstr ""
 
-#: lazarusidestrconsts.lismaybepackage
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ""
-
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr ""
@@ -12017,10 +11966,6 @@ msgstr "Ander"
 msgid "Projects"
 msgstr ""
 
-#: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
-msgid "Message contains no file position information:%s%s"
-msgstr ""
-
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr ""
@@ -12490,6 +12435,10 @@ msgstr ""
 msgid "No macro selected"
 msgstr ""
 
+#: lazarusidestrconsts.lisnomessageselected
+msgid "(no message selected)"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "geen naam"
@@ -12500,6 +12449,10 @@ msgstr "%sgeen"
 
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
+msgstr ""
+
+#: lazarusidestrconsts.lisnoneselected
+msgid "(None selected)"
 msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
@@ -12743,6 +12696,14 @@ msgstr ""
 msgid "On break line (i.e. return or enter key)"
 msgstr ""
 
+#: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
+msgid "Only messages fitting this regular expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
+msgid "Only messages with these FPC IDs (comma separated):"
+msgstr ""
+
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Alleen hele woorden zoeken"
@@ -12833,6 +12794,10 @@ msgstr "Open het pakket %s?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "Open het project %s"
+
+#: lazarusidestrconsts.lisopenurl
+msgid "Open URL"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenxml
 msgid "Open XML"
@@ -14441,10 +14406,6 @@ msgstr "Programma"
 msgid "Program detected"
 msgstr "Programma vastgesteld"
 
-#: lazarusidestrconsts.lisprogramnotfound
-msgid "Program %s not found"
-msgstr ""
-
 #: lazarusidestrconsts.lisprogramprogramdescriptor
 msgid "A Free Pascal command line program with some useful settings added."
 msgstr ""
@@ -14693,12 +14654,6 @@ msgstr ""
 msgid "Project Src Path"
 msgstr "Project Src Path"
 
-#: lazarusidestrconsts.lisprojectsuccessfullybuilt
-#, fuzzy
-#| msgid "Project %s%s%s successfully built"
-msgid "Project \"%s\" successfully built"
-msgstr "Project \"%s\" succesvol gebouwd"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr ""
@@ -14871,10 +14826,6 @@ msgstr "Open Recent"
 msgid "View &Example Projects"
 msgstr ""
 
-#: lazarusidestrconsts.lisquickfixcreatelocalvariable
-msgid "Create local variable"
-msgstr ""
-
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
 msgstr ""
@@ -15008,10 +14959,6 @@ msgstr ""
 msgid "Remove local variable %s"
 msgstr ""
 
-#: lazarusidestrconsts.lisremovelocalvariable2
-msgid "Remove local variable"
-msgstr ""
-
 #: lazarusidestrconsts.lisremovelocalvariable3
 msgid "Remove local variable \"%s\""
 msgstr ""
@@ -15034,10 +14981,6 @@ msgstr "Verwijder ze"
 
 #: lazarusidestrconsts.lisremovethepathsfromothersources
 msgid "Remove the paths from \"Other sources\""
-msgstr ""
-
-#: lazarusidestrconsts.lisremoveunitfromusessection
-msgid "Remove unit from uses section"
 msgstr ""
 
 #: lazarusidestrconsts.lisremoveunitpath
@@ -15330,12 +15273,6 @@ msgstr "Alles Opslaan"
 msgid "Save All Checked"
 msgstr ""
 
-#: lazarusidestrconsts.lissaveallmessagestofile
-#, fuzzy
-#| msgid "Save all messages to file"
-msgid "Save All Messages to File"
-msgstr "Alle berichten naar bestand schrijven"
-
 #: lazarusidestrconsts.lissaveallmodified
 #, fuzzy
 #| msgid "save all modified files"
@@ -15451,10 +15388,6 @@ msgstr ""
 msgid "Search paths"
 msgstr ""
 
-#: lazarusidestrconsts.lissearchunit
-msgid "Search unit"
-msgstr ""
-
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "tweede configuratie directory, waar Lazarus zoekt voor configuratie template bestanden. Standaard is "
@@ -15492,6 +15425,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr ""
 
+#: lazarusidestrconsts.lisselectedaddition
+msgid "Selected addition:"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedandchildcontrols
 msgid "Selected and child controls"
 msgstr ""
@@ -15514,6 +15451,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
+msgstr ""
+
+#: lazarusidestrconsts.lisselectedmessageinmessageswindow
+msgid "Selected message in messages window:"
 msgstr ""
 
 #: lazarusidestrconsts.lisselectedmodeswerebuilt
@@ -16038,10 +15979,6 @@ msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
 msgstr "Doel OS"
 
-#: lazarusidestrconsts.listcompilerinternalerror
-msgid "Internal compiler error! (%d)"
-msgstr "Interne compileer fout! (%d)"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr ""
@@ -16057,6 +15994,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Testdirectorie"
+
+#: lazarusidestrconsts.listesturl
+msgid "Test URL"
+msgstr ""
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
@@ -16420,6 +16361,10 @@ msgstr ""
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr ""
 
+#: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
+msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "Er zijn andere bestanden in de directory met dezelfde naam,%salleen met andere hoofdletters:%s%s%sDeze verwijderen?"
@@ -16659,14 +16604,6 @@ msgstr ""
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "Status"
-
-#: lazarusidestrconsts.listinfobuildautocloseonsuccess
-msgid "&Automatically close on success"
-msgstr ""
-
-#: lazarusidestrconsts.listinfobuildcompiling
-msgid "Compiling:"
-msgstr ""
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -17193,10 +17130,6 @@ msgstr "Kan de bewerker-wijzigingen niet verzamelen."
 msgid "Unable to get source for designer."
 msgstr "Kan de broncode niet vinden voor de \"designer\"."
 
-#: lazarusidestrconsts.lisunabletoloadfile
-msgid "Unable to load file:%s%s"
-msgstr ""
-
 #: lazarusidestrconsts.lisunabletoloadfile2
 msgid "unable to load file %s: %s"
 msgstr ""
@@ -17486,6 +17419,10 @@ msgstr ""
 msgid "Uppercase string given as parameter"
 msgstr ""
 
+#: lazarusidestrconsts.lisurlonwikithebaseurlis
+msgid "URL on wiki (the base url is %s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr ""
@@ -17534,10 +17471,6 @@ msgstr "Gebruik \"bevat\" filter"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "Applicatie wordt gestart"
-
-#: lazarusidestrconsts.lisusemessagefile
-msgid "Use message file:"
-msgstr ""
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
@@ -17837,10 +17770,6 @@ msgstr ""
 msgid "Working directory for run"
 msgstr ""
 
-#: lazarusidestrconsts.lisworkingdirectorynotfound
-msgid "Working directory %s not found"
-msgstr ""
-
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Schrijffout"
@@ -17964,10 +17893,6 @@ msgstr ""
 
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
-msgstr ""
-
-#: lazarusidestrconsts.rsavailablescanners
-msgid "Available scanners"
 msgstr ""
 
 #: lazarusidestrconsts.rsbuild
@@ -18227,10 +18152,6 @@ msgstr "Type"
 
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
-msgstr ""
-
-#: lazarusidestrconsts.rsscanners
-msgid "Scanners"
 msgstr ""
 
 #: lazarusidestrconsts.rsselectaninheritedentry

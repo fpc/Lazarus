@@ -2741,10 +2741,6 @@ msgstr "プロパティ補完"
 msgid "Property Name"
 msgstr "プロパティ名"
 
-#: lazarusidestrconsts.dlgqautoclosecompiledialog
-msgid "Auto close compile dialog"
-msgstr "コンパイルダイアログを自動的に閉じる"
-
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
 msgstr "起動時に最後に開いていたプロジェクトを開く"
@@ -2752,10 +2748,6 @@ msgstr "起動時に最後に開いていたプロジェクトを開く"
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
 msgstr "境界間隔を表示"
-
-#: lazarusidestrconsts.dlgqshowcompiledialog
-msgid "Show compile dialog"
-msgstr "コンパイルダイアログを表示"
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
@@ -2953,10 +2945,6 @@ msgstr "すべてを表示"
 msgid "Show executable info (Win32 only)"
 msgstr "実行ファイル情報を表示(Win32のみ)"
 
-#: lazarusidestrconsts.dlgshowfullfilenames
-msgid "Show full file names"
-msgstr "完全なファイル名を表示"
-
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "一般的な情報を表示"
@@ -2978,10 +2966,6 @@ msgstr "行番号を表示"
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
 msgstr "ノートを表示"
-
-#: lazarusidestrconsts.dlgshownothing
-msgid "Show nothing (only errors)"
-msgstr "何も表示しない（エラーのみ）"
 
 #: lazarusidestrconsts.dlgshowsummary
 msgid "Show summary"
@@ -3840,6 +3824,18 @@ msgstr "ディレクトリにファイルを追加"
 msgid "Add Filter ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisadditiondoesnotfitthecurrentmessage
+msgid "Addition does not fit the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditionfitsthecurrentmessage
+msgid "Addition fits the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditions
+msgid "Additions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr "キーワード\"do\"を追加"
@@ -4514,10 +4510,6 @@ msgstr ""
 #: lazarusidestrconsts.liscannotfindlazarusstarter
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "Lazarusのスターターが見つかりません:%s%s"
-
-#: lazarusidestrconsts.liscannotfindpp
-msgid "Cannot find PPU of unit %s"
-msgstr ""
 
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
@@ -6144,6 +6136,10 @@ msgstr "条件文"
 msgid "Lazarus config directory"
 msgstr "Lazarus 設定ディレクトリ"
 
+#: lazarusidestrconsts.lisconfigfileofadditions
+msgid "Config file of additions:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
 msgstr "構築 %s を設定"
@@ -6538,10 +6534,6 @@ msgstr ""
 msgid "Copy all output to clipboard"
 msgstr "すべての出力をクリップボードにコピー"
 
-#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
-msgid "Copy All Shown and Hidden Messages to Clipboard"
-msgstr "すべての表示されているメッセージおよび隠されているメッセージをクリップボードにコピー"
-
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy All Shown Messages to Clipboard"
 msgstr "すべての表示されているメッセージをクリップボードにコピー"
@@ -6682,6 +6674,10 @@ msgstr "それを作成"
 
 #: lazarusidestrconsts.liscreatelocalvariable
 msgid "Create local variable \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewaddition
+msgid "Create new addition"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatenewpackage
@@ -7186,6 +7182,14 @@ msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "削除"
 
+#: lazarusidestrconsts.lisdelete2
+msgid "Delete?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeleteaddition
+msgid "Delete addition \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
 msgstr "すべて削除(&D)"
@@ -7263,6 +7267,10 @@ msgstr "選択したファイルを削除"
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
 msgstr "選択したマクロを削除しますか？"
+
+#: lazarusidestrconsts.lisdeletethisaddition
+msgid "Delete this addition"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeletevalue
 #, fuzzy
@@ -7652,6 +7660,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"
 msgstr "編集"
+
+#: lazarusidestrconsts.liseditadditionalhelpformessages
+msgid "Edit additional help for messages"
+msgstr ""
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -8066,10 +8078,6 @@ msgstr "ファイル\"%s\"への書き込み中にエラー"
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "パッケージリストをファイル %s%s%s%s に書き込み中にエラー"
 
-#: lazarusidestrconsts.liseteditcustomscanners
-msgid "Edit custom scanners (%s)"
-msgstr "カスタムスキャナを編集(%s)"
-
 #: lazarusidestrconsts.lisevalexpression
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
@@ -8254,10 +8262,6 @@ msgstr ""
 msgid "External Tools"
 msgstr "外部ツール"
 
-#: lazarusidestrconsts.lisexttoolfailedtoruntool
-msgid "Failed to run tool"
-msgstr "ツールの実行に失敗"
-
 #: lazarusidestrconsts.lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
 msgstr "利用できるツールの上限"
@@ -8265,14 +8269,6 @@ msgstr "利用できるツールの上限"
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr "%sツールに上限があります。"
-
-#: lazarusidestrconsts.lisexttooltitlecompleted
-msgid "\"%s\" completed"
-msgstr "\"%s\" 完了"
-
-#: lazarusidestrconsts.lisexttoolunabletorunthetool
-msgid "Unable to run the tool %s%s%s:%s%s"
-msgstr "次のツールを実行できません。 %s%s%s:%s%s"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
@@ -8292,10 +8288,6 @@ msgstr "ファイルの保存に失敗"
 
 #: lazarusidestrconsts.lisfatal
 msgid "Fatal"
-msgstr ""
-
-#: lazarusidestrconsts.lisfatal2
-msgid "%s(%s,%s) Fatal: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
@@ -8619,6 +8611,10 @@ msgstr "バージョン %sが見つかりましたが、%sが期待されてい�
 msgid "fpc.cfg is missing."
 msgstr "fpc.cfgがありません。"
 
+#: lazarusidestrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmakeに失敗しました"
@@ -8626,6 +8622,14 @@ msgstr "fpcmakeに失敗しました"
 #: lazarusidestrconsts.lisfpcmessagefile
 msgid "FPC message file"
 msgstr "FPC メッセージファイル"
+
+#: lazarusidestrconsts.lisfpcmessagefile2
+msgid "FPC message file:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessagesappendix
+msgid "FPC messages: Appendix"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
 msgid "FPC resources"
@@ -8770,6 +8774,10 @@ msgstr "一般"
 msgid "get word at current cursor position"
 msgstr "現在のカーソル位置の単語を取得"
 
+#: lazarusidestrconsts.lisglobalsettings
+msgid "Global settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisgotoline
 msgid "Goto Line"
 msgstr "行に移動"
@@ -8877,10 +8885,6 @@ msgstr ""
 #: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr ""
-
-#: lazarusidestrconsts.lishidemessageviadirective
-msgid "Hide message via directive"
-msgstr "指令経由のメッセージを隠す"
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
@@ -9195,57 +9199,6 @@ msgstr "Pascal ソースのインデント付け"
 #: lazarusidestrconsts.lisindex
 msgid "Index"
 msgstr "索引"
-
-#: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted ..."
-msgstr "中止しました ..."
-
-#: lazarusidestrconsts.lisinfobuildcaption
-msgid "Compile Project"
-msgstr "プロジェクトをコンパイル"
-
-#: lazarusidestrconsts.lisinfobuildcompile
-msgctxt "lazarusidestrconsts.lisinfobuildcompile"
-msgid "Compiling ..."
-msgstr "コンパイル中 ..."
-
-#: lazarusidestrconsts.lisinfobuilderror
-msgid "Error ..."
-msgstr "エラー ..."
-
-#: lazarusidestrconsts.lisinfobuilderrors
-msgid "Errors:"
-msgstr "エラー"
-
-#: lazarusidestrconsts.lisinfobuildhint
-msgid "Hints:"
-msgstr "ヒント: "
-
-#: lazarusidestrconsts.lisinfobuildlines
-msgctxt "lazarusidestrconsts.lisinfobuildlines"
-msgid "Lines:"
-msgstr "行:"
-
-#: lazarusidestrconsts.lisinfobuildmakeabort
-msgctxt "lazarusidestrconsts.lisinfobuildmakeabort"
-msgid "Abort"
-msgstr "中止"
-
-#: lazarusidestrconsts.lisinfobuildnote
-msgid "Notes:"
-msgstr "ノート:"
-
-#: lazarusidestrconsts.lisinfobuildproject
-msgid "Project:"
-msgstr "プロジェクト："
-
-#: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success ..."
-msgstr "成功 ..."
-
-#: lazarusidestrconsts.lisinfobuildwarning
-msgid "Warnings:"
-msgstr "警告"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
@@ -10698,10 +10651,6 @@ msgstr "ソースエディタの管理 ..."
 msgid "Max %d"
 msgstr "最大 %d"
 
-#: lazarusidestrconsts.lismaybepackage
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ""
-
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "%s おそらくパッケージを再コンパイルしなければならないでしょう。"
@@ -11654,10 +11603,6 @@ msgstr "その他のタブ"
 msgid "Projects"
 msgstr "プロジェクト"
 
-#: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
-msgid "Message contains no file position information:%s%s"
-msgstr "メッセージはファイル位置情報を含んでいません：%s%s"
-
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "メッセージエディタ"
@@ -12125,6 +12070,10 @@ msgstr "LFMファイルはありません"
 msgid "No macro selected"
 msgstr "選択されたマクロはありません"
 
+#: lazarusidestrconsts.lisnomessageselected
+msgid "(no message selected)"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "名無し"
@@ -12136,6 +12085,10 @@ msgstr "%sなし"
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
 msgstr "ありません、一つをクリックして選んでください。"
+
+#: lazarusidestrconsts.lisnoneselected
+msgid "(None selected)"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
@@ -12378,6 +12331,14 @@ msgstr "? (On)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "改行キーを押したとき(i.e. return 又は enter キー)"
 
+#: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
+msgid "Only messages fitting this regular expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
+msgid "Only messages with these FPC IDs (comma separated):"
+msgstr ""
+
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "単語全体についてのみ検索"
@@ -12464,6 +12425,10 @@ msgstr "パッケージ %s を開きますか？"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "プロジェクト %s を開きますか？"
+
+#: lazarusidestrconsts.lisopenurl
+msgid "Open URL"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenxml
 msgid "Open XML"
@@ -14046,10 +14011,6 @@ msgstr "プログラム"
 msgid "Program detected"
 msgstr "プログラムが削除されました。"
 
-#: lazarusidestrconsts.lisprogramnotfound
-msgid "Program %s not found"
-msgstr "プログラム %s は見つかりません"
-
 #: lazarusidestrconsts.lisprogramprogramdescriptor
 msgid "A Free Pascal command line program with some useful settings added."
 msgstr "いくつかの便利な設定が加わったFree Pascalコマンドラインプログラム"
@@ -14288,12 +14249,6 @@ msgstr "%0:s%0:s 該当ファイル '%1:s' 該当行 %2:d:%0:s%3:s"
 msgid "Project Src Path"
 msgstr "プロジェクトのソースパス"
 
-#: lazarusidestrconsts.lisprojectsuccessfullybuilt
-#, fuzzy
-#| msgid "Project %s%s%s successfully built"
-msgid "Project \"%s\" successfully built"
-msgstr "プロジェクト %s%s%s の構築に成功しました"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr "プロジェクトユニット"
@@ -14458,10 +14413,6 @@ msgstr "最近扱ったファイルを開く(&R)"
 msgid "View &Example Projects"
 msgstr "サンプルプロジェクトを表示(&E)"
 
-#: lazarusidestrconsts.lisquickfixcreatelocalvariable
-msgid "Create local variable"
-msgstr "ローカル変数を作成"
-
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
 msgstr ""
@@ -14591,10 +14542,6 @@ msgstr "インクルードパスを削除しますか？"
 msgid "Remove local variable %s"
 msgstr "ローカル変数を削除 %s"
 
-#: lazarusidestrconsts.lisremovelocalvariable2
-msgid "Remove local variable"
-msgstr "ローカル変数を削除"
-
 #: lazarusidestrconsts.lisremovelocalvariable3
 msgid "Remove local variable \"%s\""
 msgstr ""
@@ -14618,10 +14565,6 @@ msgstr "それらを削除"
 #: lazarusidestrconsts.lisremovethepathsfromothersources
 msgid "Remove the paths from \"Other sources\""
 msgstr "\"他のソース\"からパスを削除"
-
-#: lazarusidestrconsts.lisremoveunitfromusessection
-msgid "Remove unit from uses section"
-msgstr "uses節からユニットを削除"
 
 #: lazarusidestrconsts.lisremoveunitpath
 msgid "Remove unit path?"
@@ -14911,10 +14854,6 @@ msgstr "すべて保存"
 msgid "Save All Checked"
 msgstr "チェックされたものすべてを保存"
 
-#: lazarusidestrconsts.lissaveallmessagestofile
-msgid "Save All Messages to File"
-msgstr "すべてのメッセージをファイルに保存"
-
 #: lazarusidestrconsts.lissaveallmodified
 msgid "Save all modified files"
 msgstr "すべての変更されたファイルを保存"
@@ -15026,10 +14965,6 @@ msgstr "親ディレクトリを走査"
 msgid "Search paths"
 msgstr "検索パス"
 
-#: lazarusidestrconsts.lissearchunit
-msgid "Search unit"
-msgstr "ユニットを検索"
-
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "Lazarusが設定テンプレートファイルを検索する二次的な設定ディレクトリ。デフォルト："
@@ -15067,6 +15002,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "選択済み"
 
+#: lazarusidestrconsts.lisselectedaddition
+msgid "Selected addition:"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedandchildcontrols
 msgid "Selected and child controls"
 msgstr "選択されたコントロールと子コントロール"
@@ -15090,6 +15029,10 @@ msgstr "アンインストールのために選択されたもの"
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "（選択された左隣）"
+
+#: lazarusidestrconsts.lisselectedmessageinmessageswindow
+msgid "Selected message in messages window:"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedmodeswerebuilt
 msgid "Selected %d modes were successfully built."
@@ -15611,10 +15554,6 @@ msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
 msgstr "対象OS"
 
-#: lazarusidestrconsts.listcompilerinternalerror
-msgid "Internal compiler error! (%d)"
-msgstr "内部コンパイラエラーです！ (%d)"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr "編集可能なセル"
@@ -15630,6 +15569,10 @@ msgstr "テンプレートファイル"
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "テストディレクトリ"
+
+#: lazarusidestrconsts.listesturl
+msgid "Test URL"
+msgstr ""
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
@@ -16017,6 +15960,10 @@ msgstr "プロジェクトは、 ターゲット OS=%s と CPU=%s を使って�
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr "プロジェクトは、新しいFPCリソースを使っています。 少なくともFPC 2.4を必要とします。"
 
+#: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
+msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "ディレクトリに%s大文字小文字だけが異なる同じ名前をもつ他のファイル%s%s%sがあります。それ（ら）を削除しますか？"
@@ -16268,14 +16215,6 @@ msgstr "ソース"
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "状態"
-
-#: lazarusidestrconsts.listinfobuildautocloseonsuccess
-msgid "&Automatically close on success"
-msgstr "成功すれば自動的に閉じる(&A)"
-
-#: lazarusidestrconsts.listinfobuildcompiling
-msgid "Compiling:"
-msgstr "コンパイル中"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -16804,10 +16743,6 @@ msgstr "エディタの変更点を集めることができません。"
 msgid "Unable to get source for designer."
 msgstr "デザイナのソースを取得できません。"
 
-#: lazarusidestrconsts.lisunabletoloadfile
-msgid "Unable to load file:%s%s"
-msgstr "ファイル%s%sを読み込めません"
-
 #: lazarusidestrconsts.lisunabletoloadfile2
 msgid "unable to load file %s: %s"
 msgstr "ファイル%sを読み込めません。%s"
@@ -17111,6 +17046,10 @@ msgstr "大文字文字列"
 msgid "Uppercase string given as parameter"
 msgstr "引数として与えられている大文字文字列 "
 
+#: lazarusidestrconsts.lisurlonwikithebaseurlis
+msgid "URL on wiki (the base url is %s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr "使用メッセージ（-hオプション）"
@@ -17155,10 +17094,6 @@ msgstr "包含フィルタを使用"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "アプリケーションの実行"
-
-#: lazarusidestrconsts.lisusemessagefile
-msgid "Use message file:"
-msgstr "メッセージファイルを使用"
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
@@ -17460,10 +17395,6 @@ msgstr "構築の際の作業ディレクトリ"
 msgid "Working directory for run"
 msgstr "実行の際の作業ディレクトリ"
 
-#: lazarusidestrconsts.lisworkingdirectorynotfound
-msgid "Working directory %s not found"
-msgstr "作業ディレクトリ%sが見つかりません"
-
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "書き込みエラー"
@@ -17586,10 +17517,6 @@ msgstr ""
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "ビルド番号を自動的に増やす"
-
-#: lazarusidestrconsts.rsavailablescanners
-msgid "Available scanners"
-msgstr "利用できるスキャナ"
 
 #: lazarusidestrconsts.rsbuild
 msgid "&Build:"
@@ -17847,10 +17774,6 @@ msgstr "タイプ"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "改訂(&R)"
-
-#: lazarusidestrconsts.rsscanners
-msgid "Scanners"
-msgstr "スキャナ"
 
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"

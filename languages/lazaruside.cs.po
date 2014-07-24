@@ -2756,10 +2756,6 @@ msgstr "Dokončení vlastnosti"
 msgid "Property Name"
 msgstr "Jméno vlastnosti"
 
-#: lazarusidestrconsts.dlgqautoclosecompiledialog
-msgid "Auto close compile dialog"
-msgstr "Automaticky zavřít překladový dialog"
-
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
 msgstr "Otevřít poslední projekt při startu"
@@ -2767,10 +2763,6 @@ msgstr "Otevřít poslední projekt při startu"
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
 msgstr "Ukázat mezery od okrajů"
-
-#: lazarusidestrconsts.dlgqshowcompiledialog
-msgid "Show compile dialog"
-msgstr "Zobrazit dialog překladače"
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
@@ -2968,10 +2960,6 @@ msgstr "Ukázat vše"
 msgid "Show executable info (Win32 only)"
 msgstr "Ukázat spustitelné informace (pouze Win32)"
 
-#: lazarusidestrconsts.dlgshowfullfilenames
-msgid "Show full file names"
-msgstr "Zobrazit plné názvy souborů"
-
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "Ukázat obecné informace"
@@ -2993,10 +2981,6 @@ msgstr "Ukázat čísla řádků"
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
 msgstr "Ukázat poznámky"
-
-#: lazarusidestrconsts.dlgshownothing
-msgid "Show nothing (only errors)"
-msgstr "Neukázat nic (pouze chyby)"
 
 #: lazarusidestrconsts.dlgshowsummary
 msgid "Show summary"
@@ -3836,6 +3820,18 @@ msgstr "Přidat soubory v adresáři"
 msgid "Add Filter ..."
 msgstr "Přidat Filtr ..."
 
+#: lazarusidestrconsts.lisadditiondoesnotfitthecurrentmessage
+msgid "Addition does not fit the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditionfitsthecurrentmessage
+msgid "Addition fits the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditions
+msgid "Additions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr "Přidat klíčové slovo \"do\""
@@ -4508,10 +4504,6 @@ msgstr "nelze najít spustitelný %s"
 #| msgid "Cannot find lazarus starter:%s%s"
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "Nelze nalézt spouštěč lazarusu:%s%s"
-
-#: lazarusidestrconsts.liscannotfindpp
-msgid "Cannot find PPU of unit %s"
-msgstr ""
 
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
@@ -6139,6 +6131,10 @@ msgstr "Podmíněné"
 msgid "Lazarus config directory"
 msgstr "Konfigurační adresář Lazarusu"
 
+#: lazarusidestrconsts.lisconfigfileofadditions
+msgid "Config file of additions:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
 msgstr "Nastavit sestavení %s"
@@ -6533,10 +6529,6 @@ msgstr "Kopírovat Všechny/Původní Zprávy do Schránky"
 msgid "Copy all output to clipboard"
 msgstr "Zkopírovat celý výstup do schránky"
 
-#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
-msgid "Copy All Shown and Hidden Messages to Clipboard"
-msgstr "Kopírovat Všechny Zobrazené a Skryté Zprávy do Schránky"
-
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy All Shown Messages to Clipboard"
 msgstr "Kopírovat Všechny Zobrazené Zprávy do Schránky"
@@ -6671,6 +6663,10 @@ msgstr "Vytvořit to"
 #: lazarusidestrconsts.liscreatelocalvariable
 msgid "Create local variable \"%s\""
 msgstr "Vytvořit lokální proměnnou \"%s\""
+
+#: lazarusidestrconsts.liscreatenewaddition
+msgid "Create new addition"
+msgstr ""
 
 #: lazarusidestrconsts.liscreatenewpackage
 msgid "(Create new package)"
@@ -7174,6 +7170,14 @@ msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "Odstranit"
 
+#: lazarusidestrconsts.lisdelete2
+msgid "Delete?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeleteaddition
+msgid "Delete addition \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
 msgstr "Smazat vše"
@@ -7248,6 +7252,10 @@ msgstr "Smazat vybrané soubory"
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
 msgstr "Smazat vybrané makro?"
+
+#: lazarusidestrconsts.lisdeletethisaddition
+msgid "Delete this addition"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeletevalue
 #| msgid "Delete value \"%s\""
@@ -7633,6 +7641,10 @@ msgstr "Duplicitní Jednotka"
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"
 msgstr "Upravit"
+
+#: lazarusidestrconsts.liseditadditionalhelpformessages
+msgid "Edit additional help for messages"
+msgstr ""
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -8047,10 +8059,6 @@ msgstr "Chyba zápisu do souboru \"%s\""
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Chyba zápisu seznamu balíčků do souboru%s%s%s%s"
 
-#: lazarusidestrconsts.liseteditcustomscanners
-msgid "Edit custom scanners (%s)"
-msgstr "Upravit vlastní prohledávače (%s)"
-
 #: lazarusidestrconsts.lisevalexpression
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
@@ -8242,10 +8250,6 @@ msgstr "Extrémně výřečný"
 msgid "External Tools"
 msgstr "Vnější nástroje"
 
-#: lazarusidestrconsts.lisexttoolfailedtoruntool
-msgid "Failed to run tool"
-msgstr "Nelze spustit nástroj"
-
 #: lazarusidestrconsts.lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
 msgstr "Dosažen max. počet nástrojů"
@@ -8253,14 +8257,6 @@ msgstr "Dosažen max. počet nástrojů"
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr "Toto je maximální počet nástrojů %s."
-
-#: lazarusidestrconsts.lisexttooltitlecompleted
-msgid "\"%s\" completed"
-msgstr "\"%s\" hotovo"
-
-#: lazarusidestrconsts.lisexttoolunabletorunthetool
-msgid "Unable to run the tool %s%s%s:%s%s"
-msgstr "Nelze spustit nástroj %s%s%s:%s%s"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
@@ -8281,10 +8277,6 @@ msgstr "Uložení souboru selhalo."
 #: lazarusidestrconsts.lisfatal
 msgid "Fatal"
 msgstr "Fatální"
-
-#: lazarusidestrconsts.lisfatal2
-msgid "%s(%s,%s) Fatal: %s"
-msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
@@ -8604,6 +8596,10 @@ msgstr "Nalezena verze %s, očekávána %s"
 msgid "fpc.cfg is missing."
 msgstr "chybí fpc.cfg"
 
+#: lazarusidestrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake selhal"
@@ -8611,6 +8607,14 @@ msgstr "fpcmake selhal"
 #: lazarusidestrconsts.lisfpcmessagefile
 msgid "FPC message file"
 msgstr "Soubor FPC zpráv"
+
+#: lazarusidestrconsts.lisfpcmessagefile2
+msgid "FPC message file:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessagesappendix
+msgid "FPC messages: Appendix"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
 msgid "FPC resources"
@@ -8755,6 +8759,10 @@ msgstr "Obecné"
 msgid "get word at current cursor position"
 msgstr "získat slovo na aktuální pozici"
 
+#: lazarusidestrconsts.lisglobalsettings
+msgid "Global settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisgotoline
 msgid "Goto Line"
 msgstr "Přejít na řádek"
@@ -8866,10 +8874,6 @@ msgstr "Skrýt zprávu na %s vložením IDE direktivy {%H-}"
 #: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr "Skrýt zprávu vložením IDE direktivy {%H-}"
-
-#: lazarusidestrconsts.lishidemessageviadirective
-msgid "Hide message via directive"
-msgstr "Skrýt zprávy pomocí direktivy"
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
@@ -9186,57 +9190,6 @@ msgstr "Odsazení pro zdrojové texty pascalu"
 #: lazarusidestrconsts.lisindex
 msgid "Index"
 msgstr "Index"
-
-#: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted ..."
-msgstr "Přerušeno ..."
-
-#: lazarusidestrconsts.lisinfobuildcaption
-msgid "Compile Project"
-msgstr "Kompilovat projekt"
-
-#: lazarusidestrconsts.lisinfobuildcompile
-msgctxt "lazarusidestrconsts.lisinfobuildcompile"
-msgid "Compiling ..."
-msgstr "Překládání ..."
-
-#: lazarusidestrconsts.lisinfobuilderror
-msgid "Error ..."
-msgstr "Chyba ..."
-
-#: lazarusidestrconsts.lisinfobuilderrors
-msgid "Errors:"
-msgstr "Chyby:"
-
-#: lazarusidestrconsts.lisinfobuildhint
-msgid "Hints:"
-msgstr "Pokyny:"
-
-#: lazarusidestrconsts.lisinfobuildlines
-msgctxt "lazarusidestrconsts.lisinfobuildlines"
-msgid "Lines:"
-msgstr "Řádky:"
-
-#: lazarusidestrconsts.lisinfobuildmakeabort
-msgctxt "lazarusidestrconsts.lisinfobuildmakeabort"
-msgid "Abort"
-msgstr "Přerušit"
-
-#: lazarusidestrconsts.lisinfobuildnote
-msgid "Notes:"
-msgstr "Poznámky:"
-
-#: lazarusidestrconsts.lisinfobuildproject
-msgid "Project:"
-msgstr "Projekt:"
-
-#: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success ..."
-msgstr "Úspěch ..."
-
-#: lazarusidestrconsts.lisinfobuildwarning
-msgid "Warnings:"
-msgstr "Varování:"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
@@ -10688,10 +10641,6 @@ msgstr "Spravovat editory zdrojových kódů ..."
 msgid "Max %d"
 msgstr "Max %d"
 
-#: lazarusidestrconsts.lismaybepackage
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ""
-
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "%s Možná musíte znovu přeložit balíček."
@@ -11646,10 +11595,6 @@ msgstr "Jiný list"
 msgid "Projects"
 msgstr "Projekty"
 
-#: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
-msgid "Message contains no file position information:%s%s"
-msgstr "Zpráva neobsahuje informaci o pozici souboru:%s%s"
-
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "Editor zpráv"
@@ -12131,6 +12076,10 @@ msgstr "Žádný soubor LFM"
 msgid "No macro selected"
 msgstr "Žádné vybrané makro"
 
+#: lazarusidestrconsts.lisnomessageselected
+msgid "(no message selected)"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "bezejmenný"
@@ -12142,6 +12091,10 @@ msgstr "%sžádný"
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
 msgstr "žádný, klikněte pro výběr jednoho"
+
+#: lazarusidestrconsts.lisnoneselected
+msgid "(None selected)"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
@@ -12383,6 +12336,14 @@ msgstr "? (Zapnuto)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Při zalomení řádku (tj. klávesa Enter)"
 
+#: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
+msgid "Only messages fitting this regular expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
+msgid "Only messages with these FPC IDs (comma separated):"
+msgstr ""
+
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Hledat pouze celá slova"
@@ -12469,6 +12430,10 @@ msgstr "Otevřít balíček %s?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "Otevřít projekt %s?"
+
+#: lazarusidestrconsts.lisopenurl
+msgid "Open URL"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenxml
 msgid "Open XML"
@@ -14004,10 +13969,6 @@ msgstr "Program"
 msgid "Program detected"
 msgstr "Zjištěn program"
 
-#: lazarusidestrconsts.lisprogramnotfound
-msgid "Program %s not found"
-msgstr "Program %s nenalezen"
-
 #: lazarusidestrconsts.lisprogramprogramdescriptor
 msgid "A Free Pascal command line program with some useful settings added."
 msgstr "Free Pascal program příkazové řádky s několika přidanými užitečnými nastaveními."
@@ -14240,11 +14201,6 @@ msgstr "%0:s%0:s v souboru '%1:s' na řádce %2:d:%0:s%3:s"
 msgid "Project Src Path"
 msgstr "Zdrojová cesta projektu"
 
-#: lazarusidestrconsts.lisprojectsuccessfullybuilt
-#| msgid "Project %s%s%s successfully built"
-msgid "Project \"%s\" successfully built"
-msgstr "Projekt \"%s\" úspěšně sestaven"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr "jednotka projektu"
@@ -14411,10 +14367,6 @@ msgstr "Otevřít nedávný projekt"
 msgid "View &Example Projects"
 msgstr "Prohlížet ukázkové projekty"
 
-#: lazarusidestrconsts.lisquickfixcreatelocalvariable
-msgid "Create local variable"
-msgstr "Vytvořit lokální proměnnou"
-
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
 msgstr "Rychle Opravit chybu"
@@ -14544,10 +14496,6 @@ msgstr "Odstranit zahrnutou cestu?"
 msgid "Remove local variable %s"
 msgstr "Odstranit lokální proměnnou %s"
 
-#: lazarusidestrconsts.lisremovelocalvariable2
-msgid "Remove local variable"
-msgstr "Odstranit lokální proměnnou"
-
 #: lazarusidestrconsts.lisremovelocalvariable3
 msgid "Remove local variable \"%s\""
 msgstr "Odsranit lokální proměnnou \"%s\""
@@ -14572,10 +14520,6 @@ msgstr "Odstranit je"
 #: lazarusidestrconsts.lisremovethepathsfromothersources
 msgid "Remove the paths from \"Other sources\""
 msgstr "Odstranit cesty z \"Ostatní zdroje\""
-
-#: lazarusidestrconsts.lisremoveunitfromusessection
-msgid "Remove unit from uses section"
-msgstr "Odstranit jednotku ze sekce uses"
 
 #: lazarusidestrconsts.lisremoveunitpath
 msgid "Remove unit path?"
@@ -14865,10 +14809,6 @@ msgstr "Uložit vše"
 msgid "Save All Checked"
 msgstr "Uložit všechny zvolené"
 
-#: lazarusidestrconsts.lissaveallmessagestofile
-msgid "Save All Messages to File"
-msgstr "Uložit všechna hlášení do souboru"
-
 #: lazarusidestrconsts.lissaveallmodified
 msgid "Save all modified files"
 msgstr "Uložit všechny upravené soubory"
@@ -14979,10 +14919,6 @@ msgstr "Prohledávání nadřazeného adresáře"
 msgid "Search paths"
 msgstr "Prohledávané cesty"
 
-#: lazarusidestrconsts.lissearchunit
-msgid "Search unit"
-msgstr "Hledat jednotku"
-
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "druhotná konfigurační složka, kde Lazarus hledá šablony konfiguračních souborů. Implicitní je "
@@ -15020,6 +14956,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "Vybrané"
 
+#: lazarusidestrconsts.lisselectedaddition
+msgid "Selected addition:"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedandchildcontrols
 msgid "Selected and child controls"
 msgstr "Vybrané a potomci"
@@ -15043,6 +14983,10 @@ msgstr "vybrané pro odinstalaci"
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "(vybraný levý soused)"
+
+#: lazarusidestrconsts.lisselectedmessageinmessageswindow
+msgid "Selected message in messages window:"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedmodeswerebuilt
 msgid "Selected %d modes were successfully built."
@@ -15561,10 +15505,6 @@ msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
 msgstr "Cílový OS"
 
-#: lazarusidestrconsts.listcompilerinternalerror
-msgid "Internal compiler error! (%d)"
-msgstr "Vnitřní chyba překladače! (%d)"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr "Upravitelná buňka"
@@ -15580,6 +15520,10 @@ msgstr "Soubor šablony"
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Testovací složka"
+
+#: lazarusidestrconsts.listesturl
+msgid "Test URL"
+msgstr ""
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
@@ -15937,6 +15881,10 @@ msgstr "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this targe
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr "Projekt používá nové zdroje FPC, což vyžaduje alespoň FPC 2.4"
 
+#: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
+msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "V adresáři jsou další soubory se stejným jménem, %skteré se liší pouze ve velikosti písmen:%s%s%sSmazat je?"
@@ -16176,14 +16124,6 @@ msgstr "Zdroj"
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "Stav"
-
-#: lazarusidestrconsts.listinfobuildautocloseonsuccess
-msgid "&Automatically close on success"
-msgstr "&Automaticky zavřít při úspěchu"
-
-#: lazarusidestrconsts.listinfobuildcompiling
-msgid "Compiling:"
-msgstr "Překládání:"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -16695,10 +16635,6 @@ msgstr "Nelze získat změny v editoru."
 msgid "Unable to get source for designer."
 msgstr "Nelze získat zdroj pro návrhář."
 
-#: lazarusidestrconsts.lisunabletoloadfile
-msgid "Unable to load file:%s%s"
-msgstr "Nelze načíst soubor:%s%s"
-
 #: lazarusidestrconsts.lisunabletoloadfile2
 msgid "unable to load file %s: %s"
 msgstr "Nelze nahrát soubor %s: %s"
@@ -16988,6 +16924,10 @@ msgstr "řetězec velkými písmeny"
 msgid "Uppercase string given as parameter"
 msgstr "Řetězec velkými písmeny předán jako parametr"
 
+#: lazarusidestrconsts.lisurlonwikithebaseurlis
+msgid "URL on wiki (the base url is %s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr "Zpráva o použití (volba -h)"
@@ -17032,10 +16972,6 @@ msgstr "Použít filtr zahrnutí"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "Spouštím aplikaci"
-
-#: lazarusidestrconsts.lisusemessagefile
-msgid "Use message file:"
-msgstr "Použít soubor zpráv:"
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
@@ -17337,10 +17273,6 @@ msgstr "Pracovní složka pro sestavení"
 msgid "Working directory for run"
 msgstr "Pracovní složka pro spuštění"
 
-#: lazarusidestrconsts.lisworkingdirectorynotfound
-msgid "Working directory %s not found"
-msgstr "Pracovní adresář %s nenalezen"
-
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Chyba zápisu"
@@ -17464,10 +17396,6 @@ msgstr "Atributy"
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Automaticky zvyšovat číslo sestavení"
-
-#: lazarusidestrconsts.rsavailablescanners
-msgid "Available scanners"
-msgstr "Dostupné snímače"
 
 #: lazarusidestrconsts.rsbuild
 msgid "&Build:"
@@ -17726,10 +17654,6 @@ msgstr "Typ"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "&Revize:"
-
-#: lazarusidestrconsts.rsscanners
-msgid "Scanners"
-msgstr "Snímače"
 
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"

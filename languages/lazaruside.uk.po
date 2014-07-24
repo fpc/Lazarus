@@ -2834,10 +2834,6 @@ msgstr "Розширення властивості"
 msgid "Property Name"
 msgstr "Назва властивості"
 
-#: lazarusidestrconsts.dlgqautoclosecompiledialog
-msgid "Auto close compile dialog"
-msgstr "Автоматично закривати діалог компілювання"
-
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
 msgstr "При старті відкрити останній проект"
@@ -2845,10 +2841,6 @@ msgstr "При старті відкрити останній проект"
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
 msgstr "Показувати ширину бордюру"
-
-#: lazarusidestrconsts.dlgqshowcompiledialog
-msgid "Show compile dialog"
-msgstr "Показувати діалог компілювання"
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
@@ -3052,10 +3044,6 @@ msgstr "Показувати всі"
 msgid "Show executable info (Win32 only)"
 msgstr "Показ. викон. інф. (для Win32)"
 
-#: lazarusidestrconsts.dlgshowfullfilenames
-msgid "Show full file names"
-msgstr ""
-
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "Показувати загальні відомості"
@@ -3079,10 +3067,6 @@ msgstr "Показувати номери рядків"
 #| msgid "Show Notes"
 msgid "Show notes"
 msgstr "Показувати примітки"
-
-#: lazarusidestrconsts.dlgshownothing
-msgid "Show nothing (only errors)"
-msgstr "Показувати тільки помилки"
 
 #: lazarusidestrconsts.dlgshowsummary
 msgid "Show summary"
@@ -3963,6 +3947,18 @@ msgstr "Додати Файли в Теку"
 msgid "Add Filter ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisadditiondoesnotfitthecurrentmessage
+msgid "Addition does not fit the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditionfitsthecurrentmessage
+msgid "Addition fits the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditions
+msgid "Additions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr ""
@@ -4653,10 +4649,6 @@ msgstr ""
 #| msgid "Cannot find lazarus starter:%s%s"
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "Не можу знайти пускач lazarus:%s%s"
-
-#: lazarusidestrconsts.liscannotfindpp
-msgid "Cannot find PPU of unit %s"
-msgstr ""
 
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
@@ -6312,6 +6304,10 @@ msgstr "Умовні"
 msgid "Lazarus config directory"
 msgstr "Тека конфігурації Lazarus"
 
+#: lazarusidestrconsts.lisconfigfileofadditions
+msgid "Config file of additions:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
 msgstr "Налаштувати Побудову %s"
@@ -6712,11 +6708,6 @@ msgstr ""
 msgid "Copy all output to clipboard"
 msgstr "Копіювати весь вихід в буфер"
 
-#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
-#| msgid "Copy all shown and hidden messages to clipboard"
-msgid "Copy All Shown and Hidden Messages to Clipboard"
-msgstr "Копіювати всі Видимі та Приховані повідомлення в буфер"
-
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 #| msgid "Copy all shown messages to clipboard"
 msgid "Copy All Shown Messages to Clipboard"
@@ -6862,6 +6853,10 @@ msgstr "Створити його"
 
 #: lazarusidestrconsts.liscreatelocalvariable
 msgid "Create local variable \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewaddition
+msgid "Create new addition"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatenewpackage
@@ -7373,6 +7368,14 @@ msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "Вилучити"
 
+#: lazarusidestrconsts.lisdelete2
+msgid "Delete?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeleteaddition
+msgid "Delete addition \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
 msgstr "&Видалити Все"
@@ -7449,6 +7452,10 @@ msgstr "Видалити вибрані файли"
 
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeletethisaddition
+msgid "Delete this addition"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletevalue
@@ -7845,6 +7852,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"
 msgstr "Редагувати"
+
+#: lazarusidestrconsts.liseditadditionalhelpformessages
+msgid "Edit additional help for messages"
+msgstr ""
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -8261,10 +8272,6 @@ msgstr "Помилка запису файлу \"%s\""
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Помилка запису списку пакунків в файл%s%s%s%s"
 
-#: lazarusidestrconsts.liseteditcustomscanners
-msgid "Edit custom scanners (%s)"
-msgstr "Змінити власні сканери (%s)"
-
 #: lazarusidestrconsts.lisevalexpression
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
@@ -8453,10 +8460,6 @@ msgstr ""
 msgid "External Tools"
 msgstr "Зовнішні Інстументи"
 
-#: lazarusidestrconsts.lisexttoolfailedtoruntool
-msgid "Failed to run tool"
-msgstr "Не вдалося запустити інструмент"
-
 #: lazarusidestrconsts.lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
 msgstr "Досягнуто максимуму інструментів"
@@ -8464,14 +8467,6 @@ msgstr "Досягнуто максимуму інструментів"
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr "Припускається максимум %s інструментів."
-
-#: lazarusidestrconsts.lisexttooltitlecompleted
-msgid "\"%s\" completed"
-msgstr "\"%s\" завершено"
-
-#: lazarusidestrconsts.lisexttoolunabletorunthetool
-msgid "Unable to run the tool %s%s%s:%s%s"
-msgstr "Не можу запустити інструмент %s%s%s:%s%s"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
@@ -8491,10 +8486,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfatal
 msgid "Fatal"
-msgstr ""
-
-#: lazarusidestrconsts.lisfatal2
-msgid "%s(%s,%s) Fatal: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
@@ -8819,6 +8810,10 @@ msgstr "Знайдена версія %s, але очікувалась %s"
 msgid "fpc.cfg is missing."
 msgstr "fpc.cfg загубився."
 
+#: lazarusidestrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "fpcmake провалився"
@@ -8826,6 +8821,14 @@ msgstr "fpcmake провалився"
 #: lazarusidestrconsts.lisfpcmessagefile
 msgid "FPC message file"
 msgstr "Файл повідомлень FPC"
+
+#: lazarusidestrconsts.lisfpcmessagefile2
+msgid "FPC message file:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessagesappendix
+msgid "FPC messages: Appendix"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
 msgid "FPC resources"
@@ -8970,6 +8973,10 @@ msgstr "Загальне"
 msgid "get word at current cursor position"
 msgstr "взяти слово в поточній позиції"
 
+#: lazarusidestrconsts.lisglobalsettings
+msgid "Global settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisgotoline
 #| msgid "Goto line"
 msgid "Goto Line"
@@ -9078,10 +9085,6 @@ msgstr ""
 #: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr ""
-
-#: lazarusidestrconsts.lishidemessageviadirective
-msgid "Hide message via directive"
-msgstr "Сховати повідомлення через директиву"
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
@@ -9399,57 +9402,6 @@ msgstr "Відступи для поч. коду Паскаля"
 #: lazarusidestrconsts.lisindex
 msgid "Index"
 msgstr "Індекс"
-
-#: lazarusidestrconsts.lisinfobuildabort
-msgid "Aborted ..."
-msgstr "Перервано ..."
-
-#: lazarusidestrconsts.lisinfobuildcaption
-msgid "Compile Project"
-msgstr "Компілювати Проект"
-
-#: lazarusidestrconsts.lisinfobuildcompile
-msgctxt "lazarusidestrconsts.lisinfobuildcompile"
-msgid "Compiling ..."
-msgstr "Компілюю ..."
-
-#: lazarusidestrconsts.lisinfobuilderror
-msgid "Error ..."
-msgstr "Помилка ..."
-
-#: lazarusidestrconsts.lisinfobuilderrors
-msgid "Errors:"
-msgstr "Помилки:"
-
-#: lazarusidestrconsts.lisinfobuildhint
-msgid "Hints:"
-msgstr "Підказки:"
-
-#: lazarusidestrconsts.lisinfobuildlines
-msgctxt "lazarusidestrconsts.lisinfobuildlines"
-msgid "Lines:"
-msgstr "Рядків"
-
-#: lazarusidestrconsts.lisinfobuildmakeabort
-msgctxt "lazarusidestrconsts.lisinfobuildmakeabort"
-msgid "Abort"
-msgstr "Перервати"
-
-#: lazarusidestrconsts.lisinfobuildnote
-msgid "Notes:"
-msgstr "Примітки:"
-
-#: lazarusidestrconsts.lisinfobuildproject
-msgid "Project:"
-msgstr "Проект:"
-
-#: lazarusidestrconsts.lisinfobuildsuccess
-msgid "Success ..."
-msgstr "Успіх ..."
-
-#: lazarusidestrconsts.lisinfobuildwarning
-msgid "Warnings:"
-msgstr "Попередження:"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
@@ -10937,10 +10889,6 @@ msgstr ""
 msgid "Max %d"
 msgstr "Макс %d"
 
-#: lazarusidestrconsts.lismaybepackage
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ""
-
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "%s Може вам треба перезібрати пакунок."
@@ -11985,10 +11933,6 @@ msgstr "Інші таби"
 msgid "Projects"
 msgstr "Проекти"
 
-#: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
-msgid "Message contains no file position information:%s%s"
-msgstr "Повідомлення не містить даних про позицію файлу:%s%s"
-
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "Редактор Повідомлень"
@@ -12456,6 +12400,10 @@ msgstr "Файл LFM відсутній"
 msgid "No macro selected"
 msgstr "Макрос не вибраний"
 
+#: lazarusidestrconsts.lisnomessageselected
+msgid "(no message selected)"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "без назви"
@@ -12467,6 +12415,10 @@ msgstr "%sжоден"
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
 msgstr "жоден, клацніть щоб вибрати"
+
+#: lazarusidestrconsts.lisnoneselected
+msgid "(None selected)"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
@@ -12713,6 +12665,14 @@ msgstr "? (Вкл)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "При розриві рядка (тобто при настисканні клавіші Enter)"
 
+#: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
+msgid "Only messages fitting this regular expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
+msgid "Only messages with these FPC IDs (comma separated):"
+msgstr ""
+
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Шукати лише для повних слів"
@@ -12801,6 +12761,10 @@ msgstr "Відкрити пакунок %s"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "Відкрити проект %s"
+
+#: lazarusidestrconsts.lisopenurl
+msgid "Open URL"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenxml
 msgid "Open XML"
@@ -14406,10 +14370,6 @@ msgstr "Програма"
 msgid "Program detected"
 msgstr "Виявлена програма"
 
-#: lazarusidestrconsts.lisprogramnotfound
-msgid "Program %s not found"
-msgstr "Програма %s не знайдена"
-
 #: lazarusidestrconsts.lisprogramprogramdescriptor
 msgid "A Free Pascal command line program with some useful settings added."
 msgstr ""
@@ -14656,12 +14616,6 @@ msgstr "%0:s%0:s В файлі '%1:s' рядок %2:d:%0:s%3:s"
 msgid "Project Src Path"
 msgstr "Шлях до кодів проекту"
 
-#: lazarusidestrconsts.lisprojectsuccessfullybuilt
-#, fuzzy
-#| msgid "Project %s%s%s successfully built"
-msgid "Project \"%s\" successfully built"
-msgstr "Проект %s%s%s успішно зібрано"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr "модуль проекту"
@@ -14837,10 +14791,6 @@ msgstr "Відкрити Не&давній Проект"
 msgid "View &Example Projects"
 msgstr "Переглянути &Приклади Проектів"
 
-#: lazarusidestrconsts.lisquickfixcreatelocalvariable
-msgid "Create local variable"
-msgstr "Створити локальну змінну"
-
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
 msgstr ""
@@ -14973,10 +14923,6 @@ msgstr "Видалити включений шлях?"
 msgid "Remove local variable %s"
 msgstr "Видалити локальну змінну %s"
 
-#: lazarusidestrconsts.lisremovelocalvariable2
-msgid "Remove local variable"
-msgstr "Видалити локальну змінну"
-
 #: lazarusidestrconsts.lisremovelocalvariable3
 msgid "Remove local variable \"%s\""
 msgstr ""
@@ -15002,10 +14948,6 @@ msgstr "Видалити їх"
 #: lazarusidestrconsts.lisremovethepathsfromothersources
 msgid "Remove the paths from \"Other sources\""
 msgstr "Видалити шляхи з \"Інші джерела\""
-
-#: lazarusidestrconsts.lisremoveunitfromusessection
-msgid "Remove unit from uses section"
-msgstr "Видалити модуль з секції uses"
 
 #: lazarusidestrconsts.lisremoveunitpath
 msgid "Remove unit path?"
@@ -15299,11 +15241,6 @@ msgstr "Зберегти всі"
 msgid "Save All Checked"
 msgstr "Зберегти всі відзначені"
 
-#: lazarusidestrconsts.lissaveallmessagestofile
-#| msgid "Save all messages to file"
-msgid "Save All Messages to File"
-msgstr "Зберегти Всі Повідомлення в Файл"
-
 #: lazarusidestrconsts.lissaveallmodified
 msgid "Save all modified files"
 msgstr "Зберегти всі змінені файли"
@@ -15415,10 +15352,6 @@ msgstr ""
 msgid "Search paths"
 msgstr "Шляхи пошуку"
 
-#: lazarusidestrconsts.lissearchunit
-msgid "Search unit"
-msgstr "Шукати модуль"
-
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "вторинна тека налаштувань, де Lazarus шукає свої шаблони налаштувань. За замовчуванням "
@@ -15456,6 +15389,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "Вибраний"
 
+#: lazarusidestrconsts.lisselectedaddition
+msgid "Selected addition:"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedandchildcontrols
 msgid "Selected and child controls"
 msgstr ""
@@ -15479,6 +15416,10 @@ msgstr ""
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "(вибраний лівий сусід)"
+
+#: lazarusidestrconsts.lisselectedmessageinmessageswindow
+msgid "Selected message in messages window:"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedmodeswerebuilt
 msgid "Selected %d modes were successfully built."
@@ -16003,10 +15944,6 @@ msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
 msgstr "Для якої ОС"
 
-#: lazarusidestrconsts.listcompilerinternalerror
-msgid "Internal compiler error! (%d)"
-msgstr "Внутрішня помилка компілятора! (%d)"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr "Редагована Клітинка"
@@ -16022,6 +15959,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Тека проб"
+
+#: lazarusidestrconsts.listesturl
+msgid "Test URL"
+msgstr ""
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
@@ -16421,6 +16362,10 @@ msgstr "Проект використовує цільову ОС=%s та ЦП=%
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr "Проект використовує нові ресурси FPC, які вимагають принаймні FPC 2.4"
 
+#: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
+msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "В теці є і інші файли з такою самою назвою,%s, що відрізняється тільки регістром:%s%s%sВидалити їх?"
@@ -16675,14 +16620,6 @@ msgstr "Джерело"
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "Стан"
-
-#: lazarusidestrconsts.listinfobuildautocloseonsuccess
-msgid "&Automatically close on success"
-msgstr "&Автоматично закрити в випадку успіху"
-
-#: lazarusidestrconsts.listinfobuildcompiling
-msgid "Compiling:"
-msgstr "Компілювання:"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -17215,10 +17152,6 @@ msgstr "Не можу побудувати зміни редактора"
 msgid "Unable to get source for designer."
 msgstr "Не можу знайти код для дизайнера"
 
-#: lazarusidestrconsts.lisunabletoloadfile
-msgid "Unable to load file:%s%s"
-msgstr "Не можу завантажити файл:%s%s"
-
 #: lazarusidestrconsts.lisunabletoloadfile2
 msgid "unable to load file %s: %s"
 msgstr "не можу завантажити файл %s: %s"
@@ -17522,6 +17455,10 @@ msgstr "рядок в верхньому регістрі"
 msgid "Uppercase string given as parameter"
 msgstr "ВЕЛИКИЙ рядок поданий як параметр"
 
+#: lazarusidestrconsts.lisurlonwikithebaseurlis
+msgid "URL on wiki (the base url is %s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr "Повідомлення використання (опція -h)"
@@ -17568,10 +17505,6 @@ msgstr "Використовувати фільтр включень"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "Запуск програми"
-
-#: lazarusidestrconsts.lisusemessagefile
-msgid "Use message file:"
-msgstr "Викор файл повідомлень:"
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
@@ -17876,10 +17809,6 @@ msgstr "Робоча тека для побудови"
 msgid "Working directory for run"
 msgstr "Робоча тека для виконання"
 
-#: lazarusidestrconsts.lisworkingdirectorynotfound
-msgid "Working directory %s not found"
-msgstr "Робоча тека %s не знайдена"
-
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Помилка запису"
@@ -18004,10 +17933,6 @@ msgstr ""
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Автоматично збільшувати номер білду"
-
-#: lazarusidestrconsts.rsavailablescanners
-msgid "Available scanners"
-msgstr "Доступні сканери"
 
 #: lazarusidestrconsts.rsbuild
 msgid "&Build:"
@@ -18267,10 +18192,6 @@ msgstr "Тип"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "&Ревізія:"
-
-#: lazarusidestrconsts.rsscanners
-msgid "Scanners"
-msgstr "Сканери"
 
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"

@@ -2840,10 +2840,6 @@ msgstr "„Property“ užbaigimas"
 msgid "Property Name"
 msgstr "Savybės pavadinimas"
 
-#: lazarusidestrconsts.dlgqautoclosecompiledialog
-msgid "Auto close compile dialog"
-msgstr "Kompiliavimo dialogą uždaryti automatiškai"
-
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project at start"
 msgstr "Startuojant atverti paskutini syk atvertą projektą"
@@ -2851,10 +2847,6 @@ msgstr "Startuojant atverti paskutini syk atvertą projektą"
 #: lazarusidestrconsts.dlgqshowborderspacing
 msgid "Show border spacing"
 msgstr "Rodyti rėmelio plotį"
-
-#: lazarusidestrconsts.dlgqshowcompiledialog
-msgid "Show compile dialog"
-msgstr "Rodyti kompiliacijos dialogą"
 
 #: lazarusidestrconsts.dlgqshowgrid
 msgid "Show grid"
@@ -3063,10 +3055,6 @@ msgstr "Rodyti viską"
 msgid "Show executable info (Win32 only)"
 msgstr "Rodyti vykdomosios bylos informaciją (tik Win32)"
 
-#: lazarusidestrconsts.dlgshowfullfilenames
-msgid "Show full file names"
-msgstr ""
-
 #: lazarusidestrconsts.dlgshowgeneralinfo
 msgid "Show general info"
 msgstr "Rodyti pagrindinę informaciją"
@@ -3090,10 +3078,6 @@ msgstr "Rodyti eilučių numerius"
 #| msgid "Show Notes"
 msgid "Show notes"
 msgstr "Rodyti pastabas"
-
-#: lazarusidestrconsts.dlgshownothing
-msgid "Show nothing (only errors)"
-msgstr "Slėpti viską (išskyrus klaidas)"
 
 #: lazarusidestrconsts.dlgshowsummary
 msgid "Show summary"
@@ -3981,6 +3965,18 @@ msgstr "Pridėti aplanko failus"
 msgid "Add Filter ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisadditiondoesnotfitthecurrentmessage
+msgid "Addition does not fit the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditionfitsthecurrentmessage
+msgid "Addition fits the current message"
+msgstr ""
+
+#: lazarusidestrconsts.lisadditions
+msgid "Additions"
+msgstr ""
+
 #: lazarusidestrconsts.lisaddkeyworddo
 msgid "Add keyword \"do\""
 msgstr "Įdėti raktažodį „do“"
@@ -4679,10 +4675,6 @@ msgstr ""
 #| msgid "Cannot find lazarus starter:%s%s"
 msgid "Cannot find Lazarus starter:%s%s"
 msgstr "Nepavyko rasti Lazarus startuotojo:%s%s"
-
-#: lazarusidestrconsts.liscannotfindpp
-msgid "Cannot find PPU of unit %s"
-msgstr ""
 
 #: lazarusidestrconsts.liscannotfindunit
 msgid "Cannot find unit %s"
@@ -6346,6 +6338,10 @@ msgstr "Sąlygos"
 msgid "Lazarus config directory"
 msgstr "Lazarus nustatymų aplankas"
 
+#: lazarusidestrconsts.lisconfigfileofadditions
+msgid "Config file of additions:"
+msgstr ""
+
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
 msgstr "Derinti %s daryklę"
@@ -6746,10 +6742,6 @@ msgstr ""
 msgid "Copy all output to clipboard"
 msgstr "Visą išvestį kopijuoti į išvestinę"
 
-#: lazarusidestrconsts.liscopyallshownandhiddenmessagestoclipboard
-msgid "Copy All Shown and Hidden Messages to Clipboard"
-msgstr "Kopijuoti visus (ir paslėptus) pranešimus į iškarpinę"
-
 #: lazarusidestrconsts.liscopyallshownmessagestoclipboard
 msgid "Copy All Shown Messages to Clipboard"
 msgstr "Kopijuoti visus rodomus pranešimus į iškarpinę"
@@ -6895,6 +6887,10 @@ msgstr "Kurti"
 
 #: lazarusidestrconsts.liscreatelocalvariable
 msgid "Create local variable \"%s\""
+msgstr ""
+
+#: lazarusidestrconsts.liscreatenewaddition
+msgid "Create new addition"
 msgstr ""
 
 #: lazarusidestrconsts.liscreatenewpackage
@@ -7406,6 +7402,14 @@ msgctxt "lazarusidestrconsts.lisdelete"
 msgid "Delete"
 msgstr "Pašalinti"
 
+#: lazarusidestrconsts.lisdelete2
+msgid "Delete?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdeleteaddition
+msgid "Delete addition \"%s\"?"
+msgstr ""
+
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
 msgstr "&Pašalinti visus"
@@ -7483,6 +7487,10 @@ msgstr "Ištrinti pažymėtus failus"
 #: lazarusidestrconsts.lisdeleteselectedmacro
 msgid "Delete selected macro?"
 msgstr "ar pašalinti pažymėtąją makrokomandą?"
+
+#: lazarusidestrconsts.lisdeletethisaddition
+msgid "Delete this addition"
+msgstr ""
 
 #: lazarusidestrconsts.lisdeletevalue
 #, fuzzy
@@ -7874,6 +7882,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.lisedit"
 msgid "Edit"
 msgstr "Keisti"
+
+#: lazarusidestrconsts.liseditadditionalhelpformessages
+msgid "Edit additional help for messages"
+msgstr ""
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -8290,10 +8302,6 @@ msgstr "Rašant į failą „%s“ įvyko klaida"
 msgid "Error writing package list to file%s%s%s%s"
 msgstr "Įvyko klaida rašant paketo sąrašą į failą%s%s%s%s"
 
-#: lazarusidestrconsts.liseteditcustomscanners
-msgid "Edit custom scanners (%s)"
-msgstr "Keisti naudotojo žvalgytuvus (%s)"
-
 #: lazarusidestrconsts.lisevalexpression
 msgctxt "lazarusidestrconsts.lisevalexpression"
 msgid "Eval expression"
@@ -8483,10 +8491,6 @@ msgstr ""
 msgid "External Tools"
 msgstr "Išorės įrankiai"
 
-#: lazarusidestrconsts.lisexttoolfailedtoruntool
-msgid "Failed to run tool"
-msgstr "Nepavyko startuoti įrankį"
-
 #: lazarusidestrconsts.lisexttoolmaximumtoolsreached
 msgid "Maximum Tools reached"
 msgstr "Per daug įrankių"
@@ -8494,14 +8498,6 @@ msgstr "Per daug įrankių"
 #: lazarusidestrconsts.lisexttoolthereisamaximumoftools
 msgid "There is a maximum of %s tools."
 msgstr "Čia daugiausia gali būti %s įrankių."
-
-#: lazarusidestrconsts.lisexttooltitlecompleted
-msgid "\"%s\" completed"
-msgstr "„%s“ baigta"
-
-#: lazarusidestrconsts.lisexttoolunabletorunthetool
-msgid "Unable to run the tool %s%s%s:%s%s"
-msgstr "Nepavyko startuoti įrankį %s%s%s:%s%s"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
@@ -8521,10 +8517,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisfatal
 msgid "Fatal"
-msgstr ""
-
-#: lazarusidestrconsts.lisfatal2
-msgid "%s(%s,%s) Fatal: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
@@ -8850,6 +8842,10 @@ msgstr "Rasta versija „%s“, tikėtasi „%s“"
 msgid "fpc.cfg is missing."
 msgstr "Trūksta „fpc.cfg“."
 
+#: lazarusidestrconsts.lisfpcfullversioneg20701
+msgid "FPC version as one number (e.g. 20701)"
+msgstr ""
+
 #: lazarusidestrconsts.lisfpcmakefailed
 msgid "fpcmake failed"
 msgstr "„fpcmake“ nepavyko"
@@ -8857,6 +8853,14 @@ msgstr "„fpcmake“ nepavyko"
 #: lazarusidestrconsts.lisfpcmessagefile
 msgid "FPC message file"
 msgstr "FPC pranešimo failas"
+
+#: lazarusidestrconsts.lisfpcmessagefile2
+msgid "FPC message file:"
+msgstr ""
+
+#: lazarusidestrconsts.lisfpcmessagesappendix
+msgid "FPC messages: Appendix"
+msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
 msgid "FPC resources"
@@ -9002,6 +9006,10 @@ msgstr "Pagrindinis"
 msgid "get word at current cursor position"
 msgstr "Grąžina žodį, ties kuriuo, šiuo metu yra žymeklis"
 
+#: lazarusidestrconsts.lisglobalsettings
+msgid "Global settings"
+msgstr ""
+
 #: lazarusidestrconsts.lisgotoline
 #| msgid "Goto line"
 msgid "Goto Line"
@@ -9111,10 +9119,6 @@ msgstr ""
 #: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
 msgid "Hide message by inserting IDE directive {%H-}"
 msgstr ""
-
-#: lazarusidestrconsts.lishidemessageviadirective
-msgid "Hide message via directive"
-msgstr "Pranešimą slėpti naudojant direktyvą"
 
 #: lazarusidestrconsts.lishidesearch
 msgid "Hide Search"
@@ -9434,60 +9438,6 @@ msgstr "Lygiavimas paskalio pirminiame kode"
 #: lazarusidestrconsts.lisindex
 msgid "Index"
 msgstr "Indeksas"
-
-#: lazarusidestrconsts.lisinfobuildabort
-#| msgid "Aborted..."
-msgid "Aborted ..."
-msgstr "Nutraukta…"
-
-#: lazarusidestrconsts.lisinfobuildcaption
-msgid "Compile Project"
-msgstr "Kompiliuoti projektą"
-
-#: lazarusidestrconsts.lisinfobuildcompile
-msgctxt "lazarusidestrconsts.lisinfobuildcompile"
-msgid "Compiling ..."
-msgstr "Kompiliuojama…"
-
-#: lazarusidestrconsts.lisinfobuilderror
-#| msgid "Error..."
-msgid "Error ..."
-msgstr "Klaida…"
-
-#: lazarusidestrconsts.lisinfobuilderrors
-msgid "Errors:"
-msgstr "Klaidos:"
-
-#: lazarusidestrconsts.lisinfobuildhint
-msgid "Hints:"
-msgstr "Užuominų:"
-
-#: lazarusidestrconsts.lisinfobuildlines
-msgctxt "lazarusidestrconsts.lisinfobuildlines"
-msgid "Lines:"
-msgstr "Eilučių:"
-
-#: lazarusidestrconsts.lisinfobuildmakeabort
-msgctxt "lazarusidestrconsts.lisinfobuildmakeabort"
-msgid "Abort"
-msgstr "Nutraukti"
-
-#: lazarusidestrconsts.lisinfobuildnote
-msgid "Notes:"
-msgstr "Pastabos:"
-
-#: lazarusidestrconsts.lisinfobuildproject
-msgid "Project:"
-msgstr "Projektas:"
-
-#: lazarusidestrconsts.lisinfobuildsuccess
-#| msgid "Success..."
-msgid "Success ..."
-msgstr "Tvarka…"
-
-#: lazarusidestrconsts.lisinfobuildwarning
-msgid "Warnings:"
-msgstr "Įspėjimai:"
 
 #: lazarusidestrconsts.lisinformation
 msgid "Information"
@@ -10979,10 +10929,6 @@ msgstr ""
 msgid "Max %d"
 msgstr "Maksimaliai %d"
 
-#: lazarusidestrconsts.lismaybepackage
-msgid ". Maybe package %s needs a clean rebuild."
-msgstr ""
-
 #: lazarusidestrconsts.lismaybeyouhavetorecompilethepackage
 msgid "%s Maybe you have to recompile the package."
 msgstr "%s Ko gero, paketą reikia kompiliuoti iš naujo."
@@ -12045,10 +11991,6 @@ msgstr "Kitos kortelės"
 msgid "Projects"
 msgstr "Projektai"
 
-#: lazarusidestrconsts.lismessagecontainsnofilepositioninformation
-msgid "Message contains no file position information:%s%s"
-msgstr "Pranešime nėra informacijos apie poziciją faile:%s%s"
-
 #: lazarusidestrconsts.lismessageseditor
 msgid "Messages Editor"
 msgstr "Pranešimų rengyklė"
@@ -12520,6 +12462,10 @@ msgstr "LFM failo nėra"
 msgid "No macro selected"
 msgstr "Makrokomanda nepažymėta"
 
+#: lazarusidestrconsts.lisnomessageselected
+msgid "(no message selected)"
+msgstr ""
+
 #: lazarusidestrconsts.lisnoname
 msgid "noname"
 msgstr "be_pavadinimo"
@@ -12531,6 +12477,10 @@ msgstr "%snieks"
 #: lazarusidestrconsts.lisnoneclicktochooseone
 msgid "none, click to choose one"
 msgstr "Nėra, tačiau spustelėjus bus galima parinkti kokią nors"
+
+#: lazarusidestrconsts.lisnoneselected
+msgid "(None selected)"
+msgstr ""
 
 #: lazarusidestrconsts.lisnonodeselected
 msgid "no node selected"
@@ -12778,6 +12728,14 @@ msgstr "? (Aktyvus)"
 msgid "On break line (i.e. return or enter key)"
 msgstr "Laužiant eilutę (pvz. įvedimo klavišas)"
 
+#: lazarusidestrconsts.lisonlymessagesfittingthisregularexpression
+msgid "Only messages fitting this regular expression:"
+msgstr ""
+
+#: lazarusidestrconsts.lisonlymessageswiththesefpcidscommaseparated
+msgid "Only messages with these FPC IDs (comma separated):"
+msgstr ""
+
 #: lazarusidestrconsts.lisonlysearchforwholewords
 msgid "Only search for whole words"
 msgstr "Ieškoti tik ištisų žodžių"
@@ -12866,6 +12824,10 @@ msgstr "Atverti paketą %s?"
 #: lazarusidestrconsts.lisopentheproject
 msgid "Open the project %s?"
 msgstr "Atverti projektą %s?"
+
+#: lazarusidestrconsts.lisopenurl
+msgid "Open URL"
+msgstr ""
 
 #: lazarusidestrconsts.lisopenxml
 msgid "Open XML"
@@ -14469,10 +14431,6 @@ msgstr "Programa"
 msgid "Program detected"
 msgstr "Aptikta programa"
 
-#: lazarusidestrconsts.lisprogramnotfound
-msgid "Program %s not found"
-msgstr "Programa „%s“ nerasta"
-
 #: lazarusidestrconsts.lisprogramprogramdescriptor
 msgid "A Free Pascal command line program with some useful settings added."
 msgstr ""
@@ -14719,12 +14677,6 @@ msgstr "%0:s%0:s Failo „%1:s“ eilutėje %2:d:%0:s%3:s"
 msgid "Project Src Path"
 msgstr "Kelias iki projekto pirminio kodo"
 
-#: lazarusidestrconsts.lisprojectsuccessfullybuilt
-#, fuzzy
-#| msgid "Project %s%s%s successfully built"
-msgid "Project \"%s\" successfully built"
-msgstr "Projektas %s%s%s sėkmingai padarytas"
-
 #: lazarusidestrconsts.lisprojectunit
 msgid "project unit"
 msgstr "projekto modulis"
@@ -14900,10 +14852,6 @@ msgstr "Atverti pas&kiausiąjį projektą"
 msgid "View &Example Projects"
 msgstr "Rodyti pavy&zdžių projektus"
 
-#: lazarusidestrconsts.lisquickfixcreatelocalvariable
-msgid "Create local variable"
-msgstr "Kurti vietinį kintamąjį"
-
 #: lazarusidestrconsts.lisquickfixerror
 msgid "QuickFix error"
 msgstr ""
@@ -15036,10 +14984,6 @@ msgstr "Pašalinti kelią iki įterptinių?"
 msgid "Remove local variable %s"
 msgstr "Pašalinti vietinį kintamąjį „%s“"
 
-#: lazarusidestrconsts.lisremovelocalvariable2
-msgid "Remove local variable"
-msgstr "Pašalinti vietinį kintamąjį"
-
 #: lazarusidestrconsts.lisremovelocalvariable3
 msgid "Remove local variable \"%s\""
 msgstr ""
@@ -15065,10 +15009,6 @@ msgstr "Pašalinti elementą"
 #: lazarusidestrconsts.lisremovethepathsfromothersources
 msgid "Remove the paths from \"Other sources\""
 msgstr "Iš „Kiti pirminiai kodai“ pašalinti kelius"
-
-#: lazarusidestrconsts.lisremoveunitfromusessection
-msgid "Remove unit from uses section"
-msgstr "Modulį pašalinti iš naudojamų modulių sąrašo"
 
 #: lazarusidestrconsts.lisremoveunitpath
 msgid "Remove unit path?"
@@ -15368,11 +15308,6 @@ msgstr "Įrašyti visus"
 msgid "Save All Checked"
 msgstr "Įrašyti visus pažymėtus"
 
-#: lazarusidestrconsts.lissaveallmessagestofile
-#| msgid "Save all messages to file"
-msgid "Save All Messages to File"
-msgstr "Visus pranešimus įrašyti failan"
-
 #: lazarusidestrconsts.lissaveallmodified
 #| msgid "save all modified files"
 msgid "Save all modified files"
@@ -15486,10 +15421,6 @@ msgstr ""
 msgid "Search paths"
 msgstr "Paieškos keliai"
 
-#: lazarusidestrconsts.lissearchunit
-msgid "Search unit"
-msgstr "Ieškoti modulio"
-
 #: lazarusidestrconsts.lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "Antrinis aplankas nustatymų failams, kuriame Lazarus ieškos nustatymų šablonų failų. Numatytasis yra "
@@ -15527,6 +15458,10 @@ msgctxt "lazarusidestrconsts.lisselected"
 msgid "Selected"
 msgstr "Pažymėtas"
 
+#: lazarusidestrconsts.lisselectedaddition
+msgid "Selected addition:"
+msgstr ""
+
 #: lazarusidestrconsts.lisselectedandchildcontrols
 msgid "Selected and child controls"
 msgstr ""
@@ -15550,6 +15485,10 @@ msgstr ""
 #: lazarusidestrconsts.lisselectedleftneighbour
 msgid "(selected left neighbour)"
 msgstr "(pažymėtas kairysis kaimynas)"
+
+#: lazarusidestrconsts.lisselectedmessageinmessageswindow
+msgid "Selected message in messages window:"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectedmodeswerebuilt
 msgid "Selected %d modes were successfully built."
@@ -16076,10 +16015,6 @@ msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
 msgstr "Skirtas OS"
 
-#: lazarusidestrconsts.listcompilerinternalerror
-msgid "Internal compiler error! (%d)"
-msgstr "Vidinė kompiliatoriaus klaida! (%d)"
-
 #: lazarusidestrconsts.listemplateeditparamcell
 msgid "Editable Cell"
 msgstr "Langelis, kurį galima keisti"
@@ -16097,6 +16032,10 @@ msgstr ""
 #: lazarusidestrconsts.listestdirectory
 msgid "Test directory"
 msgstr "Testo aplankas"
+
+#: lazarusidestrconsts.listesturl
+msgid "Test URL"
+msgstr ""
 
 #: lazarusidestrconsts.listheapplicationbundlewascreatedfor
 msgid "The Application Bundle was created for \"%s\""
@@ -16498,6 +16437,10 @@ msgstr "Projekto paskirties operacinė sistema yra %s, procesorius – %s.%sFPC 
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr "Projekte naudojami naujos laidos FPC ištekliai, tam būtinas bent 2.4 laidos FPC."
 
+#: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
+msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
 msgstr "Aplanke yra failų, kurių pavadinimai%sskiriasi tik raidžių lygiais:%s%s%sJuos ištrinti?"
@@ -16753,14 +16696,6 @@ msgstr "Pirminis kodas"
 msgctxt "lazarusidestrconsts.listhreadsstate"
 msgid "State"
 msgstr "Būsena"
-
-#: lazarusidestrconsts.listinfobuildautocloseonsuccess
-msgid "&Automatically close on success"
-msgstr "Pavykus, uždaryti &automatiškai"
-
-#: lazarusidestrconsts.listinfobuildcompiling
-msgid "Compiling:"
-msgstr "Kompiliuojama:"
 
 #: lazarusidestrconsts.listitle
 msgid "&Title"
@@ -17298,10 +17233,6 @@ msgstr "Nepavyko susekti pokyčių rengyklėje."
 msgid "Unable to get source for designer."
 msgstr "Nepavyko gauti pirminio kodo, skirto konstruktoriui."
 
-#: lazarusidestrconsts.lisunabletoloadfile
-msgid "Unable to load file:%s%s"
-msgstr "Nepavyko įkelti failo:%s%s"
-
 #: lazarusidestrconsts.lisunabletoloadfile2
 msgid "unable to load file %s: %s"
 msgstr "nepavyko įkelti failo %s: %s"
@@ -17605,6 +17536,10 @@ msgstr "Teksto raides versti didžiosiomis"
 msgid "Uppercase string given as parameter"
 msgstr "Teksto, kuris pateiktas, kaip parametras, raides versti didžiosiomis"
 
+#: lazarusidestrconsts.lisurlonwikithebaseurlis
+msgid "URL on wiki (the base url is %s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisusagemessagehoption
 msgid "Usage message (-h option)"
 msgstr "Pranešimas apie naudojimą (-h parinktis)"
@@ -17651,10 +17586,6 @@ msgstr "Naudoti įterpimo filtrą"
 #: lazarusidestrconsts.lisuselaunchingapplicationgroupbox
 msgid "Launching application"
 msgstr "Paleidžiančioji programa"
-
-#: lazarusidestrconsts.lisusemessagefile
-msgid "Use message file:"
-msgstr "Naudoti pranešimų failą:"
 
 #: lazarusidestrconsts.lisusepackageinpackage
 msgid "Use package %s in package %s"
@@ -17960,10 +17891,6 @@ msgstr "Darbinis aplankas darant"
 msgid "Working directory for run"
 msgstr "Darbinis aplankas startuojant"
 
-#: lazarusidestrconsts.lisworkingdirectorynotfound
-msgid "Working directory %s not found"
-msgstr "Nerastas darbinis aplankas „%s“"
-
 #: lazarusidestrconsts.liswriteerror
 msgid "Write Error"
 msgstr "Rašymo klaida"
@@ -18088,10 +18015,6 @@ msgstr ""
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumber
 msgid "Automatically increase build number"
 msgstr "Automatiškai didinti darymo numerį"
-
-#: lazarusidestrconsts.rsavailablescanners
-msgid "Available scanners"
-msgstr "Esami skeneriai"
 
 #: lazarusidestrconsts.rsbuild
 #| msgid "Build:"
@@ -18353,10 +18276,6 @@ msgstr "Tipas"
 #: lazarusidestrconsts.rsrevision
 msgid "&Revision:"
 msgstr "&Poversijis:"
-
-#: lazarusidestrconsts.rsscanners
-msgid "Scanners"
-msgstr "Skeneriai"
 
 #: lazarusidestrconsts.rsselectaninheritedentry
 msgid "Select an inherited entry"
