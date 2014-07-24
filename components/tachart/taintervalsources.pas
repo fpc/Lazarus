@@ -60,8 +60,10 @@ type
   strict private
     FDateTimeFormat: String;
     FSteps: TDateTimeSteps;
+    FSuppressPrevUnit: Boolean;
     procedure SetDateTimeFormat(AValue: String);
     procedure SetSteps(AValue: TDateTimeSteps);
+    procedure SetSuppressPrevUnit(AValue: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     procedure ValuesInRange(
@@ -70,6 +72,8 @@ type
     property DateTimeFormat: String read FDateTimeFormat write SetDateTimeFormat;
     property Steps: TDateTimeSteps
       read FSteps write SetSteps default DATE_TIME_STEPS_ALL;
+    property SuppressPrevUnit: Boolean
+      read FSuppressPrevUnit write SetSuppressPrevUnit default true;
   end;
 
 
@@ -341,6 +345,7 @@ constructor TDateTimeIntervalChartSource.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FSteps := DATE_TIME_STEPS_ALL;
+  FSuppressPrevUnit := true;
 end;
 
 procedure TDateTimeIntervalChartSource.SetDateTimeFormat(AValue: String);
@@ -355,6 +360,14 @@ procedure TDateTimeIntervalChartSource.SetSteps(AValue: TDateTimeSteps);
 begin
   if FSteps = AValue then exit;
   FSteps := AValue;
+  InvalidateCaches;
+  Notify;
+end;
+
+procedure TDateTimeIntervalChartSource.SetSuppressPrevUnit(AValue: Boolean);
+begin
+  if FSuppressPrevUnit = AValue then exit;
+  FSuppressPrevUnit := AValue;
   InvalidateCaches;
   Notify;
 end;
@@ -381,24 +394,24 @@ var
           FormatDateTime('/yyyy', AValue);
       dtsMonth:
         Result := FormatDateTime(
-          IfThen(st.Year = prevSt.Year, 'mm', 'mm/yyyy'), AValue);
+          IfThen(FSuppressPrevUnit and (st.Year = prevSt.Year), 'mm', 'mm/yyyy'), AValue);
       dtsWeek:
         Result := FormatDateTime('dd/mm', AValue);
       dtsDay:
         Result := FormatDateTime(
-          IfThen(st.Month = prevSt.Month, 'dd', 'dd/mm'), AValue);
+          IfThen(FSuppressPrevUnit and (st.Month = prevSt.Month), 'dd', 'dd/mm'), AValue);
       dtsHour:
         Result := FormatDateTime(
-          IfThen(st.Day = prevSt.Day, 'hh:00', 'dd hh:00'), AValue);
+          IfThen(FSuppressPrevUnit and (st.Day = prevSt.Day), 'hh:00', 'dd hh:00'), AValue);
       dtsMinute:
         Result := FormatDateTime(
-          IfThen(st.Hour = prevSt.Hour, 'nn', 'hh:nn'), AValue);
+          IfThen(FSuppressPrevUnit and (st.Hour = prevSt.Hour), 'nn', 'hh:nn'), AValue);
       dtsSecond:
         Result := FormatDateTime(
-          IfThen(st.Minute = prevSt.Minute, 'ss', 'nn:ss'), AValue);
+          IfThen(FSuppressPrevUnit and (st.Minute = prevSt.Minute), 'ss', 'nn:ss'), AValue);
       dtsMillisecond:
         Result :=
-          IfThen(st.Second = prevSt.Second, '', IntToStr(st.Second) + '.') +
+          IfThen(FSuppressPrevUnit and (st.Second = prevSt.Second), '', IntToStr(st.Second) + DefaultFormatSettings.DecimalSeparator) +
           IntToStr(st.Millisecond) + 'ms';
     end;
     if InRange(AValue, helper.FOrigParams.FMin, helper.FOrigParams.FMax) then
