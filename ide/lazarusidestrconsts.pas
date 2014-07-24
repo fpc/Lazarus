@@ -3989,6 +3989,8 @@ resourcestring
   lisPkgSysThisIsTheDefaultPackageUsedOnlyForComponents = 'This is the '
     +'default package. Used only for components without a package. These '
     +'components are outdated.';
+  lisUpdatingPoFilesFailedForPackage =
+    'Updating po files failed for package %s';
   lisPkgSysRegisterProcedureIsNil = 'Register procedure is nil';
   lisPkgSysThisPackageIsInstalledButTheLpkFileWasNotFound = 'This package is '
     +'installed, but the lpk file was not found. All its components are '

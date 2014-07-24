@@ -124,6 +124,16 @@ type
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
 
+  TLazPkgGraphExtToolData = class(TIDEExternalToolData)
+  public
+    Pkg: TLazPackage;
+    BuildItem: TLazPkgGraphBuildItem;
+    SrcPPUFilename: string;
+    CompilerFilename: string;
+    CompilerParams: string;
+    ErrorMessage: string;
+  end;
+
   { TLazPackageGraph }
 
   TLazPackageGraph = class
@@ -178,6 +188,7 @@ type
                     out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean;
                     var Note: string): TModalResult;
     procedure InvalidateStateFile(APackage: TLazPackage);
+    procedure OnExtToolBuildStopped(Sender: TObject);
   public
     constructor Create;
     destructor Destroy; override;
@@ -644,7 +655,8 @@ var
 begin
   for i:=Count-1 downto 0 do begin
     Tool:=Tools[i];
-    Tool.Data:=nil;
+    if Tool.Data is TLazPkgGraphExtToolData then
+      TLazPkgGraphExtToolData(Tool.Data).BuildItem:=nil;
     Tool.Release(Self);
   end;
   fTools.Clear;
@@ -652,10 +664,9 @@ end;
 
 function TLazPkgGraphBuildItem.Add(Tool: TAbstractExternalTool): integer;
 begin
-  if Tool.Data<>nil then
-    raise Exception.Create('');
   Tool.Reference(Self,'TLazPkgGraphBuildItem.Add');
-  Tool.Data:=Self;
+  if Tool.Data is TLazPkgGraphExtToolData then
+    TLazPkgGraphExtToolData(Tool.Data).BuildItem:=Self;
   Result:=fTools.Add(Tool);
 end;
 
@@ -1663,6 +1674,49 @@ begin
     QuietRegistration:=true;
   if DlgResult=mrAbort then
     AbortRegistration:=true;
+end;
+
+procedure TLazPackageGraph.OnExtToolBuildStopped(Sender: TObject);
+var
+  PkgCompileTool: TAbstractExternalTool;
+  Data: TLazPkgGraphExtToolData;
+  aPackage: TLazPackage;
+  SrcPPUFile: String;
+  MsgResult: TModalResult;
+  SrcPPUFileExists: Boolean;
+begin
+  PkgCompileTool:=Sender as TAbstractExternalTool;
+  Data:=PkgCompileTool.Data as TLazPkgGraphExtToolData;
+  aPackage:=Data.Pkg;
+  //debugln(['TLazPackageGraph.OnExtToolBuildStopped aPackage=',aPackage.IDAsString]);
+
+  // check if main ppu file was created
+  SrcPPUFile:=Data.SrcPPUFilename;
+  SrcPPUFileExists:=(SrcPPUFile<>'') and FileExistsUTF8(SrcPPUFile);
+  // write state file
+  MsgResult:=SavePackageCompiledState(APackage,
+                    Data.CompilerFilename,Data.CompilerParams,
+                    PkgCompileTool.ErrorMessage='',SrcPPUFileExists,false);
+  if MsgResult<>mrOk then begin
+    Data.ErrorMessage:='SavePackageCompiledState failed';
+    DebugLn(['TLazPackageGraph.OnExtToolBuildStopped SavePackageCompiledState failed: ',APackage.IDAsString]);
+    exit;
+  end;
+  Data.ErrorMessage:=PkgCompileTool.ErrorMessage;
+
+  if Data.ErrorMessage<>'' then exit;
+
+  // update .po files
+  if (APackage.POOutputDirectory<>'') then begin
+    MsgResult:=ConvertPackageRSTFiles(APackage);
+    if MsgResult<>mrOk then begin
+      Data.ErrorMessage:='ConvertPackageRSTFiles failed';
+      DebugLn('TLazPackageGraph.CompilePackage ConvertPackageRSTFiles failed: ',APackage.IDAsString);
+      IDEMessagesWindow.AddCustomMessage(mluError,
+        Format(lisUpdatingPoFilesFailedForPackage, [APackage.IDAsString]));
+      exit;
+    end;
+  end;
 end;
 
 function TLazPackageGraph.CreateDefaultPackage: TLazPackage;
@@ -3510,13 +3564,11 @@ var
   EffectiveCompilerParams: String;
   CompilePolicy: TPackageUpdatePolicy;
   NeedBuildAllFlag: Boolean;
-  MsgResult: TModalResult;
-  SrcPPUFile: String;
-  SrcPPUFileExists: Boolean;
   CompilerParams: String;
   Note: String;
   WorkingDir: String;
   ToolTitle: String;
+  ExtToolData: TLazPkgGraphExtToolData;
 begin
   Result:=mrCancel;
 
@@ -3621,9 +3673,11 @@ begin
         ToolTitle:='Package '+APackage.IDAsString+': '+lisExecutingCommandBefore;
         if BuildItem<>nil then
         begin
+          // run later
           BuildItem.Add(APackage.CompilerOptions.ExecuteBefore.CreateExtTool(
                               WorkingDir,ToolTitle,Note));
         end else begin
+          // run now
           Result:=APackage.CompilerOptions.ExecuteBefore.Execute(WorkingDir,
             ToolTitle,Note);
           if Result<>mrOk then begin
@@ -3651,6 +3705,10 @@ begin
         end;
 
         PkgCompileTool:=ExternalToolList.Add(Format(lisPkgMangCompilingPackage, [APackage.IDAsString]));
+        ExtToolData:=TLazPkgGraphExtToolData.Create(IDEToolCompilePackage,
+          APackage.Name,APackage.Filename);
+        PkgCompileTool.Data:=ExtToolData;
+        PkgCompileTool.FreeData:=true;
         if BuildItem<>nil then
           BuildItem.Add(PkgCompileTool)
         else
@@ -3668,42 +3726,26 @@ begin
           PkgCompileTool.Process.Executable:=CompilerFilename;
           PkgCompileTool.CmdLineParams:=EffectiveCompilerParams;
           PkgCompileTool.Hint:=Note;
-          PkgCompileTool.Data:=TIDEExternalToolData.Create(IDEToolCompilePackage,
-            APackage.Name,APackage.Filename);
-          PkgCompileTool.FreeData:=true;
-          if BuildItem=nil then
+          ExtToolData.Pkg:=APackage;
+          ExtToolData.SrcPPUFilename:=APackage.GetSrcPPUFilename;
+          ExtToolData.CompilerFilename:=CompilerFilename;
+          ExtToolData.CompilerParams:=CompilerParams;
+          PkgCompileTool.AddHandlerOnStopped(@OnExtToolBuildStopped);
+          if BuildItem<>nil then
           begin
-            // run
+            // run later
+          end else begin
+            // run now
             PkgCompileTool.Execute;
+            //debugln(['TLazPackageGraph.CompilePackage BEFORE WaitForExit: ',APackage.IDAsString]);
             PkgCompileTool.WaitForExit;
-            // check if main ppu file was created
-            SrcPPUFile:=APackage.GetSrcPPUFilename;
-            SrcPPUFileExists:=(SrcPPUFile<>'') and FileExistsUTF8(SrcPPUFile);
-            // write state file
-            Result:=SavePackageCompiledState(APackage,
-                              CompilerFilename,CompilerParams,
-                              PkgCompileTool.ErrorMessage='',SrcPPUFileExists,false);
-            if Result<>mrOk then begin
-              DebugLn(['TLazPackageGraph.CompilePackage SavePackageCompiledState failed: ',APackage.IDAsString]);
-              exit;
-            end;
-            if PkgCompileTool.ErrorMessage<>'' then
+            //debugln(['TLazPackageGraph.CompilePackage AFTER WaitForExit: ',APackage.IDAsString,' ExtToolData.ErrorMessage=',ExtToolData.ErrorMessage]);
+            if ExtToolData.ErrorMessage<>'' then
               exit(mrCancel);
           end;
         finally
           if BuildItem=nil then
             PkgCompileTool.Release(Self);
-        end;
-      end;
-
-      // update .po files
-      if (APackage.POOutputDirectory<>'') then begin
-        Result:=ConvertPackageRSTFiles(APackage);
-        if Result<>mrOk then begin
-          DebugLn('TLazPackageGraph.CompilePackage ConvertPackageRSTFiles failed: ',APackage.IDAsString);
-          IDEMessagesWindow.AddCustomMessage(mluError,
-            'Updating po files failed for package '+APackage.IDAsString);
-          exit;
         end;
       end;
 
@@ -3713,9 +3755,11 @@ begin
         ToolTitle:='Package '+APackage.IDAsString+': '+lisExecutingCommandAfter;
         if BuildItem<>nil then
         begin
+          // run later
           BuildItem.Add(APackage.CompilerOptions.ExecuteAfter.CreateExtTool(
                               WorkingDir,ToolTitle,Note));
         end else begin
+          // run now
           Result:=APackage.CompilerOptions.ExecuteAfter.Execute(WorkingDir,
                                        ToolTitle,Note);
           if Result<>mrOk then begin
@@ -3727,32 +3771,8 @@ begin
       end;
       Result:=mrOk;
     finally
-      if (LazarusIDE<>nil) then
+      if (BuildItem=nil) and (LazarusIDE<>nil) then
         LazarusIDE.MainBarSubTitle:='';
-      if Result<>mrOk then begin
-        if (APackage.AutoInstall<>pitNope)
-        and (OnUninstallPackage<>nil)
-        and (not IsStaticBasePackage(APackage.Name))
-        and (IgnoreQuestions<>nil)
-        and (IgnoreQuestions.Find(GetIgnoreIdentifier)=nil)
-        then begin
-          // a package needed for installation failed to compile
-          // -> ask user if the package should be removed from the installation
-          // list
-          MsgResult:=IDEQuestionDialog(lisInstallationFailed,
-            Format(lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati,
-                   [APackage.IDAsString, LineEnding]),
-              mtConfirmation,
-              [mrYes, lisRemoveFromInstallList, mrIgnore, lisKeepInInstallList]);
-          if MsgResult=mrIgnore then
-            IgnoreQuestions.Add(GetIgnoreIdentifier,iiid24H)
-          else if MsgResult=mrYes then
-          begin
-            Result:=OnUninstallPackage(APackage,
-              [puifDoNotConfirm,puifDoNotBuildIDE],true);
-          end;
-        end;
-      end;
     end;
   finally
     PackageGraph.EndUpdate;
