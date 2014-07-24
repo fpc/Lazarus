@@ -39,7 +39,7 @@ uses
 
 resourcestring
   SThreadName        = 'Thread Object';
-  SThreadDescription = 'A Pascal unit with a subclass of TThread class';
+  SThreadDescription = 'A Pascal unit with a subclass of TThread class.';
 
 //---------------//
 procedure register;

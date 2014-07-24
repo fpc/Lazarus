@@ -1,0 +1,11 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: reglazthread.sthreaddescription
+msgid "A Pascal unit with a subclass of TThread class."
+msgstr ""
+
+#: reglazthread.sthreadname
+msgid "Thread Object"
+msgstr ""
+
