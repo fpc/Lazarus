@@ -3011,7 +3011,8 @@ type
     tvsTripleClicked,
     tvsQuadClicked,
     tvsSelectionChanged,
-    tvsEditOnMouseUp
+    tvsEditOnMouseUp, // if mouse up occurs on mouse down node: activate editing
+    tvsSingleSelectOnMouseUp // if mouse up occurs on mouse down node: single select this node
     );
   TTreeViewStates = set of TTreeViewState;
 
@@ -3239,6 +3240,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseLeave; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     procedure SetDragMode(Value: TDragMode); override;

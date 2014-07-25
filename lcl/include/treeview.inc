@@ -5140,12 +5140,13 @@ procedure TCustomTreeView.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   CursorNode: TTreeNode;
   LogicalX: Integer;
+  CursorNodeSelected: Boolean;
 begin
   {$IFDEF VerboseDrag}
   DebugLn('TCustomTreeView.MouseDown A ',Name,':',ClassName,' ');
   {$ENDIF}
   fMouseDownPos := Point(X,Y);
-  Exclude(FStates,tvsEditOnMouseUp);
+  FStates:=FStates-[tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
   if Button=mbRight then begin
     if RightClickSelect then begin
       Selected:=GetNodeAt(X,Y);
@@ -5158,6 +5159,9 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 
   CursorNode := GetNodeAt(X, Y);
+  CursorNodeSelected := (CursorNode<>nil)
+    and (CursorNode.Selected
+      or ((tvoAllowMultiselect in Options) and CursorNode.MultiSelected));
   LogicalX:=X;
   if ([ssDouble, ssTriple, ssQuad] * Shift) = [] then
   begin
@@ -5202,8 +5206,10 @@ begin
           end
           else
           begin
-            if (Selected <> CursorNode) or Items.IsMultiSelection then
-              Items.SelectOnlyThis(CursorNode);
+            if not CursorNodeSelected then
+              Items.SelectOnlyThis(CursorNode)
+            else
+              Include(FStates, tvsSingleSelectOnMouseUp);
           end;
         end;
       end;
@@ -5223,6 +5229,8 @@ end;
 
 procedure TCustomTreeView.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+var
+  aMouseDownNode, aMouseUpNode: TTreeNode;
 begin
   inherited MouseUp(Button, Shift, X, Y);
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
@@ -5233,12 +5241,27 @@ begin
   and (FStates * [tvsDblClicked, tvsTripleClicked, tvsQuadClicked] = [])
   then begin
     //AquirePrimarySelection;
-    if (tvsEditOnMouseUp in FStates) and (not ReadOnly)
-    and (abs(fMouseDownPos.X-X)+abs(fMouseDownPos.Y-Y)<10)
-    and (GetNodeAt(fMouseDownPos.X,fMouseDownPos.Y)=GetNodeAt(X,Y)) then
-      BeginEditing(Selected);
+    aMouseDownNode:=GetNodeAt(fMouseDownPos.X,fMouseDownPos.Y);
+    aMouseUpNode:=GetNodeAt(X,Y);
+    if (abs(fMouseDownPos.X-X)+abs(fMouseDownPos.Y-Y)<10)
+    and (aMouseDownNode=aMouseUpNode) then
+    begin
+      // mouse up on mouse-down node
+      if (tvsEditOnMouseUp in FStates) and (not ReadOnly) then
+        BeginEditing(Selected)
+      else if (tvsSingleSelectOnMouseUp in FStates) then
+        Items.SelectOnlyThis(aMouseUpNode);
+    end;
   end;
-  FStates:=FStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,tvsEditOnMouseUp];
+  FStates:=FStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,
+                    tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
+end;
+
+procedure TCustomTreeView.MouseLeave;
+begin
+  FStates:=FStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,
+                    tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
+  inherited MouseLeave;
 end;
 
 procedure TCustomTreeView.Notification(AComponent: TComponent; Operation: TOperation);
