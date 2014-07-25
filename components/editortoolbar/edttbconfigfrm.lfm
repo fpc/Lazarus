@@ -2,27 +2,27 @@ object EdtTbConfigForm: TEdtTbConfigForm
   Left = 375
   Height = 457
   Top = 200
-  Width = 722
+  Width = 772
   Caption = 'EdtTbConfigForm'
   ClientHeight = 457
-  ClientWidth = 722
+  ClientWidth = 772
   OnCreate = FormCreate
   LCLVersion = '1.3'
   object lblMenuTree: TLabel
     Left = 16
-    Height = 17
+    Height = 15
     Top = 14
-    Width = 81
+    Width = 74
     Caption = 'lblMenuTree'
     ParentColor = False
   end
   object lblToolbar: TLabel
     AnchorSideLeft.Control = lbToolbar
-    AnchorSideTop.Control = lblpos
+    AnchorSideTop.Control = lblMenuTree
     Left = 443
-    Height = 17
+    Height = 15
     Top = 14
-    Width = 62
+    Width = 59
     Caption = 'lblToolbar'
     ParentColor = False
   end
@@ -32,7 +32,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Side = asrBottom
     Left = 415
     Height = 26
-    Top = 120
+    Top = 118
     Width = 22
     BorderSpacing.Top = 1
     Enabled = False
@@ -46,7 +46,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Control = TV
     Left = 415
     Height = 26
-    Top = 93
+    Top = 91
     Width = 22
     BorderSpacing.Left = 6
     BorderSpacing.Top = 25
@@ -61,7 +61,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Side = asrBottom
     Left = 415
     Height = 26
-    Top = 171
+    Top = 169
     Width = 22
     BorderSpacing.Top = 25
     Enabled = False
@@ -75,7 +75,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Side = asrBottom
     Left = 415
     Height = 26
-    Top = 198
+    Top = 196
     Width = 22
     BorderSpacing.Top = 1
     Enabled = False
@@ -87,11 +87,11 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Left = 0
     Height = 42
     Top = 415
-    Width = 722
+    Width = 772
     Align = alBottom
     BevelOuter = bvNone
     ClientHeight = 42
-    ClientWidth = 722
+    ClientWidth = 772
     Color = clGreen
     ParentColor = False
     TabOrder = 4
@@ -99,14 +99,14 @@ object EdtTbConfigForm: TEdtTbConfigForm
       Left = 0
       Height = 2
       Top = 0
-      Width = 722
+      Width = 772
       Align = alTop
     end
     object btnOK: TButton
       AnchorSideRight.Control = btnCancel
       AnchorSideBottom.Control = pnlButtons
       AnchorSideBottom.Side = asrBottom
-      Left = 545
+      Left = 600
       Height = 25
       Top = 11
       Width = 75
@@ -128,10 +128,10 @@ object EdtTbConfigForm: TEdtTbConfigForm
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = pnlButtons
       AnchorSideBottom.Side = asrBottom
-      Left = 626
+      Left = 681
       Height = 25
       Top = 11
-      Width = 90
+      Width = 85
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Right = 6
@@ -152,7 +152,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Left = 443
     Height = 25
     Top = 384
-    Width = 116
+    Width = 109
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
@@ -170,9 +170,9 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Control = TV
     AnchorSideBottom.Control = btnAddDivider
     Left = 443
-    Height = 310
-    Top = 68
-    Width = 268
+    Height = 312
+    Top = 66
+    Width = 318
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Bottom = 6
@@ -187,13 +187,14 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideRight.Control = Splitter1
     AnchorSideBottom.Control = pnlButtons
     Left = 16
-    Height = 341
-    Top = 68
+    Height = 343
+    Top = 66
     Width = 381
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     BorderSpacing.Right = 3
     BorderSpacing.Bottom = 6
+    DefaultItemHeight = 18
     ReadOnly = True
     ScrollBars = ssAutoBoth
     TabOrder = 1
@@ -206,7 +207,7 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideTop.Side = asrBottom
     Left = 16
     Height = 25
-    Top = 37
+    Top = 35
     Width = 192
     UseFormActivate = True
     ButtonWidth = 23
@@ -219,10 +220,17 @@ object EdtTbConfigForm: TEdtTbConfigForm
     ExpandAllInitially = True
   end
   object cbPos: TComboBox
-    Left = 293
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = lbToolbar
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = pnlButtons
+    Left = 661
     Height = 25
-    Top = 10
+    Top = 384
     Width = 100
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Bottom = 6
     ItemHeight = 0
     ItemIndex = 0
     Items.Strings = (
@@ -236,24 +244,30 @@ object EdtTbConfigForm: TEdtTbConfigForm
     Text = 'Top'
   end
   object lblpos: TLabel
-    AnchorSideTop.Control = lblMenuTree
-    Left = 232
-    Height = 17
-    Top = 14
-    Width = 38
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbPos
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = cbPos
+    Left = 618
+    Height = 15
+    Top = 389
+    Width = 37
+    Anchors = [akTop, akRight]
+    BorderSpacing.Right = 6
     Caption = 'lblpos'
     ParentColor = False
   end
   object cbVisible: TCheckBox
-    Left = 316
+    Left = 232
     Height = 21
-    Top = 45
-    Width = 68
+    Top = 39
+    Width = 64
     Caption = 'Visible'
     OnChange = cbVisibleChange
     ParentShowHint = False
     ShowHint = True
     TabOrder = 6
+    Visible = False
   end
   object Splitter1: TSplitter
     AnchorSideLeft.Control = TV
@@ -262,8 +276,8 @@ object EdtTbConfigForm: TEdtTbConfigForm
     AnchorSideBottom.Control = TV
     AnchorSideBottom.Side = asrBottom
     Left = 400
-    Height = 341
-    Top = 68
+    Height = 343
+    Top = 66
     Width = 9
     Align = alNone
     Anchors = [akTop, akBottom]
