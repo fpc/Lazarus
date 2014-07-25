@@ -3512,12 +3512,17 @@ var
   ReqFlags: TPkgIntfRequiredFlags;
   CurPkg: TLazPackage;
   BuildItems: TObjectList;
-  {$IFDEF EnableGroupCompile}
   BuildItem: TLazPkgGraphBuildItem;
   j: Integer;
   Tool: TAbstractExternalTool;
   ToolData: TLazPkgGraphExtToolData;
-  {$ENDIF}
+
+  procedure FreeBuildItems;
+  begin
+
+    FreeAndNil(BuildItems);
+  end;
+
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CompileRequiredPackages A MinPolicy=',dbgs(Policy),' SkipDesignTimePackages=',SkipDesignTimePackages);
@@ -3562,6 +3567,10 @@ begin
         {$ENDIF}
         Result:=CompilePackage(CurPkg,Flags,false,BuildItem);
         if Result<>mrOk then exit;
+
+        if BuildItem.Count>0 then begin
+
+        end;
       end;
 
       // execute
@@ -3582,7 +3591,7 @@ begin
         end;
       end;
     finally
-      FreeAndNil(BuildItems);
+      FreeBuildItems;
       FreeAndNil(PkgList);
       EndUpdate;
     end;
