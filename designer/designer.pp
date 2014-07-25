@@ -4244,14 +4244,14 @@ begin
       AHint := GetSelectionPosHintText;
   end;
 
-  Rect := FHintWindow.CalcHintRect(0, AHint);  //no maxwidth
+  Rect := FHintWindow.CalcHintRect(0, AHint, Nil);  //no maxwidth
   Rect.Left := Position.X + 15;
   Rect.Top := Position.Y + 15;
   Rect.Right := Rect.Left + Rect.Right;
   Rect.Bottom := Rect.Top + Rect.Bottom;
 
   FHintWindow.HintRectAdjust := Rect;
-  FHintWindow.ActivateText(AHint);
+  FHintWindow.ActivateHint(AHint);
 end;
 
 procedure TDesigner.SetSnapToGrid(const AValue: boolean);

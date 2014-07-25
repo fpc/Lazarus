@@ -327,10 +327,10 @@ var
   var
     HintWinRect: TRect;
   begin
-    HintWinRect := HintTextWindow.CalcHintRect(Screen.Width, TheHint);
+    HintWinRect := HintTextWindow.CalcHintRect(Screen.Width, TheHint, Nil);
     HintTextWindow.HintRectAdjust := HintWinRect;      // Adds borders.
     HintTextWindow.OffsetHintRect(ScreenPos);
-    HintTextWindow.ActivateText(TheHint);
+    HintTextWindow.ActivateHint(TheHint);
   end;
 
   procedure DoHtml;

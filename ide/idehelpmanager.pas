@@ -1678,7 +1678,7 @@ begin
     HintWinRect := Rect(0, 0, NewWidth, NewHeight);
     TheHint:='';
   end else begin
-    HintWinRect := aHintWindow.CalcHintRect(Screen.Width, TheHint);
+    HintWinRect := aHintWindow.CalcHintRect(Screen.Width, TheHint, Nil);
     aHintWindow.HintRectAdjust := HintWinRect;      // Adds borders.
   end;
   OffsetRect(HintWinRect, ScreenPos.X, ScreenPos.Y+30);

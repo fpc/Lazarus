@@ -847,7 +847,8 @@ begin
     // make the hint have the same BiDiMode as the activating control
     FHintWindow.BiDiMode := FHintControl.BiDiMode;
     // calculate the width of the hint based on HintStr and MaxWidth
-    HintWinRect := FHintWindow.CalcHintRect(HintInfo.HintMaxWidth, HintInfo.HintStr);
+    with HintInfo do
+      HintWinRect := FHintWindow.CalcHintRect(HintMaxWidth, HintStr, HintData);
     //Position HintWindow depending on LTR/RTL
     if FHintWindow.UseRightToLeftAlignment then
       OffsetRect(HintWinRect, HintInfo.HintPos.X - (HintWinRect.Right - HintWinRect.Left), HintInfo.HintPos.Y)
@@ -860,7 +861,7 @@ begin
 
     //debugln('TApplication.ShowHintWindow B HintWinRect=',dbgs(HintWinRect),' HintStr="',DbgStr(HintInfo.HintStr),'"');
     FHintWindow.HintRectAdjust := HintWinRect;
-    FHintWindow.ActivateText(HintInfo.HintStr);
+    FHintWindow.ActivateHint(HintInfo.HintStr);
     FHintRect := HintInfo.CursorRect;
     // start hide timer
     StartHintTimer(HintInfo.HideTimeout,ahttHideHint);

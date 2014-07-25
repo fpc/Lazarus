@@ -213,7 +213,7 @@ begin
     Invalidate;
 end;
 
-procedure THintWindow.ActivateText(const AHint: String);
+procedure THintWindow.ActivateHint(const AHint: String);
 // Shows simple text hint.
 begin
   if FActivating then exit;
@@ -227,19 +227,27 @@ begin
   end;
 end;
 
+procedure THintWindow.ActivateHint(ARect: TRect; const AHint: String);
+begin
+  HintRect := ARect;
+  AdjustBoundsForMonitor;
+  ActivateHint(AHint);
+end;
+
 procedure THintWindow.ActivateWithBounds(ARect: TRect; const AHint: String);
 begin
   HintRect := ARect;
-  ActivateText(AHint);
+  ActivateHint(AHint);
 end;
 
-procedure THintWindow.ActivateWithData(ARect: TRect; const AHint: String; AData: pointer);
+procedure THintWindow.ActivateHintData(ARect: TRect; const AHint: String; AData: pointer);
 begin
   HintRectAdjust := ARect;
-  ActivateText(AHint);                // AData is not used now.
+  ActivateHint(AHint);                // AData is not used now.
 end;
 
-function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String): TRect;
+function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
+  AData: pointer): TRect;
 var
   Flags: Cardinal;
   uh: HDC;

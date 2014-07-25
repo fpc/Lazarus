@@ -77,7 +77,8 @@ type
     FIndex: Integer;
   public
     constructor Create(AOwner: TComponent); override;
-    function CalcHintRect(MaxWidth: Integer; const AHint: string): TRect; override;
+    function CalcHintRect(MaxWidth: Integer; const AHint: string;
+                          AData: pointer): TRect; override;
     procedure Paint; override;
     property Index: Integer read FIndex write FIndex;
   end;
@@ -685,7 +686,7 @@ begin
     // CalcHintRect uses the current index
     FHint.Index := AIndex;
     // calculate the size
-    R := FHint.CalcHintRect(Monitor.Width, ItemList[AIndex]);
+    R := FHint.CalcHintRect(Monitor.Width, ItemList[AIndex], nil);
 
     if (R.Right <= Scroll.Left) then begin
       FHint.Hide;
@@ -726,7 +727,7 @@ end;
 procedure TSynBaseCompletionForm.OnHintTimer(Sender: TObject);
 begin
   FHintTimer.Enabled := False;
-  FHint.ActivateText(ItemList[FHint.Index]);
+  FHint.ActivateHint(ItemList[FHint.Index]);
 end;
 
 procedure TSynBaseCompletionForm.KeyDown(var Key: Word; Shift: TShiftState);
@@ -2154,7 +2155,8 @@ begin
   Visible := False;
 end;
 
-function TSynBaseCompletionHint.CalcHintRect(MaxWidth: Integer; const AHint: string): TRect;
+function TSynBaseCompletionHint.CalcHintRect(MaxWidth: Integer; const AHint: string;
+  AData: pointer): TRect;
 var
   P: TPoint;
 begin

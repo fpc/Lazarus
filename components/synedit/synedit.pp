@@ -4747,7 +4747,7 @@ begin
             ScrollHint.Visible := TRUE;
           end;
           s := Format('line %d', [TopLine]);
-          rc := ScrollHint.CalcHintRect(200, s);
+          rc := ScrollHint.CalcHintRect(200, s, Nil);
           pt := ClientToScreen(Point(ClientWidth-ScrollBarWidth - rc.Right - 4, 10));
           if eoScrollHintFollows in fOptions then
             pt.y := Mouse.CursorPos.y - (rc.Bottom div 2);

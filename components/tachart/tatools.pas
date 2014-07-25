@@ -1799,7 +1799,7 @@ begin
     if FHintWindow = nil then
       FHintWindow := THintWindow.Create(nil);
     if h = '' then exit;
-    r := FHintWindow.CalcHintRect(FChart.Width, h);
+    r := FHintWindow.CalcHintRect(FChart.Width, h, Nil);
     OffsetRect(r, APoint.X, APoint.Y);
     FHintWindow.ActivateWithBounds(r, h);
   end;

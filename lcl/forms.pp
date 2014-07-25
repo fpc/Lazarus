@@ -860,11 +860,13 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ActivateText(const AHint: String);
+    procedure ActivateHint(const AHint: String);
+    procedure ActivateHint(ARect: TRect; const AHint: String); virtual;
     procedure ActivateWithBounds(ARect: TRect; const AHint: String);
-    procedure ActivateWithData(ARect: TRect; const AHint: String; AData: pointer);
-      deprecated 'Set HintData explicitly';
-    function CalcHintRect(MaxWidth: Integer; const AHint: String): TRect; virtual;
+    procedure ActivateHintData(ARect: TRect; const AHint: String;
+                               AData: pointer); virtual;
+    function CalcHintRect(MaxWidth: Integer; const AHint: String;
+                          AData: pointer): TRect; virtual;
     function OffsetHintRect(NewPos: TPoint; dy: Integer = 30): Boolean;
     procedure InitializeWnd; override;
     procedure ReleaseHandle;
