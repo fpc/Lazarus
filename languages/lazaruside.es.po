@@ -17894,6 +17894,10 @@ msgstr ""
 msgid "Update references?"
 msgstr "¿Actualizar referencias?"
 
+#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
+msgid "Updating PO files failed for package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
 msgstr "Actualiza"

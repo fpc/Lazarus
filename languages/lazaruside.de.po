@@ -17241,6 +17241,10 @@ msgstr "Andere Prozedur-Signaturen aktualisieren bereits bei Änderung der Schre
 msgid "Update references?"
 msgstr "Verweise aktualisieren?"
 
+#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
+msgid "Updating PO files failed for package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
 msgstr ""

@@ -17533,6 +17533,10 @@ msgstr "Atualizar outras assinaturas de procedimentos apenas quando houver mudan
 msgid "Update references?"
 msgstr "Atualizar referências?"
 
+#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
+msgid "Updating PO files failed for package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
 msgstr "Atualizar"

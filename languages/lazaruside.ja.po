@@ -17030,6 +17030,10 @@ msgstr "大文字小文字が変更された場合のみ他の手続き署名を
 msgid "Update references?"
 msgstr "参照を更新しますか？"
 
+#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
+msgid "Updating PO files failed for package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
 msgstr "アップグレード"

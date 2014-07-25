@@ -16908,6 +16908,10 @@ msgstr "Aktualizovat ostatní podpisy procedur když se změnila pouze velikost 
 msgid "Update references?"
 msgstr "Aktualizovat odkazy?"
 
+#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
+msgid "Updating PO files failed for package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
 msgstr "Povýšit"

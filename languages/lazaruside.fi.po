@@ -16535,6 +16535,10 @@ msgstr "Päivitä muut aliohjelman määritykset, kun vain kirjainten koko on mu
 msgid "Update references?"
 msgstr "Päivitetäänkö viittaukset?"
 
+#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
+msgid "Updating PO files failed for package %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
 msgstr "Päivitä"

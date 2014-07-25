@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-24 04:03+0400\n"
+"PO-Revision-Date: 2014-07-26 02:14+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -17359,6 +17359,10 @@ msgstr "Обновлять остальные сигнатуры процеду�
 #: lazarusidestrconsts.lisupdatereferences
 msgid "Update references?"
 msgstr "Обновить ссылки?"
+
+#: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
+msgid "Updating PO files failed for package %s"
+msgstr "Не удалось обновить файлы PO для пакета %s"
 
 #: lazarusidestrconsts.lisupgrade
 msgid "Upgrade"
