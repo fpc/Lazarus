@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -32,3 +31,4 @@ msgstr "JSON-RPC kezelők regisztrálása a gyárban"
 #: frmrpcmoduleoptions.sregisterwebm
 msgid "Register web module"
 msgstr "Web modul regisztrálása"
+

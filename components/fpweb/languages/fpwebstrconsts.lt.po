@@ -1,4 +1,3 @@
-# Valdas Jankunas <zmuogs@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -9,8 +8,7 @@ msgstr ""
 "Language: lt\n"
 "Content-Transfer-Encoding: 8bit\n"
 "MIME-Version: 1.0\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
-"100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.5\n"
 
 #: fpwebstrconsts.scssfile
@@ -396,5 +394,4 @@ msgstr "Re&gistruoti vietą, iš kurios bus tiekiami failai"
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"
 msgstr "Prašymų aptarnavimui naudoti gi&jas"
-
 

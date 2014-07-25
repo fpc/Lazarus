@@ -29,3 +29,4 @@ msgstr "Zaregistrovat JSON-RPC ukazatele v továrně"
 #: frmrpcmoduleoptions.sregisterwebm
 msgid "Register web module"
 msgstr "Registrovat webový modul"
+

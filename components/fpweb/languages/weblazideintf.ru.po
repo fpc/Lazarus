@@ -59,35 +59,35 @@ msgstr "Веб-модуль HTML%sМодуль данных веб для соз
 
 #: weblazideintf.rshttpappli
 msgid "HTTP server Application"
-msgstr ""
+msgstr "Приложение сервера HTTP"
 
 #: weblazideintf.rshttpappli2
 msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
-msgstr ""
+msgstr "Приложение сервера HTTP. Законченная программа сервера HTTP на Free Pascal, использующая веб-модули. Исходный код программы автоматически поддерживается Lazarus."
 
 #: weblazideintf.rswebdataprovi
 msgid "Web DataProvider Module"
-msgstr ""
+msgstr "Модуль Web DataProvider"
 
 #: weblazideintf.rswebdataprovi2
 msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
-msgstr ""
+msgstr "Модуль Web DataProvider%sМодуль данных для обработки информационных запросов в приложениях веб (HTTP) с использованием компонентов WebDataProvider."
 
 #: weblazideintf.rswebextdirect
 msgid "Web Ext.Direct Module"
-msgstr ""
+msgstr "Модуль Web Ext.Direct"
 
 #: weblazideintf.rswebextdirect2
 msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr ""
+msgstr "Модуль Web Ext.Direct%sМодуль данных для обработки запросов Ext.Direct в приложениях веб (HTTP) с использованием компонентов TJSONRPCHandler."
 
 #: weblazideintf.rswebjsonrpcmo
 msgid "Web JSON-RPC Module"
-msgstr ""
+msgstr "Модуль Web JSON-RPC"
 
 #: weblazideintf.rswebjsonrpcmo2
 msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr ""
+msgstr "Модуль Web JSON-RPC%sМодуль данных для обработки запросов JSON-RPC в приложениях веб (HTTP) с использованием компонентов TJSONRPCHandler."
 
 #: weblazideintf.rswebmodule
 msgid "Web Module"
