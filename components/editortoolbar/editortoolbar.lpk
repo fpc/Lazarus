@@ -19,7 +19,7 @@
 "/>
     <License Value="GPL
 "/>
-    <Version Minor="5"/>
+    <Version Minor="5" Release="2"/>
     <Files Count="4">
       <Item1>
         <Filename Value="jumpto_impl.pas"/>

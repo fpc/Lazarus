@@ -21,6 +21,7 @@ resourcestring
   rsRemoveSelected          = 'Remove selected item from toolbar';
   rsMoveSelectedUp          = 'Move selected toolbar item up';
   rsMoveSelectedDown        = 'Move selected toolbar item down';
+  rsHint                    = 'You may add here your favorite commands';
   rsPosition                = 'Position';
   rsTop                     = 'Top';
   rsBottom                  = 'Bottom';

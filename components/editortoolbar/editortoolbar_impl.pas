@@ -92,6 +92,7 @@ procedure Register;
 var
   sToolbarPos: string;
   bToolBarShow: boolean;
+  EditorMenuCommand:TIDEMenuCommand;
 
 implementation
 
@@ -128,6 +129,17 @@ procedure ConfigureToolbar (Sender:TObject);
 begin
   if TEdtTbConfigForm.Execute then
     uEditorToolbarList.ReloadAll;
+end;
+
+procedure ToggleToolbar (Sender:TObject);
+var
+  ToolBarVisible: Boolean;
+begin
+  ToolBarVisible:= not bToolBarShow;
+  EditorMenuCommand.Checked:= ToolBarVisible;
+  bToolBarShow:= ToolBarVisible;
+  TEdtTbConfigForm.UpdateVisible(ToolBarVisible);
+  uEditorToolbarList.ReloadAll;
 end;
 
 procedure TEditToolBarToolButton.Click;
@@ -194,6 +206,7 @@ begin
   ATB.Flat     := True;
   ATB.Images   := IDEImages.Images_16;
   ATB.ShowHint := True;
+  ATB.Hint     := rsHint;
 end;
 
 function TEditorToolbar.CreateJumpItem(AJumpType: TJumpType; O: TComponent): TMenuItem;
@@ -348,6 +361,7 @@ begin
     end;
     sToolbarPos := cfg.GetValue('Position','Top');
     bToolBarShow:= cfg.GetValue('Visible',true);
+    EditorMenuCommand.Checked:= bToolBarShow;
     SetTbPos;
   finally
     cfg.Free;
@@ -418,15 +432,21 @@ end;
 
 procedure Register;
 var
-  MenuCommand:TIDEMenuCommand;
   MenuIcon: string;
 begin
   MenuIcon:= 'menu_editor_options';
   //MenuIcon:= 'menu_editor_toolbar'; TODO!
   if uEditorToolbarList = nil then begin
     TEditorToolbarList.Create;
-    MenuCommand:= RegisterIDEMenuCommand(itmViewSecondaryWindows,'EditorToolBar',rsEditorToolbar,nil,@ConfigureToolbar);
-    MenuCommand.ImageIndex := IDEImages.LoadImage(16, MenuIcon);
+    EditorMenuCommand:= RegisterIDEMenuCommand(itmViewSecondaryWindows,'EditorToolBar',
+      rsEditorToolbar,nil,@ToggleToolbar);
+    EditorMenuCommand.Checked:= True;
+    EditorMenuCommand.Enabled:= True;
+    //EditorMenuCommand:= RegisterIDEMenuCommand(itmViewSecondaryWindows,'EditorToolBar',rsEditorToolbar,nil,@ConfigureToolbar);
+{$IFNDEF LCLGTK2}
+    // GTK2 Doesn't show both Icon and checkbox. Qt Does - Windows?
+    EditorMenuCommand.ImageIndex := IDEImages.LoadImage(16, MenuIcon);
+{$ENDIF}
   end;
 
 end;

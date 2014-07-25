@@ -49,7 +49,6 @@ type
     FilterEdit: TTreeFilterEdit;
     Splitter1: TSplitter;
     TV: TTreeView;
-    procedure btnCancelClick(Sender: TObject);
     procedure cbPosChange(Sender: TObject);
     procedure cbVisibleChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -69,14 +68,17 @@ type
     procedure LoadSettings;
     procedure SaveSettings;
     procedure AddMenuItem(ParentNode: TTreeNode; Item: TIDEMenuItem);
+    procedure AddToolBarItem(Item: TIDEMenuItem);
   public
     class function Execute: boolean;
     class procedure Setup;
+    class procedure UpdateVisible(NewStatus: Boolean);
   end; 
 
 Var
   sPosValues: array[0..3] of string = ('Top','Bottom','Right','Left');
   sLocalizedPosValues: array[0..3] of string;
+  sMenuView: string = 'View';
 
 implementation
 
@@ -148,10 +150,6 @@ begin
   end;
 end;
 
-procedure TEdtTbConfigForm.btnCancelClick(Sender: TObject);
-begin
-end;
-
 procedure TEdtTbConfigForm.cbVisibleChange(Sender: TObject);
 begin
   FToolBarShow:= cbVisible.Checked;
@@ -186,14 +184,25 @@ begin
     lbToolbar.Items.AddObject(TIDEMenuItem(n.Data).Caption, TObject(n.Data));
     lbToolbar.ItemIndex := lbToolbar.Items.Count-1;
     lbToolbarSelectionChange(lblToolbar, False);
+    TV.Selected.Visible:= False;
   end;
 end;
 
 procedure TEdtTbConfigForm.btnRemoveClick(Sender: TObject);
+Var
+  mi: TIDEMenuItem;
+  n: TTreeNode;
+  I: Integer;
 begin
-  if lbToolbar.ItemIndex > -1 then begin
+  I := lbToolbar.ItemIndex;
+  if I > -1 then begin
+    mi := TIDEMenuItem(lbToolbar.Items.Objects[I]);
     lbToolbar.Items.Delete(lbToolbar.ItemIndex);
     lbToolbarSelectionChange(lbToolbar, False);
+    if assigned(mi) then begin
+      n:= TV.Items.FindNodeWithData(mi);
+      n.Visible:= True;
+    end;
     TVSelectionChanged(TV);
   end;
 end;
@@ -228,7 +237,7 @@ end;
 procedure TEdtTbConfigForm.btnOKClick(Sender: TObject);
 begin
   SaveSettings;
-  if not FToolBarShow then ShowMessageFmt(rsWarning,[rsMenuView,rsEditorToolbar]);
+  if not FToolBarShow then ShowMessage(Format(rsWarning,[sMenuView,rsEditorToolbar]));
 end;
 
 procedure TEdtTbConfigForm.SetupCaptions;
@@ -274,23 +283,23 @@ var
   cfg: TConfigStorage;
   value: string;
   mi: TIDEMenuItem;
-  ms: TIDEMenuSection;
 begin
   cfg := GetIDEConfigStorage(cSettingsFile, True);
   try
     c := cfg.GetValue('Count', 0);
-
     if c = 0 then begin
       // Let's provide a Jump Back/Jump Forward as a starting default
-      ms := itmJumpings;
-      mi := ms.FindByName('itmJumpBack');
-      if Assigned(mi) then
-        lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
-      mi := ms.FindByName('itmJumpForward');
-      if Assigned(mi) then
-        lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
+      value := 'IDEMainMenu/Search/itmJumpings/itmJumpBack';
+      mi := IDEMenuRoots.FindByPath(value, false);
+      AddToolBarItem(mi);
+      {if Assigned(mi) then
+        lbToolbar.Items.AddObject(mi.Caption, TObject(mi));}
+      value := 'IDEMainMenu/Search/itmJumpings/itmJumpForward';
+      mi := IDEMenuRoots.FindByPath(value, false);
+      AddToolBarItem(mi);
+      {if Assigned(mi) then
+        lbToolbar.Items.AddObject(mi.Caption, TObject(mi));}
     end
-
     else begin
      for i := 0 to c - 1 do
      begin
@@ -304,8 +313,9 @@ begin
         end;
 
         mi := IDEMenuRoots.FindByPath(value, false);
-        if Assigned(mi) then
-          lbToolbar.Items.AddObject(mi.Caption, TObject(mi));
+        AddToolBarItem(mi);
+        {if Assigned(mi) then
+          lbToolbar.Items.AddObject(mi.Caption, TObject(mi));}
        end;
      end;
     end;
@@ -348,18 +358,32 @@ var
   n: TTreeNode;
   i: integer;
   sec: TIDEMenuSection;
+  ACaption: string;
 begin
   n := TV.Items.AddChild(ParentNode, Format('%s', [Item.Caption]));
   n.ImageIndex := Item.ImageIndex;
   n.SelectedIndex := Item.ImageIndex;
   if Item is TIDEMenuSection then
   begin
+    // get the caption of the View entry for the appropriate Warning
+    if Item.Name = 'View' then sMenuView:= Item.Caption;
     sec := (Item as TIDEMenuSection);
     for i := 0 to sec.Count-1 do
       AddMenuItem(n, sec.Items[i]);
   end
   else
     n.Data := Item;
+end;
+
+procedure TEdtTbConfigForm.AddToolBarItem(Item: TIDEMenuItem);
+Var
+  n: TTreeNode;
+begin
+  if Assigned(Item) then begin
+    lbToolbar.Items.AddObject(Item.Caption, TObject(Item));
+    n:= TV.Items.FindNodeWithData(Item);
+    n.Visible:= False;
+  end;
 end;
 
 class function TEdtTbConfigForm.Execute: boolean;
@@ -374,15 +398,26 @@ begin
   end;
 end;
 
-{TEdtTbConfigForm.Setup - called if no user items in config. }
 class procedure TEdtTbConfigForm.Setup;
 var
   frm: TEdtTbConfigForm;
 begin
-  // Create inserts the default Items
   frm := TEdtTbConfigForm.Create(nil);
   try
-    // Must save them, less they're inserted twice
+    frm.SaveSettings;
+  finally
+    frm.Free;
+  end;
+
+end;
+
+class procedure TEdtTbConfigForm.UpdateVisible(NewStatus: Boolean);
+var
+  frm: TEdtTbConfigForm;
+begin
+  frm := TEdtTbConfigForm.Create(nil);
+  try
+    frm.FToolBarShow:= NewStatus;
     frm.SaveSettings;
   finally
     frm.Free;
