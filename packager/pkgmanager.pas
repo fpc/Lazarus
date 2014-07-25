@@ -46,7 +46,7 @@ uses
   MemCheck,
   {$ENDIF}
   // FCL, LCL
-  TypInfo, Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
+  TypInfo, math, Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, Menus,
   contnrs, StringHashList, Translations, LResources, ComCtrls,
   // codetools
   CodeToolsConfig, CodeToolManager, CodeCache, CodeToolsStructs, BasicCodeTools,
@@ -1728,10 +1728,10 @@ begin
     {$ENDIF}
     exit;
   end;
-  if Abs(aFileCount)+Abs(aDependencyCount)+Abs(aDirectoryCount)>1 then begin
+  if Sign(aFileCount)+Sign(aDependencyCount)+Sign(aDirectoryCount)>1 then begin
     // more than one type, but only one type can be dragged
     {$IFDEF VerbosePkgEditDrag}
-    debugln(['TPkgManager.CheckDrag failed: more than one type']);
+    debugln(['TPkgManager.CheckDrag failed: more than one type Files=',aFileCount,' Deps=',aDependencyCount,' Dirs=',aDirectoryCount]);
     {$ENDIF}
     exit;
   end;
