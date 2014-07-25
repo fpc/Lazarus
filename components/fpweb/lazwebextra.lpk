@@ -6,7 +6,7 @@
     <CompilerOptions>
       <Version Value="11"/>
       <SearchPaths>
-        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+        <UnitOutputDirectory Value="lib/extra/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Parsing>
         <SyntaxOptions>
@@ -20,7 +20,6 @@
       </CodeGeneration>
       <Other>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Empty package. All stuff was moved to package weblaz.
