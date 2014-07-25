@@ -3506,23 +3506,16 @@ function TLazPackageGraph.CompileRequiredPackages(APackage: TLazPackage;
   FirstDependency: TPkgDependency; SkipDesignTimePackages: boolean;
   Policy: TPackageUpdatePolicy): TModalResult;
 var
+  BuildItems: TObjectList;
   PkgList: TFPList;
   i: Integer;
   Flags: TPkgCompileFlags;
   ReqFlags: TPkgIntfRequiredFlags;
   CurPkg: TLazPackage;
-  BuildItems: TObjectList;
   BuildItem: TLazPkgGraphBuildItem;
   j: Integer;
   Tool: TAbstractExternalTool;
   ToolData: TLazPkgGraphExtToolData;
-
-  procedure FreeBuildItems;
-  begin
-
-    FreeAndNil(BuildItems);
-  end;
-
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CompileRequiredPackages A MinPolicy=',dbgs(Policy),' SkipDesignTimePackages=',SkipDesignTimePackages);
@@ -3568,8 +3561,8 @@ begin
         Result:=CompilePackage(CurPkg,Flags,false,BuildItem);
         if Result<>mrOk then exit;
 
-        if BuildItem.Count>0 then begin
-
+        if (BuildItem<>nil) and (BuildItem.Count>0) then begin
+          // set dependencies
         end;
       end;
 
@@ -3591,7 +3584,7 @@ begin
         end;
       end;
     finally
-      FreeBuildItems;
+      FreeAndNil(BuildItems);
       FreeAndNil(PkgList);
       EndUpdate;
     end;
