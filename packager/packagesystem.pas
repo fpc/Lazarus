@@ -3282,7 +3282,7 @@ begin
 
   if GroupCompile and (lpfNeedGroupCompile in APackage.Flags) then begin
     debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile dependencies will be rebuilt']);
-    Note:='Dependencies will be rebuilt';
+    Note+='Dependencies will be rebuilt';
     DependenciesChanged:=true;
     exit(mrYes);
   end;
@@ -3535,7 +3535,7 @@ begin
         CurPkg:=TLazPackage(PkgList[i]);
         if SkipDesignTimePackages and (CurPkg.PackageType=lptDesignTime) then
           PkgList.Delete(i);
-        CurPkg.Flags:=CurPkg.Flags+[lpfNeedGroupCompile];
+        CurPkg.Flags:=CurPkg.Flags-[lpfNeedGroupCompile];
       end;
       if Assigned(OnBeforeCompilePackages) then
       begin
@@ -3600,15 +3600,13 @@ var
 begin
   if Pkg=nil then exit;
   if lpfNeedGroupCompile in Pkg.Flags then exit;
-  debugln(['TLazPackageGraph.SetFlagDependenciesNeedBuild START=',Pkg.Name]);
   Pkg.Flags:=Pkg.Flags+[lpfNeedGroupCompile];
   ADependency:=Pkg.FirstUsedByDependency;
   while ADependency<>nil do begin
-    debugln(['TLazPackageGraph.SetFlagDependenciesNeedBuild UsedBy=',ADependency.RequiredPackage<>nil]);
-    SetFlagDependenciesNeedBuild(ADependency.RequiredPackage);
+    if ADependency.Owner is TLazPackage then
+      SetFlagDependenciesNeedBuild(TLazPackage(ADependency.Owner));
     ADependency:=ADependency.NextUsedByDependency;
   end;
-  debugln(['TLazPackageGraph.SetFlagDependenciesNeedBuild END=',Pkg.Name]);
 end;
 
 function TLazPackageGraph.CompilePackage(APackage: TLazPackage;

@@ -711,7 +711,7 @@ type
                                WithMinVersion: boolean = false): TPkgDependency;
     function Requires(APackage: TLazPackage): boolean;
     procedure GetAllRequiredPackages(var List: TFPList; WithSelf: boolean;
-      Flags: TPkgIntfRequiredFlags = [];
+      aFlags: TPkgIntfRequiredFlags = [];
       MinPolicy: TPackageUpdatePolicy = low(TPackageUpdatePolicy));
     // components
     function IndexOfPkgComponent(PkgComponent: TPkgComponent): integer;
@@ -2470,7 +2470,7 @@ var
   ChangedFlags: TLazPackageFlags;
 begin
   if FFlags=AValue then exit;
-  ChangedFlags:=FFlags+AValue-(FFlags*AValue);
+  ChangedFlags:=(FFlags-AValue)+(AValue-FFlags);
   FFlags:=AValue;
   if ChangedFlags*[lpfAutoIncrementVersionOnBuild]<>[] then
     Modified:=true;
@@ -3655,11 +3655,11 @@ begin
 end;
 
 procedure TLazPackage.GetAllRequiredPackages(var List: TFPList;
-  WithSelf: boolean; Flags: TPkgIntfRequiredFlags;
+  WithSelf: boolean; aFlags: TPkgIntfRequiredFlags;
   MinPolicy: TPackageUpdatePolicy);
 begin
   if Assigned(OnGetAllRequiredPackages) then
-    OnGetAllRequiredPackages(Self,FirstRequiredDependency,List,Flags,MinPolicy);
+    OnGetAllRequiredPackages(Self,FirstRequiredDependency,List,aFlags,MinPolicy);
   if WithSelf then begin
     if List=nil then List:=TFPList.Create;
     if List.IndexOf(Self)<0 then

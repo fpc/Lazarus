@@ -306,7 +306,6 @@ begin
         NeedBuild:=PackageGraph.CheckIfPackageNeedsCompilation(
                         Pkg,SkipDesignTimePackages,true,NeedBuildAll,Item.Note);
         if NeedBuild=mrYes then begin
-          debugln(['TIDEInfoNeedBuildDlg.CheckNeedBuild ',Pkg.Name]);
           PackageGraph.SetFlagDependenciesNeedBuild(Pkg);
           if NeedBuildAll then
             Item.NeedBuild:=inbClean
