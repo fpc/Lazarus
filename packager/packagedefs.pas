@@ -463,7 +463,8 @@ type
     lpfDestroying,     // set during destruction
     lpfLoading,        // set during loading
     lpfSkipSaving,     // Used by PkgBoss to skip saving
-    lpfCycle           // Used by the PackageGraph to mark cycles
+    lpfCycle,          // Used by the PackageGraph to mark cycles
+    lpfNeedGroupCompile     // set during group compile, dependent packages need compile too
     );
   TLazPackageFlags = set of TLazPackageFlag;
   

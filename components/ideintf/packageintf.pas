@@ -183,12 +183,13 @@ type
   TPkgOpenFlags = set of TPkgOpenFlag;
 
   TPkgCompileFlag = (
+    pcfOnlyIfNeeded,
     pcfCleanCompile,  // append -B to the compiler options
+    pcfGroupCompile,
     pcfDoNotCompileDependencies,
     pcfDoNotCompilePackage,
     pcfCompileDependenciesClean,
     pcfSkipDesignTimePackages,
-    pcfOnlyIfNeeded,
     pcfDoNotSaveEditorFiles,
     pcfCreateMakefile,
     pcfCreateFpmakeFile

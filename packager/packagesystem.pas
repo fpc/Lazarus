@@ -48,7 +48,7 @@ uses
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
   Laz2_XMLCfg, LazLogger, LazFileUtils, InterfaceBase, LazUTF8,
   // codetools
-  AVL_Tree, DefineTemplates, CodeCache,
+  AVL_Tree, contnrs, DefineTemplates, CodeCache,
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
   CodeToolManager, DirectoryCacher,
   // IDEIntf,
@@ -184,7 +184,7 @@ type
                                        Verbose: boolean): boolean;
     function GetPackageCompilerParams(APackage: TLazPackage): string;
     function CheckIfCurPkgOutDirNeedsCompile(APackage: TLazPackage;
-                    CheckDependencies, SkipDesignTimePackages: boolean;
+                    CheckDependencies, SkipDesignTimePackages, GroupCompile: boolean;
                     out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean;
                     var Note: string): TModalResult;
     procedure InvalidateStateFile(APackage: TLazPackage);
@@ -323,6 +323,7 @@ type
                   Complete, MainPPUExists, ShowAbort: boolean): TModalResult;
     function LoadPackageCompiledState(APackage: TLazPackage;
                                 IgnoreErrors, ShowAbort: boolean): TModalResult;
+    procedure SetFlagDependenciesNeedBuild(Pkg: TLazPackage);
     function CheckCompileNeedDueToFPCUnits(TheOwner: TObject;
                           StateFileAge: longint; var Note: string): boolean;
     function CheckCompileNeedDueToDependencies(TheOwner: TObject;
@@ -330,7 +331,7 @@ type
                          SkipDesignTimePackages: boolean; StateFileAge: longint;
                          var Note: string): TModalResult;
     function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-                    SkipDesignTimePackages: boolean;
+                    SkipDesignTimePackages, GroupCompile: boolean;
                     out NeedBuildAllFlag: boolean; var Note: string): TModalResult;
     function PreparePackageOutputDirectory(APackage: TLazPackage;
                                            CleanUp: boolean): TModalResult;
@@ -664,6 +665,7 @@ end;
 
 function TLazPkgGraphBuildItem.Add(Tool: TAbstractExternalTool): integer;
 begin
+  if Tool=nil then exit;
   Tool.Reference(Self,'TLazPkgGraphBuildItem.Add');
   if Tool.Data is TLazPkgGraphExtToolData then
     TLazPkgGraphExtToolData(Tool.Data).BuildItem:=Self;
@@ -3124,8 +3126,8 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
-  SkipDesignTimePackages: boolean; out NeedBuildAllFlag: boolean; var
-  Note: string): TModalResult;
+  SkipDesignTimePackages, GroupCompile: boolean; out NeedBuildAllFlag: boolean;
+  var Note: string): TModalResult;
 var
   OutputDir: String;
   NewOutputDir: String;
@@ -3146,7 +3148,7 @@ begin
 
   // check the current output directory
   Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-             true,SkipDesignTimePackages,
+             true,SkipDesignTimePackages,GroupCompile,
              NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
   if Result=mrNo then begin
     // the current output is valid
@@ -3174,7 +3176,7 @@ begin
     Note+='Normal output directory is not writable, switching to fallback.'+LineEnding;
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:=NewOutputDir;
     Result:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-               true,SkipDesignTimePackages,
+               true,SkipDesignTimePackages,GroupCompile,
                NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
   end else begin
     // the last compile was put to the fallback output directory
@@ -3195,7 +3197,7 @@ begin
     APackage.CompilerOptions.ParsedOpts.OutputDirectoryOverride:='';
     OldNeedBuildAllFlag:=NeedBuildAllFlag;
     DefResult:=CheckIfCurPkgOutDirNeedsCompile(APackage,
-               true,SkipDesignTimePackages,
+               true,SkipDesignTimePackages,GroupCompile,
                NeedBuildAllFlag,ConfigChanged,DependenciesChanged,Note);
     if DefResult=mrNo then begin
       // switching back to the not writable output directory requires no compile
@@ -3211,9 +3213,9 @@ begin
 end;
 
 function TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile(
-  APackage: TLazPackage; CheckDependencies, SkipDesignTimePackages: boolean;
-  out NeedBuildAllFlag, ConfigChanged, DependenciesChanged: boolean;
-  var Note: string): TModalResult;
+  APackage: TLazPackage; CheckDependencies, SkipDesignTimePackages,
+  GroupCompile: boolean; out NeedBuildAllFlag, ConfigChanged,
+  DependenciesChanged: boolean; var Note: string): TModalResult;
 // returns: mrYes, mrNo, mrCancel, mrAbort
 var
   StateFilename: String;
@@ -3276,6 +3278,13 @@ begin
   then begin
     NeedBuildAllFlag:=true;
     ConfigChanged:=true;
+  end;
+
+  if GroupCompile and (lpfNeedGroupCompile in APackage.Flags) then begin
+    debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile dependencies will be rebuilt']);
+    Note:='Dependencies will be rebuilt';
+    DependenciesChanged:=true;
+    exit(mrYes);
   end;
 
   StateFileAge:=FileAgeUTF8(StateFilename);
@@ -3439,7 +3448,7 @@ begin
           Note);
     if Result<>mrNo then begin
       DependenciesChanged:=true;
-      exit;
+      exit(mrYes);
     end;
   end;
 
@@ -3502,6 +3511,13 @@ var
   Flags: TPkgCompileFlags;
   ReqFlags: TPkgIntfRequiredFlags;
   CurPkg: TLazPackage;
+  BuildItems: TObjectList;
+  {$IFDEF EnableGroupCompile}
+  BuildItem: TLazPkgGraphBuildItem;
+  j: Integer;
+  Tool: TAbstractExternalTool;
+  ToolData: TLazPkgGraphExtToolData;
+  {$ENDIF}
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CompileRequiredPackages A MinPolicy=',dbgs(Policy),' SkipDesignTimePackages=',SkipDesignTimePackages);
@@ -3512,32 +3528,61 @@ begin
   GetAllRequiredPackages(APackage,FirstDependency,PkgList,ReqFlags,Policy);
   if PkgList<>nil then begin
     //DebugLn('TLazPackageGraph.CompileRequiredPackages B Count=',IntToStr(PkgList.Count));
+    BuildItems:=nil;
     BeginUpdate(false);
     try
-      Flags:=[pcfDoNotCompileDependencies,pcfDoNotSaveEditorFiles];
       for i:=PkgList.Count-1 downto 0 do begin
         CurPkg:=TLazPackage(PkgList[i]);
         if SkipDesignTimePackages and (CurPkg.PackageType=lptDesignTime) then
           PkgList.Delete(i);
+        CurPkg.Flags:=CurPkg.Flags+[lpfNeedGroupCompile];
       end;
       if Assigned(OnBeforeCompilePackages) then
       begin
         Result:=OnBeforeCompilePackages(PkgList);
         if Result<>mrOk then exit;
       end;
+
+      // prepare output directories, basic checks
+      Flags:=[pcfDoNotCompileDependencies,pcfDoNotSaveEditorFiles,pcfGroupCompile];
+      if SkipDesignTimePackages then
+        Include(Flags,pcfSkipDesignTimePackages);
       if Policy=pupAsNeeded then
         Include(Flags,pcfOnlyIfNeeded)
       else
         Include(Flags,pcfCleanCompile);
-      if SkipDesignTimePackages then
-        Include(Flags,pcfSkipDesignTimePackages);
-      i:=0;
-      while i<PkgList.Count do begin
-        Result:=CompilePackage(TLazPackage(PkgList[i]),Flags,false);
+      BuildItems:=TObjectList.Create(true);
+      for i:=0 to PkgList.Count-1 do begin
+        CurPkg:=TLazPackage(PkgList[i]);
+        {$IFDEF EnableGroupCompile}
+        BuildItem:=TLazPkgGraphBuildItem.Create(nil);
+        BuildItems.Add(BuildItem);
+        {$ELSE}
+        BuildItem:=nil;
+        {$ENDIF}
+        Result:=CompilePackage(CurPkg,Flags,false,BuildItem);
         if Result<>mrOk then exit;
-        inc(i);
+      end;
+
+      // execute
+      for i:=0 to BuildItems.Count-1 do begin
+        BuildItem:=TLazPkgGraphBuildItem(BuildItems[i]);
+        for j:=0 to BuildItem.Count-1 do begin
+          Tool:=BuildItem[j];
+          debugln(['TLazPackageGraph.CompileRequiredPackages ',Tool.Title]);
+          if Tool.Data is TLazPkgGraphExtToolData then
+            ToolData:=TLazPkgGraphExtToolData(Tool.Data)
+          else
+            ToolData:=nil;
+          Tool.Execute;
+          Tool.WaitForExit;
+          if (Tool.ErrorMessage<>'') or ((ToolData<>nil) and (ToolData.ErrorMessage<>''))
+          then
+            exit(mrCancel);
+        end;
       end;
     finally
+      FreeAndNil(BuildItems);
       FreeAndNil(PkgList);
       EndUpdate;
     end;
@@ -3546,6 +3591,24 @@ begin
   debugln('TLazPackageGraph.CompileRequiredPackages END ');
   {$ENDIF}
   Result:=mrOk;
+end;
+
+procedure TLazPackageGraph.SetFlagDependenciesNeedBuild(Pkg: TLazPackage);
+// set flag lpfNeedGroupCompile in all dependent packages
+var
+  ADependency: TPkgDependency;
+begin
+  if Pkg=nil then exit;
+  if lpfNeedGroupCompile in Pkg.Flags then exit;
+  debugln(['TLazPackageGraph.SetFlagDependenciesNeedBuild START=',Pkg.Name]);
+  Pkg.Flags:=Pkg.Flags+[lpfNeedGroupCompile];
+  ADependency:=Pkg.FirstUsedByDependency;
+  while ADependency<>nil do begin
+    debugln(['TLazPackageGraph.SetFlagDependenciesNeedBuild UsedBy=',ADependency.RequiredPackage<>nil]);
+    SetFlagDependenciesNeedBuild(ADependency.RequiredPackage);
+    ADependency:=ADependency.NextUsedByDependency;
+  end;
+  debugln(['TLazPackageGraph.SetFlagDependenciesNeedBuild END=',Pkg.Name]);
 end;
 
 function TLazPackageGraph.CompilePackage(APackage: TLazPackage;
@@ -3606,6 +3669,7 @@ begin
     Note:='';
     Result:=CheckIfPackageNeedsCompilation(APackage,
                           pcfSkipDesignTimePackages in Flags,
+                          pcfGroupCompile in Flags,
                           NeedBuildAllFlag,Note);
     if Note<>'' then
       Note:='Compile reason: '+Note;
@@ -3622,8 +3686,12 @@ begin
     end;
 
     try
-      if (LazarusIDE<>nil) then
+      if (BuildItem=nil) and (LazarusIDE<>nil) then
         LazarusIDE.MainBarSubTitle:=APackage.Name;
+
+      if pcfGroupCompile in Flags then
+        SetFlagDependenciesNeedBuild(APackage);
+
       // auto increase version
       // ToDo
 

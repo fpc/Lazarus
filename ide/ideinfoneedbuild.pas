@@ -263,6 +263,7 @@ begin
         end
         else if Item.Target is TLazPackage then begin
           Pkg:=TLazPackage(Item.Target);
+          Pkg.Flags:=Pkg.Flags-[lpfNeedGroupCompile];
           Item.Caption:=Pkg.IDAsString;
           Item.Filename:=Pkg.Filename;
         end;
@@ -303,8 +304,10 @@ begin
         Pkg:=TLazPackage(Item.Target);
         Item.Note:='';
         NeedBuild:=PackageGraph.CheckIfPackageNeedsCompilation(
-                             Pkg,SkipDesignTimePackages,NeedBuildAll,Item.Note);
+                        Pkg,SkipDesignTimePackages,true,NeedBuildAll,Item.Note);
         if NeedBuild=mrYes then begin
+          debugln(['TIDEInfoNeedBuildDlg.CheckNeedBuild ',Pkg.Name]);
+          PackageGraph.SetFlagDependenciesNeedBuild(Pkg);
           if NeedBuildAll then
             Item.NeedBuild:=inbClean
           else
