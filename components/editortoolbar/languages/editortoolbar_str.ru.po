@@ -37,6 +37,10 @@ msgstr "Инструментальная панель редактора"
 msgid "Editor Toolbar Configuration"
 msgstr "Настройка инструментальной панели редактора"
 
+#: editortoolbar_str.rshint
+msgid "You may add here your favorite commands"
+msgstr "Сюда можно добавить часто используемые команды"
+
 #: editortoolbar_str.rsjumpto
 msgid "Jump To"
 msgstr "Перейти к ..."

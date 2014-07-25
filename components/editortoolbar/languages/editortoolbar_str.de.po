@@ -38,6 +38,10 @@ msgstr ""
 msgid "Editor Toolbar Configuration"
 msgstr "Editor-Toolbar-Konfiguration"
 
+#: editortoolbar_str.rshint
+msgid "You may add here your favorite commands"
+msgstr ""
+
 #: editortoolbar_str.rsjumpto
 msgid "Jump To"
 msgstr "Springe zu"
