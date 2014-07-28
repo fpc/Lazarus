@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils,
-  IDEProcs, ProjPackIntf, CompilerOptions,
+  IDEProcs, CompilerOptions,
   DefineTemplates, CodeToolManager, FileReferenceList;
 
 type

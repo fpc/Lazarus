@@ -92,7 +92,7 @@ type
                              var {%H-}Abort: boolean): string;
     function MacroFuncLCLWidgetType(const {%H-}Param: string; const Data: PtrInt;
                                     var {%H-}Abort: boolean): string;
-    function MacroFuncLazVer(const {%H-}Param: string; const Data: PtrInt;
+    function MacroFuncLazVer(const {%H-}Param: string; const {%H-}Data: PtrInt;
                                     var {%H-}Abort: boolean): string;
     function MacroFuncMake(const {%H-}Param: string; const {%H-}Data: PtrInt;
                            var {%H-}Abort: boolean): string;// make utility

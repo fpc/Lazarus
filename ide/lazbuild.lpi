@@ -48,7 +48,6 @@
       <Unit0>
         <Filename Value="lazbuild.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lazbuild"/>
       </Unit0>
       <Unit1>
         <Filename Value="buildmanager.pas"/>
@@ -58,12 +57,10 @@
       <Unit2>
         <Filename Value="basebuildmanager.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="BaseBuildManager"/>
       </Unit2>
       <Unit3>
         <Filename Value="idecmdline.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="IDECmdLine"/>
       </Unit3>
     </Units>
   </ProjectOptions>
@@ -77,8 +74,5 @@
       <OtherUnitFiles Value="../designer;../packager;../debugger"/>
       <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>

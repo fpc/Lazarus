@@ -688,7 +688,7 @@ type
     procedure RemoveFile(PkgFile: TPkgFile); // move file to removed file list
     procedure UnremovePkgFile(PkgFile: TPkgFile); // move file back to file list
     // True if something changed. Param is ignored here, just to match with interface.
-    function RemoveNonExistingFiles(RemoveFromUsesSection: boolean = true): boolean;
+    function RemoveNonExistingFiles({%H-}RemoveFromUsesSection: boolean = true): boolean;
     function GetFileDialogInitialDir(const DefaultDirectory: string): string;
     procedure MoveFile(CurIndex, NewIndex: integer);
     procedure SortFiles;
