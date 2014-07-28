@@ -614,7 +614,7 @@ end;
 
 destructor TExternalTool.Destroy;
 begin
-  debugln(['TExternalTool.Destroy ',Title]);
+  //debugln(['TExternalTool.Destroy ',Title]);
   EnterCriticalSection;
   try
     FStage:=etsDestroying;
@@ -798,7 +798,7 @@ begin
   NeedProcTerminate:=false;
   EnterCriticalSection;
   try
-    debugln(['TExternalTool.DoTerminate ',Title,' Terminated=',Terminated,' Stage=',dbgs(Stage)]);
+    //debugln(['TExternalTool.DoTerminate ',Title,' Terminated=',Terminated,' Stage=',dbgs(Stage)]);
     if Terminated then exit;
     if Stage=etsStopped then exit;
 
@@ -1391,7 +1391,10 @@ end;
 
 procedure TExternalTools.HandleMesages;
 begin
-  Application.ProcessMessages;
+  if Application<>nil then
+    Application.ProcessMessages
+  else
+    CheckSynchronize;
 end;
 
 procedure TExternalTools.RegisterParser(Parser: TExtToolParserClass);
