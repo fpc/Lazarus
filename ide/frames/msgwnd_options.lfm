@@ -188,4 +188,28 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     ShowHint = True
     TabOrder = 4
   end
+  object MWMaxProcsSpinEdit: TSpinEdit
+    AnchorSideLeft.Control = MWMaxProcsLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = MWFocusCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 110
+    Height = 25
+    Top = 295
+    Width = 50
+    BorderSpacing.Left = 2
+    TabOrder = 5
+  end
+  object MWMaxProcsLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MWMaxProcsSpinEdit
+    AnchorSideTop.Side = asrCenter
+    Left = 6
+    Height = 15
+    Top = 300
+    Width = 102
+    BorderSpacing.Left = 6
+    Caption = 'MWMaxProcsLabel'
+    ParentColor = False
+  end
 end

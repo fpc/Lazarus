@@ -3308,7 +3308,7 @@ begin
   end;
 
   if GroupCompile and (lpfNeedGroupCompile in APackage.Flags) then begin
-    debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile dependencies will be rebuilt']);
+    //debugln(['TLazPackageGraph.CheckIfCurPkgOutDirNeedsCompile dependencies will be rebuilt']);
     Note+='Dependencies will be rebuilt';
     DependenciesChanged:=true;
     exit(mrYes);
@@ -3554,9 +3554,8 @@ var
   CurPkg: TLazPackage;
   BuildItem: TLazPkgGraphBuildItem;
   j: Integer;
+  {$IFDEF DisableGroupCompile}
   Tool: TAbstractExternalTool;
-  {$IFDEF EnableGroupCompile}
-  ToolData: TLazPkgGraphExtToolData;
   {$ENDIF}
   aDependency: TPkgDependency;
   RequiredBuildItem: TLazPkgGraphBuildItem;
@@ -3600,12 +3599,12 @@ begin
       BuildItems:=TObjectList.Create(true);
       for i:=0 to PkgList.Count-1 do begin
         CurPkg:=TLazPackage(PkgList[i]);
-        {$IFDEF EnableGroupCompile}
+        {$IFDEF DisableGroupCompile}
+        BuildItem:=nil;
+        {$ELSE}
         BuildItem:=TLazPkgGraphBuildItem.Create(nil);
         BuildItem.LazPackage:=CurPkg;
         BuildItems.Add(BuildItem);
-        {$ELSE}
-        BuildItem:=nil;
         {$ENDIF}
         Result:=CompilePackage(CurPkg,Flags,false,BuildItem);
         if Result<>mrOk then exit;
@@ -3651,11 +3650,10 @@ begin
         end;
       end;
 
+      if ToolGroup=nil then exit(mrOk);
+
       // execute
-      {$IFDEF EnableGroupCompile}
-      ToolGroup.Execute;
-      ToolGroup.WaitForExit;
-      {$ELSE}
+      {$IFDEF DisableGroupCompile}
       for i:=0 to BuildItems.Count-1 do begin
         BuildItem:=TLazPkgGraphBuildItem(BuildItems[i]);
         for j:=0 to BuildItem.Count-1 do begin
@@ -3667,6 +3665,13 @@ begin
           if Tool.ErrorMessage<>'' then
             exit(mrCancel);
         end;
+      end;
+      {$ELSE}
+      ToolGroup.Execute;
+      ToolGroup.WaitForExit;
+      if ToolGroup.ErrorMessage<>'' then begin
+        debugln(['TLazPackageGraph.CompileRequiredPackages ERROR="',ToolGroup.ErrorMessage,'"']);
+        exit(mrCancel);
       end;
       {$ENDIF}
     finally

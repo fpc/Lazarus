@@ -1109,6 +1109,8 @@ resourcestring
   dlgIDEOptions = 'IDE Options';
   dlgBakNoSubDirectory = '(no subdirectory)';
   dlgEOFocusMessagesAfterCompilation = 'Focus messages after compilation';
+  lisMaximumParallelProcesses0MeansDefault = 'Maximum parallel processes, 0 '
+    +'means default (%s)';
   lisMessagesWindow = 'Messages Window';
   lisCheckForDiskFileChangesViaContentRatherThanTimesta = 'Check for disk file'
     +' changes via content rather than timestamp';

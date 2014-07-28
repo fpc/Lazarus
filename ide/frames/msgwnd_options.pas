@@ -30,8 +30,9 @@ unit MsgWnd_Options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LazLoggerBase, IDEOptionsIntf, SynEdit, Forms,
-  Controls, Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls,
+  Classes, SysUtils, FileUtil, LazLoggerBase, SynEdit, Forms,
+  Controls, Graphics, Dialogs, StdCtrls, ColorBox, ExtCtrls, Spin,
+  IDEOptionsIntf, IDEExternToolIntf,
   LazarusIDEStrConsts, EnvironmentOpts, editor_general_options, EditorOptions;
 
 type
@@ -43,6 +44,8 @@ type
     MWDblClickJumpsCheckBox: TCheckBox;
     MWFocusCheckBox: TCheckBox;
     MWHideIconsCheckBox: TCheckBox;
+    MWMaxProcsLabel: TLabel;
+    MWMaxProcsSpinEdit: TSpinEdit;
     MWOptsLeftBevel: TBevel;
     MWColorBox: TColorBox;
     MWColorListBox: TColorListBox;
@@ -155,6 +158,8 @@ begin
     lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN;
   MWDblClickJumpsCheckBox.Caption:=lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick;
   MWFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
+  MWMaxProcsLabel.Caption:=Format(lisMaximumParallelProcesses0MeansDefault, [
+    IntToStr(DefaultMaxProcessCount)]);
 end;
 
 function TMsgWndOptionsFrame.GetTitle: String;
@@ -181,6 +186,7 @@ begin
   MWAlwaysDrawFocusedCheckBox.Checked := o.MsgViewAlwaysDrawFocused;
   MWDblClickJumpsCheckBox.Checked:=o.MsgViewDblClickJumps;
   MWFocusCheckBox.Checked:=o.MsgViewFocus;
+  MWMaxProcsSpinEdit.Value:=o.MaxExtToolsInParallel;
 
   fReady:=true;
 end;
@@ -197,6 +203,7 @@ begin
   o.MsgViewAlwaysDrawFocused := MWAlwaysDrawFocusedCheckBox.Checked;
   o.MsgViewDblClickJumps := MWDblClickJumpsCheckBox.Checked;
   o.MsgViewFocus := MWFocusCheckBox.Checked;
+  o.MaxExtToolsInParallel := MWMaxProcsSpinEdit.Value;
 end;
 
 class function TMsgWndOptionsFrame.

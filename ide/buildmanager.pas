@@ -171,6 +171,7 @@ type
     procedure SetupExternalTools;
     procedure SetupCompilerInterface;
     procedure SetupInputHistories;
+    procedure EnvOptsChanged;
 
     function GetBuildMacroOverride(const MacroName: string): string; override;
     function GetBuildMacroOverrides: TStrings; override;
@@ -514,6 +515,14 @@ begin
     SetLazarusDefaultFilename;
     Load;
   end;
+end;
+
+procedure TBuildManager.EnvOptsChanged;
+begin
+  if EnvironmentOptions.MaxExtToolsInParallel<=0 then
+    ExternalTools.MaxProcessCount:=DefaultMaxProcessCount
+  else
+    ExternalTools.MaxProcessCount:=EnvironmentOptions.MaxExtToolsInParallel;
 end;
 
 function TBuildManager.GetBuildMacroOverride(const MacroName: string): string;

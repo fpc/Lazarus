@@ -41,10 +41,10 @@ uses
   // LCL
   LCLIntf, LCLProc, Forms, Dialogs, FileUtil, AvgLvlTree,
   // IDEIntf
-  IDEExternToolIntf, BaseIDEIntf, MacroIntf, IDEMsgIntf,
+  IDEExternToolIntf, BaseIDEIntf, MacroIntf, IDEMsgIntf, IDEDialogs,
+  CompOptsIntf, PackageIntf, LazIDEIntf,
   // IDE
-  IDEDialogs, CompOptsIntf, PackageIntf, LazIDEIntf, TransferMacros,
-  LazarusIDEStrConsts;
+  TransferMacros, LazarusIDEStrConsts;
 
 type
   TLMVToolState = (
@@ -193,6 +193,7 @@ type
     procedure EnterCriticalSection; override;
     procedure LeaveCriticalSection; override;
     function GetIDEObject(ToolData: TIDEExternalToolData): TObject; override;
+    procedure HandleMesages; override;
     // parsers
     function ParserCount: integer; override;
     procedure RegisterParser(Parser: TExtToolParserClass); override;
@@ -869,7 +870,7 @@ end;
 
 procedure TExternalTool.AddExecuteBefore(Tool: TAbstractExternalTool);
 begin
-  debugln(['TExternalTool.AddExecuteBefore Self=',Title,' Tool=',Tool.Title]);
+  //debugln(['TExternalTool.AddExecuteBefore Self=',Title,' Tool=',Tool.Title]);
   if (Tool=Self) or (Tool.IsExecutedBefore(Self)) then
     raise Exception.Create('TExternalTool.AddExecuteBefore: that would create a circle');
   if (fExecuteBefore<>nil) and (fExecuteBefore.IndexOf(Tool)<0) then
@@ -1261,8 +1262,7 @@ begin
   InitCriticalSection(FCritSec);
   fRunning:=TFPList.Create;
   fParsers:=TFPList.Create;
-  MaxProcessCount:=2; // even on single cores there is delay due to file reads
-                      // => use 2 processes in parallel by default
+  MaxProcessCount:=2;
   if ExternalToolList=nil then
     ExternalToolList:=Self;
   if ExternalTools=nil then
@@ -1387,6 +1387,11 @@ begin
   end else if ToolData.Kind=IDEToolCompilePackage then begin
     Result:=PackageEditingInterface.FindPackageWithName(ToolData.ModuleName);
   end;
+end;
+
+procedure TExternalTools.HandleMesages;
+begin
+  Application.ProcessMessages;
 end;
 
 procedure TExternalTools.RegisterParser(Parser: TExtToolParserClass);

@@ -14,7 +14,7 @@ unit IDEExternToolIntf;
 interface
 
 uses
-  Classes, SysUtils, typinfo, UTF8Process, AvgLvlTree,
+  Classes, SysUtils, Math, TypInfo, UTF8Process, AvgLvlTree,
   ObjInspStrConsts, LazLogger, LazFileUtils, LazFileCache, Menus, LCLProc;
 
 const
@@ -272,7 +272,7 @@ type
   { TExtToolParser
     Read the output of a tool, for example the output of the Free Pascal compiler.
     It does not filter. Some parsers can work together, for example make and fpc.
-    Usage: Tool.AddParsers('fpc');
+    Usage: Tool.AddParsers('ParserName');
     }
   TExtToolParser = class(TComponent)
   private
@@ -349,7 +349,11 @@ type
 const
   DefaultETViewMinUrgency = mluHint;
 type
-  { TExtToolView }
+  { TExtToolView
+    Implemented by the IDE.
+    When a tool with a scanner but no View is started the IDE automatically
+    creates a View.
+    You can create a View with IDEMessagesWindow.CreateView(Title) }
 
   TExtToolView = class(TComponent)
   private
@@ -429,7 +433,9 @@ type
   TExternalToolGroup = class;
 
   { TAbstractExternalTool
-    access needs Tool.Enter/LeaveCriticalSection }
+    Implemented by the IDE.
+    Create one with ExternalToolList.Add or AddDummy.
+    Access needs Tool.Enter/LeaveCriticalSection. }
 
   TAbstractExternalTool = class(TComponent)
   private
@@ -563,11 +569,13 @@ type
   end;
 
   { TExternalToolGroup
-    Hint: Add tools by setting Tool.Group:=Group }
+    Hint: Add tools by setting Tool.Group:=Group.
+    You can create your own descendant classes. }
 
   TExternalToolGroup = class(TComponent)
   private
     FAbortIfOneFails: boolean;
+    FErrorMessage: string;
     FItems: TFPList; // list of TAbstractExternalTool
     function GetItems(Index: integer): TAbstractExternalTool;
     procedure InternalRemove(Tool: TAbstractExternalTool); virtual;
@@ -578,12 +586,17 @@ type
     procedure Clear; virtual;
     function Count: integer;
     procedure Execute; virtual;
+    procedure WaitForExit; virtual;
+    procedure Terminate; virtual;
+    function AllStopped: boolean;
     property Items[Index: integer]: TAbstractExternalTool read GetItems; default;
     property AbortIfOneFails: boolean read FAbortIfOneFails write FAbortIfOneFails;
     procedure ToolExited(Tool: TAbstractExternalTool); virtual;
+    property ErrorMessage: string read FErrorMessage write FErrorMessage;
   end;
 
-  { TIDEExternalTools }
+  { TIDEExternalTools
+    Implemented by the IDE. }
 
   TIDEExternalTools = class(TComponent)
   private
@@ -605,6 +618,7 @@ type
     procedure EnterCriticalSection; virtual; abstract;
     procedure LeaveCriticalSection; virtual; abstract;
     function GetIDEObject(ToolData: TIDEExternalToolData): TObject; virtual; abstract;
+    procedure HandleMesages; virtual; abstract;
     // parsers
     procedure RegisterParser(Parser: TExtToolParserClass); virtual; abstract; // (main thread)
     procedure UnregisterParser(Parser: TExtToolParserClass); virtual; abstract; // (main thread)
@@ -663,6 +677,7 @@ type
 
 var
   RunExternalTool: TRunExternalTool = nil;// set by the IDE
+  DefaultMaxProcessCount: integer = 2;// set by the IDE
 
 function CompareMsgLinesSrcPos(MsgLine1, MsgLine2: Pointer): integer;
 
@@ -867,9 +882,39 @@ begin
   for i:=0 to Count-1 do begin
     Tool:=Items[i];
     if Tool.Terminated then continue;
-    debugln(['TExternalToolGroup.Execute ',Tool.Title]);
+    //debugln(['TExternalToolGroup.Execute ',Tool.Title]);
     Tool.Execute;
   end;
+end;
+
+procedure TExternalToolGroup.WaitForExit;
+begin
+  repeat
+    ExternalToolList.HandleMesages;
+    if AllStopped then exit;
+    Sleep(20);
+    //debugln(['TExternalToolGroup.WaitForExit ',Now,'==========================']);
+    //for i:=0 to Count-1 do
+    //  debugln(['  Stage=',dbgs(Items[i].Stage),' "',Items[i].Title,'"']);
+  until false;
+end;
+
+procedure TExternalToolGroup.Terminate;
+var
+  i: Integer;
+begin
+  for i:=Count-1 downto 0 do
+    if i<Count then
+      Items[i].Terminate;
+end;
+
+function TExternalToolGroup.AllStopped: boolean;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do
+    if ord(Items[i].Stage)<ord(etsStopped) then exit(false);
+  Result:=true;
 end;
 
 procedure TExternalToolGroup.InternalRemove(Tool: TAbstractExternalTool);
@@ -888,13 +933,13 @@ begin
 end;
 
 procedure TExternalToolGroup.ToolExited(Tool: TAbstractExternalTool);
-var
-  i: Integer;
 begin
   //debugln(['TExternalToolGroup.ToolExited START ',Tool.Title,' Error=',Tool.ErrorMessage,' AbortIfOneFails=',AbortIfOneFails]);
-  if (Tool.ErrorMessage<>'') and AbortIfOneFails then begin
-    for i:=Count-1 downto 0 do
-      Items[i].Terminate;
+  if (Tool.ErrorMessage<>'') then begin
+    if ErrorMessage='' then
+      ErrorMessage:=Tool.ErrorMessage;
+    if AbortIfOneFails then
+      Terminate;
   end;
 end;
 
@@ -2364,6 +2409,11 @@ begin
     LeaveCriticalSection;
   end;
 end;
+
+initialization
+  // on single cores there is delay due to file reads
+  // => use 2 processes in parallel by default
+  DefaultMaxProcessCount:=Max(2,GetSystemThreadCount);
 
 end.
 

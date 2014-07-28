@@ -254,6 +254,7 @@ type
     FFilename: string;
     FFileAge: longint;
     FFileHasChangedOnDisk: boolean;
+    FMaxExtToolsInParallel: integer;
     FOldLazarusVersion: string;
     FXMLCfg: TRttiXMLConfig;
     FConfigStore: TXMLOptionsStorage;
@@ -688,6 +689,8 @@ type
        
     // external tools
     property ExternalToolMenuItems: TBaseExternalUserTools read fExternalUserTools;
+    property MaxExtToolsInParallel: integer read FMaxExtToolsInParallel
+                                            write FMaxExtToolsInParallel; // 0=automatic
 
     // naming conventions
     property PascalFileExtension: TPascalExtType read fPascalFileExtension
@@ -987,6 +990,7 @@ begin
   
   // external tools
   fExternalUserTools:=ExternalUserToolsClass.Create;
+  FMaxExtToolsInParallel:=0;
 
   // naming
   fPascalFileExtension:=petPAS;
@@ -1431,6 +1435,7 @@ begin
 
       // external tools
       fExternalUserTools.Load(FConfigStore,Path+'ExternalTools/');
+      FMaxExtToolsInParallel:=XMLConfig.GetValue(Path+'ExternalTools/MaxInParallel',0);
 
       // naming
       LoadPascalFileExt(Path+'');
@@ -1804,6 +1809,8 @@ begin
 
       // external tools
       fExternalUserTools.Save(FConfigStore,Path+'ExternalTools/');
+      XMLConfig.SetDeleteValue(Path+'ExternalTools/MaxInParallel',
+                               FMaxExtToolsInParallel,0);
 
       // naming
       XMLConfig.SetDeleteValue(Path+'Naming/PascalFileExtension',

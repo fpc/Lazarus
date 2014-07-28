@@ -1447,6 +1447,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Create CODETOOLS');{$ENDIF}
 
   MainBuildBoss.SetupExternalTools;
+  MainBuildBoss.EnvOptsChanged;
 
   // build and position the MainIDE form
   Application.CreateForm(TMainIDEBar,MainIDEBar);
@@ -4841,6 +4842,7 @@ begin
   LazarusSrcDirChanged:=false;
   ChangeMacroValue('LazarusDir',EnvironmentOptions.GetParsedLazarusDirectory);
   ChangeMacroValue('FPCSrcDir',EnvironmentOptions.GetParsedFPCSourceDirectory);
+  MainBuildBoss.EnvOptsChanged;
 
   if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
   //debugln(['TMainIDE.DoEnvironmentOptionsAfterWrite FPCCompilerChanged=',FPCCompilerChanged,' FPCSrcDirChanged=',FPCSrcDirChanged,' LazarusSrcDirChanged=',LazarusSrcDirChanged]);
