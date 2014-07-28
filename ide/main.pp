@@ -1146,6 +1146,21 @@ procedure TMainIDE.LoadGlobalOptions;
       {$ENDIF}
     {$ENDIF}
   end;
+
+  function NormalizeLazExe(LazExe: string): string;
+  {$IFDEF Darwin}
+  var
+    p: SizeInt;
+  {$ENDIF}
+  begin
+    Result:=TrimFilename(LazExe);
+    {$IFDEF Darwin}
+    p:=Pos('.app/Contents/MacOS/',Result);
+    if p>0 then
+      Result:=LeftStr(LazExe,p-1);
+    {$ENDIF}
+  end;
+
 var
   EnvOptsCfgExisted: boolean;
   s, LastCalled: String;
@@ -1188,9 +1203,10 @@ begin
 
   // check if this PCP was used by another lazarus exe
   s := ExtractFileName(ParamStrUTF8(0));
-  CurPrgName := TrimFilename(AppendPathDelim(ProgramDirectory(False)) + s);
-  AltPrgName := TrimFilename(AppendPathDelim(AppendPathDelim(GetPrimaryConfigPath) + 'bin') + s);
-  LastCalled := EnvironmentOptions.LastCalledByLazarusFullPath;
+  CurPrgName := NormalizeLazExe(AppendPathDelim(ProgramDirectory(False)) + s);
+  AltPrgName := NormalizeLazExe(AppendPathDelim(AppendPathDelim(GetPrimaryConfigPath) + 'bin') + s);
+  LastCalled := NormalizeLazExe(EnvironmentOptions.LastCalledByLazarusFullPath);
+
   if (LastCalled = '') then
   begin
     // this PCP was not yet used (at least not with a version with LastCalledByLazarusFullPath)
@@ -1214,6 +1230,10 @@ begin
     // => either the user forgot to pass a --pcp
     //    or the user uninstalled and installed to another directory
     // => warn
+    debugln(['TMainIDE.LoadGlobalOptions ']);
+    debugln(['  LastCalled="',LastCalled,'"']);
+    debugln(['  CurPrgName="',CurPrgName,'"']);
+    debugln(['  AltPrgName="',AltPrgName,'"']);
     MsgResult := IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
         Format(lisIDEConficurationFoundMayBelongToOtherLazarus,
         [LineEnding, GetSecondConfDirWarning, GetPrimaryConfigPath,

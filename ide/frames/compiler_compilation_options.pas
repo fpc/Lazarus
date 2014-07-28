@@ -5,10 +5,12 @@ unit compiler_compilation_options;
 interface
 
 uses
-  Controls, StdCtrls, Dialogs, IDEOptionsIntf, Project, CompilerOptions,
-  CompOptsIntf, IDEDialogs, IDEUtils, FileProcs, DefineTemplates,
-  CodeToolManager, PackageDefs, LazarusIDEStrConsts, EnvironmentOpts, LazConf,
-  IDEProcs, InputHistory, InitialSetupProc, Classes, sysutils;
+  Classes, sysutils,
+  Controls, StdCtrls, Dialogs,
+  FileProcs, DefineTemplates, CodeToolManager,
+  IDEOptionsIntf,  CompOptsIntf, IDEDialogs, IDEUtils,
+  Project, CompilerOptions, PackageDefs, LazarusIDEStrConsts, EnvironmentOpts,
+  LazConf, IDEProcs, DialogProcs, InputHistory, InitialSetupProc;
 
 type
 
@@ -16,6 +18,7 @@ type
 
   TCompilerCompilationOptionsFrame = class(TAbstractIDEOptionsEditor)
     BrowseCompilerButton: TButton;
+    ExecBeforeBrowseButton: TButton;
     chkCompilerBuild: TCheckBox;
     chkCompilerCompile: TCheckBox;
     chkCompilerRun: TCheckBox;
@@ -27,7 +30,8 @@ type
     chkExecBeforeCompile: TCheckBox;
     chkExecBeforeRun: TCheckBox;
     cobCompiler: TComboBox;
-    ExecuteAfterCommandEdit: TEdit;
+    ExecAfterBrowseButton: TButton;
+    ExecuteAfterCommandComboBox: TComboBox;
     ExecuteAfterCommandLabel: TLabel;
     ExecuteAfterGroupBox: TGroupBox;
     ExecuteAfterScanFPCCheckBox: TCheckBox;
@@ -46,7 +50,7 @@ type
     lblRunIfCompiler: TLabel;
     lblRunIfExecAfter: TLabel;
     lblRunIfExecBefore: TLabel;
-    procedure BrowseCompilerButtonClick(Sender: TObject);
+    procedure CompCmdBrowseButtonClick(Sender: TObject);
   private
   public
     function GetTitle: string; override;
@@ -62,49 +66,70 @@ implementation
 
 { TCompilerCompilationOptionsFrame }
 
-procedure TCompilerCompilationOptionsFrame.BrowseCompilerButtonClick(
+procedure TCompilerCompilationOptionsFrame.CompCmdBrowseButtonClick(
   Sender: TObject);
 var
   OpenDialog: TOpenDialog;
-  AFilename: string;
+  NewFilename: string;
   Quality: TSDFilenameQuality;
   Note: string;
   s: string;
+  OldFilename: string;
+  OldParams: string;
+  Combo: TComboBox;
 begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
+    OldFilename:='';
+    OldParams:='';
     // set title
-    if Sender=BrowseCompilerButton then
+    if Sender=BrowseCompilerButton then begin
+      Combo:=cobCompiler;
       OpenDialog.Title:=Format(lisChooseCompilerPath,[GetDefaultCompilerFilename])
-    else
+    end else if (Sender=ExecAfterBrowseButton) then begin
+      Combo:=ExecuteAfterCommandComboBox;
+      OpenDialog.Title:='Choose an executable';
+      SplitCmdLine(Combo.Text,OldFilename,OldParams);
+    end else if (Sender=ExecBeforeBrowseButton) then begin
+      Combo:=ExecuteBeforeCommandComboBox;
+      OpenDialog.Title:='Choose an executable';
+      SplitCmdLine(Combo.Text,OldFilename,OldParams);
+    end else
       exit;
 
-    if OpenDialog.Execute then begin
-      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
-
-      if Sender=BrowseCompilerButton then begin
-        // check compiler filename
-        if IsFPCExecutable(AFilename,s) then begin
-          // check compiler
-          Quality:=CheckCompilerQuality(AFilename,Note,
-                                     CodeToolBoss.FPCDefinesCache.TestFilename);
-          if Quality<>sddqCompatible then begin
-            if IDEMessageDialog(lisCCOWarningCaption, Format(
-              lisTheCompilerFileDoesNotLookCorrect, [AFilename, #13, Note]),
-              mtWarning,[mbIgnore,mbCancel])<>mrIgnore
-            then
-              exit;
-          end;
-        end else begin
-          // maybe a script
+    if not OpenDialog.Execute then exit;
+    NewFilename:=TrimAndExpandFilename(OpenDialog.Filename);
+    if Sender=BrowseCompilerButton then begin
+      // check compiler filename
+      if IsFPCExecutable(NewFilename,s) then begin
+        // check compiler
+        Quality:=CheckCompilerQuality(NewFilename,Note,
+                                   CodeToolBoss.FPCDefinesCache.TestFilename);
+        if Quality<>sddqCompatible then begin
+          if IDEMessageDialog(lisCCOWarningCaption, Format(
+            lisTheCompilerFileDoesNotLookCorrect, [NewFilename, #13, Note]),
+            mtWarning,[mbIgnore,mbCancel])<>mrIgnore
+          then
+            exit;
         end;
-        SetComboBoxText(cobCompiler,AFilename,cstFilename);
+      end else begin
+        // maybe a script
+        if not CheckExecutable(OldFilename,NewFilename,'Invalid Executable','The file "%s" is not executable.')
+        then
+          exit;
       end;
+    end else if (Sender=ExecBeforeBrowseButton)
+    or (Sender=ExecAfterBrowseButton) then begin
+      // check executable
+      if not CheckExecutable(OldFilename,NewFilename,'Invalid Executable','The file "%s" is not executable.')
+      then
+        exit;
     end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
+    SetComboBoxText(Combo,NewFilename,cstFilename);
   finally
+    InputHistories.StoreFileDialogSettings(OpenDialog);
     OpenDialog.Free;
   end;
 end;
@@ -146,7 +171,7 @@ begin
   chkExecAfterBuild.Caption := lisBuildStage;
   chkExecAfterCompile.Caption := lisCompileStage;
   chkExecAfterRun.Caption := lisRunStage;
-  ExecuteAfterCommandEdit.Text := '';
+  ExecuteAfterCommandComboBox.Text := '';
   ExecuteAfterCommandLabel.Caption := lisCOCommand;
   ExecuteAfterScanLabel.Caption := lisCOScanForMessages;
   ExecuteAfterScanFPCCheckBox.Caption := 'FPC'; // do not translate name
@@ -193,6 +218,11 @@ begin
     Items.EndUpdate;
   end;
 
+  ExecuteBeforeCommandComboBox.Items.Assign(
+    InputHistories.HistoryLists.GetList('BuildExecBefore',true,rltFile));
+  ExecuteAfterCommandComboBox.Items.Assign(
+    InputHistories.HistoryLists.GetList('BuildExecAfter',true,rltFile));
+
   if Options is TProjectCompilerOptions then
     with TProjectCompilerOptions(Options) do
     begin
@@ -230,7 +260,7 @@ begin
     cobCompiler.AnchorParallel(akTop, 0, lblCompiler.Parent);
   end;
 
-  ExecuteAfterCommandEdit.Text := Options.ExecuteAfter.Command;
+  ExecuteAfterCommandComboBox.Text := Options.ExecuteAfter.Command;
   ExecuteAfterScanFPCCheckBox.Checked := Options.ExecuteAfter.ScanForFPCMessages;
   ExecuteAfterScanMakeCheckBox.Checked := Options.ExecuteAfter.ScanForMakeMessages;
   ExecuteAfterShowAllCheckBox.Checked := Options.ExecuteAfter.ShowAllMessages;
@@ -282,6 +312,11 @@ begin
   Options.CompilerPath := cobCompiler.Text;
   EnvironmentOptions.CompilerFileHistory.Assign(cobCompiler.Items);
 
+  InputHistories.HistoryLists.GetList('BuildExecBefore',true,rltFile).Assign(
+    ExecuteBeforeCommandComboBox.Items);
+  InputHistories.HistoryLists.GetList('BuildExecAfter',true,rltFile).Assign(
+    ExecuteAfterCommandComboBox.Items);
+
   if Options is TProjectCompilerOptions then
   begin
     TProjectCompilerOptions(Options).CompileReasons :=
@@ -290,7 +325,7 @@ begin
   else if Options is TPkgCompilerOptions then
     TPkgCompilerOptions(Options).SkipCompiler := chkCompilerCompile.Checked;
 
-  Options.ExecuteAfter.Command := ExecuteAfterCommandEdit.Text;
+  Options.ExecuteAfter.Command := ExecuteAfterCommandComboBox.Text;
   Options.ExecuteAfter.ScanForFPCMessages := ExecuteAfterScanFPCCheckBox.Checked;
   Options.ExecuteAfter.ScanForMakeMessages :=ExecuteAfterScanMakeCheckBox.Checked;
   Options.ExecuteAfter.ShowAllMessages := ExecuteAfterShowAllCheckBox.Checked;

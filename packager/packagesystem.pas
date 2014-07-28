@@ -120,6 +120,9 @@ type
     procedure Clear;
     function Add(Tool: TAbstractExternalTool): integer;
     function Count: integer; inline;
+    function GetDummyTool: TAbstractExternalTool;
+    function GetFirstOrDummy: TAbstractExternalTool;
+    function GetLastOrDummy: TAbstractExternalTool;
     property Tools[Index: integer]: TAbstractExternalTool read GetTools; default;
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -609,6 +612,28 @@ end;
 function TLazPkgGraphBuildItem.Count: integer;
 begin
   Result:=fTools.Count;
+end;
+
+function TLazPkgGraphBuildItem.GetDummyTool: TAbstractExternalTool;
+begin
+  Result:=ExternalToolList.AddDummy('Dummy tool for building package '+LazPackage.Name);
+  Add(Result);
+end;
+
+function TLazPkgGraphBuildItem.GetFirstOrDummy: TAbstractExternalTool;
+begin
+  if Count>0 then
+    Result:=TAbstractExternalTool(fTools[0])
+  else
+    Result:=GetDummyTool;
+end;
+
+function TLazPkgGraphBuildItem.GetLastOrDummy: TAbstractExternalTool;
+begin
+  if Count>0 then
+    Result:=TAbstractExternalTool(fTools[Count-1])
+  else
+    Result:=GetDummyTool;
 end;
 
 function TLazPkgGraphBuildItem.GetTools(Index: integer): TAbstractExternalTool;
@@ -1701,6 +1726,7 @@ begin
                     PkgCompileTool.ErrorMessage='',SrcPPUFileExists,false);
   if MsgResult<>mrOk then begin
     Data.ErrorMessage:='SavePackageCompiledState failed';
+    PkgCompileTool.ErrorMessage:=Data.ErrorMessage;
     DebugLn(['TLazPackageGraph.OnExtToolBuildStopped SavePackageCompiledState failed: ',APackage.IDAsString]);
     exit;
   end;
@@ -1713,6 +1739,7 @@ begin
     MsgResult:=ConvertPackageRSTFiles(APackage);
     if MsgResult<>mrOk then begin
       Data.ErrorMessage:='ConvertPackageRSTFiles failed';
+      PkgCompileTool.ErrorMessage:=Data.ErrorMessage;
       DebugLn('TLazPackageGraph.CompilePackage ConvertPackageRSTFiles failed: ',APackage.IDAsString);
       IDEMessagesWindow.AddCustomMessage(mluError,
         Format(lisUpdatingPoFilesFailedForPackage, [APackage.IDAsString]));
@@ -3507,6 +3534,19 @@ function TLazPackageGraph.CompileRequiredPackages(APackage: TLazPackage;
   Policy: TPackageUpdatePolicy): TModalResult;
 var
   BuildItems: TObjectList;
+
+  function PkgToBuildItem(Pkg: TLazPackage): TLazPkgGraphBuildItem;
+  var
+    i: Integer;
+  begin
+    for i:=0 to BuildItems.Count-1 do begin
+      Result:=TLazPkgGraphBuildItem(BuildItems[i]);
+      if Result.LazPackage=Pkg then exit;
+    end;
+    Result:=nil;
+  end;
+
+var
   PkgList: TFPList;
   i: Integer;
   Flags: TPkgCompileFlags;
@@ -3515,7 +3555,14 @@ var
   BuildItem: TLazPkgGraphBuildItem;
   j: Integer;
   Tool: TAbstractExternalTool;
+  {$IFDEF EnableGroupCompile}
   ToolData: TLazPkgGraphExtToolData;
+  {$ENDIF}
+  aDependency: TPkgDependency;
+  RequiredBuildItem: TLazPkgGraphBuildItem;
+  Tool1: TAbstractExternalTool;
+  Tool2: TAbstractExternalTool;
+  ToolGroup: TExternalToolGroup;
 begin
   {$IFDEF VerbosePkgCompile}
   debugln('TLazPackageGraph.CompileRequiredPackages A MinPolicy=',dbgs(Policy),' SkipDesignTimePackages=',SkipDesignTimePackages);
@@ -3527,6 +3574,7 @@ begin
   if PkgList<>nil then begin
     //DebugLn('TLazPackageGraph.CompileRequiredPackages B Count=',IntToStr(PkgList.Count));
     BuildItems:=nil;
+    ToolGroup:=nil;
     BeginUpdate(false);
     try
       for i:=PkgList.Count-1 downto 0 do begin
@@ -3554,6 +3602,7 @@ begin
         CurPkg:=TLazPackage(PkgList[i]);
         {$IFDEF EnableGroupCompile}
         BuildItem:=TLazPkgGraphBuildItem.Create(nil);
+        BuildItem.LazPackage:=CurPkg;
         BuildItems.Add(BuildItem);
         {$ELSE}
         BuildItem:=nil;
@@ -3561,29 +3610,67 @@ begin
         Result:=CompilePackage(CurPkg,Flags,false,BuildItem);
         if Result<>mrOk then exit;
 
-        if (BuildItem<>nil) and (BuildItem.Count>0) then begin
-          // set dependencies
+        if (BuildItem<>nil) and (not (lpfNeedGroupCompile in CurPkg.Flags))
+        then begin
+          // package is up-to-date
+          //debugln(['TLazPackageGraph.CompileRequiredPackages no build needed: pkg=',CurPkg.Name]);
+          BuildItems.Remove(BuildItem);
+        end;
+      end;
+
+      // add tool dependencies
+      for i:=0 to BuildItems.Count-1 do begin
+        BuildItem:=TLazPkgGraphBuildItem(BuildItems[i]);
+        CurPkg:=BuildItem.LazPackage;
+        if BuildItem.Count=0 then continue;
+
+        // add tools to ToolGroup
+        if ToolGroup=nil then
+          ToolGroup:=TExternalToolGroup.Create(nil);
+        for j:=0 to BuildItem.Count-1 do
+          BuildItem[j].Group:=ToolGroup;
+
+        // add dependencies between tools of this package (execute before, compile, after)
+        for j:=1 to BuildItem.Count-1 do begin
+          Tool1:=BuildItem[j-1];
+          Tool2:=BuildItem[j];
+          Tool2.AddExecuteBefore(Tool1);
+        end;
+
+        // add dependencies between packages
+        aDependency:=CurPkg.FirstRequiredDependency;
+        while aDependency<>nil do begin
+          RequiredBuildItem:=PkgToBuildItem(aDependency.RequiredPackage);
+          aDependency:=aDependency.NextRequiresDependency;
+          if RequiredBuildItem=nil then continue;
+          if not (lpfNeedGroupCompile in RequiredBuildItem.LazPackage.Flags) then
+            continue;
+          Tool1:=BuildItem.GetFirstOrDummy;
+          Tool2:=RequiredBuildItem.GetLastOrDummy;
+          Tool1.AddExecuteBefore(Tool2);
         end;
       end;
 
       // execute
+      {$IFDEF EnableGroupCompile}
+      ToolGroup.Execute;
+      ToolGroup.WaitForExit;
+      {$ELSE}
       for i:=0 to BuildItems.Count-1 do begin
         BuildItem:=TLazPkgGraphBuildItem(BuildItems[i]);
         for j:=0 to BuildItem.Count-1 do begin
           Tool:=BuildItem[j];
+          if Tool.Terminated then continue;
           debugln(['TLazPackageGraph.CompileRequiredPackages ',Tool.Title]);
-          if Tool.Data is TLazPkgGraphExtToolData then
-            ToolData:=TLazPkgGraphExtToolData(Tool.Data)
-          else
-            ToolData:=nil;
           Tool.Execute;
           Tool.WaitForExit;
-          if (Tool.ErrorMessage<>'') or ((ToolData<>nil) and (ToolData.ErrorMessage<>''))
-          then
+          if Tool.ErrorMessage<>'' then
             exit(mrCancel);
         end;
       end;
+      {$ENDIF}
     finally
+      FreeAndNil(ToolGroup);
       FreeAndNil(BuildItems);
       FreeAndNil(PkgList);
       EndUpdate;
@@ -4794,7 +4881,9 @@ begin
     exit;
   end;
   if OldShortenSrc<>NewShortenSrc then begin
+    {$IFDEF VerbosePkgCompile}
     DebugLn('TLazPackageGraph.SavePackageMainSource Src changed ',dbgs(length(OldShortenSrc)),' ',dbgs(length(NewShortenSrc)));
+    {$ENDIF}
   end;
 
   // save source

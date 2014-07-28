@@ -562,7 +562,8 @@ type
     property ExecuteAfter[Index: integer]: TAbstractExternalTool read GetExecuteAfter;
   end;
 
-  { TExternalToolGroup }
+  { TExternalToolGroup
+    Hint: Add tools by setting Tool.Group:=Group }
 
   TExternalToolGroup = class(TComponent)
   private
@@ -576,6 +577,7 @@ type
     destructor Destroy; override;
     procedure Clear; virtual;
     function Count: integer;
+    procedure Execute; virtual;
     property Items[Index: integer]: TAbstractExternalTool read GetItems; default;
     property AbortIfOneFails: boolean read FAbortIfOneFails write FAbortIfOneFails;
     procedure ToolExited(Tool: TAbstractExternalTool); virtual;
@@ -597,6 +599,7 @@ type
     procedure Clear; virtual; abstract; // terminate + free all tools
     property Items[Index: integer]: TAbstractExternalTool read GetItems; default;
     function Add(Title: string): TAbstractExternalTool; virtual; abstract;
+    function AddDummy(Title: string): TAbstractExternalTool; // a tool, not run, usable for dependencies
     function IndexOf(Tool: TAbstractExternalTool): integer; virtual; abstract;
     procedure ConsistencyCheck; virtual;
     procedure EnterCriticalSection; virtual; abstract;
@@ -854,6 +857,19 @@ end;
 function TExternalToolGroup.Count: integer;
 begin
   Result:=FItems.Count;
+end;
+
+procedure TExternalToolGroup.Execute;
+var
+  i: Integer;
+  Tool: TAbstractExternalTool;
+begin
+  for i:=0 to Count-1 do begin
+    Tool:=Items[i];
+    if Tool.Terminated then continue;
+    debugln(['TExternalToolGroup.Execute ',Tool.Title]);
+    Tool.Execute;
+  end;
 end;
 
 procedure TExternalToolGroup.InternalRemove(Tool: TAbstractExternalTool);
@@ -1450,6 +1466,12 @@ end;
 function TIDEExternalTools.Count: integer;
 begin
   Result:=fItems.Count;
+end;
+
+function TIDEExternalTools.AddDummy(Title: string): TAbstractExternalTool;
+begin
+  Result:=Add(Title);
+  Result.Terminate;
 end;
 
 constructor TIDEExternalTools.Create(aOwner: TComponent);

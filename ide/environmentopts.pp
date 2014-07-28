@@ -44,7 +44,7 @@ uses
   ComponentReg, IDEExternToolIntf, IDEDialogs, MacroDefIntf,
   DbgIntfDebuggerBase,
   // IDE
-  IDEProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
+  IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
   IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger;
 
 const
@@ -745,10 +745,6 @@ function CharCaseFileActionNameToType(const Action: string): TCharCaseFileAction
 function UnitRenameReferencesActionNameToType(const Action: string): TUnitRenameReferencesAction;
 function StrToMsgWndFilenameStyle(const s: string): TMsgWndFileNameStyle;
 
-function CheckExecutable(const OldFilename, NewFilename: string;
-  const ErrorCaption, ErrorMsg: string; SearchInPath: boolean = false): boolean;
-function CheckDirPathExists(const Dir,
-  ErrorCaption, ErrorMsg: string): TModalResult;
 function SimpleDirectoryCheck(const OldDir, NewDir,
   NotFoundErrMsg: string; out StopChecking: boolean): boolean;
 
@@ -814,40 +810,6 @@ begin
   for Result in TMsgWndFileNameStyle do
     if CompareText(s,MsgWndFileNameStyleNames[Result])=0 then exit;
   Result:=mwfsShort;
-end;
-
-function CheckExecutable(const OldFilename,
-  NewFilename: string; const ErrorCaption, ErrorMsg: string;
-  SearchInPath: boolean): boolean;
-var
-  Filename: String;
-begin
-  Result:=true;
-  if OldFilename=NewFilename then exit;
-  Filename:=NewFilename;
-  if (not FilenameIsAbsolute(NewFilename)) and SearchInPath then begin
-    Filename:=FindDefaultExecutablePath(NewFilename);
-    if Filename='' then
-      Filename:=NewFilename;
-  end;
-
-  if (not FileIsExecutable(Filename)) then begin
-    if IDEMessageDialog(ErrorCaption,Format(ErrorMsg,[Filename]),
-      mtWarning,[mbIgnore,mbCancel])=mrCancel
-    then begin
-      Result:=false;
-    end;
-  end;
-end;
-
-function CheckDirPathExists(const Dir,
-  ErrorCaption, ErrorMsg: string): TModalResult;
-begin
-  if not DirPathExists(Dir) then begin
-    Result:=IDEMessageDialog(ErrorCaption,Format(ErrorMsg,[Dir]),mtWarning,
-                       [mbIgnore,mbCancel]);
-  end else
-    Result:=mrOk;
 end;
 
 function SimpleDirectoryCheck(const OldDir, NewDir,

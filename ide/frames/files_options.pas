@@ -31,8 +31,9 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, CodeToolManager, DefineTemplates, Forms,
   StdCtrls, Dialogs, Controls, Spin, EnvironmentOpts, MacroIntf,
-  LazarusIDEStrConsts, InputHistory, LazConf, IDEProcs, IDEOptionsIntf,
-  IDEDialogs, IDEUtils, InitialSetupProc;
+  IDEOptionsIntf, IDEDialogs,
+  LazarusIDEStrConsts, InputHistory, LazConf, IDEProcs,
+  IDEUtils, InitialSetupProc, DialogProcs;
 
 type
 

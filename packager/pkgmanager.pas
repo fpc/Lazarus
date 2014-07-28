@@ -2454,9 +2454,21 @@ var
       end;
     end;
     // unit paths
-    if not TargetFilesEdit.ExtendUnitSearchPath(NewUnitPaths) then exit(false);
+    if (NewUnitPaths<>'') and not TargetFilesEdit.ExtendUnitSearchPath(NewUnitPaths)
+    then begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['ExtendSearchPaths ExtendUnitSearchPath failed: NewUnitPaths="',NewUnitPaths,'"']);
+      {$ENDIF}
+      exit(false);
+    end;
     // include paths
-    if not TargetFilesEdit.ExtendIncSearchPath(NewIncPaths) then exit(false);
+    if (NewIncPaths<>'') and not TargetFilesEdit.ExtendIncSearchPath(NewIncPaths)
+    then begin
+      {$IFDEF VerbosePkgEditDrag}
+      debugln(['ExtendSearchPaths ExtendIncSearchPath failed: NewIncPaths="',NewIncPaths,'"']);
+      {$ENDIF}
+      exit(false);
+    end;
     Result:=true;
   end;
 

@@ -613,6 +613,7 @@ end;
 
 destructor TExternalTool.Destroy;
 begin
+  debugln(['TExternalTool.Destroy ',Title]);
   EnterCriticalSection;
   try
     FStage:=etsDestroying;
@@ -868,6 +869,7 @@ end;
 
 procedure TExternalTool.AddExecuteBefore(Tool: TAbstractExternalTool);
 begin
+  debugln(['TExternalTool.AddExecuteBefore Self=',Title,' Tool=',Tool.Title]);
   if (Tool=Self) or (Tool.IsExecutedBefore(Self)) then
     raise Exception.Create('TExternalTool.AddExecuteBefore: that would create a circle');
   if (fExecuteBefore<>nil) and (fExecuteBefore.IndexOf(Tool)<0) then
@@ -1259,7 +1261,8 @@ begin
   InitCriticalSection(FCritSec);
   fRunning:=TFPList.Create;
   fParsers:=TFPList.Create;
-  MaxProcessCount:=2;
+  MaxProcessCount:=2; // even on single cores there is delay due to file reads
+                      // => use 2 processes in parallel by default
   if ExternalToolList=nil then
     ExternalToolList:=Self;
   if ExternalTools=nil then

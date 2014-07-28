@@ -52,11 +52,14 @@ unit etQuickFixes;
 interface
 
 uses
-  Classes, SysUtils, Menus, Dialogs, Controls, CodeToolManager, CodeCache,
-  CodeTree, CodeAtom, BasicCodeTools, KeywordFuncLists, LazLogger, AvgLvlTree,
-  LazFileUtils, IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs, MenuIntf,
-  ProjectIntf, PackageIntf, CompOptsIntf, etFPCMsgParser, AbstractsMethodsDlg,
-  LazarusIDEStrConsts;
+  Classes, SysUtils,
+  LazLogger, AvgLvlTree, LazFileUtils,
+  Menus, Dialogs, Controls,
+  CodeToolManager, CodeCache, CodeTree, CodeAtom, BasicCodeTools,
+  KeywordFuncLists,
+  IDEExternToolIntf, IDEMsgIntf, LazIDEIntf, IDEDialogs, MenuIntf,
+  ProjectIntf, PackageIntf, CompOptsIntf,
+  etFPCMsgParser, AbstractsMethodsDlg, LazarusIDEStrConsts;
 
 type
 

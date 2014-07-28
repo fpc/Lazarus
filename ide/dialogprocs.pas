@@ -38,8 +38,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Dialogs, ComCtrls,
   FileProcs, FileUtil, LazFileUtils, Laz2_XMLCfg, lazutf8classes, LazFileCache,
-  CodeToolsConfig, CodeCache, CodeToolManager, AVL_Tree, LazIDEIntf, IDEProcs,
-  LazarusIDEStrConsts, IDEDialogs;
+  CodeToolsConfig, CodeCache, CodeToolManager, AVL_Tree, LazIDEIntf, IDEDialogs,
+  IDEProcs, LazarusIDEStrConsts;
 
 type
   // load buffer flags
@@ -95,6 +95,11 @@ function CheckFileIsWritable(const Filename: string;
                              ErrorButtons: TMsgDlgButtons = []): TModalResult;
 function CheckDirectoryIsWritable(const Filename: string;
                                   ErrorButtons: TMsgDlgButtons = []): TModalResult;
+function CheckExecutable(const OldFilename,
+  NewFilename: string; const ErrorCaption, ErrorMsg: string;
+  SearchInPath: boolean = true): boolean;
+function CheckDirPathExists(const Dir,
+  ErrorCaption, ErrorMsg: string): TModalResult;
 function ChooseSymlink(var Filename: string; AskOnSymlink: boolean): TModalResult;
 function CreateSymlinkInteractive(const LinkFilename, TargetFilename: string;
                                   ErrorButtons: TMsgDlgButtons = []): TModalResult;
@@ -586,6 +591,40 @@ begin
     if Result<>mrRetry then exit;
   end;
   Result:=mrOk;
+end;
+
+function CheckExecutable(const OldFilename,
+  NewFilename: string; const ErrorCaption, ErrorMsg: string;
+  SearchInPath: boolean): boolean;
+var
+  Filename: String;
+begin
+  Result:=true;
+  if OldFilename=NewFilename then exit;
+  Filename:=NewFilename;
+  if (not FilenameIsAbsolute(NewFilename)) and SearchInPath then begin
+    Filename:=FindDefaultExecutablePath(NewFilename);
+    if Filename='' then
+      Filename:=NewFilename;
+  end;
+
+  if (not FileIsExecutable(Filename)) then begin
+    if IDEMessageDialog(ErrorCaption,Format(ErrorMsg,[Filename]),
+      mtWarning,[mbIgnore,mbCancel])=mrCancel
+    then begin
+      Result:=false;
+    end;
+  end;
+end;
+
+function CheckDirPathExists(const Dir,
+  ErrorCaption, ErrorMsg: string): TModalResult;
+begin
+  if not DirPathExists(Dir) then begin
+    Result:=IDEMessageDialog(ErrorCaption,Format(ErrorMsg,[Dir]),mtWarning,
+                       [mbIgnore,mbCancel]);
+  end else
+    Result:=mrOk;
 end;
 
 function DeleteFileInteractive(const Filename: string;
