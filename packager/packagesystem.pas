@@ -280,6 +280,7 @@ type
     function FindUnitInAllPackages(const TheUnitName: string;
                                    IgnoreDeleted: boolean): TPkgFile;
     function GetMapSourceDirectoryToPackage(IgnorePackage: TLazPackage = nil): TFilenameToPointerTree;
+    function EstimateCompileLoad(APackage: TLazPackage): int64;
     function PackageCanBeReplaced(OldPackage, NewPackage: TLazPackage): boolean;
     function PackageIsNeeded(APackage: TLazPackage): boolean;
     function PackageNameExists(const PkgName: string;
@@ -1417,6 +1418,20 @@ begin
       Dir:=ChompPathDelim(Dir);
       Result[Dir]:=aPackage;
     until false;
+  end;
+end;
+
+function TLazPackageGraph.EstimateCompileLoad(APackage: TLazPackage): int64;
+var
+  PkgFile: TPkgFile;
+  i: Integer;
+begin
+  Result:=1;
+  for i:=0 to APackage.FileCount-1 do begin
+    PkgFile:=APackage.Files[i];
+    if PkgFile.FileType in [pftUnit,pftMainUnit,pftInclude,pftLFM] then begin
+      inc(Result,CodeToolBoss.DirectoryCachePool.FileSize(PkgFile.Filename));
+    end;
   end;
 end;
 
@@ -3628,6 +3643,15 @@ begin
           ToolGroup:=TExternalToolGroup.Create(nil);
         for j:=0 to BuildItem.Count-1 do
           BuildItem[j].Group:=ToolGroup;
+
+        // estimate load
+        for j:=0 to BuildItem.Count-1 do begin
+          Tool1:=BuildItem[j];
+          if Tool1.Data is TLazPkgGraphExtToolData then begin
+            Tool1.EstimatedLoad:=EstimateCompileLoad(CurPkg);
+            //debugln(['TLazPackageGraph.CompileRequiredPackages ',CurPkg.Name,' EstimatedLoad=',Tool1.EstimatedLoad]);
+          end;
+        end;
 
         // add dependencies between tools of this package (execute before, compile, after)
         for j:=1 to BuildItem.Count-1 do begin
