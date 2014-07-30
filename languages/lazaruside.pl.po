@@ -10885,6 +10885,10 @@ msgstr "Stałe łańcuchowe o tej samej wartości:"
 msgid "Manage Source Editors ..."
 msgstr "Zarządzaj oknami kodu źródłowego ..."
 
+#: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
+msgid "Maximum parallel processes, 0 means default (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr ""
@@ -12361,6 +12365,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
+msgstr ""
+
+#: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
+msgid "Multiple directories are separated with semicolons"
 msgstr ""
 
 #: lazarusidestrconsts.lismultiplepack

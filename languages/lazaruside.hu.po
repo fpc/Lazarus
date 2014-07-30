@@ -10526,6 +10526,10 @@ msgstr "Azonos értékű string-ek:"
 msgid "Manage Source Editors ..."
 msgstr "Forráskód-szerkesztők kezelése ..."
 
+#: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
+msgid "Maximum parallel processes, 0 means default (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr "Maximum %d"
@@ -11805,6 +11809,10 @@ msgstr "Ezen unitok áthelyezése törést okoz a uses részükben. Lásd az Üz
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(ms)"
+
+#: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
+msgid "Multiple directories are separated with semicolons"
+msgstr ""
 
 #: lazarusidestrconsts.lismultiplepack
 msgid ", multiple packages: "

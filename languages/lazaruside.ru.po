@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-26 02:14+0400\n"
+"PO-Revision-Date: 2014-07-31 01:43+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -10881,6 +10881,10 @@ msgstr "Строки с тем же значением:"
 msgid "Manage Source Editors ..."
 msgstr "Управление редакторами исходного кода ..."
 
+#: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
+msgid "Maximum parallel processes, 0 means default (%s)"
+msgstr "Максимально параллельных процессов, 0 - значение по умолчанию (%s)"
+
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr "Максимум %d"
@@ -12302,6 +12306,10 @@ msgstr "Перемещение этих модулей приведёт в не�
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(мс)"
+
+#: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
+msgid "Multiple directories are separated with semicolons"
+msgstr "Разделителем каталогов является точка с запятой"
 
 #: lazarusidestrconsts.lismultiplepack
 msgid ", multiple packages: "

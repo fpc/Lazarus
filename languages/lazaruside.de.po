@@ -10858,6 +10858,10 @@ msgstr "Strings mit gleichen Werten:"
 msgid "Manage Source Editors ..."
 msgstr "Quelltexteditoren verwalten ..."
 
+#: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
+msgid "Maximum parallel processes, 0 means default (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr "Max %d"
@@ -12267,6 +12271,10 @@ msgstr ""
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(ms)"
+
+#: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
+msgid "Multiple directories are separated with semicolons"
+msgstr ""
 
 #: lazarusidestrconsts.lismultiplepack
 msgid ", multiple packages: "

@@ -10936,6 +10936,10 @@ msgstr "Sequências de carac. com o mesmo valor:"
 msgid "Manage Source Editors ..."
 msgstr "Gerenciar Editores de Código ..."
 
+#: lazarusidestrconsts.lismaximumparallelprocesses0meansdefault
+msgid "Maximum parallel processes, 0 means default (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lismaxs
 msgid "Max %d"
 msgstr "Máximo %d"
@@ -12332,6 +12336,10 @@ msgstr ""
 #: lazarusidestrconsts.lisms
 msgid "(ms)"
 msgstr "(ms)"
+
+#: lazarusidestrconsts.lismultipledirectoriesareseparatedwithsemicolons
+msgid "Multiple directories are separated with semicolons"
+msgstr ""
 
 #: lazarusidestrconsts.lismultiplepack
 msgid ", multiple packages: "
