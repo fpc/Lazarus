@@ -3748,6 +3748,8 @@ resourcestring
   lisFindFilesearchInDirectories = 'search in &directories';
   lisFindFileDirectoryOptions = 'Directory options';
   lisFindFileDirectory = 'D&irectory';
+  lisMultipleDirectoriesAreSeparatedWithSemicolons = 'Multiple directories are'
+    +' separated with semicolons';
   lisFindFileFileMask = 'Fi&le mask';
   lisFindFileIncludeSubDirectories = 'Include &sub directories';
   lisFindFileOnlyTextFiles = 'Only text files';

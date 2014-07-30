@@ -75,15 +75,15 @@ type
     FReplaceText: string;
     fSearchString: string;
     fSearchOptions: TLazFindInFileSearchOptions;
-    fSearchDirectory: string;
+    fSearchDirectories: string;
     fSearchMask: string;
   public
     property SearchString: string read fSearchString write fSearchString;
     property ReplaceText: string read FReplaceText write FReplaceText;
     property SearchOptions: TLazFindInFileSearchOptions read fSearchOptions
                                                         write fSearchOptions;
-    property SearchDirectory: string read fSearchDirectory
-                                     write fSearchDirectory;
+    property SearchDirectories: string read fSearchDirectories
+                                     write fSearchDirectories;
     property SearchMask: string read fSearchMask write fSearchMask;
   end;//TLazSearch
 
@@ -188,7 +188,7 @@ type
     function AddSearch(const ResultsName: string;
                        const SearchText: string;
                        const ReplaceText: string;
-                       const ADirectory: string;
+                       const ADirectories: string;
                        const AMask: string;
                        const TheOptions: TLazFindInFileSearchOptions): TTabSheet;
     function GetSourcePositon: TPoint;
@@ -709,7 +709,7 @@ end;
 function TSearchResultsView.AddSearch(const ResultsName: string;
   const SearchText: string;
   const ReplaceText: string;
-  const ADirectory: string;
+  const ADirectories: string;
   const AMask: string;
   const TheOptions: TLazFindInFileSearchOptions): TTabSheet;
 var
@@ -751,7 +751,7 @@ begin
       if SearchObj<>nil then begin
         SearchObj.SearchString:= SearchText;
         SearchObj.ReplaceText := ReplaceText;
-        SearchObj.SearchDirectory:= ADirectory;
+        SearchObj.SearchDirectories:= ADirectories;
         SearchObj.SearchMask:= AMask;
         SearchObj.SearchOptions:= TheOptions;
       end;

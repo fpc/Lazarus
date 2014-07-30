@@ -12,7 +12,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   Constraints.MinWidth = 400
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object OptionsCheckGroupBox: TCheckGroup
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ReplaceTextComboBox
@@ -21,7 +21,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 83
-    Top = 76
+    Top = 72
     Width = 449
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -38,8 +38,8 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 62
-    ClientWidth = 441
+    ClientHeight = 66
+    ClientWidth = 445
     Columns = 2
     Items.Strings = (
       'Case sensitive'
@@ -60,7 +60,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     AnchorSideRight.Side = asrBottom
     Left = 6
     Height = 83
-    Top = 165
+    Top = 161
     Width = 449
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -77,8 +77,8 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 62
-    ClientWidth = 441
+    ClientHeight = 66
+    ClientWidth = 445
     Columns = 2
     ItemIndex = 1
     Items.Strings = (
@@ -97,75 +97,77 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 131
-    Top = 254
+    Height = 125
+    Top = 250
     Width = 449
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Directory Options'
-    ClientHeight = 110
-    ClientWidth = 441
+    ClientHeight = 108
+    ClientWidth = 445
     Enabled = False
     TabOrder = 5
-    object DirectoryLabel: TLabel
+    object DirectoriesLabel: TLabel
       AnchorSideLeft.Control = DirectoryOptionsGroupBox
-      AnchorSideTop.Control = DirectoryComboBox
+      AnchorSideTop.Control = DirectoriesComboBox
       AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 17
+      Height = 15
       Top = 12
-      Width = 61
+      Width = 65
       BorderSpacing.Left = 6
-      Caption = 'Directory:'
-      FocusControl = DirectoryComboBox
+      Caption = 'Directories:'
+      FocusControl = DirectoriesComboBox
       ParentColor = False
     end
     object FileMaskLabel: TLabel
       AnchorSideLeft.Control = DirectoryOptionsGroupBox
-      AnchorSideTop.Control = DirectoryComboBox
+      AnchorSideTop.Control = DirectoriesComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 17
-      Top = 47
-      Width = 59
+      Height = 15
+      Top = 45
+      Width = 49
       BorderSpacing.Left = 6
       BorderSpacing.Top = 12
       Caption = 'File mask'
       FocusControl = FileMaskComboBox
       ParentColor = False
     end
-    object DirectoryComboBox: TComboBox
-      AnchorSideLeft.Control = DirectoryLabel
+    object DirectoriesComboBox: TComboBox
+      AnchorSideLeft.Control = DirectoriesLabel
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = DirectoryOptionsGroupBox
-      AnchorSideRight.Control = DirectoryBrowse
-      Left = 73
-      Height = 29
+      AnchorSideRight.Control = DirectoriesBrowse
+      Left = 77
+      Height = 27
       Top = 6
-      Width = 330
+      Width = 335
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
       ItemHeight = 0
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
     end
-    object DirectoryBrowse: TBitBtn
+    object DirectoriesBrowse: TBitBtn
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = DirectoryComboBox
+      AnchorSideTop.Control = DirectoriesComboBox
       AnchorSideRight.Control = DirectoryOptionsGroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 409
-      Height = 28
+      Left = 418
+      Height = 27
       Top = 6
-      Width = 26
+      Width = 21
       Anchors = [akTop, akRight]
       AutoSize = True
       BorderSpacing.Right = 6
       Caption = '...'
       Layout = blGlyphTop
-      OnClick = DirectoryBrowseClick
+      OnClick = DirectoriesBrowseClick
       TabOrder = 1
     end
     object FileMaskComboBox: TComboBox
@@ -173,12 +175,12 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FileMaskLabel
       AnchorSideTop.Side = asrCenter
-      AnchorSideRight.Control = DirectoryComboBox
+      AnchorSideRight.Control = DirectoriesComboBox
       AnchorSideRight.Side = asrBottom
-      Left = 71
-      Height = 29
-      Top = 41
-      Width = 332
+      Left = 61
+      Height = 27
+      Top = 39
+      Width = 351
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       ItemHeight = 0
@@ -190,9 +192,9 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       AnchorSideTop.Control = FileMaskComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 22
-      Top = 82
-      Width = 170
+      Height = 24
+      Top = 78
+      Width = 151
       BorderSpacing.Left = 6
       BorderSpacing.Top = 12
       BorderSpacing.Bottom = 6
@@ -204,8 +206,8 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 33
-    Top = 398
+    Height = 28
+    Top = 403
     Width = 449
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -229,10 +231,10 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 88
-    Height = 29
-    Top = 41
-    Width = 367
+    Left = 82
+    Height = 27
+    Top = 39
+    Width = 373
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
@@ -249,9 +251,9 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     AnchorSideTop.Control = ReplaceTextComboBox
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 22
-    Top = 44
-    Width = 76
+    Height = 24
+    Top = 40
+    Width = 70
     BorderSpacing.Left = 6
     Caption = 'Replace'
     Enabled = False
@@ -263,9 +265,9 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     AnchorSideTop.Control = TextToFindComboBox
     AnchorSideTop.Side = asrCenter
     Left = 6
-    Height = 17
+    Height = 15
     Top = 12
-    Width = 75
+    Width = 69
     BorderSpacing.Left = 6
     Caption = 'Text To Find:'
     ParentColor = False
@@ -276,10 +278,10 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 87
-    Height = 29
+    Left = 81
+    Height = 27
     Top = 6
-    Width = 368
+    Width = 374
     Anchors = [akTop, akLeft, akRight]
     AutoComplete = True
     AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactRetainPrefixCase, cbactSearchAscending]
@@ -292,7 +294,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
   object SelectDirectoryDialog: TSelectDirectoryDialog
     FilterIndex = 0
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 260
-    top = 215
+    left = 180
+    top = 70
   end
 end

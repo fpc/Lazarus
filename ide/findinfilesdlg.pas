@@ -17,10 +17,14 @@ unit FindInFilesDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, LCLIntf, Controls, StdCtrls, Forms, Buttons,
-  ExtCtrls, FileProcs, LazarusIDEStrConsts, Dialogs, SynEditTypes, ButtonPanel,
+  Classes, SysUtils,
+  FileProcs,
+  LCLProc, LCLIntf, Controls, StdCtrls, Forms, Buttons, ExtCtrls, Dialogs,
+  ButtonPanel,
+  SynEditTypes, SynEdit,
   MacroIntf, IDEWindowIntf, SrcEditorIntf, IDEHelpIntf, IDEDialogs,
-  InputHistory, EditorOptions, SearchFrm, Project, SynEdit, SearchResultView;
+  LazarusIDEStrConsts, InputHistory, EditorOptions, Project, IDEProcs,
+  SearchFrm, SearchResultView;
 
 type
   { TLazFindInFilesDialog }
@@ -31,9 +35,9 @@ type
     ReplaceTextComboBox: TComboBox;
     IncludeSubDirsCheckBox: TCheckBox;
     FileMaskComboBox: TComboBox;
-    DirectoryBrowse: TBitBtn;
-    DirectoryComboBox: TComboBox;
-    DirectoryLabel: TLabel;
+    DirectoriesBrowse: TBitBtn;
+    DirectoriesComboBox: TComboBox;
+    DirectoriesLabel: TLabel;
     FileMaskLabel: TLabel;
     DirectoryOptionsGroupBox: TGroupBox;
     OptionsCheckGroupBox: TCheckGroup;
@@ -41,7 +45,7 @@ type
     TextToFindComboBox: TComboBox;
     TextToFindLabel: TLabel;
     WhereRadioGroup: TRadioGroup;
-    procedure DirectoryBrowseClick(Sender: TObject);
+    procedure DirectoriesBrowseClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
@@ -65,12 +69,13 @@ type
     property ReplaceText: string read GetReplaceText write SetReplaceText;
     property SynSearchOptions: TSynSearchOptions read GetSynOptions
                                                  write SetSynOptions;
+    function GetBaseDirectory: string;
     procedure LoadHistory;
     procedure SaveHistory;
     procedure FindInFilesPerDialog(AProject: TProject);
     procedure InitFromLazSearch(Sender: TObject);
     procedure FindInFiles(AProject: TProject; const AFindText: string);
-    function GetResolvedDirectory: string;
+    function GetResolvedDirectories: string;
   end;
 
 function FindInFilesDialog: TLazFindInFilesDialog;
@@ -119,18 +124,28 @@ begin
   DirectoryOptionsGroupBox.Enabled := (WhereRadioGroup.ItemIndex = ItemIndDirectories)
 end;
 
-procedure TLazFindInFilesDialog.DirectoryBrowseClick(Sender: TObject);
+procedure TLazFindInFilesDialog.DirectoriesBrowseClick(Sender: TObject);
 var
   Dir: String;
+  OldDirs: String;
+  p: Integer;
 begin
   InitIDEFileDialog(SelectDirectoryDialog);
-  Dir:=GetResolvedDirectory;
-  if DirectoryExistsUTF8(Dir) then
+  // use the first directory as initialdir for the dialog
+  OldDirs:=GetResolvedDirectories;
+  p:=1;
+  repeat
+    Dir:=GetNextDirectoryInSearchPath(OldDirs,p);
+    if Dir='' then break;
+    if DirectoryExistsUTF8(Dir) then break;
+  until false;
+  if Dir<>'' then
     SelectDirectoryDialog.InitialDir := Dir
   else
-    SelectDirectoryDialog.InitialDir := GetCurrentDirUTF8;
+    SelectDirectoryDialog.InitialDir := GetBaseDirectory;
+
   if SelectDirectoryDialog.Execute then
-    DirectoryComboBox.Text := AppendPathDelim(TrimFilename(SelectDirectoryDialog.FileName));
+    DirectoriesComboBox.Text := AppendPathDelim(TrimFilename(SelectDirectoryDialog.FileName));
   StoreIDEFileDialog(SelectDirectoryDialog);
 end;
 
@@ -160,7 +175,8 @@ begin
   WhereRadioGroup.Items[ItemIndActiveFile]  := lisFindFilesearchInActiveFile;
 
   DirectoryOptionsGroupBox.Caption := lisFindFileDirectoryOptions;
-  DirectoryLabel.Caption := lisFindFileDirectory;
+  DirectoriesComboBox.Hint:=lisMultipleDirectoriesAreSeparatedWithSemicolons;
+  DirectoriesLabel.Caption := lisFindFileDirectory;
   FileMaskLabel.Caption := lisFindFileFileMask;
 
   IncludeSubDirsCheckBox.Caption := lisFindFileIncludeSubDirectories;
@@ -185,14 +201,20 @@ end;
 procedure TLazFindInFilesDialog.OKButtonClick(Sender : TObject);
 var
   Dir: String;
+  p: Integer;
 begin
-  Dir:=GetResolvedDirectory;
-  if (WhereRadioGroup.ItemIndex=ItemIndDirectories) and not DirectoryExistsUTF8(Dir) then
+  if (WhereRadioGroup.ItemIndex=ItemIndDirectories) then
   begin
-    IDEMessageDialog(lisEnvOptDlgDirectoryNotFound,
-               Format(dlgSeachDirectoryNotFound,[Dir]),
-               mtWarning, [mbOk]);
-    ModalResult:=mrNone;
+    Dir:=GetResolvedDirectories;
+    p:=1;
+    Dir:=GetNextDirectoryInSearchPath(Dir,p);
+    if not DirectoryExistsUTF8(Dir) then
+    begin
+      IDEMessageDialog(lisEnvOptDlgDirectoryNotFound,
+                 Format(dlgSeachDirectoryNotFound,[Dir]),
+                 mtWarning, [mbOk]);
+      ModalResult:=mrNone;
+    end;
   end
 end;
 
@@ -272,6 +294,15 @@ begin
     ButtonPanel1.OKButton.Caption := lisBtnFind;
 end;
 
+function TLazFindInFilesDialog.GetBaseDirectory: string;
+begin
+  Result:='';
+  if Project1<>nil then
+    Result:=Project1.ProjectDirectory;
+  if Result='' then
+    Result:=GetCurrentDirUTF8;
+end;
+
 procedure TLazFindInFilesDialog.LoadHistory;
 
   procedure AssignToComboBox(AComboBox: TComboBox; Strings: TStrings);
@@ -319,11 +350,11 @@ begin
     end;
   end;
   // show last used directories and directory of current file
-  AssignToComboBox(DirectoryComboBox, InputHistories.FindInFilesPathHistory);
+  AssignToComboBox(DirectoriesComboBox, InputHistories.FindInFilesPathHistory);
   if (SrcEdit<>nil) and (FilenameIsAbsolute(SrcEdit.FileName)) then
-    AddFileToComboBox(DirectoryComboBox, ExtractFilePath(SrcEdit.FileName));
-  if DirectoryComboBox.Items.Count>0 then
-    DirectoryComboBox.Text:=DirectoryComboBox.Items[0];
+    AddFileToComboBox(DirectoriesComboBox, ExtractFilePath(SrcEdit.FileName));
+  if DirectoriesComboBox.Items.Count>0 then
+    DirectoriesComboBox.Text:=DirectoriesComboBox.Items[0];
   // show last used file masks
   AssignToComboBox(FileMaskComboBox, InputHistories.FindInFilesMaskHistory);
   Options := InputHistories.FindInFilesSearchOptions;
@@ -334,7 +365,7 @@ var
   Dir: String;
 begin
   InputHistories.AddToFindHistory(FindText);
-  Dir:=AppendPathDelim(TrimFilename(DirectoryComboBox.Text));
+  Dir:=AppendPathDelim(TrimFilename(DirectoriesComboBox.Text));
   if Dir<>'' then
     InputHistories.AddToFindInFilesPathHistory(Dir);
   InputHistories.AddToFindInFilesMaskHistory(FileMaskComboBox.Text);
@@ -369,9 +400,9 @@ procedure TLazFindInFilesDialog.InitFromLazSearch(Sender: TObject);
 var
   Dir: String;
 begin
-  Dir:=AppendPathDelim(TrimFilename(TLazSearch(Sender).SearchDirectory));
+  Dir:=AppendPathDelim(TrimFilename(TLazSearch(Sender).SearchDirectories));
   if Dir<>'' then
-    DirectoryComboBox.Text:= Dir;
+    DirectoriesComboBox.Text:= Dir;
   Options:= TLazSearch(Sender).SearchOptions;
   FileMaskComboBox.Text:= TLazSearch(Sender).SearchMask;
 end;
@@ -396,11 +427,11 @@ begin
 
     SearchForm:= TSearchProgressForm.Create(SearchResultsView);
     with SearchForm do begin
-      SearchOptions   := self.Options;
-      SearchText      := self.FindText;
-      ReplaceText     := self.ReplaceText;
-      SearchMask      := self.FileMaskComboBox.Text;
-      SearchDirectory := self.GetResolvedDirectory;
+      SearchOptions     := self.Options;
+      SearchText        := self.FindText;
+      ReplaceText       := self.ReplaceText;
+      SearchMask        := self.FileMaskComboBox.Text;
+      SearchDirectories := self.GetResolvedDirectories;
     end;
 
     try
@@ -419,11 +450,11 @@ begin
   end;
 end;
 
-function TLazFindInFilesDialog.GetResolvedDirectory: string;
+function TLazFindInFilesDialog.GetResolvedDirectories: string;
 begin
-  Result:=DirectoryComboBox.Text;
+  Result:=DirectoriesComboBox.Text;
   IDEMacros.SubstituteMacros(Result);
-  Result:=TrimAndExpandDirectory(Result);
+  Result:=TrimSearchPath(Result,GetBaseDirectory,true,true);
 end;
 
 end.

@@ -123,7 +123,7 @@ function FindProgram(const Programname, BaseDirectory: string;
 
 // search paths
 function TrimSearchPath(const SearchPath, BaseDirectory: string;
-                        DeleteDoubles: boolean = false): string;
+                  DeleteDoubles: boolean = false; ExpandPaths: boolean = false): string;
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
 procedure MergeSearchPaths(SearchPath: TStrings; const AddSearchPath: string);
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
@@ -1363,7 +1363,7 @@ end;
   - removes doubles
 -------------------------------------------------------------------------------}
 function TrimSearchPath(const SearchPath, BaseDirectory: string;
-  DeleteDoubles: boolean): string;
+  DeleteDoubles: boolean; ExpandPaths: boolean): string;
 var
   CurPath: String;
   EndPos: Integer;
@@ -1386,7 +1386,9 @@ begin
     CurPath:=copy(SearchPath,StartPos,EndPos-StartPos);
     if CurPath<>'' then begin
       // non empty path => expand, trim and normalize
-      if (BaseDir<>'') and (not FilenameIsAbsolute(CurPath)) then
+      if ExpandPaths then
+        CurPath:=TrimAndExpandDirectory(CurPath,BaseDir)
+      else if (BaseDir<>'') and (not FilenameIsAbsolute(CurPath)) then
         CurPath:=BaseDir+CurPath;
       CurPath:=ChompPathDelim(TrimFilename(CurPath));
       if CurPath='' then CurPath:='.';

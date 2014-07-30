@@ -39,7 +39,7 @@ uses
   // IDEIntf
   IDEWindowIntf, LazIDEIntf, SrcEditorIntf, IDEDialogs, MainIntf,
   // ide
-  LazarusIDEStrConsts, InputHistory, SearchResultView, Project;
+  LazarusIDEStrConsts, InputHistory, IDEProcs, SearchResultView, Project;
 
 type
 
@@ -77,14 +77,14 @@ type
     fSearchFileList: TStringList;
     fSearchFiles: boolean;
     fSearchFor: String;
-    fTheDirectory: string;
+    fDirectories: string;
     fSearchOpen: boolean;
     fSearchActive: boolean;
     fSearchProject: boolean;
     fAborting: boolean;
     fLastUpdateProgress: DWORD;
     fWasActive: boolean;
-    procedure DoFindInFiles(ADirectory: string);
+    procedure DoFindInFiles(ADirectories: string);
     procedure DoFindInSearchList;
     procedure SetResultsList(const AValue: TStrings);
     procedure UpdateMatches;
@@ -102,7 +102,7 @@ type
     procedure DoSearchDir;
     procedure DoSearchProject(AProject: TProject);
   public
-    property SearchDirectory: string read fTheDirectory write fTheDirectory;
+    property SearchDirectories: string read fDirectories write fDirectories;
     property SearchText: string read fSearchFor write fSearchFor;
     property ReplaceText: string read FReplaceText write FReplaceText;
     property SearchOptions: TLazFindInFileSearchOptions read GetOptions
@@ -761,7 +761,7 @@ begin
     end;
     try
       if fSearchFiles then
-        DoFindInFiles(fTheDirectory);
+        DoFindInFiles(fDirectories);
       if fSearchProject or fSearchOpen or fSearchActive then
         DoFindInSearchList;
       if Assigned(fResultsList) then begin
@@ -849,19 +849,29 @@ end;
 
 { TSearchProgressForm }
 
-procedure TSearchProgressForm.DoFindInFiles(ADirectory: string);
+procedure TSearchProgressForm.DoFindInFiles(ADirectories: string);
 var
   Searcher: TLazFileSearcher;
+  SearchPath: String;
+  p: Integer;
+  Dir: String;
 begin
-  //if we have a list and a valid directory
-  if (DirPathExists(ADirectory)) then
-  begin
-    Searcher := TLazFileSearcher.Create(Self);
-    try
-      Searcher.Search(ADirectory, FMask, FRecursive);
-    finally
-      Searcher.Free;
-    end;
+  // if we have a list and a valid directory
+  SearchPath:='';
+  p:=1;
+  repeat
+    Dir:=GetNextDirectoryInSearchPath(ADirectories,p);
+    if Dir='' then break;
+    if DirPathExists(Dir) then
+      SearchPath:=MergeSearchPaths(SearchPath,Dir);
+  until false;
+  if SearchPath='' then
+    exit;
+  Searcher := TLazFileSearcher.Create(Self);
+  try
+    Searcher.Search(SearchPath, FMask, FRecursive);
+  finally
+    Searcher.Free;
   end;
 end;
 
@@ -953,7 +963,7 @@ begin
   Cnt:= 0;
   LazarusIDE.DoShowSearchResultsView(False);
   ListPage:=SearchResultsView.AddSearch(SearchText,SearchText,
-                            ReplaceText,SearchDirectory,SearchMask,SearchOptions);
+                            ReplaceText,SearchDirectories,SearchMask,SearchOptions);
   try
     (* BeginUpdate prevents ListPage from being closed,
       other pages can still be closed or inserted, so PageIndex can change *)
