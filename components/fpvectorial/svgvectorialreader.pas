@@ -2889,7 +2889,7 @@ end;
 procedure TvSVGVectorialReader.ReadFromStream(AStream: TStream;
   AData: TvVectorialDocument);
 var
-  Doc: TXMLDocument;
+  Doc: TXMLDocument = nil;
 begin
   try
     // Read in xml file from the stream

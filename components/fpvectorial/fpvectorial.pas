@@ -54,7 +54,7 @@ type
     { Formula formats }
     vfMathML,
     { Text Document formats }
-    vfODT, vfDOCX,
+    vfODT, vfDOCX, vfHTML,
     { Raster Image formats }
     vfRAW
     );
@@ -89,6 +89,7 @@ const
   STR_ODG_EXTENSION = '.odg';
   STR_ODT_EXTENSION = '.odt';
   STR_DOCX_EXTENSION = '.docx';
+  STR_HTML_EXTENSION = '.html';
 
   STR_FPVECTORIAL_TEXT_HEIGHT_SAMPLE = 'Ćą';
 
@@ -6613,6 +6614,7 @@ begin
   else if AnsiCompareText(lExt, STR_MATHML_EXTENSION) = 0 then Result := vfMathML
   else if AnsiCompareText(lExt, STR_ODG_EXTENSION) = 0 then Result := vfODG
   else if AnsiCompareText(lExt, STR_DOCX_EXTENSION) = 0 then Result := vfDOCX
+  else if AnsiCompareText(lExt, STR_HTML_EXTENSION) = 0 then Result := vfHTML
   else
     raise Exception.Create('TvVectorialDocument.GetFormatFromExtension: The extension (' + lExt + ') doesn''t match any supported formats.');
 end;

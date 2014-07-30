@@ -1425,6 +1425,7 @@ components/fpvectorial/fpvectorialpkg.lpk svneol=native#text/plain
 components/fpvectorial/fpvectorialpkg.pas svneol=native#text/plain
 components/fpvectorial/fpvtocanvas.pas svneol=native#text/plain
 components/fpvectorial/fpvutils.pas svneol=native#text/plain
+components/fpvectorial/htmlvectorialreader.pas svneol=native#text/pascal
 components/fpvectorial/lasvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/lazvectorialreader.pas svneol=native#text/plain
 components/fpvectorial/mathmlvectorialreader.pas svneol=native#text/plain

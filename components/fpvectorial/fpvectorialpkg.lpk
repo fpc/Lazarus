@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="fpvectorialpkg"/>
@@ -12,7 +12,7 @@
         <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="20">
+    <Files Count="21">
       <Item1>
         <Filename Value="fpvectorial.pas"/>
         <UnitName Value="fpvectorial"/>
@@ -93,6 +93,10 @@
         <Filename Value="docxvectorialwriter.pas"/>
         <UnitName Value="docxvectorialwriter"/>
       </Item20>
+      <Item21>
+        <Filename Value="htmlvectorialreader.pas"/>
+        <UnitName Value="htmlvectorialreader"/>
+      </Item21>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
