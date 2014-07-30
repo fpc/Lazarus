@@ -168,7 +168,7 @@ type
     procedure DoFileFound; virtual;
   public
     constructor Create;
-    procedure Search(const ASearchPath: String; ASearchMask: String = '';
+    procedure Search(ASearchPath: String; ASearchMask: String = '';
       ASearchSubDirs: Boolean = True; CaseSensitive: Boolean = False);
   public
     property MaskSeparator: char read FMaskSeparator write FMaskSeparator;

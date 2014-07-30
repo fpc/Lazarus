@@ -1068,7 +1068,7 @@ begin
   FSearching := False;
 end;
 
-procedure TFileSearcher.Search(const ASearchPath: String; ASearchMask: String;
+procedure TFileSearcher.Search(ASearchPath: String; ASearchMask: String;
   ASearchSubDirs: Boolean; CaseSensitive: Boolean = False);
 var
   MaskList: TMaskList;
@@ -1137,6 +1137,9 @@ var
       end;
   end;
 
+var
+  p: SizeInt;
+  Dir: String;
 begin
   if FSearching then RaiseSearchingError;
 
@@ -1147,7 +1150,15 @@ begin
 
   FSearching := True;
   try
-    DoSearch(AppendPathDelim(ASearchPath), 0);
+    while ASearchPath<>'' do begin
+      p:=Pos(';',ASearchPath);
+      if p<1 then
+        p:=length(ASearchPath)+1;
+      Dir:=TrimFilename(LeftStr(ASearchPath,p-1));
+      Delete(ASearchPath,1,p);
+      if Dir<>'' then
+        DoSearch(AppendPathDelim(Dir), 0);
+    end;
   finally
     FSearching := False;
     if MaskList <> nil then MaskList.Free;
