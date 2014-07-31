@@ -361,7 +361,7 @@
       </element>
       <!-- function result Visibility: default -->
       <element name="ForceDirectory.Result">
-        <short>Returns True if successfully created directory</short>
+        <short>Returns True if directory exists or if it was successfully created</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="ForceDirectory.DirectoryName">

@@ -260,7 +260,8 @@
 
 <!-- function Visibility: default -->
 <element name="ForceDirectory">
-<short/>
+<short>
+  <var>ForceDirectory </var>- creates a directory if none exists</short>
 <descr>
 </descr>
 <errors>
@@ -271,7 +272,7 @@
 
 <!-- function result Visibility: default -->
 <element name="ForceDirectory.Result">
-<short/>
+<short>Returns True if directory exists or if it was successfully created</short>
 </element>
 
 <!-- argument Visibility: default -->
