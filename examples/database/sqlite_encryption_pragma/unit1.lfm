@@ -1,0 +1,321 @@
+object Form1: TForm1
+  Left = 389
+  Height = 740
+  Top = 156
+  Width = 416
+  Caption = 'SQLite DB Demo'
+  ClientHeight = 740
+  ClientWidth = 416
+  OnCreate = FormCreate
+  LCLVersion = '1.2.4.0'
+  object btnMakeNewDB: TButton
+    Left = 144
+    Height = 25
+    Top = 88
+    Width = 120
+    Caption = 'Make New DB'
+    OnClick = btnMakeNewDBClick
+    TabOrder = 0
+  end
+  object txtNew: TEdit
+    Left = 176
+    Height = 23
+    Top = 160
+    Width = 120
+    TabOrder = 1
+  end
+  object btnReKeyDB: TButton
+    Left = 144
+    Height = 25
+    Top = 200
+    Width = 120
+    Caption = 'ReKey DB'
+    OnClick = btnReKeyDBClick
+    TabOrder = 2
+  end
+  object Label2: TLabel
+    Left = 112
+    Height = 15
+    Top = 164
+    Width = 53
+    Caption = 'New Pass:'
+    ParentColor = False
+  end
+  object txtPass: TEdit
+    Left = 176
+    Height = 23
+    Top = 16
+    Width = 120
+    TabOrder = 3
+  end
+  object Label3: TLabel
+    Left = 88
+    Height = 15
+    Top = 20
+    Width = 77
+    Caption = 'Database Pass:'
+    ParentColor = False
+  end
+  object Shape1: TShape
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 1
+    Top = 128
+    Width = 416
+    Anchors = [akTop, akLeft, akRight]
+  end
+  object Shape2: TShape
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 1
+    Top = 240
+    Width = 416
+    Anchors = [akTop, akLeft, akRight]
+  end
+  object btnViewAppID: TButton
+    Left = 280
+    Height = 25
+    Top = 704
+    Width = 120
+    Caption = 'View Application_ID'
+    OnClick = btnViewAppIDClick
+    TabOrder = 4
+  end
+  object btnViewUserVersion: TButton
+    Left = 280
+    Height = 25
+    Top = 658
+    Width = 120
+    Caption = 'View User_Version'
+    OnClick = btnViewUserVersionClick
+    TabOrder = 5
+  end
+  object btnSetAppID: TButton
+    Left = 152
+    Height = 25
+    Top = 704
+    Width = 120
+    Caption = 'Set Application_ID'
+    OnClick = btnSetAppIDClick
+    TabOrder = 6
+  end
+  object btnSetUserVersion: TButton
+    Left = 152
+    Height = 25
+    Top = 658
+    Width = 120
+    Caption = 'Set User_Version'
+    OnClick = btnSetUserVersionClick
+    TabOrder = 7
+  end
+  object txtUser_Version: TEdit
+    Left = 24
+    Height = 23
+    Hint = 'Must be a 32-bit Signed Integer (LongInt -2147483648 .. 2147483647)'
+    Top = 658
+    Width = 120
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 8
+    Text = '0'
+  end
+  object txtApplication_ID: TEdit
+    Left = 24
+    Height = 23
+    Hint = 'Must be a 32-bit Unsigned Integer (Longword 0 .. 4294967295)'
+    Top = 704
+    Width = 120
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 9
+    Text = '0'
+  end
+  object Label4: TLabel
+    Left = 24
+    Height = 15
+    Top = 642
+    Width = 70
+    Caption = 'User_Version:'
+    ParentColor = False
+  end
+  object Label5: TLabel
+    Left = 24
+    Height = 15
+    Top = 688
+    Width = 79
+    Caption = 'Application_Id:'
+    ParentColor = False
+  end
+  object Label6: TLabel
+    Left = 16
+    Height = 50
+    Top = 584
+    Width = 384
+    AutoSize = False
+    Caption = 'Database Pragma Settings:'#13#10'user_version originally set to 23400001'#13#10'application_id originally set to 1189021115'
+    ParentColor = False
+    WordWrap = True
+  end
+  object Label7: TLabel
+    Left = 15
+    Height = 15
+    Top = 64
+    Width = 88
+    Caption = 'Create Database:'
+    ParentColor = False
+  end
+  object Label8: TLabel
+    Left = 16
+    Height = 15
+    Top = 136
+    Width = 137
+    Caption = 'Change the Database Key:'
+    ParentColor = False
+  end
+  object Shape3: TShape
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 1
+    Top = 568
+    Width = 416
+    Anchors = [akTop, akLeft, akRight]
+  end
+  object Label9: TLabel
+    Left = 16
+    Height = 15
+    Top = 248
+    Width = 117
+    Caption = 'Add Info To Database:'
+    ParentColor = False
+  end
+  object txtUser_Name: TEdit
+    Left = 176
+    Height = 23
+    Top = 272
+    Width = 120
+    TabOrder = 10
+  end
+  object txtInfo: TEdit
+    Left = 176
+    Height = 23
+    Top = 296
+    Width = 120
+    TabOrder = 11
+  end
+  object btnAddToDB: TButton
+    Left = 144
+    Height = 25
+    Top = 336
+    Width = 120
+    Caption = 'Add To DB'
+    OnClick = btnAddToDBClick
+    TabOrder = 12
+  end
+  object Label10: TLabel
+    Left = 120
+    Height = 15
+    Top = 276
+    Width = 35
+    Caption = 'Name:'
+    ParentColor = False
+  end
+  object Label11: TLabel
+    Left = 120
+    Height = 15
+    Top = 300
+    Width = 24
+    Caption = 'Info:'
+    ParentColor = False
+  end
+  object Shape4: TShape
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 1
+    Top = 376
+    Width = 416
+    Anchors = [akTop, akLeft, akRight]
+  end
+  object Label12: TLabel
+    Left = 15
+    Height = 15
+    Top = 384
+    Width = 83
+    Caption = 'Query Database'
+    ParentColor = False
+  end
+  object btnUpdateGrid: TButton
+    Left = 64
+    Height = 25
+    Top = 528
+    Width = 120
+    Caption = 'Update Grid'
+    OnClick = btnUpdateGridClick
+    TabOrder = 13
+  end
+  object DBGrid1: TDBGrid
+    Left = 8
+    Height = 104
+    Top = 408
+    Width = 400
+    Color = clWindow
+    Columns = <>
+    ReadOnly = True
+    TabOrder = 14
+  end
+  object Shape5: TShape
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 1
+    Top = 56
+    Width = 416
+    Anchors = [akTop, akLeft, akRight]
+  end
+  object btnCountRows: TButton
+    Left = 224
+    Height = 25
+    Top = 528
+    Width = 120
+    Caption = 'Count Rows'
+    OnClick = btnCountRowsClick
+    TabOrder = 15
+  end
+  object DataSource1: TDataSource
+    DataSet = SQLQuery1
+    left = 376
+    top = 8
+  end
+  object SQLQuery1: TSQLQuery
+    FieldDefs = <>
+    Database = SQLite3Connection1
+    Transaction = SQLTransaction1
+    Params = <>
+    left = 376
+    top = 72
+  end
+  object SQLTransaction1: TSQLTransaction
+    Active = False
+    Database = SQLite3Connection1
+    left = 376
+    top = 144
+  end
+  object SQLite3Connection1: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    KeepConnection = False
+    Transaction = SQLTransaction1
+    LogEvents = []
+    Options = []
+    left = 376
+    top = 200
+  end
+end
