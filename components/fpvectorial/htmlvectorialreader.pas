@@ -28,10 +28,10 @@ type
   private
     FPointSeparator, FCommaSeparator: TFormatSettings;
     //
-    function ReadEntityFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
-    function ReadHeaderFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
-    function ReadParagraphFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
-    function ReadSVGFromNode(ANode: TDOMNode; AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+    function ReadEntityFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+    function ReadHeaderFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+    function ReadParagraphFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+    function ReadSVGFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
   public
     { General reading methods }
     constructor Create; override;
@@ -57,7 +57,7 @@ const
 { TvHTMLVectorialReader }
 
 function TvHTMLVectorialReader.ReadEntityFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+  AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
 var
   lEntityName: DOMString;
 begin
@@ -71,17 +71,32 @@ begin
 end;
 
 function TvHTMLVectorialReader.ReadHeaderFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+  AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+var
+  CurParagraph: TvParagraph;
+  lText: TvText;
+  lTextStr: string;
+  lHeaderType: DOMString;
 begin
+  CurParagraph := AData.AddParagraph();
+  CurParagraph.Style := ADoc.StyleTextBody;
+  lTextStr := ANode.FirstChild.NodeValue;
+  lText := CurParagraph.AddText(lTextStr);
+  lHeaderType := LowerCase(ANode.NodeName);
+  case lHeaderType of
+    'h1', 'h2': lText.Style := ADoc.StyleHeading1;
+    'h3', 'h4': lText.Style := ADoc.StyleHeading2;
+    'h5', 'h6': lText.Style := ADoc.StyleHeading3;
+  end;
 end;
 
 function TvHTMLVectorialReader.ReadParagraphFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+  AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
 begin
 end;
 
 function TvHTMLVectorialReader.ReadSVGFromNode(ANode: TDOMNode;
-  AData: TvVectorialPage; ADoc: TvVectorialDocument): TvEntity;
+  AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
 begin
 end;
 
@@ -133,7 +148,7 @@ procedure TvHTMLVectorialReader.ReadFromXML(Doc: TXMLDocument;
   AData: TvVectorialDocument);
 var
   lCurNode: TDOMNode;
-  lPage: TvVectorialPage;
+  lPage: TvTextPageSequence;
   lNodeName, lNodeValue: DOMString;
   ANode: TDOMElement;
   i: Integer;
@@ -154,7 +169,7 @@ begin
   // Now process the elements
   // ----------------
   lCurNode := Doc.DocumentElement.FirstChild;
-  lPage := AData.AddPage();
+  lPage := AData.AddTextPageSequence();
   //lPage.Width := AData.Width;
   //lPage.Height := AData.Height;
   while Assigned(lCurNode) do

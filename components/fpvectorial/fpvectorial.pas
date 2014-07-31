@@ -1243,6 +1243,12 @@ type
     function  RemoveEntity(AEntity: TvEntity; AFreeAfterRemove: Boolean = True): Boolean; virtual; abstract;
     { Data writing methods }
     function AddEntity(AEntity: TvEntity): Integer; virtual; abstract;
+    { Drawing methods }
+    procedure DrawBackground(ADest: TFPCustomCanvas); virtual; abstract;
+    procedure RenderPageBorder(ADest: TFPCustomCanvas;
+      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual; abstract;
+    procedure Render(ADest: TFPCustomCanvas;
+      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual; abstract;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual; abstract;
   end;
@@ -1321,11 +1327,11 @@ type
     function AddPoint(AX, AY, AZ: Double): TvPoint;
     { Drawing methods }
     procedure PositionEntitySubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double);
-    procedure DrawBackground(ADest: TFPCustomCanvas);
+    procedure DrawBackground(ADest: TFPCustomCanvas); override;
     procedure RenderPageBorder(ADest: TFPCustomCanvas;
-      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     procedure Render(ADest: TFPCustomCanvas;
-      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
+      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     { Debug methods }
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); override;
     //
@@ -1362,6 +1368,14 @@ type
     function AddList: TvList;
     function AddTable: TvTable;
     //function AddImage: TvImage;
+    { Drawing methods }
+    procedure DrawBackground(ADest: TFPCustomCanvas); override;
+    procedure RenderPageBorder(ADest: TFPCustomCanvas;
+      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    procedure Render(ADest: TFPCustomCanvas;
+      ADestX: Integer = 0; ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    { Debug methods }
+    procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); override;
   end;
 
   {@@ TvVectorialReader class reference type }
@@ -6373,6 +6387,29 @@ end;
 function TvTextPageSequence.AddTable: TvTable;
 begin
   Result := MainText.AddTable;
+end;
+
+procedure TvTextPageSequence.DrawBackground(ADest: TFPCustomCanvas);
+begin
+
+end;
+
+procedure TvTextPageSequence.RenderPageBorder(ADest: TFPCustomCanvas;
+  ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+begin
+
+end;
+
+procedure TvTextPageSequence.Render(ADest: TFPCustomCanvas; ADestX: Integer;
+  ADestY: Integer; AMulX: Double; AMulY: Double);
+begin
+
+end;
+
+procedure TvTextPageSequence.GenerateDebugTree(
+  ADestRoutine: TvDebugAddItemProc; APageItem: Pointer);
+begin
+
 end;
 
 (*
