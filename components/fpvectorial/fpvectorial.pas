@@ -366,10 +366,13 @@ type
   TvFindEntityResult = (vfrNotFound, vfrFound, vfrSubpartFound);
 
   TvRenderInfo = record
+    // Input to the rendering
     BackgroundColor: TFPColor;
     AdjustPenColorToBackground: Boolean;
     Selected: Boolean;
     ForceRenderBlock: Boolean; // Blocks are usually invisible, but when rendering an insert, their drawing can be forced
+    // Fields which are output from the rendering process
+    EntityCanvasMinXY, EntityCanvasMaxXY: TPoint; // The size utilized in the canvas to draw this entity
   end;
 
   { Now all elements }
@@ -399,7 +402,7 @@ type
     procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); virtual;
     procedure Scale(ADeltaScaleX, ADeltaScaleY: Double); virtual;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); virtual; // Angle in radians
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
@@ -431,7 +434,8 @@ type
     constructor Create(APage: TvPage); override;
     procedure ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo);
     procedure AssignPen(APen: TvPen);
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure CalcEntityCanvasMinMaxXY(var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -445,7 +449,7 @@ type
     constructor Create(APage: TvPage); override;
     procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas);
     procedure AssignBrush(ABrush: TvBrush);
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -460,7 +464,7 @@ type
     procedure ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AMulX: Double = 1.0);
     procedure AssignFont(AFont: TvFont);
     procedure Scale(ADeltaScaleX, ADeltaScaleY: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -507,7 +511,7 @@ type
     function  MoveToSubpart(ASubpart: Cardinal): TPathSegment;
     function  GetSubpartCount: Integer; override;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     procedure RenderInternalPolygon(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0);
@@ -534,7 +538,7 @@ type
     destructor Destroy; override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -562,7 +566,7 @@ type
   TvCircle = class(TvEntityWithPenAndBrush)
   public
     Radius: Double;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -576,7 +580,7 @@ type
     Radius: Double;
     {@@ The Angle is measured in degrees in relation to the positive X axis }
     StartAngle, EndAngle: Double;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -593,7 +597,7 @@ type
     {@@ The Angle is measured in degrees in relation to the positive X axis }
     Angle: Double;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -608,7 +612,7 @@ type
     // Corner rounding, zero indicates no rounding
     RX, RY: Double;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -622,7 +626,7 @@ type
     // All points of the polygon
     Points: array of T3DPoint;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -640,7 +644,7 @@ type
   public
     // Mandatory fields
     BaseLeft, BaseRight, DimensionLeft, DimensionRight: T3DPoint;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -656,7 +660,7 @@ type
     // Mandatory fields
     IsDiameter: Boolean; // If false, it is a radius, if true, it is a diameter
     Center, DimensionLeft, DimensionRight: T3DPoint; // Diameter uses both, Radius uses only DImensionLeft
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -672,7 +676,7 @@ type
     // Mandatory fields
     ArcValue, ArcRadius: Double; // ArcValue is in degrees
     TextPos, BaseLeft, BaseRight, DimensionLeft, DimensionRight: T3DPoint;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     procedure CalculateExtraArcInfo;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
@@ -701,7 +705,7 @@ type
     destructor Destroy; override;
     procedure CreateRGB888Image(AWidth, AHeight: Cardinal);
     procedure InitializeWithConvertionOf3DPointsToHeightMap(APage: TvVectorialPage; AWidth, AHeight: Integer);
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -714,7 +718,7 @@ type
     Pen: TvPen;
     {constructor Create; override;
     procedure ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo);
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;}
   end;
 
@@ -739,7 +743,7 @@ type
     ArrowLength: Double;
     ArrowBaseLength: Double;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -794,7 +798,7 @@ type
     function CalculateWidth(ADest: TFPCustomCanvas): Double; // in milimeters
     function AsText: string;
     procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double);
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     procedure GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer); virtual;
     class function GetPrecedenceFromKind(AKind: TvFormulaElementKind): Byte; // 0 is the smallest precedence
@@ -830,7 +834,7 @@ type
     function CalculateWidth(ADest: TFPCustomCanvas): Double; virtual; // in milimeters
     procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); override;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -843,7 +847,7 @@ type
     function CalculateWidth(ADest: TFPCustomCanvas): Double; override; // in milimeters
     procedure PositionSubparts(ADest: TFPCustomCanvas; ABaseX, ABaseY: Double); override;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     //function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -877,7 +881,7 @@ type
     function  RemoveEntity(AEntity: TvEntity; AFreeAfterRemove: Boolean = True): Boolean;
     procedure Rotate(AAngle: Double; ABase: T3DPoint); override;
     procedure Clear; override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
     function FindEntityWithReference(AEntity: TvEntity): Integer;
@@ -893,7 +897,7 @@ type
 
   TvBlock = class(TvEntityWithSubEntities)
   public
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
@@ -908,7 +912,7 @@ type
   public
     InsertEntity: TvEntity; // The entity to be inserted
     RotationAngle: Double; // in angles, normal is zero
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -949,7 +953,7 @@ type
     function AddField(AKind : TvFieldKind): TvField;
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -978,7 +982,7 @@ type
     function Level : Integer;
 
     {function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;}
   end;
@@ -1011,7 +1015,7 @@ type
     //function AddImage: TvImage;
     //
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
-    procedure Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
@@ -1224,6 +1228,7 @@ type
     MinX, MinY, MinZ, MaxX, MaxY, MaxZ: Double;
     // Other basic document information
     BackgroundColor: TFPColor;
+    RenderInfo: TvRenderInfo; // Prepared by the reader with info on how to draw the page
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); virtual;
     destructor Destroy; override;
@@ -1266,8 +1271,6 @@ type
     procedure AppendSegmentToTmpPath(ASegment: TPathSegment);
     procedure CallbackDeleteEntity(data,arg:pointer);
   public
-    RenderInfo: TvRenderInfo; // Prepared by the reader with info on how to draw the page
-    //
     Owner: TvVectorialDocument;
     { Base methods }
     constructor Create(AOwner: TvVectorialDocument); override;
@@ -2178,7 +2181,7 @@ begin
 end;
 
 procedure TvVerticalFormulaStack.Render(ADest: TFPCustomCanvas;
-  ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
+  var ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
   AMulY: Double);
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
@@ -2351,7 +2354,7 @@ begin
 
 end;
 
-procedure TvEntity.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvEntity.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
 
@@ -2437,7 +2440,20 @@ begin
   Pen.Width := APen.Width;
 end;
 
-procedure TvEntityWithPen.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvEntityWithPen.CalcEntityCanvasMinMaxXY(
+  var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
+begin
+  if ARenderInfo.EntityCanvasMinXY.X < 0 then ARenderInfo.EntityCanvasMinXY.X := APointX
+  else ARenderInfo.EntityCanvasMinXY.X := Min(ARenderInfo.EntityCanvasMinXY.X, APointX);
+  if ARenderInfo.EntityCanvasMinXY.Y < 0 then ARenderInfo.EntityCanvasMinXY.Y := APointY
+  else ARenderInfo.EntityCanvasMinXY.Y := Min(ARenderInfo.EntityCanvasMinXY.Y, APointY);
+  if ARenderInfo.EntityCanvasMaxXY.X < 0 then ARenderInfo.EntityCanvasMaxXY.X := APointX
+  else ARenderInfo.EntityCanvasMaxXY.X := Max(ARenderInfo.EntityCanvasMaxXY.X, APointX);
+  if ARenderInfo.EntityCanvasMaxXY.Y < 0 then ARenderInfo.EntityCanvasMaxXY.Y := APointY
+  else ARenderInfo.EntityCanvasMaxXY.Y := Max(ARenderInfo.EntityCanvasMaxXY.Y, APointY);
+end;
+
+procedure TvEntityWithPen.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
@@ -2466,7 +2482,7 @@ begin
 end;
 
 procedure TvEntityWithPenAndBrush.Render(ADest: TFPCustomCanvas;
-   ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
+   var ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   ApplyBrushToCanvas(ADest);
@@ -2542,7 +2558,7 @@ begin
 end;
 
 procedure TvEntityWithPenBrushAndFont.Render(ADest: TFPCustomCanvas;
-  ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
+  var ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
   AMulY: Double);
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
@@ -2862,7 +2878,7 @@ begin
   end;
 end;
 
-procedure TPath.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TPath.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -3279,7 +3295,7 @@ begin
   ABottom := Y;
 end;
 
-procedure TvText.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvText.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -3301,9 +3317,13 @@ var
   lText: string;
   {$ifdef USE_LCL_CANVAS}
   ACanvas: TCanvas absolute ADest;
+  lTextSize: TSize;
   {$endif}
 begin
   inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+
+  ARenderInfo.EntityCanvasMinXY := Point(-1, -1);
+  ARenderInfo.EntityCanvasMaxXY := Point(-1, -1);
 
   // Don't draw anything if we have alpha=zero
   if Font.Color.Alpha = 0 then Exit;
@@ -3340,7 +3360,13 @@ begin
     if not Render_Use_NextText_X then
       Render_NextText_X := CoordToCanvasX(X)+XAnchorAdjustment;
     ADest.TextOut(Render_NextText_X, Round(LowerDim.Y), lText);
-    Render_NextText_X := Render_NextText_X + ADest.TextWidth(lText);
+
+    CalcEntityCanvasMinMaxXY(ARenderInfo, Render_NextText_X, Round(LowerDim.Y));
+    lTextSize := ACanvas.TextExtent(lText);
+    CalcEntityCanvasMinMaxXY(ARenderInfo, Render_NextText_X+lTextSize.cx,
+      Round(LowerDim.Y)+lTextSize.cy);
+
+    Render_NextText_X := Render_NextText_X + lTextSize.cx;
   end;
 end;
 
@@ -3370,7 +3396,7 @@ end;
 
 { TvCircle }
 
-procedure TvCircle.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvCircle.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -3395,7 +3421,7 @@ end;
 
 { TvCircularArc }
 
-procedure TvCircularArc.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvCircularArc.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -3521,7 +3547,7 @@ begin
   end;
 end;
 
-procedure TvEllipse.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvEllipse.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -3590,7 +3616,7 @@ begin
   ABottom := Y - CY;
 end;
 
-procedure TvRectangle.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvRectangle.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -3658,7 +3684,7 @@ begin
   end;
 end;
 
-procedure TvPolygon.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
+procedure TvPolygon.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -3689,7 +3715,7 @@ end;
 
 { TvAlignedDimension }
 
-procedure TvAlignedDimension.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvAlignedDimension.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -3820,7 +3846,7 @@ end;
 
 { TvRadialDimension }
 
-procedure TvRadialDimension.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvRadialDimension.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -3932,7 +3958,7 @@ end;
 { TvArcDimension }
 
 procedure TvArcDimension.Render(ADest: TFPCustomCanvas;
-  ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
+  var ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
   AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -4122,7 +4148,7 @@ begin
 end;
 
 procedure TvRasterImage.Render(ADest: TFPCustomCanvas;
-  ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
+  var ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer; AMulX: Double;
   AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -4194,7 +4220,7 @@ begin
 
 end;
 
-procedure TvArrow.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvArrow.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -4426,7 +4452,7 @@ begin
   end;
 end;
 
-procedure TvFormulaElement.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvFormulaElement.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 
   function CoordToCanvasX(ACoord: Double): Integer;
@@ -4963,7 +4989,7 @@ begin
   ABottom := Y + ABottom;
 end;
 
-procedure TvFormula.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvFormula.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   lElement: TvFormulaElement;
@@ -5101,7 +5127,7 @@ begin
   FElements.Clear;
 end;
 
-procedure TvEntityWithSubEntities.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
+procedure TvEntityWithSubEntities.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   lEntity: TvEntity;
@@ -5207,7 +5233,7 @@ end;
 
 { TvInsert }
 
-procedure TvInsert.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvInsert.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   lEntity: TvEntity;
@@ -5248,7 +5274,7 @@ end;
 
 { TvBlock }
 
-procedure TvBlock.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; ADestX: Integer;
+procedure TvBlock.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   lEntity: TvEntity;
@@ -5343,7 +5369,7 @@ begin
   Result:=inherited TryToSelect(APos, ASubpart);
 end;
 
-procedure TvParagraph.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
+procedure TvParagraph.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   lCurWidth: Double = 0.0;
@@ -5490,7 +5516,7 @@ begin
   Result:=inherited TryToSelect(APos, ASubpart);
 end;
 
-procedure TvRichText.Render(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo;
+procedure TvRichText.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo;
   ADestX: Integer; ADestY: Integer; AMulX: Double; AMulY: Double);
 var
   lCurHeight: Double = 0.0;
@@ -6402,8 +6428,32 @@ end;
 
 procedure TvTextPageSequence.Render(ADest: TFPCustomCanvas; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
+var
+  i: Integer;
+  CurEntity: TvEntity;
+  CurY: Integer = 0;
 begin
+  {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+  WriteLn(':>TvTextPageSequence.Render');
+  {$endif}
+  CurY := ADestY;
 
+  for i := 0 to GetEntitiesCount - 1 do
+  begin
+    {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+    Write(Format('[Path] ID=%d', [i]));
+    {$endif}
+
+    CurEntity := GetEntity(i);
+
+    RenderInfo.BackgroundColor := BackgroundColor;
+    CurEntity.Render(ADest, RenderInfo, ADestX, CurY, AMulX, AMulY);
+    CurY := RenderInfo.EntityCanvasMaxXY.Y;
+  end;
+
+  {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
+  WriteLn(':<TvTextPageSequence.Render');
+  {$endif}
 end;
 
 procedure TvTextPageSequence.GenerateDebugTree(

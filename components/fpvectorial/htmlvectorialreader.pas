@@ -147,16 +147,12 @@ end;
 procedure TvHTMLVectorialReader.ReadFromXML(Doc: TXMLDocument;
   AData: TvVectorialDocument);
 var
-  lCurNode: TDOMNode;
+  lCurNode, lCurSubnode: TDOMNode;
   lPage: TvTextPageSequence;
   lNodeName, lNodeValue: DOMString;
   ANode: TDOMElement;
   i: Integer;
   lCurEntity: TvEntity;
-  lViewBox: TDoubleArray;
-  lStr: string;
-  lDocNeedsSizeAutoDetection: Boolean = True;
-  lx, ly, lx2, ly2: Double;
 begin
   {ANode := Doc.DocumentElement;
   for i := 0 to ANode.Attributes.Length - 1 do
@@ -175,9 +171,18 @@ begin
   while Assigned(lCurNode) do
   begin
     lNodeName := lCurNode.NodeName;
-    lCurEntity := ReadEntityFromNode(lCurNode, lPage, AData);
-    if lCurEntity <> nil then
-      lPage.AddEntity(lCurEntity);
+    if lNodeName = 'body' then
+    begin
+      lCurSubnode := lCurNode.FirstChild;
+      while Assigned(lCurSubnode) do
+      begin
+        lCurEntity := ReadEntityFromNode(lCurSubnode, lPage, AData);
+        if lCurEntity <> nil then
+          lPage.AddEntity(lCurEntity);
+
+        lCurSubnode := lCurSubnode.NextSibling;
+      end;
+    end;
 
     lCurNode := lCurNode.NextSibling;
   end;
