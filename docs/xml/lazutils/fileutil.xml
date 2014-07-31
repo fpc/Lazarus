@@ -373,7 +373,7 @@
           <var>DeleteDirectory</var> - Delete the named directory (or only its contents if  
           
           
-          <var>OnlyChilds</var> is True)</short>
+          <var>OnlyChildren</var> is True)</short>
         <errors>If there was an error, such as trying to removing . or .., or there were insufficient permissions, or the file did not exist, False is returned</errors>
       </element>
       <!-- function result Visibility: default -->
@@ -385,7 +385,7 @@
         <short>The name of the directory for processing</short>
       </element>
       <!-- argument Visibility: default -->
-      <element name="DeleteDirectory.OnlyChilds">
+      <element name="DeleteDirectory.OnlyChildren">
         <short>If True, only the contents ('children') of the directory are removed</short>
       </element>
       <!-- function Visibility: default -->
