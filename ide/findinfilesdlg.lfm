@@ -90,7 +90,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     OnClick = WhereRadioGroupClick
     TabOrder = 4
   end
-  object DirectoryOptionsGroupBox: TGroupBox
+  object DirectoriesOptionsGroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = WhereRadioGroup
     AnchorSideTop.Side = asrBottom
@@ -103,13 +103,13 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
-    Caption = 'Directory Options'
+    Caption = 'Directories'
     ClientHeight = 108
     ClientWidth = 445
     Enabled = False
     TabOrder = 5
     object DirectoriesLabel: TLabel
-      AnchorSideLeft.Control = DirectoryOptionsGroupBox
+      AnchorSideLeft.Control = DirectoriesOptionsGroupBox
       AnchorSideTop.Control = DirectoriesComboBox
       AnchorSideTop.Side = asrCenter
       Left = 6
@@ -122,7 +122,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       ParentColor = False
     end
     object FileMaskLabel: TLabel
-      AnchorSideLeft.Control = DirectoryOptionsGroupBox
+      AnchorSideLeft.Control = DirectoriesOptionsGroupBox
       AnchorSideTop.Control = DirectoriesComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6
@@ -138,7 +138,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     object DirectoriesComboBox: TComboBox
       AnchorSideLeft.Control = DirectoriesLabel
       AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = DirectoryOptionsGroupBox
+      AnchorSideTop.Control = DirectoriesOptionsGroupBox
       AnchorSideRight.Control = DirectoriesBrowse
       Left = 77
       Height = 27
@@ -156,7 +156,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
     object DirectoriesBrowse: TBitBtn
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = DirectoriesComboBox
-      AnchorSideRight.Control = DirectoryOptionsGroupBox
+      AnchorSideRight.Control = DirectoriesOptionsGroupBox
       AnchorSideRight.Side = asrBottom
       Left = 418
       Height = 27
@@ -188,7 +188,7 @@ object LazFindInFilesDialog: TLazFindInFilesDialog
       Text = '*.pas;*.pp;*.inc'
     end
     object IncludeSubDirsCheckBox: TCheckBox
-      AnchorSideLeft.Control = DirectoryOptionsGroupBox
+      AnchorSideLeft.Control = DirectoriesOptionsGroupBox
       AnchorSideTop.Control = FileMaskComboBox
       AnchorSideTop.Side = asrBottom
       Left = 6

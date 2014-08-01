@@ -39,7 +39,7 @@ type
     DirectoriesComboBox: TComboBox;
     DirectoriesLabel: TLabel;
     FileMaskLabel: TLabel;
-    DirectoryOptionsGroupBox: TGroupBox;
+    DirectoriesOptionsGroupBox: TGroupBox;
     OptionsCheckGroupBox: TCheckGroup;
     SelectDirectoryDialog: TSelectDirectoryDialog;
     TextToFindComboBox: TComboBox;
@@ -121,7 +121,7 @@ end;
 
 procedure TLazFindInFilesDialog.WhereRadioGroupClick(Sender: TObject);
 begin
-  DirectoryOptionsGroupBox.Enabled := (WhereRadioGroup.ItemIndex = ItemIndDirectories)
+  DirectoriesOptionsGroupBox.Enabled := (WhereRadioGroup.ItemIndex = ItemIndDirectories)
 end;
 
 procedure TLazFindInFilesDialog.DirectoriesBrowseClick(Sender: TObject);
@@ -174,9 +174,9 @@ begin
   WhereRadioGroup.Items[ItemIndDirectories] := lisFindFilesearchInDirectories;
   WhereRadioGroup.Items[ItemIndActiveFile]  := lisFindFilesearchInActiveFile;
 
-  DirectoryOptionsGroupBox.Caption := lisFindFileDirectoryOptions;
+  DirectoriesOptionsGroupBox.Caption := lisDirectories;
   DirectoriesComboBox.Hint:=lisMultipleDirectoriesAreSeparatedWithSemicolons;
-  DirectoriesLabel.Caption := lisFindFileDirectory;
+  DirectoriesLabel.Caption := lisFindFileDirectories;
   FileMaskLabel.Caption := lisFindFileFileMask;
 
   IncludeSubDirsCheckBox.Caption := lisFindFileIncludeSubDirectories;
@@ -187,7 +187,7 @@ begin
   ReplaceCheckBox.Enabled:=true;
 
   UpdateReplaceCheck;
-  DirectoryOptionsGroupBox.Enabled:=WhereRadioGroup.ItemIndex=ItemIndDirectories;
+  DirectoriesOptionsGroupBox.Enabled:=WhereRadioGroup.ItemIndex=ItemIndDirectories;
 
   AutoSize:=IDEDialogLayoutList.Find(Self,false)=nil;
   IDEDialogLayoutList.ApplyLayout(Self);
@@ -229,7 +229,7 @@ begin
   OptionsCheckGroupBox.Checked[1] := fifWholeWord in NewOptions;
   OptionsCheckGroupBox.Checked[2] := fifRegExpr in NewOptions;
   OptionsCheckGroupBox.Checked[3] := fifMultiLine in NewOptions;
-  DirectoryOptionsGroupBox.Enabled := fifSearchDirectories in NewOptions;
+  DirectoriesOptionsGroupBox.Enabled := fifSearchDirectories in NewOptions;
   IncludeSubDirsCheckBox.Checked := fifIncludeSubDirs in NewOptions;
   ReplaceCheckBox.Checked := [fifReplace,fifReplaceAll]*NewOptions<>[];
   

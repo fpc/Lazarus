@@ -3746,10 +3746,10 @@ resourcestring
   lisFindFilesearchAllOpenFiles = 'search all &open files';
   lisFindFilesearchInActiveFile = 'search in &active file';
   lisFindFilesearchInDirectories = 'search in &directories';
-  lisFindFileDirectoryOptions = 'Directory options';
-  lisFindFileDirectory = 'D&irectory';
+  lisFindFileDirectories = 'D&irectories';
   lisMultipleDirectoriesAreSeparatedWithSemicolons = 'Multiple directories are'
     +' separated with semicolons';
+  lisDirectories = 'Directories';
   lisFindFileFileMask = 'Fi&le mask';
   lisFindFileIncludeSubDirectories = 'Include &sub directories';
   lisFindFileOnlyTextFiles = 'Only text files';
