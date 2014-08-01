@@ -1072,6 +1072,7 @@ procedure TFileSearcher.Search(ASearchPath: String; ASearchMask: String;
   ASearchSubDirs: Boolean; CaseSensitive: Boolean = False);
 var
   MaskList: TMaskList;
+  SearchDirectories: TStringList;
 
   procedure DoSearch(const APath: String; const ALevel: Integer);
   var
@@ -1140,6 +1141,8 @@ var
 var
   p: SizeInt;
   Dir: String;
+  i: Integer;
+  OtherDir: String;
 begin
   if FSearching then RaiseSearchingError;
 
@@ -1149,6 +1152,7 @@ begin
     FreeAndNil(MaskList);
 
   FSearching := True;
+  SearchDirectories:=TStringList.Create;
   try
     while ASearchPath<>'' do begin
       p:=Pos(';',ASearchPath);
@@ -1156,10 +1160,29 @@ begin
         p:=length(ASearchPath)+1;
       Dir:=TrimFilename(LeftStr(ASearchPath,p-1));
       Delete(ASearchPath,1,p);
+      if Dir='' then continue;
+      Dir:=ChompPathDelim(Dir);
+      for i:=SearchDirectories.Count-1 downto 0 do
+      begin
+        OtherDir:=SearchDirectories[i];
+        if (CompareFilenames(Dir,OtherDir)=0)
+        or (FileIsInPath(Dir,OtherDir)) then
+        begin
+          // directory Dir is already searched
+          Dir:='';
+          break;
+        end;
+        if FileIsInPath(OtherDir,Dir) then
+          // directory Dir includes the old directory => delete
+          SearchDirectories.Delete(i);
+      end;
       if Dir<>'' then
-        DoSearch(AppendPathDelim(Dir), 0);
+        SearchDirectories.Add(Dir);
     end;
+    for i:=0 to SearchDirectories.Count-1 do
+      DoSearch(AppendPathDelim(SearchDirectories[i]), 0);
   finally
+    SearchDirectories.Free;
     FSearching := False;
     if MaskList <> nil then MaskList.Free;
   end;
