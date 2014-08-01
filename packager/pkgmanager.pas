@@ -62,7 +62,7 @@ uses
   Project, ComponentReg, OldCustomCompDlg, PackageEditor, AddToPackageDlg,
   PackageDefs, PackageLinks, PackageSystem, OpenInstalledPkgDlg,
   PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
-  IDETranslations, TransferMacros, BuildLazDialog, NewDialog,
+  IDETranslations, TransferMacros, BuildLazDialog, NewDialog, FindInFilesDlg,
   IDEDialogs, UnitResources, ProjectInspector, ComponentPalette, SourceEditor,
   AddFileToAPackageDlg, LazarusPackageIntf, PublishProjectDlg, PkgLinksDlg,
   InstallPkgSetDlg, ConfirmPkgListDlg, NewPkgComponentDlg,
@@ -94,6 +94,8 @@ type
     function OnPackageEditorDragOverTreeView(Sender, Source: TObject;
       X, Y: Integer; out TargetTVNode: TTreeNode;
       out TargetTVType: TTreeViewInsertMarkType): boolean;
+    function OnPackageEditorFindInFiles(Sender: TObject; APackage: TLazPackage
+      ): TModalResult;
     function OnPackageEditorInstallPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
     function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage): TModalResult;
@@ -240,6 +242,7 @@ type
                         InObject: TObject): TPkgFile; override;
     function SearchUnitInDesigntimePackages(const AnUnitName: string;
                         InObject: TObject): TPkgFile; override;
+    function ShowFindInPackageFilesDlg(APackage: TLazPackage): TModalResult;
 
     // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
@@ -866,6 +869,12 @@ var
 begin
   Result:=CheckDrag(Sender, Source, X, Y, TargetFilesEdit, SrcFilesEdit, aFileCount,
     aDependencyCount, aDirectoryCount, TargetTVNode, TargetTVType);
+end;
+
+function TPkgManager.OnPackageEditorFindInFiles(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  Result:=ShowFindInPackageFilesDlg(APackage);
 end;
 
 function TPkgManager.OnPackageEditorAddToProject(Sender: TObject;
@@ -2937,6 +2946,7 @@ begin
   PackageEditors.OnDeleteAmbiguousFiles:=@OnPackageEditorDeleteAmbiguousFiles;
   PackageEditors.OnDragDropTreeView:=@OnPackageEditorDragDropTreeView;
   PackageEditors.OnDragOverTreeView:=@OnPackageEditorDragOverTreeView;
+  PackageEditors.OnShowFindInFiles:=@OnPackageEditorFindInFiles;
   PackageEditors.OnFreeEditor:=@OnPackageEditorFreeEditor;
   PackageEditors.OnGetIDEFileInfo:=@MainIDE.GetIDEFileState;
   PackageEditors.OnGetUnitRegisterInfo:=@OnPackageEditorGetUnitRegisterInfo;
@@ -4958,6 +4968,17 @@ begin
     if Result<>nil then exit;
   end;
   Result:=nil;
+end;
+
+function TPkgManager.ShowFindInPackageFilesDlg(APackage: TLazPackage
+  ): TModalResult;
+var
+  Dlg: TLazFindInFilesDialog;
+begin
+  Result:=mrOk;
+  Dlg:=FindInFilesDialog;
+  Dlg.DirectoriesComboBox.Text:='';
+  Dlg.FindInFilesPerDialog(Project1);
 end;
 
 function TPkgManager.AddDependencyToUnitOwners(const OwnedFilename,

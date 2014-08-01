@@ -77,6 +77,7 @@ var
   PkgEditMenuCleanDependencies: TIDEMenuCommand;
 
   // all files
+  PkgEditMenuFindInFiles: TIDEMenuCommand;
   PkgEditMenuSortFiles: TIDEMenuCommand;
   PkgEditMenuFixFilesCase: TIDEMenuCommand;
   PkgEditMenuShowMissingFiles: TIDEMenuCommand;
@@ -96,6 +97,7 @@ var
   PkgEditMenuViewPackageSource: TIDEMenuCommand;
 
 type
+  TOnPkgEvent = function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnAddPkgToProject =
     function(Sender: TObject; APackage: TLazPackage;
              OnlyTestIfPossible: boolean): TModalResult of object;
@@ -104,35 +106,17 @@ type
              CompileClean, CompileRequired: boolean): TModalResult of object;
   TOnCreateNewPkgFile =
     function(Sender: TObject; Params: TAddToPkgResult): TModalResult  of object;
-  TOnCreatePkgFpmakeFile =
-    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
-  TOnCreatePkgMakefile =
-    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnDeleteAmbiguousFiles =
     function(Sender: TObject; APackage: TLazPackage;
              const Filename: string): TModalResult of object;
   TOnFreePkgEditor = procedure(APackage: TLazPackage) of object;
-  TOnInstallPackage =
-    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnOpenFile =
     function(Sender: TObject; const Filename: string): TModalResult of object;
-  TOnOpenPackage =
-    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnOpenPkgFile =
     function(Sender: TObject; PkgFile: TPkgFile): TModalResult of object;
-  TOnPublishPackage =
-    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
-  TOnRevertPackage =
-    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnSavePackage =
     function(Sender: TObject; APackage: TLazPackage;
              SaveAs: boolean): TModalResult of object;
-  TOnUninstallPackage =
-    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
-  TOnViewPackageSource =
-    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
-  TOnViewPackageToDos =
-    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
 
   TPENodeType = (
     penFile,
@@ -251,6 +235,7 @@ type
     procedure DisableI18NForLFMCheckBoxChange(Sender: TObject);
     procedure EditVirtualUnitMenuItemClick(Sender: TObject);
     procedure ExpandDirectoryMenuItemClick(Sender: TObject);
+    procedure FindInFilesMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
@@ -348,6 +333,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoCompile(CompileClean, CompileRequired: boolean);
+    procedure DoFindInFiles;
     procedure DoFixFilesCase;
     procedure DoShowMissingFiles;
     procedure DoMoveCurrentFile(Offset: integer);
@@ -404,24 +390,25 @@ type
     FOnCompilePackage: TOnCompilePackage;
     FOnCopyMoveFiles: TNotifyEvent;
     FOnCreateNewFile: TOnCreateNewPkgFile;
-    FOnCreateMakefile: TOnCreatePkgMakefile;
-    FOnCreateFpmakeFile: TOnCreatePkgFpmakeFile;
+    FOnCreateMakefile: TOnPkgEvent;
+    FOnCreateFpmakeFile: TOnPkgEvent;
     FOnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles;
     FOnDragDropTreeView: TDragDropEvent;
     FOnDragOverTreeView: TOnDragOverTreeView;
+    FOnShowFindInFiles: TOnPkgEvent;
     FOnFreeEditor: TOnFreePkgEditor;
     FOnGetIDEFileInfo: TGetIDEFileStateEvent;
     FOnGetUnitRegisterInfo: TOnGetUnitRegisterInfo;
-    FOnInstallPackage: TOnInstallPackage;
+    FOnInstallPackage: TOnPkgEvent;
     FOnOpenFile: TOnOpenFile;
-    FOnOpenPackage: TOnOpenPackage;
+    FOnOpenPackage: TOnPkgEvent;
     FOnOpenPkgFile: TOnOpenPkgFile;
-    FOnPublishPackage: TOnPublishPackage;
-    FOnRevertPackage: TOnRevertPackage;
+    FOnPublishPackage: TOnPkgEvent;
+    FOnRevertPackage: TOnPkgEvent;
     FOnSavePackage: TOnSavePackage;
-    FOnUninstallPackage: TOnUninstallPackage;
-    FOnViewPackageSource: TOnViewPackageSource;
-    FOnViewPackageToDos: TOnViewPackageToDos;
+    FOnUninstallPackage: TOnPkgEvent;
+    FOnViewPackageSource: TOnPkgEvent;
+    FOnViewPackageToDos: TOnPkgEvent;
     function GetEditors(Index: integer): TPackageEditorForm;
   public
     constructor Create;
@@ -449,6 +436,7 @@ type
     function UninstallPackage(APackage: TLazPackage): TModalResult;
     function ViewPkgSource(APackage: TLazPackage): TModalResult;
     function ViewPkgToDos(APackage: TLazPackage): TModalResult;
+    function FindInFiles(APackage: TLazPackage): TModalResult;
     function DeleteAmbiguousFiles(APackage: TLazPackage;
                                   const Filename: string): TModalResult;
     function AddToProject(APackage: TLazPackage;
@@ -468,10 +456,10 @@ type
                                                  write FOnCompilePackage;
     property OnCopyMoveFiles: TNotifyEvent read FOnCopyMoveFiles
                                            write FOnCopyMoveFiles;
-    property OnCreateMakeFile: TOnCreatePkgMakefile read FOnCreateMakefile
-                                                     write FOnCreateMakefile;
-    property OnCreateFpmakeFile: TOnCreatePkgFpmakeFile read FOnCreateFpmakeFile
+    property OnCreateFpmakeFile: TOnPkgEvent read FOnCreateFpmakeFile
                                                      write FOnCreateFpmakeFile;
+    property OnCreateMakeFile: TOnPkgEvent read FOnCreateMakefile
+                                                     write FOnCreateMakefile;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
                                                   write FOnCreateNewFile;
     property OnDeleteAmbiguousFiles: TOnDeleteAmbiguousFiles
@@ -480,30 +468,31 @@ type
                                                       write FOnDragDropTreeView;
     property OnDragOverTreeView: TOnDragOverTreeView read FOnDragOverTreeView
                                                       write FOnDragOverTreeView;
+    property OnShowFindInFiles: TOnPkgEvent read FOnShowFindInFiles write FOnShowFindInFiles;
     property OnFreeEditor: TOnFreePkgEditor read FOnFreeEditor
                                             write FOnFreeEditor;
     property OnGetIDEFileInfo: TGetIDEFileStateEvent read FOnGetIDEFileInfo
                                                      write FOnGetIDEFileInfo;
     property OnGetUnitRegisterInfo: TOnGetUnitRegisterInfo
                        read FOnGetUnitRegisterInfo write FOnGetUnitRegisterInfo;
-    property OnInstallPackage: TOnInstallPackage read FOnInstallPackage
+    property OnInstallPackage: TOnPkgEvent read FOnInstallPackage
                                                  write FOnInstallPackage;
     property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
-    property OnOpenPackage: TOnOpenPackage read FOnOpenPackage
+    property OnOpenPackage: TOnPkgEvent read FOnOpenPackage
                                            write FOnOpenPackage;
     property OnOpenPkgFile: TOnOpenPkgFile read FOnOpenPkgFile
                                            write FOnOpenPkgFile;
-    property OnPublishPackage: TOnPublishPackage read FOnPublishPackage
+    property OnPublishPackage: TOnPkgEvent read FOnPublishPackage
                                                write FOnPublishPackage;
-    property OnRevertPackage: TOnRevertPackage read FOnRevertPackage
+    property OnRevertPackage: TOnPkgEvent read FOnRevertPackage
                                                write FOnRevertPackage;
     property OnSavePackage: TOnSavePackage read FOnSavePackage
                                            write FOnSavePackage;
-    property OnUninstallPackage: TOnUninstallPackage read FOnUninstallPackage
+    property OnUninstallPackage: TOnPkgEvent read FOnUninstallPackage
                                                  write FOnUninstallPackage;
-    property OnViewPackageSource: TOnViewPackageSource read FOnViewPackageSource
+    property OnViewPackageSource: TOnPkgEvent read FOnViewPackageSource
                                                  write FOnViewPackageSource;
-    property OnViewPackageToDos: TOnViewPackageToDos read FOnViewPackageToDos
+    property OnViewPackageToDos: TOnPkgEvent read FOnViewPackageToDos
                                                  write FOnViewPackageToDos;
   end;
   
@@ -571,6 +560,7 @@ begin
   // register the section for operations on all files
   PkgEditMenuSectionFiles:=RegisterIDEMenuSection(PackageEditorMenuRoot,'Files');
   AParent:=PkgEditMenuSectionFiles;
+  PkgEditMenuFindInFiles:=RegisterIDEMenuCommand(AParent,'Find in files',srkmecFindInFiles);
   PkgEditMenuSortFiles:=RegisterIDEMenuCommand(AParent,'Sort Files Permanently',lisPESortFiles);
   PkgEditMenuFixFilesCase:=RegisterIDEMenuCommand(AParent,'Fix Files Case',lisPEFixFilesCase);
   PkgEditMenuShowMissingFiles:=RegisterIDEMenuCommand(AParent, 'Show Missing Files', lisPEShowMissingFiles);
@@ -901,6 +891,7 @@ begin
     PkgEditMenuSectionFileType.Clear;
 
     // under section PkgEditMenuSectionFiles
+    SetItem(PkgEditMenuFindInFiles,@FindInFilesMenuItemClick);
     SetItem(PkgEditMenuSortFiles,@SortFilesMenuItemClick,(LazPackage.FileCount>1),Writable);
     SetItem(PkgEditMenuFixFilesCase,@FixFilesCaseMenuItemClick,(LazPackage.FileCount>0),Writable);
     SetItem(PkgEditMenuShowMissingFiles,@ShowMissingFilesMenuItemClick,(LazPackage.FileCount>0),Writable);
@@ -1307,6 +1298,11 @@ end;
 procedure TPackageEditorForm.ExpandDirectoryMenuItemClick(Sender: TObject);
 begin
   DoExpandDirectory;
+end;
+
+procedure TPackageEditorForm.FindInFilesMenuItemClick(Sender: TObject);
+begin
+  DoFindInFiles;
 end;
 
 procedure TPackageEditorForm.FormCreate(Sender: TObject);
@@ -3007,6 +3003,11 @@ begin
   UpdateStatusBar;
 end;
 
+procedure TPackageEditorForm.DoFindInFiles;
+begin
+  PackageEditors.FindInFiles(LazPackage);
+end;
+
 procedure TPackageEditorForm.DoRevert;
 begin
   if MessageDlg(lisPkgEditRevertPackage,
@@ -3347,6 +3348,14 @@ function TPackageEditors.ViewPkgToDos(APackage: TLazPackage): TModalResult;
 begin
   if Assigned(OnViewPackageToDos) then
     Result:=OnViewPackageToDos(Self,APackage)
+  else
+    Result:=mrCancel;
+end;
+
+function TPackageEditors.FindInFiles(APackage: TLazPackage): TModalResult;
+begin
+  if Assigned(OnShowFindInFiles) then
+    Result:=OnShowFindInFiles(Self,APackage)
   else
     Result:=mrCancel;
 end;

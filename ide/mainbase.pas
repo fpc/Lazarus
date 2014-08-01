@@ -1516,20 +1516,6 @@ begin
   end;
 end;
 
-//function TMainIDEBase.DoJumpToCodePos(ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
-//  NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer; AddJumpPoint: boolean;
-//  FocusEditor: Boolean; MarkLine: Boolean): TModalResult;
-//var
-//  Flags: TJumpToCodePosFlags;
-//begin
-//  Flags := [];
-//  if FocusEditor then Include(Flags, jfFocusEditor);
-//  if AddJumpPoint then Include(Flags, jfAddJumpPoint);
-//  if MarkLine then Include(Flags, jfMarkLine);
-//  DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo, NewSource, NewX, NewY, NewTopLine,
-//    Flags)
-//end;
-
 procedure TMainIDEBase.FindInFilesPerDialog(AProject: TProject);
 begin
   FindInFilesDialog.FindInFilesPerDialog(AProject);

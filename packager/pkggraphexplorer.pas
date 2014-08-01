@@ -78,7 +78,7 @@ type
     procedure UninstallMenuItemClick(Sender: TObject);
   private
     FOnOpenProject: TOnOpenProject;
-    FOnUninstallPackage: TOnUninstallPackage;
+    FOnUninstallPackage: TOnPkgEvent;
     ImgIndexProject: integer;
     ImgIndexPackage: integer;
     ImgIndexInstallPackage: integer;
@@ -86,7 +86,7 @@ type
     ImgIndexUninstallPackage: integer;
     ImgIndexCyclePackage: integer;
     ImgIndexMissingPackage: integer;
-    FOnOpenPackage: TOnOpenPackage;
+    FOnOpenPackage: TOnPkgEvent;
     FChangedDuringLock: boolean;
     FUpdateLock: integer;
     FUpdatingSelection: boolean;
@@ -115,9 +115,9 @@ type
     function FindLvlGraphNodeWithText(const s: string): TLvlGraphNode;
     procedure ShowPath(PathList: TFPList);
   public
-    property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
+    property OnOpenPackage: TOnPkgEvent read FOnOpenPackage write FOnOpenPackage;
     property OnOpenProject: TOnOpenProject read FOnOpenProject write FOnOpenProject;
-    property OnUninstallPackage: TOnUninstallPackage read FOnUninstallPackage
+    property OnUninstallPackage: TOnPkgEvent read FOnUninstallPackage
                                                     write FOnUninstallPackage;
   end;
   
