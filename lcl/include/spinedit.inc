@@ -113,8 +113,13 @@ begin
 end;
 
 procedure TCustomFloatSpinEdit.SetValue(const AValue: Double);
+var
+  ValueFromText: Extended;
 begin
-  if FValue = AValue then Exit;
+  if (FValue = AValue)
+    //if you set text by code (or paste it) and text is not a valid float, then FValue will hold the previous value
+    //and in that case we should not exit here...
+    and (TryStrToFloat(Text, ValueFromText) and (ValueFromText = FValue)) then Exit;
   FValue := AValue;
   
   // clear FValueChanged to prevent getting the old value from the widget
