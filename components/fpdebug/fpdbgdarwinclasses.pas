@@ -110,6 +110,7 @@ type
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     function AddWatchpoint(AnAddr: TDBGPtr): integer; override;
     function RemoveWatchpoint(AnId: integer): boolean; override;
+    function DetectHardwareWatchpoint: integer; override;
     procedure BeforeContinue; override;
     procedure LoadRegisterValues; override;
   end;
@@ -247,6 +248,7 @@ begin
     Log('Failed to call thread_get_state for thread %d. Mach error: '+mach_error_string(aKernResult),[Id]);
     end;
   FRegisterValueListValid:=false;
+  FDebugStateRead:=false;
 end;
 
 function TDbgDarwinThread.ReadDebugState: boolean;
@@ -421,9 +423,28 @@ begin
     exit;
 
   if Process.Mode=dm32 then
-    RemoveBreakpoint32(AnId)
+    result := RemoveBreakpoint32(AnId)
   else
-    RemoveBreakpoint64(AnId);
+    result := RemoveBreakpoint64(AnId);
+end;
+
+function TDbgDarwinThread.DetectHardwareWatchpoint: integer;
+var
+  dr6: DWord;
+begin
+  result := -1;
+  if ReadDebugState then
+    begin
+    if Process.Mode=dm32 then
+      dr6 := FDebugState32.__dr6
+    else
+      dr6 := lo(FDebugState64.__dr6);
+
+    if dr6 and 1 = 1 then result := 0
+    else if dr6 and 2 = 2 then result := 1
+    else if dr6 and 4 = 4 then result := 2
+    else if dr6 and 8 = 8 then result := 3;
+    end;
 end;
 
 procedure TDbgDarwinThread.BeforeContinue;
@@ -431,6 +452,15 @@ var
   aKernResult: kern_return_t;
   old_StateCnt: mach_msg_Type_number_t;
 begin
+  if Process.CurrentWatchpoint>-1 then
+    begin
+    if Process.Mode=dm32 then
+      FDebugState32.__dr6:=0
+    else
+      FDebugState64.__dr6:=0;
+    FDebugStateChanged:=true;
+    end;
+
   if FDebugStateRead and FDebugStateChanged then
   begin
     if Process.Mode=dm32 then

@@ -149,6 +149,7 @@ type
     procedure BeforeContinue; virtual;
     function AddWatchpoint(AnAddr: TDBGPtr): integer; virtual;
     function RemoveWatchpoint(AnId: integer): boolean; virtual;
+    function DetectHardwareWatchpoint: integer; virtual;
     procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); virtual;
     procedure ClearCallStack;
     destructor Destroy; override;
@@ -239,6 +240,7 @@ type
   protected
     FCurrentBreakpoint: TDbgBreakpoint;  // set if we are executing the code at the break
                                          // if the singlestep is done, set the break again
+    FCurrentWatchpoint: integer;
     FReEnableBreakStep: Boolean;         // Set when we are reenabling a breakpoint
                                          // We need a single step, so the IP is after the break to set
 
@@ -301,6 +303,7 @@ type
     property ThreadID: integer read FThreadID;
     property ExitCode: DWord read FExitCode;
     property CurrentBreakpoint: TDbgBreakpoint read FCurrentBreakpoint;
+    property CurrentWatchpoint: integer read FCurrentWatchpoint;
 
     // Properties valid when last event was an deException
     property ExceptionMessage: string read FExceptionMessage write FExceptionMessage;
@@ -659,6 +662,7 @@ begin
   FLibMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgLibrary));
   FBreakMap := TMap.Create(MAP_ID_SIZE, SizeOf(TDbgBreakpoint));
   FCurrentBreakpoint := nil;
+  FCurrentWatchpoint := -1;
 
   FSymInstances := TList.Create;
 
@@ -811,11 +815,12 @@ begin
 
     // Determine the address where the execution has stopped
     CurrentAddr:=GetInstructionPointerRegisterValue;
-    if not (FMainThread.NextIsSingleStep or assigned(FCurrentBreakpoint)) then
+    FCurrentWatchpoint:=AThread.DetectHardwareWatchpoint;
+    if not (FMainThread.NextIsSingleStep or assigned(FCurrentBreakpoint) or (FCurrentWatchpoint>-1)) then
     begin
-      // The debugger did not stop due to single-stepping, so a breakpoint has
-      // been hit. But breakpoints stop *after* they have been hit. So the
-      // decrement the CurrentAddr.
+      // The debugger did not stop due to single-stepping or a watchpoint,
+      // so a breakpoint has been hit. But breakpoints stop *after* they
+      // have been hit. So decrement the CurrentAddr.
       FMainThread.FNeedIPDecrement:=true;
       dec(CurrentAddr);
     end
@@ -1071,6 +1076,11 @@ function TDbgThread.RemoveWatchpoint(AnId: integer): boolean;
 begin
   FProcess.log('Hardware watchpoints are not available: '+self.classname);
   result := false;
+end;
+
+function TDbgThread.DetectHardwareWatchpoint: integer;
+begin
+  result := -1;
 end;
 
 procedure TDbgThread.PrepareCallStackEntryList(AFrameRequired: Integer);
