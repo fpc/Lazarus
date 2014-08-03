@@ -616,8 +616,10 @@ var
   {$IFDEF lazcanvas_profiling}
   lTimeStart: TDateTime;
   {$ENDIF}
+  {$ifdef lazcanvas_new_fast_copy}
   lScanlineSrc, lScanlineDest: PByte;
   lBytesPerPixel: Byte;
+  {$ENDIF}
 begin
   {$IFDEF lazcanvas_profiling}
   lTimeStart := NowUTC();
