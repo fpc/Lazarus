@@ -79,8 +79,15 @@ type
     FInto: boolean;
     FHiddenWatchpointInto: integer;
     FHiddenWatchpointOut: integer;
+    FHiddenWatchpointOutStackbase: integer;
+    FLastStackPointerValue: TDBGPtr;
+    FLastStackBaseValue: TDBGPtr;
+    FAssumedProcStartStackPointer: TDBGPtr;
+    FHiddenBreakpoint: TDbgBreakpoint;
+    FInstCount: integer;
   public
     constructor Create(AController: TDbgController); override;
+    destructor Destroy; override;
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
     procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); override;
   end;
@@ -197,9 +204,28 @@ begin
   inherited Create(AController);
   FHiddenWatchpointInto:=-1;
   FHiddenWatchpointOut:=-1;
+  FHiddenWatchpointOutStackbase:=-1;
+end;
+
+destructor TDbgControllerStepIntoLineCmd.Destroy;
+begin
+  if assigned(FHiddenBreakpoint) then
+    begin
+    FController.CurrentProcess.RemoveBreak(FHiddenBreakpoint.Location);
+    FreeAndNil(FHiddenBreakpoint);
+    end;
+  inherited Destroy;
 end;
 
 procedure TDbgControllerStepIntoLineCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
+
+var
+  CodeBin: array[0..20] of byte;
+  p: pointer;
+  ADump,
+  AStatement: string;
+  ALocation: TDBGPtr;
+
 begin
   if not FInfoStored then
   begin
@@ -208,42 +234,94 @@ begin
     AThread.StoreStepInfo;
   end;
 
-  AProcess.Continue(AProcess, AThread, not FInto);
+  if not FInto then
+  begin
+    if AProcess.ReadData(aProcess.GetInstructionPointerRegisterValue,sizeof(CodeBin),CodeBin) then
+    begin
+      p := @CodeBin;
+      Disassemble(p, AProcess.Mode=dm64, ADump, AStatement);
+      if (copy(AStatement,1,4)='call') then
+        begin
+        FInto := true;
+        FInstCount := 0;
+
+        ALocation := AProcess.GetInstructionPointerRegisterValue+(PtrUInt(p)-PtrUInt(@codebin));
+        if not AProcess.HasBreak(ALocation) then
+          FHiddenBreakpoint := AProcess.AddBreak(ALocation);
+
+        AProcess.Continue(AProcess, AThread, true);
+        exit;
+        end;
+    end;
+  end;
+
+  AProcess.Continue(AProcess, AThread, (FHiddenWatchpointInto=-1) and (FHiddenWatchpointOut=-1));
 end;
 
 procedure TDbgControllerStepIntoLineCmd.ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean);
+
+var
+  AStackPointerValue: TDBGPtr;
+  AStackBasePointerValue: TDBGPtr;
+
+  procedure SetHWBreakpoints;
+  var
+    OutStackPos: TDBGPtr;
+    StackBasePos: TDBGPtr;
+    IntoStackPos: TDBGPtr;
+  begin
+    IntoStackPos:=AStackPointerValue-DBGPTRSIZE[FController.FCurrentProcess.Mode];
+    OutStackPos:=FAssumedProcStartStackPointer;
+    StackBasePos:=AStackBasePointerValue;
+
+    FHiddenWatchpointInto := FController.FCurrentThread.AddWatchpoint(IntoStackPos);
+    FHiddenWatchpointOut := FController.FCurrentThread.AddWatchpoint(OutStackPos);
+    FHiddenWatchpointOutStackbase := FController.FCurrentThread.AddWatchpoint(StackBasePos);
+  end;
+
 begin
   if (FHiddenWatchpointOut<>-1) and FController.FCurrentThread.RemoveWatchpoint(FHiddenWatchpointOut) then
     FHiddenWatchpointOut:=-1;
   if (FHiddenWatchpointInto<>-1) and FController.FCurrentThread.RemoveWatchpoint(FHiddenWatchpointInto) then
     FHiddenWatchpointInto:=-1;
+  if (FHiddenWatchpointOutStackbase<>-1) and FController.FCurrentThread.RemoveWatchpoint(FHiddenWatchpointOutStackbase) then
+    FHiddenWatchpointOutStackbase:=-1;
+
+  AStackPointerValue:=FController.CurrentProcess.GetStackPointerRegisterValue;
+  AStackBasePointerValue:=FController.CurrentProcess.GetStackBasePointerRegisterValue;
 
   Handled := false;
   Finished := not (AnEvent in [deInternalContinue, deLoadLibrary]);
-  if (AnEvent=deBreakpoint) and not assigned(FController.FCurrentProcess.CurrentBreakpoint) then
+  if (AnEvent=deBreakpoint) and (not assigned(FController.FCurrentProcess.CurrentBreakpoint) or (FController.FCurrentProcess.CurrentBreakpoint=FHiddenBreakpoint)) then
   begin
     if FController.FCurrentThread.CompareStepInfo<>dcsiNewLine then
     begin
       AnEvent:=deInternalContinue;
-
-      if not FInto and (FStoredStackFrame>FController.FCurrentProcess.GetStackBasePointerRegisterValue) then
-      begin
-        // A sub-procedure has been called, with no debug-information. Use hadrware-breakpoints instead of single-
-        // stepping for better performance.
-        FInto:=true;
-      end;
+      Finished:=false;
+      inc(FInstCount);
 
       if FInto then
       begin
-        FHiddenWatchpointInto := FController.FCurrentThread.AddWatchpoint(FController.FCurrentProcess.GetStackPointerRegisterValue-DBGPTRSIZE[FController.FCurrentProcess.Mode]);
-        FHiddenWatchpointOut := FController.FCurrentThread.AddWatchpoint(FController.FCurrentProcess.GetStackBasePointerRegisterValue+DBGPTRSIZE[FController.FCurrentProcess.Mode]);
-        // If there are no watchpoints available, keep single stepping. Although
-        // this will be really slow.
-        if (FHiddenWatchpointInto=-1) and (FHiddenWatchpointOut=-1) then
-          FInto := false;
-      end;
+        if (FController.CurrentProcess.CurrentBreakpoint=FHiddenBreakpoint) then
+        begin
+          FInto:=false;
+          FInstCount:=0;
+          FController.CurrentProcess.RemoveBreak(FHiddenBreakpoint.Location);
+          FreeAndNil(FHiddenBreakpoint);
+        end
+        else
+        begin
+          if FInstCount=1 then
+            FAssumedProcStartStackPointer:=AStackPointerValue;
+          if (AStackBasePointerValue<>FLastStackBaseValue) or (AStackPointerValue<>FLastStackPointerValue) then
+            FInstCount:=1;
 
-      Finished:=false;
+          if FInstCount>4 then
+            SetHWBreakpoints;
+        end;
+      end
+      else
+        FInstCount := 0;
     end
     else
     begin
@@ -253,15 +331,16 @@ begin
       // This because when stepping out of a procedure, the first asm-instruction
       // could still be part of the instruction-line that made the call to the
       // procedure in the first place.
-      if FInto and (FStoredStackFrame<FController.FCurrentProcess.GetStackBasePointerRegisterValue)
+      if (FStoredStackFrame<AStackBasePointerValue)
         and not FController.FCurrentThread.IsAtStartOfLine then
       begin
-        FInto:=false;
         Finished:=false;
         AnEvent:=deInternalContinue;
       end;
     end;
   end;
+  FLastStackPointerValue:=AStackPointerValue;
+  FLastStackBaseValue:=AStackBasePointerValue;
 end;
 
 { TDbgControllerStepOverLineCmd }
