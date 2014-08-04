@@ -697,7 +697,7 @@ begin
     CreateMenuSeparatorSection(mnuSearch,itmBookmarks,'itmBookmarks');
     ParentMI:=itmBookmarks;
 
-    CreateMenuItem(ParentMI,itmSetFreeBookmark,'itmSetFreeBookmark',lisMenuSetFreeBookmark);
+    CreateMenuItem(ParentMI,itmSetFreeBookmark,'itmSetFreeBookmark',lisMenuSetFreeBookmark, 'menu_search_set_bookmark');
     CreateMenuItem(ParentMI,itmJumpToNextBookmark,'itmJumpToNextBookmark',lisMenuJumpToNextBookmark, 'menu_search_next_bookmark');
     CreateMenuItem(ParentMI,itmJumpToPrevBookmark,'itmJumpToPrevBookmark',lisMenuJumpToPrevBookmark, 'menu_search_previous_bookmark');
 

@@ -86,6 +86,7 @@ menu/menu_search_jumpforward.png
 menu/menu_search_next_bookmark.png
 menu/menu_search_openfile_atcursor.png
 menu/menu_search_previous_bookmark.png
+menu/menu_search_set_bookmark.png
 menu/menu_search_replace.png
 menu/menu_select_all.png
 menu/menu_stepinto.png

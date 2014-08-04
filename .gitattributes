@@ -5885,6 +5885,7 @@ images/menu/menu_search_next_bookmark.png -text
 images/menu/menu_search_openfile_atcursor.png -text svneol=unset#image/png
 images/menu/menu_search_previous_bookmark.png -text
 images/menu/menu_search_replace.png -text svneol=unset#image/png
+images/menu/menu_search_set_bookmark.png -text svneol=unset#image/png
 images/menu/menu_select_all.png -text svneol=unset#image/png
 images/menu/menu_stepinto.png -text svneol=unset#image/png
 images/menu/menu_stepinto_instr.png -text svneol=unset#image/png

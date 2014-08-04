@@ -27,12 +27,18 @@ resourcestring
   rsBottom                  = 'Bottom';
   rsLeft                    = 'Left';
   rsRight                   = 'Right';
-  rsVisible                 = 'Visible';
-  rsShowHide                = 'Show/Hide Toolbar';
-  rsWarning                 = 'You''ve chosen to hide the toolbar. ' +
-    'You may access the toolbar configuration via "%s" -> "%s" main menu.';
   rsEditorToolbar           = 'Editor ToolBar';
   rsMenuView                = 'View';
+  // Root Node Captions
+  rsIDEMainMenu             = 'IDE Main Menu';
+  rsSourceTab               = 'Source Tab';
+  rsSourceEditor            = 'Source Editor';
+  rsMessages                = 'Messages';
+  rsCodeExplorer            = 'Code Explorer';
+  rsCodeTemplates           = 'Code Templates';
+  rsDesigner                = 'Designer';
+  rsPackageEditor           = 'Package Editor';
+  rsPackageEditorFiles      = 'Package Editor Files';
 
 implementation
 

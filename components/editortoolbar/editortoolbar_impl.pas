@@ -107,7 +107,7 @@ uses
   ,EdtTbConfigFrm
   ,LazConfigStorage
   ,BaseIDEIntf
-  ;
+  ,LCLProc;
 
 type
 
@@ -272,10 +272,13 @@ end;
 procedure TEditorToolbar.AddButton(AMenuItem: TIDEMenuItem);
 var
   B: TEditToolBarToolButton;
+  ACaption: string;
 begin
   B := TEditToolBarToolButton.Create(TB);
-  B.Caption     := AMenuItem.Caption;
-  B.Hint        := AMenuItem.Caption; // or should we use AMenuItem.Hint?
+  ACaption      := AMenuItem.Caption;
+  DeleteAmpersands(ACaption);
+  B.Caption     := ACaption;
+  B.Hint        := ACaption; // or should we use AMenuItem.Hint?
   // If we have a image, us it. Otherwise supply a default.
   if AMenuItem.ImageIndex <> -1 then
     B.ImageIndex := AMenuItem.ImageIndex
