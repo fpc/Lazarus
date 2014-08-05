@@ -18,3 +18,4 @@ msgstr "soubor \"%s\" neexistuje"
 #: luresstrings.ctsfileisnotexecutable
 msgid "%s is not executable"
 msgstr "%s není spustitelný"
+

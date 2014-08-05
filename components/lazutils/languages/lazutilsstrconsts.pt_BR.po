@@ -11,18 +11,14 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
-msgctxt ""
-"lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
-"um componente diretório em %s não existe ou é um vínculo simbólico pendente"
+msgstr "um componente diretório em %s não existe ou é um vínculo simbólico pendente"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
-msgctxt ""
-"lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
-"um componente diretório em %s não existe ou é um vínculo simbólico pendente"
+msgstr "um componente diretório em %s não existe ou é um vínculo simbólico pendente"
 
 #: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
 msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
@@ -168,3 +164,4 @@ msgstr "Incapaz de criar diretório de configuração \"%s\""
 #: lazutilsstrconsts.lrsvarnoconversion
 msgid "Conversion from %s to %s not possible"
 msgstr "Conversão impossível de %s para %s"
+
