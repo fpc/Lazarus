@@ -210,3 +210,4 @@ msgstr "Warnung: Keine Definition im Datadictionary für das Feld %s"
 #: ldd_consts.swrongselection
 msgid "Wrong selection count : %d"
 msgstr "Falscher Zähler der Auswahl: %d"
+

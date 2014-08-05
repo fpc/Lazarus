@@ -210,3 +210,4 @@ msgstr "Aviso: Nenhuma definição no dicionário dados para campo %s"
 #: ldd_consts.swrongselection
 msgid "Wrong selection count : %d"
 msgstr "Contagem seleção errada: %d"
+
