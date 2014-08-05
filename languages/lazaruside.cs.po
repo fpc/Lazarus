@@ -7359,6 +7359,10 @@ msgstr "Pokyny"
 msgid "Directives for new unit"
 msgstr "Pokyny pro novou jednotku"
 
+#: lazarusidestrconsts.lisdirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
 msgstr "Adresář: "
@@ -8508,13 +8512,9 @@ msgstr "Filtrovat zprávy 'warning' a níže"
 msgid "Find ..."
 msgstr "Hledat ..."
 
-#: lazarusidestrconsts.lisfindfiledirectory
-msgid "D&irectory"
-msgstr "Adresář"
-
-#: lazarusidestrconsts.lisfindfiledirectoryoptions
-msgid "Directory options"
-msgstr "Nastavení složky"
+#: lazarusidestrconsts.lisfindfiledirectories
+msgid "D&irectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfilefilemask
 msgid "Fi&le mask"

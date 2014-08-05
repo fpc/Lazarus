@@ -7562,6 +7562,10 @@ msgstr "Директиви"
 msgid "Directives for new unit"
 msgstr "Директиви для нового модуля"
 
+#: lazarusidestrconsts.lisdirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
 msgstr ""
@@ -8721,13 +8725,9 @@ msgstr ""
 msgid "Find ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisfindfiledirectory
-msgid "D&irectory"
-msgstr "Д&иректорія"
-
-#: lazarusidestrconsts.lisfindfiledirectoryoptions
-msgid "Directory options"
-msgstr "Параметри тек"
+#: lazarusidestrconsts.lisfindfiledirectories
+msgid "D&irectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfilefilemask
 msgid "Fi&le mask"

@@ -7630,6 +7630,10 @@ msgstr "Direttive"
 msgid "Directives for new unit"
 msgstr "Direttive per una nuova unit"
 
+#: lazarusidestrconsts.lisdirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
 msgstr ""
@@ -8799,13 +8803,9 @@ msgstr ""
 msgid "Find ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisfindfiledirectory
-msgid "D&irectory"
+#: lazarusidestrconsts.lisfindfiledirectories
+msgid "D&irectories"
 msgstr ""
-
-#: lazarusidestrconsts.lisfindfiledirectoryoptions
-msgid "Directory options"
-msgstr "Opzioni cartella"
 
 #: lazarusidestrconsts.lisfindfilefilemask
 msgid "Fi&le mask"

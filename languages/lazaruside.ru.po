@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-31 01:43+0400\n"
+"PO-Revision-Date: 2014-08-06 02:15+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7542,6 +7542,10 @@ msgstr "Директивы"
 msgid "Directives for new unit"
 msgstr "Директивы в новом модуле"
 
+#: lazarusidestrconsts.lisdirectories
+msgid "Directories"
+msgstr "Каталоги"
+
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
 msgstr "Каталог: "
@@ -8692,13 +8696,9 @@ msgstr "Не выводить предупреждения и ниже"
 msgid "Find ..."
 msgstr "Найти ..."
 
-#: lazarusidestrconsts.lisfindfiledirectory
-msgid "D&irectory"
-msgstr "Ката&лог"
-
-#: lazarusidestrconsts.lisfindfiledirectoryoptions
-msgid "Directory options"
-msgstr "Параметры каталогов"
+#: lazarusidestrconsts.lisfindfiledirectories
+msgid "D&irectories"
+msgstr "&Каталоги"
 
 #: lazarusidestrconsts.lisfindfilefilemask
 #| msgid "File mask"
@@ -12285,7 +12285,7 @@ msgstr "Переместить или копировать файлы (%s шт.)
 #: lazarusidestrconsts.lismovepage
 #| msgid "Move Page ..."
 msgid "Move Page"
-msgstr "Переместить страницу"
+msgstr "Переместить вкладку"
 
 #: lazarusidestrconsts.lismoveselecteddown
 msgid "Move selected item down (Ctrl+Down)"
@@ -17879,7 +17879,7 @@ msgstr "Набор символов:"
 
 #: lazarusidestrconsts.rsclosecurrentpage
 msgid "Close current page"
-msgstr "Закрыть текущую страницу"
+msgstr "Закрыть текущую вкладку"
 
 #: lazarusidestrconsts.rsconditionaldefines
 msgid "Conditional defines"
@@ -19579,11 +19579,11 @@ msgstr "Закладка"
 
 #: lazarusidestrconsts.uemcloseotherpages
 msgid "Close All &Other Pages"
-msgstr "Закрыть &другие страницы"
+msgstr "Закрыть &другие вкладки"
 
 #: lazarusidestrconsts.uemclosepage
 msgid "&Close Page"
-msgstr "&Закрыть страницу"
+msgstr "&Закрыть вкладку"
 
 #: lazarusidestrconsts.uemcopyfilename
 #| msgid "Copy filename"
@@ -19658,22 +19658,22 @@ msgstr "З&афиксировать положение в редакторе"
 #: lazarusidestrconsts.uemmovepageleft
 #| msgid "Move page left"
 msgid "Move Page Left"
-msgstr "Переместить страницу влево"
+msgstr "Переместить вкладку влево"
 
 #: lazarusidestrconsts.uemmovepageleftmost
 #| msgid "Move page leftmost"
 msgid "Move Page Leftmost"
-msgstr "Поместить страницу слева"
+msgstr "Поместить вкладку слева"
 
 #: lazarusidestrconsts.uemmovepageright
 #| msgid "Move page right"
 msgid "Move Page Right"
-msgstr "Переместить страницу вправо"
+msgstr "Переместить вкладку вправо"
 
 #: lazarusidestrconsts.uemmovepagerightmost
 #| msgid "Move page rightmost"
 msgid "Move Page Rightmost"
-msgstr "Поместить страницу справа"
+msgstr "Поместить вкладку справа"
 
 #: lazarusidestrconsts.uemmovetonewwindow
 #| msgid "Move to new Window"

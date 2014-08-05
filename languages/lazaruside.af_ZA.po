@@ -7279,6 +7279,10 @@ msgstr ""
 msgid "Directives for new unit"
 msgstr ""
 
+#: lazarusidestrconsts.lisdirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
 msgstr ""
@@ -8406,12 +8410,8 @@ msgstr ""
 msgid "Find ..."
 msgstr ""
 
-#: lazarusidestrconsts.lisfindfiledirectory
-msgid "D&irectory"
-msgstr ""
-
-#: lazarusidestrconsts.lisfindfiledirectoryoptions
-msgid "Directory options"
+#: lazarusidestrconsts.lisfindfiledirectories
+msgid "D&irectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisfindfilefilemask

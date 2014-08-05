@@ -7516,6 +7516,10 @@ msgstr "Anweisungen"
 msgid "Directives for new unit"
 msgstr "Direktiven für neue Unit"
 
+#: lazarusidestrconsts.lisdirectories
+msgid "Directories"
+msgstr ""
+
 #: lazarusidestrconsts.lisdirectory
 msgid "Directory: "
 msgstr "Verzeichnis:"
@@ -8667,13 +8671,9 @@ msgstr ""
 msgid "Find ..."
 msgstr "Suchen ..."
 
-#: lazarusidestrconsts.lisfindfiledirectory
-msgid "D&irectory"
-msgstr "Verze&ichnis"
-
-#: lazarusidestrconsts.lisfindfiledirectoryoptions
-msgid "Directory options"
-msgstr "Verzeichniseinstellungen"
+#: lazarusidestrconsts.lisfindfiledirectories
+msgid "D&irectories"
+msgstr ""
 
 #: lazarusidestrconsts.lisfindfilefilemask
 #| msgid "File mask"
