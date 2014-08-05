@@ -17,8 +17,20 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: editortoolbar_str.rscodeexplorer
+msgid "Code Explorer"
+msgstr ""
+
+#: editortoolbar_str.rscodetemplates
+msgid "Code Templates"
+msgstr ""
+
 #: editortoolbar_str.rsconfiguretoo
 msgid "Configure Toolbar"
+msgstr ""
+
+#: editortoolbar_str.rsdesigner
+msgid "Designer"
 msgstr ""
 
 #: editortoolbar_str.rseditortoolbar
@@ -31,6 +43,10 @@ msgstr ""
 
 #: editortoolbar_str.rshint
 msgid "You may add here your favorite commands"
+msgstr ""
+
+#: editortoolbar_str.rsidemainmenu
+msgid "IDE Main Menu"
 msgstr ""
 
 #: editortoolbar_str.rsjumpto
@@ -49,6 +65,10 @@ msgstr ""
 msgid "View"
 msgstr ""
 
+#: editortoolbar_str.rsmessages
+msgid "Messages"
+msgstr ""
+
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr ""
@@ -59,6 +79,14 @@ msgstr ""
 
 #: editortoolbar_str.rsok
 msgid "OK"
+msgstr ""
+
+#: editortoolbar_str.rspackageeditor
+msgid "Package Editor"
+msgstr ""
+
+#: editortoolbar_str.rspackageeditorfiles
+msgid "Package Editor Files"
 msgstr ""
 
 #: editortoolbar_str.rsposition
@@ -73,8 +101,12 @@ msgstr ""
 msgid "Right"
 msgstr ""
 
-#: editortoolbar_str.rsshowhide
-msgid "Show/Hide Toolbar"
+#: editortoolbar_str.rssourceeditor
+msgid "Source Editor"
+msgstr ""
+
+#: editortoolbar_str.rssourcetab
+msgid "Source Tab"
 msgstr ""
 
 #: editortoolbar_str.rstoolbar
@@ -83,14 +115,6 @@ msgstr ""
 
 #: editortoolbar_str.rstop
 msgid "Top"
-msgstr ""
-
-#: editortoolbar_str.rsvisible
-msgid "Visible"
-msgstr ""
-
-#: editortoolbar_str.rswarning
-msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu."
 msgstr ""
 
 #: editortoolbar_str.serrcouldnotfind

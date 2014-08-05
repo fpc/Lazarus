@@ -25,9 +25,21 @@ msgstr "Снизу"
 msgid "Cancel"
 msgstr "Отмена"
 
+#: editortoolbar_str.rscodeexplorer
+msgid "Code Explorer"
+msgstr "Обозреватель кода"
+
+#: editortoolbar_str.rscodetemplates
+msgid "Code Templates"
+msgstr "Шаблоны кода"
+
 #: editortoolbar_str.rsconfiguretoo
 msgid "Configure Toolbar"
 msgstr "Настроить инструментальную панель"
+
+#: editortoolbar_str.rsdesigner
+msgid "Designer"
+msgstr "Дизайнер"
 
 #: editortoolbar_str.rseditortoolbar
 msgid "Editor ToolBar"
@@ -40,6 +52,10 @@ msgstr "Настройка инструментальной панели ред�
 #: editortoolbar_str.rshint
 msgid "You may add here your favorite commands"
 msgstr "Сюда можно добавить часто используемые команды"
+
+#: editortoolbar_str.rsidemainmenu
+msgid "IDE Main Menu"
+msgstr "Главное меню IDE"
 
 #: editortoolbar_str.rsjumpto
 msgid "Jump To"
@@ -58,6 +74,10 @@ msgstr "Доступные элементы меню"
 msgid "View"
 msgstr "Вид"
 
+#: editortoolbar_str.rsmessages
+msgid "Messages"
+msgstr "Сообщения"
+
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
 msgstr "Переместить выбранный элемент вниз"
@@ -69,6 +89,14 @@ msgstr "Переместить выбранный элемент вверх"
 #: editortoolbar_str.rsok
 msgid "OK"
 msgstr "ОК"
+
+#: editortoolbar_str.rspackageeditor
+msgid "Package Editor"
+msgstr "Редактор пакетов"
+
+#: editortoolbar_str.rspackageeditorfiles
+msgid "Package Editor Files"
+msgstr "Файлы в редакторе пакетов"
 
 #: editortoolbar_str.rsposition
 msgid "Position"
@@ -82,9 +110,13 @@ msgstr "Удалить выбранный элемент с панели"
 msgid "Right"
 msgstr "Справа"
 
-#: editortoolbar_str.rsshowhide
-msgid "Show/Hide Toolbar"
-msgstr "Показывать/скрывать инструментальную панель"
+#: editortoolbar_str.rssourceeditor
+msgid "Source Editor"
+msgstr "Редактор исходного кода"
+
+#: editortoolbar_str.rssourcetab
+msgid "Source Tab"
+msgstr "Вкладка редактора исходного кода"
 
 #: editortoolbar_str.rstoolbar
 #| msgid "Toolbar"
@@ -94,15 +126,6 @@ msgstr "Элементы панели"
 #: editortoolbar_str.rstop
 msgid "Top"
 msgstr "Сверху"
-
-#: editortoolbar_str.rsvisible
-msgid "Visible"
-msgstr "Отображать"
-
-#: editortoolbar_str.rswarning
-#| msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu"
-msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu."
-msgstr "Вы скрыли инструментальную панель. Для доступа к диалогу её настройки вызовите \"%s\" -> \"%s\" главного меню."
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
