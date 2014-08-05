@@ -387,7 +387,7 @@ msgstr "Kurzor"
 
 #: lclstrconsts.rscustomcolorcaption
 msgid "Custom ..."
-msgstr "Saját ..."
+msgstr "Egyéni ..."
 
 #: lclstrconsts.rsdefaultcolorcaption
 msgid "Default"
@@ -489,7 +489,7 @@ msgstr "Fájl mentése másként"
 
 #: lclstrconsts.rsfdopenfile
 msgid "Open existing file"
-msgstr "Látező fájl megnyitása"
+msgstr "Létező fájl megnyitása"
 
 #: lclstrconsts.rsfdoverwritefile
 msgid "Overwrite file ?"
@@ -501,7 +501,7 @@ msgstr "Az útvonalnak léteznie kell"
 
 #: lclstrconsts.rsfdpathnoexist
 msgid "The path \"%s\" does not exist."
-msgstr "A(z) \"%s\" útvonal nem tezik."
+msgstr "A(z) \"%s\" útvonal nem létezik."
 
 #: lclstrconsts.rsfdselectdirectory
 msgid "Select Directory"
@@ -1334,22 +1334,18 @@ msgid "Duplicate menus"
 msgstr "Többszörös menük"
 
 #: lclstrconsts.sinvalidactioncreation
-#, fuzzy
 msgid "Invalid action creation"
 msgstr "Érvénytelen művelet létrehozás"
 
 #: lclstrconsts.sinvalidactionenumeration
-#, fuzzy
 msgid "Invalid action enumeration"
 msgstr "Érvénytelen művelet felsorolás"
 
 #: lclstrconsts.sinvalidactionregistration
-#, fuzzy
 msgid "Invalid action registration"
 msgstr "Érvénytelen művelet regisztrálás"
 
 #: lclstrconsts.sinvalidactionunregistration
-#, fuzzy
 msgid "Invalid action unregistration"
 msgstr "Érvénytelen művelet kiregisztrálás"
 
@@ -1474,7 +1470,7 @@ msgstr "Nincsenek elérhető időzítők"
 
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
-msgstr "Rossz token típus: %s az elvárt"
+msgstr "Rossz vezérjel típus: %s az elvárt"
 
 #: lclstrconsts.sparinvalidfloat
 msgid "Invalid floating point number: %s"
@@ -1498,9 +1494,9 @@ msgstr "Lezáratlan karakterlánc"
 
 #: lclstrconsts.sparwrongtokensymbol
 msgid "Wrong token symbol: %s expected but %s found"
-msgstr "Rossz token szimbólum: %s az elvárt, de %s található"
+msgstr "Rossz vezérjel szimbólum: %s az elvárt, de %s található"
 
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
-msgstr "Rossz token típus: %s az elvárt, de %s található"
+msgstr "Rossz vezérjel típus: %s az elvárt, de %s található"
 

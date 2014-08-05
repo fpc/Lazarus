@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -30,7 +29,7 @@ msgstr "Sorszámok"
 
 #: syndesignstringconstants.syndslineoverview
 msgid "Line Overview"
-msgstr "Sor áttekintés"
+msgstr "Sorok áttekintése"
 
 #: syndesignstringconstants.syndsresetmouseactions
 msgid "Reset mouse actions"
@@ -39,3 +38,4 @@ msgstr "Egérműveletek visszaállítása"
 #: syndesignstringconstants.syndsseparator
 msgid "Separator"
 msgstr "Elválasztó"
+

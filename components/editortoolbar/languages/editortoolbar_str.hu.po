@@ -21,27 +21,43 @@ msgstr "A kijelölt elem hozzáadása az eszköztárhoz"
 
 #: editortoolbar_str.rsbottom
 msgid "Bottom"
-msgstr ""
+msgstr "Alulra"
 
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr "Mégsem"
 
+#: editortoolbar_str.rscodeexplorer
+msgid "Code Explorer"
+msgstr "Kódböngésző"
+
+#: editortoolbar_str.rscodetemplates
+msgid "Code Templates"
+msgstr "Kódsablonok"
+
 #: editortoolbar_str.rsconfiguretoo
 msgid "Configure Toolbar"
 msgstr "Eszköztár beállítása"
 
+#: editortoolbar_str.rsdesigner
+msgid "Designer"
+msgstr "Tervező"
+
 #: editortoolbar_str.rseditortoolbar
 msgid "Editor ToolBar"
-msgstr ""
+msgstr "Szerkesztő eszköztár"
 
 #: editortoolbar_str.rseditortoolbarconfigform
 msgid "Editor Toolbar Configuration"
-msgstr "Szerkesztő Eszköztár Beállítása"
+msgstr "Szerkesztő eszköztár beállítása"
 
 #: editortoolbar_str.rshint
 msgid "You may add here your favorite commands"
-msgstr ""
+msgstr "Itt adhatja hozzá a kedvenc parancsait"
+
+#: editortoolbar_str.rsidemainmenu
+msgid "IDE Main Menu"
+msgstr "IDE Főmenü"
 
 #: editortoolbar_str.rsjumpto
 msgid "Jump To"
@@ -49,7 +65,7 @@ msgstr "Ugrás ide:"
 
 #: editortoolbar_str.rsleft
 msgid "Left"
-msgstr ""
+msgstr "Balra"
 
 #: editortoolbar_str.rsmenutree
 msgid "Available Menu Items"
@@ -57,7 +73,11 @@ msgstr "Elérhető menüelemek"
 
 #: editortoolbar_str.rsmenuview
 msgid "View"
-msgstr ""
+msgstr "Nézet"
+
+#: editortoolbar_str.rsmessages
+msgid "Messages"
+msgstr "Üzenetek"
 
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
@@ -71,9 +91,17 @@ msgstr "A kijelöl eszköztárelem mozgatása felfelé"
 msgid "OK"
 msgstr "OK"
 
+#: editortoolbar_str.rspackageeditor
+msgid "Package Editor"
+msgstr "Csomagszerkesztő"
+
+#: editortoolbar_str.rspackageeditorfiles
+msgid "Package Editor Files"
+msgstr "Csomagszerkesztő fájljai"
+
 #: editortoolbar_str.rsposition
 msgid "Position"
-msgstr ""
+msgstr "Elhelyezés"
 
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
@@ -81,11 +109,15 @@ msgstr "A kijelölt elem eltávolítása az eszköztárról"
 
 #: editortoolbar_str.rsright
 msgid "Right"
-msgstr ""
+msgstr "Jobbra"
 
-#: editortoolbar_str.rsshowhide
-msgid "Show/Hide Toolbar"
-msgstr ""
+#: editortoolbar_str.rssourceeditor
+msgid "Source Editor"
+msgstr "Forráskódszerkesztő"
+
+#: editortoolbar_str.rssourcetab
+msgid "Source Tab"
+msgstr "Forrás-fül"
 
 #: editortoolbar_str.rstoolbar
 msgid "Toolbar Items"
@@ -93,15 +125,7 @@ msgstr "Eszköztár elemek"
 
 #: editortoolbar_str.rstop
 msgid "Top"
-msgstr ""
-
-#: editortoolbar_str.rsvisible
-msgid "Visible"
-msgstr ""
-
-#: editortoolbar_str.rswarning
-msgid "You've chosen to hide the toolbar. You may access the toolbar configuration via \"%s\" -> \"%s\" main menu."
-msgstr ""
+msgstr "Felülre"
 
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"

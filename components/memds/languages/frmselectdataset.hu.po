@@ -17,7 +17,7 @@ msgstr "Mégsem"
 
 #: frmselectdataset.scaption
 msgid "Select dataset to copy from"
-msgstr "Válasszon dataset-et ahonnan másol"
+msgstr "Válasszon adatkészletet ahonnan másol"
 
 #: frmselectdataset.scopymeta
 msgid "Copy only metadata"
@@ -25,7 +25,7 @@ msgstr "Csak metaadatok másolása"
 
 #: frmselectdataset.sdataset
 msgid "&Dataset to copy from:"
-msgstr "Dataset másolása innen:"
+msgstr "Adatkészlet másolása innen:"
 
 #: frmselectdataset.serrcomponentnotfound
 msgid "Error: Component \"%s\" not found"
@@ -33,15 +33,15 @@ msgstr "Hiba: A(z) \"%s\" komponens nincs meg"
 
 #: frmselectdataset.serrselectdataset
 msgid "Please select a dataset first"
-msgstr "Előbb dataset-et kell választani"
+msgstr "Előbb adatkészletet kell választani"
 
 #: frmselectdataset.smenucopydataset
 msgid "Copy data from Dataset"
-msgstr "Adat másolása Dataset-ből"
+msgstr "Adat másolása adatkészletből"
 
 #: frmselectdataset.smenucreatedataset
 msgid "Create dataset"
-msgstr "Dataset létrehozása"
+msgstr "Adatkészlet létrehozása"
 
 #: frmselectdataset.sokbtn
 msgid "OK"

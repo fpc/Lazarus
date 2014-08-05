@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -21,7 +20,6 @@ msgid "Test again"
 msgstr "Újratesztelés"
 
 #: emsstrings.emseditormacrotitle
-#, fuzzy
 msgid "Editor Macro Script"
 msgstr "Szerkesztő Makrószkript"
 
@@ -35,34 +33,21 @@ msgstr "Szkriptek használata kikapcsolva. Nem támogatott platform vagy CPU."
 
 #: emsstrings.emspending
 msgid "Scripting not active. Selftest will run next time the IDE is started."
-msgstr ""
-"Szkriptek használata kikapcsolva. Az önellenőrzés az IDE következő "
-"indításakor fut."
+msgstr "Szkriptek használata kikapcsolva. Az önellenőrzés az IDE következő indításakor fut."
 
 #: emsstrings.emsselftesterrcaption
 msgid "Error in EditorMacroScript"
 msgstr "EditorMacroScript hiba"
 
 #: emsstrings.emsselftestfailed
-msgid ""
-"The package EditorMacroScript (pascalscript macros) has detected a problem "
-"and was deactivated.%0:sThe package failed its selftest with the message:%0:s"
-"\"%1:s\""
-msgstr ""
-"Az EditorMacroScript (pascalscript makrók) hibát érzékelt és ki lett "
-"kapcsolva.%0:sA csomag önellenőrzése sikertelenül zárult a következő "
-"üzenettel::%0:s\"%1:s\""
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package failed its selftest with the message:%0:s\"%1:s\""
+msgstr "Az EditorMacroScript (pascalscript makrók) hibát érzékelt és ki lett kapcsolva.%0:sA csomag önellenőrzése sikertelenül zárult a következő üzenettel::%0:s\"%1:s\""
 
 #: emsstrings.emsselftestfailedlasttime
-msgid ""
-"The package EditorMacroScript (pascalscript macros) has detected a problem "
-"and was deactivated.%0:sThe package selftest was not completed during the "
-"last start of the IDE."
-msgstr ""
-"Az EditorMacroScript (pascalscript makrók) hibát érzékelt és ki lett "
-"kapcsolva.%0:sA csomag önellenőrzése nem futott végig az IDE legutóbbi "
-"indításakor."
+msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package selftest was not completed during the last start of the IDE."
+msgstr "Az EditorMacroScript (pascalscript makrók) hibát érzékelt és ki lett kapcsolva.%0:sA csomag önellenőrzése nem futott végig az IDE legutóbbi indításakor."
 
 #: emsstrings.emsstatustitle
 msgid "Status"
 msgstr "Állapot"
+

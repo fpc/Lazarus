@@ -29,7 +29,7 @@ msgstr "Új leírásfájl választása"
 
 #: lazdemsg.sadditionalparams
 msgid "Additional parameters for fpdoc"
-msgstr ""
+msgstr "További paraméterek az fpdoc számára"
 
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
@@ -167,7 +167,6 @@ msgstr " a csomagban "
 
 #: lazdemsg.sfortopic
 #, fuzzy
-#| msgid " in topic"
 msgid " in topic "
 msgstr " a témában "
 
@@ -235,7 +234,7 @@ msgstr "Változó"
 #: lazdemsg.shintinsertbulletedlist
 msgctxt "lazdemsg.shintinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Listajeles felsorolás beszúrása"
 
 #: lazdemsg.shintinsertelement
 msgctxt "lazdemsg.shintinsertelement"
@@ -255,7 +254,7 @@ msgstr "Új modul"
 #: lazdemsg.shintinsertnumberedlist
 msgctxt "lazdemsg.shintinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Számozott lista beszúrása"
 
 #: lazdemsg.shintinsertpackage
 msgctxt "lazdemsg.shintinsertpackage"
@@ -308,11 +307,11 @@ msgstr "Tartalomfájl importálása"
 #: lazdemsg.sinsertbulletedlist
 msgctxt "lazdemsg.sinsertbulletedlist"
 msgid "Insert bulleted list"
-msgstr ""
+msgstr "Listajeles felsorolás beszúrása"
 
 #: lazdemsg.sinsertexamplecode
 msgid "Insert example code"
-msgstr ""
+msgstr "Példakód beszúrása"
 
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
@@ -322,7 +321,7 @@ msgstr "Link beszúrása"
 #: lazdemsg.sinsertnumberedlist
 msgctxt "lazdemsg.sinsertnumberedlist"
 msgid "Insert numbered list"
-msgstr ""
+msgstr "Számozott lista beszúrása"
 
 #: lazdemsg.sinsertprintshortlink
 msgid "Insert short description link"
@@ -347,11 +346,11 @@ msgstr " erre hivatkozik: "
 
 #: lazdemsg.slinktarget
 msgid "Link target"
-msgstr ""
+msgstr "Hivatkozási cél"
 
 #: lazdemsg.slinktext
 msgid "Link text"
-msgstr ""
+msgstr "Hivatkozás szövege"
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -481,7 +480,7 @@ msgstr "&Beszúrás"
 
 #: lazdemsg.smenuinsertbulletedlist
 msgid "Bulleted list"
-msgstr ""
+msgstr "Listajeles felsorolás"
 
 #: lazdemsg.smenuinsertelement
 msgid "&Element"
@@ -493,7 +492,7 @@ msgstr "Hivatkozás"
 
 #: lazdemsg.smenuinsertlist
 msgid "List"
-msgstr ""
+msgstr "Lista"
 
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
@@ -501,7 +500,7 @@ msgstr "Modul"
 
 #: lazdemsg.smenuinsertnumberedlist
 msgid "Numbered list"
-msgstr ""
+msgstr "Számozott lista"
 
 #: lazdemsg.smenuinsertpackage
 msgctxt "lazdemsg.smenuinsertpackage"
@@ -571,7 +570,7 @@ msgstr "Új téma"
 
 #: lazdemsg.snodename
 msgid "Node name"
-msgstr ""
+msgstr "Csomópont neve"
 
 #: lazdemsg.snoelement
 msgid "No element selected"
@@ -673,7 +672,7 @@ msgstr "&Mentés"
 
 #: lazdemsg.ssavebeforebuildquestion
 msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
-msgstr ""
+msgstr "Nem mentett változtatások ebben: \"%s\".%sMenteni kell őket, hogy láthatóak legyenek az épített dokumentációban. Mentés?"
 
 #: lazdemsg.sseealso
 msgid "See Also"
@@ -719,15 +718,15 @@ msgstr "A kezdő elem nem található: \"%s\""
 
 #: lazdemsg.stablecols
 msgid "Columns"
-msgstr ""
+msgstr "Oszlopok"
 
 #: lazdemsg.stableheader
 msgid "Use header row"
-msgstr ""
+msgstr "Fejlécsor használata"
 
 #: lazdemsg.stablerows
 msgid "Rows"
-msgstr ""
+msgstr "Sorok"
 
 #: lazdemsg.stargetos
 msgid "Target OS"

@@ -41,15 +41,15 @@ msgstr "Részletezés lábléce"
 
 #: lr_const.sband11
 msgid "Subdetail header"
-msgstr ""
+msgstr "Kiegészítő részletek fejléce"
 
 #: lr_const.sband12
 msgid "Subdetail data"
-msgstr ""
+msgstr "Kiegészítő részletek adata"
 
 #: lr_const.sband13
 msgid "Subdetail footer"
-msgstr ""
+msgstr "Kiegészítő részletek lábléce"
 
 #: lr_const.sband14
 msgid "Overlay"
@@ -57,19 +57,19 @@ msgstr "Átfedés"
 
 #: lr_const.sband15
 msgid "Column header"
-msgstr "Oszlop fejléc"
+msgstr "Oszlop fejléce"
 
 #: lr_const.sband16
 msgid "Column footer"
-msgstr "Oszlop lábléc"
+msgstr "Oszlop lábléce"
 
 #: lr_const.sband17
 msgid "Group header"
-msgstr "Csoport fejléc"
+msgstr "Csoport fejléce"
 
 #: lr_const.sband18
 msgid "Group footer"
-msgstr "Csoport lábléc"
+msgstr "Csoport lábléce"
 
 #: lr_const.sband19
 msgid "Cross header"
@@ -77,7 +77,7 @@ msgstr ""
 
 #: lr_const.sband2
 msgid "Report summary"
-msgstr "Jelentés összefoglaló"
+msgstr "Jelentés összefoglalása"
 
 #: lr_const.sband20
 msgid "Cross data"
@@ -93,11 +93,11 @@ msgstr "Nincs"
 
 #: lr_const.sband3
 msgid "Page header"
-msgstr "Oldal fejléc"
+msgstr "Oldal fejléce"
 
 #: lr_const.sband4
 msgid "Page footer"
-msgstr "Oldal lábléc"
+msgstr "Oldal lábléce"
 
 #: lr_const.sband5
 msgid "Master header"
@@ -244,19 +244,19 @@ msgstr "Jegyzet:"
 
 #: lr_const.sdateformat1
 msgid "mm.dd.yy"
-msgstr "hh.nn.éé"
+msgstr "mm.dd.yy"
 
 #: lr_const.sdateformat2
 msgid "mm.dd.yyyy"
-msgstr "hh.nn.éééé"
+msgstr "mm.dd.yyyy"
 
 #: lr_const.sdateformat3
 msgid "d mmm yyyy"
-msgstr "n hhh éééé"
+msgstr "d mmm yyyy"
 
 #: lr_const.sdateformat4
 msgid "d mmmm yyyy"
-msgstr "n hhhh éééé"
+msgstr "d mmmm yyyy"
 
 #: lr_const.sdatetimecategory
 msgid "Date and time"
@@ -264,7 +264,7 @@ msgstr "Dátum és idő"
 
 #: lr_const.sdbfield
 msgid "DB field"
-msgstr ""
+msgstr "Adatbázis mező"
 
 #: lr_const.sdefaultprinter
 msgid "Default printer"
@@ -462,7 +462,7 @@ msgstr "mm"
 
 #: lr_const.sdesoptionsformobj
 msgid "Object moving"
-msgstr ""
+msgstr "Objektum mozgatása"
 
 #: lr_const.sdesoptionsformopt
 msgctxt "lr_const.sdesoptionsformopt"
@@ -492,7 +492,7 @@ msgstr "Rács megjelenítése"
 
 #: lr_const.sdesoptionsformunits
 msgid "Report units"
-msgstr ""
+msgstr "Jelentés mértékegysége"
 
 #: lr_const.sdoc
 msgid "Report:"
@@ -542,7 +542,7 @@ msgstr "Nyomtató"
 
 #: lr_const.sdocoptformselect
 msgid "&Select when report loaded"
-msgstr ""
+msgstr "Kijelölés a jelentés betöltésekor"
 
 #: lr_const.sdocoptformsubject
 msgid "Subject"
@@ -623,7 +623,7 @@ msgstr "Váltózó-szerkesztő"
 
 #: lr_const.sevformcopy
 msgid "Copy variables"
-msgstr "Véltozók másolása"
+msgstr "Változók másolása"
 
 #: lr_const.sevformexp
 msgid "&Expression"
@@ -648,7 +648,7 @@ msgstr "Változók ..."
 
 #: lr_const.sexportfilterindexerror
 msgid "Export filter index out of range"
-msgstr ""
+msgstr "Export-szűrő indexe a tartományon kívülre esik"
 
 #: lr_const.sfieldsformaviabledb
 msgid "&Available DB's"
@@ -683,7 +683,7 @@ msgstr "Jelenlegi oldal"
 
 #: lr_const.sfindtextfirstpg
 msgid "&1st page"
-msgstr "1. lap"
+msgstr "1. oldal"
 
 #: lr_const.sfindtextnotfound
 msgid "Search text not found."
@@ -712,7 +712,7 @@ msgstr "Decimális számjegyek"
 
 #: lr_const.sfmtformfrac
 msgid "Fraction &symbol"
-msgstr ""
+msgstr "Tört jel"
 
 #: lr_const.sfmtformfrmt
 #, fuzzy
@@ -823,7 +823,7 @@ msgstr "Egyéni"
 
 #: lr_const.sformfile
 msgid "FastReport form"
-msgstr ""
+msgstr "FastReport űrlap"
 
 #: lr_const.sformnewpage
 msgid "Force new page"
@@ -831,7 +831,7 @@ msgstr "Új oldal kényszerítése"
 
 #: lr_const.sfrdesignerdatainsp
 msgid "Data inspector"
-msgstr ""
+msgstr "Adat felügyelő"
 
 #: lr_const.sfrdesignerexists
 msgid "You already have one TfrDesigner component"
@@ -840,7 +840,7 @@ msgstr "Már van egy TfrDesigner komponensed"
 #: lr_const.sfrdesignerformaddpg
 msgctxt "lr_const.sfrdesignerformaddpg"
 msgid "Add page"
-msgstr "Lap hozzáadása"
+msgstr "Oldal hozzáadása"
 
 #: lr_const.sfrdesignerformalign
 msgid "Alignment"
@@ -872,7 +872,7 @@ msgstr "Függőleges közepek igazítása"
 
 #: lr_const.sfrdesignerformallframe
 msgid "All frame lines"
-msgstr "Minden keretvonal"
+msgstr "Teljes keret"
 
 #: lr_const.sfrdesignerformback
 msgid "Send to back"
@@ -966,12 +966,12 @@ msgstr "Rács"
 
 #: lr_const.sfrdesignerformgridalign
 msgid "Grid align"
-msgstr ""
+msgstr "Rácshoz igazítás"
 
 #: lr_const.sfrdesignerformhightlight
 msgctxt "lr_const.sfrdesignerformhightlight"
 msgid "Highlight attributes"
-msgstr ""
+msgstr "Jellemzők kiemelése"
 
 #: lr_const.sfrdesignerforminsband
 msgid "Insert band"
@@ -987,7 +987,7 @@ msgstr "Téglalap objektum beszúrása"
 
 #: lr_const.sfrdesignerforminssub
 msgid "Insert subreport"
-msgstr ""
+msgstr "Segédjelentés beszúrása"
 
 #: lr_const.sfrdesignerformitalic
 msgid "Italic"
@@ -1012,7 +1012,7 @@ msgstr "Nincs keret"
 
 #: lr_const.sfrdesignerformnormaltext
 msgid "Normal text / 90 degrees"
-msgstr ""
+msgstr "Normál szöveg / 90 fok"
 
 #: lr_const.sfrdesignerformobj
 msgid "Objects"
@@ -1076,7 +1076,7 @@ msgstr "Objektum kijelölése"
 
 #: lr_const.sfrdesignerformspace
 msgid "Space equally, horizontally"
-msgstr "Egyenlő ű, vízszintesen"
+msgstr "Egyenlő űr, vízszintesen"
 
 #: lr_const.sfrdesignerformspaceeqvert
 msgid "Space equally, vertically"
@@ -1117,7 +1117,7 @@ msgstr "Függőlegesen középre"
 
 #: lr_const.sfrdesignerformwidthalign
 msgid "Width align"
-msgstr ""
+msgstr "Szélességhez igazítás"
 
 #: lr_const.sfrdesignerform_about
 msgid "&About ..."
@@ -1125,11 +1125,11 @@ msgstr "Névjegy ..."
 
 #: lr_const.sfrdesignerform_addpg
 msgid "&Add page"
-msgstr "Lap hozzáadása"
+msgstr "Oldal hozzáadása"
 
 #: lr_const.sfrdesignerform_alignpalette
 msgid "&Alignment palette"
-msgstr ""
+msgstr "Igazítás"
 
 #: lr_const.sfrdesignerform_back
 msgid "Send to &back"
@@ -1153,7 +1153,7 @@ msgstr "Kivágás"
 
 #: lr_const.sfrdesignerform_datainsp
 msgid "&Data inspector"
-msgstr ""
+msgstr "A&dat felügyelő"
 
 #: lr_const.sfrdesignerform_delete
 msgid "&Delete"
@@ -1259,7 +1259,7 @@ msgstr "Összes kijelölése"
 
 #: lr_const.sfrdesignerform_std
 msgid "&Standard"
-msgstr "Szabványos"
+msgstr "&Alapvető"
 
 #: lr_const.sfrdesignerform_text
 msgid "&Text"
@@ -1305,7 +1305,7 @@ msgstr "FR változók"
 
 #: lr_const.sfunctions
 msgid "Functions"
-msgstr ""
+msgstr "Függvények"
 
 #: lr_const.sgeditorformcapt
 msgid "Picture"
@@ -1374,7 +1374,7 @@ msgstr "Betűtípus"
 #: lr_const.shilightformhilitattr
 msgctxt "lr_const.shilightformhilitattr"
 msgid "Highlight attributes"
-msgstr ""
+msgstr "Jellemzők kiemelése"
 
 #: lr_const.shilightformitalic
 msgid "&Italic"
@@ -1414,11 +1414,11 @@ msgstr "Jelölőnégyzet beszúrása"
 
 #: lr_const.sinsert
 msgid "Insert"
-msgstr ""
+msgstr "Beszúrás"
 
 #: lr_const.sinsertexpression
 msgid "Insert Expression"
-msgstr ""
+msgstr "Kifejezés beszúrása"
 
 #: lr_const.sinsertfields
 msgid "Insert DB fields"
@@ -1426,7 +1426,7 @@ msgstr "Adatbázismező beszúrása"
 
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
-msgstr "Elérhető dataset-ek"
+msgstr "Elérhető adatkészletek"
 
 #: lr_const.sinsertfieldsformband
 msgid "Include &bands"
@@ -1454,7 +1454,7 @@ msgstr "&Függőleges"
 
 #: lr_const.sinsroundrect
 msgid "Insert a RoundRect with shadow area"
-msgstr ""
+msgstr "Lekerekített téglalap beszúrása árnyékkal"
 
 #: lr_const.sinsshape
 msgid "Insert Shape object"
@@ -1483,7 +1483,7 @@ msgstr "Matematikai"
 
 #: lr_const.smm
 msgid "MM"
-msgstr "mm"
+msgstr "MM"
 
 #: lr_const.snewtemplate
 msgid "New template"
@@ -2047,7 +2047,7 @@ msgstr "Tájkép"
 
 #: lr_const.spgoptformlayoutorder
 msgid "Layout Order"
-msgstr ""
+msgstr "Elrendezési utasítás"
 
 #: lr_const.spgoptformleft
 msgid "&Left, mm"
@@ -2076,7 +2076,7 @@ msgstr "Papír"
 
 #: lr_const.spgoptformpgmargins
 msgid "Page margins"
-msgstr "Lap margói"
+msgstr "Oldal margói"
 
 #: lr_const.spgoptformport
 msgid "&Portrait"
@@ -2129,7 +2129,7 @@ msgstr "Két oldal"
 #: lr_const.spreviewformadd
 msgctxt "lr_const.spreviewformadd"
 msgid "Add page"
-msgstr "Lap hozzáadása"
+msgstr "OLdal hozzáadása"
 
 #: lr_const.spreviewformclose
 msgid "Close preview"
@@ -2137,11 +2137,11 @@ msgstr "Előnézet bezárása"
 
 #: lr_const.spreviewformdel
 msgid "Delete page"
-msgstr "Lap törlése"
+msgstr "Oldal törlése"
 
 #: lr_const.spreviewformedit
 msgid "Edit page"
-msgstr "Lap szerkesztése"
+msgstr "Oldal szerkesztése"
 
 #: lr_const.spreviewformfind
 msgctxt "lr_const.spreviewformfind"
@@ -2163,7 +2163,7 @@ msgstr "Jelentés nyomtatása"
 
 #: lr_const.spreviewformpw
 msgid "&Page width"
-msgstr "Lap szélessége"
+msgstr "Oldal szélessége"
 
 #: lr_const.spreviewformsave
 msgctxt "lr_const.spreviewformsave"
@@ -2176,7 +2176,7 @@ msgstr "Átméretezés"
 
 #: lr_const.spreviewformwhole
 msgid "&Whole page"
-msgstr "Teljes lap"
+msgstr "Teljes oldal"
 
 #: lr_const.sprintererror
 msgid "Selected printer is not valid"
@@ -2226,15 +2226,15 @@ msgstr "Tulajdonságok"
 
 #: lr_const.sprintifsubsetempty
 msgid "Print if detail empty"
-msgstr ""
+msgstr "Nyomtatás ha a részletek üresek"
 
 #: lr_const.sremovepg
 msgid "Remove this page?"
-msgstr "Lap eltávolítása?"
+msgstr "Oldal eltávolítása?"
 
 #: lr_const.srepeatheader
 msgid "Show on all pages"
-msgstr "Megjelenítés minden lapon"
+msgstr "Megjelenítés minden oldalon"
 
 #: lr_const.srepfile
 msgid "Report file"
@@ -2246,7 +2246,7 @@ msgstr "Jelentés létrehozásának dátuma"
 
 #: lr_const.sreportlastmodifydate
 msgid "Report last modification date"
-msgstr ""
+msgstr "Jelentés utolsó módosításának dátuma"
 
 #: lr_const.sreportloadingerror
 msgid "Error while loading report"
@@ -2372,7 +2372,7 @@ msgstr "Karakterlánc"
 
 #: lr_const.ssubreportonpage
 msgid "SubReport on page"
-msgstr ""
+msgstr "Segédjelentés a lapon:"
 
 #: lr_const.stemplemptydesc
 msgid "New report based on empty template"
@@ -2401,23 +2401,23 @@ msgstr "ASCII Szövegfájl"
 
 #: lr_const.stimeformat1
 msgid "hh:nn:ss"
-msgstr ""
+msgstr "hh:nn:ss"
 
 #: lr_const.stimeformat2
 msgid "h:nn:ss"
-msgstr ""
+msgstr "h:nn:ss"
 
 #: lr_const.stimeformat3
 msgid "hh:nn"
-msgstr ""
+msgstr "hh:nn"
 
 #: lr_const.stimeformat4
 msgid "h:nn"
-msgstr ""
+msgstr "h:nn"
 
 #: lr_const.sto
 msgid "to"
-msgstr "eddig:"
+msgstr "-->"
 
 #: lr_const.stransparent
 msgid "Transparent"
@@ -2463,7 +2463,7 @@ msgstr "Jelenlegi sor#"
 
 #: lr_const.svar9
 msgid "TotalPages"
-msgstr ""
+msgstr "ÖsszesOldal"
 
 #: lr_const.svaredformcapt
 msgid "Variables list"
@@ -2487,7 +2487,7 @@ msgstr "Kategória:"
 
 #: lr_const.svariable
 msgid "Variable"
-msgstr ""
+msgstr "Változó"
 
 #: lr_const.svbandeditorformbnd
 msgid "Bands"
@@ -2509,15 +2509,15 @@ msgstr "Rekordok száma"
 
 #: lr_const.svirtualdataset
 msgid "Virtual Dataset"
-msgstr ""
+msgstr "Virtuális adatkészlet"
 
 #: lr_const.swordbreak
 msgid "Word break"
-msgstr "Sortörés"
+msgstr "Szavak tördelése"
 
 #: lr_const.swordwrap
 msgid "Word wrap"
-msgstr "Szó tördelés"
+msgstr "Sortörés"
 
 #: lr_const.syes
 msgid "Yes"

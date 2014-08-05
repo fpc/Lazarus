@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -190,7 +189,7 @@ msgstr "Alkalmazás"
 
 #: ldd_consts.smenudatadictcreatecode
 msgid "Create code from dataset"
-msgstr "Kód létrehozása dataset alapján"
+msgstr "Kód létrehozása adatkészlet alapján"
 
 #: ldd_consts.smenudatadictdesignsql
 msgid "Design SQL"
@@ -211,3 +210,4 @@ msgstr "Figyelem! Nincs definíció az adatszótárban a mezőhöz: %s"
 #: ldd_consts.swrongselection
 msgid "Wrong selection count : %d"
 msgstr "Rossz a kijelölések száma: %d"
+

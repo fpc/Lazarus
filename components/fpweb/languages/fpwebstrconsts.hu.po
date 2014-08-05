@@ -337,7 +337,7 @@ msgstr "Egyéb"
 
 #: fpwebstrconsts.smihtmlstandart
 msgid "Standard"
-msgstr "Szabványos"
+msgstr "Alapvető"
 
 #: fpwebstrconsts.smihtmlstyle
 msgid "Styles"

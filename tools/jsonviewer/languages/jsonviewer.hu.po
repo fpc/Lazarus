@@ -57,7 +57,6 @@ msgid "Empty document"
 msgstr "Üres dokumentum"
 
 #: msgjsonviewer.serrcreatingconfigdir
-#| msgid "Could not create the configuration files directory \"s\""
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "Nem sikerült létrehozni a beállítások könyvtárát: \"%s\""
 

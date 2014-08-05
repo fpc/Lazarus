@@ -725,8 +725,6 @@ msgid "Run query"
 msgstr "Lekérdezés futtatása"
 
 #: lazdatadeskstr.srowsaffected
-#, fuzzy
-#| msgid "Query executed succesfully: %d rows affected."
 msgid "Query executed successfully: %d rows affected."
 msgstr "A lekérdezés sikeresen futott: %d sor érintett."
 

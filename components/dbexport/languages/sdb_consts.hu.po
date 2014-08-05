@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Péter Gábor <ptrg@freemail.hu>\n"
 "Language-Team: Magyar (Hungarian)\n"
-"X-Generator: Poedit 1.5.4\n"
 "Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #: sdb_consts.scancelrecordsexported
 msgid "Exported %d before user canceled."
@@ -65,21 +65,19 @@ msgstr "Exportálandó mezők kiválasztása"
 
 #: sdb_consts.serrnodatasetassigned
 msgid "DataExporter has no Dataset assigned."
-msgstr "Nincs megadva Dataset a DataExporter számára."
+msgstr "Nincs megadva adatkészlet a DataExporter számára."
 
 #: sdb_consts.serropeningdataset
 msgid "Could not open dataset for exporting: %s"
-msgstr "Nem nyitható meg a dataset az exportáláshoz: %s"
+msgstr "Nem nyitható meg az adatkészlet az exportáláshoz: %s"
 
 #: sdb_consts.sexecute
 msgid "Execute ..."
 msgstr "Végrehajtás ..."
 
 #: sdb_consts.snrecordsexported
-#, fuzzy
-#| msgid "Succesfully exported %d records."
 msgid "Successfully exported %d records."
-msgstr "%d rekord sikeresen exportálva"
+msgstr "%d rekord sikeresen exportálva."
 
 #: sdb_consts.sprogress
 msgid "Exporting %d records"

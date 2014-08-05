@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -58,19 +57,19 @@ msgstr "Karakter"
 
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
-msgstr ""
+msgstr "Diff - szakasz jelző"
 
 #: syneditstrconst.syns_attrchunkmixed
 msgid "Diff Chunk Line Counts"
-msgstr ""
+msgstr "Diff - szakasz sorainak száma"
 
 #: syneditstrconst.syns_attrchunknew
 msgid "Diff Chunk New Line Count"
-msgstr ""
+msgstr "Diff - szakasz új sorainak száma"
 
 #: syneditstrconst.syns_attrchunkorig
 msgid "Diff Chunk Original Line Count"
-msgstr ""
+msgstr "Diff - szakasz eredeti sorainak száma"
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
@@ -131,7 +130,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrescapeampersand
 msgid "Escape ampersand"
-msgstr ""
+msgstr "Karakterhelyettesítő"
 
 #: syneditstrconst.syns_attrevent
 msgid "Event"
@@ -204,19 +203,19 @@ msgstr "Címke"
 
 #: syneditstrconst.syns_attrlineadded
 msgid "Diff Added line"
-msgstr ""
+msgstr "Diff - hozzáadott sor"
 
 #: syneditstrconst.syns_attrlinechanged
 msgid "Diff Changed Line"
-msgstr ""
+msgstr "Diff - megváltozott sor"
 
 #: syneditstrconst.syns_attrlinecontext
 msgid "Diff Context Line"
-msgstr ""
+msgstr "Diff - szövegkörnyezet sor"
 
 #: syneditstrconst.syns_attrlineremoved
 msgid "Diff Removed Line"
-msgstr ""
+msgstr "Diff - eltávolított sor"
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
@@ -248,7 +247,7 @@ msgstr "Névtér tulajdonság értéke"
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
-msgstr ""
+msgstr "Diff - új fájl"
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
@@ -272,7 +271,7 @@ msgstr "Operátor"
 
 #: syneditstrconst.syns_attrorigfile
 msgid "Diff Original File"
-msgstr ""
+msgstr "Diff - eredeti fájl"
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
@@ -427,14 +426,12 @@ msgid "Whitespace"
 msgstr "Szóközök"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-msgid ""
-"The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr ""
-"A(z) \"%s\" billentyűleütés már egy másik szerkesztőhöz van társítva. (%s)"
+msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
+msgstr "A(z) \"%s\" billentyűleütés már egy másik szerkesztőhöz van társítva. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
 msgid "Mouse-Shortcut already exists"
-msgstr ""
+msgstr "Az egérparancs már létezik"
 
 #: syneditstrconst.syns_emcbreakpointtoggle
 msgid "Toggle Breakpoint"
@@ -446,7 +443,7 @@ msgstr "Kód összecsukása"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
-msgstr ""
+msgstr "Csomópontok,Egy,Mind,\"Kurzor alatt\",\"Jelenlegi csomópont\""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
@@ -458,7 +455,7 @@ msgstr "Kód kinyitása"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
 msgid "Nodes,One,All"
-msgstr ""
+msgstr "Csomópontok,Egy,Mind"
 
 #: syneditstrconst.syns_emccontextmenu
 msgid "Popup Menu"
@@ -466,7 +463,7 @@ msgstr "Helyi menü"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr ""
+msgstr "\"Kurzor mozgatása kijelölés létezésekor\", Soha, \"Kattintás kívülre\", Mindig"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
@@ -474,7 +471,7 @@ msgstr "Forrás-hivatkozás"
 
 #: syneditstrconst.syns_emcmouselink_opt
 msgid "Underline,yes, no"
-msgstr ""
+msgstr "Aláhúzás,igen,nem"
 
 #: syneditstrconst.syns_emcnone
 msgid "No Action"
@@ -494,7 +491,7 @@ msgstr "Sor kijelölése"
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
-msgstr ""
+msgstr "\"Szóközök beleszámítva\",nem,igen"
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"
@@ -538,43 +535,43 @@ msgstr "IDE parancs"
 
 #: syneditstrconst.syns_emcwheelhorizscrolldown
 msgid "Wheel scroll down (Horizontal)"
-msgstr ""
+msgstr "Kerék görgetése le (Vízszintes)"
 
 #: syneditstrconst.syns_emcwheelhorizscrollup
 msgid "Wheel scroll up (Horizontal)"
-msgstr ""
+msgstr "Kerék görgetése fel (Vízszintes)"
 
 #: syneditstrconst.syns_emcwheelscrolldown
 msgid "Wheel scroll down"
-msgstr ""
+msgstr "Kerék görgetése le"
 
 #: syneditstrconst.syns_emcwheelscrollup
 msgid "Wheel scroll up"
-msgstr ""
+msgstr "Kerék görgetése fel"
 
 #: syneditstrconst.syns_emcwheelscroll_opt
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr ""
+msgstr "Sebesség,Rendszerbeállítás,Sorok,Oldalak,\"Oldalak (legalább egy sor)\""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
-msgstr ""
+msgstr "Kerék görgetése le (Függőleges)"
 
 #: syneditstrconst.syns_emcwheelvertscrollup
 msgid "Wheel scroll up (Vertical)"
-msgstr ""
+msgstr "Kerék görgetése fel (Függőleges)"
 
 #: syneditstrconst.syns_emcwheelzoomin
 msgid "Wheel zoom in"
-msgstr ""
+msgstr "Kerék kicsinyít"
 
 #: syneditstrconst.syns_emcwheelzoomnorm
 msgid "Wheel zoom default"
-msgstr ""
+msgstr "Kerék alapértelmezettre nagyít"
 
 #: syneditstrconst.syns_emcwheelzoomout
 msgid "Wheel zoom out"
-msgstr ""
+msgstr "Kerék nagyít"
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
@@ -761,11 +758,8 @@ msgid "x86 Assembly Files (*.asm)|*.ASM"
 msgstr "x86 Assembly fájlok(*.asm)|*.ASM"
 
 #: syneditstrconst.syns_filterxml
-msgid ""
-"XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
-msgstr ""
-"XML dokumentumok (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*."
-"dtd"
+msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
+msgstr "XML dokumentumok (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
 
 #: syneditstrconst.syns_previewscrollinfofmt
 msgid "Page: %d"
@@ -786,3 +780,4 @@ msgstr "<nincs>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Névtelen"
+

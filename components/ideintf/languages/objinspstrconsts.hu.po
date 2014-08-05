@@ -142,7 +142,7 @@ msgstr "Mégsem"
 
 #: objinspstrconsts.fescheckdset
 msgid "Check dataset settings"
-msgstr "Dataset beállítások ellenőrzése"
+msgstr "Adatkészlet beállítások ellenőrzése"
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
@@ -150,7 +150,7 @@ msgstr "A&datok"
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
-msgstr "&Dataset:"
+msgstr "A&datkészlet:"
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
@@ -199,11 +199,11 @@ msgstr "Név:"
 
 #: objinspstrconsts.fesnofields
 msgid "It was not possible to get the dataset field's list"
-msgstr "Nem sikerült összegyűjteni a Dataset mezőinek listáját"
+msgstr "Nem sikerült összegyűjteni adatkészlet mezőinek listáját"
 
 #: objinspstrconsts.fesnofieldsnote
 msgid "Field's list is not available, can't check for duplicates"
-msgstr "A mezők listája nem érhető el, nem lehet többszörös előfordulásokat keresni"
+msgstr "A mezők listája nem érhető el, nem lehet ismétlődéseket keresni"
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
