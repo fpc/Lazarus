@@ -48,8 +48,8 @@ uses
   FPReadJpeg, FPWriteJpeg, // jpg support
   FPReadTiff, FPTiffCmn,   // tiff support
   FPReadGif,
-  IntfGraphics,
   AvgLvlTree,
+  IntfGraphics,
   LCLStrConsts, LCLType, LCLProc, LMessages, LResources, LCLResCache,
   GraphType, IcnsTypes, GraphMath, WSReferences;
 

@@ -90,6 +90,8 @@ type
 
   TWSTabSheet = class(TWSCustomPage)
   published
+    class function GetDefaultColor(const AControl: TControl;
+      const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TWSPageControl }
@@ -260,6 +262,14 @@ implementation
 uses
   LResources;
 
+{ TWSTabSheet }
+
+class function TWSTabSheet.GetDefaultColor(const AControl: TControl;
+  const ADefaultColorType: TDefaultColorType): TColor;
+begin
+  Result:=DefBtnColors[ADefaultColorType];
+end;
+
 { TWSCustomPage }
 
 class procedure TWSCustomPage.UpdateProperties(const ACustomPage: TCustomPage);
@@ -401,13 +411,8 @@ begin
 end;
 
 class function TWSStatusBar.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
-const
-  DefColors: array[TDefaultColorType] of TColor = (
- { dctBrush } clBtnFace,
- { dctFont  } clBtnText
-  );
 begin
-  Result := DefColors[ADefaultColorType];
+  Result := DefBtnColors[ADefaultColorType];
 end;
     
 { TWSCustomListView }

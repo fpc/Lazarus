@@ -1266,8 +1266,8 @@ end;
 function TControl.GetDefaultColor(const DefaultColorType: TDefaultColorType): TColor;
 const
   DefColors: array[TDefaultColorType] of TColor = (
-  { dctBrush } clForm,
-  { dctFont  } clBtnText
+  { dctBrush } clWindow,
+  { dctFont  } clWindowText
   );
 begin
   Result := TWSControlClass(WidgetSetClass).GetDefaultColor(Self, DefaultColorType);

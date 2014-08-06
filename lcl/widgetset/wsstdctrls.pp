@@ -35,13 +35,14 @@ interface
 //    the uses clause of the XXXintf.pp
 ////////////////////////////////////////////////////
 uses
+  Classes,
 ////////////////////////////////////////////////////
-// To get as little as posible circles,
+// To get as little as possible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   Graphics, Controls, StdCtrls,
 ////////////////////////////////////////////////////
-  WSLCLClasses, WSControls, Classes, WSFactory, Clipbrd;
+  Clipbrd, WSLCLClasses, WSControls, WSFactory;
 
 type
   { TWSScrollBar }
@@ -63,6 +64,7 @@ type
 
   TWSGroupBox = class(TWSCustomGroupBox)
   published
+    class function GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TWSCustomComboBox }
@@ -198,6 +200,8 @@ type
   published
     class procedure SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment); virtual;
     class procedure SetStaticBorderStyle(const ACustomStaticText: TCustomStaticText; const NewBorderStyle: TStaticBorderStyle); virtual;
+    class function GetDefaultColor(const AControl: TControl;
+      const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TWSStaticText }
@@ -270,6 +274,14 @@ implementation
 
 uses
   LResources;
+
+{ TWSGroupBox }
+
+class function TWSGroupBox.GetDefaultColor(const AControl: TControl;
+  const ADefaultColorType: TDefaultColorType): TColor;
+begin
+  Result:=DefBtnColors[ADefaultColorType];
+end;
 
 { TWSScrollBar }
 
@@ -624,6 +636,12 @@ begin
   // nothing
 end;
 
+class function TWSCustomStaticText.GetDefaultColor(const AControl: TControl;
+  const ADefaultColorType: TDefaultColorType): TColor;
+begin
+  Result:=DefBtnColors[ADefaultColorType];
+end;
+
 { TWSButton }
 
 class procedure TWSButton.SetDefault(const AButton: TCustomButton; ADefault: Boolean);
@@ -811,13 +829,8 @@ end;
 { TWSButtonControl }
 
 class function TWSButtonControl.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
-const
-  DefColors: array[TDefaultColorType] of TColor = (
- { dctBrush } clBtnFace,
- { dctFont  } clBtnText
-  );
 begin
-  Result := DefColors[ADefaultColorType];
+  Result := DefBtnColors[ADefaultColorType];
 end;
 
 end.

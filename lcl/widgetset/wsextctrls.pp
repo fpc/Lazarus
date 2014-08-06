@@ -53,6 +53,8 @@ type
 
   TWSNotebook = class(TWSCustomControl)
   published
+    class function GetDefaultColor(const AControl: TControl;
+      const ADefaultColorType: TDefaultColorType): TColor; override;
   end;
 
   { TWSShape }
@@ -172,6 +174,14 @@ type
   procedure RegisterCustomTrayIcon;
 
 implementation
+
+{ TWSNotebook }
+
+class function TWSNotebook.GetDefaultColor(const AControl: TControl;
+  const ADefaultColorType: TDefaultColorType): TColor;
+begin
+  Result:=DefBtnColors[ADefaultColorType];
+end;
 
 { TWSCustomTrayIcon }
 
@@ -332,13 +342,8 @@ end;
 { TWSCustomPanel }
 
 class function TWSCustomPanel.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
-const
-  DefColors: array[TDefaultColorType] of TColor = (
- { dctBrush } clBtnFace,
- { dctFont  } clBtnText
-  );
 begin
-  Result := DefColors[ADefaultColorType];
+  Result := DefBtnColors[ADefaultColorType];
 end;
 
 end.

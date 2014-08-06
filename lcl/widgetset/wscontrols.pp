@@ -34,17 +34,22 @@ interface
 //    the uses clause of the XXXintf.pp
 ////////////////////////////////////////////////////
 uses
-  Classes,
+  Classes, Types,
 ////////////////////////////////////////////////////
-// To get as little as posible circles,
+// To get as little as possible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls, Graphics, LCLType, Types,
+  Controls, Graphics, LCLType,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSImgList,
   { TODO: remove when CreateHandle/Component code moved }
   InterfaceBase, WSFactory;
 
+const
+  DefBtnColors: array[TDefaultColorType] of TColor = (
+ { dctBrush } clBtnFace,
+ { dctFont  } clBtnText
+  );
 type
   { TWSDragImageList }
 

@@ -1101,13 +1101,8 @@ end;
 { TGtk3WSButtonControl }
 
 class function TGtk3WSButtonControl.GetDefaultColor(const AControl: TControl; const ADefaultColorType: TDefaultColorType): TColor;
-const
-  DefColors: array[TDefaultColorType] of TColor = (
- { dctBrush } clBtnFace,
- { dctFont  } clBtnText
-  );
 begin
-  Result := DefColors[ADefaultColorType];
+  Result := DefBtnColors[ADefaultColorType];
 end;
 
 end.
