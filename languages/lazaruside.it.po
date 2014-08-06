@@ -6254,6 +6254,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Compila"
 
+#: lazarusidestrconsts.liscompileproject
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Compilatore"

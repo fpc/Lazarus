@@ -5950,6 +5950,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Fordítás"
 
+#: lazarusidestrconsts.liscompileproject
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Fordító"

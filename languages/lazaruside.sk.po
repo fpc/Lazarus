@@ -6272,6 +6272,10 @@ msgctxt "lazarusidestrconsts.liscompile"
 msgid "Compile"
 msgstr "Preložiť"
 
+#: lazarusidestrconsts.liscompileproject
+msgid "Compile Project"
+msgstr ""
+
 #: lazarusidestrconsts.liscompiler
 msgid "Compiler"
 msgstr "Prekladač"
