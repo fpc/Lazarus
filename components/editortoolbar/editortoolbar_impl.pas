@@ -25,7 +25,6 @@ interface
 uses
   Classes
   ,CodeToolManager
-  ,CodeTree
   ,jumpto_impl
   ,Forms
   ,ComCtrls
@@ -68,6 +67,7 @@ type
     procedure   AddDivider;
     procedure   AddStaticItems;
     procedure   ClearToolbar;
+    property    OwnerWindow: TSourceEditorWindowInterface read FWindow;
   end;
   
 
@@ -78,6 +78,7 @@ type
     FToolBarList: TFPList;
   protected
     procedure SourceWindowCreated(Sender: TObject);
+    procedure SourceWindowDestroyed(Sender: TObject);
     procedure AddBar(ABar: TEditorToolbar);
     procedure DelBar(ABar: TEditorToolbar);
     procedure ReloadAll;
@@ -116,9 +117,8 @@ type
   TEditToolBarToolButton = class(TToolButton)
   private
     FMenuItem: TIDEMenuItem;
-  protected
-    procedure Click; override;
   public
+    procedure Click; override;
     property MenuItem: TIDEMenuItem read FMenuItem write FMenuItem;
   end;
 
@@ -156,6 +156,21 @@ begin
   TEditorToolbar.Create(Sender as TSourceEditorWindowInterface);
 end;
 
+procedure TEditorToolbarList.SourceWindowDestroyed(Sender: TObject);
+  var
+    i: integer;
+    aBar: TEditorToolbar;
+begin
+  // Let's remove from our list the destroyed window
+  for i:= 0 to FToolBarList.Count -1 do begin
+    aBar := TEditorToolbar(FToolBarList[i]);
+    if aBar.OwnerWindow = TSourceEditorWindowInterface(Sender) then begin
+      FToolBarList.Remove(aBar);
+      exit;
+    end;
+  end;
+end;
+
 procedure TEditorToolbarList.AddBar(ABar: TEditorToolbar);
 begin
   FToolBarList.Add(ABar);
@@ -171,7 +186,7 @@ var
   i: Integer;
 begin
   for i := 0 to FToolBarList.Count - 1 do
-    TEditorToolbar(FToolBarList[i]).Reload;
+    TEditorToolbar(FToolBarList[i]).Reload
 end;
 
 constructor TEditorToolbarList.Create;
@@ -180,8 +195,10 @@ begin
   uEditorToolbarList := self;
   FToolBarList := TFPList.Create;
 
-  if SourceEditorManagerIntf <> nil then
+  if SourceEditorManagerIntf <> nil then begin
     SourceEditorManagerIntf.RegisterChangeEvent(semWindowCreate, @SourceWindowCreated);
+    SourceEditorManagerIntf.RegisterChangeEvent(semWindowDestroy,@SourceWindowDestroyed);
+  end;
 
 end;
 
@@ -228,7 +245,6 @@ var
   T: TJumpType;
   c: integer;
   cfg: TConfigStorage;
-  value: string;
 begin
   uEditorToolbarList.AddBar(Self);
   if assigned(TB) then exit;
