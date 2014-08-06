@@ -142,7 +142,8 @@ type
     FSelection: TPersistentSelectionList;
     FSelectedControlsList: TList;
     FUpdating: Boolean;
-    procedure Refresh(Force: boolean);
+    fNeedUpdate: boolean;
+    procedure Refresh;
     procedure OnRefreshPropertyValues;
     procedure OnSetSelection(const ASelection: TPersistentSelectionList);
     function GetSelectedControls: TList;
@@ -270,7 +271,7 @@ end;
 
 procedure TAnchorDesigner.AnchorDesignerShow(Sender: TObject);
 begin
-  Refresh(true);
+  Refresh;
 end;
 
 procedure TAnchorDesigner.AnchorEnabledCheckBoxChange(Sender: TObject);
@@ -318,7 +319,7 @@ begin
           lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel])<>
             mrIgnore
         then begin
-          Refresh(false);
+          Refresh;
           exit;
         end;
         break;
@@ -545,7 +546,7 @@ begin
           lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel])<>
             mrIgnore
         then begin
-          Refresh(false);
+          Refresh;
           exit;
         end;
         break;
@@ -657,7 +658,7 @@ begin
           lisThisWillCreateACircularDependency, mtWarning, [mbIgnore, mbCancel])<>
             mrIgnore
         then begin
-          Refresh(false);
+          Refresh;
           exit;
         end;
         break;
@@ -761,7 +762,7 @@ begin
   if AnchorDesigner=Self then AnchorDesigner:=nil;
 end;
 
-procedure TAnchorDesigner.Refresh(Force: boolean);
+procedure TAnchorDesigner.Refresh;
 var
   SelectedControlCount: Integer;
   CurSide: TAnchorDesignerSideValues;
@@ -769,15 +770,21 @@ var
   CurSelection: TList;
 begin
   //debugln('TAnchorDesigner.Refresh A ');
-  if not Force then begin
-    // check if update is needed
-    if not IsVisible then exit;
+  // check if update is needed
+  if not IsVisible then begin
+    fNeedUpdate:=true;
+    exit;
   end;
   if FUpdating then exit;
   FUpdating:=true;
+  fNeedUpdate:=false;
   try
     FreeAndNil(Values);
     CurSelection:=GetSelectedControls;
+    {if (CurSelection<>nil) and (CurSelection.Count>0) then
+      debugln(['TAnchorDesigner.Refresh Item0=',DbgSName(TObject(CurSelection[0]))])
+    else
+      debugln(['TAnchorDesigner.Refresh empty selection']);}
     CollectValues(CurSelection,Values,SelectedControlCount);
     //debugln('TAnchorDesigner.Refresh B ',dbgs(SelectedControlCount));
 
@@ -887,7 +894,7 @@ end;
 
 procedure TAnchorDesigner.OnRefreshPropertyValues;
 begin
-  Refresh(false);
+  Refresh;
 end;
 
 function TAnchorDesigner.GetSelectedControls: TList;
@@ -984,7 +991,7 @@ procedure TAnchorDesigner.OnSetSelection(
   const ASelection: TPersistentSelectionList);
 begin
   if FSelection.IsEqual(ASelection) then exit;
-  Refresh(false);
+  Refresh;
 end;
 
 { TAnchorDesignerValues }
