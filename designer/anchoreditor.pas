@@ -156,6 +156,7 @@ type
                             var SelectedControlCount: integer);
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
+    procedure UpdateShowing; override;
   public
     destructor Destroy; override;
     class function ControlToStr(AControl: TControl): string;
@@ -678,6 +679,13 @@ procedure TAnchorDesigner.KeyUp(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyUp(Key, Shift);
   ExecuteIDEShortCut(Self,Key,Shift,nil);
+end;
+
+procedure TAnchorDesigner.UpdateShowing;
+begin
+  inherited UpdateShowing;
+  if IsVisible and fNeedUpdate then
+    Refresh;
 end;
 
 procedure TAnchorDesigner.FillComboBoxWithSiblings(AComboBox: TComboBox);
