@@ -309,7 +309,7 @@ begin
   if ConsoleVerbosity>=0 then
     DebugLn('[TCompiler.Compile] CmdLine="',CompilerFilename+CmdLine,'"');
 
-  Tool:=ExternalToolList.Add('Compile Project');
+  Tool:=ExternalToolList.Add(lisCompileProject);
   Tool.Reference(Self,ClassName);
   try
     Tool.Data:=TIDEExternalToolData.Create(IDEToolCompileProject,'',AProject.ProjectInfoFile);

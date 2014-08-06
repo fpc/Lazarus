@@ -3149,6 +3149,7 @@ resourcestring
     +'clean with -B';
   lisCompilerHintYouCanSetTheCompilerPath = 'Hint: you can set the compiler '
     +'path in Tools -> Options-> Files -> Compiler Path';
+  lisCompileProject = 'Compile Project';
   lisCompilerNOTELoadingOldCodetoolsOptionsFile = 'NOTE: loading old '
     +'codetools options file: ';
   lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults = 'NOTE: codetools '
