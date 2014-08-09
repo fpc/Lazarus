@@ -14,12 +14,17 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
+      <Linking>
+        <Debugging>
+          <UseHeaptrc Value="True"/>
+        </Debugging>
+      </Linking>
     </CompilerOptions>
     <Description Value="Provides a configurable Toolbar in the source editor window, which can be positioned at any side. The toolbar comes with a predefined Jump button, and then Jump Forward and Jump Back buttons. 
 "/>
     <License Value="GPL
 "/>
-    <Version Minor="6" Release="2"/>
+    <Version Minor="6" Release="3"/>
     <Files Count="4">
       <Item1>
         <Filename Value="jumpto_impl.pas"/>

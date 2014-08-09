@@ -157,15 +157,16 @@ begin
 end;
 
 procedure TEditorToolbarList.SourceWindowDestroyed(Sender: TObject);
-  var
-    i: integer;
-    aBar: TEditorToolbar;
+var
+  i: integer;
+  aBar: TEditorToolbar;
 begin
-  // Let's remove from our list the destroyed window
+  // Let's remove from our list the destroyed window and then destroy the ToolBar
   for i:= 0 to FToolBarList.Count -1 do begin
     aBar := TEditorToolbar(FToolBarList[i]);
     if aBar.OwnerWindow = TSourceEditorWindowInterface(Sender) then begin
-      FToolBarList.Remove(aBar);
+      DelBar(aBar);
+      aBar.Free;
       exit;
     end;
   end;
