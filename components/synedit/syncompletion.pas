@@ -728,6 +728,7 @@ procedure TSynBaseCompletionForm.OnHintTimer(Sender: TObject);
 begin
   FHintTimer.Enabled := False;
   FHint.ActivateHint(ItemList[FHint.Index]);
+  FHint.Invalidate;
 end;
 
 procedure TSynBaseCompletionForm.KeyDown(var Key: Word; Shift: TShiftState);
