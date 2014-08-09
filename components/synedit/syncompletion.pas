@@ -877,17 +877,9 @@ end;
 
 procedure TSynBaseCompletionForm.Paint;
 var
-  i: integer;
-  PaintWidth: Integer;
-
-  function Min(a, b: integer): integer;
-  begin
-    if a < b then
-      Result := a
-    else
-      Result := b;
-  end;
-
+  i, Ind: integer;
+  PaintWidth, YYY, RightC, BottomC: Integer;
+  Capt: String;
 begin
 //Writeln('[TSynBaseCompletionForm.Paint]');
 
@@ -907,18 +899,18 @@ begin
     Scroll.Max := 0;
   end;
 
-  PaintWidth:=Width-Scroll.Width;
-
+  PaintWidth := Width - Scroll.Width;
+  RightC := PaintWidth - 2 * DrawBorderWidth;
   //DebugLn(['TSynBaseCompletionForm.Paint NbLinesInWindow=',NbLinesInWindow,' ItemList.Count=',ItemList.Count]);
-  for i := 0 to min(NbLinesInWindow - 1, ItemList.Count - Scroll.Position - 1) do
+  for i := 0 to Min(NbLinesInWindow - 1, ItemList.Count - Scroll.Position - 1) do
   begin
+    YYY := DrawBorderWidth + FFontHeight * i;
+    BottomC := (FFontHeight * (i + 1))+1;
     if i + Scroll.Position = Position then
     begin
       Canvas.Brush.Color := clSelect;
       Canvas.Pen.Color := clSelect;
-      Canvas.Rectangle(DrawBorderWidth, DrawBorderWidth+(FFontHeight * i),
-                       PaintWidth-2*DrawBorderWidth,
-                       (FFontHeight * (i + 1))+1);
+      Canvas.Rectangle(DrawBorderWidth, YYY, RightC, BottomC);
       Canvas.Pen.Color := clBlack;
       Canvas.Font.Color := TextSelectedColor;
       Hint := ItemList[Position];
@@ -927,20 +919,15 @@ begin
     begin
       Canvas.Brush.Color := BackgroundColor;
       Canvas.Font.Color := TextColor;
-      Canvas.FillRect(Rect(DrawBorderWidth, DrawBorderWidth+(FFontHeight * i),
-                           PaintWidth-2*DrawBorderWidth,
-                           (FFontHeight * (i + 1))+1));
+      Canvas.FillRect(Rect(DrawBorderWidth, YYY, RightC, BottomC));
     end;
-
     //DebugLn(['TSynBaseCompletionForm.Paint ',i,' ',ItemList[Scroll.Position + i]]);
-    if not Assigned(OnPaintItem) or
-       not OnPaintItem(ItemList[Scroll.Position + i], Canvas,
-        DrawBorderWidth, DrawBorderWidth+FFontHeight * i, i + Scroll.Position = Position,
-        i + Scroll.Position
-        ) then
-    begin
-      Canvas.TextOut(DrawBorderWidth+2, DrawBorderWidth+FFontHeight * i, ItemList[Scroll.Position + i]);
-    end;
+    Ind := i + Scroll.Position;
+    Capt := ItemList[Scroll.Position + i];
+    if not Assigned(OnPaintItem)
+    or not OnPaintItem(Capt, Canvas, DrawBorderWidth, YYY, Ind = Position, Ind)
+    then
+      Canvas.TextOut(DrawBorderWidth+2, YYY, Capt);
   end;
   // paint the rest of the background
   if NbLinesInWindow > ItemList.Count - Scroll.Position then
@@ -950,7 +937,8 @@ begin
     Canvas.FillRect(Rect(0, i, PaintWidth, Height));
   end;
   // draw a rectangle around the window
-  if DrawBorderWidth > 0 then begin
+  if DrawBorderWidth > 0 then
+  begin
     Canvas.Pen.Color := TextColor;
     Canvas.Pen.Width := DrawBorderWidth;
     Canvas.Moveto(0, 0);
@@ -1307,7 +1295,6 @@ begin
       if Assigned(OnPositionChanged) then OnPositionChanged(Self);
     end;
   end;
-  // ToDo by Juha: Fix THintWindow to show long completion lines again. Disabled temporarily.
   if Showing then
     ShowItemHint(Position);
 end;
@@ -1560,8 +1547,7 @@ begin
   Form.OnPositionChanged :=  AValue;
 end;
 
-procedure TSynBaseCompletion.SetOnPaintItem(const Value:
-  TSynBaseCompletionPaintItem);
+procedure TSynBaseCompletion.SetOnPaintItem(const Value: TSynBaseCompletionPaintItem);
 begin
   form.OnPaintItem := Value;
 end;
@@ -2134,15 +2120,13 @@ begin
   R := ClientRect;
   Canvas.FillRect(R);
   DrawEdge(Canvas.Handle, R, BDR_RAISEDOUTER, BF_RECT);
-  
   Canvas.Font.Color := FCompletionForm.TextColor;
-  
+
   if not Assigned(FCompletionForm.OnPaintItem)
   or not FCompletionForm.OnPaintItem(Caption, Canvas, 1, 1,
                                      FCompletionForm.Position = FIndex, FIndex)
-  then begin
+  then
     Canvas.TextOut(2, 2, Caption);
-  end;
 end;
 
 constructor TSynBaseCompletionHint.Create(AOwner: TComponent);
