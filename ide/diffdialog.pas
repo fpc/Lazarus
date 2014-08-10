@@ -26,7 +26,7 @@
  ***************************************************************************
 
   Author: Mattias Gaertner
-  
+
   Abstract:
     The TDiffDlg is a dialog for showing differences between two files.
 

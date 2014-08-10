@@ -98,6 +98,21 @@ object ChgEncodingDialog: TChgEncodingDialog
       TabOrder = 3
       Text = 'FileFilterCombobox'
     end
+    object RegExprErrorLabel: TLabel
+      AnchorSideLeft.Control = RegExprCheckBox
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = RegExprCheckBox
+      AnchorSideTop.Side = asrCenter
+      Left = 167
+      Height = 15
+      Top = 116
+      Width = 114
+      BorderSpacing.Left = 27
+      Caption = 'RegExprErrorLabel'
+      Font.Color = clFuchsia
+      ParentColor = False
+      ParentFont = False
+    end
   end
   object BtnPanel: TPanel
     Left = 0

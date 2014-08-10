@@ -48,6 +48,7 @@ type
     HelpButton: TBitBtn;
     BtnPanel: TPanel;
     CloseButton: TBitBtn;
+    RegExprErrorLabel: TLabel;
     NewEncodingComboBox: TComboBox;
     FileFilterCombobox: TComboBox;
     NewEncodingLabel: TLabel;
@@ -275,14 +276,15 @@ begin
     ok:=false;
     try
       IncludeFilterRegExpr.Expression:=Expr;
+      IncludeFilterRegExpr.Compile;
       ok:=true;
     except
       on E: Exception do begin
         DebugLn('Invalid Include File Expression ',Expr,' ',E.Message);
-        MessageDlg('Error in regular expression',
-          E.Message,mtError,[mbCancel],0);
+        RegExprErrorLabel.Caption:=E.Message;
       end;
     end;
+    RegExprErrorLabel.Visible := not ok;
     if not ok then exit;
 
     NewEncoding:=NormalizeEncoding(NewEncodingComboBox.Text);
