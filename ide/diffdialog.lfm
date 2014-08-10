@@ -5,16 +5,16 @@ object DiffDlg: TDiffDlg
   Width = 598
   HelpType = htKeyword
   BorderIcons = [biSystemMenu]
-  Caption = 'Diff dialog'
+  Caption = 'Compare files'
   ClientHeight = 522
   ClientWidth = 598
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.3'
   object Text1GroupBox: TGroupBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 53
+    Height = 57
     Top = 6
     Width = 586
     Align = alTop
@@ -22,7 +22,7 @@ object DiffDlg: TDiffDlg
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Text1GroupBox'
-    ClientHeight = 36
+    ClientHeight = 38
     ClientWidth = 582
     TabOrder = 0
     object Text1Combobox: TComboBox
@@ -30,9 +30,9 @@ object DiffDlg: TDiffDlg
       AnchorSideTop.Control = Text1GroupBox
       AnchorSideRight.Control = Text1FileOpenButton
       Left = 6
-      Height = 23
+      Height = 25
       Top = 6
-      Width = 316
+      Width = 320
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -47,10 +47,10 @@ object DiffDlg: TDiffDlg
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = Text1GroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 372
-      Height = 26
-      Top = 4
-      Width = 204
+      Left = 376
+      Height = 21
+      Top = 8
+      Width = 200
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -64,8 +64,8 @@ object DiffDlg: TDiffDlg
       AnchorSideRight.Control = Text1OnlySelectionCheckBox
       AnchorSideBottom.Control = Text1Combobox
       AnchorSideBottom.Side = asrBottom
-      Left = 328
-      Height = 23
+      Left = 332
+      Height = 25
       Top = 6
       Width = 32
       Anchors = [akTop, akRight, akBottom]
@@ -78,14 +78,14 @@ object DiffDlg: TDiffDlg
   object Text2GroupBox: TGroupBox
     AnchorSideTop.Control = Text1GroupBox
     Left = 6
-    Height = 53
-    Top = 65
+    Height = 57
+    Top = 69
     Width = 586
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Text2GroupBox'
-    ClientHeight = 36
+    ClientHeight = 38
     ClientWidth = 582
     TabOrder = 1
     object Text2Combobox: TComboBox
@@ -93,9 +93,9 @@ object DiffDlg: TDiffDlg
       AnchorSideTop.Control = Text2GroupBox
       AnchorSideRight.Control = Text2FileOpenButton
       Left = 6
-      Height = 23
+      Height = 25
       Top = 6
-      Width = 316
+      Width = 320
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
@@ -110,10 +110,10 @@ object DiffDlg: TDiffDlg
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = Text2GroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 372
-      Height = 26
-      Top = 4
-      Width = 204
+      Left = 376
+      Height = 21
+      Top = 8
+      Width = 200
       Anchors = [akTop, akRight]
       BorderSpacing.Top = 6
       BorderSpacing.Right = 6
@@ -127,8 +127,8 @@ object DiffDlg: TDiffDlg
       AnchorSideRight.Control = Text2OnlySelectionCheckBox
       AnchorSideBottom.Control = Text2Combobox
       AnchorSideBottom.Side = asrBottom
-      Left = 328
-      Height = 23
+      Left = 332
+      Height = 25
       Top = 6
       Width = 32
       Anchors = [akTop, akRight, akBottom]
@@ -147,7 +147,7 @@ object DiffDlg: TDiffDlg
     AnchorSideBottom.Control = ProgressBar1
     Left = 6
     Height = 109
-    Top = 345
+    Top = 344
     Width = 586
     Anchors = [akLeft, akRight, akBottom]
     AutoFill = True
@@ -170,8 +170,8 @@ object DiffDlg: TDiffDlg
     AnchorSideRight.Control = Owner
     AnchorSideBottom.Control = OptionsGroupBox
     Left = 6
-    Height = 215
-    Top = 124
+    Height = 206
+    Top = 132
     Width = 586
     Align = alTop
     BorderSpacing.Around = 6
@@ -189,50 +189,24 @@ object DiffDlg: TDiffDlg
     Gutter.Width = 55
     Gutter.MouseActions = <    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccAny
         ClickDir = cdDown
-        Command = 13
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcOnMainGutterClick
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbRight
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 12
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcContextMenu
       end>
     RightGutter.Width = 0
     RightGutter.MouseActions = <    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccAny
         ClickDir = cdDown
-        Command = 13
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcOnMainGutterClick
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbRight
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 12
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcContextMenu
       end>
     Highlighter = SynDiffSyn1
     Keystrokes = <    
@@ -558,141 +532,113 @@ object DiffDlg: TDiffDlg
       end>
     MouseActions = <    
       item
-        Shift = []
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 1
+        Command = emcStartSelections
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssShift]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 1
+        Command = emcStartSelections
         MoveCaret = True
         Option = 1
-        Priority = 0
       end    
       item
         Shift = [ssAlt]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 3
+        Command = emcStartColumnSelections
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssShift, ssAlt]
         ShiftMask = [ssShift, ssAlt]
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 3
+        Command = emcStartColumnSelections
         MoveCaret = True
         Option = 1
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbRight
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 12
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcContextMenu
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccDouble
         ClickDir = cdDown
-        Command = 6
+        Command = emcSelectWord
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccTriple
         ClickDir = cdDown
-        Command = 7
+        Command = emcSelectLine
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
         ClickCount = ccQuad
         ClickDir = cdDown
-        Command = 8
+        Command = emcSelectPara
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
-        Shift = []
-        ShiftMask = []
         Button = mbMiddle
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 10
+        Command = emcPasteSelection
         MoveCaret = True
-        Option = 0
-        Priority = 0
       end    
       item
         Shift = [ssCtrl]
         ShiftMask = [ssShift, ssAlt, ssCtrl]
-        Button = mbLeft
-        ClickCount = ccSingle
-        ClickDir = cdUp
-        Command = 11
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcMouseLink
       end>
+    MouseTextActions = <>
     MouseSelActions = <    
       item
-        Shift = []
-        ShiftMask = []
-        Button = mbLeft
-        ClickCount = ccSingle
         ClickDir = cdDown
-        Command = 9
-        MoveCaret = False
-        Option = 0
-        Priority = 0
+        Command = emcStartDragMove
       end>
     Lines.Strings = (
       'DiffSynEdit'
     )
     VisibleSpecialChars = [vscSpace, vscTabAtLast]
+    SelectedColor.FrameEdges = sfeAround
+    SelectedColor.BackPriority = 50
+    SelectedColor.ForePriority = 50
+    SelectedColor.FramePriority = 50
+    SelectedColor.BoldPriority = 50
+    SelectedColor.ItalicPriority = 50
+    SelectedColor.UnderlinePriority = 50
+    SelectedColor.StrikeOutPriority = 50
+    IncrementColor.FrameEdges = sfeAround
+    HighlightAllColor.FrameEdges = sfeAround
     BracketHighlightStyle = sbhsBoth
+    BracketMatchColor.Background = clNone
+    BracketMatchColor.Foreground = clNone
+    BracketMatchColor.FrameEdges = sfeAround
+    BracketMatchColor.Style = [fsBold]
+    FoldedCodeColor.Background = clNone
+    FoldedCodeColor.Foreground = clGray
+    FoldedCodeColor.FrameColor = clGray
+    FoldedCodeColor.FrameEdges = sfeAround
+    MouseLinkColor.Background = clNone
+    MouseLinkColor.Foreground = clBlue
+    MouseLinkColor.FrameEdges = sfeAround
+    LineHighlightColor.Background = clNone
+    LineHighlightColor.Foreground = clNone
+    LineHighlightColor.FrameEdges = sfeAround
     inline TSynGutterPartList
       object TSynGutterMarks
         Width = 24
+        MouseActions = <>
       end
       object TSynGutterLineNumber
         Width = 15
         MouseActions = <>
         MarkupInfo.Background = clBtnFace
         MarkupInfo.Foreground = clNone
+        MarkupInfo.FrameEdges = sfeAround
         DigitCount = 2
         ShowOnlyLineNumbersMultiplesOf = 1
         ZeroStart = False
@@ -700,35 +646,29 @@ object DiffDlg: TDiffDlg
       end
       object TSynGutterChanges
         Width = 4
+        MouseActions = <>
         ModifiedColor = 59900
         SavedColor = clGreen
       end
       object TSynGutterSeparator
         Width = 2
+        MouseActions = <>
+        MarkupInfo.Background = clWhite
+        MarkupInfo.Foreground = clGray
+        MarkupInfo.FrameEdges = sfeAround
       end
       object TSynGutterCodeFolding
         MouseActions = <        
           item
-            Shift = []
-            ShiftMask = []
             Button = mbRight
-            ClickCount = ccSingle
-            ClickDir = cdUp
-            Command = 16
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldContextMenu
           end        
           item
-            Shift = []
             ShiftMask = [ssShift]
             Button = mbMiddle
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldCollaps
           end        
           item
             Shift = [ssShift]
@@ -736,103 +676,65 @@ object DiffDlg: TDiffDlg
             Button = mbMiddle
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
+            Command = emcCodeFoldCollaps
             Option = 1
-            Priority = 0
           end        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 0
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcNone
           end>
         MarkupInfo.Background = clNone
         MarkupInfo.Foreground = clGray
+        MarkupInfo.FrameEdges = sfeAround
         MouseActionsExpanded = <        
           item
-            Shift = []
-            ShiftMask = []
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 14
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldCollaps
           end>
         MouseActionsCollapsed = <        
           item
             Shift = [ssCtrl]
             ShiftMask = [ssCtrl]
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 15
-            MoveCaret = False
-            Option = 0
-            Priority = 0
+            Command = emcCodeFoldExpand
           end        
           item
-            Shift = []
             ShiftMask = [ssCtrl]
-            Button = mbLeft
             ClickCount = ccAny
             ClickDir = cdDown
-            Command = 15
-            MoveCaret = False
+            Command = emcCodeFoldExpand
             Option = 1
-            Priority = 0
           end>
       end
     end
   end
-  object SaveDiffButton: TBitBtn
+  object OpenInEditorButton: TBitBtn
     AnchorSideRight.Control = CloseButton
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 459
-    Height = 25
-    Top = 491
-    Width = 64
-    Anchors = [akRight, akBottom]
-    AutoSize = True
-    BorderSpacing.Around = 6
-    Caption = 'Save Diff'
-    NumGlyphs = 0
-    OnClick = SaveDiffButtonClick
-    TabOrder = 4
-  end
-  object OpenInEditorButton: TBitBtn
-    AnchorSideRight.Control = SaveDiffButton
-    AnchorSideBottom.Control = Owner
-    AnchorSideBottom.Side = asrBottom
-    Left = 320
-    Height = 25
-    Top = 491
-    Width = 133
+    Left = 373
+    Height = 26
+    Top = 490
+    Width = 137
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'OpenInEditorButton'
     ModalResult = 6
-    NumGlyphs = 0
-    TabOrder = 5
+    TabOrder = 4
   end
   object CloseButton: TBitBtn
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 529
-    Height = 26
-    Top = 490
-    Width = 63
+    Left = 516
+    Height = 27
+    Top = 489
+    Width = 76
     Anchors = [akRight, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
@@ -840,25 +742,23 @@ object DiffDlg: TDiffDlg
     Caption = '&Close'
     Kind = bkClose
     ModalResult = 2
-    NumGlyphs = 0
-    TabOrder = 6
+    TabOrder = 5
   end
   object HelpButton: TBitBtn
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 6
-    Height = 26
-    Top = 490
-    Width = 57
+    Height = 33
+    Top = 483
+    Width = 76
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = '&Help'
     Kind = bkHelp
-    NumGlyphs = 0
     OnClick = HelpButtonClick
-    TabOrder = 7
+    TabOrder = 6
   end
   object ProgressBar1: TProgressBar
     AnchorSideLeft.Control = Owner
@@ -867,36 +767,29 @@ object DiffDlg: TDiffDlg
     AnchorSideBottom.Control = CloseButton
     Left = 6
     Height = 24
-    Top = 460
-    Width = 466
+    Top = 459
+    Width = 462
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Step = 0
-    TabOrder = 8
+    TabOrder = 7
   end
   object CancelScanningButton: TBitBtn
     AnchorSideTop.Control = ProgressBar1
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 478
-    Height = 25
-    Top = 460
-    Width = 114
+    Left = 474
+    Height = 26
+    Top = 458
+    Width = 118
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Around = 6
     Caption = 'Cancel Scanning'
     Enabled = False
     OnClick = CancelScanningButtonClick
-    TabOrder = 9
-  end
-  object dlgSave: TSaveDialog
-    DefaultExt = '.diff'
-    Filter = 'diff|*.diff|any file|*.*'
-    FilterIndex = 0
-    left = 272
-    top = 48
+    TabOrder = 8
   end
   object dlgOpen: TOpenDialog
     DefaultExt = '.pas'

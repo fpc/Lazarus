@@ -9928,7 +9928,6 @@ function TMainIDE.DoDiff: TModalResult;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  OpenDiffInEditor: boolean;
   DiffText: string;
   NewDiffFilename: String;
 begin
@@ -9936,10 +9935,9 @@ begin
   GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
   if ActiveSrcEdit=nil then exit;
 
-  Result:=ShowDiffDialog(ActiveSrcEdit.PageIndex,
-                         OpenDiffInEditor,DiffText);
-  if OpenDiffInEditor then begin
-    NewDiffFilename:=CreateSrcEditPageName('','diff.txt', nil);
+  Result:=ShowDiffDialog(ActiveSrcEdit.PageIndex, DiffText);
+  if Result = mrYes then begin
+    NewDiffFilename:=CreateSrcEditPageName('','FileDifference.diff', nil);
     Result:=DoNewEditorFile(FileDescriptorText,NewDiffFilename,DiffText,
                             [nfOpenInEditor]);
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);

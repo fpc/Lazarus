@@ -28,7 +28,7 @@
   Author: Mattias Gaertner
   
   Abstract:
-    The TDiffDlg is the dialog for showing the differences between two files.
+    The TDiffDlg is a dialog for showing differences between two files.
 
 }
 
@@ -81,11 +81,9 @@ type
     DiffSynEdit: TSynEdit;
     OpenInEditorButton: TBitBtn;
     ProgressBar1: TProgressBar;
-    SaveDiffButton: TBitBtn;
     SynDiffSyn1: TSynDiffSyn;
     Text1FileOpenButton: TButton;
     CancelScanningButton: TBitBtn;
-    dlgSave: TSaveDialog;
     dlgOpen: TOpenDialog;
 
     Text2FileOpenButton: TButton;
@@ -107,7 +105,6 @@ type
     procedure FileOpenClick(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure OnChangeFlag(Sender: TObject);
-    procedure SaveDiffButtonClick(Sender: TObject);
     procedure Text1ComboboxChange(Sender: TObject);
     procedure Text2ComboboxChange(Sender: TObject);
   private
@@ -135,8 +132,7 @@ type
     property IdleConnected: boolean read fIdleConnected write SetIdleConnected;
   end;
   
-function ShowDiffDialog(Text1Index: integer;
-  var OpenDiffInEditor: boolean; var Diff: string): TModalResult;
+function ShowDiffDialog(Text1Index: integer; out Diff: string): TModalResult;
 
 const
   IgnoreCaseCheckBox = 0;
@@ -151,36 +147,33 @@ implementation
 
 {$R *.lfm}
 
-function ShowDiffDialog(Text1Index: integer;
-  var OpenDiffInEditor: boolean; var Diff: string): TModalResult;
+function ShowDiffDialog(Text1Index: integer; out Diff: string): TModalResult;
 var
   DiffDlg: TDiffDlg;
   Files: TDiffFiles;
   i: Integer;
   SrcEdit: TSourceEditor;
 begin
+  DiffDlg := TDiffDlg.Create(nil);
   Files := TDiffFiles.Create;
-  for i:=0 to SourceEditorManager.SourceEditorCount - 1 do begin
-    SrcEdit := SourceEditorManager.SourceEditors[i]; // FindSourceEditorWithPageIndex(i);
-    Files.Add(TDiffFile.Create(SrcEdit.PageName, SrcEdit, SrcEdit.SelectionAvailable));
+  try
+    // Get available files
+    for i:=0 to SourceEditorManager.SourceEditorCount - 1 do begin
+      SrcEdit := SourceEditorManager.SourceEditors[i]; // FindSourceEditorWithPageIndex(i);
+      Files.Add(TDiffFile.Create(SrcEdit.PageName, SrcEdit, SrcEdit.SelectionAvailable));
+    end;
+    DiffDlg.Files := Files;
+    DiffDlg.SetText1Index(Text1Index);
+    DiffDlg.Init;
+    Result := DiffDlg.ShowModal;
+    DiffDlg.SaveSettings;
+    // "Open in editor" button returns mrYes.
+    if Result=mrYes then
+      Diff := DiffDlg.DiffSynEdit.Text;
+  finally
+    Files.Free;
+    DiffDlg.Free;
   end;
-
-  OpenDiffInEditor:=false;
-  DiffDlg:=TDiffDlg.Create(nil);
-  DiffDlg.Files:=Files;
-  DiffDlg.SetText1Index(Text1Index);
-  DiffDlg.Init;
-  Result:=DiffDlg.ShowModal;
-  DiffDlg.SaveSettings;
-
-  if Result=mrYes then begin
-    OpenDiffInEditor:=true;
-    Diff:=DiffDlg.DiffSynEdit.Text;
-    Result:=mrOk;
-  end;
-
-  Files.Free;
-  DiffDlg.Free;
 end;
 
 { TDiffDlg }
@@ -228,16 +221,6 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-procedure TDiffDlg.SaveDiffButtonClick(Sender: TObject);
-begin
-  if dlgSave.Execute then begin
-    try
-      SaveStringsToFileUTF8(DiffSynEdit.Lines,dlgSave.FileName);
-    except
-    end;
-  end;
-end;
-
 procedure TDiffDlg.Text1ComboboxChange(Sender: TObject);
 begin
   SetText1Index(Text1Combobox.Items.IndexOf(Text1Combobox.Text));
@@ -251,12 +234,12 @@ end;
 procedure TDiffDlg.SetupComponents;
 begin
   // text 1
-  Text1GroupBox.Caption:=lisDiffDlgText1;
+  Text1GroupBox.Caption:=lisDiffDlgFile1;
   Text1OnlySelectionCheckBox.Caption:=lisDiffDlgOnlySelection;
   Text1FileOpenButton.Caption:='...';
 
   // text 2
-  Text2GroupBox.Caption:=lisDiffDlgText2;
+  Text2GroupBox.Caption:=lisDiffDlgFile2;
   Text2OnlySelectionCheckBox.Caption:=lisDiffDlgOnlySelection;
   Text2FileOpenButton.Caption:='...';
 
@@ -277,17 +260,12 @@ begin
   CancelScanningButton.LoadGlyphFromResourceName(hInstance, 'btn_cancel');
   CloseButton.Caption:=lisClose;
   OpenInEditorButton.Caption:=lisDiffDlgOpenDiffInEditor;
-  SaveDiffButton.Caption:=lisDlgSave;
   HelpButton.Caption:=lisMenuHelp;
 
   OpenInEditorButton.LoadGlyphFromStock(idButtonOpen);
   if OpenInEditorButton.Glyph.Empty then
     OpenInEditorButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
   
-  SaveDiffButton.LoadGlyphFromStock(idButtonSave);
-  if SaveDiffButton.Glyph.Empty then
-    SaveDiffButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
-
   // dialogs
   dlgOpen.Title:=lisOpenExistingFile;
   dlgOpen.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
@@ -296,8 +274,6 @@ begin
                  +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
                  +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
                  +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
-  dlgSave.Title:=lisSaveFileAs;
-  dlgSave.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask;
 
   // diff
   EditorOpts.GetSynEditSettings(DiffSynEdit);
@@ -360,7 +336,6 @@ begin
     Text1GroupBox.Enabled := False;
     Text2GroupBox.Enabled := False;
     OpenInEditorButton.Enabled := False;
-    SaveDiffButton.Enabled := False;
     //CancelScanningButton.Enabled := True;
 
     DiffOutput:=TDiffOutput.Create(Text1Src, Text2Src, GetDiffOptions, ProgressBar1);
@@ -371,7 +346,6 @@ begin
     end;
 
     //CancelScanningButton.Enabled := False;
-    SaveDiffButton.Enabled := True;
     OpenInEditorButton.Enabled := True;
     Text2GroupBox.Enabled := True;
     Text1GroupBox.Enabled := True;
@@ -384,7 +358,7 @@ begin
   inherited Create(TheOwner);
   fUpdating := False;
   fCancelled := False;
-  Caption := lisCaptionDiff;
+  Caption := lisCaptionCompareFiles;
   IDEDialogLayoutList.ApplyLayout(Self,600,500);
   SetupComponents;
 end;

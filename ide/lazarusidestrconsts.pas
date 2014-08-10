@@ -511,8 +511,8 @@ resourcestring
   lisMenuGuessUnclosedBlock = 'Guess Unclosed Block';
   lisMenuGuessMisplacedIFDEF = 'Guess Misplaced IFDEF/ENDIF';
   lisMenuMakeResourceString = 'Make Resource String ...';
-  lisCaptionDiff = 'Diff';
-  lisMenuDiff = 'Diff ...';
+  lisCaptionCompareFiles = 'Compare files (not for creating patches)';
+  lisMenuCompareFiles = 'Compare files ...';
   lisMenuConvertDFMtoLFM = 'Convert Binary DFM to Text LFM + Check Syntax ...';
   lisMenuCheckLFM = 'Check LFM File in Editor';
   lisMenuDelphiConversion = 'Delphi Conversion';
@@ -3398,9 +3398,9 @@ resourcestring
   lisTheApplicationBundleWasCreatedFor = 'The Application Bundle was created for "%s"';
 
   // diff dialog
-  lisDiffDlgText1 = 'Text1';
+  lisDiffDlgFile1 = 'File1';
   lisDiffDlgOnlySelection = 'Only selection';
-  lisDiffDlgText2 = 'Text2';
+  lisDiffDlgFile2 = 'File2';
   lisDiffDlgCaseInsensitive = 'Case Insensitive';
   lisDiffDlgIgnoreIfEmptyLinesWereAdd = 'Ignore if empty lines were added or removed';
   lisDiffDlgIgnoreSpacesAtStartOfLine = 'Ignore spaces at start of line';
@@ -3409,7 +3409,7 @@ resourcestring
     +'g. #10 = #13#10)';
   lisDiffDlgIgnoreIfSpaceCharsWereAdd = 'Ignore amount of space chars';
   lisDiffDlgIgnoreSpaces = 'Ignore spaces (newline chars not included)';
-  lisDiffDlgOpenDiffInEditor = 'Open Diff in editor';
+  lisDiffDlgOpenDiffInEditor = 'Open difference in editor';
 
   // packages
   lisPkgFileTypeUnit = 'Unit';
