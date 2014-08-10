@@ -46,9 +46,9 @@ uses
 
 type
 
-  { TDiffFile }
+  { TAvailableDiffFile }
 
-  TDiffFile = class
+  TAvailableDiffFile = class
   public
     Name: string;
     Editor: TSourceEditor;
@@ -57,19 +57,18 @@ type
       NewSelectionAvailable: boolean);
   end;
 
+  { TAvailableDiffFiles }
 
-  { TDiffFiles }
-
-  TDiffFiles = class(TList)
+  TAvailableDiffFiles = class(TList)
   private
-    function GetItems(Index: integer): TDiffFile;
-    procedure SetItems(Index: integer; const AValue: TDiffFile);
+    function GetItems(Index: integer): TAvailableDiffFile;
+    procedure SetItems(Index: integer; const AValue: TAvailableDiffFile);
   public
     procedure Clear; override;
-    function Add(DiffFile: TDiffFile): integer;
+    function Add(DiffFile: TAvailableDiffFile): integer;
     function IndexOfName(const Name: string): integer;
   public
-    property Items[Index: integer]: TDiffFile read GetItems write SetItems; default;
+    property Items[Index: integer]: TAvailableDiffFile read GetItems write SetItems; default;
   end;
 
 
@@ -111,14 +110,14 @@ type
     fUpdating: Boolean;
     fIdleConnected: boolean;
     fCancelled: boolean;
+    fAvailableFiles: TAvailableDiffFiles;
+    fSelectedFile1: TAvailableDiffFile;
+    fSelectedFile2: TAvailableDiffFile;
     procedure SetupComponents;
     procedure UpdateDiff;
     procedure SetIdleConnected(const AValue: boolean);
     procedure OnIdle(Sender: TObject; var Done: Boolean);
   public
-    Files: TDiffFiles;
-    Text1: TDiffFile;
-    Text2: TDiffFile;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure Init;
@@ -150,19 +149,19 @@ implementation
 function ShowDiffDialog(Text1Index: integer; out Diff: string): TModalResult;
 var
   DiffDlg: TDiffDlg;
-  Files: TDiffFiles;
+  Files: TAvailableDiffFiles;
   i: Integer;
   SrcEdit: TSourceEditor;
 begin
   DiffDlg := TDiffDlg.Create(nil);
-  Files := TDiffFiles.Create;
+  Files := TAvailableDiffFiles.Create;
   try
     // Get available files
     for i:=0 to SourceEditorManager.SourceEditorCount - 1 do begin
       SrcEdit := SourceEditorManager.SourceEditors[i]; // FindSourceEditorWithPageIndex(i);
-      Files.Add(TDiffFile.Create(SrcEdit.PageName, SrcEdit, SrcEdit.SelectionAvailable));
+      Files.Add(TAvailableDiffFile.Create(SrcEdit.PageName, SrcEdit, SrcEdit.SelectionAvailable));
     end;
-    DiffDlg.Files := Files;
+    DiffDlg.fAvailableFiles := Files;
     DiffDlg.SetText1Index(Text1Index);
     DiffDlg.Init;
     Result := DiffDlg.ShowModal;
@@ -190,7 +189,7 @@ begin
     //only add new files
     if Text1ComboBox.Items.IndexOf(dlgOpen.FileName) = -1 then
     begin
-      Files.Add(TDiffFile.Create(dlgOpen.FileName,nil,False));
+      fAvailableFiles.Add(TAvailableDiffFile.Create(dlgOpen.FileName,nil,False));
       Text1ComboBox.Items.Add(dlgOpen.FileName);
       Text2ComboBox.Items.Add(dlgOpen.FileName);
     end;
@@ -304,33 +303,33 @@ begin
   if fUpdating then Exit;
   fUpdating := True;
   DiffSynEdit.Lines.Text := '';
-  if (Text1 <> nil) and (Text2 <> nil) then begin
-    if Text1.Editor = nil then
+  if (fSelectedFile1 <> nil) and (fSelectedFile2 <> nil) then begin
+    if fSelectedFile1.Editor = nil then
       begin
         dat := TStringListUTF8.Create;
-        dat.LoadFromFile(Text1.Name);
+        dat.LoadFromFile(fSelectedFile1.Name);
         Text1Src := dat.Text;
         dat.Free;
       end
     else begin
-      if (Text1.SelectionAvailable and Text1OnlySelectionCheckBox.Checked) then
-        Text1Src := Text1.Editor.EditorComponent.SelText
+      if (fSelectedFile1.SelectionAvailable and Text1OnlySelectionCheckBox.Checked) then
+        Text1Src := fSelectedFile1.Editor.EditorComponent.SelText
       else
-        Text1Src := Text1.Editor.EditorComponent.Lines.Text;
+        Text1Src := fSelectedFile1.Editor.EditorComponent.Lines.Text;
     end;
 
-    if Text2.Editor = nil then
+    if fSelectedFile2.Editor = nil then
       begin
         dat := TStringListUTF8.Create;
-        dat.LoadFromFile(Text2.Name);
+        dat.LoadFromFile(fSelectedFile2.Name);
         Text2Src := dat.Text;
         dat.Free;
       end
     else begin
-      if (Text2.SelectionAvailable and Text2OnlySelectionCheckBox.Checked) then
-        Text2Src := Text2.Editor.EditorComponent.SelText
+      if (fSelectedFile2.SelectionAvailable and Text2OnlySelectionCheckBox.Checked) then
+        Text2Src := fSelectedFile2.Editor.EditorComponent.SelText
       else
-        Text2Src := Text2.Editor.EditorComponent.Lines.Text;
+        Text2Src := fSelectedFile2.Editor.EditorComponent.Lines.Text;
     end;
 
     Text1GroupBox.Enabled := False;
@@ -379,9 +378,9 @@ begin
   // get recent Text 2
   LastText2Name:=InputHistories.DiffText2;
   if LastText2Name<>'' then
-    i:=Files.IndexOfName(LastText2Name);
+    i:=fAvailableFiles.IndexOfName(LastText2Name);
   if i<0 then i:=0;
-  if i=Files.IndexOf(Text2) then inc(i);
+  if i=fAvailableFiles.IndexOf(fSelectedFile2) then inc(i);
   SetText2Index(i);
   
   // set recent options
@@ -398,57 +397,57 @@ begin
   // Text 1
   Text1Combobox.Items.BeginUpdate;
   Text1Combobox.Items.Clear;
-  for i:=0 to Files.Count-1 do
-    Text1Combobox.Items.Add(Files[i].Name);
+  for i:=0 to fAvailableFiles.Count-1 do
+    Text1Combobox.Items.Add(fAvailableFiles[i].Name);
   Text1Combobox.Items.EndUpdate;
 
   // Text 2
   Text2Combobox.Items.BeginUpdate;
   Text2Combobox.Items.Clear;
-  for i:=0 to Files.Count-1 do
-    Text2Combobox.Items.Add(Files[i].Name);
+  for i:=0 to fAvailableFiles.Count-1 do
+    Text2Combobox.Items.Add(fAvailableFiles[i].Name);
   Text2Combobox.Items.EndUpdate;
 end;
 
 procedure TDiffDlg.SetText1Index(NewIndex: integer);
 var
-  OldText1: TDiffFile;
+  OldText1: TAvailableDiffFile;
 begin
-  OldText1:=Text1;
-  if (NewIndex>=0) and (NewIndex<Files.Count) then begin
-    Text1:=Files[NewIndex];
-    Text1Combobox.Text:=Text1.Name;
-    Text1OnlySelectionCheckBox.Enabled:=Text1.SelectionAvailable;
+  OldText1:=fSelectedFile1;
+  if (NewIndex>=0) and (NewIndex<fAvailableFiles.Count) then begin
+    fSelectedFile1:=fAvailableFiles[NewIndex];
+    Text1Combobox.Text:=fSelectedFile1.Name;
+    Text1OnlySelectionCheckBox.Enabled:=fSelectedFile1.SelectionAvailable;
   end else begin
-    Text1:=nil;
+    fSelectedFile1:=nil;
     Text1Combobox.Text:='';
     Text1OnlySelectionCheckBox.Enabled:=false;
   end;
-  if Text1<>OldText1 then UpdateDiff;
+  if fSelectedFile1<>OldText1 then UpdateDiff;
 end;
 
 procedure TDiffDlg.SetText2Index(NewIndex: integer);
 var
-  OldText2: TDiffFile;
+  OldText2: TAvailableDiffFile;
 begin
-  OldText2:=Text2;
-  if (NewIndex>=0) and (NewIndex<Files.Count) then begin
-    Text2:=Files[NewIndex];
-    Text2Combobox.Text:=Text2.Name;
-    Text2OnlySelectionCheckBox.Enabled:=Text2.SelectionAvailable;
+  OldText2:=fSelectedFile2;
+  if (NewIndex>=0) and (NewIndex<fAvailableFiles.Count) then begin
+    fSelectedFile2:=fAvailableFiles[NewIndex];
+    Text2Combobox.Text:=fSelectedFile2.Name;
+    Text2OnlySelectionCheckBox.Enabled:=fSelectedFile2.SelectionAvailable;
   end else begin
-    Text2:=nil;
+    fSelectedFile2:=nil;
     Text2Combobox.Text:='';
     Text2OnlySelectionCheckBox.Enabled:=false;
   end;
-  if Text2<>OldText2 then UpdateDiff;
+  if fSelectedFile2<>OldText2 then UpdateDiff;
 end;
 
 procedure TDiffDlg.SaveSettings;
 begin
   InputHistories.DiffFlags:=GetDiffOptions;
-  if Text2<>nil then begin
-    InputHistories.DiffText2:=Text2.Name;
+  if fSelectedFile2<>nil then begin
+    InputHistories.DiffText2:=fSelectedFile2.Name;
     InputHistories.DiffText2OnlySelection:=Text2OnlySelectionCheckBox.Checked;
   end else begin
     InputHistories.DiffText2:='';
@@ -487,9 +486,9 @@ begin
     Include(Result,tdfIgnoreTrailingSpaces);
 end;
 
-{ TDiffFile }
+{ TAvailableDiffFile }
 
-constructor TDiffFile.Create(const NewName: string; NewEditor: TSourceEditor;
+constructor TAvailableDiffFile.Create(const NewName: string; NewEditor: TSourceEditor;
   NewSelectionAvailable: boolean);
 begin
   Name:=NewName;
@@ -497,19 +496,19 @@ begin
   SelectionAvailable:=NewSelectionAvailable;
 end;
 
-{ TDiffFiles }
+{ TAvailableDiffFiles }
 
-function TDiffFiles.GetItems(Index: integer): TDiffFile;
+function TAvailableDiffFiles.GetItems(Index: integer): TAvailableDiffFile;
 begin
-  Result:=TDiffFile(inherited Items[Index]);
+  Result:=TAvailableDiffFile(inherited Items[Index]);
 end;
 
-procedure TDiffFiles.SetItems(Index: integer; const AValue: TDiffFile);
+procedure TAvailableDiffFiles.SetItems(Index: integer; const AValue: TAvailableDiffFile);
 begin
   inherited Items[Index]:=AValue;
 end;
 
-procedure TDiffFiles.Clear;
+procedure TAvailableDiffFiles.Clear;
 var
   i: Integer;
 begin
@@ -518,12 +517,12 @@ begin
   inherited Clear;
 end;
 
-function TDiffFiles.Add(DiffFile: TDiffFile): integer;
+function TAvailableDiffFiles.Add(DiffFile: TAvailableDiffFile): integer;
 begin
   Result:=inherited Add(DiffFile);
 end;
 
-function TDiffFiles.IndexOfName(const Name: string): integer;
+function TAvailableDiffFiles.IndexOfName(const Name: string): integer;
 begin
   Result:=Count-1;
   while (Result>=0) and (Items[Result].Name<>Name) do dec(Result);
