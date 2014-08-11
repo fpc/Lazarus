@@ -1534,48 +1534,58 @@ end;
 
 procedure TPackageEditorForm.ApplyDependencyButtonClick(Sender: TObject);
 var
-  NewDependency: TPkgDependency;
+  Flags: TPkgDependencyFlags;
+  MinVers, MaxVers: TPkgVersion;
 begin
   if LazPackage=nil then exit;
   if FSingleSelectedDep=nil then exit;
   if LazPackage.FindDependencyByName(FSingleSelectedDep.PackageName)<>FSingleSelectedDep
   then exit;
 
-  NewDependency:=TPkgDependency.Create;
+  MinVers:=TPkgVersion.Create;
+  MaxVers:=TPkgVersion.Create;
   try
-    NewDependency.Assign(FSingleSelectedDep);
+    // Assign relevant data to temp variables
+    Flags:=FSingleSelectedDep.Flags;
+    MinVers.Assign(FSingleSelectedDep.MinVersion);
+    MaxVers.Assign(FSingleSelectedDep.MinVersion);
 
     // read minimum version
     if UseMinVersionCheckBox.Checked then begin
-      NewDependency.Flags:=NewDependency.Flags+[pdfMinVersion];
-      if not NewDependency.MinVersion.ReadString(MinVersionEdit.Text) then begin
+      Include(Flags, pdfMinVersion);
+      if not MinVers.ReadString(MinVersionEdit.Text) then begin
         MessageDlg(lisPckEditInvalidMinimumVersion,
           Format(lisPckEditTheMinimumVersionIsNotAValidPackageVersion,
                  [MinVersionEdit.Text, LineEnding]),
           mtError,[mbCancel],0);
         exit;
       end;
-    end else begin
-      NewDependency.Flags:=NewDependency.Flags-[pdfMinVersion];
-    end;
+    end
+    else
+      Exclude(Flags, pdfMinVersion);
 
     // read maximum version
     if UseMaxVersionCheckBox.Checked then begin
-      NewDependency.Flags:=NewDependency.Flags+[pdfMaxVersion];
-      if not NewDependency.MaxVersion.ReadString(MaxVersionEdit.Text) then begin
+      Include(Flags, pdfMaxVersion);
+      if not MaxVers.ReadString(MaxVersionEdit.Text) then begin
         MessageDlg(lisPckEditInvalidMaximumVersion,
           Format(lisPckEditTheMaximumVersionIsNotAValidPackageVersion,
                  [MaxVersionEdit.Text, LineEnding]),
           mtError,[mbCancel],0);
         exit;
       end;
-    end else begin
-      NewDependency.Flags:=NewDependency.Flags-[pdfMaxVersion];
-    end;
+    end
+    else
+      Exclude(Flags, pdfMaxVersion);
 
-    PackageGraph.ChangeDependency(FSingleSelectedDep,NewDependency);
+    // Assign changes back to the dependency
+    FSingleSelectedDep.Flags := Flags;
+    FSingleSelectedDep.MinVersion.Assign(MinVers);
+    FSingleSelectedDep.MaxVersion.Assign(MaxVers);
+    LazPackage.ModifySilently;
   finally
-    NewDependency.Free;
+    MaxVers.Free;
+    MinVers.Free;
   end;
 end;
 

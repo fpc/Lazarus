@@ -386,7 +386,7 @@ type
     procedure AddDependencyToPackage(APackage, RequiredPackage: TLazPackage);
     procedure RemoveDependencyFromPackage(APackage: TLazPackage;
                          Dependency: TPkgDependency; AddToRemovedList: boolean);
-    procedure ChangeDependency(Dependency, NewDependency: TPkgDependency);
+    //procedure ChangeDependency(Dependency, NewDependency: TPkgDependency);
     function OpenDependency(Dependency: TPkgDependency;
                             ShowAbort: boolean): TLoadPackageResult;
     function FindAlternativeLPK(APackage: TLazPackage): string;
@@ -5239,9 +5239,8 @@ begin
   IncreaseBuildMacroChangeStamp;
   EndUpdate;
 end;
-
-procedure TLazPackageGraph.ChangeDependency(Dependency,
-  NewDependency: TPkgDependency);
+{
+procedure TLazPackageGraph.ChangeDependency(Dependency, NewDependency: TPkgDependency);
 begin
   if Dependency.Compare(NewDependency)=0 then exit;
   BeginUpdate(true);
@@ -5252,7 +5251,7 @@ begin
   DoDependencyChanged(Dependency);
   EndUpdate;
 end;
-
+}
 function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency;
   ShowAbort: boolean): TLoadPackageResult;
 
