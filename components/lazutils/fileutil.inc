@@ -692,8 +692,8 @@ begin
     Flags:=Flags+[cffCreateDestDirectory];
     Searcher.FFlags:=Flags;
     Searcher.FCopyFailedCount:=0;
-    Searcher.FSourceDir:=SourceDir;
-    Searcher.FTargetDir:=TargetDir;
+    Searcher.FSourceDir:=SetDirSeparators(SourceDir);
+    Searcher.FTargetDir:=SetDirSeparators(TargetDir);
     Searcher.Search(SourceDir);
     Result:=True;
   finally
