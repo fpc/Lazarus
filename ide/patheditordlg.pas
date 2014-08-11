@@ -21,9 +21,9 @@ unit PathEditorDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, StdCtrls, Dialogs,
-  FileUtil, ButtonPanel, ExtCtrls, EditBtn, MacroIntf, LCLType, Graphics,
-  types, TransferMacros, LazarusIDEStrConsts, shortpathedit;
+  Classes, SysUtils, types, Forms, Controls, Buttons, StdCtrls, Dialogs,
+  FileUtil, ButtonPanel, ExtCtrls, EditBtn, MacroIntf, LCLType, Graphics, Menus,
+  TransferMacros, LazarusIDEStrConsts, shortpathedit, Clipbrd, LCLProc;
 
 type
 
@@ -32,6 +32,9 @@ type
   TPathEditorDialog = class(TForm)
     AddTemplateButton: TBitBtn;
     ButtonPanel1: TButtonPanel;
+    CopyMenuItem: TMenuItem;
+    PasteMenuItem: TMenuItem;
+    PopupMenu1: TPopupMenu;
     ReplaceButton: TBitBtn;
     AddButton: TBitBtn;
     DeleteInvalidPathsButton: TBitBtn;
@@ -47,6 +50,8 @@ type
     BrowseDialog: TSelectDirectoryDialog;
     procedure AddButtonClick(Sender: TObject);
     procedure AddTemplateButtonClick(Sender: TObject);
+    procedure CopyMenuItemClick(Sender: TObject);
+    procedure PasteMenuItemClick(Sender: TObject);
     procedure DeleteInvalidPathsButtonClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);
     procedure DirectoryEditAcceptDirectory(Sender: TObject; var Value: String);
@@ -214,6 +219,49 @@ begin
   end;
 end;
 
+procedure TPathEditorDialog.CopyMenuItemClick(Sender: TObject);
+var
+  Paths: TStringList;
+  i: integer;
+begin
+  Paths := TStringList.Create;
+  try
+    for i := 0 to PathListBox.Count-1 do
+      Paths.Add(PathAsAbsolute(PathListBox.Items[i]));
+    Clipboard.AsText := Paths.Text;
+  finally
+    Paths.Free;
+  end;
+end;
+
+procedure TPathEditorDialog.PasteMenuItemClick(Sender: TObject);
+var
+  Paths: TStringList;
+  s: string;
+  y, i: integer;
+begin
+  Paths := TStringList.Create;
+  try
+    y := PathListBox.ItemIndex;
+    if y = -1 then
+      y := PathListBox.Count-1;
+    Paths.Text := Clipboard.AsText;
+    for i := 0 to Paths.Count-1 do
+    begin
+      s := Trim(Paths[i]);
+      if s <> '' then
+      begin
+        Inc(y);
+        PathListBox.Items.InsertObject(y, BaseRelative(s), PathMayExist(s));
+      end;
+    end;
+    //PathListBox.ItemIndex := y;
+    UpdateButtons;
+  finally
+    Paths.Free;
+  end;
+end;
+
 procedure TPathEditorDialog.DirectoryEditChange(Sender: TObject);
 begin
   UpdateButtons;
@@ -263,6 +311,9 @@ begin
   TemplateGroupBox.Caption:=lisPathEditPathTemplates;
   AddTemplateButton.Caption:=lisCodeTemplAdd;
   AddTemplateButton.Hint:=lisPathEditorTemplAddHint;
+
+  CopyMenuItem.Caption:=lisCopyAllItemsToClipboard;
+  PasteMenuItem.Caption:=lisPaste;
 
   MoveUpButton.LoadGlyphFromResourceName(HInstance, 'arrow_up');
   MoveDownButton.LoadGlyphFromResourceName(HInstance, 'arrow_down');
