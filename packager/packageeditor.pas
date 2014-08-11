@@ -296,7 +296,7 @@ type
     FSortAlphabetically: boolean;
     FDirSummaryLabel: TLabel;
     FSingleSelectedFile: TPkgFile;
-    FSingleSelectedDependency: TPkgDependency;
+    FSingleSelectedDep: TPkgDependency;
     FFirstNodeData: array[TPENodeType] of TPENodeData;
     fUpdateLock: integer;
     procedure FreeNodeData(Typ: TPENodeType);
@@ -740,7 +740,7 @@ begin
         end else if Item is TPkgDependency then begin
           CurDependency:=TPkgDependency(Item);
           inc(SelDepCount);
-          FSingleSelectedDependency:=CurDependency;
+          FSingleSelectedDep:=CurDependency;
           SingleSelectedRemoved:=NodeData.Removed;
         end;
       end else if IsDirectoryNode(TVNode) or (TVNode=FFilesNode) then begin
@@ -751,7 +751,7 @@ begin
     if (SelFileCount+SelDepCount+SelDirCount>1) then begin
       // it is a multi selection
       FSingleSelectedFile:=nil;
-      FSingleSelectedDependency:=nil;
+      FSingleSelectedDep:=nil;
     end;
 
     Writable:=(not LazPackage.ReadOnly);
@@ -784,28 +784,28 @@ begin
     PkgEditMenuSectionDependency.Visible:=(SelDepCount>0)
       or (ItemsTreeView.Selected=FRequiredPackagesNode);
     SetItem(PkgEditMenuOpenPackage,@OpenFileMenuItemClick,
-            (FSingleSelectedDependency<>nil) and (FSingleSelectedDependency.RequiredPackage<>nil));
+            (FSingleSelectedDep<>nil) and (FSingleSelectedDep.RequiredPackage<>nil));
     SetItem(PkgEditMenuRemoveDependency,@RemoveBitBtnClick,
-            (FSingleSelectedDependency<>nil) and (not SingleSelectedRemoved),
+            (FSingleSelectedDep<>nil) and (not SingleSelectedRemoved),
             Writable);
     SetItem(PkgEditMenuReAddDependency,@ReAddMenuItemClick,
-            (FSingleSelectedDependency<>nil) and SingleSelectedRemoved,
+            (FSingleSelectedDep<>nil) and SingleSelectedRemoved,
             Writable);
     SetItem(PkgEditMenuDependencyStoreFileNameAsDefault,
             @SetDependencyDefaultFilenameMenuItemClick,
-            (FSingleSelectedDependency<>nil) and (not SingleSelectedRemoved),
-            Writable and (FSingleSelectedDependency<>nil)
-            and (FSingleSelectedDependency.RequiredPackage<>nil));
+            (FSingleSelectedDep<>nil) and (not SingleSelectedRemoved),
+            Writable and (FSingleSelectedDep<>nil)
+            and (FSingleSelectedDep.RequiredPackage<>nil));
     SetItem(PkgEditMenuDependencyStoreFileNameAsPreferred,
             @SetDependencyPreferredFilenameMenuItemClick,
-            (FSingleSelectedDependency<>nil) and (not SingleSelectedRemoved),
-            Writable and (FSingleSelectedDependency<>nil)
-            and (FSingleSelectedDependency.RequiredPackage<>nil));
+            (FSingleSelectedDep<>nil) and (not SingleSelectedRemoved),
+            Writable and (FSingleSelectedDep<>nil)
+            and (FSingleSelectedDep.RequiredPackage<>nil));
     SetItem(PkgEditMenuDependencyClearStoredFileName,
             @ClearDependencyFilenameMenuItemClick,
-            (FSingleSelectedDependency<>nil) and (not SingleSelectedRemoved),
-            Writable and (FSingleSelectedDependency<>nil)
-            and (FSingleSelectedDependency.RequiredPackage<>nil));
+            (FSingleSelectedDep<>nil) and (not SingleSelectedRemoved),
+            Writable and (FSingleSelectedDep<>nil)
+            and (FSingleSelectedDep.RequiredPackage<>nil));
     SetItem(PkgEditMenuCleanDependencies,
             @CleanDependenciesMenuItemClick,LazPackage.FirstRequiredDependency<>nil,
             Writable);
@@ -1031,12 +1031,12 @@ end;
 procedure TPackageEditorForm.ClearDependencyFilenameMenuItemClick(Sender: TObject);
 begin
   if LazPackage=nil then exit;
-  if FSingleSelectedDependency=nil then exit;
+  if FSingleSelectedDep=nil then exit;
   if LazPackage.ReadOnly then exit;
-  if FSingleSelectedDependency.RequiredPackage=nil then exit;
-  if FSingleSelectedDependency.DefaultFilename='' then exit;
-  FSingleSelectedDependency.DefaultFilename:='';
-  FSingleSelectedDependency.PreferDefaultFilename:=false;
+  if FSingleSelectedDep.RequiredPackage=nil then exit;
+  if FSingleSelectedDep.DefaultFilename='' then exit;
+  FSingleSelectedDep.DefaultFilename:='';
+  FSingleSelectedDep.PreferDefaultFilename:=false;
   LazPackage.Modified:=true;
   UpdateRequiredPkgs;
 end;
@@ -1051,7 +1051,7 @@ begin
   if SortAlphabetically then exit;
   if Assigned(FSingleSelectedFile) then
     DoMoveCurrentFile(-1)
-  else if Assigned(FSingleSelectedDependency) then
+  else if Assigned(FSingleSelectedDep) then
     DoMoveDependency(-1)
 end;
 
@@ -1067,7 +1067,7 @@ begin
   if SortAlphabetically then exit;
   if Assigned(FSingleSelectedFile) then
     DoMoveCurrentFile(1)
-  else if Assigned(FSingleSelectedDependency) then
+  else if Assigned(FSingleSelectedDep) then
     DoMoveDependency(1)
 end;
 
@@ -1537,13 +1537,13 @@ var
   NewDependency: TPkgDependency;
 begin
   if LazPackage=nil then exit;
-  if FSingleSelectedDependency=nil then exit;
-  if LazPackage.FindDependencyByName(FSingleSelectedDependency.PackageName
-    )<>FSingleSelectedDependency then exit;
+  if FSingleSelectedDep=nil then exit;
+  if LazPackage.FindDependencyByName(FSingleSelectedDep.PackageName)<>FSingleSelectedDep
+  then exit;
 
   NewDependency:=TPkgDependency.Create;
   try
-    NewDependency.Assign(FSingleSelectedDependency);
+    NewDependency.Assign(FSingleSelectedDep);
 
     // read minimum version
     if UseMinVersionCheckBox.Checked then begin
@@ -1573,7 +1573,7 @@ begin
       NewDependency.Flags:=NewDependency.Flags-[pdfMaxVersion];
     end;
 
-    PackageGraph.ChangeDependency(FSingleSelectedDependency,NewDependency);
+    PackageGraph.ChangeDependency(FSingleSelectedDep,NewDependency);
   finally
     NewDependency.Free;
   end;
@@ -1858,19 +1858,19 @@ var
   NewFilename: String;
 begin
   if LazPackage=nil then exit;
-  if FSingleSelectedDependency=nil then exit;
-  if LazPackage.FindDependencyByName(FSingleSelectedDependency.PackageName
-    )<>FSingleSelectedDependency then exit;
+  if FSingleSelectedDep=nil then exit;
+  if LazPackage.FindDependencyByName(FSingleSelectedDep.PackageName)<>FSingleSelectedDep
+  then exit;
   if LazPackage.ReadOnly then exit;
-  if FSingleSelectedDependency.RequiredPackage=nil then exit;
-  NewFilename:=FSingleSelectedDependency.RequiredPackage.Filename;
-  if (NewFilename=FSingleSelectedDependency.DefaultFilename)
-  and (FSingleSelectedDependency.PreferDefaultFilename=AsPreferred) then
+  if FSingleSelectedDep.RequiredPackage=nil then exit;
+  NewFilename:=FSingleSelectedDep.RequiredPackage.Filename;
+  if (NewFilename=FSingleSelectedDep.DefaultFilename)
+  and (FSingleSelectedDep.PreferDefaultFilename=AsPreferred) then
     exit;
   BeginUpdate;
   try
-    FSingleSelectedDependency.DefaultFilename:=NewFilename;
-    FSingleSelectedDependency.PreferDefaultFilename:=AsPreferred;
+    FSingleSelectedDep.DefaultFilename:=NewFilename;
+    FSingleSelectedDep.PreferDefaultFilename:=AsPreferred;
     LazPackage.Modified:=true;
     UpdateRequiredPkgs;
   finally
@@ -2482,7 +2482,7 @@ begin
   FPlugins.Clear;
 
   // check selection
-  FSingleSelectedDependency:=nil;
+  FSingleSelectedDep:=nil;
   FSingleSelectedFile:=nil;
   SingleSelectedDirectory:=nil;
   SingleSelectedRemoved:=false;
@@ -2528,7 +2528,7 @@ begin
       end else if Item is TPkgDependency then begin
         inc(SelDepCount);
         CurDependency:=TPkgDependency(Item);
-        FSingleSelectedDependency:=CurDependency;
+        FSingleSelectedDep:=CurDependency;
         SingleSelected:=TVNode;
         SingleSelectedRemoved:=NodeData.Removed;
       end;
@@ -2542,7 +2542,7 @@ begin
   if (SelFileCount+SelDepCount+SelDirCount>1) then begin
     // it is a multi selection
     FSingleSelectedFile:=nil;
-    FSingleSelectedDependency:=nil;
+    FSingleSelectedDep:=nil;
     SingleSelectedDirectory:=nil;
     SingleSelected:=nil;
   end;
@@ -2550,18 +2550,18 @@ begin
   OnlyFilesWithUnitsSelected:=OnlyFilesSelected and (SelUnitCount>0);
 
   //debugln(['TPackageEditorForm.UpdatePEProperties SelFileCount=',SelFileCount,' SelDepCount=',SelDepCount,' SelDirCount=',SelDirCount,' SelUnitCount=',SelUnitCount]);
-  //debugln(['TPackageEditorForm.UpdatePEProperties FSingleSelectedFile=',FSingleSelectedFile<>nil,' FSingleSelectedDependency=',FSingleSelectedDependency<>nil,' SingleSelectedDirectory=',SingleSelectedDirectory<>nil]);
+  //debugln(['TPackageEditorForm.UpdatePEProperties FSingleSelectedFile=',FSingleSelectedFile<>nil,' FSingleSelectedDependency=',FSingleSelectedDep<>nil,' SingleSelectedDirectory=',SingleSelectedDirectory<>nil]);
 
   DisableAlign;
   try
     // move up/down (only single selection)
     aVisible:=(not (SortAlphabetically or SingleSelectedRemoved))
-       and ((FSingleSelectedFile<>nil) or (FSingleSelectedDependency<>nil));
+       and ((FSingleSelectedFile<>nil) or (FSingleSelectedDep<>nil));
     MoveUpBtn.Enabled  :=aVisible and Assigned(SingleSelected.GetPrevVisibleSibling);
     MoveDownBtn.Enabled:=aVisible and Assigned(SingleSelected.GetNextVisibleSibling);
 
     // Min/Max version of dependency (only single selection)
-    aVisible:=FSingleSelectedDependency<>nil;
+    aVisible:=FSingleSelectedDep<>nil;
     UseMinVersionCheckBox.Visible:=aVisible;
     MinVersionEdit.Visible:=aVisible;
     UseMaxVersionCheckBox.Visible:=aVisible;
@@ -2597,15 +2597,15 @@ begin
       PropsGroupBox.Enabled:=true;
       PropsGroupBox.Caption:=lisPckEditFileProperties;
     end
-    else if FSingleSelectedDependency<>nil then begin
+    else if FSingleSelectedDep<>nil then begin
       PropsGroupBox.Enabled:=not SingleSelectedRemoved;
       PropsGroupBox.Caption:=lisPckEditDependencyProperties;
-      UseMinVersionCheckBox.Checked:=pdfMinVersion in FSingleSelectedDependency.Flags;
-      MinVersionEdit.Text:=FSingleSelectedDependency.MinVersion.AsString;
-      MinVersionEdit.Enabled:=pdfMinVersion in FSingleSelectedDependency.Flags;
-      UseMaxVersionCheckBox.Checked:=pdfMaxVersion in FSingleSelectedDependency.Flags;
-      MaxVersionEdit.Text:=FSingleSelectedDependency.MaxVersion.AsString;
-      MaxVersionEdit.Enabled:=pdfMaxVersion in FSingleSelectedDependency.Flags;
+      UseMinVersionCheckBox.Checked:=pdfMinVersion in FSingleSelectedDep.Flags;
+      MinVersionEdit.Text:=FSingleSelectedDep.MinVersion.AsString;
+      MinVersionEdit.Enabled:=pdfMinVersion in FSingleSelectedDep.Flags;
+      UseMaxVersionCheckBox.Checked:=pdfMaxVersion in FSingleSelectedDep.Flags;
+      MaxVersionEdit.Text:=FSingleSelectedDep.MaxVersion.AsString;
+      MaxVersionEdit.Enabled:=pdfMaxVersion in FSingleSelectedDep.Flags;
       UpdateApplyDependencyButton;
     end
     else if SingleSelectedDirectory<>nil then begin
@@ -2635,41 +2635,41 @@ var
 begin
   if not CanUpdate(pefNeedUpdateApplyDependencyButton,Immediately) then exit;
 
-  FSingleSelectedDependency:=nil;
+  FSingleSelectedDep:=nil;
   for i:=0 to ItemsTreeView.SelectionCount-1 do begin
     TVNode:=ItemsTreeView.Selections[i];
     if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
     if Item is TPkgFile then begin
-      FSingleSelectedDependency:=nil;
+      FSingleSelectedDep:=nil;
       break;
     end else if Item is TPkgDependency then begin
-      if FSingleSelectedDependency<>nil then begin
-        FSingleSelectedDependency:=nil;
+      if FSingleSelectedDep<>nil then begin
+        FSingleSelectedDep:=nil;
         break;
       end;
-      FSingleSelectedDependency:=TPkgDependency(Item);
+      FSingleSelectedDep:=TPkgDependency(Item);
     end;
   end;
 
   DependencyChanged:=false;
-  if (FSingleSelectedDependency<>nil) then begin
+  if (FSingleSelectedDep<>nil) then begin
     // check min version
-    if UseMinVersionCheckBox.Checked<>(pdfMinVersion in FSingleSelectedDependency.Flags) then
+    if UseMinVersionCheckBox.Checked<>(pdfMinVersion in FSingleSelectedDep.Flags) then
       DependencyChanged:=true;
     if UseMinVersionCheckBox.Checked then begin
       AVersion:=TPkgVersion.Create;
       if AVersion.ReadString(MinVersionEdit.Text)
-      and (AVersion.Compare(FSingleSelectedDependency.MinVersion)<>0) then
+      and (AVersion.Compare(FSingleSelectedDep.MinVersion)<>0) then
         DependencyChanged:=true;
       AVersion.Free;
     end;
     // check max version
-    if UseMaxVersionCheckBox.Checked<>(pdfMaxVersion in FSingleSelectedDependency.Flags) then
+    if UseMaxVersionCheckBox.Checked<>(pdfMaxVersion in FSingleSelectedDep.Flags) then
       DependencyChanged:=true;
     if UseMaxVersionCheckBox.Checked then begin
       AVersion:=TPkgVersion.Create;
       if AVersion.ReadString(MaxVersionEdit.Text)
-      and (AVersion.Compare(FSingleSelectedDependency.MaxVersion)<>0) then
+      and (AVersion.Compare(FSingleSelectedDep.MaxVersion)<>0) then
         DependencyChanged:=true;
       AVersion.Free;
     end;
@@ -3127,9 +3127,9 @@ begin
   ItemsTreeView.BeginUpdate;
   OldSelection:=ItemsTreeView.StoreCurrentSelection;
   if Offset<0 then
-    PackageGraph.MoveRequiredDependencyUp(FSingleSelectedDependency)
+    PackageGraph.MoveRequiredDependencyUp(FSingleSelectedDep)
   else
-    PackageGraph.MoveRequiredDependencyDown(FSingleSelectedDependency);
+    PackageGraph.MoveRequiredDependencyDown(FSingleSelectedDep);
   ItemsTreeView.ApplyStoredSelection(OldSelection);
   ItemsTreeView.EndUpdate;
 end;
