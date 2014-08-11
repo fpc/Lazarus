@@ -206,7 +206,7 @@ object Form1: TForm1
   end
   object DBEdit1: TDBEdit
     Left = 128
-    Height = 23
+    Height = 21
     Top = 408
     Width = 166
     DataField = 'Image_Link'
@@ -235,32 +235,32 @@ object Form1: TForm1
     Columns = <    
       item
         Title.Caption = 'Common Name'
-        Width = 108
+        Width = 86
         FieldName = 'Common_Name'
       end    
       item
         Title.Caption = 'Scientific Name'
-        Width = 110
+        Width = 87
         FieldName = 'Scientific_Name'
       end    
       item
         Title.Caption = 'Order'
-        Width = 49
+        Width = 43
         FieldName = 'Order'
       end    
       item
         Title.Caption = 'Genus'
-        Width = 53
+        Width = 45
         FieldName = 'Genus'
       end    
       item
         Title.Caption = 'ID'
-        Width = 28
+        Width = 26
         FieldName = 'ID'
       end    
       item
         Title.Caption = 'Notes'
-        Width = 49
+        Width = 43
         FieldName = 'Notes'
       end>
     DataSource = Datasource1
@@ -277,8 +277,8 @@ object Form1: TForm1
     BevelOuter = bvNone
     BorderWidth = 2
     BorderStyle = bsSingle
-    ClientHeight = 326
-    ClientWidth = 320
+    ClientHeight = 324
+    ClientWidth = 318
     ParentColor = False
     TabOrder = 6
     object Image1: TImage
@@ -303,8 +303,8 @@ object Form1: TForm1
     BevelOuter = bvNone
     BorderWidth = 2
     BorderStyle = bsSingle
-    ClientHeight = 326
-    ClientWidth = 160
+    ClientHeight = 324
+    ClientWidth = 158
     ParentColor = False
     TabOrder = 7
     object DBImage1: TDBImage
@@ -325,17 +325,17 @@ object Form1: TForm1
   end
   object Label1: TLabel
     Left = 8
-    Height = 15
+    Height = 13
     Top = 55
-    Width = 25
+    Width = 18
     Caption = 'Link'
     ParentColor = False
   end
   object Label2: TLabel
     Left = 360
-    Height = 15
+    Height = 13
     Top = 55
-    Width = 26
+    Width = 20
     Caption = 'Blob'
     ParentColor = False
   end
@@ -350,16 +350,16 @@ object Form1: TForm1
   end
   object Label3: TLabel
     Left = 8
-    Height = 15
+    Height = 13
     Top = 424
-    Width = 36
+    Width = 30
     Caption = 'Note :'
     ParentColor = False
   end
   object Datasource1: TDataSource
     DataSet = SQLQuery1
     OnDataChange = Datasource1DataChange
-    left = 216
+    left = 232
     top = 192
   end
   object OpenDialog1: TOpenDialog
@@ -381,7 +381,7 @@ object Form1: TForm1
     Active = False
     Action = caCommitRetaining
     Database = SQLite3Connection1
-    left = 208
+    left = 232
     top = 120
   end
   object SQLite3Connection1: TSQLite3Connection
@@ -410,5 +410,12 @@ object Form1: TForm1
     DataSet = SQLQuery1
     left = 464
     top = 344
+  end
+  object IBConnection1: TIBConnection
+    Connected = False
+    LoginPrompt = False
+    KeepConnection = False
+    left = 152
+    top = 120
   end
 end

@@ -4570,6 +4570,8 @@ examples/database/sqlite_mushrooms/images/Small-Conocybe_rugosa.jpg -text svneol
 examples/database/sqlite_mushrooms/images/Small-Destroying_Angel_02.jpg -text svneol=unset#image/jpeg
 examples/database/sqlite_mushrooms/images/Small-FalseMorel.JPG -text svneol=unset#image/jpeg
 examples/database/sqlite_mushrooms/images/Small-Galerina.jpg -text svneol=unset#image/jpeg
+examples/database/sqlite_mushrooms/imagetest.fbk -text
+examples/database/sqlite_mushrooms/mushrooms_firebird.sql svneol=native#text/plain
 examples/database/sqlite_mushrooms/project1.ico -text svneol=unset#image/ico
 examples/database/sqlite_mushrooms/project1.lpi svneol=native#text/plain
 examples/database/sqlite_mushrooms/project1.lpr svneol=native#text/pascal
