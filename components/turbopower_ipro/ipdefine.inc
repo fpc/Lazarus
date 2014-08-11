@@ -93,6 +93,10 @@
 // an application using the HTML panels, e.g. for HTML based wizards
 {.$DEFINE HtmlWithoutHttp}
 
+// Uncomment if you want to enable printing functionality
+// (requires extra build/runtime dependencies for Linux like cairo,etc)
+{$DEFINE HtmlPrint}
+
 // we do not want to include PNG support when building the design-time package
 // (that would cause problems if another package also included ZLib).  We also
 // do not want to include units that aren't ours, so we'll undefine the other

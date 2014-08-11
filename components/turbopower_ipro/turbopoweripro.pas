@@ -7,7 +7,7 @@ unit TurboPowerIPro;
 interface
 
 uses
-  IpAnim, IpConst, Ipfilebroker, IpHtml, IpHtmlPv, IpMsg, IpStrms, IpUtils, 
+  IpAnim, IpConst, Ipfilebroker, IpHtml, {$IFDEF Html_Print}IpHtmlPv,{$ENDIF} IpMsg, IpStrms, IpUtils,
   IpHtmlTabList, iphtmlprop, ipHtmlBlockLayout, ipHtmlTableLayout, 
   LazarusPackageIntf;
 

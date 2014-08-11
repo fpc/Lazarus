@@ -95,7 +95,9 @@ const
   IPMAXFRAMES = 256; {maximum number of frames in a single frameset}
   MAXINTS = 4096; {buffer size - this should be way more than needed}
   TINTARRGROWFACTOR = 64;
+  {$IFDEF Hmtl_Print}
   DEFAULT_PRINTMARGIN = 0.5; {inches}
+  {$ENDIF}
   FONTSIZESVALUSARRAY : array[0..6] of integer = (8,10,12,14,18,24,36);
   MAXWORDS = 65536;
 
@@ -2153,7 +2155,9 @@ type
     procedure SetPageRect(const Value: TRect);
   protected
     FUpdatingScrollbars : Boolean;
+    {$IFDEF Hmtl_Print}
     InPrint: Integer;
+    {$ENDIF}
     SettingPageRect : Boolean;
     MouseDownX, MouseDownY : Integer;
     HaveSelection,
@@ -2204,17 +2208,21 @@ type
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure HideHint;
     function HtmlPanel: TIpHtmlCustomPanel;
+    {$IFDEF Hmtl_Print}
     procedure BeginPrint;
     procedure ResetPrint;
     procedure EndPrint;
+    {$ENDIF}
   public
     ViewTop, ViewLeft : Integer;
     HScroll,
     VScroll : TIpHtmlScrollBar;
+    {$IFDEF Hmtl_Print}
     PrintPageRect : TRect;
     PrintWidth, PrintHeight: Integer;
     PrintTopLeft: TPoint;
     PageCount: Integer;
+    {$ENDIF}
     procedure InvalidateSize;
     property Hyper : TIpHtml read FHyper write SetHtml;
     property PageRect : TRect read GetPageRect write SetPageRect;
@@ -2227,10 +2235,12 @@ type
     property OnClick : TNotifyEvent read FOnClick write FOnClick;
     destructor Destroy; override;
     procedure ScrollRequest(Sender: TIpHtml; const R: TRect{$IFDEF IP_LAZARUS}; ShowAtTop: Boolean = True{$ENDIF});
+    {$IFDEF Html_Print}
     function GetPrintPageCount: Integer;
     procedure PrintPages(FromPage, ToPage: Integer);
     procedure PrintPreview;
     function SelectPrinterDlg: boolean;
+    {$ENDIF}
     procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF}
   end;
 
@@ -2373,6 +2383,7 @@ type
     var cancel: boolean)
       of object;
 
+  {$IFDEF Hmtl_Print}
   TIpHtmlPrintSettings = class(TPersistent)
   private
     FMarginTop: Double;
@@ -2388,6 +2399,7 @@ type
     property MarginRight: Double read FMarginRight write FMarginRight;
     property MarginBottom: Double read FMarginBottom write FMarginBottom;
   end;
+  {$ENDIF}
 
   { TIpHtmlCustomPanel }
 
@@ -2404,7 +2416,9 @@ type
     FDocumentOpen: TNotifyEvent;
     FAllowTextSelect: Boolean;
     FCurElement : PIpHtmlElement;
+    {$IFDEF Hmtl_Print}
     FPrintSettings: TIpHtmlPrintSettings;
+    {$ENDIF}
     FFactBAParag: Real;
     FWantTabs: Boolean;
     procedure SetDataProvider(const AValue: TIpAbstractHtmlDataProvider);
@@ -2471,7 +2485,9 @@ type
     procedure CalculatePreferredSize(var PreferredWidth,
       PreferredHeight: integer; WithThemeSpace: Boolean); override;
   public
+    {$IFDEF Hmtl_Print}
     function GetPrintPageCount: Integer;
+    {$ENDIF}
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure EraseBackground(DC: HDC); {$IFDEF IP_LAZARUS} override; {$ENDIF}
@@ -2498,8 +2514,10 @@ type
     procedure SetHtmlFromStr(NewHtml : string);
     procedure SetHtmlFromStream(NewHtml : TStream);
     procedure Stop;
+    {$IFDEF Hmtl_Print}
     procedure Print(FromPg, ToPg: LongInt);
     procedure PrintPreview;
+    {$ENDIF}
     function GetContentSize: TSize;
 
     property VScrollPos: Integer read GetVScrollPos write SetVScrollPos;
@@ -2517,7 +2535,9 @@ type
     property LinkColor: TColor read FLinkColor write FLinkColor default clBlue;
     property MarginHeight: Integer read FMarginHeight write FMarginHeight default 10;
     property MarginWidth: Integer read FMarginWidth write FMarginWidth default 10;
+    {$IFDEF Hmtl_Print}
     property PrintSettings: TIpHtmlPrintSettings read FPrintSettings write FPrintSettings;
+    {$ENDIF}
     property ShowHints: Boolean read FShowHints write FShowHints default True;
     property TextColor: TColor read FTextColor write FTextColor default clBlack;
     property Title: string read GetTitle;
@@ -2560,10 +2580,12 @@ type
     property FactBAParag;
     property FlagErrors;
     property LinkColor;
+    property PopupMenu;
+    {$IFDEF Hmtl_Print}
+    property PrintSettings;
     property MarginHeight;
     property MarginWidth;
-    property PopupMenu;
-    property PrintSettings;
+    {$ENDIF}
     property ShowHints;
     property TabOrder;
     property TabStop;
@@ -2664,7 +2686,10 @@ implementation
 uses
   // ipHtmlBlockLayout and ipHtmlTableLayout should not be needed here but
   //  the initialization section is not called otherwise.
-  Printers, PrintersDlgs, IpHtmlPv, ipHtmlBlockLayout, ipHtmlTableLayout;
+  {$IFDEF Hmtl_Print}
+  Printers, PrintersDlgs, IpHtmlPv,
+  {$ENDIF}
+  ipHtmlBlockLayout, ipHtmlTableLayout;
 
 {$R *.res}
 
@@ -2879,6 +2904,7 @@ begin
   end;
 end;
 
+{$IFDEF Hmtl_Print}
 procedure GetRelativeAspect(PrinterDC : hDC);
 var
   ScreenDC : hDC;
@@ -2896,6 +2922,7 @@ begin
     ReleaseDC(0, ScreenDC);
   end;
 end;
+{$ENDIF}
 
 {$IFDEF IP_LAZARUS}
 constructor TIpHtmlPoolManager.Create(TheItemSize, MaxItems : DWord);
@@ -12946,6 +12973,7 @@ begin
   {$ENDIF}
 end;
 
+{$IFDEF Hmtl_Print}
 procedure TIpHtmlInternalPanel.BeginPrint;
 begin
   if InPrint = 0 then begin
@@ -13089,12 +13117,14 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 procedure TIpHtmlInternalPanel.EraseBackground(DC: HDC);
 begin
   //
 end;
 
+{$IFDEF Hmtl_Print}
 function TIpHtmlInternalPanel.GetPrintPageCount: Integer;
 begin
   BeginPrint;
@@ -13104,6 +13134,7 @@ begin
     EndPrint;
   end;
 end;
+{$ENDIF}
 
 procedure TIpHtmlInternalPanel.InvalidateSize;
 begin
@@ -14543,14 +14574,18 @@ begin
   FixedTypeface := 'Courier New';
   DefaultTypeFace := Graphics.DefFontData.Name;
   DefaultFontSize := 12;
+  {$IFDEF Hmtl_Print}
   FPrintSettings := TIpHtmlPrintSettings.Create;
+  {$ENDIF}
   FFactBAParag := 1;
   FWantTabs := True;
 end;
 
 destructor TIpHtmlCustomPanel.Destroy;
 begin
+  {$IFDEF Hmtl_Print}
   FPrintSettings.Free;
+  {$ENDIF}
   TargetStack.Free;
   URLStack.Free;
   FMasterFrame.Free;
@@ -14938,6 +14973,7 @@ begin
 end;
 {$ENDIF}
 
+{$IFDEF Hmtl_Print}
 function TIpHtmlCustomPanel.GetPrintPageCount: Integer;
 begin
   if Assigned(FMasterFrame) and Assigned(FMasterFrame.HyperPanel) then
@@ -14965,6 +15001,7 @@ begin
   if Assigned(FMasterFrame) then
     FMasterFrame.HyperPanel.PrintPreview;
 end;
+{$ENDIF}
 
 function TIpHtmlCustomPanel.GetContentSize: TSize;
 begin
@@ -15449,6 +15486,8 @@ begin
     Result := nil;
 end;
 
+{$IFDEF Hmtl_Print}
+
 { TIpHtmlPrintSettings }
 
 constructor TIpHtmlPrintSettings.Create;
@@ -15464,6 +15503,8 @@ destructor TIpHtmlPrintSettings.Destroy;
 begin
   inherited;
 end;
+
+{$ENDIF}
 
 { TIpHtmlNodeTH }
 
