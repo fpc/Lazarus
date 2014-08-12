@@ -663,7 +663,7 @@ begin
           Result:=copy(Result,1,ProcModifierPos-1)
                   +copy(Result,ProcModifierPos+9,length(Result));
         StartContextPos:=CodeToolBoss.IdentifierList.StartContextPos;
-        Line:=StartContextPos.Code.GetLine(StartContextPos.Y-1);
+        Line:=StartContextPos.Code.GetLine(StartContextPos.Y-1,false);
         Indent:=StartContextPos.X;
         //debugln(['GetIdentCompletionValue ',Indent,' "',dbgstr(Line),'" ',GetLineIndent(Line,1),' empty=',InEmptyLine(Line,1),' ',DbgsCXY(StartContextPos)]);
         if not InEmptyLine(Line,1) then

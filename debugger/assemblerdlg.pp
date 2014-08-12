@@ -969,7 +969,7 @@ begin
   Editor := SourceEditorManager.SourceEditorIntfWithFilename(SrcFileName);
   if Editor <> nil then SrcLineNumber := Editor.DebugToSourceLine(SrcLineNumber);
 
-  Result := Trim(PasSource.GetLine(SrcLineNumber - 1));
+  Result := Trim(PasSource.GetLine(SrcLineNumber - 1,false));
 end;
 
 procedure TAssemblerDlg.UpdateLineData;

@@ -345,7 +345,7 @@ begin
     ANode:=TreeOfPCodeXYPosition.FindHighest;
     while ANode<>nil do begin
       CodePos:=PCodeXYPosition(ANode.Data);
-      CurLine:=TrimRight(CodePos^.Code.GetLine(CodePos^.Y-1));
+      CurLine:=TrimRight(CodePos^.Code.GetLine(CodePos^.Y-1,false));
       TrimmedLine:=Trim(CurLine);
       TrimCnt:=length(CurLine)-length(TrimmedLine);
       //debugln('ShowReferences x=',dbgs(CodePos^.x),' y=',dbgs(CodePos^.y),' ',CurLine);

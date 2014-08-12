@@ -199,7 +199,7 @@ begin
   sl:=TStringList.Create;
   if Code<>nil then begin
     for i:=0 to Code.LineCount-1 do begin
-      sl.Add('Line='+dbgs(i+1)+' Start='+dbgs(Code.GetLineStart(i))+' ="'+dbgstr(Code.GetLine(i))+'"');
+      sl.Add('Line='+dbgs(i+1)+' Start='+dbgs(Code.GetLineStart(i))+' ="'+dbgstr(Code.GetLine(i,true))+'"');
     end;
   end;
   CodeBufferMemo.Lines.Assign(sl);
@@ -270,7 +270,7 @@ begin
         sl.Add('Node Src>>>>>>>>>>>>>>>>>>');
         SrcCode:=TSourceLog.Create(copy(Tool.Src,Node.StartPos,Node.EndPos-Node.StartPos));
         for i:=0 to SrcCode.LineCount-1 do begin
-          sl.Add('Line='+dbgs(i)+',CleanPos='+dbgs(Node.StartPos+SrcCode.GetLineStart(i)-1)+'="'+dbgstr(SrcCode.GetLine(i))+'"');
+          sl.Add('Line='+dbgs(i)+',CleanPos='+dbgs(Node.StartPos+SrcCode.GetLineStart(i)-1)+'="'+dbgstr(SrcCode.GetLine(i,true))+'"');
         end;
         SrcCode.Free;
         sl.Add('Node Src<<<<<<<<<<<<<<<<<<');

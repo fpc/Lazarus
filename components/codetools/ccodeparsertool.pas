@@ -668,7 +668,7 @@ var
     MergePos:=1;
     if not (chfmfIgnoreIncludes in Flags) then begin
       for i:=0 to Code.LineCount-1 do begin
-        Line:=Code.GetLine(i);
+        Line:=Code.GetLine(i,false);
         if length(Line)<length('#include')+2 then continue;
         if copy(Line,1,length('#include'))<>'#include' then continue;
         if not (Line[length('#include')+1] in [' ',#9]) then continue;

@@ -133,7 +133,7 @@ type
     Data: Pointer;
     LastError: string;
     function LineCount: integer;
-    function GetLine(Index: integer): string; // 0-based
+    function GetLine(Index: integer; WithLineEnd: boolean = true): string; // 0-based
     function GetLineLength(Index: integer): integer; // 0-based
     procedure GetLineRange(Index: integer; out LineRange: TLineRange); // 0-based
     function GetLineStart(Index: integer): integer; // 1-based
@@ -362,15 +362,19 @@ begin
   Result:=fLineCount;
 end;
 
-function TSourceLog.GetLine(Index: integer): string;
+function TSourceLog.GetLine(Index: integer; WithLineEnd: boolean): string;
 var LineLen: integer;
 begin
   BuildLineRanges;
   if (Index>=0) and (Index<fLineCount) then begin
-    if Index<fLineCount-1 then
-      LineLen:=fLineRanges[Index+1].StartPos-fLineRanges[Index].StartPos
-    else
-      LineLen:=fSrcLen-fLineRanges[Index].StartPos+1;
+    if WithLineEnd then begin
+      if Index<fLineCount-1 then
+        LineLen:=fLineRanges[Index+1].StartPos-fLineRanges[Index].StartPos
+      else
+        LineLen:=fSrcLen-fLineRanges[Index].StartPos+1;
+    end else begin
+      LineLen:=fLineRanges[Index].EndPos-fLineRanges[Index].StartPos
+    end;
     SetLength(Result,LineLen);
     if LineLen>0 then
       System.Move(fSource[fLineRanges[Index].StartPos],Result[1],LineLen);

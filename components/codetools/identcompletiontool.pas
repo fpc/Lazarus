@@ -1842,7 +1842,7 @@ begin
     if IgnoreErrorAfterValid then
       debugln(['  IgnoreErrorAfter=',dbgs(IgnoreErrorAfter),' IgnoreErrorAfterCleanedPos=',IgnoreErrorAfterCleanedPos,' CleanPosIsAfterIgnorePos=',CleanPosIsAfterIgnorePos(CleanCursorPos)]);
     if CursorPos.Y<=CursorPos.Code.LineCount then
-      debugln(['  Line=',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),1,CursorPos.X-1),'|',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1),CursorPos.X,100)]);
+      debugln(['  Line=',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1,true),1,CursorPos.X-1),'|',dbgstr(CursorPos.Code.GetLine(CursorPos.Y-1,true),CursorPos.X,100)]);
     CursorNode:=Tree.Root;
     if CursorNode=nil then begin
       debugln(['  no nodes']);
@@ -2057,7 +2057,7 @@ var
   cm: TCompilerMode;
 begin
   Result:=false;
-  Line:=CursorPos.Code.GetLine(CursorPos.Y-1);
+  Line:=CursorPos.Code.GetLine(CursorPos.Y-1,false);
   p:=1;
   while p<=length(Line) do begin
     p:=FindNextCompilerDirective(Line,p,Scanner.NestedComments);

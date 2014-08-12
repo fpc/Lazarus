@@ -1318,7 +1318,7 @@ begin
   CurIdentStart:=0;
   CurIdentEnd:=0;
   if (CurCodePos.Code<>nil) then begin
-    Line:=CurCodePos.Code.GetLine(CurCodePos.Y-1);
+    Line:=CurCodePos.Code.GetLine(CurCodePos.Y-1,false);
     GetIdentStartEndAtPosition(Line,CurCodePos.X,CurIdentStart,CurIdentEnd);
     if CurIdentStart<CurIdentEnd then
       CurIdentifier:=copy(Line,CurIdentStart,CurIdentEnd-CurIdentStart);

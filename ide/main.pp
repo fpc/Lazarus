@@ -7351,7 +7351,7 @@ begin
     if Result<>mrOk then exit;
 
     if ActiveUnitInfo.Source.LineCount>0 then
-      FirstLine:=ActiveUnitInfo.Source.GetLine(0)
+      FirstLine:=ActiveUnitInfo.Source.GetLine(0,false)
     else
       FirstLine:='';
     HasShebang:=copy(FirstLine,1,2)='#!';
@@ -9556,7 +9556,7 @@ begin
     SearchResultsView.BeginUpdate(SearchPageIndex.PageIndex);
     for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
       CodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
-      CurLine:=TrimRight(CodePos^.Code.GetLine(CodePos^.Y-1));
+      CurLine:=TrimRight(CodePos^.Code.GetLine(CodePos^.Y-1,false));
       if CodePos^.X<=length(CurLine) then
         Identifier:=GetIdentifier(@CurLine[CodePos^.X])
       else

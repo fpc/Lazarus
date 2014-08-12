@@ -1107,7 +1107,7 @@ begin
           NewPos.X:=1;
           if Identifier<>'' then begin
             // there is an Identifier => search it in line
-            CurLine:=LinkCode.GetLine(SourceLine-1);
+            CurLine:=LinkCode.GetLine(SourceLine-1,false);
             EndPos:=1;
             while (EndPos<=length(CurLine)) do begin
               BasicCodeTools.ReadRawNextPascalAtom(CurLine,EndPos,StartPos,
