@@ -4686,10 +4686,9 @@ msgstr "Alleen the class van TComponents kan gewijzigd worden."
 msgid "Can't find a valid %s.ppu"
 msgstr ""
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
-msgstr "Verschil"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7491,6 +7490,14 @@ msgstr ""
 msgid "Case Insensitive"
 msgstr "Hoofd/kleine letter ongevoelig"
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "Negeer toevoegingen en verwijderingen van lege regels"
@@ -7520,16 +7527,10 @@ msgid "Only selection"
 msgstr "Alleen de selectie"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
+#, fuzzy
+#| msgid "Open Diff in editor"
+msgid "Open difference in editor"
 msgstr "Toon verschillen in bewerker"
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr "Tekst1"
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
-msgstr "Tekst2"
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
@@ -10949,6 +10950,10 @@ msgstr "CodeTools definitieseditor ..."
 msgid "Comment Selection"
 msgstr "Commentaarselectie"
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -11013,13 +11018,6 @@ msgstr "Debug schermen"
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
 msgstr ""
-
-#: lazarusidestrconsts.lismenudiff
-#, fuzzy
-#| msgid "Diff"
-msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff ..."
-msgstr "Verschil"
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"

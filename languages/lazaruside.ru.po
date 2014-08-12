@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-08-06 04:05+0400\n"
+"PO-Revision-Date: 2014-08-13 02:56+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -4666,10 +4666,9 @@ msgstr "Возможно только изменить класс TComponents."
 msgid "Can't find a valid %s.ppu"
 msgstr "Невозможно найти корректный %s.ppu"
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
-msgstr "Разница Diff"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
+msgstr "Сравнение файлов (не для создания файлов разницы)"
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7490,6 +7489,14 @@ msgstr "Код деструктора"
 msgid "Case Insensitive"
 msgstr "Игнорировать регистр"
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr "Файл1"
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr "Файл2"
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "Игнорировать добавление/удаление пустых строк"
@@ -7519,16 +7526,9 @@ msgid "Only selection"
 msgstr "Только выбранное"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
-msgstr "Открыть Diff в редакторе"
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr "Текст1"
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
-msgstr "Текст2"
+#| msgid "Open Diff in editor"
+msgid "Open difference in editor"
+msgstr "Открыть разницу в редакторе"
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
@@ -11003,6 +11003,10 @@ msgstr "Редактор определений CodeTools ..."
 msgid "Comment Selection"
 msgstr "Закомментировать выделенное"
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr "Сравнить файлы ..."
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -11063,12 +11067,6 @@ msgstr "Окна отладки"
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
 msgstr "Преобразование кода на Delphi"
-
-#: lazarusidestrconsts.lismenudiff
-#| msgid "Diff"
-msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff ..."
-msgstr "Разница Diff ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"

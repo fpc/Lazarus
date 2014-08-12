@@ -4666,10 +4666,9 @@ msgstr ""
 msgid "Can't find a valid %s.ppu"
 msgstr ""
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
-msgstr "Mostra les diferències"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7463,6 +7462,14 @@ msgstr ""
 msgid "Case Insensitive"
 msgstr "No distingeixis entre majúscules i minúscules"
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "Ignora si s'han afegit o eliminat línies buides"
@@ -7492,16 +7499,10 @@ msgid "Only selection"
 msgstr "Selecció única"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
+#, fuzzy
+#| msgid "Open Diff in editor"
+msgid "Open difference in editor"
 msgstr "Obre les diferències a l'editor"
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr "Text1"
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
-msgstr "Text2"
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
@@ -10907,6 +10908,10 @@ msgstr "Editor de definició de les eines del codi ..."
 msgid "Comment Selection"
 msgstr "Comenta la selecció"
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -10971,13 +10976,6 @@ msgstr "Finestres de depuració"
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
 msgstr ""
-
-#: lazarusidestrconsts.lismenudiff
-#, fuzzy
-#| msgid "Diff"
-msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff ..."
-msgstr "Mostra les diferències"
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"

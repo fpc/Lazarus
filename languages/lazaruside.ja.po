@@ -4527,10 +4527,9 @@ msgstr "TComponentのクラスしか変更できません。"
 msgid "Can't find a valid %s.ppu"
 msgstr ""
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
-msgstr "差分"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7324,6 +7323,14 @@ msgstr "デストラクタコード"
 msgid "Case Insensitive"
 msgstr "大文字と小文字を区別しない"
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "空の行が追加されたり削除されたりしても無視"
@@ -7353,16 +7360,10 @@ msgid "Only selection"
 msgstr "選択対象のみ"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
+#, fuzzy
+#| msgid "Open Diff in editor"
+msgid "Open difference in editor"
 msgstr "エディタの差分を開く"
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr "テキスト１"
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
-msgstr "テキスト２"
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
@@ -10756,6 +10757,10 @@ msgstr "コードツール定義エディタ ..."
 msgid "Comment Selection"
 msgstr "選択部分をコメントにする"
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -10808,11 +10813,6 @@ msgstr "デバッグウィンドウ"
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
 msgstr ""
-
-#: lazarusidestrconsts.lismenudiff
-msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff ..."
-msgstr "差分 ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"

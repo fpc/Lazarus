@@ -4787,10 +4787,9 @@ msgstr "Sólo se puede cambiar la clase de TComponents."
 msgid "Can't find a valid %s.ppu"
 msgstr ""
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
-msgstr "Difrencias"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7674,6 +7673,14 @@ msgstr "Código del Destructor"
 msgid "Case Insensitive"
 msgstr "Insensible a mayus/mins"
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "Ignorar si se han añadido o eliminado líneas vacías"
@@ -7703,16 +7710,10 @@ msgid "Only selection"
 msgstr "Sólo selección"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
+#, fuzzy
+#| msgid "Open Diff in editor"
+msgid "Open difference in editor"
 msgstr "Abrir Difrencias en editor"
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr "Texto1"
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
-msgstr "Texto2"
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
@@ -11255,6 +11256,10 @@ msgstr "Editor de Defines de CodeTools ..."
 msgid "Comment Selection"
 msgstr "Comentar Selección"
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -11323,12 +11328,6 @@ msgstr "Ventanas de Depuración"
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
 msgstr ""
-
-#: lazarusidestrconsts.lismenudiff
-#| msgid "Diff"
-msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff ..."
-msgstr "Diff ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"

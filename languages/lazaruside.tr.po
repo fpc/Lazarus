@@ -4520,10 +4520,9 @@ msgstr ""
 msgid "Can't find a valid %s.ppu"
 msgstr ""
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
-msgstr "Diff"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7301,6 +7300,14 @@ msgstr ""
 msgid "Case Insensitive"
 msgstr ""
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr ""
@@ -7330,15 +7337,7 @@ msgid "Only selection"
 msgstr ""
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
-msgstr ""
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr ""
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
+msgid "Open difference in editor"
 msgstr ""
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
@@ -10765,6 +10764,10 @@ msgstr "Kod Araçları tanımlamaları düzenleyici ..."
 msgid "Comment Selection"
 msgstr "Seçimi yoruma dönüştür"
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -10829,13 +10832,6 @@ msgstr "Hata ayıklama pencereleri"
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
 msgstr ""
-
-#: lazarusidestrconsts.lismenudiff
-#, fuzzy
-#| msgid "Diff"
-msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff ..."
-msgstr "Diff"
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"

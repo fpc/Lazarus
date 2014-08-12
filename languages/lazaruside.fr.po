@@ -4625,10 +4625,9 @@ msgstr "Peut seulement changer la classe de TComponents."
 msgid "Can't find a valid %s.ppu"
 msgstr " Ne peut pas trouver %s.ppu valide"
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
-msgstr "Différences"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7439,6 +7438,14 @@ msgstr "Code Destructor"
 msgid "Case Insensitive"
 msgstr "Insensible à la casse"
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "Ignorer lignes vides ajoutées ou supprimées"
@@ -7468,16 +7475,10 @@ msgid "Only selection"
 msgstr "Sélection seulement"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
+#, fuzzy
+#| msgid "Open Diff in editor"
+msgid "Open difference in editor"
 msgstr "Ouvrir Différences dans l'éditeur"
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr "Texte1"
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
-msgstr "Texte2"
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
@@ -10914,6 +10915,10 @@ msgstr "Editeur 'Defines' des outils de code ..."
 msgid "Comment Selection"
 msgstr "Commenter la sélection"
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -10974,12 +10979,6 @@ msgstr "Fenêtres de débogage"
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
 msgstr "Convertion Delphi"
-
-#: lazarusidestrconsts.lismenudiff
-#| msgid "Diff"
-msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff ..."
-msgstr "Diff ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"

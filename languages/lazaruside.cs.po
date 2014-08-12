@@ -4521,10 +4521,9 @@ msgstr "Změnit lze pouze třídu dědící TComponent."
 msgid "Can't find a valid %s.ppu"
 msgstr "Nelze najít validní %s.ppu"
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
-msgstr "Rozdíl"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7307,6 +7306,14 @@ msgstr "Kód destruktoru"
 msgid "Case Insensitive"
 msgstr "Nerozlišovat velikost znaků"
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "Ignorovat prázdné řádky při přidávání a odstraňování"
@@ -7336,16 +7343,10 @@ msgid "Only selection"
 msgstr "Pouze výběr"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
+#, fuzzy
+#| msgid "Open Diff in editor"
+msgid "Open difference in editor"
 msgstr "Otevřít Diff v editoru"
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr "Text1"
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
-msgstr "Text2"
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
@@ -10746,6 +10747,10 @@ msgstr "Editor definic pro CodeTools ..."
 msgid "Comment Selection"
 msgstr "Zakomentovat výběr"
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -10798,11 +10803,6 @@ msgstr "Ladící okna"
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
 msgstr "Delphi Konverze:"
-
-#: lazarusidestrconsts.lismenudiff
-msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff ..."
-msgstr "Rozdíl ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"

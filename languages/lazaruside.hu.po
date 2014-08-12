@@ -4463,10 +4463,9 @@ msgstr "Csak TComponent-ek osztálya módosítható"
 msgid "Can't find a valid %s.ppu"
 msgstr "Nem található érvényes %s.ppu"
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
-msgstr "Diff"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7216,6 +7215,14 @@ msgstr "Destruktor kód"
 msgid "Case Insensitive"
 msgstr "Kis-/nagybetűre érzéketlen"
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "Üres sor hozzáadások/törlések figyelmen kívül hagyása"
@@ -7245,16 +7252,10 @@ msgid "Only selection"
 msgstr "Csak a kijelölés"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
+#, fuzzy
+#| msgid "Open Diff in editor"
+msgid "Open difference in editor"
 msgstr "Diff megnyitása szerkesztőben"
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr "1. szöveg"
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
-msgstr "2. szöveg"
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
@@ -10629,6 +10630,10 @@ msgstr "CodeTools beállítás szerkesztő ..."
 msgid "Comment Selection"
 msgstr "Kijelölés megjegyzésbe"
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -10681,11 +10686,6 @@ msgstr "Hibakereső ablakok"
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
 msgstr "Delphi átalakítása"
-
-#: lazarusidestrconsts.lismenudiff
-msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff ..."
-msgstr "Diff ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"

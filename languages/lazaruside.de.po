@@ -4650,10 +4650,9 @@ msgstr "Kann nur die Klasse von TComponents ändern."
 msgid "Can't find a valid %s.ppu"
 msgstr "Kann keine gültige %s.ppu finden"
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
-msgstr "Dateivergleich"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7464,6 +7463,14 @@ msgstr "Destruktor-Code"
 msgid "Case Insensitive"
 msgstr "Schreibweise übergehen"
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "Zufügen und Löschen leerer Zeilen übergehen"
@@ -7493,16 +7500,10 @@ msgid "Only selection"
 msgstr "Nur Auswahl"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
+#, fuzzy
+#| msgid "Open Diff in editor"
+msgid "Open difference in editor"
 msgstr "Öffne Vergleich im Editor"
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr "Text1"
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
-msgstr "Text2"
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
@@ -10980,6 +10981,10 @@ msgstr "Editor für CodeTools-Eigenschaften ..."
 msgid "Comment Selection"
 msgstr "Auswahl kommentieren"
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -11041,12 +11046,6 @@ msgstr "Debuggerfenster"
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
 msgstr ""
-
-#: lazarusidestrconsts.lismenudiff
-#| msgid "Diff"
-msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff ..."
-msgstr "Dateivergleich ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"

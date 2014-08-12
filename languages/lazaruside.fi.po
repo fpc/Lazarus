@@ -4445,10 +4445,9 @@ msgstr "Vain TComponent:sta periytyvän luokka voidaan vaihtaa."
 msgid "Can't find a valid %s.ppu"
 msgstr ""
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
-msgstr "Eroavuudet"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
+msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
 msgid "%s (%s files)"
@@ -7187,6 +7186,14 @@ msgstr ""
 msgid "Case Insensitive"
 msgstr "Kirjaimen koolla ei väliä"
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr "Jätä huomiotta tyhjät rivit"
@@ -7216,16 +7223,10 @@ msgid "Only selection"
 msgstr "Ainoastaan valittu osa"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
+#, fuzzy
+#| msgid "Open Diff in editor"
+msgid "Open difference in editor"
 msgstr "Avaa eroavuudet editorissa"
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr "Teksti 1"
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
-msgstr "Teksti 2"
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
@@ -10572,6 +10573,10 @@ msgstr "CodeTools-määritysten muokkain ..."
 msgid "Comment Selection"
 msgstr "Kommentoi valinta"
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -10624,10 +10629,6 @@ msgstr "Virheenjäljitysikkunat"
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
 msgstr ""
-
-#: lazarusidestrconsts.lismenudiff
-msgid "Diff ..."
-msgstr "Eroavuudet ..."
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"

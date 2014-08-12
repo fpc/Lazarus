@@ -4479,9 +4479,8 @@ msgstr ""
 msgid "Can't find a valid %s.ppu"
 msgstr ""
 
-#: lazarusidestrconsts.liscaptiondiff
-msgctxt "lazarusidestrconsts.liscaptiondiff"
-msgid "Diff"
+#: lazarusidestrconsts.liscaptioncomparefiles
+msgid "Compare files (not for creating patches)"
 msgstr ""
 
 #: lazarusidestrconsts.liscbpfiles
@@ -7236,6 +7235,14 @@ msgstr ""
 msgid "Case Insensitive"
 msgstr ""
 
+#: lazarusidestrconsts.lisdiffdlgfile1
+msgid "File1"
+msgstr ""
+
+#: lazarusidestrconsts.lisdiffdlgfile2
+msgid "File2"
+msgstr ""
+
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
 msgstr ""
@@ -7265,16 +7272,10 @@ msgid "Only selection"
 msgstr "المعيّن فقط"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
-msgid "Open Diff in editor"
+#, fuzzy
+#| msgid "Open Diff in editor"
+msgid "Open difference in editor"
 msgstr "إفتح الفروق في المحرّر"
-
-#: lazarusidestrconsts.lisdiffdlgtext1
-msgid "Text1"
-msgstr ""
-
-#: lazarusidestrconsts.lisdiffdlgtext2
-msgid "Text2"
-msgstr ""
 
 #: lazarusidestrconsts.lisdifferentunitfoundatnewposition
 msgid "different unit %s found at new position \"%s\""
@@ -10635,6 +10636,10 @@ msgstr ""
 msgid "Comment Selection"
 msgstr ""
 
+#: lazarusidestrconsts.lismenucomparefiles
+msgid "Compare files ..."
+msgstr ""
+
 #: lazarusidestrconsts.lismenucompletecode
 msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
@@ -10686,11 +10691,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
-msgstr ""
-
-#: lazarusidestrconsts.lismenudiff
-msgctxt "lazarusidestrconsts.lismenudiff"
-msgid "Diff ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuedit
