@@ -1068,31 +1068,83 @@ end;
 
 function EditGetSelStart(WinHandle: HWND): integer;
 begin
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    Windows.SendMessageW(WinHandle, EM_GETSEL, Windows.WPARAM(@Result), 0);
+  end
+  else
+  begin
+    Windows.SendMessage(WinHandle, EM_GETSEL, Windows.WPARAM(@Result), 0);
+  end;
+  {$else}
   Windows.SendMessage(WinHandle, EM_GETSEL, Windows.WPARAM(@Result), 0);
+  {$endif}
 end;
 
 function EditGetSelLength(WinHandle: HWND): integer;
 var
   startpos, endpos: integer;
 begin
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    Windows.SendMessageW(WinHandle, EM_GETSEL, Windows.WPARAM(@startpos), Windows.LPARAM(@endpos));
+  end
+  else
+  begin
+    Windows.SendMessage(WinHandle, EM_GETSEL, Windows.WPARAM(@startpos), Windows.LPARAM(@endpos));
+  end;
+  {$else}
   Windows.SendMessage(WinHandle, EM_GETSEL, Windows.WPARAM(@startpos), Windows.LPARAM(@endpos));
+  {$endif}
   Result := endpos - startpos;
 end;
 
 procedure EditSetSelStart(WinHandle: HWND; NewStart: integer);
 begin
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    Windows.SendMessageW(WinHandle, EM_SETSEL, Windows.WParam(NewStart), Windows.LParam(NewStart));
+    // scroll caret into view
+    Windows.SendMessageW(WinHandle, EM_SCROLLCARET, 0, 0);
+  end
+  else
+  begin
+    Windows.SendMessage(WinHandle, EM_SETSEL, Windows.WParam(NewStart), Windows.LParam(NewStart));
+    // scroll caret into view
+    Windows.SendMessage(WinHandle, EM_SCROLLCARET, 0, 0);
+  end;
+  {$else}
   Windows.SendMessage(WinHandle, EM_SETSEL, Windows.WParam(NewStart), Windows.LParam(NewStart));
   // scroll caret into view
   Windows.SendMessage(WinHandle, EM_SCROLLCARET, 0, 0);
+  {$endif}
 end;
 
 procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 var
   startpos, endpos: integer;
 begin
-  Windows.SendMessage(WinHandle, EM_GETSEL, Windows.WParam(@startpos), Windows.LParam(@endpos));
-  endpos := startpos + NewLength;
-  Windows.SendMessage(WinHandle, EM_SETSEL, Windows.WParam(startpos), Windows.LParam(endpos));
+  {$ifdef WindowsUnicodeSupport}
+   if UnicodeEnabledOS then
+   begin
+     Windows.SendMessageW(WinHandle, EM_GETSEL, Windows.WParam(@startpos), Windows.LParam(@endpos));
+     endpos := startpos + NewLength;
+     Windows.SendMessageW(WinHandle, EM_SETSEL, Windows.WParam(startpos), Windows.LParam(endpos));
+   end
+   else
+   begin
+     Windows.SendMessage(WinHandle, EM_GETSEL, Windows.WParam(@startpos), Windows.LParam(@endpos));
+     endpos := startpos + NewLength;
+     Windows.SendMessage(WinHandle, EM_SETSEL, Windows.WParam(startpos), Windows.LParam(endpos));
+   end;
+   {$else}
+   Windows.SendMessage(WinHandle, EM_GETSEL, Windows.WParam(@startpos), Windows.LParam(@endpos));
+   endpos := startpos + NewLength;
+   Windows.SendMessage(WinHandle, EM_SETSEL, Windows.WParam(startpos), Windows.LParam(endpos));
+   {$endif}
 end;
 
 { TWin32WSCustomEdit }
