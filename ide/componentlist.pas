@@ -44,8 +44,8 @@ type
 
   TComponentListForm = class(TForm)
     ListTree: TTreeView;
-    UseAndCloseButton: TBitBtn;
-    ButtonPanel: TPanel;
+    ButtonPanel: TButtonPanel;
+    OKButton: TPanelBitBtn;
     LabelSearch: TLabel;
     PageControl: TPageControl;
     FilterPanel: TPanel;
@@ -59,7 +59,7 @@ type
     PalletteTree: TTreeView;
     TreeFilterEd: TTreeFilterEdit;
     procedure FormShow(Sender: TObject);
-    procedure UseAndCloseButtonClick(Sender: TObject);
+    procedure OKButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);
     procedure ComponentsClick(Sender: TObject);
     //procedure ComponentsListboxDrawItem(Control: TWinControl; Index: Integer;
@@ -106,7 +106,7 @@ begin
   TabSheetList.Caption := lisCmpLstList;
   TabSheetPaletteTree.Caption := lisCmpLstPalette;
   TabSheetInheritance.Caption := lisCmpLstInheritance;
-  UseAndCloseButton.Caption := lisUseAndClose;
+  ButtonPanel.OKButton.Caption := lisUseAndClose;
 
   ListTree.DefaultItemHeight       := ComponentPaletteImageHeight + 1;
   InheritanceTree.DefaultItemHeight:= ComponentPaletteImageHeight + 1;
@@ -205,7 +205,7 @@ end;
 
 procedure TComponentListForm.UpdateButtonState;
 begin
-  UseAndCloseButton.Enabled := Assigned(GetSelectedComponent);
+  ButtonPanel.OKButton.Enabled := Assigned(GetSelectedComponent);
 end;
 
 procedure TComponentListForm.UpdateComponentSelection(Sender: TObject);
@@ -393,7 +393,7 @@ end;
 procedure TComponentListForm.ComponentsDblClick(Sender: TObject);
 // This is used for all 3 treeviews
 begin
-  UseAndCloseButtonClick(nil);       // Select and close this form
+  OKButtonClick(nil);       // Select and close this form
 end;
 
 procedure TComponentListForm.ComponentsClick(Sender: TObject);
@@ -458,7 +458,7 @@ begin
     Close;
 end;
 
-procedure TComponentListForm.UseAndCloseButtonClick(Sender: TObject);
+procedure TComponentListForm.OKButtonClick(Sender: TObject);
 // Select component from palette and close this form. User can insert the component.
 var
   AComponent: TRegisteredComponent;
