@@ -795,7 +795,10 @@ begin
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item=nil then
     Item:=TPOFileItem(FOriginalToItem.Data[OriginalValue]);
-  if Item<>nil then begin
+  //Load translation only if it exists and is NOT fuzzy.
+  //This matches gettext behaviour and allows to avoid a lot of crashes related
+  //to formatting arguments mismatches.
+  if (Item<>nil) and (pos('fuzzy', lowercase(Item.Flags))=0) then begin
     Result:=Item.Translation;
     if Result='' then RaiseGDBException('TPOFile.Translate Inconsistency');
   end else
