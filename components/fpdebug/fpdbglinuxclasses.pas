@@ -231,6 +231,7 @@ type
     function ResetInstructionPointerAfterBreakpoint: boolean; override;
     function AddWatchpoint(AnAddr: TDBGPtr): integer; override;
     function RemoveWatchpoint(AnId: integer): boolean; override;
+    function DetectHardwareWatchpoint: integer; override;
     procedure BeforeContinue; override;
     procedure LoadRegisterValues; override;
   end;
@@ -433,10 +434,27 @@ begin
   end;
 end;
 
+function TDbgLinuxThread.DetectHardwareWatchpoint: integer;
+var
+  dr6: PtrUInt;
+begin
+  result := -1;
+  if ReadDebugReg(6, dr6) then
+  begin
+    if dr6 and 1 = 1 then result := 0
+    else if dr6 and 2 = 2 then result := 1
+    else if dr6 and 4 = 4 then result := 2
+    else if dr6 and 8 = 8 then result := 3;
+  end;
+end;
+
 procedure TDbgLinuxThread.BeforeContinue;
 var
   io: iovec;
 begin
+  if Process.CurrentWatchpoint>-1 then
+    WriteDebugReg(6, 0);
+
   if FUserRegsChanged then
     begin
     io.iov_base:=@(FUserRegs.regs64[0]);
