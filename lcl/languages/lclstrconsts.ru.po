@@ -1480,6 +1480,10 @@ msgstr "Отсутствует форма MDI."
 msgid "No timers available"
 msgstr "Таймеры недоступны"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr "Неверный тип лексемы: ожидался %s"

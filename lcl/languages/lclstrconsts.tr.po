@@ -1488,6 +1488,10 @@ msgstr "MDI Pencere mevcut değil."
 msgid "No timers available"
 msgstr "Kullanılabilir zamanlayıcı yok"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr ""

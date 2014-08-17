@@ -1473,6 +1473,10 @@ msgstr "Nepřítomno žádné MDI okno."
 msgid "No timers available"
 msgstr "Nedostupné žádné časovače"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr "Nesprávný typ symbolu: očekáváno %s"

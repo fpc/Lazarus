@@ -1441,6 +1441,10 @@ msgstr ""
 msgid "No timers available"
 msgstr ""
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr ""

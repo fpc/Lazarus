@@ -1494,6 +1494,10 @@ msgstr "Ingen MDI-formular til rådighet."
 msgid "No timers available"
 msgstr "Ingen timere tilgjengelig"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr ""

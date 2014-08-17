@@ -1468,6 +1468,10 @@ msgstr "Nincs MDI form."
 msgid "No timers available"
 msgstr "Nincsenek elérhető időzítők"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr "Rossz vezérjel típus: %s az elvárt"

@@ -1488,6 +1488,10 @@ msgstr "MDI formos nėra."
 msgid "No timers available"
 msgstr "Nėra laikmačių"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr "Klaidingas leksemos tipas: tikėtasi %s"

@@ -1489,6 +1489,10 @@ msgstr "Nie je MIDI formulár"
 msgid "No timers available"
 msgstr "Nie sú dostupné žiadne časovače"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr "Zlý typ tokenu: očakávaný %s"

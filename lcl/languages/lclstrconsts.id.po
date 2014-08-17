@@ -1489,6 +1489,10 @@ msgstr "Tidak ada form MDI"
 msgid "No timers available"
 msgstr "Tidak tersedia timer"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr ""

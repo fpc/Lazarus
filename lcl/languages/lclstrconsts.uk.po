@@ -1483,6 +1483,10 @@ msgstr "Немає MDI форми."
 msgid "No timers available"
 msgstr "Немає доступних таймерів"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr "Невірний тип маркера: очікується %s"

@@ -1483,6 +1483,10 @@ msgstr "לא קיים טופס MDI "
 msgid "No timers available"
 msgstr "אין קוצב זמן זמין"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr "סוג token שגוי: %s צפוי"

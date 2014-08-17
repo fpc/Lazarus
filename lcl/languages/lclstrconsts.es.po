@@ -1490,6 +1490,10 @@ msgstr "No hay un formulario MDI presente"
 msgid "No timers available"
 msgstr "No hay temporizadores disponibles"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr "Tipo de token incorrecto: Se esperaba %s "

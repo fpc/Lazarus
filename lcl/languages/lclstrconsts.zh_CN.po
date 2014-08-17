@@ -1491,6 +1491,10 @@ msgstr "没有 MDI 窗体出现"
 msgid "No timers available"
 msgstr "无有效计时器"
 
+#: lclstrconsts.sparentrequired
+msgid "Control \"%s\" has no parent window"
+msgstr ""
+
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
 msgstr "错误的标识符类型：期望 %s"
