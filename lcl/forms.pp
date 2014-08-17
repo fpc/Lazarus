@@ -1724,7 +1724,7 @@ type
 var
   OnGetDesignerForm: TGetDesignerFormEvent = nil;
 
-function GetParentForm(Control:TControl): TCustomForm;
+function GetParentForm(Control: TControl; TopForm: Boolean = True): TCustomForm;
 function GetFirstParentForm(Control:TControl): TCustomForm;
 function GetDesignerForm(APersistent: TPersistent): TCustomForm;
 function FindRootDesigner(APersistent: TPersistent): TIDesigner;
@@ -1900,13 +1900,19 @@ begin
 end;
 
 //------------------------------------------------------------------------------
-function GetParentForm(Control: TControl): TCustomForm;
+function GetParentForm(Control: TControl; TopForm: Boolean): TCustomForm;
 begin
+  //For Delphi compatibility if Control is a TCustomForm with no parent, the function returns the TCustomForm itself
   while Control.Parent <> nil do
+  begin
+    if (not TopForm) and (Control is TCustomForm) then
+      Break;
     Control := Control.Parent;
-  if Control is TCustomForm
-  then Result := TCustomForm(Control)
-  else Result := nil;
+  end;
+  if Control is TCustomForm then
+    Result := TCustomForm(Control)
+  else
+    Result := nil;
 end;
 
 //------------------------------------------------------------------------------
@@ -1950,9 +1956,10 @@ end;
 
 function GetFirstParentForm(Control: TControl): TCustomForm;
 begin
-  while (Control<>nil) and (not (Control is TCustomForm)) do
-    Control:=Control.Parent;
-  Result:=TCustomForm(Control);
+  if (Control = nil) then
+    Result:= nil
+  else
+    Result := GetParentForm(Control, False);
 end;
 
 function GetDesignerForm(APersistent: TPersistent): TCustomForm;
