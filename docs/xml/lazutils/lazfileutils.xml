@@ -418,7 +418,7 @@
 
 <!-- function Visibility: default -->
 <element name="TrimFilename">
-<short/>
+<short><var>TrimFilename</var> - trim double path delimiters, heading and trailing spaces and special dirs . and ..</short>
 <descr>
 </descr>
 <errors>
