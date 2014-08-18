@@ -419,12 +419,11 @@
 <!-- function Visibility: default -->
 <element name="TrimFilename">
 <short><var>TrimFilename</var> - trim double path delimiters, heading and trailing spaces and special dirs . and ..</short>
-<descr>
+<descr>The function cuts leading and trailing spaces and uses ResolveDots to shorten the file name.
 </descr>
 <errors>
 </errors>
-<seealso>
-</seealso>
+<seealso>ResolveDots</seealso>
 </element>
 
 <!-- function result Visibility: default -->
@@ -1100,6 +1099,11 @@ On Windows it simply returns Filename.</descr>
 </descr>
       </element><element name="TryReadAllLinks"><short>Resolves a symlink to the real file. It does not resolve symlinks in parent directories.</short><descr>If a symlink can not be resolved it returns Filename.
 It uses ReadAllLinks.</descr>
+      </element>
+    <element name="ResolveDots"><short>Removes duplicate path delimiters and resolves logically . and ..</short><descr>This function shortens duplicate path delimiters to single path delimiters.
+It resolves 'A/../B' to 'B', which might be wrong under Unix if A is a symlink. The functions does not check the file system.
+The single dot './A' is resolved to 'A', but a single '.' is kept as '.'.
+</descr>
       </element>
     </module> <!-- LazFileUtils -->
 
