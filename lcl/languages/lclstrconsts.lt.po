@@ -1489,7 +1489,7 @@ msgid "No timers available"
 msgstr "Nėra laikmačių"
 
 #: lclstrconsts.sparentrequired
-msgid "Control \"%s\" has no parent window"
+msgid "Control \"%s\" has no parent window."
 msgstr ""
 
 #: lclstrconsts.sparexpected

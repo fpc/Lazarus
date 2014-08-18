@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-02 01:34+0400\n"
+"PO-Revision-Date: 2014-08-19 03:12+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -1481,8 +1481,8 @@ msgid "No timers available"
 msgstr "Таймеры недоступны"
 
 #: lclstrconsts.sparentrequired
-msgid "Control \"%s\" has no parent window"
-msgstr ""
+msgid "Control \"%s\" has no parent window."
+msgstr "Элемент управления \"%s\" не имеет родительского окна."
 
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"

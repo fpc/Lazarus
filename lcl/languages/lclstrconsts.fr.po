@@ -1471,7 +1471,7 @@ msgid "No timers available"
 msgstr "Aucun temporisateur disponible"
 
 #: lclstrconsts.sparentrequired
-msgid "Control \"%s\" has no parent window"
+msgid "Control \"%s\" has no parent window."
 msgstr ""
 
 #: lclstrconsts.sparexpected

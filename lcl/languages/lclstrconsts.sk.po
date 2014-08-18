@@ -1490,7 +1490,7 @@ msgid "No timers available"
 msgstr "Nie sú dostupné žiadne časovače"
 
 #: lclstrconsts.sparentrequired
-msgid "Control \"%s\" has no parent window"
+msgid "Control \"%s\" has no parent window."
 msgstr ""
 
 #: lclstrconsts.sparexpected
