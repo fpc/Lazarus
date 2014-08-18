@@ -608,10 +608,16 @@ end;
 
 function CalcCanvasCharWidth(Canvas:TCanvas): integer;
 begin
+  {$ifdef dbgDBGridExtra}
+  DebugLnEnter('CalcCanvasCharWidth INIT');
+  {$endif}
   if Canvas.HandleAllocated then
     result := Canvas.TextWidth('MX') div 2
   else
     result := 8;
+  {$ifdef dbgDBGridExtra}
+  DebugLnExit('CalcCanvasCharWidth DONE result=%d', [result]);
+  {$endif}
 end;
 
 function CalcColumnFieldWidth(Canvas: TCanvas; hasTitle: boolean;
@@ -621,6 +627,9 @@ var
   aFont: TFont;
   UseTitleFont: boolean;
 begin
+  {$ifdef dbgDBGridExtra}
+  DebugLnEnter('CalcColumnFieldWidth INIT');
+  {$endif}
   if (Field=nil) or (Field.DisplayWidth=0) then
     Result := DEFCOLWIDTH
   else begin
@@ -653,8 +662,10 @@ begin
         end;
       end;
     end; // if HasTitle ...
-
-  end; // if (Field=nil) or (Field.DisplayWidth=0) ...
+  end; // if (Field=nil) or (Field.DisplayWidth=0) 
+  {$ifdef dbgDBGridExtra}
+  DebugLnExit('CalcColumnFieldWidth DONE result=%d', [result]);
+  {$endif}
 end;
 
 var
@@ -663,6 +674,9 @@ var
 
 procedure LookupGetBookMark(ALookupField: TField);
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('LookupGetBookMark');
+  {$endif}
   LookupTmpSetActive := not ALookupField.LookupDataSet.Active;
   if LookupTmpSetActive then
     ALookupField.LookupDataSet.Active := True
@@ -675,6 +689,9 @@ end;
 
 procedure LookupGotoBookMark(ALookupField: TField);
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('LookupGotoBookMark');
+  {$endif}
   if LookupTmpSetActive then
   begin
     ALookupField.LookupDataSet.Active := False;
@@ -695,11 +712,11 @@ procedure TCustomDBGrid.OnRecordChanged(Field: TField);
 var
   c: Integer;
 begin
-  {$IfDef dbgDBGrid}
-  DBGOut('('+name+') ','TCustomDBGrid.OnRecordChanged(Field=');
+  {$ifdef dbgDBGrid}
+  DbgOut(ClassName,'.OnRecordChanged(Field=');
   if Field=nil then DebugLn('nil)')
   else              DebugLn(Field.FieldName,')');
-  {$Endif}
+  {$endif}
   if Field=nil then
     UpdateActive
   else begin
@@ -713,6 +730,9 @@ end;
 
 function TCustomDBGrid.GetDataSource: TDataSource;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.GetDataSource', [ClassName]);
+  {$endif}
   Result:= FDataLink.DataSource;
 end;
 
@@ -740,7 +760,13 @@ end;
 
 function TCustomDBGrid.GetRecordCount: Integer;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLnEnter('%s.GetRecordCount INIT', [ClassName]);
+  {$endif}
   result := FDataLink.DataSet.RecordCount;
+  {$ifdef dbgDBGrid}
+  DebugLnExit('%s.GetRecordCount DONE RecordCount=%d', [ClassName, result]);
+  {$endif}
 end;
 
 function TCustomDBGrid.GetSelectedFieldRect: TRect;
@@ -760,6 +786,9 @@ procedure TCustomDBGrid.EmptyGrid;
 var
   OldFixedCols, OldFixedRows: Integer;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.EmptyGrid', [ClassName]);
+  {$endif}
   OldFixedCols := FixedCols;
   OldFixedRows := FixedRows;
   Clear;
@@ -776,6 +805,9 @@ end;
 
 procedure TCustomDBGrid.InvalidateSizes;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.InvalidateSizes', [ClassName]);
+  {$endif}
   GridFlags := GridFlags + [gfVisualChange];
 end;
 
@@ -794,8 +826,9 @@ end;
 
 procedure TCustomDBGrid.OnDataSetChanged(aDataSet: TDataSet);
 begin
-  {$Ifdef dbgDBGrid}
-  DebugLnEnter('(%s) TCustomDBDrid.OnDataSetChanged(aDataSet=%s) INIT',[name,dbgsname(ADataset)]);
+  {$ifdef dbgDBGrid}
+  DebugLnEnter('%s.OnDataSetChanged INIT name=%s aDataSet=%s',
+  	[ClassName,name,dbgsname(ADataset)]);
   {$endif}
   if not (gsStartEditing in FGridStatus) then begin
     if EditorMode then
@@ -808,29 +841,30 @@ begin
     if (dgAlwaysShowEditor in Options) and not EditorMode then
       EditorMode := true;
   end;
-  {$Ifdef dbgDBGrid}
-  DebugLnExit('(%s) TCustomDBDrid.OnDataSetChanged(aDataSet=%s) DONE',[name,dbgsname(ADataset)]);
+  {$ifdef dbgDBGrid}
+  DebugLnExit('%s.OnDataSetChanged DONE name=%s aDataSet=%s',
+  	[ClassName,name,dbgsname(ADataset)]);
   {$endif}
 end;
 
 procedure TCustomDBGrid.OnDataSetOpen(aDataSet: TDataSet);
 begin
-  {$Ifdef dbgDBGrid}
-  DebugLnEnter('(%s) TCustomDBDrid.OnDataSetOpen INIT',[name]);
+  {$ifdef dbgDBGrid}
+  DebugLnEnter('%s.OnDataSetOpen INIT', [ClassName]);
   {$endif}
   RenewColWidths;
   LinkActive(True);
   UpdateActive;
   SelectEditor;
-  {$Ifdef dbgDBGrid}
-  DebugLnExit('(%s) TCustomDBDrid.OnDataSetOpen DONE',[name]);
+  {$ifdef dbgDBGrid}
+  DebugLnExit('%s.OnDataSetOpen DONE', [ClassName]);
   {$endif}
 end;
 
 procedure TCustomDBGrid.OnDataSetClose(aDataSet: TDataSet);
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('(',name,') ','TCustomDBGrid.OnDataSetClose');
+  DebugLn('%s.OnDataSetClose', [ClassName]);
   {$endif}
   LinkActive(False);
 end;
@@ -838,7 +872,7 @@ end;
 procedure TCustomDBGrid.OnEditingChanged(aDataSet: TDataSet);
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('(',name,') ','TCustomDBGrid.OnEditingChanged');
+  DebugLn('%s.OnEditingChanged', [ClassName]);
   if aDataSet<>nil then begin
     DebugLn(['Editing=', dsEdit = aDataSet.State]);
     DebugLn(['Inserting=',dsInsert = aDataSet.State]);
@@ -852,7 +886,7 @@ end;
 procedure TCustomDBGrid.OnInvalidDataSet(aDataSet: TDataSet);
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('(',name,') ','TCustomDBGrid.OnInvalidDataSet');
+  DebugLn('%s.OnInvalidDataSet', [ClassName]);
   {$endif}
   LinkActive(False);
 end;
@@ -860,7 +894,7 @@ end;
 procedure TCustomDBGrid.OnInvalidDataSource(aDataSet: TDataset);
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('(',name,') ','TCustomDBGrid.OnInvalidDataSource');
+  DebugLn('%s.OnInvalidDataSource', [ClassName]);
   {$endif}
   LinkActive(False);
 end;
@@ -868,22 +902,22 @@ end;
 procedure TCustomDBGrid.OnLayoutChanged(aDataSet: TDataSet);
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('(',name,') ','TCustomDBGrid.OnLayoutChanged');
+  DebugLn('%s.OnLayoutChanged', [ClassName]);
   {$endif}
   LayoutChanged;
 end;
 
 procedure TCustomDBGrid.OnNewDataSet(aDataSet: TDataset);
 begin
-  {$Ifdef dbgDBGrid}
-  DebugLnEnter('(%s) TCustomDBDrid.OnNewDataset INIT',[name]);
+  {$ifdef dbgDBGrid}
+  DebugLnEnter('%s.OnNewDataSet INIT', [ClassName]);
   {$endif}
   RenewColWidths;
   LinkActive(True);
   UpdateActive;
   SelectEditor;
-  {$Ifdef dbgDBGrid}
-  DebugLnExit('(%s) TCustomDBDrid.OnNewDataset DONE',[name]);
+  {$ifdef dbgDBGrid}
+  DebugLnExit('%s.OnNewDataSet DONE', [ClassName]);
   {$endif}
 end;
 
@@ -892,8 +926,7 @@ var
   OldEditorMode: boolean;
 begin
   {$ifdef dbgDBGrid}
-  DebugLn(ClassName, ' (',name,')', '.OnDataSetScrolled(',IntToStr(Distance),')');
-  Debugln('Dataset.RecordCount=',IntToStr(aDataSet.RecordCount));
+  DebugLn('%s.OnDataSetScrolled Distance=%d ds.RecordCount=%d',[ClassName, Distance, aDataSet.RecordCount]);
   {$endif}
   UpdateScrollBarRange;
   // todo: Use a fast interface method to scroll a rectangular section of window
@@ -916,11 +949,17 @@ end;
 
 procedure TCustomDBGrid.OnUpdateData(aDataSet: TDataSet);
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.OnUpdateData', [ClassName]);
+  {$endif}
   UpdateData;
 end;
 
 procedure TCustomDBGrid.SetColumns(const AValue: TDBGridColumns);
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.SetColumns', [ClassName]);
+  {$endif}
   inherited Columns := TGridColumns(AValue);
 end;
 
@@ -949,6 +988,9 @@ end;
 
 procedure TCustomDBGrid.SetDataSource(const AValue: TDataSource);
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.SetDataSource', [ClassName]);
+  {$endif}
   if AValue = FDatalink.Datasource then Exit;
   RenewColWidths;
   FDataLink.DataSource := AValue;
@@ -958,14 +1000,15 @@ end;
 procedure TCustomDBGrid.SetExtraOptions(const AValue: TDBGridExtraOptions);
 var
   OldOptions: TDBGridExtraOptions;
-
   function IsOptionChanged(Op: TDBGridExtraOption): boolean;
   begin
     result := ((op in OldOptions) and not (op in AValue)) or
       (not (op in OldOptions) and (op in AValue));
   end;
-
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.SetExtraOptions', [ClassName]);
+  {$endif}
   if FExtraOptions=AValue then exit;
   OldOptions := FExtraOptions;
   FExtraOptions := AValue;
@@ -989,6 +1032,9 @@ var
   ChangedOptions: TDbGridOptions;
   MultiSel: boolean;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLnEnter('%s.SetOptions INIT', [ClassName]);
+  {$endif}
   if FOptions<>AValue then begin
     MultiSel := dgMultiSelect in FOptions;
     ChangedOptions := (FOptions-AValue) + (AValue-FOptions);
@@ -1107,6 +1153,9 @@ begin
 
     EndLayout;
   end;
+  {$ifdef dbgDBGrid}
+  DebugLnExit('%s.SetOptions DONE', [ClassName]);
+  {$endif}
 end;
 
 procedure TCustomDBGrid.SetSelectedIndex(const AValue: Integer);
@@ -1118,15 +1167,18 @@ procedure TCustomDBGrid.UpdateBufferCount;
 var
   BCount: Integer;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLnEnter('%s.UpdateBufferCount INIT', [ClassName]);
+  {$endif}
   if FDataLink.Active then begin
     BCount := GetBufferCount;
     if BCount<1 then
       BCount := 1;
     FDataLink.BufferCount:= BCount;
-    {$ifdef dbgDBGrid}
-    DebugLn('%s (%s), FDatalink.BufferCount=%d',[ClassName,Name,FDataLink.BufferCount]);
-    {$endif}
   end;
+  {$ifdef dbgDBGrid}
+  DebugLnExit('%s.UpdateBufferCount DONE BufferCount=%d', [ClassName, FDataLink.BufferCount]);
+  {$endif}
 end;
 
 procedure TCustomDBGrid.UpdateData;
@@ -1141,7 +1193,8 @@ begin
 
     if (edField<>nil) and (edField = SelField) then begin
       {$ifdef dbgDBGrid}
-      DebugLn('---> UpdateData: Field[', edField.Fieldname, '(',edField.AsString,')]=', FTempText,' INIT');
+      DebugLnEnter('%s.UpdateData INIT Field[%s(%s)]=%s', 
+                   [ClassName, edField.Fieldname ,edField.AsString, FTempText]);
       {$endif}
 
       StartUpdating;
@@ -1169,10 +1222,9 @@ begin
       finally
         EndUpdating;
       end;
-
       EditingColumn(FEditingColumn, False);
       {$ifdef dbgDBGrid}
-      DebugLn('<--- UpdateData: Chk: Field:=',edField.ASString,' END');
+      DebugLnExit('%s.UpdateData DONE Field=%s',[ClassName, edField.ASString]);
       {$endif}
     end;
 
@@ -1257,8 +1309,8 @@ begin
   if not FDatalink.Active then exit;
 
   {$ifdef dbgDBGrid}
-  DebugLn('VSCROLL: Code=',SbCodeToStr(Message.ScrollCode),
-          ' Position=', dbgs(Message.Pos),' OldPos=',Dbgs(FOldPosition));
+  DebugLnEnter('%s.WMVScroll INIT Code=%s Position=%s OldPos=%s',
+  			[ClassName, SbCodeToStr(Message.ScrollCode), dbgs(Message.Pos), Dbgs(FOldPosition)]);
   {$endif}
 
   IsSeq := FDatalink.DataSet.IsSequenced and not FDataLink.DataSet.Filtered;
@@ -1280,12 +1332,24 @@ begin
         exit;
     SB_THUMBTRACK:
       if dgThumbTracking in Options then begin
-        if not (FDatalink.DataSet.IsSequenced) or DsPos then
+        if not (FDatalink.DataSet.IsSequenced) or DsPos then begin
+          {$ifdef dbgDBGrid}
+          DebugLnExit('%s.WMVScroll EXIT: SB_THUMBTRACK: DsPos or not sequenced', [ClassName]);
+          {$endif}
           exit;
-      end else
+        end;
+      end else begin
+        {$ifdef dbgDBGrid}
+        DebugLnExit('%s.WMVScroll EXIT: SB_THUMBTRACK: not using dgThumbTracking', [ClassName]);
+        {$endif}
         Exit;
-    else
+      end;
+    else begin
+      {$ifdef dbgDBGrid}
+      DebugLnExit('%s.WMVScroll EXIT: invalid ScrollCode: %d', [ClassName, message.ScrollCode]);
+      {$endif}
       Exit;
+    end;
   end;
 
   ScrollBarPosition(SB_VERT, aPos);
@@ -1294,14 +1358,14 @@ begin
   if EditorMode then
     RestoreEditor;
   {$ifdef dbgDBGrid}
-  DebugLn('---- Diff=',dbgs(DeltaRec), ' FinalPos=',dbgs(aPos));
+  DebugLnExit('%s.WMVScroll DONE Diff=%s FinalPos=%s', [ClassName, dbgs(DeltaRec), dbgs(aPos)]);
   {$endif}
 end;
 
 procedure TCustomDBGrid.WndProc(var TheMessage: TLMessage);
 begin
   if (TheMessage.Msg=LM_SETFOCUS) and (gsUpdatingData in FGridStatus) then begin
-    {$ifdef dbgGrid}DebugLn('DBGrid.LM_SETFOCUS while updating');{$endif}
+    {$ifdef dbgGrid}DebugLn('%s.LM_SETFOCUS while updating', [ClassName]);{$endif}
     if EditorMode then begin
       LCLIntf.SetFocus(Editor.Handle);
       EditorSelectAll;
@@ -1475,6 +1539,9 @@ end;
 
 function TCustomDBGrid.GetBufferCount: integer;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.GetBufferCount', [ClassName]);
+  {$endif}
   Result := ClientHeight div DefaultRowHeight;
   if dgTitles in Options then
     Dec(Result, 1);
@@ -1484,6 +1551,9 @@ procedure TCustomDBGrid.UpdateGridColumnSizes;
 var
   i: Integer;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.UpdateGridColumnSizes', [ClassName]);
+  {$endif}
   if FDefaultColWidths then begin
     if dgIndicator in Options then
       ColWidths[0]:=12;
@@ -1501,6 +1571,10 @@ var
   ScrollInfo: TScrollInfo;
 begin
   if not HandleAllocated then exit;
+
+  {$ifdef dbgDBGrid}
+  DebugLnEnter('%s.UpdateScrollbarRange INIT', [ClassName]);
+  {$endif}
 
   GetScrollBarParams(aRange, aPage, aPos);
 
@@ -1530,9 +1604,8 @@ begin
   );
   FOldPosition := aPos;
   {$ifdef dbgDBGrid}
-  DebugLn('UpdateScrollBarRange: Handle=',IntToStr(Handle),
-   ' aRange=', IntToStr(aRange),
-   ' aPage=', IntToStr(aPage), ' aPos=', IntToStr(aPos));
+  DebugLnExit('%s.UpdateScrollBarRange DONE Handle=%d aRange=%d aPage=%d aPos=%d',
+    [ClassName, Handle, aRange, aPage, aPos]);
   {$endif}
 end;
 
@@ -1540,14 +1613,13 @@ procedure TCustomDBGrid.doLayoutChanged;
 begin
   if csDestroying in ComponentState then
     exit;
-
-  {$ifdef dbgDBGrid}DebugLnEnter('TCustomDBGrid.doLayoutChanged INIT',[]);{$endif}
+  {$ifdef dbgDBGrid}DebugLnEnter('%s.doLayoutChanged INIT', [ClassName]);{$endif}
   BeginUpdate;
   if UpdateGridCounts=0 then
     EmptyGrid;
   EndUpdate;
   UpdateScrollbarRange;
-  {$ifdef dbgDBGrid}DebugLnExit('TCustomDBGrid.doLayoutChanged DONE',[]);{$endif}
+  {$ifdef dbgDBGrid}DebugLnExit('%s.doLayoutChanged DONE', [ClassName]);{$endif}
 end;
 {
 procedure TCustomDBGrid.WriteColumns(Writer: TWriter);
@@ -1568,6 +1640,9 @@ end;
 
 function TCustomDBGrid.IsEOF: boolean;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.IsEOF', [ClassName]);
+  {$endif}
   with FDatalink do
     result :=
       Active and DataSet.EOF;
@@ -1575,6 +1650,9 @@ end;
 
 function TCustomDBGrid.ValidDataSet: boolean;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.ValidDataSet', [ClassName]);
+  {$endif}
   result := FDatalink.Active And (FDatalink.DataSet<>nil)
 end;
 
@@ -1587,19 +1665,19 @@ end;
 procedure TCustomDBGrid.StartUpdating;
 begin
   if not UpdatingData then begin
-    {$ifdef dbgDBGrid} DebugLn('DBGrid.StartUpdating');{$endif}
+    {$ifdef dbgDBGrid}DebugLn('%s.StartUpdating', [ClassName]);{$endif}
     Include(FGridStatus, gsUpdatingData);
     FOldControlStyle := ControlStyle;
     ControlStyle := ControlStyle + [csActionClient];
     LockEditor;
   end
   else
-    {$ifdef dbgDBGrid} DebugLn('WARNING: multiple call to StartUpdating');{$endif}
+    {$ifdef dbgDBGrid}DebugLn('WARNING: multiple calls to StartUpdating');{$endif}
 end;
 
 procedure TCustomDBGrid.EndUpdating;
 begin
-  {$ifdef dbgDBGrid} DebugLn('DBGrid.EndUpdating');{$endif}
+  {$ifdef dbgDBGrid}DebugLn('%s.EndUpdating', [ClassName]);{$endif}
   Exclude(FGridStatus, gsUpdatingData);
   ControlStyle := FOldControlStyle;
   UnLockEditor;
@@ -1650,7 +1728,6 @@ begin
   finally
     Exclude(FGridStatus, gsAddingAutoColumns);
   end;
-
 end;
 
 procedure TCustomDBGrid.AssignTo(Dest: TPersistent);
@@ -1672,7 +1749,6 @@ var
   C: TGridColumn;
   s: string;
 begin
-
   if gsAutoSized in GridStatus then
     exit;
 
@@ -1751,7 +1827,7 @@ begin
      FDatalink.Edit then
   begin
     if SelField.DataType=ftBoolean then
-    	SelField.AsBoolean := not SelField.AsBoolean
+      SelField.AsBoolean := not SelField.AsBoolean
     else
     begin
       if TempColumn.ValueChecked=SelField.AsString then
@@ -1769,6 +1845,9 @@ end;
 
 procedure TCustomDBGrid.LinkActive(Value: Boolean);
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.LinkActive', [ClassName]);
+  {$endif}
   if not Value then begin
     FSelectedRows.Clear;
     if FKeyBookmark<>nil then begin
@@ -1782,6 +1861,9 @@ end;
 
 procedure TCustomDBGrid.LayoutChanged;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.LayoutChanged', [ClassName]);
+  {$endif}
   if csDestroying in ComponentState then
     exit;
   if FLayoutChangedCount=0 then begin
@@ -1798,6 +1880,9 @@ end;
 
 procedure TCustomDBGrid.Loaded;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.Loaded', [ClassName]);
+  {$endif}
   LayoutChanged;
   inherited Loaded;
 end;
@@ -1839,11 +1924,17 @@ end;
 
 function TCustomDBGrid.CreateColumns: TGridColumns;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.CreateColumns', [ClassName]);
+  {$endif}
   result := TDBGridColumns.Create(Self, TColumn);
 end;
 
 procedure TCustomDBGrid.CreateWnd;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.CreateWnd', [ClassName]);
+  {$endif}
   inherited CreateWnd;
   LayoutChanged;
   if Scrollbars in [ssBoth, ssVertical, ssAutoBoth, ssAutoVertical] then
@@ -1958,20 +2049,23 @@ end;
 
 procedure TCustomDBGrid.BeforeMoveSelection(const DCol,DRow: Integer);
 begin
-  {$ifdef dbgDBGrid}DebugLn('DBGrid.BefMovSel INIT');{$endif}
+  {$ifdef dbgDBGrid}DebugLnEnter('%s.BeforeMoveSelection INIT', [ClassName]);{$endif}
   inherited BeforeMoveSelection(DCol, DRow);
   if DCol<>Col then begin
     if assigned(OnColExit) then
       OnColExit(Self);
     FColEnterPending:=True;
   end;
-{$ifdef dbgDBGrid}DebugLn('DBGrid.BefMovSel END');{$endif}
+{$ifdef dbgDBGrid}DebugLnExit('%s.BeforeMoveSelection DONE', [ClassName]);{$endif}
 end;
 
 procedure TCustomDBGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 var
   Column: TColumn;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.HeaderClick', [ClassName]);
+  {$endif}
   if Assigned(OnTitleClick) and IsColumn then begin
     Column := TColumn(ColumnFromGridColumn(Index));
     if Column<>nil then
@@ -1987,10 +2081,10 @@ var
 
   procedure DoOnKeyDown;
   begin
-    {$ifdef dbgGrid}DebugLn('DoOnKeyDown INIT');{$endif}
+    {$ifdef dbgGrid}DebugLnEnter('DoOnKeyDown INIT');{$endif}
     if Assigned(OnKeyDown) then
       OnKeyDown(Self, Key, Shift);
-    {$ifdef dbgGrid}DebugLn('DoOnKeyDown FIN');{$endif}
+    {$ifdef dbgGrid}DebugLnExit('DoOnKeyDown DONE');{$endif}
   end;
 
   {$ifdef dbgGrid}
@@ -2008,7 +2102,7 @@ var
 
   procedure DoOperation(AOper: TOperation; Arg: Integer = 0);
   begin
-    {$IfDef dbgGrid}DebugLn('KeyDown.DoOperation(%s,%d) INIT',[OperToStr(AOper),arg]);{$Endif}
+    {$ifdef dbgGrid}DebugLnEnter('KeyDown.DoOperation(%s,%d) INIT',[OperToStr(AOper),arg]);{$endif}
     GridFlags := GridFlags + [gfEditingDone];
     case AOper of
       opMoveBy:
@@ -2027,7 +2121,7 @@ var
         FDatalink.Dataset.Delete;
     end;
     GridFlags := GridFlags - [gfEditingDone];
-    {$IfDef dbgGrid}DebugLn('KeyDown.DoOperation(%s,%d) DONE',[OperToStr(AOper),arg]);{$Endif}
+    {$ifdef dbgGrid}DebugLnExit('KeyDown.DoOperation(%s,%d) DONE',[OperToStr(AOper),arg]);{$endif}
   end;
 
   procedure SelectNext(const AStart,ADown:Boolean);
@@ -2074,7 +2168,7 @@ var
 
   function doVKDown: boolean;
   begin
-    {$ifdef dbgGrid}DebugLn('DoVKDown INIT');{$endif}
+    {$ifdef dbgGrid}DebugLnEnter('DoVKDown INIT');{$endif}
     if InsertCancelable then
     begin
       if IsEOF then
@@ -2093,12 +2187,12 @@ var
       end else
         SelectNext(false,true);
     end;
-    {$ifdef dbgGrid}DebugLn('DoVKDown FIN');{$endif}
+    {$ifdef dbgGrid}DebugLnExit('DoVKDown DONE');{$endif}
   end;
 
   function DoVKUP: boolean;
   begin
-    {$ifdef dbgGrid}DebugLn('DoVKUP INIT');{$endif}
+    {$ifdef dbgGrid}DebugLnEnter('DoVKUP INIT');{$endif}
     if InsertCancelable then
       doOperation(opCancel)
     else begin
@@ -2107,7 +2201,7 @@ var
       SelectNext(false, false);
     end;
     result := FDatalink.DataSet.BOF;
-    {$ifdef dbgGrid}DebugLn('DoVKUP FIN');{$endif}
+    {$ifdef dbgGrid}DebugLnExit('DoVKUP DONE');{$endif}
   end;
 
   procedure MoveSel(AReset: boolean);
@@ -2131,7 +2225,7 @@ var
   end;
 
 begin
-  {$IfDef dbgGrid}DebugLnEnter('DBGrid.KeyDown %s INIT Key=%d',[Name,Key]);{$Endif}
+  {$ifdef dbgGrid}DebugLnEnter('%s.KeyDown %s INIT Key=%d',[ClassName, Name,Key]);{$endif}
   case Key of
 
     VK_TAB:
@@ -2144,6 +2238,7 @@ begin
                (Col<=GetFirstVisibleColumn) and (Row<=GetFirstVisibleRow)) then begin
               if EditorKey then
                 GridFlags := GridFlags + [gfRevEditorTab];
+              {$ifdef dbgGrid}DebugLnExit('%s.KeyDown Exit: Tab: Shift',[ClassName]);{$endif}
               exit;
             end;
 
@@ -2152,6 +2247,7 @@ begin
             if (not (ssShift in Shift)) and (Row>=GetLastVisibleRow) and
                (DeltaRow>0) and (Col=GetLastVisibleColumn) and
                (FDatalink.Editing or not GridCanModify) then begin
+              {$ifdef dbgGrid}DebugLnExit('%s.KeyDown Exit: Tab: not shift',[ClassName]);{$endif}
               exit;
             end;
 
@@ -2297,7 +2393,7 @@ begin
         doOnKeyDown;
         if (Key<>0) and ValidDataset then begin
           if ColumnEditorStyle(Col, SelectedField) = cbsCheckboxColumn then begin
-        		SwapCheckBox;
+            SwapCheckBox;
             Key:=0;
           end;
         end;
@@ -2313,7 +2409,7 @@ begin
     else
       inherited KeyDown(Key, Shift);
   end;
-  {$IfDef dbgGrid}DebugLnExit('DBGrid.KeyDown END Key= %d',[Key]);{$Endif}
+  {$ifdef dbgGrid}DebugLnExit('%s.KeyDown DONE Key= %d',[ClassName, Key]);{$endif}
 end;
 
 procedure TCustomDBGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -2334,23 +2430,23 @@ var
   end;
   procedure doMoveBy;
   begin
-    {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown MoveBy INIT'); {$Endif}
+    {$ifdef dbgGrid}DebugLnEnter('%s.MouseDown MoveBy INIT', [ClassName]); {$endif}
     FDatalink.MoveBy(P.Y - Row);
-    {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown MoveBy END'); {$Endif}
+    {$ifdef dbgGrid}DebugLnExit('%s.MouseDown MoveBy DONE', [ClassName]); {$endif}
   end;
   procedure doMoveToColumn;
   begin
-    {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown MoveToCol INIT Col=', IntToStr(P.X)); {$Endif}
+    {$ifdef dbgGrid}DebugLnEnter('%s.MouseDown MoveToCol INIT Col=%d', [ClassName, P.X]); {$endif}
     Col := P.X;
-    {$IfDef dbgGrid} DebugLn('DBGrid.MouseDown MoveToCol END'); {$Endif}
+    {$ifdef dbgGrid}DebugLnExit('%s.MouseDown MoveToCol DONE', [ClassName]); {$endif}
   end;
   procedure DoCancel;
   begin
-    {$IfDef dbgGrid}DebugLn('DBGrid.MouseDown Dataset.CANCEL INIT');{$Endif}
+    {$ifdef dbgGrid}DebugLnEnter('%s.MouseDown Dataset.CANCEL INIT', [ClassName]);{$endif}
     if EditorMode then
       EditorCancelEditing;
     FDatalink.Dataset.cancel;
-    {$IfDef dbgGrid}DebugLn('DBGrid.MouseDown Dataset.CANCEL FIN');{$Endif}
+    {$ifdef dbgGrid}DebugLnExit('%s.MouseDown Dataset.CANCEL DONE', [ClassName]);{$endif}
   end;
   procedure DoAcceptValue;
   begin
@@ -2360,22 +2456,22 @@ var
 begin
 
   if (csDesigning in componentState) {or not GCache.ValidGrid }then begin
-    {$ifdef dbgDBGrid}DebugLn('DBGrid.mousedown - checkDesigning');{$endif}
+    {$ifdef dbgDBGrid}DebugLn('%s.MouseDown - checkDesigning', [ClassName]);{$endif}
     exit;
   end;
 
   if UpdatingData then begin
-    {$ifdef dbgDBGrid}DebugLn('DBGrid.MouseDown - UpdatingData');{$endif}
+    {$ifdef dbgDBGrid}DebugLn('%s.MouseDown - UpdatingData', [ClassName]);{$endif}
     exit;
   end;
 
   if not MouseButtonAllowed(Button) then begin
-    {$ifdef dbgDBGrid}DebugLn('DBGrid.MouseDown - no mouse allowed');{$endif}
+    {$ifdef dbgDBGrid}DebugLn('%s.MouseDown - no mouse allowed', [ClassName]);{$endif}
     doInherited;
     exit;
   end;
 
-  {$IfDef dbgGrid} DebugLnEnter('DBGrid.MouseDown INIT'); {$Endif}
+  {$ifdef dbgGrid}DebugLnEnter('%s.MouseDown INIT', [ClassName]); {$endif}
   Gz:=MouseToGridZone(X,Y);
   CacheMouseDown(X,Y);
   case Gz of
@@ -2429,7 +2525,7 @@ begin
         end;
       end;
   end;
-  {$IfDef dbgGrid} DebugLnExit('DBGrid.MouseDown END'); {$Endif}
+  {$ifdef dbgGrid}DebugLnExit('%s.MouseDown DONE', [ClassName]); {$endif}
 end;
 
 procedure TCustomDBGrid.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -2474,7 +2570,7 @@ var
   aMaxLen: integer;
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('TCustomDBGrid.SelectEditor INIT Editor=',dbgsname(editor));
+  DebugLnEnter('%s.SelectEditor INIT Editor=%s',[ClassName, dbgsname(editor)]);
   {$endif}
   if (FDatalink<>nil) and FDatalink.Active then begin
     inherited SelectEditor;
@@ -2498,7 +2594,7 @@ begin
   end else
     Editor := nil;
   {$ifdef dbgDBGrid}
-  DebugLn('TCustomDBGrid.SelectEditor DONE Editor=',dbgsname(editor));
+  DebugLnExit('%s.SelectEditor DONE Editor=%s',[ClassName, dbgsname(editor)]);
   {$endif}
 end;
 
@@ -2526,14 +2622,15 @@ end;
 
 procedure TCustomDBGrid.EditingColumn(aCol: Integer; Ok: Boolean);
 begin
-  {$ifdef dbgDBGrid} DebugLn(['DBGrid.EditingColumn INIT aCol=', aCol, ' Ok=', ok]); {$endif}
+  {$ifdef dbgDBGrid}DebugLnEnter('%s.EditingColumn INIT aCol=%d Ok=%s',
+  	[ClassName, aCol, BoolToStr(ok, true)]); {$endif}
   if Ok then begin
     FEditingColumn := aCol;
     FDatalink.Modified := True;
   end
   else
     FEditingColumn := -1;
-  {$ifdef dbgDBGrid} DebugLn('DBGrid.EditingColumn END'); {$endif}
+  {$ifdef dbgDBGrid} DebugLnExit('%s.EditingColumn DONE', [ClassName]); {$endif}
 end;
 
 procedure TCustomDBGrid.EditorCancelEditing;
@@ -2548,15 +2645,15 @@ end;
 
 procedure TCustomDBGrid.EditorDoGetValue;
 begin
-  {$ifdef dbgDBGrid}DebugLn('DBGrid.EditorDoGetValue INIT');{$endif}
+  {$ifdef dbgDBGrid}DebugLnEnter('%s.EditorDoGetValue INIT', [ClassName]);{$endif}
   inherited EditordoGetValue;
   UpdateData;
-  {$ifdef dbgDBGrid}DebugLn('DBGrid.EditorDoGetValue FIN');{$endif}
+  {$ifdef dbgDBGrid}DebugLnExit('%s.EditorDoGetValue DONE', [ClassName]);{$endif}
 end;
 
 procedure TCustomDBGrid.CellClick(const aCol, aRow: Integer; const Button:TMouseButton);
 begin
-
+  {$ifdef dbgGrid}DebugLn('%s.CellClick', [ClassName]); {$endif}
   if Button<>mbLeft then
     exit;
 
@@ -2566,7 +2663,7 @@ begin
        (ColumnEditorStyle(ACol, SelectedField) = cbsCheckboxColumn) then begin
       // react only if overriden editor is hidden
       if (Editor=nil) or not EditorMode then
-  	    SwapCheckBox
+        SwapCheckBox
     end;
   end;
   if Assigned(OnCellClick) then
@@ -2626,7 +2723,7 @@ end;
 
 procedure TCustomDBGrid.DoExit;
 begin
-  {$ifdef dbgDBGrid}DebugLn('DBGrid.DoExit INIT');{$Endif}
+  {$ifdef dbgDBGrid}DebugLnEnter('%s.DoExit INIT', [ClassName]);{$endif}
   if ValidDataSet and (dgCancelOnExit in Options) and
     InsertCancelable then
   begin
@@ -2634,7 +2731,7 @@ begin
     EditingColumn(FEditingColumn, False);
   end;
   inherited DoExit;
-  {$ifdef dbgDBGrid}DebugLn('DBGrid.DoExit FIN');{$Endif}
+  {$ifdef dbgDBGrid}DebugLnExit('%s.DoExit DONE', [ClassName]);{$endif}
 end;
 
 function TCustomDBGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint
@@ -2746,14 +2843,14 @@ end;
 
 procedure TCustomDBGrid.MoveSelection;
 begin
-  {$ifdef dbgDBGrid}DebugLn('DBGrid.MoveSelection INIT');{$Endif}
+  {$ifdef dbgDBGrid}DebugLnEnter('%s.MoveSelection INIT', [ClassName]);{$endif}
   inherited MoveSelection;
   if FColEnterPending and Assigned(OnColEnter) then begin
     OnColEnter(Self);
   end;
   FColEnterPending:=False;
   UpdateActive;
-  {$ifdef dbgDBGrid}DebugLn('DBGrid.MoveSelection FIN');{$Endif}
+  {$ifdef dbgDBGrid}DebugLnExit('%s.MoveSelection DONE', [ClassName]);{$endif}
 end;
 
 function TCustomDBGrid.MouseButtonAllowed(Button: TMouseButton): boolean;
@@ -2767,8 +2864,7 @@ var
 begin
   if FDataLink.Active then begin
     {$ifdef dbgGridPaint}
-    DebugLn;
-    DebugLn('%s DrawAllRows: Link.ActiveRecord=%d, Row=%d',[Name, FDataLink.ActiveRecord, Row]);
+    DebugLnEnter('%s DrawAllRows INIT Link.ActiveRecord=%d, Row=%d',[Name, FDataLink.ActiveRecord, Row]);
     {$endif}
     CurActiveRecord:=FDataLink.ActiveRecord;
     FDrawingEmptyDataset:=FDatalink.DataSet.IsEmpty;
@@ -2780,8 +2876,7 @@ begin
     if FDataLink.Active then begin
       FDataLink.ActiveRecord:=CurActiveRecord;
       {$ifdef dbgGridPaint}
-      DebugLn('%s DrawAllRows END Link.ActiveRecord=%d, Row=%d',[Name, FDataLink.ActiveRecord, Row]);
-      DebugLn;
+      DebugLnExit('%s DrawAllRows DONE Link.ActiveRecord=%d, Row=%d',[Name, FDataLink.ActiveRecord, Row]);
       {$endif}
     end;
   end;
@@ -2816,7 +2911,7 @@ begin
   {$endif}
   inherited DrawRow(ARow);
   {$ifdef dbgGridPaint}
-  DebugLn(' End Row')
+  DebugLn('End Row')
   {$endif}
 end;
 
@@ -2864,7 +2959,7 @@ begin
   if (F<>nil) then
     if F.DataType=ftBoolean then
       if F.IsNull then
-    	  AState := cbGrayed
+        AState := cbGrayed
       else
       if F.AsBoolean then
         AState := cbChecked
@@ -3112,9 +3207,9 @@ begin
     (FDatalink=nil) or (not FDatalink.Active) or
     (FDatalink.ActiveRecord<0) then
     exit;
-  {$IfDef dbgDBGrid}
-  DebugLn(Name,'.UpdateActive: ActiveRecord=', dbgs(FDataLink.ActiveRecord),
-            ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.UpdateActive (%s): ActiveRecord=%d FixedRows=%d Row=%d',
+  		[ClassName, Name, FDataLink.ActiveRecord, FixedRows, Row]);
   {$endif}
   PrevRow := Row;
   Row:= FixedRows + FDataLink.ActiveRecord;
@@ -3131,7 +3226,7 @@ begin
   // find out the column count, if result=0 then
   // there are no visible columns defined or dataset is inactive
   // or there are no visible fields, ie the grid is blank
-  {$IfDef dbgDBGrid}DebugLnEnter('TCustomDbgrid.UpdateGridCounts INIT');{$endif}
+  {$ifdef dbgDBGrid}DebugLnEnter('%s.UpdateGridCounts INIT', [ClassName]);{$endif}
   BeginUpdate;
   try
     Result := GetColumnCount;
@@ -3167,7 +3262,7 @@ begin
   finally
     EndUpdate;
   end;
-  {$IfDef dbgDBGrid}DebugLnExit('TCustomDbgrid.UpdateGridCounts END');{$endif}
+  {$ifdef dbgDBGrid}DebugLnExit('%s.UpdateGridCounts DONE', [ClassName]);{$endif}
 end;
 
 constructor TCustomDBGrid.Create(AOwner: TComponent);
@@ -3219,7 +3314,7 @@ end;
 
 procedure TCustomDBGrid.InitiateAction;
 begin
-  {$ifdef dbgDBGrid}DebugLn('===> DBGrid.InitiateAction INIT');{$endif}
+  {$ifdef dbgDBGrid}DebugLnEnter('%s.InitiateAction INIT', [ClassName]);{$endif}
   inherited InitiateAction;
   if (gsUpdatingData in FGridStatus) then begin
     EndUpdating;
@@ -3230,7 +3325,7 @@ begin
     end;
     }
   end;
-  {$ifdef dbgDBGrid}DebugLn('<=== DBGrid.InitiateAction FIN');{$endif}
+  {$ifdef dbgDBGrid}DebugLnExit('%s.InitiateAction DONE', [ClassName]);{$endif}
 end;
 
 procedure TCustomDBGrid.DefaultDrawColumnCell(const Rect: TRect;
@@ -3240,7 +3335,6 @@ var
   F: TField;
   DataRow: Integer;
 begin
-
   F := Column.Field;
 
   DataCol := GridColumnFromColumnIndex(DataCol);
@@ -3289,6 +3383,7 @@ end;
 
 procedure TCustomDBGrid.SelectRecord(AValue: boolean);
 begin
+  {$ifdef dbgGrid}DebugLn('%s.SelectRecord', [ClassName]); {$endif}
   if dgMultiSelect in Options then
     FSelectedRows.CurrentRowSelected := AValue;
 end;
@@ -3353,6 +3448,7 @@ end;
 
 destructor TCustomDBGrid.Destroy;
 begin
+  {$ifdef dbgGrid}DebugLn('%s.Destroy', [ClassName]); {$endif}
   FSelectedRows.Free;
   FDataLink.OnDataSetChanged:=nil;
   FDataLink.OnRecordChanged:=nil;
@@ -3389,24 +3485,31 @@ end;
 
 function TComponentDataLink.GetFields(Index: Integer): TField;
 begin
+  {$ifdef dbgGrid}DebugLn('%s.GetFields Index=%d',[ClassName, Index]); {$endif}
   if (index>=0)and(index<DataSet.FieldCount) then result:=DataSet.Fields[index];
 end;
 
 function TComponentDataLink.GetDataSetName: string;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.GetDataSetName', [ClassName]);
+  {$endif}
   Result:=FDataSetName;
   if DataSet<>nil then Result:=DataSet.Name;
 end;
 
 procedure TComponentDataLink.SetDataSetName(const AValue: string);
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.SetDataSetName', [ClassName]);
+  {$endif}
   if FDataSetName<>AValue then FDataSetName:=AValue;
 end;
 
 procedure TComponentDataLink.RecordChanged(Field: TField);
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('TComponentDataLink.RecordChanged');
+  DebugLn('%s.RecordChanged', [ClassName]);
   {$endif}
   if Assigned(OnRecordChanged) then
     OnRecordChanged(Field);
@@ -3415,9 +3518,8 @@ end;
 procedure TComponentDataLink.DataSetChanged;
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('TComponentDataLink.DataSetChanged, FirstRecord=', dbgs(FirstRecord));
-  {$Endif}
-  // todo: improve this routine, for example: OnDatasetInserted
+  DebugLn('%s.DataSetChanged FirstRecord=%d', [ClassName, FirstRecord]);
+  {$endif}
   if Assigned(OnDataSetChanged) then
     OnDataSetChanged(DataSet);
 end;
@@ -3425,7 +3527,7 @@ end;
 procedure TComponentDataLink.ActiveChanged;
 begin
   {$ifdef dbgDBGrid}
-  DebugLnEnter('TComponentDataLink.ActiveChanged INIT');
+  DebugLnEnter('%s.ActiveChanged INIT', [ClassName]);
   {$endif}
   if Active then begin
     fDataSet := DataSet;
@@ -3446,32 +3548,35 @@ begin
         fDataSet := nil;
         fDataSetName := '[???]';
       end else begin
-        if Assigned(fOnDataSetClose) then fOnDataSetClose(DataSet);
+        if Assigned(FOnDataSetClose) then begin
+          FOnDataSetClose(DataSet);
+          {$ifdef dbgDBGrid} DebugLn('%s.ActiveChanged OnDataSetClose Called', [ClassName]); {$endif}
+        end;
         if DataSet <> nil then FDataSetName := DataSetName;
       end;
     end;
   end;
   {$ifdef dbgDBGrid}
-  DebugLnExit('TComponentDataLink.ActiveChanged DONE');
+  DebugLnExit('%s.ActiveChanged DONE', [ClassName]);
   {$endif}
 end;
 
 procedure TComponentDataLink.LayoutChanged;
 begin
   {$ifdef dbgDBGrid}
-  DebugLnEnter('TComponentDataLink.LayoutChanged INIT');
-  {$Endif}
+  DebugLnEnter('%s.LayoutChanged INIT', [ClassName]);
+  {$endif}
   if Assigned(OnLayoutChanged) then
     OnLayoutChanged(DataSet);
   {$ifdef dbgDBGrid}
-  DebugLnExit('TComponentDataLink.LayoutChanged END');
-  {$Endif}
+  DebugLnExit('%s.LayoutChanged DONE', [ClassName]);
+  {$endif}
 end;
 
 procedure TComponentDataLink.DataSetScrolled(Distance: Integer);
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('TComponentDataLink.DataSetScrolled(',IntToStr(Distance),')');
+  DebugLn('%s.DataSetScrolled Distance=%d',[ClassName, Distance]);
   {$endif}
   if Assigned(OnDataSetScrolled) then
     OnDataSetScrolled(DataSet, Distance);
@@ -3480,14 +3585,14 @@ end;
 procedure TComponentDataLink.FocusControl(Field: TFieldRef);
 begin
   {$ifdef dbgDBGrid}
-  DebugLn('TComponentDataLink.FocusControl');
+  DebugLn('%s.FocusControl', [ClassName]);
   {$endif}
 end;
 
 procedure TComponentDataLink.CheckBrowseMode;
 begin
   {$ifdef dbgDBGrid}
-  DebugLn(ClassName,'.CheckBrowseMode');
+  DebugLn('%s.CheckBrowseMode', [ClassName]);
   {$endif}
   inherited CheckBrowseMode;
 end;
@@ -3495,7 +3600,7 @@ end;
 procedure TComponentDataLink.EditingChanged;
 begin
   {$ifdef dbgDBGrid}
-  DebugLn(ClassName,'.EditingChanged');
+  DebugLn('%s.EditingChanged', [ClassName]);
   {$endif}
   if Assigned(OnEditingChanged) then
     OnEditingChanged(DataSet);
@@ -3504,7 +3609,7 @@ end;
 procedure TComponentDataLink.UpdateData;
 begin
   {$ifdef dbgDBGrid}
-  DebugLn(ClassName,'.UpdateData');
+  DebugLn('%s.UpdateData', [ClassName]);
   {$endif}
   if Assigned(OnUpdatedata) then
     OnUpdateData(DataSet);
@@ -3514,13 +3619,13 @@ function TComponentDataLink.MoveBy(Distance: Integer): Integer;
 begin
   (*
   {$ifdef dbgDBGrid}
-  DebugLn(ClassName,'.MoveBy  INIT: Distance=',Distance);
+  DebugLnEnter('%s.MoveBy INIT Distance=%d',[ClassName, Distance]);
   {$endif}
   *)
   Result:=inherited MoveBy(Distance);
   (*
   {$ifdef dbgDBGrid}
-  DebugLn(ClassName,'.MoveBy  END: Distance=',Distance);
+  DebugLnExit('%s.MoveBy DONE Result=%d',[ClassName, Result]);
   {$endif}
   *)
 end;
@@ -3622,7 +3727,6 @@ var
   L: TList;
   i: Integer;
 begin
-
   L := TList.Create;
   try
 
@@ -3654,6 +3758,9 @@ function TDBGridColumns.Add: TColumn;
 var
   G: TCustomDBGrid;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.Add', [ClassName]);
+  {$endif}
   G := TCustomDBGrid(Grid);
   if G<>nil then begin
     // remove automatic columns before adding user columns
@@ -3835,6 +3942,9 @@ constructor TColumn.Create(ACollection: TCollection);
 var
   AGrid: TCustomGrid;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.Create', [ClassName]);
+  {$endif}
   inherited Create(ACollection);
   if ACollection is TDBGridColumns then begin
     AGrid := TDBGridColumns(ACollection).Grid;
@@ -3948,6 +4058,9 @@ end;
 
 function TBookmarkList.GetCount: integer;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.GetCount FList.Count=%d',[ClassName, FList.Count]);
+  {$endif}
   result := FList.Count;
 end;
 
@@ -3982,15 +4095,15 @@ begin
 
   if Find(Bookmark, Index) then begin
     FDataset.FreeBookmark(Bookmark);
-    {$IFNDEF noautomatedbookmark}
+    {$ifndef noautomatedbookmark}
     SetLength(TBookmark(Bookmark),0); // decrease reference count
-    {$ENDIF noautomatedbookmark}
+    {$endif noautomatedbookmark}
     if not AValue then begin
       FDataset.FreeBookmark(Pointer(Items[Index]));
-      {$IFNDEF noautomatedbookmark}
+      {$ifndef noautomatedbookmark}
       Bookmark := FList[Index];
       SetLength(TBookmark(Bookmark),0); // decrease reference count
-      {$ENDIF noautomatedbookmark}
+      {$endif noautomatedbookmark}
       FList.Delete(Index);
       FGrid.Invalidate;
     end;
@@ -4007,6 +4120,9 @@ end;
 
 procedure TBookmarkList.CheckActive;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.CheckActive', [ClassName]);
+  {$endif}
   if not FGrid.FDataLink.Active then
     raise EInvalidGridOperation.Create('Dataset Inactive');
 end;
@@ -4028,17 +4144,20 @@ end;
 procedure TBookmarkList.Clear;
 var
   i: Integer;
-  {$IFNDEF noautomatedbookmark}
+  {$ifndef noautomatedbookmark}
   Bookmark: Pointer;
-  {$ENDIF}
+  {$endif}
 begin
   for i:=0 to FList.Count-1 do
   begin
+    {$ifdef dbgDBGrid}
+    DebugLn('%s.Clear', [ClassName]);
+    {$endif}
     FDataset.FreeBookmark(Items[i]);
-    {$IFNDEF noautomatedbookmark}
+    {$ifndef noautomatedbookmark}
     Bookmark := FList[i];
     SetLength(TBookmark(Bookmark),0); // decrease reference count
-    {$ENDIF noautomatedbookmark}
+    {$endif noautomatedbookmark}
   end;
   FList.Clear;
   FGrid.Invalidate;
@@ -4047,17 +4166,20 @@ end;
 procedure TBookmarkList.Delete;
 var
   i: Integer;
-  {$IFNDEF noautomatedbookmark}
+  {$ifndef noautomatedbookmark}
   Bookmark: Pointer;
-  {$ENDIF}
+  {$endif}
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.Delete', [ClassName]);
+  {$endif}
   for i := 0 to FList.Count - 1 do begin
     FDataset.GotoBookmark(Items[i]);
     FDataset.Delete;
-    {$IFNDEF noautomatedbookmark}
+    {$ifndef noautomatedbookmark}
     Bookmark := FList[i];
     SetLength(TBookmark(Bookmark),0); // decrease reference count
-    {$ENDIF noautomatedbookmark}
+    {$endif noautomatedbookmark}
     FList.Delete(i);
   end;
 end;
@@ -4087,6 +4209,9 @@ var
   L, R, I: Integer;
   CompareRes: PtrInt;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.Find', [ClassName]);
+  {$endif}
   // From TStringList.Find() Use binary search.
   Result := False;
   L := 0;
@@ -4113,6 +4238,9 @@ end;
 
 function TBookmarkList.IndexOf(const Item: TBookmark): Integer;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.IndexOf', [ClassName]);
+  {$endif}
   if not Find(Item, Result) then
     Result := -1;
 end;
@@ -4121,6 +4249,9 @@ function TBookmarkList.Refresh: boolean;
 var
   i: LongInt;
 begin
+  {$ifdef dbgDBGrid}
+  DebugLn('%s.Refresh', [ClassName]);
+  {$endif}
   Result := False;
   for i := FList.Count - 1 downto 0 do
     if not FDataset.BookmarkValid(TBookMark(Items[i])) then begin
