@@ -166,7 +166,7 @@ type
   TGroupedEditButton = class(TCustomGroupedEditButton)
   public
     property Button;
-    property Edit: TMaskEdit;
+    property Edit;
   published
     property AutoSize;
     property AutoSelect;
