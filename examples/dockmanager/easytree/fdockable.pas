@@ -26,7 +26,7 @@ type
 
 implementation
 
-{$R fDockable.lfm}
+{$R *.lfm}
 
 procedure TDockable.Button1Click(Sender: TObject);
 begin

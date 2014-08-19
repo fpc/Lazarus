@@ -22,7 +22,7 @@ var
 
 implementation
 
-{$R fTree.lfm}
+{$R *.lfm}
 
 end.
 

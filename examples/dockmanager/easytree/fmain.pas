@@ -79,7 +79,7 @@ var
 
 implementation
 
-{$R fMain.lfm}
+{$R *.lfm}
 
 uses
   fDockable,

@@ -88,7 +88,7 @@ var
 
 implementation
 
-{$R Unit1.lfm}
+{$R *.lfm}
 
 { TForm1 }
 
