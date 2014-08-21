@@ -105,6 +105,10 @@ msgstr "Įrankio PO failų tikrinimui grafinė sąsaja"
 msgid "Identifier [%s] not found in %s"
 msgstr "Ieškota identifikatoriaus [%s], tačiau %s jo neturi"
 
+#: pocheckerconsts.signorefuzzytranslations
+msgid "Ignore translated strings marked as \"fuzzy\""
+msgstr ""
+
 #: pocheckerconsts.sincompatibleformatargs
 #, fuzzy
 #| msgid "[Line: %d] Incompatible format() arguments for:"
@@ -140,6 +144,10 @@ msgstr ""
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
 msgstr "Būtina parinkti bent vieną testavimą."
+
+#: pocheckerconsts.snotetranslationisfuzzy
+msgid "Note: translation is fuzzy"
+msgstr ""
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -210,7 +218,9 @@ msgid "Select test types"
 msgstr "Pažymėti testavimo tipus"
 
 #: pocheckerconsts.stotalerrors
-msgid "Total errors / warnings found: %d"
+#, fuzzy
+#| msgid "Total errors / warnings found: %d"
+msgid "Total errors found: %d"
 msgstr "Viso rasta klaidų/perspėjimų: %d"
 
 #: pocheckerconsts.stotalwarnings

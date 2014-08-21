@@ -43,7 +43,6 @@
       <Unit0>
         <Filename Value="pochecker.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="pochecker"/>
       </Unit0>
       <Unit1>
         <Filename Value="..\pofamilies.pp"/>
@@ -56,7 +55,6 @@
         <ComponentName Value="ResultDlgForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="ResultDlg"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\simplepofiles.pp"/>

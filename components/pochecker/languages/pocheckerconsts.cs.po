@@ -107,6 +107,10 @@ msgstr "GUI pomůcka pro kontrolu po souborů"
 msgid "Identifier [%s] not found in %s"
 msgstr "Identifikátor [%s] nenalezen v %s"
 
+#: pocheckerconsts.signorefuzzytranslations
+msgid "Ignore translated strings marked as \"fuzzy\""
+msgstr ""
+
 #: pocheckerconsts.sincompatibleformatargs
 #| msgid "[Line: %d] Incompatible format() arguments for:"
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
@@ -141,6 +145,10 @@ msgstr ""
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
 msgstr "Nejsou vybrány žádné testy."
+
+#: pocheckerconsts.snotetranslationisfuzzy
+msgid "Note: translation is fuzzy"
+msgstr ""
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -213,7 +221,9 @@ msgid "Select test types"
 msgstr "Vybrat typy testu"
 
 #: pocheckerconsts.stotalerrors
-msgid "Total errors / warnings found: %d"
+#, fuzzy
+#| msgid "Total errors / warnings found: %d"
+msgid "Total errors found: %d"
 msgstr "Nalezeno celkem %d chyb / varování."
 
 #: pocheckerconsts.stotalwarnings

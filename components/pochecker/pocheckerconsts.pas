@@ -19,7 +19,7 @@ resourcestring
   sErrorOnCreate = 'Error creating an instance of TPoFamily:' + LineEnding + '%s';
   sErrorOnCleanup = 'An unrecoverable error occurred' + LineEnding + '%s' + LineEnding + 'Please close the program';
 
-  sTotalErrors = 'Total errors / warnings found: %d';
+  sTotalErrors = 'Total errors found: %d';
   sTotalWarnings = 'Total warnings found: %d';
   sNoErrorsFound = 'No errors found';
   sCurrentTest = 'Current Test:';
@@ -47,6 +47,7 @@ resourcestring
     +'values';
   sCheckStatistics = 'Check percentage of (un)translated and fuzzy strings';
   sFindAllTranslatedPoFiles = 'Find all translated po-files';
+  sIgnoreFuzzyTranslations = 'Ignore translated strings marked as "fuzzy"';
   sIncompatibleFormatArgs = '[Line: %d] Incompatible and/or invalid format() arguments for:' ;
 
   sNrErrorsFound = 'Found %d errors.';
@@ -55,6 +56,8 @@ resourcestring
   sIdentifierNotFoundIn = 'Identifier [%s] not found in %s';
   sMissingMasterIdentifier = 'Identifier [%s] found in %s, but it does not exist in %s';
   sLineNr = '[Line: %d]';
+  sNoteTranslationIsFuzzy = 'Note: translation is fuzzy';
+
 
   sNrOfItemsMisMatch = 'Mismatch in number of items for master and child';
   sNrOfItemsMismatchD = '%s: %d items';

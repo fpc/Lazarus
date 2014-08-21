@@ -13,23 +13,23 @@ uses
 
 Type
 
-  TPoTestOption = (ptoCheckNrOfItems, ptoCheckFormatArgs, ptoCheckMissingIdentifiers,
-                   ptoCheckMismatchedOriginals, ptoCheckDuplicateOriginals, ptoCheckStatistics,
-                   ptoFindAllChildren);
-  TPoTestOptions = Set of TPoTestOption;
+  TPoTestType = (pttCheckNrOfItems, pttCheckFormatArgs, pttCheckMissingIdentifiers,
+                 pttCheckMismatchedOriginals, pttCheckDuplicateOriginals, pttCheckStatistics);
+  TPoTestTypes = Set of TPoTestType;
+
+  TPoTestOption = (ptoFindAllChildren, ptoIgnoreFuzzyStrings);
+  TPoTestOptions = set of TPoTestOption;
 
 const
-    optRunAllTests: TPoTestOptions = [];
-    optRunAllTestsOnAllChildren: TPoTestOptions = [];
+    optRunAllTests: TPoTestTypes = [];
 
-    PoTestOptionNames: array[TPoTestOption] of String = (
+    PoTestTypeNames: array[TPoTestType] of String = (
       sCheckNumberOfItems,
       sCheckForIncompatibleFormatArguments,
       sCheckMissingIdentifiers,
       sCheckForMismatchesInUntranslatedStrings,
       sCheckForDuplicateUntranslatedValues,
-      sCheckStatistics,
-      sFindAllTranslatedPoFiles
+      sCheckStatistics
     );
 
 Type
@@ -61,14 +61,15 @@ Type
 
   protected
     procedure CheckNrOfItems(out ErrorCount: Integer; ErrorLog: TStrings);
-    procedure CheckFormatArgs(out ErrorCount: Integer; ErrorLog: TStrings);
+    procedure CheckFormatArgs(out ErrorCount: Integer; ErrorLog: TStrings; IgnoreFuzzyStrings: Boolean);
     procedure CheckMissingIdentifiers(out ErrorCount: Integer; ErrorLog: TStrings);
     procedure CheckMismatchedOriginals(out ErrorCount: Integer; ErrorLog: TStrings);
     procedure CheckDuplicateOriginals(out WarningCount: Integer; ErrorLog: TStrings);
     procedure CheckStatistics(out WarningCount: Integer; ErrorLog: TStrings);
 
   public
-    procedure RunTests(const Options: TPoTestOptions; out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
+    procedure RunTests(const TestTypes: TPoTestTypes; const TestOptions: TPoTestOptions;
+                       out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
 
     property Master: TSimplePoFile read FMaster;
     property Child: TSimplePoFile read FChild;
@@ -349,7 +350,7 @@ end;
 procedure TPoFamily.CheckNrOfItems(out ErrorCount: Integer; ErrorLog: TStrings);
 begin
   //debugln('TPoFamily.CheckNrOfItems');
-  DoTestStart(PoTestOptionNames[ptoCheckNrOfItems], ShortChildName);
+  DoTestStart(PoTestTypeNames[pttCheckNrOfItems], ShortChildName);
   if (FMaster.Count <> FChild.Count) then
   begin
     ErrorCount := 1;
@@ -366,17 +367,18 @@ begin
     ErrorLog.Add('');
   end
   else ErrorCount := NoError;
-  DoTestEnd(PoTestOptionNames[ptoCheckNrOfItems], ErrorCount);
+  DoTestEnd(PoTestTypeNames[pttCheckNrOfItems], ErrorCount);
   //debugln('TPoFamily.CheckNrOfItemsMismatch: ',Dbgs(ErrorCount),' Errors');
 end;
 
-procedure TPoFamily.CheckFormatArgs(out ErrorCount: Integer; ErrorLog: TStrings);
+procedure TPoFamily.CheckFormatArgs(out ErrorCount: Integer; ErrorLog: TStrings; IgnoreFuzzyStrings: Boolean);
 var
   i: Integer;
   CPoItem: TPOFileItem;
+  IsFuzzy: Boolean;
 begin
   //debugln('TPoFamily.CheckFormatArgs');
-  DoTestStart(PoTestOptionNames[ptoCheckFormatArgs], ShortChildName);
+  DoTestStart(PoTestTypeNames[pttCheckFormatArgs], ShortChildName);
   ErrorCount := NoError;
   //for i := 0 to FMaster.Count - 1 do
   for i := 0 to FChild.Count - 1 do
@@ -387,7 +389,9 @@ begin
     //CPoItem := FChild.FindPoItem(MPoItem.Identifier);
     if Assigned(CPoItem) then
     begin
-      if (Length(CPoItem.Translation) > 0) and (CompareFormatArgs(CPoItem.Original, CPoItem.Translation) = false) then
+      IsFuzzy := (Pos('fuzzy', CPoItem.Flags) > 0);
+      //if (IgnoreFuzzyStrings and IsFuzzy) then debugln('Skipping fuzzy translation: ',CPoItem.Translation);
+      if (Length(CPoItem.Translation) > 0) and (not (IgnoreFuzzyStrings and IsFuzzy)) and (not CompareFormatArgs(CPoItem.Original, CPoItem.Translation)) then
       begin
         if (ErrorCount = 0) then
         begin
@@ -402,6 +406,7 @@ begin
         ErrorLog.Add(Format(sFormatArgsID,[sCommentIdentifier, CPoItem.Identifier]));
         ErrorLog.Add(Format(sFormatArgsValues,[sMsgID,CPoItem.Original,sOriginal]));
         ErrorLog.Add(Format(sFormatArgsValues,[sMsgStr,CPoItem.Translation,sTranslation]));
+        if IsFuzzy then ErrorLog.Add(sNoteTranslationIsFuzzy);
         ErrorLog.Add('');
       end;
     end;
@@ -413,7 +418,7 @@ begin
     ErrorLog.Add('');
     ErrorLog.Add('');
   end;
-  DoTestEnd(PoTestOptionNames[ptoCheckFormatArgs], ErrorCount);
+  DoTestEnd(PoTestTypeNames[pttCheckFormatArgs], ErrorCount);
   //debugln('TPoFamily.CheckIncompatibleFormatArgs: ',Dbgs(ErrorCount),' Errors');
 end;
 
@@ -424,7 +429,7 @@ var
   MPoItem, CPoItem: TPOFileItem;
 begin
   //debugln('TPoFamily.CheckMissingIdentifiers');
-  DoTestStart(PoTestOptionNames[ptoCheckMissingIdentifiers], ShortChildName);
+  DoTestStart(PoTestTypeNames[pttCheckMissingIdentifiers], ShortChildName);
   ErrorCount := NoError;
   for i := 0 to FMaster.Count - 1 do
   begin
@@ -484,7 +489,7 @@ begin
     ErrorLog.Add('');
     ErrorLog.Add('');
   end;
-  DoTestEnd(PoTestOptionNames[ptoCheckMissingIdentifiers], ErrorCount);
+  DoTestEnd(PoTestTypeNames[pttCheckMissingIdentifiers], ErrorCount);
   //debugln('TPoFamily.CheckMissingIdentifiers: ',Dbgs(ErrorCount),' Errors');
 end;
 
@@ -495,7 +500,7 @@ var
   MPoItem, CPoItem: TPOFileItem;
 begin
   //debugln('TPoFamily.CheckMismatchedOriginals');
-  DoTestStart(PoTestOptionNames[ptoCheckMismatchedOriginals], ShortChildName);
+  DoTestStart(PoTestTypeNames[pttCheckMismatchedOriginals], ShortChildName);
   ErrorCount := NoError;
   for i := 0 to FMaster.Count - 1 do
   begin
@@ -529,7 +534,7 @@ begin
     ErrorLog.Add('');
     ErrorLog.Add('');
   end;
-  DoTestEnd(PoTestOptionNames[ptoCheckMismatchedOriginals], ErrorCount);
+  DoTestEnd(PoTestTypeNames[pttCheckMismatchedOriginals], ErrorCount);
   //debugln('TPoFamily.CheckMismatchedOriginals: ',Dbgs(ErrorCount),' Errors');
 end;
 
@@ -541,7 +546,7 @@ var
   LastHash, CurHash: Cardinal;
 begin
   //debugln('TPoFamily.CheckMismatchedOriginals');
-  DoTestStart(PoTestOptionNames[ptoCheckDuplicateOriginals], ShortMasterName);
+  DoTestStart(PoTestTypeNames[pttCheckDuplicateOriginals], ShortMasterName);
   WarningCount := 0;
 
   //debugln('TPoFamily.CehckDuplicateOriginals');
@@ -586,7 +591,7 @@ begin
     ErrorLog.Add('');
   end;
 
-  DoTestEnd(PoTestOptionNames[ptoCheckDuplicateOriginals], WarningCount);
+  DoTestEnd(PoTestTypeNames[pttCheckDuplicateOriginals], WarningCount);
   //debugln('TPoFamily.CheckDuplicateOriginals: ',Dbgs(WarningCount),' Errors');
 end;
 
@@ -636,18 +641,18 @@ begin
     ErrorLog.Add('');
   end;
   WarningCount := NrTotal;
-  DoTestEnd(PoTestOptionNames[ptoCheckFormatArgs], WarningCount);
+  DoTestEnd(PoTestTypeNames[pttCheckFormatArgs], WarningCount);
   //debugln('TPoFamily.CheckIncompatibleFormatArgs: ',Dbgs(ErrorCount),' Errors');
 end;
 
 {
-procedure TPoFamily.RunTests(const Options: TPoTestOptions; out
+procedure TPoFamily.RunTests(const Options: TPoTestTypes; out
 Pre conditions:
   * Master and a matching Child must be assigned at start ot testing
   * If a Child is assigned it must be child of Master
 }
-procedure TPoFamily.RunTests(const Options: TPoTestOptions; out
-  ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
+procedure TPoFamily.RunTests(const TestTypes: TPoTestTypes;  const TestOptions: TPoTestOptions;
+                             out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
 var
   SL: TStringList;
   CurrErrCnt, CurrWarnCnt: Integer;
@@ -680,7 +685,7 @@ begin
       Exit;
     end
   end;
-  if not Assigned(FChild) and ([ptoFindAllChildren, ptoCheckDuplicateOriginals] * Options = []) then
+  if not Assigned(FChild) and not ((pttCheckDuplicateOriginals in Testtypes) or (ptoFindAllChildren in TestOptions)) then
   begin
     {$ifdef DebugSimplePoFiles}
     Debugln('TPoFamily.RunTests: no child assigned for ',ShortMasterName);
@@ -688,7 +693,7 @@ begin
     Exit;
   end;
 
-  if (ptoFindAllChildren in Options) then
+  if (ptoFindAllChildren in TestOptions) then
   begin
     SL := FindAllTranslatedPoFiles(FMasterName);
     //We want current Child (if currently assigned) at index 0
@@ -715,7 +720,7 @@ begin
   try
 
     //First run checks that are Master-only
-    if (ptoCheckDuplicateOriginals in Options) then
+    if (pttCheckDuplicateOriginals in TestTypes) then
     begin
       CheckDuplicateOriginals(CurrWarnCnt, ErrorLog);
       WarningCount := CurrWarnCnt + WarningCount;
@@ -725,7 +730,7 @@ begin
     Debugln('TPoFamily.RunTests: number of childs for testing = ',DbgS(Sl.Count));
     {$endif}
 
-    if (Options - [ptoCheckDuplicateOriginals] <> []) and (Sl.Count = 0) then
+    if (TestTypes - [pttCheckDuplicateOriginals] <> []) and (Sl.Count = 0) then
     begin
       {$ifdef DebugSimplePoFiles}
       Debugln('TPoFamily.RunTests: Warning: No child selected or found for selected tests');
@@ -743,38 +748,38 @@ begin
       //debugln('TPoFamily.RunTests: setting ChildName to ',CurrChildName);
       SetChildName(CurrChildName);
 
-      if (ptoCheckNrOfItems in Options) then
+      if (pttCheckNrOfItems in TestTypes) then
       begin
         CheckNrOfItems(CurrErrCnt, ErrorLog);
         ErrorCount := CurrErrCnt + ErrorCount;
       end;
 
-      if (ptoCheckFormatArgs in Options) then
+      if (pttCheckFormatArgs in TestTypes) then
       begin
-        CheckFormatArgs(CurrErrCnt, ErrorLog);
+        CheckFormatArgs(CurrErrCnt, ErrorLog, (ptoIgnoreFuzzyStrings in TestOptions));
         ErrorCount := CurrErrCnt + ErrorCount;
       end;
 
 
-      if (ptoCheckMissingIdentifiers in Options) then
+      if (pttCheckMissingIdentifiers in TestTypes) then
       begin
         CheckMissingIdentifiers(CurrErrCnt, ErrorLog);
         ErrorCount := CurrErrCnt + ErrorCount;
       end;
 
-      if (ptoCheckMismatchedOriginals in Options) then
+      if (pttCheckMismatchedOriginals in TestTypes) then
       begin
         CheckMismatchedOriginals(CurrErrCnt, ErrorLog);
         ErrorCount := CurrErrCnt + ErrorCount;
       end;
 
-      if (ptoCheckStatistics in Options) then
+      if (pttCheckStatistics in TestTypes) then
       begin
         CheckStatistics(CurrErrCnt, ErrorLog);
         ErrorCount := CurrErrCnt + ErrorCount;
       end;
        {
-        if (pto in Options) then
+        if (ptt in TestTypes) then
         begin
           Check(CurrErrCnt, ErrorLog);
           ErrorCount := CurrErrCnt + ErrorCount;
@@ -789,10 +794,9 @@ end;
 
 procedure InitTestOptions;
 var
-  Index: TPoTestOption;
+  Index: TPoTestType;
 begin
-  for Index := Low(TPoTestOption) to High(TPotestOption) do optRunAllTestsOnAllChildren := optRunAllTestsOnAllChildren + [Index];
-  optRunAllTests := optRunAllTestsOnAllChildren - [ptoFindAllChildren];
+  for Index := Low(TPoTestType) to High(TPoTestType) do optRunAllTests := optRunAllTests + [Index];
 end;
 
 Initialization

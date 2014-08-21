@@ -104,6 +104,10 @@ msgstr "Ferramenta GUI de verificação de arquivos PO"
 msgid "Identifier [%s] not found in %s"
 msgstr "Identificador [%s] não encontrado em %s"
 
+#: pocheckerconsts.signorefuzzytranslations
+msgid "Ignore translated strings marked as \"fuzzy\""
+msgstr ""
+
 #: pocheckerconsts.sincompatibleformatargs
 #| msgid "[Line: %d] Incompatible format() arguments for:"
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
@@ -138,6 +142,10 @@ msgstr ""
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
 msgstr "Nenhum teste selecionado."
+
+#: pocheckerconsts.snotetranslationisfuzzy
+msgid "Note: translation is fuzzy"
+msgstr ""
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -210,7 +218,9 @@ msgid "Select test types"
 msgstr "Selecionar tipos de teste"
 
 #: pocheckerconsts.stotalerrors
-msgid "Total errors / warnings found: %d"
+#, fuzzy
+#| msgid "Total errors / warnings found: %d"
+msgid "Total errors found: %d"
 msgstr "Total de erros / avisos encontrados: %d"
 
 #: pocheckerconsts.stotalwarnings

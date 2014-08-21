@@ -38,6 +38,7 @@ type
   { TPoCheckerForm }
 
   TPoCheckerForm = class(TForm)
+    IgnoreFuzzyCheckBox: TCheckBox;
     UnselectAllBtn: TButton;
     SelectAllBtn: TButton;
     SelectBasicBtn: TButton;
@@ -68,7 +69,8 @@ type
     procedure OnTestStart(const ATestName, APoFileName: string);
     procedure OnTestEnd(const ATestName: string; const ErrorCount: integer);
     procedure FillTestListBox;
-    function GetOptionsFromListBox: TPoTestOptions;
+    function GetTestTypesFromListBox: TPoTestTypes;
+    function GetTestOptions: TPoTestOptions;
     procedure ShowError(const Msg: string);
     function TrySelectFile: boolean;
     procedure RunSelectedTests;
@@ -122,6 +124,7 @@ begin
   Caption := sGUIPoFileCheckingTool;
   SelectTestLabel.Caption := sSelectTestTypes;
   FindAllPOsCheckBox.Caption := sFindAllTranslatedPoFiles;
+  IgnoreFuzzyCheckBox.Caption := sIgnoreFuzzyTranslations;
   OpenBtn.Caption := sOpenAPoFile;
   RunBtn.Caption := sRunSelectedTests;
   NoErrLabel.Caption := sNoErrorsFound;
@@ -211,45 +214,52 @@ end;
 
 procedure TPoCheckerForm.FillTestListBox;
 var
-  Opt: TPoTestOption;
+  Typ: TPoTestType;
 begin
-  for Opt := Low(PoTestOptionNames) to Pred(High(PoTestOptionNames)) do
-    case Opt of
-      ptoCheckNrOfItems:
+  for Typ := Low(PoTestTypeNames) to High(PoTestTypeNames) do
+    case Typ of
+      pttCheckNrOfItems:
         TestListBox.Items.Add(sCheckNumberOfItems);
-      ptoCheckFormatArgs:
+      pttCheckFormatArgs:
         TestListBox.Items.Add(sCheckForIncompatibleFormatArguments);
-      ptoCheckMissingIdentifiers:
+      pttCheckMissingIdentifiers:
         TestListBox.Items.Add(sCheckMissingIdentifiers);
-      ptoCheckMismatchedOriginals:
+      pttCheckMismatchedOriginals:
         TestListBox.Items.Add(sCheckForMismatchesInUntranslatedStrings);
-      ptoCheckDuplicateOriginals:
+      pttCheckDuplicateOriginals:
         TestListBox.Items.Add(sCheckForDuplicateUntranslatedValues);
-      ptoCheckStatistics:
+      pttCheckStatistics:
         TestListBox.Items.Add(sCheckStatistics);
       else
-        TestListBox.Items.Add(PoTestOptionNames[Opt]);
+        TestListBox.Items.Add(PoTestTypeNames[Typ]);
     end;
 end;
 
 
-function TPoCheckerForm.GetOptionsFromListBox: TPoTestOptions;
+function TPoCheckerForm.GetTestTypesFromListBox: TPoTestTypes;
 var
-  Opt: TPoTestOption;
+  Typ: TPoTestType;
   Index: integer;
 begin
   Result := [];
-  for Opt := Low(TpoTestOption) to Pred(High(TPoTestOption)) do
+  for Typ := Low(TPoTestType) to High(TPoTestType) do
   begin
-    Index := Ord(Opt);
+    Index := Ord(Typ);
     if (Index < TestListBox.Count) then
     begin
       if TestListBox.Checked[Index] then
-        Result := Result + [Opt];
+        Result := Result + [Typ];
     end;
   end;
+end;
+
+function TPoCheckerForm.GetTestOptions: TPoTestOptions;
+begin
+  Result := [];
   if FindAllPOsCheckBox.Checked then
-    Result := Result + [High(TPoTestOption)];
+    Result := Result + [ptoFindAllChildren];
+  if IgnoreFuzzyCheckBox.Checked then
+    Result := Result + [ptoIgnoreFuzzyStrings];
 end;
 
 
@@ -330,30 +340,32 @@ end;
 
 procedure TPoCheckerForm.RunSelectedTests;
 var
-  Options: TPoTestOptions;
+  TestTypes: TPoTestTypes;
+  TestOptions: TPoTestOptions;
   ErrorCount, WarningCount: integer;
   SL: TStrings;
   ResultDlg: TResultDlgForm;
 begin
-  Options := GetOptionsFromListBox;
-  if (Options = []) then
+  TestTypes := GetTestTypesFromListBox;
+  if (TestTypes = []) then
   begin
     ShowError(sNoTestSelected);
     Exit;
   end;
+  TestOptions := GetTestOptions;
   NoErrLabel.Visible := False;
   Application.ProcessMessages;
   SL := TStringList.Create;
   try
     StatusPanel.Enabled := True;
-    if (not (ptoFindAllChildren in Options)) and Assigned(PoFamily.Child) and
+    if (not (ptoFindAllChildren in TestOptions)) and Assigned(PoFamily.Child) and
       (PoFamily.ChildName <> FChosenChildName) then
       PoFamily.ChildName := FChosenChildName;
-    PoFamily.RunTests(Options, ErrorCount, WarningCount, SL);
+    PoFamily.RunTests(TestTypes, TestOptions, ErrorCount, WarningCount, SL);
     debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
     debugln('                  ', Format(sTotalWarnings, [WarningCount]));
     if (ErrorCount > 0) or (WarningCount > 0) or
-      (ptoCheckStatistics in Options) then
+      (pttCheckStatistics in TestTypes) then
     begin
       SL.Add(Format(sTotalErrors, [ErrorCount]));
       SL.Add(Format(sTotalWarnings, [WarningCount]));
