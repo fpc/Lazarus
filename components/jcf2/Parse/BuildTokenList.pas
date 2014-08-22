@@ -59,7 +59,7 @@ type
     function EndOfFile: boolean;
     function EndOfFileAfter(const piChars: integer): boolean;
 
-      { implementation of GetNextToken }
+    { implementation of GetNextToken }
     function TryReturn(const pcToken: TSourceToken): boolean;
 
     function TryCurlyComment(const pcToken: TSourceToken): boolean;
@@ -361,20 +361,21 @@ begin
   if not WideCharIsReturn(Current) then
     exit;
 
+  Result := True;
   pcToken.TokenType  := ttReturn;
   pcToken.SourceCode := Current;
   Consume;
+  if fiCurrentIndex > Length(fsSourceCode) then
+    exit;
 
   { concat the next return char if it is not the same
     This will recognise <cr><lf> or <lf><cr>, but not <cr><cr> }
-
   chNext := Current;
   if WideCharIsReturn(chNext) and (chNext <> pcToken.SourceCode[1]) then
   begin
     pcToken.SourceCode := pcToken.SourceCode + chNext;
     Consume;
   end;
-  Result := True;
 end;
 
 { complexities like 'Hello'#32'World' and #$12'Foo' are assemlbed in the parser }
