@@ -2383,7 +2383,6 @@ type
     var cancel: boolean)
       of object;
 
-  {$IFDEF Html_Print}
   TIpHtmlPrintSettings = class(TPersistent)
   private
     FMarginTop: Double;
@@ -2399,7 +2398,6 @@ type
     property MarginRight: Double read FMarginRight write FMarginRight;
     property MarginBottom: Double read FMarginBottom write FMarginBottom;
   end;
-  {$ENDIF}
 
   { TIpHtmlCustomPanel }
 
@@ -2535,9 +2533,7 @@ type
     property LinkColor: TColor read FLinkColor write FLinkColor default clBlue;
     property MarginHeight: Integer read FMarginHeight write FMarginHeight default 10;
     property MarginWidth: Integer read FMarginWidth write FMarginWidth default 10;
-    {$IFDEF Html_Print}
     property PrintSettings: TIpHtmlPrintSettings read FPrintSettings write FPrintSettings;
-    {$ENDIF}
     property ShowHints: Boolean read FShowHints write FShowHints default True;
     property TextColor: TColor read FTextColor write FTextColor default clBlack;
     property Title: string read GetTitle;
@@ -2581,11 +2577,9 @@ type
     property FlagErrors;
     property LinkColor;
     property PopupMenu;
-    {$IFDEF Html_Print}
     property PrintSettings;
     property MarginHeight;
     property MarginWidth;
-    {$ENDIF}
     property ShowHints;
     property TabOrder;
     property TabStop;
