@@ -131,14 +131,11 @@ begin
     GetRegSettings.ReadAll;
 
   { check for read-only  }
-  if pciUnit <> nil then
+  if pciUnit.ReadOnly then
   begin
-    if pciUnit.ReadOnly then
-    begin
-      SendStatusMessage(pciUnit.FileName, 'Unit is read only. Cannot format ',
-        mtInputError, -1, -1);
-      exit;
-    end;
+    SendStatusMessage(pciUnit.FileName, 'Unit is read only. Cannot format ',
+      mtInputError, -1, -1);
+    exit;
   end;
 
   fsCurrentUnitName := pciUnit.FileName;
