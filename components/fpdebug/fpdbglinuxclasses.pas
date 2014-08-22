@@ -260,6 +260,9 @@ type
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; override;
 
+    function CheckForConsoleOutput(ATimeOutMs: integer): integer; override;
+    function GetConsoleOutput: string; override;
+
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
@@ -576,6 +579,7 @@ begin
     AProcess.Parameters:=AParams;
     AProcess.Environment:=AnEnvironment;
     AProcess.CurrentDirectory:=AWorkingDirectory;
+    AProcess.Options := AProcess.Options + [poUsePipes];
     AProcess.Execute;
     PID:=AProcess.ProcessID;
 
@@ -700,6 +704,32 @@ begin
     end;
 
   result := true;
+end;
+
+function TDbgLinuxProcess.CheckForConsoleOutput(ATimeOutMs: integer): integer;
+Var
+  f: TfdSet;
+  sleepytime: ttimeval;
+begin
+  sleepytime.tv_sec := ATimeOutMs div 1000;
+  sleepytime.tv_usec := (ATimeOutMs mod 1000)*1000;
+  FpFD_ZERO(f);
+  fpFD_SET(FProcProcess.Output.Handle,f);
+  result := fpselect(FProcProcess.Output.Handle+1,@f,nil,nil,@sleepytime);
+end;
+
+function TDbgLinuxProcess.GetConsoleOutput: string;
+var
+  ABytesAvailable: DWord;
+begin
+  ABytesAvailable := FProcProcess.Output.NumBytesAvailable;
+  if ABytesAvailable>0 then
+  begin
+    setlength(result, ABytesAvailable);
+    FProcProcess.Output.Read(result[1], ABytesAvailable);
+  end
+  else
+    result := '';
 end;
 
 function TDbgLinuxProcess.GetInstructionPointerRegisterValue: TDbgPtr;

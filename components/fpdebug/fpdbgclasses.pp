@@ -286,6 +286,9 @@ type
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; virtual; abstract;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; virtual;
 
+    function CheckForConsoleOutput(ATimeOutMs: integer): integer; virtual;
+    function GetConsoleOutput: string; virtual;
+
     function AddThread(AThreadIdentifier: THandle): TDbgThread;
     procedure LoadInfo; override;
 
@@ -834,6 +837,16 @@ begin
     if DoBreak(CurrentAddr, FMainThread.ID) then
       result := deBreakpoint;
   end
+end;
+
+function TDbgProcess.CheckForConsoleOutput(ATimeOutMs: integer): integer;
+begin
+  result := -1;
+end;
+
+function TDbgProcess.GetConsoleOutput: string;
+begin
+  result := '';
 end;
 
 function TDbgProcess.AddThread(AThreadIdentifier: THandle): TDbgThread;

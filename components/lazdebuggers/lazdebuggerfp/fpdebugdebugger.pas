@@ -69,6 +69,7 @@ type
     FLogCritSection: TRTLCriticalSection;
     FMemReader: TDbgMemReader;
     FMemManager: TFpDbgMemManager;
+    FConsoleOutputThread: TThread;
     {$ifdef linux}
     FCacheLine: cardinal;
     FCacheFileName: string;
@@ -269,9 +270,68 @@ type
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
   end;
 
+  { TFpWaitForConsoleOutputThread }
+
+  TFpWaitForConsoleOutputThread = class(TThread)
+  private
+    FFpDebugDebugger: TFpDebugDebugger;
+    FHasConsoleOutputQueued: PRTLEvent;
+    procedure DoHasConsoleOutput(Data: PtrInt);
+  public
+    constructor Create(AFpDebugDebugger: TFpDebugDebugger);
+    destructor Destroy; override;
+    procedure Execute; override;
+  end;
+
+
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFpWaitForConsoleOutputThread }
+
+procedure TFpWaitForConsoleOutputThread.DoHasConsoleOutput(Data: PtrInt);
+var
+  s: string;
+begin
+  if (Data=0) or assigned(TFpDebugDebugger(Data).FConsoleOutputThread) then
+  begin
+    RTLeventSetEvent(FHasConsoleOutputQueued);
+    s := FFpDebugDebugger.FDbgController.CurrentProcess.GetConsoleOutput;
+    FFpDebugDebugger.OnConsoleOutput(self, s);
+  end;
+end;
+
+constructor TFpWaitForConsoleOutputThread.Create(AFpDebugDebugger: TFpDebugDebugger);
+begin
+  Inherited create(false);
+  FHasConsoleOutputQueued := RTLEventCreate;
+  FFpDebugDebugger := AFpDebugDebugger;
+end;
+
+destructor TFpWaitForConsoleOutputThread.Destroy;
+begin
+  RTLeventdestroy(FHasConsoleOutputQueued);
+  inherited Destroy;
+end;
+
+procedure TFpWaitForConsoleOutputThread.Execute;
+var
+  res: integer;
+begin
+  while not terminated do
+  begin
+    res := FFpDebugDebugger.FDbgController.CurrentProcess.CheckForConsoleOutput(100);
+    if res<0 then
+      Terminate
+    else if res>0 then
+    begin
+      RTLeventResetEvent(FHasConsoleOutputQueued);
+      Application.QueueAsyncCall(@DoHasConsoleOutput, PtrInt(FFpDebugDebugger));
+      RTLeventWaitFor(FHasConsoleOutputQueued);
+    end;
+  end;
 end;
 
 { TFpDbgMemReader }
@@ -922,7 +982,19 @@ end;
 { TFpDebugDebugger }
 
 procedure TFpDebugDebugger.FDbgControllerProcessExitEvent(AExitCode: DWord);
+var
+  AThread: TFpWaitForConsoleOutputThread;
 begin
+  if assigned(FConsoleOutputThread) then
+    begin
+    AThread := TFpWaitForConsoleOutputThread(FConsoleOutputThread);
+    FConsoleOutputThread := nil;
+    AThread.Terminate;
+    AThread.DoHasConsoleOutput(0);
+    AThread.WaitFor;
+    AThread.Free;
+    end;
+
   SetExitCode(Integer(AExitCode));
   {$PUSH}{$R-}
   DoDbgEvent(ecProcess, etProcessExit, Format('Process exited with exit-code %d',[AExitCode]));
@@ -1292,6 +1364,9 @@ begin
 
   if not SetSoftwareExceptionBreakpoint then
     debugln('Failed to set software-debug breakpoint');
+
+  if assigned(OnConsoleOutput) then
+    FConsoleOutputThread := TFpWaitForConsoleOutputThread.Create(self);
 end;
 
 function TFpDebugDebugger.RequestCommand(const ACommand: TDBGCommand;

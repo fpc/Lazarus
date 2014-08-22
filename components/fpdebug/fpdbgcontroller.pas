@@ -118,7 +118,6 @@ type
     FOnLog: TOnLog;
     FOnProcessExitEvent: TOnProcessExitEvent;
     FProcessMap: TMap;
-    FExitCode: DWord;
     FPDEvent: TFPDEvent;
     FParams: TStringList;
     FWorkingDirectory: string;
@@ -625,17 +624,8 @@ begin
     end;
     if not IsHandled then
     begin
-      case FPDEvent of
-        deExitProcess :
-          begin
-            if FCurrentProcess = FMainProcess then FMainProcess := nil;
-            FExitCode:=FCurrentProcess.ExitCode;
-
-            FProcessMap.Delete(AProcessIdentifier);
-            FCurrentProcess.Free;
-            FCurrentProcess := nil;
-          end;
-  {      deLoadLibrary :
+{      case FPDEvent of
+        deLoadLibrary :
           begin
             if FCurrentProcess.GetLib(FCurrentProcess.LastEventProcessIdentifier, ALib)
             and (GImageInfo <> iiNone)
@@ -647,8 +637,8 @@ begin
             if GBreakOnLibraryLoad
             then GState := dsPause;
 
-          end;}
-      end; {case}
+          end;
+      end; }{case}
     end;
     if IsFinished then
       FreeAndNil(FCommand);
@@ -676,9 +666,15 @@ begin
       end;
     deExitProcess:
       begin
-        continue := false;
+        if FCurrentProcess = FMainProcess then FMainProcess := nil;
+
         if assigned(OnProcessExitEvent) then
-          OnProcessExitEvent(FExitCode);
+          OnProcessExitEvent(FCurrentProcess.ExitCode);
+
+        FProcessMap.Delete(FCurrentProcess.ProcessID);
+        FCurrentProcess.Free;
+        FCurrentProcess := nil;
+        continue := false;
       end;
     deException:
       begin
