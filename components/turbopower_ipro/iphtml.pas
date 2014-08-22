@@ -95,9 +95,7 @@ const
   IPMAXFRAMES = 256; {maximum number of frames in a single frameset}
   MAXINTS = 4096; {buffer size - this should be way more than needed}
   TINTARRGROWFACTOR = 64;
-  {$IFDEF Html_Print}
   DEFAULT_PRINTMARGIN = 0.5; {inches}
-  {$ENDIF}
   FONTSIZESVALUSARRAY : array[0..6] of integer = (8,10,12,14,18,24,36);
   MAXWORDS = 65536;
 
@@ -2375,13 +2373,10 @@ type
   end;
 
   TIpHtmlControlEvent = procedure(Sender: TIpHtmlCustomPanel;
-    Frame: TIpHtmlFrame; Html: TIpHtml; Node: TIpHtmlNodeControl)
-      of object;
+    Frame: TIpHtmlFrame; Html: TIpHtml; Node: TIpHtmlNodeControl) of object;
 
   TIpHtmlControlEvent2 = procedure(Sender: TIpHtmlCustomPanel;
-    Frame: TIpHtmlFrame; Html: TIpHtml; Node: TIpHtmlNodeControl;
-    var cancel: boolean)
-      of object;
+    Frame: TIpHtmlFrame; Html: TIpHtml; Node: TIpHtmlNodeControl; var cancel: boolean) of object;
 
   TIpHtmlPrintSettings = class(TPersistent)
   private
@@ -2391,7 +2386,6 @@ type
     FMarginRight: Double;
   public
     constructor Create;
-    destructor Destroy; override;
   published
     property MarginLeft: Double read FMarginLeft write FMarginLeft;
     property MarginTop: Double read FMarginTop write FMarginTop;
@@ -2414,9 +2408,7 @@ type
     FDocumentOpen: TNotifyEvent;
     FAllowTextSelect: Boolean;
     FCurElement : PIpHtmlElement;
-    {$IFDEF Html_Print}
     FPrintSettings: TIpHtmlPrintSettings;
-    {$ENDIF}
     FFactBAParag: Real;
     FWantTabs: Boolean;
     procedure SetDataProvider(const AValue: TIpAbstractHtmlDataProvider);
@@ -14568,18 +14560,14 @@ begin
   FixedTypeface := 'Courier New';
   DefaultTypeFace := Graphics.DefFontData.Name;
   DefaultFontSize := 12;
-  {$IFDEF Html_Print}
   FPrintSettings := TIpHtmlPrintSettings.Create;
-  {$ENDIF}
   FFactBAParag := 1;
   FWantTabs := True;
 end;
 
 destructor TIpHtmlCustomPanel.Destroy;
 begin
-  {$IFDEF Html_Print}
   FPrintSettings.Free;
-  {$ENDIF}
   TargetStack.Free;
   URLStack.Free;
   FMasterFrame.Free;
@@ -15480,8 +15468,6 @@ begin
     Result := nil;
 end;
 
-{$IFDEF Html_Print}
-
 { TIpHtmlPrintSettings }
 
 constructor TIpHtmlPrintSettings.Create;
@@ -15492,13 +15478,6 @@ begin
   FMarginRight := DEFAULT_PRINTMARGIN;
   FMarginBottom := DEFAULT_PRINTMARGIN;
 end;
-
-destructor TIpHtmlPrintSettings.Destroy;
-begin
-  inherited;
-end;
-
-{$ENDIF}
 
 { TIpHtmlNodeTH }
 
