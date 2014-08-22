@@ -48,6 +48,7 @@ type
 
     { woker procs }
     fiCurrentIndex: integer;
+    fcNestedDepth: integer;
 
     procedure SetSourceCode(const Value: WideString);
 
@@ -100,17 +101,20 @@ type
 implementation
 
 uses
- { delphi }
- Forms, SysUtils,
- { local }
- JcfStringUtils, JcfSystemUtils,
- JcfUnicode,
- JcfRegistrySettings;
+  Forms, SysUtils,
+  { local }
+  JcfStringUtils, JcfSystemUtils,
+  JcfUnicode,
+  JcfRegistrySettings,
+  JcfSetBase;
 
-function CheckMultiByte(const pcChar: WideChar): Boolean;
+const
+  CurlyLeft = widechar(123);
+  CurlyRight = widechar(125);
+
+function CheckMultiByte(const pcChar: widechar): boolean;
 begin
   Result := False;
-
   if GetRegSettings.CheckMultiByteChars then
     Result := IsMultiByte(pcChar);
 end;
@@ -257,7 +261,7 @@ end;
 function TBuildTokenList.TryCurlyComment(const pcToken: TSourceToken): boolean;
 var
   liCommentLength: integer;
-
+  lForwardChar:widechar;
   procedure MoveToCommentEnd;
   begin
     { comment is ended by close-curly or by EOF (bad source) }
@@ -265,17 +269,21 @@ var
     begin
       if EndOfFileAfter(liCommentLength) then
         break;
-
-      if CheckMultiByte(ForwardChar(liCommentLength)) then
+      lForwardChar:=ForwardChar(liCommentLength);
+      if CheckMultiByte(lForwardChar) then
       begin
         liCommentLength := liCommentLength + 2;
         continue;
       end;
 
-      if ForwardChar(liCommentLength) = '}' then
-        break;
-
-      inc(liCommentLength);
+      if lForwardChar = CurlyLeft then
+        Inc(fcNestedDepth)
+      else if lForwardChar = CurlyRight then begin
+        Dec(fcNestedDepth);
+        if (fcNestedDepth = 0) then
+          break;
+      end;
+      Inc(liCommentLength);
     end;
 
     { include the closing brace }
@@ -289,6 +297,7 @@ begin
     exit;
 
   pcToken.TokenType  := ttComment;
+  Inc(fcNestedDepth);
   liCommentLength := 1;
 
   { compiler directive are the comments with a $ just after the open-curly
