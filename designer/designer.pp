@@ -3038,7 +3038,7 @@ begin
     {$IFDEF VerboseDesigner}
     DebugLn('[TDesigner.Notification] opRemove ',dbgsName(AComponent));
     {$ENDIF}
-    DoDeletePersistent(AComponent,false);
+    // DoDeletePersistent is called already in RemovePersistentAndChilds.
   end;
 end;
 
