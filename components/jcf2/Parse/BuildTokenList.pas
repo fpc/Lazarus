@@ -48,7 +48,6 @@ type
 
     { woker procs }
     fiCurrentIndex: integer;
-    fcNestedDepth: integer;
 
     procedure SetSourceCode(const Value: WideString);
 
@@ -105,8 +104,7 @@ uses
   { local }
   JcfStringUtils, JcfSystemUtils,
   JcfUnicode,
-  JcfRegistrySettings,
-  JcfSetBase;
+  JcfRegistrySettings;
 
 const
   CurlyLeft = widechar(123);
@@ -261,10 +259,12 @@ end;
 function TBuildTokenList.TryCurlyComment(const pcToken: TSourceToken): boolean;
 var
   liCommentLength: integer;
-  lForwardChar:widechar;
+  lNestedDepth: integer;
   procedure MoveToCommentEnd;
+  var
+    lForwardChar:widechar;
   begin
-    { comment is ended by close-curly or by EOF (bad source) }
+    { comment is ended by (close-curly AND lNestedDepth=0) or by EOF (bad source) }
     while True do
     begin
       if EndOfFileAfter(liCommentLength) then
@@ -275,20 +275,15 @@ var
         liCommentLength := liCommentLength + 2;
         continue;
       end;
-
+      Inc(liCommentLength);
       if lForwardChar = CurlyLeft then
-        Inc(fcNestedDepth)
+        Inc(lNestedDepth)
       else if lForwardChar = CurlyRight then begin
-        Dec(fcNestedDepth);
-        if (fcNestedDepth = 0) then
+        Dec(lNestedDepth);
+        if (lNestedDepth = 0) then
           break;
       end;
-      Inc(liCommentLength);
     end;
-
-    { include the closing brace }
-    if not EndOfFileAfter(liCommentLength) and (ForwardChars(liCommentLength, 1) = '}') then
-      inc(liCommentLength);
   end;
 
 begin
@@ -297,7 +292,7 @@ begin
     exit;
 
   pcToken.TokenType  := ttComment;
-  Inc(fcNestedDepth);
+  lNestedDepth := 1;
   liCommentLength := 1;
 
   { compiler directive are the comments with a $ just after the open-curly
