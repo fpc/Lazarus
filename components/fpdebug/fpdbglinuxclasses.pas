@@ -9,6 +9,7 @@ uses
   Classes,
   SysUtils,
   BaseUnix,
+  termio,
   process,
   FpDbgClasses,
   FpDbgLoader,
@@ -159,6 +160,8 @@ type
     u_debugreg : array[0..7] of longint;
   end;
 
+function login_tty(__fd:longint):longint;cdecl;external 'c' name 'login_tty';
+function openpty(__amaster:Plongint; __aslave:Plongint; __name:Pchar; __termp:pointer{Ptermios}; __winp:pointer{Pwinsize}):longint;cdecl;external 'util' name 'openpty';
 
 const
   R15      = 0;
@@ -245,6 +248,7 @@ type
     FProcProcess: TProcess;
     FIsTerminating: boolean;
     FExceptionSignal: PtrUInt;
+    FMasterPtyFd: cint;
     {$ifndef VER2_6}
     procedure OnForkEvent(Sender : TObject);
     {$endif}
@@ -262,6 +266,7 @@ type
 
     function CheckForConsoleOutput(ATimeOutMs: integer): integer; override;
     function GetConsoleOutput: string; override;
+    procedure SendConsoleInput(AString: string); override;
 
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
@@ -276,6 +281,9 @@ type
 procedure RegisterDbgClasses;
 
 implementation
+
+var
+  GSlavePtyFd: cint;
 
 procedure RegisterDbgClasses;
 begin
@@ -298,12 +306,19 @@ procedure OnForkEvent;
 var
   e: integer;
 begin
+  login_tty(GSlavePtyFd);
+  e := fpgeterrno;
+  if e <> 0 then
+    begin
+    writeln('Failed to login to pty. Errcode: '+inttostr(e)+' - '+inttostr(GSlavePtyFd));
+    end;
+
   fpPTrace(PTRACE_TRACEME, 0, nil, nil);
   e := fpgeterrno;
   if e <> 0 then
     begin
     writeln('Failed to start trace of process. Errcode: '+inttostr(e));
-    end
+    end;
 end;
 
 function TDbgLinuxThread.GetDebugRegOffset(ind: byte): pointer;
@@ -542,12 +557,15 @@ end;
 constructor TDbgLinuxProcess.Create(const AName: string; const AProcessID,
   AThreadID: Integer; AOnLog: TOnLog);
 begin
+  FMasterPtyFd:=-1;
   inherited Create(AName, AProcessID, AThreadID, AOnLog);
 end;
 
 destructor TDbgLinuxProcess.Destroy;
 begin
   FProcProcess.Free;
+  if FMasterPtyFd>-1 then
+    FpClose(FMasterPtyFd);
   inherited Destroy;
 end;
 
@@ -555,6 +573,7 @@ class function TDbgLinuxProcess.StartInstance(AFileName: string; AParams, AnEnvi
 var
   PID: TPid;
   AProcess: TProcess;
+  AMasterPtyFd: cint;
   AnExecutabeFilename: string;
 begin
   result := nil;
@@ -579,12 +598,14 @@ begin
     AProcess.Parameters:=AParams;
     AProcess.Environment:=AnEnvironment;
     AProcess.CurrentDirectory:=AWorkingDirectory;
-    AProcess.Options := AProcess.Options + [poUsePipes];
+    if openpty(@AMasterPtyFd, @GSlavePtyFd, nil, nil, nil) <> 0 then
+      AOnLog('Failed to open new pty. Errcode: '+inttostr(fpgeterrno), dllDebug);
     AProcess.Execute;
     PID:=AProcess.ProcessID;
 
     sleep(100);
     result := TDbgLinuxProcess.Create(AFileName, Pid, -1, AOnLog);
+    TDbgLinuxProcess(result).FMasterPtyFd := AMasterPtyFd;
     TDbgLinuxProcess(result).FProcProcess := AProcess;
   except
     on E: Exception do
@@ -714,22 +735,32 @@ begin
   sleepytime.tv_sec := ATimeOutMs div 1000;
   sleepytime.tv_usec := (ATimeOutMs mod 1000)*1000;
   FpFD_ZERO(f);
-  fpFD_SET(FProcProcess.Output.Handle,f);
-  result := fpselect(FProcProcess.Output.Handle+1,@f,nil,nil,@sleepytime);
+  fpFD_SET(FMasterPtyFd,f);
+  result := fpselect(FMasterPtyFd+1,@f,nil,nil,@sleepytime);
 end;
 
 function TDbgLinuxProcess.GetConsoleOutput: string;
 var
   ABytesAvailable: DWord;
+  ABytesRead: cint;
 begin
-  ABytesAvailable := FProcProcess.Output.NumBytesAvailable;
+  if fpioctl(FMasterPtyFd, FIONREAD, @ABytesAvailable)<0 then
+    ABytesAvailable := 0;
+
   if ABytesAvailable>0 then
   begin
     setlength(result, ABytesAvailable);
-    FProcProcess.Output.Read(result[1], ABytesAvailable);
+    ABytesRead := fpRead(FMasterPtyFd, result[1], ABytesAvailable);
+    SetLength(result, ABytesRead);
   end
   else
     result := '';
+end;
+
+procedure TDbgLinuxProcess.SendConsoleInput(AString: string);
+begin
+  if FpWrite(FMasterPtyFd, AString[1], length(AString)) <> Length(AString) then
+    Log('Failed to send input to console.', dllDebug);
 end;
 
 function TDbgLinuxProcess.GetInstructionPointerRegisterValue: TDbgPtr;

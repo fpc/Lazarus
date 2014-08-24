@@ -288,6 +288,7 @@ type
 
     function CheckForConsoleOutput(ATimeOutMs: integer): integer; virtual;
     function GetConsoleOutput: string; virtual;
+    procedure SendConsoleInput(AString: string); virtual;
 
     function AddThread(AThreadIdentifier: THandle): TDbgThread;
     procedure LoadInfo; override;
@@ -847,6 +848,11 @@ end;
 function TDbgProcess.GetConsoleOutput: string;
 begin
   result := '';
+end;
+
+procedure TDbgProcess.SendConsoleInput(AString: string);
+begin
+  // Do nothing
 end;
 
 function TDbgProcess.AddThread(AThreadIdentifier: THandle): TDbgThread;

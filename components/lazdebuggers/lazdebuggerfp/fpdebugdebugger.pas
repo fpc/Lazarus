@@ -297,8 +297,8 @@ var
 begin
   if (Data=0) or assigned(TFpDebugDebugger(Data).FConsoleOutputThread) then
   begin
-    RTLeventSetEvent(FHasConsoleOutputQueued);
     s := FFpDebugDebugger.FDbgController.CurrentProcess.GetConsoleOutput;
+    RTLeventSetEvent(FHasConsoleOutputQueued);
     FFpDebugDebugger.OnConsoleOutput(self, s);
   end;
 end;
@@ -1482,6 +1482,10 @@ begin
           String(AParams[1].VPointer^), TDBGType(AParams[2].VPointer^),
           EvalFlags);
       end;
+    dcSendConsoleInput:
+      begin
+        FDbgController.CurrentProcess.SendConsoleInput(String(AParams[0].VAnsiString));
+      end;
   end; {case}
 end;
 
@@ -1740,7 +1744,7 @@ end;
 function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result:=[dcRun, dcStop, dcStepIntoInstr, dcStepOverInstr, dcStepOver,
-           dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate];
+           dcRunTo, dcPause, dcStepOut, dcStepInto, dcEvaluate, dcSendConsoleInput];
 end;
 
 end.
