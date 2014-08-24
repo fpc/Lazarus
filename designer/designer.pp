@@ -2991,6 +2991,9 @@ Begin
   // remove all child controls owned by the LookupRoot
   if (APersistent is TWinControl) then begin
     AWinControl:=TWinControl(APersistent);
+    // Component may to auto-create new components during deletion unless informed.
+    // ComponentState does not have csDestroying yet when removing children.
+    AWinControl.DesignerDeleting := True;
     i:=AWinControl.ControlCount-1;
     while (i>=0) do begin
       ChildControl:=AWinControl.Controls[i];
@@ -3005,6 +3008,7 @@ Begin
       end else
         dec(i);
     end;
+    AWinControl.DesignerDeleting := False;
   end;
   // remove component
   {$IFDEF VerboseDesigner}

@@ -1893,6 +1893,7 @@ type
     FDoubleBuffered: Boolean;
     FDockSite: Boolean;
     FUseDockManager: Boolean;
+    FDesignerDeleting: Boolean;
     procedure AlignControl(AControl: TControl);
     function GetBrush: TBrush;
     function GetControl(const Index: Integer): TControl;
@@ -2120,6 +2121,7 @@ type
     property Showing: Boolean read FShowing; // handle visible
     property UseDockManager: Boolean read FUseDockManager
                                      write SetUseDockManager default False;
+    property DesignerDeleting: Boolean read FDesignerDeleting write FDesignerDeleting;
     property VisibleDockClientCount: Integer read GetVisibleDockClientCount;
   public
     // size, position, bounds

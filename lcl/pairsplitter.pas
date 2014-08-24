@@ -170,19 +170,26 @@ end;
 procedure TPairSplitterSide.SetParent(AParent: TWinControl);
 var
   ASplitter: TCustomPairSplitter;
+  DeletingSplitter: Boolean;
 begin
   CheckNewParent(AParent);
   // remove from side list of old parent
   ASplitter := Splitter;
-  if ASplitter <> nil then
+  if ASplitter <> nil then begin
     ASplitter.RemoveSide(Self);
+    DeletingSplitter := (csDestroying in ASplitter.ComponentState) or DesignerDeleting;
+  end
+  else
+    DeletingSplitter := False;
 
   inherited SetParent(AParent);
 
-  // add to side list of new parent
-  ASplitter:=Splitter;
-  if ASplitter <> nil then
-    ASplitter.AddSide(Self);
+  if not DeletingSplitter then begin
+    // add to side list of new parent
+    ASplitter:=Splitter;
+    if ASplitter <> nil then
+      ASplitter.AddSide(Self);
+  end;
 end;
 
 procedure TPairSplitterSide.WMPaint(var PaintMessage: TLMPaint);
@@ -281,7 +288,7 @@ begin
   i := Low(FSides);
   repeat
     if FSides[i] = ASide then
-    Exit;
+      Exit;
     if FSides[i] =nil then
     begin
       FSides[i] := ASide;
@@ -309,7 +316,8 @@ begin
       FSides[i] := nil;
     end;
   // if the user deletes a side at designtime, autocreate a new one
-  if (csDesigning in ComponentState) then
+  if (ComponentState * [csDesigning,csDestroying] = [csDesigning])
+  and not DesignerDeleting then
     CreateSides;
 end;
 
