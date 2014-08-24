@@ -77,7 +77,6 @@ type
     dfShowEditorHints,
     dfShowComponentCaptions,
     dfDestroyingForm,
-    dfDeleting,
     dfNeedPainting
     );
   TDesignerFlags = set of TDesignerFlag;
@@ -172,8 +171,6 @@ type
     LastMouseMovePos: TPoint;
     LastFormCursor: TCursor;
     DeletingPersistent: TList;
-    IgnoreDeletingPersistent: TList;
-
     LastPaintSender: TControl;
 
     // event handlers for designed components
@@ -649,7 +646,6 @@ begin
   DDC:=TDesignerDeviceContext.Create;
   LastFormCursor := crDefault;
   DeletingPersistent:=TList.Create;
-  IgnoreDeletingPersistent:=TList.Create;
   FPopupMenuComponentEditor := nil;
 
   SetLength(FUndoList, 64);
@@ -691,7 +687,6 @@ begin
   FreeAndNil(FHintTimer);
   FreeAndNil(DDC);
   FreeAndNil(DeletingPersistent);
-  FreeAndNil(IgnoreDeletingPersistent);
   inherited Destroy;
 end;
 
@@ -2829,18 +2824,14 @@ begin
   // clear selection by selecting the LookupRoot
   SelectOnlyThisComponent(FLookupRoot);
   // delete marked components
-  Include(FFlags,dfDeleting);
   try
     if DeletingPersistent.Count=0 then exit;
     while DeletingPersistent.Count>0 do begin
       APersistent:=TPersistent(DeletingPersistent[DeletingPersistent.Count-1]);
       //debugln(['TDesigner.DoDeleteSelectedComponents A ',dbgsName(APersistent),' ',(APersistent is TComponent) and (TheFormEditor.FindComponent(TComponent(APersistent))<>nil)]);
       RemovePersistentAndChilds(APersistent);
-      //writeln('TDesigner.DoDeleteSelectedComponents B ',DeletingPersistent.IndexOf(AComponent));
     end;
-    IgnoreDeletingPersistent.Clear;
   finally
-    Exclude(FFlags,dfDeleting);
     Modified;
   end;
   Result:=true;
@@ -2894,7 +2885,6 @@ begin
   finally
     // unmark component
     DeletingPersistent.Remove(APersistent);
-    IgnoreDeletingPersistent.Remove(APersistent);
   end;
   // call ComponentDeleted handler
   if Assigned(FOnPersistentDeleted) then
@@ -2986,7 +2976,6 @@ Begin
   DebugLn('[TDesigner.RemovePersistentAndChilds] START ',dbgsName(APersistent),' ',DbgS(APersistent));
   {$ENDIF}
   if (APersistent=FLookupRoot) or (APersistent=Form)
-  or (IgnoreDeletingPersistent.IndexOf(APersistent)>=0)
   then exit;
   // remove all child controls owned by the LookupRoot
   if (APersistent is TWinControl) then begin
@@ -2998,8 +2987,7 @@ Begin
     while (i>=0) do begin
       ChildControl:=AWinControl.Controls[i];
 //      if (GetLookupRootForComponent(ChildControl)=FLookupRoot)
-      if (ChildControl.Owner=FLookupRoot)
-      and (IgnoreDeletingPersistent.IndexOf(ChildControl)<0) then begin
+      if ChildControl.Owner=FLookupRoot then begin
         //Debugln(['[TDesigner.RemoveComponentAndChilds] B ',dbgsName(APersistent),' Child=',dbgsName(ChildControl),' i=',i,' ',TheFormEditor.FindComponent(ChildControl)<>nil]);
         RemovePersistentAndChilds(ChildControl);
         // the component list of the form has changed
@@ -3023,11 +3011,6 @@ begin
     {$IFDEF VerboseDesigner}
     DebugLn('opInsert ',dbgsName(AComponent),' ',DbgS(AComponent));
     {$ENDIF}
-    if dfDeleting in FFlags then begin
-      // a component has auto created a new component during deletion
-      // -> ignore the new component
-      IgnoreDeletingPersistent.Add(AComponent);
-    end;
   end
   else
   if Operation = opRemove then begin
