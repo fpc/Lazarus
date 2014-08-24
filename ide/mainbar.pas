@@ -496,6 +496,10 @@ begin
   inherited CreateNew(TheOwner, 1);
   AllowDropFiles:=true;
   OnDropFiles:=@MainIDEBarDropFiles;
+  try
+    Icon.LoadFromResourceName(HInstance, 'WIN_MAIN');
+  except
+  end;
 end;
 
 procedure TMainIDEBar.HideIDE;

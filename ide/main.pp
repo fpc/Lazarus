@@ -11188,6 +11188,11 @@ begin
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   if FormEditor1<>nil then
     FormEditor1.Obj_Inspector := ObjectInspector1;
+
+  try
+    ObjectInspector1.Icon.LoadFromResourceName(HInstance, 'WIN_OBJECTINSPECTOR');
+  except
+  end;
 end;
 
 procedure TMainIDE.OnApplicationUserInput(Sender: TObject; Msg: Cardinal);

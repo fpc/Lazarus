@@ -98,7 +98,10 @@ procedure TMessagesView.FormCreate(Sender: TObject);
 begin
   IDEMessagesWindow:=Self;
   Caption:=lisMenuViewMessages;
-
+  try
+    IDEMessagesWindow.Icon.LoadFromResourceName(HInstance, 'WIN_MESSAGES');
+  except
+  end;
   MessagesFrame1.MessagesCtrl.OnOpenMessage:=@OnOpenMessage;
   MessagesFrame1.MessagesCtrl.OnOptionsChanged:=@OnMsgCtrlOptsChanged;
 

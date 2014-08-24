@@ -252,3 +252,8 @@ packages/pkg_unit.png
 packages/pkg_package_autoinstall.png
 packages/pkg_add.png
 ide_icon48x48.png
+windows/win_objectinspector.ico
+windows/win_messages.ico
+windows/win_sourceeditor.ico
+windows/win_main.ico
+windows/win_formeditor.ico

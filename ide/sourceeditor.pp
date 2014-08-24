@@ -5717,6 +5717,11 @@ begin
   Application.AddOnMinimizeHandler(@OnApplicationDeactivate);
 
   FStopBtnIdx := IDEImages.LoadImage(16, 'menu_stop');
+
+  try
+    Icon.LoadFromResourceName(HInstance, 'WIN_SOURCEEDITOR');
+  except
+  end;
 end;
 
 destructor TSourceNotebook.Destroy;

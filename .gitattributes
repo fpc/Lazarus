@@ -6004,6 +6004,11 @@ images/states/state_unknown.png -text svneol=unset#image/png
 images/states/state_warning.png -text svneol=unset#image/png
 images/template.png -text svneol=unset#image/png
 images/vase_trans.xpm -text svneol=native#image/x-xpixmap
+images/windows/win_formeditor.ico -text
+images/windows/win_main.ico -text
+images/windows/win_messages.ico -text
+images/windows/win_objectinspector.ico -text
+images/windows/win_sourceeditor.ico -text
 install/lazarus-mime.xml svneol=native#text/plain
 install/lazarus.desktop svneol=native#text/plain
 install/man/Makefile svneol=native#text/plain
