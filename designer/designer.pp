@@ -196,7 +196,6 @@ type
     procedure DoSelectAll;
     procedure DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
     procedure MarkPersistentForDeletion(APersistent: TPersistent);
-    function PersistentIsMarkedForDeletion(APersistent: TPersistent): boolean;
     function GetSelectedComponentClass: TRegisteredComponent;
     procedure NudgePosition(DiffX, DiffY: Integer);
     procedure NudgeSize(DiffX, DiffY: Integer);
@@ -2856,8 +2855,7 @@ begin
   Form.Invalidate;
 end;
 
-procedure TDesigner.DoDeletePersistent(APersistent: TPersistent;
-  FreeIt: boolean);
+procedure TDesigner.DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
 var
   Hook: TPropertyEditorHook;
   AComponent: TComponent;
@@ -2905,14 +2903,8 @@ end;
 
 procedure TDesigner.MarkPersistentForDeletion(APersistent: TPersistent);
 begin
-  if (not PersistentIsMarkedForDeletion(APersistent)) then
+  if DeletingPersistent.IndexOf(APersistent) = -1 then
     DeletingPersistent.Add(APersistent);
-end;
-
-function TDesigner.PersistentIsMarkedForDeletion(APersistent: TPersistent
-  ): boolean;
-begin
-  Result:=(DeletingPersistent.IndexOf(APersistent)>=0);
 end;
 
 function TDesigner.GetSelectedComponentClass: TRegisteredComponent;
