@@ -686,7 +686,7 @@ begin
               PrevMsgID:=PrevMsgID+GetUTF8String(LineStart+length('#| msgid "'),LineEnd-1);
               Handled:=true;
             end else if IsKey(LineStart, '#| "') then begin
-              Msg[CurMsg] := Msg[CurMsg] + GetUTF8String(LineStart+length('#| "'),LineEnd-1);
+              PrevMsgID := PrevMsgID + GetUTF8String(LineStart+length('#| "'),LineEnd-1);
               Handled:=true;
             end;
           ',':
@@ -977,6 +977,20 @@ begin
                 // in lineending, fix here.
                 if not (Value[Length(Value)] in [#13,#10]) then
                   Value := Value + LineEnding;
+
+                //treat #10#13 sequences as #13#10 for consistency,
+                //e.g. #10#13#13#13#10#13#10 should become #13#10#13#13#10#13#10
+                p:=2;
+                while p<=Length(Value) do begin
+                  if (Value[p]=#13) and (Value[p-1]=#10) then begin
+                    Value[p]:=#10;
+                    Value[p-1]:=#13;
+                  end;
+                  // further analysis shouldn't affect found #13#10 pair
+                  if (Value[p]=#10) and (Value[p-1]=#13) then
+                    inc(p);
+                  inc(p);
+                end;
               end;
               // po requires special characters as #number
               p:=1;
@@ -1126,10 +1140,8 @@ begin
   P2 := pchar(S2);
   Result := ord(P1^) - ord(P2^);
 
-  while (Result=0) and (P1^<>#0) do begin
-    Inc(P1); Inc(P2);
-    Dec(L1); Dec(L2);
-    if P1^<>P2^ then begin
+  while (Result=0) and (L1>0) and (L2>0) and (P1^<>#0) do begin
+    if (P1^<>P2^) or (P1^ in [#10,#13]) then begin
       C1 := SkipLineEndings(P1, L1);
       C2 := SkipLineEndings(P2, L2);
       if (C1<>C2) then
@@ -1140,6 +1152,8 @@ begin
         // there are no lineendings at all, will end loop
         result := Ord(P1^)-Ord(P2^);
     end;
+    Inc(P1); Inc(P2);
+    Dec(L1); Dec(L2);
   end;
 
   // if strings are the same, check that all chars have been consumed
