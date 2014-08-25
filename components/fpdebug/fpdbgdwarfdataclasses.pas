@@ -2848,7 +2848,7 @@ end;
 
 function TFpDwarfInfo.FindContext(AAddress: TDbgPtr): TFpDbgInfoContext;
 begin
-  FindContext(1, 0, AAddress);
+  result := FindContext(1, 0, AAddress);
 end;
 
 function TFpDwarfInfo.FindSymbol(AAddress: TDbgPtr): TFpDbgSymbol;
