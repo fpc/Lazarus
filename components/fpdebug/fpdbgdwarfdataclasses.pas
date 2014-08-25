@@ -3970,9 +3970,10 @@ function TDwarfCompilationUnit.ReadAddressAtPointer(var AData: Pointer;
   AIncPointer: Boolean): TFpDbgMemLocation;
 begin
   // do not need mem reader, address is in dwarf. Should be in correct format
-  if FAddressSize = 4 // TODO Dwarf3 depends on FIsDwarf64
-  then Result := TargetLoc(PLongWord(AData)^)
-  else Result := TargetLoc(PQWord(AData)^);
+  if ((Version>2) and IsDwarf64) or ((version < 3) and (FAddressSize = 8)) then
+    Result := TargetLoc(PQWord(AData)^)
+  else
+    Result := TargetLoc(PLongWord(AData)^);
   if AIncPointer then inc(AData, FAddressSize);
 end;
 
