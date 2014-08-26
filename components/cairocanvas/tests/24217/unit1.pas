@@ -13,6 +13,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    btnUnderline: TButton;
     Button1: TButton;
     btn24217: TButton;
     btn19435: TButton;
@@ -25,6 +26,7 @@ type
     procedure btn19435Click(Sender: TObject);
     procedure btnOtherClick(Sender: TObject);
     procedure btnPrintAllClick(Sender: TObject);
+    procedure btnUnderlineClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure btn24217Click(Sender: TObject);
     procedure chkTestsItemClick(Sender: TObject; Index: integer);
@@ -33,10 +35,12 @@ type
     procedure Draw19435(cnv: TCanvas; XDPI,YDPI: Integer);
     procedure Draw24217(cnv: TCanvas; XDPI,YDPI: Integer);
     procedure DrawOther(cnv: TCanvas; XDPI,YDPI: Integer);
+    procedure DrawUnderline(cnv: TCanvas; XDPI,YDPI: Integer);
     function GetOtherAlignment:TAlignment;
     function GetOtherLayout:TTextLayout;
     procedure GetReferencePoint(const r: TRect; cnv:TCanvas; out x, y: Integer);
     procedure PrintOther(aFileName: string = 'other'; aBackend: TCairoBackend = cbPDF);
+    procedure PrintUnderline(aFileName: string = 'underline'; aBackend: TCairoBackend = cbPDF);
   public
     { public declarations }
   end;
@@ -131,6 +135,11 @@ begin
   end;
 end;
 
+procedure TForm1.btnUnderlineClick(Sender: TObject);
+begin
+  PrintUnderline;
+end;
+
 procedure TForm1.btn24217Click(Sender: TObject);
 var
   CairoPrinter: TCairoFilePrinter;
@@ -160,6 +169,7 @@ begin
   if chkTests.Checked[0] then Draw24217(Canvas, ResX, ResY);
   if chkTests.Checked[1] then Draw19435(Canvas, ResX, ResY);
   if chkTests.Checked[2] then DrawOther(Canvas, ResX, ResY);
+  if chkTests.Checked[3] then DrawUnderline(Canvas, ResX, ResY);
 end;
 
 procedure TForm1.Draw19435(cnv: TCanvas; XDPI, YDPI: Integer);
@@ -375,6 +385,65 @@ begin
     format('Alignment: "%s" Layout: "%s" Orientation: %d° ',[sA, sL, radOtherAngle.ItemIndex * 90]));
 end;
 
+procedure TForm1.DrawUnderline(cnv: TCanvas; XDPI, YDPI: Integer);
+const
+  STEXT = 'Pájaro';
+var
+  y: Integer;
+  sz: TSize;
+  R: TRect;
+begin
+
+  // using TextOut
+  R := Rect(XDPI, YDPI, 0, 0);
+  cnv.Font.Name := 'Arial';
+  cnv.Font.Size := 40;
+  cnv.Font.Color := clBlue;
+  cnv.Font.Orientation:=0;
+  cnv.Font.Underline := false;
+  y := R.Top;
+  cnv.TextOut(R.Left, y, STEXT);
+  cnv.Font.Underline := true;
+
+  sz := cnv.TextExtent(STEXT);
+  inc(y, sz.cy);
+  cnv.TextOut(XDPI, y, STEXT);
+
+  cnv.Font.Underline := false;
+  cnv.Font.StrikeThrough := true;
+  inc(y, sz.cy);
+  cnv.TextOut(XDPI, y, STEXT);
+
+  cnv.Font.Underline := true;
+  cnv.Font.StrikeThrough := true;
+  inc(y, sz.cy);
+  cnv.TextOut(XDPI, y, STEXT);
+
+  // using TextRect
+  cnv.Font.Color:= clRed;
+  cnv.Font.Underline := false;
+  cnv.Font.StrikeThrough := false;
+  OffsetRect(R, 2*XDPI, 0);
+  R.Right := R.Left + sz.cx;
+  R.Bottom := R.Top + sz.cy;
+  cnv.TextRect(R, R.Left, R.Top, STEXT);
+
+  OffsetRect(R, 0, sz.cy);
+  cnv.Font.Underline := true;
+  cnv.Font.StrikeThrough := false;
+  cnv.TextRect(R, R.Left, R.Top, STEXT);
+
+  OffsetRect(R, 0, sz.cy);
+  cnv.Font.Underline := false;
+  cnv.Font.StrikeThrough := true;
+  cnv.TextRect(R, R.Left, R.Top, STEXT);
+
+  OffsetRect(R, 0, sz.cy);
+  cnv.Font.Underline := true;
+  cnv.Font.StrikeThrough := true;
+  cnv.TextRect(R, R.Left, R.Top, STEXT);
+end;
+
 function TForm1.GetOtherAlignment: TAlignment;
 begin
   case radOtherAlign.ItemIndex of
@@ -434,6 +503,21 @@ begin
   CairoPrinter.BeginDoc;
   with CairoPrinter do
     DrawOther(Canvas, XDPI, YDPI);
+  CairoPrinter.EndDoc;
+  CairoPrinter.Free;
+end;
+
+procedure TForm1.PrintUnderline(aFileName: string = 'underline'; aBackend: TCairoBackend = cbPDF);
+var
+  CairoPrinter: TCairoFilePrinter;
+begin
+  CairoPrinter := TCairoFilePrinter.create;
+  //CairoPrinter.CairoBackend:=cbPS;
+  CairoPrinter.CairoBackend:=aBackend;
+  CairoPrinter.FileName:=aFileName;
+  CairoPrinter.BeginDoc;
+  with CairoPrinter do
+    DrawUnderline(Canvas, XDPI, YDPI);
   CairoPrinter.EndDoc;
   CairoPrinter.Free;
 end;

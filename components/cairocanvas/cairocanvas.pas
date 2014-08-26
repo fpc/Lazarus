@@ -35,6 +35,7 @@ type
     fFontDesc: PPangoFontDescription;
     fFontDescStr: string;
     function StylesToStr(Styles: TFontStyles):string;
+    procedure UpdatePangoLayout(Layout: PPangoLayout);
     {$endif}
     procedure SelectFontEx(AStyle: TFontStyles; const AName: string;
       ASize: double);
@@ -652,6 +653,40 @@ begin
   if fsItalic in Styles then
     Result := Result + 'italic ';
 end;
+
+procedure TCairoPrinterCanvas.UpdatePangoLayout(Layout: PPangoLayout);
+var
+  AttrListTemporary: Boolean;
+  AttrList: PPangoAttrList;
+  Attr: PPangoAttribute;
+begin
+  if Font.Underline or Font.StrikeThrough then begin
+
+    AttrListTemporary := false;
+    AttrList := pango_layout_get_attributes(Layout);
+    if (AttrList = nil) then
+    begin
+      AttrList := pango_attr_list_new();
+      AttrListTemporary := True;
+    end;
+    if Font.Underline then
+      Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
+    else
+      Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+    pango_attr_list_change(AttrList, Attr);
+
+    Attr := pango_attr_strikethrough_new(Font.StrikeThrough);
+    pango_attr_list_change(AttrList, Attr);
+
+    pango_layout_set_attributes(Layout, AttrList);
+
+    pango_cairo_update_layout(cr, Layout);
+
+    if AttrListTemporary then
+      pango_attr_list_unref(AttrList);
+  end;
+end;
+
 {$endif}
 
 procedure TCairoPrinterCanvas.FillAndStroke;
@@ -941,6 +976,7 @@ begin
   // use absolute font size sintax  (px)
   Layout := Pango_Cairo_Create_Layout(cr);
   pango_layout_set_font_description(layout, fFontDesc);
+  UpdatePangoLayout(Layout);
   {$endif}
   if Font.Orientation = 0 then
   begin
@@ -1112,6 +1148,7 @@ begin
     {$ifdef pangocairo}
     Layout := Pango_Cairo_Create_Layout(cr);
     pango_layout_set_font_description(layout, fFontDesc);
+    UpdatePangolayout(Layout);
     {$else}
     cairo_font_extents(cr, @fe);
     {$endif}

@@ -20,7 +20,7 @@ object Form1: TForm1
   object btn24217: TButton
     Left = 548
     Height = 25
-    Top = 36
+    Top = 32
     Width = 75
     Caption = 'btn24217'
     OnClick = btn24217Click
@@ -29,17 +29,17 @@ object Form1: TForm1
   object btn19435: TButton
     Left = 548
     Height = 25
-    Top = 68
+    Top = 64
     Width = 75
     Caption = 'btn19435'
     OnClick = btn19435Click
     TabOrder = 2
   end
   object chkTests: TCheckGroup
-    Left = 526
-    Height = 80
+    Left = 520
+    Height = 88
     Top = 144
-    Width = 97
+    Width = 103
     AutoFill = True
     Caption = 'Paint or Print'
     ChildSizing.LeftRightSpacing = 6
@@ -50,17 +50,18 @@ object Form1: TForm1
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 57
-    ClientWidth = 93
+    ClientHeight = 65
+    ClientWidth = 99
     Items.Strings = (
       '24217'
       '19435'
       'Other'
+      'Underline'
     )
     OnItemClick = chkTestsItemClick
     TabOrder = 3
     Data = {
-      03000000020202
+      0400000002020202
     }
   end
   object btnPrintAll: TButton
@@ -75,7 +76,7 @@ object Form1: TForm1
   object btnOther: TButton
     Left = 548
     Height = 25
-    Top = 100
+    Top = 96
     Width = 75
     Caption = 'btnOther'
     OnClick = btnOtherClick
@@ -138,6 +139,15 @@ object Form1: TForm1
       '270'
     )
     TabOrder = 7
+  end
+  object btnUnderline: TButton
+    Left = 548
+    Height = 25
+    Top = 124
+    Width = 75
+    Caption = 'btnUnderline'
+    OnClick = btnUnderlineClick
+    TabOrder = 8
   end
   object PrintDialog1: TPrintDialog
     left = 129
