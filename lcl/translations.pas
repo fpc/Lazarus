@@ -1201,14 +1201,22 @@ begin
     if Item.Context='' then
       Item.Context := Item.IdentifierLow;
       
-    // if old item it's already translated use translation
+    // if old item is already translated use translation
     if Item.Translation<>'' then
       ATranslation := Item.Translation;
 
     AFlags := Item.Flags;
-    // if old item was fuzzy, new should be fuzzy too.
-    if (ATranslation<>'') and (pos('fuzzy', AFlags)<>0) then
-      APrevStr := Item.PreviousID;
+    // if old item was fuzzy, new should be fuzzy too
+    if ATranslation<>'' then
+      if pos('fuzzy', AFlags)<>0 then
+        APrevStr := Item.PreviousID
+      else begin
+        // if some translation was automatically assigned, mark item as fuzzy
+        // to avoid potential subtle translation deficiences
+        if AFlags<>'' then
+          AFlags := AFlags + ', ';
+        AFlags := AFlags + 'fuzzy';
+      end;
 
     // update identifier list
     AContext := Identifier;
