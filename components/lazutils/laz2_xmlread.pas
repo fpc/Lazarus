@@ -2498,9 +2498,10 @@ begin
   FState := rsDTD;
   try
     FDocType.FName := ExpectName;
-    SkipS(True);
-    ParseExternalID(FDocType.FSystemID, FDocType.FPublicID, False);
-    SkipS;
+    if SkipS(false) then begin
+      ParseExternalID(FDocType.FSystemID, FDocType.FPublicID, False);
+      SkipS;
+    end;
   finally
     // DONE: append node after its name has been set; always append to avoid leak
     if FCanonical then
