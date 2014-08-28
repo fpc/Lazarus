@@ -665,6 +665,10 @@ msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
 msgstr "Sisipkan field DB"
 
+#: lr_const.sfilenotfound
+msgid "File not found"
+msgstr ""
+
 #: lr_const.sfilter
 msgid "Filter properties"
 msgstr "Properti filter"
@@ -1318,10 +1322,6 @@ msgstr "&Undo"
 msgid "Variables &list ..."
 msgstr "Da&ftar variabel..."
 
-#: lr_const.sfrferror
-msgid "Unsupported FRF format"
-msgstr "Format FRF tidak didukung"
-
 #: lr_const.sfrom
 msgid "from"
 msgstr "dari"
@@ -1497,6 +1497,18 @@ msgstr "Sisipkan obyek Bentuk"
 
 #: lr_const.sinterpretator
 msgid "Interpretator"
+msgstr ""
+
+#: lr_const.sinvalidfrfreport
+msgid "Invalid binary report"
+msgstr ""
+
+#: lr_const.sinvalidfrfversion
+msgid "Invalid report version"
+msgstr ""
+
+#: lr_const.sinvalidlrfreport
+msgid "Invalid report format"
 msgstr ""
 
 #: lr_const.sinvalidvariablename
@@ -2468,6 +2480,10 @@ msgstr "ke"
 #: lr_const.stransparent
 msgid "Transparent"
 msgstr "Transparan"
+
+#: lr_const.sunabletoreadversion
+msgid "Unable to read report version"
+msgstr ""
 
 #: lr_const.suntitled
 msgid "Untitled"

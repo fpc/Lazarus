@@ -145,6 +145,8 @@ type
   
   TLayoutOrder = (loColumns, loRows);
 
+  ELazReportException = class(Exception);
+
   TfrMemoStrings  =Class(TStringList);
   TfrScriptStrings=Class(TStringList);
   
@@ -1116,6 +1118,7 @@ type
     procedure ClearAttribs;
     function FindObjectByName(AName:string):TfrObject;
     procedure ExecScript;
+    procedure CheckFileExists(FName: string);
   protected
     function DoObjectClick(AObj:TfrView):boolean;
     procedure DoBeginBand(Band: TfrBand); virtual;
@@ -9827,8 +9830,11 @@ end;
 // load/save methods
 procedure TfrReport.LoadFromStream(Stream: TStream);
 begin
+
   CurReport := Self;
-  Stream.Read(frVersion, 1);
+  if Stream.Read(frVersion, 1)<>1 then
+    raise ELazReportException.CreateFmt('%s: %s', [sInvalidFRFReport, sUnableToReadVersion]);
+
   if frVersion < 21 then
   begin
     frVersion := 21;
@@ -9850,17 +9856,22 @@ begin
     begin
       Pages.Clear;
       Pages.Add;
-      MessageDlg(sFRFError+^M+E.Message,mtError,[mbOk],0)
+      MessageDlg(sInvalidFRFReport+^M+E.Message,mtError,[mbOk],0)
     end;
   end
   else
-    MessageDlg(sFRFError,mtError,[mbOk],0);
+    raise ELazReportException.CreateFmt('%s: %s (%d)', [sInvalidFRFReport, sInvalidFRFVersion, frVersion]);
 end;
 
 procedure TfrReport.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 var
   ATitle: string;
 begin
+
+  ATitle := XML.GetValue(Path+'Version/Value', 'LR-ERROR');
+  if ATitle='LR-ERROR' then
+    raise ELazReportException.CreateFmt('%s: %s',[sReportLoadingError, sInvalidLRFReport]);
+
   CurReport := Self;
   frVersion := XML.GetValue(Path+'Version/Value'{%H-}, 21);
   fComments.Text := XML.GetValue(Path+'Comments/Value', '');
@@ -9923,6 +9934,7 @@ begin
     LoadFromXMLFile(fName)
   else
   begin
+    CheckFileExists(fName);
     Stream := TFileStream.Create(UTF8ToSys(FName), fmOpenRead);
     LoadFromStream(Stream);
     Stream.Free;
@@ -9934,6 +9946,7 @@ procedure TfrReport.LoadFromXMLFile(const Fname: String);
 var
   XML: TLrXMLConfig;
 begin
+  CheckFileExists(FName);
   XML := TLrXMLConfig.Create(nil);
   XML.Filename := UTF8ToSys(FName);
   try
@@ -11157,6 +11170,13 @@ begin
       FreeAndNil(ErrorList);
     end;
   end;
+end;
+
+procedure TfrReport.CheckFileExists(FName: string);
+begin
+  if not FileExistsUTF8(FName) then
+    raise ELazReportException.CreateFmt('%s: %s (%s)',
+      [sReportLoadingError, sFileNotFound, FName]);
 end;
 
 function TfrReport.DoObjectClick(AObj: TfrView): boolean;

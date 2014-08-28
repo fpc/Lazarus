@@ -676,6 +676,10 @@ msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
 msgstr "Insérer un champ BDD"
 
+#: lr_const.sfilenotfound
+msgid "File not found"
+msgstr ""
+
 #: lr_const.sfilter
 msgid "Filter properties"
 msgstr "Propriétés de filtre"
@@ -1329,10 +1333,6 @@ msgstr "&Défaire"
 msgid "Variables &list ..."
 msgstr "&Liste de variables..."
 
-#: lr_const.sfrferror
-msgid "Unsupported FRF format"
-msgstr "Format FRF non supporté."
-
 #: lr_const.sfrom
 msgid "from"
 msgstr "de"
@@ -1508,6 +1508,18 @@ msgstr "Inserer un objet forme géométrique"
 
 #: lr_const.sinterpretator
 msgid "Interpretator"
+msgstr ""
+
+#: lr_const.sinvalidfrfreport
+msgid "Invalid binary report"
+msgstr ""
+
+#: lr_const.sinvalidfrfversion
+msgid "Invalid report version"
+msgstr ""
+
+#: lr_const.sinvalidlrfreport
+msgid "Invalid report format"
 msgstr ""
 
 #: lr_const.sinvalidvariablename
@@ -2479,6 +2491,10 @@ msgstr "à"
 #: lr_const.stransparent
 msgid "Transparent"
 msgstr "Transparent"
+
+#: lr_const.sunabletoreadversion
+msgid "Unable to read report version"
+msgstr ""
 
 #: lr_const.suntitled
 msgid "Untitled"

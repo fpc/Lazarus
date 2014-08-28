@@ -264,12 +264,15 @@ resourcestring
   sFRVariables = 'FR variables';
   sErrorOccured = 'An error occurred during calculation';
   sSpecVal = 'Other';
-  sFRFError = 'Unsupported FRF format';
+  sInvalidFRFReport = 'Invalid binary report';
+  sInvalidLRFReport = 'Invalid report format';
+  sUnableToReadVersion = 'Unable to read report version';
+  sInvalidFRFVersion = 'Invalid report version';
   sReportLoadingError = 'Error while loading report';
   sClassObjectNotFound = 'Class Object "%s" not found';
   sDuplicatedObjectName = 'An object named "%s" already exists';
   sObjectNotFound = 'Object "%s" not found';
-
+  sFileNotFound = 'File not found';
   
   SDoc       = 'Report:';
   SBand      = 'Band:';

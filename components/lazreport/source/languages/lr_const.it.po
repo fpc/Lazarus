@@ -668,6 +668,10 @@ msgctxt "lr_const.sfieldsforminsert"
 msgid "Insert DB field"
 msgstr "Inserisci campo DB"
 
+#: lr_const.sfilenotfound
+msgid "File not found"
+msgstr ""
+
 #: lr_const.sfilter
 msgid "Filter properties"
 msgstr "Proprietà del filtro"
@@ -1321,10 +1325,6 @@ msgstr "&Annulla"
 msgid "Variables &list ..."
 msgstr "&Lista variabili"
 
-#: lr_const.sfrferror
-msgid "Unsupported FRF format"
-msgstr "Formato FRF non supportato"
-
 #: lr_const.sfrom
 msgid "from"
 msgstr "da"
@@ -1500,6 +1500,18 @@ msgstr "Inserisci oggetto forma"
 
 #: lr_const.sinterpretator
 msgid "Interpretator"
+msgstr ""
+
+#: lr_const.sinvalidfrfreport
+msgid "Invalid binary report"
+msgstr ""
+
+#: lr_const.sinvalidfrfversion
+msgid "Invalid report version"
+msgstr ""
+
+#: lr_const.sinvalidlrfreport
+msgid "Invalid report format"
 msgstr ""
 
 #: lr_const.sinvalidvariablename
@@ -2471,6 +2483,10 @@ msgstr "a"
 #: lr_const.stransparent
 msgid "Transparent"
 msgstr "Trasparente"
+
+#: lr_const.sunabletoreadversion
+msgid "Unable to read report version"
+msgstr ""
 
 #: lr_const.suntitled
 msgid "Untitled"
