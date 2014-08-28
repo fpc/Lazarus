@@ -7,7 +7,7 @@
 {                                         }
 {*****************************************}
 
-unit lr_PreviewToolsAbsract;
+unit lr_PreviewToolsAbstract;
 
 {$mode objfpc}{$H+}
 

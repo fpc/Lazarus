@@ -233,7 +233,7 @@ type
 
 
 implementation
-uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg, Printers, strutils, lr_PreviewToolsAbsract;
+uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg, Printers, strutils, lr_PreviewToolsAbstract;
 
 {$R *.lfm}
 

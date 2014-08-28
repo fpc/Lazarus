@@ -291,8 +291,8 @@ See license.txt and license-lazreport.txt for details.
         <UnitName Value="lr_design_ins_filed"/>
       </Item66>
       <Item67>
-        <Filename Value="lr_previewtoolsabsract.pas"/>
-        <UnitName Value="lr_PreviewToolsAbsract"/>
+        <Filename Value="lr_previewtoolsabstract.pas"/>
+        <UnitName Value="lr_previewtoolsabstract"/>
       </Item67>
     </Files>
     <i18n>
