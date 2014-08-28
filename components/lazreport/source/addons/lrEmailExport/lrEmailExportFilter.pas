@@ -5,7 +5,7 @@ unit lrEmailExportFilter;
 interface
 
 uses
-  Classes, SysUtils, LR_Class, lr_PreviewToolsAbsract, UTF8Process;
+  Classes, SysUtils, LR_Class, lr_PreviewToolsAbstract, UTF8Process;
 
 type
   TEmailApp = class;
@@ -243,7 +243,7 @@ begin
   inherited Create(AOwner);
   FEmailList:=TStringList.Create;
   FBody:=TStringList.Create;
-  FCaption:='Отправить по электронной почте';
+  FCaption:='Send by email';
 end;
 
 destructor TlrEmailExportFilter.Destroy;
