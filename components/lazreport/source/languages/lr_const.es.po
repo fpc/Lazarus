@@ -1495,6 +1495,10 @@ msgstr "Insertar objeto de Forma"
 msgid "Interpretator"
 msgstr ""
 
+#: lr_const.sinvalidvariablename
+msgid "\"%s\" is not a valid variable name."
+msgstr ""
+
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
 msgstr "Mantener proporciones"

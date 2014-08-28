@@ -15,8 +15,13 @@ type
     cbDSList:TComboBox;
     lbFieldsList: TListBox;
     fPanelHeader: TPanel;
+    PageControl1: TPageControl;
     SpeedButton1: TSpeedButton;
     SpeedButton2: TSpeedButton;
+    TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
+    ValCombo: TComboBox;
+    ValList: TListBox;
     procedure cbDSListChange(Sender: TObject);
     procedure fPanelHeaderMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
@@ -26,6 +31,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure SpeedButton1Click(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
+    procedure ValComboChange(Sender: TObject);
   private
     fDown         : Boolean;
     fPt           : TPoint;
@@ -33,6 +39,12 @@ type
     procedure RestorePos;
     procedure SavePos;
     function IniFileName:string;
+    procedure FillValCombo;
+    procedure GetVariables;
+    procedure GetSpecValues;
+    procedure GetFRVariables;
+    function CurValSet: String;
+    function CurVal: String;
   public
     constructor Create(aOwner : TComponent); override;
     destructor Destroy; override;
@@ -131,6 +143,17 @@ begin
   Application.ReleaseComponent(Self);
 end;
 
+procedure TlrFieldsList.ValComboChange(Sender: TObject);
+begin
+  if CurValSet = sFRVariables then
+    GetFRVariables
+  else
+    if CurValSet = sSpecVal then
+      GetSpecValues
+    else
+      GetVariables;
+end;
+
 procedure TlrFieldsList.RestorePos;
 var
   Ini:TIniFile;
@@ -166,12 +189,77 @@ begin
   Result:=AppendPathDelim(lrConfigFolderName(false))+'lrFieldsList.cfg';
 end;
 
+procedure TlrFieldsList.FillValCombo;
+var
+  s: TStringList;
+begin
+  s := TStringList.Create;
+  CurReport.GetCategoryList(s);
+  s.Add(sSpecVal);
+  s.Add(sFRVariables);
+  ValCombo.Items.Assign(s);
+  s.Free;
+end;
+
+procedure TlrFieldsList.GetVariables;
+begin
+  CurReport.GetVarList(ValCombo.ItemIndex, ValList.Items);
+end;
+
+procedure TlrFieldsList.GetSpecValues;
+var
+  i: Integer;
+begin
+  with ValList.Items do
+  begin
+    Clear;
+    for i := 0 to frSpecCount-1 do
+      if i <> 1 then
+        Add(frSpecArr[i]);
+  end;
+end;
+
+procedure TlrFieldsList.GetFRVariables;
+var
+  i: Integer;
+begin
+  with ValList.Items do
+  begin
+    Clear;
+    for i := 0 to frVariables.Count - 1 do
+      Add(frVariables.Name[i]);
+  end;
+end;
+
+function TlrFieldsList.CurValSet: String;
+begin
+  Result := '';
+  if ValCombo.ItemIndex <> -1 then
+    Result := ValCombo.Items[ValCombo.ItemIndex];
+end;
+
+function TlrFieldsList.CurVal: String;
+begin
+  Result := '';
+  if CurValSet <> sSpecVal then
+  begin
+    if ValList.ItemIndex <> -1 then
+      Result := ValList.Items[ValList.ItemIndex];
+  end
+  else
+  if ValList.ItemIndex > 0 then
+    Result := frSpecFuncs[ValList.ItemIndex + 1]
+  else
+    Result := frSpecFuncs[0];
+end;
+
 constructor TlrFieldsList.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   RestorePos;
   Parent :=TWinControl(aOwner);
   RefreshDSList;
+  FillValCombo;
   fPanelHeader.Caption:=sFRDesignerDataInsp;
 end;
 
@@ -204,10 +292,14 @@ end;
 
 function TlrFieldsList.SelectedField: string;
 begin
-  if (lbFieldsList.ItemIndex>-1) and (lbFieldsList.ItemIndex<lbFieldsList.Items.Count) then
-    Result:=cbDSList.Text + '."' + lbFieldsList.Items[lbFieldsList.ItemIndex] + '"'
+  Result:='';
+  if PageControl1.ActivePageIndex = 0 then
+  begin;
+    if (lbFieldsList.ItemIndex>-1) and (lbFieldsList.ItemIndex<lbFieldsList.Items.Count) then
+      Result:=cbDSList.Text + '."' + lbFieldsList.Items[lbFieldsList.ItemIndex] + '"'
+  end
   else
-    Result:='';
+    Result:=CurVal;
 end;
 
 end.

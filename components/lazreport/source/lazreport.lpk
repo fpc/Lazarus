@@ -15,12 +15,6 @@
           <CStyleOperator Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <Other>
-        <CompilerMessages>
-          <UseMsgFile Value="True"/>
-        </CompilerMessages>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="LazReport is a report designer tool for Lazarus consisting of a Report Engine, Designer and Previewer. LazReport was forked from FreeReport v2.32.
 FreeReport is Copyright (c) 1998-99 by Tzyganenko A.
@@ -30,7 +24,7 @@ Lazarus Port: Olivier Guilbaud, Jesus Reyes A.
 See license.txt and license-lazreport.txt for details.
 "/>
     <Version Minor="9" Release="9"/>
-    <Files Count="66">
+    <Files Count="67">
       <Item1>
         <Filename Value="lr_about.pas"/>
         <UnitName Value="LR_About"/>
@@ -296,6 +290,10 @@ See license.txt and license-lazreport.txt for details.
         <Filename Value="lr_design_ins_filed.pas"/>
         <UnitName Value="lr_design_ins_filed"/>
       </Item66>
+      <Item67>
+        <Filename Value="lr_previewtoolsabsract.pas"/>
+        <UnitName Value="lr_PreviewToolsAbsract"/>
+      </Item67>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

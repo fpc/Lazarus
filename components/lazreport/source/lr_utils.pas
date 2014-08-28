@@ -82,7 +82,8 @@ function UTF8CountWords(const str:string; out WordCount,SpcCount,SpcSize:Integer
 
 implementation
 
-uses LR_Class, LR_Const, LR_Pars, FileUtil, LazUtilsStrConsts;
+uses LR_Class, LR_Const, LR_Pars, FileUtil, LazUtilsStrConsts, LR_DSet,
+  LR_DBComponent, strutils;
 
 var
   PreviousFormatSettings: TFormatSettings;
@@ -343,8 +344,38 @@ end;
 function frGetDataSet(const ComplexName: String): TfrTDataSet;
 var
   Component: TComponent;
+  F:TfrObject;
+  S1, S2:string;
 begin
-  Component := frFindComponent(CurReport.Owner, ComplexName);
+  Result := nil;
+  if ComplexName = '' then exit;
+  Component := nil;
+
+  if Assigned(CurReport) then
+  begin
+    if (Pos('.', ComplexName) > 0)  then
+    begin
+      S1:=Copy(ComplexName, 1, Pos('.', ComplexName)-1);
+      S2:=Copy(ComplexName, Pos('.', ComplexName)+1, Length(ComplexName));
+      F:=CurReport.FindObject(S1);
+      if Assigned(F) and (F is TfrPageDialog) then
+        F:=TfrPageDialog(F).FindObject(S2);
+
+      if Assigned(F) and (F is TLRDataSetControl) then
+        Component:=TLRDataSetControl(F).DataSet;
+
+    end
+    else
+    begin
+      F:=CurReport.FindObject(ComplexName);
+      if Assigned(F) and (F is TLRDataSetControl) then
+        Component:=TLRDataSetControl(F).DataSet;
+    end;
+  end;
+
+  if not Assigned(Component) then
+    Component := frFindComponent(CurReport.Owner, ComplexName);
+
   if Assigned(Component) then
   begin
     if Component is TDataSet then
@@ -359,15 +390,56 @@ end;
 procedure frGetDataSetAndField(ComplexName: String; var DataSet: TfrTDataSet;
   out Field: TfrTField);
 var
-  n: Integer;
+  n, i, j: Integer;
   Owner, Component: TComponent;
   s1, s2, s3, s4: String;
+  frDS, F:TfrObject;
 begin
   Field := nil;
   Owner := CurReport.Owner;
   n := Pos('.', ComplexName);
   if n <> 0 then
   begin
+    s1 := Copy(ComplexName, 1, n - 1);        // table name
+    s2 := Copy(ComplexName, n + 1, 255);      // field name
+
+    if Assigned(CurReport) then
+    begin
+      // find dataset and field in DS on reports dialogs
+      if Pos('.', S2)>0 then
+      begin
+        S3:=Copy(S2, Pos('.', S2)+1, Length(S2));
+        Delete(S2, Pos('.', S2), Length(S2));
+
+        F:=CurReport.FindObject(S1);
+        if Assigned(F) and (F is TfrPageDialog) then
+          frDS:=TfrPageDialog(F).FindObject(S2)
+        else
+          frDS:=nil;
+
+        if Assigned(frDS) and (frDS is TLRDataSetControl) then
+        begin
+          RemoveQuotes(s3);
+          DataSet:= TfrTDataSet(TLRDataSetControl(frDS).DataSet);
+          Field:=TfrTField(TLRDataSetControl(frDS).DataSet.FindField(S3));
+        end;
+      end
+      else
+      begin
+        frDS:=CurReport.FindObject(S1);
+        if Assigned(frDS) and (frDS is TLRDataSetControl) then
+        begin
+          RemoveQuotes(s2);
+          DataSet:=TfrTDataSet(TLRDataSetControl(frDS).DataSet);
+          Field:=TfrTField(TLRDataSetControl(frDS).DataSet.FindField(S2));
+        end;
+      end;
+
+    end;
+
+    if Assigned(Field) then
+      exit;
+
     s1 := Copy(ComplexName, 1, n - 1);        // table name
     s2 := Copy(ComplexName, n + 1, 255);      // field name
     if Pos('.', s2) <> 0 then                 // module name present
@@ -432,7 +504,7 @@ end;
 
 function frFindComponent(Owner: TComponent; const Name: String): TComponent;
 var
-  n: Integer;
+  n, i, j: Integer;
   s1, s2, s3: String;
 begin
   Result := nil;
@@ -457,20 +529,56 @@ begin
         Delete(S2, 1, n);
       end;
 
-      Owner := FindGlobalComponent(s1);
-      if Owner=nil then begin
-        // try screen registered containers
-        // which at design time are not in FindGlobalComponentList
-        Owner := Screen.FindDataModule(s1);
-        if Owner=nil then
-          Owner := Screen.FindForm(s1);
-      end;
-      if Owner <> nil then
+      if Assigned(CurReport) and (S3 = '') then
       begin
-        if s3<>'' then
-          Owner:=Owner.FindComponent(s3);
-        if Assigned(Owner) then
-          Result := Owner.FindComponent(s2);
+        for i:=0 to CurReport.Pages.Count-1 do
+          if CurReport.Pages[i] is TfrPageDialog then
+          begin
+            if CurReport.Pages[i].Name = S1 then
+            begin;
+              for j:=0 to CurReport.Pages[i].Objects.Count-1 do
+              begin
+                if TfrObject(CurReport.Pages[i].Objects[j]) is TLRDataSetControl then
+                begin
+                  if TLRDataSetControl(CurReport.Pages[i].Objects[j]).DataSet.Name = S2 then
+                  begin
+                    Result:=TLRDataSetControl(CurReport.Pages[i].Objects[j]).DataSet;
+                    break;
+                  end;
+                  if TLRDataSetControl(CurReport.Pages[i].Objects[j]).lrDBDataSet.Name = S2 then
+                  begin
+                    Result:=TLRDataSetControl(CurReport.Pages[i].Objects[j]).lrDBDataSet;
+                    break;
+                  end;
+                  if TLRDataSetControl(CurReport.Pages[i].Objects[j]).lrDataSource.Name = S2 then
+                  begin
+                    Result:=TLRDataSetControl(CurReport.Pages[i].Objects[j]).lrDataSource;
+                    break;
+                  end;
+                end;
+              end;
+              break;
+            end
+          end;
+      end;
+
+      if not Assigned(Result) then
+      begin
+        Owner := FindGlobalComponent(s1);
+        if Owner=nil then begin
+          // try screen registered containers
+          // which at design time are not in FindGlobalComponentList
+          Owner := Screen.FindDataModule(s1);
+          if Owner=nil then
+            Owner := Screen.FindForm(s1);
+        end;
+        if Owner <> nil then
+        begin
+          if s3<>'' then
+            Owner:=Owner.FindComponent(s3);
+          if Assigned(Owner) then
+            Result := Owner.FindComponent(s2);
+        end;
       end;
     end;
   except
@@ -482,8 +590,6 @@ end;
 {$HINTS OFF}
 procedure frGetComponents(Owner: TComponent; ClassRef: TClass;
   List: TStrings; Skip: TComponent);
-var
-  i, j: Integer;
 
   procedure EnumComponents(f: TComponent);
   var
@@ -516,16 +622,72 @@ var
     end;
   end;
 
+var
+  i, j: Integer;
+  S:string;
 begin
   {$IFDEF DebugLR}
   DebugLn('frGetComponents 1');
   {$ENDIF}
   List.Clear;
+
+  //Find DataSet in current report
+  if Assigned(CurReport) and (ClassRef = TfrDataSet) then
+  begin
+    for i:=0 to CurReport.Pages.Count-1 do
+      if CurReport.Pages[i] is TfrPageDialog then
+      begin
+        for j:=0 to CurReport.Pages[i].Objects.Count-1 do
+        begin
+          if TfrObject(CurReport.Pages[i].Objects[j]) is TLRDataSetControl then
+          begin
+            S:=CurReport.Pages[i].Name+'.'+TLRDataSetControl(CurReport.Pages[i].Objects[j]).lrDBDataSet.Name;
+            List.Add(S);
+          end;
+        end;
+      end;
+  end;
+
+  if Assigned(CurReport) and (ClassRef = TDataSet) then
+  begin
+    for i:=0 to CurReport.Pages.Count-1 do
+      if CurReport.Pages[i] is TfrPageDialog then
+      begin
+        for j:=0 to CurReport.Pages[i].Objects.Count-1 do
+        begin
+          if TfrObject(CurReport.Pages[i].Objects[j]) is TLRDataSetControl then
+          begin
+            S:=CurReport.Pages[i].Name+'.'+TLRDataSetControl(CurReport.Pages[i].Objects[j]).DataSet.Name;
+            List.Add(S);
+          end;
+        end;
+      end;
+  end;
+
+  if Assigned(CurReport) and (ClassRef = TDataSource) then
+  begin
+    for i:=0 to CurReport.Pages.Count-1 do
+      if CurReport.Pages[i] is TfrPageDialog then
+      begin
+        for j:=0 to CurReport.Pages[i].Objects.Count-1 do
+        begin
+          if TfrObject(CurReport.Pages[i].Objects[j]) is TLRDataSetControl then
+          begin
+            S:=CurReport.Pages[i].Name+'.'+TLRDataSetControl(CurReport.Pages[i].Objects[j]).lrDataSource.Name;
+            List.Add(S);
+          end;
+        end;
+      end;
+  end;
+  {$IFDEF DebugLR}
+  DebugLn('frGetComponents 2');
+  {$ENDIF}
+
   for i := 0 to Screen.FormCount - 1 do
     EnumComponents(Screen.Forms[i]);
 
   {$IFDEF DebugLR}
-  DebugLn('frGetComponents 2');
+  DebugLn('frGetComponents 3');
   {$ENDIF}
   for i := 0 to Screen.DataModuleCount - 1 do
     EnumComponents(Screen.DataModules[i]);
@@ -533,7 +695,7 @@ begin
   with Screen do
   begin
     {$IFDEF DebugLR}
-    DebugLn('frGetComponents 3');
+    DebugLn('frGetComponents 4');
     {$ENDIF}
     for i := 0 to CustomFormCount - 1 do
     begin

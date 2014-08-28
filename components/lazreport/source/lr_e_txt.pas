@@ -23,8 +23,13 @@ type
   { TfrTextExport }
 
   TfrTextExport = class(TComponent)
+  private
+    function GetShowExportParamsDlg: boolean;
+    procedure SetShowExportParamsDlg(AValue: boolean);
   public
     constructor Create(aOwner: TComponent); override;
+  published
+    property ShowExportParamsDlg:boolean read GetShowExportParamsDlg write SetShowExportParamsDlg;
   end;
 
   { TfrTextExportFilter }
@@ -33,6 +38,9 @@ type
   private
     FUseBOM: boolean;
     FUsedFont: Integer;
+
+    FDeleteEmptyLine: boolean;
+    FPageBreaks: boolean;
   protected
     procedure GetUsedFont; virtual;
     function Setup:boolean; override;
@@ -53,7 +61,10 @@ type
 
 implementation
 
-uses LR_Const;
+uses LR_Const, LR_E_TXT_Params;
+
+var
+  FShowExportParamsDlg: boolean;
 
 
 procedure TfrTextExportFilter.GetUsedFont;
@@ -68,10 +79,26 @@ begin
 end;
 
 function TfrTextExportFilter.Setup: boolean;
+var
+  lrExpTxtParamsForm: TlrExpTxtParamsForm;
 begin
   Result:=inherited Setup;
   if FUsedFont<=0 then
     GetUsedFont;
+
+  if FShowExportParamsDlg then
+  begin
+    lrExpTxtParamsForm:=TlrExpTxtParamsForm.Create(Application);
+    lrExpTxtParamsForm.CheckBox1.Checked:=FDeleteEmptyLine;
+    lrExpTxtParamsForm.CheckBox2.Checked:=FPageBreaks;
+    Result:=lrExpTxtParamsForm.ShowModal = mrOk;
+    if Result then
+    begin
+      FPageBreaks:=lrExpTxtParamsForm.CheckBox2.Checked;
+      FDeleteEmptyLine:=lrExpTxtParamsForm.CheckBox1.Checked;
+    end;
+    lrExpTxtParamsForm.Free;
+  end;
 end;
 
 procedure TfrTextExportFilter.NewRec(View: TfrView; const AText: string;
@@ -95,6 +122,8 @@ begin
   inherited;
   FUsedFont := 10;
   FUseBOM := false;
+  FPageBreaks:=true;
+  FDeleteEmptyLine:=false;
 end;
 
 procedure TfrTextExportFilter.OnBeginDoc;
@@ -141,8 +170,15 @@ begin
       tc1:= x + UTF8Length(p^.Text);
       p  := p^.Next;
     end;
-    s := s + LineEnding;
-    Stream.Write(s[1], Length(s));
+
+    if FDeleteEmptyLine and (S = '') then
+      Continue;
+
+    if FPageBreaks then
+    begin
+      S :=S+ #12+LineEnding;
+      Stream.Write(s[1], Length(s));
+    end;
   end;
   s := #12+LineEnding;
   Stream.Write(s[1], Length(s));
@@ -173,6 +209,16 @@ end;
 
 
 { TfrTextExport }
+
+function TfrTextExport.GetShowExportParamsDlg: boolean;
+begin
+  Result:=FShowExportParamsDlg;
+end;
+
+procedure TfrTextExport.SetShowExportParamsDlg(AValue: boolean);
+begin
+  FShowExportParamsDlg:=AValue;
+end;
 
 constructor TfrTextExport.Create(aOwner: TComponent);
 begin

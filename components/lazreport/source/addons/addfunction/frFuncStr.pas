@@ -13,8 +13,20 @@ unit frFuncStr;
 
 interface
 
-{$A+,B-,E-,R-}
-{.$I FR.inc}
+
+{$mode objfpc}
+
+{$B-} {- Complete Boolean Evaluation }
+{$R-} {- Range-Checking }
+{$V-} {- Var-String Checking }
+{$T-} {- Typed @ operator }
+{$X+} {- Extended syntax }
+{$P+} {- Open string params }
+{$J+} {- Writeable structured consts }
+{$H+} {- Use long strings by default }
+
+{$DEFINE HASVARIANT}
+{.$I LR_Vers.inc}
 
 uses
   SysUtils;
@@ -46,6 +58,7 @@ type
  function frInsert(cStr1, cStr2: String; nIndex:Integer) :String;
 
 implementation
+uses LazUTF8;
 
 {--------------------------------------------------------------------}
 { Return position first character N words in string S, use           }
@@ -180,8 +193,8 @@ begin
  repeat
    I := Pos(Srch, Source);
    if I > 0 then begin
-     Result := Result + Copy(Source, 1, I - 1) + Replace;
-     Source := Copy(Source, I + Length(Srch), MaxInt);
+     Result := Result + UTF8Copy(Source, 1, I - 1) + Replace;
+     Source := UTF8Copy(Source, I + UTF8Length(Srch), MaxInt);
    end
    else Result := Result + Source;
  until I <= 0;
@@ -266,7 +279,8 @@ begin
  if nLenSS > nLenS then Exit;
 
  for nCou := nLenS downto 1 do
-   if Copy( cStr, nCou, nLenSS ) = cSubStr then begin
+   if UTF8Copy( cStr, nCou, nLenSS ) = cSubStr then
+   begin
      Result := nCou;
      Exit;
    end; { if }
@@ -278,7 +292,7 @@ end; { frEndPos }
 {--------------------------------------------------------------------}
 function frLeftCopy( cStr: String; nNum: Integer ): String;
 begin
- Result := Copy( cStr, 1, nNum );
+  Result := UTF8Copy( cStr, 1, nNum );
 end; { frLeftCopy }
 
 {--------------------------------------------------------------------}
@@ -286,9 +300,9 @@ end; { frLeftCopy }
 {--------------------------------------------------------------------}
 function frRightCopy( cStr: String; nNum: Integer ): String;
 begin
- Result := '';
- if nNum > Length( cStr ) then Exit;
- Result := Copy( cStr, (Length(cStr) - nNum + 1), Length(cStr) );
+  Result := '';
+  if nNum > Length( cStr ) then Exit;
+  Result := UTF8Copy( cStr, (UTF8Length(cStr) - nNum + 1), UTF8Length(cStr) );
 end; { frRightCopy }
 
 {--------------------------------------------------------------------}
@@ -296,8 +310,8 @@ end; { frRightCopy }
 {--------------------------------------------------------------------}
 function frDelete(cStr: String; nIndex, nCount:Integer) :String;
 begin
- Delete(cStr,nIndex,nCount);
- Result := cStr;
+  UTF8Delete(cStr, nIndex, nCount);
+  Result := cStr;
 end; { frDelete }
 
 {--------------------------------------------------------------------}
@@ -305,8 +319,8 @@ end; { frDelete }
 {--------------------------------------------------------------------}
 function frInsert(cStr1, cStr2: String; nIndex:Integer) :String;
 begin
- Insert(cStr1,cStr2,nIndex);
- Result := cStr2;
+  UTF8Insert(cStr1, cStr2, nIndex);
+  Result := cStr2;
 end; { frDelete }
 
 {----------------------------------------------------------------}
@@ -328,7 +342,8 @@ begin
    nLenMax := Length( cStr2 );
 
  for nCou := 1 to nLenMax do
-   if Copy( cStr1, nCou, 1) <> Copy( cStr2, nCou, 1) then begin
+   if UTF8Copy( cStr1, nCou, 1) <> UTF8Copy( cStr2, nCou, 1) then
+   begin
      Result := nCou;
      Exit;
    end; { if }

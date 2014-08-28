@@ -292,6 +292,7 @@ resourcestring
   sDefaultPrinter = 'Default printer';
   sExportFilterIndexError = 'Export filter index out of range';
   sFindTextNotFound = 'Search text not found.';
+  sInvalidVariableName = '"%s" is not a valid variable name.';
 
 //--- PrintForm resources ---------------------------------------------------
   sPrintFormPrint = 'Print';

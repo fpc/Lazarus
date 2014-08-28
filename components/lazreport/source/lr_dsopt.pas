@@ -17,7 +17,7 @@ interface
 uses
   Classes, SysUtils, LResources,
   Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,ComCtrls, ButtonPanel,
+  Buttons, StdCtrls,ComCtrls, ButtonPanel, Spin,
   LR_Const;
 
 type
@@ -26,7 +26,21 @@ type
 
   TfrDesOptionsForm = class(TForm)
     ButtonPanel1: TButtonPanel;
+    CheckBox1: TCheckBox;
+    ComboBox1: TComboBox;
+    ComboBox2: TComboBox;
+    GroupBox6: TGroupBox;
+    GroupBox7: TGroupBox;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
     PageControl1: TPageControl;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    SpinEdit1: TSpinEdit;
+    SpinEdit2: TSpinEdit;
     Tab1: TTabSheet;
     GroupBox1: TGroupBox;
     CB1: TCheckBox;
@@ -46,20 +60,37 @@ type
     CB3: TCheckBox;
     CB4: TCheckBox;
     CB5: TCheckBox;
+    TabSheet1: TTabSheet;
     procedure FormCreate(Sender: TObject);
+    procedure RadioButton1Change(Sender: TObject);
   private
-    { Private declarations }
+    procedure FillFonst;
   public
     { Public declarations }
   end;
 
 
 implementation
+uses LCLType, LCLIntf;
 
 {$R *.lfm}
 
+function EnumFontsProc( var LogFont: TEnumLogFontEx; var {%H-}Metric: TNewTextMetricEx;
+  FontType: Longint; {%H-}Data: LParam):LongInt; stdcall;
+var
+  S: String;
+  Lst: TStrings;
+begin
+  s := StrPas(LogFont.elfLogFont.lfFaceName);
+  Lst := TStrings(PtrInt(Data));
+  if Lst.IndexOf(S)<0 then
+    Lst.AddObject(S, TObject(PtrInt(FontType)));
+  Result := 1;
+end;
+
 procedure TfrDesOptionsForm.FormCreate(Sender: TObject);
 begin
+  PageControl1.ActivePageIndex:=0;
   Caption := sDesOptionsFormOpt;
   Tab1.Caption := sDesOptionsFormDes;
   GroupBox1.Caption := sDesOptionsFormGrid;
@@ -80,6 +111,40 @@ begin
   RB6.Caption := sDesOptionsFormPix;
   RB7.Caption := sDesOptionsFormmm;
   RB8.Caption := sDesOptionsFormInch;
+  FillFonst;
+  RadioButton1Change(nil);
+end;
+
+procedure TfrDesOptionsForm.RadioButton1Change(Sender: TObject);
+begin
+  Label1.Enabled:=RadioButton2.Checked;
+  Label2.Enabled:=RadioButton2.Checked;
+  ComboBox1.Enabled:=RadioButton2.Checked;
+  SpinEdit1.Enabled:=RadioButton2.Checked;
+end;
+
+procedure TfrDesOptionsForm.FillFonst;
+var
+  DC: HDC;
+  Lf: TLogFont;
+  S: String;
+  {$IFDEF USE_PRINTER_FONTS}
+  Lst: TStrings;
+  i: Integer;
+  j: PtrInt;
+  {$ENDIF}
+begin
+  ComboBox1.Items.Clear;
+  DC := GetDC(0);
+  try
+    Lf.lfFaceName := '';
+    Lf.lfCharSet := DEFAULT_CHARSET;
+    Lf.lfPitchAndFamily := 0;
+    EnumFontFamiliesEx(DC, @Lf, @EnumFontsProc, PtrInt(ComboBox1.Items), 0);
+  finally
+    ReleaseDC(0, DC);
+  end;
+  ComboBox2.Items.Assign(ComboBox1.Items);
 end;
 
 end.

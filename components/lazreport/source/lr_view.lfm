@@ -49,10 +49,10 @@ object frPreviewForm: TfrPreviewForm
       TabOrder = 0
       object ZoomBtn: TBitBtn
         Tag = 200
-        Left = 171
+        Left = 182
         Height = 28
         Top = 1
-        Width = 70
+        Width = 76
         Align = alLeft
         AutoSize = True
         BorderSpacing.InnerBorder = 2
@@ -198,7 +198,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object PrintBtn: TBitBtn
         Tag = 203
-        Left = 90
+        Left = 101
         Height = 28
         Top = 1
         Width = 28
@@ -293,7 +293,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 6
       end
       object frTBSeparator1: TPanel
-        Left = 65
+        Left = 76
         Height = 28
         Top = 1
         Width = 25
@@ -303,7 +303,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 7
       end
       object frTBSeparator2: TPanel
-        Left = 118
+        Left = 129
         Height = 28
         Top = 1
         Width = 25
@@ -313,7 +313,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 8
       end
       object frTBSeparator3: TPanel
-        Left = 269
+        Left = 286
         Height = 28
         Top = 1
         Width = 25
@@ -323,7 +323,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 9
       end
       object PgUp: TSpeedButton
-        Left = 314
+        Left = 331
         Height = 28
         Top = 1
         Width = 20
@@ -369,7 +369,7 @@ object frPreviewForm: TfrPreviewForm
         OnClick = PgUpClick
       end
       object PgDown: TSpeedButton
-        Left = 437
+        Left = 454
         Height = 28
         Top = 1
         Width = 20
@@ -415,7 +415,7 @@ object frPreviewForm: TfrPreviewForm
         OnClick = PgDownClick
       end
       object LbPanel: TPanel
-        Left = 334
+        Left = 351
         Height = 28
         Top = 1
         Width = 103
@@ -429,7 +429,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 10
       end
       object BtPgFirst: TSpeedButton
-        Left = 294
+        Left = 311
         Height = 28
         Top = 1
         Width = 20
@@ -475,7 +475,7 @@ object frPreviewForm: TfrPreviewForm
         OnClick = BtPgFirstClick
       end
       object BtPgLast: TSpeedButton
-        Left = 457
+        Left = 474
         Height = 28
         Top = 1
         Width = 20
@@ -521,7 +521,7 @@ object frPreviewForm: TfrPreviewForm
         OnClick = BtPgLastClick
       end
       object BtZoomOut: TBitBtn
-        Left = 143
+        Left = 154
         Height = 28
         Top = 1
         Width = 28
@@ -567,7 +567,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 3
       end
       object BtZoomIn: TBitBtn
-        Left = 241
+        Left = 258
         Height = 28
         Top = 1
         Width = 28
@@ -613,7 +613,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 5
       end
       object frTBSeparator4: TPanel
-        Left = 477
+        Left = 494
         Height = 28
         Top = 1
         Width = 25
@@ -623,7 +623,7 @@ object frPreviewForm: TfrPreviewForm
         TabOrder = 11
       end
       object FindBtn: TBitBtn
-        Left = 502
+        Left = 519
         Height = 28
         Top = 1
         Width = 28
@@ -667,6 +667,23 @@ object frPreviewForm: TfrPreviewForm
         OnClick = FindBtnClick
         TabOrder = 12
       end
+      object SpeedButton1: TSpeedButton
+        Left = 65
+        Height = 28
+        Top = 1
+        Width = 11
+        Align = alLeft
+        AutoSize = True
+        Flat = True
+        Glyph.Data = {
+          92000000424D9200000000000000760000002800000007000000070000000100
+          0400000000001C00000000000000000000000000000000000000000000000000
+          8000008000000080800080000000800080008080000080808000C0C0C0000000
+          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00FFF0FFF0FF00
+          0FF0FF000FF0F00000F0F00000F00000000000000000
+        }
+        OnClick = SpeedButton1Click
+      end
     end
   end
   object PreviewPanel: TPanel
@@ -683,11 +700,11 @@ object frPreviewForm: TfrPreviewForm
     TabOrder = 1
     object ScrollBox1: TScrollBox
       Left = 1
-      Height = 469
+      Height = 465
       Top = 1
-      Width = 666
-      HorzScrollBar.Page = 666
-      VertScrollBar.Page = 469
+      Width = 662
+      HorzScrollBar.Page = 1
+      VertScrollBar.Page = 1
       Align = alClient
       BorderStyle = bsNone
       TabOrder = 0
@@ -695,19 +712,19 @@ object frPreviewForm: TfrPreviewForm
     object BPanel: TPanel
       Left = 1
       Height = 19
-      Top = 470
-      Width = 685
+      Top = 466
+      Width = 681
       Align = alBottom
       BevelOuter = bvNone
       ClientHeight = 19
-      ClientWidth = 685
+      ClientWidth = 681
       FullRepaint = False
       TabOrder = 1
       object HScrollBar: TScrollBar
         Left = 2
-        Height = 15
-        Top = 4
-        Width = 667
+        Height = 13
+        Top = 6
+        Width = 663
         Align = alBottom
         BorderSpacing.Left = 2
         BorderSpacing.Right = 16
@@ -721,21 +738,21 @@ object frPreviewForm: TfrPreviewForm
       end
     end
     object RPanel: TPanel
-      Left = 667
-      Height = 469
+      Left = 663
+      Height = 465
       Top = 1
       Width = 19
       Align = alRight
       BevelOuter = bvNone
-      ClientHeight = 469
+      ClientHeight = 465
       ClientWidth = 19
       FullRepaint = False
       TabOrder = 2
       object VScrollBar: TScrollBar
-        Left = 4
-        Height = 469
+        Left = 6
+        Height = 465
         Top = 0
-        Width = 15
+        Width = 13
         Align = alRight
         Kind = sbVertical
         LargeChange = 200
@@ -858,5 +875,15 @@ object frPreviewForm: TfrPreviewForm
   object prnDialog: TPrintDialog
     left = 86
     top = 48
+  end
+  object PopupMenu1: TPopupMenu
+    left = 84
+    top = 184
+    object MenuItem1: TMenuItem
+      Caption = 'New Item1'
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'New Item2'
+    end
   end
 end

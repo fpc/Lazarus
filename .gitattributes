@@ -2203,6 +2203,18 @@ components/lazreport/samples/barcode/cb.res -text
 components/lazreport/samples/barcode/cbunit.lfm svneol=native#text/plain
 components/lazreport/samples/barcode/cbunit.pas svneol=native#text/pascal
 components/lazreport/samples/barcode/reports/codigobarras.lrf svneol=native#text/xml
+components/lazreport/samples/detail_reports/ReportImport.lrf svneol=LF#text/xml eol=lf
+components/lazreport/samples/detail_reports/ReportWithDBF.lrf svneol=LF#text/xml eol=lf
+components/lazreport/samples/detail_reports/ReportWithSQLDB.lrf svneol=LF#text/xml eol=lf
+components/lazreport/samples/detail_reports/SimpleReport.lrf svneol=LF#text/xml eol=lf
+components/lazreport/samples/detail_reports/project1.ico -text
+components/lazreport/samples/detail_reports/project1.lpi svneol=native#text/plain
+components/lazreport/samples/detail_reports/project1.lpr svneol=native#text/pascal
+components/lazreport/samples/detail_reports/project1.res -text
+components/lazreport/samples/detail_reports/test1.ods -text
+components/lazreport/samples/detail_reports/test1.xls -text
+components/lazreport/samples/detail_reports/unit1.lfm svneol=native#text/plain
+components/lazreport/samples/detail_reports/unit1.pas svneol=native#text/pascal
 components/lazreport/samples/editor/BarcodeTester.lrf svneol=native#text/xml
 components/lazreport/samples/editor/albumsbycountry.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/editor/alignments.lrf svneol=native#text/xml
@@ -2379,6 +2391,30 @@ components/lazreport/source/addons/imgexport/test/testunit1.lfm svneol=native#te
 components/lazreport/source/addons/imgexport/test/testunit1.pas svneol=native#text/pascal
 components/lazreport/source/addons/imgexport/tfrhtmldivexport.png -text
 components/lazreport/source/addons/imgexport/tfrimageexport.png -text
+components/lazreport/source/addons/lrEmailExport/images/TlrEmailExportFilter.bmp -text
+components/lazreport/source/addons/lrEmailExport/images/img.txt svneol=native#text/plain
+components/lazreport/source/addons/lrEmailExport/images/mk_res.sh svneol=native#text/plain
+components/lazreport/source/addons/lrEmailExport/languages/lrEmailExportFilter.po svneol=native#text/plain
+components/lazreport/source/addons/lrEmailExport/languages/lrEmailExportFilter.ru.po svneol=native#text/plain
+components/lazreport/source/addons/lrEmailExport/lrEmailExportFilter.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrEmailExport/lrEmailExportFilterSetup.lfm svneol=native#text/plain
+components/lazreport/source/addons/lrEmailExport/lrEmailExportFilterSetup.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrEmailExport/lremailappfreesoft.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrEmailExport/lremailappms.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrEmailExport/lremailappthebat.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrEmailExport/lremailexport.lpk svneol=native#text/plain
+components/lazreport/source/addons/lrEmailExport/lremailexport.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrEmailExport/lremailexport.res -text
+components/lazreport/source/addons/lrOfficeImport/lr_officeimport.lpk svneol=native#text/plain
+components/lazreport/source/addons/lrOfficeImport/lr_officeimport.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrOfficeImport/lr_officeimport_img.res -text
+components/lazreport/source/addons/lrOfficeImport/lrofficeimport.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrOfficeImport/lrspreadheetimport.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrOfficeImport/lrspreadsheetimportunit.lfm svneol=native#text/plain
+components/lazreport/source/addons/lrOfficeImport/lrspreadsheetimportunit.pas svneol=native#text/pascal
+components/lazreport/source/addons/lrOfficeImport/resources/TlrOfficeImport.bmp -text
+components/lazreport/source/addons/lrOfficeImport/resources/lrimport_img.txt svneol=native#text/plain
+components/lazreport/source/addons/lrOfficeImport/resources/mk_res.sh svneol=native#text/plain
 components/lazreport/source/addons/lrcodereport/lr_codereport.pas svneol=native#text/pascal
 components/lazreport/source/addons/lrcodereport/lr_codereport.res -text
 components/lazreport/source/addons/lrcodereport/lr_codereport_pkg.lpk svneol=native#text/plain

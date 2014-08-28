@@ -73,7 +73,6 @@ type
     function ShowEditor: TModalResult; override;
   end;
 
-
 implementation
 
 {$R *.lfm}
@@ -112,6 +111,13 @@ begin
   end;
   M1.Font.Charset := frCharset;
   M2.Font.Charset := frCharset;
+
+  if edtScriptFontName <> '' then
+    M2.Font.Name:=edtScriptFontName;
+
+  if edtScriptFontSize > 0 then
+    M2.Font.Size:=edtScriptFontSize;
+
   {$IFDEF DebugLR}
   DebugLn('TfrEditorForm.FormShow END');
   {$ENDIF}
@@ -249,6 +255,7 @@ begin
   Button6.Caption := sEditorFormFunction;
   Button1.Caption := sOk;
   Button2.Caption := sCancel;
+
 end;
 
 procedure TfrEditorForm.Button5Click(Sender: TObject);

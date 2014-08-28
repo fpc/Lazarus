@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CONFIG>
+  <LazReport>
+    <Version Value="27"/>
+    <Title Value=""/>
+    <Subject Value=""/>
+    <KeyWords Value=""/>
+    <Comments Value=""/>
+    <ReportCreateDate Value="1899-12-30 00:00:00"/>
+    <ReportLastChange Value="2014-08-11 09:11:40"/>
+    <ReportVersionBuild Value=""/>
+    <ReportVersionMajor Value=""/>
+    <ReportVersionMinor Value=""/>
+    <ReportVersionRelease Value=""/>
+    <ReportAutor Value=""/>
+    <Script Value=""/>
+    <Pages>
+      <PrintToDefault Value="False"/>
+      <DoublePass Value="False"/>
+      <SelectedPrinter Value="Canon-MF4010-UFRII-LT"/>
+      <PageCount Value="2"/>
+      <Page1>
+        <Name Value="Page1"/>
+        <ClassName Value="TfrPageReport"/>
+        <Visible Value="True"/>
+        <Width Value="595"/>
+        <Height Value="842"/>
+        <Script Value=""/>
+        <PgSize Value="9"/>
+        <Margins>
+          <left Value="36"/>
+          <Top Value="36"/>
+          <Right Value="36"/>
+          <Bottom Value="36"/>
+        </Margins>
+        <Orientation Value="poPortrait"/>
+        <UseMargins Value="True"/>
+        <PrintToPrevPage Value="False"/>
+        <ColCount Value="0"/>
+        <ColGap Value="0"/>
+        <LayoutOrder Value="loColumns"/>
+        <ObjectCount Value="8"/>
+        <Object1>
+          <Name Value="MasterData1"/>
+          <ClassName Value="TfrBandView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtBand"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="0"/>
+            <Top Value="196"/>
+            <Width Value="752"/>
+            <Height Value="20"/>
+          </Size>
+          <Flags Value="48"/>
+          <Data>
+            <Script Value="begin&#xA;  Memo1.Tag:=[LINE#];&#xA;  Memo3.Tag:=[LINE#];&#xA;end;&#xA;"/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BandType Value="btMasterData"/>
+          <Condition Value=""/>
+          <DatasetStr Value="10"/>
+        </Object1>
+        <Object2>
+          <Name Value="ReportTitle1"/>
+          <ClassName Value="TfrBandView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtBand"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="0"/>
+            <Top Value="40"/>
+            <Width Value="752"/>
+            <Height Value="40"/>
+          </Size>
+          <Flags Value="48"/>
+          <Data>
+            <Script Value=""/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <BandType Value="btReportTitle"/>
+          <Condition Value=""/>
+          <DatasetStr Value=""/>
+        </Object2>
+        <Object3>
+          <Name Value="Memo1"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="36"/>
+            <Top Value="196"/>
+            <Width Value="152"/>
+            <Height Value="20"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="556"/>
+            <FormatStr Value=""/>
+            <Memo Value="[LINE#] - [Memo1.Tag]&#xA;"/>
+            <Script Value="&#xA;"/>
+            <OnClick Value="begin&#xA;    var_a:=Tag;&#xA;end&#xA;"/>
+            <OnMouseEnter Value=""/>
+            <OnMouseLeave Value=""/>
+            <DetailReport Value="Memo1_DetailReport"/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="DejaVu Sans"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+          <Cursor Value="-21"/>
+        </Object3>
+        <Object4>
+          <Name Value="Memo2"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="40"/>
+            <Top Value="44"/>
+            <Width Value="676"/>
+            <Height Value="26"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value=""/>
+          </Frames>
+          <Data>
+            <Format Value="556"/>
+            <FormatStr Value=""/>
+            <Memo Value="Main report&#xA;"/>
+            <Script Value=""/>
+            <OnClick Value=""/>
+            <OnMouseEnter Value=""/>
+            <OnMouseLeave Value=""/>
+            <DetailReport Value=""/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="14"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value="fsBold"/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taCenter"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+          <Cursor Value="0"/>
+        </Object4>
+        <Object5>
+          <Name Value="Memo3"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="188"/>
+            <Top Value="196"/>
+            <Width Value="96"/>
+            <Height Value="20"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbLeft,frbTop,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="556"/>
+            <FormatStr Value=""/>
+            <Memo Value="[LINE#]&#xA;"/>
+            <Script Value=""/>
+            <OnClick Value="begin&#xA;    var_a:=Tag;&#xA;end&#xA;"/>
+            <OnMouseEnter Value=""/>
+            <OnMouseLeave Value=""/>
+            <DetailReport Value="Memo1_DetailReport"/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="DejaVu Serif"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+          <Cursor Value="-21"/>
+        </Object5>
+        <Object6>
+          <Name Value="Memo4"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="284"/>
+            <Top Value="196"/>
+            <Width Value="240"/>
+            <Height Value="20"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbTop,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="556"/>
+            <FormatStr Value=""/>
+            <Memo Value="[Page#]&#xA;"/>
+            <Script Value=""/>
+            <OnClick Value=""/>
+            <OnMouseEnter Value=""/>
+            <OnMouseLeave Value=""/>
+            <DetailReport Value=""/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+          <Cursor Value="0"/>
+        </Object6>
+        <Object7>
+          <Name Value="Memo5"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="524"/>
+            <Top Value="196"/>
+            <Width Value="96"/>
+            <Height Value="20"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbTop,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="556"/>
+            <FormatStr Value=""/>
+            <Memo Value="[CURRENT#]&#xA;"/>
+            <Script Value=""/>
+            <OnClick Value=""/>
+            <OnMouseEnter Value=""/>
+            <OnMouseLeave Value=""/>
+            <DetailReport Value=""/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+          <Cursor Value="0"/>
+        </Object7>
+        <Object8>
+          <Name Value="Memo6"/>
+          <ClassName Value="TfrMemoView"/>
+          <Visible Value="True"/>
+          <Typ Value="gtMemo"/>
+          <StreamMode Value="0"/>
+          <Size>
+            <Left Value="620"/>
+            <Top Value="196"/>
+            <Width Value="96"/>
+            <Height Value="20"/>
+          </Size>
+          <Flags Value="3"/>
+          <FillColor Value="clNone"/>
+          <Frames>
+            <FrameColor Value="clBlack"/>
+            <FrameStyle Value="frsSolid"/>
+            <FrameWidth Value="1"/>
+            <FrameBorders Value="frbTop,frbRight,frbBottom"/>
+          </Frames>
+          <Data>
+            <Format Value="556"/>
+            <FormatStr Value=""/>
+            <Memo Value="[LINE#]&#xA;"/>
+            <Script Value=""/>
+            <OnClick Value=""/>
+            <OnMouseEnter Value=""/>
+            <OnMouseLeave Value=""/>
+            <DetailReport Value=""/>
+          </Data>
+          <Tag Value=""/>
+          <FURLInfo Value=""/>
+          <Font>
+            <Name Value="helvetica [urw]"/>
+            <Size Value="10"/>
+            <Color Value="clBlack"/>
+            <Charset Value="0"/>
+            <Style Value=""/>
+          </Font>
+          <Highlight>
+            <FontStyle Value="2"/>
+            <FontColor Value="clBlack"/>
+            <FillColor Value="clWhite"/>
+            <HighlightStr Value=""/>
+          </Highlight>
+          <Alignment Value="taLeftJustify"/>
+          <Layout Value="tlTop"/>
+          <Angle Value="0"/>
+          <Justify Value="False"/>
+          <Cursor Value="0"/>
+        </Object8>
+      </Page1>
+      <Page2>
+        <Name Value="Page2"/>
+        <ClassName Value="TfrPageReport"/>
+        <Visible Value="True"/>
+        <Width Value="595"/>
+        <Height Value="842"/>
+        <Script Value=""/>
+        <PgSize Value="9"/>
+        <Margins>
+          <left Value="0"/>
+          <Top Value="0"/>
+          <Right Value="0"/>
+          <Bottom Value="0"/>
+        </Margins>
+        <Orientation Value="poPortrait"/>
+        <UseMargins Value="True"/>
+        <PrintToPrevPage Value="False"/>
+        <ColCount Value="0"/>
+        <ColGap Value="0"/>
+        <LayoutOrder Value="loColumns"/>
+        <ObjectCount Value="0"/>
+      </Page2>
+      <FVal>
+        <Count Value="0"/>
+      </FVal>
+      <ParentVars Value=""/>
+    </Pages>
+    <DetailReports>
+      <Count Value="1"/>
+      <Detail0>
+        <ReportName Value="Memo1_DetailReport"/>
+        <ReportDescription Value=""/>
+        <ReportBody Value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;&#xA;&lt;CONFIG&gt;&#xA;  &lt;LazReport&gt;&#xA;    &lt;Version Value=&quot;27&quot;/&gt;&#xA;    &lt;Title Value=&quot;&quot;/&gt;&#xA;    &lt;Subject Value=&quot;&quot;/&gt;&#xA;    &lt;KeyWords Value=&quot;&quot;/&gt;&#xA;    &lt;Comments Value=&quot;&quot;/&gt;&#xA;    &lt;ReportCreateDate Value=&quot;1899-12-30 00:00:00&quot;/&gt;&#xA;    &lt;ReportLastChange Value=&quot;2014-08-11 09:11:30&quot;/&gt;&#xA;    &lt;ReportVersionBuild Value=&quot;&quot;/&gt;&#xA;    &lt;ReportVersionMajor Value=&quot;&quot;/&gt;&#xA;    &lt;ReportVersionMinor Value=&quot;&quot;/&gt;&#xA;    &lt;ReportVersionRelease Value=&quot;&quot;/&gt;&#xA;    &lt;ReportAutor Value=&quot;&quot;/&gt;&#xA;    &lt;Script Value=&quot;&quot;/&gt;&#xA;    &lt;Pages&gt;&#xA;      &lt;PrintToDefault Value=&quot;False&quot;/&gt;&#xA;      &lt;DoublePass Value=&quot;False&quot;/&gt;&#xA;      &lt;SelectedPrinter Value=&quot;Canon-MF4010-UFRII-LT&quot;/&gt;&#xA;      &lt;PageCount Value=&quot;1&quot;/&gt;&#xA;      &lt;Page1&gt;&#xA;        &lt;Name Value=&quot;Page1&quot;/&gt;&#xA;        &lt;ClassName Value=&quot;TfrPageReport&quot;/&gt;&#xA;        &lt;Visible Value=&quot;True&quot;/&gt;&#xA;        &lt;Width Value=&quot;595&quot;/&gt;&#xA;        &lt;Height Value=&quot;842&quot;/&gt;&#xA;        &lt;Script Value=&quot;&quot;/&gt;&#xA;        &lt;PgSize Value=&quot;9&quot;/&gt;&#xA;        &lt;Margins&gt;&#xA;          &lt;left Value=&quot;36&quot;/&gt;&#xA;          &lt;Top Value=&quot;36&quot;/&gt;&#xA;          &lt;Right Value=&quot;36&quot;/&gt;&#xA;          &lt;Bottom Value=&quot;36&quot;/&gt;&#xA;        &lt;/Margins&gt;&#xA;        &lt;Orientation Value=&quot;poPortrait&quot;/&gt;&#xA;        &lt;UseMargins Value=&quot;True&quot;/&gt;&#xA;        &lt;PrintToPrevPage Value=&quot;False&quot;/&gt;&#xA;        &lt;ColCount Value=&quot;0&quot;/&gt;&#xA;        &lt;ColGap Value=&quot;0&quot;/&gt;&#xA;        &lt;LayoutOrder Value=&quot;loColumns&quot;/&gt;&#xA;        &lt;ObjectCount Value=&quot;4&quot;/&gt;&#xA;        &lt;Object1&gt;&#xA;          &lt;Name Value=&quot;ReportTitle1&quot;/&gt;&#xA;          &lt;ClassName Value=&quot;TfrBandView&quot;/&gt;&#xA;          &lt;Visible Value=&quot;True&quot;/&gt;&#xA;          &lt;Typ Value=&quot;gtBand&quot;/&gt;&#xA;          &lt;StreamMode Value=&quot;0&quot;/&gt;&#xA;          &lt;Size&gt;&#xA;            &lt;Left Value=&quot;0&quot;/&gt;&#xA;            &lt;Top Value=&quot;172&quot;/&gt;&#xA;            &lt;Width Value=&quot;752&quot;/&gt;&#xA;            &lt;Height Value=&quot;40&quot;/&gt;&#xA;          &lt;/Size&gt;&#xA;          &lt;Flags Value=&quot;48&quot;/&gt;&#xA;          &lt;Data&gt;&#xA;            &lt;Script Value=&quot;&quot;/&gt;&#xA;          &lt;/Data&gt;&#xA;          &lt;Tag Value=&quot;&quot;/&gt;&#xA;          &lt;FURLInfo Value=&quot;&quot;/&gt;&#xA;          &lt;BandType Value=&quot;btReportTitle&quot;/&gt;&#xA;          &lt;Condition Value=&quot;&quot;/&gt;&#xA;          &lt;DatasetStr Value=&quot;&quot;/&gt;&#xA;        &lt;/Object1&gt;&#xA;        &lt;Object2&gt;&#xA;          &lt;Name Value=&quot;MasterData1&quot;/&gt;&#xA;          &lt;ClassName Value=&quot;TfrBandView&quot;/&gt;&#xA;          &lt;Visible Value=&quot;True&quot;/&gt;&#xA;          &lt;Typ Value=&quot;gtBand&quot;/&gt;&#xA;          &lt;StreamMode Value=&quot;0&quot;/&gt;&#xA;          &lt;Size&gt;&#xA;            &lt;Left Value=&quot;0&quot;/&gt;&#xA;            &lt;Top Value=&quot;484&quot;/&gt;&#xA;            &lt;Width Value=&quot;752&quot;/&gt;&#xA;            &lt;Height Value=&quot;20&quot;/&gt;&#xA;          &lt;/Size&gt;&#xA;          &lt;Flags Value=&quot;48&quot;/&gt;&#xA;          &lt;Data&gt;&#xA;            &lt;Script Value=&quot;&quot;/&gt;&#xA;          &lt;/Data&gt;&#xA;          &lt;Tag Value=&quot;&quot;/&gt;&#xA;          &lt;FURLInfo Value=&quot;&quot;/&gt;&#xA;          &lt;BandType Value=&quot;btMasterData&quot;/&gt;&#xA;          &lt;Condition Value=&quot;&quot;/&gt;&#xA;          &lt;DatasetStr Value=&quot;100&quot;/&gt;&#xA;        &lt;/Object2&gt;&#xA;        &lt;Object3&gt;&#xA;          &lt;Name Value=&quot;Memo1&quot;/&gt;&#xA;          &lt;ClassName Value=&quot;TfrMemoView&quot;/&gt;&#xA;          &lt;Visible Value=&quot;True&quot;/&gt;&#xA;          &lt;Typ Value=&quot;gtMemo&quot;/&gt;&#xA;          &lt;StreamMode Value=&quot;0&quot;/&gt;&#xA;          &lt;Size&gt;&#xA;            &lt;Left Value=&quot;36&quot;/&gt;&#xA;            &lt;Top Value=&quot;484&quot;/&gt;&#xA;            &lt;Width Value=&quot;96&quot;/&gt;&#xA;            &lt;Height Value=&quot;20&quot;/&gt;&#xA;          &lt;/Size&gt;&#xA;          &lt;Flags Value=&quot;3&quot;/&gt;&#xA;          &lt;FillColor Value=&quot;clNone&quot;/&gt;&#xA;          &lt;Frames&gt;&#xA;            &lt;FrameColor Value=&quot;clBlack&quot;/&gt;&#xA;            &lt;FrameStyle Value=&quot;frsSolid&quot;/&gt;&#xA;            &lt;FrameWidth Value=&quot;1&quot;/&gt;&#xA;            &lt;FrameBorders Value=&quot;frbLeft,frbTop,frbRight,frbBottom&quot;/&gt;&#xA;          &lt;/Frames&gt;&#xA;          &lt;Data&gt;&#xA;            &lt;Format Value=&quot;556&quot;/&gt;&#xA;            &lt;FormatStr Value=&quot;&quot;/&gt;&#xA;            &lt;Memo Value=&quot;[var_a]&amp;#xA;&quot;/&gt;&#xA;            &lt;Script Value=&quot;&quot;/&gt;&#xA;            &lt;OnClick Value=&quot;&quot;/&gt;&#xA;            &lt;OnMouseEnter Value=&quot;&quot;/&gt;&#xA;            &lt;OnMouseLeave Value=&quot;&quot;/&gt;&#xA;            &lt;DetailReport Value=&quot;&quot;/&gt;&#xA;          &lt;/Data&gt;&#xA;          &lt;Tag Value=&quot;&quot;/&gt;&#xA;          &lt;FURLInfo Value=&quot;&quot;/&gt;&#xA;          &lt;Font&gt;&#xA;            &lt;Name Value=&quot;helvetica [urw]&quot;/&gt;&#xA;            &lt;Size Value=&quot;10&quot;/&gt;&#xA;            &lt;Color Value=&quot;clBlack&quot;/&gt;&#xA;            &lt;Charset Value=&quot;0&quot;/&gt;&#xA;            &lt;Style Value=&quot;&quot;/&gt;&#xA;          &lt;/Font&gt;&#xA;          &lt;Highlight&gt;&#xA;            &lt;FontStyle Value=&quot;2&quot;/&gt;&#xA;            &lt;FontColor Value=&quot;clBlack&quot;/&gt;&#xA;            &lt;FillColor Value=&quot;clWhite&quot;/&gt;&#xA;            &lt;HighlightStr Value=&quot;&quot;/&gt;&#xA;          &lt;/Highlight&gt;&#xA;          &lt;Alignment Value=&quot;taLeftJustify&quot;/&gt;&#xA;          &lt;Layout Value=&quot;tlTop&quot;/&gt;&#xA;          &lt;Angle Value=&quot;0&quot;/&gt;&#xA;          &lt;Justify Value=&quot;False&quot;/&gt;&#xA;          &lt;Cursor Value=&quot;0&quot;/&gt;&#xA;        &lt;/Object3&gt;&#xA;        &lt;Object4&gt;&#xA;          &lt;Name Value=&quot;Memo2&quot;/&gt;&#xA;          &lt;ClassName Value=&quot;TfrMemoView&quot;/&gt;&#xA;          &lt;Visible Value=&quot;True&quot;/&gt;&#xA;          &lt;Typ Value=&quot;gtMemo&quot;/&gt;&#xA;          &lt;StreamMode Value=&quot;0&quot;/&gt;&#xA;          &lt;Size&gt;&#xA;            &lt;Left Value=&quot;36&quot;/&gt;&#xA;            &lt;Top Value=&quot;172&quot;/&gt;&#xA;            &lt;Width Value=&quot;680&quot;/&gt;&#xA;            &lt;Height Value=&quot;42&quot;/&gt;&#xA;          &lt;/Size&gt;&#xA;          &lt;Flags Value=&quot;3&quot;/&gt;&#xA;          &lt;FillColor Value=&quot;clNone&quot;/&gt;&#xA;          &lt;Frames&gt;&#xA;            &lt;FrameColor Value=&quot;clBlack&quot;/&gt;&#xA;            &lt;FrameStyle Value=&quot;frsSolid&quot;/&gt;&#xA;            &lt;FrameWidth Value=&quot;1&quot;/&gt;&#xA;            &lt;FrameBorders Value=&quot;&quot;/&gt;&#xA;          &lt;/Frames&gt;&#xA;          &lt;Data&gt;&#xA;            &lt;Format Value=&quot;556&quot;/&gt;&#xA;            &lt;FormatStr Value=&quot;&quot;/&gt;&#xA;            &lt;Memo Value=&quot;Detail report&amp;#xA;with param [var_a]&amp;#xA;&quot;/&gt;&#xA;            &lt;Script Value=&quot;&quot;/&gt;&#xA;            &lt;OnClick Value=&quot;&quot;/&gt;&#xA;            &lt;OnMouseEnter Value=&quot;&quot;/&gt;&#xA;            &lt;OnMouseLeave Value=&quot;&quot;/&gt;&#xA;            &lt;DetailReport Value=&quot;&quot;/&gt;&#xA;          &lt;/Data&gt;&#xA;          &lt;Tag Value=&quot;&quot;/&gt;&#xA;          &lt;FURLInfo Value=&quot;&quot;/&gt;&#xA;          &lt;Font&gt;&#xA;            &lt;Name Value=&quot;helvetica [urw]&quot;/&gt;&#xA;            &lt;Size Value=&quot;12&quot;/&gt;&#xA;            &lt;Color Value=&quot;clBlack&quot;/&gt;&#xA;            &lt;Charset Value=&quot;0&quot;/&gt;&#xA;            &lt;Style Value=&quot;&quot;/&gt;&#xA;          &lt;/Font&gt;&#xA;          &lt;Highlight&gt;&#xA;            &lt;FontStyle Value=&quot;2&quot;/&gt;&#xA;            &lt;FontColor Value=&quot;clBlack&quot;/&gt;&#xA;            &lt;FillColor Value=&quot;clWhite&quot;/&gt;&#xA;            &lt;HighlightStr Value=&quot;&quot;/&gt;&#xA;          &lt;/Highlight&gt;&#xA;          &lt;Alignment Value=&quot;taCenter&quot;/&gt;&#xA;          &lt;Layout Value=&quot;tlTop&quot;/&gt;&#xA;          &lt;Angle Value=&quot;0&quot;/&gt;&#xA;          &lt;Justify Value=&quot;False&quot;/&gt;&#xA;          &lt;Cursor Value=&quot;0&quot;/&gt;&#xA;        &lt;/Object4&gt;&#xA;      &lt;/Page1&gt;&#xA;      &lt;FVal&gt;&#xA;        &lt;Count Value=&quot;0&quot;/&gt;&#xA;      &lt;/FVal&gt;&#xA;      &lt;ParentVars Value=&quot;&quot;/&gt;&#xA;    &lt;/Pages&gt;&#xA;    &lt;DetailReports&gt;&#xA;      &lt;Count Value=&quot;0&quot;/&gt;&#xA;    &lt;/DetailReports&gt;&#xA;  &lt;/LazReport&gt;&#xA;&lt;/CONFIG&gt;&#xA;"/>
+      </Detail0>
+    </DetailReports>
+  </LazReport>
+</CONFIG>

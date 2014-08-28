@@ -17,26 +17,26 @@ object frEditorForm: TfrEditorForm
   OnShow = FormShow
   Position = poScreenCenter
   ShowHint = True
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object Panel2: TPanel
     Left = 0
-    Height = 47
-    Top = 389
+    Height = 53
+    Top = 383
     Width = 589
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 47
+    ClientHeight = 53
     ClientWidth = 589
     FullRepaint = False
     TabOrder = 0
     object Button1: TButton
       AnchorSideTop.Control = Panel2
       AnchorSideRight.Control = Button2
-      Left = 479
-      Height = 35
+      Left = 475
+      Height = 41
       Top = 4
-      Width = 37
+      Width = 38
       HelpContext = 40
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -51,10 +51,10 @@ object frEditorForm: TfrEditorForm
       AnchorSideTop.Control = Panel2
       AnchorSideRight.Control = Panel2
       AnchorSideRight.Side = asrBottom
-      Left = 522
-      Height = 35
+      Left = 519
+      Height = 41
       Top = 4
-      Width = 61
+      Width = 64
       HelpContext = 50
       Anchors = [akRight, akBottom]
       AutoSize = True
@@ -69,9 +69,9 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Panel2
       AnchorSideTop.Control = Panel2
       Left = 6
-      Height = 35
+      Height = 41
       Top = 4
-      Width = 68
+      Width = 71
       HelpContext = 60
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -85,10 +85,10 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Button3
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
-      Left = 80
-      Height = 35
+      Left = 83
+      Height = 41
       Top = 4
-      Width = 67
+      Width = 70
       HelpContext = 70
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -102,10 +102,10 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Button6
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
-      Left = 227
-      Height = 35
+      Left = 241
+      Height = 41
       Top = 4
-      Width = 61
+      Width = 66
       HelpContext = 110
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -119,10 +119,10 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = Button4
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel2
-      Left = 153
-      Height = 35
+      Left = 159
+      Height = 41
       Top = 4
-      Width = 68
+      Width = 76
       HelpContext = 70
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -136,7 +136,7 @@ object frEditorForm: TfrEditorForm
   object ScriptPanel: TPanel
     Left = 0
     Height = 152
-    Top = 237
+    Top = 231
     Width = 589
     Align = alBottom
     BevelOuter = bvNone
@@ -146,9 +146,9 @@ object frEditorForm: TfrEditorForm
     TabOrder = 1
     object Label2: TLabel
       Left = 4
-      Height = 15
+      Height = 21
       Top = 0
-      Width = 35
+      Width = 38
       Caption = 'S&cript'
       ParentColor = False
     end
@@ -169,7 +169,7 @@ object frEditorForm: TfrEditorForm
       OnEnter = M1Enter
       BookMarkOptions.Xoffset = 2
       Gutter.Color = 13605511
-      Gutter.Width = 55
+      Gutter.Width = 57
       Gutter.MouseActions = <      
         item
           ClickCount = ccAny
@@ -576,6 +576,7 @@ object frEditorForm: TfrEditorForm
           ShiftMask = [ssShift, ssAlt, ssCtrl]
           Command = emcMouseLink
         end>
+      MouseTextActions = <>
       MouseSelActions = <      
         item
           ClickDir = cdDown
@@ -590,23 +591,31 @@ object frEditorForm: TfrEditorForm
         'End'
       )
       VisibleSpecialChars = [vscSpace, vscTabAtLast]
+      SelectedColor.FrameEdges = sfeAround
       SelectedColor.BackPriority = 50
       SelectedColor.ForePriority = 50
       SelectedColor.FramePriority = 50
       SelectedColor.BoldPriority = 50
       SelectedColor.ItalicPriority = 50
       SelectedColor.UnderlinePriority = 50
+      SelectedColor.StrikeOutPriority = 50
+      IncrementColor.FrameEdges = sfeAround
+      HighlightAllColor.FrameEdges = sfeAround
       BracketHighlightStyle = sbhsBoth
       BracketMatchColor.Background = clNone
       BracketMatchColor.Foreground = clNone
+      BracketMatchColor.FrameEdges = sfeAround
       BracketMatchColor.Style = [fsBold]
       FoldedCodeColor.Background = clNone
       FoldedCodeColor.Foreground = clGray
       FoldedCodeColor.FrameColor = clGray
+      FoldedCodeColor.FrameEdges = sfeAround
       MouseLinkColor.Background = clNone
       MouseLinkColor.Foreground = clBlue
+      MouseLinkColor.FrameEdges = sfeAround
       LineHighlightColor.Background = clNone
       LineHighlightColor.Foreground = clNone
+      LineHighlightColor.FrameEdges = sfeAround
       inline TSynGutterPartList
         object TSynGutterMarks
           AutoSize = False
@@ -614,10 +623,11 @@ object frEditorForm: TfrEditorForm
           MouseActions = <>
         end
         object TSynGutterLineNumber
-          Width = 17
+          Width = 19
           MouseActions = <>
           MarkupInfo.Background = clNone
           MarkupInfo.Foreground = clNone
+          MarkupInfo.FrameEdges = sfeAround
           DigitCount = 2
           ShowOnlyLineNumbersMultiplesOf = 1
           ZeroStart = False
@@ -634,6 +644,7 @@ object frEditorForm: TfrEditorForm
           MouseActions = <>
           MarkupInfo.Background = clWhite
           MarkupInfo.Foreground = clGray
+          MarkupInfo.FrameEdges = sfeAround
         end
         object TSynGutterCodeFolding
           MouseActions = <          
@@ -664,6 +675,7 @@ object frEditorForm: TfrEditorForm
             end>
           MarkupInfo.Background = clWhite
           MarkupInfo.Foreground = clGray
+          MarkupInfo.FrameEdges = sfeAround
           MouseActionsExpanded = <          
             item
               ClickCount = ccAny
@@ -691,12 +703,12 @@ object frEditorForm: TfrEditorForm
   end
   object MemoPanel: TPanel
     Left = 0
-    Height = 192
-    Top = 36
+    Height = 185
+    Top = 37
     Width = 589
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 192
+    ClientHeight = 185
     ClientWidth = 589
     FullRepaint = False
     TabOrder = 2
@@ -709,8 +721,8 @@ object frEditorForm: TfrEditorForm
       AnchorSideBottom.Control = MemoPanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 165
-      Top = 27
+      Height = 152
+      Top = 33
       Width = 589
       Anchors = [akTop, akLeft, akRight, akBottom]
       OnEnter = M1Enter
@@ -723,9 +735,9 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = MemoPanel
       AnchorSideTop.Control = MemoPanel
       Left = 6
-      Height = 15
+      Height = 21
       Top = 6
-      Width = 37
+      Width = 40
       BorderSpacing.Around = 6
       Caption = '&Memo'
       ParentColor = False
@@ -735,7 +747,7 @@ object frEditorForm: TfrEditorForm
     Cursor = crVSplit
     Left = 0
     Height = 9
-    Top = 228
+    Top = 222
     Width = 589
     Align = alBottom
     Anchors = [akLeft, akBottom]
@@ -748,13 +760,13 @@ object frEditorForm: TfrEditorForm
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     Left = 0
-    Height = 36
+    Height = 37
     Top = 0
     Width = 589
     Align = alTop
     AutoSize = True
     BevelOuter = bvLowered
-    ClientHeight = 36
+    ClientHeight = 37
     ClientWidth = 589
     FullRepaint = False
     TabOrder = 4
@@ -762,9 +774,9 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
       Left = 4
-      Height = 22
+      Height = 23
       Top = 7
-      Width = 59
+      Width = 61
       HelpContext = 80
       BorderSpacing.Around = 6
       Caption = '&Script'
@@ -775,10 +787,10 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = CB1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
-      Left = 69
-      Height = 22
+      Left = 71
+      Height = 23
       Top = 7
-      Width = 70
+      Width = 74
       HelpContext = 90
       BorderSpacing.Around = 6
       Caption = '&Big font'
@@ -789,10 +801,10 @@ object frEditorForm: TfrEditorForm
       AnchorSideLeft.Control = CB2
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel3
-      Left = 145
-      Height = 22
+      Left = 151
+      Height = 23
       Top = 7
-      Width = 90
+      Width = 94
       HelpContext = 100
       BorderSpacing.Around = 6
       Caption = '&Word wrap'

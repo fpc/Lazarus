@@ -21,12 +21,10 @@ const
   frEmptyBookmark = nil;
 
 type
+  { TODO -oalexs : Remove this }
   TfrBookmark = TBookmark;
-
   TfrTDataSet =class(TDataSet);
-
   TfrTField = class(TField);
-
   TfrTBlobField = class(TBlobField);
 
 function frIsBlob(Field: TfrTField): Boolean;

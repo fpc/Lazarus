@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, DB, LR_Class, Controls, StdCtrls, CheckLst,
-  LMessages, LCLType, LCLIntf, Buttons, EditBtn, Themes, ButtonPanel;
+  LMessages, LCLType, LCLIntf, Buttons, EditBtn, Themes, ButtonPanel, ExtCtrls;
 
 type
   TLRDialogControls = class(TComponent)
@@ -51,6 +51,7 @@ type
     function GetColor: TColor;
     function GetEnabled: boolean;
     function GetFont: TFont;
+    function GetHint: string;
     function GetOnClick: TfrScriptStrings;
     procedure SetAutoSize(AValue: Boolean);
     procedure SetCaption(AValue: string);
@@ -58,6 +59,7 @@ type
     procedure SetEnabled(AValue: boolean);
     procedure SetFont(AValue: TFont);
     procedure OnClickHandle(Sender: TObject);
+    procedure SetHint(AValue: string);
     procedure SetOnClick(AValue: TfrScriptStrings);
   protected
     FControl: TControl;
@@ -73,6 +75,7 @@ type
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
     procedure UpdateControlPosition; override;
     procedure AttachToParent; override;
+    procedure Assign(From: TfrView); override;
 
     property Control: TControl read FControl write FControl;
     property AutoSize: Boolean read GetAutoSize write SetAutoSize;
@@ -80,6 +83,7 @@ type
     property Caption:string read GetCaption write SetCaption;
     property Text:string read GetCaption write SetCaption;
     property Font:TFont read GetFont write SetFont;
+    property Hint:string read GetHint write SetHint;
     property OnClick:TfrScriptStrings read GetOnClick write SetOnClick;
   published
     property Enabled:boolean read GetEnabled write SetEnabled;
@@ -108,6 +112,7 @@ type
     property Color;
     property Caption;
     property Font;
+    property Hint;
     property OnClick;
   end;
 
@@ -126,6 +131,7 @@ type
     property Color;
     property Enabled;
     property Text;
+    property Hint;
     property OnClick;
   end;
 
@@ -147,6 +153,7 @@ type
     property Color;
     property Enabled;
     property Memo;
+    property Hint;
     property OnClick;
   end;
 
@@ -168,6 +175,7 @@ type
     property Color;
     property Enabled;
     property Caption;
+    property Hint;
     property Kind: TBitBtnKind read GetKind write SetKind;
     property OnClick;
   end;
@@ -191,6 +199,7 @@ type
     property Color;
     property Enabled;
     property Caption;
+    property Hint;
     property Checked:boolean read GetChecked write SetChecked;
     property OnClick;
   end;
@@ -225,6 +234,7 @@ type
     property Enabled;
     property Items:TStrings read GetItems write SetItems;
     property ItemIndex:integer read GetItemIndex write SetItemIndex;
+    property Hint;
     property OnClick;
   end;
 
@@ -252,6 +262,7 @@ type
     property Enabled;
     property Text;
     property AutoSize;
+    property Hint;
     property Style:TComboBoxStyle read GetStyle write SetStyle;
     property Items:TStrings read GetItems write SetItems;
     property ItemIndex:integer read GetItemIndex write SetItemIndex;
@@ -275,6 +286,7 @@ type
   published
     property Color;
     property Enabled;
+    property Hint;
     property Date:TDateTime read GetDate write SetDate;
     property OnClick;
   end;
@@ -302,6 +314,7 @@ type
     property Color;
     property Enabled;
     property Text;
+    property Hint;
     property OnClick;
   end;
 
@@ -330,7 +343,35 @@ type
     property Items:TStrings read GetItems write SetItems;
     property ItemIndex:integer read GetItemIndex write SetItemIndex;
     property ItemsCount:integer read GetItemsCount;
+    property Hint;
     property OnClick;
+  end;
+
+  { TlrRadioGroup }
+
+  TlrRadioGroup = class(TlrVisualControl)
+  private
+    function GetItemIndex: integer;
+    function GetItems: TStrings;
+    function GetItemsCount: integer;
+    procedure SetItemIndex(AValue: integer);
+    procedure SetItems(AValue: TStrings);
+  protected
+    procedure PaintDesignControl; override;
+    function CreateControl:TControl;override;
+  public
+    constructor Create(AOwnerPage:TfrPage); override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
+  published
+    property Color;
+    property Enabled;
+    property Items:TStrings read GetItems write SetItems;
+    property ItemIndex:integer read GetItemIndex write SetItemIndex;
+    property ItemsCount:integer read GetItemsCount;
+    property Hint;
+    property OnClick;
+    property Caption;
   end;
 
 procedure Register;
@@ -359,6 +400,7 @@ var
   lrBMP_LRDateEdit:TBitmap = nil;
   lrBMP_LRButtonPanel:TBitmap = nil;
   lrBMP_LRCheckListBox:TBitmap = nil;
+  lrBMP_LRRadioGroupBox:TBitmap = nil;
 
 procedure DoRegsiterControl(var cmpBMP:TBitmap; lrClass:TlrVisualControlClass);
 begin
@@ -383,6 +425,109 @@ begin
   DoRegsiterControl(lrBMP_LRDateEdit, TlrDateEdit);
   DoRegsiterControl(lrBMP_LRButtonPanel, TlrButtonPanel);
   DoRegsiterControl(lrBMP_LRCheckListBox, TlrCheckListBox);
+  DoRegsiterControl(lrBMP_LRRadioGroupBox, TlrRadioGroup);
+end;
+
+{ TlrRadioGroup }
+
+function TlrRadioGroup.GetItemIndex: integer;
+begin
+  Result:=TRadioGroup(FControl).ItemIndex;
+end;
+
+function TlrRadioGroup.GetItems: TStrings;
+begin
+  Result:=TRadioGroup(FControl).Items;
+end;
+
+function TlrRadioGroup.GetItemsCount: integer;
+begin
+  Result:=TRadioGroup(FControl).Items.Count;
+end;
+
+procedure TlrRadioGroup.SetItemIndex(AValue: integer);
+begin
+  TRadioGroup(FControl).ItemIndex:=AValue;
+end;
+
+procedure TlrRadioGroup.SetItems(AValue: TStrings);
+begin
+  TRadioGroup(FControl).Items:=AValue;
+  if Assigned(frDesigner) then
+    frDesigner.Modified:=true;
+end;
+
+procedure TlrRadioGroup.PaintDesignControl;
+var
+  AY, aH, i:integer;
+  S:string;
+
+var
+  details, details_chek: TThemedElementDetails;
+  PaintRect: TRect;
+  CSize: TSize;
+begin
+  Canvas.Frame3d(DRect, 1, bvLowered);
+  Canvas.Brush.Color := Color; // FControl.Color;
+  Canvas.FillRect(DRect);
+  Canvas.Font:=FControl.Font;
+
+  AY:=DRect.Top + 3;
+  aH:=Canvas.TextHeight('Wg');
+
+  Canvas.TextRect(DRect, DRect.Left + 3, AY, Text);
+  inc(AY, aH + 3);
+
+  i:=0;
+
+  Details := ThemeServices.GetElementDetails(tbRadioButtonUncheckedNormal);
+  details_chek:=ThemeServices.GetElementDetails(tbRadioButtonCheckedNormal);
+  CSize := ThemeServices.GetDetailSize(Details);
+
+
+  while (AY < DRect.Bottom) and (i<TRadioGroup(FControl).Items.Count) do
+  begin
+    PaintRect := Bounds(DRect.Left, AY, CSize.cx, CSize.cy);
+    if ItemIndex = i then
+      ThemeServices.DrawElement(Canvas.Handle, details_chek, PaintRect, nil)
+    else
+      ThemeServices.DrawElement(Canvas.Handle, Details, PaintRect, nil);
+
+
+
+    S:=TRadioGroup(FControl).Items[i];
+    Canvas.TextRect(DRect, DRect.Left + 3 + CSize.cx, AY, S);
+    inc(AY, aH + 3);
+    inc(i);
+  end;
+end;
+
+
+function TlrRadioGroup.CreateControl: TControl;
+begin
+  Result:=TRadioGroup.Create(nil);
+  TRadioGroup(Result).OnClick:=@OnClickHandle;
+end;
+
+constructor TlrRadioGroup.Create(AOwnerPage: TfrPage);
+begin
+  inherited Create(AOwnerPage);
+  BaseName := 'lrRadioGroup';
+  AutoSize:=false;
+end;
+
+procedure TlrRadioGroup.LoadFromXML(XML: TLrXMLConfig; const Path: String);
+begin
+  inherited LoadFromXML(XML, Path);
+  Items.Text:=XML.GetValue(Path+'Items/Text/Value'{%H-}, '');
+  ItemIndex:=XML.GetValue(Path+'ItemIndex/Value'{%H-}, -1);
+end;
+
+procedure TlrRadioGroup.SaveToXML(XML: TLrXMLConfig; const Path: String);
+begin
+  inherited SaveToXML(XML, Path);
+  XML.SetValue(Path+'Items/Text/Value'{%H-}, Items.Text);
+  XML.SetValue(Path+'ItemIndex/Value'{%H-}, ItemIndex);
 end;
 
 { TlrCheckListBox }
@@ -1179,6 +1324,11 @@ begin
   Result:=FControl.Font;
 end;
 
+function TlrVisualControl.GetHint: string;
+begin
+  Result:=FControl.Hint;
+end;
+
 function TlrVisualControl.GetOnClick: TfrScriptStrings;
 begin
   Result:=Script;
@@ -1235,6 +1385,11 @@ begin
   end;
 end;
 
+procedure TlrVisualControl.SetHint(AValue: string);
+begin
+  FControl.Hint:=AValue;
+end;
+
 procedure TlrVisualControl.SetOnClick(AValue: TfrScriptStrings);
 begin
   Script:=AValue;
@@ -1278,6 +1433,21 @@ begin
   FControl.Parent := OwnerForm;
 end;
 
+procedure TlrVisualControl.Assign(From: TfrView);
+begin
+  inherited Assign(From);
+  if From is TlrVisualControl then
+  begin
+    AutoSize:=TlrVisualControl(From).AutoSize;
+    Color:=TlrVisualControl(From).Color;
+    Caption:=TlrVisualControl(From).Caption;
+    Text:=TlrVisualControl(From).Text;
+    Font:=TlrVisualControl(From).Font;
+    Hint:=TlrVisualControl(From).Hint;
+    OnClick:=TlrVisualControl(From).OnClick;
+  end;
+end;
+
 procedure TlrVisualControl.AfterCreate;
 begin
   inherited AfterCreate;
@@ -1317,6 +1487,7 @@ begin
   Caption:=XML.GetValue(Path+'Caption/Value'{%H-}, '');
   AutoSize:=XML.GetValue(Path+'AutoSize/Value'{%H-}, true);
   Color:= StringToColor(XML.GetValue(Path+'Color/Value', 'clNone'));
+  Hint:=XML.GetValue(Path+'Hint/Value'{%H-}, '');
   if StreamMode = smDesigning then
   begin
     OnClick.Text:=XML.GetValue(Path+'Event/OnClick/Value', '');
@@ -1335,6 +1506,7 @@ begin
   XML.SetValue(Path+'Caption/Value'{%H-}, Caption);
   XML.SetValue(Path+'AutoSize/Value'{%H-}, AutoSize);
   XML.SetValue(Path+'Color/Value', ColorToString(Color));
+  XML.SetValue(Path+'Hint/Value'{%H-}, Hint);
 
   if StreamMode = smDesigning then
   begin
@@ -1368,6 +1540,8 @@ finalization
     FreeAndNil(lrBMP_LRDateEdit);
   if Assigned(lrBMP_LRButtonPanel) then
     FreeAndNil(lrBMP_LRButtonPanel);
+  if Assigned(lrBMP_LRRadioGroupBox) then
+    FreeAndNil(lrBMP_LRRadioGroupBox);
 end.
 
 

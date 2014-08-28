@@ -37,6 +37,8 @@ type
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
     property DataSet:TDataSet read FDS write SetDataSet;
+    property lrDBDataSet:TfrDBDataSet read FlrDBDataSet;
+    property lrDataSource:TDataSource read FlrDataSource;
   published
     property Active:boolean read GetActive write SetActive;
     property EOF:boolean read GetEOF;

@@ -68,7 +68,7 @@ begin
   while R = 0 do
   begin
     if (SearchRec.Attr and faDirectory) = 0 then begin
-      if CheckLrtTemplate(SearchRec.Name) then
+      if CheckLrtTemplate(AppendPathDelim(FTemplatePath) + SearchRec.Name) then
         LB1.Items.AddObject(ChangeFileExt(SearchRec.Name, ''), Lb1);
     end;
     R := FindNextUTF8(SearchRec);

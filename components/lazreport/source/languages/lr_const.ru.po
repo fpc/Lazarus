@@ -1484,6 +1484,10 @@ msgstr "Вставить объект-фигуру"
 msgid "Interpretator"
 msgstr "Интерпретатор"
 
+#: lr_const.sinvalidvariablename
+msgid "\"%s\" is not a valid variable name."
+msgstr ""
+
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
 msgstr "Сохранять соотношение сторон"

@@ -139,6 +139,7 @@ var
   FPage:TfrPage;
 begin
   FPage:=THackObj(t).OwnerPage;
+  ListBoxObjects.Items.Clear;
 
   if (FPage is TfrPageDialog) then
   begin

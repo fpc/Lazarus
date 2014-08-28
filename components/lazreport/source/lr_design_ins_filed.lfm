@@ -8,28 +8,6 @@ object lrFieldsList: TlrFieldsList
   TabOrder = 0
   DesignLeft = 779
   DesignTop = 316
-  object cbDSList: TComboBox
-    Left = 0
-    Height = 21
-    Top = 24
-    Width = 208
-    Align = alTop
-    ItemHeight = 13
-    OnChange = cbDSListChange
-    Style = csDropDownList
-    TabOrder = 0
-  end
-  object lbFieldsList: TListBox
-    Left = 0
-    Height = 285
-    Top = 45
-    Width = 208
-    Align = alClient
-    DragMode = dmAutomatic
-    ItemHeight = 0
-    ScrollWidth = 206
-    TabOrder = 1
-  end
   object fPanelHeader: TPanel
     Left = 0
     Height = 24
@@ -40,7 +18,7 @@ object lrFieldsList: TlrFieldsList
     Caption = 'Data inspector'
     ClientHeight = 24
     ClientWidth = 208
-    TabOrder = 2
+    TabOrder = 0
     OnDblClick = SpeedButton1Click
     OnMouseDown = fPanelHeaderMouseDown
     OnMouseMove = fPanelHeaderMouseMove
@@ -71,6 +49,77 @@ object lrFieldsList: TlrFieldsList
       Anchors = [akTop, akRight, akBottom]
       Caption = 'x'
       OnClick = SpeedButton2Click
+    end
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 306
+    Top = 24
+    Width = 208
+    ActivePage = TabSheet2
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 1
+    object TabSheet1: TTabSheet
+      Caption = 'Fields'
+      ClientHeight = 275
+      ClientWidth = 204
+      object lbFieldsList: TListBox
+        Left = 0
+        Height = 242
+        Top = 33
+        Width = 204
+        Align = alClient
+        DragMode = dmAutomatic
+        ItemHeight = 0
+        ScrollWidth = 202
+        TabOrder = 0
+        TopIndex = -1
+      end
+      object cbDSList: TComboBox
+        Left = 0
+        Height = 33
+        Top = 0
+        Width = 204
+        Align = alTop
+        ItemHeight = 0
+        OnChange = cbDSListChange
+        Style = csDropDownList
+        TabOrder = 1
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Variables'
+      ClientHeight = 275
+      ClientWidth = 204
+      object ValCombo: TComboBox
+        Left = 0
+        Height = 33
+        Top = 0
+        Width = 204
+        HelpContext = 32
+        Align = alTop
+        ItemHeight = 0
+        OnChange = ValComboChange
+        Style = csDropDownList
+        TabOrder = 0
+      end
+      object ValList: TListBox
+        Left = 0
+        Height = 242
+        Top = 33
+        Width = 204
+        HelpContext = 22
+        Align = alClient
+        ClickOnSelChange = False
+        DragMode = dmAutomatic
+        IntegralHeight = True
+        ItemHeight = 0
+        ParentFont = False
+        ScrollWidth = 202
+        TabOrder = 1
+        TopIndex = -1
+      end
     end
   end
 end

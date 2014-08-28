@@ -71,13 +71,15 @@ type
     property Color;
     property Enabled;
     property Text:Variant read GetText write SetText;
+    property Hint;
     property OnClick;
   end;
 
 implementation
+
 {$R lrdbdialogcontrols_img.res}
 
-uses lclintf, Themes, LCLType, DBPropEdits, PropEdits, LR_Utils, LR_DBRel;
+uses lclintf, Themes, LCLType, DBPropEdits, PropEdits, LR_Utils, LR_DBRel, LR_DBComponent;
 
 var
   lrBMP_LRDBLookupComboBox:TBitmap = nil;
@@ -176,15 +178,33 @@ end;
 procedure TlrDBLookupComboBox.AfterLoad;
 var
   D:TDataSet;
+  i:integer;
 begin
   inherited AfterLoad;
 
   D:=frFindComponent(nil, FListSource) as TDataSet;
   if Assigned(D) then
   begin
-    try
-      TDBLookupComboBox(FControl).ListSource:=frGetDataSource(OwnerForm, D);
-    finally
+    if Assigned(D.Owner) then
+    begin
+      try
+        TDBLookupComboBox(FControl).ListSource:=frGetDataSource(D.Owner, D);
+      finally
+      end;
+    end
+    else
+    begin
+      for i:=0 to OwnerPage.Objects.Count-1 do
+      begin
+        if TfrObject(OwnerPage.Objects[i]) is TLRDataSetControl then
+        begin
+          if TLRDataSetControl(OwnerPage.Objects[i]).DataSet = D then
+          begin
+           TDBLookupComboBox(FControl).ListSource:=TLRDataSetControl(OwnerPage.Objects[i]).lrDataSource;
+           break;
+          end;
+        end;
+      end;
     end;
   end;
 end;

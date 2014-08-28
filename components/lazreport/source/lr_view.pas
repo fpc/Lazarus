@@ -24,11 +24,8 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  Classes, SysUtils, LResources,LMessages,
-  Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, Buttons, StdCtrls,Menus,
-  
-  GraphType,LCLType,LCLIntf,LCLProc,
+  Classes, SysUtils, LResources,LMessages, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, Buttons, StdCtrls,Menus, GraphType,LCLType,LCLIntf,LCLProc,
   
   LR_Const, PrintersDlgs;
 
@@ -91,6 +88,8 @@ type
   { TfrPBox }
 
   TfrPBox = class(TPanel)
+  private
+    FCurView:TObject;
   public
     Preview: TfrPreviewForm;
     procedure WMEraseBackground(var {%H-}Message: TLMEraseBkgnd); message LM_ERASEBKGND;
@@ -117,9 +116,12 @@ type
     frTBSeparator3: TPanel;
     frTBSeparator4: TPanel;
     LbPanel: TPanel;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
     PanTop: TPanel;
     PgDown: TSpeedButton;
     PgUp: TSpeedButton;
+    PopupMenu1: TPopupMenu;
     prnDialog: TPrintDialog;
     ProcMenu: TPopupMenu;
     N2001: TMenuItem;
@@ -143,6 +145,7 @@ type
     RPanel: TPanel;
     BtPgFirst: TSpeedButton;
     BtPgLast: TSpeedButton;
+    SpeedButton1: TSpeedButton;
     VScrollBar: TScrollBar;
     BPanel: TPanel;
     HScrollBar: TScrollBar;
@@ -157,6 +160,7 @@ type
     procedure FormResize(Sender: TObject);
     procedure BtPgFirstClick(Sender: TObject);
     procedure BtPgLastClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
     procedure VScrollBarChange(Sender: TObject);
     procedure HScrollBarChange(Sender: TObject);
     procedure PgUpClick(Sender: TObject);
@@ -220,6 +224,8 @@ type
       {%H-}MousePos: TPoint; var Handled: Boolean);
     function ExportToWithFilterIndex(AFilterIndex:Integer; const AFileName: string): boolean;
     function Print: boolean;
+    procedure CreateExportFilterItems;
+    procedure ExportFilterItemExecClick(Sender: TObject);
   public
     { Public declarations }
     procedure Show_Modal(ADoc: Pointer);
@@ -227,7 +233,7 @@ type
 
 
 implementation
-uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg, Printers, strutils;
+uses LR_Class, LR_Prntr, LR_Srch, LR_PrDlg, Printers, strutils, lr_PreviewToolsAbsract;
 
 {$R *.lfm}
 
@@ -581,6 +587,9 @@ begin
   end;
 end;
 
+type
+  THackView = class(TfrMemoView);
+
 procedure TfrPBox.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   E:TfrEMFPages;
@@ -588,6 +597,7 @@ var
   P:TPoint;
   C:TCursor;
   S:string;
+  V:TfrView;
 begin
   if not Assigned(Preview.EMFPages) then Exit;
   E:=TfrEMFPages(Preview.EMFPages);
@@ -595,10 +605,27 @@ begin
   for i := 0 to E.Count - 1 do
     if PtInRect(E[i]^.R, P) then
     begin
-      if E.DoMouseMove(i, Point(Round((P.X - E[i]^.R.Left) / Preview.per), Round((P.Y - E[i]^.r.Top) / Preview.per)), C, S) then
+      V:=E.DoMouseMove(i, Point(Round((P.X - E[i]^.R.Left) / Preview.per), Round((P.Y - E[i]^.r.Top) / Preview.per)), C, S);
+      if Assigned(V) then
         Cursor:=C
       else
         Cursor:=crDefault;
+
+      if FCurView <> V then
+      begin
+        if Assigned(FCurView) and (FCurView is TfrMemoView) then
+        begin
+          THackView(FCurView).DoMouseLeave;
+//          THackView(FCurView).Invalidate;
+        end;
+        FCurView:=V;
+        if Assigned(FCurView) and (FCurView is TfrMemoView) then
+        begin
+          THackView(FCurView).DoMouseEnter;
+//          THackView(FCurView).Invalidate;
+        end;
+//        Invalidate;
+      end;
       Break;
     end;
   inherited MouseMove(Shift, X, Y);
@@ -609,6 +636,7 @@ begin
   if Preview.EMFPages = nil then Exit;
   with Preview do
     if N5.Visible then EditBtnClick(nil);
+  FCurView:=nil;
 end;
 
 
@@ -644,6 +672,7 @@ begin
   FindBtn.Hint := sPreviewFormFind;
 
   // TODO:  ADD hints to new buttons
+  CreateExportFilterItems;
 end;
 
 procedure TfrPreviewForm.FormDestroy(Sender: TObject);
@@ -813,6 +842,45 @@ begin
   end;
   {$ENDIF}
   result := true;
+end;
+
+procedure TfrPreviewForm.CreateExportFilterItems;
+var
+  M: TMenuItem;
+  i: Integer;
+  B:TbitMap;
+begin
+  if lrExportFilters.Count>0 then
+  begin
+    PopupMenu1.Items.Clear;
+    for i:=0 to lrExportFilters.Count-1 do
+    begin
+      M:=TMenuItem.Create(Self);
+      M.Tag:=I;
+      M.Caption:=TlrPreviewToolsAbstract(lrExportFilters[i]).Caption;
+      M.OnClick:=@ExportFilterItemExecClick;
+
+      B := TbitMap.Create;
+      B.LoadFromResourceName(HInstance, TlrPreviewToolsAbstract(lrExportFilters[i]).ClassName);
+      M.Bitmap.Assign(B);
+      B.Free;
+
+      PopupMenu1.Items.Add(M);
+    end;
+  end
+  else
+    SpeedButton1.Visible:=false;
+end;
+
+procedure TfrPreviewForm.ExportFilterItemExecClick(Sender: TObject);
+var
+  i:integer;
+begin
+  i:=TMenuItem(Sender).Tag;
+  ConnectBack;
+  TlrPreviewToolsAbstract(lrExportFilters[i]).Execute(TfrReport(Doc));
+  Connect(Doc);
+  Invalidate;
 end;
 
 function TfrPreviewForm.ExportToWithFilterIndex(AFilterIndex: Integer;
@@ -1066,6 +1134,14 @@ begin
     CurPage := TfrEMFPages(EMFPages).Count;
   ShowPageNum;
   SetToCurPage;
+end;
+
+procedure TfrPreviewForm.SpeedButton1Click(Sender: TObject);
+var
+  R:TPoint;
+begin
+  R:=ClientToScreen(Point(SpeedButton1.Left, SpeedButton1.Top + SpeedButton1.Height));
+  PopupMenu1.PopUp(R.X, R.Y);
 end;
 
 procedure TfrPreviewForm.SetToCurPage;

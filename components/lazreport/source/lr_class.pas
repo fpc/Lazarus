@@ -383,8 +383,13 @@ type
 
   TfrMemoView = class(TfrStretcheable)
   private
+    FCursor: TCursor;
+    FDetailReport: string;
     fFont        : TFont;
     fLastValue   : TStringList;
+    FOnClick: TfrScriptStrings;
+    FOnMouseEnter: TfrScriptStrings;
+    FOnMouseLeave: TfrScriptStrings;
 
     function GetAlignment: TAlignment;
     function GetAngle: Byte;
@@ -405,12 +410,16 @@ type
     procedure SetAlignment(const AValue: TAlignment);
     procedure SetAngle(const AValue: Byte);
     procedure SetAutoSize(const AValue: Boolean);
+    procedure SetCursor(AValue: TCursor);
     procedure SetFont(Value: TFont);
     procedure SetHideDuplicates(const AValue: Boolean);
     procedure SetHideZeroValues(AValue: Boolean);
     procedure SetIsLastValueSet(const AValue: boolean);
     procedure SetJustify(AValue: boolean);
     procedure SetLayout(const AValue: TTextLayout);
+    procedure SetOnClick(AValue: TfrScriptStrings);
+    procedure SetOnMouseEnter(AValue: TfrScriptStrings);
+    procedure SetOnMouseLeave(AValue: TfrScriptStrings);
     procedure SetWordBreak(AValue: Boolean);
     procedure SetWordWrap(const AValue: Boolean);
   protected
@@ -430,6 +439,11 @@ type
     procedure GetBlob(b: TfrTField); override;
     procedure FontChange({%H-}sender: TObject);
     procedure ResetLastValue; override;
+
+    procedure DoRunScript(AScript: TfrScriptStrings);
+    procedure DoOnClick;
+    procedure DoMouseEnter;
+    procedure DoMouseLeave;
 
     property IsLastValueSet: boolean read GetIsLastValueSet write SetIsLastValueSet;
   public
@@ -455,6 +469,8 @@ type
     property Justify: boolean read GetJustify write SetJustify;
     
   published
+    property Cursor: TCursor read FCursor write SetCursor default crDefault;
+    property DetailReport   : string read FDetailReport write FDetailReport;
     property Font      : TFont read fFont write SetFont;
     property Alignment : TAlignment read GetAlignment write SetAlignment;
     property Layout    : TTextLayout read GetLayout write SetLayout;
@@ -464,6 +480,10 @@ type
     property AutoSize  : Boolean read GetAutoSize write SetAutoSize;
     property HideDuplicates: Boolean read GetHideDuplicates write SetHideDuplicates;
     property HideZeroValues : Boolean read GetHideZeroValues write SetHideZeroValues;
+    property OnClick   : TfrScriptStrings read FOnClick write SetOnClick;
+    property OnMouseEnter : TfrScriptStrings read FOnMouseEnter write SetOnMouseEnter;
+    property OnMouseLeave : TfrScriptStrings read FOnMouseLeave write SetOnMouseLeave;
+
 
     property FillColor;
     property Memo;
@@ -493,6 +513,9 @@ type
     function  GetTitleRect: TRect;
     function  TitleSize: Integer;
     procedure CalcTitleSize;
+  protected
+    procedure SetHeight(const AValue: Double); override;
+    procedure SetVisible(AValue: Boolean);override;
   public
     constructor Create(AOwnerPage:TfrPage); override;
 
@@ -837,14 +860,15 @@ type
   private
     fHasVisibleControls : Boolean;
     FForm               : TfrDialogForm;
+    FCaption            : string;
     procedure EditFormDestroy(Sender: TObject);
     function GetCaption: string;
     procedure SetCaption(AValue: string);
     procedure UpdateControlPosition;
   protected
-    procedure SetName(const AValue: string); override;
     procedure PrepareObjects; override;
     procedure InitReport; override;
+    procedure DoneReport; override;
     procedure SetLeft(AValue: Integer);override;
     procedure SetTop(AValue: Integer);override;
     procedure SetWidth(AValue: Integer);override;
@@ -911,7 +935,7 @@ type
     procedure Delete(Index: Integer);
 
     function DoMouseClick(Index: Integer; pt: TPoint; var AInfo: String): Boolean;
-    function DoMouseMove(Index: Integer; pt: TPoint; var Cursor: TCursor; var AInfo: String): Boolean;
+    function DoMouseMove(Index: Integer; pt: TPoint; var Cursor: TCursor; var AInfo: String): TfrView;
 
     procedure LoadFromStream(AStream: TStream);
     procedure AddPagesFromStream(AStream: TStream; AReadHeader: boolean=true);
@@ -961,6 +985,48 @@ type
 
   TfrExportFilterClass = class of TfrExportFilter;
 
+  { TlrDetailReport }
+
+  TlrDetailReport = class
+  private
+    FReportBody: TStream;
+    FReportDescription: string;
+    FReportName: string;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String);
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String);
+
+    procedure SaveToStream(Stream: TStream);
+    procedure LoadFromStream(Stream: TStream);
+
+    property ReportDescription:string read FReportDescription write FReportDescription;
+    property ReportBody:TStream read FReportBody;
+    property ReportName:string read FReportName write FReportName;
+  end;
+
+  { TlrDetailReports }
+
+  TlrDetailReports = class
+  private
+    FList:TFPList;
+    function GetCount: integer;
+    function GetItems(AReportName: string): TlrDetailReport;
+    procedure Clear;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure LoadFromStream(Stream: TStream);
+    procedure LoadFromXML(XML: TLrXMLConfig; const Path: String);
+    procedure SaveToStream(Stream: TStream);
+    procedure SaveToXML(XML: TLrXMLConfig; const Path: String);
+    function GetItem(AItem:integer): TlrDetailReport;
+    function Add(AReportName: string):TlrDetailReport;
+    property Items[AReportName:string]:TlrDetailReport read GetItems; default;
+    property Count:integer read GetCount;
+  end;
+
   TfrDataType = (dtDataSet,dtDataSource);
 
   { TfrReport }
@@ -969,6 +1035,7 @@ type
   private
     FDataType: TfrDataType;
     FDefaultCollate: boolean;
+    FDetailReports: TlrDetailReports;
     FOnAfterPrint: TPrintReportEvent;
     FOnBeforePrint: TPrintReportEvent;
     FOnDBImageRead: TOnDBImageRead;
@@ -1017,7 +1084,6 @@ type
     FCurrentFilter: TfrExportFilter;
     FPageNumbers  : String;
     FCopies       : Integer;
-    FCurPage      : TfrPage;
     
 //    FDefaultTitle : String;
     FTitle        : String;
@@ -1051,6 +1117,7 @@ type
     function FindObjectByName(AName:string):TfrObject;
     procedure ExecScript;
   protected
+    function DoObjectClick(AObj:TfrView):boolean;
     procedure DoBeginBand(Band: TfrBand); virtual;
     procedure DoBeginColumn(Band: TfrBand); virtual;
     procedure DoBeginDoc; virtual;
@@ -1150,6 +1217,7 @@ type
 
     property DefaultCollate : boolean read FDefaultCollate write FDefaultCollate;
 
+    property DetailReports:TlrDetailReports read FDetailReports;
   published
     property Dataset: TfrDataset read FDataset write FDataset;
     property DefaultCopies: Integer read FDefaultCopies write FDefaultCopies default 1;
@@ -1299,10 +1367,11 @@ function FindObjectProps(AObjStr:string; out frObj:TfrObject; out PropName:strin
 
 const
   lrTemplatePath = 'LazReportTemplate/';
-  frCurrentVersion = 26;
+  frCurrentVersion = 27;
     // version 2.5: lazreport: added to binary stream ParentBandType variable
     //                         on TfrView, used to extend export facilities
     // version 2.6: lazreport: added to binary stream Tag property on TfrView
+    // version 2.7: lazreport: added to binary stream FOnClick, FOnMouseEnter, FOnMouseLeave, FCursor property on TfrMemoView
 
   frSpecCount = 9;
   frSpecFuncs: Array[0..frSpecCount - 1] of String = ('PAGE#', '',
@@ -1397,7 +1466,7 @@ var
 implementation
 
 uses
-  strutils, LR_Fmted, LR_Prntr, LR_Progr, LR_Utils, DateUtils
+  strutils, LR_Fmted, LR_Prntr, LR_Progr, LR_Utils, DateUtils, PropEdits
   {$IFDEF JPEG}, JPEG {$ENDIF}, lr_hyphen;
 
 type
@@ -1453,12 +1522,7 @@ const
   PropCount = 6;
   PropNames: Array[0..PropCount - 1] of String =
       ('Text','FontName', 'FontSize', 'FontStyle', 'FontColor', 'Adjust');
-{
-  ColNames: Array[0..16] of String =
-      ('clWhite', 'clBlack', 'clMaroon', 'clGreen', 'clOlive', 'clNavy',
-       'clPurple', 'clTeal', 'clGray', 'clSilver', 'clRed', 'clLime',
-       'clYellow', 'clBlue', 'clFuchsia', 'clAqua', 'clTransparent');
-}
+
 {$IFDEF DebugLR}
 function Bandtyp2str(typ: TfrBandType): string;
 begin
@@ -1512,39 +1576,54 @@ begin
   PropName:='';
 
   P:=Pos('.', AObjStr);
-  if P = 0 then exit;
-  FPageName:='';
-  FObjName:='';
-
-  FObjName:=Copy2SymbDel(AObjStr, '.');
-
-  P:=Pos('.', AObjStr);
-  if P <> 0 then
+  if (P = 0) then
   begin
-    FPageName:=FObjName;
-    FObjName:=Copy2SymbDel(AObjStr, '.');
-  end;
-  PropName:=AObjStr;
-
-
-  if FPageName<>'' then
-  begin
-    FPage:=CurReport.Pages.PageByName(FPageName);
-    if not Assigned(FPage) then
-      exit;
+    if Assigned(CurView) then
+    begin
+      Result:=GetPropInfo(CurView, AObjStr); //Retreive property informations
+      if Assigned(Result) then
+      begin
+        frObj:=CurView;
+        PropName:=AObjStr;
+      end;
+    end;
   end
   else
   begin
-    FPage:=CurPage;
+    FPageName:='';
+    FObjName:='';
+
+    FObjName:=Copy2SymbDel(AObjStr, '.');
+
+    P:=Pos('.', AObjStr);
+    if P <> 0 then
+    begin
+      FPageName:=FObjName;
+      FObjName:=Copy2SymbDel(AObjStr, '.');
+    end;
+    PropName:=AObjStr;
+
+
+    if FPageName<>'' then
+    begin
+      FPage:=CurReport.Pages.PageByName(FPageName);
+      if not Assigned(FPage) then
+        exit;
+    end
+    else
+    begin
+      FPage:=CurPage;
+    end;
+
+    if Assigned(FPage) then
+      frObj := FPage.FindRTObject(FObjName);
+    if not Assigned(frObj) then
+      frObj := CurReport.FindObject(FObjName);
+
+    if Assigned(frObj) then
+      Result:=GetPropInfo(frObj, PropName); //Retreive property informations
+
   end;
-
-  if Assigned(FPage) then
-    frObj := FPage.FindRTObject(FObjName);
-  if not Assigned(frObj) then
-    frObj := CurReport.FindObject(FObjName);
-
-  if Assigned(frObj) then
-    Result:=GetPropInfo(frObj, PropName); //Retreive property informations
 end;
 
 function DoFindObjMetod(S: string; out AObjProp: string
@@ -1804,13 +1883,25 @@ begin
       case CurBand.Typ of
         btMasterData, btReportSummary, btMasterFooter,
         btGroupHeader, btGroupFooter:
-          FRDataset := CurPage.Bands[btMasterData].DataSet;
+          if Assigned(CurPage.Bands[btMasterData]) then
+            FRDataset := CurPage.Bands[btMasterData].DataSet
+          else
+            FRDataset := nil;
         btDetailData, btDetailFooter:
-          FRDataset := CurPage.Bands[btDetailData].DataSet;
+          if Assigned(CurPage.Bands[btDetailData]) then
+            FRDataset := CurPage.Bands[btDetailData].DataSet
+          else
+            FRDataset := nil;
         btSubDetailData, btSubDetailFooter:
-          FRDataset := CurPage.Bands[btSubDetailData].DataSet;
+          if Assigned(CurPage.Bands[btSubDetailData]) then
+            FRDataset := CurPage.Bands[btSubDetailData].DataSet
+          else
+            FRDataset := nil;
         btCrossData, btCrossFooter:
-          FRDataset := CurPage.Bands[btCrossData].DataSet;
+          if Assigned(CurPage.Bands[btCrossData]) then
+            FRDataset := CurPage.Bands[btCrossData].DataSet
+          else
+            FRDataset := nil;
       end;
     end;
     if FRDataset is TfrDBDataset then
@@ -1983,6 +2074,171 @@ begin
     Canvas.TextRect(ARect, X1, Y, s);
 
   SetLength(Arr, 0);
+end;
+
+{ TlrDetailReports }
+
+function TlrDetailReports.GetItems(AReportName: string): TlrDetailReport;
+var
+  i: Integer;
+begin
+  Result:=nil;
+  if Trim(AReportName) = '' then exit;
+  for i:=0 to FList.Count - 1 do
+    if TlrDetailReport(FList[i]).FReportName = AReportName then
+    begin;
+      Result:=TlrDetailReport(FList[i]);
+      exit
+    end;
+end;
+
+function TlrDetailReports.GetCount: integer;
+begin
+  Result:=FList.Count;
+end;
+
+function TlrDetailReports.Add(AReportName: string): TlrDetailReport;
+begin
+  if AReportName <> '' then
+    Result:=GetItems(AReportName)
+  else
+    Result:=nil;
+  if not Assigned(Result) then
+  begin
+    Result:=TlrDetailReport.Create;
+    FList.Add(Result);
+    Result.FReportName:=AReportName;
+  end;
+end;
+
+procedure TlrDetailReports.Clear;
+var
+  P:TlrDetailReport;
+  i: Integer;
+begin
+  for i:=0 to FList.Count - 1 do
+  begin
+    P:=TlrDetailReport(FList[i]);
+    P.Free;
+  end;
+  FList.Clear;
+end;
+
+constructor TlrDetailReports.Create;
+begin
+  inherited Create;
+  FList:=TFPList.Create;
+end;
+
+destructor TlrDetailReports.Destroy;
+begin
+  Clear;
+  FreeAndNil(FList);
+  inherited Destroy;
+end;
+
+procedure TlrDetailReports.LoadFromStream(Stream: TStream);
+var
+  Cnt, i: Integer;
+  P: TlrDetailReport;
+begin
+  if Stream.Position = Stream.Size then exit;
+  Stream.Read(Cnt, SizeOf(Cnt));
+  for i:=0 to Cnt - 1 do
+  begin
+    P:=Add('');
+    P.LoadFromStream(Stream);
+  end;
+end;
+
+procedure TlrDetailReports.LoadFromXML(XML: TLrXMLConfig; const Path: String);
+var
+  Cnt, i: Integer;
+  P:TlrDetailReport;
+  S:string;
+begin
+  Cnt:=XML.GetValue(Path+'Count/Value', 0);
+  for i:=0 to Cnt - 1 do
+  begin
+    S:=XML.GetValue(Path+Format('Detail%d/', [i]) + 'ReportName/Value', '');
+    if S <> '' then
+    begin
+      P:=Add(S);
+      P.LoadFromXML(XML, Path + Format('Detail%d/', [i]));
+    end;
+  end;
+end;
+
+procedure TlrDetailReports.SaveToStream(Stream: TStream);
+var
+  Cnt, i: Integer;
+begin
+  Cnt:=Count;
+  Stream.Write(Cnt, SizeOf(Cnt));
+  for i:=0 to Cnt - 1 do
+    GetItem(i).SaveToStream(Stream);
+end;
+
+procedure TlrDetailReports.SaveToXML(XML: TLrXMLConfig; const Path: String);
+var
+  i: Integer;
+  P:TlrDetailReport;
+begin
+  XML.SetValue(Path+'Count/Value', Count);
+  for i:=0 to Count - 1 do
+    GetItem(i).SavetoXML(XML, Path+Format('Detail%d/', [i]));
+end;
+
+function TlrDetailReports.GetItem(AItem: integer): TlrDetailReport;
+begin
+  Result:=TlrDetailReport(FList[AItem]);
+end;
+
+{ TlrDetailReport }
+
+constructor TlrDetailReport.Create;
+begin
+  inherited Create;
+  FReportBody:=TStringStream.Create('');
+end;
+
+destructor TlrDetailReport.Destroy;
+begin
+  FreeAndNil(FReportBody);
+  inherited Destroy;
+end;
+
+procedure TlrDetailReport.LoadFromXML(XML: TLrXMLConfig; const Path: String);
+begin
+  FReportName:=XML.GetValue(Path+'ReportName/Value', '');
+  FReportDescription:=XML.GetValue(Path+'ReportDescription/Value', '');
+  FReportBody.Size:=0;
+  TStringStream(FReportBody).WriteString(XML.GetValue(Path+'ReportBody/Value', ''));
+end;
+
+procedure TlrDetailReport.SaveToXML(XML: TLrXMLConfig; const Path: String);
+begin
+  XML.SetValue(Path+'ReportName/Value', FReportName);
+  XML.SetValue(Path+'ReportDescription/Value', FReportDescription);
+  XML.SetValue(Path+'ReportBody/Value', TStringStream(FReportBody).DataString);
+end;
+
+procedure TlrDetailReport.SaveToStream(Stream: TStream);
+begin
+  frWriteString(Stream, FReportName);
+  frWriteString(Stream, FReportDescription);
+  frWriteString(Stream, TStringStream(FReportBody).DataString);
+end;
+
+procedure TlrDetailReport.LoadFromStream(Stream: TStream);
+var
+  S: String;
+begin
+  FReportName:=frReadString(Stream);
+  FReportDescription:=frReadString(Stream);
+  S:=frReadString(Stream);
+  TStringStream(FReportBody).Size:=0;
+  TStringStream(FReportBody).WriteString(S);
 end;
 
 { TfrReportDesigner }
@@ -2920,6 +3176,12 @@ end;
 constructor TfrMemoView.Create(AOwnerPage: TfrPage);
 begin
   inherited Create(AOwnerPage);
+  fOnClick:=TfrScriptStrings.Create;
+  FCursor:=crDefault;
+  FDetailReport:='';
+  FOnMouseEnter:=TfrScriptStrings.Create;
+  FOnMouseLeave:=TfrScriptStrings.Create;
+
   Typ := gtMemo;
   FFont := TFont.Create;
   FFont.Name := 'Arial';
@@ -2941,6 +3203,10 @@ begin
   FFont.Free;
   if FLastValue<>nil then
     FLastValue.Free;
+
+  FreeAndNil(FOnMouseEnter);
+  FreeAndNil(FOnMouseLeave);
+  FreeAndNil(fOnClick);
   inherited Destroy;
 end;
 
@@ -2994,6 +3260,27 @@ begin
   end;
 end;
 
+procedure TfrMemoView.SetOnClick(AValue: TfrScriptStrings);
+begin
+  BeforeChange;
+  fOnClick.Assign(AValue);
+  AfterChange;
+end;
+
+procedure TfrMemoView.SetOnMouseEnter(AValue: TfrScriptStrings);
+begin
+  BeforeChange;
+  FOnMouseEnter.Assign(AValue);
+  AfterChange;
+end;
+
+procedure TfrMemoView.SetOnMouseLeave(AValue: TfrScriptStrings);
+begin
+  BeforeChange;
+  FOnMouseLeave.Assign(AValue);
+  AfterChange;
+end;
+
 procedure TfrMemoView.SetWordBreak(AValue: Boolean);
 begin
   if WordBreak<>AValue then
@@ -3014,6 +3301,15 @@ begin
   Highlight := TfrMemoView(From).Highlight;
   HighlightStr := TfrMemoView(From).HighlightStr;
   LineSpacing := TfrMemoView(From).LineSpacing;
+
+  if From is TfrMemoView then
+  begin
+    FOnClick.Assign(TfrMemoView(From).FOnClick);
+    FOnMouseEnter.Assign(TfrMemoView(From).FOnMouseEnter);
+    FOnMouseLeave.Assign(TfrMemoView(From).FOnMouseLeave);
+    FDetailReport:=TfrMemoView(From).FDetailReport;
+    FCursor:=TfrMemoView(From).FCursor;
+  end;
 end;
 
 procedure TfrMemoView.ExpandVariables;
@@ -3934,6 +4230,17 @@ begin
       Angle := tmpAngle;
       EndUpdate;
     end;
+
+
+    if frVersion>26 then
+    begin
+      Stream.Read(FCursor, SizeOf(FCursor));
+      frReadMemo(Stream, FOnClick);
+      frReadMemo(Stream, FOnMouseEnter);
+      frReadMemo(Stream, FOnMouseLeave);
+      FDetailReport:=frReadString(Stream);
+    end;
+
   end;
 
   if frVersion = 21 then
@@ -3961,6 +4268,14 @@ begin
   RestoreProperty('Layout',XML.GetValue(Path+'Layout/Value',''));
   Angle := XML.GetValue(Path+'Angle/Value'{%H-}, 0);
   Justify := XML.GetValue(Path+'Justify/Value', false);
+
+  FCursor:=TCursor(XML.GetValue(Path+'Cursor/Value'{%H-}, crDefault));
+
+  FOnClick.Text:= XML.GetValue(Path+'Data/OnClick/Value', '');
+  FOnMouseEnter.Text:= XML.GetValue(Path+'Data/OnMouseEnter/Value', '');
+  FOnMouseLeave.Text:= XML.GetValue(Path+'Data/OnMouseLeave/Value', '');
+
+  FDetailReport:= XML.GetValue(Path+'Data/DetailReport/Value', '');
 end;
 
 procedure TfrMemoView.SaveToStream(Stream: TStream);
@@ -3995,6 +4310,12 @@ begin
     Write(tmpByteAlign, SizeOf(tmpByteAlign));
     Write(tmpLayout,SizeOf(tmpLayout));
     Write(tmpAngle,SizeOf(tmpAngle));
+
+    Stream.Write(FCursor, SizeOf(FCursor));
+    frWriteMemo(Stream, FOnClick);
+    frWriteMemo(Stream, FOnMouseEnter);
+    frWriteMemo(Stream, FOnMouseLeave);
+    frWriteString(Stream, FDetailReport);
   end;
 end;
 
@@ -4018,6 +4339,13 @@ begin
   XML.SetValue(Path+'Layout/Value', GetSaveProperty('Layout'));
   XML.SetValue(Path+'Angle/Value'{%H-}, Angle);
   XML.SetValue(Path+'Justify/Value', Justify);
+  XML.SetValue(Path+'Cursor/Value'{%H-}, FCursor);
+
+  XML.SetValue(Path+'Data/OnClick/Value', FOnClick.Text);
+  XML.SetValue(Path+'Data/OnMouseEnter/Value', FOnMouseEnter.Text);
+  XML.SetValue(Path+'Data/OnMouseLeave/Value', FOnMouseLeave.Text);
+
+  XML.SetValue(Path+'Data/DetailReport/Value', FDetailReport);
 end;
 
 procedure TfrMemoView.GetBlob(b: TfrTField);
@@ -4048,6 +4376,113 @@ end;
 procedure TfrMemoView.ResetLastValue;
 begin
   IsLastValueSet := False;
+end;
+
+procedure TfrMemoView.DoRunScript(AScript: TfrScriptStrings);
+var
+  FSaveView:TfrView;
+  FSavePage:TfrPage;
+  CmdList, ErrorList:TStringList;
+begin
+  FSaveView:=CurView;
+  FSavePage:=CurPage;
+
+  CmdList:=TStringList.Create;
+  ErrorList:=TStringList.Create;
+  try
+    CurView := Self;
+    CurPage:=OwnerPage;
+    frInterpretator.PrepareScript(AScript, CmdList, ErrorList);
+    frInterpretator.DoScript(CmdList);
+  finally
+    CurPage:=FSavePage;
+    CurView := FSaveView;
+
+    FreeAndNil(CmdList);
+    FreeAndNil(ErrorList);
+  end;
+end;
+
+procedure TfrMemoView.DoOnClick;
+var
+  FSaveRep,FDetailRep:TfrReport;
+  FSaveView:TfrView;
+  FSavePage:TfrPage;
+  CmdList, ErrorList:TStringList;
+
+  FSaveGetPValue:TGetPValueEvent;
+  FSaveFunEvent:TFunctionEvent;
+
+  FDR:TlrDetailReport;
+begin
+  if not Assigned(CurReport) then
+    exit;
+
+  if (FOnClick.Count>0) and (Trim(FOnClick.Text)<>'') then
+    DoRunScript(FOnClick);
+
+  FDR:=CurReport.DetailReports[FDetailReport];
+  if Assigned(FDR) and (FDR.ReportBody.Size>0) then
+  begin
+    FSaveView:=CurView;
+    FSavePage:=CurPage;
+    FSaveRep:=CurReport;
+    FSaveGetPValue:=frParser.OnGetValue;
+    FSaveFunEvent:=frParser.OnFunction;
+
+    FDR.ReportBody.Position:=0;
+
+    CurView := nil;
+    CurPage := nil;
+    CurReport:=TfrReport.Create(FSaveRep.Owner);
+
+    CurReport.OnBeginBand:=FSaveRep.OnBeginBand;
+    CurReport.OnBeginColumn:=FSaveRep.OnBeginColumn;
+    CurReport.OnBeginDoc:=FSaveRep.OnBeginDoc;
+    CurReport.OnBeginPage:=FSaveRep.OnBeginPage;
+    CurReport.OnDBImageRead:=FSaveRep.OnDBImageRead;
+    CurReport.OnEndBand:=FSaveRep.OnEndBand;
+    CurReport.OnEndDoc:=FSaveRep.OnEndDoc;
+    CurReport.OnEndPage:=FSaveRep.OnEndPage;
+    CurReport.OnEnterRect:=FSaveRep.OnEnterRect;
+    CurReport.OnExportFilterSetup:=FSaveRep.OnExportFilterSetup;
+    CurReport.OnGetValue:=FSaveRep.OnGetValue;
+    CurReport.OnManualBuild:=FSaveRep.OnManualBuild;
+    CurReport.OnMouseOverObject:=FSaveRep.OnMouseOverObject;
+    CurReport.OnObjectClick:=FSaveRep.OnObjectClick;
+    CurReport.OnPrintColumn:=FSaveRep.OnPrintColumn;
+    CurReport.OnProgress:=FSaveRep.OnProgress;
+    CurReport.OnUserFunction:=FSaveRep.OnUserFunction;
+
+
+    CmdList:=TStringList.Create;
+    ErrorList:=TStringList.Create;
+    try
+      CurReport.LoadFromXMLStream(FDR.ReportBody);
+      CurReport.ShowReport;
+    finally
+      FreeAndNil(CurReport);
+      CurReport:=FSaveRep;
+      CurPage:=FSavePage;
+      CurView := FSaveView;
+      frParser.OnGetValue:=FSaveGetPValue;
+      frParser.OnFunction:=FSaveFunEvent;
+      FreeAndNil(CmdList);
+      FreeAndNil(ErrorList);
+    end;
+  end;
+end;
+
+procedure TfrMemoView.DoMouseEnter;
+begin
+  if (FOnMouseEnter.Count>0) and (Trim(FOnMouseEnter.Text)<>'') and (Assigned(CurReport))then
+    DoRunScript(FOnMouseEnter);
+end;
+
+procedure TfrMemoView.DoMouseLeave;
+begin
+  if (FOnMouseLeave.Count>0) and (Trim(FOnMouseLeave.Text)<>'') and (Assigned(CurReport))then
+    DoRunScript(FOnMouseLeave);
 end;
 
 procedure TfrMemoView.DefinePopupMenu(Popup: TPopupMenu);
@@ -4270,6 +4705,14 @@ procedure TfrMemoView.SetAutoSize(const AValue: Boolean);
 begin
   if AutoSize<>AValue then
     ModifyFlag(flAutoSize, AValue);
+end;
+
+procedure TfrMemoView.SetCursor(AValue: TCursor);
+begin
+  if FCursor=AValue then Exit;
+  BeforeChange;
+  FCursor:=AValue;
+  AfterChange;
 end;
 
 {----------------------------------------------------------------------------}
@@ -4656,6 +5099,19 @@ begin
         MaxTitleSize := W;
     end;
   end;
+end;
+
+procedure TfrBandView.SetHeight(const AValue: Double);
+begin
+  inherited SetHeight(AValue);
+  Parent.dy := Round(Avalue);
+end;
+
+procedure TfrBandView.SetVisible(AValue: Boolean);
+begin
+  inherited SetVisible(AValue);
+  if Assigned(Parent) then
+    Parent.Visible := Avalue;
 end;
 
 {----------------------------------------------------------------------------}
@@ -8314,26 +8770,23 @@ begin
     R1:=Rect(Round(V.X), Round(V.Y), Round((V.X + V.DX)), Round((V.Y + V.DY)));
     if PtInRect(R1, pt) then
     begin
-      if Assigned(Parent.OnObjectClick) then
-      begin
-        Parent.OnObjectClick(V);
-        Result := True;
+      Result:=Parent.DoObjectClick(V);
+      if Result then
         AInfo:=V.FURLInfo;
-      end;
       exit;
     end;
   end;
 end;
 
 function TfrEMFPages.DoMouseMove(Index: Integer; pt: TPoint;
-  var Cursor: TCursor; var AInfo: String): Boolean;
+  var Cursor: TCursor; var AInfo: String): TfrView;
 var
   PgInf:  PfrPageInfo;
   V: TfrView;
   i: Integer;
   R1:TRect;
 begin
-  Result := False;
+  Result := nil;
   PgInf := FPages[Index];
   if not Assigned(PgInf) then exit;
 
@@ -8347,11 +8800,13 @@ begin
     R1:=Rect(Round(V.X), Round(V.Y), Round((V.X + V.DX)), Round((V.Y + V.DY)));
     if PtInRect(R1, pt) then
     begin
+      Result := V;
+
+      if Result is TfrMemoView then
+        Cursor:=TfrMemoView(Result).Cursor;
+
       if Assigned(Parent.OnMouseOverObject) then
-      begin
         Parent.OnMouseOverObject(V, Cursor);
-        Result := True;
-      end;
       exit;
     end;
   end;
@@ -8776,6 +9231,7 @@ begin
     frProgressForm := TfrProgressForm.Create(nil);
   end;
 
+  FDetailReports:=TlrDetailReports.Create;
   FPages := TfrPages.Create(Self);
   FEMFPages := TfrEMFPages.Create(Self);
   FVars := TStringList.Create;
@@ -8802,6 +9258,7 @@ begin
   FEMFPages := nil;
   FPages.Free;
   FComments.Free;
+  FreeAndNil(FDetailReports);
   FreeAndNil(FScript);
   inherited Destroy;
 end;
@@ -8813,6 +9270,7 @@ begin
     frDataManager.Clear;
   DoublePass := False;
   ClearAttribs;
+  FDetailReports.Clear;
   DocMode := dmDesigning;
 end;
 
@@ -9222,7 +9680,7 @@ begin
        varQWord, varDouble, varSingle] then
     begin
       if aValue = 0 then
-        aValue:='';
+        aValue:=Null;
     end;
   end;
 end;
@@ -9383,6 +9841,10 @@ begin
       frVersion := 22;
 {$ENDIF}
     Pages.LoadFromStream(Stream);
+
+    if frVersion>26 then
+      FDetailReports.LoadFromStream(Stream);
+
   except
     on E:Exception do
     begin
@@ -9438,6 +9900,8 @@ begin
     end
   else
     MessageDlg(sReportLoadingError,mtError,[mbOk],0);
+
+  FDetailReports.LoadFromXML(XML, Path+'DetailReports/');
 end;
 
 procedure TfrReport.SaveToStream(Stream: TStream);
@@ -9446,6 +9910,7 @@ begin
   frVersion := frCurrentVersion;
   Stream.Write(frVersion, 1);
   Pages.SaveToStream(Stream);
+  FDetailReports.SaveToStream(Stream);
 end;
 
 procedure TfrReport.LoadFromFile(const FName: String);
@@ -9537,6 +10002,8 @@ begin
   XML.SetValue(Path+'Script/Value', FScript.Text);
 
   Pages.SaveToXML(XML, Path+'Pages/');
+
+  FDetailReports.SaveToXML(XML, Path+'DetailReports/');
 end;
 
 procedure TfrReport.SaveToXMLFile(const FName: String);
@@ -10155,14 +10622,14 @@ begin
         begin
           if Pages[i] is TfrPageReport then
           begin
-            FCurPage := Pages[i];
-            if FCurPage.Skip or (not FCurPage.Visible) then
+            CurPage := Pages[i];
+            if CurPage.Skip or (not CurPage.Visible) then
               Continue;
-            FCurPage.Mode := pmNormal;
+            CurPage.Mode := pmNormal;
             if Assigned(FOnManualBuild) then
-              FOnManualBuild(FCurPage)
+              FOnManualBuild(CurPage)
             else
-              FCurPage.FormPage;
+              CurPage.FormPage;
 
           {$IFDEF DebugLR}
           debugLn('p3');
@@ -10692,6 +11159,17 @@ begin
   end;
 end;
 
+function TfrReport.DoObjectClick(AObj: TfrView): boolean;
+begin
+  Result:=false;
+  if Assigned(AObj) and (AObj is TfrMemoView) then
+    TfrMemoView(AObj).DoOnClick;
+
+  Result:=Assigned(OnObjectClick);
+  if Assigned(OnObjectClick) then
+    OnObjectClick(AObj);
+end;
+
 procedure TfrReport.DoBeginBand(Band: TfrBand);
 begin
   if Assigned(FOnBeginBand) then
@@ -10809,14 +11287,14 @@ var
   t:  TfrObject;
   Prop: String;
   n:integer;
+  PropName: String;
   PropInfo:PPropInfo;
   St:string;
   i:integer;
   FColorVal:TColor;
 begin
 
-  t := CurView;
-  Prop := AName;
+  t := nil;
 
   if frVariables.IndexOf(AName) <> -1 then
   begin
@@ -10830,21 +11308,10 @@ begin
     exit;
   end;
 
-  N:=PosLast('.', AName);
-  t:=nil;
-
-  if N>0 then
-  begin
-    Prop:=Copy(AName, N+1, Length(AName));
-    Delete(AName, N, Length(AName));
-    //Проверим - существует ли такой объект?
-    t := FindObjectByName(AName);
-  end;
-
+  PropInfo:=FindObjectProps(AName, t, PropName);
   if Assigned(t) then
   begin
        //Retreive property informations
-    PropInfo:=GetPropInfo(t,Prop);
     if Assigned(PropInfo) then
     begin
       {$IFDEF DebugLR}
@@ -10854,24 +11321,24 @@ begin
         tkChar,tkAString,tkWString,
         tkSString,tkLString :
           begin
-            St:=GetStrProp(t, Prop);
+            St:=GetStrProp(t, PropInfo);
             {$IFDEF DebugLR}
             DebugLn('St=',St);
             {$ENDIF}
             AValue:=St;
           end;
         tkBool,tkInt64,tkQWord,
-        tkInteger                   : AValue:=GetOrdProp(t,PropInfo);
+        tkInteger                   : AValue:=GetOrdProp(t, PropInfo);
         tkSet                       : begin
-                                            St:=GetSetProp(t,Prop);
+                                            St:=GetSetProp(t, PropInfo, false);
                                             {$IFDEF DebugLR}
                                             DebugLn('St=',St);
                                             {$ENDIF}
                                             AValue:=St;
                                           end;
-        tkFloat                     : AValue:=GetFloatProp(t,Prop);
+        tkFloat                     : AValue:=GetFloatProp(t,PropInfo);
         tkEnumeration               : begin
-                                            St:=GetEnumProp(t,Prop);
+                                            St:=GetEnumProp(t,PropInfo);
                                             {$IFDEF DebugLR}
                                             DebugLn('St=',St);
                                             {$ENDIF}
@@ -10886,7 +11353,7 @@ begin
       if not (t is TfrBandView) then
       begin
         for i:=0 to propcount-1 do
-          if CompareText(PropNames[i], Prop)=0 then
+          if CompareText(PropNames[i], PropName)=0 then
           begin
               {$IFDEF DebugLR}
               DbgOut('A CustomField was found ', Prop);
@@ -10915,22 +11382,25 @@ begin
   begin
     // it's not a property of t, try with known color names first
     if IdentToColor(AName, FColorVal) then
-    begin
-      AValue := FColorVal;
-      exit;
-    end
+      AValue := FColorVal
     else
     if UpperCase(AName) = 'MROK' then //try std ModalResult values
-    begin
-      AValue := mrOk;
-      exit;
-    end
+      AValue := mrOk
     else
     if UpperCase(AName) = 'MRCANCEL' then //try std ModalResult values
-    begin
-      AValue := mrCancel;
-      exit;
-    end
+      AValue := mrCancel
+    else
+    if (UpperCase(AName) = 'FINALPASS') and Assigned(CurReport) then
+      AValue := CurReport.FinalPass
+    else
+    if (UpperCase(AName) = 'CURY') and Assigned(CurPage) then
+      AValue := CurPage.CurY
+    else
+    if (UpperCase(AName) = 'PAGEHEIGHT') and Assigned(CurPage) then
+      AValue := CurPage.Height
+    else
+    if (UpperCase(AName) = 'PAGEWIDTH') and Assigned(CurPage) then
+      AValue := CurPage.Width;
   end;
 end;
 
@@ -11635,9 +12105,9 @@ end;
 procedure TInterpretator.SetValue(const Name: String; Value: Variant);
 var
   t         : TfrObject;
-  Prop      : String;
+  PropName  : String;
   PropInfo  : PPropInfo;
-  St        : String;
+  S         : String;
   i         : Integer;
 begin
   {$IFDEF DebugLR}
@@ -11647,53 +12117,28 @@ begin
         DebugLn('Value=NULL');
   {$ENDIF}
 
-  t := CurView;
-  Prop := Name;
-  if Pos('.', Name) <> 0 then
-  begin
-    St := Copy(Name, 1, Pos('.', Name) - 1);
-    {$IFDEF DebugLR}
-    DebugLn('Trying to find RT Object "',St,'"');
-    {$ENDIF}
-    if Assigned(CurReport.FCurPage) then
-      t := CurReport.FCurPage.FindRTObject(St);
-    if not Assigned(t) then
-       t:=CurReport.FindObject(Copy(Name, 1, Pos('.', Name) - 1));
-    Prop := Copy(Name, Pos('.', Name) + 1, 255);
-  end;
-  {$IFDEF DebugLR}
-  DebugLn('t=', dbgsName(t),' Prop=',Prop);
-  {$ENDIF}
-
-  //Retreive property informations
-  if t is TfrBandView then
-    t := TfrBandView(t).Parent;
-
-  if Assigned(t) then
-    PropInfo:=GetPropInfo(t,Prop)
-  else
-    PropInfo:=nil;
+  PropInfo:=FindObjectProps(Name, t, PropName);
 
   if Assigned(PropInfo) then
   begin
-    St:=VarToStr(Value);
+    S:=VarToStr(Value);
     {$IFDEF DebugLR}
     DebugLn('PropInfo for ',prop,' found, Setting Value=',St);
     {$ENDIF}
 
     Case PropInfo^.PropType^.Kind of
       tkChar,tkAString,tkWString,
-      tkSString,tkLString         : SetStrProp(t,Prop,St);
+      tkSString,tkLString         : SetStrProp(t,PropInfo,S);
       tkBool,tkInt64,tkQWord,
       tkInteger                   : begin
                                       if AnsiCompareText(PropInfo^.PropType^.Name,'TGraphicsColor')=0 then
-                                        SetOrdProp(t,PropInfo,StringToColor(St))
+                                        SetOrdProp(t,PropInfo,StringToColor(S))
                                       else
                                         SetOrdProp(t,PropInfo,Value)
                                     end;
-      tkSet                       : SetSetProp(t,Prop,St);
-      tkFloat                     : SetFloatProp(t,Prop,Value);
-      tkEnumeration               : SetEnumProp(t,Prop,St);
+      tkSet                       : SetSetProp(t,PropInfo,S);
+      tkFloat                     : SetFloatProp(t,PropInfo, Value);
+      tkEnumeration               : SetEnumProp(t,PropInfo, S);
     end;
   end
   else
@@ -11702,7 +12147,7 @@ begin
     begin
       // try with customized properties not included directly in t
       for i:=0 to propcount-1 do
-        if CompareText(PropNames[i], Prop)=0 then
+        if CompareText(PropNames[i], PropName)=0 then
         begin
           {$IFDEF DebugLR}
           DbgOut('A CustomField was found ', Prop);
@@ -11729,7 +12174,7 @@ begin
     if IsValidIdent(Name) then
       frVariables[Name] := Value
     else
-      raise Exception.CreateFmt('"%s" is not a valid variable name.', [Name]); //TODO: Translate this
+      raise Exception.CreateFmt( sInvalidVariableName, [Name]);
   end;
 end;
 
@@ -11752,6 +12197,9 @@ begin
 end;
 
 {----------------------------------------------------------------------------}
+
+
+
 procedure DoInit;
 begin
   RegisterClasses([TfrPageReport,TfrPageDialog]);
@@ -11786,7 +12234,6 @@ begin
   frCompressor.Free;
   HookList.Free;
 end;
-
 
 { TfrObject }
 
@@ -12130,44 +12577,31 @@ end;
 
 procedure TfrPageDialog.EditFormDestroy(Sender: TObject);
 begin
-  fForm:=nil;
+  FForm:=nil;
 end;
 
 function TfrPageDialog.GetCaption: string;
 begin
-  Result:=FForm.Caption;
+  Result:=FCaption;
 end;
 
 procedure TfrPageDialog.SetCaption(AValue: string);
 begin
-  FForm.Caption:=AValue;
+  FCaption:=AValue;
+  if Assigned(FForm) then
+    FForm.Caption:=AValue;
 end;
 
 procedure TfrPageDialog.UpdateControlPosition;
 begin
-  FForm.Left:=Left;
-  FForm.Top:=Top;
-  FForm.Width:=Width;
-  FForm.Height:=Height - 20;
-  FForm.Position:=poScreenCenter;
-end;
-
-procedure TfrPageDialog.SetName(const AValue: string);
-var
-  S:string;
-  i:integer;
-  F:TComponent;
-begin
-  inherited SetName(AValue);
-  S:=AValue;
-  F:=Application.FindComponent(S);
-  if Assigned(F) and (F<>FForm) then
+  if Assigned(FForm) then
   begin
-    i:=1;
-    while Assigned(Application.FindComponent(AValue + IntToStr(i))) do inc(i);
-    S:=AValue + IntToStr(i);
+    FForm.Left:=Left;
+    FForm.Top:=Top;
+    FForm.Width:=Width;
+    FForm.Height:=Height - 20;
+    FForm.Position:=poScreenCenter;
   end;
-  FForm.Name:=S;
 end;
 
 procedure TfrPageDialog.PrepareObjects;
@@ -12179,17 +12613,37 @@ procedure TfrPageDialog.InitReport;
 var
   i:integer;
   P:TfrControl;
+
+  S:string;
+  F:TComponent;
 begin
   if not fVisible then
     exit;
   fHasVisibleControls:=False;
+
+  FForm   :=TfrDialogForm.CreateNew(Application);
+  FForm.OnDestroy:=@EditFormDestroy;
+  FForm.Caption:=FCaption;
+  FForm.ShowHint:=true;
+  S:=FName;
+  F:=Application.FindComponent(S);
+  if Assigned(F) and (F<>FForm) then
+  begin
+    i:=1;
+    while Assigned(Application.FindComponent(FName + IntToStr(i))) do inc(i);
+    S:=FName + IntToStr(i);
+  end;
+
+  FForm.Name:=S;
+  //  UpdateControlPosition;
+
   for i:=0 to Objects.Count - 1 do
   begin
     P:=TfrControl(Objects[i]);
+    P.AttachToParent;
     if not (P is TfrNonVisualControl) then
     begin
       fHasVisibleControls:=true;
-      P.AttachToParent;
       P.UpdateControlPosition;
     end;
   end;
@@ -12204,28 +12658,34 @@ begin
   end;
 end;
 
+procedure TfrPageDialog.DoneReport;
+begin
+  inherited DoneReport;
+  FreeAndNil(FForm);
+end;
+
 procedure TfrPageDialog.SetLeft(AValue: Integer);
 begin
   inherited SetLeft(AValue);
-  FForm.Left:=AValue;
+  UpdateControlPosition;
 end;
 
 procedure TfrPageDialog.SetTop(AValue: Integer);
 begin
   inherited SetTop(AValue);
-  FForm.Top:=AValue;
+  UpdateControlPosition;
 end;
 
 procedure TfrPageDialog.SetWidth(AValue: Integer);
 begin
   inherited SetWidth(AValue);
-  FForm.Width:=AValue;
+  UpdateControlPosition;
 end;
 
 procedure TfrPageDialog.SetHeight(AValue: Integer);
 begin
   inherited SetHeight(AValue);
-  FForm.Height:=AValue;
+  UpdateControlPosition;
 end;
 
 procedure TfrPageDialog.ExecScript;
@@ -12256,9 +12716,6 @@ end;
 constructor TfrPageDialog.Create(AOwnerPage: TfrPage);
 begin
   inherited Create(AOwnerPage);
-  
-  fForm   :=TfrDialogForm.CreateNew(Application);
-  fForm.OnDestroy:=@EditFormDestroy;
   BaseName:='Dialog';
   
   Width :=400;

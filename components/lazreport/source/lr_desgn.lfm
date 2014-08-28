@@ -1,4 +1,4 @@
-inherited frDesignerForm: TfrDesignerForm
+object frDesignerForm: TfrDesignerForm
   Left = 386
   Height = 434
   Top = 289
@@ -9,7 +9,7 @@ inherited frDesignerForm: TfrDesignerForm
   VertScrollBar.Range = 149
   ActiveControl = frDock1
   Caption = 'Designer'
-  ClientHeight = 414
+  ClientHeight = 407
   ClientWidth = 695
   KeyPreview = True
   Menu = MainMenu1
@@ -23,11 +23,12 @@ inherited frDesignerForm: TfrDesignerForm
   OnResize = FormResize
   OnShow = FormShow
   ShowHint = True
+  LCLVersion = '1.3'
   WindowState = wsMaximized
-  object StatusBar1: TStatusBar[0]
+  object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 391
+    Height = 25
+    Top = 382
     Width = 695
     Panels = <    
       item
@@ -44,7 +45,7 @@ inherited frDesignerForm: TfrDesignerForm
       end>
     SimplePanel = False
   end
-  object frDock1: TPanel[1]
+  object frDock1: TPanel
     Left = 0
     Height = 83
     Top = 0
@@ -1894,10 +1895,10 @@ inherited frDesignerForm: TfrDesignerForm
         object C3: TComboBox
           Tag = 8
           Left = 161
-          Height = 21
+          Height = 33
           Top = 2
           Width = 67
-          ItemHeight = 13
+          ItemHeight = 0
           Items.Strings = (
             '5'
             '6'
@@ -1926,7 +1927,7 @@ inherited frDesignerForm: TfrDesignerForm
         object C2: TComboBox
           Tag = 7
           Left = 1
-          Height = 19
+          Height = 33
           Top = 2
           Width = 155
           ItemHeight = 13
@@ -2323,7 +2324,7 @@ inherited frDesignerForm: TfrDesignerForm
         object E1: TEdit
           Tag = 6
           Left = 4
-          Height = 21
+          Height = 31
           Top = 1
           Width = 31
           TabOrder = 0
@@ -2386,23 +2387,23 @@ inherited frDesignerForm: TfrDesignerForm
       TabOrder = 3
     end
   end
-  object frDock2: TPanel[2]
+  object frDock2: TPanel
     Left = 0
-    Height = 308
+    Height = 299
     Top = 83
     Width = 27
     Align = alLeft
-    ClientHeight = 308
+    ClientHeight = 299
     ClientWidth = 27
     FullRepaint = False
     TabOrder = 1
     object panForDlg: TPanel
       Left = 1
-      Height = 306
+      Height = 297
       Top = 1
       Width = 25
       Align = alClient
-      ClientHeight = 306
+      ClientHeight = 297
       ClientWidth = 25
       FullRepaint = False
       TabOrder = 1
@@ -2468,11 +2469,11 @@ inherited frDesignerForm: TfrDesignerForm
     end
     object Panel4: TPanel
       Left = 1
-      Height = 306
+      Height = 297
       Top = 1
       Width = 25
       Align = alClient
-      ClientHeight = 306
+      ClientHeight = 297
       ClientWidth = 25
       FullRepaint = False
       TabOrder = 0
@@ -2769,9 +2770,9 @@ inherited frDesignerForm: TfrDesignerForm
       end
     end
   end
-  object Tab1: TTabControl[3]
+  object Tab1: TTabControl
     Left = 27
-    Height = 308
+    Height = 299
     Top = 83
     Width = 641
     TabStop = False
@@ -2785,25 +2786,25 @@ inherited frDesignerForm: TfrDesignerForm
     TabOrder = 2
     object panTab: TPanel
       Left = 2
-      Height = 285
-      Top = 21
+      Height = 267
+      Top = 30
       Width = 637
       Align = alClient
       BevelOuter = bvNone
       Caption = 'panTab'
-      ClientHeight = 285
+      ClientHeight = 267
       ClientWidth = 637
       TabOrder = 1
       object ScrollBox1: TScrollBox
         Left = 0
-        Height = 285
+        Height = 267
         Top = 0
         Width = 637
-        HorzScrollBar.Page = 633
-        VertScrollBar.Page = 281
+        HorzScrollBar.Page = 488
+        VertScrollBar.Page = 174
         Align = alClient
-        ClientHeight = 281
-        ClientWidth = 633
+        ClientHeight = 265
+        ClientWidth = 635
         Color = clGray
         ParentColor = False
         TabOrder = 0
@@ -3009,50 +3010,6 @@ inherited frDesignerForm: TfrDesignerForm
             00FF000000000000000000000000000000000000000000000000000000000000
             000000000000000000000000000000000000A5A2A5FF0000000000000000A5A2
             A5FF
-          }
-          Visible = False
-        end
-        object Image2: TImage
-          Left = 396
-          Height = 16
-          Top = 152
-          Width = 16
-          Picture.Data = {
-            07544269746D617036040000424D360400000000000036000000280000001000
-            0000100000000100200000000000000400006400000064000000000000000000
-            00000000000000000000000000000000000000A200FF00000000000000000000
-            0000000000000000000000000000000000000000000000000000000000000000
-            0000000000000000000000000000000000000000000000A200FF000000000000
-            000000000000000000FF000000FF000000FF000000FF000000FF000000FF0000
-            00FF0000000000A200FF00A200FF00A200FF00A200FF00A200FF00A200FF0000
-            000000000000A5A2A5FFFFFBFFFFFFFBFFFFFFFBFFFFFFFBFFFFFFFBFFFF0000
-            00FF000000000000000000000000000000000000000000A200FF000000000000
-            000000000000A5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FF0000
-            00FF0000000000000000000000000000000000A200FF00000000000000000000
-            0000000000000000000000000000000000000000000000000000000000000000
-            0000000000000000000000000000000000000000000000000000000000000000
-            000000000000000000FF000000FF000000FF000000FF000000FF000000FF0000
-            00FF00000000000000FF000000FF000000FF000000FF000000FF000000FF0000
-            000000000000A5A2A5FFFFFBFFFFFFFBFFFFFFFBFFFFFFFBFFFFFFFBFFFF0000
-            00FFA5A2A5FFA5A2A5FF00000000FFFBFFFFFFFBFFFFFFFBFFFFA5A2A5FF0000
-            00FF00000000A5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FF0000
-            00FFA5A2A5FF00000000FFFBFFFFFFFBFFFFFFFBFFFF00000000000000000000
-            00FF000000000000000000000000000000000000000000000000000000000000
-            0000A5A2A5FF0000000000000000FFFBFFFFFFFBFFFFFFFBFFFF000000000000
-            00FF00000000000000FF000000FF000000FF000000FF000000FF000000FF0000
-            00FFA5A2A5FF0000000000000000000000000000000000000000000000000000
-            00FF00000000A5A2A5FFFFFBFFFFFFFBFFFFFFFBFFFFFFFBFFFFFFFBFFFF0000
-            00FFA5A2A5FF00000000FFFBFFFFFFFBFFFFFFFBFFFF00000000000000000000
-            00FF00000000A5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FF0000
-            00FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FF0000
-            00FF000000000000000000000000000000000000000000000000000000000000
-            0000A5A2A5FF00000000FFFBFFFFFFFBFFFFFFFBFFFFFFFBFFFF000000000000
-            00FF000000000000000000000000000000000000000000000000000000000000
-            0000A5A2A5FFA5A2A5FFFFFBFFFFFFFBFFFFFFFBFFFFFFFBFFFFA5A2A5FF0000
-            00FF000000000000000000000000000000000000000000000000000000000000
-            000000000000A5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FFA5A2A5FF0000
-            0000000000000000000000000000000000000000000000000000000000000000
-            0000
           }
           Visible = False
         end
@@ -4107,14 +4064,14 @@ inherited frDesignerForm: TfrDesignerForm
       end
     end
   end
-  object frDock4: TPanel[4]
+  object frDock4: TPanel
     Left = 668
-    Height = 308
+    Height = 299
     Top = 83
     Width = 27
     Align = alRight
     Anchors = [akTop, akRight]
-    ClientHeight = 308
+    ClientHeight = 299
     ClientWidth = 27
     FullRepaint = False
     TabOrder = 3
@@ -4689,7 +4646,7 @@ inherited frDesignerForm: TfrDesignerForm
       end
     end
   end
-  object Panel7: TPanel[5]
+  object Panel7: TPanel
     Left = 78
     Height = 15
     Top = 134
@@ -4709,7 +4666,7 @@ inherited frDesignerForm: TfrDesignerForm
       OnPaint = PBox1Paint
     end
   end
-  object Popup1: TPopupMenu[6]
+  object Popup1: TPopupMenu
     OnPopup = Popup1Popup
     left = 272
     top = 96
@@ -4746,10 +4703,10 @@ inherited frDesignerForm: TfrDesignerForm
       OnClick = N6Click
     end
   end
-  object MainMenu1: TMainMenu[7]
+  object MainMenu1: TMainMenu
     Images = ActionsImageList
-    left = 232
-    top = 56
+    left = 208
+    top = 88
     object FileMenu: TMenuItem
       Caption = '&File'
       object N23: TMenuItem
@@ -5053,19 +5010,19 @@ inherited frDesignerForm: TfrDesignerForm
       end
     end
   end
-  object OpenDialog1: TOpenDialog[8]
+  object OpenDialog1: TOpenDialog
     FilterIndex = 0
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
     left = 288
     top = 200
   end
-  object SaveDialog1: TSaveDialog[9]
+  object SaveDialog1: TSaveDialog
     FilterIndex = 0
     Options = [ofHideReadOnly]
     left = 288
     top = 264
   end
-  object ImageList1: TImageList[10]
+  object ImageList1: TImageList
     Height = 15
     Width = 15
     left = 288
@@ -5158,7 +5115,7 @@ inherited frDesignerForm: TfrDesignerForm
       00FFDCDCDCFF000000FFDCDCDCFF000000FFDCDCDCFF000000FF
     }
   end
-  object ImageList2: TImageList[11]
+  object ImageList2: TImageList
     Height = 14
     left = 288
     top = 312
@@ -5250,7 +5207,7 @@ inherited frDesignerForm: TfrDesignerForm
       2CFFB5B5B5FF9B9B9BFF232323FF
     }
   end
-  object Popup2: TPopupMenu[12]
+  object Popup2: TPopupMenu
     left = 272
     top = 56
     object N41: TMenuItem
@@ -5263,7 +5220,7 @@ inherited frDesignerForm: TfrDesignerForm
       Caption = '        '
     end
   end
-  object ImgIndic: TImageList[13]
+  object ImgIndic: TImageList
     Height = 8
     Width = 8
     left = 328
@@ -5296,7 +5253,7 @@ inherited frDesignerForm: TfrDesignerForm
       00FF000000FF000000FF000000FF
     }
   end
-  object actList: TActionList[14]
+  object actList: TActionList
     Images = ActionsImageList
     left = 560
     top = 36
