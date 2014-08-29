@@ -779,7 +779,7 @@ type
     destructor Destroy; override;
     procedure ReloadPaletteBegin; // used in QEventPaletteChange !
     procedure ReloadPaletteEnd; // used in QEventPaletteChange !
-    procedure setColor(const AColor: PQColor); overload;
+    procedure setColor(const AColor: PQColor);
     procedure setTextColor(const AColor: PQColor);
     property Handle: QPaletteH read FHandle;
     property CurrentColor: TQColor read FCurrentColor;
