@@ -1093,7 +1093,13 @@ begin
   pool := NSAutoreleasePool.alloc.init;
   obj := NSObject(AWinControl.Handle);
   if obj.isKindOfClass_(NSView) then
-    NSView(obj).removeFromSuperview
+  begin
+    //todo: removeFromSuperview + autorelease pool seems to be releasing the object
+    // retain prevents an error of .release below need to be updated
+    // according to the latest Apple recommendations of ATC
+    NSView(obj).retain;
+    NSView(obj).removeFromSuperview;
+  end
   else
   if obj.isKindOfClass_(NSWindow) then
     NSWindow(obj).close;
