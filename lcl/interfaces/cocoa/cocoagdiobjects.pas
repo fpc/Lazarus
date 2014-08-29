@@ -1574,7 +1574,7 @@ begin
     cg := CGContext;
     if not Assigned(cg) then Exit;
 
-    fillbrush:=TCocoaBrush.Create(ColorToNSColor(AColor));
+    fillbrush:=TCocoaBrush.Create(ColorToNSColor(ColorRef(AColor)));
     fillbrush.Apply(self);
 
     r.origin.x:=x;
