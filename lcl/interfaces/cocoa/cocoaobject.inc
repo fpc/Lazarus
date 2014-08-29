@@ -132,6 +132,12 @@ begin
 
   FreeSysColorBrushes;
 
+  // The CocoaCaret is based WidgetSet timer.
+  // The GlobalCaret is freed in finalization section, which is called
+  // after the destruction of the widgetset and will cause a failure.
+  // Need to destroy the caret here.. or CustomTimer must be verified.
+  // or CocoaCaret should not use TTimer at all (use raw cocoa timer)
+  DestroyGlobalCaret;
 
   CocoaWidgetSet := nil;
 end;

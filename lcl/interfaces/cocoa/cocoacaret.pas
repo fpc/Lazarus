@@ -392,9 +392,12 @@ begin
 end;
 
 function TEmulatedCaret.IsValid: Boolean;
+var
+  ctrl: TControl;
 begin
-  Result := (FWidth > 0) and (FHeight > 0) and (FView <> nil) and FView.lclIsVisible and
-    not (csDestroying in TControl(FView.lclGetTarget).ComponentState);
+  ctrl := TControl(FView.lclGetTarget);
+  Result := (FWidth > 0) and (FHeight > 0) and (FView <> nil) and FView.lclIsVisible
+    and Assigned(ctrl) and not (csDestroying in ctrl.ComponentState);
 end;
 
 procedure TEmulatedCaret.SetView(AView: NSView);
