@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-07-25 01:32+0400\n"
+"PO-Revision-Date: 2014-08-30 17:11+0400\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -667,7 +667,7 @@ msgstr "Вставить поле БД"
 
 #: lr_const.sfilenotfound
 msgid "File not found"
-msgstr ""
+msgstr "Файл не найден"
 
 #: lr_const.sfilter
 msgid "Filter properties"
@@ -1486,19 +1486,19 @@ msgstr "Интерпретатор"
 
 #: lr_const.sinvalidfrfreport
 msgid "Invalid binary report"
-msgstr ""
+msgstr "Неверный двоичный отчёт"
 
 #: lr_const.sinvalidfrfversion
 msgid "Invalid report version"
-msgstr ""
+msgstr "Некорректная версия отчёта"
 
 #: lr_const.sinvalidlrfreport
 msgid "Invalid report format"
-msgstr ""
+msgstr "Некорректный формат отчёта"
 
 #: lr_const.sinvalidvariablename
 msgid "\"%s\" is not a valid variable name."
-msgstr ""
+msgstr "\"%s\" не является корректным именем переменной."
 
 #: lr_const.skeepaspectratio
 msgid "Keep aspect ratio"
@@ -2466,7 +2466,7 @@ msgstr "Прозрачный"
 
 #: lr_const.sunabletoreadversion
 msgid "Unable to read report version"
-msgstr ""
+msgstr "Невозможно прочитать версию отчёта"
 
 #: lr_const.suntitled
 msgid "Untitled"
