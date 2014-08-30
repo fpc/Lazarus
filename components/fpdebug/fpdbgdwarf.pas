@@ -578,11 +578,11 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     procedure MemberVisibilityNeeded; override;
     procedure SizeNeeded; override;
     function GetTypedValueObject({%H-}ATypeCast: Boolean): TFpDwarfValue; virtual; // returns refcount=1 for caller, no cached copy kept
-    // TODO: flag bounds as cardinal if needed
-    function GetValueBounds({%H-}AValueObj: TFpDwarfValue; out ALowBound, AHighBound: Int64): Boolean; virtual;
   public
     class function CreateTypeSubClass(AName: String; AnInformationEntry: TDwarfInformationEntry): TFpDwarfSymbolType;
     function TypeCastValue(AValue: TFpDbgValue): TFpDbgValue; override;
+    // TODO: flag bounds as cardinal if needed
+    function GetValueBounds({%H-}AValueObj: TFpDwarfValue; out ALowBound, AHighBound: Int64): Boolean; virtual;
   end;
 
   { TFpDwarfSymbolTypeBasic }
@@ -644,7 +644,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FLowEnumIdx, FHighEnumIdx: Integer;
     FEnumIdxValid: Boolean;
     procedure InitEnumIdx;
-    procedure ReadBounds;
+    procedure ReadBounds(AValueObj: TFpDwarfValue);
   protected
     function DoGetNestedTypeInfo: TFpDwarfSymbolType;override;
     function GetHasBounds: Boolean; override;
@@ -657,9 +657,10 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetMember(AIndex: Int64): TFpDbgSymbol; override;
     function GetMemberCount: Integer; override;
     function GetFlags: TDbgSymbolFlags; override;
+    procedure Init; override;
+  public
     function GetValueBounds(AValueObj: TFpDwarfValue; out ALowBound,
       AHighBound: Int64): Boolean; override;
-    procedure Init; override;
   end;
 
   { TFpDwarfSymbolTypePointer }
@@ -2622,6 +2623,7 @@ function TFpDwarfValueArray.GetMemberCount: Integer;
 var
   t, t2: TFpDbgSymbol;
   Addr: TFpDbgMemLocation;
+  LowBound, HighBound: int64;
   i: Int64;
 begin
   Result := 0;
@@ -2629,7 +2631,8 @@ begin
   if t.MemberCount < 1 then // IndexTypeCount;
     exit;
   t2 := t.Member[0]; // IndexType[0];
-  if not t2.HasBounds then begin
+  if not ((t2 is TFpDwarfSymbolType) and (TFpDwarfSymbolType(t2).GetValueBounds(self, LowBound, HighBound))) and
+     not t2.HasBounds then begin
     if (sfDynArray in t.Flags) and (AsCardinal <> 0) and
        GetDwarfDataAddress(Addr, TFpDwarfSymbolType(FOwner))
     then begin
@@ -3222,7 +3225,7 @@ function TFpDwarfSymbolType.GetValueBounds(AValueObj: TFpDwarfValue; out ALowBou
 begin
   Result := HasBounds;
   ALowBound := OrdLowBound;
-  AHighBound := OrdLowBound;
+  AHighBound := OrdHighBound;
 end;
 
 class function TFpDwarfSymbolType.CreateTypeSubClass(AName: String;
@@ -3442,11 +3445,14 @@ begin
   FLowEnumIdx := i + 1;
 end;
 
-procedure TFpDwarfSymbolTypeSubRange.ReadBounds;
+procedure TFpDwarfSymbolTypeSubRange.ReadBounds(AValueObj: TFpDwarfValue);
 var
   FwdInfoPtr: Pointer;
   FwdCompUint: TDwarfCompilationUnit;
   NewInfo: TDwarfInformationEntry;
+var
+  AnAddress: TFpDbgMemLocation;
+  InitLocParserData: TInitLocParserData;
 begin
   if FLowBoundState <> rfNotRead then exit;
 
@@ -3492,25 +3498,35 @@ begin
   end
   else
   begin
-    FHighBoundState := rfNotFound;
+    if assigned(AValueObj) then
+      InitLocParserData.ObjectDataAddress := AValueObj.Address;
+    InitLocParserData.ObjectDataAddrPush := False;
+    if assigned(AValueObj) and LocationFromTag(DW_AT_upper_bound, AValueObj, AnAddress, @InitLocParserData, InformationEntry, True) then begin
+      FHighBoundState := rfConst;
+      FHighBoundConst := AnAddress.Address;
+    end
+    else
+    begin
+      FHighBoundState := rfNotFound;
 
-    if InformationEntry.ReadReference(DW_AT_count, FwdInfoPtr, FwdCompUint) then begin
-      NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-      FCountValue := TFpDwarfSymbolValue.CreateValueSubClass('', NewInfo);
-      NewInfo.ReleaseReference;
-      if FCountValue = nil then begin
-        FCountState := rfNotFound;
-        exit;
+      if InformationEntry.ReadReference(DW_AT_count, FwdInfoPtr, FwdCompUint) then begin
+        NewInfo := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+        FCountValue := TFpDwarfSymbolValue.CreateValueSubClass('', NewInfo);
+        NewInfo.ReleaseReference;
+        if FCountValue = nil then begin
+          FCountState := rfNotFound;
+          exit;
+        end
+        else
+          FCountState := rfValue;
       end
       else
-        FCountState := rfValue;
-    end
-    else
-    if InformationEntry.ReadValue(DW_AT_count, FCountConst) then begin
-      FCountState := rfConst;
-    end
-    else
-      FCountState := rfNotFound;
+      if InformationEntry.ReadValue(DW_AT_count, FCountConst) then begin
+        FCountState := rfConst;
+      end
+      else
+        FCountState := rfNotFound;
+    end;
   end;
 end;
 
@@ -3532,7 +3548,7 @@ end;
 
 function TFpDwarfSymbolTypeSubRange.GetHasBounds: Boolean;
 begin
-  ReadBounds;
+  ReadBounds(nil);
 // TODO: currently limited to const.
 // not standard, but upper may be missing?
   Result := (FLowBoundState in [rfConst]) and
@@ -3641,7 +3657,7 @@ end;
 function TFpDwarfSymbolTypeSubRange.GetValueBounds(AValueObj: TFpDwarfValue; out
   ALowBound, AHighBound: Int64): Boolean;
 begin
-  ReadBounds;
+  ReadBounds(AValueObj);
   Result := inherited GetValueBounds(AValueObj, ALowBound, AHighBound);
 end;
 
