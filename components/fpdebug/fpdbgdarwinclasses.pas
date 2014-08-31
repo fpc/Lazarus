@@ -9,6 +9,7 @@ uses
   Classes,
   SysUtils,
   BaseUnix,
+  termio,
   process,
   FpDbgClasses,
   FpDbgLoader,
@@ -125,6 +126,7 @@ type
     FProcProcess: TProcess;
     FIsTerminating: boolean;
     FExceptionSignal: PtrUInt;
+    FMasterPtyFd: cint;
     function GetDebugAccessRights: boolean;
     {$ifndef VER2_6}
     procedure OnForkEvent(Sender : TObject);
@@ -141,6 +143,10 @@ type
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; override;
 
+    function CheckForConsoleOutput(ATimeOutMs: integer): integer; override;
+    function GetConsoleOutput: string; override;
+    procedure SendConsoleInput(AString: string); override;
+
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
@@ -154,6 +160,11 @@ type
 procedure RegisterDbgClasses;
 
 implementation
+
+var
+  GSlavePtyFd: cint;
+  GMasterPtyFd: cint;
+  GSlavePty: string;
 
 type
   vm_map_t = mach_port_t;
@@ -205,6 +216,11 @@ function task_threads(target_task: task_t; var act_list: thread_act_array_t; var
 function thread_get_state(target_act: thread_act_t; flavor: thread_state_flavor_t; old_state: thread_state_t; var old_stateCnt: mach_msg_Type_number_t): kern_return_t; cdecl external name 'thread_get_state';
 function thread_set_state(target_act: thread_act_t; flavor: thread_state_flavor_t; new_state: thread_state_t; old_stateCnt: mach_msg_Type_number_t): kern_return_t; cdecl external name 'thread_set_state';
 
+function posix_openpt(oflag: cint): cint;cdecl;external 'c' name 'posix_openpt';
+function ptsname(__fd:longint):Pchar;cdecl;external 'c' name 'ptsname';
+function grantpt(__fd:longint):longint;cdecl;external 'c' name 'grantpt';
+function unlockpt(__fd:longint):longint;cdecl;external 'c' name 'unlockpt';
+
 procedure RegisterDbgClasses;
 begin
   OSDbgClasses.DbgProcessClass:=TDbgDarwinProcess;
@@ -218,12 +234,44 @@ end;
 
 { TDbgDarwinThread }
 
+Function safefpdup2(fildes, fildes2 : cInt): cInt;
+begin
+  repeat
+    safefpdup2:=fpdup2(fildes,fildes2);
+  until (safefpdup2<>-1) or (fpgeterrno<>ESysEINTR);
+end;
+
 {$ifndef VER2_6}
 procedure TDbgDarwinProcess.OnForkEvent(Sender: TObject);
 {$else}
 procedure OnForkEvent;
 {$endif VER2_6}
 begin
+  if FpSetsid<>0 then
+    begin
+    // For some reason, FpSetsid always fails.
+    // writeln('Failed to set sid. '+inttostr(fpgeterrno));
+    end;
+  if GSlavePty<>'' then
+  begin
+    GSlavePtyFd:=FpOpen(GSlavePty, O_RDWR + O_NOCTTY);
+    if GSlavePtyFd>-1 then
+      begin
+      if (FpIOCtl(GSlavePtyFd, TIOCSCTTY, nil) = -1) then
+        begin
+        // This call always fails for some reason. That's also why login_tty can not be used. (login_tty
+        // also calls TIOCSCTTY, but when it fails it aborts) The failure is ignored.
+        // writeln('Failed to set tty '+inttostr(fpgeterrno));
+        end;
+
+      safefpdup2(GSlavePtyFd,0);
+      safefpdup2(GSlavePtyFd,1);
+      safefpdup2(GSlavePtyFd,2);
+      end
+    else
+      writeln('Failed to open tty '+GSlavePty+'. Errno: '+inttostr(fpgeterrno));
+  end;
+
   fpPTrace(PTRACE_TRACEME, 0, nil, nil);
 end;
 
@@ -619,6 +667,8 @@ end;
 destructor TDbgDarwinProcess.Destroy;
 begin
   FProcProcess.Free;
+  if FMasterPtyFd>-1 then
+    FpClose(FMasterPtyFd);
   inherited Destroy;
 end;
 
@@ -654,11 +704,26 @@ begin
     AProcess.Parameters:=AParams;
     AProcess.Environment:=AnEnvironment;
     AProcess.CurrentDirectory:=AWorkingDirectory;
+
+    GSlavePty:='';
+    GMasterPtyFd := posix_openpt(O_RDWR + O_NOCTTY);
+    if GMasterPtyFd<0 then
+      AOnLog('Failed to open pseudo-tty. Errno: ' + IntToStr(fpgeterrno), dllDebug)
+    else
+    begin
+      if grantpt(GMasterPtyFd)<>0 then
+        AOnLog('Failed to set pseudo-tty slave permissions. Errno: ' + IntToStr(fpgeterrno), dllDebug);
+      if unlockpt(GMasterPtyFd)<>0 then
+        AOnLog('Failed to unlock pseudo-tty slave. Errno: ' + IntToStr(fpgeterrno), dllDebug);
+      GSlavePty := strpas(ptsname(GMasterPtyFd));
+    end;
+
     AProcess.Execute;
     PID:=AProcess.ProcessID;
 
     sleep(100);
     result := TDbgDarwinProcess.Create(AFileName, Pid, -1, AOnLog);
+    TDbgDarwinProcess(result).FMasterPtyFd := GMasterPtyFd;
     TDbgDarwinProcess(result).FProcProcess := AProcess;
   except
     on E: Exception do
@@ -710,6 +775,36 @@ begin
     end;
 
   result := true;
+end;
+
+function TDbgDarwinProcess.CheckForConsoleOutput(ATimeOutMs: integer): integer;
+Var
+  f: TfdSet;
+  sleepytime: ttimeval;
+begin
+  sleepytime.tv_sec := ATimeOutMs div 1000;
+  sleepytime.tv_usec := (ATimeOutMs mod 1000)*1000;
+  FpFD_ZERO(f);
+  fpFD_SET(FMasterPtyFd,f);
+  result := fpselect(FMasterPtyFd+1,@f,nil,nil,@sleepytime);
+end;
+
+function TDbgDarwinProcess.GetConsoleOutput: string;
+var
+  ABytesRead: cint;
+  ABuf: array[0..1023] of char;
+begin
+  ABytesRead := fpRead(FMasterPtyFd, ABuf[0], SizeOf(ABuf));
+  if ABytesRead>0 then
+    result := Copy(ABuf, 0, ABytesRead)
+  else
+    result := '';
+end;
+
+procedure TDbgDarwinProcess.SendConsoleInput(AString: string);
+begin
+  if FpWrite(FMasterPtyFd, AString[1], length(AString)) <> Length(AString) then
+    Log('Failed to send input to console.', dllDebug);
 end;
 
 function TDbgDarwinProcess.GetInstructionPointerRegisterValue: TDbgPtr;
