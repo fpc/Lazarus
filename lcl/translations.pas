@@ -115,7 +115,7 @@ type
     destructor Destroy; override;
     procedure ReadPOText(const Txt: string);
     procedure Add(const Identifier, OriginalValue, TranslatedValue, Comments,
-                        Context, Flags, PreviousID: string);
+                        Context, Flags, PreviousID: string; SetFuzzy: boolean = false);
     function Translate(const Identifier, OriginalValue: String): String;
     Property CharSet: String read FCharSet;
     procedure Report;
@@ -625,8 +625,10 @@ var
   procedure AddEntry;
   var
     Item: TPOFileItem;
+    SetFuzzy: boolean;
   begin
     if Identifier<>'' then begin
+      SetFuzzy:=false;
       // check for unresolved duplicates in po file
       Item := TPOFileItem(FOriginalToItem.Data[Msg[mid]]);
       if (Item<>nil) then begin
@@ -636,12 +638,18 @@ var
         // set context of new duplicate
         if Msg[mctx]='' then
           Msg[mctx] := Identifier;
-        // if old duplicate was translated and
-        // new one is not, provide a initial translation
-        if Msg[mstr]='' then
+        // if old duplicate was translated and new one is not,
+        // provide an initial translation and set a flag to mark it fuzzy
+        if (Msg[mstr]='') and (Item.Translation<>'') then begin
           Msg[mstr] := Item.Translation;
+          // if old item is fuzzy, copy PreviousID too
+          if pos('fuzzy', Item.Flags)<>0 then
+            PrevMsgID := Item.PreviousID;
+          // mark newly translated item fuzzy
+          SetFuzzy:=true;
+        end;
       end;
-      Add(Identifier,Msg[mid],Msg[mstr],Comments,Msg[mctx],Flags,PrevMsgID);
+      Add(Identifier,Msg[mid],Msg[mstr],Comments,Msg[mctx],Flags,PrevMsgID,SetFuzzy);
       ResetVars;
     end else
     if (Msg[CurMsg]<>'') and (FHeader=nil) then begin
@@ -773,7 +781,7 @@ begin
 end;
 
 procedure TPOFile.Add(const Identifier, OriginalValue, TranslatedValue,
-  Comments, Context, Flags, PreviousID: string);
+  Comments, Context, Flags, PreviousID: string; SetFuzzy: boolean = false);
 var
   Item: TPOFileItem;
   p: Integer;
@@ -783,6 +791,8 @@ begin
   Item.Comments:=Comments;
   Item.Context:=Context;
   Item.Flags:=Flags;
+  if SetFuzzy = true then
+    Item.ModifyFlag('fuzzy', true);
   Item.PreviousID:=PreviousID;
   Item.Tag:=FTag;
   FItems.Add(Item);
@@ -1000,6 +1010,7 @@ begin
                     inc(p);
                   inc(p);
                 end;
+                Value := AdjustLineBreaks(Value);
               end;
               // po requires special characters as #number
               p:=1;
@@ -1187,6 +1198,7 @@ procedure TPOFile.UpdateItem(const Identifier: string; Original: string);
 var
   Item: TPOFileItem;
   AContext,AComment,ATranslation,AFlags,APrevStr: string;
+  SetFuzzy: boolean;
 begin
   if FHelperList=nil then
     FHelperList := TStringList.Create;
@@ -1210,6 +1222,7 @@ begin
   end;
 
   // try to find po entry based only on it's value
+  SetFuzzy := false;
   AContext := '';
   AComment := '';
   ATranslation := '';
@@ -1222,21 +1235,16 @@ begin
       Item.Context := Item.IdentifierLow;
       
     // if old item is already translated use translation
-    if Item.Translation<>'' then
+    if Item.Translation<>'' then begin
       ATranslation := Item.Translation;
+      // if old item is fuzzy, copy PreviousID too
+      if pos('fuzzy', Item.Flags)<>0 then
+        APrevStr := Item.PreviousID;
+      // set a flag to mark item fuzzy if it is not already
+      SetFuzzy := true;
+    end;
 
     AFlags := Item.Flags;
-    // if old item was fuzzy, new should be fuzzy too
-    if ATranslation<>'' then
-      if pos('fuzzy', AFlags)<>0 then
-        APrevStr := Item.PreviousID
-      else begin
-        // if some translation was automatically assigned, mark item as fuzzy
-        // to avoid potential subtle translation deficiences
-        if AFlags<>'' then
-          AFlags := AFlags + ', ';
-        AFlags := AFlags + 'fuzzy';
-      end;
 
     // update identifier list
     AContext := Identifier;
@@ -1244,7 +1252,7 @@ begin
 
   // this appear to be a new item
   FModified := true;
-  Add(Identifier, Original, ATranslation, AComment, AContext, AFlags, APrevStr);
+  Add(Identifier, Original, ATranslation, AComment, AContext, AFlags, APrevStr, SetFuzzy);
 end;
 
 procedure TPOFile.UpdateTranslation(BasePOFile: TPOFile);
