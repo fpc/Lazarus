@@ -6476,6 +6476,7 @@ var
   FPCVersion, FPCRelease, FPCPatch: integer;
   aCompileHint: String;
   OldToolStatus: TIDEToolStatus;
+  IsComplete: Boolean;
 begin
   Result:=SourceFileMgr.PrepareForCompileWithMsg;
   if Result<>mrOk then begin
@@ -6708,7 +6709,8 @@ begin
           exit;
         end;
         // compilation succeded -> write state file
-        Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,true);
+        IsComplete:=[pbfSkipLinking,pbfSkipAssembler,pbfSkipTools]*Flags=[];
+        Result:=Project1.SaveStateFile(CompilerFilename,CompilerParams,IsComplete);
         if Result<>mrOk then begin
           debugln(['TMainIDE.DoBuildProject SaveStateFile after compile failed']);
           exit;
