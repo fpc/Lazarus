@@ -4215,7 +4215,7 @@ begin
   if InformationEntry.ReadValue(DW_AT_bit_stride, FStrideInBits) then
     exit;
 
-  CreateMembers; // TODO Can we get here without that already done?
+  CreateMembers;
   if (FMembers.Count > 0) and // TODO: stride for diff member
      (TDbgDwarfSymbolBase(FMembers[0]).InformationEntry.ReadValue(DW_AT_byte_stride, FStrideInBits))
   then begin
@@ -4303,6 +4303,7 @@ function TFpDwarfSymbolTypeArray.GetMemberAddress(AValObject: TFpDwarfValue;
   AIndex: array of Int64): TFpDbgMemLocation;
 var
   Idx, Offs, Factor: Int64;
+  LowBound, HighBound: int64;
   i: Integer;
   bsize: Integer;
   m: TFpDwarfSymbol;
@@ -4336,7 +4337,8 @@ begin
     for i := Length(AIndex) - 1 downto 0 do begin
       Idx := AIndex[i];
       m := TFpDwarfSymbol(FMembers[i]);
-      if m.HasBounds then begin
+      if ((m is TFpDwarfSymbolType) and (TFpDwarfSymbolType(m).GetValueBounds(AValObject, LowBound, HighBound))) or
+         m.HasBounds then begin
         Idx := Idx - m.OrdLowBound;
       end;
       Offs := Offs + Idx * bsize * Factor;
