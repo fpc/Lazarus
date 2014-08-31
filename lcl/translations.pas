@@ -607,6 +607,7 @@ var
   Handled: Boolean;
   CurMsg: TMsg;
   Msg: array[TMsg] of string;
+  MsgStrFlag: boolean;
 
   procedure ResetVars;
   begin
@@ -618,6 +619,7 @@ var
     Comments := '';
     Flags := '';
     PrevMsgID := '';
+    MsgStrFlag := false;
   end;
   
   procedure AddEntry;
@@ -668,11 +670,13 @@ begin
       case LineStart^ of
       '#':
         begin
+          if MsgStrFlag=true then
+            //we detected comments after previous MsgStr. Consider it as start of new entry
+            AddEntry;
           case LineStart[1] of
           ':':
             if LineStart[2]=' ' then begin
               // '#: '
-              AddEntry;
               Identifier:=copy(s,LineStart-p+4,LineLen-3);
               // the RTL creates identifier paths with point instead of colons
               // fix it:
@@ -700,7 +704,11 @@ begin
             // '#'
             if Comments<>'' then
               Comments := Comments + LineEnding;
-            Comments := Comments + GetUTF8String(LineStart+1,LineEnd);
+            // if comment is valid then store it, otherwise omit it
+            if (LineStart[1]=' ') or (LineStart[1]='.') then
+              Comments := Comments + GetUTF8String(LineStart+1,LineEnd)
+            else
+              GetUTF8String(LineStart+1,LineEnd);
             Handled:=true;
           end;
         end;
@@ -715,6 +723,7 @@ begin
             end;
           's':
             if IsKey(LineStart,'msgstr "') then begin
+              MsgStrFlag:=true;
               CurMsg:=mstr;
               Msg[CurMsg]:=Msg[CurMsg]+GetUTF8String(LineStart+length('msgstr "'),LineEnd-1);
               Handled:=true;
@@ -1030,18 +1039,28 @@ var
 
     FHelperList.Text:=AValue;
     if FHelperList.Count=1 then begin
-      if AProp='' then OutLst.Add(FHelperList[0])
-      else             OutLst.Add(AProp+' "'+FHelperList[0]+'"');
+      if AProp='' then
+        OutLst.Add(FHelperList[0])
+      else begin
+        if AProp='#' then
+          //comments are not quoted
+          OutLst.Add(AProp+FHelperList[0])
+        else
+          OutLst.Add(AProp+' "'+FHelperList[0]+'"');
+      end;
     end else begin
-      if AProp<>'' then
+      //comments are not quoted, instead prepend each line with '#'
+      if (AProp<>'') and (AProp<>'#') then
         OutLst.Add(AProp+' ""');
       for i:=0 to FHelperList.Count-1 do begin
         s := FHelperList[i];
-        if AProp<>'' then begin
+        if (AProp<>'') and (AProp<>'#') then begin
           s := '"' + s + '\n"';
           if AProp='#| msgid' then
             s := '#| ' + s;
-        end;
+        end else
+          if AProp='#' then
+            s := AProp + s;
         OutLst.Add(s)
       end;
     end;
@@ -1049,7 +1068,8 @@ var
 
   procedure WriteItem(Item: TPOFileItem);
   begin
-    WriteLst('',Item.Comments);
+    if Item.Comments<>'' then
+      WriteLst('#', Item.Comments);
     if Item.IdentifierLow<>'' then
       OutLst.Add('#: '+Item.IdentifierLow);
     if Trim(Item.Flags)<>'' then
