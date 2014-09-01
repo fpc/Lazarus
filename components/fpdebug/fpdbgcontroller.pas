@@ -494,6 +494,7 @@ end;
 destructor TDbgController.Destroy;
 begin
   //FCurrentProcess.Free;
+  FProcessMap.Free;
   FParams.Free;
   FEnvironment.Free;
   inherited Destroy;
