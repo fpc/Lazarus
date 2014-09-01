@@ -1037,6 +1037,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtk2WidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
+  {$if defined(cpui386) or defined(cpux86_64)}
+  // needed otherwise some gtk theme engines crash with division by zero
+  {$IFNDEF DisableGtkDivZeroFix}
+    SetExceptionMask(GetExceptionMask + [exOverflow,exZeroDivide,exInvalidOp]);
+  {$ENDIF}
+  {$ifend}
+
   InitKeyboardTables;
   { Compute pixels per inch variable }
   ScreenInfo.PixelsPerInchX :=
@@ -1044,17 +1051,6 @@ begin
   ScreenInfo.PixelsPerInchY :=
     RoundToInt(gdk_screen_height / (GetScreenHeightMM / 25.4));
   ScreenInfo.ColorDepth := gdk_visual_get_system^.depth;
-
-  {$if defined(cpui386) or defined(cpux86_64)}
-  // needed otherwise some gtk theme engines crash with division by zero
-  {$IFNDEF DisableGtkDivZeroFix}
-    {$IFDEF windows}
-      Set8087CW($133F);
-    {$ELSE}
-      SetExceptionMask(GetExceptionMask + [exZeroDivide,exInvalidOp]);
-    {$ENDIF}
-  {$ENDIF}
-  {$ifend}
 end;
 
 procedure TGtk2WidgetSet.AppBringToFront;
