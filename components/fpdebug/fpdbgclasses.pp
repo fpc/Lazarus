@@ -676,23 +676,31 @@ begin
 end;
 
 destructor TDbgProcess.Destroy;
-var
-  Bp: TDbgBreakpoint;
-  Iterator: TMapIterator;
+
+  procedure FreeItemsInMap(AMap: TMap);
+  var
+    AnObject: TObject;
+    Iterator: TMapIterator;
+  begin
+    iterator := TMapIterator.Create(AMap);
+    try
+      Iterator.First;
+      while not Iterator.EOM do
+      begin
+        Iterator.GetData(AnObject);
+        AnObject.Free;
+        iterator.Next;
+      end;
+    finally
+      Iterator.Free;
+    end;
+  end;
+
 begin
   FProcessID:=0;
-  iterator := TMapIterator.Create(FBreakMap);
-  try
-    Iterator.First;
-    while not Iterator.EOM do
-    begin
-      Iterator.GetData(bp);
-      Bp.Free;
-      iterator.Next;
-    end;
-  finally
-    Iterator.Free;
-  end;
+
+  FreeItemsInMap(FBreakMap);
+  FreeItemsInMap(FThreadMap);
 
   FreeAndNil(FBreakMap);
   FreeAndNil(FThreadMap);
