@@ -228,6 +228,8 @@ begin
     on E: Exception do WriteLn(E.Message);
   end;
   S.Free;
+
+  sym.ReleaseReference;
 end;
 
 procedure TFPDLoop.GControllerCreateProcessEvent(var continue: boolean);
