@@ -50,9 +50,11 @@ type
     constructor Create(AOwner: TTreeFilterEdit; ARootNode: TTreeNode);
     destructor Destroy; override;
     procedure AddNodeData(ANodeText: string; AData: TObject; AFullFilename: string = '');
+    procedure DeleteData(ANode: TTreeNode);
     procedure FreeNodeData(ANode: TTreeNode);
     function GetData(AIndex: integer): TObject;
     procedure Clear;
+    procedure InvalidateBranch;
     procedure MoveFile(CurIndex, NewIndex: integer);
   end;
 
@@ -326,6 +328,24 @@ begin
   end;
 end;
 
+procedure TTreeFilterBranch.DeleteData(ANode : TTreeNode);
+
+  procedure DeleteFromList(List: TStrings);
+  var
+    i: Integer;
+  begin
+    i := List.IndexOf(ANode.Text);
+    if i > -1 then
+      List.Delete(i);
+  end;
+
+begin
+  FreeNodeData(ANode);
+  DeleteFromList(fOriginalData);
+  DeleteFromList(fSortedData);
+  fOwner.FilteredTreeview.Items.Delete(ANode);
+end;
+
 procedure TTreeFilterBranch.FreeNodeData(ANode : TTreeNode);
 Var
   AObject : TObject;
@@ -364,6 +384,12 @@ end;
 procedure TTreeFilterBranch.Clear;
 Begin
   RemoveChildrenData(fRootNode);
+end;
+
+procedure TTreeFilterBranch.InvalidateBranch;
+begin
+  SortAndFilter;
+  ApplyFilter;
 end;
 
 procedure TTreeFilterBranch.MoveFile(CurIndex, NewIndex: integer);

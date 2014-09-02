@@ -164,6 +164,7 @@ type
   TPEFlag = (
     pefNeedUpdateTitle,
     pefNeedUpdateFiles,
+    pefNeedUpdateRemovedFiles,
     pefNeedUpdateRequiredPkgs,
     pefNeedUpdateProperties,
     pefNeedUpdateButtons,
@@ -299,6 +300,7 @@ type
     FSingleSelectedDep: TPkgDependency;
     FFirstNodeData: array[TPENodeType] of TPENodeData;
     fUpdateLock: integer;
+    fForcedFlags: TPEFlags;
     procedure FreeNodeData(Typ: TPENodeType);
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
@@ -312,6 +314,7 @@ type
     function CanUpdate(Flag: TPEFlag; Immediately: boolean): boolean;
     procedure UpdateTitle(Immediately: boolean = false);
     procedure UpdateFiles(Immediately: boolean = false);
+    procedure UpdateRemovedFiles(Immediately: boolean = false);
     procedure UpdateRequiredPkgs(Immediately: boolean = false);
     procedure UpdatePEProperties(Immediately: boolean = false);
     procedure UpdateButtons(Immediately: boolean = false);
@@ -617,13 +620,16 @@ var
   AFilename: String;
   Dependency: TPkgDependency;
   i: Integer;
+  HasFiles, HasPkgs: Boolean;
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
 begin
   BeginUpdate;
   try
-    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+    HasFiles:=False;
+    HasPkgs:=False;
+    for i:=ItemsTreeView.SelectionCount-1 downto 0 do begin
       TVNode:=ItemsTreeView.Selections[i];
       if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
       if not NodeData.Removed then continue;
@@ -643,16 +649,23 @@ begin
         end;
         PkgFile.Filename:=AFilename;
         LazPackage.UnremovePkgFile(PkgFile);
-        UpdateFiles;
-      end else if Item is TPkgDependency then begin
+        HasFiles:=True;
+      end
+      else if Item is TPkgDependency then begin
         Dependency:=TPkgDependency(Item);
         // re-add dependency
         if CheckAddingDependency(LazPackage,Dependency,false,true)<>mrOk then exit;
         LazPackage.RemoveRemovedDependency(Dependency);
         PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
-        UpdateRequiredPkgs;
+        HasPkgs:=True;
       end;
     end;
+    if HasFiles then begin
+      UpdateFiles;
+      UpdateRemovedFiles;
+    end;
+    if HasPkgs then
+      UpdateRequiredPkgs;
   finally
     EndUpdate;
   end;
@@ -1190,6 +1203,24 @@ var
   FileWarning, PkgWarning: String;
   FileCount, PkgCount: Integer;
 
+  procedure CheckFileSelection(CurFile: TPkgFile);
+  begin
+    inc(FileCount);
+    if CurFile.FileType=pftMainUnit then
+      MainUnitSelected:=true;
+    if FileWarning='' then
+      FileWarning:=Format(lisPckEditRemoveFileFromPackage,
+                          [CurFile.Filename, LineEnding, LazPackage.IDAsString]);
+  end;
+
+  procedure CheckPkgSelection(CurDependency: TPkgDependency);
+  begin
+    inc(PkgCount);
+    if PkgWarning='' then
+      PkgWarning:=Format(lisPckEditRemoveDependencyFromPackage,
+                    [CurDependency.AsString, LineEnding, LazPackage.IDAsString]);
+  end;
+
   function ConfirmFileDeletion: TModalResult;
   var
     mt: TMsgDlgType;
@@ -1223,12 +1254,11 @@ var
 
 var
   ANode: TTreeNode;
-  CurFile: TPkgFile;
-  CurDependency: TPkgDependency;
-  i: Integer;
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
+  FilesBranch: TTreeFilterBranch;
+  i: Integer;
 begin
   BeginUpdate;
   try
@@ -1238,32 +1268,21 @@ begin
       exit;
     end;
 
-    // check selection
     MainUnitSelected:=false;
-    FileWarning:='';
     FileCount:=0;
+    FileWarning:='';
     PkgCount:=0;
     PkgWarning:='';
+
+    // check selection
     for i:=0 to ItemsTreeView.SelectionCount-1 do begin
       TVNode:=ItemsTreeView.Selections[i];
       if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
       if NodeData.Removed then continue;
-      if Item is TPkgFile then begin
-        CurFile:=TPkgFile(Item);
-        inc(FileCount);
-        if CurFile.FileType=pftMainUnit then
-          MainUnitSelected:=true;
-        if FileWarning='' then
-          FileWarning:=Format(lisPckEditRemoveFileFromPackage,
-                           [CurFile.Filename, LineEnding, LazPackage.IDAsString]);
-      end
-      else if Item is TPkgDependency then begin
-        CurDependency:=TPkgDependency(Item);
-        inc(PkgCount);
-        if PkgWarning='' then
-          PkgWarning:=Format(lisPckEditRemoveDependencyFromPackage,
-              [CurDependency.AsString, LineEnding, LazPackage.IDAsString]);
-      end;
+      if Item is TPkgFile then
+        CheckFileSelection(TPkgFile(Item))
+      else if Item is TPkgDependency then
+        CheckPkgSelection(TPkgDependency(Item));
     end;
     if (FileCount=0) and (PkgCount=0) then begin
       UpdateButtons;
@@ -1271,23 +1290,36 @@ begin
     end;
 
     // confirm deletion
-    if (FileCount>0) and (ConfirmFileDeletion<>mrYes) then Exit;
-    if (PkgCount>0) and (ConfirmPkgDeletion<>mrYes) then Exit;
+    if (FileCount>0) then begin
+      if ConfirmFileDeletion<>mrYes then Exit;
+      FilesBranch:=FilterEdit.GetExistingBranch(FFilesNode);
+    end;
+    if (PkgCount>0) then begin
+      if ConfirmPkgDeletion<>mrYes then Exit;
+      PackageGraph.BeginUpdate(True);
+    end;
 
     // remove
-    for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+    for i:=ItemsTreeView.SelectionCount-1 downto 0 do begin
       TVNode:=ItemsTreeView.Selections[i];
       if not GetNodeDataItem(TVNode, NodeData, Item) then continue;
       if NodeData.Removed then continue;
       if Item is TPkgFile then begin
-        CurFile:=TPkgFile(Item);
-        LazPackage.RemoveFile(CurFile);
-        UpdateFiles;
-      end else if Item is TPkgDependency then begin
-        CurDependency:=TPkgDependency(Item);
-        PackageGraph.RemoveDependencyFromPackage(LazPackage,CurDependency,true);
-        UpdateRequiredPkgs;
-      end;
+        FilesBranch.DeleteData(TVNode);
+        LazPackage.RemoveFileSilently(TPkgFile(Item));
+      end
+      else if Item is TPkgDependency then
+        PackageGraph.RemoveDependencyFromPackage(LazPackage,TPkgDependency(Item),true);
+    end;
+    if (PkgCount>0) then begin
+      PackageGraph.EndUpdate;
+      UpdateRequiredPkgs;
+    end;
+    if (FileCount>0) then begin
+      fForcedFlags:=[pefNeedUpdateRemovedFiles]; // Force update for removed files only.
+      LazPackage.Modified:=True; // This will update also other possible editors.
+      fForcedFlags:=[];
+      UpdateRemovedFiles;
     end;
 
   finally
@@ -1929,14 +1961,18 @@ begin
   if csDestroying in ComponentState then exit;
   if LazPackage=nil then exit;
   Name:=PackageEditorWindowPrefix+LazPackage.Name;
-  fFlags:=fFlags+[
-    pefNeedUpdateTitle,
-    pefNeedUpdateFiles,
-    pefNeedUpdateRequiredPkgs,
-    pefNeedUpdateProperties,
-    pefNeedUpdateButtons,
-    pefNeedUpdateApplyDependencyButton,
-    pefNeedUpdateStatusBar];
+  if fForcedFlags<>[] then
+    fFlags:=fFlags+fForcedFlags  // Flags forcing a partial update
+  else
+    fFlags:=fFlags+[             // Otherwise all flags.
+      pefNeedUpdateTitle,
+      pefNeedUpdateFiles,
+      pefNeedUpdateRemovedFiles,
+      pefNeedUpdateRequiredPkgs,
+      pefNeedUpdateProperties,
+      pefNeedUpdateButtons,
+      pefNeedUpdateApplyDependencyButton,
+      pefNeedUpdateStatusBar];
   UpdatePending;
 end;
 
@@ -2267,6 +2303,8 @@ begin
       UpdateTitle(true);
     if pefNeedUpdateFiles in fFlags then
       UpdateFiles(true);
+    if pefNeedUpdateRemovedFiles in fFlags then
+      UpdateRemovedFiles(true);
     if pefNeedUpdateRequiredPkgs in fFlags then
       UpdateRequiredPkgs(true);
     if pefNeedUpdateProperties in fFlags then
@@ -2308,7 +2346,6 @@ var
   OldFilter : String;
 begin
   if not CanUpdate(pefNeedUpdateFiles,Immediately) then exit;
-
   OldFilter := FilterEdit.ForceFilter('');
 
   // files belonging to package
@@ -2335,7 +2372,21 @@ begin
   if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penFile) then
     FreeAndNil(FNextSelectedPart);
 
-  // removed files
+  FilterEdit.Filter := OldFilter;            // This triggers ApplyFilter
+  FilterEdit.InvalidateFilter;
+  UpdatePEProperties;
+  UpdateButtons;
+end;
+
+procedure TPackageEditorForm.UpdateRemovedFiles(Immediately: boolean = false);
+var
+  i: Integer;
+  CurFile: TPkgFile;
+  RemovedBranch: TTreeFilterBranch;
+  NodeData: TPENodeData;
+begin
+  if not CanUpdate(pefNeedUpdateRemovedFiles,Immediately) then exit;
+
   if LazPackage.RemovedFilesCount>0 then begin
     // Create root node for removed files if not done yet.
     if FRemovedFilesNode=nil then begin
@@ -2351,15 +2402,17 @@ begin
       NodeData:=CreateNodeData(penFile,CurFile.Filename,true);
       RemovedBranch.AddNodeData(CurFile.GetShortFilename(true), NodeData);
     end;
-  end else begin
+    RemovedBranch.InvalidateBranch;
+  end
+  else begin
     // No more removed files left -> delete the root node
     if FRemovedFilesNode<>nil then begin
       FilterEdit.DeleteBranch(FRemovedFilesNode);
       FreeAndNil(FRemovedFilesNode);
     end;
+    FilterEdit.InvalidateFilter;
   end;
-  FilterEdit.Filter := OldFilter;            // This triggers ApplyFilter
-  FilterEdit.InvalidateFilter;
+
   UpdatePEProperties;
   UpdateButtons;
 end;

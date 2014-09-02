@@ -685,6 +685,7 @@ type
                      NewFileType: TPkgFileType; NewFlags: TPkgFileFlags;
                      CompPriorityCat: TComponentPriorityCategory): TPkgFile;
     procedure DeleteFile(PkgFile: TPkgFile); // free TPkgFile
+    procedure RemoveFileSilently(PkgFile: TPkgFile);
     procedure RemoveFile(PkgFile: TPkgFile); // move file to removed file list
     procedure UnremovePkgFile(PkgFile: TPkgFile); // move file back to file list
     // True if something changed. Param is ignored here, just to match with interface.
@@ -3346,11 +3347,17 @@ begin
   Modified:=true
 end;
 
-procedure TLazPackage.RemoveFile(PkgFile: TPkgFile);
+procedure TLazPackage.RemoveFileSilently(PkgFile: TPkgFile);
+// Remove a file without setting the Modified flag. Caller must take care of it.
 begin
   FFiles.Remove(PkgFile);
   FRemovedFiles.Add(PkgFile);
   PkgFile.Removed:=true;
+end;
+
+procedure TLazPackage.RemoveFile(PkgFile: TPkgFile);
+begin
+  RemoveFileSilently(PkgFile);
   Modified:=true;
 end;
 
