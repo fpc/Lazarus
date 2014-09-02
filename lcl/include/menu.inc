@@ -241,7 +241,7 @@ function TMenu.IsShortcut(var Message: TLMKey): boolean;
     if Item = nil then
       Exit;
     HandleItem(Item.Parent);
-    if Item.Enabled then
+    if FShortcutHandled and Item.Enabled then
     begin
       Item.InitiateActions;
       Item.Click;
