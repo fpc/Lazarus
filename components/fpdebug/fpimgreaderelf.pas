@@ -106,7 +106,7 @@ type
     st_size  : qword;
   end;
   PElf64symbolArray = ^TElf64symbolArray;
-  TElf64symbolArray = array[0..maxSmallint] of TElf64symbol;
+  TElf64symbolArray = array[0..MaxInt] of TElf64symbol;
 
 
 
