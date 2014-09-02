@@ -563,6 +563,7 @@ object frPreviewForm: TfrPreviewForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
+        GlyphShowMode = gsmAlways
         OnClick = BtZoomOutClick
         TabOrder = 3
       end
@@ -609,6 +610,7 @@ object frPreviewForm: TfrPreviewForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
+        GlyphShowMode = gsmAlways
         OnClick = BtZoomInClick
         TabOrder = 5
       end
@@ -664,6 +666,7 @@ object frPreviewForm: TfrPreviewForm
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
           FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
         }
+        GlyphShowMode = gsmAlways
         OnClick = FindBtnClick
         TabOrder = 12
       end
