@@ -330,14 +330,13 @@ procedure TTreeFilterBranch.FreeNodeData(ANode : TTreeNode);
 Var
   AObject : TObject;
 Begin
-  AObject := NIL;
   If Assigned(ANode) And Assigned(ANode.Data) Then Begin
     AObject := TObject(ANode.Data);
-    If Assigned(AObject) And AObject.InheritsFrom(TTFENodeData) Then Begin
+    If AObject.InheritsFrom(TTFENodeData) Then Begin
       TTFENodeData(AObject).Node := NIL;
       TTFENodeData(AObject).Branch := NIL;
     end;
-    If Assigned(AObject) And (AObject is TFileNameItem) Then
+    If AObject is TFileNameItem Then
       AObject.Free;
     ANode.Data := NIL;
   end;
