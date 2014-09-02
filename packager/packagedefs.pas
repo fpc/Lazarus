@@ -2589,7 +2589,7 @@ begin
     PublishOptions.Modified:=false;
     CompilerOptions.Modified:=false;
   end;
-  if (OldModified<>Modified) and (Editor<>nil) then
+  if Modified and (not OldModified) and (Editor<>nil) then
     Editor.UpdateAll(false);
 end;
 
