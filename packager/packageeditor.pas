@@ -1186,20 +1186,49 @@ end;
 
 procedure TPackageEditorForm.RemoveBitBtnClick(Sender: TObject);
 var
+  MainUnitSelected: Boolean;
+  FileWarning, PkgWarning: String;
+  FileCount, PkgCount: Integer;
+
+  function ConfirmFileDeletion: TModalResult;
+  var
+    mt: TMsgDlgType;
+    s: String;
+  begin
+    mt:=mtConfirmation;
+    if FileCount=1 then
+      s:=FileWarning
+    else
+      s:=Format(lisRemoveFilesFromPackage, [IntToStr(FileCount), LazPackage.Name]);
+    if MainUnitSelected then begin
+      s+=Format(lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas,
+                [LineEnding+LineEnding, lowercase(LazPackage.Name)]);
+      mt:=mtWarning;
+    end;
+    Result:=IDEMessageDialog(lisPckEditRemoveFile2, s, mt, [mbYes,mbNo]);
+  end;
+
+  function ConfirmPkgDeletion: TModalResult;
+  var
+    mt: TMsgDlgType;
+    s: String;
+  begin
+    mt:=mtConfirmation;
+    if PkgCount=1 then
+      s:=PkgWarning
+    else
+      s:=Format(lisRemoveDependenciesFromPackage, [IntToStr(PkgCount), LazPackage.Name]);
+    Result:=IDEMessageDialog(lisRemove2, s, mt, [mbYes, mbNo]);
+  end;
+
+var
   ANode: TTreeNode;
   CurFile: TPkgFile;
   CurDependency: TPkgDependency;
-  s: String;
-  mt: TMsgDlgType;
   i: Integer;
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
-  MainUnitSelected: Boolean;
-  FileWarning: String;
-  FileCount: Integer;
-  PkgCount: Integer;
-  PkgWarning: String;
 begin
   BeginUpdate;
   try
@@ -1227,7 +1256,8 @@ begin
         if FileWarning='' then
           FileWarning:=Format(lisPckEditRemoveFileFromPackage,
                            [CurFile.Filename, LineEnding, LazPackage.IDAsString]);
-      end else if Item is TPkgDependency then begin
+      end
+      else if Item is TPkgDependency then begin
         CurDependency:=TPkgDependency(Item);
         inc(PkgCount);
         if PkgWarning='' then
@@ -1241,38 +1271,13 @@ begin
     end;
 
     // confirm deletion
-    if FileCount>0 then begin
-      s:='';
-      mt:=mtConfirmation;
-      if FileCount=1 then
-        s:=FileWarning
-      else
-        s:=Format(lisRemoveFilesFromPackage, [IntToStr(FileCount), LazPackage.
-          Name]);
-      if MainUnitSelected then begin
-        s+=Format(lisWarningThisIsTheMainUnitTheNewMainUnitWillBePas,
-                  [LineEnding+LineEnding, lowercase(LazPackage.Name)]);
-        mt:=mtWarning;
-      end;
-      if IDEMessageDialog(lisPckEditRemoveFile2,s,mt,[mbYes,mbNo])<>mrYes then
-        exit;
-    end;
-    if PkgCount>0 then begin
-      s:='';
-      mt:=mtConfirmation;
-      if PkgCount=1 then
-        s:=PkgWarning
-      else
-        s:=Format(lisRemoveDependenciesFromPackage, [IntToStr(PkgCount),
-          LazPackage.Name]);
-      if IDEMessageDialog(lisRemove2, s, mt, [mbYes, mbNo])<>mrYes then
-        exit;
-    end;
+    if (FileCount>0) and (ConfirmFileDeletion<>mrYes) then Exit;
+    if (PkgCount>0) and (ConfirmPkgDeletion<>mrYes) then Exit;
 
     // remove
     for i:=0 to ItemsTreeView.SelectionCount-1 do begin
       TVNode:=ItemsTreeView.Selections[i];
-      if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+      if not GetNodeDataItem(TVNode, NodeData, Item) then continue;
       if NodeData.Removed then continue;
       if Item is TPkgFile then begin
         CurFile:=TPkgFile(Item);
