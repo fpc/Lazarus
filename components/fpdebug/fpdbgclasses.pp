@@ -648,6 +648,11 @@ function TDbgProcess.AddBreak(const ALocation: TDbgPtr): TDbgBreakpoint;
 begin
   Result := OSDbgClasses.DbgBreakpointClass.Create(Self, ALocation);
   FBreakMap.Add(ALocation, Result);
+  if (GetInstructionPointerRegisterValue=ALocation) and not assigned(FCurrentBreakpoint) then
+    begin
+    FCurrentBreakpoint := Result;
+    Result.ResetBreak;
+    end;
 end;
 
 constructor TDbgProcess.Create(const AName: string; const AProcessID, AThreadID: Integer; AOnLog: TOnLog);
