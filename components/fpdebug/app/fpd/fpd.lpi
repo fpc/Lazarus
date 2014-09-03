@@ -31,8 +31,6 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="\home\CNOC\joost\svn\ranger\newserver\RangerServer2"/>
-        <LaunchingApplication PathPlusParams="\usr\bin\gnome-terminal -e $(TargetCmdLine)"/>
       </local>
     </RunParams>
     <RequiredPackages Count="1">
@@ -40,11 +38,16 @@
         <PackageName Value="fpdebug"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="1">
+    <Units Count="2">
       <Unit0>
         <Filename Value="fpd.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
+      <Unit1>
+        <Filename Value="..\dbgclasses.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="dbgclasses"/>
+      </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -57,33 +60,17 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Parsing>
-      <SyntaxOptions>
-        <IncludeAssertionCode Value="True"/>
-      </SyntaxOptions>
-    </Parsing>
-    <CodeGeneration>
-      <Checks>
-        <IOChecks Value="True"/>
-        <RangeChecks Value="True"/>
-        <OverflowChecks Value="True"/>
-        <StackChecks Value="True"/>
-      </Checks>
-      <VerifyObjMethodCallValidity Value="True"/>
-      <TargetCPU Value="x86_64"/>
-    </CodeGeneration>
     <Linking>
-      <Debugging>
-        <DebugInfoType Value="dsDwarf3"/>
-        <UseHeaptrc Value="True"/>
-        <TrashVariables Value="True"/>
-      </Debugging>
       <Options>
+        <PassLinkerOptions Value="True"/>
         <LinkerOptions Value="-sectcreate __TEXT __info_plist Info.plist"/>
       </Options>
     </Linking>
     <Other>
-      <CustomOptions Value="-dFPDBG_DWARF_VERBOSE -dFPDBG_DWARF_SEARCH"/>
+      <CompilerMessages>
+        <MsgFileName Value=""/>
+      </CompilerMessages>
+      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
   <Debugging>

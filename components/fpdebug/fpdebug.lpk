@@ -11,33 +11,6 @@
         <OtherUnitFiles Value="."/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
-      <Parsing>
-        <SyntaxOptions>
-          <IncludeAssertionCode Value="True"/>
-        </SyntaxOptions>
-      </Parsing>
-      <CodeGeneration>
-        <Checks>
-          <IOChecks Value="True"/>
-          <RangeChecks Value="True"/>
-          <OverflowChecks Value="True"/>
-          <StackChecks Value="True"/>
-        </Checks>
-        <VerifyObjMethodCallValidity Value="True"/>
-      </CodeGeneration>
-      <Linking>
-        <Debugging>
-          <DebugInfoType Value="dsDwarf3"/>
-          <UseHeaptrc Value="True"/>
-          <TrashVariables Value="True"/>
-        </Debugging>
-      </Linking>
-      <Other>
-        <CustomOptions Value="-dFPDBG_DWARF_VERBOSE
--dFPDBG_DWARF_VERBOSE_LOAD
--dFPDBG_DWARF_WARNINGS
--aln"/>
-      </Other>
     </CompilerOptions>
     <Description Value="A set of helperclasses for implementing a debugger.
 

@@ -1045,7 +1045,7 @@ var
     else
     begin // append to existing
       GapAvail := FTableListGaps[ATableListIndex].EndTable;
-      //assert(AEntry^.EndIndex + AEntry^.LeadHigh - AEntry^.LeadLow + 1 + GapAvail <= FEndTableNextFreeIndex);
+      assert(AEntry^.EndIndex + AEntry^.LeadHigh - AEntry^.LeadLow + 1 + GapAvail <= FEndTableNextFreeIndex);
       AtEnd := AEntry^.EndIndex + AEntry^.EndHigh - AEntry^.EndLow + 1 + GapAvail = FEndTableNextFreeIndex;
       ANeeded := ALeadByte - AEntry^.EndHigh;
 
