@@ -1,4 +1,4 @@
-{ Copyright (C) 2005-2013  Andrew Haines, Lazarus contributors
+{ Copyright (C) 2005-2014  Andrew Haines, Lazarus contributors
 
   Main form for lhelp. Includes processing/data communication.
 
@@ -27,7 +27,7 @@ unit lhelpcore;
 
 {$IFDEF UNIX}
   {$if FPC_FULLVERSION <= 20700}
-       {$DEFINE STALE_PIPE_WORKAROUND}
+    {$DEFINE STALE_PIPE_WORKAROUND}
   {$ENDIF}
 {$ENDIF}
 
@@ -41,7 +41,7 @@ uses
   Buttons, LCLProc, IpHtml, ComCtrls, ExtCtrls, Menus, LCLType, LCLIntf, StdCtrls,
   BaseContentProvider, FileContentProvider,
   ChmContentProvider
-  {$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF};
+  {$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF}, lazlogger;
 
 type
 
@@ -150,7 +150,7 @@ var
 
 const
   INVALID_FILE_TYPE = 1;
-  VERSION_STAMP = '2013-07-31'; //used in displaying about form etc
+  VERSION_STAMP = '2013-07-31'; //used in displaying version in about form etc
 
 implementation
 
@@ -244,20 +244,22 @@ procedure THelpForm.FileMenuOpenURLItemClick(Sender: TObject);
 var
   fRes: String;
   URLSAllowed: String;
-  Protocall: TStrings;
+  Protocol: TStrings;
   i: Integer;
 begin
-  Protocall := GetContentProviderList;
-
-  URLSAllowed:='';
-  for i := 0 to Protocall.Count-1 do
-  begin
-    if i < 1 then
-      URLSAllowed := URLSAllowed + Protocall[i]
-    else
-      URLSAllowed := URLSAllowed + ', ' +Protocall[i]
+  Protocol := GetContentProviderList;
+  try
+    URLSAllowed:='';
+    for i := 0 to Protocol.Count-1 do
+    begin
+      if i < 1 then
+        URLSAllowed := URLSAllowed + Protocol[i]
+      else
+        URLSAllowed := URLSAllowed + ', ' +Protocol[i]
+    end;
+  finally
+    Protocol.Free;
   end;
-  Protocall.Free;
 
   URLSAllowed := Trim(URLSALLowed);
 
@@ -331,7 +333,7 @@ end;
 
 procedure THelpForm.ViewMenuContentsClick(Sender: TObject);
 begin
-  //TabsControl property in TChmContentProvider
+  // TabsControl property in TChmContentProvider
   if Assigned(ActivePage) then
     with TChmContentProvider(ActivePage.ContentProvider) do
     begin
@@ -352,7 +354,7 @@ begin
   PrefFile := GetAppConfigDirUTF8(False);
   ForceDirectoriesUTF8(PrefFile);
   // --ipcname passes a server ID that consists of a
-  // a server-dependent constant together with a process ID.
+  // server-dependent constant together with a process ID.
   // Strip out the process ID to get fixed config file names for one server
   ServerPart := Copy(AIPCName, 1, length(AIPCName)-5); //strip out PID
   PrefFile:=Format('%slhelp-%s.conf',[IncludeTrailingPathDelimiter(PrefFile), ServerPart]);
@@ -475,10 +477,12 @@ begin
     Stream.Position := 0;
     FillByte(FileReq{%H-},SizeOf(FileReq),0);
     Stream.Read(FileReq, SizeOf(FileReq));
+    Res := Ord(srError); //fail by default
     case FileReq.RequestType of
       rtFile    : begin
                     Url := 'file://'+FileReq.FileName;
                     Res := OpenURL(URL);
+                    debugln('got rtfile, filename '+filereq.filename);
                   end;
       rtUrl     : begin
                     Stream.Position := 0;
@@ -494,6 +498,7 @@ begin
                       Url := UrlReq.Url;
                       Res := OpenURL(Url);
                     end;
+                    debugln('got rturl, filename '+urlreq.filerequest.filename+', url '+urlreq.url);
                   end;
       rtContext : begin
                     Stream.Position := 0;
@@ -501,6 +506,7 @@ begin
                     Stream.Read(ConReq, SizeOf(ConReq));
                     Url := 'file://'+FileReq.FileName;
                     Res := OpenURL(Url, ConReq.HelpContext);
+                    debugln('got rtcontext, filename '+filereq.filename+', context '+inttostr(ConReq.HelpContext));
                   end;
       rtMisc    : begin
                     Stream.Position := 0;
@@ -520,7 +526,7 @@ begin
                       end;
                       mrVersion:
                       begin
-                        //Protocol version encoded in the filename
+                        // Protocol version encoded in the filename
                         // Verify what we support
                         if strtointdef(FileReq.FileName,0)=strtointdef(PROTOCOL_VERSION,0) then
                           Res := ord(srSuccess)
@@ -536,8 +542,14 @@ begin
       AddRecentFile(Url);
     SendResponse(Res);
     if MustClose then
+    begin
+      // Wait some time for the response message to go out before shutting down
+      Application.ProcessMessages;
+      Sleep(10);
       Application.Terminate;
+    end;
 
+    // We received mrShow:
     if (MustClose=false) and (fHide=false) then
     begin
       Self.SendToBack;
@@ -675,20 +687,20 @@ var
  fPage: TContentTab = nil;
  I: Integer;
 begin
- Result := Ord(srUnknown);
+ Result := Ord(srInvalidURL);
  fURLPrefix := GetURLPrefix;
  fContentProvider := GetContentProvider(fURLPrefix);
  
  if fContentProvider = nil then begin
    ShowError('Cannot handle this type of content. "' + fURLPrefix + '" for url:'+LineEnding+AURL);
-   Result := Ord(srInvalidFile);
+   Result := Ord(srInvalidURL);
    Exit;
  end;
  fRealContentProvider := fContentProvider.GetProperContentProvider(AURL);
  
  if fRealContentProvider = nil then begin
    ShowError('Cannot handle this type of subcontent. "' + fURLPrefix + '" for url:'+LineEnding+AURL);
-   Result := Ord(srInvalidFile);
+   Result := Ord(srInvalidURL);
    Exit;
  end;
 
@@ -717,7 +729,6 @@ begin
    fPage.ContentProvider.LoadPreferences(fConfig);
  end;
 
- 
  if fPage.ContentProvider.LoadURL(AURL, AContext) then
  begin
    PageControl.ActivePage := fPage;
@@ -725,7 +736,7 @@ begin
    Result := Ord(srSuccess);
  end
  else
-   Result := Ord(srInvalidFile);
+   Result := Ord(srInvalidURL);
 
  if not fHide then
    ShowOnTop;

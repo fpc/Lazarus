@@ -1,4 +1,4 @@
-{ Copyright (C) <2005-2013> <Andrew Haines>, Lazarus contributors
+{ Copyright (C) <2005-2014> <Andrew Haines>, Lazarus contributors
 
   lazchmhelp.pas
 
@@ -354,6 +354,16 @@ end;
 
 destructor TChmHelpViewer.Destroy;
 begin
+  // Try to close lhelp if we had opened it before; ignore response
+  try
+    fHelpConnection.RunMiscCommand(LHelpControl.mrClose);
+  except
+    // ignore errors; let user close it himself
+    on E: Exception do begin
+      debugln('TChmHelpViewer.Destroy: exception '+E.Message+' when trying to send mrClose on viewer');
+    end;
+  end;
+
   fHelpConnection.Free;
   inherited Destroy;
 end;
@@ -398,9 +408,7 @@ begin
     fHelpConnection.StartHelpServer(HelpLabel, HelpExeFileName, true);
     Response:=fHelpConnection.RunMiscCommand(mrVersion);
     if Response<>srSuccess then
-    begin
-      debugln('Help viewer does not support our protocol version.');
-    end
+      debugln('Help viewer does not support our protocol version ('+PROTOCOL_VERSION +'). Response was: ord: '+inttostr(ord(Response)))
     else
     begin
       // Open all chm files after it has started, while still hidden
@@ -408,9 +416,7 @@ begin
       // Instruct viewer to show its GUI
       Response:=fHelpConnection.RunMiscCommand(mrShow);
       if Response<>srSuccess then
-      begin
-        debugln('Help viewer failed to respond to mrShow command.');
-      end;
+        debugln('Help viewer gave error response to mrShow command. Response was: ord: '+inttostr(ord(Response)));
     end;
   end;
 end;
@@ -451,7 +457,7 @@ begin
   begin
     Result := shrDatabaseNotFound;
     ErrMsg := FileName +' not found. Please put the chm help files in '+ LineEnding
-                       +SearchPath+  LineEnding
+                       +SearchPath + LineEnding
                        +' or set the path to lcl.chm rtl.chm fcl.chm with "HelpFilesPath" in '
                        +' Environment Options -> Help -> Help Options ->'+LineEnding
                        +' under HelpViewers - CHMHelpViewer';
@@ -473,7 +479,7 @@ begin
     if Trim(fHelpExeParams) = '' then
     begin
       Result := shrViewerError;
-      ErrMsg := 'If you do not use "lhelp" as viewer you have to setup '
+      ErrMsg := 'If you do not use "lhelp" as viewer you have to set up '
               + 'HelpExeParams correctly in' + sLineBreak
               + 'Tools -> Options -> Help -> Help Options -> '
               + 'under HelpViewers - CHM Help Viewer' + sLineBreak
@@ -517,7 +523,19 @@ begin
   case Res of
     srSuccess: Result := shrSuccess;
     srNoAnswer: Result := shrSuccess;
-  else
+    srInvalidContext: begin
+      Result := shrNone;
+      ErrMsg := 'Invalid context showing '+URL;
+    end;
+    srInvalidFile: begin
+      Result := shrNone;
+      ErrMsg := 'Invalid file showing '+URL;
+    end;
+    srInvalidURL: begin
+      Result := shrNone;
+      ErrMsg := 'Invalid URL showing '+URL;
+    end;
+  else //srUnknown, srError
     Result := shrNone;
     ErrMsg := 'Unknown error showing '+URL;
   end;
