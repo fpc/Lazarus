@@ -93,6 +93,9 @@ type
     class procedure SetStyle(const ACustomComboBox: TCustomComboBox; NewStyle: TComboBoxStyle); override;
 
     class procedure Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean); override;
+
+    class function GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer; override;
+    class procedure SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer); override;
   end;
 
   { TQtWSComboBox }
@@ -1360,6 +1363,7 @@ begin
   QtComboBox.setEditable((AParams.Style and CBS_DROPDOWN <> 0) or
     (AParams.Style and CBS_SIMPLE <> 0));
 
+  QtComboBox.DropList.setUniformItemSizes(AParams.Style and CBS_OWNERDRAWFIXED <> 0);
   QtComboBox.AttachEvents;
   QtComboBox.OwnerDrawn := (AParams.Style and CBS_OWNERDRAWFIXED <> 0) or
     (AParams.Style and CBS_OWNERDRAWVARIABLE <> 0);
@@ -1616,6 +1620,59 @@ class procedure TQtWSCustomComboBox.Sort(
   const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
 begin
   TQtComboStrings(AList).Sorted := IsSorted;
+end;
+
+class function TQtWSCustomComboBox.GetItemHeight(
+  const ACustomComboBox: TCustomComboBox): Integer;
+var
+  ComboBox: TQtComboBox;
+  AText: WideString;
+  ACombo: QComboBoxH;
+  AItems: QStringListH;
+begin
+  Result := 0;
+
+  if not WSCheckHandleAllocated(ACustomComboBox, 'GetItemHeight') then
+    Exit;
+
+  {only for csDropDown, csDropDownList, csSimple}
+  ComboBox := TQtComboBox(ACustomComboBox.Handle);
+  if ACustomComboBox.Items.Count > 0 then
+    Result := ComboBox.DropList.getRowHeight(0)
+  else
+  begin
+    // no way to get themed item size, so we must construct dummy QComboBox
+    // with one item.
+    ACombo := QComboBox_create(nil);
+    try
+      QWidget_setFont(ACombo, ComboBox.getFont);
+      QComboBox_setEditable(ACombo, not ACustomComboBox.ReadOnly);
+      AText := 'Mtjx';
+      AItems := QStringList_create(PWideString(@AText));
+      QComboBox_addItems(ACombo, AItems);
+      QStringList_destroy(AItems);
+      Result := QAbstractItemView_sizeHintForRow(QComboBox_view(ACombo), 0);
+    finally
+      QComboBox_destroy(ACombo);
+    end;
+  end;
+end;
+
+class procedure TQtWSCustomComboBox.SetItemHeight(
+  const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer);
+var
+  ComboBox: TQtComboBox;
+begin
+  if not WSCheckHandleAllocated(ACustomComboBox, 'SetItemHeight') then
+    Exit;
+  {only for csOwnerDrawFixed, csOwnerDrawVariable}
+  ComboBox := TQtComboBox(ACustomComboBox.Handle);
+  if ComboBox.getDroppedDown then
+  begin
+    ComboBox.DropList.setUniformItemSizes(False);
+    ComboBox.DropList.setUniformItemSizes(ACustomComboBox.Style = csOwnerDrawFixed);
+  end else
+    RecreateWnd(ACustomComboBox);
 end;
 
 
