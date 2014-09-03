@@ -2313,7 +2313,7 @@ procedure TPackageEditorForm.UpdateFiles(Immediately: boolean);
 var
   i: Integer;
   CurFile: TPkgFile;
-  FilesBranch, RemovedBranch: TTreeFilterBranch;
+  FilesBranch: TTreeFilterBranch;
   Filename: String;
   NodeData: TPENodeData;
   OldFilter : String;
