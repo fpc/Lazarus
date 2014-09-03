@@ -620,15 +620,12 @@ var
   AFilename: String;
   Dependency: TPkgDependency;
   i: Integer;
-  HasFiles, HasPkgs: Boolean;
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
 begin
   BeginUpdate;
   try
-    HasFiles:=False;
-    HasPkgs:=False;
     for i:=ItemsTreeView.SelectionCount-1 downto 0 do begin
       TVNode:=ItemsTreeView.Selections[i];
       if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
@@ -649,7 +646,6 @@ begin
         end;
         PkgFile.Filename:=AFilename;
         LazPackage.UnremovePkgFile(PkgFile);
-        HasFiles:=True;
       end
       else if Item is TPkgDependency then begin
         Dependency:=TPkgDependency(Item);
@@ -657,15 +653,9 @@ begin
         if CheckAddingDependency(LazPackage,Dependency,false,true)<>mrOk then exit;
         LazPackage.RemoveRemovedDependency(Dependency);
         PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
-        HasPkgs:=True;
       end;
     end;
-    if HasFiles then begin
-      UpdateFiles;
-      UpdateRemovedFiles;
-    end;
-    if HasPkgs then
-      UpdateRequiredPkgs;
+    LazPackage.Modified:=True;
   finally
     EndUpdate;
   end;
@@ -1290,14 +1280,11 @@ begin
     end;
 
     // confirm deletion
-    if (FileCount>0) then begin
+    if FileCount>0 then begin
       if ConfirmFileDeletion<>mrYes then Exit;
       FilesBranch:=FilterEdit.GetExistingBranch(FFilesNode);
     end;
-    if (PkgCount>0) then begin
-      if ConfirmPkgDeletion<>mrYes then Exit;
-      PackageGraph.BeginUpdate(True);
-    end;
+    if (PkgCount>0) and (ConfirmPkgDeletion<>mrYes) then Exit;
 
     // remove
     for i:=ItemsTreeView.SelectionCount-1 downto 0 do begin
@@ -1309,18 +1296,12 @@ begin
         LazPackage.RemoveFileSilently(TPkgFile(Item));
       end
       else if Item is TPkgDependency then
-        PackageGraph.RemoveDependencyFromPackage(LazPackage,TPkgDependency(Item),true);
+        LazPackage.RemoveRequiredDepSilently(TPkgDependency(Item));
     end;
-    if (PkgCount>0) then begin
-      PackageGraph.EndUpdate;
-      UpdateRequiredPkgs;
-    end;
-    if (FileCount>0) then begin
+    if PkgCount=0 then
       fForcedFlags:=[pefNeedUpdateRemovedFiles]; // Force update for removed files only.
-      LazPackage.Modified:=True; // This will update also other possible editors.
-      fForcedFlags:=[];
-      UpdateRemovedFiles;
-    end;
+    LazPackage.Modified:=True; // This will update also other possible editors.
+    fForcedFlags:=[];
 
   finally
     EndUpdate;
@@ -1677,7 +1658,6 @@ begin
           CurFile.FileType:=CurPFT;
           if not NodeData.Removed then
             LazPackage.Modified:=true;
-          UpdateFiles;
         end;
       finally
         EndUpdate;
@@ -1773,7 +1753,6 @@ begin
       CurFile.DisableI18NForLFM:=DisableI18NForLFMCheckBox.Checked;
       if not NodeData.Removed then
         LazPackage.Modified:=true;
-      UpdateFiles;
     end;
   finally
     EndUpdate;
@@ -2019,7 +1998,6 @@ var
     FreeAndNil(FNextSelectedPart);
     FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-    UpdateFiles;
   end;
 
   procedure AddVirtualUnit(AddParams: TAddToPkgResult);
@@ -2029,7 +2007,6 @@ var
     FreeAndNil(FNextSelectedPart);
     FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
-    UpdateFiles;
   end;
 
   procedure AddNewComponent(AddParams: TAddToPkgResult);
@@ -2050,7 +2027,6 @@ var
     PackageEditors.DeleteAmbiguousFiles(LazPackage,AddParams.UnitFilename);
     // open file in editor
     PackageEditors.CreateNewFile(Self,AddParams);
-    UpdateFiles;
   end;
 
   procedure AddRequiredPkg(AddParams: TAddToPkgResult);
@@ -2060,7 +2036,6 @@ var
     FreeAndNil(FNextSelectedPart);
     FNextSelectedPart:=TPENodeData.Create(penDependency,
                                         AddParams.Dependency.PackageName,false);
-    UpdateRequiredPkgs;
   end;
 
   procedure AddFile(AddParams: TAddToPkgResult);
@@ -2074,7 +2049,6 @@ var
     end;
     FreeAndNil(FNextSelectedPart);
     FNextSelectedPart:=TPENodeData.Create(penFile,AddParams.UnitFilename,false);
-    UpdateFiles;
   end;
 
   procedure AddNewFile(AddParams: TAddToPkgResult);
@@ -2113,7 +2087,6 @@ var
                                                 NewPkgFileFlags, cpNormal);
         FreeAndNil(FNextSelectedPart);
         FNextSelectedPart:=TPENodeData.Create(penFile,NewFilename,false);
-        UpdateFiles;
       end;
     end;
   end;
@@ -2164,7 +2137,7 @@ begin
       OldParams.Free;
     end;
     AddParams.Free;
-    LazPackage.Modified:=true;
+    Assert(LazPackage.Modified, 'ShowAddDialog: LazPackage.Modified = False');
   finally
     IgnoreUnitPaths.Free;
     IgnoreIncPaths.Free;
@@ -3208,7 +3181,6 @@ var
 begin
   TreeSelection:=ItemsTreeView.StoreCurrentSelection;
   LazPackage.SortFiles;
-  UpdateFiles;
   ItemsTreeView.ApplyStoredSelection(TreeSelection);
 end;
 
@@ -3219,15 +3191,12 @@ end;
 
 procedure TPackageEditorForm.DoFixFilesCase;
 begin
-  if LazPackage.FixFilesCaseSensitivity then
-    LazPackage.Modified:=true;
-  UpdateFiles;
+  LazPackage.FixFilesCaseSensitivity;
 end;
 
 procedure TPackageEditorForm.DoShowMissingFiles;
 begin
   ShowMissingPkgFilesDialog(LazPackage);
-  UpdateFiles;
 end;
 
 constructor TPackageEditorForm.Create(TheOwner: TComponent);

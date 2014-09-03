@@ -702,6 +702,7 @@ type
     function RemovedDepByIndex(Index: integer): TPkgDependency;
     procedure AddRequiredDependency(Dependency: TPkgDependency);
     procedure AddPackageDependency(const PackageName: string);
+    procedure RemoveRequiredDepSilently(Dependency: TPkgDependency);
     procedure RemoveRequiredDependency(Dependency: TPkgDependency);
     procedure DeleteRequiredDependency(Dependency: TPkgDependency);
     procedure DeleteRemovedDependency(Dependency: TPkgDependency);
@@ -3507,13 +3508,14 @@ begin
       //debugln('TLazPackage.FixFilesCaseSensitivity New ',dbgs(i),' NewShortFilename=',NewShortFilename);
       if CurShortFilename<>NewShortFilename then begin
         // case changes
-        NewFilename:=
-            AppendPathDelim(ExtractFilePath(CurFile.Filename))+NewShortFilename;
+        NewFilename:=AppendPathDelim(ExtractFilePath(CurFile.Filename))+NewShortFilename;
         //debugln('TLazPackage.FixFilesCaseSensitivity New ',dbgs(i),' NewFilename=',NewFilename);
         CurFile.Filename:=NewFilename;
         Result:=true;
       end;
     end;
+    if Result then
+      Modified:=true;
   finally
     if SrcDirs<>nil then begin
       for i:=0 to SrcDirs.Count-1 do
@@ -3551,12 +3553,18 @@ begin
   AddRequiredDependency(Dependency);
 end;
 
-procedure TLazPackage.RemoveRequiredDependency(Dependency: TPkgDependency);
+procedure TLazPackage.RemoveRequiredDepSilently(Dependency: TPkgDependency);
+// Remove a dependency without setting the Modified flag. Caller must take care of it.
 begin
   Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
   Dependency.RequiredPackage:=nil;
   Dependency.AddToList(FFirstRemovedDependency,pdlRequires);
   Dependency.Removed:=true;
+end;
+
+procedure TLazPackage.RemoveRequiredDependency(Dependency: TPkgDependency);
+begin
+  RemoveRequiredDepSilently(Dependency);
   Modified:=true;
 end;
 
