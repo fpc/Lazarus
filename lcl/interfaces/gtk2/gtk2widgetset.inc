@@ -4497,7 +4497,8 @@ begin
             break;
           inc(Data);
         end;
-        XFree(Data);
+        if nitemsReturned > 0 then
+          XFree(Data);
         Data := nil;
       end;
     end;
