@@ -2577,10 +2577,7 @@ begin
 end;
 
 procedure TLazPackage.SetModified(const AValue: boolean);
-var
-  OldModified: Boolean;
 begin
-  OldModified:=Modified;
   if AValue then begin
     if FModifiedLock>0 then exit;
     ModifySilently;
@@ -2590,7 +2587,7 @@ begin
     PublishOptions.Modified:=false;
     CompilerOptions.Modified:=false;
   end;
-  if Modified and (not OldModified) and (Editor<>nil) then
+  if Modified and (Editor<>nil) then
     Editor.UpdateAll(false);
 end;
 
