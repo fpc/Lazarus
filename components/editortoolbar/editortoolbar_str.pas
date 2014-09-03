@@ -21,6 +21,7 @@ resourcestring
   rsRemoveSelected          = 'Remove selected item from toolbar';
   rsMoveSelectedUp          = 'Move selected toolbar item up';
   rsMoveSelectedDown        = 'Move selected toolbar item down';
+  rsClearSelection          = 'Clear selection';
   rsHint                    = 'You may add here your favorite commands';
   rsPosition                = 'Position';
   rsTop                     = 'Top';
@@ -29,6 +30,18 @@ resourcestring
   rsRight                   = 'Right';
   rsEditorToolbar           = 'Editor ToolBar';
   rsMenuView                = 'View';
+  rsAll                     = 'All';
+  rsDesign                  = 'Design';
+  rsDebug                   = 'Debug';
+  rsHTML                    = 'HTML';
+  rsCustom                  = 'Custom';
+  rsHelp1                   = 'The "Add" button inserts a Menu Item before the '+
+    'selected Item of the Toolbar.';
+  rsHelp2                   = 'If none is selected, the Item will be appended at the end '+
+    'of the Toolbar.';
+  rsHelp3                   = 'You may rearrage Toolbar Items with "Move Up" and '+
+    '"Move Down" buttons.';
+  rsHelp4                   = 'Hint: to append an Item at the end, use "Clear selection"';
   // Root Node Captions
   rsIDEMainMenu             = 'IDE Main Menu';
   rsSourceTab               = 'Source Tab';

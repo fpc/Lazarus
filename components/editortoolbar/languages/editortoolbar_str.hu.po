@@ -19,6 +19,10 @@ msgstr "Elválasztó hozzáadása"
 msgid "Add selected item to toolbar"
 msgstr "A kijelölt elem hozzáadása az eszköztárhoz"
 
+#: editortoolbar_str.rsall
+msgid "All"
+msgstr ""
+
 #: editortoolbar_str.rsbottom
 msgid "Bottom"
 msgstr "Alulra"
@@ -26,6 +30,10 @@ msgstr "Alulra"
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr "Mégsem"
+
+#: editortoolbar_str.rsclearselection
+msgid "Clear selection"
+msgstr ""
 
 #: editortoolbar_str.rscodeexplorer
 msgid "Code Explorer"
@@ -39,6 +47,18 @@ msgstr "Kódsablonok"
 msgid "Configure Toolbar"
 msgstr "Eszköztár beállítása"
 
+#: editortoolbar_str.rscustom
+msgid "Custom"
+msgstr ""
+
+#: editortoolbar_str.rsdebug
+msgid "Debug"
+msgstr ""
+
+#: editortoolbar_str.rsdesign
+msgid "Design"
+msgstr ""
+
 #: editortoolbar_str.rsdesigner
 msgid "Designer"
 msgstr "Tervező"
@@ -51,9 +71,29 @@ msgstr "Szerkesztő eszköztár"
 msgid "Editor Toolbar Configuration"
 msgstr "Szerkesztő eszköztár beállítása"
 
+#: editortoolbar_str.rshelp1
+msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
+msgstr ""
+
+#: editortoolbar_str.rshelp2
+msgid "If none is selected, the Item will be appended at the end of the Toolbar."
+msgstr ""
+
+#: editortoolbar_str.rshelp3
+msgid "You may rearrage Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
+msgstr ""
+
+#: editortoolbar_str.rshelp4
+msgid "Hint: to append an Item at the end, use \"Clear selection\""
+msgstr ""
+
 #: editortoolbar_str.rshint
 msgid "You may add here your favorite commands"
 msgstr "Itt adhatja hozzá a kedvenc parancsait"
+
+#: editortoolbar_str.rshtml
+msgid "HTML"
+msgstr ""
 
 #: editortoolbar_str.rsidemainmenu
 msgid "IDE Main Menu"

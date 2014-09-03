@@ -34,12 +34,17 @@ uses
   ,IDEImagesIntf
   ,SrcEditorIntf
   ,editortoolbar_str
-  ;
+  ,IDECommands;
 
 
 const
   cSettingsFile = 'editortoolbar.xml';
   cDivider      = '---------------';
+  iAll          = 15;
+  iDesign       = 1;
+  iDebug        = 2;
+  iHTML         = 4;
+  iCustom       = 8;
 
 type
 
@@ -51,11 +56,14 @@ type
     FWindow: TSourceEditorWindowInterface;
     TB: TToolbar;
     PM: TPopupMenu;
+    PPUP: TPopupMenu;
     CfgButton: TToolButton;
     procedure   CreateEditorToolbar(AW: TForm; var ATB: TToolbar);
     function    CreateJumpItem(AJumpType: TJumpType; O: TComponent): TMenuItem;
+    function    CreateProfileItem(ProfIndx: Integer; O: TComponent): TMenuItem;
     procedure   DoConfigureToolbar(Sender: TObject);
   protected
+    procedure   MenuItemClick (Sender: TObject);
     procedure   AddButton(AMenuItem: TIDEMenuItem);
     procedure   PositionAtEnd(AToolbar: TToolbar; AButton: TToolButton);
     procedure   Reload;
@@ -87,6 +95,8 @@ type
     destructor Destroy; override;
   end;
 
+function GetShortcut(AMenuItem: TIDEMenuItem): string;
+function GetProfileIndex (aMask: Integer): Integer;
 
 procedure Register;
 
@@ -94,6 +104,8 @@ var
   sToolbarPos: string;
   bToolBarShow: boolean;
   EditorMenuCommand:TIDEMenuCommand;
+  ProfileMask: array [0..4] of Integer = (iAll,iDesign,iDebug,iHTML,iCustom);
+  ProfileNames: array [0..4] of String = (rsAll,rsDesign,rsDebug,rsHTML,rsCustom);
 
 implementation
 
@@ -225,6 +237,7 @@ begin
   ATB.Images   := IDEImages.Images_16;
   ATB.ShowHint := True;
   ATB.Hint     := rsHint;
+  ATB.PopupMenu := PPUP;
 end;
 
 function TEditorToolbar.CreateJumpItem(AJumpType: TJumpType; O: TComponent): TMenuItem;
@@ -235,10 +248,42 @@ begin
   Result.Caption  := cJumpNames[AJumpType];
 end;
 
+function TEditorToolbar.CreateProfileItem(ProfIndx: Integer; O: TComponent
+  ): TMenuItem;
+begin
+  Result            := TMenuItem.Create(O);
+  Result.Tag        := ProfIndx;
+  Result.Caption    := ProfileNames[ProfIndx];
+  Result.GroupIndex := 1;
+  Result.RadioItem  := True;
+  //Result.AutoCheck  := True;
+  Result.OnClick    := @MenuItemClick;
+end;
+
 procedure TEditorToolbar.DoConfigureToolbar(Sender: TObject);
 begin
   if TEdtTbConfigForm.Execute then
     uEditorToolbarList.ReloadAll;
+end;
+
+procedure TEditorToolbar.MenuItemClick(Sender: TObject);
+var
+  cfg: TConfigStorage;
+  Value: Integer;
+begin
+  if (Sender <> nil ) and (Sender is TMenuItem) then begin
+    TMenuItem(Sender).Checked:= True;
+    Value:= TMenuItem(Sender).Tag;
+    CurrProfile := ProfileMask[Value];
+    cfg := GetIDEConfigStorage(cSettingsFile,True);
+    try
+      cfg.SetDeleteValue('Profile',CurrProfile,iAll);
+      cfg.WriteToDisk;
+    finally
+      cfg.Free;
+    end;
+    Reload;
+  end;
 end;
 
 constructor TEditorToolbar.Create(AOwner: TComponent);
@@ -252,6 +297,12 @@ begin
 
   FJumpHandler := TJumpHandler.Create(nil);
   FWindow := TSourceEditorWindowInterface(AOwner);
+
+  PPUP := TPopupMenu.Create(FWindow);
+  for c := 0 to High(ProfileNames) do begin
+    PPUP.Items.Add(CreateProfileItem(c,FWindow));
+  end;
+
   CreateEditorToolBar(FWindow, TB);
 
   PM := TPopupMenu.Create(FWindow);
@@ -295,7 +346,9 @@ begin
   ACaption      := AMenuItem.Caption;
   DeleteAmpersands(ACaption);
   B.Caption     := ACaption;
-  B.Hint        := ACaption; // or should we use AMenuItem.Hint?
+  // Get Shortcut, if any, and append to Hint
+  ACaption:= ACaption + GetShortcut(AMenuItem);
+  B.Hint        := ACaption;
   // If we have a image, us it. Otherwise supply a default.
   if AMenuItem.ImageIndex <> -1 then
     B.ImageIndex := AMenuItem.ImageIndex
@@ -335,7 +388,9 @@ var
   c: integer;
   cfg: TConfigStorage;
   value: string;
+  profile: Integer;
   mi: TIDEMenuItem;
+  ShowItem: Boolean;
 
 procedure SetTbPos;
 begin
@@ -363,11 +418,17 @@ begin
   cfg := GetIDEConfigStorage(cSettingsFile, True);
   TB.BeginUpdate;
   try
+    c:= cfg.GetValue('Profile',iAll);
+    CurrProfile := c;
+    c := GetProfileIndex(CurrProfile);
+    PPUP.Items[c].Checked:= True;
     c := cfg.GetValue('Count', 0);
     for i := 1 to c do
     begin
       value := cfg.GetValue('Button' + Format('%2.2d', [i]) + '/Value', '');
-       if value <> '' then
+      profile := cfg.GetValue('Button' + Format('%2.2d', [i]) + '/Profile', iall);
+      ShowItem := (CurrProfile = iAll) or ((profile and CurrProfile) <> 0);
+      if (value <> '') and ShowItem then
        begin
         if value = cDivider then
           AddDivider
@@ -450,21 +511,49 @@ begin
   end;
 end;
 
+function GetShortcut(AMenuItem: TIDEMenuItem): string;
+var
+  ACommand: TIDECommand;
+  AShortcut: string;
+begin
+  Result := '';
+  AShortcut:= '';
+  if AMenuItem is TIDEMenuCommand then begin
+   ACommand := TIDEMenuCommand(AMenuItem).Command;
+   if Assigned(ACommand) then  AShortcut:= ShortCutToText(ACommand.AsShortCut);
+   if AShortcut <> '' then Result:= ' (' + AShortcut +')';
+ end;
+end;
+
+function GetProfileIndex(aMask: Integer): Integer;
+var
+  I: Integer;
+begin
+  for I:= 0 to High(ProfileMask) do begin
+    if aMask = ProfileMask[I] then begin
+      Result := I;
+      Exit;
+    end;
+  end;
+  Result := 0;
+end;
+
 procedure Register;
+{$IFDEF LCLQt}
 var
   MenuIcon: string;
+{$ENDIF}
 begin
-  MenuIcon:= 'menu_editor_options';
-  //MenuIcon:= 'menu_editor_toolbar'; TODO!
   if uEditorToolbarList = nil then begin
     TEditorToolbarList.Create;
     EditorMenuCommand:= RegisterIDEMenuCommand(itmViewSecondaryWindows,'EditorToolBar',
       rsEditorToolbar,nil,@ToggleToolbar);
     EditorMenuCommand.Checked:= True;
     EditorMenuCommand.Enabled:= True;
-    //EditorMenuCommand:= RegisterIDEMenuCommand(itmViewSecondaryWindows,'EditorToolBar',rsEditorToolbar,nil,@ConfigureToolbar);
-{$IFNDEF LCLGTK2}
-    // GTK2 Doesn't show both Icon and checkbox. Qt Does - Windows?
+    // GTK2 and Windows do not show both Icon and checkbox. Only Qt Does
+{$IFDEF LCLQt}
+    MenuIcon:= 'menu_editor_options';
+    //MenuIcon:= 'menu_editor_toolbar'; TODO!
     EditorMenuCommand.ImageIndex := IDEImages.LoadImage(16, MenuIcon);
 {$ENDIF}
   end;
@@ -476,6 +565,7 @@ initialization
   uEditorToolbarList := nil;
   sToolbarPos:= 'Top';
   bToolBarShow:= True;
+  CurrProfile:= iAll;
 
 finalization
   uEditorToolbarList.Free;

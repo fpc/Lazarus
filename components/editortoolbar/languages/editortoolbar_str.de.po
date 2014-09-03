@@ -18,6 +18,10 @@ msgstr "Trenner hinzufügen"
 msgid "Add selected item to toolbar"
 msgstr "Gewähltes Element zur Toolbar hinzufügen"
 
+#: editortoolbar_str.rsall
+msgid "All"
+msgstr ""
+
 #: editortoolbar_str.rsbottom
 msgid "Bottom"
 msgstr ""
@@ -25,6 +29,10 @@ msgstr ""
 #: editortoolbar_str.rscancel
 msgid "Cancel"
 msgstr "Abbrechen"
+
+#: editortoolbar_str.rsclearselection
+msgid "Clear selection"
+msgstr ""
 
 #: editortoolbar_str.rscodeexplorer
 msgid "Code Explorer"
@@ -38,6 +46,18 @@ msgstr ""
 msgid "Configure Toolbar"
 msgstr "Toolbar konfigurieren"
 
+#: editortoolbar_str.rscustom
+msgid "Custom"
+msgstr ""
+
+#: editortoolbar_str.rsdebug
+msgid "Debug"
+msgstr ""
+
+#: editortoolbar_str.rsdesign
+msgid "Design"
+msgstr ""
+
 #: editortoolbar_str.rsdesigner
 msgid "Designer"
 msgstr ""
@@ -50,8 +70,28 @@ msgstr ""
 msgid "Editor Toolbar Configuration"
 msgstr "Editor-Toolbar-Konfiguration"
 
+#: editortoolbar_str.rshelp1
+msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
+msgstr ""
+
+#: editortoolbar_str.rshelp2
+msgid "If none is selected, the Item will be appended at the end of the Toolbar."
+msgstr ""
+
+#: editortoolbar_str.rshelp3
+msgid "You may rearrage Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
+msgstr ""
+
+#: editortoolbar_str.rshelp4
+msgid "Hint: to append an Item at the end, use \"Clear selection\""
+msgstr ""
+
 #: editortoolbar_str.rshint
 msgid "You may add here your favorite commands"
+msgstr ""
+
+#: editortoolbar_str.rshtml
+msgid "HTML"
 msgstr ""
 
 #: editortoolbar_str.rsidemainmenu
