@@ -106,7 +106,7 @@ type
     st_size  : qword;
   end;
   PElf64symbolArray = ^TElf64symbolArray;
-  TElf64symbolArray = array[0..MaxInt] of TElf64symbol;
+  TElf64symbolArray = array[0..maxSmallint] of TElf64symbol;
 
 
 
@@ -358,11 +358,14 @@ begin
       for i := 0 to SymbolCount-1 do
       begin
         begin
+          {$push}
+          {$R-}
           if SymbolArr64^[i].st_name<>0 then
             begin
             SymbolName:=pchar(SymbolStr+SymbolArr64^[i].st_name);
             AfpSymbolInfo.AddObject(SymbolName, TObject(PtrUInt(SymbolArr64^[i].st_value+ImageBase)));
             end;
+          {$pop}
         end
       end;
     end

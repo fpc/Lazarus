@@ -153,8 +153,13 @@ type
     start_stack : dword;
     signal : longint;
     reserved : longint;
+    {$ifdef i386}
     u_ar0 : ^user_regs_struct32;
     u_fpstate : ^user_fpregs_struct32;
+    {$else}
+    u_ar0 : DWord;
+    u_fpstate : DWord;
+    {$endif}
     magic : dword;
     u_comm : array[0..31] of char;
     u_debugreg : array[0..7] of longint;
@@ -347,7 +352,7 @@ begin
   e := fpgeterrno;
   if e <> 0 then
     begin
-    log('Failed to read dr'+inttostr(ind)+'-debug register. Errcode: '+inttostr(e));
+    log('Failed to read dr'+inttostr(ind)+'-debug register offset '+inttostr(qword(GetDebugRegOffset(ind)))+'. Errcode: '+inttostr(e));
     result := false;
     end
   else
