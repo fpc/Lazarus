@@ -5,18 +5,33 @@ unit lr_SQLQuery;
 interface
 
 uses
-  Classes, SysUtils, Graphics, LR_Class, LR_DBComponent, sqldb, DB;
+  Classes, SysUtils, Graphics, LR_Class, LR_DBComponent, sqldb, DB, contnrs;
 
 type
+
+  TQueryParam = class
+    ParamType:TFieldType;
+    ParamName:string;
+    ParamValue:string;
+  end;
+
+  { TQueryParamList }
+
+  TQueryParamList = class(TFPObjectList)
+    function ParamByName(AParamName:string):TQueryParam;
+    function Add(AParamType:TFieldType; const AParamName, AParamValue:string):TQueryParam;
+  end;
 
   { TLRSQLQuery }
 
   TLRSQLQuery = class(TLRDataSetControl)
   private
     FDatabase: string;
+    FParams: TQueryParamList;
     procedure SetDatabase(AValue: string);
     procedure DoMakeParams;
     procedure DoEditParams;
+    procedure SQLQueryBeforeOpen(ADataSet: TDataSet);
   protected
     function GetSQL: string;
     procedure SetSQL(AValue:string);
@@ -24,12 +39,14 @@ type
     procedure AfterLoad;override;
   public
     constructor Create(AOwnerPage:TfrPage); override;
+    destructor Destroy; override;
 
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
   published
     property SQL:string read GetSQL write SetSQL;
     property Database:string read FDatabase write SetDatabase;
+    property Params:TQueryParamList read FParams write FParams;
   end;
 
   { TLRSQLConnection }
@@ -77,7 +94,8 @@ implementation
 
 {$R lrsqldb_img.res}
 
-uses LR_Utils, DBPropEdits, PropEdits, Controls;
+uses LR_Utils, DBPropEdits, PropEdits, Controls, Forms,
+  lr_EditSQLDBParamsUnit;
 
 var
   lrBMP_SQLQuery:TBitmap = nil;
@@ -90,6 +108,34 @@ begin
     lrBMP_SQLQuery.LoadFromResourceName(HInstance, 'TLRSQLQuery');
     frRegisterObject(TLRSQLQuery, lrBMP_SQLQuery, 'TLRSQLQuery', nil, otlUIControl, nil);
   end;
+end;
+
+{ TQueryParamList }
+
+function TQueryParamList.ParamByName(AParamName: string): TQueryParam;
+var
+  i:integer;
+begin
+  Result:=nil;
+  AParamName:=UpperCase(AParamName);
+  for i:=0 to Count - 1 do
+  begin
+    if UpperCase(TQueryParam(Items[i]).ParamName) = AParamName then
+    begin
+      Result:=TQueryParam(Items[i]);
+      exit;
+    end;
+  end;
+end;
+
+function TQueryParamList.Add(AParamType: TFieldType; const AParamName,
+  AParamValue: string): TQueryParam;
+begin
+  Result:=TQueryParam.Create;
+  inherited Add(Result);
+  Result.ParamType:=AParamType;
+  Result.ParamName:=AParamName;
+  Result.ParamValue:=AParamValue;
 end;
 
 { TLRSQLConnection }
@@ -235,13 +281,89 @@ begin
 end;
 
 procedure TLRSQLQuery.DoMakeParams;
+var
+  Q:TSQLQuery;
+  i:integer;
 begin
-  { TODO : Необходимо реализовать параметры по аналогии с ZEOS }
+  Q:=TSQLQuery(DataSet);
+  if Q.Params.Count > 0 then
+  begin
+    //Add new params...
+    for i:=0 to Q.Params.Count-1 do
+    begin
+      if not Assigned(FParams.ParamByName(Q.Params[i].Name)) then
+        FParams.Add(ftUnknown, Q.Params[i].Name, '');
+    end;
+
+    //Delete not exists params
+    for i:=FParams.Count-1 downto 0 do
+    begin
+      if not Assigned(Q.Params.FindParam(TQueryParam(FParams[i]).ParamName)) then
+        FParams.Delete(i);
+    end;
+  end
+  else
+    FParams.Clear;
 end;
 
 procedure TLRSQLQuery.DoEditParams;
+var
+  lrEditParamsForm: Tlr_EditSQLDBParamsForm;
 begin
-  { TODO : Необходимо реализовать параметры по аналогии с ZEOS }
+  lrEditParamsForm:=Tlr_EditSQLDBParamsForm.Create(Application);
+  lrEditParamsForm.LoadParamList(FParams);
+  if lrEditParamsForm.ShowModal = mrOk then
+  begin
+    lrEditParamsForm.SaveParamList(FParams);
+    if Assigned(frDesigner) then
+      frDesigner.Modified:=true;
+  end;
+  lrEditParamsForm.Free;
+end;
+
+procedure TLRSQLQuery.SQLQueryBeforeOpen(ADataSet: TDataSet);
+var
+  i: Integer;
+  s: String;
+  SaveView: TfrView;
+  SavePage: TfrPage;
+  SaveBand: TfrBand;
+  Q:TSQLQuery;
+  P:TQueryParam;
+begin
+  Q:=TSQLQuery(DataSet);
+  SaveView := CurView;
+  SavePage := CurPage;
+  SaveBand := CurBand;
+
+  CurView := Self;
+  CurPage := OwnerPage;
+  CurBand := nil;
+
+  for i := 0 to Q.Params.Count - 1 do
+  begin
+    S:=Q.Params[i].Name;
+    P:=FParams.ParamByName(S);
+    if Assigned(P) and (P.ParamValue <> '') and (DocMode = dmPrinting) then
+    begin
+      case P.ParamType of
+        ftDate,
+        ftDateTime:Q.Params[i].AsDateTime := frParser.Calc(P.ParamValue);
+        ftInteger:Q.Params[i].AsInteger := frParser.Calc(P.ParamValue);
+        ftFloat:Q.Params[i].AsFloat := frParser.Calc(P.ParamValue);
+        ftString:Q.Params[i].AsString := frParser.Calc(P.ParamValue);
+      else
+        Q.Params[i].Value := frParser.Calc(P.ParamValue);
+      end;
+    end;
+  end;
+
+  if Assigned(Q.DataBase) then
+    if not Q.DataBase.Connected then Q.DataBase.Connected:=true;
+
+  CurView := SaveView;
+  CurPage := SavePage;
+  CurBand := SaveBand;
 end;
 
 function TLRSQLQuery.GetSQL: string;
@@ -289,25 +411,80 @@ begin
   inherited Create(AOwnerPage);
   BaseName := 'lrSQLQuery';
   DataSet:=TSQLQuery.Create(OwnerForm);
+  DataSet.BeforeOpen:=@SQLQueryBeforeOpen;
+  FParams:=TQueryParamList.Create;
+end;
+
+destructor TLRSQLQuery.Destroy;
+begin
+  FreeAndNil(FParams);
+  inherited Destroy;
+end;
+
+function StrToFieldType(AStrTypeName:string):TFieldType;
+var
+  i:TFieldType;
+begin
+  Result:=ftUnknown;
+  AStrTypeName:=UpperCase(AStrTypeName);
+  for i in TFieldType do
+  begin
+    if UpperCase(Fieldtypenames[i]) = AStrTypeName then
+    begin
+      Result:=i;
+      exit;
+    end;
+  end;
 end;
 
 procedure TLRSQLQuery.LoadFromXML(XML: TLrXMLConfig; const Path: String);
+var
+  C: Integer;
+  i: Integer;
 begin
   inherited LoadFromXML(XML, Path);
   TSQLQuery(DataSet).SQL.Text  := XML.GetValue(Path+'SQL/Value'{%H-}, '');
   FDatabase:= XML.GetValue(Path+'Database/Value'{%H-}, '');
+
+  C:=XML.GetValue(Path+'Params/Count/Value', 0);
+  for i:=0 to C-1 do
+    FParams.Add(
+        StrToFieldType(XML.GetValue(Path+'Params/Item'+IntToStr(i)+'/ParamType', '')),
+        XML.GetValue(Path+'Params/Item'+IntToStr(i)+'/Name', ''),
+        XML.GetValue(Path+'Params/Item'+IntToStr(i)+'/Value', '')
+        );
 end;
 
 procedure TLRSQLQuery.SaveToXML(XML: TLrXMLConfig; const Path: String);
+var
+  i: Integer;
+  P: TQueryParam;
 begin
   inherited SaveToXML(XML, Path);
   XML.SetValue(Path+'SQL/Value', TSQLQuery(DataSet).SQL.Text);
   XML.SetValue(Path+'Database/Value', FDatabase);
+
+  XML.SetValue(Path+'Params/Count/Value', FParams.Count);
+  for i:=0 to FParams.Count-1 do
+  begin
+    P:=TQueryParam(FParams[i]);
+    XML.SetValue(Path+'Params/Item'+IntToStr(i)+'/Name', P.ParamName);
+    XML.SetValue(Path+'Params/Item'+IntToStr(i)+'/Value', P.ParamValue);
+    XML.SetValue(Path+'Params/Item'+IntToStr(i)+'/ParamType', Fieldtypenames[P.ParamType]);
+  end;
 end;
 
 type
 
-  { TLRZConnectionProtocolProperty }
+  { TLRSQLQueryParamsProperty }
+
+  TLRSQLQueryParamsProperty = class(TPropertyEditor)
+  public
+    function  GetAttributes: TPropertyAttributes; override;
+    function GetValue: ansistring; override;
+    procedure Edit; override;
+  end;
+
 
   TLRSQLConnectionProtocolProperty = class(TFieldProperty)
   public
@@ -323,6 +500,24 @@ type
     function GetValue: ansistring; override;
     procedure Edit; override;
   end;
+
+{ TLRSQLQueryParamsProperty }
+
+function TLRSQLQueryParamsProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result:=[paDialog, paReadOnly];
+end;
+
+function TLRSQLQueryParamsProperty.GetValue: ansistring;
+begin
+  Result:='(Params)';
+end;
+
+procedure TLRSQLQueryParamsProperty.Edit;
+begin
+  if (GetComponent(0) is TLRSQLQuery) then
+    TLRSQLQuery(GetComponent(0)).DoEditParams;
+end;
 
 { TLRSQLQuerySQLProperty }
 
@@ -373,6 +568,8 @@ initialization
 
   RegisterPropertyEditor(TypeInfo(string), TLRSQLQuery, 'Database', TLRSQLConnectionProtocolProperty);
   RegisterPropertyEditor(TypeInfo(string), TLRSQLQuery, 'SQL', TLRSQLQuerySQLProperty);
+
+  RegisterPropertyEditor(TypeInfo(TQueryParamList), TLRSQLQuery, 'Params', TLRSQLQueryParamsProperty);
 finalization
   if Assigned(lrBMP_SQLQuery) then
     FreeAndNil(lrBMP_SQLQuery);

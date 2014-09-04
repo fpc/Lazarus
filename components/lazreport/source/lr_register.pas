@@ -22,7 +22,8 @@ uses
 
   LR_PGrid,
   LR_View,
-  
+  lr_CrossTab,
+
   ComponentEditors,
   LazarusPackageIntf;
 
@@ -50,7 +51,8 @@ begin
      TfrBarCodeObject,TfrRoundRectObject,TfrShapeObject,
      TfrCheckBoxObject,TfrCompositeReport,TfrUserDataset,
      TfrTextExport,TfrHTMExport,TfrCSVExport,
-     TfrPrintGrid,TfrDesigner,TfrPreview]);
+     TfrPrintGrid,TfrDesigner,TfrPreview,
+     TlrCrossObject]);
   RegisterComponentEditor(TfrReport, TfrRepEditor);
 end;
 

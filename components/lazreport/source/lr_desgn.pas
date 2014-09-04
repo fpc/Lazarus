@@ -1398,7 +1398,7 @@ begin
         end;
 
         //Show indicator if hightlight it's not empty
-        if (t is TfrMemoView) and (Trim(TfrmemoView(t).HighlightStr)<>'') then
+        if (t is TfrCustomMemoView) and (Trim(TfrCustomMemoView(t).HighlightStr)<>'') then
           FDesigner.ImgIndic.Draw(Canvas, t.x+1, t.y+iy, 1);
       end;
     end;
@@ -1745,10 +1745,11 @@ var
   
   procedure AddObject(ot: Byte);
   begin
-    Objects.Add(frCreateObject(ot, '', FDesigner.Page));
-    t := TfrView(Objects.Last);
-    if t is TfrMemoView then
-      TfrMemoView(t).MonitorFontChanges;
+{    Objects.Add(frCreateObject(ot, '', FDesigner.Page));
+    t := TfrView(Objects.Last);}
+    t:=frCreateObject(ot, '', FDesigner.Page);
+    if t is TfrCustomMemoView then
+      TfrCustomMemoView(t).MonitorFontChanges;
   end;
   
   procedure CreateSection;
@@ -1760,8 +1761,9 @@ var
       ObjectInserted := frBandTypesForm.ShowModal = mrOk;
       if ObjectInserted then
       begin
-        Objects.Add(TfrBandView.Create(FDesigner.Page));
-        t := TfrView(Objects.Last);
+{        Objects.Add(TfrBandView.Create(FDesigner.Page));
+        t := TfrView(Objects.Last);}
+        t:=TfrBandView.Create(FDesigner.Page);
         (t as TfrBandView).BandType := frBandTypesForm.SelectedTyp;
         s := frGetBandName(frBandTypesForm.SelectedTyp);
         THackView(t).BaseName := s;
@@ -1774,8 +1776,9 @@ var
   
   procedure CreateSubReport;
   begin
-    Objects.Add(TfrSubReportView.Create(FDesigner.Page));
-    t := TfrView(Objects.Last);
+{    Objects.Add(TfrSubReportView.Create(FDesigner.Page));
+    t := TfrView(Objects.Last);}
+    t:=TfrSubReportView.Create(FDesigner.Page);
     (t as TfrSubReportView).SubPage := CurReport.Pages.Count;
     CurReport.Pages.Add;
   end;
@@ -1846,8 +1849,9 @@ begin
                   if Tag >= gtAddIn then
                   begin
                     k := Tag - gtAddIn;
-                    Objects.Add(frCreateObject(gtAddIn, frAddIns[k].ClassRef.ClassName, FDesigner.Page));
-                    t := TfrView(Objects.Last);
+{                    Objects.Add(frCreateObject(gtAddIn, frAddIns[k].ClassRef.ClassName, FDesigner.Page));
+                    t := TfrView(Objects.Last);}
+                    t:=frCreateObject(gtAddIn, frAddIns[k].ClassRef.ClassName, FDesigner.Page);
                   end
                   else
                     AddObject(Tag);
@@ -1874,8 +1878,9 @@ begin
                 if Tag >= gtAddIn then
                 begin
                   k := Tag - gtAddIn;
-                  Objects.Add(frCreateObject(gtAddIn, frAddIns[k].ClassRef.ClassName, FDesigner.Page));
-                  t := TfrView(Objects.Last);
+{                  Objects.Add(frCreateObject(gtAddIn, frAddIns[k].ClassRef.ClassName, FDesigner.Page));
+                  t := TfrView(Objects.Last);}
+                  t:=frCreateObject(gtAddIn, frAddIns[k].ClassRef.ClassName, FDesigner.Page);
                 end
                 else
                   AddObject(Tag);
@@ -1901,7 +1906,7 @@ begin
         begin
           dx := 40;
           dy := 40;
-          if t is TfrMemoView then
+          if t is TfrCustomMemoView then
             FDesigner.GetDefaultSize(dx, dy);
           OldRect := Rect(Left, Top, Left + dx, Top + dy);
         end;
@@ -1927,9 +1932,9 @@ begin
       if t.Typ <> gtBand then
         t.Frames:=LastFrames;
         
-      if t is TfrMemoView then
+      if t is TfrCustomMemoView then
       begin
-        with t as TfrMemoView do
+        with t as TfrCustomMemoView do
         begin
           Font.Name := LastFontName;
           Font.Size := LastFontSize;
@@ -2426,7 +2431,7 @@ begin
     for i := 0 to Objects.Count - 1 do
     begin
       t := TfrView(Objects[i]);
-      if t.Selected then
+      if (t.Selected) and not (lrrDontSize in T.Restrictions) then
       begin
         if FDesigner.ShapeMode = smAll then
           AddRgn(hr, t);
@@ -2526,6 +2531,9 @@ begin
     end;
     
     t := TfrView(Objects[TopSelected]);
+    if (lrrDontSize in T.Restrictions) then
+      exit;
+
     if FDesigner.ShapeMode = smFrame then
       DrawPage(dmShape)
     else
@@ -2680,7 +2688,10 @@ begin
   for i := 0 to Objects.Count - 1 do
   begin
     t := TfrView(Objects[i]);
-    if not t.Selected then continue;
+    if (not t.Selected) or (AResize and (lrrDontSize in T.Restrictions)) or
+       ((lrrDontMove in T.Restrictions) and not AResize) then
+       continue;
+
     if FDesigner.ShapeMode = smAll then
       AddRgn(hr, t);
     if aResize then
@@ -2948,11 +2959,11 @@ begin
   end;
   {$ENDIF}
 
-  if (SelNum>0) and (FirstSelected is TfrMemoView) then
+  if (SelNum>0) and (FirstSelected is TfrCustomMemoView) then
   begin
     // font of selected memo has preference, select it
-    LastFontname := TfrMemoView(FirstSelected).Font.Name;
-    LastFontSize := TfrMemoView(FirstSelected).Font.Size;
+    LastFontname := TfrCustomMemoView(FirstSelected).Font.Name;
+    LastFontSize := TfrCustomMemoView(FirstSelected).Font.Size;
   end else
   if C2.Items.IndexOf(LastFontName)>=0 then
     // last font name remains valid, keep it together with lastFontSize
@@ -3839,13 +3850,13 @@ end;
 procedure TfrDesignerForm.CutToClipboard;
 var
   i: Integer;
-  t: TfrView;
+  T: TfrView;
 begin
   ClearClipBoard;
   for i := 0 to Objects.Count - 1 do
   begin
     t := TfrView(Objects[i]);
-    if t.Selected then
+    if (t.Selected) and not (lrrDontDelete in T.Restrictions) and not (doChildComponent in T.DesignOptions) then
     begin
       ClipBd.Add(frCreateObject(t.Typ, t.ClassName, Page));
       TfrView(ClipBd.Last).Assign(t);
@@ -3854,9 +3865,11 @@ begin
   for i := Objects.Count - 1 downto 0 do
   begin
     t := TfrView(Objects[i]);
-    if t.Selected then Page.Delete(i);
+    if t.Selected and not (lrrDontDelete in T.Restrictions) and not (doChildComponent in T.DesignOptions) then
+      Page.Delete(i);
   end;
   SelNum := 0;
+  PageView.Invalidate;
 end;
 
 procedure TfrDesignerForm.CopyToClipboard;
@@ -3868,9 +3881,9 @@ begin
   for i := 0 to Objects.Count - 1 do
   begin
     t := TfrView(Objects[i]);
-    if t.Selected then
+    if t.Selected and not (doChildComponent in T.DesignOptions)  then
     begin
-      ClipBd.Add(frCreateObject(t.Typ, t.ClassName, Page));
+      ClipBd.Add(frCreateObject(t.Typ, t.ClassName, nil));
       TfrView(ClipBd.Last).Assign(t);
     end;
   end;
@@ -4146,7 +4159,7 @@ begin
   for i := Objects.Count - 1 downto 0 do
   begin
     t := TfrView(Objects[i]);
-    if t.Selected then
+    if t.Selected and not (lrrDontDelete in T.Restrictions) then
       Page.Delete(i);
   end;
   SetPageTitles;
@@ -4166,10 +4179,11 @@ begin
     t := TfrView(Objects[TopSelected]);
     if t.Typ = gtBand then
       Result := [ssBand]
-    else if t is TfrMemoView then
-           Result := [ssMemo]
-         else
-           Result := [ssOther];
+    else
+    if t is TfrCustomMemoView then
+      Result := [ssMemo]
+    else
+      Result := [ssOther];
   end
   else if SelNum > 1 then
           Result := [ssMultiple];
@@ -4183,250 +4197,9 @@ begin
   ScrollBox1.Autoscroll := False;
   ScrollBox1.Autoscroll := True;
   ScrollBox1.VertScrollBar.Range := ScrollBox1.VertScrollBar.Range + 10;
-  //ScrollBox1.VertScrollBar.Range := ScrollBox1.VertScrollBar.Range + 10;
 end;
 
 {$HINTS OFF}
-{
-procedure TfrDesignerForm.InsertDbFields;
-var
-  i, x, y, dx, dy, pdx, adx, tdx, tdy: Integer;
-  HeaderL, DataL: TFpList;
-  t, t1: TfrView;
-  b: TfrBandView;
-  f: TfrTField;
-  f1: TFieldDef;
-  fSize: Integer;
-  fName: String;
-
-  function FindDataset(DataSet: TfrTDataSet): String;
-  var
-    i,j: Integer;
-
-    function EnumComponents(f: TComponent): String;
-    var
-      i: Integer;
-      c: TComponent;
-      d: TfrDBDataSet;
-    begin
-      Result := '';
-      for i := 0 to f.ComponentCount - 1 do
-      begin
-        c := f.Components[i];
-        if c is TfrDBDataSet then
-        begin
-          d := c as TfrDBDataSet;
-          if d.GetDataSet = DataSet then
-          begin
-            if d.Owner = CurReport.Owner then
-              Result := d.Name else
-              Result := d.Owner.Name + '.' + d.Name;
-            break;
-          end;
-        end;
-      end;
-    end;
-
-  begin
-    Result := '';
-    for i := 0 to Screen.FormCount - 1 do
-    begin
-      Result := EnumComponents(Screen.Forms[i]);
-      if Result <> '' then Exit;
-    end;
-
-    with Screen do
-    begin
-      for i := 0 to CustomFormCount - 1 do
-        with CustomForms[i] do
-        if (ClassName = 'TDataModuleForm')  then
-          for j := 0 to ComponentCount - 1 do
-          begin
-            if (Components[j] is TDataModule) then
-              Result:=EnumComponents(Components[j]);
-              if Result <> '' then Exit;
-          end;
-    end;
-  end;
-begin
-  if frInsertFieldsForm=nil then
-    exit;
-    
-  with frInsertFieldsForm do
-  begin
-    if (DataSet=nil) or (FieldsL.Items.Count = 0) or (FieldsL.SelCount = 0) then
-      exit;
-      
-    HeaderL := TFpList.Create;
-    DataL := TFpList.Create;
-    try
-      x := Page.LeftMargin; y := Page.TopMargin;
-      Unselect;
-      SelNum := 0;
-      for i := 0 to FieldsL.Items.Count - 1 do
-        if FieldsL.Selected[i] then
-        begin
-          f := TfrTField(DataSet.FindField(FieldsL.Items[i]));
-          fSize := 0;
-          if f <> nil then
-          begin
-            fSize := f.DisplayWidth;
-            fName := f.DisplayName;
-          end
-          else
-          begin
-            f1 := DataSet.FieldDefs[i];
-            fSize := f1.Size;
-            fName := f1.Name;
-          end;
-
-          if (fSize = 0) or (fSize > 255) then
-            fSize := 6;
-
-          t := frCreateObject(gtMemo, '', Page);
-          t.CreateUniqueName;
-          t.x := x;
-          t.y := y;
-          GetDefaultSize(t.dx, t.dy);
-          with t as TfrMemoView do
-          begin
-            Font.Name := LastFontName;
-            Font.Size := LastFontSize;
-            if HeaderCB.Checked then
-              Font.Style := [fsBold];
-            MonitorFontChanges;
-          end;
-          PageView.Canvas.Font.Assign(TfrMemoView(t).Font);
-          t.Selected := True;
-          Inc(SelNum);
-          if HeaderCB.Checked then
-          begin
-            t.Memo.Add(fName);
-            t.dx := PageView.Canvas.TextWidth(fName + '   ') div GridSize * GridSize;
-          end
-          else
-          begin
-            t.Memo.Add('[' + DatasetCB.Items[DatasetCB.ItemIndex] +
-              '."' + FieldsL.Items[i] + '"]');
-            t.dx := (fSize * PageView.Canvas.TextWidth('=')) div GridSize * GridSize;
-          end;
-          dx := t.dx;
-          Page.Objects.Add(t);
-          if HeaderCB.Checked then
-            HeaderL.Add(t) else
-            DataL.Add(t);
-          if HeaderCB.Checked then
-          begin
-            t := frCreateObject(gtMemo, '', Page);
-            t.CreateUniqueName;
-            t.x := x;
-            t.y := y;
-            GetDefaultSize(t.dx, t.dy);
-            if HorzRB.Checked then
-              Inc(t.y, 72) else
-              Inc(t.x, dx + GridSize * 2);
-            with t as TfrMemoView do
-            begin
-              Font.Name := LastFontName;
-              Font.Size := LastFontSize;
-              MonitorFontChanges;
-            end;
-            t.Selected := True;
-            Inc(SelNum);
-            t.Memo.Add('[' + DatasetCB.Items[DatasetCB.ItemIndex] +
-              '."' + FieldsL.Items[i] + '"]');
-            t.dx := (fSize * PageView.Canvas.TextWidth('=')) div GridSize * GridSize;
-            Page.Objects.Add(t);
-            DataL.Add(t);
-          end;
-          if HorzRB.Checked then
-            Inc(x, t.dx + GridSize) else
-            Inc(y, t.dy + GridSize);
-
-          if t is TfrControl then
-            TfrControl(T).UpdateControlPosition;
-        end;
-
-      if HorzRB.Checked then
-      begin
-        t := TfrView(DataL[DataL.Count - 1]);
-        adx := t.x + t.dx;
-        pdx := Page.RightMargin - Page.LeftMargin;
-        x := Page.LeftMargin;
-        if adx > pdx then
-        begin
-          for i := 0 to DataL.Count - 1 do
-          begin
-            t := TfrView(DataL[i]);
-            t.x := Round((t.x - x) / (adx / pdx)) + x;
-            t.dx := Round(t.dx / (adx / pdx));
-          end;
-          if HeaderCB.Checked then
-            for i := 0 to DataL.Count - 1 do
-            begin
-              t := TfrView(HeaderL[i]);
-              t1 := TfrView(DataL[i]);
-              t.x := Round((t.x - x) / (adx / pdx)) + x;
-              if t.dx > t1.dx then
-                t.dx := t1.dx;
-            end;
-        end;
-      end;
-
-      if BandCB.Checked then
-      begin
-        if HeaderCB.Checked then
-          t := TfrView(HeaderL[DataL.Count - 1])
-        else
-          t := TfrView(DataL[DataL.Count - 1]);
-        dy := t.y + t.dy - Page.TopMargin;
-        b := frCreateObject(gtBand, '', Page) as TfrBandView;
-        b.CreateUniqueName;
-        b.y := Page.TopMargin;
-        b.dy := dy;
-        b.Selected := True;
-        Inc(SelNum);
-        if not HeaderCB.Checked or not HorzRB.Checked then
-        begin
-          Page.Objects.Add(b);
-          b.BandType := btMasterData;
-          b.DataSet := FindDataset(DataSet);
-        end
-        else
-        begin
-          if frCheckBand(btPageHeader) then
-          begin
-            Dec(SelNum);
-            b.Free;
-          end
-          else
-          begin
-            b.BandType := btPageHeader;
-            Page.Objects.Add(b);
-          end;
-          b := frCreateObject(gtBand, '', Page) as TfrBandView;
-          b.BandType := btMasterData;
-          b.DataSet := FindDataset(DataSet);
-          b.CreateUniqueName;
-          b.y := Page.TopMargin + 72;
-          b.dy := dy;
-          b.Selected := True;
-          Inc(SelNum);
-          Page.Objects.Add(b);
-        end;
-      end;
-      SelectionChanged;
-      SendBandsToDown;
-      PageView.GetMultipleSelected;
-      RedrawPage;
-      AddUndoAction(acInsert);
-    finally
-      HeaderL.Free;
-      DataL.Free;
-    end;
-  end;
-end;
-}
 {$ifdef sbod}
 procedure TfrDesignerForm.DrawStatusPanel(const ACanvas: TCanvas;
   const rect: TRect);
@@ -4660,7 +4433,7 @@ begin
   if CurReport.FindObject(t.Name) <> nil then
     t.CreateUniqueName;
 
-  Objects.Add(t);
+//  Objects.Add(t);
 end;
 
 procedure TfrDesignerForm.ResetDuplicateCount;
@@ -4804,8 +4577,8 @@ begin
         E1.Text := FloatToStrF(FrameWidth, ffGeneral, 2, 2);
         frSetGlyph(FillColor, ClB1, 1);
         frSetGlyph(FrameColor, ClB3, 2);
-        if t is TfrMemoView then
-        with t as TfrMemoView do
+        if t is TfrCustomMemoView then
+        with t as TfrCustomMemoView do
         begin
           frSetGlyph(Font.Color, ClB2, 0);
           if C2.ItemIndex <> C2.Items.IndexOf(Font.Name) then
@@ -4915,8 +4688,8 @@ begin
     if t.Selected and ((t.Typ <> gtBand) or (b = 16)) then
     with t do
     begin
-      if t is TfrMemoView then
-      with t as TfrMemoView do
+      if t is TfrCustomMemoView then
+      with t as TfrCustomMemoView do
         case b of
           7: if C2.ItemIndex >= 0 then
              begin
@@ -5058,9 +4831,9 @@ end;
 
 procedure TfrDesignerForm.HlB1Click(Sender: TObject);
 var
-  t: TfrMemoView;
+  t: TfrCustomMemoView;
 begin
-  t := TfrMemoView(Objects[TopSelected]);
+  t := TfrCustomMemoView(Objects[TopSelected]);
   frHilightForm := TfrHilightForm.Create(nil);
   with frHilightForm do
   begin
@@ -5317,8 +5090,8 @@ begin
   CL:=clNone;
   if Sender=ClB1 then
     CL:=t.FillColor;
-  if (Sender=ClB2) and (t is TfrMemoView) then
-    CL:=TfrMemoView(t).Font.Color;
+  if (Sender=ClB2) and (t is TfrCustomMemoView) then
+    CL:=TfrCustomMemoView(t).Font.Color;
   if Sender=ClB3 then
     CL:=t.FrameColor;
   ColorSelector.Color:=CL;
@@ -5455,6 +5228,10 @@ var
 begin
   SetCaptureControl(nil);
   t := TfrView(Objects[TopSelected]);
+
+  if lrrDontModify in T.Restrictions then
+    exit;
+
   if t.Typ = gtMemo then
     ShowMemoEditor
   else
@@ -5510,6 +5287,12 @@ begin
     for i := 0 to frAddInsCount - 1 do
       if frAddIns[i].ClassRef.ClassName = t.ClassName then
       begin
+        if Assigned(frAddIns[i].EditorProc) then
+        begin
+          if frAddIns[i].EditorProc(t) then
+            Modified:=true;
+        end
+        else
         if frAddIns[i].EditorForm <> nil then
         begin
           PageView.NPEraseSelection;
@@ -5681,7 +5464,7 @@ begin
       acInsert: p^.ObjID := t.ID;
       acDelete, acEdit:
         begin
-          t1 := frCreateObject(t.Typ, t.ClassName, Page);
+          t1 := frCreateObject(t.Typ, t.ClassName, nil);
           t1.Assign(t);
           t1.ID := t.ID;
           p^.ObjID := t.ID;
@@ -5717,6 +5500,7 @@ var
   i,j: Integer;
   t: TfrView;
   List: TFpList;
+  F:boolean;
 
   procedure AddCurrent;
   var
@@ -5742,7 +5526,13 @@ begin
   for i := j to Objects.Count - 1 do
   begin
     t := TfrView(Objects[i]);
-    if (not (doUndoDisable in T.DesignOptions)) and ((AUndoAction in [acDuplication, acZOrder]) or t.Selected) then
+    F:= ((AUndoAction = acDelete) and not (lrrDontDelete in t.Restrictions))
+      or
+        ((AUndoAction = acEdit) and not (lrrDontModify in t.Restrictions))
+      or
+        (not (AUndoAction in [acDelete, acEdit]));
+
+    if (not (doUndoDisable in T.DesignOptions)) and ((AUndoAction in [acDuplication, acZOrder]) or t.Selected) and F then
       AddCurrent;
   end;
 
@@ -5894,7 +5684,6 @@ begin
     t1.Assign(t);
     if CurReport.FindObject(t1.Name) <> nil then
       t1.CreateUniqueName;
-    Objects.Add(t1);
   end;
   SelectionChanged;
   SendBandsToDown;
@@ -6175,15 +5964,16 @@ procedure TfrDesignerForm.ScrollBox1DragDrop(Sender, Source: TObject; X,
   Y: Integer);
 var
   Control :TControl;
-  t : TfrMemoView;
+  t : TfrCustomMemoView;
   dx, dy:integer;
 begin
   Control:=lrDesignAcceptDrag(Source);
   if Assigned(lrFieldsList) and ((Control = lrFieldsList.lbFieldsList) or (Control = lrFieldsList.ValList)) then
   begin
 
-    Objects.Add(frCreateObject(gtMemo, '', Page));
-    t:=TfrMemoView(Objects.Last);
+{    Objects.Add(frCreateObject(gtMemo, '', Page));
+    t:=TfrCustomMemoView(Objects.Last);}
+    t:=frCreateObject(gtMemo, '', Page) as TfrCustomMemoView;
     if Assigned(t) then
     begin
       t.MonitorFontChanges;
@@ -6315,7 +6105,7 @@ begin
       begin
         t1 := TfrView(Objects[i]);
         if t1.Selected then
-          if not (((t is TfrMemoView) and (t1 is TfrMemoView)) or
+          if not (((t is TfrCustomMemoView) and (t1 is TfrCustomMemoView)) or
              ((t.Typ <> gtAddIn) and (t.Typ = t1.Typ)) or
              ((t.Typ = gtAddIn) and (t.ClassName = t1.ClassName))) then
           begin
@@ -7233,8 +7023,8 @@ begin
 
     Case Sb.Tag of
       5 : t.FillColor:=aColor; {ClB1}
-     17 : if (t is TfrMemoView) then {ClB2}
-               TfrMemoView(t).Font.Color:=aColor;
+     17 : if (t is TfrCustomMemoView) then {ClB2}
+               TfrCustomMemoView(t).Font.Color:=aColor;
      19 : t.FrameColor:=aColor; {ClB3}
     end;
   end;
@@ -7804,12 +7594,12 @@ begin
 end;
 
 type
-  { TfrMemoViewDetailReportProperty }
+  { TfrCustomMemoViewDetailReportProperty }
 
-  TfrMemoViewDetailReportProperty = class(TStringProperty)
+  TfrCustomMemoViewDetailReportProperty = class(TStringProperty)
   private
     FSaveRep:TfrReport;
-    FEditView:TfrMemoView;
+    FEditView:TfrCustomMemoView;
     FDetailRrep: TlrDetailReport;
     procedure DoSaveReportEvent(Report: TfrReport; var ReportName: String;
       SaveAs: Boolean; var Saved: Boolean);
@@ -7819,7 +7609,41 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
-procedure TfrMemoViewDetailReportProperty.DoSaveReportEvent(Report: TfrReport;
+
+  TfrViewDataFieldProperty = class(TStringProperty)
+  public
+    function  GetAttributes: TPropertyAttributes; override;
+    procedure Edit; override;
+  end;
+
+{ TfrPictureViewDataFieldProperty }
+
+function TfrViewDataFieldProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := inherited GetAttributes + [paDialog{, paValueList, paSortList}];
+end;
+
+type
+  TfrHackView = class(TfrView);
+
+procedure TfrViewDataFieldProperty.Edit;
+begin
+  if (GetComponent(0) is TfrView) and Assigned(CurReport) then
+  begin
+    frFieldsForm := TfrFieldsForm.Create(Application);
+    try
+      if frFieldsForm.ShowModal = mrOk then
+      begin
+        TfrHackView(GetComponent(0)).DataField:=frFieldsForm.DBField;
+        frDesigner.Modified:=true;
+      end;
+    finally
+      frFieldsForm.Free;
+    end;
+  end;
+end;
+
+procedure TfrCustomMemoViewDetailReportProperty.DoSaveReportEvent(Report: TfrReport;
   var ReportName: String; SaveAs: Boolean; var Saved: Boolean);
 begin
   if Assigned(FDetailRrep) then
@@ -7833,12 +7657,12 @@ begin
     Saved:=false;
 end;
 
-function TfrMemoViewDetailReportProperty.GetAttributes: TPropertyAttributes;
+function TfrCustomMemoViewDetailReportProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := inherited GetAttributes + [paDialog, paValueList, paSortList];
 end;
 
-procedure TfrMemoViewDetailReportProperty.Edit;
+procedure TfrCustomMemoViewDetailReportProperty.Edit;
 var
   FSaveDesigner:TfrReportDesigner;
   FSaveView:TfrView;
@@ -7851,9 +7675,9 @@ var
   ///***DocMode: (dmDesigning, dmPrinting);             // current mode
 
 begin
-  if (GetComponent(0) is TfrMemoView) and Assigned(CurReport) then
+  if (GetComponent(0) is TfrCustomMemoView) and Assigned(CurReport) then
   begin
-    FEditView:=GetComponent(0) as TfrMemoView;
+    FEditView:=GetComponent(0) as TfrCustomMemoView;
 
     if FEditView.DetailReport = '' then
       FEditView.DetailReport:=FEditView.Name + '_DetailReport';
@@ -7922,7 +7746,7 @@ begin
   end;
 end;
 
-procedure TfrMemoViewDetailReportProperty.GetValues(Proc: TGetStrProc);
+procedure TfrCustomMemoViewDetailReportProperty.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
   Values: TStringList;
@@ -8073,7 +7897,7 @@ begin
           t.x := x;
           t.y := y;
           TfrDesignerForm(frDesigner).GetDefaultSize(t.dx, t.dy);
-          with t as TfrMemoView do
+          with t as TfrCustomMemoView do
           begin
             Font.Name := LastFontName;
             Font.Size := LastFontSize;
@@ -8081,7 +7905,7 @@ begin
               Font.Style := [fsBold];
             MonitorFontChanges;
           end;
-          TfrDesignerForm(frDesigner).PageView.Canvas.Font.Assign(TfrMemoView(t).Font);
+          TfrDesignerForm(frDesigner).PageView.Canvas.Font.Assign(TfrCustomMemoView(t).Font);
           t.Selected := True;
           Inc(TfrDesignerForm(frDesigner).SelNum);
           if HeaderCB.Checked then
@@ -8096,7 +7920,7 @@ begin
             t.dx := (fSize * TfrDesignerForm(frDesigner).PageView.Canvas.TextWidth('=')) div TfrDesignerForm(frDesigner).GridSize * TfrDesignerForm(frDesigner).GridSize;
           end;
           dx := t.dx;
-          TfrDesignerForm(frDesigner).Page.Objects.Add(t);
+//          TfrDesignerForm(frDesigner).Page.Objects.Add(t);
           if HeaderCB.Checked then
             HeaderL.Add(t) else
             DataL.Add(t);
@@ -8110,7 +7934,7 @@ begin
             if HorzRB.Checked then
               Inc(t.y, 72) else
               Inc(t.x, dx + TfrDesignerForm(frDesigner).GridSize * 2);
-            with t as TfrMemoView do
+            with t as TfrCustomMemoView do
             begin
               Font.Name := LastFontName;
               Font.Size := LastFontSize;
@@ -8121,7 +7945,7 @@ begin
             t.Memo.Add('[' + DatasetCB.Items[DatasetCB.ItemIndex] +
               '."' + FieldsL.Items[i] + '"]');
             t.dx := (fSize * TfrDesignerForm(frDesigner).PageView.Canvas.TextWidth('=')) div TfrDesignerForm(frDesigner).GridSize * TfrDesignerForm(frDesigner).GridSize;
-            TfrDesignerForm(frDesigner).Page.Objects.Add(t);
+//            TfrDesignerForm(frDesigner).Page.Objects.Add(t);
             DataL.Add(t);
           end;
           if HorzRB.Checked then
@@ -8174,7 +7998,7 @@ begin
         Inc(TfrDesignerForm(frDesigner).SelNum);
         if not HeaderCB.Checked or not HorzRB.Checked then
         begin
-          TfrDesignerForm(frDesigner).Page.Objects.Add(b);
+//          TfrDesignerForm(frDesigner).Page.Objects.Add(b);
           b.BandType := btMasterData;
           b.DataSet := FindDataset(DataSet);
         end
@@ -8188,7 +8012,7 @@ begin
           else
           begin
             b.BandType := btPageHeader;
-            TfrDesignerForm(frDesigner).Page.Objects.Add(b);
+//            TfrDesignerForm(frDesigner).Page.Objects.Add(b);
           end;
           b := frCreateObject(gtBand, '', TfrDesignerForm(frDesigner).Page) as TfrBandView;
           b.BandType := btMasterData;
@@ -8198,7 +8022,7 @@ begin
           b.dy := dy;
           b.Selected := True;
           Inc(TfrDesignerForm(frDesigner).SelNum);
-          TfrDesignerForm(frDesigner).Page.Objects.Add(b);
+//          TfrDesignerForm(frDesigner).Page.Objects.Add(b);
         end;
       end;
       TfrDesignerForm(frDesigner).SelectionChanged;
@@ -8241,7 +8065,8 @@ initialization
   LastAdjust := 0;
   //** RegRootKey := 'Software\FastReport\' + Application.Title;
 
-  RegisterPropertyEditor(TypeInfo(String), TfrMemoView, 'DetailReport', TfrMemoViewDetailReportProperty);
+  RegisterPropertyEditor(TypeInfo(String), TfrCustomMemoView, 'DetailReport', TfrCustomMemoViewDetailReportProperty);
+  RegisterPropertyEditor(TypeInfo(String), TfrView, 'DataField', TfrViewDataFieldProperty);
 
   FlrInternalTools:=TlrInternalTools.Create;
 finalization

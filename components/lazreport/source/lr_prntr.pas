@@ -792,6 +792,7 @@ begin
       // update paper size in std pt units
       PaperWidth := round(fPrinter.PaperSize.Width * 72 / fPrinter.XDPI);
       PaperHeight := round(fPrinter.PaperSize.Height * 72 / fPrinter.YDPI);
+      Orientation := fPrinter.Orientation;
     except
       PaperWidth:=1;
       PaperHeight:=1;

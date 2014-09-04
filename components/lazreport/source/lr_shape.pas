@@ -43,7 +43,7 @@ type
     procedure DrawShape(aCanvas : TCanvas);
   public
     constructor Create(AOwnerPage:TfrPage); override;
-    procedure Assign(From: TfrView); override;
+    procedure Assign(Source: TPersistent); override;
     procedure Draw(aCanvas: TCanvas); override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
@@ -56,6 +56,7 @@ type
     property FrameColor;
     property FrameStyle;
     property FrameWidth;
+    property Restrictions;
 
     property ShapeType : TfrShapeType Read fShapeType write fShapeType;
   end;
@@ -127,10 +128,11 @@ begin
   fShapeType := frstRectangle;
 end;
 
-procedure TfrShapeView.Assign(From: TfrView);
+procedure TfrShapeView.Assign(Source: TPersistent);
 begin
-  inherited Assign(From);
-  ShapeType := TfrShapeView(From).ShapeType;
+  inherited Assign(Source);
+  if Source is TfrShapeView then
+    ShapeType := TfrShapeView(Source).ShapeType;
 end;
 
 procedure TfrShapeView.DrawShape(aCanvas : TCanvas);

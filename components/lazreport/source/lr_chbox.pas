@@ -43,20 +43,22 @@ type
     procedure Print(Stream: TStream); override;
     procedure ExportData; override;
     procedure DefinePopupMenu(Popup: TPopupMenu); override;
-    
+
+    procedure Assign(Source: TPersistent); override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
   published
     property Checked : Boolean read fChecked write fChecked;
+    property DataField;
     property FillColor;
     property FrameColor;
     property Frames;
     property FrameStyle;
     property FrameWidth;
     property Script;
-
+    property Restrictions;
   end;
 
 
@@ -111,12 +113,18 @@ begin
 end;
 
 procedure TfrCheckBoxView.Draw(aCanvas: TCanvas);
+var
+  IsChecked: Boolean;
 begin
   BeginDraw(aCanvas);
   Memo1.Assign(Memo);
   CalcGaps;
   ShowBackground;
-  DrawCheck(DRect, Self.Checked);
+  IsChecked := Self.Checked;
+  if Memo1.Count > 0 then
+    IsChecked := Memo1[0] = '1';
+  DrawCheck(DRect, IsChecked);
+//  DrawCheck(DRect, Self.Checked);
   ShowFrame;
   RestoreCoord;
 end;
@@ -153,10 +161,16 @@ begin
   if Popup=nil then;
 end;
 
+procedure TfrCheckBoxView.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TfrCheckBoxView then
+    Self.Checked := TfrCheckBoxView(Source).Checked;
+end;
+
 procedure TfrCheckBoxView.LoadFromStream(Stream: TStream);
 begin
   inherited LoadFromStream(Stream);
-  
   Stream.Read(fChecked, SizeOf(fChecked));
 end;
 
@@ -169,7 +183,6 @@ end;
 procedure TfrCheckBoxView.LoadFromXML(XML: TLrXMLConfig; const Path: String);
 begin
   inherited LoadFromXML(XML, Path);
-  
   RestoreProperty('Checked',XML.GetValue(Path+'Data/Checked/Value',''));
 end;
 

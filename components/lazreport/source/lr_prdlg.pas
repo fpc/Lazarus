@@ -102,12 +102,13 @@ begin
   r := ARect;
   r.Right := r.Left + 18;
   r.Bottom := r.Top + 16;
-  OffsetRect(r, 2, 0);
+
+  OffsetRect(r, 2, (ARect.Bottom - ARect.Top) div 2 - 8);
+
   with CB1.Canvas do
   begin
     FillRect(ARect);
-    // todo: implement brushcopy
-    //BrushCopy(r, Image1.Picture.Bitmap, Rect(0, 0, 18, 16), clOlive);
+    BrushCopy(r, Image1.Picture.Bitmap, Rect(0, 0, 18, 16), clOlive);
     TextOut(ARect.Left + 24, ARect.Top + 1, CB1.Items[Index]);
   end;
 end;

@@ -84,7 +84,7 @@ type
     function  GetCorners: TCornerSet;
   public
     constructor Create(AOwnerPage:TfrPage); override;
-    procedure Assign(From: TfrView); override;
+    procedure Assign(Source: TPersistent); override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
@@ -565,11 +565,12 @@ begin
   end;
 end;
 
-procedure TfrRoundRectView.Assign(From: TfrView);
+procedure TfrRoundRectView.Assign(Source: TPersistent);
 begin
-  inherited Assign(From);
-  if from is TfrRoundRectView then
-    fCadre := TfrRoundRectView(From).fCadre
+  inherited Assign(Source);
+
+  if Source is TfrRoundRectView then
+    fCadre := TfrRoundRectView(Source).fCadre
   else
   begin
     fCadre.wCurve:=10;

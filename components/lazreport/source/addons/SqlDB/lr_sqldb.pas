@@ -7,7 +7,8 @@ unit LR_SqlDB;
 interface
 
 uses
-  LR_PQConnection, lr_SQLQuery, LR_IBConnection, LazarusPackageIntf;
+  LR_PQConnection, lr_SQLQuery, LR_IBConnection, lr_EditSQLDBParamsUnit, 
+  LazarusPackageIntf;
 
 implementation
 

@@ -513,14 +513,16 @@ var
   View: TfrView;
 begin
   View := CreateView(Page, Node.NodeName);
-  if View<>nil then begin
+  if View<>nil then
+  begin
     View.BeginUpdate;
-    Page.Objects.Add(View);
+//    Page.Objects.Add(View);
     LoadView(Node, Page, View, ParentView);
     View.EndUpdate;
     // process any child
     cNode := Node.FirstChild;
-    while cNode<>nil do begin
+    while cNode<>nil do
+    begin
       ProcessObject(Page, cNode, View);
       cNode := cNode.NextSibling;
     end;

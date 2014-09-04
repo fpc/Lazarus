@@ -303,13 +303,13 @@ begin
       b := TfrBandView(frCreateObject(gtBand, '', Page));
       b.SetBounds(10, 20, 1000, 25);
       b.BandType := btReportTitle;
-      Page.Objects.Add(b);
+//      Page.Objects.Add(b);
       v := frCreateObject(gtMemo, '', Page);
       v.SetBounds(20, 20, Page.PrnInfo.PgW - 40, 25);
       TfrMemoView(v).Alignment:=taCenter;
       TfrMemoView(v).Font.Assign(FTitleFont);
       v.Memo.Add(FCaption);
-      Page.Objects.Add(v);
+//      Page.Objects.Add(v);
     end;
 
     // if we have a template we need to be sure that bands on template
@@ -323,7 +323,7 @@ begin
       b.Flags:=b.Flags+flBandRepeatHeader;
     b.SetBounds(XPos, YPos, 1000, 20);
     b.Flags:=b.Flags or flStretched;
-    Page.Objects.Add(b);
+//    Page.Objects.Add(b);
 
     v := frCreateObject(gtMemo, '', Page);
     v.SetBounds(XPos, YPos, 20, 20);
@@ -333,7 +333,7 @@ begin
     TfrMemoView(v).Frames:=frAllFrames;
     TfrMemoView(v).Layout:=tlTop;
     v.Memo.Add('[Header]');
-    Page.Objects.Add(v);
+//    Page.Objects.Add(v);
 
     YPos := YPos + 22;
 
@@ -342,13 +342,13 @@ begin
     b.Dataset := FReportDataSet.Name;
     b.SetBounds(0, YPos, 1000, 18);
     b.Flags:=b.Flags or flStretched;
-    Page.Objects.Add(b);
+//    Page.Objects.Add(b);
 
     b := TfrBandView(frCreateObject(gtBand, '', Page));
     b.BandType := btCrossData;
     b.Dataset := FColumnDataSet.Name;
     b.SetBounds(XPos, 0, 20, 1000);
-    Page.Objects.Add(b);
+//    Page.Objects.Add(b);
 
     v := frCreateObject(gtMemo, '', Page);
     v.SetBounds(XPos, YPos, 20, 18);
@@ -357,7 +357,7 @@ begin
     TfrMemoView(v).Font.Assign(FFont);
     TfrMemoView(v).Frames:=frAllFrames;
     TfrMemoView(v).Layout:=tlTop;
-    Page.Objects.Add(v);
+//    Page.Objects.Add(v);
 
     FDataSet.DisableControls;
     BM:=FDataSet.GetBookmark;

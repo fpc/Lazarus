@@ -1,6 +1,6 @@
 { LazReport dialogs control
 
-  Copyright (C) 2012-2013 alexs alexs75.at.hotbox.ru
+  Copyright (C) 2012-2014 alexs alexs75.at.yandex.ru
 
   This library is free software; you can redistribute it and/or modify it
   under the terms of the GNU Library General Public License as published by
@@ -75,7 +75,7 @@ type
     procedure SaveToXML(XML: TLrXMLConfig; const Path: String); override;
     procedure UpdateControlPosition; override;
     procedure AttachToParent; override;
-    procedure Assign(From: TfrView); override;
+    procedure Assign(Source: TPersistent); override;
 
     property Control: TControl read FControl write FControl;
     property AutoSize: Boolean read GetAutoSize write SetAutoSize;
@@ -1433,18 +1433,18 @@ begin
   FControl.Parent := OwnerForm;
 end;
 
-procedure TlrVisualControl.Assign(From: TfrView);
+procedure TlrVisualControl.Assign(Source: TPersistent);
 begin
-  inherited Assign(From);
-  if From is TlrVisualControl then
+  inherited Assign(Source);
+  if Source is TlrVisualControl then
   begin
-    AutoSize:=TlrVisualControl(From).AutoSize;
-    Color:=TlrVisualControl(From).Color;
-    Caption:=TlrVisualControl(From).Caption;
-    Text:=TlrVisualControl(From).Text;
-    Font:=TlrVisualControl(From).Font;
-    Hint:=TlrVisualControl(From).Hint;
-    OnClick:=TlrVisualControl(From).OnClick;
+    AutoSize:=TlrVisualControl(Source).AutoSize;
+    Color:=TlrVisualControl(Source).Color;
+    Caption:=TlrVisualControl(Source).Caption;
+    Text:=TlrVisualControl(Source).Text;
+    Font:=TlrVisualControl(Source).Font;
+    Hint:=TlrVisualControl(Source).Hint;
+    OnClick:=TlrVisualControl(Source).OnClick;
   end;
 end;
 

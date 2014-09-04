@@ -39,18 +39,18 @@ object frPreviewForm: TfrPreviewForm
       Left = 0
       Height = 30
       Top = 0
-      Width = 687
+      Width = 683
       Align = alTop
       BevelInner = bvSpace
       BevelOuter = bvNone
       ClientHeight = 30
-      ClientWidth = 687
+      ClientWidth = 683
       FullRepaint = False
       TabOrder = 0
       object ZoomBtn: TBitBtn
         Tag = 200
         Left = 182
-        Height = 28
+        Height = 24
         Top = 1
         Width = 76
         Align = alLeft
@@ -101,7 +101,7 @@ object frPreviewForm: TfrPreviewForm
       object LoadBtn: TBitBtn
         Tag = 201
         Left = 1
-        Height = 28
+        Height = 24
         Top = 1
         Width = 32
         Align = alLeft
@@ -150,7 +150,7 @@ object frPreviewForm: TfrPreviewForm
       object SaveBtn: TBitBtn
         Tag = 202
         Left = 33
-        Height = 28
+        Height = 24
         Top = 1
         Width = 32
         Align = alLeft
@@ -199,7 +199,7 @@ object frPreviewForm: TfrPreviewForm
       object PrintBtn: TBitBtn
         Tag = 203
         Left = 101
-        Height = 28
+        Height = 24
         Top = 1
         Width = 28
         Align = alLeft
@@ -246,8 +246,8 @@ object frPreviewForm: TfrPreviewForm
       end
       object ExitBtn: TBitBtn
         Tag = 205
-        Left = 658
-        Height = 28
+        Left = 650
+        Height = 24
         Top = 1
         Width = 28
         Align = alRight
@@ -294,7 +294,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object frTBSeparator1: TPanel
         Left = 76
-        Height = 28
+        Height = 24
         Top = 1
         Width = 25
         Align = alLeft
@@ -304,7 +304,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object frTBSeparator2: TPanel
         Left = 129
-        Height = 28
+        Height = 24
         Top = 1
         Width = 25
         Align = alLeft
@@ -314,7 +314,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object frTBSeparator3: TPanel
         Left = 286
-        Height = 28
+        Height = 24
         Top = 1
         Width = 25
         Align = alLeft
@@ -324,7 +324,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object PgUp: TSpeedButton
         Left = 331
-        Height = 28
+        Height = 24
         Top = 1
         Width = 20
         Align = alLeft
@@ -370,7 +370,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object PgDown: TSpeedButton
         Left = 454
-        Height = 28
+        Height = 24
         Top = 1
         Width = 20
         Align = alLeft
@@ -416,7 +416,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object LbPanel: TPanel
         Left = 351
-        Height = 28
+        Height = 24
         Top = 1
         Width = 103
         Align = alLeft
@@ -430,7 +430,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object BtPgFirst: TSpeedButton
         Left = 311
-        Height = 28
+        Height = 24
         Top = 1
         Width = 20
         Align = alLeft
@@ -476,7 +476,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object BtPgLast: TSpeedButton
         Left = 474
-        Height = 28
+        Height = 24
         Top = 1
         Width = 20
         Align = alLeft
@@ -522,7 +522,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object BtZoomOut: TBitBtn
         Left = 154
-        Height = 28
+        Height = 24
         Top = 1
         Width = 28
         Align = alLeft
@@ -569,7 +569,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object BtZoomIn: TBitBtn
         Left = 258
-        Height = 28
+        Height = 24
         Top = 1
         Width = 28
         Align = alLeft
@@ -616,7 +616,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object frTBSeparator4: TPanel
         Left = 494
-        Height = 28
+        Height = 24
         Top = 1
         Width = 25
         Align = alLeft
@@ -626,7 +626,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object FindBtn: TBitBtn
         Left = 519
-        Height = 28
+        Height = 24
         Top = 1
         Width = 28
         Align = alLeft
@@ -672,7 +672,7 @@ object frPreviewForm: TfrPreviewForm
       end
       object SpeedButton1: TSpeedButton
         Left = 65
-        Height = 28
+        Height = 24
         Top = 1
         Width = 11
         Align = alLeft
@@ -726,8 +726,8 @@ object frPreviewForm: TfrPreviewForm
       object HScrollBar: TScrollBar
         Left = 2
         Height = 13
-        Top = 6
-        Width = 663
+        Top = 2
+        Width = 659
         Align = alBottom
         BorderSpacing.Left = 2
         BorderSpacing.Right = 16
@@ -752,8 +752,8 @@ object frPreviewForm: TfrPreviewForm
       FullRepaint = False
       TabOrder = 2
       object VScrollBar: TScrollBar
-        Left = 6
-        Height = 465
+        Left = 2
+        Height = 461
         Top = 0
         Width = 13
         Align = alRight

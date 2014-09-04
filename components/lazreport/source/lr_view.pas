@@ -817,29 +817,29 @@ begin
   frPrintForm := TfrPrintForm.Create(nil);
   frPrintForm.E1.Value:=TfrReport(Doc).DefaultCopies;
   frPrintForm.cbCollate.Checked:=TfrReport(Doc).DefaultCollate;
-  with frPrintForm do
-  begin
-    if ShowModal = mrOk then
+//  with frPrintForm do
+//  begin
+    if frPrintForm.ShowModal = mrOk then
     begin
-      if (Printer.PrinterIndex <> ind) or Prn.UseVirtualPrinter then
+      if TfrReport(Doc).RebuildPrinter and ((Printer.PrinterIndex <> ind) or Prn.UseVirtualPrinter) then
       begin
         if not RebuildReport then
           exit;
       end;
 
-      if RB1.Checked then
+      if frPrintForm.RB1.Checked then
         Pages := ''
       else
-        if RB2.Checked then
+        if frPrintForm.RB2.Checked then
            Pages := IntToStr(CurPage)
         else
-           Pages := E2.Text;
+           Pages := frPrintForm.E2.Text;
 
       TfrReport(Doc).DefaultCollate:=frPrintForm.cbCollate.Checked;
-      PrintReport(E1.Value);
+      PrintReport(frPrintForm.E1.Value);
     end;
-    Free;
-  end;
+    frPrintForm.Free;
+//  end;
   {$ENDIF}
   result := true;
 end;

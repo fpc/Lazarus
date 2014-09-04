@@ -91,7 +91,7 @@ type
     
     constructor Create(AOwnerPage:TfrPage);override;
     destructor Destroy; override;
-    procedure Assign(From: TfrView); override;
+    procedure Assign(Source: TPersistent); override;
     function GenerateBitmap: TBitmap;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
@@ -112,6 +112,7 @@ type
     property FrameColor;
     property FrameStyle;
     property FrameWidth;
+    property Restrictions;
   end;
 
   { TfrBarCodeForm }
@@ -484,10 +485,11 @@ begin
   inherited Destroy;
 end;
 
-procedure TfrBarCodeView.Assign(From:TfrView);
+procedure TfrBarCodeView.Assign(Source: TPersistent);
 begin
-  inherited Assign(From);
-  Param := (From as TfrBarCodeView).Param;
+  inherited Assign(Source);
+  if Source is TfrBarCodeView then
+    Param := TfrBarCodeView(Source).Param;
 end;
 
 function TfrBarCodeView.GenerateBitmap: TBitmap;

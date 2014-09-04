@@ -167,7 +167,7 @@ begin
 
         T.MonitorFontChanges;
         T.Memo.Text:=FWorksheet.ReadAsUTF8Text(Cell);
-        frDesigner.Page.Objects.Add(t);
+//        frDesigner.Page.Objects.Add(t);
 
       end
       else
