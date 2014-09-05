@@ -38,10 +38,19 @@ uses
   Classes, SysUtils, DB;
 
 type
+
+  { TExItem }
+
   TExItem = class
+  private
     FCelCol:string;
     FValue:Variant;
-    Bookmark:TBookMark;
+    FDataset: TDataset;
+    FBookmark:TBookMark;
+  public
+    procedure SaveBookmark(Ds: TDataset);
+    function IsBookmarkValid: boolean;
+    destructor destroy; override;
   end;
 
 type
@@ -92,6 +101,28 @@ type
 
 implementation
 uses math, variants;
+
+{ TExItem }
+
+procedure TExItem.SaveBookmark(Ds: TDataset);
+begin
+  if IsBookmarkValid then
+    FDataset.FreeBookmark(FBookmark);
+  FDataset := Ds;
+  FBookmark := FDataset.GetBookmark;
+end;
+
+function TExItem.IsBookmarkValid: boolean;
+begin
+  result := (FDataset<>nil) and FDataset.BookmarkValid(FBookmark)
+end;
+
+destructor TExItem.destroy;
+begin
+  if IsBookmarkValid then
+    FDataset.FreeBookmark(FBookmark);
+  inherited destroy;
+end;
 
 { TExRow }
 

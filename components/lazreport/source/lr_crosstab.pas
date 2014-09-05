@@ -369,7 +369,7 @@ begin
 
   FCalcTotal:=FD.DataType in NumericFieldTypes;
 
-  P:=FData.Bookmark;
+  P:=FData.GetBookmark;
   FData.DisableControls;
   try
     FData.First;
@@ -392,11 +392,12 @@ begin
 
       ExItem:=FExVarArray.CellData[FC.DisplayText, FR.DisplayText];
       if Assigned(ExItem) then
-        ExItem.Bookmark:=FData.Bookmark;
+        ExItem.SaveBookmark(FData);
       FData.Next;
     end;
   finally
-    FData.Bookmark:=P;
+    FData.GotoBookmark(P);
+    FData.FreeBookmark(P);
     FData.EnableControls;
   end;
 
@@ -565,8 +566,8 @@ begin
       AView.FillColor:=DataCell.FillColor;
 
     ExItem:=FExVarArray.CellData[SC, SR];
-    if Assigned(ExItem) and Assigned(ExItem.Bookmark) then
-      FData.Bookmark:=ExItem.Bookmark;
+    if Assigned(ExItem) and ExItem.IsBookmarkValid then
+      ExItem.SaveBookmark(FData);
   end
   else
   if S = '-RowTitle-' then
