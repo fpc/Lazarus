@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -44,12 +44,12 @@
       <Unit0>
         <Filename Value="chmmaker.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="chmmaker"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CHMForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="unit1"/>
       </Unit1>
@@ -58,7 +58,6 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SitemapEditForm"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="CHMSiteMapEditor"/>
       </Unit2>
     </Units>
   </ProjectOptions>
@@ -86,8 +85,5 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>

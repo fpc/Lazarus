@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
   Buttons, ComCtrls, chmsitemap, SynEdit, LazFileUtils, LazLogger, Menus,
-  ExtCtrls, EditBtn, LCLProc, chmfilewriter;
+  ExtCtrls, EditBtn, LCLProc, chmfilewriter, types;
 
 type
 
@@ -98,6 +98,7 @@ type
   public
     Project: TChmProject;
     procedure OpenProject(AFileName: String);
+    // Dirty flag: has project been modified since opening?
     property Modified: Boolean read GetModified write FModified;
   end; 
 
@@ -154,15 +155,19 @@ var
     SearchRec: TSearchRec;
     FileName: String;
   begin
-   // WriteLn('Adding Dir: ', ADir);
-    if FindFirst(ADir+'*', faAnyFile or faDirectory, SearchRec) = 0 then begin
+    // WriteLn('Adding Dir: ', ADir);
+    if FindFirst(ADir+'*', faAnyFile or faDirectory, SearchRec) = 0 then
+    begin
       repeat
-        if (SearchRec.Attr and faDirectory) <> 0 then begin
-          if Pos('.', SearchRec.Name) = 0 then begin
+        if (SearchRec.Attr and faDirectory) <> 0 then
+        begin
+          if Pos('.', SearchRec.Name) = 0 then
+          begin
             AddDir(IncludeTrailingPathDelimiter(ADir+SearchRec.Name));
           end;
         end
-        else begin
+        else
+        begin
           FileName := ADir+SearchRec.Name;
           FileName := ExtractRelativepath(Project.ProjectDir, FileName);
           if Files.IndexOf(FileName) = -1 then
@@ -173,14 +178,18 @@ var
     end;
   end;
 begin
-  if MessageDlg('This will add all files in the project'#10+
-                'Directory recursively. Do you want to continue?', mtConfirmation, [mbYes, mbNo],0) = mrNo then exit;
+  if MessageDlg('This will add all files in the project directory ' + LineEnding +
+                'recursively. Do you want to continue?',
+                mtConfirmation, [mbYes, mbNo],0) = mrNo then exit;
   Modified := True;
   Files := TStringList.Create;
-  Files.AddStrings(FileListBox.Items);
-  AddDir(Project.ProjectDir);
-  FileListBox.Items.Assign(Files);
-  Files.Free;
+  try
+    Files.AddStrings(FileListBox.Items);
+    AddDir(Project.ProjectDir);
+    FileListBox.Items.Assign(Files);
+  finally
+    Files.Free;
+  end;
 end;
 
 procedure TCHMForm.AutoAddLinksBtnClick(Sender: TObject);
@@ -215,14 +224,19 @@ procedure TCHMForm.CompileBtnClick(Sender: TObject);
 var
   OutFile: TFileStream;
 begin
-  if ChmFileNameEdit.FileName = '' then begin
+  if ChmFileNameEdit.FileName = '' then
+  begin
     MessageDlg('You must set a filename for the output CHM file!', mtError, [mbCancel], 0);
     Exit;
   end;
   Save(False);
   OutFile := TFileStream.Create(Project.OutputFileName, fmCreate or fmOpenWrite);
-  Project.WriteChm(OutFile);
-  OutFile.Free;
+  try
+    Project.WriteChm(OutFile);
+    ShowMessage('CHM file '+ChmFileNameEdit.FileName+' was created.');
+  finally
+    OutFile.Free;
+  end;
 end;
 
 
@@ -232,7 +246,8 @@ var
   LHelpConn: TLHelpConnection;
   Proc: TProcess;
 begin
-  if ChmFileNameEdit.FileName = '' then begin
+  if ChmFileNameEdit.FileName = '' then
+  begin
     MessageDlg('You must set a filename for the output CHM file!', mtError, [mbCancel], 0);
     Exit;
   end;
@@ -274,20 +289,25 @@ end;
 procedure TCHMForm.FileListBoxDrawItem(Control: TWinControl; Index: Integer;
   ARect: TRect; State: TOwnerDrawState);
 begin
-   if Pos('..', FileListBox.Items.Strings[Index]) > 0 then begin
-     // These items won't be added to the chm because they are not within the project dir
-     Dec(ARect.Right);
-     Dec(ARect.Bottom);
-     FileListBox.Canvas.Pen.Color := clRed;
-     FileListBox.Canvas.Frame(ARect);
-   end;
+  if Pos('..', FileListBox.Items.Strings[Index]) > 0 then
+  begin
+    // These items won't be added to the chm because they are not within the project dir
+    // so mark them with a red rectangle
+    Dec(ARect.Right);
+    Dec(ARect.Bottom);
+    FileListBox.Canvas.Pen.Color := clRed;
+    FileListBox.Canvas.Frame(ARect);
+  end;
+  // Draw item text
+  FileListBox.Canvas.TextRect(ARect, 2, ARect.Top+2, FileListBox.Items[Index]);
 end;
 
 procedure TCHMForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 var
   MResult: Integer;
 begin
-  if Modified then begin
+  if Modified then
+  begin
     MResult := MessageDlg('Project is modified would you like to save the changes?', mtConfirmation,
                                       [mbYes, mbNo, mbCancel], 0);
     case MResult of
@@ -317,20 +337,21 @@ var
   FileName: String;
 begin
   FileName := IndexEdit.FileName;
-  if FileName = '' then begin
+  if FileName = '' then
+  begin
     FileName := Project.ProjectDir+'_index.hhk'
   end;
 
-  if FileExists(FileName) then begin
+  if FileExists(FileName) then
+  begin
     Stream := TFileStream.Create(FileName, fmOpenReadWrite);
   end
-  else begin
+  else
+  begin
     Stream := TFileStream.Create(FileName, fmCreate or fmOpenReadWrite);
   end;
 
   if SitemapEditForm.Execute(Stream, stIndex, FileListBox.Items) then IndexEdit.FileName := FileName;
-
-
 end;
 
 procedure TCHMForm.ProjCloseItemClick(Sender: TObject);
@@ -341,7 +362,8 @@ end;
 procedure TCHMForm.ProjNewItemClick(Sender: TObject);
 begin
   InitFileDialog(SaveDialog1);
-  If SaveDialog1.Execute then begin
+  If SaveDialog1.Execute then
+  begin
     if FileExists(SaveDialog1.FileName)
     and (MessageDlg('File Already Exists! Ovewrite?', mtWarning, [mbYes, mbNo],0) = mrNo) then Exit;
     OpenProject(SaveDialog1.FileName);
@@ -352,7 +374,8 @@ end;
 procedure TCHMForm.ProjOpenItemClick(Sender: TObject);
 begin
   InitFileDialog(OpenDialog1);
-  if OpenDialog1.Execute then begin
+  if OpenDialog1.Execute then
+  begin
     CloseProject;
     OpenProject(OpenDialog1.FileName);
   end;
@@ -396,14 +419,17 @@ var
   BDir: String;
 begin
   FileName := TOCEdit.FileName;
-  if FileName = '' then begin
+  if FileName = '' then
+  begin
     FileName := Project.ProjectDir+'_table_of_contents.hhc'
   end;
   
-  if FileExists(FileName) then begin
+  if FileExists(FileName) then
+  begin
     Stream := TFileStream.Create(FileName, fmOpenReadWrite);
   end
-  else begin
+  else
+  begin
     Stream := TFileStream.Create(FileName, fmCreate or fmOpenReadWrite);
   end;
 
@@ -413,7 +439,6 @@ begin
 
   
   if SitemapEditForm.Execute(Stream, stTOC, FileListBox.Items) then TOCEdit.FileName := FileName;
-  
 end;
 
 function TCHMForm.GetModified: Boolean;
@@ -467,7 +492,7 @@ begin
   if not Assigned(Project) then Project := TChmProject.Create;
   Project.LoadFromFile(AFileName);
   GroupBox1.Enabled      := True;
-  MainPanel.Enabled         := True;
+  MainPanel.Enabled      := True;
   CompileItem.Enabled    := True;
   ProjSaveAsItem.Enabled := True;
   ProjSaveItem.Enabled   := True;

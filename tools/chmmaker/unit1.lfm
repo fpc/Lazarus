@@ -3,38 +3,38 @@ object CHMForm: TCHMForm
   Height = 511
   Top = 217
   Width = 611
-  HorzScrollBar.Page = 611
-  VertScrollBar.Page = 489
+  HorzScrollBar.Page = 573
+  VertScrollBar.Page = 424
   ActiveControl = FileListBox
   AutoScroll = True
   Caption = 'Compiled HTML Help Project - [Made with Freepascal]'
-  ClientHeight = 489
+  ClientHeight = 492
   ClientWidth = 611
   Menu = MainMenu1
   OnClose = FormClose
   OnCreate = FormCreate
   ShowInTaskBar = stAlways
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.3'
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 18
-    Top = 471
+    Height = 20
+    Top = 472
     Width = 611
     Panels = <>
   end
   object GroupBox1: TGroupBox
     Left = 0
-    Height = 471
+    Height = 472
     Top = 0
     Width = 268
     Align = alLeft
     Caption = 'Files'
-    ClientHeight = 455
+    ClientHeight = 454
     ClientWidth = 264
     TabOrder = 0
     object FileListBox: TListBox
       Left = 0
-      Height = 321
+      Height = 320
       Top = 0
       Width = 264
       Align = alClient
@@ -44,12 +44,11 @@ object CHMForm: TCHMForm
       Sorted = True
       Style = lbOwnerDrawFixed
       TabOrder = 0
-      TopIndex = -1
     end
     object Panel2: TPanel
       Left = 0
       Height = 134
-      Top = 321
+      Top = 320
       Width = 264
       Align = alBottom
       ClientHeight = 134
@@ -113,50 +112,50 @@ object CHMForm: TCHMForm
   end
   object MainPanel: TPanel
     Left = 268
-    Height = 471
+    Height = 472
     Top = 0
     Width = 343
     Align = alClient
-    ClientHeight = 471
+    ClientHeight = 472
     ClientWidth = 343
     TabOrder = 1
     object TableOfContentsLabel: TLabel
       Left = 11
-      Height = 15
+      Height = 13
       Top = 11
-      Width = 136
+      Width = 124
       Caption = 'Table of Contents (*.hhc)'
       ParentColor = False
     end
     object IndexLabel: TLabel
       Left = 11
-      Height = 15
+      Height = 13
       Top = 59
-      Width = 70
+      Width = 66
       Caption = 'Index (*.hhk)'
       ParentColor = False
     end
     object CompileTimeOptionsLabel: TLabel
       Left = 11
-      Height = 15
+      Height = 13
       Top = 219
-      Width = 123
+      Width = 102
       Caption = 'Compile time options:'
       ParentColor = False
     end
     object DefaultPageLabel: TLabel
       Left = 11
-      Height = 15
+      Height = 13
       Top = 108
-      Width = 72
+      Width = 62
       Caption = 'Default Page'
       ParentColor = False
     end
     object CHMFilenameLabel: TLabel
       Left = 12
-      Height = 15
+      Height = 13
       Top = 356
-      Width = 78
+      Width = 65
       Caption = 'CHM filename'
       ParentColor = False
     end
@@ -203,7 +202,7 @@ object CHMForm: TCHMForm
       AnchorSideRight.Control = MainPanel
       AnchorSideRight.Side = asrBottom
       Left = 276
-      Height = 26
+      Height = 23
       Top = 31
       Width = 60
       Anchors = [akTop, akRight]
@@ -220,7 +219,7 @@ object CHMForm: TCHMForm
       AnchorSideRight.Control = MainPanel
       AnchorSideRight.Side = asrBottom
       Left = 276
-      Height = 26
+      Height = 23
       Top = 79
       Width = 60
       Anchors = [akTop, akRight]
@@ -234,19 +233,19 @@ object CHMForm: TCHMForm
     end
     object FollowLinksCheck: TCheckBox
       Left = 19
-      Height = 32
+      Height = 17
       Top = 252
-      Width = 179
+      Width = 285
       Caption = 'Parse *.htm* files to include '#10'linked pages and images'
       Enabled = False
       TabOrder = 4
     end
     object CreateSearchableCHMCheck: TCheckBox
       Left = 19
-      Height = 22
+      Height = 17
       Hint = 'Only indexes files added to the project'#10'not files automatically added.'
       Top = 304
-      Width = 162
+      Width = 139
       Caption = 'Create a searchable chm'
       ParentShowHint = False
       ShowHint = True
@@ -254,21 +253,21 @@ object CHMForm: TCHMForm
     end
     object DefaultPageCombo: TComboBox
       Left = 11
-      Height = 28
+      Height = 21
       Top = 128
       Width = 287
       AutoSelect = False
-      ItemHeight = 0
+      ItemHeight = 13
       Style = csDropDownList
       TabOrder = 6
     end
     object CompileBtn: TButton
       AnchorSideLeft.Side = asrBottom
       AnchorSideRight.Control = CompileViewBtn
-      Left = 110
-      Height = 34
-      Top = 423
-      Width = 66
+      Left = 107
+      Height = 31
+      Top = 427
+      Width = 71
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Right = 9
@@ -280,10 +279,10 @@ object CHMForm: TCHMForm
     object CompileViewBtn: TButton
       AnchorSideLeft.Control = CompileBtn
       AnchorSideLeft.Side = asrBottom
-      Left = 185
-      Height = 34
-      Top = 423
-      Width = 119
+      Left = 187
+      Height = 31
+      Top = 427
+      Width = 117
       Anchors = [akRight, akBottom]
       AutoSize = True
       BorderSpacing.Right = 13
