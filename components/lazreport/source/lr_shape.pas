@@ -137,11 +137,12 @@ end;
 
 procedure TfrShapeView.DrawShape(aCanvas : TCanvas);
 var
-  x1, y1, min : Integer;
+  x1, y1, min, fw : Integer;
   Pts         : Array[0..3] of TPoint;
 begin
   x1 := Round((SaveX + SaveDX) * ScaleX + OffsX);
   y1 := Round((SaveY + SaveDY) * ScaleY + OffsY);
+  fw := Round(FrameWidth);
   min := dx;
   if dy < dx then
     min := dy;
@@ -150,17 +151,53 @@ begin
   begin
     Pen.Width := Round(FrameWidth);
     Pen.Color := FrameColor;
-    Pen.Style := psSolid;
+    if FrameStyle = frsDouble then
+      Pen.Style := psSolid
+    else
+      Pen.Style := TPenStyle(FrameStyle);
     Brush.Style := bsSolid;
     Brush.Color := FillColor;
     case ShapeType of
       frstRectangle:
-        Rectangle(x, y, x1 + 1, y1 + 1);
+        if FrameStyle = frsDouble then
+        begin
+          Rectangle(x - fw, y - fw, x1 + 1 + fw, y1 + 1 + fw);
+          Rectangle(x + fw, y + fw, x1 + 1 - fw, y1 + 1 - fw);
+        end
+        else
+          Rectangle(x, y, x1 + 1, y1 + 1);
       frstRoundRect:
-        RoundRect(x, y, x1 + 1, y1 + 1, min div 4, min div 4);
+        if FrameStyle = frsDouble then
+        begin
+          RoundRect(x - fw, y - fw, x1 + 1 + fw, y1 + 1 + fw, (min + 2 * fw) div 4, min div 4);
+          RoundRect(x + fw, y + fw, x1 + 1 - fw, y1 + 1 - fw, (min - 2 * fw) div 4, min div 4);
+        end
+        else
+          RoundRect(x, y, x1 + 1, y1 + 1, min div 4, min div 4);
       frstEllipse:
-        Ellipse(x, y, x1 + 1, y1 + 1);
+        if FrameStyle = frsDouble then
+        begin
+          Ellipse(x - fw, y - fw, x1 + 1 + fw, y1 + 1 + fw);
+          Ellipse(x + fw, y + fw, x1 + 1 - fw, y1 + 1 - fw);
+        end
+        else
+          Ellipse(x, y, x1 + 1, y1 + 1);
       frstTriangle:
+        if FrameStyle = frsDouble then
+        begin
+          Pts[0]:=Point(x1 + fw * 2, y1 + fw);
+          Pts[1]:=Point(x - fw * 2, y1 + fw);
+          Pts[2]:=Point(x + (x1 - x) div 2, y - fw * 2);
+          Pts[3]:=Point(x1 + fw * 2, y1 + fw);
+          Polygon(Pts);
+
+          Pts[0]:=Point(x1 - fw * 2, y1 - fw);
+          Pts[1]:=Point(x + fw * 2, y1 - fw);
+          Pts[2]:=Point(x + (x1 - x) div 2, y + fw * 2);
+          Pts[3]:=Point(x1 - fw * 2, y1 - fw);
+          Polygon(Pts);
+        end
+        else
         begin
           Pts[0]:=Point(x1, y1);
           Pts[1]:=Point(x, y1);
@@ -169,9 +206,21 @@ begin
           Polygon(Pts);
         end;
       frstDiagonal1:
-      	Line(x,y,x1,y1);
+        if FrameStyle = frsDouble then
+        begin
+          Line(x,y-fw,x1,y1-fw);
+          Line(x,y+fw,x1,y1+fw);
+        end
+        else
+          Line(x,y,x1,y1);
       frstDiagonal2:
-      	Line(x,y1,x1,y);
+        if FrameStyle = frsDouble then
+        begin
+          Line(x,y1+fw,x1,y+fw);
+          Line(x,y1-fw,x1,y-fw);
+        end
+        else
+          Line(x,y1,x1,y);
     end;
   end;
 end;
@@ -240,11 +289,11 @@ const
 var
   x1, y1, xp, yp : Integer;
   Pts         : Array[0..6] of TPoint;
-  min, bx, by, bx1, by1, w1, w2: Integer;
+  min, bx, by, bx1, by1, w1, w2, fw: Integer;
 begin
   w1 := Round(FrameWidth / 2);
   w2 := Round((FrameWidth - 1) / 2);
-
+  fw := Round(FrameWidth);
   bx:=x;
   by:=y;
   bx1:=x+dx+1;
@@ -258,6 +307,14 @@ begin
         Inc(by1, w2);
         Dec(bx, w1);
         Dec(by, w1);
+
+        if FrameStyle = frsDouble then
+        begin
+          Dec(bx, fw);
+          Dec(by, fw);
+          Inc(bx1, fw);
+          Inc(by1, fw);
+        end;
 
         min := dx;
         if dy < dx then
@@ -277,6 +334,15 @@ begin
         Inc(by1, w2);
         Dec(bx, w1);
         Dec(by, w1);
+
+        if FrameStyle = frsDouble then
+        begin
+          Dec(bx, fw);
+          Dec(by, fw);
+          Inc(bx1, fw);
+          Inc(by1, fw);
+        end;
+
         if rt=rtExtended then begin
           if ShapeType=frstRectangle then
             result := CreateRectRgn(bx-Delta, by-Delta, bx1 + Delta, by1 + Delta)
@@ -296,6 +362,15 @@ begin
         Inc(by1, w2);
         Dec(bx, w1);
         Dec(by, w1);
+
+        if FrameStyle = frsDouble then
+        begin
+          Dec(bx, fw * 2);
+          Dec(by, fw * 2);
+          Inc(bx1, fw * 2);
+          Inc(by1, fw * 2);
+        end;
+
         xp := bx + (bx1 - bx) div 2;
         if rt=rtExtended then
         begin
@@ -314,6 +389,11 @@ begin
 
     frstDiagonal1: //Line(x,y,x1,y1);
       begin
+        if FrameStyle = frsDouble then
+        begin
+          Dec(by, fw);
+          Inc(by1, fw);
+        end;
         if w1=0 then
           w1 := 1; // avoid disappearing  line
         if rt=rtExtended then
@@ -335,6 +415,11 @@ begin
 
     frstDiagonal2: //Line(x,y1,x1,y);
       begin
+        if FrameStyle = frsDouble then
+        begin
+          Dec(by, fw);
+          Inc(by1, fw);
+        end;
         if w1=0 then
           w1 := 1; // avoid disappearing  line
         if rt=rtExtended then begin
