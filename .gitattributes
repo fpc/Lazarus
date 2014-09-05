@@ -2205,7 +2205,6 @@ components/lazreport/samples/Demo_CrossTab/demo_cross.lrf svneol=LF#text/xml eol
 components/lazreport/samples/Demo_CrossTab/project1.ico -text
 components/lazreport/samples/Demo_CrossTab/project1.lpi svneol=native#text/plain
 components/lazreport/samples/Demo_CrossTab/project1.lpr svneol=native#text/pascal
-components/lazreport/samples/Demo_CrossTab/project1.lps svneol=native#text/xml
 components/lazreport/samples/Demo_CrossTab/project1.res -text
 components/lazreport/samples/Demo_CrossTab/unit1.lfm svneol=native#text/plain
 components/lazreport/samples/Demo_CrossTab/unit1.pas svneol=native#text/pascal
