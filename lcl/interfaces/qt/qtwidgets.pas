@@ -10146,7 +10146,8 @@ procedure TQtComboBox.InternalIntfGetItems;
 begin
   TCustomComboBox(LCLObject).IntfGetItems;
   // because of issue #25032 we must call it here
-  SlotDropListVisibility(True);
+  if getEnabled then
+    SlotDropListVisibility(True);
 end;
 
 procedure TQtComboBox.ClearItems;
