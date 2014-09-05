@@ -1039,6 +1039,7 @@ begin
       result := dcsiSameLine
     else
       result := dcsiNewLine;
+    sym.ReleaseReference;
   end
   else
     result := dcsiNoLineInfo;
@@ -1059,6 +1060,7 @@ begin
     if cu.GetLineAddress(sym.FileName, sym.Line)<>AnAddr then
       result := false;
   end;
+  sym.ReleaseReference;
 end;
 
 procedure TDbgThread.StoreStepInfo;
@@ -1074,6 +1076,7 @@ begin
     FStoreStepSrcFilename:=sym.FileName;
     FStoreStepSrcLineNo:=sym.Line;
     FStoreStepFuncAddr:=sym.Address.Address;
+    sym.ReleaseReference;
   end
   else
     FStoreStepSrcLineNo:=-1;
