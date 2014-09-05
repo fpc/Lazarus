@@ -54,6 +54,18 @@ type
     SyncLogLevel: TFPDLogLevel;
   end;
 
+  { TFpDebugDebuggerProperties }
+
+  TFpDebugDebuggerProperties = class(TDebuggerProperties)
+  private
+    FNextOnlyStopOnStartLine: boolean;
+  public
+    constructor Create; override;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property NextOnlyStopOnStartLine: boolean read FNextOnlyStopOnStartLine write FNextOnlyStopOnStartLine;
+  end;
+
   { TFpDebugDebugger }
 
   TFpDebugDebugger = class(TDebuggerIntf)
@@ -142,6 +154,7 @@ type
     function GetLocation: TDBGLocationRec; override;
     class function Caption: String; override;
     class function HasExePath: boolean; override;
+    class function CreateProperties: TDebuggerProperties; override;
     function  GetSupportedCommands: TDBGCommands; override;
   end;
 
@@ -287,6 +300,22 @@ type
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFpDebugDebuggerProperties }
+
+constructor TFpDebugDebuggerProperties.Create;
+begin
+  inherited Create;
+  FNextOnlyStopOnStartLine:=true;
+end;
+
+procedure TFpDebugDebuggerProperties.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TFpDebugDebuggerProperties then begin
+    FNextOnlyStopOnStartLine := TFpDebugDebuggerProperties(Source).NextOnlyStopOnStartLine;
+  end;
 end;
 
 { TFpWaitForConsoleOutputThread }
@@ -1376,6 +1405,8 @@ var
   addr: TDBGPtr;
 begin
   result := False;
+  if assigned(FDbgController) then
+    FDbgController.NextOnlyStopOnStartLine := TFpDebugDebuggerProperties(GetProperties).NextOnlyStopOnStartLine;
   case ACommand of
     dcRun:
       begin
@@ -1678,6 +1709,7 @@ begin
   FDbgController.OnProcessExitEvent:=@FDbgControllerProcessExitEvent;
   FDbgController.OnExceptionEvent:=@FDbgControllerExceptionEvent;
   FDbgController.OnDebugInfoLoaded := @FDbgControllerDebugInfoLoaded;
+  FDbgController.NextOnlyStopOnStartLine := TFpDebugDebuggerProperties(GetProperties).NextOnlyStopOnStartLine;
 end;
 
 destructor TFpDebugDebugger.Destroy;
@@ -1739,6 +1771,11 @@ end;
 class function TFpDebugDebugger.HasExePath: boolean;
 begin
   Result:=False;
+end;
+
+class function TFpDebugDebugger.CreateProperties: TDebuggerProperties;
+begin
+  Result := TFpDebugDebuggerProperties.Create;
 end;
 
 function TFpDebugDebugger.GetSupportedCommands: TDBGCommands;

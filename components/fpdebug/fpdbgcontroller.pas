@@ -111,6 +111,7 @@ type
   private
     FEnvironment: TStrings;
     FExecutableFilename: string;
+    FNextOnlyStopOnStartLine: boolean;
     FOnCreateProcessEvent: TOnCreateProcessEvent;
     FOnDebugInfoLoaded: TNotifyEvent;
     FOnExceptionEvent: TOnExceptionEvent;
@@ -157,6 +158,13 @@ type
     property Params: TStringList read FParams write SetParams;
     property Environment: TStrings read FEnvironment write SetEnvironment;
     property WorkingDirectory: string read FWorkingDirectory write FWorkingDirectory;
+    // With this parameter set a 'next' will only stop if the current
+    // instruction is the first inststruction of a line according to the
+    // debuginfo.
+    // Due to a bug in fpc's debug-info, the line info for the first instruction
+    // of a line, sometimes points the the prior line. This setting hides the
+    // results of that bug. It seems like it that GDB does something similar.
+    property NextOnlyStopOnStartLine: boolean read FNextOnlyStopOnStartLine write FNextOnlyStopOnStartLine;
 
     property OnCreateProcessEvent: TOnCreateProcessEvent read FOnCreateProcessEvent write FOnCreateProcessEvent;
     property OnHitBreakpointEvent: TOnHitBreakpointEvent read FOnHitBreakpointEvent write FOnHitBreakpointEvent;
@@ -360,7 +368,8 @@ begin
   inherited ResolveEvent(AnEvent, Handled, Finished);
   if (AnEvent=deBreakpoint) and not assigned(FController.CurrentProcess.CurrentBreakpoint) then
   begin
-    if FController.FCurrentThread.CompareStepInfo<>dcsiNewLine then
+    if (FController.FCurrentThread.CompareStepInfo<>dcsiNewLine) or
+      (not FController.FCurrentThread.IsAtStartOfLine and FController.NextOnlyStopOnStartLine) then
     begin
       AnEvent:=deInternalContinue;
       FHiddenBreakpoint:=nil;
@@ -720,6 +729,7 @@ begin
   FParams := TStringList.Create;
   FEnvironment := TStringList.Create;
   FProcessMap := TMap.Create(itu4, SizeOf(TDbgProcess));
+  FNextOnlyStopOnStartLine := true;
 end;
 
 end.
