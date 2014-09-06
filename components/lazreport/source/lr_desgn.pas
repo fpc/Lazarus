@@ -1999,8 +1999,10 @@ begin
       t.dy := -t.dy; if Abs(t.dy) > Abs(t.dx) then t.y := OldRect.Bottom;
     end;
     t.Selected := True;
+    t.BeginUpdate;
     t.FrameWidth := LastLineWidth;
     t.FrameColor := LastFrameColor;
+    t.EndUpdate;
     TfrDesignerForm(frDesigner).SelNum := 1;
     NPRedrawViewCheckBand(t);
     FDesigner.SelectionChanged;
