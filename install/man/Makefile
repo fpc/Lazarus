@@ -2,32 +2,20 @@
 # Man page installation for unix
 #
 
-override PATH:=$(subst \,/,$(PATH))
-SEARCHPATH:=$(filter-out .,$(subst :, ,$(PATH)))
+PREFIX=/usr
+GINSTALL=/usr/bin/install
 
+INSTALL_MANDIR=$(PREFIX)/share/man/man1
 
-ifndef INSTALL_PREFIX
-INSTALL_PREFIX=/usr/local
-endif
+SRC_FILES=$(wildcard man1/*.1)
+COMPRESSED_FILES=$(SRC_FILES:.1=.1.gz)
 
-ifndef GINSTALL
-GINSTALL:=$(strip $(wildcard $(addsuffix /ginstall,$(SEARCHPATH))))
-ifeq ($(GINSTALL),)
-GINSTALL:=$(strip $(wildcard $(addsuffix /install,$(SEARCHPATH))))
-ifeq ($(GINSTALL),)
-GINSTALL=
-else
-GINSTALL:=$(firstword $(GINSTALL))
-endif
-else
-GINSTALL:=$(firstword $(GINSTALL))
-endif
-endif
+$(INSTALL_MANDIR):
+	$(GINSTALL) -d -m 755 $(INSTALL_MANDIR)
 
-INSTALL_MANDIR=$(INSTALL_PREFIX)/man
+%.1.gz: %.1
+	cat $< | gzip > $@
 
-installman:
-	$(GINSTALL) -d -m 755 $(INSTALL_MANDIR)/man1
-#	$(GINSTALL) -d -m 755 $(INSTALL_MANDIR)/man5
-	$(GINSTALL) -c -m 644 man1/*.1 $(INSTALL_MANDIR)/man1
-#	$(GINSTALL) -c -m 644 man5/*.5 $(INSTALL_MANDIR)/man5
+install: $(COMPRESSED_FILES) $(INSTALL_MANDIR)
+	$(GINSTALL) -m 644 $(COMPRESSED_FILES) $(INSTALL_MANDIR)
+	$(RM) $(COMPRESSED_FILES)
