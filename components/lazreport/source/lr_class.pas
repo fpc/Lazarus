@@ -6152,15 +6152,18 @@ begin
   for i := SubIndex to Objects.Count - 1 do
   begin
     t :=TfrView(Objects[i]);
-    Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
-    Page.Mode := pmBuildList;
-    Page.FormPage;
-    Page.CurY := y + t.y;
-    Page.CurBottomY := Parent.CurBottomY;
-    Page.XAdjust := Parent.XAdjust + t.x;
-    Page.ColCount := 1;
-    Page.PlayFrom := 0;
-    EOFArr[i - SubIndex] := False;
+    if t is TfrSubReportView then
+    begin
+      Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
+      Page.Mode := pmBuildList;
+      Page.FormPage;
+      Page.CurY := y + t.y;
+      Page.CurBottomY := Parent.CurBottomY;
+      Page.XAdjust := Parent.XAdjust + t.x;
+      Page.ColCount := 1;
+      Page.PlayFrom := 0;
+      EOFArr[i - SubIndex] := False;
+    end;
   end;
   Parent.LastBand := nil;
 end;
@@ -6176,17 +6179,20 @@ begin
       for i := SubIndex to Objects.Count - 1 do
       begin
         t :=TfrView(Objects[i]);
-        Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
-        Page.CurY := Parent.CurY;
-        Page.CurBottomY := Parent.CurBottomY;
+        if t is TfrSubReportView then
+        begin
+          Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
+          Page.CurY := Parent.CurY;
+          Page.CurBottomY := Parent.CurBottomY;
+        end;
       end;
     EOFReached := True;
     MaxY := Parent.CurY;
     for i := SubIndex to Objects.Count - 1 do
     begin
-      if not EOFArr[i - SubIndex] then
+      t :=TfrView(Objects[i]);
+      if (t is TfrSubReportView) and (not EOFArr[i - SubIndex]) then
       begin
-        t :=TfrView(Objects[i]);
         Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
         if Page.PlayRecList then
           EOFReached := False
@@ -6214,9 +6220,13 @@ begin
   for i := SubIndex to Objects.Count - 1 do
   begin
     t :=TfrView(Objects[i]);
-    Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
-    Page.ClearRecList;
+    if t is TfrSubReportView then
+    begin
+      Page := CurReport.Pages[(t as TfrSubReportView).SubPage];
+      Page.ClearRecList;
+    end;
   end;
+
   Parent.CurY := MaxY;
   Parent.LastBand := nil;
 end;
