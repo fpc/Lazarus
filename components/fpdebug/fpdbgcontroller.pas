@@ -65,6 +65,7 @@ type
   TDbgControllerStepOverLineCmd = class(TDbgControllerStepOverInstructionCmd)
   private
     FInfoStored: boolean;
+    FStoredStackFrame: TDBGPtr;
   public
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
     procedure ResolveEvent(var AnEvent: TFPDEvent; out Handled, Finished: boolean); override;
@@ -358,6 +359,7 @@ begin
   begin
     FInfoStored:=true;
     AThread.StoreStepInfo;
+    FStoredStackFrame:=AProcess.GetStackBasePointerRegisterValue;
   end;
 
   inherited DoContinue(AProcess, AThread);
@@ -369,7 +371,8 @@ begin
   if (AnEvent=deBreakpoint) and not assigned(FController.CurrentProcess.CurrentBreakpoint) then
   begin
     if (FController.FCurrentThread.CompareStepInfo<>dcsiNewLine) or
-      (not FController.FCurrentThread.IsAtStartOfLine and FController.NextOnlyStopOnStartLine) then
+      (not FController.FCurrentThread.IsAtStartOfLine and
+       (FController.NextOnlyStopOnStartLine or (FStoredStackFrame < FController.CurrentProcess.GetStackBasePointerRegisterValue))) then
     begin
       AnEvent:=deInternalContinue;
       FHiddenBreakpoint:=nil;
