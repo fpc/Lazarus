@@ -258,29 +258,52 @@ ifneq ($(findstring $(OS_TARGET),win32 win64),)
 else
 	$(MKDIR) $(INSTALL_PREFIX)/share
 	$(MKDIR) $(INSTALL_PREFIX)/share/lazarus
+	$(MKDIR) $(INSTALL_PREFIX)/share/applications
+	$(MKDIR) $(INSTALL_PREFIX)/share/pixmaps
+	$(MKDIR) $(INSTALL_PREFIX)/share/mime/packages
+	$(MKDIR) $(INSTALL_PREFIX)/share/icons/hicolor/48x48/mimetypes
 	$(MKDIR) $(INSTALL_BINDIR)
 	$(MKDIR) $(INSTALL_MAN_DIR)
 	$(MKDIR) $(INSTALL_MAN_DIR)/man1
 endif
 #-----------------------------------------------------------------------------
-# Many "make" users expect 'make install' to copy the binaries to somewhere
+# Most "make" users expect 'make install' to copy the binaries to somewhere
 # Copy the lazarus tree to the install directory and set some links
 # Copy everything except for 'debian' to avoid recursion and other platform files
-install:
-	$(MAKE) installbase
+install: installbase
 	$(COPYTREE) packager debugger designer converter ide images languages lazarus.app units $(LAZARUS_INSTALL_DIR)
-	$(COPYTREE) components docs doceditor examples lcl test install tools $(LAZARUS_INSTALL_DIR)
+	$(COPYTREE) components docs doceditor examples lcl test tools $(LAZARUS_INSTALL_DIR)
 	$(COPYTREE) Makefile* *.txt *.bat *.sh $(LAZARUS_INSTALL_DIR)
-	$(COPYTREE) lazarus startlazarus lazbuild $(LAZARUS_INSTALL_DIR)
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
-
+	$(COPYTREE) lazarus startlazarus lazbuild $(LAZARUS_INSTALL_DIR)
 else
-	ln -sf $(LAZARUS_INSTALL_DIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus-ide
-	ln -sf $(LAZARUS_INSTALL_DIR)/startlazarus $(INSTALL_PREFIX)/bin/startlazarus
-	ln -sf $(LAZARUS_INSTALL_DIR)/lazbuild $(INSTALL_PREFIX)/bin/lazbuild
-	cat install/man/man1/lazarus-ide.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazarus-ide.1.gz
-	cat install/man/man1/startlazarus.1 | gzip > $(INSTALL_MAN_DIR)/man1/startlazarus.1.gz
-	cat install/man/man1/lazbuild.1 | gzip > $(INSTALL_MAN_DIR)/man1/lazbuild.1.gz
+	$(INSTALLEXE) lazarus startlazarus lazbuild $(LAZARUS_INSTALL_DIR)
+
+	# symlinks (they must be relative!)
+	ln -sf ../$(INSTALL_BASEDIR)/lazarus $(INSTALL_PREFIX)/bin/lazarus-ide
+	ln -sf ../$(INSTALL_BASEDIR)/startlazarus $(INSTALL_PREFIX)/bin/startlazarus
+	ln -sf ../$(INSTALL_BASEDIR)/lazbuild $(INSTALL_PREFIX)/bin/lazbuild
+	ln -sf ../$(INSTALL_BASEDIR)/tools/lazres $(INSTALL_PREFIX)/bin/lazres
+	ln -sf ../$(INSTALL_BASEDIR)/tools/lrstolfm $(INSTALL_PREFIX)/bin/lrstolfm
+	ln -sf ../$(INSTALL_BASEDIR)/tools/updatepofiles $(INSTALL_PREFIX)/bin/updatepofiles
+
+	# man pages
+	$(MAKE) -C install/man install PREFIX=$(INSTALL_PREFIX) GINSTALL=$(GINSTALL)
+
+	# start menu item
+	$(INSTALL) install/lazarus.desktop $(INSTALL_PREFIX)/share/applications/lazarus.desktop
+	$(INSTALL) images/icons/lazarus128x128.png $(INSTALL_PREFIX)/share/pixmaps/lazarus.png
+
+	# mime types and icons
+	$(INSTALL) install/lazarus-mime.xml $(INSTALL_PREFIX)/share/mime/packages/lazarus.xml
+	$(INSTALL) images/mimetypes/*.png $(INSTALL_PREFIX)/share/icons/hicolor/48x48/mimetypes/
+
+	# create missing directories (needed when rebuilding IDE without write permission)
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/nogui
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/gtk
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/gtk2
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/units/$(FULL_TARGET)/qt
+	$(MKDIR) $(LAZARUS_INSTALL_DIR)/components/synedit/design/languages
 endif
 
 
