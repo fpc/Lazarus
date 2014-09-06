@@ -2698,13 +2698,6 @@ begin
   if IsColumn then begin
     AddDel(FCols, NewValue);
     FGCache.AccumWidth.Count:=NewValue;
-    // calc initial accumulated widths of new columns
-    OldCount := OldValue;
-    while (OldValue>0) and (OldCount<NewValue) do begin
-      FGCache.AccumWidth[OldCount] :=
-        FGCache.AccumWidth[OldCount-1] + GetColWidths(OldCount);
-      Inc(OldCount);
-    end;
     OldCount:=RowCount;
     if (OldValue=0)and(NewValue>=0) then begin
       FTopLeft.X:=FFixedCols;
@@ -2720,6 +2713,7 @@ begin
         FGCache.AccumHeight.Count:=NewCount;
       end;
     end;
+    UpdateCachedSizes;
     SizeChanged(OldValue, OldCount);
     // if new count makes current col out of range, adjust position
     // if not, position should not change (fake changed col to be the last one)
@@ -2730,13 +2724,6 @@ begin
   end else begin
     AddDel(FRows, NewValue);
     FGCache.AccumHeight.Count:=NewValue;
-    // calc initial accumulated heights of new rows
-    OldCount := OldValue;
-    while (OldValue>0) and (OldCount<NewValue) do begin
-      FGCache.AccumHeight[OldCount] :=
-        FGCache.AccumHeight[OldCount-1] + GetRowHeights(OldCount);
-      Inc(OldCount);
-    end;
     OldCount:=ColCount;
     if (OldValue=0)and(NewValue>=0) then begin
       FTopleft.Y:=FFixedRows;
@@ -2755,6 +2742,7 @@ begin
         FGCache.AccumWidth.Count:=NewCount;
       end;
     end;
+    UpdateCachedSizes;
     SizeChanged(OldCount, OldValue);
     // if new count makes current row out of range, adjust position
     // if not, position should not change (fake changed row to be the last one)
