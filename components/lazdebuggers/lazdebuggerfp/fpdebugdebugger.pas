@@ -1556,7 +1556,9 @@ end;
 
 procedure TFpDebugDebugger.StartDebugLoop;
 begin
+  {$ifdef DBG_FPDEBUG_VERBOSE}
   DebugLn('StartDebugLoop');
+  {$endif DBG_FPDEBUG_VERBOSE}
   RTLeventSetEvent(FFpDebugThread.StartDebugLoopEvent);
 end;
 
@@ -1564,7 +1566,9 @@ procedure TFpDebugDebugger.DebugLoopFinished;
 var
   Cont: boolean;
 begin
+  {$ifdef DBG_FPDEBUG_VERBOSE}
   DebugLn('DebugLoopFinished');
+  {$endif DBG_FPDEBUG_VERBOSE}
 
   FDbgController.SendEvents(Cont);
 

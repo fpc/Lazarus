@@ -513,6 +513,9 @@ procedure TDbgController.InitializeCommand(ACommand: TDbgControllerCmd);
 begin
   if assigned(FCommand) then
     raise exception.create('Prior command not finished yet.');
+  {$ifdef DBG_FPDEBUG_VERBOSE}
+  log('Initialized command '+ACommand.ClassName, dllDebug);
+  {$endif DBG_FPDEBUG_VERBOSE}
   FCommand := ACommand;
 end;
 
@@ -601,9 +604,19 @@ begin
     else
     begin
       if not assigned(FCommand) then
+        begin
+        {$ifdef DBG_FPDEBUG_VERBOSE}
+        log('Continue process without command.', dllDebug);
+        {$endif DBG_FPDEBUG_VERBOSE}
         FCurrentProcess.Continue(FCurrentProcess, FCurrentThread, False)
+        end
       else
+        begin
+        {$ifdef DBG_FPDEBUG_VERBOSE}
+        log('Continue process with command '+FCommand.ClassName, dllDebug);
+        {$endif DBG_FPDEBUG_VERBOSE}
         FCommand.DoContinue(FCurrentProcess, FCurrentThread);
+        end;
     end;
     if not FCurrentProcess.WaitForDebugEvent(AProcessIdentifier, AThreadIdentifier) then Continue;
 
@@ -625,8 +638,22 @@ begin
       FCurrentThread := FCurrentProcess.AddThread(AThreadIdentifier);
 
     FPDEvent:=FCurrentProcess.ResolveDebugEvent(FCurrentThread);
+    {$ifdef DBG_FPDEBUG_VERBOSE}
+    log('Process stopped with event %s. IP=%s, SP=%s, BSP=%s.', [FPDEventNames[FPDEvent],
+                                                                FCurrentProcess.FormatAddress(FCurrentProcess.GetInstructionPointerRegisterValue),
+                                                                FCurrentProcess.FormatAddress(FCurrentProcess.GetStackPointerRegisterValue),
+                                                                FCurrentProcess.FormatAddress(FCurrentProcess.GetStackBasePointerRegisterValue)], dllDebug);
+    {$endif DBG_FPDEBUG_VERBOSE}
     if assigned(FCommand) then
-      FCommand.ResolveEvent(FPDEvent, IsHandled, IsFinished)
+      begin
+      FCommand.ResolveEvent(FPDEvent, IsHandled, IsFinished);
+      {$ifdef DBG_FPDEBUG_VERBOSE}
+      if IsFinished then
+        log('Command %s is finished. (IsHandled=%s)', [FCommand.ClassName, BoolToStr(IsHandled)], dllDebug)
+      else
+        log('Command %s is not finished. (IsHandled=%s)', [FCommand.ClassName, BoolToStr(IsHandled)], dllDebug);
+      {$endif DBG_FPDEBUG_VERBOSE}
+      end
     else
     begin
       IsHandled:=false;

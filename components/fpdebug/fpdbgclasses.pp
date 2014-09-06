@@ -274,6 +274,7 @@ type
     procedure RemoveThread(const AID: DWord);
     procedure Log(const AString: string; const ALogLevel: TFPDLogLevel = dllDebug);
     procedure Log(const AString: string; const Options: array of const; const ALogLevel: TFPDLogLevel = dllDebug);
+    function FormatAddress(const AAddress): String;
     function  Pause: boolean; virtual;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; virtual;
@@ -335,6 +336,7 @@ var
 
 const
   DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
+  FPDEventNames: array[TFPDEvent] of string = ('deExitProcess', 'deBreakpoint', 'deException', 'deCreateProcess', 'deLoadLibrary', 'deInternalContinue');
 
 function OSDbgClasses: TOSDbgClasses;
 
@@ -927,6 +929,11 @@ end;
 procedure TDbgProcess.Log(const AString: string; const Options: array of const; const ALogLevel: TFPDLogLevel);
 begin
   Log(Format(AString, Options), ALogLevel);
+end;
+
+function TDbgProcess.FormatAddress(const AAddress): String;
+begin
+  Result := HexValue(AAddress, DBGPTRSIZE[Mode], [hvfIncludeHexchar]);
 end;
 
 function TDbgProcess.Pause: boolean;
