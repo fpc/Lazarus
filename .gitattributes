@@ -2407,6 +2407,7 @@ components/lazreport/source/addons/imgexport/tfrimageexport.png -text
 components/lazreport/source/addons/lrEmailExport/images/TlrEmailExportFilter.bmp -text
 components/lazreport/source/addons/lrEmailExport/images/img.txt svneol=native#text/plain
 components/lazreport/source/addons/lrEmailExport/images/mk_res.sh svneol=native#text/plain
+components/lazreport/source/addons/lrEmailExport/languages/lrEmailExportFilter.de.po svneol=native#text/plain
 components/lazreport/source/addons/lrEmailExport/languages/lrEmailExportFilter.po svneol=native#text/plain
 components/lazreport/source/addons/lrEmailExport/languages/lrEmailExportFilter.ru.po svneol=native#text/plain
 components/lazreport/source/addons/lrEmailExport/lrEmailExportFilter.pas svneol=native#text/pascal
