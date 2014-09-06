@@ -759,11 +759,11 @@ else
       <!-- function Visibility: default -->
       <element name="GetExeExt">
         <short>
-          <var>GetExeExt</var> - find the correct extension for an executable file</short>
+          <var>GetExeExt</var> - find the correct extension (including the starting .) for an executable file</short>
       </element>
       <!-- function result Visibility: default -->
       <element name="GetExeExt.Result">
-        <short>Returns '.exe' in Windows, nothing in other systems</short>
+        <short>Returns '.exe' in Windows, nothing in other systems.</short>
       </element>
       <!-- function Visibility: default -->
       <element name="SearchFileInPath">
