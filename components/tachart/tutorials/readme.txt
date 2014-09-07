@@ -50,9 +50,24 @@ topics:
 --------------------------------------------------------------------------------
 folder "bar_series"
 --------------------------------------------------------------------------------
-tutorial
+tutorials
   http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_BarSeries
+  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_Stacked_BarSeries
   
 topics
 - multiple bar series arranged side-by-side
+- stacked bar series
+- TChartStyle
 - TRandomChartSource
+
+--------------------------------------------------------------------------------
+folder "background"
+--------------------------------------------------------------------------------
+tutorial
+  http://wiki.lazarus.freepascal.org/TAChart_Tutorial:_Background_design
+  
+topics
+- events used by TChart
+- user-drawn chart backgrounds: entire background, chart area ("back wall") only
+- transparency of bar series
+- enter data at design-time
