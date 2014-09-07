@@ -172,15 +172,21 @@ msgid "Original"
 msgstr "Eredeti"
 
 #: pocheckerconsts.spercfuzzy
-msgid "Fuzzy strings: %2.0f%%."
+#, fuzzy
+#| msgid "Fuzzy strings: %2.0f%%."
+msgid "%s: %4.1f%% fuzzy strings."
 msgstr "Bizonytalan szövegek: %2.0f%%."
 
 #: pocheckerconsts.sperctranslated
-msgid "Translated strings: %2.0f%%."
+#, fuzzy
+#| msgid "Translated strings: %2.0f%%."
+msgid "%s: %4.1f%% translated strings."
 msgstr "Lefordított szövegek: %2.0f%%."
 
 #: pocheckerconsts.spercuntranslated
-msgid "Untranslated strings: %2.0f%%."
+#, fuzzy
+#| msgid "Untranslated strings: %2.0f%%."
+msgid "%s: %4.1f%% untranslated strings."
 msgstr "Lefordítatlan szövegek: %2.0f%%."
 
 #: pocheckerconsts.sresults
@@ -231,7 +237,9 @@ msgid "Translation"
 msgstr "Fordítás"
 
 #: pocheckerconsts.stranslationstatistics
-msgid "Translation statistics for:"
+#, fuzzy
+#| msgid "Translation statistics for:"
+msgid "Translation statistics per language:"
 msgstr "Fordítási statisztika ehhez:"
 
 #: pocheckerconsts.sunselectalltests

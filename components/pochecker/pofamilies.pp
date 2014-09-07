@@ -7,7 +7,7 @@ unit PoFamilies;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil, StringHashList,
+  Classes, SysUtils, LCLProc, FileUtil, StringHashList, ContNrs, Math,
   //{$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF},
   SimplePoFiles, pocheckerconsts;
 
@@ -38,6 +38,8 @@ Type
   TTestStartEvent = procedure(const ATestName, APoFileName: String) of object;
   TTestEndEvent = procedure(const ATestName: String; const ErrorCount: Integer) of object;
 
+  TPoFamilyStats = class;
+
   TPoFamily = class
   private
     FMaster: TSimplePoFile;
@@ -46,6 +48,7 @@ Type
     FChildName: String;
     FOnTestStart: TTestStartEvent;
     FOnTestEnd: TTestEndEvent;
+    FPoFamilyStats: TPoFamilyStats;
     procedure SetChildName(AValue: String);
     procedure SetMasterName(AValue: String);
     function GetShortMasterName: String;
@@ -65,7 +68,7 @@ Type
     procedure CheckMissingIdentifiers(out ErrorCount: Integer; ErrorLog: TStrings);
     procedure CheckMismatchedOriginals(out ErrorCount: Integer; ErrorLog: TStrings);
     procedure CheckDuplicateOriginals(out WarningCount: Integer; ErrorLog: TStrings);
-    procedure CheckStatistics(out WarningCount: Integer; ErrorLog: TStrings);
+    procedure CheckStatistics;
 
   public
     procedure RunTests(const TestTypes: TPoTestTypes; const TestOptions: TPoTestOptions;
@@ -75,10 +78,48 @@ Type
     property Child: TSimplePoFile read FChild;
     property MasterName: String read FMasterName write SetMasterName;
     property ChildName: String read FChildName write SetChildName;
+    property PoFamilyStats: TPoFamilyStats read FPoFamilyStats;
     property ShortMasterName: String read  GetShortMasterName;
     property ShortChildName: String read GetShortChildName;
     property OnTestStart: TTestStartEvent read FOnTestStart write FOnTestStart;
     property OnTestEnd: TTestEndEvent read FOnTestEnd write FOnTestEnd;
+  end;
+
+  { TPoFamilyStats }
+
+  { TStat }
+
+  TStat = class
+  private
+    FPoName: String;
+    FNrTotal: Integer;
+    FNrTranslated: Integer;
+    FNrUnTranslated: Integer;
+    FNrFuzzy: Integer;
+  public
+    constructor Create(APoName: String; ANrTotal, ANrTranslated, ANrUntranslated, ANrFuzzy: Integer);
+    property PoName: string read FPoName;
+    property NrTotal: Integer read FNrTotal;
+    property NrTranslated: Integer read FNrTranslated;
+    property NrUnTranslated: Integer read FNrUnTranslated;
+    property NrFuzzy: Integer read FNrFuzzy;
+    function PercTranslated: Double;
+    function PercUnTranslated: Double;
+    function PercFuzzy: Double;
+  end;
+
+  TPoFamilyStats = class
+  private
+    FList: TFPObjectList;
+    function GetCount: Integer;
+  public
+    procedure Clear;
+    procedure Add(AName: String; ANrTotal, ANrTranslated, ANrUnTranslated, ANrFuzzy: Integer);
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddStatisticsToLog(ALog: TStrings);
+
+    property Count: Integer read GetCount;
   end;
 
 function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;
@@ -271,6 +312,95 @@ begin
   end;
 end;
 
+{ TStat }
+
+constructor TStat.Create(APoName: String; ANrTotal, ANrTranslated, ANrUntranslated, ANrFuzzy: Integer);
+begin
+  FPoName := APoName;
+  FNrTotal := ANrTotal;
+  FNrTranslated := ANrTranslated;
+  FNrUntranslated := ANrUntranslated;
+  FNrFuzzy := ANrFuzzy;
+end;
+
+function TStat.PercTranslated: Double;
+begin
+  Result := 100 * (FNrTranslated / FNrTotal);
+end;
+
+function TStat.PercUnTranslated: Double;
+begin
+  Result := 100 * (FNrUnTranslated / FNrTotal);
+end;
+
+function TStat.PercFuzzy: Double;
+begin
+  Result := 100 * (FNrFuzzy / FNrTotal);
+end;
+
+{ TPoFamilyStats }
+
+function TPoFamilyStats.GetCount: Integer;
+begin
+  Result := FList.Count;
+end;
+
+procedure TPoFamilyStats.Clear;
+begin
+  FList.Clear;
+end;
+
+procedure TPoFamilyStats.Add(AName: String; ANrTotal, ANrTranslated, ANrUnTranslated, ANrFuzzy: Integer);
+begin
+  FList.Add(TStat.Create(AName, ANrTotal, ANrTranslated, ANrUntranslated, ANrFuzzy));
+end;
+
+constructor TPoFamilyStats.Create;
+begin
+  FList := TFPObjectList.Create(True);
+end;
+
+destructor TPoFamilyStats.Destroy;
+begin
+  FList.Free;
+  inherited Destroy;
+end;
+
+procedure TPoFamilyStats.AddStatisticsToLog(ALog: TStrings);
+var
+  i: Integer;
+  Stat: TStat;
+  function Bar(Nr, Total: Integer; RoundDown: Boolean): String;
+  const
+    Max = 50;
+  var
+    Count: Integer;
+  begin
+    if RoundDown then
+      Count := Floor(Max * (Nr/Total))
+    else
+      Count := Ceil(Max * (Nr/Total));
+    Result := StringOfChar('x', Count);
+    Result := Result + StringOfChar(#32, Max - Count);
+  end;
+begin
+  if (FList.Count = 0) then Exit;
+  ALog.Add(Divider);
+  ALog.Add(sTranslationStatistics);
+  ALog.Add('');
+  for i := 0 to FList.Count - 1 do
+  begin
+    Stat := TStat(FList.Items[i]);
+    ALog.Add(Stat.PoName);
+    ALog.Add(Format(sPercTranslated,[Bar(Stat.NrTranslated, Stat.NrTotal, True),Stat.PercTranslated]));
+    ALog.Add(Format(sPercUntranslated,[Bar(Stat.NrUnTranslated, Stat.NrTotal, False), Stat.PercUnTranslated]));
+    ALog.Add(Format(sPercFuzzy,[Bar(Stat.NrFuzzy, Stat.NrTotal, False), Stat.PercFuzzy]));
+    ALog.Add('');
+    ALog.Add('');
+  end;
+  ALog.Add(Divider);
+end;
+
 { TPoFamily }
 
 procedure TPoFamily.SetMasterName(AValue: String);
@@ -338,12 +468,14 @@ begin
     FChildName := AChildName;
     //debugln('TPoFamily.Create: created ',FChildName);
   end;
+  FPoFamilyStats := TPoFamilyStats.Create;
 end;
 
 destructor TPoFamily.Destroy;
 begin
   if Assigned(FMaster) then FMaster.Free;
   if Assigned(FChild) then FChild.Free;
+  FPoFamilyStats.Free;
   inherited Destroy;
 end;
 
@@ -595,24 +727,21 @@ begin
   //debugln('TPoFamily.CheckDuplicateOriginals: ',Dbgs(WarningCount),' Errors');
 end;
 
-procedure TPoFamily.CheckStatistics(out WarningCount: Integer; ErrorLog: TStrings);
+procedure TPoFamily.CheckStatistics;
 var
   i: Integer;
   CPoItem: TPOFileItem;
   NrTranslated, NrUntranslated, NrFuzzy, NrTotal: Integer;
 begin
-  //debugln('TPoFamily.CheckFormatArgs');
+  //debugln('TPoFamily.CheckStatistics');
   DoTestStart(sCheckStatistics, ShortChildName);
   NrTranslated := 0;
   NrUntranslated := 0;
   NrFuzzy := 0;
-  //for i := 0 to FMaster.Count - 1 do
   for i := 0 to FChild.Count - 1 do
   begin
     //debugln('  i = ',DbgS(i));
-    //MPoItem := FMaster.PoItems[i];
     CPoItem := FChild.PoItems[i];
-    //CPoItem := FChild.FindPoItem(MPoItem.Identifier);
     if Assigned(CPoItem) then
     begin
       if (Length(CPoItem.Translation) > 0) then
@@ -631,17 +760,9 @@ begin
   NrTotal := NrTranslated + NrUntranslated + NrFuzzy;
   if (NrTotal > 0) then
   begin
-    ErrorLog.Add(Divider);
-    ErrorLog.Add(sTranslationStatistics);
-    ErrorLog.Add(ShortChildName);
-    ErrorLog.Add(Format(sPercTranslated,[100.0*(NrTranslated/NrTotal)]));
-    ErrorLog.Add(Format(sPercUntranslated,[100.0*(NrUntranslated/NrTotal)]));
-    ErrorLog.Add(Format(sPercFuzzy,[100.0*(NrFuzzy/NrTotal)]));
-    ErrorLog.Add('');
-    ErrorLog.Add('');
+    FPoFamilyStats.Add(ShortChildName, NrTotal, NrTranslated, NrUntranslated, NrFuzzy);
   end;
-  WarningCount := NrTotal;
-  DoTestEnd(PoTestTypeNames[pttCheckFormatArgs], WarningCount);
+  DoTestEnd(PoTestTypeNames[pttCheckFormatArgs], 0);
   //debugln('TPoFamily.CheckIncompatibleFormatArgs: ',Dbgs(ErrorCount),' Errors');
 end;
 
@@ -661,6 +782,7 @@ var
   S: String;
 begin
   SL := nil;
+  FPoFamilyStats.Clear;
   ErrorCount := NoError;
   WarningCount := NoError;
   if (not Assigned(FMaster)) and (not Assigned(FChild)) then
@@ -773,10 +895,11 @@ begin
         ErrorCount := CurrErrCnt + ErrorCount;
       end;
 
+
+      //Always run this as the last test please
       if (pttCheckStatistics in TestTypes) then
       begin
-        CheckStatistics(CurrErrCnt, ErrorLog);
-        ErrorCount := CurrErrCnt + ErrorCount;
+        CheckStatistics;
       end;
        {
         if (ptt in TestTypes) then
@@ -785,6 +908,11 @@ begin
           ErrorCount := CurrErrCnt + ErrorCount;
         end;
         }
+    end;
+    //Add statistics at the end of the log
+    if (pttCheckStatistics in TestTypes) and (FPoFamilyStats.Count > 0) then
+    begin
+      FPoFamilyStats.AddStatisticsToLog(ErrorLog);
     end;
   finally
     SL.Free;

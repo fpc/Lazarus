@@ -175,15 +175,21 @@ msgid "Original"
 msgstr "Originál"
 
 #: pocheckerconsts.spercfuzzy
-msgid "Fuzzy strings: %2.0f%%."
+#, fuzzy
+#| msgid "Fuzzy strings: %2.0f%%."
+msgid "%s: %4.1f%% fuzzy strings."
 msgstr "Nepřesné překlady: %2.0f%%."
 
 #: pocheckerconsts.sperctranslated
-msgid "Translated strings: %2.0f%%."
+#, fuzzy
+#| msgid "Translated strings: %2.0f%%."
+msgid "%s: %4.1f%% translated strings."
 msgstr "Přeloženo:          %2.0f%%."
 
 #: pocheckerconsts.spercuntranslated
-msgid "Untranslated strings: %2.0f%%."
+#, fuzzy
+#| msgid "Untranslated strings: %2.0f%%."
+msgid "%s: %4.1f%% untranslated strings."
 msgstr "Nepřeloženo:       %2.0f%%."
 
 #: pocheckerconsts.sresults
@@ -235,7 +241,9 @@ msgid "Translation"
 msgstr "Překlad"
 
 #: pocheckerconsts.stranslationstatistics
-msgid "Translation statistics for:"
+#, fuzzy
+#| msgid "Translation statistics for:"
+msgid "Translation statistics per language:"
 msgstr "Statistiky překladu pro:"
 
 #: pocheckerconsts.sunselectalltests

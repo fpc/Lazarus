@@ -172,15 +172,15 @@ msgid "Original"
 msgstr "Original"
 
 #: pocheckerconsts.spercfuzzy
-msgid "Fuzzy strings: %2.0f%%."
+msgid "%s: %4.1f%% fuzzy strings."
 msgstr ""
 
 #: pocheckerconsts.sperctranslated
-msgid "Translated strings: %2.0f%%."
+msgid "%s: %4.1f%% translated strings."
 msgstr ""
 
 #: pocheckerconsts.spercuntranslated
-msgid "Untranslated strings: %2.0f%%."
+msgid "%s: %4.1f%% untranslated strings."
 msgstr ""
 
 #: pocheckerconsts.sresults
@@ -232,7 +232,7 @@ msgid "Translation"
 msgstr "Traducción"
 
 #: pocheckerconsts.stranslationstatistics
-msgid "Translation statistics for:"
+msgid "Translation statistics per language:"
 msgstr ""
 
 #: pocheckerconsts.sunselectalltests

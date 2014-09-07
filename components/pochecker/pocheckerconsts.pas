@@ -36,7 +36,7 @@ resourcestring
   sOriginal = 'Original';
   sTranslation = 'Translation';
   sErrorsByTest = 'Errors / warnings reported by %s for:';
-  sTranslationStatistics = 'Translation statistics for:';
+  sTranslationStatistics = 'Translation statistics per language:';
   sCheckNumberOfItems = 'Check number of items';
   sCheckForIncompatibleFormatArguments = 'Check for incompatible format '
     +'arguments';
@@ -65,9 +65,9 @@ resourcestring
   sDuplicateOriginals = 'The (untranslated) value "%s" is used for more than 1 entry:';
 
   sDuplicateLineNrWithValue = '[Line %d] %s';
-  sPercTranslated = 'Translated strings: %2.0f%%.';
-  sPercUntranslated = 'Untranslated strings: %2.0f%%.';
-  sPercFuzzy = 'Fuzzy strings: %2.0f%%.';
+  sPercTranslated = '%s: %4.1f%% translated strings.';
+  sPercUntranslated = '%s: %4.1f%% untranslated strings.';
+  sPercFuzzy = '%s: %4.1f%% fuzzy strings.';
 implementation
 
 end.

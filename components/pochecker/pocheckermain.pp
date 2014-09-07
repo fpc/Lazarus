@@ -107,6 +107,7 @@ begin
   {$IFDEF POCHECKERSTANDALONE}
   //Initializing translation
   Lang := GetEnvironmentVariableUTF8('LANG');
+  T := '';
   if Lang = '' then
     LCLGetLanguageIDs(Lang, T);
   if Lang <> '' then
@@ -203,11 +204,10 @@ end;
 
 
 procedure TPoCheckerForm.OnTestEnd(const ATestName: string; const ErrorCount: integer);
-
 begin
   //CurTestLabel.Caption := '';
   //CurPoLabel.Caption :=  '';
-  debugln('OnTestEnd [', ATestName, ']: ErrorCount = ', DbgS(ErrorCount));
+  //debugln('OnTestEnd [', ATestName, ']: ErrorCount = ', DbgS(ErrorCount));
   //Application.ProcessMessages;
 end;
 
