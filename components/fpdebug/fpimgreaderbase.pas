@@ -58,8 +58,10 @@ type
   private
     FImage64Bit: Boolean;
     FImageBase: QWord;
+    FUUID: TGuid;
   protected
     function GetSection(const AName: String): PDbgImageSection; virtual; abstract;
+    procedure SetUUID(AGuid: TGuid);
     procedure SetImageBase(ABase: QWord);
     procedure SetImage64Bit(AValue: Boolean);
   public
@@ -70,6 +72,7 @@ type
 
     property ImageBase: QWord read FImageBase;
     Property Image64Bit: Boolean read FImage64Bit;
+    property UUID: TGuid read FUUID;
     property Section[const AName: String]: PDbgImageSection read GetSection;
   end;
   TDbgImageReaderClass = class of TDbgImageReader;
@@ -225,6 +228,11 @@ begin
 end;
 
 { TDbgImageReader }
+
+procedure TDbgImageReader.SetUUID(AGuid: TGuid);
+begin
+  FUUID := AGuid;
+end;
 
 procedure TDbgImageReader.SetImageBase(ABase: QWord);
 begin

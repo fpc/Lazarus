@@ -134,6 +134,7 @@ begin
     end;
   end;
   SetImage64Bit((fFile.header.cputype and CPU_ARCH_ABI64)=CPU_ARCH_ABI64);
+  SetUUID(fFile.UUID);
   fileRead := true;
 end;
 

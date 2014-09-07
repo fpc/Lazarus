@@ -25,6 +25,7 @@ type
     header    : mach_header;
     commands  : array of pload_command;
     sections  : TFPList;
+    UUID      : TGuid;
     constructor Create;
     destructor Destroy; override;
     function  LoadFromFile(ALoader: TDbgFileLoader): Boolean;
@@ -57,6 +58,7 @@ var
   ofs : Integer;
   sc32: psection;
   sc64: psection_64;
+  idcm: puuid_command;
   s   : TMachOsection;
   hs  : integer;
   i64 : boolean;
@@ -97,7 +99,10 @@ begin
         sections.add(s);
         inc(sc64);
       end;
-
+    end
+    else if commands[i]^.cmd = LC_UUID then begin
+      idcm := @cmdbuf[ofs];
+      UUID:=PGuid(@(idcm^.uuid))^;
     end;
     inc(ofs, commands[i]^.cmdsize);
   end;

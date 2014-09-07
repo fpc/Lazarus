@@ -692,6 +692,9 @@ begin
     deCreateProcess:
       begin
         FCurrentProcess.LoadInfo;
+        if not FCurrentProcess.DbgInfo.HasInfo then
+          Log('No Dwarf-debug information available. The debugger will not function properly.',dllInfo);
+
         DoOnDebugInfoLoaded(self);
 
         continue:=true;

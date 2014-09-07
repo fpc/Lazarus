@@ -189,13 +189,14 @@ type
     FMode: TFPDMode;
     FName: String;
     FProcess: TDbgProcess;
-    FDbgInfo: TDbgInfo;
     FSymbolTableInfo: TFpSymbolInfo;
     FLoader: TDbgImageLoader;
 
   protected
+    FDbgInfo: TDbgInfo;
     function InitializeLoader: TDbgImageLoader; virtual;
     procedure SetName(const AValue: String);
+    property Loader: TDbgImageLoader read FLoader write FLoader;
   public
     constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
@@ -975,9 +976,7 @@ begin
   inherited LoadInfo;
 
   if DbgInfo.HasInfo then
-    FSymInstances.Add(Self)
-  else
-    Log('No Dwarf-debug information available. The debugger will not function properly.',dllInfo);
+    FSymInstances.Add(Self);
 end;
 
 function TDbgProcess.GetLastEventProcessIdentifier: THandle;

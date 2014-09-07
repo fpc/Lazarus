@@ -57,6 +57,7 @@ type
     FFileLoader: TDbgFileLoader;
     FImgReader: TDbgImageReader;
     function GetImage64Bit: Boolean;
+    function GetUUID: TGuid;
   protected
     FImageBase: QWord unimplemented;
     function GetSection(const AName: String): PDbgImageSection; virtual;
@@ -73,6 +74,7 @@ type
     function IsValid: Boolean;
     property ImageBase: QWord read FImageBase; unimplemented;
     Property Image64Bit: Boolean read GetImage64Bit;
+    property UUID: TGuid read GetUUID;
     property Section[const AName: String]: PDbgImageSection read GetSection;
   end;
 
@@ -92,6 +94,14 @@ begin
     {$endif}
   else
     result := ImgReader.Image64Bit;
+end;
+
+function TDbgImageLoader.GetUUID: TGuid;
+begin
+  if assigned(FImgReader) then
+    result := FImgReader.UUID
+  else
+    result := GUID_NULL;
 end;
 
 function TDbgImageLoader.GetSection(const AName: String): PDbgImageSection;
