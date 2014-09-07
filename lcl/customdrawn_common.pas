@@ -699,7 +699,7 @@ begin
   ADest.Line(ASize.cx - 1, ASize.cy - 1, ASize.cx - 1, -1);
   ADest.Pen.FPColor := TColorToFPColor($0099A8AC);
   ADest.Line(1, ASize.cy - 2, ASize.cx - 2, ASize.cy - 2);
-  ADest.Line(ASize.cx - 2, ASize.cx - 2, ASize.cx - 2, 0);
+  ADest.Line(ASize.cx - 2, ASize.cy - 2, ASize.cx - 2, 0);
   ADest.Pen.FPColor := TColorToFPColor($00E2EFF1);
   ADest.Line(1, 1, ASize.cx - 2, 1);
   ADest.Line(1, 1, 1, ASize.cy - 2);
