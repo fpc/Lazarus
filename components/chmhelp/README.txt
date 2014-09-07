@@ -35,20 +35,18 @@ This is a basic HOWTO for integrating lhelp into the Lazarus IDE.
     http://sourceforge.net/projects/freepascal/files/Documentation/
     the lcl.chm, rtl.chm, fcl.chm, prog.chm from
     http://www.stack.nl/~marcov/doc-chm.zip
-    or a daily snapshot from
-    ftp://freepascal.dfmk.hu/pub/lazarus/snapshots/
 
     HelpLabel Name and Tag do not need to be altered.
     The HelpLabel is the name of the named pipe that lazarus will use to communicate with lhelp.
 
-7 ) Configure the DataBases
+7 ) Configure the Databases
 
-    Choose the DataBases tab.
+    Choose the Databases tab.
 
     RTLUnits:
-    this should be "rtl.chm://"
+    Leave it empty to use the default: "rtl.chm://"
     FCLUnits:
-    this should be "fcl.chm://"
+    Leave it empty to use the default: "fcl.chm://"
 
     NOTE if you have only a single lcl-fcl-rtl.chm file then paths become:
     "lcl-fcl-rtl.chm://rtl/"

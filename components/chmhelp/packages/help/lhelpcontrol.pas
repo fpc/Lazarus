@@ -97,14 +97,24 @@ implementation
 { TLHelpConnection }
 
 function TLHelpConnection.WaitForMsgResponse: TLHelpResponse;
+const
+  // This value should be big enough to give any reasonable help system time to
+  // respond.
+  // If it does respond but takes longer, the delay should be irritating for the
+  // typical user so it then isn't fit for purpose.
+  TimeoutSecs=10;
 var
+  Iterations: integer;
   Stream: TStream;
-  WaitTime: Integer = 5000;
+  StartTime: TDateTime;
+  TimeOut: TDateTime;
 begin
   Result := srNoAnswer;
-  while WaitTime >= 0 do
+  TimeOut := EncodeTime(0,0,TimeOutSecs,0);
+  StartTime := Now;
+  while (Now-StartTime)<TimeOut do
   begin
-    Dec(WaitTime, 50);
+    Inc(Iterations);
     if fServerIn.PeekMessage(50, True) then
     begin
       Stream := fServerIn.MsgData;
@@ -114,6 +124,7 @@ begin
     end;
     if Assigned(FProcessWhileWaiting) then FProcessWhileWaiting();
   end;
+  debugln('LHelpControl: WaitForMsgResponse: hit timeout ('+inttostr(TimeoutSecs)+')');
 end;
 
 function TLHelpConnection.SendMessage(Stream: TStream): TLHelpResponse;
@@ -215,6 +226,7 @@ begin
       InheritHandles := false;
       ShowWindow:=swoShowNormal;
       CommandLine := Cmd;
+      debugln('LHelpControl: going to start help server by executing '+Cmd);
       Execute;
       Free;
     end;
@@ -243,7 +255,7 @@ begin
     UrlRequest.FileRequest.FileName := HelpFileName+#0;
     UrlRequest.FileRequest.RequestType := rtURL;
     UrlRequest.Url := Url+#0;
-    Result:=srNoAnswer;
+    Result := srNoAnswer;
     try
       Stream.Write(UrlRequest,SizeOf(UrlRequest));
       Result := SendMessage(Stream);

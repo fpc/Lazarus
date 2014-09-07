@@ -82,7 +82,6 @@
       <Unit1>
         <Filename Value="chmdataprovider.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ChmDataProvider"/>
       </Unit1>
       <Unit2>
         <Filename Value="chmspecialparser.pas"/>
@@ -113,7 +112,6 @@
       <Unit7>
         <Filename Value="chmcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="chmcontentprovider"/>
       </Unit7>
       <Unit8>
         <Filename Value="httpcontentprovider.pas"/>
@@ -141,6 +139,10 @@
       </Optimizations>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <GenerateDebugInfo Value="False"/>
+        <StripSymbols Value="True"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

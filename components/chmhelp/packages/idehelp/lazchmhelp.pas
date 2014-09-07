@@ -310,8 +310,8 @@ end;
 function TChmHelpViewer.PassTheBuck(Node: THelpNode; var ErrMsg: string
   ): TShowHelpResult;
 var
- I: Integer;
- Viewer: THelpViewer;
+  I: Integer;
+  Viewer: THelpViewer;
 begin
   Result := shrViewerNotFound;
   ErrMsg := 'Attempted to find viewer for "'+ Node.URL + '" failed.';
@@ -522,7 +522,10 @@ begin
 
   case Res of
     srSuccess: Result := shrSuccess;
-    srNoAnswer: Result := shrSuccess;
+    srNoAnswer: begin
+      Result := shrHelpNotFound;
+      ErrMsg := 'No answer from help viewer for URL '+URL;
+    end;
     srInvalidContext: begin
       Result := shrNone;
       ErrMsg := 'Invalid context showing '+URL;

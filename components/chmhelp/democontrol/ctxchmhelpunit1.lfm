@@ -7,10 +7,10 @@ object Form1: TForm1
   ClientHeight = 239
   ClientWidth = 359
   OnCreate = FormCreate
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object Edit1: TEdit
     Left = 71
-    Height = 25
+    Height = 21
     Top = 72
     Width = 225
     HelpType = htKeyword
@@ -20,7 +20,7 @@ object Form1: TForm1
   end
   object Edit2: TEdit
     Left = 71
-    Height = 25
+    Height = 21
     Top = 128
     Width = 224
     HelpType = htKeyword
@@ -30,7 +30,7 @@ object Form1: TForm1
   end
   object ShowHelpButton: TButton
     Left = 70
-    Height = 27
+    Height = 23
     Top = 20
     Width = 105
     AutoSize = True

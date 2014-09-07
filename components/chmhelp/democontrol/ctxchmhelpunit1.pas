@@ -7,13 +7,22 @@ Abstract:
 
   TLHelpConnector starts "lhelp" a chm viewer written in pure pascal.
 
+How to run this program
+    Make sure the example.chm file is created
+    You can create the example.chm with
+    ../../../tools/chmaker/chmmaker.lpi
+    (see the README.txt in the chmmaker directory).
+
+    Run the program.
+
+    Focus the edit field and press F1. lhelp will be started. lhelp will load
+    example.chm and shows the page MainPage.html.
+
 How was the example created:
     Put a TCHMHelpDatabase on a form.
     Set AutoRegister to true.
     Set KeywordPrefix to 'example'
     Set Filename to the path of the chm file '../../../tools/chmaker/example.chm'
-    You can create the example.chm with chmmaker (see the REDAME.txt
-    in the chmmaker directory).
 
     Put a TLHelpConnector on the form.
     Set AutoRegister to true.
@@ -22,10 +31,6 @@ How was the example created:
     Put a TEdit on a form.
     Set HelpType to htKeyword
     Set HelpKeyword to 'example/MainPage.html'
-
-    Run the program.
-    Focus the edit field and press F1. lhelp will be started. lhelp will load
-    example.chm and shows the page MainPage.html.
 }
 unit CtxCHMHelpUnit1;
 

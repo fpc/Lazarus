@@ -184,8 +184,14 @@ begin
   end;
 
   if Connection.ServerRunning = false then begin
-    IPCFile:=ExtractFileName(Application.ExeName);
-    IPCFile+='lhelpconnector';
+    // Use '_lhlpctl_' in case application developer uses SimpleIPC
+    // and also uses the exe name followed by the process ID.
+    // Follow help protocol specs defined in
+    // http://wiki.lazarus.freepascal.org/Help_protocol
+    // Use process id in order to avoid conflicts when multiple entries are running
+    IPCFile:=LowerCase(ExtractFileName(Application.ExeName))+
+      '_lhlpctl_'+
+      copy(inttostr(GetProcessID)+'00000',1,5);
     {$IFDEF Unix}
     if FileExistsUTF8('/tmp/'+IPCFile) then
       DeleteFileUTF8('/tmp/'+IPCFile);

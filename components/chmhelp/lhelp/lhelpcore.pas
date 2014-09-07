@@ -540,6 +540,7 @@ begin
     end;
     if (URL<>'') and (Res = Ord(srSuccess)) then
       AddRecentFile(Url);
+    debugln('Going to send TLHelpResponse code: '+inttostr(Res));
     SendResponse(Res);
     if MustClose then
     begin
