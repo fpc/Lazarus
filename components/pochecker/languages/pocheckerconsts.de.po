@@ -68,7 +68,8 @@ msgstr "[Zeile %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
 msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
-msgstr "Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
+msgstr ""
+"Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -106,7 +107,7 @@ msgstr "Bezeichner [%s] nicht gefunden in %s"
 
 #: pocheckerconsts.signorefuzzytranslations
 msgid "Ignore translated strings marked as \"fuzzy\""
-msgstr ""
+msgstr "Als \"ungeklärt\" markierte Zeichenketten ignorieren"
 
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
@@ -145,7 +146,7 @@ msgstr "Es wurden keine Tests ausgewählt."
 
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
-msgstr ""
+msgstr "Notiz: Übersetzung ist ungeklärt"
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -172,22 +173,19 @@ msgid "Original"
 msgstr "Original"
 
 #: pocheckerconsts.spercfuzzy
-#, fuzzy
 #| msgid "Fuzzy strings: %2.0f%%."
 msgid "%s: %4.1f%% fuzzy strings."
-msgstr "Ungeklärte Zeichenketten: %2.0f%%."
+msgstr "%s: %4.1f%% ungeklärte Zeichenketten."
 
 #: pocheckerconsts.sperctranslated
-#, fuzzy
 #| msgid "Translated strings: %2.0f%%."
 msgid "%s: %4.1f%% translated strings."
-msgstr "Übersetzte Zeichenketten: %2.0f%%."
+msgstr "%s: %4.1f%% übersetzte Zeichenketten."
 
 #: pocheckerconsts.spercuntranslated
-#, fuzzy
 #| msgid "Untranslated strings: %2.0f%%."
 msgid "%s: %4.1f%% untranslated strings."
-msgstr "Nicht übersetzte Zeichenketten: %2.0f%%."
+msgstr "%s: %4.1f%% nicht übersetzte Zeichenketten."
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -223,10 +221,9 @@ msgid "Select test types"
 msgstr "Test-Typen"
 
 #: pocheckerconsts.stotalerrors
-#, fuzzy
 #| msgid "Total errors / warnings found: %d"
 msgid "Total errors found: %d"
-msgstr "Insgesamt %d Fehler / Warnungen gefunden"
+msgstr "Insgesamt %d Fehler gefunden"
 
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
@@ -237,12 +234,10 @@ msgid "Translation"
 msgstr "Übersetzung"
 
 #: pocheckerconsts.stranslationstatistics
-#, fuzzy
 #| msgid "Translation statistics for:"
 msgid "Translation statistics per language:"
-msgstr "Übersetzungsstatistik für:"
+msgstr "Übersetzungsstatistikpro Sprache:"
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
 msgstr "Alle abwählen"
-

@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -76,7 +76,6 @@ msgid "Execute ..."
 msgstr "Ausführen ..."
 
 #: sdb_consts.snrecordsexported
-#, fuzzy
 #| msgid "Succesfully exported %d records."
 msgid "Successfully exported %d records."
 msgstr "%d Datensätze erfolgreich exportiert."
@@ -84,4 +83,3 @@ msgstr "%d Datensätze erfolgreich exportiert."
 #: sdb_consts.sprogress
 msgid "Exporting %d records"
 msgstr "Exportiere %d Datensätze"
-

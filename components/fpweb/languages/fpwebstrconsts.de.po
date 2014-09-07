@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Swen Heinig <swen.heinig@freenet.de>\n"
+"Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -31,7 +31,7 @@ msgstr ""
 
 #: fpwebstrconsts.sdocumentroot
 msgid "&Directory"
-msgstr ""
+msgstr "Verzeichnis"
 
 #: fpwebstrconsts.senteryoutext
 msgctxt "fpwebstrconsts.senteryoutext"
@@ -65,11 +65,10 @@ msgid "HTML file"
 msgstr "HTML-Datei"
 
 #: fpwebstrconsts.shtmlfiledesc
-#, fuzzy
 #| msgid "Create new HTML file..."
 msgctxt "fpwebstrconsts.shtmlfiledesc"
 msgid "Create new HTML file ..."
-msgstr "Erzeuge neue HTML-Datei"
+msgstr "Erzeuge neue HTML-Datei ..."
 
 #: fpwebstrconsts.shtmlinputformaccesskey
 msgid "Access key"
@@ -125,11 +124,10 @@ msgid "Border width"
 msgstr ""
 
 #: fpwebstrconsts.shtmltableformcaption
-#, fuzzy
 #| msgid "New HTML table..."
 msgctxt "fpwebstrconsts.shtmltableformcaption"
 msgid "New HTML table ..."
-msgstr "Neue HTML-Tabelle..."
+msgstr "Neue HTML-Tabelle ..."
 
 #: fpwebstrconsts.shtmltableformcellpadding
 msgid "Cell padding"
@@ -180,7 +178,7 @@ msgstr ""
 
 #: fpwebstrconsts.shtmltitle
 msgid "Html &title - <title>"
-msgstr ""
+msgstr "HTML-&Titel"
 
 #: fpwebstrconsts.shttpport
 msgid "&Port to listen for requests:"
@@ -191,10 +189,9 @@ msgid "Javascript file"
 msgstr "Javascript-Datei"
 
 #: fpwebstrconsts.sjsfiledesc
-#, fuzzy
 #| msgid "Create new javascript file..."
 msgid "Create new javascript file ..."
-msgstr "Erzeuge neue Javascript-Datei..."
+msgstr "Erzeuge neue Javascript-Datei ..."
 
 #: fpwebstrconsts.sjssource
 msgid "Enter your javascript code here"
@@ -248,7 +245,6 @@ msgid "Insert new line"
 msgstr "Neue Zeile einfügen"
 
 #: fpwebstrconsts.smihtmlinsertcolor
-#, fuzzy
 #| msgid "Insert HTML Color"
 msgctxt "fpwebstrconsts.smihtmlinsertcolor"
 msgid "Insert HTML color value"
@@ -369,7 +365,7 @@ msgstr ""
 #: fpwebstrconsts.smihtmllists
 msgctxt "fpwebstrconsts.smihtmllists"
 msgid "Lists"
-msgstr ""
+msgstr "Listen"
 
 #: fpwebstrconsts.smihtmlother
 msgctxt "fpwebstrconsts.smihtmlother"
@@ -381,11 +377,10 @@ msgid "Standard"
 msgstr ""
 
 #: fpwebstrconsts.smihtmlstyle
-#, fuzzy
 #| msgid "Style"
 msgctxt "fpwebstrconsts.smihtmlstyle"
 msgid "Styles"
-msgstr "Stil"
+msgstr "Stile"
 
 #: fpwebstrconsts.smihtmltables
 msgctxt "fpwebstrconsts.smihtmltables"
@@ -434,7 +429,7 @@ msgstr "Dateiname einfügen"
 
 #: fpwebstrconsts.snewhtmlfileprops
 msgid "New Html file properties"
-msgstr ""
+msgstr "Neue HTML-Datei-Eigenschaften"
 
 #: fpwebstrconsts.snewhttpapp
 msgid "New HTTP application"
@@ -447,4 +442,3 @@ msgstr ""
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"
 msgstr ""
-

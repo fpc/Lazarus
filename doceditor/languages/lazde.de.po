@@ -28,7 +28,7 @@ msgstr "Neue Beschreibungsdatei wählen"
 
 #: lazdemsg.sadditionalparams
 msgid "Additional parameters for fpdoc"
-msgstr ""
+msgstr "Zusätzliche Parameter für fpdoc"
 
 #: lazdemsg.sbuild
 msgctxt "lazdemsg.sbuild"
@@ -165,7 +165,6 @@ msgid " in package "
 msgstr " im Package"
 
 #: lazdemsg.sfortopic
-#, fuzzy
 #| msgid " in topic"
 msgid " in topic "
 msgstr " im Eintrag"
@@ -312,7 +311,7 @@ msgstr ""
 
 #: lazdemsg.sinsertexamplecode
 msgid "Insert example code"
-msgstr ""
+msgstr "Beispielcode einfügen"
 
 #: lazdemsg.sinsertlink
 msgctxt "lazdemsg.sinsertlink"
@@ -347,11 +346,11 @@ msgstr "verweist auf"
 
 #: lazdemsg.slinktarget
 msgid "Link target"
-msgstr ""
+msgstr "Link-Ziel"
 
 #: lazdemsg.slinktext
 msgid "Link text"
-msgstr ""
+msgstr "Link-Text"
 
 #: lazdemsg.sload
 msgid "&Load"
@@ -494,7 +493,7 @@ msgstr "&Link"
 
 #: lazdemsg.smenuinsertlist
 msgid "List"
-msgstr ""
+msgstr "Liste"
 
 #: lazdemsg.smenuinsertmodule
 msgid "&Module"
@@ -673,7 +672,9 @@ msgid "&Save"
 msgstr "&Speichern"
 
 #: lazdemsg.ssavebeforebuildquestion
-msgid "You have unsaved changes in \"%s\".%sThey should be saved in order to be visible in built documentation. Save them?"
+msgid ""
+"You have unsaved changes in \"%s\".%sThey should be saved in order to be "
+"visible in built documentation. Save them?"
 msgstr ""
 
 #: lazdemsg.sseealso
@@ -689,7 +690,6 @@ msgid "Select output file name"
 msgstr "Ausgabedateiname festlegen"
 
 #: lazdemsg.sselectsometext
-#, fuzzy
 #| msgid "Select some text"
 msgid "Select some text."
 msgstr "Etwas Text auswählen"
@@ -704,7 +704,9 @@ msgstr "p&rivate Methoden anzeigen"
 
 #: lazdemsg.sskelerrorwithfile
 msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
-msgstr "makeskel meldete einen Fehler (%d). Trotzdem versuchen, die produzierte Datei zu laden?"
+msgstr ""
+"makeskel meldete einen Fehler (%d). Trotzdem versuchen, die produzierte "
+"Datei zu laden?"
 
 #: lazdemsg.sskelerrorwithoutfile
 msgid "makeskel reported an error (%d) and produced no file."
@@ -720,7 +722,7 @@ msgstr "Startelement \"%s\" nicht gefunden"
 
 #: lazdemsg.stablecols
 msgid "Columns"
-msgstr ""
+msgstr "Spalten"
 
 #: lazdemsg.stableheader
 msgid "Use header row"
@@ -728,7 +730,7 @@ msgstr ""
 
 #: lazdemsg.stablerows
 msgid "Rows"
-msgstr ""
+msgstr "Zeilen"
 
 #: lazdemsg.stargetos
 msgid "Target OS"
@@ -741,4 +743,3 @@ msgstr "Docs mit dem folgenden Befehl anlegen:"
 #: lazdemsg.swarnifnodocumentationnodefound
 msgid "Warn if no documentation node found"
 msgstr "Warnen, falls kein Dokumentationsknoten gefunden"
-
