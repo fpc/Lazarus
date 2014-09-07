@@ -1411,13 +1411,15 @@ end;
 function TCocoaTextField.becomeFirstResponder: Boolean;
 begin
   Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
+  if Assigned(callback) then
+    callback.BecomeFirstResponder;
 end;
 
 function TCocoaTextField.resignFirstResponder: Boolean;
 begin
   Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
+  if Assigned(callback) then
+    callback.ResignFirstResponder;
 end;
 
 function TCocoaTextField.lclGetCallback: ICommonCallback;

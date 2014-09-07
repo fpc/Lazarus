@@ -1815,8 +1815,11 @@ begin
       lView := GetNSObjectView(Obj);
       if lView <> nil then
       begin
-        lView.window.makeKeyWindow;
-        lView.window.makeFirstResponder(lView);
+        if lView.window <> nil then
+        begin
+          lView.window.makeKeyWindow;
+          lView.window.makeFirstResponder(lView);
+        end;
       end;
     end;
   end
