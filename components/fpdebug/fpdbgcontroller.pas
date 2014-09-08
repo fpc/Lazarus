@@ -339,7 +339,7 @@ begin
       // This because when stepping out of a procedure, the first asm-instruction
       // could still be part of the instruction-line that made the call to the
       // procedure in the first place.
-      if (FStoredStackFrame<AStackBasePointerValue)
+      if ((FStoredStackFrame<AStackBasePointerValue) or (FController.NextOnlyStopOnStartLine))
         and not FController.FCurrentThread.IsAtStartOfLine then
       begin
         Finished:=false;
