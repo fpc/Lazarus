@@ -641,7 +641,11 @@ begin
   if FEnvironmentForLogFileName <> '' then begin;
     // if not found yet, then try to find in the environment variables
     if (length(result)=0) then begin
-      EnvVarName:= ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),'') + FEnvironmentForLogFileName;
+      // Substitute * with executable filename without extension
+      EnvVarName:=StringReplace(FEnvironmentForLogFileName,
+        '*',
+        ChangeFileExt(ExtractFileName(ParamStrUTF8(0)),''),
+        [rfReplaceAll,rfIgnoreCase]);
       Result := GetEnvironmentVariableUTF8(EnvVarName);
     end;
   end;
