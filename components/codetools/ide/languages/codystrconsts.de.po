@@ -44,9 +44,7 @@ msgid "... and %s more identifiers"
 msgstr "... und %s weitere Bezeichner"
 
 #: codystrconsts.crsawindowforthelazarusideitcanbedockedlikethecodeexp
-msgid ""
-"A window for the Lazarus IDE. It can be docked like the Code Explorer or the "
-"FPDoc Editor. This also creates a menu item in the View menu and a short cut."
+msgid "A window for the Lazarus IDE. It can be docked like the Code Explorer or the FPDoc Editor. This also creates a menu item in the View menu and a short cut."
 msgstr ""
 
 #: codystrconsts.crsbtncancel
@@ -114,9 +112,7 @@ msgid "Parameter type:"
 msgstr "Parametertyp:"
 
 #: codystrconsts.crscampleasepositionthecursorofthesourceeditorinapascalc
-msgid ""
-"Please position the cursor of the source editor in a pascal class "
-"declaration before invoking \"Add Assign method\"."
+msgid "Please position the cursor of the source editor in a pascal class declaration before invoking \"Add Assign method\"."
 msgstr ""
 
 #: codystrconsts.crscamprivate
@@ -222,9 +218,7 @@ msgid "Pascal (*.pas;*.pp)|*.pas;*.pp"
 msgstr "Pascal (*.pas;*.pp)|*.pas;*.pp"
 
 #: codystrconsts.crscupleaseplacethecursorofthesourceeditorinanimplement
-msgid ""
-"Please place the cursor of the source editor in an implementation of an "
-"overridden method."
+msgid "Please place the cursor of the source editor in an implementation of an overridden method."
 msgstr ""
 
 #: codystrconsts.crscuselectfiletoinsertatcursor
@@ -356,12 +350,8 @@ msgid "Identifier not found"
 msgstr "Bezeichner nicht gefunden"
 
 #: codystrconsts.crsidentifiernotfoundinunit
-msgid ""
-"Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not "
-"exist for this platform or maybe the identifier was deleted/renamed."
-msgstr ""
-"Bezeichner \"%s\" nicht gefunden in Unit \"%s\". Evtl. existiert der "
-"Bezeichner nicht für diese Plattform oder er wurde gelöscht/umbenannt."
+msgid "Identifier \"%s\" not found in unit \"%s\". Maybe the identifier does not exist for this platform or maybe the identifier was deleted/renamed."
+msgstr "Bezeichner \"%s\" nicht gefunden in Unit \"%s\". Evtl. existiert der Bezeichner nicht für diese Plattform oder er wurde gelöscht/umbenannt."
 
 #: codystrconsts.crsidewindowdockable
 msgid "IDE window, dockable"
@@ -369,9 +359,7 @@ msgstr "IDE-Fenster, andockbar"
 
 #: codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne
 msgctxt "codystrconsts.crsifidentifierisaddedtotheimplementationsectionandne"
-msgid ""
-"If identifier is added to the implementation section and needed unit needs "
-"to be added, add to the uses section of the implementation"
+msgid "If identifier is added to the implementation section and needed unit needs to be added, add to the uses section of the implementation"
 msgstr ""
 
 #: codystrconsts.crsimpossibledependency
@@ -459,11 +447,7 @@ msgid "No project"
 msgstr "Kein Projekt"
 
 #: codystrconsts.crsnotethenameoftheformmustbeavalidpascalidentifieran
-msgid ""
-"Note: The name of the form must be a valid pascal identifier and unique "
-"across the whole IDE, which includes all packages. Prepend the name with an "
-"abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are "
-"already used by the IDE itself."
+msgid "Note: The name of the form must be a valid pascal identifier and unique across the whole IDE, which includes all packages. Prepend the name with an abbreviation of your package. The prefixes \"IDE\", \"Laz\", \"Pkg\" are already used by the IDE itself."
 msgstr ""
 
 #: codystrconsts.crsnounitselected
@@ -523,15 +507,11 @@ msgid "Please open a project first."
 msgstr ""
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoratanidentifie
-msgid ""
-"Please place the cursor of the source editor at an identifier in a statement."
-"%sFor example:%sMyVar:=3;"
+msgid "Please place the cursor of the source editor at an identifier in a statement.%sFor example:%sMyVar:=3;"
 msgstr ""
 
 #: codystrconsts.crspleaseplacethecursorofthesourceeditoronanidentifie
-msgid ""
-"Please place the cursor of the source editor on an identifier of a "
-"declaration."
+msgid "Please place the cursor of the source editor on an identifier of a declaration."
 msgstr ""
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditor
@@ -539,9 +519,7 @@ msgid "Please select some code in the Source Editor."
 msgstr ""
 
 #: codystrconsts.crspleaseselectsomecodeinthesourceeditorforanewwithbl
-msgid ""
-"Please select some code in the Source Editor for a new \"With\" block. No "
-"candidate for a with expression was found."
+msgid "Please select some code in the Source Editor for a new \"With\" block. No candidate for a with expression was found."
 msgstr ""
 
 #: codystrconsts.crspleasespecifyalocation
@@ -585,15 +563,11 @@ msgid "Published"
 msgstr ""
 
 #: codystrconsts.crsreallydeletethepackagefromthedatabasenotethisdoe
-msgid ""
-"Really delete the package from the database?%sNote: This does not change the "
-"source or any configuration.%s%s\"%s\""
+msgid "Really delete the package from the database?%sNote: This does not change the source or any configuration.%s%s\"%s\""
 msgstr ""
 
 #: codystrconsts.crsreallydeletetheunitfromthedatabasenotethisdoesno
-msgid ""
-"Really delete the unit from the database?%sNote: This does not change the "
-"source or any configuration.%s%sunit: \"%s\""
+msgid "Really delete the unit from the database?%sNote: This does not change the source or any configuration.%s%sunit: \"%s\""
 msgstr ""
 
 #: codystrconsts.crsrefresh
@@ -681,27 +655,19 @@ msgid "The identifier \"%s\" is already defined."
 msgstr "Der Bezeichner \"%s\" ist bereits definiert."
 
 #: codystrconsts.crsthereisalreadyanotherpackageloadedwiththesamenameo
-msgid ""
-"There is already another package loaded with the same name.%sOpen package: %s"
-"%sNew package: %s%sOnly one package can be loaded at a time."
+msgid "There is already another package loaded with the same name.%sOpen package: %s%sNew package: %s%sOnly one package can be loaded at a time."
 msgstr ""
 
 #: codystrconsts.crsthetargetunithasthesamenameasthecurrentunitfreepas
-msgid ""
-"The target unit has the same name as the current unit.%s Free Pascal does "
-"not support that."
+msgid "The target unit has the same name as the current unit.%s Free Pascal does not support that."
 msgstr ""
 
 #: codystrconsts.crstheunitispartofitcannotuseanotherpackagewiththesam
-msgid ""
-"The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the "
-"same name:%s\"%s\""
+msgid "The unit \"%s\"%sis part of \"%s\".%sIt can not use another package with the same name:%s\"%s\""
 msgstr ""
 
 #: codystrconsts.crsthisunitislocatedinthefreepascalsourcesbutnoppufil
-msgid ""
-"This unit is located in the Free Pascal sources, but no ppu file is "
-"installed. Maybe this unit is not available for this target platform."
+msgid "This unit is located in the Free Pascal sources, but no ppu file is installed. Maybe this unit is not available for this target platform."
 msgstr ""
 
 #: codystrconsts.crstotal
@@ -775,3 +741,4 @@ msgstr ""
 #: codystrconsts.crswhere
 msgid "Where"
 msgstr ""
+
