@@ -46,7 +46,7 @@ uses
 {$ENDIF}
   // FPC + LCL
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
-  Laz2_XMLCfg, LazLogger, LazFileUtils, InterfaceBase, LazUTF8,
+  Laz2_XMLCfg, LazLogger, LazFileUtils, InterfaceBase, LazUTF8, laz2_XMLRead,
   // codetools
   AVL_Tree, contnrs, DefineTemplates, CodeCache,
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
@@ -2982,6 +2982,15 @@ begin
       stats^.StateFileDate:=StateFileAge;
       stats^.StateFileLoaded:=true;
     except
+      on E: EXMLReadError do begin
+        // invalid XML
+        debugln(['TLazPackageGraph.LoadPackageCompiledState syntax error in ',StateFile,' => need clean build.']);
+        stats^.Complete:=false;
+        stats^.CompilerFilename:='';
+        stats^.StateFileName:=StateFile;
+        stats^.StateFileDate:=StateFileAge;
+        stats^.StateFileLoaded:=true;
+      end;
       on E: Exception do begin
         if IgnoreErrors then begin
           Result:=mrOk;
