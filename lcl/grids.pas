@@ -7093,7 +7093,10 @@ end;
 
 procedure TCustomGrid.UnLockEditor;
 begin
-  Dec(FEditorHidingCount);
+  if FEDitorHidingCount>0 then
+    Dec(FEditorHidingCount)
+  else
+    DebugLn('WARNING: unpaired Unlock Editor');
   {$ifdef dbgGrid}DebugLn('==< LockEditor: ', dbgs(FEditorHidingCount)); {$endif}
 end;
 
