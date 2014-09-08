@@ -23,6 +23,7 @@ type
   TFpSymbolContext = class(TFpDbgInfoContext)
   private
     FFpSymbolInfo: TFpSymbolInfo;
+    FSizeOfAddress: integer;
   protected
     function GetAddress: TDbgPtr; override;
     function GetStackFrame: Integer; override;
@@ -39,6 +40,7 @@ type
   private
     FSymbolList: TfpSymbolList;
     FContext: TFpSymbolContext;
+    FImage64Bit: boolean;
   public
     constructor Create(ALoader: TDbgImageLoader); override;
     destructor Destroy; override;
@@ -47,6 +49,7 @@ type
     function FindSymbol(AAddress: TDbgPtr): TFpDbgSymbol; override;
     function FindSymbol(const AName: String): TFpDbgSymbol; override;
     function GetLineAddress(const AFileName: String; ALine: Cardinal): TDbgPtr; override;
+    property Image64Bit: boolean read FImage64Bit;
   end;
 
 implementation
@@ -70,13 +73,17 @@ end;
 
 function TFpSymbolContext.GetSizeOfAddress: Integer;
 begin
-  result := 4;
+  result := FSizeOfAddress;
 end;
 
 constructor TFpSymbolContext.Create(AFpSymbolInfo: TFpSymbolInfo);
 begin
   inherited create;
   FFpSymbolInfo:=AFpSymbolInfo;
+  if AFpSymbolInfo.Image64Bit then
+    FSizeOfAddress:=8
+  else
+    FSizeOfAddress:=4;
 end;
 
 function TFpSymbolContext.FindSymbol(const AName: String): TFpDbgValue;
@@ -105,6 +112,7 @@ begin
 
   FSymbolList := TfpSymbolList.Create;
   ALoader.ParseSymbolTable(FSymbolList);
+  FImage64Bit := ALoader.Image64Bit;
 end;
 
 destructor TFpSymbolInfo.Destroy;
