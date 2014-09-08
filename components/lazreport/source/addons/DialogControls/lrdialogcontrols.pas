@@ -428,6 +428,34 @@ begin
   DoRegsiterControl(lrBMP_LRRadioGroupBox, TlrRadioGroup);
 end;
 
+procedure DoneLRComp;
+begin
+  if Assigned(lrBMP_LRLabel) then
+    FreeAndNil(lrBMP_LRLabel);
+  if Assigned(lrBMP_LREdit) then
+    FreeAndNil(lrBMP_LREdit);
+  if Assigned(lrBMP_LRButton) then
+    FreeAndNil(lrBMP_LRButton);
+  if Assigned(lrBMP_LRCheckBox) then
+    FreeAndNil(lrBMP_LRCheckBox);
+  if Assigned(lrBMP_LRComboBox) then
+    FreeAndNil(lrBMP_LRComboBox);
+  if Assigned(lrBMP_LRRadioButton) then
+    FreeAndNil(lrBMP_LRRadioButton);
+  if Assigned(lrBMP_LRMemo) then
+    FreeAndNil(lrBMP_LRMemo);
+  if Assigned(lrBMP_LRListBox) then
+    FreeAndNil(lrBMP_LRListBox);
+  if Assigned(lrBMP_LRDateEdit) then
+    FreeAndNil(lrBMP_LRDateEdit);
+  if Assigned(lrBMP_LRButtonPanel) then
+    FreeAndNil(lrBMP_LRButtonPanel);
+  if Assigned(lrBMP_LRCheckListBox) then
+    FreeAndNil(lrBMP_LRCheckListBox);
+  if Assigned(lrBMP_LRRadioGroupBox) then
+    FreeAndNil(lrBMP_LRRadioGroupBox);
+end;
+
 { TlrRadioGroup }
 
 function TlrRadioGroup.GetItemIndex: integer;
@@ -1520,28 +1548,7 @@ initialization
   InitLRComp;
 
 finalization
-  if Assigned(lrBMP_LRLabel) then
-    FreeAndNil(lrBMP_LRLabel);
-  if Assigned(lrBMP_LREdit) then
-    FreeAndNil(lrBMP_LREdit);
-  if Assigned(lrBMP_LRButton) then
-    FreeAndNil(lrBMP_LRButton);
-  if Assigned(lrBMP_LRCheckBox) then
-    FreeAndNil(lrBMP_LRCheckBox);
-  if Assigned(lrBMP_LRComboBox) then
-    FreeAndNil(lrBMP_LRComboBox);
-  if Assigned(lrBMP_LRRadioButton) then
-    FreeAndNil(lrBMP_LRRadioButton);
-  if Assigned(lrBMP_LRMemo) then
-    FreeAndNil(lrBMP_LRMemo);
-  if Assigned(lrBMP_LRListBox) then
-    FreeAndNil(lrBMP_LRListBox);
-  if Assigned(lrBMP_LRDateEdit) then
-    FreeAndNil(lrBMP_LRDateEdit);
-  if Assigned(lrBMP_LRButtonPanel) then
-    FreeAndNil(lrBMP_LRButtonPanel);
-  if Assigned(lrBMP_LRRadioGroupBox) then
-    FreeAndNil(lrBMP_LRRadioGroupBox);
+  DoneLRComp;
 end.
 
 

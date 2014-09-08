@@ -7772,6 +7772,7 @@ type
     procedure InsertDbFields;
   public
     constructor Create;
+    destructor Destroy; override;
   end;
 
 var
@@ -8045,6 +8046,12 @@ begin
   lrBMPInsFields := TBitmap.Create;
   lrBMPInsFields.LoadFromResourceName(HInstance, 'lrd_ins_fields');
   frRegisterTool(sInsertFields, lrBMPInsFields, @InsFieldsClick);
+end;
+
+destructor TlrInternalTools.Destroy;
+begin
+  lrBMPInsFields.Free;
+  inherited destroy;
 end;
 
 initialization
