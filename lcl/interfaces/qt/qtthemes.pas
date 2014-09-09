@@ -792,6 +792,8 @@ var
   AStdPixmap: QStyleStandardPixmap;
   opt: QStyleOptionH;
   IconSize: Integer;
+  AIcon: QIconH;
+  ASize: TSize;
 begin
   case StockID of
     idButtonOk: AStdPixmap := QStyleSP_DialogOkButton;
@@ -822,22 +824,34 @@ begin
   end;
 
   opt := QStyleOption_create(QStyleOptionVersion, QStyleOptionSO_Default);
-  APixmap := QPixmap_create();
+  AIcon := QIcon_create();
   if StockID in [idButtonOk..idButtonShield] then
     IconSize := GetPixelMetric(QStylePM_ButtonIconSize, opt, nil)
   else
+  if (StockID >= idDialogWarning) and (StockID <= idDialogShield) then
+    IconSize := GetPixelMetric(QStylePM_MessageBoxIconSize, opt, nil)
+  else
     IconSize := 0;
-  QStyle_standardPixmap(QApplication_style(), APixmap, AStdPixmap, opt);
+  QStyle_standardIcon(QApplication_style(), AIcon, AStdPixmap, opt);
   QStyleOption_Destroy(opt);
 
-  if QPixmap_isNull(APixmap) then
+  if QIcon_isNull(AIcon) then
   begin
-    QPixmap_destroy(APixmap);
+    QIcon_destroy(AIcon);
     Result := inherited GetStockImage(StockID, Image, Mask);
     Exit;
   end;
 
   // convert from what we have to QImageH
+  APixmap := QPixmap_create();
+  if IconSize > 0 then
+  begin
+    ASize.cx := IconSize;
+    ASize.cy := IconSize;
+  end else
+    QIcon_actualSize(AIcon, @ASize, @ASize);
+  QIcon_pixmap(AIcon, APixmap, PSize(@ASize));
+  QIcon_destroy(AIcon);
   AImage := QImage_create();
   QPixmap_toImage(APixmap, AImage);
   QPixmap_destroy(APixmap);
