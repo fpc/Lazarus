@@ -328,7 +328,7 @@ var
     HintWinRect: TRect;
   begin
     HintWinRect := HintTextWindow.CalcHintRect(Screen.Width, TheHint, Nil);
-    HintTextWindow.HintRectAdjust := HintWinRect;      // Adds borders.
+    HintTextWindow.HintRect := HintWinRect;      // Adds borders.
     HintTextWindow.OffsetHintRect(ScreenPos);
     HintTextWindow.ActivateHint(TheHint);
   end;

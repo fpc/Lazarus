@@ -4229,7 +4229,7 @@ begin
   Rect.Right := Rect.Left + Rect.Right;
   Rect.Bottom := Rect.Top + Rect.Bottom;
 
-  FHintWindow.HintRectAdjust := Rect;
+  FHintWindow.HintRect := Rect;
   FHintWindow.ActivateHint(AHint);
 end;
 

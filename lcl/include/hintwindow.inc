@@ -12,8 +12,8 @@
 {
    use:
    HintWindow := THintWindow.Create(nil);
-   Rect := HintWindow.CalcHintRect(0,'This is the hint');
-   HintWindow.ActivateWithBounds(Rect,'This is the hint');
+   Rect := HintWindow.CalcHintRect(0,'This is the hint', Nil);
+   HintWindow.ActivateHint(Rect,'This is the hint');
 
 }
 
@@ -242,7 +242,7 @@ end;
 
 procedure THintWindow.ActivateHintData(ARect: TRect; const AHint: String; AData: pointer);
 begin
-  HintRectAdjust := ARect;
+  HintRect := ARect;
   ActivateHint(AHint);                // AData is not used now.
 end;
 
@@ -265,6 +265,9 @@ begin
       ThemeServices.GetElementDetails(tttStandardNormal), AHint, Flags, @Result)
   else
     DrawText(uh, PChar(AHint), Length(AHint), Result, Flags);
+  // compensate for InflateRect in Paint method
+  Inc(Result.Right, 4 * HintBorderWidth);
+  Inc(Result.Bottom, 4 * HintBorderWidth);
   //debugln('THintWindow.CalcHintRect Result=',dbgs(Result));
 end;
 
