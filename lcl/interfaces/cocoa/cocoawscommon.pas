@@ -828,6 +828,7 @@ begin
 
   if assigned(targetControl) and not FIsEventRouting then
   begin
+    if not targetControl.HandleAllocated then Exit; // Fixes crash due to events being sent after ReleaseHandle
     FIsEventRouting:=true;
     // debugln(Target.name+' -> '+targetControl.Name+'- is parent:'+dbgs(targetControl=Target.Parent)+' Point: '+dbgs(mp)+' Rect'+dbgs(rect));
     obj := GetNSObjectView(NSObject(targetControl.Handle));

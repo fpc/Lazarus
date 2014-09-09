@@ -238,12 +238,17 @@ type
 
   end;
 
+  TCocoaFieldEditor = objcclass;
+
   { TCocoaTextField }
 
   TCocoaTextField = objcclass(NSTextField)
     callback: ICommonCallback;
+    procedure dealloc; override;
+    function GetFieldEditor: TCocoaFieldEditor; message 'GetFieldEditor';
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
+    function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
@@ -256,8 +261,11 @@ type
   TCocoaSecureTextField = objcclass(NSSecureTextField)
   public
     callback: ICommonCallback;
+    procedure dealloc; override;
+    function GetFieldEditor: TCocoaFieldEditor; message 'GetFieldEditor';
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
+    function RealResignFirstResponder: Boolean; message 'RealResignFirstResponder';
     function resignFirstResponder: Boolean; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
@@ -311,10 +319,21 @@ type
     function lclIsHandle: Boolean; override;
   end;
 
+  { TCocoaFieldEditor }
+
+  TCocoaFieldEditor = objcclass(NSTextView)
+  public
+    lastEditBox: NSTextField;
+    function resignFirstResponder: Boolean; override;
+  end;
+
+  { TCocoaWindow }
 
   TCocoaWindow = objcclass(NSWindow, NSWindowDelegateProtocol)
   protected
+    fieldEditor: TCocoaFieldEditor;
     function windowShouldClose(sender : id): LongBool; message 'windowShouldClose:';
+    function windowWillReturnFieldEditor_toObject(sender: NSWindow; client: id): id; message 'windowWillReturnFieldEditor:toObject:';
     procedure windowWillClose(notification: NSNotification); message 'windowWillClose:';
     procedure windowDidBecomeKey(notification: NSNotification); message 'windowDidBecomeKey:';
     procedure windowDidResignKey(notification: NSNotification); message 'windowDidResignKey:';
@@ -322,6 +341,7 @@ type
     procedure windowDidMove(notification: NSNotification); message 'windowDidMove:';
   public
     callback: IWindowCallback;
+    procedure dealloc; override;
     function acceptsFirstResponder: Boolean; override;
     function canBecomeKeyWindow: Boolean; override;
     function becomeFirstResponder: Boolean; override;
@@ -955,6 +975,26 @@ begin
     inherited sendEvent(event);
 end;
 
+{ TCocoaFieldEditor }
+
+function TCocoaFieldEditor.resignFirstResponder: Boolean;
+begin
+  //DebugLn('[TCocoaFieldEditor.resignFirstResponder]');
+  if (lastEditBox <> nil) then
+  begin
+    if lastEditBox.isKindOfClass_(TCocoaTextField) then
+    begin
+      TCocoaTextField(lastEditBox).RealResignFirstResponder();
+    end
+    else if lastEditBox.isKindOfClass_(TCocoaSecureTextField) then
+    begin
+      TCocoaSecureTextField(lastEditBox).RealResignFirstResponder();
+    end;
+    lastEditBox := nil;
+  end;
+  Result := inherited resignFirstResponder;
+end;
+
 { TCocoaWindow }
 
 function TCocoaWindow.lclIsHandle: Boolean;
@@ -970,6 +1010,15 @@ begin
   if Assigned(callback) then
     callback.CloseQuery(canClose);
   Result := canClose;
+end;
+
+function TCocoaWindow.windowWillReturnFieldEditor_toObject(sender: NSWindow;
+  client: id): id;
+begin
+  //DebugLn('[TCocoaWindow.windowWillReturnFieldEditor_toObject]');
+  if (fieldEditor = nil) then
+    fieldEditor := TCocoaFieldEditor.alloc.init;
+  Result := fieldEditor;
 end;
 
 procedure TCocoaWindow.windowWillClose(notification: NSNotification);
@@ -1000,6 +1049,16 @@ procedure TCocoaWindow.windowDidMove(notification: NSNotification);
 begin
   if Assigned(callback) then
     callback.Move;
+end;
+
+procedure TCocoaWindow.dealloc;
+begin
+  if (fieldEditor <> nil) then
+  begin
+    fieldEditor.release;
+    fieldEditor := nil;
+  end;
+  inherited dealloc;
 end;
 
 function TCocoaWindow.acceptsFirstResponder: Boolean;
@@ -1403,6 +1462,33 @@ begin
   Result := True;
 end;
 
+procedure TCocoaTextField.dealloc;
+var
+  lFieldEditor: TCocoaFieldEditor;
+begin
+  lFieldEditor := GetFieldEditor();
+  if (lFieldEditor <> nil) and (lFieldEditor.lastEditBox = Self) then
+  begin
+    lFieldEditor.lastEditBox := nil;
+  end;
+
+  inherited dealloc;
+end;
+
+function TCocoaTextField.GetFieldEditor: TCocoaFieldEditor;
+var
+  lFieldEditor: TCocoaFieldEditor;
+  lText: NSText;
+begin
+  Result := nil;
+  if window = nil then Exit;
+  lText := window.fieldEditor_forObject(True, Self);
+  if (lText <> nil) and lText.isKindOfClass_(TCocoaFieldEditor) then
+  begin
+    Result := TCocoaFieldEditor(lText);
+  end;
+end;
+
 function TCocoaTextField.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -1411,15 +1497,31 @@ end;
 function TCocoaTextField.becomeFirstResponder: Boolean;
 begin
   Result := inherited becomeFirstResponder;
-  if Assigned(callback) then
-    callback.BecomeFirstResponder;
+  callback.BecomeFirstResponder;
 end;
 
-function TCocoaTextField.resignFirstResponder: Boolean;
+function TCocoaTextField.RealResignFirstResponder: Boolean;
 begin
+  callback.ResignFirstResponder;
+end;
+
+// Do not propagate this event to the LCL,
+// because Cocoa NSTextField loses focus as soon as it receives it
+// and the shared editor gets focus instead.
+// see NSWindow.fieldEditor:forObject:
+// See http://www.cocoabuilder.com/archive/cocoa/103607-resignfirstresponder-called-immediately.html
+// See http://stackoverflow.com/questions/3192905/nstextfield-not-noticing-lost-focus-when-pressing-tab
+function TCocoaTextField.resignFirstResponder: Boolean;
+var
+  lFieldEditor: TCocoaFieldEditor;
+begin
+  //DebugLn('[TCocoaTextField.resignFirstResponder]');
   Result := inherited resignFirstResponder;
-  if Assigned(callback) then
-    callback.ResignFirstResponder;
+  lFieldEditor := GetFieldEditor();
+  if (lFieldEditor <> nil) then
+  begin
+    lFieldEditor.lastEditBox := Self;
+  end;
 end;
 
 function TCocoaTextField.lclGetCallback: ICommonCallback;
@@ -1488,6 +1590,33 @@ begin
   Result := True;
 end;
 
+procedure TCocoaSecureTextField.dealloc;
+var
+  lFieldEditor: TCocoaFieldEditor;
+begin
+  lFieldEditor := GetFieldEditor();
+  if (lFieldEditor <> nil) and (lFieldEditor.lastEditBox = Self) then
+  begin
+    lFieldEditor.lastEditBox := nil;
+  end;
+
+  inherited dealloc;
+end;
+
+function TCocoaSecureTextField.GetFieldEditor: TCocoaFieldEditor;
+var
+  lFieldEditor: TCocoaFieldEditor;
+  lText: NSText;
+begin
+  Result := nil;
+  if window = nil then Exit;
+  lText := window.fieldEditor_forObject(True, Self);
+  if (lText <> nil) and lText.isKindOfClass_(TCocoaFieldEditor) then
+  begin
+    Result := TCocoaFieldEditor(lText);
+  end;
+end;
+
 function TCocoaSecureTextField.acceptsFirstResponder: Boolean;
 begin
   Result := True;
@@ -1499,10 +1628,22 @@ begin
   callback.BecomeFirstResponder;
 end;
 
-function TCocoaSecureTextField.resignFirstResponder: Boolean;
+function TCocoaSecureTextField.RealResignFirstResponder: Boolean;
 begin
-  Result := inherited resignFirstResponder;
   callback.ResignFirstResponder;
+end;
+
+function TCocoaSecureTextField.resignFirstResponder: Boolean;
+var
+  lFieldEditor: TCocoaFieldEditor;
+begin
+  //DebugLn('[TCocoaTextField.resignFirstResponder]');
+  Result := inherited resignFirstResponder;
+  lFieldEditor := GetFieldEditor();
+  if (lFieldEditor <> nil) then
+  begin
+    lFieldEditor.lastEditBox := Self;
+  end;
 end;
 
 procedure TCocoaSecureTextField.resetCursorRects;
@@ -1578,14 +1719,14 @@ end;
 
 procedure TCocoaCustomControl.mouseMoved(event: NSEvent);
 begin
-if not Assigned(callback) or not callback.MouseMove(event) then
-  inherited mouseMoved(event);
+  if not Assigned(callback) or not callback.MouseMove(event) then
+    inherited mouseMoved(event);
 end;
 
 procedure TCocoaCustomControl.scrollWheel(event: NSEvent);
 begin
-if not Assigned(callback) or not callback.scrollWheel(event) then
-  inherited scrollWheel(event);
+  if not Assigned(callback) or not callback.scrollWheel(event) then
+    inherited scrollWheel(event);
 end;
 
 procedure TCocoaCustomControl.keyDown(event: NSEvent);
