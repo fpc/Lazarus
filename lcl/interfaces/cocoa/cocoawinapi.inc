@@ -1221,7 +1221,7 @@ begin
     COLOR_BTNSHADOW:
       Result := NSColor.controlShadowColor;
     COLOR_BTNHIGHLIGHT:
-      Result := NSColor.controlHighlightColor;
+      Result := NSColor.controlLightHighlightColor;//controlHighlightColor has no contrast with COLOR_BTNFACE which affects TBevel. In Win32 this has value white
     COLOR_BTNTEXT:
       Result := NSColor.controlTextColor;
     COLOR_GRAYTEXT:
@@ -1229,7 +1229,7 @@ begin
     COLOR_3DDKSHADOW:
       Result := NSColor.controlDarkShadowColor;
     COLOR_3DLIGHT:
-      Result := NSColor.controlLightHighlightColor;
+      Result := NSColor.controlHighlightColor;// makes a more consistent result (a very light gray) than controlLightHighlightColor (which is white)
     COLOR_INFOBK:
       Result := NSColor.colorWithCalibratedRed_green_blue_alpha(249 / $FF, 252 / $FF, 201 / $FF, 1);
   else
