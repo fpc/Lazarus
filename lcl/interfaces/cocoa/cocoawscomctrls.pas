@@ -784,7 +784,9 @@ var
   lTableLV: TCocoaTableListView;
 begin
   if not CheckParams(lCocoaLV, lTableLV, ALV) then Exit;
-  lTableLV.setRowHeight(AValue);
+  if AValue > 0 then
+    lTableLV.setRowHeight(AValue);
+  // setRowSizeStyle could be used here but is available only in 10.7+
 end;
 
 class procedure TCocoaWSCustomListView.SetProperty(const ALV: TCustomListView;
