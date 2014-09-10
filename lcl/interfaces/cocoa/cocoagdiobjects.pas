@@ -528,10 +528,10 @@ begin
 
   FName := AFontName;
   if FName = 'default' then
-  begin
     FName := NSStringToString(NSFont.systemFontOfSize(0).familyName);
-    FSize := Round(NSFont.systemFontSize);
-  end
+
+  if ALogFont.lfHeight = 0 then
+    FSize := Round(NSFont.systemFontSize)
   else
     FSize := Abs(ALogFont.lfHeight);
 
