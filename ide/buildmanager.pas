@@ -267,7 +267,9 @@ procedure TBuildManager.OnProjectDestroy(Sender: TObject);
 var
   aProject: TProject;
 begin
-  aProject:=TProject(Sender);
+  if not (Sender is TProjectIDEOptions) then
+    exit;
+  aProject:=TProjectIDEOptions(Sender).Project;
   if FBuildTarget=aProject then
     FBuildTarget:=nil;
 end;

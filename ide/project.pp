@@ -2680,10 +2680,11 @@ end;
  ------------------------------------------------------------------------------}
 destructor TProject.Destroy;
 begin
-  FDefineTemplates.Active := False;
   FDestroying := True;
+  FDefineTemplates.Active := False;
   ActiveBuildMode:=nil;
   Clear;
+  FreeThenNil(FIDEOptions);
   FreeAndNil(FBuildModesBackup);
   FreeAndNil(FBuildModes);
   FreeAndNil(FMacroEngine);
@@ -2696,7 +2697,6 @@ begin
   FreeThenNil(FJumpHistory);
   FreeThenNil(FSourceDirectories);
   FreeThenNil(FPublishOptions);
-  FreeThenNil(FIDEOptions);
   FreeThenNil(FRunParameters);
   FreeThenNil(FDefineTemplates);
 
