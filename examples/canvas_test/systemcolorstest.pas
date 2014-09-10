@@ -32,6 +32,7 @@ var
   lColor: types.DWORD;
 begin
   Canvas.Brush.Style := bsSolid;
+  Canvas.Font.Color := clBlack;
 
   lColor := LCLIntf.GetSysColor(COLOR_SCROLLBAR);
   Canvas.Brush.Color := lColor;
@@ -61,12 +62,11 @@ begin
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(20, 140, Format('COLOR_WINDOWFRAME=%x', [lColor]));
 
-  Canvas.Pen.Color := clWhite;
+  Canvas.Font.Color := clWhite;
   lColor := LCLIntf.GetSysColor(COLOR_MENUTEXT);
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(20, 160, Format('COLOR_MENUTEXT=%x', [lColor]));
 
-  Canvas.Pen.Color := clBlack;
   lColor := LCLIntf.GetSysColor(COLOR_WINDOWTEXT);
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(20, 180, Format('COLOR_WINDOWTEXT=%x', [lColor]));
@@ -75,6 +75,7 @@ begin
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(20, 200, Format('COLOR_CAPTIONTEXT=%x', [lColor]));
 
+  Canvas.Font.Color := clBlack;
   lColor := LCLIntf.GetSysColor(COLOR_ACTIVEBORDER);
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(20, 220, Format('COLOR_ACTIVEBORDER=%x', [lColor]));
@@ -91,12 +92,14 @@ begin
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(20, 280, Format('COLOR_HIGHLIGHT=%x', [lColor]));
 
+  Canvas.Font.Color := clWhite;
   lColor := LCLIntf.GetSysColor(COLOR_HIGHLIGHTTEXT);
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(20, 300, Format('COLOR_HIGHLIGHTTEXT=%x', [lColor]));
 
   // Second column
 
+  Canvas.Font.Color := clBlack;
   lColor := LCLIntf.GetSysColor(COLOR_BTNFACE);
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(240, 20, Format('COLOR_BTNFACE=%x', [lColor]));
@@ -109,7 +112,7 @@ begin
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(240, 60, Format('COLOR_GRAYTEXT=%x', [lColor]));
 
-  Canvas.Pen.Color := clWhite;
+  Canvas.Font.Color := clWhite;
   lColor := LCLIntf.GetSysColor(COLOR_BTNTEXT);
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(240, 80, Format('COLOR_BTNTEXT=%x', [lColor]));
@@ -118,22 +121,22 @@ begin
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(240, 100, Format('COLOR_INACTIVECAPTIONTEXT=%x', [lColor]));
 
-  Canvas.Pen.Color := clBlack;
+  Canvas.Font.Color := clBlack;
   lColor := LCLIntf.GetSysColor(COLOR_BTNHIGHLIGHT);
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(240, 120, Format('COLOR_BTNHIGHLIGHT=%x', [lColor]));
 
-  Canvas.Pen.Color := clWhite;
+  Canvas.Font.Color := clWhite;
   lColor := LCLIntf.GetSysColor(COLOR_3DDKSHADOW);
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(240, 140, Format('COLOR_3DDKSHADOW=%x', [lColor]));
 
-  Canvas.Pen.Color := clBlack;
+  Canvas.Font.Color := clBlack;
   lColor := LCLIntf.GetSysColor(COLOR_3DLIGHT);
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(240, 160, Format('COLOR_3DLIGHT=%x', [lColor]));
 
-  Canvas.Pen.Color := clWhite;
+  Canvas.Font.Color := clWhite;
   lColor := LCLIntf.GetSysColor(COLOR_INFOTEXT);
   Canvas.Brush.Color := lColor;
   Canvas.TextOut(240, 180, Format('COLOR_INFOTEXT=%x', [lColor]));
