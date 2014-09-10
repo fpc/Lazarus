@@ -520,6 +520,7 @@ procedure TCocoaThemeServices.DrawElement(DC: HDC;
 //var
 //  Context: TCarbonDeviceContext absolute DC;
 begin
+  inherited DrawElement(DC, Details, R, ClipRect);
 {  if CheckDC(DC, 'TCocoaThemeServices.DrawElement') then
   begin
     case Details.Element of
