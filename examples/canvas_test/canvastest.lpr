@@ -10,7 +10,7 @@ uses
   Forms
   { you can add units after this }, canvastestunit, LResources, pentest,
   brushtest, fonttest, rectanglestest, shapedwindowtest, ellipseunit,
-  screenshotunit, drawtest, imagetest;
+  screenshotunit, drawtest, imagetest, systemcolorstest;
 
 {$R *.res}
 
@@ -26,6 +26,7 @@ begin
   Application.CreateForm(TfrmEllipse, frmEllipse);
   Application.CreateForm(TfrmDraw, frmDraw);
   Application.CreateForm(TfrmImage, frmImage);
+  Application.CreateForm(TfrmSystemColors, frmSystemColors);
   Application.Run;
 end.
 

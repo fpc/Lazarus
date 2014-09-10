@@ -10,7 +10,7 @@ uses
   StdCtrls,
   // Project units
   rectanglestest, brushtest, pentest, fonttest, shapedwindowtest,
-  ellipseunit, screenshotunit, drawtest, imagetest;
+  ellipseunit, screenshotunit, drawtest, imagetest, systemcolorstest;
 
 type
 
@@ -18,6 +18,7 @@ type
 
   TfrmCanvasTest = class(TForm)
     btnBrush: TButton;
+    btnSystemColors: TButton;
     btnPen: TButton;
     btnFont: TButton;
     btnClose: TButton;
@@ -37,6 +38,7 @@ type
     procedure btnRectanglesClick(Sender: TObject);
     procedure btnScreenshotClick(Sender: TObject);
     procedure btnShapedWindowClick(Sender: TObject);
+    procedure btnSystemColorsClick(Sender: TObject);
   private
     { private declarations }
   public
@@ -100,6 +102,11 @@ end;
 procedure TfrmCanvasTest.btnShapedWindowClick(Sender: TObject);
 begin
   frmShapedWindow.Show;
+end;
+
+procedure TfrmCanvasTest.btnSystemColorsClick(Sender: TObject);
+begin
+  frmSystemColors.Show;
 end;
 
 end.

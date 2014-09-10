@@ -1,14 +1,14 @@
 object frmCanvasTest: TfrmCanvasTest
   Left = 290
-  Height = 420
+  Height = 460
   Top = 171
   Width = 233
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Canvas Test Program'
-  ClientHeight = 420
+  ClientHeight = 460
   ClientWidth = 233
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.3'
   object btnBrush: TButton
     Left = 19
     Height = 25
@@ -39,7 +39,7 @@ object frmCanvasTest: TfrmCanvasTest
   object btnClose: TButton
     Left = 19
     Height = 25
-    Top = 384
+    Top = 424
     Width = 194
     Caption = 'Close'
     OnClick = btnCloseClick
@@ -98,5 +98,14 @@ object frmCanvasTest: TfrmCanvasTest
     Caption = 'Show Image Dialog'
     OnClick = btnImageClick
     TabOrder = 9
+  end
+  object btnSystemColors: TButton
+    Left = 19
+    Height = 25
+    Top = 376
+    Width = 194
+    Caption = 'Show System Colors'
+    OnClick = btnSystemColorsClick
+    TabOrder = 10
   end
 end

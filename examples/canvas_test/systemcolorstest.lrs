@@ -1,0 +1,7 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfrmSystemColors','FORMDATA',[
+  'TPF0'#16'TfrmSystemColors'#15'frmSystemColors'#4'Left'#3'Y'#1#6'Height'#3'@'
+  +#1#3'Top'#3#160#0#5'Width'#3#224#1#7'Caption'#6#15'frmSystemColors'#7'OnPain'
+  +'t'#7#9'FormPaint'#10'LCLVersion'#6#3'1.3'#0#0
+]);
