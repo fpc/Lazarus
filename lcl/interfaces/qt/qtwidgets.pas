@@ -244,7 +244,7 @@ type
     function getUpdatesEnabled: Boolean;
     function getWidth: Integer;
     function getWindow: TQtWidget;
-    function getWindowState: QtWindowStates;
+    function getWindowState: QtWindowStates; {$IFDEF QTSCROLLABLEFORMS}virtual;{$ENDIF}
     procedure grabMouse; virtual;
     function hasFocus: Boolean; virtual;
     function IsActiveWindow: Boolean;
@@ -605,6 +605,7 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     {viewport events}
     function ScrollViewEventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
+    function getWindowState: QtWindowStates; override;
   end;
   {$ENDIF}
 
@@ -6416,6 +6417,13 @@ begin
     end;
   end;
   EndEventProcessing;
+end;
+
+function TQtWindowArea.getWindowState: QtWindowStates;
+begin
+  Result := inherited getWindowState;
+  if Assigned(LCLObject) then
+    Result := TQtMainWindow(LCLObject.Handle).getWindowState;
 end;
 
 {$ENDIF}
