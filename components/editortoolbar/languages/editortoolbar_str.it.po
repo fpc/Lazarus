@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2014-07-17 19:57+0100\n"
+"PO-Revision-Date: 2014-09-01 16:52+0100\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
@@ -22,7 +22,7 @@ msgstr "Aggiungere alla barra degli strumenti"
 
 #: editortoolbar_str.rsall
 msgid "All"
-msgstr ""
+msgstr "Tutti"
 
 #: editortoolbar_str.rsbottom
 msgid "Bottom"
@@ -34,15 +34,15 @@ msgstr "Annulla"
 
 #: editortoolbar_str.rsclearselection
 msgid "Clear selection"
-msgstr ""
+msgstr "Annulla selezione"
 
 #: editortoolbar_str.rscodeexplorer
 msgid "Code Explorer"
-msgstr ""
+msgstr "Esplora codice"
 
 #: editortoolbar_str.rscodetemplates
 msgid "Code Templates"
-msgstr ""
+msgstr "Modelli di codice"
 
 #: editortoolbar_str.rsconfiguretoo
 msgid "Configure Toolbar"
@@ -50,19 +50,19 @@ msgstr "Configura la toolbar"
 
 #: editortoolbar_str.rscustom
 msgid "Custom"
-msgstr ""
+msgstr "Personale"
 
 #: editortoolbar_str.rsdebug
 msgid "Debug"
-msgstr ""
+msgstr "Debug"
 
 #: editortoolbar_str.rsdesign
 msgid "Design"
-msgstr ""
+msgstr "Progetto"
 
 #: editortoolbar_str.rsdesigner
 msgid "Designer"
-msgstr ""
+msgstr "Progettazione"
 
 #: editortoolbar_str.rseditortoolbar
 msgid "Editor ToolBar"
@@ -74,31 +74,31 @@ msgstr "Editor di configurazione toolbar"
 
 #: editortoolbar_str.rshelp1
 msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
-msgstr ""
+msgstr "Il bottone \"Aggiungi\" inserisce una voce prima di quella selezionata nella Barra Strumenti."
 
 #: editortoolbar_str.rshelp2
 msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr ""
+msgstr "Se nessuna è selezionata, la voce sarà aggiunta alla fine."
 
 #: editortoolbar_str.rshelp3
 msgid "You may rearrage Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr ""
+msgstr "Potete riposizionare le voci della barra con i bottoni \"Sposta su\" e \"Sposta giù\"."
 
 #: editortoolbar_str.rshelp4
 msgid "Hint: to append an Item at the end, use \"Clear selection\""
-msgstr ""
+msgstr "Consiglio: per aggiungere una voce in fondo, usa \"Annulla selezione\""
 
 #: editortoolbar_str.rshint
 msgid "You may add here your favorite commands"
-msgstr ""
+msgstr "Potete aggiungere qui i vostri comandi preferiti"
 
 #: editortoolbar_str.rshtml
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: editortoolbar_str.rsidemainmenu
 msgid "IDE Main Menu"
-msgstr ""
+msgstr "Menu principale"
 
 #: editortoolbar_str.rsjumpto
 msgid "Jump To"
@@ -119,15 +119,15 @@ msgstr "Visualizza"
 
 #: editortoolbar_str.rsmessages
 msgid "Messages"
-msgstr ""
+msgstr "Messaggi"
 
 #: editortoolbar_str.rsmoveselecteddown
 msgid "Move selected toolbar item down"
-msgstr "Spostare in basso"
+msgstr "Spostare in giù"
 
 #: editortoolbar_str.rsmoveselectedup
 msgid "Move selected toolbar item up"
-msgstr "Spostare in alto"
+msgstr "Spostare in su"
 
 #: editortoolbar_str.rsok
 msgid "OK"
@@ -135,15 +135,19 @@ msgstr "OK"
 
 #: editortoolbar_str.rspackageeditor
 msgid "Package Editor"
-msgstr ""
+msgstr "Editor Pacchetti"
 
 #: editortoolbar_str.rspackageeditorfiles
 msgid "Package Editor Files"
-msgstr ""
+msgstr "File di editor pacchetti"
 
 #: editortoolbar_str.rsposition
 msgid "Position"
 msgstr "Posizione"
+
+#: editortoolbar_str.rsprofile
+msgid "Profile"
+msgstr "Profilo"
 
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
@@ -155,11 +159,11 @@ msgstr "Destra"
 
 #: editortoolbar_str.rssourceeditor
 msgid "Source Editor"
-msgstr ""
+msgstr "Editor sorgente"
 
 #: editortoolbar_str.rssourcetab
 msgid "Source Tab"
-msgstr ""
+msgstr "Linguette editor sorgente"
 
 #: editortoolbar_str.rstoolbar
 #| msgid "Toolbar"

@@ -30,6 +30,7 @@ resourcestring
   rsRight                   = 'Right';
   rsEditorToolbar           = 'Editor ToolBar';
   rsMenuView                = 'View';
+  rsProfile                 = 'Profile';
   rsAll                     = 'All';
   rsDesign                  = 'Design';
   rsDebug                   = 'Debug';

@@ -105,7 +105,7 @@ var
   bToolBarShow: boolean;
   EditorMenuCommand:TIDEMenuCommand;
   ProfileMask: array [0..4] of Integer = (iAll,iDesign,iDebug,iHTML,iCustom);
-  ProfileNames: array [0..4] of String = (rsAll,rsDesign,rsDebug,rsHTML,rsCustom);
+  sLocalizedProfileNames: array[0..4] of string;
 
 implementation
 
@@ -253,7 +253,7 @@ function TEditorToolbar.CreateProfileItem(ProfIndx: Integer; O: TComponent
 begin
   Result            := TMenuItem.Create(O);
   Result.Tag        := ProfIndx;
-  Result.Caption    := ProfileNames[ProfIndx];
+  Result.Caption    := sLocalizedProfileNames[ProfIndx];
   Result.GroupIndex := 1;
   Result.RadioItem  := True;
   //Result.AutoCheck  := True;
@@ -295,11 +295,17 @@ begin
   uEditorToolbarList.AddBar(Self);
   if assigned(TB) then exit;
 
+  sLocalizedProfileNames[0] := rsAll;
+  sLocalizedProfileNames[1] := rsDesign;
+  sLocalizedProfileNames[2] := rsDebug;
+  sLocalizedProfileNames[3] := rsHTML;
+  sLocalizedProfileNames[4] := rsCustom;
+
   FJumpHandler := TJumpHandler.Create(nil);
   FWindow := TSourceEditorWindowInterface(AOwner);
 
   PPUP := TPopupMenu.Create(FWindow);
-  for c := 0 to High(ProfileNames) do begin
+  for c := 0 to High(sLocalizedProfileNames) do begin
     PPUP.Items.Add(CreateProfileItem(c,FWindow));
   end;
 

@@ -133,6 +133,10 @@ msgstr ""
 msgid "Position"
 msgstr ""
 
+#: editortoolbar_str.rsprofile
+msgid "Profile"
+msgstr ""
+
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
 msgstr ""

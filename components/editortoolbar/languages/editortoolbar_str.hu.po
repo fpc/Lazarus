@@ -143,6 +143,10 @@ msgstr "Csomagszerkesztő fájljai"
 msgid "Position"
 msgstr "Elhelyezés"
 
+#: editortoolbar_str.rsprofile
+msgid "Profile"
+msgstr ""
+
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "A kijelölt elem eltávolítása az eszköztárról"

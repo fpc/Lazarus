@@ -142,6 +142,10 @@ msgstr "Файлы в редакторе пакетов"
 msgid "Position"
 msgstr "Положение"
 
+#: editortoolbar_str.rsprofile
+msgid "Profile"
+msgstr ""
+
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
 msgstr "Удалить выбранный элемент с панели"

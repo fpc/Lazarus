@@ -177,6 +177,7 @@ begin
   btnMoveDown.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   btnClear.LoadGlyphFromResourceName(HINSTANCE,'menu_close');
   btnHelp.LoadGlyphFromResourceName(HINSTANCE, 'menu_help');
+  sbAddDivider.LoadGlyphFromResourceName(HINSTANCE, 'menu_divider16');
 
   btnAdd.Hint      := rsAddSelected;
   btnRemove.Hint   := rsRemoveSelected;
@@ -195,8 +196,8 @@ begin
   MainList := TStringList.Create;
   MainList.OwnsObjects:= True; // it should be the default, but just to make sure...
 
-  LoadStyleSettings;
   SetupCaptions;
+  LoadStyleSettings;
   LoadCategories;
   LoadSettings;
 end;
@@ -319,8 +320,6 @@ end;
 
 procedure TEdtTbConfigForm.ExchangeMainListItem(Item1, Item2: TListItem);
 var
-  I,J: Integer;
-  MainListItem1,MainListItem2: TLvItem;
   MainIndex1,MainIndex2: Integer;
   aMainListItem: TLvItem;
 begin
@@ -600,19 +599,21 @@ begin
   lblMenuTree.Caption   := rsMenuTree;
   lblToolbar.Caption    := rsToolbar;
   lblpos.Caption        := rsPosition;
+  lblProfile.Caption    := rsProfile;
+
   sLocalizedPosValues[0] := rsTop;
   sLocalizedPosValues[1] := rsBottom;
   sLocalizedPosValues[2] := rsRight;
   sLocalizedPosValues[3] := rsLeft;
-  for i := 0 to 3 do
+
+  for i := 0 to high(sLocalizedPosValues) do
   begin
    cbPos.Items[i] := sLocalizedPosValues[i]; // localized
   end;
-  cbProfile.Items[0] := rsAll;
-  cbProfile.Items[1] := rsDesign;
-  cbProfile.Items[2] := rsDebug;
-  cbProfile.Items[3] := rsHTML;
-  cbProfile.Items[4] := rsCustom;
+  for i := 0 to high(sLocalizedProfileNames) do
+  begin
+    cbProfile.Items[i] := sLocalizedProfileNames[i];
+  end;
 end;
 
 procedure TEdtTbConfigForm.LoadCategories;
@@ -638,7 +639,6 @@ var
   aProfileMask: Integer;
   mi: TIDEMenuItem;
   ms: TIDEMenuSection;
-  lvItem: TListItem;
 begin
   cfg := GetIDEConfigStorage(cSettingsFile, True);
   try
@@ -689,7 +689,8 @@ begin
     value         := cfg.GetValue('Profile',iAll);
     CurrProfile   := value;
     value         := GetProfileIndex(value);
-    cbProfile.ItemIndex:= value;
+    //cbProfile.ItemIndex:= value;
+    cbProfile.Text:= sLocalizedProfileNames[value];
   finally
     cfg.Free;
   end;

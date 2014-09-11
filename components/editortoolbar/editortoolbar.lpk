@@ -19,7 +19,7 @@
 "/>
     <License Value="GPL
 "/>
-    <Version Minor="8"/>
+    <Version Minor="8" Release="2"/>
     <Files Count="4">
       <Item1>
         <Filename Value="jumpto_impl.pas"/>
@@ -42,6 +42,7 @@
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
+      <EnableI18NForLFM Value="True"/>
     </i18n>
     <Type Value="DesignTime"/>
     <RequiredPkgs Count="5">
