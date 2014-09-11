@@ -43,15 +43,23 @@ unit QuickFixDemo1;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, IDEMsgIntf, CodeTree, CodeAtom, BasicCodeTools,
-  PascalParserTool, SourceChanger, LazIDEIntf, CodeCache, CodeToolManager,
-  Dialogs;
+  Classes, SysUtils, LCLProc, Dialogs,
+  CodeTree, PascalParserTool, SourceChanger, CodeCache, CodeToolManager,
+  IDEMsgIntf, LazIDEIntf, IDEExternToolIntf;
 
-procedure QuickFixSenderParameterNotUsed(Sender: TObject; Step: TIMQuickFixStep;
-                                         Msg: TIDEMessageLine);
-function GetMsgLineFilename(Msg: TIDEMessageLine;
-                            out CodeBuf: TCodeBuffer): boolean;
-function ParseCode(CodeBuf: TCodeBuffer; out ACodeTool: TCodeTool): boolean;
+type
+
+  { TQuickFixParemNotUsedAddAssert }
+
+  TQuickFixParemNotUsedAddAssert = class(TMsgQuickFix)
+  public
+    function IsApplicable(Msg: TMessageLine; out Identifier: string): boolean;
+    procedure CreateMenuItems(Fixes: TMsgQuickFixes); override;
+    procedure QuickFix({%H-}Fixes: TMsgQuickFixes; Msg: TMessageLine); override;
+  end;
+
+function ParseCode(Msg: TMessageLine;
+  out CodeBuf: TCodeBuffer; out ACodeTool: TCodeTool): boolean;
 function CaretToSourcePosition(ACodeTool: TCodeTool; CodeBuf: TCodeBuffer;
   Line, Column: integer; out CleanPos: Integer): boolean;
 
@@ -59,122 +67,24 @@ procedure Register;
 
 implementation
 
-procedure QuickFixSenderParameterNotUsed(Sender: TObject;
-  Step: TIMQuickFixStep; Msg: TIDEMessageLine);
-// Adds a 'Assert(Sender=nil);' line at the beginning of the begin..end block
-// of the procedure of the compiler messages 'Parameter "Sender" not used'.
-var
-  CodeBuf: TCodeBuffer;
-  Line: LongInt;
-  ACodeTool: TCodeTool;
-  Column: LongInt;
-  CleanPos: Integer;
-  ProcNode: TCodeTreeNode;
-  SourceChangeCache: TSourceChangeCache;
-  InsertPos: Integer;
-  Indent: LongInt;
-  BeginNode: TCodeTreeNode;
-begin
-  if Step<>imqfoMenuItem then exit;
-
-  // load the file
-  if not GetMsgLineFilename(Msg,CodeBuf) then exit;
-
-  // get line and column
-  Line:=StrToIntDef(Msg.Parts.Values['Line'],0);
-  Column:=StrToIntDef(Msg.Parts.Values['Column'],0);
-  if (Line<1) then begin
-    DebugLn('QuickFixSenderParameterNotUsed Line=',dbgs(Line));
-    exit;
-  end;
-
-  // parse the code and find the source position
-  if not ParseCode(CodeBuf,ACodeTool) then exit;
-  if not CaretToSourcePosition(ACodeTool,CodeBuf,Line,Column,CleanPos) then exit;
-  
-  // find procedure node
-  ProcNode:=ACodeTool.FindDeepestNodeAtPos(CleanPos,false);
-  if ProcNode<>nil then
-    ProcNode:=ProcNode.GetNodeOfType(ctnProcedure);
-  if ProcNode=nil then begin
-    DebugLn('QuickFixSenderParameterNotUsed no procedure with begin..end at code position line=',dbgs(line),' col=',dbgs(Column));
-    exit;
-  end;
-  BeginNode:=ACodeTool.FindProcBody(ProcNode);
-  if BeginNode=nil then begin
-    // this procedure has no begin..end -> search corresponding pocedure node
-    ProcNode:=ACodeTool.FindCorrespondingProcNode(ProcNode,[phpAddClassName,phpInUpperCase]);
-    if ProcNode=nil then begin
-      DebugLn('QuickFixSenderParameterNotUsed no corresponding procedure with begin..end at code position line=',dbgs(line),' col=',dbgs(Column));
-      exit;
-    end;
-    BeginNode:=ACodeTool.FindProcBody(ProcNode);
-    if BeginNode=nil then begin
-      DebugLn('QuickFixSenderParameterNotUsed corresponding procedure at code position line=',dbgs(line),' col=',dbgs(Column),' has no begin..end');
-      exit;
-    end;
-  end;
-
-  // find insert postion after the 'begin' keyword
-  SourceChangeCache:=CodeToolBoss.SourceChangeCache;
-  SourceChangeCache.MainScanner:=ACodeTool.Scanner;
-  InsertPos:=BeginNode.StartPos+length('begin');
-
-  // define a nice indentation
-  Indent:=GetLineIndent(ACodeTool.Src,InsertPos);
-  inc(Indent,SourceChangeCache.BeautifyCodeOptions.Indent);
-
-  // change source
-  try
-    if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
-                                     GetIndentStr(Indent)+'Assert(Sender=nil);')
-    then
-      raise Exception.Create('QuickFixSenderParameterNotUsed insertion impossible');
-    if not SourceChangeCache.Apply then
-      raise Exception.Create('QuickFixSenderParameterNotUsed changing source failed');
-    // message fixed -> clean
-    Msg.Msg:='';
-  except
-    on E: Exception do begin
-      MessageDlg('Error',E.Message,mtError,[mbCancel],0);
-    end;
-  end;
-end;
-
-function GetMsgLineFilename(Msg: TIDEMessageLine; out CodeBuf: TCodeBuffer
-  ): boolean;
-// loads the file of the message
-var
-  Filename: String;
-begin
-  Result:=false;
-  CodeBuf:=nil;
-  if Msg.Parts=nil then begin
-    DebugLn('GetMsgLineFilename Msg.Parts=nil');
-    exit;
-  end;
-
-  Filename:=Msg.Parts.Values['Filename'];
-  //DebugLn('GetMsgLineFilename Filename=',Filename,' ',Msg.Parts.Text);
-  CodeBuf:=CodeToolBoss.LoadFile(Filename,false,false);
-  if CodeBuf=nil then begin
-    DebugLn('GetMsgLineFilename Filename "',Filename,'" not found.');
-    exit;
-  end;
-  Result:=true;
-end;
-
-function ParseCode(CodeBuf: TCodeBuffer; out ACodeTool: TCodeTool): boolean;
+function ParseCode(Msg: TMessageLine; out CodeBuf: TCodeBuffer; out
+  ACodeTool: TCodeTool): boolean;
 // commits any editor changes to the codetools, parses the unit
 // and if there is a syntax error, tells the IDE jump to it
 begin
-  LazarusIDE.SaveSourceEditorChangesToCodeCache(nil);
+  Result:=false;
+  if Msg=nil then exit;
+  CodeBuf:=CodeToolBoss.LoadFile(Msg.GetFullFilename,true,false);
+  if CodeBuf=nil then exit;
+  if not LazarusIDE.BeginCodeTools then begin
+    DebugLn(['QuickFixDemo1 ParseCode failed because IDE busy']);
+    exit;
+  end;
   if not CodeToolBoss.Explore(CodeBuf,ACodeTool,false) then begin
     LazarusIDE.DoJumpToCodeToolBossError;
-    Result:=false;
-  end else begin
-    Result:=true;
+    exit;
   end;
+  Result:=true;
 end;
 
 function CaretToSourcePosition(ACodeTool: TCodeTool;
@@ -198,10 +108,106 @@ end;
 
 procedure Register;
 begin
-  RegisterIDEMsgQuickFix('Parameter Sender not used',
-    'Quick fix: Add Assert(Sender=nil) dummy line',
-    'Parameter "Sender" not used',[imqfoMenuItem],
-    nil,@QuickFixSenderParameterNotUsed);
+  MsgQuickFixes.RegisterQuickFix(TQuickFixParemNotUsedAddAssert.Create);
+end;
+
+{ TQuickFixParemNotUsedAddAssert }
+
+function TQuickFixParemNotUsedAddAssert.IsApplicable(Msg: TMessageLine; out
+  Identifier: string): boolean;
+var
+  Dummy: string;
+begin
+  Result:=false;
+  // Check: Parameter "$1" not used
+  if not IDEFPCParser.MsgLineIsId(Msg,5024,Identifier,Dummy) then
+    exit;
+  if not Msg.HasSourcePosition or not IsValidIdent(Identifier) then exit;
+  Result:=true;
+end;
+
+procedure TQuickFixParemNotUsedAddAssert.CreateMenuItems(Fixes: TMsgQuickFixes);
+var
+  i: Integer;
+  Msg: TMessageLine;
+  Identifier: string;
+begin
+  for i:=0 to Fixes.LineCount-1 do begin
+    Msg:=Fixes.Lines[i];
+    if not IsApplicable(Msg,Identifier) then continue;
+    Fixes.AddMenuItem(Self, Msg, 'Add Assert('+Identifier+'=nil);');
+    exit;
+  end;
+end;
+
+procedure TQuickFixParemNotUsedAddAssert.QuickFix(Fixes: TMsgQuickFixes;
+  Msg: TMessageLine);
+var
+  Identifier: string;
+  CodeBuf: TCodeBuffer;
+  ACodeTool: TCodeTool;
+  CleanPos: Integer;
+  ProcNode: TCodeTreeNode;
+  BeginNode: TCodeTreeNode;
+  SourceChangeCache: TSourceChangeCache;
+  InsertPos: Integer;
+  Indent: Integer;
+  Beauty: TBeautifyCodeOptions;
+begin
+  if not IsApplicable(Msg,Identifier) then exit;
+
+  // parse the code and find the source position
+  if not ParseCode(Msg,CodeBuf,ACodeTool) then exit;
+  if not CaretToSourcePosition(ACodeTool,CodeBuf,Msg.Line,Msg.Column,CleanPos) then exit;
+
+  // find procedure node
+  ProcNode:=ACodeTool.FindDeepestNodeAtPos(CleanPos,false);
+  if ProcNode<>nil then
+    ProcNode:=ProcNode.GetNodeOfType(ctnProcedure);
+  if ProcNode=nil then begin
+    DebugLn('TQuickFixParemNotUsedAddAssert.QuickFix no procedure with begin..end at code position line=',dbgs(Msg.Line),' col=',dbgs(Msg.Column));
+    exit;
+  end;
+  BeginNode:=ACodeTool.FindProcBody(ProcNode);
+  if BeginNode=nil then begin
+    // this procedure has no begin..end -> search corresponding pocedure node
+    ProcNode:=ACodeTool.FindCorrespondingProcNode(ProcNode,[phpAddClassName,phpInUpperCase]);
+    if ProcNode=nil then begin
+      DebugLn('TQuickFixParemNotUsedAddAssert.QuickFix no corresponding procedure with begin..end at code position line=',dbgs(Msg.Line),' col=',dbgs(Msg.Column));
+      exit;
+    end;
+    BeginNode:=ACodeTool.FindProcBody(ProcNode);
+    if BeginNode=nil then begin
+      DebugLn('TQuickFixParemNotUsedAddAssert.QuickFix corresponding procedure at code position line=',dbgs(Msg.Line),' col=',dbgs(Msg.Column),' has no begin..end');
+      exit;
+    end;
+  end;
+
+  // find insert postion after the 'begin' keyword
+  SourceChangeCache:=CodeToolBoss.SourceChangeCache;
+  SourceChangeCache.MainScanner:=ACodeTool.Scanner;
+  InsertPos:=BeginNode.StartPos+length('begin');
+  Beauty:=SourceChangeCache.BeautifyCodeOptions;
+
+  // define a nice indentation
+  Indent:=Beauty.GetLineIndent(ACodeTool.Src,InsertPos);
+  inc(Indent,SourceChangeCache.BeautifyCodeOptions.Indent);
+
+  // change source
+  try
+    if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
+                              Beauty.GetIndentStr(Indent)+'Assert(Sender=nil);')
+    then
+      raise Exception.Create('TQuickFixParemNotUsedAddAssert.QuickFix insertion impossible');
+    if not SourceChangeCache.Apply then
+      raise Exception.Create('TQuickFixParemNotUsedAddAssert.QuickFix changing source failed');
+    // message fixed -> clean
+    Msg.Msg:='';
+  except
+    on E: Exception do begin
+      MessageDlg('Error',E.Message,mtError,[mbCancel],0);
+    end;
+  end;
 end;
 
 end.
