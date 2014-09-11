@@ -365,6 +365,7 @@ var
   vRight, vBottom: Integer;
   vOldPenColor, vOldBrushColor: TColor;
   vOldPenStyle: TPenStyle;
+  noFill: Boolean;
 begin
   vRight := (ARect.Bottom - ARect.Top) + ARect.Left - 2;
   vBottom:=ARect.Bottom-2;
@@ -396,10 +397,19 @@ begin
     Rectangle(ARect.Left, ARect.Top, vRight, vBottom);
 
     // set things up and do the work
-    Brush.Color := StringToColorDef(CurValue,clNone);
+    noFill := CurValue = 'clNone';
+    if noFill then
+      Brush.Color := clWindow
+    else
+      Brush.Color := StringToColorDef(CurValue,clNone);
     Pen.Color := ColorToBorderColor(ColorToRGB(Brush.Color));
     Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, vBottom - 1);
-    
+    if noFill then
+    begin
+      Line(ARect.Left + 1, ARect.Top + 1, vRight - 2, vBottom - 2);
+      Line(ARect.Left + 1, vBottom - 2, vRight - 2, ARect.Top + 1);
+    end;
+
     // restore the things we twiddled with
     Brush.Color := vOldBrushColor;
     Pen.Color := vOldPenColor;
