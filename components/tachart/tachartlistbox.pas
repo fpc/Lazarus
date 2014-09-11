@@ -86,6 +86,7 @@ type
     procedure ClickedItem(AIndex: Integer); virtual;
     procedure ClickedSeriesIcon(AIndex: Integer); virtual;
     function CreateLegendItems: TChartLegendItems;
+    procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
     procedure Populate;
 
   public
@@ -457,6 +458,13 @@ begin
   end;
 end;
 
+procedure TChartListbox.Notification(AComponent: TComponent; AOperation: TOperation);
+begin
+  if (AOperation = opRemove) and (AComponent = FChart) then
+    FChart := nil;
+  inherited Notification(AComponent, AOperation);
+end;
+
 procedure TChartListbox.Populate;
 { populates the listbox with all series contained in the chart. Use the event
   OnPopulate if you don't omit special series from the listbox (RemoveSeries) }
@@ -466,7 +474,7 @@ begin
   Items.BeginUpdate;
   try
     Items.Clear;
-    if FChart = nil then exit;
+    if (FChart = nil) or (FChart.Series = nil) then exit;
     FreeAndNil(FLegendItems);
     FLegendItems := CreateLegendItems;
     Chart.Legend.SortItemsByOrder(FLegendItems);
