@@ -14210,8 +14210,6 @@ While CanFocus checks all control parents it does not check whether a form contr
       </element>
     <element name="TLazAccessibleObject.GetEnumerator"><short>Default enumerator for the children</short>
       </element>
-    <element name="TControl.ParentVisibleChanged"><short>Called when Parent or grand parent's Visible property changed and this and all parents in between have Visible=true</short><descr>Use this method to act on changes to inherited/nested visibility.</descr>
-      </element>
     </module>
     <!-- Controls -->
   </package>

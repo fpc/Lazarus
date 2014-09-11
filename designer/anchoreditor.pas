@@ -157,6 +157,7 @@ type
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure UpdateShowing; override;
+    procedure ParentVisibleChanged(aParent: TWinControl); override;
   public
     destructor Destroy; override;
     class function ControlToStr(AControl: TControl): string;
@@ -398,29 +399,29 @@ end;
 
 function compareControlTop(Item1, Item2: pointer): Integer;
 begin
-  if tcontrol(item1).top<tcontrol(item2).top then result:=-1
-  else if tcontrol(item1).top>tcontrol(item2).top then result:=1
-  else result:=0;
+  if TControl(Item1).Top<TControl(TControl).Top then Result:=-1
+  else if TControl(Item1).Top>TControl(Item2).Top then Result:=1
+  else Result:=0;
 end;
 
 function compareControlLeft(Item1, Item2: pointer): Integer;
 begin
-  if tcontrol(item1).left<tcontrol(item2).left then result:=-1
-  else if tcontrol(item1).left>tcontrol(item2).left then result:=1
+  if TControl(Item1).Left<TControl(Item2).Left then Result:=-1
+  else if TControl(Item1).Left>TControl(Item2).Left then Result:=1
   else result:=0;
 end;
 
 function compareControlRight(Item1, Item2: pointer): Integer;
 begin
-  if tcontrol(item1).left+tcontrol(item1).width>tcontrol(item2).left+tcontrol(item2).width then result:=-1
-  else if tcontrol(item1).left+tcontrol(item1).width<tcontrol(item2).left+tcontrol(item2).width then result:=1
+  if TControl(item1).left+TControl(item1).width>TControl(item2).left+TControl(item2).width then result:=-1
+  else if TControl(item1).left+TControl(item1).width<TControl(item2).left+TControl(item2).width then result:=1
   else result:=0;
 end;
 
 function compareControlBottom(Item1, Item2: pointer): Integer;
 begin
-  if tcontrol(item1).top+tcontrol(item1).Height>tcontrol(item2).top+tcontrol(item2).Height then result:=-1
-  else if tcontrol(item1).top+tcontrol(item1).Height<tcontrol(item2).top+tcontrol(item2).Height then result:=1
+  if TControl(item1).top+TControl(item1).Height>TControl(item2).top+TControl(item2).Height then result:=-1
+  else if TControl(item1).top+TControl(item1).Height<TControl(item2).top+TControl(item2).Height then result:=1
   else result:=0;
 end;
 
@@ -437,7 +438,7 @@ var
   UseNeighbours: boolean;
   OldPositions,OldPositions2: array of Integer;
 
-  function NeighbourPosition(c: tcontrol):Integer;
+  function NeighbourPosition(c: TControl):Integer;
   begin
     case CurNeighbour of
     akTop: result:=c.top;
@@ -464,7 +465,7 @@ var
     for cur:=lastNeighbour+1 to firstNeighbour do
       if abs(OldPositions2[cur]-OldPositions2[i]) < abs(OldPositions2[resultId]-OldPositions2[i])  then
          resultid:=cur;
-    result:=tcontrol(SelectedControls[resultId]);
+    result:=TControl(SelectedControls[resultId]);
  end;
 
 var
@@ -509,7 +510,6 @@ begin
       end;
       if UseNeighbours then
       begin
-        //todo: copy the list if it is needed unsorted somewhere else
         case CurNeighbour of //todo: use just one sorting function
           akTop: SelectedControls.Sort(@compareControlTop);
           akLeft: SelectedControls.Sort(@compareControlLeft);
@@ -688,6 +688,11 @@ begin
     Refresh;
 end;
 
+procedure TAnchorDesigner.ParentVisibleChanged(aParent: TWinControl);
+begin
+  inherited ParentVisibleChanged(aParent);
+end;
+
 procedure TAnchorDesigner.FillComboBoxWithSiblings(AComboBox: TComboBox);
 var
   sl: TStringList;
@@ -755,7 +760,6 @@ end;
 
 function TAnchorDesigner.AnchorDesignerNeighbourText(direction: TAnchorKind): string;
 begin
-  //todo: add translations
   case direction of
     akLeft: result:=lisSelectedLeftNeighbour;
     akRight: result:=lisSelectedRightNeighbour;
