@@ -2712,10 +2712,8 @@
       </element>
       <!-- function Visibility: default -->
       <element name="UTF16ToUTF8">
-        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
-        </short>
-        <descr>
-        </descr>
+        <short>Replaces last digits with a decimal number one higher</short>
+        <descr>For example Name21 becomes Name22.</descr>
         <errors>
         </errors>
         <seealso>
@@ -2750,10 +2748,8 @@
       </element>
       <!-- function Visibility: default -->
       <element name="CreateFirstIdentifier">
-        <short> Deprecated, see <link id="#LazUtils.LazUTF8"/> for replacements.
-        </short>
-        <descr>
-        </descr>
+        <short>Replaces last digits with 1</short>
+        <descr>For example Name321 becomes Name1</descr>
         <errors>
         </errors>
         <seealso>
