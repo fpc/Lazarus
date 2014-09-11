@@ -8746,7 +8746,7 @@ begin
       if b = gtAddIn then
         s := ReadString(Stream) else
         s := '';
-      t := frCreateObject(b, s, P^.Page);
+      t := frCreateObject(b, s, nil);
       t.StreamMode := smPrinting;
       t.LoadFromStream(Stream);
       t.ExportData;
