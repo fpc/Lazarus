@@ -1802,7 +1802,6 @@ end;
 
 procedure TControl.VisibleChanged;
 begin
-{ TODO -cdocking : For docked controls, the docking manager must receive a notification! }
   DoCallNotifyHandler(chtOnVisibleChanged);
 end;
 
@@ -1816,7 +1815,6 @@ end;
 
 procedure TControl.EnabledChanged;
 begin
-{ TODO -cdocking : For docked controls, the docking manager must receive a notification! }
   DoCallNotifyHandler(chtOnEnabledChanged);
 end;
 

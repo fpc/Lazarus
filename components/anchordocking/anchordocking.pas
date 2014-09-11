@@ -225,9 +225,7 @@ type
     This form is the dockhostsite for all controls.
     When docked together they build a tree structure with the docked controls
     as leaf nodes.
-    A TAnchorDockHostSite has four modes:
-
-    }
+    A TAnchorDockHostSite has four modes: TAnchorDockHostSiteType }
 
   TAnchorDockHostSiteType = (
     adhstNone,  // fresh created, no control docked
