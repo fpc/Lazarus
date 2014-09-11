@@ -34,13 +34,15 @@ begin
    SendMethodExit('SaveToFile');
 end;
 
-There are some more methods as displayed here.
+There are some more methods; see the FPC dbugintf help for that.
 
-Output would look as in the attached screenshot. It is extremely useful
-when debugging GUI code with lots of events - because you see the
-messages as they are sent, in a separate window which can be kept 'on
-top'. We also use it to debug our server applications.  The indentation
-of the messages (by SendMethodEnter) is intentional: if an exception
-occurs, then the SendMethodExit does not happen, and you see that
+It is extremely useful when debugging GUI code with lots of events - because
+you see the messages as they are sent, in a separate window which can be kept
+'on top'.
+
+It can also be used to debug server (e.g. daemons, services, CGI) applications.
+
+The indentation of the messages (by SendMethodEnter) is intentional: if an
+exception occurs, then the SendMethodExit does not happen, and you see that
 something is wrong visually.
 

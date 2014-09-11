@@ -49,7 +49,7 @@ type
     LVMessages: TListView;
     MEdit: TMenuItem;
     MenuItem1: TMenuItem;
-    MenuItem2: TMenuItem;
+    MISelectAll: TMenuItem;
     PMIQuit: TMenuItem;
     PMIShow: TMenuItem;
     PMIClear: TMenuItem;
@@ -74,11 +74,11 @@ type
     TBCopyMessages: TToolButton;
     TBQuit: TToolButton;
     TBSave: TToolButton;
-    ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
+    TBHideMessagesWindow: TToolButton;
+    TBClearMessages: TToolButton;
     ToolButton3: TToolButton;
     TIDebug: TTrayIcon;
-    ToolButton4: TToolButton;
+    TBSaveSelected: TToolButton;
     procedure AClearExecute(Sender: TObject);
     procedure ACopyLinesExecute(Sender: TObject);
     procedure ACopyLinesUpdate(Sender: TObject);
@@ -158,7 +158,7 @@ end;
 
 procedure TMainForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  If FQuitting then
+  If FQuitting Then
     CloseAction:=caFree
   else
     CloseAction:=caHide
@@ -540,9 +540,9 @@ Var
   Ini : TMemIniFile;
 
 begin
-  if not(DirectoryExists(GetAppConfigDir(False))) then
+  if not(DirectoryExists(GetAppConfigDir(False))) Then
     if not(CreateDir (GetAppConfigDir(False))) Then
-      ShowMessage('I can''t create config dir');
+      ShowMessage('Cannot create config dir');
 
   Ini:=TMeminiFile.Create(GetAppConfigFile(False));
   With Ini do

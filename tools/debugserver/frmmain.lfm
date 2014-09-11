@@ -4,16 +4,16 @@ object MainForm: TMainForm
   Top = 281
   Width = 400
   Caption = 'Debug message viewer'
-  ClientHeight = 273
+  ClientHeight = 281
   ClientWidth = 400
   Menu = MMDebugServer
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object LVMessages: TListView
     Left = 0
-    Height = 247
+    Height = 255
     Top = 26
     Width = 400
     Align = alClient
@@ -53,26 +53,36 @@ object MainForm: TMainForm
       Left = 24
       Top = 2
       Action = APause
+      ParentShowHint = False
+      ShowHint = True
     end
-    object ToolButton2: TToolButton
+    object TBClearMessages: TToolButton
       Left = 80
       Top = 2
       Action = AClear
+      ParentShowHint = False
+      ShowHint = True
     end
     object TBCopyMessages: TToolButton
       Left = 126
       Top = 2
       Action = ACopyLines
+      ParentShowHint = False
+      ShowHint = True
     end
     object TBQuit: TToolButton
       Left = 1
       Top = 2
       Action = AQuit
+      ParentShowHint = False
+      ShowHint = True
     end
     object TBSave: TToolButton
       Left = 103
       Top = 2
       Action = ASelectAll
+      ParentShowHint = False
+      ShowHint = True
     end
     object ToolButton3: TToolButton
       Left = 70
@@ -81,15 +91,19 @@ object MainForm: TMainForm
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
-    object ToolButton1: TToolButton
+    object TBHideMessagesWindow: TToolButton
       Left = 47
       Top = 2
       Action = AHide
+      ParentShowHint = False
+      ShowHint = True
     end
-    object ToolButton4: TToolButton
+    object TBSaveSelected: TToolButton
       Left = 149
       Top = 2
       Action = ASave
+      ParentShowHint = False
+      ShowHint = True
     end
   end
   object MMDebugServer: TMainMenu
@@ -306,6 +320,7 @@ object MainForm: TMainForm
       end
       object MICopy: TMenuItem
         Action = ACopyLines
+        Caption = '&Copy selected lines'
         Bitmap.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000000000000000
@@ -346,6 +361,7 @@ object MainForm: TMainForm
       end
       object MISave: TMenuItem
         Action = ASave
+        Caption = '&Save'
         Bitmap.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000000000000000
@@ -384,8 +400,9 @@ object MainForm: TMainForm
         }
         OnClick = ASaveExecute
       end
-      object MenuItem2: TMenuItem
+      object MISelectAll: TMenuItem
         Action = ASelectAll
+        Caption = 'SelectAll'
         Bitmap.Data = {
           36040000424D3604000000000000360000002800000010000000100000000100
           2000000000000004000064000000640000000000000000000000000000000000
