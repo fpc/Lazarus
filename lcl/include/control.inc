@@ -1805,6 +1805,15 @@ begin
   DoCallNotifyHandler(chtOnVisibleChanged);
 end;
 
+procedure TControl.ParentVisibleChanged(aParent: TWinControl);
+// called when a Parent (or grand parent) Visible property changed
+// and all parents in between have Visible=true
+// In other words: called when this control visibility changed due to
+//                 visibility change of Parent.
+begin
+
+end;
+
 {------------------------------------------------------------------------------
   procedure TControl.EnabledChanging;
 ------------------------------------------------------------------------------}
@@ -4270,7 +4279,7 @@ begin
         AdjustSize;
         if (not Visible) and Assigned(Parent) then
         begin
-          // control became invisible, so AdjustSize was not propagated
+          // control became invisible, so AdjustSize was not propagated to Parent
           // => propagate now
           Parent.InvalidatePreferredSize;
           Parent.AdjustSize;

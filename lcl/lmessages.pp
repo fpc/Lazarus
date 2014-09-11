@@ -224,7 +224,7 @@ const
   LM_CLEAR             = $0303;
 
 const
-  // Moved from Controls to avoid circles
+  // Moved from Controls to avoid circular dependencies
   CM_BASE                 = $B000;
   CM_LCLOFFSET            = $100;
   CM_ACTIVATE             = CM_BASE + 0;
