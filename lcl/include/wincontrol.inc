@@ -4340,12 +4340,6 @@ begin
   ChangeShowing(bShow);
 end;
 
-procedure TWinControl.ParentVisibleChanged(aParent: TWinControl);
-begin
-  inherited ParentVisibleChanged(aParent);
-  PropagateParentVisibleChanged(aParent);
-end;
-
 procedure TWinControl.Update;
 begin
   if HandleAllocated then UpdateWindow(Handle);
@@ -6139,22 +6133,6 @@ begin
                                              r.Right,r.Bottom,true);
   finally
     Box.Free;
-  end;
-end;
-
-procedure TWinControl.PropagateParentVisibleChanged(aParent: TWinControl);
-var
-  i: Integer;
-  aControl: TControl;
-begin
-  for i:=0 to ControlCount-1 do
-  begin
-    aControl:=Controls[i];
-    if not aControl.Visible then
-      continue;
-    ParentVisibleChanged(aParent);
-    if aControl is TWinControl then
-      TWinControl(aControl).PropagateParentVisibleChanged(aParent);
   end;
 end;
 

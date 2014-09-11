@@ -157,7 +157,6 @@ type
   protected
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure UpdateShowing; override;
-    procedure ParentVisibleChanged(aParent: TWinControl); override;
   public
     destructor Destroy; override;
     class function ControlToStr(AControl: TControl): string;
@@ -686,11 +685,6 @@ begin
   inherited UpdateShowing;
   if IsVisible and fNeedUpdate then
     Refresh;
-end;
-
-procedure TAnchorDesigner.ParentVisibleChanged(aParent: TWinControl);
-begin
-  inherited ParentVisibleChanged(aParent);
 end;
 
 procedure TAnchorDesigner.FillComboBoxWithSiblings(AComboBox: TComboBox);

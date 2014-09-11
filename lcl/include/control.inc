@@ -1805,15 +1805,6 @@ begin
   DoCallNotifyHandler(chtOnVisibleChanged);
 end;
 
-procedure TControl.ParentVisibleChanged(aParent: TWinControl);
-// called when a Parent (or grand parent) Visible property changed
-// and all parents in between have Visible=true
-// In other words: called when this control visibility changed due to
-//                 visibility change of Parent.
-begin
-
-end;
-
 {------------------------------------------------------------------------------
   procedure TControl.EnabledChanging;
 ------------------------------------------------------------------------------}

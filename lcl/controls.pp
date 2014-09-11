@@ -1362,7 +1362,6 @@ type
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; virtual;
     procedure VisibleChanging; virtual;
     procedure VisibleChanged; virtual;
-    procedure ParentVisibleChanged(aParent: TWinControl); virtual;
     procedure EnabledChanging; virtual;
     procedure EnabledChanged; virtual;
     procedure AddHandler(HandlerType: TControlHandlerType;
@@ -1915,7 +1914,6 @@ type
     procedure Remove(AControl: TControl);
     procedure AlignNonAlignedControls(ListOfControls: TFPList;
                                       var BoundsModified: Boolean);
-    procedure PropagateParentVisibleChanged(aParent: TWinControl);
   protected
     FWinControlFlags: TWinControlFlags;
     class procedure WSRegisterClass; override;
@@ -2076,7 +2074,6 @@ type
     procedure ShowControl(AControl: TControl); virtual;
     procedure UpdateControlState;
     procedure UpdateShowing; virtual; // checks control's handle visibility, called by DoAllAutoSize and UpdateControlState
-    procedure ParentVisibleChanged(aParent: TWinControl); override;
     procedure WndProc(var Message: TLMessage); override;
     procedure WSSetText(const AText: String); virtual;
   protected
