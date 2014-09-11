@@ -70,7 +70,7 @@ msgid "If none is selected, the Item will be appended at the end of the Toolbar.
 msgstr ""
 
 #: editortoolbar_str.rshelp3
-msgid "You may rearrage Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
+msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
 msgstr ""
 
 #: editortoolbar_str.rshelp4
