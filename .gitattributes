@@ -1145,6 +1145,7 @@ components/editortoolbar/images/arrowright_blue16.xpm -text svneol=unset#image/x
 components/editortoolbar/images/arrowup_blue16.xpm -text svneol=unset#image/x-xpixmap
 components/editortoolbar/images/execute16.xpm -text svneol=unset#image/x-xpixmap
 components/editortoolbar/images/jumpto16.xpm -text svneol=unset#image/x-xpixmap
+components/editortoolbar/images/menu_divider16.xpm svneol=native#text/plain
 components/editortoolbar/images/preferences16.xpm -text svneol=unset#image/x-xpixmap
 components/editortoolbar/images/toolbar.txt svneol=native#text/plain
 components/editortoolbar/jumpto.pas svneol=native#text/plain
