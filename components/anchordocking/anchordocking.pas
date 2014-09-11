@@ -4557,7 +4557,7 @@ begin
   Result:=Check(Self);
 end;
 
-function TAnchorDockHostSite.CloseSite: Boolean;
+function TAnchorDockHostSite.CloseSite: boolean;
 var
   AControl: TControl;
   AForm: TCustomForm;
