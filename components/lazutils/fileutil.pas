@@ -151,7 +151,6 @@ type
 
   { TFileSearcher }
 
-
   TFileSearcher = class(TFileIterator)
   private
     FMaskSeparator: char;
@@ -178,6 +177,28 @@ type
     property OnDirectoryFound: TDirectoryFoundEvent read FOnDirectoryFound write FOnDirectoryFound;
     property OnFileFound: TFileFoundEvent read FOnFileFound write FOnFileFound;
     property OnDirectoryEnter: TDirectoryEnterEvent read FOnDirectoryEnter write FOnDirectoryEnter;
+  end;
+
+  { TListFileSearcher }
+
+  TListFileSearcher = class(TFileSearcher)
+  private
+    FList: TStrings;
+  protected
+    procedure DoFileFound; override;
+  public
+    constructor Create(AList: TStrings);
+  end;
+
+  { TListDirectoriesSearcher }
+
+  TListDirectoriesSearcher = class(TFileSearcher)
+  private
+    FDirectoriesList :TStrings;
+  protected
+    procedure DoDirectoryFound; override;
+  public
+    constructor Create(AList: TStrings);
   end;
 
 function FindAllFiles(const SearchPath: String; SearchMask: String = '';

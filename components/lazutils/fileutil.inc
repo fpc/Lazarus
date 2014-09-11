@@ -941,19 +941,6 @@ begin
   Result:='';
 end;
 
-type
-
-  { TListFileSearcher }
-
-  TListFileSearcher = class(TFileSearcher)
-  private
-    FList: TStrings;
-  protected
-    procedure DoFileFound; override;
-  public
-    constructor Create(AList: TStrings);
-  end;
-
 { TListFileSearcher }
 
 procedure TListFileSearcher.DoFileFound;
@@ -981,18 +968,7 @@ begin
   end;
 end;
 
-type
-
-  { TListDirectoriesSearcher }
-
-  TListDirectoriesSearcher = class(TFileSearcher)
-  private
-    FDirectoriesList :TStrings;
-  protected
-    procedure DoDirectoryFound; override;
-  public
-    constructor Create(AList: TStrings);
-  end;
+{ TListDirectoriesSearcher }
 
 constructor TListDirectoriesSearcher.Create(AList: TStrings);
 begin
