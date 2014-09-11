@@ -545,6 +545,7 @@ procedure TCustomColorBox.DrawItem(Index: Integer; Rect: TRect; State: TOwnerDra
 var
   r: TRect;
   BrushColor, PenColor, NewColor: TColor;
+  noFill: Boolean;
 begin
   if Index = -1 then
     Exit;
@@ -554,6 +555,8 @@ begin
   r.left := Rect.left + 3;
   r.right := r.left + FColorRectWidth;
   Exclude(State, odPainted);
+
+  noFill := false;
 
   with Canvas do
   begin
@@ -565,7 +568,10 @@ begin
     NewColor := Self.Colors[Index];
 
     if NewColor = clNone then
-      NewColor := NoneColorColor
+    begin
+      NewColor := NoneColorColor;
+      noFill := true;
+    end
     else
     if NewColor = clDefault then
       NewColor := DefaultColorColor;
@@ -573,7 +579,14 @@ begin
     Brush.Color := NewColor;
     Pen.Color := clBlack;
 
-    Rectangle(BidiFlipRect(r, Rect, UseRightToLeftAlignment));
+    r := BiDiFlipRect(r, Rect, UseRightToLeftAlignment);
+    Rectangle(r);
+
+    if noFill then
+    begin
+      Line(r.Left, r.Top, r.Right-1, r.Bottom-1);
+      Line(r.Left, r.Bottom-1, r.Right-1, r.Top);
+    end;
 
     Brush.Color := BrushColor;
     Pen.Color := PenColor;
