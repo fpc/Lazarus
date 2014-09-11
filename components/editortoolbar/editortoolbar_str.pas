@@ -40,7 +40,7 @@ resourcestring
     'selected Item of the Toolbar.';
   rsHelp2                   = 'If none is selected, the Item will be appended at the end '+
     'of the Toolbar.';
-  rsHelp3                   = 'You may rearrage Toolbar Items with "Move Up" and '+
+  rsHelp3                   = 'You may rearrange Toolbar Items with "Move Up" and '+
     '"Move Down" buttons.';
   rsHelp4                   = 'Hint: to append an Item at the end, use "Clear selection"';
   // Root Node Captions
