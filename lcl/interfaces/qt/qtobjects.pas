@@ -4077,33 +4077,35 @@ var
   end;
 {$ENDIF}
 begin
-  BeginEventProcessing;
   Result := False;
+  BeginEventProcessing;
+  try
+    {$IFDEF HASX11}
+    if QEvent_type(Event) = LCLQt_ClipboardPrimarySelection then
+    begin
+      ClipboardType := TClipBoardType(QLCLMessageEvent_getMsg(QLCLMessageEventH(Event)));
+      FormatCount := QLCLMessageEvent_getWParam(QLCLMessageEventH(Event));
+      Modifiers := QtKeyboardModifiers(QLCLMessageEvent_getLParam(QLCLMessageEventH(Event)));
+      if FOnClipBoardRequest[ClipboardType] <> nil then
+        PutSelectionOnClipboard;
+      Result := True;
+      QEvent_accept(Event);
+    end;
+    {$ENDIF}
 
-  {$IFDEF HASX11}
-  if QEvent_type(Event) = LCLQt_ClipboardPrimarySelection then
-  begin
-    ClipboardType := TClipBoardType(QLCLMessageEvent_getMsg(QLCLMessageEventH(Event)));
-    FormatCount := QLCLMessageEvent_getWParam(QLCLMessageEventH(Event));
-    Modifiers := QtKeyboardModifiers(QLCLMessageEvent_getLParam(QLCLMessageEventH(Event)));
-    if FOnClipBoardRequest[ClipboardType] <> nil then
-      PutSelectionOnClipboard;
-    Result := True;
-    QEvent_accept(Event);
+    if QEvent_type(Event) = QEventClipboard then
+    begin
+      Result := FClipChanged;
+      // Clipboard is changed, but we have no ability at moment to pass that info
+      // to LCL since LCL has no support for that event
+      // so we are using signalDataChanged() to pass changes to Clipbrd.Clipboard
+      if FClipChanged then
+        FClipChanged := False;
+      QEvent_accept(Event);
+    end;
+  finally
+    EndEventProcessing;
   end;
-  {$ENDIF}
-
-  if QEvent_type(Event) = QEventClipboard then
-  begin
-    Result := FClipChanged;
-    // Clipboard is changed, but we have no ability at moment to pass that info
-    // to LCL since LCL has no support for that event
-    // so we are using signalDataChanged() to pass changes to Clipbrd.Clipboard
-    if FClipChanged then
-      FClipChanged := False;
-    QEvent_accept(Event);
-  end;
-  EndEventProcessing;
 end;
 
 function TQtClipboard.Clipboard: QClipboardH;
