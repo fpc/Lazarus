@@ -206,8 +206,8 @@ begin
             QStyleOptionButton_setFeatures(QStyleOptionButtonH(opt), Features);
 
             // workaround for qt QStyle bug. QStyle does not set disable flag (palette).
-            // see issue #24413
-            if Details.State in [TS_DISABLED] then
+            // see issue #24413,#26586
+            if Details.State in [CBS_UNCHECKEDDISABLED,CBS_CHECKEDDISABLED,CBS_MIXEDDISABLED] then
             begin
               APalette := QPalette_create();
               try
