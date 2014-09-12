@@ -431,6 +431,25 @@ begin
 end;  {TQtWidgetSet.PromptUser}
 
 {------------------------------------------------------------------------------
+  Function: RadialPie
+  Params: DC, PaintRect coordinates, StartAngle16, StopAngle16
+  Returns: True if done, False if invalid
+
+ ------------------------------------------------------------------------------}
+
+function TQtWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer): Boolean;
+var
+  theWidth,theHeight: Integer;
+begin
+  Result := IsValidDC(DC) and (x2 > x1) and (y2 > y1);
+  if Result then begin
+    theWidth  := x2 - x1 +  1;
+    theHeight := y2 - y1 + 1;
+    QPainter_drawPie(TQtDeviceContext(DC).Widget, x1, y1, theWidth, theHeight, Angle1, Angle2);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: RawImage_CreateBitmaps
   Params: ARawImage:
           ABitmap:
