@@ -267,5 +267,24 @@ object PathEditorDialog: TPathEditorDialog
       Caption = 'Paste'
       OnClick = PasteMenuItemClick
     end
+    object SeparMenuItem: TMenuItem
+      Caption = '-'
+    end
+    object ExportMenuItem: TMenuItem
+      Caption = 'Export to file'
+      OnClick = ExportMenuItemClick
+    end
+    object ImportMenuItem: TMenuItem
+      Caption = 'Import from file'
+      OnClick = ImportMenuItemClick
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    left = 476
+    top = 197
+  end
+  object SaveDialog1: TSaveDialog
+    left = 512
+    top = 197
   end
 end

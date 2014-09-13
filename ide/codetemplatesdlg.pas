@@ -730,7 +730,7 @@ begin
                     lisLowercaseStringGivenAsParameter,
                     @CodeMacroLower,nil);
   RegisterCodeMacro('Paste', lisPasteClipboard,
-                    lisPasteTextFromClipboard,
+                    lisPasteFromClipboard,
                     @CodeMacroPaste,nil);
   RegisterCodeMacro('ProcedureHead', lisInsertProcedureHead,
      'Insert header of current procedure'#13

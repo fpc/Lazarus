@@ -4700,6 +4700,8 @@ resourcestring
   lisPathEditorDeleteHint = 'Delete the selected path';
   lisPathEditorDeleteInvalidHint = 'Remove non-existent (gray) paths from the list';
   lisPathEditorTemplAddHint = 'Add template to the list';
+  lisExportAllItemsToFile = 'Export All Items to File';
+  lisImportFromFile = 'Import from File';
 
   // version info tab
   VersionInfoTitle = 'Version Info';
@@ -5113,7 +5115,7 @@ resourcestring
   lisLowercaseString = 'lowercase string';
   lisLowercaseStringGivenAsParameter = 'Lowercase string given as parameter';
   lisPasteClipboard = 'paste clipboard';
-  lisPasteTextFromClipboard = 'Paste text from clipboard';
+  lisPasteFromClipboard = 'Paste from clipboard';
   lisInsertProcedureHead = 'insert procedure head';
   lisInsertProcedureName = 'insert procedure name';
   lisInsertNameOfCurrentProcedure = 'Insert name of current procedure';

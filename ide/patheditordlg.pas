@@ -22,8 +22,9 @@ interface
 
 uses
   Classes, SysUtils, types, Forms, Controls, Buttons, StdCtrls, Dialogs,
-  FileUtil, ButtonPanel, ExtCtrls, EditBtn, MacroIntf, LCLType, Graphics, Menus,
-  TransferMacros, LazarusIDEStrConsts, shortpathedit, Clipbrd, LCLProc;
+  FileUtil, ButtonPanel, ExtCtrls, EditBtn, MacroIntf, IDEImagesIntf, LCLType,
+  Graphics, Menus, TransferMacros, LazarusIDEStrConsts, shortpathedit, Clipbrd,
+  LCLProc;
 
 type
 
@@ -33,6 +34,11 @@ type
     AddTemplateButton: TBitBtn;
     ButtonPanel1: TButtonPanel;
     CopyMenuItem: TMenuItem;
+    OpenDialog1: TOpenDialog;
+    SaveDialog1: TSaveDialog;
+    ExportMenuItem: TMenuItem;
+    ImportMenuItem: TMenuItem;
+    SeparMenuItem: TMenuItem;
     PasteMenuItem: TMenuItem;
     PopupMenu1: TPopupMenu;
     ReplaceButton: TBitBtn;
@@ -51,6 +57,7 @@ type
     procedure AddButtonClick(Sender: TObject);
     procedure AddTemplateButtonClick(Sender: TObject);
     procedure CopyMenuItemClick(Sender: TObject);
+    procedure ExportMenuItemClick(Sender: TObject);
     procedure PasteMenuItemClick(Sender: TObject);
     procedure DeleteInvalidPathsButtonClick(Sender: TObject);
     procedure DeleteButtonClick(Sender: TObject);
@@ -67,6 +74,7 @@ type
       Shift: TShiftState);
     procedure PathListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure ReplaceButtonClick(Sender: TObject);
+    procedure ImportMenuItemClick(Sender: TObject);
     procedure TemplatesListBoxDblClick(Sender: TObject);
     procedure TemplatesListBoxSelectionChange(Sender: TObject; User: boolean);
   private
@@ -78,11 +86,13 @@ type
     function BaseRelative(const APath: string): String;
     function PathAsAbsolute(const APath: string): String;
     function PathMayExist(APath: string): TObject;
+    procedure ReadHelper(Paths: TStringList);
     procedure SetBaseDirectory(const AValue: string);
     procedure SetPath(const AValue: string);
     procedure SetTemplates(const AValue: string);
     function TextToPath(const AText: string): string;
     procedure UpdateButtons;
+    procedure WriteHelper(Paths: TStringList);
   public
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
     property EffectiveBaseDirectory: string read FEffectiveBaseDirectory;
@@ -101,8 +111,7 @@ type
   public
     procedure Click; override;
     property CurrentPathEditor: TPathEditorDialog read FCurrentPathEditor;
-    property OnExecuted: TOnPathEditorExecuted
-      read FOnExecuted write FOnExecuted;
+    property OnExecuted: TOnPathEditorExecuted read FOnExecuted write FOnExecuted;
   end;
 
 function PathEditorDialog: TPathEditorDialog;
@@ -219,44 +228,86 @@ begin
   end;
 end;
 
+procedure TPathEditorDialog.WriteHelper(Paths: TStringList);
+// Helper method for writing paths. Collect paths to a StringList.
+var
+  i: integer;
+begin
+  for i := 0 to PathListBox.Count-1 do
+    Paths.Add(PathAsAbsolute(PathListBox.Items[i]));
+end;
+
 procedure TPathEditorDialog.CopyMenuItemClick(Sender: TObject);
 var
   Paths: TStringList;
-  i: integer;
 begin
   Paths := TStringList.Create;
   try
-    for i := 0 to PathListBox.Count-1 do
-      Paths.Add(PathAsAbsolute(PathListBox.Items[i]));
+    WriteHelper(Paths);
     Clipboard.AsText := Paths.Text;
   finally
     Paths.Free;
   end;
 end;
 
-procedure TPathEditorDialog.PasteMenuItemClick(Sender: TObject);
+procedure TPathEditorDialog.ExportMenuItemClick(Sender: TObject);
 var
   Paths: TStringList;
+begin
+  if not SaveDialog1.Execute then Exit;
+  Paths := TStringList.Create;
+  try
+    WriteHelper(Paths);
+    Paths.SaveToFile(SaveDialog1.FileName);
+  finally
+    Paths.Free;
+  end;
+end;
+
+procedure TPathEditorDialog.ReadHelper(Paths: TStringList);
+// Helper method for reading paths. Insert paths from a StringList to the ListBox.
+var
   s: string;
   y, i: integer;
 begin
+  y := PathListBox.ItemIndex;
+  if y = -1 then
+    y := PathListBox.Count-1;
+  for i := 0 to Paths.Count-1 do
+  begin
+    s := Trim(Paths[i]);
+    if s <> '' then
+    begin
+      Inc(y);
+      PathListBox.Items.InsertObject(y, BaseRelative(s), PathMayExist(s));
+    end;
+  end;
+  //PathListBox.ItemIndex := y;
+  UpdateButtons;
+end;
+
+procedure TPathEditorDialog.PasteMenuItemClick(Sender: TObject);
+var
+  Paths: TStringList;
+begin
   Paths := TStringList.Create;
   try
-    y := PathListBox.ItemIndex;
-    if y = -1 then
-      y := PathListBox.Count-1;
     Paths.Text := Clipboard.AsText;
-    for i := 0 to Paths.Count-1 do
-    begin
-      s := Trim(Paths[i]);
-      if s <> '' then
-      begin
-        Inc(y);
-        PathListBox.Items.InsertObject(y, BaseRelative(s), PathMayExist(s));
-      end;
-    end;
-    //PathListBox.ItemIndex := y;
-    UpdateButtons;
+    ReadHelper(Paths);
+  finally
+    Paths.Free;
+  end;
+end;
+
+procedure TPathEditorDialog.ImportMenuItemClick(Sender: TObject);
+var
+  Paths: TStringList;
+begin
+  if not OpenDialog1.Execute then Exit;
+  Paths := TStringList.Create;
+  try
+    Paths.LoadFromFile(OpenDialog1.FileName);
+    ReadHelper(Paths);
   finally
     Paths.Free;
   end;
@@ -292,6 +343,8 @@ begin
 end;
 
 procedure TPathEditorDialog.FormCreate(Sender: TObject);
+const
+  Filt = 'Text file (*.txt)|*.txt|All files (*)|*';
 begin
   Caption:=dlgDebugOptionsPathEditorDlgCaption;
 
@@ -312,8 +365,18 @@ begin
   AddTemplateButton.Caption:=lisCodeTemplAdd;
   AddTemplateButton.Hint:=lisPathEditorTemplAddHint;
 
+  PopupMenu1.Images:=IDEImages.Images_16;
   CopyMenuItem.Caption:=lisCopyAllItemsToClipboard;
-  PasteMenuItem.Caption:=lisPaste;
+  CopyMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_copy');
+  PasteMenuItem.Caption:=lisPasteFromClipboard;
+  PasteMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_paste');
+  ExportMenuItem.Caption:=lisExportAllItemsToFile;
+  ExportMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_save');
+  ImportMenuItem.Caption:=lisImportFromFile;
+  ImportMenuItem.ImageIndex:=IDEImages.LoadImage(16, 'laz_open');
+
+  OpenDialog1.Filter:=Filt;
+  SaveDialog1.Filter:=Filt;
 
   MoveUpButton.LoadGlyphFromResourceName(HInstance, 'arrow_up');
   MoveDownButton.LoadGlyphFromResourceName(HInstance, 'arrow_down');
