@@ -39,6 +39,7 @@ uses
   LCLProc, GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList,
   PropertyStorage, Menus, ActnList, LCLClasses, LResources;
 
+{$I controlconsts.inc}
 
 const
   // Used for ModalResult
