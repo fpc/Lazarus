@@ -1465,6 +1465,7 @@ bigide:
 	$(MAKE) -C sdf
 	$(MAKE) -C tachart
 	$(MAKE) -C todolist
+	$(MAKE) -C editortoolbar
 	$(MAKE) -C jcf2/IdePlugin/lazarus
 	$(MAKE) -C chmhelp/packages/help
 	$(MAKE) -C chmhelp/packages/idehelp
