@@ -65,7 +65,7 @@ uses
     TurboPowerIPro, TurboPowerIProDsgn,
     jcfidelazarus, chmhelppkg,
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
-    TodoListLaz, EditorToolbar,
+    TodoListLaz, EditorToolbar, {DateTimeCtrls,}
     SQLDBLaz, DBFLaz,
     pascalscript, EditorMacroScript,
   {$ENDIF}
