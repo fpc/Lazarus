@@ -167,6 +167,10 @@ procedure TDBMemo.KeyPress(var Key: Char);
   end;
 begin
   inherited KeyPress(Key);
+
+  if not FieldCanAcceptKey(FDataLink.Field, Key) or not FDatalink.Edit then
+    Key := #0;
+
   case key of
     ^X, ^V, ^Z, ^I, ^J, ^H, #32..#255: // alphabetic characters
       CheckValidChar;
