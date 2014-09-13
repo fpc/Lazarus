@@ -11,7 +11,7 @@ version=1.5.1
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) .
-options= -MObjFPC -Scghi -CX -O2 -g -gl -vewnhibq -l -dLCL -dLCL$(LCL_PLATFORM)
+options= -MObjFPC -Scghi -O2 -g -gl -vewnhibq -l -dLCL -dLCL$(LCL_PLATFORM)
 
 [target]
 units=datetimectrls.pas
