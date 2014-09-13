@@ -291,8 +291,6 @@ end;
 procedure TCustomBitmap.SetMonochrome(AValue: Boolean);
 begin
   if Monochrome = AValue then exit;
-  if not AValue then Exit;
-
   if AValue
   then PixelFormat := pf1bit
   else PixelFormat := pfDevice;
