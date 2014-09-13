@@ -145,6 +145,18 @@ begin
   inherited EditingDone;
 end;
 
+function TDBRadioGroup.ExecuteAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited ExecuteAction(AAction) or
+            (DataLink <> nil) and DataLink.ExecuteAction(AAction);
+end;
+
+function TDBRadioGroup.UpdateAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited UpdateAction(AAction) or
+            (DataLink <> nil) and DataLink.UpdateAction(AAction);
+end;
+
 constructor TDBRadioGroup.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);

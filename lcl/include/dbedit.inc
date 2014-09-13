@@ -259,3 +259,15 @@ begin
   inherited Destroy;
 end;
 
+function TDBEdit.ExecuteAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited ExecuteAction(AAction) or
+            (FDataLink <> nil) and FDataLink.ExecuteAction(AAction);
+end;
+
+function TDBEdit.UpdateAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited UpdateAction(AAction) or
+            (FDataLink <> nil) and FDataLink.UpdateAction(AAction);
+end;
+

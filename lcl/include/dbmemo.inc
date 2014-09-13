@@ -243,4 +243,16 @@ begin
   end;
 end;
 
+function TDBMemo.ExecuteAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited ExecuteAction(AAction) or
+            (FDataLink <> nil) and FDataLink.ExecuteAction(AAction);
+end;
+
+function TDBMemo.UpdateAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited UpdateAction(AAction) or
+            (FDataLink <> nil) and FDataLink.UpdateAction(AAction);
+end;
+
 // included by dbctrls.pas

@@ -102,6 +102,18 @@ begin
   inherited EditingDone;
 end;
 
+function TDBCalendar.ExecuteAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited ExecuteAction(AAction) or
+            (FDataLink <> nil) and FDataLink.ExecuteAction(AAction);
+end;
+
+function TDBCalendar.UpdateAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited UpdateAction(AAction) or
+            (FDataLink <> nil) and FDataLink.UpdateAction(AAction);
+end;
+
 { Public Methods }
 constructor TDBCalendar.Create(TheOwner: TComponent);
 begin

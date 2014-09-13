@@ -194,6 +194,8 @@ Type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function ExecuteAction(AAction: TBasicAction): Boolean; override;
+    function UpdateAction(AAction: TBasicAction): Boolean; override;
     property Field: TField read GetField;
   published
     property CustomEditMask: Boolean read FCustomEditMask write FCustomEditMask default False;
@@ -267,6 +269,8 @@ Type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function ExecuteAction(AAction: TBasicAction): Boolean; override;
+    function UpdateAction(AAction: TBasicAction): Boolean; override;
     property Field: TField read GetField;
   published
     property Align;
@@ -339,6 +343,8 @@ Type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function ExecuteAction(AAction: TBasicAction): Boolean; override;
+    function UpdateAction(AAction: TBasicAction): Boolean; override;
     property Field: TField read GetField;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -517,6 +523,8 @@ Type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure EditingDone; override;
+    function ExecuteAction(AAction: TBasicAction): Boolean; override;
+    function UpdateAction(AAction: TBasicAction): Boolean; override;
     property Field: TField read GetField;
     property ItemIndex;
     property Value: string read FValue write SetValue;
@@ -579,6 +587,8 @@ Type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function ExecuteAction(AAction: TBasicAction): Boolean; override;
+    function UpdateAction(AAction: TBasicAction): Boolean; override;
     property Checked;
     property Field: TField read GetField;
     property State;
@@ -647,6 +657,8 @@ Type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function ExecuteAction(AAction: TBasicAction): Boolean; override;
+    function UpdateAction(AAction: TBasicAction): Boolean; override;
     procedure EditingDone; override;
     property Field: TField read GetField;
     property Text;
@@ -851,6 +863,8 @@ Type
     destructor Destroy; override;
     procedure EditingDone; override;
     procedure LoadMemo; virtual;
+    function ExecuteAction(AAction: TBasicAction): Boolean; override;
+    function UpdateAction(AAction: TBasicAction): Boolean; override;
     property Field: TField read GetField;
   published
     property Align;
@@ -916,6 +930,8 @@ Type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function ExecuteAction(AAction: TBasicAction): Boolean; override;
+    function UpdateAction(AAction: TBasicAction): Boolean; override;
     property Field: TField read GetField;
   published
     property Align;
@@ -995,6 +1011,8 @@ Type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    function ExecuteAction(AAction: TBasicAction): Boolean; override;
+    function UpdateAction(AAction: TBasicAction): Boolean; override;
     property Field: TField read GetField;
     procedure Change; virtual;
   published
@@ -1057,6 +1075,8 @@ Type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure EditingDone; override;
+    function ExecuteAction(AAction: TBasicAction): Boolean; override;
+    function UpdateAction(AAction: TBasicAction): Boolean; override;
 
     property Field: TField read GetField;
   published

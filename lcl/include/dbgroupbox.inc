@@ -71,4 +71,16 @@ begin
   inherited Destroy;
 end;
 
+function TDBGroupBox.ExecuteAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited ExecuteAction(AAction) or
+            (FDataLink <> nil) and FDataLink.ExecuteAction(AAction);
+end;
+
+function TDBGroupBox.UpdateAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited UpdateAction(AAction) or
+            (FDataLink <> nil) and FDataLink.UpdateAction(AAction);
+end;
+
 // included by dbctrls.pas

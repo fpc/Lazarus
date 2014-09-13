@@ -104,3 +104,15 @@ begin
   FDataLink.Destroy;
   inherited Destroy;
 end;
+
+function TDBText.ExecuteAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited ExecuteAction(AAction) or
+            (FDataLink <> nil) and FDataLink.ExecuteAction(AAction);
+end;
+
+function TDBText.UpdateAction(AAction: TBasicAction): Boolean;
+begin
+  Result := inherited UpdateAction(AAction) or
+            (FDataLink <> nil) and FDataLink.UpdateAction(AAction);
+end;

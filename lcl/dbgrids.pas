@@ -488,6 +488,8 @@ type
     procedure ResetColWidths;
     destructor Destroy; override;
     function MouseToRecordOffset(const x,y: Integer; out Column: TColumn; out RecordOffset: Integer): TGridZone;
+    function ExecuteAction(AAction: TBasicAction): Boolean; override;
+    function UpdateAction(AAction: TBasicAction): Boolean; override;
     property AllowOutboundEvents;
     property SelectedField: TField read GetCurrentField write SetCurrentField;
     property SelectedIndex: Integer read GetSelectedIndex write SetSelectedIndex;
@@ -1428,7 +1430,7 @@ begin
     Result := 0;
 end;
 
-procedure TCustomDBGrid.PrepareCellHints(ACol, ARow: Integer);
+procedure TCustomDBGrid.PrepareCellHints(aCol, aRow: Integer);
 begin
   if not DataLink.Active then Exit;
   FSavedRecord := DataLink.ActiveRecord;
@@ -1441,7 +1443,7 @@ begin
   DataLink.ActiveRecord := FSavedRecord;
 end;
 
-function TCustomDBGrid.GetCellHintText(ACol, ARow: Integer): String;
+function TCustomDBGrid.GetCellHintText(aCol, aRow: Integer): String;
 var
   C: TColumn;
 begin
@@ -1455,7 +1457,7 @@ begin
 
 end;
 
-function TCustomDBGrid.GetTruncCellHintText(ACol, ARow: integer): String;
+function TCustomDBGrid.GetTruncCellHintText(aCol, aRow: Integer): string;
 var
   F: TField;
 begin
@@ -1609,7 +1611,7 @@ begin
   {$endif}
 end;
 
-procedure TCustomDBGrid.doLayoutChanged;
+procedure TCustomDBGrid.DoLayoutChanged;
 begin
   if csDestroying in ComponentState then
     exit;
@@ -1638,7 +1640,7 @@ begin
   end;
 end;
 
-function TCustomDBGrid.IsEOF: boolean;
+function TCustomDBGrid.ISEOF: boolean;
 begin
   {$ifdef dbgDBGrid}
   DebugLn('%s.IsEOF', [ClassName]);
@@ -2620,7 +2622,7 @@ begin
   inc(FLayoutChangedCount);
 end;
 
-procedure TCustomDBGrid.EditingColumn(aCol: Integer; Ok: Boolean);
+procedure TCustomDBGrid.EditingColumn(aCol: Integer; Ok: boolean);
 begin
   {$ifdef dbgDBGrid}DebugLnEnter('%s.EditingColumn INIT aCol=%d Ok=%s',
   	[ClassName, aCol, BoolToStr(ok, true)]); {$endif}
@@ -3479,6 +3481,18 @@ begin
     if aRow>=0 then
       Column := Columns[aRow];
   end;
+end;
+
+function TCustomDBGrid.ExecuteAction(AAction: TBasicAction): Boolean;
+begin
+    Result := (DataLink <> nil)
+              and DataLink.ExecuteAction(AAction);
+end;
+
+function TCustomDBGrid.UpdateAction(AAction: TBasicAction): Boolean;
+begin
+  Result := (DataLink <> nil)
+            and DataLink.UpdateAction(AAction);
 end;
 
 { TComponentDataLink }
