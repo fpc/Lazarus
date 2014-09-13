@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-09-06 17:40+0100\n"
+"PO-Revision-Date: 2014-09-13 19:57+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -260,11 +260,10 @@ msgid "Middle Button"
 msgstr "Mittlere Taste"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpagebtn
-#, fuzzy
 #| msgid "Middle button"
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpagebtn"
 msgid "Middle"
-msgstr "Tasten"
+msgstr "Mitte"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectpageextra1
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectpageextra1"
@@ -1592,10 +1591,9 @@ msgid "Other Files"
 msgstr "Andere Dateien"
 
 #: lazarusidestrconsts.dlgenvproject
-#, fuzzy
 #| msgid "Project"
 msgid "Tabs for project"
-msgstr "Projekt"
+msgstr "Tabulatoren für Projekt"
 
 #: lazarusidestrconsts.dlgenvtype
 msgctxt "lazarusidestrconsts.dlgenvtype"
@@ -1820,7 +1818,6 @@ msgid "From b&eginning"
 msgstr "Vom B&eginn"
 
 #: lazarusidestrconsts.dlgfromcursor
-#, fuzzy
 #| msgid "&From Cursor"
 msgid "&From cursor"
 msgstr "Ab &Cursorposition"
@@ -2122,7 +2119,6 @@ msgid "Left:"
 msgstr "Links:"
 
 #: lazarusidestrconsts.dlglefttopclr
-#, fuzzy
 #| msgid "Guid lines Left,Top"
 msgid "Guide lines Left,Top"
 msgstr "Farbe für links, oben"
@@ -2904,10 +2900,9 @@ msgid "Project Files"
 msgstr "Projektdateien"
 
 #: lazarusidestrconsts.dlgpromptonreplace
-#, fuzzy
 #| msgid "&Prompt On Replace"
 msgid "&Prompt on replace"
-msgstr "&Beim Überschreiben nachfragen "
+msgstr "Beim Überschreiben nachfragen "
 
 #: lazarusidestrconsts.dlgpropertycompletion
 msgid "Property completion"
@@ -3953,11 +3948,10 @@ msgid "Abort whole loading"
 msgstr "Abbruch beim Laden"
 
 #: lazarusidestrconsts.lisabout
-#, fuzzy
 #| msgid "About ..."
 msgctxt "lazarusidestrconsts.lisabout"
 msgid "About"
-msgstr "Über ..."
+msgstr "Über"
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"
@@ -8743,7 +8737,7 @@ msgstr "Den Include-Dateisuchpfad von Package \"%s\" mit%s\"%s\" erweitern?"
 
 #: lazarusidestrconsts.lisextendincludefilessearchpathofprojectwith
 msgid "Extend include files search path of project with%s\"%s\"?"
-msgstr ""
+msgstr "Den Includedateien-Suchpfad des Projekts mit%s\"%s\" erweitern?"
 
 #: lazarusidestrconsts.lisextendincludepath
 msgid "Extend include path?"
@@ -11511,7 +11505,6 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "Delphi- in Lazarus-Unit umwandeln ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-#, fuzzy
 #| msgid "Convert binary DFM to text LFM + check syntax ..."
 msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
 msgstr "DFM- in LFM-Datei umwandeln ..."
@@ -11519,7 +11512,7 @@ msgstr "DFM- in LFM-Datei umwandeln ..."
 #: lazarusidestrconsts.lismenuconvertencoding
 #| msgid "Convert encoding of projects/packages ..."
 msgid "Convert Encoding of Projects/Packages ..."
-msgstr "Kodierungen von Projekten/Packages konvertieren ..."
+msgstr "Kodierungen von Projekten/Packages umwandeln ..."
 
 #: lazarusidestrconsts.lismenudebugwindows
 #| msgid "Debug windows"
@@ -11528,7 +11521,7 @@ msgstr "Debuggerfenster"
 
 #: lazarusidestrconsts.lismenudelphiconversion
 msgid "Delphi Conversion"
-msgstr ""
+msgstr "Delphi-Umwandlung"
 
 #: lazarusidestrconsts.lismenuedit
 msgid "&Edit"
@@ -12049,7 +12042,6 @@ msgid "Run &Parameters ..."
 msgstr "Start&parameter ..."
 
 #: lazarusidestrconsts.lismenuruntocursor
-#, fuzzy
 #| msgid "Run to &Cursor"
 msgid "Step over to &Cursor"
 msgstr "Start bis &Cursor"
@@ -13479,7 +13471,7 @@ msgstr ", analysiert"
 
 #: lazarusidestrconsts.lisparser
 msgid "parser \"%s\": %s"
-msgstr ""
+msgstr "Parser \"%s\": %s"
 
 #: lazarusidestrconsts.lispascalfile
 msgid "Pascal file"
@@ -18511,7 +18503,7 @@ msgstr "Ausgabe für den Aufruf (Parameter -h)"
 
 #: lazarusidestrconsts.lisuseandclose
 msgid "Use and close"
-msgstr ""
+msgstr "Verwenden und schließen"
 
 #: lazarusidestrconsts.lisuseansistrings
 msgctxt "lazarusidestrconsts.lisuseansistrings"
@@ -18730,7 +18722,7 @@ msgstr "&Datenhaltepunkt ..."
 
 #: lazarusidestrconsts.liswatchpropert
 msgid "Watch Properties"
-msgstr "Properties überwachen"
+msgstr "Eigenschaften überwachen"
 
 #: lazarusidestrconsts.liswatchscope
 msgid "Watch scope"
