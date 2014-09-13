@@ -67,6 +67,7 @@
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Lazarus"/>
       </Unit0>
       <Unit1>
         <Filename Value="frames/oi_options.pas"/>
@@ -340,7 +341,6 @@
       <Unit45>
         <Filename Value="project.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="Project"/>
       </Unit45>
       <Unit46>
         <Filename Value="customformeditor.pp"/>
@@ -423,7 +423,6 @@
         <ComponentName Value="CompilerPathOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="compiler_path_options"/>
       </Unit58>
       <Unit59>
         <Filename Value="frames/compiler_parsing_options.pas"/>
@@ -438,6 +437,7 @@
         <ComponentName Value="CompilerCodegenOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="compiler_codegen_options"/>
       </Unit60>
       <Unit61>
         <Filename Value="frames/compiler_linking_options.pas"/>
@@ -472,6 +472,7 @@
         <ComponentName Value="CompilerCompilationOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="compiler_compilation_options"/>
       </Unit65>
       <Unit66>
         <Filename Value="frames/compiler_conditionals_options.pas"/>
@@ -613,7 +614,6 @@
       <Unit90>
         <Filename Value="sourcefilemanager.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="SourceFileManager"/>
       </Unit90>
       <Unit91>
         <Filename Value="../packager/lpkcache.pas"/>
@@ -827,7 +827,6 @@
       <Unit132>
         <Filename Value="lazarusidestrconsts.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="LazarusIDEStrConsts"/>
       </Unit132>
       <Unit133>
         <Filename Value="codetemplatesdlg.pas"/>
@@ -837,7 +836,6 @@
       <Unit134>
         <Filename Value="mainintf.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="MainIntf"/>
       </Unit134>
       <Unit135>
         <Filename Value="mainbase.pas"/>
@@ -1242,7 +1240,6 @@
         <ComponentName Value="IDEOptionsDialog"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="IDEOptionsDlg"/>
       </Unit221>
       <Unit222>
         <Filename Value="findunitdlg.pas"/>
@@ -1376,7 +1373,6 @@
         <ComponentName Value="ImExportCompOptsDlg"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="ImExportCompilerOpts"/>
       </Unit250>
       <Unit251>
         <Filename Value="initialsetupproc.pas"/>
