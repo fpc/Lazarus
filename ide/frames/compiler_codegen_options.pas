@@ -100,7 +100,7 @@ begin
       else
         radOptLevelNone.Checked := True;
     end;
-    grpLinking.Enabled := NeedsLinkerOpts;
+    grpLinking.Visible := NeedsLinkerOpts;
     chkLinkSmart.Checked := LinkSmart;
     chkLinkSmart.Enabled := NeedsLinkerOpts;
     chkOptionsLinkOpt.Checked := PassLinkerOptions;
