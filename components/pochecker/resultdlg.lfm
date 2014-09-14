@@ -138,11 +138,12 @@ object ResultDlgForm: TResultDlgForm
       TabOrder = 0
     end
     object GraphStatBtn: TBitBtn
-      Left = 224
+      Left = 222
       Height = 26
       Top = 12
-      Width = 155
+      Width = 157
       Anchors = [akRight]
+      AutoSize = True
       Caption = 'Show statistics graph'
       Glyph.Data = {
         36040000424D3604000000000000360000002800000010000000100000000100

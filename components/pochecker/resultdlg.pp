@@ -94,6 +94,7 @@ end;
 
 procedure TResultDlgForm.GraphStatBtnClick(Sender: TObject);
 begin
+  Debugln('TResultDlgForm.GraphStatBtnClick: Assigned(GraphStatForm) = ',DbgS(Assigned(GraphStatForm)));
   GraphStatForm.PoFamilyStats := Self.PoFamilyStats;
   GraphStatForm.ShowModal;
 end;
