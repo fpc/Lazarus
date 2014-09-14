@@ -65,6 +65,7 @@ type
     SavedHandlesList: TMap;
     FSocketEventMap: TMap;
     StayOnTopList: TMap;
+    SysTrayIconsList: TFPList;
     // global hooks
     FAppEvenFilterHook: QObject_hookH;
     FAppFocusChangedHook: QApplication_hookH;
@@ -156,6 +157,11 @@ type
     procedure AddHandle(AHandle: TObject);
     procedure RemoveHandle(AHandle: TObject);
     function IsValidHandle(AHandle: HWND): Boolean;
+
+    // qt systray icons map
+    procedure RegisterSysTrayIcon(AHandle: TObject);
+    procedure UnRegisterSysTrayIcon(AHandle: TObject);
+    function IsValidSysTrayIcon(AHandle: HWND): Boolean;
 
     {$IFDEF HASX11}
     // qt hints handles map (needed on X11 only)
@@ -276,6 +282,8 @@ const
    LCLQt_DelayLayoutRequest = QEventType(Ord(QEventUser) + $1009);
    // delayed resize event if wincontrol is computing bounds
    LCLQt_DelayResizeEvent = QEventType(Ord(QEventUser) + $1010);
+   // systemtrayicon event, used to find and register private QWidget of QSystemTrayIcon
+   LCLQt_RegisterSystemTrayIcon = QEventType(Ord(QEventUser) + $1011);
 
 
    QtTextSingleLine            = $0100;
@@ -311,7 +319,7 @@ uses
 ////////////////////////////////////////////////////
   Graphics, buttons, Menus,
   // Bindings
-  qtprivate, qtwidgets, qtobjects;
+  qtprivate, qtwidgets, qtobjects, qtsystemtrayicon;
 
 function DTFlagsToQtFlags(const Flags: Cardinal): Integer;
 begin

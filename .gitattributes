@@ -6906,6 +6906,7 @@ lcl/interfaces/qt/qtobjects.pas svneol=native#text/plain
 lcl/interfaces/qt/qtpagecontrol.inc svneol=native#text/pascal
 lcl/interfaces/qt/qtprivate.pp svneol=native#text/plain
 lcl/interfaces/qt/qtproc.pp svneol=native#text/pascal
+lcl/interfaces/qt/qtsystemtrayicon.pas svneol=native#text/plain
 lcl/interfaces/qt/qtthemes.pas svneol=native#text/pascal
 lcl/interfaces/qt/qtwidgets.pas svneol=native#text/plain
 lcl/interfaces/qt/qtwinapi.inc svneol=native#text/pascal
