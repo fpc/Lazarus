@@ -138,7 +138,8 @@ object ResultDlgForm: TResultDlgForm
       TabOrder = 0
     end
     object GraphStatBtn: TBitBtn
-      Left = 222
+      AnchorSideRight.Control = CopyBtn
+      Left = 226
       Height = 26
       Top = 12
       Width = 157
