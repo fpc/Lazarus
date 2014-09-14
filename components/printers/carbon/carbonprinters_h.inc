@@ -77,12 +77,12 @@ type
     function GetCanPrint: Boolean;override;
     function GetCanRenderCopies : Boolean;override;
     procedure RawModeChanging; override;
+    procedure DoDestroy; override;
   public
     procedure Validate;
     procedure UpdatePrinter;
   public
     constructor Create; override;
-    destructor Destroy; override;
     function Write(const {%H-}Buffer; {%H-}Count:Integer; var {%H-}Written: Integer): Boolean; override;
     // Warning not portable functions here
     property CurrentPrinterName: String read GetCurrentPrinterName;

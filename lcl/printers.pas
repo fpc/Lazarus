@@ -174,6 +174,15 @@ type
     property PaperRectOf[aName : string] : TPaperRect read PaperRectOfName;
   end;
 
+  TPrinterFlags = set of
+    (
+      pfPrinting,                //Printing
+      pfAborted,                 //Abort  process
+      pfDestroying,              //Printer object is being destroyed
+      pfPrintersValid,           //fPrinters list is valid
+      pfRawMode                  //Printer is in raw mode
+    );
+
   { TPrinter }
 
   TPrinter = class(TObject)
@@ -183,17 +192,15 @@ type
     fFonts       : TStrings;     //Accepted font by printer
     fPageNumber  : Integer;      //Current page number
     fPrinters    : TStrings;     //Printers names list
-    fPrintersValid: Boolean;
     fPrinterIndex: Integer;      //selected printer index
     fTitle       : string;       //Title of current document
-    fPrinting    : Boolean;      //Printing
-    fAborted     : Boolean;      //Abort  process
     //fCapabilities: TPrinterCapabilities;
     fPaperSize   : TPaperSize;
-    fRawMode     : Boolean;
     fCanvasClass : TPrinterCanvasRef;
     fBins        : TStrings;
+    fFlags       : TPrinterFlags;
 
+    function GetAborted: Boolean;
     function GetCanvas: TCanvas;
     procedure CheckPrinting(Value: Boolean);
     function GetCanvasClass: TPrinterCanvasRef;
@@ -208,6 +215,8 @@ type
     function GetPrinterIndex: integer;
     function GetPrinterName: string;
     function GetPrinters: TStrings;
+    function GetPrinting: Boolean;
+    function GetRawMode: boolean;
     procedure SetCanvasClass(const AValue: TPrinterCanvasRef);
     procedure SetCopies(AValue: Integer);
     procedure SetOrientation(const AValue: TPrinterOrientation);
@@ -242,6 +251,8 @@ type
      procedure DoSetBinName(aName: string); virtual;
      function DoGetPaperRect(aName : string; Var aPaperRc : TPaperRect) : Integer; virtual;
      function DoGetPrinterState: TPrinterState; virtual;
+     procedure DoDestroy; virtual;
+
      function GetPrinterType : TPrinterType; virtual;
      function GetCanPrint : Boolean; virtual;
      function GetCanRenderCopies : Boolean; virtual;
@@ -252,6 +263,8 @@ type
      procedure RawModeChanging; virtual;
      procedure PrinterSelected; virtual;
      function  DoGetDefaultCanvasClass: TPrinterCanvasRef; virtual;
+
+     property PrinterFlags: TPrinterFlags read fFlags write fFlags;
   public
      constructor Create; virtual;
      destructor Destroy; override;
@@ -279,15 +292,15 @@ type
      property PageHeight: Integer read GetPageHeight;
      property PageWidth: Integer read GetPageWidth;
      property PageNumber : Integer read fPageNumber;
-     property Aborted: Boolean read fAborted;
-     property Printing: Boolean read FPrinting;
+     property Aborted: Boolean read GetAborted;
+     property Printing: Boolean read GetPrinting;
      property Title: string read fTitle write fTitle;
      property PrinterType : TPrinterType read GetPrinterType;
      property CanPrint : Boolean read GetCanPrint;
      property CanRenderCopies : Boolean read GetCanRenderCopies;
      property XDPI : Integer read GetXDPI;
      property YDPI : Integer read GetYDPI;
-     property RawMode: boolean read FRawMode write SetRawMode;
+     property RawMode: boolean read GetRawMode write SetRawMode;
      property DefaultBinName: string read GetDefaultBinName;
      property BinName: string read GetBinName write SetBinName;
      property SupportedBins: TStrings read GetBins;
@@ -317,31 +330,8 @@ end;
 
 destructor TPrinter.Destroy;
 begin
-  if Printing then
-    Abort;
-
-  fBins.free;
-
-  if Assigned(fCanvas) then
-    fCanvas.Free;
-    
-  if Assigned(fPaperSize) then
-     fPaperSize.Free;
-     
-
-  if Assigned(fPrinters) then
-  begin
-    DoResetPrintersList;
-    FreeAndNil(fPrinters);
-  end;
-
-  if Assigned(fFonts) then
-  begin
-    DoResetFontsList;
-    FreeAndNil(fFonts);
-  end;
-     
-
+  Include(fFlags, pfDestroying);
+  DoDestroy;
   inherited Destroy;
 end;
 
@@ -353,7 +343,7 @@ begin
 
   DoAbort;
   
-  fAborted:=True;
+  Include(fFlags, pfAborted);
   EndDoc;
 end;
 
@@ -365,12 +355,12 @@ begin
   
   //If not selected printer, set default printer
   SelectCurrentPrinterOrDefault;
-  
-  fPrinting := True;
-  fAborted := False;
+
+  Include(fFlags, pfPrinting);
+  Exclude(fFlags, pfAborted);
   fPageNumber := 1;
   
-  if not FRawMode then begin
+  if not RawMode then begin
     Canvas.Refresh;
     TPrinterCanvas(Canvas).BeginDoc;
   end;
@@ -378,7 +368,7 @@ begin
   DoBeginDoc;
   
   // Set font resolution
-  if not FRawMode then
+  if not RawMode then
     Canvas.Font.PixelsPerInch := YDPI;
 end;
 
@@ -388,13 +378,13 @@ begin
   //Check if Printer print otherwise, exception
   CheckPrinting(True);
 
-  if not FRawMode then
+  if not RawMode then
     TPrinterCanvas(Canvas).EndDoc;
   
-  DoEndDoc(fAborted);
+  DoEndDoc(pfAborted in fFlags);
 
-  fPrinting := False;
-  fAborted := False;
+  Exclude(fFlags, pfPrinting);
+  Exclude(fFlags, pfAborted);
   fPageNumber := 0;
 end;
 
@@ -511,6 +501,11 @@ begin
   Result:=fCanvas;
 end;
 
+function TPrinter.GetAborted: Boolean;
+begin
+  Result := (pfAborted in fFlags);
+end;
+
 //Raise error if Printer.Printing is not Value
 procedure TPrinter.CheckPrinting(Value: Boolean);
 begin
@@ -525,7 +520,7 @@ end;
 
 function TPrinter.GetCanvasClass: TPrinterCanvasRef;
 begin
-  if FRawMode then
+  if RawMode then
     result := nil
   else
   if FCanvasClass=nil then
@@ -536,7 +531,7 @@ end;
 
 procedure TPrinter.CheckRawMode(const Value: boolean; Msg: string);
 begin
-  if FRawMode<>Value then
+  if RawMode<>Value then
   begin
     if msg='' then
       if Value then
@@ -648,13 +643,23 @@ begin
   Result:=fPrinters;
   
   //Only 1 initialization
-  if not fPrintersValid then begin
-    fPrintersValid:=true;
+  if [pfPrintersValid, pfDestroying]*fFlags = [] then begin
+    Include(fFlags, pfPrintersValid);
     DoEnumPrinters(fPrinters);
     if FPrinters.Count>0 then
       SelectCurrentPrinterOrDefault;
     DoInitialization;
   end;
+end;
+
+function TPrinter.GetPrinting: Boolean;
+begin
+  result := (pfPrinting in fFlags);
+end;
+
+function TPrinter.GetRawMode: boolean;
+begin
+  result := (pfRawMode in fFlags);
 end;
 
 procedure TPrinter.SetCanvasClass(const AValue: TPrinterCanvasRef);
@@ -725,10 +730,13 @@ end;
 
 procedure TPrinter.SetRawMode(const AValue: boolean);
 begin
-  if AValue<>FRawMode then begin
+  if AValue<>RawMode then begin
     CheckPrinting(False);
     RawModeChanging;
-    FRawMode := AValue;
+    if AValue then
+      Include(fFlags, pfRawMode)
+    else
+      Exclude(fFlags, pfRawMode);
   end;
 end;
 
@@ -768,7 +776,7 @@ end;
 procedure TPrinter.DoResetPrintersList;
 begin
  //Override this method
- fPrintersValid:=false;
+  Exclude(fFlags, pfPrintersValid);
 end;
 
 procedure TPrinter.DoResetFontsList;
@@ -897,6 +905,33 @@ function TPrinter.DoGetPrinterState: TPrinterState;
 begin
   //Override this method
   Result:=psNoDefine;
+end;
+
+procedure TPrinter.DoDestroy;
+begin
+  if Printing then
+    Abort;
+
+  fBins.free;
+
+  if Assigned(fCanvas) then
+    fCanvas.Free;
+
+  if Assigned(fPaperSize) then
+     fPaperSize.Free;
+
+
+  if Assigned(fPrinters) then
+  begin
+    DoResetPrintersList;
+    FreeAndNil(fPrinters);
+  end;
+
+  if Assigned(fFonts) then
+  begin
+    DoResetFontsList;
+    FreeAndNil(fFonts);
+  end;
 end;
 
 //Return the type of selected printer

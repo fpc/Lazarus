@@ -158,9 +158,9 @@ type
      function GetResolutionOption: string;
      function IsOptionValueValid(AKeyword,AValue: pchar): boolean;
      function PPDOptionChoiceFrom(OptionStr, aKeyOrValue: string; IsKey:boolean): pppd_choice_t;
+     procedure DoDestroy; override;
   public
     constructor Create; override;
-    destructor Destroy; override;
     function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
     
     {-------------------------------------------------

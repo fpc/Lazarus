@@ -282,7 +282,7 @@ begin
   //DebugLn('Default ' + FDefaultPrinter);
 end;
 
-destructor TCarbonPrinter.Destroy;
+procedure TCarbonPrinter.DoDestroy;
 begin
   FPrinterContext.Free;
   
@@ -290,7 +290,7 @@ begin
   if FPageFormat <> nil then PMRelease(PMObject(FPageFormat));
   if FPrintSession <> nil then PMRelease(PMObject(FPrintSession));
   
-  inherited Destroy;
+  inherited DoDestroy;
 end;
 
 function TCarbonPrinter.Write(const Buffer; Count: Integer;

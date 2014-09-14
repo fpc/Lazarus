@@ -147,11 +147,11 @@ begin
   CreatePrintSettings;
 end;
 
-destructor TQtPrinters.Destroy;
+procedure TQtPrinters.DoDestroy;
 begin
   FPagesEnum.Free;
   QtDefaultPrinter.endDoc;
-  inherited Destroy;
+  inherited DoDestroy;
 end;
 
 function TQtPrinters.Write(const Buffer; Count: Integer;

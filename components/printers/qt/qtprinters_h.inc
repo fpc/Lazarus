@@ -51,12 +51,12 @@ type
     function GetCanPrint: Boolean;override;
     function GetCanRenderCopies : Boolean;override;
     procedure RawModeChanging; override;
+    procedure DoDestroy; override;
   public
     procedure Validate;
     function GetPaperSize(Const Str: String): QPrinterPageSize;
   public
     constructor Create; override;
-    destructor Destroy; override;
     function Write(const {%H-}Buffer; {%H-}Count:Integer; var {%H-}Written: Integer): Boolean; override;
 
     property ColorMode: QPrinterColorMode read GetColorMode write SetColorMode;

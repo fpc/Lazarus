@@ -47,10 +47,8 @@ begin
   fPrinterHandle := 0; //None
 end;
 
-destructor TWinPrinter.Destroy;
+procedure TWinPrinter.DoDestroy;
 begin
-  fDestroying := true;
-
   ClearDC;
 
   DoResetPrintersList;
@@ -58,7 +56,7 @@ begin
   if fPrinterHandle <> 0 then
     ClosePrinter(fPrinterHandle);
 
-  inherited Destroy;
+  inherited DoDestroy;
 end;
 
 function TWinPrinter.Write(const Buffer; Count: Integer;
@@ -97,7 +95,7 @@ end;
 
 procedure TWinPrinter.PrinterSelected;
 begin
-  if not fDestroying and (PrinterIndex >= 0) and not RawMode then
+  if ([pfDestroying, pfRawMode]*PrinterFlags=[]) and (PrinterIndex>=0) then
     SetDC;
 end;
 
@@ -888,7 +886,7 @@ begin
     if FPrinterHandle <> 0 then
       ClosePrinter(FPrinterHandle);
 
-    if fDestroying then
+    if pfDestroying in PrinterFlags then
        result := i
     else begin
       PDev := TPrinterDevice(Printers.Objects[i]);

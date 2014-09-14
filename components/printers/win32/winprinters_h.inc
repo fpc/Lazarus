@@ -36,7 +36,6 @@ Type
     fLastHandleType : THandleType;
     fDC             : HDC;
     fPrinterHandle  : THandle;
-    fDestroying     : boolean;
     procedure SetIC;
     procedure SetDC;
     procedure ClearDC;
@@ -82,9 +81,9 @@ Type
     procedure SetHandlePrinter(aValue : HDC);
     procedure RawModeChanging; override;
     procedure PrinterSelected; override;
+    procedure DoDestroy; override;
   public
     constructor Create; override;
-    destructor Destroy; override;
     
     function Write(const Buffer; Count:Integer; var Written: Integer): Boolean; override;
 

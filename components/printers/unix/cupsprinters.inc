@@ -122,7 +122,7 @@ begin
   FCupsPapersCount := -1;
 end;
 
-destructor TCUPSPrinter.Destroy;
+procedure TCUPSPrinter.DoDestroy;
 begin
   if assigned(fRawModeStream) then
     fRawModeStream.Free;
@@ -132,7 +132,7 @@ begin
   if Assigned(fcupsHttp) then
     httpClose(fcupsHttp);
 
-  inherited destroy;
+  inherited DoDestroy;
 end;
 
 procedure TCUPSPrinter.FreeOptions;
