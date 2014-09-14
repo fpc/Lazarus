@@ -649,7 +649,8 @@ begin
       end
       else if Item is TPkgDependency then begin
         Dependency:=TPkgDependency(Item);
-        // re-add dependency
+        // Re-add dependency
+        fForcedFlags:=[pefNeedUpdateRemovedFiles,pefNeedUpdateRequiredPkgs];
         if CheckAddingDependency(LazPackage,Dependency,false,true)<>mrOk then exit;
         LazPackage.RemoveRemovedDependency(Dependency);
         PackageGraph.AddDependencyToPackage(LazPackage,Dependency);
@@ -1298,10 +1299,11 @@ begin
       else if Item is TPkgDependency then
         LazPackage.RemoveRequiredDepSilently(TPkgDependency(Item));
     end;
-    if PkgCount=0 then
-      fForcedFlags:=[pefNeedUpdateRemovedFiles]; // Force update for removed files only.
+    if FileCount>0 then        // Force update for removed files only.
+      fForcedFlags:=fForcedFlags+[pefNeedUpdateRemovedFiles];
+    if PkgCount>0 then
+      fForcedFlags:=fForcedFlags+[pefNeedUpdateRemovedFiles,pefNeedUpdateRequiredPkgs];
     LazPackage.Modified:=True; // This will update also other possible editors.
-    fForcedFlags:=[];
 
   finally
     EndUpdate;
@@ -1682,8 +1684,10 @@ begin
     for i:=0 to ListOfNodeInfos.Count-1 do begin
       Info:=TCPDNodeInfo(ListOfNodeInfos[i]);
       Dependency:=LazPackage.FindDependencyByName(Info.Dependency);
-      if Dependency<>nil then
+      if Dependency<>nil then begin
+        fForcedFlags:=[pefNeedUpdateRemovedFiles,pefNeedUpdateRequiredPkgs];
         PackageGraph.RemoveDependencyFromPackage(LazPackage,Dependency,true);
+      end;
     end;
   finally
     ListOfNodeInfos.Free;
@@ -2032,6 +2036,7 @@ var
   procedure AddRequiredPkg(AddParams: TAddToPkgResult);
   begin
     // add dependency
+    fForcedFlags:=[pefNeedUpdateRequiredPkgs];
     PackageGraph.AddDependencyToPackage(LazPackage,AddParams.Dependency);
     FreeAndNil(FNextSelectedPart);
     FNextSelectedPart:=TPENodeData.Create(penDependency,
@@ -2291,6 +2296,7 @@ begin
     IdleConnected:=false;
   finally
     ItemsTreeView.EndUpdate;
+    fForcedFlags:=[];
   end;
 end;
 
@@ -2382,8 +2388,8 @@ begin
     if FRemovedFilesNode<>nil then begin
       FilterEdit.DeleteBranch(FRemovedFilesNode);
       FreeAndNil(FRemovedFilesNode);
+      FilterEdit.InvalidateFilter;
     end;
-    FilterEdit.InvalidateFilter;
   end;
 
   UpdatePEProperties;
@@ -2426,6 +2432,7 @@ begin
   end;
   if (FNextSelectedPart<>nil) and (FNextSelectedPart.Typ=penDependency) then
     FreeAndNil(FNextSelectedPart);
+  RequiredBranch.InvalidateBranch;
 
   // removed required packages
   CurDependency:=LazPackage.FirstRemovedDependency;
@@ -2442,6 +2449,7 @@ begin
       RemovedBranch.AddNodeData(CurDependency.AsString, NodeData);
       CurDependency:=CurDependency.NextRequiresDependency;
     end;
+    RemovedBranch.InvalidateBranch;
   end else begin
     if FRemovedRequiredNode<>nil then begin
       FilterEdit.DeleteBranch(FRemovedRequiredNode);
@@ -2449,8 +2457,10 @@ begin
     end;
   end;
   FNextSelectedPart:=nil;
-  FilterEdit.Filter := OldFilter;            // This triggers ApplyFilter
-  FilterEdit.InvalidateFilter;
+  if OldFilter <> '' then begin
+    FilterEdit.Filter := OldFilter;            // This triggers ApplyFilter
+    FilterEdit.InvalidateFilter;
+  end;
   UpdatePEProperties;
   UpdateButtons;
 end;

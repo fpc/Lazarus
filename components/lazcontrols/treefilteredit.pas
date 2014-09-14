@@ -579,7 +579,7 @@ begin
 end;
 
 function TTreeFilterEdit.GetBranch(ARootNode: TTreeNode): TTreeFilterBranch;
-// Get a new or existing branch for a given tree-node.
+// Get a new or existing branch with data cleared for a given tree-node.
 begin
   if not Assigned(fBranches) then
     fBranches := TBranchList.Create;
