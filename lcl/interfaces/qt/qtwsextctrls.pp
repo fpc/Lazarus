@@ -152,9 +152,11 @@ type
     class procedure InternalUpdate(const ATrayIcon: TCustomTrayIcon); override;
     class function ShowBalloonHint(const ATrayIcon: TCustomTrayIcon): Boolean; override;
     class function GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint; override;
+    class function GetCanvas(const ATrayIcon: TCustomTrayIcon): TCanvas; override;
   end;
 
 implementation
+uses qtsystemtrayicon;
 
 { TQtWSCustomPanel }
 
@@ -303,22 +305,24 @@ class procedure TQtWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayI
 var
   SystemTrayIcon: TQtSystemTrayIcon;
   AIcon: QIconH;
+  ABmp: TCustomBitmap;
+  APixmap: QPixmapH;
 begin
   if (ATrayIcon.Handle = 0) then Exit;
 
   SystemTrayIcon := TQtSystemTrayIcon(ATrayIcon.Handle);
   if Assigned(ATrayIcon.Icon) then
   begin
-    // normal icon
+    // animate
+    if ATrayIcon.Animate and Assigned(ATrayIcon.Icons) then
+      SystemTrayIcon.setIcon(TQtImage(ATrayIcon.Icon.BitmapHandle).AsIcon)
+    else
+    // normal
     if (ATrayIcon.Icon.HandleAllocated) then
       SystemTrayIcon.setIcon(TQtIcon(ATrayIcon.Icon.Handle).Handle)
     else
-    // image list (animate)
-    if (ATrayIcon.Icon.BitmapHandle <> 0) then
-      SystemTrayIcon.setIcon(TQtImage(ATrayIcon.Icon.BitmapHandle).AsIcon)
-    else
     begin
-      AIcon := QIcon_create;
+      AIcon := QIcon_create();
       SystemTrayIcon.setIcon(AIcon);
       QIcon_destroy(AIcon);
     end;
@@ -334,6 +338,8 @@ begin
   if Assigned(ATrayIcon.PopUpMenu) then
     if TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget <> nil then
       SystemTrayIcon.setContextMenu(QMenuH(TQtMenu(ATrayIcon.PopUpMenu.Handle).Widget));
+
+  SystemTrayIcon.UpdateSystemTrayWidget;
 end;
 
 class function TQtWSCustomTrayIcon.ShowBalloonHint(
@@ -355,6 +361,17 @@ end;
 class function TQtWSCustomTrayIcon.GetPosition(const ATrayIcon: TCustomTrayIcon): TPoint;
 begin
   Result := Point(0, 0);
+  if (ATrayIcon.Handle = 0) then
+    exit;
+  Result := TQtSystemTrayIcon(ATrayIcon.Handle).GetPosition;
+end;
+
+class function TQtWSCustomTrayIcon.GetCanvas(const ATrayIcon: TCustomTrayIcon
+  ): TCanvas;
+begin
+  Result := nil;
+  if (ATrayIcon.Handle <> 0) then
+    Result := TQtSystemTrayIcon(ATrayIcon.Handle).Canvas;
 end;
 
 end.
