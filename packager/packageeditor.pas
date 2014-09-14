@@ -2328,9 +2328,9 @@ begin
   OldFilter := FilterEdit.ForceFilter('');
 
   // files belonging to package
-  FilesBranch:=FilterEdit.GetBranch(FFilesNode);
+  FilesBranch:=FilterEdit.GetCleanBranch(FFilesNode);
   FreeNodeData(penFile);
-  FilesBranch.Clear;
+  FilesBranch.ClearNodeData;
   FilterEdit.SelectedPart:=nil;
   FilterEdit.ShowDirHierarchy:=ShowDirectoryHierarchy;
   FilterEdit.SortData:=SortAlphabetically;
@@ -2374,8 +2374,8 @@ begin
       FRemovedFilesNode.ImageIndex:=ImageIndexRemovedFiles;
       FRemovedFilesNode.SelectedIndex:=FRemovedFilesNode.ImageIndex;
     end;
-    RemovedBranch:=FilterEdit.GetBranch(FRemovedFilesNode);
-    RemovedBranch.Clear;
+    RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedFilesNode);
+    RemovedBranch.ClearNodeData;
     for i:=0 to LazPackage.RemovedFilesCount-1 do begin
       CurFile:=LazPackage.RemovedFiles[i];
       NodeData:=CreateNodeData(penFile,CurFile.Filename,true);
@@ -2408,9 +2408,9 @@ begin
   OldFilter := FilterEdit.ForceFilter('');
 
   // required packages
-  RequiredBranch:=FilterEdit.GetBranch(FRequiredPackagesNode);
+  RequiredBranch:=FilterEdit.GetCleanBranch(FRequiredPackagesNode);
   FreeNodeData(penDependency);
-  RequiredBranch.Clear;
+  RequiredBranch.ClearNodeData;
   CurDependency:=LazPackage.FirstRequiredDependency;
   FilterEdit.SelectedPart:=nil;
   while CurDependency<>nil do begin
@@ -2442,8 +2442,8 @@ begin
       FRemovedRequiredNode.ImageIndex:=ImageIndexRemovedRequired;
       FRemovedRequiredNode.SelectedIndex:=FRemovedRequiredNode.ImageIndex;
     end;
-    RemovedBranch:=FilterEdit.GetBranch(FRemovedRequiredNode);
-    RemovedBranch.Clear;
+    RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedRequiredNode);
+    RemovedBranch.ClearNodeData;
     while CurDependency<>nil do begin
       NodeData:=CreateNodeData(penDependency,CurDependency.PackageName,true);
       RemovedBranch.AddNodeData(CurDependency.AsString, NodeData);

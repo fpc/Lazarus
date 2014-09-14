@@ -53,7 +53,7 @@ type
     procedure DeleteData(ANode: TTreeNode);
     procedure FreeNodeData(ANode: TTreeNode);
     function GetData(AIndex: integer): TObject;
-    procedure Clear;
+    procedure ClearNodeData;
     procedure InvalidateBranch;
     procedure MoveFile(CurIndex, NewIndex: integer);
   end;
@@ -91,7 +91,7 @@ type
     procedure StoreSelection; override;
     procedure RestoreSelection; override;
     function GetExistingBranch(ARootNode: TTreeNode): TTreeFilterBranch;
-    function GetBranch(ARootNode: TTreeNode): TTreeFilterBranch;
+    function GetCleanBranch(ARootNode: TTreeNode): TTreeFilterBranch;
     function DeleteBranch(ARootNode: TTreeNode): Boolean;
   public
     property ImageIndexDirectory: integer read fImageIndexDirectory write fImageIndexDirectory;
@@ -148,7 +148,7 @@ end;
 
 destructor TTreeFilterBranch.Destroy;
 begin
-  Clear;
+  ClearNodeData;
   FreeAndNil(fNodeTextToFullFilenameMap);
   FreeAndNil(fNodeTextToDataMap);
   FreeAndNil(fSortedData);
@@ -211,7 +211,7 @@ var
   AObject: TObject;
 begin
   if Assigned(fRootNode) then Begin
-    Clear;
+    ClearNodeData;
     fRootNode.DeleteChildren;      // Delete old tree nodes.
   end
   else
@@ -381,7 +381,7 @@ Begin
   ProcessSubNodes(ARootNode);
 end;
 
-procedure TTreeFilterBranch.Clear;
+procedure TTreeFilterBranch.ClearNodeData;
 Begin
   RemoveChildrenData(fRootNode);
 end;
@@ -578,7 +578,7 @@ begin
     end;
 end;
 
-function TTreeFilterEdit.GetBranch(ARootNode: TTreeNode): TTreeFilterBranch;
+function TTreeFilterEdit.GetCleanBranch(ARootNode: TTreeNode): TTreeFilterBranch;
 // Get a new or existing branch with data cleared for a given tree-node.
 begin
   if not Assigned(fBranches) then

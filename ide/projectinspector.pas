@@ -978,8 +978,8 @@ begin
   if not CanUpdate(pifNeedUpdateFiles) then exit;
   ItemsTreeView.BeginUpdate;
   try
-    FilesBranch:=FilterEdit.GetBranch(FFilesNode);
-    FilesBranch.Clear;
+    FilesBranch:=FilterEdit.GetCleanBranch(FFilesNode);
+    FilesBranch.ClearNodeData;
     FreeNodeData(penFile);
     if LazProject<>nil then begin
       FilterEdit.SelectedPart:=FNextSelectedPart;
@@ -1014,8 +1014,8 @@ begin
   if not CanUpdate(pifNeedUpdateDependencies) then exit;
   ItemsTreeView.BeginUpdate;
   try
-    RequiredBranch:=FilterEdit.GetBranch(FDependenciesNode);
-    RequiredBranch.Clear;
+    RequiredBranch:=FilterEdit.GetCleanBranch(FDependenciesNode);
+    RequiredBranch.ClearNodeData;
     FreeNodeData(penDependency);
     Dependency:=Nil;
     if LazProject<>nil then begin
@@ -1047,7 +1047,7 @@ begin
           FRemovedDependenciesNode.ImageIndex:=ImageIndexRemovedRequired;
           FRemovedDependenciesNode.SelectedIndex:=FRemovedDependenciesNode.ImageIndex;
         end;
-        RemovedBranch:=FilterEdit.GetBranch(FRemovedDependenciesNode);
+        RemovedBranch:=FilterEdit.GetCleanBranch(FRemovedDependenciesNode);
         // Add all removed dependencies under the branch
         while Dependency<>nil do begin
           ANodeData := CreateNodeData(penDependency, Dependency.PackageName, True);

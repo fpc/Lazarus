@@ -555,7 +555,7 @@ begin
       LPKInfoCache.LeaveCritSection;
     end;
     // fill tree view through FilterEdit
-    FilteredBranch := AvailableFilterEdit.GetBranch(Nil); // All items are top level.
+    FilteredBranch := AvailableFilterEdit.GetCleanBranch(Nil); // All items are top level.
     for i:=0 to List.Count-1 do
       FilteredBranch.AddNodeData(List[i],nil);
   finally
@@ -583,7 +583,7 @@ begin
     end;
     List.Sort;
     // fill tree view through FilterEdit
-    FilteredBranch := InstalledFilterEdit.GetBranch(Nil); // All items are top level.
+    FilteredBranch := InstalledFilterEdit.GetCleanBranch(Nil); // All items are top level.
     for i:=0 to List.Count-1 do
       FilteredBranch.AddNodeData(List[i],nil);
   finally
