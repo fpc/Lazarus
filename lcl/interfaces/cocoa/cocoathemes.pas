@@ -7,6 +7,7 @@
 unit CocoaThemes;
 
 {$mode objfpc}{$H+}
+{$modeswitch objectivec1}
 
 interface
 
@@ -14,11 +15,13 @@ uses
   // rtl
   Types, Classes, SysUtils,
   // carbon bindings
-  //MacOSAll,
+  MacOSAll, // For HiTheme
+  // cocoa bindings
+  CocoaAll,
   // lcl
-  LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema;
+  LCLType, LCLProc, LCLIntf, Graphics, Themes, TmSchema,
   // widgetset
-  //CarbonProc, CarbonCanvas, CarbonGDIObjects;
+  CocoaProc, CocoaUtils, CocoaGDIObjects;
   
 type
   { TCocoaThemeServices }
@@ -31,15 +34,15 @@ type
     function UseThemes: Boolean; override;
     function ThemedControlsEnabled: Boolean; override;
     procedure InternalDrawParentBackground({%H-}Window: HWND; {%H-}Target: HDC; {%H-}Bounds: PRect); override;
-
+*)
     function GetDrawState(Details: TThemedElementDetails): ThemeDrawState;
-    function DrawButtonElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
+(*    function DrawButtonElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
     function DrawComboBoxElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
     function DrawHeaderElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
     function DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
-    function DrawToolBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
-    function DrawTreeviewElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
-    function DrawWindowElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
+    function DrawToolBarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;*)
+    function DrawTreeviewElement(DC: TCocoaContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
+(*    function DrawWindowElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
 *)
   public
     procedure DrawElement(DC: HDC; Details: TThemedElementDetails; const R: TRect; ClipRect: PRect); override;
@@ -58,13 +61,13 @@ type
 implementation
 
 { TCocoaThemeServices }
-(*
+
 {------------------------------------------------------------------------------
   Method:  TCarbonThemeServices.GetDrawState
   Params:  Details - Details for themed element
   Returns: Draw state of the themed element passed
  ------------------------------------------------------------------------------}
-function TCarbonThemeServices.GetDrawState(Details: TThemedElementDetails): ThemeDrawState;
+function TCocoaThemeServices.GetDrawState(Details: TThemedElementDetails): ThemeDrawState;
 {
 	kThemeStateInactive = 0;
 	kThemeStateActive = 1;
@@ -89,7 +92,7 @@ begin
   else
     Result := kThemeStateActive;
 end;
-
+(*
 {------------------------------------------------------------------------------
   Method:  TCarbonThemeServices.DrawComboBoxElement
   Params:  DC       - Carbon device context
@@ -326,28 +329,29 @@ begin
         
     Result := CGRectToRect(LabelRect);
   end;
-end;
+end;*)
 
-function TCarbonThemeServices.DrawTreeviewElement(DC: TCarbonDeviceContext;
+function TCocoaThemeServices.DrawTreeviewElement(DC: TCocoaContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
   ButtonDrawInfo: HIThemeButtonDrawInfo;
   LabelRect: HIRect;
-  b: TCarbonBrush;
+  b: TCocoaBrush;
+  lColor: NSColor;
 begin
   case Details.Part of
     TVP_TREEITEM:
     begin
-      b:=TCarbonBrush.Create(False);
       case Details.State of
-        TREIS_NORMAL: b.SetColor( ColorToRGB(clWindow), True);
-        TREIS_HOT: b.SetColor( ColorToRGB(clHotLight), True);
-        TREIS_SELECTED: b.SetColor( ColorToRGB(clHighlight), True);
-        TREIS_DISABLED: b.SetColor( ColorToRGB(clWindow), True);
-        TREIS_SELECTEDNOTFOCUS: b.SetColor( ColorToRGB(clBtnFace), True);
-        TREIS_HOTSELECTED: b.SetColor( ColorToRGB(clHighlight), True);
+        TREIS_NORMAL: lColor := ColorToNSColor(ColorToRGB(clWindow));
+        TREIS_HOT: lColor := ColorToNSColor(ColorToRGB(clHotLight));
+        TREIS_SELECTED: lColor := ColorToNSColor(ColorToRGB(clHighlight));
+        TREIS_DISABLED: lColor := ColorToNSColor(ColorToRGB(clWindow));
+        TREIS_SELECTEDNOTFOCUS: lColor := ColorToNSColor(ColorToRGB(clBtnFace));
+        TREIS_HOTSELECTED: lColor := ColorToNSColor(ColorToRGB(clHighlight));
       end;
-      DC.FillRect(R, b);
+      b := TCocoaBrush.Create(lColor, False);
+      DC.Rectangle(R.Left, R.Top, R.Right, R.Bottom, True, b);
       b.Free;
     end;
     TVP_GLYPH, TVP_HOTGLYPH:
@@ -362,18 +366,19 @@ begin
 
       ButtonDrawInfo.adornment := kThemeAdornmentNone;
       LabelRect := RectToCGRect(R);
+      // Felipe: Manual calibration to make TTreeView look right, strange that this is needed =/
+      LabelRect.origin.x := LabelRect.origin.x - 2;
+      LabelRect.origin.y := LabelRect.origin.y - 1;
 
-      OSError(
-        HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext,
-          kHIThemeOrientationNormal, @LabelRect),
-        Self, 'DrawTreeviewElement', 'HIThemeDrawButton');
+      HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext(),
+        kHIThemeOrientationNormal, @LabelRect);
 
       Result := CGRectToRect(LabelRect);
     end;
   end;
 end;
 
-function TCarbonThemeServices.DrawWindowElement(DC: TCarbonDeviceContext;
+(*function TCarbonThemeServices.DrawWindowElement(DC: TCarbonDeviceContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
   WindowDrawInfo: HIThemeWindowDrawInfo;
@@ -517,24 +522,23 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCocoaThemeServices.DrawElement(DC: HDC;
   Details: TThemedElementDetails; const R: TRect; ClipRect: PRect);
-//var
-//  Context: TCarbonDeviceContext absolute DC;
+var
+  Context: TCocoaContext absolute DC;
 begin
-  inherited DrawElement(DC, Details, R, ClipRect);
-{  if CheckDC(DC, 'TCocoaThemeServices.DrawElement') then
+  if CheckDC(DC, 'TCocoaThemeServices.DrawElement') then
   begin
     case Details.Element of
-      teComboBox: DrawComboBoxElement(Context, Details, R, ClipRect);
+{      teComboBox: DrawComboBoxElement(Context, Details, R, ClipRect);
       teButton: DrawButtonElement(Context, Details, R, ClipRect);
       teHeader: DrawHeaderElement(Context, Details, R, ClipRect);
       teRebar: DrawRebarElement(Context, Details, R, ClipRect);
-      teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);
+      teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);}
       teTreeview: DrawTreeviewElement(Context, Details, R, ClipRect);
-      teWindow: DrawWindowElement(Context, Details, R, ClipRect);
+//      teWindow: DrawWindowElement(Context, Details, R, ClipRect);
     else
       inherited DrawElement(DC, Details, R, ClipRect);
     end;
-  end; }
+  end;
 end;
 (*
 {------------------------------------------------------------------------------
