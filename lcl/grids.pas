@@ -5516,11 +5516,20 @@ begin
         end;
       end;
 
-      while Offset>(integer(PtrUInt(AccumWidth[Index]))+GetColWidths(Index)-1) do
+      while Offset>(integer(PtrUInt(AccumWidth[Index]))+GetColWidths(Index)-1) do begin
         Inc(Index);
+        if Index>=ColCount then begin
+          if AllowOutBoundEvents then
+            Index := ColCount-1
+          else
+            Index := -1;
+          exit;
+        end;
+      end;
 
       Rest:=Offset;
-      if Index<>0 then Rest:=Offset-integer(PtrUInt(AccumWidth[Index]));
+      if Index<>0 then
+        Rest:=Offset-integer(PtrUInt(AccumWidth[Index]));
 
     end else begin
 
