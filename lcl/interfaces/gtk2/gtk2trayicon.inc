@@ -361,6 +361,16 @@ begin
   end;
 end;
 
+function query_tooltip_cb_statusicon({%H-}status_icon: PGtkStatusIcon;
+  x: guint; y: guint; {%H-}keyboard_mode: gboolean; {%H-}tooltip: gpointer{PGtkTooltip}; user_data: gpointer): gboolean; cdecl;
+var
+  vwsTrayIcon: TCustomTrayIcon absolute user_data;
+begin
+  Result := FALSE;
+
+  if Assigned(vwsTrayIcon.OnMouseMove) then
+   vwsTrayIcon.OnMouseMove(vwsTrayIcon, [], x, y);
+end;
 {$endif}
 
 constructor TGtk2TrayIconHandle.Create(const wsTrayIcon: TCustomTrayIcon);
@@ -374,12 +384,14 @@ begin
     FStatusIcon := gtk_status_icon_new();
     gtk_status_icon_set_from_pixbuf(FStatusIcon, {%H-}PGdkPixbuf(FTrayIcon.Icon.Handle));
     gtk_status_icon_set_tooltip(FStatusIcon, PChar(FTrayIcon.Hint));
+    g_object_set(PGObject(FStatusIcon), 'has-tooltip', TRUE);
     fEmbedded := gtk_status_icon_is_embedded(FStatusIcon);
 
     g_signal_connect(FStatusIcon, 'activate', TGCallback(@activate_cb_statusicon), fTrayIcon);
     g_signal_connect(FStatusIcon, 'popup-menu', TGCallback(@popup_cb_statusicon), fTrayIcon);
     g_signal_connect(FStatusIcon, 'button-press-event', TGCallback(@button_press_cb_statusicon), fTrayIcon);
     g_signal_connect(FStatusIcon, 'button-release-event', TGCallback(@button_release_cb_statusicon), fTrayIcon);
+    g_signal_connect(FStatusIcon, 'query-tooltip', TGCallback(@query_tooltip_cb_statusicon), fTrayIcon);
   end
   else
 {$endif}
@@ -403,8 +415,8 @@ begin
     with wsTrayIcon do
     begin
       DrawingArea := gtk_image_new_from_pixbuf({%H-}PGdkPixbuf(Icon.Handle));
-      gtk_widget_show(DrawingArea);
       gtk_container_add(GTK_CONTAINER(plug), DrawingArea);
+      gtk_widget_show(DrawingArea);
     end;
   end;
 end;
@@ -474,6 +486,7 @@ begin
   begin
     gtk_status_icon_set_from_pixbuf(FStatusIcon, NewPixBuf);
     gtk_status_icon_set_tooltip(FStatusIcon, PChar(NewHint));
+    g_object_set(PGObject(FStatusIcon), 'has-tooltip', TRUE);
   end
   else
 {$endif}
