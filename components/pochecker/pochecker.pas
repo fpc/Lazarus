@@ -8,7 +8,7 @@ interface
 
 uses
   ResultDlg, PoFamilies, pocheckermain, SimplePoFiles, pocheckerconsts, 
-  LazarusPackageIntf;
+  GraphStat, LazarusPackageIntf;
 
 implementation
 

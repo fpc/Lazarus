@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="PoChecker"/>
@@ -10,17 +10,13 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
-        <CompilerMessages>
-          <UseMsgFile Value="True"/>
-        </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Check the validity of translated PO files.
 "/>
     <Version Major="1"/>
-    <Files Count="7">
+    <Files Count="9">
       <Item1>
         <Filename Value="resultdlg.pp"/>
         <UnitName Value="ResultDlg"/>
@@ -50,6 +46,14 @@
         <Filename Value="pocheckerconsts.pas"/>
         <UnitName Value="pocheckerconsts"/>
       </Item7>
+      <Item8>
+        <Filename Value="graphstat.lfm"/>
+        <Type Value="LFM"/>
+      </Item8>
+      <Item9>
+        <Filename Value="graphstat.pp"/>
+        <UnitName Value="GraphStat"/>
+      </Item9>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
