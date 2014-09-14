@@ -99,6 +99,10 @@ msgstr "Chyby / varování nahlášené %s pro:"
 msgid "Find all translated po-files"
 msgstr "Najít všechny přeložené po soubory"
 
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr ""
+
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
 msgstr "GUI pomůcka pro kontrolu po souborů"
@@ -225,6 +229,10 @@ msgstr "Vybrat záklaní testy"
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
 msgstr "Vybrat typy testu"
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr ""
 
 #: pocheckerconsts.stotalerrors
 #, fuzzy

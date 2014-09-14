@@ -94,6 +94,10 @@ msgstr "Помилки / попередження звітовані %s для:"
 msgid "Find all translated po-files"
 msgstr "Знайти всі перекладені po-файли"
 
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr ""
+
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
 msgstr "GUI інструмент перевірки po-файлів"
@@ -213,6 +217,10 @@ msgstr ""
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
 msgstr "Вибрати типи тестів"
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr ""
 
 #: pocheckerconsts.stotalerrors
 #, fuzzy

@@ -97,6 +97,10 @@ msgstr "A(z) %s hibákat / figyelmeztetéseket jelzett ezzel kapcsolatban:"
 msgid "Find all translated po-files"
 msgstr "Az összes lefordított po-fájl megkeresése"
 
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr ""
+
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
 msgstr "GUI Po-fájl ellenőrző eszköz"
@@ -221,6 +225,10 @@ msgstr "Alapvetőek kijelölése"
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
 msgstr "Teszt típusok kiválasztása"
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr ""
 
 #: pocheckerconsts.stotalerrors
 #, fuzzy

@@ -95,6 +95,10 @@ msgstr "Errori / avvertimenti riportati da %s per:"
 msgid "Find all translated po-files"
 msgstr "Trova tutti i file po tradotti"
 
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr ""
+
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
 msgstr "Strumento GUI di verifica di file po"
@@ -218,6 +222,10 @@ msgstr "Seleziona &Base"
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
 msgstr "Seleziona i tipi di verifica"
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr ""
 
 #: pocheckerconsts.stotalerrors
 #, fuzzy

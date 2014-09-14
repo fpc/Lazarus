@@ -95,6 +95,10 @@ msgstr "Ошибки и предупреждения, найденные %s дл
 msgid "Find all translated po-files"
 msgstr "Найти все переведённые файлы PO"
 
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr ""
+
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
 msgstr "Средство проверки файлов PO"
@@ -221,6 +225,10 @@ msgstr "Выбрать &базовые"
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
 msgstr "Выбор тестов"
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr ""
 
 #: pocheckerconsts.stotalerrors
 #| msgid "Total errors / warnings found: %d"

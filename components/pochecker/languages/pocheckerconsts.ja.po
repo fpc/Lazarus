@@ -97,6 +97,10 @@ msgstr "以下のファイルに対する %s によるエラー／警告の結�
 msgid "Find all translated po-files"
 msgstr "翻訳されたすべての po ファイルを検査する"
 
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr ""
+
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
 msgstr "GUI po ファイル検査ツール"
@@ -222,6 +226,10 @@ msgstr "基本テストを選択"
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
 msgstr "テスト項目を選択してください"
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr ""
 
 #: pocheckerconsts.stotalerrors
 #, fuzzy

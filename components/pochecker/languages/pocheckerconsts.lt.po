@@ -97,6 +97,10 @@ msgstr "%s praneštos klaidos/perspėjimai apie:"
 msgid "Find all translated po-files"
 msgstr "Rasti visus išverstus PO failus"
 
+#: pocheckerconsts.sgrapstatformcaption
+msgid "Graphical summary"
+msgstr ""
+
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
 msgstr "Įrankio PO failų tikrinimui grafinė sąsaja"
@@ -216,6 +220,10 @@ msgstr ""
 #: pocheckerconsts.sselecttesttypes
 msgid "Select test types"
 msgstr "Pažymėti testavimo tipus"
+
+#: pocheckerconsts.sshowstatgraph
+msgid "Show statistics graph"
+msgstr ""
 
 #: pocheckerconsts.stotalerrors
 #, fuzzy
