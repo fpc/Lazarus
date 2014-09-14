@@ -521,7 +521,29 @@ type
     destructor Destroy; override;
     property Handle: QCursorH read FHandle;
   end;
+  
+  { TQtSystemTrayIcon }
 
+  TQtSystemTrayIcon = class(TObject)
+  private
+    FHook: QSystemTrayIcon_hookH;
+  public
+    Handle: QSystemTrayIconH;
+    FTrayIcon: TCustomTrayIcon;
+  public
+    constructor Create(vIcon: QIconH); virtual;
+    destructor Destroy; override;
+  public
+    procedure setContextMenu(menu: QMenuH);
+    procedure setIcon(icon: QIconH);
+    procedure setToolTip(tip: WideString);
+    procedure signalActivated(AReason: QSystemTrayIconActivationReason); cdecl;
+    procedure showBaloonHint(const ATitle, AHint: String;
+      const AFlag: QSystemTrayIconMessageIcon; const ATimeOut: Integer);
+    procedure Show;
+    procedure Hide;
+  end;
+  
   { TQtButtonGroup }
   
   TQtButtonGroup = class(TObject)
@@ -3669,6 +3691,119 @@ end;
 class procedure TQtPixmap.fromImage(retval: QPixmapH; image: QImageH; flags: QtImageConversionFlags = QtAutoColor);
 begin
   QPixmap_fromImage(retval, image, flags);
+end;
+
+{ TQtSystemTrayIcon }
+
+constructor TQtSystemTrayIcon.Create(vIcon: QIconH);
+begin
+  inherited Create;
+
+  if vIcon <> nil then
+    Handle := QSystemTrayIcon_create(vicon, nil)
+  else
+    Handle := QSystemTrayIcon_create();
+  FHook := QSystemTrayIcon_hook_create(Handle);
+  QSystemTrayIcon_hook_hook_activated(FHook, @signalActivated);
+end;
+
+destructor TQtSystemTrayIcon.Destroy;
+begin
+  QSystemTrayIcon_hook_destroy(FHook);
+  QSystemTrayIcon_destroy(Handle);
+  
+  inherited Destroy;
+end;
+
+procedure TQtSystemTrayIcon.setContextMenu(menu: QMenuH);
+begin
+  QSystemTrayIcon_setContextMenu(handle, menu);
+end;
+
+procedure TQtSystemTrayIcon.setIcon(icon: QIconH);
+begin
+  QSystemTrayIcon_setIcon(handle, icon);
+end;
+
+procedure TQtSystemTrayIcon.setToolTip(tip: WideString);
+begin
+  QSystemTrayIcon_setToolTip(handle, @tip)
+end;
+
+procedure TQtSystemTrayIcon.signalActivated(
+  AReason: QSystemTrayIconActivationReason); cdecl;
+var
+  MousePos: TQtPoint;
+begin
+  if not Assigned(FTrayIcon) then
+    exit;
+
+  QCursor_pos(@MousePos);
+  {$note: TODO: Mouse events of trayicon can be catched
+   in QApplication event filter (TQtWidgetSet.EventFilter),
+   so OnMouseDown and OnMouseUp can be properly sent.
+   Check if it works ok on qtwin32 and qtmac and
+   then replace this blind calls to mouse events.
+   To get systryicon object handle in application event filter
+   add property "lclsystrayicon" to this handle.}
+  case AReason of
+    QSystemTrayIconTrigger:
+      begin
+        if Assigned(FTrayIcon.OnMouseDown) then
+          FTrayIcon.OnMouseDown(FTrayIcon, mbLeft, [], MousePos.x, MousePos.y);
+        if Assigned(FTrayIcon.OnClick) then
+          FTrayIcon.OnClick(FTrayIcon);
+        if Assigned(FTrayIcon.OnMouseUp) then
+          FTrayIcon.OnMouseUp(FTrayIcon, mbLeft, [], MousePos.x, MousePos.y);
+      end;
+    QSystemTrayIconDoubleClick:
+      begin
+        if Assigned(FTrayIcon.OnMouseDown) then
+          FTrayIcon.OnMouseDown(FTrayIcon, mbLeft, [], MousePos.x, MousePos.y);
+
+        if Assigned(FTrayIcon.OnDblClick) then
+          FTrayIcon.OnDblClick(FTrayIcon);
+
+        if Assigned(FTrayIcon.OnMouseUp) then
+          FTrayIcon.OnMouseUp(FTrayIcon, mbLeft, [], MousePos.x, MousePos.y);
+      end;
+    QSystemTrayIconMiddleClick:
+      begin
+        if Assigned(FTrayIcon.OnMouseDown) then
+          FTrayIcon.OnMouseDown(FTrayIcon, mbMiddle, [], MousePos.x, MousePos.y);
+        if Assigned(FTrayIcon.OnMouseUp) then
+          FTrayIcon.OnMouseUp(FTrayIcon, mbMiddle, [], MousePos.x, MousePos.y);
+      end;
+    QSystemTrayIconContext:
+      begin
+        if Assigned(FTrayIcon.OnMouseDown) then
+          FTrayIcon.OnMouseDown(FTrayIcon, mbRight, [], MousePos.x, MousePos.y);
+
+        if Assigned(FTrayIcon.OnMouseUp) then
+          FTrayIcon.OnMouseUp(FTrayIcon, mbRight, [], MousePos.x, MousePos.y);
+      end;
+  end;
+end;
+
+procedure TQtSystemTrayIcon.showBaloonHint(const ATitle, AHint: String;
+  const AFlag: QSystemTrayIconMessageIcon; const ATimeOut: Integer);
+var
+  WHint: WideString;
+  WTitle: WideString;
+begin
+  WHint := GetUTF8String(AHint);
+  WTitle := GetUTF8String(ATitle);
+  QSystemTrayIcon_showMessage(Handle, @WTitle, @WHint, AFlag, ATimeOut);
+end;
+
+procedure TQtSystemTrayIcon.Show;
+begin
+  QSystemTrayIcon_show(handle);
+end;
+
+procedure TQtSystemTrayIcon.Hide;
+begin
+  QSystemTrayIcon_hide(handle);
 end;
 
 { TQtButtonGroup }

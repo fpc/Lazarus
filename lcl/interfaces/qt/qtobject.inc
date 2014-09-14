@@ -91,7 +91,6 @@ begin
   System.InitCriticalSection(CriticalSection);
   SavedHandlesList := TMap.Create(TMapIdType(ituPtrSize), SizeOf(TObject));
   FSocketEventMap := TMap.Create(TMapIdType(its4), SizeOf(Pointer));
-  SysTrayIconsList := TFPList.Create;
   StayOnTopList := nil;
   FAppActive := False;
   {$IFDEF HASX11}
@@ -159,13 +158,6 @@ begin
     SavedHintHandlesList := nil;
   end;
   {$ENDIF}
-
-  if SysTrayIconsList <> nil then
-  begin
-    SysTrayIconsList.Free;
-    SysTrayIconsList := nil;
-  end;
-
   FSocketEventMap.Free;
   FGlobalActions.Free;
 
@@ -555,8 +547,6 @@ var
   ASequence: QKeySequenceH;
   AKey: WideString;
   AParent: QWidgetH;
-  R: TRect;
-  AQtPoint: TQtPoint;
 
   function IsAnyWindowActive: Boolean;
   begin
@@ -565,126 +555,8 @@ var
       (QApplication_activePopupWidget() <> nil);
   end;
 
-  function IsSystemTrayWidget: boolean;
-  var
-    AName: WideString;
-    AWidget: QWidgetH;
-    RGeom: TRect;
-    AFlags: QtWindowFlags;
-    i: Integer;
-  begin
-    Result := False;
-    if QObject_isWidgetType(Sender) then
-    begin
-      AWidget := QWidgetH(Sender);
-      QObject_objectName(Sender, @AName);
-      if UTF8Copy(AName, 1, 16) = 'qtlclsystrayicon' then
-      begin
-        for i := 0 to SysTrayIconsList.Count - 1 do
-        begin
-          RGeom := TQtSystemTrayIcon(SysTrayIconsList.Items[i]).GetGeometry;
-          if TQtSystemTrayIcon(SysTrayIconsList.Items[i]).SysTrayWidget = nil then
-          begin
-            if QApplication_widgetAt(RGeom.Left, RGeom.Top) = AWidget then
-              TQtSystemTrayIcon(SysTrayIconsList.Items[i]).AttachSysTrayWidget(AWidget);
-          end;
-        end;
-        exit(True);
-      end;
-      if QWidget_isWindow(AWidget) and (QWidget_parentWidget(AWidget) = nil) then
-      begin
-        AFlags := QWidget_windowFlags(AWidget);
-
-        if QWidget_testAttribute(AWidget, QtWA_AlwaysShowToolTips) and
-          QWidget_testAttribute(AWidget, QtWA_PaintOnScreen) and
-          QWidget_testAttribute(AWidget, QtWA_NoSystemBackground) and
-          not QWidget_testAttribute(AWidget, QtWA_QuitOnClose) and
-          {$IFDEF HASX11}
-          (AFlags and QtX11BypassWindowManagerHint = QtX11BypassWindowManagerHint) and
-          {$ENDIF}
-          (AFlags and QtFramelessWindowHint = QtFramelessWindowHint) then
-        begin
-          if HwndFromWidgetH(AWidget) = 0 then
-          begin
-            // we must find it by geometry, but it's innacurate since
-            // qt systrayicon widget returns -1,-1 for left & top, so we
-            // use QApplication_widgetAt().
-            // Another problem is that QSystemTrayIcon geometry is updated
-            // too late, much after QEventShow/QEventShowToParent
-            // so no way to catch private QWidget until we enter
-            // it by mouse.
-            // For that reason we use LCLQt_RegisterSystemTrayIcon event.
-
-            {$IFDEF DEBUGSYSTRAYICON}
-            DebugLn('====****** Inherits private ? ',dbgs(QObject_inherits(AWidget, 'QSystemTrayIconSys')),
-            ' mouseTracking=',dbgs(QWidget_hasMouseTracking(AWidget)));
-            {$ENDIF}
-            for i := 0 to SysTrayIconsList.Count - 1 do
-            begin
-              RGeom := TQtSystemTrayIcon(SysTrayIconsList.Items[i]).GetGeometry;
-              if (QApplication_widgetAt(RGeom.Left, RGeom.Top) = AWidget) then
-              begin
-                AName := 'qtlclsystrayicon_' + dbgHex(PtrUInt(AWidget));
-                QObject_setObjectName(Sender, @AName);
-                TQtSystemTrayIcon(SysTrayIconsList.Items[i]).AttachSysTrayWidget(AWidget);
-                {$IFDEF DEBUGSYSTRAYICON}
-                DebugLn('Attached systemtrayicon[',dbgs(I),'] with geometry ',dbgs(RGeom),' dbg=',
-                  dbgsName(TQtSystemTrayIcon(SysTrayIconsList.Items[i]).FTrayIcon),
-                  ' position=',dbgs(TQtSystemTrayIcon(SysTrayIconsList.Items[i]).GetPosition));
-                {$ENDIF}
-                TQtSystemTrayIcon(SysTrayIconsList.Items[i]).UpdateSystemTrayWidget;
-                Result := True;
-                break;
-              end;
-            end;
-          end;
-        end;
-      end;
-    end;
-  end;
-
 begin
   Result := False;
-
-  // find QSystemTrayIcon
-  if Assigned(SysTrayIconsList) and (SysTrayIconsList.Count > 0) and
-    ((QEvent_type(Event) = LCLQt_RegisterSystemTrayIcon) or
-    (QEvent_type(Event) = QEventPaint) or
-    (QEvent_type(Event) = QEventEnter)) and
-    QObject_isWidgetType(Sender) and (QObject_parent(Sender) = nil) and
-    QWidget_isWindow(QWidgetH(Sender)) and QWidget_isVisible(QWidgetH(Sender)) and
-    (QWidget_focusPolicy(QWidgetH(Sender)) = QtNoFocus) then
-  begin
-    AParent := QWidgetH(Sender);
-    QWidget_geometry(AParent, @R);
-    if (R.Left = -1) and (R.Top = -1) and (R.Right > 0) and (R.Bottom > 0) then
-    begin
-      AQtPoint.x := 0;
-      AQtPoint.y := 0;
-      QWidget_mapToGlobal(AParent, @AQtPoint, @AQtPoint);
-      {$IFDEF DEBUGSYSTRAYICON}
-      DebugLn('EVENT: ',dbgs(QEvent_type(Event)),' Sender 0x',dbgHex(PtrUInt(Sender)),' geometry ',dbgs(R),' QtPt.X=',dbgs(AQtPoint.x),' QtPt.Y=',dbgs(AQtPoint.y));
-      {$ENDIF}
-      if (QEvent_type(Event) = LCLQt_RegisterSystemTrayIcon) then
-      begin
-        if IsSystemTrayWidget then
-        begin
-          Result := True;
-          {$IFDEF DEBUGSYSTRAYICON}
-          DebugLn('Found SystemTrayIcon via event ',dbgs(QEvent_type(Event)),' SYSTRAYICON 0x',dbgHex(PtrUInt(Sender)));
-          {$ENDIF}
-          exit;
-        end;
-      end else
-      if ((QEvent_type(Event) = QEventPaint) and (AQtPoint.x > 0) and (AQtPoint.y > 0)) or
-        (QEvent_type(Event) = QEventEnter) then
-      begin
-        LCLEvent := QLCLMessageEvent_create(LCLQt_RegisterSystemTrayIcon, 0, 0, 0, 0);
-        QCoreApplication_postEvent(AParent, LCLEvent);
-      end;
-    end;
-  end;
-
   case QEvent_type(Event) of
     QEventShortcutOverride: // issue #22827
     begin
@@ -1283,21 +1155,6 @@ begin
   System.EnterCriticalsection(CriticalSection);
   Result := SavedHandlesList.HasId(TObject(AHandle));
   System.LeaveCriticalsection(CriticalSection);
-end;
-
-procedure TQtWidgetSet.RegisterSysTrayIcon(AHandle: TObject);
-begin
-  SysTrayIconsList.Add(AHandle);
-end;
-
-procedure TQtWidgetSet.UnRegisterSysTrayIcon(AHandle: TObject);
-begin
-  SysTrayIconsList.Remove(AHandle);
-end;
-
-function TQtWidgetSet.IsValidSysTrayIcon(AHandle: HWND): Boolean;
-begin
-  Result := SysTrayIconsList.IndexOf(TObject(AHandle)) >= 0;
 end;
 
 {$IFDEF HASX11}

@@ -118,8 +118,10 @@ end;"/>
       <Other>
         <CompilerMessages>
           <IgnoredMessages idx5044="True"/>
+          <UseMsgFile Value="True"/>
         </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
+        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Lazarus Component Library. Visual components with great Delphi VCL compatibility, but running natively on many platforms.
@@ -127,7 +129,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="3"/>
-    <Files Count="436">
+    <Files Count="435">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2160,11 +2162,6 @@ end;"/>
         <Filename Value="cocoa/mackeycodes.inc"/>
         <Type Value="Include"/>
       </Item435>
-      <Item436>
-        <Filename Value="qt/qtsystemtrayicon.pas"/>
-        <AddToUsesPkgSection Value="False"/>
-        <UnitName Value="qtsystemtrayicon"/>
-      </Item436>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
