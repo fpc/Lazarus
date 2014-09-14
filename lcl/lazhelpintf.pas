@@ -271,7 +271,7 @@ type
   
   
   { THelpDBIMessage
-    Help registration item for a message (e.g. a fpc warning).
+    Help registration item for a message (e.g. an FPC warning).
     Used by the IDE to search for help for one message (typically a line).
     For example a line like
       "/usr/share/lazarus/components/synedit/syneditkeycmds.pp(532,10) Warning: Function result does not seem to be set"
