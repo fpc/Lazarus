@@ -557,8 +557,6 @@ var
   AParent: QWidgetH;
   R: TRect;
   AQtPoint: TQtPoint;
-  ALCLSysTrayIconEvent: QLCLMessageEventH;
-  AName: WideString;
 
   function IsAnyWindowActive: Boolean;
   begin
@@ -650,6 +648,9 @@ begin
 
   // find QSystemTrayIcon
   if Assigned(SysTrayIconsList) and (SysTrayIconsList.Count > 0) and
+    ((QEvent_type(Event) = LCLQt_RegisterSystemTrayIcon) or
+    (QEvent_type(Event) = QEventPaint) or
+    (QEvent_type(Event) = QEventEnter)) and
     QObject_isWidgetType(Sender) and (QObject_parent(Sender) = nil) and
     QWidget_isWindow(QWidgetH(Sender)) and QWidget_isVisible(QWidgetH(Sender)) and
     (QWidget_focusPolicy(QWidgetH(Sender)) = QtNoFocus) then
@@ -678,8 +679,8 @@ begin
       if ((QEvent_type(Event) = QEventPaint) and (AQtPoint.x > 0) and (AQtPoint.y > 0)) or
         (QEvent_type(Event) = QEventEnter) then
       begin
-        ALCLSysTrayIconEvent := QLCLMessageEvent_create(LCLQt_RegisterSystemTrayIcon, 0, 0, 0, 0);
-        QCoreApplication_postEvent(AParent, ALCLSysTrayIconEvent);
+        LCLEvent := QLCLMessageEvent_create(LCLQt_RegisterSystemTrayIcon, 0, 0, 0, 0);
+        QCoreApplication_postEvent(AParent, LCLEvent);
       end;
     end;
   end;
