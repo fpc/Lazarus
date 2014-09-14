@@ -7,13 +7,14 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, Buttons, ClipBrd, LCLType, LCLProc, SynEdit, SynHighlighterPo,
-  pocheckerconsts;
+  PoFamilies, GraphStat, PoCheckerConsts;
 
 type
 
   { TResultDlgForm }
 
   TResultDlgForm = class(TForm)
+    GraphStatBtn: TBitBtn;
     CopyBtn: TBitBtn;
     SaveBtn: TBitBtn;
     CloseBtn: TBitBtn;
@@ -27,12 +28,15 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
+    procedure GraphStatBtnClick(Sender: TObject);
     procedure SaveBtnClick(Sender: TObject);
   private
     PoHL: TSynPoSyn;
+    FPoFamilyStats: TPoFamilyStats;
     procedure SaveToFile;
   public
     property Log: TStringList read FLog write FLog;
+    property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
   end; 
 
 implementation
@@ -51,6 +55,7 @@ begin
   LogMemo.Highlighter := PoHL;
   SaveBtn.Caption := sSaveCaption;
   CopyBtn.Caption := sCopyCaption;
+  GraphStatBtn.Caption := sShowStatGraph;
 end;
 
 procedure TResultDlgForm.FormClose(Sender: TObject;
@@ -84,6 +89,13 @@ end;
 procedure TResultDlgForm.FormShow(Sender: TObject);
 begin
   LogMemo.Lines.Assign(FLog);
+  GraphStatBtn.Visible := (PoFamilyStats <> nil) and (PoFamilyStats.Count > 0);
+end;
+
+procedure TResultDlgForm.GraphStatBtnClick(Sender: TObject);
+begin
+  GraphStatForm.PoFamilyStats := Self.PoFamilyStats;
+  GraphStatForm.ShowModal;
 end;
 
 procedure TResultDlgForm.SaveBtnClick(Sender: TObject);
@@ -105,7 +117,7 @@ begin
     try
       LogMemo.Lines.SaveToFile(SaveDialog.FileName);
     except
-      MessageDlg('GPoCheck',Format(sSaveError,[SaveDialog.FileName]), mtError, [mbOk], 0);
+      MessageDlg('Po-checker',Format(sSaveError,[SaveDialog.FileName]), mtError, [mbOk], 0);
     end;
   end;
 end;

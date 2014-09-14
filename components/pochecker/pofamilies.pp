@@ -103,15 +103,19 @@ Type
     property NrTranslated: Integer read FNrTranslated;
     property NrUnTranslated: Integer read FNrUnTranslated;
     property NrFuzzy: Integer read FNrFuzzy;
-    function PercTranslated: Double;
-    function PercUnTranslated: Double;
-    function PercFuzzy: Double;
+    function PercTranslated: Double; inline;
+    function PercUnTranslated: Double; inline;
+    function PercFuzzy: Double; inline;
+    function FracTranslated: Double;
+    function FracUnTranslated: Double;
+    function FracFuzzy: Double;
   end;
 
   TPoFamilyStats = class
   private
     FList: TFPObjectList;
     function GetCount: Integer;
+    function GetItems(Index: Integer): TStat;
   public
     procedure Clear;
     procedure Add(AName: String; ANrTotal, ANrTranslated, ANrUnTranslated, ANrFuzzy: Integer);
@@ -119,6 +123,7 @@ Type
     destructor Destroy; override;
     procedure AddStatisticsToLog(ALog: TStrings);
 
+    property Items[Index: Integer]: TStat read GetItems;
     property Count: Integer read GetCount;
   end;
 
@@ -325,17 +330,32 @@ end;
 
 function TStat.PercTranslated: Double;
 begin
-  Result := 100 * (FNrTranslated / FNrTotal);
+  Result := 100 * FracTranslated;
 end;
 
 function TStat.PercUnTranslated: Double;
 begin
-  Result := 100 * (FNrUnTranslated / FNrTotal);
+  Result := 100 * FracUnTranslated;
 end;
 
 function TStat.PercFuzzy: Double;
 begin
-  Result := 100 * (FNrFuzzy / FNrTotal);
+  Result := 100 * FracFuzzy;
+end;
+
+function TStat.FracTranslated: Double;
+begin
+  Result := (FNrTranslated / FNrTotal);
+end;
+
+function TStat.FracUnTranslated: Double;
+begin
+  Result := (FNrUnTranslated / FNrTotal);
+end;
+
+function TStat.FracFuzzy: Double;
+begin
+  Result := (FNrFuzzy / FNrTotal);
 end;
 
 { TPoFamilyStats }
@@ -343,6 +363,11 @@ end;
 function TPoFamilyStats.GetCount: Integer;
 begin
   Result := FList.Count;
+end;
+
+function TPoFamilyStats.GetItems(Index: Integer): TStat;
+begin
+  Result := TStat(FList.Items[Index]);
 end;
 
 procedure TPoFamilyStats.Clear;

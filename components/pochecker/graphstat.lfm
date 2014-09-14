@@ -1,0 +1,24 @@
+object GraphStatForm: TGraphStatForm
+  Left = 652
+  Height = 544
+  Top = 116
+  Width = 636
+  HorzScrollBar.Page = 602
+  HorzScrollBar.Range = 4000
+  HorzScrollBar.Visible = False
+  VertScrollBar.Page = 510
+  VertScrollBar.Range = 4000
+  BorderStyle = bsDialog
+  Caption = 'Graphical summary'
+  ClientHeight = 544
+  ClientWidth = 619
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '1.3'
+  object Img: TImage
+    Left = 0
+    Height = 4000
+    Top = 0
+    Width = 4000
+  end
+end

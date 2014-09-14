@@ -13,7 +13,7 @@ object ResultDlgForm: TResultDlgForm
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.3'
   object Panel1: TPanel
     Left = 0
     Height = 50
@@ -27,10 +27,10 @@ object ResultDlgForm: TResultDlgForm
     object CloseBtn: TBitBtn
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 643
+      Left = 657
       Height = 26
       Top = 12
-      Width = 89
+      Width = 75
       Anchors = [akRight]
       AutoSize = True
       BorderSpacing.Right = 10
@@ -41,10 +41,10 @@ object ResultDlgForm: TResultDlgForm
     end
     object SaveBtn: TBitBtn
       AnchorSideRight.Control = CloseBtn
-      Left = 534
+      Left = 544
       Height = 26
       Top = 12
-      Width = 99
+      Width = 103
       Anchors = [akRight]
       AutoSize = True
       BorderSpacing.Around = 10
@@ -90,10 +90,10 @@ object ResultDlgForm: TResultDlgForm
     end
     object CopyBtn: TBitBtn
       AnchorSideRight.Control = SaveBtn
-      Left = 395
+      Left = 393
       Height = 26
       Top = 12
-      Width = 129
+      Width = 141
       Anchors = [akRight]
       AutoSize = True
       BorderSpacing.Around = 10
@@ -136,6 +136,52 @@ object ResultDlgForm: TResultDlgForm
       }
       OnClick = CopyBtnClick
       TabOrder = 0
+    end
+    object GraphStatBtn: TBitBtn
+      Left = 224
+      Height = 26
+      Top = 12
+      Width = 155
+      Anchors = [akRight]
+      Caption = 'Show statistics graph'
+      Glyph.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF002E28EE0C2821EB81221BEAC91D15E8FF1911E72DFFFFFF00FFFF
+        FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00403BF2453833F1DE5856EBFF6C6DE7FF332DE9FF1F17E82D984B20D29145
+        1DC98B411981853D160CFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF005452
+        F6546262F3FF7D7FEEFF9499EBFF8D91E9FF3B37ECFF261FEB2DA15127D2D68E
+        62FFB86643FF8D421ADE863D1748FFFFFF00FFFFFF00FFFFFF00696AFA155F5F
+        F8F39599F2FFA5AAEEFF7B81E6FF979AEBFF4440EFFF2E28EE2DA95A2DD2DB99
+        70FFE6A47FFFCB8057FFA65531FF883E1854FFFFFF00FFFFFF007476FB116B6C
+        FA996262F9F98485F4FFA3A8EFFFA0A5EDFF4F4CF1FF3733F12DB36234D2DEA1
+        79FFDE895BFFE6A67FFFD0875CFF90451CF38A401915FFFFFF00449A4C733D91
+        44666275D31B6566F98D5C5CF8F37C7EF3FF5958F4FF423EF22DBA6C3BD2E1A8
+        81FFE09264FFD9794CFFE7A884FFBE704AFF91451D84FFFFFF004DA556CF90BF
+        93FF3F9346EA388A3F725471B51D5F5FF87B5655F7ED4E4BF52DC37544D2E4B0
+        8BFFE39C6DFFDD8554FFE29667FFDA976DFF9A4C22CFFFFFFF0056AF60F0CAE8
+        C8FFAFD9ABFF92BF94FF3A8D40ED3482397E8171B814A4759118CB804BD2E7B7
+        93FFE7A677FFE0905DFFDE8E5CFFE6AD88FFA35328F3FFFFFF0060B86BF9B6E0
+        B1FF7BCC6FFF92D289FFADD9A9FF89B88BFF35843A9DD7915B56D18954F6EFC8
+        A9FFE6A673FFE29B67FFE29866FFE7B38FFFAB5C2EF0FFFFFF0068C175CFBADF
+        B8FF7ACC6DFF66C659FF72C866FFA8DAA3FF68A86DFF37863D3CD8925DC3E6B5
+        8EFFF0CCACFFE5A671FFE9B184FFE3AF88FFB46435CFFFFFFF0073C87F84B3DA
+        B5FFA2D89AFF6DCA5FFF66C658FF80CC75FFA3CEA3FF3F9346CFD4996232D993
+        5EFCF2D1B2FFEBB98DFFF0C9AAFFD89C70FFBC6D3D84FFFFFF007CCF891274CA
+        82F3BEE1BEFF94D489FF6ECA62FF6EC960FF9ED697FF93C196FF41964769DE9C
+        6696E7B48EFFF3D3B5FFE9BB98FFCB804BF3C5774512FFFFFF00FFFFFF007CD0
+        8A51A0D5A8FFBAE0BBFFA7DAA0FF7DCE70FF7FCD73FFB0D9ADFF4AA152ED9B9D
+        5B23DF9E68EDEBC29EFFDDA273FFD1895451FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF007ED18C3F78CC85DEB4DCB7FFBCE0BAFFB9E1B5FFCEEACBFFA4CEA6FF4BA3
+        5496E3A46F69DF9F69DEDC99633FFFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+        FF00FFFFFF007FD28E0C79CE877E73C87FC66AC277FC63BC6FFC5BB567C655AD
+        5E7D8CA76103E4A6710AFFFFFF00FFFFFF00FFFFFF00FFFFFF00
+      }
+      OnClick = GraphStatBtnClick
+      TabOrder = 3
     end
   end
   inline LogMemo: TSynEdit
@@ -656,6 +702,7 @@ object ResultDlgForm: TResultDlgForm
         ShiftMask = [ssShift, ssAlt, ssCtrl]
         Command = emcMouseLink
       end>
+    MouseTextActions = <>
     MouseSelActions = <    
       item
         ClickDir = cdDown
@@ -667,23 +714,38 @@ object ResultDlgForm: TResultDlgForm
     VisibleSpecialChars = [vscSpace, vscTabAtLast]
     ReadOnly = True
     ScrollBars = ssAutoBoth
+    SelectedColor.FrameEdges = sfeAround
+    SelectedColor.BackPriority = 50
+    SelectedColor.ForePriority = 50
+    SelectedColor.FramePriority = 50
+    SelectedColor.BoldPriority = 50
+    SelectedColor.ItalicPriority = 50
+    SelectedColor.UnderlinePriority = 50
+    SelectedColor.StrikeOutPriority = 50
+    IncrementColor.FrameEdges = sfeAround
+    HighlightAllColor.FrameEdges = sfeAround
     BracketHighlightStyle = sbhsBoth
     BracketMatchColor.Background = clNone
     BracketMatchColor.Foreground = clNone
+    BracketMatchColor.FrameEdges = sfeAround
     BracketMatchColor.Style = [fsBold]
     FoldedCodeColor.Background = clNone
     FoldedCodeColor.Foreground = clGray
     FoldedCodeColor.FrameColor = clGray
+    FoldedCodeColor.FrameEdges = sfeAround
     MouseLinkColor.Background = clNone
     MouseLinkColor.Foreground = clBlue
+    MouseLinkColor.FrameEdges = sfeAround
     LineHighlightColor.Background = clNone
     LineHighlightColor.Foreground = clNone
+    LineHighlightColor.FrameEdges = sfeAround
     inline SynLeftGutterPartList1: TSynGutterPartList
       object SynGutterLineNumber1: TSynGutterLineNumber
         Width = 17
         MouseActions = <>
         MarkupInfo.Background = clBtnFace
         MarkupInfo.Foreground = clNone
+        MarkupInfo.FrameEdges = sfeAround
         DigitCount = 2
         ShowOnlyLineNumbersMultiplesOf = 1
         ZeroStart = False

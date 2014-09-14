@@ -69,7 +69,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="6">
+    <Units Count="7">
       <Unit0>
         <Filename Value="pochecker.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -85,6 +85,7 @@
         <ComponentName Value="ResultDlgForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ResultDlg"/>
       </Unit2>
       <Unit3>
         <Filename Value="..\simplepofiles.pp"/>
@@ -104,6 +105,14 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="pocheckermain"/>
       </Unit5>
+      <Unit6>
+        <Filename Value="..\graphstat.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="GraphStatForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="GraphStat"/>
+      </Unit6>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

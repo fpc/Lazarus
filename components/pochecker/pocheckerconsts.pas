@@ -31,6 +31,10 @@ resourcestring
   sSaveCaption = 'Save to file';
   sResults = 'Results';
   sCopyCaption = 'Copy to clipboard';
+  sShowStatGraph = 'Show statistics graph';
+
+  //Graphical summary form
+  sGrapStatFormCaption = 'Graphical summary';
 
   //PoFamiles
   sOriginal = 'Original';

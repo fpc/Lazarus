@@ -373,6 +373,10 @@ begin
       try
         ResultDlg.Log.Assign(SL);
         FreeAndNil(SL);                 //No need to keep 2 copies of this data
+        if (pttCheckStatistics in TestTypes) then
+          ResultDlg.PoFamilyStats := PoFamily.PoFamilyStats
+        else
+          ResultDlg.PoFamilyStats := nil;
         ResultDlg.ShowModal;
       finally
         ResultDlg.Free;
