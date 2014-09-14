@@ -2812,6 +2812,7 @@ begin
 end;
 
 procedure TCustomSynEdit.UTF8KeyPress(var Key: TUTF8Char);
+var OnKeyPressFired : boolean = false;
 begin
   if Key='' then exit;
 
@@ -2826,14 +2827,16 @@ begin
     if Assigned(OnUTF8KeyPress) then OnUTF8KeyPress(Self, Key);
     // The key will be handled in UTFKeyPress always and KeyPress won't be called
     // so we we fire the OnKeyPress here
-    if (ord(key[1])< %11000000) and (key[1]<>#0) and Assigned(OnKeyPress) then
+    if (ord(key[1])< %11000000) and (key[1]<>#0) and Assigned(OnKeyPress) then begin
       OnKeyPress(Self, Key[1]);
+      OnKeyPressFired:= true;//used to prevent from double firing issue #0026444
+    end;
     {$IFDEF VerboseKeys}
     DebugLn('TCustomSynEdit.UTF8KeyPress ',DbgSName(Self),' Key="',DbgStr(Key),'" UseUTF8=',dbgs(UseUTF8));
     {$ENDIF}
     CommandProcessor(ecChar, Key, nil);
     // Check if ecChar has handled the Key; Todo: move the condition, in one common place
-    if not ReadOnly and ((Key = #13) or (Key >= #32)) and (Key <> #127) then
+    if (not ReadOnly or OnKeyPressFired) and ((Key = #13) or (Key >= #32)) and (Key <> #127) then
       Key:='';
   end else begin
     // don't ignore further keys
