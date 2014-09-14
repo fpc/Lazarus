@@ -129,7 +129,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="3"/>
-    <Files Count="435">
+    <Files Count="436">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2162,6 +2162,11 @@ end;"/>
         <Filename Value="cocoa/mackeycodes.inc"/>
         <Type Value="Include"/>
       </Item435>
+      <Item436>
+        <Filename Value="qt/qtsystemtrayicon.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtsystemtrayicon"/>
+      </Item436>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
