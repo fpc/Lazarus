@@ -65,8 +65,7 @@ uses
     TurboPowerIPro, TurboPowerIProDsgn,
     jcfidelazarus, chmhelppkg,
     FPCUnitTestRunner, FPCUnitIDE, ProjTemplates, TAChartLazarusPkg,
-    TodoListLaz, EditorToolbar,
-    {DateTimeCtrls, Error: Recompiling DateTimePicker, checksum changed for Controls, probably the implementation uses of this package confuses fpc }
+    TodoListLaz, EditorToolbar, DateTimeCtrls,
     SQLDBLaz, DBFLaz,
     pascalscript, EditorMacroScript,
   {$ENDIF}
