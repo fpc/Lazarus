@@ -16,7 +16,6 @@ begin
   RequireDerivedFormResource := True;
   Application.Initialize;
   Application.CreateForm(TPoCheckerForm, PoCheckerForm);
-  Application.CreateForm(TGraphStatForm, GraphStatForm);
   Application.Run;
 end.
 
