@@ -1535,15 +1535,6 @@ var
   PrecMask: QWord;
   EightBytes: QWord;
 begin
-  if Prec=16
-  then begin
-    // fast update
-    P:=@(TheData[Position.Byte]);
-    inc(P,6-Shift shr 3);
-    PWORD(P)^:=Bits;
-    Exit;
-  end;
-
   P:=@(TheData[Position.Byte]);
   PrecMask:=(Qword(1) shl Prec)-1;
   Bits:=Bits shr (16-Prec);
