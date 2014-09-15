@@ -11,8 +11,8 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   LCLVersion = '1.3'
   object StatusBar: TStatusBar
     Left = 0
-    Height = 22
-    Top = 647
+    Height = 23
+    Top = 646
     Width = 300
     Panels = <    
       item
@@ -24,11 +24,11 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   end
   object AvailPersistentComboBox: TComboBox
     Left = 0
-    Height = 25
+    Height = 23
     Top = 0
     Width = 300
     Align = alTop
-    ItemHeight = 0
+    ItemHeight = 15
     OnCloseUp = AvailComboBoxCloseUp
     Style = csDropDownList
     TabOrder = 0
@@ -36,7 +36,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
   object ComponentPanel: TPanel
     Left = 0
     Height = 184
-    Top = 25
+    Top = 23
     Width = 300
     Align = alTop
     ClientHeight = 184
@@ -47,10 +47,10 @@ object ObjectInspectorDlg: TObjectInspectorDlg
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FilterLabel
       AnchorSideTop.Side = asrCenter
-      Left = 87
-      Height = 25
-      Top = 2
-      Width = 184
+      Left = 77
+      Height = 23
+      Top = 3
+      Width = 194
       UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 1
@@ -63,7 +63,7 @@ object ObjectInspectorDlg: TObjectInspectorDlg
       Left = 3
       Height = 15
       Top = 7
-      Width = 79
+      Width = 69
       Caption = 'Co&mponents'
       FocusControl = CompFilterEdit
       ParentColor = False

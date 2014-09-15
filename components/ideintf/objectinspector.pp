@@ -2631,22 +2631,8 @@ var
   lclPlatform: TLCLPlatform;
   X, Y: Integer;
   NameBgColor: TColor;
-
-  procedure DrawTreeIcon(X, Y: Integer; Minus: Boolean);
-  const
-    PlusMinusDetail: array[Boolean] of TThemedTreeview =
-    (
-      ttGlyphClosed,
-      ttGlyphOpened
-    );
-  var
-    Details: TThemedElementDetails;
-    Size: TSize;
-  begin
-    Details := ThemeServices.GetElementDetails(PlusMinusDetail[Minus]);
-    Size := ThemeServices.GetDetailSize(Details);
-    ThemeServices.DrawElement(Canvas.Handle, Details, Rect(X, Y, X + Size.cx, Y + Size.cy), nil);
-  end;
+  Details: TThemedElementDetails;
+  Size: TSize;
 
 // PaintRow
 begin
@@ -2679,7 +2665,6 @@ begin
   end;
 
   IconX:=GetTreeIconX(ARow);
-  IconY:=((NameRect.Bottom-NameRect.Top-9) div 2)+NameRect.Top;
   NameIconRect := NameRect;
   NameIconRect.Right := IconX + Indent;
   NameTextRect := NameRect;
@@ -2720,8 +2705,13 @@ begin
     end;
 
     // draw icon
+    if CurRow.Expanded then
+      Details := ThemeServices.GetElementDetails(ttGlyphOpened)
+    else Details := ThemeServices.GetElementDetails(ttGlyphClosed);
+    Size := ThemeServices.GetDetailSize(Details);
+    IconY:=((NameRect.Bottom - NameRect.Top - Size.cy) div 2) + NameRect.Top;
     if CanExpandRow(CurRow) then
-      DrawTreeIcon(IconX, IconY, CurRow.Expanded)
+      ThemeServices.DrawElement(Canvas.Handle, Details, Rect(IconX, IconY, IconX + Size.cx, IconY + Size.cy), nil)
     else if (ARow = FItemIndex) then
       Canvas.Draw(IconX, IconY, FActiveRowBmp);
 
