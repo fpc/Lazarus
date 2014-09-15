@@ -68,7 +68,8 @@ msgstr "[Zeile %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
 msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
-msgstr "Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
+msgstr ""
+"Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -98,7 +99,7 @@ msgstr "Alle übersetzten po-Dateien finden"
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
-msgstr ""
+msgstr "Graphischer Überblick"
 
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
@@ -157,7 +158,7 @@ msgstr "%d Fehler gefunden."
 
 #: pocheckerconsts.snrofitemsmismatch
 msgid "Mismatch in number of items for master and child"
-msgstr ""
+msgstr "Ungleiche Anzahl von Einträgen für Original und Übersetzung"
 
 #: pocheckerconsts.snrofitemsmismatchd
 msgid "%s: %d items"
@@ -225,7 +226,7 @@ msgstr "Test-Typen"
 
 #: pocheckerconsts.sshowstatgraph
 msgid "Show statistics graph"
-msgstr ""
+msgstr "Zeige Statistik-Graph"
 
 #: pocheckerconsts.stotalerrors
 #| msgid "Total errors / warnings found: %d"
@@ -248,4 +249,3 @@ msgstr "Übersetzungsstatistikpro Sprache:"
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
 msgstr "Alle abwählen"
-
