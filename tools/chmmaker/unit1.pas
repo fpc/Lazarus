@@ -281,9 +281,12 @@ begin
       Exit;
   end;
   LHelpConn := TLHelpConnection.Create;
-  LHelpConn.StartHelpServer('chmmaker', LHelpName);
-  LHelpConn.OpenFile(ChmFileNameEdit.FileName);
-  LHelpConn.Free;
+  try
+    LHelpConn.StartHelpServer('chmmaker', LHelpName);
+    LHelpConn.OpenFile(ChmFileNameEdit.FileName);
+  finally
+    LHelpConn.Free;
+  end;
 end;
 
 procedure TCHMForm.FileListBoxDrawItem(Control: TWinControl; Index: Integer;
