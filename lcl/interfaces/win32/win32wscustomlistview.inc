@@ -780,6 +780,8 @@ begin
   Params.WindowInfo^.ParentMsgHandler := @ListViewParentMsgHandler;
   Params.WindowInfo^.needParentPaint := false;
   Result := Params.Window;
+  if TCustomListView(AWinControl).checkboxes
+    then UpdateExStyle(result,lvs_ex_SubitemImages or lvs_Ex_Checkboxes,lvs_ex_SubitemImages or lvs_Ex_Checkboxes) else
   UpdateExStyle(Result, LVS_EX_SUBITEMIMAGES, LVS_EX_SUBITEMIMAGES);
 end;
 
@@ -1196,6 +1198,8 @@ begin
       else UpdateExStyle(ALV.Handle, LV_STYLES[AProp].Style, 0);
     end;
   end;
+  if(aProp=lvpCheckboxes)and aIsSet
+    then ReCreateWnd(ALV)
 end;
 
 class procedure TWin32WSCustomListView.SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties);
