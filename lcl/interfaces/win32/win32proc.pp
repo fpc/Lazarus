@@ -710,8 +710,9 @@ begin
     // -> Adjust the position
     // add the upper frame with the caption
     DC := Windows.GetDC(Handle);
+    SelectObject(DC, TheWinControl.Font.Handle);
     Windows.GetTextMetrics(DC, TM);
-    ORect.Top := TM.TMHeight;
+    ORect.Top := TM.TMHeight + 3;
     Windows.ReleaseDC(Handle, DC);
     // add the left, right and bottom frame borders
     ORect.Left := 2;
