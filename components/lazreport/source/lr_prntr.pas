@@ -645,14 +645,25 @@ var
   i, aWidth, aHeight, BDeltaW, BDeltaH, BIndex,Cw,Ch: Integer;
   PaperRect: TPaperRect;
   ValidSize: Boolean;
+  CurDx, CurDy: Integer;
+  {$ifdef DbgPrinter_detail}
+  BestDw, BestDh: Integer;
+
+  function dbgsp: string;
+  begin
+    if i>=0 then
+      result := format(' askW=%d askH=%d rspW=%d rspH=%d',
+        [aWidth, aHeight, PPDPaperInfo[i].X, PPDPaperInfo[i].Y]);
+  end;
+  {$endif}
 begin
   result := -1;
 
   ValidSize := true;
   try
     PaperRect := prn.Printer.PaperSize.PaperRectOf[aPaperName];
-    aWidth := PaperRect.PhysicalRect.Right-PaperRect.PhysicalRect.Left;
-    aHeight := PaperRect.PhysicalRect.Bottom-PaperRect.PhysicalRect.Top;
+    aWidth := round((PaperRect.PhysicalRect.Right-PaperRect.PhysicalRect.Left) * 72 / prn.Printer.XDPI);
+    aHeight := round((PaperRect.PhysicalRect.Bottom-PaperRect.PhysicalRect.Top) * 72 / prn.Printer.YDPI);
   except
     ValidSize := false;
   end;
@@ -660,17 +671,28 @@ begin
   BIndex := -1;
   BDeltaW := 2013;
   BDeltaH := 2013;
+  {$ifdef DbgPrinter_detail}
+  BestDw := BDeltaW;
+  BestDh := BDeltaH;
+  {$endif}
 
-  // name and size match
+  // name
   for i:=0 to PAPERCOUNT-1 do
-  with PPDPaperInfo[i] do begin
-    if CompareText(aPaperName, Name)=0 then
+  with PPDPaperInfo[i] do
+  begin
+    if CompareText(Name, aPaperName)=0 then
     begin
-      // perfect name match, no need to look anymore
-      {$ifdef DbgPrinter_detail}DebugLn('i=%d Perfect Name Match %s',[i, Name]);{$Endif}
-      BIndex := i;
-      Break;
-    end else
+      // found
+      {$ifdef DbgPrinter_detail}DebugLn('i=%d Perfect Name Match %s %s',[i, Name, dbgsp]);{$Endif}
+      result := Typ;
+      exit;
+    end;
+  end;
+
+  // size match
+  for i:=0 to PAPERCOUNT-1 do
+  with PPDPaperInfo[i] do
+  begin
     if ValidSize and (X>=aWidth) and (Y>=aHeight) then
     begin
       // only interested on papers that are same or bigger size than match paper
@@ -679,24 +701,31 @@ begin
       if (Cw=0) and (Ch=0) then
       begin
         // no need to look more, perfect match
-        {$ifdef DbgPrinter_detail}DebugLn('i=%d Perfect Size Match w=%d h=%d "%s"->%s',[i,X,Y,aPaperName,Name]);{$Endif}
+        {$ifdef DbgPrinter_detail}DebugLn('i=%d Perfect Size Match w=%d h=%d "%s"->%s %s',[i,X,Y,aPaperName,Name, dbgsp]);{$Endif}
         BIndex := i;
         break;
       end else
-      if (Cw<6) and (Ch<6) and (Cw<=BDeltaW) and (Cw<=BDeltaH) then
       begin
-        {$ifdef DbgPrinter_detail}DebugLn('i=%d Close Size cw=%d ch=%d  "%s"->%s',[i,cw,ch,aPaperName,Name]);{$endif}
-        // we are interested only on differences with searched paper of
-        // about 2 mm or less (1 mm is aprox 3 points)
-        BIndex := i;
-        BDeltaW := Cw;
-        BDeltaH := CH;
-      end
-      {$ifdef DbgPrinter_detail}
-      //else
-      //  DebugLn('i=%d Missed cw=%d ch=%d %s',[i, cw, ch, Name])
-      {$endif}
-      ;
+        {$ifdef DbgPrinter_detail}
+        if (Cw<BestDw) and (Ch<BestDh) then begin
+          BestDw := Cw;
+          BestDh := Ch;
+        end;
+        {$endif}
+        if (Cw<6) and (Ch<6) and (Cw<=BDeltaW) and (Cw<=BDeltaH) then
+        begin
+          {$ifdef DbgPrinter_detail}DebugLn('i=%d Close Size cw=%d ch=%d  "%s"->%s %s',[i,cw,ch,aPaperName,Name, dbgsp]);{$endif}
+          // we are interested only on differences with searched paper of
+          // about 2 mm or less (1 mm is aprox 3 points)
+          BIndex := i;
+          BDeltaW := Cw;
+          BDeltaH := CH;
+        end
+        {$ifdef DbgPrinter_detail}
+        //else
+        //  DebugLn('i=%d Missed cw=%d ch=%d %s',[i, cw, ch, Name])
+        {$endif}
+      end;
     end;
   end;
 
@@ -706,7 +735,7 @@ begin
   end
   {$ifdef DbgPrinter_detail}
   else
-    DebugLn(['Matching Paper ',aPaperName,' failed'])
+    DebugLn('Matching Paper %s failed BestDw=%d BestDh=%d',[aPaperName, BestDw, BestDh])
   {$endif}
   ;
 end;
