@@ -116,8 +116,13 @@ type
     property Color default clTAColor;
   end;
 
+  TOHLCMode = (mOHLC, mCandleStick);
+
   TOpenHighLowCloseSeries = class(TBasicPointSeries)
   private
+    FCandlestickDownBrush: TBrush;
+    FCandleStickLinePen: TPen;
+    FCandlestickUpBrush: TBrush;
     FDownLinePen: TOHLCDownPen;
     FLinePen: TPen;
     FTickWidth: Cardinal;
@@ -125,8 +130,13 @@ type
     FYIndexHigh: Cardinal;
     FYIndexLow: Cardinal;
     FYIndexOpen: Cardinal;
+    FMode: TOHLCMode;
+    procedure SetCandlestickLinePen(AValue: TPen);
+    procedure SetCandlestickDownBrush(AValue: TBrush);
+    procedure SetCandlestickUpBrush(AValue: TBrush);
     procedure SetDownLinePen(AValue: TOHLCDownPen);
     procedure SetLinePen(AValue: TPen);
+    procedure SetOHLCMode(AValue: TOHLCMode);
     procedure SetTickWidth(AValue: Cardinal);
     procedure SetYIndexClose(AValue: Cardinal);
     procedure SetYIndexHigh(AValue: Cardinal);
@@ -146,8 +156,15 @@ type
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
+    property CandlestickDownBrush: TBrush
+      read FCandlestickDownBrush write SetCandlestickDownBrush;
+    property CandlestickLinePen: TPen
+      read FCandlestickLinePen write FCandleStickLinePen;
+    property CandlestickUpBrush: TBrush
+      read FCandlestickUpBrush write SetCandlestickUpBrush;
     property DownLinePen: TOHLCDownPen read FDownLinePen write SetDownLinePen;
     property LinePen: TPen read FLinePen write SetLinePen;
+    property Mode: TOHLCMode read FMode write SetOHLCMode;
     property TickWidth: Cardinal
       read FTickWidth write SetTickWidth default DEF_OHLC_TICK_WIDTH;
     property YIndexClose: Cardinal
@@ -163,7 +180,12 @@ type
     property AxisIndexY;
     property Source;
   end;
-
+              (*
+  TCandleStickSeries = class(TOpenHighLowCloseSeries)
+  public
+    procedure Draw(ADrawer: IChartDrawer); override;
+  end;
+                *)
 implementation
 
 uses
@@ -578,7 +600,8 @@ function TOpenHighLowCloseSeries.AddXOHLC(
   AX, AOpen, AHigh, ALow, AClose: Double;
   ALabel: String; AColor: TColor): Integer;
 begin
-  Result := ListSource.Add(AX, 0, ALabel, AColor);
+  if ListSource.YCount < 4 then ListSource.YCount := 4;
+  Result := ListSource.Add(AX, NaN, ALabel, AColor);
   with ListSource.Item[Result]^ do begin
     SetY(YIndexOpen, AOpen);
     SetY(YIndexHigh, AHigh);
@@ -591,8 +614,12 @@ procedure TOpenHighLowCloseSeries.Assign(ASource: TPersistent);
 begin
   if ASource is TOpenHighLowCloseSeries then
     with TOpenHighLowCloseSeries(ASource) do begin
-      Self.DownLinePen := FDownLinePen;
-      Self.LinePen := FLinePen;
+      Self.FCandlestickDownBrush := FCandlestickDownBrush;
+      Self.FCandlestickLinePen := FCandlestickLinePen;
+      Self.FCandlestickUpBrush := FCandlestickUpBrush;
+      Self.FDownLinePen := FDownLinePen;
+      Self.FLinePen := FLinePen;
+      Self.FMode := FMode;
       Self.FTickWidth := FTickWidth;
       Self.FYIndexClose := FYIndexClose;
       Self.FYIndexHigh := FYIndexHigh;
@@ -605,11 +632,29 @@ end;
 constructor TOpenHighLowCloseSeries.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FCandlestickDownBrush := TBrush.Create;
+  with FCandlestickDownBrush do begin
+    Color := clRed;
+    OnChange := @StyleChanged;
+  end;
+  FCandlestickLinePen := TPen.Create;
+  with FCandlestickLinePen do begin
+    Color := clBlack;
+    OnChange := @StyleChanged;
+  end;
+  FCandlestickUpBrush := TBrush.Create;
+  with FCandlestickUpBrush do begin
+    Color := clLime;
+    OnChange := @StyleChanged;
+  end;
   FDownLinePen := TOHLCDownPen.Create;
-  FDownLinePen.Color := clTAColor;
-  FDownLinePen.OnChange := @StyleChanged;
+  with FDownLinePen do begin
+    Color := clTAColor;
+    OnChange := @StyleChanged;
+  end;
   FLinePen := TPen.Create;
-  FLinePen.OnChange := @StyleChanged;
+  with FLinePen do
+    OnChange := @StyleChanged;
   FTickWidth := DEF_OHLC_TICK_WIDTH;
   FYIndexClose := DEF_YINDEX_CLOSE;
   FYIndexHigh := DEF_YINDEX_HIGH;
@@ -619,6 +664,9 @@ end;
 
 destructor TOpenHighLowCloseSeries.Destroy;
 begin
+  FreeAndNil(FCandlestickDownBrush);
+  FreeAndNil(FCandlestickLinePen);
+  FreeAndNil(FCandlestickUpBrush);
   FreeAndNil(FDownLinePen);
   FreeAndNil(FLinePen);
   inherited;
@@ -638,12 +686,38 @@ procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
     ADrawer.Line(MaybeRotate(AX1, AY1), MaybeRotate(AX2, AY2));
   end;
 
+  procedure DoRect(AX1, AY1, AX2, AY2: Double);
+  var
+    r: TRect;
+  begin
+    with ParentChart do begin
+      r.TopLeft := MaybeRotate(AX1, AY1);
+      r.BottomRight := MaybeRotate(AX2, AY2);
+    end;
+    ADrawer.FillRect(r.Left, r.Top, r.Right, r.Bottom);
+    ADrawer.Rectangle(r);
+  end;
+
   function GetGraphPointYIndex(AIndex, AYIndex: Integer): Double;
   begin
     if AYIndex = 0 then
       Result := GetGraphPointY(AIndex)
     else
       Result := AxisToGraphY(Source[AIndex]^.YList[AYIndex - 1]);
+  end;
+
+  procedure DrawOHLC(x, yopen, yhigh, ylow, yclose, tw: Double);
+  begin
+    DoLine(x, yhigh, x, ylow);
+    DoLine(x - tw, yopen, x, yopen);
+    DoLine(x, yclose, x + tw, yclose);
+  end;
+
+  procedure DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw: Double);
+  begin
+    ADrawer.Pen := FCandlestickLinePen;
+    DoLine(x, yhigh, x, ylow);
+    DoRect(x - tw, yopen, x + tw, yclose);
   end;
 
 var
@@ -670,18 +744,23 @@ begin
     yclose := GetGraphPointYIndex(i, YIndexClose);
     tw := GetXRange(x, i) * PERCENT * TickWidth;
 
-    if (DownLinePen.Color = clTAColor) or (yopen <= yclose) then
-      p := LinePen
-    else
+    if (yopen <= yclose) then begin
+      p := LinePen;
+      ADrawer.Brush := FCandleStickUpBrush;
+    end
+    else begin
       p := DownLinePen;
+      ADrawer.Brush := FCandleStickDownBrush;
+    end;
     ADrawer.Pen := p;
     with Source[i]^ do
       if Color <> clTAColor then
         ADrawer.SetPenParams(p.Style, Color);
 
-    DoLine(x, yhigh, x, ylow);
-    DoLine(x - tw, yopen, x, yopen);
-    DoLine(x, yclose, x + tw, yclose);
+    case FMode of
+      mOHLC: DrawOHLC(x, yopen, yhigh, ylow, yclose, tw);
+      mCandleStick: DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw);
+    end;
   end;
 end;
 
@@ -700,6 +779,27 @@ begin
   Result := LinePen.Color;
 end;
 
+procedure TOpenHighLowCloseSeries.SetCandlestickLinePen(AValue: TPen);
+begin
+  if FCandleStickLinePen = AValue then exit;
+  FCandleStickLinePen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TOpenHighLowCloseSeries.SetCandlestickDownBrush(AValue: TBrush);
+begin
+  if FCandlestickDownBrush = AValue then exit;
+  FCandlestickDownBrush.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TOpenHighLowCloseSeries.SetCandlestickUpBrush(AValue: TBrush);
+begin
+  if FCandlestickUpBrush = AValue then exit;
+  FCandlestickUpBrush.Assign(AValue);
+  UpdateParentChart;
+end;
+
 procedure TOpenHighLowCloseSeries.SetDownLinePen(AValue: TOHLCDownPen);
 begin
   if FDownLinePen = AValue then exit;
@@ -711,6 +811,13 @@ procedure TOpenHighLowCloseSeries.SetLinePen(AValue: TPen);
 begin
   if FLinePen = AValue then exit;
   FLinePen.Assign(AValue);
+  UpdateParentChart;
+end;
+
+procedure TOpenHighLowCloseSeries.SetOHLCMode(AValue: TOHLCMode);
+begin
+  if FMode = AValue then exit;
+  FMode := AValue;
   UpdateParentChart;
 end;
 
@@ -749,9 +856,85 @@ begin
   UpdateParentChart;
 end;
 
+          (*
+{ TCandleStickSeries }
+
+procedure TCandleStickChart.Draw(ADrawer: IChartDrawer);
+
+  function MaybeRotate(AX, AY: Double): TPoint;
+  begin
+    if IsRotated then
+      Exchange(AX, AY);
+    Result := ParentChart.GraphToImage(DoublePoint(AX, AY));
+  end;
+
+  procedure DoLine(AX1, AY1, AX2, AY2: Double);
+  begin
+    ADrawer.Line(MaybeRotate(AX1, AY1), MaybeRotate(AX2, AY2));
+  end;
+
+  function GetGraphPointYIndex(AIndex, AYIndex: Integer): Double;
+  begin
+    if AYIndex = 0 then
+      Result := GetGraphPointY(AIndex)
+    else
+      Result := AxisToGraphY(Source[AIndex]^.YList[AYIndex - 1]);
+  end;
+
+  procedure DoRect(AX1, AY1, AX2, AY2: Double);
+  var
+    r: TRect;
+  begin
+    with ParentChart do begin
+      r.TopLeft := MaybeRotate(AX1, AY1);
+      r.BottomRight := MaybeRotate(AX2, AY2);
+    end;
+    ADrawer.FillRect(r.Left, r.Top, r.Right, r.Bottom);
+    ADrawer.Rectangle(r);
+  end;
+
+var
+  maxy: Cardinal;
+  ext2: TDoubleRect;
+  i: Integer;
+  x, tw, yopen, yhigh, ylow, yclose: Double;
+  p: TPen;
+begin
+  maxy := MaxIntValue([YIndexOpen, YIndexHigh, YIndexLow, YIndexClose]);
+  if IsEmpty or (maxy >= Source.YCount) then exit;
+
+  ext2 := ParentChart.CurrentExtent;
+  ExpandRange(ext2.a.X, ext2.b.X, 1.0);
+  ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
+
+  PrepareGraphPoints(ext2, true);
+
+  for i := FLoBound to FUpBound do begin
+    x := GetGraphPointX(i);
+    yopen := GetGraphPointYIndex(i, YIndexOpen);
+    yhigh := GetGraphPointYIndex(i, YIndexHigh);
+    ylow := GetGraphPointYIndex(i, YIndexLow);
+    yclose := GetGraphPointYIndex(i, YIndexClose);
+    tw := GetXRange(x, i) * PERCENT * TickWidth;
+
+    if (DownLinePen.Color = clTAColor) or (yopen <= yclose) then
+      p := LinePen
+    else
+      p := DownLinePen;
+    ADrawer.BrushColor:= P.Color;
+
+    // set border black
+    ADrawer.SetPenParams(p.Style, clBlack);
+    DoLine(x, yhigh, x, ylow);
+    DoRect(x - tw, yopen, x + tw, yclose);
+  end;
+end;
+     *)
+
 initialization
   RegisterSeriesClass(TBubbleSeries, 'Bubble series');
   RegisterSeriesClass(TBoxAndWhiskerSeries, 'Box-and-whiskers series');
   RegisterSeriesClass(TOpenHighLowCloseSeries, 'Open-high-low-close series');
+//  RegisterSeriesClass(TCandleStickSeries, 'Candle stick series');
 
 end.
