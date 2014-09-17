@@ -670,6 +670,15 @@ begin
   Changed;
 end;
 
+procedure TCanvas.ArcTo(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer);
+var
+  r: TRect;
+begin
+  Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY);
+  r:=Rect(ALeft, ATop, ARight, ABottom);
+  MoveTo(RadialPoint(EccentricAngle(Point(EX, EY), r), r));
+end;
+
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
   Params:   ALeft, ATop, ARight, ABottom, sx, sy, ex, ey

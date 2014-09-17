@@ -1150,6 +1150,7 @@ type
     // extra drawing methods (there are more in the ancestor TFPCustomCanvas)
     procedure Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
+    procedure ArcTo(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual; //As Arc(), but updates pen position
     procedure BrushCopy(ADestRect: TRect; ABitmap: TBitmap; ASourceRect: TRect;
                         ATransparentColor: TColor); virtual;
     procedure Chord(x1, y1, x2, y2,
