@@ -64,6 +64,8 @@ type
     ScaleX, ScaleY, FontScale: Double;
     procedure SetLazClipRect(r: TRect);
     procedure DoLineTo(X1,Y1: Integer); override;
+    procedure DoMoveTo(x, y: integer); override;
+
     function CreateCairoHandle: HDC; virtual; abstract;
     procedure DestroyCairoHandle; virtual;
     procedure SetHandle(NewHandle: HDC); override;
@@ -318,6 +320,12 @@ begin
   SetInternalPenPos(Point(X1,Y1));
   StrokeOnly;
   Changed;
+end;
+
+procedure TCairoPrinterCanvas.DoMoveTo(x, y: integer);
+begin
+  // should not call inherited DoMoveTo which would end calling
+  // interface MoveToEx which breaks things for Qt
 end;
 
 procedure TCairoPrinterCanvas.DestroyCairoHandle;
