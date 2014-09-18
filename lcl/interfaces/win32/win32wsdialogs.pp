@@ -89,6 +89,7 @@ type
   TWin32WSSaveDialog = class(TWSSaveDialog)
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
+    class procedure DestroyHandle(const ACommonDialog: TCommonDialog); override;
     class procedure ShowModal(const ACommonDialog: TCommonDialog); override;
   end;
 
@@ -1052,6 +1053,25 @@ begin
     Result := CreateFileDialogHandle(TOpenDialog(ACommonDialog));
 end;
 
+class procedure TWin32WSSaveDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
+{$ifdef UseVistaDialogs}
+var
+  Dialog: IFileDialog;
+{$endif}
+begin
+  if ACommonDialog.Handle <> 0 then
+  {$ifdef UseVistaDialogs}
+    if (WindowsVersion >= wvVista) and ThemeServices.ThemesEnabled then
+    begin
+      Dialog := IFileDialog(ACommonDialog.Handle);
+      Dialog._Release;
+      Dialog := nil;
+    end
+    else
+  {$endif}
+      DestroyFileDialogHandle(ACommonDialog.Handle)
+end;
+
 class procedure TWin32WSSaveDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   State: TApplicationState;
@@ -1257,10 +1277,10 @@ begin
         // Setting root dir
         {$ifdef WindowsUnicodeSupport}
         if UnicodeEnabledOS then
-          SendMessageW(hwnd, BFFM_SETSELECTIONW, ULONG(True), lpData)
+          SendMessageW(hwnd, BFFM_SETSELECTIONW, WPARAM(True), lpData)
         else
         {$endif}
-          SendMessage(hwnd, BFFM_SETSELECTION, ULONG(True), lpData);
+          SendMessage(hwnd, BFFM_SETSELECTION, WPARAM(True), lpData);
     //BFFM_SELCHANGED
     //  : begin
     //    if Assigned(FOnSelectionChange) then .....
