@@ -33,6 +33,7 @@ type
     procedure DoInitOther;
   public
     constructor Create; override;
+    procedure UpdateDescriptions; override;
     procedure DoFunction(FNo: Integer; p1, p2, p3: Variant; var val: Variant);override;
   end;
   
@@ -262,13 +263,16 @@ begin
   Add('VALIDINT');
   Add('WORDCOUNT');
   Add('WORDPOSITION');
+end;
 
-  DoInitStr;
-  DoInitNum;
-  DoInitDate;
-  DoInitSQL;
-  DoInitMath;
-  DoInitOther;
+procedure TAddFunctionLibrary.UpdateDescriptions;
+begin
+ DoInitStr;
+ DoInitNum;
+ DoInitDate;
+ DoInitSQL;
+ DoInitMath;
+ DoInitOther;
 end;
 
 procedure TAddFunctionLibrary.DoFunction(FNo: Integer; p1, p2, p3: Variant;
