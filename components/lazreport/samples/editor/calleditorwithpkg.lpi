@@ -19,9 +19,6 @@
     <BuildModes Count="2">
       <Item1 Name="default" Default="True"/>
       <Item2 Name="For Qt">
-        <MacroValues Count="1">
-          <Macro1 Name="LCLWidgetType" Value="qt"/>
-        </MacroValues>
         <CompilerOptions>
           <Version Value="11"/>
           <Target>
@@ -31,14 +28,7 @@
             <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
             <SrcPath Value="$(LazarusDir)/lcl;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)"/>
           </SearchPaths>
-          <Other>
-            <CompilerMessages>
-              <UseMsgFile Value="True"/>
-            </CompilerMessages>
-            <CompilerPath Value="$(CompPath)"/>
-          </Other>
           <CompileReasons Run="False"/>
-          <LCLWidgetType Value="qt"/>
         </CompilerOptions>
       </Item2>
     </BuildModes>
@@ -54,34 +44,36 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="6">
+    <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="lr_extexp"/>
+        <PackageName Value="lr_add_function"/>
       </Item1>
       <Item2>
-        <PackageName Value="lazreport"/>
-        <MinVersion Minor="9" Release="6" Valid="True"/>
+        <PackageName Value="lr_extexp"/>
       </Item2>
       <Item3>
-        <PackageName Value="Printer4Lazarus"/>
+        <PackageName Value="lazreport"/>
+        <MinVersion Minor="9" Release="6" Valid="True"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="Printer4Lazarus"/>
       </Item4>
       <Item5>
-        <PackageName Value="FCL"/>
-        <MinVersion Major="1" Valid="True"/>
+        <PackageName Value="LCL"/>
       </Item5>
       <Item6>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item6>
+      <Item7>
         <PackageName Value="DBFLaz"/>
         <MinVersion Minor="1" Release="1" Valid="True"/>
-      </Item6>
+      </Item7>
     </RequiredPackages>
     <Units Count="3">
       <Unit0>
         <Filename Value="calleditorwithpkg.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="calleditorwithpkg"/>
       </Unit0>
       <Unit1>
         <Filename Value="maincalleditor.pas"/>
@@ -96,7 +88,6 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmCustomPreview"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="custompreview"/>
       </Unit2>
     </Units>
   </ProjectOptions>
@@ -109,12 +100,6 @@
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       <SrcPath Value="$(LazarusDir)/lcl;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)"/>
     </SearchPaths>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
     <CompileReasons Run="False"/>
   </CompilerOptions>
   <Debugging>
