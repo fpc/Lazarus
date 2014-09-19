@@ -638,12 +638,12 @@ var
         // set context of new duplicate
         if Msg[mctx]='' then
           Msg[mctx] := Identifier;
-        // copy flags to new duplicate
-        if Flags='' then
-          Flags := Item.Flags;
         // if old duplicate was translated and new one is not,
         // provide an initial translation and set a flag to mark it fuzzy
         if (Msg[mstr]='') and (Item.Translation<>'') then begin
+          // copy flags to new duplicate
+          if Flags='' then
+            Flags := Item.Flags;
           Msg[mstr] := Item.Translation;
           // if old item is fuzzy, copy PreviousID too
           if pos('fuzzy', Item.Flags)<>0 then
