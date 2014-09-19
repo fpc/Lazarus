@@ -41,7 +41,8 @@ uses
   Buttons, LCLProc, IpHtml, ComCtrls, ExtCtrls, Menus, LCLType, LCLIntf, StdCtrls,
   BaseContentProvider, FileContentProvider,
   ChmContentProvider
-  {$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF}, lazlogger;
+  {$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF},
+  lazlogger;
 
 type
 
@@ -106,12 +107,13 @@ type
     fServerTimer: TTimer;
     fContext: LongInt; // used once when we are started on the command line with --context
     fConfig: TXMLConfig;
-    FHasShowed: Boolean;
+    fHasShowed: Boolean;
     fHide: boolean; //If yes, start with content hidden. Otherwise start normally
     // Load preferences; separate preferences per coupled server/IDE
     procedure LoadPreferences(AIPCName: String);
     // Saves preferences. Uses existing config loaded by LoadPreferences
     procedure SavePreferences;
+    // Add filename to recent files (MRU) list
     procedure AddRecentFile(AFileName: String);
     procedure ContentTitleChange({%H-}sender: TObject);
     procedure OpenRecentItemClick(Sender: TObject);
@@ -291,7 +293,12 @@ begin
   if fServerName <> '' then begin
     StartComms(fServerName);
   end;
-  RefreshState;
+  // If user wants lhelp to hide, hide entire form.
+  // Detect this choice based on fHide set in ReadCommandLineOptions
+  if fHide then
+    WindowState := wsMinimized
+  else
+    RefreshState;
   SetKeyUp(Self);
 end;
 
@@ -453,7 +460,6 @@ begin
   Stream := TMemoryStream.Create;
   try
     Stream.WriteDWord(Response);
-
     if assigned(fOutputIPC) and fOutputIPC.Active then
       fOutputIPC.SendMessage(mtUnknown, Stream);
   finally
@@ -517,12 +523,16 @@ begin
                       begin
                         MustClose:=true;
                         Res:= ord(srSuccess);
+                        debugln('got rtmisc/mrClose');
                       end;
                       mrShow:
                       begin
                         fHide := false;
-                        PageControl.Visible:=true;
+                        if WindowState = wsMinimized then
+                          WindowState := wsNormal;
+                        RefreshState;
                         Res := ord(srSuccess);
+                        debugln('got rtmisc/mrShow');
                       end;
                       mrVersion:
                       begin
@@ -532,16 +542,25 @@ begin
                           Res := ord(srSuccess)
                         else
                           Res := ord(srError); //version not supported
+                        debugln('got rtmisc/');
                       end
                       else {Unknown}
                         Res := ord(srUnknown);
                     end;
                   end;
     end;
+
+    // This may take some time which may allow receiving end to get ready for
+    // receiving messages
     if (URL<>'') and (Res = Ord(srSuccess)) then
       AddRecentFile(Url);
-    debugln('Going to send TLHelpResponse code: '+inttostr(Res));
-    SendResponse(Res);
+    // Receiving end may not yet be ready (observed with an Intel Core i7),
+    // so perhaps wait a bit?
+    // Unfortunately, the delay time is guesswork=>Sleep(80)?
+    SendResponse(Res); //send response again in case first wasn't picked up
+    // Keep after SendResponse to avoid timing issues (e.g. writing to log file):
+    debugln('Just sent TLHelpResponse code: '+inttostr(Res));
+
     if MustClose then
     begin
       // Wait some time for the response message to go out before shutting down
@@ -597,7 +616,7 @@ begin
     end;
   end;
 
-  // Loop through a second time for the url
+  // Loop through a second time for the URL
   for X := 1 to ParamCount do
     if not IsHandled[X] then begin
       //DoOpenChm(ParamStrUTF8(X));
@@ -769,20 +788,28 @@ begin
   begin
     en := false;
     // Hide content page
-    // todo: even though this code perhaps will hide the content window,
-    // starting laz+pressing f1 will show content while loading all chms
     if Assigned(ActivePage) then
       with TChmContentProvider(ActivePage.ContentProvider) do
       begin
-        ActivePage.Visible:=false;
-        Visible:=false;
-        //todo: are these necessary
+        ActivePage.Visible := false;
+        Visible := false;
         TabsControl.Visible := false;
         Splitter.Visible := false;
       end;
   end
   else
+  begin
     en := Assigned(ActivePage);
+    // Show content page
+    if en then
+      with TChmContentProvider(ActivePage.ContentProvider) do
+      begin
+        ActivePage.Visible := true;
+        Visible := true;
+        TabsControl.Visible := true;
+        Splitter.Visible := true;
+      end;
+  end;
 
   BackBttn.Enabled := en;
   ForwardBttn.Enabled := en;
