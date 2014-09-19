@@ -138,11 +138,11 @@ begin
   FWorksheet := FWorkbook.GetFirstWorksheet;
 
   Y:=0;
-  for Row:=0 to FWorksheet.GetLastRowIndex(False)-1 do
+  for Row:=0 to FWorksheet.GetLastRowIndex-1 do
   begin
     X:=0;
     DY:=CalcRowHeight(FWorksheet.GetRowHeight(Row));
-    for Col:=0 to FWorksheet.GetLastColIndex(false)-1 do
+    for Col:=0 to FWorksheet.GetLastColIndex-1 do
     begin
       Cell := FWorksheet.FindCell(Row, Col);
       if Assigned(Cell) then
