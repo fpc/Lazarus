@@ -5363,6 +5363,7 @@ begin
     BufferLength := FRedoBufferLength;
 
   if (Buffer^[BufferLength - 1].Page <> CurPage) then Exit;
+
   List := TFpList.Create;
   a := Buffer^[BufferLength - 1].Action;
   p := Buffer^[BufferLength - 1].Objects;
@@ -5419,7 +5420,7 @@ begin
     Dec(FRedoBufferLength);
 
   ResetSelection;
-  RedrawPage;
+  PageView.Invalidate;
   N46.Enabled := FUndoBufferLength > 0;
   UndoB.Enabled := N46.Enabled;
   N48.Enabled := FRedoBufferLength > 0;
