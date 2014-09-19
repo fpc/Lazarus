@@ -97,11 +97,11 @@ msgstr "Найти все переведённые файлы PO"
 
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
-msgstr ""
+msgstr "Неточные переводы"
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
-msgstr ""
+msgstr "Сводка в графическом виде"
 
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
@@ -179,22 +179,19 @@ msgid "Original"
 msgstr "Исходная строка"
 
 #: pocheckerconsts.spercfuzzy
-#, fuzzy
 #| msgid "Fuzzy strings: %2.0f%%."
 msgid "%s: %4.1f%% fuzzy strings."
-msgstr "Неточные строки: %2.0f%%."
+msgstr "%s: %4.1f%% неточных переводов."
 
 #: pocheckerconsts.sperctranslated
-#, fuzzy
 #| msgid "Translated strings: %2.0f%%."
 msgid "%s: %4.1f%% translated strings."
-msgstr "Переведённые строки: %2.0f%%."
+msgstr "%s: %4.1f%% переведённых строк."
 
 #: pocheckerconsts.spercuntranslated
-#, fuzzy
 #| msgid "Untranslated strings: %2.0f%%."
 msgid "%s: %4.1f%% untranslated strings."
-msgstr "Непереведённые строки: %2.0f%%."
+msgstr "%s: %4.1f%% непереведённых строк."
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -232,14 +229,21 @@ msgstr "Выбор тестов"
 
 #: pocheckerconsts.sshowstatgraph
 msgid "Show statistics graph"
-msgstr ""
+msgstr "Показать графическую сводку"
 
 #: pocheckerconsts.sstathint
+#| msgid ""
+#| "%3.1f %% Translated\n"
+#| "%3.1f %% UnTranslated\n"
+#| "%3.1f %% Fuzzy\n"
 msgid ""
-"%3.1f %% Translated\n"
-"%3.1f %% UnTranslated\n"
-"%3.1f %% Fuzzy\n"
+"%3.1f%% Translated\n"
+"%3.1f%% UnTranslated\n"
+"%3.1f%% Fuzzy\n"
 msgstr ""
+"%3.1f%% переведённых строк\n"
+"%3.1f%% непереведённых строк\n"
+"%3.1f%% неточных переводов\n"
 
 #: pocheckerconsts.stotalerrors
 #| msgid "Total errors / warnings found: %d"
@@ -252,17 +256,16 @@ msgstr "Всего найдено предупреждений: %d"
 
 #: pocheckerconsts.stranslated
 msgid "Translated"
-msgstr ""
+msgstr "Переведённые строки"
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Перевод"
 
 #: pocheckerconsts.stranslationstatistics
-#, fuzzy
 #| msgid "Translation statistics for:"
 msgid "Translation statistics per language:"
-msgstr "Статистика перевода для:"
+msgstr "Статистика переводов по языкам:"
 
 #: pocheckerconsts.sunselectalltests
 #| msgid "&Unselect All Tests"
@@ -271,5 +274,5 @@ msgstr "&Снять выбор"
 
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
-msgstr ""
+msgstr "Непереведённые строки"
 

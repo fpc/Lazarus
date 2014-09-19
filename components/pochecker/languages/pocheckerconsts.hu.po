@@ -236,9 +236,9 @@ msgstr ""
 
 #: pocheckerconsts.sstathint
 msgid ""
-"%3.1f %% Translated\n"
-"%3.1f %% UnTranslated\n"
-"%3.1f %% Fuzzy\n"
+"%3.1f%% Translated\n"
+"%3.1f%% UnTranslated\n"
+"%3.1f%% Fuzzy\n"
 msgstr ""
 
 #: pocheckerconsts.stotalerrors
