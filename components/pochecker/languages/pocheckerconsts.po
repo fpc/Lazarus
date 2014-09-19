@@ -78,6 +78,10 @@ msgstr ""
 msgid "Find all translated po-files"
 msgstr ""
 
+#: pocheckerconsts.sfuzzy
+msgid "Fuzzy"
+msgstr ""
+
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
 msgstr ""
@@ -207,6 +211,10 @@ msgstr ""
 msgid "Total warnings found: %d"
 msgstr ""
 
+#: pocheckerconsts.stranslated
+msgid "Translated"
+msgstr ""
+
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr ""
@@ -217,5 +225,9 @@ msgstr ""
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
+msgstr ""
+
+#: pocheckerconsts.suntranslated
+msgid "Untranslated"
 msgstr ""
 

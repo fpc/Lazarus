@@ -94,6 +94,10 @@ msgstr "Помилки / попередження звітовані %s для:"
 msgid "Find all translated po-files"
 msgstr "Знайти всі перекладені po-файли"
 
+#: pocheckerconsts.sfuzzy
+msgid "Fuzzy"
+msgstr ""
+
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
 msgstr ""
@@ -232,6 +236,10 @@ msgstr "Знайдено всього помилок / попереджень: %
 msgid "Total warnings found: %d"
 msgstr "Знайдено всього попереджень: %d"
 
+#: pocheckerconsts.stranslated
+msgid "Translated"
+msgstr ""
+
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Переклад"
@@ -242,5 +250,9 @@ msgstr ""
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
+msgstr ""
+
+#: pocheckerconsts.suntranslated
+msgid "Untranslated"
 msgstr ""
 

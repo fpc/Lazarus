@@ -35,6 +35,9 @@ resourcestring
 
   //Graphical summary form
   sGrapStatFormCaption = 'Graphical summary';
+  sTranslated = 'Translated';
+  sUntranslated = 'Untranslated';
+  sFuzzy = 'Fuzzy';
 
   //PoFamiles
   sOriginal = 'Original';
