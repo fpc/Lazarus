@@ -61,7 +61,7 @@ begin
   Application.CreateForm(THelpPopupForm, HelpPopupForm);
 
   try
-  Application.Run;
+    Application.Run;
   except
     // try to remove stale named pipes so that a new instance can use them
     if IPCServer <> nil then
