@@ -5,8 +5,8 @@ unit GraphStat;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls;
+  Classes, SysUtils, Types, FileUtil, Forms, Controls, Graphics, Dialogs,
+  ExtCtrls, PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls;
 
 type
 
@@ -21,13 +21,17 @@ type
     TranslatedShape: TShape;
     UnTranslatedShape: TShape;
     FuzzyShape: TShape;
+    procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure ListViewMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
   private
     { private declarations }
     FPoFamilyStats: TPoFamilyStats;
     FImgList: TImageList;
+    FOldHintHidePause: Integer;
     function CreateBitmap(AStat: TStat): TBitmap;
     procedure AddToListView(AStat: TStat; ABmp: TBitmap);
     procedure DrawGraphs;
@@ -73,6 +77,32 @@ const
 procedure TGraphStatForm.FormShow(Sender: TObject);
 begin
   DrawGraphs;
+  FOldHintHidePause := Application.HintHidePause;
+  Application.HintHidePause := 5000;
+end;
+
+procedure TGraphStatForm.ListViewMouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
+var
+  Pt: types.TPoint;
+  Item: TListItem;
+  Index: Integer;
+  AStat: TStat;
+begin
+  Pt:= Listview.ScreenToClient(Mouse.CursorPos );
+  Item := Listview.GetItemAt(Pt.X, Pt.Y);
+  if Assigned(Item) then
+  begin
+    Index := Item.Index;
+    AStat := FPoFamilyStats.Items[Index];
+    ListView.Hint := Format(sStatHint,[AStat.PercTranslated, AStat.PercUnTranslated, AStat.PercFuzzy]);
+  end
+  else
+  begin
+    ListView.Hint := '';
+    Application.HideHint;
+  end;
+
 end;
 
 
@@ -87,6 +117,12 @@ begin
   FuzzyShape.Brush.Color := clFuzzy;
   ListView.Color := clBackGround;
   ListView.Align := alClient;
+end;
+
+procedure TGraphStatForm.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  Application.HintHidePause := FOldHintHidePause;
 end;
 
 procedure TGraphStatForm.FormDestroy(Sender: TObject);

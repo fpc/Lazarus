@@ -226,6 +226,13 @@ msgstr "Вибрати типи тестів"
 msgid "Show statistics graph"
 msgstr ""
 
+#: pocheckerconsts.sstathint
+msgid ""
+"%3.1f %% Translated\n"
+"%3.1f %% UnTranslated\n"
+"%3.1f %% Fuzzy\n"
+msgstr ""
+
 #: pocheckerconsts.stotalerrors
 #, fuzzy
 #| msgid "Total errors / warnings found: %d"

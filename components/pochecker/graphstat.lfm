@@ -6,6 +6,7 @@ object GraphStatForm: TGraphStatForm
   Caption = 'Graphical summary'
   ClientHeight = 544
   ClientWidth = 636
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
@@ -69,9 +70,12 @@ object GraphStatForm: TGraphStatForm
     Width = 250
     AutoSort = False
     Columns = <>
+    ParentShowHint = False
     ReadOnly = True
     ScrollBars = ssAutoBoth
+    ShowHint = True
     TabOrder = 1
     ViewStyle = vsIcon
+    OnMouseMove = ListViewMouseMove
   end
 end
