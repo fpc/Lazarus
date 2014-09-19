@@ -52,7 +52,6 @@
       <Unit1>
         <Filename Value="buildmanager.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="BuildManager"/>
       </Unit1>
       <Unit2>
         <Filename Value="basebuildmanager.pas"/>

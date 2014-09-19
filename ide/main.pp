@@ -782,6 +782,7 @@ type
                             Flags: TProjectBuildFlags): TModalResult; override;
     function UpdateProjectPOFile(AProject: TProject): TModalResult;
     function DoAbortBuild: TModalResult;
+    procedure DoCompile;
     procedure DoQuickCompile;
     function DoInitProjectRun: TModalResult; override;
     function DoRunProject: TModalResult;
@@ -3254,13 +3255,7 @@ begin
   ecSaveAll:                  DoSaveAll([sfCheckAmbiguousFiles]);
   ecQuit:                     mnuQuitClicked(Self);
   ecCompile:
-    begin
-      GetCurrentUnit(ASrcEdit,AnUnitInfo);
-      if Assigned(AnUnitInfo) and AnUnitInfo.BuildFileIfActive then
-        DoBuildFile(false)
-      else
-        DoBuildProject(crCompile, []);
-    end;
+    DoCompile;
   ecRun:
     begin
       GetCurrentUnit(ASrcEdit,AnUnitInfo);
@@ -4266,16 +4261,8 @@ begin
 end;
 
 procedure TMainIDE.mnuCompileProjectClicked(Sender: TObject);
-var
-  ASrcEdit: TSourceEditor;
-  AnUnitInfo: TUnitInfo;
 Begin
-  GetCurrentUnit(ASrcEdit,AnUnitInfo);
-  if (AnUnitInfo<>nil)
-  and AnUnitInfo.BuildFileIfActive then
-    DoBuildFile(false)
-  else
-    DoBuildProject(crCompile,[]);
+  DoCompile;
 end;
 
 procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
@@ -6763,6 +6750,18 @@ function TMainIDE.DoAbortBuild: TModalResult;
 begin
   Result:=mrOk;
   AbortBuild;
+end;
+
+procedure TMainIDE.DoCompile;
+var
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+begin
+  GetCurrentUnit(ASrcEdit,AnUnitInfo);
+  if Assigned(AnUnitInfo) and AnUnitInfo.BuildFileIfActive then
+    DoBuildFile(false)
+  else
+    DoBuildProject(crCompile, []);
 end;
 
 procedure TMainIDE.DoQuickCompile;
