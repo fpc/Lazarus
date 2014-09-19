@@ -8196,6 +8196,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "Exportovat"
 
+#: lazarusidestrconsts.lisexportallitemstofile
+msgid "Export All Items to File"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "Exportovat jako HTML"
@@ -9138,6 +9142,10 @@ msgstr "Importovat"
 #: lazarusidestrconsts.lisimportant
 msgid "Important"
 msgstr "Důležité"
+
+#: lazarusidestrconsts.lisimportfromfile
+msgid "Import from File"
+msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -12576,9 +12584,9 @@ msgstr "Vložit"
 msgid "paste clipboard"
 msgstr "vložit schránku"
 
-#: lazarusidestrconsts.lispastetextfromclipboard
-msgid "Paste text from clipboard"
-msgstr "Vložit text ze schránky"
+#: lazarusidestrconsts.lispastefromclipboard
+msgid "Paste from clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.lispath
 msgid "Path"

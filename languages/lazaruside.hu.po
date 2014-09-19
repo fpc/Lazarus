@@ -8094,6 +8094,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "Exportálás"
 
+#: lazarusidestrconsts.lisexportallitemstofile
+msgid "Export All Items to File"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "Exportálás HTML-ként"
@@ -9022,6 +9026,10 @@ msgstr "Importálás"
 #: lazarusidestrconsts.lisimportant
 msgid "Important"
 msgstr "Fontos"
+
+#: lazarusidestrconsts.lisimportfromfile
+msgid "Import from File"
+msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
 msgid "Import list"
@@ -12458,9 +12466,9 @@ msgstr "Beillesztés"
 msgid "paste clipboard"
 msgstr "vágólap beillesztése"
 
-#: lazarusidestrconsts.lispastetextfromclipboard
-msgid "Paste text from clipboard"
-msgstr "Szöveg beillesztése a vágólapról"
+#: lazarusidestrconsts.lispastefromclipboard
+msgid "Paste from clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.lispath
 msgid "Path"

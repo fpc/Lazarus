@@ -8411,6 +8411,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "Експорт ..."
 
+#: lazarusidestrconsts.lisexportallitemstofile
+msgid "Export All Items to File"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "Експортувати як HTML"
@@ -9347,6 +9351,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisimportant
 msgid "Important"
+msgstr ""
+
+#: lazarusidestrconsts.lisimportfromfile
+msgid "Import from File"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -12908,9 +12916,9 @@ msgstr "Вставити"
 msgid "paste clipboard"
 msgstr "вставити буфер обміну"
 
-#: lazarusidestrconsts.lispastetextfromclipboard
-msgid "Paste text from clipboard"
-msgstr "Вставити текст з буферу"
+#: lazarusidestrconsts.lispastefromclipboard
+msgid "Paste from clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.lispath
 msgid "Path"

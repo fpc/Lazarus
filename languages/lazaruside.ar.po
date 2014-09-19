@@ -8113,6 +8113,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr ""
 
+#: lazarusidestrconsts.lisexportallitemstofile
+msgid "Export All Items to File"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "حوّل إلى HTML"
@@ -9033,6 +9037,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisimportant
 msgid "Important"
+msgstr ""
+
+#: lazarusidestrconsts.lisimportfromfile
+msgid "Import from File"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -12453,8 +12461,8 @@ msgstr "ألصق"
 msgid "paste clipboard"
 msgstr ""
 
-#: lazarusidestrconsts.lispastetextfromclipboard
-msgid "Paste text from clipboard"
+#: lazarusidestrconsts.lispastefromclipboard
+msgid "Paste from clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.lispath

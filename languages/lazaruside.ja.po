@@ -8214,6 +8214,10 @@ msgctxt "lazarusidestrconsts.lisexport"
 msgid "Export"
 msgstr "エクスポート"
 
+#: lazarusidestrconsts.lisexportallitemstofile
+msgid "Export All Items to File"
+msgstr ""
+
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
 msgstr "HTMLとしてエクスポート"
@@ -9147,6 +9151,10 @@ msgstr "インポート"
 
 #: lazarusidestrconsts.lisimportant
 msgid "Important"
+msgstr ""
+
+#: lazarusidestrconsts.lisimportfromfile
+msgid "Import from File"
 msgstr ""
 
 #: lazarusidestrconsts.lisimportlist
@@ -12571,9 +12579,9 @@ msgstr "貼り付け"
 msgid "paste clipboard"
 msgstr "クリップボードを貼り付け"
 
-#: lazarusidestrconsts.lispastetextfromclipboard
-msgid "Paste text from clipboard"
-msgstr "クリップボードからテキストを貼り付け"
+#: lazarusidestrconsts.lispastefromclipboard
+msgid "Paste from clipboard"
+msgstr ""
 
 #: lazarusidestrconsts.lispath
 msgid "Path"
