@@ -89,11 +89,14 @@ function GetSystemThreadCount: integer;
 {$IF defined(windows)}
 //returns total number of processors available to system including logical hyperthreaded processors
 var
+  SystemInfo: SYSTEM_INFO;
+  {$IFnDEF WinCE}
   i: Integer;
   ProcessAffinityMask, SystemAffinityMask: DWORD_PTR;
   Mask: DWORD;
-  SystemInfo: SYSTEM_INFO;
+  {$ENDIF}
 begin
+  {$IFnDEF WinCE}
   if GetProcessAffinityMask(GetCurrentProcess, ProcessAffinityMask, SystemAffinityMask)
   then begin
     Result := 0;
@@ -102,11 +105,12 @@ begin
       if (ProcessAffinityMask and Mask)<>0 then
         inc(Result);
     end;
-  end else begin
-    //can't get the affinity mask so we just report the total number of processors
-    GetSystemInfo(SystemInfo);
-    Result := SystemInfo.dwNumberOfProcessors;
+    exit;
   end;
+  {$ENDIF}
+  //can't get the affinity mask so we just report the total number of processors
+  GetSystemInfo(SystemInfo);
+  Result := SystemInfo.dwNumberOfProcessors;
 end;
 {$ELSEIF defined(UNTESTEDsolaris)}
   begin
