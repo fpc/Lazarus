@@ -146,6 +146,13 @@ begin
   Result:=Filename;
 end;
 
+function GetPhysicalFilename(const Filename: string;
+        OnError: TPhysicalFilenameOnError): string;
+begin
+  if OnError=pfeEmpty then ;
+  Result:=Filename;
+end;
+
 // ******** Start of AnsiString specific implementations ************
 
 {$ifndef WinCE}
@@ -248,13 +255,6 @@ begin
   Rslt.Name:=UTF8ToSys(Rslt.Name);
   Result:=SysUtils.FindNext(Rslt);
   Rslt.Name:=SysToUTF8(Rslt.Name);
-end;
-
-function GetPhysicalFilename(const Filename: string;
-        OnError: TPhysicalFilenameOnError): string;
-begin
-  if OnError=pfeEmpty then ;
-  Result:=Filename;
 end;
 
 function GetAppConfigDirAnsi(Global: Boolean; Create: boolean = false): string;
