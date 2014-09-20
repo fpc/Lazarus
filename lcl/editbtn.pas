@@ -678,7 +678,6 @@ type
   private
     FDateOrder: TDateOrder;
     FDefaultToday: Boolean;
-    FDialogTitle: TCaption;
     FDisplaySettings: TDisplaySettings;
     FDroppedDown: Boolean;
     FOnAcceptDate: TAcceptDateEvent;
@@ -687,7 +686,6 @@ type
     FCancelCaption: TCaption;
     FDateFormat: string;
     function GetDate: TDateTime;
-    function IsStoreTitle: boolean;
     procedure SetDate(Value: TDateTime);
     procedure CalendarPopupReturnDate(Sender: TObject; const ADate: TDateTime);
     procedure CalendarPopupShowHide(Sender: TObject);
@@ -707,7 +705,6 @@ type
     property Button;
     property DroppedDown: Boolean read FDroppedDown;
   published
-    property DialogTitle: TCaption read FDialogTitle write FDialogTitle stored IsStoreTitle;
     property CalendarDisplaySettings: TDisplaySettings read FDisplaySettings write FDisplaySettings;
     property OnAcceptDate: TAcceptDateEvent read FOnAcceptDAte write FOnAcceptDate;
     property OnCustomDate: TCustomDateEvent read FOnCustomDate write FOnCustomDate;
@@ -2175,7 +2172,6 @@ begin
   inherited Create(AOwner);
   FDefaultToday := False;
   FDisplaySettings := [dsShowHeadings, dsShowDayNames];
-  DialogTitle := rsPickDate;
   OKCaption := 'OK';
   CancelCaption := 'Cancel';
   DateFormatChanged;
@@ -2307,11 +2303,6 @@ begin
     else
       Result := ParseDate(ADate,DateOrder,Result)
   end;
-end;
-
-function TDateEdit.IsStoreTitle: boolean;
-begin
-  Result := DialogTitle <> rsPickDate;
 end;
 
 procedure TDateEdit.SetDate(Value: TDateTime);
