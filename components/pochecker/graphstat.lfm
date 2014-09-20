@@ -6,6 +6,7 @@ object GraphStatForm: TGraphStatForm
   Caption = 'Graphical summary'
   ClientHeight = 544
   ClientWidth = 636
+  OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -42,7 +43,7 @@ object GraphStatForm: TGraphStatForm
       Left = 104
       Height = 15
       Top = 17
-      Width = 83
+      Width = 100
       Caption = 'TranslatedLabel'
       ParentColor = False
     end
@@ -50,7 +51,7 @@ object GraphStatForm: TGraphStatForm
       Left = 104
       Height = 15
       Top = 36
-      Width = 98
+      Width = 118
       Caption = 'UnTranslatedLabel'
       ParentColor = False
     end
@@ -58,7 +59,7 @@ object GraphStatForm: TGraphStatForm
       Left = 104
       Height = 15
       Top = 55
-      Width = 57
+      Width = 70
       Caption = 'FuzzyLabel'
       ParentColor = False
     end

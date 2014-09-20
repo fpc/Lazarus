@@ -8,6 +8,10 @@ uses
   Classes, SysUtils, Types, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls;
 
+
+{$ifndef windows}
+{$define lv_}
+{$endif}
 type
 
   { TGraphStatForm }
@@ -21,6 +25,7 @@ type
     TranslatedShape: TShape;
     UnTranslatedShape: TShape;
     FuzzyShape: TShape;
+    procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -76,7 +81,6 @@ const
 
 procedure TGraphStatForm.FormShow(Sender: TObject);
 begin
-  DrawGraphs;
   FOldHintHidePause := Application.HintHidePause;
   Application.HintHidePause := 5000;
 end;
@@ -123,6 +127,12 @@ procedure TGraphStatForm.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   Application.HintHidePause := FOldHintHidePause;
+end;
+
+procedure TGraphStatForm.FormActivate(Sender: TObject);
+begin
+  //Doing this in TGraphStatForm.FormShow results in icons disappearing in Linux GTK2
+  DrawGraphs;
 end;
 
 procedure TGraphStatForm.FormDestroy(Sender: TObject);
@@ -201,6 +211,7 @@ var
 begin
   if Assigned(FImgList) then FImgList.Free;
   FImgList := TImageList.CreateSize(BmpWH, BmpWH);
+  ListView.Clear;
   ListView.LargeImages := FImgList;
   ListView.BeginUpdate;
   try

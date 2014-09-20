@@ -77,7 +77,6 @@
       <Unit1>
         <Filename Value="..\pofamilies.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="PoFamilies"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\resultdlg.pp"/>
@@ -90,12 +89,10 @@
       <Unit3>
         <Filename Value="..\simplepofiles.pp"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="SimplePoFiles"/>
       </Unit3>
       <Unit4>
         <Filename Value="..\pocheckerconsts.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="pocheckerconsts"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\pocheckermain.pp"/>
