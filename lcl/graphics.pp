@@ -1151,6 +1151,7 @@ type
     procedure Arc(ALeft, ATop, ARight, ABottom, Angle16Deg, Angle16DegLength: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual; {$IFDEF HasFPCanvas1}reintroduce;{$ENDIF}
     procedure ArcTo(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer); virtual; //As Arc(), but updates pen position
+    procedure AngleArc(X, Y: Integer; Radius: Longword; StartAngle, SweepAngle: Single);
     procedure BrushCopy(ADestRect: TRect; ABitmap: TBitmap; ASourceRect: TRect;
                         ATransparentColor: TColor); virtual;
     procedure Chord(x1, y1, x2, y2,

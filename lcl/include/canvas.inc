@@ -679,6 +679,21 @@ begin
   MoveTo(RadialPoint(EccentricAngle(Point(EX, EY), r), r));
 end;
 
+procedure TCanvas.AngleArc(X, Y: Integer; Radius: Longword; StartAngle, SweepAngle: Single);
+var x1, y1, x2, y2: integer;
+begin
+  x1:=trunc(x+cos(pi*StartAngle/180)*Radius);
+  y1:=trunc(y-sin(pi*StartAngle/180)*Radius);
+  x2:=trunc(x+cos(pi*(StartAngle+SweepAngle)/180)*Radius);
+  y2:=trunc(y-sin(pi*(StartAngle+SweepAngle)/180)*Radius);
+  LineTo(x1,y1);
+  if SweepAngle>0 then
+    Arc(x-Radius, y-Radius, x+Radius, y+Radius, x1, y1, x2, y2)
+  else
+    Arc(x-Radius, y-Radius, x+Radius, y+Radius, x2, y2, x1, y1);
+  MoveTo(x2,y2);
+end;
+
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
   Params:   ALeft, ATop, ARight, ABottom, sx, sy, ex, ey
