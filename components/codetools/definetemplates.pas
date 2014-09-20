@@ -2165,13 +2165,14 @@ begin
         'define FPC_USE_LIBC','FPC_USE_LIBC','',da_DefineRecurse));
     RTLDir.AddChild(IFTempl);
 
-    // rtl: IF SrcOS=win then add include path rtl/win/wininc
+    // rtl: IF SrcOS=win then add include path rtl/TargetOS/wininc;rtl/win/wininc;rtl/win
     IFTempl:=TDefineTemplate.Create('If SrcOS=win','If SrcOS=win',
       '',''''+SrcOS+'''=''win''',da_If);
     IFTempl.AddChild(TDefineTemplate.Create('Include Path',
         Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
         IncludePathMacroName,
         IncPathMacro
+        +';'+Dir+'rtl'+DS+TargetOSMacro+DS+'wininc'
         +';'+Dir+'rtl'+DS+'win'+DS+'wininc'
         +';'+Dir+'rtl'+DS+'win',
         da_DefineRecurse));
