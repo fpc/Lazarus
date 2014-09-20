@@ -683,11 +683,46 @@ type
     function lclIsHandle: Boolean; override;
   end;
 
+  { TCocoaProgressIndicator }
+
+  TCocoaProgressIndicator = objcclass(NSProgressIndicator)
+    callback: ICommonCallback;
+    function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+    procedure resetCursorRects; override;
+  end;
+
+  { TCocoaSlider }
+
+  TCocoaSlider = objcclass(NSSlider)
+    callback: ICommonCallback;
+    function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+    procedure resetCursorRects; override;
+    //
+    procedure keyDown(event: NSEvent); override;
+    procedure keyUp(event: NSEvent); override;
+    //
+    procedure SnapToInteger(AExtraFactor: Integer = 0); message 'SnapToInteger:';
+    procedure sliderAction(sender: id); message 'sliderAction:';
+  end;
+
+  TCocoaSliderCell = objcclass(NSSliderCell)
+  end;
+
 procedure SetViewDefaults(AView: NSView);
 function CheckMainThread: Boolean;
 function GetNSViewSuperViewHeight(view: NSView): CGFloat;
 
 implementation
+
+{$I mackeycodes.inc}
 
 procedure SetViewDefaults(AView: NSView);
 begin
@@ -1681,7 +1716,7 @@ end;
 procedure TCocoaCustomControl.drawRect(dirtyRect: NSRect);
 begin
   inherited drawRect(dirtyRect);
-  if CheckMainThread and ASsigned(callback) then
+  if CheckMainThread and Assigned(callback) then
     callback.Draw(NSGraphicsContext.currentContext, bounds, dirtyRect);
 end;
 
@@ -2655,7 +2690,7 @@ end;
 
 procedure TCocoaTableListView.mouseDragged(event: NSEvent);
 begin
-if not Assigned(callback) or not callback.MouseMove(event) then
+  if not Assigned(callback) or not callback.MouseMove(event) then
   inherited mouseDragged(event);
 end;
 
@@ -2919,6 +2954,123 @@ end;
 function TCocoaMenuItem.lclGetCallback: IMenuItemCallback;
 begin
   result:=menuItemCallback;
+end;
+
+{ TCocoaProgressIndicator }
+
+function TCocoaProgressIndicator.acceptsFirstResponder: Boolean;
+begin
+  Result:=True;
+end;
+
+function TCocoaProgressIndicator.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaProgressIndicator.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
+
+function TCocoaProgressIndicator.lclGetCallback: ICommonCallback;
+begin
+  Result:=callback;
+end;
+
+procedure TCocoaProgressIndicator.lclClearCallback;
+begin
+  callback:=nil;
+end;
+
+procedure TCocoaProgressIndicator.resetCursorRects;
+begin
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
+end;
+
+{ TCocoaSlider }
+
+function TCocoaSlider.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaSlider.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaSlider.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
+
+function TCocoaSlider.lclGetCallback: ICommonCallback;
+begin
+  Result:=callback;
+end;
+
+procedure TCocoaSlider.lclClearCallback;
+begin
+  callback := nil;
+end;
+
+procedure TCocoaSlider.resetCursorRects;
+begin
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
+end;
+
+procedure TCocoaSlider.keyDown(event: NSEvent);
+var
+  KeyCode: word;
+begin
+  KeyCode := Event.keyCode;
+  case KeyCode of
+    MK_UP       : SnapToInteger(1);
+    MK_DOWN     : SnapToInteger(-1);
+    MK_LEFT     : SnapToInteger(-1);
+    MK_RIGHT    : SnapToInteger(1);
+  else
+    // If this isn't done callback.KeyEvent will cause arrow left/right to change control
+    if Assigned(callback) then callback.KeyEvent(event)
+    else inherited keyDown(event);
+  end;
+end;
+
+procedure TCocoaSlider.keyUp(event: NSEvent);
+var
+  KeyCode: word;
+begin
+  KeyCode := Event.keyCode;
+  case KeyCode of
+    MK_UP, MK_DOWN, MK_LEFT, MK_RIGHT: inherited keyUp(event);
+  else
+    // If this isn't done callback.KeyEvent will cause arrow left/right to change control
+    if Assigned(callback) then callback.KeyEvent(event)
+    else inherited keyUp(event);
+  end;
+end;
+
+procedure TCocoaSlider.SnapToInteger(AExtraFactor: Integer);
+begin
+  setIntValue(Round(doubleValue() + AExtraFactor));
+end;
+
+procedure TCocoaSlider.sliderAction(sender: id);
+var
+  Msg: TLMessage;
+begin
+  SnapToInteger();
+  // OnChange event
+  FillChar(Msg, SizeOf(Msg), #0);
+  Msg.Msg := LM_CHANGED;
+  DeliverMessage(Msg);
 end;
 
 end.

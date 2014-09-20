@@ -13,6 +13,7 @@ uses
   MacOSAll, CocoaAll,
   Classes, LCLType, SysUtils, Contnrs, LCLMessageGlue, LMessages,
   Controls, ComCtrls, Types, StdCtrls, LCLProc, Graphics, ImgList,
+  Math,
   // WS
   WSComCtrls,
   // Cocoa WS
@@ -149,6 +150,55 @@ type
     class procedure SetStyle(const AProgressBar: TCustomProgressBar; const NewStyle: TProgressBarStyle); override;
   end;
 
+  { TCocoaWSCustomUpDown }
+
+  TCocoaWSCustomUpDown = class(TWSCustomUpDown)
+  published
+  end;
+
+  { TCarbonWSUpDown }
+
+  TCarbonWSUpDown = class(TWSUpDown)
+  published
+  end;
+
+  { TCocoaWSToolButton }
+
+  TCocoaWSToolButton = class(TWSToolButton)
+  published
+  end;
+
+  { TCarbonWSToolBar }
+
+  TCarbonWSToolBar = class(TWSToolBar)
+  published
+    //class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+  end;
+
+  { TCocoaWSTrackBar }
+
+  TCocoaWSTrackBar = class(TWSTrackBar)
+  published
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure ApplyChanges(const ATrackBar: TCustomTrackBar); override;
+    class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
+    class procedure SetPosition(const ATrackBar: TCustomTrackBar; const {%H-}NewPosition: integer); override;
+    class procedure SetOrientation(const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation); override;
+    //class procedure SetTick(const ATrackBar: TCustomTrackBar; const ATick: integer); virtual;
+  end;
+
+  { TCocoaWSCustomTreeView }
+
+  TCocoaWSCustomTreeView = class(TWSCustomTreeView)
+  published
+  end;
+
+  { TCocoaWSTreeView }
+
+  TCocoaWSTreeView = class(TWSTreeView)
+  published
+  end;
+
   { TLCLListViewCallback }
 
   TLCLListViewCallback = class(TLCLCommonCallback, IListViewCallback)
@@ -158,32 +208,6 @@ type
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
 implementation
-
-type
-  { TCocoaProgressIndicator }
-
-  TCocoaProgressIndicator = objcclass(NSProgressIndicator)
-    callback: ICommonCallback;
-    function acceptsFirstResponder: Boolean; override;
-    function becomeFirstResponder: Boolean; override;
-    function resignFirstResponder: Boolean; override;
-    function lclGetCallback: ICommonCallback; override;
-    procedure lclClearCallback; override;
-    procedure resetCursorRects; override;
-  end;
-
-
-function AllocProgressIndicator(ATarget: TWinControl; const AParams: TCreateParams): TCocoaProgressIndicator;
-begin
-  Result := TCocoaProgressIndicator.alloc.lclInitWithCreateParams(AParams);
-  if Assigned(Result) then
-  begin
-    Result.callback := TLCLCommonCallback.Create(Result, ATarget);
-    Result.startAnimation(nil);
-    //small constrol size looks like carbon
-    //Result.setControlSize(NSSmallControlSize);
-  end;
-end;
 
 { TCocoaWSCustomPage }
 
@@ -858,8 +882,18 @@ end;
 
 class function TCocoaWSProgressBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lResult: TCocoaProgressIndicator;
 begin
-  Result:=TLCLIntfHandle(AllocProgressIndicator(AWinControl, AParams));
+  lResult := TCocoaProgressIndicator.alloc.lclInitWithCreateParams(AParams);
+  if Assigned(lResult) then
+  begin
+    lResult.callback := TLCLCommonCallback.Create(lResult, AWinControl);
+    lResult.startAnimation(nil);
+    //small constrol size looks like carbon
+    //lResult.setControlSize(NSSmallControlSize);
+  end;
+  Result := TLCLIntfHandle(lResult);
 end;
 
 class procedure TCocoaWSProgressBar.ApplyChanges(
@@ -913,41 +947,6 @@ begin
   callback:=nil;
 end; *)
 
-{ TCocoaProgressIndicator }
-
-function TCocoaProgressIndicator.acceptsFirstResponder: Boolean;
-begin
-  Result:=True;
-end;
-
-function TCocoaProgressIndicator.becomeFirstResponder: Boolean;
-begin
-  Result := inherited becomeFirstResponder;
-  callback.BecomeFirstResponder;
-end;
-
-function TCocoaProgressIndicator.resignFirstResponder: Boolean;
-begin
-  Result := inherited resignFirstResponder;
-  callback.ResignFirstResponder;
-end;
-
-function TCocoaProgressIndicator.lclGetCallback: ICommonCallback;
-begin
-  Result:=callback;
-end;
-
-procedure TCocoaProgressIndicator.lclClearCallback;
-begin
-  callback:=nil;
-end;
-
-procedure TCocoaProgressIndicator.resetCursorRects;
-begin
-  if not callback.resetCursorRects then
-    inherited resetCursorRects;
-end;
-
 { TLCLListViewCallback }
 
 procedure TLCLListViewCallback.delayedSelectionDidChange_OnTimer(
@@ -955,6 +954,113 @@ procedure TLCLListViewCallback.delayedSelectionDidChange_OnTimer(
 begin
   TCocoaTableListView(Owner).Timer.Enabled := False;
   TCocoaTableListView(Owner).tableViewSelectionDidChange(nil);
+end;
+
+{ TCocoaWSTrackBar }
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWSTrackBar.CreateHandle
+  Params:  AWinControl - LCL control
+           AParams     - Creation parameters
+  Returns: Handle to the control in Carbon interface
+
+  Creates new track bar with the specified parameters
+ ------------------------------------------------------------------------------}
+class function TCocoaWSTrackBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lResult: TCocoaSlider;
+begin
+  lResult := TCocoaSlider.alloc.lclInitWithCreateParams(AParams);
+  if Assigned(lResult) then
+  begin
+    lResult.callback := TLCLCommonCallback.Create(lResult, AWinControl);
+    lResult.setTarget(lResult);
+    lResult.setAction(objcselector('sliderAction:'));
+  end;
+  Result := TLCLIntfHandle(lResult);
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWSTrackBar.ApplyChanges
+  Params:  ATrackBar - LCL custom track bar
+
+  Sets the parameters (Min, Max, Position, Ticks) of slider
+ ------------------------------------------------------------------------------}
+class procedure TCocoaWSTrackBar.ApplyChanges(const ATrackBar: TCustomTrackBar);
+var
+  lSlider: TCocoaSlider;
+  lTickCount, lTrackBarLength: Integer;
+begin
+  if not Assigned(ATrackBar) or not ATrackBar.HandleAllocated then Exit;
+  lSlider := TCocoaSlider(ATrackBar.Handle);
+  lSlider.setMaxValue(ATrackBar.Max);
+  lSlider.setMinValue(ATrackBar.Min);
+  lSlider.setIntValue(ATrackBar.Position);
+
+  if ATrackBar.Orientation = trHorizontal then
+    lTrackBarLength := ATrackBar.Width
+  else
+    lTrackBarLength := ATrackBar.Height;
+
+  // Ticks
+  if ATrackBar.TickStyle = tsNone then
+  begin
+    lTickCount := 0;
+  end
+  else
+  begin
+    lTickCount := lTrackBarLength div 5;
+    lTickCount := Min(lTickCount, ATrackBar.Max-ATrackBar.Min);
+  end;
+  lSlider.setNumberOfTickMarks(lTickCount);
+
+  //procedure setAltIncrementValue(incValue: double); message 'setAltIncrementValue:';
+  //procedure setTitle(aString: NSString); message 'setTitle:';
+  //procedure setKnobThickness(aFloat: CGFloat); message 'setKnobThickness:';
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWSTrackBar.GetPosition
+  Params:  ATrackBar - LCL custom track bar
+  Returns: Position of slider
+ ------------------------------------------------------------------------------}
+class function TCocoaWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar
+  ): integer;
+var
+  lSlider: TCocoaSlider;
+begin
+  if not Assigned(ATrackBar) or not ATrackBar.HandleAllocated then Exit;
+  lSlider := TCocoaSlider(ATrackBar.Handle);
+  Result := lSlider.intValue();
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TCocoaWSTrackBar.SetPosition
+  Params:  ATrackBar - LCL custom track bar
+           NewPosition  - New position
+
+  Sets the position of slider
+ ------------------------------------------------------------------------------}
+class procedure TCocoaWSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar;
+  const NewPosition: integer);
+var
+  lSlider: TCocoaSlider;
+begin
+  if not Assigned(ATrackBar) or not ATrackBar.HandleAllocated then Exit;
+  lSlider := TCocoaSlider(ATrackBar.Handle);
+  lSlider.setIntValue(ATrackBar.Position);
+end;
+
+// Cocoa auto-detects the orientation based on width/height and there seams
+// to be no way to force it
+class procedure TCocoaWSTrackBar.SetOrientation(
+  const ATrackBar: TCustomTrackBar; const AOrientation: TTrackBarOrientation);
+begin
+  if (AOrientation = trHorizontal) and (ATrackBar.Height > ATrackBar.Width) then
+    ATrackBar.Width := ATrackBar.Height + 1
+  else if (AOrientation = trVertical) and (ATrackBar.Width > ATrackBar.Height then
+    ATrackBar.Height := ATrackBar.Width + 1;
 end;
 
 end.

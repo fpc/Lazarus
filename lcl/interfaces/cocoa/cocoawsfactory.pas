@@ -197,7 +197,8 @@ end;
 
 function RegisterCustomTrackBar: Boolean; alias : 'WSRegisterCustomTrackBar';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomTrackBar, TCocoaWSTrackBar);
+  Result := True;
 end;
 
 function RegisterCustomTreeView: Boolean; alias : 'WSRegisterCustomTreeView';
