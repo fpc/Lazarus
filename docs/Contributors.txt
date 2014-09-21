@@ -147,6 +147,7 @@ Michael A. Hess
 Michal Bukovjan
 Michalis Kamburelis
 Mike Sapsard
+Mike Thompson
 Nikolay Ermolov
 Olivier Guilbaud
 Patrick Chevalley
