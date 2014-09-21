@@ -473,6 +473,9 @@ type
   TChartToolHintPositionEvent = procedure (
     ATool: TDataPointHintTool; var APoint: TPoint) of object;
 
+  TChartToolHintLocationEvent = procedure (
+    ATool: TDataPointHintTool; AHintSize: TSize; var APoint: TPoint) of object;
+
   { TDataPointHintTool }
 
   TDataPointHintTool = class(TDataPointTool)
@@ -480,6 +483,7 @@ type
     FHintWindow: THintWindow;
     FOnHint: TChartToolHintEvent;
     FOnHintPosition: TChartToolHintPositionEvent;
+    FOnHintLocation: TChartToolHintLocationEvent;
     FPrevPointIndex: Integer;
     FPrevSeries: TBasicChartSeries;
     FUseApplicationHint: Boolean;
@@ -497,8 +501,10 @@ type
   published
     property ActiveCursor;
     property OnHint: TChartToolHintEvent read FOnHint write FOnHint;
+    property OnHintLocation: TChartToolHintLocationEvent
+      read FOnHintLocation write FOnHintLocation;
     property OnHintPosition: TChartToolHintPositionEvent
-      read FOnHintPosition write FOnHintPosition;
+      read FOnHintPosition write FOnHintPosition; deprecated;
     property UseApplicationHint: Boolean
       read FUseApplicationHint write SetUseApplicationHint default false;
     property UseDefaultHintText: Boolean
@@ -1770,6 +1776,7 @@ procedure TDataPointHintTool.MouseMove(APoint: TPoint);
 var
   r: TRect;
   h: String;
+  sz: TSize;
 begin
   FSeries := nil;
   FindNearestPoint(APoint);
@@ -1800,6 +1807,11 @@ begin
       FHintWindow := THintWindow.Create(nil);
     if h = '' then exit;
     r := FHintWindow.CalcHintRect(FChart.Width, h, Nil);
+    if Assigned(OnHintLocation) then begin
+      sz.CX := r.Right - r.Left;
+      sz.CY := r.Bottom - r.Top;
+      OnHintLocation(Self, sz, APoint);
+    end;
     OffsetRect(r, APoint.X, APoint.Y);
     FHintWindow.ActivateWithBounds(r, h);
   end;

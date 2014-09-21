@@ -2,28 +2,28 @@ object MainForm: TMainForm
   Left = 313
   Height = 438
   Top = 177
-  Width = 758
+  Width = 891
   Caption = 'MainForm'
   ClientHeight = 438
-  ClientWidth = 758
+  ClientWidth = 891
   OnCreate = FormCreate
   LCLVersion = '1.3'
   object TopPanel: TPanel
     Left = 0
     Height = 42
     Top = 0
-    Width = 758
+    Width = 891
     Align = alTop
     BevelOuter = bvNone
     ClientHeight = 42
-    ClientWidth = 758
+    ClientWidth = 891
     TabOrder = 0
     object cbSeriesType: TComboBox
       Left = 8
-      Height = 28
+      Height = 23
       Top = 8
       Width = 242
-      ItemHeight = 20
+      ItemHeight = 15
       ItemIndex = 0
       Items.Strings = (
         'OHLC series'
@@ -34,12 +34,20 @@ object MainForm: TMainForm
       TabOrder = 0
       Text = 'OHLC series'
     end
+    object Label1: TLabel
+      Left = 266
+      Height = 15
+      Top = 12
+      Width = 523
+      Caption = 'Hold the left mouse button down to see a hint window with the stock prices above each data point.'
+      ParentColor = False
+    end
   end
   object FinancialChart: TChart
     Left = 0
     Height = 396
     Top = 42
-    Width = 758
+    Width = 891
     AxisList = <    
       item
         Grid.Color = clSilver
@@ -70,6 +78,7 @@ object MainForm: TMainForm
     Title.Text.Strings = (
       'TAChart'
     )
+    Toolset = ChartToolset1
     Align = alClient
     ParentColor = False
     object ohlcSeries: TOpenHighLowCloseSeries
@@ -80,6 +89,17 @@ object MainForm: TMainForm
       LinePen.Color = clLime
       LinePen.Width = 2
       Mode = mOHLC
+    end
+  end
+  object ChartToolset1: TChartToolset
+    left = 160
+    top = 111
+    object DataPointHintTool: TDataPointHintTool
+      Shift = [ssLeft]
+      DistanceMode = cdmOnlyX
+      GrabRadius = 8
+      OnHint = DataPointHintToolHint
+      OnHintLocation = DataPointHintToolHintLocation
     end
   end
 end
