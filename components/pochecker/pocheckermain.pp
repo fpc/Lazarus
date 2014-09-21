@@ -40,8 +40,7 @@ type
   TPoCheckerForm = class(TForm)
   private
     PoFamily: TPoFamily;
-    FChosenMasterName: string;
-    FChosenChildName: string;
+    FSelectedPoName: String;
     FPoCheckerSettings: TPoCheckerSettings;
     procedure OnTestStart(const ATestName, APoFileName: string);
     procedure OnTestEnd(const ATestName: string; const ErrorCount: integer);
@@ -51,9 +50,11 @@ type
     procedure SetTestTypeCheckBoxes(TestTypes: TPoTestTypes);
     procedure SetTestOptionCheckBoxes(TestOptions: TPoTestOptions);
     procedure ShowError(const Msg: string);
-    function TrySelectFile: boolean;
+    function TrySelectFile(out Filename: String): Boolean;
+    function TryCreatePoFamily(Filename: String): Boolean;
     procedure RunSelectedTests;
     procedure ClearAndDisableStatusPanel;
+    procedure SetSelectedPoName(AFilename: String);
   published
     IgnoreFuzzyCheckBox: TCheckBox;
     UnselectAllBtn: TButton;
@@ -148,7 +149,14 @@ begin
   //DebugLn('  ',DbgS(FPoCheckerSettings.TestTypes));
   SetTestTypeCheckBoxes(FPoCheckerSettings.TestTypes);
   SetTestOptionCheckBoxes(FPoCheckerSettings.TestOptions);
-
+  if (FPoCheckerSettings.LastSelectedFile <> '') then
+  begin
+    //debugln('Trying to load ',FPoCheckerSettings.LastSelectedFile);
+    if TryCreatePoFamily(FPoCheckerSettings.LastSelectedFile) then
+      SetSelectedPoName(FPoCheckerSettings.LastSelectedFile)
+    else
+      SetSelectedPoName('');
+  end;
 end;
 
 
@@ -159,6 +167,7 @@ begin
   if Assigned(FPoCheckerSettings) then
   begin
     FPoCheckerSettings.SaveSettingsOnExit := True; //ToDo: create a checkbox for this
+    FPoCheckerSettings.LastSelectedFile := FSelectedPoName;
     FPoCheckerSettings.TestTypes := GetTestTypesFromListBox;
     FPoCheckerSettings.TestOptions := GetTestOptions;
     FPoCheckerSettings.SaveConfig;
@@ -168,22 +177,16 @@ end;
 
 
 procedure TPoCheckerForm.OpenBtnClick(Sender: TObject);
+var
+  Fn: String;
 begin
-  if TrySelectFile then
+  if TrySelectFile(Fn) then
   begin
-    RunBtn.Enabled := True;
-    TestListBox.Enabled := True;
-    SelectAllBtn.Enabled := True;
-    SelectBasicBtn.Enabled := True;
-    UnselectAllBtn.Enabled := True;
+    SetSelectedPoName(Fn);
   end
   else
   begin
-    RunBtn.Enabled := False;
-    TestListBox.Enabled := False;
-    SelectAllBtn.Enabled := False;
-    SelectBasicBtn.Enabled := False;
-    UnselectAllBtn.Enabled := False;
+    SetSelectedPoName('');
   end;
 end;
 
@@ -310,72 +313,76 @@ begin
 end;
 
 
-function TPoCheckerForm.TrySelectFile: boolean;
-var
-  Fn: string;
-  ShortFn: string;
-  OK: boolean;
+function TPoCheckerForm.TrySelectFile(out Filename: String): boolean;
 begin
   NoErrLabel.Visible := False;
-  OK := False;
+  Result := False;
+  Filename := '';
   if OpenDialog.Execute then
   begin
-    Fn := OpenDialog.FileName;
-    ShortFn := ExtractFileName(Fn);
-    if IsMasterPoName(Fn) then
+    Filename := OpenDialog.FileName;
+    Result := TryCreatePoFamily(Filename);
+  end;
+end;
+
+function TPoCheckerForm.TryCreatePoFamily(Filename: String): Boolean;
+var
+  ChosenMasterName, ChosenChildName, ShortFn: String;
+begin
+  Result := False;
+  ShortFn := ExtractFileName(Filename);
+  if IsMasterPoName(Filename) then
+  begin
+    ChosenMasterName := Filename;
+    ChosenChildName := '';
+  end
+  else
+  begin //not a mastername, may be a child
+    ChosenChildName := Filename;
+    ChosenMasterName := ExtractMasterNameFromChildName(Filename);
+    if (ChosenMasterName = '') then
     begin
-      FChosenMasterName := Fn;
-      FChosenChildName := '';
+      ChosenMasterName := '';
+      ChosenChildName := '';
+      ShowError(Format(sNotAProperFileName, [ShortFn]));
     end
     else
-    begin //not a mastername, may be a child
-      FChosenChildName := Fn;
-      FChosenMasterName := ExtractMasterNameFromChildName(Fn);
-      if (FChosenMasterName = '') then
-      begin
-        FChosenMasterName := '';
-        FChosenChildName := '';
-        ShowError(Format(sNotAProperFileName, [ShortFn]));
-      end
-      else
-      if not FileExistsUtf8(FChosenMasterName) then
-      begin
-        ShowError(Format(sCannotFindMaster,
-          [ExtractFileName(FChosenMasterName), ShortFn]));
-        FChosenMasterName := '';
-        FChosenChildName := '';
-      end;
-    end;
-    OK := (FChosenMasterName <> '');
-    if OK then
+    if not FileExistsUtf8(ChosenMasterName) then
     begin
-      if Assigned(PoFamily) then
-        PoFamily.Free;
-      try
-        PoFamily := TPoFamily.Create(FChosenMasterName, FChosenChildName);
-        PoFamily.OnTestStart := @OnTestStart;
-        PoFamily.OnTestEnd := @OnTestEnd;
-      except
-        on E: Exception do
+      ShowError(Format(sCannotFindMaster,
+        [ExtractFileName(ChosenMasterName), ShortFn]));
+      ChosenMasterName := '';
+      ChosenChildName := '';
+    end;
+  end;
+  Result := (ChosenMasterName <> '');
+  if Result then
+  begin
+    if Assigned(PoFamily) then
+      PoFamily.Free;
+    try
+      PoFamily := TPoFamily.Create(ChosenMasterName, ChosenChildName);
+      PoFamily.OnTestStart := @OnTestStart;
+      PoFamily.OnTestEnd := @OnTestEnd;
+    except
+      on E: Exception do
+      begin
+        Result := False;
+        ShowError(Format(sErrorOnCreate, [E.Message]));
+        if Assigned(PoFamily) then
         begin
-          OK := False;
-          ShowError(Format(sErrorOnCreate, [E.Message]));
-          if Assigned(PoFamily) then
-          begin
-            try
-              PoFamily.Free;
-            except
-              on E: Exception do
-              begin
-                ShowError(Format(sErrorOnCleanUp, [E.Message]));
-              end;
+          try
+            PoFamily.Free;
+          except
+            on E: Exception do
+            begin
+              ShowError(Format(sErrorOnCleanUp, [E.Message]));
             end;
           end;
         end;
       end;
     end;
   end;
-  Result := OK;
 end;
 
 
@@ -400,8 +407,8 @@ begin
   try
     StatusPanel.Enabled := True;
     if (not (ptoFindAllChildren in TestOptions)) and Assigned(PoFamily.Child) and
-      (PoFamily.ChildName <> FChosenChildName) then
-      PoFamily.ChildName := FChosenChildName;
+      (PoFamily.ChildName <> FSelectedPoName) then
+      PoFamily.ChildName := FSelectedPoName;
     PoFamily.RunTests(TestTypes, TestOptions, ErrorCount, WarningCount, SL);
     debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
     debugln('                  ', Format(sTotalWarnings, [WarningCount]));
@@ -437,6 +444,30 @@ begin
   CurTestLabel.Caption := '';
   CurPoLabel.Caption := '';
   StatusPanel.Enabled := False;
+end;
+
+procedure TPoCheckerForm.SetSelectedPoName(AFilename: String);
+begin
+  if (FSelectedPoName = AFilename) then Exit;
+  FSelectedPoName := AFilename;
+  if (AFilename <> '') then
+  begin
+    RunBtn.Enabled := True;
+    TestListBox.Enabled := True;
+    SelectAllBtn.Enabled := True;
+    SelectBasicBtn.Enabled := True;
+    UnselectAllBtn.Enabled := True;
+    Caption := sGUIPoFileCheckingTool + ' [' + ExtractFileName(AFilename) + ']';
+  end
+  else
+  begin
+    RunBtn.Enabled := False;
+    TestListBox.Enabled := False;
+    SelectAllBtn.Enabled := False;
+    SelectBasicBtn.Enabled := False;
+    UnselectAllBtn.Enabled := False;
+    Caption := sGUIPoFileCheckingTool;
+  end;
 end;
 
 

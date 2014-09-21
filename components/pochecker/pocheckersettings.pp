@@ -27,10 +27,13 @@ type
     FSaveSettingsOnExit: Boolean;
     FMasterPoList: TStrings;
     FChildrenPoList: TStrings;
+    FLastSelectedFile: String;
+    function LoadLastSelectedFile: String;
     function LoadTestTypes: TPoTestTypes;
     function LoadTestOptions: TPoTestOptions;
     procedure LoadMasterPoList(List: TStrings);
     procedure LoadChildrenPoList(List: TStrings);
+    procedure SaveLastSelectedFile;
     procedure SaveTestTypes;
     procedure SaveTestOptions;
     procedure SaveMasterPoList;
@@ -49,6 +52,7 @@ type
     property TestOptions: TPoTestOptions read FTestOptions write FTestOptions;
     property MasterPoList: TStrings read FMasterPoList write FMasterPoList;
     property ChildrenPoList: TStrings read FChildrenPoList write FChildrenPoList;
+    property LastSelectedFile: String read FLastSelectedFile write FLastSelectedFile;
   end;
 
 function DbgS(PoTestTypes: TPoTestTypes): String; overload;
@@ -107,10 +111,11 @@ const
     );
 
   pLoadSettings = 'General/LoadSettings/';
+  pLastSelected = 'LastSelected/';
   pTestTypes = 'TestTypes/';
   pTestOptions = 'TestOptions/';
-  pMasterPoFiles = 'MasterPoFiles';
-  pChildrenPoFiles = 'ChildrenPoFiles';
+  pMasterPoFiles = 'MasterPoFiles/';
+  pChildrenPoFiles = 'ChildrenPoFiles/';
 
 function DbgS(PoTestTypes: TPoTestTypes): String; overload;
 var
@@ -136,6 +141,11 @@ begin
   end;
   if (Result[Length(Result)] = ',') then System.Delete(Result,Length(Result),1);
   Result := Result + ']';
+end;
+
+function TPoCheckerSettings.LoadLastSelectedFile: String;
+begin
+  Result := FConfig.GetValue(pLastSelected+'Value','');
 end;
 
 function TPoCheckerSettings.LoadTestTypes: TPoTestTypes;
@@ -178,6 +188,11 @@ procedure TPoCheckerSettings.LoadChildrenPoList(List: TStrings);
 begin
   if not Assigned(List) then Exit;
   List.Clear;
+end;
+
+procedure TPoCheckerSettings.SaveLastSelectedFile;
+begin
+  FConfig.SetDeleteValue(pLastSelected+'Value',FLastSelectedFile,'');
 end;
 
 procedure TPoCheckerSettings.SaveTestTypes;
@@ -233,7 +248,7 @@ begin
     FFilename := 'pochecker.xml';
     FConfig := GetIDEConfigStorage(FFilename, True);
     {$endif}
-    DebugLn('TPoCheckerSettings.Create: FConfig = ',DbgSName(FConfig));
+    //DebugLn('TPoCheckerSettings.Create: FConfig = ',DbgSName(FConfig));
   except
     Debugln('PoCheckerSettings.Create: failed to create ConfigStorage:');
     Debugln(' - Filename = ',FFilename);
@@ -255,6 +270,7 @@ begin
     begin
       FTestTypes := LoadTestTypes;
       FTestOptions := LoadTestOptions;
+      FLastSelectedFile := LoadLastSelectedFile;
       LoadMasterPoList(FMasterPoList);
       LoadChildrenPoList(FChildrenPoList);
     end;
@@ -272,6 +288,7 @@ begin
     FConfig.SetValue(pLoadSettings+'Value',FSaveSettingsOnExit);
     if FSaveSettingsOnExit then
     begin
+      SaveLastSelectedFile;
       SaveTestTypes;
       SaveTestOptions;
       SaveMasterPoList;
