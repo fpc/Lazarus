@@ -113,9 +113,12 @@ begin
   case key of
     VK_ESCAPE:
       begin
-       //cancel out of editing by reset on esc
-       FDataLink.Reset;
-       SelectAll;
+        //cancel out of editing by reset on esc, but only when in editing mode
+        if FDataLink.Editing then begin
+          FDataLink.Reset;
+          SelectAll;
+          Key := VK_UNKNOWN;
+        end;
       end;
     VK_DELETE, VK_BACK:
       begin
