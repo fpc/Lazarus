@@ -31,13 +31,30 @@ uses
   {$ELSE}
   IDEIntf, MenuIntf,
   {$ENDIF}
-  SimplePoFiles, PoFamilies, ResultDlg, pocheckerconsts;
+  SimplePoFiles, PoFamilies, ResultDlg, pocheckerconsts, PoCheckerSettings;
 
 type
 
   { TPoCheckerForm }
 
   TPoCheckerForm = class(TForm)
+  private
+    PoFamily: TPoFamily;
+    FChosenMasterName: string;
+    FChosenChildName: string;
+    FPoCheckerSettings: TPoCheckerSettings;
+    procedure OnTestStart(const ATestName, APoFileName: string);
+    procedure OnTestEnd(const ATestName: string; const ErrorCount: integer);
+    procedure FillTestListBox;
+    function GetTestTypesFromListBox: TPoTestTypes;
+    function GetTestOptions: TPoTestOptions;
+    procedure SetTestTypeCheckBoxes(TestTypes: TPoTestTypes);
+    procedure SetTestOptionCheckBoxes(TestOptions: TPoTestOptions);
+    procedure ShowError(const Msg: string);
+    function TrySelectFile: boolean;
+    procedure RunSelectedTests;
+    procedure ClearAndDisableStatusPanel;
+  published
     IgnoreFuzzyCheckBox: TCheckBox;
     UnselectAllBtn: TButton;
     SelectAllBtn: TButton;
@@ -62,21 +79,6 @@ type
     procedure SelectAllBtnClick(Sender: TObject);
     procedure SelectBasicBtnClick(Sender: TObject);
     procedure UnselectAllBtnClick(Sender: TObject);
-  private
-    PoFamily: TPoFamily;
-    FChosenMasterName: string;
-    FChosenChildName: string;
-    procedure OnTestStart(const ATestName, APoFileName: string);
-    procedure OnTestEnd(const ATestName: string; const ErrorCount: integer);
-    procedure FillTestListBox;
-    function GetTestTypesFromListBox: TPoTestTypes;
-    function GetTestOptions: TPoTestOptions;
-    procedure ShowError(const Msg: string);
-    function TrySelectFile: boolean;
-    procedure RunSelectedTests;
-    procedure ClearAndDisableStatusPanel;
-  public
-
   end;
 
 var
@@ -104,6 +106,7 @@ var
   Lang, T: string;
 {$ENDIF}
 begin
+  //debugln('TPoCheckerForm.FormCreate A:');
   {$IFDEF POCHECKERSTANDALONE}
   //Initializing translation
   Lang := GetEnvironmentVariableUTF8('LANG');
@@ -137,6 +140,15 @@ begin
   SelectAllBtn.Caption := sSelectAllTests;
   SelectBasicBtn.Caption := sSelectBasicTests;
   UnselectAllBtn.Caption := sUnselectAllTests;
+  FPoCheckerSettings := TPoCheckerSettings.Create;
+  FPoCheckerSettings.LoadConfig;
+  //DebugLn('  TestOptions after loading = ');
+  //DebugLn('  ',DbgS(FPoCheckerSettings.TestOptions));
+  //debugln('  TPoCheckerForm.FormCreate: TestTypes   after loading = ');
+  //DebugLn('  ',DbgS(FPoCheckerSettings.TestTypes));
+  SetTestTypeCheckBoxes(FPoCheckerSettings.TestTypes);
+  SetTestOptionCheckBoxes(FPoCheckerSettings.TestOptions);
+
 end;
 
 
@@ -144,6 +156,14 @@ procedure TPoCheckerForm.FormDestroy(Sender: TObject);
 begin
   if Assigned(PoFamily) then
     PoFamily.Free;
+  if Assigned(FPoCheckerSettings) then
+  begin
+    FPoCheckerSettings.SaveSettingsOnExit := True; //ToDo: create a checkbox for this
+    FPoCheckerSettings.TestTypes := GetTestTypesFromListBox;
+    FPoCheckerSettings.TestOptions := GetTestOptions;
+    FPoCheckerSettings.SaveConfig;
+    FPoCheckerSettings.Free;
+  end;
 end;
 
 
@@ -260,6 +280,27 @@ begin
     Result := Result + [ptoFindAllChildren];
   if IgnoreFuzzyCheckBox.Checked then
     Result := Result + [ptoIgnoreFuzzyStrings];
+end;
+
+procedure TPoCheckerForm.SetTestTypeCheckBoxes(TestTypes: TPoTestTypes);
+var
+  Typ: TPoTestType;
+  Index: integer;
+begin
+  for Typ := Low(TPoTestType) to High(TPoTestType) do
+  begin
+    Index := Ord(Typ);
+    if (Index < TestListBox.Count) then
+    begin
+      TestListBox.Checked[Index] := (Typ in TestTypes)
+    end;
+  end;
+end;
+
+procedure TPoCheckerForm.SetTestOptionCheckBoxes(TestOptions: TPoTestOptions);
+begin
+  FindAllPOsCheckBox.Checked := (ptoFindAllChildren in TestOptions);
+  IgnoreFuzzyCheckBox.Checked := (ptoIgnoreFuzzyStrings in TestOptions);
 end;
 
 

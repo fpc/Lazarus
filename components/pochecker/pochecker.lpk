@@ -16,7 +16,7 @@
     <Description Value="Check the validity of translated PO files.
 "/>
     <Version Major="1"/>
-    <Files Count="9">
+    <Files Count="11">
       <Item1>
         <Filename Value="resultdlg.pp"/>
         <UnitName Value="ResultDlg"/>
@@ -54,6 +54,14 @@
         <Filename Value="graphstat.pp"/>
         <UnitName Value="GraphStat"/>
       </Item9>
+      <Item10>
+        <Filename Value="pocheckersettings.pp"/>
+        <UnitName Value="PoCheckerSettings"/>
+      </Item10>
+      <Item11>
+        <Filename Value="pocheckerxmlconfig.pp"/>
+        <UnitName Value="PoCheckerXMLConfig"/>
+      </Item11>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
