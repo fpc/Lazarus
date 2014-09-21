@@ -166,6 +166,7 @@ Type
   private
     FDataLink: TFieldDataLink;
     FCustomEditMask: Boolean;
+    FFocusedDisplay: boolean;
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     function GetDataField: string;
