@@ -199,7 +199,7 @@ begin
   Result:=TComboExItem.Create(self);
 end;
 
-function TComboExItems.Add(const ACaption: string; AImageIndex: SmallInt;
+function TComboExItems.AddItem(const ACaption: string; AImageIndex: SmallInt;
   AOverlayImageIndex: SmallInt; ASelectedImageIndex: SmallInt; AIndent: SmallInt; AData: TCustomData
   ): TComboExItem;
 begin
@@ -316,7 +316,7 @@ begin
   FItemsEx.BeginUpdate;
   FItemsEx.Clear;
   for i:=0 to AItems.Count-1 do
-    ItemsEx.Add(AItems[i]);
+    ItemsEx.AddItem(AItems[i]);
   FItemsEx.EndUpdate;
 end;
 

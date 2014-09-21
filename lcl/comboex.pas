@@ -122,10 +122,10 @@ type
     procedure Notify(Item: TCollectionItem; Action: TCollectionNotification); override;
     procedure Update(Item: TCollectionItem); override;
   public
-    function Add: TComboExItem; overload;
-    function Add(const ACaption: string; AImageIndex: SmallInt = -1;
+    function Add: TComboExItem;
+    function AddItem(const ACaption: string; AImageIndex: SmallInt = -1;
                  AOverlayImageIndex: SmallInt = -1; ASelectedImageIndex: SmallInt = -1;
-                 AIndent: SmallInt = -1; AData: TCustomData = nil): TComboExItem; overload;
+                 AIndent: SmallInt = -1; AData: TCustomData = nil): TComboExItem;
     function Insert(AIndex: Integer): TComboExItem;
     property ComboItems[AIndex: Integer]: TComboExItem read GetComboItems; default;
   end;
