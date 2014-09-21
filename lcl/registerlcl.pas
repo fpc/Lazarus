@@ -15,7 +15,7 @@ uses
   PairSplitter, ExtDlgs, StdActns, DbCtrls, DBGrids, DBActns, EditBtn,
   ActnList, FileCtrl, Graphics, XMLPropStorage, IniPropStorage,
   ColorBox, ButtonPanel, LResources, LazHelpHTML, PopupNotifier, AsyncProcess,
-  UTF8Process, ShellCtrls, ValEdit;
+  UTF8Process, ShellCtrls, ValEdit, ComboEx;
 
 procedure Register;
 procedure RegisterLCLBase;
@@ -48,10 +48,10 @@ begin
   RegisterUnit('EditBtn',@EditBtn.Register);
   RegisterUnit('ActnList',@ActnList.Register);
   RegisterUnit('FileCtrl',@FileCtrl.Register);
+  RegisterUnit('ComboEx', @ComboEx.Register);
   RegisterUnit('Graphics',@Graphics.Register);
-  RegisterUnit('XMLPropStorage',@XMLPropStorage.Register);
-  RegisterUnit('IniPropStorage',@IniPropStorage.Register);
   RegisterUnit('ColorBox',@ColorBox.Register);
+  RegisterUnit('ValEdit', @ValEdit.Register);
   RegisterUnit('ButtonPanel',@ButtonPanel.Register);
   RegisterUnit('LResources',@LResources.Register);
   RegisterUnit('LazHelpHTML',@LazHelpHTML.Register);
@@ -59,7 +59,8 @@ begin
   RegisterUnit('AsyncProcess', @AsyncProcess.Register);
   RegisterUnit('UTF8Process', @UTF8Process.Register);
   RegisterUnit('ShellCtrls', @ShellCtrls.Register);
-  RegisterUnit('ValEdit', @ValEdit.Register);
+  RegisterUnit('XMLPropStorage',@XMLPropStorage.Register);
+  RegisterUnit('IniPropStorage',@IniPropStorage.Register);
 end;
 
 procedure RegisterLCLBase;

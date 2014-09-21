@@ -151,6 +151,7 @@ begin
     t.Dependencies.AddUnit('calendar');
     t.Dependencies.AddUnit('registerlcl');
     t.Dependencies.AddUnit('valedit');
+    t.Dependencies.AddUnit('comboex');
     t.Dependencies.AddUnit('lazcanvas');
     t.Dependencies.AddUnit('lazdialogs');
     t.Dependencies.AddUnit('lazregions');
@@ -273,6 +274,7 @@ begin
     T:=P.Targets.AddUnit('calendar.pp');
     T:=P.Targets.AddUnit('registerlcl.pas');
     T:=P.Targets.AddUnit('valedit.pas');
+    T:=P.Targets.AddUnit('comboex.pas');
     T:=P.Targets.AddUnit('lazcanvas.pas');
     T:=P.Targets.AddUnit('lazdialogs.pas');
     T:=P.Targets.AddUnit('lazregions.pas');

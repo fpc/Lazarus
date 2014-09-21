@@ -26,7 +26,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="3"/>
-    <Files Count="281">
+    <Files Count="282">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1157,6 +1157,10 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="EditBtn"/>
       </Item281>
+      <Item282>
+        <Filename Value="comboex.pas"/>
+        <UnitName Value="ComboEx"/>
+      </Item282>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>

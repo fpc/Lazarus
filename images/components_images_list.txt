@@ -13,6 +13,7 @@ components/tcalculatordialog.png
 components/tcalendar.png
 components/tcalendardialog.png
 components/tcheckbox.png
+components/tcheckcombobox.png
 components/tcheckgroup.png
 components/tchecklistbox.png
 components/tcolorbox.png
@@ -20,6 +21,7 @@ components/tcolorbutton.png
 components/tcolordialog.png
 components/tcolorlistbox.png
 components/tcombobox.png
+components/tcomboboxex.png
 components/tcontrolbar.png
 components/tcoolbar.png
 components/tdatasource.png

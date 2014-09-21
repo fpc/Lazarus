@@ -386,7 +386,6 @@ implementation
 
 procedure Register;
 begin
-  {$I comboex.lrs}
   RegisterComponents('Misc', [TComboBoxEx, TCheckComboBox]);
 end;
 
