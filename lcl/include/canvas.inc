@@ -674,8 +674,9 @@ procedure TCanvas.ArcTo(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY: Integer);
 var
   r: TRect;
 begin
-  Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY);
   r:=Rect(ALeft, ATop, ARight, ABottom);
+  LineTo(RadialPoint(EccentricAngle(Point(SX, SY), r), r));
+  Arc(ALeft, ATop, ARight, ABottom, SX, SY, EX, EY);
   MoveTo(RadialPoint(EccentricAngle(Point(EX, EY), r), r));
 end;
 
