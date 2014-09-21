@@ -148,6 +148,9 @@ type
     procedure MenuItemMouseDown(Sender: TObject; Button: TMouseButton;
                                 Shift: TShiftState; X, Y: Integer);
     procedure MenuItemDblClick(Sender: TObject);
+    procedure MenuItemDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure MenuItemDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState;
+                               var Accept: Boolean);
     procedure AddNewItemBeforeClick(Sender: TObject);
     procedure AddNewItemAfterClick(Sender: TObject);
     procedure AddSubMenuClick(Sender: TObject);
@@ -169,6 +172,7 @@ type
     function MoveDown(DMenuItem: TDesignerMenuItem; Ident: string): Integer;
     function DeleteItem(DMenuItem: TDesignerMenuItem): Integer;
     function ChangeCaption(DMenuItem: TDesignerMenuItem; const newcaption: string): Integer;
+    function MoveToNewLocation(DMenuItem, DDestMenuItem: TDesignerMenuItem; TheAction: Integer): Boolean;
     procedure InsertFromTemplate(Item,Ident: string);
     procedure SaveAsTemplate(Item,Ident: string);
     procedure ReplaceInTemplate(old_Item, new_Item: string);
@@ -264,7 +268,7 @@ begin
 end;
 
 //
-constructor TDesignerMainMenu.CreateWithMenu(AOwner: TComponent; aMenu: TMenu);
+constructor TDesignerMainMenu.CreateWithMenu(AOwner: TComponent; AMenu: TMenu);
 var
   PopupMenuItem: TMenuItem;
 begin
@@ -393,6 +397,8 @@ begin
   DMenuItem.SelfPanel.Caption:='';
   DMenuItem.SelfPanel.Height:=DESIGNER_MENU_ITEM_HEIGHT;
   DMenuItem.SelfPanel.OnMouseDown:=@MenuItemMouseDown;
+  DMenuItem.SelfPanel.OnDragOver:=@MenuItemDragOver;
+  DMenuItem.SelfPanel.OnDragDrop:=@MenuItemDragDrop;
   DMenuItem.SelfPanel.OnDblClick:=@MenuItemDblClick;
   DMenuItem.SelfPanel.PopupMenu := FDesignerPopupMenu;
 
@@ -403,6 +409,8 @@ begin
   DMenuItem.CaptionLabel.Top:=2;
   DMenuItem.CaptionLabel.Height:=DESIGNER_MENU_ITEM_HEIGHT - 4;
   DMenuItem.CaptionLabel.OnMouseDown:=@MenuItemMouseDown;
+  DMenuItem.CaptionLabel.OnDragOver:=@MenuItemDragOver;
+  DMenuItem.CaptionLabel.OnDragDrop:=@MenuItemDragDrop;
   DMenuItem.CaptionLabel.OnDblClick:=@MenuItemDblClick;
 
   DMenuItem.SubMenuArrow:=TArrow.Create(self);
@@ -414,6 +422,8 @@ begin
   DMenuItem.SubMenuArrow.ShadowType:=stout;
   DMenuItem.SubMenuArrow.Visible:=false;
   DMenuItem.SubMenuArrow.OnMouseDown:=@MenuItemMouseDown;
+  DMenuItem.SubMenuArrow.OnDragOver:=@MenuItemDragOver;
+  DMenuItem.SubMenuArrow.OnDragDrop:=@MenuItemDragDrop;
   DMenuItem.SubMenuArrow.OnDblClick:=@MenuItemDblClick;
 
   DesignerMenuItemIdent:=DesignerMenuItemIdent + 1;
@@ -818,12 +828,336 @@ begin
     UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 9);
 
     RealignDesigner;
+
+    If Button=mbLeft Then
+      TWinControl(Sender).BeginDrag(False, 1);
   end;
 end;
 
 procedure TDesignerMainMenu.MenuItemDblClick(Sender: TObject);
 begin
   HandleOnClickEventClick(Sender);
+end;
+
+procedure TDesignerMainMenu.MenuItemDragDrop(Sender, Source: TObject; X, Y: Integer);
+
+  function InnerIsChildOf(AMenu, AChild: TDesignerMenuItem): Boolean;
+  var
+    MenuItem: TDesignerMenuItem;
+  begin
+    result := false;
+    MenuItem := AMenu;
+
+    while assigned(MenuItem) and not result do
+    begin
+      result := (MenuItem=AChild);
+
+      if not result then
+      begin
+        if assigned(MenuItem.SubMenu) then
+          result := InnerIsChildOf(MenuItem.SubMenu, AChild);
+
+        if not result then
+          MenuItem := MenuItem.NextItem;
+      end;
+    end;
+  end;
+
+  function IsChildOf(AMenu, AChild: TDesignerMenuItem): Boolean;
+  begin
+    result := false;
+    if assigned(AMenu.SubMenu) then
+    begin
+      result := (AMenu.SubMenu=AChild);
+
+      if not result then
+        result := InnerIsChildOf(AMenu.SubMenu, AChild);
+    end;
+  end;
+
+var
+  DestDesignerItem: TDesignerMenuItem;
+  SelectedDesignerItem: TDesignerMenuItem;
+  bMoved: Boolean;
+begin
+  SelectedDesignerItem := GetDesignerMenuItem(Root, SelectedDesignerMenuItem);
+  if not assigned(SelectedDesignerItem) then
+    exit;
+
+  if (Sender is TPanel) then
+    DestDesignerItem := SearchItemByPanel(Root, TPanel(Sender))
+  else
+  if (Sender is TLabel) then
+    DestDesignerItem := SearchItemByPanel(Root, TPanel(TLabel(Sender).Parent))
+  else
+  if (Sender is TArrow) then
+    DestDesignerItem := SearchItemByPanel(Root, TPanel(TArrow(Sender).Parent))
+  else
+    DestDesignerItem := nil;
+
+  if not assigned(DestDesignerItem) then
+    exit;
+
+  if IsChildOf(SelectedDesignerItem, DestDesignerItem) then
+    exit;
+
+  bMoved := false;
+  if (Sender is TArrow) then
+    bMoved := MoveToNewLocation(SelectedDesignerItem, DestDesignerItem, 2)
+  else if (DestDesignerItem.Level=1) and (fMenu is TMainMenu) then
+  begin
+    // we're moving the menu sideways amoung the root menu items
+    if (x<10) then
+      bMoved := MoveToNewLocation(SelectedDesignerItem, DestDesignerItem, 0)
+    else if (x>TWinControl(Sender).Width-10) then
+      bMoved := MoveToNewLocation(SelectedDesignerItem, DestDesignerItem, 1)
+    else if (DestDesignerItem.SubMenu<>SelectedDesignerItem) then
+      bMoved := MoveToNewLocation(SelectedDesignerItem, DestDesignerItem, 2);
+  end
+  else
+  begin
+    // We're moving the menu up or down
+    If (y<5) then
+      bMoved := MoveToNewLocation(SelectedDesignerItem, DestDesignerItem, 0)
+    else if (y>TWinControl(Sender).Height-5) then
+      bMoved := MoveToNewLocation(SelectedDesignerItem, DestDesignerItem, 1)
+    else if (DestDesignerItem.SubMenu<>SelectedDesignerItem) then
+      bMoved := MoveToNewLocation(SelectedDesignerItem, DestDesignerItem, 2);
+  end;
+
+  if bMoved then
+  begin
+    SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
+
+    // destroy all existing panels
+    ChangeMenuItem(Root, 2, Root.ID);
+
+    // rebuild internal data state
+    InitIndexSequence;
+    SelectedDesignerMenuItem := SelectedDesignerItem.ID;
+    ChangeMenuItem(Root, 1, SelectedDesignerMenuItem);
+    CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
+
+    // Ensure the OI is updated and SelectedDesignerItem selected
+    // (seems to be only possible by toggling selected)
+    GetDesigner.SelectOnlyThisComponent(DestDesignerItem.RealMenuItem);
+    GetDesigner.SelectOnlyThisComponent(SelectedDesignerItem.RealMenuItem);
+
+    RealignDesigner;
+  end;
+end;
+
+function TDesignerMainMenu.MoveToNewLocation(DMenuItem, DDestMenuItem: TDesignerMenuItem; TheAction: Integer): Boolean;
+
+  function FindParentDesignerMenuItem(DSubMenuItem: TDesignerMenuItem): TDesignerMenuItem;
+  var
+    TempMI: TDesignerMenuItem;
+  begin
+    if DSubMenuItem.Level=1 then
+      result := nil
+    else
+    begin
+      // find the first menu in this submenu
+      TempMI := DSubMenuItem;
+      while assigned(TempMI.PrevItem) do
+        TempMI := TempMI.PrevItem;
+
+      if assigned(TempMI.ParentMenu) then
+        result := TempMI.ParentMenu
+      else
+        result := nil;
+    end;
+  end;
+
+  // Find the whole submenu that ATemp belongs to and recalculate the .indexs
+  procedure RecalcIndexes(DSubMenuItem: TDesignerMenuItem);
+  var
+    i : Integer;
+    TempMI: TDesignerMenuItem;
+    s: String;
+  begin
+    if not assigned(DSubMenuItem) then
+      exit;
+
+    TempMI := FindParentDesignerMenuItem(DSubMenuItem);
+    If assigned(TempMI) Then
+      s := TempMI.Caption
+    Else
+      s := 'Root';
+
+    if assigned(TempMI) then
+      TempMI := TempMI.SubMenu
+    else
+      TempMI := fRoot;
+
+    // now reindex the submenu
+    i := 0;
+    while assigned(TempMI) do
+    begin
+      TempMI.Index:=i;
+      i:=i+1;
+      TempMI := TempMI.NextItem;
+    end;
+  end;
+
+var
+  TempMI: TDesignerMenuItem;
+  DOrigParent: TDesignerMenuItem;
+  DOrigIndex: Integer;
+
+begin
+  result := false;
+  if (not assigned(DDestMenuItem)) or (not assigned(DMenuItem)) then
+    exit;
+
+  if not TheAction in [0..2] then
+    exit;
+
+  DOrigParent := FindParentDesignerMenuItem(DMenuItem);
+  DOrigIndex := DMenuItem.Index;
+
+  // First: unlink DMenuItem from it's current position
+
+  // Was this the root node?
+  if not assigned(DMenuItem.ParentMenu) and not assigned(DMenuItem.PrevItem) then
+  begin
+    fRoot := DMenuItem.NextItem;
+
+    if assigned(fRoot) then
+    begin
+      fRoot.PrevItem := nil;
+      DMenuItem.NextItem := nil;
+      RecalcIndexes(fRoot);
+    end;
+  end;
+
+  // is this the first node in a submenu?
+  if assigned(DMenuItem.ParentMenu) then
+  begin
+    TempMI := DMenuItem.NextItem;
+
+    if assigned(TempMI) then
+    begin
+      TempMI.ParentMenu := DMenuItem.ParentMenu;
+      TempMI.ParentMenu.SubMenu := TempMI;
+
+      RecalcIndexes(TempMI);
+    end
+    else
+    begin
+      DMenuItem.ParentMenu.SubMenu := nil;
+      DMenuItem.ParentMenu.SubMenuPanel.Visible := false;
+    end;
+
+    DMenuItem.ParentMenu := nil;
+  end;
+
+  // unlink from siblings
+  if assigned(DMenuItem.PrevItem) or assigned(DMenuItem.NextItem) then
+  begin
+    TempMI := nil;
+    if assigned(DMenuItem.PrevItem) then
+    begin
+      TempMI := DMenuItem.PrevItem;
+      TempMI.NextItem := DMenuItem.NextItem;
+    end;
+
+    if assigned(DMenuItem.NextItem) then
+    begin
+      DMenuItem.NextItem.PrevItem := TempMI;
+      TempMI := DMenuItem.NextItem;
+    end;
+
+    DMenuItem.NextItem := nil;
+    DMenuItem.PrevItem := nil;
+
+    RecalcIndexes(TempMI);
+  end;
+
+  // Now that DMenuItem is unlinked, it needs to be linked into new position
+  case TheAction of
+  0: // In front of DDestMenuItem.
+    begin
+      if assigned(DDestMenuItem.ParentMenu) then
+      begin
+        DMenuItem.ParentMenu := DDestMenuItem.ParentMenu;
+        DMenuItem.ParentMenu.SubMenu := DMenuItem;
+        DDestMenuItem.ParentMenu := nil;
+      end;
+
+      if assigned(DDestMenuItem.PrevItem) then
+      begin
+        TempMI := DDestMenuItem.PrevItem;
+        TempMI.NextItem := DMenuItem;
+        DMenuItem.PrevItem := TempMI;
+      end;
+
+      DDestMenuItem.PrevItem := DMenuItem;
+      DMenuItem.NextItem := DDestMenuItem;
+      DMenuItem.Level := DDestMenuItem.Level;
+
+      if not assigned(DMenuItem.ParentMenu) and not assigned(DMenuItem.PrevItem) then
+        fRoot := DMenuItem;
+
+      RecalcIndexes(DMenuItem);
+      result := true;
+    end;
+  1: // Behind DDestMenuItem
+    begin
+      if assigned(DDestMenuItem.NextItem) then
+      begin
+        TempMI := DDestMenuItem.NextItem;
+        TempMI.PrevItem := DMenuItem;
+        DMenuItem.NextItem := TempMI;
+      end;
+
+      DDestMenuItem.NextItem := DMenuItem;
+      DMenuItem.PrevItem := DDestMenuItem;
+      DMenuItem.Level := DDestMenuItem.Level;
+
+      RecalcIndexes(DDestMenuItem);
+      result := true;
+    end;
+  2: // Insert as first submenu item of DDestMenuItem
+    begin
+      if assigned(DDestMenuItem.SubMenu) then
+      begin
+        TempMI := DDestMenuItem.SubMenu;
+        TempMI.ParentMenu := nil;
+        TempMI.PrevItem := DMenuItem;
+        DMenuItem.NextItem := TempMI;
+      end;
+
+      DDestMenuItem.SubMenu := DMenuItem;
+      DMenuItem.ParentMenu := DDestMenuItem;
+      DMenuItem.Level := DDestMenuItem.Level + 1;
+
+      RecalcIndexes(DMenuItem);
+      result := true;
+    end;
+  end;
+
+  if result then
+  begin
+    // unlink the RealMenuItem
+    if assigned(DOrigParent) then
+      DOrigParent.RealMenuItem.Delete(DOrigIndex)
+    else
+      fMenu.Items.Delete(DOrigIndex);
+
+    // relink the RealMenuItem
+    TempMI := FindParentDesignerMenuItem(DMenuItem);
+    if assigned(TempMI) then
+      TempMI.RealMenuItem.Insert(DMenuItem.Index, DMenuItem.RealMenuItem)
+    else
+      fMenu.Items.Insert(DMenuItem.Index, DMenuItem.RealMenuItem);
+  end;
+end;
+
+procedure TDesignerMainMenu.MenuItemDragOver(Sender, Source: TObject; X, Y: Integer; State: TDragState;
+  var Accept: Boolean);
+begin
+  Accept := (Sender<>Source) and ((Source is TPanel) or (Source is TLabel) or (Source is TArrow));
 end;
 
 // -------------------------------------------------------------//
@@ -898,6 +1232,8 @@ end;
 // Move Up has been selected from context menu --------//
 // ----------------------------------------------------//
 procedure TDesignerMainMenu.MoveUpClick(Sender: TObject);
+var
+  TempMI : TDesignerMenuItem;
 begin
   if (MoveUp(Root, SelectedDesignerMenuItem) > 0) then
   begin
@@ -906,7 +1242,12 @@ begin
     InitIndexSequence;
     CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
     
-    UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 4);
+    TempMI := GetDesignerMenuItem(Root, SelectedDesignerMenuItem);
+    UpdateMenu(fMenu.Items, TempMI, 1, 4);
+
+    // Ensure OI is updated and correct item select
+    GetDesigner.SelectOnlyThisComponent(TempMI.NextItem.RealMenuItem);
+    GetDesigner.SelectOnlyThisComponent(TempMI.RealMenuItem);
 
     RealignDesigner;
   end;
@@ -1464,6 +1805,8 @@ end;
 // Move Down has been selected from context menu --------//
 // ------------------------------------------------------//
 procedure TDesignerMainMenu.MoveDownClick(Sender: TObject);
+var
+  TempMI: TDesignerMenuItem;
 begin
   if (MoveDown(Root, SelectedDesignerMenuItem) > 0) then
   begin
@@ -1472,7 +1815,12 @@ begin
     InitIndexSequence;
     CreateIndexSequence(Root, SelectedDesignerMenuItem,1);
 
-    UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 5);
+    TempMI := GetDesignerMenuItem(Root, SelectedDesignerMenuItem);
+    UpdateMenu(fMenu.Items, TempMI, 1, 5);
+
+    // Ensure OI is updated and correct item select
+    GetDesigner.SelectOnlyThisComponent(TempMI.PrevItem.RealMenuItem);
+    GetDesigner.SelectOnlyThisComponent(TempMI.RealMenuItem);
 
     RealignDesigner;
   end;
@@ -1872,7 +2220,7 @@ begin
     index_sequence[i]:=-1;
 end;
 
-function TDEsignerMainMenu.CreateIndexSequence(DMenuItem: TDesignerMenuItem;
+function TDesignerMainMenu.CreateIndexSequence(DMenuItem: TDesignerMenuItem;
   Ident: string; Ind: Integer): Boolean;
 begin
   Result:=false;
