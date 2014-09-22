@@ -63,6 +63,7 @@ type
     function GetFileNameAndURL(RawUrl: String; out FileName: String; out URL: String): Boolean;
     procedure SetHelpLabel(AValue: String);
     function CheckBuildLHelp: Integer; // modal result
+    // Get full path of lazbuild executable
     function GetLazBuildEXE(out ALazBuild: String): Boolean;
     function PassTheBuck(Node: THelpNode; var ErrMsg: string): TShowHelpResult;
   public
@@ -152,7 +153,7 @@ begin
    for i := 0 to HelpDatabases.Count-1 do begin
      if HelpDatabases[i].SupportsMimeType('application/x-chm') then begin
        HelpDatabases[i].ShowTableOfContents;
-       Sleep(200); //give viewer chance to open file. todo: better way of doing this?
+       Sleep(200); //give viewer chance to open file.
        Application.ProcessMessages;
      end;
    end;
@@ -175,8 +176,10 @@ begin
     for i := 0 to CHMFiles.Count-1 do begin
       if UpperCase(ExtractFileExt(CHMFiles[i]))='.CHM' then begin
         fHelpConnection.OpenURL(CHMFiles[i], '/index.html');
-        Sleep(200); //give viewer chance to open file. todo: better way of doing this?
-        Application.ProcessMessages;
+        // This is probably no longer necessary as we're now waiting for the viewer's
+        // response to our OpenURL command; the viewer can process at it's own speed
+        //Sleep(200); //give viewer chance to open file.
+        //Application.ProcessMessages;
       end;
     end;
   finally
@@ -314,7 +317,7 @@ var
   Viewer: THelpViewer;
 begin
   Result := shrViewerNotFound;
-  ErrMsg := 'Attempted to find viewer for "'+ Node.URL + '" failed.';
+  ErrMsg := 'TChmHelpViewer: Attempted to find viewer for "'+ Node.URL + '" failed.';
   for I := 0 to HelpViewers.Count-1 do
   begin
     Viewer := HelpViewers.Items[I];
@@ -370,7 +373,7 @@ end;
 
 function TChmHelpViewer.SupportsTableOfContents: boolean;
 begin
-  Result:=True;
+  Result := True;
 end;
 
 procedure TChmHelpViewer.ShowTableOfContents(Node: THelpNode);
@@ -392,12 +395,16 @@ begin
   // Make sure the lhelp help viewer exists; build it if doesn't and it is lhelp
   HelpExeFileName:=GetHelpExe;
   if (not FileExistsUTF8(HelpExeFileName)) and
-    ((ExtractFileNameOnly(HelpExeFileName) = 'lhelp') and (CheckBuildLHelp <> mrOK)) then begin
+    ((ExtractFileNameOnly(HelpExeFileName) = 'lhelp') and
+    (CheckBuildLHelp <> mrOK)) then begin
     IDEMessageDialog(HELP_MissingLhelp,
       Format(HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
              [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
               SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]),
       mtError,[mbCancel]);
+    debugln(Format('ChmHelpViewer: '+HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
+      [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
+      SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]));
     exit;
   end;
 
@@ -406,17 +413,17 @@ begin
   if not(fHelpConnection.ServerRunning) then
   begin
     fHelpConnection.StartHelpServer(HelpLabel, HelpExeFileName, true);
-    Response:=fHelpConnection.RunMiscCommand(mrVersion);
-    if Response<>srSuccess then
-      debugln('Help viewer does not support our protocol version ('+PROTOCOL_VERSION +'). Response was: ord: '+inttostr(ord(Response)))
+    Response := fHelpConnection.RunMiscCommand(mrVersion);
+    if Response <> srSuccess then
+      debugln('TChmHelpViewer: Help viewer does not support our protocol version ('+PROTOCOL_VERSION +'). Response was: ord: '+inttostr(ord(Response)))
     else
     begin
       // Open all chm files after it has started, while still hidden
       OpenAllCHMsInSearchPath(SearchPath);
       // Instruct viewer to show its GUI
-      Response:=fHelpConnection.RunMiscCommand(mrShow);
-      if Response<>srSuccess then
-        debugln('Help viewer gave error response to mrShow command. Response was: ord: '+inttostr(ord(Response)));
+      Response := fHelpConnection.RunMiscCommand(mrShow);
+      if Response <> srSuccess then
+        debugln('TChmHelpViewer: Help viewer gave error response to mrShow command. Response was: ord: '+inttostr(ord(Response)));
     end;
   end;
 end;
@@ -426,7 +433,7 @@ function TChmHelpViewer.ShowNode(Node: THelpNode; var ErrMsg: string
 var
   FileName: String;
   Url: String;
-  Res: TLHelpResponse;
+  Response: TLHelpResponse;
   SearchPath: String; //; delimited list of directories
   Proc: TProcessUTF8;
   FoundFileName: String;
@@ -468,13 +475,20 @@ begin
 
   if ExtractFileNameOnly(GetHelpExe) = 'lhelp' then begin
     WasRunning := fHelpConnection.ServerRunning;
-    fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe);
+    // Start server and tell it to hide
+    // No use setting cursor to hourglass as that may take as long as the
+    // waitforresponse timeout.
+    fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe, true);
     // If the server is not already running, open all chm files after it has started
     // This will allow cross-chm (LCL, FCL etc) searching and browsing in lhelp.
     if not(WasRunning) then begin
       OpenAllCHMsInSearchPath(SearchPath);
+      // Instruct viewer to show its GUI
+      Response:=fHelpConnection.RunMiscCommand(mrShow);
+      if Response<>srSuccess then
+        debugln('Help viewer gave error response to mrShow command. Response was: ord: '+inttostr(ord(Response)));
     end;
-    Res := fHelpConnection.OpenURL(FileName, Url);
+    Response := fHelpConnection.OpenURL(FileName, Url);
   end else begin
     if Trim(fHelpExeParams) = '' then
     begin
@@ -513,19 +527,21 @@ begin
       Proc.Parameters.Add(Format(fHelpExeParams, [FileName, Url]));
       {$endif}
       Proc.Execute;
-      Res := srSuccess;
+      Response := srSuccess;
     except
-      Res := srUnknown;
+      Response := srUnknown;
     end;
     Proc.Free;
   end;
 
-  case Res of
+  case Response of
     srSuccess: Result := shrSuccess;
-    srNoAnswer: begin
+    srNoAnswer: Result := shrSuccess;
+    { Due to problems with SimpleIPC messages not arriving at the right time
+    we will assume no answer actually means success. Otherwise:
       Result := shrHelpNotFound;
       ErrMsg := 'No answer from help viewer for URL '+URL;
-    end;
+    }
     srInvalidContext: begin
       Result := shrNone;
       ErrMsg := 'Invalid context showing '+URL;
