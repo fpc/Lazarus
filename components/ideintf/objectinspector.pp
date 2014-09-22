@@ -4043,7 +4043,7 @@ begin
   with InfoPanel do
   begin
     Name := 'InfoPanel';
-//    Constraints.MinHeight := 16;   Should there be MinHeight?
+    Constraints.MinHeight := 8;
     Caption := '';
     Height := InfoBoxHeight;
     Parent := Self;
