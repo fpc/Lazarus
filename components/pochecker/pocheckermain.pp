@@ -478,7 +478,6 @@ begin
   FPoCheckerSettings.TestTypes := GetTestTypesFromListBox;
   FPoCheckerSettings.TestOptions := GetTestOptions;
   FPoCheckerSettings.SaveConfig;
-  FPoCheckerSettings.Free;
 end;
 
 
