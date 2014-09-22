@@ -454,14 +454,13 @@ type
     function GetEffectiveShowInTaskBar: TShowInTaskBar;
     function GetMonitor: TMonitor;
     function GetPixelsPerInch: Longint;
-    function GetRestoredLeft: integer;
-    function GetRestoredTop: integer;
     function IsAutoScrollStored: Boolean;
     function IsForm: Boolean;
     function IsIconStored: Boolean;
     procedure CloseModal;
     procedure FreeIconHandles;
     procedure IconChanged(Sender: TObject);
+    procedure Moved(Data: PtrInt);
     procedure SetActive(AValue: Boolean);
     procedure SetActiveControl(AWinControl: TWinControl);
     procedure SetActiveDefaultControl(AControl: TControl);
@@ -485,6 +484,7 @@ type
     procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
     procedure WMHelp(var Message: TLMHelp); message LM_HELP;
+    procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
@@ -685,8 +685,8 @@ type
     property ParentFont default False;
     property PixelsPerInch: Longint read GetPixelsPerInch write FPixelsPerInch stored False;
     property Position: TPosition read FPosition write SetPosition default poDesigned;
-    property RestoredLeft: integer read GetRestoredLeft;
-    property RestoredTop: integer read GetRestoredTop;
+    property RestoredLeft: integer read FRestoredLeft;
+    property RestoredTop: integer read FRestoredTop;
     property RestoredWidth: integer read FRestoredWidth;
     property RestoredHeight: integer read FRestoredHeight;
     property ShowInTaskBar: TShowInTaskbar read FShowInTaskbar write SetShowInTaskBar

@@ -730,13 +730,26 @@ begin
 
   inherited WMSize(Message);
 
-  if (Message.SizeType and SIZE_RESTORED) > 0 then
+  if (Message.SizeType and not SIZE_SourceIsInterface) = SIZE_RESTORED then
   begin
-    FRestoredLeft := Left;
-    FRestoredTop := Top;
     FRestoredWidth := Width;
     FRestoredHeight := Height;
     //DebugLn('[TCustomForm.WMSize] saving restored bounds ',DbgSName(Self),' ',dbgs(FRestoredWidth),'x',dbgs(FRestoredHeight));
+  end;
+end;
+
+procedure TCustomForm.WMMove(var Message: TLMMove);
+begin
+  inherited WMMove(Message);
+  Application.QueueAsyncCall(@Moved, 0)
+end;
+
+procedure TCustomForm.Moved(Data: PtrInt);
+begin
+  if WindowState = wsNormal then
+  begin
+    FRestoredLeft := Left;
+    FRestoredTop := Top;
   end;
 end;
 
@@ -2273,22 +2286,6 @@ end;
 function TCustomForm.GetMonitor: TMonitor;
 begin
   Result := Screen.MonitorFromWindow(Handle, mdNearest);
-end;
-
-function TCustomForm.GetRestoredLeft: integer;
-begin
-  if WindowState=wsNormal then
-    Result := Left
-  else
-    Result := FRestoredLeft;
-end;
-
-function TCustomForm.GetRestoredTop: integer;
-begin
-  if WindowState=wsNormal then
-    Result := Top
-  else
-    Result := FRestoredTop;
 end;
 
 {------------------------------------------------------------------------------
