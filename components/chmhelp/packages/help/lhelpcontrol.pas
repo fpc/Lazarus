@@ -76,7 +76,8 @@ type
     function ServerRunning: Boolean;
     // Starts remote server (help viewer); if Hide specified, asks the help server to hide itself/run minimized while starting
     // Server must support a switch --ipcname that accepts the NameForServer argument to identify it for SimpleIPC
-    function StartHelpServer(NameForServer: String; ServerEXE: String = '';Hide: boolean=false): Boolean;
+    function StartHelpServer(NameForServer: String;
+      ServerEXE: String = ''; Hide: boolean=false): Boolean;
     // Shows URL in the HelpFileName file by sending a TUrlRequest
     function OpenURL(HelpFileName: String; Url: String): TLHelpResponse;
     // Shows help for Context in the HelpFileName file by sending a TContextRequest request
@@ -85,6 +86,7 @@ type
     function OpenFile(HelpFileName: String): TLHelpResponse;
     // Requests to run command on viewer by sending a TMiscrequest
     function RunMiscCommand(CommandID: TMiscRequests): TLHelpResponse;
+    // Calling code can set this to process e.g. GUI handling while waiting for help to show
     property ProcessWhileWaiting: TProcedureOfObject read FProcessWhileWaiting write FProcessWhileWaiting;
   end;
 
@@ -104,7 +106,6 @@ const
   // typical user so it then isn't fit for purpose.
   TimeoutSecs=10;
 var
-  Iterations: integer;
   Stream: TStream;
   StartTime: TDateTime;
   TimeOut: TDateTime;
@@ -114,17 +115,16 @@ begin
   StartTime := Now;
   while (Now-StartTime)<TimeOut do
   begin
-    Inc(Iterations);
     if fServerIn.PeekMessage(50, True) then
     begin
       Stream := fServerIn.MsgData;
-      Stream.Position:=0;
+      Stream.Position := 0;
       Result := TLHelpResponse(Stream.ReadDWord);
       Exit;
     end;
     if Assigned(FProcessWhileWaiting) then FProcessWhileWaiting();
   end;
-  debugln('LHelpControl: WaitForMsgResponse: hit timeout ('+inttostr(TimeoutSecs)+')');
+  debugln('LHelpControl: WaitForMsgResponse: hit timeout ('+inttostr(TimeoutSecs)+' seconds)');
 end;
 
 function TLHelpConnection.SendMessage(Stream: TStream): TLHelpResponse;
@@ -220,13 +220,12 @@ begin
       // to put lhelp into the foreground, use "open -n"
       Cmd:='/usr/bin/open -n '+ServerEXE+' --args --ipcname ' + NameForServer
     end;
-    DebugLn(['TLHelpConnection.StartHelpServer ',cmd]);
     {$ENDIF}
     with TProcessUTF8.Create(nil) do begin
       InheritHandles := false;
       ShowWindow:=swoShowNormal;
       CommandLine := Cmd;
-      debugln('LHelpControl: going to start help server by executing '+Cmd);
+      debugln('TLHelpConnection.StartHelpServer: going to start help server by executing '+Cmd);
       Execute;
       Free;
     end;
