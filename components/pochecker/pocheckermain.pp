@@ -55,6 +55,8 @@ type
     procedure RunSelectedTests;
     procedure ClearAndDisableStatusPanel;
     procedure SetSelectedPoName(AFilename: String);
+    procedure LoadConfig;
+    procedure SaveConfig;
   published
     IgnoreFuzzyCheckBox: TCheckBox;
     UnselectAllBtn: TButton;
@@ -141,22 +143,7 @@ begin
   SelectAllBtn.Caption := sSelectAllTests;
   SelectBasicBtn.Caption := sSelectBasicTests;
   UnselectAllBtn.Caption := sUnselectAllTests;
-  FPoCheckerSettings := TPoCheckerSettings.Create;
-  FPoCheckerSettings.LoadConfig;
-  //DebugLn('  TestOptions after loading = ');
-  //DebugLn('  ',DbgS(FPoCheckerSettings.TestOptions));
-  //debugln('  TPoCheckerForm.FormCreate: TestTypes   after loading = ');
-  //DebugLn('  ',DbgS(FPoCheckerSettings.TestTypes));
-  SetTestTypeCheckBoxes(FPoCheckerSettings.TestTypes);
-  SetTestOptionCheckBoxes(FPoCheckerSettings.TestOptions);
-  if (FPoCheckerSettings.LastSelectedFile <> '') then
-  begin
-    //debugln('Trying to load ',FPoCheckerSettings.LastSelectedFile);
-    if TryCreatePoFamily(FPoCheckerSettings.LastSelectedFile) then
-      SetSelectedPoName(FPoCheckerSettings.LastSelectedFile)
-    else
-      SetSelectedPoName('');
-  end;
+  LoadConfig;
 end;
 
 
@@ -164,15 +151,9 @@ procedure TPoCheckerForm.FormDestroy(Sender: TObject);
 begin
   if Assigned(PoFamily) then
     PoFamily.Free;
+  SaveConfig;
   if Assigned(FPoCheckerSettings) then
-  begin
-    FPoCheckerSettings.SaveSettingsOnExit := True; //ToDo: create a checkbox for this
-    FPoCheckerSettings.LastSelectedFile := FSelectedPoName;
-    FPoCheckerSettings.TestTypes := GetTestTypesFromListBox;
-    FPoCheckerSettings.TestOptions := GetTestOptions;
-    FPoCheckerSettings.SaveConfig;
     FPoCheckerSettings.Free;
-  end;
 end;
 
 
@@ -468,6 +449,36 @@ begin
     UnselectAllBtn.Enabled := False;
     Caption := sGUIPoFileCheckingTool;
   end;
+end;
+
+procedure TPoCheckerForm.LoadConfig;
+begin
+  FPoCheckerSettings := TPoCheckerSettings.Create;
+  FPoCheckerSettings.LoadConfig;
+  //DebugLn('  TestOptions after loading = ');
+  //DebugLn('  ',DbgS(FPoCheckerSettings.TestOptions));
+  //debugln('  TPoCheckerForm.FormCreate: TestTypes   after loading = ');
+  //DebugLn('  ',DbgS(FPoCheckerSettings.TestTypes));
+  SetTestTypeCheckBoxes(FPoCheckerSettings.TestTypes);
+  SetTestOptionCheckBoxes(FPoCheckerSettings.TestOptions);
+  if (FPoCheckerSettings.LastSelectedFile <> '') then
+  begin
+    //debugln('Trying to load ',FPoCheckerSettings.LastSelectedFile);
+    if TryCreatePoFamily(FPoCheckerSettings.LastSelectedFile) then
+      SetSelectedPoName(FPoCheckerSettings.LastSelectedFile)
+    else
+      SetSelectedPoName('');
+  end;
+end;
+
+procedure TPoCheckerForm.SaveConfig;
+begin
+  FPoCheckerSettings.SaveSettingsOnExit := True; //ToDo: create a checkbox for this
+  FPoCheckerSettings.LastSelectedFile := FSelectedPoName;
+  FPoCheckerSettings.TestTypes := GetTestTypesFromListBox;
+  FPoCheckerSettings.TestOptions := GetTestOptions;
+  FPoCheckerSettings.SaveConfig;
+  FPoCheckerSettings.Free;
 end;
 
 
