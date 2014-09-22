@@ -152,7 +152,7 @@ type
     constructor Create; override;
     Destructor Destroy; override;
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
-    procedure ReadFromXML(Doc: TXMLDocument; AData: TvVectorialDocument);
+    procedure ReadFromXML(Doc: TXMLDocument; AData: TvVectorialDocument); override;
   end;
 
 implementation

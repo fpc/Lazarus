@@ -30,7 +30,8 @@ uses
   Classes, SysUtils, Math, TypInfo, contnrs, types,
   // FCL-Image
   fpcanvas, fpimage,
-
+  // lazutils
+  laz2_dom,
   // LCL
   lazutf8
   {$ifdef USE_LCL_CANVAS}
@@ -106,6 +107,8 @@ type
   TvVectorialPage = class;
   TvTextPageSequence = class;
   TvEntityWithPenBrushAndFont = class;
+  TvVectorialDocument = class;
+  TvEmbeddedVectorialDoc = class;
 
   { Pen, Brush and Font }
 
@@ -388,12 +391,13 @@ type
   public
     //not used currently Parent: TvEntity; // Might be nil if this is placed directly in the page!!!
     X, Y, Z: Double;
-    constructor Create; virtual;
+    constructor Create(APage: TvPage); virtual;
     procedure Clear; virtual;
     // in CalculateBoundingBox always remember to treat correctly the case of ADest=nil!!!
     // This cased is utilized to guess the size of a document even before getting a canvas to draw at
     procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); virtual;
     procedure ExpandBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); // helper to help CalculateBoundingBox
+    procedure CalcEntityCanvasMinMaxXY(var ARenderInfo: TvRenderInfo; APointX, APointY: Integer); virtual;
     {@@ ASubpart is only valid if this routine returns vfrSubpartFound }
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; virtual;
     procedure Move(ADeltaX, ADeltaY: Double); virtual;
@@ -420,7 +424,7 @@ type
     FPage: TvPage;
   public
     Name: string;
-    constructor Create(APage: TvPage); virtual;
+    constructor Create(APage: TvPage); override;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
 
@@ -434,7 +438,6 @@ type
     constructor Create(APage: TvPage); override;
     procedure ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo);
     procedure AssignPen(APen: TvPen);
-    procedure CalcEntityCanvasMinMaxXY(var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
@@ -1012,6 +1015,7 @@ type
     function AddParagraph: TvParagraph;
     function AddList: TvList;
     function AddTable: TvTable;
+    function AddEmbeddedVectorialDoc: TvEmbeddedVectorialDoc;
     //function AddImage: TvImage;
     //
     function TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult; override;
@@ -1135,14 +1139,19 @@ type
     function AddColWidth(AValue : Double) : Integer;
   end;
 
-(*
-  TvImage = class(TvEntityWithStyle) // ClassName subject to change...
-  public
-    Filename : String;
+  { TvEmbeddedVectorialDoc }
 
-    Width, Height : Double; // mm
+  TvEmbeddedVectorialDoc = class(TvEntity)
+  public
+    Document: TvVectorialDocument;
+    constructor create(APage : TvPage); override;
+    destructor destroy; override;
+    procedure CalculateBoundingBox(ADest: TFPCustomCanvas; var ALeft, ATop, ARight, ABottom: Double); override;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
+    function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; override;
   end;
-*)
+
   { TvVectorialDocument }
 
   TvVectorialDocument = class
@@ -1182,6 +1191,7 @@ type
     procedure ReadFromFile(AFileName: string); overload;
     procedure ReadFromStream(AStream: TStream; AFormat: TvVectorialFormat);
     procedure ReadFromStrings(AStrings: TStrings; AFormat: TvVectorialFormat);
+    procedure ReadFromXML(ADoc: TXMLDocument; AFormat: TvVectorialFormat);
     class function GetFormatFromExtension(AFileName: string): TvVectorialFormat;
     function  GetDetailedFileFormat(): string;
     procedure GuessDocumentSize();
@@ -1370,6 +1380,7 @@ type
     function AddParagraph: TvParagraph;
     function AddList: TvList;
     function AddTable: TvTable;
+    function AddEmbeddedVectorialDoc: TvEmbeddedVectorialDoc;
     //function AddImage: TvImage;
     { Drawing methods }
     procedure DrawBackground(ADest: TFPCustomCanvas); override;
@@ -1394,6 +1405,7 @@ type
     procedure ReadFromFile(AFileName: string; AData: TvVectorialDocument); virtual;
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); virtual;
     procedure ReadFromStrings(AStrings: TStrings; AData: TvVectorialDocument); virtual;
+    procedure ReadFromXML(ADoc: TXMLDocument; AData: TvVectorialDocument); virtual;
   end;
 
   {@@ TvVectorialWriter class reference type }
@@ -1666,6 +1678,61 @@ function TvTable.AddColWidth(AValue: Double): Integer;
 begin
   SetLength(ColWidths, Length(ColWidths) + 1);
   ColWidths[High(ColWidths)] := AValue;
+end;
+
+{ TvEmbeddedVectorialDoc }
+
+constructor TvEmbeddedVectorialDoc.create(APage: TvPage);
+begin
+  inherited create(APage);
+  Document := TvVectorialDocument.Create();
+end;
+
+destructor TvEmbeddedVectorialDoc.destroy;
+begin
+  Document.Free;
+  inherited destroy;
+end;
+
+procedure TvEmbeddedVectorialDoc.CalculateBoundingBox(ADest: TFPCustomCanvas;
+  var ALeft, ATop, ARight, ABottom: Double);
+begin
+  ALeft := X;
+  ATop := Y;
+  ARight := X + Document.Width;
+  ABottom := Y + Document.Height;
+end;
+
+procedure TvEmbeddedVectorialDoc.Render(ADest: TFPCustomCanvas;
+  var ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer;
+  AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
+var
+  lPage: TvPage;
+begin
+  lPage := Document.GetPage(0);
+  lPage.Render(ADest, CoordToCanvasX(X), CoordToCanvasY(Y), AMulX, AMulY);
+
+  CalcEntityCanvasMinMaxXY(ARenderInfo, CoordToCanvasX(X), CoordToCanvasY(Y));
+  CalcEntityCanvasMinMaxXY(ARenderInfo,
+    CoordToCanvasX(X) + CoordToCanvasX(Document.Width),
+    CoordToCanvasY(Y) + CoordToCanvasY(Document.Height));
+end;
+
+function TvEmbeddedVectorialDoc.GenerateDebugTree(
+  ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer;
+begin
+  Result:=inherited GenerateDebugTree(ADestRoutine, APageItem);
 end;
 
 { TvStyle }
@@ -2287,7 +2354,7 @@ end;
 
 { TvEntity }
 
-constructor TvEntity.Create;
+constructor TvEntity.Create(APage: TvPage);
 begin
 end;
 
@@ -2315,6 +2382,19 @@ begin
   if lTop < ATop then ATop := lTop;
   if lRight > ARight then ARight := lRight;
   if lBottom > ABottom then ABottom := lBottom;
+end;
+
+procedure TvEntity.CalcEntityCanvasMinMaxXY(
+  var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
+begin
+  if ARenderInfo.EntityCanvasMinXY.X < 0 then ARenderInfo.EntityCanvasMinXY.X := APointX
+  else ARenderInfo.EntityCanvasMinXY.X := Min(ARenderInfo.EntityCanvasMinXY.X, APointX);
+  if ARenderInfo.EntityCanvasMinXY.Y < 0 then ARenderInfo.EntityCanvasMinXY.Y := APointY
+  else ARenderInfo.EntityCanvasMinXY.Y := Min(ARenderInfo.EntityCanvasMinXY.Y, APointY);
+  if ARenderInfo.EntityCanvasMaxXY.X < 0 then ARenderInfo.EntityCanvasMaxXY.X := APointX
+  else ARenderInfo.EntityCanvasMaxXY.X := Max(ARenderInfo.EntityCanvasMaxXY.X, APointX);
+  if ARenderInfo.EntityCanvasMaxXY.Y < 0 then ARenderInfo.EntityCanvasMaxXY.Y := APointY
+  else ARenderInfo.EntityCanvasMaxXY.Y := Max(ARenderInfo.EntityCanvasMaxXY.Y, APointY);
 end;
 
 function TvEntity.TryToSelect(APos: TPoint; var ASubpart: Cardinal): TvFindEntityResult;
@@ -2403,7 +2483,7 @@ end;
 
 constructor TvNamedEntity.Create(APage: TvPage);
 begin
-  inherited Create;
+  inherited Create(APage);
   FPage := APage;
 end;
 
@@ -2438,19 +2518,6 @@ begin
   Pen.Style := APen.Style;
   Pen.Color := APen.Color;
   Pen.Width := APen.Width;
-end;
-
-procedure TvEntityWithPen.CalcEntityCanvasMinMaxXY(
-  var ARenderInfo: TvRenderInfo; APointX, APointY: Integer);
-begin
-  if ARenderInfo.EntityCanvasMinXY.X < 0 then ARenderInfo.EntityCanvasMinXY.X := APointX
-  else ARenderInfo.EntityCanvasMinXY.X := Min(ARenderInfo.EntityCanvasMinXY.X, APointX);
-  if ARenderInfo.EntityCanvasMinXY.Y < 0 then ARenderInfo.EntityCanvasMinXY.Y := APointY
-  else ARenderInfo.EntityCanvasMinXY.Y := Min(ARenderInfo.EntityCanvasMinXY.Y, APointY);
-  if ARenderInfo.EntityCanvasMaxXY.X < 0 then ARenderInfo.EntityCanvasMaxXY.X := APointX
-  else ARenderInfo.EntityCanvasMaxXY.X := Max(ARenderInfo.EntityCanvasMaxXY.X, APointX);
-  if ARenderInfo.EntityCanvasMaxXY.Y < 0 then ARenderInfo.EntityCanvasMaxXY.Y := APointY
-  else ARenderInfo.EntityCanvasMaxXY.Y := Max(ARenderInfo.EntityCanvasMaxXY.Y, APointY);
 end;
 
 procedure TvEntityWithPen.Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer;
@@ -3361,10 +3428,10 @@ begin
       Render_NextText_X := CoordToCanvasX(X)+XAnchorAdjustment;
     ADest.TextOut(Render_NextText_X, Round(LowerDim.Y), lText);
 
-    CalcEntityCanvasMinMaxXY(ARenderInfo, Render_NextText_X, Round(LowerDim.Y));
+    CalcEntityCanvasMinMaxXY(ARenderInfo, Render_NextText_X, ADestY);
     lTextSize := ACanvas.TextExtent(lText);
     CalcEntityCanvasMinMaxXY(ARenderInfo, Render_NextText_X+lTextSize.cx,
-      Round(LowerDim.Y)+lTextSize.cy);
+      ADestY+lTextSize.cy);
 
     Render_NextText_X := Render_NextText_X + lTextSize.cx;
   end;
@@ -5503,6 +5570,12 @@ begin
   AddEntity(Result);
 end;
 
+function TvRichText.AddEmbeddedVectorialDoc: TvEmbeddedVectorialDoc;
+begin
+  Result := TvEmbeddedVectorialDoc.Create(FPage);
+  AddEntity(Result);
+end;
+
 (*
 function TvRichText.AddImage: TvImage;
 begin
@@ -6210,7 +6283,7 @@ function TvVectorialPage.AddPoint(AX, AY, AZ: Double): TvPoint;
 var
   lPoint: TvPoint;
 begin
-  lPoint := TvPoint.Create;
+  lPoint := TvPoint.Create(Self);
   lPoint.X := AX;
   lPoint.Y := AY;
   lPoint.Z := AZ;
@@ -6224,7 +6297,7 @@ var
   i: Integer;
 begin
   for i := 0 to GetEntitiesCount()-1 do
-    GetEntity(0).PositionSubparts(ADest, ABaseX, ABaseY);
+    GetEntity(i).PositionSubparts(ADest, ABaseX, ABaseY);
 end;
 
 procedure TvVectorialPage.DrawBackground(ADest: TFPCustomCanvas);
@@ -6415,6 +6488,11 @@ begin
   Result := MainText.AddTable;
 end;
 
+function TvTextPageSequence.AddEmbeddedVectorialDoc: TvEmbeddedVectorialDoc;
+begin
+  Result := MainText.AddEmbeddedVectorialDoc;
+end;
+
 procedure TvTextPageSequence.DrawBackground(ADest: TFPCustomCanvas);
 begin
 
@@ -6445,9 +6523,14 @@ begin
     {$endif}
 
     CurEntity := GetEntity(i);
+    CurEntity.X := 0;
+    CurEntity.Y := 0;
 
     RenderInfo.BackgroundColor := BackgroundColor;
     CurEntity.Render(ADest, RenderInfo, ADestX, CurY, AMulX, AMulY);
+    // Store the old position in X/Y but don't use it, we use this to debug out the position
+    CurEntity.X := ADestX;
+    CurEntity.Y := CurY;
     CurY := RenderInfo.EntityCanvasMaxXY.Y;
   end;
 
@@ -6458,8 +6541,15 @@ end;
 
 procedure TvTextPageSequence.GenerateDebugTree(
   ADestRoutine: TvDebugAddItemProc; APageItem: Pointer);
+var
+  lCurEntity: TvEntity;
+  i: Integer;
 begin
-
+  for i := 0 to MainText.GetEntitiesCount() - 1 do
+  begin
+    lCurEntity := MainText.GetEntity(i);
+    lCurEntity.GenerateDebugTree(ADestRoutine, APageItem);
+  end;
 end;
 
 (*
@@ -6676,6 +6766,20 @@ begin
   AReader := CreateVectorialReader(AFormat);
   try
     AReader.ReadFromStrings(AStrings, Self);
+  finally
+    AReader.Free;
+  end;
+end;
+
+procedure TvVectorialDocument.ReadFromXML(ADoc: TXMLDocument; AFormat: TvVectorialFormat);
+var
+  AReader: TvCustomVectorialReader;
+begin
+  Self.Clear;
+
+  AReader := CreateVectorialReader(AFormat);
+  try
+    AReader.ReadFromXML(ADoc, Self);
   finally
     AReader.Free;
   end;
@@ -7121,6 +7225,10 @@ begin
   finally
     AStringStream.Free;
   end;
+end;
+
+procedure TvCustomVectorialReader.ReadFromXML(ADoc: TXMLDocument; AData: TvVectorialDocument);
+begin
 end;
 
 { TsCustomSpreadWriter }

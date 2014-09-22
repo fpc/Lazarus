@@ -78,6 +78,7 @@ var
   lTextStr: string;
   lHeaderType: DOMString;
 begin
+  Result := nil;
   CurParagraph := AData.AddParagraph();
   CurParagraph.Style := ADoc.StyleTextBody;
   lTextStr := ANode.FirstChild.NodeValue;
@@ -92,12 +93,36 @@ end;
 
 function TvHTMLVectorialReader.ReadParagraphFromNode(ANode: TDOMNode;
   AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+var
+  CurParagraph: TvParagraph;
+  lText: TvText;
+  lTextStr: string;
 begin
+  Result := nil;
+  CurParagraph := AData.AddParagraph();
+  CurParagraph.Style := ADoc.StyleTextBody;
+  lTextStr := ANode.FirstChild.NodeValue;
+  lText := CurParagraph.AddText(lTextStr);
 end;
 
 function TvHTMLVectorialReader.ReadSVGFromNode(ANode: TDOMNode;
   AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+var
+  CurSVG: TvEmbeddedVectorialDoc;
+  lText: TvText;
+  lDoc: TXMLDocument;
+  lImportedNode: TDOMNode;
 begin
+  Result := nil;
+  CurSVG := AData.AddEmbeddedVectorialDoc();
+  lDoc := TXMLDocument.Create;
+  try
+    lImportedNode := lDoc.ImportNode(ANode, True);
+    lDoc.AppendChild(lImportedNode);
+    CurSVG.Document.ReadFromXML(lDoc, vfSVG);
+  finally
+    lDoc.Free;
+  end;
 end;
 
 constructor TvHTMLVectorialReader.Create;
