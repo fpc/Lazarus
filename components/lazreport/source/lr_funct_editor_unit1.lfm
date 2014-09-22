@@ -41,7 +41,9 @@ object LR_FunctEditor1Form: TLR_FunctEditor1Form
       Align = alClient
       Caption = 'Label2'
       Color = clInfoBk
+      Font.Color = clInfoText
       ParentColor = False
+      ParentFont = False
       Transparent = False
       WordWrap = True
     end
