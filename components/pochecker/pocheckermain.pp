@@ -451,10 +451,23 @@ begin
   end;
 end;
 
+
 procedure TPoCheckerForm.LoadConfig;
+function IsSaneRect(ARect: TRect): Boolean;
+const
+  MinWH = 50; //arbitrary
+begin
+  Result := (ARect.Right > ARect.Left + MinWH) and
+            (ARect.Bottom > ARect.Bottom + MinWH);
+end;
+var
+  ARect: TRect;
 begin
   FPoCheckerSettings := TPoCheckerSettings.Create;
   FPoCheckerSettings.LoadConfig;
+  ARect := FPoCheckerSettings.MainFormGeometry;
+  if IsSaneRect(ARect) then BoundsRect := ARect;
+
   //DebugLn('  TestOptions after loading = ');
   //DebugLn('  ',DbgS(FPoCheckerSettings.TestOptions));
   //debugln('  TPoCheckerForm.FormCreate: TestTypes   after loading = ');
@@ -477,6 +490,7 @@ begin
   FPoCheckerSettings.LastSelectedFile := FSelectedPoName;
   FPoCheckerSettings.TestTypes := GetTestTypesFromListBox;
   FPoCheckerSettings.TestOptions := GetTestOptions;
+  FPoCheckerSettings.MainFormGeometry := BoundsRect;
   FPoCheckerSettings.SaveConfig;
 end;
 

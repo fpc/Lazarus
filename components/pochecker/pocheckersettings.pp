@@ -28,6 +28,7 @@ type
     FMasterPoList: TStrings;
     FChildrenPoList: TStrings;
     FLastSelectedFile: String;
+    FMainFormGeometry: TRect;
     function LoadLastSelectedFile: String;
     function LoadTestTypes: TPoTestTypes;
     function LoadTestOptions: TPoTestOptions;
@@ -36,6 +37,7 @@ type
     procedure SaveLastSelectedFile;
     procedure SaveTestTypes;
     procedure SaveTestOptions;
+    procedure SaveWindowsGeometry;
     procedure SaveMasterPoList;
     procedure SaveChildrenPoList;
 
@@ -53,6 +55,7 @@ type
     property MasterPoList: TStrings read FMasterPoList write FMasterPoList;
     property ChildrenPoList: TStrings read FChildrenPoList write FChildrenPoList;
     property LastSelectedFile: String read FLastSelectedFile write FLastSelectedFile;
+    property MainFormGeometry: TRect read FMainFormGeometry write FMainFormGeometry;
   end;
 
 function DbgS(PoTestTypes: TPoTestTypes): String; overload;
@@ -72,7 +75,7 @@ begin
   Result := '';
 end;
 
-function GetConfigPath: String;
+function GetAndCreateConfigPath: String;
 var
   OldOnGetApplicationName: TGetAppNameEvent;
   OldOnGetVendorName: TGetVendorNameEvent;
@@ -92,6 +95,8 @@ begin
     OnGetVendorName := OldOnGetVendorName;
     Result := GetAppConfigDirUtf8(False);
   end;
+  if not ForceDirectoriesUTF8(Result) then
+    Debugln('GetAndCreateConfigPath: unable to create "',Result,'"');
 end;
 
 {$endif}
@@ -114,6 +119,7 @@ const
   pLastSelected = 'LastSelected/';
   pTestTypes = 'TestTypes/';
   pTestOptions = 'TestOptions/';
+  pWindowsGeometry = 'General/WindowsGeometry/';
   pMasterPoFiles = 'MasterPoFiles/';
   pChildrenPoFiles = 'ChildrenPoFiles/';
 
@@ -219,6 +225,11 @@ begin
   end;
 end;
 
+procedure TPoCheckerSettings.SaveWindowsGeometry;
+begin
+  FConfig.SetDeleteValue(pWindowsGeometry+'MainForm/Value',FMainFormGeometry,Rect(-1,-1,-1,-1));
+end;
+
 procedure TPoCheckerSettings.SaveMasterPoList;
 begin
   FConfig.DeletePath(pMasterPoFiles);
@@ -234,8 +245,9 @@ begin
   try
     FTestTypes := [];
     FTestOptions := [];
+    FMainFormGeometry := Rect(-1,-1,-1,-1);
     {$ifdef POCHECKERSTANDALONE}
-    FFilename := GetConfigPath;
+    FFilename := GetAndCreateConfigPath;
     if (FFilename <> '') then FFilename := AppendPathDelim(FFilename);
     FFilename := FFilename + 'pochecker.xml';
     debugln('TPoCheckerSettings.Create: Filename = ');
@@ -291,6 +303,7 @@ begin
       SaveLastSelectedFile;
       SaveTestTypes;
       SaveTestOptions;
+      SaveWindowsGeometry;
       SaveMasterPoList;
       SaveChildrenPoList;
     end
