@@ -174,7 +174,7 @@
       </element>
       <!-- property Visibility: published -->
       <element name="TCustomTimer.Interval">
-        <short>The <var>Interval</var> for which the timer is to run</short>
+        <short>The <var>Interval</var> (in milliseconds) for which the timer is to run</short>
         <descr/>
         <seealso/>
       </element>
