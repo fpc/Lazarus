@@ -205,7 +205,7 @@ type
 
     procedure ShowLazarusHelpStartPage;
     procedure ShowIDEHelpForContext(HelpContext: THelpContext);
-    procedure ShowIDEHelpForKeyword(const Keyword: string); // an arbitrary keyword, not a fpc keyword
+    procedure ShowIDEHelpForKeyword(const Keyword: string); // an arbitrary keyword, not an FPC keyword
 
     function ShowHelpForSourcePosition(const Filename: string;
                                        const CodePos: TPoint;
@@ -1377,6 +1377,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
   const CodePos: TPoint; var ErrMsg: string): TShowHelpResult;
   
   function CollectKeyWords(CodeBuffer: TCodeBuffer; out Identifier: string): TShowHelpResult;
+  // Collect keywords and show help if possible
   var
     p: Integer;
     IdentStart, IdentEnd: integer;
@@ -1404,7 +1405,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
     if Result=shrSuccess then
       exit;
     if Result in [shrNone,shrDatabaseNotFound,shrContextNotFound,shrHelpNotFound] then
-      exit(shrHelpNotFound); // not a FPC keyword
+      exit(shrHelpNotFound); // not an FPC keyword
     // viewer error
     HelpManager.ShowError(Result,ErrorMsg);
     Result:=shrCancel;
@@ -1412,6 +1413,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
 
   function CollectDeclarations(CodeBuffer: TCodeBuffer;
     out Complete: boolean): TShowHelpResult;
+  // Collect declarations and show help if possible
   var
     NewList: TPascalHelpContextList;
     PascalHelpContextLists: TList;
@@ -1430,7 +1432,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
       then begin
         if ListOfPCodeXYPosition=nil then exit;
         debugln('TIDEHelpManager.ShowHelpForSourcePosition Success, number of declarations: ',dbgs(ListOfPCodeXYPosition.Count));
-        // convert the source positions in pascal help context list
+        // convert the source positions in Pascal help context list
         for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
           CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
           debugln('TIDEHelpManager.ShowHelpForSourcePosition Declaration at ',dbgs(CurCodePos));
@@ -1483,11 +1485,11 @@ begin
   if Result in [shrCancel,shrSuccess] then exit;
   if IsValidIdent(Identifier) then
   begin
-    debugln(['TIDEHelpManager.ShowHelpForSourcePosition "',Identifier,'" is not a FPC keyword, search via code browser ...']);
+    debugln(['TIDEHelpManager.ShowHelpForSourcePosition "',Identifier,'" is not an FPC keyword, search via code browser ...']);
     ShowCodeBrowser(Identifier);
     exit(shrSuccess);
   end;
-  debugln(['TIDEHelpManager.ShowHelpForSourcePosition "',Identifier,'" is not a FPC keyword']);
+  debugln(['TIDEHelpManager.ShowHelpForSourcePosition "',Identifier,'" is not an FPC keyword']);
 end;
 
 function TIDEHelpManager.ConvertCodePosToPascalHelpContext(
