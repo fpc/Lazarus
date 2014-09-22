@@ -1726,7 +1726,6 @@ end;
 
 procedure TPackageEditorForm.CreateFpmakeFileClick(Sender: TObject);
 begin
-  debugln(['TPackageEditorForm.CreateFpmakeFileClick AAA1']);
   PackageEditors.CreateFpmakeFile(LazPackage);
 end;
 
