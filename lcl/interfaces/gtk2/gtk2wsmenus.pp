@@ -83,7 +83,7 @@ var
   MenuWidget: PGtkWidget = nil;
 
 function Gtk2MenuItemButtonPress(widget: PGtkWidget; event: PGdkEventButton;
- {%H-} user_data: gpointer): gboolean; cdecl;
+ {%H-}user_data: gpointer): gboolean; cdecl;
 var
   Parent: PGtkWidget;
   WidgetInfo: PWidgetInfo;
