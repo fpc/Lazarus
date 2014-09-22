@@ -40,7 +40,6 @@
       <Unit0>
         <Filename Value="lhelpconnectiondemo1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="lhelpconnectiondemo1"/>
       </Unit0>
       <Unit1>
         <Filename Value="helpconnectionunit1.pas"/>
@@ -74,8 +73,5 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>
