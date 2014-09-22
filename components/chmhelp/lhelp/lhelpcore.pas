@@ -104,7 +104,7 @@ type
     // only used if lhelp started with --ipcname to indicate
     // IPC communication method should be used
     fOutputIPC: TSimpleIPCClient;
-    fServerTimer: TTimer;
+    fInputIPCTimer: TTimer;
     fContext: LongInt; // used once when we are started on the command line with --context
     fConfig: TXMLConfig;
     fHasShowed: Boolean;
@@ -147,12 +147,14 @@ type
 
 var
   HelpForm: THelpForm;
+  // Sends messages to the IDE
   IPCClient: TSimpleIPCClient;
+  // Receives messages from the IDE
   IPCServer: TSimpleIPCServer;
 
 const
   INVALID_FILE_TYPE = 1;
-  VERSION_STAMP = '2013-07-31'; //used in displaying version in about form etc
+  VERSION_STAMP = '2014-09-22'; //used in displaying version in about form etc
 
 implementation
 
@@ -233,12 +235,30 @@ begin
 end;
 
 procedure THelpForm.FileMenuOpenItemClick(Sender: TObject);
+var
+  TimerWasOn: boolean;
 begin
-  if OpenDialog1.Execute then
+  // Work around bug 25529: Slow dialog boxes for Windows Vista+ with
+  // themes enabled
+  // Stop listening to incoming server messages while busy showing dialog
+  if assigned(fInputIPCTimer) Then
   begin
-    if OpenURL('file://'+OpenDialog1.FileName) = Ord(srSuccess) then
-      AddRecentFile('file://'+OpenDialog1.FileName);
-    RefreshState;
+    TimerWasOn := fInputIPCTimer.Enabled;
+    fInputIPCTimer.Enabled := False;
+  end;
+
+  try
+    if OpenDialog1.Execute then
+    begin
+      if OpenURL('file://'+OpenDialog1.FileName) = Ord(srSuccess) then
+        AddRecentFile('file://'+OpenDialog1.FileName);
+      RefreshState;
+    end;
+  finally
+    if assigned(fInputIPCTimer) Then
+    begin
+      fInputIPCTimer.Enabled := TimerWasOn;
+    end;
   end;
 end;
 
@@ -263,10 +283,11 @@ begin
     Protocol.Free;
   end;
 
-  URLSAllowed := Trim(URLSALLowed);
+  URLSAllowed := Trim(URLSAllowed);
 
   fRes:='';
-  if InputQuery('Please enter a URL', 'Supported URL type(s): (' +URLSAllowed+ ')', fRes) then
+  if InputQuery('Please enter a URL',
+    'Supported URL type(s): (' +URLSAllowed+ ')', fRes) then
   begin
     if OpenURL(fRes) = ord(srSuccess) then
       AddRecentFile(fRes);
@@ -652,16 +673,20 @@ begin
   fInputIPC.Active := True;
   IPCServer := fInputIPC;
 
-  fServerTimer := TTimer.Create(nil);
-  fServerTimer.OnTimer := @ServerMessage;
-  fServerTimer.Interval := 200;
-  fServerTimer.Enabled := True;
+  // Use timer to check for incoming messages from the IDE
+  fInputIPCTimer := TTimer.Create(nil);
+  fInputIPCTimer.OnTimer := @ServerMessage;
+  fInputIPCTimer.Interval := 200; //milliseconds
+  fInputIPCTimer.Enabled := True;
   ServerMessage(nil);
 
   fOutputIPC := TSimpleIPCClient.Create(nil);
   fOutputIPC.ServerID := ServerName+'client';
   try
-    if fOutputIPC.ServerRunning {$IFDEF STALE_PIPE_WORKAROUND} and not IPCPipeIsStale(fOutputIPC){$ENDIF}
+    if fOutputIPC.ServerRunning
+{$IFDEF STALE_PIPE_WORKAROUND}
+      and not IPCPipeIsStale(fOutputIPC)
+{$ENDIF}
     then
       fOutputIPC.Active := True;
   except
@@ -679,7 +704,7 @@ begin
 
      FreeAndNil(fInputIPC);
      IPCServer := nil;
-     FreeAndNil(fServerTimer);
+     FreeAndNil(fInputIPCTimer);
    end;
 
    if fOutputIPC <> nil then
@@ -740,7 +765,7 @@ begin
 
  if fPage = nil then
  begin
-   //no existing page that can handle this content, so create one
+   // no existing page that can handle this content, so create one
    fPage := TContentTab.Create(PageControl);
    fPage.ContentProvider := fRealContentProvider.Create(fPage, ImageList1);
    fPAge.ContentProvider.OnTitleChange:=@ContentTitleChange;
