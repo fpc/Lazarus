@@ -867,7 +867,7 @@ type
                                AData: pointer); virtual;
     function CalcHintRect(MaxWidth: Integer; const AHint: String;
                           AData: pointer): TRect; virtual;
-    function OffsetHintRect(NewPos: TPoint; dy: Integer = 30): Boolean;
+    function OffsetHintRect(NewPos: TPoint; dy: Integer = 15): Boolean;
     procedure InitializeWnd; override;
     procedure ReleaseHandle;
     procedure Paint; override;
