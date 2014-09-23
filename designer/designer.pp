@@ -4228,9 +4228,7 @@ begin
   Rect.Top := Position.Y + 15;
   Rect.Right := Rect.Left + Rect.Right;
   Rect.Bottom := Rect.Top + Rect.Bottom;
-
-  FHintWindow.HintRect := Rect;
-  FHintWindow.ActivateHint(AHint);
+  FHintWindow.ActivateHint(Rect, AHint);
 end;
 
 procedure TDesigner.SetSnapToGrid(const AValue: boolean);

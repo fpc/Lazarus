@@ -1813,7 +1813,7 @@ begin
       OnHintLocation(Self, sz, APoint);
     end;
     OffsetRect(r, APoint.X, APoint.Y);
-    FHintWindow.ActivateWithBounds(r, h);
+    FHintWindow.ActivateHint(r, h);
   end;
 end;
 

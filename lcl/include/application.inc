@@ -779,7 +779,7 @@ var
   HintInfo: THintInfo;
   CanShow: Boolean;
   HintWinRect: TRect;
-  CurHeight: Integer;
+  CurHeight, WidthAdjust: Integer;
   i: LongInt;
 begin
   if not FShowHint or (FHintControl=nil) then
@@ -851,17 +851,16 @@ begin
       HintWinRect := FHintWindow.CalcHintRect(HintMaxWidth, HintStr, HintData);
     //Position HintWindow depending on LTR/RTL
     if FHintWindow.UseRightToLeftAlignment then
-      OffsetRect(HintWinRect, HintInfo.HintPos.X - (HintWinRect.Right - HintWinRect.Left), HintInfo.HintPos.Y)
+      WidthAdjust := HintWinRect.Right - HintWinRect.Left
     else
-      OffsetRect(HintWinRect, HintInfo.HintPos.X, HintInfo.HintPos.Y);
+      WidthAdjust := 0;
+    OffsetRect(HintWinRect, HintInfo.HintPos.X - WidthAdjust, HintInfo.HintPos.Y);
     //DebugLn(['TApplication.ShowHintWindow HintStr="',HintInfo.HintStr,'" HintWinRect=',dbgs(HintWinRect)]);
 
     FHintWindow.Color := HintInfo.HintColor;
     //DebugLn(['TApplication.ShowHintWindow FHintWindow.Color=',dbgs(FHintWindow.Color),' HintInfo.HintColor=',dbgs(HintInfo.HintColor)]);
 
-    //debugln('TApplication.ShowHintWindow B HintWinRect=',dbgs(HintWinRect),' HintStr="',DbgStr(HintInfo.HintStr),'"');
-    FHintWindow.HintRect := HintWinRect;
-    FHintWindow.ActivateHint(HintInfo.HintStr);
+    FHintWindow.ActivateHint(HintWinRect, HintInfo.HintStr);
     FHintRect := HintInfo.CursorRect;
     // start hide timer
     StartHintTimer(HintInfo.HideTimeout,ahttHideHint);
