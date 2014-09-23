@@ -19,7 +19,7 @@ msgstr "Добавить выбранный элемент на панель"
 
 #: editortoolbar_str.rsall
 msgid "All"
-msgstr ""
+msgstr "Все"
 
 #: editortoolbar_str.rsbottom
 msgid "Bottom"
@@ -31,7 +31,7 @@ msgstr "Отмена"
 
 #: editortoolbar_str.rsclearselection
 msgid "Clear selection"
-msgstr ""
+msgstr "Снять выбор"
 
 #: editortoolbar_str.rscodeexplorer
 msgid "Code Explorer"
@@ -47,15 +47,15 @@ msgstr "Настроить инструментальную панель"
 
 #: editortoolbar_str.rscustom
 msgid "Custom"
-msgstr ""
+msgstr "Пользовательский"
 
 #: editortoolbar_str.rsdebug
 msgid "Debug"
-msgstr ""
+msgstr "Отладка"
 
 #: editortoolbar_str.rsdesign
 msgid "Design"
-msgstr ""
+msgstr "Разработка"
 
 #: editortoolbar_str.rsdesigner
 msgid "Designer"
@@ -71,19 +71,19 @@ msgstr "Настройка инструментальной панели ред�
 
 #: editortoolbar_str.rshelp1
 msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
-msgstr ""
+msgstr "Кнопка \"Добавить\" вставляет элемент из меню перед выбранным элементом инструментальной панели."
 
 #: editortoolbar_str.rshelp2
 msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr ""
+msgstr "Если ничего не было выбрано, добавление будет произведено в конец панели."
 
 #: editortoolbar_str.rshelp3
 msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr ""
+msgstr "Элементы панели можно упорядочивать при помощи кнопок \"Переместить вверх\" и \"Переместить вниз\"."
 
 #: editortoolbar_str.rshelp4
 msgid "Hint: to append an Item at the end, use \"Clear selection\""
-msgstr ""
+msgstr "Подсказка: чтобы добавить элемент в конец, воспользуйтесь кнопкой \"Снять выбор\""
 
 #: editortoolbar_str.rshint
 msgid "You may add here your favorite commands"
@@ -91,7 +91,7 @@ msgstr "Сюда можно добавить часто используемые
 
 #: editortoolbar_str.rshtml
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: editortoolbar_str.rsidemainmenu
 msgid "IDE Main Menu"
@@ -144,7 +144,7 @@ msgstr "Положение"
 
 #: editortoolbar_str.rsprofile
 msgid "Profile"
-msgstr ""
+msgstr "Профиль"
 
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
