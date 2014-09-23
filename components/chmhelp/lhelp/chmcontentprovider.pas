@@ -871,7 +871,7 @@ var
   k: Integer;
   Item: TContentTreeNode;
 begin
-//  if fKeywordCombo.Text = '' then Exit;
+  //  if fKeywordCombo.Text = '' then Exit;
   SearchWords := TStringList.Create;
   SearchWords.Delimiter := ' ';
   Searchwords.DelimitedText := fKeywordCombo.Text;

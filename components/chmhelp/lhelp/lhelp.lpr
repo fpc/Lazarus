@@ -27,8 +27,8 @@ uses
   SimpleIPC, TurboPowerIPro, chmpopup, lhelpcontrolpkg, lhelpcore;
 
 var
- X: Integer;
- S: TStringList;
+  X: Integer;
+  S: TStringList;
 
 {$R *.res}
 
