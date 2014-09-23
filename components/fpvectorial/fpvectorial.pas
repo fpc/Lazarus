@@ -378,6 +378,10 @@ type
     EntityCanvasMinXY, EntityCanvasMaxXY: TPoint; // The size utilized in the canvas to draw this entity
   end;
 
+  TvEntityFeatures = record
+    DrawsUpwards: Boolean; // TvText, TvEmbeddedVectorialDoc, etc draws upwards, but in the future we might have entities drawing downwards
+  end;
+
   { Now all elements }
 
   {@@
@@ -410,6 +414,7 @@ type
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); virtual;
     function AdjustColorToBackground(AColor: TFPColor; ARenderInfo: TvRenderInfo): TFPColor;
     function GetNormalizedPos(APage: TvVectorialPage; ANewMin, ANewMax: Double): T3DPoint;
+    function GetEntityFeatures: TvEntityFeatures; virtual;
     function GenerateDebugTree(ADestRoutine: TvDebugAddItemProc; APageItem: Pointer): Pointer; virtual;
     class function GenerateDebugStrForFPColor(AColor: TFPColor): string;
   end;
@@ -436,7 +441,8 @@ type
         elements might be able to override this setting. }
     Pen: TvPen;
     constructor Create(APage: TvPage); override;
-    procedure ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo);
+    procedure ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo); overload;
+    procedure ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; APen: TvPen); overload;
     procedure AssignPen(APen: TvPen);
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -450,7 +456,8 @@ type
         elements might be able to override this setting. }
     Brush: TvBrush;
     constructor Create(APage: TvPage); override;
-    procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas);
+    procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas); overload;
+    procedure ApplyBrushToCanvas(ADest: TFPCustomCanvas; ABrush: TvBrush); overload;
     procedure AssignBrush(ABrush: TvBrush);
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
       ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
@@ -464,7 +471,8 @@ type
     Font: TvFont;
     TextAnchor: TvTextAnchor;
     constructor Create(APage: TvPage); override;
-    procedure ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AMulX: Double = 1.0);
+    procedure ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AMulX: Double = 1.0); overload;
+    procedure ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AFont: TvFont; AMulX: Double = 1.0); overload;
     procedure AssignFont(AFont: TvFont);
     procedure Scale(ADeltaScaleX, ADeltaScaleY: Double); override;
     procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
@@ -480,6 +488,8 @@ type
     constructor Create(APage: TvPage); override;
     destructor Destroy; override;
     function GetCombinedStyle(AParent: TvEntityWithStyle): TvStyle;
+    procedure Render(ADest: TFPCustomCanvas; var ARenderInfo: TvRenderInfo; ADestX: Integer = 0;
+      ADestY: Integer = 0; AMulX: Double = 1.0; AMulY: Double = 1.0); override;
   end;
 
   TvClipMode = (vcmNonzeroWindingRule, vcmEvenOddRule);
@@ -1173,7 +1183,8 @@ type
     { Selection fields }
     SelectedElement: TvEntity;
     // List of common styles, for conveniently finding them
-    StyleTextBody, StyleHeading1, StyleHeading2, StyleHeading3: TvStyle;
+    StyleTextBody, StyleHeading1, StyleHeading2, StyleHeading3,
+      StyleHeading4, StyleHeading5, StyleHeading6: TvStyle;
     StyleTextBodyCentralized, StyleHeading1Centralized,
       StyleHeading2Centralized, StyleHeading3Centralized: TvStyle;
     StyleBulletList, StyleNumberList : TvListStyle;
@@ -2465,6 +2476,11 @@ begin
   Result.Z := (Z - APage.MinZ) * (ANewMax - ANewMin) / (APage.MaxZ - APage.MinZ) + ANewMin;
 end;
 
+function TvEntity.GetEntityFeatures: TvEntityFeatures;
+begin
+  Result.DrawsUpwards := True;
+end;
+
 function TvEntity.GenerateDebugTree(ADestRoutine: TvDebugAddItemProc;
   APageItem: Pointer): Pointer;
 var
@@ -2508,9 +2524,15 @@ end;
 
 procedure TvEntityWithPen.ApplyPenToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo);
 begin
-  ADest.Pen.FPColor := AdjustColorToBackground(Pen.Color, ARenderInfo);
-  ADest.Pen.Width := 1;//Pen.Width;
-  ADest.Pen.Style := Pen.Style;
+  ApplyPenToCanvas(ADest, ARenderInfo, Pen);
+end;
+
+procedure TvEntityWithPen.ApplyPenToCanvas(ADest: TFPCustomCanvas;
+  ARenderInfo: TvRenderInfo; APen: TvPen);
+begin
+  ADest.Pen.FPColor := AdjustColorToBackground(APen.Color, ARenderInfo);
+  ADest.Pen.Width := 1;//APen.Width;
+  ADest.Pen.Style := APen.Style;
 end;
 
 procedure TvEntityWithPen.AssignPen(APen: TvPen);
@@ -2538,8 +2560,14 @@ end;
 
 procedure TvEntityWithPenAndBrush.ApplyBrushToCanvas(ADest: TFPCustomCanvas);
 begin
-  ADest.Brush.FPColor := Brush.Color;
-  ADest.Brush.Style := Brush.Style;
+  ApplyBrushToCanvas(ADest, Brush);
+end;
+
+procedure TvEntityWithPenAndBrush.ApplyBrushToCanvas(ADest: TFPCustomCanvas;
+  ABrush: TvBrush);
+begin
+  ADest.Brush.FPColor := ABrush.Color;
+  ADest.Brush.Style := ABrush.Style;
 end;
 
 procedure TvEntityWithPenAndBrush.AssignBrush(ABrush: TvBrush);
@@ -2580,7 +2608,14 @@ begin
   Font.Color := colBlack;
 end;
 
-procedure TvEntityWithPenBrushAndFont.ApplyFontToCanvas(ADest: TFPCustomCanvas; ARenderInfo: TvRenderInfo; AMulX: Double = 1.0);
+procedure TvEntityWithPenBrushAndFont.ApplyFontToCanvas(ADest: TFPCustomCanvas;
+  ARenderInfo: TvRenderInfo; AMulX: Double = 1.0);
+begin
+  ApplyFontToCanvas(ADest, ARenderInfo, Font, AMulX);
+end;
+
+procedure TvEntityWithPenBrushAndFont.ApplyFontToCanvas(ADest: TFPCustomCanvas;
+  ARenderInfo: TvRenderInfo; AFont: TvFont; AMulX: Double);
 var
   i: Integer;
   {$ifdef USE_LCL_CANVAS}
@@ -2589,20 +2624,20 @@ var
   //
   LowerDim: T3DPoint;
 begin
-  ADest.Font.Size := Round(AmulX * Font.Size);
-  ADest.Font.Bold := Font.Bold;
-  ADest.Font.Italic := Font.Italic;
-  ADest.Font.Underline := Font.Underline;
+  ADest.Font.Size := Round(AmulX * AFont.Size);
+  ADest.Font.Bold := AFont.Bold;
+  ADest.Font.Italic := AFont.Italic;
+  ADest.Font.Underline := AFont.Underline;
   {$IF (FPC_FULLVERSION<=20600) or (FPC_FULLVERSION=20602)}
-  ADest.Font.StrikeTrough := Font.StrikeThrough; //old version with typo
+  ADest.Font.StrikeTrough := AFont.StrikeThrough; //old version with typo
   {$ELSE}
-  ADest.Font.StrikeThrough := Font.StrikeThrough;
+  ADest.Font.StrikeThrough := AFont.StrikeThrough;
   {$ENDIF}
 
   {$ifdef USE_LCL_CANVAS}
-  ALCLDest.Font.Orientation := Round(Font.Orientation * 16);
+  ALCLDest.Font.Orientation := Round(AFont.Orientation * 16);
   {$endif}
-  ADest.Font.FPColor := AdjustColorToBackground(Font.Color, ARenderInfo);
+  ADest.Font.FPColor := AdjustColorToBackground(AFont.Color, ARenderInfo);
 end;
 
 procedure TvEntityWithPenBrushAndFont.AssignFont(AFont: TvFont);
@@ -2668,6 +2703,19 @@ function TvEntityWithStyle.GetCombinedStyle(AParent: TvEntityWithStyle
 begin
   if (AParent <> nil) and (Style = nil) then Result := AParent.Style
   else Result := Style;
+end;
+
+procedure TvEntityWithStyle.Render(ADest: TFPCustomCanvas;
+  var ARenderInfo: TvRenderInfo; ADestX: Integer; ADestY: Integer;
+  AMulX: Double; AMulY: Double);
+begin
+  inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
+  if (Style <> nil) then
+  begin
+    ApplyPenToCanvas(ADest, ARenderInfo, Style.Pen);
+    ApplyBrushToCanvas(ADest, Style.Brush);
+    ApplyFontToCanvas(ADest, ARenderInfo, Style.Font, AMulX);
+  end;
 end;
 
 { TPath }
@@ -3337,10 +3385,13 @@ var
   i: Integer;
   lSize: TSize;
   lWidth, lHeight: Integer;
+  lRenderInfo: TvRenderInfo;
   {$ifdef USE_LCL_CANVAS}
   ACanvas: TCanvas absolute ADest;
   {$endif}
 begin
+  inherited Render(ADest, lRenderInfo, 0, 0, 0, 0);
+
   ALeft := X;
   ATop := Y;
   lWidth := 0;
@@ -3428,10 +3479,10 @@ begin
       Render_NextText_X := CoordToCanvasX(X)+XAnchorAdjustment;
     ADest.TextOut(Render_NextText_X, Round(LowerDim.Y), lText);
 
-    CalcEntityCanvasMinMaxXY(ARenderInfo, Render_NextText_X, ADestY);
+    CalcEntityCanvasMinMaxXY(ARenderInfo, Render_NextText_X, Round(LowerDim.Y));
     lTextSize := ACanvas.TextExtent(lText);
     CalcEntityCanvasMinMaxXY(ARenderInfo, Render_NextText_X+lTextSize.cx,
-      ADestY+lTextSize.cy);
+      Round(LowerDim.Y)+lTextSize.cy);
 
     Render_NextText_X := Render_NextText_X + lTextSize.cx;
   end;
@@ -5447,6 +5498,7 @@ var
   lText: TvText absolute lEntity;
   lPrevText: TvText = nil;
   lFirstText: Boolean = True;
+  lResetOldStyle: Boolean = False;
 begin
   // Don't call inherited Render(ADest, ARenderInfo, ADestX, ADestY, AMulX, AMulY);
   lEntity := GetFirstEntity();
@@ -5454,6 +5506,14 @@ begin
   begin
     if lEntity is TvText then
     begin
+      // Set the text style if not already set
+      lResetOldStyle := False;
+      if (Style <> nil) and (TvText(lEntity).Style = nil) then
+      begin
+        TvText(lEntity).Style := Style;
+        lResetOldStyle := True
+      end;
+
       // Direct text position setting resets the auto-positioning
       if (OldTextX <> lText.X) or (OldTextY <> lText.Y) then
       begin
@@ -5477,6 +5537,8 @@ begin
 
       lText.X := OldTextX;
       lText.Y := OldTextY;
+      if lResetOldStyle then
+        TvText(lEntity).Style := nil;
     end;
     lEntity := GetNextEntity();
   end;
@@ -6506,10 +6568,22 @@ end;
 
 procedure TvTextPageSequence.Render(ADest: TFPCustomCanvas; ADestX: Integer;
   ADestY: Integer; AMulX: Double; AMulY: Double);
+
+  function CoordToCanvasX(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestX + AmulX * ACoord);
+  end;
+
+  function CoordToCanvasY(ACoord: Double): Integer;
+  begin
+    Result := Round(ADestY + AmulY * ACoord);
+  end;
+
 var
   i: Integer;
   CurEntity: TvEntity;
   CurY: Integer = 0;
+  lBoundsLeft, lBoundsTop, lBoundsRight, lBoundsBottom: Double;
 begin
   {$ifdef FPVECTORIAL_TOCANVAS_DEBUG}
   WriteLn(':>TvTextPageSequence.Render');
@@ -6523,9 +6597,14 @@ begin
     {$endif}
 
     CurEntity := GetEntity(i);
+
     CurEntity.X := 0;
     CurEntity.Y := 0;
-
+    if CurEntity.GetEntityFeatures().DrawsUpwards then
+    begin
+      CurEntity.CalculateBoundingBox(ADest, lBoundsLeft, lBoundsTop, lBoundsRight, lBoundsBottom);
+      CurY := CurY + Abs(Round((lBoundsBottom - lBoundsTop) * AMulY));
+    end;
     RenderInfo.BackgroundColor := BackgroundColor;
     CurEntity.Render(ADest, RenderInfo, ADestX, CurY, AMulX, AMulY);
     // Store the old position in X/Y but don't use it, we use this to debug out the position
@@ -6966,6 +7045,7 @@ begin
   lTextBody.Kind := vskTextBody;
   lTextBody.Font.Size := 12;
   lTextBody.Font.Name := 'Times New Roman';
+  lTextBody.Brush.Style := bsClear;
   lTextBody.Alignment := vsaJustifed;
   lTextBody.MarginTop := 0;
   lTextBody.MarginBottom := 2.12;
@@ -6978,6 +7058,7 @@ begin
   lBaseHeading.Kind := vskHeading;
   lBaseHeading.Font.Size := 14;
   lBaseHeading.Font.Name := 'Arial';
+  lBaseHeading.Brush.Style := bsClear;
   lBaseHeading.MarginTop := 4.23;
   lBaseHeading.MarginBottom := 2.12;
   lBaseHeading.SetElements := [spbfFontSize, spbfFontName, sseMarginTop, sseMarginBottom];
@@ -6986,8 +7067,13 @@ begin
   lCurStyle.Name := 'Heading 1';
   lCurStyle.Parent := lBaseHeading;
   lCurStyle.HeadingLevel := 1;
-  lCurStyle.Font.Size := Round(1.15 * lBaseHeading.Font.Size);
   lCurStyle.Font.Bold := True;
+  case AFormat of
+    vfHTML: lCurStyle.Font.Size := 20;
+  else
+    lCurStyle.Font.Size := Round(1.15 * lBaseHeading.Font.Size);
+  end;
+  lCurStyle.Brush.Style := bsClear;
   lCurStyle.SetElements := [spbfFontSize, spbfFontBold];
   StyleHeading1 := lCurStyle;
 
@@ -6995,9 +7081,14 @@ begin
   lCurStyle.Name := 'Heading 2';
   lCurStyle.Parent := lBaseHeading;
   lCurStyle.HeadingLevel := 2;
-  lCurStyle.Font.Size := 14;
   lCurStyle.Font.Bold := True;
-  lCurStyle.Font.Italic := True;
+  case AFormat of
+    vfHTML: lCurStyle.Font.Size := 16;
+  else
+    lCurStyle.Font.Size := 14;
+    lCurStyle.Font.Italic := True;
+  end;
+  lCurStyle.Brush.Style := bsClear;
   lCurStyle.SetElements := [spbfFontSize, spbfFontBold, spbfFontItalic];
   StyleHeading2 := lCurStyle;
 
@@ -7005,10 +7096,41 @@ begin
   lCurStyle.Name := 'Heading 3';
   lCurStyle.Parent := lBaseHeading;
   lCurStyle.HeadingLevel := 3;
-  lCurStyle.Font.Size := 14;
   lCurStyle.Font.Bold := True;
+  lCurStyle.Font.Size := 14;
+  lCurStyle.Brush.Style := bsClear;
   lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold];
   StyleHeading3 := lCurStyle;
+
+  lCurStyle := AddStyle();
+  lCurStyle.Name := 'Heading 4';
+  lCurStyle.Parent := lBaseHeading;
+  lCurStyle.HeadingLevel := 4;
+  lCurStyle.Font.Size := 12;
+  lCurStyle.Font.Bold := True;
+  lCurStyle.Brush.Style := bsClear;
+  lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold];
+  StyleHeading4 := lCurStyle;
+
+  lCurStyle := AddStyle();
+  lCurStyle.Name := 'Heading 5';
+  lCurStyle.Parent := lBaseHeading;
+  lCurStyle.HeadingLevel := 5;
+  lCurStyle.Font.Size := 10;
+  lCurStyle.Font.Bold := True;
+  lCurStyle.Brush.Style := bsClear;
+  lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold];
+  StyleHeading5 := lCurStyle;
+
+  lCurStyle := AddStyle();
+  lCurStyle.Name := 'Heading 6';
+  lCurStyle.Parent := lBaseHeading;
+  lCurStyle.HeadingLevel := 6;
+  lCurStyle.Font.Size := 8;
+  lCurStyle.Font.Bold := True;
+  lCurStyle.Brush.Style := bsClear;
+  lCurStyle.SetElements := [spbfFontSize, spbfFontName, spbfFontBold];
+  StyleHeading6 := lCurStyle;
 
   // ---------------------------------
   // Centralized paragraph styles
@@ -7086,18 +7208,21 @@ begin
   StyleTextSpanBold.Kind := vskTextSpan; // This implies this style should not be applied to Paragraphs
   StyleTextSpanBold.Name := 'Bold';
   StyleTextSpanBold.Font.Bold := True;
+  StyleTextSpanBold.Brush.Style := bsClear;
   StyleTextSpanBold.SetElements := StyleTextSpanBold.SetElements + [spbfFontBold];
 
   StyleTextSpanItalic := AddStyle();
   StyleTextSpanItalic.Kind := vskTextSpan; // This implies this style should not be applied to Paragraphs
   StyleTextSpanItalic.Name := 'Italic';
   StyleTextSpanItalic.Font.Italic := True;
+  StyleTextSpanItalic.Brush.Style := bsClear;
   StyleTextSpanItalic.SetElements := StyleTextSpanItalic.SetElements + [spbfFontItalic];
 
   StyleTextSpanUnderline := AddStyle();
   StyleTextSpanUnderline.Kind := vskTextSpan; // This implies this style should not be applied to Paragraphs
   StyleTextSpanUnderline.Name := 'Underline';
   StyleTextSpanUnderline.Font.Underline := True;
+  StyleTextSpanUnderline.Brush.Style := bsClear;
   StyleTextSpanUnderline.SetElements := StyleTextSpanUnderline.SetElements + [spbfFontUnderline];
 end;
 

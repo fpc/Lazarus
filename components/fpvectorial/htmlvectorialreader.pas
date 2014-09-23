@@ -32,6 +32,7 @@ type
     function ReadHeaderFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadParagraphFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
     function ReadSVGFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+    function ReadMathFromNode(ANode: TDOMNode; AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
   public
     { General reading methods }
     constructor Create; override;
@@ -67,6 +68,7 @@ begin
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6': Result := ReadHeaderFromNode(ANode, AData, ADoc);
     'p': Result := ReadParagraphFromNode(ANode, AData, ADoc);
     'svg': Result := ReadSVGFromNode(ANode, AData, ADoc);
+    'math': Result := ReadMathFromNode(ANode, AData, ADoc);
   end;
 end;
 
@@ -85,9 +87,12 @@ begin
   lText := CurParagraph.AddText(lTextStr);
   lHeaderType := LowerCase(ANode.NodeName);
   case lHeaderType of
-    'h1', 'h2': lText.Style := ADoc.StyleHeading1;
-    'h3', 'h4': lText.Style := ADoc.StyleHeading2;
-    'h5', 'h6': lText.Style := ADoc.StyleHeading3;
+    'h1': lText.Style := ADoc.StyleHeading1;
+    'h2': lText.Style := ADoc.StyleHeading2;
+    'h3': lText.Style := ADoc.StyleHeading3;
+    'h4': lText.Style := ADoc.StyleHeading4;
+    'h5': lText.Style := ADoc.StyleHeading5;
+    'h6': lText.Style := ADoc.StyleHeading6;
   end;
 end;
 
@@ -120,6 +125,26 @@ begin
     lImportedNode := lDoc.ImportNode(ANode, True);
     lDoc.AppendChild(lImportedNode);
     CurSVG.Document.ReadFromXML(lDoc, vfSVG);
+  finally
+    lDoc.Free;
+  end;
+end;
+
+function TvHTMLVectorialReader.ReadMathFromNode(ANode: TDOMNode;
+  AData: TvTextPageSequence; ADoc: TvVectorialDocument): TvEntity;
+var
+  CurSVG: TvEmbeddedVectorialDoc;
+  lText: TvText;
+  lDoc: TXMLDocument;
+  lImportedNode: TDOMNode;
+begin
+  Result := nil;
+  CurSVG := AData.AddEmbeddedVectorialDoc();
+  lDoc := TXMLDocument.Create;
+  try
+    lImportedNode := lDoc.ImportNode(ANode, True);
+    lDoc.AppendChild(lImportedNode);
+    CurSVG.Document.ReadFromXML(lDoc, vfMathML);
   finally
     lDoc.Free;
   end;
@@ -185,6 +210,8 @@ begin
     lNodeName := ANode.Attributes.Item[i].NodeName;
     lNodeValue := ANode.Attributes.Item[i].NodeValue;
   end;}
+
+  AData.AddStandardTextDocumentStyles(vfHTML);
 
   // ----------------
   // Now process the elements

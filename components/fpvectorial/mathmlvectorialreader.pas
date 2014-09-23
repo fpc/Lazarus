@@ -31,6 +31,7 @@ type
     procedure AddNodeToFormula(ANode: TDOMNode; APage: TvVectorialPage; var AFormula: TvFormula);
     procedure ReadFormulaFromNodeChildren(ACurNode: TDOMNode; APage: TvVectorialPage; var AFormula: TvFormula);
     procedure ReadFromStream(AStream: TStream; AData: TvVectorialDocument); override;
+    procedure ReadFromXML(Doc: TXMLDocument; AData: TvVectorialDocument); override;
   end;
 
 implementation
@@ -263,48 +264,54 @@ procedure TvMathMLVectorialReader.ReadFromStream(AStream: TStream;
   AData: TvVectorialDocument);
 var
   Doc: TXMLDocument;
+begin
+  try
+    // Read in xml file from the stream
+    ReadXMLFile(Doc, AStream);
+    ReadFromXML(Doc, AData);
+  finally
+    // finally, free the document
+    Doc.Free;
+  end;
+end;
+
+procedure TvMathMLVectorialReader.ReadFromXML(Doc: TXMLDocument;
+  AData: TvVectorialDocument);
+var
   lFirstLayer, lCurNode: TDOMNode;
   lPage: TvVectorialPage;
   lFormula: TvFormula;
   lStr: DOMString;
 begin
-  try
-    // Read in xml file from the stream
-    ReadXMLFile(Doc, AStream);
+  {// Read the properties of the <svg> tag
+  AData.Width := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('width'));
+  AData.Height := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('height'));}
 
-    {// Read the properties of the <svg> tag
-    AData.Width := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('width'));
-    AData.Height := StringWithUnitToFloat(Doc.DocumentElement.GetAttribute('height'));}
-
-    // Now process the elements inside the first layer
-    lFirstLayer := Doc.DocumentElement;
-    lCurNode := lFirstLayer.FirstChild;
-    lPage := AData.AddPage();
-    lPage.Width := AData.Width;
-    lPage.Height := AData.Height;
-    while Assigned(lCurNode) do
+  // Now process the elements inside the first layer
+  lFirstLayer := Doc.DocumentElement;
+  lCurNode := lFirstLayer.FirstChild;
+  lPage := AData.AddPage();
+  lPage.Width := AData.Width;
+  lPage.Height := AData.Height;
+  while Assigned(lCurNode) do
+  begin
+    lStr := lCurNode.NodeName;
+    if lStr = 'mrow' then
     begin
-      lStr := lCurNode.NodeName;
-      if lStr = 'mrow' then
-      begin
-        lFormula := TvFormula.Create(lPage);
-        ReadFormulaFromNodeChildren(lCurNode, lPage, lFormula);
-        lPage.AddEntity(lFormula);
-      end
-      else if lStr = 'mstack' then
-      begin
-        lFormula := TvVerticalFormulaStack.Create(lPage);
-        ReadFormulaFromNodeChildren(lCurNode, lPage, lFormula);
-        lPage.AddEntity(lFormula);
-      end
-      else
-        raise Exception.Create(Format('[TvMathMLVectorialReader.ReadFromStream] Expected mrow or mstack, got %s', [lStr]));
+      lFormula := TvFormula.Create(lPage);
+      ReadFormulaFromNodeChildren(lCurNode, lPage, lFormula);
+      lPage.AddEntity(lFormula);
+    end
+    else if lStr = 'mstack' then
+    begin
+      lFormula := TvVerticalFormulaStack.Create(lPage);
+      ReadFormulaFromNodeChildren(lCurNode, lPage, lFormula);
+      lPage.AddEntity(lFormula);
+    end
+    else
+      raise Exception.Create(Format('[TvMathMLVectorialReader.ReadFromStream] Expected mrow or mstack, got %s', [lStr]));
 
-      lCurNode := lCurNode.NextSibling;
-    end;
-  finally
-    // finally, free the document
-    Doc.Free;
+    lCurNode := lCurNode.NextSibling;
   end;
 end;
 
