@@ -974,16 +974,16 @@ function TDesignerMainMenu.MoveToNewLocation(DMenuItem, DDestMenuItem: TDesigner
   var
     i : Integer;
     TempMI: TDesignerMenuItem;
-    s: String;
+    //s: String;
   begin
     if not assigned(DSubMenuItem) then
       exit;
 
     TempMI := FindParentDesignerMenuItem(DSubMenuItem);
-    If assigned(TempMI) Then
+    {If assigned(TempMI) Then
       s := TempMI.Caption
     Else
-      s := 'Root';
+      s := 'Root';}
 
     if assigned(TempMI) then
       TempMI := TempMI.SubMenu
