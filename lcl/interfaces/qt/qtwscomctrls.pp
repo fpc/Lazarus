@@ -162,6 +162,7 @@ type
 
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetIconArrangement(const ALV: TCustomListView; const AValue: TIconArrangement); override;
+    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); override;
     class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
     class procedure SetOwnerData(const ALV: TCustomListView; const AValue: Boolean); override;
 
@@ -1965,6 +1966,66 @@ begin
     QtList := TQtListWidget(ALV.Handle);
     if QtList.ViewStyle <> Ord(vsList) then
       QtList.setViewFlow(IconArngToQListFlow[AValue]);
+  end;
+end;
+
+class procedure TQtWSCustomListView.SetImageList(const ALV: TCustomListView;
+  const AList: TListViewImageList; const AValue: TCustomImageList);
+var
+  QtListWidget: TQtListWidget;
+  ItemViewWidget: QAbstractItemViewH;
+  Size: TSize;
+  x: Integer;
+  LWI: QListWidgetItemH;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetImageList') then
+    Exit;
+
+  if not IsIconView(ALV) then
+    exit;
+
+  QtListWidget := TQtListWidget(ALV.Handle);
+  if TViewStyle(QtListWidget.ViewStyle) in [vsIcon, vsSmallIcon] then
+  begin
+    ItemViewWidget := QListWidgetH(QtListWidget.Widget);
+    case QtListWidget.ViewStyle of
+      Ord(vsIcon):
+         begin
+          if Assigned(TListView(ALV).LargeImages) then
+          begin
+            Size.cy := TListView(ALV).LargeImages.Height;
+            Size.cx := TListView(ALV).LargeImages.Width;
+          end else
+          begin
+            x := GetPixelMetric(QStylePM_IconViewIconSize, nil, ItemViewWidget);
+            Size.cx := x;
+            Size.cy := x;
+          end;
+        end;
+      Ord(vsSmallIcon):
+        begin
+          if Assigned(TListView(ALV).SmallImages) then
+          begin
+            Size.cy := TListView(ALV).SmallImages.Height;
+            Size.cx := TListView(ALV).SmallImages.Width;
+          end else
+          begin
+            x := GetPixelMetric(QStylePM_ListViewIconSize, nil, ItemViewWidget);
+            Size.cx := x;
+            Size.cy := x;
+          end;
+        end;
+    end;
+
+    TQtAbstractItemView(ALV.Handle).IconSize := Size;
+    LWI := QtListWidget.getItem(0);
+    if LWI <> nil then
+    begin
+      X := Size.CY;
+      QListWidgetItem_sizeHint(LWI, @Size);
+      Size.Cy := X;
+      QListWidgetItem_setSizeHint(LWI, @Size);
+    end;
   end;
 end;
 
