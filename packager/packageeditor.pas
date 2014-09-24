@@ -1358,14 +1358,7 @@ procedure TPackageEditorForm.FormDropFiles(Sender: TObject;
   const FileNames: array of String);
 var
   i: Integer;
-  NewFilename: String;
-  NewFileType: TPkgFileType;
-  NewUnitName: String;
-  HasRegister: Boolean;
-  NewFlags: TPkgFileFlags;
-  Code: TCodeBuffer;
   NewUnitPaths, NewIncPaths: String;
-  CurDir: String;
 begin
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPackageEditorForm.FormDropFiles ',length(FileNames)]);

@@ -401,10 +401,7 @@ end;
 procedure TProjectInspectorForm.AddBitBtnClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
-  AFilename: string;
   i: Integer;
-  NewListItem: TListItem;
-  NewPgkFileType: TPkgFileType;
   ADirectory: String;
 begin
   OpenDialog:=TOpenDialog.Create(nil);
@@ -435,8 +432,6 @@ procedure TProjectInspectorForm.AddMoreBitBtnClick(Sender: TObject);
 var
   AddResult: TAddToProjectResult;
   i: Integer;
-  NewFilename: string;
-  NewFile: TUnitInfo;
 begin
   if ShowAddToProjectDlg(LazProject,AddResult)<>mrOk then exit;
 
@@ -479,8 +474,6 @@ procedure TProjectInspectorForm.FormDropFiles(Sender: TObject;
   const FileNames: array of String);
 var
   i: Integer;
-  NewFilename: String;
-  NewFile: TUnitInfo;
 begin
   {$IFDEF VerboseProjInspDrag}
   debugln(['TProjectInspectorForm.FormDropFiles ',length(FileNames)]);
