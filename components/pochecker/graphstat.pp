@@ -88,13 +88,11 @@ end;
 procedure TGraphStatForm.ListViewMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 var
-  Pt: types.TPoint;
   Item: TListItem;
   Index: Integer;
   AStat: TStat;
 begin
-  Pt:= Listview.ScreenToClient(Mouse.CursorPos );
-  Item := Listview.GetItemAt(Pt.X, Pt.Y);
+  Item := Listview.GetItemAt(X, Y);
   if Assigned(Item) then
   begin
     Index := Item.Index;
