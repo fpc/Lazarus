@@ -2390,6 +2390,7 @@ components/lazreport/source/addons/addfunction/images/mk_res.bat svneol=native#t
 components/lazreport/source/addons/addfunction/languages/lr_add_function_const.de.po svneol=native#text/plain
 components/lazreport/source/addons/addfunction/languages/lr_add_function_const.es.po svneol=native#text/plain
 components/lazreport/source/addons/addfunction/languages/lr_add_function_const.po svneol=native#text/plain
+components/lazreport/source/addons/addfunction/languages/lr_add_function_const.ru.po svneol=native#text/plain
 components/lazreport/source/addons/addfunction/lrAddFunctionLibrary.pas svneol=native#text/pascal
 components/lazreport/source/addons/addfunction/lr_add_function.lpk svneol=native#text/plain
 components/lazreport/source/addons/addfunction/lr_add_function.pas svneol=native#text/pascal
