@@ -358,6 +358,8 @@ begin
 
     if QtTrackBar.getPageStep <> ATrackBar.PageSize then
       QtTrackBar.setPageStep(ATrackBar.PageSize);
+    if QtTrackBar.getSingleStep <> ATrackBar.LineSize then
+      QtTrackBar.setSingleStep(ATrackBar.LineSize);
     if QtTrackBar.getTickInterval <> ATrackBar.Frequency then
       QtTrackBar.setTickInterval(ATrackBar.Frequency);
     if QtTrackBar.getSliderPosition <> ATrackBar.Position then
