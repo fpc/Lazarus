@@ -1265,10 +1265,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Var/Type (místní)"
 
-#: lazarusidestrconsts.dlgedadd
-msgid "Add ..."
-msgstr "Přidat ..."
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "Zpět"
@@ -1301,10 +1297,6 @@ msgstr "(%s sec prodleva)"
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
 msgstr "Zobrazení"
-
-#: lazarusidestrconsts.dlgededit
-msgid "Edit ..."
-msgstr "Upravit ..."
 
 #: lazarusidestrconsts.dlgedfiles
 msgid "Editor Files"
@@ -7478,6 +7470,12 @@ msgstr "Některé soubory se na disku změnily:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Rozlišovat velká a malá písmena např. A a a"
 
+#: lazarusidestrconsts.lisdlgadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Přidat ..."
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr "Všechny možnosti ..."
@@ -7489,6 +7487,12 @@ msgstr "Změnit třídu ..."
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
 msgstr "Definice ..."
+
+#: lazarusidestrconsts.lisdlgedit
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
+msgstr "Upravit ..."
 
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
@@ -12662,9 +12666,13 @@ msgstr "Vyčistit pro použití jména balíčku"
 msgid "Disable I18N of lfm"
 msgstr "Zakázat I18N v lfm"
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "Přidat položku"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

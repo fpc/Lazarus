@@ -1247,10 +1247,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Var/Type (paikallinen)"
 
-#: lazarusidestrconsts.dlgedadd
-msgid "Add ..."
-msgstr "Lisää ..."
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "Takaisin"
@@ -1282,10 +1278,6 @@ msgstr "(%s sekunnin viive)"
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
 msgstr "Näkymä"
-
-#: lazarusidestrconsts.dlgededit
-msgid "Edit ..."
-msgstr "Muokkaa ..."
 
 #: lazarusidestrconsts.dlgedfiles
 msgid "Editor Files"
@@ -7357,6 +7349,12 @@ msgstr "Seuraavat tiedostot ovat muuttuneet:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Erottelee pienet ja isot kirjaimet (esim. A ja a )"
 
+#: lazarusidestrconsts.lisdlgadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Lisää ..."
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr "Kaikki asetukset ..."
@@ -7368,6 +7366,12 @@ msgstr "Vaihda luokka ..."
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
 msgstr "Määritteet ..."
+
+#: lazarusidestrconsts.lisdlgedit
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
+msgstr "Muokkaa ..."
 
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
@@ -12456,9 +12460,13 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "Lisää osio"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

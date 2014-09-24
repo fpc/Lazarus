@@ -1298,11 +1298,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Var/Type (locali)"
 
-#: lazarusidestrconsts.dlgedadd
-#| msgid "Add..."
-msgid "Add ..."
-msgstr "Aggiungi..."
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "Indietro"
@@ -1336,11 +1331,6 @@ msgstr "(ritardo di %s secondi)"
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
 msgstr "Visualizza"
-
-#: lazarusidestrconsts.dlgededit
-#| msgid "Edit..."
-msgid "Edit ..."
-msgstr "Modifica..."
 
 #: lazarusidestrconsts.dlgedfiles
 #| msgid "Editor files"
@@ -7758,6 +7748,12 @@ msgstr "Alcuni file su disco sono cambiati:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Distingui tra lettere maiuscole e minuscole per es. tra A e a"
 
+#: lazarusidestrconsts.lisdlgadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Aggiungi..."
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr ""
@@ -7769,6 +7765,12 @@ msgstr ""
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
 msgstr ""
+
+#: lazarusidestrconsts.lisdlgedit
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
+msgstr "Modifica..."
 
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
@@ -13264,9 +13266,13 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "Aggiungi una voce"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 #, fuzzy

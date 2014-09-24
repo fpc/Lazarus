@@ -1322,12 +1322,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "משתנה/סוג (מקומי)"
 
-#: lazarusidestrconsts.dlgedadd
-#, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
-msgstr "הוסף ..."
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "אחורה"
@@ -1363,12 +1357,6 @@ msgstr "(השהייה של s% שניות)"
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
 msgstr "הצג"
-
-#: lazarusidestrconsts.dlgededit
-#, fuzzy
-#| msgid "Edit..."
-msgid "Edit ..."
-msgstr "עריכה ..."
 
 #: lazarusidestrconsts.dlgedfiles
 #, fuzzy
@@ -7835,6 +7823,13 @@ msgstr "מספר קבצים השתנו בדיסק:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "הבחן בין אותיות גדולות וקטנות למשל A ו a"
 
+#: lazarusidestrconsts.lisdlgadd
+#, fuzzy
+#| msgid "Add..."
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "הוסף ..."
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr ""
@@ -7846,6 +7841,13 @@ msgstr ""
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
 msgstr ""
+
+#: lazarusidestrconsts.lisdlgedit
+#, fuzzy
+#| msgid "Edit..."
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
+msgstr "עריכה ..."
 
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
@@ -13349,9 +13351,13 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "הוסף עצם"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 #, fuzzy

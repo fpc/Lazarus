@@ -1254,10 +1254,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Var/Type (helyi)"
 
-#: lazarusidestrconsts.dlgedadd
-msgid "Add ..."
-msgstr "Hozzáadás ..."
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "Vissza"
@@ -1289,10 +1285,6 @@ msgstr "(%s mp késleltetés)"
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
 msgstr "Megjelenés"
-
-#: lazarusidestrconsts.dlgededit
-msgid "Edit ..."
-msgstr "Szerkesztés ..."
 
 #: lazarusidestrconsts.dlgedfiles
 msgid "Editor Files"
@@ -7386,6 +7378,12 @@ msgstr "Néhány fájl megváltozott a lemezen:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Nagy- és kisbetűk megkülönböztetése pl. A és a"
 
+#: lazarusidestrconsts.lisdlgadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Hozzáadás ..."
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr "Minden beállítás ..."
@@ -7397,6 +7395,12 @@ msgstr "Osztály módosítása ..."
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
 msgstr "Definíciók ..."
+
+#: lazarusidestrconsts.lisdlgedit
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
+msgstr "Szerkesztés ..."
 
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
@@ -12544,9 +12548,13 @@ msgstr "Törölje a csomag nevének használatához"
 msgid "Disable I18N of lfm"
 msgstr "I18N kikapcsolása az lfm-ben"
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "Egy elem hozzáadása"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

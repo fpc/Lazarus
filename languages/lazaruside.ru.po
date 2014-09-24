@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-09-20 00:44+0400\n"
+"PO-Revision-Date: 2014-09-25 03:33+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1309,11 +1309,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Секции Var/Type (локальные)"
 
-#: lazarusidestrconsts.dlgedadd
-#| msgid "Add..."
-msgid "Add ..."
-msgstr "Добавить ..."
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "Назад"
@@ -1347,11 +1342,6 @@ msgstr "(задержка %s сек)"
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
 msgstr "Отображение"
-
-#: lazarusidestrconsts.dlgededit
-#| msgid "Edit..."
-msgid "Edit ..."
-msgstr "Редактировать ..."
 
 #: lazarusidestrconsts.dlgedfiles
 #| msgid "Editor files"
@@ -7664,6 +7654,11 @@ msgstr "Некоторые файлы изменены на диске:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Различать регистр букв, например, А и а"
 
+#: lazarusidestrconsts.lisdlgadd
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Добавить ..."
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr "Все параметры ..."
@@ -7675,6 +7670,11 @@ msgstr "Сменить класс ..."
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
 msgstr "Определения ..."
+
+#: lazarusidestrconsts.lisdlgedit
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
+msgstr "Редактировать ..."
 
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
@@ -13045,9 +13045,13 @@ msgstr "Очистите это поле для использования им�
 msgid "Disable I18N of lfm"
 msgstr "Отключить i18n для LFM"
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "Добавить элемент"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr "Добавить файлы из файловой системы"
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr "Добавить прочие элементы"
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 #| msgid "Add to project"
@@ -14652,7 +14656,7 @@ msgstr "Подтвердите удаление файла"
 
 #: lazarusidestrconsts.lisprojinspdeletedependencyfor
 msgid "Delete dependency for %s?"
-msgstr "Удалить зависимость для %s?"
+msgstr "Удалить зависимость от %s?"
 
 #: lazarusidestrconsts.lisprojinspprojectinspector
 msgid "Project Inspector - %s"

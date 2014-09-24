@@ -1303,11 +1303,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Var/Type (vietinis)"
 
-#: lazarusidestrconsts.dlgedadd
-#| msgid "Add..."
-msgid "Add ..."
-msgstr "Pridėti…"
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "Atgal"
@@ -1342,11 +1337,6 @@ msgstr "(%s sek. pauzė)"
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
 msgstr "Ekranas"
-
-#: lazarusidestrconsts.dlgededit
-#| msgid "Edit..."
-msgid "Edit ..."
-msgstr "Keisti…"
 
 #: lazarusidestrconsts.dlgedfiles
 #| msgid "Editor files"
@@ -7716,6 +7706,12 @@ msgstr "Kai kurie failai buvo pakeisti iš išorės:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Ieškant skirti didžiąsias ir mažąsias raides"
 
+#: lazarusidestrconsts.lisdlgadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Pridėti…"
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr ""
@@ -7727,6 +7723,12 @@ msgstr "Pakeisti klasę…"
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
 msgstr ""
+
+#: lazarusidestrconsts.lisdlgedit
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
+msgstr "Keisti…"
 
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
@@ -13058,9 +13060,13 @@ msgstr "Išvalius bus naudojamas paketo pavadinimas"
 msgid "Disable I18N of lfm"
 msgstr "Nenaudoti LFM internacionalizacijos"
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "Pridėti elementą"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 #| msgid "Add to project"

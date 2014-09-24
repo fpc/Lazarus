@@ -1299,10 +1299,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Var/Type (локальні)"
 
-#: lazarusidestrconsts.dlgedadd
-msgid "Add ..."
-msgstr "Додати..."
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "Назад"
@@ -1337,10 +1333,6 @@ msgstr "(%s сек затримка)"
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
 msgstr "Відображення"
-
-#: lazarusidestrconsts.dlgededit
-msgid "Edit ..."
-msgstr "Редагувати ..."
 
 #: lazarusidestrconsts.dlgedfiles
 #| msgid "Editor files"
@@ -7686,6 +7678,12 @@ msgstr "Деякі файли змінені на диску:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Розрізняти регістр букв, наприклад, А і а"
 
+#: lazarusidestrconsts.lisdlgadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Додати..."
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr ""
@@ -7697,6 +7695,12 @@ msgstr ""
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
 msgstr ""
+
+#: lazarusidestrconsts.lisdlgedit
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
+msgstr "Редагувати ..."
 
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
@@ -12996,9 +13000,13 @@ msgstr "Очистити для викор назви пакету"
 msgid "Disable I18N of lfm"
 msgstr "Вимкнути I18N в lfm"
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "Додати пункт"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 #| msgid "Add to project"

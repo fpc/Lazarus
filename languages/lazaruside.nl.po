@@ -1300,12 +1300,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr ""
 
-#: lazarusidestrconsts.dlgedadd
-#, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
-msgstr "Toevoegen ..."
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "Terug"
@@ -1339,12 +1333,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
 msgstr "Beeld"
-
-#: lazarusidestrconsts.dlgededit
-#, fuzzy
-#| msgid "Edit..."
-msgid "Edit ..."
-msgstr "Bewerken ..."
 
 #: lazarusidestrconsts.dlgedfiles
 #, fuzzy
@@ -7661,6 +7649,13 @@ msgstr "Bepaalde bestanden zijn gewijzigd op schijf:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Maak onderscheid tussen hoofd- en kleine letters. Bijv. A en a"
 
+#: lazarusidestrconsts.lisdlgadd
+#, fuzzy
+#| msgid "Add..."
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Toevoegen ..."
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr ""
@@ -7672,6 +7667,13 @@ msgstr ""
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
 msgstr ""
+
+#: lazarusidestrconsts.lisdlgedit
+#, fuzzy
+#| msgid "Edit..."
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
+msgstr "Bewerken ..."
 
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
@@ -13030,9 +13032,13 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "Item toevoegen"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

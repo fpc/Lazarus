@@ -1307,12 +1307,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr ""
 
-#: lazarusidestrconsts.dlgedadd
-#, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
-msgstr "Pridať..."
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "Späť"
@@ -1346,12 +1340,6 @@ msgstr ""
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
 msgstr "Zobraziť"
-
-#: lazarusidestrconsts.dlgededit
-#, fuzzy
-#| msgid "Edit..."
-msgid "Edit ..."
-msgstr "Upraviť ..."
 
 #: lazarusidestrconsts.dlgedfiles
 #, fuzzy
@@ -7738,6 +7726,13 @@ msgstr "Niektoré súbory boli na disku zmenené:"
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "Rozoznávať veľké a malé písmená, napr. C a c"
 
+#: lazarusidestrconsts.lisdlgadd
+#, fuzzy
+#| msgid "Add..."
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Pridať..."
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr ""
@@ -7749,6 +7744,13 @@ msgstr ""
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
 msgstr ""
+
+#: lazarusidestrconsts.lisdlgedit
+#, fuzzy
+#| msgid "Edit..."
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
+msgstr "Upraviť ..."
 
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
@@ -13190,9 +13192,13 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "Pridať položku"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 #, fuzzy

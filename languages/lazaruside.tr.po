@@ -1262,12 +1262,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr ""
 
-#: lazarusidestrconsts.dlgedadd
-#, fuzzy
-#| msgid "Add..."
-msgid "Add ..."
-msgstr "Ekle..."
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "Geri"
@@ -1298,10 +1292,6 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
-msgstr ""
-
-#: lazarusidestrconsts.dlgededit
-msgid "Edit ..."
 msgstr ""
 
 #: lazarusidestrconsts.dlgedfiles
@@ -7469,6 +7459,13 @@ msgstr ""
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr ""
 
+#: lazarusidestrconsts.lisdlgadd
+#, fuzzy
+#| msgid "Add..."
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "Ekle..."
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr ""
@@ -7479,6 +7476,11 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
+msgstr ""
+
+#: lazarusidestrconsts.lisdlgedit
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
 msgstr ""
 
 #: lazarusidestrconsts.lisdlgexport
@@ -12831,9 +12833,13 @@ msgstr ""
 msgid "Disable I18N of lfm"
 msgstr ""
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "Bir parça ekle"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"

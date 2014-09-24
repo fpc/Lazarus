@@ -1256,10 +1256,6 @@ msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Var/Type (ローカル)"
 
-#: lazarusidestrconsts.dlgedadd
-msgid "Add ..."
-msgstr "追加 ..."
-
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
 msgstr "戻る"
@@ -1291,10 +1287,6 @@ msgstr "(%s 秒遅れ)"
 #: lazarusidestrconsts.dlgeddisplay
 msgid "Display"
 msgstr "表示"
-
-#: lazarusidestrconsts.dlgededit
-msgid "Edit ..."
-msgstr "編集 ..."
 
 #: lazarusidestrconsts.dlgedfiles
 msgid "Editor Files"
@@ -7496,6 +7488,12 @@ msgstr "ディスク上のいくつかのファイルが変更されました。
 msgid "Distinguish big and small letters e.g. A and a"
 msgstr "大文字と小文字（例:Aとa）を区別する"
 
+#: lazarusidestrconsts.lisdlgadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgadd"
+msgid "Add ..."
+msgstr "追加 ..."
+
 #: lazarusidestrconsts.lisdlgalloptions
 msgid "All options ..."
 msgstr "すべてのオプション ..."
@@ -7507,6 +7505,12 @@ msgstr "クラスを変更 ..."
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
 msgstr "定義 ..."
+
+#: lazarusidestrconsts.lisdlgedit
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisdlgedit"
+msgid "Edit ..."
+msgstr "編集 ..."
 
 #: lazarusidestrconsts.lisdlgexport
 msgctxt "lazarusidestrconsts.lisdlgexport"
@@ -12657,9 +12661,13 @@ msgstr "パッケージ名を利用するためにクリア"
 msgid "Disable I18N of lfm"
 msgstr "lfmの国際化を無効化"
 
-#: lazarusidestrconsts.lispckeditaddanitem
-msgid "Add an item"
-msgstr "アイテムを追加"
+#: lazarusidestrconsts.lispckeditaddfiles
+msgid "Add files from the file system"
+msgstr ""
+
+#: lazarusidestrconsts.lispckeditaddotheritems
+msgid "Add other items"
+msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
