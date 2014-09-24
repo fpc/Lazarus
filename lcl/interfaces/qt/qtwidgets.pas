@@ -398,6 +398,7 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function CanPaintBackground: Boolean; override;
+    procedure SetNoMousePropagation(Sender: QWidgetH; const ANoMousePropagation: Boolean); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setFrameStyle(p1: Integer);
     procedure setFrameShape(p1: QFrameShape);
@@ -7808,6 +7809,17 @@ begin
     Result := (TCustomPanel(LCLObject).BevelInner = bvNone) and
      (TCustomPanel(LCLObject).BevelOuter = bvNone);
   end;
+end;
+
+procedure TQtFrame.SetNoMousePropagation(Sender: QWidgetH;
+  const ANoMousePropagation: Boolean);
+begin
+  // issue #26759
+  if Assigned(DragManager) and DragManager.IsDragging and
+    DragManager.Dragging(LCLObject) then
+      inherited SetNoMousePropagation(Sender, False)
+  else
+    inherited SetNoMousePropagation(Sender, ANoMousePropagation);
 end;
 
 procedure TQtFrame.setFocusPolicy(const APolicy: QtFocusPolicy);
