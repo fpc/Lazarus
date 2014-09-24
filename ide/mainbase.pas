@@ -276,6 +276,7 @@ begin
         debugln(['TMainIDEBase.mnuCenterWindowItemClick New=',dbgs(NewBounds)]);
         Form.BoundsRect:=NewBounds;
         Form.WindowState:=wsNormal;
+        Form.BringToFront;
       end;
       break;
     end;
