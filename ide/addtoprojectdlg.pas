@@ -60,7 +60,6 @@ type
   TAddToProjectDialog = class(TForm)
     AddFileListView: TListView;
     ButtonPanel: TButtonPanel;
-    FilesBrowseButton: TBitBtn;
     FilesDeleteButton: TBitBtn;
     FilesDirButton: TBitBtn;
     FilesShortenButton: TBitBtn;
@@ -91,14 +90,12 @@ type
       Selected: Boolean);
     procedure NewDependButtonClick(Sender: TObject);
     procedure FilesAddButtonClick(Sender: TObject);
-    procedure FilesBrowseButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
     procedure FilesShortenButtonClick(Sender: TObject);
     procedure NotebookChange(Sender: TObject);
   private
     fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
-    function CheckAddingFile(NewFiles: TStringList; var NewFilename: string
-      ): TModalResult;
+    function CheckAddingFile(NewFiles: TStringList; var NewFilename: string): TModalResult;
     procedure SetupComponents;
     procedure SetupAddEditorFilePage;
     procedure SetupAddRequirementPage;
@@ -359,50 +356,6 @@ begin
   ModalResult:=mrOk;
 end;
 
-procedure TAddToProjectDialog.FilesBrowseButtonClick(Sender: TObject);
-var
-  OpenDialog: TOpenDialog;
-  AFilename: string;
-  i: Integer;
-  NewListItem: TListItem;
-  NewPgkFileType: TPkgFileType;
-  ADirectory: String;
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    InputHistories.ApplyFileDialogSettings(OpenDialog);
-    ADirectory:=TheProject.ProjectDirectory;
-    if not FilenameIsAbsolute(ADirectory) then ADirectory:='';
-    if ADirectory<>'' then
-      OpenDialog.InitialDir:=ADirectory;
-    OpenDialog.Title:=lisOpenFile;
-    OpenDialog.Options:=OpenDialog.Options
-                          +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
-    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
-                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
-                 +'|'+lisLazarusInclude+' (*.inc)|*.inc'
-                 +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm';
-    if OpenDialog.Execute then begin
-      for i:=0 to OpenDialog.Files.Count-1 do begin
-        AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);
-        if FileExistsUTF8(AFilename) then begin
-          NewPgkFileType:=FileNameToPkgFileType(AFilename);
-          if ADirectory<>'' then
-            AFilename:=CreateRelativePath(AFilename,ADirectory);
-          NewListItem:=FilesListView.Items.Add;
-          NewListItem.Caption:=AFilename;
-          NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
-          NewListItem.Selected:=True;
-        end;
-      end;
-      UpdateFilesButtons;
-    end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
-  finally
-    OpenDialog.Free;
-  end;
-end;
-
 procedure TAddToProjectDialog.FilesDeleteButtonClick(Sender: TObject);
 var
   i: Integer;
@@ -502,11 +455,6 @@ begin
   CurColumn.Caption:=lisA2PFilename2;
   CurColumn:=FilesListView.Columns.Add;
   CurColumn.Caption:=dlgEnvType;
-
-  with FilesBrowseButton do begin
-    Caption:=lisA2PAddFiles;
-    LoadGlyphFromResourceName(HInstance, 'laz_add');
-  end;
 
   with FilesDirButton do begin
     Caption:=lisAddFilesInDirectory;

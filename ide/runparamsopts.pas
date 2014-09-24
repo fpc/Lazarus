@@ -423,8 +423,8 @@ begin
     Columns.EndUpdate;
   end;
 
-  UserOverridesAddButton.Caption    := dlgEdAdd;
-  UserOverridesEditButton.Caption   := dlgEdEdit;
+  UserOverridesAddButton.Caption    := lisDlgAdd;
+  UserOverridesEditButton.Caption   := lisDlgEdit;
   UserOverridesDeleteButton.Caption := lisDelete;
   IncludeSystemVariablesCheckBox.Caption := dlgIncludeSystemVariables;
 end;

@@ -63,7 +63,7 @@ uses
   PackageIntf,
   // IDE
   LazarusIDEStrConsts, IDEProcs, DialogProcs, IDEOptionDefs, EnvironmentOpts,
-  PackageDefs, Project, MainIntf, PackageEditor, AddToProjectDlg;
+  PackageDefs, Project, MainIntf, PackageEditor, AddToProjectDlg, InputHistory;
   
 type
   TOnAddUnitToProject =
@@ -97,10 +97,12 @@ type
     ToolBar: TToolBar;
     // toolbuttons
     AddBitBtn: TToolButton;
+    AddMoreBitBtn: TToolButton;
     RemoveBitBtn: TToolButton;
     OptionsBitBtn: TToolButton;
     HelpBitBtn: TToolButton;
     procedure AddBitBtnClick(Sender: TObject);
+    procedure AddMoreBitBtnClick(Sender: TObject);
     procedure CopyMoveToDirMenuItemClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of String);
@@ -159,6 +161,7 @@ type
     ImageIndexDirectory: integer;
     FFlags: TProjectInspectorFlags;
     FProjectNodeDataList : array [TPENodeType] of TPENodeData;
+    function AddOneFile(aFilename: string): TModalResult;
     procedure FreeNodeData(Typ: TPENodeType);
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
@@ -373,7 +376,62 @@ begin
   end;
 end;
 
+function TProjectInspectorForm.AddOneFile(aFilename: string): TModalResult;
+var
+  NewFile: TUnitInfo;
+begin
+  Result := mrOK;
+  aFilename:=CleanAndExpandFilename(aFilename);
+  NewFile:=LazProject.UnitInfoWithFilename(aFilename);
+  if NewFile<>nil then begin
+    if NewFile.IsPartOfProject then Exit(mrIgnore);
+  end else begin
+    NewFile:=TUnitInfo.Create(nil);
+    NewFile.Filename:=aFilename;
+    LazProject.AddFile(NewFile,false);
+  end;
+  NewFile.IsPartOfProject:=true;
+  if Assigned(OnAddUnitToProject) then begin
+    Result:=OnAddUnitToProject(Self,NewFile);
+    if Result<>mrOK then Exit;
+  end;
+  FNextSelectedPart:=NewFile;
+end;
+
 procedure TProjectInspectorForm.AddBitBtnClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+  i: Integer;
+  NewListItem: TListItem;
+  NewPgkFileType: TPkgFileType;
+  ADirectory: String;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    ADirectory:=LazProject.ProjectDirectory;
+    if not FilenameIsAbsolute(ADirectory) then ADirectory:='';
+    if ADirectory<>'' then
+      OpenDialog.InitialDir:=ADirectory;
+    OpenDialog.Title:=lisOpenFile;
+    OpenDialog.Options:=OpenDialog.Options
+                          +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
+    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
+                 +'|'+lisLazarusInclude+' (*.inc)|*.inc'
+                 +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm';
+    if OpenDialog.Execute then begin
+      for i:=0 to OpenDialog.Files.Count-1 do
+        if not (AddOneFile(OpenDialog.Files[i]) in [mrOk, mrIgnore]) then break;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TProjectInspectorForm.AddMoreBitBtnClick(Sender: TObject);
 var
   AddResult: TAddToProjectResult;
   i: Integer;
@@ -381,31 +439,17 @@ var
   NewFile: TUnitInfo;
 begin
   if ShowAddToProjectDlg(LazProject,AddResult)<>mrOk then exit;
-  
+
   case AddResult.AddType of
   a2pFiles:
     begin
       BeginUpdate;
-      for i:=0 to AddResult.FileNames.Count-1 do begin
-        NewFilename:=AddResult.FileNames[i];
-        NewFile:=LazProject.UnitInfoWithFilename(NewFilename);
-        if NewFile<>nil then begin
-          if NewFile.IsPartOfProject then continue;
-        end else begin
-          NewFile:=TUnitInfo.Create(nil);
-          NewFile.Filename:=NewFilename;
-          LazProject.AddFile(NewFile,false);
-        end;
-        NewFile.IsPartOfProject:=true;
-        if Assigned(OnAddUnitToProject) then begin
-          if OnAddUnitToProject(Self,NewFile)<>mrOk then break;
-        end;
-        FNextSelectedPart:=NewFile;
-      end;
+      for i:=0 to AddResult.FileNames.Count-1 do
+        if not (AddOneFile(AddResult.FileNames[i]) in [mrOk, mrIgnore]) then break;
       UpdateAll;
       EndUpdate;
     end;
-  
+
   a2pRequiredPkg:
     begin
       BeginUpdate;
@@ -415,9 +459,9 @@ begin
       UpdateRequiredPackages;
       EndUpdate;
     end;
-  
+
   end;
-  
+
   AddResult.Free;
 end;
 
@@ -444,24 +488,9 @@ begin
   if length(FileNames)=0 then exit;
   BeginUpdate;
   try
-    for i:=0 to high(Filenames) do begin
-      NewFilename:=CleanAndExpandFilename(FileNames[i]);
-      if not FileExistsUTF8(NewFilename) then continue;
-      if DirPathExists(NewFilename) then continue;
-      NewFile:=LazProject.UnitInfoWithFilename(NewFilename);
-      if (NewFile<>nil) and (NewFile.IsPartOfProject) then continue;
-      {$IFDEF VerboseProjInspDrag}
-      debugln(['TProjectInspectorForm.FormDropFiles Adding files: ',NewFilename]);
-      {$ENDIF}
-      if NewFile=nil then begin
-        NewFile:=TUnitInfo.Create(nil);
-        NewFile.Filename:=NewFilename;
-        LazProject.AddFile(NewFile,false);
-      end;
-      if OnAddUnitToProject(Self,NewFile)<>mrOk then
-        break;
-      UpdateAll;
-    end;
+    for i:=0 to high(Filenames) do
+      if not (AddOneFile(FileNames[i]) in [mrOk, mrIgnore]) then break;
+    UpdateAll;
   finally
     EndUpdate;
   end;
@@ -914,7 +943,8 @@ begin
   ToolBar.Images            := IDEImages.Images_16;
   FilterEdit.OnGetImageIndex:=@OnTreeViewGetImageIndex;
 
-  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddAnItem, 'laz_add', @AddBitBtnClick);
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddFiles, 'laz_add', @AddBitBtnClick);
+  AddMoreBitBtn := CreateToolButton('AddMoreBitBtn', lisDlgAdd, lisPckEditAddOtherItems, 'laz_addmore', @AddMoreBitBtnClick);
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', dlgFROpts, lisPckEditEditGeneralOptions, 'menu_environment_options', @OptionsBitBtnClick);

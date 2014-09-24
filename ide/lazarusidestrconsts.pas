@@ -44,6 +44,7 @@ resourcestring
   lisLazarus = 'Lazarus';
   lisAdd  = 'Add';
   lisBtnAdd = '&Add';
+  lisDlgAdd = 'Add ...';
   lisBtnDlgAdd = '&Add ...';
   lisApply = 'Apply';
   lisInsert = 'Insert';
@@ -58,6 +59,7 @@ resourcestring
   lisBtnReplace = '&Replace';
   lisBtnDlgReplace = '&Replace ...';
   lisEdit = 'Edit';
+  lisDlgEdit = 'Edit ...';
   lisClear = 'Clear';
   lisOpen = 'Open';
   lisSave = 'Save';
@@ -1703,8 +1705,6 @@ resourcestring
   lisCompletionLongLineHintTypeRightOnly = 'Extend right only';
   lisCompletionLongLineHintTypeLittleLeft = 'Extend some left';
   lisCompletionLongLineHintTypeFullLeft = 'Extend far left';
-  dlgEdAdd = 'Add ...';
-  dlgEdEdit = 'Edit ...';
   lisAutomaticFeatures = 'Completion and Hints';
   lisAutoMarkup = 'Markup and Matches';
 
@@ -4191,7 +4191,8 @@ resourcestring
   lisPckEditCompilerOptionsForPackage = 'Compiler Options for Package %s';
   lisPckEditSavePackage = 'Save Package';
   lisPckEditCompilePackage = 'Compile package';
-  lisPckEditAddAnItem = 'Add an item';
+  lisPckEditAddFiles = 'Add files from the file system';
+  lisPckEditAddOtherItems = 'Add other items';
   lisPckEditRemoveSelectedItem = 'Remove selected item';
   lisPckEditInstallPackageInTheIDE = 'Install package in the IDE';
   lisUseSub = 'Use >>';

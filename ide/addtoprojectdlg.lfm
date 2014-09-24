@@ -90,7 +90,7 @@ object AddToProjectDialog: TAddToProjectDialog
         Anchors = [akTop, akLeft, akRight]
         AutoComplete = True
         AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
-        ItemHeight = 0
+        ItemHeight = 15
         OnChange = DependPkgNameComboBoxChange
         TabOrder = 0
         Text = 'DependPkgNameComboBox'
@@ -136,12 +136,11 @@ object AddToProjectDialog: TAddToProjectDialog
         OnSelectItem = FilesListViewSelectItem
       end
       object FilesDirButton: TBitBtn
-        AnchorSideLeft.Control = FilesBrowseButton
         AnchorSideLeft.Side = asrBottom
-        Left = 142
-        Height = 28
-        Top = 221
-        Width = 102
+        Left = 6
+        Height = 27
+        Top = 233
+        Width = 96
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
@@ -149,44 +148,33 @@ object AddToProjectDialog: TAddToProjectDialog
         OnClick = FilesDirButtonClick
         TabOrder = 1
       end
-      object FilesBrowseButton: TBitBtn
-        Left = 6
-        Height = 28
-        Top = 221
-        Width = 130
-        Anchors = [akLeft, akBottom]
-        AutoSize = True
-        Caption = 'FilesBrowseButton'
-        OnClick = FilesBrowseButtonClick
-        TabOrder = 2
-      end
       object FilesShortenButton: TBitBtn
         AnchorSideLeft.Control = FilesDirButton
         AnchorSideLeft.Side = asrBottom
-        Left = 250
-        Height = 28
-        Top = 221
-        Width = 135
+        Left = 108
+        Height = 27
+        Top = 233
+        Width = 126
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
         Caption = 'FilesShortenButton'
         OnClick = FilesShortenButtonClick
-        TabOrder = 3
+        TabOrder = 2
       end
       object FilesDeleteButton: TBitBtn
         AnchorSideLeft.Control = FilesShortenButton
         AnchorSideLeft.Side = asrBottom
-        Left = 391
-        Height = 28
-        Top = 221
-        Width = 126
+        Left = 240
+        Height = 27
+        Top = 233
+        Width = 118
         Anchors = [akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 6
         Caption = 'FilesDeleteButton'
         OnClick = FilesDeleteButtonClick
-        TabOrder = 4
+        TabOrder = 3
       end
     end
   end
