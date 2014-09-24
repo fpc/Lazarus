@@ -43,8 +43,8 @@ uses
   FormEditingIntf, PackageIntf, IDEHelpIntf, IDEOptionsIntf, SrcEditorIntf,
   IDEMsgIntf, IDEExternToolIntf,
   // IDE
-  IDEDialogs, IDEProcs, LazarusIDEStrConsts, IDEDefs,
-  CompilerOptions, ComponentReg, UnitResources, EnvironmentOpts, DialogProcs,
+  IDEDialogs, IDEProcs, LazarusIDEStrConsts, IDEDefs, CompilerOptions,
+  ComponentReg, UnitResources, EnvironmentOpts, DialogProcs, InputHistory,
   PackageDefs, AddToPackageDlg, PkgVirtualUnitEditor, MissingPkgFilesDlg,
   PackageSystem, CleanPkgDeps;
   
@@ -192,6 +192,7 @@ type
     CompileBitBtn: TToolButton;
     UseBitBtn: TToolButton;
     AddBitBtn: TToolButton;
+    AddMoreBitBtn: TToolButton;
     RemoveBitBtn: TToolButton;
     OptionsBitBtn: TToolButton;
     MoreBitBtn: TToolButton;
@@ -218,6 +219,7 @@ type
     ItemsPopupMenu: TPopupMenu;
     MorePopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
+    procedure AddMoreBitBtnClick(Sender: TObject);
     procedure AddToProjectClick(Sender: TObject);
     procedure AddToUsesPkgSectionCheckBoxChange(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
@@ -301,6 +303,7 @@ type
     FFirstNodeData: array[TPENodeType] of TPENodeData;
     fUpdateLock: integer;
     fForcedFlags: TPEFlags;
+    function AddOneFile(aFilename: string; var NewUnitPaths, NewIncPaths: String): TModalResult;
     procedure FreeNodeData(Typ: TPENodeType);
     function CreateNodeData(Typ: TPENodeType; aName: string; aRemoved: boolean): TPENodeData;
     procedure SetDependencyDefaultFilename(AsPreferred: boolean);
@@ -1361,9 +1364,8 @@ var
   HasRegister: Boolean;
   NewFlags: TPkgFileFlags;
   Code: TCodeBuffer;
-  NewUnitPaths: String;
+  NewUnitPaths, NewIncPaths: String;
   CurDir: String;
-  NewIncPaths: String;
 begin
   {$IFDEF VerbosePkgEditDrag}
   debugln(['TPackageEditorForm.FormDropFiles ',length(FileNames)]);
@@ -1373,37 +1375,9 @@ begin
   try
     NewUnitPaths:='';
     NewIncPaths:='';
-    for i:=0 to high(Filenames) do begin
-      NewFilename:=CleanAndExpandFilename(FileNames[i]);
-      if not FileExistsUTF8(NewFilename) then continue;
-      if DirPathExists(NewFilename) then continue;
-      if LazPackage.FindPkgFile(NewFilename,true,false)<>nil then continue;
-      NewFileType:=FileNameToPkgFileType(NewFilename);
-      NewFlags:=[];
-      HasRegister:=false;
-      NewUnitName:='';
-      if (NewFileType=pftUnit) then begin
-        Code:=CodeToolBoss.LoadFile(NewFilename,true,false);
-        NewUnitName:=CodeToolBoss.GetSourceName(Code,false);
-        if NewUnitName='' then
-          NewUnitName:=ExtractFileNameOnly(NewFilename);
-        if LazPackage.FindUsedUnit(NewUnitName)=nil then
-          Include(NewFlags,pffAddToPkgUsesSection);
-        CodeToolBoss.HasInterfaceRegisterProc(Code,HasRegister);
-        if HasRegister then
-          Include(NewFlags,pffHasRegisterProc);
-      end;
-      {$IFDEF VerbosePkgEditDrag}
-      debugln(['TPackageEditorForm.FormDropFiles Adding files: ',NewFilename,' Unit=',NewUnitName,' Type=',PkgFileTypeIdents[NewFileType],' use=',pffAddToPkgUsesSection in NewFlags,' hasregister=',pffHasRegisterProc in NewFlags]);
-      {$ENDIF}
-      LazPackage.AddFile(NewFilename,NewUnitName,NewFileType,NewFlags,cpNormal);
-      CurDir:=ChompPathDelim(ExtractFilePath(NewFilename));
-      if NewFileType=pftUnit then
-        NewUnitPaths:=MergeSearchPaths(NewUnitPaths,CurDir)
-      else
-        NewIncPaths:=MergeSearchPaths(NewIncPaths,CurDir);
-      UpdateAll(false);
-    end;
+    for i:=0 to high(Filenames) do
+      if not (AddOneFile(FileNames[i], NewUnitPaths, NewIncPaths) in [mrOk, mrIgnore]) then break;
+    //UpdateAll(false);
     // extend unit and include search path
     if not ExtendUnitSearchPath(NewUnitPaths) then exit;
     if not ExtendIncSearchPath(NewIncPaths) then exit;
@@ -1503,7 +1477,83 @@ begin
   DoUseUnitsInDirectory(false);
 end;
 
+function TPackageEditorForm.AddOneFile(aFilename: string;
+  var NewUnitPaths, NewIncPaths: String): TModalResult;
+var
+  NewFileType: TPkgFileType;
+  NewUnitName: String;
+  HasRegister: Boolean;
+  NewFlags: TPkgFileFlags;
+  Code: TCodeBuffer;
+  CurDir: String;
+begin
+  Result := mrOK;
+  aFilename:=CleanAndExpandFilename(aFileName);
+  if not FileExistsUTF8(aFilename) then Exit(mrIgnore);
+  if DirPathExists(aFilename) then Exit(mrIgnore);
+  if LazPackage.FindPkgFile(aFilename,true,false)<>nil then Exit(mrIgnore);
+  NewFileType:=FileNameToPkgFileType(aFilename);
+  NewFlags:=[];
+  HasRegister:=false;
+  NewUnitName:='';
+  if (NewFileType=pftUnit) then begin
+    Code:=CodeToolBoss.LoadFile(aFilename,true,false);
+    NewUnitName:=CodeToolBoss.GetSourceName(Code,false);
+    if NewUnitName='' then
+      NewUnitName:=ExtractFileNameOnly(aFilename);
+    if LazPackage.FindUsedUnit(NewUnitName)=nil then
+      Include(NewFlags,pffAddToPkgUsesSection);
+    CodeToolBoss.HasInterfaceRegisterProc(Code,HasRegister);
+    if HasRegister then
+      Include(NewFlags,pffHasRegisterProc);
+  end;
+  {$IFDEF VerbosePkgEditDrag}
+  debugln(['TPackageEditorForm.FormDropFiles Adding files: ',aFilename,' Unit=',NewUnitName,' Type=',PkgFileTypeIdents[NewFileType],' use=',pffAddToPkgUsesSection in NewFlags,' hasregister=',pffHasRegisterProc in NewFlags]);
+  {$ENDIF}
+  LazPackage.AddFile(aFilename,NewUnitName,NewFileType,NewFlags,cpNormal);
+  CurDir:=ChompPathDelim(ExtractFilePath(aFilename));
+  if NewFileType=pftUnit then
+    NewUnitPaths:=MergeSearchPaths(NewUnitPaths,CurDir)
+  else
+    NewIncPaths:=MergeSearchPaths(NewIncPaths,CurDir);
+end;
+
 procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  i: Integer;
+  NewUnitPaths, NewIncPaths: String;
+begin
+  OpenDialog:=TOpenDialog.Create(nil);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.InitialDir:=LazPackage.GetFileDialogInitialDir(OpenDialog.InitialDir);
+    OpenDialog.Title:=lisOpenFile;
+    OpenDialog.Options:=OpenDialog.Options
+                          +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
+    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
+                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
+                 +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
+                 +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
+                 +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
+                 +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
+    if OpenDialog.Execute then begin
+      NewUnitPaths:='';
+      NewIncPaths:='';
+      for i:=0 to OpenDialog.Files.Count-1 do
+        if not (AddOneFile(OpenDialog.Files[i], NewUnitPaths, NewIncPaths) in [mrOk, mrIgnore]) then break;
+      InputHistories.StoreFileDialogSettings(OpenDialog);
+      //UpdateAll(false);
+      // extend unit and include search path
+      if not ExtendUnitSearchPath(NewUnitPaths) then exit;
+      if not ExtendIncSearchPath(NewIncPaths) then exit;
+    end;
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TPackageEditorForm.AddMoreBitBtnClick(Sender: TObject);
 begin
   if LazPackage=nil then exit;
   BeginUpdate;
@@ -1825,7 +1875,8 @@ begin
   CompileBitBtn := CreateToolButton('CompileBitBtn', lisCompile, lisPckEditCompilePackage, 'pkg_compile', @CompileBitBtnClick);
   UseBitBtn     := CreateToolButton('UseBitBtn', lisPckEditInstall, lisPckEditInstallPackageInTheIDE, 'pkg_install', nil);
   CreateDivider;
-  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddOtherItems, 'laz_add', @AddBitBtnClick);
+  AddBitBtn     := CreateToolButton('AddBitBtn', lisAdd, lisPckEditAddFiles, 'laz_add', @AddBitBtnClick);
+  AddMoreBitBtn := CreateToolButton('AddMoreBitBtn', lisDlgAdd, lisPckEditAddOtherItems, 'laz_addmore', @AddMoreBitBtnClick);
   RemoveBitBtn  := CreateToolButton('RemoveBitBtn', lisRemove, lisPckEditRemoveSelectedItem, 'laz_delete', @RemoveBitBtnClick);
   CreateDivider;
   OptionsBitBtn := CreateToolButton('OptionsBitBtn', dlgFROpts, lisPckEditEditGeneralOptions, 'pkg_properties', @OptionsBitBtnClick);

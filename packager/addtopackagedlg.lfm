@@ -13,7 +13,7 @@ object AddToPackageDlg: TAddToPackageDlg
   OnDestroy = FormDestroy
   OnKeyDown = AddToPackageDlgKeyDown
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object PageControl1: TPageControl
     Left = 0
     Height = 282
@@ -387,20 +387,20 @@ object AddToPackageDlg: TAddToPackageDlg
       end
       object AddFilesBtnPanel: TPanel
         Left = 0
-        Height = 40
-        Top = 209
+        Height = 39
+        Top = 218
         Width = 654
         Align = alBottom
         AutoSize = True
         BevelOuter = bvNone
-        ClientHeight = 40
+        ClientHeight = 39
         ClientWidth = 654
         TabOrder = 1
         object FilesShortenButton: TBitBtn
-          Left = 250
-          Height = 28
+          Left = 108
+          Height = 27
           Top = 6
-          Width = 135
+          Width = 126
           Align = alLeft
           AutoSize = True
           BorderSpacing.Around = 6
@@ -409,10 +409,10 @@ object AddToPackageDlg: TAddToPackageDlg
           TabOrder = 0
         end
         object FilesDeleteButton: TBitBtn
-          Left = 391
-          Height = 28
+          Left = 240
+          Height = 27
           Top = 6
-          Width = 126
+          Width = 118
           Align = alLeft
           AutoSize = True
           BorderSpacing.Around = 6
@@ -420,29 +420,17 @@ object AddToPackageDlg: TAddToPackageDlg
           OnClick = FilesDeleteButtonClick
           TabOrder = 1
         end
-        object FilesBrowseButton: TBitBtn
-          Left = 6
-          Height = 28
-          Top = 6
-          Width = 130
-          Align = alLeft
-          AutoSize = True
-          BorderSpacing.Around = 6
-          Caption = 'FilesBrowseButton'
-          OnClick = FilesBrowseButtonClick
-          TabOrder = 2
-        end
         object FilesDirButton: TBitBtn
-          Left = 142
-          Height = 28
+          Left = 6
+          Height = 27
           Top = 6
-          Width = 102
+          Width = 96
           Align = alLeft
           AutoSize = True
           BorderSpacing.Around = 6
           Caption = 'FilesDirButton'
           OnClick = FilesDirButtonClick
-          TabOrder = 3
+          TabOrder = 2
         end
       end
     end

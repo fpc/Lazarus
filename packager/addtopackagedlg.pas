@@ -81,7 +81,6 @@ type
   { TAddToPackageDlg }
 
   TAddToPackageDlg = class(TForm)
-    FilesBrowseButton: TBitBtn;
     FilesDirButton: TBitBtn;
     // PageControl1
     PageControl1: TPageControl;
@@ -136,7 +135,6 @@ type
     procedure ComponentUnitNameEditChange(Sender: TObject);
     procedure DependPkgNameComboBoxChange(Sender: TObject);
     procedure FilesAddButtonClick(Sender: TObject);
-    procedure FilesBrowseButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
     procedure FilesDirButtonClick(Sender: TObject);
     procedure FilesListViewSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
@@ -679,49 +677,6 @@ begin
   ModalResult:=mrOk;
 end;
 
-procedure TAddToPackageDlg.FilesBrowseButtonClick(Sender: TObject);
-var
-  OpenDialog: TOpenDialog;
-  AFilename: string;
-  i: Integer;
-  NewListItem: TListItem;
-  NewPgkFileType: TPkgFileType;
-begin
-  OpenDialog:=TOpenDialog.Create(nil);
-  try
-    InputHistories.ApplyFileDialogSettings(OpenDialog);
-    OpenDialog.InitialDir:=LazPackage.GetFileDialogInitialDir(OpenDialog.InitialDir);
-    OpenDialog.Title:=lisOpenFile;
-    OpenDialog.Options:=OpenDialog.Options
-                          +[ofFileMustExist,ofPathMustExist,ofAllowMultiSelect];
-    OpenDialog.Filter:=dlgAllFiles+' ('+GetAllFilesMask+')|'+GetAllFilesMask
-                 +'|'+lisLazarusUnit+' (*.pas;*.pp)|*.pas;*.pp'
-                 +'|'+lisLazarusProject+' (*.lpi)|*.lpi'
-                 +'|'+lisLazarusForm+' (*.lfm;*.dfm)|*.lfm;*.dfm'
-                 +'|'+lisLazarusPackage+' (*.lpk)|*.lpk'
-                 +'|'+lisLazarusProjectSource+' (*.lpr)|*.lpr';
-    if OpenDialog.Execute then begin
-      for i:=0 to OpenDialog.Files.Count-1 do begin
-        AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);
-        if FileExistsUTF8(AFilename) then begin
-          if FindFileInFilesList(AFilename)<0 then begin
-            LazPackage.ShortenFilename(AFilename,true);
-            NewListItem:=FilesListView.Items.Add;
-            NewListItem.Caption:=AFilename;
-            NewPgkFileType:=FileNameToPkgFileType(AFilename);
-            NewListItem.SubItems.Add(GetPkgFileTypeLocalizedName(NewPgkFileType));
-            NewListItem.Selected:=True;
-          end;
-        end;
-      end;
-    end;
-    InputHistories.StoreFileDialogSettings(OpenDialog);
-    CheckFilesButtonsOk;
-  finally
-    OpenDialog.Free;
-  end;
-end;
-
 procedure TAddToPackageDlg.FilesDeleteButtonClick(Sender: TObject);
 var
   i: Integer;
@@ -1173,11 +1128,6 @@ begin
     CurColumn.Caption:=dlgEnvType;
   end;
   
-  with FilesBrowseButton do begin
-    Caption:=lisA2PAddFiles;
-    LoadGlyphFromResourceName(HInstance, 'laz_add');
-  end;
-
   with FilesDirButton do begin
     Caption:=lisAddFilesInDirectory;
     LoadGlyphFromResourceName(HInstance, 'pkg_files');
