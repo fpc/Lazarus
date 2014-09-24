@@ -12899,6 +12899,7 @@ begin
   Result := False;
   QEvent_accept(Event);
   case QEvent_type(Event) of
+    QEventMouseMove,
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick: ; {do nothing here - signal is fired}
@@ -17242,6 +17243,7 @@ begin
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
+      QEventMouseMove: Result := SlotMouseMove(Sender, Event);
       QEventContextMenu: Result := SlotContextMenu(Sender, Event);
       else
       begin
