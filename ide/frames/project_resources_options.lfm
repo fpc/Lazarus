@@ -35,6 +35,7 @@ object ResourcesOptionsFrame: TResourcesOptionsFrame
         Caption = 'Resource'
         Width = 326
       end>
+    HideSelection = False
     RowSelect = True
     TabOrder = 0
     ViewStyle = vsReport

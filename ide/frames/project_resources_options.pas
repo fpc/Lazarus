@@ -88,12 +88,14 @@ end;
 
 procedure TResourcesOptionsFrame.cbResourceTypeChange(Sender: TObject);
 begin
-  lbResources.Selected.SubItems[0] := ResourceTypeToStr[TUserResourceType(cbResourceType.ItemIndex)];
+  if Assigned(lbResources.Selected) then
+    lbResources.Selected.SubItems[0] := ResourceTypeToStr[TUserResourceType(cbResourceType.ItemIndex)];
 end;
 
 procedure TResourcesOptionsFrame.edResourceNameEditingDone(Sender: TObject);
 begin
-  lbResources.Selected.SubItems[1] := edResourceName.Text;
+  if Assigned(lbResources.Selected) then
+    lbResources.Selected.SubItems[1] := edResourceName.Text;
 end;
 
 procedure TResourcesOptionsFrame.edResourceNameKeyDown(Sender: TObject;
