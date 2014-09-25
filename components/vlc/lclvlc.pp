@@ -54,11 +54,13 @@ Type
 
 implementation
 
+{$ifdef HasX}
 {$ifdef lclgtk2}
 {$I vlcgtk2.inc}
 {$endif}
 {$ifdef lclqt}
 {$I vlcqt.inc}
+{$endif}
 {$endif}
 { TLCLVLCPlayer }
 
