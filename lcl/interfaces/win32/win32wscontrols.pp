@@ -143,6 +143,9 @@ uses
 procedure PrepareCreateWindow(const AWinControl: TWinControl;
   const CreateParams: TCreateParams; out Params: TCreateWindowExParams);
 begin
+  { Windows requires at least an application HANDLE as a container }
+  if WidgetSet.AppHandle=0 then
+    WidgetSet.AppInit(ScreenInfo);
   with Params do
   begin
     Window := HWND(nil);
