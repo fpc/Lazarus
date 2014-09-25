@@ -816,6 +816,7 @@ type
     procedure RealSetText(const Value: TCaption); override;
     function GetCachedText(var CachedText: TCaption): boolean; override;
     function GetCaretPos: TPoint; override;
+    procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); override;
     procedure SetCaretPos(const Value: TPoint); override;
     procedure SetLines(const Value: TStrings);
     procedure SetSelText(const Val: string); override;
