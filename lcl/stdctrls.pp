@@ -1503,6 +1503,9 @@ type
     property OnMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnChangeBounds;
     property OnContextPopup;
     property OnResize;
