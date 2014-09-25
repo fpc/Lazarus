@@ -6464,6 +6464,7 @@ var
   aCompileHint: String;
   OldToolStatus: TIDEToolStatus;
   IsComplete: Boolean;
+  StartTime: TDateTime;
 begin
   Result:=SourceFileMgr.PrepareForCompileWithMsg;
   if Result<>mrOk then begin
@@ -6682,11 +6683,14 @@ begin
           exit;
         end;
 
+        StartTime:=Now;
         Result:=TheCompiler.Compile(Project1,
                                 WorkingDir,CompilerFilename,CompilerParams,
                                 (pbfCleanCompile in Flags) or NeedBuildAllFlag,
                                 pbfSkipLinking in Flags,
                                 pbfSkipAssembler in Flags,aCompileHint);
+        if ConsoleVerbosity>=0 then
+          debugln(['TMainIDE.DoBuildProject compiler time in s: ',(Now-StartTime)*86400]);
         if Result<>mrOk then begin
           // save state, so that next time the project is not compiled clean
           Project1.LastCompilerFilename:=CompilerFilename;

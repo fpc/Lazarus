@@ -1582,6 +1582,7 @@ begin
         DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' execute ...']);
         {$ENDIF}
         // now execute
+        Tool.Process.PipeBufferSize:=Max(Tool.Process.PipeBufferSize,64*1024);
         Tool.Process.Execute;
         {$IFDEF VerboseExtToolThread}
         DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' executing ...']);
