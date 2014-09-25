@@ -825,7 +825,10 @@ begin
         Message.wParam := 0;
         Message.lParam := 0;
         Message.Result := 0;
-        DeliverMessage(Info^.WinControl, Message);
+
+        //debugln('LOWORD(WPARAM)=%d, HIWORD(WPARAM)=%d', [LOWORD(WParam), HIWORD(WPARAM)]);
+        if TWin32WSTrackBar.GetPosition(TCustomTrackBar(Info^.WinControl))<>TCustomTrackBar(Info^.WinControl).Position then
+          DeliverMessage(Info^.WinControl, Message);
       end;
       Result := True;
     end;
