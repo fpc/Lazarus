@@ -73,10 +73,5 @@
       <OtherUnitFiles Value="../designer;../packager;../debugger"/>
       <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
     </SearchPaths>
-    <Other>
-      <Verbosity>
-        <ShowAll Value="True"/>
-      </Verbosity>
-    </Other>
   </CompilerOptions>
 </CONFIG>
