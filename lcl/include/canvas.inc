@@ -138,7 +138,7 @@ end;
 procedure TCanvas.SetPixel(X, Y: Integer; Value: TColor);
 begin
   Changing;
-  RequiredState([csHandleValid]);
+  RequiredState([csHandleValid, csPenvalid]);
   WidgetSet.DCSetPixel(FHandle, X, Y, Value);
   Changed;
 end;
