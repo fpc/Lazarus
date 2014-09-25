@@ -13,6 +13,7 @@ object CompOptModeMatrixFrame: TCompOptModeMatrixFrame
     Height = 26
     Top = 0
     Width = 550
+    ButtonHeight = 25
     Caption = 'BMMatrixToolBar'
     EdgeBorders = []
     List = True
