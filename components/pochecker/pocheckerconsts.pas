@@ -38,9 +38,9 @@ resourcestring
   sTranslated = 'Translated';
   sUntranslated = 'Untranslated';
   sFuzzy = 'Fuzzy';
-  sStatHint = '%3.1f%% Translated' + LineEnding +
-              '%3.1f%% UnTranslated' + LineEnding +
-              '%3.1f%% Fuzzy';
+  sStatHint = '%3d Translated (%3.1f%%)' + LineEnding +
+              '%3d UnTranslated (%3.1f%%)' + LineEnding +
+              '%3d Fuzzy (%3.1f%%)';
 
   //PoFamiles
   sOriginal = 'Original';

@@ -97,7 +97,9 @@ begin
   begin
     Index := Item.Index;
     AStat := FPoFamilyStats.Items[Index];
-    ListView.Hint := Format(sStatHint,[AStat.PercTranslated, AStat.PercUnTranslated, AStat.PercFuzzy]);
+    ListView.Hint := Format(sStatHint,[AStat.NrTranslated, AStat.PercTranslated,
+                                       AStat.NrUnTranslated, AStat.PercUnTranslated,
+                                       AStat.NrFuzzy, AStat.PercFuzzy]);
   end
   else
   begin
