@@ -19831,5 +19831,5 @@ msgstr "Niet wijzigbaar"
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
-msgstr "Verie informatie"
+msgstr "Versie informatie"
 
