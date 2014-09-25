@@ -56,7 +56,7 @@ type
     procedure OpenButtonCLICK(Sender: TObject);
     procedure PopupClick(Sender: TObject);
     procedure HistoryButtonClick(Sender: TObject);
-    procedure RecentSaveButton1Click(Sender: TObject);
+    //procedure RecentSaveButton1Click(Sender: TObject);
     procedure SaveButtonCLICK(Sender: TObject);
   private
     FFilename: string;
@@ -329,12 +329,12 @@ procedure TImExportCompOptsDlg.HistoryButtonClick(Sender: TObject);
 begin
   RecentPopupMenu.PopUp;
 end;
-
+{
 procedure TImExportCompOptsDlg.RecentSaveButton1Click(Sender: TObject);
 begin
   RecentPopupMenu.PopUp;
 end;
-
+}
 procedure TImExportCompOptsDlg.SaveButtonCLICK(Sender: TObject);
 begin
   DoSaveFile(CleanAndExpandFilename(FileNameEdit.FileName));
@@ -361,6 +361,8 @@ begin
       mi.OnClick:=@PopupClick;
       RecentPopupMenu.Items.Add(mi);
     end;
+    HistoryLabel.Visible := sl.Count > 0;
+    HistoryButton.Visible := HistoryLabel.Visible;
   finally
     sl.Free;
   end;

@@ -1,10 +1,10 @@
 object ImExportCompOptsDlg: TImExportCompOptsDlg
   Left = 416
-  Height = 127
+  Height = 129
   Top = 208
   Width = 746
   Caption = 'ImExportCompOptsDlg'
-  ClientHeight = 127
+  ClientHeight = 129
   ClientWidth = 746
   Constraints.MinHeight = 113
   Constraints.MinWidth = 300
@@ -13,8 +13,8 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
   LCLVersion = '1.3'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 41
-    Top = 80
+    Height = 38
+    Top = 85
     Width = 734
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -28,24 +28,25 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     ShowButtons = [pbOK, pbCancel, pbHelp]
   end
   object HistoryLabel: TLabel
+    AnchorSideTop.Control = HistoryButton
+    AnchorSideTop.Side = asrCenter
     Left = 16
-    Height = 15
-    Top = 16
-    Width = 44
+    Height = 20
+    Top = 8
+    Width = 47
     Caption = 'History'
     ParentColor = False
   end
   object HistoryButton: TButton
     AnchorSideLeft.Control = HistoryLabel
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = HistoryLabel
-    AnchorSideTop.Side = asrCenter
-    Left = 66
+    AnchorSideTop.Control = Owner
+    Left = 69
     Height = 25
     Hint = 'Recent files'
-    Top = 11
+    Top = 6
     Width = 35
-    BorderSpacing.Left = 6
+    BorderSpacing.Around = 6
     Caption = '>>'
     OnClick = HistoryButtonClick
     ParentShowHint = False
@@ -58,10 +59,10 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     AnchorSideTop.Control = HistoryLabel
     AnchorSideTop.Side = asrBottom
     Left = 16
-    Height = 15
-    Top = 46
-    Width = 20
-    BorderSpacing.Top = 15
+    Height = 20
+    Top = 41
+    Width = 23
+    BorderSpacing.Top = 13
     Caption = 'File'
     ParentColor = False
   end
@@ -70,9 +71,9 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = FileLabel
     AnchorSideTop.Side = asrCenter
-    Left = 42
-    Height = 25
-    Top = 41
+    Left = 45
+    Height = 28
+    Top = 37
     Width = 431
     DialogOptions = [ofExtensionDifferent, ofEnableSizing, ofViewDetail]
     Filter = 'XML file (*.xml)|*.xml|Project file (*.lpi)|*.lpi|Package file (*.lpk)|*.lpk|Session file (*.lps)|*.lps|All files (*)|*'
@@ -89,8 +90,8 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
   object ExportRadioGroup: TRadioGroup
     AnchorSideLeft.Control = FileNameEdit
     AnchorSideLeft.Side = asrBottom
-    Left = 488
-    Height = 62
+    Left = 491
+    Height = 69
     Top = 6
     Width = 185
     AutoFill = True
@@ -103,7 +104,7 @@ object ImExportCompOptsDlg: TImExportCompOptsDlg
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 43
+    ClientHeight = 44
     ClientWidth = 181
     ItemIndex = 0
     Items.Strings = (
