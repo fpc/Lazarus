@@ -1533,20 +1533,23 @@ var
   SrcNoteBook: TSourceNotebook;
   Layout: TSimpleWindowLayout;
 begin
-  MainIDE.DoShowMessagesView(PutOnTop);
-  if SourceEditorManager.SourceWindowCount = 0 then exit;
-  SrcNoteBook := SourceEditorManager.SourceWindows[0];
-
-  Layout:=IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(SrcNoteBook.Name);
-  if (Layout<>nil) and (Layout.WindowPlacement=iwpDefault)
-  and ((SrcNoteBook.Top + SrcNoteBook.Height) > MessagesView.Top)
-  and (MessagesView.Parent = nil) then
-    SrcNoteBook.Height := Max(50,Min(SrcNoteBook.Height,MessagesView.Top-SrcNoteBook.Top));
-  if PutOnTop then
+  if SourceEditorManager.SourceWindowCount > 0 then
   begin
-    IDEWindowCreators.ShowForm(MessagesView,true);
-    SourceEditorManager.ShowActiveWindowOnTop(False);
+    SrcNoteBook := SourceEditorManager.SourceWindows[0];
+
+    Layout:=IDEWindowCreators.SimpleLayoutStorage.ItemByFormID(SrcNoteBook.Name);
+    if (Layout<>nil) and (Layout.WindowPlacement=iwpDefault)
+    and ((SrcNoteBook.Top + SrcNoteBook.Height) > MessagesView.Top)
+    and (MessagesView.Parent = nil) then
+      SrcNoteBook.Height := Max(50,Min(SrcNoteBook.Height,MessagesView.Top-SrcNoteBook.Top));
+    if PutOnTop then
+    begin
+      IDEWindowCreators.ShowForm(MessagesView,true);
+      SourceEditorManager.ShowActiveWindowOnTop(False);
+      exit;
+    end;
   end;
+  MainIDE.DoShowMessagesView(PutOnTop);
 end;
 
 function TLazSourceFileManager.SomethingOfProjectIsModified(Verbose: boolean): boolean;

@@ -8112,8 +8112,10 @@ begin
     exit;
 
   if Msg=nil then begin
+    // first find an error with a source position
     if MessagesView.SelectFirstUrgentMessage(mluError,true) then
       Msg:=MessagesView.GetSelectedLine;
+    // then find any error
     if (Msg=nil) and MessagesView.SelectFirstUrgentMessage(mluError,false) then
       Msg:=MessagesView.GetSelectedLine;
     if Msg=nil then exit;
@@ -8276,9 +8278,6 @@ begin
 
   // don't move the messagesview, if it was already visible.
   IDEWindowCreators.ShowForm(MessagesView,BringToFront);
-  if BringToFront then
-    // the sourcenotebook is more interesting than the messages
-    SourceEditorManager.ShowActiveWindowOnTop(False);
 end;
 
 procedure TMainIDE.DoShowSearchResultsView(Show: boolean; BringToFront: boolean = False);
@@ -8288,10 +8287,7 @@ begin
     SearchresultsView.OnSelectionChanged := OnSearchResultsViewSelectionChanged;
   end;
   if Show then begin
-    IDEWindowCreators.ShowForm(SearchresultsView,Show);
-    // the sourcenotebook is more interesting than the search results
-    if BringToFront = false then
-      SourceEditorManager.ShowActiveWindowOnTop(False);
+    IDEWindowCreators.ShowForm(SearchresultsView,BringToFront);
   end;
 end;
 
