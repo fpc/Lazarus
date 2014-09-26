@@ -309,8 +309,13 @@ type
                                           write FOnColorChanged;
     property OnDblClick;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnPaint;
     property OnResize;
     property OnChangeBounds;

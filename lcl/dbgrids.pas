@@ -589,6 +589,9 @@ type
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnPrepareCanvas;
     property OnSelectEditor;
     //property OnStartDock;

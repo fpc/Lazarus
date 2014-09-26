@@ -463,9 +463,12 @@ type
     property OnKeyUp;
     property OnMouseDown;
     property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
-    property OnMouseLeave;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnResize;
     property OnUTF8KeyPress;
   end;

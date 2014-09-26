@@ -264,6 +264,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnMouseWheel;
@@ -297,8 +299,6 @@ type
     property TitleCaptions: TStrings read FTitleCaptions write SetTitleCaptions;
 
     property OnGetPickList: TGetPickListEvent read FOnGetPickList write FOnGetPickList;
-    property OnMouseEnter;
-    property OnMouseLeave;
     property OnStringsChange: TNotifyEvent read FOnStringsChange write FOnStringsChange;
     property OnStringsChanging: TNotifyEvent read FOnStringsChanging write FOnStringsChanging;
     property OnValidate: TOnValidateEvent read FOnValidate write FOnValidate;

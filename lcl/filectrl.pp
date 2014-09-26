@@ -111,8 +111,10 @@ Type
     property OnKeyPress;
     property OnKeyDown;
     property OnKeyUp;
-    property OnMouseMove;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
+    property OnMouseMove;
     property OnMouseUp;
     property OnMouseWheel;
     property OnMouseWheelDown;
@@ -205,8 +207,13 @@ Type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnStartDrag;
     property OnSelect;
     property OnUTF8KeyPress;

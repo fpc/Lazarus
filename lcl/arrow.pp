@@ -63,8 +63,13 @@ type
     property OnDragOver;
     property OnEndDrag;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnPaint;
     property OnResize;
     property OnStartDrag;

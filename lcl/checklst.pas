@@ -119,11 +119,11 @@ type
     property OnKeyPress;
     property OnKeyDown;
     property OnKeyUp;
-    property OnMouseMove;
     property OnMouseDown;
-    property OnMouseUp;
     property OnMouseEnter;
     property OnMouseLeave;
+    property OnMouseMove;
+    property OnMouseUp;
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;

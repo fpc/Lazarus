@@ -320,6 +320,9 @@ const
     property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property OnStartDock;
     property OnStartDrag;
     property OnUTF8KeyPress;
