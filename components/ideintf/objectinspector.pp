@@ -657,7 +657,6 @@ type
     FOnUpdateRestricted: TNotifyEvent;
     FOnViewRestricted: TNotifyEvent;
     FSelection: TPersistentSelectionList;
-    FComponentTreeHeight: integer;
     FDefaultItemHeight: integer;
     FFlags: TOIFlags;
     FOnShowOptions: TNotifyEvent;
@@ -677,7 +676,7 @@ type
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
     procedure SetComponentEditor(const AValue: TBaseComponentEditor);
     procedure SetFavorites(const AValue: TOIFavoriteProperties);
-    procedure SetComponentTreeHeight(const AValue: integer);
+    procedure SetComponentPanelHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
     procedure SetInfoBoxHeight(const AValue: integer);
     procedure SetRestricted(const AValue: TOIRestrictedProperties);
@@ -699,7 +698,7 @@ type
     FEnableHookGetSelection: boolean;
     FInSelection: Boolean;
     FOnAutoShow: TNotifyEvent;
-    function GetComponentTreeHeight: integer;
+    function GetComponentPanelHeight: integer;
     function GetInfoBoxHeight: integer;
     procedure SetEnableHookGetSelection(AValue: boolean);
   protected
@@ -741,8 +740,8 @@ type
     procedure FocusGrid(Grid: TOICustomPropertyGrid = nil);
 
     property AutoShow: Boolean read FAutoShow write FAutoShow;
-    property ComponentTreeHeight: integer read GetComponentTreeHeight
-                                          write SetComponentTreeHeight;
+    property ComponentPanelHeight: integer read GetComponentPanelHeight
+                                          write SetComponentPanelHeight;
     property DefaultItemHeight: integer read FDefaultItemHeight
                                         write SetDefaultItemHeight;
     property EnableHookGetSelection: Boolean read FEnableHookGetSelection
@@ -3799,7 +3798,7 @@ begin
       FGridSplitterX[Page]:=AnObjInspector.GridControl[Page].PreferredSplitterX;
   FDefaultItemHeight:=AnObjInspector.DefaultItemHeight;
   FShowComponentTree:=AnObjInspector.ShowComponentTree;
-  FComponentTreeHeight:=AnObjInspector.ComponentTreeHeight;
+  FComponentTreeHeight:=AnObjInspector.ComponentPanelHeight;
 
   FGridBackgroundColor:=AnObjInspector.PropertyGrid.BackgroundColor;
   FSubPropertiesColor:=AnObjInspector.PropertyGrid.SubPropertiesColor;
@@ -3845,7 +3844,7 @@ begin
   AnObjInspector.DefaultItemHeight := DefaultItemHeight;
   AnObjInspector.ShowComponentTree := ShowComponentTree;
   AnObjInspector.ShowInfoBox := ShowInfoBox;
-  AnObjInspector.ComponentTreeHeight := ComponentTreeHeight;
+  AnObjInspector.ComponentPanelHeight := ComponentTreeHeight;
   AnObjInspector.InfoBoxHeight := InfoBoxHeight;
   AnObjInspector.AutoShow := AutoShow;
   AnObjInspector.ShowStatusBar := ShowStatusBar;
@@ -3927,7 +3926,7 @@ begin
   FAutoShow := True;
   FUpdatingAvailComboBox:=false;
   FDefaultItemHeight := 22;
-  FComponentTreeHeight := 160;
+  ComponentPanelHeight := 160;
   FShowComponentTree := True;
   FShowFavorites := False;
   FShowRestricted := False;
@@ -4012,7 +4011,6 @@ begin
   with ComponentTree do
   begin
     Name := 'ComponentTree';
-    Constraints.MinHeight := 16;
     Parent := ComponentPanel;
     AnchorSideTop.Control := CompFilterEdit;
     AnchorSideTop.Side := asrBottom;
@@ -4035,7 +4033,7 @@ begin
   end;
 
   // ComponentPanel encapsulates TreeFilterEdit and ComponentTree
-  ComponentPanel.Height := ComponentTreeHeight;
+  ComponentPanel.Constraints.MinHeight := 1;
   ComponentPanel.Visible := FShowComponentTree;
   CompFilterEdit.FilteredTreeview:=ComponentTree;
 
@@ -4120,14 +4118,10 @@ begin
     Result:=APersistent.ClassName;
 end;
 
-procedure TObjectInspectorDlg.SetComponentTreeHeight(const AValue: integer);
+procedure TObjectInspectorDlg.SetComponentPanelHeight(const AValue: integer);
 begin
-  if FComponentTreeHeight <> AValue then
-  begin
-    FComponentTreeHeight := AValue;
-    Assert(Assigned(ComponentTree), 'TObjectInspectorDlg.SetComponentTreeHeight: ComponentTree=nil');
+  if ComponentPanel.Height <> AValue then
     ComponentPanel.Height := AValue;
-  end;
 end;
 
 procedure TObjectInspectorDlg.SetDefaultItemHeight(const AValue: integer);
@@ -4717,7 +4711,6 @@ begin
     ComponentPanel.Visible := False;
     AvailPersistentComboBox.Visible := False;
     // rebuild controls
-    ComponentPanel.Height := ComponentTreeHeight;
     if FShowComponentTree then
       CreateSplitter(True)
     else
@@ -4865,7 +4858,7 @@ begin
       Name := 'Splitter1';
       Parent := Self;
       Align := alTop;
-      Top := ComponentTreeHeight;
+      Top := ComponentPanelHeight;
       Height := 5;
     end;
   end
@@ -5363,13 +5356,9 @@ begin
   DoModified(Self);
 end;
 
-function TObjectInspectorDlg.GetComponentTreeHeight: integer;
+function TObjectInspectorDlg.GetComponentPanelHeight: integer;
 begin
-  if Assigned(ComponentTree) then
-    Result := ComponentPanel.Height
-  else        // Will never happen, remove later. JuMa
-    raise Exception.Create('ComponentTree=nil in TObjectInspectorDlg.GetComponentTreeHeight');
-    //Result := FComponentTreeHeight;
+  Result := ComponentPanel.Height
 end;
 
 function TObjectInspectorDlg.GetInfoBoxHeight: integer;
