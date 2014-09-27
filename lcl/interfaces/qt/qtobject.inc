@@ -235,10 +235,15 @@ begin
 
   if not FIsLibraryInstance then
   begin
+    {$IFDEF HAIKU}
+    FAppSessionQuit := nil;
+    FAppSaveSessionRequest := nil;
+    {$ELSE}
     FAppSessionQuit := QApplication_hook_create(App);
     QApplication_hook_hook_commitDataRequest(FAppSessionQuit, @SlotCommitDataRequest);
     FAppSaveSessionRequest := QApplication_hook_create(App);
     QApplication_hook_hook_saveStateRequest(FAppSaveSessionRequest, @SlotSaveDataRequest);
+    {$ENDIF}
   end else
   begin
     FAppSessionQuit := nil;
@@ -322,6 +327,7 @@ begin
   // do not quit application if we are library
   if not FIsLibraryInstance then
   begin
+    {$IFNDEF HAIKU}
     if Assigned(FAppSessionQuit) then
     begin
       QApplication_hook_destroy(FAppSessionQuit);
@@ -332,6 +338,7 @@ begin
       QApplication_hook_destroy(FAppSaveSessionRequest);
       FAppSaveSessionRequest := nil;
     end;
+    {$ENDIF}
     QCoreApplication_quit;
   end;
 end;
@@ -1097,6 +1104,7 @@ begin
     ' errorInteraction ',dbgs(QSessionManager_allowsErrorInteraction(sessionManager)),
     ' phase2 ',dbgs(QSessionManager_isPhase2(sessionManager)));
   {$ENDIF}
+  {$IFNDEF HAIKU}
   // if session manager does not allow interaction, then we close app without any intf calls
   if QSessionManager_allowsInteraction(sessionManager) then
   begin
@@ -1118,6 +1126,7 @@ begin
       QSessionManager_release(sessionManager);
     end;
   end;
+  {$ENDIF}
 end;
 
 procedure TQtWidgetSet.SlotSaveDataRequest(sessionManager: QSessionManagerH);
