@@ -92,10 +92,12 @@ procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   DropDownMenuDropped: Boolean;
+  Pressed: Boolean;
   Pt: TPoint;
 begin
   //DebugLn(['TToolButton.MouseUp ',Name,':',ClassName,' ',dbgs(ord(Button)),' ',X,',',Y]);
-  if (Button = mbLeft) and ([tbfArrowPressed, tbfPressed] * FToolButtonFlags <> []) then
+  Pressed := (Button = mbLeft) and ([tbfArrowPressed, tbfPressed] * FToolButtonFlags <> []);
+  if Pressed then
   begin
     Exclude(FToolButtonFlags, tbfPressed);
     Exclude(FToolButtonFlags, tbfArrowPressed);
@@ -127,7 +129,8 @@ begin
     begin
       if (Style = tbsCheck) then
         Down := not Down;
-      Click;
+      if Pressed then
+        Click;
     end;
   end;
   Invalidate;
