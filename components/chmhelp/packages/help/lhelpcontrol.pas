@@ -130,8 +130,11 @@ end;
 function TLHelpConnection.SendMessage(Stream: TStream): TLHelpResponse;
 begin
   Result := srNoAnswer;
-  fServerOut.SendMessage(mtUnknown, Stream);
-  Result := WaitForMsgResponse;
+  if fServerOut.Active then
+  begin
+    fServerOut.SendMessage(mtUnknown, Stream);
+    Result := WaitForMsgResponse;
+  end;
 end;
 
 constructor TLHelpConnection.Create;
