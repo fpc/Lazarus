@@ -37,10 +37,9 @@ interface
 
 uses
   Classes, SysUtils, SimpleIPC, Laz2_XMLCfg,
-  FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, LCLProc, IpHtml, ComCtrls, ExtCtrls, Menus, LCLType, LCLIntf, StdCtrls,
-  BaseContentProvider, FileContentProvider,
-  ChmContentProvider
+  FileUtil, Forms, Controls, Dialogs,
+  Buttons, LCLProc, ComCtrls, ExtCtrls, Menus, LCLType, LCLIntf, StdCtrls,
+  BaseContentProvider, ChmContentProvider
   {$IFDEF USE_LNET}, HTTPContentProvider{$ENDIF},
   lazlogger;
 
