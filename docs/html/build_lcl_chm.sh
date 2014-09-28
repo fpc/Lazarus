@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# basic script to do a lcl.chm build.   Marco van de Voort dec 2011
+# basic script to do an lcl.chm build. Marco van de Voort dec 2011
 
-# assumes a fpcdocs checkout where "fixdocs.sh" has been succesfully run.
+# assumes a fpcdocs checkout where "fixdocs.sh" has been successfully run.
 # on 1.7GHz Core2 laptop single thread 6:26 minutes. Don't be impatient :-)
 
 set -e

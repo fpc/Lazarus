@@ -3,8 +3,8 @@
 # Author: Mattias Gaertner
 #
 # Creates the fpdoc HTML output for the LCL
-# Creates an chm file, if HTMLFMT is set to chm,
-# otherwise it create html docs
+# Creates a chm file if HTMLFMT is set to chm,
+# otherwise it creates html docs
 #
 #
 
