@@ -5575,9 +5575,13 @@ begin
   Result:=false;
   with FGCache do begin
     if IsCol then begin
+      if index>ColCount-1 then
+        exit;
       StartPos:=integer(PtrUInt(AccumWidth[index]));
       Dim:=GetColWidths(index);
     end else begin
+      if index>RowCount-1 then
+        exit;
       StartPos:=integer(PtrUInt(AccumHeight[index]));
       Dim:= GetRowHeights(index);
     end;
