@@ -4050,8 +4050,8 @@ begin
       if not BuildOneMode then Exit;
     end;
     // Switch back to original mode.
-    if ModeList.Count > 0 then
-      Project1.ActiveBuildMode := ActiveMode;
+    Project1.ActiveBuildMode := ActiveMode;
+    MainIDE.UpdateCaption;
     Msg := Format(lisSelectedModesWereBuilt, [ModeCnt]);
     IDEMessageDialog(lisSuccess, Msg, mtInformation, [mbOK]);
     Result:=True;
