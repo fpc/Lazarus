@@ -68,8 +68,7 @@ msgstr "[Zeile %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
 msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
-msgstr ""
-"Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
+msgstr "Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -176,6 +175,14 @@ msgstr "%d Warnungen gefunden."
 msgid "&Open a po-file"
 msgstr "p&o-Datei öffnen"
 
+#: pocheckerconsts.sopenfail
+msgid "Unable to open file %s"
+msgstr ""
+
+#: pocheckerconsts.sopenfile
+msgid "Open file %s in Ide Editor?"
+msgstr ""
+
 #: pocheckerconsts.soriginal
 msgid "Original"
 msgstr "Original"
@@ -233,10 +240,17 @@ msgid "Show statistics graph"
 msgstr "Zeige Statistik-Graphik"
 
 #: pocheckerconsts.sstathint
+#, fuzzy
 #| msgid ""
 #| "%3.1f%% Translated\n"
 #| "%3.1f%% UnTranslated\n"
 #| "%3.1f%% Fuzzy\n"
+#| "%3d Translated (%3.1f%%)\n"
+#| "%3d UnTranslated (%3.1f%%)\n"
+#| "%3d Fuzzy (%3.1f%%)\n"
+#| "%3d Translated (%3.1f%%)\n"
+#| "%3d UnTranslated (%3.1f%%)\n"
+#| "%3d Fuzzy (%3.1f%%)\n"
 msgid ""
 "%3d Translated (%3.1f%%)\n"
 "%3d UnTranslated (%3.1f%%)\n"
@@ -275,3 +289,4 @@ msgstr "Alle abwählen"
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
 msgstr "Nicht übersetzt"
+

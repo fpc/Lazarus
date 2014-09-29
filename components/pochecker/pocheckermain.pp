@@ -378,6 +378,7 @@ var
   ErrorCount, WarningCount: integer;
   SL: TStrings;
   ResultDlg: TResultDlgForm;
+  mr: TModalResult;
 begin
   TestTypes := GetTestTypesFromListBox;
   if (TestTypes = []) then
@@ -389,6 +390,7 @@ begin
   NoErrLabel.Visible := False;
   Application.ProcessMessages;
   SL := TStringList.Create;
+  mr := mrNone;
   try
     StatusPanel.Enabled := True;
     if (not (ptoFindAllChildren in TestOptions)) and Assigned(PoFamily.Child) and
@@ -410,7 +412,7 @@ begin
           ResultDlg.PoFamilyStats := PoFamily.PoFamilyStats
         else
           ResultDlg.PoFamilyStats := nil;
-        ResultDlg.ShowModal;
+        mr := ResultDlg.ShowModal;
       finally
         ResultDlg.Free;
       end;
@@ -421,6 +423,7 @@ begin
       SL.Free;
     ClearAndDisableStatusPanel;
   end;
+  if mr = mrOpenEditorFile then WindowState:= wsMinimized;
 end;
 
 

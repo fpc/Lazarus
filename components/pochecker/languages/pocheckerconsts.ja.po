@@ -175,6 +175,14 @@ msgstr "%d 個の警告が見つかりました。"
 msgid "&Open a po-file"
 msgstr "po ファイルを開く(&O)"
 
+#: pocheckerconsts.sopenfail
+msgid "Unable to open file %s"
+msgstr ""
+
+#: pocheckerconsts.sopenfile
+msgid "Open file %s in Ide Editor?"
+msgstr ""
+
 #: pocheckerconsts.soriginal
 msgid "Original"
 msgstr "原文"

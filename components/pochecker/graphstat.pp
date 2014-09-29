@@ -6,6 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Types, FileUtil, Forms, Controls, Graphics, Dialogs,
+  {$ifndef POCHECKERSTANDALONE} LazIDEIntf, {$endif}
   ExtCtrls, PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls;
 
 
@@ -29,6 +30,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure ListViewMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure ListViewMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     { private declarations }
     FPoFamilyStats: TPoFamilyStats;
@@ -106,6 +109,37 @@ begin
 
 end;
 
+procedure TGraphStatForm.ListViewMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+{$ifndef POCHECKERSTANDALONE}
+var
+  anItem: TListItem;
+  anIndex: Integer;
+  AStat: TStat;
+  PageIndex,WindowIndex: Integer;
+  OpenFlags: TOpenFlags;
+  mr: TModalResult;
+{$endif}
+begin
+  {$ifndef POCHECKERSTANDALONE}
+  anItem := Listview.GetItemAt(X, Y);
+  if Assigned(anItem) then begin
+    anIndex := anItem.Index;
+    AStat := FPoFamilyStats.Items[anIndex];
+    PageIndex:= -1;
+    WindowIndex:= -1;
+    OpenFlags:= [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros];
+    mr := LazarusIde.DoOpenEditorFile(AStat.Name,PageIndex,WindowIndex,OpenFlags);
+    if mr = mrOk then begin
+      if MessageDlg('PoChecker',Format(sOpenFile,[AStat.PoName]),
+         mtConfirmation,mbOKCancel,0) = mrOk then begin
+           ModalResult:= mrOpenEditorFile; //To let caller know what we want to do
+         end;
+      end
+    else ShowMessage(Format(SOpenFail,[AStat.Name]));
+  end;
+  {$endif}
+end;
 
 procedure TGraphStatForm.FormCreate(Sender: TObject);
 begin

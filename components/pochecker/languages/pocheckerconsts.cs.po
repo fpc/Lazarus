@@ -178,6 +178,14 @@ msgstr "Nalezeno %d varování"
 msgid "&Open a po-file"
 msgstr "&Otevřít PO  soubor"
 
+#: pocheckerconsts.sopenfail
+msgid "Unable to open file %s"
+msgstr ""
+
+#: pocheckerconsts.sopenfile
+msgid "Open file %s in Ide Editor?"
+msgstr ""
+
 #: pocheckerconsts.soriginal
 msgid "Original"
 msgstr "Originál"

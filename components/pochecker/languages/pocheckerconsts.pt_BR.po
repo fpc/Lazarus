@@ -175,6 +175,14 @@ msgstr "Encontrados %d avisos."
 msgid "&Open a po-file"
 msgstr "&Abrir um arquivo PO"
 
+#: pocheckerconsts.sopenfail
+msgid "Unable to open file %s"
+msgstr ""
+
+#: pocheckerconsts.sopenfile
+msgid "Open file %s in Ide Editor?"
+msgstr ""
+
 #: pocheckerconsts.soriginal
 msgid "Original"
 msgstr "Original"

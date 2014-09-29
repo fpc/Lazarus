@@ -175,6 +175,14 @@ msgstr "%d figyelmeztetés."
 msgid "&Open a po-file"
 msgstr "PO fájl megnyitása"
 
+#: pocheckerconsts.sopenfail
+msgid "Unable to open file %s"
+msgstr ""
+
+#: pocheckerconsts.sopenfile
+msgid "Open file %s in Ide Editor?"
+msgstr ""
+
 #: pocheckerconsts.soriginal
 msgid "Original"
 msgstr "Eredeti"

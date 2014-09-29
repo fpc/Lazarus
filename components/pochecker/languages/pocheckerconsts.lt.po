@@ -177,6 +177,14 @@ msgstr "Rasta perspėjimų: %d."
 msgid "&Open a po-file"
 msgstr "At&verti PO failą"
 
+#: pocheckerconsts.sopenfail
+msgid "Unable to open file %s"
+msgstr ""
+
+#: pocheckerconsts.sopenfile
+msgid "Open file %s in Ide Editor?"
+msgstr ""
+
 #: pocheckerconsts.soriginal
 msgid "Original"
 msgstr "Originalas"

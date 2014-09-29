@@ -4,6 +4,8 @@ unit pocheckerconsts;
 
 interface
 
+Uses Controls;
+
 resourcestring
   //Main form
   rsPoChecker = 'PO File Checker';
@@ -41,6 +43,8 @@ resourcestring
   sStatHint = '%3d Translated (%3.1f%%)' + LineEnding +
               '%3d UnTranslated (%3.1f%%)' + LineEnding +
               '%3d Fuzzy (%3.1f%%)';
+  sOpenFile = 'Open file %s in Ide Editor?';
+  SOpenFail = 'Unable to open file %s';
 
   //PoFamiles
   sOriginal = 'Original';
@@ -78,6 +82,10 @@ resourcestring
   sPercTranslated = '%s: %4.1f%% translated strings.';
   sPercUntranslated = '%s: %4.1f%% untranslated strings.';
   sPercFuzzy = '%s: %4.1f%% fuzzy strings.';
+
+const
+  mrOpenEditorFile = mrNone+100;
+
 implementation
 
 end.

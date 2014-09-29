@@ -93,11 +93,14 @@ begin
 end;
 
 procedure TResultDlgForm.GraphStatBtnClick(Sender: TObject);
+var
+  mr: TModalResult;
 begin
   GraphStatForm := TGraphStatForm.Create(nil);
   GraphStatForm.PoFamilyStats := Self.PoFamilyStats;
-  GraphStatForm.ShowModal;
+  mr := GraphStatForm.ShowModal;
   FreeAndNil(GraphStatForm);
+  if mr = mrOpenEditorFile then ModalResult := mr; // To inform pocheckermain
 end;
 
 procedure TResultDlgForm.SaveBtnClick(Sender: TObject);

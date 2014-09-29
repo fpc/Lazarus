@@ -79,5 +79,6 @@ object GraphStatForm: TGraphStatForm
     TabOrder = 1
     ViewStyle = vsIcon
     OnMouseMove = ListViewMouseMove
+    OnMouseUp = ListViewMouseUp
   end
 end

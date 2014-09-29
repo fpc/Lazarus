@@ -174,6 +174,14 @@ msgstr "Найдено предупреждений: %d"
 msgid "&Open a po-file"
 msgstr "&Открыть файл PO"
 
+#: pocheckerconsts.sopenfail
+msgid "Unable to open file %s"
+msgstr ""
+
+#: pocheckerconsts.sopenfile
+msgid "Open file %s in Ide Editor?"
+msgstr ""
+
 #: pocheckerconsts.soriginal
 msgid "Original"
 msgstr "Исходная строка"
@@ -240,6 +248,12 @@ msgstr "Показать графическую сводку"
 #| "%3.1f%% Translated\n"
 #| "%3.1f%% UnTranslated\n"
 #| "%3.1f%% Fuzzy\n"
+#| "%3d Translated (%3.1f%%)\n"
+#| "%3d UnTranslated (%3.1f%%)\n"
+#| "%3d Fuzzy (%3.1f%%)\n"
+#| "%3d Translated (%3.1f%%)\n"
+#| "%3d UnTranslated (%3.1f%%)\n"
+#| "%3d Fuzzy (%3.1f%%)\n"
 msgid ""
 "%3d Translated (%3.1f%%)\n"
 "%3d UnTranslated (%3.1f%%)\n"
