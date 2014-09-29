@@ -5,8 +5,9 @@ unit AllCompilerOptions;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, StdCtrls, Buttons, ButtonPanel, EditBtn,
-  Dialogs, contnrs, LCLProc, ComCtrls, ExtCtrls, Compiler, LazarusIDEStrConsts;
+  Classes, SysUtils, math, contnrs,
+  Forms, Controls, StdCtrls, Buttons, ButtonPanel, EditBtn, ExtCtrls,
+  LCLProc, Compiler, LazarusIDEStrConsts;
 
 type
 
@@ -22,6 +23,8 @@ type
     sbAllOptions: TScrollBox;
     procedure btnResetOptionsFilterClick(Sender: TObject);
     procedure cbShowModifiedClick(Sender: TObject);
+    procedure sbMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure edOptionsFilterChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -62,6 +65,7 @@ constructor TfrmAllCompilerOptions.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FGeneratedControls := TComponentList.Create;
+  sbAllOptions.OnMouseWheel := @sbMouseWheel;
 end;
 
 destructor TfrmAllCompilerOptions.Destroy;
@@ -154,6 +158,14 @@ begin
   FRenderedOnce := True;
 end;
 
+procedure TfrmAllCompilerOptions.sbMouseWheel(Sender: TObject;
+  Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+  with sbAllOptions.VertScrollBar do
+    Position := Position - Sign(WheelDelta) * Increment;
+  Handled := True;
+end;
+
 procedure TfrmAllCompilerOptions.CheckBoxClick(Sender: TObject);
 var
   cb: TCheckBox;
@@ -205,6 +217,7 @@ var
 
   function MakeOptionCntrl(aCntrlClass: TControlClass; aCaption: string;
     aTopOffs: integer=0): TControl;
+  // Header Label or TCheckBox
   begin
     Result := aCntrlClass.Create(Nil);
     Result.Parent := Container;
@@ -232,7 +245,7 @@ var
   procedure MakeDescrLabel(aCntrl: TControl; aLeft: integer);
   // Description label after CheckBox / Edit control
   var
-    Lbl: TControl;
+    Lbl: TLabel;
   begin
     Lbl := TLabel.Create(Nil);
     Lbl.Parent := Container;
@@ -241,6 +254,7 @@ var
     Lbl.AnchorSide[akTop].Side := asrCenter;
     Lbl.Left := aLeft;              // Now use Left instead of anchors
     Lbl.Anchors := [akLeft,akTop];
+    Lbl.OnMouseWheel := @sbMouseWheel;
     FGeneratedControls.Add(Lbl);
   end;
 
@@ -256,12 +270,14 @@ var
       case Opt.EditKind of
         oeGroup, oeSet: begin                   // Label for group or set
           Cntrl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix);
+          TLabel(Cntrl).OnMouseWheel := @sbMouseWheel;
           MakeDescrLabel(Cntrl, Opt.CalcLeft(LeftDescrGroup, 7));
         end;
         oeBoolean: begin                        // CheckBox
           Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option);
           Assert((Opt.Value='') or (Opt.Value='True'), 'Wrong value in Boolean option '+Opt.Option);
           TCheckBox(Cntrl).Checked := Opt.Value<>'';
+          TCheckBox(Cntrl).OnMouseWheel := @sbMouseWheel;
           Cntrl.OnClick := @CheckBoxClick;
           MakeDescrLabel(Cntrl, Opt.CalcLeft(LeftDescrBoolean, 11));
         end;
@@ -269,19 +285,23 @@ var
           Cntrl := MakeOptionCntrl(TCheckBox, Opt.Option+Opt.Description);
           Assert((Opt.Value='') or (Opt.Value='True'), 'Wrong value in Boolean option '+Opt.Option);
           TCheckBox(Cntrl).Checked := Opt.Value<>'';
+          TCheckBox(Cntrl).OnMouseWheel := @sbMouseWheel;
           Cntrl.OnClick := @CheckBoxClick;
         end;
         oeNumber, oeText, oeSetNumber: begin    // Edit
           Lbl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix, 3);
+          TLabel(Lbl).OnMouseWheel := @sbMouseWheel;
           Cntrl := MakeEditCntrl(Lbl, TEdit);
           if Opt.EditKind <> oeText then
-            TCustomEdit(Cntrl).Width := 80;
-          TCustomEdit(Cntrl).Text := Opt.Value;
-          TCustomEdit(Cntrl).OnChange := @EditChange;
+            TEdit(Cntrl).Width := 80;
+          TEdit(Cntrl).Text := Opt.Value;
+          TEdit(Cntrl).OnChange := @EditChange;
+          TEdit(Cntrl).OnMouseWheel := @sbMouseWheel;
           MakeDescrLabel(Cntrl, LeftDescrEdit);
         end;
         oeList: begin                           // ComboBox
           Lbl := MakeOptionCntrl(TLabel, Opt.Option+Opt.Suffix, 3);
+          TLabel(Lbl).OnMouseWheel := @sbMouseWheel;
           Cntrl := MakeEditCntrl(Lbl, TComboBox);
           cb := TComboBox(Cntrl);
           cb.Style := csDropDownList;
