@@ -1236,6 +1236,8 @@ begin
     itmRunMenuCompile.Command:=GetCommand(ecCompile);
     itmRunMenuBuild.Command:=GetCommand(ecBuild);
     itmRunMenuQuickCompile.Command:=GetCommand(ecQuickCompile);
+    itmRunMenuCleanUpAndBuild.Command:=GetCommand(ecCleanUpAndBuild);
+    itmRunMenuBuildManyModes.Command:=GetCommand(ecBuildManyModes);
     itmRunMenuAbortBuild.Command:=GetCommand(ecAbortBuild);
     itmRunMenuRun.Command:=GetCommand(ecRun);
     itmRunMenuPause.Command:=GetCommand(ecPause);
