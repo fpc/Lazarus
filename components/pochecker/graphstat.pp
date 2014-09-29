@@ -150,6 +150,7 @@ var
 begin
   Bmp := TBitmap.Create;
   Bmp.SetSize(BmpWH,BmpWH);
+  Bmp.Canvas.AntialiasingMode:= amOn; // currently effective only with Qt
   PieRect := Rect(0,0,BmpWH, BmpWH);
   with Bmp do
   begin
