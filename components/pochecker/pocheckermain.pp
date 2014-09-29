@@ -41,6 +41,7 @@ type
   private
     PoFamily: TPoFamily;
     FSelectedPoName: String;
+    FNewRun: boolean;
     FPoCheckerSettings: TPoCheckerSettings;
     procedure OnTestStart(const ATestName, APoFileName: string);
     procedure OnTestEnd(const ATestName: string; const ErrorCount: integer);
@@ -169,12 +170,15 @@ begin
   begin
     SetSelectedPoName('');
   end;
+ FNewRun:= False;
 end;
 
 
 procedure TPoCheckerForm.RunBtnClick(Sender: TObject);
 begin
+  if FNewRun then TryCreatePoFamily(FSelectedPoName);
   RunSelectedTests;
+  FNewRun:= True;
 end;
 
 procedure TPoCheckerForm.SelectAllBtnClick(Sender: TObject);
@@ -439,6 +443,7 @@ begin
     SelectBasicBtn.Enabled := True;
     UnselectAllBtn.Enabled := True;
     Caption := sGUIPoFileCheckingTool + ' [' + ExtractFileName(AFilename) + ']';
+    OpenDialog.InitialDir:= ExtractFileDir(AFilename);
   end
   else
   begin

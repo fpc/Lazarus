@@ -98,6 +98,7 @@ Type
     FNrFuzzy: Integer;
   public
     constructor Create(APoName: String; ANrTotal, ANrTranslated, ANrUntranslated, ANrFuzzy: Integer);
+    function ShortPoName: String;
     property PoName: string read FPoName;
     property NrTotal: Integer read FNrTotal;
     property NrTranslated: Integer read FNrTranslated;
@@ -326,6 +327,11 @@ begin
   FNrTranslated := ANrTranslated;
   FNrUntranslated := ANrUntranslated;
   FNrFuzzy := ANrFuzzy;
+end;
+
+function TStat.ShortPoName: String;
+begin
+  Result := ExtractFilename(FPoName);
 end;
 
 function TStat.PercTranslated: Double;
@@ -785,7 +791,7 @@ begin
   NrTotal := NrTranslated + NrUntranslated + NrFuzzy;
   if (NrTotal > 0) then
   begin
-    FPoFamilyStats.Add(ShortChildName, NrTotal, NrTranslated, NrUntranslated, NrFuzzy);
+    FPoFamilyStats.Add(ChildName, NrTotal, NrTranslated, NrUntranslated, NrFuzzy);
   end;
   DoTestEnd(PoTestTypeNames[pttCheckFormatArgs], 0);
   //debugln('TPoFamily.CheckIncompatibleFormatArgs: ',Dbgs(ErrorCount),' Errors');

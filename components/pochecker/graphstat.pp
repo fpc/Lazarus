@@ -9,9 +9,6 @@ uses
   ExtCtrls, PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls;
 
 
-{$ifndef windows}
-{$define lv_}
-{$endif}
 type
 
   { TGraphStatForm }
@@ -150,7 +147,7 @@ var
 begin
   Bmp := TBitmap.Create;
   Bmp.SetSize(BmpWH,BmpWH);
-  Bmp.Canvas.AntialiasingMode:= amOn; // currently effective only with Qt
+  Bmp.Canvas.AntialiasingMode := amOn; // currently effective only with Qt
   PieRect := Rect(0,0,BmpWH, BmpWH);
   with Bmp do
   begin
@@ -200,7 +197,7 @@ var
 begin
   ImgIndex := FImgList.AddMasked(ABmp, clBackGround);
   ListItem := ListView.Items.Add;
-  ListItem.Caption := AStat.PoName;
+  ListItem.Caption := AStat.ShortPoName;
   ListItem.ImageIndex := ImgIndex;
 end;
 

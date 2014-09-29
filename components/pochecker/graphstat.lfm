@@ -43,7 +43,7 @@ object GraphStatForm: TGraphStatForm
       Left = 104
       Height = 15
       Top = 17
-      Width = 100
+      Width = 83
       Caption = 'TranslatedLabel'
       ParentColor = False
     end
@@ -51,7 +51,7 @@ object GraphStatForm: TGraphStatForm
       Left = 104
       Height = 15
       Top = 36
-      Width = 118
+      Width = 98
       Caption = 'UnTranslatedLabel'
       ParentColor = False
     end
@@ -59,7 +59,7 @@ object GraphStatForm: TGraphStatForm
       Left = 104
       Height = 15
       Top = 55
-      Width = 70
+      Width = 57
       Caption = 'FuzzyLabel'
       ParentColor = False
     end
