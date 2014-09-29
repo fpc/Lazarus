@@ -521,7 +521,7 @@ end;
 
 procedure TCustomPropertyStorage.Save;
 begin
-  if Active then begin
+  if Active and not (csDesigning in ComponentState) then begin
     StorageNeeded(False);
     Try
       if Assigned(FOnSavingProperties) then
@@ -540,7 +540,7 @@ end;
 
 procedure TCustomPropertyStorage.Restore;
 begin
-  if Active then begin
+  if Active and not (csDesigning in ComponentState) then begin
     FSaved := False;
     StorageNeeded(True);
     try
@@ -577,6 +577,7 @@ begin
             StoreObjectsProps(Owner,AStoredList);
           except
             // ignore any exceptions
+            // ToDo: Why?
             // ToDo: warn if unable to write file
           end;
         finally
@@ -610,6 +611,7 @@ begin
             LoadObjectsProps(Owner,L);
           except
             { ignore any exceptions }
+            // ToDo: Why?
           end;
         finally
           Free;
@@ -693,7 +695,7 @@ function TCustomPropertyStorage.ReadInteger(const Ident: string; DefaultValue: L
 begin
   StorageNeeded(True);
   try
-  Result := DoReadInteger(RootSection, Ident, DefaultValue);
+    Result := DoReadInteger(RootSection, Ident, DefaultValue);
   finally
     FreeStorage;
   end;

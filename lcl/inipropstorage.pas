@@ -88,7 +88,8 @@ begin
       FreeStorage;
       end;
     FReadOnly:=ReadOnly;
-    FInifile:=IniFileClass.Create(GetIniFileName);
+    if not (csDesigning in ComponentState) then
+      FInifile:=IniFileClass.Create(GetIniFileName);
     end;
   Inc(FCount);
 end;
@@ -107,6 +108,8 @@ function TCustomIniPropStorage.GetIniFileName: string;
 begin
   If (FIniFileName<>'') then
     Result:=FIniFileName
+  else if csDesigning in ComponentState then
+    raise Exception.Create('TCustomIniPropStorage.GetIniFileName: missing Filename')
   else
 {$ifdef unix}
     Result:=IncludeTrailingPathDelimiter(GetEnvironmentVariableUTF8('HOME'))

@@ -119,7 +119,8 @@ end;
 
 procedure TCustomXMLPropStorage.StorageNeeded(ReadOnly: Boolean);
 begin
-  If (FXML=Nil) then begin
+  If (FXML=Nil) and not (csDesigning in ComponentState) then
+  begin
     FXML:=TPropStorageXMLConfig.Create(nil);
     FXML.FileName := GetXMLFileName;
   end;
@@ -142,6 +143,8 @@ function TCustomXMLPropStorage.GetXMLFileName: string;
 begin
   if (FFileName<>'') then
     Result:=FFileName
+  else if csDesigning in ComponentState then
+    raise Exception.Create('TCustomXMLPropStorage.GetXMLFileName: missing Filename')
   else
     {$ifdef unix}
     Result:=IncludeTrailingPathDelimiter(GetEnvironmentVariableUTF8('HOME'))
