@@ -119,6 +119,9 @@ end;
 procedure TWindowsMetafileDrawer.DrawingBegin(const ABoundingBox: TRect);
 begin
   inherited DrawingBegin(ABoundingBox);
+  FreeAndNil(FCanvas);
+  FMetafile.Width := ABoundingBox.Right - ABoundingBox.Left;
+  FMetafile.Height := ABoundingBox.Bottom - ABoundingBox.Top;
   if FCanvas = nil then
     FCanvas := TMetafileCanvas.Create(FMetafile, 0);
 end;
