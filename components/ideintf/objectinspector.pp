@@ -4034,7 +4034,7 @@ begin
   end;
 
   // ComponentPanel encapsulates TreeFilterEdit and ComponentTree
-  ComponentPanel.Constraints.MinHeight := 1;
+  ComponentPanel.Constraints.MinHeight := 8;
   ComponentPanel.Visible := FShowComponentTree;
   CompFilterEdit.FilteredTreeview:=ComponentTree;
 
@@ -4706,18 +4706,13 @@ begin
   BeginUpdate;
   try
     ShowComponentTreePopupMenuItem.Checked := FShowComponentTree;
-    // hide controls while rebuilding
-    if Splitter1 <> nil then
-      Splitter1.Visible := False;
-    ComponentPanel.Visible := False;
-    AvailPersistentComboBox.Visible := False;
-    // rebuild controls
+    // hide / show / rebuild controls
+    AvailPersistentComboBox.Visible := not FShowComponentTree;
+    ComponentPanel.Visible := FShowComponentTree;
     if FShowComponentTree then
       CreateTopSplitter
     else
       FreeAndNil(Splitter1);
-    AvailPersistentComboBox.Visible := not FShowComponentTree;
-    ComponentPanel.Visible := FShowComponentTree;
   finally
     EndUpdate;
   end;
