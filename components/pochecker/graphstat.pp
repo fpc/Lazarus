@@ -99,7 +99,7 @@ begin
     AStat := FPoFamilyStats.Items[Index];
     ListView.Hint := Format(sStatHint,[AStat.NrTranslated, AStat.PercTranslated,
                                        AStat.NrUnTranslated, AStat.PercUnTranslated,
-                                       AStat.NrFuzzy, AStat.PercFuzzy]);
+                                       AStat.NrFuzzy, AStat.PercFuzzy, AStat.NrErrors]);
   end
   else
   begin
@@ -174,10 +174,12 @@ end;
 function TGraphStatForm.CreateBitmap(AStat: TStat): TBitmap;
 const
   FullCircle = 16 * 360;
+  QMark = ' ? ';
 var
   Bmp: TBitmap;
   Translated16Angle, UnTranslated16Angle, Fuzzy16Angle: Integer;
   PieRect: TRect;
+  TextSize: TSize;
 begin
   Bmp := TBitmap.Create;
   Bmp.SetSize(BmpWH,BmpWH);
@@ -219,6 +221,17 @@ begin
         Canvas.Ellipse(PieRect)
       else
         Canvas.RadialPie(PieRect.Left,PieRect.Top,PieRect.Right,PieRect.Bottom,Translated16Angle+UnTranslated16Angle,Fuzzy16Angle);
+    end;
+    if AStat.NrErrors <> 0 then begin
+      Bmp.Canvas.Font := Font;
+      Canvas.Font.Size := BmpWH div 6;
+      Canvas.Font.Style:= [fsBold];
+      Canvas.Font.Color:= clRed;
+      TextSize := Bmp.Canvas.TextExtent(QMark);
+      Canvas.Brush.Color:= clBlack;
+      Canvas.Rectangle(0,PieRect.Bottom-TextSize.cy-4,TextSize.cx+4,PieRect.Bottom);
+      Canvas.Brush.Color:= clYellow;
+      Canvas.TextOut(2,PieRect.Bottom-TextSize.cy-2,QMark);
     end;
   end;
   Result := Bmp;

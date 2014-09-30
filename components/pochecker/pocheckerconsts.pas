@@ -42,7 +42,8 @@ resourcestring
   sFuzzy = 'Fuzzy';
   sStatHint = '%3d Translated (%3.1f%%)' + LineEnding +
               '%3d UnTranslated (%3.1f%%)' + LineEnding +
-              '%3d Fuzzy (%3.1f%%)';
+              '%3d Fuzzy (%3.1f%%)' + LineEnding +
+              '%d Error(s) in Selected Tests';
   sOpenFile = 'Open file %s in Ide Editor?';
   SOpenFail = 'Unable to open file %s';
 
