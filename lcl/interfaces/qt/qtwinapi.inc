@@ -2392,6 +2392,8 @@ function TQtWidgetSet.Frame3d(DC: HDC; var ARect: TRect;
   const FrameWidth: integer; const Style: TBevelCut): Boolean;
 var
   QtDC: TQtDeviceContext;
+  AWidget: HWND;
+  ATransparent: Boolean;
 begin
   {$ifdef VerboseQtWinAPI}
     DebugLn('[TQtWidgetSet.Frame3d Rect=', dbgs(ARect));
@@ -2403,12 +2405,22 @@ begin
 
   QtDC := TQtDeviceContext(DC);
 
+  // issue #26491, draw opaque TCustomPanel if csOpaque is setted up in control style
+  // otherwise use brush and painter backgroundmode settings.
+  ATransparent := True;
+  if (QtDC.Parent <> nil) and QObject_isWidgetType(QtDC.Parent) then
+  begin
+    AWidget := HwndFromWidgetH(QtDC.Parent);
+    if (AWidget <> 0) and Assigned(TQtWidget(AWidget).LCLObject) then
+      ATransparent := not (csOpaque in TQtWidget(AWidget).LCLObject.ControlStyle);
+  end;
+
   case Style of
     bvNone: ;
     bvLowered: QtDC.qDrawWinPanel(ARect.Left, ARect.Top,
-      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, True, FrameWidth);
+      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, ATransparent, nil, True, FrameWidth);
     bvRaised: QtDC.qDrawWinPanel(ARect.Left, ARect.Top,
-      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, False, FrameWidth);
+      ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, ATransparent, nil, False, FrameWidth);
     bvSpace: QtDC.qDrawPlainRect(ARect.Left, ARect.Top,
       ARect.Right - ARect.Left, ARect.Bottom - ARect.Top, nil, FrameWidth);
   end;

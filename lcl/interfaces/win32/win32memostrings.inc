@@ -36,12 +36,27 @@ type
 
 function TWin32MemoStrings.GetLineLength(Index: Integer): Integer;
 begin
+  //{$ifdef WindowsUnicodeSupport}{$else}{$endif WindowsUnicodeSupport}
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+   Result := SendMessageW(FHandle, EM_LINELENGTH, SendMessageW(FHandle, EM_LINEINDEX, Index, 0), 0)
+  else
+    Result := SendMessage(FHandle, EM_LINELENGTH, SendMessage(FHandle, EM_LINEINDEX, Index, 0), 0);
+  {$else}
   Result := SendMessage(FHandle, EM_LINELENGTH, SendMessage(FHandle, EM_LINEINDEX, Index, 0), 0);
+  {$endif WindowsUnicodeSupport}
 end;
 
 function TWin32MemoStrings.GetLineStart(Index: Integer): Integer;
 begin
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    Result := SendMessageW(FHandle, EM_LINEINDEX, Index, 0)
+  else
+    Result := SendMessage(FHandle, EM_LINEINDEX, Index, 0);
+  {$else}
   Result := SendMessage(FHandle, EM_LINEINDEX, Index, 0);
+  {$endif WindowsUnicodeSupport}
 end;
 
 function TWin32MemoStrings.GetTextStr: string;
@@ -159,8 +174,21 @@ begin
   LineStart := GetLineStart(Index);
   LineEnd := GetLineStart(Index+1);
   if LineEnd < 0 then LineEnd := LineStart+GetLineLength(Index);
+  {$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+  begin
+    SendMessageW(FHandle, EM_SETSEL, LineStart, LineEnd);
+    SendMessageW(FHandle, EM_REPLACESEL,0 , lparam(PWChar('')));
+  end
+  else
+  begin
+    SendMessage(FHandle, EM_SETSEL, LineStart, LineEnd);
+    SendMessage(FHandle, EM_REPLACESEL,0 , lparam(PChar('')));
+  end;
+  {$else}
   SendMessage(FHandle, EM_SETSEL, LineStart, LineEnd);
   SendMessage(FHandle, EM_REPLACESEL,0 , lparam(PChar('')));
+  {$endif WindowsUnicodeSupport}
 end;
 
 procedure TWin32MemoStrings.Insert(Index: integer; const S: string);
@@ -174,31 +202,48 @@ begin
     //insert with LineEnding
     LineStart := GetLineStart(Index);
     NewLine := S+LineEnding;
-    SendMessage(FHandle, EM_SETSEL, LineStart, LineStart);
-{$ifdef WindowsUnicodeSupport}
+   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS
-    then SendMessageW(FHandle, EM_REPLACESEL, 0, lparam(PWideChar(UTF8ToUTF16(NewLine))))
-    else SendMessage(FHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)));
-{$else}
+    then
+    begin
+      SendMessageW(FHandle, EM_SETSEL, LineStart, LineStart);
+      SendMessageW(FHandle, EM_REPLACESEL, 0, lparam(PWideChar(UTF8ToUTF16(NewLine))))
+    end
+    else
+    begin
+      SendMessage(FHandle, EM_SETSEL, LineStart, LineStart);
+      SendMessage(FHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)))
+    end;
+   {$else}
+    SendMessage(FHandle, EM_SETSEL, LineStart, LineStart);
     SendMessage(FHandle, EM_REPLACESEL, 0, lparam(PChar(NewLine)));
-{$endif}
+   {$endif WindowsUnicodeSupport}
   end
   else
   begin
     //append with a preceding LineEnding
     LineStart := GetLineStart(Index-1)+GetLineLength(Index-1);
+    {$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      SendMessageW(FHandle, EM_SETSEL, LineStart, LineStart)
+    else
+      SendMessage(FHandle, EM_SETSEL, LineStart, LineStart);
+    {$else}
     SendMessage(FHandle, EM_SETSEL, LineStart, LineStart);
+    {$endif WindowsUnicodeSupport}
     if GetRealCount = Count then
       NewLine := LineEnding+S+LineEnding
     else
       NewLine := S+LineEnding;
-{$ifdef WindowsUnicodeSupport}
+   {$ifdef WindowsUnicodeSupport}
     if UnicodeEnabledOS
-    then SendMessageW(FHandle, EM_REPLACESEL, 0, lparam(PWideChar(UTF8ToUTF16(NewLine))))
-    else SendMessage(FHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)));
-{$else}
+    then
+      SendMessageW(FHandle, EM_REPLACESEL, 0, lparam(PWideChar(UTF8ToUTF16(NewLine))))
+    else
+      SendMessage(FHandle, EM_REPLACESEL, 0, lparam(Utf8ToAnsi(NewLine)));
+   {$else}
     SendMessage(FHandle, EM_REPLACESEL, 0, lparam(PChar(NewLine)));
-{$endif}
+   {$endif}
   end;
 end;
 
