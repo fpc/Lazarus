@@ -7205,8 +7205,15 @@ var
 }
 begin
   if goRowSelect in Options then begin
-    aRect.Left := FGCache.FixedWidth + 1;
-    aRect.Right := FGCache.MaxClientXY.x;
+
+    if UseRightToLeftAlignment then begin
+      aRect.Left := GCache.ClientWidth - GCache.MaxClientXY.x;
+      aRect.Right := GCache.ClientWidth - GCache.FixedWidth;
+    end else begin
+      aRect.Left := GCache.FixedWidth + 1;
+      aRect.Right := GCache.MaxClientXY.x;
+    end;
+
     FlipRect(aRect);
   end;
   if goHorzLine in Options then dec(aRect.Bottom, 1);

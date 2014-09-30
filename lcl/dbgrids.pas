@@ -3061,14 +3061,26 @@ begin
         CenterY;
         x:= R.Left+3;
         if MultiSel then begin
-          ACanvas.Polyline([point(x,y-dy),  point(x+dx,y),point(x,y+dy), point(x,y+dy-1)]);
-          ACanvas.Polyline([point(x,y-dy+1),point(x+dx-1,y),point(x, y+dy-1), point(x,y+dy-2)]);
-          CenterX;
-          Dec(X,3);
-          ACanvas.Ellipse(Rect(X-2,Y-2,X+2,Y+2));
-        end else
-          ACanvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
-       end;
+          if BiDiMode = bdRightToLeft then begin
+            ACanvas.Polyline([point(x+dx,y-dy),  point(x,y),point(x+dx,y+dy), point(x+dx,y+dy-1)]);
+            ACanvas.Polyline([point(x+dx,y-dy+1),  point(x+1,y),point(x+dx,y+dy-1), point(x+dx,y+dy-2)]);
+            CenterX;
+            Dec(X,3);
+            ACanvas.Ellipse(Rect(X+dx-2,Y-2,X+dx+2,Y+2));
+          end else begin
+            ACanvas.Polyline([point(x,y-dy),  point(x+dx,y),point(x,y+dy), point(x,y+dy-1)]);
+            ACanvas.Polyline([point(x,y-dy+1),point(x+dx-1,y),point(x, y+dy-1), point(x,y+dy-2)]);
+            CenterX;
+            Dec(X,3);
+            ACanvas.Ellipse(Rect(X-2,Y-2,X+2,Y+2));
+          end;
+        end else begin
+          if BiDiMode = bdRightToLeft then
+            ACanvas.Polygon([point(x,y),point(x+dx,y-dy),point(x+dx, y+dy),point(x,y)])
+          else
+            ACanvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
+        end;
+      end;
     dsEdit:
       DrawEdit(clBlack);
     dsInsert:
