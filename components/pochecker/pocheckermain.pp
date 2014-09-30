@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls,
+  StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls, ComCtrls,
   {$IFDEF POCHECKERSTANDALONE}
   Translations,
   {$ELSE}
@@ -38,6 +38,7 @@ type
   { TPoCheckerForm }
 
   TPoCheckerForm = class(TForm)
+    StatusBar: TStatusBar;
   private
     PoFamily: TPoFamily;
     FSelectedPoName: String;
@@ -53,7 +54,7 @@ type
     function TrySelectFile(out Filename: String): Boolean;
     function TryCreatePoFamily(Filename: String): Boolean;
     procedure RunSelectedTests;
-    procedure ClearAndDisableStatusPanel;
+    procedure ClearStatusBar;
     procedure SetSelectedPoName(AFilename: String);
     procedure LoadConfig;
     procedure SaveConfig;
@@ -63,12 +64,7 @@ type
     SelectAllBtn: TButton;
     SelectBasicBtn: TButton;
     FindAllPOsCheckBox: TCheckBox;
-    CurTestHeaderLabel: TLabel;
-    CurPoHeaderLabel: TLabel;
-    CurTestLabel: TLabel;
-    CurPoLabel: TLabel;
     NoErrLabel: TLabel;
-    StatusPanel: TPanel;
     RunBtn: TBitBtn;
     OpenBtn: TBitBtn;
     Button3: TButton;
@@ -92,6 +88,7 @@ procedure Register;
 implementation
 
 {$R *.lfm}
+
 
 procedure ShowPoCheckerForm();
 begin
@@ -136,10 +133,8 @@ begin
   RunBtn.Caption := sRunSelectedTests;
   NoErrLabel.Caption := sNoErrorsFound;
   FillTestListBox;
-  ClearAndDisableStatusPanel;
+  ClearStatusBar;
   NoErrLabel.Visible := False;
-  CurTestHeaderLabel.Caption := sCurrentTest;
-  CurPoHeaderLabel.Caption := sCurrentPoFile;
   SelectAllBtn.Caption := sSelectAllTests;
   SelectBasicBtn.Caption := sSelectBasicTests;
   UnselectAllBtn.Caption := sUnselectAllTests;
@@ -206,8 +201,8 @@ end;
 procedure TPoCheckerForm.OnTestStart(const ATestName, APoFileName: string);
 begin
   //debugln('OnTestStart: ATestName = "',AtestName,'" APoFileName = "',APoFileName);
-  CurTestLabel.Caption := ATestName;
-  CurPoLabel.Caption := APoFileName;
+  StatusBar.SimplePanel := True;
+  StatusBar.SimpleText := Format('Test: %s on %s',[ATestName,APoFileName]);
   Application.ProcessMessages;
 end;
 
@@ -393,7 +388,6 @@ begin
   SL := TStringList.Create;
   mr := mrNone;
   try
-    StatusPanel.Enabled := True;
     if (not (ptoFindAllChildren in TestOptions)) and Assigned(PoFamily.Child) and
       (PoFamily.ChildName <> FSelectedPoName) then
       PoFamily.ChildName := FSelectedPoName;
@@ -422,17 +416,15 @@ begin
   finally
     if Assigned(SL) then
       SL.Free;
-    ClearAndDisableStatusPanel;
+    ClearStatusBar;
   end;
   if mr = mrOpenEditorFile then WindowState:= wsMinimized;
 end;
 
 
-procedure TPoCheckerForm.ClearAndDisableStatusPanel;
+procedure TPoCheckerForm.ClearStatusBar;
 begin
-  CurTestLabel.Caption := '';
-  CurPoLabel.Caption := '';
-  StatusPanel.Enabled := False;
+  StatusBar.SimpleText := '';
 end;
 
 procedure TPoCheckerForm.SetSelectedPoName(AFilename: String);

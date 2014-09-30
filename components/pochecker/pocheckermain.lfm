@@ -103,66 +103,10 @@ object PoCheckerForm: TPoCheckerForm
     OnClick = RunBtnClick
     TabOrder = 2
   end
-  object StatusPanel: TPanel
-    Left = 0
-    Height = 49
-    Top = 293
-    Width = 581
-    Align = alBottom
-    BevelOuter = bvLowered
-    ClientHeight = 49
-    ClientWidth = 581
-    TabOrder = 3
-    object CurTestHeaderLabel: TLabel
-      Left = 8
-      Height = 15
-      Top = 8
-      Width = 68
-      Caption = 'Current Test:'
-      ParentColor = False
-    end
-    object CurPoHeaderLabel: TLabel
-      AnchorSideLeft.Control = CurTestHeaderLabel
-      AnchorSideTop.Control = CurTestHeaderLabel
-      AnchorSideTop.Side = asrBottom
-      Left = 8
-      Height = 15
-      Top = 23
-      Width = 81
-      Caption = 'Current po-file:'
-      ParentColor = False
-    end
-    object CurTestLabel: TLabel
-      AnchorSideLeft.Control = CurTestHeaderLabel
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = CurTestHeaderLabel
-      AnchorSideTop.Side = asrCenter
-      Left = 82
-      Height = 15
-      Top = 8
-      Width = 69
-      BorderSpacing.Around = 6
-      Caption = 'CurTestLabel'
-      ParentColor = False
-    end
-    object CurPoLabel: TLabel
-      AnchorSideLeft.Control = CurPoHeaderLabel
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = CurPoHeaderLabel
-      AnchorSideTop.Side = asrCenter
-      Left = 95
-      Height = 15
-      Top = 23
-      Width = 61
-      BorderSpacing.Around = 6
-      Caption = 'CurPoLabel'
-      ParentColor = False
-    end
-  end
   object NoErrLabel: TLabel
     Left = 8
     Height = 25
-    Top = 262
+    Top = 280
     Width = 146
     Anchors = [akLeft, akBottom]
     Caption = 'No errors found'
@@ -182,7 +126,7 @@ object PoCheckerForm: TPoCheckerForm
     Width = 156
     BorderSpacing.Top = 6
     Caption = 'Find all translated PO files'
-    TabOrder = 4
+    TabOrder = 3
   end
   object SelectBasicBtn: TButton
     AnchorSideLeft.Control = TestListBox
@@ -196,7 +140,7 @@ object PoCheckerForm: TPoCheckerForm
     Caption = 'Select Basic Tests'
     Enabled = False
     OnClick = SelectBasicBtnClick
-    TabOrder = 5
+    TabOrder = 4
   end
   object SelectAllBtn: TButton
     AnchorSideLeft.Control = SelectBasicBtn
@@ -210,7 +154,7 @@ object PoCheckerForm: TPoCheckerForm
     Caption = 'Select All Tests'
     Enabled = False
     OnClick = SelectAllBtnClick
-    TabOrder = 6
+    TabOrder = 5
   end
   object UnselectAllBtn: TButton
     AnchorSideLeft.Control = SelectAllBtn
@@ -224,7 +168,7 @@ object PoCheckerForm: TPoCheckerForm
     Caption = 'Unselect All Tests'
     Enabled = False
     OnClick = UnselectAllBtnClick
-    TabOrder = 7
+    TabOrder = 6
   end
   object IgnoreFuzzyCheckBox: TCheckBox
     AnchorSideLeft.Control = TestListBox
@@ -236,7 +180,14 @@ object PoCheckerForm: TPoCheckerForm
     Width = 152
     BorderSpacing.Top = 6
     Caption = 'sIgnoreFuzzyTranslations'
-    TabOrder = 8
+    TabOrder = 7
+  end
+  object StatusBar: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 319
+    Width = 581
+    Panels = <>
   end
   object OpenDialog: TOpenDialog
     Filter = 'po-files (*.po)|*.po|all files|*'

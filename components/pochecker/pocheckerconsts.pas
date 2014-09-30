@@ -24,8 +24,7 @@ resourcestring
   sTotalErrors = 'Total errors found: %d';
   sTotalWarnings = 'Total warnings found: %d';
   sNoErrorsFound = 'No errors found';
-  sCurrentTest = 'Current Test:';
-  sCurrentPoFile = 'Current po-file:';
+  sCurrentTest = 'Test: %s on %s';
   sNoTestSelected = 'There are no tests selected.';
 
   //Result form
