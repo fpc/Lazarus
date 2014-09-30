@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="lhelpcontrolpkg"/>
@@ -16,10 +16,9 @@
       </Parsing>
       <Other>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
-    <Description Value="This package contains unit that will allow you to &quot;remote control&quot; the program LHelp."/>
+    <Description Value="This package contains a unit that will allow you to &quot;remote control&quot; the program LHelp."/>
     <License Value="Modified LGPL-2, same as LCL"/>
     <Version Minor="2"/>
     <Files Count="2">
@@ -46,5 +45,8 @@
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
     </PublishOptions>
+    <CustomOptions Items="ExternHelp" Version="2">
+      <_ExternHelp Items="Count"/>
+    </CustomOptions>
   </Package>
 </CONFIG>

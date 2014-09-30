@@ -1,1 +1,2 @@
 tchmhelpdatabase.png
+tlhelpconnector.png
