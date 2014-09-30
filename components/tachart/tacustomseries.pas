@@ -965,25 +965,46 @@ var
   g: TDoublePoint;
   i, si: Integer;
   ld: TLabelDirection;
+  style: TChartStyle;
+  lfont: TFont;
 begin
   if not Marks.IsMarkLabelsVisible then exit;
-  for i := 0 to Count - 1 do begin
-    if IsNan(Source[i]^.Point) then continue;
-    g := GetLabelDataPoint(i);
-    ld := GetLabelDirection(i);
-    for si := 0 to Source.YCount - 1 do begin
-      if si > 0 then
-        if IsRotated then
-          g.X += AxisToGraphY(Source[i]^.YList[si - 1])
-        else
-          g.Y += AxisToGraphY(Source[i]^.YList[si - 1]);
-      with ParentChart do
-        if
-          (Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si) and
-          IsPointInViewPort(g)
-        then
-          DrawLabel(FormattedMark(i, '', si), GraphToImage(g), ld);
+
+  lfont := TFont.Create;
+  try
+    lfont.Assign(Marks.LabelFont);
+    ParentChart.DisableRedrawing;
+
+    for i := 0 to Count - 1 do begin
+      if IsNan(Source[i]^.Point) then continue;
+      g := GetLabelDataPoint(i);
+      ld := GetLabelDirection(i);
+      for si := 0 to Source.YCount - 1 do begin
+        if Styles <> nil then begin
+          style := Styles.StyleByIndex(si);
+          if style.UseFont then
+            Marks.LabelFont.Assign(style.Font)
+          else
+            Marks.LabelFont.Assign(lfont);
+        end;
+        if si > 0 then
+          if IsRotated then
+            g.X += AxisToGraphY(Source[i]^.YList[si - 1])
+          else
+            g.Y += AxisToGraphY(Source[i]^.YList[si - 1]);
+        with ParentChart do
+          if
+            (Marks.YIndex = MARKS_YINDEX_ALL) or (Marks.YIndex = si) and
+            IsPointInViewPort(g)
+          then
+            DrawLabel(FormattedMark(i, '', si), GraphToImage(g), ld);
+      end;
     end;
+
+  finally
+    Marks.LabelFont.Assign(lfont);
+    ParentChart.EnableRedrawing;
+    lfont.Free;
   end;
 end;
 

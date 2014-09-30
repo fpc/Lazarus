@@ -154,6 +154,7 @@ type
     procedure PrepareHelper(
       ADrawer: IChartDrawer; const ATransf: ICoordTransformer;
       AClipRect: PRect; AMaxZPosition: Integer);
+    procedure UpdateBidiMode;
     procedure UpdateBounds(var AMin, AMax: Double);
     property DisplayName: String read GetDisplayName;
     property Value[AIndex: Integer]: TChartValueText read GetValue;
@@ -223,6 +224,7 @@ type
     procedure Prepare(ARect: TRect);
     procedure PrepareGroups;
     procedure SetAxisByAlign(AAlign: TChartAxisAlignment; AValue: TChartAxis);
+    procedure UpdateBiDiMode;
 
     property Axes[AIndex: Integer]: TChartAxis read GetAxes; default;
     property BottomAxis: TChartAxis index calBottom read GetAxisByAlign write SetAxisByAlign;
@@ -734,7 +736,10 @@ begin
   if Arrow.Visible then
     with AMeasureData do begin
       FSize := Max(d.Scale(Arrow.Width), FSize);
-      FLastMark := Max(d.Scale(Arrow.Length), FLastMark);
+      if Arrow.Inverted then
+        FFirstMark := Max(d.Scale(Arrow.Length), FFirstMark)
+      else
+        FLastMark := Max(d.Scale(Arrow.Length), FLastMark);
     end;
 end;
 
@@ -897,6 +902,30 @@ begin
     if (ASender is TAxisTransform) or (ASender is TChartAxisTransformations) then
       ZoomFull;
     Invalidate;
+  end;
+end;
+
+procedure TChartAxis.UpdateBidiMode;
+begin
+  if csLoading in GetChart.ComponentState then
+    exit;
+  case GetAlignment of
+    calLeft:
+      begin
+        Alignment := calRight;
+        Title.Font.Orientation := -Title.Font.Orientation;
+      end;
+    calRight:
+      begin
+        Alignment := calLeft;
+        Title.Font.Orientation := -Title.Font.Orientation;
+      end;
+    calBottom,
+    calTop:
+      begin
+        Inverted := not Inverted;
+        if Arrow <> nil then Arrow.Inverted := not Arrow.Inverted;
+      end;
   end;
 end;
 
@@ -1110,6 +1139,14 @@ procedure TChartAxisList.Update(AItem: TCollectionItem);
 begin
   Unused(AItem);
   FChart.Invalidate;
+end;
+
+procedure TChartAxisList.UpdateBiDiMode;
+var
+  a: TChartAxis;
+begin
+  for a in self do
+    a.UpdateBidiMode;
 end;
 
 { TAxisCoeffHelper }
