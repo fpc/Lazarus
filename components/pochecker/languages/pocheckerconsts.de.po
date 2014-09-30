@@ -54,6 +54,10 @@ msgstr "Zeige Prozente (nicht) übersetzter und ungeklärter Zeichenketten"
 msgid "Copy to clipboard"
 msgstr "In Zwischenablage kopieren"
 
+#: pocheckerconsts.scurrenttest
+msgid "Test: %s on %s"
+msgstr ""
+
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[Zeile %d] %s"
@@ -168,11 +172,29 @@ msgid "&Open a po-file"
 msgstr "p&o-Datei öffnen"
 
 #: pocheckerconsts.sopenfail
-msgid "Unable to open file %s"
+msgid ""
+"Unable to open file:\n"
+"\"%s\"\n"
+msgstr ""
+
+#: pocheckerconsts.sopenfailexternal
+msgid ""
+"Unable to open file\n"
+"\"%s\"\n"
+"in external editor\n"
+"\"%s\"\n"
 msgstr ""
 
 #: pocheckerconsts.sopenfile
 msgid "Open file %s in Ide Editor?"
+msgstr ""
+
+#: pocheckerconsts.sopenfileexternal
+msgid ""
+"Open file:\n"
+"\"%s\"\n"
+"in external editor:\n"
+"\"%s\"?\n"
 msgstr ""
 
 #: pocheckerconsts.soriginal
@@ -246,6 +268,10 @@ msgstr "Zeige Statistik-Graphik"
 #| "%3d Translated (%3.1f%%)\n"
 #| "%3d UnTranslated (%3.1f%%)\n"
 #| "%3d Fuzzy (%3.1f%%)\n"
+#| "%3d Translated (%3.1f%%)\n"
+#| "%3d UnTranslated (%3.1f%%)\n"
+#| "%3d Fuzzy (%3.1f%%)\n"
+#| "%d Error(s) in Selected Tests\n"
 #| "%3d Translated (%3.1f%%)\n"
 #| "%3d UnTranslated (%3.1f%%)\n"
 #| "%3d Fuzzy (%3.1f%%)\n"

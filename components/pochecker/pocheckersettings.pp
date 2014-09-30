@@ -20,6 +20,7 @@ type
   TPoCheckerSettings = class
   private
     FConfig: TConfigStorage;
+    FExternalEditorName: String;
     FFilename: String;
     FTestTypes: TPoTestTypes;
     FTestOptions: TPoTestOptions;
@@ -35,12 +36,14 @@ type
     function LoadTestTypes: TPoTestTypes;
     function LoadTestOptions: TPoTestOptions;
     procedure LoadWindowsGeometry;
+    function LoadExternalEditorName: String;
     procedure LoadMasterPoList(List: TStrings);
     procedure LoadChildrenPoList(List: TStrings);
     procedure SaveLastSelectedFile;
     procedure SaveTestTypes;
     procedure SaveTestOptions;
     procedure SaveWindowsGeometry;
+    procedure SaveExternalEditorName;
     procedure SaveMasterPoList;
     procedure SaveChildrenPoList;
 
@@ -55,6 +58,7 @@ type
     property SaveSettingsOnExit: Boolean read FSaveSettingsOnExit write FSaveSettingsOnExit;
     property TestTypes: TPoTestTypes read FTestTypes write FTestTypes;
     property TestOptions: TPoTestOptions read FTestOptions write FTestOptions;
+    property ExternalEditorName: String read FExternalEditorName write FExternalEditorName;
     property MasterPoList: TStrings read FMasterPoList write FMasterPoList;
     property ChildrenPoList: TStrings read FChildrenPoList write FChildrenPoList;
     property LastSelectedFile: String read FLastSelectedFile write FLastSelectedFile;
@@ -135,6 +139,7 @@ const
   pTestTypes = 'TestTypes/';
   pTestOptions = 'TestOptions/';
   pWindowsGeometry = 'General/WindowsGeometry/';
+  pExternalEditor = 'ExternalEditor/';
   pMasterPoFiles = 'MasterPoFiles/';
   pChildrenPoFiles = 'ChildrenPoFiles/';
 
@@ -250,6 +255,20 @@ begin
   FConfig.GetValue(pWindowsGeometry+'GraphForm/Value',FGraphFormGeometry,DefaultRect);
 end;
 
+function TPoCheckerSettings.LoadExternalEditorName: String;
+begin
+  {$IFDEF POCHECKERSTANDALONE}
+  //allow override on commandline
+  if Application.HasOption('editor') then
+    Result := Application.GetOptionValue('editor')
+  else
+    Result := FConfig.GetValue(pExternalEditor+'Value','');
+  {$ELSE}
+  Result := '';
+  {$eNDIF}
+end;
+
+
 procedure TPoCheckerSettings.LoadMasterPoList(List: TStrings);
 begin
   if not Assigned(List) then Exit;
@@ -296,6 +315,13 @@ begin
   FConfig.SetDeleteValue(pWindowsGeometry+'MainForm/Value',FMainFormGeometry,DefaultRect);
   FConfig.SetDeleteValue(pWindowsGeometry+'ResultsForm/Value',FResultsFormGeometry,DefaultRect);
   FConfig.SetDeleteValue(pWindowsGeometry+'GraphForm/Value',FGraphFormGeometry,DefaultRect);
+end;
+
+procedure TPoCheckerSettings.SaveExternalEditorName;
+begin
+  {$IFDEF POCHECKERSTANDALONE}
+  FConfig.SetDeleteValue(pExternalEditor+'Value',FExternalEditorName,'');
+  {$ENDIF}
 end;
 
 procedure TPoCheckerSettings.SaveMasterPoList;
@@ -351,6 +377,7 @@ begin
       FTestTypes := LoadTestTypes;
       FTestOptions := LoadTestOptions;
       FLastSelectedFile := LoadLastSelectedFile;
+      FExternalEditorName := LoadExternalEditorName;
       LoadWindowsGeometry;
       LoadMasterPoList(FMasterPoList);
       LoadChildrenPoList(FChildrenPoList);
@@ -372,6 +399,7 @@ begin
       SaveLastSelectedFile;
       SaveTestTypes;
       SaveTestOptions;
+      SaveExternalEditorName;
       SaveWindowsGeometry;
       SaveMasterPoList;
       SaveChildrenPoList;

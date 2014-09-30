@@ -41,6 +41,10 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr ""
 
+#: pocheckerconsts.scurrenttest
+msgid "Test: %s on %s"
+msgstr ""
+
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr ""
@@ -146,11 +150,29 @@ msgid "&Open a po-file"
 msgstr ""
 
 #: pocheckerconsts.sopenfail
-msgid "Unable to open file %s"
+msgid ""
+"Unable to open file:\n"
+"\"%s\"\n"
+msgstr ""
+
+#: pocheckerconsts.sopenfailexternal
+msgid ""
+"Unable to open file\n"
+"\"%s\"\n"
+"in external editor\n"
+"\"%s\"\n"
 msgstr ""
 
 #: pocheckerconsts.sopenfile
 msgid "Open file %s in Ide Editor?"
+msgstr ""
+
+#: pocheckerconsts.sopenfileexternal
+msgid ""
+"Open file:\n"
+"\"%s\"\n"
+"in external editor:\n"
+"\"%s\"?\n"
 msgstr ""
 
 #: pocheckerconsts.soriginal

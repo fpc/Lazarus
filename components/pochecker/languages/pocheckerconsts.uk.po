@@ -52,6 +52,10 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr "Копіювати в буфер"
 
+#: pocheckerconsts.scurrenttest
+msgid "Test: %s on %s"
+msgstr ""
+
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[Рядок %d] %s"
@@ -167,11 +171,29 @@ msgid "&Open a po-file"
 msgstr "&Відкрити po-файл"
 
 #: pocheckerconsts.sopenfail
-msgid "Unable to open file %s"
+msgid ""
+"Unable to open file:\n"
+"\"%s\"\n"
+msgstr ""
+
+#: pocheckerconsts.sopenfailexternal
+msgid ""
+"Unable to open file\n"
+"\"%s\"\n"
+"in external editor\n"
+"\"%s\"\n"
 msgstr ""
 
 #: pocheckerconsts.sopenfile
 msgid "Open file %s in Ide Editor?"
+msgstr ""
+
+#: pocheckerconsts.sopenfileexternal
+msgid ""
+"Open file:\n"
+"\"%s\"\n"
+"in external editor:\n"
+"\"%s\"?\n"
 msgstr ""
 
 #: pocheckerconsts.soriginal

@@ -55,6 +55,10 @@ msgstr "翻訳／未翻訳、未確定文字列の割合を検査"
 msgid "Copy to clipboard"
 msgstr "クリップボードへコピー"
 
+#: pocheckerconsts.scurrenttest
+msgid "Test: %s on %s"
+msgstr ""
+
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[行 %d] %s"
@@ -168,11 +172,29 @@ msgid "&Open a po-file"
 msgstr "po ファイルを開く(&O)"
 
 #: pocheckerconsts.sopenfail
-msgid "Unable to open file %s"
+msgid ""
+"Unable to open file:\n"
+"\"%s\"\n"
+msgstr ""
+
+#: pocheckerconsts.sopenfailexternal
+msgid ""
+"Unable to open file\n"
+"\"%s\"\n"
+"in external editor\n"
+"\"%s\"\n"
 msgstr ""
 
 #: pocheckerconsts.sopenfile
 msgid "Open file %s in Ide Editor?"
+msgstr ""
+
+#: pocheckerconsts.sopenfileexternal
+msgid ""
+"Open file:\n"
+"\"%s\"\n"
+"in external editor:\n"
+"\"%s\"?\n"
 msgstr ""
 
 #: pocheckerconsts.soriginal

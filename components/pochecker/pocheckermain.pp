@@ -202,7 +202,7 @@ procedure TPoCheckerForm.OnTestStart(const ATestName, APoFileName: string);
 begin
   //debugln('OnTestStart: ATestName = "',AtestName,'" APoFileName = "',APoFileName);
   StatusBar.SimplePanel := True;
-  StatusBar.SimpleText := Format('Test: %s on %s',[ATestName,APoFileName]);
+  StatusBar.SimpleText := Format(sCurrentTest,[ATestName,APoFileName]);
   Application.ProcessMessages;
 end;
 

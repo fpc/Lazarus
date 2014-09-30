@@ -53,6 +53,10 @@ msgstr "Вывод статистики по (не)переведённым и �
 msgid "Copy to clipboard"
 msgstr "Копировать в буфер обмена"
 
+#: pocheckerconsts.scurrenttest
+msgid "Test: %s on %s"
+msgstr ""
+
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[Строка %d] %s"
@@ -167,12 +171,32 @@ msgid "&Open a po-file"
 msgstr "&Открыть файл PO"
 
 #: pocheckerconsts.sopenfail
-msgid "Unable to open file %s"
+#, fuzzy
+#| msgid "Unable to open file %s"
+msgid ""
+"Unable to open file:\n"
+"\"%s\"\n"
 msgstr "Невозможно открыть файл %s"
+
+#: pocheckerconsts.sopenfailexternal
+msgid ""
+"Unable to open file\n"
+"\"%s\"\n"
+"in external editor\n"
+"\"%s\"\n"
+msgstr ""
 
 #: pocheckerconsts.sopenfile
 msgid "Open file %s in Ide Editor?"
 msgstr "Открыть файл %s в редакторе IDE?"
+
+#: pocheckerconsts.sopenfileexternal
+msgid ""
+"Open file:\n"
+"\"%s\"\n"
+"in external editor:\n"
+"\"%s\"?\n"
+msgstr ""
 
 #: pocheckerconsts.soriginal
 msgid "Original"
@@ -232,6 +256,7 @@ msgid "Show statistics graph"
 msgstr "Показать графическую сводку"
 
 #: pocheckerconsts.sstathint
+#, fuzzy
 #| msgid ""
 #| "%3.1f %% Translated\n"
 #| "%3.1f %% UnTranslated\n"
@@ -248,6 +273,10 @@ msgstr "Показать графическую сводку"
 #| "%3d Translated (%3.1f%%)\n"
 #| "%3d UnTranslated (%3.1f%%)\n"
 #| "%3d Fuzzy (%3.1f%%)\n"
+#| "%3d Translated (%3.1f%%)\n"
+#| "%3d UnTranslated (%3.1f%%)\n"
+#| "%3d Fuzzy (%3.1f%%)\n"
+#| "%d Error(s) in Selected Tests\n"
 #| "%3d Translated (%3.1f%%)\n"
 #| "%3d UnTranslated (%3.1f%%)\n"
 #| "%3d Fuzzy (%3.1f%%)\n"

@@ -24,6 +24,7 @@ resourcestring
   sTotalErrors = 'Total errors found: %d';
   sTotalWarnings = 'Total warnings found: %d';
   sNoErrorsFound = 'No errors found';
+  sCurrentTest = 'Test: %s on %s';
   sNoTestSelected = 'There are no tests selected.';
 
   //Result form
@@ -43,7 +44,12 @@ resourcestring
               '%3d Fuzzy (%3.1f%%)' + LineEnding +
               '%d Error(s) in Selected Tests';
   sOpenFile = 'Open file %s in Ide Editor?';
-  SOpenFail = 'Unable to open file %s';
+  sOpenFileExternal = 'Open file:' + LineEnding + '"%s"' +
+                      LineEnding + 'in external editor:' +
+                      LineEnding + '"%s"?';
+  SOpenFail = 'Unable to open file:' + LineEnding +  '"%s"';
+  SOpenFailExternal = 'Unable to open file' + LineEnding +
+                      '"%s"' + LineEnding + 'in external editor' + LineEnding + '"%s"';
 
   //PoFamiles
   sOriginal = 'Original';

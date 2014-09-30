@@ -6,7 +6,11 @@ interface
 
 uses
   Classes, SysUtils, Types, FileUtil, Forms, Controls, Graphics, Dialogs,
-  {$ifndef POCHECKERSTANDALONE} LazIDEIntf, {$endif}
+  {$ifndef POCHECKERSTANDALONE}
+  LazIDEIntf,
+  {$else}
+  Process, Utf8Process,
+  {$endif}
   ExtCtrls, PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls,
   PoCheckerSettings;
 
@@ -117,14 +121,16 @@ end;
 
 procedure TGraphStatForm.ListViewMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
-{$ifndef POCHECKERSTANDALONE}
 var
   anItem: TListItem;
   anIndex: Integer;
   AStat: TStat;
+  mr: TModalResult;
+{$ifndef POCHECKERSTANDALONE}
   PageIndex,WindowIndex: Integer;
   OpenFlags: TOpenFlags;
-  mr: TModalResult;
+{$else}
+  Proc: TProcessUtf8;
 {$endif}
 begin
   {$ifndef POCHECKERSTANDALONE}
@@ -143,6 +149,37 @@ begin
          end;
       end
     else ShowMessage(Format(SOpenFail,[AStat.PoName]));
+  end;
+  {$else}
+  anItem := Listview.GetItemAt(X, Y);
+  if Assigned(anItem) and (Settings.ExternalEditorName <> '') then
+  begin
+    anIndex := anItem.Index;
+    AStat := FPoFamilyStats.Items[anIndex];
+    if MessageDlg('PoChecker',Format(sOpenFileExternal,[AStat.PoName,Settings.ExternalEditorName]),
+       mtConfirmation,mbOKCancel,0) = mrOk then
+    begin
+      Proc := TProcessUtf8.Create(nil);
+      try
+        Proc.Options := [];
+        Proc.Executable := Settings.ExternalEditorName;
+        Proc.Parameters.Add(AStat.PoName);
+        try
+          Proc.Execute;
+        except
+          on E: EProcess do
+          begin
+            debugln('TGraphStatForm.ListViewMouseUp:');
+            debugln('  Exception occurred of type ',E.ClassName);
+            debugln('  Message: ',E.Message);
+            ShowMessage(Format(SOpenFailExternal,[AStat.PoName,Settings.ExternalEditorName]));
+          end;
+        end;
+      finally
+        Proc.Free;
+      end;
+    end;
+
   end;
   {$endif}
 end;
