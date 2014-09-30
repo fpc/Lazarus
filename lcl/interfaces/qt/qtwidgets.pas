@@ -1558,6 +1558,7 @@ type
     function getHasSubMenu: boolean;
     function getText: WideString; override;
     function getVisible: Boolean; override;
+    function MenuItemEnabled: boolean;
     procedure PopUp(pos: PQtPoint; at: QActionH = nil);
     procedure Exec(pos: PQtPoint; at: QActionH = nil);
     procedure removeActionGroup;
@@ -10129,7 +10130,8 @@ procedure TQtComboBox.InternalIntfGetItems;
 begin
   TCustomComboBox(LCLObject).IntfGetItems;
   // because of issue #25032 we must call it here
-  SlotDropListVisibility(True);
+  if getEnabled then
+    SlotDropListVisibility(True);
 end;
 
 procedure TQtComboBox.ClearItems;
@@ -14915,6 +14917,27 @@ begin
   end;
 end;
 
+function TQtMenu.MenuItemEnabled: boolean;
+var
+  AParentMenu: TMenuItem;
+begin
+  if not Assigned(FMenuItem) then
+  begin
+    Result := getEnabled;
+    exit;
+  end;
+
+  Result := FMenuItem.Enabled;
+  AParentMenu := FMenuItem.Parent;
+  while AParentMenu <> nil do
+  begin
+    Result := AParentMenu.Enabled;
+    if not Result then
+      break;
+    AParentMenu := AParentMenu.Parent;
+  end;
+end;
+
 function TQtMenu.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
   Msg: TLMessage;
@@ -14928,7 +14951,7 @@ begin
       begin
         FillChar(Msg, SizeOf(Msg), 0);
         Msg.msg := LM_ACTIVATE;
-        if Assigned(FMenuItem) then
+        if MenuItemEnabled then
           FMenuItem.Dispatch(Msg);
         Result := True;
       end;

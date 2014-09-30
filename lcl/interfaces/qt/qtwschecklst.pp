@@ -135,7 +135,9 @@ begin
   if not WSCheckHandleAllocated(ACheckListBox, 'SetItemEnabled') then
     Exit;
   QtListWidget := TQtCheckListBox(ACheckListBox.Handle);
+  QtListWidget.BeginUpdate;
   QtListWidget.Enabled[AIndex] := AEnabled;
+  QtListWidget.EndUpdate;
 end;
 
 class procedure TQtWSCustomCheckListBox.SetState(

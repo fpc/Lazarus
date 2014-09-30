@@ -2412,7 +2412,14 @@ begin
   begin
     AWidget := HwndFromWidgetH(QtDC.Parent);
     if (AWidget <> 0) and Assigned(TQtWidget(AWidget).LCLObject) then
+    begin
       ATransparent := not (csOpaque in TQtWidget(AWidget).LCLObject.ControlStyle);
+      // issue #26607
+      if ATransparent and (TQtWidget(AWidget).LCLObject is TCustomPanel) and
+        (TQtWidget(AWidget).LCLObject.Color <> clDefault) and
+        not TCustomPanel(TQtWidget(AWidget).LCLObject).ParentColor then
+          ATransparent := False;
+    end;
   end;
 
   case Style of

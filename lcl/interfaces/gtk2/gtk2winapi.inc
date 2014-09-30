@@ -5137,6 +5137,7 @@ var
   AFontName: String;
   PangoDesc: PPangoFontDescription;
   i, RequiredSize: Integer;
+  AFontSize: gint;
 begin
   Result := 0;
   if not IsValidGDIObject(GDIObj) then Exit;
@@ -5177,6 +5178,23 @@ begin
 
             if AFontName <> '' then
               PLogfont(Buf)^.lfFaceName := AFontName;
+          end;
+
+          if (GDIObject^.GDIFontObject <> nil) then
+          begin
+            AFont := GDIObject^.GDIFontObject;
+            if PANGO_IS_LAYOUT(AFont) then
+            begin
+              PangoDesc := pango_layout_get_font_description(GDIObject^.GDIFontObject);
+              if PangoDesc = nil then
+                PangoDesc := pango_context_get_font_description(pango_layout_get_context(AFont));
+
+              AFontSize := pango_font_description_get_size(PangoDesc);
+              if not pango_font_description_get_size_is_absolute(PangoDesc) or (AFontSize >= PANGO_SCALE) then
+                AFontSize := AFontSize div PANGO_SCALE;
+
+              PLogfont(Buf)^.lfHeight := MulDiv(AFontSize, GetDeviceCaps(0, LOGPIXELSX) , 72);
+            end;
           end;
         end else
         if BufSize > 0 then

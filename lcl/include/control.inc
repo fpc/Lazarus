@@ -773,10 +773,19 @@ begin
     if not ParentFont then
       Font.Height := MulDiv(GetFontData(Font.Reference.Handle).Height, Multiplier, Divider);
     R := BaseBounds;
-    R.Left := MulDiv(R.Left, Multiplier, Divider);
-    R.Top := MulDiv(R.Top, Multiplier, Divider);
-    R.Right := MulDiv(R.Right, Multiplier, Divider);
-    R.Bottom := MulDiv(R.Bottom, Multiplier, Divider);
+    if (Self is TCustomForm) and (GetParentForm(Self, True) = Self) then
+    begin
+      //Dont change Left,Top if this is the topmost form
+      R.Right := R.Left + MulDiv(R.Right-R.Left, Multiplier, Divider);
+      R.Bottom := R.Top + MulDiv(R.Bottom-R.Top, Multiplier, Divider);
+    end
+    else
+    begin
+      R.Left := MulDiv(R.Left, Multiplier, Divider);
+      R.Top := MulDiv(R.Top, Multiplier, Divider);
+      R.Right := MulDiv(R.Right, Multiplier, Divider);
+      R.Bottom := MulDiv(R.Bottom, Multiplier, Divider);
+    end;
     BoundsRect := R;
   end;
 end;

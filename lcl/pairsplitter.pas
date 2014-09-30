@@ -62,6 +62,7 @@ type
     property ChildSizing;
     property ClientWidth;
     property ClientHeight;
+    property Constraints;
     property Cursor;
     property Enabled;
     property OnMouseDown;
