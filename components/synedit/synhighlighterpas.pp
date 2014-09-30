@@ -672,7 +672,7 @@ begin
       mHashTable[Char(I)] := 0;
     end;
     IsIntegerChar[I]:=(I in ['0'..'9', 'A'..'F', 'a'..'f']);
-    IsNumberChar[I]:=(I in ['0'..'9', '.', 'e', 'E']);
+    IsNumberChar[I]:=(I in ['0'..'9']);
     IsSpaceChar[I]:=(I in [#1..#9, #11, #12, #14..#32]);
     IsUnderScoreOrNumberChar[I]:=(I in ['_','0'..'9']);
     IsLetterChar[I]:=(I in ['a'..'z','A'..'Z']);
@@ -2753,10 +2753,15 @@ begin
   inc(Run);
   fTokenID := tkNumber;
   if Run<fLineLen then begin
-    while (IsNumberChar[FLine[Run]]) do begin
-      if (FLine[Run]='.') and (fLine[Run+1]='.')  then
-        break;
+    while (IsNumberChar[FLine[Run]]) do inc(Run);
+    if (FLine[Run]='.') and not(fLine[Run+1]='.')  then begin
       inc(Run);
+      while (IsNumberChar[FLine[Run]]) do inc(Run);
+    end;
+    if (FLine[Run]='e') or (fLine[Run]='E')  then begin
+      inc(Run);
+      if (FLine[Run]='+') or (fLine[Run]='-')  then inc(Run);
+      while (IsNumberChar[FLine[Run]]) do inc(Run);
     end;
   end;
 end;
