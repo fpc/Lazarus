@@ -642,6 +642,7 @@ type
     procedure SetBeautifier(NewBeautifier: TSynCustomBeautifier);
     function GetMaxUndo: Integer;
     function GetSelAvail: Boolean;
+    function GetIsBackwardSel: Boolean;
     function GetSelText: string;
     procedure SetTrimSpaceType(const AValue: TSynEditStringTrimmingType);
     function SynGetText: string;
@@ -883,6 +884,7 @@ type
     property SelStart: Integer read GetSelStart write SetSelStart;
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     property SelAvail: Boolean read GetSelAvail;
+    property IsBackwardSel: Boolean read GetIsBackwardSel;
     property SelText: string read GetSelText write SetSelTextExternal;
 
     // Text
@@ -2558,6 +2560,11 @@ end;
 function TCustomSynEdit.GetSelAvail: Boolean;
 begin
   Result := FBlockSelection.SelAvail;
+end;
+
+function TCustomSynEdit.GetIsBackwardSel: Boolean;
+begin
+  Result := FBlockSelection.SelAvail and FBlockSelection.IsBackwardSel;
 end;
 
 function TCustomSynEdit.GetSelText: string;
