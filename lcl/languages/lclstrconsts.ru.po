@@ -1472,8 +1472,8 @@ msgid "No timers available"
 msgstr "Таймеры недоступны"
 
 #: lclstrconsts.sparentrequired
-msgid "Control \"%s\" has no parent window"
-msgstr ""
+msgid "Control \"%s\" has no parent window."
+msgstr "Элемент управления \"%s\" не имеет родительского окна."
 
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"

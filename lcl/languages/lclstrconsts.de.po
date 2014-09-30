@@ -30,7 +30,7 @@ msgstr "Kann den HTML-Browser nicht finden."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr ""
+msgstr "Kein HTML-Browser gefunden.%sBitte legen Sie einen fest unter Werkzeuge -> Einstellungen -> Hilfe -> Hilfeeinstellungen"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
@@ -1470,7 +1470,7 @@ msgid "No timers available"
 msgstr "Keine Timer verfügbar"
 
 #: lclstrconsts.sparentrequired
-msgid "Control \"%s\" has no parent window"
+msgid "Control \"%s\" has no parent window."
 msgstr ""
 
 #: lclstrconsts.sparexpected
