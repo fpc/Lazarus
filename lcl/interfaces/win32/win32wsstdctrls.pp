@@ -54,6 +54,9 @@ type
           const AParams: TCreateParams): HWND; override;
     class procedure SetBiDiMode(const AWinControl: TWinControl; UseRightToLeftAlign,
       UseRightToLeftReading, UseRightToLeftScrollBar : Boolean); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+          var PreferredWidth, PreferredHeight: integer;
+          WithThemeSpace: Boolean); override;
   end;
 
   { TWin32WSGroupBox }
@@ -557,6 +560,17 @@ class procedure TWin32WSCustomGroupBox.SetBiDiMode(
   UseRightToLeftReading, UseRightToLeftScrollBar : Boolean);
 begin
   RecreateWnd(AWinControl);
+end;
+
+class procedure TWin32WSCustomGroupBox.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth,
+                 PreferredHeight) then begin
+    PreferredWidth += 19;
+    PreferredHeight += 4;
+  end;
 end;
 
 { TWin32WSCustomListBox }
@@ -1331,7 +1345,7 @@ end;
 
 class procedure TWin32WSCustomMemo.SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint);
 var
-  CharIndex: Longword;
+  CharIndex: LRESULT;
 begin
   { EM_LINEINDEX returns the char index of a given line }
   CharIndex := Windows.SendMessageW(ACustomEdit.Handle, EM_LINEINDEX, NewPos.Y, 0) + NewPos.X;

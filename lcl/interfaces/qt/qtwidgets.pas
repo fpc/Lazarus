@@ -7743,7 +7743,7 @@ var
   ASize: TSize;
 begin
   QWidget_getContentsMargins(Widget,@L, @T, @R, @B);
-  QWidget_sizeHint(Widget, @ASize);
+  QGroupBox_minimumSizeHint(QGroupBoxH(Widget), @ASize);
   PreferredWidth := ASize.cx + L + R;
   PreferredHeight := ASize.cy + B + T;
   {$IFDEF VerboseQtResize}
@@ -15895,9 +15895,12 @@ end;
 procedure TQtAbstractScrollArea.SetNoMousePropagation(Sender: QWidgetH;
   const ANoMousePropagation: Boolean);
 begin
+  // keep it so because sender can be dangling pointer from qt inside
+  // mouse event of viewportWidget ! issue #26466
   if Sender = viewportWidget then
     inherited SetNoMousePropagation(Sender, False)
   else
+  if Sender = Widget then
     inherited SetNoMousePropagation(Sender, ANoMousePropagation);
 end;
 
