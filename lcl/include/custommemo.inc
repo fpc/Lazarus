@@ -203,6 +203,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Prevents false firing of the OnEditingDone event if the memo accepts the
+  RETURN key for new-line input.
+ ------------------------------------------------------------------------------}
+procedure TCustomMemo.KeyUpAfterInterface(var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_RETURN) and FWantReturns then
+    Key := 0;
+  inherited;
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomMemo.SetLines
   Params: 
   Returns: 

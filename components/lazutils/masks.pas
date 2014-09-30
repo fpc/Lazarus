@@ -289,7 +289,7 @@ var
       if fCaseSensitive then
         CharValue := GetCodePoint(AValue,I)
       else
-        CharValue := Utf8UpperCase(GetCodePoint(AValue,I));
+        CharValue := Utf8LowerCase(GetCodePoint(AValue,I));
     end;
 
     Inc(FMask.MinLength);
@@ -374,6 +374,8 @@ var
           end;
         mcAnyChar:
           begin
+            //CP := GetCodePoint(S, CharIndex);
+            //writeln('mcAnyChar: CP = ',UTF8ToConsole(CP),' CharIndex = ',CharIndex);
             if CharIndex > L then Exit;
             Inc(CharIndex);
           end;
@@ -411,7 +413,10 @@ begin
   if fCaseSensitive then
     S := AFileName
   else
-    S := Utf8UpperCase(AFileName);
+  begin
+    S := Utf8LowerCase(AFileName);
+    L := Utf8Length(S);
+  end;
   Result := MatchToEnd(0, 1);
 end;
 

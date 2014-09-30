@@ -162,6 +162,7 @@ type
 
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
     class procedure SetIconArrangement(const ALV: TCustomListView; const AValue: TIconArrangement); override;
+    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); override;
     class procedure SetItemsCount(const ALV: TCustomListView; const Avalue: Integer); override;
     class procedure SetOwnerData(const ALV: TCustomListView; const AValue: Boolean); override;
 
@@ -1966,6 +1967,23 @@ begin
     if QtList.ViewStyle <> Ord(vsList) then
       QtList.setViewFlow(IconArngToQListFlow[AValue]);
   end;
+end;
+
+class procedure TQtWSCustomListView.SetImageList(const ALV: TCustomListView;
+  const AList: TListViewImageList; const AValue: TCustomImageList);
+var
+  QtListWidget: TQtListWidget;
+begin
+  if not WSCheckHandleAllocated(ALV, 'SetImageList') then
+    Exit;
+
+  if not IsIconView(ALV) then
+    exit;
+
+  QtListWidget := TQtListWidget(ALV.Handle);
+  // issue #26770 , imediatelly apply changes.
+  if TViewStyle(QtListWidget.ViewStyle) in [vsIcon, vsSmallIcon] then
+    RecreateWnd(ALV);
 end;
 
 class procedure TQtWSCustomListView.SetItemsCount(const ALV: TCustomListView;
