@@ -57,12 +57,10 @@ msgstr "Spočítat procentuální zastoupení (ne)přeložených a nepřesných 
 msgid "Copy to clipboard"
 msgstr "Kopírovat do schránky"
 
-#: pocheckerconsts.scurrentpofile
-msgid "Current po-file:"
-msgstr "Současný PO soubor:"
-
 #: pocheckerconsts.scurrenttest
-msgid "Current Test:"
+#, fuzzy
+#| msgid "Current Test:"
+msgid "Test: %s on %s"
 msgstr "Aktuální test:"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue

@@ -55,12 +55,10 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr "Kopijuoti į iškarpinę"
 
-#: pocheckerconsts.scurrentpofile
-msgid "Current po-file:"
-msgstr "Veikiamasis PO failas:"
-
 #: pocheckerconsts.scurrenttest
-msgid "Current Test:"
+#, fuzzy
+#| msgid "Current Test:"
+msgid "Test: %s on %s"
 msgstr "Veikiamasis tikrinimas:"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue

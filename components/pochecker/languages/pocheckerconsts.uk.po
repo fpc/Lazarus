@@ -52,12 +52,10 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr "Копіювати в буфер"
 
-#: pocheckerconsts.scurrentpofile
-msgid "Current po-file:"
-msgstr "Поточний po-файл:"
-
 #: pocheckerconsts.scurrenttest
-msgid "Current Test:"
+#, fuzzy
+#| msgid "Current Test:"
+msgid "Test: %s on %s"
 msgstr "Поточний тест:"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue

@@ -54,12 +54,10 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr "Copiar para área de transferência"
 
-#: pocheckerconsts.scurrentpofile
-msgid "Current po-file:"
-msgstr "Arquivo po atual:"
-
 #: pocheckerconsts.scurrenttest
-msgid "Current Test:"
+#, fuzzy
+#| msgid "Current Test:"
+msgid "Test: %s on %s"
 msgstr "Teste atual:"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue

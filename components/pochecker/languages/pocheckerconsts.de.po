@@ -54,12 +54,10 @@ msgstr "Zeige Prozente (nicht) übersetzter und ungeklärter Zeichenketten"
 msgid "Copy to clipboard"
 msgstr "In Zwischenablage kopieren"
 
-#: pocheckerconsts.scurrentpofile
-msgid "Current po-file:"
-msgstr "Aktuelle po-Datei:"
-
 #: pocheckerconsts.scurrenttest
-msgid "Current Test:"
+#, fuzzy
+#| msgid "Current Test:"
+msgid "Test: %s on %s"
 msgstr "Aktueller Test:"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue
@@ -254,6 +252,10 @@ msgstr "Zeige Statistik-Graphik"
 #| "%3d Translated (%3.1f%%)\n"
 #| "%3d UnTranslated (%3.1f%%)\n"
 #| "%3d Fuzzy (%3.1f%%)\n"
+#| "%3d Translated (%3.1f%%)\n"
+#| "%3d UnTranslated (%3.1f%%)\n"
+#| "%3d Fuzzy (%3.1f%%)\n"
+#| "%d Error(s) in Selected Tests\n"
 msgid ""
 "%3d Translated (%3.1f%%)\n"
 "%3d UnTranslated (%3.1f%%)\n"

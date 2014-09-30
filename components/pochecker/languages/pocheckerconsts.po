@@ -41,12 +41,8 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr ""
 
-#: pocheckerconsts.scurrentpofile
-msgid "Current po-file:"
-msgstr ""
-
 #: pocheckerconsts.scurrenttest
-msgid "Current Test:"
+msgid "Test: %s on %s"
 msgstr ""
 
 #: pocheckerconsts.sduplicatelinenrwithvalue
