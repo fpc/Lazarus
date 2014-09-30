@@ -53,12 +53,6 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr "Copiar en el portapapeles"
 
-#: pocheckerconsts.scurrenttest
-#, fuzzy
-#| msgid "Current Test:"
-msgid "Test: %s on %s"
-msgstr "Test Actual:"
-
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[Línea %d] %s"

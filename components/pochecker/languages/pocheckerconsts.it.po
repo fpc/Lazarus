@@ -53,12 +53,6 @@ msgstr "Verifica le percentuali di stringhe tradotte o incerte"
 msgid "Copy to clipboard"
 msgstr "Copia negli appunti"
 
-#: pocheckerconsts.scurrenttest
-#, fuzzy
-#| msgid "Current Test:"
-msgid "Test: %s on %s"
-msgstr "Testo corrente:"
-
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[Riga %d] %s"

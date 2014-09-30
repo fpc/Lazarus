@@ -55,12 +55,6 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr "Kopijuoti į iškarpinę"
 
-#: pocheckerconsts.scurrenttest
-#, fuzzy
-#| msgid "Current Test:"
-msgid "Test: %s on %s"
-msgstr "Veikiamasis tikrinimas:"
-
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[Eilutė %d] %s"

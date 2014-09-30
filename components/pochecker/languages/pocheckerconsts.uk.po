@@ -52,12 +52,6 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr "Копіювати в буфер"
 
-#: pocheckerconsts.scurrenttest
-#, fuzzy
-#| msgid "Current Test:"
-msgid "Test: %s on %s"
-msgstr "Поточний тест:"
-
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[Рядок %d] %s"

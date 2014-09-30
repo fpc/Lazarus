@@ -53,12 +53,6 @@ msgstr "Вывод статистики по (не)переведённым и �
 msgid "Copy to clipboard"
 msgstr "Копировать в буфер обмена"
 
-#: pocheckerconsts.scurrenttest
-#, fuzzy
-#| msgid "Current Test:"
-msgid "Test: %s on %s"
-msgstr "Текущий тест:"
-
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[Строка %d] %s"
@@ -174,11 +168,11 @@ msgstr "&Открыть файл PO"
 
 #: pocheckerconsts.sopenfail
 msgid "Unable to open file %s"
-msgstr ""
+msgstr "Невозможно открыть файл %s"
 
 #: pocheckerconsts.sopenfile
 msgid "Open file %s in Ide Editor?"
-msgstr ""
+msgstr "Открыть файл %s в редакторе IDE?"
 
 #: pocheckerconsts.soriginal
 msgid "Original"
@@ -238,7 +232,6 @@ msgid "Show statistics graph"
 msgstr "Показать графическую сводку"
 
 #: pocheckerconsts.sstathint
-#, fuzzy
 #| msgid ""
 #| "%3.1f %% Translated\n"
 #| "%3.1f %% UnTranslated\n"
@@ -265,9 +258,10 @@ msgid ""
 "%3d Fuzzy (%3.1f%%)\n"
 "%d Error(s) in Selected Tests\n"
 msgstr ""
-"%3.1f%% переведённых строк\n"
-"%3.1f%% непереведённых строк\n"
-"%3.1f%% неточных переводов\n"
+"Переведённых строк: %3d (%3.1f%%)\n"
+"Непереведённых строк: %3d (%3.1f%%)\n"
+"Неточных переводов: %3d (%3.1f%%)\n"
+"Ошибок в выбранных тестах: %d\n"
 
 #: pocheckerconsts.stotalerrors
 #| msgid "Total errors / warnings found: %d"

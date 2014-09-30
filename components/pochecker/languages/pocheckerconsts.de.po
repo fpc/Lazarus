@@ -54,12 +54,6 @@ msgstr "Zeige Prozente (nicht) übersetzter und ungeklärter Zeichenketten"
 msgid "Copy to clipboard"
 msgstr "In Zwischenablage kopieren"
 
-#: pocheckerconsts.scurrenttest
-#, fuzzy
-#| msgid "Current Test:"
-msgid "Test: %s on %s"
-msgstr "Aktueller Test:"
-
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[Zeile %d] %s"

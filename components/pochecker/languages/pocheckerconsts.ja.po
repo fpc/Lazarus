@@ -55,12 +55,6 @@ msgstr "翻訳／未翻訳、未確定文字列の割合を検査"
 msgid "Copy to clipboard"
 msgstr "クリップボードへコピー"
 
-#: pocheckerconsts.scurrenttest
-#, fuzzy
-#| msgid "Current Test:"
-msgid "Test: %s on %s"
-msgstr "現在のテスト項目："
-
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[行 %d] %s"

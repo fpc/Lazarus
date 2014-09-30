@@ -55,12 +55,6 @@ msgstr "A lefordított és lefordítatlan szövegek százalékának ellenőrzés
 msgid "Copy to clipboard"
 msgstr "Másolás vágólapra"
 
-#: pocheckerconsts.scurrenttest
-#, fuzzy
-#| msgid "Current Test:"
-msgid "Test: %s on %s"
-msgstr "Jelenlegi teszt:"
-
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
 msgstr "[Sor: %d] %s"
