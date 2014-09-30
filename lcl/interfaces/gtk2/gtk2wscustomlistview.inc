@@ -1869,7 +1869,8 @@ begin
   else
   if GTK_IS_ICON_VIEW(Widgets^.MainView) then
   begin
-    ItemPath := gtk_icon_view_get_path_at_pos(PGtkIconView(Widgets^.MainView), x, y);
+    ItemPath := gtk_icon_view_get_path_at_pos(PGtkIconView(Widgets^.MainView),
+      x + Widgets^.ScrollingData.HValue, y + Widgets^.ScrollingData.VValue);
     if ItemPath <> nil then
     begin
       Result := gtk_tree_path_get_indices(ItemPath)^;

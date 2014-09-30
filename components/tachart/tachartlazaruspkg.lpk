@@ -22,6 +22,11 @@
           <RangeChecks Value="True"/>
         </Checks>
       </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <DebugInfoType Value="dsDwarf2"/>
+        </Debugging>
+      </Linking>
     </CompilerOptions>
     <Description Value="TeeChart compatible graph component"/>
     <License Value=" See the file COPYING.modifiedLGPL, included in this distribution,

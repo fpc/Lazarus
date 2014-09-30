@@ -409,6 +409,9 @@ begin
     end else
     begin
       FItemIndex := Value;
+      // maybe handle was recreated. issue #26714
+      FLastClickedItemIndex := -1;
+
       // trigger event to be delphi compat, even if handle isn't allocated.
       // issue #15989
       if (Value <> OldItemIndex) and not FCreatingWnd then

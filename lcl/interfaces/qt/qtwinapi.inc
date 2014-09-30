@@ -6649,14 +6649,22 @@ begin
         begin
           AClipRect := DstQDC.getClipRegion.getBoundingRect;
           OffsetRect(AClipRect, -AClipRect.Left, -AClipRect.Top);
+
           if (DstRect.Right - DstRect.Left <= AClipRect.Right) and
             (DstRect.Bottom - DstRect.Top <= AClipRect.Bottom) and
-            DstQDC.getClipRegion.containsPoint(DstRect.Left, DstRect.Top) and
-            // issue #26342, unset clipping only when transform is dirty
-            QPaintEngine_testDirty(DstQDC.PaintEngine, QPaintEngineDirtyTransform) then
+            DstQDC.getClipRegion.containsPoint(DstRect.Left, DstRect.Top) then
           begin
-            RestoreClip := True;
-            DstQDC.setClipping(False);
+            if (QPaintEngine_type(DstQDC.PaintEngine) = QPaintEngineRaster) then
+            begin
+              // issue #26744 - only affects raster engine.
+              RestoreClip := ((DstRect.Left > 0) or (DstRect.Top > 0)) and
+                (DstRect.Right - DstRect.Left - AClipRect.Right - AClipRect.Left = 0) and
+                (DstRect.Bottom - DstRect.Top - AClipRect.Bottom - AClipRect.Top = 0);
+            end else
+              // issue #26342, unset clipping only when transform is dirty with non raster engine.
+              RestoreClip := QPaintEngine_testDirty(DstQDC.PaintEngine, QPaintEngineDirtyTransform);
+            if RestoreClip then
+              DstQDC.setClipping(False);
           end;
         end;
         DstQDC.drawImage(@DstRect, Image, @SrcRect, QMask, @MaskRect);
