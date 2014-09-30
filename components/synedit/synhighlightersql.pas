@@ -1362,12 +1362,15 @@ procedure TSynSQLSyn.NumberProc;
 begin
   inc(Run);
   fTokenID := tkNumber;
-  while FLine[Run] in ['0'..'9', '.', '-'] do begin
-    case FLine[Run] of
-      '.':
-        if FLine[Run + 1] = '.' then break;
-    end;
+  while FLine[Run] in ['0'..'9'] do inc(Run);
+  if (FLine[Run]='.') and not(fLine[Run+1]='.')  then begin
     inc(Run);
+    while FLine[Run] in ['0'..'9'] do inc(Run);
+  end;
+  if (FLine[Run]='e') or (fLine[Run]='E')  then begin
+    inc(Run);
+    if (FLine[Run]='+') or (fLine[Run]='-')  then inc(Run);
+    while FLine[Run] in ['0'..'9'] do inc(Run);
   end;
 end;
 

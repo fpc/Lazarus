@@ -1594,33 +1594,25 @@ begin
 end;
 
 procedure TSynJScriptSyn.NumberProc;
-var
-  idx1: Integer; // token[1]
-  isHex: Boolean;
 begin
   fTokenID := tkNumber;
-  isHex := False;
-  idx1 := Run;
-  Inc(Run);
-  while FLine[Run] in ['0'..'9', '.', 'a'..'f', 'A'..'F', 'x', 'X'] do
+  if (FLine[Run] = '0') and (FLine[Run+1] in ['x', 'X'])then
   begin
-    case FLine[Run] of
-      '.':
-        if FLine[Succ(Run)] = '.' then
-          Break;
-      'a'..'f', 'A'..'F':
-        if not isHex then
-          Break;
-      'x', 'X':
-        begin
-          if (FLine[idx1] <> '0') or (Run > Succ(idx1)) then
-            Break;
-          if not (FLine[Succ(Run)] in ['0'..'9', 'a'..'f', 'A'..'F']) then
-            Break;
-          isHex := True;
-        end;
-    end;
-    Inc(Run);
+    inc(Run, 2);
+    while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
+    exit;
+  end;
+
+  inc(Run);
+  while FLine[Run] in ['0'..'9'] do inc(Run);
+  if (FLine[Run]='.') and not(fLine[Run+1]='.')  then begin
+    inc(Run);
+    while FLine[Run] in ['0'..'9'] do inc(Run);
+  end;
+  if (FLine[Run]='e') or (fLine[Run]='E')  then begin
+    inc(Run);
+    if (FLine[Run]='+') or (fLine[Run]='-')  then inc(Run);
+    while FLine[Run] in ['0'..'9'] do inc(Run);
   end;
 end;
 
