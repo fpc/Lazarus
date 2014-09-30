@@ -1693,7 +1693,7 @@ var
 
       fMarkupManager.FinishMarkupForRow(CurTextIndex+1);
     end;
-    CurLine:=-1;
+    CurLine := -1;
     AClip.Top := rcLine.Bottom;
   end;
 
@@ -1720,11 +1720,11 @@ begin
   colEditorBG := BackgroundColor;
   // If the right edge is visible and in the invalid area, prepare to paint it.
   // Do this first to realize the pen when getting the dc variable.
-  bDoRightEdge := FALSE;
+  bDoRightEdge := False;
   if FRightEdgeVisible then begin // column value
     nRightEdge := FTextBounds.Left + (RightEdgeColumn - LeftChar + 1) * CharWidth; // pixel value
     if (nRightEdge >= AClip.Left) and (nRightEdge <= AClip.Right) then
-      bDoRightEdge := TRUE;
+      bDoRightEdge := True;
     if nRightEdge > AClip.Right then
       nRightEdge := AClip.Right; // for divider draw lines (don't draw into right gutter)
   end
