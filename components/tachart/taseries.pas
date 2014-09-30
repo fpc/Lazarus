@@ -768,12 +768,18 @@ begin
       lsHorizontal: begin
         p := YGraphToImage(AxisToGraphX(Position));
         DrawLineHoriz(ADrawer, p);
-        Arrow.Draw(ADrawer, Point(ClipRect.Right - 1, p), 0, Pen);
+        if Arrow.Inverted then
+          Arrow.Draw(ADrawer, Point(ClipRect.Left, p), 0, Pen)
+        else
+          Arrow.Draw(ADrawer, Point(ClipRect.Right - 1, p), 0, Pen);
       end;
       lsVertical: begin
         p := XGraphToImage(AxisToGraphX(Position));
         DrawLineVert(ADrawer, p);
-        Arrow.Draw(ADrawer, Point(p, ClipRect.Top), -Pi / 2, Pen);
+        if Arrow.Inverted then
+          Arrow.Draw(ADrawer, Point(p, ClipRect.Bottom - 1), -Pi / 2, Pen)
+        else
+          Arrow.Draw(ADrawer, Point(p, ClipRect.Top), -Pi / 2, Pen);
       end;
     end;
 end;

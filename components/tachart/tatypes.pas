@@ -224,10 +224,11 @@ type
     procedure Draw(
       ADrawer: IChartDrawer; const AEndPos: TPoint; AAngle: Double;
       APen: TFPCustomPen);
-    property Inverted: Boolean read FInverted write SetInverted;
   published
     property BaseLength: TChartDistance
       read FBaseLength write SetBaseLength default 0;
+    property Inverted: Boolean
+      read FInverted write SetInverted default false;
     property Length: TChartDistance
       read FLength write SetLength default DEF_ARROW_LENGTH;
     property Visible default false;
