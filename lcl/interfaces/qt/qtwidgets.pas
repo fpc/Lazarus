@@ -398,7 +398,6 @@ type
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
     function CanPaintBackground: Boolean; override;
-    procedure SetNoMousePropagation(Sender: QWidgetH; const ANoMousePropagation: Boolean); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure setFrameStyle(p1: Integer);
     procedure setFrameShape(p1: QFrameShape);
@@ -7811,17 +7810,6 @@ begin
   end;
 end;
 
-procedure TQtFrame.SetNoMousePropagation(Sender: QWidgetH;
-  const ANoMousePropagation: Boolean);
-begin
-  // issue #26759
-  if Assigned(DragManager) and DragManager.IsDragging and
-    DragManager.Dragging(LCLObject) then
-      inherited SetNoMousePropagation(Sender, False)
-  else
-    inherited SetNoMousePropagation(Sender, ANoMousePropagation);
-end;
-
 procedure TQtFrame.setFocusPolicy(const APolicy: QtFocusPolicy);
 begin
   if Assigned(LCLObject) and not LCLObject.TabStop then
@@ -12911,7 +12899,6 @@ begin
   Result := False;
   QEvent_accept(Event);
   case QEvent_type(Event) of
-    QEventMouseMove,
     QEventMouseButtonPress,
     QEventMouseButtonRelease,
     QEventMouseButtonDblClick: ; {do nothing here - signal is fired}
@@ -17255,7 +17242,6 @@ begin
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick: Result := SlotMouse(Sender, Event);
-      QEventMouseMove: Result := SlotMouseMove(Sender, Event);
       QEventContextMenu: Result := SlotContextMenu(Sender, Event);
       else
       begin
