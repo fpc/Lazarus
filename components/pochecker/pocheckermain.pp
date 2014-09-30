@@ -41,7 +41,6 @@ type
   private
     PoFamily: TPoFamily;
     FSelectedPoName: String;
-    FNewRun: boolean;
     FPoCheckerSettings: TPoCheckerSettings;
     procedure OnTestStart(const ATestName, APoFileName: string);
     procedure OnTestEnd(const ATestName: string; const ErrorCount: integer);
@@ -170,15 +169,17 @@ begin
   begin
     SetSelectedPoName('');
   end;
- FNewRun:= False;
 end;
 
 
 procedure TPoCheckerForm.RunBtnClick(Sender: TObject);
 begin
-  if FNewRun then TryCreatePoFamily(FSelectedPoName);
-  RunSelectedTests;
-  FNewRun:= True;
+  if TryCreatePoFamily(FSelectedPoName) then
+    RunSelectedTests
+  else
+  begin
+    if Assigned(PoFamily) then FreeAndNil(PoFamily);
+  end;
 end;
 
 procedure TPoCheckerForm.SelectAllBtnClick(Sender: TObject);
@@ -300,13 +301,13 @@ end;
 
 function TPoCheckerForm.TrySelectFile(out Filename: String): boolean;
 begin
-  NoErrLabel.Visible := False;
   Result := False;
   Filename := '';
   if OpenDialog.Execute then
   begin
     Filename := OpenDialog.FileName;
-    Result := TryCreatePoFamily(Filename);
+    Result := (CompareText(ExtractFileExt(Filename), '.po') = 0);
+    if not Result then Filename := '';
   end;
 end;
 
@@ -436,6 +437,7 @@ end;
 
 procedure TPoCheckerForm.SetSelectedPoName(AFilename: String);
 begin
+  NoErrLabel.Visible := False;
   if (FSelectedPoName = AFilename) then Exit;
   FSelectedPoName := AFilename;
   if (AFilename <> '') then
@@ -482,14 +484,10 @@ begin
   //DebugLn('  ',DbgS(FPoCheckerSettings.TestTypes));
   SetTestTypeCheckBoxes(FPoCheckerSettings.TestTypes);
   SetTestOptionCheckBoxes(FPoCheckerSettings.TestOptions);
-  if (FPoCheckerSettings.LastSelectedFile <> '') then
-  begin
-    //debugln('Trying to load ',FPoCheckerSettings.LastSelectedFile);
-    if TryCreatePoFamily(FPoCheckerSettings.LastSelectedFile) then
-      SetSelectedPoName(FPoCheckerSettings.LastSelectedFile)
-    else
-      SetSelectedPoName('');
-  end;
+  if (CompareText(ExtractFileExt(FPoCheckerSettings.LastSelectedFile), '.po') = 0) then
+    SetSelectedPoName(FPoCheckerSettings.LastSelectedFile)
+  else
+    SetSelectedPoName('');
 end;
 
 procedure TPoCheckerForm.SaveConfig;
