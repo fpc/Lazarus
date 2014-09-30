@@ -2,7 +2,7 @@
  /***************************************************************************
                                      menus.pp
                                      --------
-                Component Library TMenu, TMenuItem, TMenuBar Controls
+                   Component Library TMenu, TMenuItem Controls
                    Initial Revision  : Mon Jul 26 0:10:12 1999
 
 
@@ -17,10 +17,9 @@
 }
 
 {
-TMenu, TMenuItem, TMenuBar
+TMenu, TMenuItem
 @author(TMenu - Shane Miller <smiller@lakefield.net>)
 @author(TMenuItem - Shane Miller <smiller@lakefield.net>)
-@author(TMenuBar - Shane Miller <smiller@lakefield.net>)
 @author(TMainMenu - Marc Weustink <weus@quicknet.nl>)
 @author(TPopupMenu - Marc Weustink <weus@quicknet.nl>
 @created(26-Jul-1999)
