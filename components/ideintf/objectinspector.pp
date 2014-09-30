@@ -280,11 +280,11 @@ type
     FNameFont, FDefaultValueFont, FValueFont, FHighlightFont: TFont;
     FNewComboBoxItems: TStringList;
     FOnModified: TNotifyEvent;
-    FPreferredSplitterX: integer; // best splitter position
-    FPropertyEditorHook: TPropertyEditorHook;
     FRows: TFPList;// list of TOIPropertyGridRow
     FSelection: TPersistentSelectionList;
     FNotificationComponents: TFPList;
+    FPropertyEditorHook: TPropertyEditorHook;
+    FPreferredSplitterX: integer; // best splitter position
     FSplitterX: integer; // current splitter position
     FStates: TOIPropertyGridStates;
     FTopY: integer;
@@ -483,8 +483,6 @@ type
     property OnOIKeyDown: TKeyEvent read FOnOIKeyDown write FOnOIKeyDown;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
     property OnPropertyHint: TOIPropertyHint read FOnPropertyHint write FOnPropertyHint;
-    property PreferredSplitterX: integer read FPreferredSplitterX
-                                         write FPreferredSplitterX default 100;
     property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
                                                     write SetPropertyEditorHook;
     property RowCount: integer read GetRowCount;
@@ -493,6 +491,8 @@ type
     property Selection: TPersistentSelectionList read FSelection
                                                  write SetSelection;
     property ShowGutter: Boolean read FShowGutter write SetShowGutter default True;
+    property PreferredSplitterX: integer read FPreferredSplitterX
+                                         write FPreferredSplitterX default 100;
     property SplitterX: integer read FSplitterX write SetSplitterX default 100;
     property TopY: integer read FTopY write SetTopY default 0;
     property Favorites: TOIFavoriteProperties read FFavorites
@@ -673,6 +673,8 @@ type
     FUpdatingAvailComboBox: Boolean;
     FComponentEditor: TBaseComponentEditor;
     FOnNodeGetImageIndex: TOnOINodeGetImageEvent;
+    procedure CreateTopSplitter;
+    procedure CreateBottomSplitter;
     function GetGridControl(Page: TObjectInspectorPage): TOICustomPropertyGrid;
     procedure SetComponentEditor(const AValue: TBaseComponentEditor);
     procedure SetFavorites(const AValue: TOIFavoriteProperties);
@@ -712,7 +714,6 @@ type
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure HookSetSelection(const ASelection: TPersistentSelectionList);
-    procedure CreateSplitter(TopSplitter: Boolean);
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -4052,9 +4053,9 @@ begin
   end;
 
   if ShowComponentTree then
-    CreateSplitter(True);
+    CreateTopSplitter;
   if ShowInfoBox then
-    CreateSplitter(False);
+    CreateBottomSplitter;
 
   CreateNoteBook;
 end;
@@ -4712,7 +4713,7 @@ begin
     AvailPersistentComboBox.Visible := False;
     // rebuild controls
     if FShowComponentTree then
-      CreateSplitter(True)
+      CreateTopSplitter
     else
       FreeAndNil(Splitter1);
     AvailPersistentComboBox.Visible := not FShowComponentTree;
@@ -4722,13 +4723,6 @@ begin
   end;
 end;
 
-procedure TObjectInspectorDlg.SetShowFavorites(const AValue: Boolean);
-begin
-  if FShowFavorites = AValue then exit;
-  FShowFavorites := AValue;
-  NoteBook.Page[2].TabVisible := AValue;
-end;
-
 procedure TObjectInspectorDlg.SetShowInfoBox(const AValue: Boolean);
 begin
   if FShowInfoBox = AValue then exit;
@@ -4736,9 +4730,33 @@ begin
   ShowInfoBoxPopupMenuItem.Checked := AValue;
   InfoPanel.Visible := AValue;
   if AValue then
-    CreateSplitter(False)
+    CreateBottomSplitter
   else
     FreeAndNil(Splitter2);
+end;
+
+procedure TObjectInspectorDlg.SetShowStatusBar(const AValue: Boolean);
+var
+  HideInfoBox: Boolean;
+begin
+  if FShowStatusBar = AValue then exit;
+  FShowStatusBar := AValue;
+  ShowStatusBarPopupMenuItem.Checked := AValue;
+  HideInfoBox := AValue and ShowInfoBox;
+  // StatusBar was maybe hidden, before showing must hide InfoPanel temporarily.
+  if HideInfoBox then
+    ShowInfoBox := False; // Deletes the splitter.
+  StatusBar.Align := alBottom;
+  StatusBar.Visible := AValue;
+  if HideInfoBox then
+    ShowInfoBox := True;  // Show InfoBox again, creates the splitter.
+end;
+
+procedure TObjectInspectorDlg.SetShowFavorites(const AValue: Boolean);
+begin
+  if FShowFavorites = AValue then exit;
+  FShowFavorites := AValue;
+  NoteBook.Page[2].TabVisible := AValue;
 end;
 
 procedure TObjectInspectorDlg.SetShowRestricted(const AValue: Boolean);
@@ -4746,14 +4764,6 @@ begin
   if FShowRestricted = AValue then exit;
   FShowRestricted := AValue;
   NoteBook.Page[3].TabVisible := AValue;
-end;
-
-procedure TObjectInspectorDlg.SetShowStatusBar(const AValue: Boolean);
-begin
-  if FShowStatusBar = AValue then exit;
-  FShowStatusBar := AValue;
-  ShowStatusBarPopupMenuItem.Checked := AValue;
-  StatusBar.Visible := AValue;
 end;
 
 procedure TObjectInspectorDlg.ShowNextPage(Delta: integer);
@@ -4774,7 +4784,6 @@ begin
     end;
   until NewPageIndex = NoteBook.PageIndex;
 end;
-
 
 procedure TObjectInspectorDlg.RestrictedPageShow(Sender: TObject);
 begin
@@ -4847,32 +4856,31 @@ begin
   RestrictedPaint(ComponentRestrictedBox, WidgetSetRestrictions);
 end;
 
-procedure TObjectInspectorDlg.CreateSplitter(TopSplitter: Boolean);
+procedure TObjectInspectorDlg.CreateTopSplitter;
+// vertical splitter between component tree and notebook
 begin
-  // vertical splitter between component tree and notebook
-  if TopSplitter then
+  Splitter1 := TSplitter.Create(Self);
+  with Splitter1 do
   begin
-    Splitter1 := TSplitter.Create(Self);
-    with Splitter1 do
-    begin
-      Name := 'Splitter1';
-      Parent := Self;
-      Align := alTop;
-      Top := ComponentPanelHeight;
-      Height := 5;
-    end;
-  end
-  else
+    Name := 'Splitter1';
+    Parent := Self;
+    Align := alTop;
+    Top := ComponentPanelHeight;
+    Height := 5;
+  end;
+end;
+
+procedure TObjectInspectorDlg.CreateBottomSplitter;
+// vertical splitter between notebook and info panel
+begin
+  Splitter2 := TSplitter.Create(Self);
+  with Splitter2 do
   begin
-    Splitter2 := TSplitter.Create(Self);
-    with Splitter2 do
-    begin
-      Name := 'Splitter2';
-      Parent := Self;
-      Align := alBottom;
-      Top := InfoPanel.Top - 1;
-      Height := 5;
-    end;
+    Name := 'Splitter2';
+    Parent := Self;
+    Align := alBottom;
+    Top := InfoPanel.Top - 1;
+    Height := 5;
   end;
 end;
 
