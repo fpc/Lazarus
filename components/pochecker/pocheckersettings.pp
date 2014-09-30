@@ -29,9 +29,12 @@ type
     FChildrenPoList: TStrings;
     FLastSelectedFile: String;
     FMainFormGeometry: TRect;
+    FGraphFormGeometry: TRect;
+    FResultsFormGeometry: TRect;
     function LoadLastSelectedFile: String;
     function LoadTestTypes: TPoTestTypes;
     function LoadTestOptions: TPoTestOptions;
+    procedure LoadWindowsGeometry;
     procedure LoadMasterPoList(List: TStrings);
     procedure LoadChildrenPoList(List: TStrings);
     procedure SaveLastSelectedFile;
@@ -56,12 +59,115 @@ type
     property ChildrenPoList: TStrings read FChildrenPoList write FChildrenPoList;
     property LastSelectedFile: String read FLastSelectedFile write FLastSelectedFile;
     property MainFormGeometry: TRect read FMainFormGeometry write FMainFormGeometry;
+    property ResultsFormGeometry: TRect read FResultsFormGeometry write FResultsFormGeometry;
+    property GraphFormGeometry: TRect read FGraphFormGeometry write FGraphFormGeometry;
   end;
 
 function DbgS(PoTestTypes: TPoTestTypes): String; overload;
 function DbgS(PoTestOpts: TPoTestOptions): String; overload;
+function FitToRect(const ARect, FitIn: TRect): TRect;
+function IsDefaultRect(ARect: TRect): Boolean;
+function IsValidRect(ARect: TRect): Boolean;
+
 
 implementation
+
+function FitToRect(const ARect, FitIn: TRect): TRect;
+begin
+  Result := ARect;
+  if (Result.Right - Result.Left) > (FitIn.Right - FitIn.Left) then
+    Result.Right := Result.Left + (FitIn.Right - FitIn.Left);
+  if (Result.Bottom - Result.Top) > (FitIn.Bottom - FitIn.Top) then
+    Result.Bottom := Result.Top + (FitIn.Bottom - FitIn.Top);
+  if Result.Left < FitIn.Left then
+  begin
+    Result.Right := Result.Right + (FitIn.Left - Result.Left);
+    Result.Left := FitIn.Left;
+  end;
+  if Result.Right > FitIn.Right then
+  begin
+    Result.Left := Result.Left - (Result.Right - FitIn.Right);
+    Result.Right := Result.Right - (Result.Right - FitIn.Right);
+  end;
+  if Result.Top < FitIn.Top then
+  begin
+    Result.Bottom := Result.Bottom + (FitIn.Top - Result.Top);
+    Result.Top := FitIn.Top;
+  end;
+  if Result.Bottom > FitIn.Bottom then
+  begin
+    Result.Top := Result.Top - (Result.Bottom - FitIn.Bottom);
+    Result.Bottom := Result.Bottom - (Result.Bottom - FitIn.Bottom);
+  end;
+
+  //if Result.Right > FitIn.Right then Result.Right := FitIn.Right;
+  //if Result.Bottom > FitIn.Bottom then Result.Bottom := FitIn.Bottom;
+end;
+
+function IsDefaultRect(ARect: TRect): Boolean;
+begin
+  Result := (ARect.Left = -1) and (ARect.Top = -1) and
+            (ARect.Right = -1) and (Arect.Bottom = -1);
+end;
+
+function IsValidRect(ARect: TRect): Boolean;
+begin
+  Result := (ARect.Right > ARect.Left) and
+            (ARect.Bottom > ARect.Top);
+end;
+
+const
+  TestTypeNames: array[TPoTestType] of String = (
+    'CheckNumberOfItems',
+    'CheckForIncompatibleFormatArguments',
+    'CheckMissingIdentifiers',
+    'CheckForMismatchesInUntranslatedStrings',
+    'CheckForDuplicateUntranslatedValues',
+    'CheckStatistics'
+    );
+  TestoptionNames: array[TPoTestOption] of String = (
+    'FindAllChildren',
+    'IgnoreFuzzyStrings'
+    );
+
+  pLoadSettings = 'General/LoadSettings/';
+  pLastSelected = 'LastSelected/';
+  pTestTypes = 'TestTypes/';
+  pTestOptions = 'TestOptions/';
+  pWindowsGeometry = 'General/WindowsGeometry/';
+  pMasterPoFiles = 'MasterPoFiles/';
+  pChildrenPoFiles = 'ChildrenPoFiles/';
+
+var
+  DefaultRect: TRect;
+
+function DbgS(PoTestTypes: TPoTestTypes): String; overload;
+var
+  Typ: TPoTestType;
+begin
+  Result := '[';
+  for Typ := Low(TPotestType) to High(TPoTesttype) do
+  begin
+    if (Typ in PoTestTypes) then Result := Result + TestTypeNames[Typ];
+  end;
+  if (Result[Length(Result)] = ',') then System.Delete(Result,Length(Result),1);
+  Result := Result + ']';
+end;
+
+function DbgS(PoTestOpts: TPoTestOptions): String; overload;
+var
+  Opt: TPoTestOption;
+begin
+  Result := '[';
+  for Opt := Low(TPotestOption) to High(TPoTestOption) do
+  begin
+    if (Opt in PoTestOpts) then Result := Result + TestOptionNames[opt];
+  end;
+  if (Result[Length(Result)] = ',') then System.Delete(Result,Length(Result),1);
+  Result := Result + ']';
+end;
+
+
 
 { TPoCheckerSettings }
 {$ifdef pocheckerstandalone}
@@ -101,53 +207,6 @@ end;
 
 {$endif}
 
-const
-  TestTypeNames: array[TPoTestType] of String = (
-    'CheckNumberOfItems',
-    'CheckForIncompatibleFormatArguments',
-    'CheckMissingIdentifiers',
-    'CheckForMismatchesInUntranslatedStrings',
-    'CheckForDuplicateUntranslatedValues',
-    'CheckStatistics'
-    );
-  TestoptionNames: array[TPoTestOption] of String = (
-    'FindAllChildren',
-    'IgnoreFuzzyStrings'
-    );
-
-  pLoadSettings = 'General/LoadSettings/';
-  pLastSelected = 'LastSelected/';
-  pTestTypes = 'TestTypes/';
-  pTestOptions = 'TestOptions/';
-  pWindowsGeometry = 'General/WindowsGeometry/';
-  pMasterPoFiles = 'MasterPoFiles/';
-  pChildrenPoFiles = 'ChildrenPoFiles/';
-
-function DbgS(PoTestTypes: TPoTestTypes): String; overload;
-var
-  Typ: TPoTestType;
-begin
-  Result := '[';
-  for Typ := Low(TPotestType) to High(TPoTesttype) do
-  begin
-    if (Typ in PoTestTypes) then Result := Result + TestTypeNames[Typ];
-  end;
-  if (Result[Length(Result)] = ',') then System.Delete(Result,Length(Result),1);
-  Result := Result + ']';
-end;
-
-function DbgS(PoTestOpts: TPoTestOptions): String; overload;
-var
-  Opt: TPoTestOption;
-begin
-  Result := '[';
-  for Opt := Low(TPotestOption) to High(TPoTestOption) do
-  begin
-    if (Opt in PoTestOpts) then Result := Result + TestOptionNames[opt];
-  end;
-  if (Result[Length(Result)] = ',') then System.Delete(Result,Length(Result),1);
-  Result := Result + ']';
-end;
 
 function TPoCheckerSettings.LoadLastSelectedFile: String;
 begin
@@ -182,6 +241,13 @@ begin
     B := FConfig.GetValue(pTestOptions + Name + '/Value',False);
     if B then Result := Result + [opt];
   end;
+end;
+
+procedure TPoCheckerSettings.LoadWindowsGeometry;
+begin
+  FConfig.GetValue(pWindowsGeometry+'MainForm/Value',FMainFormGeometry,DefaultRect);
+  FConfig.GetValue(pWindowsGeometry+'ResultsForm/Value',FResultsFormGeometry,DefaultRect);
+  FConfig.GetValue(pWindowsGeometry+'GraphForm/Value',FGraphFormGeometry,DefaultRect);
 end;
 
 procedure TPoCheckerSettings.LoadMasterPoList(List: TStrings);
@@ -227,7 +293,9 @@ end;
 
 procedure TPoCheckerSettings.SaveWindowsGeometry;
 begin
-  FConfig.SetDeleteValue(pWindowsGeometry+'MainForm/Value',FMainFormGeometry,Rect(-1,-1,-1,-1));
+  FConfig.SetDeleteValue(pWindowsGeometry+'MainForm/Value',FMainFormGeometry,DefaultRect);
+  FConfig.SetDeleteValue(pWindowsGeometry+'ResultsForm/Value',FResultsFormGeometry,DefaultRect);
+  FConfig.SetDeleteValue(pWindowsGeometry+'GraphForm/Value',FGraphFormGeometry,DefaultRect);
 end;
 
 procedure TPoCheckerSettings.SaveMasterPoList;
@@ -250,8 +318,8 @@ begin
     FFilename := GetAndCreateConfigPath;
     if (FFilename <> '') then FFilename := AppendPathDelim(FFilename);
     FFilename := FFilename + 'pochecker.xml';
-    debugln('TPoCheckerSettings.Create: Filename = ');
-    debugln('"',Filename,'"');
+    //debugln('TPoCheckerSettings.Create: Filename = ');
+    //debugln('"',Filename,'"');
 
     //FFilename := 'pochecker.xml';
 
@@ -283,6 +351,7 @@ begin
       FTestTypes := LoadTestTypes;
       FTestOptions := LoadTestOptions;
       FLastSelectedFile := LoadLastSelectedFile;
+      LoadWindowsGeometry;
       LoadMasterPoList(FMasterPoList);
       LoadChildrenPoList(FChildrenPoList);
     end;
@@ -318,5 +387,7 @@ begin
   end;
 end;
 
+Initialization
+  DefaultRect := Rect(-1, -1, -1, -1);
 end.
 

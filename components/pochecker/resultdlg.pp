@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, Buttons, ClipBrd, LCLType, LCLProc, SynEdit, SynHighlighterPo,
-  PoFamilies, GraphStat, PoCheckerConsts;
+  PoFamilies, GraphStat, PoCheckerConsts, PoCheckerSettings;
 
 type
 
@@ -33,10 +33,14 @@ type
   private
     PoHL: TSynPoSyn;
     FPoFamilyStats: TPoFamilyStats;
+    FSettings: TPoCheckerSettings;
     procedure SaveToFile;
+    procedure LoadConfig;
+    procedure SaveConfig;
   public
     property Log: TStringList read FLog write FLog;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
+    property Settings: TPoCheckerSettings read FSettings write FSettings;
   end; 
 
 implementation
@@ -72,6 +76,7 @@ end;
 procedure TResultDlgForm.FormDestroy(Sender: TObject);
 begin
   FLog.Free;
+  SaveConfig;
 end;
 
 procedure TResultDlgForm.FormKeyDown(Sender: TObject; var Key: Word;
@@ -90,6 +95,7 @@ procedure TResultDlgForm.FormShow(Sender: TObject);
 begin
   LogMemo.Lines.Assign(FLog);
   GraphStatBtn.Visible := (PoFamilyStats <> nil) and (PoFamilyStats.Count > 0);
+  LoadConfig;
 end;
 
 procedure TResultDlgForm.GraphStatBtnClick(Sender: TObject);
@@ -97,10 +103,14 @@ var
   mr: TModalResult;
 begin
   GraphStatForm := TGraphStatForm.Create(nil);
-  GraphStatForm.PoFamilyStats := Self.PoFamilyStats;
-  mr := GraphStatForm.ShowModal;
-  FreeAndNil(GraphStatForm);
-  if mr = mrOpenEditorFile then ModalResult := mr; // To inform pocheckermain
+  try
+    GraphStatForm.PoFamilyStats := Self.PoFamilyStats;
+    GraphStatForm.Settings := Self.Settings;
+    mr := GraphStatForm.ShowModal;
+    if mr = mrOpenEditorFile then ModalResult := mr; // To inform pocheckermain
+  finally
+    FreeAndNil(GraphStatForm);
+  end;
 end;
 
 procedure TResultDlgForm.SaveBtnClick(Sender: TObject);
@@ -125,6 +135,27 @@ begin
       MessageDlg('Po-checker',Format(sSaveError,[SaveDialog.FileName]), mtError, [mbOk], 0);
     end;
   end;
+end;
+
+procedure TResultDlgForm.LoadConfig;
+var
+  ARect: TRect;
+begin
+  if not Assigned(FSettings) then Exit;
+  ARect := FSettings.ResultsFormGeometry;
+  //debugln('TResultDlgForm.LoadConfig: ARect = ',dbgs(ARect));
+  if not IsDefaultRect(ARect) and IsValidRect(ARect) then
+  begin
+    ARect := FitToRect(ARect, Screen.WorkAreaRect);
+    BoundsRect := ARect;
+  end;
+end;
+
+procedure TResultDlgForm.SaveConfig;
+begin
+  //debugln('TResultDlgForm.SaveConfig: BoundsRect = ',dbgs(BoundsRect));
+  if not Assigned(FSettings) then Exit;
+  Settings.ResultsFormGeometry := BoundsRect;
 end;
 
 end.

@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, Types, FileUtil, Forms, Controls, Graphics, Dialogs,
   {$ifndef POCHECKERSTANDALONE} LazIDEIntf, {$endif}
-  ExtCtrls, PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls;
+  ExtCtrls, PoFamilies, PoCheckerConsts, LCLProc, StdCtrls, ComCtrls,
+  PoCheckerSettings;
 
 
 type
@@ -37,12 +38,16 @@ type
     FPoFamilyStats: TPoFamilyStats;
     FImgList: TImageList;
     FOldHintHidePause: Integer;
+    FSettings: TPoCheckerSettings;
+    procedure LoadConfig;
+    Procedure SaveConfig;
     function CreateBitmap(AStat: TStat): TBitmap;
     procedure AddToListView(AStat: TStat; ABmp: TBitmap);
     procedure DrawGraphs;
   public
     { public declarations }
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
+    property Settings: TPoCheckerSettings read FSettings write FSettings;
   end;
 
 var
@@ -83,6 +88,7 @@ procedure TGraphStatForm.FormShow(Sender: TObject);
 begin
   FOldHintHidePause := Application.HintHidePause;
   Application.HintHidePause := 5000;
+  LoadConfig;
 end;
 
 procedure TGraphStatForm.ListViewMouseMove(Sender: TObject; Shift: TShiftState;
@@ -141,6 +147,27 @@ begin
   {$endif}
 end;
 
+procedure TGraphStatForm.LoadConfig;
+var
+  ARect: TRect;
+begin
+  if not Assigned(FSettings) then Exit;
+  ARect := FSettings.GraphFormGeometry;
+  //debugln('TGraphStatForm.LoadConfig: ARect = ',dbgs(ARect));
+  if not IsDefaultRect(ARect) and IsValidRect(ARect) then
+  begin
+    ARect := FitToRect(ARect, Screen.WorkAreaRect);
+    BoundsRect := ARect;
+  end;
+end;
+
+procedure TGraphStatForm.SaveConfig;
+begin
+  //debugln('TGraphStatForm.SaveConfig: BoundsRect = ',dbgs(BoundsRect));
+  if not Assigned(FSettings) then Exit;
+  Settings.GraphFormGeometry := BoundsRect;
+end;
+
 procedure TGraphStatForm.FormCreate(Sender: TObject);
 begin
   Caption := sGrapStatFormCaption;
@@ -169,6 +196,7 @@ end;
 procedure TGraphStatForm.FormDestroy(Sender: TObject);
 begin
   if Assigned(FImgList) then FImgList.Free;
+  SaveConfig;
 end;
 
 function TGraphStatForm.CreateBitmap(AStat: TStat): TBitmap;

@@ -392,8 +392,8 @@ begin
       (PoFamily.ChildName <> FSelectedPoName) then
       PoFamily.ChildName := FSelectedPoName;
     PoFamily.RunTests(TestTypes, TestOptions, ErrorCount, WarningCount, SL);
-    debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
-    debugln('                  ', Format(sTotalWarnings, [WarningCount]));
+    //debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
+    //debugln('                  ', Format(sTotalWarnings, [WarningCount]));
     if (ErrorCount > 0) or (WarningCount > 0) or
       (pttCheckStatistics in TestTypes) then
     begin
@@ -407,6 +407,7 @@ begin
           ResultDlg.PoFamilyStats := PoFamily.PoFamilyStats
         else
           ResultDlg.PoFamilyStats := nil;
+        ResultDlg.Settings := FPoCheckerSettings;
         mr := ResultDlg.ShowModal;
       finally
         ResultDlg.Free;
@@ -455,20 +456,17 @@ end;
 
 
 procedure TPoCheckerForm.LoadConfig;
-function IsSaneRect(ARect: TRect): Boolean;
-const
-  MinWH = 50; //arbitrary
-begin
-  Result := (ARect.Right > ARect.Left + MinWH) and
-            (ARect.Bottom > ARect.Bottom + MinWH);
-end;
 var
   ARect: TRect;
 begin
   FPoCheckerSettings := TPoCheckerSettings.Create;
   FPoCheckerSettings.LoadConfig;
   ARect := FPoCheckerSettings.MainFormGeometry;
-  if IsSaneRect(ARect) then BoundsRect := ARect;
+  if not IsDefaultRect(ARect) and IsValidRect(ARect) then
+  begin
+    ARect := FitToRect(ARect, Screen.WorkAreaRect);
+    BoundsRect := ARect;
+  end;
 
   //DebugLn('  TestOptions after loading = ');
   //DebugLn('  ',DbgS(FPoCheckerSettings.TestOptions));
