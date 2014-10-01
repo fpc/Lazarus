@@ -52,6 +52,7 @@ type
   public
     procedure Assign(ASource: TPersistent); override;
     procedure Clear; override;
+    procedure CopyToClipboard;
     procedure LoadFromFile(const AFileName: String); override;
     procedure LoadFromStream(AStream: TStream); override;
     function ReleaseHandle: HENHMETAFILE;
@@ -98,7 +99,7 @@ type
 implementation
 
 uses
-  SysUtils, TAChartUtils;
+  SysUtils, clipbrd, TAChartUtils;
 
 { TWindowsMetafileDrawer }
 
@@ -129,7 +130,11 @@ end;
 procedure TWindowsMetafileDrawer.DrawingEnd;
 begin
   FreeAndNil(FCanvas);
-  FMetafile.SaveToFile(FFileName);
+  if FFileName = '' then
+   // Clipboard.Assign(FMetaFile)
+    FMetafile.CopyToClipboard
+  else
+    FMetafile.SaveToFile(FFileName);
 end;
 
 function TWindowsMetafileDrawer.GetCanvas: TCanvas;
@@ -327,6 +332,24 @@ end;
 procedure TMetafile.Clear;
 begin
   DeleteImage;
+end;
+
+procedure TMetafile.CopyToClipboard;
+// http://www.olivierlanglois.net/metafile-clipboard.html
+var
+  Format: Word;
+  Data: THandle;
+begin
+  if FImageHandle = 0 then exit;
+
+  OpenClipboard(0);
+  try
+    EmptyClipboard;
+    Format := CF_ENHMETAFILE;
+    SetClipboardData(Format, FImageHandle); //Data);
+  finally
+    CloseClipboard;
+  end;
 end;
 
 procedure TMetafile.LoadFromFile(const AFileName: String);

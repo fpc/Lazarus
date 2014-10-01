@@ -14,12 +14,14 @@ type
 
   TForm1 = class(TForm)
     btnSaveToMetafile: TButton;
+    btnCopyToClipboard: TButton;
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
     Chart1LineSeries1: TLineSeries;
     Panel1: TPanel;
     RandomChartSource1: TRandomChartSource;
     procedure btnSaveToMetafileClick(Sender: TObject);
+    procedure btnCopyToClipboardClick(Sender: TObject);
   end;
 
 var
@@ -38,6 +40,14 @@ procedure TForm1.btnSaveToMetafileClick(Sender: TObject);
 begin
   with Chart1 do
     Draw(TWindowsMetafileDrawer.Create('test.wmf'), Rect(0, 0, Width, Height));
+end;
+
+procedure TForm1.btnCopyToClipboardClick(Sender: TObject);
+begin
+  with Chart1 do
+    Draw(TWindowsMetafileDrawer.Create(''), Rect(0, 0, Width, Height));
+    // Setting the file name to an empty string results in copying the chart to
+    // the clipboard as a windows metafile.
 end;
 
 end.
