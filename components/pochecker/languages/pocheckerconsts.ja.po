@@ -15,6 +15,10 @@ msgstr ""
 msgid "PO File Checker"
 msgstr "PO ファイルチェッカー"
 
+#: pocheckerconsts.salllanguages
+msgid "All Languages"
+msgstr ""
+
 #: pocheckerconsts.scannotfindmaster
 msgid ""
 "Cannot find master po file:\n"
@@ -50,6 +54,10 @@ msgstr "項目数の検査"
 #: pocheckerconsts.scheckstatistics
 msgid "Check percentage of (un)translated and fuzzy strings"
 msgstr "翻訳／未翻訳、未確定文字列の割合を検査"
+
+#: pocheckerconsts.sclearlistbox
+msgid "Clear"
+msgstr ""
 
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
@@ -239,6 +247,10 @@ msgstr ""
 "ファイル保存中のエラー：\n"
 "%s\n"
 
+#: pocheckerconsts.sscandir
+msgid "Scan a folder"
+msgstr ""
+
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
 msgstr ""
@@ -291,6 +303,10 @@ msgstr "翻訳状況："
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
+msgstr ""
+
+#: pocheckerconsts.sunselectlistbox
+msgid "Unselect"
 msgstr ""
 
 #: pocheckerconsts.suntranslated

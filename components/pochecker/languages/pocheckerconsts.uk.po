@@ -12,6 +12,10 @@ msgstr ""
 msgid "PO File Checker"
 msgstr "Перевірка PO Файлів"
 
+#: pocheckerconsts.salllanguages
+msgid "All Languages"
+msgstr ""
+
 #: pocheckerconsts.scannotfindmaster
 msgid ""
 "Cannot find master po file:\n"
@@ -46,6 +50,10 @@ msgstr "Перевірити кількість елементів"
 
 #: pocheckerconsts.scheckstatistics
 msgid "Check percentage of (un)translated and fuzzy strings"
+msgstr ""
+
+#: pocheckerconsts.sclearlistbox
+msgid "Clear"
 msgstr ""
 
 #: pocheckerconsts.scopycaption
@@ -232,6 +240,10 @@ msgstr ""
 "Помилка збереження файлу:\n"
 "%s\n"
 
+#: pocheckerconsts.sscandir
+msgid "Scan a folder"
+msgstr ""
+
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
 msgstr ""
@@ -280,6 +292,10 @@ msgstr ""
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
+msgstr ""
+
+#: pocheckerconsts.sunselectlistbox
+msgid "Unselect"
 msgstr ""
 
 #: pocheckerconsts.suntranslated

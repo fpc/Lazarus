@@ -15,7 +15,11 @@ resourcestring
   sGUIPoFileCheckingTool = 'GUI Po-file checking tool';
   sSelectTestTypes = 'Select test types';
   sOpenAPoFile = '&Open a po-file';
+  sScanDir = 'Scan a folder';
   sRunSelectedTests = '&Run Selected Tests';
+  sClearListBox = 'Clear';
+  sUnselectListBox = 'Unselect';
+  sAllLanguages = 'All Languages';
   sCannotFindMaster = 'Cannot find master po file:' + LineEnding + '%s' + LineEnding + 'for selected file' + LineEnding + '%s';
   sNotAProperFileName = 'Selected filename' + LineEnding + '%s' + LineEnding + 'does not seem to be a proper name for a po-file';
   sErrorOnCreate = 'Error creating an instance of TPoFamily:' + LineEnding + '%s';

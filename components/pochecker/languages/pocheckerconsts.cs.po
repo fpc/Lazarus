@@ -17,6 +17,10 @@ msgstr ""
 msgid "PO File Checker"
 msgstr "PO File Checker"
 
+#: pocheckerconsts.salllanguages
+msgid "All Languages"
+msgstr ""
+
 #: pocheckerconsts.scannotfindmaster
 msgid ""
 "Cannot find master po file:\n"
@@ -52,6 +56,10 @@ msgstr "Zkontrolovat počet položek"
 #: pocheckerconsts.scheckstatistics
 msgid "Check percentage of (un)translated and fuzzy strings"
 msgstr "Spočítat procentuální zastoupení (ne)přeložených a nepřesných řetězců"
+
+#: pocheckerconsts.sclearlistbox
+msgid "Clear"
+msgstr ""
 
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
@@ -242,6 +250,10 @@ msgstr ""
 "Chyba ukládání souboru:\n"
 "%s\n"
 
+#: pocheckerconsts.sscandir
+msgid "Scan a folder"
+msgstr ""
+
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
 msgstr ""
@@ -294,6 +306,10 @@ msgstr "Statistiky překladu pro:"
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
+msgstr ""
+
+#: pocheckerconsts.sunselectlistbox
+msgid "Unselect"
 msgstr ""
 
 #: pocheckerconsts.suntranslated
