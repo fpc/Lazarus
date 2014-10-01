@@ -57,12 +57,13 @@ type
     fConfigStorage: TConfigStorage;
     fSettingsForm: TConvertSettingsForm;
     // Actual user settings.
-    fDelphiDefine: Boolean;
-    fBackupFiles: Boolean;
-    fKeepFileOpen: Boolean;
     fCrossPlatform: Boolean;
     fSupportDelphi: Boolean;
     fSameDfmFile: Boolean;
+    fDelphiDefine: Boolean;
+    fBackupFiles: Boolean;
+    fKeepFileOpen: Boolean;
+    fScanParentDir: Boolean;
     fFuncReplaceComment: Boolean;
     // Modes for replacements:
     fUnitsReplaceMode: TReplaceModeLong;
@@ -113,12 +114,15 @@ type
     property MainPath: String read GetMainPath;
     property BackupPath: String read GetBackupPath;
     property Enabled: Boolean read fEnabled write SetEnabled;
-    property DelphiDefine: Boolean read fDelphiDefine;
-    property BackupFiles: Boolean read fBackupFiles;
-    property KeepFileOpen: Boolean read fKeepFileOpen;
+
     property CrossPlatform: Boolean read fCrossPlatform;
     property SupportDelphi: Boolean read fSupportDelphi;
     property SameDfmFile: Boolean read fSameDfmFile;
+    property DelphiDefine: Boolean read fDelphiDefine;
+    property BackupFiles: Boolean read fBackupFiles;
+    property KeepFileOpen: Boolean read fKeepFileOpen;
+    property ScanParentDir: Boolean read fScanParentDir;
+
     property FuncReplaceComment: Boolean read fFuncReplaceComment;
     property UnitsReplaceMode: TReplaceModeLong read fUnitsReplaceMode;
     property PropReplaceMode: TReplaceModeLong read fPropReplaceMode;
@@ -136,10 +140,14 @@ type
   { TConvertSettingsForm }
 
   TConvertSettingsForm = class(TForm)
-    FuncReplaceCommentCB: TCheckBox;
+    BackupCheckBox: TCheckBox;
     DelphiDefineCheckBox: TCheckBox;
+    FuncReplaceCommentCB: TCheckBox;
+    ScanParentDirCheckBox: TCheckBox;
+    OtherOptGroupBox: TGroupBox;
     InputPathLabel: TLabel;
     InputPathListBox: TListBox;
+    KeepFileOpenCheckBox: TCheckBox;
     StopScanButton: TBitBtn;
     CoordOffsComboBox: TComboBox;
     ScanLabel: TLabel;
@@ -158,13 +166,12 @@ type
     FuncReplaceDivider: TDividerBevel;
     CoordOffsDivider: TDividerBevel;
     FuncReplaceButton: TBitBtn;
-    KeepFileOpenCheckBox: TCheckBox;
-    BackupCheckBox: TCheckBox;
     ButtonPanel1: TButtonPanel;
     TypeReplaceButton: TBitBtn;
     UnitReplaceButton: TBitBtn;
     CoordOffsButton: TBitBtn;
     procedure SameDfmCheckBoxChange(Sender: TObject);
+    procedure ScanParentDirCheckBoxClick(Sender: TObject);
     procedure StopScanButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure SupportDelphiCheckBoxChange(Sender: TObject);
@@ -177,6 +184,9 @@ type
   private
     fSettings: TConvertSettings;
     fCacheUnitsThread: TThread;
+    fThreadStarted: Boolean;
+    procedure StartThreadIfValid;
+    procedure ThreadGuiShow(aRunning: Boolean);
     procedure ThreadTerminated(Sender: TObject);
   public
     constructor Create(AOwner: TComponent; ASettings: TConvertSettings); reintroduce;
@@ -401,12 +411,13 @@ begin
   fCoordOffsets:=TVisualOffsets.Create;
   // Load settings from ConfigStorage.
   fConfigStorage:=GetIDEConfigStorage('delphiconverter.xml', true);
-  fDelphiDefine                     :=fConfigStorage.GetValue('DelphiDefine', true);
-  fBackupFiles                      :=fConfigStorage.GetValue('BackupFiles', true);
-  fKeepFileOpen                     :=fConfigStorage.GetValue('KeepFileOpen', false);
   fCrossPlatform                    :=fConfigStorage.GetValue('CrossPlatform', true);
   fSupportDelphi                    :=fConfigStorage.GetValue('SupportDelphi', false);
   fSameDfmFile                      :=fConfigStorage.GetValue('SameDfmFile', false);
+  fDelphiDefine                     :=fConfigStorage.GetValue('DelphiDefine', true);
+  fBackupFiles                      :=fConfigStorage.GetValue('BackupFiles', true);
+  fKeepFileOpen                     :=fConfigStorage.GetValue('KeepFileOpen', false);
+  fScanParentDir                    :=fConfigStorage.GetValue('ScanParentDir', true);
   fFuncReplaceComment               :=fConfigStorage.GetValue('FuncReplaceComment', true);
   fUnitsReplaceMode:=TReplaceModeLong(fConfigStorage.GetValue('UnitsReplaceMode', 2));
   fPropReplaceMode :=TReplaceModeLong(fConfigStorage.GetValue('UnknownPropsMode', 2));
@@ -629,12 +640,13 @@ end;
 destructor TConvertSettings.Destroy;
 begin
   // Save possibly modified settings to ConfigStorage.
-  fConfigStorage.SetDeleteValue('DelphiDefine',      fDelphiDefine, true);
-  fConfigStorage.SetDeleteValue('BackupFiles',       fBackupFiles, true);
-  fConfigStorage.SetDeleteValue('KeepFileOpen',      fKeepFileOpen, false);
   fConfigStorage.SetDeleteValue('CrossPlatform',     fCrossPlatform, true);
   fConfigStorage.SetDeleteValue('SupportDelphi',     fSupportDelphi, false);
   fConfigStorage.SetDeleteValue('SameDfmFile',       fSameDfmFile, false);
+  fConfigStorage.SetDeleteValue('DelphiDefine',      fDelphiDefine, true);
+  fConfigStorage.SetDeleteValue('BackupFiles',       fBackupFiles, true);
+  fConfigStorage.SetDeleteValue('KeepFileOpen',      fKeepFileOpen, false);
+  fConfigStorage.SetDeleteValue('ScanParentDir',     fScanParentDir, true);
   fConfigStorage.SetDeleteValue('FuncReplaceComment',fFuncReplaceComment, true);
   fConfigStorage.SetDeleteValue('UnitsReplaceMode', integer(fUnitsReplaceMode), 2);
   fConfigStorage.SetDeleteValue('UnknownPropsMode', integer(fPropReplaceMode), 2);
@@ -663,24 +675,18 @@ begin
   fSettingsForm:=TConvertSettingsForm.Create(nil, Self);
   try
     with fSettingsForm do begin
-      fCacheUnitsThread := ACacheUnitsThread;
-      if Assigned(fCacheUnitsThread) then begin
-        fCacheUnitsThread.OnTerminate:=@ThreadTerminated;
-        ButtonPanel1.OKButton.Enabled := False; // Disabled while thread is running
-        fCacheUnitsThread.Start;
-      end
-      else
-        ThreadTerminated(nil);        // Hide controls dealing with scanning
       Caption:=fTitle + ' - ' + ExtractFileName(MainFilename);
       InputPathListBox.Items.Assign(fMainFilenames);
       // Settings --> UI. Loaded from ConfigSettings earlier.
-      DelphiDefineCheckBox.Checked   :=fDelphiDefine;
-      BackupCheckBox.Checked         :=fBackupFiles;
-      KeepFileOpenCheckBox.Checked   :=fKeepFileOpen;
       CrossPlatformCheckBox.Checked  :=fCrossPlatform;
       SupportDelphiCheckBox.Checked  :=fSupportDelphi;
       SameDfmCheckBox.Checked        :=fSameDfmFile;
+      DelphiDefineCheckBox.Checked   :=fDelphiDefine;
+      BackupCheckBox.Checked         :=fBackupFiles;
+      KeepFileOpenCheckBox.Checked   :=fKeepFileOpen;
+      ScanParentDirCheckBox.Checked  :=fScanParentDir;
       FuncReplaceCommentCB.Checked   :=fFuncReplaceComment;
+
       UnitReplaceComboBox.ItemIndex  :=integer(fUnitsReplaceMode);
       UnknownPropsComboBox.ItemIndex :=integer(fPropReplaceMode);
       TypeReplaceComboBox.ItemIndex  :=integer(fTypeReplaceMode);
@@ -688,16 +694,21 @@ begin
       CoordOffsComboBox.ItemIndex    :=integer(fCoordOffsMode);
       SupportDelphiCheckBoxChange(SupportDelphiCheckBox);
       SameDfmCheckBoxChange(SameDfmCheckBox);
+
+      fCacheUnitsThread := ACacheUnitsThread;
+      StartThreadIfValid;
       Result:=ShowModal;        // Let the user change settings in a form.
       if Result=mrOK then begin // The thread will finished before the form closes.
         // UI --> Settings. Will be saved to ConfigSettings later.
-        fDelphiDefine      :=DelphiDefineCheckBox.Checked;
-        fBackupFiles       :=BackupCheckBox.Checked;
-        fKeepFileOpen      :=KeepFileOpenCheckBox.Checked;
         fCrossPlatform     :=CrossPlatformCheckBox.Checked;
         fSupportDelphi     :=SupportDelphiCheckBox.Checked;
         fSameDfmFile       :=SameDfmCheckBox.Checked;
+        fDelphiDefine      :=DelphiDefineCheckBox.Checked;
+        fBackupFiles       :=BackupCheckBox.Checked;
+        fKeepFileOpen      :=KeepFileOpenCheckBox.Checked;
+        fScanParentDir     :=ScanParentDirCheckBox.Checked;
         fFuncReplaceComment:=FuncReplaceCommentCB.Checked;
+
         fUnitsReplaceMode:=TReplaceModeLong(UnitReplaceComboBox.ItemIndex);
         fPropReplaceMode :=TReplaceModeLong(UnknownPropsComboBox.ItemIndex);
         fTypeReplaceMode :=TReplaceModeAllow(TypeReplaceComboBox.ItemIndex);
@@ -848,6 +859,8 @@ end;
 
 destructor TConvertSettingsForm.Destroy;
 begin
+  if Assigned(fCacheUnitsThread) and not fThreadStarted then
+    fCacheUnitsThread.Free;
   inherited Destroy;
 end;
 
@@ -856,21 +869,30 @@ begin
   InputPathLabel.Caption:=lisToFPCPath; // Reuse a string form options page.
   InputPathListBox.Clear;
   InputPathListBox.Hint:=lisProjectPathHint;
-  DelphiDefineCheckBox.Caption:=lisAddDelphiDefine;
-  DelphiDefineCheckBox.Hint:=lisAddDelphiDefineHint;
-  BackupCheckBox.Caption:=lisBackupChangedFiles;
-  BackupCheckBox.Hint:=lisBackupHint;
-  KeepFileOpenCheckBox.Caption:=lisKeepFileOpen;
-  KeepFileOpenCheckBox.Hint:=lisKeepFileOpenHint;
   // Target
+  TargetGroupBox.Caption:=lisConvertTarget;
+  TargetGroupBox.Hint:=lisConvertTargetHint;
   CrossPlatformCheckBox.Caption:=lisConvertTargetCrossPlatform;
   CrossPlatformCheckBox.Hint:=lisConvertTargetCrossPlatformHint;
   SupportDelphiCheckBox.Caption:=lisConvertTargetSupportDelphi;
   SupportDelphiCheckBox.Hint:=lisConvertTargetSupportDelphiHint;
   SameDfmCheckBox.Caption:=lisConvertTargetSameDfmFile;
   SameDfmCheckBox.Hint:=lisConvertTargetSameDfmFileHint;
-  TargetGroupBox.Caption:=lisConvertTarget;
-  TargetGroupBox.Hint:=lisConvertTargetHint;
+  // Other
+  OtherOptGroupBox.Caption:=lisCEOtherGroup;
+  OtherOptGroupBox.Hint:=lisConvertTargetHint;
+  DelphiDefineCheckBox.Caption:=lisAddDelphiDefine;
+  DelphiDefineCheckBox.Hint:=lisAddDelphiDefineHint;
+  BackupCheckBox.Caption:=lisBackupChangedFiles;
+  BackupCheckBox.Hint:=lisBackupHint;
+  KeepFileOpenCheckBox.Caption:=lisKeepFileOpen;
+  KeepFileOpenCheckBox.Hint:=lisKeepFileOpenHint;
+  ScanParentDirCheckBox.Caption:=lisScanFilesInParentDir;
+  ScanParentDirCheckBox.Hint:=lisScanFilesInParentDirHint;
+  // File system scanning
+  ScanLabel.Caption := lisScanParentDir;
+  StopScanButton.Caption:=lisStop;
+  StopScanButton.LoadGlyphFromResourceName(HInstance, 'menu_stop');
   // Unit Replacements
   UnitReplaceDivider.Caption:=lisConvUnitReplacements;
   UnitReplaceButton.Caption:=lisEdit;    // Recycled string.
@@ -910,14 +932,8 @@ begin
   CoordOffsButton.Hint:=lisConvCoordHint;
   CoordOffsComboBox.Items.Add(lisDisabled);
   CoordOffsComboBox.Items.Add(lisEnabled);
-  // File system scanning
-  ScanLabel.Caption := lisScanParentDir;
-  StopScanButton.Caption:=lisStop;
-  StopScanButton.LoadGlyphFromResourceName(HInstance, 'menu_stop');
 
   ButtonPanel1.OKButton.Caption:=lisStartConversion;
-  ButtonPanel1.HelpButton.Caption:=lisMenuHelp;
-  ButtonPanel1.CancelButton.Caption:=lisCancel;
 end;
 
 procedure TConvertSettingsForm.FormDestroy(Sender: TObject);
@@ -945,6 +961,26 @@ begin
   CoordOffsComboBox.Enabled:=not Chk;
 end;
 
+procedure TConvertSettingsForm.ScanParentDirCheckBoxClick(Sender: TObject);
+begin
+  if (Sender as TCheckBox).Checked then
+    StartThreadIfValid;
+end;
+
+procedure TConvertSettingsForm.StartThreadIfValid;
+begin
+  if ScanParentDirCheckBox.Checked and Assigned(fCacheUnitsThread) then
+  begin
+    ThreadGuiShow(True);
+    fCacheUnitsThread.FreeOnTerminate:=True;
+    fCacheUnitsThread.OnTerminate:=@ThreadTerminated;
+    fCacheUnitsThread.Start;
+    fThreadStarted := True;
+  end
+  else
+    ThreadGuiShow(False);          // Hide controls dealing with scanning
+end;
+
 procedure TConvertSettingsForm.StopScanButtonClick(Sender: TObject);
 begin
   (fCacheUnitsThread as TCacheUnitsThread).Searcher.Stop; // Terminate;
@@ -958,12 +994,19 @@ begin
   end;
 end;
 
+procedure TConvertSettingsForm.ThreadGuiShow(aRunning: Boolean);
+begin
+  ScanLabel.Visible := aRunning;
+  ScanProgressBar.Visible := aRunning;
+  StopScanButton.Visible := aRunning;
+  // These are disabled while thread is running
+  ButtonPanel1.OKButton.Enabled := not aRunning;
+  ScanParentDirCheckBox.Enabled := not aRunning;
+end;
+
 procedure TConvertSettingsForm.ThreadTerminated(Sender: TObject);
 begin
-  ScanLabel.Visible := False;
-  ScanProgressBar.Visible := False;
-  StopScanButton.Visible := False;
-  ButtonPanel1.OKButton.Enabled := True;
+  ThreadGuiShow(False);
   fCacheUnitsThread := nil;  // Thread frees itself. Make the variable nil, too.
 end;
 

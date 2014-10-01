@@ -409,7 +409,7 @@ end;
 constructor TCacheUnitsThread.Create(aConverter: TConvertDelphiPBase; aPath: string);
 begin
   inherited Create(True);
-  FreeOnTerminate:=True;
+  FreeOnTerminate:=False; // Will be set to True before starting;
   // Create searcher already now. Its Stop method can be called anytime.
   fSearcher:=TUnitsSearcher.Create(aConverter);
   // The parent directory to be scanned

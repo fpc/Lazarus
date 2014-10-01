@@ -608,6 +608,7 @@ resourcestring
   lisStartConversion = 'Start Conversion';
   lisConvertTarget = 'Target';
   lisConvertTargetHint = 'Converter adds conditional compilation to support different targets';
+  lisConvertOtherHint = 'Other options affecting the conversion';
   lisConvertTargetCrossPlatform = 'Cross-platform';
   lisConvertTargetCrossPlatformHint = 'Cross-platform versus Windows-only';
   lisConvertTargetSupportDelphi = 'Support Delphi';
@@ -616,6 +617,9 @@ resourcestring
   lisConvertTargetSameDfmFileHint = 'Same DFM file for Lazarus and Delphi instead of copying it to LFM';
   lisKeepFileOpen = 'Keep converted files open in editor';
   lisKeepFileOpenHint = 'All project files will be open in editor after conversion';
+  lisScanFilesInParentDir = 'Scan files in parent directory';
+  lisScanFilesInParentDirHint = 'Search for source files in sibling directories'
+    +' (parent directory and its children)';
   lisConvUnknownProps = 'Unknown properties';
   lisConvTypesToReplace = 'Types to replace';
   lisConvTypeReplacements = 'Type Replacements';
