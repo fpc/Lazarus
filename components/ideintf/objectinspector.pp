@@ -4731,20 +4731,13 @@ begin
 end;
 
 procedure TObjectInspectorDlg.SetShowStatusBar(const AValue: Boolean);
-var
-  HideInfoBox: Boolean;
 begin
   if FShowStatusBar = AValue then exit;
   FShowStatusBar := AValue;
-  ShowStatusBarPopupMenuItem.Checked := AValue;
-  HideInfoBox := AValue and ShowInfoBox;
-  // StatusBar was maybe hidden, before showing must hide InfoPanel temporarily.
-  if HideInfoBox then
-    ShowInfoBox := False; // Deletes the splitter.
-  StatusBar.Align := alBottom;
   StatusBar.Visible := AValue;
-  if HideInfoBox then
-    ShowInfoBox := True;  // Show InfoBox again, creates the splitter.
+  ShowStatusBarPopupMenuItem.Checked := AValue;
+  if ShowInfoBox then // make sure StatusBar goes below InfoPanel.
+    StatusBar.Top := InfoPanel.Top + InfoPanel.Height + 1;
 end;
 
 procedure TObjectInspectorDlg.SetShowFavorites(const AValue: Boolean);
