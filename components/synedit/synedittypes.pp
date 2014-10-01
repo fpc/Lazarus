@@ -47,8 +47,9 @@ const
   TSynSpecialChars = [#128..#255]; // MG: special chars. Meaning depends on system encoding/codepage.
   TSynValidStringChars = ['_', '0'..'9', 'A'..'Z', 'a'..'z'] + TSynSpecialChars;
   TSynWhiteChars = [' ', #9];
-  TSynWordBreakChars = ['.', ',', ';', ':', '"', '''', '!', '?', '[', ']', '(',
-            ')', '{', '}', '@', '^', '-', '=', '+', '*', '/', '\', '|','<','>'];
+  TSynWordBreakChars = ['.', ',', ';', ':', '"', '''', '`', '!', '?', '[', ']',
+     '(', ')', '{', '}', '@', '^', '-', '=', '+', '*', '/', '\', '|','<','>',
+     '%', '&', '~'];
 
 type
   ESynEditError = class(Exception);
