@@ -15,7 +15,7 @@ msgstr "Проверка файлов PO"
 
 #: pocheckerconsts.salllanguages
 msgid "All Languages"
-msgstr ""
+msgstr "Все языки"
 
 #: pocheckerconsts.scannotfindmaster
 msgid ""
@@ -55,7 +55,7 @@ msgstr "Вывод статистики по (не)переведённым и �
 
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
-msgstr ""
+msgstr "Очистить"
 
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
@@ -63,7 +63,7 @@ msgstr "Копировать в буфер обмена"
 
 #: pocheckerconsts.scurrenttest
 msgid "Test: %s on %s"
-msgstr ""
+msgstr "Тест: %s в %s"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
@@ -179,12 +179,13 @@ msgid "&Open a po-file"
 msgstr "&Открыть файл PO"
 
 #: pocheckerconsts.sopenfail
-#, fuzzy
 #| msgid "Unable to open file %s"
 msgid ""
 "Unable to open file:\n"
 "\"%s\"\n"
-msgstr "Невозможно открыть файл %s"
+msgstr ""
+"Невозможно открыть файл:\n"
+"\"%s\"\n"
 
 #: pocheckerconsts.sopenfailexternal
 msgid ""
@@ -193,6 +194,10 @@ msgid ""
 "in external editor\n"
 "\"%s\"\n"
 msgstr ""
+"Невозможно открыть файл\n"
+"\"%s\"\n"
+"во внешнем редакторе\n"
+"\"%s\"\n"
 
 #: pocheckerconsts.sopenfile
 msgid "Open file %s in Ide Editor?"
@@ -205,6 +210,10 @@ msgid ""
 "in external editor:\n"
 "\"%s\"?\n"
 msgstr ""
+"Открыть файл:\n"
+"\"%s\"\n"
+"во внешнем редакторе:\n"
+"\"%s\"?\n"
 
 #: pocheckerconsts.soriginal
 msgid "Original"
@@ -247,7 +256,7 @@ msgstr ""
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
-msgstr ""
+msgstr "Искать в каталоге"
 
 #: pocheckerconsts.sselectalltests
 #| msgid "Select &All Tests"
@@ -268,7 +277,6 @@ msgid "Show statistics graph"
 msgstr "Показать графическую сводку"
 
 #: pocheckerconsts.sstathint
-#, fuzzy
 #| msgid ""
 #| "%3d Translated (%3.1f%%)\n"
 #| "%3d UnTranslated (%3.1f%%)\n"
@@ -313,7 +321,7 @@ msgstr "&Снять выбор"
 
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect"
-msgstr ""
+msgstr "Снять выбор"
 
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
