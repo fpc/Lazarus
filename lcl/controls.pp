@@ -1496,6 +1496,7 @@ type
     procedure ExecuteDefaultAction; virtual;
     procedure ExecuteCancelAction; virtual;
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer = -1);
+    procedure EndDrag(Drop: Boolean);
     procedure BringToFront;
     function HasParent: Boolean; override;
     function GetParentComponent: TComponent; override;

@@ -373,6 +373,12 @@ begin
   DragManager.DragStart(Self, Immediate, Threshold);
 end;
 
+procedure TControl.EndDrag(Drop: Boolean);
+begin
+  if Dragging then
+    DragManager.DragStop(Drop);
+end;
+
 {------------------------------------------------------------------------------
        TControl.BeginAutoDrag
 ------------------------------------------------------------------------------}
