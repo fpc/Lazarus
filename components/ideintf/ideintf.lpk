@@ -19,7 +19,7 @@
     <Description Value="IDEIntf - the interface units for the Lazarus IDE"/>
     <License Value="Modified LPGL2"/>
     <Version Major="1"/>
-    <Files Count="76">
+    <Files Count="77">
       <Item1>
         <Filename Value="actionseditor.pas"/>
         <UnitName Value="ActionsEditor"/>
@@ -325,6 +325,10 @@
         <Filename Value="projpackintf.pas"/>
         <UnitName Value="projpackintf"/>
       </Item76>
+      <Item77>
+        <Filename Value="dbgridcolumnspropeditform.pas"/>
+        <UnitName Value="DBGridColumnsPropEditForm"/>
+      </Item77>
     </Files>
     <LazDoc Paths="docs"/>
     <i18n>

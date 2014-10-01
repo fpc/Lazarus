@@ -131,6 +131,30 @@ msgctxt "objinspstrconsts.clbup"
 msgid "Up"
 msgstr "Vyššie"
 
+#: objinspstrconsts.dceaddfields
+msgid "Add Fields"
+msgstr ""
+
+#: objinspstrconsts.dcecolumneditor
+msgid "DBGrid Columns Editor"
+msgstr ""
+
+#: objinspstrconsts.dcedeleteall
+msgid "Delete All"
+msgstr ""
+
+#: objinspstrconsts.dcefetchlabels
+msgid "Fetch Labels"
+msgstr ""
+
+#: objinspstrconsts.dceoktodelete
+msgid "This will delete all columns. Continue?"
+msgstr ""
+
+#: objinspstrconsts.dcewillreplacecontinue
+msgid "This will replace all captions from dataset. Continue?"
+msgstr ""
+
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
 msgstr ""

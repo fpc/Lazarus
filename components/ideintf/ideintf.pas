@@ -19,7 +19,8 @@ uses
   NewItemIntf, ObjectInspector, ObjInspStrConsts, OIFavoriteProperties, 
   PackageIntf, ProjectIntf, ProjectResourcesIntf, PropEdits, PropEditUtils, 
   SrcEditorIntf, StatusBarPropEdit, StringsPropEditDlg, TextTools, 
-  TreeViewPropEdit, UnitResources, ProjPackIntf, LazarusPackageIntf;
+  TreeViewPropEdit, UnitResources, ProjPackIntf, DBGridColumnsPropEditForm, 
+  LazarusPackageIntf;
 
 implementation
 

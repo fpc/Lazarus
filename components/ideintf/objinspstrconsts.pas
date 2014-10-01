@@ -433,6 +433,14 @@ resourcestring
   oisAddCollectionItem = '&Add Item';
   lisUnableToFindParserForTool = 'Unable to find parser for tool "%s"';
 
+  // Dbgrid Columns editor
+  dceAddFields = 'Add Fields';
+  dceDeleteAll  = 'Delete All';
+  dceFetchLabels = 'Fetch Labels';
+  dceWillReplaceContinue = 'This will replace all captions from dataset. Continue?';
+  dceColumnEditor = 'DBGrid Columns Editor';
+  dceOkToDelete = 'This will delete all columns. Continue?';
+
 implementation
 
 end.

@@ -1,4 +1,4 @@
-{ Copyright (C) 2004
+{ Copyright (C) 2004-2013
 
  *****************************************************************************
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
@@ -19,7 +19,7 @@ interface
 uses
   Classes, SysUtils, ObjInspStrConsts, PropEdits, PropEditUtils,
   ComponentEditors,
-  TypInfo, DB, DbCtrls, DBGrids;
+  TypInfo, DB, DbCtrls, DBGrids, Forms, DBGridColumnsPropEditForm;
 
 type
   TFieldProperty = class(TStringPropertyEditor)
@@ -28,6 +28,14 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     procedure FillValues(const Values: TStringList); virtual;
   end;
+
+ { TDBGridColumnsPropertyEditor }
+
+ TDBGridColumnsPropertyEditor = class (TCollectionPropertyEditor)
+ public
+   class function ShowCollectionEditor(ACollection: TCollection;
+   OwnerPersistent: TPersistent; const PropName: String): TCustomForm; override;
+ end;
 
   { TLookupFieldProperty }
 
@@ -52,6 +60,7 @@ type
 
 function GetFieldDefsLookupRoot(APersistent: TPersistent): TPersistent;
 procedure ListDataSourceFields(DataSource: TDataSource; List: TStrings);
+procedure EditDBGridColumns(AComponent: TComponent; ACollection: TCollection; APropertyName: String);
 
 implementation
 
@@ -87,6 +96,28 @@ begin
   if Result=nil then
     Result:=aFieldDefs.Dataset;
   Result:=GetLookupRootForComponent(Result);
+end;
+
+procedure EditDBGridColumns(AComponent: TComponent; ACollection: TCollection;
+  APropertyName: String);
+begin
+  TDBGridColumnsPropertyEditor.ShowCollectionEditor(ACollection, AComponent, APropertyName);
+end;
+
+{ TDBGridColumnsPropertyEditor }
+const
+  DBGridColumnsForm:  TDBGridColumnsPropertyEditorForm = nil;
+
+class function TDBGridColumnsPropertyEditor.ShowCollectionEditor(
+  ACollection: TCollection; OwnerPersistent: TPersistent; const PropName: String
+  ): TCustomForm;
+begin
+  if DBGridColumnsForm = nil then
+    DBGridColumnsForm := TDBGridColumnsPropertyEditorForm.Create(Application);
+  DBGridColumnsForm.SetCollection(ACollection, OwnerPersistent, PropName);
+  DBGridColumnsForm.EnsureVisible;
+  Result:=DBGridColumnsForm;
+  //  Result:=inherited ShowCollectionEditor(ACollection, OwnerPersistent, PropName );
 end;
 
 { TFieldProperty }
@@ -151,7 +182,7 @@ var
 begin
   DBGrid := GetComponent as TDBGrid;
   GetHook(Hook);
-  EditCollection(DBGrid, DBGrid.Columns, 'Columns');
+  EditDBGridColumns( DBGrid, DBGrid.Columns, 'Columns' );
   if Assigned(Hook) then Hook.Modified(Self);
 end;
 
@@ -174,6 +205,6 @@ initialization
   RegisterPropertyEditor(TypeInfo(string), TColumn, 'FieldName', TDBGridFieldProperty);
   RegisterComponentEditor(TDBGrid,TDBGridComponentEditor);
   RegisterGetLookupRoot(@GetFieldDefsLookupRoot);
-
+  RegisterPropertyEditor(TypeInfo(TDBGridColumns), nil, '', TDBGridColumnsPropertyEditor);
 end.
 

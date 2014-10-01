@@ -1,0 +1,151 @@
+object DBGridColumnsPropertyEditorForm: TDBGridColumnsPropertyEditorForm
+  Left = 637
+  Height = 300
+  Top = 48
+  Width = 379
+  HorzScrollBar.Page = 189
+  VertScrollBar.Page = 299
+  BorderStyle = bsSizeToolWin
+  Caption = 'DBGridColumnsPropertyEditorForm'
+  ClientHeight = 300
+  ClientWidth = 379
+  Constraints.MinHeight = 100
+  Constraints.MinWidth = 190
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  Position = poDefaultPosOnly
+  LCLVersion = '1.3'
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 82
+    Top = 0
+    Width = 379
+    AutoSize = True
+    ButtonHeight = 40
+    ButtonWidth = 44
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 0
+    object AddButton: TToolButton
+      Left = 1
+      Top = 2
+      Action = actAdd
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object DeleteButton: TToolButton
+      Left = 45
+      Top = 2
+      Action = actDel
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object DividerToolButton: TToolButton
+      Left = 89
+      Top = 2
+      Width = 5
+      Caption = 'DividerToolButton'
+      Style = tbsDivider
+    end
+    object MoveUpButton: TToolButton
+      Left = 94
+      Top = 2
+      Action = actMoveUp
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object MoveDownButton: TToolButton
+      Left = 138
+      Top = 2
+      Action = actMoveDown
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object btAddFlds: TToolButton
+      Left = 187
+      Top = 2
+      Action = actAddFields
+    end
+    object DividerToolButton1: TToolButton
+      Left = 182
+      Top = 2
+      Width = 5
+      Caption = 'DividerToolButton1'
+      Style = tbsDivider
+      Visible = False
+    end
+    object DividerToolButton2: TToolButton
+      Left = 256
+      Top = 2
+      Width = 5
+      Caption = 'DividerToolButton2'
+      Style = tbsDivider
+      Visible = False
+    end
+    object ToolButton1: TToolButton
+      Left = 261
+      Top = 2
+      Action = actDeleteAll
+    end
+    object DividerToolButton3: TToolButton
+      Left = 324
+      Top = 2
+      Width = 5
+      Caption = 'DividerToolButton3'
+      Style = tbsDivider
+      Visible = False
+    end
+    object ToolButton2: TToolButton
+      Left = 1
+      Top = 42
+      Action = actFetchLabels
+    end
+  end
+  object CollectionListBox: TListBox
+    Left = 0
+    Height = 218
+    Top = 82
+    Width = 379
+    Align = alClient
+    ItemHeight = 0
+    OnClick = CollectionListBoxClick
+    ScrollWidth = 377
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object ActionList1: TActionList
+    left = 61
+    top = 109
+    object actAdd: TAction
+      Caption = 'Add'
+      OnExecute = actAddExecute
+      ShortCut = 45
+    end
+    object actDel: TAction
+      Caption = 'Del'
+      OnExecute = actDelExecute
+      ShortCut = 46
+    end
+    object actMoveUp: TAction
+      Caption = 'Up'
+      OnExecute = actMoveUpExecute
+    end
+    object actMoveDown: TAction
+      Caption = 'Down'
+      OnExecute = actMoveDownExecute
+    end
+    object actAddFields: TAction
+      Caption = 'Add Fields'
+      OnExecute = actAddFieldsExecute
+      ShortCut = 16449
+    end
+    object actDeleteAll: TAction
+      Caption = 'Delete all'
+      OnExecute = actDeleteAllExecute
+    end
+    object actFetchLabels: TAction
+      Caption = 'Fetch Labels'
+      OnExecute = actFetchLabelsExecute
+    end
+  end
+end
