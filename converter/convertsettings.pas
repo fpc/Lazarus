@@ -608,9 +608,9 @@ begin
     // File functions using a handle
     Categ:='FileHandle';
     AddDefaultCategory(Categ);
-    AddFunc(Categ, 'CreateFile', 'FileCreate($1)','','SysUtils');
+    //AddFunc(Categ, 'CreateFile', 'FileCreate($1)','','SysUtils');
+    //AddFunc(Categ, 'ReadFile',   'FileRead($1)'  ,'','SysUtils');
     AddFunc(Categ, 'GetFileSize','FileSize($1)'  ,'','SysUtils');
-    AddFunc(Categ, 'ReadFile',   'FileRead($1)'  ,'','SysUtils');
     AddFunc(Categ, 'CloseHandle','FileClose($1)' ,'','SysUtils');
     // WindowsAPI
     Categ:='WindowsAPI';
