@@ -214,7 +214,7 @@ begin
     Node:=FFiles.Tree.FindSuccessor(Node);
   end;
   PreviewListView.EndUpdate;
-  PreviewGroupBox.Caption:='Number of files failed to convert: '+IntToStr(PreviewListView.Items.Count);
+  PreviewGroupBox.Caption:=Format(lisEncodingNumberOfFilesFailed, [PreviewListView.Items.Count]);
 end;
 
 procedure TChgEncodingDialog.HelpButtonClick(Sender: TObject);

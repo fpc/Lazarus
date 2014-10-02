@@ -671,6 +671,7 @@ resourcestring
   lisReplaceRemoveUnknown = 'Fix unknown properties and types';
   lisReplacementFuncs = 'Replacement functions';
   lisFilesHaveRightEncoding = '*** All found files already have the right encoding ***';
+  lisEncodingNumberOfFilesFailed = 'Number of files failed to convert: %d';
 
   lisnoname = 'noname';
   lisTheDestinationDirectoryDoesNotExist = 'The destination directory%s"%s" does not exist.';
