@@ -390,6 +390,7 @@ type
     procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); override;
     procedure DrawRow(ARow: Integer); override;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
+    procedure DrawCellBackground(aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure DrawCheckboxBitmaps(aCol: Integer; aRect: TRect; F: TField);
     procedure DrawFixedText(aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState);
     procedure DrawColumnText(aCol, aRow: Integer; aRect: TRect; aState: TGridDrawState); override;
@@ -926,7 +927,8 @@ begin
   {$endif}
 end;
 
-procedure TCustomDBGrid.OnDataSetScrolled(aDataset: TDataSet; Distance: Integer);
+procedure TCustomDBGrid.OnDataSetScrolled(aDataSet: TDataSet; Distance: Integer
+  );
 var
   OldEditorMode: boolean;
 begin
@@ -1977,11 +1979,7 @@ var
   cbs: TColumnButtonStyle;
 begin
 
-  // background
-  if (gdFixed in aState) and (TitleStyle=tsNative) then
-    DrawThemedCell(aCol, aRow, aRect, aState)
-  else
-    Canvas.FillRect(aRect);
+  DrawCellBackground(aCol, aRow, aRect, aState);
 
   if gdFixed in aState then
     DrawFixedText(aCol, aRow, aRect, aState)
@@ -2044,11 +2042,24 @@ procedure TCustomDBGrid.DoPrepareCanvas(aCol, aRow: Integer;
   aState: TGridDrawState);
 var
   DataCol: Integer;
+  IsSelected: boolean;
 begin
-  if Assigned(OnPrepareCanvas) and (ARow>=FixedRows) then begin
-    DataCol := ColumnIndexFromGridColumn(aCol);
-    if DataCol>=0 then
-      OnPrepareCanvas(Self, DataCol, TColumn(Columns[DataCol]), aState);
+  if (ARow>=FixedRows) then begin
+
+    if not DefaultDrawing then begin
+      GetSelectedState(aState, IsSelected);
+      if IsSelected then begin
+        Canvas.Brush.Color := SelectedColor;
+        Canvas.Font.Color := clHighlightText;
+      end;
+    end;
+
+    if Assigned(OnPrepareCanvas) then begin
+      DataCol := ColumnIndexFromGridColumn(aCol);
+      if DataCol>=0 then
+        OnPrepareCanvas(Self, DataCol, TColumn(Columns[DataCol]), aState);
+    end;
+
   end;
 end;
 
@@ -2935,7 +2946,10 @@ begin
   {$endif dbgGridPaint}
 
   if (gdFixed in aState) or DefaultDrawing then
-    DefaultDrawCell(aCol, aRow, aRect, aState);
+    DefaultDrawCell(aCol, aRow, aRect, aState)
+  else
+  if not DefaultDrawing then
+    DrawCellBackground(aCol, aRow, aRect, aState);
 
   if (ARow>=FixedRows) and Assigned(OnDrawColumnCell) and
     not (csDesigning in ComponentState) then begin
@@ -2947,6 +2961,16 @@ begin
   end;
 
   DrawCellGrid(aCol, aRow, aRect, aState);
+end;
+
+procedure TCustomDBGrid.DrawCellBackground(aCol, aRow: Integer; aRect: TRect;
+  aState: TGridDrawState);
+begin
+  // background
+  if (gdFixed in aState) and (TitleStyle=tsNative) then
+    DrawThemedCell(aCol, aRow, aRect, aState)
+  else
+    Canvas.FillRect(aRect);
 end;
 
 procedure TCustomDBGrid.DrawCheckboxBitmaps(aCol: Integer; aRect: TRect;
