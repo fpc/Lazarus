@@ -678,8 +678,8 @@ begin
       LfmFixer.ObjectsMustExist:=true;
       if LfmFixer.ConvertAndRepair<>mrOK then begin
         LazarusIDE.DoJumpToCompilerMessage(true);
-        fOwnerConverter.fErrorMsg:='Problems when repairing form file '
-                                  +ChangeFileExt(fOrigUnitFilename, '.lfm');
+        fOwnerConverter.fErrorMsg:=Format(lisConvProblemsRepairingFormFile,
+                                          [ChangeFileExt(fOrigUnitFilename, '.lfm')]);
         exit(mrAbort);
       end;
     finally
@@ -745,8 +745,8 @@ begin
         Result:=mrOK;
       // Abort the whole conversion.
       mrAbort:
-        fOwnerConverter.fErrorMsg:='User selected to end conversion with file '
-                                  +fOrigUnitFilename;
+        fOwnerConverter.fErrorMsg:=Format(lisConvUserSelectedToEndConversion,
+                                          [fOrigUnitFilename]);
     end;
   until not TryAgain;
 end;
@@ -772,7 +772,7 @@ begin
     if CodeTool.FixIncludeFilenames(Code,SrcCache,FoundIncludeFiles,MissingIncludeFilesCodeXYPos)
     then begin
       if Assigned(FoundIncludeFiles) then begin
-        Msg:='Repairing include files : ';
+        Msg:=lisConvRepairingIncludeFiles;
         for i:=0 to FoundIncludeFiles.Count-1 do begin
           fSettings.MaybeBackupFile(FoundIncludeFiles[i]);
           s:=CreateRelativePath(FoundIncludeFiles[i], fSettings.MainPath);
@@ -792,8 +792,7 @@ begin
           fSettings.AddLogLine(Msg);
         end;
       end;
-      fErrorMsg:='Problems when fixing include files in file '
-                                +fOrigUnitFilename;
+      fErrorMsg:=Format(lisConvProblemsFixingIncludeFile, [fOrigUnitFilename]);
       Result:=mrCancel;
     end;
   finally
@@ -812,8 +811,8 @@ begin
         mtWarning, [mrIgnore, lisIgnoreAndContinue, mrAbort], 0);
     case Result  of
       mrIgnore : Result:=mrOK;
-      mrAbort : fOwnerConverter.fErrorMsg:='User selected to end conversion with file '
-                                           +fOrigUnitFilename;
+      mrAbort : fOwnerConverter.fErrorMsg:=Format(lisConvUserSelectedToEndConversion,
+                                                  [fOrigUnitFilename]);
     end;
   end;
 end;
@@ -983,9 +982,7 @@ var
   s: string;
 begin
   if CompareFileExt(fSettings.MainFilename,'.dproj',false)=0 then begin
-    fErrorMsg:=
-      '.dproj file is not supported yet. The file is used by Delphi 2007 and newer.'+
-      ' Please select a .dpr file for projects or .dpk file for packages.';
+    fErrorMsg := lisConvDprojFileNotSupportedYet;
     Exit(mrCancel);
   end;
   // Start scanning unit files one level above project path. The GUI will appear
@@ -1378,7 +1375,7 @@ begin
       if not DeleteFileUTF8(s) then
         exit(mrCancel);
       //fFilesToDelete.Delete(i);
-      fSettings.AddLogLine(Format('Deleted file %s',[s]));
+      fSettings.AddLogLine(Format(lisConvDeletedFile,[s]));
     end;
   end;
   Result:=mrOK;
@@ -1595,8 +1592,7 @@ begin
                                          FoundUnits, MisUnits, NormalUnits) then
     begin
       LazarusIDE.DoJumpToCodeToolBossError;
-      fErrorMsg:='Problems when trying to find all units from project file '
-                +fSettings.MainFilename;
+      fErrorMsg:=Format(lisConvProblemsFindingAllUnits, [fSettings.MainFilename]);
       exit(mrCancel);
     end;
     try        // Add all units to the project
@@ -1824,7 +1820,7 @@ begin
         Format(lisConvDelphiThereIsAlreadyAPackageWithTheNamePleaseCloseThisPa,
                [PkgName, LineEnding]), mtError, [mbAbort], 0);
       PackageEditingInterface.DoOpenPackageFile(LazPackage.Filename,[pofAddToRecent],true);
-      fErrorMsg:='Stopped because there already is a package with the same name';
+      fErrorMsg:=lisConvStoppedBecauseThereIsPackage;
       exit(mrAbort);
     end else begin
       Result:=mrOK;
@@ -1881,8 +1877,7 @@ begin
       if CodeToolBoss.HasInterfaceRegisterProc(CodeBuffer, HasRegisterProc) then
         if HasRegisterProc then begin
           Include(Flags, pffHasRegisterProc);
-          fSettings.AddLogLine(Format('Adding flag for "Register" procedure in unit %s.',
-                                      [PureUnitName]));
+          fSettings.AddLogLine(Format(lisConvAddingFlagForRegister, [PureUnitName]));
         end;
     // Add new unit to package
     LazPackage.AddFile(AFileName, PureUnitName, pftUnit, Flags, cpNormal);
@@ -1905,8 +1900,7 @@ begin
                                          FoundUnits, MisUnits, NormalUnits) then
     begin
       LazarusIDE.DoJumpToCodeToolBossError;
-      fErrorMsg:='Problems when trying to find all units from package file '
-                +fSettings.MainFilename;
+      fErrorMsg:=Format(lisConvProblemsFindingAllUnits, [fSettings.MainFilename]);
       exit(mrCancel);
     end;
     try

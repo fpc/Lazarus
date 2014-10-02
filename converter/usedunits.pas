@@ -776,7 +776,7 @@ procedure TUsedUnitsTool.AddUnitIfNeeded(aUnitName: string);
 begin
   if not HasUnit(aUnitName) then begin
     fMainUsedUnits.fUnitsToAdd.Add(aUnitName);
-    fCTLink.Settings.AddLogLine('Added unit '+aUnitName+ ' to uses section');
+    fCTLink.Settings.AddLogLine(Format(lisConvAddedUnitToUsesSection, [aUnitName]));
     MaybeOpenPackage(aUnitName);
   end;
 end;

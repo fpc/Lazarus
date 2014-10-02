@@ -640,6 +640,26 @@ resourcestring
   lisConvTopOff = 'Top offset';
   lisConvLeftOff = 'Left offset';
   lisConvDelphiFunc = 'Delphi Function';
+  lisConvAddedUnitToUsesSection = 'Added unit %s to uses section';
+  lisConvAddingFlagForRegister = 'Adding flag for "Register" procedure in unit %s.';
+  lisConvDeletedFile = 'Deleted file %s';
+  lisConvBracketNotFound = 'Bracket not found';
+  lisConvDprojFileNotSupportedYet =
+    '.dproj file is not supported yet. The file is used by Delphi 2007 and newer.'+
+    ' Please select a .dpr file for projects or .dpk file for packages.';
+  lisConvRepairingIncludeFiles = 'Repairing include files : ';
+  lisConvUserSelectedToEndConversion = 'User selected to end conversion with file %s';
+  lisConvFixedUnitName = 'Fixed unit name from %s to %s.';
+  lisConvShouldBeFollowedByNumber = '"$" should be followed by a number: %s';
+  lisConvReplacedCall = 'Replaced call %s with %s';
+  lisConvReplFuncParameterNum = 'Replacement function parameter number should be >= 1: %s';
+  lisConvBracketMissingFromReplFunc = '")" is missing from replacement function: %s';
+  lisConvProblemsFindingAllUnits = 'Problems when trying to find all units from project file %s';
+  lisConvProblemsRepairingFormFile = 'Problems when repairing form file %s';
+  lisConvProblemsFixingIncludeFile = 'Problems when fixing include files in file %s';
+  lisConvStoppedBecauseThereIsPackage  = 'Stopped because there already is a package with the same name';
+  lisConvConvertedFrom = ' { *Converted from %s* }';
+  lisConvThisLogWasSaved = 'This log was saved to %s';
   lisScanning = 'Scanning';
   lisScanParentDir = 'Scanning parent directory';
   lisReplacement = 'Replacement';

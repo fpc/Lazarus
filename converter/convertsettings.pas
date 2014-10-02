@@ -797,8 +797,7 @@ begin
 end;
 
 function TConvertSettings.AddLogLine(
-  const ALine: string; Urgency: TMessageLineUrgency
-  ): integer;
+  const ALine: string; Urgency: TMessageLineUrgency): integer;
 begin
   IDEMessagesWindow.AddCustomMessage(Urgency,aLine); // Show in message window
   Result:=fLog.Add(MessageLineUrgencyNames[Urgency]+': '+ALine);// and store for log.
@@ -813,8 +812,8 @@ begin
   Code:=CodeToolBoss.CreateFile(aFilename);
   Code.Assign(fLog);
   Result:=SaveCodeBuffer(Code)=mrOk;
-  if Result then
-    IDEMessagesWindow.AddCustomMessage(mluHint,'This log was saved to '+aFilename); // Show in message window
+  if Result then                                     // Show in message window
+    IDEMessagesWindow.AddCustomMessage(mluHint,Format(lisConvThisLogWasSaved, [aFilename]));
 end;
 
 function TConvertSettings.GetBackupPath: String;

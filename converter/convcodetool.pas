@@ -264,8 +264,7 @@ begin
         SrcCache.MainScanner:=CodeTool.Scanner;
         SrcCache.Replace(gtNone, gtNone, NamePos.StartPos, NamePos.EndPos, DiskNm);
         if not SrcCache.Apply then exit;
-        fSettings.AddLogLine(Format('Fixed unit name from %s to %s.',
-                                    [UnitNm, DiskNm]));
+        fSettings.AddLogLine(Format(lisConvFixedUnitName, [UnitNm, DiskNm]));
       end;
     end;
   end;
@@ -432,16 +431,15 @@ var
           Inc(i);                         // Get the number after '$'
         xLen:=i-xStart;
         if xLen<2 then
-          raise EDelphiConverterError.Create('"$" should be followed by a number: '+ aStr);
+          raise EDelphiConverterError.Create(Format(lisConvShouldBeFollowedByNumber, [aStr]));
         xNum:=StrToInt(copy(aStr, xStart+1, xLen-1)); // Leave out '$', convert number.
         if xNum < 1 then
-          raise EDelphiConverterError.Create(
-                           'Replacement function parameter number should be >= 1: '+ aStr);
+          raise EDelphiConverterError.Create(Format(lisConvReplFuncParameterNum, [aStr]));
         ReplacementParams.Add(TReplacementParam.Create(xNum, xLen, xStart));
       end;
     end;
     if HasBracket and (aStr[i]<>')') then
-      raise EDelphiConverterError.Create('")" is missing from replacement function: '+ aStr);
+      raise EDelphiConverterError.Create(Format(lisConvBracketMissingFromReplFunc, [aStr]));
     Result:=i+1;
   end;
 
@@ -508,7 +506,7 @@ begin
         // Separate function body
         NewFunc:=NewFunc+FuncInfo.InclEmptyBrackets+FuncInfo.InclSemiColon;
         if fCTLink.fSettings.FuncReplaceComment then
-          NewFunc:=NewFunc+' { *Converted from '+FuncInfo.FuncName+'* }';
+          NewFunc:=NewFunc+Format(lisConvConvertedFrom, [FuncInfo.FuncName]);
         Comment:=GetComment(FuncInfo.ReplFunc, PossibleCommentPos);
         if Comment<>'' then            // Possible comment from the configuration
           NewFunc:=NewFunc+' { ' +Comment+' }';
@@ -520,7 +518,7 @@ begin
         fCTLink.ResetMainScanner;
         if not fCTLink.SrcCache.Replace(gtNone, gtNone,
                             FuncInfo.StartPos, FuncInfo.EndPos, NewFunc) then exit;
-        fCTLink.fSettings.AddLogLine('Replaced call '+s+' with '+NewFunc);
+        fCTLink.fSettings.AddLogLine(Format(lisConvReplacedCall, [s, NewFunc]));
         // Add the required unit name to uses section if needed.
         if Assigned(AddUnitEvent) and (FuncInfo.UnitName<>'') then
           AddUnitEvent(FuncInfo.UnitName);
@@ -624,7 +622,7 @@ var
               break;
             end;
             if not AtomIsChar(',') then
-              raise EDelphiConverterError.Create('Bracket not found');
+              raise EDelphiConverterError.Create(lisConvBracketNotFound);
             ReadNextAtom;
           end;
         end
