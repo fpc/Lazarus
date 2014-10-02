@@ -3623,6 +3623,7 @@ resourcestring
   lisKMOpenPackageFile = 'Open package file';
   lisCPOpenPackage = 'Open Package %s';
   lisFilterAllMessagesOfType = 'Filter all messages of type %s';
+  lisFilterAllMessagesOfCertainType = 'Filter all messages of certain type';
   lisCPOpenUnit = 'Open Unit %s';
   lisCompPalOpenUnit = 'Open unit';
   lisCompPalComponentList = 'View All';
