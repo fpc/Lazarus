@@ -126,7 +126,7 @@ const
   );
 
 var
-  menuiteminfosize : DWORD = 0;
+  OldMenuWin95 : Boolean = False;         // Indicator for Windows 95 menus, or above(MENUITEMINFO size, MIIM_TYPE)
 
 type
   TCaptionFlags = (cfBold, cfUnderline);
@@ -160,16 +160,30 @@ end;
 function FindMenuItemAccelerator(const ACharCode: word; const AMenuHandle: HMENU): integer;
 var
   MenuItemIndex: integer;
-  ItemInfo: MENUITEMINFO;
+  ItemInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
   FirstMenuItem: TMenuItem;
   SiblingMenuItem: TMenuItem;
   i: integer;
 begin
   Result := MakeLResult(0, MNC_IGNORE);
   MenuItemIndex := -1;
-  ItemInfo.cbSize := menuiteminfosize;
+  if OldMenuWin95 then
+    ItemInfo.cbSize := W95_MENUITEMINFO_SIZE
+  else
+    ItemInfo.cbSize := sizeof(TMenuItemInfo);
   ItemInfo.fMask := MIIM_DATA;
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    begin
+      if not GetMenuItemInfoW(AMenuHandle, 0, true, @ItemInfo) then Exit;
+    end
+  else
+    begin
+      if not GetMenuItemInfoA(AMenuHandle, 0, true, @ItemInfo) then Exit;
+    end;
+{$else}
   if not GetMenuItemInfo(AMenuHandle, 0, true, @ItemInfo) then Exit;
+{$endif}
   FirstMenuItem := TMenuItem(ItemInfo.dwItemData);
   if FirstMenuItem = nil then exit;
   i := 0;
@@ -220,6 +234,14 @@ end;
 function CompleteMenuItemCaption(const AMenuItem: TMenuItem; Spacing: String): string;
 begin
   Result := AMenuItem.Caption;
+  if AMenuItem.ShortCut <> scNone then
+    Result := Result + Spacing + MenuItemShortCut(AMenuItem);
+end;
+
+(* Idem with external string caption *)
+function CompleteMenuItemStringCaption(const AMenuItem: TMenuItem; ACaption: String; Spacing: String): string;
+begin
+  Result := ACaption;
   if AMenuItem.ShortCut <> scNone then
     Result := Result + Spacing + MenuItemShortCut(AMenuItem);
 end;
@@ -1138,7 +1160,7 @@ begin
 
   ImageRect := Rect(x, ARect.top + TopPosition(ARect.Bottom - ARect.Top, IconSize.y),
                     IconSize.x, IconSize.y);
-      
+
   if AChecked then // draw rectangle around
   begin
     FrameRect(aHDC,
@@ -1217,18 +1239,41 @@ end;
 
 function ChangeMenuFlag(const AMenuItem: TMenuItem; Flag: Cardinal; Value: boolean): boolean;
 var
-  MenuInfo: MENUITEMINFO;
+  MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
 begin
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
-  MenuInfo.cbSize := menuiteminfosize;
-  MenuInfo.fMask := MIIM_TYPE;
+  if OldMenuWin95 then
+    begin
+      MenuInfo.cbSize := W95_MENUITEMINFO_SIZE;
+      MenuInfo.fMask := MIIM_TYPE;          // caption not retrieved (dwTypeData = nil)
+    end
+  else
+    begin
+      MenuInfo.cbSize := sizeof(TMenuItemInfo);
+      MenuInfo.fMask := MIIM_FTYPE;         // don't retrieve caption (MIIM_STRING not included)
+    end;
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    GetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo)
+  else
+    GetMenuItemInfoA(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+{$else}
   GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+{$endif}
   if Value then
     MenuInfo.fType := MenuInfo.fType or Flag
   else
     MenuInfo.fType := MenuInfo.fType and (not Flag);
-  MenuInfo.dwTypeData := LPSTR(AMenuItem.Caption);
+  if OldMenuWin95 then      // MIIM_TYPE = MIIM_FTYPE + MIIM_STRING for Windows 95
+    MenuInfo.dwTypeData := PChar(UTF8ToAnsi(CompleteMenuItemCaption(AMenuItem, #9))); // Windows 95 only Ansi
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    Result := SetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo)
+  else
+    Result := SetMenuItemInfoA(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+{$else}
   Result := SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+{$endif}
   TriggerFormUpdate(AMenuItem);
 end;
 
@@ -1241,24 +1286,50 @@ end;
  ------------------------------------------------------------------------------}
 procedure SetMenuFlag(const Menu: HMenu; Flag: Cardinal; Value: boolean);
 var
-  MenuInfo: MENUITEMINFO;
+  MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
 begin
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
-  MenuInfo.cbSize := menuiteminfosize;
-  MenuInfo.fMask := MIIM_TYPE;
+  if OldMenuWin95 then
+    begin
+      MenuInfo.cbSize := W95_MENUITEMINFO_SIZE;
+      MenuInfo.fMask := MIIM_TYPE;          // caption not retrieved (dwTypeData = nil)
+    end
+  else
+    begin
+      MenuInfo.cbSize := sizeof(TMenuItemInfo);
+      MenuInfo.fMask := MIIM_FTYPE;         // don't retrieve caption (MIIM_STRING not included)
+    end;
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    GetMenuItemInfoW(Menu, 0, True, @MenuInfo)
+  else
+    GetMenuItemInfoA(Menu, 0, True, @MenuInfo);
+{$else}
   GetMenuItemInfo(Menu, 0, True, @MenuInfo);
+{$endif}
   if Value then
     MenuInfo.fType := MenuInfo.fType or Flag
   else
     MenuInfo.fType := MenuInfo.fType and not Flag;
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    SetMenuItemInfoW(Menu, 0, True, @MenuInfo)
+  else
+    SetMenuItemInfoA(Menu, 0, True, @MenuInfo);
+{$else}
   SetMenuItemInfo(Menu, 0, True, @MenuInfo);
+{$endif}
 end;
 
 { TWin32WSMenuItem }
 
 procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
 var
-  MenuInfo: MENUITEMINFO;
+  MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+{$ifdef WindowsUnicodeSupport}
+  AnsiBuffer: ansistring;
+  WideBuffer: widestring;
+{$endif WindowsUnicodeSupport}
 begin
   if (AMenuItem.Parent = nil) or not AMenuItem.Parent.HandleAllocated then
     Exit;
@@ -1266,59 +1337,140 @@ begin
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
   with MenuInfo do
   begin
-    cbSize := menuiteminfosize;
-    fMask := MIIM_TYPE or MIIM_STATE;
-    dwTypeData := nil;  // don't retrieve caption
+    if OldMenuWin95 then
+      begin
+        cbSize := W95_MENUITEMINFO_SIZE;
+        fMask := MIIM_TYPE or MIIM_STATE;   // current caption not retrieved (dwTypeData = nil)
+      end
+    else
+      begin
+        cbSize := sizeof(TMenuItemInfo);
+        fMask := MIIM_FTYPE or MIIM_STATE;  // don't retrieve current caption
+      end;
   end;
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    GetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo)
+  else
+    GetMenuItemInfoA(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+{$else}
   GetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+{$endif}
   with MenuInfo do
   begin
     // change enabled too since we can change from '-' to normal caption and vice versa
     if ACaption <> cLineCaption then
     begin
-      fType := (fType or MFT_STRING) and not (MFT_SEPARATOR or MFT_OWNERDRAW);
+      if OldMenuWin95 then
+        fType := fType or MFT_STRING
+      else
+        fType := fType or MIIM_STRING;
+      fType := fType and not (MFT_SEPARATOR or MFT_OWNERDRAW);
       fState := EnabledToStateFlag[AMenuItem.Enabled];
-      dwTypeData := LPSTR(ACaption);
-      cch := StrLen(dwTypeData);
+      if AMenuItem.Checked then
+        fState := fState or MFS_CHECKED;
+//      AMenuItem.Caption := ACaption;          // Already set
+{$ifdef WindowsUnicodeSupport}
+      if UnicodeEnabledOS then
+        begin
+          WideBuffer := UTF8ToUTF16(CompleteMenuItemStringCaption(AMenuItem, ACaption, #9));
+          dwTypeData := PChar(WideBuffer);      // PWideChar forced to PChar
+          cch := length(WideBuffer);
+        end
+      else
+        begin
+          AnsiBuffer := UTF8ToAnsi(CompleteMenuItemStringCaption(AMenuItem, ACaption, #9));
+          dwTypeData := PChar(AnsiBuffer);
+          cch := length(AnsiBuffer);
+        end;
+{$else}
+      AnsiBuffer := UTF8ToAnsi(CompleteMenuItemStringCaption(AMenuItem, ACaption, #9));
+      dwTypeData := PChar(AnsiBuffer);
+      cch := length(AnsiBuffer);
+{$endif}
+      if not OldMenuWin95 then
+        fMask := fMask or MIIM_STRING;      // caption updated too
     end
     else
     begin
-      fType := (fType or MFT_SEPARATOR) and not (MFT_STRING or MFT_OWNERDRAW);
+      if OldMenuWin95 then
+        fType := fType and not (MFT_STRING)
+      else
+        fType := fType and not (MIIM_STRING);
+      fType := (fType or MFT_SEPARATOR) and not (MFT_OWNERDRAW);
       fState := MFS_DISABLED;
     end;
   end;
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    SetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo)
+  else
+    SetMenuItemInfoA(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+{$else}
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+{$endif}
 
   // MIIM_BITMAP is needed to request new measure item call
   with MenuInfo do
   begin
-    fMask := MIIM_BITMAP;
+    if OldMenuWin95 then
+      fMask := MFT_BITMAP
+    else
+      fMask := MIIM_BITMAP;
     dwTypeData := nil;
   end;
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    SetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo)
+  else
+    SetMenuItemInfoA(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+{$else}
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+{$endif}
 
   // set owner drawn
   with MenuInfo do
   begin
-    fMask := MIIM_TYPE;
-    fType := (fType or MFT_OWNERDRAW) and not (MFT_STRING or MFT_SEPARATOR);
-    dwTypeData := LPSTR(ACaption);
-    cch := StrLen(dwTypeData);
+    if OldMenuWin95 then
+      begin
+        fMask := MIIM_TYPE;
+        fType := (fType or MFT_OWNERDRAW) and not (MFT_STRING or MFT_SEPARATOR);
+        MenuInfo.dwTypeData := PChar(CompleteMenuItemStringCaption(AMenuItem, ACaption, #9)); // Windows 95 only Ansi
+      end
+    else
+      begin
+        fMask := MIIM_FTYPE;      // don't set caption
+        fType := (fType or MFT_OWNERDRAW) and not (MIIM_STRING or MFT_SEPARATOR);
+      end;
   end;
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    SetMenuItemInfoW(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo)
+  else
+    SetMenuItemInfoA(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
+{$else}
   SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, False, @MenuInfo);
-
+{$endif}
   TriggerFormUpdate(AMenuItem);
 end;
 
 class procedure TWin32WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var
-  MenuInfo: MENUITEMINFO;
+  MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
   ParentMenuHandle: HMenu;
   ParentOfParent: HMenu;
+  CallMenuRes: Boolean;
+{$ifdef WindowsUnicodeSupport}
+  AnsiBuffer: ansistring;
+  WideBuffer: widestring;
+{$endif WindowsUnicodeSupport}
 begin
   ParentMenuHandle := AMenuItem.Parent.Handle;
   FillChar(MenuInfo, SizeOf(MenuInfo), 0);
-  MenuInfo.cbSize := menuiteminfosize;
+  if OldMenuWin95 then
+    MenuInfo.cbSize := W95_MENUITEMINFO_SIZE
+  else
+    MenuInfo.cbSize := sizeof(TMenuItemInfo);
 
   // Following part fixes the case when an item is added in runtime
   // but the parent item has not defined the submenu flag (hSubmenu=0)
@@ -1326,15 +1478,30 @@ begin
   begin
     ParentOfParent := AMenuItem.Parent.Parent.Handle;
     MenuInfo.fMask := MIIM_SUBMENU;
-
-    if GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
+{$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      CallMenuRes := GetMenuItemInfoW(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo)
+    else
+      CallMenuRes:= GetMenuItemInfoA(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo);
+{$else}
+    CallMenuRes := GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) ;
+{$endif}
+    if CallMenuRes then
     begin
       // the parent menu item is not defined with submenu flag
       // convert it to submenu
       if MenuInfo.hSubmenu = 0 then
       begin
         MenuInfo.hSubmenu := ParentMenuHandle;
-        if not SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo) then
+{$ifdef WindowsUnicodeSupport}
+        if UnicodeEnabledOS then
+          CallMenuRes := SetMenuItemInfoW(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo)
+        else
+          CallMenuRes := SetMenuItemInfoA(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo);
+{$else}
+        CallMenuRes := SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command, False, @MenuInfo);
+{$endif}
+        if not CallMenuRes then
           DebugLn(['SetMenuItemInfo failed: ', GetLastErrorReport]);
       end;
     end;
@@ -1348,7 +1515,10 @@ begin
       fstate := MFS_GRAYED;
     if AMenuItem.Checked then
       fState := fState or MFS_CHECKED;
-    fMask := MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_TYPE;
+    if OldMenuWin95 then
+      fMask := MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_TYPE
+    else
+      fMask := MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_FTYPE or MIIM_STRING;
     wID := AMenuItem.Command; {value may only be 16 bit wide!}
     dwItemData := PtrInt(AMenuItem);
     if (AMenuItem.Count > 0) then
@@ -1363,7 +1533,24 @@ begin
       fType := fType or MFT_SEPARATOR;
       fState := fState or MFS_DISABLED;
     end;
-    dwTypeData := PChar(AMenuItem);
+{$ifdef WindowsUnicodeSupport}
+    if UnicodeEnabledOS then
+      begin
+        WideBuffer := UTF8ToUTF16(CompleteMenuItemCaption(AMenuItem, #9));
+        dwTypeData := PChar(WideBuffer);        // PWideChar forced to PChar
+        cch := length(WideBuffer);
+      end
+    else
+      begin
+        AnsiBuffer := UTF8ToAnsi(CompleteMenuItemCaption(AMenuItem, #9));
+        dwTypeData := PChar(AnsiBuffer);
+        cch := length(AnsiBuffer);
+      end;
+{$else}
+    AnsiBuffer := UTF8ToAnsi(CompleteMenuItemCaption(AMenuItem, #9));
+    dwTypeData := PChar(AnsiBuffer);
+    cch := length(AnsiBuffer);
+{$endif}
     if AMenuItem.RadioItem then
       fType := fType or MFT_RADIOCHECK;
     if (AMenuItem.GetIsRightToLeft) then
@@ -1377,7 +1564,15 @@ begin
     if AMenuItem.RightJustify then
       fType := fType or MFT_RIGHTJUSTIFY;
   end;
-  if not InsertMenuItem(ParentMenuHandle, AMenuItem.Parent.VisibleIndexOf(AMenuItem), True, @MenuInfo) then
+{$ifdef WindowsUnicodeSupport}
+  if UnicodeEnabledOS then
+    CallMenuRes := InsertMenuItemW(ParentMenuHandle, AMenuItem.Parent.VisibleIndexOf(AMenuItem), True, @MenuInfo)
+  else
+    CallMenuRes := InsertMenuItemA(ParentMenuHandle, AMenuItem.Parent.VisibleIndexOf(AMenuItem), True, @MenuInfo);
+{$else}
+  CallMenuRes := InsertMenuItem(ParentMenuHandle, AMenuItem.Parent.VisibleIndexOf(AMenuItem), True, @MenuInfo);
+{$endif}
+  if not CallMenuRes then
     DebugLn(['InsertMenuItem failed with error: ', GetLastErrorReport]);
   TriggerFormUpdate(AMenuItem);
 end;
@@ -1390,7 +1585,8 @@ end;
 class procedure TWin32WSMenuItem.DestroyHandle(const AMenuItem: TMenuItem);
 var
   ParentOfParentHandle, ParentHandle: HMENU;
-  MenuInfo: MENUITEMINFO;
+  MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
+  CallMenuRes: Boolean;
 begin
   if Assigned(AMenuItem.Parent) then
   begin
@@ -1404,15 +1600,33 @@ begin
       FillChar(MenuInfo, SizeOf(MenuInfo), 0);
       with MenuInfo do
       begin
-        cbSize := menuiteminfosize;
+        if OldMenuWin95 then
+          cbSize := W95_MENUITEMINFO_SIZE
+        else
+          cbSize := sizeof(TMenuItemInfo);
         fMask := MIIM_SUBMENU;
       end;
-      GetMenuItemInfo(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo);
+{$ifdef WindowsUnicodeSupport}
+      if UnicodeEnabledOS then
+        GetMenuItemInfoW(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo)
+      else
+        GetMenuItemInfoA(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo);
+{$else}
+      GetMenuItemInfo(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo) ;
+{$endif}
       // the parent menu item is defined with submenu flag then reset it
       if MenuInfo.hSubmenu <> 0 then
       begin
         MenuInfo.hSubmenu := 0;
-        if not SetMenuItemInfo(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo) then
+{$ifdef WindowsUnicodeSupport}
+        if UnicodeEnabledOS then
+          CallMenuRes := SetMenuItemInfoW(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo)
+        else
+          CallMenuRes := SetMenuItemInfoA(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo);
+{$else}
+        CallMenuRes := SetMenuItemInfo(ParentOfParentHandle, AMenuItem.Parent.Command, False, @MenuInfo);
+{$endif}
+        if not CallMenuRes then
           DebugLn(['SetMenuItemInfo failed: ', GetLastErrorReport]);
         // Set menu item info destroys/corrupts our internal popup menu for the
         // unknown reason. We need to recreate it.
@@ -1521,7 +1735,7 @@ end;
 
 initialization
   if (Win32MajorVersion = 4) and (Win32MinorVersion = 0) then
-    menuiteminfosize := W95_MENUITEMINFO_SIZE
+    OldMenuWin95 := True
   else
-    menuiteminfosize := sizeof(TMenuItemInfo);
+    OldMenuWin95 := False;
 end.
