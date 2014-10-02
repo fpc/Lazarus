@@ -16,7 +16,7 @@ interface
 
 uses
   Windows, Classes, Graphics,
-  TADrawerCanvas;
+  TADrawerCanvas, TAGraph;
 
 type
   { TMetafile }
@@ -95,6 +95,14 @@ type
     procedure DrawingEnd; override;
     function GetCanvas: TCanvas; override;
   end;
+
+  { TWMFChartHelper }
+
+  TWMFChartHelper = class helper for TChart
+    procedure CopyToClipboardMetafile;
+    procedure SaveToWMF(const AFileName: String);
+  end;
+
 
 implementation
 
@@ -452,6 +460,18 @@ destructor TMetafileCanvas.Destroy;
 begin
   FMetafile.Handle := CloseEnhMetafile(Handle);
   inherited Destroy;
+end;
+
+{ TWMFChartHelper }
+
+procedure TWMFChartHelper.CopyToClipboardMetafile;
+begin
+  Draw(TWindowsMetafileDrawer.Create(''), Rect(0, 0, Width, Height));
+end;
+
+procedure TWMFChartHelper.SaveToWMF(const AFileName: String);
+begin
+  Draw(TWindowsMetafileDrawer.Create(AFilename), Rect(0, 0, Width, Height));
 end;
 
 

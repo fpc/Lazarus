@@ -38,16 +38,22 @@ uses
 
 procedure TForm1.btnSaveToMetafileClick(Sender: TObject);
 begin
+  Chart1.SaveToWMF('test.wmf');
+  { or:
   with Chart1 do
     Draw(TWindowsMetafileDrawer.Create('test.wmf'), Rect(0, 0, Width, Height));
+    }
 end;
 
 procedure TForm1.btnCopyToClipboardClick(Sender: TObject);
 begin
+  Chart1.CopyToClipboardMetaFile;
+  { or:
   with Chart1 do
     Draw(TWindowsMetafileDrawer.Create(''), Rect(0, 0, Width, Height));
     // Setting the file name to an empty string results in copying the chart to
     // the clipboard as a windows metafile.
+    }
 end;
 
 end.
