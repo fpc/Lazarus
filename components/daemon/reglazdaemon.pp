@@ -170,6 +170,8 @@ begin
     AProject.AddPackageDependency('LazDaemon');
     AProject.Title:='Daemon application';
     AProject.LazCompilerOptions.Win32GraphicApp:=False;
+    AProject.LazCompilerOptions.UnitOutputDirectory:='lib'+PathDelim+'$(TargetCPU)-$(TargetOS)';
+    AProject.LazCompilerOptions.TargetFilename:='project1';
     AProject.ProjectInfoFile:='project1.lpi';
     F:=AProject.CreateProjectFile('project1.lpr');
     F.IsPartOfProject:=True;
