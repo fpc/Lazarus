@@ -35,6 +35,7 @@ var
 begin
   Application.Initialize;
   for X := 1 to ParamCount do
+  begin
     if LowerCase(ParamStr(X)) = '--help' then 
     begin
       S := TStringList.Create;
@@ -57,6 +58,7 @@ begin
       S.Free;
       Exit;
     end;
+  end;
   Application.CreateForm(THelpForm, HelpForm);
   Application.CreateForm(THelpPopupForm, HelpPopupForm);
 
@@ -65,16 +67,18 @@ begin
   except
     // try to remove stale named pipes so that a new instance can use them
     if IPCServer <> nil then
-    try
-    FreeAndNil(IPCServer);
-    except
-    end;
+      try
+        FreeAndNil(IPCServer);
+      except
+        //ignore
+      end;
 
     if IPCClient <> nil then
-    try
-    FreeAndNil(IPCClient);
-    except
-    end;
+      try
+        FreeAndNil(IPCClient);
+      except
+        // ignore
+      end;
   end;
 end.
 

@@ -1,5 +1,10 @@
 unit chmcontentprovider;
 
+{
+  Graphical CHM help content provider.
+  Responsible for loading TOC, providing search etc.
+}
+
 {$mode objfpc}{$H+}
 
 {$Note Compiling lhelp with search support}
@@ -7,6 +12,7 @@ unit chmcontentprovider;
 
 {$IF FPC_FULLVERSION>=20400}
 {$Note Compiling lhelp *with* binary index and toc support}
+// CHMs can have both binary and text Table of Contents and index
 {$DEFINE CHM_BINARY_INDEX_TOC}
 {$endif}
 
@@ -67,7 +73,9 @@ type
     procedure NewChmOpened(ChmFileList: TChmFileList; Index: Integer);
     procedure LoadingHTMLStream(var AStream: TStream);
 
+    // Queue TOC fill action for later processing
     procedure QueueFillToc(AChm: TChmReader);
+    // Fills table of contents (and index for main file)
     procedure FillTOC(Data: PtrInt);
     procedure IpHtmlPanelDocumentOpen(Sender: TObject);
     procedure IpHtmlPanelHotChange(Sender: TObject);
@@ -289,7 +297,7 @@ begin
   fHistoryIndex := -1;
   fHistory.Clear;
 
-  // Code Here has been moved to the OpenFile handler
+  // Code here has been moved to the OpenFile handler
 
   UpdateTitle;
 end;
@@ -447,7 +455,7 @@ end;
 
 procedure TChmContentProvider.FillTOC(Data: PtrInt);
 var
-  fChm: TChmReader;
+  CHMReader: TChmReader;
   ParentNode: TTreeNode;
   i: Integer;
   SM: TChmSiteMap;
@@ -463,16 +471,17 @@ begin
   fFillingToc := True;
   fContentsTree.BeginUpdate;
 
-  fChm := TChmReader(Data);
+  CHMReader := TChmReader(Data);
   {$IFDEF CHM_DEBUG_TIME}
   writeln('Start: ',FormatDateTime('hh:nn:ss.zzz', Now));
   {$ENDIF}
-  if fChm <> nil then begin
-    ParentNode := fContentsTree.Items.AddChildObject(nil, fChm.Title, fChm);
+  if CHMReader <> nil then begin
+    ParentNode := fContentsTree.Items.AddChildObject(nil, CHMReader.Title, CHMReader);
     ParentNode.ImageIndex := 0;
     ParentNode.SelectedIndex := 0;
     {$IFDEF CHM_BINARY_INDEX_TOC}
-    SM := fChm.GetTOCSitemap;
+    // GetTOCSitemap first tries binary TOC but falls back to text if needed
+    SM := CHMReader.GetTOCSitemap;
     {$ELSE}
     SM := nil;
     fFillingIndex := True;
@@ -487,7 +496,7 @@ begin
       {$IFDEF CHM_DEBUG_TIME}
       writeln('Stream read: ',FormatDateTime('hh:nn:ss.zzz', Now));
       {$ENDIF}
-      with TContentsFiller.Create(fContentsTree, SM, @fStopTimer, fChm) do begin
+      with TContentsFiller.Create(fContentsTree, SM, @fStopTimer, CHMReader) do begin
         DoFill(ParentNode);
         Free;
       end;
@@ -504,12 +513,11 @@ begin
     Application.ProcessMessages;
     fFillingIndex := True;
 
-
     // we fill the index here too but only for the main file
-    if fChms.IndexOfObject(fChm) < 1 then
+    if fChms.IndexOfObject(CHMReader) < 1 then
     begin
       {$IFDEF CHM_BINARY_INDEX_TOC}
-      SM := fChm.GetIndexSitemap;
+      SM := CHMReader.GetIndexSitemap;
       {$ELSE}
       SM := nil;
       Stream := TMemoryStream(fchm.GetObject(fChm.IndexFile));
@@ -522,13 +530,12 @@ begin
       if SM <> nil then begin
         fStatusBar.SimpleText:= 'Index Loading ...';
         Application.ProcessMessages;
-        with TContentsFiller.Create(fIndexView, SM, @fStopTimer, fChm) do begin
+        with TContentsFiller.Create(fIndexView, SM, @fStopTimer, CHMReader) do begin
           DoFill(nil);
           Free;
         end;
         SM.Free;
         fIndexView.FullExpand;
-
       end;
     end;
   end;
@@ -627,8 +634,8 @@ begin
   if fIndexView.Selected = nil then Exit;
   ATreeNode := TContentTreeNode(fIndexView.Selected);
 
-  //find the chm associated with this branch
-   DoLoadUri(MakeURI(ATreeNode.Url, TChmReader(ATreeNode.Data)));
+  // Find the chm associated with this branch
+  DoLoadUri(MakeURI(ATreeNode.Url, TChmReader(ATreeNode.Data)));
 end;
 
 procedure TChmContentProvider.TreeViewStopCollapse(Sender: TObject;
@@ -879,75 +886,78 @@ var
 begin
   //  if fKeywordCombo.Text = '' then Exit;
   SearchWords := TStringList.Create;
-  SearchWords.Delimiter := ' ';
-  Searchwords.DelimitedText := fKeywordCombo.Text;
-  if fKeywordCombo.Items.IndexOf(fKeywordCombo.Text) = -1 then
-    fKeywordCombo.Items.Add(fKeywordCombo.Text);
-  fSearchResults.BeginUpdate;
-  fSearchResults.Items.Clear;
-  //WriteLn('Search words: ', SearchWords.Text);
-  for i := 0 to fChms.Count-1 do
-  begin
-    for j := 0 to SearchWords.Count-1 do
+  try
+    SearchWords.Delimiter := ' ';
+    Searchwords.DelimitedText := fKeywordCombo.Text;
+    if fKeywordCombo.Items.IndexOf(fKeywordCombo.Text) = -1 then
+      fKeywordCombo.Items.Add(fKeywordCombo.Text);
+    fSearchResults.BeginUpdate;
+    fSearchResults.Items.Clear;
+    //WriteLn('Search words: ', SearchWords.Text);
+    for i := 0 to fChms.Count-1 do
     begin
-      if fChms.Chm[i].SearchReader = nil then
+      for j := 0 to SearchWords.Count-1 do
       begin
-        FIftiMainStream := fchms.Chm[i].GetObject('/$FIftiMain');
-        if FIftiMainStream = nil then
-          continue;
-        SearchReader := TChmSearchReader.Create(FIftiMainStream, True); //frees the stream when done
-        fChms.Chm[i].SearchReader := SearchReader;
-      end
-      else
-        SearchReader := fChms.Chm[i].SearchReader;
-      TopicResults := SearchReader.LookupWord(SearchWords[j], TitleResults);
-      // body results
-      for k := 0 to High(TopicResults) do
-        UpdateTopic(TopicResults[k].TopicIndex, High(TopicResults[k].LocationCodes), 0, j = 0);
-      // title results
-      for k := 0 to High(TitleResults) do
-        UpdateTopic(TitleResults[k].TopicIndex, 0, High(TitleResults[k].LocationCodes), j = 0);
-
-      // remove documents that don't have results
-      k := 0;
-      while k <= High(FoundTopics) do
-      begin
-        if FoundTopics[k].FoundForThisRound = False then
-          DeleteTopic(k)
-        else
+        if fChms.Chm[i].SearchReader = nil then
         begin
-          FoundTopics[k].FoundForThisRound := False;
-          Inc(k);
+          FIftiMainStream := fchms.Chm[i].GetObject('/$FIftiMain');
+          if FIftiMainStream = nil then
+            continue;
+          SearchReader := TChmSearchReader.Create(FIftiMainStream, True); //frees the stream when done
+          fChms.Chm[i].SearchReader := SearchReader;
+        end
+        else
+          SearchReader := fChms.Chm[i].SearchReader;
+        TopicResults := SearchReader.LookupWord(SearchWords[j], TitleResults);
+        // Body results
+        for k := 0 to High(TopicResults) do
+          UpdateTopic(TopicResults[k].TopicIndex, High(TopicResults[k].LocationCodes), 0, j = 0);
+        // Title results
+        for k := 0 to High(TitleResults) do
+          UpdateTopic(TitleResults[k].TopicIndex, 0, High(TitleResults[k].LocationCodes), j = 0);
+
+        // Remove documents that don't have results
+        k := 0;
+        while k <= High(FoundTopics) do
+        begin
+          if FoundTopics[k].FoundForThisRound = False then
+            DeleteTopic(k)
+          else
+          begin
+            FoundTopics[k].FoundForThisRound := False;
+            Inc(k);
+          end;
         end;
       end;
-    end;
 
-    // clear out results that don't contain all the words we are looking for
+      // Clear out results that don't contain all the words we are looking for
 
-    Item := nil;
-    // now lookup titles and urls to add to final search results
-    for j := 0 to High(FoundTopics) do
-    begin
-    try
-      DocURL := fChms.Chm[i].LookupTopicByID(FoundTopics[j].Topic, DocTitle);
-      if (Length(DocURL) > 0) and (DocURL[1] <> '/') then
-        Insert('/', DocURL, 1);
-      if DocTitle = '' then
-        DocTitle := 'untitled';
-      Item := TContentTreeNode(fSearchResults.Items.Add(Item, DocTitle));
-      Item.Data:= fChms.Chm[i];
-      Item.Url:= DocURL;
-    except
-      //WriteLn('Exception');
-      // :)
-    end;
-    end;
+      Item := nil;
+      // Now lookup titles and urls to add to final search results
+      for j := 0 to High(FoundTopics) do
+      begin
+        try
+          DocURL := fChms.Chm[i].LookupTopicByID(FoundTopics[j].Topic, DocTitle);
+          if (Length(DocURL) > 0) and (DocURL[1] <> '/') then
+            Insert('/', DocURL, 1);
+          if DocTitle = '' then
+            DocTitle := 'untitled';
+          Item := TContentTreeNode(fSearchResults.Items.Add(Item, DocTitle));
+          Item.Data:= fChms.Chm[i];
+          Item.Url:= DocURL;
+        except
+          //WriteLn('Exception');
+          // :)
+        end;
+      end;
 
+      SetLength(FoundTopics, 0);
+    end;
     SetLength(FoundTopics, 0);
+  finally
+    SearchWords.Free;
   end;
-  SetLength(FoundTopics, 0);
 
-  SearchWords.Free;
   if fSearchResults.Items.Count = 0 then
   begin
     fSearchResults.Items.Add(nil, 'No Results');
@@ -1018,7 +1028,7 @@ begin
     QueueFillToc(CurCHM);
   end;
 
-  // AContext will override the url if it is found
+  // AContext will override the URL if it is found
   if AContext <> -1 then
   begin
     ContextURL := CurCHM.GetContextUrl(AContext);

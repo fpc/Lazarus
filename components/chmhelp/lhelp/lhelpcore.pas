@@ -583,7 +583,6 @@ begin
 
     if MustClose then
     begin
-      // Wait some time for the response message to go out before shutting down
       Application.ProcessMessages;
       Sleep(10);
       Application.Terminate;
@@ -791,8 +790,8 @@ procedure THelpForm.LateOpenURL ( Url: PStringItem ) ;
 begin
   if OpenURL(URL^.FString, fContext) = ord(srSuccess) then
     AddRecentFile(URL^.FString);
-  //we reset the context because at this point the file has been loaded and the
-  //context shown
+  // we reset the context because at this point the file has been loaded and the
+  // context shown
   fContext := -1;
 
   Dispose(Url);

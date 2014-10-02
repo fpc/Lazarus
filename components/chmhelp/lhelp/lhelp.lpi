@@ -112,6 +112,7 @@
       <Unit7>
         <Filename Value="chmcontentprovider.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="chmcontentprovider"/>
       </Unit7>
       <Unit8>
         <Filename Value="httpcontentprovider.pas"/>

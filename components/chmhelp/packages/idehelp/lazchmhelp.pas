@@ -62,6 +62,7 @@ type
   protected
     function GetFileNameAndURL(RawUrl: String; out FileName: String; out URL: String): Boolean;
     procedure SetHelpLabel(AValue: String);
+    // Check for lhelp executable, if not present, build if possible
     function CheckBuildLHelp: Integer; // modal result
     // Get full path of lazbuild executable
     function GetLazBuildEXE(out ALazBuild: String): Boolean;
@@ -124,7 +125,7 @@ end;
 
 function TChmHelpViewer.GetHelpLabel: String;
 begin
-  // fHelpLable is used for SimpleIPC server id;
+  // fHelpLabel is used for SimpleIPC server id;
   // lhelp protocol specifies server-dependent constant string
   // followed by string representation of last 5 digits of the processID
   // padded with 00000 at the right
