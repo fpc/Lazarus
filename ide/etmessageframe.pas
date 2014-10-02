@@ -464,7 +464,8 @@ begin
     Parent.ChildsAsSubMenu:=true;
     Parent.Caption:=lisAbout;
     MsgAboutToolMenuItem:=RegisterIDEMenuCommand(Parent, 'About', lisAbout);
-    MsgOpenToolOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'Open Tool Options', lisCompPalOpenPackage);
+    MsgOpenToolOptionsMenuItem:=RegisterIDEMenuCommand(Parent, 'Open Tool '
+      +'Options', lisOpenToolOptions);
   MsgFilterMsgOfTypeMenuItem:=RegisterIDEMenuCommand(Root,'FilterMsgOfType',lisFilterAllMessagesOfCertainType);
   MsgRemoveCompOptHideMenuSection:=RegisterIDEMenuSection(Root,'RemoveCompOptHideMsg');
     Parent:=MsgRemoveCompOptHideMenuSection;
@@ -2774,7 +2775,10 @@ begin
       //only assign caption if it is not empty to avoid its "unlocalizing",
       //this is visible e.g. in EditorToolBar menu tree
       MsgOpenToolOptionsMenuItem.Caption:=ToolOptionsCaption;
-    end;
+    end
+    else
+      //assign default caption if item is not visible (needed for EditorToolBar)
+      MsgOpenToolOptionsMenuItem.Caption:=lisOpenToolOptions;
     MsgOpenToolOptionsMenuItem.OnClick:=@OpenToolsOptionsMenuItemClick;
     MsgAboutSection.ChildsAsSubMenu:=VisibleCnt>1;
 
@@ -2784,6 +2788,8 @@ begin
         MsgType]);
       MsgFilterMsgOfTypeMenuItem.Visible:=true;
     end else begin
+      //assign default caption if item is not visible (needed for EditorToolBar)
+      MsgFilterMsgOfTypeMenuItem.Caption:=lisFilterAllMessagesOfCertainType;
       MsgFilterMsgOfTypeMenuItem.Visible:=false;
     end;
     MsgFilterMsgOfTypeMenuItem.OnClick:=@FilterMsgOfTypeMenuItemClick;

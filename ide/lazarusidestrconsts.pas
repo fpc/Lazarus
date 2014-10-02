@@ -3645,6 +3645,7 @@ resourcestring
   lisCPOpenPackage = 'Open Package %s';
   lisFilterAllMessagesOfType = 'Filter all messages of type %s';
   lisFilterAllMessagesOfCertainType = 'Filter all messages of certain type';
+  lisOpenToolOptions = 'Open Tool Options';
   lisCPOpenUnit = 'Open Unit %s';
   lisCompPalOpenUnit = 'Open unit';
   lisCompPalComponentList = 'View All';
