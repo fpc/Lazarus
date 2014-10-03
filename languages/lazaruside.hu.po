@@ -6163,6 +6163,26 @@ msgstr "A vezérlőnek szülőre van szüksége"
 msgid "Add comment after replacement"
 msgstr "Megjegyzés hozzáadása csere után"
 
+#: lazarusidestrconsts.lisconvaddedunittousessection
+msgid "Added unit %s to uses section"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvaddingflagforregister
+msgid "Adding flag for \"Register\" procedure in unit %s."
+msgstr ""
+
+#: lazarusidestrconsts.lisconvbracketmissingfromreplfunc
+msgid "\")\" is missing from replacement function: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvbracketnotfound
+msgid "Bracket not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvconvertedfrom
+msgid " { *Converted from %s* }"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
 msgstr "Eltolás hozzáadódik a vezérlők felső koordinátáihoz az őket tartalmazó látható területen belül"
@@ -6170,6 +6190,10 @@ msgstr "Eltolás hozzáadódik a vezérlők felső koordinátáihoz az őket tar
 #: lazarusidestrconsts.lisconvcoordoffs
 msgid "Coordinate offsets"
 msgstr "Koordináták eltolása"
+
+#: lazarusidestrconsts.lisconvdeletedfile
+msgid "Deleted file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiaddedcustomoptiondefines
 msgid "Added defines %s in custom options"
@@ -6317,6 +6341,10 @@ msgstr "Cserélendő unit-ok itt: %s"
 msgid "LCL already has a unit with name %s. Delete local file %s?"
 msgstr "Az LCL már tartalmaz egy unit-ot ezzel a névvel: %s. Törli a helyi %s fájlt?"
 
+#: lazarusidestrconsts.lisconvdprojfilenotsupportedyet
+msgid ".dproj file is not supported yet. The file is used by Delphi 2007 and newer. Please select a .dpr file for projects or .dpk file for packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
 msgstr "Átalakításisi hiba"
@@ -6332,6 +6360,10 @@ msgstr "Karakterkódolás átalakítása"
 #: lazarusidestrconsts.lisconvertencodingofprojectspackages
 msgid "Convert encoding of projects/packages"
 msgstr "Projektek/csomagok kódolásának átalakítása"
+
+#: lazarusidestrconsts.lisconvertotherhint
+msgid "Other options affecting the conversion"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
@@ -6369,6 +6401,10 @@ msgstr "Delphi támogatása"
 msgid "Use conditional compilation to support Delphi"
 msgstr "Feltételes fordítás használata a Delphi támogatásához"
 
+#: lazarusidestrconsts.lisconvfixedunitname
+msgid "Fixed unit name from %s to %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
 msgstr "Eljárás cserék"
@@ -6392,6 +6428,42 @@ msgstr "új név"
 
 #: lazarusidestrconsts.lisconvparentcontainer
 msgid "Parent Container"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvproblemsfindingallunits
+msgid "Problems when trying to find all units from project file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvproblemsfixingincludefile
+msgid "Problems when fixing include files in file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvproblemsrepairingformfile
+msgid "Problems when repairing form file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvrepairingincludefiles
+msgid "Repairing include files : "
+msgstr ""
+
+#: lazarusidestrconsts.lisconvreplacedcall
+msgid "Replaced call %s with %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvreplfuncparameternum
+msgid "Replacement function parameter number should be >= 1: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvshouldbefollowedbynumber
+msgid "\"$\" should be followed by a number: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvstoppedbecausethereispackage
+msgid "Stopped because there already is a package with the same name"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvthislogwassaved
+msgid "This log was saved to %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisconvtopoff
@@ -6425,6 +6497,10 @@ msgstr "Cserélendő unitok"
 #: lazarusidestrconsts.lisconvunknownprops
 msgid "Unknown properties"
 msgstr "Ismeretlen tulajdonságok"
+
+#: lazarusidestrconsts.lisconvuserselectedtoendconversion
+msgid "User selected to end conversion with file %s"
+msgstr ""
 
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
@@ -7789,6 +7865,10 @@ msgstr "Közrezárás"
 msgid "Enclose in $IFDEF"
 msgstr "Közrezárás $IFDEF által"
 
+#: lazarusidestrconsts.lisencodingnumberoffilesfailed
+msgid "Number of files failed to convert: %d"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
@@ -8357,6 +8437,10 @@ msgstr "Szűrő"
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
 msgstr "Szűrő: %s"
+
+#: lazarusidestrconsts.lisfilterallmessagesofcertaintype
+msgid "Filter all messages of certain type"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilterallmessagesoftype
 msgid "Filter all messages of type %s"
@@ -12336,6 +12420,10 @@ msgstr "Megnyitja a(z) %s csomagot?"
 msgid "Open the project %s?"
 msgstr "Megnyitja a(z) %s projektet?"
 
+#: lazarusidestrconsts.lisopentooloptions
+msgid "Open Tool Options"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
 msgstr "URL megnyitása"
@@ -14742,6 +14830,14 @@ msgstr "Mentés "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Nagyítás:"
+
+#: lazarusidestrconsts.lisscanfilesinparentdir
+msgid "Scan files in parent directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisscanfilesinparentdirhint
+msgid "Search for source files in sibling directories (parent directory and its children)"
+msgstr ""
 
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"

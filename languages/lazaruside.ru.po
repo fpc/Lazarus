@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-09-25 03:33+0400\n"
+"PO-Revision-Date: 2014-10-04 03:35+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6403,6 +6403,26 @@ msgstr "Элемент управления требует \"родителя\""
 msgid "Add comment after replacement"
 msgstr "Добавлять комментарий при замене"
 
+#: lazarusidestrconsts.lisconvaddedunittousessection
+msgid "Added unit %s to uses section"
+msgstr "Модуль %s добавлен в выражение Uses"
+
+#: lazarusidestrconsts.lisconvaddingflagforregister
+msgid "Adding flag for \"Register\" procedure in unit %s."
+msgstr "Добавление флага наличия процедуры \"Register\" в модуле %s."
+
+#: lazarusidestrconsts.lisconvbracketmissingfromreplfunc
+msgid "\")\" is missing from replacement function: %s"
+msgstr "\")\" отсутствует в заменяющей функции: %s"
+
+#: lazarusidestrconsts.lisconvbracketnotfound
+msgid "Bracket not found"
+msgstr "Скобка не найдена"
+
+#: lazarusidestrconsts.lisconvconvertedfrom
+msgid " { *Converted from %s* }"
+msgstr " { *Преобразовано из %s* }"
+
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
 msgstr "Добавление смещения к координатам виджетов внутри визуальных контейнеров"
@@ -6410,6 +6430,10 @@ msgstr "Добавление смещения к координатам видж
 #: lazarusidestrconsts.lisconvcoordoffs
 msgid "Coordinate offsets"
 msgstr "Смещения координат"
+
+#: lazarusidestrconsts.lisconvdeletedfile
+msgid "Deleted file %s"
+msgstr "Удалён файл %s"
 
 #: lazarusidestrconsts.lisconvdelphiaddedcustomoptiondefines
 msgid "Added defines %s in custom options"
@@ -6562,6 +6586,10 @@ msgstr "Модули для замены в %s"
 msgid "LCL already has a unit with name %s. Delete local file %s?"
 msgstr "В LCL уже имеется модуль с именем %s. Удалить локальный файл %s?"
 
+#: lazarusidestrconsts.lisconvdprojfilenotsupportedyet
+msgid ".dproj file is not supported yet. The file is used by Delphi 2007 and newer. Please select a .dpr file for projects or .dpk file for packages."
+msgstr "Файл .dproj в настоящее время не поддерживается. Он используется в Delphi 2007 и новее. Выберите файл .dpr для проектов либо .dpk для пакетов."
+
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
 msgstr "Ошибка преобразования"
@@ -6578,6 +6606,10 @@ msgstr "Преобразование кодировки"
 #: lazarusidestrconsts.lisconvertencodingofprojectspackages
 msgid "Convert encoding of projects/packages"
 msgstr "Преобразовать кодировку проектов/пакетов"
+
+#: lazarusidestrconsts.lisconvertotherhint
+msgid "Other options affecting the conversion"
+msgstr "Прочие параметры, влияющие на преобразование"
 
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
@@ -6615,6 +6647,10 @@ msgstr "Поддержка Delphi"
 msgid "Use conditional compilation to support Delphi"
 msgstr "Использовать условную компиляцию для обеспечения поддержки Delphi"
 
+#: lazarusidestrconsts.lisconvfixedunitname
+msgid "Fixed unit name from %s to %s."
+msgstr "Имя модуля %s исправлено на %s."
+
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
 msgstr "Замена функций"
@@ -6639,6 +6675,42 @@ msgstr "Новое имя"
 #: lazarusidestrconsts.lisconvparentcontainer
 msgid "Parent Container"
 msgstr "Родительский контейнер"
+
+#: lazarusidestrconsts.lisconvproblemsfindingallunits
+msgid "Problems when trying to find all units from project file %s"
+msgstr "Не удалось найти все модули для файла проекта %s"
+
+#: lazarusidestrconsts.lisconvproblemsfixingincludefile
+msgid "Problems when fixing include files in file %s"
+msgstr "Не удалось исправить включаемые файлы в %s"
+
+#: lazarusidestrconsts.lisconvproblemsrepairingformfile
+msgid "Problems when repairing form file %s"
+msgstr "Не удалось исправить файл формы %s"
+
+#: lazarusidestrconsts.lisconvrepairingincludefiles
+msgid "Repairing include files : "
+msgstr "Исправление включаемых файлов: "
+
+#: lazarusidestrconsts.lisconvreplacedcall
+msgid "Replaced call %s with %s"
+msgstr "Вызов %s заменён на %s"
+
+#: lazarusidestrconsts.lisconvreplfuncparameternum
+msgid "Replacement function parameter number should be >= 1: %s"
+msgstr "Количество параметров заменяющей функции не должно быть меньше единицы: %s"
+
+#: lazarusidestrconsts.lisconvshouldbefollowedbynumber
+msgid "\"$\" should be followed by a number: %s"
+msgstr "За \"$\" должно следовать число: %s"
+
+#: lazarusidestrconsts.lisconvstoppedbecausethereispackage
+msgid "Stopped because there already is a package with the same name"
+msgstr "Остановлено, так как пакет с таким же именем уже имеется"
+
+#: lazarusidestrconsts.lisconvthislogwassaved
+msgid "This log was saved to %s"
+msgstr "Журнал был сохранён в %s"
 
 #: lazarusidestrconsts.lisconvtopoff
 msgid "Top offset"
@@ -6671,6 +6743,10 @@ msgstr "Заменяемые модули"
 #: lazarusidestrconsts.lisconvunknownprops
 msgid "Unknown properties"
 msgstr "Неизвестные свойства"
+
+#: lazarusidestrconsts.lisconvuserselectedtoendconversion
+msgid "User selected to end conversion with file %s"
+msgstr "Пользователь запросил завершение преобразования на файле %s"
 
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
@@ -8066,6 +8142,10 @@ msgstr "Заключить"
 msgid "Enclose in $IFDEF"
 msgstr "Заключить в $IFDEF"
 
+#: lazarusidestrconsts.lisencodingnumberoffilesfailed
+msgid "Number of files failed to convert: %d"
+msgstr "Не удалось преобразовать файлов: %d"
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 #| msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
@@ -8651,6 +8731,10 @@ msgstr "Фильтр"
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
 msgstr "Фильтр: %s"
+
+#: lazarusidestrconsts.lisfilterallmessagesofcertaintype
+msgid "Filter all messages of certain type"
+msgstr "Скрывать сообщения определённого типа"
 
 #: lazarusidestrconsts.lisfilterallmessagesoftype
 msgid "Filter all messages of type %s"
@@ -12830,6 +12914,10 @@ msgstr "Открыть пакет %s?"
 msgid "Open the project %s?"
 msgstr "Открыть проект %s?"
 
+#: lazarusidestrconsts.lisopentooloptions
+msgid "Open Tool Options"
+msgstr "Открыть диалог параметров"
+
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
 msgstr "Открыть страницу"
@@ -15356,6 +15444,14 @@ msgstr "Сохранить "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Коэффициент масштабирования:"
+
+#: lazarusidestrconsts.lisscanfilesinparentdir
+msgid "Scan files in parent directory"
+msgstr "Искать файлы в родительском каталоге"
+
+#: lazarusidestrconsts.lisscanfilesinparentdirhint
+msgid "Search for source files in sibling directories (parent directory and its children)"
+msgstr "Искать файлы исходного кода в соседних каталогах (родительском и его непосредственных подкаталогах)"
 
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"

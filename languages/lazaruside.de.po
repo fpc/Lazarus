@@ -6365,6 +6365,26 @@ msgstr "Komponente benötigt Vorgänger"
 msgid "Add comment after replacement"
 msgstr "Kommentar nach Ersetzung hinzufügen"
 
+#: lazarusidestrconsts.lisconvaddedunittousessection
+msgid "Added unit %s to uses section"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvaddingflagforregister
+msgid "Adding flag for \"Register\" procedure in unit %s."
+msgstr ""
+
+#: lazarusidestrconsts.lisconvbracketmissingfromreplfunc
+msgid "\")\" is missing from replacement function: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvbracketnotfound
+msgid "Bracket not found"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvconvertedfrom
+msgid " { *Converted from %s* }"
+msgstr ""
+
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
 msgstr "Ein Offset wird zur oberen Koordinate von Steuerelementen in sichtbaren Containern addiert"
@@ -6372,6 +6392,10 @@ msgstr "Ein Offset wird zur oberen Koordinate von Steuerelementen in sichtbaren 
 #: lazarusidestrconsts.lisconvcoordoffs
 msgid "Coordinate offsets"
 msgstr "Koordinaten-Offsets"
+
+#: lazarusidestrconsts.lisconvdeletedfile
+msgid "Deleted file %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvdelphiaddedcustomoptiondefines
 msgid "Added defines %s in custom options"
@@ -6522,6 +6546,10 @@ msgstr "Units zum Ersetzen in %s"
 msgid "LCL already has a unit with name %s. Delete local file %s?"
 msgstr "Die LCL enthält bereits eine Unit namens %s. Lokale Datei %s löschen?"
 
+#: lazarusidestrconsts.lisconvdprojfilenotsupportedyet
+msgid ".dproj file is not supported yet. The file is used by Delphi 2007 and newer. Please select a .dpr file for projects or .dpk file for packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisconversionerror
 msgid "Conversion error"
 msgstr "Konvertierungsfehler"
@@ -6538,6 +6566,10 @@ msgstr "Kodierung umwandeln"
 #: lazarusidestrconsts.lisconvertencodingofprojectspackages
 msgid "Convert encoding of projects/packages"
 msgstr "Kodierung von Projekten/Packages umwandeln"
+
+#: lazarusidestrconsts.lisconvertotherhint
+msgid "Other options affecting the conversion"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvertprojectorpackage
 msgid "Convert project or package"
@@ -6575,6 +6607,10 @@ msgstr "Delphi unterstützen"
 msgid "Use conditional compilation to support Delphi"
 msgstr "Verwende bedingte Kompilierung zur Unterstützung von Delphi"
 
+#: lazarusidestrconsts.lisconvfixedunitname
+msgid "Fixed unit name from %s to %s."
+msgstr ""
+
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
 msgstr "Funktionsersetzungen"
@@ -6599,6 +6635,42 @@ msgstr "Neuer Name"
 #: lazarusidestrconsts.lisconvparentcontainer
 msgid "Parent Container"
 msgstr "Eltern-Container"
+
+#: lazarusidestrconsts.lisconvproblemsfindingallunits
+msgid "Problems when trying to find all units from project file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvproblemsfixingincludefile
+msgid "Problems when fixing include files in file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvproblemsrepairingformfile
+msgid "Problems when repairing form file %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvrepairingincludefiles
+msgid "Repairing include files : "
+msgstr ""
+
+#: lazarusidestrconsts.lisconvreplacedcall
+msgid "Replaced call %s with %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvreplfuncparameternum
+msgid "Replacement function parameter number should be >= 1: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvshouldbefollowedbynumber
+msgid "\"$\" should be followed by a number: %s"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvstoppedbecausethereispackage
+msgid "Stopped because there already is a package with the same name"
+msgstr ""
+
+#: lazarusidestrconsts.lisconvthislogwassaved
+msgid "This log was saved to %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisconvtopoff
 msgid "Top offset"
@@ -6631,6 +6703,10 @@ msgstr "Zu ersetzende Units"
 #: lazarusidestrconsts.lisconvunknownprops
 msgid "Unknown properties"
 msgstr "Unbekannte Eigenschaften"
+
+#: lazarusidestrconsts.lisconvuserselectedtoendconversion
+msgid "User selected to end conversion with file %s"
+msgstr ""
 
 #: lazarusidestrconsts.liscopy
 msgctxt "lazarusidestrconsts.liscopy"
@@ -8023,6 +8099,10 @@ msgstr "Einschließen"
 msgid "Enclose in $IFDEF"
 msgstr "In $IFDEF einschließen"
 
+#: lazarusidestrconsts.lisencodingnumberoffilesfailed
+msgid "Number of files failed to convert: %d"
+msgstr ""
+
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 #| msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
@@ -8607,6 +8687,10 @@ msgstr "Filter"
 #: lazarusidestrconsts.lisfilter3
 msgid "Filter: %s"
 msgstr "Filter: %s"
+
+#: lazarusidestrconsts.lisfilterallmessagesofcertaintype
+msgid "Filter all messages of certain type"
+msgstr ""
 
 #: lazarusidestrconsts.lisfilterallmessagesoftype
 msgid "Filter all messages of type %s"
@@ -12761,6 +12845,10 @@ msgstr "Package %s öffnen?"
 msgid "Open the project %s?"
 msgstr "Projekt %s öffnen?"
 
+#: lazarusidestrconsts.lisopentooloptions
+msgid "Open Tool Options"
+msgstr ""
+
 #: lazarusidestrconsts.lisopenurl
 msgid "Open URL"
 msgstr ""
@@ -15251,6 +15339,14 @@ msgstr "Speichere "
 #: lazarusidestrconsts.lisscalingfactor
 msgid "Scaling factor:"
 msgstr "Skalierungsfaktor:"
+
+#: lazarusidestrconsts.lisscanfilesinparentdir
+msgid "Scan files in parent directory"
+msgstr ""
+
+#: lazarusidestrconsts.lisscanfilesinparentdirhint
+msgid "Search for source files in sibling directories (parent directory and its children)"
+msgstr ""
 
 #: lazarusidestrconsts.lisscanning
 msgid "Scanning"
