@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, Math, FileUtil, DB,
   LCLStrConsts, LCLIntf, LCLProc, LCLType, LMessages, LResources,
-  Controls, StdCtrls, Graphics, Grids, Dialogs, Themes, Variants;
+  Controls, StdCtrls, Graphics, Grids, Dialogs, Themes, Variants, Clipbrd;
 
 {$if FPC_FULLVERSION<20701}
   {$DEFINE noautomatedbookmark}
@@ -381,6 +381,7 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure DefaultDrawCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
     function  DefaultEditorStyle(const Style:TColumnButtonStyle; const F:TField): TColumnButtonStyle;
+    procedure DoCopyToClipboard; override;
     procedure DoExit; override;
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
@@ -2028,6 +2029,17 @@ begin
     Result := cbsAuto;
 end;
 
+procedure TCustomDBGrid.DoCopyToClipboard;
+var
+  F: TField;
+begin
+  // copy current field to clipboard
+  if not FDatalink.Active then
+    exit;
+  F := GetFieldFromGridColumn(Col);
+  if F<>nil then
+    Clipboard.AsText := F.AsString;
+end;
 
 procedure TCustomDBGrid.DoOnChangeBounds;
 begin
