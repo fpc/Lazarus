@@ -48,6 +48,8 @@ type
     function CreateBitmap(AStat: TStat): TBitmap;
     procedure AddToListView(AStat: TStat; ABmp: TBitmap);
     procedure DrawGraphs;
+    procedure MaybeOpenInLazIDE(const Fn: String);
+    procedure MaybeOpenInExternalEditor(const Fn: String);
   public
     { public declarations }
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats write FPoFamilyStats;
@@ -126,62 +128,22 @@ var
   anIndex: Integer;
   AStat: TStat;
   mr: TModalResult;
-{$ifndef POCHECKERSTANDALONE}
-  PageIndex,WindowIndex: Integer;
-  OpenFlags: TOpenFlags;
-{$else}
-  Proc: TProcessUtf8;
-{$endif}
 begin
-  {$ifndef POCHECKERSTANDALONE}
   anItem := Listview.GetItemAt(X, Y);
-  if Assigned(anItem) then begin
-    anIndex := anItem.Index;
-    AStat := FPoFamilyStats.Items[anIndex];
-    PageIndex:= -1;
-    WindowIndex:= -1;
-    OpenFlags:= [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros];
-    mr := LazarusIde.DoOpenEditorFile(AStat.PoName,PageIndex,WindowIndex,OpenFlags);
-    if mr = mrOk then begin
-      if MessageDlg('PoChecker',Format(sOpenFile,[AStat.PoName]),
-         mtConfirmation,mbOKCancel,0) = mrOk then begin
-           ModalResult:= mrOpenEditorFile; //To let caller know what we want to do
-         end;
-      end
-    else ShowMessage(Format(SOpenFail,[AStat.PoName]));
-  end;
-  {$else}
-  anItem := Listview.GetItemAt(X, Y);
+  {$ifdef pocheckerstandalone}
   if Assigned(anItem) and (Settings.ExternalEditorName <> '') then
+  {$else}
+  if Assigned(anItem) then
+  {$endif}
   begin
     anIndex := anItem.Index;
     AStat := FPoFamilyStats.Items[anIndex];
-    if MessageDlg('PoChecker',Format(sOpenFileExternal,[AStat.PoName,Settings.ExternalEditorName]),
-       mtConfirmation,mbOKCancel,0) = mrOk then
-    begin
-      Proc := TProcessUtf8.Create(nil);
-      try
-        Proc.Options := [];
-        Proc.Executable := Settings.ExternalEditorName;
-        Proc.Parameters.Add(AStat.PoName);
-        try
-          Proc.Execute;
-        except
-          on E: EProcess do
-          begin
-            debugln('TGraphStatForm.ListViewMouseUp:');
-            debugln('  Exception occurred of type ',E.ClassName);
-            debugln('  Message: ',E.Message);
-            ShowMessage(Format(SOpenFailExternal,[AStat.PoName,Settings.ExternalEditorName]));
-          end;
-        end;
-      finally
-        Proc.Free;
-      end;
-    end;
-
+    {$ifdef pocheckerstandalone}
+    MaybeOpenInExternalEditor(AStat.PoName);
+    {$else}
+    MaybeOpenInLazIDE(AStat.PoName);
+    {$endif}
   end;
-  {$endif}
 end;
 
 procedure TGraphStatForm.LoadConfig;
@@ -335,6 +297,62 @@ begin
   finally
     ListView.EndUpdate;
   end;
+end;
+
+procedure TGraphStatForm.MaybeOpenInExternalEditor(const Fn: String);
+{$ifdef POCHECKERSTANDALONE}
+var
+  Proc: TProcessUtf8;
+{$endif}
+begin
+  {$ifdef POCHECKERSTANDALONE}
+  if MessageDlg('PoChecker',Format(sOpenFileExternal,[Fn,Settings.ExternalEditorName]),
+     mtConfirmation,mbOKCancel,0) = mrOk then
+  begin
+    Proc := TProcessUtf8.Create(nil);
+    try
+      Proc.Options := [];
+      Proc.Executable := Settings.ExternalEditorName;
+      Proc.Parameters.Add(Fn);
+      try
+        Proc.Execute;
+      except
+        on E: EProcess do
+        begin
+          debugln('TGraphStatForm.ListViewMouseUp:');
+          debugln('  Exception occurred of type ',E.ClassName);
+          debugln('  Message: ',E.Message);
+          ShowMessage(Format(SOpenFailExternal,[Fn,Settings.ExternalEditorName]));
+        end;
+      end;
+    finally
+      Proc.Free;
+    end;
+  end;
+  {$endif}
+end;
+
+procedure TGraphStatForm.MaybeOpenInLazIDE(const Fn: String);
+{$ifndef POCHECKERSTANDALONE}
+var
+  mr: TModalResult;
+  PageIndex,WindowIndex: Integer;
+  OpenFlags: TOpenFlags;
+{$endif}
+begin
+  {$ifndef POCHECKERSTANDALONE}
+  PageIndex:= -1;
+  WindowIndex:= -1;
+  OpenFlags:= [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros];
+  mr := LazarusIde.DoOpenEditorFile(Fn,PageIndex,WindowIndex,OpenFlags);
+  if mr = mrOk then begin
+    if MessageDlg('PoChecker',Format(sOpenFile,[Fn]),
+       mtConfirmation,mbOKCancel,0) = mrOk then begin
+         ModalResult:= mrOpenEditorFile; //To let caller know what we want to do
+       end;
+    end
+  else ShowMessage(Format(SOpenFail,[Fn]));
+  {$endif}
 end;
 
 end.
