@@ -16,7 +16,7 @@ msgstr "po-Datei-Prüfer"
 
 #: pocheckerconsts.salllanguages
 msgid "All Languages"
-msgstr ""
+msgstr "Alle Sprachen"
 
 #: pocheckerconsts.scannotfindmaster
 msgid ""
@@ -56,7 +56,7 @@ msgstr "Zeige Prozente (nicht) übersetzter und ungeklärter Zeichenketten"
 
 #: pocheckerconsts.sclearlistbox
 msgid "Clear"
-msgstr ""
+msgstr "Leeren"
 
 #: pocheckerconsts.scopycaption
 msgid "Copy to clipboard"
@@ -64,7 +64,7 @@ msgstr "In Zwischenablage kopieren"
 
 #: pocheckerconsts.scurrenttest
 msgid "Test: %s on %s"
-msgstr ""
+msgstr "Test: %s auf %s"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
@@ -72,7 +72,8 @@ msgstr "[Zeile %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
 msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
-msgstr "Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
+msgstr ""
+"Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -184,6 +185,8 @@ msgid ""
 "Unable to open file:\n"
 "\"%s\"\n"
 msgstr ""
+"Kann Datei nicht öffnen:\n"
+"\"%s\"\n"
 
 #: pocheckerconsts.sopenfailexternal
 msgid ""
@@ -192,10 +195,14 @@ msgid ""
 "in external editor\n"
 "\"%s\"\n"
 msgstr ""
+"Kann Datei\n"
+"\"%s\"\n"
+"nicht in externem Editor\n"
+"\"%s\" öffnen\n"
 
 #: pocheckerconsts.sopenfile
 msgid "Open file %s in Ide Editor?"
-msgstr ""
+msgstr "Datei %s im IDE-Editor öffnen?"
 
 #: pocheckerconsts.sopenfileexternal
 msgid ""
@@ -204,6 +211,10 @@ msgid ""
 "in external editor:\n"
 "\"%s\"?\n"
 msgstr ""
+"Datei:\n"
+"\"%s\"\n"
+"in externem Editor:\n"
+"\"%s\" öffnen?\n"
 
 #: pocheckerconsts.soriginal
 msgid "Original"
@@ -246,7 +257,7 @@ msgstr ""
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
-msgstr ""
+msgstr "Verzeichnis durchsuchen"
 
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
@@ -266,7 +277,6 @@ msgid "Show statistics graph"
 msgstr "Zeige Statistik-Graphik"
 
 #: pocheckerconsts.sstathint
-#, fuzzy
 #| msgid ""
 #| "%3.1f%% Translated\n"
 #| "%3.1f%% UnTranslated\n"
@@ -280,6 +290,7 @@ msgstr ""
 "%3d übersetzt (%3.1f%%)\n"
 "%3d nicht übersetzt (%3.1f%%)\n"
 "%3d ungeklärt (%3.1f%%)\n"
+"%d Fehler in den gewählten Tests\n"
 
 #: pocheckerconsts.stotalerrors
 #| msgid "Total errors / warnings found: %d"
@@ -301,7 +312,7 @@ msgstr "Übersetzung"
 #: pocheckerconsts.stranslationstatistics
 #| msgid "Translation statistics for:"
 msgid "Translation statistics per language:"
-msgstr "Übersetzungsstatistikpro Sprache:"
+msgstr "Übersetzungsstatistik pro Sprache:"
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
@@ -309,9 +320,8 @@ msgstr "Alle abwählen"
 
 #: pocheckerconsts.sunselectlistbox
 msgid "Unselect"
-msgstr ""
+msgstr "Abwählen"
 
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
 msgstr "Nicht übersetzt"
-
