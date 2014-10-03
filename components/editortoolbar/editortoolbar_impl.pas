@@ -24,11 +24,11 @@ interface
 
 uses
   Classes
-  ,CodeToolManager
   ,jumpto_impl
   ,Forms
   ,ComCtrls
   ,Controls
+  ,ExtCtrls
   ,Menus
   ,MenuIntf
   ,IDEImagesIntf
@@ -58,10 +58,13 @@ type
     PM: TPopupMenu;
     PPUP: TPopupMenu;
     CfgButton: TToolButton;
+    FButtonList: TList;
+    UpdateTimer: TTimer;
     procedure   CreateEditorToolbar(AW: TForm; var ATB: TToolbar);
     function    CreateJumpItem(AJumpType: TJumpType; O: TComponent): TMenuItem;
     function    CreateProfileItem(ProfIndx: Integer; O: TComponent): TMenuItem;
     procedure   DoConfigureToolbar(Sender: TObject);
+    procedure   UpdateBar(Sender: TObject);
   protected
     procedure   MenuItemClick (Sender: TObject);
     procedure   AddButton(AMenuItem: TIDEMenuItem);
@@ -112,9 +115,7 @@ implementation
 {$R toolbar.res}    // all required images
 
 uses
-  LazIDEIntf
-  ,CustomCodeTool
-  ,Dialogs
+  Dialogs
   ,SysUtils
   ,LResources
   ,EdtTbConfigFrm
@@ -131,7 +132,7 @@ type
     FMenuItem: TIDEMenuItem;
   public
     procedure Click; override;
-    property MenuItem: TIDEMenuItem read FMenuItem write FMenuItem;
+    property IdeMenuItem: TIDEMenuItem read FMenuItem write FMenuItem;
   end;
 
 var
@@ -266,6 +267,27 @@ begin
     uEditorToolbarList.ReloadAll;
 end;
 
+procedure TEditorToolbar.UpdateBar(Sender: TObject);
+var
+  i,j: integer;
+  mi: TIDEMenuItem;
+begin
+  TB.BeginUpdate;
+  try
+    for i := TB.ButtonCount - 1 downto 0 do begin
+      if TB.Buttons[I].tag <> 0 then begin
+        j := TB.Buttons[I].tag-1;
+        mi := TIDEMenuItem(FButtonList.Items[j]);
+        if mi <> nil then begin
+            TB.Buttons[I].Enabled := mi.Enabled;
+            end;
+          end;
+      end;
+  finally
+    TB.EndUpdate;
+  end;
+end;
+
 procedure TEditorToolbar.MenuItemClick(Sender: TObject);
 var
   cfg: TConfigStorage;
@@ -294,6 +316,8 @@ var
 begin
   uEditorToolbarList.AddBar(Self);
   if assigned(TB) then exit;
+
+  FButtonList := TList.Create;
 
   sLocalizedProfileNames[0] := rsAll;
   sLocalizedProfileNames[1] := rsDesign;
@@ -328,12 +352,17 @@ begin
     TEdtTbConfigForm.Setup;
 
   AddCustomItems;
+  UpdateTimer := TTimer.Create(Self);
+  UpdateTimer.Interval := 500;
+  UpdateTimer.OnTimer := @UpdateBar;
+  UpdateTimer.Enabled := True;
 end;
 
 destructor TEditorToolbar.Destroy;
 begin
   uEditorToolbarList.DelBar(Self);
   FJumpHandler.Free;
+  FButtonList.Free;
   inherited Destroy;
 end;
 
@@ -347,6 +376,7 @@ procedure TEditorToolbar.AddButton(AMenuItem: TIDEMenuItem);
 var
   B: TEditToolBarToolButton;
   ACaption: string;
+  iPos: Integer;
 begin
   B := TEditToolBarToolButton.Create(TB);
   ACaption      := AMenuItem.Caption;
@@ -362,7 +392,9 @@ begin
     B.ImageIndex  := IDEImages.LoadImage(16, 'execute16');
 
   B.Style       := tbsButton;
-  B.MenuItem := AMenuItem;
+  B.IdeMenuItem := AMenuItem;
+  iPos := FButtonList.Add(AMenuItem);
+  B.Tag:= iPos+1;
   //B.OnClick     := AMenuItem.OnClick;
   PositionAtEnd(TB, B);
 end;
@@ -481,9 +513,8 @@ begin
     CfgButton.Style       := tbsButton;
     CfgButton.OnClick     := @DoConfigureToolbar;
     PositionAtEnd(TB, CfgButton);
-    
     AddDivider;
-    
+
     // JumpTo Button
     B := TToolbutton.Create(TB);
     B.Caption       := rsJumpTo;
