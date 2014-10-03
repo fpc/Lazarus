@@ -53,18 +53,12 @@ type
 implementation
 
 uses
-  CodeAtom
-  ,SrcEditorIntf
+  SrcEditorIntf
   ,LazIDEIntf
   ,Controls
   ,CodeCache
-  ,CustomCodeTool
   ,Dialogs
   ,SysUtils
-  ,LResources
-  ,Forms
-  ,ComCtrls
-  ,Menus
   ,editortoolbar_str
   ;
 

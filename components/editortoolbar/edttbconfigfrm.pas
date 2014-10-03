@@ -408,14 +408,11 @@ begin
 end;
 
 procedure TEdtTbConfigForm.miAllClick(Sender: TObject);
-var
-  aMask: Integer;
 begin
   if lvToolbar.ItemIndex = -1 then begin
     puMenuItems.Close;
     Exit
   end;
-  aMask:= StrToInt(lvToolbar.Selected.SubItems[0]);
   if miAll.Checked then begin
     lvToolbar.Selected.SubItems[0] := IntToStr(iAll);
     miDesign.Checked := False;
