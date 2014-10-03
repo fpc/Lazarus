@@ -1,17 +1,15 @@
-Requirements: FPC 2.3.1 revision 9169
+Requirements: FPC 2.4+
 
 This is the Lazarus support for the Free Pascal DBExport units.
 These units provide exports from any TDataset to various file formats.
 
 The package registers on the tab 'Data Export' the following components:
 
-TSCVExporter - Export to CSV (Comma Separated Values) file.
+TSCVExporter - Export to CSV (Comma Separated Values) text file.
 
-TFixedLengthExporter - Export to Fixed Length format file.
+TFixedLengthExporter - Export to Fixed Length format text file.
 
 TSimpleXMLExporter - Export to XML file (no UTF-8, just ASCII)
-
-TXMLXSDexporter - Export to various kinds of UTF-8 XML file formats (Microsoft Access, Microsoft Excel, ADO.NET, Delphi ClientDataset)
 
 TSimpleJSONExporter - Export to JSON file (no UTF-8, just ASCII)
 
@@ -19,7 +17,8 @@ TSQLExporter - Export data as a series of SQL insert/update statements.
 
 TFPDBFEport - Export to a DBF file.
 
-TXMLXSDExporter - Export to various kinds of UTF-8 XML file formats (Microsoft Access, Microsoft Excel, ADO.NET, Delphi ClientDataset)
+TXMLXSDExporter - Export to various kinds of UTF-8 XML file formats (Microsoft 
+Access, Microsoft Excel, ADO.NET, Delphi ClientDataset)
 
 TDataExporter - Dialog component which allows one to select a registered export
 format, configures the export settings, and exports the data. Right-click on
