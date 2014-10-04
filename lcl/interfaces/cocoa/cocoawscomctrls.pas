@@ -1059,7 +1059,7 @@ class procedure TCocoaWSTrackBar.SetOrientation(
 begin
   if (AOrientation = trHorizontal) and (ATrackBar.Height > ATrackBar.Width) then
     ATrackBar.Width := ATrackBar.Height + 1
-  else if (AOrientation = trVertical) and (ATrackBar.Width > ATrackBar.Height then
+  else if (AOrientation = trVertical) and (ATrackBar.Width > ATrackBar.Height) then
     ATrackBar.Height := ATrackBar.Width + 1;
 end;
 

@@ -61,6 +61,7 @@ type
     procedure ResignFirstResponder; virtual;
     procedure DidBecomeKeyNotification; virtual;
     procedure DidResignKeyNotification; virtual;
+    procedure SendOnChange; virtual;
 
     function DeliverMessage(var Msg): LRESULT; virtual; overload;
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; virtual; overload;
@@ -982,6 +983,11 @@ procedure TLCLCommonCallback.DidResignKeyNotification;
 begin
    LCLSendActivateMsg(Target, WA_INACTIVE, false);
    LCLSendKillFocusMsg(Target);
+end;
+
+procedure TLCLCommonCallback.SendOnChange;
+begin
+    SendSimpleMessage(Target, LM_CHANGED);
 end;
 
 function TLCLCommonCallback.DeliverMessage(var Msg): LRESULT;

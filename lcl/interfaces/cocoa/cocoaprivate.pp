@@ -53,6 +53,7 @@ type
     procedure ResignFirstResponder;
     procedure DidBecomeKeyNotification;
     procedure DidResignKeyNotification;
+    procedure SendOnChange;
     // non event methods
     function DeliverMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
     function GetPropStorage: TStringList;
@@ -3063,14 +3064,11 @@ begin
 end;
 
 procedure TCocoaSlider.sliderAction(sender: id);
-var
-  Msg: TLMessage;
 begin
   SnapToInteger();
   // OnChange event
-  FillChar(Msg, SizeOf(Msg), #0);
-  Msg.Msg := LM_CHANGED;
-  DeliverMessage(Msg);
+  if callback <> nil then
+    callback.SendOnChange();
 end;
 
 end.
