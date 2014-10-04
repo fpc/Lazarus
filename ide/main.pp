@@ -4395,6 +4395,7 @@ begin
     SaveEnvironment(true);
     // save shortcuts to editor options
     ExternalUserTools.SaveShortCuts(EditorOpts.KeyMap);
+    EditorOpts.Save;
     UpdateExternalUserToolsInMenu;
   end;
 end;
@@ -7576,12 +7577,15 @@ end;
 procedure TMainIDE.UpdateExternalUserToolsInMenu;
 var
   ToolCount: integer;
-
-  procedure CreateToolMenuItems;
-  var
-    Section: TIDEMenuSection;
-  begin
-    Section:=itmCustomTools;
+  Section: TIDEMenuSection;
+  CurMenuItem: TIDEMenuItem;
+  i: Integer;
+  ExtTool: TExternalUserTool;
+begin
+  ToolCount:=ExternalUserTools.Count;
+  Section:=itmCustomTools;
+  Section.BeginUpdate;
+  try
     // add enough menuitems
     while Section.Count-1<ToolCount do
       RegisterIDEMenuCommand(Section.GetPath,
@@ -7589,14 +7593,8 @@ var
     // delete unneeded menuitems
     while Section.Count-1>ToolCount do
       Section[Section.Count-1].Free;
-  end;
 
-  procedure SetToolMenuItems;
-  var
-    CurMenuItem: TIDEMenuItem;
-    i: Integer;
-    ExtTool: TExternalUserTool;
-  begin
+    // set caption and command
     for i:=0 to ToolCount-1 do begin
       CurMenuItem:=itmCustomTools[i+1]; // Note: the first menu item is the "Configure"
       ExtTool:=ExternalUserTools[i];
@@ -7606,12 +7604,9 @@ var
           EditorOpts.KeyMap.FindIDECommand(ecExtToolFirst+i);
       CurMenuItem.OnClick:=@mnuExternalUserToolClick;
     end;
+  finally
+    Section.EndUpdate;
   end;
-
-begin
-  ToolCount:=ExternalUserTools.Count;
-  CreateToolMenuItems;
-  SetToolMenuItems;
 end;
 
 function TMainIDE.PrepareForCompile: TModalResult;
