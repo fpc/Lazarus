@@ -8858,7 +8858,7 @@ begin
     raise Exception.Create(rsGridFileDoesNotExists);
   Cfg:=TXMLConfig.Create(nil);
   Try
-    Cfg.Filename := UTF8ToSys(FileName);
+    Cfg.Filename := FileName;
     LoadSub(Cfg);
   Finally
     FreeThenNil(Cfg);
@@ -8886,7 +8886,7 @@ begin
     DeleteFileUTF8(FileName);
   Cfg:=TXMLConfig.Create(nil);
   Try
-    Cfg.FileName := UTF8ToSys(FileName);
+    Cfg.FileName := FileName;
     SaveContent(Cfg);
     Cfg.Flush;
   Finally
