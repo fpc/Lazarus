@@ -23,6 +23,8 @@ var
   _RemoveDirUtf8       : function(const Dir: String): Boolean ;
   _GetAppConfigDirUTF8 : function(Global: Boolean; Create: boolean = false): string;
   _GetAppConfigFileUTF8: function(Global: Boolean; SubDir: boolean = false;CreateDir: boolean = false): string;
+  _GetShellLinkTarget  : function(const FileName: string): string;
+
 
 
 
@@ -153,6 +155,11 @@ begin
   Result:=Filename;
 end;
 
+function GetShellLinkTarget(const FileName: string): string;
+begin
+  Result := _GetShellLinkTarget(FileName);
+end;
+
 // ******** Start of AnsiString specific implementations ************
 
 {$ifndef WinCE}
@@ -276,6 +283,35 @@ begin
   if Dir = '' then exit;
   if not ForceDirectoriesUTF8(Dir) then
     raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Dir]));
+end;
+
+function GetShellLinkTargetAnsi(const FileName: string): string;
+var
+  ShellLinkA: IShellLinkA;
+  PersistFile: IPersistFile;
+  WideFileName: WideString;
+  AnsiPath: array [0 .. MAX_PATH] of Char;
+  WinFindData: WIN32_FIND_DATAA;
+begin
+  Result := FileName;
+  if (LowerCase(ExtractFileExt(FileName)) = '.lnk') then
+  begin
+    if (CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
+                         IShellLinkA, ShellLinkA) = S_OK) then
+    if (ShellLinkA.QueryInterface(IPersistFile, PersistFile) = S_OK) then
+    begin
+      WideFileName := Utf8ToUtf16(FileName);
+      FillChar(WinFindData{%H-}, SizeOf(WinFindData), 0);
+      if (PersistFile.Load(POleStr(WideFileName), STGM_READ) = S_OK) then
+      begin
+        if (ShellLinkA.GetPath(AnsiPath, Length(AnsiPath),
+                               WinFindData, SLGP_UNCPRIORITY) = S_OK) then
+        begin
+          Result := SysToUtf8(AnsiPath); // implicit conversion
+        end;
+      end;
+    end;
+  end;
 end;
 
 
@@ -745,6 +781,40 @@ begin
     raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Dir]));
 end;
 
+
+function GetShellLinkTargetWide(const FileName: string): string;
+{$IFnDEF WINCE}
+var
+  ShellLinkW: IShellLinkW;
+  PersistFile: IPersistFile;
+  WideFileName: WideString;
+  WidePath: array [0 .. MAX_PATH] of WideChar;
+  WinFindData: WIN32_FIND_DATAW;
+  {$ENDIF WINCE}
+begin
+  Result := FileName;
+  {$IFnDEF WINCE}
+  if (LowerCase(ExtractFileExt(FileName)) = '.lnk') then
+  begin
+    if (CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
+                         IShellLinkW, ShellLinkW) = S_OK) then
+    if (ShellLinkW.QueryInterface(IPersistFile, PersistFile) = S_OK) then
+    begin
+      WideFileName := Utf8ToUtf16(FileName);
+      FillChar(WinFindData{%H-}, SizeOf(WinFindData), 0);
+      if (PersistFile.Load(POleStr(WideFileName), STGM_READ) = S_OK) then
+      begin
+        if (ShellLinkW.GetPath(WidePath, Length(WidePath),
+                               @WinFindData, SLGP_UNCPRIORITY) = S_OK) then
+        begin
+          Result := Utf16toUtf8(WidePath); // implicit conversion
+        end;
+      end;
+    end;
+  end;
+  {$ENDIF WINCE}
+end;
+
 // ******** End of WideString specific implementations ************
 
 
@@ -1064,6 +1134,7 @@ begin
     _FindNextUtf8 := @FindNextAnsi;
     _GetAppConfigDirUtf8 := @GetAppConfigDirAnsi;
     _GetAppConfigFileUtf8 := @GetAppConfigFileAnsi;
+    _GetShellLinkTarget := @GetShellLinkTargetAnsi;
   end
   else
   {$endif}
@@ -1086,6 +1157,7 @@ begin
     _FindNextUtf8 := @FindNextWide;
     _GetAppConfigDirUtf8 := @GetAppConfigDirWide;
     _GetAppConfigFileUtf8 := @GetAppConfigFileWide;
+    _GetShellLinkTarget := @GetShellLinkTargetWide;
   end;
 end;
 

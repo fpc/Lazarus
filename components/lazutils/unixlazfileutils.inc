@@ -473,6 +473,10 @@ begin
     raise EInOutError.Create(Format(lrsUnableToCreateConfigDirectoryS,[Dir]));
 end;
 
+function GetShellLinkTarget(const FileName: string): string;
+begin
+  Result := Filename;
+end;
 
 procedure InitLazFileUtils;
 begin

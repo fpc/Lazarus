@@ -107,6 +107,9 @@ function GetFileDescription(const AFilename: string): string;
 function ReadAllLinks(const Filename: string;
                       ExceptionOnError: boolean): string; // if a link is broken returns ''
 function TryReadAllLinks(const Filename: string): string; // if a link is broken returns Filename
+function GetShellLinkTarget(const FileName: string): string;
+
+
 type
   TPhysicalFilenameOnError = (pfeException,pfeEmpty,pfeOriginal);
 function GetPhysicalFilename(const Filename: string;
@@ -147,7 +150,7 @@ implementation
 // to get more detailed error messages consider the os
 uses
 {$IFDEF Windows}
-  Windows {$IFnDEF WinCE}, WinDirs{$ENDIF};
+  Windows {$IFnDEF WinCE}, ShlObj, ActiveX, WinDirs{$ENDIF};
 {$ELSE}
   {$IFDEF darwin}
   MacOSAll,
