@@ -5908,9 +5908,11 @@ var
         gtk_misc_set_alignment(GTK_MISC(LabelWidget), 0.0, 0.5)
       else
         gtk_misc_set_alignment(GTK_MISC (LabelWidget), 1.0, 0.5);
-    end else
-    if LabelWidget <> nil then
+    end
+    else if LabelWidget <> nil then begin
       gtk_widget_destroy(PGtkWidget(LabelWidget));
+      g_object_set_data(PGObject(MenuItemWidget), 'LCLShortCutLabel', nil);
+    end;
   end;
 
   procedure CreateIcon;
