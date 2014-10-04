@@ -432,17 +432,18 @@ type
 
 
   TCocoaComboBox = objcclass;
+  TCocoaReadOnlyComboBox = objcclass;
 
   { TCocoaComboBoxList }
 
   TCocoaComboBoxList = class(TStringList)
-  private
-    FOwner: TCocoaComboBox;
   protected
+    FOwner: TCocoaComboBox;
+    FReadOnlyOwner: TCocoaReadOnlyComboBox;
     procedure Changed; override;
   public
-    constructor Create(AOwner: TCocoaComboBox);
-    property Owner: TCocoaComboBox read fOwner;
+    // Pass only 1 owner and nil for the other ones
+    constructor Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
   end;
 
   IComboboxCallBack = interface(ICommonCallBack)
@@ -472,6 +473,23 @@ type
     procedure comboBoxWillDismiss(notification: NSNotification); message 'comboBoxWillDismiss:';
     procedure comboBoxSelectionDidChange(notification: NSNotification); message 'comboBoxSelectionDidChange:';
     procedure comboBoxSelectionIsChanging(notification: NSNotification); message 'comboBoxSelectionIsChanging:';
+    function lclIsHandle: Boolean; override;
+  end;
+
+  { TCocoaReadOnlyComboBox }
+
+  TCocoaReadOnlyComboBox = objcclass(NSPopUpButton)
+  public
+    callback: IComboboxCallBack;
+    list: TCocoaComboBoxList;
+    resultNS: NSString;  //use to return values to combo
+    function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
+    procedure dealloc; override;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+    procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
   end;
 
@@ -2833,14 +2851,29 @@ end;
 { TCocoaComboBoxList }
 
 procedure TCocoaComboBoxList.Changed;
+var
+  i: Integer;
+  nsstr: NSString;
 begin
-  fOwner.reloadData;
+  if FOwner <> nil then
+    fOwner.reloadData;
+  if FReadOnlyOwner <> nil then
+  begin
+    FReadOnlyOwner.removeAllItems();
+    for i := 0 to Count-1 do
+    begin
+      nsstr := NSStringUtf8(Strings[i]);
+      FReadOnlyOwner.addItemWithTitle(nsstr);
+      nsstr.release;
+    end;
+  end;
   inherited Changed;
 end;
 
-constructor TCocoaComboBoxList.Create(AOwner:TCocoaComboBox);
+constructor TCocoaComboBoxList.Create(AOwner: TCocoaComboBox; AReadOnlyOwner: TCocoaReadOnlyComboBox);
 begin
-  fOwner:=AOwner;
+  FOwner := AOwner;
+  FReadOnlyOwner := AReadOnlyOwner;
 end;
 
 { TCocoaComboBox }
@@ -2926,6 +2959,58 @@ end;
 procedure TCocoaComboBox.comboBoxSelectionIsChanging(notification: NSNotification);
 begin
   callback.ComboBoxSelectionIsChanging;
+end;
+
+{ TCocoaReadOnlyComboBox }
+
+function TCocoaReadOnlyComboBox.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaReadOnlyComboBox.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  callback.BecomeFirstResponder;
+end;
+
+function TCocoaReadOnlyComboBox.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  callback.ResignFirstResponder;
+end;
+
+procedure TCocoaReadOnlyComboBox.dealloc;
+begin
+  if Assigned(list) then
+  begin
+    list.Free;
+    list:=nil;
+  end;
+  if resultNS <> nil then
+    resultNS.release;
+  inherited dealloc;
+end;
+
+function TCocoaReadOnlyComboBox.lclGetCallback: ICommonCallback;
+begin
+  Result := callback;
+end;
+
+procedure TCocoaReadOnlyComboBox.lclClearCallback;
+begin
+  callback := nil;
+end;
+
+procedure TCocoaReadOnlyComboBox.resetCursorRects;
+begin
+  if not callback.resetCursorRects then
+    inherited resetCursorRects;
+end;
+
+function TCocoaReadOnlyComboBox.lclIsHandle: Boolean;
+begin
+  Result:=true;
 end;
 
 { TCocoaMenu }
