@@ -879,7 +879,7 @@ begin
   SameDfmCheckBox.Hint:=lisConvertTargetSameDfmFileHint;
   // Other
   OtherOptGroupBox.Caption:=lisCEOtherGroup;
-  OtherOptGroupBox.Hint:=lisConvertTargetHint;
+  OtherOptGroupBox.Hint:=lisConvertOtherHint;
   DelphiDefineCheckBox.Caption:=lisAddDelphiDefine;
   DelphiDefineCheckBox.Hint:=lisAddDelphiDefineHint;
   BackupCheckBox.Caption:=lisBackupChangedFiles;
