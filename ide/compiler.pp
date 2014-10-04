@@ -322,8 +322,9 @@ begin
   TargetCPU:=AProject.CompilerOptions.GetEffectiveTargetCPU;
   if TargetCPU<>GetCompiledTargetCPU then
     Title+=Format(lisCPU, [TargetCPU]);
-  TargetFilename:=ExtractFilename(
-          AProject.CompilerOptions.CreateTargetFilename(AProject.MainFilename));
+  TargetFilename:=AProject.GetShortFilename(
+          AProject.CompilerOptions.CreateTargetFilename(AProject.MainFilename),
+          false);
   if TargetFilename<>'' then
     Title+=Format(lisTarget2, [TargetFilename]);
 
