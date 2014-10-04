@@ -2111,7 +2111,10 @@ begin
         and ((lDefaultControl.Parent = nil) or (lDefaultControl.Parent.CanFocus))
         and lDefaultControl.Enabled and lDefaultControl.Visible then
       begin
-        //debugln('TApplication.ControlKeyUp VK_RETURN ', Acontrol.Name);
+        //debugln('TApplication.DoReturnKey VK_RETURN ', Acontrol.Name);
+        //Setting Key to VK_UKNOWN prevents the calling of KeyUpAfterInterface,
+        //which tiggers EditingDone when Key = VK_RETURN, so we call it here
+        AControl.EditingDone;
         lDefaultControl.ExecuteDefaultAction;
         Key := VK_UNKNOWN;
       end;
