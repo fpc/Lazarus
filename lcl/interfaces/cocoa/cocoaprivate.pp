@@ -2950,27 +2950,36 @@ const
     (kHIThemeTextHorizontalFlushLeft,kHIThemeTextHorizontalFlushRight,kHIThemeTextHorizontalFlushCenter);
   StatusHeight = 15;
 begin
-  cr:=RectToCGRect(r);
-  FillChar(info{%H-}, sizeof(info), 0);
-  info.kind:=kThemeListHeaderButton;
-  info.state:=kThemeStateActive;
-  HIThemeDrawButton( cr, info, ctx, 0, nil);
+  // Otherwise the text gets printed upside down!
+  CGContextTranslateCTM(Ctx, 0, StatusHeight);
+  CGContextScaleCTM(Ctx, 1, -1);
+  try
+    cr:=RectToCGRect(r);
+    FillChar(info{%H-}, sizeof(info), 0);
+    info.kind:=kThemeListHeaderButton;
+    info.state:=kThemeStateActive;
+    HIThemeDrawButton( cr, info, ctx, 0, nil);
 
-  cr.origin.x:=cr.origin.x+2;
-  cr.origin.y:=cr.origin.y+1;
-  cr.size.width:=cr.size.width-6;
-  if data.Text <> nil then
-    lStr := NSStringToString(data.Text);
-  if (data.Text <> nil) and (lStr <> '') then
-  begin
-    FillChar(txtinfo{%H-}, sizeof(txtinfo), 0);
-    txtinfo.version:=1;
-    //txtinfo.fontID:=kThemeMiniSystemFont;
-    txtinfo.horizontalFlushness:=txtHorzFlush[data.align];
-    txtinfo.fontID:=kThemeSmallSystemFont;
-    txtinfo.state:=kThemeStateActive;
-    HIThemeSetTextFill(kThemeTextColorListView, nil, ctx, 0);
-    HIThemeDrawTextBox(CFStringRef(data.Text), cr, txtinfo, ctx, 0);
+    cr.origin.x:=cr.origin.x+2;
+    cr.origin.y:=cr.origin.y+1;
+    cr.size.width:=cr.size.width-6;
+    if data.Text <> nil then
+      lStr := NSStringToString(data.Text);
+    if (data.Text <> nil) and (lStr <> '') then
+    begin
+      FillChar(txtinfo{%H-}, sizeof(txtinfo), 0);
+      txtinfo.version:=1;
+      //txtinfo.fontID:=kThemeMiniSystemFont;
+      txtinfo.horizontalFlushness:=txtHorzFlush[data.align];
+      txtinfo.fontID:=kThemeSmallSystemFont;
+      txtinfo.state:=kThemeStateActive;
+      HIThemeSetTextFill(kThemeTextColorListView, nil, ctx, 0);
+      HIThemeDrawTextBox(CFStringRef(data.Text), cr, txtinfo, ctx, 0);
+    end;
+  finally
+    // It is very important to restore the coordinates ;)
+    CGContextScaleCTM(Ctx, 1, -1);
+    CGContextTranslateCTM(Ctx, 0, -1 * StatusHeight);
   end;
 end;
 
