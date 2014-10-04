@@ -934,9 +934,6 @@ const
 type
   THackDBGType = class(TGDBType) end;
 
-type
-  TGDBMIEvaluationState = (esInvalid, esRequested, esValid);
-
 const
   // priorities for commands
   GDCMD_PRIOR_IMMEDIATE = 999; // run immediate (request without callback)
@@ -1155,7 +1152,6 @@ type
   {%region      *****  Register  *****   }
 
   TStringArray = Array of string;
-  TBoolArray = Array of Boolean;
 
   TGDBMIRegisterSupplier = class;
 
@@ -2980,13 +2976,13 @@ constructor TGDBMIDebuggerCommandStack.Create(AOwner: TGDBMIDebugger;
 begin
   inherited Create(AOwner);
   FCallstack := ACallstack;
-  FCallstack.AddFreeeNotification(@DoCallstackFreed);
+  FCallstack.AddFreeNotification(@DoCallstackFreed);
 end;
 
 destructor TGDBMIDebuggerCommandStack.Destroy;
 begin
   if FCallstack <> nil
-  then FCallstack.RemoveFreeeNotification(@DoCallstackFreed);
+  then FCallstack.RemoveFreeNotification(@DoCallstackFreed);
   inherited Destroy;
 end;
 
@@ -8236,6 +8232,7 @@ begin
     if not ConvertPascalExpression(S) then Exit(False);
   end;
 
+  R := GDBMIExecResultDefault;
   Result := ExecuteCommandFull('-gdb-set var %s := %s', [AExpression, S], [cfscIgnoreError], @GDBModifyDone, 0, R)
         and (R.State <> dsError);
 
@@ -8370,6 +8367,7 @@ begin
     Exit;
   end;
 
+  R := GDBMIExecResultDefault;
   Result := ExecuteCommand('-symbol-list-lines %s', [ASource], [cfscIgnoreError, cfNoThreadContext], R)
         and (R.State <> dsError);
   // if we have an .inc file then search for filename only since there are some
@@ -12576,7 +12574,7 @@ var
 
         end;
 
-        ResultInfo.Value.AsPointer := Pointer(PtrUint(Addr));
+        ResultInfo.Value.AsPointer := {%H-}Pointer(PtrUint(Addr));
         AnExpression := Format('$%x', [Addr]);
         if PrintableString <> ''
         then AnExpression := AnExpression + ' ' + PrintableString;
@@ -12996,13 +12994,13 @@ begin
   Create(AOwner, AWatchValue.Watch.Expression, AWatchValue.DisplayFormat);
   EvalFlags := AWatchValue.EvaluateFlags;
   FWatchValue := AWatchValue;
-  FWatchValue.AddFreeeNotification(@DoWatchFreed);
+  FWatchValue.AddFreeNotification(@DoWatchFreed);
 end;
 
 destructor TGDBMIDebuggerCommandEvaluate.Destroy;
 begin
   if FWatchValue <> nil
-  then FWatchValue.RemoveFreeeNotification(@DoWatchFreed);
+  then FWatchValue.RemoveFreeNotification(@DoWatchFreed);
   if FTypeInfoAutoDestroy
   then FreeAndNil(FTypeInfo);
   inherited Destroy;
