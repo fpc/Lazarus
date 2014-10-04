@@ -272,6 +272,10 @@ var
   Abort : Boolean;
   Tool: TAbstractExternalTool;
   FPCParser: TFPCParser;
+  Title: String;
+  TargetOS: String;
+  TargetCPU: String;
+  TargetFilename: String;
 begin
   Result:=mrCancel;
   if ConsoleVerbosity>=0 then
@@ -309,7 +313,21 @@ begin
   if ConsoleVerbosity>=0 then
     DebugLn('[TCompiler.Compile] CmdLine="',CompilerFilename+CmdLine,'"');
 
-  Tool:=ExternalToolList.Add(lisCompileProject);
+  Title:=lisCompileProject;
+  if AProject.BuildModes.Count>1 then
+    Title+=Format(lisMode, [AProject.ActiveBuildMode.Identifier]);
+  TargetOS:=AProject.CompilerOptions.GetEffectiveTargetOS;
+  if TargetOS<>GetCompiledTargetOS then
+    Title+=Format(lisOS, [TargetOS]);
+  TargetCPU:=AProject.CompilerOptions.GetEffectiveTargetCPU;
+  if TargetCPU<>GetCompiledTargetCPU then
+    Title+=Format(lisCPU, [TargetCPU]);
+  TargetFilename:=ExtractFilename(
+          AProject.CompilerOptions.CreateTargetFilename(AProject.MainFilename));
+  if TargetFilename<>'' then
+    Title+=Format(lisTarget2, [TargetFilename]);
+
+  Tool:=ExternalToolList.Add(Title);
   Tool.Reference(Self,ClassName);
   try
     Tool.Data:=TIDEExternalToolData.Create(IDEToolCompileProject,'',AProject.ProjectInfoFile);
