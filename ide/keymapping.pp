@@ -3060,7 +3060,9 @@ begin
     while NewCount>fExtToolCount do begin
       ToolName:=Format(srkmecExtTool,[fExtToolCount]);
       cmd:=ecExtToolFirst+fExtToolCount;
-      CmdRel:=TKeyCommandRelation.Create(ExtToolCat, ToolName, ToolName, cmd);
+      CmdRel:=TKeyCommandRelation.Create(ExtToolCat,
+        Format('External tool %d',[fExtToolCount]), // keep name untranslated
+        ToolName, cmd);
       FRelations.Add(CmdRel);
       inc(fExtToolCount);
     end;
