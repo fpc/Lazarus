@@ -25,10 +25,10 @@ type
 
   TCocoaWSStatusBar = class(TWSStatusBar)
   published
-    //class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
-    //class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
-    //class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
-    //class procedure Update(const AStatusBar: TStatusBar); override;
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
+    class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure Update(const AStatusBar: TStatusBar); override;
   end;
 
   { TCocoaWSTabSheet }
@@ -208,6 +208,39 @@ type
   TLCLListViewCallBackClass = class of TLCLListViewCallback;
 
 implementation
+
+{ TCocoaWSStatusBar }
+
+class function TCocoaWSStatusBar.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): TLCLIntfHandle;
+var
+  lResult: TCocoaStatusBar;
+begin
+  Result := 0;
+  lResult := TCocoaStatusBar.alloc.lclInitWithCreateParams(AParams);
+  if not Assigned(lResult) then Exit;
+  Result := TLCLIntfHandle(lResult);
+
+  lResult.callback := TLCLCommonCallback.Create(lResult, AWinControl);
+  lResult.StatusBar := TStatusBar(AWinControl);
+end;
+
+class procedure TCocoaWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+begin
+
+end;
+
+class procedure TCocoaWSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+begin
+
+end;
+
+class procedure TCocoaWSStatusBar.Update(const AStatusBar: TStatusBar);
+begin
+
+end;
 
 { TCocoaWSCustomPage }
 

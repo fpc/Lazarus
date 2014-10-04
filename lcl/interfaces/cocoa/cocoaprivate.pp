@@ -430,6 +430,23 @@ type
     function lclIsHandle: Boolean; override;
   end;
 
+  TStatusItemData = record
+    Text  : NSString;
+    Width : Integer;
+    Align : TAlignment;
+  end;
+
+  TStatusItemDataArray = array of TStatusItemData;
+
+  { TCocoaStatusBar }
+
+  TCocoaStatusBar = objcclass(TCocoaCustomControl)
+  public
+    StatusBar : TStatusBar;
+    procedure drawRect(dirtyRect: NSRect); override;
+    procedure DrawSection(Ctx: CGContextRef; const r: TRect; data: TStatusItemData); message 'DrawSection:r:data:';
+    //procedure DrawStatusBar(Ctx: CGContextRef; const bnd: TRect; Items: array of TStatusItemData); message 'DrawStatusBar:bnd:Items:';
+  end;
 
   TCocoaComboBox = objcclass;
   TCocoaReadOnlyComboBox = objcclass;
@@ -2846,6 +2863,115 @@ constructor TCocoaStringList.Create(AOwner:TCocoaListBox);
 begin
   Owner:=AOwner;
   inherited Create;
+end;
+
+{ TCocoaStatusBar }
+
+procedure TCocoaStatusBar.drawRect(dirtyRect: NSRect);
+
+  procedure DrawStatusBar(Ctx: CGContextRef;
+    const bnd: TRect; Items: TStatusItemDataArray);
+  var
+    i   : Integer;
+    x   : Integer;
+    xn  : Integer;
+    r   : TRect;
+  const
+    dummy : TStatusItemData = (Text: nil; Width:0; align: taLeftJustify);
+    ExtraWidth=2;
+  begin
+    if length(Items) = 0 then
+    begin
+      DrawSection(Ctx, bnd, dummy);
+      //if Assigned(OnItemDraw) then OnItemDraw(-1, bnd, dummy);
+      Exit;
+    end;
+
+    x := bnd.Left;
+    for i := 0 to length(Items)-1 do
+    begin
+      xn := x + Items[i].Width;
+      r := Types.Rect(x, bnd.Top, xn+ExtraWidth, bnd.Bottom);
+      if i = length(Items)-1 then
+        r := Types.Rect(x, bnd.Top, bnd.Right, bnd.Bottom);
+      DrawSection(Ctx, r, Items[i]);
+      dec(r.Right, ExtraWidth);
+      //if Assigned(OnItemDraw) then OnItemDraw(i, r, Items[i]);
+      x := xn;
+    end;
+  end;
+
+var
+  R         : TRect;
+  items     : array of TStatusItemData;
+  i         : Integer;
+  Ctx: CGContextRef;
+begin
+  //inherited NSControl.drawRect(dirtyRect);
+  if callback = nil then Exit;
+  r := lclClientFrame();
+  if StatusBar.SimplePanel then
+  begin
+    SetLength(items, 1);
+    items[0].Width := r.Right-r.Left;
+    items[0].Text := NSStringUtf8(StatusBar.SimpleText);
+    items[0].Align := taLeftJustify; //todo: select proper Justify based on lanuage text-mode (r2l, l2r)!
+  end
+  else
+  begin
+    SetLength(items, StatusBar.Panels.Count);
+    for i:=0 to length(items)-1 do
+    begin
+      items[i].Width := StatusBar.Panels[i].Width;
+      items[i].Text := NSStringUtf8(StatusBar.Panels[i].Text);
+      items[i].Align := StatusBar.Panels[i].Alignment;
+    end;
+  end;
+  Ctx := NSGraphicsContext.currentContext().graphicsPort();
+
+  DrawStatusBar(Ctx, r, items);
+
+  // Release all NSStrings
+  for i:=0 to length(items)-1 do
+  begin
+    items[i].Text.release;
+  end;
+end;
+
+procedure TCocoaStatusBar.DrawSection(Ctx: CGContextRef; const r: TRect;
+  data: TStatusItemData);
+var
+  cr    : CGRect;
+  info  : HIThemeButtonDrawInfo;
+  txtinfo : HIThemeTextInfo;
+  lStr: string;
+const
+  txtHorzFlush : array [TAlignment] of Integer =
+    (kHIThemeTextHorizontalFlushLeft,kHIThemeTextHorizontalFlushRight,kHIThemeTextHorizontalFlushCenter);
+  StatusHeight = 15;
+begin
+  cr:=RectToCGRect(r);
+  FillChar(info{%H-}, sizeof(info), 0);
+  info.kind:=kThemeListHeaderButton;
+  info.state:=kThemeStateActive;
+  HIThemeDrawButton( cr, info, ctx, 0, nil);
+
+  cr.origin.x:=cr.origin.x+2;
+  cr.origin.y:=cr.origin.y+1;
+  cr.size.width:=cr.size.width-6;
+  if data.Text <> nil then
+    lStr := NSStringToString(data.Text);
+  if (data.Text <> nil) and (lStr <> '') then
+  begin
+    FillChar(txtinfo{%H-}, sizeof(txtinfo), 0);
+    txtinfo.version:=1;
+    //txtinfo.fontID:=kThemeMiniSystemFont;
+    txtinfo.horizontalFlushness:=txtHorzFlush[data.align];
+    txtinfo.fontID:=kThemeSmallSystemFont;
+    txtinfo.state:=kThemeStateActive;
+    HIThemeSetTextFill(kThemeTextColorListView, nil, ctx, 0);
+    HIThemeDrawTextBox(CFStringRef(data.Text), cr, txtinfo, ctx, 0);
+  end;
 end;
 
 { TCocoaComboBoxList }
