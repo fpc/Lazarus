@@ -96,6 +96,7 @@ begin
   LogMemo.Lines.Assign(FLog);
   GraphStatBtn.Visible := (PoFamilyStats <> nil) and (PoFamilyStats.Count > 0);
   LoadConfig;
+  WindowState := Settings.ResultsFormWindowState;
 end;
 
 procedure TResultDlgForm.GraphStatBtnClick(Sender: TObject);
@@ -155,7 +156,11 @@ procedure TResultDlgForm.SaveConfig;
 begin
   //debugln('TResultDlgForm.SaveConfig: BoundsRect = ',dbgs(BoundsRect));
   if not Assigned(FSettings) then Exit;
-  Settings.ResultsFormGeometry := BoundsRect;
+  Settings.ResultsFormWindowState := WindowState;
+  if (WindowState = wsNormal) then
+    Settings.ResultsFormGeometry := BoundsRect
+  else
+    Settings.ResultsFormGeometry := Rect(RestoredLeft, RestoredTop, RestoredLeft + RestoredWidth, RestoredTop + RestoredHeight);
 end;
 
 end.

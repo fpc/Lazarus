@@ -5,9 +5,9 @@ unit PoCheckerSettings;
 interface
 
 uses
-  Classes, SysUtils, LazConfigStorage,
+  Classes, SysUtils, LazConfigStorage, Forms,
   {$ifdef POCHECKERSTANDALONE}
-  PoCheckerXMLConfig, Forms,
+  PoCheckerXMLConfig,
   {$else}
   BaseIDEIntf,
   {$endif}
@@ -22,7 +22,10 @@ type
     FConfig: TConfigStorage;
     FExternalEditorName: String;
     FFilename: String;
+    FGraphFormWindowState: TWindowState;
+    FMainFormWindowState: TWindowState;
     FOpenDialogFilename: String;
+    FResultsFormWindowState: TWindowState;
     FSelectDirectoryFilename: String;
     FTestTypes: TPoTestTypes;
     FTestOptions: TPoTestOptions;
@@ -77,6 +80,9 @@ type
     property MainFormGeometry: TRect read FMainFormGeometry write FMainFormGeometry;
     property ResultsFormGeometry: TRect read FResultsFormGeometry write FResultsFormGeometry;
     property GraphFormGeometry: TRect read FGraphFormGeometry write FGraphFormGeometry;
+    property MainFormWindowState: TWindowState read FMainFormWindowState write FMainFormWindowState;
+    property ResultsFormWindowState: TWindowState read FResultsFormWindowState write FResultsFormWindowState;
+    property GraphFormWindowState: TWindowState read FGraphFormWindowState write FGraphFormWindowState;
   end;
 
 function DbgS(PoTestTypes: TPoTestTypes): String; overload;
@@ -273,10 +279,20 @@ begin
 end;
 
 procedure TPoCheckerSettings.LoadWindowsGeometry;
+function IntToWindowState(WSInt: Integer): TWindowState;
+begin
+  if (WSInt in [Ord(Low(TWindowState))..Ord(High(TWindowState))]) then
+    Result := TWindowState(WSInt)
+  else
+    Result := wsNormal;
+end;
 begin
   FConfig.GetValue(pWindowsGeometry+'MainForm/Value',FMainFormGeometry,DefaultRect);
+  FMainFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'MainForm/WindowState/Value', Ord(wsNormal)));
   FConfig.GetValue(pWindowsGeometry+'ResultsForm/Value',FResultsFormGeometry,DefaultRect);
+  FResultsFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'MainForm/WindowState/Value', Ord(wsNormal)));
   FConfig.GetValue(pWindowsGeometry+'GraphForm/Value',FGraphFormGeometry,DefaultRect);
+  FGraphFormWindowState := IntToWindowState(FConfig.GetValue(pWindowsGeometry+'MainForm/WindowState/Value', Ord(wsNormal)));
 end;
 
 function TPoCheckerSettings.LoadExternalEditorName: String;
@@ -365,8 +381,11 @@ end;
 procedure TPoCheckerSettings.SaveWindowsGeometry;
 begin
   FConfig.SetDeleteValue(pWindowsGeometry+'MainForm/Value',FMainFormGeometry,DefaultRect);
+  FConfig.SetDeleteValue(pWindowsGeometry+'MainForm/WindowState/Value',Ord(FMainFormWindowState), Ord(wsNormal));
   FConfig.SetDeleteValue(pWindowsGeometry+'ResultsForm/Value',FResultsFormGeometry,DefaultRect);
+  FConfig.SetDeleteValue(pWindowsGeometry+'ResultsForm/WindowState/Value',Ord(FResultsFormWindowState), Ord(wsNormal));
   FConfig.SetDeleteValue(pWindowsGeometry+'GraphForm/Value',FGraphFormGeometry,DefaultRect);
+  FConfig.SetDeleteValue(pWindowsGeometry+'GraphForm/WindowState/Value',Ord(FGraphFormWindowState), Ord(wsNormal));
 end;
 
 procedure TPoCheckerSettings.SaveExternalEditorName;

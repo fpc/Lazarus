@@ -95,6 +95,7 @@ begin
   FOldHintHidePause := Application.HintHidePause;
   Application.HintHidePause := 5000;
   LoadConfig;
+  WindowState := Settings.GraphFormWindowState;
 end;
 
 procedure TGraphStatForm.ListViewMouseMove(Sender: TObject; Shift: TShiftState;
@@ -164,7 +165,11 @@ procedure TGraphStatForm.SaveConfig;
 begin
   //debugln('TGraphStatForm.SaveConfig: BoundsRect = ',dbgs(BoundsRect));
   if not Assigned(FSettings) then Exit;
-  Settings.GraphFormGeometry := BoundsRect;
+  Settings.GraphFormWindowState := WindowState;
+  if (WindowState = wsNormal) then
+    Settings.GraphFormGeometry := BoundsRect
+  else
+    Settings.GraphFormGeometry := Rect(RestoredLeft, RestoredTop, RestoredLeft + RestoredWidth, RestoredTop + RestoredHeight);
 end;
 
 procedure TGraphStatForm.FormCreate(Sender: TObject);

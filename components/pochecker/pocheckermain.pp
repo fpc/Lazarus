@@ -53,6 +53,7 @@ type
     procedure ChildPoListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure ClearChildBtnClick(Sender: TObject);
     procedure ClearMasterBtnClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure LangFilterChange(Sender: TObject);
     procedure MasterPoListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
@@ -314,6 +315,11 @@ begin
   MasterPoListBox.Clear;
   if (ChildPoListBox.ItemIndex = -1) then
     SetSelectedPoName('');
+end;
+
+procedure TPoCheckerForm.FormShow(Sender: TObject);
+begin
+  WindowState := FPoCheckerSettings.MainFormWindowState;
 end;
 
 procedure TPoCheckerForm.MasterPoListBoxDrawItem(Control: TWinControl;
@@ -749,11 +755,6 @@ begin
     ARect := FitToRect(ARect, Screen.WorkAreaRect);
     BoundsRect := ARect;
   end;
-
-  //DebugLn('  TestOptions after loading = ');
-  //DebugLn('  ',DbgS(FPoCheckerSettings.TestOptions));
-  //debugln('  TPoCheckerForm.FormCreate: TestTypes   after loading = ');
-  //DebugLn('  ',DbgS(FPoCheckerSettings.TestTypes));
   SetTestTypeCheckBoxes(FPoCheckerSettings.TestTypes);
   SetTestOptionCheckBoxes(FPoCheckerSettings.TestOptions);
   SelectDirectoryDialog.Filename := FPoCheckerSettings.SelectDirectoryFilename;
@@ -780,7 +781,11 @@ begin
   FPoCheckerSettings.OpenDialogFilename := OpenDialog.FileName;
   FPoCheckerSettings.TestTypes := GetTestTypesFromListBox;
   FPoCheckerSettings.TestOptions := GetTestOptions;
-  FPoCheckerSettings.MainFormGeometry := BoundsRect;
+  FPoCheckerSettings.MainFormWindowState := WindowState;
+  if (WindowState = wsNormal) then
+    FPoCheckerSettings.MainFormGeometry := BoundsRect
+  else
+    FPoCheckerSettings.MainFormGeometry := Rect(RestoredLeft, RestoredTop, RestoredLeft + RestoredWidth, RestoredTop + RestoredHeight);
   FPoCheckerSettings.MasterPoList := MasterPoListBox.Items;
   FPoCheckerSettings.ChildPoList := FChildPoList;
   FPoCheckerSettings.SaveConfig;
