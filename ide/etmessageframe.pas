@@ -298,7 +298,7 @@ type
     Property OnOptionsChanged: TNotifyEvent read FOnOptionsChanged write FOnOptionsChanged;
     property Options: TMsgCtrlOptions read FOptions write SetOptions default MCDefaultOptions;
     property SearchText: string read FSearchText write SetSearchText;
-    property SelectedLine: integer read GetSelectedLine write SetSelectedLine; // -1=header line
+    property SelectedLine: integer read GetSelectedLine write SetSelectedLine; // -1=header line, can be on progress line (=View.Count)
     property SelectedView: TLMsgWndView read FSelectedView write SetSelectedView;
     property ShowHint default true;
     property SourceMarks: TETMarks read FSourceMarks write SetSourceMarks;
@@ -2739,7 +2739,7 @@ begin
     View:=MessagesCtrl.SelectedView;
     if View<>nil then begin
       LineNumber:=MessagesCtrl.SelectedLine;
-      if LineNumber>=0 then begin
+      if (LineNumber>=0) and (LineNumber<View.Lines.Count) then begin
         Line:=View.Lines[LineNumber];
         HasFilename:=Line.Filename<>'';
         HasText:=Line.Msg<>'';
