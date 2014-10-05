@@ -33,20 +33,19 @@ interface
 uses
   AVL_Tree, typinfo, math, Classes, SysUtils, Controls, Forms, Dialogs, LCLIntf,
   LCLType, LCLProc, FileProcs, FileUtil, IDEProcs, DialogProcs, IDEDialogs,
-  LConvEncoding, LazFileCache, LResources, PropEdits, DefineTemplates,
-  IDEMsgIntf, IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
-  LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf,
-  CompOptsIntf, SrcEditorIntf, IDEWindowIntf,
-  ProjectIntf, Project, ProjectDefs, ProjectInspector,
-  PackageIntf, PackageDefs, PackageSystem, CompilerOptions, BasePkgManager,
-  ComponentReg, SourceEditor, EditorOptions, CustomFormEditor, FormEditor,
-  EmptyMethodsDlg, BaseDebugManager, ControlSelection, TransferMacros,
-  EnvironmentOpts, BuildManager, EditorMacroListViewer, KeywordFuncLists,
-  FindRenameIdentifier, GenericCheckList, ViewUnit_Dlg, DiskDiffsDialog,
-  InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager, CodeToolsStructs,
-  ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool, BasicCodeTools,
-  SynEdit, UnitResources, IDEExternToolIntf, ExtToolDialog, PublishModule,
-  etMessagesWnd;
+  LConvEncoding, LazFileCache, LazFileUtils, LResources, PropEdits,
+  DefineTemplates, IDEMsgIntf, IDEProtocol, LazarusIDEStrConsts, NewDialog,
+  NewProjectDlg, LazIDEIntf, MainBase, MainBar, MainIntf, MenuIntf, NewItemIntf,
+  CompOptsIntf, SrcEditorIntf, IDEWindowIntf, ProjectIntf, Project, ProjectDefs,
+  ProjectInspector, PackageIntf, PackageDefs, PackageSystem, CompilerOptions,
+  BasePkgManager, ComponentReg, SourceEditor, EditorOptions, CustomFormEditor,
+  FormEditor, EmptyMethodsDlg, BaseDebugManager, ControlSelection,
+  TransferMacros, EnvironmentOpts, BuildManager, EditorMacroListViewer,
+  KeywordFuncLists, FindRenameIdentifier, GenericCheckList, ViewUnit_Dlg,
+  DiskDiffsDialog, InputHistory, CheckLFMDlg, LCLMemManager, CodeToolManager,
+  CodeToolsStructs, ConvCodeTool, CodeCache, CodeTree, FindDeclarationTool,
+  BasicCodeTools, SynEdit, UnitResources, IDEExternToolIntf, ExtToolDialog,
+  PublishModule, etMessagesWnd;
 
 type
 
@@ -552,7 +551,7 @@ var
   Access: TEditorOptionsEditAccessOrderEntry;
 begin
   Result := nil;
-  // Check for already open Editor. If there is none, then it must be opened in DoOpenEditorFile
+  // Check for already open Editor. If there is none, then it must be opened in OpenEditorFile
   if AnUnitInfo.OpenEditorInfoCount = 0 then exit;
   for i := 0 to EditorOpts.MultiWinEditAccessOrder.Count - 1 do begin
     Access := EditorOpts.MultiWinEditAccessOrder[i];
@@ -1025,6 +1024,14 @@ begin
     // the case is different
     DebugLn(['TFileOpener.OpenEditorFile Fixing file name: ',FFilename,' -> ',DiskFilename]);
     FFilename:=DiskFilename;
+  end;
+  if not (ofRegularFile in FFlags) then begin
+    DiskFilename:=GetShellLinkTarget(FFileName);
+    if DiskFilename<>FFilename then begin
+      // the case is different
+      DebugLn(['TFileOpener.OpenEditorFile Fixing file name: ',FFilename,' -> ',DiskFilename]);
+      FFilename:=DiskFilename;
+    end;
   end;
 
   // check if symlink and ask user if the real file should be opened instead
