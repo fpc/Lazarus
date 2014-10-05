@@ -36,6 +36,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
+  {$IFDEF Windows}
+  Windows,
+  {$ENDIF}
   Classes, SysUtils, LazUTF8, LazDbgLog, LazFileCache, LazFileUtils,
   LazUTF8Classes, LazLogger, AVL_Tree, CodeToolsStrConsts;
 
@@ -347,10 +350,8 @@ function CompareAddrWithCTLineInfoCacheItem(Addr, Item: Pointer): integer;
 implementation
 
 // to get more detailed error messages consider the os
+{$IFnDEF Windows}
 uses
-{$IFDEF Windows}
-  Windows;
-{$ELSE}
   {$IFDEF darwin}
   MacOSAll,
   {$ENDIF}
