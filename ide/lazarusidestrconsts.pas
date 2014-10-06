@@ -3175,10 +3175,10 @@ resourcestring
   lisCompilerHintYouCanSetTheCompilerPath = 'Hint: you can set the compiler '
     +'path in Tools -> Options-> Files -> Compiler Path';
   lisCompileProject = 'Compile Project';
-  lisMode = ', Mode:%s';
-  lisOS = ', OS:%s';
-  lisCPU = ', CPU:%s';
-  lisTarget2 = ', Target:%s';
+  lisMode = ', Mode: %s';
+  lisOS = ', OS: %s';
+  lisCPU = ', CPU: %s';
+  lisTarget2 = ', Target: %s';
   lisCompilerNOTELoadingOldCodetoolsOptionsFile = 'NOTE: loading old '
     +'codetools options file: ';
   lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults = 'NOTE: codetools '
