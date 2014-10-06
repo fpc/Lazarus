@@ -1,4 +1,3 @@
-# ""
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -12,17 +11,14 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 "Language: hu\n"
 
-# " """
 #: threadoptionsdialog.screateunitbuttoncaption
 msgid "Create Unit"
 msgstr "Unit létrehozása"
 
-# " """
 #: threadoptionsdialog.soptionsgroupboxcaption
 msgid "Options"
 msgstr "Beállítások"
 
-# " """
 #: threadoptionsdialog.sthreaddialogtitle
 msgid "Thread Class Options"
 msgstr "Szál-osztály beállításai"
