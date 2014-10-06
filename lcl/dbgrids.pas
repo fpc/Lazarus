@@ -4111,7 +4111,7 @@ begin
   with (Column as TColumn) do begin
     if FieldName<>'' then begin
       if FField<>nil then
-        Result := Field.DisplayName
+        Result := FField.DisplayName
       else
         Result := Fieldname;
     end else
