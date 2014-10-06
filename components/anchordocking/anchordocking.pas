@@ -99,6 +99,9 @@ unit AnchorDocking;
 
 {$mode objfpc}{$H+}
 
+{ $DEFINE VerboseAnchorDockRestore}
+{ $DEFINE VerboseADCustomSite}
+
 interface
 
 uses
@@ -5512,7 +5515,9 @@ var
       end else begin
         ChildMaxSize.Y:=Max(0,(ChildMaxSize.Y-SiteMinSize.Y));
       end;
+      {$IF defined(VerboseAnchorDockRestore) or defined(VerboseADCustomSite)}
       debugln(['TAnchorDockManager.ResetBounds ChildMaxSize=',dbgs(ChildMaxSize),' SiteMinSize=',dbgs(SiteMinSize),' Site.Client=',dbgs(Site.ClientRect)]);
+      {$ENDIF}
     end;
 
     case ResizePolicy of
@@ -5666,25 +5671,70 @@ function TAnchorDockManager.GetSitePreferredClientSize: TPoint;
 }
 var
   ChildSite: TAnchorDockHostSite;
-  ChildSitePrefSize: TPoint;
+  Splitter: TAnchorDockSplitter;
   SplitterSize: TPoint;
+  i: Integer;
+  ChildControl: TControl;
+  PrefWidth: Integer;
+  PrefHeight: Integer;
+  SplitterAnchor: TAnchorKind; // side where a child is anchored to the splitter
+  ChildPrefWidth: integer;
+  ChildPrefHeight: integer;
+  ChildBottom: Integer;
+  ChildRight: Integer;
 begin
   Result:=Point(0,0);
   Site.GetPreferredSize(Result.X,Result.Y);
+  // compute the bounds without the Splitter and ChildSite
   ChildSite:=GetChildSite;
-  if ChildSite<>nil then begin
-    // subtract the ChildSite and the splitter
-    SplitterSize:=Point(0,0);
-    if ChildSite.BoundSplitter<>nil then
-      ChildSite.BoundSplitter.GetPreferredSize(SplitterSize.X,SplitterSize.Y);
-    ChildSitePrefSize:=Point(ChildSite.Width,ChildSite.Height);
-    debugln(['TAnchorDockManager.GetSitePreferredClientSize Total=',dbgs(Result),' Child=',dbgs(ChildSitePrefSize),' Splitter=',dbgs(SplitterSize)]);
-    if ChildSite.Align in [alLeft,alRight] then begin
-      Result.X:=Max(0,Result.X-ChildSitePrefSize.X-SplitterSize.X);
-    end else begin
-      Result.Y:=Max(0,Result.Y-ChildSitePrefSize.Y-SplitterSize.Y);
+  if ChildSite=nil then exit;
+  Splitter:=ChildSite.BoundSplitter;
+  if Splitter=nil then exit;
+  SplitterSize:=Point(0,0);
+  Splitter.GetPreferredSize(SplitterSize.X,SplitterSize.Y);
+  PrefWidth:=0;
+  PrefHeight:=0;
+  if ChildSite.Align in [alLeft,alRight] then
+    PrefHeight:=Result.Y
+  else
+    PrefWidth:=Result.X;
+  SplitterAnchor:=MainAlignAnchor[ChildSite.Align];
+  for i:=0 to Site.ControlCount-1 do begin
+    ChildControl:=Site.Controls[i];
+    if (ChildControl=Splitter) or (ChildControl=ChildSite) then continue;
+    if (ChildControl.AnchorSide[SplitterAnchor].Control=Splitter)
+    or ((ChildControl.Align in [alLeft,alTop,alRight,alBottom,alClient])
+      and (SplitterAnchor in AnchorAlign[ChildControl.Align]))
+    then begin
+      // this control could be resized by the splitter
+      // => use its position and preferred size for a preferred size of the ChildSite
+      ChildPrefWidth:=0;
+      ChildPrefHeight:=0;
+      ChildControl.GetPreferredSize(ChildPrefWidth,ChildPrefHeight);
+      //debugln(['  ChildControl=',DbgSName(ChildControl),' ',ChildPrefWidth,',',ChildPrefHeight]);
+      case ChildSite.Align of
+      alTop:
+        begin
+          ChildBottom:=ChildControl.Top+ChildControl.Height;
+          PrefHeight:=Max(PrefHeight,Site.ClientHeight-ChildBottom-ChildPrefHeight);
+        end;
+      alBottom:
+        PrefHeight:=Max(PrefHeight,ChildControl.Top+ChildPrefHeight);
+      alLeft:
+        begin
+          ChildRight:=ChildControl.Left+ChildControl.Width;
+          PrefWidth:=Max(PrefWidth,Site.ClientWidth-ChildRight-ChildPrefWidth);
+        end;
+      alRight:
+        PrefWidth:=Max(PrefWidth,ChildControl.Left+ChildPrefWidth);
+      end;
     end;
   end;
+  {$IFDEF VerboseADCustomSite}
+  debugln(['TAnchorDockManager.GetSitePreferredClientSize DefaultSitePref=',dbgs(Result),' Splitter.Align=',dbgs(Splitter.Align),' ChildSite.Align=',dbgs(ChildSite.Align),' NewPref=',PrefWidth,',',PrefHeight]);
+  {$ENDIF}
+  Result.X:=PrefWidth;
+  Result.Y:=PrefHeight;
 end;
 
 function TAnchorDockManager.GetChildSite: TAnchorDockHostSite;
