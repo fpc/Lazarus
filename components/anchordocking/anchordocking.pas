@@ -70,7 +70,6 @@
     - option HeaderStyle to change appearance of grabbers
 
   ToDo:
-    - keep custom dock site content visible
     - restore custom dock site splitter without resizing content, only resize docked site
     - undock on hide
     - popup menu
@@ -99,8 +98,9 @@ unit AnchorDocking;
 
 {$mode objfpc}{$H+}
 
-{ $DEFINE VerboseAnchorDockRestore}
+{$DEFINE VerboseAnchorDockRestore}
 { $DEFINE VerboseADCustomSite}
+{$DEFINE VerboseAnchorDockPages}
 
 interface
 
@@ -498,7 +498,7 @@ type
     fSimplifying: boolean;
     fUpdateCount: integer;
     fDisabledAutosizing: TFPList; // list of TControl
-    fTreeNameToDocker: TADNameToControl;
+    fTreeNameToDocker: TADNameToControl; // TAnchorDockHostSite, TAnchorDockSplitter or custom docksite
     fPopupMenu: TPopupMenu;
     function GetControls(Index: integer): TControl;
     function GetLocalizedHeaderHint: string;
@@ -1683,6 +1683,17 @@ var
     end;
   end;
 
+  function GetNodeSite(Node: TAnchorDockLayoutTreeNode): TAnchorDockHostSite;
+  begin
+    Result:=TAnchorDockHostSite(fTreeNameToDocker[Node.Name]);
+    if Result is TAnchorDockHostSite then exit;
+    if Result<>nil then
+      exit(nil);
+    Result:=CreateSite;
+    fDisabledAutosizing.Add(Result);
+    fTreeNameToDocker[Node.Name]:=Result;
+  end;
+
   function Restore(Node: TAnchorDockLayoutTreeNode; Parent: TWinControl;
     SrcRect: TRect): TControl;
   var
@@ -1766,12 +1777,7 @@ var
       Result:=Splitter;
     end else if Node.NodeType=adltnLayout then begin
       // restore layout
-      Site:=TAnchorDockHostSite(fTreeNameToDocker[Node.Name]);
-      if Site=nil then begin
-        Site:=CreateSite;
-        fDisabledAutosizing.Add(Site);
-        fTreeNameToDocker[Node.Name]:=Site;
-      end;
+      Site:=GetNodeSite(Node);
       {$IFDEF VerboseAnchorDockRestore}
       debugln(['TAnchorDockMaster.RestoreLayout.Restore Layout Node.Name=',Node.Name,' ChildCount=',Node.Count]);
       {$ENDIF}
@@ -1812,12 +1818,10 @@ var
       Result:=Site;
     end else if Node.NodeType=adltnPages then begin
       // restore pages
-      Site:=TAnchorDockHostSite(fTreeNameToDocker[Node.Name]);
-      if Site=nil then begin
-        Site:=CreateSite;
-        fDisabledAutosizing.Add(Site);
-        fTreeNameToDocker[Node.Name]:=Site;
-      end;
+      Site:=GetNodeSite(Node);
+      {$IFDEF VerboseAnchorDockRestore}
+      debugln(['TAnchorDockMaster.RestoreLayout.Restore Pages Node.Name=',Node.Name,' ChildCount=',Node.Count]);
+      {$ENDIF}
       Site.BeginUpdateLayout;
       try
         SetupSite(Site,Node,Parent,SrcRect);
@@ -2562,7 +2566,7 @@ begin
   try
     for i:=0 to ControlCount-1 do begin
       AControl:=Controls[i];
-      if not AControl.IsVisible then continue;
+      if not GetParentForm(AControl).Visible then continue;
       VisibleControls.Add(AControl.Name);
       AForm:=GetParentForm(AControl);
       if AForm=nil then continue;
@@ -3527,6 +3531,8 @@ end;
 
 procedure TAnchorDockHostSite.CreatePages;
 begin
+  if FPages<>nil then
+    RaiseGDBException('');
   FPages:=DockMaster.PageControlClass.Create(nil); // do not own it, pages can be moved to another site
   FPages.FreeNotification(Self);
   FPages.Parent:=Self;
@@ -3538,7 +3544,9 @@ var
   OldControl: TControl;
   OldSite: TAnchorDockHostSite;
 begin
+  {$IFDEF VerboseAnchorDockPages}
   debugln(['TAnchorDockHostSite.DockSecondPage Self="',Caption,'" AControl=',DbgSName(NewControl)]);
+  {$ENDIF}
   if SiteType<>adhstOneControl then
     RaiseGDBException('TAnchorDockHostSite.DockSecondPage inconsistency');
 
@@ -3546,15 +3554,21 @@ begin
   CreatePages;
 
   // remove header (keep it for later use)
+  {$IFDEF VerboseAnchorDockPages}
   debugln(['TAnchorDockHostSite.DockSecondPage Self="',Caption,'" removing header ...']);
+  {$ENDIF}
   Header.Parent:=nil;
 
   // put the OldControl into a page of its own
+  {$IFDEF VerboseAnchorDockPages}
   debugln(['TAnchorDockHostSite.DockSecondPage Self="',Caption,'" move oldcontrol to site of its own ...']);
+  {$ENDIF}
   OldControl:=GetOneControl;
   OldSite:=MakeSite(OldControl);
   OldSite.HostDockSite:=nil;
+  {$IFDEF VerboseAnchorDockPages}
   debugln(['TAnchorDockHostSite.DockSecondPage Self="',Caption,'" adding oldcontrol site ...']);
+  {$ENDIF}
   FPages.Pages.Add(OldSite.Caption);
   OldSite.Parent:=FPages.Page[0];
   OldSite.Align:=alClient;
@@ -3569,7 +3583,9 @@ var
   NewSite: TAnchorDockHostSite;
   NewIndex: LongInt;
 begin
+  {$IFDEF VerboseAnchorDockPages}
   debugln(['TAnchorDockHostSite.DockAnotherPage Self="',Caption,'" make new control (',DbgSName(NewControl),') dockable ...']);
+  {$ENDIF}
   if SiteType<>adhstPages then
     RaiseGDBException('TAnchorDockHostSite.DockAnotherPage inconsistency');
 
@@ -3877,7 +3893,9 @@ var
 begin
   if Pages=nil then exit;
   if Pages.PageCount=1 then begin
+    {$IFDEF VerboseAnchorDockPages}
     debugln(['TAnchorDockHostSite.SimplifyPages "',Caption,'" PageCount=1']);
+    {$ENDIF}
     DisableAutoSizing;
     BeginUpdateLayout;
     try
