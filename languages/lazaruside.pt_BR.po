@@ -6931,6 +6931,10 @@ msgstr "Abrir pacote %s"
 msgid "Open Unit %s"
 msgstr "Abrir unidade %s"
 
+#: lazarusidestrconsts.liscpu
+msgid ", CPU: %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Crie um projeto primeiro!"
@@ -12347,6 +12351,10 @@ msgstr "Valor \"%s\""
 msgid "(was \"%s\")"
 msgstr "(era \"%s\")"
 
+#: lazarusidestrconsts.lismode
+msgid ", Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 #, fuzzy
 msgid ""
@@ -12970,6 +12978,10 @@ msgstr "Opções alteradas, recompilando após limpeza com -B"
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "ou"
+
+#: lazarusidestrconsts.lisos
+msgid ", OS: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -16124,6 +16136,10 @@ msgstr "Tirar um instantâneo"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Alvo:"
+
+#: lazarusidestrconsts.listarget2
+msgid ", Target: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

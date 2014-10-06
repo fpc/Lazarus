@@ -6926,6 +6926,10 @@ msgstr "Atverti paketą %s"
 msgid "Open Unit %s"
 msgstr "Atverti modulį %s"
 
+#: lazarusidestrconsts.liscpu
+msgid ", CPU: %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Pirma sukurkite projektą!"
@@ -12326,6 +12330,10 @@ msgstr ""
 msgid "(was \"%s\")"
 msgstr ""
 
+#: lazarusidestrconsts.lismode
+msgid ", Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 #, fuzzy
 msgid ""
@@ -12949,6 +12957,10 @@ msgstr "Parinktys pakito, kompiliuojama švariai iš naujo naudojant „-B“"
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "arba"
+
+#: lazarusidestrconsts.lisos
+msgid ", OS: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -16106,6 +16118,10 @@ msgstr "Daryti momentinę kopiją"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Paskirtis:"
+
+#: lazarusidestrconsts.listarget2
+msgid ", Target: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

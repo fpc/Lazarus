@@ -6939,6 +6939,10 @@ msgstr "Otwórz pakiet %s"
 msgid "Open Unit %s"
 msgstr "Otwórz moduł %s"
 
+#: lazarusidestrconsts.liscpu
+msgid ", CPU: %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Najpierw utwórz projekt!"
@@ -12375,6 +12379,10 @@ msgstr ""
 msgid "(was \"%s\")"
 msgstr ""
 
+#: lazarusidestrconsts.lismode
+msgid ", Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -12995,6 +13003,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisor
 msgid "or"
+msgstr ""
+
+#: lazarusidestrconsts.lisos
+msgid ", OS: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
@@ -16134,6 +16146,10 @@ msgstr "Rejestruj zrzut"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Cel:"
+
+#: lazarusidestrconsts.listarget2
+msgid ", Target: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

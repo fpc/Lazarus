@@ -6955,6 +6955,10 @@ msgstr "Otvoriť balíček %s"
 msgid "Open Unit %s"
 msgstr "Otvoriť jednotku  %s"
 
+#: lazarusidestrconsts.liscpu
+msgid ", CPU: %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Najprv vytvorte projekt!"
@@ -12452,6 +12456,10 @@ msgstr ""
 msgid "(was \"%s\")"
 msgstr ""
 
+#: lazarusidestrconsts.lismode
+msgid ", Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 #, fuzzy
 msgid ""
@@ -13078,6 +13086,10 @@ msgstr ""
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "alebo"
+
+#: lazarusidestrconsts.lisos
+msgid ", OS: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -16252,6 +16264,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listarget
 msgid "Target:"
+msgstr ""
+
+#: lazarusidestrconsts.listarget2
+msgid ", Target: %s"
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu

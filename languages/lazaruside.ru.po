@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-04 03:35+0400\n"
+"PO-Revision-Date: 2014-10-07 03:25+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6879,6 +6879,10 @@ msgstr "Открыть пакет %s"
 msgid "Open Unit %s"
 msgstr "Открыть модуль %s"
 
+#: lazarusidestrconsts.liscpu
+msgid ", CPU: %s"
+msgstr ", процессор: %s"
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Сначала необходимо создать проект!"
@@ -12302,6 +12306,10 @@ msgstr "Значение \"%s\""
 msgid "(was \"%s\")"
 msgstr "(было \"%s\")"
 
+#: lazarusidestrconsts.lismode
+msgid ", Mode: %s"
+msgstr ", режим: %s"
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -12933,6 +12941,10 @@ msgstr "Параметры были изменены, перекомпиляци
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "или"
+
+#: lazarusidestrconsts.lisos
+msgid ", OS: %s"
+msgstr ", ОС: %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -16026,6 +16038,10 @@ msgstr "Сделать снимок"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Цель:"
+
+#: lazarusidestrconsts.listarget2
+msgid ", Target: %s"
+msgstr ", цель: %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

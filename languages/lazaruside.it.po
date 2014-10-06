@@ -6810,6 +6810,10 @@ msgstr "Apri il pacchetto %s"
 msgid "Open Unit %s"
 msgstr "Apri la unit %s"
 
+#: lazarusidestrconsts.liscpu
+msgid ", CPU: %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Crea prima un progetto!"
@@ -12200,6 +12204,10 @@ msgstr "Valore \"%s\""
 msgid "(was \"%s\")"
 msgstr "(era \"%s\")"
 
+#: lazarusidestrconsts.lismode
+msgid ", Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -12828,6 +12836,10 @@ msgstr "Opzioni cambiate, ricompilazione da zero con -B"
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "oppure"
+
+#: lazarusidestrconsts.lisos
+msgid ", OS: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -15900,6 +15912,10 @@ msgstr "Prendi un'istantanea"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Destinazione:"
+
+#: lazarusidestrconsts.listarget2
+msgid ", Target: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -19131,7 +19147,7 @@ msgstr "Prossima cella (solo le prime)"
 #: lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel"
 msgid "Next Cell (all selected / firsts only)"
-msgstr "Prossima cella\t(tutte selezionate / solo le prime)"
+msgstr "Prossima cella	(tutte selezionate / solo le prime)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
@@ -19205,7 +19221,7 @@ msgstr "Prossima cella (solo le prime)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellrotate
 msgid "Next Cell (rotate / firsts only)"
-msgstr "Prossima cella\t(rotazione / solo le prime)"
+msgstr "Prossima cella	(rotazione / solo le prime)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcellsel"
@@ -19214,7 +19230,7 @@ msgstr "Prossima cella (tutte selezionate / solo le prime)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellselrotate
 msgid "Next Cell (rotate / all selected / firsts only)"
-msgstr "Prossima cella\t(rotazione / solo le prime)"
+msgstr "Prossima cella	(rotazione / solo le prime)"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
@@ -19732,3 +19748,4 @@ msgstr "Sola lettura"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informazioni di versione"
+

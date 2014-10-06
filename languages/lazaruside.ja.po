@@ -6715,6 +6715,10 @@ msgstr "パッケージ %s を開く"
 msgid "Open Unit %s"
 msgstr "ユニット %s を開く"
 
+#: lazarusidestrconsts.liscpu
+msgid ", CPU: %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "初めにプロジェクトを作成してください！"
@@ -11941,6 +11945,10 @@ msgstr "値 \"%s\""
 msgid "(was \"%s\")"
 msgstr "(元の値 \"%s\")"
 
+#: lazarusidestrconsts.lismode
+msgid ", Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 #, fuzzy
 msgid ""
@@ -12553,6 +12561,10 @@ msgstr "オプションが変更されたので、-Bでクリーン再コンパ�
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "または"
+
+#: lazarusidestrconsts.lisos
+msgid ", OS: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -15648,6 +15660,10 @@ msgstr "スナップショットを撮る"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "対象："
+
+#: lazarusidestrconsts.listarget2
+msgid ", Target: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

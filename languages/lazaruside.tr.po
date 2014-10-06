@@ -6696,6 +6696,10 @@ msgstr ""
 msgid "Open Unit %s"
 msgstr ""
 
+#: lazarusidestrconsts.liscpu
+msgid ", CPU: %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Önce bir proje oluştur!"
@@ -12109,6 +12113,10 @@ msgstr ""
 msgid "(was \"%s\")"
 msgstr ""
 
+#: lazarusidestrconsts.lismode
+msgid ", Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 #, fuzzy
 msgid ""
@@ -12725,6 +12733,10 @@ msgstr ""
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "ya da"
+
+#: lazarusidestrconsts.lisos
+msgid ", OS: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -15731,6 +15743,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listarget
 msgid "Target:"
+msgstr ""
+
+#: lazarusidestrconsts.listarget2
+msgid ", Target: %s"
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu

@@ -6619,6 +6619,10 @@ msgstr "%s csomag megnyitása"
 msgid "Open Unit %s"
 msgstr "%s unit megnyitása"
 
+#: lazarusidestrconsts.liscpu
+msgid ", CPU: %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Először hozzon létre projektet!"
@@ -11822,6 +11826,10 @@ msgstr "Érték: \"%s\""
 msgid "(was \"%s\")"
 msgstr "(\"%s\" volt)"
 
+#: lazarusidestrconsts.lismode
+msgid ", Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -12439,6 +12447,10 @@ msgstr "A beállítások megváltoztak, tiszta újrafordítás -B használatáva
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "vagy"
+
+#: lazarusidestrconsts.lisos
+msgid ", OS: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -15402,6 +15414,10 @@ msgstr "Pillanatkép készítése"
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Cél:"
+
+#: lazarusidestrconsts.listarget2
+msgid ", Target: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

@@ -6591,6 +6591,10 @@ msgstr "Avaa paketti %s"
 msgid "Open Unit %s"
 msgstr "Avaa käännösyksikkö %s"
 
+#: lazarusidestrconsts.liscpu
+msgid ", CPU: %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Luo ensin projekti!"
@@ -11749,6 +11753,10 @@ msgstr "Arvo \"%s\""
 msgid "(was \"%s\")"
 msgstr "(oli \"%s\")"
 
+#: lazarusidestrconsts.lismode
+msgid ", Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
 "<description>\n"
@@ -12352,6 +12360,10 @@ msgstr "Asetukset muuttuivat, käännetään kaikki option -B kanssa"
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "tai"
+
+#: lazarusidestrconsts.lisos
+msgid ", OS: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -15306,6 +15318,10 @@ msgstr ""
 #: lazarusidestrconsts.listarget
 msgid "Target:"
 msgstr "Kohde:"
+
+#: lazarusidestrconsts.listarget2
+msgid ", Target: %s"
+msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"

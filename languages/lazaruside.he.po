@@ -7036,6 +7036,10 @@ msgstr "פתח חבילה %s"
 msgid "Open Unit %s"
 msgstr "פתח יחידה %s"
 
+#: lazarusidestrconsts.liscpu
+msgid ", CPU: %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "צור קודם פרויקט!"
@@ -12602,6 +12606,10 @@ msgstr ""
 msgid "(was \"%s\")"
 msgstr ""
 
+#: lazarusidestrconsts.lismode
+msgid ", Mode: %s"
+msgstr ""
+
 #: lazarusidestrconsts.lismodifiedlgplnotice
 #, fuzzy
 msgid ""
@@ -13235,6 +13243,10 @@ msgstr "אפשרויות השתנו, הדר (נקי) מחדש עם הפרמטר 
 #: lazarusidestrconsts.lisor
 msgid "or"
 msgstr "או"
+
+#: lazarusidestrconsts.lisos
+msgid ", OS: %s"
+msgstr ""
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -16430,6 +16442,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listarget
 msgid "Target:"
+msgstr ""
+
+#: lazarusidestrconsts.listarget2
+msgid ", Target: %s"
 msgstr ""
 
 #: lazarusidestrconsts.listargetcpu
