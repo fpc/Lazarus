@@ -84,6 +84,7 @@
     - http://bugs.freepascal.org/view.php?id=18298 default layout sometimes wrong main bar
     Other bugs:
     - http://bugs.freepascal.org/view.php?id=18553 docked form designer
+    - http://bugs.freepascal.org/view.php?id=18538 crash when option Scale on resize is off
     - http://bugs.freepascal.org/view.php?id=19132 docking already docked
     - http://bugs.freepascal.org/view.php?id=19200 minimize+restore resize
     - http://bugs.freepascal.org/view.php?id=19735 main bar on different screen size
@@ -95,9 +96,9 @@ unit AnchorDocking;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerboseAnchorDockRestore}
+{ $DEFINE VerboseAnchorDockRestore}
 { $DEFINE VerboseADCustomSite}
-{$DEFINE VerboseAnchorDockPages}
+{ $DEFINE VerboseAnchorDockPages}
 
 interface
 
@@ -1600,34 +1601,49 @@ end;
 function TAnchorDockMaster.RestoreLayout(Tree: TAnchorDockLayoutTree;
   Scale: boolean): boolean;
 var
-  WorkArea: TRect;
+  WorkArea, SrcWorkArea: TRect;
 
   function SrcRectValid(const r: TRect): boolean;
   begin
     Result:=(r.Left<r.Right) and (r.Top<r.Bottom);
   end;
 
-  function ScaleX(p: integer; const SrcRect: TRect): integer;
+  function ScaleTopLvlX(p: integer): integer;
   begin
     Result:=p;
-    if SrcRectValid(SrcRect) and SrcRectValid(WorkArea) then
-      Result:=((p-SrcRect.Left)*(WorkArea.Right-WorkArea.Left))
-                div (SrcRect.Right-SrcRect.Left)
+    if SrcRectValid(SrcWorkArea) and SrcRectValid(WorkArea) then
+      Result:=((p-SrcWorkArea.Left)*(WorkArea.Right-WorkArea.Left))
+                div (SrcWorkArea.Right-SrcWorkArea.Left)
               +WorkArea.Left;
   end;
 
-  function ScaleY(p: integer; const SrcRect: TRect): integer;
+  function ScaleTopLvlY(p: integer): integer;
   begin
     Result:=p;
-    if SrcRectValid(SrcRect) and SrcRectValid(WorkArea) then
-      Result:=((p-SrcRect.Top)*(WorkArea.Bottom-WorkArea.Top))
-                   div (SrcRect.Bottom-SrcRect.Top)
+    if SrcRectValid(SrcWorkArea) and SrcRectValid(WorkArea) then
+      Result:=((p-SrcWorkArea.Top)*(WorkArea.Bottom-WorkArea.Top))
+                   div (SrcWorkArea.Bottom-SrcWorkArea.Top)
               +WorkArea.Top;
   end;
 
+  function ScaleChildX(p: integer): integer;
+  begin
+    Result:=p;
+    if SrcRectValid(SrcWorkArea) and SrcRectValid(WorkArea) then
+      Result:=p*(WorkArea.Right-WorkArea.Left)
+                div (SrcWorkArea.Right-SrcWorkArea.Left);
+  end;
+
+  function ScaleChildY(p: integer): integer;
+  begin
+    Result:=p;
+    if SrcRectValid(SrcWorkArea) and SrcRectValid(WorkArea) then
+      Result:=p*(WorkArea.Bottom-WorkArea.Top)
+                div (SrcWorkArea.Bottom-SrcWorkArea.Top);
+  end;
+
   procedure SetupSite(Site: TCustomForm;
-    Node: TAnchorDockLayoutTreeNode; Parent: TWinControl;
-    const SrcRect: TRect);
+    Node: TAnchorDockLayoutTreeNode; Parent: TWinControl);
   var
     aManager: TAnchorDockManager;
     NewBounds: TRect;
@@ -1649,12 +1665,16 @@ var
     Site.Constraints.MaxHeight:=0;
     NewBounds:=Node.BoundsRect;
     if Parent=nil then begin
-      NewBounds:=Rect(ScaleX(NewBounds.Left,SrcRect),ScaleY(NewBounds.Top,SrcRect),
-                      ScaleX(NewBounds.Right,SrcRect),ScaleY(NewBounds.Bottom,SrcRect));
-      {$IFDEF VerboseAnchorDockRestore}
-      debugln(['TAnchorDockMaster.RestoreLayout.SetupSite scale Site=',DbgSName(Site),' OldWorkArea=',dbgs(SrcRect),' CurWorkArea=',dbgs(WorkArea),' OldBounds=',dbgs(Node.BoundsRect),' NewBounds=',dbgs(NewBounds)]);
-      {$ENDIF}
+      NewBounds:=Rect(ScaleTopLvlX(NewBounds.Left),ScaleTopLvlY(NewBounds.Top),
+                      ScaleTopLvlX(NewBounds.Right),ScaleTopLvlY(NewBounds.Bottom));
+    end else begin
+      NewBounds:=Rect(ScaleChildX(NewBounds.Left),ScaleChildY(NewBounds.Top),
+                      ScaleChildX(NewBounds.Right),ScaleChildY(NewBounds.Bottom));
     end;
+    {$IFDEF VerboseAnchorDockRestore}
+    if Scale then
+      debugln(['TAnchorDockMaster.RestoreLayout.SetupSite scale Site=',DbgSName(Site),' OldWorkArea=',dbgs(SrcWorkArea),' CurWorkArea=',dbgs(WorkArea),' OldBounds=',dbgs(Node.BoundsRect),' NewBounds=',dbgs(NewBounds)]);
+    {$ENDIF}
     Site.BoundsRect:=NewBounds;
     Site.Visible:=true;
     Site.Parent:=Parent;
@@ -1691,8 +1711,7 @@ var
     fTreeNameToDocker[Node.Name]:=Result;
   end;
 
-  function Restore(Node: TAnchorDockLayoutTreeNode; Parent: TWinControl;
-    SrcRect: TRect): TControl;
+  function Restore(Node: TAnchorDockLayoutTreeNode; Parent: TWinControl): TControl;
   var
     AControl: TControl;
     Site: TAnchorDockHostSite;
@@ -1705,7 +1724,7 @@ var
   begin
     Result:=nil;
     if Scale and SrcRectValid(Node.WorkAreaRect) then
-      SrcRect:=Node.WorkAreaRect;
+      SrcWorkArea:=Node.WorkAreaRect;
     {$IFDEF VerboseAnchorDockRestore}
     debugln(['TAnchorDockMaster.RestoreLayout.Restore ',Node.Name,' ',dbgs(Node.NodeType),' Bounds=',dbgs(Node.BoundsRect),' Parent=',DbgSName(Parent),' ']);
     {$ENDIF}
@@ -1728,7 +1747,7 @@ var
       debugln(['TAnchorDockMaster.RestoreLayout.Restore Control Node.Name=',Node.Name,' Control=',DbgSName(AControl),' Site=',DbgSName(Site)]);
       {$ENDIF}
       AControl.Visible:=true;
-      SetupSite(Site,Node,Parent,SrcRect);
+      SetupSite(Site,Node,Parent);
       Result:=Site;
     end else if Node.NodeType=adltnCustomSite then begin
       // restore custom dock site
@@ -1744,11 +1763,11 @@ var
         exit;
       end;
       DisableControlAutoSizing(AControl);
-      SetupSite(TCustomForm(AControl),Node,nil,SrcRect);
+      SetupSite(TCustomForm(AControl),Node,nil);
       Result:=AControl;
       // restore docked site
       if Node.Count>0 then begin
-        Restore(Node[0],TCustomForm(AControl),SrcRect);
+        Restore(Node[0],TCustomForm(AControl));
       end;
     end else if Node.IsSplitter then begin
       // restore splitter
@@ -1762,8 +1781,8 @@ var
       {$ENDIF}
       Splitter.Parent:=Parent;
       NewBounds:=Node.BoundsRect;
-      if SrcRectValid(SrcRect) then
-        NewBounds:=Bounds(ScaleX(NewBounds.Left,SrcRect),ScaleX(NewBounds.Top,SrcRect),
+      if SrcRectValid(SrcWorkArea) then
+        NewBounds:=Bounds(ScaleChildX(NewBounds.Left),ScaleChildY(NewBounds.Top),
           NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
       Splitter.DockRestoreBounds:=NewBounds;
       Splitter.BoundsRect:=NewBounds;
@@ -1780,12 +1799,12 @@ var
       {$ENDIF}
       Site.BeginUpdateLayout;
       try
-        SetupSite(Site,Node,Parent,SrcRect);
+        SetupSite(Site,Node,Parent);
         Site.FSiteType:=adhstLayout;
         Site.Header.Parent:=nil;
         // create children
         for i:=0 to Node.Count-1 do
-          Restore(Node[i],Site,SrcRect);
+          Restore(Node[i],Site);
         // anchor children
         for i:=0 to Node.Count-1 do begin
           ChildNode:=Node[i];
@@ -1821,13 +1840,13 @@ var
       {$ENDIF}
       Site.BeginUpdateLayout;
       try
-        SetupSite(Site,Node,Parent,SrcRect);
+        SetupSite(Site,Node,Parent);
         Site.FSiteType:=adhstPages;
         Site.Header.Parent:=nil;
         Site.CreatePages;
         for i:=0 to Node.Count-1 do begin
           Site.Pages.Pages.Add(Node[i].Name);
-          AControl:=Restore(Node[i],Site.Pages.Page[i],SrcRect);
+          AControl:=Restore(Node[i],Site.Pages.Page[i]);
           if AControl=nil then continue;
           AControl.Align:=alClient;
           for Side:=Low(TAnchorKind) to high(TAnchorKind) do
@@ -1840,14 +1859,15 @@ var
     end else begin
       // create children
       for i:=0 to Node.Count-1 do
-        Restore(Node[i],Parent,SrcRect);
+        Restore(Node[i],Parent);
     end;
   end;
 
 begin
   Result:=true;
   WorkArea:=Rect(0,0,0,0);
-  Restore(Tree.Root,nil,Rect(0,0,0,0));
+  SrcWorkArea:=WorkArea;
+  Restore(Tree.Root,nil);
   Restoring:=true;
 end;
 
