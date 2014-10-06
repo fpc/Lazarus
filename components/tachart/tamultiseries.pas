@@ -714,8 +714,17 @@ procedure TOpenHighLowCloseSeries.Draw(ADrawer: IChartDrawer);
   end;
 
   procedure DrawCandleStick(x, yopen, yhigh, ylow, yclose, tw: Double);
+  var
+    clr: TColor;
   begin
     ADrawer.Pen := FCandlestickLinePen;
+    if FCandleStickLinePen.Color = clDefault then begin
+      if yopen <= yclose then
+        clr := FCandleStickUpBrush.Color
+      else
+        clr := FCandleStickDownBrush.Color;
+      ADrawer.SetPenParams(FCandleStickLinePen.Style, clr);
+    end;
     DoLine(x, yhigh, x, ylow);
     DoRect(x - tw, yopen, x + tw, yclose);
   end;

@@ -6,21 +6,28 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, TAGraph, TAMultiSeries, TATools,
-  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, types;
+  Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, ColorBox, types;
 
 type
 
   { TMainForm }
 
   TMainForm = class(TForm)
+    cbCandleStickSameColor: TCheckBox;
     cbSeriesType: TComboBox;
     ChartToolset1: TChartToolset;
+    cbUpColor: TColorBox;
+    cbDownColor: TColorBox;
     DataPointHintTool: TDataPointHintTool;
     FinancialChart: TChart;
-    Label1: TLabel;
+    LblDown: TLabel;
+    LblUp: TLabel;
     ohlcSeries: TOpenHighLowCloseSeries;
+    BottomPanel: TPanel;
     TopPanel: TPanel;
+    procedure cbCandleStickSameColorChange(Sender: TObject);
     procedure cbSeriesTypeChange(Sender: TObject);
+    procedure cbColorChange(Sender: TObject);
     procedure DataPointHintToolHint(ATool: TDataPointHintTool;
       const APoint: TPoint; var AHint: String);
     procedure DataPointHintToolHintLocation(ATool: TDataPointHintTool;
@@ -91,6 +98,31 @@ end;
 procedure TMainForm.cbSeriesTypeChange(Sender: TObject);
 begin
   ohlcSeries.Mode := TOHLCMode(CbSeriesType.ItemIndex);
+  cbCandleStickSameColor.Visible := cbSeriesType.ItemIndex = 1;
+end;
+
+procedure TMainForm.cbColorChange(Sender: TObject);
+begin
+  case ohlcSeries.Mode of
+    mOHLC:
+      begin
+        ohlcSeries.LinePen.Color := cbUpColor.Selected;
+        ohlcSeries.DownLinePen.Color := cbDownColor.Selected;
+      end;
+    mCandleStick:
+      begin
+        ohlcSeries.CandlestickUpBrush.Color := cbUpColor.Selected;
+        ohlcSeries.CandleStickDownBrush.Color := cbDownColor.Selected;
+      end;
+  end;
+end;
+
+procedure TMainForm.cbCandleStickSameColorChange(Sender: TObject);
+begin
+  if cbCandleStickSameColor.Checked then
+    ohlcSeries.CandlestickLinePen.Color := clDefault
+  else
+    ohlcSeries.CandleStickLinePen.Color := clBlack;
 end;
 
 { This event handler returns the text to be displayed as a mouse-over hint.
