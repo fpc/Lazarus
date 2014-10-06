@@ -83,9 +83,7 @@
     Parent bug with links to all other:
     - http://bugs.freepascal.org/view.php?id=18298 default layout sometimes wrong main bar
     Other bugs:
-    - http://bugs.freepascal.org/view.php?id=18538 keep size of mainbar
     - http://bugs.freepascal.org/view.php?id=18553 docked form designer
-    - http://bugs.freepascal.org/view.php?id=18407 docked form designer
     - http://bugs.freepascal.org/view.php?id=19132 docking already docked
     - http://bugs.freepascal.org/view.php?id=19200 minimize+restore resize
     - http://bugs.freepascal.org/view.php?id=19735 main bar on different screen size
