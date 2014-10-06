@@ -29,8 +29,6 @@ type
     FSelectDirectoryFilename: String;
     FTestTypes: TPoTestTypes;
     FTestOptions: TPoTestOptions;
-    FLoadSettings: Boolean;
-    FSaveSettingsOnExit: Boolean;
     FMasterPoList: TStringList;
     FChildPoList: TStringList;
     FLastSelectedFile: String;
@@ -59,7 +57,7 @@ type
     procedure SaveChildrenPoList;
     procedure SetChildPoList(AValue: TStrings);
     procedure SetMasterPoList(AValue: TStrings);
-
+    procedure ResetAllProperties;
   public
     constructor Create;
     destructor Destroy; override;
@@ -68,7 +66,6 @@ type
     procedure SaveConfig;
 
     property Filename: String read FFilename;
-    property SaveSettingsOnExit: Boolean read FSaveSettingsOnExit write FSaveSettingsOnExit;
     property TestTypes: TPoTestTypes read FTestTypes write FTestTypes;
     property TestOptions: TPoTestOptions read FTestOptions write FTestOptions;
     property ExternalEditorName: String read FExternalEditorName write FExternalEditorName;
@@ -437,18 +434,34 @@ begin
   FMasterPoList.Assign(AValue);
 end;
 
+procedure TPoCheckerSettings.ResetAllProperties;
+begin
+  FTestTypes := [];
+  FTestOptions := [];
+  FMainFormGeometry := DefaultRect;
+  FGraphFormGeometry := DefaultRect;
+  FResultsFormGeometry := DefaultRect;
+  FMainFormWindowState := wsNormal;
+  FResultsFormWindowState := wsNormal;
+  FGraphFormWindowState := wsNormal;
+  FExternalEditorName := '';
+  FOpenDialogFilename := '';
+  FSelectDirectoryFilename := '';
+  FLastSelectedFile := '';
+  if Assigned(FMasterPoList) then FMasterPoList.Free;
+  FMasterPoList := TStringList.Create;
+  FMasterPoList.Sorted := True;
+  FMasterPoList.Duplicates := dupIgnore;
+  if Assigned(FChildPoList) then FChildPoList.Free;
+  FChildPoList := TStringList.Create;
+  FChildPoList.Sorted := True;
+  FChildPoList.Duplicates := dupIgnore;
+end;
+
 constructor TPoCheckerSettings.Create;
 begin
   try
-    FTestTypes := [];
-    FTestOptions := [];
-    FMainFormGeometry := Rect(-1,-1,-1,-1);
-    FMasterPoList := TStringList.Create;
-    FMasterPoList.Sorted := True;
-    FMasterPoList.Duplicates := dupIgnore;
-    FChildPoList := TStringList.Create;
-    FChildPoList.Sorted := True;
-    FChildPoList.Duplicates := dupIgnore;
+    ResetAllProperties;
     {$ifdef POCHECKERSTANDALONE}
     FFilename := GetAndCreateConfigPath;
     if (FFilename <> '') then FFilename := AppendPathDelim(FFilename);
@@ -482,22 +495,17 @@ end;
 procedure TPoCheckerSettings.LoadConfig;
 begin
   try
-    FLoadSettings := FConfig.GetValue(pLoadSettings+'Value',False);
-    if FLoadSettings then
-    begin
-      FTestTypes := LoadTestTypes;
-      FTestOptions := LoadTestOptions;
-      FLastSelectedFile := LoadLastSelectedFile;
-      FSelectDirectoryFilename := LoadSelectDirectoryFilename;
-      FOpenDialogFilename := LoadOpenDialogFilename;
-      FExternalEditorName := LoadExternalEditorName;
-      LoadWindowsGeometry;
-      LoadMasterPoList(FMasterPoList);
-      LoadChildPoList(FChildPoList);
-    end;
+    FTestTypes := LoadTestTypes;
+    FTestOptions := LoadTestOptions;
+    FLastSelectedFile := LoadLastSelectedFile;
+    FSelectDirectoryFilename := LoadSelectDirectoryFilename;
+    FOpenDialogFilename := LoadOpenDialogFilename;
+    FExternalEditorName := LoadExternalEditorName;
+    LoadWindowsGeometry;
+    LoadMasterPoList(FMasterPoList);
+    LoadChildPoList(FChildPoList);
   except
-    FTestTypes := [];
-    FTestOptions := [];
+    ResetAllProperties;
     debugln('TPoCheckerSettings.LoadConfig: Error loading config.');
   end;
 end;
@@ -506,24 +514,18 @@ procedure TPoCheckerSettings.SaveConfig;
 begin
   try
     FConfig.SetDeleteValue('Version','1.0','');
-    FConfig.SetValue(pLoadSettings+'Value',FSaveSettingsOnExit);
-    if FSaveSettingsOnExit then
-    begin
-      SaveLastSelectedFile;
-      SaveTestTypes;
-      SaveTestOptions;
-      SaveExternalEditorName;
-      SaveSelectDirectoryFilename;
-      SaveOpenDialogFilename;
-      SaveWindowsGeometry;
-      SaveMasterPoList;
-      SaveChildrenPoList;
-    end
-    else
-    begin
-      FConfig.DeletePath(pMasterPoFiles);
-      FConfig.DeletePath(pChildPoFiles);
-    end;
+    //the next line can be reomoved after some time
+    FConfig.DeletePath(pLoadSettings);
+
+    SaveLastSelectedFile;
+    SaveTestTypes;
+    SaveTestOptions;
+    SaveExternalEditorName;
+    SaveSelectDirectoryFilename;
+    SaveOpenDialogFilename;
+    SaveWindowsGeometry;
+    SaveMasterPoList;
+    SaveChildrenPoList;
     FConfig.WriteToDisk;
   except
     debugln('TPoCheckerSettings.SaveConfig: Error saving config.');

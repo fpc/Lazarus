@@ -249,7 +249,7 @@ begin
     PrevItem := ChildPoListBox.Items[Idx]
   else
     PrevItem := '';
-  debugln('TPoCheckerForm.LangFilterChange: PrevItem = "',PrevItem,'"');
+  //debugln('TPoCheckerForm.LangFilterChange: PrevItem = "',PrevItem,'"');
   Filter := LangFilter.Items.Strings[LangFilter.ItemIndex];
   if (LangFilter.ItemIndex > 0) then
   begin
@@ -775,7 +775,6 @@ end;
 
 procedure TPoCheckerForm.SaveConfig;
 begin
-  FPoCheckerSettings.SaveSettingsOnExit := True; //ToDo: create a checkbox for this
   FPoCheckerSettings.LastSelectedFile := FSelectedPoName;
   FPoCheckerSettings.SelectDirectoryFilename := SelectDirectoryDialog.Filename;
   FPoCheckerSettings.OpenDialogFilename := OpenDialog.FileName;
