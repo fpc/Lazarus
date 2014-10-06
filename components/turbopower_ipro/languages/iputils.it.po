@@ -3,6 +3,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: \n"
 
 #: iputils.slongversion
 msgid "Version %.2f"
@@ -10,5 +15,5 @@ msgstr "Versione %.2f"
 
 #: iputils.sshortversion
 msgid "v%.2f"
-msgstr ""
+msgstr "v%.2f"
 

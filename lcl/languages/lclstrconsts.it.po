@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.2\n"
-"PO-Revision-Date: 2014-06-29 23:57+0100\n"
+"PO-Revision-Date: 2014-10-03 20:34+0100\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
@@ -1472,7 +1472,7 @@ msgstr "Nessun timer disponibile"
 
 #: lclstrconsts.sparentrequired
 msgid "Control \"%s\" has no parent window."
-msgstr ""
+msgstr "Il controllo \"%s\" non ha una finestra genitore."
 
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2011-04-21 14:19+0200\n"
-"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"PO-Revision-Date: 2014-10-03 19:43+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -9,6 +9,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.5.1\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
 
 #: ipconst.cacheadding
 msgid "Caching item (%s = %s)"
@@ -36,7 +38,7 @@ msgstr "Connesso: %s"
 
 #: ipconst.httpdisconnect
 msgid "Disconnected: (%s), %s Total bytes received"
-msgstr "Disconnesso: (%s), %d byte ricevuti in totale"
+msgstr "Disconnesso: (%s), %s byte ricevuti in totale"
 
 #: ipconst.httpdownload
 msgid "Download: (%s), Error downloading"
@@ -44,7 +46,7 @@ msgstr "Scaricamento: (%s), errore di trasferimento"
 
 #: ipconst.httpget
 msgid "GET: (%s)"
-msgstr ""
+msgstr "GET: (%s)"
 
 #: ipconst.httpgeterror
 msgid "GET: (%s) FAILED"
@@ -56,7 +58,7 @@ msgstr "Scaicamento: (%s) ricevuto header dati"
 
 #: ipconst.httphead
 msgid "HEAD: (%s)"
-msgstr ""
+msgstr "HEAD: (%s)"
 
 #: ipconst.httpheaderror
 msgid "HEAD: (%s) FAILED"
@@ -68,7 +70,7 @@ msgstr "L'entità non ha header dati"
 
 #: ipconst.httppost
 msgid "POST: (%s)"
-msgstr ""
+msgstr "POST: (%s)"
 
 #: ipconst.httpposterror
 msgid "POST: (%s) FAILED"
@@ -290,14 +292,13 @@ msgid "- expected"
 msgstr "era atteso -"
 
 #: ipconst.shtmldefbrowsecaption
-#, fuzzy
 #| msgid "Browse..."
 msgid "Browse ..."
-msgstr "Ispeziona..."
+msgstr "Naviga..."
 
 #: ipconst.shtmldefresetcaption
 msgid "Reset"
-msgstr ""
+msgstr "Ripristina"
 
 #: ipconst.shtmldefsubmitcaption
 msgid "Submit"
@@ -561,23 +562,23 @@ msgstr "Generazione evento OnArticle"
 
 #: ipconst.slogauthlogin
 msgid " (ssAuthLogin)"
-msgstr ""
+msgstr " (ssAuthLogin)"
 
 #: ipconst.slogauthpass
 msgid " (ssAuthPass)"
-msgstr ""
+msgstr " (ssAuthPass)"
 
 #: ipconst.slogauthuser
 msgid " (ssAuthUser)"
-msgstr ""
+msgstr " (ssAuthUser)"
 
 #: ipconst.slogdata
 msgid " (ssData)"
-msgstr ""
+msgstr " (ssData)"
 
 #: ipconst.slogehlo
 msgid " (ssEhlo)"
-msgstr ""
+msgstr " (ssEhlo)"
 
 #: ipconst.slogencodeactionstart
 msgid "Generating OnEncodeAction(Start)"
@@ -589,23 +590,23 @@ msgstr "Generazione di OnEncodeAction(Stop)"
 
 #: ipconst.slogexpand
 msgid " (ssExpand)"
-msgstr ""
+msgstr " (ssExpand)"
 
 #: ipconst.sloghelo
 msgid " (ssHelo)"
-msgstr ""
+msgstr " (ssHelo)"
 
 #: ipconst.sloghelp
 msgid " (ssHelp)"
-msgstr ""
+msgstr " (ssHelp)"
 
 #: ipconst.slogicmpclass
 msgid "[ICMP] "
-msgstr ""
+msgstr "[ICMP] "
 
 #: ipconst.slogmailfrom
 msgid " (ssMailFrom)"
-msgstr ""
+msgstr " (ssMailFrom)"
 
 #: ipconst.slogmultiline
 msgid "Generating OnMultiLineResponse event"
@@ -621,151 +622,151 @@ msgstr "Prossimo messaggio pronto"
 
 #: ipconst.slognntpclass
 msgid "[NNTP] "
-msgstr ""
+msgstr "[NNTP] "
 
 #: ipconst.slognsarticle
 msgid " (nsArticle)"
-msgstr ""
+msgstr " (nsArticle)"
 
 #: ipconst.slognsauthpass
 msgid " (nsAuthPass)"
-msgstr ""
+msgstr " (nsAuthPass)"
 
 #: ipconst.slognsauthuser
 msgid " (nsAuthUser)"
-msgstr ""
+msgstr " (nsAuthUser)"
 
 #: ipconst.slognsbody
 msgid " (nsBody)"
-msgstr ""
+msgstr " (nsBody)"
 
 #: ipconst.slognsconnect
 msgid " (nsConnect)"
-msgstr ""
+msgstr " (nsConnect)"
 
 #: ipconst.slognsdate
 msgid " (nsDate)"
-msgstr ""
+msgstr " (nsDate)"
 
 #: ipconst.slognsgroup
 msgid " (nsGroup)"
-msgstr ""
+msgstr " (nsGroup)"
 
 #: ipconst.slognshead
 msgid " (nsHead)"
-msgstr ""
+msgstr " (nsHead)"
 
 #: ipconst.slognshelp
 msgid " (nsHelp)"
-msgstr ""
+msgstr " (nsHelp)"
 
 #: ipconst.slognslast
 msgid " (nsLast)"
-msgstr ""
+msgstr " (nsLast)"
 
 #: ipconst.slognslist
 msgid " (nsList)"
-msgstr ""
+msgstr " (nsList)"
 
 #: ipconst.slognslistactivetimes
 msgid " (nsListActiveTimes)"
-msgstr ""
+msgstr " (nsListActiveTimes)"
 
 #: ipconst.slognslistdistribpats
 msgid " (nsListDistribPats)"
-msgstr ""
+msgstr " (nsListDistribPats)"
 
 #: ipconst.slognslistdistributions
 msgid " (nsListDistributions)"
-msgstr ""
+msgstr " (nsListDistributions)"
 
 #: ipconst.slognslistext
 msgid " (nsListExt)"
-msgstr ""
+msgstr " (nsListExt)"
 
 #: ipconst.slognslistgroup
 msgid " (nsListGroup)"
-msgstr ""
+msgstr " (nsListGroup)"
 
 #: ipconst.slognslistnewsgroups
 msgid " (nsListNewsGroups)"
-msgstr ""
+msgstr " (nsListNewsGroups)"
 
 #: ipconst.slognslistoverviewfmt
 msgid " (nsListOverviewFmt)"
-msgstr ""
+msgstr " (nsListOverviewFmt)"
 
 #: ipconst.slognsnewgroups
 msgid " (nsNewGroups)"
-msgstr ""
+msgstr " (nsNewGroups)"
 
 #: ipconst.slognsnewnews
 msgid " (nsNewNews)"
-msgstr ""
+msgstr " (nsNewNews)"
 
 #: ipconst.slognsnext
 msgid " (nsNext)"
-msgstr ""
+msgstr " (nsNext)"
 
 #: ipconst.slognsnoop
 msgid " (nsNoOp)"
-msgstr ""
+msgstr " (nsNoOp)"
 
 #: ipconst.slognsover
 msgid " (nsOver)"
-msgstr ""
+msgstr " (nsOver)"
 
 #: ipconst.slognspat
 msgid " (nsPat)"
-msgstr ""
+msgstr " (nsPat)"
 
 #: ipconst.slognspost
 msgid " (nsPost)"
-msgstr ""
+msgstr " (nsPost)"
 
 #: ipconst.slognsprepost
 msgid " (nsPrePost)"
-msgstr ""
+msgstr " (nsPrePost)"
 
 #: ipconst.slognsquit
 msgid " (nsQuit)"
-msgstr ""
+msgstr " (nsQuit)"
 
 #: ipconst.slognsspecial
 msgid " (nsSpecial)"
-msgstr ""
+msgstr " (nsSpecial)"
 
 #: ipconst.slognsstat
 msgid " (nsStat)"
-msgstr ""
+msgstr " (nsStat)"
 
 #: ipconst.slogntauthenticate
 msgid " (ntAuthenticate)"
-msgstr ""
+msgstr " (ntAuthenticate)"
 
 #: ipconst.slogntnewnews
 msgid " (ntNewNews)"
-msgstr ""
+msgstr " (ntNewNews)"
 
 #: ipconst.slogntnotask
 msgid " (ntNoTask)"
-msgstr ""
+msgstr " (ntNoTask)"
 
 #: ipconst.slogntpostto
 msgid " (ntPostTo)"
-msgstr ""
+msgstr " (ntPostTo)"
 
 #: ipconst.slogntselectgroup
 msgid " (ntSelectGroup)"
-msgstr ""
+msgstr " (ntSelectGroup)"
 
 #: ipconst.slogoslist
 msgid " (psList)"
-msgstr ""
+msgstr " (psList)"
 
 #: ipconst.slogpop3class
 msgid "[POP3] "
-msgstr ""
+msgstr "[POP3] "
 
 #: ipconst.slogpop3message
 msgid "Generating OnMessage event"
@@ -777,87 +778,87 @@ msgstr "Generazione evento OnTop"
 
 #: ipconst.slogpsapop
 msgid " (psApop)"
-msgstr ""
+msgstr " (psApop)"
 
 #: ipconst.slogpsconnect
 msgid " (psConnect)"
-msgstr ""
+msgstr " (psConnect)"
 
 #: ipconst.slogpsdele
 msgid " (psDele)"
-msgstr ""
+msgstr " (psDele)"
 
 #: ipconst.slogpsnoop
 msgid " {psNoOp)"
-msgstr ""
+msgstr " {psNoOp)"
 
 #: ipconst.slogpspass
 msgid " (psPass)"
-msgstr ""
+msgstr " (psPass)"
 
 #: ipconst.slogpsquit
 msgid " (psQuit)"
-msgstr ""
+msgstr " (psQuit)"
 
 #: ipconst.slogpsretr
 msgid " (psRetr)"
-msgstr ""
+msgstr " (psRetr)"
 
 #: ipconst.slogpsrset
 msgid " (psRSet)"
-msgstr ""
+msgstr " (psRSet)"
 
 #: ipconst.slogpsspecial
 msgid " (psSpecial)"
-msgstr ""
+msgstr " (psSpecial)"
 
 #: ipconst.slogpsstat
 msgid " (psStat)"
-msgstr ""
+msgstr " (psStat)"
 
 #: ipconst.slogpstop
 msgid " (psTop)"
-msgstr ""
+msgstr " (psTop)"
 
 #: ipconst.slogpsuidl
 msgid " (psUidl)"
-msgstr ""
+msgstr " (psUidl)"
 
 #: ipconst.slogpsuser
 msgid " (psUser)"
-msgstr ""
+msgstr " (psUser)"
 
 #: ipconst.slogptlist
 msgid " (ptList)"
-msgstr ""
+msgstr " (ptList)"
 
 #: ipconst.slogptlogon
 msgid " (ptLogon)"
-msgstr ""
+msgstr " (ptLogon)"
 
 #: ipconst.slogptnone
 msgid " (ptNone)"
-msgstr ""
+msgstr " (ptNone)"
 
 #: ipconst.slogptuidl
 msgid " (ptUIDL)"
-msgstr ""
+msgstr " (ptUIDL)"
 
 #: ipconst.slogquit
 msgid " (ssQuit)"
-msgstr ""
+msgstr " (ssQuit)"
 
 #: ipconst.slogrcptbcc
 msgid " (ssRcptBcc)"
-msgstr ""
+msgstr " (ssRcptBcc)"
 
 #: ipconst.slogrcptcc
 msgid " (ssRcptCc)"
-msgstr ""
+msgstr " (ssRcptCc)"
 
 #: ipconst.slogrcptto
 msgid " (ssRcptTo)"
-msgstr ""
+msgstr " (ssRcptTo)"
 
 #: ipconst.slogresponse
 msgid "Generating OnResponse event, Code = "
@@ -865,27 +866,27 @@ msgstr "Generazione evento OnResponse, codice ="
 
 #: ipconst.slogrset
 msgid " (ssRSet)"
-msgstr ""
+msgstr " (ssRSet)"
 
 #: ipconst.slogsaml
 msgid " (ssSaml)"
-msgstr ""
+msgstr " (ssSaml)"
 
 #: ipconst.slogsend
 msgid " (ssSend)"
-msgstr ""
+msgstr " (ssSend)"
 
 #: ipconst.slogsendenvelope
 msgid " (ssSendEnvelope)"
-msgstr ""
+msgstr " (ssSendEnvelope)"
 
 #: ipconst.slogsendmessage
 msgid " (ssSendMessage)"
-msgstr ""
+msgstr " (ssSendMessage)"
 
 #: ipconst.slogsmtpclass
 msgid "[SMTP] "
-msgstr ""
+msgstr "[SMTP] "
 
 #: ipconst.slogsmtpnextmessage
 msgid "Generating OnNextMessage event"
@@ -893,19 +894,19 @@ msgstr "Generazione evento OnNextMessage"
 
 #: ipconst.slogsoml
 msgid " (ssSoml)"
-msgstr ""
+msgstr " (ssSoml)"
 
 #: ipconst.slogspecial
 msgid " (ssSpecial)"
-msgstr ""
+msgstr " (ssSpecial)"
 
 #: ipconst.slogssconnect
 msgid " (ssConnect)"
-msgstr ""
+msgstr " (ssConnect)"
 
 #: ipconst.slogssnoop
 msgid " (ssNoOp)"
-msgstr ""
+msgstr " (ssNoOp)"
 
 #: ipconst.slogstate
 msgid "State change: "
@@ -913,15 +914,15 @@ msgstr "Cambio di stato:"
 
 #: ipconst.slogstlogon
 msgid " (stLogon)"
-msgstr ""
+msgstr " (stLogon)"
 
 #: ipconst.slogstnotask
 msgid " (stNoTask)"
-msgstr ""
+msgstr " (stNoTask)"
 
 #: ipconst.slogstsendmail
 msgid " (stSendMail)"
-msgstr ""
+msgstr " (stSendMail)"
 
 #: ipconst.slogtaskcomplete
 msgid "Generating OnTaskComplete event "
@@ -933,11 +934,11 @@ msgstr "Inizio task:"
 
 #: ipconst.slogturn
 msgid " (ssTurn)"
-msgstr ""
+msgstr " (ssTurn)"
 
 #: ipconst.slogverify
 msgid " (ssVerify)"
-msgstr ""
+msgstr " (ssVerify)"
 
 #: ipconst.smemmapfilenamerequired
 msgid "You must specify a file name for TIpMemMapStream"
@@ -953,7 +954,7 @@ msgstr "Il metodo %s richiede che l'istanza di TIpMemMapStream sia aperta"
 
 #: ipconst.snntpcmdarticle
 msgid "ARTICLE"
-msgstr ""
+msgstr "ARTICLE"
 
 #: ipconst.snntpcmdauthpass
 msgid "AUTHINFO PASS"
@@ -1010,7 +1011,7 @@ msgstr "LISTA ESTENSIONI"
 
 #: ipconst.snntpcmdlistgroup
 msgid "LISTGROUP"
-msgstr ""
+msgstr "LISTGROUP"
 
 #: ipconst.snntpcmdlistnewsgroups
 msgid "LIST NEWSGROUPS"
@@ -1034,11 +1035,11 @@ msgstr "PROSSIMO"
 
 #: ipconst.snntpcmdpat
 msgid "PAT"
-msgstr ""
+msgstr "PAT"
 
 #: ipconst.snntpcmdpost
 msgid "POST"
-msgstr ""
+msgstr "POST"
 
 #: ipconst.snntpcmdquit
 msgctxt "ipconst.snntpcmdquit"
@@ -1048,7 +1049,7 @@ msgstr "ESCI"
 #: ipconst.snntpcmdstat
 msgctxt "ipconst.snntpcmdstat"
 msgid "STAT"
-msgstr ""
+msgstr "STAT"
 
 #: ipconst.snntpcmdxover
 msgid "XOVER"
@@ -1411,11 +1412,11 @@ msgstr "**** ATTENZIONE ****"
 
 #: ipconst.spop3cmdapop
 msgid "APOP"
-msgstr ""
+msgstr "APOP"
 
 #: ipconst.spop3cmddele
 msgid "DELE"
-msgstr ""
+msgstr "DELE"
 
 #: ipconst.spop3cmdlist
 msgctxt "ipconst.spop3cmdlist"
@@ -1424,11 +1425,11 @@ msgstr "LISTA"
 
 #: ipconst.spop3cmdnoop
 msgid "NOOP"
-msgstr ""
+msgstr "NOOP"
 
 #: ipconst.spop3cmdpass
 msgid "PASS"
-msgstr ""
+msgstr "PASS"
 
 #: ipconst.spop3cmdquit
 msgctxt "ipconst.spop3cmdquit"
@@ -1437,32 +1438,32 @@ msgstr "ESCI"
 
 #: ipconst.spop3cmdretr
 msgid "RETR"
-msgstr ""
+msgstr "RETR"
 
 #: ipconst.spop3cmdrset
 msgid "RSET"
-msgstr ""
+msgstr "RSET"
 
 #: ipconst.spop3cmdstat
 msgctxt "ipconst.spop3cmdstat"
 msgid "STAT"
-msgstr ""
+msgstr "STAT"
 
 #: ipconst.spop3cmdtop
 msgid "TOP"
-msgstr ""
+msgstr "TOP"
 
 #: ipconst.spop3cmduidl
 msgid "UIDL"
-msgstr ""
+msgstr "UIDL"
 
 #: ipconst.spop3cmduser
 msgid "USER"
-msgstr ""
+msgstr "USER"
 
 #: ipconst.spop3errresp
 msgid "-ERR"
-msgstr ""
+msgstr "-ERR"
 
 #: ipconst.spop3notauthenticating
 msgid "%s can not be called in transaction state"
@@ -1474,7 +1475,7 @@ msgstr "Non si può chiamare %s durante un'autenticazione"
 
 #: ipconst.spop3okresp
 msgid "+OK"
-msgstr ""
+msgstr "+OK"
 
 #: ipconst.sposreqd
 msgid "%s: count must be positive"
@@ -1719,7 +1720,7 @@ msgstr "%s: numero di riga fuori limite"
 
 #: ipconst.srowrowoor
 msgid "TIpTerminalArray.ScrollRows: either start row %d or end row %d is out of range"
-msgstr "TIpTerminalArray.ScrollRows: o la riga di inizio o la riga di fine sono fuori dai limiti"
+msgstr "TIpTerminalArray.ScrollRows: o la riga di inizio %d o la riga di fine %d sono fuori dai limiti"
 
 #: ipconst.sseekingdiskfileto
 msgid "Seeking disk file to "
@@ -2197,7 +2198,7 @@ msgstr "Invio messaggio"
 
 #: ipconst.ssssoml
 msgid "ssSoml"
-msgstr ""
+msgstr "ssSoml"
 
 #: ipconst.sssspecial
 msgctxt "ipconst.sssspecial"
@@ -2206,7 +2207,7 @@ msgstr "Invio comando speciale"
 
 #: ipconst.sssturn
 msgid "ssTurn"
-msgstr ""
+msgstr "ssTurn"
 
 #: ipconst.sssverify
 msgid "Verifying"

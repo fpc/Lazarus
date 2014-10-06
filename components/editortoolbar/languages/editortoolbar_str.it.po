@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2014-09-01 16:52+0100\n"
+"PO-Revision-Date: 2014-10-03 14:11+0100\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
@@ -81,7 +81,6 @@ msgid "If none is selected, the Item will be appended at the end of the Toolbar.
 msgstr "Se nessuna è selezionata, la voce sarà aggiunta alla fine."
 
 #: editortoolbar_str.rshelp3
-#, fuzzy
 #| msgid "You may rearrage Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
 msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
 msgstr "Potete riposizionare le voci della barra con i bottoni \"Sposta su\" e \"Sposta giù\"."

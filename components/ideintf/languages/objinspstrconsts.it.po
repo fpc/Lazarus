@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: objinspstrconsts\n"
-"PO-Revision-Date: 2014-06-29 12:47+0100\n"
+"PO-Revision-Date: 2014-10-03 18:07+0100\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
@@ -134,27 +134,27 @@ msgstr "Su"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
-msgstr ""
+msgstr "Aggiungi campi"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
-msgstr ""
+msgstr "Editor per colonne di DBGrid"
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
-msgstr ""
+msgstr "Elimina tutti"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
-msgstr ""
+msgstr "Preleva etichette"
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
-msgstr ""
+msgstr "Verranno cancellate tutte le colonne. Continuare?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
-msgstr ""
+msgstr "Questo sostituirà tutte le intestazioni dal dataset. Continuare?"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -175,7 +175,7 @@ msgstr "&Dati"
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
-msgstr ""
+msgstr "&Dataset:"
 
 #: objinspstrconsts.fesfetitle
 #| msgid "Edit Fields..."
@@ -196,7 +196,7 @@ msgstr "Tipo di campo"
 
 #: objinspstrconsts.fesfltitle
 msgid "FieldDefs"
-msgstr ""
+msgstr "FieldDefs"
 
 #: objinspstrconsts.fesformcaption
 #| msgid "New fileld"
@@ -264,23 +264,23 @@ msgstr "Aggiungi valore"
 
 #: objinspstrconsts.liiselse
 msgid "Else"
-msgstr ""
+msgstr "Else"
 
 #: objinspstrconsts.liiselseif
 msgid "ElseIf"
-msgstr ""
+msgstr "ElseIf"
 
 #: objinspstrconsts.liisif
 msgid "If"
-msgstr ""
+msgstr "If"
 
 #: objinspstrconsts.liisifdef
 msgid "IfDef"
-msgstr ""
+msgstr "IfDef"
 
 #: objinspstrconsts.liisifndef
 msgid "IfNDef"
-msgstr ""
+msgstr "IfNDef"
 
 #: objinspstrconsts.liissetvalue
 msgid "Set value"
@@ -396,11 +396,11 @@ msgstr "Booleano"
 
 #: objinspstrconsts.oisbtncomponents
 msgid "Co&mponents"
-msgstr ""
+msgstr "Co&mponenti"
 
 #: objinspstrconsts.oisbtnproperties
 msgid "&Properties"
-msgstr ""
+msgstr "&Proprietà"
 
 #: objinspstrconsts.oiscadd
 msgid "&Add"

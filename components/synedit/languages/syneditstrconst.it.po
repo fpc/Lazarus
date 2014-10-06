@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.3\n"
-"PO-Revision-Date: 2011-04-21 20:20+0200\n"
-"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"PO-Revision-Date: 2014-10-03 19:34+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -10,18 +10,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.5.1\n"
+"POT-Creation-Date: \n"
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
-msgstr ""
+msgstr "Annotazione"
 
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
-msgstr ""
+msgstr "Asp"
 
 #: syneditstrconst.syns_attrassembler
 msgid "Assembler"
-msgstr ""
+msgstr "Assembler"
 
 #: syneditstrconst.syns_attrattributename
 msgid "Attribute Name"
@@ -45,7 +46,7 @@ msgstr "Label case"
 
 #: syneditstrconst.syns_attrcdata
 msgid "CDATA"
-msgstr ""
+msgstr "CDATA"
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
@@ -101,7 +102,7 @@ msgstr "Direttiva"
 
 #: syneditstrconst.syns_attrdoctype
 msgid "DOCTYPE"
-msgstr ""
+msgstr "DOCTYPE"
 
 #: syneditstrconst.syns_attrdoctypesection
 msgid "DOCTYPE Section"
@@ -141,15 +142,15 @@ msgstr "Eccezione"
 
 #: syneditstrconst.syns_attrflags
 msgid "Flags"
-msgstr ""
+msgstr "Flags"
 
 #: syneditstrconst.syns_attrfloat
 msgid "Float"
-msgstr ""
+msgstr "Virgola mobile"
 
 #: syneditstrconst.syns_attrform
 msgid "Form"
-msgstr ""
+msgstr "Modulo"
 
 #: syneditstrconst.syns_attrfunction
 msgid "Function"
@@ -177,7 +178,7 @@ msgstr "Carattere illegale"
 
 #: syneditstrconst.syns_attrinclude
 msgid "Include"
-msgstr ""
+msgstr "Includi"
 
 #: syneditstrconst.syns_attrindirect
 msgid "Indirect"
@@ -217,7 +218,7 @@ msgstr "Riga diff rimossa"
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
-msgstr ""
+msgstr "Macro"
 
 #: syneditstrconst.syns_attrmarker
 msgid "Marker"
@@ -253,7 +254,7 @@ msgstr "Parola chiave non riservata"
 
 #: syneditstrconst.syns_attrnull
 msgid "Null"
-msgstr ""
+msgstr "Null"
 
 #: syneditstrconst.syns_attrnumber
 msgid "Number"
@@ -277,7 +278,7 @@ msgstr "Parola riservata (PL/SQL)"
 
 #: syneditstrconst.syns_attrpragma
 msgid "Pragma"
-msgstr ""
+msgstr "Pragma"
 
 #: syneditstrconst.syns_attrpreprocessor
 msgid "Preprocessor"
@@ -285,7 +286,7 @@ msgstr "Preprocessore"
 
 #: syneditstrconst.syns_attrprevvalue
 msgid "Previous value"
-msgstr ""
+msgstr "Valore precedente"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
@@ -309,7 +310,7 @@ msgstr "Parentesi tonde"
 
 #: syneditstrconst.syns_attrrpl
 msgid "Rpl"
-msgstr ""
+msgstr "Rpl"
 
 #: syneditstrconst.syns_attrrplcomment
 msgid "Rpl comment"
@@ -321,7 +322,7 @@ msgstr "Chiave Rpl"
 
 #: syneditstrconst.syns_attrsasm
 msgid "SASM"
-msgstr ""
+msgstr "SASM"
 
 #: syneditstrconst.syns_attrsasmcomment
 msgid "SASM Comment"
@@ -369,7 +370,7 @@ msgstr "Simbolo"
 
 #: syneditstrconst.syns_attrsyntaxerror
 msgid "SyntaxError"
-msgstr ""
+msgstr "SyntaxError"
 
 #: syneditstrconst.syns_attrsystem
 msgid "System functions and variables"
@@ -424,7 +425,6 @@ msgid "Whitespace"
 msgstr "Spazio bianco"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
-#, fuzzy
 #| msgid "Shortcut already exists"
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
 msgstr "Il tasto \"%s\" è già assegnato ad un altro comando dell'editor. (%s)"
@@ -519,15 +519,15 @@ msgstr "Selezione"
 
 #: syneditstrconst.syns_emcstartselectlines
 msgid "Selection (lines)"
-msgstr ""
+msgstr "Selezione (righe)"
 
 #: syneditstrconst.syns_emcstartselecttokens
 msgid "Selection (tokens) "
-msgstr ""
+msgstr "Selezione (token)"
 
 #: syneditstrconst.syns_emcstartselectwords
 msgid "Selection (words)"
-msgstr ""
+msgstr "Selezione (parole)"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
@@ -535,43 +535,43 @@ msgstr "Comando IDE"
 
 #: syneditstrconst.syns_emcwheelhorizscrolldown
 msgid "Wheel scroll down (Horizontal)"
-msgstr ""
+msgstr "Rotella scorri giù (orizzontale)"
 
 #: syneditstrconst.syns_emcwheelhorizscrollup
 msgid "Wheel scroll up (Horizontal)"
-msgstr ""
+msgstr "Rotella scorri su (orizzontale)"
 
 #: syneditstrconst.syns_emcwheelscrolldown
 msgid "Wheel scroll down"
-msgstr ""
+msgstr "Rotella scorri giù"
 
 #: syneditstrconst.syns_emcwheelscrollup
 msgid "Wheel scroll up"
-msgstr ""
+msgstr "Rotella scorri su"
 
 #: syneditstrconst.syns_emcwheelscroll_opt
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr ""
+msgstr "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
-msgstr ""
+msgstr "Rotella scorri giù (verticale)"
 
 #: syneditstrconst.syns_emcwheelvertscrollup
 msgid "Wheel scroll up (Vertical)"
-msgstr ""
+msgstr "Rotella scorri su (verticale)"
 
 #: syneditstrconst.syns_emcwheelzoomin
 msgid "Wheel zoom in"
-msgstr ""
+msgstr "Rotella zoom -"
 
 #: syneditstrconst.syns_emcwheelzoomnorm
 msgid "Wheel zoom default"
-msgstr ""
+msgstr "Rotella zoom predefinito"
 
 #: syneditstrconst.syns_emcwheelzoomout
 msgid "Wheel zoom out"
-msgstr ""
+msgstr "Rotella zoom +"
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
@@ -703,7 +703,7 @@ msgstr "File PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 
 #: syneditstrconst.syns_filterpo
 msgid "Po Files (*.po)|*.po"
-msgstr ""
+msgstr "Po Files (*.po)|*.po"
 
 #: syneditstrconst.syns_filterprogress
 msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"

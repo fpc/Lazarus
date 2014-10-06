@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2011-04-22 00:08+0200\n"
-"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"PO-Revision-Date: 2014-10-03 20:36+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -9,10 +9,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.5.1\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
 
 #: msgjsonviewer.sarray
 msgid "Array (%d elements)"
-msgstr ""
+msgstr "Array (%d elements)"
 
 #: msgjsonviewer.scancelclose
 msgid "Do not close the window"
@@ -56,7 +58,6 @@ msgid "Empty document"
 msgstr "Documento vuoto"
 
 #: msgjsonviewer.serrcreatingconfigdir
-#, fuzzy
 #| msgid "Could not create the configuration files directory \"s\""
 msgid "Could not create the configuration files directory \"%s\""
 msgstr "Non posso creare la cartella dei file di configurazione \"%s\""
@@ -83,7 +84,7 @@ msgstr "Nessun nodo corrisponde al criterio"
 
 #: msgjsonviewer.snull
 msgid "null"
-msgstr ""
+msgstr "null"
 
 #: msgjsonviewer.sobject
 msgid "Object (%d members)"
@@ -257,22 +258,22 @@ msgstr "&Modifica"
 #: tmainform.menuitem1.caption
 msgctxt "TMAINFORM.MENUITEM1.CAPTION"
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: tmainform.menuitem2.caption
 msgctxt "TMAINFORM.MENUITEM2.CAPTION"
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: tmainform.menuitem3.caption
 msgctxt "TMAINFORM.MENUITEM3.CAPTION"
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: tmainform.menuitem8.caption
 msgctxt "TMAINFORM.MENUITEM8.CAPTION"
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: tmainform.mfile.caption
 msgid "&File"
@@ -300,13 +301,13 @@ msgstr "&Opzioni"
 
 #: tmainform.tbjson.caption
 msgid "TBJSON"
-msgstr ""
+msgstr "TBJSON"
 
 #: tmainform.toolbutton1.caption
 msgid "ToolButton1"
-msgstr ""
+msgstr "ToolButton1"
 
 #: tmainform.toolbutton4.caption
 msgid "ToolButton4"
-msgstr ""
+msgstr "ToolButton4"
 

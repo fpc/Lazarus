@@ -1,8 +1,8 @@
 # Massimo Soricetti <notturno@quipo.it>, 2011.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2011-04-20 17:42+0200\n"
-"Last-Translator: Massimo Soricetti <notturno@quipo.it>\n"
+"PO-Revision-Date: 2014-10-03 18:48+0100\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -10,6 +10,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Virtaal 0.5.1\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
 
 #: messagecomposer.rscancel
 msgid "Cancel"
@@ -17,11 +19,11 @@ msgstr "Annulla"
 
 #: messagecomposer.rsok
 msgid "OK"
-msgstr ""
+msgstr "OK"
 
 #: messagecomposer.rstest
 msgid "Test"
-msgstr ""
+msgstr "Test"
 
 #: messagecomposer.sadd
 msgid "Add"
@@ -41,7 +43,7 @@ msgstr "risultato \"Case\""
 
 #: messagecomposer.sdefault
 msgid "Default"
-msgstr ""
+msgstr "Default"
 
 #: messagecomposer.sdelete
 msgid "Delete"

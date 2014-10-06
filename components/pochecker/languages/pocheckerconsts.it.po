@@ -24,7 +24,7 @@ msgid ""
 "for selected file\n"
 "%s\n"
 msgstr ""
-"Non trovato il filemaster po:\n"
+"Non trovato il file master po:\n"
 "%s\n"
 "per il file scelto\n"
 "%s\n"
@@ -62,8 +62,10 @@ msgid "Copy to clipboard"
 msgstr "Copia negli appunti"
 
 #: pocheckerconsts.scurrenttest
+#, fuzzy
+#| msgid "Current Test:"
 msgid "Test: %s on %s"
-msgstr ""
+msgstr "Testo corrente:"
 
 #: pocheckerconsts.sduplicatelinenrwithvalue
 msgid "[Line %d] %s"
@@ -101,11 +103,11 @@ msgstr "Trova tutti i file po tradotti"
 
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
-msgstr ""
+msgstr "Incerto"
 
 #: pocheckerconsts.sgrapstatformcaption
 msgid "Graphical summary"
-msgstr ""
+msgstr "Riassunto grafico"
 
 #: pocheckerconsts.sguipofilecheckingtool
 msgid "GUI Po-file checking tool"
@@ -117,7 +119,7 @@ msgstr "Identificatore [%s] non trovato in %s"
 
 #: pocheckerconsts.signorefuzzytranslations
 msgid "Ignore translated strings marked as \"fuzzy\""
-msgstr ""
+msgstr "Ignora le strnghe tradotte marcate come \"incerte\""
 
 #: pocheckerconsts.sincompatibleformatargs
 msgid "[Line: %d] Incompatible and/or invalid format() arguments for:"
@@ -155,7 +157,7 @@ msgstr "Nessuna verifica selezionata"
 
 #: pocheckerconsts.snotetranslationisfuzzy
 msgid "Note: translation is fuzzy"
-msgstr ""
+msgstr "Nota: la traduzione è incerta"
 
 #: pocheckerconsts.snrerrorsfound
 msgid "Found %d errors."
@@ -178,10 +180,12 @@ msgid "&Open a po-file"
 msgstr "&Aprire un file po"
 
 #: pocheckerconsts.sopenfail
+#, fuzzy
+#| msgid "Unable to open file %s"
 msgid ""
 "Unable to open file:\n"
 "\"%s\"\n"
-msgstr ""
+msgstr "Impossibile aprire il file %s"
 
 #: pocheckerconsts.sopenfailexternal
 msgid ""
@@ -193,7 +197,7 @@ msgstr ""
 
 #: pocheckerconsts.sopenfile
 msgid "Open file %s in Ide Editor?"
-msgstr ""
+msgstr "Aprire il file %s nell'Editor?"
 
 #: pocheckerconsts.sopenfileexternal
 msgid ""
@@ -208,22 +212,16 @@ msgid "Original"
 msgstr "Originale"
 
 #: pocheckerconsts.spercfuzzy
-#, fuzzy
-#| msgid "Fuzzy strings: %2.0f%%."
 msgid "%s: %4.1f%% fuzzy strings."
-msgstr "Stringhe incerte: %2.0f%%."
+msgstr "%s: %4.1f%% stringhe incerte."
 
 #: pocheckerconsts.sperctranslated
-#, fuzzy
-#| msgid "Translated strings: %2.0f%%."
 msgid "%s: %4.1f%% translated strings."
-msgstr "Stringhe tradotte: %2.0f%%."
+msgstr "%s: %4.1f%% stringhe tradotte."
 
 #: pocheckerconsts.spercuntranslated
-#, fuzzy
-#| msgid "Untranslated strings: %2.0f%%."
 msgid "%s: %4.1f%% untranslated strings."
-msgstr "Stringhe non tradotte: %2.0f%%."
+msgstr "%s: %4.1f%% stringhe non tradotte."
 
 #: pocheckerconsts.sresults
 msgid "Results"
@@ -263,21 +261,29 @@ msgstr "Seleziona i tipi di verifica"
 
 #: pocheckerconsts.sshowstatgraph
 msgid "Show statistics graph"
-msgstr ""
+msgstr "Mostra il grafico"
 
 #: pocheckerconsts.sstathint
+#, fuzzy
+#| msgid ""
+#| "%3d Translated (%3.1f%%)\n"
+#| "%3d UnTranslated (%3.1f%%)\n"
+#| "%3d Fuzzy (%3.1f%%)\n"
+#| "%d Errors\n"
 msgid ""
 "%3d Translated (%3.1f%%)\n"
 "%3d UnTranslated (%3.1f%%)\n"
 "%3d Fuzzy (%3.1f%%)\n"
 "%d Error(s) in Selected Tests\n"
 msgstr ""
+"%3d Tradotte (%3.1f%%)\n"
+"%3d Non tradotte (%3.1f%%)\n"
+"%3d Incerte (%3.1f%%)\n"
+"%d Errori\n"
 
 #: pocheckerconsts.stotalerrors
-#, fuzzy
-#| msgid "Total errors / warnings found: %d"
 msgid "Total errors found: %d"
-msgstr "Totale errori / avvertimenti: %d"
+msgstr "Totale errori trovati: %d"
 
 #: pocheckerconsts.stotalwarnings
 msgid "Total warnings found: %d"
@@ -285,17 +291,15 @@ msgstr "Totale avvertimenti: %d"
 
 #: pocheckerconsts.stranslated
 msgid "Translated"
-msgstr ""
+msgstr "Tradotte"
 
 #: pocheckerconsts.stranslation
 msgid "Translation"
 msgstr "Traduzione"
 
 #: pocheckerconsts.stranslationstatistics
-#, fuzzy
-#| msgid "Translation statistics for:"
 msgid "Translation statistics per language:"
-msgstr "Statistiche di traduzione per:"
+msgstr "Statistiche di traduzione per lingua:"
 
 #: pocheckerconsts.sunselectalltests
 msgid "&Unselect All"
@@ -307,5 +311,5 @@ msgstr ""
 
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
-msgstr ""
+msgstr "Non tradotte"
 
