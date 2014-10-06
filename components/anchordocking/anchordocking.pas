@@ -80,18 +80,17 @@
     - event for drawing grabbers+headers
     - save/restore other splitters
 
+    Parent bug with links to all other:
     - http://bugs.freepascal.org/view.php?id=18298 default layout sometimes wrong main bar
+    Other bugs:
     - http://bugs.freepascal.org/view.php?id=18538 keep size of mainbar
-    - http://bugs.freepascal.org/view.php?id=18553 dock designer windows
+    - http://bugs.freepascal.org/view.php?id=18553 docked form designer
+    - http://bugs.freepascal.org/view.php?id=18407 docked form designer
     - http://bugs.freepascal.org/view.php?id=19132 docking already docked
     - http://bugs.freepascal.org/view.php?id=19200 minimize+restore resize
     - http://bugs.freepascal.org/view.php?id=19735 main bar on different screen size
     - http://bugs.freepascal.org/view.php?id=19810 multi monitor
-    - http://bugs.freepascal.org/view.php?id=20845 restore/load tabs
     - http://bugs.freepascal.org/view.php?id=21076 views
-    - http://bugs.freepascal.org/view.php?id=22149 keep caption of a custom dock site
-    - http://bugs.freepascal.org/view.php?id=23593 open package editor not on top
-    - http://bugs.freepascal.org/view.php?id=23596 (patch) docksite disapears after undocking
     - http://bugs.freepascal.org/view.php?id=26646 Anchordocking no longer work
 }
 unit AnchorDocking;
