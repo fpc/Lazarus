@@ -1621,9 +1621,9 @@ procedure TAutoSizeBox.SumLine(Orientation: TAutoSizeBoxOrientation;
 // total orientated minimum is the sum of all minimums plus borders
 // total orientated maximum is the sum of all maximums plus borders
 // total orientated preferred is the sum of all preferred plus borders
-// total othogonal minimum is the maximum of all minimums
-// total othogonal maximum is the minimum of all maximums
-// total othogonal preferred is the maximum of all preferred
+// total orthogonal minimum is the maximum of all minimums
+// total orthogonal maximum is the minimum of all maximums
+// total orthogonal preferred is the maximum of all preferred
 var
   i: Integer;
   Orthogonal: TAutoSizeBoxOrientation;
