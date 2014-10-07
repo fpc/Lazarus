@@ -297,9 +297,13 @@ begin
 end;
 
 procedure TPoCheckerForm.ChildPoListBoxResize(Sender: TObject);
+var
+  ATop, ADiff: Integer;
 begin
   //Can't seem to get this to work with just Anchors
-  LangFilter.Top := ChildPoListBox.Top + ChildPoListBox.Height + 10;
+  ATop := ChildPoListBox.Top + ChildPoListBox.Height;
+  ADiff := MasterPoListBox.Top + MasterPoListBox.Height - ATop;
+  LangFilter.Top := ATop + (ADiff - LangFilter.Height);
 end;
 
 procedure TPoCheckerForm.ClearChildBtnClick(Sender: TObject);
