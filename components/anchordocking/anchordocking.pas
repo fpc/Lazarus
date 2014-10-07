@@ -508,7 +508,7 @@ type
     procedure MapTreeToControls(Tree: TAnchorDockLayoutTree);
     function RestoreLayout(Tree: TAnchorDockLayoutTree; Scale: boolean): boolean;
     procedure EnableAllAutoSizing;
-    procedure ClearLayoutProperties(AControl: TControl);
+    procedure ClearLayoutProperties(AControl: TControl; NewAlign: TAlign = alClient);
     procedure PopupMenuPopup(Sender: TObject);
     procedure ChangeLockButtonClick(Sender: TObject);
     procedure SetAllowDragging(AValue: boolean);
@@ -1796,14 +1796,19 @@ var
       Splitter.Parent:=Parent;
       NewBounds:=Node.BoundsRect;
       if SrcRectValid(SrcWorkArea) then
-        NewBounds:=Bounds(ScaleChildX(NewBounds.Left),ScaleChildY(NewBounds.Top),
-          NewBounds.Right-NewBounds.Left,NewBounds.Bottom-NewBounds.Top);
+        NewBounds:=Rect(ScaleChildX(NewBounds.Left),ScaleChildY(NewBounds.Top),
+          ScaleChildX(NewBounds.Right),ScaleChildY(NewBounds.Bottom));
       Splitter.DockRestoreBounds:=NewBounds;
       Splitter.BoundsRect:=NewBounds;
-      if Node.NodeType=adltnSplitterVertical then
-        Splitter.ResizeAnchor:=akLeft
-      else
+      if Node.NodeType=adltnSplitterVertical then begin
+        Splitter.ResizeAnchor:=akLeft;
+        Splitter.AnchorSide[akLeft].Control:=nil;
+        Splitter.AnchorSide[akRight].Control:=nil;
+      end else begin
         Splitter.ResizeAnchor:=akTop;
+        Splitter.AnchorSide[akTop].Control:=nil;
+        Splitter.AnchorSide[akBottom].Control:=nil;
+      end;
       Result:=Splitter;
     end else if Node.NodeType=adltnLayout then begin
       // restore layout
@@ -1834,8 +1839,11 @@ var
                 and (Side in [akLeft,akRight]))
             then continue;
             AnchorControl:=nil;
-            if ChildNode.Anchors[Side]<>'' then
+            if ChildNode.Anchors[Side]<>'' then begin
               AnchorControl:=fTreeNameToDocker[ChildNode.Anchors[Side]];
+              if AnchorControl=nil then
+                debugln(['WARNING: TAnchorDockMaster.RestoreLayout.Restore: Node=',ChildNode.Name,' Anchor[',dbgs(Side),']=',ChildNode.Anchors[Side],' not found']);
+            end;
             if AnchorControl<>nil then
               AControl.AnchorToNeighbour(Side,0,AnchorControl)
             else
@@ -1929,12 +1937,13 @@ begin
   end;
 end;
 
-procedure TAnchorDockMaster.ClearLayoutProperties(AControl: TControl);
+procedure TAnchorDockMaster.ClearLayoutProperties(AControl: TControl;
+  NewAlign: TAlign);
 var
   a: TAnchorKind;
 begin
   AControl.AutoSize:=false;
-  AControl.Align:=alClient;
+  AControl.Align:=NewAlign;
   AControl.BorderSpacing.Around:=0;
   AControl.BorderSpacing.Left:=0;
   AControl.BorderSpacing.Top:=0;
