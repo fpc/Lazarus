@@ -460,7 +460,7 @@ type
   TAnchorDockMaster = class(TComponent)
   private
     FAllowDragging: boolean;
-    FControls: TFPList;
+    FControls: TFPList; // list of TControl, custom host sites
     FDockOutsideMargin: integer;
     FDockParentMargin: integer;
     FDragTreshold: integer;
@@ -501,6 +501,7 @@ type
     function GetControls(Index: integer): TControl;
     function GetLocalizedHeaderHint: string;
     function CloseUnneededControls(Tree: TAnchorDockLayoutTree): boolean;
+    function FreeUnneededHelperControls(Tree: TAnchorDockLayoutTree): boolean;
     function CreateNeededControls(Tree: TAnchorDockLayoutTree;
                 DisableAutoSizing: boolean; ControlNames: TStrings): boolean;
     procedure MapTreeToControls(Tree: TAnchorDockLayoutTree);
@@ -1378,7 +1379,7 @@ begin
 end;
 
 function TAnchorDockMaster.CloseUnneededControls(Tree: TAnchorDockLayoutTree
-  ): Boolean;
+  ): boolean;
 var
   i: Integer;
   AControl: TControl;
@@ -1414,6 +1415,15 @@ begin
     end;
     i:=Min(i,ControlCount)-1;
   end;
+  Result:=true;
+end;
+
+function TAnchorDockMaster.FreeUnneededHelperControls(
+  Tree: TAnchorDockLayoutTree): boolean;
+begin
+  Result:=false;
+  if Tree=nil then exit;
+  // ToDo: traverse all sites and remove empty pages and unneeded splitters
   Result:=true;
 end;
 
@@ -2743,11 +2753,11 @@ begin
     DebugWriteChildAnchors(Tree.Root);
     {$ENDIF}
 
+    // close all unneeded forms/controls (not helper controls like splitters)
+    if not CloseUnneededControls(Tree) then exit;
+
     BeginUpdate;
     try
-      // close all unneeded forms/controls (not helper controls like splitters)
-      if not CloseUnneededControls(Tree) then exit;
-
       // create all needed forms/controls (not helper controls like splitters)
       if not CreateNeededControls(Tree,true,ControlNames) then exit;
 
@@ -2765,6 +2775,9 @@ begin
       {$IFDEF VerboseAnchorDockRestore}
       fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
       {$ENDIF}
+
+      // free unneeded helper controls (e.g. splitters and pages)
+      if not FreeUnneededHelperControls(Tree) then exit;
 
       // create sites
       RestoreLayout(Tree,Scale);
