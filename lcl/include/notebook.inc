@@ -183,6 +183,8 @@ begin
 
   // Update the property
   FPageIndex := AValue;
+  if (FPageIndex = -1) then
+    exit;
 
   // And show the new one
   if Assigned(Page[FPageIndex].FOnBeforeShow) then Page[FPageIndex].FOnBeforeShow(Self, Page[FPageIndex], FPageIndex); // OnBeforeShow event
