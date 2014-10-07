@@ -1629,11 +1629,6 @@ begin
   if not Result then Exit;
   APropInfo := GetPropInfo(aPersistent, aFieldName);
   {property is not published ?}
-  if APropInfo = nil then
-  begin
-    DebugLn('TDesigner.AddUndoAction: error ',dbgsName(aPersistent),' property "',AFieldName,'". Property is not published ? ');
-    exit;
-  end;
   Inc(FUndoLock);
   try
     if FUndoCurr > High(FUndoList) then
@@ -1685,7 +1680,11 @@ begin
       opType := aOpType;
       isValid := true;
       id := FUndoActId;
-      propInfo := APropInfo^;
+      if APropInfo <> nil then
+        propInfo := APropInfo^
+      else begin
+        // ToDo: Clear propInfo.
+      end;
     end;
     Inc(FUndoCurr);
   finally
