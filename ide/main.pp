@@ -3333,8 +3333,12 @@ begin
   ecToggleObjectInsp:         mnuViewInspectorClicked(Self);
   ecToggleSearchResults:      mnuViewSearchResultsClick(Self);
   ecAboutLazarus:             MainIDEBar.itmHelpAboutLazarus.OnClick(Self);
-  ecToggleBreakPoint: SourceEditorManager.ActiveSourceWindow.ToggleBreakpointClicked(Self);
-  ecRemoveBreakPoint: SourceEditorManager.ActiveSourceWindow.DeleteBreakpointClicked(Self);
+  ecToggleBreakPoint:
+    if Assigned(SourceEditorManager.ActiveSourceWindow) then
+      SourceEditorManager.ActiveSourceWindow.ToggleBreakpointClicked(Self);
+  ecRemoveBreakPoint:
+    if Assigned(SourceEditorManager.ActiveSourceWindow) then
+      SourceEditorManager.ActiveSourceWindow.DeleteBreakpointClicked(Self);
   ecProcedureList:            mnuSearchProcedureList(self);
   ecInsertGUID:               mnuSourceInsertGUID(self);
   ecInsertFilename:           mnuSourceInsertFilename(self);
