@@ -81,7 +81,7 @@ type
     );
   TDesignerFlags = set of TDesignerFlag;
 
-  TUndoList = record
+  TUndoItem = record
     obj: string;
     fieldName: string;
     propInfo: TPropInfo;
@@ -125,7 +125,7 @@ type
     FShiftState: TShiftState;
     FTheFormEditor: TCustomFormEditor;
     FPopupMenuComponentEditor: TBaseComponentEditor;
-    FUndoList: array of TUndoList;
+    FUndoList: array of TUndoItem;
     FUndoCurr: integer;
     FUndoLock: integer;
     FUndoActId: int64;
