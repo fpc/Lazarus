@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CONFIG>
+  <MainConfig>
+    <Nodes ChildCount="1">
+      <Item1 Name="MainIDE" Type="CustomSite" ChildCount="1">
+        <Bounds Top="89" Left="115" Width="600" Height="434">
+          <WorkArea>
+            <Rect Right="1920" Bottom="1080"/>
+          </WorkArea>
+        </Bounds>
+        <Item1 Name="AnchorDockSite3" Type="Layout" ChildCount="7">
+          <Bounds Top="223" Width="600" Height="192" SplitterPos="218"/>
+          <Anchors Align="Bottom"/>
+          <Item1 Name="ObjectInspector" Type="Control">
+            <Bounds Width="296" Height="92"/>
+            <Anchors Right="AnchorDockSplitter2" Bottom="AnchorDockSplitter3"/>
+          </Item1>
+          <Item2 Name="AnchorDockSplitter2" Type="SplitterVertical">
+            <Bounds Left="296" Width="4" Height="192"/>
+          </Item2>
+          <Item3 Name="SourceEditor1" Type="Control">
+            <Bounds Left="300" Width="146" Height="192"/>
+            <Anchors Left="AnchorDockSplitter2" Right="AnchorDockSplitter4"/>
+          </Item3>
+          <Item4 Name="AnchorDockSplitter3" Type="SplitterHorizontal">
+            <Bounds Top="92" Width="296" Height="4"/>
+            <Anchors Right="AnchorDockSplitter2"/>
+          </Item4>
+          <Item5 Name="Messages" Type="Control">
+            <Bounds Top="96" Width="296" Height="96"/>
+            <Anchors Top="AnchorDockSplitter3" Right="AnchorDockSplitter2"/>
+          </Item5>
+          <Item6 Name="AnchorDockSplitter4" Type="SplitterVertical">
+            <Bounds Left="446" Width="4" Height="192"/>
+          </Item6>
+          <Item7 Name="FPDocEditor" Type="Control">
+            <Bounds Left="450" Width="150" Height="192"/>
+            <Anchors Left="AnchorDockSplitter4"/>
+          </Item7>
+        </Item1>
+      </Item1>
+    </Nodes>
+  </MainConfig>
+</CONFIG>
