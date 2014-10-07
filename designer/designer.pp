@@ -2425,6 +2425,12 @@ begin
       if (FUndoState = ucsSaveChange) and (FUndoCurr > 4) then
       begin
         j := FUndoCurr - ControlSelection.Count * 4;
+/// This is for finding reasons for a bug.
+if (j < 0) or (j < Low(FUndoList)) or (j >= High(FUndoList)-ControlSelection.Count*4) then
+  raise Exception.CreateFmt(
+    'MouseUpOnControl: FUndoList index=%d, High(FUndoList)=%d, FUndoCurr=%d, # of Controls=%d.',
+    [j, High(FUndoList), FUndoCurr, ControlSelection.Count]);
+///
         for i := 0 to ControlSelection.Count - 1 do
         begin
           if (FUndoList[j].fieldName = 'Top')
