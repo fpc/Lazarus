@@ -178,12 +178,14 @@ type
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override; // any normal movement sets the DockBounds
     procedure SetBoundsKeepDockBounds(ALeft, ATop, AWidth, AHeight: integer); // movement for scaling keeps the DockBounds
     function SideAnchoredControlCount(Side: TAnchorKind): integer;
+    function HasAnchoredControls: boolean;
     procedure SaveLayout(LayoutNode: TAnchorDockLayoutTreeNode);
     function HasOnlyOneSibling(Side: TAnchorKind; MinPos, MaxPos: integer): TControl;
     property DockRestoreBounds: TRect read FDockRestoreBounds write FDockRestoreBounds;
   end;
   TAnchorDockSplitterClass = class of TAnchorDockSplitter;
 
+  TAnchorDockPageControl = class;
   { TAnchorDockPage
     A page of a TAnchorDockPageControl. }
 
@@ -460,7 +462,7 @@ type
   TAnchorDockMaster = class(TComponent)
   private
     FAllowDragging: boolean;
-    FControls: TFPList; // list of TControl, custom host sites
+    FControls: TFPList; // list of TControl, custom host sites and docked controls, not helper controls (e.g. TAnchorDock*)
     FDockOutsideMargin: integer;
     FDockParentMargin: integer;
     FDragTreshold: integer;
@@ -501,7 +503,6 @@ type
     function GetControls(Index: integer): TControl;
     function GetLocalizedHeaderHint: string;
     function CloseUnneededControls(Tree: TAnchorDockLayoutTree): boolean;
-    function FreeUnneededHelperControls(Tree: TAnchorDockLayoutTree): boolean;
     function CreateNeededControls(Tree: TAnchorDockLayoutTree;
                 DisableAutoSizing: boolean; ControlNames: TStrings): boolean;
     procedure MapTreeToControls(Tree: TAnchorDockLayoutTree);
@@ -1418,15 +1419,6 @@ begin
   Result:=true;
 end;
 
-function TAnchorDockMaster.FreeUnneededHelperControls(
-  Tree: TAnchorDockLayoutTree): boolean;
-begin
-  Result:=false;
-  if Tree=nil then exit;
-  // ToDo: traverse all sites and remove empty pages and unneeded splitters
-  Result:=true;
-end;
-
 function TAnchorDockMaster.CreateNeededControls(Tree: TAnchorDockLayoutTree;
   DisableAutoSizing: boolean; ControlNames: TStrings): boolean;
 
@@ -1495,7 +1487,7 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree);
   end;
 
   procedure MapTopLevelSites(Node: TAnchorDockLayoutTreeNode);
-  // map in TreeNameToDocker each RootWindow node name to a site whith a
+  // map in TreeNameToDocker each RootWindow node name to a site with a
   // corresponding control
   // For example: if there is control on a complex site (SiteA), and the control
   //    has a node in the Tree, then the root node of the tree node is mapped to
@@ -1848,6 +1840,14 @@ var
               AControl.AnchorToNeighbour(Side,0,AnchorControl)
             else
               AControl.AnchorParallel(Side,0,Site);
+          end;
+        end;
+        // free unneeded helper controls (e.g. splitters)
+        for i:=Site.ControlCount-1 downto 0 do begin
+          AControl:=Site.Controls[i];
+          if fTreeNameToDocker[AControl.Name]<>nil then continue;
+          if AControl is TAnchorDockSplitter then begin
+            AControl.Free;
           end;
         end;
       finally
@@ -2776,10 +2776,7 @@ begin
       fTreeNameToDocker.WriteDebugReport('TAnchorDockMaster.LoadLayoutFromConfig Map');
       {$ENDIF}
 
-      // free unneeded helper controls (e.g. splitters and pages)
-      if not FreeUnneededHelperControls(Tree) then exit;
-
-      // create sites
+      // create sites, move controls
       RestoreLayout(Tree,Scale);
     finally
       EndUpdate;
@@ -3050,9 +3047,9 @@ function TAnchorDockMaster.AutoFreedIfControlIsRemoved(AControl,
      the page will be freed.
   2. When a TAnchorDockPageControl has only one page left the content is moved
      up and the pagecontrol and page will be freed.
-  3. When a layout site has only one child site left, the content is moved up
+  3. When a adhstLayout site has only one child site left, the content is moved up
      and the child site will be freed.
-  4. When the control of a OneControl site is freed the site will be freed.
+  4. When the control of a adhstOneControl site is freed the site will be freed.
 }
 var
   ParentSite: TAnchorDockHostSite;
@@ -5881,6 +5878,20 @@ begin
     Sibling:=AnchoredControls[i];
     if Sibling.AnchorSide[OppositeAnchor[Side]].Control=Self then
       inc(Result);
+  end;
+end;
+
+function TAnchorDockSplitter.HasAnchoredControls: boolean;
+// returns true if this splitter has at least one non splitter control anchored to it
+var
+  i: Integer;
+  Sibling: TControl;
+begin
+  Result:=false;
+  for i:=0 to AnchoredControlCount-1 do begin
+    Sibling:=AnchoredControls[i];
+    if Sibling is TAnchorDockSplitter then continue;
+    exit(true);
   end;
 end;
 
