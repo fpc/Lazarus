@@ -19147,7 +19147,7 @@ msgstr "Prossima cella (solo le prime)"
 #: lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroednextfirstcellsel"
 msgid "Next Cell (all selected / firsts only)"
-msgstr "Prossima cella	(tutte selezionate / solo le prime)"
+msgstr "Prossima cella (tutte selezionate / solo le prime)"
 
 #: lazarusidestrconsts.srkmecsynpsyncroedprevcell
 msgctxt "lazarusidestrconsts.srkmecsynpsyncroedprevcell"
@@ -19221,7 +19221,7 @@ msgstr "Prossima cella (solo le prime)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellrotate
 msgid "Next Cell (rotate / firsts only)"
-msgstr "Prossima cella	(rotazione / solo le prime)"
+msgstr "Prossima cella (rotazione / solo le prime)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellsel
 msgctxt "lazarusidestrconsts.srkmecsynptmplednextfirstcellsel"
@@ -19230,7 +19230,7 @@ msgstr "Prossima cella (tutte selezionate / solo le prime)"
 
 #: lazarusidestrconsts.srkmecsynptmplednextfirstcellselrotate
 msgid "Next Cell (rotate / all selected / firsts only)"
-msgstr "Prossima cella	(rotazione / solo le prime)"
+msgstr "Prossima cella (rotazione / solo le prime)"
 
 #: lazarusidestrconsts.srkmecsynptmpledprevcell
 msgctxt "lazarusidestrconsts.srkmecsynptmpledprevcell"
