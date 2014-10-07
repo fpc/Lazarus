@@ -671,6 +671,7 @@ function ControlsLeftTopOnScreen(AControl: TControl): TPoint;
 type
   TAnchorControlsRect = array[TAnchorKind] of TControl;
 
+function DockedControlIsVisible(Control: TControl): boolean;
 function GetDockSplitter(Control: TControl; Side: TAnchorKind;
                          out Splitter: TAnchorDockSplitter): boolean;
 function GetDockSplitterOrParent(Control: TControl; Side: TAnchorKind;
@@ -832,6 +833,17 @@ begin
   end else begin
     Result:=AControl.Parent.ClientOrigin;
   end;
+end;
+
+function DockedControlIsVisible(Control: TControl): boolean;
+begin
+  while Control<>nil do begin
+    if (not Control.IsControlVisible)
+    and (not (Control is TAnchorDockPage)) then
+      exit(false);
+    Control:=Control.Parent;
+  end;
+  Result:=true;
 end;
 
 function GetDockSplitter(Control: TControl; Side: TAnchorKind; out
@@ -1374,7 +1386,7 @@ begin
   i:=ControlCount-1;
   while i>=0 do begin
     AControl:=Controls[i];
-    if AControl.IsVisible
+    if DockedControlIsVisible(AControl)
     and (Tree.Root.FindChildNode(AControl.Name,true)=nil)
     and (Application.MainForm<>AControl) then begin
       DisableControlAutoSizing(AControl);
@@ -1555,8 +1567,8 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree);
   { map the splitter nodes to existing splitters
     The heuristic works like this:
       If a node is mapped to a site and the node is at Side anchored to a
-      splitter node and the site is anchored at Side to a splitter then
-      map the the splitter node to the splitter.
+        splitter node and the site is anchored at Side to a splitter
+      then map the splitter node to the splitter.
   }
   var
     i: Integer;
@@ -1579,9 +1591,9 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree);
       if Node.Anchors[Side]='' then continue;
       SplitterNode:=Node.Parent.FindChildNode(Node.Anchors[Side],false);
       if (SplitterNode=nil) then continue;
-      // this side of node is anchored to a splitter node
+      // this Side of node is anchored to a splitter node
       if fTreeNameToDocker[SplitterNode.Name]<>nil then continue;
-      // the splitter node is not yet mapped
+      // the SplitterNode is not yet mapped
       Splitter:=Site.AnchorSide[Side].Control;
       if (not (Splitter is TAnchorDockSplitter))
       or (Splitter.Parent<>Site.Parent) then continue;
@@ -2583,7 +2595,7 @@ begin
   try
     for i:=0 to ControlCount-1 do begin
       AControl:=Controls[i];
-      if not GetParentForm(AControl).Visible then continue;
+      if not DockedControlIsVisible(AControl) then continue;
       VisibleControls.Add(AControl.Name);
       AForm:=GetParentForm(AControl);
       if AForm=nil then continue;
@@ -2731,12 +2743,12 @@ begin
     DebugWriteChildAnchors(Tree.Root);
     {$ENDIF}
 
-    // close all unneeded forms/controls
-    if not CloseUnneededControls(Tree) then exit;
-
     BeginUpdate;
     try
-      // create all needed forms/controls
+      // close all unneeded forms/controls (not helper controls like splitters)
+      if not CloseUnneededControls(Tree) then exit;
+
+      // create all needed forms/controls (not helper controls like splitters)
       if not CreateNeededControls(Tree,true,ControlNames) then exit;
 
       // simplify layouts
@@ -2745,6 +2757,7 @@ begin
       debugln(['TAnchorDockMaster.LoadLayoutFromConfig controls: ']);
       debugln(ControlNames.Text);
       {$ENDIF}
+      // if some forms/controls could not be created the layout needs to be adapted
       Tree.Root.Simplify(ControlNames);
 
       // reuse existing sites to reduce flickering
@@ -4021,7 +4034,7 @@ begin
   for i:=0 to ControlCount-1 do begin
     Child:=Controls[i];
     if not (Child is TAnchorDockHostSite) then continue;
-    if not Child.IsVisible then continue;
+    if not Child.IsControlVisible then continue;
     inc(Result);
   end;
 end;
@@ -4036,7 +4049,7 @@ begin
   for i:=0 to ControlCount-1 do begin
     Child:=Controls[i];
     if not (Child is TAnchorDockHostSite) then continue;
-    if not Child.IsVisible then continue;
+    if not Child.IsControlVisible then continue;
     if Site<>nil then exit(false);
     Site:=TAnchorDockHostSite(Child);
   end;
@@ -4054,7 +4067,7 @@ begin
   for i:=0 to ControlCount-1 do begin
     Child:=Controls[i];
     if not (Child is TAnchorDockHostSite) then continue;
-    if not Child.IsVisible then continue;
+    if not Child.IsControlVisible then continue;
     if Site1=nil then
       Site1:=TAnchorDockHostSite(Child)
     else if Site2=nil then
@@ -4123,7 +4136,7 @@ begin
     // scale splitters
     for i:=0 to ControlCount-1 do begin
       Child:=Controls[i];
-      if not Child.IsVisible then continue;
+      if not Child.IsControlVisible then continue;
       if Child is TAnchorDockSplitter then begin
         Splitter:=TAnchorDockSplitter(Child);
         //debugln(['TAnchorDockHostSite.AlignControls ',Caption,' ',DbgSName(Splitter),' OldBounds=',dbgs(Splitter.BoundsRect),' BaseBounds=',dbgs(Splitter.DockBounds),' BaseParentSize=',dbgs(Splitter.DockParentClientSize),' ParentSize=',ClientWidth,'x',ClientHeight]);
@@ -4150,7 +4163,7 @@ var
 begin
   Result:=false;
   //debugln(['TAnchorDockHostSite.CheckIfOneControlHidden ',DbgSName(Self),' UpdatingLayout=',UpdatingLayout,' Visible=',Visible,' Parent=',DbgSName(Parent),' csDestroying=',csDestroying in ComponentState,' SiteType=',dbgs(SiteType)]);
-  if UpdatingLayout or (not Visible)
+  if UpdatingLayout or (not IsControlVisible)
   or (csDestroying in ComponentState)
   or (SiteType<>adhstOneControl)
   then
@@ -4602,6 +4615,7 @@ var
   AForm: TCustomForm;
   IsMainForm: Boolean;
   CloseAction: TCloseAction;
+  NeedEnableAutoSizing: Boolean;
 begin
   Result:=CloseQuery;
   if not Result then exit;
@@ -4616,42 +4630,49 @@ begin
   adhstOneControl:
     begin
       DisableAutoSizing;
-      AControl:=GetOneControl;
-      if AControl is TCustomForm then begin
-        AForm:=TCustomForm(AControl);
-        IsMainForm := (Application.MainForm = AForm)
-                      or (AForm.IsParentOf(Application.MainForm));
-        if IsMainForm then
-          CloseAction := caFree
-        else
-          CloseAction := caHide;
-        // ToDo: TCustomForm(AControl).DoClose(CloseAction);
-        case CloseAction of
-        caHide: Hide;
-        caMinimize: WindowState := wsMinimized;
-        caFree:
-          begin
-            // if form is MainForm, then terminate the application
-            // the owner of the MainForm is the application,
-            // so the Application will take care of free-ing the form
-            // and Release is not necessary
-            if IsMainForm then
-              Application.Terminate
-            else begin
-              Release;
-              AForm.Release;
-              exit;
+      NeedEnableAutoSizing:=true;
+      try
+        AControl:=GetOneControl;
+        if AControl is TCustomForm then begin
+          AForm:=TCustomForm(AControl);
+          IsMainForm := (Application.MainForm = AForm)
+                        or (AForm.IsParentOf(Application.MainForm));
+          if IsMainForm then
+            CloseAction := caFree
+          else
+            CloseAction := caHide;
+          // ToDo: TCustomForm(AControl).DoClose(CloseAction);
+          case CloseAction of
+          caHide: Hide;
+          caMinimize: WindowState := wsMinimized;
+          caFree:
+            begin
+              // if form is MainForm, then terminate the application
+              // the owner of the MainForm is the application,
+              // so the Application will take care of free-ing the form
+              // and Release is not necessary
+              if IsMainForm then
+                Application.Terminate
+              else begin
+                NeedEnableAutoSizing:=false;
+                Release;
+                AForm.Release;
+                exit;
+              end;
             end;
           end;
+        end else begin
+          AControl.Visible:=false;
+          NeedEnableAutoSizing:=false;
+          Release;
+          exit;
         end;
-      end else begin
-        AControl.Visible:=false;
-        Release;
-        exit;
+        Visible:=false;
+        Parent:=nil;
+      finally
+        if NeedEnableAutoSizing then
+          EnableAutoSizing;
       end;
-      Visible:=false;
-      Parent:=nil;
-      EnableAutoSizing;
     end;
   end;
 end;
