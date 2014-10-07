@@ -1465,6 +1465,7 @@
       <element name="TCustomSplitter.ResizeAnchor">
         <short>
           <var>ResizeAnchor</var> - the kind of anchor to be used for resizing</short>
+      <descr>akLeft for a vertical splitter, akTop for a horizontal splitter.</descr>
       </element>
       <!-- object Visibility: default -->
       <element name="TSplitter">
