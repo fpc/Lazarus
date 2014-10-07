@@ -169,6 +169,8 @@ begin
 end;
 
 procedure TNotebook.SetPageIndex(AValue: Integer);
+var
+  pg: TPage;
 begin
   if (AValue < -1) or (AValue >= Pages.Count) then Exit;
   if FPageIndex = AValue then exit;
@@ -176,9 +178,9 @@ begin
   // Hide the previously shown page
   if (FPageIndex >= 0) and (FPageIndex < Pages.Count) then
   begin
-    Page[FPageIndex].ControlStyle :=
-      Page[FPageIndex].ControlStyle + [csNoDesignVisible];
-    Page[FPageIndex].Visible := False;
+    pg := Page[FPageIndex];
+    pg.ControlStyle := pg.ControlStyle + [csNoDesignVisible];
+    pg.Visible := False;
   end;
 
   // Update the property
@@ -187,11 +189,12 @@ begin
     exit;
 
   // And show the new one
-  if Assigned(Page[FPageIndex].FOnBeforeShow) then Page[FPageIndex].FOnBeforeShow(Self, Page[FPageIndex], FPageIndex); // OnBeforeShow event
-  Page[FPageIndex].Visible := True;
-  Page[FPageIndex].ControlStyle :=
-    Page[FPageIndex].ControlStyle - [csNoDesignVisible];
-  Page[FPageIndex].Align := alClient;
+  pg := Page[FPageIndex];
+  if Assigned(pg.FOnBeforeShow) then
+    pg.FOnBeforeShow(Self, pg, FPageIndex); // OnBeforeShow event
+  pg.Visible := True;
+  pg.ControlStyle := pg.ControlStyle - [csNoDesignVisible];
+  pg.Align := alClient;
 end;
 
 {------------------------------------------------------------------------------
