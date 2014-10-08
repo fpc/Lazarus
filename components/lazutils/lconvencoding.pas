@@ -6684,7 +6684,8 @@ begin
   end;
   if s='' then begin
     if ATo=EncodingUTF8BOM then
-      Result:=UTF8BOM;
+      Result:=UTF8BOM
+    else Result := s;
     exit;
   end;
   //DebugLn(['ConvertEncoding ',AFrom,' ',ATo]);
