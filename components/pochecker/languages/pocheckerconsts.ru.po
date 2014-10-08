@@ -97,9 +97,11 @@ msgstr "Ошибки и предупреждения, найденные %s дл
 
 #: pocheckerconsts.sfilesnotfoundandremoved
 msgid ""
-"The follwing files were not foud and removed from the list:\n"
+"The following non-existent files were removed from the list:\n"
 "%s\n"
 msgstr ""
+"Следующие несуществующие файлы были удалены из списка:\n"
+"%s\n"
 
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
@@ -144,7 +146,7 @@ msgstr "Ошибок не найдено"
 
 #: pocheckerconsts.snofileslefttocheck
 msgid "There are no files left to check."
-msgstr ""
+msgstr "Подлежащих проверке файлов больше не осталось."
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."

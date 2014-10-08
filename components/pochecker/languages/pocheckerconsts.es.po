@@ -97,7 +97,7 @@ msgstr "Errores / advertencias reportadas por %s para:"
 
 #: pocheckerconsts.sfilesnotfoundandremoved
 msgid ""
-"The follwing files were not foud and removed from the list:\n"
+"The following non-existent files were removed from the list:\n"
 "%s\n"
 msgstr ""
 
