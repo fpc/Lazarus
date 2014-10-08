@@ -2381,6 +2381,7 @@ var
 var
   Handled: Boolean;
   i, j: Integer;
+  SelectedPersistent: TSelectedControl;
 begin
   FHintTimer.Enabled := False;
   FHintWindow.Visible := False;
@@ -2437,28 +2438,44 @@ begin
   begin
     if SelectedCompClass = nil then
     begin
-      if (FUndoState = ucsSaveChange) and (FUndoCurr > 4) then
+      if (FUndoState = ucsSaveChange) then
       begin
-        j := FUndoCurr - ControlSelection.Count * 4;
-/// This is for finding reasons for a bug.
-if (j < 0) or (j < Low(FUndoList)) or (j >= High(FUndoList)-ControlSelection.Count*4) then
-  raise Exception.CreateFmt(
-    'MouseUpOnControl: FUndoList index=%d, High(FUndoList)=%d, FUndoCurr=%d, # of Controls=%d.',
-    [j, High(FUndoList), FUndoCurr, ControlSelection.Count]);
-///
-        for i := 0 to ControlSelection.Count - 1 do
+        // update undo list stored component bounds (Left, Top, Width, Height)
+        // see TControlSelection.EndResizing
+        // the list of all TComponent, Left,Top,Width,Height
+        // Note: not every component has all four properties.
+        j := FUndoCurr - 1;
+        i := ControlSelection.Count-1;
+        while i>=0 do
         begin
-          if (FUndoList[j].fieldName = 'Top')
-            and (FUndoList[j + 1].fieldName = 'Left')
-            and (FUndoList[j + 2].fieldName = 'Height')
-            and (FUndoList[j + 3].fieldName = 'Width') then
+          SelectedPersistent:=ControlSelection.Items[i];
+          if SelectedPersistent.IsTComponent then
           begin
-            FUndoList[j].newVal := ControlSelection.Items[i].Top;
-            FUndoList[j + 1].newVal := ControlSelection.Items[i].Left;
-            FUndoList[j + 2].newVal := ControlSelection.Items[i].Height;
-            FUndoList[j + 3].newVal := ControlSelection.Items[i].Width;
+            while (j>=0) do
+            begin
+              if (FUndoList[j].compName <> TComponent(SelectedPersistent.Persistent).Name)
+              then begin
+                // this is not a list of bounds -> stop
+                i:=0;
+                break;
+              end;
+              if (FUndoList[j].fieldName = 'Width') then
+                FUndoList[j].newVal := SelectedPersistent.Width
+              else if (FUndoList[j].fieldName = 'Height') then
+                FUndoList[j].newVal := SelectedPersistent.Height
+              else if (FUndoList[j].fieldName = 'Left') then
+                FUndoList[j].newVal := SelectedPersistent.Left
+              else if (FUndoList[j].fieldName = 'Top') then
+                FUndoList[j].newVal := SelectedPersistent.Top
+              else begin
+                // this is not a list of bounds -> stop
+                i:=0;
+                break;
+              end;
+              dec(j);
+            end;
           end;
-          j := j + 4;
+          dec(i);
         end;
       end;
       FUndoState := ucsNone;
