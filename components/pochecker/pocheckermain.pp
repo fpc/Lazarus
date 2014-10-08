@@ -125,7 +125,7 @@ end;
 procedure TPoCheckerForm.FormCreate(Sender: TObject);
 {$IFDEF POCHECKERSTANDALONE}
 var
-  Lang, T: string;
+  Lang, T, AppPath: string;
 {$ENDIF}
 begin
   //debugln('TPoCheckerForm.FormCreate A:');
@@ -137,12 +137,18 @@ begin
     LCLGetLanguageIDs(Lang, T);
   if Lang <> '' then
   begin
+    {$ifdef windows}
+    AppPath := ExtractFilePath(ParamStr(0));
+    {$else}
+    AppPath := '';
+    {$endif}
     Lang := copy(Lang, 1, 2);
     Translations.TranslateUnitResourceStrings('PoCheckerConsts',
-      '..' + DirectorySeparator + 'languages' + DirectorySeparator +
+      AppPath + '..' + DirectorySeparator + 'languages' + DirectorySeparator +
       'pocheckerconsts.' + Lang + '.po');
+    //requires the user copies the LCLStrConsts translations there!
     Translations.TranslateUnitResourceStrings('LCLStrConsts',
-      '..' + DirectorySeparator + 'languages' + DirectorySeparator +
+      AppPath + '..' + DirectorySeparator + 'languages' + DirectorySeparator +
       'lclstrconsts.' + Lang + '.po');
   end;
   {$ENDIF}
