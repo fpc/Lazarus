@@ -99,9 +99,11 @@ msgstr ""
 msgid "Errors / warnings reported by %s for:"
 msgstr "Chyby / varování nahlášené %s pro:"
 
-#: pocheckerconsts.sfindalltranslatedpofiles
-msgid "Find all translated po-files"
-msgstr "Najít všechny přeložené po soubory"
+#: pocheckerconsts.sfilesnotfoundandremoved
+msgid ""
+"The follwing files were not foud and removed from the list:\n"
+"%s\n"
+msgstr ""
 
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
@@ -144,15 +146,9 @@ msgstr "Identifikátor [%s] nalezen v %s, ale neexistuje v %s"
 msgid "No errors found"
 msgstr "Žádné chyby nenalezeny"
 
-#: pocheckerconsts.snotaproperfilename
-msgid ""
-"Selected filename\n"
-"%s\n"
-"does not seem to be a proper name for a po-file\n"
+#: pocheckerconsts.snofileslefttocheck
+msgid "There are no files left to check."
 msgstr ""
-"Vybraný název souboru\n"
-"%s\n"
-"nevypadá jako korektní jméno po souboru\n"
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."

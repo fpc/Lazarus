@@ -25,14 +25,15 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls, ComCtrls, Masks, Types,
+  StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls, ComCtrls, Types,
   LCLType,
   {$IFDEF POCHECKERSTANDALONE}
   Translations,
   {$ELSE}
   IDEIntf, MenuIntf,
   {$ENDIF}
-  SimplePoFiles, PoFamilies, ResultDlg, pocheckerconsts, PoCheckerSettings;
+  SimplePoFiles, PoFamilies, ResultDlg, pocheckerconsts, PoCheckerSettings,
+  PoFamilyLists;
 
 type
 
@@ -40,18 +41,13 @@ type
 
   TPoCheckerForm = class(TForm)
     SelectDirectoryDialog: TSelectDirectoryDialog;
-    UnselectChildBtn: TButton;
-    ClearChildBtn: TButton;
     UnselectMasterBtn: TButton;
     ClearMasterBtn: TButton;
     LangFilter: TComboBox;
-    ChildPoListBox: TListBox;
     MasterPoListBox: TListBox;
     ScanDirBtn: TBitBtn;
     StatusBar: TStatusBar;
-    procedure ChildPoListBoxResize(Sender: TObject);
-    procedure ChildPoListBoxSelectionChange(Sender: TObject; User: boolean);
-    procedure ClearChildBtnClick(Sender: TObject);
+    procedure MasterPoListBoxResize(Sender: TObject);
     procedure ClearMasterBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LangFilterChange(Sender: TObject);
@@ -62,10 +58,9 @@ type
     procedure UnselectChildBtnClick(Sender: TObject);
     procedure UnselectMasterBtnClick(Sender: TObject);
   private
-    PoFamily: TPoFamily;
-    FSelectedPoName: String;
+    //PoFamily: TPoFamily;
+    PoFamilyList: TPoFamilyList;
     FPoCheckerSettings: TPoCheckerSettings;
-    FChildPoList: TStringList;
     procedure OnTestStart(const ATestName, APoFileName: string);
     procedure OnTestEnd(const {%H-}ATestName: string; const {%H-}ErrorCount: integer);
     procedure FillTestListBox;
@@ -76,14 +71,14 @@ type
     procedure ShowError(const Msg: string);
     function TrySelectFile(out Filename: String): Boolean;
     procedure ScanDirectory(ADir: String);
-    function TryCreatePoFamily(Filename: String): Boolean;
+    function TryCreatepoFamilyList(MasterList: TStrings; const Lang: String): Boolean;
     procedure RunSelectedTests;
     procedure ClearStatusBar;
-    procedure SetSelectedPoName(AFilename: String);
+    procedure UpdateGUI(HasSelection: Boolean);
+    function GetSelectedMasterFiles: TStringList;
     procedure AddToMasterPoList(Fn: String);
     procedure AddToMasterPoList(S: TStrings);
-    procedure AddToChildPoList(Fn: String);
-    procedure AddToChildPoList(S: TStrings);
+    procedure SetSelectedMasterFiles(S: TStrings);
     procedure LoadConfig;
     procedure SaveConfig;
   published
@@ -91,7 +86,6 @@ type
     UnselectAllBtn: TButton;
     SelectAllBtn: TButton;
     SelectBasicBtn: TButton;
-    FindAllPOsCheckBox: TCheckBox;
     NoErrLabel: TLabel;
     RunBtn: TBitBtn;
     OpenBtn: TBitBtn;
@@ -152,20 +146,15 @@ begin
       'lclstrconsts.' + Lang + '.po');
   end;
   {$ENDIF}
-  FChildPoList := TStringList.Create;
-  FChildPoList.Sorted := True;
-  FChildPoList.Duplicates := dupIgnore;
   Caption := sGUIPoFileCheckingTool;
   SelectTestLabel.Caption := sSelectTestTypes;
-  FindAllPOsCheckBox.Caption := sFindAllTranslatedPoFiles;
+  //FindAllPOsCheckBox.Caption := sFindAllTranslatedPoFiles;
   IgnoreFuzzyCheckBox.Caption := sIgnoreFuzzyTranslations;
   OpenBtn.Caption := sOpenAPoFile;
   ScanDirBtn.Caption := sScanDir;
   RunBtn.Caption := sRunSelectedTests;
   ClearMasterBtn.Caption := sClearListBox;
-  ClearChildBtn.Caption := sClearListBox;
   UnselectMasterBtn.Caption := sUnselectListBox;
-  UnselectChildBtn.Caption := sUnselectListBox;
   LangFilter.Items[0] := sAllLanguages;
   NoErrLabel.Caption := sNoErrorsFound;
   FillTestListBox;
@@ -181,12 +170,11 @@ end;
 
 procedure TPoCheckerForm.FormDestroy(Sender: TObject);
 begin
-  if Assigned(PoFamily) then
-    PoFamily.Free;
+  if Assigned(PoFamilyList) then
+    PoFamilyList.Free;
   SaveConfig;
   if Assigned(FPoCheckerSettings) then
     FPoCheckerSettings.Free;
-  FChildPoList.Free;
 end;
 
 
@@ -199,23 +187,38 @@ begin
     if IsMasterPoName(Fn) then
       AddToMasterPoList(Fn)
     else
-      AddToChildPoList(Fn);
-    SetSelectedPoName(Fn);
+      //AddToChildPoList(Fn);
+      AddToMasterPoList(ExtractMasterNameFromChildName(Fn));
+    UpdateGUI(True);
   end
   else
   begin
-    SetSelectedPoName('');
+    UpdateGUI(False);
   end;
 end;
 
 
 procedure TPoCheckerForm.RunBtnClick(Sender: TObject);
+var
+  AMasterList: TStringList;
+  LangIdx: Integer;
+  ALang: String;
 begin
-  if TryCreatePoFamily(FSelectedPoName) then
-    RunSelectedTests
+  LangIdx := LangFilter.ItemIndex;
+  if (LangIdx > 0) then
+    ALang := LangFilter.Items[LangIdx]
   else
-  begin
-    if Assigned(PoFamily) then FreeAndNil(PoFamily);
+    ALang := langAll;
+  AMasterList := GetSelectedMasterFiles;
+  try
+    if TryCreatePoFamilyList(AMasterList, ALang) then
+      RunSelectedTests
+    else
+    begin
+      if Assigned(PoFamilyList) then FreeAndNil(PoFamilyList);
+    end;
+  finally
+    AMasterList.Free;
   end;
 end;
 
@@ -240,85 +243,24 @@ begin
 end;
 
 procedure TPoCheckerForm.LangFilterChange(Sender: TObject);
-var
-  Filter, Mask, PrevItem: String;
-  Idx, i: Integer;
 begin
-  Idx := ChildPoListBox.ItemIndex;
-  if (Idx > -1) then
-    PrevItem := ChildPoListBox.Items[Idx]
-  else
-    PrevItem := '';
-  //debugln('TPoCheckerForm.LangFilterChange: PrevItem = "',PrevItem,'"');
-  Filter := LangFilter.Items.Strings[LangFilter.ItemIndex];
-  if (LangFilter.ItemIndex > 0) then
-  begin
-    Mask := '*.'+Filter+'.po';
-    ChildPoListBox.Clear;
-    ChildPoListBox.Items.BeginUpdate;
-    try
-    for i := 0 to FChildPoList.Count - 1 do
-      begin
-        if MatchesMask(FChildPoList.Strings[i], Mask, False) then
-          ChildPoListBox.Items.Add(FChildPoList.Strings[i]);
-      end;
-    finally
-      ChildPoListBox.Items.EndUpdate;
-    end;
-  end
-  else
-    ChildPoListBox.Items.Assign(FChildPoList);
-  if (Idx <> -1) then
-  begin
-    Idx := ChildPoListBox.Items.IndexOf(PrevItem);
-    debugln('TPoCheckerForm.LangFilterChange: IndexOf(PrevItem) = ',DbgS(Idx));
-    if (Idx <> -1) then
-    begin
-      ChildPoListBox.ItemIndex := Idx;
-    end
-    else
-    begin
-      if (MasterPoListBox.ItemIndex = -1) then
-        SetSelectedPoName('');
-    end;
-  end;
-  UnselectChildBtn.Enabled := (Idx <> -1);
 end;
 
-procedure TPoCheckerForm.ChildPoListBoxSelectionChange(Sender: TObject;
-  User: boolean);
-begin
-  //debugln('TPoCheckerForm.ChildPoListBoxSelectionChange: User = ',DbgS(User));
-  if User then
-  begin
-    SetSelectedPoName(ChildPoListBox.Items[ChildPoListBox.ItemIndex]);
-  end;
-  UnselectChildBtn.Enabled := (ChildPoListBox.ItemIndex <> -1);
-end;
 
-procedure TPoCheckerForm.ChildPoListBoxResize(Sender: TObject);
+procedure TPoCheckerForm.MasterPoListBoxResize(Sender: TObject);
 var
-  ATop, ADiff: Integer;
+  ATop: Integer;
 begin
   //Can't seem to get this to work with just Anchors
-  ATop := ChildPoListBox.Top + ChildPoListBox.Height;
-  ADiff := MasterPoListBox.Top + MasterPoListBox.Height - ATop;
-  LangFilter.Top := ATop + (ADiff - LangFilter.Height);
+  ATop := MasterPoListBox.Top + MasterPoListBox.Height;
+  LangFilter.Top := ATop + 5;
 end;
 
-procedure TPoCheckerForm.ClearChildBtnClick(Sender: TObject);
-begin
-  FChildPoList.Clear;
-  LangFilterChange(LangFilter);
-  if (MasterPoListBox.ItemIndex = -1) then
-    SetSelectedPoName('');
-end;
 
 procedure TPoCheckerForm.ClearMasterBtnClick(Sender: TObject);
 begin
   MasterPoListBox.Clear;
-  if (ChildPoListBox.ItemIndex = -1) then
-    SetSelectedPoName('');
+  UpdateGUI(False);
 end;
 
 procedure TPoCheckerForm.FormShow(Sender: TObject);
@@ -353,9 +295,9 @@ begin
   //debugln('TPoCheckerForm.MasterPoListBoxSelectionChange: User = ',DbgS(User));
   if User then
   begin
-    SetSelectedPoName(MasterPoListBox.Items[MasterPoListBox.ItemIndex]);
+    UpdateGUI(MasterPoListBox.SelCount > 0);
   end;
-  UnselectMasterBtn.Enabled := (MasterPoListBox.ItemIndex <> -1);
+  UnselectMasterBtn.Enabled := (MasterPoListBox.SelCount <> 0);
 end;
 
 procedure TPoCheckerForm.ScanDirBtnClick(Sender: TObject);
@@ -368,16 +310,12 @@ end;
 
 procedure TPoCheckerForm.UnselectChildBtnClick(Sender: TObject);
 begin
-  ChildpoListBox.ItemIndex := -1;
-  if (MasterPoListBox.ItemIndex = -1) then
-    SetSelectedPoName('');
 end;
 
 procedure TPoCheckerForm.UnselectMasterBtnClick(Sender: TObject);
 begin
-  MasterPoListBox.ItemIndex := -1;
-  if (ChildPoListBox.ItemIndex = -1) then
-    SetSelectedPoName('');
+  MasterPoListBox.ClearSelection;
+  UpdateGUI(False);
 end;
 
 procedure TPoCheckerForm.OnTestStart(const ATestName, APoFileName: string);
@@ -443,8 +381,8 @@ end;
 function TPoCheckerForm.GetTestOptions: TPoTestOptions;
 begin
   Result := [];
-  if FindAllPOsCheckBox.Checked then
-    Result := Result + [ptoFindAllChildren];
+  //if FindAllPOsCheckBox.Checked then
+  //  Result := Result + [ptoFindAllChildren];
   if IgnoreFuzzyCheckBox.Checked then
     Result := Result + [ptoIgnoreFuzzyStrings];
 end;
@@ -466,7 +404,7 @@ end;
 
 procedure TPoCheckerForm.SetTestOptionCheckBoxes(TestOptions: TPoTestOptions);
 begin
-  FindAllPOsCheckBox.Checked := (ptoFindAllChildren in TestOptions);
+  //FindAllPOsCheckBox.Checked := (ptoFindAllChildren in TestOptions);
   IgnoreFuzzyCheckBox.Checked := (ptoIgnoreFuzzyStrings in TestOptions);
 end;
 
@@ -491,85 +429,82 @@ end;
 
 procedure TPoCheckerForm.ScanDirectory(ADir: String);
 var
-  SL, ML, CL: TStringList;
+  SL, ML: TStringList;
   i: Integer;
   S: String;
 begin
   SL := FindAllFiles(ADir, '*.po',True);
   try
     ML := TStringList.Create;
-    CL := TStringList.Create;
     for i := 0 to SL.Count - 1 do
     begin
       S := SL[i];
       //debugln('TPoCheckerForm.ScanDirectory: S = "',ExtractFilename(S),'"');
       if IsMasterPoName(S) then
-        ML.Add(S)
-      else
-        CL.Add(S);
+        ML.Add(S);
     end;
     if (ML.Count > 0) then AddToMasterPoList(ML);
-    if (CL.Count > 0) then AddToChildPoList(CL);
   finally
     SL.Free;
     ML.Free;
-    CL.Free;
   end;
 end;
 
-function TPoCheckerForm.TryCreatePoFamily(Filename: String): Boolean;
+
+function TPoCheckerForm.TryCreatepoFamilyList(MasterList: TStrings; const Lang: String): Boolean;
 var
-  ChosenMasterName, ChosenChildName, ShortFn: String;
+  Fn, Msg: String;
+  i, Cnt: Integer;
 begin
   Result := False;
-  ShortFn := ExtractFileName(Filename);
-  if IsMasterPoName(Filename) then
+  Msg := '';
+  Cnt := MasterList.Count;
+  for i := Cnt - 1 downto 0 do
   begin
-    ChosenMasterName := Filename;
-    ChosenChildName := '';
-  end
-  else
-  begin //not a mastername, may be a child
-    ChosenChildName := Filename;
-    ChosenMasterName := ExtractMasterNameFromChildName(Filename);
-    if (ChosenMasterName = '') then
+    Fn := MasterList.Strings[i];
+    if not FileExistsUtf8(Fn) then
     begin
-      ChosenMasterName := '';
-      ChosenChildName := '';
-      ShowError(Format(sNotAProperFileName, [ShortFn]));
-    end
-    else
-    if not FileExistsUtf8(ChosenMasterName) then
-    begin
-      ShowError(Format(sCannotFindMaster,
-        [ExtractFileName(ChosenMasterName), ShortFn]));
-      ChosenMasterName := '';
-      ChosenChildName := '';
+      MasterList.Delete(i);
+      Msg := Format('"%s"',[Fn]) + LineEnding + Msg;
     end;
   end;
-  Result := (ChosenMasterName <> '');
-  if Result then
+  if (Msg <> '') then
+    MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[Msg]), mtInformation, [mbOk], 0);
+  Cnt := MasterList.Count;
+  if (Cnt = 0) then
   begin
-    if Assigned(PoFamily) then
-      PoFamily.Free;
-    try
-      PoFamily := TPoFamily.Create(ChosenMasterName, ChosenChildName);
-      PoFamily.OnTestStart := @OnTestStart;
-      PoFamily.OnTestEnd := @OnTestEnd;
-    except
-      on E: Exception do
+    MessageDlg('PoChecker', sNoFilesLeftToCheck, mtInformation, [mbOk], 0);
+    Exit;
+  end;
+  try
+    if Assigned(PoFamilyList) then PoFamilyList.Free;
+    PoFamilyList := TPoFamilyList.Create(MasterList, Lang, Msg);
+    if (Msg <> '') then
+    begin
+      MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[Msg]), mtInformation, [mbOk], 0);
+      if (PoFamilyList.Count = 0) then
       begin
-        Result := False;
-        ShowError(Format(sErrorOnCreate, [E.Message]));
-        if Assigned(PoFamily) then
-        begin
-          try
-            PoFamily.Free;
-          except
-            on E: Exception do
-            begin
-              ShowError(Format(sErrorOnCleanUp, [E.Message]));
-            end;
+        MessageDlg('PoChecker', sNoFilesLeftToCheck, mtInformation, [mbOk], 0);
+        FreeAndNil(PoFamilyList);
+        Exit;
+      end;
+    end;
+    PoFamilyList.OnTestStart := @OnTestStart;
+    PoFamilyList.OnTestEnd := @OnTestEnd;
+    Result := True;
+  except
+    on E: Exception do
+    begin
+      Result := False;
+      ShowError(Format(sErrorOnCreate, [E.Message]));
+      if Assigned(PoFamilyList) then
+      begin
+        try
+          FreeAndNil(PoFamilyList);
+        except
+          on E: Exception do
+          begin
+            ShowError(Format(sErrorOnCleanUp, [E.Message]));
           end;
         end;
       end;
@@ -599,10 +534,8 @@ begin
   SL := TStringList.Create;
   mr := mrNone;
   try
-    if (not (ptoFindAllChildren in TestOptions)) and Assigned(PoFamily.Child) and
-      (PoFamily.ChildName <> FSelectedPoName) then
-      PoFamily.ChildName := FSelectedPoName;
-    PoFamily.RunTests(TestTypes, TestOptions, ErrorCount, WarningCount, SL);
+
+    PoFamilyList.RunTests(TestTypes, TestOptions, ErrorCount, WarningCount, SL);
     //debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
     //debugln('                  ', Format(sTotalWarnings, [WarningCount]));
     if (ErrorCount > 0) or (WarningCount > 0) or
@@ -615,7 +548,7 @@ begin
         ResultDlg.Log.Assign(SL);
         FreeAndNil(SL);                 //No need to keep 2 copies of this data
         if (pttCheckStatistics in TestTypes) then
-          ResultDlg.PoFamilyStats := PoFamily.PoFamilyStats
+          ResultDlg.PoFamilyStats := PoFamilyList.PoFamilyStats
         else
           ResultDlg.PoFamilyStats := nil;
         ResultDlg.Settings := FPoCheckerSettings;
@@ -639,35 +572,17 @@ begin
   StatusBar.SimpleText := '';
 end;
 
-procedure TPoCheckerForm.SetSelectedPoName(AFilename: String);
-var
-  Idx: Integer;
+procedure TPoCheckerForm.UpdateGUI(HasSelection: Boolean);
 begin
-  //debugln('TPoCheckerForm.SetSelectedPoName: ((FSelectedPoName = AFilename)) = ',DbgS((FSelectedPoName = AFilename)));
   NoErrLabel.Visible := False;
-  //if (FSelectedPoName = AFilename) then Exit;
-  FSelectedPoName := AFilename;
-  if (AFilename <> '') then
+  if HasSelection then
   begin
     RunBtn.Enabled := True;
     TestListBox.Enabled := True;
     SelectAllBtn.Enabled := True;
     SelectBasicBtn.Enabled := True;
     UnselectAllBtn.Enabled := True;
-    Caption := sGUIPoFileCheckingTool + ' [' + ExtractFileName(AFilename) + ']';
-    OpenDialog.InitialDir:= ExtractFileDir(AFilename);
-    if IsMasterPoName(AFilename) then
-    begin
-      Idx := MasterPoListBox.Items.IndexOf(AFilename);
-      MasterPoListBox.ItemIndex := Idx;
-      ChildPoListBox.ItemIndex := -1;
-    end
-    else
-    begin
-      Idx := ChildPoListBox.Items.IndexOf(AFilename);
-      ChildPoListBox.ItemIndex := Idx;
-      MasterPoListBox.ItemIndex := -1;
-    end;
+    UnselectMasterBtn.Enabled := True;
   end
   else
   begin
@@ -676,9 +591,21 @@ begin
     SelectAllBtn.Enabled := False;
     SelectBasicBtn.Enabled := False;
     UnselectAllBtn.Enabled := False;
-    Caption := sGUIPoFileCheckingTool;
-    ChildPoListBox.ItemIndex := -1;
-    MasterPoListBox.ItemIndex := -1;
+    UnselectMasterBtn.Enabled := False;
+  end;
+end;
+
+function TPoCheckerForm.GetSelectedMasterFiles: TStringList;
+var
+  i: Integer;
+  Fn: String;
+begin
+  Result := TStringList.Create;
+  for i := 0 to MasterPoListBox.Items.Count - 1 do
+  begin
+    Fn := MasterpoListBox.Items[i];
+    if MasterPoListBox.Selected[i] then
+      Result.Add(Fn);
   end;
 end;
 
@@ -686,6 +613,7 @@ procedure TPoCheckerForm.AddToMasterPoList(Fn: String);
 var
   Idx: Integer;
 begin
+  if not FileExistsUtf8(Fn) then Exit;
   Idx := MasterPoListBox.Items.IndexOf(Fn);
   if (Idx = -1) then
   begin
@@ -696,54 +624,59 @@ end;
 procedure TPoCheckerForm.AddToMasterPoList(S: TStrings);
 var
   i, Idx: Integer;
-  Str, PrevItem: String;
+  Str: String;
 begin
+  {
   Idx := MasterPoListBox.ItemIndex;
   if (Idx <> -1) then
     PrevItem := MasterPoListBox.Items[Idx]
   else
     PrevItem := '';
+  }
   MasterPoListBox.Items.BeginUpdate;
   try
     for i := 0 to S.Count - 1 do
     begin
       Str := S[i];
-      Idx := MasterPoListBox.Items.IndexOf(Str);
-      if (Idx = -1) then
-        MasterPoListBox.Items.Add(Str);
+      //skip files that do not exist (anymore)
+      if FileExistsUtf8(Str) then
+      begin
+        Idx := MasterPoListBox.Items.IndexOf(Str);
+        if (Idx = -1) then
+          MasterPoListBox.Items.Add(Str);
+      end
     end;
+    {
     if (PrevItem <> '') then
     begin
       Idx := MasterPoListBox.Items.IndexOf(PrevItem);
       MasterPoListBox.ItemIndex := Idx;
     end;
+    }
   finally
     MasterPoListBox.Items.EndUpdate;
   end;
 end;
 
-procedure TPoCheckerForm.AddToChildPoList(Fn: String);
-var
-  Idx: Integer;
-begin
-  Idx := FChildPoList.Add(Fn);
-  if (Idx > -1) then
-    LangFilterChange(LangFilter);
-end;
-
-procedure TPoCheckerForm.AddToChildPoList(S: TStrings);
+procedure TPoCheckerForm.SetSelectedMasterFiles(S: TStrings);
 var
   i, Idx: Integer;
-  Str: String;
+  Fn: String;
+  HasSelection: Boolean;
 begin
+  MasterPoListBox.ClearSelection;
   for i := 0 to S.Count - 1 do
   begin
-    Str := S[i];
-    Idx := FChildPoList.IndexOf(Str);
-    if (Idx = -1) then
-      FChildPoList.Add(Str);
+    Fn := S.Strings[i];
+    Idx := MasterPoListBox.Items.IndexOf(Fn);
+    if (Idx <> -1) then
+    begin
+      MasterPoListBox.Selected[Idx] := True;
+      HasSelection := True;
+    end;
   end;
-  LangFilterChange(LangFilter);
+  //debugln('TPoCheckerForm.SetSelectedMasterFiles: MasterPoListBox.SelCount = ',DbgS(MasterPoListBox.SelCount));
+  UpdateGUI(HasSelection);
 end;
 
 
@@ -764,22 +697,26 @@ begin
   SelectDirectoryDialog.Filename := FPoCheckerSettings.SelectDirectoryFilename;
   OpenDialog.FileName := FPoCheckerSettings.OpenDialogFilename;
   AddToMasterPoList(FPoCheckerSettings.MasterPoList);
-  AddToChildPoList(FPoCheckerSettings.ChildPoList);
+  SetSelectedMasterFiles(FPoCheckerSettings.MasterPoSelList);
+  //AddToChildPoList(FPoCheckerSettings.ChildPoList);
+  {
   if (CompareText(ExtractFileExt(FPoCheckerSettings.LastSelectedFile), '.po') = 0) then
   begin
     if IsMasterPoName(FPoCheckerSettings.LastSelectedFile) then
       AddToMasterPoList(FPoCheckerSettings.LastSelectedFile)
     else
       AddToChildPoList(FPoCheckerSettings.LastSelectedFile);
-    SetSelectedPoName(FPoCheckerSettings.LastSelectedFile)
+    UpdateGUI(True)
   end
   else
-    SetSelectedPoName('');
+    UpdateGUI(False);
+  }
 end;
 
 procedure TPoCheckerForm.SaveConfig;
+var
+  SL: TStringList;
 begin
-  FPoCheckerSettings.LastSelectedFile := FSelectedPoName;
   FPoCheckerSettings.SelectDirectoryFilename := SelectDirectoryDialog.Filename;
   FPoCheckerSettings.OpenDialogFilename := OpenDialog.FileName;
   FPoCheckerSettings.TestTypes := GetTestTypesFromListBox;
@@ -790,7 +727,12 @@ begin
   else
     FPoCheckerSettings.MainFormGeometry := Rect(RestoredLeft, RestoredTop, RestoredLeft + RestoredWidth, RestoredTop + RestoredHeight);
   FPoCheckerSettings.MasterPoList := MasterPoListBox.Items;
-  FPoCheckerSettings.ChildPoList := FChildPoList;
+  SL := GetSelectedMasterFiles;
+  try
+    FPoCheckerSettings.MasterPoSelList := SL;
+  finally
+    SL.Free;
+  end;
   FPoCheckerSettings.SaveConfig;
 end;
 

@@ -97,9 +97,11 @@ msgstr ""
 msgid "Errors / warnings reported by %s for:"
 msgstr "%s praneštos klaidos/perspėjimai apie:"
 
-#: pocheckerconsts.sfindalltranslatedpofiles
-msgid "Find all translated po-files"
-msgstr "Rasti visus išverstus PO failus"
+#: pocheckerconsts.sfilesnotfoundandremoved
+msgid ""
+"The follwing files were not foud and removed from the list:\n"
+"%s\n"
+msgstr ""
 
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
@@ -143,15 +145,9 @@ msgstr "Identifikatorių [%s] turi „%s“, tačiau jo neturi „%s“"
 msgid "No errors found"
 msgstr "Klaidų nerasta"
 
-#: pocheckerconsts.snotaproperfilename
-msgid ""
-"Selected filename\n"
-"%s\n"
-"does not seem to be a proper name for a po-file\n"
+#: pocheckerconsts.snofileslefttocheck
+msgid "There are no files left to check."
 msgstr ""
-"Parinktas failo pavadinimas\n"
-"%s\n"
-"nepanašu kad tai būtų tinkamas pavadinimas PO failui\n"
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."

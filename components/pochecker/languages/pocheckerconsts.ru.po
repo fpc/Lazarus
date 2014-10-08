@@ -95,9 +95,11 @@ msgstr ""
 msgid "Errors / warnings reported by %s for:"
 msgstr "Ошибки и предупреждения, найденные %s для:"
 
-#: pocheckerconsts.sfindalltranslatedpofiles
-msgid "Find all translated po-files"
-msgstr "Найти все переведённые файлы PO"
+#: pocheckerconsts.sfilesnotfoundandremoved
+msgid ""
+"The follwing files were not foud and removed from the list:\n"
+"%s\n"
+msgstr ""
 
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
@@ -140,15 +142,9 @@ msgstr "Идентификатор [%s] найден в %s, но отсутст�
 msgid "No errors found"
 msgstr "Ошибок не найдено"
 
-#: pocheckerconsts.snotaproperfilename
-msgid ""
-"Selected filename\n"
-"%s\n"
-"does not seem to be a proper name for a po-file\n"
+#: pocheckerconsts.snofileslefttocheck
+msgid "There are no files left to check."
 msgstr ""
-"Выбранное имя файла\n"
-"%s\n"
-"не выглядит корректно для файла PO\n"
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."

@@ -72,8 +72,7 @@ msgstr "[Zeile %d] %s"
 
 #: pocheckerconsts.sduplicateoriginals
 msgid "The (untranslated) value \"%s\" is used for more than 1 entry:"
-msgstr ""
-"Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
+msgstr "Der (nicht übersetzte) Wert \"%s\" wird für mehr als 1 Eintrag verwendet:"
 
 #: pocheckerconsts.serroroncleanup
 msgid ""
@@ -97,9 +96,11 @@ msgstr ""
 msgid "Errors / warnings reported by %s for:"
 msgstr "Fehler / Warnungen gemeldet von %s für:"
 
-#: pocheckerconsts.sfindalltranslatedpofiles
-msgid "Find all translated po-files"
-msgstr "Alle übersetzten po-Dateien finden"
+#: pocheckerconsts.sfilesnotfoundandremoved
+msgid ""
+"The follwing files were not foud and removed from the list:\n"
+"%s\n"
+msgstr ""
 
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
@@ -141,16 +142,9 @@ msgstr "Bezeichner [%s] gefunden in %s, aber er existiert nicht in %s"
 msgid "No errors found"
 msgstr "Keine Fehler gefunden"
 
-#: pocheckerconsts.snotaproperfilename
-msgid ""
-"Selected filename\n"
-"%s\n"
-"does not seem to be a proper name for a po-file\n"
+#: pocheckerconsts.snofileslefttocheck
+msgid "There are no files left to check."
 msgstr ""
-"Gewählter Dateiname\n"
-"%s\n"
-"sieht nicht wie ein geeigneter Name für eine po-file\n"
-" aus\n"
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."
@@ -325,3 +319,4 @@ msgstr "Abwählen"
 #: pocheckerconsts.suntranslated
 msgid "Untranslated"
 msgstr "Nicht übersetzt"
+

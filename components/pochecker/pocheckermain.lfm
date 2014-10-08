@@ -1,11 +1,11 @@
 object PoCheckerForm: TPoCheckerForm
   Left = 318
-  Height = 514
+  Height = 513
   Top = 163
   Width = 644
   Anchors = []
   Caption = 'GUI Po-file checking tool'
-  ClientHeight = 514
+  ClientHeight = 513
   ClientWidth = 644
   Constraints.MinHeight = 450
   Constraints.MinWidth = 600
@@ -123,7 +123,7 @@ object PoCheckerForm: TPoCheckerForm
   object NoErrLabel: TLabel
     Left = 8
     Height = 25
-    Top = 452
+    Top = 451
     Width = 146
     Anchors = [akLeft, akBottom]
     Caption = 'No errors found'
@@ -132,18 +132,6 @@ object PoCheckerForm: TPoCheckerForm
     Font.Style = [fsBold]
     ParentColor = False
     ParentFont = False
-  end
-  object FindAllPOsCheckBox: TCheckBox
-    AnchorSideLeft.Control = TestListBox
-    AnchorSideTop.Control = SelectBasicBtn
-    AnchorSideTop.Side = asrBottom
-    Left = 201
-    Height = 19
-    Top = 184
-    Width = 156
-    BorderSpacing.Top = 6
-    Caption = 'Find all translated PO files'
-    TabOrder = 3
   end
   object SelectBasicBtn: TButton
     AnchorSideLeft.Control = TestListBox
@@ -157,7 +145,7 @@ object PoCheckerForm: TPoCheckerForm
     Caption = 'Select Basic Tests'
     Enabled = False
     OnClick = SelectBasicBtnClick
-    TabOrder = 4
+    TabOrder = 3
   end
   object SelectAllBtn: TButton
     AnchorSideLeft.Control = SelectBasicBtn
@@ -171,7 +159,7 @@ object PoCheckerForm: TPoCheckerForm
     Caption = 'Select All Tests'
     Enabled = False
     OnClick = SelectAllBtnClick
-    TabOrder = 5
+    TabOrder = 4
   end
   object UnselectAllBtn: TButton
     AnchorSideLeft.Control = SelectAllBtn
@@ -185,24 +173,24 @@ object PoCheckerForm: TPoCheckerForm
     Caption = 'Unselect All Tests'
     Enabled = False
     OnClick = UnselectAllBtnClick
-    TabOrder = 6
+    TabOrder = 5
   end
   object IgnoreFuzzyCheckBox: TCheckBox
     AnchorSideLeft.Control = TestListBox
-    AnchorSideTop.Control = FindAllPOsCheckBox
+    AnchorSideTop.Control = SelectBasicBtn
     AnchorSideTop.Side = asrBottom
     Left = 201
     Height = 19
-    Top = 209
+    Top = 184
     Width = 152
     BorderSpacing.Top = 6
     Caption = 'sIgnoreFuzzyTranslations'
-    TabOrder = 7
+    TabOrder = 6
   end
   object StatusBar: TStatusBar
     Left = 0
     Height = 23
-    Top = 491
+    Top = 490
     Width = 644
     Panels = <>
   end
@@ -257,58 +245,39 @@ object PoCheckerForm: TPoCheckerForm
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
     }
     OnClick = ScanDirBtnClick
-    TabOrder = 9
+    TabOrder = 8
   end
   object MasterPoListBox: TListBox
     AnchorSideTop.Control = IgnoreFuzzyCheckBox
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = TestListBox
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
     Left = 8
-    Height = 184
-    Top = 233
-    Width = 272
-    Anchors = [akTop, akLeft, akBottom]
+    Height = 185
+    Top = 208
+    Width = 629
+    Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 5
-    BorderSpacing.Bottom = 35
+    BorderSpacing.Bottom = 58
     ItemHeight = 0
+    MultiSelect = True
     OnDrawItem = MasterPoListBoxDrawItem
+    OnResize = MasterPoListBoxResize
     OnSelectionChange = MasterPoListBoxSelectionChange
     Sorted = True
     Style = lbOwnerDrawFixed
-    TabOrder = 10
-  end
-  object ChildPoListBox: TListBox
-    AnchorSideLeft.Control = MasterPoListBox
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = MasterPoListBox
-    AnchorSideRight.Control = TestListBox
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ClearChildBtn
-    Left = 290
-    Height = 154
-    Top = 233
-    Width = 347
-    Anchors = [akTop, akLeft, akRight, akBottom]
-    BorderSpacing.Left = 10
-    BorderSpacing.Bottom = 40
-    ItemHeight = 0
-    OnDrawItem = MasterPoListBoxDrawItem
-    OnResize = ChildPoListBoxResize
-    OnSelectionChange = ChildPoListBoxSelectionChange
-    Style = lbOwnerDrawFixed
-    TabOrder = 11
+    TabOrder = 9
   end
   object LangFilter: TComboBox
-    AnchorSideLeft.Control = ChildPoListBox
-    AnchorSideTop.Control = ChildPoListBox
+    AnchorSideLeft.Control = MasterPoListBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = TestListBox
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ClearChildBtn
-    Left = 290
+    Left = 8
     Height = 23
-    Top = 396
-    Width = 347
+    Top = 400
+    Width = 629
     Anchors = [akLeft, akRight]
     BorderSpacing.Top = 5
     ItemHeight = 15
@@ -340,7 +309,7 @@ object PoCheckerForm: TPoCheckerForm
     )
     OnChange = LangFilterChange
     Style = csDropDownList
-    TabOrder = 12
+    TabOrder = 10
     Text = 'All languages'
   end
   object ClearMasterBtn: TButton
@@ -350,13 +319,13 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideBottom.Control = NoErrLabel
     Left = 8
     Height = 25
-    Top = 427
+    Top = 426
     Width = 75
     Anchors = [akLeft, akBottom]
     BorderSpacing.Top = 10
     Caption = 'Clear'
     OnClick = ClearMasterBtnClick
-    TabOrder = 13
+    TabOrder = 11
   end
   object UnselectMasterBtn: TButton
     AnchorSideLeft.Control = ClearMasterBtn
@@ -364,41 +333,14 @@ object PoCheckerForm: TPoCheckerForm
     AnchorSideBottom.Control = NoErrLabel
     Left = 93
     Height = 25
-    Top = 427
+    Top = 426
     Width = 75
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 10
     Caption = 'Unselect'
     Enabled = False
     OnClick = UnselectMasterBtnClick
-    TabOrder = 14
-  end
-  object ClearChildBtn: TButton
-    AnchorSideLeft.Control = ChildPoListBox
-    AnchorSideBottom.Control = NoErrLabel
-    Left = 290
-    Height = 25
-    Top = 427
-    Width = 75
-    Anchors = [akLeft, akBottom]
-    Caption = 'Clear'
-    OnClick = ClearChildBtnClick
-    TabOrder = 15
-  end
-  object UnselectChildBtn: TButton
-    AnchorSideLeft.Control = ClearChildBtn
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideBottom.Control = NoErrLabel
-    Left = 375
-    Height = 25
-    Top = 427
-    Width = 75
-    Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 10
-    Caption = 'Unselect'
-    Enabled = False
-    OnClick = UnselectChildBtnClick
-    TabOrder = 16
+    TabOrder = 12
   end
   object OpenDialog: TOpenDialog
     Filter = 'po-files (*.po)|*.po|all files|*'

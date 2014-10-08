@@ -8,7 +8,7 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, pocheckermain, pofamilies, resultdlg, simplepofiles, pocheckerconsts,
-  graphstat, pocheckersettings;
+  graphstat, pocheckersettings, pofamilylists;
 
 {$R *.res}
 

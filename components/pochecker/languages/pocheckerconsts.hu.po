@@ -97,9 +97,11 @@ msgstr ""
 msgid "Errors / warnings reported by %s for:"
 msgstr "A(z) %s hibákat / figyelmeztetéseket jelzett ezzel kapcsolatban:"
 
-#: pocheckerconsts.sfindalltranslatedpofiles
-msgid "Find all translated po-files"
-msgstr "Az összes lefordított po-fájl megkeresése"
+#: pocheckerconsts.sfilesnotfoundandremoved
+msgid ""
+"The follwing files were not foud and removed from the list:\n"
+"%s\n"
+msgstr ""
 
 #: pocheckerconsts.sfuzzy
 msgid "Fuzzy"
@@ -141,15 +143,9 @@ msgstr "A(z) [%s] azonosító megtalálható itt: %s, de nem található meg itt
 msgid "No errors found"
 msgstr "Nincsenek hibák"
 
-#: pocheckerconsts.snotaproperfilename
-msgid ""
-"Selected filename\n"
-"%s\n"
-"does not seem to be a proper name for a po-file\n"
+#: pocheckerconsts.snofileslefttocheck
+msgid "There are no files left to check."
 msgstr ""
-"A választott fájlnév\n"
-"%s\n"
-"nem tűnik megfelelő névnek egy po-fájl számára\n"
 
 #: pocheckerconsts.snotestselected
 msgid "There are no tests selected."

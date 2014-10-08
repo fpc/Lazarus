@@ -78,8 +78,10 @@ msgstr ""
 msgid "Errors / warnings reported by %s for:"
 msgstr ""
 
-#: pocheckerconsts.sfindalltranslatedpofiles
-msgid "Find all translated po-files"
+#: pocheckerconsts.sfilesnotfoundandremoved
+msgid ""
+"The follwing files were not foud and removed from the list:\n"
+"%s\n"
 msgstr ""
 
 #: pocheckerconsts.sfuzzy
@@ -122,11 +124,8 @@ msgstr ""
 msgid "No errors found"
 msgstr ""
 
-#: pocheckerconsts.snotaproperfilename
-msgid ""
-"Selected filename\n"
-"%s\n"
-"does not seem to be a proper name for a po-file\n"
+#: pocheckerconsts.snofileslefttocheck
+msgid "There are no files left to check."
 msgstr ""
 
 #: pocheckerconsts.snotestselected

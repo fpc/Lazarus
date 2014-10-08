@@ -122,6 +122,7 @@ Type
   public
     procedure Clear;
     procedure Add(AName: String; ANrTotal, ANrTranslated, ANrUnTranslated, ANrFuzzy, ANrErrors: Integer);
+    procedure AddItemsTo(APoFamilyStats: TPoFamilyStats);
     constructor Create;
     destructor Destroy; override;
     procedure AddStatisticsToLog(ALog: TStrings);
@@ -135,11 +136,12 @@ function IsMasterPoName(const Fn: String): Boolean;
 function ExtractMasterNameFromChildName(const AChildName: String): String;
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
 
+const
+  NoError = 0;
 
 implementation
 
 const
-  NoError = 0;
   sCommentIdentifier = '#: ';
   //sCharSetIdentifier = '"Content-Type: text/plain; charset=';
   sMsgID = 'msgid "';
@@ -387,6 +389,19 @@ end;
 procedure TPoFamilyStats.Add(AName: String; ANrTotal, ANrTranslated, ANrUnTranslated, ANrFuzzy, ANrErrors: Integer);
 begin
   FList.Add(TStat.Create(AName, ANrTotal, ANrTranslated, ANrUntranslated, ANrFuzzy, ANrErrors));
+end;
+
+procedure TPoFamilyStats.AddItemsTo(APoFamilyStats: TPoFamilyStats);
+var
+  i: Integer;
+  AStat: TStat;
+begin
+  for i := 0 to FList.Count - 1 do
+  begin
+    AStat := GetItems(i);
+    APoFamilyStats.Add(AStat.PoName, AStat.NrTotal, AStat.NrTranslated,
+                       AStat.NrUntranslated, AStat.NrFuzzy, AStat.NrErrors);
+  end;
 end;
 
 constructor TPoFamilyStats.Create;

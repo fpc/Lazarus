@@ -30,13 +30,13 @@ type
     FTestTypes: TPoTestTypes;
     FTestOptions: TPoTestOptions;
     FMasterPoList: TStringList;
-    FChildPoList: TStringList;
+    FMasterPoSelList: TStringList;
     FLastSelectedFile: String;
     FMainFormGeometry: TRect;
     FGraphFormGeometry: TRect;
     FResultsFormGeometry: TRect;
-    function GetChildPoList: TStrings;
     function GetMasterPoList: TStrings;
+    function GetMasterPoSelList: TStrings;
     function LoadLastSelectedFile: String;
     function LoadTestTypes: TPoTestTypes;
     function LoadTestOptions: TPoTestOptions;
@@ -45,8 +45,7 @@ type
     function LoadSelectDirectoryFilename: String;
     function LoadOpenDialogFilename: String;
     procedure LoadMasterPoList(List: TStrings);
-    procedure LoadChildPoList(List: TStrings);
-    procedure SaveLastSelectedFile;
+    procedure LoadMasterPoSelList(List: TStrings);
     procedure SaveTestTypes;
     procedure SaveTestOptions;
     procedure SaveWindowsGeometry;
@@ -54,9 +53,9 @@ type
     procedure SaveSelectDirectoryFilename;
     procedure SaveOpenDialogFilename;
     procedure SaveMasterPoList;
-    procedure SaveChildrenPoList;
-    procedure SetChildPoList(AValue: TStrings);
+    procedure SaveMasterPoSelList;
     procedure SetMasterPoList(AValue: TStrings);
+    procedure SetMasterPoSelList(AValue: TStrings);
     procedure ResetAllProperties;
   public
     constructor Create;
@@ -70,8 +69,7 @@ type
     property TestOptions: TPoTestOptions read FTestOptions write FTestOptions;
     property ExternalEditorName: String read FExternalEditorName write FExternalEditorName;
     property MasterPoList: TStrings read GetMasterPoList write SetMasterPoList;
-    property ChildPoList: TStrings read GetChildPoList write SetChildPoList;
-    property LastSelectedFile: String read FLastSelectedFile write FLastSelectedFile;
+    property MasterPoSelList: TStrings read GetMasterPoSelList write SetMasterPoSelList;
     property SelectDirectoryFilename: String read FSelectDirectoryFilename write FSelectDirectoryFilename;
     property OpenDialogFilename: String read FOpenDialogFilename write FOpenDialogFilename;
     property MainFormGeometry: TRect read FMainFormGeometry write FMainFormGeometry;
@@ -158,6 +156,7 @@ const
   pWindowsGeometry = 'General/WindowsGeometry/';
   pExternalEditor = 'ExternalEditor/';
   pMasterPoFiles = 'MasterPoFiles/';
+  pMasterPoSelection = 'MasterPoSelection/';
   pChildPoFiles = 'ChildPoFiles/';
 
 var
@@ -240,10 +239,11 @@ begin
   Result := FMasterPoList;
 end;
 
-function TPoCheckerSettings.GetChildPoList: TStrings;
+function TPoCheckerSettings.GetMasterPoSelList: TStrings;
 begin
-  Result := FChildPoList;
+  Result := FMasterPoSelList;
 end;
+
 
 function TPoCheckerSettings.LoadTestTypes: TPoTestTypes;
 var
@@ -331,25 +331,21 @@ begin
   end;
 end;
 
-procedure TPoCheckerSettings.LoadChildPoList(List: TStrings);
+procedure TPoCheckerSettings.LoadMasterPoSelList(List: TStrings);
 var
   Cnt, i: Integer;
   Fn: String;
 begin
   List.Clear;
-  Cnt := Fconfig.GetValue(pChildPoFiles+'Count',0);
-  //debugln('TPoCheckerSettings.LoadChildPoList: Cnt = ',DbgS(Cnt));
+  Cnt := Fconfig.GetValue(pMasterpoSelection+'Count',0);
+  //debugln('TPoCheckerSettings.LoadMasterPoSelList: Cnt = ',DbgS(Cnt));
   for i := 0 to Cnt - 1 do
   begin
-    Fn := FConfig.GetValue(pChildPoFiles+Format('Item_%d/Value',[i]),'');
+    Fn := FConfig.GetValue(pMasterpoSelection+Format('Item_%d/Value',[i]),'');
     if (Fn <> '') then List.Add(Fn);
   end;
 end;
 
-procedure TPoCheckerSettings.SaveLastSelectedFile;
-begin
-  FConfig.SetDeleteValue(pLastSelected+'Value',FLastSelectedFile,'');
-end;
 
 procedure TPoCheckerSettings.SaveTestTypes;
 var
@@ -413,26 +409,28 @@ begin
     FConfig.SetDeleteValue(pMasterPoFiles+Format('Item_%d/Value',[i]),FMasterPoList[i],'');
 end;
 
-procedure TPoCheckerSettings.SaveChildrenPoList;
+procedure TPoCheckerSettings.SaveMasterPoSelList;
 var
   Cnt, i: Integer;
 begin
-  FConfig.DeletePath(pChildPoFiles);
-  Cnt := FChildPoList.Count;
-  FConfig.SetDeleteValue(pChildPoFiles+'Count',Cnt,0);
+  FConfig.DeletePath(pMasterPoSelection);
+  Cnt := FMasterPoSelList.Count;
+  FConfig.SetDeleteValue(pMasterPoSelection+'Count',Cnt,0);
   for i := 0 to Cnt - 1 do
-    FConfig.SetDeleteValue(pChildPoFiles+Format('Item_%d/Value',[i]),FChildPoList[i],'');
+    FConfig.SetDeleteValue(pMasterPoSelection+Format('Item_%d/Value',[i]),FMasterPoSelList[i],'');
 end;
 
-procedure TPoCheckerSettings.SetChildPoList(AValue: TStrings);
-begin
-  FChildPoList.Assign(AValue);
-end;
 
 procedure TPoCheckerSettings.SetMasterPoList(AValue: TStrings);
 begin
   FMasterPoList.Assign(AValue);
 end;
+
+procedure TPoCheckerSettings.SetMasterPoSelList(AValue: TStrings);
+begin
+  FMasterPoSelList.Assign(AValue);
+end;
+
 
 procedure TPoCheckerSettings.ResetAllProperties;
 begin
@@ -449,14 +447,13 @@ begin
   FSelectDirectoryFilename := '';
   FLastSelectedFile := '';
   if Assigned(FMasterPoList) then FMasterPoList.Free;
+  if Assigned(FMasterPoSelList) then FMasterPoSelList.Free;
   FMasterPoList := TStringList.Create;
+  FMasterPoSelList := TStringList.Create;
   FMasterPoList.Sorted := True;
   FMasterPoList.Duplicates := dupIgnore;
-  if Assigned(FChildPoList) then FChildPoList.Free;
-  FChildPoList := TStringList.Create;
-  FChildPoList.Sorted := True;
-  FChildPoList.Duplicates := dupIgnore;
 end;
+
 
 constructor TPoCheckerSettings.Create;
 begin
@@ -488,7 +485,7 @@ destructor TPoCheckerSettings.Destroy;
 begin
   if Assigned(FConfig) then FConfig.Free;
   FMasterPoList.Free;
-  FChildPoList.Free;
+  FMasterPoSelList.Free;
   inherited Destroy;
 end;
 
@@ -503,7 +500,7 @@ begin
     FExternalEditorName := LoadExternalEditorName;
     LoadWindowsGeometry;
     LoadMasterPoList(FMasterPoList);
-    LoadChildPoList(FChildPoList);
+    LoadMasterPoSelList(FMasterPoSelList);
   except
     ResetAllProperties;
     debugln('TPoCheckerSettings.LoadConfig: Error loading config.');
@@ -517,7 +514,6 @@ begin
     //the next line can be reomoved after some time
     FConfig.DeletePath(pLoadSettings);
 
-    SaveLastSelectedFile;
     SaveTestTypes;
     SaveTestOptions;
     SaveExternalEditorName;
@@ -525,7 +521,10 @@ begin
     SaveOpenDialogFilename;
     SaveWindowsGeometry;
     SaveMasterPoList;
-    SaveChildrenPoList;
+    SaveMasterPoSelList;
+    //not used anymore, clear it. Remove this line after a while
+    FConfig.DeletePath(pChildPoFiles);
+
     FConfig.WriteToDisk;
   except
     debugln('TPoCheckerSettings.SaveConfig: Error saving config.');

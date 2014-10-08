@@ -21,7 +21,9 @@ resourcestring
   sUnselectListBox = 'Unselect';
   sAllLanguages = 'All Languages';
   sCannotFindMaster = 'Cannot find master po file:' + LineEnding + '%s' + LineEnding + 'for selected file' + LineEnding + '%s';
-  sNotAProperFileName = 'Selected filename' + LineEnding + '%s' + LineEnding + 'does not seem to be a proper name for a po-file';
+  //sNotAProperFileName = 'Selected filename' + LineEnding + '%s' + LineEnding + 'does not seem to be a proper name for a po-file';
+  sFilesNotFoundAndRemoved = 'The follwing files were not foud and removed from the list:' + LineEnding + '%s';
+  sNoFilesLeftToCheck = 'There are no files left to check.';
   sErrorOnCreate = 'Error creating an instance of TPoFamily:' + LineEnding + '%s';
   sErrorOnCleanup = 'An unrecoverable error occurred' + LineEnding + '%s' + LineEnding + 'Please close the program';
 
@@ -69,7 +71,7 @@ resourcestring
   sCheckForDuplicateUntranslatedValues = 'Check for duplicate untranslated '
     +'values';
   sCheckStatistics = 'Check percentage of (un)translated and fuzzy strings';
-  sFindAllTranslatedPoFiles = 'Find all translated po-files';
+  //sFindAllTranslatedPoFiles = 'Find all translated po-files';
   sIgnoreFuzzyTranslations = 'Ignore translated strings marked as "fuzzy"';
   sIncompatibleFormatArgs = '[Line: %d] Incompatible and/or invalid format() arguments for:' ;
 
