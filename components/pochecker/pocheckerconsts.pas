@@ -22,7 +22,7 @@ resourcestring
   sAllLanguages = 'All Languages';
   sCannotFindMaster = 'Cannot find master po file:' + LineEnding + '%s' + LineEnding + 'for selected file' + LineEnding + '%s';
   //sNotAProperFileName = 'Selected filename' + LineEnding + '%s' + LineEnding + 'does not seem to be a proper name for a po-file';
-  sFilesNotFoundAndRemoved = 'The follwing files were not foud and removed from the list:' + LineEnding + '%s';
+  sFilesNotFoundAndRemoved = 'The following non-existent files were removed from the list:' + LineEnding + '%s';
   sNoFilesLeftToCheck = 'There are no files left to check.';
   sErrorOnCreate = 'Error creating an instance of TPoFamily:' + LineEnding + '%s';
   sErrorOnCleanup = 'An unrecoverable error occurred' + LineEnding + '%s' + LineEnding + 'Please close the program';
