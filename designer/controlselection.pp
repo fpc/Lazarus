@@ -37,9 +37,13 @@ interface
 { $DEFINE VerboseDesigner}
 
 uses
-  Classes, SysUtils, Math, types, LCLIntf, LCLType, LCLProc, Controls, Forms,
-  GraphType, Graphics, Menus, EnvironmentOpts, PropEditUtils,
-  FormEditingIntf, NonControlDesigner, DesignerProcs;
+  Classes, SysUtils, Math, types,
+  // LCL
+  LCLIntf, LCLType, LCLProc, Controls, Forms, GraphType, Graphics, Menus,
+  // IDEIntf
+  PropEditUtils, ComponentEditors, FormEditingIntf,
+  // IDE
+  EnvironmentOpts, NonControlDesigner, DesignerProcs;
 
 type
   TArrSize = array of array [0 .. 3] of integer;
@@ -272,6 +276,7 @@ type
   TControlSelection = class(TComponent)
   private
     FControls: TList;  // list of TSelectedControl
+    FDesigner: TComponentEditorDesigner;
     FMediator: TDesignerMediator;
 
     // current bounds of the selection (only valid if Count>0)
@@ -513,6 +518,7 @@ type
     property Visible:boolean read GetVisible write SetVisible;
 
     property SelectionForm: TCustomForm read FForm;
+    property Designer: TComponentEditorDesigner read FDesigner;
     property Mediator: TDesignerMediator read FMediator;
     property OnSelectionFormChanged: TOnSelectionFormChanged
       read FOnSelectionFormChanged write FOnSelectionFormChanged;
@@ -525,9 +531,6 @@ var TheControlSelection: TControlSelection;
 
 
 implementation
-
-uses
-  ComponentEditors;
 
 const
   GRAB_CURSOR: array[TGrabIndex] of TCursor = (
@@ -1013,8 +1016,6 @@ begin
 end;
 
 procedure TControlSelection.BeginResizing(IsStartUndo: boolean);
-var
-  CompEditDesig: TComponentEditorDesigner;
 begin
   if FResizeLockCount=0 then BeginUpdate;
   inc(FResizeLockCount);
@@ -1022,9 +1023,8 @@ begin
   SetLength(arrOldSize, Count);
   GetCompSize(arrOldSize);
 
-  CompEditDesig := FindRootDesigner(Items[0].Persistent) as TComponentEditorDesigner;
-  if (Count > 0) and (CompEditDesig.FUndoState = ucsNone) and IsStartUndo then
-    CompEditDesig.FUndoState := ucsStartChange;
+  if (Designer<>nil) and (Count > 0) and (Designer.FUndoState = ucsNone) and IsStartUndo then
+    Designer.FUndoState := ucsStartChange;
 end;
 
 procedure TControlSelection.EndResizing(ApplyUserBounds, ActionIsProcess: boolean);
@@ -1034,24 +1034,21 @@ var
   function SaveAct(AIndex: integer): boolean;
   var
     CurrComp: TComponent;
-    RootDesigner: TIDesigner;
   begin
     Result := false;
-    RootDesigner := FindRootDesigner(Items[AIndex].Persistent);
-    if ((RootDesigner as TComponentEditorDesigner).FUndoState = ucsStartChange)
+    if (Designer.FUndoState = ucsStartChange)
       and Items[AIndex].IsTComponent then
     begin
-      if SelectionForm.Name = TComponent(Items[AIndex].Persistent).Name then
-        CurrComp := SelectionForm
-      else
-        CurrComp := SelectionForm.FindComponent(TComponent(Items[AIndex].Persistent).Name);
-      Result := (CurrComp <> nil) and (RootDesigner is TComponentEditorDesigner) and
+      CurrComp := TComponent(Items[AIndex].Persistent);
+      if (SelectionForm <> CurrComp) and (CurrComp.Owner<>SelectionForm) then
+        exit;
+      Result :=
          ((arrOldSize[AIndex, 0] <> arrNewSize[AIndex, 0]) or
           (arrOldSize[AIndex, 1] <> arrNewSize[AIndex, 1]) or
           (arrOldSize[AIndex, 2] <> arrNewSize[AIndex, 2]) or
           (arrOldSize[AIndex, 3] <> arrNewSize[AIndex, 3]));
       if Result then
-        with (RootDesigner as TComponentEditorDesigner) do
+        with Designer do
         begin
           AddUndoAction(CurrComp, uopChange, not(IsActionsBegin), 'Top',
             arrOldSize[AIndex, 0], arrNewSize[AIndex, 0]);
@@ -1178,6 +1175,9 @@ begin
   else
     FMediator:=nil;
   FLookupRoot:=GetSelectionOwner;
+  FDesigner:=nil;
+  if Count>0 then
+    FDesigner:=TComponentEditorDesigner(FindRootDesigner(Items[0].Persistent));
   if Assigned(FOnSelectionFormChanged) then
     FOnSelectionFormChanged(Self,OldCustomForm,NewCustomForm);
 end;
@@ -2291,6 +2291,7 @@ begin
   FStates:=FStates+cssSelectionChangeFlags-[cssLookupRootSelected];
   FForm:=nil;
   FMediator:=nil;
+  FDesigner:=nil;
   UpdateBounds;
   SaveBounds;
   DoChange;

@@ -47,9 +47,10 @@ uses
   FormEditingIntf, ComponentReg,
   // IDE
   LazarusIDEStrConsts, EnvironmentOpts, IDECommands, LazIDEIntf, ProjectIntf,
-  LazFileUtils, NonControlDesigner, FrameDesigner, AlignCompsDlg, SizeCompsDlg,
-  ScaleCompsDlg, TabOrderDlg, AnchorEditor, DesignerProcs, CustomFormEditor,
-  AskCompNameDlg, ControlSelection, ChangeClassDialog, EditorOptions;
+  LazFileUtils, LazFileCache, NonControlDesigner, FrameDesigner, AlignCompsDlg,
+  SizeCompsDlg, ScaleCompsDlg, TabOrderDlg, AnchorEditor, DesignerProcs,
+  CustomFormEditor, AskCompNameDlg, ControlSelection, ChangeClassDialog,
+  EditorOptions;
 
 type
   TDesigner = class;
@@ -89,7 +90,7 @@ type
     compName, parentName: TComponentName;
     opType: TUndoOpType;
     isValid: Boolean;
-    id: int64;
+    GroupId: int64;
   end;
 
   { TDesigner }
@@ -128,7 +129,7 @@ type
     FUndoList: array of TUndoItem;
     FUndoCurr: integer;
     FUndoLock: integer;
-    FUndoActId: int64;
+    FUndoGroupId: int64;
 
     //hint stuff
     FHintTimer: TTimer;
@@ -209,8 +210,8 @@ type
 
     function DoUndo: Boolean;
     function DoRedo: Boolean;
-    procedure SetNewVal(IsActUndo: boolean);
-    procedure SetNextUndoActId;
+    procedure ExecuteUndoItem(IsActUndo: boolean);
+    procedure SetNextUndoGroupId; inline;
 
     procedure DoShowAnchorEditor;
     procedure DoShowTabOrderEditor;
@@ -294,7 +295,7 @@ type
     function Undo: Boolean; override;
     function Redo: Boolean; override;
     function AddUndoAction(const aPersistent: TPersistent; aOpType: TUndoOpType;
-      IsSetNewId: boolean; aFieldName: string; const aOldVal, aNewVal: variant): boolean; override;
+      StartNewGroup: boolean; aFieldName: string; const aOldVal, aNewVal: variant): boolean; override;
     function IsUndoLocked: boolean; override;
     procedure ClearUndoItem(AIndex: Integer);
 
@@ -611,6 +612,12 @@ begin
         'Show options',dlgFROpts, nil, nil, nil, 'menu_environment_options');
 end;
 
+// inline
+procedure TDesigner.SetNextUndoGroupId;
+begin
+  LUIncreaseChangeStamp64(FUndoGroupId);
+end;
+
 constructor TDesigner.Create(TheDesignerForm: TCustomForm;
   AControlSelection: TControlSelection);
 var
@@ -654,7 +661,7 @@ begin
   FUndoCurr := Low(FUndoList);
   FUndoLock := 0;
   FUndoState := ucsNone;
-  SetNextUndoActId;
+  FUndoGroupId := 1;
 end;
 
 procedure TDesigner.PrepareFreeDesigner(AFreeComponent: boolean);
@@ -1230,30 +1237,30 @@ begin
 end;
 
 function TDesigner.DoUndo: Boolean;
-var currId: int64;
+var GroupId: int64;
 begin
   repeat
     Result := CanUndo;
     if not Result then Exit;
     Dec(FUndoCurr);
-    currId := FUndoList[FUndoCurr].id;
-    SetNewVal(true);
-  until (FUndoCurr=Low(FUndoList)) or (currId <> FUndoList[FUndoCurr - 1].id);
+    GroupId := FUndoList[FUndoCurr].GroupId;
+    ExecuteUndoItem(true);
+  until (FUndoCurr=Low(FUndoList)) or (GroupId <> FUndoList[FUndoCurr - 1].GroupId);
 end;
 
 function TDesigner.DoRedo: Boolean;
-var currId: int64;
+var GroupId: int64;
 begin
   repeat
     Result := CanRedo;
     if not Result then Exit;
-    SetNewVal(false);
-    currId := FUndoList[FUndoCurr].id;
+    ExecuteUndoItem(false);
+    GroupId := FUndoList[FUndoCurr].GroupId;
     Inc(FUndoCurr);
-  until (FUndoCurr>High(FUndoList)) or (currId <> FUndoList[FUndoCurr].id);
+  until (FUndoCurr>High(FUndoList)) or (GroupId <> FUndoList[FUndoCurr].GroupId);
 end;
 
-procedure TDesigner.SetNewVal(IsActUndo: boolean);
+procedure TDesigner.ExecuteUndoItem(IsActUndo: boolean);
 
   procedure SetPropVal(AVal: variant);
   var
@@ -1372,12 +1379,6 @@ begin
   end;
 
   PropertyEditorHook.RefreshPropertyValues;
-end;
-
-procedure TDesigner.SetNextUndoActId;
-begin
-  Randomize;
-  FUndoActId := Random(High(Int64));
 end;
 
 procedure TDesigner.DoShowAnchorEditor;
@@ -1607,7 +1608,7 @@ begin
 end;
 
 function TDesigner.AddUndoAction(const aPersistent: TPersistent;
-  aOpType: TUndoOpType; IsSetNewId: boolean; aFieldName: string; const aOldVal,
+  aOpType: TUndoOpType; StartNewGroup: boolean; aFieldName: string; const aOldVal,
   aNewVal: variant): boolean;
 
   procedure ShiftUndoList;
@@ -1627,8 +1628,15 @@ var
 begin
   Result := (FUndoLock = 0);
   if not Result then Exit;
+
   APropInfo := GetPropInfo(aPersistent, aFieldName);
-  {property is not published ?}
+  if APropInfo=nil then
+  begin
+    // property is not published
+    debugln(['WARNING: TDesigner.AddUndoAction: property "',aFieldName,'" not published of ',DbgSName(aPersistent)]);
+    exit(false);
+  end;
+
   Inc(FUndoLock);
   try
     if FUndoCurr > High(FUndoList) then
@@ -1641,8 +1649,8 @@ begin
       Inc(i);
     end;
 
-    if IsSetNewId then
-      SetNextUndoActId;
+    if StartNewGroup then
+      SetNextUndoGroupId;
 
     if (aOpType in [uopAdd, uopDelete]) and (FForm <> aPersistent) then
     begin
@@ -1679,7 +1687,7 @@ begin
       end;
       opType := aOpType;
       isValid := true;
-      id := FUndoActId;
+      GroupId := FUndoGroupId;
       if APropInfo <> nil then
         propInfo := APropInfo^
       else begin
@@ -1710,7 +1718,7 @@ begin
     parentName := '';
     opType := uopNone;
     isValid := false;
-    id := 0;
+    GroupId := 0;
   end;
 end;
 
