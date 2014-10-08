@@ -184,6 +184,8 @@ function TryGetOrdProp(Instance: TPersistent; const PropName: string;
                        out Value: integer): boolean;
 function LeftFromDesignInfo(ADesignInfo: LongInt): SmallInt; inline;
 function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt; inline;
+procedure SetDesignInfoLeft(AComponent: TComponent; const aLeft: SmallInt); inline;
+procedure SetDesignInfoTop(AComponent: TComponent; const aTop: SmallInt); inline;
 function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt; inline;
 procedure DesignInfoToLeftTop(ADesignInfo: LongInt; out ALeft, ATop: SmallInt); inline;
 
@@ -246,6 +248,24 @@ end;
 function TopFromDesignInfo(ADesignInfo: LongInt): SmallInt;
 begin
   Result := LazLongRec(ADesignInfo).Hi;
+end;
+
+procedure SetDesignInfoLeft(AComponent: TComponent; const aLeft: SmallInt);
+var
+  DesignInfo: LongInt;
+begin
+  DesignInfo:=AComponent.DesignInfo;
+  LazLongRec(DesignInfo).Lo:=ALeft;
+  AComponent.DesignInfo:=DesignInfo;
+end;
+
+procedure SetDesignInfoTop(AComponent: TComponent; const aTop: SmallInt);
+var
+  DesignInfo: LongInt;
+begin
+  DesignInfo:=AComponent.DesignInfo;
+  LazLongRec(DesignInfo).Hi:=aTop;
+  AComponent.DesignInfo:=DesignInfo;
 end;
 
 function LeftTopToDesignInfo(const ALeft, ATop: SmallInt): LongInt;

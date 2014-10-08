@@ -85,7 +85,7 @@ type
   TUndoItem = record
     obj: string;
     fieldName: string;
-    propInfo: TPropInfo;
+    propInfo: PPropInfo;
     oldVal, newVal: Variant;
     compName, parentName: TComponentName;
     opType: TUndoOpType;
@@ -1268,6 +1268,7 @@ procedure TDesigner.ExecuteUndoItem(IsActUndo: boolean);
     tmpCompName: TComponentName;
     tmpObj: TObject;
     tmpInt: integer;
+    aPropType: PTypeInfo;
   begin
     tmpCompName := FUndoList[FUndoCurr].compName;
     if FUndoList[FUndoCurr].fieldName = 'Name' then
@@ -1287,44 +1288,59 @@ procedure TDesigner.ExecuteUndoItem(IsActUndo: boolean);
       ShowMessage('error: invalid var type');
     tmpStr := VarToStr(AVal);
 
-    with FUndoList[FUndoCurr] do
-      case propInfo.propType^.Kind of
-        tkInteger, tkInt64:
-        begin
-          if (propInfo.propType^.Name = 'TColor') or
-             (propInfo.propType^.Name = 'TGraphicsColor') then
-            SetOrdProp(tmpObj, fieldName, StringToColor(tmpStr))
-          else if propInfo.propType^.Name = 'TCursor' then
-            SetOrdProp(tmpObj, fieldName, StringToCursor(tmpStr))
-          else
-            SetOrdProp(tmpObj, fieldName, StrToInt(tmpStr));
-        end;
-        tkChar, tkWChar, tkUChar:
-        begin
-          if Length(tmpStr) = 1 then
-            SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, Ord(tmpStr[1]))
-          else if (tmpStr[1] = '#') then
+    with FUndoList[FUndoCurr] do begin
+      if propInfo<>nil then
+      begin
+        aPropType:=propInfo^.propType;
+        case aPropType^.Kind of
+          tkInteger, tkInt64:
           begin
-            str := Copy(tmpStr, 2, Length(tmpStr) - 1);
-            if TryStrToInt(str, tmpInt) and (tmpInt >= 0) and (tmpInt <= High(Byte)) then
-              SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpInt);
+            if (aPropType^.Name = 'TColor') or
+               (aPropType^.Name = 'TGraphicsColor') then
+              SetOrdProp(tmpObj, fieldName, StringToColor(tmpStr))
+            else if aPropType^.Name = 'TCursor' then
+              SetOrdProp(tmpObj, fieldName, StringToCursor(tmpStr))
+            else
+              SetOrdProp(tmpObj, fieldName, StrToInt(tmpStr));
           end;
+          tkChar, tkWChar, tkUChar:
+          begin
+            if Length(tmpStr) = 1 then
+              SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, Ord(tmpStr[1]))
+            else if (tmpStr[1] = '#') then
+            begin
+              str := Copy(tmpStr, 2, Length(tmpStr) - 1);
+              if TryStrToInt(str, tmpInt) and (tmpInt >= 0) and (tmpInt <= High(Byte)) then
+                SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpInt);
+            end;
+          end;
+          tkEnumeration:
+            SetEnumProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpStr);
+          tkFloat:
+            SetFloatProp(tmpObj, fieldName, StrToFloat(tmpStr));
+          tkBool:
+            SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, Integer(StrToBool(tmpStr)));
+          tkString, tkLString, tkAString, tkUString, tkWString:
+            SetStrProp(tmpObj, fieldName, tmpStr);
+          tkSet:
+            SetSetProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpStr);
+          tkVariant:
+            SetVariantProp(tmpObj, fieldName, AVal);
+          else
+            ShowMessage(Format('error: unknown TTypeKind(%d)', [Integer(aPropType^.Kind)]));
         end;
-        tkEnumeration:
-          SetEnumProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpStr);
-        tkFloat:
-          SetFloatProp(tmpObj, fieldName, StrToFloat(tmpStr));
-        tkBool:
-          SetOrdProp(tmpObj, FUndoList[FUndoCurr].fieldName, Integer(StrToBool(tmpStr)));
-        tkString, tkLString, tkAString, tkUString, tkWString:
-          SetStrProp(tmpObj, fieldName, tmpStr);
-        tkSet:
-          SetSetProp(tmpObj, FUndoList[FUndoCurr].fieldName, tmpStr);
-        tkVariant:
-          SetVariantProp(tmpObj, fieldName, AVal);
-        else
-          ShowMessage(Format('error: unknown TTypeKind(%d)', [Integer(propInfo.propType^.Kind)]));
+      end else begin
+        // field is not published
+        if tmpObj is TComponent then
+        begin
+          // special case: TComponent.Left,Top
+          if CompareText(fieldName,'Left')=0 then
+            SetDesignInfoLeft(TComponent(tmpObj),StrToInt(tmpStr))
+          else if CompareText(fieldName,'Top')=0 then
+            SetDesignInfoTop(TComponent(tmpObj),StrToInt(tmpStr));
+        end;
       end;
+    end;
     PropertyEditorHook.Modified(tmpObj);
   end;
 
@@ -1617,6 +1633,7 @@ function TDesigner.AddUndoAction(const aPersistent: TPersistent;
   begin
     for i := Low(FUndoList) + 1 to High(FUndoList) do
       FUndoList[i - 1] := FUndoList[i];
+    ClearUndoItem(High(FUndoList));
     Dec(FUndoCurr);
   end;
 
@@ -1630,18 +1647,13 @@ begin
   if not Result then Exit;
 
   APropInfo := GetPropInfo(aPersistent, aFieldName);
-  if APropInfo=nil then
-  begin
-    // property is not published
-    debugln(['WARNING: TDesigner.AddUndoAction: property "',aFieldName,'" not published of ',DbgSName(aPersistent)]);
-    exit(false);
-  end;
 
   Inc(FUndoLock);
   try
     if FUndoCurr > High(FUndoList) then
       ShiftUndoList;
 
+    // clear Redo items
     i := FUndoCurr;
     while (i <= High(FUndoList)) do
     begin
@@ -1688,11 +1700,7 @@ begin
       opType := aOpType;
       isValid := true;
       GroupId := FUndoGroupId;
-      if APropInfo <> nil then
-        propInfo := APropInfo^
-      else begin
-        // ToDo: Clear propInfo.
-      end;
+      propInfo := APropInfo;
     end;
     Inc(FUndoCurr);
   finally
