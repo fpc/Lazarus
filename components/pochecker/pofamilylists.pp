@@ -80,8 +80,8 @@ begin
     begin
       if (ALang <> langAll) then
         ChildName := ChangeFileExt(MasterName, '.' + ALang + '.po');
-      debugln('TPoFamilyList.Create: i = ',DbgS(i),' Adding TPoFamily.Create(''',ExtractFileName(MasterName),
-              ''',',ExtractFileName(ChildName),''')');
+      //debugln('TPoFamilyList.Create: i = ',DbgS(i),' Adding TPoFamily.Create(''',ExtractFileName(MasterName),
+      //        ''',',ExtractFileName(ChildName),''')');
       if (ALang = langAll) or FileExistsUtf8(ChildName) then
       begin
         APoFamily := TPoFamily.Create(MasterName, ChildName);
@@ -97,7 +97,7 @@ end;
 
 destructor TPoFamilyList.Destroy;
 begin
-  debugln('TPoFamilyList.Destroy: FList.Count = ',DbgS(FList.Count));
+  //debugln('TPoFamilyList.Destroy: FList.Count = ',DbgS(FList.Count));
   PoFamilyStats.Free;
   FList.Free;
   inherited Destroy;
