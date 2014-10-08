@@ -665,6 +665,7 @@ var
   HasSelection: Boolean;
 begin
   MasterPoListBox.ClearSelection;
+  HasSelection := False;
   for i := 0 to S.Count - 1 do
   begin
     Fn := S.Strings[i];
@@ -675,7 +676,7 @@ begin
       HasSelection := True;
     end;
   end;
-  //debugln('TPoCheckerForm.SetSelectedMasterFiles: MasterPoListBox.SelCount = ',DbgS(MasterPoListBox.SelCount));
+  //debugln('TPoCheckerForm.SetSelectedMasterFiles: S.Count = ',DbgS(S.Count),' HasSelection = ',DbgS(HasSelection));
   UpdateGUI(HasSelection);
 end;
 
