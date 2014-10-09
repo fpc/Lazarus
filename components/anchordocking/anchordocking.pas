@@ -1601,7 +1601,8 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree);
       or (Splitter.Parent<>Site.Parent) then continue;
       // there is an unmapped splitter anchored to the Site
       // => map the splitter to the splitter node
-      fTreeNameToDocker[Splitter.Name]:=Splitter;
+      // Note: Splitter.Name can be different from SplitterNode.Name !
+      fTreeNameToDocker[SplitterNode.Name]:=Splitter;
     end;
   end;
 
@@ -1740,7 +1741,7 @@ var
     if Scale and SrcRectValid(Node.WorkAreaRect) then
       SrcWorkArea:=Node.WorkAreaRect;
     {$IFDEF VerboseAnchorDockRestore}
-    debugln(['TAnchorDockMaster.RestoreLayout.Restore ',Node.Name,' ',dbgs(Node.NodeType),' Bounds=',dbgs(Node.BoundsRect),' Parent=',DbgSName(Parent),' ']);
+    debugln(['TAnchorDockMaster.RestoreLayout.Restore Node="',Node.Name,'" ',dbgs(Node.NodeType),' Bounds=',dbgs(Node.BoundsRect),' Parent=',DbgSName(Parent),' ']);
     {$ENDIF}
     if Node.NodeType=adltnControl then begin
       // restore control
@@ -1853,7 +1854,7 @@ var
         // free unneeded helper controls (e.g. splitters)
         for i:=Site.ControlCount-1 downto 0 do begin
           AControl:=Site.Controls[i];
-          if fTreeNameToDocker[AControl.Name]<>nil then continue;
+          if fTreeNameToDocker.ControlToName(AControl)<>'' then continue;
           if AControl is TAnchorDockSplitter then begin
             AControl.Free;
           end;
@@ -2225,7 +2226,8 @@ begin
       fNeedSimplify.Remove(AControl);
       fNeedFree.Remove(AControl);
       fDisabledAutosizing.Remove(AControl);
-      if fTreeNameToDocker<>nil then fTreeNameToDocker.RemoveControl(AControl);
+      if fTreeNameToDocker<>nil then
+        fTreeNameToDocker.RemoveControl(AControl);
     end;
   end;
 end;
