@@ -1407,7 +1407,8 @@ function GetDefaultDataSet: TfrTDataSet;
 procedure SetBit(var w: Word; e: Boolean; m: Integer);
 function frGetBandName(BandType: TfrBandType): string;
 procedure frSelectHyphenDictionary(ADict: string);
-function FindObjectProps(AObjStr:string; out frObj:TfrObject; out PropName:string):PPropInfo;
+function FindObjectProps(AObjStr:string; out frObj:TfrObject; out PropName:string;
+  out PropIndex:Integer):PPropInfo;
 
 const
   lrTemplatePath = 'LazReportTemplate/';
@@ -1609,7 +1610,25 @@ end;
 
 {$ENDIF}
 
-function FindObjectProps(AObjStr:string; out frObj:TfrObject; out PropName:string):PPropInfo;
+function IsCustomProp(const aPropName: string; out aIndex: Integer): boolean;
+var
+  i: Integer;
+begin
+  result := false;
+  aIndex := -1;
+  for i:=0 to High(PropNames) do
+  begin
+    if SameText(aPropName, PropNames[i]) then
+    begin
+      aIndex := i;
+      result := true;
+      break;
+    end;
+  end;
+end;
+
+function FindObjectProps(AObjStr:string; out frObj:TfrObject; out PropName:string;
+  out PropIndex: Integer):PPropInfo;
 var
   FPageName:string;
   FObjName:string;
@@ -1620,6 +1639,7 @@ begin
   Result:=nil;
   frObj:=nil;
   PropName:='';
+  PropIndex:=-1;
 
   P:=Pos('.', AObjStr);
   if (P = 0) then
@@ -1627,7 +1647,7 @@ begin
     if Assigned(CurView) then
     begin
       Result:=GetPropInfo(CurView, AObjStr); //Retreive property informations
-      if Assigned(Result) then
+      if Assigned(Result) or IsCustomProp(aObjStr, PropIndex) then
       begin
         frObj:=CurView;
         PropName:=AObjStr;
@@ -11422,14 +11442,14 @@ begin
     exit;
   end;
 
-  PropInfo:=FindObjectProps(AName, t, PropName);
+  PropInfo:=FindObjectProps(AName, t, PropName, i);
   if Assigned(t) then
   begin
        //Retreive property informations
     if Assigned(PropInfo) then
     begin
       {$IFDEF DebugLR}
-      DebugLn('TInterpretator.GetValue(',Name,') Prop=',Prop, ' Kind=',InttoStr(Ord(PropInfo^.PropType^.Kind)));
+      DebugLn('TInterpretator.GetValue(',Name,') Prop=',PropName, ' Kind=',InttoStr(Ord(PropInfo^.PropType^.Kind)));
       {$ENDIF}
       case PropInfo^.PropType^.Kind of
         tkChar,tkAString,tkWString,
@@ -11461,35 +11481,26 @@ begin
       end;
     end
     else
+    if not (t is TfrBandView) and (i>=0) then
     begin
-        // it's not a color name, try with customized properties
-        // not included directly in t
-      if not (t is TfrBandView) then
-      begin
-        for i:=0 to propcount-1 do
-          if CompareText(PropNames[i], PropName)=0 then
-          begin
-              {$IFDEF DebugLR}
-              DbgOut('A CustomField was found ', Prop);
-              if i=0 then
-                DbgOut(', t.memo.text=',DbgStr(t.Memo.Text));
-              DebugLn;
-              {$ENDIF}
-              case i of
-                0: AValue := t.GetText; //t.Memo.Text;
-                1: AValue := TfrMemoView(t).Font.Name;
-                2: AValue := TfrMemoView(t).Font.Size;
-                3: AValue := frGetFontStyle(TfrMemoView(t).Font.Style);
-                4: AValue := TfrMemoView(t).Font.Color;
-                5: AValue := TfrMemoView(t).Adjust;
-              end;
-              exit;
-          end;
+      {$IFDEF DebugLR}
+      DbgOut('A CustomField was found ', PropName);
+      if i=0 then
+        DbgOut(', t.memo.text=',DbgStr(t.Memo.Text));
+      DebugLn;
+      {$ENDIF}
+      case i of
+        0: AValue := t.GetText; //t.Memo.Text;
+        1: AValue := TfrMemoView(t).Font.Name;
+        2: AValue := TfrMemoView(t).Font.Size;
+        3: AValue := frGetFontStyle(TfrMemoView(t).Font.Style);
+        4: AValue := TfrMemoView(t).Font.Color;
+        5: AValue := TfrMemoView(t).Adjust;
       end;
     end;
 
     {$IFDEF DebugLR}
-    DebugLn('TInterpretator.GetValue(',Name,') No Propinfo for Prop=',Prop,' Value=',dbgs(AValue));
+    DebugLn('TInterpretator.GetValue(',Name,') No Propinfo for Prop=',PropName,' Value=',dbgs(AValue));
     {$ENDIF}
   end
   else
@@ -12231,7 +12242,7 @@ begin
         DebugLn('Value=NULL');
   {$ENDIF}
 
-  PropInfo:=FindObjectProps(Name, t, PropName);
+  PropInfo:=FindObjectProps(Name, t, PropName, i);
 
   if Assigned(PropInfo) then
   begin
@@ -12260,25 +12271,23 @@ begin
     if Assigned(t) and not (t is TfrBandView) then
     begin
       // try with customized properties not included directly in t
-      for i:=0 to propcount-1 do
-        if CompareText(PropNames[i], PropName)=0 then
-        begin
-          {$IFDEF DebugLR}
-          DbgOut('A CustomField was found ', Prop);
-          if i=0 then
-            DbgOut(', t.memo.text=',DbgStr(t.Memo.Text),' nuevo valor=',VarToStr(Value));
-          DebugLn;
-          {$ENDIF}
-          case i of
-            0: T.SetText(Value); //t.Memo.Text := Value;
-            1: TfrMemoView(t).Font.Name := Value;
-            2: TfrMemoView(t).Font.Size := Value;
-            3: TfrMemoView(t).Font.Style := frSetFontStyle(Value);
-            4: TfrMemoView(t).Font.Color := Value;
-            5: TfrMemoView(t).Adjust := Value;
-          end;
-          exit;
+      if i>=0 then begin
+        {$IFDEF DebugLR}
+        DbgOut('A CustomField was found ', PropName);
+        if i=0 then
+          DbgOut(', t.memo.text=',DbgStr(t.Memo.Text),' nuevo valor=',VarToStr(Value));
+        DebugLn;
+        {$ENDIF}
+        case i of
+          0: T.SetText(Value); //t.Memo.Text := Value;
+          1: TfrMemoView(t).Font.Name := Value;
+          2: TfrMemoView(t).Font.Size := Value;
+          3: TfrMemoView(t).Font.Style := frSetFontStyle(Value);
+          4: TfrMemoView(t).Font.Color := Value;
+          5: TfrMemoView(t).Adjust := Value;
         end;
+        exit;
+      end;
     end;
     // not found, treat it as a variable
     {$IFDEF DebugLR}
