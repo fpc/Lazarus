@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
-  Menus, ExtCtrls, Buttons, ComCtrls, SimpleFrm,
-  AnchorDocking, AnchorDockStorage, XMLPropStorage, AnchorDockOptionsDlg;
+  Menus, ExtCtrls, Buttons, ComCtrls, SimpleFrm, AnchorDocking,
+  AnchorDockStorage, XMLPropStorage, StdCtrls, AnchorDockOptionsDlg;
 
 type
 
@@ -15,6 +15,7 @@ type
 
   TMainIDE = class(TForm)
     ImageList1: TImageList;
+    InfoButton: TButton;
     MainMenu1: TMainMenu;
     ComponentPalette: TPageControl;
     MenuItem1: TMenuItem;
@@ -42,6 +43,7 @@ type
     ViewSrcEditor1ToolButton: TToolButton;
     procedure FileMenuItemClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure InfoButtonClick(Sender: TObject);
     procedure LoadLayoutMenuItemClick(Sender: TObject);
     procedure LoadLayoutToolButtonClick(Sender: TObject);
     procedure QuitMenuItemClick(Sender: TObject);
@@ -58,6 +60,7 @@ type
   private
     procedure DockMasterCreateControl(Sender: TObject; aName: string; var
       AControl: TControl; DoDisableAutoSizing: boolean);
+    procedure GetInfo(sl: TStringList);
   public
     procedure ShowForm(AForm: TCustomForm; FormEnableAutosizing: boolean);
     procedure SaveLayout(Filename: string);
@@ -116,6 +119,40 @@ begin
     CreateForm('Debug Output',Bounds(400,400,350,150));
 end;
 
+procedure TMainIDE.GetInfo(sl: TStringList);
+var
+  i: Integer;
+  aMonitor: TMonitor;
+  aForm: TForm;
+begin
+  // monitors
+  sl.Add('Monitors:');
+  for i:=0 to Screen.MonitorCount-1 do begin
+    aMonitor:=Screen.Monitors[i];
+    sl.Add('  '+dbgs(i)+'/'+dbgs(Screen.MonitorCount)
+      +' MonitorNum='+IntToStr(aMonitor.MonitorNum)
+      +' BoundsRect='+dbgs(aMonitor.BoundsRect)
+      +' WorkareaRect='+dbgs(aMonitor.WorkareaRect)
+      +' Primary='+dbgs(aMonitor.Primary)
+      );
+  end;
+  sl.Add('');
+
+  // forms
+  sl.Add('Visible Forms:');
+  for i:=0 to Screen.FormCount-1 do begin
+    aForm:=Screen.Forms[i];
+    if not aForm.Visible then continue;
+    sl.Add('  '+dbgs(i)+'/'+dbgs(Screen.FormCount)
+      +' Name="'+aForm.Name+'"'
+      +' BoundsRect='+dbgs(aForm.BoundsRect)
+      +' ClientRect='+dbgs(aForm.ClientRect)
+      +' MonitorNum='+dbgs(aForm.Monitor.MonitorNum)
+      );
+  end;
+  sl.Add('');
+end;
+
 procedure TMainIDE.FormCreate(Sender: TObject);
 begin
   ViewOIToolButton.Hint:='View Object Inspector';
@@ -138,6 +175,35 @@ begin
   ViewMessagesToolButtonClick(Self);
   ViewOIToolButtonClick(Self);
   ViewFPDocEditorToolButtonClick(Self);
+end;
+
+procedure TMainIDE.InfoButtonClick(Sender: TObject);
+var
+  aForm: TForm;
+  aMemo: TMemo;
+  sl: TStringList;
+begin
+  aForm:=TForm.CreateNew(Self);
+  sl:=TStringList.Create;
+  try
+    aForm.Name:='InfoForm';
+    aForm.Position:=poScreenCenter;
+    aMemo:=TMemo.Create(aForm);
+    with aMemo do
+    begin
+      Name:='aMemo';
+      Parent:=aForm;
+      Align:=alClient;
+      ScrollBars:=ssBoth;
+    end;
+    GetInfo(sl);
+    aMemo.Lines.Assign(sl);
+
+    aForm.ShowModal;
+  finally
+    sl.Free;
+    aForm.Free;
+  end;
 end;
 
 procedure TMainIDE.LoadLayoutMenuItemClick(Sender: TObject);

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -28,18 +28,20 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="1">
+    <RequiredPackages Count="2">
       <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+      <Item2>
         <PackageName Value="AnchorDocking"/>
         <MinVersion Valid="True"/>
         <DefaultFilename Value="../anchordocking.lpk"/>
-      </Item1>
+      </Item2>
     </RequiredPackages>
     <Units Count="3">
       <Unit0>
         <Filename Value="miniide1.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="miniide1"/>
       </Unit0>
       <Unit1>
         <Filename Value="unit1.pas"/>
@@ -54,7 +56,6 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SimpleForm"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="SimpleFrm"/>
       </Unit2>
     </Units>
   </ProjectOptions>
@@ -83,12 +84,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">
