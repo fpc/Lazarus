@@ -123,7 +123,7 @@ procedure TMainIDE.GetInfo(sl: TStringList);
 var
   i: Integer;
   aMonitor: TMonitor;
-  aForm: TForm;
+  aForm: TCustomForm;
 begin
   // monitors
   sl.Add('Monitors:');
@@ -139,12 +139,14 @@ begin
   sl.Add('');
 
   // forms
-  sl.Add('Visible Forms:');
-  for i:=0 to Screen.FormCount-1 do begin
-    aForm:=Screen.Forms[i];
+  sl.Add('Visible top level Forms:');
+  for i:=0 to Screen.CustomFormCount-1 do begin
+    aForm:=Screen.CustomForms[i];
     if not aForm.Visible then continue;
-    sl.Add('  '+dbgs(i)+'/'+dbgs(Screen.FormCount)
-      +' Name="'+aForm.Name+'"'
+    if aForm.Parent<>nil then continue;
+    sl.Add('  '+dbgs(i)+'/'+dbgs(Screen.CustomFormCount)
+      +' Caption="'+aForm.Caption+'"'
+      +' Name="'+DbgSName(aForm)+'"'
       +' BoundsRect='+dbgs(aForm.BoundsRect)
       +' ClientRect='+dbgs(aForm.ClientRect)
       +' MonitorNum='+dbgs(aForm.Monitor.MonitorNum)
