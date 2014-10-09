@@ -90,17 +90,6 @@ procedure TMainIDE.DockMasterCreateControl(Sender: TObject; aName: string; var
   end;
 
 begin
-  // first check if the form already exists
-  // the LCL Screen has a list of all existing forms.
-  // Note: Remember that the LCL allows as form names only standard
-  // pascal identifiers and compares them case insensitive
-  AControl:=Screen.FindForm(aName);
-  if AControl<>nil then begin
-    // if it already exists, just disable autosizing if requested
-    if DoDisableAutoSizing then
-      AControl.DisableAutoSizing;
-  end;
-  // if the form does not yet exist, create it
   if aName='CodeExplorer' then
     CreateForm('Code Explorer',Bounds(700,230,100,250))
   else if aName='FPDocEditor' then

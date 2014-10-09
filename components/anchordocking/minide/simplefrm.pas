@@ -32,14 +32,20 @@ implementation
 function CreateSimpleForm(Name, Title: string; NewBounds: TRect;
   DisableAutoSizing: boolean): TSimpleForm;
 begin
+  // first check if the form already exists
+  // the LCL Screen has a list of all existing forms.
+  // Note: Remember that the LCL allows as form names only standard
+  // pascal identifiers and compares them case insensitive
   Result:=TSimpleForm(Screen.FindForm(Name));
   if Result is TSimpleForm then begin
     if DisableAutoSizing then
       Result.DisableAutoSizing;
     exit;
   end;
+
+  // create it
   Result:=TSimpleForm(TSimpleForm.NewInstance);
-  Result.DisableAlign;
+  Result.DisableAutoSizing;
   Result.Create(Application);
   Result.Caption:=Title;
   Result.Name:=Name;
