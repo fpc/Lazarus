@@ -861,6 +861,7 @@ begin
     FProperties[i]:=nil;
   end;
   FProperties.Clear;
+  Editor := nil;
 end;
 
 procedure TTICustomGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
