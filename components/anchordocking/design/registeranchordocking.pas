@@ -31,7 +31,7 @@ unit RegisterAnchorDocking;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerboseAnchorDocking}
+{ $DEFINE VerboseAnchorDocking}
 
 interface
 
@@ -328,6 +328,7 @@ begin
         DockMaster.LoadLayoutFromConfig(Config,true);
         UserLayoutLoaded:=true;
       end else begin
+        // loading defaults
         {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
         debugln(['TIDEAnchorDockMaster.LoadUserLayout loading default layout ...']);
         {$ENDIF}

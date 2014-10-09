@@ -1432,18 +1432,26 @@ function TAnchorDockMaster.CreateNeededControls(Tree: TAnchorDockLayoutTree;
       AControl:=FindControl(Node.Name);
       if AControl<>nil then begin
         //debugln(['CreateControlsForNode ',Node.Name,' already exists']);
-        DisableControlAutoSizing(AControl);
+        if DisableAutoSizing then
+          DisableControlAutoSizing(AControl);
       end else begin
         //debugln(['CreateControlsForNode ',Node.Name,' needs creation']);
-        AControl:=DoCreateControl(Node.Name,DisableAutoSizing);
+        AControl:=DoCreateControl(Node.Name,true);
         if AControl<>nil then begin
-          //debugln(['CreateControlsForNode ',AControl.Name,' created']);
-          if fDisabledAutosizing.IndexOf(AControl)<0 then
-            fDisabledAutosizing.Add(AControl);
-          if Node.NodeType=adltnControl then
-            MakeDockable(AControl,false)
-          else if not IsCustomSite(AControl) then
-            raise EAnchorDockLayoutError.Create('not a docksite: '+DbgSName(AControl));
+          try
+            if DisableAutoSizing and (fDisabledAutosizing.IndexOf(AControl)<0)
+            then begin
+              fDisabledAutosizing.Add(AControl);
+              AControl.FreeNotification(Self);
+            end;
+            if Node.NodeType=adltnControl then
+              MakeDockable(AControl,false)
+            else if not IsCustomSite(AControl) then
+              raise EAnchorDockLayoutError.Create('not a docksite: '+DbgSName(AControl));
+          finally
+            if not DisableAutoSizing then
+              AControl.EnableAutoSizing;
+          end;
         end else begin
           debugln(['CreateControlsForNode ',Node.Name,' failed to create']);
         end;
@@ -1662,9 +1670,14 @@ var
   var
     aManager: TAnchorDockManager;
     NewBounds: TRect;
+    aMonitor: TMonitor;
   begin
     if Parent=nil then begin
-      WorkArea:=Site.Monitor.WorkareaRect;
+      if (Node.Monitor>=0) and (Node.Monitor<Screen.MonitorCount) then
+        aMonitor:=Screen.Monitors[Node.Monitor]
+      else
+        aMonitor:=Site.Monitor;
+      WorkArea:=aMonitor.WorkareaRect;
       {$IFDEF VerboseAnchorDockRestore}
       debugln(['TAnchorDockMaster.RestoreLayout.SetupSite WorkArea=',dbgs(WorkArea)]);
       {$ENDIF}
@@ -1688,7 +1701,7 @@ var
     end;
     {$IFDEF VerboseAnchorDockRestore}
     if Scale then
-      debugln(['TAnchorDockMaster.RestoreLayout.SetupSite scale Site=',DbgSName(Site),' OldWorkArea=',dbgs(SrcWorkArea),' CurWorkArea=',dbgs(WorkArea),' OldBounds=',dbgs(Node.BoundsRect),' NewBounds=',dbgs(NewBounds)]);
+      debugln(['TAnchorDockMaster.RestoreLayout.SetupSite scale Site=',DbgSName(Site),' Caption="',Site.Caption,'" OldWorkArea=',dbgs(SrcWorkArea),' CurWorkArea=',dbgs(WorkArea),' OldBounds=',dbgs(Node.BoundsRect),' NewBounds=',dbgs(NewBounds)]);
     {$ENDIF}
     Site.BoundsRect:=NewBounds;
     Site.Visible:=true;
@@ -1708,10 +1721,6 @@ var
     end;
     if Parent=nil then begin
       Site.WindowState:=Node.WindowState;
-      if (Node.Monitor>=0) and (Node.Monitor<Screen.MonitorCount) then
-      begin
-        // ToDo: move to monitor
-      end;
     end;
   end;
 
@@ -2296,7 +2305,9 @@ end;
 destructor TAnchorDockMaster.Destroy;
 var
   AControl: TControl;
+  {$IFDEF VerboseAnchorDocking}
   i: Integer;
+  {$ENDIF}
 begin
   QueueSimplify:=false;
   FreeAndNil(FRestoreLayouts);
@@ -2313,9 +2324,11 @@ begin
   FreeAndNil(FControls);
   FreeAndNil(fNeedFree);
   FreeAndNil(fDisabledAutosizing);
+  {$IFDEF VerboseAnchorDocking}
   for i:=0 to ComponentCount-1 do begin
     debugln(['TAnchorDockMaster.Destroy ',i,'/',ComponentCount,' ',DbgSName(Components[i])]);
   end;
+  {$ENDIF}
   inherited Destroy;
 end;
 
@@ -2509,7 +2522,7 @@ begin
     AControl.EnableAutoSizing;
   end;
   // BringToFront
-  if BringToFront and (Site<>nil) then begin
+  if Show and BringToFront and (Site<>nil) then begin
     GetParentForm(Site).BringToFront;
     Site.SetFocus;
   end;
@@ -5484,9 +5497,13 @@ var
   SplitterWidth: Integer;
 begin
   if DockSite<>nil then
+    {$IFDEF VerboseAnchorDocking}
     debugln(['TAnchorDockManager.RemoveControl DockSite="',DockSite.Caption,'" Control=',DbgSName(Control)])
+    {$ENDIF}
   else begin
+    {$IFDEF VerboseAnchorDocking}
     debugln(['TAnchorDockManager.RemoveControl Site="',DbgSName(Site),'" Control=',DbgSName(Control)]);
+    {$ENDIF}
     if Control is TAnchorDockHostSite then begin
       SplitterWidth:=0;
       if Control is TAnchorDockHostSite then begin
@@ -5514,7 +5531,9 @@ begin
         FStoredConstraints:=Rect(0,0,0,0);
       end;
       Site.BoundsRect:=NewBounds;
+      {$IFDEF VerboseAnchorDocking}
       debugln(['TAnchorDockManager.RemoveControl Site=',DbgSName(Site),' ',dbgs(Site.BoundsRect)]);
+      {$ENDIF}
 
       // Site can dock a control again
       DragManager.RegisterDockSite(Site,true);
