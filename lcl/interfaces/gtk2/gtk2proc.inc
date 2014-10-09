@@ -6562,7 +6562,7 @@ begin
   // then send a LM_MOVE message
   if TopLeftChanged then begin
     {$IFDEF VerboseSizeMsg}
-    DebugLn('Send LM_MOVE To LCL ',LCLControl.Name,':',LCLControl.ClassName);
+    DebugLn('Send LM_MOVE To LCL ',dbgsname(LCLControl));
     {$ENDIF}
     with MoveMsg do
     begin
