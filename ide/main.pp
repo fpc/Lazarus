@@ -5705,14 +5705,7 @@ end;
 
 procedure TMainIDE.DoViewJumpHistory(Show: boolean);
 begin
-  if JumpHistoryViewWin=nil then begin
-    JumpHistoryViewWin:=TJumpHistoryViewWin.Create(OwningComponent);
-    with JumpHistoryViewWin do begin
-      OnSelectionChanged := @JumpHistoryViewSelectionChanged;
-    end;
-  end;
-  if Show then
-    IDEWindowCreators.ShowForm(JumpHistoryViewWin,true);
+  IDEWindowCreators.ShowForm(NonModalIDEWindowNames[nmiwJumpHistory],Show);
 end;
 
 procedure TMainIDE.DoViewUnitInfo;
@@ -5918,8 +5911,13 @@ begin
   end
   else if ItIs(NonModalIDEWindowNames[nmiwJumpHistory]) then
   begin
-    DoViewJumpHistory(false);
+    IDEWindowCreators.CreateForm(JumpHistoryViewWin,TJumpHistoryViewWin,
+      DoDisableAutoSizing,OwningComponent);
+    with JumpHistoryViewWin do begin
+      OnSelectionChanged := @JumpHistoryViewSelectionChanged;
+    end;
     AForm:=JumpHistoryViewWin;
+    exit;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwComponentList]) then
   begin
