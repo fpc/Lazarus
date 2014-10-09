@@ -1599,14 +1599,15 @@ procedure TAnchorDockMaster.MapTreeToControls(Tree: TAnchorDockLayoutTree);
     // check each side
     for Side:=Low(TAnchorKind) to high(TAnchorKind) do begin
       if Node.Anchors[Side]='' then continue;
+      Splitter:=Site.AnchorSide[Side].Control;
+      if (not (Splitter is TAnchorDockSplitter))
+      or (Splitter.Parent<>Site.Parent) then continue;
       SplitterNode:=Node.Parent.FindChildNode(Node.Anchors[Side],false);
       if (SplitterNode=nil) then continue;
       // this Side of node is anchored to a splitter node
       if fTreeNameToDocker[SplitterNode.Name]<>nil then continue;
       // the SplitterNode is not yet mapped
-      Splitter:=Site.AnchorSide[Side].Control;
-      if (not (Splitter is TAnchorDockSplitter))
-      or (Splitter.Parent<>Site.Parent) then continue;
+      if fTreeNameToDocker.ControlToName(Splitter)<>'' then continue;
       // there is an unmapped splitter anchored to the Site
       // => map the splitter to the splitter node
       // Note: Splitter.Name can be different from SplitterNode.Name !
