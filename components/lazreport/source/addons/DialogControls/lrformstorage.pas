@@ -117,8 +117,9 @@ var
   PropInfo:PPropInfo;
   frObj:TfrObject;
   FPropName, St:string;
+  i: Integer;
 begin
-  PropInfo:=FindObjectProps(PropLine, frObj, FPropName);
+  PropInfo:=FindObjectProps(PropLine, frObj, FPropName, i);
 
   if Assigned(frObj) and Assigned(PropInfo) then
   begin
@@ -157,10 +158,11 @@ var
   PropInfo:PPropInfo;
   frObj:TfrObject;
   FPropName, St:string;
+  i: Integer;
 begin
   if PL.Values[PropLine]<>'' then
   begin
-    PropInfo:=FindObjectProps(PropLine, frObj, FPropName);
+    PropInfo:=FindObjectProps(PropLine, frObj, FPropName, i);
 
     if Assigned(PropInfo) then
     begin
