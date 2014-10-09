@@ -3402,7 +3402,7 @@ function TPascalReaderTool.GetPasDocComments(Node: TCodeTreeNode;
       pp:=@Src[p];
       if ((pp^='/') and (pp[1]='/') and (pp[2] in ['$','%']))
       or ((pp^='{') and (pp[1] in ['$','%']))
-      or ((pp^='(') and (pp[1]='*') and (pp[2]='$'))
+      or ((pp^='(') and (pp[1]='*') and (pp[2] in ['$','%']))
       then
         break;
       //debugln(['TStandardCodeTool.GetPasDocComments Comment="',copy(Src,p,FindCommentEnd(Src,p,Scanner.NestedComments)-p),'"']);
