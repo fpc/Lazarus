@@ -3351,6 +3351,8 @@ function TPascalReaderTool.GetPasDocComments(Node: TCodeTreeNode;
 // property Color; // description of Color
 //
 // Comments can be in the following line if started with <
+//
+// comment starting with $ or % are ignored
 
   function CommentBelongsToPrior(CommentStart: integer): boolean;
   var
@@ -3388,6 +3390,7 @@ function TPascalReaderTool.GetPasDocComments(Node: TCodeTreeNode;
   function Scan(StartPos, EndPos: integer): boolean;
   var
     p: LongInt;
+    pp: PChar;
   begin
     // read comments (start in front of node)
     //DebugLn(['TPascalReaderTool.GetPasDocComments Scan Src=',copy(Src,StartPos,EndPos-StartPos)]);
@@ -3395,9 +3398,11 @@ function TPascalReaderTool.GetPasDocComments(Node: TCodeTreeNode;
     p:=FindLineEndOrCodeInFrontOfPosition(StartPos,true);
     while p<EndPos do begin
       p:=FindNextComment(Src,p,EndPos);
-      if (p>=EndPos)
-      or ((Src[p]='{') and (Src[p+1]='$'))
-      or ((Src[p]='(') and (Src[p+1]='*') and (Src[p+2]='$'))
+      if (p>=EndPos) then break;
+      pp:=@Src[p];
+      if ((pp^='/') and (pp[1]='/') and (pp[2] in ['$','%']))
+      or ((pp^='{') and (pp[1] in ['$','%']))
+      or ((pp^='(') and (pp[1]='*') and (pp[2]='$'))
       then
         break;
       //debugln(['TStandardCodeTool.GetPasDocComments Comment="',copy(Src,p,FindCommentEnd(Src,p,Scanner.NestedComments)-p),'"']);
