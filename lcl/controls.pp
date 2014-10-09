@@ -1238,7 +1238,7 @@ type
 
     property AutoSizing: Boolean read FAutoSizingSelf;// see Begin/EndAutoSizing
     property AutoSizingAll: Boolean read GetAutoSizingAll;// set in DoAllAutoSize
-    property AutoSizingLockCount: Integer read FAutoSizingLockCount;
+    property AutoSizingLockCount: Integer read FAutoSizingLockCount; // in/decreased by Disable/EnableAutoSizing
   protected
     // protected messages
     procedure WMCancelMode(var Message: TLMessage); message LM_CANCELMODE;

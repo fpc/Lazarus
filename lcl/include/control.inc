@@ -2863,7 +2863,9 @@ procedure TControl.DoAllAutoSize;
     begin
       AWinControl := TWinControl(AControl);
       for i := 0 to AWinControl.ControlCount - 1 do
-        if AWinControl.Controls[i].IsControlVisible and not CallAllOnResize(AWinControl.Controls[i]) then Exit;
+        if AWinControl.Controls[i].IsControlVisible
+        and not CallAllOnResize(AWinControl.Controls[i]) then
+          exit;
     end;
     {$IFDEF VerboseOnResize}
     debugln(['TControl.DoAllAutoSize ',DbgSName(AControl),' calling Resize ...']);
