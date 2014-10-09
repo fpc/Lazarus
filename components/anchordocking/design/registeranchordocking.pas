@@ -31,6 +31,8 @@ unit RegisterAnchorDocking;
 
 {$mode objfpc}{$H+}
 
+{$DEFINE VerboseAnchorDocking}
+
 interface
 
 uses
@@ -253,7 +255,9 @@ procedure TIDEAnchorDockMaster.MakeIDEWindowDockSite(AForm: TCustomForm;
 var
   aManager: TAnchorDockManager;
 begin
+  {$IFDEF VerboseAnchorDocking}
   debugln(['TIDEAnchorDockMaster.MakeIDEWindowDockSite ',DbgSName(AForm)]);
+  {$ENDIF}
   if ASides=[] then ;
   DockMaster.MakeDockSite(AForm,[akBottom],admrpChild);
   if AForm.DockManager is TAnchorDockManager then begin
@@ -264,7 +268,9 @@ end;
 
 procedure TIDEAnchorDockMaster.MakeIDEWindowDockable(AControl: TWinControl);
 begin
+  {$IFDEF VerboseAnchorDocking}
   debugln(['TIDEAnchorDockMaster.MakeIDEWindowDockable ',DbgSName(AControl)]);
+  {$ENDIF}
   DockMaster.MakeDockable(AControl,false);
 end;
 
@@ -309,16 +315,22 @@ var
 begin
   Filename:=GetUserLayoutFilename(false);
   try
+    {$IFDEF VerboseAnchorDocking}
     debugln(['TIDEAnchorDockMaster.LoadUserLayout ',Filename]);
+    {$ENDIF}
     Config:=GetIDEConfigStorage(Filename,true);
     try
       if not DockMaster.ConfigIsEmpty(Config) then begin
         // loading last layout
+        {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
         debugln(['TIDEAnchorDockMaster.LoadUserLayout restoring ...']);
+        {$ENDIF}
         DockMaster.LoadLayoutFromConfig(Config,true);
         UserLayoutLoaded:=true;
       end else begin
+        {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
         debugln(['TIDEAnchorDockMaster.LoadUserLayout loading default layout ...']);
+        {$ENDIF}
         LoadDefaultLayout;
       end;
     finally
@@ -339,7 +351,9 @@ var
 begin
   Filename:=GetUserLayoutFilename(false);
   try
+    {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
     debugln(['TIDEAnchorDockMaster.SaveDefaultLayout ',Filename]);
+    {$ENDIF}
     Config:=GetIDEConfigStorage(Filename,false);
     try
       DockMaster.SaveLayoutToConfig(Config);
@@ -408,11 +422,16 @@ begin
     end;
     AControl:=DockMaster.GetControl(AForm);
 
-    if not Aform.IsVisible then debugln(['TIDEAnchorDockMaster.ShowForm AControl=',DbgSName(AControl),' NeedPlacing=',NeedPlacing,' Floating=',DockMaster.IsFloating(AForm)]);
+    {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
+    if not AForm.IsVisible then
+      debugln(['TIDEAnchorDockMaster.ShowForm AControl=',DbgSName(AControl),' NeedPlacing=',NeedPlacing,' Floating=',DockMaster.IsFloating(AForm)]);
+    {$ENDIF}
 
     if (AControl<>nil) and NeedPlacing and DockMaster.IsFloating(AForm) then begin
       // this form is not yet on the screen and is not yet docked
+      {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
       debugln(['TIDEAnchorDockMaster.ShowForm placing ',DbgSName(AControl),' ...']);
+      {$ENDIF}
 
       // ToDo: use the restore layout
 
@@ -423,17 +442,25 @@ begin
         SiteForm.BoundsRect:=NewBounds;
         SiteForm.UndockWidth:=NewBounds.Right-NewBounds.Left;
         SiteForm.UndockHeight:=NewBounds.Bottom-NewBounds.Top;
+        {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
         debugln(['TIDEAnchorDockMaster.ShowForm creator for ',DbgSName(AControl),' found: Left=',Creator.Left,' Top=',Creator.Top,' Right=',Creator.Right,' Bottom=',Creator.Bottom,' DockSiblingName=',DockSiblingName,' DockAlign=',dbgs(DockAlign),' ',dbgs(SiteForm.BoundsRect)]);
+        {$ENDIF}
         Site:=DockMaster.GetAnchorSite(SiteForm);
         if (Site<>nil) and (DockSiblingName<>'') then begin
           DockSibling:=Screen.FindForm(DockSiblingName);
+          {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
           debugln(['TIDEAnchorDockMaster.ShowForm DockSiblingName="',DockSiblingName,'" DockSibling=',DbgSName(DockSibling)]);
+          {$ENDIF}
           if DockSibling<>nil then begin
             NewDockSite:=DockMaster.GetSite(DockSibling);
             if NewDockSite<>nil then begin
+              {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
               debugln(['TIDEAnchorDockMaster.ShowForm NewDockSite=',DbgSName(NewDockSite),'="',NewDockSite.Caption,'"']);
+              {$ENDIF}
               DockMaster.ManualDock(Site,NewDockSite,DockAlign);
+              {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
               debugln(['TIDEAnchorDockMaster.ShowForm after docking: ',DbgSName(AControl),' Floating=',DockMaster.IsFloating(AControl)]);
+              {$ENDIF}
             end;
           end;
         end;
@@ -442,7 +469,10 @@ begin
 
   finally
     OldActiveControl:=AForm.ActiveControl;
-    if not AForm.IsVisible then debugln(['TIDEAnchorDockMaster.ShowForm MakeVisible ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect),' Floating=',DockMaster.IsFloating(AForm)]);
+    {$IF defined(VerboseAnchorDocking) or defined(VerboseAnchorDockRestore)}
+    if not AForm.IsVisible then
+      debugln(['TIDEAnchorDockMaster.ShowForm MakeVisible ',DbgSName(AForm),' ',dbgs(AForm.BoundsRect),' Floating=',DockMaster.IsFloating(AForm)]);
+    {$ENDIF}
     DockMaster.MakeVisible(AForm,BringToFront);
     AForm.EnableAlign;
 
@@ -678,7 +708,7 @@ initialization
   // create the dockmaster in the initialization section, so that it is ready
   // when the Register procedures of the packages are called.
   if IDEDockMaster<>nil then begin
-    debugln('WARNING: there is already another IDEDockMaster installed.');
+    debugln('WARNING: there is already another IDEDockMaster installed: ',DbgSName(IDEDockMaster));
     TIDEAnchorDockMaster.Create;
   end else
     IDEDockMaster:=TIDEAnchorDockMaster.Create;
