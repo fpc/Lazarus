@@ -69,7 +69,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="10">
       <Unit0>
         <Filename Value="pochecker.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -123,6 +123,13 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="PoFamilyLists"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="..\pocheckermemodlg.pp"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MemoForm"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="pocheckermemodlg"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

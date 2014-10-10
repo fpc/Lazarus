@@ -33,7 +33,7 @@ uses
   IDEIntf, MenuIntf,
   {$ENDIF}
   SimplePoFiles, PoFamilies, ResultDlg, pocheckerconsts, PoCheckerSettings,
-  PoFamilyLists;
+  PoFamilyLists, PoCheckerMemoDlg;
 
 type
 
@@ -475,11 +475,16 @@ begin
     end;
   end;
   if (Msg <> '') then
-    MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[Msg]), mtInformation, [mbOk], 0);
+    //MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[Msg]), mtInformation, [mbOk], 0);
+    Msg := Format(sFilesNotFoundAndRemoved,[Msg]);
   Cnt := MasterList.Count;
   if (Cnt = 0) then
+    Msg := Msg + LineEnding + LineEnding + LineEnding + sNoFilesLeftToCheck;
+  if (Msg <> '') then
+    MemoDlg('PoChecker',Msg);
+  if (Cnt = 0) then
   begin
-    MessageDlg('PoChecker', sNoFilesLeftToCheck, mtInformation, [mbOk], 0);
+    //MessageDlg('PoChecker', sNoFilesLeftToCheck, mtInformation, [mbOk], 0);
     Exit;
   end;
   try
@@ -487,10 +492,15 @@ begin
     PoFamilyList := TPoFamilyList.Create(MasterList, Lang, Msg);
     if (Msg <> '') then
     begin
-      MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[Msg]), mtInformation, [mbOk], 0);
+      //MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[Msg]), mtInformation, [mbOk], 0);
+      Msg := Format(sFilesNotFoundAndRemoved,[Msg]);
+      if (PoFamilyList.Count = 0) then
+        Msg := Msg + LineEnding + LineEnding + LineEnding + sNoFilesLeftToCheck;
+      if (Msg <> '') then
+        MemoDlg('PoChecker',Msg);
       if (PoFamilyList.Count = 0) then
       begin
-        MessageDlg('PoChecker', sNoFilesLeftToCheck, mtInformation, [mbOk], 0);
+        //MessageDlg('PoChecker', sNoFilesLeftToCheck, mtInformation, [mbOk], 0);
         FreeAndNil(PoFamilyList);
         Exit;
       end;
