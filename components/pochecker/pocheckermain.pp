@@ -700,6 +700,7 @@ end;
 procedure TPoCheckerForm.LoadConfig;
 var
   ARect: TRect;
+  Idx: Integer;
 begin
   FPoCheckerSettings := TPoCheckerSettings.Create;
   FPoCheckerSettings.LoadConfig;
@@ -713,6 +714,9 @@ begin
   SetTestOptionCheckBoxes(FPoCheckerSettings.TestOptions);
   SelectDirectoryDialog.Filename := FPoCheckerSettings.SelectDirectoryFilename;
   OpenDialog.FileName := FPoCheckerSettings.OpenDialogFilename;
+  Idx := FPoCheckerSettings.LangFilterIndex;
+  if (Idx > -1) and (Idx < LangFilter.Items.Count -1) then
+    LangFilter.ItemIndex := Idx;
   AddToMasterPoList(FPoCheckerSettings.MasterPoList);
   SetSelectedMasterFiles(FPoCheckerSettings.MasterPoSelList);
   //AddToChildPoList(FPoCheckerSettings.ChildPoList);
