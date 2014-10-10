@@ -5143,7 +5143,7 @@ var
   CursorNodeSelected: Boolean;
 begin
   {$IFDEF VerboseDrag}
-  DebugLn('TCustomTreeView.MouseDown A ',Name,':',ClassName,' ');
+  DebugLn('TCustomTreeView.MouseDown A ',DbgSName(Self),' ');
   {$ENDIF}
   fMouseDownPos := Point(X,Y);
   FStates:=FStates-[tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
@@ -5179,7 +5179,7 @@ begin
         // mousedown occured in text or icon
         // -> select node and begin drag operation
         {$IFDEF VerboseDrag}
-        DebugLn(['TCustomTreeView.MouseDown In Text ',Name,':',ClassName,' MouseCapture=',MouseCapture]);
+        DebugLn(['TCustomTreeView.MouseDown In Text ',DbgSName(Self),' MouseCapture=',MouseCapture]);
         {$ENDIF}
         if (Selected = CursorNode) and (LogicalX >= CursorNode.DisplayTextLeft) then
           Include(FStates, tvsEditOnMouseUp);
