@@ -936,10 +936,12 @@ begin
         Angle2 := -45*16;
     end
     else begin
-      If Angle2 > 0 then
+      {If Angle2 > 0 then}
         Angle2 := FullAngle - Angle1
-      else
+      {else
         Angle2 := -(FullAngle - Angle1);
+        - Wrong: This gives the wrong sign to Angle2 - G. Colla
+        }
     end;
   end;
 end;

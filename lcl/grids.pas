@@ -5890,6 +5890,9 @@ procedure TCustomGrid.DoOPDeleteColRow(IsColumn: Boolean; index: Integer);
     FGCache.AccumHeight.Delete(Index);
     ColRowDeleted(False,Index);
     FixPosition(False, Index);
+
+    If FRowAutoInserted And (Index=FixedRows+(RowCount-1)) Then
+      FRowAutoInserted := False;
   end;
 begin
   CheckIndex(IsColumn,Index);
