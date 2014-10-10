@@ -2794,12 +2794,9 @@ begin
   if FDataLink.Active then begin
     aField := GetFieldFromGridColumn(aCol);
     if (aField<>nil) then begin
-      {$ifdef EnableFieldEditMask}
-      // enable following line if TField gets in the future a MaskEdit property
-      //Result := aField.EditMask;
+      Result := aField.EditMask;
       if assigned(OnFieldEditMask) then
         OnFieldEditMask(Self, AField, Result);
-      {$endif}
     end;
   end;
 end;
