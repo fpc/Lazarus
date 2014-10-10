@@ -480,9 +480,15 @@ begin
   if Node=nil then exit;
   if x<Node.DisplayTextLeft then exit;
   //debugln(['TSearchResultsView.TreeViewMouseDown single=',([ssDouble,ssTriple,ssQuad]*Shift=[]),' Option=',EnvironmentOptions.MsgViewDblClickJumps]);
-  if ([ssDouble,ssTriple,ssQuad]*Shift=[]) = EnvironmentOptions.MsgViewDblClickJumps
-  then exit;
-  Node.Selected:=true;
+  if EnvironmentOptions.MsgViewDblClickJumps then
+  begin
+    // double click jumps
+    if not (ssDouble in Shift) then exit;
+  end else begin
+    // single click jumps -> single selection
+    if ([ssDouble,ssTriple,ssQuad]*Shift<>[]) then exit;
+    TV.Items.SelectOnlyThis(Node);
+  end;
   if Assigned(fOnSelectionChanged) then
     fOnSelectionChanged(Self);
 end;
