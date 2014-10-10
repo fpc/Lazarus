@@ -250,6 +250,11 @@ end;
 
 procedure TPoCheckerForm.LangFilterChange(Sender: TObject);
 begin
+  //This looks silly, but it makes that ItemIndex has the right value
+  //in OnDestroy when you dropdown and change the filter, and then close
+  //the form and no call to ItemIndex was made after changing the filter....
+  //If someone figures out why, or has a better solution: please implement that
+  LangFilter.ItemIndex;
 end;
 
 
@@ -740,6 +745,7 @@ var
 begin
   FPoCheckerSettings.SelectDirectoryFilename := SelectDirectoryDialog.Filename;
   FPoCheckerSettings.OpenDialogFilename := OpenDialog.FileName;
+  FPoCheckerSettings.LangFilterIndex := LangFilter.ItemIndex;
   FPoCheckerSettings.TestTypes := GetTestTypesFromListBox;
   FPoCheckerSettings.TestOptions := GetTestOptions;
   FPoCheckerSettings.MainFormWindowState := WindowState;

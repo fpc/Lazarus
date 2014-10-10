@@ -127,6 +127,7 @@
         <Filename Value="..\pocheckermemodlg.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MemoForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="pocheckermemodlg"/>
       </Unit9>
