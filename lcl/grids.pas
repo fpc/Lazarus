@@ -4553,6 +4553,7 @@ begin
   end;
   {$endif}
   inherited WMKillFocus(Message);
+  InvalidateFocused;
 end;
 
 procedure TCustomGrid.WMSetFocus(var message: TLMSetFocus);
@@ -4569,6 +4570,7 @@ begin
   end;
   {$endif}
   inherited WMSetFocus(Message);
+  InvalidateFocused;
 end;
 
 class procedure TCustomGrid.WSRegisterClass;
