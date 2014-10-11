@@ -1,4 +1,4 @@
-unit pocheckermemodlg;
+unit PoCheckerMemoDlg;
 
 {$mode objfpc}{$H+}
 

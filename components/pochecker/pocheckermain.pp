@@ -81,6 +81,9 @@ type
     procedure SetSelectedMasterFiles(S: TStrings);
     procedure LoadConfig;
     procedure SaveConfig;
+    function LangFilterIndexToLangID(Index: Integer): TLangID;
+    function LangIdToLangFilterIndex(LangID: TLangID): Integer;
+    procedure PopulateLangFilter;
   published
     IgnoreFuzzyCheckBox: TCheckBox;
     UnselectAllBtn: TButton;
@@ -169,6 +172,7 @@ begin
   SelectAllBtn.Caption := sSelectAllTests;
   SelectBasicBtn.Caption := sSelectBasicTests;
   UnselectAllBtn.Caption := sUnselectAllTests;
+  PopulateLangFilter;
   LoadConfig;
   LangFilter.Invalidate; //Items[0] may have been changed
 end;
@@ -705,7 +709,8 @@ end;
 procedure TPoCheckerForm.LoadConfig;
 var
   ARect: TRect;
-  Idx: Integer;
+  Abbr: String;
+  ID: TLangID;
 begin
   FPoCheckerSettings := TPoCheckerSettings.Create;
   FPoCheckerSettings.LoadConfig;
@@ -719,33 +724,23 @@ begin
   SetTestOptionCheckBoxes(FPoCheckerSettings.TestOptions);
   SelectDirectoryDialog.Filename := FPoCheckerSettings.SelectDirectoryFilename;
   OpenDialog.FileName := FPoCheckerSettings.OpenDialogFilename;
-  Idx := FPoCheckerSettings.LangFilterIndex;
-  if (Idx > -1) and (Idx < LangFilter.Items.Count -1) then
-    LangFilter.ItemIndex := Idx;
+  Abbr := FPoCheckerSettings.LangFilterLanguageAbbr;
+  ID := LangAbbrToLangId(Abbr);
+  LangFilter.ItemIndex := LangIdToLangFilterIndex(ID);
   AddToMasterPoList(FPoCheckerSettings.MasterPoList);
   SetSelectedMasterFiles(FPoCheckerSettings.MasterPoSelList);
-  //AddToChildPoList(FPoCheckerSettings.ChildPoList);
-  {
-  if (CompareText(ExtractFileExt(FPoCheckerSettings.LastSelectedFile), '.po') = 0) then
-  begin
-    if IsMasterPoName(FPoCheckerSettings.LastSelectedFile) then
-      AddToMasterPoList(FPoCheckerSettings.LastSelectedFile)
-    else
-      AddToChildPoList(FPoCheckerSettings.LastSelectedFile);
-    UpdateGUI(True)
-  end
-  else
-    UpdateGUI(False);
-  }
 end;
 
 procedure TPoCheckerForm.SaveConfig;
 var
   SL: TStringList;
+  ID: TLangID;
 begin
   FPoCheckerSettings.SelectDirectoryFilename := SelectDirectoryDialog.Filename;
   FPoCheckerSettings.OpenDialogFilename := OpenDialog.FileName;
-  FPoCheckerSettings.LangFilterIndex := LangFilter.ItemIndex;
+  //FPoCheckerSettings.LangFilterIndex := LangFilter.ItemIndex;
+  ID := LangFilterIndexToLangID(LangFilter.ItemIndex);
+  FPoCheckerSettings.LangFilterLanguageAbbr := LanguageAbbr[ID];
   FPoCheckerSettings.TestTypes := GetTestTypesFromListBox;
   FPoCheckerSettings.TestOptions := GetTestOptions;
   FPoCheckerSettings.MainFormWindowState := WindowState;
@@ -761,6 +756,79 @@ begin
     SL.Free;
   end;
   FPoCheckerSettings.SaveConfig;
+end;
+function ListSortFunc(List: TStringList; Index1, Index2: Integer): Integer;
+begin
+  Result := Utf8CompareText(List.Strings[Index1], List.Strings[Index2]);
+end;
+
+function TPoCheckerForm.LangFilterIndexToLangID(Index: Integer): TLangID;
+//Requires that items for a language end in [%lang_abbr%]
+var
+  S, Abbr: String;
+  p: Integer;
+begin
+  Result := lang_all;
+  S := LangFilter.Items[Index];
+  p := Length(S); //no need to use Utf8 functions, we look for lower ASCII
+  if (p = 0) or (not (S[p] = ']')) then Exit;
+  repeat
+    Dec(p);
+  until (p = 0) or (S[p] = '[');
+  if (p = 0) then Exit;
+  Abbr := Copy(S, p+1, Length(S)-p-1);
+  //DbgOut('Abbr = ',Abbr);
+  Result := LangAbbrToLangID(Abbr);
+  //debugln(' ID = ',Result);
+end;
+
+function TPoCheckerForm.LangIdToLangFilterIndex(LangID: TLangID): Integer;
+//Requires that items for a language end in [%lang_abbr%]
+var
+  Abbr, S: String;
+  p: SizeInt;
+  i: Integer;
+begin
+  Result := 0; // All Languages
+  if (LangID = lang_all) then Exit;
+  Abbr := LanguageAbbr[LangID];
+  for i := 1 to LangFilter.Items.Count - 1 do
+  begin
+    S := LangFilter.Items[i];
+    //no need to use Utf8 functions, we look for lower ASCII
+    p := Pos('['+Abbr+']',S);
+    if (p > 0) then
+      Exit(i);
+  end;
+end;
+
+procedure TPoCheckerForm.PopulateLangFilter;
+var
+  ID: TLangID;
+  Abbr, LangName, S: String;
+  SL: TStringList;
+begin
+  LangFilter.Items.BeginUpdate;
+  SL := TStringList.Create;
+  try
+    LangFilter.Items.Clear;
+    for ID := Succ(Low(TLangID)) to High(TLangID) do
+    begin
+      Abbr := LanguageAbbr[ID];
+      LangName := LanguageNames[ID];
+      S := Format('%s  [%s]',[LangName, Abbr]);
+      SL.Add(S);
+      SL.CustomSort(@ListSortFunc);
+    end;
+    SL.Sorted := False;
+    SL.Insert(0, LanguageNames[lang_all]);
+    LangFilter.Items.Assign(SL);
+    LangFilter.Items.EndUpdate;
+    LangFilter.ItemIndex := 0;
+  finally
+    SL.Free;
+    LangFilter.Items.EndUpdate;
+  end;
 end;
 
 

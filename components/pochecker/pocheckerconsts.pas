@@ -97,7 +97,135 @@ resourcestring
 const
   mrOpenEditorFile = mrNone+100;
 
+
+type
+  {
+   Currently supported lanuages in Lazarus.
+   Please keep alphabetically when introducing a new one
+  }
+  TLangID = (
+    lang_all,    {All languages}
+    lang_af_ZA,  {Afrikaans}
+    lang_ar,     {Arabic}
+    lang_ca,     {Catalan}
+    lang_cs,     {Czech}
+    lang_de,     {German}
+    lang_en,     {English}
+    lang_es,     {Spanish}
+    lang_fi,     {Finnish}
+    lang_fr,     {French}
+    lang_he,     {Hebrew}
+    lang_hu,     {Hungarian}
+    lang_id,     {Indonesian}
+    lang_it,     {Italian}
+    lang_ja,     {Japanese}
+    lang_lt,     {Lithuanian}
+    lang_nl,     {Dutch}
+    lang_pl,     {Polish}
+    lang_pt_BR,  {Brazilian Portuguese}
+    lang_ru,     {Russian}
+    lang_sk,     {Slovak}
+    lang_tr,     {Turkish}
+    lang_uk,     {Ukrainian}
+    lang_zh_CN   {Chinese, simplified}
+    );
+
+resourcestring
+  rs_lang_all =    'All languages';
+  rs_lang_af_ZA =  'Afrikaans';
+  rs_lang_ar =     'Arabic';
+  rs_lang_ca =     'Catalan';
+  rs_lang_cs =     'Czech';
+  rs_lang_de =     'German';
+  rs_lang_en =     'English';
+  rs_lang_es =     'Spanish';
+  rs_lang_fi =     'Finnish';
+  rs_lang_fr =     'French';
+  rs_lang_he =     'Hebrew';
+  rs_lang_hu =     'Hungarian';
+  rs_lang_id =     'Indonesian';
+  rs_lang_it =     'Italian';
+  rs_lang_ja =     'Japanese';
+  rs_lang_lt =     'Lithuanian';
+  rs_lang_nl =     'Dutch';
+  rs_lang_pl =     'Polish';
+  rs_lang_pt_BR =  'Brazilian Portuguese';
+  rs_lang_ru =     'Russian';
+  rs_lang_sk =     'Slovak';
+  rs_lang_tr =     'Turkish';
+  rs_lang_uk =     'Ukrainian';
+  rs_lang_zh_CN =  'Chinese, simplified';
+
+const
+  LanguageNames: Array[TLangID] of String = (
+    rs_lang_all ,
+    rs_lang_af_ZA,
+    rs_lang_ar ,
+    rs_lang_ca ,
+    rs_lang_cs ,
+    rs_lang_de ,
+    rs_lang_en ,
+    rs_lang_es ,
+    rs_lang_fi ,
+    rs_lang_fr ,
+    rs_lang_he ,
+    rs_lang_hu ,
+    rs_lang_id ,
+    rs_lang_it ,
+    rs_lang_ja ,
+    rs_lang_lt ,
+    rs_lang_nl ,
+    rs_lang_pl ,
+    rs_lang_pt_BR,
+    rs_lang_ru ,
+    rs_lang_sk ,
+    rs_lang_tr ,
+    rs_lang_uk ,
+    rs_lang_zh_CN
+    );
+
+  LanguageAbbr: Array[TLangID] of String = (
+     '',       {Defaut language} //in LangFilter: All Languages
+     'af_ZA',  {Afrikaans}
+     'ar',     {Arabic}
+     'ca',     {Catalan}
+     'cs',     {Czech}
+     'de',     {German}
+     'en',     {English}
+     'es',     {Spanish}
+     'fi',     {Finnish}
+     'fr',     {French}
+     'he',     {Hebrew}
+     'hu',     {Hungarian}
+     'id',     {Indonesian}
+     'it',     {Italian}
+     'ja',     {Japanese}
+     'lt',     {Lithuanian}
+     'nl',     {Dutch}
+     'pl',     {Polish}
+     'pt_BR',  {Brazilian Portuguese}
+     'ru',     {Russian}
+     'sk',     {Slovak}
+     'tr',     {Turkish}
+     'uk',     {Ukrainian}
+     'zh_CN'   {Chinese, simplified}
+     );
+
+function LangAbbrToLangId(const Abbr: String): TLangID;
+
 implementation
+
+function LangAbbrToLangId(const Abbr: String): TLangID;
+var
+  ID: TLangID;
+begin
+  Result := lang_all;
+  for ID := Low(TLangID) to High(TLangID) do
+  begin
+    if LanguageAbbr[ID] = Abbr then
+      Exit(ID);
+  end;
+end;
 
 end.
 

@@ -129,7 +129,7 @@
         <ComponentName Value="MemoForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="pocheckermemodlg"/>
+        <UnitName Value="PoCheckerMemoDlg"/>
       </Unit9>
     </Units>
   </ProjectOptions>
