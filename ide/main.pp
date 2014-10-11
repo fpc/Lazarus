@@ -3411,10 +3411,12 @@ begin
     MainIDEBar.itmHelpAboutLazarus.OnClick(Self);
 
   ecToggleBreakPoint:
-    SourceEditorManager.ActiveSourceWindow.ToggleBreakpointClicked(Self);
+   if Assigned(SourceEditorManager.ActiveSourceWindow) then
+     SourceEditorManager.ActiveSourceWindow.ToggleBreakpointClicked(Self);
 
   ecRemoveBreakPoint:
-    SourceEditorManager.ActiveSourceWindow.DeleteBreakpointClicked(Self);
+    if Assigned(SourceEditorManager.ActiveSourceWindow) then
+      SourceEditorManager.ActiveSourceWindow.DeleteBreakpointClicked(Self);
 
   ecProcedureList:
     mnuSearchProcedureList(self);
