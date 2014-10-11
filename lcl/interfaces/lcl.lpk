@@ -129,7 +129,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="2" Release="5"/>
-    <Files Count="429">
+    <Files Count="430">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2134,6 +2134,11 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="LazPangoCairo1"/>
       </Item429>
+      <Item430>
+        <Filename Value="qt/qtsystemtrayicon.pas"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="qtsystemtrayicon"/>
+      </Item430>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
