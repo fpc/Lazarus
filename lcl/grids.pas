@@ -6471,13 +6471,22 @@ begin
   {$ifdef dbgGrid}DebugLnExit('grid.DoEditorHide [',Editor.ClassName,'] END');{$endif}
 end;
 procedure TCustomGrid.DoEditorShow;
+var
+  ParentChanged: Boolean;
 begin
-  //DebugLn(['TCustomGrid.DoEditorShow ']);
   {$ifdef dbgGrid}DebugLnEnter('grid.DoEditorShow [',Editor.ClassName,'] INIT');{$endif}
   ScrollToCell(FCol,FRow,true);
-  Editor.Parent := nil;
+  // Under carbon, Editor.Parent:=nil destroy Editor handle, but not immediately
+  // as in this case where keyboard event on editor is being handled.
+  // After Editor.Visible:=true, a new handle is allocated but it's got overwritten
+  // once the delayed destroying of previous handle happens, the result is a stalled
+  // unparented editor ....
+  ParentChanged := (Editor.Parent<>Self);
+  if ParentChanged then
+    Editor.Parent := nil;
   EditorSetValue;
-  Editor.Parent:=Self;
+  if ParentChanged then
+    Editor.Parent:=Self;
   Editor.Visible:=True;
   if Focused and Editor.CanFocus then
     Editor.SetFocus;
