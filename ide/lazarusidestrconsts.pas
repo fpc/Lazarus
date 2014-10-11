@@ -135,6 +135,8 @@ resourcestring
   lrsRescanLplFiles = 'Rescan lpl files';
   lrsPLDDeleteSelected = 'Delete selected';
   lisRenameShowResult = 'Show list of renamed Identifiers';
+  lisResourceNameMustBeUnique = 'Resource name must be unique';
+  lisFailedToAddNNotUniqueResources = 'Failed to add %d not unique resource(s)';
 
   // errors
   lisErrInvalidOption = 'Invalid option at position %d: "%s"';
@@ -152,8 +154,7 @@ resourcestring
   lisSkipLoadingLastProject = 'Skip loading last project';
   lisOverrideLanguage = 'Override language. For example --language=de.'+
     ' For possible values see files in the languages directory.';
-  lissecondaryConfigDirectoryWhereLazarusSearchesFor =
-    'secondary config '+
+  lissecondaryConfigDirectoryWhereLazarusSearchesFor = 'secondary config '+
     'directory, where Lazarus searches for config template files. Default is ';
   lisFileWhereDebugOutputIsWritten =
     'file, where debug output is written to. If it is '+
