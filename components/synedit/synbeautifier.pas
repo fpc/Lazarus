@@ -1576,7 +1576,7 @@ begin
 end;
 
 function TSynBeautifier.GetCharMix(const LinePos, Indent: Integer;
-  var IndentCharsFromLinePos: Integer = 0): String;
+  var IndentCharsFromLinePos: Integer): String;
 var
   Temp, KnownMix, BasedMix: string;
   KnownPhysLen, PhysLen: Integer;
