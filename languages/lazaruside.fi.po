@@ -8497,7 +8497,7 @@ msgstr "etsi kaikista &avoinna olevista tiedostoista"
 
 #: lazarusidestrconsts.lisfindfilesearchinactivefile
 msgid "search in &active file"
-msgstr "etsi &aktiivisessta tiedostossa"
+msgstr "etsi &aktiivisesta tiedostosta"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
