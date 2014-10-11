@@ -7,7 +7,7 @@ interface
 Uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList, ContNrs,
   //{$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF},
-  PoFamilies;
+  PoFamilies, PoCheckerConsts;
 
 const
   langAll = '*';
@@ -19,7 +19,7 @@ type
 
   TPoFamilyList = class
   private
-    FLang: String;
+    FLangID: TLangID;
     FList: TFPObjectList;
     FOnTestEnd: TTestEndEvent;
     FOnTestStart: TTestStartEvent;
@@ -30,7 +30,7 @@ type
     procedure DoTestStart(const ATestName, APoFileName: String);
     procedure DoTestEnd(const ATestName: String; const ErrorCount: Integer);
   public
-    constructor Create(AMasterList: TStrings; ALang: String; out Msg: String);
+    constructor Create(AMasterList: TStrings; ALangID: TLangID; out Msg: String);
     destructor Destroy; override;
     procedure Add(PoFamily: TPofamily);
     function Count: Integer;
@@ -62,7 +62,7 @@ begin
   if Assigned(FOnTestEnd) then FOnTestEnd(ATestName, ErrorCount);
 end;
 
-constructor TPoFamilyList.Create(AMasterList: TStrings; ALang: String; out Msg: String);
+constructor TPoFamilyList.Create(AMasterList: TStrings; ALangID: TLangID; out Msg: String);
 var
   i: Integer;
   MasterName, ChildName: String;
@@ -71,18 +71,18 @@ begin
   FList := TFPObjectList.Create(True);
   Msg := '';
   FPoFamilyStats := TPoFamilyStats.Create;
-  FLang := ALang;
+  FLangID := ALangID;
   for i :=  0 to AMasterList.Count - 1 do
   begin
     MasterName := AMasterList[i];
     ChildName := '';
     if FileExistsUtf8(MasterName) then
     begin
-      if (ALang <> langAll) then
-        ChildName := ChangeFileExt(MasterName, '.' + ALang + '.po');
+      if (ALangID <> lang_all) then
+        ChildName := ChangeFileExt(MasterName, '.' + LanguageAbbr[ALangID] + '.po');
       //debugln('TPoFamilyList.Create: i = ',DbgS(i),' Adding TPoFamily.Create(''',ExtractFileName(MasterName),
       //        ''',',ExtractFileName(ChildName),''')');
-      if (ALang = langAll) or FileExistsUtf8(ChildName) then
+      if (ALangID = lang_all) or FileExistsUtf8(ChildName) then
       begin
         APoFamily := TPoFamily.Create(MasterName, ChildName);
         Add(APoFamily);
@@ -121,7 +121,7 @@ var
   PoFamily: TPoFamily;
   //ThisLog: TStringList;
 begin
-  if (FLang = langAll) then
+  if (FLangID = lang_all) then
     Include(TestOptions,ptoFindAllChildren)
   else
     Exclude(TestOptions,ptoFindAllChildren);

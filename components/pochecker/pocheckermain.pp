@@ -71,7 +71,7 @@ type
     procedure ShowError(const Msg: string);
     function TrySelectFile(out Filename: String): Boolean;
     procedure ScanDirectory(ADir: String);
-    function TryCreatepoFamilyList(MasterList: TStrings; const Lang: String): Boolean;
+    function TryCreatepoFamilyList(MasterList: TStrings; const LangID: TLangID): Boolean;
     procedure RunSelectedTests;
     procedure ClearStatusBar;
     procedure UpdateGUI(HasSelection: Boolean);
@@ -212,16 +212,13 @@ procedure TPoCheckerForm.RunBtnClick(Sender: TObject);
 var
   AMasterList: TStringList;
   LangIdx: Integer;
-  ALang: String;
+  ALangID: TLangID;
 begin
   LangIdx := LangFilter.ItemIndex;
-  if (LangIdx > 0) then
-    ALang := LangFilter.Items[LangIdx]
-  else
-    ALang := langAll;
+  ALangID := LangFilterIndexToLangID(LangIdx);
   AMasterList := GetSelectedMasterFiles;
   try
-    if TryCreatePoFamilyList(AMasterList, ALang) then
+    if TryCreatePoFamilyList(AMasterList, ALangID) then
       RunSelectedTests
     else
     begin
@@ -466,7 +463,7 @@ begin
 end;
 
 
-function TPoCheckerForm.TryCreatepoFamilyList(MasterList: TStrings; const Lang: String): Boolean;
+function TPoCheckerForm.TryCreatepoFamilyList(MasterList: TStrings; const LangID: TLangID): Boolean;
 var
   Fn, Msg: String;
   i, Cnt: Integer;
@@ -498,7 +495,7 @@ begin
   end;
   try
     if Assigned(PoFamilyList) then PoFamilyList.Free;
-    PoFamilyList := TPoFamilyList.Create(MasterList, Lang, Msg);
+    PoFamilyList := TPoFamilyList.Create(MasterList, LangID, Msg);
     if (Msg <> '') then
     begin
       //MessageDlg('PoChecker',Format(sFilesNotFoundAndRemoved,[Msg]), mtInformation, [mbOk], 0);
