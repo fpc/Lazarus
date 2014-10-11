@@ -4899,6 +4899,8 @@ begin
 end;
 
 procedure TWinControl.ChangeScale(Multiplier, Divider: Integer);
+var
+  i: Integer;
 begin
   if Multiplier <> Divider then
   begin
@@ -4906,6 +4908,8 @@ begin
     try
       ScaleControls(Multiplier, Divider);
       inherited;
+      for i := 0 to ControlCount - 1 do
+        Controls[i].UpdateAnchorRules;
     finally
       EnableAlign;
     end;
