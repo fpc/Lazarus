@@ -795,6 +795,7 @@ object DiffDlg: TDiffDlg
     DefaultExt = '.pas'
     Filter = 'pascal files|*.pas;*.pp|any file|*.*'
     FilterIndex = 0
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
     left = 176
     top = 48
   end
