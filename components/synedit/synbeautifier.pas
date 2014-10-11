@@ -148,7 +148,7 @@ type
                        AStopScanAtLine: Integer = 0): Integer;
     function AdjustCharMix(DesiredIndent: Integer; CharMix, AppendMix: String): String;
     function GetCharMix(const LinePos, Indent: Integer;
-                        var IndentCharsFromLinePos: Integer = 0): String;
+                        var IndentCharsFromLinePos: Integer): String;
     procedure ApplyIndent(LinePos: Integer; Indent: Integer;
                           RelativeToLinePos: Integer = 0; IndentChars: String = '';
                           IndentCharsFromLinePos: Integer = 0);
