@@ -8,8 +8,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList, ContNrs, Math,
-  //{$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF},
-  SimplePoFiles, pocheckerconsts;
+  Masks, SimplePoFiles, PoCheckerConsts;
 
 Type
 
@@ -214,14 +213,18 @@ function IsMasterPoName(const Fn: String): Boolean;
 //Returns True if Fn is like '[Path/To/]somename.po'
 var
   Ext: String;
-  S: String;
+  FnOnly: String;
+  IsInValidFn: Boolean;
 begin
-  S := ExtractFileName(Fn);
-  Ext := ExtractFileExt(S);
-  S := Copy(S, 1, Length(S) - Length(Ext));
-  Result := (Length(S) > 0) and
+  FnOnly := ExtractFileNameOnly(Fn);
+  //check if filename is like 'af_ZA.po', which is an invalid name for a master po-file
+  //a bit crude, but will do now (at least for Lazarus)
+  IsInValidFn := MatchesMaskList(FnOnly, '??;??_??',';',False);
+  Ext := ExtractFileExt(Fn);
+  Result := not IsInValidFn and
+            (Length(FnOnly) > 0) and
             (CompareText(Ext, ExtensionSeparator + 'po') = 0) and
-            (Pos(ExtensionSeparator, S) = 0);
+            (Pos(ExtensionSeparator, FnOnly) = 0);
 end;
 
 function ExtractMasterNameFromChildName(const AChildName: String): String;
