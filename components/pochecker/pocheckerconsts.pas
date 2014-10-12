@@ -32,6 +32,7 @@ resourcestring
   sNoErrorsFound = 'No errors found';
   sCurrentTest = 'Test: %s on %s';
   sNoTestSelected = 'There are no tests selected.';
+  sScanningInProgress = 'Scanning in progress, please wait ...';
 
   //Result form
   sSaveError = 'Error saving file:' + LineEnding + '%s';

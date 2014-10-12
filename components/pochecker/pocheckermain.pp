@@ -444,21 +444,30 @@ var
   SL, ML: TStringList;
   i: Integer;
   S: String;
+  Cur: TCursor;
 begin
-  SL := FindAllFiles(ADir, '*.po',True);
+  Cur := Screen.Cursor;
+  Screen.Cursor := crHourGlass;
+  StatusBar.SimpleText := sScanningInProgress;
   try
-    ML := TStringList.Create;
-    for i := 0 to SL.Count - 1 do
-    begin
-      S := SL[i];
-      //debugln('TPoCheckerForm.ScanDirectory: S = "',ExtractFilename(S),'"');
-      if IsMasterPoName(S) then
-        ML.Add(S);
+    SL := FindAllFiles(ADir, '*.po',True);
+    try
+      ML := TStringList.Create;
+      for i := 0 to SL.Count - 1 do
+      begin
+        S := SL[i];
+        //debugln('TPoCheckerForm.ScanDirectory: S = "',ExtractFilename(S),'"');
+        if IsMasterPoName(S) then
+          ML.Add(S);
+      end;
+      if (ML.Count > 0) then AddToMasterPoList(ML);
+    finally
+      SL.Free;
+      ML.Free;
     end;
-    if (ML.Count > 0) then AddToMasterPoList(ML);
   finally
-    SL.Free;
-    ML.Free;
+    StatusBar.SimpleText := '';
+    Screen.Cursor := Cur;
   end;
 end;
 
