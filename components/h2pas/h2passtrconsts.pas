@@ -25,7 +25,6 @@ uses
   Classes, SysUtils; 
   
 resourcestring
-  bla = '';
   h2pCHeaderFileConverter = 'C header file converter';
   h2pH2Pas = 'H2Pas ...';
   h2pCreateUnitsFromCHeaderFiles = 'Create units from C header files';
