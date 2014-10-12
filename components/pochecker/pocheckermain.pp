@@ -556,8 +556,9 @@ begin
   SL := TStringList.Create;
   mr := mrNone;
   try
-
-    PoFamilyList.RunTests(TestTypes, TestOptions, ErrorCount, WarningCount, SL);
+    PoFamilyList.TestTypes := TestTypes;
+    PoFamilyList.TestOptions := TestOptions;
+    PoFamilyList.RunTests(ErrorCount, WarningCount, SL);
     //debugln('RunSelectedTests: ', Format(sTotalErrors, [ErrorCount]));
     //debugln('                  ', Format(sTotalWarnings, [WarningCount]));
     if (ErrorCount > 0) or (WarningCount > 0) or

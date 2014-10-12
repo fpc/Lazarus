@@ -48,6 +48,8 @@ Type
     FOnTestStart: TTestStartEvent;
     FOnTestEnd: TTestEndEvent;
     FPoFamilyStats: TPoFamilyStats;
+    FTestOptions: TPoTestOptions;
+    FTestTypes: TPoTestTypes;
     procedure SetChildName(AValue: String);
     procedure SetMasterName(AValue: String);
     function GetShortMasterName: String;
@@ -70,13 +72,14 @@ Type
     procedure CheckStatistics(ErrorCnt: Integer);
 
   public
-    procedure RunTests(const TestTypes: TPoTestTypes; const TestOptions: TPoTestOptions;
-                       out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
+    procedure RunTests(out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
 
     property Master: TSimplePoFile read FMaster;
     property Child: TSimplePoFile read FChild;
     property MasterName: String read FMasterName write SetMasterName;
     property ChildName: String read FChildName write SetChildName;
+    property TestTypes: TPoTestTypes read FTestTypes write FTestTypes;
+    property TestOptions: TPoTestOptions read FTestOptions write FTestOptions;
     property PoFamilyStats: TPoFamilyStats read FPoFamilyStats;
     property ShortMasterName: String read  GetShortMasterName;
     property ShortChildName: String read GetShortChildName;
@@ -819,13 +822,12 @@ begin
 end;
 
 {
-procedure TPoFamily.RunTests(const Options: TPoTestTypes; out
+procedure TPoFamily.RunTests
 Pre conditions:
   * Master and a matching Child must be assigned at start ot testing
   * If a Child is assigned it must be child of Master
 }
-procedure TPoFamily.RunTests(const TestTypes: TPoTestTypes;  const TestOptions: TPoTestOptions;
-                             out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
+procedure TPoFamily.RunTests(out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
 var
   SL: TStringList;
   CurrErrCnt, CurrWarnCnt, ThisErrCnt: Integer;
@@ -859,7 +861,7 @@ begin
       Exit;
     end
   end;
-  if not Assigned(FChild) and not ((pttCheckDuplicateOriginals in Testtypes) or (ptoFindAllChildren in TestOptions)) then
+  if not Assigned(FChild) and not ((pttCheckDuplicateOriginals in FTesttypes) or (ptoFindAllChildren in FTestOptions)) then
   begin
     {$ifdef DebugSimplePoFiles}
     Debugln('TPoFamily.RunTests: no child assigned for ',ShortMasterName);
@@ -867,7 +869,7 @@ begin
     Exit;
   end;
 
-  if (ptoFindAllChildren in TestOptions) then
+  if (ptoFindAllChildren in FTestOptions) then
   begin
     SL := FindAllTranslatedPoFiles(FMasterName);
     //We want current Child (if currently assigned) at index 0
@@ -894,7 +896,7 @@ begin
   try
 
     //First run checks that are Master-only
-    if (pttCheckDuplicateOriginals in TestTypes) then
+    if (pttCheckDuplicateOriginals in FTestTypes) then
     begin
       CheckDuplicateOriginals(CurrWarnCnt, ErrorLog);
       WarningCount := CurrWarnCnt + WarningCount;
@@ -904,7 +906,7 @@ begin
     Debugln('TPoFamily.RunTests: number of childs for testing = ',DbgS(Sl.Count));
     {$endif}
 
-    if (TestTypes - [pttCheckDuplicateOriginals] <> []) and (Sl.Count = 0) then
+    if (FTestTypes - [pttCheckDuplicateOriginals] <> []) and (Sl.Count = 0) then
     begin
       {$ifdef DebugSimplePoFiles}
       Debugln('TPoFamily.RunTests: Warning: No child selected or found for selected tests');
@@ -923,29 +925,29 @@ begin
       //debugln('TPoFamily.RunTests: setting ChildName to ',CurrChildName);
       SetChildName(CurrChildName);
 
-      if (pttCheckNrOfItems in TestTypes) then
+      if (pttCheckNrOfItems in FTestTypes) then
       begin
         CheckNrOfItems(CurrErrCnt, ErrorLog);
         ErrorCount := CurrErrCnt + ErrorCount;
         ThisErrCnt := ThisErrCnt + CurrErrCnt;
       end;
 
-      if (pttCheckFormatArgs in TestTypes) then
+      if (pttCheckFormatArgs in FTestTypes) then
       begin
-        CheckFormatArgs(CurrErrCnt, ErrorLog, (ptoIgnoreFuzzyStrings in TestOptions));
+        CheckFormatArgs(CurrErrCnt, ErrorLog, (ptoIgnoreFuzzyStrings in FTestOptions));
         ErrorCount := CurrErrCnt + ErrorCount;
         ThisErrCnt := ThisErrCnt + CurrErrCnt;
       end;
 
 
-      if (pttCheckMissingIdentifiers in TestTypes) then
+      if (pttCheckMissingIdentifiers in FTestTypes) then
       begin
         CheckMissingIdentifiers(CurrErrCnt, ErrorLog);
         ErrorCount := CurrErrCnt + ErrorCount;
         ThisErrCnt := ThisErrCnt + CurrErrCnt;
       end;
 
-      if (pttCheckMismatchedOriginals in TestTypes) then
+      if (pttCheckMismatchedOriginals in FTestTypes) then
       begin
         CheckMismatchedOriginals(CurrErrCnt, ErrorLog);
         ErrorCount := CurrErrCnt + ErrorCount;
@@ -954,12 +956,12 @@ begin
 
 
       //Always run this as the last test please
-      if (pttCheckStatistics in TestTypes) then
+      if (pttCheckStatistics in FTestTypes) then
       begin
         CheckStatistics(ThisErrCnt);
       end;
        {
-        if (ptt in TestTypes) then
+        if (ptt in FTestTypes) then
         begin
           Check(CurrErrCnt, ErrorLog);
           ErrorCount := CurrErrCnt + ErrorCount;
@@ -967,7 +969,7 @@ begin
         }
     end;
     //Add statistics at the end of the log
-    if (pttCheckStatistics in TestTypes) and (FPoFamilyStats.Count > 0) then
+    if (pttCheckStatistics in FTestTypes) and (FPoFamilyStats.Count > 0) then
     begin
       FPoFamilyStats.AddStatisticsToLog(ErrorLog);
     end;
