@@ -194,19 +194,18 @@ end;
 procedure TPoCheckerForm.OpenBtnClick(Sender: TObject);
 var
   Fn: String;
+  Idx: Integer;
 begin
   if TrySelectFile(Fn) then
   begin
     if IsMasterPoName(Fn) then
-      AddToMasterPoList(Fn)
-    else
-      //AddToChildPoList(Fn);
-      AddToMasterPoList(ExtractMasterNameFromChildName(Fn));
-    UpdateGUI(True);
-  end
-  else
-  begin
-    UpdateGUI(False);
+    begin
+      AddToMasterPoList(Fn);
+      Idx := MasterPoListBox.Items.IndexOf(Fn);
+      if (Idx <> -1) then
+        MasterPoListBox.Selected[Idx] := True;
+    end;
+    UpdateGUI(MasterPoListBox.SelCount > 0);
   end;
 end;
 
