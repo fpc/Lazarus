@@ -2,10 +2,10 @@ object GraphStatForm: TGraphStatForm
   Left = 652
   Height = 544
   Top = 116
-  Width = 636
+  Width = 637
   Caption = 'Graphical summary'
   ClientHeight = 544
-  ClientWidth = 636
+  ClientWidth = 637
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -16,10 +16,10 @@ object GraphStatForm: TGraphStatForm
     Left = 0
     Height = 80
     Top = 464
-    Width = 636
+    Width = 637
     Align = alBottom
     ClientHeight = 80
-    ClientWidth = 636
+    ClientWidth = 637
     TabOrder = 0
     object TranslatedShape: TShape
       Left = 24
@@ -62,6 +62,22 @@ object GraphStatForm: TGraphStatForm
       Width = 57
       Caption = 'FuzzyLabel'
       ParentColor = False
+    end
+    object StatusLabel: TLabel
+      AnchorSideRight.Control = LegendPanel
+      AnchorSideRight.Side = asrBottom
+      Left = 404
+      Height = 25
+      Top = 17
+      Width = 222
+      Anchors = [akTop, akRight]
+      BorderSpacing.Right = 10
+      Caption = 'Creating icon nr %d of %d'
+      Font.Color = clRed
+      Font.Height = -19
+      ParentColor = False
+      ParentFont = False
+      Visible = False
     end
   end
   object ListView: TListView

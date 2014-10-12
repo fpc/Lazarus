@@ -20,6 +20,7 @@ type
   { TGraphStatForm }
 
   TGraphStatForm = class(TForm)
+    StatusLabel: TLabel;
     ListView: TListView;
     TranslatedLabel: TLabel;
     UnTranslatedLabel: TLabel;
@@ -47,7 +48,7 @@ type
     Procedure SaveConfig;
     function CreateBitmap(AStat: TStat): TBitmap;
     procedure AddToListView(AStat: TStat; ABmp: TBitmap);
-    procedure DrawGraphs;
+    procedure DrawGraphs(Cnt: PtrInt);
     procedure MaybeOpenInLazIDE(const Fn: String);
     procedure MaybeOpenInExternalEditor(const Fn: String);
   public
@@ -96,6 +97,7 @@ begin
   Application.HintHidePause := 5000;
   LoadConfig;
   WindowState := Settings.GraphFormWindowState;
+  Application.QueueAsyncCall(@DrawGraphs, FPoFamilyStats.Count);
 end;
 
 procedure TGraphStatForm.ListViewMouseMove(Sender: TObject; Shift: TShiftState;
@@ -194,7 +196,7 @@ end;
 procedure TGraphStatForm.FormActivate(Sender: TObject);
 begin
   //Doing this in TGraphStatForm.FormShow results in icons disappearing in Linux GTK2
-  DrawGraphs;
+  //DrawGraphs;
 end;
 
 procedure TGraphStatForm.FormDestroy(Sender: TObject);
@@ -280,27 +282,44 @@ begin
   ListItem.ImageIndex := ImgIndex;
 end;
 
-procedure TGraphStatForm.DrawGraphs;
+procedure TGraphStatForm.DrawGraphs(Cnt: PtrInt);
 var
   Bmp: TBitmap;
   AStat: TStat;
   Index: Integer;
+  Cur: TCursor;
 begin
   if Assigned(FImgList) then FImgList.Free;
   FImgList := TImageList.CreateSize(BmpWH, BmpWH);
   ListView.Clear;
   ListView.LargeImages := FImgList;
   ListView.BeginUpdate;
+  Cur := Screen.Cursor;
+  Screen.Cursor := crHourGlass;
   try
+    StatusLabel.Visible := True;
     for Index := 0 to FPoFamilyStats.Count - 1 do
     begin
+      StatusLabel.Caption := Format(sCreatingIconXofY,[Index, Cnt]);
+      StatusLabel.Repaint;
       AStat := FPoFamilyStats.Items[Index];
       Bmp := CreateBitmap(AStat);
       AddToListView(AStat, Bmp);
+
+      //if there are many icns to draw, occasionally update the ListView as visual feedback
+      if (((Index + 1) mod 25) = 0) then
+      begin
+        ListView.EndUpdate;
+        ListView.Repaint;
+        ListView.BeginUpdate;
+      end;
+
       Bmp.Free;
     end;
   finally
     ListView.EndUpdate;
+    Screen.Cursor := Cur;
+    StatusLabel.Visible := False;
   end;
 end;
 

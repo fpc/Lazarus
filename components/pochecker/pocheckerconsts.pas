@@ -56,6 +56,7 @@ resourcestring
   SOpenFail = 'Unable to open file:' + LineEnding +  '"%s"';
   SOpenFailExternal = 'Unable to open file' + LineEnding +
                       '"%s"' + LineEnding + 'in external editor' + LineEnding + '"%s"';
+  sCreatingIconXofY = 'Creating icon nr. %d of %d';
 
   //PoFamiles
   sOriginal = 'Original';
