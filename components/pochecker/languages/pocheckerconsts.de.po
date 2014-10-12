@@ -158,6 +158,10 @@ msgstr "Leeren"
 msgid "Copy to clipboard"
 msgstr "In Zwischenablage kopieren"
 
+#: pocheckerconsts.screatingiconxofy
+msgid "Creating icon nr. %d of %d"
+msgstr ""
+
 #: pocheckerconsts.scurrenttest
 msgid "Test: %s on %s"
 msgstr "Test: %s auf %s"
@@ -348,6 +352,10 @@ msgstr ""
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
 msgstr "Verzeichnis durchsuchen"
+
+#: pocheckerconsts.sscanninginprogress
+msgid "Scanning in progress, please wait ..."
+msgstr ""
 
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"

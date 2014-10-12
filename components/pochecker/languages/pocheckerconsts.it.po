@@ -157,6 +157,10 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr "Copia negli appunti"
 
+#: pocheckerconsts.screatingiconxofy
+msgid "Creating icon nr. %d of %d"
+msgstr ""
+
 #: pocheckerconsts.scurrenttest
 #, fuzzy
 #| msgid "Current Test:"
@@ -337,6 +341,10 @@ msgstr ""
 
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
+msgstr ""
+
+#: pocheckerconsts.sscanninginprogress
+msgid "Scanning in progress, please wait ..."
 msgstr ""
 
 #: pocheckerconsts.sselectalltests

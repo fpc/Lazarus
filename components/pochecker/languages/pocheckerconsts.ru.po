@@ -157,6 +157,10 @@ msgstr "Очистить"
 msgid "Copy to clipboard"
 msgstr "Копировать в буфер обмена"
 
+#: pocheckerconsts.screatingiconxofy
+msgid "Creating icon nr. %d of %d"
+msgstr ""
+
 #: pocheckerconsts.scurrenttest
 msgid "Test: %s on %s"
 msgstr "Тест: %s в %s"
@@ -351,6 +355,10 @@ msgstr ""
 #: pocheckerconsts.sscandir
 msgid "Scan a folder"
 msgstr "Искать в каталоге"
+
+#: pocheckerconsts.sscanninginprogress
+msgid "Scanning in progress, please wait ..."
+msgstr ""
 
 #: pocheckerconsts.sselectalltests
 #| msgid "Select &All Tests"
