@@ -135,7 +135,7 @@ resourcestring
   lrsRescanLplFiles = 'Rescan lpl files';
   lrsPLDDeleteSelected = 'Delete selected';
   lisRenameShowResult = 'Show list of renamed Identifiers';
-  lisResourceNameMustBeUnique = 'Resource name must be unique';
+  lisResourceNameMustBeUnique = 'Resource name must be unique.';
   lisFailedToAddNNotUniqueResources = 'Failed to add %d not unique resource(s)';
 
   // errors
