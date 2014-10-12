@@ -18,7 +18,8 @@ resourcestring
   sScanDir = 'Scan a folder';
   sRunSelectedTests = '&Run Selected Tests';
   sClearListBox = 'Clear';
-  sUnselectListBox = 'Unselect';
+  sUnselectListBox = 'Unselect all files';
+  sSelectAllListBox = 'Select all files';
   sAllLanguages = 'All Languages';
   sCannotFindMaster = 'Cannot find master po file:' + LineEnding + '%s' + LineEnding + 'for selected file' + LineEnding + '%s';
   //sNotAProperFileName = 'Selected filename' + LineEnding + '%s' + LineEnding + 'does not seem to be a proper name for a po-file';

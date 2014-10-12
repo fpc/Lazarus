@@ -357,6 +357,10 @@ msgstr "Verzeichnis durchsuchen"
 msgid "Scanning in progress, please wait ..."
 msgstr ""
 
+#: pocheckerconsts.sselectalllistbox
+msgid "Select all files"
+msgstr ""
+
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
 msgstr "&Alle auswählen"
@@ -417,7 +421,9 @@ msgid "&Unselect All"
 msgstr "Alle abwählen"
 
 #: pocheckerconsts.sunselectlistbox
-msgid "Unselect"
+#, fuzzy
+#| msgid "Unselect"
+msgid "Unselect all files"
 msgstr "Abwählen"
 
 #: pocheckerconsts.suntranslated

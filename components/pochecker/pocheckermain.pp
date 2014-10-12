@@ -40,23 +40,25 @@ type
   { TPoCheckerForm }
 
   TPoCheckerForm = class(TForm)
+    SelectAllMasterFilesBtn: TButton;
     SelectDirectoryDialog: TSelectDirectoryDialog;
-    UnselectMasterBtn: TButton;
-    ClearMasterBtn: TButton;
+    UnselectAllMasterFilesBtn: TButton;
+    ClearMasterFilesBtn: TButton;
     LangFilter: TComboBox;
     MasterPoListBox: TListBox;
     ScanDirBtn: TBitBtn;
     StatusBar: TStatusBar;
     procedure MasterPoListBoxResize(Sender: TObject);
-    procedure ClearMasterBtnClick(Sender: TObject);
+    procedure ClearMasterFilesBtnClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure LangFilterChange(Sender: TObject);
     procedure MasterPoListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
     procedure MasterPoListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure ScanDirBtnClick(Sender: TObject);
+    procedure SelectAllMasterFilesBtnClick(Sender: TObject);
     procedure UnselectChildBtnClick(Sender: TObject);
-    procedure UnselectMasterBtnClick(Sender: TObject);
+    procedure UnselectAllMasterFilesBtnClick(Sender: TObject);
   private
     //PoFamily: TPoFamily;
     PoFamilyList: TPoFamilyList;
@@ -86,9 +88,9 @@ type
     procedure PopulateLangFilter;
   published
     IgnoreFuzzyCheckBox: TCheckBox;
-    UnselectAllBtn: TButton;
-    SelectAllBtn: TButton;
-    SelectBasicBtn: TButton;
+    UnselectAllTestsBtn: TButton;
+    SelectAllTestsBtn: TButton;
+    SelectBasicTestsBtn: TButton;
     NoErrLabel: TLabel;
     RunBtn: TBitBtn;
     OpenBtn: TBitBtn;
@@ -100,9 +102,9 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure OpenBtnClick(Sender: TObject);
     procedure RunBtnClick(Sender: TObject);
-    procedure SelectAllBtnClick(Sender: TObject);
-    procedure SelectBasicBtnClick(Sender: TObject);
-    procedure UnselectAllBtnClick(Sender: TObject);
+    procedure SelectAllTestsBtnClick(Sender: TObject);
+    procedure SelectBasicTestsBtnClick(Sender: TObject);
+    procedure UnselectAllTestsBtnClick(Sender: TObject);
   end;
 
 var
@@ -162,16 +164,17 @@ begin
   OpenBtn.Caption := sOpenAPoFile;
   ScanDirBtn.Caption := sScanDir;
   RunBtn.Caption := sRunSelectedTests;
-  ClearMasterBtn.Caption := sClearListBox;
-  UnselectMasterBtn.Caption := sUnselectListBox;
+  ClearMasterFilesBtn.Caption := sClearListBox;
+  UnselectAllMasterFilesBtn.Caption := sUnselectListBox;
+  SelectAllMasterFilesBtn.Caption := sSelectAllListBox;
   LangFilter.Items[0] := sAllLanguages;
   NoErrLabel.Caption := sNoErrorsFound;
   FillTestListBox;
   ClearStatusBar;
   NoErrLabel.Visible := False;
-  SelectAllBtn.Caption := sSelectAllTests;
-  SelectBasicBtn.Caption := sSelectBasicTests;
-  UnselectAllBtn.Caption := sUnselectAllTests;
+  SelectAllTestsBtn.Caption := sSelectAllTests;
+  SelectBasicTestsBtn.Caption := sSelectBasicTests;
+  UnselectAllTestsBtn.Caption := sUnselectAllTests;
   PopulateLangFilter;
   LoadConfig;
   LangFilter.Invalidate; //Items[0] may have been changed
@@ -229,13 +232,13 @@ begin
   end;
 end;
 
-procedure TPoCheckerForm.SelectAllBtnClick(Sender: TObject);
+procedure TPoCheckerForm.SelectAllTestsBtnClick(Sender: TObject);
 begin
   TestListBox.CheckAll(cbChecked, False, False);
 end;
 
 
-procedure TPoCheckerForm.SelectBasicBtnClick(Sender: TObject);
+procedure TPoCheckerForm.SelectBasicTestsBtnClick(Sender: TObject);
 var
   i: integer;
 begin
@@ -244,7 +247,7 @@ begin
     TestListBox.Checked[i] := True;
 end;
 
-procedure TPoCheckerForm.UnselectAllBtnClick(Sender: TObject);
+procedure TPoCheckerForm.UnselectAllTestsBtnClick(Sender: TObject);
 begin
   TestListBox.CheckAll(cbUnchecked, False, False);
 end;
@@ -269,7 +272,7 @@ begin
 end;
 
 
-procedure TPoCheckerForm.ClearMasterBtnClick(Sender: TObject);
+procedure TPoCheckerForm.ClearMasterFilesBtnClick(Sender: TObject);
 begin
   MasterPoListBox.Clear;
   UpdateGUI(False);
@@ -309,7 +312,8 @@ begin
   begin
     UpdateGUI(MasterPoListBox.SelCount > 0);
   end;
-  UnselectMasterBtn.Enabled := (MasterPoListBox.SelCount <> 0);
+  UnselectAllMasterFilesBtn.Enabled := (MasterPoListBox.SelCount <> 0);
+  SelectAllMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
 end;
 
 procedure TPoCheckerForm.ScanDirBtnClick(Sender: TObject);
@@ -320,11 +324,17 @@ begin
   end;
 end;
 
+procedure TPoCheckerForm.SelectAllMasterFilesBtnClick(Sender: TObject);
+begin
+  MasterPoListBox.SelectAll;
+  UpdateGUI(MasterPoListBox.SelCount > 0);
+end;
+
 procedure TPoCheckerForm.UnselectChildBtnClick(Sender: TObject);
 begin
 end;
 
-procedure TPoCheckerForm.UnselectMasterBtnClick(Sender: TObject);
+procedure TPoCheckerForm.UnselectAllMasterFilesBtnClick(Sender: TObject);
 begin
   MasterPoListBox.ClearSelection;
   UpdateGUI(False);
@@ -461,6 +471,7 @@ begin
           ML.Add(S);
       end;
       if (ML.Count > 0) then AddToMasterPoList(ML);
+      UpdateGUI(MasterPoListBox.SelCount > 0);
     finally
       SL.Free;
       ML.Free;
@@ -611,20 +622,24 @@ begin
   begin
     RunBtn.Enabled := True;
     TestListBox.Enabled := True;
-    SelectAllBtn.Enabled := True;
-    SelectBasicBtn.Enabled := True;
-    UnselectAllBtn.Enabled := True;
-    UnselectMasterBtn.Enabled := True;
+    SelectAllTestsBtn.Enabled := True;
+    SelectBasicTestsBtn.Enabled := True;
+    UnselectAllTestsBtn.Enabled := True;
+    UnselectAllMasterFilesBtn.Enabled := True;
+    IgnoreFuzzyCheckBox.Enabled := True;
   end
   else
   begin
     RunBtn.Enabled := False;
     TestListBox.Enabled := False;
-    SelectAllBtn.Enabled := False;
-    SelectBasicBtn.Enabled := False;
-    UnselectAllBtn.Enabled := False;
-    UnselectMasterBtn.Enabled := False;
+    SelectAllTestsBtn.Enabled := False;
+    SelectBasicTestsBtn.Enabled := False;
+    UnselectAllTestsBtn.Enabled := False;
+    UnselectAllMasterFilesBtn.Enabled := False;
+    IgnoreFuzzyCheckBox.Enabled := False;
   end;
+  ClearMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
+  SelectAllMasterFilesBtn.Enabled := (MasterPoListBox.Items.Count > 0);
 end;
 
 function TPoCheckerForm.GetSelectedMasterFiles: TStringList;

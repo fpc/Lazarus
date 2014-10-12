@@ -133,51 +133,54 @@ object PoCheckerForm: TPoCheckerForm
     ParentColor = False
     ParentFont = False
   end
-  object SelectBasicBtn: TButton
+  object SelectBasicTestsBtn: TButton
     AnchorSideLeft.Control = TestListBox
     AnchorSideTop.Control = TestListBox
     AnchorSideTop.Side = asrBottom
     Left = 201
     Height = 25
     Top = 153
-    Width = 115
+    Width = 117
+    AutoSize = True
     BorderSpacing.Top = 6
     Caption = 'Select Basic Tests'
     Enabled = False
-    OnClick = SelectBasicBtnClick
+    OnClick = SelectBasicTestsBtnClick
     TabOrder = 3
   end
-  object SelectAllBtn: TButton
-    AnchorSideLeft.Control = SelectBasicBtn
+  object SelectAllTestsBtn: TButton
+    AnchorSideLeft.Control = SelectBasicTestsBtn
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = SelectBasicBtn
-    Left = 320
+    AnchorSideTop.Control = SelectBasicTestsBtn
+    Left = 322
     Height = 25
     Top = 153
-    Width = 115
+    Width = 104
+    AutoSize = True
     BorderSpacing.Left = 4
     Caption = 'Select All Tests'
     Enabled = False
-    OnClick = SelectAllBtnClick
+    OnClick = SelectAllTestsBtnClick
     TabOrder = 4
   end
-  object UnselectAllBtn: TButton
-    AnchorSideLeft.Control = SelectAllBtn
+  object UnselectAllTestsBtn: TButton
+    AnchorSideLeft.Control = SelectAllTestsBtn
     AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = SelectAllBtn
-    Left = 439
+    AnchorSideTop.Control = SelectAllTestsBtn
+    Left = 430
     Height = 25
     Top = 153
-    Width = 115
+    Width = 118
+    AutoSize = True
     BorderSpacing.Left = 4
     Caption = 'Unselect All Tests'
     Enabled = False
-    OnClick = UnselectAllBtnClick
+    OnClick = UnselectAllTestsBtnClick
     TabOrder = 5
   end
   object IgnoreFuzzyCheckBox: TCheckBox
     AnchorSideLeft.Control = TestListBox
-    AnchorSideTop.Control = SelectBasicBtn
+    AnchorSideTop.Control = SelectBasicTestsBtn
     AnchorSideTop.Side = asrBottom
     Left = 201
     Height = 19
@@ -313,7 +316,7 @@ object PoCheckerForm: TPoCheckerForm
     TabOrder = 10
     Text = 'All languages'
   end
-  object ClearMasterBtn: TButton
+  object ClearMasterFilesBtn: TButton
     AnchorSideLeft.Control = MasterPoListBox
     AnchorSideTop.Control = MasterPoListBox
     AnchorSideTop.Side = asrBottom
@@ -321,27 +324,44 @@ object PoCheckerForm: TPoCheckerForm
     Left = 8
     Height = 25
     Top = 426
-    Width = 75
+    Width = 53
     Anchors = [akLeft, akBottom]
+    AutoSize = True
     BorderSpacing.Top = 10
     Caption = 'Clear'
-    OnClick = ClearMasterBtnClick
+    OnClick = ClearMasterFilesBtnClick
     TabOrder = 11
   end
-  object UnselectMasterBtn: TButton
-    AnchorSideLeft.Control = ClearMasterBtn
+  object UnselectAllMasterFilesBtn: TButton
+    AnchorSideLeft.Control = SelectAllMasterFilesBtn
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = NoErrLabel
-    Left = 93
+    Left = 167
     Height = 25
     Top = 426
-    Width = 75
+    Width = 110
     Anchors = [akLeft, akBottom]
-    BorderSpacing.Left = 10
-    Caption = 'Unselect'
+    AutoSize = True
+    BorderSpacing.Left = 5
+    Caption = 'Unselect all files'
     Enabled = False
-    OnClick = UnselectMasterBtnClick
+    OnClick = UnselectAllMasterFilesBtnClick
     TabOrder = 12
+  end
+  object SelectAllMasterFilesBtn: TButton
+    AnchorSideLeft.Control = ClearMasterFilesBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = NoErrLabel
+    Left = 66
+    Height = 25
+    Top = 426
+    Width = 96
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 5
+    Caption = 'Select all files'
+    OnClick = SelectAllMasterFilesBtnClick
+    TabOrder = 13
   end
   object OpenDialog: TOpenDialog
     Filter = 'po-files (*.po)|*.po|all files|*'

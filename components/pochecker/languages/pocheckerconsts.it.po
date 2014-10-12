@@ -347,6 +347,10 @@ msgstr ""
 msgid "Scanning in progress, please wait ..."
 msgstr ""
 
+#: pocheckerconsts.sselectalllistbox
+msgid "Select all files"
+msgstr ""
+
 #: pocheckerconsts.sselectalltests
 msgid "Select &All"
 msgstr "Seleziona &Tutto"
@@ -406,7 +410,7 @@ msgid "&Unselect All"
 msgstr "&Deseleziona tutto"
 
 #: pocheckerconsts.sunselectlistbox
-msgid "Unselect"
+msgid "Unselect all files"
 msgstr ""
 
 #: pocheckerconsts.suntranslated

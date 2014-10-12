@@ -360,6 +360,10 @@ msgstr "Искать в каталоге"
 msgid "Scanning in progress, please wait ..."
 msgstr ""
 
+#: pocheckerconsts.sselectalllistbox
+msgid "Select all files"
+msgstr ""
+
 #: pocheckerconsts.sselectalltests
 #| msgid "Select &All Tests"
 msgid "Select &All"
@@ -422,7 +426,9 @@ msgid "&Unselect All"
 msgstr "&Снять выбор"
 
 #: pocheckerconsts.sunselectlistbox
-msgid "Unselect"
+#, fuzzy
+#| msgid "Unselect"
+msgid "Unselect all files"
 msgstr "Снять выбор"
 
 #: pocheckerconsts.suntranslated
