@@ -57,7 +57,6 @@ type
     procedure MasterPoListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure ScanDirBtnClick(Sender: TObject);
     procedure SelectAllMasterFilesBtnClick(Sender: TObject);
-    procedure UnselectChildBtnClick(Sender: TObject);
     procedure UnselectAllMasterFilesBtnClick(Sender: TObject);
   private
     //PoFamily: TPoFamily;
@@ -327,10 +326,6 @@ procedure TPoCheckerForm.SelectAllMasterFilesBtnClick(Sender: TObject);
 begin
   MasterPoListBox.SelectAll;
   UpdateGUI(MasterPoListBox.SelCount > 0);
-end;
-
-procedure TPoCheckerForm.UnselectChildBtnClick(Sender: TObject);
-begin
 end;
 
 procedure TPoCheckerForm.UnselectAllMasterFilesBtnClick(Sender: TObject);
@@ -830,6 +825,7 @@ var
   SL: TStringList;
 begin
   LangFilter.Items.BeginUpdate;
+  LocalizeLanguageNames;
   SL := TStringList.Create;
   try
     LangFilter.Items.Clear;
@@ -837,7 +833,7 @@ begin
     begin
       Abbr := LanguageAbbr[ID];
       LangName := LanguageNames[ID];
-      S := Format('%s  [%s]',[LangName, Abbr]);
+      S := Format('%s [%s]',[LangName, Abbr]);
       SL.Add(S);
       SL.CustomSort(@ListSortFunc);
     end;

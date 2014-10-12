@@ -215,6 +215,7 @@ const
      );
 
 function LangAbbrToLangId(const Abbr: String): TLangID;
+procedure LocalizeLanguageNames;
 
 implementation
 
@@ -228,6 +229,34 @@ begin
     if LanguageAbbr[ID] = Abbr then
       Exit(ID);
   end;
+end;
+
+procedure LocalizeLanguageNames;
+begin
+  LanguageNames[lang_all]:=rs_lang_all;
+  LanguageNames[lang_af_ZA]:=rs_lang_af_ZA;
+  LanguageNames[lang_ar]:=rs_lang_ar;
+  LanguageNames[lang_ca]:=rs_lang_ca;
+  LanguageNames[lang_cs]:=rs_lang_cs;
+  LanguageNames[lang_de]:=rs_lang_de;
+  LanguageNames[lang_en]:=rs_lang_en;
+  LanguageNames[lang_es]:=rs_lang_es;
+  LanguageNames[lang_fi]:=rs_lang_fi;
+  LanguageNames[lang_fr]:=rs_lang_fr;
+  LanguageNames[lang_he]:=rs_lang_he;
+  LanguageNames[lang_hu]:=rs_lang_hu;
+  LanguageNames[lang_id]:=rs_lang_id;
+  LanguageNames[lang_it]:=rs_lang_it;
+  LanguageNames[lang_ja]:=rs_lang_ja;
+  LanguageNames[lang_lt]:=rs_lang_lt;
+  LanguageNames[lang_nl]:=rs_lang_nl;
+  LanguageNames[lang_pl]:=rs_lang_pl;
+  LanguageNames[lang_pt_BR]:=rs_lang_pt_BR;
+  LanguageNames[lang_ru]:=rs_lang_ru;
+  LanguageNames[lang_sk]:=rs_lang_sk;
+  LanguageNames[lang_tr]:=rs_lang_tr;
+  LanguageNames[lang_uk]:=rs_lang_uk;
+  LanguageNames[lang_zh_CN]:=rs_lang_zh_CN;
 end;
 
 end.
