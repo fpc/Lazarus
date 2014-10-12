@@ -8221,6 +8221,10 @@ msgstr "Työkalujen maksimimäärä täyttyi"
 msgid "There is a maximum of %s tools."
 msgstr "Työkalujen suurin sallittu määrä on %s"
 
+#: lazarusidestrconsts.lisfailedtoaddnnotuniqueresources
+msgid "Failed to add %d not unique resource(s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
 msgstr "\"Application Bundle\" luonti \"%s\":lle epäonnistui"
@@ -14479,6 +14483,10 @@ msgstr "Asetetaanko kaikki tiedostosuotimet oletusarvoonsa?"
 #: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
 msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
 msgstr "Asetetaanko valittujen komponenttien Left, Top, Width, Height periytyviin arvoihin?"
+
+#: lazarusidestrconsts.lisresourcenamemustbeunique
+msgid "Resource name must be unique."
+msgstr ""
 
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"

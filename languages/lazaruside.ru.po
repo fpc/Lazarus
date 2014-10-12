@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-07 03:25+0400\n"
+"PO-Revision-Date: 2014-10-13 01:41+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8539,6 +8539,10 @@ msgstr "Достигнут максимум количества средств"
 msgid "There is a maximum of %s tools."
 msgstr "Допускается максимум %s средств."
 
+#: lazarusidestrconsts.lisfailedtoaddnnotuniqueresources
+msgid "Failed to add %d not unique resource(s)"
+msgstr "Невозможно добавить неуникальные ресурсы (%d шт.)"
+
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
 msgstr "Не удалось создать Application Bundle для \"%s\""
@@ -15178,6 +15182,10 @@ msgstr "Установить значения файловых фильтров 
 #: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
 msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
 msgstr "Сбросить свойства Left, Top, Width, Height выбранных компонентов к унаследованным значениям?"
+
+#: lazarusidestrconsts.lisresourcenamemustbeunique
+msgid "Resource name must be unique."
+msgstr "Имя ресурса должно быть уникальным."
 
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"

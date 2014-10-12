@@ -8530,6 +8530,10 @@ msgstr "Maximum aantal Hulpmiddelen bereikt"
 msgid "There is a maximum of %s tools."
 msgstr "Er is een maximum van %s hulpmiddelen"
 
+#: lazarusidestrconsts.lisfailedtoaddnnotuniqueresources
+msgid "Failed to add %d not unique resource(s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
 msgstr ""
@@ -15220,6 +15224,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
 msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
+msgstr ""
+
+#: lazarusidestrconsts.lisresourcenamemustbeunique
+msgid "Resource name must be unique."
 msgstr ""
 
 #: lazarusidestrconsts.lisresourcesaveerror

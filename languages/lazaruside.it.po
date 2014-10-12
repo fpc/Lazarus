@@ -8464,6 +8464,10 @@ msgstr "Raggiunto il massimo degli strumenti"
 msgid "There is a maximum of %s tools."
 msgstr "C'è un massimo di %s strumenti."
 
+#: lazarusidestrconsts.lisfailedtoaddnnotuniqueresources
+msgid "Failed to add %d not unique resource(s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
 msgstr "Non posso creare l'Application bundle per \"%s\""
@@ -15057,6 +15061,10 @@ msgstr "Ripristinare tutti i filtri di file ai valori predefiniti?"
 #: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
 msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
 msgstr "Ripristina i valori Left, Top, Width, Height del componente riportandoli a quelli del componente padre?"
+
+#: lazarusidestrconsts.lisresourcenamemustbeunique
+msgid "Resource name must be unique."
+msgstr ""
 
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"

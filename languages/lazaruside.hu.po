@@ -8251,6 +8251,10 @@ msgstr "Maximális eszközszám elérve"
 msgid "There is a maximum of %s tools."
 msgstr "Az eszközök száma legfeljebb %s lehet."
 
+#: lazarusidestrconsts.lisfailedtoaddnnotuniqueresources
+msgid "Failed to add %d not unique resource(s)"
+msgstr ""
+
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
 msgstr "Nem sikerült létrehozni az alkalmazásköteget ehhez: %s"
@@ -14574,6 +14578,10 @@ msgstr "Az összes fájlszűrő visszaállítása az alapértelmezettre?"
 #: lazarusidestrconsts.lisresetlefttopwidthheightofselectedcomponentstotheir
 msgid "Reset Left, Top, Width, Height of selected components to their ancestor values?"
 msgstr "Visszaállítja a kiválasztott komponens Left, Top, Width, Height tulajdonságait az ősük értékeire?"
+
+#: lazarusidestrconsts.lisresourcenamemustbeunique
+msgid "Resource name must be unique."
+msgstr ""
 
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"
