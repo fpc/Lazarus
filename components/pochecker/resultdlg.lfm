@@ -3,7 +3,7 @@ object ResultDlgForm: TResultDlgForm
   Height = 635
   Top = 100
   Width = 742
-  ActiveControl = CopyBtn
+  ActiveControl = GraphStatBtn
   Caption = 'Results'
   ClientHeight = 635
   ClientWidth = 742
@@ -34,10 +34,11 @@ object ResultDlgForm: TResultDlgForm
       Anchors = [akRight]
       AutoSize = True
       BorderSpacing.Right = 10
+      Cancel = True
       DefaultCaption = True
       Kind = bkClose
       ModalResult = 11
-      TabOrder = 2
+      TabOrder = 3
     end
     object SaveBtn: TBitBtn
       AnchorSideRight.Control = CloseBtn
@@ -86,7 +87,7 @@ object ResultDlgForm: TResultDlgForm
         39FFBD6E3BFFBB6D3AFFBB6B38EFBB703ECBB6693554FFFFFF00
       }
       OnClick = SaveBtnClick
-      TabOrder = 1
+      TabOrder = 2
     end
     object CopyBtn: TBitBtn
       AnchorSideRight.Control = SaveBtn
@@ -135,7 +136,7 @@ object ResultDlgForm: TResultDlgForm
         FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       OnClick = CopyBtnClick
-      TabOrder = 0
+      TabOrder = 1
     end
     object GraphStatBtn: TBitBtn
       AnchorSideRight.Control = CopyBtn
@@ -183,7 +184,7 @@ object ResultDlgForm: TResultDlgForm
         5E7D8CA76103E4A6710AFFFFFF00FFFFFF00FFFFFF00FFFFFF00
       }
       OnClick = GraphStatBtnClick
-      TabOrder = 3
+      TabOrder = 0
     end
   end
   inline LogMemo: TSynEdit

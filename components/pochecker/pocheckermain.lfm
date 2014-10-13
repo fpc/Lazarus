@@ -35,7 +35,7 @@ object PoCheckerForm: TPoCheckerForm
       'sCheckStatistics'
     )
     ItemHeight = 17
-    TabOrder = 0
+    TabOrder = 3
     Data = {
       06000000000000000000
     }
@@ -102,7 +102,7 @@ object PoCheckerForm: TPoCheckerForm
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
     }
     OnClick = OpenBtnClick
-    TabOrder = 1
+    TabOrder = 0
   end
   object RunBtn: TBitBtn
     AnchorSideLeft.Control = OpenBtn
@@ -146,7 +146,7 @@ object PoCheckerForm: TPoCheckerForm
     Caption = 'Select Basic Tests'
     Enabled = False
     OnClick = SelectBasicTestsBtnClick
-    TabOrder = 3
+    TabOrder = 4
   end
   object SelectAllTestsBtn: TButton
     AnchorSideLeft.Control = SelectBasicTestsBtn
@@ -161,7 +161,7 @@ object PoCheckerForm: TPoCheckerForm
     Caption = 'Select All Tests'
     Enabled = False
     OnClick = SelectAllTestsBtnClick
-    TabOrder = 4
+    TabOrder = 5
   end
   object UnselectAllTestsBtn: TButton
     AnchorSideLeft.Control = SelectAllTestsBtn
@@ -176,7 +176,7 @@ object PoCheckerForm: TPoCheckerForm
     Caption = 'Unselect All Tests'
     Enabled = False
     OnClick = UnselectAllTestsBtnClick
-    TabOrder = 5
+    TabOrder = 6
   end
   object IgnoreFuzzyCheckBox: TCheckBox
     AnchorSideLeft.Control = TestListBox
@@ -188,7 +188,7 @@ object PoCheckerForm: TPoCheckerForm
     Width = 152
     BorderSpacing.Top = 6
     Caption = 'sIgnoreFuzzyTranslations'
-    TabOrder = 6
+    TabOrder = 7
   end
   object StatusBar: TStatusBar
     Left = 0
@@ -248,7 +248,7 @@ object PoCheckerForm: TPoCheckerForm
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00
     }
     OnClick = ScanDirBtnClick
-    TabOrder = 8
+    TabOrder = 1
   end
   object MasterPoListBox: TListBox
     AnchorSideTop.Control = IgnoreFuzzyCheckBox
@@ -270,7 +270,7 @@ object PoCheckerForm: TPoCheckerForm
     OnSelectionChange = MasterPoListBoxSelectionChange
     Sorted = True
     Style = lbOwnerDrawFixed
-    TabOrder = 9
+    TabOrder = 8
   end
   object LangFilter: TComboBox
     AnchorSideLeft.Control = MasterPoListBox
@@ -313,7 +313,7 @@ object PoCheckerForm: TPoCheckerForm
     )
     OnChange = LangFilterChange
     Style = csDropDownList
-    TabOrder = 10
+    TabOrder = 9
     Text = 'All languages'
   end
   object ClearMasterFilesBtn: TButton
@@ -330,7 +330,7 @@ object PoCheckerForm: TPoCheckerForm
     BorderSpacing.Top = 10
     Caption = 'Clear'
     OnClick = ClearMasterFilesBtnClick
-    TabOrder = 11
+    TabOrder = 10
   end
   object UnselectAllMasterFilesBtn: TButton
     AnchorSideLeft.Control = SelectAllMasterFilesBtn
@@ -361,7 +361,7 @@ object PoCheckerForm: TPoCheckerForm
     BorderSpacing.Left = 5
     Caption = 'Select all files'
     OnClick = SelectAllMasterFilesBtnClick
-    TabOrder = 13
+    TabOrder = 11
   end
   object OpenDialog: TOpenDialog
     Filter = 'po-files (*.po)|*.po|all files|*'
