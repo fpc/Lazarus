@@ -85,6 +85,10 @@ type
     function LangFilterIndexToLangID(Index: Integer): TLangID;
     function LangIdToLangFilterIndex(LangID: TLangID): Integer;
     procedure PopulateLangFilter;
+    {$IFDEF POCHECKERSTANDALONE}
+    procedure GetTranslations;
+    {$ENDIF}
+    procedure ApplyTranslations;
   published
     IgnoreFuzzyCheckBox: TCheckBox;
     UnselectAllTestsBtn: TButton;
@@ -127,53 +131,16 @@ end;
 { TPoCheckerForm }
 
 procedure TPoCheckerForm.FormCreate(Sender: TObject);
-{$IFDEF POCHECKERSTANDALONE}
-var
-  Lang, T, AppPath: string;
-{$ENDIF}
 begin
   //debugln('TPoCheckerForm.FormCreate A:');
   {$IFDEF POCHECKERSTANDALONE}
   //Initializing translation
-  Lang := GetEnvironmentVariableUTF8('LANG');
-  T := '';
-  if Lang = '' then
-    LCLGetLanguageIDs(Lang, T);
-  if Lang <> '' then
-  begin
-    {$ifdef windows}
-    AppPath := ExtractFilePath(ParamStr(0));
-    {$else}
-    AppPath := '';
-    {$endif}
-    Lang := copy(Lang, 1, 2);
-    Translations.TranslateUnitResourceStrings('PoCheckerConsts',
-      AppPath + '..' + DirectorySeparator + 'languages' + DirectorySeparator +
-      'pocheckerconsts.' + Lang + '.po');
-    //requires the user copies the LCLStrConsts translations there!
-    Translations.TranslateUnitResourceStrings('LCLStrConsts',
-      AppPath + '..' + DirectorySeparator + 'languages' + DirectorySeparator +
-      'lclstrconsts.' + Lang + '.po');
-  end;
+  GetTranslations;
   {$ENDIF}
-  Caption := sGUIPoFileCheckingTool;
-  SelectTestLabel.Caption := sSelectTestTypes;
-  //FindAllPOsCheckBox.Caption := sFindAllTranslatedPoFiles;
-  IgnoreFuzzyCheckBox.Caption := sIgnoreFuzzyTranslations;
-  OpenBtn.Caption := sOpenAPoFile;
-  ScanDirBtn.Caption := sScanDir;
-  RunBtn.Caption := sRunSelectedTests;
-  ClearMasterFilesBtn.Caption := sClearListBox;
-  UnselectAllMasterFilesBtn.Caption := sUnselectListBox;
-  SelectAllMasterFilesBtn.Caption := sSelectAllListBox;
-  LangFilter.Items[0] := sAllLanguages;
-  NoErrLabel.Caption := sNoErrorsFound;
+  ApplyTranslations;
   FillTestListBox;
   ClearStatusBar;
   NoErrLabel.Visible := False;
-  SelectAllTestsBtn.Caption := sSelectAllTests;
-  SelectBasicTestsBtn.Caption := sSelectBasicTests;
-  UnselectAllTestsBtn.Caption := sUnselectAllTests;
   PopulateLangFilter;
   LoadConfig;
   LangFilter.Invalidate; //Items[0] may have been changed
@@ -358,22 +325,7 @@ var
 begin
   TestListBox.Items.Clear;
   for Typ := Low(PoTestTypeNames) to High(PoTestTypeNames) do
-    case Typ of
-      pttCheckNrOfItems:
-        TestListBox.Items.Add(sCheckNumberOfItems);
-      pttCheckFormatArgs:
-        TestListBox.Items.Add(sCheckForIncompatibleFormatArguments);
-      pttCheckMissingIdentifiers:
-        TestListBox.Items.Add(sCheckMissingIdentifiers);
-      pttCheckMismatchedOriginals:
-        TestListBox.Items.Add(sCheckForMismatchesInUntranslatedStrings);
-      pttCheckDuplicateOriginals:
-        TestListBox.Items.Add(sCheckForDuplicateUntranslatedValues);
-      pttCheckStatistics:
-        TestListBox.Items.Add(sCheckStatistics);
-      else
-        TestListBox.Items.Add(PoTestTypeNames[Typ]);
-    end;
+    TestListBox.Items.Add(PoTestTypeNames[Typ]);
 end;
 
 
@@ -825,7 +777,6 @@ var
   SL: TStringList;
 begin
   LangFilter.Items.BeginUpdate;
-  LocalizeLanguageNames;
   SL := TStringList.Create;
   try
     LangFilter.Items.Clear;
@@ -846,6 +797,55 @@ begin
     SL.Free;
     LangFilter.Items.EndUpdate;
   end;
+end;
+
+{$IFDEF POCHECKERSTANDALONE}
+procedure TPoCheckerForm.GetTranslations;
+var
+  Lang, T, AppPath: string;
+begin
+  Lang := GetEnvironmentVariableUTF8('LANG');
+  T := '';
+  if Lang = '' then
+    LCLGetLanguageIDs(Lang, T);
+  if Lang <> '' then
+  begin
+    {$ifdef windows}
+    AppPath := ExtractFilePath(ParamStr(0));
+    {$else}
+    AppPath := '';
+    {$endif}
+    Lang := copy(Lang, 1, 2);
+    Translations.TranslateUnitResourceStrings('PoCheckerConsts',
+      AppPath + '..' + DirectorySeparator + 'languages' + DirectorySeparator +
+      'pocheckerconsts.' + Lang + '.po');
+    //requires the user copies the LCLStrConsts translations there!
+    Translations.TranslateUnitResourceStrings('LCLStrConsts',
+      AppPath + '..' + DirectorySeparator + 'languages' + DirectorySeparator +
+      'lclstrconsts.' + Lang + '.po');
+  end;
+end;
+{$ENDIF}
+
+procedure TPoCheckerForm.ApplyTranslations;
+begin
+  LocalizePoTestTypeNames;
+  LocalizeLanguageNames;
+  Caption := sGUIPoFileCheckingTool;
+  SelectTestLabel.Caption := sSelectTestTypes;
+  //FindAllPOsCheckBox.Caption := sFindAllTranslatedPoFiles;
+  IgnoreFuzzyCheckBox.Caption := sIgnoreFuzzyTranslations;
+  OpenBtn.Caption := sOpenAPoFile;
+  ScanDirBtn.Caption := sScanDir;
+  RunBtn.Caption := sRunSelectedTests;
+  ClearMasterFilesBtn.Caption := sClearListBox;
+  UnselectAllMasterFilesBtn.Caption := sUnselectListBox;
+  SelectAllMasterFilesBtn.Caption := sSelectAllListBox;
+  LangFilter.Items[0] := sAllLanguages;
+  NoErrLabel.Caption := sNoErrorsFound;
+  SelectAllTestsBtn.Caption := sSelectAllTests;
+  SelectBasicTestsBtn.Caption := sSelectBasicTests;
+  UnselectAllTestsBtn.Caption := sUnselectAllTests;
 end;
 
 

@@ -137,6 +137,7 @@ function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;
 function IsMasterPoName(const Fn: String): Boolean;
 function ExtractMasterNameFromChildName(const AChildName: String): String;
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
+procedure LocalizePoTestTypeNames;
 
 const
   NoError = 0;
@@ -162,11 +163,11 @@ const
   sMismatchOriginalsM = '%s: %s';
   sMismatchOriginalsC = '%s: %s';
 
-  sCheckFormatArgs = 'CheckFormatArgs';
-  sCheckNrOfItems =  'CheckNrOfItems';
-  sCheckMissingIdentifiers = 'CheckMissingIdentifiers';
-  sCheckMismatchedOriginals = 'CheckMismatchedOriginals';
-  sCheckDuplicateOriginals = 'CheckDuplicateOriginals';
+  sShortCheckFormatArgs = 'CheckFormatArgs';
+  sShortCheckNrOfItems =  'CheckNrOfItems';
+  sShortCheckMissingIdentifiers = 'CheckMissingIdentifiers';
+  sShortCheckMismatchedOriginals = 'CheckMismatchedOriginals';
+  sShortCheckDuplicateOriginals = 'CheckDuplicateOriginals';
 
 //Helper functions
 
@@ -284,6 +285,16 @@ begin
     until FindNextUTF8(FileInfo)<>0;
   end;
   FindCloseUTF8(FileInfo);
+end;
+
+procedure LocalizePoTestTypeNames;
+begin
+  PoTestTypeNames[pttCheckNrOfItems] := sCheckNumberOfItems;
+  PoTestTypeNames[pttCheckFormatArgs] := sCheckForIncompatibleFormatArguments;
+  PoTestTypeNames[pttCheckMissingIdentifiers] := sCheckMissingIdentifiers;
+  PoTestTypeNames[pttCheckMismatchedOriginals] := sCheckForMismatchesInUntranslatedStrings;
+  PoTestTypeNames[pttCheckDuplicateOriginals] := sCheckForDuplicateUntranslatedValues;
+  PoTestTypeNames[pttCheckStatistics] := sCheckStatistics;
 end;
 
 
@@ -542,7 +553,7 @@ begin
   begin
     ErrorCount := 1;
     ErrorLog.Add(Divider);
-    ErrorLog.Add(Format(sErrorsByTest,[sCheckNrOfItems]));
+    ErrorLog.Add(Format(sErrorsByTest,[sShortCheckNrOfItems]));
     ErrorLog.Add(ShortChildName);
     ErrorLog.Add(Divider);
     ErrorLog.Add('');
@@ -583,7 +594,7 @@ begin
         if (ErrorCount = 0) then
         begin
           ErrorLog.Add(Divider);
-          ErrorLog.Add(Format(sErrorsByTest,[sCheckFormatArgs]));
+          ErrorLog.Add(Format(sErrorsByTest,[sShortCheckFormatArgs]));
           ErrorLog.Add(ShortChildName);
           ErrorLog.Add(Divider);
           ErrorLog.Add('');
@@ -629,7 +640,7 @@ begin
         if (ErrorCount = 0) then
         begin
           ErrorLog.Add(Divider);
-          ErrorLog.Add(Format(sErrorsByTest,[sCheckMissingIdentifiers]));
+          ErrorLog.Add(Format(sErrorsByTest,[sShortCheckMissingIdentifiers]));
           ErrorLog.Add(ShortChildName);
           ErrorLog.Add(Divider);
           ErrorLog.Add('');
@@ -655,7 +666,7 @@ begin
         if (ErrorCount = 0) then
         begin
           ErrorLog.Add(Divider);
-          ErrorLog.Add(Format(sErrorsByTest,[sCheckMissingIdentifiers]));
+          ErrorLog.Add(Format(sErrorsByTest,[sShortCheckMissingIdentifiers]));
           ErrorLog.Add(ShortChildName);
           ErrorLog.Add(Divider);
           ErrorLog.Add('');
@@ -700,7 +711,7 @@ begin
         if (ErrorCount = 0) then
         begin
           ErrorLog.Add(Divider);
-          ErrorLog.Add(Format(sErrorsByTest,[sCheckMismatchedOriginals]));
+          ErrorLog.Add(Format(sErrorsByTest,[sShortCheckMismatchedOriginals]));
           ErrorLog.Add(ShortChildName);
           ErrorLog.Add(Divider);
           ErrorLog.Add('');
@@ -750,7 +761,7 @@ begin
         if (WarningCount = 0) then
         begin
           ErrorLog.Add(Divider);
-          ErrorLog.Add(Format(sErrorsByTest,[sCheckDuplicateOriginals]));
+          ErrorLog.Add(Format(sErrorsByTest,[sShortCheckDuplicateOriginals]));
           ErrorLog.Add(ShortMasterName);
           ErrorLog.Add(Divider);
           ErrorLog.Add('');
