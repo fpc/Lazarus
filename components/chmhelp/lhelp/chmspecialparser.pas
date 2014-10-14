@@ -50,6 +50,7 @@ type
   
 implementation
 
+// Replace %20 with space, \ with /
 function FixURL(URL: String):String;
 var
   X: LongInt;
@@ -79,8 +80,8 @@ begin
   begin
     fLastNode := AParentNode;
     NewNode := TContentTreeNode(fTreeView.Items.AddChild(AParentNode, txt));
-    NewNode.Url:=FixURL('/'+AItem.Local);
-    NewNode.Data:=fChm;
+    NewNode.Url := FixURL('/'+AItem.Local);
+    NewNode.Data := fChm;
     if fTreeView.Images <> nil then
     begin
       NewNode.ImageIndex := 3;
