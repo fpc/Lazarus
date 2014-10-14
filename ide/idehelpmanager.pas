@@ -1211,7 +1211,7 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
                    'FCL - Free Pascal Component Library Units',
                    'file://index.html');
                    
-    // fpc 2.0.x FCL source directory
+    // FPC 2.0.x FCL source directory
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'FCL - Free Pascal Component Library Units (2.0.x)',
                    'file://index.html');
@@ -1219,7 +1219,7 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
                                      '$(FPCSrcDir)/fcl/inc','*.pp;*.pas',false);
     HTMLHelp.RegisterItem(DirItem);
     
-    // fpc 2.2.x FCL source directory
+    // FPC 2.2.x FCL source directory
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'FCL - Free Pascal Component Library Units',
                    'file://index.html');
@@ -1227,7 +1227,7 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
                    '$(FPCSrcDir)/packages/fcl-base/src','*.pp;*.pas',true);
     HTMLHelp.RegisterItem(DirItem);
 
-    // fpc 2.4.4+ FCL source directory
+    // FPC 2.4.4+ FCL source directory
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'FCL - Free Pascal Component Library Units',
                    'file://index.html');
@@ -1447,7 +1447,7 @@ function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
 
         // invoke help system
         Complete:=true;
-        debugln(['TIDEHelpManager.ShowHelpForSourcePosition PascalHelpContextLists.Count=',PascalHelpContextLists.Count,' calling ShowHelpForPascalContexts ...']);
+        debugln(['TIDEHelpManager.ShowHelpForSourcePosition PascalHelpContextLists.Count=',PascalHelpContextLists.Count,' calling ShowHelpForPascalContexts...']);
         Result:=ShowHelpForPascalContexts(Filename,CodePos,PascalHelpContextLists,ErrMsg);
       end else if CodeToolBoss.ErrorCode<>nil then begin
         MainIDEInterface.DoJumpToCodeToolBossError;
@@ -1480,12 +1480,12 @@ begin
 
   Result:=CollectDeclarations(CodeBuffer,Complete);
   if Complete then exit;
-  debugln(['TIDEHelpManager.ShowHelpForSourcePosition no declaration found, trying keywords ...']);
+  debugln(['TIDEHelpManager.ShowHelpForSourcePosition no declaration found, trying keywords...']);
   Result:=CollectKeyWords(CodeBuffer,Identifier);
   if Result in [shrCancel,shrSuccess] then exit;
   if IsValidIdent(Identifier) then
   begin
-    debugln(['TIDEHelpManager.ShowHelpForSourcePosition "',Identifier,'" is not an FPC keyword, search via code browser ...']);
+    debugln(['TIDEHelpManager.ShowHelpForSourcePosition "',Identifier,'" is not an FPC keyword, search via code browser...']);
     ShowCodeBrowser(Identifier);
     exit(shrSuccess);
   end;

@@ -22,7 +22,7 @@
   
   Abstract:
     This unit is part of the IDE's help system. It implements the help for
-    sources via fpdoc files and pascal comments.
+    sources via fpdoc files and Pascal comments.
 }
 unit CodeHelp;
 
