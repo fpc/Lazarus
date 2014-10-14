@@ -9,7 +9,7 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
   KeyPreview = True
   OnShow = PkgGraphExplorerShow
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object InfoMemo: TMemo
     Left = 0
     Height = 144
@@ -20,6 +20,7 @@ object PkgGraphExplorerDlg: TPkgGraphExplorerDlg
       'InfoMemo'
     )
     OnKeyDown = InfoMemoKeyDown
+    ReadOnly = True
     TabOrder = 0
   end
   object VerticalSplitter: TSplitter
