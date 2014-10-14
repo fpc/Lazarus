@@ -11,10 +11,12 @@ Free Pascal at www.freepascal.org is a fast Object Pascal compiler (and more),
 that runs on more than 20 platforms (Linux, Windows, BSD, OS/2, DOS, PowerPC,
 and many more).
 
-The LCL currently supports Linux (gtk, gtk2 and qt4), all flavors of Windows
-(even wince), Mac OS X (carbon, gtk, qt4), FreeBSD (gtk, gtk2).
-There is experimental support for Solaris and the native Pascal backend fpgui
-which runs on Windows, Wince and Linux.
+The LCL currently supports Linux (gtk2 and qt4), all flavors of Windows
+(even wince), Mac OS X (carbon, gtk2, qt4), FreeBSD (gtk2).
+There is experimental support for:
+* gtk3
+* Solaris 
+The LCL still contains code for gtk1 although that is obsolete.
 
 --------------------------------------------------------------------------------
 Compilation:
