@@ -8395,7 +8395,7 @@ end;
   Params:  AControl: Control to show
   Returns: nothing
 
-  Askes the parent to show ourself.
+  Asks the parent to show ourself.
  ------------------------------------------------------------------------------}
 procedure TWinControl.ShowControl(AControl: TControl);
 begin
