@@ -122,6 +122,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure ShowControl(AControl: TControl); override;
 {    function TabIndexAtClientPos(ClientPos: TPoint): integer;
     function TabRect(AIndex: Integer): TRect;
     function GetImageIndex(ThePageIndex: Integer): Integer; virtual;

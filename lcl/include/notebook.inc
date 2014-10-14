@@ -226,3 +226,15 @@ begin
   inherited Destroy;
 end;
 
+procedure TNotebook.ShowControl(AControl: TControl);
+var
+  i: Integer;
+begin
+  if AControl = ActivePageComponent then exit;
+  i := FPageList.IndexOf(Pointer(aControl));
+  if i >= 0 then
+    PageIndex := i
+  else
+    inherited ShowControl(AControl);
+end;
+
