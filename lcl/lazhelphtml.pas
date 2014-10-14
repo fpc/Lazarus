@@ -177,7 +177,7 @@ begin
   if URLType='file' then begin
     if not URLFilenameIsAbsolute(URLPath) then begin
       EffBaseURL:=GetEffectiveBaseURL;
-      //DebugLn('THTMLHelpDatabase.ShowURL file relative, making absolute ... EffBaseURL="',EffBaseURL,'"');
+      //DebugLn('THTMLHelpDatabase.ShowURL file relative, making absolute... EffBaseURL="',EffBaseURL,'"');
       if EffBaseURL<>'' then begin
         SplitURL(EffBaseURL,BaseURLType,BaseURLPath,BaseURLParams);
         if (BaseURLPath<>'') then

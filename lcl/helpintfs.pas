@@ -250,7 +250,7 @@ function ShowHelpForContext(HelpDatabaseID: THelpDatabaseID;
 function ShowHelpForContext(HelpContext: THelpContext; var ErrMsg: string
   ): TShowHelpResult; overload;
 
-// help by keyword (an arbitrary keyword, not only fpc keyword)
+// help by keyword (an arbitrary keyword, not only FPC keyword)
 function ShowHelpOrErrorForKeyword(HelpDatabaseID: THelpDatabaseID;
   const HelpKeyword: string): TShowHelpResult;
 function ShowHelpForKeyword(HelpDatabaseID: THelpDatabaseID;
@@ -264,7 +264,7 @@ function ShowHelpForDirective(HelpDatabaseID: THelpDatabaseID;
 function ShowHelpForDirective(const HelpDirective: string; var ErrMsg: string
   ): TShowHelpResult; overload;
 
-// help for pascal sources
+// help for Pascal sources
 function ShowHelpForPascalContexts(const Filename: string;
   const SourcePosition: TPoint; ListOfPascalHelpContextList: TList;
   var ErrMsg: string): TShowHelpResult;
