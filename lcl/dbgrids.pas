@@ -47,20 +47,20 @@ type
 
 
   TDBGridOption = (
-    dgEditing,                          // Ya
-    dgTitles,                           // Ya
-    dgIndicator,                        // Ya
-    dgColumnResize,                     // Ya
-    dgColumnMove,                       // Ya
-    dgColLines,                         // Ya
-    dgRowLines,                         // Ya
-    dgTabs,                             // Ya
-    dgAlwaysShowEditor,                 // Ya
-    dgRowSelect,                        // Ya
-    dgAlwaysShowSelection,              // Ya
+    dgEditing,                          // Enable or disable editing data
+    dgTitles,                           // Show column titles
+    dgIndicator,                        // Show current row indicator
+    dgColumnResize,
+    dgColumnMove,
+    dgColLines,                         // Show vertical lines between columns
+    dgRowLines,                         // Show horizontal lines between rows
+    dgTabs,                             // Allow using TAB key to navigate grid
+    dgAlwaysShowEditor,
+    dgRowSelect,
+    dgAlwaysShowSelection,
     dgConfirmDelete,
-    dgCancelOnExit,                     // Ya
-    dgMultiselect,                      // Ya
+    dgCancelOnExit,
+    dgMultiselect,                      // Allow selection of multiple nonadjacent rows
     dgHeaderHotTracking,
     dgHeaderPushedLook,
     dgPersistentMultiSelect,
