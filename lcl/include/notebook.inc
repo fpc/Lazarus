@@ -233,8 +233,7 @@ begin
   if AControl = ActivePageComponent then exit;
   i := FPageList.IndexOf(Pointer(aControl));
   if i >= 0 then
-    PageIndex := i
-  else
-    inherited ShowControl(AControl);
+    PageIndex := i;
+  inherited ShowControl(AControl);
 end;
 

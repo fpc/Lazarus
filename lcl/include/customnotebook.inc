@@ -916,7 +916,6 @@ procedure TCustomTabControl.ShowControl(APage: TControl);
 var
   i: LongInt;
 begin
-  //inherited ShowControl(AControl);
   { Find a child control that matches the one passed in and display
     the page that contains that control. This method is necessary
     for compatibility with Delphi }
@@ -926,6 +925,7 @@ begin
       Exit;
     end;
   end;
+  inherited ShowControl(APage);
 end;
 
 {------------------------------------------------------------------------------

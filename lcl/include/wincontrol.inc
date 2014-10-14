@@ -8395,7 +8395,8 @@ end;
   Params:  AControl: Control to show
   Returns: nothing
 
-  Asks the parent to show ourself.
+  Called by a child control (in TControl.Show), before setting Visible=true.
+  Asks to show the child control and recursively shows the parents.
  ------------------------------------------------------------------------------}
 procedure TWinControl.ShowControl(AControl: TControl);
 begin
