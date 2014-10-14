@@ -1131,6 +1131,10 @@ function TWin32WidgetSet.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect:
 var
   s: AnsiString;
   w: WideString;
+  res: WINBOOL;
+  lf: LOGFONT;
+  aABC: ABC;
+  paABC: LPABC;
 {$endif}
 begin
  {$ifdef WindowsUnicodeSupport}
@@ -1152,6 +1156,39 @@ begin
   begin
     S := Utf8ToAnsi(S);
     Result := Windows.DrawText(DC, PChar(S), Length(S), @Rect, Flags);
+  end;
+
+  // Theoretically, we need to augment the returned rect by the text overhang
+  // The overhang is returned in the abcC field as documented in the
+  // following article: http://support.microsoft.com/kb/94646/en-us
+  // for italic text, usually this value is negative, so the adjusted
+  // value could be calculated by Rect.Right:=Rect.Right-aABC.abcC, oddly enough
+  // sometimes this it's positive, yielding an incorrect Rect.Right value.
+  // As the objective is to return a more correct value so the text overhang
+  // is not clipped out, I found the next solution works better most times.
+  //
+  // NOTE. this doesn't solve (most of the times) the problem of right
+  // aligned bold italic text. The DrawText windows function is documented to
+  // clip out text in some special cases, specially when drawing italic text,
+  // but I found it's even worse with drawing bold italic text.
+  if (Count>0) and (flags and DT_CALCRECT = DT_CALCRECT) then
+  begin
+
+    GetObject(GetCurrentObject(DC, OBJ_FONT), SizeOf(LOGFONT), @lf);
+
+    if lf.lfItalic<>0 then
+    begin
+
+      paABC := @aABC;
+      if UnicodeEnabledOS then
+        res := GetCharABCWidthsW(DC, Uint(W[Count-1]), Uint(W[Count-1]), paABC)
+      else
+        res := GetCharABCWidthsA(DC, ord(s[Count-1]), ord(s[Count-1]), paABC);
+
+     if res then
+       Rect.Right := Rect.Right + Abs(aABC.abcC);
+
+    end;
   end;
  {$else}
   Result := Windows.DrawText(DC, Str, Count, @Rect, Flags);
