@@ -106,7 +106,7 @@ var
 begin
   if (Query is THelpQueryPascalContexts)
   and (QueryItem is TPascalHelpContextList) then begin
-    // a pascal context query
+    // a Pascal context query
     ContextList:=TPascalHelpContextList(QueryItem);
     if (ContextList.Count>0) and (ContextList.List[0].Descriptor=pihcFilename)
     then begin
