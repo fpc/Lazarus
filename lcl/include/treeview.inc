@@ -5165,6 +5165,7 @@ begin
   LogicalX:=X;
   if ([ssDouble, ssTriple, ssQuad] * Shift) = [] then
   begin
+    // single click or first of a multi click
     if (Button = mbLeft) and (CursorNode <> nil) then
     begin
       if CursorNode.HasChildren and ShowButtons and
@@ -5214,7 +5215,8 @@ begin
         end;
       end;
     end;
-  end else
+  end
+  else // multi click
   if not (tvoNoDoubleClickExpand in Options) and (ssDouble in Shift)
      and (Button = mbLeft) and (CursorNode<>nil) then
     CursorNode.Expanded := not CursorNode.Expanded;
