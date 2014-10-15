@@ -403,10 +403,16 @@ begin
   if (DataSetsCombo.ItemIndex > -1) then begin
     ADataset := GetLookupDataset;
     if Assigned(ADataset) then begin
-      ADataset.FieldDefs.Update;
-      for i := 0 to ADataset.FieldDefs.Count - 1 do begin
-        SelectResultField.Items.Add(ADataset.FieldDefs[i].Name);
-        SelectLookUpKeys.Items.Add(ADataset.FieldDefs[i].Name);
+      try
+        ADataset.FieldDefs.Update;
+        for i := 0 to ADataset.FieldDefs.Count - 1 do begin
+          SelectResultField.Items.Add(ADataset.FieldDefs[i].Name);
+          SelectLookUpKeys.Items.Add(ADataset.FieldDefs[i].Name);
+        end;
+      except
+        on E:Exception do begin
+          ShowMessage(fesNoFields+^M+fesCheckDSet+^M^M+E.Message);
+        end;
       end;
     end;
   end;
