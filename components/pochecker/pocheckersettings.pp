@@ -24,6 +24,7 @@ type
     FFilename: String;
     FGraphFormWindowState: TWindowState;
     FLangFilterLanguageAbbr: String;
+    FLangPath: String;
     FMainFormWindowState: TWindowState;
     FOpenDialogFilename: String;
     FResultsFormWindowState: TWindowState;
@@ -44,6 +45,7 @@ type
     function LoadSelectDirectoryFilename: String;
     function LoadOpenDialogFilename: String;
     function LoadLangFilterLanguageAbbr: String;
+    function LoadLangPath: String;
     procedure LoadMasterPoList(List: TStrings);
     procedure LoadMasterPoSelList(List: TStrings);
     procedure SaveTestTypes;
@@ -53,6 +55,7 @@ type
     procedure SaveSelectDirectoryFilename;
     procedure SaveOpenDialogFilename;
     procedure SaveLangFilterLanguageAbbr;
+    procedure SaveLangPath;
     procedure SaveMasterPoList;
     procedure SaveMasterPoSelList;
     procedure RemoveUnwantedPaths;
@@ -81,6 +84,7 @@ type
     property ResultsFormWindowState: TWindowState read FResultsFormWindowState write FResultsFormWindowState;
     property GraphFormWindowState: TWindowState read FGraphFormWindowState write FGraphFormWindowState;
     property LangFilterLanguageAbbr: String read FLangFilterLanguageAbbr write FLangFilterLanguageAbbr;
+    property LangPath: String read FLangPath write FLangPath;
   end;
 
 function DbgS(PoTestTypes: TPoTestTypes): String; overload;
@@ -88,6 +92,8 @@ function DbgS(PoTestOpts: TPoTestOptions): String; overload;
 function FitToRect(const ARect, FitIn: TRect): TRect;
 function IsDefaultRect(ARect: TRect): Boolean;
 function IsValidRect(ARect: TRect): Boolean;
+function GetGlobalConfigPath: String;
+function GetLocalConfigPath: String;
 
 
 implementation
@@ -153,6 +159,7 @@ const
   pSelectDirectoryFilename = 'SelectDirectoryFilename/';
   pOpenDialogFilename = 'OpenDialogFilename/';
   pLangFilter = 'LanguageFilter/';
+  pLangPath = 'LanguageFiles/';
   pTestTypes = 'TestTypes/';
   pTestOptions = 'TestOptions/';
   pWindowsGeometry = 'General/WindowsGeometry/';
@@ -203,7 +210,22 @@ begin
   Result := '';
 end;
 
-function GetAndCreateConfigPath: String;
+function GetGlobalConfigPath: String;
+var
+  OldOnGetApplicationName: TGetAppNameEvent;
+  OldOnGetVendorName: TGetVendorNameEvent;
+begin
+  Result := '';
+  OldOnGetApplicationName := OnGetApplicationName;
+  OldOnGetVendorName := OnGetVendorName;
+  OnGetApplicationName := @AppName;
+  OnGetVendorName := @Vendor;
+  Result := GetAppConfigDirUtf8(True);
+  OnGetApplicationName := OldOnGetApplicationName;
+  OnGetVendorName := OldOnGetVendorName;
+end;
+
+function GetLocalConfigPath: String;
 var
   OldOnGetApplicationName: TGetAppNameEvent;
   OldOnGetVendorName: TGetVendorNameEvent;
@@ -219,10 +241,15 @@ begin
     OldOnGetVendorName := OnGetVendorName;
     OnGetApplicationName := @AppName;
     OnGetVendorName := @Vendor;
+    Result := GetAppConfigDirUtf8(False);
     OnGetApplicationName := OldOnGetApplicationName;
     OnGetVendorName := OldOnGetVendorName;
-    Result := GetAppConfigDirUtf8(False);
   end;
+end;
+
+function GetAndCreateConfigPath: String;
+begin
+  Result := GetLocalConfigPath;
   if not ForceDirectoriesUTF8(Result) then
     Debugln('GetAndCreateConfigPath: unable to create "',Result,'"');
 end;
@@ -314,6 +341,43 @@ end;
 function TPoCheckerSettings.LoadLangFilterLanguageAbbr: String;
 begin
   Result := FConfig.GetValue(pLangFilter + 'Value', '');
+end;
+
+function TPoCheckerSettings.LoadLangPath: String;
+var
+  SL: TStringList;
+  i: Integer;
+  S: String;
+begin
+  {$IFDEF POCHECKERSTANDALONE}
+  //allow override on commandline
+  if Application.HasOption('langpath') then
+  begin
+    Result := '';
+    SL := TStringList.Create;
+    try
+      SL.Delimiter := PathSeparator;
+      SL.StrictDelimiter := True;
+      SL.DelimitedText := Application.GetOptionValue('langpath');
+      for i := 0 to SL.Count - 1 do
+      begin
+        S := SL.Strings[i];
+        if (S <> '') then
+        begin
+          Result := Result + ExpandFileNameUtf8(S) + PathSeparator;
+        end;
+      end;
+      if (Result <> '') and (Result[Length(Result)] = PathSeparator) then
+        System.Delete(Result, Length(Result), 1);
+    finally
+      SL.Free;
+    end;
+  end
+  else
+    Result := FConfig.GetValue(pLangPath+'Value','');
+  {$ELSE}
+  Result := '';
+  {$eNDIF}
 end;
 
 
@@ -428,6 +492,11 @@ begin
   FConfig.SetDeleteValue(pLangFilter + 'Value', FLangFilterLanguageAbbr, '');
 end;
 
+procedure TPoCheckerSettings.SaveLangPath;
+begin
+  FConfig.SetDeleteValue(pLangPath + 'Value', FLangPath, '');
+end;
+
 procedure TPoCheckerSettings.RemoveUnwantedPaths;
 const
   pLoadSettings = 'General/LoadSettings/';
@@ -518,6 +587,7 @@ begin
     FOpenDialogFilename := LoadOpenDialogFilename;
     FExternalEditorName := LoadExternalEditorName;
     FLangFilterLanguageAbbr := LoadLangFilterLanguageAbbr;
+    FLangPath := LoadLangPath;
     LoadWindowsGeometry;
     LoadMasterPoList(FMasterPoList);
     LoadMasterPoSelList(FMasterPoSelList);
@@ -541,6 +611,7 @@ begin
     SaveSelectDirectoryFilename;
     SaveOpenDialogFilename;
     SaveLangFilterLanguageAbbr;
+    SaveLangPath;
     SaveWindowsGeometry;
     SaveMasterPoList;
     SaveMasterPoSelList;
