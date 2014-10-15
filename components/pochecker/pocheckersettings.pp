@@ -92,9 +92,10 @@ function DbgS(PoTestOpts: TPoTestOptions): String; overload;
 function FitToRect(const ARect, FitIn: TRect): TRect;
 function IsDefaultRect(ARect: TRect): Boolean;
 function IsValidRect(ARect: TRect): Boolean;
+{$ifdef pocheckerstandalone}
 function GetGlobalConfigPath: String;
 function GetLocalConfigPath: String;
-
+{$endif}
 
 implementation
 
