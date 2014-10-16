@@ -113,6 +113,13 @@ const
   // Do not localize.
   CHMHelpName='lazhelp';
 
+// Formats (part of) process ID according to help protocol for
+// use in ipcname parameter
+function HelpProtocolFormattedPID: string;
+begin
+  result := copy(inttostr(GetProcessID)+'00000',1,5)
+end;
+
 procedure Register;
 var
   ChmHelp: TChmHelpViewer;
@@ -134,8 +141,8 @@ function TChmHelpViewer.DBFindViewer(HelpDB: THelpDatabase;
   const MimeType: string; var ErrMsg: string; out Viewer: THelpViewer
   ): TShowHelpResult;
 begin
-  Viewer:=Self;
-  Result:=shrSuccess;
+  Viewer := Self;
+  Result := shrSuccess;
 end;
 
 function TChmHelpViewer.GetHelpLabel: String;
@@ -144,8 +151,9 @@ begin
   // lhelp protocol specifies server-dependent constant string
   // followed by string representation of last 5 digits of the processID
   // padded with 00000 at the right
+  // Autocalculate if needed:
   if Length(fHelpLabel) = 0 then
-    fHelpLabel := CHMHelpName+copy(inttostr(GetProcessID)+'00000',1,5);
+    fHelpLabel := CHMHelpName + HelpProtocolFormattedPID;
   Result := fHelpLabel;
 end;
 
@@ -264,12 +272,33 @@ procedure TChmHelpViewer.SetHelpLabel(AValue: String);
 var
   i: Integer;
 begin
+  //ShowMessage('TChmHelpViewer.SetHelpLabel: value passed: '+AValue);
   fHelpLabel := AValue;
-  // Strip out difficult characters
+  // Strip out difficult characters as per Help Protocol
   for i := 1 to Length(fHelpLabel) do
   begin
     if not (fHelpLabel[i] in ['a'..'z', '0'..'9', 'A'..'Z']) then
       fHelpLabel[i] := '_';
+  end;
+  // todo: for some reason we get assigned strings like
+  // lazhelp501204548
+  // i.e. with too many numbers in the PID part
+  // Hacky way to fix this: if too many numbers, replace with
+  // default
+  if fHelpLabel[length(FHelpLabel)] in ['0'..'9'] then
+  begin
+    for i := Length(fHelpLabel) downto 1 do
+    begin
+      if not(fHelpLabel[i] in ['0'..'9']) then
+      begin
+        if (Length(fHelpLabel)-i>5) then
+        begin
+          Debugln('TChmHelpViewer.SetHelpLabel: got '+fHelpLabel+'. Help protocol does not allow this many digits. Resetting to empty string.');
+          fHelpLabel := '';
+        end;
+        break;
+      end;
+    end;
   end;
 end;
 
@@ -429,7 +458,7 @@ begin
              [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
               SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]),
       mtError,[mbCancel]);
-    debugln(Format('ChmHelpViewer: '+HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
+    Debugln(Format('ChmHelpViewer: '+HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
       [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
       SetDirSeparators('components/chmhelp/lhelp/lhelp.lpi')]));
     exit;
@@ -474,16 +503,16 @@ begin
     Result := PassTheBuck(Node, ErrMsg);
     Exit;
   end;
-  Result:=shrNone;
+  Result := shrNone;
   if (ExtractFileNameOnly(GetHelpEXE) = 'lhelp') and (CheckBuildLHelp <> mrOK) then
   begin
-    ErrMsg := 'The program "' + GetHelpEXE + '" doesn''t seem to exist'+LineEnding+
-              'or could not be built!';
+    ErrMsg := 'The program "' + GetHelpEXE + '" does not seem to exist'+LineEnding+
+      'or could not be built!';
     Exit(shrViewerNotFound);
   end;
   if not GetFileNameAndURL(Node.Url, FileName, Url) then
   begin
-    ErrMsg := 'Couldn''t read the file/URL correctly';
+    ErrMsg := 'Could not read the file/URL correctly';
     Exit(shrDatabaseNotFound);
   end;
 
@@ -495,10 +524,10 @@ begin
   begin
     Result := shrDatabaseNotFound;
     ErrMsg := FileName +' not found. Please put the chm help files in '+ LineEnding
-                       +SearchPath + LineEnding
-                       +' or set the path to lcl.chm rtl.chm fcl.chm with "HelpFilesPath" in '
-                       +' Environment Options -> Help -> Help Options ->'+LineEnding
-                       +' under HelpViewers - CHMHelpViewer';
+      +SearchPath + LineEnding
+      +' or set the path to lcl.chm rtl.chm fcl.chm with "HelpFilesPath" in '+LineEnding
+      +' Environment Options -> Help -> Help Options ->'+LineEnding
+      +' under HelpViewers - CHMHelpViewer';
     Exit;
   end;
 
@@ -610,8 +639,7 @@ begin
   begin
     Viewer:=TChmHelpViewer(Source);
     HelpEXE:=Viewer.HelpEXE;
-    if Viewer.HelpLabel<>'' then
-      HelpLabel:=Viewer.HelpLabel;
+    HelpLabel:=Viewer.HelpLabel;
     HelpFilesPath:=Viewer.HelpFilesPath;
   end;
   inherited Assign(Source);
@@ -619,10 +647,10 @@ end;
 
 procedure TChmHelpViewer.Load(Storage: TConfigStorage);
 begin
-  HelpEXE:=Storage.GetValue('CHMHelp/Exe','');
+  HelpEXE := Storage.GetValue('CHMHelp/Exe','');
   HelpExeParams := Storage.GetValue('CHMHelp/ExeParams','');
   // Precalculate label:
-  HelpLabel:=Storage.GetValue('CHMHelp/Name',CHMHelpName)+inttostr(GetProcessID);
+  HelpLabel := Storage.GetValue('CHMHelp/Name',CHMHelpName)+HelpProtocolFormattedPID;
   HelpFilesPath := Storage.GetValue('CHMHelp/FilesPath','');
 end;
 

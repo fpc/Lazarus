@@ -31,6 +31,7 @@ const
   // - support for Proposed extensions in bug 24743:
   // - openurl: if applicable return error instead of unknown
   // - openurl: if applicable return invalid url instead of invalid file for openurl
+  // Version 2.1: ipcname string constant part may only contain A..Z, a..z, _
 type
   TRequestType = (rtFile, rtUrl, rtContext, rtMisc {window handling etc});
   TMiscRequests = (mrShow, mrVersion, mrClose);

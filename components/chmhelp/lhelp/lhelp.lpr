@@ -67,18 +67,22 @@ begin
   except
     // try to remove stale named pipes so that a new instance can use them
     if IPCServer <> nil then
+    begin
       try
         FreeAndNil(IPCServer);
       except
-        //ignore
+        // ignore
       end;
+    end;
 
     if IPCClient <> nil then
+    begin
       try
         FreeAndNil(IPCClient);
       except
         // ignore
       end;
+    end;
   end;
 end.
 
