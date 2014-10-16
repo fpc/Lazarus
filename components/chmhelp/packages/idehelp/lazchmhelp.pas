@@ -85,10 +85,15 @@ type
     function GetHelpEXE: String; // macros resolved, see property HelpEXE
     function GetHelpFilesPath: String; // macros resolved, see property HelpFilesPath
   published
-    property HelpEXE: String read fHelpEXE write SetHelpEXE; // with macros, see GetHelpEXE
+    // Path and filename of help executable
+    // With macros, see GetHelpEXE
+    property HelpEXE: String read fHelpEXE write SetHelpEXE;
     // ID used for SimpleIPC communication with the help viewer
     property HelpLabel: String read GetHelpLabel write SetHelpLabel;
-    property HelpFilesPath: String read fCHMSearchPath write SetChmsFilePath; // directories separated with semicolon, with macros, see GetHelpFilesPath
+    // Where to look for help files.
+    // Directories separated with semicolon, with macros, see GetHelpFilesPath
+    property HelpFilesPath: String read fCHMSearchPath write SetChmsFilePath;
+    // Additional parameters to pass to help executable
     property HelpExeParams: String read fHelpExeParams write fHelpExeParams;
   end;
 
@@ -254,12 +259,13 @@ procedure TChmHelpViewer.SetHelpLabel(AValue: String);
 var
   i: Integer;
 begin
- fHelpLabel := AValue;
- for i := 1 to Length(fHelpLabel) do
- begin
-   if not (fHelpLabel[i] in ['a'..'z', '0'..'9', 'A'..'Z']) then
-     fHelpLabel[i] := '_';
- end;
+  fHelpLabel := AValue;
+  // Strip out difficult characters
+  for i := 1 to Length(fHelpLabel) do
+  begin
+    if not (fHelpLabel[i] in ['a'..'z', '0'..'9', 'A'..'Z']) then
+      fHelpLabel[i] := '_';
+  end;
 end;
 
 function TChmHelpViewer.CheckBuildLHelp: Integer;
@@ -599,7 +605,8 @@ begin
   begin
     Viewer:=TChmHelpViewer(Source);
     HelpEXE:=Viewer.HelpEXE;
-    HelpLabel:=Viewer.HelpLabel;
+    if Viewer.HelpLabel<>'' then
+      HelpLabel:=Viewer.HelpLabel;
     HelpFilesPath:=Viewer.HelpFilesPath;
   end;
   inherited Assign(Source);
@@ -609,7 +616,8 @@ procedure TChmHelpViewer.Load(Storage: TConfigStorage);
 begin
   HelpEXE:=Storage.GetValue('CHMHelp/Exe','');
   HelpExeParams := Storage.GetValue('CHMHelp/ExeParams','');
-  HelpLabel:=Storage.GetValue('CHMHelp/Name','lazhelp')+inttostr(GetProcessID);
+  // Precalculate label:
+  HelpLabel:=Storage.GetValue('CHMHelp/Name',CHMHelpName)+inttostr(GetProcessID);
   HelpFilesPath := Storage.GetValue('CHMHelp/FilesPath','');
 end;
 
