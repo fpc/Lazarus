@@ -84,12 +84,15 @@ type
     function GetLocalizedName: string; override;
     function GetHelpEXE: String; // macros resolved, see property HelpEXE
     function GetHelpFilesPath: String; // macros resolved, see property HelpFilesPath
+    // ID used for SimpleIPC communication with the help viewer
+    // Used to be published before Laz 1.3=>saves in tools/options;
+    // this is no longer necessary or desirable as helplabel is unique per session
+    // and calculated on-the-fly.
+    property HelpLabel: String read GetHelpLabel write SetHelpLabel;
   published
     // Path and filename of help executable
     // With macros, see GetHelpEXE
     property HelpEXE: String read fHelpEXE write SetHelpEXE;
-    // ID used for SimpleIPC communication with the help viewer
-    property HelpLabel: String read GetHelpLabel write SetHelpLabel;
     // Where to look for help files.
     // Directories separated with semicolon, with macros, see GetHelpFilesPath
     property HelpFilesPath: String read fCHMSearchPath write SetChmsFilePath;
