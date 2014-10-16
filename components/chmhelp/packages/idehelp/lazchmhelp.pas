@@ -151,8 +151,10 @@ begin
     Also, this will not work for other .chm files in the relevant directories.
     this still does not open all help files such as rtl.chm
 
-   for i := 0 to HelpDatabases.Count-1 do begin
-     if HelpDatabases[i].SupportsMimeType('application/x-chm') then begin
+   for i := 0 to HelpDatabases.Count-1 do
+   begin
+     if HelpDatabases[i].SupportsMimeType('application/x-chm') then
+     begin
        HelpDatabases[i].ShowTableOfContents;
        Sleep(200); //give viewer chance to open file.
        Application.ProcessMessages;
@@ -168,14 +170,17 @@ begin
     SearchPaths.Delimiter:=';';
     SearchPaths.StrictDelimiter:=false;
     SearchPaths.DelimitedText:=SearchPath;
-    for i := 0 to SearchPaths.Count-1 do begin
+    for i := 0 to SearchPaths.Count-1 do
+    begin
       // Note: FindAllFiles has a SearchPath parameter that is a *single* directory,
       SearchFiles := FindAllFiles(SearchPaths[i]);
       CHMFiles.AddStrings(SearchFiles);
       SearchFiles.Free;
     end;
-    for i := 0 to CHMFiles.Count-1 do begin
-      if UpperCase(ExtractFileExt(CHMFiles[i]))='.CHM' then begin
+    for i := 0 to CHMFiles.Count-1 do
+    begin
+      if UpperCase(ExtractFileExt(CHMFiles[i]))='.CHM' then
+      begin
         fHelpConnection.OpenURL(CHMFiles[i], '/index.html');
         // This is probably no longer necessary as we're now waiting for the viewer's
         // response to our OpenURL command; the viewer can process at it's own speed
@@ -191,26 +196,26 @@ end;
 
 procedure TChmHelpViewer.SetChmsFilePath(const AValue: String);
 var
-  p: String;
+  HelpFilesPath: String;
 begin
   if fCHMSearchPath = AValue then Exit;
   fCHMSearchPath := AppendPathDelim(AValue);
-  p:=GetHelpFilesPath;
+  HelpFilesPath := GetHelpFilesPath;
   if Assigned(LangRefHelpDatabase) then
-    LangRefHelpDatabase.LoadKeywordList(p);
+    LangRefHelpDatabase.LoadKeywordList(HelpFilesPath);
   if Assigned(FPCDirectivesHelpDatabase) then
-    FPCDirectivesHelpDatabase.CHMSearchPath := p;
+    FPCDirectivesHelpDatabase.CHMSearchPath := HelpFilesPath;
 end;
 
 procedure TChmHelpViewer.SetHelpEXE(AValue: String);
 begin
   if fHelpEXE=AValue then Exit;
-  fHelpEXE:=AValue;
+  fHelpEXE := AValue;
 end;
 
 function TChmHelpViewer.GetHelpEXE: String;
 begin
-  Result:=fHelpExe;
+  Result := fHelpExe;
   if Result='' then
     Result := SetDirSeparators('$(LazarusDir)/components/chmhelp/lhelp/lhelp$(ExeExt)');
   if not IDEMacros.SubstituteMacros(Result) then
@@ -246,8 +251,10 @@ var
 begin
  fHelpLabel := AValue;
  for i := 1 to Length(fHelpLabel) do
+ begin
    if not (fHelpLabel[i] in ['a'..'z', '0'..'9', 'A'..'Z']) then
      fHelpLabel[i] := '_';
+ end;
 end;
 
 function TChmHelpViewer.CheckBuildLHelp: Integer;
@@ -337,7 +344,8 @@ begin
   fHelpConnection := TLHelpConnection.Create;
   fHelpConnection.ProcessWhileWaiting:=@Application.ProcessMessages;
   AddSupportedMimeType('application/x-chm');
-  for i := 0 to HelpDatabases.Count-1 do begin
+  for i := 0 to HelpDatabases.Count-1 do
+  begin
     DB := TFPDocHTMLHelpDatabase(HelpDatabases.Items[i]);
     BaseURL := THelpBaseURLObject(DB.BasePathObject);
     if (DB.ID = 'RTLUnits') and (BaseURL.BaseURL = '') then
@@ -363,7 +371,8 @@ begin
     fHelpConnection.RunMiscCommand(LHelpControl.mrClose);
   except
     // ignore errors; let user close it himself
-    on E: Exception do begin
+    on E: Exception do
+    begin
       debugln('TChmHelpViewer.Destroy: exception '+E.Message+' when trying to send mrClose on viewer');
     end;
   end;
@@ -397,7 +406,8 @@ begin
   HelpExeFileName:=GetHelpExe;
   if (not FileExistsUTF8(HelpExeFileName)) and
     ((ExtractFileNameOnly(HelpExeFileName) = 'lhelp') and
-    (CheckBuildLHelp <> mrOK)) then begin
+    (CheckBuildLHelp <> mrOK)) then
+  begin
     IDEMessageDialog(HELP_MissingLhelp,
       Format(HELP_UnableToFindTheLhelpViewerPleaseCompileTheLhelpPro,
              [LineEnding, HelpExeFileName, LineEnding+LineEnding, LineEnding,
@@ -416,7 +426,9 @@ begin
     fHelpConnection.StartHelpServer(HelpLabel, HelpExeFileName, true);
     Response := fHelpConnection.RunMiscCommand(mrVersion);
     if Response <> srSuccess then
+    begin
       debugln('TChmHelpViewer: Help viewer does not support our protocol version ('+PROTOCOL_VERSION +'). Response was: ord: '+inttostr(ord(Response)))
+    end
     else
     begin
       // Open all chm files after it has started, while still hidden
@@ -447,12 +459,14 @@ begin
     Exit;
   end;
   Result:=shrNone;
-  if (ExtractFileNameOnly(GetHelpEXE) = 'lhelp') and (CheckBuildLHelp <> mrOK) then begin
+  if (ExtractFileNameOnly(GetHelpEXE) = 'lhelp') and (CheckBuildLHelp <> mrOK) then
+  begin
     ErrMsg := 'The program "' + GetHelpEXE + '" doesn''t seem to exist'+LineEnding+
               'or could not be built!';
     Exit(shrViewerNotFound);
   end;
-  if not GetFileNameAndURL(Node.Url, FileName, Url) then begin
+  if not GetFileNameAndURL(Node.Url, FileName, Url) then
+  begin
     ErrMsg := 'Couldn''t read the file/URL correctly';
     Exit(shrDatabaseNotFound);
   end;
@@ -474,7 +488,8 @@ begin
 
   FileName := CleanAndExpandFilename(FoundFileName);
 
-  if ExtractFileNameOnly(GetHelpExe) = 'lhelp' then begin
+  if ExtractFileNameOnly(GetHelpExe) = 'lhelp' then
+  begin
     WasRunning := fHelpConnection.ServerRunning;
     // Start server and tell it to hide
     // No use setting cursor to hourglass as that may take as long as the
@@ -482,7 +497,8 @@ begin
     fHelpConnection.StartHelpServer(HelpLabel, GetHelpExe, true);
     // If the server is not already running, open all chm files after it has started
     // This will allow cross-chm (LCL, FCL etc) searching and browsing in lhelp.
-    if not(WasRunning) then begin
+    if not(WasRunning) then
+    begin
       OpenAllCHMsInSearchPath(SearchPath);
       // Instruct viewer to show its GUI
       Response:=fHelpConnection.RunMiscCommand(mrShow);
@@ -490,7 +506,9 @@ begin
         debugln('Help viewer gave error response to mrShow command. Response was: ord: '+inttostr(ord(Response)));
     end;
     Response := fHelpConnection.OpenURL(FileName, Url);
-  end else begin
+  end
+  else
+  begin
     if Trim(fHelpExeParams) = '' then
     begin
       Result := shrViewerError;
@@ -504,6 +522,7 @@ begin
               + 'and the second one will be replaced by URL';
       Exit;
     end;
+
     Proc := TProcessUTF8.Create(nil);
     try
       Proc.InheritHandles := false;
@@ -515,7 +534,8 @@ begin
       {$IFDEF darwin}
       if DirectoryExistsUTF8(LHelpPath+'.app') then
         LHelpPath+='.app';
-      if DirectoryExistsUTF8(LHelpPath) then begin
+      if DirectoryExistsUTF8(LHelpPath) then
+      begin
         // application bundle
         // to put lhelp into the foreground, use "open -n lhelp.app --args args"
         Proc.Executable := '/usr/bin/open';
@@ -543,15 +563,18 @@ begin
       Result := shrHelpNotFound;
       ErrMsg := 'No answer from help viewer for URL '+URL;
     }
-    srInvalidContext: begin
+    srInvalidContext:
+    begin
       Result := shrNone;
       ErrMsg := 'Invalid context showing '+URL;
     end;
-    srInvalidFile: begin
+    srInvalidFile:
+    begin
       Result := shrNone;
       ErrMsg := 'Invalid file showing '+URL;
     end;
-    srInvalidURL: begin
+    srInvalidURL:
+    begin
       Result := shrNone;
       ErrMsg := 'Invalid URL showing '+URL;
     end;
@@ -560,14 +583,15 @@ begin
     ErrMsg := 'Unknown error showing '+URL;
   end;
 
-  //WriteLn('LOADING URL = ', Node.URL);
+  //DebugLn('LOADING URL = ', Node.URL);
 end;
 
 procedure TChmHelpViewer.Assign(Source: TPersistent);
 var
   Viewer: TChmHelpViewer;
 begin
-  if Source is TChmHelpViewer then begin
+  if Source is TChmHelpViewer then
+  begin
     Viewer:=TChmHelpViewer(Source);
     HelpEXE:=Viewer.HelpEXE;
     HelpLabel:=Viewer.HelpLabel;
