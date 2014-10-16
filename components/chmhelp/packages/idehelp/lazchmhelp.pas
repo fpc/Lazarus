@@ -98,6 +98,11 @@ implementation
 
 uses Process, MacroIntf, InterfaceBase, Forms, Dialogs, HelpFPDoc, IDEMsgIntf;
 
+const
+  // Part of help name. Stored/retrieved in Lazarus options CHMHelp/Name.
+  // Do not localize.
+  CHMHelpName='lazhelp';
+
 procedure Register;
 var
   ChmHelp: TChmHelpViewer;
@@ -130,7 +135,7 @@ begin
   // followed by string representation of last 5 digits of the processID
   // padded with 00000 at the right
   if Length(fHelpLabel) = 0 then
-    fHelpLabel := 'lazhelp'+copy(inttostr(GetProcessID)+'00000',1,5);
+    fHelpLabel := CHMHelpName+copy(inttostr(GetProcessID)+'00000',1,5);
   Result := fHelpLabel;
 end;
 
@@ -196,15 +201,15 @@ end;
 
 procedure TChmHelpViewer.SetChmsFilePath(const AValue: String);
 var
-  HelpFilesPath: String;
+  CurrentHelpFilesPath: String;
 begin
   if fCHMSearchPath = AValue then Exit;
   fCHMSearchPath := AppendPathDelim(AValue);
-  HelpFilesPath := GetHelpFilesPath;
+  CurrentHelpFilesPath := GetHelpFilesPath;
   if Assigned(LangRefHelpDatabase) then
-    LangRefHelpDatabase.LoadKeywordList(HelpFilesPath);
+    LangRefHelpDatabase.LoadKeywordList(CurrentHelpFilesPath);
   if Assigned(FPCDirectivesHelpDatabase) then
-    FPCDirectivesHelpDatabase.CHMSearchPath := HelpFilesPath;
+    FPCDirectivesHelpDatabase.CHMSearchPath := CurrentHelpFilesPath;
 end;
 
 procedure TChmHelpViewer.SetHelpEXE(AValue: String);
@@ -612,7 +617,7 @@ procedure TChmHelpViewer.Save(Storage: TConfigStorage);
 begin
   Storage.SetDeleteValue('CHMHelp/Exe',HelpEXE,'');
   Storage.SetDeleteValue('CHMHelp/ExeParams',HelpExeParams,'');
-  Storage.SetDeleteValue('CHMHelp/Name',HelpLabel,'lazhelp');
+  Storage.SetDeleteValue('CHMHelp/Name',CHMHelpName,CHMHelpName);
   Storage.SetDeleteValue('CHMHelp/FilesPath',HelpFilesPath,'');
 end;
 
