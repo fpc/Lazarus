@@ -96,6 +96,7 @@ type
     procedure ViewMenuContentsClick(Sender: TObject);
   private
     { private declarations }
+    // SimpleIPC server name (including unique part as per help protocol)
     fServerName: String;
     // Receives commands from IDE
     fInputIPC: TSimpleIPCServer;
@@ -108,7 +109,7 @@ type
     fConfig: TXMLConfig;
     fHasShowed: Boolean;
     fHide: boolean; //If yes, start with content hidden. Otherwise start normally
-    // Load preferences; separate preferences per coupled server/IDE
+    // Load preferences. Preferences are unique for server-lhelp pairs and plain lhelp
     procedure LoadPreferences(AIPCName: String);
     // Saves preferences. Uses existing config loaded by LoadPreferences
     procedure SavePreferences;
@@ -296,7 +297,7 @@ end;
 
 procedure THelpForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  Visible:= False;
+  Visible := false;
   Application.ProcessMessages;
   FileMenuCloseItemClick(Sender);
   StopComms;
@@ -306,7 +307,9 @@ end;
 procedure THelpForm.FormCreate(Sender: TObject);
 begin
   fContext := -1;
+  // Safe default:
   fHide := false;
+  // ReadCommandLineOptions will set fHide if requested
   ReadCommandLineOptions;
   LoadPreferences(fServerName);
   // Only start IPC if server name passed in --ipcname
@@ -315,7 +318,6 @@ begin
     StartComms(fServerName);
   end;
   // If user wants lhelp to hide, hide entire form.
-  // Detect this choice based on fHide set in ReadCommandLineOptions
   if fHide then
     WindowState := wsMinimized
   else
@@ -363,6 +365,7 @@ procedure THelpForm.ViewMenuContentsClick(Sender: TObject);
 begin
   // TabsControl property in TChmContentProvider
   if Assigned(ActivePage) then
+  begin
     with TChmContentProvider(ActivePage.ContentProvider) do
     begin
       TabsControl.Visible := not TabsControl.Visible;
@@ -370,6 +373,7 @@ begin
       Splitter.Left := TabsControl.Left + 4; //for splitter to move righter
       ViewMenuContents.Checked := TabsControl.Visible;
     end;
+  end;
 end;
 
 procedure THelpForm.LoadPreferences(AIPCName: String);
@@ -385,24 +389,32 @@ begin
   // server-dependent constant together with a process ID.
   // Strip out the process ID to get fixed config file names for one server
   ServerPart := Copy(AIPCName, 1, length(AIPCName)-5); //strip out PID
-  PrefFile:=Format('%slhelp-%s.conf',[IncludeTrailingPathDelimiter(PrefFile), ServerPart]);
+  PrefFile := Format('%slhelp-%s.conf',[IncludeTrailingPathDelimiter(PrefFile), ServerPart]);
 
   fConfig := TXMLConfig.Create(Self);
-  fConfig.Filename:=PrefFile;
+  fConfig.Filename := PrefFile;
 
-  Left   := fConfig.GetValue('Position/Left/Value',   Left);
-  Top    := fConfig.GetValue('Position/Top/Value',    Top);
-  Width  := fConfig.GetValue('Position/Width/Value',  Width);
-  Height := fConfig.GetValue('Position/Height/Value', Height);
-
-  if fConfig.GetValue('Position/Maximized',false)=true then
-    Windowstate:=wsMaximized;
+  // Restore window but only if currently not being asked to hide
+  if not(fHide) then
+  begin
+    if (fConfig.GetValue('Position/Maximized',false)=true) then
+    begin
+      Windowstate:=wsMaximized
+    end
+    else
+    begin
+      Left   := fConfig.GetValue('Position/Left/Value', Left);
+      Top    := fConfig.GetValue('Position/Top/Value', Top);
+      Width  := fConfig.GetValue('Position/Width/Value', Width);
+      Height := fConfig.GetValue('Position/Height/Value', Height);
+    end;
+  end;
 
   OpenDialog1.FileName := fConfig.GetValue('LastFileOpen/Value', OpenDialog1.FileName);
 
   RecentCount:= fConfig.GetValue('Recent/ItemCount/Value', 0);
-
-  for i := RecentCount-1 downto 0 do // downto since oldest are knocked off the list
+  // downto since oldest are knocked off the list:
+  for i := RecentCount-1 downto 0 do
     AddRecentFile(fConfig.GetValue('Recent/Item'+IntToStr(i)+'/Value',''));
 end;
 
@@ -410,11 +422,13 @@ procedure THelpForm.SavePreferences;
 var
   i: Integer;
 begin
+  if not(assigned(fConfig)) then
+    exit; //silently abort
   if not (WindowState = wsMaximized) then
   begin
-    fConfig.SetValue('Position/Left/Value',   Left);
-    fConfig.SetValue('Position/Top/Value',    Top);
-    fConfig.SetValue('Position/Width/Value',  Width);
+    fConfig.SetValue('Position/Left/Value', Left);
+    fConfig.SetValue('Position/Top/Value', Top);
+    fConfig.SetValue('Position/Width/Value', Width);
     fConfig.SetValue('Position/Height/Value', Height);
   end
   else
@@ -425,7 +439,8 @@ begin
   fConfig.SetValue('LastFileOpen/Value', OpenDialog1.FileName);
 
   fConfig.SetValue('Recent/ItemCount/Value', FileMenuOpenRecentItem.Count);
-  for i := 0 to FileMenuOpenRecentItem.Count-1 do // downto since oldest are knocked off the list
+  // downto since oldest are knocked off the list:
+  for i := 0 to FileMenuOpenRecentItem.Count-1 do
     fConfig.SetValue('Recent/Item'+IntToStr(i)+'/Value', TRecentMenuItem(FileMenuOpenRecentItem.Items[I]).URL);
 
   fConfig.Flush;
@@ -618,6 +633,7 @@ begin
   begin
     if LowerCase(ParamStrUTF8(X)) = '--ipcname' then
     begin
+      // IPC name; includes unique PID or other identifier
       IsHandled[X] := True;
       inc(X);
       if X <= ParamCount then
@@ -835,6 +851,7 @@ begin
     en := false;
     // Hide content page
     if Assigned(ActivePage) then
+    begin
       with TChmContentProvider(ActivePage.ContentProvider) do
       begin
         ActivePage.Visible := false;
@@ -842,12 +859,14 @@ begin
         TabsControl.Visible := false;
         Splitter.Visible := false;
       end;
+    end;
   end
   else
   begin
     en := Assigned(ActivePage);
     // Show content page
     if en then
+    begin
       with TChmContentProvider(ActivePage.ContentProvider) do
       begin
         ActivePage.Visible := true;
@@ -855,6 +874,7 @@ begin
         TabsControl.Visible := true;
         Splitter.Visible := true;
       end;
+    end;
   end;
 
   BackBttn.Enabled := en;

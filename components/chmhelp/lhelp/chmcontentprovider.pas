@@ -566,6 +566,7 @@ begin
   i := 0;
   while (HasSearchIndex = False) and (i < fChms.Count) do
   begin
+    // Look for binary full text search index in CHM file
     HasSearchIndex := fChms.Chm[i].ObjectExists('/$FIftiMain') > 0;
     inc(i);
   end;
