@@ -149,22 +149,26 @@ begin
 
   Result:=shrViewerError;
   ErrMsg:='';
-  if (not Node.URLValid) then begin
+  if (not Node.URLValid) then
+  begin
     ErrMsg:='TLHelpConnector.ShowNode Node.URLValid=false';
     exit;
   end;
-  if (Node.URL='') then begin
+  if (Node.URL='') then
+  begin
     ErrMsg:='TLHelpConnector.ShowNode Node.URL empty';
     exit;
   end;
 
   SplitURL(Node.URL,URLScheme,URLPath,URLParams);
   CHMFilename:=CleanAndExpandFilename(URLPath);
-  if not FileExistsUTF8(CHMFilename) then begin
+  if not FileExistsUTF8(CHMFilename) then
+  begin
     ErrMsg:='chm file "'+CHMFilename+'" not found';
     exit;
   end;
-  if DirPathExists(CHMFilename) then begin
+  if DirPathExists(CHMFilename) then
+  begin
     ErrMsg:='invalid chm file "'+CHMFilename+'"';
     exit;
   end;
@@ -172,21 +176,24 @@ begin
   SubPath:='';
   if (URLParams<>'') and (URLParams[1]='?') then
     Delete(URLParams,1,1);
-  if LeftStr(URLParams,length(CHMPathParam)+1)=CHMPathParam+'=' then begin
+  if LeftStr(URLParams,length(CHMPathParam)+1)=CHMPathParam+'=' then
+  begin
     SubPath:=URLParams;
     Delete(SubPath,1,length(CHMPathParam)+1);
   end;
 
-  if Connection=nil then begin
+  if Connection=nil then
+  begin
     // create a connection to lhelp:
     FConnection := TLHelpConnection.Create;
     Connection.ProcessWhileWaiting := @Application.ProcessMessages;
   end;
 
-  if Connection.ServerRunning = false then begin
+  if Connection.ServerRunning = false then
+  begin
     // Use '_lhlpctl_' in case application developer uses SimpleIPC
     // and also uses the exe name followed by the process ID.
-    // Follow help protocol specs defined in
+    // See help protocol specs defined in
     // http://wiki.lazarus.freepascal.org/Help_protocol
     // Use process id in order to avoid conflicts when multiple entries are running
     IPCFile:=LowerCase(ExtractFileName(Application.ExeName))+
@@ -207,12 +214,14 @@ begin
       Path:=Path+GetExeExt;
 
     // search in Path
-    if (Path<>'') and (ExtractFilePath(Path)='') then begin
+    if (Path<>'') and (ExtractFilePath(Path)='') then
+    begin
       s:=FindDefaultExecutablePath(Path);
       if s<>'' then Path:=s;
     end;
 
-    if not FileExistsUTF8(Path) then begin
+    if not FileExistsUTF8(Path) then
+    begin
       ErrMsg:='The chm viewer program lhelp was not found at "'+Path+'"';
       exit;
     end;
@@ -239,7 +248,8 @@ procedure TLHelpConnector.Assign(Source: TPersistent);
 var
   Src: TLHelpConnector;
 begin
-  if Source is TLHelpConnector then begin
+  if Source is TLHelpConnector then
+  begin
     Src:=TLHelpConnector(Source);
     LHelpPath:=Src.LHelpPath;
   end;
@@ -295,9 +305,12 @@ function TCHMHelpDatabase.ShowHelp(Query: THelpQuery; BaseNode,
 begin
   ErrMsg:='';
   Result:=shrContextNotFound;
-  if NewNode.URLValid then begin
+  if NewNode.URLValid then
+  begin
     Result:=ShowURL(NewNode.URL,NewNode.Title,ErrMsg);
-  end else begin
+  end
+  else
+  begin
     Result:=shrContextNotFound;
     ErrMsg:='TCHMHelpDatabase.ShowHelp Node.URLValid=false Node.URL="'+NewNode.URL+'"';
   end;
@@ -311,7 +324,8 @@ var
 begin
   //DebugLn('TCHMHelpDatabase.ShowURL A URL="',URL,'" Title="',Title,'"');
 
-  if not FileExistsUTF8(Filename) then begin
+  if not FileExistsUTF8(Filename) then
+  begin
     ErrMsg:='chm help file "'+Filename+'" not found';
     exit(shrDatabaseNotFound);
   end;
@@ -338,9 +352,10 @@ begin
   Result:=inherited GetNodesForKeyword(HelpKeyword, ListOfNodes, ErrMsg);
   if Result<>shrSuccess then exit;
 
-  if not (csDesigning in ComponentState)
-  and (KeywordPrefix<>'')
-  and (LeftStr(HelpKeyword,length(KeywordPrefix))=KeywordPrefix) then begin
+  if not (csDesigning in ComponentState) and
+    (KeywordPrefix<>'') and
+    (LeftStr(HelpKeyword,length(KeywordPrefix))=KeywordPrefix) then
+  begin
     // HelpKeyword starts with KeywordPrefix -> add default node
     if FHelpNode=nil then
       FHelpNode:=THelpNode.CreateURL(Self,'','');

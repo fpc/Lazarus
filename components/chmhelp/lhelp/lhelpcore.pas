@@ -154,7 +154,7 @@ var
 
 const
   INVALID_FILE_TYPE = 1;
-  VERSION_STAMP = '2014-09-22'; //used in displaying version in about form etc
+  VERSION_STAMP = '2014-10-16'; //used in displaying version in about form etc
 
 implementation
 
@@ -196,6 +196,7 @@ begin
     l.BorderSpacing.Around := 6;
     l.Caption := 'LHelp (CHM file viewer)' + LineEnding +
       'Version ' + VERSION_STAMP + LineEnding +
+      LineEnding +
       'Copyright (C) Andrew Haines, ' + LineEnding +
       'Lazarus contributors';
     l.AutoSize := True;

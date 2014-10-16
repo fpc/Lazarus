@@ -211,20 +211,23 @@ begin
 
   fServerOut.Active := False;
   fServerOut.ServerID := NameForServer;
-  if not ServerRunning then begin
+  if not ServerRunning then
+  begin
     Cmd := ServerExe + ' --ipcname ' + NameForServer;
     if Hide then Cmd := Cmd + ' --hide';
     {$IFDEF darwin}
     if DirectoryExistsUTF8(ServerEXE+'.app') then
       ServerEXE+='.app';
     debugln(['TLHelpConnection.StartHelpServer ',ServerEXE]);
-    if DirectoryExistsUTF8(ServerEXE) then begin
+    if DirectoryExistsUTF8(ServerEXE) then
+    begin
       // application bundle
       // to put lhelp into the foreground, use "open -n"
       Cmd:='/usr/bin/open -n '+ServerEXE+' --args --ipcname ' + NameForServer
     end;
     {$ENDIF}
-    with TProcessUTF8.Create(nil) do begin
+    with TProcessUTF8.Create(nil) do
+    begin
       InheritHandles := false;
       ShowWindow:=swoShowNormal;
       CommandLine := Cmd;
@@ -233,16 +236,19 @@ begin
       Free;
     end;
     // give the server some time to get started
-    for X := 0 to 40 do begin
+    for X := 0 to 40 do
+    begin
       // use fServerOut.ServerRunning here instead of Self.ServerRunning to avoid a race condition
       if not fServerOut.ServerRunning then Sleep(200);
     end;
   end;
-  if fServerOut.ServerRunning then begin
+  if fServerOut.ServerRunning then
+  begin
     fServerOut.Active := True;
     Result := True;
   end
-  else begin
+  else
+  begin
     debugln('Could not get lhelp running with command '+Cmd);
   end;
 end;

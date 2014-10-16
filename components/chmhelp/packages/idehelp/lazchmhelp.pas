@@ -47,8 +47,10 @@ type
 
   TChmHelpViewer = class(THelpViewer)
   private
+    // Full path and filename to help executable (lhelp)
     fHelpExe: String;
-    fHelpLabel: String; //ID used for SimpleIPC identification
+    // ID used for SimpleIPC identification:
+    fHelpLabel: String;
     fHelpConnection: TLHelpConnection;
     fCHMSearchPath: String;
     fHelpExeParams: String;
