@@ -310,7 +310,8 @@ begin
   ReadCommandLineOptions;
   LoadPreferences(fServerName);
   // Only start IPC if server name passed in --ipcname
-  if fServerName <> '' then begin
+  if fServerName <> '' then
+  begin
     StartComms(fServerName);
   end;
   // If user wants lhelp to hide, hide entire form.
@@ -498,76 +499,81 @@ var
   Res: LongWord;
   Url: String='';
 begin
-  if fInputIPC.PeekMessage(5, True) then begin
+  if fInputIPC.PeekMessage(5, True) then
+  begin
     Stream := fInputIPC.MsgData;
     Stream.Position := 0;
     FillByte(FileReq{%H-},SizeOf(FileReq),0);
     Stream.Read(FileReq, SizeOf(FileReq));
     Res := Ord(srError); //fail by default
     case FileReq.RequestType of
-      rtFile    : begin
-                    Url := 'file://'+FileReq.FileName;
-                    Res := OpenURL(URL);
-                    debugln('got rtfile, filename '+filereq.filename);
-                  end;
-      rtUrl     : begin
-                    Stream.Position := 0;
-                    FillByte(UrlReq{%H-},SizeOf(UrlReq),0);
-                    Stream.Read(UrlReq, SizeOf(UrlReq));
-                    if UrlReq.FileRequest.FileName <> '' then
-                    begin
-                      Url := 'file://'+UrlReq.FileRequest.FileName;
-                      Res := OpenUrl(URL+'://'+UrlReq.Url)
-                    end
-                    else
-                    begin
-                      Url := UrlReq.Url;
-                      Res := OpenURL(Url);
-                    end;
-                    debugln('got rturl, filename '+urlreq.filerequest.filename+', url '+urlreq.url);
-                  end;
-      rtContext : begin
-                    Stream.Position := 0;
-                    FillByte(ConReq{%H-},SizeOf(ConReq),0);
-                    Stream.Read(ConReq, SizeOf(ConReq));
-                    Url := 'file://'+FileReq.FileName;
-                    Res := OpenURL(Url, ConReq.HelpContext);
-                    debugln('got rtcontext, filename '+filereq.filename+', context '+inttostr(ConReq.HelpContext));
-                  end;
-      rtMisc    : begin
-                    Stream.Position := 0;
-                    FillByte(MiscReq{%H-},SizeOf(MiscReq),0);
-                    Stream.Read(MiscReq, SizeOf(MiscReq));
-                    case MiscReq.RequestID of
-                      mrClose:
-                      begin
-                        MustClose:=true;
-                        Res:= ord(srSuccess);
-                        debugln('got rtmisc/mrClose');
-                      end;
-                      mrShow:
-                      begin
-                        fHide := false;
-                        if WindowState = wsMinimized then
-                          WindowState := wsNormal;
-                        RefreshState;
-                        Res := ord(srSuccess);
-                        debugln('got rtmisc/mrShow');
-                      end;
-                      mrVersion:
-                      begin
-                        // Protocol version encoded in the filename
-                        // Verify what we support
-                        if strtointdef(FileReq.FileName,0)=strtointdef(PROTOCOL_VERSION,0) then
-                          Res := ord(srSuccess)
-                        else
-                          Res := ord(srError); //version not supported
-                        debugln('got rtmisc/');
-                      end
-                      else {Unknown}
-                        Res := ord(srUnknown);
-                    end;
-                  end;
+      rtFile:
+      begin
+        Url := 'file://'+FileReq.FileName;
+        Res := OpenURL(URL);
+        debugln('got rtfile, filename '+filereq.filename);
+      end;
+      rtUrl:
+      begin
+        Stream.Position := 0;
+        FillByte(UrlReq{%H-},SizeOf(UrlReq),0);
+        Stream.Read(UrlReq, SizeOf(UrlReq));
+        if UrlReq.FileRequest.FileName <> '' then
+        begin
+          Url := 'file://'+UrlReq.FileRequest.FileName;
+          Res := OpenUrl(URL+'://'+UrlReq.Url)
+        end
+        else
+        begin
+          Url := UrlReq.Url;
+          Res := OpenURL(Url);
+        end;
+        debugln('got rturl, filename '+urlreq.filerequest.filename+', url '+urlreq.url);
+      end;
+      rtContext:
+      begin
+        Stream.Position := 0;
+        FillByte(ConReq{%H-},SizeOf(ConReq),0);
+        Stream.Read(ConReq, SizeOf(ConReq));
+        Url := 'file://'+FileReq.FileName;
+        Res := OpenURL(Url, ConReq.HelpContext);
+        debugln('got rtcontext, filename '+filereq.filename+', context '+inttostr(ConReq.HelpContext));
+      end;
+      rtMisc:
+      begin
+        Stream.Position := 0;
+        FillByte(MiscReq{%H-},SizeOf(MiscReq),0);
+        Stream.Read(MiscReq, SizeOf(MiscReq));
+        case MiscReq.RequestID of
+          mrClose:
+          begin
+            MustClose:=true;
+            Res:= ord(srSuccess);
+            debugln('got rtmisc/mrClose');
+          end;
+          mrShow:
+          begin
+            fHide := false;
+            if WindowState = wsMinimized then
+              WindowState := wsNormal;
+            RefreshState;
+            Res := ord(srSuccess);
+            debugln('got rtmisc/mrShow');
+          end;
+          mrVersion:
+          begin
+            // Protocol version encoded in the filename
+            // Verify what we support
+            if strtointdef(FileReq.FileName,0)=strtointdef(PROTOCOL_VERSION,0) then
+              Res := ord(srSuccess)
+            else
+              Res := ord(srError); //version not supported
+            debugln('got rtmisc/');
+          end
+          else {Unknown request}
+            Res := ord(srUnknown);
+        end;
+      end; //rtMisc
     end;
 
     // This may take some time which may allow receiving end to get ready for
@@ -608,28 +614,38 @@ var
 begin
   FillChar(IsHandled{%H-}, 51, 0);
   X:=1;
-  while X<=ParamCount do begin
-    if LowerCase(ParamStrUTF8(X)) = '--ipcname' then begin
+  while X<=ParamCount do
+  begin
+    if LowerCase(ParamStrUTF8(X)) = '--ipcname' then
+    begin
       IsHandled[X] := True;
       inc(X);
-      if X <= ParamCount then begin
+      if X <= ParamCount then
+      begin
         fServerName := ParamStrUTF8(X);
         IsHandled[X] := True;
         inc(X);
       end;
-    end else if LowerCase(ParamStrUTF8(X)) = '--context' then begin
+    end
+    else if LowerCase(ParamStrUTF8(X)) = '--context' then
+    begin
       IsHandled[X] := True;
       inc(X);
       if (X <= ParamCount) then
-        if TryStrToInt(ParamStrUTF8(X), fContext) then begin
+        if TryStrToInt(ParamStrUTF8(X), fContext) then
+        begin
           IsHandled[X] := True;
           inc(X);
         end;
-    end else if LowerCase(ParamStrUTF8(X)) = '--hide' then begin
+    end
+    else if LowerCase(ParamStrUTF8(X)) = '--hide' then
+    begin
       IsHandled[X] := True;
       inc(X);
       fHide:=true;
-    end else begin
+    end
+    else
+    begin
       IsHandled[X]:=copy(ParamStrUTF8(X),1,1)='-'; // ignore other parameters
       inc(X);
     end;
@@ -637,16 +653,19 @@ begin
 
   // Loop through a second time for the URL
   for X := 1 to ParamCount do
-    if not IsHandled[X] then begin
+    if not IsHandled[X] then
+    begin
       //DoOpenChm(ParamStrUTF8(X));
       URL:=ParamStrUTF8(X);
       if Pos('://', URL) = 0 then
         URL := 'file://'+URL;
       Filename:=URL;
-      if copy(Filename,1,length('file://'))='file://' then begin
+      if copy(Filename,1,length('file://'))='file://' then
+      begin
         System.Delete(Filename,1,length('file://'));
         Filename:=SetDirSeparators(Filename);
-        if not FileExistsUTF8(Filename) then begin
+        if not FileExistsUTF8(Filename) then
+        begin
           debugln(['THelpForm.ReadCommandLineOptions file not found "',Filename,'"']);
           continue;
         end;
@@ -734,21 +753,25 @@ begin
  fURLPrefix := GetURLPrefix;
  fContentProvider := GetContentProvider(fURLPrefix);
  
- if fContentProvider = nil then begin
+ if fContentProvider = nil then
+ begin
    ShowError('Cannot handle this type of content. "' + fURLPrefix + '" for url:'+LineEnding+AURL);
    Result := Ord(srInvalidURL);
    Exit;
  end;
  fRealContentProvider := fContentProvider.GetProperContentProvider(AURL);
  
- if fRealContentProvider = nil then begin
+ if fRealContentProvider = nil then
+ begin
    ShowError('Cannot handle this type of subcontent. "' + fURLPrefix + '" for url:'+LineEnding+AURL);
    Result := Ord(srInvalidURL);
    Exit;
  end;
 
- for I := 0 to PageControl.PageCount-1 do begin
-   if fRealContentProvider.ClassName = TContentTab(PageControl.Pages[I]).ContentProvider.ClassName then begin
+ for I := 0 to PageControl.PageCount-1 do
+ begin
+   if fRealContentProvider.ClassName = TContentTab(PageControl.Pages[I]).ContentProvider.ClassName then
+   begin
      fPage := TContentTab(PageControl.Pages[I]);
      if TContentTab(PageControl.Pages[I]).ContentProvider.LoadURL(AURL, AContext) then
      begin

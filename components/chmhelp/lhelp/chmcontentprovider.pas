@@ -249,7 +249,8 @@ end;
 
 procedure TChmContentProvider.AddHistory(URL: String);
 begin
-  if fHistoryIndex < fHistory.Count then begin
+  if fHistoryIndex < fHistory.Count then
+  begin
     while fHistory.Count-1 > fHistoryIndex do
       fHistory.Delete(fHistory.Count-1);
   end;
@@ -274,7 +275,8 @@ begin
   begin
     try
       fChms := TChmFileList.Create(Utf8ToSys(AFile));
-      if Not(fChms.Chm[0].IsValidFile) then begin
+      if Not(fChms.Chm[0].IsValidFile) then
+      begin
         FreeAndNil(fChms);
         //DoError(INVALID_FILE_TYPE);
         Exit;
@@ -346,7 +348,8 @@ begin
   else
     FilteredURL := Uri;
 
-  if fChms.ObjectExists(FilteredURL, AChm) = 0 then begin
+  if fChms.ObjectExists(FilteredURL, AChm) = 0 then
+  begin
     fStatusBar.SimpleText := URI + ' not found!';
     Exit;
   end;
@@ -379,12 +382,15 @@ end;
 procedure TChmContentProvider.NewChmOpened(ChmFileList: TChmFileList;
   Index: Integer);
 begin
-  if Index = 0 then begin
-    if fContext > -1 then begin
+  if Index = 0 then
+  begin
+    if fContext > -1 then
+    begin
       DoLoadContext(fContext);
       fContext := -1;
     end
-    else if ChmFileList.Chm[Index].DefaultPage <> '' then begin
+    else if ChmFileList.Chm[Index].DefaultPage <> '' then
+    begin
       DoLoadUri(MakeURI(ChmFileList.Chm[Index].DefaultPage, ChmFileList.Chm[Index]));
     end;
   end;
@@ -464,7 +470,8 @@ var
   Stream: TMemoryStream;
   {$ENDIF}
 begin
-  if fFillingToc or fFillingIndex then begin
+  if fFillingToc or fFillingIndex then
+  begin
     Application.QueueAsyncCall(@FillToc, Data);
     exit;
   end;
@@ -475,7 +482,8 @@ begin
   {$IFDEF CHM_DEBUG_TIME}
   writeln('Start: ',FormatDateTime('hh:nn:ss.zzz', Now));
   {$ENDIF}
-  if CHMReader <> nil then begin
+  if CHMReader <> nil then
+  begin
     ParentNode := fContentsTree.Items.AddChildObject(nil, CHMReader.Title, CHMReader);
     ParentNode.ImageIndex := 0;
     ParentNode.SelectedIndex := 0;
@@ -486,17 +494,20 @@ begin
     SM := nil;
     fFillingIndex := True;
     Stream := TMemoryStream(fchm.GetObject(fChm.TOCFile));
-    if Stream <> nil then begin
+    if Stream <> nil then
+    begin
       SM := TChmSiteMap.Create(stTOC);
       SM.LoadFromStream(Stream);
       Stream.Free;
     end;
     {$ENDIF}
-    if SM <> nil then begin
+    if SM <> nil then
+    begin
       {$IFDEF CHM_DEBUG_TIME}
       writeln('Stream read: ',FormatDateTime('hh:nn:ss.zzz', Now));
       {$ENDIF}
-      with TContentsFiller.Create(fContentsTree, SM, @fStopTimer, CHMReader) do begin
+      with TContentsFiller.Create(fContentsTree, SM, @fStopTimer, CHMReader) do
+      begin
         DoFill(ParentNode);
         Free;
       end;
@@ -521,16 +532,19 @@ begin
       {$ELSE}
       SM := nil;
       Stream := TMemoryStream(fchm.GetObject(fChm.IndexFile));
-      if Stream <> nil then begin
+      if Stream <> nil then
+      begin
         SM := TChmSiteMap.Create(stTOC);
         SM.LoadFromStream(Stream);
         Stream.Free;
       end;
       {$ENDIF}
-      if SM <> nil then begin
+      if SM <> nil then
+      begin
         fStatusBar.SimpleText:= 'Index Loading ...';
         Application.ProcessMessages;
-        with TContentsFiller.Create(fIndexView, SM, @fStopTimer, CHMReader) do begin
+        with TContentsFiller.Create(fIndexView, SM, @fStopTimer, CHMReader) do
+        begin
           DoFill(nil);
           Free;
         end;
@@ -617,7 +631,8 @@ begin
   fChm := TChmReader(ARootNode.Data);
   try
     fContentsTree.OnSelectionChanged := nil;
-    if ATreeNode.Url <> '' then begin
+    if ATreeNode.Url <> '' then
+    begin
       Uri := MakeURI(ATreeNode.Url, fChm);
       if ((fHtml.MasterFrame <> nil) and (MakeURI(fHtml.CurURL, fChm)  = Uri)) = False then
         DoLoadUri(MakeURI(ATreeNode.Url, fChm));
@@ -691,10 +706,11 @@ begin
     Exit;
   SearchText := LowerCase(fIndexEdit.Text);
   Node := fIndexView.Items.GetFirstNode;
-  while Node<>nil do begin
-
+  while Node<>nil do
+  begin
     ItemName := LowerCase(Copy(Node.Text, 1, Length(SearchText)));
-    if ItemName = SearchText then begin
+    if ItemName = SearchText then
+    begin
       fIndexView.Items.GetLastNode.MakeVisible;
       Node.MakeVisible;
       Node.Selected:=True;
@@ -843,7 +859,8 @@ var
     i: Integer;
   begin
     Result := -1;
-    for i := 0 to High(FoundTopics) do begin
+    for i := 0 to High(FoundTopics) do
+    begin
       if FoundTopics[i].Topic = ATopicID then
         Exit(i);
     end;
@@ -1007,7 +1024,8 @@ begin
   Result := False;
   fFile := Copy(AUrl,8, Length(AURL));
   fPos := Pos('://', fFile);
-  if fPos > 0 then begin
+  if fPos > 0 then
+  begin
     fURL := Copy(fFile, fPos+3, Length(fFIle));
     fFile := Copy(fFIle, 1, fPos-1);
   end;
@@ -1049,14 +1067,16 @@ end;
 
 procedure TChmContentProvider.GoHome;
 begin
-  if (fChms <> nil) and (fChms.Chm[0].DefaultPage <> '') then begin
+  if (fChms <> nil) and (fChms.Chm[0].DefaultPage <> '') then
+  begin
     DoLoadUri(MakeURI(fChms.Chm[0].DefaultPage, fChms.Chm[0]));
   end;
 end;
 
 procedure TChmContentProvider.GoBack;
 begin
-  if CanGoBack then begin
+  if CanGoBack then
+  begin
     Dec(fHistoryIndex);
     fIsUsingHistory:=True;
     fHtml.OpenURL(fHistory.Strings[fHistoryIndex]);
@@ -1067,7 +1087,8 @@ procedure TChmContentProvider.GoForward;
 var
   HistoryChm: TChmReader;
 begin
-  if CanGoForward then begin
+  if CanGoForward then
+  begin
     Inc(fHistoryIndex);
     fIsUsingHistory:=True;
     HistoryChm := TChmReader(fHistory.Objects[fHistoryIndex]);
@@ -1091,7 +1112,8 @@ begin
   fHistory := TStringList.Create;
 
   fTabsControl := TPageControl.Create(AParent);
-  with fTabsControl do begin
+  with fTabsControl do
+  begin
     Width := TAB_WIDTH + 12;
     Align := alLeft;
     Parent := AParent;
@@ -1099,13 +1121,15 @@ begin
   end;
 
   fContentsTab := TTabSheet.Create(fTabsControl);
-  with fContentsTab do begin
+  with fContentsTab do
+  begin
     Caption := 'Contents';
     Parent := fTabsControl;
     //BorderSpacing.Around := 6;
   end;
   fContentsPanel := TPanel.Create(fContentsTab);
-  with fContentsPanel do begin
+  with fContentsPanel do
+  begin
     Parent := fContentsTab;
     Align := alClient;
     BevelOuter := bvNone;
@@ -1113,7 +1137,8 @@ begin
     Visible := True;
   end;
   fContentsTree := TTreeView.Create(fContentsPanel);
-  with fContentsTree do begin
+  with fContentsTree do
+  begin
     Parent := fContentsPanel;
     Align := alClient;
     BorderSpacing.Around := 6;
@@ -1128,14 +1153,16 @@ begin
   end;
 
   fIndexTab := TTabSheet.Create(fTabsControl);
-  with fIndexTab do begin
+  with fIndexTab do
+  begin
     Caption := 'Index';
     Parent := fTabsControl;
     //BorderSpacing.Around := 6;
   end;
 
   fIndexEdit := TLabeledEdit.Create(fIndexTab);
-  with fIndexEdit do begin
+  with fIndexEdit do
+  begin
     Parent := fIndexTab;
     Anchors := [akLeft, akRight, akTop];
     BorderSpacing.Around := 6;
@@ -1151,7 +1178,8 @@ begin
   end;
 
   fIndexView := TTreeView.Create(fIndexTab);
-  with fIndexView do begin
+  with fIndexView do
+  begin
     Anchors := [akLeft, akTop, akRight, akBottom];
     BorderSpacing.Around := 6;
     AnchorSide[akLeft].Control := fIndexTab;
@@ -1176,13 +1204,14 @@ begin
 
  // {$IFDEF CHM_SEARCH}
   fSearchTab := TTabSheet.Create(fTabsControl);
-  with fSearchTab do begin
+  with fSearchTab do
+  begin
     Caption := 'Search';
     Parent := fTabsControl;
-
   end;
   fKeywordLabel := TLabel.Create(fSearchTab);
-  with fKeywordLabel do begin
+  with fKeywordLabel do
+  begin
     Parent := fSearchTab;
     Top := 6;
     Caption := 'Keyword:';
@@ -1190,7 +1219,8 @@ begin
     AutoSize := True;
   end;
   fKeywordCombo := TComboBox.Create(fSearchTab);
-  with fKeywordCombo do begin
+  with fKeywordCombo do
+  begin
     Parent := fSearchTab;
     Anchors := [akLeft, akRight, akTop];
     BorderSpacing.Around := 6;
@@ -1203,7 +1233,8 @@ begin
   end;
 
   fSearchBtn := TButton.Create(fSearchTab);
-  with fSearchBtn do begin
+  with fSearchBtn do
+  begin
     Parent := fSearchTab;
     Anchors := [akLeft, akTop];
     BorderSpacing.Around := 6;
@@ -1214,7 +1245,8 @@ begin
     OnClick := @SearchButtonClick;
   end;
   fResultsLabel := TLabel.Create(fSearchTab);
-  with fResultsLabel do begin
+  with fResultsLabel do
+  begin
     Parent := fSearchTab;
     Anchors := [akLeft, akTop];
     BorderSpacing.Around := 6;
@@ -1227,7 +1259,8 @@ begin
     AutoSize := True;
   end;
   fSearchResults := TTreeView.Create(fSearchTab);
-  with fSearchResults do begin
+  with fSearchResults do
+  begin
     Parent := fSearchTab;
     Anchors := [akLeft, akTop, akRight, akBottom];
     BorderSpacing.Around := 6;
@@ -1250,7 +1283,8 @@ begin
 
 
   fHtml := TIpHtmlPanel.Create(Parent);
-  with fHtml do begin
+  with fHtml do
+  begin
     DataProvider := TIpChmDataProvider.Create(fHtml, fChms);
     TIpChmDataProvider(DataProvider).OnGetHtmlPage:=@LoadingHTMLStream;
     OnDocumentOpen := @IpHtmlPanelDocumentOpen;
@@ -1261,7 +1295,8 @@ begin
   end;
 
   fSplitter := TSplitter.Create(Parent);
-  with fSplitter do begin
+  with fSplitter do
+  begin
     //Align  := alLeft;
     Left := 1;
     AnchorSide[akLeft].Control := fTabsControl;
@@ -1274,14 +1309,16 @@ begin
 
   fPopUp := TPopupMenu.Create(fHtml);
   fPopUp.Items.Add(TMenuItem.Create(fPopup));
-  with fPopUp.Items.Items[0] do begin
+  with fPopUp.Items.Items[0] do
+  begin
     Caption := 'Copy';
     OnClick := @PopupCopyClick;
   end;
   fHtml.PopupMenu := fPopUp;
 
   fStatusBar := TStatusBar.Create(AParent);
-  with fStatusBar do begin
+  with fStatusBar do
+  begin
     Parent := AParent;
     Align := alBottom;
     SimplePanel := True;

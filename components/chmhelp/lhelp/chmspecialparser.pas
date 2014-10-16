@@ -56,7 +56,8 @@ var
   X: LongInt;
 begin
   X := Pos('%20', Url);
-  while X > 0 do begin
+  while X > 0 do
+  begin
     Delete(Url, X, 3);
     Insert(' ', Url, X);
     X := Pos('%20', Url);
@@ -93,7 +94,8 @@ begin
         AParentNode.SelectedIndex := 1;
       end;
     end;
-  end else
+  end
+  else
     NewNode := TContentTreeNode(fLastNode);
 
   Inc(fBranchCount);
@@ -116,7 +118,7 @@ end;
 
 procedure TContentsFiller.DoFill(ParentNode: TTreeNode);
 var
- X: Integer;
+  X: Integer;
 begin
   fTreeView.BeginUpdate;
 

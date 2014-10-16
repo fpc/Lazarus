@@ -86,6 +86,7 @@
       <Unit2>
         <Filename Value="chmspecialparser.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ChmSpecialParser"/>
       </Unit2>
       <Unit3>
         <Filename Value="chmpopup.pas"/>
