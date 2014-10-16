@@ -4280,7 +4280,7 @@ end;
 
 procedure TCustomGrid.WMHScroll(var message: TLMHScroll);
 var
-  C,TL,CTL,aPos: Integer;
+  C,TL,CTL,aPos, maxPos: Integer;
   R: TRect;
   ScrollInfo: TScrollInfo;
   aCode: Smallint;
@@ -4315,11 +4315,13 @@ begin
   if not FGCache.ValidGrid or not HandleAllocated then
     exit;
 
+  ScrollInfo.cbSize := SizeOf(ScrollInfo);
+  ScrollInfo.fMask := SIF_PAGE or SIF_RANGE;
+  GetScrollInfo(Handle, SB_HORZ, ScrollInfo);
+  maxPos := ScrollInfo.nMax - Max(ScrollInfo.nPage-1, 0);
+
   aCode := message.ScrollCode;
   if UseRightToLeftAlignment then begin
-    ScrollInfo.cbSize:=SizeOf(ScrollInfo);
-    ScrollInfo.fMask:= SIF_PAGE or SIF_RANGE;
-    GetScrollInfo(Handle, SB_HORZ, ScrollInfo);
     aPos := (ScrollInfo.nMax-ScrollInfo.nPage)-Message.Pos;
     case aCode of
       SB_LINERIGHT: aCode := SB_LINELEFT;
@@ -4350,7 +4352,7 @@ begin
     SB_LINERIGHT:  C := CTL + NextColWidth( FTopLeft.X, 1);
     SB_LINELEFT:   C := CTL - NextColWidth( FTopLeft.X - 1, -1);
       // Scrolls one page of lines up / down
-    SB_PAGERIGHT:  C := CTL + AccumColWidths(FGCache.FullVisibleGrid.Left, FGCache.FullVisibleGrid.Right);
+    SB_PAGERIGHT:  C := min(maxPos, CTL + AccumColWidths(FGCache.FullVisibleGrid.Left, FGCache.FullVisibleGrid.Right));
     SB_PAGELEFT:   C := CTL - AccumColWidths(FGCache.FullVisibleGrid.Left, FGCache.FullVisibleGrid.Right);
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION:
