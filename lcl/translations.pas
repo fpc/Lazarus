@@ -8,8 +8,30 @@
 
   Author: Mattias Gaertner
 
+  Author of SimplePoFiles: Bart Broersma
+
+  Merge by: Giuliano Colla
+
   Abstract:
     Methods and classes for loading translations/localizations from po files.
+
+    This unit is a merge of the Translations unit by Mattias Gaertner and the
+    SimplePoFiles unit by Bart Broersma. Its purpose is to provide a single unit
+    for easier maintenance.
+    In addition the traditional functions, it provides facilities for checking and
+    maintaining translations.
+
+    A number of new properties and methods have been introduced, or exposed, namely:
+
+    in TPOFileItem - Property LineNr
+                     Property Identifier (deprecated but left in for compatibility)
+
+    in TPOFile - Method CheckFormatArguments
+                 Method CleanUp
+                 Method FindPoItem
+                 Property PoName
+                 Property FormatChecked
+    and many more - see the type declaration for details
 
   Example 1: Load a specific .po file:
 
@@ -58,6 +80,7 @@
 unit Translations;
 
 {$mode objfpc}{$H+}{$INLINE ON}
+
 {$include include/lcl_defines.inc}
 
 interface
@@ -80,6 +103,7 @@ type
   TPOFileItem = class
   public
     Tag: Integer;
+    LineNr: Integer; // required by pochecker
     Comments: string;
     IdentifierLow: string; // lowercase
     Original: string;
@@ -89,6 +113,7 @@ type
     Context: string;
     constructor Create(const TheIdentifierLow, TheOriginal, TheTranslated: string);
     procedure ModifyFlag(const AFlag: string; Check: boolean);
+    property Identifier: string read IdentifierLow; deprecated;
   end;
 
   { TPOFile }
@@ -106,8 +131,20 @@ type
     FModified: boolean;
     FHelperList: TStringList;
     FModuleList: TStringList;
+    // New fields
+    FPoName: string;
+    FNrTranslated: Integer;
+    FNrUntranslated: Integer;
+    FNrFuzzy: Integer;
+    FNrErrors: Integer;
+    FFormatChecked: Boolean;
     procedure RemoveTaggedItems(aTag: Integer);
     procedure RemoveUntaggedModules;
+    // used by pochecker
+    function GetCount: Integer;
+    procedure SetCharSet(const AValue: String);
+    function GetPoItem(Index: Integer): TPoFileItem;
+    procedure ReadPOText(AStream: TStream);
   public
     constructor Create(Full:Boolean=True);  //when loading from internal resource Full needs to be False
     constructor Create(const AFilename: String; Full:boolean=false);
@@ -115,10 +152,12 @@ type
     destructor Destroy; override;
     procedure ReadPOText(const Txt: string);
     procedure Add(const Identifier, OriginalValue, TranslatedValue, Comments,
-                        Context, Flags, PreviousID: string; SetFuzzy: boolean = false);
+                        Context, Flags, PreviousID: string; SetFuzzy: boolean = false; LineNr: Integer = -1);
     function Translate(const Identifier, OriginalValue: String): String;
     Property CharSet: String read FCharSet;
     procedure Report;
+    procedure Report(StartIndex, StopIndex: Integer; const DisplayHeader: Boolean); //pochecker
+    procedure Report(Log: TStrings; StartIndex, StopIndex: Integer; const DisplayHeader: Boolean); //pochecker
     procedure CreateHeader;
     procedure UpdateStrings(InputLines:TStrings; SType: TStringsType);
     procedure SaveToStrings(OutLst: TStrings);
@@ -132,9 +171,26 @@ type
     property Tag: integer read FTag write FTag;
     property Modified: boolean read FModified;
     property Items: TFPList read FItems;
-    
-  end;
+    // used by pochecker /pohelper
+  public
+    procedure CheckFormatArguments;
+    procedure CleanUp; // removes previous ID from non-fuzzy entries
+                       // and badformat flags if appropriate
+    property PoName: String read FPoName;
+    property PoRename: String write FPoName;
+    property NrTranslated: Integer read FNrTranslated;
+    property NrUntranslated: Integer read FNrUntranslated;
+    property NrFuzzy: Integer read FNrFuzzy;
+    property NrErrors: Integer read FNrErrors;
+    function FindPoItem(const Identifier: String): TPoFileItem;
+    function OriginalToItem(Data: String): TPoFileItem;
+    property OriginalList: TStringHashList read FOriginalToItem;
+    property PoItems[Index: Integer]: TPoFileItem read GetPoItem;
+    property Count: Integer read GetCount;
+    property Header: TPOFileItem read FHeader;
+    property FormatChecked: boolean read FFormatChecked;
 
+  end;
   EPOFileError = class(Exception)
   public
     ResFileName: string;
@@ -162,6 +218,12 @@ function UTF8ToSystemCharSet(const s: string): string; inline;
 
 function UpdatePoFile(RSTFiles: TStrings; const POFilename: string): boolean;
 procedure UpdatePoFileTranslations(const BasePOFilename: string; BasePOFile: TPOFile = nil);
+
+const
+  tgHasDup = $01;
+  sFuzzyFlag = 'fuzzy';
+  sBadFormatFlag = 'badformat';
+
 
 implementation
 
@@ -226,6 +288,88 @@ begin
         inc(DestPos);
       end;
     end;
+  end;
+end;
+
+function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;
+const
+  FormatArgs = 'DEFGMNPSUX';
+  FormatChar = '%';
+  FormatSpecs = ':-.0123456789';
+var
+  p: PtrInt;
+  NewStr, Symb: String;
+begin
+  NewStr := '';
+  ArgumentError := 0;
+  p := UTF8Pos(FormatChar, S);
+  while (Length(S)>0) and (p>0) and (ArgumentError=0) do
+  begin
+    UTF8Delete(S, 1, p);
+    if Length(S)>0 then
+    begin
+      Symb := UTF8UpperCase(UTF8Copy(S, 1, 1));
+      while (Length(S)>1) and (UTF8Pos(Symb, FormatSpecs)>0) do
+      begin
+        //weak syntax check for formatting options, skip them if found
+        UTF8Delete(S, 1, 1);
+        Symb := UTF8UpperCase(UTF8Copy(S, 1, 1));
+      end;
+      if Symb <> FormatChar then
+      begin
+        NewStr := NewStr+Symb;
+        if UTF8Pos(Symb, FormatArgs)=0 then
+          ArgumentError := Utf8Length(NewStr);
+      end;
+      //removing processed symbol
+      UTF8Delete(S, 1, 1);
+      //searching for next argument
+      p := UTF8Pos(FormatChar, S);
+    end
+    else
+      //in this case formatting symbol doesn't have its argument
+      ArgumentError := Utf8Length(NewStr) + 1;
+  end;
+  Result := NewStr;
+end;
+
+function CompareFormatArgs(S1, S2: String): Boolean;
+var
+  Extr1, Extr2: String;
+  ArgErr1, ArgErr2: Integer;
+begin
+  Result := true;
+  //do not check arguments if strings are equal to save time and avoid some
+  //false positives, e.g. for '{%Region}' string in lazarusidestrconsts
+  if S1 <> S2 then
+  begin
+    Extr1 := ExtractFormatArgs(S1, ArgErr1);
+    Extr2 := ExtractFormatArgs(S2, ArgErr2);
+    //writeln('Extr1 = ',Extr1,' ArgErr1 = ',ArgErr1);
+    //writeln('Extr2 = ',Extr1,' ArgErr2 = ',ArgErr2);
+    if (ArgErr1 = 0) then
+    begin
+      if (ArgErr2 = 0) then
+      begin
+        Result := Utf8CompareText(Extr1, Extr2) = 0;
+      end
+      else
+      begin
+        //Extr2 can have dangling %'s
+        //e.g. Extr1 = "%s %d" Extr2 = "%s %d {%H}", it does not make sense, but it's not illegal
+        if (ArgErr2 = Utf8Length(Extr1)+1) and not (ArgErr2 > Utf8Length(Extr2)) then Extr2 := Utf8Copy(Extr2,1,ArgErr2-1);
+        Result := Utf8CompareText(Extr1, Extr2) = 0;
+      end;
+    end
+    else
+    begin  //ArgErr1 <> 0
+      //Assume Extr1 is always legal, otherwise the IDE would crash in it's default language...
+      //Only compare until the last valid argument in Extr1
+      if (ArgErr1 = Utf8Length(Extr1)) then Utf8Delete(Extr1, ArgErr1, 1);
+      if Utf8Length(Extr2) > Utf8Length(Extr1) then Extr2 := Utf8Copy(Extr2, 1, Utf8Length(Extr1));
+      Result := Utf8CompareText(Extr1, Extr2) = 0;
+    end;
+    //writeln('CompareFormatArgs: Result = ',Result);
   end;
 end;
 
@@ -330,8 +474,8 @@ begin
     // Update po file with lrt or/and rst RSTFiles
     for i:=0 to RSTFiles.Count-1 do begin
       Filename:=RSTFiles[i];
-      if (CompareFileExt(Filename,'.lrt')=0) or 
-         (CompareFileExt(Filename,'.rst')=0) or 
+      if (CompareFileExt(Filename,'.lrt')=0) or
+         (CompareFileExt(Filename,'.rst')=0) or
          (CompareFileExt(Filename,'.rsj')=0) then
         try
           //DebugLn('');
@@ -486,21 +630,21 @@ var
 begin
   if FModuleList=nil then
     exit;
-    
+
   // remove all module references that were not tagged
   for i:=FItems.Count-1 downto 0 do begin
     Item := TPOFileItem(FItems[i]);
     p := pos('.',Item.IdentifierLow);
     if P=0 then
       continue; // module not found (?)
-      
+
     Module :=LeftStr(Item.IdentifierLow, p-1);
     if (FModuleList.IndexOf(Module)<0) then
       continue; // module was not modified this time
 
     if Item.Tag=FTag then
       continue; // PO item was updated
-      
+
     // this item is not more in updated modules, delete it
     FIdentifierLowToItem.Remove(Item.IdentifierLow);
     // delete it also from VarToItem
@@ -513,6 +657,35 @@ begin
     FItems.Delete(i);
     Item.Free;
   end;
+end;
+
+function TPOFile.GetCount: Integer;
+begin
+  Result := FItems.Count;
+end;
+
+procedure TPOFile.SetCharSet(const AValue: String);
+begin
+  if (CompareText(FCharSet, AValue) = 0) then Exit;
+  if (AValue = '') then FCharSet := 'UTF-8'
+  else FCharSet := AValue;
+end;
+
+function TPOFile.GetPoItem(Index: Integer): TPoFileItem;
+begin
+  Result := TPoFileItem(FItems.Items[Index]);
+end;
+
+procedure TPOFile.ReadPOText(AStream: TStream);
+var
+  Size: Integer;
+  s: string;
+begin
+  Size:=AStream.Size-AStream.Position;
+  if Size<=0 then exit;
+  SetLength(s,Size);
+  AStream.Read(s[1],Size);
+  ReadPOText(s);
 end;
 
 constructor TPOFile.Create(Full:Boolean=True);
@@ -529,6 +702,7 @@ constructor TPOFile.Create(const AFilename: String; Full:boolean=False);
 var
   f: TStream;
 begin
+  FPoName := AFilename;
   f := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyNone);
   try
     Create(f, Full);
@@ -540,19 +714,25 @@ begin
 end;
 
 constructor TPOFile.Create(AStream: TStream; Full:boolean=false);
+{$IFDEF test_readtxt}
 var
   Size: Integer;
   s: string;
+{$ENDIF}
 begin
   Create;
-  
+
   FAllEntries := Full;
-  
+
+  {$IFDEF test_readtxt}
   Size:=AStream.Size-AStream.Position;
   if Size<=0 then exit;
   SetLength(s,Size);
   AStream.Read(s[1],Size);
   ReadPOText(s);
+  {$ELSE}
+  ReadPOText(AStream);
+  {$ENDIF}
 end;
 
 destructor TPOFile.Destroy;
@@ -595,6 +775,8 @@ var
   p: PChar;
   LineStart: PChar;
   LineEnd: PChar;
+  Cnt: Integer;
+  LineNr: Integer;
   Identifier: String;
   PrevMsgID: String;
   Comments: String;
@@ -621,8 +803,8 @@ var
     PrevMsgID := '';
     MsgStrFlag := false;
   end;
-  
-  procedure AddEntry;
+
+  procedure AddEntry (LineNr: Integer);
   var
     Item: TPOFileItem;
     SetFuzzy: boolean;
@@ -652,7 +834,7 @@ var
           SetFuzzy:=true;
         end;
       end;
-      Add(Identifier,Msg[mid],Msg[mstr],Comments,Msg[mctx],Flags,PrevMsgID,SetFuzzy);
+      Add(Identifier,Msg[mid],Msg[mstr],Comments,Msg[mctx],Flags,PrevMsgID,SetFuzzy,LineNr);
       ResetVars;
     end else
     if (Msg[CurMsg]<>'') and (FHeader=nil) then begin
@@ -669,21 +851,26 @@ begin
   p:=PChar(s);
   LineStart:=p;
   TextEnd:=p+l;
-
+  Cnt := 0;
+  LineNr := 0;
   ResetVars;
 
   while LineStart<TextEnd do begin
     LineEnd:=LineStart;
     while (not (LineEnd^ in [#0,#10,#13])) do inc(LineEnd);
     LineLen:=LineEnd-LineStart;
+    Inc(Cnt); // we must count also empty lines
     if LineLen>0 then begin
       Handled:=false;
       case LineStart^ of
       '#':
         begin
-          if MsgStrFlag=true then
+          if MsgStrFlag=true then begin
             //we detected comments after previous MsgStr. Consider it as start of new entry
-            AddEntry;
+            AddEntry(LineNr);
+            inc(Cnt); // for empty line before comment
+            LineNr := Cnt; // the comment line is the line number for this entry
+            end;
           case LineStart[1] of
           ':':
             if LineStart[2]=' ' then begin
@@ -775,16 +962,16 @@ begin
         end;
       end;
       if not Handled then
-        AddEntry;
+        AddEntry(LineNr);
     end;
     LineStart:=LineEnd+1;
     while (LineStart^ in [#10,#13]) do inc(LineStart);
   end;
-  AddEntry;
+  AddEntry(LineNr);
 end;
 
 procedure TPOFile.Add(const Identifier, OriginalValue, TranslatedValue,
-  Comments, Context, Flags, PreviousID: string; SetFuzzy: boolean = false);
+  Comments, Context, Flags, PreviousID: string; SetFuzzy: boolean = false; LineNr: Integer = -1);
 var
   Item: TPOFileItem;
   p: Integer;
@@ -795,9 +982,15 @@ begin
   Item.Context:=Context;
   Item.Flags:=Flags;
   if SetFuzzy = true then
-    Item.ModifyFlag('fuzzy', true);
+    Item.ModifyFlag(sFuzzyFlag, true);
   Item.PreviousID:=PreviousID;
   Item.Tag:=FTag;
+  Item.LineNr := LineNr;
+
+  if TranslatedValue = '' then Inc(FNrUntranslated)
+  else if pos(sFuzzyFlag,Item.Flags)<>0 then Inc(FNrFuzzy)
+  else inc(FNrTranslated);
+
   FItems.Add(Item);
 
   //debugln(['TPOFile.Add Identifier=',Identifier,' Orig="',dbgstr(OriginalValue),'" Transl="',dbgstr(TranslatedValue),'"']);
@@ -820,7 +1013,7 @@ begin
   //Load translation only if it exists and is NOT fuzzy.
   //This matches gettext behaviour and allows to avoid a lot of crashes related
   //to formatting arguments mismatches.
-  if (Item<>nil) and (pos('fuzzy', lowercase(Item.Flags))=0) then begin
+  if (Item<>nil) and (pos(sFuzzyFlag, lowercase(Item.Flags))=0) then begin
     Result:=Item.Translation;
     if Result='' then RaiseGDBException('TPOFile.Translate Inconsistency');
   end else
@@ -844,7 +1037,7 @@ begin
     DebugLn('msgstr=', FHeader.Translation);
   end;
   DebugLn;
-  
+
   DebugLn('Entries:');
   DebugLn('---------------------------------------------');
   for i:=0 to FItems.Count-1 do begin
@@ -857,6 +1050,94 @@ begin
     DebugLn;
   end;
 
+end;
+
+procedure TPOFile.Report(StartIndex, StopIndex: Integer;
+  const DisplayHeader: Boolean);
+var
+  Item: TPOFileItem;
+  i: Integer;
+begin
+  if DisplayHeader then
+  begin
+    DebugLn('Header:');
+    DebugLn('---------------------------------------------');
+
+    if FHeader=nil then
+      DebugLn('No header found in po file')
+    else begin
+      DebugLn('Comments=',FHeader.Comments);
+      DebugLn('Identifier=',FHeader.IdentifierLow);
+      DebugLn('msgid=',FHeader.Original);
+      DebugLn('msgstr=', FHeader.Translation);
+    end;
+    DebugLn;
+  end;
+
+  if (StartIndex > StopIndex) then
+  begin
+    i := StopIndex;
+    StopIndex := StartIndex;
+    StartIndex := i;
+  end;
+  if (StopIndex > Count - 1) then StopIndex := Count - 1;
+  if (StartIndex < 0) then StartIndex := 0;
+
+  DebugLn('Entries [',DbgS(StartIndex),'..',Dbgs(StopIndex),']:');
+  DebugLn('---------------------------------------------');
+  for i := StartIndex to StopIndex do begin
+    DebugLn('#',dbgs(i),': ');
+    Item := TPOFileItem(FItems[i]);
+    DebugLn('Identifier=',Item.IdentifierLow);
+    DebugLn('msgid=',Item.Original);
+    DebugLn('msgstr=', Item.Translation);
+    DebugLn('Comments=',Item.Comments);
+    DebugLn;
+  end;
+end;
+
+procedure TPOFile.Report(Log: TStrings; StartIndex, StopIndex: Integer;
+  const DisplayHeader: Boolean);
+var
+  Item: TPOFileItem;
+  i: Integer;
+begin
+  if DisplayHeader then
+  begin
+    Log.Add('Header:');
+    Log.Add('---------------------------------------------');
+
+    if FHeader=nil then
+      Log.Add('No header found in po file')
+    else begin
+      Log.Add('Comments='+FHeader.Comments);
+      Log.Add('Identifier='+FHeader.IdentifierLow);
+      Log.Add('msgid='+FHeader.Original);
+      Log.Add('msgstr='+ FHeader.Translation);
+    end;
+    Log.Add('');
+  end;
+
+  if (StartIndex > StopIndex) then
+  begin
+    i := StopIndex;
+    StopIndex := StartIndex;
+    StartIndex := i;
+  end;
+  if (StopIndex > Count - 1) then StopIndex := Count - 1;
+  if (StartIndex < 0) then StartIndex := 0;
+
+  Log.Add('Entries ['+DbgS(StartIndex)+'..'+Dbgs(StopIndex)+']:');
+  Log.Add('---------------------------------------------');
+  for i := StartIndex to StopIndex do begin
+    Log.Add('#'+dbgs(i)+': ');
+    Item := TPOFileItem(FItems[i]);
+    Log.Add('Identifier='+Item.IdentifierLow);
+    Log.Add('msgid='+Item.Original);
+    Log.Add('msgstr='+ Item.Translation);
+    Log.Add('Comments='+Item.Comments);
+    Log.Add('');
+  end;
 end;
 
 procedure TPOFile.CreateHeader;
@@ -1215,7 +1496,7 @@ begin
     if CompareMultilinedStrings(Item.Original, Original)<>0 then begin
       FModified := True;
       if Item.Translation<>'' then begin
-        Item.ModifyFlag('fuzzy', true);
+        Item.ModifyFlag(sFuzzyFlag, true);
         Item.PreviousID:=Item.Original;
       end;
     end;
@@ -1236,12 +1517,12 @@ begin
     // old item don't have context, add one
     if Item.Context='' then
       Item.Context := Item.IdentifierLow;
-      
+
     // if old item is already translated use translation
     if Item.Translation<>'' then begin
       ATranslation := Item.Translation;
       // if old item is fuzzy, copy PreviousID too
-      if pos('fuzzy', Item.Flags)<>0 then
+      if pos(sFuzzyFlag, Item.Flags)<>0 then
         APrevStr := Item.PreviousID;
       // set a flag to mark item fuzzy if it is not already
       SetFuzzy := true;
@@ -1302,6 +1583,85 @@ begin
   end;
 end;
 
+procedure TPOFile.CheckFormatArguments;
+var
+  I: Integer;
+  aPoItem: TPOFileItem;
+  isFuzzy: boolean;
+  isBadFormat: boolean;
+begin
+  FNrErrors := 0;
+  for I := 0 to FItems.Count -1 do begin
+    aPoItem := TPOFileItem(FItems.Items[I]);
+    if aPoItem.Translation = '' then Continue;
+    isFuzzy     := pos(sFuzzyFlag,aPoItem.Flags) <> 0;
+    isBadFormat := pos(sBadFormatFlag,aPoItem.Flags) <> 0;
+    if (pos('%',aPoItem.Original) <> 0) or (pos('%',aPoItem.Translation) <> 0) then begin
+      if not CompareFormatArgs(aPoItem.Original,aPoItem.Translation) then begin
+        inc(FNrErrors);
+        if not isFuzzy then begin
+          aPoItem.ModifyFlag(sFuzzyFlag,true);
+          inc(FNrFuzzy);
+          dec(FNrTranslated);
+          FModified := true;
+        end;
+        if not isBadFormat then begin
+          aPoItem.ModifyFlag(sBadFormatFlag,true);
+          FModified := true;
+        end;
+      end;
+    end
+    else begin // possibly an offending string has been removed
+      if isBadFormat then begin
+        aPoItem.ModifyFlag(sBadFormatFlag,False);
+        FModified := true;
+      end;
+    end;
+  end;
+  FFormatChecked := true;
+end;
+
+procedure TPOFile.CleanUp;
+var
+  I: Integer;
+  aPoItem: TPOFileItem;
+  isFuzzy: boolean;
+  isBadFormat: boolean;
+begin
+  for I := 0 to FItems.Count -1 do begin
+    aPoItem := TPOFileItem(FItems.Items[I]);
+    isFuzzy     := pos(sFuzzyFlag,aPoItem.Flags) <> 0;
+    isBadFormat := pos(sBadFormatFlag,aPoItem.Flags) <> 0;
+    if not isFuzzy then begin
+      // remove PreviousID from non-fuzzy Items
+      if (aPoItem.PreviousID <> '') then begin
+        aPoItem.PreviousID := '';
+        FModified := true;
+        end;
+      // remove badformat flag from non-fuzzy Items
+      if isBadFormat and FFormatChecked then begin
+        aPoItem.ModifyFlag(sBadFormatFlag,false);
+        FModified := true;
+        end;
+      end;
+    // is Context of some use ?
+    {if aPoItem.Context = '' then begin
+      aPoItem.Context := aPoItem.IdentifierLow;
+      FModified := True;
+      end;}
+  end;
+end;
+
+function TPOFile.FindPoItem(const Identifier: String): TPoFileItem;
+begin
+  Result := TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
+end;
+
+function TPOFile.OriginalToItem(Data: String): TPoFileItem;
+begin
+  Result := TPOFileItem(FOriginalToItem.Data[Data]);
+end;
+
 { TPOFileItem }
 
 constructor TPOFileItem.Create(const TheIdentifierLow, TheOriginal,
@@ -1337,5 +1697,4 @@ begin
 end;
 
 end.
-
 
