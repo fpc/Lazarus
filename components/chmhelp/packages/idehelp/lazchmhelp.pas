@@ -63,6 +63,7 @@ type
     procedure SetHelpEXE(AValue: String);
   protected
     function GetFileNameAndURL(RawUrl: String; out FileName: String; out URL: String): Boolean;
+    // Sets label/ID used for simpleipc communications
     procedure SetHelpLabel(AValue: String);
     // Check for lhelp executable, if not present, build if possible
     function CheckBuildLHelp: Integer; // modal result
@@ -112,12 +113,15 @@ const
   // Part of help name. Stored/retrieved in Lazarus options CHMHelp/Name.
   // Do not localize.
   CHMHelpName='lazhelp';
+  DigitsInPID=5; // Number of digits in the formatted PID according to the Help Protocol
 
 // Formats (part of) process ID according to help protocol for
 // use in ipcname parameter
 function HelpProtocolFormattedPID: string;
 begin
-  result := copy(inttostr(GetProcessID)+'00000',1,5)
+  // Make sure at least DigitsInPID digits present even if 0
+  result := copy(inttostr(GetProcessID)+
+    StringOfChar('0',DigitsInPID),1,DigitsInPID)
 end;
 
 procedure Register;
@@ -149,8 +153,7 @@ function TChmHelpViewer.GetHelpLabel: String;
 begin
   // fHelpLabel is used for SimpleIPC server id;
   // lhelp protocol specifies server-dependent constant string
-  // followed by string representation of last 5 digits of the processID
-  // padded with 00000 at the right
+  // followed by formatted string representation of (part of) processid/PID
   // Autocalculate if needed:
   if Length(fHelpLabel) = 0 then
     fHelpLabel := CHMHelpName + HelpProtocolFormattedPID;
@@ -280,21 +283,22 @@ begin
     if not (fHelpLabel[i] in ['a'..'z', '0'..'9', 'A'..'Z']) then
       fHelpLabel[i] := '_';
   end;
-  // todo: for some reason we get assigned strings like
+  // Validity check for labels like
   // lazhelp501204548
-  // i.e. with too many numbers in the PID part
-  // Hacky way to fix this: if too many numbers, replace with
-  // default
+  // i.e. with too many numbers in the PID part.
+  // These may be left over in option files from earlier Lazarus versions.
+  // If too many numbers at end, replace with default
   if fHelpLabel[length(FHelpLabel)] in ['0'..'9'] then
   begin
     for i := Length(fHelpLabel) downto 1 do
     begin
       if not(fHelpLabel[i] in ['0'..'9']) then
       begin
-        if (Length(fHelpLabel)-i>5) then
+        if (Length(fHelpLabel)-i>DigitsInPID) then
         begin
           Debugln('TChmHelpViewer.SetHelpLabel: got '+fHelpLabel+'. Help protocol does not allow this many digits. Resetting to empty string.');
-          fHelpLabel := '';
+          // Revert to default
+          fHelpLabel := CHMHelpName + HelpProtocolFormattedPID;
         end;
         break;
       end;
@@ -557,14 +561,14 @@ begin
     if Trim(fHelpExeParams) = '' then
     begin
       Result := shrViewerError;
-      ErrMsg := 'If you do not use "lhelp" as viewer you have to set up '
-              + 'HelpExeParams correctly in' + sLineBreak
-              + 'Tools -> Options -> Help -> Help Options -> '
-              + 'under HelpViewers - CHM Help Viewer' + sLineBreak
-              + 'e.g. for HH.EXE (HTML Help in Windows) it must be' + sLineBreak
-              + '  "%s::%s"' + sLineBreak
-              + 'where first %s will be replaced by CHM file name' + sLineBreak
-              + 'and the second one will be replaced by URL';
+      ErrMsg := 'If you do not use "lhelp" as viewer you have to set up ' +
+        'HelpExeParams correctly in' + LineEnding +
+        'Tools -> Options -> Help -> Help Options -> ' +
+        'under HelpViewers - CHM Help Viewer' + LineEnding +
+        'e.g. for HH.EXE (HTML Help in Windows) it must be' + LineEnding +
+        '  "%s::%s"' + LineEnding +
+        'where first %s will be replaced by CHM file name' + LineEnding +
+        'and the second one will be replaced by URL';
       Exit;
     end;
 

@@ -109,6 +109,11 @@ type
     fConfig: TXMLConfig;
     fHasShowed: Boolean;
     fHide: boolean; //If yes, start with content hidden. Otherwise start normally
+    // Keep track of whether size/position preferences were loaded and applied to form
+    fLayoutApplied: boolean;
+    // Applies layout (size/position/fullscreen) preferences once in lhelp lifetime
+    // Needs LoadPreference to be run first to get fConfig object.
+    procedure ApplyLayoutPreferencesOnce;
     // Load preferences. Preferences are unique for server-lhelp pairs and plain lhelp
     procedure LoadPreferences(AIPCName: String);
     // Saves preferences. Uses existing config loaded by LoadPreferences
@@ -162,6 +167,9 @@ implementation
 
 uses 
   LHelpControl;
+
+const
+  DigitsInPID=5; // Number of digits in the formatted PID according to the Help Protocol
 
 type
   TRecentMenuItem = class(TMenuItem)
@@ -362,6 +370,29 @@ begin
   RefreshState;
 end;
 
+procedure THelpForm.ApplyLayoutPreferencesOnce;
+begin
+  if not(assigned(fConfig)) then exit;
+  if (not(fHide)) and
+    (not(fLayoutApplied)) then
+  begin
+    if (fConfig.GetValue('Position/Maximized', false)=true) then
+    begin
+      Windowstate:=wsMaximized
+    end
+    else
+    begin
+      Left   := fConfig.GetValue('Position/Left/Value', Left);
+      Top    := fConfig.GetValue('Position/Top/Value', Top);
+      Width  := fConfig.GetValue('Position/Width/Value', Width);
+      Height := fConfig.GetValue('Position/Height/Value', Height);
+    end;
+    // Keep track so we do not reapply initial settings as user may have
+    // changed size etc in the meantime.
+    fLayoutApplied := true;
+  end;
+end;
+
 procedure THelpForm.ViewMenuContentsClick(Sender: TObject);
 begin
   // TabsControl property in TChmContentProvider
@@ -388,29 +419,16 @@ begin
   ForceDirectoriesUTF8(PrefFile);
   // --ipcname passes a server ID that consists of a
   // server-dependent constant together with a process ID.
-  // Strip out the process ID to get fixed config file names for one server
-  ServerPart := Copy(AIPCName, 1, length(AIPCName)-5); //strip out PID
+  // Strip out the formatted process ID to get fixed config file names for
+  // one server
+  ServerPart := Copy(AIPCName, 1, length(AIPCName)-DigitsInPID);
   PrefFile := Format('%slhelp-%s.conf',[IncludeTrailingPathDelimiter(PrefFile), ServerPart]);
 
   fConfig := TXMLConfig.Create(Self);
   fConfig.Filename := PrefFile;
 
   // Restore window but only if currently not being asked to hide
-  if not(fHide) then
-  begin
-    if (fConfig.GetValue('Position/Maximized',false)=true) then
-    begin
-      Windowstate:=wsMaximized
-    end
-    else
-    begin
-      Left   := fConfig.GetValue('Position/Left/Value', Left);
-      Top    := fConfig.GetValue('Position/Top/Value', Top);
-      Width  := fConfig.GetValue('Position/Width/Value', Width);
-      Height := fConfig.GetValue('Position/Height/Value', Height);
-    end;
-  end;
-
+  ApplyLayoutPreferencesOnce;
   OpenDialog1.FileName := fConfig.GetValue('LastFileOpen/Value', OpenDialog1.FileName);
 
   RecentCount:= fConfig.GetValue('Recent/ItemCount/Value', 0);
@@ -427,6 +445,7 @@ begin
     exit; //silently abort
   if not (WindowState = wsMaximized) then
   begin
+    fConfig.SetValue('Position/Maximized', false);
     fConfig.SetValue('Position/Left/Value', Left);
     fConfig.SetValue('Position/Top/Value', Top);
     fConfig.SetValue('Position/Width/Value', Width);
@@ -616,6 +635,9 @@ begin
       Self.SendToBack;
       Self.BringToFront;
       Self.ShowOnTop;
+      // If lhelp was run with hidden parameter, we need to apply
+      // layout preferences once:
+      ApplyLayoutPreferencesOnce;
     end;
   end;
 end;
