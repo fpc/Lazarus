@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList, ContNrs, Math,
-  Masks, SimplePoFiles, PoCheckerConsts;
+  Masks,{$IFDEF USE_NEW_TRANSLATIONS}Translations ,{$ENDIF}SimplePoFiles, PoCheckerConsts;
 
 Type
 

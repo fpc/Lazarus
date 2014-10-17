@@ -30,7 +30,7 @@ uses
   {$IFDEF POCHECKERSTANDALONE}
   Translations,
   {$ELSE}
-  IDEIntf, MenuIntf,
+  IDEIntf, MenuIntf,{$IFDEF USE_NEW_TRANSLATIONS}Translations,{$ENDIF}
   {$ENDIF}
   SimplePoFiles, PoFamilies, ResultDlg, pocheckerconsts, PoCheckerSettings,
   PoFamilyLists, PoCheckerMemoDlg;

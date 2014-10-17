@@ -36,7 +36,17 @@ unit SimplePoFiles;
 { $include include/lcl_defines.inc}
 
 interface
+{$IFDEF USE_NEW_TRANSLATIONS}
+uses
+  Classes,sysutils,Translations;
 
+type
+  TSimplePOFile = class (TPOFile)
+  end;
+
+implementation
+
+{$ELSE}
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList
   {, LConvEncoding}
@@ -141,7 +151,6 @@ function UTF8ToSystemCharSet(const s: string): string; inline;
 
 const
   tgHasDup = $01;
-
 implementation
 
 {$ifdef DebugSimplePoFiles}
@@ -1295,6 +1304,7 @@ begin
     F.Free;
   end;
 end;
+{$ENDIF}
 
 end.
 

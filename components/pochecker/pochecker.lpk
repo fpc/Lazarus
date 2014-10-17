@@ -10,7 +10,7 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
-        <CustomOptions Value="$(IDEBuildOptions)"/>
+        <CustomOptions Value="$(IDEBuildOptions) -dUSE_NEW_TRANSLATIONS"/>
       </Other>
     </CompilerOptions>
     <Description Value="Check the validity of translated PO files.
