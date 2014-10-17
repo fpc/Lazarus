@@ -1569,7 +1569,6 @@ type
   TApplicationProperties = class(TLCLComponent)
   private
     FCaptureExceptions: boolean;
-    FExceptionDialogType: TApplicationExceptionDlg;
     FExceptionDialotType: TApplicationExceptionDlg;
     FHelpFile: string;
     FHint: string;
