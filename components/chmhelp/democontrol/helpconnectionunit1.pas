@@ -55,7 +55,7 @@ begin
   try
     if Help.ServerRunning = false then
       Help.StartHelpServer(IPCFile, GetLHelpFilename);
-    Res :=Help.OpenFile(OpenDialog1.FileName);
+    Res := Help.OpenFile(OpenDialog1.FileName);
   finally
     Screen.Cursor := crDefault;
   end;
@@ -69,7 +69,7 @@ begin
   {$IFDEF Unix}
   DeleteFile('/tmp/'+IPCFile);
   {$ENDIF}
-  LHelp:=GetLHelpFilename;
+  LHelp := GetLHelpFilename;
   if not FileExistsUTF8(LHelp) then
     MessageDlg('Missing lhelp','Can not find the lhelp application "'+LHelp+'"',
        mtError,[mbOk],0);
@@ -84,11 +84,11 @@ end;
 
 function TForm1.GetLHelpFilename: string;
 begin
-  Result:='../lhelp/lhelp';
+  Result := '../lhelp/lhelp';
   {$IFDEF Windows}
-  Result:='..\lhelp\lhelp.exe';
+  Result := '..\lhelp\lhelp.exe';
   {$ENDIF}
-  {$IFDEF darwin}
+  {$IFDEF darwin} //OS X
   Result:=Result+'.app/Contents/MacOS/'+ExtractFilename(Result);
   {$ENDIF}
 end;

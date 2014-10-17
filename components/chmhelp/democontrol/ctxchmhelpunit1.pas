@@ -7,7 +7,7 @@ Abstract:
 
   TLHelpConnector starts "lhelp" a chm viewer written in pure pascal.
 
-How to run this program
+How to run this program:
     Make sure the example.chm file is created
     You can create the example.chm with
     ../../../tools/chmaker/chmmaker.lpi
