@@ -2270,12 +2270,14 @@ type
     FMinWidth: Integer;
     FParentBitmap: Boolean;
     FParentColor: Boolean;
+    FRealLeft: Integer;
+    FRealWidth: Integer;
     FText: TTranslateString;
     FVisible: Boolean;
     FWidth: Integer;
     FLeft: Integer;
     FTop: Integer;
-    FRealWidth: Integer;
+    function GetRight: Integer;
     function IsBitmapStored: Boolean;
     function IsColorStored: Boolean;
     function GetVisible: Boolean;
@@ -2298,13 +2300,15 @@ type
     cDefMinHeight = 25;
     cDefMinWidth = 100;
     cDefWidth = 180;
-    cHorSpacing = 7;
+    cHorSpacing = 5;
     cVertSpacing = 3;
   protected
     FControlLeft: Integer;
     FControlTop: Integer;
+    FTextWidth: Integer;
     function CalcPreferredHeight: Integer;
     function CalcPrefferedWidth: Integer;
+    procedure CalcTextWidth;
     function GetDisplayName: string; override;
   public
     constructor Create(aCollection: TCollection); override;
@@ -2312,6 +2316,9 @@ type
     procedure InvalidateCoolBar(Sender: TObject);
     procedure Assign(aSource: TPersistent); override;
     property Height: Integer read FHeight;
+    property Left: Integer read FLeft;
+    property Right: Integer read GetRight;
+    property Top: Integer read FTop;
   published
     property Bitmap: TBitmap read FBitmap write SetBitmap stored IsBitmapStored;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
@@ -2337,7 +2344,7 @@ type
   private
     FCoolBar: TCustomCoolBar;
     function GetItem(Index: Integer): TCoolBand;
-    procedure SetItem(Index: Integer; aValue: TCoolBand);
+    procedure SetItem(Index: Integer; Value: TCoolBand);
   protected
     function GetOwner: TPersistent; override;
     procedure Update(aItem: TCollectionItem); override;
@@ -2371,51 +2378,61 @@ type
     FVertical: Boolean;
     FOnChange: TNotifyEvent;
     function GetAlign: TAlign;
-    function RowEndHelper(ALeft, AVisInd: Integer): Boolean;
+    function RowEndHelper(ALeft, AVisibleIdx: Integer): Boolean;
     procedure SetBandBorderStyle(AValue: TBorderStyle);
     procedure SetBands(AValue: TCoolBands);
-    procedure SetBitmap(aValue: TBitmap);
+    procedure SetBitmap(AValue: TBitmap);
     procedure SetGrabStyle(AValue: TGrabStyle);
     procedure SetGrabWidth(AValue: Integer);
     procedure SetImages(AValue: TCustomImageList);
     procedure SetShowText(AValue: Boolean);
-    procedure SetVertical(aValue: Boolean);
+    procedure SetVertical(AValue: Boolean);
   protected const
-    cBorderWidth = 2;
     cDefGrabStyle = gsDouble;
     cDefGrabWidth = 10;
+    cDivider: SmallInt = 2;
+    cGrabIndent: SmallInt = 2;
   protected
-    FVisiBands: array of TCoolBand;
-    FDefCursor: TCursor;
+    FBorderEdges: TEdgeBorders;
+    FBorderLeft, FBorderTop, FBorderRight, FBorderBottom: SmallInt;
+    FBorderWidth: SmallInt;
+    FCursorBkgnd: TCursor;
     FDragBand: TDragBand;
     FDraggedBandIndex: Integer;  // -1 .. space below the last row; other negative .. invalid area
     FDragInitPos: Integer;       // Initial mouse X - position (for resizing Bands)
+    FLockCursor: Boolean;
+    FRightToLeft: Boolean;
     FTextHeight: Integer;
+    FVisiBands: array of TCoolBand;
     procedure AlignControls(AControl: TControl; var RemainingClientRect: TRect); override;
     procedure BitmapOrImageListChange(Sender: TObject);
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
                                      {%H-}WithThemeSpace: Boolean); override;
     procedure CalculateAndAlign;
     function CalculateRealIndex(AVisibleIndex: Integer): Integer;
-    procedure DoFontChanged;
+    procedure ChangeCursor(ABand, AGrabber: Boolean);
+    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
     procedure CreateWnd; override;
+    procedure DoFontChanged;
     procedure DrawTiledBitmap(ARect: TRect; ABitmap: TBitmap);
     procedure FontChanged(Sender: TObject); override;
+    function IsFirstAtRow(ABand: Integer): Boolean;
     function IsRowEnd(ALeft, AVisibleIndex: Integer): Boolean;
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseEnter; override;
-    procedure MouseLeave; override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     procedure SetAlign(aValue: TAlign); reintroduce;
+    procedure SetAutoSize(Value: Boolean); override;
+    procedure SetCursor(Value: TCursor); override;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure EndUpdate; override;
+    procedure Invalidate; override;
     procedure MouseToBandPos(X, Y: Integer; out ABand: Integer; out AGrabber: Boolean);
     procedure InsertControl(AControl: TControl; Index: integer); override;
     procedure RemoveControl(AControl: TControl); override;
