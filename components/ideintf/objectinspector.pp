@@ -391,9 +391,10 @@ type
           ARect: TRect; State: TOwnerDrawState);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure SetIdleEvent(Enable: boolean);
+    procedure OnGridMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
-    procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
     procedure SetBackgroundColor(const AValue: TColor);
     procedure SetReferences(const AValue: TColor);
     procedure SetSubPropertiesColor(const AValue: TColor);
@@ -918,6 +919,7 @@ begin
     OnKeyDown:=@ValueEditKeyDown;
     OnKeyUp:=@ValueEditKeyUp;
     OnMouseUp:=@ValueEditMouseUp;
+    OnMouseWheel:=@OnGridMouseWheel;
   end;
 
   ValueComboBox:=TComboBox.Create(Self);
@@ -946,6 +948,7 @@ begin
     OnCloseUp:=@ValueComboBoxCloseUp;
     OnMeasureItem:=@ValueComboBoxMeasureItem;
     OnDrawItem:=@ValueComboBoxDrawItem;
+    OnMouseWheel:=@OnGridMouseWheel;
   end;
 
   ValueCheckBox:=TCheckBox.Create(Self);
@@ -963,6 +966,7 @@ begin
     OnKeyDown:=@ValueCheckBoxKeyDown;
     OnKeyUp:=@ValueCheckBoxKeyUp;
     OnClick:=@ValueCheckBoxClick;
+    OnMouseWheel:=@OnGridMouseWheel;
   end;
 
   ValueButton:=TSpeedButton.Create(Self);
@@ -976,6 +980,7 @@ begin
     Caption := '...';
     SetBounds(0,-30,Width,Height); // hidden
     Parent:=Self;
+    OnMouseWheel:=@OnGridMouseWheel;
   end;
 
   FHintManager := THintWindowManager.Create;
@@ -1157,20 +1162,21 @@ begin
   end;
 end;
 
-procedure TOICustomPropertyGrid.WMMouseWheel(var Message: TLMMouseEvent);
+procedure TOICustomPropertyGrid.OnGridMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
   if Mouse.WheelScrollLines=-1 then
   begin
     // -1 : scroll by page
     TopY := TopY -
-              (Message.WheelDelta * (ClientHeight - DefaultItemHeight)) div 120;
+              (WheelDelta * (ClientHeight - DefaultItemHeight)) div 120;
   end else begin
     // scrolling one line -> scroll half an item, see SB_LINEDOWN and SB_LINEUP
     // handler in WMVScroll
     TopY := TopY -
-        (Message.WheelDelta * Mouse.WheelScrollLines*DefaultItemHeight) div 240;
+        (WheelDelta * Mouse.WheelScrollLines*DefaultItemHeight) div 240;
   end;
-  Message.Result := 1;
+  Handled := True;
 end;
 
 function TOICustomPropertyGrid.IsCurrentEditorAvailable: Boolean;
@@ -4903,6 +4909,7 @@ procedure TObjectInspectorDlg.CreateNoteBook;
       OnOIKeyDown := @OnGridKeyDown;
       OnKeyUp := @OnGridKeyUp;
       OnDblClick := @OnGridDblClick;
+      OnMouseWheel := @OnGridMouseWheel;
 
       Parent := NoteBook.Page[ANotebookPage];
     end;
