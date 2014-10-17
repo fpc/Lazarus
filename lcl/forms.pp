@@ -1569,7 +1569,7 @@ type
   TApplicationProperties = class(TLCLComponent)
   private
     FCaptureExceptions: boolean;
-    FExceptionDialotType: TApplicationExceptionDlg;
+    FExceptionDialogType: TApplicationExceptionDlg;
     FHelpFile: string;
     FHint: string;
     FHintColor: TColor;
@@ -1639,7 +1639,7 @@ type
   published
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions default True;
-    property ExceptionDialog: TApplicationExceptionDlg read FExceptionDialotType
+    property ExceptionDialog: TApplicationExceptionDlg read FExceptionDialogType
                                                        write SetExceptionDialog default aedOkCancelDialog;
     property HelpFile: string read FHelpFile write SetHelpFile;
     property Hint: string read FHint write SetHint;

@@ -69,7 +69,7 @@ end;
 procedure TApplicationProperties.SetExceptionDialog(
   AValue: TApplicationExceptionDlg);
 begin
-  if FExceptionDialotType=AValue then
+  if FExceptionDialogType=AValue then
     Exit;
   if not (csDesigning in ComponentState) then
     Application.ExceptionDialog := AValue;
