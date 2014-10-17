@@ -85,6 +85,7 @@ var
 begin
   LCLProc.SendApplicationMessageFunction:=@SendApplicationMsg;
 
+  FExceptionDialog := aedOkCancelDialog;
   FShowButtonGlyphs := sbgAlways;
   FShowMenuGlyphs := sbgAlways;
   FMainForm := nil;
@@ -1554,10 +1555,15 @@ begin
   begin
     DisableIdleHandler;
     try
-      MsgResult:=MessageBox(PChar(
-        Format(rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK,
-               [Msg, LineEnding+LineEnding, LineEnding])),
-        PChar(GetTitle), MB_OKCANCEL + MB_ICONERROR);
+      if ExceptionDialog=aedOkMessageBox then
+      begin
+        MsgResult := mrOk;
+        MessageBox(PChar(msg), PChar(GetTitle), MB_OK + MB_ICONERROR);
+      end else
+        MsgResult:=MessageBox(PChar(
+          Format(rsPressOkToIgnoreAndRiskDataCorruptionPressCancelToK,
+                 [Msg, LineEnding+LineEnding, LineEnding])),
+          PChar(GetTitle), MB_OKCANCEL + MB_ICONERROR);
     finally
       EnableIdleHandler;
     end;

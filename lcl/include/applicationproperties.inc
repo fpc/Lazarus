@@ -66,6 +66,15 @@ begin
     Application.AddOnDeactivateHandler(FOnDeactivate);
 end;
 
+procedure TApplicationProperties.SetExceptionDialog(
+  AValue: TApplicationExceptionDlg);
+begin
+  if FExceptionDialotType=AValue then
+    Exit;
+  if not (csDesigning in ComponentState) then
+    Application.ExceptionDialog := AValue;
+end;
+
 procedure TApplicationProperties.SetCaptureExceptions(const AValue : boolean);
 begin
   FCaptureExceptions := AValue;
