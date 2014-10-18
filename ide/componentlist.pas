@@ -80,6 +80,8 @@ type
     procedure ComponentWasAdded;
     procedure FindAllLazarusComponents;
     procedure UpdateButtonState;
+  protected
+    procedure UpdateShowing; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -137,12 +139,10 @@ begin
   ParentParent := Nil;
   if Assigned(Parent) then
     ParentParent := Parent.Parent;
-  DebugLn(['*** TComponentListForm.FormShow, Parent=', Parent, ', Parent.Parent=', ParentParent]);
+  //DebugLn(['*** TComponentListForm.FormShow, Parent=', Parent, ', Parent.Parent=', ParentParent]);
   ButtonPanel.Visible := ParentParent=Nil;
-  if ButtonPanel.Visible then begin
-    PageControl.AnchorSideBottom.Side := asrTop;
-    UpdateButtonState;
-  end
+  if ButtonPanel.Visible then
+    PageControl.AnchorSideBottom.Side := asrTop
   else
     PageControl.AnchorSideBottom.Side := asrBottom;
 end;
@@ -206,6 +206,13 @@ end;
 procedure TComponentListForm.UpdateButtonState;
 begin
   ButtonPanel.OKButton.Enabled := Assigned(GetSelectedComponent);
+end;
+
+procedure TComponentListForm.UpdateShowing;
+begin
+  if ButtonPanel.Visible then
+    UpdateButtonState;
+  inherited UpdateShowing;
 end;
 
 procedure TComponentListForm.UpdateComponentSelection(Sender: TObject);
