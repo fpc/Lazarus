@@ -9376,7 +9376,7 @@ begin
     exit;
   end;
   DoJumpToCodePosition(TargetSrcEdit, TargetUnitInfo,
-    NewSource, NewX, NewY, NewTopLine, [jfAddJumpPoint, jfFocusEditor]);
+    NewSource, NewX, NewY, NewTopLine, [jfFocusEditor]);
   CodeToolBoss.GetIdentifierAt(NewSource,NewX,NewY,Identifier);
   CurUnitname:=ExtractFileNameOnly(NewSource.Filename);
 
@@ -9384,19 +9384,19 @@ begin
   DeclarationCaretXY:=DeclarationSrcEdit.EditorComponent.LogicalCaretXY;
   //debugln('TMainIDE.DoFindRenameIdentifier A DeclarationCaretXY=x=',dbgs(DeclarationCaretXY.X),' y=',dbgs(DeclarationCaretXY.Y));
 
-  // let user choose the search scope
-  Result:=ShowFindRenameIdentifierDialog(DeclarationUnitInfo.Source.Filename,
-    DeclarationCaretXY,true,Rename,nil);
-  if Result<>mrOk then begin
-    debugln('TMainIDE.DoFindRenameIdentifier failed: user cancelled dialog');
-    exit;
-  end;
-
   Files:=nil;
   OwnerList:=nil;
   PascalReferences:=nil;
   ListOfLazFPDocNode:=nil;
   try
+    // let user choose the search scope
+    Result:=ShowFindRenameIdentifierDialog(DeclarationUnitInfo.Source.Filename,
+      DeclarationCaretXY,true,Rename,nil);
+    if Result<>mrOk then begin
+      debugln('TMainIDE.DoFindRenameIdentifier failed: user cancelled dialog');
+      exit;
+    end;
+
     // create the file list
     Files:=TStringList.Create;
     Files.Add(TargetUnitInfo.Filename);
@@ -9505,6 +9505,10 @@ begin
     OwnerList.Free;
     CodeToolBoss.FreeTreeOfPCodeXYPosition(PascalReferences);
     FreeListObjects(ListOfLazFPDocNode,true);
+
+    // jump back in source editor
+    DoJumpToCodePosition(TargetSrcEdit, TargetUnitInfo,
+      TargetUnitInfo.Source, LogCaretXY.X, LogCaretXY.Y, -1, [jfFocusEditor]);
   end;
 end;
 
