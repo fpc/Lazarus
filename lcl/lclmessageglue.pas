@@ -169,12 +169,8 @@ begin
   Mess.Active := Active;
   Mess.Minimized := Minimized;
   Mess.ActiveWindow := ActiveWindow;
-  Mess.Result := 0;
-  DeliverMessage(Target, Mess);
-  Result := Mess.Result;
+  Result := DeliverMessage(Target, Mess);
 end;
-
-
 
 
 {******************************************************************************
@@ -256,7 +252,6 @@ function LCLSendSizeMsg(const Target: TControl; Width, Height: Word;
 var
   Mess: TLMSize;
 begin
-  Result := 0;
   FillChar(Mess, SizeOf(Mess), 0);
   Mess.Msg := LM_SIZE;
   Mess.Width := Width;
