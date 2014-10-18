@@ -70,6 +70,8 @@
     - option HeaderStyle to change appearance of grabbers
 
   ToDo:
+    - option to save on IDE close (if MainForm is visible on active screen)
+    - restore: put MainForm on active screen
     - restore custom dock site splitter without resizing content, only resize docked site
     - undock on hide
     - popup menu
@@ -84,13 +86,10 @@
     - http://bugs.freepascal.org/view.php?id=18298 default layout sometimes wrong main bar
     Other bugs:
     - http://bugs.freepascal.org/view.php?id=18553 docked form designer
-    - http://bugs.freepascal.org/view.php?id=18538 crash when option Scale on resize is off
-    - http://bugs.freepascal.org/view.php?id=19132 docking already docked
-    - http://bugs.freepascal.org/view.php?id=19200 minimize+restore resize
+    - http://bugs.freepascal.org/view.php?id=18538 second resize after restore
     - http://bugs.freepascal.org/view.php?id=19735 main bar on different screen size
     - http://bugs.freepascal.org/view.php?id=19810 multi monitor
     - http://bugs.freepascal.org/view.php?id=21076 views
-    - http://bugs.freepascal.org/view.php?id=26646 Anchordocking no longer work
 }
 unit AnchorDocking;
 
