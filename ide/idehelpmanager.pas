@@ -1250,7 +1250,7 @@ procedure TIDEHelpManager.RegisterIDEHelpDatabases;
     FLCLHelpDBPath:=THelpBaseURLObject.Create;
     HTMLHelp.BasePathObject:=FLCLHelpDBPath;
 
-    // FPDoc nodes for units in the RTL
+    // FPDoc nodes for units in the LCL
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'LCL - Lazarus Component Library Units',
                    'file://index.html');
