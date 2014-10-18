@@ -4713,7 +4713,7 @@ function TControl.GetTextBuf(Buffer: PChar; BufSize: Integer): Integer;
 var
   S: string;
 begin
-  if BufSize <= 0 then Exit;
+  if BufSize <= 0 then Exit(0);
 
   S := RealGetText;
   if Length(S) >= BufSize
