@@ -5830,7 +5830,6 @@ begin
   end;
   if Show then
     IDEWindowCreators.ShowForm(ComponentListForm,true);
-//    ComponentListForm.Show;
 end;
 
 procedure TMainIDE.DoShowInspector(Show: boolean);
