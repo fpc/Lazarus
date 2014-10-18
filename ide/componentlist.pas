@@ -141,8 +141,10 @@ begin
     ParentParent := Parent.Parent;
   //DebugLn(['*** TComponentListForm.FormShow, Parent=', Parent, ', Parent.Parent=', ParentParent]);
   ButtonPanel.Visible := ParentParent=Nil;
-  if ButtonPanel.Visible then
-    PageControl.AnchorSideBottom.Side := asrTop
+  if ButtonPanel.Visible then begin
+    PageControl.AnchorSideBottom.Side := asrTop;
+    UpdateButtonState;
+  end
   else
     PageControl.AnchorSideBottom.Side := asrBottom;
 end;
@@ -210,7 +212,7 @@ end;
 
 procedure TComponentListForm.UpdateShowing;
 begin
-  if ButtonPanel.Visible then
+  if (ButtonPanel<>nil) and ButtonPanel.Visible then
     UpdateButtonState;
   inherited UpdateShowing;
 end;
