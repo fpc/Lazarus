@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
   ComCtrls, ButtonPanel, Buttons, LazarusIDEStrConsts, ComponentReg, PackageDefs,
-  FormEditingIntf, TreeFilterEdit, fgl, LCLProc;
+  FormEditingIntf, IDEImagesIntf, TreeFilterEdit, fgl, LCLProc;
 
 type
 
@@ -110,9 +110,9 @@ begin
   TabSheetInheritance.Caption := lisCmpLstInheritance;
   ButtonPanel.OKButton.Caption := lisUseAndClose;
 
-  ListTree.DefaultItemHeight       := ComponentPaletteImageHeight + 1;
-  InheritanceTree.DefaultItemHeight:= ComponentPaletteImageHeight + 1;
-  PalletteTree.DefaultItemHeight   := ComponentPaletteImageHeight + 1;
+  ListTree.Images:=IDEImages.Images_24;
+  InheritanceTree.Images:=ListTree.Images;
+  PalletteTree.Images:=ListTree.Images;
   PrevPageIndex := -1;
   PageControl.ActivePage := TabSheetList;
   FindAllLazarusComponents;
