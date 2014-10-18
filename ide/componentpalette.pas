@@ -85,6 +85,8 @@ type
     procedure ComponentBtnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure ComponentBtnDblClick(Sender: TObject);
+    procedure OnPageMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure CreatePopupMenu;
     procedure UnselectAllButtons;
     function SortPagesAndCompsUserOrder: Boolean;
@@ -433,6 +435,20 @@ begin
   inherited DoEndUpdate(Changed);
 end;
 
+procedure TComponentPalette.OnPageMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+  if (WheelDelta > 0) then
+  begin
+    if (PageControl.ActivePageIndex > 0) then
+      PageControl.ActivePageIndex := PageControl.ActivePageIndex - 1;
+  end else begin
+    if (PageControl.ActivePageIndex < PageControl.PageCount) then
+      PageControl.ActivePageIndex := PageControl.ActivePageIndex + 1;
+  end;
+  Handled := True;
+end;
+
 procedure TComponentPalette.OnPageAddedComponent(Component: TRegisteredComponent);
 begin
   fComponents.Add(Component);
@@ -727,6 +743,7 @@ var
         Width := OVERVIEW_PANEL_WIDTH;
         Visible := True; // EnvironmentOptions.IDESpeedButtonsVisible;
         Parent := aCompPage.PageComponent;
+        OnMouseWheel := @OnPageMouseWheel;
       end;
       BtnRight:=TSpeedButton.Create(aCompPage.PageComponent);
       with BtnRight do
@@ -736,6 +753,7 @@ var
         SetBounds(2,1,16,16);
         Hint := 'Click to Select Palette Page';
         OnClick := @MainIDE.SelComponentPageButtonClick;
+        OnMouseWheel := @OnPageMouseWheel;
         Parent := PanelRight;
       end;
     end else begin
@@ -758,6 +776,7 @@ var
     with CurBtn do begin
       Name := 'PaletteSelectBtn' + aButtonUniqueName;
       OnClick := @SelectionToolClick;
+      OnMouseWheel := @OnPageMouseWheel;
       LoadGlyphFromResourceName(hInstance, 'tmouse');
       Flat := True;
       GroupIndex:= 1;
@@ -791,6 +810,7 @@ var
           OnMouseDown := @ComponentBtnMouseDown;
           OnMouseUp := @ComponentBtnMouseUp;
           OnDblClick := @ComponentBtnDblClick;
+          OnMouseWheel := @OnPageMouseWheel;
           ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
           Hint := aComp.ComponentClass.ClassName + sLineBreak
             + '(' + aComp.ComponentClass.UnitName + ')';
@@ -824,6 +844,7 @@ var
     CurNoteBookPage := CompPage.PageComponent;
     CurScrollBox := CurNoteBookPage.Components[0] as TScrollBox;
     CurScrollBox.OnResize := @OnScrollBoxResize;
+    CurScrollBox.OnMouseWheel := @OnPageMouseWheel;
     //DebugLn(['TComponentPalette.UpdateNoteBookButtons PAGE=',CompPage.PageName,' PageIndex=',CurNoteBookPage.PageIndex]);
     // create selection button
     CreateSelectionButton(CompPage, IntToStr(aPageIndex), CurScrollBox);
