@@ -22,19 +22,21 @@ interface
 
 uses
   // libs
-  MacOSAll, CocoaAll,
+  MacOSAll, CocoaAll, SysUtils,
   // LCL
   Classes, Controls, Buttons, LCLType, LCLProc, Graphics, GraphType,
   // widgetset
   WSButtons, WSLCLClasses, WSProc,
   // LCL Carbon
-  CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects, CocoaUtils;
+  CocoaWSCommon, CocoaWSStdCtrls, CocoaGDIObjects, CocoaPrivate, CocoaUtils;
 
 type
 
   { TCocoaWSBitBtn }
 
   TCocoaWSBitBtn = class(TWSBitBtn)
+  private
+    class function  LCLGlyphPosToCocoa(ALayout: TButtonLayout): NSCellImagePosition;
   published
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class procedure SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph); override;
@@ -52,13 +54,26 @@ implementation
 
 { TCocoaWSBitBtn }
 
+class function TCocoaWSBitBtn.LCLGlyphPosToCocoa(ALayout: TButtonLayout
+  ): NSCellImagePosition;
+begin
+  case ALayout of
+  blGlyphLeft:   Result := NSImageLeft;
+  blGlyphRight:  Result := NSImageRight;
+  blGlyphTop:    Result := NSImageAbove;
+  blGlyphBottom: Result := NSImageBelow;
+  else
+    Result := NSNoImage;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCocoaWSBitBtn.CreateHandle
   Params:  AWinControl - LCL control
            AParams     - Creation parameters
   Returns: Handle to the control in Carbon interface
 
-  Creates new bevel button with bitmap in Carbon interface with the
+  Creates new bevel button with bitmap in Cocoa interface with the
   specified parameters
  ------------------------------------------------------------------------------}
 class function TCocoaWSBitBtn.CreateHandle(const AWinControl: TWinControl;
@@ -75,15 +90,17 @@ end;
   Params:  ABitBtn - LCL custom bitmap button
            AValue  - Bitmap
 
-  Sets the bitmap of bevel button in Carbon interface
+  Sets the bitmap of bevel button in Cocoa interface
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn; const AValue: TButtonGlyph);
 var
   Img: NSImage;
   AGlyph: TBitmap;
+  lButtonHandle: TCocoaButton;
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
 begin
+  //WriteLn('[TCocoaWSBitBtn.SetGlyph]');
   Img := nil;
   if ABitBtn.CanShowGlyph then
   begin
@@ -91,7 +108,9 @@ begin
     AValue.GetImageIndexAndEffect(bsUp, AIndex, AEffect);
     AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
     Img := TCocoaBitmap(AGlyph.Handle).image;
-    NSButton(ABitBtn.Handle).setImage(Img);
+    lButtonHandle := TCocoaButton(ABitBtn.Handle);
+    lButtonHandle.setImage(Img);
+    lButtonHandle.setImagePosition(LCLGlyphPosToCocoa(ABitBtn.Layout));
     AGlyph.Free;
   end;
 end;
@@ -101,26 +120,19 @@ end;
   Params:  ABitBtn - LCL custom bitmap button
            AValue  - Bitmap and caption layout
 
-  Sets the bitmap and caption layout of bevel button in Carbon interface
+  Sets the bitmap and caption layout of bevel button in Cocoa interface
  ------------------------------------------------------------------------------}
 class procedure TCocoaWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
 var
-  ImagePosition: NSCellImagePosition;
+  ImagePos: NSCellImagePosition;
 begin
 
   if (ABitBtn.CanShowGlyph) then
-  begin
-    case AValue of
-      blGlyphLeft  : ImagePosition := NSImageLeft;
-      blGlyphRight : ImagePosition := NSImageRight;
-      blGlyphTop   : ImagePosition := NSImageBelow;
-      blGlyphBottom: ImagePosition := NSImageAbove;
-    end;
-  end
+    ImagePos := LCLGlyphPosToCocoa(AValue)
   else
-    ImagePosition := NSNoImage;
-  NSButton(ABitBtn.Handle).SetImagePosition(ImagePosition);
+    ImagePos := NSNoImage;
+  NSButton(ABitBtn.Handle).SetImagePosition(ImagePos);
 end;
 
 end.

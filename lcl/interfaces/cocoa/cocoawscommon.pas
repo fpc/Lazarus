@@ -78,6 +78,8 @@ type
   { TCocoaWSWinControl }
 
   TCocoaWSWinControl = class(TWSWinControl)
+  private
+    class procedure ArrangeTabOrder(const AWinControl: TWinControl);
   published
     class function CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): TLCLIntfHandle; override;
@@ -1082,6 +1084,34 @@ end;
 
 { TCocoaWSWinControl }
 
+class procedure TCocoaWSWinControl.ArrangeTabOrder(
+  const AWinControl: TWinControl);
+var
+  lList: TFPList;
+  prevControl, curControl: TWinControl;
+  lPrevView, lCurView: NSView;
+  i: Integer;
+begin
+  lList := TFPList.Create;
+  try
+    AWinControl.GetTabOrderList(lList);
+    prevControl := TWinControl(lList.Items[lList.Count-1]);
+    lPrevView := GetNSObjectView(NSObject(prevControl.Handle));
+    for i := 0 to lList.Count-1 do
+    begin
+      curControl := TWinControl(lList.Items[i]);
+      lCurView := GetNSObjectView(NSObject(curControl.Handle));
+
+      if (lCurView <> nil) and (lPrevView <> nil) then
+        lPrevView.setNextKeyView(lCurView);
+
+      lPrevView := lCurView;
+    end;
+  finally
+    lList.Free;
+  end;
+end;
+
 class function TCocoaWSWinControl.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 begin
@@ -1285,12 +1315,20 @@ end;
 class procedure TCocoaWSWinControl.ShowHide(const AWinControl: TWinControl);
 var
   pool: NSAutoreleasePool;   // called outside apploop on startup - therefore has to be enframed by pool
+  lShow: Boolean;
 begin
   //WriteLn(Format('[TCocoaWSWinControl.ShowHide] AWinControl=%s %s', [AWinControl.Name, AWinControl.ClassName]));
   if AWinControl.HandleAllocated then
   begin
     pool := NSAutoreleasePool.alloc.init;
-    NSObject(AWinControl.Handle).lclSetVisible(AWinControl.HandleObjectShouldBeVisible);
+    lShow := AWinControl.HandleObjectShouldBeVisible;
+
+    NSObject(AWinControl.Handle).lclSetVisible(lShow);
+
+    // TabStop / TabOrder support
+    if (AWinControl is TCustomForm) and lShow then
+      ArrangeTabOrder(AWinControl);
+
     pool.release;
   end;
 end;

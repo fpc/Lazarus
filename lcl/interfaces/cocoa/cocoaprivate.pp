@@ -1087,9 +1087,16 @@ function TCocoaWindow.windowWillReturnFieldEditor_toObject(sender: NSWindow;
   client: id): id;
 begin
   //DebugLn('[TCocoaWindow.windowWillReturnFieldEditor_toObject]');
+  Result := nil;
   if (fieldEditor = nil) then
+  begin
     fieldEditor := TCocoaFieldEditor.alloc.init;
-  Result := fieldEditor;
+    fieldEditor.setFieldEditor(True);
+  end;
+  if client.isKindOfClass_(TCocoaTextField) then
+  begin
+    Result := fieldEditor;
+  end;
 end;
 
 procedure TCocoaWindow.windowWillClose(notification: NSNotification);

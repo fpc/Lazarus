@@ -267,7 +267,7 @@ var
 begin
   Result := RawImage_DescriptionToBitmapType(ADesc, bmpType);
   if not Result then begin
-    debugln(['TCarbonWidgetSet.RawImage_CreateBitmaps TODO Depth=',ADesc.Depth,' alphaprec=',ADesc.AlphaPrec,' byteorder=',ord(ADesc.ByteOrder),' alpha=',ADesc.AlphaShift,' red=',ADesc.RedShift,' green=',adesc.GreenShift,' blue=',adesc.BlueShift]);
+    debugln(['TCocoaWidgetSet.RawImage_CreateBitmaps TODO Depth=',ADesc.Depth,' alphaprec=',ADesc.AlphaPrec,' byteorder=',ord(ADesc.ByteOrder),' alpha=',ADesc.AlphaShift,' red=',ADesc.RedShift,' green=',adesc.GreenShift,' blue=',adesc.BlueShift]);
     exit;
   end;
   ABitmap := HBITMAP(TCocoaBitmap.Create(ADesc.Width, ADesc.Height, ADesc.Depth, ADesc.BitsPerPixel, ALIGNMAP[ADesc.LineEnd], bmpType, ARawImage.Data));
@@ -278,6 +278,7 @@ begin
 
   Result := True;
 end;
+
 {------------------------------------------------------------------------------
   Function: RawImage_DescriptionFromBitmap
   Params: ABitmap:
@@ -287,7 +288,6 @@ end;
   Describes the inner format utilized by Carbon and specific information
   for the specified bitmap
  ------------------------------------------------------------------------------}
-
 function TCocoaWidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADesc: TRawImageDescription): Boolean;
 begin
   if CheckBitmap(ABitmap, 'RawImage_DescriptionFromBitmap')
