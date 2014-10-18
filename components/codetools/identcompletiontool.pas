@@ -212,7 +212,7 @@ type
     FFlags: TIdentifierListFlags;
     FHistory: TIdentifierHistoryList;
     FItems: TAVLTree; // tree of TIdentifierListItem (completely sorted)
-    FIdentView: TAVLTree; // tree of TIdentHistListItem sorted for identifiers
+    FIdentView: TAVLTree; // tree of TIdentifierListItem sorted for identifiers
     FUsedTools: TAVLTree; // tree of TFindDeclarationTool
     FIdentSearchItem: TIdentifierListSearchItem;
     FPrefix: string;
@@ -437,7 +437,7 @@ begin
     exit;
   end;
 
-  // then sort for Level (lower is better)
+  // then sort for Level (i.e. scope, lower is better)
   if Item1.Level<Item2.Level then begin
     Result:=-1;
     exit;
@@ -777,7 +777,7 @@ end;
 
 function TIdentifierList.CompletePrefix(const OldPrefix: string): string;
 // search all identifiers beginning with Prefix
-// and return the biggest prefix of all of them
+// and return the biggest shared prefix of all of them
 var
   AnAVLNode: TAVLTreeNode;
   CurItem: TIdentifierListItem;
