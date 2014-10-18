@@ -145,7 +145,7 @@ const
 
  So, as a horrible hack I decided  to only allow changing of the text if we coded
  this change ourself. This is done by setting the FChangeAllowed field to True before any
- write action (in SetInherited Text() ).
+ write action (in RealSetTextWhileMasked() ).
  We try to intercept the messages for cut/paste/copy/clear and perform the appropriate
  actions instead.
  If this fails, then in TextChanged we check and will see that FChangeAllowed = False
@@ -153,8 +153,8 @@ const
 
  To make this undo possible it is necessary to set FCurrentText every time you set
  the text in the control!
- This is achieved in SetInheritedText() only, so please note:
- !! It is unsafe to make changes to inherited Text unless done so via SetInheritedText() !!!
+ This is achieved in RealSetTextWhileMasked() only, so please note:
+ !! It is unsafe to make a call to RealSetText unless done so via RealSetTextWhileMasked() !!!
 
  (Bart Broersma, januari 2009)
 
@@ -186,7 +186,7 @@ const
     FSavedMask       : TInternalMask;
     FSavedMaskLength : Integer;
     FTextChangedBySetText: Boolean;
-    FInSetInheritedText: Boolean;
+    FInRealSetTextWhileMasked: Boolean;
 
     procedure ClearInternalMask(out AMask: TInternalMask; out ALengthIndicator: Integer);
     procedure AddToMask(Value: TUtf8Char);
@@ -213,7 +213,7 @@ const
     function  CharMatchesMask(const Ch: TUtf8Char; const Position: Integer): Boolean;
     function  ClearChar(Position : Integer) : TUtf8Char;
 
-    procedure SetInheritedText(const Value: TCaption); //See notes above!
+    procedure RealSetTextWhileMasked(const Value: TCaption); //See notes above!
     procedure InsertChar(Ch : TUtf8Char);
     Function  CanInsertChar(Position : Integer; Var Ch : TUtf8Char) : Boolean;
     procedure DeleteSelected;
@@ -221,13 +221,15 @@ const
   protected
     function DisableMask(const NewText: String): Boolean;
     function RestoreMask(const NewText: String): Boolean;
+    procedure RealSetText(const AValue: TCaption); override;
+    function RealGetText: TCaption; override;
+    Function GetTextWithoutMask : TCaption;
+    Procedure SetTextApplyMask(Value: TCaption);
+    function  GetEditText: string; virtual;
+    procedure SetEditText(const AValue: string);
 
     procedure GetSel(out _SelStart: Integer; out _SelStop: Integer);
     procedure SetSel(const _SelStart: Integer; _SelStop: Integer);
-    Function  GetText : TCaption;
-    Procedure SetText(Value: TCaption);
-    function  GetEditText: string; virtual;
-    procedure SetEditText(const AValue: string);
     procedure TextChanged; override;
     procedure Change; override;
     procedure SetCharCase(Value: TEditCharCase);
@@ -266,7 +268,6 @@ const
     procedure Clear;
     procedure ValidateEdit; virtual;
     property Modified: Boolean read GetModified write SetModified;
-    property Text: TCaption read GetText write SetText;
   end;
 
   { TMaskEdit }
@@ -450,10 +451,9 @@ end;
 // Create object
 constructor TCustomMaskEdit.Create(TheOwner: TComponent);
 begin
-  Inherited Create(TheOwner);
   FSettingInitialText := False;
   FTextChangedBySetText := False;
-  FInSetInheritedText := False;
+  FInRealSetTextWhileMasked := False;
   FRealMask      := '';
   ClearInternalMask(FMask, FMaskLength);
   ClearInternalMask(FSavedMask, FSavedMaskLength);
@@ -461,8 +461,9 @@ begin
   FMaskSave      := True;
   FChangeAllowed := False;
   FTrimType      := metTrimRight;
-  FCurrentText   := Inherited Text;
-  FTextOnEnter   := Inherited Text;
+  Inherited Create(TheOwner);
+  FCurrentText   := Inherited RealGetText;
+  FTextOnEnter   := Inherited RealGetText;
   FInitialText   := '';
   FInitialMask   := '';
   FValidationFailed := False;
@@ -487,15 +488,15 @@ function TCustomMaskEdit.GetModified: Boolean;
 begin
   //This will make Modified = False inside OnChange when text is set by code
   //TCustomEdit.RealSetText sets Modified to False.
-  //We handle all input in SetInheritedText (which eventually calls RealSetText),
-  //so inside SetInheritedText Modified must be True,
-  //unless we called SetInheritedText from SetText, in that case it must be False,
+  //We handle all input in RealSetTextWhileMasked (which eventually calls RealSetText),
+  //so inside RealSetTextWhileMasked Modified must be True,
+  //unless we called RealSetTextWhileMasked from SetTextApplyMask, in that case it must be False,
   //in all other cases just return inherited value
   if FTextChangedBySetText then
     Result := False
   else
   begin
-    if FInSetInheritedText then
+    if FInRealSetTextWhileMasked then
       Result := True
     else
       Result := inherited Modified;
@@ -676,7 +677,7 @@ begin
     //SetMaxLegth must be before Clear, otherwise Clear uses old MaxLength value!
     SetMaxLength(FMaskLength);
     Clear;
-    FTextOnEnter := inherited Text;
+    FTextOnEnter := GetEditText;
   end;
 end;
 
@@ -707,7 +708,7 @@ Begin
     FSpaceChar := Value;
     if IsMasked then
     begin
-      S := Inherited Text;
+      S := GetEditText;
       for I := 1 to Utf8Length(S) do
       begin
         if (GetCodePoint(S,i) = OldValue) and (not IsLiteral(FMask[i])) then SetCodePoint(S,i,FSpaceChar);
@@ -715,7 +716,7 @@ Begin
         if (GetCodePoint(FTextOnEnter,i) = OldValue) and (not IsLiteral(FMask[i])) then SetCodePoint(FTextOnEnter,i,FSpaceChar);
       end;
       //FCurrentText := S;
-      SetInheritedText(S);
+      RealSetTextWhileMasked(S);
       CheckCursor;
     end;
   end;
@@ -968,20 +969,20 @@ end;
 
 
 //Set text in the control with FChangeAllowed flag set appropriately
-procedure TCustomMaskEdit.SetInheritedText(const Value: TCaption);
+procedure TCustomMaskEdit.RealSetTextWhileMasked(const Value: TCaption);
 begin
-  if (Value <> Inherited Text) then
+  if (Value <> GetEditText) then
   begin
-    FInSetInheritedText := True;
+    FInRealSetTextWhileMasked := True;
     FChangeAllowed := True;
     FCurrentText := Value;
     //protect resetting FChangeAllowed := False against unhandled exceptions in user's
     //OnChange, otherwise risk leaving the control in an "unsafe" state regarding text changes
     try
-      Inherited Text := Value;
+      Inherited RealSetText(Value);
     finally
       FChangeAllowed := False;
-      FInSetInheritedText := False;
+      FInRealSetTextWhileMasked := False;
     end;//finally
   end;
 end;
@@ -1021,7 +1022,7 @@ begin
     FMaskLength := FSavedMaskLength;
     ClearInternalMask(FSavedMask, FSavedMaskLength);
     SetMaxLength(FMaskLength);
-    FTextOnEnter := inherited Text;
+    FTextOnEnter := GetEditText;
     Result := True;
   end
   else
@@ -1031,226 +1032,24 @@ begin
   Text := NewText;
 end;
 
-
-// Clear (virtually) a single Utf8 char in position Position
-function TCustomMaskEdit.ClearChar(Position : Integer) : TUtf8Char;
+procedure TCustomMaskEdit.RealSetText(const AValue: TCaption);
 begin
-  Result := FMask[Position];
-  //For Delphi compatibilty, only literals remain, all others will be blanked
-  case CharToMask(FMask[Position]) Of
-    Char_Number,
-    Char_NumberFixed,
-    Char_NumberPlusMin,
-    Char_Letter,
-    Char_LetterFixed,
-    Char_LetterUpCase,
-    Char_LetterDownCase,
-    Char_LetterFixedUpCase,
-    Char_LetterFixedDownCase,
-    Char_AlphaNum,
-    Char_AlphaNumFixed,
-    Char_AlphaNumUpCase,
-    Char_AlphaNumDownCase,
-    Char_AlphaNumFixedUpcase,
-    Char_AlphaNuMFixedDownCase,
-    Char_All,
-    Char_AllFixed,
-    Char_AllUpCase,
-    Char_AllDownCase,
-    Char_AllFixedUpCase,
-    Char_AllFixedDownCase     : Result := FSpaceChar;
-    {Char_Space               : Result := #32; //FSpaceChar?; //not Delphi compatible, see notes above}
-     Char_HourSeparator       : Result := DefaultFormatSettings.TimeSeparator;
-     Char_DateSeparator       : Result := DefaultFormatSettings.DateSeparator;
-  end;
-end;
-
-
-
-//Insert a single Utf8 char at the current position of the cursor
-procedure TCustomMaskEdit.InsertChar(Ch : TUtf8Char);
-Var
-  S: String;
-  i, SelectionStart, SelectionStop: Integer;
-begin
-  if CanInsertChar(FCursorPos + 1, Ch) then
-  begin
-    S := Inherited Text;
-    if HasSelection then
-    begin
-      //replace slection with blank chars
-      //don't do this via DeleteChars(True), since it will do an unneccesary
-      //update of the control and 2 TextChanged's are triggerd for every char we enter
-      GetSel(SelectionStart, SelectionStop);
-      for i := SelectionStart + 1 to SelectionStop do SetCodePoint(S, i, ClearChar(i));
-    end;
-    SetCodePoint(S, FCursorPos + 1, Ch);
-    SetInheritedText(S);
-    SelectNextChar;
-  end
-  else
-  //If we have a selection > 1 (and cannot insert) then Delete the selected text: Delphi compatibility
-  if HasExtSelection then DeleteSelected;
-end;
-
-
-//Check if a Utf8 char can be inserted at position Position, also do case conversion if necessary
-function TCustomMaskEdit.CanInsertChar(Position: Integer; var Ch: TUtf8Char
-  ): Boolean;
-Var
-  Current : tMaskedType;
-Begin
-  Current := CharToMask(FMask[Position]);
-  Result  := False;
-
-  // If in UpCase convert the input char
-  if (Current = Char_LetterUpCase     ) Or
-     (Current = Char_LetterFixedUpCase) Or
-     (Current = Char_AllUpCase        ) Or
-     (Current = Char_AllFixedUpCase   ) or
-     (Current = Char_AlphaNumUpcase   ) or
-     (Current = Char_AlphaNumFixedUpCase)
-     then
-       Ch := Utf8UpperCase(Ch);
-
-  // If in LowerCase convert the input char
-  if (Current = Char_LetterDownCase     ) Or
-     (Current = Char_LetterFixedDownCase) Or
-     (Current = Char_AllDownCase        ) Or
-     (Current = Char_AllFixedDownCase   ) or
-     (Current = Char_AlphaNumDownCase   ) or
-     (Current = Char_AlphaNumFixedDownCase )
-     then
-       Ch := Utf8LowerCase(Ch);
-
-  // Check the input (check the valid range)
-  case Current Of
-       Char_Number              : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9']);
-       Char_NumberFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9']);
-       Char_NumberPlusMin       : Result := (Length(Ch) = 1) and (Ch[1] in ['0'..'9','+','-']);
-       Char_Letter              : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z', 'A'..'Z']);
-       Char_LetterFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z', 'A'..'Z']);
-       Char_LetterUpCase        : Result := (Length(Ch) = 1) and (Ch[1] In ['A'..'Z']);
-       Char_LetterDownCase      : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z']);
-       Char_LetterFixedUpCase   : Result := (Length(Ch) = 1) and (Ch[1] In ['A'..'Z']);
-       Char_LetterFixedDownCase : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z']);
-       Char_AlphaNum            : Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', 'A'..'Z', '0'..'9']);
-       Char_AlphaNumFixed       : Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', 'A'..'Z', '0'..'9']);
-       Char_AlphaNumUpCase      : Result := (Length(Ch) = 1) and (Ch[1] in ['A'..'Z', '0'..'9']);
-       Char_AlphaNumDownCase    : Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9']);
-       Char_AlphaNumFixedUpCase : Result := (Length(Ch) = 1) and (Ch[1] in ['A'..'Z', '0'..'9']);
-       Char_AlphaNumFixedDowncase:Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9']);
-       Char_All                 : Result := True;
-       Char_AllFixed            : Result := True;
-       Char_AllUpCase           : Result := True;
-       Char_AllDownCase         : Result := True;
-       Char_AllFixedUpCase      : Result := True;
-       Char_AllFixedDownCase    : Result := True;
-      {Char_Space               : Result := Ch in [' ', '_'];  //not Delphi compatible, see notes above}
-       Char_HourSeparator       : Result := (Ch = DefaultFormatSettings.TimeSeparator);
-       Char_DateSeparator       : Result := (Ch = DefaultFormatSettings.DateSeparator);
-  end;
-end;
-
-
-// Delete selected chars
-procedure TCustomMaskEdit.DeleteSelected;
-Var
-  SelectionStart, SelectionStop, I : Integer;
-  S: String;
-begin
-  if not HasSelection then Exit;
-  GetSel(SelectionStart, SelectionStop);
-  S := Inherited Text;
-  for i := SelectionStart + 1 to SelectionStop do SetCodePoint(S, i,ClearChar(i));
-  SetInheritedText(S);
-  SetCursorPos;
-end;
-
-
-// Delete a single char from position
-procedure TCustomMaskEdit.DeleteChars(NextChar : Boolean);
-begin
-  if NextChar then
-  begin//VK_DELETE
-    if HasSelection then DeleteSelected
-    else
-    begin
-      //cannot delete beyond length of string
-      if FCursorPos < FMaskLength then
-      begin
-        //This will select the appropriate char in the control
-        SetCursorPos;
-        DeleteSelected;
-      end;
-    end;
-  end
-  else
-  begin//VK_BACK
-    //if selected text > 1 char then delete selection
-    if HasExtSelection then DeleteSelected
-    else
-    begin
-      //cannot backspace if we are at beginning of string, or if all chars in front are MaskLiterals
-      if FCursorPos > FFirstFreePos - 1 then
-      begin
-        //This will select the previous character
-        //If there are MaskLiterals just in front of the current position, they will be skipped
-        //and the character in front of them will be deleted (Delphi compatibility)
-        SelectPrevChar;
-        DeleteSelected;
-      end;
-    end;
-  end;
-end;
-
-
-
-// Get the actual Text
-function TCustomMaskEdit.GetText: TCaption;
-{
-  Replace al FSPaceChars with #32
-  If FMaskSave = False then do trimming of spaces and remove all maskliterals
-}
-var
-  S: String;
-  i: Integer;
-Begin
   if not IsMasked then
-  begin
-    Result := InHerited Text;
-  end
+    inherited RealSetText(AValue)
   else
-  begin
-    S := StringReplace(Inherited Text, FSpaceChar, #32, [rfReplaceAll]);
-    //FSpaceChar can be used as a literal in the mask, so put it back
-    for i := 1 to FMaskLength do
-    begin
-      if IsLiteral(FMask[i]) and (FMask[i] = FSpaceChar) then
-      begin
-        SetCodePoint(S, i, FSpaceChar);
-      end;
-    end;
-    if not FMaskSave then
-    begin
-      for i := 1 to FMaskLength do
-      begin
-        if IsLiteral(FMask[i]) then SetCodePoint(S, i, #1); //We know this char can never be in Text, so this is safe
-      end;
-      S := StringReplace(S, #1, '', [rfReplaceAll]);
-      //Trimming only occurs if FMaskSave = False
-      case FTrimType of
-        metTrimLeft : S := TrimLeft(S);
-        metTrimRight: S := TrimRight(S);
-      end;//case
-    end;
-    Result := S;
-  end;
-End;
+    SetTextApplyMask(AValue);
+end;
 
+function TCustomMaskEdit.RealGetText: TCaption;
+begin
+  if not IsMasked then
+    Result := GetEditText
+  else
+    Result := GetTextWithoutMask;
+end;
 
 // Set the actual Text
-procedure TCustomMaskEdit.SetText(Value: TCaption);
+procedure TCustomMaskEdit.SetTextApplyMask(Value: TCaption);
 { This tries to mimic Delphi behaviour (D3):
   - if mask contains no literals text is set, if necessary padded with blanks,
     LTR or RTL depending on FTrimType
@@ -1455,21 +1254,21 @@ Begin
           end;
         end;
       end;//FMaskSave = False
-      SetInheritedText(S);
+      RealSetTextWhileMasked(S);
     finally
       FTextChangedBySetText := False;
     end; //try..finally
   end//Ismasked
   else
   begin//not IsMasked
-    SetInheritedText(Value);
+    RealSetTextWhileMasked(Value);
   end;
 End;
 
 
 function TCustomMaskEdit.GetEditText: string;
 begin
-  Result := Inherited Text;
+  Result := Inherited RealGetText;
 end;
 
 
@@ -1483,7 +1282,7 @@ var
 begin
   if (not IsMasked) then
   begin
-    Inherited Text := AValue;
+    Inherited RealsetText(AValue);
   end
   else
   begin
@@ -1495,9 +1294,227 @@ begin
       if IsLiteral(FMask[i]) then SetCodePoint(S,i,ClearChar(i));
     //Pad resulting string with ClearChar if text is too short
     while Utf8Length(S) < FMaskLength do S := S + ClearChar(Utf8Length(S)+1);
-    SetInheritedText(S);
+    RealSetTextWhileMasked(S);
   end;
 end;
+
+
+// Clear (virtually) a single Utf8 char in position Position
+function TCustomMaskEdit.ClearChar(Position : Integer) : TUtf8Char;
+begin
+  Result := FMask[Position];
+  //For Delphi compatibilty, only literals remain, all others will be blanked
+  case CharToMask(FMask[Position]) Of
+    Char_Number,
+    Char_NumberFixed,
+    Char_NumberPlusMin,
+    Char_Letter,
+    Char_LetterFixed,
+    Char_LetterUpCase,
+    Char_LetterDownCase,
+    Char_LetterFixedUpCase,
+    Char_LetterFixedDownCase,
+    Char_AlphaNum,
+    Char_AlphaNumFixed,
+    Char_AlphaNumUpCase,
+    Char_AlphaNumDownCase,
+    Char_AlphaNumFixedUpcase,
+    Char_AlphaNuMFixedDownCase,
+    Char_All,
+    Char_AllFixed,
+    Char_AllUpCase,
+    Char_AllDownCase,
+    Char_AllFixedUpCase,
+    Char_AllFixedDownCase     : Result := FSpaceChar;
+    {Char_Space               : Result := #32; //FSpaceChar?; //not Delphi compatible, see notes above}
+     Char_HourSeparator       : Result := DefaultFormatSettings.TimeSeparator;
+     Char_DateSeparator       : Result := DefaultFormatSettings.DateSeparator;
+  end;
+end;
+
+
+
+//Insert a single Utf8 char at the current position of the cursor
+procedure TCustomMaskEdit.InsertChar(Ch : TUtf8Char);
+Var
+  S: String;
+  i, SelectionStart, SelectionStop: Integer;
+begin
+  if CanInsertChar(FCursorPos + 1, Ch) then
+  begin
+    S := GetEditText;
+    if HasSelection then
+    begin
+      //replace slection with blank chars
+      //don't do this via DeleteChars(True), since it will do an unneccesary
+      //update of the control and 2 TextChanged's are triggerd for every char we enter
+      GetSel(SelectionStart, SelectionStop);
+      for i := SelectionStart + 1 to SelectionStop do SetCodePoint(S, i, ClearChar(i));
+    end;
+    SetCodePoint(S, FCursorPos + 1, Ch);
+    RealSetTextWhileMasked(S);
+    SelectNextChar;
+  end
+  else
+  //If we have a selection > 1 (and cannot insert) then Delete the selected text: Delphi compatibility
+  if HasExtSelection then DeleteSelected;
+end;
+
+
+//Check if a Utf8 char can be inserted at position Position, also do case conversion if necessary
+function TCustomMaskEdit.CanInsertChar(Position: Integer; var Ch: TUtf8Char
+  ): Boolean;
+Var
+  Current : tMaskedType;
+Begin
+  Current := CharToMask(FMask[Position]);
+  Result  := False;
+
+  // If in UpCase convert the input char
+  if (Current = Char_LetterUpCase     ) Or
+     (Current = Char_LetterFixedUpCase) Or
+     (Current = Char_AllUpCase        ) Or
+     (Current = Char_AllFixedUpCase   ) or
+     (Current = Char_AlphaNumUpcase   ) or
+     (Current = Char_AlphaNumFixedUpCase)
+     then
+       Ch := Utf8UpperCase(Ch);
+
+  // If in LowerCase convert the input char
+  if (Current = Char_LetterDownCase     ) Or
+     (Current = Char_LetterFixedDownCase) Or
+     (Current = Char_AllDownCase        ) Or
+     (Current = Char_AllFixedDownCase   ) or
+     (Current = Char_AlphaNumDownCase   ) or
+     (Current = Char_AlphaNumFixedDownCase )
+     then
+       Ch := Utf8LowerCase(Ch);
+
+  // Check the input (check the valid range)
+  case Current Of
+       Char_Number              : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9']);
+       Char_NumberFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9']);
+       Char_NumberPlusMin       : Result := (Length(Ch) = 1) and (Ch[1] in ['0'..'9','+','-']);
+       Char_Letter              : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z', 'A'..'Z']);
+       Char_LetterFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z', 'A'..'Z']);
+       Char_LetterUpCase        : Result := (Length(Ch) = 1) and (Ch[1] In ['A'..'Z']);
+       Char_LetterDownCase      : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z']);
+       Char_LetterFixedUpCase   : Result := (Length(Ch) = 1) and (Ch[1] In ['A'..'Z']);
+       Char_LetterFixedDownCase : Result := (Length(Ch) = 1) and (Ch[1] In ['a'..'z']);
+       Char_AlphaNum            : Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', 'A'..'Z', '0'..'9']);
+       Char_AlphaNumFixed       : Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', 'A'..'Z', '0'..'9']);
+       Char_AlphaNumUpCase      : Result := (Length(Ch) = 1) and (Ch[1] in ['A'..'Z', '0'..'9']);
+       Char_AlphaNumDownCase    : Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9']);
+       Char_AlphaNumFixedUpCase : Result := (Length(Ch) = 1) and (Ch[1] in ['A'..'Z', '0'..'9']);
+       Char_AlphaNumFixedDowncase:Result := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9']);
+       Char_All                 : Result := True;
+       Char_AllFixed            : Result := True;
+       Char_AllUpCase           : Result := True;
+       Char_AllDownCase         : Result := True;
+       Char_AllFixedUpCase      : Result := True;
+       Char_AllFixedDownCase    : Result := True;
+      {Char_Space               : Result := Ch in [' ', '_'];  //not Delphi compatible, see notes above}
+       Char_HourSeparator       : Result := (Ch = DefaultFormatSettings.TimeSeparator);
+       Char_DateSeparator       : Result := (Ch = DefaultFormatSettings.DateSeparator);
+  end;
+end;
+
+
+// Delete selected chars
+procedure TCustomMaskEdit.DeleteSelected;
+Var
+  SelectionStart, SelectionStop, I : Integer;
+  S: String;
+begin
+  if not HasSelection then Exit;
+  GetSel(SelectionStart, SelectionStop);
+  S := GetEditText;
+  for i := SelectionStart + 1 to SelectionStop do SetCodePoint(S, i,ClearChar(i));
+  RealSetTextWhileMasked(S);
+  SetCursorPos;
+end;
+
+
+// Delete a single char from position
+procedure TCustomMaskEdit.DeleteChars(NextChar : Boolean);
+begin
+  if NextChar then
+  begin//VK_DELETE
+    if HasSelection then DeleteSelected
+    else
+    begin
+      //cannot delete beyond length of string
+      if FCursorPos < FMaskLength then
+      begin
+        //This will select the appropriate char in the control
+        SetCursorPos;
+        DeleteSelected;
+      end;
+    end;
+  end
+  else
+  begin//VK_BACK
+    //if selected text > 1 char then delete selection
+    if HasExtSelection then DeleteSelected
+    else
+    begin
+      //cannot backspace if we are at beginning of string, or if all chars in front are MaskLiterals
+      if FCursorPos > FFirstFreePos - 1 then
+      begin
+        //This will select the previous character
+        //If there are MaskLiterals just in front of the current position, they will be skipped
+        //and the character in front of them will be deleted (Delphi compatibility)
+        SelectPrevChar;
+        DeleteSelected;
+      end;
+    end;
+  end;
+end;
+
+
+
+// Get the actual Text
+function TCustomMaskEdit.GetTextWithoutMask: TCaption;
+{
+  Replace al FSPaceChars with #32
+  If FMaskSave = False then do trimming of spaces and remove all maskliterals
+}
+var
+  S: String;
+  i: Integer;
+Begin
+  if not IsMasked then
+  begin
+    Result := GetEditText;
+  end
+  else
+  begin
+    S := StringReplace(GetEditText, FSpaceChar, #32, [rfReplaceAll]);
+    //FSpaceChar can be used as a literal in the mask, so put it back
+    for i := 1 to FMaskLength do
+    begin
+      if IsLiteral(FMask[i]) and (FMask[i] = FSpaceChar) then
+      begin
+        SetCodePoint(S, i, FSpaceChar);
+      end;
+    end;
+    if not FMaskSave then
+    begin
+      for i := 1 to FMaskLength do
+      begin
+        if IsLiteral(FMask[i]) then SetCodePoint(S, i, #1); //We know this char can never be in Text, so this is safe
+      end;
+      S := StringReplace(S, #1, '', [rfReplaceAll]);
+      //Trimming only occurs if FMaskSave = False
+      case FTrimType of
+        metTrimLeft : S := TrimLeft(S);
+        metTrimRight: S := TrimRight(S);
+      end;//case
+    end;
+    Result := S;
+  end;
+End;
+
 
 // Respond to Text Changed message
 procedure TCustomMaskEdit.TextChanged;
@@ -1517,9 +1534,9 @@ begin
   end
   else
   begin//Undo changes: restore with value of FCurrentText
-    //we do not call inherited TextChanged here, because the following SetInheritedText
+    //we do not call inherited TextChanged here, because the following RealSetTextWhileMasked
     //will trigger TextChanged with FChangeAllowed = True and inherited TextChanged is called then
-    SetInheritedText(FCurrentText);
+    RealSetTextWhileMasked(FCurrentText);
     //Reset cursor to last known position
     SetCursorPos;
   end;
@@ -1579,7 +1596,7 @@ begin
   inherited Loaded;
   FSettingInitialText := True;
   if (FInitialMask <> '') then SetMask(FInitialMask);
-  if (FInitialText <> '') then SetText(FInitialText);
+  if (FInitialText <> '') then SetTextApplyMask(FInitialText);
   FSettingInitialText := False;
 end;
 
@@ -1639,7 +1656,7 @@ procedure TCustomMaskEdit.Reset;
 begin
   if IsMasked and (not ReadOnly) then
   begin
-    SetInheritedText(FTextOnEnter);
+    RealSetTextWhileMasked(FTextOnEnter);
   end;
 end;
 
@@ -1647,13 +1664,13 @@ end;
 procedure TCustomMaskEdit.DoEnter;
 begin
   inherited DoEnter;
-  if isMasked then
+  if IsMasked then
   begin
     //debugln('TCustomMaskEdit.DoEnter: FValidationFailed = ',DbgS(FValidationFailed));
     FCursorPos := GetSelStart;
     //Only save FTextOnEnter if validation did not fail in last DoExit that occurred
     if not FValidationFailed then
-      FTextOnEnter := Inherited Text
+      FTextOnEnter := GetEditText
     else
       FValidationFailed := False;
     Modified := False;
@@ -1683,7 +1700,7 @@ begin
   {$IFNDEF MASKEDIT_NOVALIDATEONEXIT}
   //Do not validate if FValidationFailed, or risk raising an exception while the previous exception was
   //not handled, resulting in an application crash
-  if IsMasked and (FTextOnEnter <> Inherited Text) then
+  if IsMasked and (FTextOnEnter <> GetEditText) then
   begin
     //assume failure
     try
@@ -1729,7 +1746,7 @@ begin
   //Escape Key
   if (Key = VK_ESCAPE) and (Shift = []) then
   begin
-    if ((inherited Text) <> FTextOnEnter) then
+    if ((GetEditText) <> FTextOnEnter) then
     begin
       Reset;
       Key := 0;
@@ -1962,7 +1979,7 @@ begin
    begin
      P := FCursorPos + 1;
      DeleteSelected;
-     S := Inherited Text;
+     S := GetEditText;
      i := 1;
      //debugln('TCustomMaskEdit.PasteFromClipBoard B:');
      //debugln('  P = ',dbgs(p));
@@ -1991,7 +2008,7 @@ begin
        else
          Break;
      end;
-     SetInheritedText(S);
+     RealSetTextWhileMasked(S);
      SetCursorPos;
    end;
  end;
@@ -2008,7 +2025,7 @@ begin
   begin
     S  := '';
     for I := 1 To FMaskLength do S := S + ClearChar(I);
-    SetinheritedText(S);
+    RealSetTextWhileMasked(S);
     FCursorPos := 0;
     SetCursorPos;
   end
