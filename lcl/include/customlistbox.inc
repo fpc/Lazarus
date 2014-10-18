@@ -134,7 +134,7 @@ end;
 procedure TCustomListBox.FinalizeWnd;
 var
   NewStrings: TExtendedStringList;
-  i, Cnt: integer;
+  i: integer;
 begin
   LockSelectionChange;
 
@@ -149,8 +149,7 @@ begin
     // copy items (text+objects) from the interface items list
     NewStrings.Assign(Items);
     // copy items attributes
-    Cnt := Items.Count;
-    for i:=0 to Cnt-1 do
+    for i:=0 to Items.Count-1 do
       AssignItemDataToCache(i, NewStrings.Records[i]);
 
     // free the interface items list
