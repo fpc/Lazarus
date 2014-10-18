@@ -40,6 +40,8 @@ type
     ICAddSemicolonCheckBox: TCheckBox;
     ICReplaceCheckBox: TCheckBox;
     ICShowHelpCheckBox: TCheckBox;
+    ICSortForHistoryCheckBox: TCheckBox;
+    ICSortForScopeCheckBox: TCheckBox;
   private
   public
     function GetTitle: String; override;
@@ -68,10 +70,16 @@ begin
   ICAddDoCheckBox.Caption:=lisAddKeywordDo;
   ICAutoStartAfterPointCheckBox.Caption:=lisAutomaticallyInvokeAfterPoint;
   ICAutoAddParameterBracketsCheckBox.Caption:=lisAddParameterBrackets;
+
   ICReplaceCheckBox.Caption:=lisReplaceWholeIdentifier;
   ICReplaceCheckBox.Hint:=lisEnableReplaceWholeIdentifierDisableReplacePrefix;
+
   ICShowHelpCheckBox.Caption:=lisShowHelp;
   ICShowHelpCheckBox.Hint:=lisBestViewedByInstallingAHTMLControlLikeTurbopowerip;
+
+  ICSortForHistoryCheckBox.Caption:=lisShowRecentlyUsedIdentifiersAtTop;
+  ICSortForScopeCheckBox.Caption:=lisSortForScope;
+  ICSortForScopeCheckBox.Hint:=lisForExampleShowAtTopTheLocalVariablesThenTheMembers;
 end;
 
 procedure TCodetoolsIndentifierCompletionOptionsFrame.ReadSettings(
@@ -86,6 +94,8 @@ begin
     ICAutoAddParameterBracketsCheckBox.Checked:=IdentComplAddParameterBrackets;
     ICReplaceCheckBox.Checked:=IdentComplReplaceIdentifier;
     ICShowHelpCheckBox.Checked:=IdentComplShowHelp;
+    ICSortForHistoryCheckBox.Checked:=IdentComplSortForHistory;
+    ICSortForScopeCheckBox.Checked:=IdentComplSortForScope;
   end;
 end;
 
@@ -101,6 +111,8 @@ begin
     IdentComplAddParameterBrackets:=ICAutoAddParameterBracketsCheckBox.Checked;
     IdentComplReplaceIdentifier:=ICReplaceCheckBox.Checked;
     IdentComplShowHelp:=ICShowHelpCheckBox.Checked;
+    IdentComplSortForHistory:=ICSortForHistoryCheckBox.Checked;
+    IdentComplSortForScope:=ICSortForScopeCheckBox.Checked;
   end;
 end;
 

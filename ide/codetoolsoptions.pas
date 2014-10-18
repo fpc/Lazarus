@@ -61,6 +61,8 @@ type
 
     // General
     FAdjustTopLineDueToComment: boolean;
+    FIdentComplSortForHistory: boolean;
+    FIdentComplSortForScope: boolean;
     FJumpCentered: boolean;
     FCursorBeyondEOL: boolean;
     FSkipForwardDeclarations: boolean;
@@ -219,6 +221,10 @@ type
       read FIdentComplReplaceIdentifier write FIdentComplReplaceIdentifier;
     property IdentComplShowHelp: boolean read FIdentComplShowHelp
                                          write FIdentComplShowHelp;
+    property IdentComplSortForHistory: boolean read FIdentComplSortForHistory
+                                             write FIdentComplSortForHistory;
+    property IdentComplSortForScope: boolean read FIdentComplSortForScope
+                                             write FIdentComplSortForScope;
 
     // indentation
     property IndentOnLineBreak: boolean read FIndentOnLineBreak
@@ -482,6 +488,10 @@ begin
       'CodeToolsOptions/IdentifierCompletion/ReplaceIdentifier',true);
     FIdentComplShowHelp:=XMLConfig.GetValue(
       'CodeToolsOptions/IdentifierCompletion/ShowHelp',false);
+    FIdentComplSortForHistory:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/SortForHistory',true);
+    FIdentComplSortForScope:=XMLConfig.GetValue(
+      'CodeToolsOptions/IdentifierCompletion/SortForScope',true);
 
     // indentation
     FIndentOnLineBreak :=
@@ -624,6 +634,10 @@ begin
       FIdentComplReplaceIdentifier,true);
     XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/ShowHelp',
       FIdentComplShowHelp,false);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/SortForHistory',
+      FIdentComplSortForHistory,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierCompletion/SortForScope',
+      FIdentComplSortForScope,true);
 
     // indentation
     XMLConfig.SetDeleteValue('CodeToolsOptions/Indentation/OnLineBreak/Enabled'
@@ -743,6 +757,8 @@ begin
     FIdentComplAddParameterBrackets:=CodeToolsOpts.FIdentComplAddParameterBrackets;
     FIdentComplReplaceIdentifier:=CodeToolsOpts.FIdentComplReplaceIdentifier;
     FIdentComplShowHelp:=CodeToolsOpts.FIdentComplShowHelp;
+    FIdentComplSortForHistory:=CodeToolsOpts.FIdentComplSortForHistory;
+    FIdentComplSortForScope:=CodeToolsOpts.FIdentComplSortForScope;
   end
   else
     Clear;
@@ -797,6 +813,8 @@ begin
   FIdentComplAddParameterBrackets:=true;
   FIdentComplReplaceIdentifier:=true;
   FIdentComplShowHelp:=false;
+  FIdentComplSortForHistory:=true;
+  FIdentComplSortForScope:=true;
 
   // indentation
   FIndentOnLineBreak:=true;
@@ -869,6 +887,8 @@ begin
     and (FIdentComplAddParameterBrackets=CodeToolsOpts.FIdentComplAddParameterBrackets)
     and (FIdentComplReplaceIdentifier=CodeToolsOpts.FIdentComplReplaceIdentifier)
     and (FIdentComplShowHelp=CodeToolsOpts.FIdentComplShowHelp)
+    and (FIdentComplSortForHistory=CodeToolsOpts.FIdentComplSortForHistory)
+    and (FIdentComplSortForScope=CodeToolsOpts.FIdentComplSortForScope)
    ;
 end;
 
@@ -933,7 +953,12 @@ begin
     // CreateCode - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     AssignTo(Boss.SourceChangeCache.BeautifyCodeOptions);
     Boss.SetPropertyVariablename:=SetPropertyVariablename;
-    //
+
+    // Identifier Completion - - - - - - - - - - - - - - - - - - - - - - - - - -
+    Boss.IdentifierList.SortForHistory:=IdentComplSortForHistory;
+    Boss.IdentifierList.SortForScope:=IdentComplSortForScope;
+
+    // Code Templates- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     aFilename:=CodeCompletionTemplateFileName;
     IDEMacros.SubstituteMacros(aFilename);
     aFilename:=TrimFilename(aFilename);

@@ -1,10 +1,10 @@
 object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompletionOptionsFrame
   Left = 0
-  Height = 300
+  Height = 415
   Top = 0
-  Width = 400
-  ClientHeight = 300
-  ClientWidth = 400
+  Width = 537
+  ClientHeight = 415
+  ClientWidth = 537
   TabOrder = 0
   Visible = False
   DesignLeft = 514
@@ -15,9 +15,9 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
+    Height = 24
     Top = 0
-    Width = 400
+    Width = 537
     Anchors = [akTop, akLeft, akRight]
     Caption = 'ICAddSemicolonCheckBox'
     TabOrder = 0
@@ -29,9 +29,9 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 25
-    Width = 400
+    Height = 24
+    Top = 30
+    Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'ICAddAssignOperatorCheckBox'
@@ -44,9 +44,9 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 75
-    Width = 400
+    Height = 24
+    Top = 90
+    Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'ICAutoStartAfterPointCheckBox'
@@ -59,9 +59,9 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 100
-    Width = 400
+    Height = 24
+    Top = 120
+    Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'ICAutoAddParameterBracketsCheckBox'
@@ -74,11 +74,11 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 150
-    Width = 400
+    Height = 24
+    Top = 188
+    Width = 537
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 6
+    BorderSpacing.Top = 10
     Caption = 'ICShowHelpCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -91,11 +91,11 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 125
-    Width = 400
+    Height = 24
+    Top = 154
+    Width = 537
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Top = 6
+    BorderSpacing.Top = 10
     Caption = 'ICReplaceCheckBox'
     ParentShowHint = False
     ShowHint = True
@@ -108,12 +108,35 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 19
-    Top = 50
-    Width = 400
+    Height = 24
+    Top = 60
+    Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'ICAddDoCheckBox'
     TabOrder = 6
+  end
+  object ICSortForHistoryCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICShowHelpCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 222
+    Width = 170
+    BorderSpacing.Top = 10
+    Caption = 'ICSortForHistoryCheckBox'
+    TabOrder = 7
+  end
+  object ICSortForScopeCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICSortForHistoryCheckBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 24
+    Top = 246
+    Width = 164
+    Caption = 'ICSortForScopeCheckBox'
+    TabOrder = 8
   end
 end

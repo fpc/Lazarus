@@ -50,7 +50,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, typinfo, FileProcs, CodeTree, CodeAtom, CodeCache,
   CustomCodeTool, CodeToolsStrConsts, KeywordFuncLists, BasicCodeTools,
-  LinkScanner, AVL_Tree, CodeToolMemManager, DefineTemplates, SourceChanger,
+  LinkScanner, AvgLvlTree, AVL_Tree, CodeToolMemManager, DefineTemplates, SourceChanger,
   FindDeclarationTool, PascalReaderTool, PascalParserTool, CodeToolsStructs,
   ExprEval;
   
@@ -202,6 +202,8 @@ type
     FContext: TFindContext;
     FNewMemberVisibility: TCodeTreeNodeDesc;
     FContextFlags: TIdentifierListContextFlags;
+    FSortForHistory: boolean;
+    FSortForScope: boolean;
     FStartAtom: TAtomPosition;
     FStartAtomBehind: TAtomPosition;
     FStartAtomInFront: TAtomPosition;
@@ -211,13 +213,16 @@ type
     FFilteredList: TFPList; // list of TIdentifierListItem
     FFlags: TIdentifierListFlags;
     FHistory: TIdentifierHistoryList;
-    FItems: TAVLTree; // tree of TIdentifierListItem (completely sorted)
+    FItems: TAvgLvlTree; // tree of TIdentifierListItem (completely sorted)
     FIdentView: TAVLTree; // tree of TIdentifierListItem sorted for identifiers
     FUsedTools: TAVLTree; // tree of TFindDeclarationTool
     FIdentSearchItem: TIdentifierListSearchItem;
     FPrefix: string;
     FStartContext: TFindContext;
+    function CompareIdentListItems(Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
     procedure SetHistory(const AValue: TIdentifierHistoryList);
+    procedure SetSortForHistory(AValue: boolean);
+    procedure SetSortForScope(AValue: boolean);
     procedure UpdateFilteredList;
     function GetFilteredItems(Index: integer): TIdentifierListItem;
     procedure SetPrefix(const AValue: string);
@@ -247,6 +252,8 @@ type
                                                           read GetFilteredItems;
     property History: TIdentifierHistoryList read FHistory write SetHistory;
     property Prefix: string read FPrefix write SetPrefix;
+    property SortForHistory: boolean read FSortForHistory write SetSortForHistory;
+    property SortForScope: boolean read FSortForScope write SetSortForScope;
     property StartAtom: TAtomPosition read FStartAtom write FStartAtom;
     property StartAtomInFront: TAtomPosition
                                  read FStartAtomInFront write FStartAtomInFront; // in front of variable, not only of identifier
@@ -414,46 +421,6 @@ const
   CompilerFuncHistoryIndex = 10;
   CompilerFuncLevel = 10;
 
-function CompareIdentListItems(Data1, Data2: Pointer): integer;
-var
-  Item1: TIdentifierListItem absolute Data1;
-  Item2: TIdentifierListItem absolute Data2;
-begin
-  // first sort for Compatibility  (lower is better)
-  if ord(Item1.Compatibility)<ord(Item2.Compatibility) then begin
-    Result:=-1;
-    exit;
-  end else if ord(Item1.Compatibility)>ord(Item2.Compatibility) then begin
-    Result:=1;
-    exit;
-  end;
-  
-  // then sort for History (lower is better)
-  if Item1.HistoryIndex<Item2.HistoryIndex then begin
-    Result:=-1;
-    exit;
-  end else if Item1.HistoryIndex>Item2.HistoryIndex then begin
-    Result:=1;
-    exit;
-  end;
-
-  // then sort for Level (i.e. scope, lower is better)
-  if Item1.Level<Item2.Level then begin
-    Result:=-1;
-    exit;
-  end else if Item1.Level>Item2.Level then begin
-    Result:=1;
-    exit;
-  end;
-
-  // then sort alpabetically (lower is better)
-  Result:=CompareIdentifierPtrs(Pointer(Item2.Identifier),Pointer(Item1.Identifier));
-  if Result<>0 then exit;
-  
-  // then sort for ParamList (lower is better)
-  Result:=Item2.CompareParamList(Item1);
-end;
-
 function CompareIdentListItemsForIdents(Data1, Data2: Pointer): integer;
 var
   Item1: TIdentifierListItem absolute Data1;
@@ -536,6 +503,53 @@ end;
 
 { TIdentifierList }
 
+function TIdentifierList.CompareIdentListItems(Tree: TAvgLvlTree; Data1,
+  Data2: Pointer): integer;
+var
+  Item1: TIdentifierListItem absolute Data1;
+  Item2: TIdentifierListItem absolute Data2;
+begin
+  if SortForScope then begin
+    // first sort for Compatibility  (lower is better)
+    if ord(Item1.Compatibility)<ord(Item2.Compatibility) then begin
+      Result:=-1;
+      exit;
+    end else if ord(Item1.Compatibility)>ord(Item2.Compatibility) then begin
+      Result:=1;
+      exit;
+    end;
+  end;
+
+  if SortForHistory then begin
+    // then sort for History (lower is better)
+    if Item1.HistoryIndex<Item2.HistoryIndex then begin
+      Result:=-1;
+      exit;
+    end else if Item1.HistoryIndex>Item2.HistoryIndex then begin
+      Result:=1;
+      exit;
+    end;
+  end;
+
+  if SortForScope then begin
+    // then sort for Level (i.e. scope, lower is better)
+    if Item1.Level<Item2.Level then begin
+      Result:=-1;
+      exit;
+    end else if Item1.Level>Item2.Level then begin
+      Result:=1;
+      exit;
+    end;
+  end;
+
+  // then sort alpabetically (lower is better)
+  Result:=CompareIdentifierPtrs(Pointer(Item2.Identifier),Pointer(Item1.Identifier));
+  if Result<>0 then exit;
+
+  // then sort for ParamList (lower is better)
+  Result:=Item2.CompareParamList(Item1);
+end;
+
 procedure TIdentifierList.SetPrefix(const AValue: string);
 begin
   if FPrefix=AValue then exit;
@@ -545,7 +559,7 @@ end;
 
 procedure TIdentifierList.UpdateFilteredList;
 var
-  AnAVLNode: TAVLTreeNode;
+  AnAVLNode: TAvgLvlTreeNode;
   CurItem: TIdentifierListItem;
 begin
   if not (ilfFilteredListNeedsUpdate in FFlags) then exit;
@@ -585,6 +599,20 @@ begin
   FHistory:=AValue;
 end;
 
+procedure TIdentifierList.SetSortForHistory(AValue: boolean);
+begin
+  if FSortForHistory=AValue then Exit;
+  FSortForHistory:=AValue;
+  Clear;
+end;
+
+procedure TIdentifierList.SetSortForScope(AValue: boolean);
+begin
+  if FSortForScope=AValue then Exit;
+  FSortForScope:=AValue;
+  Clear;
+end;
+
 function TIdentifierList.GetFilteredItems(Index: integer): TIdentifierListItem;
 begin
   UpdateFilteredList;
@@ -597,10 +625,12 @@ end;
 constructor TIdentifierList.Create;
 begin
   FFlags:=[ilfFilteredListNeedsUpdate];
-  FItems:=TAVLTree.Create(@CompareIdentListItems);
+  FItems:=TAvgLvlTree.CreateObjectCompare(@CompareIdentListItems);
   FIdentView:=TAVLTree.Create(@CompareIdentListItemsForIdents);
   FIdentSearchItem:=TIdentifierListSearchItem.Create;
   FCreatedIdentifiers:=TFPList.Create;
+  FSortForHistory:=true;
+  FSortForScope:=true;
 end;
 
 destructor TIdentifierList.Destroy;
@@ -779,7 +809,7 @@ function TIdentifierList.CompletePrefix(const OldPrefix: string): string;
 // search all identifiers beginning with Prefix
 // and return the biggest shared prefix of all of them
 var
-  AnAVLNode: TAVLTreeNode;
+  AnAVLNode: TAvgLvlTreeNode;
   CurItem: TIdentifierListItem;
   FoundFirst: Boolean;
   SamePos: Integer;
@@ -820,6 +850,7 @@ function TIdentifierList.CalcMemSize: PtrUInt;
 var
   i: Integer;
   Node: TAVLTreeNode;
+  AvgNode: TAvgLvlTreeNode;
   li: TIdentifierListItem;
   hli: TIdentHistListItem;
 begin
@@ -839,12 +870,12 @@ begin
     inc(Result,FHistory.CalcMemSize);
   end;
   if FItems<>nil then begin
-    inc(Result,FItems.Count*SizeOf(TAVLTreeNode));
-    Node:=FItems.FindLowest;
-    while Node<>nil do begin
-      li:=TIdentifierListItem(Node.Data);
+    inc(Result,FItems.Count*SizeOf(TAvgLvlTreeNode));
+    AvgNode:=FItems.FindLowest;
+    while AvgNode<>nil do begin
+      li:=TIdentifierListItem(AvgNode.Data);
       inc(Result,li.CalcMemSize);
-      Node:=FItems.FindSuccessor(Node);
+      AvgNode:=AvgNode.Successor;
     end;
   end;
   if FIdentView<>nil then begin
