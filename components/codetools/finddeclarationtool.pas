@@ -1111,7 +1111,7 @@ begin
     IdentNode:=FindContext.Node;
     while (IdentNode<>nil) do begin
       if IdentNode.Desc in AllSimpleIdentifierDefinitions
-        +[ctnIdentifier,ctnEnumIdentifier]
+        +[ctnIdentifier,ctnEnumIdentifier,ctnLabel]
       then begin
         Result:=Result+' Ident="'+
           FindContext.Tool.ExtractIdentifier(IdentNode.StartPos)+'"';
@@ -2400,13 +2400,14 @@ begin
         Result := 'var Result: ' + ExtractNode(Node, []);
 
     ctnVarDefinition, ctnTypeDefinition, ctnConstDefinition,
-    ctnEnumIdentifier, ctnGenericType:
+    ctnEnumIdentifier, ctnLabel, ctnGenericType:
       begin
         case Node.Desc of
         ctnVarDefinition: Result+='var ';
         ctnTypeDefinition: Result+='type ';
         ctnConstDefinition: Result+='const ';
         ctnEnumIdentifier: Result+='enum ';
+        ctnLabel: Result+='label ';
         ctnGenericType: Result+='generic type ';
         end;
 
@@ -2425,7 +2426,7 @@ begin
                 Result += ' = '
               else
                 Result += ': ';
-            ctnEnumIdentifier: ;
+            ctnEnumIdentifier,ctnLabel: ;
             else
               Result += ': ';
           end;
@@ -3084,7 +3085,7 @@ var
     end;
   end;
 
-  function SearchInEnumDefinition: boolean;
+  function SearchInEnumLabelDefinition: boolean;
   // returns: true if ok to exit
   //          false if search should continue
   begin
@@ -3093,7 +3094,7 @@ var
     or CompareSrcIdentifiers(ContextNode.StartPos,Params.Identifier)
     then begin
       {$IFDEF ShowTriedIdentifiers}
-      DebugLn('  Enum Identifier found="',GetIdentifier(Params.Identifier),'"');
+      DebugLn('  Enum/Label Identifier found="',GetIdentifier(Params.Identifier),'"');
       {$ENDIF}
       // identifier found
       Params.SetResult(Self,ContextNode);
@@ -3479,8 +3480,8 @@ begin
           and (ContextNode=ContextNode.Parent.LastChild)
           and SearchInTypeOfVarConst then exit;
 
-        ctnEnumIdentifier:
-          if SearchInEnumDefinition then exit;
+        ctnEnumIdentifier,ctnLabel:
+          if SearchInEnumLabelDefinition then exit;
 
         ctnProcedure:
           begin
@@ -4970,7 +4971,7 @@ var
           // Note: types can be used before declaration
         end;
 
-      ctnVarDefinition,ctnConstDefinition,ctnLabelType,ctnEnumIdentifier:
+      ctnVarDefinition,ctnConstDefinition,ctnEnumIdentifier,ctnLabel:
         begin
           // only search behind variable
           if MinPos<Node.StartPos then MinPos:=Node.StartPos;
@@ -5241,7 +5242,7 @@ begin
   if Node=nil then exit;
   case Node.Desc of
 
-  ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnEnumIdentifier:
+  ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnEnumIdentifier,ctnLabel:
     begin
       if NodeIsForwardDeclaration(Node) then exit;
       Result:=InNodeIdentifier(Node.StartPos);

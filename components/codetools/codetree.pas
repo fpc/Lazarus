@@ -125,7 +125,7 @@ const
   ctnRangeType          = 79;
   ctnEnumerationType    = 80;
   ctnEnumIdentifier     = 81;
-  ctnLabelType          = 82;
+  ctnLabel              = 82;
   ctnTypeType           = 83;
   ctnFileType           = 84;
   ctnPointerType        = 85;
@@ -184,7 +184,7 @@ const
       ctnIdentifier,ctnOpenArrayType,ctnRangedArrayType,
       ctnRecordCase,ctnRecordVariant,
       ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumerationType,
-      ctnEnumIdentifier,ctnLabelType,ctnTypeType,ctnFileType,ctnPointerType,
+      ctnEnumIdentifier,ctnLabel,ctnTypeType,ctnFileType,ctnPointerType,
       ctnClassOfType,ctnVariantType,ctnConstant];
   AllPascalStatements = [ctnBeginBlock,ctnWithStatement,ctnWithVariable,
                          ctnOnBlock,ctnOnIdentifier,ctnOnStatement,
@@ -430,7 +430,7 @@ begin
   ctnRangeType: Result:='Subrange Type';
   ctnEnumerationType: Result:='Enumeration Type';
   ctnEnumIdentifier: Result:='Enumeration Identifier';
-  ctnLabelType: Result:='Label Type';
+  ctnLabel: Result:='Label Identifier';
   ctnTypeType: Result:='''Type'' Type';
   ctnFileType: Result:='File Type';
   ctnPointerType: Result:='Pointer ^ Type';

@@ -315,6 +315,12 @@ begin
         s:='enum';
       end;
       
+    ctnLabel:
+      begin
+        AColor:=clOlive;
+        s:='label';
+      end;
+
     ctnUnit, ctnUseUnit:
       begin
         AColor:=clBlack;

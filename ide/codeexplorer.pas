@@ -770,7 +770,7 @@ begin
     ctnClassInterface,ctnCPPClass:
       Result:='('+ACodeTool.ExtractClassInheritance(CodeNode,[])+')';
 
-    ctnEnumIdentifier, ctnLabelType:
+    ctnEnumIdentifier, ctnLabel:
       Result:=ACodeTool.ExtractIdentifier(CodeNode.StartPos);
 
     ctnProcedure:

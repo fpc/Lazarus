@@ -1129,7 +1129,7 @@ begin
       end;
     end;
   
-  ctnVarDefinition,ctnConstDefinition,ctnEnumIdentifier,ctnGlobalProperty:
+  ctnVarDefinition,ctnConstDefinition,ctnEnumIdentifier,ctnLabel,ctnGlobalProperty:
     Ident:=@FoundContext.Tool.Src[FoundContext.Node.StartPos];
     
   ctnProcedure,ctnProcedureHead:

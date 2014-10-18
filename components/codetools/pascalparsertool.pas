@@ -3763,7 +3763,7 @@ begin
       SaveRaiseStringExpectedButAtomFound(ctsIdentifier);
     end;
     CreateChildNode;
-    CurNode.Desc:=ctnLabelType;
+    CurNode.Desc:=ctnLabel;
     CurNode.EndPos:=CurPos.EndPos;
     EndChildNode;
     ReadNextAtom;
@@ -4548,7 +4548,7 @@ function TPascalParserTool.KeyWordFuncTypeLabel: boolean;
 // 'label;'
 begin
   CreateChildNode;
-  CurNode.Desc:=ctnLabelType;
+  CurNode.Desc:=ctnLabel;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
   ReadNextAtom;
