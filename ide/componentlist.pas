@@ -315,38 +315,7 @@ begin
     Screen.Cursor := crDefault;
   end;
 end;
-{
-procedure TComponentListForm.ComponentsListboxDrawItem(Control: TWinControl;
-  Index: Integer; ARect: TRect; State: TOwnerDrawState);
-var
-  Comp: TRegisteredComponent;
-  CurStr: string;
-  CurIcon: TCustomBitmap;
-  TxtH, IconWidth, IconHeight: Integer;
-begin
-  if (Index<0) or (Index>=ComponentsListBox.Items.Count) then exit;
-  // draw registered component
-  Comp:=TRegisteredComponent(ComponentsListBox.Items.Objects[Index]);
-  with ComponentsListBox.Canvas do begin
-    CurStr:=Comp.ComponentClass.ClassName;
-//  CurStr:=Format(lisPckEditPage,[Comp.ComponentClass.ClassName,Comp.Page.PageName]);
-    TxtH:=TextHeight(CurStr);
-    FillRect(ARect);
-    CurIcon:=nil;
-    if Comp is TPkgComponent then
-      CurIcon:=TPkgComponent(Comp).Icon;
-    if CurIcon<>nil then
-    begin
-      IconWidth:=CurIcon.Width;
-      IconHeight:=CurIcon.Height;
-      Draw(ARect.Left+(25-IconWidth) div 2,
-           ARect.Top+(ARect.Bottom-ARect.Top-IconHeight) div 2, CurIcon);
-    end;
-    TextOut(ARect.Left+25,
-            ARect.Top+(ARect.Bottom-ARect.Top-TxtH) div 2, CurStr);
-  end;
-end;
-}
+
 procedure TComponentListForm.TreeCustomDrawItem(Sender: TCustomTreeView;
   Node: TTreeNode; State: TCustomDrawState; var DefaultDraw: Boolean);
 var
