@@ -227,6 +227,8 @@ const
 
 implementation
 
+{$DEFINE CHECK_FORMAT}
+
 function IsKey(Txt, Key: PChar): boolean;
 begin
   if Txt=nil then exit(false);
@@ -714,24 +716,16 @@ begin
 end;
 
 constructor TPOFile.Create(AStream: TStream; Full:boolean=false);
-{$IFDEF test_readtxt}
-var
-  Size: Integer;
-  s: string;
-{$ENDIF}
 begin
   Create;
 
   FAllEntries := Full;
 
-  {$IFDEF test_readtxt}
-  Size:=AStream.Size-AStream.Position;
-  if Size<=0 then exit;
-  SetLength(s,Size);
-  AStream.Read(s[1],Size);
-  ReadPOText(s);
-  {$ELSE}
   ReadPOText(AStream);
+
+  {$IFDEF CHECK_FORMAT}
+  CheckFormatArguments; // Verify that translation will not generate crashes
+  CleanUp; // Remove leftover badformat flags and keep only real ones
   {$ENDIF}
 end;
 
@@ -1010,10 +1004,17 @@ begin
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item=nil then
     Item:=TPOFileItem(FOriginalToItem.Data[OriginalValue]);
+{$IFNDEF CHECK_FORMAT}
   //Load translation only if it exists and is NOT fuzzy.
   //This matches gettext behaviour and allows to avoid a lot of crashes related
   //to formatting arguments mismatches.
   if (Item<>nil) and (pos(sFuzzyFlag, lowercase(Item.Flags))=0) then begin
+{$ELSE}
+    //Load translation only if it exists and is not flagged as badformat.
+    //This allows to avoid a lot of crashes related
+    //to formatting arguments mismatches.
+  if (Item<>nil) and (pos(sBadFormatFlag, lowercase(Item.Flags))=0) then begin
+{$ENDIF}
     Result:=Item.Translation;
     if Result='' then RaiseGDBException('TPOFile.Translate Inconsistency');
   end else
