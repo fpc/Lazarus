@@ -15,7 +15,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 24
+    Height = 17
     Top = 0
     Width = 537
     Anchors = [akTop, akLeft, akRight]
@@ -29,8 +29,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 30
+    Height = 17
+    Top = 23
     Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -44,8 +44,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 90
+    Height = 17
+    Top = 69
     Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -59,8 +59,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 120
+    Height = 17
+    Top = 92
     Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -74,8 +74,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 188
+    Height = 17
+    Top = 146
     Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 10
@@ -91,8 +91,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 154
+    Height = 17
+    Top = 119
     Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 10
@@ -108,8 +108,8 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 60
+    Height = 17
+    Top = 46
     Width = 537
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
@@ -121,9 +121,9 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Control = ICShowHelpCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 222
-    Width = 170
+    Height = 17
+    Top = 173
+    Width = 146
     BorderSpacing.Top = 10
     Caption = 'ICSortForHistoryCheckBox'
     TabOrder = 7
@@ -133,10 +133,12 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     AnchorSideTop.Control = ICSortForHistoryCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 24
-    Top = 246
-    Width = 164
+    Height = 17
+    Top = 190
+    Width = 141
     Caption = 'ICSortForScopeCheckBox'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 8
   end
 end
