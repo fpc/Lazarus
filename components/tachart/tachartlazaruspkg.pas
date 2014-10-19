@@ -13,10 +13,10 @@ uses
   TALegendPanel, TARadialSeries, TACustomSource, TAGeometry, TANavigation, 
   TADrawerCanvas, TADrawerSVG, TAIntervalSources, TAChartAxisUtils, 
   TAChartListbox, TAEnumerators, TADataPointsEditor, TAChartExtentLink, 
-  TAToolEditors, TAMath, TAChartImageList, TADataTools, TAAnimatedSource, 
-  TATextElements, TAAxisSource, TASeriesPropEditors, TACustomFuncSeries, 
-  TAFitUtils, TAGUIConnector, TADiagram, TADiagramDrawing, TADiagramLayout, 
-  LazarusPackageIntf;
+  TAToolEditors, TAMath, TAChartImageList, TAChartTeeChart, TADataTools, 
+  TAAnimatedSource, TATextElements, TAAxisSource, TASeriesPropEditors, 
+  TACustomFuncSeries, TAFitUtils, TAGUIConnector, TADiagram, TADiagramDrawing, 
+  TADiagramLayout, LazarusPackageIntf;
 
 implementation
 

@@ -193,7 +193,6 @@
       </Item35>
       <Item36>
         <Filename Value="tachartteechart.pas"/>
-        <AddToUsesPkgSection Value="False"/>
         <UnitName Value="TAChartTeeChart"/>
       </Item36>
       <Item37>
