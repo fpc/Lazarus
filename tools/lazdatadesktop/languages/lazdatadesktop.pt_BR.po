@@ -198,7 +198,6 @@ msgid "New domain"
 msgstr "Novo domínio"
 
 #: lazdatadeskstr.sld_actionadddomainh
-#| msgid "Add a domain o the data dictionary"
 msgid "Add a domain to the data dictionary"
 msgstr "Adicionar um domínio ao dicionário dados"
 

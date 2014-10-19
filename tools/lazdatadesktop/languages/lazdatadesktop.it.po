@@ -334,7 +334,6 @@ msgid "Create a new table"
 msgstr "Crea una nuova tabella"
 
 #: lazdatadeskstr.sld_actionopen
-#| msgid "&Open..."
 msgid "&Open ..."
 msgstr "&Apri..."
 
@@ -727,7 +726,6 @@ msgid "Run query"
 msgstr "Esegui query"
 
 #: lazdatadeskstr.srowsaffected
-#| msgid "Query executed succesfully: %d rows affected."
 msgid "Query executed successfully: %d rows affected."
 msgstr "Query eseguita correttamente: %d righe modificate."
 
