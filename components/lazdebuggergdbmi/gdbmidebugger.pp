@@ -8073,7 +8073,7 @@ begin
   {$IFdef MSWindows}
   Result := '$(LazarusDir)\mingw\$(TargetCPU)-$(TargetOS)\bin\gdb.exe;$(LazarusDir)\mingw\bin\gdb.exe;C:\lazarus\mingw\bin\gdb.exe';
   {$ELSE}
-  Result := '/usr/bin/gdb;/usr/local/bin/gdb;/opt/fpc/gdb';
+  Result := 'gdb;/usr/bin/gdb;/usr/local/bin/gdb;/opt/fpc/gdb';
   {$ENDIF}
 end;
 
