@@ -241,7 +241,7 @@ msgstr "справа"
 
 #: anchordockstr.adrssavelayoutonclose
 msgid "Save layout on close"
-msgstr ""
+msgstr "Сохранять разбивку окна при выходе"
 
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
