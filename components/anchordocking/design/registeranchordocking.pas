@@ -62,6 +62,7 @@ type
     FCmdLineLayoutFile: string;
     FSavedChangeStamp: int64;
     FSavedDMChangeStamp: int64;
+    FSaveOnClose: boolean;
     FUserLayoutLoaded: boolean;
     procedure DockMasterCreateControl(Sender: TObject; aName: string;
       var AControl: TControl; DoDisableAutoSizing: boolean);
@@ -87,6 +88,7 @@ type
     procedure SaveLayoutToFile(Filename: string);
     property UserLayoutLoaded: boolean read FUserLayoutLoaded write SetUserLayoutLoaded;
     property CmdLineLayoutFile: string read FCmdLineLayoutFile write FCmdLineLayoutFile;
+    property SaveOnClose: boolean read FSaveOnClose write FSaveOnClose;
     // events
     procedure MakeIDEWindowDockSite(AForm: TCustomForm; ASides: TDockSides = [alBottom]); override;
     procedure MakeIDEWindowDockable(AControl: TWinControl); override;
@@ -232,6 +234,7 @@ end;
 constructor TIDEAnchorDockMaster.Create;
 begin
   inherited Create;
+  FSaveOnClose:=true;
   IDEAnchorDockMaster:=Self;
   DockMaster.OnCreateControl:=@DockMasterCreateControl;
   DockMaster.OnShowOptions:=@ShowAnchorDockOptions;
@@ -510,8 +513,16 @@ begin
 end;
 
 procedure TIDEAnchorDockMaster.OnIDEClose(Sender: TObject);
+var
+  aForm: TCustomForm;
 begin
   SaveSettings;
+  if DockMaster.SaveOnClose then begin
+    debugln(['TIDEAnchorDockMaster.OnIDEClose auto save ...']);
+    aForm:=GetParentForm(Application.MainForm);
+    if (aForm<>nil) and aForm.Monitor.Primary then
+      SaveUserLayout;
+  end;
 end;
 
 procedure TIDEAnchorDockMaster.RestoreDefaultLayoutClicked(Sender: TObject);
@@ -646,7 +657,7 @@ begin
   OptionsFrame:=TAnchorDockOptionsFrame.Create(Self);
   with OptionsFrame do begin
     Name:='OptionsFrame';
-    Flags:=[adofShow_ShowHeader];
+    Flags:=[adofShow_ShowHeader,adofShow_ShowSaveOnClose];
   end;
 end;
 

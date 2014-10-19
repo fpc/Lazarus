@@ -244,6 +244,10 @@ msgstr "Restaurar el diseño predeterminado"
 msgid "right"
 msgstr "derecha"
 
+#: anchordockstr.adrssavelayoutonclose
+msgid "Save layout on close"
+msgstr ""
+
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
 msgstr "Guardar Diseño de ventana como predeterminado"

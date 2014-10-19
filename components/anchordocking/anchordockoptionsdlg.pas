@@ -39,7 +39,8 @@ uses
 
 type
   TAnchorDockOptionsFlag = (
-    adofShow_ShowHeader
+    adofShow_ShowHeader,
+    adofShow_ShowSaveOnClose
     );
   TAnchorDockOptionsFlags = set of TAnchorDockOptionsFlag;
 
@@ -57,11 +58,13 @@ type
     HeaderStyleComboBox: TComboBox;
     HeaderStyleLabel: TLabel;
     HideHeaderCaptionForFloatingCheckBox: TCheckBox;
+    SaveLayoutOnCloseCheckBox: TCheckBox;
     ScaleOnResizeCheckBox: TCheckBox;
     ShowHeaderCaptionCheckBox: TCheckBox;
     ShowHeaderCheckBox: TCheckBox;
     SplitterWidthLabel: TLabel;
     SplitterWidthTrackBar: TTrackBar;
+    procedure FrameClick(Sender: TObject);
     procedure HeaderStyleComboBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure OkClick(Sender: TObject);
@@ -157,6 +160,11 @@ begin
   DrawADHeader(TComboBox(Control).Canvas,TADHeaderStyle(Index),ARect,true);
 end;
 
+procedure TAnchorDockOptionsFrame.FrameClick(Sender: TObject);
+begin
+
+end;
+
 procedure TAnchorDockOptionsFrame.DragThresholdTrackBarChange(Sender: TObject);
 begin
   UpdateDragThresholdLabel;
@@ -212,6 +220,7 @@ end;
 procedure TAnchorDockOptionsFrame.ApplyFlags;
 begin
   ShowHeaderCheckBox.Visible:=adofShow_ShowHeader in Flags;
+  SaveLayoutOnCloseCheckBox.Visible:=adofShow_ShowSaveOnClose in Flags;
 end;
 
 procedure TAnchorDockOptionsFrame.SaveToMaster;
@@ -250,6 +259,7 @@ begin
   TheSettings.HeaderAlignLeft:=HeaderAlignLeftTrackBar.Position;
   TheSettings.SplitterWidth:=SplitterWidthTrackBar.Position;
   TheSettings.ScaleOnResize:=ScaleOnResizeCheckBox.Checked;
+  TheSettings.SaveOnClose:=SaveLayoutOnCloseCheckBox.Checked;
   TheSettings.ShowHeader:=ShowHeaderCheckBox.Checked;
   TheSettings.ShowHeaderCaption:=ShowHeaderCaptionCheckBox.Checked;
   TheSettings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionForFloatingCheckBox.Checked;
@@ -292,6 +302,9 @@ begin
   SplitterWidthTrackBar.Hint:=adrsSplitterThickness;
   SplitterWidthTrackBar.Position:=TheSettings.SplitterWidth;
   UpdateSplitterWidthLabel;
+
+  SaveLayoutOnCloseCheckBox.Caption:=adrsSaveLayoutOnClose;
+  SaveLayoutOnCloseCheckBox.Checked:=TheSettings.SaveOnClose;
 
   ScaleOnResizeCheckBox.Caption:=adrsScaleOnResize;
   ScaleOnResizeCheckBox.Hint:=adrsScaleSubSitesWhenASiteIsResized;

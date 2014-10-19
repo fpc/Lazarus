@@ -231,6 +231,10 @@ msgstr "Alapértelmezett elrendezés visszaállítása"
 msgid "right"
 msgstr "jobbra"
 
+#: anchordockstr.adrssavelayoutonclose
+msgid "Save layout on close"
+msgstr ""
+
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
 msgstr "Ablakelrendezés mentése alapértelmezettnek"

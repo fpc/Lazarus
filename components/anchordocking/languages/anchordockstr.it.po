@@ -240,6 +240,10 @@ msgstr "Ripristina disposizione default"
 msgid "right"
 msgstr "destra"
 
+#: anchordockstr.adrssavelayoutonclose
+msgid "Save layout on close"
+msgstr ""
+
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
 msgstr "Salva l'aspetto della finestra come default"

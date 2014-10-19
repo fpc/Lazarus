@@ -403,6 +403,7 @@ type
     FHeaderFilled: boolean;
     FHideHeaderCaptionFloatingControl: boolean;
     FPageAreaInPercent: integer;
+    FSaveOnClose: boolean;
     FScaleOnResize: boolean;
     FShowHeader: boolean;
     FShowHeaderCaption: boolean;
@@ -417,6 +418,7 @@ type
     procedure SetHeaderStyle(AValue: TADHeaderStyle);
     procedure SetHideHeaderCaptionFloatingControl(AValue: boolean);
     procedure SetPageAreaInPercent(AValue: integer);
+    procedure SetSaveOnClose(AValue: boolean);
     procedure SetScaleOnResize(AValue: boolean);
     procedure SetShowHeader(AValue: boolean);
     procedure SetShowHeaderCaption(AValue: boolean);
@@ -433,6 +435,7 @@ type
     property HeaderHint: string read FHeaderHint write SetHeaderHint;
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize;
+    property SaveOnClose: boolean read FSaveOnClose write SetSaveOnClose;
     property ShowHeader: boolean read FShowHeader write SetShowHeader;
     property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption;
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl write SetHideHeaderCaptionFloatingControl;
@@ -484,6 +487,7 @@ type
     FQueueSimplify: Boolean;
     FRestoreLayouts: TAnchorDockRestoreLayouts;
     FRestoring: boolean;
+    FSaveOnClose: boolean;
     FScaleOnResize: boolean;
     FShowHeader: boolean;
     FShowHeaderCaption: boolean;
@@ -517,6 +521,7 @@ type
     procedure SetHeaderHint(AValue: string);
     procedure SetHeaderStyle(AValue: TADHeaderStyle);
     procedure SetPageAreaInPercent(AValue: integer);
+    procedure SetSaveOnClose(AValue: boolean);
     procedure SetScaleOnResize(AValue: boolean);
 
     procedure SetHeaderFlatten(AValue: boolean);
@@ -635,6 +640,7 @@ type
 
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
+    property SaveOnClose: boolean read FSaveOnClose write SetSaveOnClose default true; // you must call SaveLayoutToConfig yourself
     property AllowDragging: boolean read FAllowDragging write SetAllowDragging default true;
     property OptionsChangeStamp: int64 read FOptionsChangeStamp;
     procedure IncreaseOptionsChangeStamp; inline;
@@ -1237,6 +1243,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockSettings.SetSaveOnClose(AValue: boolean);
+begin
+  if FSaveOnClose=AValue then Exit;
+  FSaveOnClose:=AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockSettings.SetScaleOnResize(AValue: boolean);
 begin
   if FScaleOnResize=AValue then Exit;
@@ -1295,6 +1308,7 @@ begin
   HeaderAlignLeft:=Config.GetValue('HeaderAlignLeft',120);
   SplitterWidth:=Config.GetValue('SplitterWidth',4);
   ScaleOnResize:=Config.GetValue('ScaleOnResize',true);
+  SaveOnClose:=Config.GetValue('SaveOnClose',true);
   ShowHeader:=Config.GetValue('ShowHeader',true);
   ShowHeaderCaption:=Config.GetValue('ShowHeaderCaption',true);
   HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
@@ -1316,6 +1330,7 @@ begin
   Config.SetDeleteValue('HeaderAlignLeft',HeaderAlignLeft,120);
   Config.SetDeleteValue('SplitterWidth',SplitterWidth,4);
   Config.SetDeleteValue('ScaleOnResize',ScaleOnResize,true);
+  Config.SetDeleteValue('SaveOnClose',SaveOnClose,true);
   Config.SetDeleteValue('ShowHeader',ShowHeader,true);
   Config.SetDeleteValue('ShowHeaderCaption',ShowHeaderCaption,true);
   Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
@@ -1337,6 +1352,7 @@ begin
       and (HeaderHint=Settings.HeaderHint)
       and (SplitterWidth=Settings.SplitterWidth)
       and (ScaleOnResize=Settings.ScaleOnResize)
+      and (SaveOnClose=Settings.SaveOnClose)
       and (ShowHeader=Settings.ShowHeader)
       and (ShowHeaderCaption=Settings.ShowHeaderCaption)
       and (HideHeaderCaptionFloatingControl=Settings.HideHeaderCaptionFloatingControl)
@@ -2101,6 +2117,13 @@ begin
   OptionsChanged;
 end;
 
+procedure TAnchorDockMaster.SetSaveOnClose(AValue: boolean);
+begin
+  if FSaveOnClose=AValue then Exit;
+  FSaveOnClose:=AValue;
+  OptionsChanged;
+end;
+
 procedure TAnchorDockMaster.SetHeaderFlatten(AValue: boolean);
 begin
   if FHeaderFlatten=AValue then Exit;
@@ -2288,6 +2311,7 @@ begin
   FHideHeaderCaptionFloatingControl:=true;
   FSplitterWidth:=4;
   FScaleOnResize:=true;
+  FSaveOnClose:=true;
   fNeedSimplify:=TFPList.Create;
   fNeedFree:=TFPList.Create;
   fDisabledAutosizing:=TFPList.Create;
@@ -2855,6 +2879,7 @@ begin
   HeaderAlignLeft                  := Settings.HeaderAlignLeft;
   SplitterWidth                    := Settings.SplitterWidth;
   ScaleOnResize                    := Settings.ScaleOnResize;
+  SaveOnClose                      := Settings.SaveOnClose;
   ShowHeader                       := Settings.ShowHeader;
   ShowHeaderCaption                := Settings.ShowHeaderCaption;
   HideHeaderCaptionFloatingControl := Settings.HideHeaderCaptionFloatingControl;
@@ -2874,6 +2899,7 @@ begin
   Settings.HeaderAlignLeft:=HeaderAlignLeft;
   Settings.SplitterWidth:=SplitterWidth;
   Settings.ScaleOnResize:=ScaleOnResize;
+  Settings.SaveOnClose:=SaveOnClose;
   Settings.ShowHeader:=ShowHeader;
   Settings.ShowHeaderCaption:=ShowHeaderCaption;
   Settings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionFloatingControl;
