@@ -9,13 +9,13 @@
 -->
 
 <module name="UTF8Process">
-<short></short>
+<short>Version of FPC TProcess that allows UTF8 arguments</short>
 <descr>
 </descr>
 
 <!-- class Visibility: default -->
 <element name="TProcessUTF8">
-<short></short>
+<short>Version of FPC TProcess that allows UTF8 arguments</short>
 <descr>
 </descr>
 <errors>

@@ -1162,8 +1162,8 @@ else
       <!-- function Visibility: default -->
       <element name="CopyFile">
         <short>
-          <var>CopyFile</var> - copies Source file to Destination file, optionally preserving the time stamp of the original file</short>
-        <errors>An exception is raised if the Copy process does not complete successfully or correctly</errors>
+          <var>CopyFile</var> - copies Source file to Destination file, optionally preserving the timestamp of the original file</short>
+        <errors>An exception is raised if the copy process does not complete successfully or correctly</errors>
       </element>
       <!-- function result Visibility: default -->
       <element name="CopyFile.Result">
@@ -1179,7 +1179,7 @@ else
       </element>
       <!-- argument Visibility: default -->
       <element name="CopyFile.PreserveTime">
-        <short>If True, the time stamp of the original file is preserved in the copied file</short>
+        <short>If True, the timestamp of the original file is preserved in the copied file</short>
       </element>
       <!-- function Visibility: default -->
       <element name="GetTempFilename">
