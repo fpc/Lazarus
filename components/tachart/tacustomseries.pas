@@ -204,6 +204,15 @@ type
     function ListSource: TListChartSource;
     property Source: TCustomChartSource
       read GetSource write SetSource stored IsSourceStored;
+  public
+    // for Delphi compatibility
+    function LastValueIndex: Integer; inline;
+    function MaxXValue: Double;
+    function MinXValue: Double;
+    function MaxYValue: Double;
+    function MinYValue: Double;
+    property XValue[AIndex: Integer]: Double read GetXValue write SetXValue;
+    property YValue[AIndex: Integer]: Double read GetYValue write SetYValue;
   published
     property Active default true;
     property Marks: TChartMarks read FMarks write SetMarks;
@@ -672,6 +681,11 @@ begin
   Result := Source.Count;
 end;
 
+function TChartSeries.LastValueIndex: Integer;
+begin
+  Result := Source.Count - 1;
+end;
+
 constructor TChartSeries.Create(AOwner: TComponent);
 const
   BUILTIN_SOURCE_NAME = 'Builtin';
@@ -784,6 +798,11 @@ begin
   Result := Extent.b.X;
 end;
 
+function TChartSeries.MaxXValue: Double;
+begin
+  Result := Extent.b.X;
+end;
+
 function TChartSeries.GetXMaxVal: Double;
 begin
   if Count > 0 then
@@ -793,6 +812,11 @@ begin
 end;
 
 function TChartSeries.GetXMin: Double;
+begin
+  Result := Extent.a.X;
+end;
+
+function TChartSeries.MinXValue: Double;
 begin
   Result := Extent.a.X;
 end;
@@ -812,7 +836,17 @@ begin
   Result := Extent.b.Y;
 end;
 
+function TChartSeries.MaxYValue: Double;
+begin
+  Result := Extent.b.Y;
+end;
+
 function TChartSeries.GetYMin: Double;
+begin
+  Result := Extent.a.Y;
+end;
+
+function TChartSeries.MinYValue: Double;
 begin
   Result := Extent.a.Y;
 end;
