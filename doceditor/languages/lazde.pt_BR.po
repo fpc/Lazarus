@@ -276,7 +276,6 @@ msgid "New topic"
 msgstr "Novo tópico"
 
 #: lazdemsg.shintmenunewfromfile
-#| msgid "New from file..."
 msgid "New from file ..."
 msgstr "Novo do arquivo ..."
 
@@ -472,7 +471,6 @@ msgid "&Help"
 msgstr "&Ajuda"
 
 #: lazdemsg.smenuhelpabout
-#| msgid "&About..."
 msgid "&About ..."
 msgstr "&Sobre ..."
 

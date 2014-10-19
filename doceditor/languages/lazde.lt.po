@@ -710,6 +710,7 @@ msgid "makeskel reported an error (%d). Try to load produced file anyway ?"
 msgstr "Programa „makeskel“ pranešė apie klaidą (%d). Vis tiek bandyti įkelti sukurtąjį failą?"
 
 #: lazdemsg.sskelerrorwithoutfile
+#, fuzzy,badformat
 msgid "makeskel reported an error (%d) and produced no file."
 msgstr "Programa „makeskel“ pranešė apie klaidą bei nesukūrė failo."
 

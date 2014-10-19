@@ -167,7 +167,6 @@ msgid " in package "
 msgstr " nel pacchetto "
 
 #: lazdemsg.sfortopic
-#| msgid " in topic"
 msgid " in topic "
 msgstr "nell'argomento"
 
@@ -277,7 +276,6 @@ msgid "New topic"
 msgstr "Nuovo argomento"
 
 #: lazdemsg.shintmenunewfromfile
-#| msgid "New from file..."
 msgid "New from file ..."
 msgstr "Nuovo da file ..."
 
@@ -473,7 +471,6 @@ msgid "&Help"
 msgstr "&Aiuto"
 
 #: lazdemsg.smenuhelpabout
-#| msgid "&About..."
 msgid "&About ..."
 msgstr "&Informazioni"
 
@@ -690,7 +687,6 @@ msgid "Select output file name"
 msgstr "Seleziona il nome del file di output"
 
 #: lazdemsg.sselectsometext
-#| msgid "Select some text"
 msgid "Select some text."
 msgstr "Seleziona del testo."
 

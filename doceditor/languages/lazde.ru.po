@@ -178,7 +178,6 @@ msgid " in package "
 msgstr " в пакете "
 
 #: lazdemsg.sfortopic
-#| msgid " in topic"
 msgid " in topic "
 msgstr " в теме "
 
@@ -289,7 +288,6 @@ msgid "New topic"
 msgstr "Новая тема"
 
 #: lazdemsg.shintmenunewfromfile
-#| msgid "New from file..."
 msgid "New from file ..."
 msgstr "Новый из файла ..."
 
@@ -487,7 +485,6 @@ msgid "&Help"
 msgstr "&Справка"
 
 #: lazdemsg.smenuhelpabout
-#| msgid "&About..."
 msgid "&About ..."
 msgstr "&О программе ..."
 
@@ -708,7 +705,6 @@ msgid "Select output file name"
 msgstr "Выберите имя файла вывода"
 
 #: lazdemsg.sselectsometext
-#| msgid "Select some text"
 msgid "Select some text."
 msgstr "Выделите какую-нибудь часть текста."
 
