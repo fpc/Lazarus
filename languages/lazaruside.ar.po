@@ -5059,6 +5059,7 @@ msgid "Choose compiler messages file"
 msgstr "إختر جذاذة لغة تعاليق المترجم"
 
 #: lazarusidestrconsts.lischoosecompilerpath
+#, fuzzy,badformat
 msgid "Choose compiler filename (%s)"
 msgstr "إختر اسم برنامج التّرجمة"
 
@@ -8351,7 +8352,7 @@ msgid "These are file filters that will appear in all File Open dialogs"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilehaschangedsave
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s has changed. Save?"
 msgid "File \"%s\" has changed. Save?"
 msgstr "الجذاذة %s%s%s تغيّرت هل تريد حفظها؟"
@@ -9478,7 +9479,7 @@ msgid "%s is already part of the Project."
 msgstr "%s أدمج مسبقا في المشروع"
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s ليس مقبولا كإسم مشروع. %s إختر إسما آخر رجاء"
@@ -11673,7 +11674,7 @@ msgid "Skip this Unit"
 msgstr ""
 
 #: lazarusidestrconsts.lismitnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -12027,7 +12028,7 @@ msgid "New Macroname"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "%s - مشروع جديد"
@@ -15376,7 +15377,7 @@ msgid "Invalid variable name"
 msgstr ""
 
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is not a valid identifier."
 msgid "\"%s\" is not a valid identifier."
 msgstr "%s%s%sليس مقبولا كإسم "
@@ -16706,7 +16707,7 @@ msgid "Uninstall selection"
 msgstr ""
 
 #: lazarusidestrconsts.lisunithaschangedsave
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unit %s%s%s has changed. Save?"
 msgid "Unit \"%s\" has changed. Save?"
 msgstr "الوحدة %s%s%s تغيّرت هل تريد حفظها؟"

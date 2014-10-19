@@ -11299,13 +11299,11 @@ msgid "Step over to &Cursor"
 msgstr "Hardloop tot by merker"
 
 #: lazarusidestrconsts.lismenusave
-#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
 msgid "&Save"
 msgstr "&Stoor"
 
 #: lazarusidestrconsts.lismenusaveas
-#| msgid "Save As ..."
 msgid "Save &As ..."
 msgstr "Stoor &As ..."
 
@@ -15473,7 +15471,7 @@ msgid "Move the selected control down in tab order"
 msgstr ""
 
 #: lazarusidestrconsts.listaborderof
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "Keep orde van"

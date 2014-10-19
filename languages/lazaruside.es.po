@@ -145,7 +145,6 @@ msgid "Reset zoom"
 msgstr "Resetear zoom"
 
 #: lazarusidestrconsts.dlfmousesimplediff
-#| msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
 msgstr "Esta página no representa sus ajustes actuales. Vea la página de ajustes avanzados. Utilice esta página para restaurar cualquier cambio de ajustes avanzado"
 
@@ -1112,7 +1111,6 @@ msgid "Show errors"
 msgstr "Mostrar errores"
 
 #: lazarusidestrconsts.dlgcoshowoptions
-#| msgid "Show Options"
 msgid "&Show Options"
 msgstr "Mo&strar Opciones"
 
@@ -1754,7 +1752,6 @@ msgid "FPC source directory"
 msgstr "Directorio de las fuentes de FPC"
 
 #: lazarusidestrconsts.dlgframecolor
-#| msgid "Frame color"
 msgid "Text-mark"
 msgstr "Marco de Texto"
 
@@ -2610,7 +2607,6 @@ msgid "Naming"
 msgstr "Nombrar"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-#| msgid "no automatic renaming"
 msgid "No automatic renaming"
 msgstr "No renombrar automáticamente"
 
@@ -2850,7 +2846,6 @@ msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgstr "Use el envoltorio de la aplicación para ejecución y depuración (sólo Darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-#| msgid "Use manifest file to enable themes (windows only)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Usar el archivo de manifiesto para activar temas (sólo Windows)"
 
@@ -2932,7 +2927,6 @@ msgid "Report"
 msgstr "Informe"
 
 #: lazarusidestrconsts.dlgrightbottomclr
-#| msgid "color for right, bottom"
 msgid "Guide lines Right,Bottom"
 msgstr "Líneas guía Derecha,Abajo"
 
@@ -2955,12 +2949,10 @@ msgid "Select grandchildren"
 msgstr "Seleccionar nietos"
 
 #: lazarusidestrconsts.dlgruberbandcreationcolor
-#| msgid "Creation"
 msgid "Rubberband Creation"
 msgstr "Creación de goma elástica"
 
 #: lazarusidestrconsts.dlgruberbandselectioncolor
-#| msgid "Selection"
 msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
 msgid "Rubberband Selection"
 msgstr "Selección de goma elástica"
@@ -3036,7 +3028,6 @@ msgid "Scroll past end of file"
 msgstr "Desplazar después de fin de archivo"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-#| msgid "Scroll past end of line"
 msgid "Caret past end of line"
 msgstr "Cursor sobrepasa fin de línea"
 
@@ -3493,37 +3484,30 @@ msgid "Align ..."
 msgstr "Alinear ..."
 
 #: lazarusidestrconsts.fdmdeleteselection
-#| msgid "Delete selection"
 msgid "Delete Selection"
 msgstr "Borrar Selección"
 
 #: lazarusidestrconsts.fdmmirrorhorizontal
-#| msgid "Mirror horizontal"
 msgid "Mirror Horizontal"
 msgstr "Reflejar Horizontal"
 
 #: lazarusidestrconsts.fdmmirrorvertical
-#| msgid "Mirror vertical"
 msgid "Mirror Vertical"
 msgstr "Reflejar Vertical"
 
 #: lazarusidestrconsts.fdmorderbackone
-#| msgid "Back one"
 msgid "Back One"
 msgstr "Retroceder Uno"
 
 #: lazarusidestrconsts.fdmorderforwardone
-#| msgid "Forward one"
 msgid "Forward One"
 msgstr "Avanzar Uno"
 
 #: lazarusidestrconsts.fdmordermovetoback
-#| msgid "Move to back"
 msgid "Move to Back"
 msgstr "Mover al Fondo"
 
 #: lazarusidestrconsts.fdmordermovetofront
-#| msgid "Move to front"
 msgid "Move to Front"
 msgstr "Mover al Frente"
 
@@ -3683,7 +3667,6 @@ msgid "Dependency"
 msgstr "Dependencia"
 
 #: lazarusidestrconsts.lisa2pexistingfile2
-#| msgid "Existing file: %s%s%s"
 msgid "Existing file: \"%s\""
 msgstr "Archivo existente: \"%s\""
 
@@ -3964,7 +3947,6 @@ msgid "About Lazarus"
 msgstr "Acerca de Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#| msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgstr "Licencia: GPL/LGPL. Vea las fuentes de Lazarus y Free Pascal para detalles sobre la licencia.%sLazarus es un IDE para crear aplicaciones gráficas y de consola con Free Pascal. Free Pascal es un compilador Pascal y Object Pascal que corre en Windows, Linux, Mac OS X, FreeBSD y otros.%sLazarus es la parte del puzzle que faltaba para permitirle desarrollar programas para todas las plataformas anteriores en un entorno parecido a Delphi. El IDE es una herramienta RAD que incluye un diseñador de formularios.%sComo Lazarus está creciendo, necesitamos más desarrolladores."
 
@@ -4461,7 +4443,6 @@ msgid "do not add character"
 msgstr "No agregar carácter"
 
 #: lazarusidestrconsts.lisautomaticfeatures
-#| msgid "Automatic features"
 msgid "Completion and Hints"
 msgstr "Completado y Descripciones"
 
@@ -6426,7 +6407,6 @@ msgid "Open unit"
 msgstr "Abrir unidad"
 
 #: lazarusidestrconsts.liscomptest
-#| msgid "Test"
 msgctxt "lazarusidestrconsts.liscomptest"
 msgid "&Test"
 msgstr "&Probar"
@@ -6712,7 +6692,6 @@ msgid "Removed unit \"%s\" in uses section."
 msgstr "Eliminada unidad \"%s\" de la sección uses."
 
 #: lazarusidestrconsts.lisconvdelphirepairingformfile
-#| msgid "Repairing form file %s"
 msgid "* Repairing form file %s *"
 msgstr "* Reparando archivo de formulario %s *"
 
@@ -10687,7 +10666,6 @@ msgid "Lazarus IDE v%s"
 msgstr "IDE de Lazarus v%s"
 
 #: lazarusidestrconsts.lislazarusfile
-#| msgid "Lazarus File"
 msgid "Lazarus file"
 msgstr "Fichero de Lazarus"
 
@@ -10761,7 +10739,6 @@ msgid "Common Settings"
 msgstr "Opciones Comunes"
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
-#| msgid "Confirm before rebuilding Lazarus"
 msgid "Confirm before build"
 msgstr "Confirmar antes de construir"
 
@@ -10850,7 +10827,6 @@ msgid "New name for profile:"
 msgstr "Nombre nuevo para el perfil:"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-#| msgid "Restart after building the IDE"
 msgid "Restart after building IDE"
 msgstr "Reiniciar después de construir el IDE"
 
@@ -11683,7 +11659,6 @@ msgid "Insert Full Filename ..."
 msgstr "Insertar Nombre de archivo completo ..."
 
 #: lazarusidestrconsts.lismenuinsertgeneral
-#| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "Insert General"
 msgstr "General"
@@ -11841,7 +11816,6 @@ msgid "Online Help"
 msgstr "Ayuda en línea"
 
 #: lazarusidestrconsts.lismenuopen
-#| msgid "Open ..."
 msgid "&Open ..."
 msgstr "&Abrir ..."
 
@@ -11874,7 +11848,6 @@ msgid "Open Project ..."
 msgstr "Abrir Proyecto ..."
 
 #: lazarusidestrconsts.lismenuopenrecent
-#| msgid "Open &Recent ..."
 msgid "Open &Recent"
 msgstr "Abrir &Reciente"
 
@@ -11885,13 +11858,11 @@ msgid "Open Recent Package"
 msgstr "Abrir Paquete Reciente"
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-#| msgid "Open Recent Project ..."
 msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Abrir Proyecto Reciente"
 
 #: lazarusidestrconsts.lismenupackage
-#| msgid "&Package"
 msgid "Pa&ckage"
 msgstr "Pa&quete"
 
@@ -12008,13 +11979,11 @@ msgid "Step over to &Cursor"
 msgstr "Ejecutar hasta el &Cursor"
 
 #: lazarusidestrconsts.lismenusave
-#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
 msgid "&Save"
 msgstr "&Guardar"
 
 #: lazarusidestrconsts.lismenusaveas
-#| msgid "Save As ..."
 msgid "Save &As ..."
 msgstr "Guard&ar Como ..."
 
@@ -12240,7 +12209,6 @@ msgid "&View"
 msgstr "&Ver"
 
 #: lazarusidestrconsts.lismenuviewanchoreditor
-#| msgid "View Anchor Editor"
 msgid "Anchor Editor"
 msgstr "Editor de Anclaje"
 
@@ -12822,7 +12790,6 @@ msgid "Create a new unit with a datamodule."
 msgstr "Crear una unidad nueva con un módulo de datos."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
-#| msgid "Create a new unit with a frame"
 msgid "Create a new unit with a frame."
 msgstr "Crear una unidad nueva con un frame."
 
@@ -12855,7 +12822,6 @@ msgid "New Macroname"
 msgstr "Nuevo nombre de Macro"
 
 #: lazarusidestrconsts.lisnewproject
-#| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "(nuevo proyecto)"
 
@@ -14471,12 +14437,10 @@ msgid "The package name \"%s\" of%sthe file \"%s\" is invalid."
 msgstr "El nombre de paquete \"%s\" de%s del archivo \"%s\" no es válido."
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
-#| msgid "The package %s%s%s was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgid "The package \"%s\" was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "El paquete \"%s\" fue marcado.%sActualmente lazarus solo soporta paquetes enlazados estáticamente. La desinstalación completa necesita reconstruir y reiniciar lazarus.%s¿Quiere reconstruir lazarus ahora?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-#| msgid "The package %s%s%s was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgid "The package \"%s\" was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "El paquete \"%s\" se marcó para instalar.%sActualmente lazarus solo soporta paquetes enlazados estáticamente. La instalación completa necesita reconstruir y reiniciar lazarus.%s¿Desea reconstruir ahora Lazarus?"
 
@@ -17483,7 +17447,6 @@ msgid "Font without UTF-8"
 msgstr "Fuente sin UTF-8"
 
 #: lazarusidestrconsts.lisuegotoline
-#| msgid "Goto line :"
 msgid "Goto line:"
 msgstr "Ir a línea:"
 
@@ -18560,7 +18523,6 @@ msgid "Automatically increase build number"
 msgstr "Incrementar automáticamente el número de construcción"
 
 #: lazarusidestrconsts.rsbuild
-#| msgid "Build:"
 msgid "&Build:"
 msgstr "Construcción:"
 
@@ -20316,7 +20278,6 @@ msgid "&Close Page"
 msgstr "&Cerrar Página"
 
 #: lazarusidestrconsts.uemcopyfilename
-#| msgid "Copy filename"
 msgid "Copy Filename"
 msgstr "Copiar Nombre de archivo"
 

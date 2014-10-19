@@ -3529,7 +3529,7 @@ msgid "Invalid Unit Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is not a valid unit name."
 msgid "\"%s\" is not a valid unit name."
 msgstr "%s%s%s geçerli bir birim adı değil."
@@ -3721,7 +3721,7 @@ msgid "About Lazarus"
 msgstr "Lazarus Hakkında"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgstr "Lisans: GPL/LGPL%Lazarus, Free Pascal ile uygulama geliştirmek için (grafiksel ve konsol) bir tümleşik geliştirme ortamıdır(IDE). Free Pascal, Windows, Linux, Mac OS X, FreeBSD ve daha fazlasında çalışan (L)GPL ile lisanslanmış Pascal ve Object Pascal derleyicisidir.%sLazarus yukarıda tüm adı geçen platformlarda Delphi'ye benzer bir ortamda uygulama geliştirmene olanak sağlayan bulmacanın kalan kısmıdır. IDE, form tasarlayıcısı olan bir Çabuk Uygulama Geliştirme(RAD) aracıdır.%sLazarus hızla gelişiyor ve bizim daha fazla geliştiriciye ihtiyacımız var."
@@ -3935,7 +3935,7 @@ msgid "Unit name: "
 msgstr ""
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "A file %s%s%s already exists.%sReplace it?"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "%s%s%s dosyası zaten var.%sDeğiştirilsin mi?"
@@ -4027,7 +4027,7 @@ msgid "Ambiguous file found"
 msgstr "Belirsiz dosya bulundu"
 
 #: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "Belirsiz dosya bulundu: %s%s%s%sBu dosya %s%s%s%s%s şeklinde hatalı olabilir. Belirsiz dosya silinsin mi?"
@@ -4087,7 +4087,7 @@ msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distan
 msgstr ""
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgid "An error occured at last startup while loading %s!%sLoad this project again?"
 msgstr "Son açılışta %s yüklenirken bir hata oluştı! %s%sBu proje tekrar yüklensin mi?"
@@ -5184,7 +5184,7 @@ msgid "classes.ppu not found. Check your fpc.cfg."
 msgstr ""
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "%s%s%s adlı sınıf bir kayıtlı bileşen sınıfı değil.%sYapıştırılamıyor."
@@ -5523,7 +5523,7 @@ msgid "Add code template"
 msgstr "Kod şablonu ekle"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, fuzzy
+#, fuzzy,badformat
 #| msgid " A token %s%s%s already exists! "
 msgid " A token \"%s\" already exists! "
 msgstr "%s%s%s adlı sembol zaten mevcut!"
@@ -6087,13 +6087,13 @@ msgid "Component name \"%s\" is a Pascal keyword."
 msgstr ""
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Component name %s%s%s is keyword"
 msgid "Component name \"%s\" is keyword"
 msgstr "%s%s%s bileşeninin adı bir anahtar kelime"
 
 #: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "%s%s%s bileşeninin adı, geçerli bir tanımlayıcı değil"
@@ -7206,7 +7206,7 @@ msgid "Unable to load file"
 msgstr "Dosya yüklenemiyor"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to load file %s%s%s."
 msgid "Unable to load file \"%s\"."
 msgstr "%s%s%s adlı dosya yüklenemiyor."
@@ -7303,7 +7303,7 @@ msgid "Delete mode \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisdeleteoldfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete old file %s%s%s?"
 msgid "Delete old file \"%s\"?"
 msgstr "%s%s%s adlı eski dosya silinsin mi?"
@@ -7333,7 +7333,7 @@ msgid "Delete value %s"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletingoffilefailed
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Deleting of file %s%s%s failed."
 msgid "Deleting of file \"%s\" failed."
 msgstr "%s%s%s adlı dosya silinemedi"
@@ -7697,7 +7697,7 @@ msgid "Duplicate Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgid "Duplicate name: A component named \"%s\" already exists in the inherited component %s"
 msgstr "İkili ad: %s%s%s adlı bileşen, %s adlı ata bileşen içinde zaten mevcut"
@@ -8378,7 +8378,7 @@ msgid "File: "
 msgstr ""
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -8445,7 +8445,7 @@ msgid "File is symlink"
 msgstr ""
 
 #: lazarusidestrconsts.lisfileisvirtual
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s is virtual."
 msgid "File \"%s\" is virtual."
 msgstr "%s%s%s adlı dosya sanal."
@@ -8467,7 +8467,7 @@ msgid "File not found"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfound2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s not found.%s"
 msgctxt "lazarusidestrconsts.lisfilenotfound2"
 msgid "File \"%s\" not found."
@@ -8486,7 +8486,7 @@ msgid "File not found:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgid "File \"%s\" not found.%sDo you want to create it?"
 msgstr "%s%s%s adlı dosya bulunamadı%sBu dosyayı oluşturmak ister misin?%s"
@@ -8862,7 +8862,7 @@ msgid "Goto selected source line"
 msgstr ""
 
 #: lazarusidestrconsts.lisgplnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -9146,7 +9146,7 @@ msgid "Export file exists"
 msgstr "Mevcut dosyayı dışa aktar"
 
 #: lazarusidestrconsts.lisiecoexportfileexistsopenfileandreplaceonlycompileropti
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
 msgid "Export file \"%s\" exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
 msgstr " %s%s%s adlı ihraç dosyası mevcut.%sDosya açılsın ve yalnızca derleyici seçenekleri değiştirilsin mi?%s(Diğer ayarlar saklı tutulacak.)"
@@ -9561,7 +9561,7 @@ msgid "%s is already part of the Project."
 msgstr "%s zaten Projenin bir parçası."
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s geçersiz bir proje adı.%sLütfen başka bir ad seçin (ör. proje1.lpi)"
@@ -9702,7 +9702,7 @@ msgid "Compile project/program"
 msgstr ""
 
 #: lazarusidestrconsts.liskmconfigbuildfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Config %sBuild File%s"
 msgid "Config \"Build File\""
 msgstr "%sBuild File%s Yapılandır"
@@ -10522,7 +10522,7 @@ msgid "LFM is ok"
 msgstr ""
 
 #: lazarusidestrconsts.lislgplnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -12126,7 +12126,7 @@ msgid ", Mode: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -12311,7 +12311,7 @@ msgid "New Macroname"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "%s - (yeni proje)"
@@ -12532,7 +12532,7 @@ msgid "Choose a base class for the favorite property \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisoifclassnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Class %s%s%s not found."
 msgid "Class \"%s\" not found."
 msgstr "%s%s%s adlı sınıf bulunamadı."
@@ -13523,13 +13523,13 @@ msgid "Package unit search path. Parameter is package ID"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%sAdding new Dependency for package %s: package %s%s"
 msgid "%sAdding new Dependency for package %s: package %s"
 msgstr "%sPaket %s için yeni Bağimlılık ekleniyor: paket %s%s"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforprojectpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%sAdding new Dependency for project %s: package %s%s"
 msgid "%sAdding new Dependency for project %s: package %s"
 msgstr "%sProje %s için yeni Bağimlılık ekleniyor: paket %s%s"
@@ -13620,6 +13620,7 @@ msgid "Filename is used by project"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangfilenotfound
+#, fuzzy,badformat
 msgctxt "lazarusidestrconsts.lispkgmangfilenotfound"
 msgid "File \"%s\" not found."
 msgstr "%s%s%s adlı dosya bulunamadı.%s"
@@ -13786,7 +13787,7 @@ msgid "The following packages failed to load:"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "%sAşağıdaki birimler %s biriminin uses bölümüne eklenecek%s:%s%s%s"
@@ -13972,7 +13973,7 @@ msgid "Component Class \"%s\" already defined"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsysfilename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%sFile Name: %s%s%s"
 msgid "%s%sFile Name: \"%s\""
 msgstr "%s%sDosya Adı: %s%s%s"
@@ -14022,7 +14023,7 @@ msgid "This package is installed, but the lpk file was not found. All its compon
 msgstr ""
 
 #: lazarusidestrconsts.lispkgsysunitname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%sUnit Name: %s%s%s"
 msgid "%s%sUnit Name: \"%s\""
 msgstr "%s%sBirim Adı: %s%s%s"
@@ -15134,7 +15135,7 @@ msgid "Save file as"
 msgstr ""
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "%s%s%s adlı pencere kapatılmadan önce %s%s%s%sdosyası kaydedilsin mi?"
@@ -15558,7 +15559,7 @@ msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. 
 msgstr ""
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Source directory %s%s%s does not exist."
 msgid "Source directory \"%s\" does not exist."
 msgstr "%s%s%s adlı kaynak dizini mevcut değil."
@@ -15572,7 +15573,7 @@ msgid "Source modified"
 msgstr "Kaynak değişmiş"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Source of page %s%s%s has changed. Save?"
 msgid "Source of page \"%s\" has changed. Save?"
 msgstr "%s%s%s sayfasının kaynağı değişmiş. Kaydedilsin mi?"
@@ -15708,7 +15709,7 @@ msgid "Invalid variable name"
 msgstr ""
 
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is not a valid identifier."
 msgid "\"%s\" is not a valid identifier."
 msgstr "%s%s%s geçerli bir tanımlayıcı değil."
@@ -15823,7 +15824,7 @@ msgid "The Application Bundle was created for \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "%s%s%s adlı sınıf bir TControl ve denetim olmayan bir şeye yapıştırılamaz.%sYapıştırılamıyor."
@@ -15833,13 +15834,13 @@ msgid "The Codetools found an error:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.listhecommandafterisnotexecutable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The command after %s%s%s is not executable."
 msgid "The command after \"%s\" is not executable."
 msgstr "%s%s%s sonrasındaki komut çalıştırılabilir değil."
 
 #: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The command after publishing is invalid:%s%s%s%s"
 msgid "The command after publishing is invalid:%s\"%s\""
 msgstr "Yayımlamadan sonraki komut geçersiz:%s%s%s%s"
@@ -15901,7 +15902,7 @@ msgid "The default mode must be stored in project, not in session."
 msgstr ""
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The destination directory%s%s%s%s does not exist."
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Hedef dizin %s%s%s%s mevcut değil."
@@ -15935,7 +15936,7 @@ msgid "The directory %s was not found."
 msgstr ""
 
 #: lazarusidestrconsts.listhefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s"
 msgid "The file \"%s\""
 msgstr "%s%s%s dosyası"
@@ -15965,7 +15966,7 @@ msgid "The file mask \"%s\" is not a valid regular expression."
 msgstr ""
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "%s%s%s%sprogram dosyası gibi görünüyor. Bu program için, şu anki proje kapatılıp ve yeni bir lazarus projesi oluşturulsun mu?%s\"Hayır\" seçeneği dosyayı normal bir kaynak kodu dosyası olarak yükleyecek."
@@ -15985,7 +15986,7 @@ msgid "The file \"%s\" was not found.%sDo you want to locate it yourself?"
 msgstr ""
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgid "The file \"%s\" was not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "%s%s%s%s adlı dosya bulunamadı.%sYoksayarsan projenin yüklenmesine devam edilecek, %sDurdur'u seçersen yükleme durdurulacak."
@@ -16141,7 +16142,7 @@ msgid "The project has no main source file."
 msgstr ""
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgid "The project info file \"%s\"%sis equal to the project main source file!"
 msgstr "%s%s%s%s adlı proje bilgi dosyası, projenin ana kaynak kodu dosyasıyla aynı!"
@@ -16197,7 +16198,7 @@ msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already a form with the name %s%s%s"
 msgid "There is already a form with the name \"%s\""
 msgstr "Zaten %s%s%s adlı bir pencere var"
@@ -16219,13 +16220,13 @@ msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make 
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgid "There is already a unit with the name \"%s\". Pascal identifiers must be unique."
 msgstr "Zaten %s%s%s adlı bir birim var. Pascal tanımlayıcıları benzersiz olmak zorunda."
 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "projede %s%s%s adlı bir birim var.%sLütfen başka bir ad seçin"
@@ -16311,7 +16312,7 @@ msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr ""
 
 #: lazarusidestrconsts.listheunititselfhasalreadythenamepascalidentifiersmus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
 msgid "The unit itself has already the name \"%s\". Pascal identifiers must be unique."
 msgstr "Birimin kendisi zaten %s%s%s adını almış. Pascal tanımlayıcıları benzersiz olmak zorunda."
@@ -16748,13 +16749,13 @@ msgid "Unable copy components to clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoaddresourceheadercommenttoresourcefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to add resource header comment to resource file %s%s%s%s.%sProbably a syntax error."
 msgid "Unable to add resource header comment to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "%s%s%s%s adlı kaynak dosyasına kaynak başlık açıklaması eklenemedi.%sMuhtemelen bir sözdizimi hatası."
 
 #: lazarusidestrconsts.lisunabletoaddresourcetformdatatoresourcefileprobably
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to add resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error."
 msgid "Unable to add resource T%s:FORMDATA to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "%s%s%s%s adlı kaynak dosyasına T%s:FORMDATA kaynağı eklenemedi.%sMuhtemelen bir sözdizimi hatası."
@@ -16772,7 +16773,7 @@ msgid "Unable to add %s to project, because there is already a unit with the sam
 msgstr "%s projeye eklenemiyor, çünkü projede zaten bu adı almış bir birim var."
 
 #: lazarusidestrconsts.lisunabletobackupfileto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgid "Unable to backup file \"%s\" to \"%s\"!"
 msgstr "%s%s%s dosyası %s%s%s olarak yedeklenemedi!"
@@ -16790,7 +16791,7 @@ msgid "Unable to clean up destination directory"
 msgstr "Hedef dizin temizlenemiyor"
 
 #: lazarusidestrconsts.lisunabletocleanuppleasecheckpermissions
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to clean up %s%s%s.%sPlease check permissions."
 msgid "Unable to clean up \"%s\".%sPlease check permissions."
 msgstr "%s%s%s temizlenemiyor.%sLütfen izinleri denetleyin."
@@ -16800,13 +16801,13 @@ msgid "Unable to convert component text into binary format:%s%s"
 msgstr "Bileşen metni ikili biçime dönüştürülemiyor:%s%s"
 
 #: lazarusidestrconsts.lisunabletoconvertfileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to convert file %s%s%s%sError: %s"
 msgid "Unable to convert file \"%s\"%sError: %s"
 msgstr "%s%s%s%s dosyası dönüştürülemedi hatası: %s"
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "%s%s%s%s%s dosyasındaki metin biçimindeki veri, ikili akış biçimine dönüştürülemedi. (%s)"
@@ -16816,19 +16817,19 @@ msgid "Unable to copy file"
 msgstr "Dosya kopyalanamıyor"
 
 #: lazarusidestrconsts.lisunabletocopyfileto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to copy file %s%s%s%sto %s%s%s"
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "%s%s%s%sdosyası %s%s%s olarak kopyalanamıyor"
 
 #: lazarusidestrconsts.lisunabletocreatebackupdirectory
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create backup directory %s%s%s."
 msgid "Unable to create backup directory \"%s\"."
 msgstr "%s%s%s adlı yedek dizini oluşturulamıyor."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create directory %s%s%s."
 msgid "Unable to create directory \"%s\"."
 msgstr "%s%s%s adlı dizin oluşturulamıyor."
@@ -16838,7 +16839,7 @@ msgid "Unable to create file"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletocreatefile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create file %s%s%s"
 msgid "Unable to create file \"%s\""
 msgstr "%s%s%s adlı dosya oluşturulamadı"
@@ -16880,13 +16881,13 @@ msgid "Unable to find a ResourceString section in this or any of the used units.
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletofindavalidclassnamein
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to find a valid classname in %s%s%s"
 msgid "Unable to find a valid classname in \"%s\""
 msgstr "%s%s%s içinde geçerli bir sınıf adı bulunamadı"
 
 #: lazarusidestrconsts.lisunabletofindfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to find file %s%s%s."
 msgid "Unable to find file \"%s\"."
 msgstr "%s%s%s adlı dosya bulunamadı."
@@ -16952,13 +16953,13 @@ msgid "Unable to read file"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoreadfile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read file %s%s%s!"
 msgid "Unable to read file \"%s\"."
 msgstr "%s%s%s adlı dosya okunamaz!"
 
 #: lazarusidestrconsts.lisunabletoreadfileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read file %s%s%s%sError: %s"
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "%s%s%s%s dosyası okunamıyor: %s"
@@ -16977,7 +16978,7 @@ msgid "Unable to read the project info file%s\"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to remove old backup file %s%s%s!"
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "%s%s%s adlı eski yedek dosyası kaldırılamadı!"
@@ -16995,13 +16996,13 @@ msgid "Unable to rename file"
 msgstr "Dosya yeniden adlandırılamıyor"
 
 #: lazarusidestrconsts.lisunabletorenamefileto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to rename file %s%s%s to %s%s%s!"
 msgid "Unable to rename file \"%s\" to \"%s\"!"
 msgstr "%s%s%s dosyası %s%s%s olarak yeniden adlandırılamıyor!"
 
 #: lazarusidestrconsts.lisunabletorenamefileto2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to rename file %s%s%s%sto %s%s%s."
 msgid "Unable to rename file \"%s\"%sto \"%s\"."
 msgstr "%s%s%s%sdosyası, %s%s%s olarak yeniden adlandırılamıyor."
@@ -17063,7 +17064,7 @@ msgid "Unable to write file \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritefileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to write file %s%s%s%sError: %s"
 msgid "Unable to write file \"%s\"%sError: %s"
 msgstr "%s%s%s%s dosyasına yazılamadı hatası: %s"
@@ -17114,7 +17115,7 @@ msgid "Unit identifier exists"
 msgstr "Birim tanımlayıcısı mevcut"
 
 #: lazarusidestrconsts.lisunitinpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s unit %s in package %s%s"
 msgid "%s unit %s in package %s"
 msgstr "%s birim %s %s%s paketinin içinde"

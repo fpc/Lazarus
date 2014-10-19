@@ -16227,7 +16227,6 @@ msgid "Search string '%s' not found!"
 msgstr "Etsittyä merkkijonoa '%s' ei löydetty!"
 
 #: lazarusidestrconsts.lisuethecurre
-#| msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrect.%sYou can select another font in the editor options."
 msgid "The current editor font does not support UTF-8, but your system seems to use it.%sThat means non ASCII characters will probably be shown incorrectly.%sYou can select another font in the editor options."
 msgstr "Nykyinen editorin kirjasin ei tue UTF-8-merkistöä, mutta käyttöjärjestelmä tukee sitä. %sTämä merkitsee sitä että ei-ASCII merkit voivat näkyä väärin.%sSopivamman kirjasimen voi valita editorin asetuksista."
 

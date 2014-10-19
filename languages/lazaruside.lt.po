@@ -148,7 +148,6 @@ msgid "Reset zoom"
 msgstr "Atstatyti mastelį"
 
 #: lazarusidestrconsts.dlfmousesimplediff
-#| msgid "This page does not represent your current settings. See advandced page. Use this page to reset any advanced changes"
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
 msgstr "Šiame lape nepateikiamos dabartinės nuostatos. Žvilgtelėkite į papildomų nuostatų lapą. Šiame lape galima atkurti bet kokias papildomas nuostatas."
 
@@ -158,12 +157,10 @@ msgid "General"
 msgstr "Pagrindinis"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
-#| msgid "Standard, All actions (breakpoint, fold) on Mouse down"
 msgid "Standard, All actions (breakpoint, fold) on mouse down"
 msgstr "Standartinis, visi veiksmai (stabdos taškas, lankstymas) nuspaudus pelės klavišą"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftup
-#| msgid "Extended, Actions (breakpoint, fold) on Mouse up. Selection on Mouse down and move"
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
 msgstr "Išplėstinis, veiksmai (stabdos taškas, lankstymas) atleidus pelės klavišą. Žymėjimas velkant nuspaustą pelę."
 
@@ -206,7 +203,6 @@ msgid "Ctrl Wheel"
 msgstr "Ctrl ratukas"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectdrag
-#| msgid "Drag Selection (copy/paste)"
 msgid "Drag selection (copy/paste)"
 msgstr "Pažymėjimo vilkimas (kopijavimas/įdėjimas)"
 
@@ -577,12 +573,10 @@ msgid "Ansi (* *)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgapplicationsettings
-#| msgid "Application Settings"
 msgid "Application settings"
 msgstr "Programos nuostatos"
 
 #: lazarusidestrconsts.dlgassertcode
-#| msgid "Include Assertion Code"
 msgid "Include assertion code"
 msgstr "Įterpti „Assertion“ kodą"
 
@@ -631,7 +625,6 @@ msgid "Auto rename file lowercase"
 msgstr "Failą automatiškai pervadinti mažosiomis raidėmis"
 
 #: lazarusidestrconsts.dlgautosave
-#| msgid "Auto save"
 msgid "Auto Save"
 msgstr "Automatinis įrašymas"
 
@@ -656,13 +649,11 @@ msgid "Behind methods"
 msgstr "Po metodų"
 
 #: lazarusidestrconsts.dlgblockgroupoptions
-#| msgid "Selection:"
 msgctxt "lazarusidestrconsts.dlgblockgroupoptions"
 msgid "Selection"
 msgstr "Pažymėjimas"
 
 #: lazarusidestrconsts.dlgblockindent
-#| msgid "Block indent"
 msgid "Block indent (spaces)"
 msgstr "Blokų įtrauka (tarpais)"
 
@@ -707,7 +698,6 @@ msgid "Matching bracket pairs"
 msgstr "Atitinkančios skliaustų poros"
 
 #: lazarusidestrconsts.dlgcasesensitive
-#| msgid "&Case Sensitive"
 msgctxt "lazarusidestrconsts.dlgcasesensitive"
 msgid "&Case sensitive"
 msgstr "Skirti raidžių &dydį"
@@ -774,7 +764,6 @@ msgid "lowercase"
 msgstr "Mažosiomis raidėmis"
 
 #: lazarusidestrconsts.dlgcdtpreview
-#| msgid "Preview (Max line length = 1)"
 msgid "Preview (max line length = 1)"
 msgstr "Peržiūra (maksimalus eilutės ilgis yra 1)"
 
@@ -799,7 +788,6 @@ msgid "Write prefix"
 msgstr "„Write“ prefiksas"
 
 #: lazarusidestrconsts.dlgcentercursorline
-#| msgid "Center Cursor Line"
 msgid "Center cursor line"
 msgstr "Žymeklis ekrano centre"
 
@@ -826,7 +814,6 @@ msgid "Color Scheme"
 msgstr "Spalvų derinys"
 
 #: lazarusidestrconsts.dlgcmacro
-#| msgid "C Style Macros (global)"
 msgid "C style macros (global)"
 msgstr "C stiliaus makrokomandos (globaliai)"
 
@@ -857,7 +844,6 @@ msgid "Compiler Commands"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcocops
-#| msgid "C Style Operators (*=, +=, /= and -=)"
 msgid "C style operators (*=, +=, /= and -=)"
 msgstr "C stiliaus operatoriai (*=, +=, /= ir -=)"
 
@@ -898,17 +884,14 @@ msgid "Reverse fold-order in Popup"
 msgstr "Iškylančiame meniu lankstyti atvirkštine tvarka"
 
 #: lazarusidestrconsts.dlgcogdb
-#| msgid "Generate Debugging Info For GDB (Slower / Increases exe-size)"
 msgid "Generate debugging info for GDB (slower / increases exe-size)"
 msgstr "Kurti „GDB“ skirtą derinimo informaciją (sulėtins kompiliavimą)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
-#| msgid "Use Heaptrc Unit (check for mem-leaks)"
 msgid "Use Heaptrc unit (check for mem-leaks)"
 msgstr "Naudoti „Heaptrc“ modulį (žiūrima atminties nuotėkių)"
 
 #: lazarusidestrconsts.dlgcoincfiles
-#| msgid "Include Files (-Fi):"
 msgid "Include files (-Fi):"
 msgstr "Įterpiami failai (-Fi):"
 
@@ -1025,7 +1008,6 @@ msgid "Compilation and Linking"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcompilermessage
-#| msgid "Compiler Messages"
 msgid "Compiler messages"
 msgstr "Kompiliatoriaus pranešimai"
 
@@ -1049,7 +1031,6 @@ msgid "Config and Target"
 msgstr ""
 
 #: lazarusidestrconsts.dlgconfigfiles
-#| msgid "Config Files:"
 msgid "Config files"
 msgstr "Nustatymų failai"
 
@@ -1091,22 +1072,18 @@ msgid "Set compiler options as default"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcoshowerr
-#| msgid "Show Errors"
 msgid "Show errors"
 msgstr "Rodyti klaidas"
 
 #: lazarusidestrconsts.dlgcoshowoptions
-#| msgid "Show Options"
 msgid "&Show Options"
 msgstr "Rodyti &parinktis"
 
 #: lazarusidestrconsts.dlgcosmartlinkable
-#| msgid "Smart Linkable"
 msgid "Smart linkable"
 msgstr "Saistoma sumaniai"
 
 #: lazarusidestrconsts.dlgcosources
-#| msgid "Other Sources (.pp/.pas files, used only by IDE not by compiler)"
 msgid "Other sources (.pp/.pas files, used only by IDE not by compiler)"
 msgstr "Kiti pirminiai kodai (.pp/.pas failai, skirta tik IKA, ne kompiliatoriui)"
 
@@ -1115,7 +1092,6 @@ msgid "Stack"
 msgstr "Dėklą"
 
 #: lazarusidestrconsts.dlgcostrip
-#| msgid "Strip Symbols From Executable"
 msgid "Strip symbols from executable"
 msgstr "Pašalinti simbolius iš vykdomojo failo"
 
@@ -1151,7 +1127,6 @@ msgid "Trash variables"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcounitstyle
-#| msgid "Unit Style"
 msgid "Unit style"
 msgstr "Modulio stilius"
 
@@ -1164,7 +1139,6 @@ msgid "Verbosity"
 msgstr "Pranešimų gausa"
 
 #: lazarusidestrconsts.dlgcppinline
-#| msgid "C++ Styled INLINE"
 msgid "C++ styled INLINE"
 msgstr "C++ stiliaus INLINE"
 
@@ -1181,7 +1155,6 @@ msgid "Cursor beyond EOL"
 msgstr "Žymeklis peržengia EOL"
 
 #: lazarusidestrconsts.dlgcursorgroupoptions
-#| msgid "Cursor:"
 msgid "Cursor"
 msgstr "Žymeklis"
 
@@ -1226,7 +1199,6 @@ msgid "Buttons - "
 msgstr "Klavišai - "
 
 #: lazarusidestrconsts.dlgdesktopfiles
-#| msgid "Desktop files"
 msgid "Desktop Files"
 msgstr "Darbalaukio failai"
 
@@ -1316,7 +1288,6 @@ msgid "Sub directory"
 msgstr "Poaplankis"
 
 #: lazarusidestrconsts.dlgedcodetempl
-#| msgid "Code templates"
 msgid "Code Templates"
 msgstr "Kodo šablonai"
 
@@ -1339,7 +1310,6 @@ msgid "Display"
 msgstr "Ekranas"
 
 #: lazarusidestrconsts.dlgedfiles
-#| msgid "Editor files"
 msgid "Editor Files"
 msgstr "Rengyklės failai"
 
@@ -1509,12 +1479,10 @@ msgid "None"
 msgstr "Joks"
 
 #: lazarusidestrconsts.dlgenvotherfiles
-#| msgid "Other files"
 msgid "Other Files"
 msgstr "Kiti failai"
 
 #: lazarusidestrconsts.dlgenvproject
-#| msgid "Project"
 msgid "Tabs for project"
 msgstr "Projekto kortelės"
 
@@ -1727,7 +1695,6 @@ msgid "FPC source directory"
 msgstr "FPC pirminio kodo aplankas"
 
 #: lazarusidestrconsts.dlgframecolor
-#| msgid "Frame color"
 msgid "Text-mark"
 msgstr "Teksto žymėjimas"
 
@@ -1740,7 +1707,6 @@ msgid "From b&eginning"
 msgstr "Iš p&radžių"
 
 #: lazarusidestrconsts.dlgfromcursor
-#| msgid "&From Cursor"
 msgid "&From cursor"
 msgstr "Nuo žy&meklio"
 
@@ -1846,7 +1812,6 @@ msgid "Heap and stack sizes"
 msgstr "Krūvos ir dėklo dydžiai"
 
 #: lazarusidestrconsts.dlgheapsize
-#| msgid "Heap Size"
 msgid "Heap size"
 msgstr "Krūvos dydis"
 
@@ -1883,12 +1848,10 @@ msgid "Right Of Cursor"
 msgstr "Žymeklio dešinėje"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
-#| msgid "Show Hints for parameter \"Sender\" not used"
 msgid "Show hints for parameter \"Sender\" not used"
 msgstr "Rodyti užuominas apie nenaudojamą parametrą „Sender“"
 
 #: lazarusidestrconsts.dlghintsunused
-#| msgid "Show Hints for unused units in main source"
 msgid "Show hints for unused units in main"
 msgstr "Rodyti užuominas apie pagrindiniame pirminiame kode nenaudojamus modulius"
 
@@ -1901,7 +1864,6 @@ msgid "Host application"
 msgstr "Programa-šeimininkė"
 
 #: lazarusidestrconsts.dlgidentifiercompletion
-#| msgid "Identifier completion"
 msgctxt "lazarusidestrconsts.dlgidentifiercompletion"
 msgid "Identifier Completion"
 msgstr "Identifikatoriaus užbaigimas"
@@ -2076,12 +2038,10 @@ msgid "Line Splitting"
 msgstr "Eilučių laužymas"
 
 #: lazarusidestrconsts.dlglinksmart
-#| msgid "Link Smart"
 msgid "Link smart"
 msgstr "Saistyti sumaniai"
 
 #: lazarusidestrconsts.dlglnumsbct
-#| msgid "Display Line Numbers in Run-time Error Backtraces"
 msgid "Display line numbers in run-time error backtraces"
 msgstr "Rodyti eilučių numerius veikos metu įvykusių klaidų pėdsako pranešimuose"
 
@@ -2094,17 +2054,14 @@ msgid "Main Menu"
 msgstr "Pagrindinis meniu"
 
 #: lazarusidestrconsts.dlgmainviewforms
-#| msgid "View project forms"
 msgid "View Project Forms"
 msgstr "Rodyti projekto formas"
 
 #: lazarusidestrconsts.dlgmainviewframes
-#| msgid "View project frames"
 msgid "View Project Frames"
 msgstr "Rodyti projekto kadrus"
 
 #: lazarusidestrconsts.dlgmainviewunits
-#| msgid "View project units"
 msgctxt "lazarusidestrconsts.dlgmainviewunits"
 msgid "View Project Units"
 msgstr "Rodyti projekto modulius"
@@ -2122,7 +2079,6 @@ msgid "Marker color"
 msgstr "Žymeklio spalva"
 
 #: lazarusidestrconsts.dlgmarkupgroup
-#| msgid "Word under Caret Highlight"
 msgid "Highlight of Word under Caret"
 msgstr "Paryškinti žodį, esantį ties žymekliu"
 
@@ -2234,17 +2190,14 @@ msgid "Match word boundaries for words up to this length:"
 msgstr "Priderinti žodžių ribas žodžiams, kurių ilgis iki:"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
-#| msgid "Ignore Keywords"
 msgid "Ignore keywords"
 msgstr "Ignoruoti bazinius žodžius"
 
 #: lazarusidestrconsts.dlgmarkupwordnotimer
-#| msgid "Disable Timer for Markup Current Word"
 msgid "Disable timer for markup current word"
 msgstr "Paryškinant dabartinį žodį, delsos netaikyti"
 
 #: lazarusidestrconsts.dlgmarkupwordtrim
-#| msgid "Trim Spaces (when highlighting current selection)"
 msgid "Trim spaces (when highlighting current selection)"
 msgstr "Šalinti tarpus eilutės galuose (paryškinant pažymėjimą)"
 
@@ -2509,7 +2462,6 @@ msgid "Other actions using the same button"
 msgstr "Kiti veiksmai priskirti šiam mygtukui"
 
 #: lazarusidestrconsts.dlgmouseoptotheracthint
-#| msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down..."
 msgid "They may be executed depending on the Modifier Keys, Fallthrough settings, Single/Double, Up/Down ..."
 msgstr "Jie vykdomi priklausomai nuo modifikavimo klavišų būsenos, „nepavykimo“ nuostatų, vienkarčio/dvikarčio spustelėjimo, mygtuko nuspaudimo/atleidimo…"
 
@@ -2532,7 +2484,6 @@ msgid "Multi Select"
 msgstr "Pažymėti kelis"
 
 #: lazarusidestrconsts.dlgmultiwinaccessgroup
-#| msgid "Find editor for jump targets"
 msgid "Find Editor for Jump Targets"
 msgstr "Peršokimo paskirčiai skirtos rengyklės paieška"
 
@@ -2557,7 +2508,6 @@ msgid "Pages and Windows"
 msgstr "Lapai ir langai"
 
 #: lazarusidestrconsts.dlgmultiwintabgroup
-#| msgid "Notebook Tabs:"
 msgid "Notebook Tabs"
 msgstr "Rengyklės kortelės"
 
@@ -2566,7 +2516,6 @@ msgid "Naming"
 msgstr "Pavadinimų suteikimas"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
-#| msgid "no automatic renaming"
 msgid "No automatic renaming"
 msgstr "Automatiškai nepervadinti"
 
@@ -2583,12 +2532,10 @@ msgid "Source notebook tabs position"
 msgstr "Rengyklės kortelių vieta"
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
-#| msgid "Do not split line after:"
 msgid "Do not split line after"
 msgstr "Nelaužti eilutės po"
 
 #: lazarusidestrconsts.dlgnotsplitlinefront
-#| msgid "Do not split line In front of:"
 msgid "Do not split line in front of"
 msgstr "Nelaužti eilutės priešais"
 
@@ -2632,12 +2579,10 @@ msgid "Other optimizations"
 msgstr ""
 
 #: lazarusidestrconsts.dlgotherunitfiles
-#| msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
 msgid "Other unit files (-Fu) (delimiter is semicolon):"
 msgstr "Kitų modulių failai (-Fu) (atskirti kabliataškiais):"
 
 #: lazarusidestrconsts.dlgoverwriteblock
-#| msgid "Overwrite Block"
 msgid "Overwrite block"
 msgstr "Pakeisti bloką"
 
@@ -2688,7 +2633,6 @@ msgid "Only \"String\""
 msgstr "Tiktais „String“"
 
 #: lazarusidestrconsts.dlgpersistentblock
-#| msgid "Persistent Block"
 msgid "Persistent block"
 msgstr "Išliekantis blokas"
 
@@ -2705,7 +2649,6 @@ msgid "as invoker (asInvoker)"
 msgstr "kaip kreipiantysis (asInvoker)"
 
 #: lazarusidestrconsts.dlgpoclearicon
-#| msgid "Clear Icon"
 msgid "&Clear Icon"
 msgstr "Išva&lyti piktogramą"
 
@@ -2751,7 +2694,6 @@ msgid "(none)"
 msgstr "(joks)"
 
 #: lazarusidestrconsts.dlgpoloadicon
-#| msgid "Load Icon"
 msgid "&Load Icon"
 msgstr "Į&kelti piktogramą"
 
@@ -2769,7 +2711,6 @@ msgid "Resources"
 msgstr ""
 
 #: lazarusidestrconsts.dlgposaveicon
-#| msgid "Save Icon"
 msgid "&Save Icon"
 msgstr "Į&rašyti piktogramą"
 
@@ -2786,12 +2727,10 @@ msgid "UI Access (uiAccess)"
 msgstr "NS prieiga (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
-#| msgid "Use Application Bundle for running and debugging (darwin only)"
 msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgstr "Startui ir derinimui naudoti programą-ryšulį (tik dėl Darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-#| msgid "Use manifest file to enable themes (windows only)"
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Naudoti manifest failą temų įgalinimui (tik dėl Windows)"
 
@@ -2813,12 +2752,10 @@ msgid "Options for Project: %s"
 msgstr "Projekto parinktys: %s"
 
 #: lazarusidestrconsts.dlgprojfiles
-#| msgid "Project files"
 msgid "Project Files"
 msgstr "Projekto failai"
 
 #: lazarusidestrconsts.dlgpromptonreplace
-#| msgid "&Prompt On Replace"
 msgid "&Prompt on replace"
 msgstr "Keičiant k&lausti patvirtinimo"
 
@@ -2851,7 +2788,6 @@ msgid "Reference"
 msgstr "Rodyklė"
 
 #: lazarusidestrconsts.dlgregularexpressions
-#| msgid "Regular E&xpressions"
 msgid "Regular e&xpressions"
 msgstr "&Reguliarusis reiškinys"
 
@@ -2860,7 +2796,6 @@ msgid "Replace &All"
 msgstr "P&akeisti visus"
 
 #: lazarusidestrconsts.dlgreplacewith
-#| msgid "&Replace With"
 msgid "&Replace with"
 msgstr "&Pakeisti šiuo"
 
@@ -2869,12 +2804,10 @@ msgid "Report"
 msgstr "Ataskaita"
 
 #: lazarusidestrconsts.dlgrightbottomclr
-#| msgid "color for right, bottom"
 msgid "Guide lines Right,Bottom"
 msgstr "Kairioji bei dešinioji orientavimo linija"
 
 #: lazarusidestrconsts.dlgrightclickselects
-#| msgid "Right Click selects"
 msgid "Right click selects"
 msgstr "Dešinysis pelės spustelėjimas pažymi"
 
@@ -2891,12 +2824,10 @@ msgid "Select grandchildren"
 msgstr "Parinkti vaikaitį"
 
 #: lazarusidestrconsts.dlgruberbandcreationcolor
-#| msgid "Creation"
 msgid "Rubberband Creation"
 msgstr "Kūrimo rėmelis"
 
 #: lazarusidestrconsts.dlgruberbandselectioncolor
-#| msgid "Selection"
 msgctxt "lazarusidestrconsts.dlgruberbandselectioncolor"
 msgid "Rubberband Selection"
 msgstr "Žymėjimo rėmelis"
@@ -2927,7 +2858,6 @@ msgid "User overrides"
 msgstr "Naudotojo pakeitimai"
 
 #: lazarusidestrconsts.dlgrunparameters
-#| msgid "Run parameters"
 msgid "Run Parameters"
 msgstr "Starto parametrai"
 
@@ -2956,7 +2886,6 @@ msgid "Scroll by one less"
 msgstr "Slenkant per lapą slinkti viena eilute mažiau"
 
 #: lazarusidestrconsts.dlgscrollgroupoptions
-#| msgid "Scrolling:"
 msgid "Scrolling"
 msgstr "Slinktis"
 
@@ -2970,7 +2899,6 @@ msgid "Scroll past end of file"
 msgstr "Failo pabaiga nesustabdo slinkties"
 
 #: lazarusidestrconsts.dlgscrollpastendline
-#| msgid "Scroll past end of line"
 msgid "Caret past end of line"
 msgstr "Eilutės pabaiga nesustabdo slinkties"
 
@@ -2983,7 +2911,6 @@ msgid "Search terminated by user."
 msgstr "Iešką nutraukė naudotojas."
 
 #: lazarusidestrconsts.dlgsearchcaption
-#| msgid "Searching..."
 msgid "Searching ..."
 msgstr "Ieškoma…"
 
@@ -2992,7 +2919,6 @@ msgid "Paths"
 msgstr "Keliai"
 
 #: lazarusidestrconsts.dlgselectedtext
-#| msgid "&Selected Text"
 msgid "&Selected text"
 msgstr "Paž&ymėtame tekste"
 
@@ -3054,7 +2980,6 @@ msgid "Show gutter hints"
 msgstr "Rodyti kairiosios paraštės informacinius langelius"
 
 #: lazarusidestrconsts.dlgshowhint
-#| msgid "Show Hints"
 msgctxt "lazarusidestrconsts.dlgshowhint"
 msgid "Show hints"
 msgstr "Rodyti užuominas"
@@ -3065,7 +2990,6 @@ msgid "Show line numbers"
 msgstr "Rodyti eilučių numerius"
 
 #: lazarusidestrconsts.dlgshownotes
-#| msgid "Show Notes"
 msgid "Show notes"
 msgstr "Rodyti pastabas"
 
@@ -3082,7 +3006,6 @@ msgid "Show used files"
 msgstr "Rodyti naudojamus failus"
 
 #: lazarusidestrconsts.dlgshowwarnings
-#| msgid "Show Warnings"
 msgid "Show warnings"
 msgstr "Rodyti perspėjimus"
 
@@ -3141,7 +3064,6 @@ msgid "Stack size"
 msgstr "Dėklo dydis"
 
 #: lazarusidestrconsts.dlgstatickeyword
-#| msgid "Static Keyword in Objects"
 msgid "Static keyword in objects"
 msgstr "Objektuose statiniai baziniai žodžiai"
 
@@ -3200,7 +3122,6 @@ msgid "Target OS"
 msgstr "Skirtas OS"
 
 #: lazarusidestrconsts.dlgtargetplatform
-#| msgid "Target Platform"
 msgid "Target platform"
 msgstr "Skirtas platformai"
 
@@ -3217,7 +3138,6 @@ msgid "Directory for building test projects"
 msgstr "Aplankas testo projektų darymui"
 
 #: lazarusidestrconsts.dlgtexttofind
-#| msgid "&Text to Find"
 msgctxt "lazarusidestrconsts.dlgtexttofind"
 msgid "&Text to find"
 msgstr "Ieškomasis t&ekstas"
@@ -3231,7 +3151,6 @@ msgid "Top:"
 msgstr "Viršus:"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaption
-#| msgid "Trim Spaces Style"
 msgid "Trim spaces style"
 msgstr "Tarpų šalinimo būdas"
 
@@ -3260,7 +3179,6 @@ msgid "Undo after save"
 msgstr "Išsaugojus grąžinimas neišvalomas"
 
 #: lazarusidestrconsts.dlgundogroupoptions
-#| msgid "Undo / Redo:"
 msgid "Undo / Redo"
 msgstr "Atšaukti / grąžinti"
 
@@ -3269,7 +3187,6 @@ msgid "Undo limit"
 msgstr "Grąžinimų riba"
 
 #: lazarusidestrconsts.dlgunitdepcaption
-#| msgid "Unit dependencies"
 msgctxt "lazarusidestrconsts.dlgunitdepcaption"
 msgid "Unit Dependencies"
 msgstr "Modulio priklausomybės"
@@ -3288,22 +3205,18 @@ msgid "Unsaved line"
 msgstr "Neįrašyta eilutė"
 
 #: lazarusidestrconsts.dlgusecodefolding
-#| msgid "Code folding"
 msgid "Code Folding"
 msgstr "Kodo suvėrimas"
 
 #: lazarusidestrconsts.dlgusecustomconfig
-#| msgid "Use additional Compiler Config File"
 msgid "Use additional compiler config file"
 msgstr "Naudoti papildomą kompiliatoriaus nustatymų failą"
 
 #: lazarusidestrconsts.dlgusedividerdraw
-#| msgid "Divider drawing"
 msgid "Divider Drawing"
 msgstr "Skyriklio rodymas"
 
 #: lazarusidestrconsts.dlgusefpccfg
-#| msgid "Use standard Compiler Config File (fpc.cfg)"
 msgid "Use standard compiler config file (fpc.cfg)"
 msgstr "Naudoti standartinį kompiliatoriaus nustatymų failą (fpc.cfg)"
 
@@ -3357,7 +3270,6 @@ msgid "Visible right margin"
 msgstr "Dešinioji paraštė matoma"
 
 #: lazarusidestrconsts.dlgwholewordsonly
-#| msgid "&Whole Words Only"
 msgid "&Whole words only"
 msgstr "Tik vie&ntisi žodžiai"
 
@@ -3375,7 +3287,6 @@ msgid "Window"
 msgstr "Langas"
 
 #: lazarusidestrconsts.dlgwinpos
-#| msgid "Window Positions"
 msgid "Window positions"
 msgstr "Langų pozicijos"
 
@@ -3394,7 +3305,6 @@ msgid "Preview"
 msgstr "Peržiūra"
 
 #: lazarusidestrconsts.dlgwritefpclogo
-#| msgid "Write an FPC logo"
 msgid "Write FPC logo"
 msgstr "Įrašyti FPC logotipą"
 
@@ -3407,37 +3317,30 @@ msgid "Align ..."
 msgstr "Lygiuotė…"
 
 #: lazarusidestrconsts.fdmdeleteselection
-#| msgid "Delete selection"
 msgid "Delete Selection"
 msgstr "Pašalinti pažymėtą"
 
 #: lazarusidestrconsts.fdmmirrorhorizontal
-#| msgid "Mirror horizontal"
 msgid "Mirror Horizontal"
 msgstr "Apsukti pagal horizontalę"
 
 #: lazarusidestrconsts.fdmmirrorvertical
-#| msgid "Mirror vertical"
 msgid "Mirror Vertical"
 msgstr "Apsukti pagal vertikalę"
 
 #: lazarusidestrconsts.fdmorderbackone
-#| msgid "Back one"
 msgid "Back One"
 msgstr "Vienu atgal"
 
 #: lazarusidestrconsts.fdmorderforwardone
-#| msgid "Forward one"
 msgid "Forward One"
 msgstr "Vienu pirmyn"
 
 #: lazarusidestrconsts.fdmordermovetoback
-#| msgid "Move to back"
 msgid "Move to Back"
 msgstr "Perkelti į galą"
 
 #: lazarusidestrconsts.fdmordermovetofront
-#| msgid "Move to front"
 msgid "Move to Front"
 msgstr "Perkelti į priekį"
 
@@ -3446,7 +3349,6 @@ msgid "Reset ..."
 msgstr ""
 
 #: lazarusidestrconsts.fdmsaveformasxml
-#| msgid "Save form as XML"
 msgid "Save Form as XML"
 msgstr "Formą įrašyti kaip XML"
 
@@ -3537,7 +3439,6 @@ msgid "Add Files"
 msgstr "Pridėti failus"
 
 #: lazarusidestrconsts.lisa2paddfilestopackage
-#| msgid "Add files to package"
 msgid "Add Files to Package"
 msgstr "Įdėti failus į paketą"
 
@@ -3581,7 +3482,6 @@ msgid "Create New Component"
 msgstr "Kurti naują komponentę"
 
 #: lazarusidestrconsts.lisa2pcreatenewfile
-#| msgid "Create new file"
 msgid "Create New File"
 msgstr "Kurti naują failą"
 
@@ -3594,7 +3494,7 @@ msgid "Dependency"
 msgstr "Priklausomybės"
 
 #: lazarusidestrconsts.lisa2pexistingfile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Existing file: %s%s%s"
 msgid "Existing file: \"%s\""
 msgstr "Egzistuojantis failas: %s%s%s"
@@ -3604,7 +3504,7 @@ msgid "File already exists"
 msgstr "Failas jau egzistuoja"
 
 #: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s already exists in the package."
 msgid "File \"%s\" already exists in the package."
 msgstr "Pakete jau yra failas %s%s%s."
@@ -3646,7 +3546,7 @@ msgid "Invalid Unit Name"
 msgstr "Klaidingas modulio pavadinimas"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is not a valid unit name."
 msgid "\"%s\" is not a valid unit name."
 msgstr "%s%s%s yra klaidingas modulio pavadinimas."
@@ -3665,7 +3565,7 @@ msgid "New File"
 msgstr "Naujas failas"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "No package found for dependency %s%s%s.%sPlease choose an existing package."
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "%s%s%s priklausiniui nerastas paketas.%sNurodykite egzistuojantį paketą."
@@ -3700,55 +3600,55 @@ msgid "Switch Paths"
 msgstr "Kitoks kelias"
 
 #: lazarusidestrconsts.lisa2ptheancestortypehasthesamenameastheunit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
 msgid "The ancestor type \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "Protėvio tipo %s%s%s pavadinimas toks pat kaip ir%smodulio %s%s%s."
 
 #: lazarusidestrconsts.lisa2ptheancestortypeisnotavalidpascalidentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The ancestor type %s%s%s is not a valid Pascal identifier."
 msgid "The ancestor type \"%s\" is not a valid Pascal identifier."
 msgstr "Protėvio tipas %s%s%s nėra paskalio identifikatorius."
 
 #: lazarusidestrconsts.lisa2ptheclassnameandancestortypearethesame
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
 msgid "The class name \"%s\" and ancestor type \"%s\" are the same."
 msgstr "Klasės pavadinimas %s%s%stoks pat kaip ir protėvio tipo %s%s%s."
 
 #: lazarusidestrconsts.lisa2ptheclassnameexistsalreadyinpackagefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
 msgid "The class name \"%s\" exists already in%sPackage %s%sFile: \"%s\""
 msgstr "Klasės pavadinimas %s%s%s jau figūruoja%spaketo %s%sfaile: %s%s%s"
 
 #: lazarusidestrconsts.lisa2ptheclassnamehasthesamenameastheunit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
 msgid "The class name \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "Klasės pavadinimas %s%s%s toks pat kaip ir%smodulio %s%s%s."
 
 #: lazarusidestrconsts.lisa2ptheclassnameisnotavalidpascalidentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The class name %s%s%s is not a valid Pascal identifier."
 msgid "The class name \"%s\" is not a valid Pascal identifier."
 msgstr "Klasės pavadinimas %s%s%s nėra paskalio identifikatorius."
 
 #: lazarusidestrconsts.lisa2pthefileispartofthecurrentprojectitisabadidea
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s is part of the current project.%sIt is a bad idea to share files between projects and packages."
 msgid "The file \"%s\" is part of the current project.%sIt is a bad idea to share files between projects and packages."
 msgstr "Failas %s%s%s yra šio projekto dalis.%sDalintis failais tarp projektų bei paketų nėra gerai."
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgid "The filename \"%s\" is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "Neaiškus failo pavadinimas %s%s%s, nes paketas dar neturi nustatyto aplanko.%sNurodykite pilną kelią iki failo."
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
@@ -3760,56 +3660,56 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maksimali versija žemesnė už minimalią."
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "Minimali versija %s%s%s klaidinga.%sNaudokite formatą „Didysis.Mažasis.Laida.DarymoNumeris“.%sPavyzdžiui: 1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package already has a dependency on the package %s%s%s."
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "Paketas jau priklauso nuo paketo %s%s%s."
 
 #: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
 msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
 msgstr "Klaidingas paketo pavadinimas %s%s%s.%sNurodykite egzistuojantį paketą."
 
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The page name %s%s%s is too long (max 100 chars)."
 msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "Per ilgas lapo pavadinimas %s%s%s (gali būti nedaugiau 100 simbolių)"
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unitname %s%s%s already exists in the package:%s%s"
 msgid "The unitname \"%s\" already exists in the package:%s%s"
 msgstr "Modulio pavadinimas %s%s%s jau yra pakete:%s%s"
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthispackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unitname %s%s%s already exists in this package."
 msgid "The unitname \"%s\" already exists in this package."
 msgstr "Modulio pavadinimas %s%s%s jau yra pakete."
 
 #: lazarusidestrconsts.lisa2ptheunitnameandfilenamediffer
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s%sand filename %s%s%s differ."
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "Modulio %s%s%s%s ir failo %s%s%s pavadinimai skiriasi."
 
 #: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s does not correspond to the filename."
 msgid "The unit name \"%s\" does not correspond to the filename."
 msgstr "Modulio %s%s%s ir failo pavadinimai neatitinka."
 
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "Modulio pavadinimas %s%s%s toks pat kaip ir užregistruota komponentė.%sDėlto galite sulaukti keistų pranešimų apie klaidas."
@@ -3876,7 +3776,6 @@ msgid "About Lazarus"
 msgstr "Apie Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
-#| msgid "License: GPL/LGPL%sLazarus is an IDE to create (graphical and console) applications with Free Pascal. Free Pascal is a (L)GPL'ed Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
 msgstr "Licenzija: GPL/LGPL. Licencijos detalės pateiktos Lazarus ir Free Pascal pirminiame kode/%sLazarus yra IKA (integruota kūrimo aplinka), kuriame galima kurti vizualines bei terminalo Free Pascal programas. Free Pascal yra paskalio ir objektinio paskalio kompiliatorius, jis dirba Linux, FreeBSD, Windows, Mac OS X ir kitose operacinėse sistemose.%sLazarus yra rūkstamoji galvosūkio dalis, kuri jums leidžia į Delphi panašioje aplinkoje kurti programas visoms minėtoms operacinėms sistemoms. IKA yra GPK (greitas programų kūrimas) įrankis, kuriame yra formų konstruktorius.%sLazarus auga, todėl mums reikia daugiau kūrėjų."
 
@@ -4037,17 +3936,14 @@ msgid "Add value to macro %s"
 msgstr "Makrokomandai „%s“ pridėti vertę"
 
 #: lazarusidestrconsts.lisaf2paddfiletoapackage
-#| msgid "Add file to a package"
 msgid "Add File to Package"
 msgstr "Failą įdėti į paketą"
 
 #: lazarusidestrconsts.lisaf2pdestinationpackage
-#| msgid "Destination Package"
 msgid "Destination package"
 msgstr "Paskirties paketas"
 
 #: lazarusidestrconsts.lisaf2pfiletype
-#| msgid "File Type"
 msgid "File type"
 msgstr "Failo tipas"
 
@@ -4060,7 +3956,7 @@ msgid "Invalid Package"
 msgstr "Klaidingas paketas"
 
 #: lazarusidestrconsts.lisaf2pinvalidpackageid
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Invalid package ID: %s%s%s"
 msgid "Invalid package ID: \"%s\""
 msgstr "Klaidingas paketo ID: %s%s%s"
@@ -4070,19 +3966,18 @@ msgid "Package is read only"
 msgstr "Paketas tik skaitymui"
 
 #: lazarusidestrconsts.lisaf2ppackagenotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Package %s%s%s not found."
 msgid "Package \"%s\" not found."
 msgstr "Paketas %s%s%s nerastas."
 
 #: lazarusidestrconsts.lisaf2pshowall
-#| msgid "Show All"
 msgctxt "lazarusidestrconsts.lisaf2pshowall"
 msgid "Show all"
 msgstr "Rodyti visus"
 
 #: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%sis already in the package %s."
 msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
 msgid "The file \"%s\"%sis already in the package %s."
@@ -4093,12 +3988,11 @@ msgid "The package %s is read only."
 msgstr "Paketas %s tik skaitymui."
 
 #: lazarusidestrconsts.lisaf2punitname
-#| msgid "Unit Name: "
 msgid "Unit name: "
 msgstr "Modulio pavadinimas: "
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "A file %s%s%s already exists.%sReplace it?"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "Failas %s%s%s jau egzistuoja.%sPerrašyti?"
@@ -4116,7 +4010,6 @@ msgid "Alignment"
 msgstr "Lygiuotė"
 
 #: lazarusidestrconsts.lisallblockslooksok
-#| msgid "All blocks looks ok."
 msgid "All blocks look ok."
 msgstr "Visi blokai geri."
 
@@ -4149,7 +4042,7 @@ msgid "All parameters of this function are already set at this call. Nothing to 
 msgstr "Šioje kreiptyje visi šios funkcijos parametrai jau yra nustatyti. Nebėra ko pridėti."
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
 msgid "All your modifications to \"%s\"%swill be lost and the file reopened."
 msgstr "Visi faile %s%s%s%sdaryti keitimai bus prarasti ir failas bus atvertas iš naujo."
@@ -4191,7 +4084,7 @@ msgid "Ambiguous file found"
 msgstr "Rastas neaiškus failas"
 
 #: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "Rastas neaiškus failas: %s%s%s%sŠis failas gali būti supainiotas su %s%s%s%s%sIštrinti neaiškųjį failą?"
@@ -4251,7 +4144,7 @@ msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distan
 msgstr "Viršutinį kraštą pririšti prie kaimyno viršutinio krašto. Atstumą lemia kraštinės plotis. Kaimyno kratinės plotis ignoruojamas."
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgid "An error occured at last startup while loading %s!%sLoad this project again?"
 msgstr "Paskutinio starto metu įkeliant projektą %s įvyko klaida!%s%sVėl įkelti šį projektą?"
@@ -4369,7 +4262,6 @@ msgid "do not add character"
 msgstr "neįdėti simbolio"
 
 #: lazarusidestrconsts.lisautomaticfeatures
-#| msgid "Automatic features"
 msgid "Completion and Hints"
 msgstr "Užbaigimai ir užuominos"
 
@@ -4414,7 +4306,6 @@ msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
 msgstr "Geriausiai pateikiamas įdiegus HTML valdiklį (pvz. „turbopoweriprodsgn“)"
 
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
-#| msgid "Always Build before Run"
 msgid "Always build before run"
 msgstr "Prieš startuojant visada daryti"
 
@@ -4435,12 +4326,10 @@ msgid "Run Command"
 msgstr "Startavimo komanda"
 
 #: lazarusidestrconsts.lisbfwhenthisfileisactiveinsourceeditor
-#| msgid "When this file is active in source editor ..."
 msgid "When this file is active in source editor"
 msgstr "Kai šis failas pirminio kodo rengyklėje aktyvus"
 
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
-#| msgid "Working directory (Leave empty for file path)"
 msgid "Working directory (leave empty for file path)"
 msgstr "Darbinis aplankas (palikite tuščią failo keliui)"
 
@@ -4449,7 +4338,6 @@ msgid "Bold non default values"
 msgstr "Numatytąsias vertes pastorinti"
 
 #: lazarusidestrconsts.lisborderspace
-#| msgid "BorderSpace"
 msgid "Border space"
 msgstr "Kraštinės plotis"
 
@@ -4590,7 +4478,6 @@ msgid "Build new project"
 msgstr "Daryti naująjį projektą"
 
 #: lazarusidestrconsts.lisbuildnumber
-#| msgid "Build Number"
 msgid "Build number"
 msgstr "Darymo numeris"
 
@@ -4643,7 +4530,7 @@ msgid "Cannot copy top level component."
 msgstr "Aukščiausiame lygyje esančių komponenčių kopijuoti negalima."
 
 #: lazarusidestrconsts.liscannotcreatefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Cannot create file %s%s%s"
 msgid "Cannot create file \"%s\""
 msgstr "Nepavyksta sukurti failą %s%s%s"
@@ -4707,7 +4594,6 @@ msgid "Ambiguous compiler"
 msgstr "Neaiškus kompiliatorius"
 
 #: lazarusidestrconsts.lisccochecktestdir
-#| msgid "Please check the Test directory under %sEnvironment -> Environment Options -> Files -> Directory for building test projects"
 msgid "Please check the Test directory under %sTools -> Options -> Files -> Directory for building test projects"
 msgstr "Patikrinkite testinių projektų aplanką %s„Aplinka -> Aplinkos parinktys -> Failai -> Aplankas testo projektų darymui“"
 
@@ -4795,7 +4681,6 @@ msgid "There is a .ppu file older than the compiler itself:%s%s"
 msgstr "Rastas „.ppu“failas, kuris yra senesnis už patį kompiliatorių:%s%s"
 
 #: lazarusidestrconsts.lisccoseveralcompilers
-#| msgid "There are several FreePascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgid "There are several Free Pascal Compilers in your path.%s%s%sMaybe you forgot to delete an old compiler?"
 msgstr "Kelyje aptikti keli Free Pascal kompiliatoriai.%s%s%sGalbūt užmiršot ištrinti senąjį kompiliatorių?"
 
@@ -4866,7 +4751,6 @@ msgid "Empty procedures"
 msgstr "Tuščios procedūros"
 
 #: lazarusidestrconsts.liscefilter
-#| msgid "(Filter)"
 msgid "(filter)"
 msgstr "(Filtras)"
 
@@ -4884,7 +4768,6 @@ msgid "Is a root control"
 msgstr "Tai šakninis valdiklis"
 
 #: lazarusidestrconsts.liscelongparamlistcount
-#| msgid "Parameters count treating as \"many\""
 msgid "Parameters count treated as \"many\""
 msgstr "Parametrų kiekis traktuojamas kaip „daugybė“"
 
@@ -4913,7 +4796,6 @@ msgid "Show Source Nodes"
 msgstr "Rodyti pirminio kodo mazgus"
 
 #: lazarusidestrconsts.liscenestedproccount
-#| msgid "Nested procedures count treating as \"many\""
 msgid "Nested procedures count treated as \"many\""
 msgstr "Įdėtinių procedūrų kiekis, kuri traktuojamas kaip „daugybė“"
 
@@ -4922,17 +4804,14 @@ msgid "Center a lost window"
 msgstr ""
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
-#| msgid "Center control horizontally relative to the given sibling"
 msgid "Center control horizontally relative to the given sibling. BorderSpacing is ignored."
 msgstr "Komponentę centruoti horizontaliai pagal nurodytą kaimyną. Rėmelio plotis ignoruojamas."
 
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
-#| msgid "Center control vertically relative to the given sibling"
 msgid "Center control vertically relative to the given sibling. BorderSpacing is ignored."
 msgstr "Komponentę centruoti vertikaliai pagal nurodytą kaimyną. Rėmelio plotis ignoruojamas."
 
 #: lazarusidestrconsts.liscenterform
-#| msgid "Center form"
 msgid "Center Form"
 msgstr "Formą į centrą"
 
@@ -4945,7 +4824,6 @@ msgid "Centers"
 msgstr "Sutapdinti centrus"
 
 #: lazarusidestrconsts.lisceomode
-#| msgid "Preferred Exhibition Mode"
 msgid "Preferred exhibition mode"
 msgstr "Pirmiau rodyti"
 
@@ -5114,7 +4992,7 @@ msgid "Error reading %s"
 msgstr "Skaitant iš „%s“ įvyko klaida"
 
 #: lazarusidestrconsts.liscfeinfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%sIn file %s%s"
 msgid "In file %s"
 msgstr "%sFaile %s%s"
@@ -5193,7 +5071,6 @@ msgid "Change file"
 msgstr "Keisti failą"
 
 #: lazarusidestrconsts.lischangeparent
-#| msgid "Change Parent..."
 msgid "Change Parent"
 msgstr "Pakeisti tėvą"
 
@@ -5374,7 +5251,7 @@ msgid "classes.ppu not found. Check your fpc.cfg."
 msgstr "Nerastas „classes.ppu“. Patikrinkite ar geras „fpc.cfg“."
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "Klasė %s%s%s nėra registruoto komponento klasė.%sĮdėti nepavyks."
@@ -5388,7 +5265,7 @@ msgid "Class %s not found at %s(%s,%s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisclassofmethodnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Class %s%s%s of method %s%s%s not found."
 msgid "Class \"%s\" of method \"%s\" not found."
 msgstr "%s%s%s klasė (%s%s%s metodo) nerasta."
@@ -5480,7 +5357,6 @@ msgid "Clone"
 msgstr ""
 
 #: lazarusidestrconsts.lisclose
-#| msgid "&Close"
 msgctxt "lazarusidestrconsts.lisclose"
 msgid "Close"
 msgstr "Užverti"
@@ -5567,7 +5443,6 @@ msgid "Code"
 msgstr "Kodas"
 
 #: lazarusidestrconsts.liscodebrowser
-#| msgid "Code browser"
 msgctxt "lazarusidestrconsts.liscodebrowser"
 msgid "Code Browser"
 msgstr "Kodo naršyklė"
@@ -5658,7 +5533,6 @@ msgid "Insert paragraph formatting tag"
 msgstr "Įterpti paragrafo formatavimo gairę"
 
 #: lazarusidestrconsts.liscodehelpmainformcaption
-#| msgid "FPDoc editor"
 msgctxt "lazarusidestrconsts.liscodehelpmainformcaption"
 msgid "FPDoc Editor"
 msgstr "FPDoc rengyklė"
@@ -5703,7 +5577,6 @@ msgid "Ignore next unnamed constants"
 msgstr "Ignoruoti tolesnes bevardes konstantas"
 
 #: lazarusidestrconsts.liscodetempladd
-#| msgid "Add"
 msgctxt "lazarusidestrconsts.liscodetempladd"
 msgid "Add template"
 msgstr "Pridėti šabloną"
@@ -5713,13 +5586,12 @@ msgid "Add code template"
 msgstr "Pridėti kodo šabloną"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, fuzzy
+#, fuzzy,badformat
 #| msgid " A token %s%s%s already exists! "
 msgid " A token \"%s\" already exists! "
 msgstr "Leksema %s%s%s jau egzistuoja! "
 
 #: lazarusidestrconsts.liscodetemplautocompleteon
-#| msgid "Auto complete on ..."
 msgid "Auto complete on"
 msgstr "Automatiškas užbaigimas įgalintas"
 
@@ -5774,7 +5646,6 @@ msgid "CodeTools Defines Editor"
 msgstr "CodeTools apibrėžčių rengyklė"
 
 #: lazarusidestrconsts.liscodetoolsdefscompilerpath
-#| msgid "compiler path"
 msgid "Compiler path"
 msgstr "Kompiliatoriaus adresas"
 
@@ -6020,7 +5891,6 @@ msgid "Selected Node:"
 msgstr "Pažymėtas mazgas:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-#| msgid "The Free Pascal SVN source directory. Not required. This will improve find declarationand debugging."
 msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
 msgstr "Free Pascal SVN pirminio kodo aplankas. Nebūtina, tačiau nurodžius tai pagerins aprašų paiešką bei programos derinimą."
 
@@ -6033,12 +5903,10 @@ msgid "The Free Pascal SVN source directory."
 msgstr "Free Pascal SVN pirminio kodo aplankas."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
-#| msgid "The path to the free pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 msgstr "Free Pascal kompiliatoriaus adresas (kelias iki jo ir failas).%sPavyzdžiui: %s/usr/bin/%s -n%s arba %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-#| msgid "The path to the free pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgstr "Šio projekto Free Pascal kompiliatoriaus adresas (kelias iki jo ir failas). Būtina įrašyti jei žemiau nurodysit FPC SVN pirminio kodo aplanką. Šis įrašas naudojamas automatiškai kuriant makrokomandas."
 
@@ -6232,7 +6100,6 @@ msgid "Compiler filename"
 msgstr "Kompiliatoriaus failo pavadinimas"
 
 #: lazarusidestrconsts.liscompilerhintyoucansetthecompilerpath
-#| msgid "Hint: you can set the compiler path in Environment->Environment options->Files->Compiler Path"
 msgid "Hint: you can set the compiler path in Tools -> Options-> Files -> Compiler Path"
 msgstr "Užuomina: kompiliatoriaus programą galite nurodyti „Aplinka -> Parinktys -> Failai -> Kompiliatoriaus programa“."
 
@@ -6289,13 +6156,13 @@ msgid "Component name \"%s\" is a Pascal keyword."
 msgstr "Komponentės pavadinimas „%s“ sutampa su raktažodžiu."
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Component name %s%s%s is keyword"
 msgid "Component name \"%s\" is keyword"
 msgstr "Komponentės pavadinimas %s%s%s kaip ir bazinio žodžio"
 
 #: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "Komponento pavadinimas %s%s%s nėra identifikatorius"
@@ -6313,7 +6180,6 @@ msgid "Open unit"
 msgstr "Atverti modulį"
 
 #: lazarusidestrconsts.liscomptest
-#| msgid "Test"
 msgctxt "lazarusidestrconsts.liscomptest"
 msgid "&Test"
 msgstr "&Testas"
@@ -6340,7 +6206,7 @@ msgid "Configure Build %s"
 msgstr "Derinti %s daryklę"
 
 #: lazarusidestrconsts.lisconfigurebuildlazarus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Configure %sBuild Lazarus%s"
 msgid "Configure \"Build Lazarus\""
 msgstr "Derinti %sDaryti Lazarus%s"
@@ -6551,7 +6417,7 @@ msgid "Failed converting unit"
 msgstr "Modulio konvertuoti nepavyko"
 
 #: lazarusidestrconsts.lisconvdelphifailedtoconvertunit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Failed to convert unit%s%s%s"
 msgid "Failed to convert unit \"%s\""
 msgstr "Nepavyko konvertuoti modulį%s%s%s"
@@ -6640,7 +6506,6 @@ msgid "Convert"
 msgstr "Konvertuoti"
 
 #: lazarusidestrconsts.lisconvertencoding
-#| msgid "Convert encoding"
 msgid "Convert Encoding"
 msgstr "Konvertuoti koduotę"
 
@@ -6799,7 +6664,6 @@ msgid "Copy All"
 msgstr "Kopijuoti viską"
 
 #: lazarusidestrconsts.liscopyallitemstoclipboard
-#| msgid "Copy all items to clipboard"
 msgid "Copy All Items to Clipboard"
 msgstr "Visus elementus kopijuoti į iškarpinę"
 
@@ -6832,7 +6696,7 @@ msgid "Copy File Name to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyidentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Copy %s%s%s to clipboard"
 msgid "Copy \"%s\" to clipboard"
 msgstr "%s%s%s kopijuoti į iškarpinę"
@@ -6842,7 +6706,6 @@ msgid "Copying a whole form is not implemented."
 msgstr "Visos formos kopijavimas dar nėra įgyvendintas."
 
 #: lazarusidestrconsts.liscopyitemtoclipboard
-#| msgid "Copy item to clipboard"
 msgid "Copy Item to Clipboard"
 msgstr "Elementus kopijuoti į iškarpinę"
 
@@ -6851,12 +6714,10 @@ msgid "Copy/Move File to Directory"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyselecteditemtoclipboard
-#| msgid "Copy selected items to clipboard"
 msgid "Copy Selected Items to Clipboard"
 msgstr "Pažymėtus elementus kopijuoti į iškarpinę"
 
 #: lazarusidestrconsts.liscopyselectedmessagestoclipboard
-#| msgid "Copy selected messages to clipboard"
 msgid "Copy Selected Messages to Clipboard"
 msgstr "Kopijuoti pažymėtus pranešimus į iškarpinę"
 
@@ -6873,48 +6734,46 @@ msgid "Scan for messages:"
 msgstr "Žiūrėti pranešimų:"
 
 #: lazarusidestrconsts.liscoskipcallingcompiler
-#| msgid "Skip calling Compiler"
 msgid "Skip calling compiler"
 msgstr "Nešaukti kompiliatoriaus"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not add %s{$I %s%s} to main source!"
 msgid "Could not add \"{$I %s}\" to main source!"
 msgstr "Nepavyko įdėti %s{$I %s%s} į pagrindinį pirminį kodą!"
 
 #: lazarusidestrconsts.liscouldnotaddrtomainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not add %s{$R %s%s} to main source!"
 msgid "Could not add \"{$R %s}\" to main source!"
 msgstr "Nepavyko įdėti %s{$R %s%s} į pagrindinį pirminį kodą!"
 
 #: lazarusidestrconsts.liscouldnotaddtomainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not add %s%s%s to main source!"
 msgid "Could not add \"%s\" to main source!"
 msgstr "Nepavyko įdėti %s%s%s į pagrindinį pirminį kodą!"
 
 #: lazarusidestrconsts.liscouldnotremovefrommainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not remove %s%s%s from main source!"
 msgid "Could not remove \"%s\" from main source!"
 msgstr "Nepavyko pašalinti %s%s%s iš pagrindinio pirminio kodo!"
 
 #: lazarusidestrconsts.liscouldnotremoveifrommainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not remove %s{$I %s%s} from main source!"
 msgid "Could not remove \"{$I %s}\" from main source!"
 msgstr "Nepavyko pašalinti %s{$I %s%s} iš pagrindinio pirminio kodo!"
 
 #: lazarusidestrconsts.liscouldnotremoverfrommainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not remove %s{$R %s%s} from main source!"
 msgid "Could not remove \"{$R %s}\" from main source!"
 msgstr "Nepavyko pašalinti %s{$R %s%s} iš pagrindinio pirminio kodo!"
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
-#| msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr "Perspėjimas: papildomo kompiliatoriaus nustatymų failo pavadinimas yra toks pat, kaip ir Free Pascal standartinio nustatymų failo. Dėl to, praleidžiant standartinį nustatymų failą, bus analizuojamas TIK papildomas nustatymų failas."
 
@@ -7377,7 +7236,6 @@ msgid "Language Exceptions"
 msgstr "Kalbos išimtinės situacijos"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmlimitlinecountto
-#| msgid "Limit linecount to"
 msgid "Limit line count to"
 msgstr "Riboti eilučių kiekį iki"
 
@@ -7443,7 +7301,7 @@ msgid "Unable to load file"
 msgstr "Nepavyko įkelti failą"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to load file %s%s%s."
 msgid "Unable to load file \"%s\"."
 msgstr "Nepavyko įkelti failą %s%s%s."
@@ -7492,7 +7350,7 @@ msgid "Delete all breakpoints?"
 msgstr "Pašalinti visus stabdos taškus?"
 
 #: lazarusidestrconsts.lisdeleteallbreakpoints2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete all breakpoints in file %s%s%s?"
 msgid "Delete all breakpoints in file \"%s\"?"
 msgstr "Pašalinti visus stabdos taškus, esančius faile %s%s%s?"
@@ -7534,7 +7392,7 @@ msgid "Delete file failed"
 msgstr "Nepavyko ištrinti failą"
 
 #: lazarusidestrconsts.lisdeletemacro
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete macro %s%s%s?"
 msgid "Delete macro \"%s\"?"
 msgstr "Ar pašalinti makrokomandą %s%s%s?"
@@ -7544,7 +7402,7 @@ msgid "Delete mode \"%s\""
 msgstr "Pašalinti veikseną „%s“"
 
 #: lazarusidestrconsts.lisdeleteoldfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete old file %s%s%s?"
 msgid "Delete old file \"%s\"?"
 msgstr "Ištrinti senąjį failą %s%s%s?"
@@ -7566,7 +7424,7 @@ msgid "Delete this addition"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletevalue
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete value %s%s%s"
 msgid "Delete value \"%s\"?"
 msgstr "Pašalinti vertę %s%s%s"
@@ -7576,7 +7434,7 @@ msgid "Delete value %s"
 msgstr "Pašalinti vertę %s"
 
 #: lazarusidestrconsts.lisdeletingoffilefailed
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Deleting of file %s%s%s failed."
 msgid "Deleting of file \"%s\" failed."
 msgstr "Nepavyko ištrinti failą %s%s%s."
@@ -7680,7 +7538,7 @@ msgid "Directory: "
 msgstr "Aplankas: "
 
 #: lazarusidestrconsts.lisdirectorynotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Directory %s%s%s not found."
 msgid "Directory \"%s\" not found."
 msgstr "Nepavyko rasti aplanko %s%s%s."
@@ -7938,7 +7796,7 @@ msgid "Duplicate File Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Duplicate found of value %s%s%s."
 msgid "Duplicate found of value \"%s\"."
 msgstr "Rastas vertės %s%s%s dublikatas."
@@ -7948,7 +7806,7 @@ msgid "Duplicate Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgid "Duplicate name: A component named \"%s\" already exists in the inherited component %s"
 msgstr "Pavadinimai dubliuojasi: komponentas, pavadinimu %s%s%s, jau yra paveldėtame komponente %s"
@@ -8210,7 +8068,7 @@ msgid "Number of files failed to convert: %d"
 msgstr ""
 
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
@@ -8325,7 +8183,7 @@ msgid "Error loading file"
 msgstr "Klaida įkeliant failą"
 
 #: lazarusidestrconsts.liserrorloadingfile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error loading file \"%s\":%s%s"
 msgid "Error loading file \"%s\":"
 msgstr "Įkeliant failą „%s“ įvyko klaida:%s%s"
@@ -8363,7 +8221,7 @@ msgid "Error reading XML"
 msgstr "Klaida skaitant XML"
 
 #: lazarusidestrconsts.liserrorreadingxmlfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error reading xml file %s%s%s%s%s"
 msgid "Error reading xml file \"%s\"%s%s"
 msgstr "Įvyko klaida skaitant XML failą %s%s%s%s%s"
@@ -8431,7 +8289,6 @@ msgid "Add Comment"
 msgstr "Įdėti komentarą"
 
 #: lazarusidestrconsts.liseverynthlinenumber
-#| msgid "Every n-th line number:"
 msgid "Every n-th line number"
 msgstr "Numeris kas kelintoje eilutėje"
 
@@ -8460,7 +8317,6 @@ msgid "%s excluded at run time"
 msgstr "„%s“ išbrauktas vykdymo metu"
 
 #: lazarusidestrconsts.lisexcludefilter
-#| msgid "Exclude Filter"
 msgid "Exclude filter"
 msgstr "Neįtraukimo filtras"
 
@@ -8586,7 +8442,6 @@ msgid "Extremely Verbose"
 msgstr ""
 
 #: lazarusidestrconsts.lisexttoolexternaltools
-#| msgid "External tools"
 msgid "External Tools"
 msgstr "Išorės įrankiai"
 
@@ -8640,7 +8495,7 @@ msgid "File: "
 msgstr "Failas: "
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -8683,7 +8538,7 @@ msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "Tai yra filtrai, kurie bus visuose failo atvėrimo dialoguose"
 
 #: lazarusidestrconsts.lisfilehaschangedsave
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s has changed. Save?"
 msgid "File \"%s\" has changed. Save?"
 msgstr "Failas %s%s%s pakeistas. Įrašyti?"
@@ -8709,7 +8564,7 @@ msgid "File is symlink"
 msgstr "Failas yra simbolinė nuoroda"
 
 #: lazarusidestrconsts.lisfileisvirtual
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s is virtual."
 msgid "File \"%s\" is virtual."
 msgstr "Failas %s%s%s yra virtualus."
@@ -8731,7 +8586,7 @@ msgid "File not found"
 msgstr "Failas nerastas"
 
 #: lazarusidestrconsts.lisfilenotfound2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s not found.%s"
 msgctxt "lazarusidestrconsts.lisfilenotfound2"
 msgid "File \"%s\" not found."
@@ -8750,7 +8605,7 @@ msgid "File not found:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgid "File \"%s\" not found.%sDo you want to create it?"
 msgstr "Failas %s%s%s nerastas.%sJį sukurti?%s"
@@ -8764,7 +8619,6 @@ msgid "File not text"
 msgstr "Ne teksto failas"
 
 #: lazarusidestrconsts.lisfilesettings
-#| msgid "File Settings ..."
 msgid "File Settings"
 msgstr "Failo nuostatos"
 
@@ -8869,7 +8723,6 @@ msgid "Fi&le mask"
 msgstr "Failų pavadinimų &kaukė"
 
 #: lazarusidestrconsts.lisfindfileincludesubdirectories
-#| msgid "Include sub directories"
 msgid "Include &sub directories"
 msgstr "Ir po&aplankiuose"
 
@@ -9035,7 +8888,6 @@ msgid "Free Pascal Compiler messages"
 msgstr ""
 
 #: lazarusidestrconsts.lisfreepascalsourcedirectory
-#| msgid "Freepascal source directory"
 msgid "Free Pascal source directory"
 msgstr "Free Pascal pirminio kodo aplankas"
 
@@ -9118,7 +8970,6 @@ msgid "Global settings"
 msgstr ""
 
 #: lazarusidestrconsts.lisgotoline
-#| msgid "Goto line"
 msgid "Goto Line"
 msgstr "„Goto“ eilutė"
 
@@ -9128,7 +8979,7 @@ msgid "Goto selected source line"
 msgstr "Rodyti eilutę pirminiame kode"
 
 #: lazarusidestrconsts.lisgplnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -9211,7 +9062,6 @@ msgid "Hexadecimal"
 msgstr "Šešioliktainis"
 
 #: lazarusidestrconsts.lishfmhelpforfreepascalcompilermessage
-#| msgid "Help for FreePascal Compiler message"
 msgid "Help for Free Pascal Compiler message"
 msgstr "Informacija apie Free Pascal Compiler pranešimą"
 
@@ -9413,7 +9263,7 @@ msgid "Export file exists"
 msgstr "Eksportuojamas failas egzistuoja"
 
 #: lazarusidestrconsts.lisiecoexportfileexistsopenfileandreplaceonlycompileropti
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
 msgid "Export file \"%s\" exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
 msgstr "Eksportuojamas failas %s%s%s jau yra.%sAtverti failą ir jame įrašyti tik kompiliatoriaus parinktis?%s(Kitos faile esančios nuostatos lik tokios pačios.)"
@@ -9443,7 +9293,7 @@ msgid "If not checked:"
 msgstr ""
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Naudojant dvi Lazarus laidas, antrasis Lazarus turi būti startuojamas naudojant komandinės eilutės parametrą „primary-config-path“ (arba „pcp“).%s%sPavyzdžiui:%s"
@@ -9516,7 +9366,6 @@ msgid "Include all subdirectories"
 msgstr ""
 
 #: lazarusidestrconsts.lisincludefilter
-#| msgid "Include Filter"
 msgid "Include filter"
 msgstr "Įterpimo filtras"
 
@@ -9583,7 +9432,7 @@ msgid "Inherited project component"
 msgstr "Paveldėta projekto komponentė"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
 msgstr "Kuriant švarią projekto ar paketo kopiją, visi šiame aplanke esantys failai bus ištrinti.%s%sIštrinti visus %s%s%s aplanke esančius failus?"
@@ -9773,7 +9622,7 @@ msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Invalid macro %s%s%s. The macro name must be a Pascal identifier."
 msgid "Invalid macro \"%s\". The macro name must be a Pascal identifier."
 msgstr "Klaidinga makrokomanda %s%s%s. Makrokomandos pavadinimas turi būti paskalio identifikatorius."
@@ -9837,7 +9686,7 @@ msgid "%s is already part of the Project."
 msgstr "%s jau yra projekte."
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "Projekto pavadinimas %s%s%s yra klaidingas.%sNurodykite kitokį pavadinimą (pvz.: projektas1.lpi)"
@@ -9978,13 +9827,12 @@ msgid "Compile project/program"
 msgstr "Kompiliuoti projektą/programą"
 
 #: lazarusidestrconsts.liskmconfigbuildfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Config %sBuild File%s"
 msgid "Config \"Build File\""
 msgstr "Derinti %sDaryti failą%s"
 
 #: lazarusidestrconsts.liskmconfigurecustomcomponents
-#| msgid "Configure custom components"
 msgid "Configure Custom Components"
 msgstr "Derinti naudotojo komponentes"
 
@@ -9997,17 +9845,14 @@ msgid "Convert Delphi package to Lazarus package"
 msgstr "Delphi paketą konvertuoti į Lazarus paketą"
 
 #: lazarusidestrconsts.liskmconvertdelphiprojecttolazarusproject
-#| msgid "Convert Delphi project to Lazarus project"
 msgid "Convert Delphi Project to Lazarus Project"
 msgstr "Konvertuoti Delphi projektą į Lazarus projektą"
 
 #: lazarusidestrconsts.liskmconvertdelphiunittolazarusunit
-#| msgid "Convert Delphi unit to Lazarus unit"
 msgid "Convert Delphi Unit to Lazarus Unit"
 msgstr "Konvertuoti Delphi modulį į Lazarus modulį"
 
 #: lazarusidestrconsts.liskmconvertdfmfiletolfm
-#| msgid "Convert DFM file to LFM"
 msgid "Convert DFM File to LFM"
 msgstr "Konvertuoti DFM failą į LFM"
 
@@ -10024,7 +9869,6 @@ msgid "Delete last char"
 msgstr "Pašalinti paskutinį simbolį"
 
 #: lazarusidestrconsts.liskmdiffeditorfiles
-#| msgid "Diff editor files"
 msgid "Diff Editor Files"
 msgstr "Rengyklės failus apdoroti komanda Diff"
 
@@ -10037,7 +9881,6 @@ msgid "Edit context sensitive help"
 msgstr "Keisti kontekstinį žinyną"
 
 #: lazarusidestrconsts.liskmencloseselection
-#| msgid "Enclose selection"
 msgid "Enclose Selection"
 msgstr "Apgaubti pažymėtąjį"
 
@@ -10054,7 +9897,6 @@ msgid "External Tools settings"
 msgstr "Išorinių įrankių nuostatos"
 
 #: lazarusidestrconsts.liskmfindincremental
-#| msgid "Find incremental"
 msgid "Find Incremental"
 msgstr "Prieauginė paieška"
 
@@ -10232,37 +10074,31 @@ msgid "Save project as"
 msgstr "Įrašyti projektą taip"
 
 #: lazarusidestrconsts.liskmselectlineend
-#| msgid "Select line end"
 msgctxt "lazarusidestrconsts.liskmselectlineend"
 msgid "Select Line End"
 msgstr "Žymėti iki eilutės galo"
 
 #: lazarusidestrconsts.liskmselectlinestart
-#| msgid "Select line start"
 msgctxt "lazarusidestrconsts.liskmselectlinestart"
 msgid "Select Line Start"
 msgstr "Žymėti iki eilutės pradžios"
 
 #: lazarusidestrconsts.liskmselectpagebottom
-#| msgid "Select page bottom"
 msgctxt "lazarusidestrconsts.liskmselectpagebottom"
 msgid "Select Page Bottom"
 msgstr "Žymėti iki lapo apačios"
 
 #: lazarusidestrconsts.liskmselectpagetop
-#| msgid "Select page top"
 msgctxt "lazarusidestrconsts.liskmselectpagetop"
 msgid "Select Page Top"
 msgstr "Žymėti iki lapo viršaus"
 
 #: lazarusidestrconsts.liskmselectwordleft
-#| msgid "Select word left"
 msgctxt "lazarusidestrconsts.liskmselectwordleft"
 msgid "Select Word Left"
 msgstr "Pažymėti žodį kairėje"
 
 #: lazarusidestrconsts.liskmselectwordright
-#| msgid "Select word right"
 msgctxt "lazarusidestrconsts.liskmselectwordright"
 msgid "Select Word Right"
 msgstr "Pažymėti žodį dešinėje"
@@ -10312,7 +10148,6 @@ msgid "Set marker 9"
 msgstr "Uždėti žymeklį 9"
 
 #: lazarusidestrconsts.liskmstopprogram
-#| msgid "Stop program"
 msgid "Stop Program"
 msgstr "Sustabdyti programą"
 
@@ -10361,18 +10196,15 @@ msgid "Toggle marker 9"
 msgstr "Įjungti/išjungti žymeklį 9"
 
 #: lazarusidestrconsts.liskmtoggleviewassembler
-#| msgid "Toggle view Assembler"
 msgctxt "lazarusidestrconsts.liskmtoggleviewassembler"
 msgid "View Assembler"
 msgstr "Rodyti „Asembleris“"
 
 #: lazarusidestrconsts.liskmtoggleviewbreakpoints
-#| msgid "Toggle view Breakpoints"
 msgid "View Breakpoints"
 msgstr "Rodyti „Stabdos taškai“"
 
 #: lazarusidestrconsts.liskmtoggleviewcallstack
-#| msgid "Toggle view Call Stack"
 msgctxt "lazarusidestrconsts.liskmtoggleviewcallstack"
 msgid "View Call Stack"
 msgstr "Rodyti „Kreipčių dėklas“"
@@ -10386,17 +10218,14 @@ msgid "Toggle view Code Explorer"
 msgstr "Rodyti „Kodo tyrinėtojas“"
 
 #: lazarusidestrconsts.liskmtoggleviewcomponentpalette
-#| msgid "Toggle view component palette"
 msgid "Toggle View Component Palette"
 msgstr "Rodyti komponenčių paletę"
 
 #: lazarusidestrconsts.liskmtoggleviewdebugevents
-#| msgid "Toggle view Debuger Event Log"
 msgid "View Debuger Event Log"
 msgstr "Rodyti „Derintuvės įvykių žurnalas“"
 
 #: lazarusidestrconsts.liskmtoggleviewdebuggeroutput
-#| msgid "Toggle view Debugger Output"
 msgid "View Debugger Output"
 msgstr "Rodyti „Derintuvės išvestis“"
 
@@ -10414,7 +10243,6 @@ msgid "Toggle view IDE speed buttons"
 msgstr "Keisti IKA sparčiųjų mygtukų matomumą"
 
 #: lazarusidestrconsts.liskmtoggleviewlocalvariables
-#| msgid "Toggle view Local Variables"
 msgid "View Local Variables"
 msgstr "Rodyti „Vietiniai kintamieji“"
 
@@ -10432,7 +10260,6 @@ msgid "View Terminal Output"
 msgstr "Rodyti terminalo išvestį"
 
 #: lazarusidestrconsts.liskmtoggleviewregisters
-#| msgid "Toggle view Registers"
 msgid "View Registers"
 msgstr "Rodyti „Registrai“"
 
@@ -10450,7 +10277,6 @@ msgid "View Threads"
 msgstr "Rodyti gijas"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
-#| msgid "Toggle view Watches"
 msgid "View Watches"
 msgstr "Rodyti „Stebimieji“"
 
@@ -10463,7 +10289,6 @@ msgid "View project options"
 msgstr "Rodyti projekto parinktis"
 
 #: lazarusidestrconsts.liskmviewprojectsource
-#| msgid "View project source"
 msgid "View Project Source"
 msgstr "Rodyti projekto pirminį kodą"
 
@@ -10505,7 +10330,6 @@ msgid "Lazarus IDE v%s"
 msgstr "Lazarus IKA v%s"
 
 #: lazarusidestrconsts.lislazarusfile
-#| msgid "Lazarus File"
 msgid "Lazarus file"
 msgstr "Lazarus failas"
 
@@ -10579,7 +10403,6 @@ msgid "Common Settings"
 msgstr "Bendros nuostatos"
 
 #: lazarusidestrconsts.lislazbuildconfirmbuild
-#| msgid "Confirm before rebuilding Lazarus"
 msgid "Confirm before build"
 msgstr "Prieš darant reikalauti patvirtinimo"
 
@@ -10666,7 +10489,6 @@ msgid "New name for profile:"
 msgstr "Naujas profilio pavadinimas:"
 
 #: lazarusidestrconsts.lislazbuildrestartafterbuild
-#| msgid "Restart after building the IDE"
 msgid "Restart after building IDE"
 msgstr "Padarius IKA, startuoti iš naujo"
 
@@ -10723,7 +10545,6 @@ msgid "Lazarus Version (e.g. 1.2.4)"
 msgstr ""
 
 #: lazarusidestrconsts.lislclwidgettype
-#| msgid "LCL Widget Type"
 msgid "LCL widget type"
 msgstr "LCL valdiklių tipas"
 
@@ -10806,7 +10627,7 @@ msgid "LFM is ok"
 msgstr "LFM tinkamas"
 
 #: lazarusidestrconsts.lislgplnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -10893,7 +10714,6 @@ msgid "Eval expression"
 msgstr "Apskaičiuoti reiškinį"
 
 #: lazarusidestrconsts.lislogmessage
-#| msgid "Log message"
 msgid "Log Message"
 msgstr "Registruoti pranešimą"
 
@@ -10934,22 +10754,18 @@ msgid "Enter run parameters"
 msgstr "Įveskite starto parametrus"
 
 #: lazarusidestrconsts.lismainunithasapplicationcreateformstatements
-#| msgid "Main Unit has Application.CreateForm statements"
 msgid "Main unit has Application.CreateForm statements"
 msgstr "Pagrindiniame modulyje yra sakinių „Application.CreateForm“"
 
 #: lazarusidestrconsts.lismainunithasapplicationtitlestatements
-#| msgid "Main Unit has Application.Title statements"
 msgid "Main unit has Application.Title statements"
 msgstr "Pagrindiniame modulyje yra sakinių „Application.Title“"
 
 #: lazarusidestrconsts.lismainunithasusessectioncontainingallunitsofproject
-#| msgid "Main Unit has Uses Section containing all Units of project"
 msgid "Main unit has Uses section containing all units of project"
 msgstr "Pagrindiniame modulyje yra sekcija „Uses“, kurioje paminėti visi projekto moduliai"
 
 #: lazarusidestrconsts.lismainunitispascalsource
-#| msgid "Main Unit is Pascal Source"
 msgid "Main unit is Pascal source"
 msgstr "Pagrindinis modulis yra Paskalio pirminis kodas"
 
@@ -10970,7 +10786,7 @@ msgid "Append to section"
 msgstr "Tiesiog pridėti"
 
 #: lazarusidestrconsts.lismakeresstrchooseanothername
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgid "The resourcestring \"%s\" already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgstr "Tokia išteklių eilutė %s%s%s jau yra.%sParinkite kitokį pavadinimą.%sNorint ją įdėti to nepaisant, spauskite „Ignoruoti“."
@@ -11070,7 +10886,6 @@ msgid "About FPC"
 msgstr "Apie FPC"
 
 #: lazarusidestrconsts.lismenuaddbreakpoint
-#| msgid "Add breakpoint"
 msgid "Add &Breakpoint"
 msgstr "Padėti stabdos &tašką"
 
@@ -11079,22 +10894,18 @@ msgid "Add Active File to Package ..."
 msgstr "Į paketą įdėti veikiamąjį failą…"
 
 #: lazarusidestrconsts.lismenuaddjumppointtohistory
-#| msgid "Add jump point to history"
 msgid "Add Jump Point to History"
 msgstr "Peršokimo tašką įdėti praeitin"
 
 #: lazarusidestrconsts.lismenuaddtoproject
-#| msgid "Add editor file to Project"
 msgid "Add Editor File to Project"
 msgstr "Rengyklės failą įdėti į projektą"
 
 #: lazarusidestrconsts.lismenuaddwatch
-#| msgid "Add watch ..."
 msgid "Add &Watch ..."
 msgstr "Pridėti &stebimąjį…"
 
 #: lazarusidestrconsts.lismenubeaklinesinselection
-#| msgid "Break Lines in selection"
 msgid "Break Lines in Selection"
 msgstr "Laužyti eilutes pažymėtoje srityje"
 
@@ -11103,7 +10914,6 @@ msgid "Build File"
 msgstr "Daryti failą"
 
 #: lazarusidestrconsts.lismenubuildlazarus
-#| msgid "Build Lazarus with current profile"
 msgid "Build Lazarus with Current Profile"
 msgstr "Daryti Lazarus naudojant veikiamąjį profilį"
 
@@ -11116,12 +10926,10 @@ msgid "Build many Modes ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuchecklfm
-#| msgid "Check LFM file in editor"
 msgid "Check LFM File in Editor"
 msgstr "Tikrinti LFM failą rengyklėje"
 
 #: lazarusidestrconsts.lismenucleandirectory
-#| msgid "Clean directory ..."
 msgid "Clean Directory ..."
 msgstr "Apvalyti aplanką…"
 
@@ -11144,12 +10952,10 @@ msgid "Close Project"
 msgstr "Užverti projektą"
 
 #: lazarusidestrconsts.lismenucodetoolsdefineseditor
-#| msgid "CodeTools defines editor ..."
 msgid "CodeTools Defines Editor ..."
 msgstr "CodeTools apibrėžčių rengyklė…"
 
 #: lazarusidestrconsts.lismenucommentselection
-#| msgid "Comment selection"
 msgid "Comment Selection"
 msgstr "Uždėti komentarą pažymėtajam"
 
@@ -11167,12 +10973,10 @@ msgid "Configure Build+Run File ..."
 msgstr "Derinti „Daryti ir startuoti failą“…"
 
 #: lazarusidestrconsts.lismenuconfigcustomcomps
-#| msgid "Configure custom components ..."
 msgid "Configure Custom Components ..."
 msgstr "Derinti naudotojo komponentes…"
 
 #: lazarusidestrconsts.lismenuconfigexternaltools
-#| msgid "Configure external tools ..."
 msgid "Configure External Tools ..."
 msgstr "Derinti išorės įrankius…"
 
@@ -11185,32 +10989,26 @@ msgid "Context sensitive Help"
 msgstr "Kontekstinis žinynas"
 
 #: lazarusidestrconsts.lismenuconvertdelphipackage
-#| msgid "Convert Delphi package to Lazarus package ..."
 msgid "Convert Delphi Package to Lazarus Package ..."
 msgstr "Konvertuoti Delphi paketą į Lazarus paketą…"
 
 #: lazarusidestrconsts.lismenuconvertdelphiproject
-#| msgid "Convert Delphi project to Lazarus project ..."
 msgid "Convert Delphi Project to Lazarus Project ..."
 msgstr "Konvertuoti Delphi projektą į Lazarus projektą…"
 
 #: lazarusidestrconsts.lismenuconvertdelphiunit
-#| msgid "Convert Delphi unit to Lazarus unit ..."
 msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "Konvertuoti Delphi modulį į Lazarus modulį…"
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-#| msgid "Convert binary DFM to text LFM + check syntax ..."
 msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
 msgstr "Konvertuoti dvejetainį DFM failą į LFM ir patikrinti sintaksę…"
 
 #: lazarusidestrconsts.lismenuconvertencoding
-#| msgid "Convert encoding of projects/packages ..."
 msgid "Convert Encoding of Projects/Packages ..."
 msgstr "Konvertuoti projektų/paketų koduotę…"
 
 #: lazarusidestrconsts.lismenudebugwindows
-#| msgid "Debug windows"
 msgid "Debug Windows"
 msgstr "Derinimo langai"
 
@@ -11231,12 +11029,10 @@ msgid "Edit context sensitive Help"
 msgstr "Rengyklės kontekstinis žinynas"
 
 #: lazarusidestrconsts.lismenueditinstallpkgs
-#| msgid "Install/Uninstall packages ..."
 msgid "Install/Uninstall Packages ..."
 msgstr "Įdiegtus/išdiegti paketus…"
 
 #: lazarusidestrconsts.lismenueditor
-#| msgid "Menu Editor..."
 msgid "Menu Editor ..."
 msgstr "Meniu rengyklė…"
 
@@ -11245,7 +11041,6 @@ msgid "Create Submenu"
 msgstr "Sukurti pomenių"
 
 #: lazarusidestrconsts.lismenueditordeletefromtemplate
-#| msgid "Delete From Template..."
 msgid "Delete From Template ..."
 msgstr "Pašalinti iš šablono…"
 
@@ -11258,7 +11053,6 @@ msgid "Handle OnClick Event"
 msgstr "Apdoroti „OnClick“ įvykį"
 
 #: lazarusidestrconsts.lismenueditorinsertfromtemplate
-#| msgid "Insert From Template..."
 msgid "Insert From Template ..."
 msgstr "Įterpti iš šablono…"
 
@@ -11283,12 +11077,10 @@ msgid "Move Up (or left)"
 msgstr "Stumti viršun (arba kairėn)"
 
 #: lazarusidestrconsts.lismenueditornewtemplatedescription
-#| msgid "New Template Description..."
 msgid "New Template Description ..."
 msgstr "Naujas šablono aprašymas…"
 
 #: lazarusidestrconsts.lismenueditorsaveastemplate
-#| msgid "Save As Template..."
 msgid "Save As Template ..."
 msgstr "Įrašyti kaip šabloną…"
 
@@ -11309,12 +11101,10 @@ msgid "Enclose in $IFDEF ..."
 msgstr "Apgaubti su „$IFDEF“…"
 
 #: lazarusidestrconsts.lismenuencloseselection
-#| msgid "Enclose selection ..."
 msgid "Enclose Selection ..."
 msgstr "Apgaubti pažymėtąjį…"
 
 #: lazarusidestrconsts.lismenuevaluate
-#| msgid "Evaluate/Modify ..."
 msgid "E&valuate/Modify ..."
 msgstr "Į&vertinti/modifikuoti…"
 
@@ -11323,7 +11113,6 @@ msgid "Example Projects ..."
 msgstr "Pavyzdžių projektai…"
 
 #: lazarusidestrconsts.lismenuextractproc
-#| msgid "Extract procedure ..."
 msgid "Extract Procedure ..."
 msgstr "Ištraukti procedūrą…"
 
@@ -11341,17 +11130,14 @@ msgid "&Find ..."
 msgstr "&Ieškoti…"
 
 #: lazarusidestrconsts.lismenufindblockotherendofcodeblock
-#| msgid "Find other end of code block"
 msgid "Find Other End of Code Block"
 msgstr "Ieškoti kodo bloko kitos pabaigos"
 
 #: lazarusidestrconsts.lismenufindcodeblockstart
-#| msgid "Find code block start"
 msgid "Find Start of Code Block"
 msgstr "Ieškoti kodo bloko pradžios"
 
 #: lazarusidestrconsts.lismenufinddeclarationatcursor
-#| msgid "Find Declaration at cursor"
 msgid "Find Declaration at Cursor"
 msgstr "Ieškoti ties žymekliu nurodytojo aprašo"
 
@@ -11360,7 +11146,6 @@ msgid "Find Identifier References ..."
 msgstr "Ieškoti identifikatoriaus rodyklių…"
 
 #: lazarusidestrconsts.lismenufindinfiles
-#| msgid "Find &in files ..."
 msgid "Find &in Files ..."
 msgstr "Ieškoti &failuose…"
 
@@ -11381,22 +11166,18 @@ msgid "Options ..."
 msgstr "Parinktys…"
 
 #: lazarusidestrconsts.lismenugotoincludedirective
-#| msgid "Goto include directive"
 msgid "Goto Include Directive"
 msgstr "Rodyti įterpimo direktyvą"
 
 #: lazarusidestrconsts.lismenugotoline
-#| msgid "Goto line ..."
 msgid "Goto Line ..."
 msgstr "Rodyti eilutę…"
 
 #: lazarusidestrconsts.lismenuguessmisplacedifdef
-#| msgid "Guess misplaced IFDEF/ENDIF"
 msgid "Guess Misplaced IFDEF/ENDIF"
 msgstr "Nuspėti nevietoj esančius $IFDEF/$ENDIF"
 
 #: lazarusidestrconsts.lismenuguessunclosedblock
-#| msgid "Guess unclosed block"
 msgid "Guess Unclosed Block"
 msgstr "Nuspėti neužbaigtą bloką"
 
@@ -11405,7 +11186,6 @@ msgid "&Help"
 msgstr "Žin&ynas"
 
 #: lazarusidestrconsts.lismenuideinternals
-#| msgid "IDE internals"
 msgid "IDE Internals"
 msgstr "IKA ypatybės"
 
@@ -11414,27 +11194,22 @@ msgid "Incremental Find"
 msgstr "Prieauginė paieška"
 
 #: lazarusidestrconsts.lismenuindentselection
-#| msgid "Indent selection"
 msgid "Indent Selection"
 msgstr "Suteikti įtrauką pažymėjime"
 
 #: lazarusidestrconsts.lismenuinsertchangelogentry
-#| msgid "ChangeLog entry"
 msgid "ChangeLog Entry"
 msgstr "Pakeitimų žurnalo įrašas"
 
 #: lazarusidestrconsts.lismenuinsertcharacter
-#| msgid "Insert from Character Map"
 msgid "Insert from Character Map ..."
 msgstr "Įterpti iš simbolių lentelės"
 
 #: lazarusidestrconsts.lismenuinsertcvskeyword
-#| msgid "Insert CVS keyword"
 msgid "Insert CVS Keyword"
 msgstr "Įterpti CVS bazinį žodį"
 
 #: lazarusidestrconsts.lismenuinsertdatetime
-#| msgid "Current date and time"
 msgid "Current Date and Time"
 msgstr "Dabartinė data ir laikas"
 
@@ -11443,13 +11218,11 @@ msgid "Insert Full Filename ..."
 msgstr "Įterpti pilną failo pavadinimą"
 
 #: lazarusidestrconsts.lismenuinsertgeneral
-#| msgid "General"
 msgctxt "lazarusidestrconsts.lismenuinsertgeneral"
 msgid "Insert General"
 msgstr "Įterpti pagrindinį"
 
 #: lazarusidestrconsts.lismenuinsertgplnotice
-#| msgid "GPL notice"
 msgid "GPL Notice"
 msgstr "GPL raštas"
 
@@ -11458,7 +11231,6 @@ msgid "GPL Notice (translated)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertlgplnotice
-#| msgid "LGPL notice"
 msgid "LGPL Notice"
 msgstr "LGPL raštas"
 
@@ -11475,7 +11247,6 @@ msgid "MIT Notice (translated)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertmodifiedlgplnotice
-#| msgid "Modified LGPL notice"
 msgid "Modified LGPL Notice"
 msgstr "Modifikuotas LGPL raštas"
 
@@ -11484,23 +11255,19 @@ msgid "Modified LGPL Notice (translated)"
 msgstr ""
 
 #: lazarusidestrconsts.lismenuinsertusername
-#| msgid "Current username"
 msgid "Current Username"
 msgstr "Dabartinis naudotojo vardas"
 
 #: lazarusidestrconsts.lismenuinspect
-#| msgid "Inspect ..."
 msgctxt "lazarusidestrconsts.lismenuinspect"
 msgid "&Inspect ..."
 msgstr "I&nspektuoti…"
 
 #: lazarusidestrconsts.lismenujumpback
-#| msgid "Jump back"
 msgid "Jump Back"
 msgstr "Peršokti atgal"
 
 #: lazarusidestrconsts.lismenujumpforward
-#| msgid "Jump forward"
 msgid "Jump Forward"
 msgstr "Peršokti pirmyn"
 
@@ -11513,27 +11280,22 @@ msgid "Jump to Implementation"
 msgstr "Šokti į įgyvendinimą"
 
 #: lazarusidestrconsts.lismenujumptonextbookmark
-#| msgid "Jump to next bookmark"
 msgid "Jump to Next Bookmark"
 msgstr "Šokti prie tolesnės žymės"
 
 #: lazarusidestrconsts.lismenujumptonexterror
-#| msgid "Jump to next error"
 msgid "Jump to Next Error"
 msgstr "Šokti prie tolesnės klaidos"
 
 #: lazarusidestrconsts.lismenujumptoprevbookmark
-#| msgid "Jump to previous bookmark"
 msgid "Jump to Previous Bookmark"
 msgstr "Šokti prie ankstesnės žymės"
 
 #: lazarusidestrconsts.lismenujumptopreverror
-#| msgid "Jump to previous error"
 msgid "Jump to Previous Error"
 msgstr "Šokti prie ankstesnės klaidos"
 
 #: lazarusidestrconsts.lismenulowercaseselection
-#| msgid "Lowercase selection"
 msgid "Lowercase Selection"
 msgstr "Pažymėjime visas raides mažosiomis"
 
@@ -11559,7 +11321,6 @@ msgid "New ..."
 msgstr "Naujas…"
 
 #: lazarusidestrconsts.lismenunewpackage
-#| msgid "New package ..."
 msgid "New Package ..."
 msgstr "Naujas paketas…"
 
@@ -11568,7 +11329,6 @@ msgid "New Project ..."
 msgstr "Naujas projektas…"
 
 #: lazarusidestrconsts.lismenunewprojectfromfile
-#| msgid "New Project from file ..."
 msgid "New Project from File ..."
 msgstr "Naujas projektas iš failo…"
 
@@ -11587,27 +11347,22 @@ msgid "Online Help"
 msgstr "Internetinis žinynas"
 
 #: lazarusidestrconsts.lismenuopen
-#| msgid "Open ..."
 msgid "&Open ..."
 msgstr "&Atverti…"
 
 #: lazarusidestrconsts.lismenuopenfilenameatcursor
-#| msgid "Open filename at cursor"
 msgid "Open Filename at Cursor"
 msgstr "Atverti ties žymekliu nurodytą failą"
 
 #: lazarusidestrconsts.lismenuopenpackage
-#| msgid "Open loaded package ..."
 msgid "Open Loaded Package ..."
 msgstr "Atverti įkeltą paketą…"
 
 #: lazarusidestrconsts.lismenuopenpackagefile
-#| msgid "Open package file (.lpk) ..."
 msgid "Open Package File (.lpk) ..."
 msgstr "Atverti paketo failą (.lpk)…"
 
 #: lazarusidestrconsts.lismenuopenpackageofcurunit
-#| msgid "Open package of current unit"
 msgid "Open Package of Current Unit"
 msgstr "Atverti veikiamojo modulio paketą"
 
@@ -11616,33 +11371,27 @@ msgid "Open Project ..."
 msgstr "Atverti projektą…"
 
 #: lazarusidestrconsts.lismenuopenrecent
-#| msgid "Open &Recent ..."
 msgid "Open &Recent"
 msgstr "Atverti paskutinį &naudotą"
 
 #: lazarusidestrconsts.lismenuopenrecentpkg
-#| msgid "Open recent package"
 msgid "Open Recent Package"
 msgstr "Atverti paskutinį naudotą paketą"
 
 #: lazarusidestrconsts.lismenuopenrecentproject
-#| msgid "Open Recent Project ..."
 msgctxt "lazarusidestrconsts.lismenuopenrecentproject"
 msgid "Open Recent Project"
 msgstr "Atverti paskutinį naudotą projektą"
 
 #: lazarusidestrconsts.lismenupackage
-#| msgid "&Package"
 msgid "Pa&ckage"
 msgstr "&Paketas"
 
 #: lazarusidestrconsts.lismenupackagegraph
-#| msgid "Package Graph ..."
 msgid "Package Graph"
 msgstr "Paketų grafas"
 
 #: lazarusidestrconsts.lismenupackagelinks
-#| msgid "Package links ..."
 msgid "Package Links ..."
 msgstr "Paketo saitai…"
 
@@ -11668,7 +11417,6 @@ msgid "Project Options ..."
 msgstr "Projekto parinktys…"
 
 #: lazarusidestrconsts.lismenuprojectrun
-#| msgid "Run"
 msgctxt "lazarusidestrconsts.lismenuprojectrun"
 msgid "&Run"
 msgstr "&Startuoti"
@@ -11678,12 +11426,10 @@ msgid "Publish Project ..."
 msgstr "Skelbti projektą…"
 
 #: lazarusidestrconsts.lismenuquickcompile
-#| msgid "Quick compile"
 msgid "Quick Compile"
 msgstr "Spartus kompiliavimas"
 
 #: lazarusidestrconsts.lismenuquicksyntaxcheck
-#| msgid "Quick syntax check"
 msgid "Quick Syntax Check"
 msgstr "Sparti sintaksės patikra"
 
@@ -11700,18 +11446,15 @@ msgid "Rename Identifier ..."
 msgstr "Pervadinti identifikatorių…"
 
 #: lazarusidestrconsts.lismenureportingbug
-#| msgid "Reporting a bug"
 msgctxt "lazarusidestrconsts.lismenureportingbug"
 msgid "Reporting a Bug"
 msgstr "Pranešti apie ydą"
 
 #: lazarusidestrconsts.lismenurescanfpcsourcedirectory
-#| msgid "Rescan FPC source directory"
 msgid "Rescan FPC Source Directory"
 msgstr "Peržvelgti FPC pirminio kodo aplanką"
 
 #: lazarusidestrconsts.lismenuresetdebugger
-#| msgid "Reset debugger"
 msgid "Reset Debugger"
 msgstr "Atstatyti derintuvę pradžion"
 
@@ -11729,7 +11472,6 @@ msgid "Run File"
 msgstr "Startuoti failą"
 
 #: lazarusidestrconsts.lismenurunparameters
-#| msgid "Run Parameters ..."
 msgid "Run &Parameters ..."
 msgstr "Startavimo &parametrai…"
 
@@ -11740,13 +11482,11 @@ msgid "Step over to &Cursor"
 msgstr "Startuoti iki ž&ymeklio"
 
 #: lazarusidestrconsts.lismenusave
-#| msgid "Save"
 msgctxt "lazarusidestrconsts.lismenusave"
 msgid "&Save"
 msgstr "Į&rašyti"
 
 #: lazarusidestrconsts.lismenusaveas
-#| msgid "Save As ..."
 msgid "Save &As ..."
 msgstr "Įrašyti &kaip…"
 
@@ -11767,49 +11507,40 @@ msgid "Select"
 msgstr "Žymėjimas"
 
 #: lazarusidestrconsts.lismenuselectall
-#| msgid "Select all"
 msgctxt "lazarusidestrconsts.lismenuselectall"
 msgid "Select All"
 msgstr "Pažymėti viską"
 
 #: lazarusidestrconsts.lismenuselectcodeblock
-#| msgid "Select code block"
 msgid "Select Code Block"
 msgstr "Pažymėti kodo bloką"
 
 #: lazarusidestrconsts.lismenuselectline
-#| msgid "Select line"
 msgid "Select Line"
 msgstr "Pažymėti eilutę"
 
 #: lazarusidestrconsts.lismenuselectparagraph
-#| msgid "Select paragraph"
 msgid "Select Paragraph"
 msgstr "Pažymėti paragrafą"
 
 #: lazarusidestrconsts.lismenuselecttobrace
-#| msgid "Select to brace"
 msgid "Select to Brace"
 msgstr "Pažymėti iki skliaustelio"
 
 #: lazarusidestrconsts.lismenuselectword
-#| msgid "Select word"
 msgid "Select Word"
 msgstr "Pažymėti žodį"
 
 #: lazarusidestrconsts.lismenusetfreebookmark
-#| msgid "Set a free bookmark"
 msgctxt "lazarusidestrconsts.lismenusetfreebookmark"
 msgid "Set a Free Bookmark"
 msgstr "Padėti laisvą žymę"
 
 #: lazarusidestrconsts.lismenushowexecutionpoint
-#| msgid "S&how execution point"
 msgid "S&how Execution Point"
 msgstr "&Rodyti vykdymo tašką"
 
 #: lazarusidestrconsts.lismenusortselection
-#| msgid "Sort selection ..."
 msgid "Sort Selection ..."
 msgstr "Rūšiuoti pažymėtą…"
 
@@ -11818,7 +11549,6 @@ msgid "S&ource"
 msgstr "Kodas"
 
 #: lazarusidestrconsts.lismenustepinto
-#| msgid "Step in&to"
 msgid "Step In&to"
 msgstr "Žengti &gilyn"
 
@@ -11837,12 +11567,10 @@ msgid "Step Into Instruction"
 msgstr "Žengti į komandą"
 
 #: lazarusidestrconsts.lismenustepout
-#| msgid "Step o&ut"
 msgid "Step O&ut"
 msgstr "Žengti &laukan"
 
 #: lazarusidestrconsts.lismenustepover
-#| msgid "&Step over"
 msgid "&Step Over"
 msgstr "Žengti &virš"
 
@@ -11865,7 +11593,6 @@ msgid "Swap Case in Selection"
 msgstr "Pažymėtame apkeisti raidžių dydžius"
 
 #: lazarusidestrconsts.lismenutabstospacesselection
-#| msgid "Tabs to spaces in selection"
 msgid "Tabs to Spaces in Selection"
 msgstr "Pažymėtoje srityje tabuliatorius keisti tarpais"
 
@@ -11910,7 +11637,6 @@ msgid "Tutorial"
 msgstr "Pavyzdys"
 
 #: lazarusidestrconsts.lismenutogglecomment
-#| msgid "Toggle comment"
 msgid "Toggle Comment in Selection"
 msgstr "Pažymėtame įjungti arba išjungti komentarą"
 
@@ -11919,17 +11645,14 @@ msgid "&Tools"
 msgstr "Įra&nkiai"
 
 #: lazarusidestrconsts.lismenuuncommentselection
-#| msgid "Uncomment selection"
 msgid "Uncomment Selection"
 msgstr "Nuimti komentarą nuo pažymėtojo"
 
 #: lazarusidestrconsts.lismenuunindentselection
-#| msgid "Unindent selection"
 msgid "Unindent Selection"
 msgstr "Naikinti įtrauką pažymėjime"
 
 #: lazarusidestrconsts.lismenuuppercaseselection
-#| msgid "Uppercase selection"
 msgid "Uppercase Selection"
 msgstr "Pažymėjime visas raides didžiosiomis"
 
@@ -11943,7 +11666,6 @@ msgid "&View"
 msgstr "&Rodymas"
 
 #: lazarusidestrconsts.lismenuviewanchoreditor
-#| msgid "View Anchor Editor"
 msgid "Anchor Editor"
 msgstr "Prieraišų rengyklė"
 
@@ -11971,7 +11693,6 @@ msgid "Code Explorer"
 msgstr "Kodo tyrinėtojas"
 
 #: lazarusidestrconsts.lismenuviewcomponentpalette
-#| msgid "View Component Palette"
 msgid "Component Palette"
 msgstr "Komponenčių paletė"
 
@@ -11985,12 +11706,10 @@ msgid "Event Log"
 msgstr "Įvykių žurnalas"
 
 #: lazarusidestrconsts.lismenuviewdebugoutput
-#| msgid "Debug output"
 msgid "Debug Output"
 msgstr "Derinimo išvestis"
 
 #: lazarusidestrconsts.lismenuviewforms
-#| msgid "Forms..."
 msgid "Forms ..."
 msgstr "Formos…"
 
@@ -12000,13 +11719,11 @@ msgid "History"
 msgstr "Praeitis"
 
 #: lazarusidestrconsts.lismenuviewidespeedbuttons
-#| msgid "IDE speed buttons"
 msgctxt "lazarusidestrconsts.lismenuviewidespeedbuttons"
 msgid "IDE Speed Buttons"
 msgstr "IKA spartieji mygtukai"
 
 #: lazarusidestrconsts.lismenuviewjumphistory
-#| msgid "Jump History ..."
 msgctxt "lazarusidestrconsts.lismenuviewjumphistory"
 msgid "Jump History"
 msgstr "Peršokimų praeitis"
@@ -12061,7 +11778,6 @@ msgid "Threads"
 msgstr "Gijos"
 
 #: lazarusidestrconsts.lismenuviewtoggleformunit
-#| msgid "Toggle form/unit view"
 msgid "Toggle Form/Unit View"
 msgstr "Rodyti ar slėpti formą arba modulį"
 
@@ -12073,12 +11789,10 @@ msgid "Unit Dependencies"
 msgstr "Modulio priklausomybės…"
 
 #: lazarusidestrconsts.lismenuviewunitinfo
-#| msgid "Unit Information"
 msgid "Unit Information ..."
 msgstr "Informacija apie modulį…"
 
 #: lazarusidestrconsts.lismenuviewunits
-#| msgid "Units..."
 msgid "Units ..."
 msgstr "Moduliai…"
 
@@ -12095,7 +11809,6 @@ msgid "&Window"
 msgstr "&Langai"
 
 #: lazarusidestrconsts.lismeother
-#| msgid "Other"
 msgctxt "lazarusidestrconsts.lismeother"
 msgid "Other tabs"
 msgstr "Kitos kortelės"
@@ -12173,7 +11886,7 @@ msgid "Skip this Unit"
 msgstr "Praleisti šį modulį"
 
 #: lazarusidestrconsts.lismitnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -12343,7 +12056,7 @@ msgid ", Mode: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -12405,7 +12118,6 @@ msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s?"
 msgstr ""
 
 #: lazarusidestrconsts.lismovepage
-#| msgid "Move Page ..."
 msgid "Move Page"
 msgstr "Perkelti lapą"
 
@@ -12497,7 +12209,6 @@ msgid "Create a new unit with a datamodule."
 msgstr "Kurti naują modulį su duomenų moduliu."
 
 #: lazarusidestrconsts.lisnewdlgcreateanewunitwithaframe
-#| msgid "Create a new unit with a frame"
 msgid "Create a new unit with a frame."
 msgstr "Kurti naują modulį su kadru."
 
@@ -12530,7 +12241,6 @@ msgid "New Macroname"
 msgstr ""
 
 #: lazarusidestrconsts.lisnewproject
-#| msgid "%s - (new project)"
 msgid "(new project)"
 msgstr "(naujas projektas)"
 
@@ -12539,7 +12249,6 @@ msgid "New recorded macros. Not to be saved"
 msgstr "Įrašytos naujos makrokomandos. Neišsaugojamos"
 
 #: lazarusidestrconsts.lisnewunitsareaddedtousessections
-#| msgid "New units are added to uses sections:"
 msgid "New units are added to uses sections"
 msgstr "Į sekcijas „uses“ nauji moduliai pridedami"
 
@@ -12614,7 +12323,7 @@ msgid "No Pascal file"
 msgstr "Paskalio failo nėra"
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "No program file %s%s%s found."
 msgid "No program file \"%s\" found."
 msgstr "Nerastas programos failas %s%s%s."
@@ -12624,7 +12333,6 @@ msgid "No ResourceString Section found"
 msgstr "Nerasta „ResourceString“ sekcija"
 
 #: lazarusidestrconsts.lisnormallythefilterisaregularexpressioninsimplesynta
-#| msgid "Normally the filter is a regular expression. In Simple Syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple Syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
 msgid "Normally the filter is a regular expression. In simple syntax a . is a normal character, a * stands for anything, a ? stands for any character, and comma and semicolon separates alternatives. For example: Simple syntax *.pas;*.pp corresponds to ^(.*\\.pas|.*\\.pp)$"
 msgstr "Įprastai filtre nurodomas reguliarusis reiškinys. Paprastojoje sintaksėje taškas „.“ yra įprastas simbolis, žvaigždutė „*“ atitinka bet ką, klaustukas „?“ atitinka kažkokį vieną simbolį, kablelis arba kabliataškis atskiria alternatyvas. Pavyzdžiui: prasta sintaksė „*.pas;*pp“ atitinka „^(.*\\.pas|.*\\.pp)$“"
 
@@ -12756,7 +12464,7 @@ msgid "Choose a base class for the favorite property \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisoifclassnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Class %s%s%s not found."
 msgid "Class \"%s\" not found."
 msgstr "Klasė %s%s%s nerasta."
@@ -12806,7 +12514,6 @@ msgid "modified"
 msgstr "pakeistas"
 
 #: lazarusidestrconsts.lisoipopenloadedpackage
-#| msgid "Open loaded package"
 msgid "Open Loaded Package"
 msgstr "Atverti įkeltą paketą"
 
@@ -12832,7 +12539,6 @@ msgid "%sThis package is installed, but the lpk file was not found"
 msgstr "%sŠis paketas įdiegtas, tačiau nerastas lpk failas"
 
 #: lazarusidestrconsts.lisok
-#| msgid "ok"
 msgctxt "lazarusidestrconsts.lisok"
 msgid "OK"
 msgstr "gerai"
@@ -12883,13 +12589,11 @@ msgid "Open existing file"
 msgstr "Atverti failą"
 
 #: lazarusidestrconsts.lisopenfile
-#| msgid "Open file"
 msgctxt "lazarusidestrconsts.lisopenfile"
 msgid "Open File"
 msgstr "Atverti failą"
 
 #: lazarusidestrconsts.lisopenfile2
-#| msgid "Open file"
 msgctxt "lazarusidestrconsts.lisopenfile2"
 msgid "Open file"
 msgstr "Atverti failą"
@@ -13023,7 +12727,6 @@ msgid ", package %s"
 msgstr ""
 
 #: lazarusidestrconsts.lispackageinfo
-#| msgid "Package Info"
 msgid "Package info"
 msgstr "Informacija apie paketą"
 
@@ -13106,12 +12809,10 @@ msgid "Delete Invalid Paths"
 msgstr "Pašalinti klaidingus kelius"
 
 #: lazarusidestrconsts.lispatheditmovepathdown
-#| msgid "Move path down"
 msgid "Move path down (Ctrl+Down)"
 msgstr "Perkelti kelią žemyn (Ctrl+ Žemyn)"
 
 #: lazarusidestrconsts.lispatheditmovepathup
-#| msgid "Move path up"
 msgid "Move path up (Ctrl+Up)"
 msgstr "Perkelti kelią aukštyn (Ctrl + Aukštyn)"
 
@@ -13177,7 +12878,6 @@ msgid "Add other items"
 msgstr ""
 
 #: lazarusidestrconsts.lispckeditaddtoproject
-#| msgid "Add to project"
 msgctxt "lazarusidestrconsts.lispckeditaddtoproject"
 msgid "Add to Project"
 msgstr "Įdėti į projektą"
@@ -13276,7 +12976,7 @@ msgid "Package %s"
 msgstr "Paketas %s"
 
 #: lazarusidestrconsts.lispckeditpackagehaschangedsavepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Package %s%s%s has changed.%sSave package?"
 msgid "Package \"%s\" has changed.%sSave package?"
 msgstr "Paketas %s%s%s pakeistas.%sĮrašyti paketą?"
@@ -13302,12 +13002,10 @@ msgid "Read Only: %s"
 msgstr "Tik skaitymui: %s"
 
 #: lazarusidestrconsts.lispckeditrecompileallrequired
-#| msgid "Recompile all required"
 msgid "Recompile All Required"
 msgstr "Kompiliuoti visus būtinus"
 
 #: lazarusidestrconsts.lispckeditrecompileclean
-#| msgid "Recompile clean"
 msgid "Recompile Clean"
 msgstr "Išvalius kompiliuoti"
 
@@ -13332,7 +13030,7 @@ msgid "Remove Dependency?"
 msgstr "Panaikinti priklausomybę?"
 
 #: lazarusidestrconsts.lispckeditremovedependencyfrompackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
 msgid "Remove dependency \"%s\"%sfrom package \"%s\"?"
 msgstr "Panaikinti priklausomybę %s%s%s%spaketui %s%s%s?"
@@ -13355,7 +13053,7 @@ msgid "Remove file?"
 msgstr "Išmesti failą?"
 
 #: lazarusidestrconsts.lispckeditremovefilefrompackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Remove file %s%s%s%sfrom package %s%s%s?"
 msgid "Remove file \"%s\"%sfrom package \"%s\"?"
 msgstr "Išmesti failą %s%s%s%siš paketo %s%s%s?"
@@ -13369,7 +13067,6 @@ msgid "Required Packages"
 msgstr "Būtini paketai"
 
 #: lazarusidestrconsts.lispckeditsavepackage
-#| msgid "Save package"
 msgid "Save Package"
 msgstr "Įrašyti paketą"
 
@@ -13382,13 +13079,13 @@ msgid "Store file name as preferred for this dependency"
 msgstr "Failo pavadinimą įsiminti kaip pageidautiną šiai priklausomybei"
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
 msgid "The maximum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "Maksimali versiją  %s%s%s nėra gera versija paketui.%s(geras pavyzdys būtų 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedittheminimumversionisnotavalidpackageversion
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
 msgid "The minimum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "Minimali versiją  %s%s%s nėra gera versija paketui.%s(geras pavyzdys būtų 1.2.3.4)"
@@ -13439,7 +13136,6 @@ msgid "Add paths to dependent packages/projects"
 msgstr "Įdėti kelius į priklausomus paketus/projektus"
 
 #: lazarusidestrconsts.lispckoptsauthor
-#| msgid "Author:"
 msgid "Author"
 msgstr "Autorius"
 
@@ -13456,7 +13152,6 @@ msgid "Custom"
 msgstr "Naudotojo"
 
 #: lazarusidestrconsts.lispckoptsdescriptionabstract
-#| msgid "Description/Abstract"
 msgid "Description / Abstract"
 msgstr "Aprašymas/santrauka"
 
@@ -13465,7 +13160,6 @@ msgid "Designtime"
 msgstr "Konstravimo"
 
 #: lazarusidestrconsts.lispckoptsdesigntimeandruntime
-#| msgid "Designtime and Runtime"
 msgid "Designtime and runtime"
 msgstr "Konstravimo bei vykdymo metu"
 
@@ -13486,7 +13180,6 @@ msgid "Library"
 msgstr "Biblioteka"
 
 #: lazarusidestrconsts.lispckoptslicense
-#| msgid "License:"
 msgid "License"
 msgstr "Licencija"
 
@@ -13515,7 +13208,6 @@ msgid "Package Options"
 msgstr "Paketo parinktys"
 
 #: lazarusidestrconsts.lispckoptspackagetype
-#| msgid "PackageType"
 msgid "Package type"
 msgstr "Paketo tipas"
 
@@ -13532,7 +13224,7 @@ msgid "Runtime"
 msgstr "Vykdymo metu"
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
 msgid "The package \"%s\" has the auto install flag.%sThis means it will be installed in the IDE.%sInstallation packages must be designtime Packages."
 msgstr "Paketas  %s%s%s nustatytas automatiniam diegimui.%sTai reiškia, kad jis bus įdiegtas į IKA. Diegimo paketai%sturi būti skirti konstravimui."
@@ -13542,7 +13234,6 @@ msgid "This package provides the same as the following packages:"
 msgstr "Šis paketas pateikia tą patį kaip ir šie paketai:"
 
 #: lazarusidestrconsts.lispckoptsupdaterebuild
-#| msgid "Update/Rebuild"
 msgid "Update / Rebuild"
 msgstr "Naujinti/daryti iš naujo"
 
@@ -13641,7 +13332,6 @@ msgid "Show Missing Files"
 msgstr "Rodyti kokių failų trūksta"
 
 #: lazarusidestrconsts.lispesortfiles
-#| msgid "Sort Files"
 msgid "Sort Files Permanently"
 msgstr "Rūšiuoti failus"
 
@@ -13710,7 +13400,7 @@ msgid "Revert package?"
 msgstr "Atstatyti paketą?"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "Failas %s%s%s%s yra ne paketo modulių kelyje.%s%s%s%s%s įtraukti į modulių kelią?"
@@ -13775,13 +13465,13 @@ msgid "Package unit search path. Parameter is package ID"
 msgstr "Paketo modulių paieškos kelias. Parametras yra paketo ID"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%sAdding new Dependency for package %s: package %s%s"
 msgid "%sAdding new Dependency for package %s: package %s"
 msgstr "%sPaketui %s priskiriamas naujas priklausinys: paketas %s%s"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforprojectpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%sAdding new Dependency for project %s: package %s%s"
 msgid "%sAdding new Dependency for project %s: package %s"
 msgstr "%sProjektui %s priskiriamas naujas priklausinys: paketas %s%s"
@@ -13823,7 +13513,7 @@ msgid "Delete Old Package File?"
 msgstr "Ištrinti seną paketo failą?"
 
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete old package file %s%s%s?"
 msgid "Delete old package file \"%s\"?"
 msgstr "Ištrinti seną paketo failą %s%s%s?"
@@ -13874,7 +13564,7 @@ msgid "Filename is used by project"
 msgstr "Failo pavadinimą naudoja projektas"
 
 #: lazarusidestrconsts.lispkgmangfilenotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s not found."
 msgctxt "lazarusidestrconsts.lispkgmangfilenotfound"
 msgid "File \"%s\" not found."
@@ -13917,7 +13607,7 @@ msgid "Invalid Package Name"
 msgstr "Klaidingas paketo pavadinimas"
 
 #: lazarusidestrconsts.lispkgmangloadingpackagewillreplacepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%sSave old package %s?"
 msgstr "%keliant paketą %s bus pakeistas paketas %s%s, esanti faile %s.%sSenojo paketo turinys yra pakeistas.%s%sĮrašyti senojo paketo %s pakeitimus?"
@@ -13977,7 +13667,7 @@ msgid "Rename File lowercase?"
 msgstr "Failą pervadinti vien mažosiomis raidėmis?"
 
 #: lazarusidestrconsts.lispkgmangreplaceexistingfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Replace existing file %s%s%s?"
 msgid "Replace existing file \"%s\"?"
 msgstr "Pakeisti esamą failą %s%s%s?"
@@ -13991,7 +13681,6 @@ msgid "One or more required packages were not found. See package graph for detai
 msgstr "Trūksta vieno ar daugiau būtinų paketų. Žvilgtelėkit į paketų grafą."
 
 #: lazarusidestrconsts.lispkgmangsavepackage
-#| msgid "Save Package?"
 msgid "Save package?"
 msgstr "Įrašyti paketą?"
 
@@ -14000,7 +13689,7 @@ msgid "Save Package %s (*.lpk)"
 msgstr "Įrašyti paketą %s (*.lpk)"
 
 #: lazarusidestrconsts.lispkgmangshouldthefilerenamedlowercaseto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Should the file be renamed lowercase to%s%s%s%s?"
 msgid "Should the file be renamed lowercase to%s\"%s\"?"
 msgstr "Failo pavadinimą rašyti vien mažosiomis raidėmis:%s%s%s%s?"
@@ -14018,32 +13707,32 @@ msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "Paketo %s kompiliatoriaus failas nėra vykdomasis:%s%s"
 
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%sis already in the package %s."
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
 msgid "The file \"%s\"%sis already in the package %s."
 msgstr "Failas  %s%s%s%s jau yra pakete %s."
 
 #: lazarusidestrconsts.lispkgmangthefileisnotalazaruspackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s is not a Lazarus package."
 msgid "The file \"%s\" is not a Lazarus package."
 msgstr "Failas %s%s%s nėra Lazarus paketas."
 
 #: lazarusidestrconsts.lispkgmangthefilenamedoesnotcorrespondtothepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
 msgid "The filename \"%s\" does not correspond to the package name \"%s\" in the file.%sChange package name to \"%s\"?"
 msgstr "Failo pavadinimas %s%s%s ir paketo pavadinimas %s%s%s, įrašytas šiame faile, skiriasi.%sPakeisti paketo pavadinimą į %s%s%s?"
 
 #: lazarusidestrconsts.lispkgmangthefilenameispartofthecurrentproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file name %s%s%s is part of the current project.%sProjects and Packages should not share files."
 msgid "The file name \"%s\" is part of the current project.%sProjects and Packages should not share files."
 msgstr "Failo pavadinimas %s%s%s yra šio projekto dalis%sProjektai ir paketai neturėtų dalintis failais."
 
 #: lazarusidestrconsts.lispkgmangthefilenameisusedbythepackageinfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
 msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "Failo pavadinimą %s%s%s naudoja%spaketas %s%s%s%s, esantis faile %s%s%s."
@@ -14061,19 +13750,19 @@ msgid "The following packages failed to load:"
 msgstr "Nepavyko įkelti šių paketų:"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "%sŠie moduliai bus įtraukti į naudojamųjų modulių sąrašą%s%s:%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
 msgid "The package \"%s\" failed to compile.%sRemove it from the installation list?"
 msgstr "Nepavyko kompiliuoti paketą %s%s%s .%sPašalinti jį iš diegimo sąrašo?"
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package file name %s%s%s in%s%s%s%s is not a valid Lazarus package name."
 msgid "The package file name \"%s\" in%s\"%s\" is not a valid Lazarus package name."
 msgstr "Paketo failo pavadinimas %s%s%s, įrašytas %s%s%s%s, nėra tinkamas Lazarus paketo pavadinimas."
@@ -14085,13 +13774,13 @@ msgid "The package %s is a runtime only package.%sRuntime only packages cannot b
 msgstr "Paketas %s skirtas tik veikos rėžimui.%s Veikos rėžimo paketų negalima diegti į IKA."
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
 msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
 msgstr "Automatiškai kompiliuojamo paketo „%s“ išvesties aplankas „%s“ yra toks pat kaip ir numatytasis modulių paieškos kelias kompiliatoriui. Paketas naudoja kitus paketus, kurių keliai taip pat sutampa minėtu keliu. Tai sukuria begalinį ciklą.%sŠi problema sprendžiama%siš kompiliatoriaus konfigūracijos (pvz. fpc.cfg) pašalinant kelią%sarba uždraudžiant šio paketo automatinį naujinimą%sarba pašalinant priklausomybes."
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
 msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr "Paketas %s%s%s paženklintas kaip diegiamasis, tačiau jo nepavyko rasti.%sPašalinti priklausinį iš paketų diegimo sąrašo?"
@@ -14101,37 +13790,37 @@ msgid "The package %s is required by %s, which is marked for installation.%sSee 
 msgstr "Paketo %s reikia %s, kuris paženklintas kaip diegiamasis.%sŽvilgtelėkit į paketų grafą."
 
 #: lazarusidestrconsts.lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgid "The package name \"%s\" is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgstr "Paketo pavadinimas %s%s%s yra klaidingas.%sParinkite kitokį pavadinimą (pvz.: paketas.lpk)"
 
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgid "The package name \"%s\" of%sthe file \"%s\" is invalid."
 msgstr "Paketo pavadinimas %s%s%s, įrašytas%sfaile %s%s%s, yra klaidingas."
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgid "The package \"%s\" was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "Paketas %s%s%s paženklintas.%sŠiuo metu Lazarus palaiko tik statiškai saistytus paketus. Tad išdiegimo procesas yra toks: daryti Lazarus iš naujo ir po to jį startuoti vėl.%s%sAr Lazarus daryti iš naujo dabar?"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgid "The package \"%s\" was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "Paketas %s%s%s paženklintas diegimui.%sŠiuo metu Lazarus palaiko tik statiškai saistytus paketus. Tad diegimo procesas yra toks: daryti Lazarus iš naujo ir po to jį startuoti vėl.%s%sAr Lazarus daryti iš naujo dabar?"
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
 msgid "The project requires the package \"%s\".%sBut it was not found. See Project -> Project Inspector."
 msgstr "Projektui reikia paketo %s%s%s.%sTačiau jo nepavyko rasti. Žvilgtelėkit į „Projektas -> Projekto inspektorius“."
 
 #: lazarusidestrconsts.lispkgmangtherearetwounitswiththesamename1from2from
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
 msgid "There are two units with the same name:%s1. \"%s\" from %s%s2. \"%s\" from %s"
 msgstr "Rasti du moduliai tuo pačiu pavadinimu:%s%s1. %s%s%s iš %s%s2. %s%s%s iš %s%s%s"
@@ -14141,25 +13830,25 @@ msgid "There is a circular dependency in the packages. See package graph."
 msgstr "Aptiktas paketų uždaras priklausomybių ratas. Žvilgtelėkit į paketų grafą."
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
 msgid "There is a FPC unit with the same name as a package:%s\"%s\""
 msgstr "Rastas FPC modulis tuo pačiu pavadinimu kaip ir paketas:%s%s%s%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenamefrom
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
 msgid "There is a FPC unit with the same name as:%s\"%s\" from %s"
 msgstr "Rastas FPC modulis tuo pačiu pavadinimu kaip ir:%s%s%s%s%s iš %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyanotherpackagewiththename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
 msgid "There is already another package with the name \"%s\".%sConflict package: \"%s\"%sFile: \"%s\""
 msgstr "Aptiktas paketas jau naudojantis pavadinimą %s%s%s.%sKonfliktinis paketas: %s%s%s%sFailas: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgid "There is already a package \"%s\" loaded%sfrom file \"%s\".%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "Paketas %s%s%s jau yra įkeltas%siš failo %s%s%s.%sŽvilgtelėkit į „Paketas -> Paketų grafas“.%sPakeitimas neįmanomas."
@@ -14169,7 +13858,7 @@ msgid "There is an unsaved package in the required packages. See package graph."
 msgstr "Reikiamuose paketuose aptiktas neišsaugotas paketas. Žvilgtelėkit į paketų grafą."
 
 #: lazarusidestrconsts.lispkgmangthereisaunitwiththesamenameasapackage1from2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgid "There is a unit with the same name as a package:%s1. \"%s\" from %s%s2. \"%s\""
 msgstr "Rastas modulis tuo pačiu pavadinimu kaip ir paketas:%s%s1. %s%s%s iš %s%s2. %s%s%s%s"
@@ -14183,25 +13872,25 @@ msgid "Unable to create directory"
 msgstr "Nepavyko sukurti aplanką"
 
 #: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create output directory %s%s%s%sfor package %s."
 msgid "Unable to create output directory \"%s\"%sfor package %s."
 msgstr "Nepavyko sukurti išvesties aplanką %s%s%s%s, skirtą paketui %s."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create package source directory %s%s%s%sfor package %s."
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "Nepavyko sukurti aplanką %s%s%s%s paketo %s pradiniam kodui."
 
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create target directory for Lazarus:%s%s%s%s.%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "Nepavyko sukurti Lazarus skirto tikslo aplanko:%s%s%s%s.%sŠis aplankas reikalingas naujam pakeistam IKA su įdiegtais jūsų paketais."
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to delete file %s%s%s."
 msgid "Unable to delete file \"%s\"."
 msgstr "Nepavyko ištrinti failą %s%s%s."
@@ -14211,7 +13900,7 @@ msgid "Unable to delete file"
 msgstr "Nepavyko ištrinti failą"
 
 #: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to delete old state file %s%s%s%sfor package %s."
 msgid "Unable to delete old state file \"%s\"%sfor package %s."
 msgstr "Nepavyko ištrinti senąjį būsenos failą %s%s%s%s, priklausantį paketui %s."
@@ -14221,25 +13910,25 @@ msgid "Unable to load package"
 msgstr "Įkelti paketą nepavyko"
 
 #: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
 msgstr "Nepavyko įkelti paketą  %s%s%s.%sŠis paketas paženklintas diegimui."
 
 #: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
 msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
 msgstr "Nepavyko įkelti būsenos failą %s%s%s%s, priklausantį paketui %s.%sKlaida: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
 msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "Nepavyko paketą %s%s%s%sįrašyti į failą %s%s%s.%sKlaida: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
 msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
 msgstr "Nepavyko rašyti į failą %s%s%s%s, priklausantį paketui %s.%sKlaida: %s"
@@ -14261,7 +13950,7 @@ msgid "Use unit"
 msgstr "Naudoti modulį"
 
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgid "Warning: The file \"%s\"%sbelongs to the current project."
 msgstr "Dėmesio: failas %s%s%s%s jau priklauso šiam projektui."
@@ -14297,13 +13986,13 @@ msgid "Cannot register components without unit"
 msgstr "Negalima registruoti komponenčių be modulio"
 
 #: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Component Class %s%s%s already defined"
 msgid "Component Class \"%s\" already defined"
 msgstr "Komponentės klasė %s%s%s jau paskelbta"
 
 #: lazarusidestrconsts.lispkgsysfilename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%sFile Name: %s%s%s"
 msgid "%s%sFile Name: \"%s\""
 msgstr "%s%sFailo pavadinimas: %s%s%s"
@@ -14317,7 +14006,7 @@ msgid "Invalid Unitname: %s"
 msgstr "Klaidingas modulio pavadinimas: %s"
 
 #: lazarusidestrconsts.lispkgsyslpkfilename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%slpk file: %s%s%s"
 msgid "%s%slpk file: \"%s\""
 msgstr "%s%s„.lpk“ failas: %s%s%s"
@@ -14343,7 +14032,7 @@ msgid "%s%sThe lpk file was not found."
 msgstr "%s%sNepavyko rasti „.lpk“ failo."
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgstr "Paketas %s%s%s įdiegtas, tačiau nerastas paketo failas (.lpk).%sTodėl sukurtas tuščias paketas."
@@ -14357,7 +14046,7 @@ msgid "This package is installed, but the lpk file was not found. All its compon
 msgstr "Šis paketas įdiegtas, tačiau nerastas jo lpk failas. Pasyvinami visi jo komponentai. Ištaisykite tai."
 
 #: lazarusidestrconsts.lispkgsysunitname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%sUnit Name: %s%s%s"
 msgid "%s%sUnit Name: \"%s\""
 msgstr "%s%sModulio pavadinimas: %s%s%s"
@@ -14388,7 +14077,7 @@ msgid "Transitivity"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read package file %s%s%s.%sError: %s"
 msgid "Unable to read package file \"%s\".%sError: %s"
 msgstr "Nepavyko skaityti paketo failą %s%s%s.%sKlaida: %s"
@@ -14541,7 +14230,7 @@ msgid "Private Method"
 msgstr "Private metodas"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
 msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgstr "Prieš tęsiant reiktų įdiegti kai kuriuos paketus.%s%sDėmesio:%sProjektas priklauso nuo pateiktų konstravimui skirtų paketų, kurių gali prireikti atveriant formų konstruktorių. Jei būs tęsiama, tai dėl komponenčių trūkumo gali įvykti klaidos, ir įkeliant formą galima gauti nepageidautinų rezultatų.%s%Rekomenduotina nutraukti šį procesą ir įdiegti trūkstamus paketus.%s%s"
@@ -14575,7 +14264,6 @@ msgid "Program source must have a Pascal extension like .pas, .pp or .lpr"
 msgstr "Programos pirminio kodo failo plėtinys turi būti panašus į paskalio: .pas, .pp arba .lpr"
 
 #: lazarusidestrconsts.lisprojaddaddfilestoproject
-#| msgid "Add files to project"
 msgid "Add Files to Project"
 msgstr "Projektą papildyti failais"
 
@@ -14584,7 +14272,6 @@ msgid "Dependency already exists"
 msgstr "Priklausomybė jau yra"
 
 #: lazarusidestrconsts.lisprojaddeditorfile
-#| msgid "Add editor files"
 msgid "Add Editor Files"
 msgstr "Pridėti rengyklės failų"
 
@@ -14627,13 +14314,13 @@ msgid "Package not found"
 msgstr "Paketas nerastas"
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
 msgstr "Priklausinys %s%s%s nerastas.%sNurodykite egzistuojantį paketą."
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
@@ -14645,44 +14332,43 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "Maksimali versija žemesnė už minimalią."
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgstr "Minimali versija %s%s%s klaidinga.%sNaudokite formatą „Didysis.Mažasis.Laida.DarymoNumeris“.%sPavyzdžiui: 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
 msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
 msgstr "Paketo pavadinimas %s%s%s klaidingas%sNurodykite egzistuojantį paketą."
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The project has already a dependency for the package %s%s%s."
 msgid "The project has already a dependency for the package \"%s\"."
 msgstr "Projektas jau turi priklausomybe paketui %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the project%swith file: \"%s\"."
 msgstr "Pridedamojo modulio pavadinimas %s%s%s jau figūruoja šiame projekte,%sžvilgtelėkit į projekto failą: %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "Pridedamųjų failų sąraše yra keli moduliai tokiu pat pavadinimu %s%s%s,%svieno iš jų failas: %s%s%s."
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s is not a valid Pascal identifier."
 msgid "The unit name \"%s\" is not a valid Pascal identifier."
 msgstr "Modulio pavadinimas %s%s%s nėra paskalio identifikatorius."
 
 #: lazarusidestrconsts.lisprojaddtoproject
-#| msgid "Add to project"
 msgctxt "lazarusidestrconsts.lisprojaddtoproject"
 msgid "Add to Project"
 msgstr "Įdėti į projektą"
@@ -14737,7 +14423,6 @@ msgid "Project info file detected"
 msgstr "Aptiktas projekto informacinis failas"
 
 #: lazarusidestrconsts.lisprojectinformation
-#| msgid "Project Information"
 msgid "Project information"
 msgstr "Informacija apie projektą"
 
@@ -14913,12 +14598,10 @@ msgid "Publish Project"
 msgstr "Skelbti projektą"
 
 #: lazarusidestrconsts.lispublprojinvalidexcludefilter
-#| msgid "Invalid Exclude filter"
 msgid "Invalid exclude filter"
 msgstr "Klaidingas neįtraukiamųjų filtras"
 
 #: lazarusidestrconsts.lispublprojinvalidincludefilter
-#| msgid "Invalid Include filter"
 msgid "Invalid include filter"
 msgstr "Klaidingas įtraukiamųjų filtras"
 
@@ -14950,7 +14633,6 @@ msgid "The unitname is not a valid Pascal identifier."
 msgstr "Modulio pavadinimas nėra paskalio identifikatorius."
 
 #: lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses
-#| msgid "The unitname is used when the IDE extends uses clauses."
 msgctxt "lazarusidestrconsts.lispvutheunitnameisusedwhentheideextendsusesclauses"
 msgid "The unitname is used when the IDE extends uses clauses"
 msgstr "Modulio pavadinimas naudojamas kai IKA praplečia naudojamų modulių sąrašą"
@@ -14961,22 +14643,18 @@ msgid "Unitname and Filename do not match.%sExample: unit1.pas and Unit1"
 msgstr "Modulio ir failo pavadinimai nesutampa.%sPavyzdžiui: jei modulis yra „Unit1“, tada failas - „unit1.pas“."
 
 #: lazarusidestrconsts.lispwconvertproject
-#| msgid "Convert Delphi Project"
 msgid "Convert &Delphi Project"
 msgstr "Konvertuoti &Delphi projektą"
 
 #: lazarusidestrconsts.lispwnewproject
-#| msgid "New Project"
 msgid "&New Project"
 msgstr "&Naujas projektas"
 
 #: lazarusidestrconsts.lispwopenproject
-#| msgid "Open Project"
 msgid "&Open Project"
 msgstr "&Atverti projektą"
 
 #: lazarusidestrconsts.lispwopenrecentproject
-#| msgid "Open Recent Project"
 msgctxt "lazarusidestrconsts.lispwopenrecentproject"
 msgid "Open &Recent Project"
 msgstr "Atverti pas&kiausiąjį projektą"
@@ -15007,7 +14685,6 @@ msgid "Quit"
 msgstr "Baigti darbą"
 
 #: lazarusidestrconsts.lisquitlazarus
-#| msgid "Quit Lazarus"
 msgid "&Quit Lazarus"
 msgstr "&Baigti Lazarus darbą"
 
@@ -15059,7 +14736,6 @@ msgid "Relative paths"
 msgstr "Santykiniai keliai"
 
 #: lazarusidestrconsts.lisremove
-#| msgid "remove"
 msgctxt "lazarusidestrconsts.lisremove"
 msgid "Remove"
 msgstr "Pašalinti"
@@ -15101,7 +14777,6 @@ msgid "Remove from install list"
 msgstr "Pašalinti iš diegiamųjų sąrašo"
 
 #: lazarusidestrconsts.lisremovefromproject
-#| msgid "Remove from project"
 msgid "Remove from Project"
 msgstr "Pašalinti iš projekto"
 
@@ -15223,7 +14898,6 @@ msgid "Replacements"
 msgstr "Pakeitimai"
 
 #: lazarusidestrconsts.lisreplaceremoveunknown
-#| msgid "Replace unknown types and properties"
 msgid "Fix unknown properties and types"
 msgstr "Pakeisti nežinomus tipus ir savybes"
 
@@ -15268,7 +14942,6 @@ msgid "Resource save error"
 msgstr "Klaida išsaugojant išteklius"
 
 #: lazarusidestrconsts.lisresourcetypeofnewfiles
-#| msgid "Resource type of project:"
 msgid "Resource type of project"
 msgstr "Projekto išteklių tipas"
 
@@ -15349,7 +15022,7 @@ msgid "File not executable"
 msgstr "Failas nėra vykdomasis"
 
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The host application %s%s%s is not executable."
 msgid "The host application \"%s\" is not executable."
 msgstr "Programa-šeimininkas %s%s%s nėra vykdomasis failas."
@@ -15378,7 +15051,6 @@ msgid "Run-to failed"
 msgstr "Nepavyko Startuoti-Iki"
 
 #: lazarusidestrconsts.lissamabstractmethodsnotyetoverridden
-#| msgid "Abstract methods - not yet overridden"
 msgid "Abstract Methods - not yet overridden"
 msgstr "Abstraktūs metodai - dar nėra įgyvendinti"
 
@@ -15431,7 +15103,6 @@ msgid "Unable to show abstract methods of the current class, because"
 msgstr "Dabartinės klasės abstraktūs metodai nerodomi, nes"
 
 #: lazarusidestrconsts.lissave
-#| msgid "Save ..."
 msgctxt "lazarusidestrconsts.lissave"
 msgid "Save"
 msgstr "Įrašyti"
@@ -15446,7 +15117,6 @@ msgid "Save All Checked"
 msgstr "Įrašyti visus pažymėtus"
 
 #: lazarusidestrconsts.lissaveallmodified
-#| msgid "save all modified files"
 msgid "Save all modified files"
 msgstr "Įrašyti visus pakeistus failus"
 
@@ -15480,7 +15150,6 @@ msgid "Save changes to project %s?"
 msgstr "Įrašyti pakitusį projektą „%s“?"
 
 #: lazarusidestrconsts.lissavecurrenteditorfile
-#| msgid "save current editor file"
 msgid "Save current editor file"
 msgstr "Įrašyti dabartinį rengyklės failą"
 
@@ -15505,7 +15174,7 @@ msgid "Save file as"
 msgstr "Įrašyti failą taip"
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "Įrašyti failą %s%s%s%sprieš užveriant formą %s%s%s?"
@@ -15827,7 +15496,6 @@ msgid "A most simple Free Pascal command line program."
 msgstr ""
 
 #: lazarusidestrconsts.lissimplesyntax
-#| msgid "Simple Syntax"
 msgid "Simple syntax"
 msgstr "Paprasta sintaksė"
 
@@ -15920,18 +15588,17 @@ msgid "Source and Destination are the same:%s%s"
 msgstr "Šaltinis ir tikslas sutampa:%s%s"
 
 #: lazarusidestrconsts.lissourcebreakpoint
-#| msgid "&Source Breakpoint..."
 msgid "&Source Breakpoint ..."
 msgstr "&Stabdos taškas pirminiame kode…"
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
 msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
 msgstr "Išeities %s%s%s%s ir paskirties %s%s%s%saplankai nesiskiria.%s%sGalbūt Jūs nesupratote šios funkcijos paskirties.%sJi išvalo arba atkuria paskirties aplanką%sir į jį kopijuoja projektą arba paketą."
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Source directory %s%s%s does not exist."
 msgid "Source directory \"%s\" does not exist."
 msgstr "Pirminio kodo aplankas %s%s%s neegzistuoja."
@@ -15945,7 +15612,7 @@ msgid "Source modified"
 msgstr "Pirminis kodas pakeistas"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Source of page %s%s%s has changed. Save?"
 msgid "Source of page \"%s\" has changed. Save?"
 msgstr "Pirminis kodas lape %s%s%s pakeistas. Įrašyti?"
@@ -16081,7 +15748,7 @@ msgid "Invalid variable name"
 msgstr "Klaidingas kintamojo pavadinimas"
 
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is not a valid identifier."
 msgid "\"%s\" is not a valid identifier."
 msgstr "Identifikatorius %s%s%s klaidingas."
@@ -16115,7 +15782,6 @@ msgid "Move the selected control down in tab order"
 msgstr "Pažymėtąjį valdiklį tabuliavimo eilėje perkelti žemyn"
 
 #: lazarusidestrconsts.listaborderof
-#| msgid "Tab Order of"
 msgid "Tab Order of %s"
 msgstr "„%s“ vieta tabuliavimo eilėje"
 
@@ -16199,25 +15865,25 @@ msgid "The Application Bundle was created for \"%s\""
 msgstr "Sukurtas „%s“ programa-ryšulys"
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "Klasė %s%s%s yra „TControl“ tipo, todėl jos neis įdėti ne į valdiklį.%sĮdėti nepavyks."
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Codetools found an error:%s%s%s"
 msgid "The Codetools found an error:%s%s"
 msgstr "CodeTools rado klaidą:%s%s%s"
 
 #: lazarusidestrconsts.listhecommandafterisnotexecutable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The command after %s%s%s is not executable."
 msgid "The command after \"%s\" is not executable."
 msgstr "Komanda esanti po %s%s%s nėra vykdomasis failas."
 
 #: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The command after publishing is invalid:%s%s%s%s"
 msgid "The command after publishing is invalid:%s\"%s\""
 msgstr "Komanda esanti po paskelbimo yra klaidinga:%s%s%s%s"
@@ -16231,13 +15897,13 @@ msgid "The component %s can not be deleted, because it is not owned by %s."
 msgstr "%s komponentą ištrinti negalima, nes jis nėra %s nuosavybė."
 
 #: lazarusidestrconsts.listhecomponenteditorofclasshascreatedtheerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
 msgid "The component editor of class \"%s\" has created the error:%s\"%s\""
 msgstr "%s%s%s klasės komponento rengyklė padarė klaidą:%s%s%s%s"
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgid "The component editor of class \"%s\"%sinvoked with verb #%s \"%s\"%shas created the error:%s\"%s\""
 msgstr "%s%s%s klasės%s komponentų rengyklė, iššaukta veiksmažodžio #%s %s%s%s,%spadarė klaidą:%s%s%s%s"
@@ -16261,7 +15927,7 @@ msgid "The configuration will be downgraded/converted."
 msgstr "Sąranka bus pakeista ankstesne/konvertuota."
 
 #: lazarusidestrconsts.listhecontainsanotexistingdirectory
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The %s contains a not existing directory:%s%s"
 msgid "The %s contains a nonexistent directory:%s%s"
 msgstr "Į „%“ įrašytas neegzistuojantis aplankas:%s%s"
@@ -16275,7 +15941,7 @@ msgid "The current FPC has no config file. It will probably miss some units. Che
 msgstr "Dabartinis FPC neturi konfigūracijos failo. Jis gali pasigesti kai kurių modulių. Patikrinkite ar gerai įdiegtas FPC."
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
 msgid "The debugger \"%s\"%sdoes not exist or is not executable.%sSee Tools -> Options -> Debugger options"
 msgstr "Nerasta derintuvė %s%s%s,%sarba ji nėra vykdomasis failas.%s%sŽvilgtelėkit į „Įrankiai -> Parinktys… -> Derintuvė -> Pagrindinis“."
@@ -16289,13 +15955,13 @@ msgid "The default mode must be stored in project, not in session."
 msgstr ""
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The destination directory%s%s%s%s does not exist."
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Paskirties aplankas%s%s%s%s neegzistuoja."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "%s%s%s paskirties aplankas neegzistuoja.%sPatikrinkite projekto būsimo failo pavadinimą menių punkte „Projektas -> Projekto parinktys…“."
@@ -16309,19 +15975,19 @@ msgid "The directory \"%s\" contains no project units any more. Remove this dire
 msgstr "Aplanke „%s“ daugiau nebėra projekto modulių failų. Ar šį aplanką išmesti iš projekto modulių paieškos kelio?"
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
 msgid "The directory \"%s\" is no longer needed in the unit path.%sRemove it?"
 msgstr "Aplanko įrašas %s%s%s nebebūtinas modulių kelyje.%sPašalinti aplanko įrašą?"
 
 #: lazarusidestrconsts.listhedirectoryisnotwritable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The directory %s%s%s is not writable."
 msgid "The directory \"%s\" is not writable."
 msgstr "Aplanke %s%s%s rašyti draudžiama."
 
 #: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
 msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
 msgstr "Aplankas %s%s%s nefigūruoja modulių kelyje.%sPridėti aplanką prie modulio kelio?"
@@ -16331,7 +15997,7 @@ msgid "The directory %s was not found."
 msgstr "Nepavyko rasti aplanko %s."
 
 #: lazarusidestrconsts.listhefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s"
 msgid "The file \"%s\""
 msgstr "Failas %s%s%s"
@@ -16345,7 +16011,7 @@ msgid "The file index is needed for functions like find declaration. While scann
 msgstr "Funkcijos, tokioms kaip „Ieškoti aprašo“, būtina failų rodyklė. Jos sudarymo metu (kas truks iki minutės) pirminį kodą galima keisti arba kompiliuoti, tačiau funkcijos, kurioms rodyklė būtina, gali pranešinėti apie nerastus modulius."
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "Failas %s%s%s yra simbolinė nuoroda.%s%sAr vietoj jo atverti %s%s%s?"
@@ -16365,7 +16031,7 @@ msgid "The file mask \"%s\" is not a valid regular expression."
 msgstr "Failų kaukė „%s“ nėra reguliarusis reiškinys."
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "Panašu kad failas %s%s%s%s yra programa. Užverti šį projektą ir tai programai sukurti naują Lazarus projektą?%sPaspaudus „Ne“ failas bus įkeltas kaip įprastas pirminis kodas."
@@ -16377,25 +16043,25 @@ msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "Panašu kad failas %s yra kažkurio Lazarus projekto programos failas."
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
 msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
 msgstr "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit.Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
 msgid "The file \"%s\" was not found.%sDo you want to locate it yourself?"
 msgstr "Failas %s%s%s%s nerastas.%sIeškosite patys?%s"
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgid "The file \"%s\" was not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "Failas %s%s%s%s nerastas.%sPaspaudus „Tęsti“ projektas bus įkeliamas toliau,%spaspaudus „Nutraukti“ įkėlimas bus nutrauktas."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgid "The following methods used by %s are not in the source%s%s%s%s%sRemove the dangling references?"
 msgstr "Šių metodų, kuriuos naudoja %s, nėra pirminiame kode%s%s%s%s%s%sPašalinti betiksles rodykles?"
@@ -16413,19 +16079,19 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "Identifikatorius yra modulis. Pakeiskite failo pavadinimą parinkę menių punktą „Failas -> Įrašyti kaip...“."
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
 msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
 msgstr "Klavišas %s%syra paskirtas funkcijai %s.%s%sPašalinti esamą paskyrimą ir klavišą paskirti naujajai funkcijai%s%s?"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
 msgstr "Nėra startavimui reikalingo programos-ryšulio %s%s arba ji nėra vykdomasis.%sGal norite jį sukurti?%s%sNustatymus rasite „Projektas -> Projekto parinktys… -> Taikomoji programa“."
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgid "The launching application \"%s\"%sdoes not exist or is not executable.%sSee Run -> Run parameters -> Local"
 msgstr "Nerasta paleidžiančioji programa%s%s%s%s, arba ji nėra paleidžiamasis failas.%s%sŽvilgtelėkit į „Startuoti -> Startavimo parametrai -> Vietiniai“."
@@ -16453,13 +16119,13 @@ msgid "The \"make\" executable typically has the name \"%s\". It is needed for b
 msgstr "Įprastai „make“ vykdomojo failo pavadinimas būna „%s“. Jis būtinas IKA darymui. Būtina nurodyti pilną adresą."
 
 #: lazarusidestrconsts.listhenewincludefileisnotyetintheincludesearchpathadd
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The new include file is not yet in the include search path.%sAdd directory %s to build modes?"
 msgid "The new include file is not yet in the include search path.%sAdd directory %s?"
 msgstr "Naujojo įterpiamo failo dar nėra įterpiamųjų paieškos kelyje.%sĮtraukti aplanką į įterpiamųjų paieškos kelią?"
 
 #: lazarusidestrconsts.listhenewunitisnotyetintheunitsearchpathadddirectory
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The new unit is not yet in the unit search path.%sAdd directory %s to build modes?"
 msgid "The new unit is not yet in the unit search path.%sAdd directory %s?"
 msgstr "Naujojo modulio dar nėra modulių paieškos kelyje.%sĮtraukti modulio aplanką į modulių paieškos kelią?"
@@ -16473,7 +16139,7 @@ msgid "The \"Other sources\" contains a directory which is already in the \"Othe
 msgstr "Įraše „Kiti pirminiai kodai“ yra aplankas, kuris jau yra įraše „Kitų modulių failai“.%s%s"
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The output directory %s%s%s is missing."
 msgid "The output directory \"%s\" is missing."
 msgstr "Nėra išvesties aplanko %s%s%s."
@@ -16549,7 +16215,7 @@ msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "„make“ adresas nėra tinkamas: „%s“"
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The program %smake%s was not found.%sThis tool is needed to build Lazarus.%s"
 msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
 msgstr "Nerasta programa %ssmake%s.%sŠi programa reikalinga Lazarus darymui.%s"
@@ -16559,6 +16225,7 @@ msgid "The project compiler options and the directives in the main source differ
 msgstr "Skiriasi projekto kompiliatoriaus parinktys ir direktyvos pagrindiniame pirminiame kode. Naujame projekte bus naudojami projekto parinkčių veiksena ir eilutės tipas:"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
+#, fuzzy,badformat
 #| msgid "The project does not use the LCL unit interfaces, but it seems it needs it.%sYou will get strange linker errors if you use the LCL forms without interfaces."
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
 msgstr "Projekte nenaudojamos LCL modulio sąsajos, kurių reikalauja „LCLBase“.%Jei LCL formos naudojamos be sąsajų, saistyklė gali pranešti apie keistas klaidas."
@@ -16568,19 +16235,18 @@ msgid "The project has no main source file."
 msgstr "Projekte nėra pagrindinio pirminio kodo."
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgid "The project info file \"%s\"%sis equal to the project main source file!"
 msgstr "Projekto informacinis failas %s%s%s%s toks pat kaip ir projekto pagrindinio pirminio kodo failas!"
 
 #: lazarusidestrconsts.listheprojectinformationfilehaschangedondisk
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The project information file %s%s%s%shas changed on disk."
 msgid "The project information file \"%s\"%shas changed on disk."
 msgstr "Diske pakito projekto informacinis failas %s%s%s.%s"
 
 #: lazarusidestrconsts.listheprojectmustbesavedbeforebuildingifyousetthetest
-#| msgid "The project must be saved before building%sIf you set the Test Directory in the environment options,%syou can create new projects and build them at once.%sSave project?"
 msgid "The project must be saved before building%sIf you set the Test Directory in the IDE options,%syou can create new projects and build them at once.%sSave project?"
 msgstr "Prieš darymą projektas turi būti įrašytas%sAplinkos parinktyse parinkę testo aplanką,%snaujus projektus bus galima kurti ir daryti vienu metu.%sĮrašyti projektą?"
 
@@ -16603,7 +16269,7 @@ msgid "There are other files in the directory with the same name,%swhich only di
 msgstr "Aplanke yra failų, kurių pavadinimai%sskiriasi tik raidžių lygiais:%s%s%sJuos ištrinti?"
 
 #: lazarusidestrconsts.listhereisafilewiththesamenameandasimilarextension
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
 msgstr "Rastas kitas failas tokiu pat pavadinimu bei panašiu plėtiniu.%sFailas: %s%sNeaiškusis failas: %s%s%sPašalinti neaiškųjį failą?"
@@ -16629,13 +16295,13 @@ msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already a form with the name %s%s%s"
 msgid "There is already a form with the name \"%s\""
 msgstr "Forma tokiu pavadinimu %s%s%s jau yra."
 
 #: lazarusidestrconsts.listhereisalreadyamacrowiththename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already a macro with the name %s%s%s."
 msgid "There is already a macro with the name \"%s\"."
 msgstr "Makrokomanda pavadinimu %s%s%s jau yra."
@@ -16653,13 +16319,13 @@ msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make 
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgid "There is already a unit with the name \"%s\". Pascal identifiers must be unique."
 msgstr "Modulis tokiu pavadinimu %s%s%s jau yra. Paskalio identifikatoriai turi būti unikalūs."
 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "Projekte jau yra modulis %s%s%s tokiu pat pavadinimu.%sParinkite kitokį pavadinimą."
@@ -16673,7 +16339,7 @@ msgid "There must be at least one build mode."
 msgstr "Turi būti bent viena darymo veiksena."
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
 msgid "The resource class \"%s\" descends from \"%s\". Probably this is a typo for TForm."
 msgstr "Išteklių klasė %s%s%s paveldėta iš %s%s%s. Greičiausiai rašybos klaida TForm-ai."
@@ -16717,13 +16383,13 @@ msgid "The target %s is not writable."
 msgstr ""
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
 msgid "The Test Directory could not be found:%s\"%s\"%s(see IDE options)"
 msgstr "Nepavyko rasti aplanko:%s%s%s%s%s(tikrinkite IKA parinktis)"
 
 #: lazarusidestrconsts.listheunitalreadyexists
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit %s%s%s already exists."
 msgid "The unit \"%s\" already exists."
 msgstr "Modulis %s%s%s jau egzistuoja."
@@ -16741,7 +16407,7 @@ msgid "The unit has this name"
 msgstr "Modulio pavadinimas yra šis"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "Failo pavadinime %s%s%s yra ne vien tik mažosios raidės.%sFree Pascal kompiliatorius atsižvelgia į raidžių dydį, todėl patartina failo pavadinime naudoti vien tik mažąsias raides.%s%sFailą pervadinti mažosiomis raidėmis?"
@@ -16755,19 +16421,19 @@ msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr "Modulis %s naudojamas kituose failuose.%sRodykles naujinti automatiškai?"
 
 #: lazarusidestrconsts.listheunititselfhasalreadythenamepascalidentifiersmus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
 msgid "The unit itself has already the name \"%s\". Pascal identifiers must be unique."
 msgstr "Jau pačio modulio pavadinimas yra toks %s%s%s. Paskalio identifikatoriai turi būti unikalūs."
 
 #: lazarusidestrconsts.listheunitsearchpathofcontainsthesourcedirectoryofpac
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
 msgid "The unit search path of \"%s\" contains the source directory \"%s\" of package %s"
 msgstr "%s%s%s modulių paieškos kelyje yra įrašytas pirminio kodo aplankas %s%s%s, kuris priklauso paketui %s"
 
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "Darbinis aplankas %s%s%s neegzistuoja.%sŽviktelėkite į „Startuoti -> Startavimo parametrai…“."
@@ -16799,7 +16465,7 @@ msgid "This project has only the default build mode."
 msgstr "Projekte yra tik numatytoji darymo veiksena."
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgstr "Šis Lazarus nepalaiko šių Lazarus darymo parinkčių grupės.%Į aplanką %s%s%s rašyti draudžiama.%Kitų būdų kaip įdiegti Lazarus sužinosite Lazarus tinklapyje."
@@ -17109,7 +16775,6 @@ msgid "Font without UTF-8"
 msgstr "Ne UTF-8 šriftas"
 
 #: lazarusidestrconsts.lisuegotoline
-#| msgid "Goto line :"
 msgid "Goto line:"
 msgstr "Rodyti eilutę:"
 
@@ -17122,7 +16787,7 @@ msgid "Not found"
 msgstr "Nerasta"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
 msgid "Replace this occurrence of \"%s\"%s with \"%s\"?"
 msgstr "Pakeisti rastąjį %s%s%s%s į %s%s%s?"
@@ -17209,13 +16874,13 @@ msgid "Unable copy components to clipboard"
 msgstr "Komponentę kopijuoti į iškarpinę nepavyko"
 
 #: lazarusidestrconsts.lisunabletoaddresourceheadercommenttoresourcefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to add resource header comment to resource file %s%s%s%s.%sProbably a syntax error."
 msgid "Unable to add resource header comment to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "Ištekliu faile %s%s%s%snepavyko įrašyti išteklių antraštinį komentarą.%sKo gero tai sintaksės klaida."
 
 #: lazarusidestrconsts.lisunabletoaddresourcetformdatatoresourcefileprobably
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to add resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error."
 msgid "Unable to add resource T%s:FORMDATA to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "Išteklio T%s:FORMDATA nepavyko įrašyti į išteklių failą %s%s%s%s.%sKo gero tai sintaksės klaida."
@@ -17233,7 +16898,7 @@ msgid "Unable to add %s to project, because there is already a unit with the sam
 msgstr "Nepavyko %s įdėti į projektą, nes projekte jau yra modulis tokiu pat pavadinimu."
 
 #: lazarusidestrconsts.lisunabletobackupfileto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgid "Unable to backup file \"%s\" to \"%s\"!"
 msgstr "Nepavyko padaryti failo %s%s%s atsarginę kopiją į %s%s%s!"
@@ -17251,7 +16916,7 @@ msgid "Unable to clean up destination directory"
 msgstr "Nepavyko apvalyti tikslo aplanko"
 
 #: lazarusidestrconsts.lisunabletocleanuppleasecheckpermissions
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to clean up %s%s%s.%sPlease check permissions."
 msgid "Unable to clean up \"%s\".%sPlease check permissions."
 msgstr "Nepavyko apvalyti %s%s%s.%sPatikrinkite leidimus."
@@ -17261,13 +16926,13 @@ msgid "Unable to convert component text into binary format:%s%s"
 msgstr "Nepavyko komponentės tekstą konvertuoti į dvejetainį formatą:%s%s"
 
 #: lazarusidestrconsts.lisunabletoconvertfileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to convert file %s%s%s%sError: %s"
 msgid "Unable to convert file \"%s\"%sError: %s"
 msgstr "Nepavyko konvertuoti failą %s%s%s%sKlaida: %s"
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "Nepavyko faile %s%s%s%s%sesantį tekstą konvertuoti į dvejetainį srautą. (%s)"
@@ -17277,19 +16942,19 @@ msgid "Unable to copy file"
 msgstr "Nepavyko kopijuoti failą"
 
 #: lazarusidestrconsts.lisunabletocopyfileto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to copy file %s%s%s%sto %s%s%s"
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "Nepavyko kopijuoti failą %s%s%s%sį %s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatebackupdirectory
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create backup directory %s%s%s."
 msgid "Unable to create backup directory \"%s\"."
 msgstr "Nepavyko sukurti atsarginių kopijų aplanko %s%s%s."
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create directory %s%s%s."
 msgid "Unable to create directory \"%s\"."
 msgstr "Nepavyko sukurti aplanką %s%s%s."
@@ -17299,19 +16964,19 @@ msgid "Unable to create file"
 msgstr "Failas nesiduoda sukuriamas"
 
 #: lazarusidestrconsts.lisunabletocreatefile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create file %s%s%s"
 msgid "Unable to create file \"%s\""
 msgstr "Nepavyko sukurti failą %s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatefile3
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create file%s%s%s%s"
 msgid "Unable to create file%s\"%s\""
 msgstr "Nepavyko sukurti failą%s%s%s%s"
 
 #: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create link %s%s%s with target %s%s%s"
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "Nepavyko sukurti saito %s%s%s, kurio paskirtis %s%s%s"
@@ -17333,7 +16998,7 @@ msgid "Unable to delete"
 msgstr "Nepavyko ištrinti"
 
 #: lazarusidestrconsts.lisunabletodeleteambiguousfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to delete ambiguous file %s%s%s"
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "Nepavyko ištrinti neaiškųjį failą %s%s%s"
@@ -17347,19 +17012,19 @@ msgid "Unable to find a ResourceString section in this or any of the used units.
 msgstr "Nepavyko rasti „ResourceString“ sekcijos šiame ir kituose naudojamuose moduliuose."
 
 #: lazarusidestrconsts.lisunabletofindavalidclassnamein
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to find a valid classname in %s%s%s"
 msgid "Unable to find a valid classname in \"%s\""
 msgstr "%s%s%s nepavyko rasti klasę tinkamu pavadinimu"
 
 #: lazarusidestrconsts.lisunabletofindfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to find file %s%s%s."
 msgid "Unable to find file \"%s\"."
 msgstr "Nerastas failas %s%s%s."
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgid "Unable to find file \"%s\".%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr "Neina rasti failo %s%s%s.%sJei jis priklauso projektui, reikia patikrinti „Projektas -> Projekto parinktys… -> Kompiliatoriaus parinktys… -> Keliai -> Kitų modulių failai“. Jei šis failas priklauso paketui, reikia patikrinti atitinkamus kompiliatoriaus nustatymus. Jei šis failas priklauso Lazarus, kompiliacija turi būti daroma po apvalymo. Jei failas priklauso FPC, tada reikia patikrinti „fpc.cfg“. Jei neaišku, galima išbandyti „Projektas -> Projekto parinktys… -> Testas“."
@@ -17373,7 +17038,7 @@ msgid "Unable to find method."
 msgstr "Nepavyko rasti metodo."
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s%s%s%s"
 msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s\"%s\""
 msgstr "Nepavyko rasti paskalio modulio (.pas, .pp), kurį būtų galima priskirti „.lfm“ failui%s%s%s%s"
@@ -17395,13 +17060,13 @@ msgid "unable to load file %s: %s"
 msgstr "nepavyko įkelti failo %s: %s"
 
 #: lazarusidestrconsts.lisunabletoloadpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to load package %s%s%s"
 msgid "Unable to load package \"%s\""
 msgstr "Nepavyko įkelti paketą %s%s%s"
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgid "Unable to load the component class \"%s\", because it depends on itself."
 msgstr "Įkelti komponentės klasės %s%s%s nepavyks, nes ji turi priklausomybę pačiai sau."
@@ -17427,13 +17092,13 @@ msgid "Unable to read file"
 msgstr "Nepavyko įkelti failą"
 
 #: lazarusidestrconsts.lisunabletoreadfile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read file %s%s%s!"
 msgid "Unable to read file \"%s\"."
 msgstr "Nepavyko skaityti iš failo %s%s%s!"
 
 #: lazarusidestrconsts.lisunabletoreadfileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read file %s%s%s%sError: %s"
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "Nepavyko skaityti iš failo %s%s%s%sKlaida: %s"
@@ -17447,14 +17112,14 @@ msgid "unable to read process ExitStatus"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read the project info file%s%s%s%s."
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
 msgid "Unable to read the project info file%s\"%s\"."
 msgstr "Nepavyko skaityti projekto informacinio failo%s%s%s%s."
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to remove old backup file %s%s%s!"
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "Nepavyko ištrinti seną atsarginės kopijos failą %s%s%s!"
@@ -17464,7 +17129,7 @@ msgid "Unable to remove project title from source.%s%s"
 msgstr "Pirminiame kode nepavyko pašalinti projekto antraštės.%s%s"
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
 msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "Nepavyko neaiškųjį failą %s%s%s%spervadinti į %s%s%s"
@@ -17474,13 +17139,13 @@ msgid "Unable to rename file"
 msgstr "Nepavyko pervadinti failą"
 
 #: lazarusidestrconsts.lisunabletorenamefileto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to rename file %s%s%s to %s%s%s!"
 msgid "Unable to rename file \"%s\" to \"%s\"!"
 msgstr "Nepavyko pervadinti failą %s%s%s į %s%s%s!"
 
 #: lazarusidestrconsts.lisunabletorenamefileto2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to rename file %s%s%s%sto %s%s%s."
 msgid "Unable to rename file \"%s\"%sto \"%s\"."
 msgstr "Nepavyko pervadinti failą %s%s%s%sį %s%s%s."
@@ -17530,7 +17195,7 @@ msgid "Unable to update CreateForm statement in project source"
 msgstr "Nepavyko projekto pirminiame kode atnaujinti sakinį „CreateStatement“"
 
 #: lazarusidestrconsts.lisunabletowrite2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to write %s%s%s"
 msgid "Unable to write \"%s\""
 msgstr "Neina rašyti į %s%s%s"
@@ -17544,13 +17209,13 @@ msgid "Unable to write file \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritefileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to write file %s%s%s%sError: %s"
 msgid "Unable to write file \"%s\"%sError: %s"
 msgstr "Nepavyko rašyti į failą %s%s%s%sKlaida: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgid "Unable to write the project info file%s\"%s\".%sError: %s"
 msgstr "Nepavyko rašyti į projekto informacinį failą%s%s%s%s.%sKlaida: %s"
@@ -17589,7 +17254,7 @@ msgid "Uninstall selection"
 msgstr "Išdiegti pažymėtą"
 
 #: lazarusidestrconsts.lisunithaschangedsave
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unit %s%s%s has changed. Save?"
 msgid "Unit \"%s\" has changed. Save?"
 msgstr "Modulis %s%s%s pakeistas. Įrašyti?"
@@ -17599,7 +17264,7 @@ msgid "Unit identifier exists"
 msgstr "Modulio identifikatorius egzistuoja"
 
 #: lazarusidestrconsts.lisunitinpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s unit %s in package %s%s"
 msgid "%s unit %s in package %s"
 msgstr "%s modulis %s pakete %s%s"
@@ -17727,7 +17392,6 @@ msgid "Use design time packages"
 msgstr "Naudoti konstravimui skirtus paketus"
 
 #: lazarusidestrconsts.lisuseexcludefilter
-#| msgid "Use Exclude Filter"
 msgid "Use exclude filter"
 msgstr "Naudoti neįtraukimo filtrą"
 
@@ -17740,7 +17404,6 @@ msgid "Use identifier %s in %s at %s"
 msgstr "Identifikatorių „%s“ panaudoti failo „%s“ pozicijoje %s"
 
 #: lazarusidestrconsts.lisuseincludefilter
-#| msgid "Use Include Filter"
 msgid "Use include filter"
 msgstr "Naudoti įterpimo filtrą"
 
@@ -17804,7 +17467,6 @@ msgid "UTF-8 with BOM"
 msgstr "UTF-8, kuriame yra BOM"
 
 #: lazarusidestrconsts.lisvalue
-#| msgid "Value:"
 msgctxt "lazarusidestrconsts.lisvalue"
 msgid "Value"
 msgstr "Vertė"
@@ -17855,7 +17517,6 @@ msgid "Very Verbose"
 msgstr ""
 
 #: lazarusidestrconsts.lisviewbreakpointproperties
-#| msgid "Breakpoint Properties..."
 msgctxt "lazarusidestrconsts.lisviewbreakpointproperties"
 msgid "Breakpoint Properties ..."
 msgstr "Stabdos taško savybės…"
@@ -17878,7 +17539,7 @@ msgid "Warning: "
 msgstr "Perspėjimas: "
 
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "Dėmesio: rastas neaiškus failas: %s%s%s. Pirminio kodo failas: %s%s%s"
@@ -17949,7 +17610,7 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr "Jus sveikina Lazarus IKA %s"
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
 msgid "Welcome to Lazarus %s%sThere is already a configuration from version %s in%s%s"
 msgstr "Jus sveikina Lazarus IKA %s%s%sRasta ankstesnė Lazarus %s konfigūracija patalpinta aplanke%s%s%s"
@@ -17959,7 +17620,6 @@ msgid "What needs building"
 msgstr "Numatomų darymų suvestinė"
 
 #: lazarusidestrconsts.liswhenaunitisrenamedupdatereferences
-#| msgid "When a unit is renamed, update references ..."
 msgid "When a unit is renamed, update references"
 msgstr "Pakeitus modulio pavadinimą, naujinti nuorodas"
 
@@ -18036,7 +17696,6 @@ msgid "&Properties"
 msgstr "&Savybės"
 
 #: lazarusidestrconsts.liswlwatchlist
-#| msgid "Watch list"
 msgid "Watch List"
 msgstr "Stebimų sąrašas"
 
@@ -18178,7 +17837,6 @@ msgid "Automatically increase build number"
 msgstr "Automatiškai didinti darymo numerį"
 
 #: lazarusidestrconsts.rsbuild
-#| msgid "Build:"
 msgid "&Build:"
 msgstr "&Darymas:"
 
@@ -18223,7 +17881,6 @@ msgid "i18n Options"
 msgstr "Internacionalizacijos nuostatos"
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
-#| msgid "Include Version Info in executable"
 msgid "Include version info in executable"
 msgstr "Įrašyti versijos informaciją į vykdomąjį failą"
 
@@ -18573,7 +18230,6 @@ msgid "add data/watchpoint"
 msgstr "pridėti stebėjimo tašką"
 
 #: lazarusidestrconsts.srkmecaddjumppoint
-#| msgid "Add jump point"
 msgid "Add Jump Point"
 msgstr "Pridėti peršokimo tašką"
 
@@ -18744,7 +18400,6 @@ msgid "compile program/project"
 msgstr "Kompiliuoti programą/projektą"
 
 #: lazarusidestrconsts.srkmeccompletecode
-#| msgid "Complete code"
 msgctxt "lazarusidestrconsts.srkmeccompletecode"
 msgid "Complete Code"
 msgstr "Užbaigti kodą"
@@ -18827,7 +18482,6 @@ msgid "Empty Methods ..."
 msgstr "Tušti metodai…"
 
 #: lazarusidestrconsts.srkmecenvironmentoptions
-#| msgid "General environment options"
 msgid "IDE options"
 msgstr "IKA parinktys"
 
@@ -18836,7 +18490,6 @@ msgid "evaluate/modify"
 msgstr "įvertinti/keisti"
 
 #: lazarusidestrconsts.srkmecextractproc
-#| msgid "Extract procedure"
 msgctxt "lazarusidestrconsts.srkmecextractproc"
 msgid "Extract Procedure"
 msgstr "Ištraukti procedūrą"
@@ -18850,7 +18503,6 @@ msgid "External tools settings"
 msgstr "Išorės įrankių nuostatos"
 
 #: lazarusidestrconsts.srkmecfind
-#| msgid "Find text"
 msgid "Find Text"
 msgstr "Ieškoti teksto"
 
@@ -18863,33 +18515,27 @@ msgid "Find block start"
 msgstr "Ieškoti bloko pradžios"
 
 #: lazarusidestrconsts.srkmecfinddeclaration
-#| msgid "Find declaration"
 msgid "Find Declaration"
 msgstr "Ieškoti aprašo"
 
 #: lazarusidestrconsts.srkmecfindidentifierrefs
-#| msgid "Find identifier references"
 msgid "Find Identifier References"
 msgstr "Ieškoti identifikatoriaus rodyklių"
 
 #: lazarusidestrconsts.srkmecfindinfiles
-#| msgid "Find in files"
 msgid "Find in Files"
 msgstr "Ieškoti failuose"
 
 #: lazarusidestrconsts.srkmecfindnext
-#| msgid "Find next"
 msgctxt "lazarusidestrconsts.srkmecfindnext"
 msgid "Find Next"
 msgstr "Ieškoti toliau"
 
 #: lazarusidestrconsts.srkmecfindnextwordoccurrence
-#| msgid "Find next word occurrence"
 msgid "Find Next Word Occurrence"
 msgstr "Ieškoti žodžio toliau"
 
 #: lazarusidestrconsts.srkmecfindoverloads
-#| msgid "Find overloads"
 msgid "Find Overloads"
 msgstr "Ieškoti daugiareikšmiškumų"
 
@@ -18898,22 +18544,18 @@ msgid "Find Overloads ..."
 msgstr "Ieškoti daugiareikšmiškumų…"
 
 #: lazarusidestrconsts.srkmecfindprevious
-#| msgid "Find previous"
 msgid "Find Previous"
 msgstr "Ieškoti ankstesnio"
 
 #: lazarusidestrconsts.srkmecfindprevwordoccurrence
-#| msgid "Find previous word occurrence"
 msgid "Find Previous Word Occurrence"
 msgstr "Ieškoti žodžio atgaline tvarka"
 
 #: lazarusidestrconsts.srkmecfindproceduredefinition
-#| msgid "Find procedure definiton"
 msgid "Find Procedure Definiton"
 msgstr "Ieškoti procedūros apibrėžties"
 
 #: lazarusidestrconsts.srkmecfindproceduremethod
-#| msgid "Find procedure method"
 msgid "Find Procedure Method"
 msgstr "Ieškoti procedūros metodo"
 
@@ -18926,16 +18568,15 @@ msgid "Fold to Level %d"
 msgstr "Suverti iki %d lygio"
 
 #: lazarusidestrconsts.srkmecgotoeditor
+#, fuzzy,badformat
 msgid "Go to editor %d"
 msgstr "Rodyti %s rengyklę"
 
 #: lazarusidestrconsts.srkmecgotoincludedirective
-#| msgid "Go to to include directive of current include file"
 msgid "Go to include directive of current include file"
 msgstr "Rodyti veikiamojo įdėtojo failo įdėjimo direktyvą"
 
 #: lazarusidestrconsts.srkmecgotolinenumber
-#| msgid "Go to line number"
 msgid "Go to Line Number"
 msgstr "Rodyti eilutę nurodytu numeriu"
 
@@ -18948,7 +18589,6 @@ msgid "Goto XY"
 msgstr "Eiti į poziciją"
 
 #: lazarusidestrconsts.srkmecguessmisplacedifdef
-#| msgid "Guess misplaced $IFDEF"
 msgid "Guess Misplaced $IFDEF"
 msgstr "Nuspėti nevietoj esančius „$IFDEF“"
 
@@ -19065,7 +18705,6 @@ msgid "inspect"
 msgstr "inspektuoti"
 
 #: lazarusidestrconsts.srkmecinvertassignment
-#| msgid "Invert assignment"
 msgctxt "lazarusidestrconsts.srkmecinvertassignment"
 msgid "Invert Assignment"
 msgstr "Sukeisti priskyrimą"
@@ -19099,7 +18738,6 @@ msgid "Lock Editor"
 msgstr "Užrakinti rengyklę"
 
 #: lazarusidestrconsts.srkmecmakeresourcestring
-#| msgid "Make resource string"
 msgid "Make Resource String"
 msgstr "Sukurti išteklių eilutę"
 
@@ -19156,7 +18794,6 @@ msgid "Normal selection mode"
 msgstr "Įprasta žymėjimo veiksena"
 
 #: lazarusidestrconsts.srkmecopenfileatcursor
-#| msgid "Open file at cursor"
 msgid "Open File at Cursor"
 msgstr "Atverti ties žymekliu nurodytą failą"
 
@@ -19217,27 +18854,22 @@ msgid "quick compile, no linking"
 msgstr "kompiliuoti greitai, nesaistyti"
 
 #: lazarusidestrconsts.srkmecremovebreakpoint
-#| msgid "remove break point"
 msgid "remove breakpoint"
 msgstr "pašalinti stabdos tašką"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
-#| msgid "Remove empty methods"
 msgid "Remove Empty Methods"
 msgstr "Pašalinti tuščius metodus"
 
 #: lazarusidestrconsts.srkmecremoveunusedunits
-#| msgid "Remove unused units"
 msgid "Remove Unused Units"
 msgstr "Pašalinti nenaudojamus modulius"
 
 #: lazarusidestrconsts.srkmecrenameidentifier
-#| msgid "Rename identifier"
 msgid "Rename Identifier"
 msgstr "Pervadinti identifikatorių"
 
 #: lazarusidestrconsts.srkmecreplace
-#| msgid "Replace text"
 msgid "Replace Text"
 msgstr "Pakeisti tekstą"
 
@@ -19316,7 +18948,6 @@ msgid "Select half-word right"
 msgstr "Pažymėti puse žodžio dešinėje"
 
 #: lazarusidestrconsts.srkmecselleft
-#| msgid "SelLeft"
 msgid "Select Left"
 msgstr "Žymėti simboliu kairiau"
 
@@ -19361,7 +18992,6 @@ msgid "Select Page Up"
 msgstr "Žymėti lapu aukščiau"
 
 #: lazarusidestrconsts.srkmecselright
-#| msgid "SelRight"
 msgid "Select Right"
 msgstr "Žymėti simboliu dešiniau"
 
@@ -19417,12 +19047,10 @@ msgid "Shift Tab"
 msgstr "Shift Tab"
 
 #: lazarusidestrconsts.srkmecshowabstractmethods
-#| msgid "Show abstract methods"
 msgid "Show Abstract Methods"
 msgstr "Rodyti abstrakčius metodus"
 
 #: lazarusidestrconsts.srkmecshowcodecontext
-#| msgid "Show code context"
 msgid "Show Code Context"
 msgstr "Rodyti kodo turinį"
 
@@ -19585,7 +19213,6 @@ msgid "Previous Cell (all selected / firsts only)"
 msgstr "Ankstesnis langelis (visi pažymėti/tik pirmieji)"
 
 #: lazarusidestrconsts.srkmecsyntaxcheck
-#| msgid "Syntax check"
 msgid "Syntax Check"
 msgstr "Sintaksės patikra"
 
@@ -19594,7 +19221,6 @@ msgid "View assembler"
 msgstr "Rodyti asemblerį"
 
 #: lazarusidestrconsts.srkmectogglebreakpoint
-#| msgid "toggle break point"
 msgid "toggle breakpoint"
 msgstr "įjungti ar išjungti stabdos tašką"
 
@@ -19748,7 +19374,6 @@ msgid "View units"
 msgstr "Rodyti modulius"
 
 #: lazarusidestrconsts.srkmecwordcompletion
-#| msgid "Word completion"
 msgid "Word Completion"
 msgstr "Žodžio užbaigimas"
 
@@ -19890,17 +19515,14 @@ msgid "&Close Page"
 msgstr "&Užverti lapą"
 
 #: lazarusidestrconsts.uemcopyfilename
-#| msgid "Copy filename"
 msgid "Copy Filename"
 msgstr "Kopijuoti failo pavadinimą"
 
 #: lazarusidestrconsts.uemcopytonewwindow
-#| msgid "Clone to new Window"
 msgid "Clone to New Window"
 msgstr "Kopijuoti į naują langą"
 
 #: lazarusidestrconsts.uemcopytootherwindow
-#| msgid "Clone to other Window"
 msgid "Clone to Other Window"
 msgstr "Kopijuoti į kitą langą"
 
@@ -19919,7 +19541,6 @@ msgid "Encoding"
 msgstr "Koduotė"
 
 #: lazarusidestrconsts.uemevaluatemodify
-#| msgid "&Evaluate/Modify..."
 msgid "&Evaluate/Modify ..."
 msgstr "Į&vertinti/Keisti…"
 
@@ -19940,7 +19561,6 @@ msgid "Highlighter"
 msgstr "Sintaksės paryškinimas"
 
 #: lazarusidestrconsts.ueminspect
-#| msgid "&Inspect..."
 msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
 msgstr "&Inspektuoti…"
@@ -19951,7 +19571,6 @@ msgid "Invert Assignment"
 msgstr "Sukeisti priskyrimą"
 
 #: lazarusidestrconsts.uemlineending
-#| msgid "Line ending"
 msgid "Line Ending"
 msgstr "Eilutės pabaiga"
 
@@ -19960,32 +19579,26 @@ msgid "&Lock Page"
 msgstr "&Užrakinti lapą"
 
 #: lazarusidestrconsts.uemmovepageleft
-#| msgid "Move page left"
 msgid "Move Page Left"
 msgstr "Lapą perkelti kairėn"
 
 #: lazarusidestrconsts.uemmovepageleftmost
-#| msgid "Move page leftmost"
 msgid "Move Page Leftmost"
 msgstr "Lapą perkelti į kairįjį kraštą"
 
 #: lazarusidestrconsts.uemmovepageright
-#| msgid "Move page right"
 msgid "Move Page Right"
 msgstr "Lapą perkelti dešinėn"
 
 #: lazarusidestrconsts.uemmovepagerightmost
-#| msgid "Move page rightmost"
 msgid "Move Page Rightmost"
 msgstr "Lapą perkelti į dešinįjį kraštą"
 
 #: lazarusidestrconsts.uemmovetonewwindow
-#| msgid "Move to new Window"
 msgid "Move to New Window"
 msgstr "Perkelti į naują langą"
 
 #: lazarusidestrconsts.uemmovetootherwindow
-#| msgid "Move to other Window"
 msgid "Move to Other Window"
 msgstr "Perkelti į kitą langą"
 
@@ -19995,7 +19608,6 @@ msgid "New Window"
 msgstr "Naujas langas"
 
 #: lazarusidestrconsts.uemnextbookmark
-#| msgid "Goto next Bookmark"
 msgid "Goto Next Bookmark"
 msgstr "Rodyti tolesnę žymę"
 
@@ -20004,12 +19616,10 @@ msgid "Modified"
 msgstr "Pakeista"
 
 #: lazarusidestrconsts.uemopenfileatcursor
-#| msgid "&Open file at cursor"
 msgid "&Open File at Cursor"
 msgstr "Atverti ties žymekliu nurodytą &failą"
 
 #: lazarusidestrconsts.uemprevbookmark
-#| msgid "Goto previous Bookmark"
 msgid "Goto Previous Bookmark"
 msgstr "Rodyti ankstesnę žymę"
 
@@ -20031,7 +19641,6 @@ msgid "&Run to Cursor"
 msgstr "S&tartuoti iki žymeklio"
 
 #: lazarusidestrconsts.uemsetfreebookmark
-#| msgid "Set a free Bookmark"
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
 msgid "Set a Free Bookmark"
 msgstr "Padėti laisvą žymę"
@@ -20050,7 +19659,6 @@ msgid "&Toggle Bookmark"
 msgstr "Į&jungti/išjungti žymę"
 
 #: lazarusidestrconsts.uemtogglebreakpoint
-#| msgid "&Toggle Breakpoint"
 msgid "Toggle &Breakpoint"
 msgstr "Įjungti ar išjungti stabd&os tašką"
 

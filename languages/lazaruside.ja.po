@@ -3458,7 +3458,7 @@ msgid "Dependency"
 msgstr "依存性"
 
 #: lazarusidestrconsts.lisa2pexistingfile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Existing file: %s%s%s"
 msgid "Existing file: \"%s\""
 msgstr "既存のファイル: %s%s%s"
@@ -3468,7 +3468,7 @@ msgid "File already exists"
 msgstr "ファイルはすでに存在します。"
 
 #: lazarusidestrconsts.lisa2pfilealreadyexistsinthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s already exists in the package."
 msgid "File \"%s\" already exists in the package."
 msgstr "ファイル %s%s%s はすでにパッケージに存在します。"
@@ -3510,7 +3510,7 @@ msgid "Invalid Unit Name"
 msgstr "無効なユニット名"
 
 #: lazarusidestrconsts.lisa2pisnotavalidunitname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is not a valid unit name."
 msgid "\"%s\" is not a valid unit name."
 msgstr "%s%s%s は無効なユニット名です"
@@ -3529,7 +3529,7 @@ msgid "New File"
 msgstr "新規のファイル"
 
 #: lazarusidestrconsts.lisa2pnopackagefoundfordependencypleasechooseanexisting
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "No package found for dependency %s%s%s.%sPlease choose an existing package."
 msgid "No package found for dependency \"%s\".%sPlease choose an existing package."
 msgstr "依存関係%s%s%sにパッケージが見つかりませんでした。%s存在しているパッケージを一つ選択してください。"
@@ -3564,55 +3564,55 @@ msgid "Switch Paths"
 msgstr "パスの切り替え"
 
 #: lazarusidestrconsts.lisa2ptheancestortypehasthesamenameastheunit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The ancestor type %s%s%s has the same name as%sthe unit %s%s%s."
 msgid "The ancestor type \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "先祖型%s%s%sは%sユニット %s%s%sと同じ名前を持っています。"
 
 #: lazarusidestrconsts.lisa2ptheancestortypeisnotavalidpascalidentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The ancestor type %s%s%s is not a valid Pascal identifier."
 msgid "The ancestor type \"%s\" is not a valid Pascal identifier."
 msgstr "先祖型 %s%s%s は有効な Pascal 識別子ではありません。"
 
 #: lazarusidestrconsts.lisa2ptheclassnameandancestortypearethesame
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The class name %s%s%s and ancestor type %s%s%s are the same."
 msgid "The class name \"%s\" and ancestor type \"%s\" are the same."
 msgstr "クラス名%s%s%sと先祖型%s%s%sは同じです。"
 
 #: lazarusidestrconsts.lisa2ptheclassnameexistsalreadyinpackagefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The class name %s%s%s exists already in%sPackage %s%sFile: %s%s%s"
 msgid "The class name \"%s\" exists already in%sPackage %s%sFile: \"%s\""
 msgstr "クラス名%s%s%sは既に%sパッケージ %s%sのファイル%s%s%sに存在します。"
 
 #: lazarusidestrconsts.lisa2ptheclassnamehasthesamenameastheunit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The class name %s%s%s has the same name as%sthe unit %s%s%s."
 msgid "The class name \"%s\" has the same name as%sthe unit \"%s\"."
 msgstr "クラス名%s%s%sは%sユニット %s%s%sと同じ名前を持っています。"
 
 #: lazarusidestrconsts.lisa2ptheclassnameisnotavalidpascalidentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The class name %s%s%s is not a valid Pascal identifier."
 msgid "The class name \"%s\" is not a valid Pascal identifier."
 msgstr "クラス名 %s%s%s は有効な Pascal 識別子ではありません。"
 
 #: lazarusidestrconsts.lisa2pthefileispartofthecurrentprojectitisabadidea
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s is part of the current project.%sIt is a bad idea to share files between projects and packages."
 msgid "The file \"%s\" is part of the current project.%sIt is a bad idea to share files between projects and packages."
 msgstr "ファイル %s%s%sは現在のプロジェクトの一部です。%sプロジェクトとパッケージの間でファイルを共有するのはよくないことです。"
 
 #: lazarusidestrconsts.lisa2pthefilenameisambiguouspleasespecifiyafilename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The filename %s%s%s is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgid "The filename \"%s\" is ambiguous, because the package has no default directory yet.%sPlease specify a filename with full path."
 msgstr "そのパッケージはまだ既定のディレクトリを持たないため、ファイル名 %s%s%sは紛らわしいです。%sファイル名をフルパスで指定してください。"
 
 #: lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisa2pthemaximumversionisinvalidpleaseusetheformatmajor"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
@@ -3624,56 +3624,56 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "その最高バージョンは最低バージョンよりも低いです。"
 
 #: lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisa2ptheminimumversionisinvalidpleaseusetheformatmajor"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor example: 1.0.20.10"
 msgstr "その最低バージョン %s%s%sは無効です。%sメジャー.マイナー.リリース.ビルドの書式を使ってください%s 例：1.0.20.10"
 
 #: lazarusidestrconsts.lisa2pthepackagehasalreadyadependencyforthe
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package already has a dependency on the package %s%s%s."
 msgid "The package already has a dependency on the package \"%s\"."
 msgstr "そのパッケージは既にパッケージ %s%s%s に依存しています。"
 
 #: lazarusidestrconsts.lisa2pthepackagenameisinvalidpleasechooseanexisting
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package name %s%s%s is invalid.%sPlease choose an existing package."
 msgid "The package name \"%s\" is invalid.%sPlease choose an existing package."
 msgstr "パッケージ名 %s%s%sは無効です。%s存在するパッケージを選んでください。"
 
 #: lazarusidestrconsts.lisa2pthepagenameistoolongmax100chars
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The page name %s%s%s is too long (max 100 chars)."
 msgid "The page name \"%s\" is too long (max 100 chars)."
 msgstr "パッケージ名 %s%s%sは長すぎます（最大100文字）。"
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unitname %s%s%s already exists in the package:%s%s"
 msgid "The unitname \"%s\" already exists in the package:%s%s"
 msgstr "ユニット名%s%s%sは次のパッケージに既に存在しています:%s%s"
 
 #: lazarusidestrconsts.lisa2ptheunitnamealreadyexistsinthispackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unitname %s%s%s already exists in this package."
 msgid "The unitname \"%s\" already exists in this package."
 msgstr "ユニット名%s%s%sはこのパッケージに既に存在しています。"
 
 #: lazarusidestrconsts.lisa2ptheunitnameandfilenamediffer
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s%sand filename %s%s%s differ."
 msgid "The unit name \"%s\"%sand filename \"%s\" differ."
 msgstr "ユニット名 %s%s%s%s とファイル名 %s%s%s が異なります。"
 
 #: lazarusidestrconsts.lisa2ptheunitnamedoesnotcorrespondtothefilename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s does not correspond to the filename."
 msgid "The unit name \"%s\" does not correspond to the filename."
 msgstr "ユニット名%s%s%sがファイル名と一致してません。"
 
 #: lazarusidestrconsts.lisa2ptheunitnameisthesameasanregisteredcomponent
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s is the same as a registered component.%sUsing this can cause strange error messages."
 msgid "The unit name \"%s\" is the same as a registered component.%sUsing this can cause strange error messages."
 msgstr "ユニット名%s%s%sは登録済みコンポーネントと同じです。%sこのままでは奇妙なエラーが起きてしまいます。"
@@ -3918,7 +3918,7 @@ msgid "Invalid Package"
 msgstr "無効なパッケージ"
 
 #: lazarusidestrconsts.lisaf2pinvalidpackageid
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Invalid package ID: %s%s%s"
 msgid "Invalid package ID: \"%s\""
 msgstr "無効なパッケージID: %s%s%s"
@@ -3928,7 +3928,7 @@ msgid "Package is read only"
 msgstr "パッケージは読み込み専用です"
 
 #: lazarusidestrconsts.lisaf2ppackagenotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Package %s%s%s not found."
 msgid "Package \"%s\" not found."
 msgstr "パッケージ %s%s%s は見つかりません"
@@ -3939,7 +3939,7 @@ msgid "Show all"
 msgstr "すべて表示"
 
 #: lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%sis already in the package %s."
 msgctxt "lazarusidestrconsts.lisaf2pthefileisalreadyinthepackage"
 msgid "The file \"%s\"%sis already in the package %s."
@@ -3954,7 +3954,7 @@ msgid "Unit name: "
 msgstr "ユニット名: "
 
 #: lazarusidestrconsts.lisafilealreadyexistsreplaceit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "A file %s%s%s already exists.%sReplace it?"
 msgid "A file \"%s\" already exists.%sReplace it?"
 msgstr "ファイル %s%s%s は既に存在します。%s置き換えますか？"
@@ -4004,7 +4004,7 @@ msgid "All parameters of this function are already set at this call. Nothing to 
 msgstr "この関数のすべての引数はこの呼び出しで既に設定されています。加えるべきものはありません。"
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "All your modifications to %s%s%s%swill be lost and the file reopened."
 msgid "All your modifications to \"%s\"%swill be lost and the file reopened."
 msgstr "%s%s%s%sへのすべての修正は失われ、ファイルが再び開かれます。"
@@ -4046,7 +4046,7 @@ msgid "Ambiguous file found"
 msgstr "曖昧なファイルが見つかりました"
 
 #: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Ambiguous file found: %s%s%s%sThis file can be mistaken with %s%s%s%s%sDelete the ambiguous file?"
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
 msgstr "曖昧なファイルが見つかりました。 %s%s%s%sこのファイルは %s%s%s%s%sと間違うかもしれません。曖昧なファイルを削除しますか？ "
@@ -4106,7 +4106,7 @@ msgid "Anchor top side to top side of sibling. Use BorderSpacing to set a distan
 msgstr "上端を兄弟の下端にアンカー。距離を設定するにはBorderSpacingを使ってください。兄弟のBorderSpacingは無視されます。"
 
 #: lazarusidestrconsts.lisanerroroccuredatlaststartupwhileloadingloadthispro
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "An error occured at last startup while loading %s!%s%sLoad this project again?"
 msgid "An error occured at last startup while loading %s!%sLoad this project again?"
 msgstr "最近の%s!%s%sの読み込み時に起動時にエラーが起こりました。またこのプロジェクトを読み込みますか？"
@@ -4482,7 +4482,7 @@ msgid "Cannot copy top level component."
 msgstr "最上位コンポーネントはコピーできません。"
 
 #: lazarusidestrconsts.liscannotcreatefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Cannot create file %s%s%s"
 msgid "Cannot create file \"%s\""
 msgstr "ファイルを作成できません：%s%s%s"
@@ -4938,7 +4938,7 @@ msgid "Error reading %s"
 msgstr "%s2の読み取り中にエラー"
 
 #: lazarusidestrconsts.liscfeinfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%sIn file %s%s"
 msgid "In file %s"
 msgstr "%sIn file %s%s"
@@ -5195,7 +5195,7 @@ msgid "classes.ppu not found. Check your fpc.cfg."
 msgstr "クラス.ppuが見つかりません。fpc.cfgをチェックしてください"
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Class %s%s%s is not a registered component class.%sUnable to paste."
 msgid "Class \"%s\" is not a registered component class.%sUnable to paste."
 msgstr "クラス%s%s%sは登録されたコンポーネントクラスではありあせん。%s貼り付けできません。"
@@ -5209,7 +5209,7 @@ msgid "Class %s not found at %s(%s,%s)"
 msgstr ""
 
 #: lazarusidestrconsts.lisclassofmethodnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Class %s%s%s of method %s%s%s not found."
 msgid "Class \"%s\" of method \"%s\" not found."
 msgstr "クラス %s%s%sのメソッド%s%s%sが見つかりません"
@@ -5528,7 +5528,7 @@ msgid "Add code template"
 msgstr "コードテンプレートを追加"
 
 #: lazarusidestrconsts.liscodetemplatokenalreadyexists
-#, fuzzy
+#, fuzzy,badformat
 #| msgid " A token %s%s%s already exists! "
 msgid " A token \"%s\" already exists! "
 msgstr "トークン %s%s%s はすでに存在します!"
@@ -6090,13 +6090,13 @@ msgid "Component name \"%s\" is a Pascal keyword."
 msgstr "コンポーネント名 \"%s\" は Pascal キーワードです"
 
 #: lazarusidestrconsts.liscomponentnameiskeyword
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Component name %s%s%s is keyword"
 msgid "Component name \"%s\" is keyword"
 msgstr "コンポーネント名 %s%s%s はキーワードです"
 
 #: lazarusidestrconsts.liscomponentnameisnotavalididentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Component name %s%s%s is not a valid identifier"
 msgid "Component name \"%s\" is not a valid identifier"
 msgstr "コンポーネント名 %s%s%s は無効な識別子です"
@@ -6140,7 +6140,7 @@ msgid "Configure Build %s"
 msgstr "構築 %s を設定"
 
 #: lazarusidestrconsts.lisconfigurebuildlazarus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Configure %sBuild Lazarus%s"
 msgid "Configure \"Build Lazarus\""
 msgstr "%sLazarus構築 %s を設定"
@@ -6349,7 +6349,7 @@ msgid "Failed converting unit"
 msgstr "変換に失敗したユニット"
 
 #: lazarusidestrconsts.lisconvdelphifailedtoconvertunit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Failed to convert unit%s%s%s"
 msgid "Failed to convert unit \"%s\""
 msgstr "変換に失敗したユニット%s%s%s"
@@ -6626,7 +6626,7 @@ msgid "Copy File Name to Clipboard"
 msgstr ""
 
 #: lazarusidestrconsts.liscopyidentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Copy %s%s%s to clipboard"
 msgid "Copy \"%s\" to clipboard"
 msgstr "%s%s%s をクリップボードにコピー"
@@ -6668,37 +6668,37 @@ msgid "Skip calling compiler"
 msgstr "コンパイラ呼び出しをスキップ"
 
 #: lazarusidestrconsts.liscouldnotadditomainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not add %s{$I %s%s} to main source!"
 msgid "Could not add \"{$I %s}\" to main source!"
 msgstr "%s{$I %s%s}をメインソースに追加できませんでした！"
 
 #: lazarusidestrconsts.liscouldnotaddrtomainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not add %s{$R %s%s} to main source!"
 msgid "Could not add \"{$R %s}\" to main source!"
 msgstr "%s{$R %s%s}をメインソースに追加できませんでした！"
 
 #: lazarusidestrconsts.liscouldnotaddtomainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not add %s%s%s to main source!"
 msgid "Could not add \"%s\" to main source!"
 msgstr "%s%s%s をメインソースに追加できませんでした！"
 
 #: lazarusidestrconsts.liscouldnotremovefrommainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not remove %s%s%s from main source!"
 msgid "Could not remove \"%s\" from main source!"
 msgstr "%s%s%s をメインソースから削除できませんでした！"
 
 #: lazarusidestrconsts.liscouldnotremoveifrommainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not remove %s{$I %s%s} from main source!"
 msgid "Could not remove \"{$I %s}\" from main source!"
 msgstr "%s{$I %s%s} をメインソースから削除できませんでした！"
 
 #: lazarusidestrconsts.liscouldnotremoverfrommainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Could not remove %s{$R %s%s} from main source!"
 msgid "Could not remove \"{$R %s}\" from main source!"
 msgstr "%s{$R %s%s} をメインソースから削除できませんでした！"
@@ -7225,7 +7225,7 @@ msgid "Unable to load file"
 msgstr "ファイルを読み込めません。"
 
 #: lazarusidestrconsts.lisdebugunabletoloadfile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to load file %s%s%s."
 msgid "Unable to load file \"%s\"."
 msgstr "ファイル%s%s%sを読み込めません。"
@@ -7274,7 +7274,7 @@ msgid "Delete all breakpoints?"
 msgstr "すべてのブレークポイントを削除しますか？"
 
 #: lazarusidestrconsts.lisdeleteallbreakpoints2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete all breakpoints in file %s%s%s?"
 msgid "Delete all breakpoints in file \"%s\"?"
 msgstr "ファイル%s%s%sのすべてのブレークポイントを削除しますか？"
@@ -7316,7 +7316,7 @@ msgid "Delete file failed"
 msgstr "ファイル削除に失敗"
 
 #: lazarusidestrconsts.lisdeletemacro
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete macro %s%s%s?"
 msgid "Delete macro \"%s\"?"
 msgstr "マクロ %s%s%s を削除しますか？"
@@ -7326,7 +7326,7 @@ msgid "Delete mode \"%s\""
 msgstr "モード  \"%s\"を削除"
 
 #: lazarusidestrconsts.lisdeleteoldfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete old file %s%s%s?"
 msgid "Delete old file \"%s\"?"
 msgstr "古いファイル%s%s%sを削除しますか？"
@@ -7348,7 +7348,7 @@ msgid "Delete this addition"
 msgstr ""
 
 #: lazarusidestrconsts.lisdeletevalue
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete value %s%s%s"
 msgid "Delete value \"%s\"?"
 msgstr "%s%s%sの値を削除"
@@ -7358,7 +7358,7 @@ msgid "Delete value %s"
 msgstr "%sの値を削除"
 
 #: lazarusidestrconsts.lisdeletingoffilefailed
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Deleting of file %s%s%s failed."
 msgid "Deleting of file \"%s\" failed."
 msgstr "ファイル %s%s%sの削除に失敗"
@@ -7462,7 +7462,7 @@ msgid "Directory: "
 msgstr "ディレクトリ: "
 
 #: lazarusidestrconsts.lisdirectorynotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Directory %s%s%s not found."
 msgid "Directory \"%s\" not found."
 msgstr "フォルダ %s%s%s が見つかりません。"
@@ -7718,7 +7718,7 @@ msgid "Duplicate File Name"
 msgstr ""
 
 #: lazarusidestrconsts.lisduplicatefoundofvalue
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Duplicate found of value %s%s%s."
 msgid "Duplicate found of value \"%s\"."
 msgstr "次の重複が見つかりました。 %s%s%s"
@@ -7728,7 +7728,7 @@ msgid "Duplicate Name"
 msgstr "重複した名前"
 
 #: lazarusidestrconsts.lisduplicatenameacomponentnamedalreadyexistsintheinhe
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Duplicate name: A component named %s%s%s already exists in the inherited component %s"
 msgid "Duplicate name: A component named \"%s\" already exists in the inherited component %s"
 msgstr "名称重複： %s%s%s という名前のコンポーネントは継承されたコンポーネント %s に既に存在します"
@@ -7988,7 +7988,7 @@ msgid "Number of files failed to convert: %d"
 msgstr ""
 
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Encoding of file %s%s%s%son disk is %s. New encoding is %s."
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
 msgid "Encoding of file \"%s\"%son disk is %s. New encoding is %s."
@@ -8103,7 +8103,7 @@ msgid "Error loading file"
 msgstr "ファイル読み込み中にエラー"
 
 #: lazarusidestrconsts.liserrorloadingfile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error loading file \"%s\":%s%s"
 msgid "Error loading file \"%s\":"
 msgstr "ファイル \"%s\"の読み込み中にエラー:%s%s"
@@ -8141,7 +8141,7 @@ msgid "Error reading XML"
 msgstr "XMLの読み取り中にエラー"
 
 #: lazarusidestrconsts.liserrorreadingxmlfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error reading xml file %s%s%s%s%s"
 msgid "Error reading xml file \"%s\"%s%s"
 msgstr "XML ファイル %s%s%s%s%s 読み取り中のエラー"
@@ -8413,7 +8413,7 @@ msgid "File: "
 msgstr "ファイル："
 
 #: lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s%sdoes not look like a text file.%sOpen it anyway?"
 msgctxt "lazarusidestrconsts.lisfiledoesnotlooklikeatextfileopenitanyway"
 msgid "File \"%s\"%sdoes not look like a text file.%sOpen it anyway?"
@@ -8456,7 +8456,7 @@ msgid "These are file filters that will appear in all File Open dialogs"
 msgstr "これらはファイルを開くダイアログに表示されるフィルタです"
 
 #: lazarusidestrconsts.lisfilehaschangedsave
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s has changed. Save?"
 msgid "File \"%s\" has changed. Save?"
 msgstr "ファイル%s%s%sは変更されています。保存しますか？"
@@ -8482,7 +8482,7 @@ msgid "File is symlink"
 msgstr "ファイルはシンボリックリンクです"
 
 #: lazarusidestrconsts.lisfileisvirtual
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s is virtual."
 msgid "File \"%s\" is virtual."
 msgstr "ファイル %s%s%s は仮想ファイルです"
@@ -8504,7 +8504,7 @@ msgid "File not found"
 msgstr "ファイルが見つかりません"
 
 #: lazarusidestrconsts.lisfilenotfound2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s not found.%s"
 msgctxt "lazarusidestrconsts.lisfilenotfound2"
 msgid "File \"%s\" not found."
@@ -8523,7 +8523,7 @@ msgid "File not found:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lisfilenotfounddoyouwanttocreateit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s not found.%sDo you want to create it?%s"
 msgid "File \"%s\" not found.%sDo you want to create it?"
 msgstr "ファイル %s%s%sは見つかりません%s作成しますか？%s"
@@ -8897,7 +8897,7 @@ msgid "Goto selected source line"
 msgstr "選択されたソース行へ移動"
 
 #: lazarusidestrconsts.lisgplnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -9181,7 +9181,7 @@ msgid "Export file exists"
 msgstr "エクスポートファイルは存在します。"
 
 #: lazarusidestrconsts.lisiecoexportfileexistsopenfileandreplaceonlycompileropti
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Export file %s%s%s exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
 msgid "Export file \"%s\" exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
 msgstr "エクスポートファイル %s%s%s は存在します。%s ファイルを開き、コンパイラオプションのみを置き換えますか？%s（他の設定は保持されます）"
@@ -9211,7 +9211,7 @@ msgid "If not checked:"
 msgstr ""
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%s%sFor example:%s"
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
 msgstr "Lazarus の異なる 2 つのバージョンを共に使用されたいのであれば、2 つ目の Lazarus を primary-config-path あるいは pcp のコマンドライン引数で開始しなければなりません。%s%s例：%s"
@@ -9346,7 +9346,7 @@ msgid "Inherited project component"
 msgstr "継承されたプロジェクトコンポーネント"
 
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%s%sDelete all files in %s%s%s?"
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
 msgstr "プロジェクトもしくはパッケージのクリーンコピーを作成するためには、次のディレクトリ内の全てのファイルが削除され、その中身が失われます。%s%s %s%s%s内のすべてのファイルを削除しますか？"
@@ -9536,7 +9536,7 @@ msgid "Invalid macros \"%s\" in external tool \"%s\""
 msgstr ""
 
 #: lazarusidestrconsts.lisinvalidmacrothemacromustbeapascalidentifie
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Invalid macro %s%s%s. The macro name must be a Pascal identifier."
 msgid "Invalid macro \"%s\". The macro name must be a Pascal identifier."
 msgstr "無効なマクロ名 %s%s%s。マクロ名は Pascal 識別子でなければなりません。"
@@ -9598,7 +9598,7 @@ msgid "%s is already part of the Project."
 msgstr "%s はすでにプロジェクトの一部です"
 
 #: lazarusidestrconsts.lisisaninvalidprojectnamepleasechooseanotheregproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgid "\"%s\" is an invalid project name.%sPlease choose another (e.g. project1.lpi)"
 msgstr "%s%s%s は無効なプロジェクト名です.%s 別の(例 project1.lpi)ものを選択してください"
@@ -9739,7 +9739,7 @@ msgid "Compile project/program"
 msgstr "プロジェクト/プログラムをコンパイル"
 
 #: lazarusidestrconsts.liskmconfigbuildfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Config %sBuild File%s"
 msgid "Config \"Build File\""
 msgstr "%s 構築ファイル %sを設定"
@@ -10535,7 +10535,7 @@ msgid "LFM is ok"
 msgstr "LFMはOK"
 
 #: lazarusidestrconsts.lislgplnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -10694,7 +10694,7 @@ msgid "Append to section"
 msgstr "セクションに追加"
 
 #: lazarusidestrconsts.lismakeresstrchooseanothername
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The resourcestring %s%s%s already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgid "The resourcestring \"%s\" already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
 msgstr "リソース文字列%s%s%sは既に存在しています。%s他の名前を選んでください。%sそれでも追加する場合は[無視]を選択してください。"
@@ -11788,7 +11788,7 @@ msgid "Skip this Unit"
 msgstr "このユニットをスキップ"
 
 #: lazarusidestrconsts.lismitnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -11958,7 +11958,7 @@ msgid ", Mode: %s"
 msgstr ""
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
-#, fuzzy
+#, fuzzy,badformat
 msgid ""
 "<description>\n"
 "\n"
@@ -12223,7 +12223,7 @@ msgid "No Pascal file"
 msgstr "Pascal ファイルがありません"
 
 #: lazarusidestrconsts.lisnoprogramfilesfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "No program file %s%s%s found."
 msgid "No program file \"%s\" found."
 msgstr "プログラムファイル%s%s%sが見つかりません"
@@ -12358,13 +12358,13 @@ msgid "Add to favorite properties"
 msgstr "お気に入りのプロパティに追加"
 
 #: lazarusidestrconsts.lisoifchooseabaseclassforthefavoriteproperty
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Choose a base class for the favorite property %s%s%s."
 msgid "Choose a base class for the favorite property \"%s\"."
 msgstr "お気に入りのプロパティ%s%s%sの基底クラスを選択"
 
 #: lazarusidestrconsts.lisoifclassnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Class %s%s%s not found."
 msgid "Class \"%s\" not found."
 msgstr "クラス %s%s%s がありません"
@@ -12876,7 +12876,7 @@ msgid "Package %s"
 msgstr "パッケージ %s"
 
 #: lazarusidestrconsts.lispckeditpackagehaschangedsavepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Package %s%s%s has changed.%sSave package?"
 msgid "Package \"%s\" has changed.%sSave package?"
 msgstr "パッケージ %s%s%sは変更されました。%s保存しますか？"
@@ -12930,7 +12930,7 @@ msgid "Remove Dependency?"
 msgstr "依存ソースを削除しますか？"
 
 #: lazarusidestrconsts.lispckeditremovedependencyfrompackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Remove dependency %s%s%s%sfrom package %s%s%s?"
 msgid "Remove dependency \"%s\"%sfrom package \"%s\"?"
 msgstr "依存関係 %s%s%s%s をパッケージ %s%s%s から削除しますか？"
@@ -12953,7 +12953,7 @@ msgid "Remove file?"
 msgstr "ファイルを削除してよろしいですか？"
 
 #: lazarusidestrconsts.lispckeditremovefilefrompackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Remove file %s%s%s%sfrom package %s%s%s?"
 msgid "Remove file \"%s\"%sfrom package \"%s\"?"
 msgstr "%s%s%s%s のファイルをパッケージ %s%s%s から削除しますか？"
@@ -12979,13 +12979,13 @@ msgid "Store file name as preferred for this dependency"
 msgstr "この依存性への望ましい値としてファイル名を保管"
 
 #: lazarusidestrconsts.lispckeditthemaximumversionisnotavalidpackageversion
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The maximum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
 msgid "The maximum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "バージョンの上限値%s%s%sは有効なパッケージバージョンではありません。%s(よい例 1.2.3.4)"
 
 #: lazarusidestrconsts.lispckedittheminimumversionisnotavalidpackageversion
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The minimum version %s%s%s is not a valid package version.%s(good example 1.2.3.4)"
 msgid "The minimum version \"%s\" is not a valid package version.%s(good example 1.2.3.4)"
 msgstr "バージョンの下限値%s%s%sは有効なパッケージバージョンではありません。%s(よい例 1.2.3.4)"
@@ -13122,7 +13122,7 @@ msgid "Runtime"
 msgstr "実行時"
 
 #: lazarusidestrconsts.lispckoptsthepackagehastheautoinstallflagthismeans
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s has the auto install flag.%sThis means it will be installed in the IDE. Installation packages%smust be designtime Packages."
 msgid "The package \"%s\" has the auto install flag.%sThis means it will be installed in the IDE.%sInstallation packages must be designtime Packages."
 msgstr "パッケージ %s%s%sは自動インストールフラグを有しています。%sこのことはそれがIDEにインストールされることを意味しています。パッケージ%sのインストールは設計時パッケージでなければなりません。"
@@ -13298,7 +13298,7 @@ msgid "Revert package?"
 msgstr "パッケージを復帰しますか？"
 
 #: lazarusidestrconsts.lispkgeditthefileiscurrentlynotintheunitpathofthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%sis currently not in the unit path of the package.%s%sAdd %s%s%s to unit path?"
 msgid "The file \"%s\"%sis currently not in the unit path of the package.%sAdd \"%s\" to unit path?"
 msgstr "ファイル %s%s%s%sはまだパッケージのユニットパスにありません。%s%s %s%s%s をユニットパスに追加しますか？"
@@ -13363,13 +13363,13 @@ msgid "Package unit search path. Parameter is package ID"
 msgstr "パッケージのユニット検索パス。引数はパッケージID"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforpackagepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%sAdding new Dependency for package %s: package %s%s"
 msgid "%sAdding new Dependency for package %s: package %s"
 msgstr "%sパッケージ %sに新しい依存関係を追加:  パッケージ %s%s"
 
 #: lazarusidestrconsts.lispkgmangaddingnewdependencyforprojectpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%sAdding new Dependency for project %s: package %s%s"
 msgid "%sAdding new Dependency for project %s: package %s"
 msgstr "%sプロジェクト %sに新しい依存ソースを追加: パッケージ %s%s"
@@ -13411,7 +13411,7 @@ msgid "Delete Old Package File?"
 msgstr "古いパッケージファイルを削除しますか？"
 
 #: lazarusidestrconsts.lispkgmangdeleteoldpackagefile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Delete old package file %s%s%s?"
 msgid "Delete old package file \"%s\"?"
 msgstr "古いパッケージ%s%s%sを削除しますか？"
@@ -13462,7 +13462,7 @@ msgid "Filename is used by project"
 msgstr "ファイル名はプロジェクトによって使われています"
 
 #: lazarusidestrconsts.lispkgmangfilenotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "File %s%s%s not found."
 msgctxt "lazarusidestrconsts.lispkgmangfilenotfound"
 msgid "File \"%s\" not found."
@@ -13505,7 +13505,7 @@ msgid "Invalid Package Name"
 msgstr "無効なパッケージ名"
 
 #: lazarusidestrconsts.lispkgmangloadingpackagewillreplacepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%s%sSave old package %s?"
 msgid "Loading package %s will replace package %s%sfrom file %s.%sThe old package is modified.%sSave old package %s?"
 msgstr "パッケージを読み込み中 %sはパッケージ %s%sを%sファイルから置き換えます。%s古いパッケージは修正されます。%s%s古いパッケージ%sを保存しますか？"
@@ -13563,7 +13563,7 @@ msgid "Rename File lowercase?"
 msgstr "ファイル名を小文字に変更しますか？"
 
 #: lazarusidestrconsts.lispkgmangreplaceexistingfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Replace existing file %s%s%s?"
 msgid "Replace existing file \"%s\"?"
 msgstr "存在するファイル %s%s%s を置換してよろしいですか?"
@@ -13585,7 +13585,7 @@ msgid "Save Package %s (*.lpk)"
 msgstr "パッケージ %s (*.lpk)を保存しますか？"
 
 #: lazarusidestrconsts.lispkgmangshouldthefilerenamedlowercaseto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Should the file be renamed lowercase to%s%s%s%s?"
 msgid "Should the file be renamed lowercase to%s\"%s\"?"
 msgstr "ファイルの名前を小文字の%s%s%s%sに変更していいですか？"
@@ -13603,32 +13603,32 @@ msgid "The compiler file for package %s is not a valid executable:%s%s"
 msgstr "パッケージ%sのコンパイラファイルは有効な実行ファイルではありません。:%s%s"
 
 #: lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%sis already in the package %s."
 msgctxt "lazarusidestrconsts.lispkgmangthefileisalreadyinthepackage"
 msgid "The file \"%s\"%sis already in the package %s."
 msgstr "ファイル %s%s%s%sは既にパッケージ %sに存在します。"
 
 #: lazarusidestrconsts.lispkgmangthefileisnotalazaruspackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s is not a Lazarus package."
 msgid "The file \"%s\" is not a Lazarus package."
 msgstr "ファイル %s%s%s は Lazarus パッケージではありません。"
 
 #: lazarusidestrconsts.lispkgmangthefilenamedoesnotcorrespondtothepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The filename %s%s%s does not correspond to the package name %s%s%s in the file.%sChange package name to %s%s%s?"
 msgid "The filename \"%s\" does not correspond to the package name \"%s\" in the file.%sChange package name to \"%s\"?"
 msgstr "ファイル名 %s%s%sはファイル内のパッケージ名 %s%s%sと一致しません。%sパッケージ名を%s%s%sに変更しますか？"
 
 #: lazarusidestrconsts.lispkgmangthefilenameispartofthecurrentproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file name %s%s%s is part of the current project.%sProjects and Packages should not share files."
 msgid "The file name \"%s\" is part of the current project.%sProjects and Packages should not share files."
 msgstr "ファイル名 %s%s%sは現在のプロジェクトの一部です。%sプロジェクトとパッケージでファイルを共有すべきではありません。"
 
 #: lazarusidestrconsts.lispkgmangthefilenameisusedbythepackageinfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file name %s%s%s is used by%sthe package %s%s%s%sin file %s%s%s."
 msgid "The file name \"%s\" is used by%sthe package \"%s\"%sin file \"%s\"."
 msgstr "ファイル名 %s%s%sは、%sパッケージ%s%s%s%sのファイル %s%s%sで用いられています。"
@@ -13646,19 +13646,19 @@ msgid "The following packages failed to load:"
 msgstr "以下のパッケージの読み込みに失敗しました。"
 
 #: lazarusidestrconsts.lispkgmangthefollowingunitswillbeaddedtotheusessectionof
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%sThe following units will be added to the uses section of%s%s:%s%s%s"
 msgid "%sThe following units will be added to the uses section of%s%s:%s%s"
 msgstr "%s次のユニットが%s%sのusesセクションに追加されます: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthepackagefailedtocompileremoveitfromtheinstallati
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s failed to compile.%sRemove it from the installation list?"
 msgid "The package \"%s\" failed to compile.%sRemove it from the installation list?"
 msgstr "パッケージ %s%s%s のコンパイルに失敗しました。%sインストールリストからそれを削除しますか？"
 
 #: lazarusidestrconsts.lispkgmangthepackagefilenameinisnotavalidlazaruspackagename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package file name %s%s%s in%s%s%s%s is not a valid Lazarus package name."
 msgid "The package file name \"%s\" in%s\"%s\" is not a valid Lazarus package name."
 msgstr "%s%s%s%s のパッケージファイル名 %s%s%s は有効な Lazarus パッケージ名ではありません。"
@@ -13668,13 +13668,13 @@ msgid "The package %s is a runtime only package.%sRuntime only packages cannot b
 msgstr "パッケージ %s は実行時専用パッケージです。%s実行時専用パッケージはIDEにインストールできません。"
 
 #: lazarusidestrconsts.lispkgmangthepackageiscompiledautomaticallyanditsoutputdirec
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue%sby removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package%sor by removing dependencies."
 msgid "The package \"%s\" is compiled automatically and its output directory is \"%s\", which is in the default unit search path of the compiler. The package uses other packages which also use the default unit search of the compiler. This creates an endless loop.%sYou can fix this issue by removing the path from your compiler config (e.g. fpc.cfg)%sor by disabling the auto update of this package or by removing dependencies."
 msgstr "パッケージ %s は自動的にコンパイルされ、その出力ディレクトリは、コンパイラのデフォルトユニット検索パス内の \"%s\"です。そのパッケージはやはりコンパイラのデフォルトユニット検索を用いる他のパッケージを使っています。これは終わりの無いループをもたらします。%sこの問題は%sコンパイラ設定(例えばfpc.cfg)のパスを削除したり、%sこのパッケージの自動アップデートを無効化したり、%s依存性を削除することで解決できます。"
 
 #: lazarusidestrconsts.lispkgmangthepackageismarkedforinstallationbutcannotbefound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
 msgid "The package \"%s\" is marked for installation, but cannot be found.%sRemove dependency from the installation list of packages?"
 msgstr "パッケージ %s%s%sをインストールするようマークされましたが、見つかりません。%sインストールリストから依存関係を削除しますか？"
@@ -13684,37 +13684,37 @@ msgid "The package %s is required by %s, which is marked for installation.%sSee 
 msgstr "パッケージ %s は %s に要求されており、そのことがインストールに記されています。%sパッケージグラフを参照のこと。"
 
 #: lazarusidestrconsts.lispkgmangthepackagenameisnotavalidpackagenamepleasechoosean
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package name %s%s%s is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgid "The package name \"%s\" is not a valid package name%sPlease choose another name (e.g. package1.lpk)"
 msgstr "パッケージ名 %s%s%sは有効なパッケージ名ではありません。%s他の名前（例：package1.lpk）を選んでください。"
 
 #: lazarusidestrconsts.lispkgmangthepackagenameofthefileisinvalid
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package name %s%s%s of%sthe file %s%s%s is invalid."
 msgid "The package name \"%s\" of%sthe file \"%s\" is invalid."
 msgstr "パッケージ名%s%s%s %s（ファイル%s%s%sの）は無効です。 "
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedcurrentlylazarus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgid "The package \"%s\" was marked.%sCurrently Lazarus only supports static linked packages. The real un-installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "パッケージ %s%s%s がマークされました。%s 現在、Lazarus は静的リンクパッケージのみをサポートしています。実際にアンインストールするには Lazarus の再構築と再起動が必要です。%s%sLazarus を再構築しますか？"
 
 #: lazarusidestrconsts.lispkgmangthepackagewasmarkedforinstallationcurrentlylazarus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%s%sDo you want to rebuild Lazarus now?"
 msgid "The package \"%s\" was marked for installation.%sCurrently Lazarus only supports static linked packages. The real installation needs rebuilding and restarting of Lazarus.%sDo you want to rebuild Lazarus now?"
 msgstr "パッケージ %s%s%s をインストールするようマークされました。%s現在、Lazarus は静的リンクパッケージのみをサポートしています。 実際にインストールするには Lazarus の再構築と再起動が必要です。%s%sLazarus を再構築しますか？"
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The project requires the package %s%s%s.%sBut it was not found. See Project -> Project Inspector."
 msgid "The project requires the package \"%s\".%sBut it was not found. See Project -> Project Inspector."
 msgstr "こそのプロジェクトはパッケージ%s%s%sを要求していますが、見つかりません。%sプロジェクト→プロジェクトインスペクタを参照のこと"
 
 #: lazarusidestrconsts.lispkgmangtherearetwounitswiththesamename1from2from
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There are two units with the same name:%s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
 msgid "There are two units with the same name:%s1. \"%s\" from %s%s2. \"%s\" from %s"
 msgstr "同じ名前のユニットが2つあります: %s%s1. %s%s%s from %s%s2. %s%s%s from %s%s%s"
@@ -13724,25 +13724,25 @@ msgid "There is a circular dependency in the packages. See package graph."
 msgstr "パッケージの循環参照があります。パッケージグラフを参照のこと"
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenameasapackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is a FPC unit with the same name as a package:%s%s%s%s%s%s"
 msgid "There is a FPC unit with the same name as a package:%s\"%s\""
 msgstr "パッケージ%s%s%s%s%s%sと同じ名前のFPCユニットがあります。"
 
 #: lazarusidestrconsts.lispkgmangthereisafpcunitwiththesamenamefrom
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is a FPC unit with the same name as:%s%s%s%s%s from %s%s%s"
 msgid "There is a FPC unit with the same name as:%s\"%s\" from %s"
 msgstr "同じ名前のFPCユニットがあります：%s%s%sの%s%s%s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyanotherpackagewiththename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"
 msgid "There is already another package with the name \"%s\".%sConflict package: \"%s\"%sFile: \"%s\""
 msgstr "既に%s%s%sという名前の他のパッケージがあります。%s矛盾するパッケージ：%s%s%s%sファイル: %s%s%s"
 
 #: lazarusidestrconsts.lispkgmangthereisalreadyapackageloadedfromfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Package -> Package Graph.%sReplace is impossible."
 msgid "There is already a package \"%s\" loaded%sfrom file \"%s\".%sSee Package -> Package Graph.%sReplace is impossible."
 msgstr "既にパッケージ %s%s%s が存在し、%sそれはファイル %s%s%s から読み込まれます。%sパッケージ→パッケージグラフを参照のこと。%s置換はできません。"
@@ -13752,7 +13752,7 @@ msgid "There is an unsaved package in the required packages. See package graph."
 msgstr "要求されたパッケージに保存されていないパッケージがあります。パッケージグラフを参照のこと。"
 
 #: lazarusidestrconsts.lispkgmangthereisaunitwiththesamenameasapackage1from2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is a unit with the same name as a package:%s%s1. %s%s%s from %s%s2. %s%s%s%s"
 msgid "There is a unit with the same name as a package:%s1. \"%s\" from %s%s2. \"%s\""
 msgstr "パッケージと同じ名前のユニットがあります: %s%s1. %s%s%s from %s%s2. %s%s%s%s"
@@ -13766,25 +13766,25 @@ msgid "Unable to create directory"
 msgstr "ディレクトリを作成できません。"
 
 #: lazarusidestrconsts.lispkgmangunabletocreateoutputdirectoryforpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create output directory %s%s%s%sfor package %s."
 msgid "Unable to create output directory \"%s\"%sfor package %s."
 msgstr "パッケージ%sの出力ディレクトリ%s%s%s%sを作成できません。"
 
 #: lazarusidestrconsts.lispkgmangunabletocreatepackagesourcedirectoryforpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create package source directory %s%s%s%sfor package %s."
 msgid "Unable to create package source directory \"%s\"%sfor package %s."
 msgstr "パッケージ%sのパッケージソースディレクトリ%s%s%s%sを作成できません。"
 
 #: lazarusidestrconsts.lispkgmangunabletocreatetargetdirectoryforlazarus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create target directory for Lazarus:%s%s%s%s.%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgid "Unable to create target directory for Lazarus:%s\"%s\".%sThis directory is needed for the new changed Lazarus IDE with your custom packages."
 msgstr "Lazarus の対象ディレクトリ %s%s%s%s を作成できません。%sこのディレクトリはあなたのカスタムパッケージで新たに変更された Lazarus IDE に必要です。"
 
 #: lazarusidestrconsts.lispkgmangunabletodeletefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to delete file %s%s%s."
 msgid "Unable to delete file \"%s\"."
 msgstr "ファイル%s%s%sを削除できません。"
@@ -13794,7 +13794,7 @@ msgid "Unable to delete file"
 msgstr "ファイルを削除できません。"
 
 #: lazarusidestrconsts.lispkgmangunabletodeleteoldstatefileforpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to delete old state file %s%s%s%sfor package %s."
 msgid "Unable to delete old state file \"%s\"%sfor package %s."
 msgstr "パッケージ%sの古い状態ファイル%s%s%s%sを削除できません。"
@@ -13804,25 +13804,25 @@ msgid "Unable to load package"
 msgstr "パッケージを読み込めません"
 
 #: lazarusidestrconsts.lispkgmangunabletoopenthepackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to open the package %s%s%s.%sThis package was marked for installation."
 msgid "Unable to open the package \"%s\".%sThis package was marked for installation."
 msgstr "パッケージ%s%s%sを開けません。%sこのパッケージをインストールするようマークされています。"
 
 #: lazarusidestrconsts.lispkgmangunabletoreadstatefileofpackageerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read state file %s%s%s%sof package %s.%sError: %s"
 msgid "Unable to read state file \"%s\"%sof package %s.%sError: %s"
 msgstr "パッケージ%sの状態ファイル%s%s%s%sを読めません。%sエラー: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritepackagetofileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
 msgid "Unable to write package \"%s\"%sto file \"%s\".%sError: %s"
 msgstr "パッケージ %s%s%s%sをファイル %s%s%sに書き込めません。%sエラー: %s"
 
 #: lazarusidestrconsts.lispkgmangunabletowritestatefileofpackageerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to write state file %s%s%s%sof package %s.%sError: %s"
 msgid "Unable to write state file \"%s\"%sof package %s.%sError: %s"
 msgstr "パッケージ%sの状態ファイル %s%s%s%sに書き込めません。%sエラー: %s"
@@ -13844,7 +13844,7 @@ msgid "Use unit"
 msgstr "ユニットを使用"
 
 #: lazarusidestrconsts.lispkgmangwarningthefilebelongstothecurrentproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Warning: The file %s%s%s%sbelongs to the current project."
 msgid "Warning: The file \"%s\"%sbelongs to the current project."
 msgstr "警告：ファイル%s%s%s%sは現在のプロジェクトに属しています。"
@@ -13878,13 +13878,13 @@ msgid "Cannot register components without unit"
 msgstr "ユニット無しではコンポーネントを登録できません"
 
 #: lazarusidestrconsts.lispkgsyscomponentclassalreadydefined
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Component Class %s%s%s already defined"
 msgid "Component Class \"%s\" already defined"
 msgstr "コンポーネントクラス %s%s%s はすでに定義されています"
 
 #: lazarusidestrconsts.lispkgsysfilename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%sFile Name: %s%s%s"
 msgid "%s%sFile Name: \"%s\""
 msgstr "%s%sファイル名: %s%s%s"
@@ -13898,7 +13898,7 @@ msgid "Invalid Unitname: %s"
 msgstr "無効なユニット名: %s"
 
 #: lazarusidestrconsts.lispkgsyslpkfilename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%slpk file: %s%s%s"
 msgid "%s%slpk file: \"%s\""
 msgstr "%s%slpk ファイル: %s%s%s"
@@ -13924,7 +13924,7 @@ msgid "%s%sThe lpk file was not found."
 msgstr "%s%s そのlpkは見つかりませんでした。"
 
 #: lazarusidestrconsts.lispkgsysthepackageisinstalledbutnovalidpackagefilewasfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s%s%s is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgid "The package \"%s\" is installed, but no valid package file (.lpk) was found.%sA broken dummy package was created."
 msgstr "パッケージ %s%s%sがインストールされましたが、有効なパッケージファイル(.lpk)が見つかりません。%s壊れたダミーパッケージが作成されました。"
@@ -13938,7 +13938,7 @@ msgid "This package is installed, but the lpk file was not found. All its compon
 msgstr "このパッケージはインストールされましたが、lpkファイルが見つかりません。そのすべてのコンポーネントは無効にされています。修復してください。"
 
 #: lazarusidestrconsts.lispkgsysunitname
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%sUnit Name: %s%s%s"
 msgid "%s%sUnit Name: \"%s\""
 msgstr "%s%sユニット名: %s%s%s"
@@ -13957,7 +13957,7 @@ msgid "The following dependencies are not needed, because of the automatic trans
 msgstr "パッケージ依存性の間の自動的な他動性のため、以下の依存性は不要です。"
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s%s"
 msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s"
 msgstr "このプロジェクトは引き続くパッケージの出力ディレクトリをオーバーライドします。%sプロジェクト / プロジェクトオプション/ %s%s%s"
@@ -13971,7 +13971,7 @@ msgid "Transitivity"
 msgstr "推移性"
 
 #: lazarusidestrconsts.lispkgunabletoreadpackagefileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read package file %s%s%s.%sError: %s"
 msgid "Unable to read package file \"%s\".%sError: %s"
 msgstr "パッケージファイル%s%s%sを読めません。%sエラー: %s"
@@ -14124,7 +14124,7 @@ msgid "Private Method"
 msgstr "privateメソッド"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Probably you need to install some packages before continuing.%s%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%s%sIt is recommended to cancel and install these packages first.%s%s"
 msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
 msgstr "おそらく続行する前にいくつかのパッケージをインストールする必要があります。%s%s警告:%sプロジェクトはデザイナでそのフォームを開くのに必要になるであろう以下のデザイン時パッケージを用いています。もし続行するならばコンポーネントが見付からないというエラーが表示されるかもしれず、フォーム読み込みがおそらく非常に不快な結果をもたらします。%s%sキャンセルして、これらのパッケージをまずインストールすることが推奨されます。%s%s"
@@ -14204,13 +14204,13 @@ msgid "Package not found"
 msgstr "パッケージが見つかりません"
 
 #: lazarusidestrconsts.lisprojaddthedependencywasnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The dependency %s%s%s was not found.%sPlease choose an existing package."
 msgid "The dependency \"%s\" was not found.%sPlease choose an existing package."
 msgstr "依存関係%s%s%sが見つかりませんでした。%s存在しているパッケージを選んでください。"
 
 #: lazarusidestrconsts.lisprojaddthemaximumversionisinvalid
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddthemaximumversionisinvalid"
 msgid "The Maximum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
@@ -14222,38 +14222,38 @@ msgid "The Maximum Version is lower than the Minimim Version."
 msgstr "バージョンの上限値が下限値より小さくなっています。"
 
 #: lazarusidestrconsts.lisprojaddtheminimumversionisinvalid
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Minimum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgctxt "lazarusidestrconsts.lisprojaddtheminimumversionisinvalid"
 msgid "The Minimum Version \"%s\" is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
 msgstr "バージョンの下限値%s%s%sが無効です。%sメジャー.マイナー.リリース.ビルドの書式を用いてください。%s例： 1.0.20.10"
 
 #: lazarusidestrconsts.lisprojaddthepackagenameisinvalidplasechooseanexistingpackag
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package name %s%s%s is invalid.%sPlase choose an existing package."
 msgid "The package name \"%s\" is invalid.%sPlase choose an existing package."
 msgstr "パッケージ名 %s%s%sは無効です。%s存在するパッケージを選んでください。"
 
 #: lazarusidestrconsts.lisprojaddtheprojecthasalreadyadependency
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The project has already a dependency for the package %s%s%s."
 msgid "The project has already a dependency for the package \"%s\"."
 msgstr "このプロジェクトは既にパッケージ %s%s%s に依存性しています。"
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the project%swith file: \"%s\"."
 msgstr "ユニット名%s%s%sはプロジェクト%sに既に存在しています。ファイル：%s%s%s"
 
 #: lazarusidestrconsts.lisprojaddtheunitnamealreadyexistsintheselection
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s already exists in the selection%swith file: %s%s%s."
 msgid "The unit name \"%s\" already exists in the selection%swith file: \"%s\"."
 msgstr "ユニット名%s%s%sは選択した%sに既に存在しています。ファイル：%s%s%s"
 
 #: lazarusidestrconsts.lisprojaddtheunitnameisnotavalidpascalidentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit name %s%s%s is not a valid Pascal identifier."
 msgid "The unit name \"%s\" is not a valid Pascal identifier."
 msgstr "ユニット名 %s%s%s は有効な Pascal 識別子ではありません。"
@@ -14902,7 +14902,7 @@ msgid "File not executable"
 msgstr "ファイルは実行可能ではありません"
 
 #: lazarusidestrconsts.lisrunparamsthehostapplicationisnotexecutable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The host application %s%s%s is not executable."
 msgid "The host application \"%s\" is not executable."
 msgstr "そのホストアプリケーション%s%s%sは実行ファイルではありません。"
@@ -15052,7 +15052,7 @@ msgid "Save file as"
 msgstr "名前を付けて保存"
 
 #: lazarusidestrconsts.lissavefilebeforeclosingform
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgid "Save file \"%s\"%sbefore closing form \"%s\"?"
 msgstr "フォーム %s%s%s を閉じる前にファイル %s%s%s%s を保存しますか？"
@@ -15468,13 +15468,13 @@ msgid "&Source Breakpoint ..."
 msgstr "ソースのブレークポイント(&S) ..."
 
 #: lazarusidestrconsts.lissourcedirectoryanddestinationdirectoryarethesamema
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Source directory %s%s%s%sand destination directory %s%s%s%sare the same.%s%sMaybe you misunderstand this feature.%sIt will clean/recreate the destination directory%sand copies the package/project into it."
 msgid "Source directory \"%s\"%sand destination directory \"%s\"%sare the same. Maybe you misunderstand this feature.%sIt will clean/recreate the destination directory and copy the package/project into it."
 msgstr "ソースディレクトリ%s%s%s%sと行き先ディレクトリ%s%s%s%sが同じです。%s%sおそらくあなたはこの機能を誤解しています。%sこの機能は、行き先ディレクトリの中身を掃除するか再作成し、%sパッケージやプロジェクトをその中にコピーします。"
 
 #: lazarusidestrconsts.lissourcedirectorydoesnotexist
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Source directory %s%s%s does not exist."
 msgid "Source directory \"%s\" does not exist."
 msgstr "ソースディレクトリ %s%s%s は存在しません"
@@ -15488,7 +15488,7 @@ msgid "Source modified"
 msgstr "ソースが変更されています"
 
 #: lazarusidestrconsts.lissourceofpagehaschangedsave
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Source of page %s%s%s has changed. Save?"
 msgid "Source of page \"%s\" has changed. Save?"
 msgstr "ページ %s%s%sのソースが変更されています。保存しますか？"
@@ -15624,7 +15624,7 @@ msgid "Invalid variable name"
 msgstr "無効な変数名"
 
 #: lazarusidestrconsts.lissvuoisnotavalididentifier
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s%s%s is not a valid identifier."
 msgid "\"%s\" is not a valid identifier."
 msgstr "%s%s%s は無効な識別子です"
@@ -15739,25 +15739,25 @@ msgid "The Application Bundle was created for \"%s\""
 msgstr "アプリケーションバンドルが\"%s\"について作成されました。"
 
 #: lazarusidestrconsts.listheclassisatcontrolandcannotbepastedontoanoncontro
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The class %s%s%s is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgid "The class \"%s\" is a TControl and cannot be pasted onto a non control.%sUnable to paste."
 msgstr "クラス%s%s%sはTControlで、非コントロールの上には貼り付けることができません。%s貼り付け不能"
 
 #: lazarusidestrconsts.listhecodetoolsfoundanerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Codetools found an error:%s%s%s"
 msgid "The Codetools found an error:%s%s"
 msgstr "コードツールがエラーを見つけました:%s%s%s"
 
 #: lazarusidestrconsts.listhecommandafterisnotexecutable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The command after %s%s%s is not executable."
 msgid "The command after \"%s\" is not executable."
 msgstr " %s%s%sの後のコマンドは実行できません。"
 
 #: lazarusidestrconsts.listhecommandafterpublishingisinvalid
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The command after publishing is invalid:%s%s%s%s"
 msgid "The command after publishing is invalid:%s\"%s\""
 msgstr "発行後のコマンドは無効です：%s%s%s%s"
@@ -15771,13 +15771,13 @@ msgid "The component %s can not be deleted, because it is not owned by %s."
 msgstr "コンポーネント%sを削除できません。なぜならそれが%sに所有されているためです。"
 
 #: lazarusidestrconsts.listhecomponenteditorofclasshascreatedtheerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The component editor of class %s%s%s has created the error:%s%s%s%s"
 msgid "The component editor of class \"%s\" has created the error:%s\"%s\""
 msgstr "クラス%s%s%sのコンポーネントエディタがエラーを出しました：%s%s%s%s"
 
 #: lazarusidestrconsts.listhecomponenteditorofclassinvokedwithverbhascreated
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The component editor of class %s%s%s%sinvoked with verb #%s %s%s%s%shas created the error:%s%s%s%s"
 msgid "The component editor of class \"%s\"%sinvoked with verb #%s \"%s\"%shas created the error:%s\"%s\""
 msgstr "クラス %s%s%s%s (それは、動詞#%s %s%s%s%s で呼びだされた)のコンポーネントエディタがエラーを発生させました:%s%s%s%s"
@@ -15811,7 +15811,7 @@ msgid "The current FPC has no config file. It will probably miss some units. Che
 msgstr "現在のFPCには設定ファイルがありません。いくつかのユニットがないようです。fpcのインストールをチェックして下さい。"
 
 #: lazarusidestrconsts.listhedebuggerdoesnotexistsorisnotexecutableseeenviro
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The debugger %s%s%s%sdoes not exist or is not executable.%s%sSee Tools -> Options -> Debugger options"
 msgid "The debugger \"%s\"%sdoes not exist or is not executable.%sSee Tools -> Options -> Debugger options"
 msgstr "デバッガ %s%s%s%s は存在しないか、実行ファイルではありません。%s%sツール→オプション→デバッガオプションを参照のこと"
@@ -15825,13 +15825,13 @@ msgid "The default mode must be stored in project, not in session."
 msgstr "既定のモードはセッションではなくプロジェクトに保管されなければなりません。"
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexist
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The destination directory%s%s%s%s does not exist."
 msgid "The destination directory%s\"%s\" does not exist."
 msgstr "行き先のディレクトリ%s%s%s%sは存在しません。"
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The destination directory %s%s%s does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "行き先のディレクトリ%s%s%sは存在しません。%sメニュー > プロジェクト > プロジェクトオプションでプロジェクトの対象ファイルをチェックしてください。"
@@ -15845,19 +15845,19 @@ msgid "The directory \"%s\" contains no project units any more. Remove this dire
 msgstr "ディレクトリ\"%s\"はプロジェクトユニットをもはや含んでいません。このディレクトリをプロジェクトのユニット検索パスから削除しますか？"
 
 #: lazarusidestrconsts.listhedirectoryisnolongerneededintheunitpathremoveit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The directory %s%s%s is no longer needed in the unit path.%sRemove it?"
 msgid "The directory \"%s\" is no longer needed in the unit path.%sRemove it?"
 msgstr "ディレクトリ%s%s%sはもうユニットパスに必要ではありません。%s削除しますか？"
 
 #: lazarusidestrconsts.listhedirectoryisnotwritable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The directory %s%s%s is not writable."
 msgid "The directory \"%s\" is not writable."
 msgstr "フォルダ %s%s%s は、書き込み可能ではありません。"
 
 #: lazarusidestrconsts.listhedirectoryisnotyetintheunitpathaddit
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The directory %s%s%s is not yet in the unit path.%sAdd it?"
 msgid "The directory \"%s\" is not yet in the unit path.%sAdd it?"
 msgstr "ディレクトリ%s%s%sはまだユニットパスにありません。%s追加しますか？"
@@ -15867,7 +15867,7 @@ msgid "The directory %s was not found."
 msgstr "ディレクトリ%sは見つかりませんでした。"
 
 #: lazarusidestrconsts.listhefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s"
 msgid "The file \"%s\""
 msgstr "ファイル %s%s%s"
@@ -15881,13 +15881,13 @@ msgid "The file index is needed for functions like find declaration. While scann
 msgstr "そのファイル索引は宣言の検索などの機能に必要です。スキャニング中にソースの編集やコンパイルはできますが、宣言の検索のような機能は「ユニットが見つかりません」エラーを表示するでしょう。これには少々時間がかかります。"
 
 #: lazarusidestrconsts.listhefileisasymlinkopeninstead
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s is a symlink.%s%sOpen %s%s%s instead?"
 msgid "The file \"%s\" is a symlink.%sOpen \"%s\" instead?"
 msgstr "ファイル%s%s%sはシンボリックリンクです。%s%s　%s%s%sを代わりに開きますか？ "
 
 #: lazarusidestrconsts.listhefileisnotalazarusprojectcreateanewprojectforthi
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s is not a Lazarus project.%sCreate a new project for this %s?"
 msgid "The file \"%s\" is not a Lazarus project.%sCreate a new project for this \"%s\"?"
 msgstr "ファイル %s%s%s は、Lazarus プロジェクトではありません。%sこの %s のための新しいプロジェクトを作成しますか？"
@@ -15901,7 +15901,7 @@ msgid "The file mask \"%s\" is not a valid regular expression."
 msgstr "マスク\"%s\"は有効な正規表現ではありません。"
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%sseems to be a program. Close current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
 msgstr "ファイル %s%s%s%s はプログラムのようです。現在のプロジェクトを閉じ、このプログラムについての新しい Lazarus プロジェクトを作成しますか？%s\"いいえ\" を選択するとファイルを通常のソースとして読み込みます。"
@@ -15911,25 +15911,25 @@ msgid "The file %s seems to be the program file of an existing Lazarus Project."
 msgstr "ファイル %s は既にある Lazarus プロジェクトのプログラムファイルのようです。"
 
 #: lazarusidestrconsts.listhefilewasfoundinoneofthesourcedirectoriesofthepac
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%s%sDelete ambiguous file?"
 msgid "The file \"%s\"%swas found in one of the source directories of the package %s and looks like a compiled unit. Compiled units must be in the output directory of the package, otherwise other packages can get problems using this package.%sDelete ambiguous file?"
 msgstr "ファイル%s%s%s%sはパッケージのソースディレクトリの一つに見つかりました。%s それはコンパイルされたユニットのようです。コンパイルされたユニットはパッケージの出力ディレクトリになければならず、さもなければ他のパッケージがこのパッケージを利用することで問題が生じかねません。%s%s曖昧なファイルを削除しますか？"
 
 #: lazarusidestrconsts.listhefilewasnotfounddoyouwanttolocateityourself
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%swas not found.%sDo you want to locate it yourself ?%s"
 msgid "The file \"%s\" was not found.%sDo you want to locate it yourself?"
 msgstr "ファイル %s%s%s%sは見つかりませんでした。%sあなた自身で位置決めしますか？%s"
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The file %s%s%s%swas not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgid "The file \"%s\" was not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
 msgstr "ファイル %s%s%s%sは見つかりませんでした。%s[無視]を選ぶとプロジェクトの読み込みを続け、%s[中止]を選ぶと読み込みを停止します。"
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The following methods used by %s are not in the source%s%s%s%s%s%sRemove the dangling references?"
 msgid "The following methods used by %s are not in the source%s%s%s%s%sRemove the dangling references?"
 msgstr "%sに用いられている以下のメソッドはソース%s%s%s%s%s%sにありません。その付随参照を削除しますか？"
@@ -15947,19 +15947,19 @@ msgid "The identifier is a unit. Please use the File - Save as function to renam
 msgstr "その識別子はユニットです。ファイル - 名前を付けて保存でユニット名を変更してください。"
 
 #: lazarusidestrconsts.listhekeyisalreadyassignedtoremovetheoldassignmentand
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The key %s%sis already assigned to %s.%s%sRemove the old assignment and assign the key to the new function%s%s?"
 msgid "The key %s%sis already assigned to %s.%sRemove the old assignment and assign the key to the new function%s%s?"
 msgstr "キー%s%sは素手に%sに割り当てられています。.%s%s古い割り当てを削除し、そのキーを関数%s%sに割り当てますか？"
 
 #: lazarusidestrconsts.listhelaunchingapplicationbundledoesnotexists
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%s%sSee Project -> Project Options -> Application for settings."
 msgid "The Application Bundle %s%sneeded for execution does not exist or is not executable.%sDo you want to create one?%sSee Project -> Project Options -> Application for settings."
 msgstr "実行ファイルの実行に必要なアプリケーションバンドル%s%s が存在しません。%s作成しますか？%s%s設定はプロジェクト→プロジェクトオプション→アプリケーションで行えます。"
 
 #: lazarusidestrconsts.listhelaunchingapplicationdoesnotexistsorisnotexecuta
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The launching application %s%s%s%sdoes not exist or is not executable.%s%sSee Run -> Run parameters -> Local"
 msgid "The launching application \"%s\"%sdoes not exist or is not executable.%sSee Run -> Run parameters -> Local"
 msgstr "起動しようとしているアプリケーション%s%s%s%sは存在しないか、実行ファイルではありません。%s%s実行→実行パラメータ→ローカル を参照のこと"
@@ -16005,7 +16005,7 @@ msgid "The \"Other sources\" contains a directory which is already in the \"Othe
 msgstr "\"他のソース\"は既に\"他のユニットファイル\"にあるディレクトリを含んでいます。%s%s"
 
 #: lazarusidestrconsts.listheoutputdirectoryismissing
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The output directory %s%s%s is missing."
 msgid "The output directory \"%s\" is missing."
 msgstr "出力ディレクトリ%s%s%sがありません。"
@@ -16059,7 +16059,7 @@ msgid "The package %s can not be uninstalled, because it is needed by the IDE it
 msgstr "パッケージ %s をアンインストールできません。なぜなら、 IDE自身が必要としているからです。"
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%s%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgstr "パッケージ %s はいかなる\"Register\"手続きも含まず、これは一般的にいかなるIDEアドオンも提供しないことを意味します。それをインストールすることはおそらくIDEのサイズを大きくするだけで、IDEを不安定にすることすらあります。%s%sヒント：もしパッケージをプロジェクトで使いたければ、メニューの[プロジェクトに追加]を使いましょう。"
@@ -16077,7 +16077,7 @@ msgid "The path of \"make\" is not correct: \"%s\""
 msgstr "\"make\"のパスが正しくありません：\"%s\""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The program %smake%s was not found.%sThis tool is needed to build Lazarus.%s"
 msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
 msgstr "プログラム %smake%s が見つかりませんでした。%sこのツールは Lazarus を構築するのに必要です。%s"
@@ -16095,13 +16095,13 @@ msgid "The project has no main source file."
 msgstr "プロジェクトにメインソースファイルがありません。"
 
 #: lazarusidestrconsts.listheprojectinfofileisequaltotheprojectmainsource
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The project info file %s%s%s%sis equal to the project main source file!"
 msgid "The project info file \"%s\"%sis equal to the project main source file!"
 msgstr "プロジェクト情報ファイル%s%s%s%sがプロジェクトメインソースファイルに等しいです！"
 
 #: lazarusidestrconsts.listheprojectinformationfilehaschangedondisk
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The project information file %s%s%s%shas changed on disk."
 msgid "The project information file \"%s\"%shas changed on disk."
 msgstr "プロジェクト情報ファイル %s%s%s%s はディスク上で変更されました。"
@@ -16129,7 +16129,7 @@ msgid "There are other files in the directory with the same name,%swhich only di
 msgstr "ディレクトリに%s大文字小文字だけが異なる同じ名前をもつ他のファイル%s%s%sがあります。それ（ら）を削除しますか？"
 
 #: lazarusidestrconsts.listhereisafilewiththesamenameandasimilarextension
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is a file with the same name and a similar extension ond disk%sFile: %s%sAmbiguous File: %s%s%sDelete ambiguous file?"
 msgid "There is a file with the same name and a similar extension on disk%sFile: %s%sAmbiguous File: %s%sDelete ambiguous file?"
 msgstr "ディスクに同じ名前で類似した拡張子をもつファイルがあります。%sファイル： %s%s紛らわしいファイル: %s%s%s紛らわしいファイルを削除しますか？"
@@ -16155,13 +16155,13 @@ msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already a form with the name %s%s%s"
 msgid "There is already a form with the name \"%s\""
 msgstr "既に%s%s%sという名前のフォームがあります。"
 
 #: lazarusidestrconsts.listhereisalreadyamacrowiththename
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already a macro with the name %s%s%s."
 msgid "There is already a macro with the name \"%s\"."
 msgstr "既に%s%s%sという名称のマクロがあります。"
@@ -16179,13 +16179,13 @@ msgid "There is already a unit \"%s\" in %s%sOld: %s%sNew: %s%sYou have to make 
 msgstr ""
 
 #: lazarusidestrconsts.listhereisalreadyaunitwiththenamepascalidentifiersmus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgid "There is already a unit with the name \"%s\". Pascal identifiers must be unique."
 msgstr "既に%s%s%sという名前のユニットがあります。Pascal識別子は唯一でなければなりません。"
 
 #: lazarusidestrconsts.listhereisaunitwiththenameintheprojectpleasechoose
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is a unit with the name %s%s%s in the project.%sPlease choose a different name"
 msgid "There is a unit with the name \"%s\" in the project.%sPlease choose a different name"
 msgstr "プロジェクトに%s%s%sという名前のユニットがあります。%s別の名前を選んでください。"
@@ -16199,7 +16199,7 @@ msgid "There must be at least one build mode."
 msgstr "少なくとも一つの構築モードが必要です。"
 
 #: lazarusidestrconsts.listheresourceclassdescendsfromprobablythisisatypofor
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The resource class %s%s%s descends from %s%s%s. Probably this is a typo for TForm."
 msgid "The resource class \"%s\" descends from \"%s\". Probably this is a typo for TForm."
 msgstr "そのリソースクラス %s%s%s は %s%s%s から派生しています。おそらくこれはTFormのタイプミスです。"
@@ -16241,13 +16241,13 @@ msgid "The target %s is not writable."
 msgstr ""
 
 #: lazarusidestrconsts.listhetestdirectorycouldnotbefoundseeideopt
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The Test Directory could not be found:%s%s%s%s%s(see IDE options)"
 msgid "The Test Directory could not be found:%s\"%s\"%s(see IDE options)"
 msgstr "テストディレクトリが見つかりませんでした：%s%s%s%s%s（IDEオプションを参照のこと）"
 
 #: lazarusidestrconsts.listheunitalreadyexists
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit %s%s%s already exists."
 msgid "The unit \"%s\" already exists."
 msgstr "ユニット%s%s%sの既に存在します。"
@@ -16265,7 +16265,7 @@ msgid "The unit has this name"
 msgstr "ユニットは、この名前を持っています。"
 
 #: lazarusidestrconsts.listheunitisnotlowercasethefreepascalcompiler
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit filename %s%s%s is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%s%sRename file lowercase?"
 msgid "The unit filename \"%s\" is not lowercase.%sThe Free Pascal compiler does not search for all cases. It is recommended to use lowercase filename.%sRename file lowercase?"
 msgstr "ユニットファイル名 %s%s%s は小文字ではありません。%sFree Pascal コンパイラは大文字小文字を区別して検索しません。小文字のファイル名を用いることが推奨されます。%s%s小文字に名称変更しますか？"
@@ -16279,19 +16279,19 @@ msgid "The unit %s is used by other files.%sUpdate references automatically?"
 msgstr "ユニット%sは他のファイルに用いられています。%s参照を自動的にアップデートしますか？"
 
 #: lazarusidestrconsts.listheunititselfhasalreadythenamepascalidentifiersmus
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
 msgid "The unit itself has already the name \"%s\". Pascal identifiers must be unique."
 msgstr "ユニットそれ自体が既に%s%s%sという名前を有しています。Pascal識別子は唯一でなければなりません。"
 
 #: lazarusidestrconsts.listheunitsearchpathofcontainsthesourcedirectoryofpac
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The unit search path of %s%s%s contains the source directory %s%s%s of package %s"
 msgid "The unit search path of \"%s\" contains the source directory \"%s\" of package %s"
 msgstr "%s%s%sのユニット検索パスはパッケージ %sのソースディレクトリ%s%s%sのを含んでいます。"
 
 #: lazarusidestrconsts.listheworkingdirectorydoesnotexistpleasechecktheworki
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The working directory %s%s%s does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgid "The working directory \"%s\" does not exist.%sPlease check the working directory in Menu > Run > Run parameters."
 msgstr "作業ディレクトリ %s%s%s が存在しません。%sメニュー>実行>実行パラメータで作業ディレクトリをチェックしてください。"
@@ -16321,7 +16321,7 @@ msgid "This project has only the default build mode."
 msgstr "このプロジェクトは既定の構築モードのみを持っています"
 
 #: lazarusidestrconsts.listhissetofoptionstobuildlazarusisnotsupportedbythis
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory %s%s%s is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgid "This set of options to build Lazarus is not supported by this installation.%sThe directory \"%s\" is not writable.%sSee the Lazarus website for other ways to install Lazarus."
 msgstr "このLazarus構築オプションセットは、このインストール過程においてサポートされていません。%sフォルダ %s%s%s は書き込み可能ではありません。%s他の方法でLazarusをインストールするために、Lazarus ウェブサイトを見てください。"
@@ -16637,7 +16637,7 @@ msgid "Not found"
 msgstr "見つかりません"
 
 #: lazarusidestrconsts.lisuereplacethisoccurrenceofwith
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
 msgid "Replace this occurrence of \"%s\"%s with \"%s\"?"
 msgstr "%s%s%s%s を %s%s%s に置き換えますか？"
@@ -16722,13 +16722,13 @@ msgid "Unable copy components to clipboard"
 msgstr "コンポーネントをクリップボードへコピーすることができません"
 
 #: lazarusidestrconsts.lisunabletoaddresourceheadercommenttoresourcefile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to add resource header comment to resource file %s%s%s%s.%sProbably a syntax error."
 msgid "Unable to add resource header comment to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "リソースヘッダコメントをリソースファイル%s%s%s%sに追加できません。%sおそらく文法エラーです。"
 
 #: lazarusidestrconsts.lisunabletoaddresourcetformdatatoresourcefileprobably
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to add resource T%s:FORMDATA to resource file %s%s%s%s.%sProbably a syntax error."
 msgid "Unable to add resource T%s:FORMDATA to resource file %s\"%s\".%sProbably a syntax error."
 msgstr "リソース T%s:FORMDATAをリソースファイル%s%s%s%sに追加できません。%sおそらく文法エラーです。"
@@ -16746,7 +16746,7 @@ msgid "Unable to add %s to project, because there is already a unit with the sam
 msgstr "既に同じ名前のユニットがプロジェクトにあるため、%sをプロジェクトに追加できません。"
 
 #: lazarusidestrconsts.lisunabletobackupfileto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to backup file %s%s%s to %s%s%s!"
 msgid "Unable to backup file \"%s\" to \"%s\"!"
 msgstr "%s%s%sを%s%s%sにバックアップできません!"
@@ -16764,7 +16764,7 @@ msgid "Unable to clean up destination directory"
 msgstr "対象ディレクトリを掃除できません。"
 
 #: lazarusidestrconsts.lisunabletocleanuppleasecheckpermissions
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to clean up %s%s%s.%sPlease check permissions."
 msgid "Unable to clean up \"%s\".%sPlease check permissions."
 msgstr "%s%s%sを掃除できません。%sパーミッションをチェックしてください。"
@@ -16774,13 +16774,13 @@ msgid "Unable to convert component text into binary format:%s%s"
 msgstr "コンポーネントテキストをバイナリ形式に変換できません:%s%s"
 
 #: lazarusidestrconsts.lisunabletoconvertfileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to convert file %s%s%s%sError: %s"
 msgid "Unable to convert file \"%s\"%sError: %s"
 msgstr "ファイル %s%s%s%sを変換できません。エラー: %s"
 
 #: lazarusidestrconsts.lisunabletoconverttextformdataoffileintobinarystream
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgid "Unable to convert text form data of file %s\"%s\"%sinto binary stream. (%s)"
 msgstr "ファイル%s%s%s%s%sのテキストフォームデータをバイナリストリームに変換できません。(%s)"
@@ -16790,19 +16790,19 @@ msgid "Unable to copy file"
 msgstr "ファイルをコピーできません。"
 
 #: lazarusidestrconsts.lisunabletocopyfileto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to copy file %s%s%s%sto %s%s%s"
 msgid "Unable to copy file \"%s\"%sto \"%s\""
 msgstr "ファイル%s%s%s%sを%s%s%sにコピーできません。"
 
 #: lazarusidestrconsts.lisunabletocreatebackupdirectory
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create backup directory %s%s%s."
 msgid "Unable to create backup directory \"%s\"."
 msgstr "バックアップディレクトリ%s%s%sを作成できません。"
 
 #: lazarusidestrconsts.lisunabletocreatedirectory
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create directory %s%s%s."
 msgid "Unable to create directory \"%s\"."
 msgstr "ディレクトリ%s%s%sを作成できません。"
@@ -16812,19 +16812,19 @@ msgid "Unable to create file"
 msgstr "ファイルを作成できません。"
 
 #: lazarusidestrconsts.lisunabletocreatefile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create file %s%s%s"
 msgid "Unable to create file \"%s\""
 msgstr "ファイル%s%s%sを作成できません。"
 
 #: lazarusidestrconsts.lisunabletocreatefile3
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create file%s%s%s%s"
 msgid "Unable to create file%s\"%s\""
 msgstr "ファイル%s%s%s%sを作成できません。"
 
 #: lazarusidestrconsts.lisunabletocreatelinkwithtarget
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to create link %s%s%s with target %s%s%s"
 msgid "Unable to create link \"%s\" with target \"%s\""
 msgstr "リンク%s%s%sをターゲット%s%s%sで作成できません。"
@@ -16846,7 +16846,7 @@ msgid "Unable to delete"
 msgstr "削除できません"
 
 #: lazarusidestrconsts.lisunabletodeleteambiguousfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to delete ambiguous file %s%s%s"
 msgid "Unable to delete ambiguous file \"%s\""
 msgstr "紛らわしいファイル%s%s%sを削除できません。"
@@ -16860,19 +16860,19 @@ msgid "Unable to find a ResourceString section in this or any of the used units.
 msgstr "このユニットもしくは使われているどのユニットにもリソース文字列セクションが見つかりません。"
 
 #: lazarusidestrconsts.lisunabletofindavalidclassnamein
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to find a valid classname in %s%s%s"
 msgid "Unable to find a valid classname in \"%s\""
 msgstr "有効なクラス名 %s%s%sが見つかりません。"
 
 #: lazarusidestrconsts.lisunabletofindfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to find file %s%s%s."
 msgid "Unable to find file \"%s\"."
 msgstr "ファイル%s%s%sが見つかりません。"
 
 #: lazarusidestrconsts.lisunabletofindfilechecksearchpathinprojectcompileroption
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to find file %s%s%s.%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgid "Unable to find file \"%s\".%sIf it belongs to your project, check search path in%sProject -> Compiler Options -> Search Paths -> Other Unit Files. If this file belongs to a package, check the appropriate package compiler options. If this file belongs to Lazarus, make sure compiling clean. If the file belongs to FPC then check fpc.cfg. If unsure, check Project -> CompilerOptions -> Test"
 msgstr "ファイル %s%s%s が見つかりません。%sもしそれがプロジェクトに属しているのであれば、%sプロジェクト → コンパイラオプション → 検索パス → その他のファイル で検索パスをチェックしてください。もしこのファイルがパッケージに属しているのであれば、適切なパッケージコンパイラオプションをチェックしてください。もしこのファイルが Lazarus に属しているのであれば、コンパイルが問題なく進むか確認してください。もしこのファイルが FPC に属しているのであれば、fpc.cfg をチェックしてください。もしよく分からなければ、プロジェクト → コンパイラオプション → テスト でチェックしてください。"
@@ -16886,7 +16886,7 @@ msgid "Unable to find method."
 msgstr "メソッドが見つかりません。"
 
 #: lazarusidestrconsts.lisunabletofindpascalunitpasppforlfmfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s%s%s%s"
 msgid "Unable to find Pascal unit (.pas, .pp) for .lfm file%s\"%s\""
 msgstr ".lfm ファイル %s%s%s%s に対応する Pascal ユニットファイル (.pas, .pp) が見つかりません"
@@ -16908,13 +16908,13 @@ msgid "unable to load file %s: %s"
 msgstr "ファイル%sを読み込めません。%s"
 
 #: lazarusidestrconsts.lisunabletoloadpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to load package %s%s%s"
 msgid "Unable to load package \"%s\""
 msgstr "パッケージ%s%s%sを読み込めません"
 
 #: lazarusidestrconsts.lisunabletoloadthecomponentclassbecauseitdependsonits
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to load the component class %s%s%s, because it depends on itself."
 msgid "Unable to load the component class \"%s\", because it depends on itself."
 msgstr "コンポーネントクラス %s%s%s を読み込めません。なぜならそれはそれ自身に依存しているからです。"
@@ -16940,13 +16940,13 @@ msgid "Unable to read file"
 msgstr "ファイルを読めません。"
 
 #: lazarusidestrconsts.lisunabletoreadfile2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read file %s%s%s!"
 msgid "Unable to read file \"%s\"."
 msgstr "ファイル%s%s%sを読めません！"
 
 #: lazarusidestrconsts.lisunabletoreadfileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read file %s%s%s%sError: %s"
 msgid "Unable to read file \"%s\"%sError: %s"
 msgstr "ファイル%s%s%s%sを読めません。エラー: %s"
@@ -16960,14 +16960,14 @@ msgid "unable to read process ExitStatus"
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletoreadtheprojectinfofile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to read the project info file%s%s%s%s."
 msgctxt "lazarusidestrconsts.lisunabletoreadtheprojectinfofile"
 msgid "Unable to read the project info file%s\"%s\"."
 msgstr "プロジェクト情報ファイル%s%s%s%sを読み込みできません。"
 
 #: lazarusidestrconsts.lisunabletoremoveoldbackupfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to remove old backup file %s%s%s!"
 msgid "Unable to remove old backup file \"%s\"!"
 msgstr "古いバックアップファイル%s%s%sを削除できません！"
@@ -16977,7 +16977,7 @@ msgid "Unable to remove project title from source.%s%s"
 msgstr "ソースからプロジェクトタイトルを削除できません。%s%s"
 
 #: lazarusidestrconsts.lisunabletorenameambiguousfileto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to rename ambiguous file %s%s%s%sto %s%s%s"
 msgid "Unable to rename ambiguous file \"%s\"%sto \"%s\""
 msgstr "曖昧なファイル名%s%s%s%sを%s%s%sに変更できません。"
@@ -16987,13 +16987,13 @@ msgid "Unable to rename file"
 msgstr "名称を変更できません。"
 
 #: lazarusidestrconsts.lisunabletorenamefileto
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to rename file %s%s%s to %s%s%s!"
 msgid "Unable to rename file \"%s\" to \"%s\"!"
 msgstr "ファイル%s%s%sを%s%s%sに名称変更できません！"
 
 #: lazarusidestrconsts.lisunabletorenamefileto2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to rename file %s%s%s%sto %s%s%s."
 msgid "Unable to rename file \"%s\"%sto \"%s\"."
 msgstr "ファイル%s%s%s%sを%s%s%sに名称変更できません。"
@@ -17043,7 +17043,7 @@ msgid "Unable to update CreateForm statement in project source"
 msgstr "プロジェクトソースのCreateForm文をアップデートできません。"
 
 #: lazarusidestrconsts.lisunabletowrite2
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to write %s%s%s"
 msgid "Unable to write \"%s\""
 msgstr "%s%s%sを書き込めません"
@@ -17057,13 +17057,13 @@ msgid "Unable to write file \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lisunabletowritefileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to write file %s%s%s%sError: %s"
 msgid "Unable to write file \"%s\"%sError: %s"
 msgstr "ファイル%s%s%sに書き込めません。%sエラー: %s"
 
 #: lazarusidestrconsts.lisunabletowritetheprojectinfofileerror
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unable to write the project info file%s%s%s%s.%sError: %s"
 msgid "Unable to write the project info file%s\"%s\".%sError: %s"
 msgstr "プロジェクト情報ファイル %s%s%s%s に書き込むことができません 。%sエラー: %s"
@@ -17102,7 +17102,7 @@ msgid "Uninstall selection"
 msgstr "選択対象をアンインストール"
 
 #: lazarusidestrconsts.lisunithaschangedsave
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Unit %s%s%s has changed. Save?"
 msgid "Unit \"%s\" has changed. Save?"
 msgstr "ユニット%s%s%sは変更されています。保存しますか？"
@@ -17112,7 +17112,7 @@ msgid "Unit identifier exists"
 msgstr "ユニットの識別子が存在します"
 
 #: lazarusidestrconsts.lisunitinpackage
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "%s unit %s in package %s%s"
 msgid "%s unit %s in package %s"
 msgstr "%s%sパッケージ内の%s ユニット %s"
@@ -17387,7 +17387,7 @@ msgid "Warning: "
 msgstr "警告："
 
 #: lazarusidestrconsts.liswarningambiguousfilefoundsourcefileis
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Warning: ambiguous file found: %s%s%s. Source file is: %s%s%s"
 msgid "Warning: ambiguous file found: \"%s\". Source file is: \"%s\""
 msgstr "警告：紛らわしいファイルが見つかりました: %s%s%s。ソースファイルは%s%s%sです。"
@@ -17458,7 +17458,7 @@ msgid "Welcome to Lazarus IDE %s"
 msgstr "Lazarus IDEへようこそ %s"
 
 #: lazarusidestrconsts.liswelcometolazarusthereisalreadyaconfigurationfromve
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Welcome to Lazarus %s%s%sThere is already a configuration from version %s in%s%s%s"
 msgid "Welcome to Lazarus %s%sThere is already a configuration from version %s in%s%s"
 msgstr "Lazarus へようこそ %s%s%s以下の場所にバージョン %s の設定が既に存在します。%s%s%s"

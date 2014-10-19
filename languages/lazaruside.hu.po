@@ -11890,7 +11890,6 @@ msgid "Move files?"
 msgstr "Fájlok áthelyezése?"
 
 #: lazarusidestrconsts.lismovefilesfromtothedirectoryof
-#| msgid "Move %s file(s) from %s to the directory%s%s%sof %s."
 msgid "Move %s file(s) from %s to the directory%s%s%sof %s?"
 msgstr "%s fájl áthelyezése innen: %s%s ide:%s%smely a(z) %s könyvtára?"
 
@@ -11907,7 +11906,6 @@ msgid "Move or Copy files?"
 msgstr "Fájlok áthelyezése vagy másolása?"
 
 #: lazarusidestrconsts.lismoveorcopyfilesfromtothedirectoryofpackage
-#| msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s."
 msgid "Move or copy %s file(s) from %s to the directory%s%s%sof %s?"
 msgstr "%s fájl áthelyezése vagy másolása innen: %s%s ide:%s%smely a(z) %s könyvtára?"
 
@@ -16793,7 +16791,6 @@ msgid "Update references?"
 msgstr "Frissíti a hivatkozásokat?"
 
 #: lazarusidestrconsts.lisupdatingpofilesfailedforpackage
-#| msgid "Updating po files failed for package %s"
 msgid "Updating PO files failed for package %s"
 msgstr "A(z) %s csomag PO fájljainak frissítése nem sikerült"
 
