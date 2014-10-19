@@ -447,7 +447,10 @@ begin
                                     'EnvironmentOptions/CompilerFilename/Value');
     if CheckFile(AFilename,Result) then exit;
 
-    // check PATH
+    // search fpc(.exe) in PATH
+    if CheckFile(GetDefaultCompilerFilename,Result) then exit;
+
+    // search ppccpu(.exe) in PATH
     if CheckFile(FindDefaultCompilerPath,Result) then exit;
 
     // check history
