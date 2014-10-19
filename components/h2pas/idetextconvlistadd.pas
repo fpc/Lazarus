@@ -17,7 +17,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  StdCtrls, IDETextConverter;
+  StdCtrls, IDETextConverter, h2passtrconsts;
 
 type
 
@@ -62,9 +62,9 @@ end;
 
 procedure TIDETextConvListAddDlg.FormCreate(Sender: TObject);
 begin
-  ClassLabel.Caption:='&Select a class';
-  AddButton.Caption:='&Add';
-  CancelButton.Caption:='&Cancel';
+  ClassLabel.Caption := h2pSelectAClass;
+  AddButton.Caption := h2pAdd;
+  CancelButton.Caption := h2pCancel2;
   
   FillClassComboBox;
   ToolClass:=TextConverterToolClasses[0];
@@ -79,8 +79,8 @@ end;
 procedure TIDETextConvListAddDlg.AddButtonClick(Sender: TObject);
 begin
   if FToolClass=nil then begin
-    MessageDlg('Invalid class',
-      'Invalid class',mtError,[mbCancel],0);
+    MessageDlg(h2pInvalidClass,
+      h2pInvalidClass, mtError, [mbCancel], 0);
     exit;
   end;
   ModalResult:=mrOk;

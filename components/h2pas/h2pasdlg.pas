@@ -247,54 +247,54 @@ end;
 procedure TH2PasDialog.FormCreate(Sender: TObject);
 begin
   Caption:=h2pCHeaderFileConverter;
-  FilesTabSheet.Caption:='C header files';
-    AddCHeadersButton.Caption:='Add .h files ...';
-    DeleteCHeadersButton.Caption:='Delete selected .h files';
-    EnableAllCHeadersButton.Caption:='Enable all .h files';
-    DisableAllCHeadersButton.Caption:='Disable all .h files';
-    MoveFileDownButton.Caption:='Move file down';
-    MoveFileUpButton.Caption:='Move file up';
-    FileInfoGroupBox.Caption:='File information';
-    AddIncludedCHeaderFilesButton.Caption:='Add included .h files';
-    MergeAllCHeadersExceptCurrentButton.Caption:='Merge all but this';
-  MergeFileCheckBox.Caption:='Merge file';
-  h2pasOptionsTabSheet.Caption:='h2pas Options';
-    h2pasOptionsCheckGroup.Caption:='Options';
+  FilesTabSheet.Caption := h2pCHeaderFiles;
+    AddCHeadersButton.Caption := h2pAddHFiles;
+    DeleteCHeadersButton.Caption := h2pDeleteSelectedHFiles;
+    EnableAllCHeadersButton.Caption := h2pEnableAllHFiles;
+    DisableAllCHeadersButton.Caption := h2pDisableAllHFiles;
+    MoveFileDownButton.Caption := h2pMoveFileDown;
+    MoveFileUpButton.Caption := h2pMoveFileUp;
+    FileInfoGroupBox.Caption := h2pFileInformation;
+    AddIncludedCHeaderFilesButton.Caption := h2pAddIncludedHFiles;
+    MergeAllCHeadersExceptCurrentButton.Caption := h2pMergeAllButThis;
+  MergeFileCheckBox.Caption := h2pMergeFile;
+  h2pasOptionsTabSheet.Caption := h2pH2pasOptions;
+    h2pasOptionsCheckGroup.Caption := h2pOptions;
     with h2pasOptionsCheckGroup.Items do begin
-      Add('-d  '+'Use external; for all procedures');
-      Add('-D  '+'Use external libname name "func__name" for functions');
-      Add('-e  '+'constants instead of enumeration type for C enums');
-      Add('-c  '+'Compact outputmode, less spaces and empty lines');
-      Add('-i  '+'Create an include file instead of a unit');
-      Add('-p  '+'Use letter P for pointer types instead of "^"');
-      Add('-pr '+'Pack all records (1 byte alignment)');
-      Add('-P  '+'use proc. vars for imports');
-      Add('-s  '+'Strip comments');
-      Add('-S  '+'Strip comments and info');
-      Add('-t  '+'Prepend  typedef  types with T');
-      Add('-T  '+'Prepend  typedef  types with T, and remove __');
-      Add('-v  '+'Replace pointer parameters by  var');
-      Add('-w  '+'Handle special win32 macros');
-      Add('-x  '+'Handle SYS__TRAP of the PalmOS header files');
-      Add('-C  '+'Use types in ctypes unit');
+      Add(h2pDUseExternalForAllProcedures);
+      Add(h2pDUseExternalLibnameNameFunc__nameForFunctions);
+      Add(h2pEConstantsInsteadOfEnumerationTypeForCEnums);
+      Add(h2pCCompactOutputmodeLessSpacesAndEmptyLines);
+      Add(h2pICreateAnIncludeFileInsteadOfAUnit);
+      Add(h2pPUseLetterPForPointerTypesInsteadOf);
+      Add(h2pPrPackAllRecords1ByteAlignment);
+      Add(h2pPUseProcVarsForImports);
+      Add(h2pSStripComments);
+      Add(h2pSStripCommentsAndInfo);
+      Add(h2pTPrependTypedefTypesWithT);
+      Add(h2pTPrependTypedefTypesWithTAndRemove__);
+      Add(h2pVReplacePointerParametersByVar);
+      Add(h2pWHandleSpecialWin32Macros);
+      Add(h2pXHandleSYS__TRAPOfThePalmOSHeaderFiles);
+      Add(h2pCUseTypesInCtypesUnit);
     end;
-    OutputExtLabel.Caption:='Output extension of new file';
-    OutputDirLabel.Caption:='Output directory';
-    LibNameLabel.Caption:='-l Library name';
-  PreH2PasTabSheet.Caption:='Before h2pas';
-    PreH2PasGroupBox.Caption:='Conversions before running h2pas';
-  PostH2PasTabSheet.Caption:='After h2pas';
-    PostH2PasGroupBox.Caption:='Conversions after running h2pas';
-  SettingsTabSheet.Caption:='Settings';
-    H2PasFilenameLabel.Caption:='h2pas program path';
-    OpenLastProjectOnStartCheckBox.Caption:='Open last settings on start';
-    SaveSettingsAsButton.Caption:='Save settings as ...';
-    NewSettingsButton.Caption:='New/Clear settings';
-  OpenSettingsButton.Caption:='&Open Settings';
-  SaveSettingsButton.Caption:='&Save Settings';
-  ConvertButton.Caption:='Run h2pas';
-  ConvertAndBuildButton.Caption:='Run h2pas and compile';
-  CloseButton.Caption:='&Close';
+    OutputExtLabel.Caption := h2pOutputExtensionOfNewFile;
+    OutputDirLabel.Caption := h2pOutputDirectory;
+    LibNameLabel.Caption := h2pLLibraryName;
+  PreH2PasTabSheet.Caption := h2pBeforeH2pas;
+    PreH2PasGroupBox.Caption := h2pConversionsBeforeRunningH2pas;
+  PostH2PasTabSheet.Caption := h2pAfterH2pas;
+    PostH2PasGroupBox.Caption := h2pConversionsAfterRunningH2pas;
+  SettingsTabSheet.Caption := h2pSettings;
+    H2PasFilenameLabel.Caption := h2pH2pasProgramPath;
+    OpenLastProjectOnStartCheckBox.Caption := h2pOpenLastSettingsOnStart;
+    SaveSettingsAsButton.Caption := h2pSaveSettingsAs;
+    NewSettingsButton.Caption := h2pNewClearSettings;
+  OpenSettingsButton.Caption := h2pOpenSettings;
+  SaveSettingsButton.Caption := h2pSaveSettings;
+  ConvertButton.Caption := h2pRunH2pas;
+  ConvertAndBuildButton.Caption := h2pRunH2pasAndCompile;
+  CloseButton.Caption := h2pClose;
   
   PreH2PasEdit:=TTextConvListEditor.Create(Self);
   with PreH2PasEdit do
@@ -342,10 +342,10 @@ begin
   //DebugLn(['TH2PasDialog.FormCloseQuery Converter.Modified=',Converter.Modified,' Project.Modified=',Project.Modified]);
   if Converter.Modified
   or ((Project<>nil) and (Project.Modified)) then begin
-    DlgResult:=QuestionDlg('Save changes?',
-      'Save settings?',mtConfirmation,
-      [mrYes,'Save and exit',mrNo,'Discard changes and exit',
-       mrCancel,'Do not exit'],0);
+    DlgResult := QuestionDlg(h2pSaveChanges,
+      h2pSaveSettings2, mtConfirmation,
+      [mrYes, h2pSaveAndExit, mrNo, h2pDiscardChangesAndExit,
+       mrCancel, h2pDoNotExit], 0);
     case DlgResult of
     mrYes: CanClose:=SaveSettings=mrOk;
     mrNo: ;
@@ -385,11 +385,9 @@ begin
     Node:=Node.GetNextMultiSelected;
   end;
   if DeleteFiles.Count>0 then begin
-    if QuestionDlg('Confirm removal',
-      'Delete these .h files from list?'#13
-      +#13
-      +DeleteFiles.Text,
-      mtConfirmation,[mrYes,'Remove all files',mrCancel],0)=mrYes
+    if QuestionDlg(h2pConfirmRemoval,
+      Format(h2pDeleteTheseHFilesFromList, [#13, #13, DeleteFiles.Text]),
+      mtConfirmation, [mrYes, h2pRemoveAllFiles, mrCancel], 0) = mrYes
     then begin
       Project.DeleteFiles(DeleteFiles);
     end;
@@ -405,9 +403,9 @@ begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InitIDEFileDialog(OpenDialog);
-    OpenDialog.Title:='Add *.h files ...';
+    OpenDialog.Title := h2pAddHFiles2;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect,ofFileMustExist];
-    OpenDialog.Filter:='C header file (*.h)|*.h|All files (*.*)|'+FileMask;
+    OpenDialog.Filter := Format(h2pCHeaderFileHHAllFiles, [FileMask]);
     if OpenDialog.Execute then begin
       Project.AddFiles(OpenDialog.Files);
       UpdateFilesPage(true);
@@ -474,9 +472,8 @@ begin
         CurFilename:=Project.ShortenFilename(sl[i]);
         s:=s+#13+CurFilename;
       end;
-      if QuestionDlg('Add .h files?',
-        'Add these .h files to h2pas project:'#13
-        +s+#13+'?',
+      if QuestionDlg(h2pAddHFiles3,
+        Format(h2pAddTheseHFilesToH2pasProject, [#13, s, #13]),
         mtConfirmation,[mrYes,mrNo],0)=mrYes
       then begin
         Project.AddFiles(sl);
@@ -579,9 +576,9 @@ begin
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InitIDEFileDialog(OpenDialog);
-    OpenDialog.Title:='Open project (*.h2p) ...';
+    OpenDialog.Title := h2pOpenProjectH2p;
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist];
-    OpenDialog.Filter:='h2pas project (*.h2p)|*.h2p|All files (*.*)|'+FileMask;
+    OpenDialog.Filter := Format(h2pH2pasProjectH2pH2pAllFiles, [FileMask]);
     if OpenDialog.Execute then begin
       OpenProject(OpenDialog.FileName,[]);
     end;
@@ -596,7 +593,7 @@ var
   ADirectory: String;
 begin
   ADirectory:=OutputDirEdit.Text;
-  if not ShowSelectDirDialog('Output directory',ADirectory) then exit;
+  if not ShowSelectDirDialog(h2pOutputDirectory, ADirectory) then exit;
   Project.OutputDirectory:=Project.ShortenFilename(ADirectory);
   OutputDirEdit.Text:=Project.OutputDirectory;
 end;
@@ -662,7 +659,7 @@ var
   AFilename: String;
 begin
   AFilename:=H2PasFilenameEdit.Text;
-  if not ShowOpenFileDialog('Filename of h2pas program',AFilename) then exit;
+  if not ShowOpenFileDialog(h2pFilenameOfH2pasProgram, AFilename) then exit;
   Converter.h2pasFilename:=AFilename;
   H2PasFilenameEdit.Text:=Converter.h2pasFilename;
 end;
@@ -700,7 +697,7 @@ begin
     'x': Project.PalmOSSYSTrap:=NewValue;
     'C': Project.UseCTypes:=NewValue;
     else
-      raise Exception.Create('TH2PasDialog.h2pasOptionsCheckGroupItemClick: Unknown option '+OptionStr);
+      raise Exception.Create(Format(h2pTH2PasDialogH2pasOptionsCheckGroupItemClickUnknown, [OptionStr]));
     end;
   end else begin
     if OptionStr='pr' then
@@ -786,20 +783,20 @@ begin
   AFile:=GetCurrentCHeaderFile;
   if AFile<>nil then begin
     Filename:=AFile.Filename;
-    s:='File: '+Filename;
+    s := Format(h2pFile, [Filename]);
     if not FileExistsCached(Filename) then
-      s:=s+#13+'ERROR: file not found';
+      s := s + #13 + h2pERRORFileNotFound2;
     if AFile.MergedBy<>nil then begin
       OutputFilename:=AFile.MergedBy.GetOutputFilename;
-      s:=s+#13+'Merged into: '+OutputFilename;
+      s := s + #13 + Format(h2pMergedInto, [OutputFilename]);
     end else begin
       OutputFilename:=AFile.GetOutputFilename;
-      s:=s+#13+'Output: '+OutputFilename;
+      s := s + #13 + Format(h2pOutput, [OutputFilename]);
     end;
 
     AFile.ReadCIncludes(false);
     if AFile.CIncludeCount>0 then begin
-      s:=s+#13#13+'Includes:';
+      s := s + #13#13 + h2pIncludes;
       for i:=0 to AFile.CIncludeCount-1 do begin
         IncFile:=AFile.CIncludes[i];
         s:=s+#13+Project.ShortenFilename(IncFile.Filename)+':'+IntToStr(IncFile.SrcPos.Y);
@@ -810,7 +807,7 @@ begin
     end;
 
     if AFile.CIncludedByCount>0 then begin
-      s:=s+#13#13+'Included by:';
+      s := s + #13#13 + h2pIncludedBy;
       for i:=0 to AFile.CIncludedByCount-1 do begin
         IncFile:=AFile.CIncludedBy[i];
         s:=s+#13+Project.ShortenFilename(IncFile.Owner.Filename)+':'+IntToStr(IncFile.SrcPos.Y);
@@ -822,7 +819,7 @@ begin
     MergeFileCheckBox.Checked:=AFile.Merge;
     MergeFileCheckBox.Enabled:=true;
   end else begin
-    FileInfoMemo.Caption:='No file selected.';
+    FileInfoMemo.Caption := h2pNoFileSelected;
     MergeFileCheckBox.Enabled:=false;
     AddIncludedCHeaderFilesButton.Enabled:=false;
   end;
@@ -837,13 +834,13 @@ procedure TH2PasDialog.CreateLazarusMenuItems;
 begin
   // add a context menu to the source editor. It will be freed by ide automatically
   fSrcEditSection:=RegisterIDESubMenu(SrcEditMenuSectionFirstStatic,
-                                      'h2pas project','h2pas',nil,nil);
+                                      h2pH2pasProject, 'h2pas', nil, nil);
   fSrcEditSection.AddHandlerOnShow(@OnShowSrcEditSection);
   // add a menu item to easily create a Search and replace from the current
   // selection or line of the source editor.
   fSrcEditAddSearchReplaceMenuItem:=RegisterIDEMenuCommand(SrcEditSection,
-      'Add "search and replace" tool before h2pas',
-      'Add "search and replace" tool before h2pas', 
+      h2pAddSearchAndReplaceToolBeforeH2pas,
+      h2pAddSearchAndReplaceToolBeforeH2pas,
       @OnAddSearchAndReplaceBeforeH2PasClick);
 end;
 
@@ -963,7 +960,7 @@ begin
       CurFile:=Project.CHeaderFiles[i];
       s:=Project.ShortenFilename(CurFile.Filename);
       if CurFile.CIncludedByCount>0 then
-        s:=s+' (included by '+IntToStr(CurFile.CIncludedByCount)+')';
+        s := Format(h2pIncludedBy2, [s, IntToStr(CurFile.CIncludedByCount)]);
       Node:=CHeaderFilesCheckTreeView.Items.Add(nil,s);
       Node.MultiSelected:=OldSelection.IndexOf(Node.GetTextPath)>=0;
       Node.Selected:=Node.Text=OldSelected;
@@ -1095,8 +1092,8 @@ begin
   Result:=mrCancel;
 
   if not Project.HasEnabledFiles then begin
-    IDEMessageDialog('Nothing to do',
-      'Please enable at least one c header file that is not merged.',
+    IDEMessageDialog(h2pNothingToDo,
+      h2pPleaseEnableAtLeastOneCHeaderFileThatIsNotMerged,
       mtInformation,[mbOk],'');
     Result:=mrOK;
     exit;
@@ -1151,9 +1148,8 @@ begin
     Result:=mrOk;
   except
     on E: Exception do begin
-      MessageDlg('Write error',
-        'Error writing global config:'#13
-        +E.Message,mtError,[mbCancel],0);
+      MessageDlg(h2pWriteError,
+        Format(h2pErrorWritingGlobalConfig, [#13, E.Message]), mtError, [mbCancel], 0);
     end;
   end;
 end;
@@ -1182,9 +1178,8 @@ begin
     Result:=mrOk;
   except
     on E: Exception do begin
-      MessageDlg('Read error',
-        'Error reading global config:'#13
-        +E.Message,mtError,[mbCancel],0);
+      MessageDlg(h2pReadError,
+        Format(h2pErrorReadingGlobalConfig, [#13, E.Message]), mtError, [mbCancel], 0);
     end;
   end;
 end;
@@ -1208,12 +1203,12 @@ begin
     SaveDialog:=TSaveDialog.Create(nil);
     try
       InitIDEFileDialog(SaveDialog);
-      SaveDialog.Title:='Save project as ... (*.h2p)';
+      SaveDialog.Title := h2pSaveProjectAsH2p;
       //choose a nice default name
       if NewFilename='' then
         NewFilename:='project1.h2p';
       SaveDialog.FileName:=NewFilename;
-      SaveDialog.Filter:='h2pas project (*.h2p)|*.h2p|All files (*.*)|'+FileMask;
+      SaveDialog.Filter := Format(h2pH2pasProjectH2pH2pAllFiles, [FileMask]);
       NewPath:=ExtractFilePath(NewFilename);
       if NewPath<>'' then
         SaveDialog.InitialDir:=NewPath;
@@ -1225,10 +1220,9 @@ begin
         NewFilename:=NewFilename+'.h2p';
       // warn if overwriting
       if FileExistsUTF8(NewFilename) then begin
-        if QuestionDlg('Replace file?',
-          'The file "'+NewFilename+'"'#13
-          +'already exists.',
-          mtConfirmation,[mrOk,'Overwrite',mrCancel,'Cancel'],0)<>mrOk
+        if QuestionDlg(h2pReplaceFile,
+          Format(h2pTheFileAlreadyExists, [NewFilename, #13]),
+          mtConfirmation, [mrOk, h2pOverwrite, mrCancel, h2pCancel], 0) <> mrOk
         then exit;
       end;
     finally
@@ -1244,9 +1238,8 @@ begin
     Result:=mrOk;
   except
     on E: Exception do begin
-      MessageDlg('Write error',
-        'Error writing global config:'#13
-        +E.Message,mtError,[mbCancel],0);
+      MessageDlg(h2pWriteError,
+        Format(h2pErrorWritingGlobalConfig, [#13, E.Message]), mtError, [mbCancel], 0);
     end;
   end;
   UpdateCaption;
@@ -1261,8 +1254,8 @@ begin
   NewFilename:=ExpandFileNameUTF8(TrimFilename(Filename));
   if not FileExistsUTF8(NewFilename) then begin
     if ofOnlyIfExists in Flags then begin
-      MessageDlg('File not found',
-        'File not found: "'+NewFilename+'"',mtError,[mbCancel],0);
+      MessageDlg(h2pFileNotFound,
+        Format(h2pFileNotFound2, [NewFilename]), mtError, [mbCancel], 0);
       exit;
     end;
   end;
@@ -1278,11 +1271,8 @@ begin
       Result:=mrOk;
     except
       on E: Exception do begin
-        MessageDlg('Read error',
-          'Error reading project from file'#13
-          +NewFilename+#13
-          +#13
-          +E.Message,mtError,[mbCancel],0);
+        MessageDlg(h2pReadError,
+          Format(h2pErrorReadingProjectFromFile, [#13, NewFilename, #13, #13, E.Message]), mtError, [mbCancel], 0);
       end;
     end;
   end else begin

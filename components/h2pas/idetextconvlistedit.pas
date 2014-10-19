@@ -19,7 +19,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Graphics, Dialogs,
   StdCtrls, ClipBrd, Buttons, ExtCtrls,
   IDETextConverter, ObjectInspector,
-  IDETextConvListAdd;
+  IDETextConvListAdd, h2passtrconsts;
 
 type
 
@@ -82,17 +82,17 @@ implementation
 
 procedure TTextConvListEditor.FormCreate(Sender: TObject);
 begin
-  Caption:='Text conversion tools editor';
-  ToolsLabel.Caption:='Tools:';
+  Caption := h2pTextConversionToolsEditor;
+  ToolsLabel.Caption := h2pTools;
   
   // buttons
-  AddToolButton.Caption:='Add new tool';
-  CloneButton.Caption:='Add a copy';
-  PasteButton.Caption:='Add from clipboard';
-  CopyToolButton.Caption:='Copy tool to clipboard';
-  MoveToolDownButton.Caption:='Move down';
-  MoveToolUpButton.Caption:='Move up';
-  DeleteToolButton.Caption:='Delete tool';
+  AddToolButton.Caption := h2pAddNewTool;
+  CloneButton.Caption := h2pAddACopy;
+  PasteButton.Caption := h2pAddFromClipboard;
+  CopyToolButton.Caption := h2pCopyToolToClipboard;
+  MoveToolDownButton.Caption := h2pMoveDown;
+  MoveToolUpButton.Caption := h2pMoveUp;
+  DeleteToolButton.Caption := h2pDeleteTool;
 
   PropertyGrid:=TCustomPropertiesGrid.Create(Self);
   PropertyGrid.Align:=alBottom;
@@ -127,7 +127,7 @@ begin
       raise Exception.Create('nil');
     if not (NewComponent is TCustomTextConverterTool) then begin
       NewComponent.Free;
-      raise Exception.Create('not a TCustomTextConverterTool');
+      raise Exception.Create(h2pNotATCustomTextConverterTool);
     end;
     NewTool:=TCustomTextConverterTool(NewComponent);
     MakeToolCaptionAndNameUnique(NewTool);
@@ -136,9 +136,8 @@ begin
     SelectTool(NewTool);
   except
     on E: Exception do begin
-      MessageDlg('Error',
-        'Error converting clipboard text to text tool:'#13
-        +E.Message,mtError,[mbCancel],0);
+      MessageDlg(h2pError,
+        Format(h2pErrorConvertingClipboardTextToTextTool, [#13, E.Message]), mtError, [mbCancel], 0);
     end;
   end;
 end;
@@ -201,9 +200,8 @@ begin
     Clipboard.SetComponentAsText(Tool);
   except
     on E: Exception do begin
-      MessageDlg('Error',
-        'Error converting putting tool onto clipboard:'#13
-        +E.Message,mtError,[mbCancel],0);
+      MessageDlg(h2pError,
+        Format(h2pErrorConvertingPuttingToolOntoClipboard, [#13, E.Message]), mtError, [mbCancel], 0);
     end;
   end;
 end;
@@ -215,9 +213,9 @@ var
 begin
   Tool:=GetCurrentTool;
   if Tool=nil then exit;
-  if QuestionDlg('Confirm delete',
-    'Do you really want to delete "'+Tool.Caption+'"?',
-    mtConfirmation,[mrYes,'Delete',mrCancel],0
+  if QuestionDlg(h2pConfirmDelete,
+    Format(h2pDoYouReallyWantToDelete, [Tool.Caption]),
+    mtConfirmation, [mrYes, h2pDelete, mrCancel], 0
     )<>mrYes
   then exit;
   i:=ToolsListBox.ItemIndex;

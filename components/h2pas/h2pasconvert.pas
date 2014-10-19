@@ -30,7 +30,7 @@ uses
   FileProcs, CodeCache, SourceChanger, CodeToolManager,
   // IDEIntf
   TextTools, IDEExternToolIntf, IDEDialogs, LazIDEIntf, SrcEditorIntf,
-  IDEMsgIntf, IDETextConverter;
+  IDEMsgIntf, IDETextConverter, h2passtrconsts;
   
 type
 
@@ -2021,8 +2021,8 @@ begin
   // check if file exists
   InputFilename:=AFile.Filename;
   if not FileExistsCached(InputFilename) then begin
-    Result:=IDEMessageDialog('File not found',
-      'C header file "'+InputFilename+'" not found',
+    Result := IDEMessageDialog(h2pFileNotFound,
+      Format(h2pCHeaderFileNotFound, [InputFilename]),
       mtError,[mbCancel,mbAbort],'');
     exit;
   end;
@@ -2032,9 +2032,8 @@ begin
   TextConverter:=TIDETextConverter.Create(nil);
   try
     if not CopyFile(InputFilename,TempCHeaderFilename) then begin
-      Result:=IDEMessageDialog('Copying file failed',
-        'Unable to copy file "'+InputFilename+'"'#13
-        +'to "'+TempCHeaderFilename+'"',
+      Result := IDEMessageDialog(h2pCopyingFileFailed,
+        Format(h2pUnableToCopyFileTo, [InputFilename, #13, TempCHeaderFilename]),
         mtError,[mbCancel,mbAbort],'');
       exit;
     end;
@@ -2150,9 +2149,7 @@ begin
       AddIncludedByFiles(IncludedByFiles,CurFile);
       if IncludedByFiles.Count>1 then begin
         // this merged file is included by more than one unit
-        Warning:=Warning
-          +'Warning: the file "'+Project.ShortenFilename(CurFile.Filename)+'"'#13
-          +'will be merged into multiple files:'#13;
+        Warning := Format(h2pWarningTheFileWillBeMergedIntoMultipleFiles, [Warning, Project.ShortenFilename(CurFile.Filename), #13, #13]);
         for j:=0 to IncludedByFiles.Count-1 do begin
           if j>0 then
             Warning:=Warning+', ';
@@ -2167,9 +2164,8 @@ begin
   end;
   
   if Warning<>'' then begin
-    Result:=MessageDlg('Warning',
-      'Ambiguous merges:'#13
-      +Warning,mtWarning,[mbIgnore,mbAbort],0);
+    Result := MessageDlg(h2pWarning,
+      Format(h2pAmbiguousMerges, [#13, Warning]), mtWarning, [mbIgnore, mbAbort], 0);
     if Result<>mrIgnore then exit(mrCancel);
   end;
 
@@ -2252,8 +2248,7 @@ begin
         end;
       except
         on E: Exception do begin
-          MessageDlg('Error','Unable to merge file "'+IncludeFile.Filename+'"'
-            +' into "'+TextConverter.Filename+'"',mtError,[mbCancel],0);
+          MessageDlg(h2pError, Format(h2pUnableToMergeFileInto, [IncludeFile.Filename, TextConverter.Filename]), mtError, [mbCancel], 0);
           exit;
         end;
       end;
@@ -2279,7 +2274,7 @@ end;
 
 class function TRemoveCPlusPlusExternCTool.ClassDescription: string;
 begin
-  Result:='Remove C++ ''extern "C"'' lines';
+  Result := h2pRemoveCExternCLines;
 end;
 
 function TRemoveCPlusPlusExternCTool.Execute(aText: TIDETextConverter
@@ -2313,7 +2308,7 @@ end;
 
 class function TRemoveEmptyCMacrosTool.ClassDescription: string;
 begin
-  Result:='Remove empty C macros';
+  Result := h2pRemoveEmptyCMacros;
 end;
 
 function TRemoveEmptyCMacrosTool.Execute(aText: TIDETextConverter
@@ -2432,7 +2427,7 @@ end;
 
 class function TReplaceMacro0PointerWithNULL.ClassDescription: string;
 begin
-  Result:='Replace macro values 0 pointer like (char *)0 with NULL';
+  Result := h2pReplaceMacroValues0PointerLikeChar0WithNULL;
 end;
 
 function TReplaceMacro0PointerWithNULL.Execute(aText: TIDETextConverter
@@ -2482,7 +2477,7 @@ end;
 
 class function TReplaceEdgedBracketPairWithStar.ClassDescription: string;
 begin
-  Result:='Replace [] with *';
+  Result := h2pReplaceWith;
 end;
 
 constructor TReplaceEdgedBracketPairWithStar.Create(TheOwner: TComponent);
@@ -2496,7 +2491,7 @@ end;
 
 class function TReplaceUnitFilenameWithUnitName.ClassDescription: string;
 begin
-  Result:='Replace "unit filename;" with "unit name;"';
+  Result := h2pReplaceUnitFilenameWithUnitName;
 end;
 
 constructor TReplaceUnitFilenameWithUnitName.Create(TheOwner: TComponent);
@@ -2511,7 +2506,7 @@ end;
 
 class function TRemoveSystemTypes.ClassDescription: string;
 begin
-  Result:='Remove type redefinitions like PLongint';
+  Result := h2pRemoveTypeRedefinitionsLikePLongint;
 end;
 
 function TRemoveSystemTypes.Execute(aText: TIDETextConverter): TModalResult;
@@ -2538,7 +2533,7 @@ begin
   SearchFor:='^\s*('+SearchFor+');\s*$';
   Result:=IDESearchInText('',Source,SearchFor,'',Flags,Prompt,nil);
   if Result<>mrOk then begin
-    ErrorMsg:='deletion of "'+SearchFor+'" failed';
+    ErrorMsg := Format(h2pDeletionOfFailed, [SearchFor]);
     exit;
   end;
   
@@ -2546,7 +2541,7 @@ begin
   Flags:=[sesoReplace,sesoReplaceAll,sesoRegExpr,sesoMatchCase];
   Result:=IDESearchInText('',Source,'\bNULL\b','nil',Flags,Prompt,nil);
   if Result<>mrOk then begin
-    ErrorMsg:='replacing of NULL with nil failed';
+    ErrorMsg := h2pReplacingOfNULLWithNilFailed;
     exit;
   end;
 
@@ -2557,7 +2552,7 @@ end;
 
 class function TRemoveRedefinedPointerTypes.ClassDescription: string;
 begin
-  Result:='Remove redefined pointer types';
+  Result := h2pRemoveRedefinedPointerTypes;
 end;
 
 function TRemoveRedefinedPointerTypes.Execute(aText: TIDETextConverter
@@ -2601,7 +2596,7 @@ end;
 
 class function TRemoveEmptyTypeVarConstSections.ClassDescription: string;
 begin
-  Result:='Remove empty type/var/const sections';
+  Result := h2pRemoveEmptyTypeVarConstSections;
 end;
 
 function TRemoveEmptyTypeVarConstSections.Execute(aText: TIDETextConverter
@@ -2693,13 +2688,7 @@ end;
 
 class function TReplaceImplicitTypes.ClassDescription: string;
 begin
-  Result:='Replace implicit types'#13
-    +'For example:'#13
-    +'    procedure ProcName(a: array[0..2] of char)'#13
-    +'  is replaced with'#13
-    +'    procedure ProcName(a: Tarray_0to2_of_char)'#13
-    +'  and a new type is added'#13
-    +'    Tarray_0to2_of_char = array[0..2] of char';
+  Result := Format(h2pReplaceImplicitTypesForExampleProcedureProcNameAAr, [#13, #13, #13, #13, #13, #13]);
 end;
 
 function TReplaceImplicitTypes.FindNextImplicitType(var Position: integer;
@@ -3169,7 +3158,7 @@ begin
             SrcPosToLineCol(Src,TypeStart,ErrLine,ErrCol);
             ErrorColumn:=ErrCol;
             ErrorLine:=ErrLine;
-            ErrorMsg:='FindExplicitTypes FAILED reading type definition '+Identifier;
+            ErrorMsg := Format(h2pFindExplicitTypesFAILEDReadingTypeDefinition, [Identifier]);
             DebugLn(['FindExplicitTypes FAILED reading type definition ',Identifier,' at ',PosToStr(TypeStart)]);
             exit;
           end;
@@ -3188,7 +3177,7 @@ begin
             SrcPosToLineCol(Src,TypeStart,ErrLine,ErrCol);
             ErrorColumn:=ErrCol;
             ErrorLine:=ErrLine;
-            ErrorMsg:='FindExplicitTypes FAILED Rereading type definition '+Identifier;
+            ErrorMsg := Format(h2pFindExplicitTypesFAILEDRereadingTypeDefinition, [Identifier]);
             DebugLn(['FindExplicitTypes FAILED Rereading type definition ',Identifier,' at ',PosToStr(TypeStart)]);
             exit;
           end;
@@ -3208,7 +3197,7 @@ begin
         SrcPosToLineCol(Src,ConstSectionStart,ErrLine,ErrCol);
         ErrorColumn:=ErrCol;
         ErrorLine:=ErrLine;
-        ErrorMsg:='FindExplicitTypes FAILED reading const section';
+        ErrorMsg := h2pFindExplicitTypesFAILEDReadingConstSection;
         DebugLn(['FindExplicitTypes FAILED reading const section at ',PosToStr(ConstSectionStart)]);
         exit;
       end;
@@ -3221,7 +3210,7 @@ begin
         SrcPosToLineCol(Src,ConstSectionStart,ErrLine,ErrCol);
         ErrorColumn:=ErrCol;
         ErrorLine:=ErrLine;
-        ErrorMsg:='FindExplicitTypes FAILED reading const section';
+        ErrorMsg := h2pFindExplicitTypesFAILEDReadingConstSection;
         DebugLn(['FindExplicitTypes FAILED reading const section at ',PosToStr(ConstSectionStart)]);
         exit;
       end;
@@ -3446,8 +3435,7 @@ end;
 
 class function TFixArrayOfParameterType.ClassDescription: string;
 begin
-  Result:='Fix open arrays'#13
-         +'Replace "array of )" with "array of const)"';
+  Result := Format(h2pFixOpenArraysReplaceArrayOfWithArrayOfConst, [#13]);
 end;
 
 function TFixArrayOfParameterType.Execute(aText: TIDETextConverter
@@ -3525,7 +3513,7 @@ end;
 
 class function TRemoveRedefinitionsInUnit.ClassDescription: string;
 begin
-  Result:='Remove redefinitions in pascal unit';
+  Result := h2pRemoveRedefinitionsInPascalUnit;
 end;
 
 function TRemoveRedefinitionsInUnit.Execute(aText: TIDETextConverter
@@ -3550,11 +3538,7 @@ end;
 
 class function TFixAliasDefinitionsInUnit.ClassDescription: string;
 begin
-  Result:='Fixes section type of alias definitions in pascal unit'#13
-    +'Checks all alias definitions of the form'#13
-    +'const LeftSide = RightSide;'#13
-    +'looks up RightSide in the unit and if RightSide is a type or var, changes'
-    +' the section accordingly';
+  Result := Format(h2pFixesSectionTypeOfAliasDefinitionsInPascalUnitChec, [#13, #13, #13]);
 end;
 
 function TFixAliasDefinitionsInUnit.Execute(aText: TIDETextConverter
@@ -3578,7 +3562,7 @@ end;
 
 class function TFixH2PasMissingIFDEFsInUnit.ClassDescription: string;
 begin
-  Result:='Add missing h2pas IFDEFs for function bodies';
+  Result := h2pAddMissingH2pasIFDEFsForFunctionBodies;
 end;
 
 function TFixH2PasMissingIFDEFsInUnit.Execute(aText: TIDETextConverter
@@ -3628,9 +3612,7 @@ end;
 
 class function TReduceCompilerDirectivesInUnit.ClassDescription: string;
 begin
-  Result:='Reduce compiler directives in pascal file'#13
-    +'Shortens expressions in $IF directives'#13
-    +'and removes unneeded $IFDEF and $DEFINE directives.';
+  Result := Format(h2pReduceCompilerDirectivesInPascalFileShortensExpres, [#13, #13]);
 end;
 
 function TReduceCompilerDirectivesInUnit.Execute(aText: TIDETextConverter
@@ -3655,7 +3637,7 @@ end;
 
 class function TReplaceConstFunctionsInUnit.ClassDescription: string;
 begin
-  Result:='Replace simple functions with constants';
+  Result := h2pReplaceSimpleFunctionsWithConstants;
 end;
 
 function TReplaceConstFunctionsInUnit.Execute(aText: TIDETextConverter
@@ -3678,7 +3660,7 @@ end;
 
 class function TReplaceTypeCastFunctionsInUnit.ClassDescription: string;
 begin
-  Result:='Replace simple functions with type casts';
+  Result := h2pReplaceSimpleFunctionsWithTypeCasts;
 end;
 
 function TReplaceTypeCastFunctionsInUnit.Execute(aText: TIDETextConverter
@@ -3707,15 +3689,7 @@ end;
 
 class function TPreH2PasTools.ClassDescription: string;
 begin
-  Result:='Pre H2Pas - a set of common tools to run before h2pas'#13
-    +'phRemoveCPlusPlusExternCTool - Remove C++ ''extern "C"'' lines'#13
-    +'phRemoveEmptyCMacrosTool - Remove empty C macros'#13
-    +'phReplaceEdgedBracketPairWithStar - Replace [] with *'#13
-    +'phReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0'#13
-    +'phConvertFunctionTypesToPointers - Convert function types to pointers'#13
-    +'phConvertEnumsToTypeDef - Convert anonymous enums to ypedef enums'#13
-    +'phCommentComplexCMacros - Comment macros too complex for hpas'#13
-    +'phCommentComplexCFunctions - Comment functions too complex for hpas'#13
+  Result := Format(h2pPreH2PasASetOfCommonToolsToRunBeforeH2pasPhRemoveC, [#13, #13, #13, #13, #13, #13, #13, #13, #13])
     ;
 end;
 
@@ -3806,22 +3780,7 @@ end;
 
 class function TPostH2PasTools.ClassDescription: string;
 begin
-  Result:='Post H2Pas - a set of common tools to run after h2pas'#13
-    +'phReplaceUnitFilenameWithUnitName - Replace "unit filename;" with "unit name;"'#13
-    +'phRemoveIncludeDirectives - Remove include directives'
-    +'phRemoveSystemTypes - Remove type redefinitons like PLongint'#13
-    +'phFixH2PasMissingIFDEFsInUnit - add missing IFDEFs for function bodies'#13
-    +'phReduceCompilerDirectivesInUnit - removes unneeded directives'#13
-    +'phRemoveRedefinedPointerTypes - Remove redefined pointer types'#13
-    +'phRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections'#13
-    +'phReplaceImplicitTypes - Search implicit types in parameters and add types for them'#13
-    +'phFixArrayOfParameterType - Replace "array of )" with "array of const)"'#13
-    +'phRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings'#13
-    +'phFixAliasDefinitionsInUnit - fix section type of alias definitions'#13
-    +'phReplaceConstFunctionsInUnit - replace simple assignment functions with constants'#13
-    +'phReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types'#13
-    +'phFixForwardDefinitions - fix forward definitions by reordering'#13
-    +'phAddUnitsToUsesSection - add units to uses section'#13
+  Result := Format(h2pPostH2PasASetOfCommonToolsToRunAfterH2pasPhReplace, [#13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13, #13])
     ;
 end;
 
@@ -3884,7 +3843,7 @@ function TPostH2PasTools.Execute(aText: TIDETextConverter): TModalResult;
       UnitName:=FUseUnits[i];
       if (UnitName='') then continue;
       if not IsValidIdent(UnitName) then
-        raise Exception.Create('TPostH2PasTools.Execute.AddToUsesSection invalid unitname "'+UnitName+'"');
+        raise Exception.Create(Format(h2pTPostH2PasToolsExecuteAddToUsesSectionInvalidUnitn, [UnitName]));
       Changed:=true;
       if not CodeToolBoss.AddUnitToMainUsesSection(TCodeBuffer(aText.CodeBuffer),UnitName,'')
       then begin
@@ -4009,7 +3968,7 @@ end;
 
 class function TRemoveIncludeDirectives.ClassDescription: string;
 begin
-  Result:='Remove all include directives';
+  Result := h2pRemoveAllIncludeDirectives;
 end;
 
 constructor TRemoveIncludeDirectives.Create(TheOwner: TComponent);
@@ -4024,7 +3983,7 @@ end;
 
 class function TConvertFunctionTypesToPointers.ClassDescription: string;
 begin
-  Result:='Convert function types to pointers';
+  Result := h2pConvertFunctionTypesToPointers;
 end;
 
 function TConvertFunctionTypesToPointers.Execute(aText: TIDETextConverter
@@ -4153,7 +4112,7 @@ end;
 
 class function TFixForwardDefinitions.ClassDescription: string;
 begin
-  Result:='Fix forward definitions by reordering';
+  Result := h2pFixForwardDefinitionsByReordering;
 end;
 
 function TFixForwardDefinitions.Execute(aText: TIDETextConverter
@@ -4176,7 +4135,7 @@ end;
 
 class function TRemoveDoubleSemicolons.ClassDescription: string;
 begin
-  Result:='Remove double semicolons';
+  Result := h2pRemoveDoubleSemicolons;
 end;
 
 function TRemoveDoubleSemicolons.Execute(aText: TIDETextConverter
@@ -4243,7 +4202,7 @@ end;
 
 class function TAddMissingPointerTypes.ClassDescription: string;
 begin
-  Result:='Add missing pointer types like PPPChar';
+  Result := h2pAddMissingPointerTypesLikePPPChar;
 end;
 
 function TAddMissingPointerTypes.Execute(aText: TIDETextConverter
@@ -4503,7 +4462,7 @@ end;
 
 class function TConvertEnumsToTypeDef.ClassDescription: string;
 begin
-  Result:='Give anoymous c enums a typedef name';
+  Result := h2pGiveAnoymousCEnumsATypedefName;
 end;
 
 function TConvertEnumsToTypeDef.Execute(aText: TIDETextConverter
@@ -4622,7 +4581,7 @@ end;
 
 class function TCommentComplexCMacros.ClassDescription: string;
 begin
-  Result:='Comment macros that are too complex for h2pas';
+  Result := h2pCommentMacrosThatAreTooComplexForH2pas;
 end;
 
 function TCommentComplexCMacros.Execute(aText: TIDETextConverter
@@ -4743,7 +4702,7 @@ end;
 
 class function TCommentComplexCFunctions.ClassDescription: string;
 begin
-  Result:='Comment functions that are too complex for h2pas';
+  Result := h2pCommentFunctionsThatAreTooComplexForH2pas;
 end;
 
 function TCommentComplexCFunctions.Execute(aText: TIDETextConverter
@@ -4922,7 +4881,7 @@ end;
 
 class function TAddToUsesSection.ClassDescription: string;
 begin
-  Result:='Add units to uses section';
+  Result := h2pAddUnitsToUsesSection;
 end;
 
 function TAddToUsesSection.Execute(aText: TIDETextConverter): TModalResult;
@@ -4939,7 +4898,7 @@ begin
     AUnitName:=FUseUnits[i];
     if (AUnitName='') then continue;
     if not IsValidIdent(AUnitName) then
-      raise Exception.Create('TAddToUsesSection.Execute invalid unitname "'+AUnitName+'"');
+      raise Exception.Create(Format(h2pTAddToUsesSectionExecuteInvalidUnitname, [AUnitName]));
     if not CodeToolBoss.AddUnitToMainUsesSection(TCodeBuffer(aText.CodeBuffer),AUnitName,'')
     then begin
       AssignCodeToolBossError;
@@ -4954,7 +4913,7 @@ end;
 
 class function TAddMissingMacroBrackets.ClassDescription: string;
 begin
-  Result:='Add missing brackets around macro values';
+  Result := h2pAddMissingBracketsAroundMacroValues;
 end;
 
 function TAddMissingMacroBrackets.Execute(aText: TIDETextConverter
