@@ -1444,13 +1444,9 @@ function TApplication.DispatchAction(Msg: Longint; Action: TBasicAction): Boolea
 var
   Form: TCustomForm;
 begin
-  Result := False;
   Form := Screen.ActiveForm;
-  if (Form <> nil) and (Form.Perform(Msg, 0, PtrInt(Action)) = 1) then
-    Result := True
-  else
-  if (MainForm <> Form) and (MainForm <> nil) and (MainForm.Perform(Msg, 0, PtrInt(Action)) = 1) then
-    Result := True;
+  Result := ((Form <> nil) and (Form.Perform(Msg, 0, PtrInt(Action)) = 1)) or
+            ((MainForm <> Form) and (MainForm <> nil) and (MainForm.Perform(Msg, 0, PtrInt(Action)) = 1));
   // Disable action if no "user" handler is available
   if (not Result) and (Action is TCustomAction) and
      TCustomAction(Action).Enabled and TCustomAction(Action).DisableIfNoHandler then
