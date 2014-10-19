@@ -71,6 +71,7 @@ type
     procedure DragThresholdTrackBarChange(Sender: TObject);
     procedure HeaderAlignLeftTrackBarChange(Sender: TObject);
     procedure HeaderAlignTopTrackBarChange(Sender: TObject);
+    procedure ShowHeaderCheckBoxChange(Sender: TObject);
     procedure SplitterWidthTrackBarChange(Sender: TObject);
   private
     FFlags: TAnchorDockOptionsFlags;
@@ -139,6 +140,11 @@ end;
 procedure TAnchorDockOptionsFrame.HeaderAlignTopTrackBarChange(Sender: TObject);
 begin
   UpdateHeaderAlignTopLabel;
+end;
+
+procedure TAnchorDockOptionsFrame.ShowHeaderCheckBoxChange(Sender: TObject);
+begin
+  ApplyFlags;
 end;
 
 procedure TAnchorDockOptionsFrame.SplitterWidthTrackBarChange(Sender: TObject);
@@ -218,9 +224,17 @@ begin
 end;
 
 procedure TAnchorDockOptionsFrame.ApplyFlags;
+var
+  HasHeaders: Boolean;
 begin
   ShowHeaderCheckBox.Visible:=adofShow_ShowHeader in Flags;
   SaveLayoutOnCloseCheckBox.Visible:=adofShow_ShowSaveOnClose in Flags;
+
+  HasHeaders:=ShowHeaderCheckBox.Checked;
+  ShowHeaderCaptionCheckBox.Enabled:=HasHeaders;
+  HideHeaderCaptionForFloatingCheckBox.Enabled:=HasHeaders;
+  FlattenHeaders.Enabled:=HasHeaders;
+  FilledHeaders.Enabled:=HasHeaders;
 end;
 
 procedure TAnchorDockOptionsFrame.SaveToMaster;

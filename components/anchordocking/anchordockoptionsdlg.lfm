@@ -183,6 +183,7 @@ object AnchorDockOptionsFrame: TAnchorDockOptionsFrame
     Top = 227
     Width = 149
     Caption = 'ShowHeaderCheckBox'
+    OnChange = ShowHeaderCheckBoxChange
     ParentShowHint = False
     ShowHint = True
     TabOrder = 7
