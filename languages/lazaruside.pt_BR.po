@@ -8937,6 +8937,10 @@ msgstr "Dica de foco"
 msgid "Force renaming"
 msgstr "Forçar renomeação"
 
+#: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
+msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
+msgstr ""
+
 #: lazarusidestrconsts.lisform
 msgid "Form"
 msgstr "Formulário"
@@ -15787,6 +15791,10 @@ msgstr "Exibir pacotes"
 msgid "Show position of source editor"
 msgstr "Exibir posição do editor de código"
 
+#: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
+msgid "Show recently used identifiers at top"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowrelativepaths
 msgid "Show relative paths"
 msgstr "Exibir caminhos relativos"
@@ -15867,6 +15875,10 @@ msgstr "Resultados"
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr "Desculpe, este tipo ainda não foi implementado"
+
+#: lazarusidestrconsts.lissortforscope
+msgid "Sort for scope"
+msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"

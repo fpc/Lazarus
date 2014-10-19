@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-13 01:41+0400\n"
+"PO-Revision-Date: 2014-10-20 02:15+0400\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8866,6 +8866,10 @@ msgstr "Прикрепить подсказку"
 msgid "Force renaming"
 msgstr "Переименовать принудительно"
 
+#: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
+msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
+msgstr "Например, выводить сверху локальные переменные, затем элементы текущего класса, его предков, текущего и используемых модулей"
+
 #: lazarusidestrconsts.lisform
 msgid "Form"
 msgstr "Форма"
@@ -15693,6 +15697,10 @@ msgstr "Показывать пакеты"
 msgid "Show position of source editor"
 msgstr "Показать положение редактора исходного кода"
 
+#: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
+msgid "Show recently used identifiers at top"
+msgstr "Выводить недавно использовавшиеся идентификаторы сверху"
+
 #: lazarusidestrconsts.lisshowrelativepaths
 msgid "Show relative paths"
 msgstr "Показывать относительные пути"
@@ -15773,6 +15781,10 @@ msgstr "Совпадения"
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr "Извините, этот тип ещё не реализован"
+
+#: lazarusidestrconsts.lissortforscope
+msgid "Sort for scope"
+msgstr "Сортировать по области действия"
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"

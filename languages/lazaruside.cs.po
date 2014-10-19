@@ -8685,6 +8685,10 @@ msgstr "Tip při fokusu"
 msgid "Force renaming"
 msgstr "Vynutit přejmenování"
 
+#: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
+msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
+msgstr ""
+
 #: lazarusidestrconsts.lisform
 msgid "Form"
 msgstr "Formulář"
@@ -15270,6 +15274,10 @@ msgstr "Ukázat balíčky"
 msgid "Show position of source editor"
 msgstr "Ukázat pozici v zdrojovém editoru"
 
+#: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
+msgid "Show recently used identifiers at top"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowrelativepaths
 msgid "Show relative paths"
 msgstr "Zobrazit relativní cesty"
@@ -15349,6 +15357,10 @@ msgstr "Odpovídá"
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr "Omlouváme se, tento typ ještě nebyl implementován."
+
+#: lazarusidestrconsts.lissortforscope
+msgid "Sort for scope"
+msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"

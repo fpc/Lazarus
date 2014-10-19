@@ -8570,6 +8570,10 @@ msgstr "Fókusz tipp"
 msgid "Force renaming"
 msgstr "Átnevezés erőltetése"
 
+#: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
+msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
+msgstr ""
+
 #: lazarusidestrconsts.lisform
 msgid "Form"
 msgstr "Form"
@@ -15077,6 +15081,10 @@ msgstr "Csomagok megjelenítése"
 msgid "Show position of source editor"
 msgstr "A forráskód-szerkesztőbeli helyzetének megjelenítése"
 
+#: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
+msgid "Show recently used identifiers at top"
+msgstr ""
+
 #: lazarusidestrconsts.lisshowrelativepaths
 msgid "Show relative paths"
 msgstr "Relatív útvonalak megjelenítése"
@@ -15156,6 +15164,10 @@ msgstr "Találatok"
 #: lazarusidestrconsts.lissorrythistypeisnotyetimplemented
 msgid "Sorry, this type is not yet implemented"
 msgstr "Sajnáljuk, ez a típus egyelőre nincs megvalósítva"
+
+#: lazarusidestrconsts.lissortforscope
+msgid "Sort for scope"
+msgstr ""
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
