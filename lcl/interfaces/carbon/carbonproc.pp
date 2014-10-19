@@ -1288,9 +1288,6 @@ function CustomControlHandler(ANextHandler: EventHandlerCallRef;
   {%H-}AData: Pointer): OSStatus; {$IFDEF darwin}mwpascal;{$ENDIF}
 var
   EventClass, EventKind: LongWord;
-  Part: ControlPartCode;
-const
-  SName = 'CustomControlHandler';
 begin
   EventClass := GetEventClass(AEvent);
   EventKind := GetEventKind(AEvent);
@@ -1309,7 +1306,7 @@ begin
         kEventControlHitTest:
           begin
             Result := CallNextEventHandler(ANextHandler, AEvent);
-            {
+            (*
             // I was not able to find what for is this workaround (r11394)
             // returning kControlEditTextPart for any customcontrol looks strange
             // It seems to interfer with what widget really hit the mouse click.
@@ -1326,7 +1323,7 @@ begin
             Result := SetEventParameter(AEvent, kEventParamControlPart,
               typeControlPartCode, SizeOf(Part), @Part);
             OSError(Result, SName, SSetEvent);
-            }
+            *)
           end;
       end;
     kEventClassTextInput: Result := noErr;
