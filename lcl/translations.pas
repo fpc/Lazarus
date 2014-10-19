@@ -1004,17 +1004,17 @@ begin
   Item:=TPOFileItem(FIdentifierLowToItem[lowercase(Identifier)]);
   if Item=nil then
     Item:=TPOFileItem(FOriginalToItem.Data[OriginalValue]);
-{$IFNDEF CHECK_FORMAT}
   //Load translation only if it exists and is NOT fuzzy.
   //This matches gettext behaviour and allows to avoid a lot of crashes related
   //to formatting arguments mismatches.
-  if (Item<>nil) and (pos(sFuzzyFlag, lowercase(Item.Flags))=0) then begin
-{$ELSE}
-    //Load translation only if it exists and is not flagged as badformat.
-    //This allows to avoid a lot of crashes related
-    //to formatting arguments mismatches.
-  if (Item<>nil) and (pos(sBadFormatFlag, lowercase(Item.Flags))=0) then begin
+  if (Item<>nil) and (pos(sFuzzyFlag, lowercase(Item.Flags))=0)
+{$IFDEF CHECK_FORMAT}
+  //Load translation only if it is not flagged as badformat.
+  //This allows to avoid even more crashes related
+  //to formatting arguments mismatches.
+  and (pos(sBadFormatFlag, lowercase(Item.Flags))=0)
 {$ENDIF}
+  then begin
     Result:=Item.Translation;
     if Result='' then RaiseGDBException('TPOFile.Translate Inconsistency');
   end else
