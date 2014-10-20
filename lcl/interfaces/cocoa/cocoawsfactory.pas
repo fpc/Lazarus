@@ -15,7 +15,8 @@ uses
   CocoaWSMenus,
   CocoaWSStdCtrls,
   CocoaWSComCtrls,
-  CocoaWSDialogs;
+  CocoaWSDialogs,
+  CocoaWSSpin;
 
 // imglist
 function RegisterCustomImageList: Boolean;
@@ -525,7 +526,8 @@ end;
 // Spin
 function RegisterCustomFloatSpinEdit: Boolean; alias : 'WSRegisterCustomFloatSpinEdit';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomFloatSpinEdit, TCocoaWSCustomFloatSpinEdit);
+  Result := True;
 end;
 
 // RubberBand

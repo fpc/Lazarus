@@ -30,7 +30,7 @@ uses
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
   LMessages, LCLMessageGlue, ExtCtrls, Graphics,
-  LCLType, LCLProc, Controls, ComCtrls;
+  LCLType, LCLProc, Controls, ComCtrls, Spin;
 
 type
 
@@ -752,6 +752,26 @@ type
 
   TCocoaSliderCell = objcclass(NSSliderCell)
   end;
+
+  { TCocoaSpinEdit }
+
+  TCocoaSpinEdit = objcclass(NSControl)
+  public
+    callback: ICommonCallback;
+    Stepper: NSStepper;
+    Edit: NSTextField;
+    procedure dealloc; override;
+    procedure UpdateControl(ASpinEdit: TCustomFloatSpinEdit); message 'UpdateControl:';
+    procedure CreateSubcontrols(ASpinEdit: TCustomFloatSpinEdit; const AParams: TCreateParams); message 'CreateSubControls:AParams:';
+    procedure ActionHandler(sender: NSObject); message 'ActionHandler:';
+    function acceptsFirstResponder: Boolean; override;
+    function becomeFirstResponder: Boolean; override;
+    function resignFirstResponder: Boolean; override;
+    function lclGetCallback: ICommonCallback; override;
+    procedure lclClearCallback; override;
+    function lclIsHandle: Boolean; override;
+  end;
+
 
 procedure SetViewDefaults(AView: NSView);
 function CheckMainThread: Boolean;
@@ -3308,6 +3328,93 @@ begin
   // OnChange event
   if callback <> nil then
     callback.SendOnChange();
+end;
+
+{ TCocoaSpinEdit }
+
+procedure TCocoaSpinEdit.dealloc;
+begin
+  if Stepper <> nil then
+    Stepper.release;
+  if Edit <> nil then
+    Edit.release;
+  inherited dealloc;
+end;
+
+procedure TCocoaSpinEdit.UpdateControl(ASpinEdit: TCustomFloatSpinEdit);
+begin
+  Stepper.setMaxValue(ASpinEdit.MaxValue);
+  Stepper.setMinValue(ASpinEdit.MinValue);
+  Stepper.setIncrement(ASpinEdit.Increment);
+  Stepper.setDoubleValue(ASpinEdit.Value);
+end;
+
+procedure TCocoaSpinEdit.CreateSubcontrols(ASpinEdit: TCustomFloatSpinEdit; const AParams: TCreateParams);
+const
+  DEFAULT_STEPPER_WIDTH = 15;
+var
+  lParams: TCreateParams;
+begin
+  // General control setup
+  setTarget(Self);
+  setAction(objcselector('ActionHandler:'));
+
+  // Now creates the subcontrols
+  lParams := AParams;
+  lParams.Y := 0;
+  lParams.WndParent := HWND(Self);
+  lParams.Style := AParams.Style or WS_VISIBLE;
+
+  lParams.Width := DEFAULT_STEPPER_WIDTH;
+  lParams.X := AParams.Width - DEFAULT_STEPPER_WIDTH;
+  Stepper := NSStepper.alloc.lclInitWithCreateParams(lParams);
+
+  lParams.Width := AParams.Width - DEFAULT_STEPPER_WIDTH;
+  lParams.X := 0;
+  Edit := NSTextField.alloc.lclInitWithCreateParams(lParams);
+end;
+
+procedure TCocoaSpinEdit.ActionHandler(sender: NSObject);
+var
+  lStr: NSString;
+begin
+  lStr := CocoaUtils.NSStringUtf8(Format('%f', [Stepper.doubleValue()]));
+  Edit.setStringValue(lStr);
+  lStr.release;
+end;
+
+function TCocoaSpinEdit.acceptsFirstResponder: Boolean;
+begin
+  Result := True;
+end;
+
+function TCocoaSpinEdit.becomeFirstResponder: Boolean;
+begin
+  Result := inherited becomeFirstResponder;
+  if Assigned(callback) then
+    callback.BecomeFirstResponder;
+end;
+
+function TCocoaSpinEdit.resignFirstResponder: Boolean;
+begin
+  Result := inherited resignFirstResponder;
+  if Assigned(callback) then
+    callback.ResignFirstResponder;
+end;
+
+function TCocoaSpinEdit.lclGetCallback: ICommonCallback;
+begin
+  Result := callback;
+end;
+
+procedure TCocoaSpinEdit.lclClearCallback;
+begin
+  callback := nil;
+end;
+
+function TCocoaSpinEdit.lclIsHandle: Boolean;
+begin
+  Result := True;
 end;
 
 end.
