@@ -5018,13 +5018,13 @@ begin
   SideCaptions[akRight]:=adrsRight;
   SideCaptions[akBottom]:=adrsBottom;
 
-  // undock, merge
+  // menu items: undock, merge
   DockMaster.AddRemovePopupMenuItem(ParentSite.CanUndock,'UndockMenuItem',
                                     adrsUndock,@UndockButtonClick);
   DockMaster.AddRemovePopupMenuItem(ParentSite.CanMerge,'MergeMenuItem',
                                     adrsMerge, @MergeButtonClick);
 
-  // header position
+  // menu items: header position
   HeaderPosItem:=DockMaster.AddPopupMenuItem('HeaderPosMenuItem',
                                              adrsHeaderPosition, nil);
   Item:=DockMaster.AddPopupMenuItem('HeaderPosAutoMenuItem', adrsAutomatically,
@@ -5042,7 +5042,7 @@ begin
     Item.Checked:=HeaderPosition=TADLHeaderPosition(Item.Tag);
   end;
 
-  // enlarge
+  // menu items: enlarge
   for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
     Item:=DockMaster.AddRemovePopupMenuItem(ParentSite.EnlargeSide(Side,true),
       'Enlarge'+DbgS(Side)+'MenuItem', Format(adrsEnlargeSide, [
@@ -5050,7 +5050,7 @@ begin
     if Item<>nil then Item.Tag:=ord(Side);
   end;
 
-  // close
+  // menu item: close or quit
   ContainsMainForm:=ParentSite.IsParentOf(Application.MainForm);
   if ContainsMainForm then
     s:=Format(adrsQuit, [Application.Title])
