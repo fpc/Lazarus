@@ -459,6 +459,7 @@ var
 
   function LCLCharToMacEvent(const AUTF8Char: AnsiString): Boolean;
   begin
+    Result := False;
     if AUTF8Char = '' then
       Exit;
     // TODO

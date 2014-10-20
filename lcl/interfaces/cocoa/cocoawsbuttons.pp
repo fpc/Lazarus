@@ -111,7 +111,9 @@ begin
     lButtonHandle := TCocoaButton(ABitBtn.Handle);
     lButtonHandle.setImage(Img);
     lButtonHandle.setImagePosition(LCLGlyphPosToCocoa(ABitBtn.Layout));
-    AGlyph.Free;
+    if Assigned(lButtonHandle.Glyph) then
+      FreeAndNil(lButtonHandle.Glyph);
+    lButtonHandle.Glyph := AGlyph;
   end;
 end;
 

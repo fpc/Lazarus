@@ -203,6 +203,7 @@ type
   TCocoaBitmap = class(TCocoaGDIObject)
   strict private
     FData: Pointer;
+    FOriginalData: PByte; // Exists and is set in case the data needed pre-multiplication
     FAlignment: TCocoaBitmapAlignment;
     FFreeData: Boolean;
     FDataSize: Integer;
@@ -218,7 +219,6 @@ type
     FImage: NSImage;
     FImagerep: NSBitmapImageRep;
     function GetColorSpace: NSString;
-    procedure PreMultiplyAlpha();
     function DebugShowData(): string;
   public
     constructor Create(ABitmap: TCocoaBitmap);
@@ -232,6 +232,8 @@ type
 
     function CreateSubImage(const ARect: TRect): CGImageRef;
     function CreateMaskImage(const ARect: TRect): CGImageRef;
+    procedure PreMultiplyAlpha();
+    function GetNonPreMultipliedData(): PByte;
   public
     property BitmapType: TCocoaBitmapType read FType;
     property BitsPerPixel: Byte read FBitsPerPixel;
@@ -749,8 +751,10 @@ begin
 
   HasAlpha := AType in [cbtARGB, cbtRGBA];
   // Non premultiplied bitmaps can't be used for bitmap context
-  // So we need to pre-multiply ourselves
-  PreMultiplyAlpha();
+  // So we need to pre-multiply ourselves, but only if we were allowed
+  // to copy the data, otherwise we might corrupt the original
+  if ACopyData then
+    PreMultiplyAlpha();
   BitmapFormat := 0;
   if AType in [cbtARGB, cbtRGB] then
     BitmapFormat := BitmapFormat or NSAlphaFirstBitmapFormat;
@@ -789,6 +793,8 @@ destructor TCocoaBitmap.Destroy;
 begin
   image.release;
   if FFreeData then System.FreeMem(FData);
+  if FOriginalData <> nil then
+    System.FreeMem(FOriginalData);
 
   inherited Destroy;
 end;
@@ -890,6 +896,7 @@ begin
     Result := NSCalibratedRGBColorSpace;
 end;
 
+// Cocoa cannot create a context unless the image has alpha pre-multiplied
 procedure TCocoaBitmap.PreMultiplyAlpha;
 var
   lByteData: PByte;
@@ -897,6 +904,16 @@ var
   lAlpha, lRed, lGreen, lBlue: Byte;
 begin
   if not (FType in [cbtARGB, cbtRGBA]) then Exit;
+  if FData = nil then Exit;
+
+  // Keep the original data in a copy, otherwise we cant get access to it
+  // because pre-multiplying destroys the original value if we had alpha=0
+  if FOriginalData <> nil then
+    System.FreeMem(FOriginalData);
+  System.GetMem(FOriginalData, FDataSize);
+  System.Move(FData^, FOriginalData^, FDataSize); // copy data
+
+  // Pre-Multiply
   lByteData := PByte(FData);
   i := 0;
   while i < FDataSize -1 do
@@ -928,10 +945,22 @@ begin
   end;
 end;
 
+// The Alpha pre-multiplication will prevent us from obtaining the original image
+// raw data for the function RawImage_FromCocoaBitmap,
+// so we need to store it
+function TCocoaBitmap.GetNonPreMultipliedData(): PByte;
+begin
+  if FOriginalData <> nil then
+    Result := FOriginalData
+  else
+    Result := PByte(FData);
+end;
+
 function TCocoaBitmap.DebugShowData: string;
 var
   i: Integer;
 begin
+  Result := '';
   for i := 0 to FDataSize -1 do
   begin
     Result := Result + IntToHex(PByte(FData)[i], 2);
@@ -1823,7 +1852,7 @@ var
 begin
   if Style = bvRaised then
   begin
-    GetHiThemeMetric(kThemeMetricPrimaryGroupBoxContentInset, D);
+    D := GetHiThemeMetric(kThemeMetricPrimaryGroupBoxContentInset);
 
     // draw frame as group box
     DrawInfo.version := 0;

@@ -29,7 +29,7 @@ uses
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
   // LCL
-  LMessages, LCLMessageGlue, ExtCtrls,
+  LMessages, LCLMessageGlue, ExtCtrls, Graphics,
   LCLType, LCLProc, Controls, ComCtrls;
 
 type
@@ -216,6 +216,8 @@ type
     procedure frameDidChange(sender: NSNotification); message 'frameDidChange:';
   public
     callback: IButtonCallback;
+    Glyph: TBitmap;
+    procedure dealloc; override;
     function initWithFrame(frameRect: NSRect): id; override;
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
@@ -236,7 +238,6 @@ type
     procedure mouseMoved(event: NSEvent); override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
-
   end;
 
   TCocoaFieldEditor = objcclass;
@@ -1425,6 +1426,14 @@ begin
     callback.frameDidChange;
 end;
 
+procedure TCocoaButton.dealloc;
+begin
+  if Assigned(Glyph) then
+    FreeAndNil(Glyph);
+
+  inherited dealloc;
+end;
+
 function TCocoaButton.initWithFrame(frameRect: NSRect): id;
 begin
   Result := inherited initWithFrame(frameRect);
@@ -1581,6 +1590,7 @@ end;
 function TCocoaTextField.RealResignFirstResponder: Boolean;
 begin
   callback.ResignFirstResponder;
+  Result := True;
 end;
 
 // Do not propagate this event to the LCL,
@@ -1709,6 +1719,7 @@ end;
 function TCocoaSecureTextField.RealResignFirstResponder: Boolean;
 begin
   callback.ResignFirstResponder;
+  Result := True;
 end;
 
 function TCocoaSecureTextField.resignFirstResponder: Boolean;
@@ -2504,7 +2515,7 @@ end;
 function TCocoaTabControl.tabView_shouldSelectTabViewItem(tabView: NSTabView;
   tabViewItem: NSTabViewItem): Boolean;
 begin
-
+  Result := True;
 end;
 
 procedure TCocoaTabControl.tabView_willSelectTabViewItem(tabView: NSTabView;

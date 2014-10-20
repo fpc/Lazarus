@@ -585,19 +585,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:  TCarbonWidgetSet.RawImage_FromCarbonBitmap
+  Method:  TCocoaWidgetSet.RawImage_FromCocoaBitmap
 
-  Creates a rawimage description for a carbonbitmap
+  Creates a rawimage description for a cocoabitmap
  ------------------------------------------------------------------------------}
 function TCocoaWidgetSet.RawImage_FromCocoaBitmap(out ARawImage: TRawImage; ABitmap, AMask: TCocoaBitmap; ARect: PRect = nil): Boolean;
+var
+  lBitmapData: PByte;
 begin
   FillChar(ARawImage, SizeOf(ARawImage), 0);
   RawImage_DescriptionFromCocoaBitmap(ARawImage.Description, ABitmap);
 
   ARawImage.DataSize := ABitmap.DataSize;
   ReAllocMem(ARawImage.Data, ARawImage.DataSize);
+  lBitmapData := ABitmap.GetNonPreMultipliedData();
   if ARawImage.DataSize > 0 then
-    System.Move(ABitmap.Data^, ARawImage.Data^, ARawImage.DataSize);
+    System.Move(lBitmapData^, ARawImage.Data^, ARawImage.DataSize);
 
   Result := True;
   

@@ -1710,7 +1710,8 @@ end;
 
 function TCocoaWidgetSet.SetCapture(AHandle: HWND): HWND;
 begin
-  FCaptureControl:= AHandle;
+  Result := FCaptureControl;
+  FCaptureControl := AHandle;
 end;
 
 function TCocoaWidgetSet.SetCaretPos(X, Y: Integer): Boolean;
@@ -1750,6 +1751,7 @@ end;
 function TCocoaWidgetSet.ReleaseCapture : Boolean;
 begin
   FCaptureControl:=0;
+  Result := True;
 end;
 
 function TCocoaWidgetSet.ReleaseDC(hWnd: HWND; DC: HDC): Integer;

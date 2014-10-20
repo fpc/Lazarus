@@ -590,8 +590,10 @@ end;
 
 class function TCocoaWSCustomForm.GetClientBounds(const AWinControl: TWinControl; var ARect: TRect): Boolean;
 begin
-  if AWinControl.HandleAllocated then
-    ARect := NSObject(AWinControl.Handle).lclClientFrame;
+  Result := False;
+  if not AWinControl.HandleAllocated then Exit;
+  ARect := NSObject(AWinControl.Handle).lclClientFrame;
+  Result := True;
 end;
 
 class function TCocoaWSCustomForm.GetClientRect(const AWinControl: TWinControl; var ARect: TRect): Boolean;
