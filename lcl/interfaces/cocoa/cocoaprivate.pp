@@ -1094,7 +1094,8 @@ begin
     fieldEditor := TCocoaFieldEditor.alloc.init;
     fieldEditor.setFieldEditor(True);
   end;
-  if client.isKindOfClass_(TCocoaTextField) then
+  if client.isKindOfClass_(TCocoaTextField) or
+     client.isKindOfClass_(TCocoaSecureTextField) then
   begin
     Result := fieldEditor;
   end;
