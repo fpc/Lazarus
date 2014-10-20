@@ -228,6 +228,10 @@ var
   HasHeaders: Boolean;
 begin
   ShowHeaderCheckBox.Visible:=adofShow_ShowHeader in Flags;
+  if ShowHeaderCheckBox.Visible then
+    ShowHeaderCaptionCheckBox.BorderSpacing.Left:=15
+  else
+    ShowHeaderCaptionCheckBox.BorderSpacing.Left:=0;
   SaveLayoutOnCloseCheckBox.Visible:=adofShow_ShowSaveOnClose in Flags;
 
   HasHeaders:=ShowHeaderCheckBox.Checked;
