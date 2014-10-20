@@ -5527,12 +5527,7 @@ end;
 procedure TQtWidget.DestroyWidget;
 begin
   if (Widget <> nil) and FOwnWidget then
-  begin
-    if not FDeleteLater and not InEvent then
-      QWidget_destroy(Widget)
-    else
-      QObject_deleteLater(Widget);
-  end;
+    QObject_deleteLater(Widget);
   Widget := nil;
 end;
 
@@ -6652,7 +6647,7 @@ begin
   begin
     MenuBar.DetachEvents;
     if FOwnWidget and (MenuBar.Widget <> nil) then
-      QWidget_destroy(MenuBar.Widget);
+      QObject_deleteLater(MenuBar.Widget);
     MenuBar.Widget := nil;
     FreeThenNil(MenuBar);
   end;
