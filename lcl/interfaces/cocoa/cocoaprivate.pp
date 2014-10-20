@@ -760,16 +760,19 @@ type
     callback: ICommonCallback;
     Stepper: NSStepper;
     Edit: NSTextField;
+    Spin: TCustomFloatSpinEdit;
     procedure dealloc; override;
     procedure UpdateControl(ASpinEdit: TCustomFloatSpinEdit); message 'UpdateControl:';
     procedure CreateSubcontrols(ASpinEdit: TCustomFloatSpinEdit; const AParams: TCreateParams); message 'CreateSubControls:AParams:';
-    procedure ActionHandler(sender: NSObject); message 'ActionHandler:';
+    procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
     function lclGetCallback: ICommonCallback; override;
     procedure lclClearCallback; override;
     function lclIsHandle: Boolean; override;
+    // NSViewFix
+    function fittingSize: NSSize; override;
   end;
 
 
@@ -3347,6 +3350,9 @@ begin
   Stepper.setMinValue(ASpinEdit.MinValue);
   Stepper.setIncrement(ASpinEdit.Increment);
   Stepper.setDoubleValue(ASpinEdit.Value);
+
+  // update the UI too
+  StepperChanged(Self);
 end;
 
 procedure TCocoaSpinEdit.CreateSubcontrols(ASpinEdit: TCustomFloatSpinEdit; const AParams: TCreateParams);
@@ -3355,9 +3361,7 @@ const
 var
   lParams: TCreateParams;
 begin
-  // General control setup
-  setTarget(Self);
-  setAction(objcselector('ActionHandler:'));
+  Spin := ASpinEdit;
 
   // Now creates the subcontrols
   lParams := AParams;
@@ -3368,19 +3372,26 @@ begin
   lParams.Width := DEFAULT_STEPPER_WIDTH;
   lParams.X := AParams.Width - DEFAULT_STEPPER_WIDTH;
   Stepper := NSStepper.alloc.lclInitWithCreateParams(lParams);
+  Stepper.setValueWraps(False);
 
   lParams.Width := AParams.Width - DEFAULT_STEPPER_WIDTH;
   lParams.X := 0;
   Edit := NSTextField.alloc.lclInitWithCreateParams(lParams);
+
+  // Change event for the stepper
+  Stepper.setTarget(Self);
+  Stepper.setAction(objcselector('StepperChanged:'));
 end;
 
-procedure TCocoaSpinEdit.ActionHandler(sender: NSObject);
+procedure TCocoaSpinEdit.StepperChanged(sender: NSObject);
 var
-  lStr: NSString;
+  lNSStr: NSString;
+  lStr: string;
 begin
-  lStr := CocoaUtils.NSStringUtf8(Format('%f', [Stepper.doubleValue()]));
-  Edit.setStringValue(lStr);
-  lStr.release;
+  lStr := Format('%.*f', [Spin.DecimalPlaces, Stepper.doubleValue()]);
+  lNSStr := CocoaUtils.NSStringUtf8(lStr);
+  Edit.setStringValue(lNSStr);
+  lNSStr.release;
 end;
 
 function TCocoaSpinEdit.acceptsFirstResponder: Boolean;
@@ -3415,6 +3426,13 @@ end;
 function TCocoaSpinEdit.lclIsHandle: Boolean;
 begin
   Result := True;
+end;
+
+function TCocoaSpinEdit.fittingSize: NSSize;
+begin
+  Result.width := -1;
+  Edit.sizeToFit();
+  Result.height := Edit.bounds.size.height;
 end;
 
 end.

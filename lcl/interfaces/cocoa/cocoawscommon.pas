@@ -1219,20 +1219,19 @@ class procedure TCocoaWSWinControl.GetPreferredSize(
   const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 var
-  Obj: NSObject;
+  lView: NSView;
   Size: NSSize;
 begin
-  if AWinControl.HandleAllocated then
+  if not AWinControl.HandleAllocated then Exit;
+
+  lView := CocoaUtils.GetNSObjectView(NSObject(AWinControl.Handle));
+  if lView = nil then Exit;
+
+  if lView.respondsToSelector(objcselector('fittingSize')) then
   begin
-    Obj := NSObject(AWinControl.Handle);
-{
-    if Obj.isKindOfClass_(NSView) and obj.respondsToSelector(objcselector('fittingSize')) then
-    begin
-      Size := NSView(Obj).fittingSize;
-      PreferredWidth := Round(Size.width);
-      PreferredHeight := Round(Size.height);
-    end;
-}
+    Size := lView.fittingSize();
+    PreferredWidth := Round(Size.width);
+    PreferredHeight := Round(Size.height);
   end;
 end;
 
