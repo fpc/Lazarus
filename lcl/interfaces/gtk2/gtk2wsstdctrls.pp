@@ -2902,7 +2902,7 @@ begin
   FrameWidget := {%H-}PGtkFrame(AWinControl.Handle);
   LblWidget := GetLabelWidget(FrameWidget);
 
-  if TStaticText(AWinControl).ShowAccelChar then
+  if TStaticText(AWinControl).ShowAccelChar and (AText <> '') then
   begin
     DC := Widgetset.GetDC(HWND({%H-}PtrUInt(LblWidget)));
     ALabel := TGtk2WidgetSet(WidgetSet).ForceLineBreaks(
