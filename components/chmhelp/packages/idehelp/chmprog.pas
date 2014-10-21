@@ -31,8 +31,8 @@ type
       var ListOfNodes: THelpNodeQueryList;
       var ErrMsg: string): TShowHelpResult; override;
     function ShowHelp(Query: THelpQuery; {%H-}BaseNode, NewNode: THelpNode;
-                      {%H-}QueryItem: THelpQueryItem;
-                      var ErrMsg: string): TShowHelpResult; override;
+      {%H-}QueryItem: THelpQueryItem;
+      var ErrMsg: string): TShowHelpResult; override;
     function GetCHMSearchPath: string;
     property CHMSearchPath: string read FCHMSearchPath write FCHMSearchPath;
     function FindCHMFile: string;
@@ -52,7 +52,7 @@ begin
   if not Assigned(FPCDirectivesHelpDatabase) then
     FPCDirectivesHelpDatabase :=
       TFPCDirectivesHelpDatabase(HelpDatabases.CreateHelpDatabase(
-        sFPCCompilerDirectives, TFPCDirectivesHelpDatabase, true));
+      sFPCCompilerDirectives, TFPCDirectivesHelpDatabase, true));
 end;
 
 { TFPCDirectivesHelpDatabase }
@@ -143,8 +143,8 @@ var
 begin
   Result := shrHelpNotFound;
   if (csDesigning in ComponentState) then Exit;
-  if (FPCDirectiveHelpPrefix<>'')
-  and (LeftStr(HelpDirective, Length(FPCDirectiveHelpPrefix)) = FPCDirectiveHelpPrefix) then
+  if (FPCDirectiveHelpPrefix<>'') and
+    (LeftStr(HelpDirective, Length(FPCDirectiveHelpPrefix)) = FPCDirectiveHelpPrefix) then
   begin
     Filename:=FindCHMFile;
     debugln(['TFPCDirectivesHelpDatabase.GetNodesForDirective ',Filename]);
@@ -152,10 +152,10 @@ begin
     begin
       Result := shrDatabaseNotFound;
       ErrMsg := Format('prog.chm not found. Please put prog.chm help file in '+ LineEnding
-                       + '%s' +  LineEnding
-                       +'or set the path to it with "HelpFilesPath" in '
-                       +' Environment Options -> Help -> Help Options ->' + LineEnding
-                       +'under Viewers - CHM Help Viewer', [FCHMSearchPath]);
+        + '%s' +  LineEnding
+        +'or set the path to it with "HelpFilesPath" in '
+        +' Environment Options -> Help -> Help Options ->' + LineEnding
+        +'under Viewers - CHM Help Viewer', [FCHMSearchPath]);
       Exit;
     end;
     // HelpDirective starts with DirectivePrefix
@@ -182,7 +182,8 @@ end;
 function TFPCDirectivesHelpDatabase.GetCHMSearchPath: string;
 begin
   Result:=FCHMSearchPath;
-  if Result='' then begin
+  if Result='' then
+  begin
     Result := '$(LazarusDir)/docs/html;$(LazarusDir)/docs/chm';
     IDEMacros.SubstituteMacros(Result);
     Result:=MinimizeSearchPath(SetDirSeparators(Result));

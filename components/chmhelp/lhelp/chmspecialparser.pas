@@ -75,10 +75,12 @@ var
 begin
   if fStop^ then Exit;
   txt := AItem.KeyWord;
+  // Fallback:
   if txt = '' then txt := AItem.Text;
   txt := Trim(txt);
   if not Assigned(fLastNode) or (fLastNode.Text <> txt) then
   begin
+    // Add new child node
     fLastNode := AParentNode;
     NewNode := TContentTreeNode(fTreeView.Items.AddChild(AParentNode, txt));
     NewNode.Url := FixURL('/'+AItem.Local);

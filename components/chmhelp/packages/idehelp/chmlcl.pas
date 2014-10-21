@@ -40,11 +40,11 @@ begin
 
   // FPDoc nodes for units in the LCL
   FPDocNode := THelpNode.CreateURL(LCLHelpDatabase,
-                 'LCL - Lazarus Component Library Units',
-                 'file://index.html');
+    'LCL - Lazarus Component Library Units',
+    'file://index.html');
   LCLHelpDatabase.TOCNode := THelpNode.Create(LCLHelpDatabase, FPDocNode);
   DirItem := THelpDBISourceDirectory.Create(FPDocNode, '$(LazarusDir)/lcl',
-                            '*.pp;*.pas;*.inc', True);// and once as normal page
+    '*.pp;*.pas;*.inc', True);// and once as normal page
   LCLHelpDatabase.RegisterItem(DirItem);
 end;
 

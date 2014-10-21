@@ -31,11 +31,11 @@ type
     destructor Destroy; override;
     procedure LoadKeywordList(const Path: string);
     function GetNodesForKeyword(const HelpKeyword: string;
-                        var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
-                        ): TShowHelpResult; override;
+      var ListOfNodes: THelpNodeQueryList; var ErrMsg: string
+      ): TShowHelpResult; override;
     function ShowHelp(Query: THelpQuery; {%H-}BaseNode, NewNode: THelpNode;
-                      {%H-}QueryItem: THelpQueryItem;
-                      var ErrMsg: string): TShowHelpResult; override;
+      {%H-}QueryItem: THelpQueryItem;
+      var ErrMsg: string): TShowHelpResult; override;
     property CHMSearchPath: string read FCHMSearchPath write FCHMSearchPath;
   end;
 
@@ -51,14 +51,14 @@ uses chmreader, chmsitemap;
 procedure RegisterLangRefHelpDatabase;
 begin
   if not Assigned(LangRefHelpDatabase) then
-    LangRefHelpDatabase := TLangRefHelpDatabase(HelpDatabases.CreateHelpDatabase(sFPCLangRef,
-                                               TLangRefHelpDatabase, true));
+    LangRefHelpDatabase := TLangRefHelpDatabase(HelpDatabases.CreateHelpDatabase(sFPCLangRef,                                               TLangRefHelpDatabase, true));
 end;
 
 { TLangRefHelpDatabase }
 
 procedure TLangRefHelpDatabase.ClearKeywordNodes;
-var i: Integer;
+var
+  i: Integer;
 begin
   for i := 0 to FKeywordNodes.Count - 1 do
     TObject(FKeywordNodes[i]).Free;
@@ -160,10 +160,10 @@ begin
     begin
       Result := shrDatabaseNotFound;
       ErrMsg := Format('ref.chm not found. Please put ref.chm help file in '+ LineEnding
-                         + '%s' +  LineEnding
-                         +'or set the path to it with "HelpFilesPath" in '
-                         +' Environment Options -> Help -> Help Options ->' + LineEnding
-                         +'under Viewers - CHM Help Viewer', [fCHMSearchPath]);
+        + '%s' +  LineEnding
+        +'or set the path to it with "HelpFilesPath" in '
+        +' Environment Options -> Help -> Help Options ->' + LineEnding
+        +'under Viewers - CHM Help Viewer', [fCHMSearchPath]);
       Exit;
     end;
     // HelpKeyword starts with KeywordPrefix
