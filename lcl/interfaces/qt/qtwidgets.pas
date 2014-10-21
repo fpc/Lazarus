@@ -6853,6 +6853,23 @@ begin
   BeginEventProcessing;
   try
     case QEvent_type(Event) of
+      QEventHide:
+      begin
+        Result := inherited EventFilter(Sender, Event);
+        {as of r46623 (issue #26893) we use QObject_deleteLater
+         instead of QWidget_destroy.
+         QMDIArea does not respond after that, so we must activate next mdichild
+         according to mdi standards.Looks like Qt4 bug.}
+        if not Application.Terminated and IsMDIChild then
+        begin
+          if Assigned(MDIChildArea) then
+          begin
+            if (MDIChildArea.ActiveSubWindow = nil) or
+              (MDIChildArea.ActiveSubWindow = Widget) then
+              QMdiArea_activatePreviousSubWindow(QMDIAreaH(MDIChildArea.Widget));
+          end;
+        end;
+      end;
       QEventMouseButtonPress,
       QEventMouseButtonRelease,
       QEventMouseButtonDblClick:
