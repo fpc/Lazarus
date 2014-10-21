@@ -4610,8 +4610,8 @@ begin
       AChild := gtk_bin_get_child(PGtkBin(Widget));
       if (AChild <> nil) and GTK_IS_TREE_VIEW(AChild) then
       begin
-        Result.Right := AChild^.allocation.width - AChild^.allocation.x;
-        Result.Bottom := AChild^.allocation.height - AChild^.allocation.y;
+        Result.Right := AChild^.allocation.width;
+        Result.Bottom := AChild^.allocation.height;
       end;
     end;
   end;
