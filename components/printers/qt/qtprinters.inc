@@ -214,6 +214,7 @@ begin
   {$IFDEF VERBOSE_QT_PRINTING}
   DebugLn('TQtPrinters.DoBeginDoc()');
   {$ENDIF}
+  QtDefaultPrinter.DocName := Title;
   BeginPage;
 end;
 
