@@ -84,8 +84,10 @@ type
     procedure UpdateHeaderAlignTopLabel;
     procedure UpdateHeaderAlignLeftLabel;
     procedure UpdateSplitterWidthLabel;
+    procedure UpdateHeaderOptions;
     procedure ApplyFlags;
   public
+    constructor Create(TheOwner: TComponent); override;
     procedure SaveToMaster;
     procedure LoadFromMaster;
     procedure SaveToSettings(TheSettings: TAnchorDockSettings);
@@ -94,6 +96,9 @@ type
     property Settings: TAnchorDockSettings read FSettings write SetSettings;
     property Flags: TAnchorDockOptionsFlags read FFlags write SetFlags;
   end;
+
+var
+  DefaultAnchorDockOptionFlags: TAnchorDockOptionsFlags = [];
 
 function ShowAnchorDockOptions(ADockMaster: TAnchorDockMaster): TModalResult;
 
@@ -144,7 +149,7 @@ end;
 
 procedure TAnchorDockOptionsFrame.ShowHeaderCheckBoxChange(Sender: TObject);
 begin
-  ApplyFlags;
+  UpdateHeaderOptions;
 end;
 
 procedure TAnchorDockOptionsFrame.SplitterWidthTrackBarChange(Sender: TObject);
@@ -189,6 +194,7 @@ begin
   if FFlags=AValue then Exit;
   FFlags:=AValue;
   ApplyFlags;
+  UpdateHeaderOptions;
 end;
 
 procedure TAnchorDockOptionsFrame.SetSettings(AValue: TAnchorDockSettings);
@@ -223,9 +229,18 @@ begin
                              +' ('+IntToStr(SplitterWidthTrackBar.Position)+')';
 end;
 
-procedure TAnchorDockOptionsFrame.ApplyFlags;
+procedure TAnchorDockOptionsFrame.UpdateHeaderOptions;
 var
   HasHeaders: Boolean;
+begin
+  HasHeaders:=ShowHeaderCheckBox.Checked;
+  ShowHeaderCaptionCheckBox.Enabled:=HasHeaders;
+  HideHeaderCaptionForFloatingCheckBox.Enabled:=HasHeaders;
+  FlattenHeaders.Enabled:=HasHeaders;
+  FilledHeaders.Enabled:=HasHeaders;
+end;
+
+procedure TAnchorDockOptionsFrame.ApplyFlags;
 begin
   ShowHeaderCheckBox.Visible:=adofShow_ShowHeader in Flags;
   if ShowHeaderCheckBox.Visible then
@@ -233,12 +248,12 @@ begin
   else
     ShowHeaderCaptionCheckBox.BorderSpacing.Left:=0;
   SaveLayoutOnCloseCheckBox.Visible:=adofShow_ShowSaveOnClose in Flags;
+end;
 
-  HasHeaders:=ShowHeaderCheckBox.Checked;
-  ShowHeaderCaptionCheckBox.Enabled:=HasHeaders;
-  HideHeaderCaptionForFloatingCheckBox.Enabled:=HasHeaders;
-  FlattenHeaders.Enabled:=HasHeaders;
-  FilledHeaders.Enabled:=HasHeaders;
+constructor TAnchorDockOptionsFrame.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FFlags:=DefaultAnchorDockOptionFlags;
 end;
 
 procedure TAnchorDockOptionsFrame.SaveToMaster;
@@ -332,6 +347,7 @@ begin
   ShowHeaderCheckBox.Hint:=
     adrsEachDockedWindowHasAHeaderThatAllowsDraggingHasACo;
   ShowHeaderCheckBox.Checked:=TheSettings.ShowHeader;
+  UpdateHeaderOptions;
 
   ShowHeaderCaptionCheckBox.Caption:=adrsShowHeaderCaptions;
   ShowHeaderCaptionCheckBox.Hint:=adrsShowCaptionsOfDockedControlsInTheHeader;

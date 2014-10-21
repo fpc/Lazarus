@@ -234,6 +234,8 @@ end;
 constructor TIDEAnchorDockMaster.Create;
 begin
   inherited Create;
+  DefaultAnchorDockOptionFlags:=[adofShow_ShowHeader,adofShow_ShowSaveOnClose];
+
   FSaveOnClose:=true;
   IDEAnchorDockMaster:=Self;
   DockMaster.OnCreateControl:=@DockMasterCreateControl;
@@ -657,7 +659,6 @@ begin
   OptionsFrame:=TAnchorDockOptionsFrame.Create(Self);
   with OptionsFrame do begin
     Name:='OptionsFrame';
-    Flags:=[adofShow_ShowHeader,adofShow_ShowSaveOnClose];
   end;
 end;
 
