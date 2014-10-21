@@ -654,10 +654,10 @@ begin
   Result := False;
 
   // find QSystemTrayIcon
-  if Assigned(SysTrayIconsList) and (SysTrayIconsList.Count > 0) and
-    ((QEvent_type(Event) = LCLQt_RegisterSystemTrayIcon) or
+  if ((QEvent_type(Event) = LCLQt_RegisterSystemTrayIcon) or
      (QEvent_type(Event) = QEventPaint) or
     (QEvent_type(Event) = QEventEnter)) and
+    Assigned(SysTrayIconsList) and (SysTrayIconsList.Count > 0) and
     QObject_isWidgetType(Sender) and (QObject_parent(Sender) = nil) and
     QWidget_isWindow(QWidgetH(Sender)) and QWidget_isVisible(QWidgetH(Sender)) and
     (QWidget_focusPolicy(QWidgetH(Sender)) = QtNoFocus) then
