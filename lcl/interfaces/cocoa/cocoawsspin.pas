@@ -26,7 +26,7 @@ uses
   // widgetset
   WSSpin, WSLCLClasses,
   // cocoa ws
-  CocoaPrivate;
+  CocoaPrivate, CocoaWSCommon;
 
 type
 
@@ -37,6 +37,8 @@ type
     class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function  GetValue(const ACustomFloatSpinEdit: TCustomFloatSpinEdit): Double; override;
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
+    //
+    class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
   end;
 
 implementation
@@ -98,6 +100,20 @@ begin
   lSpin := TCocoaSpinEdit(ACustomFloatSpinEdit.Handle);
 
   lSpin.UpdateControl(ACustomFloatSpinEdit);
+end;
+
+class procedure TCocoaWSCustomFloatSpinEdit.SetBounds(
+  const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  lSpin: TCocoaSpinEdit;
+  ACustomFloatSpinEdit: TCustomFloatSpinEdit absolute AWinControl;
+begin
+  if ACustomFloatSpinEdit = nil then Exit;
+  if not ACustomFloatSpinEdit.HandleAllocated then Exit;
+  lSpin := TCocoaSpinEdit(ACustomFloatSpinEdit.Handle);
+
+  TCocoaWSWinControl.SetBounds(AWinControl, ALeft, ATop, AWidth, AHeight);
+  lSpin.PositionSubcontrols(ALeft, ATop, AWidth, AHeight);
 end;
 
 end.

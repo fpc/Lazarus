@@ -32,6 +32,9 @@ uses
   LMessages, LCLMessageGlue, ExtCtrls, Graphics,
   LCLType, LCLProc, Controls, ComCtrls, Spin;
 
+const
+  DEFAULT_STEPPER_WIDTH = 15;
+
 type
 
   { ICommonCallback }
@@ -764,7 +767,9 @@ type
     procedure dealloc; override;
     procedure UpdateControl(ASpinEdit: TCustomFloatSpinEdit); message 'UpdateControl:';
     procedure CreateSubcontrols(ASpinEdit: TCustomFloatSpinEdit; const AParams: TCreateParams); message 'CreateSubControls:AParams:';
+    procedure PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer); message 'PositionSubcontrols:ATop:AWidth:AHeight:';
     procedure StepperChanged(sender: NSObject); message 'StepperChanged:';
+    // lcl
     function acceptsFirstResponder: Boolean; override;
     function becomeFirstResponder: Boolean; override;
     function resignFirstResponder: Boolean; override;
@@ -3356,8 +3361,6 @@ begin
 end;
 
 procedure TCocoaSpinEdit.CreateSubcontrols(ASpinEdit: TCustomFloatSpinEdit; const AParams: TCreateParams);
-const
-  DEFAULT_STEPPER_WIDTH = 15;
 var
   lParams: TCreateParams;
 begin
@@ -3369,11 +3372,13 @@ begin
   lParams.WndParent := HWND(Self);
   lParams.Style := AParams.Style or WS_VISIBLE;
 
+  // Stepper
   lParams.Width := DEFAULT_STEPPER_WIDTH;
   lParams.X := AParams.Width - DEFAULT_STEPPER_WIDTH;
   Stepper := NSStepper.alloc.lclInitWithCreateParams(lParams);
   Stepper.setValueWraps(False);
 
+  // Edit
   lParams.Width := AParams.Width - DEFAULT_STEPPER_WIDTH;
   lParams.X := 0;
   Edit := NSTextField.alloc.lclInitWithCreateParams(lParams);
@@ -3381,6 +3386,25 @@ begin
   // Change event for the stepper
   Stepper.setTarget(Self);
   Stepper.setAction(objcselector('StepperChanged:'));
+end;
+
+procedure TCocoaSpinEdit.PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer);
+var
+  lRect: NSRect;
+begin
+  WriteLn('[TCocoaSpinEdit.PositionSubcontrols] ALeft=', ALeft,
+    ' ATop=', ATop, ' AWidth=', AWidth, ' AHeight=', AHeight);
+  // Stepper
+  LCLToNSRect(Types.Bounds(AWidth - DEFAULT_STEPPER_WIDTH, 0,
+    DEFAULT_STEPPER_WIDTH, AHeight),
+    frame.size.height, lRect);
+  Stepper.setBounds(lRect);
+
+  // Edit
+  LCLToNSRect(Types.Bounds(0, 0,
+    AWidth - DEFAULT_STEPPER_WIDTH, AHeight),
+    frame.size.height, lRect);
+  Edit.setBounds(lRect);
 end;
 
 procedure TCocoaSpinEdit.StepperChanged(sender: NSObject);
@@ -3401,7 +3425,7 @@ end;
 
 function TCocoaSpinEdit.becomeFirstResponder: Boolean;
 begin
-  Result := inherited becomeFirstResponder;
+  Result := Edit.becomeFirstResponder;
   if Assigned(callback) then
     callback.BecomeFirstResponder;
 end;
@@ -3433,6 +3457,8 @@ begin
   Result.width := -1;
   Edit.sizeToFit();
   Result.height := Edit.bounds.size.height;
+  WriteLn('[TCocoaSpinEdit.fittingSize] width=', Result.width,
+    ' height=', Result.height);
 end;
 
 end.
