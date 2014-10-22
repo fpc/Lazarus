@@ -677,7 +677,7 @@ begin
     //SetMaxLegth must be before Clear, otherwise Clear uses old MaxLength value!
     SetMaxLength(FMaskLength);
     Clear;
-    FTextOnEnter := GetEditText;
+    FTextOnEnter := inherited RealGetText;
   end;
 end;
 
@@ -708,7 +708,7 @@ Begin
     FSpaceChar := Value;
     if IsMasked then
     begin
-      S := GetEditText;
+      S := inherited RealGetText;
       for I := 1 to Utf8Length(S) do
       begin
         if (GetCodePoint(S,i) = OldValue) and (not IsLiteral(FMask[i])) then SetCodePoint(S,i,FSpaceChar);
@@ -971,7 +971,7 @@ end;
 //Set text in the control with FChangeAllowed flag set appropriately
 procedure TCustomMaskEdit.RealSetTextWhileMasked(const Value: TCaption);
 begin
-  if (Value <> GetEditText) then
+  if (Value <> inherited RealGetText) then
   begin
     FInRealSetTextWhileMasked := True;
     FChangeAllowed := True;
@@ -1022,7 +1022,7 @@ begin
     FMaskLength := FSavedMaskLength;
     ClearInternalMask(FSavedMask, FSavedMaskLength);
     SetMaxLength(FMaskLength);
-    FTextOnEnter := GetEditText;
+    FTextOnEnter := inherited RealGetText;
     Result := True;
   end
   else
@@ -1342,7 +1342,7 @@ Var
 begin
   if CanInsertChar(FCursorPos + 1, Ch) then
   begin
-    S := GetEditText;
+    S := inherited RealGetText;
     if HasSelection then
     begin
       //replace slection with blank chars
@@ -1428,7 +1428,7 @@ Var
 begin
   if not HasSelection then Exit;
   GetSel(SelectionStart, SelectionStop);
-  S := GetEditText;
+  S := inherited RealGetText;
   for i := SelectionStart + 1 to SelectionStop do SetCodePoint(S, i,ClearChar(i));
   RealSetTextWhileMasked(S);
   SetCursorPos;
@@ -1485,11 +1485,11 @@ var
 Begin
   if not IsMasked then
   begin
-    Result := GetEditText;
+    Result := inherited RealGetText;
   end
   else
   begin
-    S := StringReplace(GetEditText, FSpaceChar, #32, [rfReplaceAll]);
+    S := StringReplace(inherited RealGetText, FSpaceChar, #32, [rfReplaceAll]);
     //FSpaceChar can be used as a literal in the mask, so put it back
     for i := 1 to FMaskLength do
     begin
@@ -1670,7 +1670,7 @@ begin
     FCursorPos := GetSelStart;
     //Only save FTextOnEnter if validation did not fail in last DoExit that occurred
     if not FValidationFailed then
-      FTextOnEnter := GetEditText
+      FTextOnEnter := inherited RealGetText
     else
       FValidationFailed := False;
     Modified := False;
@@ -1700,7 +1700,7 @@ begin
   {$IFNDEF MASKEDIT_NOVALIDATEONEXIT}
   //Do not validate if FValidationFailed, or risk raising an exception while the previous exception was
   //not handled, resulting in an application crash
-  if IsMasked and (FTextOnEnter <> GetEditText) then
+  if IsMasked and (FTextOnEnter <> inherited RealGetText) then
   begin
     //assume failure
     try
@@ -1746,7 +1746,7 @@ begin
   //Escape Key
   if (Key = VK_ESCAPE) and (Shift = []) then
   begin
-    if ((GetEditText) <> FTextOnEnter) then
+    if ((inherited RealGetText) <> FTextOnEnter) then
     begin
       Reset;
       Key := 0;
@@ -1979,7 +1979,7 @@ begin
    begin
      P := FCursorPos + 1;
      DeleteSelected;
-     S := GetEditText;
+     S := inherited RealGetText;
      i := 1;
      //debugln('TCustomMaskEdit.PasteFromClipBoard B:');
      //debugln('  P = ',dbgs(p));
