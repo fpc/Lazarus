@@ -4235,13 +4235,15 @@ begin
   {$ifdef dbgDBGrid}
   DebugLn('%s.Delete', [ClassName]);
   {$endif}
-  for i := 0 to FList.Count - 1 do begin
+  for i := FList.Count-1 downto 0 do begin
     FDataset.GotoBookmark(Items[i]);
-    FDataset.Delete;
     {$ifndef noautomatedbookmark}
     Bookmark := FList[i];
     SetLength(TBookmark(Bookmark),0); // decrease reference count
+    {$else}
+    FDataset.FreeBookmark(Items[i]);
     {$endif noautomatedbookmark}
+    FDataset.Delete;
     FList.Delete(i);
   end;
 end;
