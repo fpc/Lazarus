@@ -1167,6 +1167,7 @@ type
     procedure PostponedMouseReleaseTimerEvent(); cdecl; virtual;
   public
     constructor Create(const AWinControl: TWinControl; const AParams: TCreateParams); override;
+    destructor Destroy; override;
     procedure signalActivated(index: QModelIndexH); cdecl; virtual;
     procedure signalClicked(index: QModelIndexH); cdecl; virtual;
     procedure signalDoubleClicked(index: QModelIndexH); cdecl; virtual;
@@ -17098,6 +17099,13 @@ begin
   FNewDelegate := nil;
 end;
 
+destructor TQtAbstractItemView.Destroy;
+begin
+  if FNewDelegate <> nil then
+    SetOwnerDrawn(False);
+  inherited Destroy;
+end;
+
 procedure TQtAbstractItemView.signalActivated(index: QModelIndexH); cdecl;
 var
   Msg: TLMessage;
@@ -17134,7 +17142,7 @@ begin
   {should be overriden by descedants}
 end;
 
-procedure TQtAbstractItemView.SignalViewportEntered; cdecl;
+procedure TQtAbstractItemView.signalViewportEntered; cdecl;
 begin
   {should be overriden by descedants}
 end;
