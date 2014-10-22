@@ -6108,12 +6108,17 @@ begin
             Exit;
           end;
 
-          if not MoveExtend(False, FGCache.ClickCell.X, FGCache.ClickCell.Y) then begin
-            if EditorAlwaysShown then begin
-              SelectEditor;
-              EditorShow(true);
+          include(fGridFlags, gfEditingDone);
+          try
+            if not MoveExtend(False, FGCache.ClickCell.X, FGCache.ClickCell.Y) then begin
+              if EditorAlwaysShown then begin
+                SelectEditor;
+                EditorShow(true);
+              end;
+              MoveSelection;
             end;
-            MoveSelection;
+          finally
+            exclude(fGridFlags, gfEditingDone);
           end;
 
         end;
