@@ -133,7 +133,6 @@ Type
     property Count: Integer read GetCount;
   end;
 
-{function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;}
 function IsMasterPoName(const Fn: String): Boolean;
 function ExtractMasterNameFromChildName(const AChildName: String): String;
 function ExtractLanguageFromChildName(const AChildName: string): TLangID;
@@ -172,47 +171,6 @@ const
 
 //Helper functions
 
-{function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;
-const
-  FormatArgs = 'DEFGMNPSUX';
-  FormatChar = '%';
-  FormatSpecs = ':-.0123456789';
-var
-  p: PtrInt;
-  NewStr, Symb: String;
-begin
-  NewStr := '';
-  ArgumentError := 0;
-  p := UTF8Pos(FormatChar, S);
-  while (Length(S)>0) and (p>0) and (ArgumentError=0) do
-  begin
-    UTF8Delete(S, 1, p);
-    if Length(S)>0 then
-    begin
-      Symb := UTF8UpperCase(UTF8Copy(S, 1, 1));
-      while (Length(S)>1) and (UTF8Pos(Symb, FormatSpecs)>0) do
-      begin
-        //weak syntax check for formatting options, skip them if found
-        UTF8Delete(S, 1, 1);
-        Symb := UTF8UpperCase(UTF8Copy(S, 1, 1));
-      end;
-      if Symb <> FormatChar then
-      begin
-        NewStr := NewStr+Symb;
-        if UTF8Pos(Symb, FormatArgs)=0 then
-          ArgumentError := Utf8Length(NewStr);
-      end;
-      //removing processed symbol
-      UTF8Delete(S, 1, 1);
-      //searching for next argument
-      p := UTF8Pos(FormatChar, S);
-    end
-    else
-      //in this case formatting symbol doesn't have its argument
-      ArgumentError := Utf8Length(NewStr) + 1;
-  end;
-  Result := NewStr;
-end;}
 
 function IsMasterPoName(const Fn: String): Boolean;
 //Returns True if Fn is like '[Path/To/]somename.po'
