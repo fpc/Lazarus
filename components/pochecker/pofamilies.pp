@@ -136,7 +136,7 @@ Type
 {function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;}
 function IsMasterPoName(const Fn: String): Boolean;
 function ExtractMasterNameFromChildName(const AChildName: String): String;
-function ExtractLanguageFromChildName(const AChildName: string): String;
+function ExtractLanguageFromChildName(const AChildName: string): TLangID;
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
 procedure LocalizePoTestTypeNames;
 
@@ -258,17 +258,18 @@ begin
     Result := '';
 end;
 
-function ExtractLanguageFromChildName(const AChildName: string): String;
+function ExtractLanguageFromChildName(const AChildName: string): TLangID;
 Var
-  Mn: string;
+  Mn, Abbr: string;
   P1,P2: Integer;
 begin
   Mn := ExtractMasterNameFromChildName(AChildName);
   Mn := ExtractFileNameWithoutExt(Mn);
   P1 := Length(Mn);
   P2 := Length(AChildName);
-  Result := Copy(AChildName,P1+2,P2-(P1+1));
-  Result := ExtractFileNameWithoutExt(Result);
+  Abbr := Copy(AChildName,P1+2,P2-(P1+1));
+  Abbr := ExtractFileNameWithoutExt(Abbr);
+  Result := LangAbbrToLangId(Abbr);
 end;
 
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;

@@ -122,6 +122,7 @@
       <Unit7>
         <Filename Value="..\pofamilylists.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="PoFamilyLists"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\pocheckermemodlg.pp"/>
@@ -129,6 +130,7 @@
         <ComponentName Value="MemoForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="PoCheckerMemoDlg"/>
       </Unit8>
     </Units>
   </ProjectOptions>

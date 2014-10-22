@@ -161,8 +161,9 @@ end;
 
 procedure TPoCheckerForm.OpenBtnClick(Sender: TObject);
 var
-  Fn,Mn,l: String;
+  Fn,Mn: String;
   Idx: Integer;
+  ALang: TLangID;
 begin
   if TrySelectFile(Fn) then
   begin
@@ -173,19 +174,19 @@ begin
       if (Idx <> -1) then
         MasterPoListBox.Selected[Idx] := True;
     end
-    else begin
+    else
+    begin
       Mn := ExtractMasterNameFromChildName(Fn);
-      if Mn <> '' then begin
+      if Mn <> '' then
+      begin
         AddToMasterPoList(Mn);
         Idx := MasterPoListBox.Items.IndexOf(Mn);
         if (Idx <> -1) then
           MasterPoListBox.Selected[Idx] := True;
-        l := ExtractLanguageFromChildName(Fn);
-        l := '[' + l + ']';
-        for Idx := 0 to LangFilter.Items.Count -1 do begin
-           if pos(l,LangFilter.Items[Idx]) <> 0 then
-             LangFilter.ItemIndex := Idx;
-        end;
+        ALang := ExtractLanguageFromChildName(Fn);
+        Idx := LangIdToLangFilterIndex(ALang);
+        if (Idx <> -1) then
+          LangFilter.ItemIndex := Idx;
       end;
     end;
     UpdateGUI(MasterPoListBox.SelCount > 0);
