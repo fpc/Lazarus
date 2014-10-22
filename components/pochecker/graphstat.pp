@@ -130,7 +130,6 @@ var
   anItem: TListItem;
   anIndex: Integer;
   AStat: TStat;
-  mr: TModalResult;
 begin
   anItem := Listview.GetItemAt(X, Y);
   {$ifdef pocheckerstandalone}

@@ -26,13 +26,11 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   StdCtrls, LCLProc, CheckLst, Buttons, ExtCtrls, ComCtrls, Types,
-  LCLType,
-  {$IFDEF POCHECKERSTANDALONE}
-  Translations,
-  {$ELSE}
-  IDEIntf, MenuIntf,{$IFDEF USE_NEW_TRANSLATIONS}Translations,{$ENDIF}
+  LCLType, Translations,
+  {$IFnDEF POCHECKERSTANDALONE}
+  IDEIntf, MenuIntf,
   {$ENDIF}
-  SimplePoFiles, PoFamilies, ResultDlg, pocheckerconsts, PoCheckerSettings,
+  PoFamilies, ResultDlg, pocheckerconsts, PoCheckerSettings,
   PoFamilyLists, PoCheckerMemoDlg;
 
 type
@@ -163,7 +161,7 @@ end;
 
 procedure TPoCheckerForm.OpenBtnClick(Sender: TObject);
 var
-  Fn: String;
+  Fn,Mn,l: String;
   Idx: Integer;
 begin
   if TrySelectFile(Fn) then
@@ -174,6 +172,21 @@ begin
       Idx := MasterPoListBox.Items.IndexOf(Fn);
       if (Idx <> -1) then
         MasterPoListBox.Selected[Idx] := True;
+    end
+    else begin
+      Mn := ExtractMasterNameFromChildName(Fn);
+      if Mn <> '' then begin
+        AddToMasterPoList(Mn);
+        Idx := MasterPoListBox.Items.IndexOf(Mn);
+        if (Idx <> -1) then
+          MasterPoListBox.Selected[Idx] := True;
+        l := ExtractLanguageFromChildName(Fn);
+        l := '[' + l + ']';
+        for Idx := 0 to LangFilter.Items.Count -1 do begin
+           if pos(l,LangFilter.Items[Idx]) <> 0 then
+             LangFilter.ItemIndex := Idx;
+        end;
+      end;
     end;
     UpdateGUI(MasterPoListBox.SelCount > 0);
   end;
@@ -915,7 +928,7 @@ end;
 
 function SameItem(Item1, Item2: TPoFileItem): boolean;
 begin
-  Result := (Item1.Identifier = Item2.Identifier) and
+  Result := (Item1.IdentifierLow = Item2.IdentifierLow) and
     (Item1.Original = Item2.Original) and (Item1.Context = Item2.Context) and
     (Item1.Flags = Item2.Flags) and (Item1.PreviousID = Item2.PreviousID) and
     (Item1.Translation = Item2.Translation);

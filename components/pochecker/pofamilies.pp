@@ -8,7 +8,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList, ContNrs, Math,
-  Masks,{$IFDEF USE_NEW_TRANSLATIONS}Translations ,{$ENDIF}SimplePoFiles, PoCheckerConsts;
+  Masks, Translations, PoCheckerConsts;
 
 Type
 
@@ -41,8 +41,8 @@ Type
 
   TPoFamily = class
   private
-    FMaster: TSimplePoFile;
-    FChild: TSimplePoFile;
+    FMaster: TPOFile;
+    FChild: TPOFile;
     FMasterName: String;
     FChildName: String;
     FOnTestStart: TTestStartEvent;
@@ -74,8 +74,8 @@ Type
   public
     procedure RunTests(out ErrorCount, WarningCount: Integer; ErrorLog: TStrings);
 
-    property Master: TSimplePoFile read FMaster;
-    property Child: TSimplePoFile read FChild;
+    property Master: TPOFile read FMaster;
+    property Child: TPOFile read FChild;
     property MasterName: String read FMasterName write SetMasterName;
     property ChildName: String read FChildName write SetChildName;
     property TestTypes: TPoTestTypes read FTestTypes write FTestTypes;
@@ -133,9 +133,10 @@ Type
     property Count: Integer read GetCount;
   end;
 
-function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;
+{function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;}
 function IsMasterPoName(const Fn: String): Boolean;
 function ExtractMasterNameFromChildName(const AChildName: String): String;
+function ExtractLanguageFromChildName(const AChildName: string): String;
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
 procedure LocalizePoTestTypeNames;
 
@@ -171,7 +172,7 @@ const
 
 //Helper functions
 
-function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;
+{function ExtractFormatArgs(S: String; out ArgumentError: Integer): String;
 const
   FormatArgs = 'DEFGMNPSUX';
   FormatChar = '%';
@@ -211,7 +212,7 @@ begin
       ArgumentError := Utf8Length(NewStr) + 1;
   end;
   Result := NewStr;
-end;
+end;}
 
 function IsMasterPoName(const Fn: String): Boolean;
 //Returns True if Fn is like '[Path/To/]somename.po'
@@ -257,6 +258,19 @@ begin
     Result := '';
 end;
 
+function ExtractLanguageFromChildName(const AChildName: string): String;
+Var
+  Mn: string;
+  P1,P2: Integer;
+begin
+  Mn := ExtractMasterNameFromChildName(AChildName);
+  Mn := ExtractFileNameWithoutExt(Mn);
+  P1 := Length(Mn);
+  P2 := Length(AChildName);
+  Result := Copy(AChildName,P1+2,P2-(P1+1));
+  Result := ExtractFileNameWithoutExt(Result);
+end;
+
 function FindAllTranslatedPoFiles(const Filename: string): TStringList;
 var
   Path: String;
@@ -299,7 +313,7 @@ end;
 
 
 
-function CompareFormatArgs(S1, S2: String): Boolean;
+{function CompareFormatArgs(S1, S2: String): Boolean;
 var
   Extr1, Extr2: String;
   ArgErr1, ArgErr2: Integer;
@@ -337,7 +351,7 @@ begin
     end;
     //writeln('CompareFormatArgs: Result = ',Result);
   end;
-end;
+end;}
 
 { TStat }
 
@@ -475,7 +489,7 @@ begin
   FMaster.Free;
   FMaster := nil;
   FMasterName := '';
-  if (AValue <> '') then FMaster := TSimplePoFile.Create(AValue{, True});
+  if (AValue <> '') then FMaster := TPOFile.Create(AValue, True);
   FMasterName := AValue;
 end;
 
@@ -506,7 +520,7 @@ begin
   FChild.Free;
   FChild := nil;
   FChildName := '';
-  if (AValue <> '') then FChild := TSimplePoFile.Create(AValue{, True});
+  if (AValue <> '') then FChild := TPOFile.Create(AValue, True);
   FChildName := AValue;
 end;
 
@@ -524,13 +538,13 @@ constructor TPoFamily.Create(const AMasterName, AChildName: String);
 begin
   if (AMasterName <> '') then
   begin
-    FMaster := TSimplePoFile.Create(AMasterName, True);
+    FMaster := TPOFile.Create(AMasterName, True);
     FMasterName := AMasterName;
     //debugln('TPoFamily.Create: created ',FMasterName);
   end;
   if (AChildName <> '') then
   begin
-    FChild := TSimplePoFile.Create(AChildName, True);
+    FChild := TPOFile.Create(AChildName, True);
     FChildName := AChildName;
     //debugln('TPoFamily.Create: created ',FChildName);
   end;
@@ -574,6 +588,7 @@ var
   i: Integer;
   CPoItem: TPOFileItem;
   IsFuzzy: Boolean;
+  IsBadFormat: Boolean;
 begin
   //debugln('TPoFamily.CheckFormatArgs');
   DoTestStart(PoTestTypeNames[pttCheckFormatArgs], ShortChildName);
@@ -584,12 +599,13 @@ begin
     //debugln('  i = ',DbgS(i));
     //MPoItem := FMaster.PoItems[i];
     CPoItem := FChild.PoItems[i];
-    //CPoItem := FChild.FindPoItem(MPoItem.Identifier);
+    //CPoItem := FChild.FindPoItem(MPoItem.IdentifierLow);
     if Assigned(CPoItem) then
     begin
       IsFuzzy := (Pos('fuzzy', CPoItem.Flags) > 0);
+      IsBadFormat := (Pos('badformat', CPoItem.Flags) > 0);
       //if (IgnoreFuzzyStrings and IsFuzzy) then debugln('Skipping fuzzy translation: ',CPoItem.Translation);
-      if (Length(CPoItem.Translation) > 0) and (not (IgnoreFuzzyStrings and IsFuzzy)) and (not CompareFormatArgs(CPoItem.Original, CPoItem.Translation)) then
+      if (Length(CPoItem.Translation) > 0) and (not (IgnoreFuzzyStrings and IsFuzzy)) and IsBadFormat then
       begin
         if (ErrorCount = 0) then
         begin
@@ -601,7 +617,7 @@ begin
         end;
         Inc(ErrorCount);
         ErrorLog.Add(Format(sIncompatibleFormatArgs,[CPoItem.LineNr]));
-        ErrorLog.Add(Format(sFormatArgsID,[sCommentIdentifier, CPoItem.Identifier]));
+        ErrorLog.Add(Format(sFormatArgsID,[sCommentIdentifier, CPoItem.IdentifierLow]));
         ErrorLog.Add(Format(sFormatArgsValues,[sMsgID,CPoItem.Original,sOriginal]));
         ErrorLog.Add(Format(sFormatArgsValues,[sMsgStr,CPoItem.Translation,sTranslation]));
         if IsFuzzy then ErrorLog.Add(sNoteTranslationIsFuzzy);
@@ -632,9 +648,9 @@ begin
   for i := 0 to FMaster.Count - 1 do
   begin
     MPoItem := FMaster.PoItems[i];
-    if Assigned(MPoItem) and (MPoItem.Identifier <> '') then
+    if Assigned(MPoItem) and (MPoItem.IdentifierLow <> '') then
     begin
-      CPoItem := FChild.FindPoItem(MPoItem.Identifier);
+      CPoItem := FChild.FindPoItem(MPoItem.IdentifierLow);
       if not Assigned(CPoItem) then
       begin
         if (ErrorCount = 0) then
@@ -649,7 +665,7 @@ begin
         ErrorLog.Add(Format(sLineInFileName,
                             [MPoItem.LineNr,ShortMasterName]));
         ErrorLog.Add(Format(sIdentifierNotFoundIn,
-                            [MPoItem.Identifier,ShortChildName]));
+                            [MPoItem.IdentifierLow,ShortChildName]));
         ErrorLog.Add('');
       end;
     end;
@@ -658,9 +674,9 @@ begin
   for i := 0 to FChild.Count - 1 do
   begin
     CPoItem := FChild.PoItems[i];
-    if Assigned(CPoItem) and (CPoItem.Identifier <> '') then
+    if Assigned(CPoItem) and (CPoItem.IdentifierLow <> '') then
     begin
-      MPoItem := FMaster.FindPoItem(CPoItem.Identifier);
+      MPoItem := FMaster.FindPoItem(CPoItem.IdentifierLow);
       if not Assigned(MPoItem) then
       begin
         if (ErrorCount = 0) then
@@ -675,7 +691,7 @@ begin
         ErrorLog.Add(Format(sLineNr,
                             [CPoItem.LineNr]));
         ErrorLog.Add(Format(sMissingMasterIdentifier,
-                            [CPoItem.Identifier,ShortChildName,ShortMasterName]));
+                            [CPoItem.IdentifierLow,ShortChildName,ShortMasterName]));
         ErrorLog.Add('');
       end;
     end;
@@ -703,7 +719,7 @@ begin
   for i := 0 to FMaster.Count - 1 do
   begin
     MPoItem := FMaster.PoItems[i];
-    CPoItem := FChild.FindPoItem(MpoItem.Identifier);
+    CPoItem := FChild.FindPoItem(MpoItem.IdentifierLow);
     if Assigned(CPoItem) then
     begin
       if (MPoItem.Original <> CPoItem.Original) then
@@ -718,7 +734,7 @@ begin
         end;
         Inc(ErrorCount);
         ErrorLog.Add(Format(sLineInFileName,[CpoItem.LineNr, ShortChildName]));
-        ErrorLog.Add(Format(sMismatchOriginalsID,[CPoItem.Identifier]));
+        ErrorLog.Add(Format(sMismatchOriginalsID,[CPoItem.IdentifierLow]));
         ErrorLog.Add(Format(sMismatchOriginalsM,[ShortMasterName,MPoItem.Original]));
         ErrorLog.Add(Format(sMismatchOriginalsC,[ShortChildName, CPoItem.Original]));
         ErrorLog.Add('');
@@ -774,8 +790,8 @@ begin
           ErrorLog.Add(Format(sDuplicateOriginals,[PoItem.Original]));
           //debugln(format('The (untranslated) value "%s" is used for more than 1 entry:',[PoItem.Original]));
         end;
-        ErrorLog.Add(format(sDuplicateLineNrWithValue,[PoItem.LineNr,PoItem.Identifier]));
-        //debugln(format(sDuplicateLineNrWithValue,[PoItem.LineNr,PoItem.Identifier]));
+        ErrorLog.Add(format(sDuplicateLineNrWithValue,[PoItem.LineNr,PoItem.IdentifierLow]));
+        //debugln(format(sDuplicateLineNrWithValue,[PoItem.LineNr,PoItem.IdentifierLow]));
       end;
     end;
   end;
@@ -795,34 +811,13 @@ end;
 
 procedure TPoFamily.CheckStatistics(ErrorCnt: Integer);
 var
-  i: Integer;
-  CPoItem: TPOFileItem;
   NrTranslated, NrUntranslated, NrFuzzy, NrTotal: Integer;
 begin
   //debugln('TPoFamily.CheckStatistics');
   DoTestStart(sCheckStatistics, ShortChildName);
-  NrTranslated := 0;
-  NrUntranslated := 0;
-  NrFuzzy := 0;
-  for i := 0 to FChild.Count - 1 do
-  begin
-    //debugln('  i = ',DbgS(i));
-    CPoItem := FChild.PoItems[i];
-    if Assigned(CPoItem) then
-    begin
-      if (Length(CPoItem.Translation) > 0) then
-      begin
-        if (Pos('fuzzy', CPoItem.Flags) <> 0) then
-          Inc(NrFuzzy)
-        else
-          Inc(NrTranslated);
-      end
-      else
-      begin
-        Inc(NrUntranslated)
-      end;
-    end;
-  end;
+  NrTranslated := FChild.NrTranslated;
+  NrUntranslated := FChild.NrUntranslated;
+  NrFuzzy := FChild.NrFuzzy;
   NrTotal := NrTranslated + NrUntranslated + NrFuzzy;
   if (NrTotal > 0) then
   begin

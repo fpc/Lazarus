@@ -7,7 +7,7 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, pocheckermain, pofamilies, resultdlg, simplepofiles, pocheckerconsts,
+  Forms, pocheckermain, pofamilies, resultdlg, pocheckerconsts,
   graphstat, pocheckersettings, pofamilylists;
 
 {$R *.res}

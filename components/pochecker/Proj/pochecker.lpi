@@ -75,7 +75,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="9">
       <Unit0>
         <Filename Value="pochecker.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -94,47 +94,42 @@
         <UnitName Value="ResultDlg"/>
       </Unit2>
       <Unit3>
-        <Filename Value="..\simplepofiles.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="SimplePoFiles"/>
-      </Unit3>
-      <Unit4>
         <Filename Value="..\pocheckerconsts.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="pocheckerconsts"/>
-      </Unit4>
-      <Unit5>
+      </Unit3>
+      <Unit4>
         <Filename Value="..\pocheckermain.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PoCheckerForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="pocheckermain"/>
-      </Unit5>
-      <Unit6>
+      </Unit4>
+      <Unit5>
         <Filename Value="..\graphstat.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="GraphStatForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="GraphStat"/>
-      </Unit6>
-      <Unit7>
+      </Unit5>
+      <Unit6>
         <Filename Value="..\pocheckersettings.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="PoCheckerSettings"/>
-      </Unit7>
-      <Unit8>
+      </Unit6>
+      <Unit7>
         <Filename Value="..\pofamilylists.pp"/>
         <IsPartOfProject Value="True"/>
-      </Unit8>
-      <Unit9>
+      </Unit7>
+      <Unit8>
         <Filename Value="..\pocheckermemodlg.pp"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="MemoForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-      </Unit9>
+      </Unit8>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -156,7 +151,7 @@
       </Options>
     </Linking>
     <Other>
-      <CustomOptions Value="-dPoCheckerStandAlone -dUSE_NEW_TRANSLATIONS"/>
+      <CustomOptions Value="-dPoCheckerStandAlone"/>
     </Other>
   </CompilerOptions>
   <Debugging>

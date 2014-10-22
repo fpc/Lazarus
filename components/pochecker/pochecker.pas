@@ -7,8 +7,8 @@ unit PoChecker;
 interface
 
 uses
-  ResultDlg, PoFamilies, pocheckermain, SimplePoFiles, pocheckerconsts, 
-  GraphStat, PoCheckerSettings, PoCheckerXMLConfig, LazarusPackageIntf;
+  ResultDlg, PoFamilies, pocheckermain, pocheckerconsts, GraphStat, 
+  PoCheckerSettings, PoCheckerXMLConfig, LazarusPackageIntf;
 
 implementation
 

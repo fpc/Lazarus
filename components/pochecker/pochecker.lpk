@@ -10,13 +10,13 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
-        <CustomOptions Value="$(IDEBuildOptions) -dUSE_NEW_TRANSLATIONS"/>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Check the validity of translated PO files.
 "/>
     <Version Major="1"/>
-    <Files Count="11">
+    <Files Count="10">
       <Item1>
         <Filename Value="resultdlg.pp"/>
         <UnitName Value="ResultDlg"/>
@@ -35,33 +35,29 @@
         <UnitName Value="pocheckermain"/>
       </Item4>
       <Item5>
-        <Filename Value="simplepofiles.pp"/>
-        <UnitName Value="SimplePoFiles"/>
-      </Item5>
-      <Item6>
         <Filename Value="pocheckermain.lfm"/>
         <Type Value="LFM"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="pocheckerconsts.pas"/>
         <UnitName Value="pocheckerconsts"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="graphstat.lfm"/>
         <Type Value="LFM"/>
-      </Item8>
-      <Item9>
+      </Item7>
+      <Item8>
         <Filename Value="graphstat.pp"/>
         <UnitName Value="GraphStat"/>
-      </Item9>
-      <Item10>
+      </Item8>
+      <Item9>
         <Filename Value="pocheckersettings.pp"/>
         <UnitName Value="PoCheckerSettings"/>
-      </Item10>
-      <Item11>
+      </Item9>
+      <Item10>
         <Filename Value="pocheckerxmlconfig.pp"/>
         <UnitName Value="PoCheckerXMLConfig"/>
-      </Item11>
+      </Item10>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
