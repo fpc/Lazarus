@@ -1043,7 +1043,7 @@ end;
 function TCustomMaskEdit.RealGetText: TCaption;
 begin
   if not IsMasked then
-    Result := GetEditText
+    Result := inherited RealGetText  //don't call GetEditText here (issue #0026924)
   else
     Result := GetTextWithoutMask;
 end;
