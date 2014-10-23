@@ -12,13 +12,12 @@
   for details about the license.
  *****************************************************************************
 
-  Abstract:
-    Only the .lrs file is used by the LCL (dialogs.pp).
-    This unit is itself is not compiled into the LCL.
-    This form is used to design the .lfm and .lrs file.
-    
-    The source code is copied to ../lcl/include/finddialog.inc.
-    The lrs included in the initialization section of lcl/dialogs.pp
+ Note:
+   Only the .lfm file is used by the LCL (dialogs.pp).
+   This unit is itself is not compiled into the LCL.
+   This form is used to design the .lfm file.
+
+   The source code is a copy of ../lcl/include/finddialog.inc.
 }
 unit FindDlgUnit;
 
