@@ -37,6 +37,7 @@ type
     EntireScopeCheckBox: TCheckBox;
     FindButton: TButton;
     CancelButton: TButton;
+    FlagsPanel: TPanel;
     HelpButton: TButton;
     WholeWordsOnlyCheckBox: TCheckBox;
     CaseSensitiveCheckBox: TCheckBox;
