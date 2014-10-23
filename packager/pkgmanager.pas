@@ -3508,7 +3508,7 @@ var
 begin
   Result:=ShowOpenLoadedPkgDlg(APackage);
   if (Result<>mrOk) then exit;
-  Result:=DoOpenPackage(APackage,[],false);
+  Result:=DoOpenPackage(APackage,[pofAddToRecent],false);
 end;
 
 function TPkgManager.DoOpenPackage(APackage: TLazPackage;
