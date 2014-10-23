@@ -2832,6 +2832,7 @@ procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
     aList.Add('ARMV5');
     aList.Add('ARMV6');
     aList.Add('ARMV7');
+    aList.Add('ARMV7A');
     aList.Add('ARMV7M');
     aList.Add('CORTEXM3');
   end;
