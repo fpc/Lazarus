@@ -404,6 +404,9 @@ type
     property OnCanResize;
     property OnChangeBounds;
     property OnMoved;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
     property ParentColor;
     property ParentShowHint;
     property PopupMenu;
