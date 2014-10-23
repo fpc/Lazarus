@@ -1,8 +1,8 @@
 object IDEOptionsDialog: TIDEOptionsDialog
   Left = 372
-  Height = 404
+  Height = 500
   Top = 202
-  Width = 689
+  Width = 800
   ActiveControl = FilterEdit
   BorderIcons = [biSystemMenu]
   Caption = 'IDEOptionsDialog'
