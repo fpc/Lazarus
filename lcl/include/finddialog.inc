@@ -16,6 +16,7 @@ type
   { TFindDialogForm }
 
   TFindDialogForm = class(TForm)
+    BtnPanel: TPanel;
     EntireScopeCheckBox: TCheckBox;
     FindButton: TButton;
     CancelButton: TButton;
