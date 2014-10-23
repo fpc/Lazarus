@@ -95,6 +95,7 @@ type
     FCosmetic: Boolean;
     FEndCap: TPenEndCap;
     FJoinStyle: TPenJoinStyle;
+    FPenMode: TPenMode;
     FStyle: TFPPenStyle;
     FWidth: Integer;
     FColor: TColor;
@@ -106,6 +107,7 @@ type
     procedure setCosmetic(b: Boolean);
     procedure SetEndCap(AValue: TPenEndCap);
     procedure SetJoinStyle(AValue: TPenJoinStyle);
+    procedure SetPenMode(AValue: TPenMode);
     procedure SetStyle(AValue: TFPPenStyle);
     procedure setWidth(p1: Integer);
   public
@@ -118,6 +120,7 @@ type
     property EndCap: TPenEndCap read FEndCap write SetEndCap;
     property IsExtPen: Boolean read FIsExtPen write FIsExtPen;
     property JoinStyle: TPenJoinStyle read FJoinStyle write SetJoinStyle;
+    property Mode: TPenMode read FPenMode write SetPenMode;
     property Style: TFPPenStyle read FStyle write SetStyle;
     property Width: Integer read GetWidth write SetWidth;
   end;
@@ -755,6 +758,12 @@ begin
   FJoinStyle:=AValue;
 end;
 
+procedure TGtk3Pen.SetPenMode(AValue: TPenMode);
+begin
+  if FPenMode=AValue then Exit;
+  FPenMode:=AValue;
+end;
+
 procedure TGtk3Pen.SetStyle(AValue: TFPPenStyle);
 begin
   FStyle := AValue;
@@ -957,13 +966,47 @@ procedure TGtk3DeviceContext.ApplyPen;
   end;
 var
   cap: cairo_line_cap_t;
+  w: Double;
 begin
   SetSourceColor(FCurrentPen.Color);
+
+  case FCurrentPen.Mode of
+    pmBlack: begin
+      SetSourceColor(clBlack);
+      cairo_set_operator(Widget, CAIRO_OPERATOR_OVER);
+    end;
+    pmWhite: begin
+      SetSourceColor(clWhite);
+      cairo_set_operator(Widget, CAIRO_OPERATOR_OVER);
+    end;
+    pmCopy: cairo_set_operator(Widget, CAIRO_OPERATOR_OVER);
+    pmXor: cairo_set_operator(Widget, CAIRO_OPERATOR_XOR);
+    pmNotXor: cairo_set_operator(Widget, CAIRO_OPERATOR_XOR);
+    {pmNop,
+    pmNot,
+    pmCopy,
+    pmNotCopy,
+    pmMergePenNot,
+    pmMaskPenNot,
+    pmMergeNotPen,
+    pmMaskNotPen,
+    pmMerge,
+    pmNotMerge,
+    pmMask,
+    pmNotMask,}
+    else
+      cairo_set_operator(Widget, CAIRO_OPERATOR_OVER);
+  end;
 
   if FCurrentPen.Cosmetic then
     cairo_set_line_width(Widget, 1.0)
   else
-    cairo_set_line_width(Widget, FCurrentPen.Width {* ScaleX}); //line_width is diameter of the pen circle
+  begin
+    w := FCurrentPen.Width;
+    if w = 0 then
+      w := 0.5;
+    cairo_set_line_width(Widget, w {* ScaleX}); //line_width is diameter of the pen circle
+  end;
 
   case FCurrentPen.Style of
     psSolid: cairo_set_dash(Widget, nil, 0, 0);

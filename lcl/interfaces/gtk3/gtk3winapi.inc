@@ -1663,11 +1663,21 @@ end;
 
 function TGtk3WidgetSet.FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH
   ): Integer;
+var
+  cr: Pcairo_t;
 begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.FrameRect not implemented ...');
+  DebugLn('TGtk3WidgetSet.FrameRect ARect=',dbgs(ARect));
   {$ENDIF}
-  Result := inherited FrameRect(DC, ARect, hBr);
+  Result := 0;
+  if not IsValidDC(DC) then
+    exit;
+  cr := TGtk3DeviceContext(DC).Widget;
+  cairo_rectangle(cr, ARect.Left, ARect.Top, ARect.Right-ARect.Left, ARect.Bottom-ARect.Top);
+  if IsValidGDIObject(hBr) then
+    TGtk3DeviceContext(DC).SetSourceColor(TGtk3Brush(HBR).Color);
+  cairo_set_line_width(cr, 1);
+  cairo_stroke(cr); //Don't touch
 end;
 
 function TGtk3WidgetSet.HideCaret(hWnd: HWND): Boolean;
