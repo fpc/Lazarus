@@ -443,7 +443,7 @@ begin
     if (PageControl.ActivePageIndex > 0) then
       PageControl.ActivePageIndex := PageControl.ActivePageIndex - 1;
   end else begin
-    if (PageControl.ActivePageIndex < PageControl.PageCount) then
+    if (PageControl.ActivePageIndex < PageControl.PageCount-1) then
       PageControl.ActivePageIndex := PageControl.ActivePageIndex + 1;
   end;
   Handled := True;
