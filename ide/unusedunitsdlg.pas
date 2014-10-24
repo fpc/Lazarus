@@ -42,6 +42,7 @@ type
 
   TUnusedUnitsDialog = class(TForm)
     CancelBitBtn: TBitBtn;
+    ShowInitializationCheckBox: TCheckBox;
     RemoveAllBitBtn: TBitBtn;
     RemoveSelectedBitBtn: TBitBtn;
     Panel1: TPanel;
@@ -50,6 +51,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure RemoveAllBitBtnClick(Sender: TObject);
     procedure RemoveSelectedBitBtnClick(Sender: TObject);
+    procedure ShowInitializationCheckBoxClick(Sender: TObject);
     procedure UnitsTreeViewSelectionChanged(Sender: TObject);
   private
     FCode: TCodeBuffer;
@@ -159,6 +161,8 @@ end;
 
 procedure TUnusedUnitsDialog.FormCreate(Sender: TObject);
 begin
+  ShowInitializationCheckBox.Caption:=lisShowUnitsWithInitialization;
+  ShowInitializationCheckBox.Hint:=lisShowUnitsWithInitializationHint;
   RemoveSelectedBitBtn.Caption:=lisRemoveSelectedUnits;
   RemoveAllBitBtn.Caption:=lisRemoveAllUnits;
   CancelBitBtn.Caption:=lisCancel;
@@ -183,6 +187,11 @@ end;
 procedure TUnusedUnitsDialog.RemoveSelectedBitBtnClick(Sender: TObject);
 begin
   ModalResult:=mrOk;
+end;
+
+procedure TUnusedUnitsDialog.ShowInitializationCheckBoxClick(Sender: TObject);
+begin
+  RebuildUnitsTreeView;
 end;
 
 procedure TUnusedUnitsDialog.UnitsTreeViewSelectionChanged(Sender: TObject);
@@ -212,7 +221,7 @@ var
   Flags: string;
   UseInterface: Boolean;
   InImplUsesSection: Boolean;
-  UseCode: Boolean;
+  UseCode, HideCode: Boolean;
   IntfTreeNode: TTreeNode;
   ImplTreeNode: TTreeNode;
   ParentNode: TTreeNode;
@@ -233,7 +242,9 @@ begin
       InImplUsesSection:=System.Pos(',implementation',Flags)>0;
       UseInterface:=System.Pos(',used',Flags)>0;
       UseCode:=System.Pos(',code',Flags)>0;
-      if not UseInterface then begin
+      HideCode:=not ShowInitializationCheckBox.Checked;
+      if not (UseInterface or (HideCode and UseCode)) then
+      begin
         if InImplUsesSection then
           ParentNode:=ImplTreeNode
         else

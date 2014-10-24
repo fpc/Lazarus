@@ -5105,6 +5105,9 @@ resourcestring
   lisResult2 = 'Result:';
   lisTheIdentifierIsAUnitPleaseUseTheFileSaveAsFunction = 'The identifier is '
     +'a unit. Please use the File - Save as function to rename a unit.';
+  lisShowUnitsWithInitialization = 'Show units with initialization/finalization sections';
+  lisShowUnitsWithInitializationHint = 'These units may initialize global data '
+    +'used by the program/application. Remove with care.';
   lisRemoveSelectedUnits = 'Remove selected units';
   lisRemoveAllUnits = 'Remove all units';
   lisCEShowCodeObserver = 'Show observations about';
