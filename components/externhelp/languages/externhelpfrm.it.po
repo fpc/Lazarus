@@ -65,7 +65,6 @@ msgid "Include sub directories"
 msgstr "Includi sottocartelle"
 
 #: externhelpfrm.ehrsmacrofy
-#| msgid "Macrofy"
 msgid "Use macros"
 msgstr "Usa macro"
 
