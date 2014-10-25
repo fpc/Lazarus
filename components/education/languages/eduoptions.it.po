@@ -67,7 +67,6 @@ msgid "Object Inspector"
 msgstr "Analizzatore oggetti"
 
 #: eduoptions.ersedupropseventstitle
-#| msgid "Properties & Events"
 msgid "Properties and Events"
 msgstr "Proprietà ed eventi"
 
