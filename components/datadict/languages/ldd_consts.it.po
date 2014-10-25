@@ -169,7 +169,6 @@ msgid "Configuration"
 msgstr "Configurazione"
 
 #: ldd_consts.smenuconfprojdatadict
-#| msgid "Set..."
 msgid "Set ..."
 msgstr "Imposta..."
 
