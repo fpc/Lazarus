@@ -549,7 +549,6 @@ msgid "Project has no main source file."
 msgstr "Il progetto non ha un sorgente principale."
 
 #: codystrconsts.crsprojectoutput
-#| msgid "Project output"
 msgid "Project Output"
 msgstr "Output del progetto"
 
@@ -626,7 +625,6 @@ msgid "Show Unit / Identifier Dictionary ..."
 msgstr "Mostra il dizionario Unit / Identificatori"
 
 #: codystrconsts.crsshowusedppufiles
-#| msgid "Show used .ppu files ..."
 msgid "Show Used .ppu Files ..."
 msgstr "Mostra file .ppu usati ..."
 
@@ -739,7 +737,6 @@ msgid "Uses"
 msgstr "Uses"
 
 #: codystrconsts.crsvirtualunit
-#| msgid "Virtual unit"
 msgid "Virtual Unit"
 msgstr "Unit virtuale"
 
