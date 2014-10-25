@@ -21,7 +21,6 @@ msgid "Error while parsing trace file"
 msgstr "Errore nell'analisi del tracefile"
 
 #: heaptrcview.rsleakview
-#| msgid "Find source lines for leak/stack-traces"
 msgid "Leaks and Traces"
 msgstr "Perdite e Tracce"
 
@@ -46,7 +45,6 @@ msgid "Stay on top"
 msgstr "Resta in cima"
 
 #: heaptrcview.sfrmcap
-#| msgid "LeakView - HeapTrc output viewer"
 msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
 msgstr "Perdite e tracce - Visore dell'output di HeapTrc e GDB backtrace"
 
@@ -83,7 +81,6 @@ msgid "Leaking Mem Size: %d"
 msgstr "Dimensione memoria perduta: %d"
 
 #: heaptrcview.strtotalmemalloc
-#| msgid "Total Mem alloced: %d"
 msgid "Total Mem allocated: %d"
 msgstr "Memoria totale allocata: %d"
 
