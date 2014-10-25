@@ -292,7 +292,6 @@ msgid "- expected"
 msgstr "era atteso -"
 
 #: ipconst.shtmldefbrowsecaption
-#| msgid "Browse..."
 msgid "Browse ..."
 msgstr "Naviga..."
 
