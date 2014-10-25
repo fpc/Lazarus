@@ -838,8 +838,10 @@ begin
   	[ClassName,name,dbgsname(ADataset)]);
   {$endif}
   if not (gsStartEditing in FGridStatus) then begin
+    GridFlags := GridFlags + [gfEditingDone];
     if EditorMode then
       EditorMode := False;
+    GridFlags := GridFlags - [gfEditingDone];
     LayoutChanged;
   end;
   UpdateActive;
