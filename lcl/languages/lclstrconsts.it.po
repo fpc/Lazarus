@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.2\n"
-"PO-Revision-Date: 2014-10-03 20:34+0100\n"
+"PO-Revision-Date: 2014-10-20 01:57+0100\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: PincoPallo Team\n"
 "Language: it\n"
@@ -13,17 +13,14 @@ msgstr ""
 "POT-Creation-Date: \n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#| msgid "Browser \"%s\" not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "Il browser \"%s\" non è eseguibile."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#| msgid "Browser \"%s\" not found."
 msgid "Browser \"%s\" not found."
 msgstr "Il browser \"%s\" non c'è."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#| msgid "Error while executing \"%s\":%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "Errore eseguendo \"%s\":%s%s"
 
@@ -36,7 +33,6 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "Nessun Browser HTML trovato.%sDefinirne uno in Strumenti->Opzioni->Aiuto->Opzioni aiuto"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#| msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "L'archivio dell'help \"%s\" non trova il file \"%s\"."
 
@@ -271,7 +267,6 @@ msgid "3D Light"
 msgstr "Luce 3D"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
-#| msgid "A control can't have itself as parent"
 msgid "A control can't have itself as a parent"
 msgstr "Un controllo non può essere padre di se stesso"
 
@@ -532,12 +527,10 @@ msgid "First"
 msgstr "Primo"
 
 #: lclstrconsts.rsfixedcolstoobig
-#| msgid "FixedCols can't be >= ColCount"
 msgid "FixedCols can't be > ColCount"
 msgstr "FixedCol non può essere > ColCount"
 
 #: lclstrconsts.rsfixedrowstoobig
-#| msgid "FixedRows can't be >= RowCount"
 msgid "FixedRows can't be > RowCount"
 msgstr "FixedRows non può essere > RowCount"
 
@@ -654,7 +647,6 @@ msgid "--no-xshm             Disable use of the X Shared Memory Extension."
 msgstr "--no-xshm             Disabilita l'uso dell'estensione della memoria condivisa di X."
 
 #: lclstrconsts.rsgtkoptionsync
-#| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                Chiama XSynchronize (display, True) appena viene stabilita la connessione al server X. Ciò semplifica la correzione degli errori di protocollo X dato che la richiesta di bufferizzazione di X sarà disabilitata e quindi gli errori di X verranno ricevuti subito dopo che la richiesta di protocollo che ha generato l'errore è stata processata dal server X."
 
@@ -663,12 +655,10 @@ msgid "%s: Already registered"
 msgstr "%s: Già registrato"
 
 #: lclstrconsts.rshelpcontextnotfound
-#| msgid "Help Context not found"
 msgid "A help database was found for this topic, but this topic was not found"
 msgstr "Trovato un archivio di aiuto sull'argomento, ma argomento non trovato"
 
 #: lclstrconsts.rshelpdatabasenotfound
-#| msgid "Help Database not found"
 msgid "There is no help database installed for this topic"
 msgstr "Non è installato un archivio di aiuto per questo argomento"
 
@@ -681,17 +671,14 @@ msgid "Help context %s not found."
 msgstr "Aiuto su %s non trovato."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#| msgid "Help context %s not found in Database \"%s\"."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "Aiuto su %s non trovato nell'archivio \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgstr "L'archivio Help \"%s\" non trova un visualizzatore per le pagine di aiuto di tipo %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#| msgid "Help Database \"%s\" not found"
 msgid "Help Database \"%s\" not found"
 msgstr "Archivio Help \"%s\" non trovato"
 
@@ -704,17 +691,14 @@ msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr "Aiuto per la direttiva \"%s\" non trovato nel Database \"%s\"."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#| msgid "Help keyword \"%s\" not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "Aiuto sulla parola chiave \"%s\" non trovato."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#| msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Aiuto sulla parola chiave \"%s\" non trovato nell'archivio \"%s\"."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#| msgid "Help node \"%s\" has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "Il nodo di aiuto \"%s\" non ha un Database di aiuto"
 
@@ -723,12 +707,10 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Nessun aiuto trovato per la linea %d, colonna %d di %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-#| msgid "No help nodes available"
 msgid "No help entries available for this topic"
 msgstr "Nessun aiuto disponibile"
 
 #: lclstrconsts.rshelpnotfound
-#| msgid "Help not found"
 msgid "No help found for this topic"
 msgstr "Aiuto non trovato"
 
@@ -741,7 +723,6 @@ msgid "Help Selector Error"
 msgstr "Errore nella selezione dell'Help"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#| msgid "There is no viewer for help type \"%s\""
 msgid "There is no viewer for help type \"%s\""
 msgstr "Nessun visualizzatore per aiuto di tipo \"%s\""
 
@@ -750,7 +731,6 @@ msgid "Help Viewer Error"
 msgstr "Errore nel visualizzatore dell'Help"
 
 #: lclstrconsts.rshelpviewernotfound
-#| msgid "Help Viewer not found"
 msgid "No viewer was found for this type of help content"
 msgstr "Visualizzatore per questo tipo di aiuto non trovato"
 
@@ -1050,7 +1030,6 @@ msgid "Post"
 msgstr "Post"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
-#| msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgstr "%s%sPremi Ok per ignorare il messaggio e rischiare di corrompere i dati.%sPremi Annulla per terminare il programma"
 
@@ -1085,7 +1064,7 @@ msgstr "-nograb, impedisce a QT di catturare mouse e/o tastiera. Richiede QT_DEB
 
 #: lclstrconsts.rsqtoptionreverse
 msgid "-reverse, sets the application's layout direction to Qt::RightToLeft."
-msgstr "-reverse: imposta la direzione di layout del programma a Qt::RightToLeft."
+msgstr "-reverse: imposta la direzione di disposizione del programma a Qt::RightToLeft."
 
 #: lclstrconsts.rsqtoptionsession
 msgid "-session session, restores the application from an earlier session."
@@ -1487,7 +1466,6 @@ msgid "Invalid integer number: %s"
 msgstr "Numero intero non valido: %s"
 
 #: lclstrconsts.sparlocinfo
-#| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
 msgstr " (a %d %d, offset nello stream %d)"
 
