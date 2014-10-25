@@ -73,12 +73,10 @@ msgid "Could not open dataset for exporting: %s"
 msgstr "Non posso aprire il Dataset %s per l'export"
 
 #: sdb_consts.sexecute
-#| msgid "Execute..."
 msgid "Execute ..."
 msgstr "Esegui..."
 
 #: sdb_consts.snrecordsexported
-#| msgid "Succesfully exported %d records."
 msgid "Successfully exported %d records."
 msgstr "Esportati %d record con successo."
 
