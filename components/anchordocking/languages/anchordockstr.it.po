@@ -1,19 +1,19 @@
+# Giuliano Colla <giuliano.colla@fastwebnet.it>, 2014.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2014-06-29 17:31+0100\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-10-20 01:55+0100\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
-"Language-Team: PincoPallo Team\n"
+"Language-Team: Lazarus\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.5.1\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
+"X-Generator: Virtaal 0.6.1\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
-#| msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgid "A free side of a splitter must not be anchored: Node=\"%s\" Type=%s Anchors[%s]=\"%s\""
 msgstr "Un lato libero di uno splitter non deve essere ancorato: Nodo=\"%s\" Tipo=%s Ancore[%s]=\"%s\""
 
@@ -30,22 +30,18 @@ msgid "Anchor Docking Layout"
 msgstr "Posizionamento degli ancoraggi di docking"
 
 #: anchordockstr.adrsanchorisnotsplitternodeanchors
-#| msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgid "Anchor is not splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "L'ancora non è uno splitter: Nodo=\"%s\" Ancore[%s]=\"%s\""
 
 #: anchordockstr.adrsanchornotfoundnodeanchors
-#| msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgid "Anchor not found: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "Ancora non trovata: Nodo=\"%s\" Ancore[%s]=\"%s\""
 
 #: anchordockstr.adrsanchortowrongsideofsplitternodeanchors
-#| msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgid "Anchor to wrong side of splitter: Node=\"%s\" Anchors[%s]=\"%s\""
 msgstr "L'ancora è sul lato sbagliato dello splitter: Nodo=\"%s\" Ancore[%s]=\"%s\""
 
 #: anchordockstr.adrsapagemustnotbeanchorednodeparentparenttypeanchors
-#| msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgid "A page must not be anchored: Node=\"%s\" Parent=%s ParentType=%s Anchors[%s]=\"%s\""
 msgstr "Una pagina non deve essere ancorata:Nodo=\"%s\" Padre=%s ParentType=%s Ancore[%s]=\"%s\""
 
@@ -66,7 +62,6 @@ msgid "control is already a docksite"
 msgstr "Il controllo è già un sito di docking"
 
 #: anchordockstr.adrscustomdocksitecanhaveonlyonesite
-#| msgid "Custom dock site \"%s\" can have only one site."
 msgid "Custom dock site \"%s\" can have only one site."
 msgstr "Il sito di docking personalizzato \"%s\" può avere un solo sito."
 
@@ -79,7 +74,6 @@ msgid "Docking options"
 msgstr "Opzioni di docking"
 
 #: anchordockstr.adrsdraganddockc
-#| msgid "Use the mouse to drag and dock window \"%c\""
 msgid "Use the mouse to drag and dock window \"%s\""
 msgstr "Usa il mouse per trascinare la finestra \"%s\""
 
@@ -113,11 +107,11 @@ msgstr "Errore"
 
 #: anchordockstr.adrserrorloadingwindowlayoutfromfile
 msgid "Error loading window layout from file \"%s\"%s%s"
-msgstr "Errore nel caricamento del layout della finestra dal file \"%s\"%s%s"
+msgstr "Errore nel caricamento della disposizione della finestra dal file \"%s\"%s%s"
 
 #: anchordockstr.adrserrorwritingwindowlayouttofile
 msgid "Error writing window layout to file \"%s\"%s%s"
-msgstr "Errore nella scrittura del layout della finestra dal file \"%s\"%s%s"
+msgstr "Errore nella scrittura della disposizione della finestra dal file \"%s\"%s%s"
 
 #: anchordockstr.adrsfilledheaders
 msgid "Fill headers"
@@ -165,11 +159,11 @@ msgstr "sinistra"
 
 #: anchordockstr.adrsloadwindowlayoutfromfile
 msgid "Load window layout from file ..."
-msgstr "Carica layout della finestra dal file ..."
+msgstr "Carica la disposizione della finestra dal file ..."
 
 #: anchordockstr.adrsloadwindowlayoutfromfilexml
 msgid "Load window layout from file (*.xml)"
-msgstr "Carica layout della finestra dal file (*.xml)"
+msgstr "Carica la disposizione della finestra dal file (*.xml)"
 
 #: anchordockstr.adrslocked
 msgid "Locked"
@@ -216,7 +210,6 @@ msgid "No captions for floating sites"
 msgstr "Nessun titolo per i siti flottanti"
 
 #: anchordockstr.adrsnochildrenallowedfornodetype
-#| msgid "No children allowed for Node=\"%s\" Type=%s"
 msgid "No children allowed for Node=\"%s\" Type=%s"
 msgstr "Non sono ammessi figli per il nodo=\"%s\" tipo=%s"
 
@@ -234,7 +227,7 @@ msgstr "Era richiesto %s, invece è stato creato %s"
 
 #: anchordockstr.adrsrestoredefaultlayout
 msgid "Restore default layout"
-msgstr "Ripristina disposizione default"
+msgstr "Ripristina la disposizione predefinita"
 
 #: anchordockstr.adrsright
 msgid "right"
@@ -242,19 +235,19 @@ msgstr "destra"
 
 #: anchordockstr.adrssavelayoutonclose
 msgid "Save layout on close"
-msgstr ""
+msgstr "Salva la disposizione della finestra alla chiusura"
 
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
-msgstr "Salva l'aspetto della finestra come default"
+msgstr "Salva la disposizione della finestra come default"
 
 #: anchordockstr.adrssavewindowlayouttofile
 msgid "Save window layout to file ..."
-msgstr "Salva l'aspetto della finestra in un file ..."
+msgstr "Salva la disposizione della finestra in un file ..."
 
 #: anchordockstr.adrssavewindowlayouttofilexml
 msgid "Save window layout to file (*.xml)"
-msgstr "Salva l'aspetto della finestra in un file (*.xml)"
+msgstr "Salva la disposizione della finestra in un file (*.xml)"
 
 #: anchordockstr.adrsscaleonresize
 msgid "Scale on resize"
