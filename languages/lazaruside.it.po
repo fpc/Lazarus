@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-05 12:39+0200\n"
+"PO-Revision-Date: 2014-10-22 19:47+0200\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: Lazarus\n"
 "Language: it\n"
@@ -150,7 +150,9 @@ msgstr "Resetta lo zoom"
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
-msgstr "Questa pagina non mostra le vostre attuali preferenze: vedi preferenze avanzate. Usatela per azzerare cambiamenti alle preferenza avanzate"
+msgstr ""
+"Questa pagina non mostra le vostre attuali preferenze: vedi preferenze "
+"avanzate. Usatela per azzerare cambiamenti alle preferenza avanzate"
 
 #: lazarusidestrconsts.dlfmousesimplegenericsect
 msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
@@ -2846,7 +2848,7 @@ msgstr "Salva informazioni dell'editor solo per i file di progetto"
 
 #: lazarusidestrconsts.dlgscope
 msgid "Scope"
-msgstr "Campo di validità"
+msgstr "Visibilità"
 
 #: lazarusidestrconsts.dlgscrollbyoneless
 msgid "Scroll by one less"
@@ -6621,7 +6623,7 @@ msgstr "Apri la unit %s"
 
 #: lazarusidestrconsts.liscpu
 msgid ", CPU: %s"
-msgstr ""
+msgstr ", CPU: %s"
 
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
@@ -7467,7 +7469,7 @@ msgstr "Tutte le opzioni ..."
 
 #: lazarusidestrconsts.lisdlgchangeclass
 msgid "Change Class ..."
-msgstr "Camibiare classe ..."
+msgstr "Cambiare classe ..."
 
 #: lazarusidestrconsts.lisdlgdefines
 msgid "Defines ..."
@@ -8249,7 +8251,7 @@ msgstr "C'è un massimo di %s strumenti."
 
 #: lazarusidestrconsts.lisfailedtoaddnnotuniqueresources
 msgid "Failed to add %d not unique resource(s)"
-msgstr ""
+msgstr "Impossibile aggiungere %d risorse: non uniche"
 
 #: lazarusidestrconsts.lisfailedtocreateapplicationbundlefor
 msgid "Failed to create Application Bundle for \"%s\""
@@ -8569,6 +8571,8 @@ msgstr "Forza rinomina"
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr ""
+"Per esempio mostrare in cima le variabili locali, poi i membri della classe "
+"corrente, poi gli antenati, poi l'unità corrente poi le unità usate"
 
 #: lazarusidestrconsts.lisform
 msgid "Form"
@@ -11831,7 +11835,7 @@ msgstr "(era \"%s\")"
 
 #: lazarusidestrconsts.lismode
 msgid ", Mode: %s"
-msgstr ""
+msgstr ", Modalità: %s"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
@@ -12452,7 +12456,7 @@ msgstr "oppure"
 
 #: lazarusidestrconsts.lisos
 msgid ", OS: %s"
-msgstr ""
+msgstr ", OS: %s"
 
 #: lazarusidestrconsts.lisothersourcespathofpackagecontainsdirectorywhichisa
 msgid "other sources path of package \"%s\" contains directory \"%s\", which is already in the unit search path."
@@ -14576,7 +14580,7 @@ msgstr "Ripristina i valori Left, Top, Width, Height del componente riportandoli
 
 #: lazarusidestrconsts.lisresourcenamemustbeunique
 msgid "Resource name must be unique."
-msgstr ""
+msgstr "Ogni nome di risorsa deve essere unico."
 
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"
@@ -15074,7 +15078,7 @@ msgstr "Mostra la posizione dell'editor sorgente"
 
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
-msgstr ""
+msgstr "Mostrare in testa gli identificatori usati recentemente"
 
 #: lazarusidestrconsts.lisshowrelativepaths
 msgid "Show relative paths"
@@ -15158,7 +15162,7 @@ msgstr "Spiacente, questo tipo non è ancora implementato"
 
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
-msgstr ""
+msgstr "Ordina per visibilità"
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
@@ -15428,7 +15432,7 @@ msgstr "Destinazione:"
 
 #: lazarusidestrconsts.listarget2
 msgid ", Target: %s"
-msgstr ""
+msgstr ", Destinazione: %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -19117,4 +19121,3 @@ msgstr "Sola lettura"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informazioni di versione"
-
