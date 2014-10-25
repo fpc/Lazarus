@@ -94,7 +94,6 @@ msgid "class node without parent node"
 msgstr "nodo classe senza nodo genitore"
 
 #: codetoolsstrconsts.ctsclassnotfound
-#| msgid "class \"%s\" not found"
 msgid "class \"%s\" not found"
 msgstr "classe \"%s\" non trovata"
 
@@ -303,7 +302,6 @@ msgid "expected end., but %s found"
 msgstr "era previsto end. invece è stato trovato %s"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
-#| msgid "End of source not found"
 msgid "End of source not found."
 msgstr "Non è stata trovata la fine del sorgente"
 
@@ -550,12 +548,10 @@ msgid "interface directory"
 msgstr "directory interfaccia"
 
 #: codetoolsstrconsts.ctsinvalidclassname
-#| msgid "invalid class name=\"%s\""
 msgid "invalid class name=\"%s\""
 msgstr "nome classe non valido=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
-#| msgid "invalid class name \"%s\""
 msgid "invalid class name \"%s\""
 msgstr "nome classe non valido \"%s\""
 
@@ -584,12 +580,10 @@ msgid "invalid type"
 msgstr "tipo non valido"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
-#| msgid "invalid variable name \"%s\""
 msgid "invalid variable name \"%s\""
 msgstr "nome variabile non valido \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
-#| msgid "invalid variable type \"%s\""
 msgid "invalid variable type \"%s\""
 msgstr "tipo di variabile non valido \"%s\""
 
@@ -816,7 +810,6 @@ msgid "source is not unit"
 msgstr "il sorgente non è una unit"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
-#| msgid "source not found: unit %s"
 msgid "source not found: unit %s. Check your FPC source directory."
 msgstr "sorgente non trovato: unit %s. Verificare la cartella dei sorgenti FPC."
 
@@ -829,7 +822,6 @@ msgid "SrcPath Initialization"
 msgstr "Inizializzazione SrcPath"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
-#| msgid "%s expected, but %s found"
 msgid "expected %s, but %s found"
 msgstr "era previsto %s invece è stato trovato %s"
 
