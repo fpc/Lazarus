@@ -109,7 +109,8 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function URLHasStream(const URL: string): boolean; virtual; abstract;
-      { The standard IDE implementation supports for OpenURLAsync the following:
+      { Open a URL asynchronously
+        The standard IDE implementation supports the following for OpenURLAsync:
         source://local-file-name   : open a file local-file-name in the source editor
         openpackage://package-name : open a package editor
         fpdoc://#package-name.unitname.element : this opens the help for the fpdoc entry
