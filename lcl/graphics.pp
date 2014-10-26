@@ -1800,6 +1800,7 @@ type
   TCursorImage = class(TCustomIcon)
   private
     function GetHotSpot: TPoint;
+    procedure SetHotSpot(const P: TPoint);
     function GetCursorHandle: HCURSOR;
     procedure SetCursorHandle(AValue: HCURSOR);
   protected
@@ -1814,7 +1815,8 @@ type
     procedure LoadFromResourceHandle(Instance: THandle; ResHandle: TFPResourceHandle); override;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     function ReleaseHandle: HCURSOR;
-    property HotSpot: TPoint read GetHotSpot;
+    procedure SetCenterHotSpot;
+    property HotSpot: TPoint read GetHotSpot write SetHotSpot;
     property Handle: HCURSOR read GetCursorHandle write SetCursorHandle;
   end;
   

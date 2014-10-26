@@ -171,6 +171,23 @@ begin
   else Result := TCursorImageImage(TSharedCursorImage(FSharedImage).FImages[FCurrent]).HotSpot;
 end;
 
+procedure TCursorImage.SetHotSpot(const P: TPoint);
+begin
+  if FCurrent >= 0 then
+    TCursorImageImage(TSharedCursorImage(FSharedImage).FImages[FCurrent]).HotSpot := P;
+end;
+
+procedure TCursorImage.SetCenterHotSpot;
+var
+  AImage: TCursorImageImage;
+begin
+  if FCurrent >= 0 then
+  begin
+    AImage := TCursorImageImage(TSharedCursorImage(FSharedImage).FImages[FCurrent]);
+    AImage.HotSpot := Point(AImage.Width div 2, AImage.Height div 2);
+  end;
+end;
+
 procedure TCursorImage.HandleNeeded;
 var
   IconInfo: TIconInfo;
