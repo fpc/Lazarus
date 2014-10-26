@@ -311,6 +311,8 @@ object AddToPackageDlg: TAddToPackageDlg
           Height = 29
           Top = 6
           Width = 200
+          AutoComplete = True
+          AutoCompleteText = [cbactEnabled, cbactEndOfLineComplete, cbactSearchAscending]
           Constraints.MinWidth = 200
           ItemHeight = 0
           OnChange = DependPkgNameComboBoxChange
