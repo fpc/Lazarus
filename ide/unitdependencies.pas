@@ -418,8 +418,7 @@ begin
   Result:=IDEFPCParser.MsgLineIsId(Msg,10020,Unitname1,Unitname2);
 end;
 
-procedure TQuickFixCircularUnitReference.CreateMenuItems(
-  Fixes: TMsgQuickFixes);
+procedure TQuickFixCircularUnitReference.CreateMenuItems(Fixes: TMsgQuickFixes);
 var
   Msg: TMessageLine;
   Unitname1: string;
@@ -575,29 +574,25 @@ begin
     AllUnitsSearchEdit.Text:=ResStrSearch;
 end;
 
-procedure TUnitDependenciesWindow.AllUnitsSearchNextSpeedButtonClick(
-  Sender: TObject);
+procedure TUnitDependenciesWindow.AllUnitsSearchNextSpeedButtonClick(Sender: TObject);
 begin
   SelectNextSearchTV(AllUnitsTreeView,AllUnitsTreeView.Selected,true,true);
   fAllUnitsTVSearchStartNode:=AllUnitsTreeView.Selected;
 end;
 
-procedure TUnitDependenciesWindow.AllUnitsSearchPrevSpeedButtonClick(
-  Sender: TObject);
+procedure TUnitDependenciesWindow.AllUnitsSearchPrevSpeedButtonClick(Sender: TObject);
 begin
   SelectNextSearchTV(AllUnitsTreeView,AllUnitsTreeView.Selected,false,true);
   fAllUnitsTVSearchStartNode:=AllUnitsTreeView.Selected;
 end;
 
-procedure TUnitDependenciesWindow.AllUnitsShowDirsSpeedButtonClick(
-  Sender: TObject);
+procedure TUnitDependenciesWindow.AllUnitsShowDirsSpeedButtonClick(Sender: TObject);
 begin
   Include(FFlags,udwNeedUpdateAllUnitsTreeView);
   IdleConnected:=true;
 end;
 
-procedure TUnitDependenciesWindow.AllUnitsShowGroupNodesSpeedButtonClick(
-  Sender: TObject);
+procedure TUnitDependenciesWindow.AllUnitsShowGroupNodesSpeedButtonClick(Sender: TObject);
 begin
   Include(FFlags,udwNeedUpdateAllUnitsTreeView);
   IdleConnected:=true;
@@ -650,8 +645,7 @@ begin
   end;
 end;
 
-procedure TUnitDependenciesWindow.UnitsLvlGraphSelectionChanged(Sender: TObject
-  );
+procedure TUnitDependenciesWindow.UnitsLvlGraphSelectionChanged(Sender: TObject);
 var
   GraphNode: TLvlGraphNode;
   UGUnit: TUGUnit;
@@ -871,15 +865,13 @@ begin
     SelUnitsSearchEdit.Text:=ResStrSearch;
 end;
 
-procedure TUnitDependenciesWindow.SelUnitsSearchNextSpeedButtonClick(
-  Sender: TObject);
+procedure TUnitDependenciesWindow.SelUnitsSearchNextSpeedButtonClick(Sender: TObject);
 begin
   SelectNextSearchTV(SelUnitsTreeView,SelUnitsTreeView.Selected,true,true);
   fSelUnitsTVSearchStartNode:=SelUnitsTreeView.Selected;
 end;
 
-procedure TUnitDependenciesWindow.SelUnitsSearchPrevSpeedButtonClick(
-  Sender: TObject);
+procedure TUnitDependenciesWindow.SelUnitsSearchPrevSpeedButtonClick(Sender: TObject);
 begin
   SelectNextSearchTV(SelUnitsTreeView,SelUnitsTreeView.Selected,false,true);
   fSelUnitsTVSearchStartNode:=SelUnitsTreeView.Selected;
@@ -910,21 +902,18 @@ begin
   end;
 end;
 
-procedure TUnitDependenciesWindow.SearchCustomFilesCheckBoxChange(
-  Sender: TObject);
+procedure TUnitDependenciesWindow.SearchCustomFilesCheckBoxChange(Sender: TObject);
 begin
   UpdateUnitsButtons;
   ScopeChanged;
 end;
 
-procedure TUnitDependenciesWindow.SearchCustomFilesComboBoxChange(
-  Sender: TObject);
+procedure TUnitDependenciesWindow.SearchCustomFilesComboBoxChange(Sender: TObject);
 begin
   ScopeChanged;
 end;
 
-procedure TUnitDependenciesWindow.UnitsTVCollapseAllMenuItemClick(
-  Sender: TObject);
+procedure TUnitDependenciesWindow.UnitsTVCollapseAllMenuItemClick(Sender: TObject);
 var
   TV: TTreeView;
   i: Integer;
@@ -937,8 +926,7 @@ begin
   TV.EndUpdate;
 end;
 
-procedure TUnitDependenciesWindow.UnitsTVCopyFilenameMenuItemClick(
-  Sender: TObject);
+procedure TUnitDependenciesWindow.UnitsTVCopyFilenameMenuItemClick(Sender: TObject);
 var
   TV: TTreeView;
   TVNode: TTreeNode;
@@ -950,8 +938,7 @@ begin
   Clipboard.AsText:=GetFilename(TUDNode(TVNode.Data));
 end;
 
-procedure TUnitDependenciesWindow.UnitsTVExpandAllMenuItemClick(Sender: TObject
-  );
+procedure TUnitDependenciesWindow.UnitsTVExpandAllMenuItemClick(Sender: TObject);
 var
   TV: TTreeView;
   i: Integer;
@@ -980,8 +967,7 @@ begin
     UnitsTVUnusedUnitsMenuItem.Enabled:=false;
 end;
 
-procedure TUnitDependenciesWindow.UnitsTVUnusedUnitsMenuItemClick(Sender: TObject
-  );
+procedure TUnitDependenciesWindow.UnitsTVUnusedUnitsMenuItemClick(Sender: TObject);
 var
   TV: TTreeView;
   TVNode: TTreeNode;
@@ -1023,8 +1009,7 @@ begin
   GuessGroupOfUnits;
 end;
 
-function TUnitDependenciesWindow.CreateProjectGroup(AProject: TLazProject
-  ): TUGGroup;
+function TUnitDependenciesWindow.CreateProjectGroup(AProject: TLazProject): TUGGroup;
 var
   i: Integer;
   Filename: String;
@@ -1052,8 +1037,7 @@ begin
   end;
 end;
 
-function TUnitDependenciesWindow.CreatePackageGroup(APackage: TIDEPackage
-  ): TUGGroup;
+function TUnitDependenciesWindow.CreatePackageGroup(APackage: TIDEPackage): TUGGroup;
 var
   i: Integer;
   Filename: String;
@@ -1301,8 +1285,7 @@ begin
   end;
 end;
 
-procedure TUnitDependenciesWindow.SetPendingUnitDependencyRoute(AValue: TStrings
-  );
+procedure TUnitDependenciesWindow.SetPendingUnitDependencyRoute(AValue: TStrings);
 begin
   if FPendingUnitDependencyRoute.Equals(AValue) then Exit;
   FPendingUnitDependencyRoute.Assign(AValue);
@@ -1453,8 +1436,7 @@ begin
   Result:=RootNode;
 end;
 
-procedure TUnitDependenciesWindow.ExpandPendingUnitDependencyRoute(
-  RootNode: TUDNode);
+procedure TUnitDependenciesWindow.ExpandPendingUnitDependencyRoute(RootNode: TUDNode);
 var
   i: Integer;
   CurUnitName: String;
