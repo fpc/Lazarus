@@ -84,6 +84,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Load(Storage: TConfigStorage); override;
     procedure Save(Storage: TConfigStorage); override;
+    // Get localized name for CHM Help Viewer string
     function GetLocalizedName: string; override;
     function GetHelpEXE: String; // macros resolved, see property HelpEXE
     function GetHelpFilesPath: String; // macros resolved, see property HelpFilesPath
