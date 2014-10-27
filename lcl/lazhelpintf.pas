@@ -1136,17 +1136,17 @@ begin
   Result:=shrSuccess;
   ErrMsg:='';
   if csDesigning in ComponentState then exit;
-  if (ListOfPascalHelpContextList=nil)
-  or (ListOfPascalHelpContextList.Count=0) then exit;
+  if (ListOfPascalHelpContextList=nil) or
+    (ListOfPascalHelpContextList.Count=0) then exit;
   // add the registered nodes
   //debugln('THelpDatabase.GetNodesForPascalContexts A ID="',ID,'" ListOfPascalHelpContextList.Count=',dbgs(ListOfPascalHelpContextList.Count));
   if FSearchItems<>nil then begin
-    // check every pascal context
+    // check every Pascal context
     for j:=0 to ListOfPascalHelpContextList.Count-1 do begin
       PascalContext:=TPascalHelpContextList(ListOfPascalHelpContextList[j]);
       //debugln('THelpDatabase.GetNodesForPascalContexts A ID="',ID,'" PascalContext.Count=',dbgs(PascalContext.Count));
-      if (PascalContext.Count>0)
-      and (PascalContext.List[0].Descriptor=pihcFilename) then begin
+      if (PascalContext.Count>0) and
+        (PascalContext.List[0].Descriptor=pihcFilename) then begin
         Filename:=PascalContext.List[0].Context;
         // search file item
         for i:=0 to FSearchItems.Count-1 do begin
