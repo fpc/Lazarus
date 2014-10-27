@@ -15389,6 +15389,14 @@ msgstr "Exibir barra de estado"
 msgid "Show units"
 msgstr "Exibir unidades"
 
+#: lazarusidestrconsts.lisshowunitswithinitialization
+msgid "Show units with initialization/finalization sections"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowunitswithinitializationhint
+msgid "These units may initialize global data used by the program/application. Remove with care."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowunusedunits
 msgid "Show unused units ..."
 msgstr "Exibir unidades não usadas ..."

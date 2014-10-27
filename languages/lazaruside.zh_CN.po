@@ -15969,6 +15969,14 @@ msgstr "显示状态条"
 msgid "Show units"
 msgstr "显示单元"
 
+#: lazarusidestrconsts.lisshowunitswithinitialization
+msgid "Show units with initialization/finalization sections"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowunitswithinitializationhint
+msgid "These units may initialize global data used by the program/application. Remove with care."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowunusedunits
 msgid "Show unused units ..."
 msgstr ""

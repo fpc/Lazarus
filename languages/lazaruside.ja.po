@@ -15343,6 +15343,14 @@ msgstr "ステータスバーを表示"
 msgid "Show units"
 msgstr "ユニットを表示"
 
+#: lazarusidestrconsts.lisshowunitswithinitialization
+msgid "Show units with initialization/finalization sections"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowunitswithinitializationhint
+msgid "These units may initialize global data used by the program/application. Remove with care."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowunusedunits
 msgid "Show unused units ..."
 msgstr "使われていないユニットを表示 ..."

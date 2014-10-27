@@ -150,9 +150,7 @@ msgstr "Resetta lo zoom"
 
 #: lazarusidestrconsts.dlfmousesimplediff
 msgid "This page does not represent your current settings. See advanced page. Use this page to reset any advanced changes"
-msgstr ""
-"Questa pagina non mostra le vostre attuali preferenze: vedi preferenze "
-"avanzate. Usatela per azzerare cambiamenti alle preferenza avanzate"
+msgstr "Questa pagina non mostra le vostre attuali preferenze: vedi preferenze avanzate. Usatela per azzerare cambiamenti alle preferenza avanzate"
 
 #: lazarusidestrconsts.dlfmousesimplegenericsect
 msgctxt "lazarusidestrconsts.dlfmousesimplegenericsect"
@@ -8570,9 +8568,7 @@ msgstr "Forza rinomina"
 
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
-msgstr ""
-"Per esempio mostrare in cima le variabili locali, poi i membri della classe "
-"corrente, poi gli antenati, poi l'unità corrente poi le unità usate"
+msgstr "Per esempio mostrare in cima le variabili locali, poi i membri della classe corrente, poi gli antenati, poi l'unità corrente poi le unità usate"
 
 #: lazarusidestrconsts.lisform
 msgid "Form"
@@ -15100,6 +15096,14 @@ msgstr "Mostra barra di stato"
 msgid "Show units"
 msgstr "Mostra le unit"
 
+#: lazarusidestrconsts.lisshowunitswithinitialization
+msgid "Show units with initialization/finalization sections"
+msgstr ""
+
+#: lazarusidestrconsts.lisshowunitswithinitializationhint
+msgid "These units may initialize global data used by the program/application. Remove with care."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowunusedunits
 msgid "Show unused units ..."
 msgstr "Mostra le unit inutilizzate ..."
@@ -19121,3 +19125,4 @@ msgstr "Sola lettura"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informazioni di versione"
+
