@@ -145,7 +145,7 @@ constructor TWinCEFileDialogForm.Create(AOwner: TComponent; ALCLDialog: TFileDia
 var
   AImage: TPortableNetworkGraphic;
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner,1);
 
   LCLDialog := ALCLDialog;
 
