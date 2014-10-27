@@ -314,12 +314,13 @@ Procedure mdtgsy(n, rwidth: ArbInt; Var a: ArbFloat; Var pp:ArbInt;
                  Var qq:boolean; Var ca:ArbFloat; Var term:ArbInt);
 
 Var
-   i, j, kmin1, k, kplus1, kmin2, imin2, nsr, nsi, nsb,
+   i, j, kmin1, k, kplus1, kmin2, imin2, nsr, //nsi, nsi,
    imin1, jmin1, indexpivot, iplus1, indi, indj, indk, indp : ArbInt;
-    h, absh, maxim, pivot, ct, norma, sumrowi, normt, normr : ArbFloat;
+        h, absh, maxim, pivot, norma, sumrowi, normt, normr : ArbFloat;
                          alt, l, d, t, u, v, l1, d1, u1, t1 : ^arfloat1;
                                                           p : ^arint1;
                                                           q : ^arbool1;
+                                                         ct : ArbFloat = 0.0;  // to silence the compiler...
 Begin
   If (n<1) Or (rwidth<1) Then
     Begin
@@ -330,8 +331,8 @@ Begin
  p := @pp;
  q := @qq;
   nsr := n*sizeof(ArbFloat);
-  nsi := n*sizeof(ArbInt);
-  nsb := n*sizeof(boolean);
+//  nsi := n*sizeof(ArbInt);
+//  nsb := n*sizeof(boolean);
   getmem(l, nsr);
   getmem(d, nsr);
   getmem(t, nsr);
@@ -615,7 +616,7 @@ Procedure mdtgba(n, lb, rb, rwa: ArbInt; Var a: ArbFloat; rwl: ArbInt;
                  Var l:ArbFloat; Var p: ArbInt; Var ca: ArbFloat; Var term:ArbInt);
 
 Var
-  sr, i, j, k, ipivot, lbj, lbi, ubi, ls,
+  sr, i, j, k, ipivot, lbj, ubi, ls,
                 ii, jj, ll, jl, ubj       : ArbInt;
   normr, sumrowi, pivot, normt, maxim, h  : ArbFloat;
       pl, au, sumrow, t, row              : ^arfloat1;
@@ -636,7 +637,6 @@ Begin
   getmem(sumrow, n*sr);
   getmem(t, n*sr);
   getmem(row, ls);
-  lbi := n-rb+1;
  lbj := 0;
   jj := 1;
   For i:=lb Downto 1 Do

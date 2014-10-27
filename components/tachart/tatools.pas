@@ -504,7 +504,7 @@ type
     property OnHintLocation: TChartToolHintLocationEvent
       read FOnHintLocation write FOnHintLocation;
     property OnHintPosition: TChartToolHintPositionEvent
-      read FOnHintPosition write FOnHintPosition; deprecated;
+      read FOnHintPosition write FOnHintPosition; //deprecated;
     property UseApplicationHint: Boolean
       read FUseApplicationHint write SetUseApplicationHint default false;
     property UseDefaultHintText: Boolean

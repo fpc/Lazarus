@@ -913,12 +913,12 @@ begin
     calLeft:
       begin
         Alignment := calRight;
-        Title.Font.Orientation := -Title.Font.Orientation;
+        Title.LabelFont.Orientation := -Title.LabelFont.Orientation;
       end;
     calRight:
       begin
         Alignment := calLeft;
-        Title.Font.Orientation := -Title.Font.Orientation;
+        Title.LabelFont.Orientation := -Title.LabelFont.Orientation;
       end;
     calBottom,
     calTop:

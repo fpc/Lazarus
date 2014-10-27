@@ -408,7 +408,7 @@ Procedure slegba(n, l, r: ArbInt;
                  Var a, b, x, ca: ArbFloat; Var term:ArbInt);
 
 Var
-  sr, i, j, k, ipivot, lbj, lbi, ubi, ls,
+  sr, i, j, k, ipivot, {lbj, lbi,} ubi, ls,
          ii, jj, ll, ubj, rwidth       : ArbInt;
   normr, sumrowi, pivot, normt, maxim, h  : ArbFloat;
   pa, pb, px, au, sumrow, t, row              : ^arfloat1;
@@ -431,7 +431,7 @@ Begin
   getmem(row, ls);
   move(pb^, px^, n*sr);
   jj := 1;
- ii := 1;
+  ii := 1;
   For i:=1 To n Do
     Begin
       If i <= l+1 Then
@@ -447,10 +447,10 @@ Begin
       jj := jj+rwidth;
      ii := ii+ll;
     End; {i}
-  lbi := n-r+1;
- lbj := 0;
+  //lbi := n-r+1;
+  //lbj := 0;
   normr := 0;
- term := 1;
+  term := 1;
   ii := 1;
   For i:=1 To n Do
     Begin
@@ -568,7 +568,7 @@ Var
   a                                           : ar2dr1 absolute a1;
   b                                           : arfloat1 absolute b1;
   x                                           : arfloat1 absolute x1;
-  au                                          : par2dr1;
+  au                                          : par2dr1 = nil;
   sumrow, t, row                              : ^arfloat1;
 Begin
   If (n<1) Or (l<0) Or (r<0) Or (l>n-1) Or (r>n-1)
@@ -578,19 +578,19 @@ Begin
      exit
     End; {term=3}
   sr := sizeof(ArbFloat);
- ll := l+r+1;
- ls := ll*sr;
+  ll := l+r+1;
+  ls := ll*sr;
   AllocateAr2dr(n, ll, au);
   getmem(sumrow, n*sr);
- getmem(t, n*sr);
- getmem(row, ls);
+  getmem(t, n*sr);
+  getmem(row, ls);
   move(b[1], x[1], n*sr);
   For i:=1 To n Do
     Begin
       If i <= l+1 Then
         Begin
           If i <= n-r Then rwidth := r+i
-         Else rwidth := n
+          Else rwidth := n
         End
      Else
           If i <= n-r Then rwidth := ll
@@ -832,7 +832,7 @@ Var
      a : ar2dr1 absolute a1;
      x : arfloat1 absolute x1;
      b : arfloat1 absolute b1;
-     au: par2dr1;
+     au: par2dr1 = nil;
      sumrow, t, row : ^arfloat1;
 Begin
   If n<1 Then
@@ -1039,7 +1039,7 @@ Var     i, j, ns, ms                    : ArbInt;
         b                               : arfloat1 absolute b1;
         x                               : arfloat1 absolute x1;
         alpha, e, y, r                  : ^arfloat1;
-        qr                              : par2dr1;
+        qr                              : par2dr1 = nil;
         pivot                           : ^arint1;
 Begin
   If (n<1) Or (m<n)
@@ -1119,7 +1119,7 @@ Var
     h, normr, normt, sumrowi, hh, alim, norma              : ArbFloat;
     pa, pb, px, al, t, v                                   : ^arfloat1;
 
-    Procedure decomp(i, r: ArbInt);
+    Procedure decomp(r: ArbInt);
 
     Var k: ArbInt;
     Begin
@@ -1206,12 +1206,12 @@ Begin
         Begin
           jmin1 := j;
          j := j+1;
-          decomp(i, r);
+          decomp(r);
           r := r+1
         End ; {j}
       jmin1 := llm1;
      j := ll;
-      decomp(i, i);
+      decomp(i);
       If h <= 0
        Then
         posdef := false
@@ -1287,7 +1287,7 @@ Var
     a                                         : ar2dr1 absolute a1;
     b                                         : arfloat1 absolute b1;
     x                                         : arfloat1 absolute x1;
-    al                                        : par2dr1;
+    al                                        : par2dr1 = nil;
     t, v                                      : ^arfloat1;
 
     Procedure decomp(r: ArbInt);
@@ -1537,7 +1537,7 @@ Var                   sr, i, j, k, kmin1 : ArbInt;
                                        a : ar2dr1 absolute a1;
                                        b : arfloat1 absolute b1;
                                        x : arfloat1 absolute x1;
-                                      al : par2dr1;
+                                      al : par2dr1 = nil;
                                        t : ^arfloat1;
 
 Begin
@@ -1627,10 +1627,11 @@ Procedure slegsy(n, rwidth: ArbInt; Var a, b, x, ca: ArbFloat;
 Var
    i, j, kmin1, k, kplus1, kmin2, nsr, nsi, nsb,
    imin1, jmin1, indexpivot, iplus1, indi, indj, indk, indp       : ArbInt;
-   h, absh, maxim, pivot, ct, norma, sumrowi, normt, normr, s : ArbFloat;
+           h, absh, maxim, pivot, norma, sumrowi, normt, normr, s : ArbFloat;
               pa, pb, pb1, px, alt, l, d, t, u, v, l1, d1, u1, t1 : ^arfloat1;
                                                                 p : ^arint1;
                                                                 q : ^arbool1;
+                                                               ct : ArbFloat = 0.0;
 Begin
   If (n<1) Or (rwidth<1)
    Then
@@ -1886,14 +1887,15 @@ Procedure slegsyl(n: ArbInt; Var a1; Var b1, x1, ca: ArbFloat;
 
 Var
    i, j, k, nsr, nsi, nsb, indexpivot: ArbInt;
-   h, absh, maxim, pivot, ct, norma, sumrowi, normt, normr, s : ArbFloat;
+   h, absh, maxim, pivot, norma, sumrowi, normt, normr, s : ArbFloat;
                                            a : ar2dr1 absolute a1;
                                            b : arfloat1 absolute b1;
                                            x : arfloat1 absolute x1;
            b0, l, d, t, u, v, l1, d1, u1, t1 : ^arfloat1;
-                                         alt : par2dr1;
+                                         alt : par2dr1 = nil;
                                            p : ^arint1;
                                            q : ^arbool1;
+                                          ct : ArbFloat = 0.0;
 Begin
   If n<1 Then
     Begin

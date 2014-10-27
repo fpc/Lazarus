@@ -76,7 +76,7 @@ implementation
 
 procedure ipffsn(n: ArbInt; var x, y, a, d2a: ArbFloat; var term: ArbInt);
 
-var                    i, j, sr, n1s, ns1, ns2: ArbInt;
+var                       i, sr, n1s, ns1, ns2: ArbInt;
    s, lam, lam0, lam1, lambda, ey, ca, p, q, r: ArbFloat;
      px, py, pd, pa, pd2a,
   h, z, diagb, dinv, qty, qtdinvq, c, t, tl: ^arfloat1;
@@ -84,8 +84,9 @@ var                    i, j, sr, n1s, ns1, ns2: ArbInt;
 
   procedure solve; {n, py, qty, h, qtdinvq, dinv, lam, t, pa, pd2a, term}
   var i: ArbInt;
-      p, q, r, ca: ArbFloat;
+          p, q, r: ArbFloat;
              f, c: ^arfloat1;
+               ca: ArbFloat = 0.0;
   begin
     getmem(f, 3*ns1); getmem(c, ns1);
     for i:=1 to n-1 do
@@ -513,7 +514,7 @@ procedure ipfpol(m, n: ArbInt; var x, y, b: ArbFloat; var term: ArbInt);
 
 var                      i, ns: ArbInt;
                           fsum: ArbFloat;
-            px, py, alfa, beta: ^arfloat1;
+                py, alfa, beta: ^arfloat1;
                          pb, a: ^arfloat0;
 begin
   if (n<0) or (m<1)
@@ -555,9 +556,10 @@ procedure ipfisn(n: ArbInt; var x, y, d2s: ArbFloat; var term: ArbInt);
 
 var
                    s, i : ArbInt;
-               p, q, ca : ArbFloat;
+                   p, q : ArbFloat;
         px, py, h, b, t : ^arfloat0;
                    pd2s : ^arfloat1;
+                     ca : Arbfloat = 0.0;
 begin
   px:=@x; py:=@y; pd2s:=@d2s;
   term:=1;
@@ -767,7 +769,7 @@ procedure splineparameters
        x := v; v := w; w := x
    end;
 
-   procedure pxpy(a, b, c: complex; var p:complex);
+   procedure pxpy(a, b, c: complex; out p:complex);
    var det: ArbFloat;
    begin
         b.sub(a); c.sub(a); det := b.xreal*c.imag-b.imag*c.xreal;
@@ -820,7 +822,7 @@ var i, j, i1 : ArbInt;
     x, h,
     absdet,
     absdetmax,
-    s, s1, ca: ArbFloat;
+    s, s1    : ArbFloat;
     alfa, dv, hulp,
     u, v, w  : vector;
     e22      : array[0..2] of vector;
@@ -883,7 +885,7 @@ begin
   pxpy(an1,an,an2,z); for i:=0 to n do b^[i].j:=1+p(a[i],an1,z);
   pxpy(an,an2,an1,z); for i:=0 to n do b^[i].k:=1+p(a[i],an,z);
 
-  e22[0].init(0,e(an1,an2),e(an,an2));
+  {%H-}e22[0].init(0,e(an1,an2),e(an,an2));
   e22[1].init(e(an1,an2),0,e(an,an1));
   e22[2].init(e(an,an2),e(an,an1),0);
 

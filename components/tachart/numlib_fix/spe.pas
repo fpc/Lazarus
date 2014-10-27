@@ -892,7 +892,7 @@ var tvsmall, t, g: ArbFloat;
 begin
   if sizeof(ArbFloat) = 6
   then
-    tvsmall:=2*midget
+    {%H-}tvsmall:=2*midget
   else
     tvsmall:=midget;
   t:=abs(x);
@@ -1268,6 +1268,7 @@ end; {speath}
 var exitsave : pointer;
 
 procedure MyExit;
+{
 const ErrorS : array[400..408,1..6] of char =
      ('spepow',
       'spebk0',
@@ -1278,7 +1279,7 @@ const ErrorS : array[400..408,1..6] of char =
       'speath',
       'spegam',
       'spelga');
-
+}
 begin
      ExitProc := ExitSave;
      if (ExitCode>=400) AND (ExitCode<=408) then

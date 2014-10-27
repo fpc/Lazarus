@@ -118,7 +118,6 @@ end;
 procedure DrawDiaLink(ASelf: TDiaLink);
 var
   id: IChartDrawer;
-  drawDecor: IDiaDrawerDecorator;
   startPos, endPos, p: TPoint;
   d: IDiaDecorator;
 begin

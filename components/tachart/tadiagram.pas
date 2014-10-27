@@ -824,6 +824,7 @@ end;
 function TDiaElement.IsPointInside(
   const APoint: TDoublePoint; AUnits: TDiaUnits): Boolean;
 begin
+  Unused(APoint);
   Result := false;
 end;
 

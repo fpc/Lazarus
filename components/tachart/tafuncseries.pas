@@ -761,7 +761,7 @@ var
   startIndex: Integer;
   splineStart: Integer = 0;
   splineEnd: Integer = -2;
-  level: Integer = 0;
+  //level: Integer = 0;
   pStart, pEnd: TDoublePoint;
 
   function CalcSpline(APos: Double): TDoublePoint;
