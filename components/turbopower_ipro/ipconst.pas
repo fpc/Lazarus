@@ -255,7 +255,7 @@ resourcestring
   SUUEncodeCountErr  = 'Count <> Len or Count > 63';
   SLineLengthErr = 'Invalid line length for encoded text';
   SUnsupportedEncoding = 'Encoding method not supported';
-  
+
   { ICMP errors and messages }
   SIpICMP_SUCCESS                  = 'Successful';
   SIpICMP_BUF_TOO_SMALL            = 'Buffer too small';
@@ -327,7 +327,7 @@ resourcestring
   SstNoTask          = 'None';
   SstLogon           = 'Logging on';
   SstSendMail        = 'Sending mail';
-  SstError           = 'An error has occured during this task.';
+  SstError           = 'An error has occurred during this task.';
   { SMTP response codes, used by the TIpSmtpClient.ResultMsg method }
   SSmtpResponse02 = 'Success, ';
   SSmtpResponse04 = 'Transient, ';
@@ -711,8 +711,8 @@ resourcestring
   sSSLFailedhelloParse       = 'Did not parse server hello correctly.';
   sSSLEncryptionType         = 'Encryption type not defined.';
   sSSLBlockSizeError         = 'Block size error';
-  sSSLServerNoHandShake      = 'Server cid not return a handshake message.';
-  sSSLServerNoServerHello    = 'Server cid not return a server hello message.';
+  sSSLServerNoHandShake      = 'Server did not return a handshake message.';
+  sSSLServerNoServerHello    = 'Server did not return a server hello message.';
   sSSLBadCompressionValue    = 'Compression value is wrong.';
   sSSLBadCertType            = 'Cert type not found';
   sSSLBadKeyExchangeType     = 'Key exchange message expected but not received';
