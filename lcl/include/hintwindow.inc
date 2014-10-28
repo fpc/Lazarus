@@ -315,6 +315,20 @@ begin
   UpdateRegion;
 end;
 
+function THintWindow.IsHintMsg(Msg: TMsg): Boolean;
+begin
+  case Msg.message of
+    LM_KEYFIRST..LM_KEYLAST,
+    CM_ACTIVATE, CM_DEACTIVATE,
+    CM_APPSYSCOMMAND,
+    LM_COMMAND,
+    LM_LBUTTONDOWN..LM_MOUSELAST, LM_NCMOUSEMOVE :
+      Result := True;
+    else
+      Result := False;
+  end;
+end;
+
 procedure THintWindow.ReleaseHandle;
 begin
   if HandleAllocated then

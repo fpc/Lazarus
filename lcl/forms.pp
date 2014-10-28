@@ -869,6 +869,7 @@ type
                           AData: pointer): TRect; virtual;
     function OffsetHintRect(NewPos: TPoint; dy: Integer = 15): Boolean;
     procedure InitializeWnd; override;
+    function IsHintMsg(Msg: TMsg): Boolean; virtual;
     procedure ReleaseHandle;
     procedure Paint; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
