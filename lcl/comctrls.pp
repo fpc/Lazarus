@@ -3113,6 +3113,7 @@ type
     FAccessibilityOn: Boolean;
     FBackgroundColor: TColor;
     FBottomItem: TTreeNode;
+    FCallingOnChange: Boolean;
     FEditingItem: TTreeNode;
     FExpandSignType: TTreeViewExpandSignType;
     FExpandSignSize: integer;

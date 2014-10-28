@@ -5035,7 +5035,11 @@ end;
 
 procedure TCustomTreeView.Change(Node: TTreeNode);
 begin
-  if Assigned(FOnChange) then FOnChange(Self, Node);
+  if Assigned(FOnChange) then begin
+    FCallingOnChange := True;
+    FOnChange(Self, Node);
+    FCallingOnChange := False;
+  end;
 end;
 
 procedure TCustomTreeView.Delete(Node: TTreeNode);
@@ -5477,8 +5481,8 @@ begin
     Exclude(FStates, tvsSelectionChanged);
     DoSelectionChanged;
     FChangeTimer.Enabled := False;
-    FChangeTimer.Enabled := True;
-    //debugln('TCustomTreeView.InternalSelectionChanged');
+    if not FCallingOnChange then  // Prevent recursive loop from OnChange handler.
+      FChangeTimer.Enabled := True;
   end;
 end;
 
@@ -5648,8 +5652,7 @@ begin
   end;
 end;
 
-procedure TCustomTreeView.WriteDebugReport(const Prefix: string;
-  AllNodes: boolean);
+procedure TCustomTreeView.WriteDebugReport(const Prefix: string; AllNodes: boolean);
 begin
   DbgOut('%s%s.WriteDebugReport Self=%p', [Prefix, ClassName, Pointer(Self)]);
   ConsistencyCheck;
