@@ -12,11 +12,11 @@ object UseUnitDialog: TUseUnitDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.3'
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 32
-    Top = 384
+    Height = 30
+    Top = 386
     Width = 351
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -41,7 +41,7 @@ object UseUnitDialog: TUseUnitDialog
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
     Height = 49
-    Top = 329
+    Top = 331
     Width = 351
     Anchors = [akLeft, akRight, akBottom]
     AutoFill = True
@@ -56,10 +56,10 @@ object UseUnitDialog: TUseUnitDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
-    ClientHeight = 32
+    ClientHeight = 24
     ClientWidth = 347
     Columns = 2
-    ItemIndex = 1
+    ItemIndex = 0
     Items.Strings = (
       'Interface'
       'Implementation'
@@ -74,7 +74,7 @@ object UseUnitDialog: TUseUnitDialog
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = AllUnitsCheckBox
     Left = 6
-    Height = 267
+    Height = 263
     Top = 32
     Width = 351
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -90,9 +90,9 @@ object UseUnitDialog: TUseUnitDialog
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = SectionRadioGroup
     Left = 12
-    Height = 18
-    Top = 305
-    Width = 104
+    Height = 24
+    Top = 301
+    Width = 115
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Around = 6
@@ -104,11 +104,11 @@ object UseUnitDialog: TUseUnitDialog
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 20
+    Height = 28
     Top = 6
-    Width = 320
+    Width = 351
     ButtonWidth = 23
-    NumGlyphs = 0
+    NumGlyphs = 1
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
     Font.Color = clBtnShadow

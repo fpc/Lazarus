@@ -394,12 +394,12 @@ end;
 
 procedure TUseUnitDialog.DetermineUsesSection(ACode: TCodeBuffer; ACursorPos: TPoint);
 var
-  CursorPos: TCodeXYPosition;
-  CleanCursorPos: Integer;
   ImplUsesNode: TCodeTreeNode;
   i: Integer;
   Tool: TCodeTool;
-  ImplNode: TCodeTreeNode;
+  //CursorPos: TCodeXYPosition;
+  //CleanCursorPos: Integer;
+  //ImplNode: TCodeTreeNode;
 begin
   CodeToolBoss.Explore(ACode,Tool,false);
   if Tool=nil then exit;
@@ -409,11 +409,13 @@ begin
     for i := 0 to FImplUsedUnits.Count - 1 do
       FImplUsedUnits.Objects[i] := ImplUsesNode;
   // check if cursor is behind interface section
+{Note: now default to interface section always.
   CursorPos := CodeXYPosition(ACursorPos.X, ACursorPos.Y, ACode);
   Tool.CaretToCleanPos(CursorPos,CleanCursorPos);
   ImplNode:=Tool.FindImplementationNode;
   if (ImplNode<>nil) and (CleanCursorPos>ImplNode.StartPos) then
     SectionRadioGroup.ItemIndex := 1;
+}
   // update
   SectionRadioGroup.OnClick(SectionRadioGroup);
 end;
