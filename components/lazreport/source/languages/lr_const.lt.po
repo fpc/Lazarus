@@ -1116,6 +1116,10 @@ msgstr "Viršutinė lygiuotė"
 msgid "Top frame line"
 msgstr "Viršutinė rėmelio linija"
 
+#: lr_const.sfrdesignerformunabletocreatetemplatedir
+msgid "Unable to create template directory"
+msgstr ""
+
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
 msgstr "Pabraukimas"

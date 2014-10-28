@@ -1115,6 +1115,10 @@ msgstr "Alinhar acima"
 msgid "Top frame line"
 msgstr "Borda superior"
 
+#: lr_const.sfrdesignerformunabletocreatetemplatedir
+msgid "Unable to create template directory"
+msgstr ""
+
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
 msgstr "Sublinhado"

@@ -1114,6 +1114,10 @@ msgstr "Jajar atas"
 msgid "Top frame line"
 msgstr "Garis bingkai atas"
 
+#: lr_const.sfrdesignerformunabletocreatetemplatedir
+msgid "Unable to create template directory"
+msgstr ""
+
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
 msgstr "Garis bawah"

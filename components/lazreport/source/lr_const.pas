@@ -574,6 +574,7 @@ resourcestring
   sFRDesignerForm_Modified = 'Modified';
   sFRDesignerExists        = 'You already have one TfrDesigner component';
   sFRDesignerDataInsp      = 'Data inspector';
+  sFrDesignerFormUnableToCreateTemplateDir = 'Unable to create template directory';
 
 //--- InspForm resources ------------------------------------------------------
   sObjectInspector ='Object inspector';

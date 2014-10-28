@@ -1113,6 +1113,10 @@ msgstr "Выравнивание по верхнему краю"
 msgid "Top frame line"
 msgstr "Верхняя линия фрейма"
 
+#: lr_const.sfrdesignerformunabletocreatetemplatedir
+msgid "Unable to create template directory"
+msgstr ""
+
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
 msgstr "Подчёркнутый"

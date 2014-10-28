@@ -1117,6 +1117,10 @@ msgstr "Do góry"
 msgid "Top frame line"
 msgstr "Górna linia obramowania"
 
+#: lr_const.sfrdesignerformunabletocreatetemplatedir
+msgid "Unable to create template directory"
+msgstr ""
+
 #: lr_const.sfrdesignerformunderline
 msgid "Underline"
 msgstr "Podkreślenie"

@@ -3372,10 +3372,19 @@ begin
                 else
                   s := ExtractFileName(ChangeFileExt(FileName, '.frt'));
                 if frTemplateDir <> '' then
-                  s := frTemplateDir + PathDelim + s;
+                  s := AppendPathDelim(frTemplateDir) + s;
                 frTemplNewForm := TfrTemplNewForm.Create(nil);
                 if frTemplNewForm.ShowModal = mrOk then
                 begin
+                  if frTemplateDir<>'' then
+                  begin
+                    if not DirectoryExistsUTF8(frTemplateDir) then begin
+                      if not ForceDirectoriesUTF8(frTemplateDir) then begin
+                        ShowMessage(sFrDesignerFormUnableToCreateTemplateDir);
+                        exit;
+                      end;
+                    end;
+                  end;
                   if FCurDocFileType = dtLazReportTemplate then
                     CurReport.SaveTemplateXML(s, frTemplNewForm.Memo1.Lines, frTemplNewForm.Image1.Picture.Bitmap)
                   else
