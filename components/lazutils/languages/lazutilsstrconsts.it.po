@@ -1,0 +1,168 @@
+# Giuliano Colla <giuliano.colla@fastwebnet.it>, 2014.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2014-10-22 00:28+0200\n"
+"Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
+"Language-Team: Lazarus\n"
+"Language: it\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.6.1\n"
+
+#: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml"
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr ""
+"un componente directory in %s non esiste o è un link simbolico non valido"
+
+#: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml2"
+msgid "a directory component in %s does not exist or is a dangling symlink"
+msgstr ""
+"un componente directory in %s non esiste o è un link simbolico non valido"
+
+#: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory"
+msgid "a directory component in %s is not a directory"
+msgstr "un componente directory in %s non è una directory"
+
+#: lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2
+msgctxt "lazutilsstrconsts.lrsadirectorycomponentinisnotadirectory2"
+msgid "a directory component in %s is not a directory"
+msgstr "un componente directory in %s non è una directory"
+
+#: lazutilsstrconsts.lrsboolean
+msgid "boolean"
+msgstr "booleano"
+
+#: lazutilsstrconsts.lrscannotexecute
+msgid "can not execute %s"
+msgstr "impossibile eseguire %s"
+
+#: lazutilsstrconsts.lrsevalinvalidargcount
+msgid "Invalid number of function arguments"
+msgstr "Numero di argomenti della funzione non valido"
+
+#: lazutilsstrconsts.lrsevalunknownfunction
+msgid "Unknown function: \"%s\""
+msgstr "Funzione sconosciuta \"%s\""
+
+#: lazutilsstrconsts.lrsevalunknownvariable
+msgid "Unknown variable: \"%s\""
+msgstr "Variabile sconosciuta: \"%s\""
+
+#: lazutilsstrconsts.lrsfiledoesnotexist
+msgid "file \"%s\" does not exist"
+msgstr "il file \"%s\" non esiste"
+
+#: lazutilsstrconsts.lrsfileisadirectoryandnotanexecutable
+msgid "file \"%s\" is a directory and not an executable"
+msgstr "il file \"%s\" è una cartella e non un eseguibile"
+
+#: lazutilsstrconsts.lrshasacircularsymboliclink
+msgid "%s has a circular symbolic link"
+msgstr "%s ha un link simbolico circolare"
+
+#: lazutilsstrconsts.lrsinsufficientmemory
+msgid "insufficient memory"
+msgstr "memoria insufficiente"
+
+#: lazutilsstrconsts.lrsinvalidcharset
+msgctxt "lazutilsstrconsts.lrsinvalidcharset"
+msgid "The char set in mask \"%s\" is not valid!"
+msgstr "Il charset nella maschera \"%s\" non è valido"
+
+#: lazutilsstrconsts.lrsisnotasymboliclink
+msgid "%s is not a symbolic link"
+msgstr "%s non è un link simbolico"
+
+#: lazutilsstrconsts.lrsisnotexecutable
+msgid "%s is not executable"
+msgstr "%s non è eseguibile"
+
+#: lazutilsstrconsts.lrsmodified
+msgctxt "lazutilsstrconsts.lrsmodified"
+msgid "  modified "
+msgstr "  modificato "
+
+#: lazutilsstrconsts.lrsnodeset
+msgid "node set"
+msgstr "nodo impostato"
+
+#: lazutilsstrconsts.lrsnumber
+msgid "number"
+msgstr "numero"
+
+#: lazutilsstrconsts.lrsparserbadaxisname
+msgid "Invalid axis name"
+msgstr "Nome dell'asse non valido"
+
+#: lazutilsstrconsts.lrsparserbadnodetype
+msgid "Invalid node type"
+msgstr "Tipo di nodo non valido"
+
+#: lazutilsstrconsts.lrsparserexpectedleftbracket
+msgid "Expected \"(\""
+msgstr "Atteso \"(\""
+
+#: lazutilsstrconsts.lrsparserexpectedrightbracket
+msgid "Expected \")\""
+msgstr "Atteso \")\""
+
+#: lazutilsstrconsts.lrsparserexpectedrightsquarebracket
+msgid "Expected \"]\" after predicate"
+msgstr "\"]\" atteso dopo il predicato"
+
+#: lazutilsstrconsts.lrsparsergarbageafterexpression
+msgid "Unrecognized input after expression"
+msgstr "Testo non riconosciuto dopo l'espressione"
+
+#: lazutilsstrconsts.lrsparserinvalidnodetest
+msgid "Invalid node test (syntax error)"
+msgstr "Test sul nodo non valido (errore di sintassi)"
+
+#: lazutilsstrconsts.lrsparserinvalidprimexpr
+msgid "Invalid primary expression"
+msgstr "Espressione primaria non valida"
+
+#: lazutilsstrconsts.lrsprogramfilenotfound
+msgid "program file not found %s"
+msgstr "file di programma non trovato %s"
+
+#: lazutilsstrconsts.lrsreadaccessdeniedfor
+msgid "read access denied for %s"
+msgstr "accesso in lettura negato per %s"
+
+#: lazutilsstrconsts.lrsscannerexpectedvarname
+msgid "Expected variable name after \"$\""
+msgstr "Atteso un nome di variabile dopo \"$\""
+
+#: lazutilsstrconsts.lrsscannerinvalidchar
+msgid "Invalid character"
+msgstr "Carattere non valido"
+
+#: lazutilsstrconsts.lrsscannermalformedqname
+msgid "Expected \"*\" or local part after colon"
+msgstr "Atteso \"*\" o la parte locale dopo la virgola"
+
+#: lazutilsstrconsts.lrsscannerunclosedstring
+msgid "String literal was not closed"
+msgstr "Il literal della stringa non è stato chiuso"
+
+#: lazutilsstrconsts.lrssize
+msgctxt "lazutilsstrconsts.lrssize"
+msgid "  size "
+msgstr "  ampiezza "
+
+#: lazutilsstrconsts.lrsstring
+msgid "string"
+msgstr "stringa"
+
+#: lazutilsstrconsts.lrsunabletocreateconfigdirectorys
+msgid "Unable to create config directory \"%s\""
+msgstr "Impossibile creare la cartella di configurazione \"%s\""
+
+#: lazutilsstrconsts.lrsvarnoconversion
+msgid "Conversion from %s to %s not possible"
+msgstr "Conversione da %s a %s impossibile"
