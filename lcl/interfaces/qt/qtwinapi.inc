@@ -874,7 +874,7 @@ begin
     if TQtResource(AObject).Owner <> nil then
     begin
       // this is an owned (default) resource, let owner free it
-      DebugLn('WARNING: Trying to Free a default resource');
+      DebugLn('WARNING: TQtWidgetSet.DeleteObject() trying to free a default resource ',dbgsName(AObject),' owner=',dbgsName(TQtResource(AObject).Owner));
       AObject := nil;
     end;
 
