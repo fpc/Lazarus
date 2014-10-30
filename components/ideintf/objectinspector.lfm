@@ -47,10 +47,10 @@ object ObjectInspectorDlg: TObjectInspectorDlg
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = FilterLabel
       AnchorSideTop.Side = asrCenter
-      Left = 77
-      Height = 23
+      Left = 92
+      Height = 28
       Top = 3
-      Width = 194
+      Width = 204
       UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 1
