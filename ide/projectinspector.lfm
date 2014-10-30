@@ -103,9 +103,9 @@ object ProjectInspectorForm: TProjectInspectorForm
       AnchorSideTop.Control = SortAlphabeticallyButton
       AnchorSideTop.Side = asrCenter
       Left = 91
-      Height = 25
-      Top = 2
-      Width = 185
+      Height = 28
+      Top = 0
+      Width = 205
       UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 1
