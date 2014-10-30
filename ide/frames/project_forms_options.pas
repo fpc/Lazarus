@@ -182,7 +182,9 @@ end;
 procedure TProjectFormsOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   FormsAutoCreatedLabel.Caption := dlgAutoCreateForms;
+  FormsAutoCreatedListBox.Hint := dlgAutoCreateFormsHint;
   FormsAvailFormsLabel.Caption := dlgAvailableForms;
+  FormsAvailFormsListBox.Hint := dlgAvailableFormsHint;
   FormsAutoCreateNewFormsCheckBox.Caption := dlgAutoCreateNewForms;
   FormsMoveAutoCreatedFormUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
   FormsMoveAutoCreatedFormsDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');

@@ -2337,7 +2337,10 @@ resourcestring
   dlgPOIconDescNone = '(none)';
 
   dlgAutoCreateForms = 'Auto-create forms:';
+  dlgAutoCreateFormsHint = 'Main .lpr unit creates each form with Application.CreateForm(). '
+    +'They are also freed automatically.';
   dlgAvailableForms = 'Available forms:';
+  dlgAvailableFormsHint = 'These forms must be created and freed in the program code.';
   dlgAutoCreateNewForms = 'When creating new forms, add them to auto-created forms';
   dlgSaveEditorInfo = 'Save editor info for closed files';
   dlgSaveEditorInfoProject = 'Save editor info only for project files';
