@@ -2280,30 +2280,33 @@ resourcestring
   dlgPOMisc = 'Miscellaneous';
   dlgPOI18n = 'i18n';
   rsEnableI18n = 'Enable i18n';
-  lisEnableInternationalizationAndTranslationSupport = 'Enable internationaliza'
-    +'tion and translation support';
+  lisEnableInternationalizationAndTranslationSupport = 'Enable internationalization '
+    +'and translation support';
   rsI18nOptions = 'i18n Options';
   rsPOOutputDirectory = 'PO Output Directory:';
-  lisDirectoryWhereTheIDEPutsThePoFiles = 'Directory where the IDE puts the .'
-    +'po files';
+  lisDirectoryWhereTheIDEPutsThePoFiles = 'Directory where the IDE puts the .po files';
   lisCreateUpdatePoFileWhenSavingALfmFile = 'Create/update .po file when '
     +'saving a lfm file';
   lisYouCanDisableThisForIndividualFormsViaThePackageEd = 'You can disable '
     +'this for individual forms via the package editor';
   lisYouCanDisableThisForIndividualFormsViaThePopupMenu = 'You can disable '
     +'this for individual forms via the popup menu in the project inspector';
+
   rsIncludeVersionInfoInExecutable = 'Include version info in executable';
+  rsIncludeVersionInfoHint = 'Version info is stored if the executable format supports it.';
   rsVersionNumbering = 'Version numbering';
   rsMajorVersion = '&Major version:';
   rsMinorVersion = 'Mi&nor version:';
   rsRevision = '&Revision:';
   rsBuild = '&Build:';
   rsAutomaticallyIncreaseBuildNumber = 'Automatically increase build number';
+  rsAutomaticallyIncreaseBuildNumberHint = 'Increased every time the project is compiled.';
+  rsAttributes = 'Attributes';
   rsLanguageOptions = 'Language options';
   rsLanguageSelection = 'Language selection:';
   rsCharacterSet = 'Character set:';
   rsOtherInfo = 'Other info';
-  rsAttributes = 'Attributes';
+
   dlgPOSaveSession = 'Session';
   dlgApplicationSettings = 'Application settings';
   dlgPOTitle = 'Title:';
@@ -2342,8 +2345,23 @@ resourcestring
   dlgAvailableForms = 'Available forms:';
   dlgAvailableFormsHint = 'These forms must be created and freed in the program code.';
   dlgAutoCreateNewForms = 'When creating new forms, add them to auto-created forms';
+
   dlgSaveEditorInfo = 'Save editor info for closed files';
+  dlgSaveEditorInfoHint = 'The files are available in the "Open Recent" history list.';
   dlgSaveEditorInfoProject = 'Save editor info only for project files';
+  dlgSaveEditorInfoProjectHint = 'Only files that belong to this project.';
+  lisSaveSessionJumpHistory = 'Save jump history';
+  lisSaveSessionJumpHistoryHint = 'Ctrl-Click on an identifier in code editor is stored in jump history.';
+  lisSaveSessionFoldState = 'Save fold info';
+  lisSaveSessionFoldStateHint = 'Code editor supports folding (temporarily hiding) blocks of code.';
+  lisPOSaveInLpiFil = 'Save in .lpi file';
+  lisPOSaveInLpsFileInProjectDirectory = 'Save in .lps file in project directory';
+  lisPOSaveInIDEConfigDirectory = 'Save in .lps file in IDE config directory';
+  lisPODoNotSaveAnySessionInfo = 'Do not save any session info';
+  lisPOSaveSessionInformationIn = 'Save session information in';
+  lisPOSaveSessionInformationInHint = '.lpi is the project main info file, '
+    +'.lps is a separate file for session data only.';
+
   lisMainUnitIsPascalSource = 'Main unit is Pascal source';
   lisMainUnitHasUsesSectionContainingAllUnitsOfProject = 'Main unit has Uses '
     +'section containing all units of project';
@@ -4642,13 +4660,6 @@ resourcestring
   lisCTSelectCodeMacro = 'Select Code Macro';
   lisPDProgress = 'Progress';
   lisPDAbort = 'Abort';
-  lisPOSaveInLpiFil = 'Save in .lpi file';
-  lisPOSaveInLpsFileInProjectDirectory = 'Save in .lps file in project directory';
-  lisPOSaveInIDEConfigDirectory = 'Save in IDE config directory';
-  lisPODoNotSaveAnySessionInfo = 'Do not save any session info';
-  lisPOSaveSessionInformationIn = 'Save session information in';
-  lisPOSaveSessionJumpHistory = 'Save jump history';
-  lisPOSaveSessionFoldState = 'Save fold info';
   lisMVSaveMessagesToFileTxt = 'Save messages to file (*.txt)';
   lisTabOrderOf = 'Tab Order of %s';
 

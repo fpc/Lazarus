@@ -78,10 +78,15 @@ var
   s: TProjectSessionStorage;
 begin
   SaveClosedUnitInfoCheckBox.Caption := dlgSaveEditorInfo;
+  SaveClosedUnitInfoCheckBox.Hint := dlgSaveEditorInfoHint;
   SaveOnlyProjectUnitInfoCheckBox.Caption := dlgSaveEditorInfoProject;
+  SaveOnlyProjectUnitInfoCheckBox.Hint := dlgSaveEditorInfoProjectHint;
+  SaveJumpHistory.Caption := lisSaveSessionJumpHistory;
+  SaveJumpHistory.Hint := lisSaveSessionJumpHistoryHint;
+  SaveFoldState.Caption := lisSaveSessionFoldState;
+  SaveFoldState.Hint := lisSaveSessionFoldStateHint;
   SaveSessionLocationRadioGroup.Caption := lisPOSaveSessionInformationIn;
-  SaveJumpHistory.Caption := lisPOSaveSessionJumpHistory;
-  SaveFoldState.Caption := lisPOSaveSessionFoldState;
+  SaveSessionLocationRadioGroup.Hint := lisPOSaveSessionInformationInHint;
   for s := Low(TProjectSessionStorage) to High(TProjectSessionStorage) do
     SaveSessionLocationRadioGroup.Items.Add(ProjectSessionStorageToLocalizedName(s));
 end;

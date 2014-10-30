@@ -13,11 +13,13 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     Left = 0
-    Height = 21
+    Height = 24
     Top = 0
     Width = 320
     Align = alTop
     Caption = 'SaveClosedUnitInfoCheckBox'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
   end
   object SaveOnlyProjectUnitInfoCheckBox: TCheckBox
@@ -27,12 +29,14 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 27
+    Height = 24
+    Top = 30
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'SaveOnlyProjectUnitInfoCheckBox'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
   end
   object SaveSessionLocationRadioGroup: TRadioGroup
@@ -42,8 +46,8 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 20
-    Top = 108
+    Height = 24
+    Top = 120
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     AutoFill = True
@@ -60,6 +64,8 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     ChildSizing.ControlsPerLine = 1
     Constraints.MinHeight = 20
     OnClick = SaveSessionLocationRadioGroupClick
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 4
   end
   object SaveJumpHistory: TCheckBox
@@ -69,12 +75,14 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 54
+    Height = 24
+    Top = 60
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'SaveJumpHistory'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 2
   end
   object SaveFoldState: TCheckBox
@@ -84,12 +92,14 @@ object ProjectSaveOptionsFrame: TProjectSaveOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 0
-    Height = 21
-    Top = 81
+    Height = 24
+    Top = 90
     Width = 320
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 6
     Caption = 'SaveFoldState'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 3
   end
 end
