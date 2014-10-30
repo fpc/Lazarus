@@ -19,7 +19,6 @@ type
     DebugPathLabel: TLabel;
     IncludeFilesEdit: TEdit;
     IncludeFilesLabel: TLabel;
-    LCLWidgetTypeLabel: TLabel;
     LibrariesEdit: TEdit;
     LibrariesLabel: TLabel;
     OtherSourcesEdit: TEdit;
@@ -31,9 +30,6 @@ type
     ProjTargetFileLabel: TLabel;
     UnitOutputDirEdit: TEdit;
     UnitOutputDirLabel: TLabel;
-    procedure LCLWidgetTypeLabelClick(Sender: TObject);
-    procedure LCLWidgetTypeLabelMouseEnter(Sender: TObject);
-    procedure LCLWidgetTypeLabelMouseLeave(Sender: TObject);
     procedure ProjTargetFileEditChange(Sender: TObject);
   private
     FDialog: TAbstractOptionsEditorDialog;
@@ -287,25 +283,6 @@ end;
 procedure TCompilerPathOptionsFrame.ProjTargetFileEditChange(Sender: TObject);
 begin
   UpdateTargetFileLabel;
-end;
-
-procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelClick(Sender: TObject);
-begin
-  // Make sure the "Additions And Overrides" page is visible, then move there.
-  FDialog.ResetFilter;
-  FDialog.OpenEditor(GroupCompiler,CompilerOptionsAdditionsAndOverrides);
-end;
-
-procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelMouseEnter(Sender: TObject);
-begin
-  (Sender as TLabel).Font.Underline := True;
-  (Sender as TLabel).Font.Color := clRed;
-end;
-
-procedure TCompilerPathOptionsFrame.LCLWidgetTypeLabelMouseLeave(Sender: TObject);
-begin
-  (Sender as TLabel).Font.Underline := False;
-  (Sender as TLabel).Font.Color := clBlue;
 end;
 
 function TCompilerPathOptionsFrame.CheckSearchPath(const Context, ExpandedPath: string;
@@ -735,8 +712,6 @@ begin
 
   {------------------------------------------------------------}
 
-  LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSetMacroLCLWidgetType;
-
   // register special buttons in the dialog itself
   btnShowOptions := CreateButton(dlgCOShowOptions);
   btnShowOptions.LoadGlyphFromResourceName(HInstance, 'menu_compiler_options');
@@ -771,7 +746,6 @@ end;
 procedure TCompilerPathOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   ProjOpts: TProjectCompilerOptions;
-  PkgDep: TPkgDependency;
 begin
   if not (AOptions is TBaseCompilerOptions) then exit;
   FCompilerOpts := TBaseCompilerOptions(AOptions);
@@ -785,15 +759,12 @@ begin
     ProjTargetFileEdit.Text:=ProjOpts.TargetFilename;
     ProjTargetApplyConventionsCheckBox.Checked:=ProjOpts.TargetFilenameApplyConventions;
     ProjTargetApplyConventionsCheckBox.Visible:=true;
-    PkgDep:=ProjOpts.LazProject.FindDependencyByName('LCL');
-    LCLWidgetTypeLabel.Visible:=Assigned(PkgDep);
     UpdateTargetFileLabel;
   end else begin
     FHasProjectCompilerOpts:=False;
     ProjTargetFileEdit.Visible:=false;
     ProjTargetFileLabel.Visible:=false;
     ProjTargetApplyConventionsCheckBox.Visible:=false;
-    LCLWidgetTypeLabel.Visible:=false;
   end;
 
   OtherUnitsEdit.Text := FCompilerOpts.OtherUnitFiles;

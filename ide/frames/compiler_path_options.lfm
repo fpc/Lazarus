@@ -83,22 +83,6 @@ object CompilerPathOptionsFrame: TCompilerPathOptionsFrame
     Caption = 'DebugPathLabel'
     ParentColor = False
   end
-  object LCLWidgetTypeLabel: TLabel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = DebugPathEdit
-    AnchorSideTop.Side = asrBottom
-    Left = 0
-    Height = 15
-    Top = 343
-    Width = 122
-    Caption = 'LCLWidgetTypeLabel'
-    Font.Color = clBlue
-    ParentColor = False
-    ParentFont = False
-    OnClick = LCLWidgetTypeLabelClick
-    OnMouseEnter = LCLWidgetTypeLabelMouseEnter
-    OnMouseLeave = LCLWidgetTypeLabelMouseLeave
-  end
   object OtherUnitsEdit: TEdit
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = OtherUnitsLabel

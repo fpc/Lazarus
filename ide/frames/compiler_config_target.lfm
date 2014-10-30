@@ -193,13 +193,13 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
     end
   end
   object LCLWidgetTypeLabel: TLabel
-    AnchorSideTop.Control = grbTargetOptions
+    AnchorSideTop.Control = CurrentWidgetTypeLabel
     AnchorSideTop.Side = asrBottom
-    Left = 3
-    Height = 15
-    Top = 292
-    Width = 122
-    BorderSpacing.Top = 8
+    Left = 16
+    Height = 20
+    Top = 350
+    Width = 140
+    BorderSpacing.Top = 3
     Caption = 'LCLWidgetTypeLabel'
     Font.Color = clBlue
     ParentColor = False
@@ -207,5 +207,16 @@ object CompilerConfigTargetFrame: TCompilerConfigTargetFrame
     OnClick = LCLWidgetTypeLabelClick
     OnMouseEnter = LCLWidgetTypeLabelMouseEnter
     OnMouseLeave = LCLWidgetTypeLabelMouseLeave
+  end
+  object CurrentWidgetTypeLabel: TLabel
+    AnchorSideTop.Control = grbTargetOptions
+    AnchorSideTop.Side = asrBottom
+    Left = 3
+    Height = 20
+    Top = 327
+    Width = 165
+    BorderSpacing.Top = 9
+    Caption = 'CurrentWidgetTypeLabel'
+    ParentColor = False
   end
 end

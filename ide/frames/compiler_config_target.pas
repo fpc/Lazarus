@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, strutils, FileUtil, Controls, Dialogs, Graphics, StdCtrls,
-  LCLProc, DefineTemplates, IDEOptionsIntf,
+  LCLProc, DefineTemplates, IDEOptionsIntf, MacroIntf,
   IDEDialogs, CompilerOptions, LazarusIDEStrConsts,
   TransferMacros, PackageDefs, Project, compiler_parsing_options;
 
@@ -45,6 +45,7 @@ type
     grbTargetOptions: TGroupBox;
     grbConfigFile: TGroupBox;
     grbTargetPlatform: TGroupBox;
+    CurrentWidgetTypeLabel: TLabel;
     lblTargetCPU: TLabel;
     lblTargetOS: TLabel;
     lblTargetProc: TLabel;
@@ -69,6 +70,7 @@ type
     destructor Destroy; override;
     function Check: Boolean; override;
     function GetTitle: string; override;
+    procedure UpdateWidgetSet(AValue: string = '');
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
@@ -187,42 +189,46 @@ begin
   Result := dlgConfigAndTarget;
 end;
 
-procedure TCompilerConfigTargetFrame.UpdateByTargetOS(aTargetOS: string);
-//var DbgMsg: String;
+procedure TCompilerConfigTargetFrame.UpdateWidgetSet(AValue: string);
+// Use the value if it is given. Otherwise read IDE macro LCLWidgetType's value.
+// This can be called from ModeMatrix with a new value before it is saved.
 begin
-  //DbgMsg := '';
+  if AValue = '' then begin
+    AValue := '$(LCLWidgetType)';
+    if not IDEMacros.SubstituteMacros(AValue) then
+      AValue := '';
+  end;
+  CurrentWidgetTypeLabel.Caption := Format(lisCurrentLCLWidgetSet, [AValue]);
+end;
+
+procedure TCompilerConfigTargetFrame.UpdateByTargetOS(aTargetOS: string);
+begin
   if aTargetOS = '' then
   begin
     aTargetOS := '$(TargetOS)';
     if not GlobalMacroList.SubstituteStr(aTargetOS) then
       raise Exception.CreateFmt('Cannot substitute macro "%s".', [aTargetOS]);
-    //DbgMsg := ' (got by using $(TargetOS) macro)';
   end;
-  //DebugLn(['TCompilerConfigTargetFrame.UpdateTargetSpecific: TargetOS=',aTargetOS,DbgMsg]);
   // Now hide/show the whole GroupBox because there is only one setting.
   grbTargetOptions.Visible := AnsiStartsText('Win', aTargetOS);
   if grbTargetOptions.Visible then
-    LCLWidgetTypeLabel.AnchorSideTop.Control := grbTargetOptions
+    CurrentWidgetTypeLabel.AnchorSideTop.Control := grbTargetOptions
   else
-    LCLWidgetTypeLabel.AnchorSideTop.Control := grbTargetPlatform;
+    CurrentWidgetTypeLabel.AnchorSideTop.Control := grbTargetPlatform;
 end;
 
 procedure TCompilerConfigTargetFrame.UpdateByTargetCPU(aTargetCPU: string);
 var
-  //DbgMsg: String;
   ParsingFrame: TCompilerParsingOptionsFrame;
   sl: TStringList;
   i: Integer;
 begin
-  //DbgMsg := '';
   if aTargetCPU = '' then
   begin
     aTargetCPU := '$(TargetCPU)';
     if not GlobalMacroList.SubstituteStr(aTargetCPU) then
       raise Exception.CreateFmt('Cannot substitute macro "%s".', [aTargetCPU]);
-    //DbgMsg := ' (got by using $(TargetCPU) macro)';
   end;
-  //DebugLn(['TCompilerConfigTargetFrame.UpdateTargetProcessorList: TargetCPU=',aTargetCPU,DbgMsg]);
 
   // Update selection list for target processor
   sl:=TStringList.Create;
@@ -245,7 +251,6 @@ var
   s: ShortString;
 begin
   FDialog := ADialog;
-
   // Config
   grbConfigFile.Caption := dlgConfigFiles;
   chkConfigFile.Caption := dlgUseFpcCfg + ' ('+lisIfNotChecked+' -n)';
@@ -273,12 +278,14 @@ begin
     ItemIndex := 0;
   end;
 
+  // Target CPU
   lblTargetProc.Caption := dlgTargetProc+' (-Cp)';
-  LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSetMacroLCLWidgetType;
-
-  // Target options
+  // Target-specific options
   grbTargetOptions.Caption := dlgTargetSpecificOptions;
   chkWin32GraphicApp.Caption := dlgWin32GUIApp + ' (-WG)';
+  // WidgetSet
+  UpdateWidgetSet;
+  LCLWidgetTypeLabel.Caption := lisSelectAnotherLCLWidgetSet;
 end;
 
 procedure TCompilerConfigTargetFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -303,6 +310,7 @@ begin
       TargetCPUComboBox.ItemIndex := 0;
       TargetCPUComboBox.Text := 'default';
       TargetProcComboBox.Text := 'default';
+      CurrentWidgetTypeLabel.Visible:=false;
       LCLWidgetTypeLabel.Visible:=false;
     end else begin
       grbTargetPlatform.Visible:=true;
@@ -321,6 +329,7 @@ begin
       UpdateByTargetOS(TargetOS);
       TargetProcComboBox.Text := ProcessorToCaption(TargetProcessor);
       PkgDep:=(AOptions as TProjectCompilerOptions).LazProject.FindDependencyByName('LCL');
+      CurrentWidgetTypeLabel.Visible:=Assigned(PkgDep);
       LCLWidgetTypeLabel.Visible:=Assigned(PkgDep);
     end;
     chkWin32GraphicApp.Checked := Win32GraphicApp;

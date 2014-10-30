@@ -5460,8 +5460,7 @@ resourcestring
   lisCheckTheTargetOSCPULCLWidgetTypeMaybeYouHaveToReco = '%s Check the '
     +'target (OS, CPU, LCL widget type). Maybe you have to recompile the '
     +'package for this target or set another target for the project.';
-  lisMaybeYouHaveToRecompileThePackage = '%s Maybe you have to recompile the '
-    +'package.';
+  lisMaybeYouHaveToRecompileThePackage = '%s Maybe you have to recompile the package.';
   lisDuplicatePpuFilesDeleteOneOrMakeSureAllSearchPaths = 'Duplicate ppu '
     +'files. Delete one or make sure all search paths have correct order ('
     +'Hint: FPC uses last path first).';
@@ -5470,8 +5469,8 @@ resourcestring
     +'uses last path first).';
   lisPEMissingFilesOfPackage = 'Missing files of package %s';
   lisPENoFilesMissingAllFilesExist = 'No files missing. All files exist.';
-  lisSelectAnotherLCLWidgetSetMacroLCLWidgetType = 'Select another LCL widget '
-    +'set (macro LCLWidgetType)';
+  lisCurrentLCLWidgetSet = 'Current LCL widgetset: "%s"';
+  lisSelectAnotherLCLWidgetSet = 'Select another LCL widgetset (macro LCLWidgetType)';
   lisEndlessLoopInMacros = 'Endless loop in macros';
 
   // Uses Unit dialog

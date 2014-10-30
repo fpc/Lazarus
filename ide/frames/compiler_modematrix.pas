@@ -38,7 +38,7 @@ uses
   Classes, SysUtils, types, LazLogger, LazUTF8, Controls, Graphics, ComCtrls,
   Menus, LCLProc, IDEOptionsIntf, IDEImagesIntf, CompOptsIntf, EnvironmentOpts,
   PackageSystem, PackageDefs, Project, LazarusIDEStrConsts, TransferMacros,
-  ModeMatrixOpts, ModeMatrixCtrl;
+  ModeMatrixOpts, ModeMatrixCtrl, compiler_config_target;
 
 type
 
@@ -84,6 +84,7 @@ type
     procedure OnAddMacroMenuItemClick(Sender: TObject);
     procedure OnAddLCLWidgetTypeClick(Sender: TObject);
   private
+    FDialog: TAbstractOptionsEditorDialog;
     FErrorColor: TColor;
     FGrid: TGroupedMatrixControl;
     FGroupIDE: TGroupedMatrixGroup;
@@ -484,12 +485,17 @@ end;
 
 procedure TCompOptModeMatrixFrame.OnAddLCLWidgetTypeClick(Sender: TObject);
 var
+  TargetFrame: TCompilerConfigTargetFrame;
   ValueMenuItem: TMenuItem;
   Value: String;
 begin
   ValueMenuItem:=Sender as TMenuItem;
   Value:=GetCaptionValue(ValueMenuItem.Caption,fCaptionPatternMacroValue);
   CreateNewOption(BuildMatrixOptionTypeCaption(bmotIDEMacro),'LCLWidgetType:='+Value);
+  // Update LCLWidgetType to Config and Target page. ToDo: update also when deleting or changing.
+  TargetFrame := TCompilerConfigTargetFrame(FDialog.FindEditor(TCompilerConfigTargetFrame));
+  Assert(Assigned(TargetFrame));
+  TargetFrame.UpdateWidgetSet(Value);
 end;
 
 procedure TCompOptModeMatrixFrame.BMMNewCustomOptionMenuItemClick(Sender: TObject);
@@ -1171,7 +1177,7 @@ end;
 
 procedure TCompOptModeMatrixFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
-  //debugln(['TCompOptModeMatrix.Setup ',DbgSName(ADialog)]);
+  FDialog := ADialog;
 end;
 
 class function TCompOptModeMatrixFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
