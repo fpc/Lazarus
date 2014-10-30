@@ -66,7 +66,7 @@ type
     function  CreateDebugProcess(const AOptions: String): Boolean; virtual;
     procedure Flush;                                   // Flushes output buffer
     function  GetWaiting: Boolean; override;
-    function  LineEndPos(const s: string; out LineEndLen: integer): integer; virtual;
+    function  LineEndPos(const {%H-}s: string; out LineEndLen: integer): integer; virtual;
     function  ReadLine(ATimeOut: Integer = -1): String; overload;
     function  ReadLine(const APeek: Boolean; ATimeOut: Integer = -1): String; virtual; overload;
     procedure SendCmdLn(const ACommand: String); virtual; overload;
