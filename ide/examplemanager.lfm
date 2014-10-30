@@ -9,7 +9,7 @@ object ExampleManagerForm: TExampleManagerForm
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object ProjectsGroupBox: TGroupBox
     Left = 0
     Height = 326
@@ -62,7 +62,7 @@ object ExampleManagerForm: TExampleManagerForm
       Height = 17
       Top = 3
       Width = 87
-      BorderSpacing.Left = 50
+      BorderSpacing.Left = 25
       Caption = 'Relative paths'
       OnClick = cbRelativePathClick
       TabOrder = 2
