@@ -2109,11 +2109,15 @@ msgid "Revoked Certificate."
 msgstr "Certificado revogado."
 
 #: ipconst.ssslservernohandshake
-msgid "Server cid not return a handshake message."
+#, fuzzy
+#| msgid "Server cid not return a handshake message."
+msgid "Server did not return a handshake message."
 msgstr "\"CID\" servidor não retornou um mensagem \"handshake\"."
 
 #: ipconst.ssslservernoserverhello
-msgid "Server cid not return a server hello message."
+#, fuzzy
+#| msgid "Server cid not return a server hello message."
+msgid "Server did not return a server hello message."
 msgstr "\"CID\" servidor não retornou um mensagem \"hello\"."
 
 #: ipconst.ssslsessidtolong
@@ -2211,7 +2215,9 @@ msgid "Verifying"
 msgstr "Verificando"
 
 #: ipconst.ssterror
-msgid "An error has occured during this task."
+#, fuzzy
+#| msgid "An error has occured during this task."
+msgid "An error has occurred during this task."
 msgstr "Um erro ocorreu durante esta tarefa."
 
 #: ipconst.sstlogon

@@ -2117,11 +2117,15 @@ msgid "Revoked Certificate."
 msgstr "证书作废."
 
 #: ipconst.ssslservernohandshake
-msgid "Server cid not return a handshake message."
+#, fuzzy
+#| msgid "Server cid not return a handshake message."
+msgid "Server did not return a handshake message."
 msgstr "服务器 cid 没有返回握手信息."
 
 #: ipconst.ssslservernoserverhello
-msgid "Server cid not return a server hello message."
+#, fuzzy
+#| msgid "Server cid not return a server hello message."
+msgid "Server did not return a server hello message."
 msgstr "服务器 cid 没有返回服务器hello信息."
 
 #: ipconst.ssslsessidtolong
@@ -2219,7 +2223,9 @@ msgid "Verifying"
 msgstr ""
 
 #: ipconst.ssterror
-msgid "An error has occured during this task."
+#, fuzzy
+#| msgid "An error has occured during this task."
+msgid "An error has occurred during this task."
 msgstr "在当前任务期间发生错误."
 
 #: ipconst.sstlogon

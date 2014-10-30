@@ -2104,11 +2104,13 @@ msgid "Revoked Certificate."
 msgstr "Sertifikat Dihidupkan."
 
 #: ipconst.ssslservernohandshake
-msgid "Server cid not return a handshake message."
+msgid "Server did not return a handshake message."
 msgstr ""
 
 #: ipconst.ssslservernoserverhello
-msgid "Server cid not return a server hello message."
+#, fuzzy
+#| msgid "Server cid not return a server hello message."
+msgid "Server did not return a server hello message."
 msgstr "Server tidak mengembalikan pesan serverhello."
 
 #: ipconst.ssslsessidtolong
@@ -2206,7 +2208,9 @@ msgid "Verifying"
 msgstr "Memverifikasi"
 
 #: ipconst.ssterror
-msgid "An error has occured during this task."
+#, fuzzy
+#| msgid "An error has occured during this task."
+msgid "An error has occurred during this task."
 msgstr "Kesalahan terjadi selama tugas ini."
 
 #: ipconst.sstlogon

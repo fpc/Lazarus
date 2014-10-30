@@ -2112,11 +2112,15 @@ msgid "Revoked Certificate."
 msgstr "Відкликаний Сертифікат."
 
 #: ipconst.ssslservernohandshake
-msgid "Server cid not return a handshake message."
+#, fuzzy
+#| msgid "Server cid not return a handshake message."
+msgid "Server did not return a handshake message."
 msgstr "Сервер не повернув повідомлення рукостискання."
 
 #: ipconst.ssslservernoserverhello
-msgid "Server cid not return a server hello message."
+#, fuzzy
+#| msgid "Server cid not return a server hello message."
+msgid "Server did not return a server hello message."
 msgstr "Сервер не повернув вітальне повідомлення сервера."
 
 #: ipconst.ssslsessidtolong
@@ -2214,7 +2218,9 @@ msgid "Verifying"
 msgstr "Перевірка"
 
 #: ipconst.ssterror
-msgid "An error has occured during this task."
+#, fuzzy
+#| msgid "An error has occured during this task."
+msgid "An error has occurred during this task."
 msgstr "Під час виконання цього завдання сталася помилка."
 
 #: ipconst.sstlogon

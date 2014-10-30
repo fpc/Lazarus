@@ -2111,11 +2111,15 @@ msgid "Revoked Certificate."
 msgstr "Panaikintas sertifikatas."
 
 #: ipconst.ssslservernohandshake
-msgid "Server cid not return a handshake message."
+#, fuzzy
+#| msgid "Server cid not return a handshake message."
+msgid "Server did not return a handshake message."
 msgstr "Serveris negrąžino pranešimo apie užmegztą ryšį."
 
 #: ipconst.ssslservernoserverhello
-msgid "Server cid not return a server hello message."
+#, fuzzy
+#| msgid "Server cid not return a server hello message."
+msgid "Server did not return a server hello message."
 msgstr "serverio „cid“ negrąžino serverio hello pranešimo."
 
 #: ipconst.ssslsessidtolong
@@ -2213,7 +2217,9 @@ msgid "Verifying"
 msgstr "Tikrinama"
 
 #: ipconst.ssterror
-msgid "An error has occured during this task."
+#, fuzzy
+#| msgid "An error has occured during this task."
+msgid "An error has occurred during this task."
 msgstr "Vykdant šią užduotį įvyko klaida."
 
 #: ipconst.sstlogon

@@ -2097,11 +2097,11 @@ msgid "Revoked Certificate."
 msgstr ""
 
 #: ipconst.ssslservernohandshake
-msgid "Server cid not return a handshake message."
+msgid "Server did not return a handshake message."
 msgstr ""
 
 #: ipconst.ssslservernoserverhello
-msgid "Server cid not return a server hello message."
+msgid "Server did not return a server hello message."
 msgstr ""
 
 #: ipconst.ssslsessidtolong
@@ -2199,7 +2199,7 @@ msgid "Verifying"
 msgstr ""
 
 #: ipconst.ssterror
-msgid "An error has occured during this task."
+msgid "An error has occurred during this task."
 msgstr ""
 
 #: ipconst.sstlogon
