@@ -96,9 +96,12 @@ end;
 procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
   procedure SetupGridGroupBox;
   begin
-    ShowBorderSpaceCheckBox.Caption:=dlgQShowBorderSpacing;
     ShowGridCheckBox.Caption:=dlgQShowGrid;
+    ShowGridCheckBox.Hint:=dlgGridConsistsOfSmallDots;
+    ShowBorderSpaceCheckBox.Caption:=dlgQShowBorderSpacing;
+    ShowBorderSpaceCheckBox.Hint:=dlgBorderSpaceCanBeSetInAnchorEditor;
     SnapToGridCheckBox.Caption:=dlgQSnapToGrid;
+    SnapToGridCheckBox.Hint:=dlgDistanceBetweenGridPointsIsSmallestStep;
     GridSizeXSpinEdit.Hint:=dlgGridXHint;
     GridSizeXLabel.Caption:=dlgGridX;
     GridSizeYSpinEdit.Hint:=dlgGridYHint;
@@ -108,33 +111,31 @@ procedure TFormEditorOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
   procedure SetupGuideLinesGroupBox;
   begin
     ShowGuideLinesCheckBox.Caption:=dlgGuideLines;
+    ShowGuideLinesCheckBox.Hint:=dlgGuideLinesHint;
     SnapToGuideLinesCheckBox.Caption:=dlgSnapGuideLines;
+    SnapToGuideLinesCheckBox.Hint:=dlgSnapGuideLinesHint;
   end;
 
   procedure SetupMiscGroupBox;
   begin
-    ShowComponentCaptionsCheckBox.Caption:=dlgShowCaps;
-    ShowEditorHintsCheckBox.Caption:=dlgShowEdrHints;
-    OpenDesignerOnOpenUnitCheckBox.Caption:=lisOpenDesignerOnOpenUnit;
-    RightClickSelectsCheckBox.Caption:=dlgRightClickSelects;
-    CheckPackagesOnFormCreateCheckBox.Caption:=dlgCheckPackagesOnFormCreate;
-
-    with DesignerPaintLazyCheckBox do
-    begin
-      Caption:=lisFEPaintDesignerItemsOnIdle;
-      Hint:=lisFEPaintDesignerItemsOnIdleReduceOverheadForSlowCompu;
-    end;
-    with CreateCompFocusNameCheckBox do
-    begin
-      Caption:=lisAskNameOnCreate;
-      Hint:=lisAskForComponentNameAfterPuttingItOnForm;
-    end;
-    with SwitchToFavoritesOITabCheckBox do
-    begin
-      Caption:=lisOFESwitchToObjectInspectorFavoritesTab;
-      Hint:=lisOFESwitchToObjectInspectorFavoritesTabAfterAsking;
-    end;
     RubberbandSelectsGrandChildsCheckBox.Caption:=dlgRubberbandSelectsGrandChildren;
+    RubberbandSelectsGrandChildsCheckBox.Hint:=dlgSelectAllChildControls;
+    ShowComponentCaptionsCheckBox.Caption:=dlgShowCaptionsOfNonVisuals;
+    ShowComponentCaptionsCheckBox.Hint:=dlgDrawComponentsNameBelowIt;
+    ShowEditorHintsCheckBox.Caption:=dlgShowDesignerHints;
+    ShowEditorHintsCheckBox.Hint:=dlgShowDesignerHintsHint;
+    OpenDesignerOnOpenUnitCheckBox.Caption:=lisOpenDesignerOnOpenUnit;
+    OpenDesignerOnOpenUnitCheckBox.Hint:=lisOpenDesignerOnOpenUnitHint;
+    RightClickSelectsCheckBox.Caption:=dlgRightClickSelects;
+    RightClickSelectsCheckBox.Hint:=dlgComponentUnderMouseCursorIsFirstSelected;
+    DesignerPaintLazyCheckBox.Caption:=lisFEPaintDesignerItemsOnIdle;
+    DesignerPaintLazyCheckBox.Hint:=lisFEPaintDesignerItemsOnIdleHint;
+    CreateCompFocusNameCheckBox.Caption:=lisAskNameOnCreate;
+    CreateCompFocusNameCheckBox.Hint:=lisAskForComponentNameAfterPuttingItOnForm;
+    SwitchToFavoritesOITabCheckBox.Caption:=lisOFESwitchToObjectInspectorFavoritesTab;
+    SwitchToFavoritesOITabCheckBox.Hint:=lisSwitchToFavoritesTabAfterAsking;
+    CheckPackagesOnFormCreateCheckBox.Caption:=dlgCheckPackagesOnFormCreate;
+    CheckPackagesOnFormCreateCheckBox.Hint:=dlgCheckPackagesOnFormCreateHint;
   end;
 begin
   GridGroupBox.Caption := dlgEnvGrid;

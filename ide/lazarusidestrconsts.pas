@@ -1287,37 +1287,60 @@ resourcestring
     +'For example: German: $(FPCSrcDir)/compiler/msg/errordu.msg.';
   dlgDebugType = 'Debugger type and path';
   dlgTestPrjDir = 'Directory for building test projects';
+
   dlgQShowGrid = 'Show grid';
+  dlgGridConsistsOfSmallDots = 'Grid consists of small dots which help aligning controls.';
   dlgQShowBorderSpacing = 'Show border spacing';
-  dlgGridColor = 'Grid color';
+  dlgBorderSpaceCanBeSetInAnchorEditor = 'Border space can be set in Anchor editor. '
+    +'A red line is shown if spacing > 0.';
   dlgQSnapToGrid = 'Snap to grid';
+  dlgDistanceBetweenGridPointsIsSmallestStep = 'Distance between grid points is '
+    +'the smallest step when moving a control.';
   dlgGridX = 'Grid size X';
   dlgGridXHint = 'Horizontal grid step size';
   dlgGridY = 'Grid size Y';
   dlgGridYHint = 'Vertical grid step size';
   dlgGuideLines = 'Show Guide Lines';
+  dlgGuideLinesHint = 'When a control is aligned horizontally or vertically '
+    +'with another controls, a blue guide line is shown.';
   dlgSnapGuideLines = 'Snap to Guide Lines';
+  dlgSnapGuideLinesHint = 'When a control is close to being aligned '
+    +'with another control, it snaps to the aligned position.';
+  dlgGridColor = 'Grid color';
   dlgLeftTopClr = 'Guide lines Left,Top';
   dlgRightBottomClr = 'Guide lines Right,Bottom';
-  dlgShowCaps = 'Show component captions';
-  dlgShowEdrHints = 'Show editor hints';
-  dlgrightClickSelects = 'Right click selects';
-  lisOpenDesignerOnOpenUnit = 'Open designer on open unit';
-  dlgCheckPackagesOnFormCreate = 'Check packages on form create';
   dlgGrabberColor = 'Grabber color';
   dlgMarkerColor = 'Marker color';
-  lisFEPaintDesignerItemsOnIdle = 'Reduce designer painting';
-  lisFEPaintDesignerItemsOnIdleReduceOverheadForSlowCompu = 'Paint designer '
-    +'items only on idle (reduce overhead for slow computers)';
-  dlgEnvGrid = 'Grid';
-  dlgEnvLGuideLines = 'Guide lines';
-  dlgEnvMisc = 'Miscellaneous';
   dlgRuberbandSelectionColor = 'Rubberband Selection';
   dlgRuberbandCreationColor = 'Rubberband Creation';
   dlgRubberbandSelectsGrandChildren = 'Select grandchildren';
+  dlgSelectAllChildControls = 'Select all child controls together with their parent.';
+  dlgShowCaptionsOfNonVisuals = 'Show captions of non-visual components';
+  dlgDrawComponentsNameBelowIt = 'Draw the component''s name below it.';
+  dlgShowDesignerHints = 'Show designer hints';
+  dlgShowDesignerHintsHint = 'Hint shows control''s position or size while moving or resizing it.';
+  lisOpenDesignerOnOpenUnit = 'Open designer on open unit';
+  lisOpenDesignerOnOpenUnitHint = 'Form is loaded in designer always when source unit is opened.';
+  dlgrightClickSelects = 'Right click selects';
+  dlgComponentUnderMouseCursorIsFirstSelected = 'Component under mouse cursor '
+    +'is first selected, then the popup menu commands work on it.';
+  lisFEPaintDesignerItemsOnIdle = 'Reduce designer painting';
+  lisFEPaintDesignerItemsOnIdleHint = 'Paint designer items only on idle '
+    +'(reduce overhead for slow computers)';
+  lisAskNameOnCreate = 'Ask name on create';
+  lisAskForComponentNameAfterPuttingItOnForm = 'Ask for component '
+    +'name after putting it on a designer form.';
+  lisOFESwitchToObjectInspectorFavoritesTab = 'Switch to Object Inspector Favorites tab';
+  lisSwitchToFavoritesTabAfterAsking = 'Switch to Favorites tab after asking for component name.';
+  dlgCheckPackagesOnFormCreate = 'Check packages on form create';
+  dlgCheckPackagesOnFormCreateHint = 'The form may require a package to work. '
+    +'Install such a package automatically.';
+
+  dlgEnvGrid = 'Grid';
+  dlgEnvLGuideLines = 'Guide lines';
+  dlgEnvMisc = 'Miscellaneous';
   dlgPasExt = 'Default Pascal extension';
   dlgCharCaseFileAct = 'Save As - auto rename Pascal files lower case';
-  
   dlgAmbigFileAct = 'Ambiguous file action:';
   dlgEnvAsk = 'Ask';
   lisNever = 'Never';
@@ -5259,13 +5282,6 @@ resourcestring
   lisUseUnitInUnit = 'Use unit %s in unit %s';
   lisUseIdentifier = 'Use identifier';
   lisFindMissingUnit = 'Find missing unit';
-  lisAskNameOnCreate = 'Ask name on create';
-  lisAskForComponentNameAfterPuttingItOnForm = 'Ask for component '
-    +'name after putting it on a designer form';
-  lisOFESwitchToObjectInspectorFavoritesTab = 'Switch to Object Inspector '
-    +'Favorites tab';
-  lisOFESwitchToObjectInspectorFavoritesTabAfterAsking = 'Switch to Object '
-    +'Inspector Favorites tab after asking for component name';
   lisEmpty = 'Empty';
   lisNotAValidPascalIdentifier = 'Not a valid Pascal identifier';
   lisThereIsAlreadyAComponentWithThisName = 'There is already a component '
