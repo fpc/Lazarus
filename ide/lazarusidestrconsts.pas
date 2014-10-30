@@ -1200,8 +1200,10 @@ resourcestring
   lisInsertMacro = 'Insert Macro';
   lisCTPleaseSelectAMacro = 'please select a macro';
   dlgEnvLanguage = 'Language';
+  dlgEnvLanguageHint = 'Language of all IDE strings. Restart IDE after changing it for best result.';
   dlgAutoSave = 'Auto Save';
   lisAskBeforeSavingProjectSSession = 'Ask before saving project''s session';
+  lisIfOnlySessionInfoChangedThenAsk = 'If only the session info changed, ask about saving it.';
   dlgEdFiles = 'Editor Files';
   dlgEnvProject = 'Tabs for project';
   lisCenterALostWindow = 'Center a lost window';
@@ -1220,6 +1222,7 @@ resourcestring
   dlgLoadDFile = 'Load desktop settings from file';
   dlgSingleTaskBarButton  = 'Show single button in TaskBar';
   dlgHideIDEOnRun = 'Hide IDE windows on run';
+  dlgHideIDEOnRunHint = 'Do not show the IDE at all while program is running.';
   lisShowOnlyOneButtonInTheTaskbarForTheWholeIDEInstead = 'Show only one '
     +'button in the taskbar for the whole IDE, instead of one per window. Some'
     +' Linux Window Managers like Cinnamon do not support this and always show'

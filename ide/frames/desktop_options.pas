@@ -109,6 +109,7 @@ var
 begin
   // language
   lblLanguage.Caption := dlgEnvLanguage;
+  LanguageComboBox.Hint := dlgEnvLanguageHint;
 
   // languages: first the automatic, then sorted the rest
   sl:=TStringList.Create;
@@ -125,7 +126,8 @@ begin
 
   // auto save
   lblAutoSave.Caption := dlgAutoSave;
-  AskSavingOnlySessionCheckBox.Caption:=lisAskBeforeSavingProjectSSession;
+  AskSavingOnlySessionCheckBox.Caption := lisAskBeforeSavingProjectSSession;
+  AskSavingOnlySessionCheckBox.Hint := lisIfOnlySessionInfoChangedThenAsk;
   AutoSaveEditorFilesCheckBox.Caption := dlgEdFiles;
   AutoSaveProjectCheckBox.Caption := dlgProject;
   AutoSaveIntervalInSecsLabel.Caption := dlgIntvInSec;

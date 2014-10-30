@@ -18,7 +18,8 @@ object WindowOptionsFrame: TWindowOptionsFrame
     Top = 0
     Width = 181
     Caption = 'SingleTaskBarButtonCheckBox'
-    Enabled = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
   end
   object HideIDEOnRunCheckBox: TCheckBox
@@ -31,6 +32,8 @@ object WindowOptionsFrame: TWindowOptionsFrame
     Top = 17
     Width = 151
     Caption = 'HideIDEOnRunCheckBox'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 1
   end
   object WindowPositionsGroupBox: TGroupBox
