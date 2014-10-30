@@ -152,10 +152,10 @@ object ComponentListForm: TComponentListForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = LabelSearch
       AnchorSideTop.Side = asrCenter
-      Left = 70
-      Height = 21
+      Left = 92
+      Height = 28
       Top = 2
-      Width = 203
+      Width = 204
       OnAfterFilter = TreeFilterEdAfterFilter
       ButtonWidth = 23
       NumGlyphs = 1
