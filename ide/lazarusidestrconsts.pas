@@ -2102,32 +2102,38 @@ resourcestring
   lisCustomOptHint = 'These options are passed to the compiler after'
     +' comments are deleted and macros are replaced.';
   dlgStopAfterNrErr = 'Stop after number of errors:';
-  dlgOtherUnitFiles = 'Other unit files (-Fu) (delimiter is semicolon):';
+
+  lisApplyConventions = 'Apply conventions';
+  lisApplyConventionsHint = 'Adjust name extension and character case for platform and file type.';
+  dlgOtherUnitFiles = 'Other unit files (-Fu):';
   dlgCOIncFiles = 'Include files (-Fi):';
-  dlgCOSources = 'Other sources (.pp/.pas files, used only by IDE not by compiler)';
   dlgCOLibraries = 'Libraries (-Fl):';
+  dlgUnitOutp = 'Unit output directory (-FU):';
+  lisTargetFileNameEmptyUseUnitOutputDirectory = 'Target file name: (-o, empty = '
+    +'use unit output directory)';
+  lisTargetFileNameO = 'Target file name (-o):';
+  dlgCOSources = 'Other sources (.pp/.pas files, used only by IDE not by compiler)';
   dlgCODebugPath = 'Debugger path addition (none):';
+  lisDelimiterIsSemicolon = 'Delimiter is semicolon.';
   lisCompiler = 'Compiler';
   lisDebugger = 'Debugger';
   lisToFPCPath = 'Path:';
   lisCOSkipCallingCompiler = 'Skip calling compiler';
-  lisCOAmbiguousAdditionalCompilerConfigFile = 'Ambiguous additional compiler '
-    +'config file';
+  lisCOAmbiguousAdditionalCompilerConfigFile = 'Ambiguous additional compiler config file';
   lisCOWarningTheAdditionalCompilerConfigFileHasTheSameNa = 'Warning: The '
     +'additional compiler config file has the same name, as one of the '
     +'standard config filenames the Free Pascal compiler is looking for. This '
-    +'can result in ONLY parsing the additional config and skipping the '
-    +'standard config.';
+    +'can result in ONLY parsing the additional config and skipping the standard config.';
   lisCOClickOKIfAreSureToDoThat = '%s%sClick OK if you definitely want to do that.';
   lisCOCallOn = 'Call on:';
   dlgCOCreateMakefile = 'Create Makefile';
+  lisEnabledOnlyForPackages = 'Enabled only for packages.';
   lisCOExecuteAfter = 'Execute after';
   lisCOExecuteBefore = 'Execute before';
   lisCOCommand = 'Command:';
   lisCOScanForMessages = 'Scan for messages:';
   lisCOScanForFPCMessages = 'Scan for FPC messages';
   lisCOScanForMakeMessages = 'Scan for Make messages';
-  dlgUnitOutp = 'Unit output directory (-FU):';
   dlgCOShowOptions = '&Show Options';
   lisCompTest = '&Test';
   dlgCOLoadSaveHint = 'Compiler options can be saved to an XML file.';
@@ -2310,8 +2316,6 @@ resourcestring
   dlgPOSaveSession = 'Session';
   dlgApplicationSettings = 'Application settings';
   dlgPOTitle = 'Title:';
-  lisTargetFileNameEmptyUseUnitOutputDirectory = 'Target file name: (-o, empty = '
-    +'use unit output directory)';
   lisHint = 'Hint';
   lisNote = 'Note';
   lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh = 'The %s contains a '
@@ -2321,7 +2325,6 @@ resourcestring
   lisTheOtherSourcesContainsADirectoryWhichIsAlreadyInT = 'The "Other sources" '
     +'contains a directory which is already in the "Other unit files".%s%s';
   lisRemoveThePathsFromOtherSources = 'Remove the paths from "Other sources"';
-  lisTargetFileNameO = 'Target file name (-o):';
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (Darwin only)';
   dlgPOCreateAppBundle = 'Create Application Bundle';
   dlgPOUseManifest = 'Use manifest file to enable themes (Windows only)';
@@ -5443,7 +5446,6 @@ resourcestring
 
   //Disassembler dialog
   lisDisAssAssembler = 'Assembler';
-  lisApplyConventions = 'Apply conventions';
   lisKeepRelativeIndentationOfMultiLineTemplate = 'Keep relative indentation '
     +'of multi line template';
   lisTheCurrentFPCHasNoConfigFileItWillProbablyMissSome = 'The current FPC '

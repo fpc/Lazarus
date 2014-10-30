@@ -142,6 +142,7 @@ end;
 procedure TCompilerCompilationOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   chkCreateMakefile.Caption := dlgCOCreateMakefile;
+  chkCreateMakefile.Hint := lisEnabledOnlyForPackages;
 
   ExecuteBeforeGroupBox.Caption := lisCOExecuteBefore;
   chkExecBeforeBuild.Caption := lisBuildStage;

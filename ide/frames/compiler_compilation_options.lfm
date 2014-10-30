@@ -16,6 +16,8 @@ object CompilerCompilationOptionsFrame: TCompilerCompilationOptionsFrame
     Top = 0
     Width = 136
     Caption = 'chkCreateMakefile'
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
   end
   object ExecuteAfterGroupBox: TGroupBox

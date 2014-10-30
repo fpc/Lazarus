@@ -606,6 +606,7 @@ begin
   FDialog:=ADialog;
   ProjTargetFileEdit.Text:='';
   ProjTargetApplyConventionsCheckBox.Caption:=lisApplyConventions;
+  ProjTargetApplyConventionsCheckBox.Hint:=lisApplyConventionsHint;
 
   OtherUnitsLabel.Caption := dlgOtherUnitFiles;
   OtherUnitsPathEditBtn := TPathEditorButton.Create(Self);
@@ -624,6 +625,7 @@ begin
     TabOrder:=1;
   end;
   OtherUnitsEdit.AnchorToNeighbour(akRight, 0, OtherUnitsPathEditBtn);
+  OtherUnitsEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
@@ -644,6 +646,7 @@ begin
     TabOrder:=3;
   end;
   IncludeFilesEdit.AnchorToNeighbour(akRight, 0, IncludeFilesPathEditBtn);
+  IncludeFilesEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
@@ -664,6 +667,7 @@ begin
     TabOrder:=9;
   end;
   OtherSourcesEdit.AnchorToNeighbour(akRight, 0, OtherSourcesPathEditBtn);
+  OtherSourcesEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
@@ -684,6 +688,7 @@ begin
     TabOrder:=5;
   end;
   LibrariesEdit.AnchorToNeighbour(akRight, 0, LibrariesPathEditBtn);
+  LibrariesEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
@@ -703,6 +708,9 @@ begin
     TabOrder:=7;
   end;
   UnitOutputDirEdit.AnchorToNeighbour(akRight, 0, btnUnitOutputDir);
+  UnitOutputDirEdit.Hint := lisDelimiterIsSemicolon;
+
+  ProjTargetFileEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
@@ -723,6 +731,7 @@ begin
     TabOrder:=13;
   end;
   DebugPathEdit.AnchorToNeighbour(akRight, 0, DebugPathEditBtn);
+  DebugPathEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
