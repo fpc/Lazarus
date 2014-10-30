@@ -40,7 +40,7 @@ object EditorKeymappingOptionsFrame: TEditorKeymappingOptionsFrame
     Width = 115
     Anchors = [akTop, akRight]
     AutoSize = True
-    BorderSpacing.Left = 50
+    BorderSpacing.Left = 19
     BorderSpacing.Right = 2
     Caption = 'FindKeyButton'
     OnClick = FindKeyButtonClick
