@@ -391,8 +391,8 @@ type
           ARect: TRect; State: TOwnerDrawState);
     procedure OnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure SetIdleEvent(Enable: boolean);
-    procedure OnGridMouseWheel(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure OnGridMouseWheel(Sender: TObject; {%H-}Shift: TShiftState;
+      WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
 
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     procedure SetBackgroundColor(const AValue: TColor);
