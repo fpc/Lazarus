@@ -92,9 +92,9 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object InstalledFilterEdit: TTreeFilterEdit
       AnchorSideTop.Control = InstallPkgGroupBox
       Left = 8
-      Height = 25
+      Height = 28
       Top = 3
-      Width = 253
+      Width = 276
       ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
@@ -165,14 +165,13 @@ object InstallPkgSetDialog: TInstallPkgSetDialog
     object AvailableFilterEdit: TTreeFilterEdit
       AnchorSideTop.Control = AvailablePkgGroupBox
       Left = 6
-      Height = 25
+      Height = 28
       Top = 3
-      Width = 255
+      Width = 279
       ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 3
-      Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
