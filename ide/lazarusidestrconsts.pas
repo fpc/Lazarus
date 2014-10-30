@@ -973,11 +973,11 @@ resourcestring
   lisDestinationDirectory = 'Destination directory';
   lisCommandAfter = 'Command after';
   lisChooseLazarusSourceDirectory = 'Choose Lazarus Directory';
-  lisChooseCompilerPath = 'Choose compiler filename (%s)';
+  lisChooseCompilerExecutable = 'Choose compiler executable (%s)';
   lisChooseFPCSourceDir = 'Choose FPC source directory';
   lisChooseCompilerMessages = 'Choose compiler messages file';
-  lisChooseMakePath = 'Choose make path';
-  lisChooseDebuggerPath = 'Choose debugger filename';
+  lisChooseMakeExecutable = 'Choose "make" executable';
+  lisChooseDebuggerExecutable = 'Choose debugger executable';
   lisChooseTestBuildDir = 'Choose the directory for tests';
   lisLazarusDesktopSettings = 'Lazarus Desktop Settings';
   lisXMLFiles = 'XML files';
@@ -1275,9 +1275,9 @@ resourcestring
   dlgMaxRecentProjs = 'Max recent project files';
   dlgQOpenLastPrj = 'Open last project at start';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
-  dlgFpcPath = 'Compiler path (e.g. %s)';
+  dlgFpcExecutable = 'Compiler executable (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
-  dlgMakePath = 'Make path';
+  dlgMakeExecutable = '"Make" executable';
   dlgCompilerMessages = 'Compiler messages language file (*.msg)';
   lisSetThisToTranslateTheCompilerMessagesToAnotherLang = 'Set this to '
     +'translate the compiler messages to another language (i.e. not English). '

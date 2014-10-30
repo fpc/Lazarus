@@ -121,10 +121,9 @@ begin
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     // set title
     if Sender=CompilerPathButton then
-      OpenDialog.Title:=
-                      Format(lisChooseCompilerPath,[GetDefaultCompilerFilename])
+      OpenDialog.Title:=Format(lisChooseCompilerExecutable,[GetDefaultCompilerFilename])
     else if Sender=MakePathButton then
-      OpenDialog.Title:=lisChooseMakePath
+      OpenDialog.Title:=lisChooseMakeExecutable
     else
       exit;
 
@@ -232,9 +231,9 @@ begin
     EndUpdate;
   end;
 
-  CompilerPathLabel.Caption:=Format(dlgFpcPath,[GetDefaultCompilerFilename]);
+  CompilerPathLabel.Caption:=Format(dlgFpcExecutable,[GetDefaultCompilerFilename]);
   FPCSourceDirLabel.Caption:=dlgFpcSrcPath;
-  MakePathLabel.Caption:=dlgMakePath;
+  MakePathLabel.Caption:=dlgMakeExecutable;
   with MakePathComboBox.Items do
   begin
     BeginUpdate;

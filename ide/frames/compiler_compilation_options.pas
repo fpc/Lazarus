@@ -87,7 +87,7 @@ begin
     // set title
     if Sender=BrowseCompilerButton then begin
       Combo:=cobCompiler;
-      OpenDialog.Title:=Format(lisChooseCompilerPath,[GetDefaultCompilerFilename])
+      OpenDialog.Title:=Format(lisChooseCompilerExecutable,[GetDefaultCompilerFilename])
     end else if (Sender=ExecAfterBrowseButton) then begin
       Combo:=ExecuteAfterCommandComboBox;
       OpenDialog.Title:='Choose an executable';

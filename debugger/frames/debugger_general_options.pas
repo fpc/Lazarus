@@ -109,7 +109,7 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
-    OpenDialog.Title:=lisChooseDebuggerPath;
+    OpenDialog.Title:=lisChooseDebuggerExecutable;
 
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
