@@ -15,7 +15,7 @@ object ViewUnitDialog: TViewUnitDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object Listbox: TListBox
     Left = 6
     Height = 278
@@ -85,16 +85,15 @@ object ViewUnitDialog: TViewUnitDialog
       AnchorSideTop.Control = SortAlphabeticallySpeedButton
       AnchorSideTop.Side = asrCenter
       Left = 22
-      Height = 25
-      Top = 2
-      Width = 328
+      Height = 28
+      Top = 0
+      Width = 349
       ButtonWidth = 23
       NumGlyphs = 1
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 6
       BorderSpacing.Top = 6
       BorderSpacing.Bottom = 6
-      Font.Color = clBtnShadow
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
