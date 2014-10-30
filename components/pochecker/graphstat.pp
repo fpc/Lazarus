@@ -367,14 +367,14 @@ begin
   PageIndex:= -1;
   WindowIndex:= -1;
   OpenFlags:= [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros];
-  mr := LazarusIde.DoOpenEditorFile(Fn,PageIndex,WindowIndex,OpenFlags);
-  if mr = mrOk then begin
-    if MessageDlg('PoChecker',Format(sOpenFile,[Fn]),
-       mtConfirmation,mbOKCancel,0) = mrOk then begin
-         ModalResult:= mrOpenEditorFile; //To let caller know what we want to do
-       end;
-    end
-  else ShowMessage(Format(SOpenFail,[Fn]));
+  if MessageDlg('PoChecker',Format(sOpenFile,[Fn]), mtConfirmation,mbOKCancel,0) = mrOk then
+  begin
+    mr := LazarusIde.DoOpenEditorFile(Fn,PageIndex,WindowIndex,OpenFlags);
+    if mr = mrOk then
+      ModalResult:= mrOpenEditorFile //To let caller know what we want to do
+    else
+      ShowMessage(Format(SOpenFail,[Fn]));
+  end;
   {$endif}
 end;
 
