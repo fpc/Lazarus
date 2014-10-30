@@ -54,18 +54,26 @@ end;
 procedure TProjectMiscOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   MainUnitIsPascalSourceCheckBox.Caption := lisMainUnitIsPascalSource;
+  MainUnitIsPascalSourceCheckBox.Hint := lisMainUnitIsPascalSourceHint;
   MainUnitHasUsesSectionForAllUnitsCheckBox.Caption := lisMainUnitHasUsesSectionContainingAllUnitsOfProject;
+  MainUnitHasUsesSectionForAllUnitsCheckBox.Hint := lisNewUnitsAreAddedToUsesSections;
   MainUnitHasCreateFormStatementsCheckBox.Caption := lisMainUnitHasApplicationCreateFormStatements;
+  MainUnitHasCreateFormStatementsCheckBox.Hint := lisUsedForAutoCreatedForms;
   MainUnitHasTitleStatementCheckBox.Caption := lisMainUnitHasApplicationTitleStatements;
+  MainUnitHasTitleStatementCheckBox.Hint := lisIdeMaintainsTheTitleInMainUnit;
   RunnableCheckBox.Caption := lisProjectIsRunnable;
+  RunnableCheckBox.Hint := lisProjectIsRunnableHint;
   UseDesignTimePkgsCheckBox.Caption := lisUseDesignTimePackages;
+  UseDesignTimePkgsCheckBox.Hint := lisThisIsTestProjectForDesignTimePackage;
   AlwaysBuildCheckBox.Caption := lisProjOptsAlwaysBuildEvenIfNothingChanged;
+  AlwaysBuildCheckBox.Hint := lisProjOptsAlwaysBuildHint;
   LRSInOutputDirCheckBox.Caption := lisPutLrsFilesInOutputDirectory;
+  LRSInOutputDirCheckBox.Hint := lisPutLrsFilesInOutputDirectoryHint;
   ResourceGroupBox.Caption := lisResourceTypeOfNewFiles;
   UseLRSFilesRadioButton.Caption := lisLrsIncludeFiles;
-  UseLRSFilesRadioButton.Hint := lisAutomaticallyConvertLfmFilesToLrsIncludeFiles;
+  UseLRSFilesRadioButton.Hint := lisAutomaticallyConvertLfmToLrs;
   UseFPCResourcesRadioButton.Caption := lisFPCResources;
-  UseFPCResourcesRadioButton.Hint := lisRequiresFPC24OrAboveLikeDelphiResources;
+  UseFPCResourcesRadioButton.Hint := lisDelphiCompatibleResources;
   PathDelimLabel.Caption:=lisStorePathDelimitersAndAs;
   PathDelimComboBox.Items.Text:=lisDoNotChange+LineEnding
                                +lisChangeToUnix+LineEnding

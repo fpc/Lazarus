@@ -2363,13 +2363,32 @@ resourcestring
     +'.lps is a separate file for session data only.';
 
   lisMainUnitIsPascalSource = 'Main unit is Pascal source';
+  lisMainUnitIsPascalSourceHint = 'Assume Pascal even if it does not end with .pas/.pp suffix.';
   lisMainUnitHasUsesSectionContainingAllUnitsOfProject = 'Main unit has Uses '
     +'section containing all units of project';
   lisMainUnitHasApplicationCreateFormStatements = 'Main unit has Application.CreateForm statements';
+  lisUsedForAutoCreatedForms = 'Used for auto-created forms.';
   lisMainUnitHasApplicationTitleStatements = 'Main unit has Application.Title statements';
+  lisIdeMaintainsTheTitleInMainUnit = 'The IDE maintains the title in main unit.';
   lisProjectIsRunnable = 'Project is runnable';
-  lisProjOptsAlwaysBuildEvenIfNothingChanged = 'Always build (even if nothing changed)';
+  lisProjectIsRunnableHint = 'Generates a binary executable which can be run.';
   lisUseDesignTimePackages = 'Use design time packages';
+  lisThisIsTestProjectForDesignTimePackage = 'This is a test project for a '
+    +'design time package, testing it outside the IDE.';
+  lisProjOptsAlwaysBuildEvenIfNothingChanged = 'Always build (even if nothing changed)';
+  lisProjOptsAlwaysBuildHint = 'May be needed if there is a bug in dependency check, normally not needed.';
+  lisPutLrsFilesInOutputDirectory = 'Save .lrs files in the output directory';
+  lisPutLrsFilesInOutputDirectoryHint = 'The resource will be available for FPC.';
+  lisResourceTypeOfNewFiles = 'Resource type of project';
+  lisLrsIncludeFiles = 'Lazarus resources (.lrs) include files';
+  lisAutomaticallyConvertLfmToLrs = 'Automatically convert .lfm files to .lrs resource files';
+  lisFPCResources = 'FPC resources (.res)';
+  lisDelphiCompatibleResources = 'Delphi compatible resources. Recommended.';
+  lisStorePathDelimitersAndAs = 'Store path delimiters \ and / as';
+  lisDoNotChange = 'Do not change';
+  lisChangeToUnix = 'Change to Unix /';
+  lisChangeToWindows = 'Change to Windows \';
+
   dlgRunParameters = 'Run Parameters';
   dlgRunOLocal = 'Local';
   dlgRunOEnvironment = 'Environment';
@@ -5094,16 +5113,6 @@ resourcestring
   lisSelectedTopNeighbour = '(selected top neighbour)';
   lisSelectedBottomNeighbour = '(selected bottom neighbour)';
 
-  lisPutLrsFilesInOutputDirectory = 'Save .lrs files in the output directory';
-  lisLrsIncludeFiles = 'lrs include files';
-  lisResourceTypeOfNewFiles = 'Resource type of project';
-  lisAutomaticallyConvertLfmFilesToLrsIncludeFiles = 'Automatically convert .lfm files to .lrs include files';
-  lisFPCResources = 'FPC resources';
-  lisRequiresFPC24OrAboveLikeDelphiResources = 'Requires FPC 2.4 or above. Like Delphi resources';
-  lisStorePathDelimitersAndAs = 'Store path delimiters \ and / as';
-  lisDoNotChange = 'Do not change';
-  lisChangeToUnix = 'Change to Unix /';
-  lisChangeToWindows = 'Change to Windows \';
   lisAction = 'Action:';
   lisValues = 'Values';
   lisIDEMacros = 'IDE Macros';
