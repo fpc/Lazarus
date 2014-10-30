@@ -969,7 +969,7 @@ function TDesignerMainMenu.MoveToNewLocation(DMenuItem, DDestMenuItem: TDesigner
     end;
   end;
 
-  // Find the whole submenu that ATemp belongs to and recalculate the .indexs
+  // Find the whole submenu that ATemp belongs to and recalculate the .index
   procedure RecalcIndexes(DSubMenuItem: TDesignerMenuItem);
   var
     i : Integer;
