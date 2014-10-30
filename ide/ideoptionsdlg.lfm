@@ -84,9 +84,9 @@ object IDEOptionsDialog: TIDEOptionsDialog
       AnchorSideTop.Control = CategoryPanel
       AnchorSideRight.Side = asrBottom
       Left = 6
-      Height = 25
+      Height = 28
       Top = 6
-      Width = 200
+      Width = 249
       OnFilterItem = FilterEditFilterItem
       UseFormActivate = True
       ButtonWidth = 23
