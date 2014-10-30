@@ -246,9 +246,9 @@ object PackageEditorForm: TPackageEditorForm
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Side = asrBottom
       Left = 163
-      Height = 25
-      Top = 2
-      Width = 278
+      Height = 28
+      Top = 0
+      Width = 300
       UseFormActivate = True
       ButtonWidth = 23
       NumGlyphs = 1
