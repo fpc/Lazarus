@@ -536,7 +536,7 @@ begin
       teTreeview: DrawTreeviewElement(Context, Details, R, ClipRect);
 //      teWindow: DrawWindowElement(Context, Details, R, ClipRect);
     else
-      inherited DrawElement(DC, Details, R, ClipRect);
+      //inherited DrawElement(DC, Details, R, ClipRect); this generates an endless loop
     end;
   end;
 end;

@@ -62,7 +62,7 @@ begin
   Result := TLCLIntfHandle(lSpin);
   if Result = 0 then Exit;
 
-  //lSpin.callback := TLCLCommonCallback.Create(Result, ATarget);
+  lSpin.callback := TLCLCommonCallback.Create(lSpin, AWinControl);
   lSpin.CreateSubcontrols(TCustomFloatSpinEdit(AWinControl), AParams);
   lSpin.UpdateControl(TCustomFloatSpinEdit(AWinControl));
 end;
