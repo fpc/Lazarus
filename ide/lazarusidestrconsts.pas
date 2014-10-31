@@ -1380,16 +1380,28 @@ resourcestring
   dlgOISpeedSettings = 'Speed settings';
   dlgOIOptions = 'Options';
   dlgOIItemHeight = 'Item height';
+  dlgHeightOfOnePropertyInGrid = 'Height of one property in the grid.';
   dlgOIUseDefaultLazarusSettings = 'Use default Lazarus settings';
   dlgOIUseDefaultDelphiSettings = 'Use default Delphi settings';
   lisShowComponentTreeInObjectInspector = 'Show component tree';
+  lisShowsAllControlsInTreeHierarchy = 'Shows all controls in tree hierarchy.';
   lisShowHintsInObjectInspector = 'Show hints';
+  lisHintAtPropertysNameShowsDescription = 'A hint at property''s name shows its description.';
   lisAutoShowObjectInspector = 'Auto show';
+  lisObjectInspectorBecomesVisible = 'Object Inspector becomes visible '
+    +'when components are selected in designer.';
   lisBoldNonDefaultObjectInspector = 'Bold non default values';
+  lisValuesThatAreChangedFromDefault = 'Values that are changed from the default '
+    +'are stored in .lfm file and are shown differently in Object Inspector.';
   lisDrawGridLinesObjectInspector = 'Draw grid lines';
+  lisHorizontalLinesBetweenProperties = 'Horizontal lines between properties.';
   lisShowGutterInObjectInspector = 'Show gutter';
-  lisShowStatusBarInObjectInspector = 'Show status bar';
+  lisShowStatusBarInObjectInspector = 'Show statusbar';
+  lisStatusBarShowsPropertysNameAndClass = 'Statusbar shows the property''s '
+    +'name and the class where it is published.';
   lisShowInfoBoxInObjectInspector = 'Show information box';
+  lisShowsDescriptionForSelectedProperty = 'A box at the bottom shows '
+    +'description for the selected property.';
   dlgEnvBackupHelpNote = 'Notes: Project files are all files in the project directory';
   lisEnvOptDlgInvalidDebuggerFilename = 'Invalid debugger filename';
   lisEnvOptDlgInvalidDebuggerFilenameMsg = 'The debugger file "%s" is not an executable.';

@@ -172,16 +172,24 @@ begin
   OIOptionsGroupBox.Caption := dlgOIOptions;
   ObjectInspectorSpeedSettingsGroupBox.Caption := dlgOISpeedSettings;
   OIDefaultItemHeightLabel.Caption := dlgOIItemHeight;
+  OIDefaultItemHeightSpinEdit.Hint := dlgHeightOfOnePropertyInGrid;
 
   OIShowComponentTreeCheckBox.Caption := lisShowComponentTreeInObjectInspector;
-  OIShowHintCheckBox.Caption := lisShowHintsInObjectInspector;
+  OIShowComponentTreeCheckBox.Hint := lisShowsAllControlsInTreeHierarchy;
   OIShowInfoBoxCheckBox.Caption := lisShowInfoBoxInObjectInspector;
+  OIShowInfoBoxCheckBox.Hint := lisShowsDescriptionForSelectedProperty;
   OIShowStatusBarCheckBox.Caption := lisShowStatusBarInObjectInspector;
+  OIShowStatusBarCheckBox.Hint := lisStatusBarShowsPropertysNameAndClass;
+  OIShowHintCheckBox.Caption := lisShowHintsInObjectInspector;
+  OIShowHintCheckBox.Hint := lisHintAtPropertysNameShowsDescription;
 
   OIAutoShowCheckBox.Caption := lisAutoShowObjectInspector;
+  OIAutoShowCheckBox.Hint := lisObjectInspectorBecomesVisible;
   OIBoldNonDefaultCheckBox.Caption := lisBoldNonDefaultObjectInspector;
+  OIBoldNonDefaultCheckBox.Hint := lisValuesThatAreChangedFromDefault;
   OIShowGutterCheckBox.Caption := lisShowGutterInObjectInspector;
   OIDrawGridLinesCheckBox.Caption := lisDrawGridLinesObjectInspector;
+  OIDrawGridLinesCheckBox.Hint := lisHorizontalLinesBetweenProperties;
 
   BtnUseDefaultLazarusSettings.Caption := dlgOIUseDefaultLazarusSettings;
   BtnUseDefaultDelphiSettings.Caption := dlgOIUseDefaultDelphiSettings;
