@@ -41,7 +41,6 @@ type
 
   TMsgWndOptionsFrame = class(TAbstractIDEOptionsEditor)
     MWAlwaysDrawFocusedCheckBox: TCheckBox;
-    MWDblClickJumpsCheckBox: TCheckBox;
     MWFocusCheckBox: TCheckBox;
     MWHideIconsCheckBox: TCheckBox;
     MWMaxProcsLabel: TLabel;
@@ -156,7 +155,6 @@ begin
   MWAlwaysDrawFocusedCheckBox.Caption:=lisAlwaysDrawSelectedItemsFocused;
   MWAlwaysDrawFocusedCheckBox.Hint:=
     lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN;
-  MWDblClickJumpsCheckBox.Caption:=lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick;
   MWFocusCheckBox.Caption:=dlgEOFocusMessagesAfterCompilation;
   MWMaxProcsLabel.Caption:=Format(lisMaximumParallelProcesses0MeansDefault, [
     IntToStr(DefaultMaxProcessCount)]);
@@ -184,10 +182,8 @@ begin
     MWColorListBox.Colors[ord(c)] := o.MsgViewColors[c];
   MWHideIconsCheckBox.Checked := o.HideMessagesIcons;
   MWAlwaysDrawFocusedCheckBox.Checked := o.MsgViewAlwaysDrawFocused;
-  MWDblClickJumpsCheckBox.Checked:=o.MsgViewDblClickJumps;
-  MWFocusCheckBox.Checked:=o.MsgViewFocus;
-  MWMaxProcsSpinEdit.Value:=o.MaxExtToolsInParallel;
-
+  MWFocusCheckBox.Checked := o.MsgViewFocus;
+  MWMaxProcsSpinEdit.Value := o.MaxExtToolsInParallel;
   fReady:=true;
 end;
 
@@ -201,7 +197,6 @@ begin
     o.MsgViewColors[c] := MWColorListBox.Colors[ord(c)];
   o.HideMessagesIcons := MWHideIconsCheckBox.Checked;
   o.MsgViewAlwaysDrawFocused := MWAlwaysDrawFocusedCheckBox.Checked;
-  o.MsgViewDblClickJumps := MWDblClickJumpsCheckBox.Checked;
   o.MsgViewFocus := MWFocusCheckBox.Checked;
   o.MaxExtToolsInParallel := MWMaxProcsSpinEdit.Value;
 end;

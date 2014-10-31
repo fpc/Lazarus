@@ -1132,7 +1132,6 @@ resourcestring
   dlgGroupCodetools = 'Codetools';
   dlgGroupCodeExplorer = 'Code Explorer';
   dlgGroupDebugger = 'Debugger';
-
   // Options dialog
   dlgIDEOptions = 'IDE Options';
   dlgBakNoSubDirectory = '(no subdirectory)';
@@ -1140,9 +1139,10 @@ resourcestring
   lisMaximumParallelProcesses0MeansDefault = 'Maximum parallel processes, 0 '
     +'means default (%s)';
   lisMessagesWindow = 'Messages Window';
-  lisCheckForDiskFileChangesViaContentRatherThanTimesta = 'Check for disk file'
-    +' changes via content rather than timestamp';
-  
+  lisCheckForDiskFileChangesViaContent = 'Check for disk file changes via content '
+    +'rather than timestamp';
+  lisSlowerButMoreAccurate = 'Slower but more accurate.';
+
   // Search dialog
   dlgSearchCaption = 'Searching ...';
   dlgSearchAbort = 'Search terminated by user.';
@@ -1199,12 +1199,6 @@ resourcestring
   lisCMParameter = 'Parameter';
   lisInsertMacro = 'Insert Macro';
   lisCTPleaseSelectAMacro = 'please select a macro';
-  dlgEnvLanguage = 'Language';
-  dlgEnvLanguageHint = 'Language of all IDE strings. Restart IDE after changing it for best result.';
-  dlgAutoSave = 'Auto Save';
-  lisAskBeforeSavingProjectSSession = 'Ask before saving project''s session';
-  lisIfOnlySessionInfoChangedThenAsk = 'If only the session info changed, ask about saving it.';
-  dlgEdFiles = 'Editor Files';
   dlgEnvProject = 'Tabs for project';
   lisCenterALostWindow = 'Center a lost window';
   lisNumberOfFilesToConvert = 'Number of files to convert: %s';
@@ -1216,10 +1210,31 @@ resourcestring
   lisFilesNotInASCIINorUTF8Encoding = 'Files not in ASCII nor UTF-8 encoding';
   podAddPackageUnitToUsesSection = 'Add package unit to uses section';
   lisCodeBrowser = 'Code Browser';
+
+  // Desktop options
+  dlgEnvLanguage = 'Language';
+  dlgEnvLanguageHint = 'Language of all IDE strings. Restart IDE after changing it for best result.';
+  dlgCheckAndAutoSaveFiles = 'Check and Auto Save Files';
+  lisAskBeforeSavingProjectSSession = 'Ask before saving project''s session';
+  lisIfOnlySessionInfoChangedThenAsk = 'If only the session info changed, ask about saving it.';
+  dlgEdFiles = 'Editor Files';
   dlgIntvInSec = 'Interval in secs';
   dlgDesktopFiles = 'Desktop Files';
   dlgSaveDFile = 'Save desktop settings to file';
   dlgLoadDFile = 'Load desktop settings from file';
+  dlgDesktopHints = 'Hints';
+  dlgDesktopButtons = 'Buttons - ';
+  dlgDesktopMenus = 'Menus - ';
+  dlgPalHints = 'Hints for component palette';
+  dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
+  dlgMouseAction = 'Mouse Action';
+  dlgPreferDoubleClickOverSingleClick = 'Prefer double-click over single-click';
+  dlgCurrentlyRespectedByMessagesWindow = 'Currently respected by messages window, '
+    +'jump history and search results.';
+  lisSavedSuccessfully = 'Saved successfully';
+  lisLoadedSuccessfully = 'Loaded successfully';
+
+  // Window options
   dlgSingleTaskBarButton  = 'Show single button in TaskBar';
   dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgHideIDEOnRunHint = 'Do not show the IDE at all while program is running.';
@@ -1227,29 +1242,11 @@ resourcestring
     +'button in the taskbar for the whole IDE, instead of one per window. Some'
     +' Linux Window Managers like Cinnamon do not support this and always show'
     +' one button per window.';
-  dlgHideMessagesIcons = 'Hide Messages Icons';
-  lisAlwaysDrawSelectedItemsFocused = 'Always draw selected items focused';
-  lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN = 'Draw the selection '
-    +'focused, even if the Messages window has no focus. Use this if your '
-    +'theme has a hardly visible unfocused drawing.';
-  lisEditorColors = 'Editor Colors';
   lisIDETitleStartsWithProjectName = 'IDE title starts with project name';
   lisIDETitleShowsProjectDir = 'IDE title shows project directory';
   lisIDETitleShowsBuildMode = 'IDE title shows selected build mode';
   lisWindowMenuWithNameForDesignedForm = 'Window menu shows designed form''s name instead of caption';
   lisWindowMenuWithNameForDesignedFormHint = 'Useful especially if the caption is left empty.';
-  dlgDesktopHints = 'Hints';
-  dlgPalHints = 'Hints for component palette';
-  dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
-  dlgDesktopButtons = 'Buttons - ';
-  dlgDesktopMenus = 'Menus - ';
-
-  dlgDesktopMisc = 'Misc Options';
-  lisSavedSuccessfully = 'Saved successfully';
-  lisLoadedSuccessfully = 'Loaded successfully';
-
-  lisEnvJumpFromMessageToSrcOnDblClickOtherwiseSingleClick = 'Jump from '
-    +'message to source line on double click (otherwise: single click)';
   dlgWinPos = 'Window positions';
   lisTitleInTaskbarShowsForExampleProject1LpiLazarus = 'Title in taskbar '
     +'shows for example: project1.lpi - Lazarus';
@@ -1257,6 +1254,14 @@ resourcestring
     +'shows for example: project1.lpi - Release - Lazarus';
   lisProjectDirectoryIsShowedInIdeTitleBar = 'Title in taskbar '
     +'shows also directory path of the project';
+
+  // Message window options
+  dlgHideMessagesIcons = 'Hide Messages Icons';
+  lisAlwaysDrawSelectedItemsFocused = 'Always draw selected items focused';
+  lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN = 'Draw the selection '
+    +'focused, even if the Messages window has no focus. Use this if your '
+    +'theme has a hardly visible unfocused drawing.';
+  lisEditorColors = 'Editor Colors';
 
   dlgMainMenu = 'Main Menu';
   dlgSrcEdit = 'Source Editor';
@@ -5329,7 +5334,7 @@ resourcestring
   lisImpossible = 'Impossible';
   lisAProjectUnitCanNotBeUsedByOtherPackagesProjects = 'A project unit can '
     +'not be used by other packages/projects';
-  lisShowGlyphsFor = 'Show Glyphs for:';
+  lisShowGlyphsFor = 'Show Glyphs for';
   lisDirectoryNotWritable = 'Directory not writable';
   lisTheDirectoryIsNotWritable = 'The directory "%s" is not writable.';
   lisBuildingLazarusFailed = 'Building Lazarus failed';

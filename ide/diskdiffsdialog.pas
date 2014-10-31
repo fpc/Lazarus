@@ -351,7 +351,7 @@ begin
   DiffSynEdit.Lines.Text:=lisDiskDiffClickOnOneOfTheAboveItemsToSeeTheDiff;
   RevertAllButton.Caption:=lisDiskDiffRevertAll;
   IgnoreDiskChangesButton.Caption:=lisDiskDiffIgnoreDiskChanges;
-  CheckDiskChangesWithLoadingCheckBox.Caption:=lisCheckForDiskFileChangesViaContentRatherThanTimesta;
+  CheckDiskChangesWithLoadingCheckBox.Caption:=lisCheckForDiskFileChangesViaContent;
   CheckDiskChangesWithLoadingCheckBox.Checked:=EnvironmentOptions.CheckDiskChangesWithLoading;
 end;
 
