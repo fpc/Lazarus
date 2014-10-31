@@ -1033,14 +1033,23 @@ begin
 end;
 
 class function TWinCEWSMenuItem.SetCheck(const AMenuItem: TMenuItem; const Checked: boolean): boolean;
+const
+  uCheck: array[boolean] of uInt = (mf_Unchecked, mf_Checked);
 var
-  uCheck: UINT;
+  Sibling: TMenuItem;
 begin
-  if Checked then
-    uCheck := MF_CHECKED
-  else
-    uCheck := MF_UNCHECKED;
-  Result := Boolean(Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, uCheck));
+  with AMenuItem do
+    if not radioItem or (groupIndex=0) then
+      result := longBool(CheckMenuItem(AMenuItem.Parent.handle,
+        AMenuItem.Command, uCheck[checked]))
+    else if checked then
+    begin
+      result := CheckMenuRadioItem(AMenuItem.Parent.handle,
+        AMenuItem.Command, AMenuItem.Command, AMenuItem.Command, mf_ByCommand);
+      for Sibling in AMenuItem.Parent do
+        if Sibling.radioItem and (Sibling.groupIndex=groupIndex) and (Sibling<>AMenuItem) then
+          CheckMenuRadioItem(AMenuItem.Parent.handle, Sibling.command, Sibling.command, command, mf_ByCommand);
+    end;
 end;
 
 class procedure TWinCEWSMenuItem.SetShortCut(const AMenuItem: TMenuItem; const ShortCutK1, ShortCutK2: TShortCut);
