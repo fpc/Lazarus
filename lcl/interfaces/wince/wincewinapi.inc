@@ -754,12 +754,13 @@ begin
   LB.lbHatch := LogBrush.lbHatch;
   //DebugLn(Format('Trace:> [TWinCEWidgetSet.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
 
-  if lb.lbStyle= BS_NULL then
-    Result := Windows.GetStockObject(NULL_BRUSH)
-  else if lb.lbStyle = BS_DIBPATTERNPT then
-    Result := CreateDIBPatternBrushPt(pointer(lb.lbHatch), lb.lbColor)
+  case lb.lbStyle of
+    BS_NULL: Result := Windows.GetStockObject(NULL_BRUSH);
+    BS_DIBPATTERNPT: Result := CreateDIBPatternBrushPt(pointer(lb.lbHatch), lb.lbColor);
+    BS_PATTERN: Result := CreatePatternBrush(lb.lbHatch);
   else { lb.lbStyle = BS_SOLID }
-    Result := Windows.CreateSolidBrush(LB.lbColor);
+    Result := Windows.CreateSolidBrush(LB.lbColor)
+  end
 
   //DebugLn(Format('Trace:< [TWinCEWidgetSet.CreateBrushIndirect] Got --> %x', [Result]));
 end;
