@@ -863,11 +863,20 @@ begin
 end;
 
 class procedure TWinCEWSCustomListView.SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList);
+  const
+    LIST_MAP: array[TListViewImageList] of WPARAM = (
+     {lvilSmall} LVSIL_SMALL,
+     {lvilLarge} LVSIL_NORMAL,
+     {lvilState} LVSIL_STATE
+    );
 begin
   if not WSCheckHandleAllocated(ALV, 'SetImageList')
   then Exit;
   
-  //TODO: implement imagelist
+  if AValue <> nil then
+    SendMessage(ALV.Handle, LVM_SETIMAGELIST, LIST_MAP[AList], AValue.Reference._Handle)
+  else
+    SendMessage(ALV.Handle, LVM_SETIMAGELIST, LIST_MAP[AList], 0);
 end;
 
 class procedure TWinCEWSCustomListView.SetItemsCount(const ALV: TCustomListView; const AValue: Integer);
