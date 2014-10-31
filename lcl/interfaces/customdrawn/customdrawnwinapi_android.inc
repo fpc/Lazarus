@@ -4796,11 +4796,11 @@ begin
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, -1);
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton2, -1);
   javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton3, -1);
-  case utype of
+  case utype and $F of
     MB_OK:
     begin
       // button1
-      BtnText := RemoveAccelChars(rsMbYes);
+      BtnText := RemoveAccelChars(rsMbOK);
       lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
       javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton1str, lJavaString);
       javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, IDOK);
@@ -4808,7 +4808,7 @@ begin
     MB_OKCANCEL:
     begin
       // button1
-      BtnText := RemoveAccelChars(rsMbYes);
+      BtnText := RemoveAccelChars(rsMbOK);
       lJavaString :=javaEnvRef^^.NewStringUTF(javaEnvRef, PChar(BtnText));
       javaEnvRef^^.SetObjectField(javaEnvRef, javaActivityObject, JavaField_lclbutton1str, lJavaString);
       javaEnvRef^^.SetIntField(javaEnvRef, javaActivityObject, JavaField_lclbutton1, IDOK);
