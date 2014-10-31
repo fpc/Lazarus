@@ -10,6 +10,8 @@ unit svgvectorialwriter;
 
 {$mode objfpc}{$H+}
 
+{.$define FPVECTORIAL_SVGWRITER_TEXT_OFFSET}
+
 interface
 
 uses
@@ -254,8 +256,14 @@ begin
   SVGFontFamily := 'Arial, sans-serif';//lText.FontName;
 
   AStrings.Add('  <text ');
+  // Discussion about this offset in bugs 22091 and 26817
+  {$IFDEF FPVECTORIAL_SVGWRITER_TEXT_OFFSET}
   AStrings.Add('    x="' + FloatToStr(PtX+0.5*lText.Font.Size, FPointSeparator) + '"');
   AStrings.Add('    y="' + FloatToStr(PtY-6.0*lText.Font.Size, FPointSeparator) + '"');
+  {$ELSE}
+  AStrings.Add('    x="' + FloatToStr(PtX, FPointSeparator) + '"');
+  AStrings.Add('    y="' + FloatToStr(PtY, FPointSeparator) + '"');
+  {$ENDIF}
 //    AStrings.Add('    font-size="' + IntToStr(FontSize) + '"'); Doesn't seam to work, we need to use the tspan
   AStrings.Add('    font-family="' + SVGFontFamily + '">');
   AStrings.Add('    <tspan ');
