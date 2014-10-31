@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-28 02:26+0300\n"
+"PO-Revision-Date: 2014-10-31 03:50+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgstr "После h2pas"
 
 #: h2passtrconsts.h2pambiguousmerges
 msgid "Ambiguous merges:%s%s"
-msgstr "Неоднозначные попытки объединения:%s%s"
+msgstr "Неоднозначные попытки слияния:%s%s"
 
 #: h2passtrconsts.h2pbeforeh2pas
 msgid "Before h2pas"
@@ -332,15 +332,15 @@ msgstr "-l  Имя библиотеки"
 
 #: h2passtrconsts.h2pmergeallbutthis
 msgid "Merge all but this"
-msgstr "Объединить остальные"
+msgstr "Слить все остальные"
 
 #: h2passtrconsts.h2pmergedinto
 msgid "Merged into: %s"
-msgstr "Объединено в: %s"
+msgstr "Слито в: %s"
 
 #: h2passtrconsts.h2pmergefile
 msgid "Merge file"
-msgstr "Объединить файлы"
+msgstr "Слить файлы"
 
 #: h2passtrconsts.h2pmovedown
 msgid "Move down"
@@ -408,7 +408,7 @@ msgstr "Перезаписать"
 
 #: h2passtrconsts.h2ppleaseenableatleastonecheaderfilethatisnotmerged
 msgid "Please enable at least one c header file that is not merged."
-msgstr "Выберите хотя бы один ещё не объединённый заголовочный файл C."
+msgstr "Выберите хотя бы один ещё не слитый заголовочный файл C."
 
 #: h2passtrconsts.h2pposth2pasasetofcommontoolstorunafterh2pasphreplace
 msgid "Post H2Pas - a set of common tools to run after h2pas%sphReplaceUnitFilenameWithUnitName - Replace \"unit filename;\" with \"unit name;\"%sphRemoveIncludeDirectives - Remove include directivesphRemoveSystemTypes - Remove type redefinitons like PLongint%sphFixH2PasMissingIFDEFsInUnit - add missing IFDEFs for function bodies%sphReduceCompilerDirectivesInUnit - removes unneeded directives%sphRemoveRedefinedPointerTypes - Remove redefined pointer types%sphRemoveEmptyTypeVarConstSections - Remove empty type/var/const sections%sphReplaceImplicitTypes - Search implicit types in parameters and add types for them%sphFixArrayOfParameterType - Replace \"array of )\" with \"array of const)\"%sphRemoveRedefinitionsInUnit - Removes redefinitions of types, variables, constants and resourcestrings%sphFixAliasDefinitionsInUnit - fix section type of alias definitions%sphReplaceConstFunctionsInUnit - replace simple assignment functions with constants%sphReplaceTypeCastFunctionsInUnit - replace simple type cast functions with types%sphFixForwardDefinitions - fix forward definitions by reordering%sphAddUnitsToUsesSection - add units to uses section%s"
@@ -596,7 +596,7 @@ msgstr "Невозможно скопировать файл \"%s\"%sв \"%s\""
 
 #: h2passtrconsts.h2punabletomergefileinto
 msgid "Unable to merge file \"%s\" into \"%s\""
-msgstr "Невозможно объединить файл \"%s\" с \"%s\""
+msgstr "Невозможно слить файл \"%s\" с \"%s\""
 
 #: h2passtrconsts.h2pvreplacepointerparametersbyvar
 msgid "-v  Replace pointer parameters by  var"
@@ -608,7 +608,7 @@ msgstr "Предупреждение"
 
 #: h2passtrconsts.h2pwarningthefilewillbemergedintomultiplefiles
 msgid "%sWarning: the file \"%s\"%swill be merged into multiple files:%s"
-msgstr "%sПредупреждение: файл \"%s\"%sбудет объединён с несколькими файлами:%s"
+msgstr "%sПредупреждение: файл \"%s\"%sбудет слит с несколькими файлами:%s"
 
 #: h2passtrconsts.h2pwhandlespecialwin32macros
 msgid "-w  Handle special win32 macros"
