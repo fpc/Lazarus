@@ -247,7 +247,7 @@ procedure TCarbonListBoxStrings.InsertItem(Index: Integer; const S: string);
 begin
   inherited InsertItem(Index, S);
 
-  //FOwner.InsertItem(Index); //Already called. Don't call it again.
+  FOwner.InsertItem(Index); // Without this call, dynamically adding items won't work
 end;
 {$ENDIF}
 
