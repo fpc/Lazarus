@@ -899,7 +899,8 @@ end;
 class procedure TWinCEWSMenuItem.CloseCommand(ACommand: LongInt);
 begin
   ACommand := ACommand - MenuBarID_BASE;
-  inherited CloseCommand(ACommand);
+  if ACommand >=0 then
+    inherited CloseCommand(ACommand);
 end;
 
 {$endif}
