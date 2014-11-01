@@ -26,18 +26,18 @@ interface
 
 uses
   Classes, SysUtils, types, FileUtil, Forms, Controls, StdCtrls, ExtCtrls,
-  LCLProc, Spin,
-  ObjInspStrConsts, ObjectInspector, IDEOptionsIntf, IDEWindowIntf,
-  EnvironmentOpts, IDEOptionDefs,
-  InterfaceBase, LazarusIDEStrConsts;
+  LCLProc, Spin, ObjInspStrConsts, ObjectInspector, IDEOptionsIntf,
+  IDEWindowIntf, DividerBevel, EnvironmentOpts, IDEOptionDefs, InterfaceBase,
+  LazarusIDEStrConsts;
 
 type
   { TWindowOptionsFrame }
 
   TWindowOptionsFrame = class(TAbstractIDEOptionsEditor)
     ApplyButton: TButton;
-    Bevel1: TBevel;
-    Bevel2: TBevel;
+    lblWindowPosition: TDividerBevel;
+    lblShowingWindows: TDividerBevel;
+    lblWindowCaption: TDividerBevel;
     NameForDesignedFormList: TCheckBox;
     TitleIncludesBuildMode: TCheckBox;
     dropSplitterPlacement: TComboBox;
@@ -48,7 +48,6 @@ type
     HeightLabel: TLabel;
     HideIDEOnRunCheckBox: TCheckBox;
     SplitLabel: TLabel;
-    lblWindowCaption: TLabel;
     LeftEdit: TSpinEdit;
     LeftLabel: TLabel;
     SplitterList: TListBox;
@@ -63,7 +62,7 @@ type
     LetWindowManagerDecideRadioButton: TRadioButton;
     WidthEdit: TSpinEdit;
     WidthLabel: TLabel;
-    WindowPositionsGroupBox: TGroupBox;
+    WindowPositionsPanel: TPanel;
     WindowPositionsListBox: TListBox;
     procedure ApplyButtonClick(Sender: TObject);
     procedure CustomGeometryRadioButtonClick(Sender: TObject);
@@ -110,6 +109,7 @@ end;
 procedure TWindowOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   // windows
+  lblShowingWindows.Caption := dlgShowingWindows;
   SingleTaskBarButtonCheckBox.Caption := dlgSingleTaskBarButton;
   SingleTaskBarButtonCheckBox.Enabled :=
     WidgetSet.GetLCLCapability(lcNeedMininimizeAppWithMainForm) = LCL_CAPABILITY_YES;
@@ -146,8 +146,10 @@ begin
 
   if FShowSimpleLayout then begin
     // Window Positions
-    WindowPositionsGroupBox.Parent:=Self;
-    WindowPositionsGroupBox.Caption := dlgWinPos;
+    lblWindowPosition.Parent:=Self;
+    lblWindowPosition.Caption := dlgWinPos;
+    WindowPositionsPanel.Parent:=Self;
+    WindowPositionsPanel.Caption:='';
     WindowPositionsListBox.Items.BeginUpdate;
     WindowPositionsListBox.Items.Clear;
     // show all registered windows
@@ -199,7 +201,8 @@ begin
 
     SetWindowPositionsItem(0);
   end else begin
-    WindowPositionsGroupBox.Parent:=nil;
+    lblWindowPosition.Parent:=nil;
+    WindowPositionsPanel.Parent:=nil;
   end;
 end;
 
@@ -418,8 +421,7 @@ begin
   SaveCurrentSplitterLayout;
 end;
 
-function TWindowOptionsFrame.GetLayoutCaption(ALayout: TSimpleWindowLayout
-  ): String;
+function TWindowOptionsFrame.GetLayoutCaption(ALayout: TSimpleWindowLayout): String;
 
   function Fits(FormName, aCaption: string): boolean;
   var

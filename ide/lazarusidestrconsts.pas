@@ -1235,6 +1235,7 @@ resourcestring
   lisLoadedSuccessfully = 'Loaded successfully';
 
   // Window options
+  dlgShowingWindows = 'Showing Windows';
   dlgSingleTaskBarButton  = 'Show single button in TaskBar';
   dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgHideIDEOnRunHint = 'Do not show the IDE at all while program is running.';
