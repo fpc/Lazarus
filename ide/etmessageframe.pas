@@ -2407,7 +2407,7 @@ begin
   HeaderBackground[lmvtsFailed]:=EnvironmentOptions.MsgViewColors[mwFailed];
   NewOptions:=Options;
   SetOption(mcoSingleClickOpensFile,not EnvironmentOptions.MsgViewDblClickJumps);
-  SetOption(mcoShowMsgIcons,not EnvironmentOptions.HideMessagesIcons);
+  SetOption(mcoShowMsgIcons,EnvironmentOptions.ShowMessagesIcons);
   SetOption(mcoShowTranslated,EnvironmentOptions.MsgViewShowTranslations);
   SetOption(mcoAlwaysDrawFocused,EnvironmentOptions.MsgViewAlwaysDrawFocused);
   Options:=NewOptions;

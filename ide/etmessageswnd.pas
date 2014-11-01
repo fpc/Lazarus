@@ -47,9 +47,9 @@ type
     function OnOpenMessage(Sender: TObject; Msg: TMessageLine): boolean;
   private
     function GetDblClickJumps: boolean;
-    function GetHideMessagesIcons: boolean;
+    function GetShowMessagesIcons: boolean;
     procedure SetDblClickJumps(AValue: boolean);
-    procedure SetHideMessagesIcons(AValue: boolean);
+    procedure SetShowMessagesIcons(AValue: boolean);
   protected
     function GetViews(Index: integer): TExtToolView; override;
   public
@@ -82,7 +82,7 @@ type
     // options
     procedure ApplyIDEOptions;
     property DblClickJumps: boolean read GetDblClickJumps write SetDblClickJumps;
-    property HideMessagesIcons: boolean read GetHideMessagesIcons write SetHideMessagesIcons;
+    property ShowMessagesIcons: boolean read GetShowMessagesIcons write SetShowMessagesIcons;
   end;
 
 var
@@ -143,12 +143,12 @@ begin
       MessagesFrame1.MessagesCtrl.Options+[mcoSingleClickOpensFile]
 end;
 
-procedure TMessagesView.SetHideMessagesIcons(AValue: boolean);
+procedure TMessagesView.SetShowMessagesIcons(AValue: boolean);
 begin
   if AValue then
-    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options-[mcoShowMsgIcons]
+    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options+[mcoShowMsgIcons]
   else
-    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options+[mcoShowMsgIcons];
+    MessagesFrame1.MessagesCtrl.Options:=MessagesFrame1.MessagesCtrl.Options-[mcoShowMsgIcons];
 end;
 
 function TMessagesView.GetViews(Index: integer): TExtToolView;
@@ -272,7 +272,7 @@ begin
   Result:=not (mcoSingleClickOpensFile in MessagesFrame1.MessagesCtrl.Options);
 end;
 
-function TMessagesView.GetHideMessagesIcons: boolean;
+function TMessagesView.GetShowMessagesIcons: boolean;
 begin
   Result:=mcoShowMsgIcons in MessagesFrame1.MessagesCtrl.Options;
 end;

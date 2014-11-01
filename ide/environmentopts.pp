@@ -336,7 +336,7 @@ type
     // messages
     fMsgViewDblClickJumps: boolean;
     fMsgViewFocus: boolean;
-    FHideMessagesIcons: boolean;
+    FShowMessagesIcons: boolean;
     FMsgViewStayOnTop: boolean;
     FMsgViewShowTranslations: boolean;
     FMsgViewAlwaysDrawFocused: boolean;
@@ -718,7 +718,7 @@ type
       write fMsgViewDblClickJumps; // true=dbl click jump to error, false=single click jumps
     property MsgViewFocus: boolean read fMsgViewFocus
       write fMsgViewFocus; // when showing the message window, focus it
-    property HideMessagesIcons: boolean read fHideMessagesIcons write fHideMessagesIcons;
+    property ShowMessagesIcons: boolean read FShowMessagesIcons write FShowMessagesIcons;
     property MsgViewStayOnTop: boolean read FMsgViewStayOnTop write FMsgViewStayOnTop;
     property MsgViewShowTranslations: boolean read FMsgViewShowTranslations
              write FMsgViewShowTranslations;
@@ -933,7 +933,7 @@ begin
   // messages view
   fMsgViewDblClickJumps:=true;
   fMsgViewFocus:=DefaultMsgViewFocus;
-  FHideMessagesIcons:=false;
+  FShowMessagesIcons:=false;
   FMsgViewStayOnTop:=false;
   FMsgViewShowTranslations:=false;
   FMsgViewAlwaysDrawFocused:=false;
@@ -1386,8 +1386,8 @@ begin
         Path+'MsgViewDblClickJumps/Value',false);
       fMsgViewFocus:=XMLConfig.GetValue(
         Path+'MsgViewFocus/Value',DefaultMsgViewFocus);
-      FHideMessagesIcons:=XMLConfig.GetValue(
-        Path+'Desktop/HideMessagesIcons/Value',false);
+      FShowMessagesIcons:=XMLConfig.GetValue(
+        Path+'Desktop/ShowMessagesIcons/Value',true);
       FMsgViewStayOnTop:=XMLConfig.GetValue(
         Path+'MsgView/StayOnTop/Value',false);
       FMsgViewShowTranslations:=XMLConfig.GetValue(
@@ -1769,8 +1769,8 @@ begin
         fMsgViewDblClickJumps,false);
       XMLConfig.SetDeleteValue(Path+'MsgViewFocus/Value',
         fMsgViewFocus,DefaultMsgViewFocus);
-      XMLConfig.SetDeleteValue(Path+'Desktop/HideMessagesIcons/Value',
-        FHideMessagesIcons,false);
+      XMLConfig.SetDeleteValue(Path+'Desktop/ShowMessagesIcons/Value',
+        FShowMessagesIcons,true);
       XMLConfig.SetDeleteValue(
         Path+'MsgView/StayOnTop/Value',FMsgViewStayOnTop,false);
       XMLConfig.SetDeleteValue(

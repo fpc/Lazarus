@@ -1256,7 +1256,9 @@ resourcestring
     +'shows also directory path of the project';
 
   // Message window options
-  dlgHideMessagesIcons = 'Hide Messages Icons';
+  dlgShowMessagesIcons = 'Show Messages Icons';
+  dlgAnIconForErrorWarningHintIsShown = 'An icon for error/warning/hint is shown '
+    +'in front of a message. The same icon shows in source editor gutter in any case.';
   lisAlwaysDrawSelectedItemsFocused = 'Always draw selected items focused';
   lisDrawTheSelectionFocusedEvenIfTheMessagesWindowHasN = 'Draw the selection '
     +'focused, even if the Messages window has no focus. Use this if your '

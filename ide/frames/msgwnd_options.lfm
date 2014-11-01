@@ -132,16 +132,16 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     Width = 300
     Anchors = [akTop, akLeft, akRight]
   end
-  object MWHideIconsCheckBox: TCheckBox
+  object MWShowIconsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = MWOptionsLabel
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
     Top = 204
-    Width = 181
+    Width = 185
     BorderSpacing.Left = 6
-    Caption = 'MWHideIconsCheckBox'
+    Caption = 'MWShowIconsCheckBox'
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
@@ -161,8 +161,8 @@ object MsgWndOptionsFrame: TMsgWndOptionsFrame
     TabOrder = 2
   end
   object MWAlwaysDrawFocusedCheckBox: TCheckBox
-    AnchorSideLeft.Control = MWHideIconsCheckBox
-    AnchorSideTop.Control = MWHideIconsCheckBox
+    AnchorSideLeft.Control = MWShowIconsCheckBox
+    AnchorSideTop.Control = MWShowIconsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 24
