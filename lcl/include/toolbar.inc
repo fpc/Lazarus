@@ -730,6 +730,7 @@ var
   AdjustClientFrame: TRect;
   i: Integer;
   GrowSide: TAnchorKind; // when a line is full, grow the TToolBar in this direction
+  SeparatorWidthChange: Boolean;
 begin
   //DebugLn(['WrapButtons ',DbgSName(Self),' Wrapable=',Wrapable,' ',dbgs(BoundsRect),' Vertical=',IsVertical,' RTL=',UseRightToLeftAlignment,' Simulate=',Simulate]);
   Result := True;
@@ -828,6 +829,12 @@ begin
 
       w := CurControl.Constraints.MinMaxWidth(w);
       h := CurControl.Constraints.MinMaxHeight(h);
+      SeparatorWidthChange := (CurControl is TToolButton) and
+        (TToolButton(CurControl).Style in [tbsSeparator, tbsDivider]);
+      if SeparatorWidthChange then begin
+        SeparatorWidthChange := (w <> CurControl.Width);
+        w := CurControl.Width;
+      end;
       if (CurControl.Left <> x) or (CurControl.Top <> y) or
          (CurControl.Width <> w) or (CurControl.Height <> h) then
       begin
@@ -835,7 +842,10 @@ begin
         if not Simulate then
         begin
           //DebugLn(['TToolBar.WrapButtons moving child: ',DbgSName(CurControl),' Old=',dbgs(CurControl.BoundsRect),' New=',dbgs(Bounds(x,y,w,h))]);
-          CurControl.SetBounds(x,y,w,h); // Note: do not use SetBoundsKeepBase
+          if SeparatorWidthChange then
+            CurControl.SetBoundsKeepBase(x,y,w,h)
+          else
+            CurControl.SetBounds(x,y,w,h);
           //DebugLn(['TToolBar.WrapButtons moved child: ',DbgSName(CurControl),' ',dbgs(CurControl.BoundsRect)]);
         end;
       end;
