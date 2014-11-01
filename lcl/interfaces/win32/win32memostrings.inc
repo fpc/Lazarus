@@ -39,11 +39,11 @@ begin
   //{$ifdef WindowsUnicodeSupport}{$else}{$endif WindowsUnicodeSupport}
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
-   Result := SendMessageW(FHandle, EM_LINELENGTH, SendMessageW(FHandle, EM_LINEINDEX, Index, 0), 0)
+    Result := Integer(SendMessageW(FHandle, EM_LINELENGTH, SendMessageW(FHandle, EM_LINEINDEX, Index, 0), 0))
   else
-    Result := SendMessage(FHandle, EM_LINELENGTH, SendMessage(FHandle, EM_LINEINDEX, Index, 0), 0);
+    Result := Integer(SendMessage(FHandle, EM_LINELENGTH, SendMessage(FHandle, EM_LINEINDEX, Index, 0), 0));
   {$else}
-  Result := SendMessage(FHandle, EM_LINELENGTH, SendMessage(FHandle, EM_LINEINDEX, Index, 0), 0);
+  Result := Integer(SendMessage(FHandle, EM_LINELENGTH, SendMessage(FHandle, EM_LINEINDEX, Index, 0), 0));
   {$endif WindowsUnicodeSupport}
 end;
 
@@ -51,11 +51,11 @@ function TWin32MemoStrings.GetLineStart(Index: Integer): Integer;
 begin
   {$ifdef WindowsUnicodeSupport}
   if UnicodeEnabledOS then
-    Result := SendMessageW(FHandle, EM_LINEINDEX, Index, 0)
+    Result := Integer(SendMessageW(FHandle, EM_LINEINDEX, Index, 0))
   else
-    Result := SendMessage(FHandle, EM_LINEINDEX, Index, 0);
+    Result := Integer(SendMessage(FHandle, EM_LINEINDEX, Index, 0));
   {$else}
-  Result := SendMessage(FHandle, EM_LINEINDEX, Index, 0);
+  Result := Integer(SendMessage(FHandle, EM_LINEINDEX, Index, 0));
   {$endif WindowsUnicodeSupport}
 end;
 
