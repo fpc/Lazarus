@@ -933,7 +933,7 @@ begin
   // messages view
   fMsgViewDblClickJumps:=true;
   fMsgViewFocus:=DefaultMsgViewFocus;
-  FShowMessagesIcons:=false;
+  FShowMessagesIcons:=true;
   FMsgViewStayOnTop:=false;
   FMsgViewShowTranslations:=false;
   FMsgViewAlwaysDrawFocused:=false;
