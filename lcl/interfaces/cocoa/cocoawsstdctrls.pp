@@ -179,6 +179,8 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
+    //
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
   end;
 
   { TCocoaWSToggleBox }
@@ -469,6 +471,23 @@ const
 begin
   if ACustomCheckBox.HandleAllocated then
     NSButton(ACustomCheckBox.Handle).setState(buttonState[NewState]);
+end;
+
+class procedure TCocoaWSCustomCheckBox.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+var
+  lButton: NSButton;
+  lOldSize: NSSize;
+begin
+  if not AWinControl.HandleAllocated then Exit;
+  lButton := NSButton(AWinControl.Handle);
+
+  lOldSize := lButton.bounds.size;
+  lButton.sizeToFit();
+  PreferredWidth := Integer(lButton.bounds.size.width);
+  PreferredHeight := Integer(lButton.bounds.size.height);
+  lButton.setBoundsSize(lOldSize);
 end;
 
 { TCocoaWSRadioButton }
