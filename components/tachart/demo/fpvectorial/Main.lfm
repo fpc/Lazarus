@@ -1,13 +1,13 @@
 object Form1: TForm1
-  Left = 1251
+  Left = 485
   Height = 342
-  Top = 164
+  Top = 210
   Width = 422
   Caption = 'Form1'
   ClientHeight = 342
   ClientWidth = 422
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object Chart1: TChart
     Left = 0
     Height = 300
@@ -53,16 +53,16 @@ object Form1: TForm1
       Left = 8
       Height = 25
       Top = 8
-      Width = 75
+      Width = 96
       Caption = 'Save as SVG'
       OnClick = btnSVGClick
       TabOrder = 0
     end
     object btnGCode: TButton
-      Left = 92
+      Left = 112
       Height = 25
       Top = 8
-      Width = 95
+      Width = 119
       Caption = 'Save as G-code'
       OnClick = btnGCodeClick
       TabOrder = 1
