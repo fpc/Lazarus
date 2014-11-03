@@ -216,7 +216,7 @@ var
   Str: AnsiString;
 begin
   Str := Utf8ToAnsi(Filename);
-  FindHandle := Windows.FindFirstFileA(PAnsiChar(Str), FindData);
+  FindHandle := Windows.FindFirstFileA(PAnsiChar(Str), FindData{%H-});
   if FindHandle = Windows.Invalid_Handle_value then
   begin
     Result := -1;
@@ -339,7 +339,7 @@ function WinToDosTime(Var Wtime : TFileTime; var DTime:longint):longbool;
 var
   lft : TFileTime;
 begin
-  WinToDosTime:=FileTimeToLocalFileTime(WTime,lft)
+  WinToDosTime:=FileTimeToLocalFileTime(WTime,lft{%H-})
     {$ifndef WinCE}
     and FileTimeToDosDateTime(lft,Longrec(Dtime).Hi,LongRec(DTIME).lo)
     {$endif}
@@ -426,7 +426,7 @@ begin
 end;
 
 
-function FileCreateWide(Const FileName : string;  ShareMode: Integer; Rights: Integer) : THandle;
+function FileCreateWide(Const FileName : string;  ShareMode: Integer; {%H-}Rights: Integer) : THandle;
 begin
   Result := CreateFileW(PWideChar(UTF8Decode(FileName)), GENERIC_READ or GENERIC_WRITE,
                        dword(ShareModes[(ShareMode and $F0) shr 4]), nil, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
@@ -451,7 +451,8 @@ var
   Hnd: THandle;
   FindData: TWin32FindDataW;
 begin
-  Hnd := FindFirstFileW(PWideChar(UTF8ToUTF16(FileName)), FindData);
+  Result := -1;
+  Hnd := FindFirstFileW(PWideChar(UTF8ToUTF16(FileName)), FindData{%H-});
    if Hnd <> Windows.INVALID_HANDLE_VALUE then
     begin
       Windows.FindClose(Hnd);
@@ -459,7 +460,6 @@ begin
         If WinToDosTime(FindData.ftLastWriteTime,Result) then
           exit;
     end;
-   Result := -1;
 end;
 
 function FileSetDateWide(const FileName: String; Age: Longint): Longint;
@@ -472,7 +472,7 @@ begin
                        FILE_WRITE_ATTRIBUTES,
                        0, nil, OPEN_EXISTING,
                        FILE_ATTRIBUTE_NORMAL, 0);
-     if (fh <> feInvalidHandle) and (DosToWinTime(Age,FT) and SetFileTime(fh, nil, nil, @FT)) then
+     if (fh <> feInvalidHandle) and (DosToWinTime(Age,FT{%H-}) and SetFileTime(fh, nil, nil, @FT)) then
        Result := 0
      else
        Result := GetLastError;
@@ -492,7 +492,7 @@ begin
   // Don't assign the widestring to TSearchRec.name because it is of type
   // string, which will generate a conversion to the system encoding
   Str := UTF8Decode(Filename);
-  FindHandle := Windows.FindFirstFileW(PWideChar(Str), FindData);
+  FindHandle := Windows.FindFirstFileW(PWideChar(Str), FindData{%H-});
   if FindHandle = Windows.Invalid_Handle_value then
   begin
     Result := -1;
@@ -607,7 +607,7 @@ begin
   Rslt.ExcludeAttr:=(not Attr) and ($1e);
                  { $1e = faHidden or faSysFile or faVolumeID or faDirectory }
   { FindFirstFile is a Win32 Call }
-  Rslt.FindHandle:=Windows.FindFirstFileW( PWideChar(UTF8Decode(Path)),find);
+  Rslt.FindHandle:=Windows.FindFirstFileW( PWideChar(UTF8Decode(Path)),find{%H-});
   If Rslt.FindHandle=Windows.Invalid_Handle_value then
   begin
     Result:=GetLastError;
@@ -627,7 +627,7 @@ function FindNextWide(var Rslt: TSearchRec): Longint;
 var
   wide: TWIN32FINDDATAW;
 begin
-  if FindNextFileW(Rslt.FindHandle, wide) then
+  if FindNextFileW(Rslt.FindHandle, wide{%H-}) then
   begin
     {$IFNDEF FindData_W}
     FindWideToAnsi(wide, Rslt.FindData);
@@ -722,7 +722,7 @@ begin
     InitDLL;
   If (SHGetFolderPathW <> Nil) then
   begin
-    FillChar(APath, SizeOf(APath), #0);
+    FillChar(APath{%H-}, SizeOf(APath), #0);
     if SHGetFolderPathW(0,ID or CSIDL_FLAG_CREATE,0,0,@APATH[0]) = S_OK then
     begin
       Len := StrLen(APath);
@@ -737,7 +737,7 @@ end;
 
 {$ENDIF WINCE}
 
-function DGetAppConfigDir(Global : Boolean) : String;
+function DGetAppConfigDir({%H-}Global : Boolean) : String;
 begin
   Result := ChompPathDelim(ExtractFilePath(ParamStrUtf8(0)));
 end;
@@ -865,7 +865,7 @@ begin
     if HasDrive then
     begin
       FnDrive := UpCase(Fn[1]);
-      _GetDirUtf8(Byte(FnDrive)-64, CurDir);
+      _GetDirUtf8(Byte(FnDrive)-64, CurDir{%H-});
       CurDrive := UpCase(GetCurrentDirUtf8[1]);
     end
     else
@@ -1031,7 +1031,7 @@ begin
   H := FileOpenUtf8(aFilename, fmOpenRead);
   if (H <> feInvalidHandle) then
   begin
-    FillChar(FileInfo, SizeOf(BY_HANDLE_FILE_INFORMATION),0);
+    FillChar(FileInfo{%H-}, SizeOf(BY_HANDLE_FILE_INFORMATION),0);
     if GetFileInformationByHandle(H, FileInfo) then
       Result := (FileInfo.nNumberOfLinks > 1);
     FileClose(H);
