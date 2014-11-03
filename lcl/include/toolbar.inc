@@ -450,6 +450,7 @@ begin
     for i:=ControlCount-1 downto 0 do
     begin
       CurControl := Controls[i];
+      CurControl.InvalidatePreferredSize;
       NewWidth := CurControl.Width;
       NewHeight := CurControl.Height;
 
