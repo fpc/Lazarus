@@ -2394,8 +2394,7 @@ begin
   begin
     case Details.State of
       TREIS_SELECTED,
-      TREIS_HOTSELECTED,
-      TREIS_HOT: Canvas.Font.Color := clHighlightText;
+      TREIS_HOTSELECTED: Canvas.Font.Color := clHighlightText;
       TREIS_SELECTEDNOTFOCUS: Canvas.Font.Color := clBtnText;
     else
       Canvas.Font.Color := clWindowText;
