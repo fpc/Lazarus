@@ -59,7 +59,7 @@ resourcestring
 
   { Event log }
   SEventConnect = 'Connect: Loc: %s Rem: %s';
-  SEventDisconnect = 'Close:   Loc: %s Rem: %s';
+  SEventDisconnect = 'Close: Loc: %s Rem: %s';
 
   { Terminal Errors }
   SNotEnoughData = 'Not enough data in queue (%s bytes) to satisfy read request (%s bytes)';
@@ -82,7 +82,7 @@ resourcestring
   SwsaEWouldBlock = 'Resource temporarily unavailable';
   SwsaEInProgress = 'Operation now in progress';
   SwsaEAlReady = 'Operation already in progress';
-  SwsaENotSock = 'Socket operation on nonsocket';
+  SwsaENotSock = 'Socket operation on non socket';
   SwsaEDestAddrReq = 'Destination address required';
   SwsaEMsgSize = 'Message too long';
   SwsaEPrototype = 'Protocol wrong type for socket';
@@ -132,7 +132,7 @@ resourcestring
   Swsa_E_Cancelled = 'Lookup cancelled';
   SwsaERefused = 'Refused';
   SwsaHost_Not_Found = 'Host not found';
-  SwsaTry_Again = 'Nonauthoritative host not found';
+  SwsaTry_Again = 'Non-authoritative host not found';
   SwsaNo_Recovery = 'This is a nonrecoverable error';
   SwsaNo_Data = 'Valid name, no data record of requested type';
   Swsa_Qos_Receivers = 'At least one Reserve has arrived';
@@ -143,7 +143,7 @@ resourcestring
   Swsa_Qos_Admission_Failure = 'Error due to lack of resources';
   Swsa_Qos_Policy_Failure = 'Rejected for administrative reasons - bad credentials';
   Swsa_Qos_Bad_Style = 'Unknown or conflicting style';
-  Swsa_Qos_Bad_Object = 'Problem filterspec or providerspecific buffer';
+  Swsa_Qos_Bad_Object = 'Problem filterspec or provider specific buffer';
   Swsa_Qos_Traffic_Ctrl_Error = 'Problem with some part of the flowspec';
   Swsa_Qos_Generic_Error = 'General error';
 
@@ -457,7 +457,7 @@ resourcestring
   SptLogon       = 'Logging on';
   SptList        = 'Retrieving mailbox list';
   SptUIDL        = 'Retrieving mailbox UID list';
-  SptError       = 'An error occured with the last task.';
+  SptError       = 'An error occurred with the last task.';
   SptUnknown     = 'Unknown task';
   SLogPop3Class  = '[POP3] ';
   SLogState      = 'State change: ';
