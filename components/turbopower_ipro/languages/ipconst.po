@@ -215,7 +215,7 @@ msgid "Connect: Loc: %s Rem: %s"
 msgstr ""
 
 #: ipconst.seventdisconnect
-msgid "Close:   Loc: %s Rem: %s"
+msgid "Close: Loc: %s Rem: %s"
 msgstr ""
 
 #: ipconst.sfilename
@@ -1531,7 +1531,7 @@ msgid "Logging on with User"
 msgstr ""
 
 #: ipconst.spterror
-msgid "An error occured with the last task."
+msgid "An error occurred with the last task."
 msgstr ""
 
 #: ipconst.sptlist
@@ -2393,7 +2393,7 @@ msgid "Directory not empty"
 msgstr ""
 
 #: ipconst.swsaenotsock
-msgid "Socket operation on nonsocket"
+msgid "Socket operation on non socket"
 msgstr ""
 
 #: ipconst.swsaeopnotsupp
@@ -2485,7 +2485,7 @@ msgid "Network subsystem is unavailable"
 msgstr ""
 
 #: ipconst.swsatry_again
-msgid "Nonauthoritative host not found"
+msgid "Non-authoritative host not found"
 msgstr ""
 
 #: ipconst.swsatype_not_found
@@ -2510,7 +2510,7 @@ msgid "Error due to lack of resources"
 msgstr ""
 
 #: ipconst.swsa_qos_bad_object
-msgid "Problem filterspec or providerspecific buffer"
+msgid "Problem filterspec or provider specific buffer"
 msgstr ""
 
 #: ipconst.swsa_qos_bad_style

@@ -3077,15 +3077,9 @@ begin
 
     // free unneeded controls
     for i := fNeedFree.Count - 1 downto 0 do
-      if csDestroying in TControl(fNeedFree[i]).ComponentState then
+      if not (csDestroying in TControl(fNeedFree[i]).ComponentState) then
         TControl(fNeedFree[i]).Free;
-{ was:
-    while fNeedFree.Count>0 do
-      if csDestroying in TControl(fNeedFree[0]).ComponentState then
-        fNeedFree.Delete(0)
-      else
-        TControl(fNeedFree[0]).Free;
-}
+    fNeedFree.Clear;
   finally
     fSimplifying:=false;
   end;

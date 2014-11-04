@@ -223,7 +223,9 @@ msgid "Connect: Loc: %s Rem: %s"
 msgstr "Verbinden: Loc: %s Rem: %s"
 
 #: ipconst.seventdisconnect
-msgid "Close:   Loc: %s Rem: %s"
+#, fuzzy
+#| msgid "Close:   Loc: %s Rem: %s"
+msgid "Close: Loc: %s Rem: %s"
 msgstr "Schließen: Loc: %s Rem: %s"
 
 #: ipconst.sfilename
@@ -1546,7 +1548,9 @@ msgid "Logging on with User"
 msgstr "Logge ein mit User"
 
 #: ipconst.spterror
-msgid "An error occured with the last task."
+#, fuzzy
+#| msgid "An error occured with the last task."
+msgid "An error occurred with the last task."
 msgstr "Beim letzten Task trat ein Fehler auf."
 
 #: ipconst.sptlist
@@ -2414,7 +2418,9 @@ msgid "Directory not empty"
 msgstr "Verzeichnis nicht leer"
 
 #: ipconst.swsaenotsock
-msgid "Socket operation on nonsocket"
+#, fuzzy
+#| msgid "Socket operation on nonsocket"
+msgid "Socket operation on non socket"
 msgstr "Socket-Operation auf Nicht-Socket"
 
 #: ipconst.swsaeopnotsupp
@@ -2506,7 +2512,9 @@ msgid "Network subsystem is unavailable"
 msgstr "Netzwerk-Subsystem ist nicht verfügbar"
 
 #: ipconst.swsatry_again
-msgid "Nonauthoritative host not found"
+#, fuzzy
+#| msgid "Nonauthoritative host not found"
+msgid "Non-authoritative host not found"
 msgstr "Keinen nonauthoritativen Host gefunden"
 
 #: ipconst.swsatype_not_found
@@ -2531,7 +2539,9 @@ msgid "Error due to lack of resources"
 msgstr "Fehler wegen Ressourcenmangels"
 
 #: ipconst.swsa_qos_bad_object
-msgid "Problem filterspec or providerspecific buffer"
+#, fuzzy
+#| msgid "Problem filterspec or providerspecific buffer"
+msgid "Problem filterspec or provider specific buffer"
 msgstr "Problematische Filterdefinition oder providerspezifischer Puffer"
 
 #: ipconst.swsa_qos_bad_style

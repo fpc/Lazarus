@@ -220,7 +220,9 @@ msgid "Connect: Loc: %s Rem: %s"
 msgstr "Sambung: Lok: %s Rem: %s"
 
 #: ipconst.seventdisconnect
-msgid "Close:   Loc: %s Rem: %s"
+#, fuzzy
+#| msgid "Close:   Loc: %s Rem: %s"
+msgid "Close: Loc: %s Rem: %s"
 msgstr "Tutup:   Lok: %s Rem: %s"
 
 #: ipconst.sfilename
@@ -1538,7 +1540,9 @@ msgid "Logging on with User"
 msgstr "Masuk dengan Pengguna"
 
 #: ipconst.spterror
-msgid "An error occured with the last task."
+#, fuzzy
+#| msgid "An error occured with the last task."
+msgid "An error occurred with the last task."
 msgstr "Kesalahan terjadi dengan tugas terakhir"
 
 #: ipconst.sptlist
@@ -2404,7 +2408,9 @@ msgid "Directory not empty"
 msgstr "Direktori tidak kosong"
 
 #: ipconst.swsaenotsock
-msgid "Socket operation on nonsocket"
+#, fuzzy
+#| msgid "Socket operation on nonsocket"
+msgid "Socket operation on non socket"
 msgstr "Operasi soket pada nonsoket"
 
 #: ipconst.swsaeopnotsupp
@@ -2496,7 +2502,9 @@ msgid "Network subsystem is unavailable"
 msgstr "Subsistem jaringan tidak tersedia"
 
 #: ipconst.swsatry_again
-msgid "Nonauthoritative host not found"
+#, fuzzy
+#| msgid "Nonauthoritative host not found"
+msgid "Non-authoritative host not found"
 msgstr "Non otoratif host ditemukan"
 
 #: ipconst.swsatype_not_found
@@ -2521,7 +2529,9 @@ msgid "Error due to lack of resources"
 msgstr "Kesalahan karena kekurangan sumber daya"
 
 #: ipconst.swsa_qos_bad_object
-msgid "Problem filterspec or providerspecific buffer"
+#, fuzzy
+#| msgid "Problem filterspec or providerspecific buffer"
+msgid "Problem filterspec or provider specific buffer"
 msgstr "Masalah filterspec atau bufer providerspecific"
 
 #: ipconst.swsa_qos_bad_style
