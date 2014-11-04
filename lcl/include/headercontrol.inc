@@ -74,6 +74,15 @@ begin
   Result := THeaderSections.Create(Self);
 end;
 
+
+
+procedure TCustomHeaderControl.Loaded;
+begin
+  inherited Loaded;
+  FSavedCursor := Cursor;
+  //debugln('TCustomHeaderControl.Loaded: Setting FSavedCursor to ',DbgS(FSavedCursor));
+end;
+
 constructor TCustomHeaderControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -177,6 +186,8 @@ begin
   inherited MouseEnter;
   if not (csDesigning in ComponentState) then
   begin
+    FSavedCursor := Cursor;
+    //debugln('TCustomHeaderControl.MouseEnter: setting FSavedCursor to ',dbgS(FSavedCursor));
     FMouseInControl := True;
     UpdateState;
   end;
@@ -267,7 +278,7 @@ begin
          (GetSectionAt(Point(X - HeaderBorderSize, Y))<>GetSectionAt(Point(X + HeaderBorderSize, Y))) then
         Cursor:=crSizeE
        else
-        Cursor:=crDefault;
+        Cursor:=FSavedCursor;
     UpdateState;
   end;
 end;

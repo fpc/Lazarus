@@ -3661,6 +3661,7 @@ type
     FEndDragSectionIndex: longint;
     FSelectedSection: longint;
     FMouseInControl: Boolean;
+    FSavedCursor: TCursor;
     
     FOnSectionClick: TCustomSectionNotifyEvent;
     FOnSectionResize: TCustomSectionNotifyEvent;
@@ -3677,6 +3678,7 @@ type
   protected
     function CreateSection: THeaderSection; virtual;
     function CreateSections: THeaderSections; virtual;
+    procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SectionClick(Section: THeaderSection); virtual;
     procedure SectionResize(Section: THeaderSection); virtual;
