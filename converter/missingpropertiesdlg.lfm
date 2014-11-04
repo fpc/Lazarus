@@ -9,7 +9,7 @@ object FixLFMDialog: TFixLFMDialog
   ClientWidth = 756
   OnCreate = CheckLFMDialogCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object NoteLabel: TLabel
     Left = 0
     Height = 15
@@ -450,6 +450,7 @@ object FixLFMDialog: TFixLFMDialog
           ShiftMask = [ssShift, ssAlt, ssCtrl]
           Command = emcMouseLink
         end>
+      MouseTextActions = <>
       MouseSelActions = <      
         item
           ClickDir = cdDown
@@ -671,6 +672,7 @@ object FixLFMDialog: TFixLFMDialog
       Top = 0
       Width = 339
       Align = alTop
+      AutoSize = True
       BorderStyle = sbsSunken
       Caption = 'Properties'
       TabOrder = 1
@@ -717,6 +719,7 @@ object FixLFMDialog: TFixLFMDialog
       Top = 209
       Width = 339
       Align = alTop
+      AutoSize = True
       BorderStyle = sbsSunken
       Caption = 'Types'
       TabOrder = 4
