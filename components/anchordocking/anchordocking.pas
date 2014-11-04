@@ -4342,27 +4342,11 @@ begin
             Child.AnchorSide[Side].Assign(AnchorSide[Side]);
       end;
     end;
-{ was :
-    i:=0;
-    while i<ControlCount-1 do begin
-      Child:=Controls[i];
-      if Child.Owner=Self then
-        inc(i)
-      else begin
-        Child.Parent:=ParentSite;
-        Child.SetBounds(Child.Left+Left,Child.Top+Top,Child.Width,Child.Height);
-        for Side:=Low(TAnchorKind) to High(TAnchorKind) do begin
-          if Child.AnchorSide[Side].Control=Self then
-            Child.AnchorSide[Side].Assign(AnchorSide[Side]);
-        end;
-      end;
-    end;
-}
     Parent:=nil;
     DockMaster.NeedFree(Self);
   finally
-    EnableAutoSizing;
     ParentSite.EndUpdateLayout;
+    // not needed, because this site is freed: EnableAutoSizing;
   end;
 end;
 
