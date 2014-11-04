@@ -4337,6 +4337,18 @@ begin
   ParentSite.BeginUpdateLayout;
   DisableAutoSizing;
   try
+    for i := ControlCount - 1 downto 0 do begin
+      Child := Controls[i];
+      if Child.Owner <> Self then
+      begin
+        Child.Parent := ParentSite;
+        Child.SetBounds(Child.Left + Left, Child.Top + Top, Child.Width, Child.Height);
+        for Side := Low(TAnchorKind) to High(TAnchorKind) do
+          if Child.AnchorSide[Side].Control = Self then
+            Child.AnchorSide[Side].Assign(AnchorSide[Side]);
+      end;
+    end;
+{ was :
     i:=0;
     while i<ControlCount-1 do begin
       Child:=Controls[i];
@@ -4351,6 +4363,7 @@ begin
         end;
       end;
     end;
+}
     Parent:=nil;
     DockMaster.NeedFree(Self);
   finally
