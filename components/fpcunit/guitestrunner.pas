@@ -263,8 +263,10 @@ begin
   MenuItem3.Caption:= smiCopyClipbrd;
   // Select the first entry in the tree in order to immediately activate the 
   // Run All tests button:
-  if TestTree.Items.Count>0 then
+  if TestTree.Items.Count>0 then begin
     TestTree.Items.SelectOnlyThis(TestTree.Items[0]);
+    TestTree.Items[0].Expand(False);
+  end;
 end;
 
 procedure TGUITestRunner.RunExecute(Sender: TObject);
@@ -304,7 +306,6 @@ begin
   if (TestTree.Selected <> nil) and (TestTree.Selected.Data <> nil) then
   begin
     testSuite := TTest(TestTree.Selected.Data);
-    TestTree.Selected.Expand(false);
   end;
   RunTest(testSuite);
 end;
@@ -478,7 +479,6 @@ begin
     node.SelectedIndex := imgGrayBall;
     node.StateIndex := ord(tsChecked);
   end;
-  rootNode.Expand(False);
   ResetNodeColors;
 end;
 
@@ -515,7 +515,9 @@ begin
   begin
     aNode.ImageIndex := imgRedBall;
     aNode.SelectedIndex := imgRedBall;
-    aNode.Expand(True);
+    if aNode.AbsoluteIndex<>0 then begin
+      aNode.Expand(True);
+    end;
     aNode := aNode.Parent;
     if Assigned(aNode) and
       ((aNode.ImageIndex in [imgGreenBall, imgPurpleBall, imgGrayBall, imgBlueBall]) or
@@ -534,7 +536,9 @@ begin
     begin
       aNode.ImageIndex := imgPurpleBall;
       aNode.SelectedIndex := imgPurpleBall;
-      aNode.Expand(true);
+      if aNode.AbsoluteIndex<>0 then begin
+        aNode.Expand(true);
+      end;
     end;
     aNode := aNode.Parent;
     if Assigned(aNode) and ((aNode.ImageIndex in [imgGreenBall, imgGrayBall, imgBlueBall]) or
@@ -744,7 +748,12 @@ begin
   Node := FindNode(ATest);
   Node.DeleteChildren;
   PaintNodeBusy(Node);
-  Node.MakeVisible;
+  if Node.Level=1 then begin
+    Node.MakeVisible;
+  end;
+  if assigned(Node.Parent) and (Node.Parent.Level=1) then begin
+    Node.Parent.MakeVisible;
+  end;
   Application.ProcessMessages;
   TestTree.EndUpdate;
 end;
