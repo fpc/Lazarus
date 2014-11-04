@@ -4354,6 +4354,7 @@ begin
     Parent:=nil;
     DockMaster.NeedFree(Self);
   finally
+    EnableAutoSizing;
     ParentSite.EndUpdateLayout;
   end;
 end;
