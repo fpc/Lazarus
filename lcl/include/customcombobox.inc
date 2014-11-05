@@ -479,7 +479,10 @@ begin
   UserDropDown := ((Shift *[ssAlt] = [ssAlt]) and (Key = VK_DOWN));
   PreventDropDown := Key in [VK_TAB, VK_RETURN, VK_ESCAPE];
   if PreventDropDown then
+  begin
+    if DroppedDown then Key := VK_UNKNOWN; //prevent execution of DefaultAction (Delphi compatibility)
     DroppedDown := False;
+  end;
   if AutoDropDown or UserDropDown or FReturnArrowState then
   begin
     if PreventDropDown then
