@@ -3731,8 +3731,12 @@ begin
         RGN_DIFF:
           begin
             // get existing clip
-            GDK_Window_Get_Size(Drawable, @X, @Y);
-            Clip := CreateRectRGN(0, 0, X, Y);
+            if Drawable=nil then
+              Clip:=CreateEmptyRegion
+            else begin
+              GDK_Window_Get_Size(Drawable, @X, @Y);
+              Clip := CreateRectRGN(0, 0, X, Y);
+            end;
             // create target clip
             Tmp := CreateEmptyRegion;
             // combine
