@@ -60,7 +60,7 @@ function Float2Str(const d: double): string;
 {not really a file fn - string file name manipulation}
 function SetFileNameExtension(const psFileName, psExt: string): string;
 
-procedure AdvanceTextPos(const AText: string; var ARow, ACol: integer);
+procedure AdvanceTextPos(const AText: WideString; var ARow, ACol: integer);
 function LastLineLength(const AString: string): integer;
 
 { split into lines at CrLf or Lf}
@@ -214,11 +214,11 @@ begin
   end;
 end;
 
-procedure PosLastAndCount(const ASubString, AString: String;
+procedure PosLastAndCount(const ASubString, AString: WideString;
   out ALastPos: integer; out ACount: integer);
 var
   {This gets the last occurance and count in one go. It saves time}
-  LastChar1: Char;
+  LastChar1: WideChar;
   Index1:    integer;
   Index2:    integer;
   Index3:    integer;
@@ -269,7 +269,7 @@ end;
   - if the text contains newlines, then add on to the Y pos, and
     set the X pos to the text length after the last newline }
 {AdemBaba}
-procedure AdvanceTextPos(const AText: string; var ARow, ACol: integer);
+procedure AdvanceTextPos(const AText: WideString; var ARow, ACol: integer);
 var
   Length1: integer;
   Count1:  integer;
@@ -282,8 +282,8 @@ begin
     0: ; {Trivial case}
     1:
     begin
-      case AText[1] of
-        NativeCarriageReturn, NativeLineFeed:
+      case ord(AText[1]) of
+        ord(NativeCarriageReturn), ord(NativeLineFeed):
         begin {#13 or #10}
           Inc(ACol);
           ARow := 1; // XPos is indexed from 1
@@ -294,7 +294,7 @@ begin
     end;
     2:
     begin
-      if (AText[1] = NativeCarriageReturn) and (AText[2] = NativeLineFeed) then
+      if (ord(AText[1]) = ord(NativeCarriageReturn)) and (ord(AText[2]) = ord(NativeLineFeed)) then
       begin
         Inc(ACol);
         ARow := 1; // XPos is indexed from 1
@@ -303,7 +303,7 @@ begin
         Inc(ARow, Length1);
     end;
     else
-      PosLastAndCount(NativeLineBreak, AText, Pos1, Count1);
+      PosLastAndCount(WideChar(NativeLineBreak), AText, Pos1, Count1);
       if Pos1 <= 0 then
         Inc(ARow, Length1)
       else
