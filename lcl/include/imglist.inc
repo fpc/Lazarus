@@ -126,7 +126,7 @@ end;
   Returns:  The index of the added icon, -1 if unsuccesfull.
 
   Adds one or more (bitmap width / imagelist width) bitmaps to the list. 
-  Every occurance of MaskColor will be converted to transparent.
+  Every occurrence of MaskColor will be converted to transparent.
  ------------------------------------------------------------------------------}
 function TCustomImageList.AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
 begin
@@ -864,7 +864,7 @@ end;
   Returns: Nothing
 
   Adds one or more (bitmap width / imagelist width) bitmaps to the list. 
-  Every occurance of MaskColor will be converted to transparent.
+  Every occurrence of MaskColor will be converted to transparent.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.InsertMasked(Index: Integer; AImage: TCustomBitmap;
   MaskColor: TColor);
@@ -1444,7 +1444,7 @@ end;
   Returns: Nothing
 
   Replaces the index'th image with the image given.
-  Every occurance of MaskColor will be converted to transparent.
+  Every occurrence of MaskColor will be converted to transparent.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.ReplaceMasked(Index: Integer; NewImage: TCustomBitmap; MaskColor: TColor);
 var

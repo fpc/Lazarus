@@ -217,7 +217,7 @@ end;
 procedure PosLastAndCount(const ASubString, AString: WideString;
   out ALastPos: integer; out ACount: integer);
 var
-  {This gets the last occurance and count in one go. It saves time}
+  {This gets the last occurrence and count in one go. It saves time}
   LastChar1: WideChar;
   Index1:    integer;
   Index2:    integer;

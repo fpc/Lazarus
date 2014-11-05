@@ -398,7 +398,7 @@ begin
     Result := 0;
 end;
 
-{ Find Nth from the rightmost occurance of character C in string S }
+{ Find Nth from the rightmost occurrence of character C in string S }
 { * If C not found returns 0 }
 function RNthCharPos(C: AnsiChar; const S : string; Nth: Integer): Integer;
 var
