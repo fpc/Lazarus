@@ -163,6 +163,12 @@ begin
     OffsetRect(Result,(ImgWidth-PicWidth) div 2,(ImgHeight-PicHeight) div 2);
 end;
 
+procedure TCustomImage.Invalidate;
+begin
+  if FPainting then exit;
+  inherited Invalidate;
+end;
+
 procedure TCustomImage.CalculatePreferredSize(var PreferredWidth,
   PreferredHeight: integer; WithThemeSpace: Boolean);
 begin
@@ -208,7 +214,12 @@ begin
   C := inherited Canvas;
   R := DestRect;
   C.AntialiasingMode := FAntialiasingMode;
-  C.StretchDraw(R, Picture.Graphic);
+  FPainting:=true;
+  try
+    C.StretchDraw(R, Picture.Graphic);
+  finally
+    FPainting:=false;
+  end;
 
   FUseAncestorCanvas := True;
   try

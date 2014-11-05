@@ -480,6 +480,7 @@ type
     FTransparent: Boolean;
     FStretch: Boolean;
     FUseAncestorCanvas: boolean;
+    FPainting: boolean;
     function  GetCanvas: TCanvas;
     procedure SetAntialiasingMode(AValue: TAntialiasingMode);
     procedure SetPicture(const AValue: TPicture);
@@ -500,6 +501,7 @@ type
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
     function DestRect: TRect; virtual;
+    procedure Invalidate; override;
   public
     property AntialiasingMode: TAntialiasingMode read FAntialiasingMode write SetAntialiasingMode default amDontCare;
     property Align;
