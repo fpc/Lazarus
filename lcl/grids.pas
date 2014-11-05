@@ -3632,7 +3632,7 @@ end;
 procedure TCustomGrid.ShowCellHintWindow(APoint: TPoint);
 var
   cell: TPoint;
-  txt1, txt2, txt: String;
+  txt1, txt2, txt, AppHint: String;
   w: Integer;
   gds: TGridDrawState;
 begin
@@ -3641,7 +3641,10 @@ begin
 
   cell := MouseToCell(APoint);
   if (cell.x = -1) or (cell.y = -1) then
+  begin
+    Application.Hint := '';
     exit;
+  end;
 
   txt := '';
   txt1 := '';
@@ -3667,6 +3670,7 @@ begin
       txt := txt2
     else
       txt := txt1;
+    AppHint := txt;
   end else begin
     if (txt1 <> '') and (txt2 <> '') then
       txt := txt1 + #13 + txt2
@@ -3674,14 +3678,19 @@ begin
       txt := txt1
     else if txt2 <> '' then
       txt := txt2;
+    AppHint := txt;
     if (FCellHintPriority = chpAll) and (txt <> '') then
-      txt := FSavedHint + #13 + txt;
+      txt := GetShortHint(FSavedHint) + #13 + txt;
   end;
+
+
   if (txt = '') and (FSavedHint <> '') then
     txt := FSavedHint;
-
+  if (AppHint = '') then AppHint := FSavedhint;
   if (txt <> '') and not EditorMode and not (csDesigning in ComponentState) then begin
     Hint := txt;
+    //set Application.Hint as well (issue #0026957)
+    Application.Hint := AppHint;
     Application.ActivateHint(APoint, true);
   end else
     HideCellHintWindow;
@@ -6172,6 +6181,8 @@ begin
         finally
           AllowOutboundEvents := obe;
         end;
+        //if we are not over a cell, and we use cellhint, we need to empty Application.Hint
+        if (p.X < 0) and ([goCellHints, goTruncCellHints]*Options <> []) then Application.Hint := '';
         with FGCache do
           if (MouseCell.X <> p.X) or (MouseCell.Y <> p.Y) then begin
             Application.CancelHint;
