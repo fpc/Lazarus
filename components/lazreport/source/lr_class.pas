@@ -209,8 +209,8 @@ type
     procedure AssignTo(Dest: TPersistent); override;
     procedure Assign(Source: TPersistent); override; //virtual; overload;
 
-    procedure BeginUpdate;
-    procedure EndUpdate;
+    procedure BeginUpdate;virtual;
+    procedure EndUpdate;virtual;
     
     procedure CreateUniqueName;
 
@@ -246,6 +246,7 @@ type
     fFrameTyp  : word;
     FTag: string;
     FURLInfo: string;
+    FFindHighlight : boolean;
     function GetDataField: string;
     function GetLeft: Double;
     function GetStretched: Boolean;
@@ -340,6 +341,7 @@ type
 
     property StreamMode: TfrStreamMode read fStreamMode write fStreamMode;
     property Restrictions:TlrRestrictions read FRestrictions write FRestrictions;
+    property FindHighlight : boolean read FFindHighlight write FFindHighlight;
   published
     property Left: double read GetLeft write SetLeft;
     property Top: double read GetTop write SetTop;
@@ -969,6 +971,8 @@ type
     procedure Add(APage: TfrPage);
     procedure Insert(Index: Integer; APage: TfrPage);
     procedure Delete(Index: Integer);
+
+    procedure ResetFindData;
 
     function DoMouseClick(Index: Integer; pt: TPoint; var AInfo: String): Boolean;
     function DoMouseMove(Index: Integer; pt: TPoint; var Cursor: TCursor; var AInfo: String): TfrView;
@@ -2503,10 +2507,18 @@ var
   fp: TColor;
 begin
   if DisableDrawing then Exit;
-  if (DocMode = dmPrinting) and (FillColor = clNone) then Exit;
-  fp := FillColor;
-  if (DocMode = dmDesigning) and (fp = clNone) then
-    fp := clWhite;
+  if (DocMode = dmPrinting) then
+    if (FillColor = clNone) and (not FFindHighlight) then Exit;
+
+  if FFindHighlight then
+    fp := clSilver
+  else
+  begin
+    fp := FillColor;
+    if (DocMode = dmDesigning) and (fp = clNone) then
+      fp := clWhite;
+  end;
+
   Canvas.Brush.Bitmap := nil;
   Canvas.Brush.Style := bsSolid;
   Canvas.Brush.Color := fp;
@@ -2696,10 +2708,10 @@ begin
   {$ENDIF}
   with Stream do
   begin
-    if StreamMode = smDesigning then
+//    if StreamMode = smDesigning then
     begin
       if frVersion >= 23 then
-        Name := ReadString(Stream)
+        fName := ReadString(Stream)
       else
         CreateUniqueName;
     end;
@@ -2843,7 +2855,7 @@ begin
 
   with Stream do
   begin
-    if StreamMode = smDesigning then
+//    if StreamMode = smDesigning then
       frWriteString(Stream, Name);
 //    Write(x, 18); // this is equal to, but much faster:
     Write(x, 4);
@@ -3278,6 +3290,7 @@ begin
   FDetailReport:='';
   FOnMouseEnter:=TfrScriptStrings.Create;
   FOnMouseLeave:=TfrScriptStrings.Create;
+  FFindHighlight:=false;
 
   Typ := gtMemo;
   FFont := TFont.Create;
@@ -8877,6 +8890,21 @@ begin
   if Pages[Index]^.Stream <> nil then Pages[Index]^.Stream.Free;
   FreeMem(Pages[Index], SizeOf(TfrPageInfo));
   FPages.Delete(Index);
+end;
+
+procedure TfrEMFPages.ResetFindData;
+var
+  i: Integer;
+  j: Integer;
+  P: PfrPageInfo;
+begin
+  for i:=0 to Count - 1 do
+  begin
+    P:=Pages[i];
+    if Assigned(P^.Page) then
+      for j:=0 to P^.Page.Objects.Count - 1 do
+        TfrView(P^.Page.Objects[j]).FindHighlight:=false;
+  end;
 end;
 
 function TfrEMFPages.DoMouseClick(Index: Integer; pt: TPoint; var AInfo: String

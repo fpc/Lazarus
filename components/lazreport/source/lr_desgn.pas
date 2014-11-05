@@ -778,6 +778,7 @@ var
   Lst: TfpList;
 begin
   Lst := Objects;
+  if not Assigned(Lst) then exit;
   for i:=0 to Lst.Count-1 do
   begin
     t := TfrView(Lst[i]);
@@ -5526,6 +5527,7 @@ var
 
 begin
   ClearRedoBuffer;
+  if not Assigned(Objects) then exit;
 
   List := TFpList.Create;
 
@@ -6977,7 +6979,10 @@ end;
 // miscellaneous
 function Objects: TFpList;
 begin
-  Result := frDesigner.Page.Objects;
+  if Assigned(frDesigner) and Assigned(frDesigner.Page) then
+    Result := frDesigner.Page.Objects
+  else
+    Result := nil;
 end;
 
 procedure frSetGlyph(aColor: TColor; sb: TSpeedButton; n: Integer);
@@ -7046,13 +7051,18 @@ function TopSelected: Integer;
 var
   i: Integer;
 begin
-  Result := Objects.Count - 1;
-  for i := Objects.Count - 1 downto 0 do
-    if TfrView(Objects[i]).Selected then
-    begin
-      Result := i;
-      break;
-    end;
+  if Assigned(Objects) then
+  begin
+    Result := Objects.Count - 1;
+    for i := Objects.Count - 1 downto 0 do
+      if TfrView(Objects[i]).Selected then
+      begin
+        Result := i;
+        break;
+      end;
+  end
+  else
+    Result:=-1;
 end;
 
 function frCheckBand(b: TfrBandType): Boolean;

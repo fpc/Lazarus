@@ -783,8 +783,16 @@ end;
 procedure TlrButtonPanel.UpdateControlPosition;
 begin
   X:=2;
-  Y:=OwnerPage.Height - FControl.Height - 4;
-  Dx:=OwnerPage.Width-8;
+  if Assigned(OwnerPage) then
+  begin
+    Y:=OwnerPage.Height - FControl.Height - 4;
+    Dx:=OwnerPage.Width-8;
+  end
+  else
+  begin
+    Y:=2;
+    DX:=FControl.Width;
+  end;
   Dy:=FControl.Height;
 end;
 

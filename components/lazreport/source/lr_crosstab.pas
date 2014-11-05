@@ -163,6 +163,8 @@ type
 
     procedure Print(Stream: TStream); override;
     procedure Draw(aCanvas: TCanvas); override;
+    procedure BeginUpdate; override;
+    procedure EndUpdate; override;
 
     procedure Assign(Source: TPersistent); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
@@ -927,6 +929,32 @@ begin
   aCanvas.Draw(X + dx - 20, Y + dy - 20, lrBMPCrossView);
 end;
 
+procedure TlrCrossView.BeginUpdate;
+begin
+  inherited BeginUpdate;
+  FDataCell.BeginUpdate;
+  FRowTitleCell.BeginUpdate;
+  FRowTotalCell.BeginUpdate;
+  FColTitleCell.BeginUpdate;
+  FColTotalCell.BeginUpdate;
+  FGrandTotalCell.BeginUpdate;
+  FTotalCHCell.BeginUpdate;
+  FTotalRHCell.BeginUpdate;
+end;
+
+procedure TlrCrossView.EndUpdate;
+begin
+  inherited EndUpdate;
+  FDataCell.EndUpdate;
+  FRowTitleCell.EndUpdate;
+  FRowTotalCell.EndUpdate;
+  FColTitleCell.EndUpdate;
+  FColTotalCell.EndUpdate;
+  FGrandTotalCell.EndUpdate;
+  FTotalCHCell.EndUpdate;
+  FTotalRHCell.EndUpdate;
+end;
+
 constructor TlrCrossView.Create(AOwnerPage: TfrPage);
 begin
   inherited Create(AOwnerPage);
@@ -1023,6 +1051,7 @@ begin
   FColumnFields.Text:=XML.GetValue(Path+'ColumnFields/Value', '');
   FRowFields.Text:=XML.GetValue(Path+'RowFields/Value', '');
 
+  BeginUpdate;
   FDataCell.LoadFromXML(XML, Path+'DataCell/');
   FRowTitleCell.LoadFromXML(XML, Path+'RowTitleCell/');
   FRowTotalCell.LoadFromXML(XML, Path+'RowTotalCell/');
@@ -1032,6 +1061,7 @@ begin
 
   FTotalCHCell.LoadFromXML(XML, Path+'TotalCHCell/');
   FTotalRHCell.LoadFromXML(XML, Path+'TotalRHCell/');
+  EndUpdate;
 
   FDataCell.DY:=18;
   FRowTitleCell.DY:=18;
