@@ -2277,9 +2277,9 @@ type
     FWidth: Integer;
     FLeft: Integer;
     FTop: Integer;
-    function GetRight: Integer;
     function IsBitmapStored: Boolean;
     function IsColorStored: Boolean;
+    function GetRight: Integer;
     function GetVisible: Boolean;
     procedure SetBitmap(AValue: TBitmap);
     procedure SetBorderStyle(AValue: TBorderStyle);
@@ -2300,21 +2300,25 @@ type
     cDefMinHeight = 25;
     cDefMinWidth = 100;
     cDefWidth = 180;
+    cDivider: SmallInt = 2;
+    cGrabIndent: SmallInt = 2;
     cHorSpacing = 5;
     cVertSpacing = 3;
   protected
     FControlLeft: Integer;
     FControlTop: Integer;
     FTextWidth: Integer;
+    function CalcControlLeft: Integer;
     function CalcPreferredHeight: Integer;
-    function CalcPrefferedWidth: Integer;
+    function CalcPreferredWidth: Integer;
     procedure CalcTextWidth;
     function GetDisplayName: string; override;
   public
     constructor Create(aCollection: TCollection); override;
     destructor Destroy; override;
-    procedure InvalidateCoolBar(Sender: TObject);
     procedure Assign(aSource: TPersistent); override;
+    procedure AutosizeWidth;
+    procedure InvalidateCoolBar(Sender: TObject);
     property Height: Integer read FHeight;
     property Left: Integer read FLeft;
     property Right: Integer read GetRight;
@@ -2390,8 +2394,6 @@ type
   protected const
     cDefGrabStyle = gsDouble;
     cDefGrabWidth = 10;
-    cDivider: SmallInt = 2;
-    cGrabIndent: SmallInt = 2;
   protected
     FBorderEdges: TEdgeBorders;
     FBorderLeft, FBorderTop, FBorderRight, FBorderBottom: SmallInt;
@@ -2431,10 +2433,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure AutosizeBands;
     procedure EndUpdate; override;
     procedure Invalidate; override;
-    procedure MouseToBandPos(X, Y: Integer; out ABand: Integer; out AGrabber: Boolean);
     procedure InsertControl(AControl: TControl; Index: integer); override;
+    procedure MouseToBandPos(X, Y: Integer; out ABand: Integer; out AGrabber: Boolean);
     procedure RemoveControl(AControl: TControl); override;
   public
     property Align read GetAlign write SetAlign default alTop;

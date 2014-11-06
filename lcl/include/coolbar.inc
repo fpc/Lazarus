@@ -68,6 +68,28 @@ begin
     inherited Assign(aSource);
 end;
 
+procedure TCoolBand.AutosizeWidth;
+var h, w: Integer;
+begin
+  if Assigned(FControl) and FControl.AutoSize then begin
+    FControl.GetPreferredSize(w, h);
+    inc(w, CalcControlLeft+cHorSpacing+cDivider);
+    Width := Math.max(FMinWidth, w);
+  end;
+end;
+
+function TCoolBand.CalcControlLeft: Integer;
+var xHelp: Integer;
+begin
+  Result := cGrabIndent+FCoolBar.GrabWidth+cHorSpacing;
+  xHelp := Result;
+  if (Text <> '') and FCoolBar.ShowText then
+    inc(Result, FCoolBar.Canvas.TextWidth(Text)+cHorSpacing);
+  if Assigned(FCoolBar.Images) and (ImageIndex >= 0) then
+    inc(Result, FCoolBar.Images.Width+cHorSpacing);
+  if Result = xHelp then inc(Result, cHorSpacing);
+end;
+
 function TCoolBand.CalcPreferredHeight: Integer;
 begin
   Result := FMinHeight;
@@ -80,11 +102,11 @@ begin
   //DebugLn('CalcPreferredHeight ', CalcPreferredHeight);
 end;
 
-function TCoolBand.CalcPrefferedWidth: Integer;
+function TCoolBand.CalcPreferredWidth: Integer;
 begin
-  Result := FCoolBar.GrabWidth+2*cHorSpacing;
+  Result := CalcControlLeft;
   if Assigned(Control) then inc(Result, Control.Width+cHorSpacing);
-  if (FText <> '') and FCoolBar.FShowText then inc(Result, FTextWidth+cHorSpacing);
+  inc(Result, cDivider);
   Result := max(FMinWidth, Result);
 end;
 
@@ -443,13 +465,22 @@ begin
   inherited AlignControls(AControl, RemainingClientRect);
 end;
 
+procedure TCustomCoolBar.AutosizeBands;
+var i: Integer;
+begin
+  BeginUpdate;
+  for i := 0 to Bands.Count-1 do
+    Bands[i].AutosizeWidth;
+  EndUpdate;
+end;
+
 procedure TCustomCoolBar.BitmapOrImageListChange(Sender: TObject);
 begin
   Invalidate;
 end;
 
 procedure TCustomCoolBar.CalculateAndAlign;
-var i, x, xHelp, y, aBorder, aCountM1, aHeight, aLeft, aStartIndex, aTop, aWidth: Integer;
+var i, x, y, aBorder, aCountM1, aHeight, aLeft, aStartIndex, aTop, aWidth: Integer;
     aRowEnd: Boolean;
 begin
   if (FUpdateCount > 0) or ([csLoading, csDestroying] * ComponentState <> []) then exit;
@@ -483,7 +514,7 @@ begin
     dec(FUpdateCount);
   end;
   for i := 0 to aCountM1 do begin
-    if (FVisiBands[i].Break or Vertical) or aRowEnd then aLeft := aBorder;  //TODO
+    if (FVisiBands[i].Break or Vertical) or aRowEnd then aLeft := aBorder;
     aHeight := Max(aHeight, FVisiBands[i].CalcPreferredHeight);
     aRowEnd := (i = aCountM1);
     inc(aLeft, FVisiBands[i].Width);
@@ -508,21 +539,15 @@ begin
     FVisiBands[i].FRealLeft := FVisiBands[i].FLeft;
     FVisiBands[i].FTop := aTop;
     if Assigned(FVisiBands[i].Control) then begin
-      x := cGrabIndent+GrabWidth+TCoolBand.cHorSpacing;
-      xHelp := x;
-      if (FVisiBands[i].Text<>'') and FShowText then
-        inc(x, Canvas.TextWidth(FVisiBands[i].Text)+TCoolBand.cHorSpacing);
-      if Assigned(FImages) and (FVisiBands[i].ImageIndex >=0) then
-        inc(x, FImages.Width+TCoolBand.cHorSpacing);
-      if x = xHelp then inc(x, TCoolBand.cHorSpacing);
-      aWidth := FVisiBands[i].Width-x-TCoolBand.cHorSpacing-cDivider;
+      x := FVisiBands[i].CalcControlLeft;
+      aWidth := FVisiBands[i].Width-x-TCoolBand.cHorSpacing-TCoolBand.cDivider;
       y := aTop+(FVisiBands[i].FHeight-FVisiBands[i].Control.Height) div 2;
       if not FRightToLeft then begin
         inc(x, aLeft);
         FVisiBands[i].Control.Left := x;
         FVisiBands[i].FControlLeft := x-aBorder;
       end else begin
-        x := FVisiBands[i].FLeft+cDivider+TCoolBand.cHorSpacing;
+        x := FVisiBands[i].FLeft+TCoolBand.cDivider+TCoolBand.cHorSpacing;
         FVisiBands[i].Control.Left := x;
         FVisiBands[i].FControlLeft := x-FBorderLeft;
       end;
@@ -539,7 +564,7 @@ begin
     end else
       FVisiBands[i].FRealWidth := x;
     if aRowEnd then
-      inc(aTop, FVisiBands[i].FHeight+cDivider);
+      inc(aTop, FVisiBands[i].FHeight+TCoolBand.cDivider);
   end;
   exclude(FWinControlFlags, wcfAligningControls);
 end;
@@ -663,7 +688,7 @@ begin
       BeginUpdate;
       aBand := FBands.Add;
       aBand.Control := AControl;
-      aBand.Width := aBand.CalcPrefferedWidth;
+      aBand.Width := aBand.CalcPreferredWidth;
       EndUpdate;
     end;
   end;
@@ -749,22 +774,25 @@ var aBand: Integer;
 begin
   inherited MouseMove(Shift, X, Y);
   if length(FVisiBands) > 1 then begin
-    if (FDragBand = dbNone) and not FFixedSize then begin
-      MouseToBandPos(X, Y, aBand, aGrabber);
-      if aBand >= 0 then begin
-        if aGrabber and (aBand > 0) and not IsFirstAtRow(aBand) then
-          ChangeCursor(True, True)
-        else
-          if length(FVisiBands) > 1 then ChangeCursor(True, False);
-      end else
-        ChangeCursor(False, False);
-    end else
-      if FDragBand = dbResize then begin
+    case FDragBand of
+      dbNone: begin
+        MouseToBandPos(X, Y, aBand, aGrabber);
+        if aBand >= 0 then begin
+          if aGrabber and (aBand > 0) and not FVisiBands[aBand-1].FixedSize
+             and not FFixedSize and not IsFirstAtRow(aBand) then
+            ChangeCursor(True, True)
+          else
+            if length(FVisiBands) > 1 then ChangeCursor(not FixedOrder, False);
+        end else
+          ChangeCursor(False, False);
+      end;
+      dbResize: begin
         if not FRightToLeft then
           FVisiBands[FDraggedBandIndex-1].Width := X-FDragInitPos-FVisiBands[FDraggedBandIndex-1].FLeft
         else
           FVisiBands[FDraggedBandIndex-1].Width := -X-FDragInitPos+FVisiBands[FDraggedBandIndex-1].FLeft+FVisiBands[FDraggedBandIndex-1].FWidth;
       end;
+    end;
   end;
 end;
 
@@ -775,7 +803,7 @@ begin
   AGrabber := False;
   aCountM1 := length(FVisiBands)-1;
   if aCountM1 >= 0 then begin
-    if Y > (FVisiBands[aCountM1].Top+FVisiBands[aCountM1].Height+cDivider) then
+    if Y > (FVisiBands[aCountM1].Top+FVisiBands[aCountM1].Height+TCoolBand.cDivider) then
       ABand := -1  //new row, i.e. free space below the last row
     else
       for i := 0 to aCountM1 do begin
@@ -1012,9 +1040,9 @@ begin
       end;
       //paint a Grabber
       if not FRightToLeft then
-        x := aLeft+cGrabIndent
+        x := aLeft+TCoolBand.cGrabIndent
       else
-        x := aLeft+FVisiBands[i].Width-GrabWidth-cGrabIndent;
+        x := aLeft+FVisiBands[i].Width-GrabWidth-TCoolBand.cGrabIndent;
       PaintGrabber(Rect(x, aTop+2, x+GrabWidth-1, aTop+FVisiBands[i].FHeight-3));
       if not FRightToLeft then
         x := x+GrabWidth+TCoolBand.cHorSpacing
@@ -1049,7 +1077,7 @@ begin
         then PaintSeparator(aTop+FVisiBands[i].FHeight);
       if not aRowEnd and (i < aCountM1) and (FBandBorderStyle = bsSingle) then begin
         //paint Divider |
-        if not FRightToLeft then x := aLeft-cDivider;
+        if not FRightToLeft then x := aLeft-TCoolBand.cDivider;
         Canvas.Pen.Color := arBevel[not aRaisedBevel];
         Canvas.Line(x+1, aTop+1, x+1, aTop+FVisiBands[i].FHeight-1);
         Canvas.Pen.Color := arBevel[aRaisedBevel];
@@ -1075,7 +1103,7 @@ end;
 function TCustomCoolBar.RowEndHelper(ALeft, AVisibleIdx: Integer): Boolean;
 begin
   Result := FVisiBands[AVisibleIdx+1].Break or Vertical
-    or (ALeft+FVisiBands[AVisibleIdx+1].Width-cDivider >= Width);
+    or (ALeft+FVisiBands[AVisibleIdx+1].Width-TCoolBand.cDivider >= Width);
 end;
 
 procedure TCustomCoolBar.WMSize(var Message: TLMSize);
