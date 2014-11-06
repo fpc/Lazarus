@@ -1045,8 +1045,9 @@ begin
     ThisLine := StringReplace(aLines[i],'-Agas-darwinAssemble','-Agas-darwin Assemble',[]);
     ThisInd := CalcIndentation(ThisLine);
     ThisLine := Trim(ThisLine);
-    if ThisInd = 0 then Continue; //Call if needed: ReadVersion(ThisLine);// Top header lines for compiler version etc.
+    if ThisInd < 2 then Continue; //Call if needed: ReadVersion(ThisLine);// Top header lines for compiler version etc.
     if (ThisLine = '') or (ThisInd > 30)
+    or (ThisLine[1] = '@')
     or (Pos('-? ', ThisLine) > 0)
     or (Pos('-h ', ThisLine) > 0) then Continue;
 
