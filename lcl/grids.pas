@@ -10594,9 +10594,9 @@ procedure TCustomStringGrid.InsertRowWithValues(Index: Integer;
 var
   i: Integer;
 begin
-  InsertColRow(false, Index);
   if Length(Values) > ColCount then
     ColCount := Length(Values);
+  InsertColRow(false, Index);
   for i := 0 to Length(Values)-1 do
     Cells[i, Index] := Values[i];
 end;
