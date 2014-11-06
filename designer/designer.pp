@@ -2777,6 +2777,7 @@ begin
           if NewName <> Current.Name then begin
             Current.Name:=NewName;
             GlobalDesignHook.ComponentRenamed(Current);
+            Modified;
           end;
         end
 
