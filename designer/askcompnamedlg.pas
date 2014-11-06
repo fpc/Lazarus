@@ -81,7 +81,7 @@ end;
 procedure TAskCompNameDialog.FormCreate(Sender: TObject);
 begin
   Caption:=lisChooseName;
-  Label1.Caption:=lisChooseANameForTheNewComponent;
+  Label1.Caption:=lisChooseANameForTheComponent;
   NameEdit.Hint:=lisTheComponentNameMustBeUniqueInAllComponentsOnTheFo;
   OkButton.Caption:=lisMenuOk;
   OkButton.Enabled:=false;

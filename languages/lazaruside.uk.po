@@ -566,6 +566,10 @@ msgstr "Двозначна дія з файлом:"
 msgid "Warn on compile"
 msgstr "Попередж. при компіляції"
 
+#: lazarusidestrconsts.dlganiconforerrorwarninghintisshown
+msgid "An icon for error/warning/hint is shown in front of a message. The same icon shows in source editor gutter in any case."
+msgstr ""
+
 #: lazarusidestrconsts.dlgansicommenttab
 msgid "Ansi (* *)"
 msgstr ""
@@ -581,6 +585,10 @@ msgstr "Включити assert-код"
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Автостворювані форми:"
+
+#: lazarusidestrconsts.dlgautocreateformshint
+msgid "Main .lpr unit creates each form with Application.CreateForm(). They are also freed automatically."
+msgstr ""
 
 #: lazarusidestrconsts.dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
@@ -622,13 +630,13 @@ msgstr "Автом. видаляти порожні методи"
 msgid "Auto rename file lowercase"
 msgstr "Автоперейменування в нижній регістр"
 
-#: lazarusidestrconsts.dlgautosave
-msgid "Auto Save"
-msgstr "Автозбереження"
-
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
 msgstr "Доступні форми:"
+
+#: lazarusidestrconsts.dlgavailableformshint
+msgid "These forms must be created and freed in the program code."
+msgstr ""
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
@@ -686,6 +694,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
 msgstr "Відступ блоку (таби)"
+
+#: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
+msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+msgstr ""
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -795,9 +807,17 @@ msgstr "Рядок з курсором в центрі"
 msgid "Save As - auto rename Pascal files lower case"
 msgstr "Зберегти як - автоперейменування в нижній регістр"
 
+#: lazarusidestrconsts.dlgcheckandautosavefiles
+msgid "Check and Auto Save Files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcheckpackagesonformcreate
 msgid "Check packages on form create"
 msgstr "Перевірити пакунки при створенні форми"
+
+#: lazarusidestrconsts.dlgcheckpackagesonformcreatehint
+msgid "The form may require a package to work. Install such a package automatically."
+msgstr ""
 
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
@@ -1024,6 +1044,10 @@ msgstr "Параметри компілятора"
 msgid "Complete properties"
 msgstr "Завершити властивості"
 
+#: lazarusidestrconsts.dlgcomponentundermousecursorisfirstselected
+msgid "Component under mouse cursor is first selected, then the popup menu commands work on it."
+msgstr ""
+
 #: lazarusidestrconsts.dlgconfigandtarget
 msgid "Config and Target"
 msgstr ""
@@ -1148,6 +1172,10 @@ msgstr "Натискання Ctrl-Середня Кнопка Миші на вк
 msgid "Curly { }"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcurrentlyrespectedbymessageswindow
+msgid "Currently respected by messages window, jump history and search results."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
 msgstr "Курсор за межею рядка"
@@ -1208,10 +1236,6 @@ msgstr "Підказки"
 msgid "Menus - "
 msgstr "Меню - "
 
-#: lazarusidestrconsts.dlgdesktopmisc
-msgid "Misc Options"
-msgstr "Інші Параметри"
-
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
 msgstr "Напрямок"
@@ -1219,6 +1243,10 @@ msgstr "Напрямок"
 #: lazarusidestrconsts.dlgdisableantialiasing
 msgid "Disable anti-aliasing"
 msgstr "Вимкнути згладжування"
+
+#: lazarusidestrconsts.dlgdistancebetweengridpointsissmalleststep
+msgid "Distance between grid points is the smallest step when moving a control."
+msgstr ""
 
 #: lazarusidestrconsts.dlgdividercolordefault
 msgid "Use right margin color"
@@ -1272,6 +1300,10 @@ msgstr "Var/Type"
 msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Var/Type (локальні)"
+
+#: lazarusidestrconsts.dlgdrawcomponentsnamebelowit
+msgid "Draw the component's name below it."
+msgstr ""
 
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
@@ -1461,6 +1493,10 @@ msgstr "Сітка"
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
 msgstr "Мова"
+
+#: lazarusidestrconsts.dlgenvlanguagehint
+msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+msgstr ""
 
 #: lazarusidestrconsts.dlgenvlguidelines
 msgid "Guide lines"
@@ -1684,9 +1720,9 @@ msgstr "Політика вставки процедур"
 msgid "Keep order of procedures"
 msgstr "Залишати порядок процедур"
 
-#: lazarusidestrconsts.dlgfpcpath
-msgid "Compiler path (e.g. %s)"
-msgstr "Шлях до компілятора (%s)"
+#: lazarusidestrconsts.dlgfpcexecutable
+msgid "Compiler executable (e.g. %s)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfpcsrcpath
 msgid "FPC source directory"
@@ -1732,6 +1768,10 @@ msgstr "Колір виділення"
 #: lazarusidestrconsts.dlggridcolor
 msgid "Grid color"
 msgstr "Колір сітки"
+
+#: lazarusidestrconsts.dlggridconsistsofsmalldots
+msgid "Grid consists of small dots which help aligning controls."
+msgstr ""
 
 #: lazarusidestrconsts.dlggridx
 msgid "Grid size X"
@@ -1780,6 +1820,10 @@ msgstr "Ґруповий відкат"
 msgid "Show Guide Lines"
 msgstr "Показувати лінійки"
 
+#: lazarusidestrconsts.dlgguidelineshint
+msgid "When a control is aligned horizontally or vertically with another controls, a blue guide line is shown."
+msgstr ""
+
 #: lazarusidestrconsts.dlggutter
 msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
@@ -1813,6 +1857,10 @@ msgstr "Розміри купи і стеку"
 msgid "Heap size"
 msgstr "Розмір купи"
 
+#: lazarusidestrconsts.dlgheightofonepropertyingrid
+msgid "Height of one property in the grid."
+msgstr ""
+
 #: lazarusidestrconsts.dlgheightpos
 msgid "Height:"
 msgstr "Висота:"
@@ -1821,9 +1869,9 @@ msgstr "Висота:"
 msgid "Hide IDE windows on run"
 msgstr "Приховати вікна IDE при пуску"
 
-#: lazarusidestrconsts.dlghidemessagesicons
-msgid "Hide Messages Icons"
-msgstr "Приховувати Значки Повідомлень"
+#: lazarusidestrconsts.dlghideideonrunhint
+msgid "Do not show the IDE at all while program is running."
+msgstr ""
 
 #: lazarusidestrconsts.dlghidesingletabinnotebook
 msgid "Hide tab in single page windows"
@@ -2064,9 +2112,9 @@ msgctxt "lazarusidestrconsts.dlgmainviewunits"
 msgid "View Project Units"
 msgstr "Показувати Модулі Проекту"
 
-#: lazarusidestrconsts.dlgmakepath
-msgid "Make path"
-msgstr "Шлях до Make"
+#: lazarusidestrconsts.dlgmakeexecutable
+msgid "\"Make\" executable"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
@@ -2218,6 +2266,10 @@ msgstr "Максимум останніх файлів проектів"
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
 msgstr "Змішування методів і властивостей"
+
+#: lazarusidestrconsts.dlgmouseaction
+msgid "Mouse Action"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtn1
 msgid "Single"
@@ -2577,7 +2629,9 @@ msgid "Other optimizations"
 msgstr ""
 
 #: lazarusidestrconsts.dlgotherunitfiles
-msgid "Other unit files (-Fu) (delimiter is semicolon):"
+#, fuzzy
+#| msgid "Other unit files (-Fu) (delimiter is semicolon):"
+msgid "Other unit files (-Fu):"
 msgstr "Інші файли модулів (-Fu) (роздільником є двокрапка):"
 
 #: lazarusidestrconsts.dlgoverwriteblock
@@ -2732,6 +2786,10 @@ msgstr "Використовувати Пакет Програм для запу
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Використовувати manifest-файл для ввімкнення тем (лише Windows)"
 
+#: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
+msgid "Prefer double-click over single-click"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpriorities
 msgid "Priorities"
 msgstr ""
@@ -2871,9 +2929,17 @@ msgstr "Збережений рядок"
 msgid "Save editor info for closed files"
 msgstr "Зберігати відомості про закриті файли"
 
+#: lazarusidestrconsts.dlgsaveeditorinfohint
+msgid "The files are available in the \"Open Recent\" history list."
+msgstr ""
+
 #: lazarusidestrconsts.dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
 msgstr "Зберігати відомості тільки про файли проекту"
+
+#: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
+msgid "Only files that belong to this project."
+msgstr ""
 
 #: lazarusidestrconsts.dlgscope
 msgid "Scope"
@@ -2916,6 +2982,10 @@ msgstr "Пошук ..."
 msgid "Paths"
 msgstr "Шляхи"
 
+#: lazarusidestrconsts.dlgselectallchildcontrols
+msgid "Select all child controls together with their parent."
+msgstr ""
+
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
 msgstr "&Виділений текст"
@@ -2936,9 +3006,9 @@ msgstr "Встановити змінну властивості"
 msgid "Show all units"
 msgstr "Показати всі модулі"
 
-#: lazarusidestrconsts.dlgshowcaps
-msgid "Show component captions"
-msgstr "Назви компонентів"
+#: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
+msgid "Show captions of non-visual components"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -2957,9 +3027,13 @@ msgstr "Показувати умови"
 msgid "Show debug info"
 msgstr "Показувати налагоджувальну інф-ю"
 
-#: lazarusidestrconsts.dlgshowedrhints
-msgid "Show editor hints"
-msgstr "Довідки редактора"
+#: lazarusidestrconsts.dlgshowdesignerhints
+msgid "Show designer hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgshowdesignerhintshint
+msgid "Hint shows control's position or size while moving or resizing it."
+msgstr ""
 
 #: lazarusidestrconsts.dlgshoweverything
 msgid "Show everything"
@@ -2982,10 +3056,18 @@ msgctxt "lazarusidestrconsts.dlgshowhint"
 msgid "Show hints"
 msgstr "Показувати підказки"
 
+#: lazarusidestrconsts.dlgshowingwindows
+msgid "Showing Windows"
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
 msgid "Show line numbers"
 msgstr "Показувати номери рядків"
+
+#: lazarusidestrconsts.dlgshowmessagesicons
+msgid "Show Messages Icons"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
@@ -3038,6 +3120,10 @@ msgstr "Символ попереду (.~pp)"
 #: lazarusidestrconsts.dlgsnapguidelines
 msgid "Snap to Guide Lines"
 msgstr "Защіпнутись за лінійками"
+
+#: lazarusidestrconsts.dlgsnapguidelineshint
+msgid "When a control is close to being aligned with another control, it snaps to the aligned position."
+msgstr ""
 
 #: lazarusidestrconsts.dlgspacenotcosmos
 msgctxt "lazarusidestrconsts.dlgspacenotcosmos"
@@ -4168,6 +4254,10 @@ msgstr "застосовувати прапори побудови (-B) тако
 msgid "Apply conventions"
 msgstr "Застосувати умови"
 
+#: lazarusidestrconsts.lisapplyconventionshint
+msgid "Adjust name extension and character case for platform and file type."
+msgstr ""
+
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
 msgstr "Модуль проекту не може бути використаний іншими пакунками/проектами"
@@ -4185,7 +4275,9 @@ msgid "Ask before saving project's session"
 msgstr "Запитати перед збереженням сеансу проекту"
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
-msgid "Ask for component name after putting it on a designer form"
+#, fuzzy
+#| msgid "Ask for component name after putting it on a designer form"
+msgid "Ask for component name after putting it on a designer form."
 msgstr "Запитати ім'я компоненту після встановлення його на формі дизайнера"
 
 #: lazarusidestrconsts.lisaskforfilenameonnewfile
@@ -4225,9 +4317,9 @@ msgstr "Автоматично"
 msgid "Automatically"
 msgstr "Автоматично"
 
-#: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
-msgid "Automatically convert .lfm files to .lrs include files"
-msgstr "Автоматично конвертувати файли .lfm в файли заголовків .lrs"
+#: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
+msgid "Automatically convert .lfm files to .lrs resource files"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyignoreforselection
 msgid "do not complete selection"
@@ -5090,7 +5182,9 @@ msgstr "Таблиця символів"
 msgid "Check All"
 msgstr "Відмітити все"
 
-#: lazarusidestrconsts.lischeckfordiskfilechangesviacontentratherthantimesta
+#: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "Перевіряти зміни файлу на диску за вмістом а не міткою часу"
 
@@ -5136,9 +5230,9 @@ msgstr "Виберіть посилання FPDoc"
 msgid "Choose a key ..."
 msgstr "Виберіть клавішу ..."
 
-#: lazarusidestrconsts.lischooseanameforthenewcomponent
-msgid "Choose a name for the new component"
-msgstr "Виберіть ім'я для нового компоненту"
+#: lazarusidestrconsts.lischooseanameforthecomponent
+msgid "Choose a name for the component"
+msgstr ""
 
 #: lazarusidestrconsts.lischooseanexamplefile
 msgid "Choose an example file"
@@ -5154,17 +5248,17 @@ msgstr "Виберіть файл повідомлень FPC"
 msgid "Choose a Pascal file for indentation examples"
 msgstr "Виберіть файл Паскаля для прикладу відступів"
 
+#: lazarusidestrconsts.lischoosecompilerexecutable
+msgid "Choose compiler executable (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lischoosecompilermessages
 msgid "Choose compiler messages file"
 msgstr "Виберіть файл повідомлень компілятора"
 
-#: lazarusidestrconsts.lischoosecompilerpath
-msgid "Choose compiler filename (%s)"
-msgstr "Виберіть файл компілятора (%s)"
-
-#: lazarusidestrconsts.lischoosedebuggerpath
-msgid "Choose debugger filename"
-msgstr "Виберіть файл налагоджувача"
+#: lazarusidestrconsts.lischoosedebuggerexecutable
+msgid "Choose debugger executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosedelphipackage
 msgid "Choose Delphi package (*.dpk)"
@@ -5190,9 +5284,9 @@ msgstr "Виберіть теку коду FPC"
 msgid "Choose Lazarus Directory"
 msgstr "Виберіть теку Lazarus"
 
-#: lazarusidestrconsts.lischoosemakepath
-msgid "Choose make path"
-msgstr "Виберіть шлях make"
+#: lazarusidestrconsts.lischoosemakeexecutable
+msgid "Choose \"make\" executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosename
 msgid "Choose name"
@@ -6906,6 +7000,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "Поточний"
 
+#: lazarusidestrconsts.liscurrentlclwidgetset
+msgid "Current LCL widgetset: \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
 msgstr "Поточний стан: "
@@ -7433,9 +7531,17 @@ msgstr "Видалити значення %s"
 msgid "Deleting of file \"%s\" failed."
 msgstr "Видалення файлу  %s%s%s не вдалося."
 
+#: lazarusidestrconsts.lisdelimiterissemicolon
+msgid "Delimiter is semicolon."
+msgstr ""
+
 #: lazarusidestrconsts.lisdelphi
 msgid "Delphi"
 msgstr "Delphi"
+
+#: lazarusidestrconsts.lisdelphicompatibleresources
+msgid "Delphi compatible resources. Recommended."
+msgstr ""
 
 #: lazarusidestrconsts.lisdelphipackage
 msgid "Delphi package"
@@ -8025,6 +8131,10 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Доступний"
 
+#: lazarusidestrconsts.lisenabledonlyforpackages
+msgid "Enabled only for packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
 msgstr ""
@@ -8079,10 +8189,6 @@ msgstr ""
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "Змінна оточення, ім'я як параметр"
-
-#: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
-msgid "Jump from message to source line on double click (otherwise: single click)"
-msgstr "Перейти від повідомл. до рядка коду подвійним клацанням(інакше: однинарним)"
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
@@ -8475,7 +8581,9 @@ msgstr ""
 msgid "Reduce designer painting"
 msgstr "Обмежити мал. дизайнера"
 
-#: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
+#: lazarusidestrconsts.lisfepaintdesigneritemsonidlehint
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisfepaintdesigneritemsonidlehint"
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "Малювати елементи дизайну тільки в паузах (зменшує навантаження на повільних машинах)"
 
@@ -8817,7 +8925,9 @@ msgid "FPC messages: Appendix"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
-msgid "FPC resources"
+#, fuzzy
+#| msgid "FPC resources"
+msgid "FPC resources (.res)"
 msgstr "Ресурси FPC"
 
 #: lazarusidestrconsts.lisfpcsources
@@ -9091,6 +9201,10 @@ msgstr "Підказка"
 msgid "Hint: A default value can be defined in the conditionals."
 msgstr "Порада: Типове значення може бути задане в умовних."
 
+#: lazarusidestrconsts.lishintatpropertysnameshowsdescription
+msgid "A hint at property's name shows its description."
+msgstr ""
+
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "Порада: Перевірте чи два пакунки містять модуль з одним іменем."
@@ -9159,6 +9273,10 @@ msgstr "HTML шлях до FPC документації"
 msgid "Horizontal"
 msgstr "Горизонтальний"
 
+#: lazarusidestrconsts.lishorizontallinesbetweenproperties
+msgid "Horizontal lines between properties."
+msgstr ""
+
 #: lazarusidestrconsts.lisid
 msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
@@ -9199,6 +9317,10 @@ msgstr "УВАГА: невірна назва модуля %s, пакунок=%s
 #: lazarusidestrconsts.lisidemacros
 msgid "IDE Macros"
 msgstr "Макрос IDE"
+
+#: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
+msgid "The IDE maintains the title in main unit."
+msgstr ""
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -9284,6 +9406,10 @@ msgstr "Зберегти в файл"
 
 #: lazarusidestrconsts.lisifnotchecked
 msgid "If not checked:"
+msgstr ""
+
+#: lazarusidestrconsts.lisifonlysessioninfochangedthenask
+msgid "If only the session info changed, ask about saving it."
 msgstr ""
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
@@ -10722,7 +10848,9 @@ msgid "lpk is missing"
 msgstr ""
 
 #: lazarusidestrconsts.lislrsincludefiles
-msgid "lrs include files"
+#, fuzzy
+#| msgid "lrs include files"
+msgid "Lazarus resources (.lrs) include files"
 msgstr "Заголовочні файли lrs"
 
 #: lazarusidestrconsts.lismacpascal
@@ -10756,6 +10884,10 @@ msgstr "Головний модуль має секцію Uses, що вміщу�
 #: lazarusidestrconsts.lismainunitispascalsource
 msgid "Main unit is Pascal source"
 msgstr "Основний модуль в кодах Паскаля"
+
+#: lazarusidestrconsts.lismainunitispascalsourcehint
+msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
+msgstr ""
 
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
@@ -12414,6 +12546,10 @@ msgstr "Створити новий проект"
 msgid "Number of files to convert: %s"
 msgstr "К-сть файлів для конвертування: %s"
 
+#: lazarusidestrconsts.lisobjectinspectorbecomesvisible
+msgid "Object Inspector becomes visible when components are selected in designer."
+msgstr ""
+
 #: lazarusidestrconsts.lisobjectpascaldefault
 msgid "Object Pascal - default"
 msgstr "Object Pascal - типово"
@@ -12425,10 +12561,6 @@ msgstr "шлях до об'єкта"
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "Перейти на вкладку Обране Інсп. Об'єктів"
-
-#: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestabafterasking
-msgid "Switch to Object Inspector Favorites tab after asking for component name"
-msgstr "Перейти на вкладку Обране Інспектора Об'єктів після запиту імені компонента"
 
 #: lazarusidestrconsts.lisoff
 msgid "? (Off)"
@@ -12570,6 +12702,10 @@ msgstr "Відкрити як XML-файл"
 #: lazarusidestrconsts.lisopendesigneronopenunit
 msgid "Open designer on open unit"
 msgstr "Відкривати дизайнер при відкритті модуля"
+
+#: lazarusidestrconsts.lisopendesigneronopenunithint
+msgid "Form is loaded in designer always when source unit is opened."
+msgstr ""
 
 #: lazarusidestrconsts.lisopenexistingfile
 msgid "Open existing file"
@@ -14160,7 +14296,9 @@ msgid "Pointer"
 msgstr "Вказівник"
 
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
-msgid "Save in IDE config directory"
+#, fuzzy
+#| msgid "Save in IDE config directory"
+msgid "Save in .lps file in IDE config directory"
 msgstr "Зберегти в теці графічної оболонки"
 
 #: lazarusidestrconsts.lisposaveinlpifil
@@ -14171,17 +14309,13 @@ msgstr "Зберегти в файлі .lpi"
 msgid "Save in .lps file in project directory"
 msgstr "Зберегти в файлі .lpi в теці проекту"
 
-#: lazarusidestrconsts.lisposavesessionfoldstate
-msgid "Save fold info"
-msgstr "Зберегти згорток до"
-
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "Зберегти інформацію про сесію в"
 
-#: lazarusidestrconsts.lisposavesessionjumphistory
-msgid "Save jump history"
-msgstr "Зберегти історію переходів"
+#: lazarusidestrconsts.lisposavesessioninformationinhint
+msgid ".lpi is the project main info file, .lps is a separate file for session data only."
+msgstr ""
 
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
@@ -14417,6 +14551,10 @@ msgstr "Інформація про проект"
 msgid "Project is runnable"
 msgstr "Проект є виконуваним"
 
+#: lazarusidestrconsts.lisprojectisrunnablehint
+msgid "Generates a binary executable which can be run."
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectmacro
 msgctxt "lazarusidestrconsts.lisprojectmacro"
 msgid "Project"
@@ -14539,6 +14677,10 @@ msgstr "Неможливо записати файл стану в проект 
 msgid "Always build (even if nothing changed)"
 msgstr "Завжди будувати (навіть якщо нічого не мінялось)"
 
+#: lazarusidestrconsts.lisprojoptsalwaysbuildhint
+msgid "May be needed if there is a bug in dependency check, normally not needed."
+msgstr ""
+
 #: lazarusidestrconsts.lisprojoptserror
 msgctxt "lazarusidestrconsts.lisprojoptserror"
 msgid "Error"
@@ -14595,6 +14737,10 @@ msgstr "Неправильний фільтр включень"
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr "Зберігати .lrs файли в кінцеву теку"
+
+#: lazarusidestrconsts.lisputlrsfilesinoutputdirectoryhint
+msgid "The resource will be available for FPC."
+msgstr ""
 
 #: lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas
 #, fuzzy
@@ -14900,10 +15046,6 @@ msgstr "Помилка заміни"
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
-#: lazarusidestrconsts.lisrequiresfpc24orabovelikedelphiresources
-msgid "Requires FPC 2.4 or above. Like Delphi resources"
-msgstr "Вимагає FPC 2.4 чи новіше. Як ресурси Delphi"
-
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
 msgstr "Пересканувати"
@@ -15182,6 +15324,26 @@ msgstr "Зберегти проект %s (*%s)"
 msgid "Save session changes to project %s?"
 msgstr "Зберегти зміни сеансу до проекту %s?"
 
+#: lazarusidestrconsts.lissavesessionfoldstate
+#, fuzzy
+msgctxt "lazarusidestrconsts.lissavesessionfoldstate"
+msgid "Save fold info"
+msgstr "Зберегти згорток до"
+
+#: lazarusidestrconsts.lissavesessionfoldstatehint
+msgid "Code editor supports folding (temporarily hiding) blocks of code."
+msgstr ""
+
+#: lazarusidestrconsts.lissavesessionjumphistory
+#, fuzzy
+msgctxt "lazarusidestrconsts.lissavesessionjumphistory"
+msgid "Save jump history"
+msgstr "Зберегти історію переходів"
+
+#: lazarusidestrconsts.lissavesessionjumphistoryhint
+msgid "Ctrl-Click on an identifier in code editor is stored in jump history."
+msgstr ""
+
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
 msgstr "Зберегти налаштування"
@@ -15242,9 +15404,9 @@ msgstr "Шукати елемент довідки:"
 msgid "Select a node"
 msgstr "Виберіть елемент"
 
-#: lazarusidestrconsts.lisselectanotherlclwidgetsetmacrolclwidgettype
-msgid "Select another LCL widget set (macro LCLWidgetType)"
-msgstr "Вибрати інший набір віджетів LCL (макрос LCLWidgetType)"
+#: lazarusidestrconsts.lisselectanotherlclwidgetset
+msgid "Select another LCL widgetset (macro LCLWidgetType)"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -15378,7 +15540,9 @@ msgid "Show empty units/packages"
 msgstr "Показати порожні модулі/пакунки"
 
 #: lazarusidestrconsts.lisshowglyphsfor
-msgid "Show Glyphs for:"
+#, fuzzy
+#| msgid "Show Glyphs for:"
+msgid "Show Glyphs for"
 msgstr "Показувати Знаки для:"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
@@ -15434,6 +15598,14 @@ msgstr ""
 msgid "Show relative paths"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowsallcontrolsintreehierarchy
+msgid "Shows all controls in tree hierarchy."
+msgstr ""
+
+#: lazarusidestrconsts.lisshowsdescriptionforselectedproperty
+msgid "A box at the bottom shows description for the selected property."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"
 msgstr "Показати діалог налаштування найбільш важливих параметрів"
@@ -15443,7 +15615,9 @@ msgid "Show special characters"
 msgstr "Показувати спеціальні символи"
 
 #: lazarusidestrconsts.lisshowstatusbarinobjectinspector
-msgid "Show status bar"
+#, fuzzy
+#| msgid "Show status bar"
+msgid "Show statusbar"
 msgstr "Показувати рядок стану"
 
 #: lazarusidestrconsts.lisshowunits
@@ -15505,6 +15679,10 @@ msgstr "Пропустити файл і продовжити завантаже
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
 msgstr "Пропустити завантаження останнього проекту"
+
+#: lazarusidestrconsts.lisslowerbutmoreaccurate
+msgid "Slower but more accurate."
+msgstr ""
 
 #: lazarusidestrconsts.lissmallerratherthanfaster
 msgid "Smaller rather than faster"
@@ -15644,6 +15822,10 @@ msgstr "Запустити IDE"
 msgid "Start with a new project"
 msgstr "Розпочати з нового проекту"
 
+#: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
+msgid "Statusbar shows the property's name and the class where it is published."
+msgstr ""
+
 #: lazarusidestrconsts.lisstop
 msgctxt "lazarusidestrconsts.lisstop"
 msgid "Stop"
@@ -15750,6 +15932,10 @@ msgstr "Змінювання системної змінної"
 
 #: lazarusidestrconsts.lisswitchfiltersettings
 msgid "Switch Filter Settings"
+msgstr ""
+
+#: lazarusidestrconsts.lisswitchtofavoritestabafterasking
+msgid "Switch to Favorites tab after asking for component name."
 msgstr ""
 
 #: lazarusidestrconsts.lissyntaxmode
@@ -16434,6 +16620,10 @@ msgstr "Ця функція потребує відкритий .lfm файл в
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
 msgstr "це довідкове повідомлення"
+
+#: lazarusidestrconsts.listhisistestprojectfordesigntimepackage
+msgid "This is a test project for a design time package, testing it outside the IDE."
+msgstr ""
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 #, fuzzy
@@ -17356,6 +17546,7 @@ msgid "Use and close"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Викор рядки Ansi"
@@ -17371,6 +17562,10 @@ msgstr ""
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
 msgstr "Викор. пакунки часу розробки"
+
+#: lazarusidestrconsts.lisusedforautocreatedforms
+msgid "Used for auto-created forms."
+msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use exclude filter"
@@ -17463,6 +17658,10 @@ msgstr "Змінна: "
 #: lazarusidestrconsts.lisvalues
 msgid "Values"
 msgstr "Змінні"
+
+#: lazarusidestrconsts.lisvaluesthatarechangedfromdefault
+msgid "Values that are changed from the default are stored in .lfm file and are shown differently in Object Inspector."
+msgstr ""
 
 #: lazarusidestrconsts.lisvariable
 msgctxt "lazarusidestrconsts.lisvariable"
@@ -17817,6 +18016,10 @@ msgstr ""
 msgid "Automatically increase build number"
 msgstr "Автоматично збільшувати номер білду"
 
+#: lazarusidestrconsts.rsautomaticallyincreasebuildnumberhint
+msgid "Increased every time the project is compiled."
+msgstr ""
+
 #: lazarusidestrconsts.rsbuild
 msgid "&Build:"
 msgstr "По&будувати:"
@@ -17860,6 +18063,10 @@ msgstr "Знайдено, але тут не вказано: "
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
 msgstr "Параметри i18n"
+
+#: lazarusidestrconsts.rsincludeversioninfohint
+msgid "Version info is stored if the executable format supports it."
+msgstr ""
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"

@@ -574,6 +574,10 @@ msgstr "Przy dwuznacznej nazwie pliku:"
 msgid "Warn on compile"
 msgstr "Ostrzegaj przed kompilacją"
 
+#: lazarusidestrconsts.dlganiconforerrorwarninghintisshown
+msgid "An icon for error/warning/hint is shown in front of a message. The same icon shows in source editor gutter in any case."
+msgstr ""
+
 #: lazarusidestrconsts.dlgansicommenttab
 msgid "Ansi (* *)"
 msgstr ""
@@ -591,6 +595,10 @@ msgstr "Dołącz asercje (-Sa)"
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "Automatycznie twórz:"
+
+#: lazarusidestrconsts.dlgautocreateformshint
+msgid "Main .lpr unit creates each form with Application.CreateForm(). They are also freed automatically."
+msgstr ""
 
 #: lazarusidestrconsts.dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
@@ -631,15 +639,13 @@ msgstr "Automatycznie usuwaj puste metody"
 msgid "Auto rename file lowercase"
 msgstr "Automatycznie zmień nazwę na małe litery"
 
-#: lazarusidestrconsts.dlgautosave
-#, fuzzy
-#| msgid "Auto save"
-msgid "Auto Save"
-msgstr "Automatyczne zapisywanie"
-
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
 msgstr "Dostępne formularze:"
+
+#: lazarusidestrconsts.dlgavailableformshint
+msgid "These forms must be created and freed in the program code."
+msgstr ""
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
@@ -701,6 +707,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
 msgstr "Wcięcie bloku (tabulatorem)"
+
+#: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
+msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
+msgstr ""
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -816,8 +826,16 @@ msgstr "Wyśrodkuj aktualny wiersz"
 msgid "Save As - auto rename Pascal files lower case"
 msgstr "Zapisz jako - automatyczna zmiana nazwy na małe litery"
 
+#: lazarusidestrconsts.dlgcheckandautosavefiles
+msgid "Check and Auto Save Files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcheckpackagesonformcreate
 msgid "Check packages on form create"
+msgstr ""
+
+#: lazarusidestrconsts.dlgcheckpackagesonformcreatehint
+msgid "The form may require a package to work. Install such a package automatically."
 msgstr ""
 
 #: lazarusidestrconsts.dlgchscodetempl
@@ -1055,6 +1073,10 @@ msgstr "Opcje kompilatora"
 msgid "Complete properties"
 msgstr "Uzupełniaj właściwości"
 
+#: lazarusidestrconsts.dlgcomponentundermousecursorisfirstselected
+msgid "Component under mouse cursor is first selected, then the popup menu commands work on it."
+msgstr ""
+
 #: lazarusidestrconsts.dlgconfigandtarget
 msgid "Config and Target"
 msgstr ""
@@ -1193,6 +1215,10 @@ msgstr ""
 msgid "Curly { }"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcurrentlyrespectedbymessageswindow
+msgid "Currently respected by messages window, jump history and search results."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
 msgstr "Kursor poza końcem linii"
@@ -1257,10 +1283,6 @@ msgstr "Podpowiedzi"
 msgid "Menus - "
 msgstr "Menu -"
 
-#: lazarusidestrconsts.dlgdesktopmisc
-msgid "Misc Options"
-msgstr "Różne opcje"
-
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
 msgstr "Kierunek"
@@ -1268,6 +1290,10 @@ msgstr "Kierunek"
 #: lazarusidestrconsts.dlgdisableantialiasing
 msgid "Disable anti-aliasing"
 msgstr "Wyłącz wygładzanie"
+
+#: lazarusidestrconsts.dlgdistancebetweengridpointsissmalleststep
+msgid "Distance between grid points is the smallest step when moving a control."
+msgstr ""
 
 #: lazarusidestrconsts.dlgdividercolordefault
 msgid "Use right margin color"
@@ -1321,6 +1347,10 @@ msgstr ""
 msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "Var/Type (lokalne)"
+
+#: lazarusidestrconsts.dlgdrawcomponentsnamebelowit
+msgid "Draw the component's name below it."
+msgstr ""
 
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
@@ -1514,6 +1544,10 @@ msgstr "Siatka"
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
 msgstr "Język"
+
+#: lazarusidestrconsts.dlgenvlanguagehint
+msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+msgstr ""
 
 #: lazarusidestrconsts.dlgenvlguidelines
 msgid "Guide lines"
@@ -1748,9 +1782,9 @@ msgstr "Zasady wstawiania procedur"
 msgid "Keep order of procedures"
 msgstr "Zachowaj kolejność procedur"
 
-#: lazarusidestrconsts.dlgfpcpath
-msgid "Compiler path (e.g. %s)"
-msgstr "Ścieżka kompilatora (%s)"
+#: lazarusidestrconsts.dlgfpcexecutable
+msgid "Compiler executable (e.g. %s)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfpcsrcpath
 msgid "FPC source directory"
@@ -1801,6 +1835,10 @@ msgstr "Kolor paska ikon"
 msgid "Grid color"
 msgstr "Kolor siatki"
 
+#: lazarusidestrconsts.dlggridconsistsofsmalldots
+msgid "Grid consists of small dots which help aligning controls."
+msgstr ""
+
 #: lazarusidestrconsts.dlggridx
 msgid "Grid size X"
 msgstr "Rozmiar siatki X"
@@ -1848,6 +1886,10 @@ msgstr ""
 msgid "Show Guide Lines"
 msgstr "Pokaż linie naprowadzające"
 
+#: lazarusidestrconsts.dlgguidelineshint
+msgid "When a control is aligned horizontally or vertically with another controls, a blue guide line is shown."
+msgstr ""
+
 #: lazarusidestrconsts.dlggutter
 msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
@@ -1883,6 +1925,10 @@ msgstr "Rozmiar sterty i stosu"
 msgid "Heap size"
 msgstr "Rozmiar sterty"
 
+#: lazarusidestrconsts.dlgheightofonepropertyingrid
+msgid "Height of one property in the grid."
+msgstr ""
+
 #: lazarusidestrconsts.dlgheightpos
 msgid "Height:"
 msgstr "Wysokość"
@@ -1891,9 +1937,9 @@ msgstr "Wysokość"
 msgid "Hide IDE windows on run"
 msgstr "Ukryj okna IDE przy uruchomieniu"
 
-#: lazarusidestrconsts.dlghidemessagesicons
-msgid "Hide Messages Icons"
-msgstr "Ukryj ikony komunikatów"
+#: lazarusidestrconsts.dlghideideonrunhint
+msgid "Do not show the IDE at all while program is running."
+msgstr ""
 
 #: lazarusidestrconsts.dlghidesingletabinnotebook
 msgid "Hide tab in single page windows"
@@ -2148,9 +2194,9 @@ msgctxt "lazarusidestrconsts.dlgmainviewunits"
 msgid "View Project Units"
 msgstr "Pokaż moduły projektu"
 
-#: lazarusidestrconsts.dlgmakepath
-msgid "Make path"
-msgstr "Ścieżka programu Make"
+#: lazarusidestrconsts.dlgmakeexecutable
+msgid "\"Make\" executable"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
@@ -2310,6 +2356,10 @@ msgstr "Liczba niedawno otwartych projektów"
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
 msgstr "Mieszanie metod i właściwości"
+
+#: lazarusidestrconsts.dlgmouseaction
+msgid "Mouse Action"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtn1
 msgid "Single"
@@ -2539,6 +2589,7 @@ msgid "Text"
 msgstr "Tekst"
 
 #: lazarusidestrconsts.dlgmouseoptnodeselect
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
 msgid "Selection"
 msgstr "Wybór"
@@ -2677,7 +2728,9 @@ msgid "Other optimizations"
 msgstr "Pozostałe optymalizacje"
 
 #: lazarusidestrconsts.dlgotherunitfiles
-msgid "Other unit files (-Fu) (delimiter is semicolon):"
+#, fuzzy
+#| msgid "Other unit files (-Fu) (delimiter is semicolon):"
+msgid "Other unit files (-Fu):"
 msgstr "Pozostałe katalogi modułów (-Fu) (średnik jest separatorem):"
 
 #: lazarusidestrconsts.dlgoverwriteblock
@@ -2846,6 +2899,10 @@ msgstr "Użyj Zestawu Aplikacji do uruchomienia i odpluskiwania (dot. systemu Da
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "Użyj pliku manifest aby odblokować kompozycje"
 
+#: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
+msgid "Prefer double-click over single-click"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpriorities
 msgid "Priorities"
 msgstr "Priorytety"
@@ -3004,9 +3061,17 @@ msgstr ""
 msgid "Save editor info for closed files"
 msgstr "Zapisuj informację edytora dla zamykanych plików"
 
+#: lazarusidestrconsts.dlgsaveeditorinfohint
+msgid "The files are available in the \"Open Recent\" history list."
+msgstr ""
+
 #: lazarusidestrconsts.dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
 msgstr "Zapisuj informację edytora tylko dla plików projektu"
+
+#: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
+msgid "Only files that belong to this project."
+msgstr ""
 
 #: lazarusidestrconsts.dlgscope
 msgid "Scope"
@@ -3053,6 +3118,10 @@ msgstr "Wyszukiwanie..."
 msgid "Paths"
 msgstr "Ścieżki"
 
+#: lazarusidestrconsts.dlgselectallchildcontrols
+msgid "Select all child controls together with their parent."
+msgstr ""
+
 #: lazarusidestrconsts.dlgselectedtext
 #, fuzzy
 #| msgid "&Selected Text"
@@ -3075,9 +3144,9 @@ msgstr "Zmienna właściwości"
 msgid "Show all units"
 msgstr ""
 
-#: lazarusidestrconsts.dlgshowcaps
-msgid "Show component captions"
-msgstr "Napisy na komponentach"
+#: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
+msgid "Show captions of non-visual components"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -3096,9 +3165,13 @@ msgstr ""
 msgid "Show debug info"
 msgstr ""
 
-#: lazarusidestrconsts.dlgshowedrhints
-msgid "Show editor hints"
-msgstr "Podpowiedzi edytora"
+#: lazarusidestrconsts.dlgshowdesignerhints
+msgid "Show designer hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgshowdesignerhintshint
+msgid "Hint shows control's position or size while moving or resizing it."
+msgstr ""
 
 #: lazarusidestrconsts.dlgshoweverything
 msgid "Show everything"
@@ -3123,10 +3196,18 @@ msgctxt "lazarusidestrconsts.dlgshowhint"
 msgid "Show hints"
 msgstr "Pokaż wzmianki"
 
+#: lazarusidestrconsts.dlgshowingwindows
+msgid "Showing Windows"
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
 msgid "Show line numbers"
 msgstr "Wyświetlaj numery wierszy"
+
+#: lazarusidestrconsts.dlgshowmessagesicons
+msgid "Show Messages Icons"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshownotes
 #, fuzzy
@@ -3183,6 +3264,10 @@ msgstr "Przedrostek (~.pp)"
 #: lazarusidestrconsts.dlgsnapguidelines
 msgid "Snap to Guide Lines"
 msgstr "Przyciągaj do linii naprowadzających"
+
+#: lazarusidestrconsts.dlgsnapguidelineshint
+msgid "When a control is close to being aligned with another control, it snaps to the aligned position."
+msgstr ""
 
 #: lazarusidestrconsts.dlgspacenotcosmos
 msgctxt "lazarusidestrconsts.dlgspacenotcosmos"
@@ -4337,6 +4422,10 @@ msgstr ""
 msgid "Apply conventions"
 msgstr ""
 
+#: lazarusidestrconsts.lisapplyconventionshint
+msgid "Adjust name extension and character case for platform and file type."
+msgstr ""
+
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
 msgstr ""
@@ -4354,7 +4443,7 @@ msgid "Ask before saving project's session"
 msgstr "Pytaj przed zapisem sesji projektu"
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
-msgid "Ask for component name after putting it on a designer form"
+msgid "Ask for component name after putting it on a designer form."
 msgstr ""
 
 #: lazarusidestrconsts.lisaskforfilenameonnewfile
@@ -4394,8 +4483,8 @@ msgstr ""
 msgid "Automatically"
 msgstr ""
 
-#: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
-msgid "Automatically convert .lfm files to .lrs include files"
+#: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
+msgid "Automatically convert .lfm files to .lrs resource files"
 msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyignoreforselection
@@ -5259,7 +5348,9 @@ msgstr "Tablica znaków"
 msgid "Check All"
 msgstr "Zaznacz wszystkie"
 
-#: lazarusidestrconsts.lischeckfordiskfilechangesviacontentratherthantimesta
+#: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
+#, fuzzy
+msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "Sprawdzanie zmian pliku na dysku poprzez zawartość a nie znacznik czasu"
 
@@ -5305,8 +5396,8 @@ msgstr ""
 msgid "Choose a key ..."
 msgstr ""
 
-#: lazarusidestrconsts.lischooseanameforthenewcomponent
-msgid "Choose a name for the new component"
+#: lazarusidestrconsts.lischooseanameforthecomponent
+msgid "Choose a name for the component"
 msgstr ""
 
 #: lazarusidestrconsts.lischooseanexamplefile
@@ -5321,17 +5412,17 @@ msgstr ""
 msgid "Choose a Pascal file for indentation examples"
 msgstr ""
 
+#: lazarusidestrconsts.lischoosecompilerexecutable
+msgid "Choose compiler executable (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lischoosecompilermessages
 msgid "Choose compiler messages file"
 msgstr ""
 
-#: lazarusidestrconsts.lischoosecompilerpath
-msgid "Choose compiler filename (%s)"
+#: lazarusidestrconsts.lischoosedebuggerexecutable
+msgid "Choose debugger executable"
 msgstr ""
-
-#: lazarusidestrconsts.lischoosedebuggerpath
-msgid "Choose debugger filename"
-msgstr "Wybierz nazwę pliku odpluskwiacza"
 
 #: lazarusidestrconsts.lischoosedelphipackage
 msgid "Choose Delphi package (*.dpk)"
@@ -5357,8 +5448,8 @@ msgstr "Wybierz katalog źródeł FPC"
 msgid "Choose Lazarus Directory"
 msgstr "Wybierz katalog Lazarusa"
 
-#: lazarusidestrconsts.lischoosemakepath
-msgid "Choose make path"
+#: lazarusidestrconsts.lischoosemakeexecutable
+msgid "Choose \"make\" executable"
 msgstr ""
 
 #: lazarusidestrconsts.lischoosename
@@ -7059,6 +7150,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr ""
 
+#: lazarusidestrconsts.liscurrentlclwidgetset
+msgid "Current LCL widgetset: \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
 msgstr ""
@@ -7578,8 +7673,16 @@ msgstr ""
 msgid "Deleting of file \"%s\" failed."
 msgstr "Nie można usunąć pliku %s%s%s"
 
+#: lazarusidestrconsts.lisdelimiterissemicolon
+msgid "Delimiter is semicolon."
+msgstr ""
+
 #: lazarusidestrconsts.lisdelphi
 msgid "Delphi"
+msgstr ""
+
+#: lazarusidestrconsts.lisdelphicompatibleresources
+msgid "Delphi compatible resources. Recommended."
 msgstr ""
 
 #: lazarusidestrconsts.lisdelphipackage
@@ -8162,6 +8265,10 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "Włączone"
 
+#: lazarusidestrconsts.lisenabledonlyforpackages
+msgid "Enabled only for packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
 msgstr ""
@@ -8214,10 +8321,6 @@ msgstr "Wpisz nową nazwę makra \"%s\""
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr ""
-
-#: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
-msgid "Jump from message to source line on double click (otherwise: single click)"
-msgstr "Podwójne kliknięcie dla przejścia z okna komunikatów do linii kodu (jeżeli nie: pojedyncze)"
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
@@ -8608,7 +8711,8 @@ msgstr ""
 msgid "Reduce designer painting"
 msgstr ""
 
-#: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
+#: lazarusidestrconsts.lisfepaintdesigneritemsonidlehint
+msgctxt "lazarusidestrconsts.lisfepaintdesigneritemsonidlehint"
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr ""
 
@@ -8952,7 +9056,9 @@ msgid "FPC messages: Appendix"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
-msgid "FPC resources"
+#, fuzzy
+#| msgid "FPC resources"
+msgid "FPC resources (.res)"
 msgstr "zasoby FPC"
 
 #: lazarusidestrconsts.lisfpcsources
@@ -9227,6 +9333,10 @@ msgstr "Podpowiedź"
 msgid "Hint: A default value can be defined in the conditionals."
 msgstr ""
 
+#: lazarusidestrconsts.lishintatpropertysnameshowsdescription
+msgid "A hint at property's name shows its description."
+msgstr ""
+
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr ""
@@ -9295,6 +9405,10 @@ msgstr "Ścieżka FPC Doc HTML"
 msgid "Horizontal"
 msgstr "Poziomo"
 
+#: lazarusidestrconsts.lishorizontallinesbetweenproperties
+msgid "Horizontal lines between properties."
+msgstr ""
+
 #: lazarusidestrconsts.lisid
 msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
@@ -9334,6 +9448,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisidemacros
 msgid "IDE Macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
+msgid "The IDE maintains the title in main unit."
 msgstr ""
 
 #: lazarusidestrconsts.lisidentifier
@@ -9418,6 +9536,10 @@ msgstr "Zapisz do pliku"
 
 #: lazarusidestrconsts.lisifnotchecked
 msgid "If not checked:"
+msgstr ""
+
+#: lazarusidestrconsts.lisifonlysessioninfochangedthenask
+msgid "If only the session info changed, ask about saving it."
 msgstr ""
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
@@ -10863,7 +10985,9 @@ msgid "lpk is missing"
 msgstr ""
 
 #: lazarusidestrconsts.lislrsincludefiles
-msgid "lrs include files"
+#, fuzzy
+#| msgid "lrs include files"
+msgid "Lazarus resources (.lrs) include files"
 msgstr "dołączane pliki lrs"
 
 #: lazarusidestrconsts.lismacpascal
@@ -10905,6 +11029,10 @@ msgstr "Główny moduł posiada sekcję Uses zawierającą wszystkie moduły pro
 #| msgid "Main Unit is Pascal Source"
 msgid "Main unit is Pascal source"
 msgstr "Główny moduł jest Źródłem Pascala"
+
+#: lazarusidestrconsts.lismainunitispascalsourcehint
+msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
+msgstr ""
 
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
@@ -11742,6 +11870,7 @@ msgid "Revert"
 msgstr "Przywróć"
 
 #: lazarusidestrconsts.lismenurun
+#, fuzzy
 msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "&Uruchom"
@@ -12758,6 +12887,10 @@ msgstr ""
 msgid "Number of files to convert: %s"
 msgstr ""
 
+#: lazarusidestrconsts.lisobjectinspectorbecomesvisible
+msgid "Object Inspector becomes visible when components are selected in designer."
+msgstr ""
+
 #: lazarusidestrconsts.lisobjectpascaldefault
 msgid "Object Pascal - default"
 msgstr ""
@@ -12768,10 +12901,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
-msgstr ""
-
-#: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestabafterasking
-msgid "Switch to Object Inspector Favorites tab after asking for component name"
 msgstr ""
 
 #: lazarusidestrconsts.lisoff
@@ -12913,6 +13042,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisopendesigneronopenunit
 msgid "Open designer on open unit"
+msgstr ""
+
+#: lazarusidestrconsts.lisopendesigneronopenunithint
+msgid "Form is loaded in designer always when source unit is opened."
 msgstr ""
 
 #: lazarusidestrconsts.lisopenexistingfile
@@ -14522,7 +14655,9 @@ msgid "Pointer"
 msgstr ""
 
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
-msgid "Save in IDE config directory"
+#, fuzzy
+#| msgid "Save in IDE config directory"
+msgid "Save in .lps file in IDE config directory"
 msgstr "Zapisz w katalogu konfiguracyjnym IDE"
 
 #: lazarusidestrconsts.lisposaveinlpifil
@@ -14533,17 +14668,13 @@ msgstr "Zapisz w pliku .lpi"
 msgid "Save in .lps file in project directory"
 msgstr "Zapisz w pliku .lps w katalogu projektu"
 
-#: lazarusidestrconsts.lisposavesessionfoldstate
-msgid "Save fold info"
-msgstr "Zapisuj informację o zwijaniu"
-
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "Zapisz informacje o sesji w"
 
-#: lazarusidestrconsts.lisposavesessionjumphistory
-msgid "Save jump history"
-msgstr "Zapisuj historię skoków"
+#: lazarusidestrconsts.lisposavesessioninformationinhint
+msgid ".lpi is the project main info file, .lps is a separate file for session data only."
+msgstr ""
 
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
@@ -14779,6 +14910,10 @@ msgstr "Informacje o projekcie"
 msgid "Project is runnable"
 msgstr "Projekt jest wykonywalny"
 
+#: lazarusidestrconsts.lisprojectisrunnablehint
+msgid "Generates a binary executable which can be run."
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectmacro
 msgctxt "lazarusidestrconsts.lisprojectmacro"
 msgid "Project"
@@ -14901,6 +15036,10 @@ msgstr ""
 msgid "Always build (even if nothing changed)"
 msgstr "Zawsze buduj (nawet jeśli nic nie zostało zmienione)"
 
+#: lazarusidestrconsts.lisprojoptsalwaysbuildhint
+msgid "May be needed if there is a bug in dependency check, normally not needed."
+msgstr ""
+
 #: lazarusidestrconsts.lisprojoptserror
 msgctxt "lazarusidestrconsts.lisprojoptserror"
 msgid "Error"
@@ -14961,6 +15100,10 @@ msgstr "Błędny filtr Include"
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr "Zapisz pliki .lrs w katalogu wyjściowym"
+
+#: lazarusidestrconsts.lisputlrsfilesinoutputdirectoryhint
+msgid "The resource will be available for FPC."
+msgstr ""
 
 #: lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas
 #, fuzzy
@@ -15272,10 +15415,6 @@ msgstr ""
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr ""
 
-#: lazarusidestrconsts.lisrequiresfpc24orabovelikedelphiresources
-msgid "Requires FPC 2.4 or above. Like Delphi resources"
-msgstr ""
-
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
 msgstr ""
@@ -15558,6 +15697,26 @@ msgstr ""
 msgid "Save session changes to project %s?"
 msgstr ""
 
+#: lazarusidestrconsts.lissavesessionfoldstate
+#, fuzzy
+msgctxt "lazarusidestrconsts.lissavesessionfoldstate"
+msgid "Save fold info"
+msgstr "Zapisuj informację o zwijaniu"
+
+#: lazarusidestrconsts.lissavesessionfoldstatehint
+msgid "Code editor supports folding (temporarily hiding) blocks of code."
+msgstr ""
+
+#: lazarusidestrconsts.lissavesessionjumphistory
+#, fuzzy
+msgctxt "lazarusidestrconsts.lissavesessionjumphistory"
+msgid "Save jump history"
+msgstr "Zapisuj historię skoków"
+
+#: lazarusidestrconsts.lissavesessionjumphistoryhint
+msgid "Ctrl-Click on an identifier in code editor is stored in jump history."
+msgstr ""
+
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
 msgstr "Zapisz ustawienia"
@@ -15618,8 +15777,8 @@ msgstr ""
 msgid "Select a node"
 msgstr "Wybierz węzeł"
 
-#: lazarusidestrconsts.lisselectanotherlclwidgetsetmacrolclwidgettype
-msgid "Select another LCL widget set (macro LCLWidgetType)"
+#: lazarusidestrconsts.lisselectanotherlclwidgetset
+msgid "Select another LCL widgetset (macro LCLWidgetType)"
 msgstr ""
 
 #: lazarusidestrconsts.lisselectdfmfiles
@@ -15752,7 +15911,9 @@ msgid "Show empty units/packages"
 msgstr "pokaż puste moduły/pakiety"
 
 #: lazarusidestrconsts.lisshowglyphsfor
-msgid "Show Glyphs for:"
+#, fuzzy
+#| msgid "Show Glyphs for:"
+msgid "Show Glyphs for"
 msgstr "Pokaż glify dla:"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
@@ -15764,6 +15925,7 @@ msgid "Show help"
 msgstr "Pokaż pomoc"
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "Pokaż podpowiedzi w Inspektorze Obiektów"
@@ -15808,6 +15970,14 @@ msgstr ""
 msgid "Show relative paths"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowsallcontrolsintreehierarchy
+msgid "Shows all controls in tree hierarchy."
+msgstr ""
+
+#: lazarusidestrconsts.lisshowsdescriptionforselectedproperty
+msgid "A box at the bottom shows description for the selected property."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"
 msgstr ""
@@ -15817,7 +15987,9 @@ msgid "Show special characters"
 msgstr "Pokaż znaki specjalne"
 
 #: lazarusidestrconsts.lisshowstatusbarinobjectinspector
-msgid "Show status bar"
+#, fuzzy
+#| msgid "Show status bar"
+msgid "Show statusbar"
 msgstr "Pokaż pasek stanu"
 
 #: lazarusidestrconsts.lisshowunits
@@ -15878,6 +16050,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
+msgstr ""
+
+#: lazarusidestrconsts.lisslowerbutmoreaccurate
+msgid "Slower but more accurate."
 msgstr ""
 
 #: lazarusidestrconsts.lissmallerratherthanfaster
@@ -16014,6 +16190,10 @@ msgstr ""
 msgid "Start with a new project"
 msgstr ""
 
+#: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
+msgid "Statusbar shows the property's name and the class where it is published."
+msgstr ""
+
 #: lazarusidestrconsts.lisstop
 msgctxt "lazarusidestrconsts.lisstop"
 msgid "Stop"
@@ -16120,6 +16300,10 @@ msgstr "Przedefiniuj zmienną systemową"
 
 #: lazarusidestrconsts.lisswitchfiltersettings
 msgid "Switch Filter Settings"
+msgstr ""
+
+#: lazarusidestrconsts.lisswitchtofavoritestabafterasking
+msgid "Switch to Favorites tab after asking for component name."
 msgstr ""
 
 #: lazarusidestrconsts.lissyntaxmode
@@ -16728,6 +16912,10 @@ msgstr ""
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
 msgstr "ten komunikat pomocy"
+
+#: lazarusidestrconsts.listhisistestprojectfordesigntimepackage
+msgid "This is a test project for a design time package, testing it outside the IDE."
+msgstr ""
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
@@ -17626,6 +17814,7 @@ msgid "Use and close"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Używaj łańcuchów typu Ansistring"
@@ -17640,6 +17829,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
+msgstr ""
+
+#: lazarusidestrconsts.lisusedforautocreatedforms
+msgid "Used for auto-created forms."
 msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
@@ -17733,6 +17926,10 @@ msgstr "Wartość: "
 #: lazarusidestrconsts.lisvalues
 msgid "Values"
 msgstr "Wartości"
+
+#: lazarusidestrconsts.lisvaluesthatarechangedfromdefault
+msgid "Values that are changed from the default are stored in .lfm file and are shown differently in Object Inspector."
+msgstr ""
 
 #: lazarusidestrconsts.lisvariable
 msgctxt "lazarusidestrconsts.lisvariable"
@@ -18087,6 +18284,10 @@ msgstr "Atrybuty"
 msgid "Automatically increase build number"
 msgstr "Automatycznie zwiększ numer budowania"
 
+#: lazarusidestrconsts.rsautomaticallyincreasebuildnumberhint
+msgid "Increased every time the project is compiled."
+msgstr ""
+
 #: lazarusidestrconsts.rsbuild
 #, fuzzy
 #| msgid "Build:"
@@ -18132,6 +18333,10 @@ msgstr ""
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
 msgstr "Opcje i18n"
+
+#: lazarusidestrconsts.rsincludeversioninfohint
+msgid "Version info is stored if the executable format supports it."
+msgstr ""
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 #, fuzzy
@@ -19869,6 +20074,7 @@ msgid "Highlighter"
 msgstr "Podświetlanie"
 
 #: lazarusidestrconsts.ueminspect
+#, fuzzy
 msgctxt "lazarusidestrconsts.ueminspect"
 msgid "&Inspect ..."
 msgstr "Badaj ..."

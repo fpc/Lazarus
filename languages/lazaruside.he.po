@@ -570,6 +570,10 @@ msgstr "פעולת קובץ רב משמעית:"
 msgid "Warn on compile"
 msgstr "אזהרה בזמן הידור"
 
+#: lazarusidestrconsts.dlganiconforerrorwarninghintisshown
+msgid "An icon for error/warning/hint is shown in front of a message. The same icon shows in source editor gutter in any case."
+msgstr ""
+
 #: lazarusidestrconsts.dlgansicommenttab
 msgid "Ansi (* *)"
 msgstr ""
@@ -589,6 +593,10 @@ msgstr "כלול קוד הפרה"
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
 msgstr "צור טפסים אוטומטית:"
+
+#: lazarusidestrconsts.dlgautocreateformshint
+msgid "Main .lpr unit creates each form with Application.CreateForm(). They are also freed automatically."
+msgstr ""
 
 #: lazarusidestrconsts.dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
@@ -630,15 +638,13 @@ msgstr "הסר אוטומטית מתודות ריקות"
 msgid "Auto rename file lowercase"
 msgstr "שנה אוטומטית שם קובץ לאותיות קטנות"
 
-#: lazarusidestrconsts.dlgautosave
-#, fuzzy
-#| msgid "Auto save"
-msgid "Auto Save"
-msgstr "שמור אוטומטית"
-
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
 msgstr "טפסים זמינים"
+
+#: lazarusidestrconsts.dlgavailableformshint
+msgid "These forms must be created and freed in the program code."
+msgstr ""
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
@@ -699,6 +705,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
+msgstr ""
+
+#: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
+msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
 msgstr ""
 
 #: lazarusidestrconsts.dlgbrackethighlight
@@ -815,9 +825,17 @@ msgstr "מרכז את שורת הסמן"
 msgid "Save As - auto rename Pascal files lower case"
 msgstr "שמור כ - שנה אוטומטית שמות של קבצי פסקל לאותיות קטנות"
 
+#: lazarusidestrconsts.dlgcheckandautosavefiles
+msgid "Check and Auto Save Files"
+msgstr ""
+
 #: lazarusidestrconsts.dlgcheckpackagesonformcreate
 msgid "Check packages on form create"
 msgstr "בדוק חבילות בזמן יצירת טופס"
+
+#: lazarusidestrconsts.dlgcheckpackagesonformcreatehint
+msgid "The form may require a package to work. Install such a package automatically."
+msgstr ""
 
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
@@ -1056,6 +1074,10 @@ msgstr "אפשרויות מהדר"
 msgid "Complete properties"
 msgstr "השלם מאפיינים"
 
+#: lazarusidestrconsts.dlgcomponentundermousecursorisfirstselected
+msgid "Component under mouse cursor is first selected, then the popup menu commands work on it."
+msgstr ""
+
 #: lazarusidestrconsts.dlgconfigandtarget
 msgid "Config and Target"
 msgstr ""
@@ -1192,6 +1214,10 @@ msgstr "מקש Ctrl+לחצן אמצעי על לשונית סוגר את כל ה�
 msgid "Curly { }"
 msgstr ""
 
+#: lazarusidestrconsts.dlgcurrentlyrespectedbymessageswindow
+msgid "Currently respected by messages window, jump history and search results."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
 msgstr "סמן לאחר סיום השורה"
@@ -1256,10 +1282,6 @@ msgstr "טיפים"
 msgid "Menus - "
 msgstr "תפריטים -"
 
-#: lazarusidestrconsts.dlgdesktopmisc
-msgid "Misc Options"
-msgstr "אפשרויות שונות"
-
 #: lazarusidestrconsts.dlgdirection
 msgid "Direction"
 msgstr "כיוון"
@@ -1267,6 +1289,10 @@ msgstr "כיוון"
 #: lazarusidestrconsts.dlgdisableantialiasing
 msgid "Disable anti-aliasing"
 msgstr "בטל החלקת תצוגה"
+
+#: lazarusidestrconsts.dlgdistancebetweengridpointsissmalleststep
+msgid "Distance between grid points is the smallest step when moving a control."
+msgstr ""
 
 #: lazarusidestrconsts.dlgdividercolordefault
 msgid "Use right margin color"
@@ -1320,6 +1346,10 @@ msgstr "משתנה/סוג"
 msgctxt "lazarusidestrconsts.dlgdivpasvarlocalname"
 msgid "Var/Type (local)"
 msgstr "משתנה/סוג (מקומי)"
+
+#: lazarusidestrconsts.dlgdrawcomponentsnamebelowit
+msgid "Draw the component's name below it."
+msgstr ""
 
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
@@ -1514,6 +1544,10 @@ msgstr "רשת"
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
 msgstr "שפה"
+
+#: lazarusidestrconsts.dlgenvlanguagehint
+msgid "Language of all IDE strings. Restart IDE after changing it for best result."
+msgstr ""
 
 #: lazarusidestrconsts.dlgenvlguidelines
 msgid "Guide lines"
@@ -1741,9 +1775,9 @@ msgstr "מדיניות הזנת פרוצדורה"
 msgid "Keep order of procedures"
 msgstr "שמור על סדר הפרוצדורות"
 
-#: lazarusidestrconsts.dlgfpcpath
-msgid "Compiler path (e.g. %s)"
-msgstr "מיקום המהדר (למשל %s)"
+#: lazarusidestrconsts.dlgfpcexecutable
+msgid "Compiler executable (e.g. %s)"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfpcsrcpath
 msgid "FPC source directory"
@@ -1792,6 +1826,10 @@ msgstr "לוכד צבע"
 msgid "Grid color"
 msgstr "צבע הרשת"
 
+#: lazarusidestrconsts.dlggridconsistsofsmalldots
+msgid "Grid consists of small dots which help aligning controls."
+msgstr ""
+
 #: lazarusidestrconsts.dlggridx
 msgid "Grid size X"
 msgstr "גודל הרשת בכוון אופקי"
@@ -1839,6 +1877,10 @@ msgstr "בטל קבוצה"
 msgid "Show Guide Lines"
 msgstr "הראה קווי עזר"
 
+#: lazarusidestrconsts.dlgguidelineshint
+msgid "When a control is aligned horizontally or vertically with another controls, a blue guide line is shown."
+msgstr ""
+
 #: lazarusidestrconsts.dlggutter
 msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
@@ -1874,6 +1916,10 @@ msgstr ""
 msgid "Heap size"
 msgstr "גודל הערמה"
 
+#: lazarusidestrconsts.dlgheightofonepropertyingrid
+msgid "Height of one property in the grid."
+msgstr ""
+
 #: lazarusidestrconsts.dlgheightpos
 msgid "Height:"
 msgstr "גובה:"
@@ -1882,9 +1928,9 @@ msgstr "גובה:"
 msgid "Hide IDE windows on run"
 msgstr "הסתר את חלונות ה IDE בזמן ריצה"
 
-#: lazarusidestrconsts.dlghidemessagesicons
-msgid "Hide Messages Icons"
-msgstr "הסתר את סמלי ההודעות"
+#: lazarusidestrconsts.dlghideideonrunhint
+msgid "Do not show the IDE at all while program is running."
+msgstr ""
 
 #: lazarusidestrconsts.dlghidesingletabinnotebook
 msgid "Hide tab in single page windows"
@@ -2141,9 +2187,9 @@ msgctxt "lazarusidestrconsts.dlgmainviewunits"
 msgid "View Project Units"
 msgstr "צפה ביחידות בפרויקט"
 
-#: lazarusidestrconsts.dlgmakepath
-msgid "Make path"
-msgstr "נתיב ל Make"
+#: lazarusidestrconsts.dlgmakeexecutable
+msgid "\"Make\" executable"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
@@ -2303,6 +2349,10 @@ msgstr "מספר מקסימלי של קבצי פרוייקט שנפתחו לאח
 #: lazarusidestrconsts.dlgmixmethodsandproperties
 msgid "Mix methods and properties"
 msgstr "ערבב מתודות ותכונות"
+
+#: lazarusidestrconsts.dlgmouseaction
+msgid "Mouse Action"
+msgstr ""
 
 #: lazarusidestrconsts.dlgmouseoptbtn1
 msgid "Single"
@@ -2532,6 +2582,7 @@ msgid "Text"
 msgstr "טקסט"
 
 #: lazarusidestrconsts.dlgmouseoptnodeselect
+#, fuzzy
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeselect"
 msgid "Selection"
 msgstr "בחירה"
@@ -2673,8 +2724,8 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgotherunitfiles
 #, fuzzy
-#| msgid "Other Unit Files (-Fu) (Delimiter is semicolon):"
-msgid "Other unit files (-Fu) (delimiter is semicolon):"
+#| msgid "Other unit files (-Fu) (delimiter is semicolon):"
+msgid "Other unit files (-Fu):"
 msgstr "קבצי יחידה אחרים (-Fu) (המפריד הוא פסיק):"
 
 #: lazarusidestrconsts.dlgoverwriteblock
@@ -2849,6 +2900,10 @@ msgstr "השתמש בחבורת היישום להרצה ולניפוי שגיא�
 msgid "Use manifest file to enable themes (Windows only)"
 msgstr "השתמש בקובץ הרשימות לאפשר ערכות נושא (חלונות בלבד)"
 
+#: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
+msgid "Prefer double-click over single-click"
+msgstr ""
+
 #: lazarusidestrconsts.dlgpriorities
 msgid "Priorities"
 msgstr ""
@@ -3001,9 +3056,17 @@ msgstr "שורה שמורה"
 msgid "Save editor info for closed files"
 msgstr "שמור מידע עורך עבור קבצים סגורים"
 
+#: lazarusidestrconsts.dlgsaveeditorinfohint
+msgid "The files are available in the \"Open Recent\" history list."
+msgstr ""
+
 #: lazarusidestrconsts.dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
 msgstr "שמור מידע עורך עבור קבצי הפרוייקט בלבד"
+
+#: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
+msgid "Only files that belong to this project."
+msgstr ""
 
 #: lazarusidestrconsts.dlgscope
 msgid "Scope"
@@ -3051,6 +3114,10 @@ msgstr "מחפש ..."
 msgid "Paths"
 msgstr "נתיבים"
 
+#: lazarusidestrconsts.dlgselectallchildcontrols
+msgid "Select all child controls together with their parent."
+msgstr ""
+
 #: lazarusidestrconsts.dlgselectedtext
 #, fuzzy
 #| msgid "&Selected Text"
@@ -3073,9 +3140,9 @@ msgstr "קבע את משתנה התכונות"
 msgid "Show all units"
 msgstr ""
 
-#: lazarusidestrconsts.dlgshowcaps
-msgid "Show component captions"
-msgstr "הראה את כותרת הרכיב"
+#: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
+msgid "Show captions of non-visual components"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -3094,9 +3161,13 @@ msgstr "הראה מותנים"
 msgid "Show debug info"
 msgstr "הראה מידע ניפוי שגיאות"
 
-#: lazarusidestrconsts.dlgshowedrhints
-msgid "Show editor hints"
-msgstr "הראה טיפים של העורך"
+#: lazarusidestrconsts.dlgshowdesignerhints
+msgid "Show designer hints"
+msgstr ""
+
+#: lazarusidestrconsts.dlgshowdesignerhintshint
+msgid "Hint shows control's position or size while moving or resizing it."
+msgstr ""
 
 #: lazarusidestrconsts.dlgshoweverything
 msgid "Show everything"
@@ -3121,10 +3192,18 @@ msgctxt "lazarusidestrconsts.dlgshowhint"
 msgid "Show hints"
 msgstr "הראה טיפים"
 
+#: lazarusidestrconsts.dlgshowingwindows
+msgid "Showing Windows"
+msgstr ""
+
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
 msgid "Show line numbers"
 msgstr "הראה מספרי שורה"
+
+#: lazarusidestrconsts.dlgshowmessagesicons
+msgid "Show Messages Icons"
+msgstr ""
 
 #: lazarusidestrconsts.dlgshownotes
 #, fuzzy
@@ -3181,6 +3260,10 @@ msgstr "סמל לפני (pp.~)"
 #: lazarusidestrconsts.dlgsnapguidelines
 msgid "Snap to Guide Lines"
 msgstr "הצמד לקווים המנחים"
+
+#: lazarusidestrconsts.dlgsnapguidelineshint
+msgid "When a control is close to being aligned with another control, it snaps to the aligned position."
+msgstr ""
 
 #: lazarusidestrconsts.dlgspacenotcosmos
 msgctxt "lazarusidestrconsts.dlgspacenotcosmos"
@@ -4359,6 +4442,10 @@ msgstr "השתמש בדגלי בניה (B-) גם לתלויות"
 msgid "Apply conventions"
 msgstr "יישם את ההסכמות"
 
+#: lazarusidestrconsts.lisapplyconventionshint
+msgid "Adjust name extension and character case for platform and file type."
+msgstr ""
+
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
 msgstr "יחידה של פרוייקט אינה יכולה לשמש לפרוייקט או חבילה אחרים"
@@ -4376,7 +4463,9 @@ msgid "Ask before saving project's session"
 msgstr ""
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
-msgid "Ask for component name after putting it on a designer form"
+#, fuzzy
+#| msgid "Ask for component name after putting it on a designer form"
+msgid "Ask for component name after putting it on a designer form."
 msgstr "בקש את שם הרכיב אחרי שתכניס אותו לטופס המעצב"
 
 #: lazarusidestrconsts.lisaskforfilenameonnewfile
@@ -4416,9 +4505,9 @@ msgstr "אוטומטי"
 msgid "Automatically"
 msgstr ""
 
-#: lazarusidestrconsts.lisautomaticallyconvertlfmfilestolrsincludefiles
-msgid "Automatically convert .lfm files to .lrs include files"
-msgstr "המר אוטומטית קבצי lfm. לקבצי lrs. \"כלול\""
+#: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
+msgid "Automatically convert .lfm files to .lrs resource files"
+msgstr ""
 
 #: lazarusidestrconsts.lisautomaticallyignoreforselection
 msgid "do not complete selection"
@@ -5325,7 +5414,8 @@ msgstr "מפת תווים"
 msgid "Check All"
 msgstr ""
 
-#: lazarusidestrconsts.lischeckfordiskfilechangesviacontentratherthantimesta
+#: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
+msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr ""
 
@@ -5372,9 +5462,9 @@ msgstr "בחר קישור ל FPDoc"
 msgid "Choose a key ..."
 msgstr "בחר מקשר ..."
 
-#: lazarusidestrconsts.lischooseanameforthenewcomponent
-msgid "Choose a name for the new component"
-msgstr "בחר שם לרכיב החדש"
+#: lazarusidestrconsts.lischooseanameforthecomponent
+msgid "Choose a name for the component"
+msgstr ""
 
 #: lazarusidestrconsts.lischooseanexamplefile
 msgid "Choose an example file"
@@ -5390,17 +5480,17 @@ msgstr ""
 msgid "Choose a Pascal file for indentation examples"
 msgstr "בחר קובץ פסקל עבור דוגמאות זיהוי"
 
+#: lazarusidestrconsts.lischoosecompilerexecutable
+msgid "Choose compiler executable (%s)"
+msgstr ""
+
 #: lazarusidestrconsts.lischoosecompilermessages
 msgid "Choose compiler messages file"
 msgstr "בחר קובץ להודעות מהדר"
 
-#: lazarusidestrconsts.lischoosecompilerpath
-msgid "Choose compiler filename (%s)"
-msgstr "בחר בשם הקובץ של המהדר (%s)"
-
-#: lazarusidestrconsts.lischoosedebuggerpath
-msgid "Choose debugger filename"
-msgstr "בחר בשם הקובץ של מנפה השגיאות"
+#: lazarusidestrconsts.lischoosedebuggerexecutable
+msgid "Choose debugger executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosedelphipackage
 msgid "Choose Delphi package (*.dpk)"
@@ -5426,9 +5516,9 @@ msgstr "בחר את ספריית קוד המקור של FPC"
 msgid "Choose Lazarus Directory"
 msgstr "בחר את ספריית לזרוס"
 
-#: lazarusidestrconsts.lischoosemakepath
-msgid "Choose make path"
-msgstr "בחר את נתיב make"
+#: lazarusidestrconsts.lischoosemakeexecutable
+msgid "Choose \"make\" executable"
+msgstr ""
 
 #: lazarusidestrconsts.lischoosename
 msgid "Choose name"
@@ -7191,6 +7281,10 @@ msgctxt "lazarusidestrconsts.liscurrent"
 msgid "Current"
 msgstr "נוכחי"
 
+#: lazarusidestrconsts.liscurrentlclwidgetset
+msgid "Current LCL widgetset: \"%s\""
+msgstr ""
+
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
 msgstr ""
@@ -7721,9 +7815,17 @@ msgstr "מחק ערך %s"
 msgid "Deleting of file \"%s\" failed."
 msgstr "מחיקת הקובץ s%s%s% נכשלה."
 
+#: lazarusidestrconsts.lisdelimiterissemicolon
+msgid "Delimiter is semicolon."
+msgstr ""
+
 #: lazarusidestrconsts.lisdelphi
 msgid "Delphi"
 msgstr "דלפי"
+
+#: lazarusidestrconsts.lisdelphicompatibleresources
+msgid "Delphi compatible resources. Recommended."
+msgstr ""
 
 #: lazarusidestrconsts.lisdelphipackage
 msgid "Delphi package"
@@ -8324,6 +8426,10 @@ msgctxt "lazarusidestrconsts.lisenabled"
 msgid "Enabled"
 msgstr "מאופשר"
 
+#: lazarusidestrconsts.lisenabledonlyforpackages
+msgid "Enabled only for packages."
+msgstr ""
+
 #: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
 msgstr ""
@@ -8378,10 +8484,6 @@ msgstr ""
 #: lazarusidestrconsts.lisenvironmentvariablenameasparameter
 msgid "Environment variable, name as parameter"
 msgstr "משתנה סביבה, תן שם כמו לפרמטר"
-
-#: lazarusidestrconsts.lisenvjumpfrommessagetosrcondblclickotherwisesingleclick
-msgid "Jump from message to source line on double click (otherwise: single click)"
-msgstr "קפוץ מההודעה לשורת הקוד בלחיצה כפולה(אחרת: בלחיצה בודדת)"
 
 #: lazarusidestrconsts.lisenvoptdlgdirectorynotfound
 msgid "Directory not found"
@@ -8790,7 +8892,9 @@ msgstr ""
 msgid "Reduce designer painting"
 msgstr "צמצם את צביעת המעצב"
 
-#: lazarusidestrconsts.lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
+#: lazarusidestrconsts.lisfepaintdesigneritemsonidlehint
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisfepaintdesigneritemsonidlehint"
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "פריטי מעצב הצבעים מושבתים (צמצם אפשרויות עבור מחשבים איטיים)"
 
@@ -9137,7 +9241,9 @@ msgid "FPC messages: Appendix"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
-msgid "FPC resources"
+#, fuzzy
+#| msgid "FPC resources"
+msgid "FPC resources (.res)"
 msgstr " משאבי  FPC"
 
 #: lazarusidestrconsts.lisfpcsources
@@ -9157,6 +9263,7 @@ msgid "FPC Version (e.g. 2.2.2)"
 msgstr "גירסת FPC (למשל 2.2.2)"
 
 #: lazarusidestrconsts.lisfpdoceditor
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisfpdoceditor"
 msgid "FPDoc Editor"
 msgstr "עורך FPDoc"
@@ -9418,6 +9525,10 @@ msgstr "טיפ"
 msgid "Hint: A default value can be defined in the conditionals."
 msgstr "טיפ: ניתן להגדיר ערך ברירת מחדל בהתניות עם:"
 
+#: lazarusidestrconsts.lishintatpropertysnameshowsdescription
+msgid "A hint at property's name shows its description."
+msgstr ""
+
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
 msgstr "טיפ: בדוק אם יש שתי חבילות המכילות יחידות עם אותו שם."
@@ -9487,6 +9598,10 @@ msgstr "נתיב ל FPC Doc HTML"
 msgid "Horizontal"
 msgstr "אופקי"
 
+#: lazarusidestrconsts.lishorizontallinesbetweenproperties
+msgid "Horizontal lines between properties."
+msgstr ""
+
 #: lazarusidestrconsts.lisid
 msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
@@ -9526,6 +9641,10 @@ msgstr "אזהרה: שם יחידה לא חוקי %s, חבילה=%s"
 
 #: lazarusidestrconsts.lisidemacros
 msgid "IDE Macros"
+msgstr ""
+
+#: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
+msgid "The IDE maintains the title in main unit."
 msgstr ""
 
 #: lazarusidestrconsts.lisidentifier
@@ -9612,6 +9731,10 @@ msgstr "שמור לקובץ"
 
 #: lazarusidestrconsts.lisifnotchecked
 msgid "If not checked:"
+msgstr ""
+
+#: lazarusidestrconsts.lisifonlysessioninfochangedthenask
+msgid "If only the session info changed, ask about saving it."
 msgstr ""
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
@@ -11120,7 +11243,9 @@ msgid "lpk is missing"
 msgstr ""
 
 #: lazarusidestrconsts.lislrsincludefiles
-msgid "lrs include files"
+#, fuzzy
+#| msgid "lrs include files"
+msgid "Lazarus resources (.lrs) include files"
 msgstr "קובץ \"כלול\" מסוג lrs"
 
 #: lazarusidestrconsts.lismacpascal
@@ -11162,6 +11287,10 @@ msgstr "ליחידה הראשית יש קטע הכולל את כל יחידות 
 #| msgid "Main Unit is Pascal Source"
 msgid "Main unit is Pascal source"
 msgstr "היחידה הראשית היא קוד של פסקל"
+
+#: lazarusidestrconsts.lismainunitispascalsourcehint
+msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
+msgstr ""
 
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
@@ -12009,6 +12138,7 @@ msgid "Revert"
 msgstr "שחזר"
 
 #: lazarusidestrconsts.lismenurun
+#, fuzzy
 msgctxt "lazarusidestrconsts.lismenurun"
 msgid "&Run"
 msgstr "ה&רץ"
@@ -12281,6 +12411,7 @@ msgid "Call Stack"
 msgstr "קרא למחסנית"
 
 #: lazarusidestrconsts.lismenuviewcodebrowser
+#, fuzzy
 msgctxt "lazarusidestrconsts.lismenuviewcodebrowser"
 msgid "Code Browser"
 msgstr "סייר הקוד"
@@ -13051,6 +13182,10 @@ msgstr "צור פרויקט חדש"
 msgid "Number of files to convert: %s"
 msgstr "מספר הקבצים להמרה: %s"
 
+#: lazarusidestrconsts.lisobjectinspectorbecomesvisible
+msgid "Object Inspector becomes visible when components are selected in designer."
+msgstr ""
+
 #: lazarusidestrconsts.lisobjectpascaldefault
 msgid "Object Pascal - default"
 msgstr "Object Pascal ברירת מחדל"
@@ -13062,10 +13197,6 @@ msgstr "נתיב האובייקט"
 #: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestab
 msgid "Switch to Object Inspector Favorites tab"
 msgstr "עבור למפקח העצמים ללשונית מועודפים"
-
-#: lazarusidestrconsts.lisofeswitchtoobjectinspectorfavoritestabafterasking
-msgid "Switch to Object Inspector Favorites tab after asking for component name"
-msgstr "עבור למפקח העצמים ללשונית מועודפים אחרי בקשה לשם רכיב"
 
 #: lazarusidestrconsts.lisoff
 msgid "? (Off)"
@@ -13214,6 +13345,10 @@ msgstr "פתח כקובץ XML"
 #: lazarusidestrconsts.lisopendesigneronopenunit
 msgid "Open designer on open unit"
 msgstr "פתח מעצב או פתח יחידה"
+
+#: lazarusidestrconsts.lisopendesigneronopenunithint
+msgid "Form is loaded in designer always when source unit is opened."
+msgstr ""
 
 #: lazarusidestrconsts.lisopenexistingfile
 msgid "Open existing file"
@@ -14862,7 +14997,9 @@ msgid "Pointer"
 msgstr "מצביע"
 
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
-msgid "Save in IDE config directory"
+#, fuzzy
+#| msgid "Save in IDE config directory"
+msgid "Save in .lps file in IDE config directory"
 msgstr "שמור בתיקיית ההגדרות של ה IDE"
 
 #: lazarusidestrconsts.lisposaveinlpifil
@@ -14873,16 +15010,12 @@ msgstr "שמור בקובץ lpi."
 msgid "Save in .lps file in project directory"
 msgstr "שמור בקובץ lps. בתיקיית הפרוייקט"
 
-#: lazarusidestrconsts.lisposavesessionfoldstate
-msgid "Save fold info"
-msgstr ""
-
 #: lazarusidestrconsts.lisposavesessioninformationin
 msgid "Save session information in"
 msgstr "שמור מידע session ב"
 
-#: lazarusidestrconsts.lisposavesessionjumphistory
-msgid "Save jump history"
+#: lazarusidestrconsts.lisposavesessioninformationinhint
+msgid ".lpi is the project main info file, .lps is a separate file for session data only."
 msgstr ""
 
 #: lazarusidestrconsts.lispositionoutsideofsource
@@ -15127,6 +15260,10 @@ msgstr "מידע הפרויקט"
 msgid "Project is runnable"
 msgstr "הפרויקט בר ריצה"
 
+#: lazarusidestrconsts.lisprojectisrunnablehint
+msgid "Generates a binary executable which can be run."
+msgstr ""
+
 #: lazarusidestrconsts.lisprojectmacro
 msgctxt "lazarusidestrconsts.lisprojectmacro"
 msgid "Project"
@@ -15255,6 +15392,10 @@ msgstr "לא יכול לכתוב את קובץ המצב של הפרוייקט s%
 msgid "Always build (even if nothing changed)"
 msgstr "תמיד בנה (גם אם לא היה שינוי)"
 
+#: lazarusidestrconsts.lisprojoptsalwaysbuildhint
+msgid "May be needed if there is a bug in dependency check, normally not needed."
+msgstr ""
+
 #: lazarusidestrconsts.lisprojoptserror
 msgctxt "lazarusidestrconsts.lisprojoptserror"
 msgid "Error"
@@ -15317,6 +15458,10 @@ msgstr "מסנן \"כלול\" לא חוקי"
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectory
 msgid "Save .lrs files in the output directory"
 msgstr "שמור את קובץ lrs. בתיקיית הפלט"
+
+#: lazarusidestrconsts.lisputlrsfilesinoutputdirectoryhint
+msgid "The resource will be available for FPC."
+msgstr ""
 
 #: lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas
 #, fuzzy
@@ -15640,10 +15785,6 @@ msgstr "החלפת הבחירה נכשלה."
 msgid "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 msgstr "http://wiki.lazarus.freepascal.org/How_do_I_create_a_bug_report"
 
-#: lazarusidestrconsts.lisrequiresfpc24orabovelikedelphiresources
-msgid "Requires FPC 2.4 or above. Like Delphi resources"
-msgstr "דורש FPC 2.4 ומעלה. כמו משאבי דלפי"
-
 #: lazarusidestrconsts.lisrescan
 msgid "Rescan"
 msgstr "סרוק מחדש"
@@ -15934,6 +16075,24 @@ msgstr "שמור את פרוייקט %s "
 msgid "Save session changes to project %s?"
 msgstr ""
 
+#: lazarusidestrconsts.lissavesessionfoldstate
+msgctxt "lazarusidestrconsts.lissavesessionfoldstate"
+msgid "Save fold info"
+msgstr ""
+
+#: lazarusidestrconsts.lissavesessionfoldstatehint
+msgid "Code editor supports folding (temporarily hiding) blocks of code."
+msgstr ""
+
+#: lazarusidestrconsts.lissavesessionjumphistory
+msgctxt "lazarusidestrconsts.lissavesessionjumphistory"
+msgid "Save jump history"
+msgstr ""
+
+#: lazarusidestrconsts.lissavesessionjumphistoryhint
+msgid "Ctrl-Click on an identifier in code editor is stored in jump history."
+msgstr ""
+
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
 msgstr "שמור הגדרות"
@@ -15995,9 +16154,9 @@ msgstr "בחר פריט עזרה"
 msgid "Select a node"
 msgstr "בחר צומת"
 
-#: lazarusidestrconsts.lisselectanotherlclwidgetsetmacrolclwidgettype
-msgid "Select another LCL widget set (macro LCLWidgetType)"
-msgstr "בחר סט סמלים אחר של LCL (מאקרו LCLWidgetType)"
+#: lazarusidestrconsts.lisselectanotherlclwidgetset
+msgid "Select another LCL widgetset (macro LCLWidgetType)"
+msgstr ""
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -16131,7 +16290,9 @@ msgid "Show empty units/packages"
 msgstr "הראה יחידות/חבילות ריקות"
 
 #: lazarusidestrconsts.lisshowglyphsfor
-msgid "Show Glyphs for:"
+#, fuzzy
+#| msgid "Show Glyphs for:"
+msgid "Show Glyphs for"
 msgstr "הראה גליף עבור:"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
@@ -16143,6 +16304,7 @@ msgid "Show help"
 msgstr ""
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "הראה רמזים"
@@ -16187,6 +16349,14 @@ msgstr ""
 msgid "Show relative paths"
 msgstr ""
 
+#: lazarusidestrconsts.lisshowsallcontrolsintreehierarchy
+msgid "Shows all controls in tree hierarchy."
+msgstr ""
+
+#: lazarusidestrconsts.lisshowsdescriptionforselectedproperty
+msgid "A box at the bottom shows description for the selected property."
+msgstr ""
+
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"
 msgstr "הראה דיאלוג הגדרות עבור ההגדרות החשובות ביותר"
@@ -16196,7 +16366,9 @@ msgid "Show special characters"
 msgstr "הראה תווים מיוחדים"
 
 #: lazarusidestrconsts.lisshowstatusbarinobjectinspector
-msgid "Show status bar"
+#, fuzzy
+#| msgid "Show status bar"
+msgid "Show statusbar"
 msgstr "הראה שורת מצב"
 
 #: lazarusidestrconsts.lisshowunits
@@ -16261,6 +16433,10 @@ msgstr "דלג על הקובץ והמשך בטעינה"
 #: lazarusidestrconsts.lisskiploadinglastproject
 msgid "Skip loading last project"
 msgstr "דלג על טעינת הפרויקט האחרון"
+
+#: lazarusidestrconsts.lisslowerbutmoreaccurate
+msgid "Slower but more accurate."
+msgstr ""
 
 #: lazarusidestrconsts.lissmallerratherthanfaster
 msgid "Smaller rather than faster"
@@ -16403,6 +16579,10 @@ msgstr ""
 msgid "Start with a new project"
 msgstr "התחל עם פרוייקט חדש"
 
+#: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
+msgid "Statusbar shows the property's name and the class where it is published."
+msgstr ""
+
 #: lazarusidestrconsts.lisstop
 msgctxt "lazarusidestrconsts.lisstop"
 msgid "Stop"
@@ -16509,6 +16689,10 @@ msgstr "עדכן את משתני המערכת"
 
 #: lazarusidestrconsts.lisswitchfiltersettings
 msgid "Switch Filter Settings"
+msgstr ""
+
+#: lazarusidestrconsts.lisswitchtofavoritestabafterasking
+msgid "Switch to Favorites tab after asking for component name."
 msgstr ""
 
 #: lazarusidestrconsts.lissyntaxmode
@@ -17209,6 +17393,10 @@ msgstr "הפונקציה צריכה קובץ lfm. פתוח בעורך הטקסט
 #: lazarusidestrconsts.listhishelpmessage
 msgid "this help message"
 msgstr "הודעת עזרה ז"
+
+#: lazarusidestrconsts.listhisistestprojectfordesigntimepackage
+msgid "This is a test project for a design time package, testing it outside the IDE."
+msgstr ""
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 #, fuzzy,badformat
@@ -18135,6 +18323,7 @@ msgid "Use and close"
 msgstr ""
 
 #: lazarusidestrconsts.lisuseansistrings
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "השתמש במחרוזת ansi"
@@ -18150,6 +18339,10 @@ msgstr ""
 #: lazarusidestrconsts.lisusedesigntimepackages
 msgid "Use design time packages"
 msgstr "השתמש ב\"חבילות זמן תיכנות\""
+
+#: lazarusidestrconsts.lisusedforautocreatedforms
+msgid "Used for auto-created forms."
+msgstr ""
 
 #: lazarusidestrconsts.lisuseexcludefilter
 #, fuzzy
@@ -18254,6 +18447,10 @@ msgstr "ערך:"
 msgid "Values"
 msgstr "ערכים"
 
+#: lazarusidestrconsts.lisvaluesthatarechangedfromdefault
+msgid "Values that are changed from the default are stored in .lfm file and are shown differently in Object Inspector."
+msgstr ""
+
 #: lazarusidestrconsts.lisvariable
 msgctxt "lazarusidestrconsts.lisvariable"
 msgid "Variable"
@@ -18299,6 +18496,7 @@ msgid "View Source"
 msgstr ""
 
 #: lazarusidestrconsts.lisviewsourcedisass
+#, fuzzy
 msgctxt "lazarusidestrconsts.lisviewsourcedisass"
 msgid "View Assembler"
 msgstr "החלף (הצג/הסתר) מהדר האסמבלי"
@@ -18614,6 +18812,10 @@ msgstr ""
 msgid "Automatically increase build number"
 msgstr "הגדל אוטומטית את מספר הבנייה"
 
+#: lazarusidestrconsts.rsautomaticallyincreasebuildnumberhint
+msgid "Increased every time the project is compiled."
+msgstr ""
+
 #: lazarusidestrconsts.rsbuild
 msgid "&Build:"
 msgstr "בנה:"
@@ -18657,6 +18859,10 @@ msgstr "נמצא אבל לא מופיע ברשימה שכאן:"
 #: lazarusidestrconsts.rsi18noptions
 msgid "i18n Options"
 msgstr "אפשרויות i18n"
+
+#: lazarusidestrconsts.rsincludeversioninfohint
+msgid "Version info is stored if the executable format supports it."
+msgstr ""
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 #, fuzzy
@@ -19791,11 +19997,13 @@ msgid "Select Left"
 msgstr "בחר שמאלה"
 
 #: lazarusidestrconsts.srkmecsellineend
+#, fuzzy
 msgctxt "lazarusidestrconsts.srkmecsellineend"
 msgid "Select Line End"
 msgstr "בחר בסוף שורה"
 
 #: lazarusidestrconsts.srkmecsellinestart
+#, fuzzy
 msgctxt "lazarusidestrconsts.srkmecsellinestart"
 msgid "Select Line Start"
 msgstr "בחר בהתחלת שורה"
@@ -19805,6 +20013,7 @@ msgid "Select to text start in line"
 msgstr "בחירה לטקסט בשורה חדשה"
 
 #: lazarusidestrconsts.srkmecselpagebottom
+#, fuzzy
 msgctxt "lazarusidestrconsts.srkmecselpagebottom"
 msgid "Select Page Bottom"
 msgstr "בחר בתחתית הדף"
@@ -19822,6 +20031,7 @@ msgid "Select Page Right"
 msgstr "בחר דף ימינה"
 
 #: lazarusidestrconsts.srkmecselpagetop
+#, fuzzy
 msgctxt "lazarusidestrconsts.srkmecselpagetop"
 msgid "Select Page Top"
 msgstr "בחר דף עליון"
@@ -19865,11 +20075,13 @@ msgid "Select word-end right"
 msgstr ""
 
 #: lazarusidestrconsts.srkmecselwordleft
+#, fuzzy
 msgctxt "lazarusidestrconsts.srkmecselwordleft"
 msgid "Select Word Left"
 msgstr "בחר מילה אחת שמאלה"
 
 #: lazarusidestrconsts.srkmecselwordright
+#, fuzzy
 msgctxt "lazarusidestrconsts.srkmecselwordright"
 msgid "Select Word Right"
 msgstr "בחר מילה אחת ימינה"
@@ -20433,6 +20645,7 @@ msgid "&Inspect ..."
 msgstr "פ&קח"
 
 #: lazarusidestrconsts.ueminvertassignment
+#, fuzzy
 msgctxt "lazarusidestrconsts.ueminvertassignment"
 msgid "Invert Assignment"
 msgstr "הפוך הצבה"
@@ -20554,6 +20767,7 @@ msgid "Toggle &Breakpoint"
 msgstr "החלף נקודת עצירה"
 
 #: lazarusidestrconsts.uemviewcallstack
+#, fuzzy
 msgctxt "lazarusidestrconsts.uemviewcallstack"
 msgid "View Call Stack"
 msgstr "הצג את מחסנית הקריאות"
