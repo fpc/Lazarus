@@ -701,12 +701,8 @@ begin
     end;
     if Opt = Nil then begin
       Opt := FindOption(Copy(aOptAndValue, 1, OptLen));
-      if Assigned(Opt) then begin
-        if Opt.fEditKind in [oeNumber,oeText] then
-          Opt.SetValue(Param, fOwnerReader.fCurOrigLine)
-        else
-          Opt := Nil;
-      end;
+      if Assigned(Opt) then
+        Opt.SetValue(Param, fOwnerReader.fCurOrigLine)
     end;
   end;
   Result := Assigned(Opt);
