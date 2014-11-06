@@ -1128,8 +1128,7 @@ begin
   end;
 end;
 
-function TCompilerOptReader.ParseOptions(OutputI, OutputH: TStringList
-  ): TModalResult;
+function TCompilerOptReader.ParseOptions(OutputI, OutputH: TStringList): TModalResult;
 begin
   OptionIdCounter := 0;
   fErrorMsg := '';
@@ -1140,11 +1139,11 @@ begin
   Result := ParseH(OutputH);
 end;
 
-procedure TCompilerOptReader.ReadCompiler(CompPath, Params: string; out
-  OutputI, OutputH: TStringList);
+procedure TCompilerOptReader.ReadCompiler(CompPath, Params: string;
+  out OutputI, OutputH: TStringList);
 begin
-  OutputH:=nil;
   OutputI:=nil;
+  OutputH:=nil;
   if CompPath = '' then
     CompPath := 'fpc';        // Let's hope "fpc" is found in PATH.
   // FPC with option -i
