@@ -368,7 +368,8 @@ type
   TFindOption = (frDown, frFindNext, frHideMatchCase, frHideWholeWord,
                  frHideUpDown, frMatchCase, frDisableMatchCase, frDisableUpDown,
                  frDisableWholeWord, frReplace, frReplaceAll, frWholeWord, frShowHelp,
-                 frEntireScope, frHideEntireScope, frPromptOnReplace, frHidePromptOnReplace);
+                 frEntireScope, frHideEntireScope, frPromptOnReplace, frHidePromptOnReplace,
+                 frButtonsAtBottom);
   TFindOptions = set of TFindOption;
 
   TFindDialog = class(TCommonDialog)
@@ -547,8 +548,8 @@ procedure Register;
 implementation
 
 {$R dialog_icons.res}
-{$R forms/finddlgunit.lfm}
-{$R forms/replacedlgunit.lfm}
+{ $R forms/finddlgunit.lfm}
+{ $R forms/replacedlgunit.lfm}
 
 uses 
   Math, WSDialogs;

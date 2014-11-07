@@ -30,7 +30,10 @@ type
     procedure EditFindChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
+    FButtonsBottom: Boolean;
   public
+    constructor CreateNew(aOwner: TComponent; Options: TFindOptions); reintroduce;
+    procedure SetLayout (Options: TFindOptions);
   end;
 
 procedure TFindDialogForm.EditFindChange(Sender: TObject);
@@ -41,6 +44,314 @@ end;
 procedure TFindDialogForm.FormCreate(Sender: TObject);
 begin
   EditFindChange(nil);
+end;
+
+constructor TFindDialogForm.CreateNew(aOwner: TComponent; Options: TFindOptions
+  );
+var
+  Layout: boolean; // true = Buttons at bottom
+begin
+  inherited CreateNew(aOwner);
+  Layout := frButtonsAtBottom in Options;
+  if Layout then begin
+    Left := 417;
+    Height := 166;
+    Top := 333;
+    Width := 415;
+    ClientHeight := 166;
+    ClientWidth := 415;
+    Constraints.MinHeight := 166;
+    Constraints.MaxHeight := 166; // fixed height
+    Constraints.MinWidth := 415;
+  end
+  else begin
+    Left := 417;
+    Height := 136;
+    Top := 333;
+    Width := 480;
+    ClientHeight := 140;
+    ClientWidth := 480;
+    Constraints.MinHeight := 136;
+    Constraints.MinWidth := 480;
+  end;
+  AutoSize := True;
+  BorderIcons := [biSystemMenu, biHelp];
+  Caption := 'Find';
+  //OnCreate := @FormCreate;
+  Position := poMainFormCenter;
+  LCLVersion := '1.3';
+
+  FindLabel := TLabel.Create(Self);
+  with FindLabel do begin
+    Left := 6;
+    Height := 17;
+    Top := 15;
+    Width := 77;
+    BorderSpacing.Right := 2;
+    Caption := 'Text to find';
+    FocusControl := EditFind;
+    ParentColor := False;
+    Parent := Self;
+  end;
+  EditFind := TEdit.Create(Self);
+  with EditFind do begin
+    Left := 85;
+    Height := 27;
+    Top := 10;
+    Width := 303;
+    TabOrder := 0;
+    Text := 'EditFind';
+    Parent := Self;
+  end;
+  DirectionRadioGroup := TRadioGroup.Create(Self);
+  with DirectionRadioGroup do begin
+    Left := 155;
+    Height := 45;
+    Top := 49;
+    Width := 227;
+    AutoFill := True;
+    AutoSize := True;
+    BorderSpacing.Left := 12;
+    //BorderSpacing.Around := 0;
+    Caption := 'Direction';
+    ChildSizing.LeftRightSpacing := 6;
+    ChildSizing.TopBottomSpacing := 6;
+    ChildSizing.EnlargeHorizontal := crsHomogenousChildResize;
+    ChildSizing.EnlargeVertical := crsHomogenousChildResize;
+    ChildSizing.ShrinkHorizontal := crsScaleChilds;
+    ChildSizing.ShrinkVertical := crsScaleChilds;
+    ChildSizing.Layout := cclLeftToRightThenTopToBottom;
+    ChildSizing.ControlsPerLine := 2;
+    ClientHeight := 48;
+    ClientWidth := 217;
+    Columns := 2;
+    Constraints.MaxHeight := 60;
+    Items.Add('Forward');
+    Items.Add('Backward');
+    TabOrder := 1;
+    Parent := Self;
+  end;
+  FlagsPanel := TPanel.Create(Self);
+  With FlagsPanel do begin
+    Left := 6;
+    Height := 82;
+    Top := 43;
+    Width := 143;
+    AutoSize := True;
+    BorderSpacing.Around := 6;
+    BevelOuter := bvNone;
+    ChildSizing.VerticalSpacing := 6;
+    ChildSizing.Layout := cclLeftToRightThenTopToBottom;
+    ChildSizing.ControlsPerLine := 1;
+    ClientHeight := 82;
+    ClientWidth := 143;
+    TabOrder := 2;
+    Parent := Self;
+  end;
+  // Flags Panel Objects
+    WholeWordsOnlyCheckBox := TCheckBox.Create(Self);
+    with WholeWordsOnlyCheckBox do begin
+      Left := 0;
+      Height := 23;
+      Top := 0;
+      Width := 142;
+      Caption := 'Whole words only';
+      TabOrder := 0;
+      Parent := FlagsPanel;
+    end;
+    CaseSensitiveCheckBox := TCheckBox.Create(Self);
+    with CaseSensitiveCheckBox do begin
+      Left := 0;
+      Height := 23;
+      Top := 29;
+      Width := 142;
+      Caption := 'Case sensitive';
+      TabOrder := 1;
+      Parent := FlagsPanel;
+    end;
+    EntireScopeCheckBox := TCheckBox.Create(Self);
+    with EntireScopeCheckBox do begin
+      Left := 0;
+      Height := 23;
+      Top := 58;
+      Width := 142;
+      Caption := 'Search entire file';
+      TabOrder := 2;
+      Parent := FlagsPanel;
+    end;
+  //End of Flags Panel objects
+  BtnPanel := TPanel.Create(Self);
+  with BtnPanel do begin
+    Left := 388;
+    Height := 132;
+    Top := 0;
+    Width := 92;
+    Align := alRight;
+    AutoSize := True;
+    BevelOuter := bvNone;
+    ChildSizing.LeftRightSpacing := 6;
+    ChildSizing.TopBottomSpacing := 6;
+    ChildSizing.VerticalSpacing := 6;
+    ClientHeight := 132;
+    ClientWidth := 92;
+    TabOrder := 3;
+    Parent := Self;
+  end;
+  // BtnPanel Objects
+    FindButton := TButton.Create(Self);
+    with FindButton do begin
+      Left := 6;
+      Height := 26;
+      Top := 6;
+      Width := 80;
+      AutoSize := True;
+      Caption := 'Find more';
+      Constraints.MinWidth := 80;
+      Default := True;
+      TabOrder := 0;
+      Parent := BtnPanel;
+    end;
+    CancelButton := TButton.Create(Self);
+    with CancelButton do begin
+      Left := 6;
+      Height := 26;
+      Top := 64;
+      Width := 80;
+      AutoSize := True;
+      BorderSpacing.Bottom := 10;
+      Cancel := True;
+      Caption := 'Cancel';
+      Constraints.MinWidth := 80;
+      ModalResult := 2;
+      TabOrder := 1;
+      Parent := BtnPanel;
+    end;
+    HelpButton := TButton.Create(Self);
+    with HelpButton do begin
+      Left := 6;
+      Height := 26;
+      Top := 100;
+      Width := 80;
+      AutoSize := True;
+      Caption := 'Help';
+      Constraints.MinWidth := 80;
+      TabOrder := 2;
+      Parent := BtnPanel;
+    end;
+
+  EditFind.OnChange := @EditFindChange;
+  SetLayout(Options);
+end;
+
+procedure TFindDialogForm.SetLayout(Options: TFindOptions);
+begin
+  FButtonsBottom := frButtonsAtBottom in Options;
+  if FButtonsBottom then begin
+    Height := 180;
+    Width := 447;
+    ClientHeight := 180;
+    ClientWidth := 447;
+    AutoSize := False;
+    with BtnPanel do begin
+      Left := 0;
+      Height := 38;
+      Top := 131;
+      Width := 447;
+      ClientHeight := 38;
+      ClientWidth := 447;
+      Align := alBottom;
+      AutoSize := True;
+    end;
+    // Anchors
+    FindLabel.Anchors := [akTop, akLeft];
+    FindLabel.AnchorSideTop.Control := EditFind;
+    FindLabel.AnchorSideTop.Side := asrCenter;
+
+    EditFind.Width := 362;
+    EditFind.Anchors := [akTop, akLeft, akRight];
+    EditFind.AnchorSideLeft.Control := FindLabel;
+    EditFind.AnchorSideLeft.Side := asrBottom;
+    EditFind.AnchorSideRight.Control := TControl(Owner);
+    EditFind.AnchorSideRight.Side := asrBottom;
+
+
+    DirectionRadioGroup.Anchors := [akTop, akLeft];
+    DirectionRadioGroup.AnchorSideLeft.Control := FlagsPanel;
+    DirectionRadioGroup.AnchorSideLeft.Side := asrBottom;
+    DirectionRadioGroup.AnchorSideTop.Control := FlagsPanel;
+
+    FlagsPanel.Anchors := [akTop, akLeft];
+    FlagsPanel.AnchorSideLeft.Control := TControl(Owner);
+    FlagsPanel.AnchorSideTop.Control := EditFind;
+    FlagsPanel.AnchorSideTop.Side := asrBottom;
+
+    FindButton.Anchors := [akRight, akBottom];
+    FindButton.AnchorSideRight.Control := BtnPanel;
+    FindButton.AnchorSideRight.Side := asrBottom;
+    FindButton.AnchorSideBottom.Control := BtnPanel;
+    FindButton.AnchorSideBottom.Side := asrBottom;
+
+    CancelButton.Left := 265;
+    CancelButton.Top := 6;
+    CancelButton.BorderSpacing.Bottom := 0;
+    CancelButton.Anchors := [akRight, akBottom];
+    CancelButton.AnchorSideRight.Control := FindButton;
+    //CancelButton.AnchorSideRight.Side := asrBottom;
+    CancelButton.AnchorSideBottom.Control := BtnPanel;
+    CancelButton.AnchorSideBottom.Side := asrBottom;
+    CancelButton.BorderSpacing.Right := 32;
+
+    HelpButton.Anchors := [akLeft, akBottom];
+    HelpButton.AnchorSideLeft.Control := BtnPanel;
+    HelpButton.AnchorSideBottom.Control := BtnPanel;
+    HelpButton.AnchorSideBottom.Side := asrBottom;
+    end
+  else begin
+    with BtnPanel do begin
+      Height := 132;
+      Top := 0;
+      Width := 92;
+      Align := alRight;
+    end;
+    // Anchors
+    FindLabel.AnchorSideTop.Control := EditFind;
+    FindLabel.AnchorSideTop.Side := asrCenter;
+
+    EditFind.Anchors := [akTop, akLeft, akRight];
+    EditFind.AnchorSideLeft.Control := FindLabel;
+    EditFind.AnchorSideLeft.Side := asrBottom;
+    EditFind.AnchorSideRight.Control := BtnPanel;
+
+    DirectionRadioGroup.Anchors := [akTop, akLeft, akRight, akBottom];
+    DirectionRadioGroup.AnchorSideLeft.Control := FlagsPanel;
+    DirectionRadioGroup.AnchorSideLeft.Side := asrBottom;
+    DirectionRadioGroup.AnchorSideTop.Control := FlagsPanel;
+    DirectionRadioGroup.AnchorSideRight.Control := BtnPanel;
+    DirectionRadioGroup.AnchorSideBottom.Control := FlagsPanel;
+    DirectionRadioGroup.AnchorSideBottom.Side := asrBottom;
+
+    FlagsPanel.AnchorSideLeft.Control := TControl(Owner);
+    FlagsPanel.AnchorSideTop.Control := EditFind;
+    FlagsPanel.AnchorSideTop.Side := asrBottom;
+
+    FindButton.Anchors := [akTop, akRight];
+    FindButton.AnchorSideTop.Control := BtnPanel;
+    FindButton.AnchorSideRight.Control := BtnPanel;
+    FindButton.AnchorSideRight.Side := asrBottom;
+    FindButton.AnchorSideBottom.Control := CancelButton;
+
+    CancelButton.Anchors := [akRight, akBottom];
+    CancelButton.AnchorSideTop.Side := asrBottom;
+    CancelButton.AnchorSideRight.Control := BtnPanel;
+    CancelButton.AnchorSideRight.Side := asrBottom;
+    CancelButton.AnchorSideBottom.Control := HelpButton;
+
+    HelpButton.Anchors := [akLeft, akRight, akBottom];
+    HelpButton.AnchorSideLeft.Control := BtnPanel;
+    HelpButton.AnchorSideRight.Control := BtnPanel;
+    HelpButton.AnchorSideBottom.Control := BtnPanel;
+    HelpButton.AnchorSideBottom.Side := asrBottom;
+  end;
 end;
 
 { TFindDialog }
@@ -126,7 +437,7 @@ end;
 procedure TFindDialog.SetPosition(const AValue: TPoint);
 begin
   if (FFormLeft<>AValue.x) or (FFormTop<>AValue.y) then
-  begin;
+  begin
     FFormLeft:=AValue.x;
     FFormTop:=AValue.y;
     UpdatePosition;
@@ -163,7 +474,7 @@ end;
 function TFindDialog.CreateForm: TForm;
 begin
   // do not use Self as Owner, otherwise as desgntime this will not work
-  Result := TFindDialogForm.Create(nil);
+  Result := TFindDialogForm.CreateNew(nil,Options);
   with TFindDialogForm(Result) do
   begin
     FindButton.Caption := rsFind;
