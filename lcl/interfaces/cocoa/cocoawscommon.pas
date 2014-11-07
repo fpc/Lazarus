@@ -122,7 +122,7 @@ type
   private
     FMenuItemTarget: TComponent;
   public
-    constructor Create(AOwner: NSObject; AMenuItemTarget: TComponent);
+    constructor Create(AOwner: NSObject; AMenuItemTarget: TComponent); reintroduce;
     procedure ItemSelected;
   end;
 

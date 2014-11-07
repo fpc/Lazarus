@@ -24,10 +24,10 @@ interface
 
 uses
   // Libs
-  MacOSAll, CocoaAll,
+  MacOSAll, CocoaAll, Classes, sysutils,
   // LCL
   Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue,
-  Classes, LazUtf8Classes,
+  LazUtf8Classes,
   // Widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
@@ -181,7 +181,7 @@ type
     class function RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
     //
-    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
   end;
 
   { TCocoaWSToggleBox }
@@ -486,8 +486,8 @@ begin
 
   lOldSize := lButton.bounds.size;
   lButton.sizeToFit();
-  PreferredWidth := Integer(lButton.bounds.size.width);
-  PreferredHeight := Integer(lButton.bounds.size.height);
+  PreferredWidth := round(lButton.bounds.size.width);
+  PreferredHeight := round(lButton.bounds.size.height);
   lButton.setBoundsSize(lOldSize);
 end;
 
@@ -622,6 +622,8 @@ function GetLinesCount(const s: AnsiString): Integer;
 var
   ofs : Integer;
 begin
+  Result:=0;
+  ofs:=0;
   GetLineStart(s, -1, ofs, Result);
 end;
 
@@ -639,6 +641,8 @@ var
   t     : Integer;
 begin
   s:=GetTextStr;
+  t:=0;
+  ofs:=0;
   GetLineStart(s, Index, ofs, t);
   eofs:=ofs;
   while (eofs<=length(s)) and not (s[eofs] in [#10,#13]) do
