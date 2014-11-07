@@ -21,11 +21,11 @@ Type
     FUpDown : TCustomUpDown;
     FButtonType : TUDBtnType;
   protected
-    procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure DoubleClick(Sender: TObject);
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer
+      ); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+      override;
+    procedure DblClick; override;
   public
     constructor CreateWithParams(UpDown : TCustomUpDown;
       ButtonType : TUDBtnType);
@@ -34,8 +34,8 @@ Type
     procedure Paint; override;
   end;
 
-procedure TUpDownButton.ButtonMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TUpDownButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
 begin
   if Button = mbLeft then begin
     With FUpDown do begin
@@ -54,8 +54,8 @@ begin
   end;
 end;
 
-procedure TUpDownButton.ButtonMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
+procedure TUpDownButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
 begin
   With FUpDown do
     If Assigned(BTimer) then begin
@@ -66,7 +66,7 @@ begin
     end;
 end;
 
-procedure TUpDownButton.DoubleClick(Sender: TObject);
+procedure TUpDownButton.DblClick;
 begin
   Click;
 end;
@@ -121,9 +121,6 @@ begin
 
   Parent := FUpDown;
   ControlStyle := ControlStyle + [csNoFocus, csNoDesignSelectable];
-  OnMouseDown := @ButtonMouseDown;
-  OnMouseUp := @ButtonMouseUp;
-  OnDblClick := @DoubleClick;
 end;
 
 procedure TUpDownButton.Paint;
