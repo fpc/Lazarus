@@ -5851,6 +5851,14 @@ procedure TCustomGrid.DoOPInsertColRow(IsColumn: boolean; index: integer);
 var
   NewCol,NewRow: Integer;
 begin
+  if IsColumn and (RowCount = 0) then
+    Raise EGridException.Create(rsGridHasNoRows);
+  if not IsColumn then
+  begin
+    if (Columns.Enabled and (Columns.Count = 0)) or (not Columns.Enabled and (ColCount = 0)) then
+      Raise EGridException.Create(rsGridHasNoCols);
+  end;
+
   if Index<0 then
     Index:=0;
 

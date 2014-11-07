@@ -603,6 +603,14 @@ msgstr "Тёмно-зелёный"
 msgid "Grid file doesn't exists"
 msgstr "Файл сетки не существует"
 
+#: lclstrconsts.rsgridhasnocols
+msgid "Cannot insert rows into a grid when it has no columns"
+msgstr ""
+
+#: lclstrconsts.rsgridhasnorows
+msgid "Cannot insert columns into a grid when it has no rows"
+msgstr ""
+
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
 msgstr "Индекс Grid'а вне диапазона допустимых значений."

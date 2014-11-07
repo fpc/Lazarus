@@ -239,6 +239,8 @@ resourceString
   rsNotAValidGridFile = 'Not a valid grid file';
   rsIndexOutOfRange = 'Index Out of range Cell[Col=%d Row=%d]';
   rsGridIndexOutOfRange = 'Grid index out of range.';
+  rsGridHasNoRows = 'Cannot insert columns into a grid when it has no rows';
+  rsGridHasNoCols = 'Cannot insert rows into a grid when it has no columns';
   rsERRORInLCL = 'ERROR in LCL: ';
   rsCreatingGdbCatchableError = 'Creating gdb catchable error:';
   rsAControlCanNotHaveItselfAsParent = 'A control can''t have itself as a parent';

@@ -609,6 +609,14 @@ msgstr "緑色"
 msgid "Grid file doesn't exists"
 msgstr "グリッド用ファイルが存在しません"
 
+#: lclstrconsts.rsgridhasnocols
+msgid "Cannot insert rows into a grid when it has no columns"
+msgstr ""
+
+#: lclstrconsts.rsgridhasnorows
+msgid "Cannot insert columns into a grid when it has no rows"
+msgstr ""
+
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
 msgstr "グリッドインデックスが範囲外です"
