@@ -1808,8 +1808,6 @@ type
 
   TCustomUpDown = class(TCustomControl)
   private
-    BTimerBounds : TRect;
-    BTimerProc: TProcedureOfObject;
     FAlignButton: TUDAlignButton;
     FArrowKeys: Boolean;
     FAssociate: TWinControl;
@@ -1817,7 +1815,11 @@ type
     FCanChangePos: SmallInt;
     FIncrement: Integer;
     FMax: SmallInt;
+    FMaxBtn: TControl; // TSpeedButton (TUpDownButton)
     FMin: SmallInt;
+    FMinBtn: TControl; // TSpeedButton (TUpDownButton)
+    FMouseDownBounds : TRect;
+    FMouseTimerEvent: TProcedureOfObject; // the Min/MaxBtn's Click method
     FOnChanging: TUDChangingEvent;
     FOnChangingEx: TUDChangingEventEx;
     FOnClick: TUDClickEvent;
@@ -1825,8 +1827,6 @@ type
     FPosition: SmallInt;
     FThousands: Boolean;
     FWrap: Boolean;
-    MaxBtn: TControl; // TSpeedButton (TUpDownButton)
-    MinBtn: TControl; // TSpeedButton (TUpDownButton)
     function GetPosition: SmallInt;
     procedure BTimerExec(Sender : TObject);
     procedure SetAlignButton(Value: TUDAlignButton);
@@ -1848,7 +1848,7 @@ type
     procedure OnAssociateChangeBounds(Sender: TObject);
     procedure OnAssociateChangeEnabled(Sender: TObject);
     procedure OnAssociateChangeVisible(Sender: TObject);
-    procedure DoOnResize; override;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure SetEnabled(Value: Boolean); override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure CalculatePreferredSize(var PreferredWidth,
