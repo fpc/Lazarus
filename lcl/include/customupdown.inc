@@ -257,17 +257,19 @@ end;
 
 procedure TCustomUpDown.UpdateOrientation;
 var
-  d: Integer;
+  d, r: Integer;
 begin
   If FOrientation = udHorizontal then begin
     d:=ClientWidth div 2;
+    r:=ClientWidth mod 2;
     MinBtn.SetBounds(0,0,d,ClientHeight);
-    MaxBtn.SetBounds(d,0,d,ClientHeight);
+    MaxBtn.SetBounds(d+r,0,d,ClientHeight);
   end
   else begin
     d:=ClientHeight div 2;
+    r:=ClientHeight mod 2;
     MaxBtn.SetBounds(0,0,ClientWidth,d);
-    MinBtn.SetBounds(0,d,ClientWidth,d);
+    MinBtn.SetBounds(0,d+r,ClientWidth,d);
   end;
 end;
 
@@ -411,6 +413,23 @@ class function TCustomUpDown.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 17;
   Result.CY := 31;
+end;
+
+procedure TCustomUpDown.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer; WithThemeSpace: Boolean);
+begin
+  case Orientation of
+  udHorizontal:
+    begin
+      PreferredWidth:=31;
+      PreferredHeight:=17;
+    end;
+  udVertical:
+    begin
+      PreferredWidth:=17;
+      PreferredHeight:=31;
+    end;
+  end;
 end;
 
 procedure TCustomUpDown.Notification(AComponent: TComponent;

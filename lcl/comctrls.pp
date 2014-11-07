@@ -1851,6 +1851,8 @@ type
     procedure DoOnResize; override;
     procedure SetEnabled(Value: Boolean); override;
     class function GetControlClassDefaultSize: TSize; override;
+    procedure CalculatePreferredSize(var PreferredWidth,
+      PreferredHeight: integer; WithThemeSpace: Boolean); override;
     function CanChange: Boolean; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Click(Button: TUDBtnType); virtual; overload;
