@@ -1808,25 +1808,25 @@ type
 
   TCustomUpDown = class(TCustomControl)
   private
-    FOnChangingEx: TUDChangingEventEx;
-    FOnChanging: TUDChangingEvent;
-    MinBtn: TControl; // TSpeedButton
-    MaxBtn: TControl; // TSpeedButton
-    BTimerProc: TProcedureOfObject;
     BTimerBounds : TRect;
+    BTimerProc: TProcedureOfObject;
+    FAlignButton: TUDAlignButton;
     FArrowKeys: Boolean;
     FAssociate: TWinControl;
-    FMin: SmallInt;
-    FMax: SmallInt;
+    FCanChangeDir: TUpDownDirection;
+    FCanChangePos: SmallInt;
     FIncrement: Integer;
+    FMax: SmallInt;
+    FMin: SmallInt;
+    FOnChanging: TUDChangingEvent;
+    FOnChangingEx: TUDChangingEventEx;
+    FOnClick: TUDClickEvent;
+    FOrientation: TUDOrientation;
     FPosition: SmallInt;
     FThousands: Boolean;
     FWrap: Boolean;
-    FOnClick: TUDClickEvent;
-    FAlignButton: TUDAlignButton;
-    FOrientation: TUDOrientation;
-    FCanChangePos: SmallInt;
-    FCanChangeDir: TUpDownDirection;
+    MaxBtn: TControl; // TSpeedButton (TUpDownButton)
+    MinBtn: TControl; // TSpeedButton (TUpDownButton)
     function GetPosition: SmallInt;
     procedure BTimerExec(Sender : TObject);
     procedure SetAlignButton(Value: TUDAlignButton);
@@ -1856,19 +1856,20 @@ type
     function CanChange: Boolean; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Click(Button: TUDBtnType); virtual; overload;
+  protected
     property AlignButton: TUDAlignButton read FAlignButton write SetAlignButton default udRight;
     property ArrowKeys: Boolean read FArrowKeys write SetArrowKeys default True;
     property Associate: TWinControl read FAssociate write SetAssociate;
-    property Min: SmallInt read FMin write SetMin;
-    property Max: SmallInt read FMax write SetMax default 100;
     property Increment: Integer read FIncrement write SetIncrement default 1;
+    property Max: SmallInt read FMax write SetMax default 100;
+    property Min: SmallInt read FMin write SetMin;
+    property OnChanging: TUDChangingEvent read FOnChanging write FOnChanging;
+    property OnChangingEx: TUDChangingEventEx read FOnChangingEx write FOnChangingEx;
+    property OnClick: TUDClickEvent read FOnClick write FOnClick;
     property Orientation: TUDOrientation read FOrientation write SetOrientation default udVertical;
     property Position: SmallInt read GetPosition write SetPosition;
     property Thousands: Boolean read FThousands write SetThousands default True;
     property Wrap: Boolean read FWrap write SetWrap;
-    property OnChanging: TUDChangingEvent read FOnChanging write FOnChanging;
-    property OnChangingEx: TUDChangingEventEx read FOnChangingEx write FOnChangingEx;
-    property OnClick: TUDClickEvent read FOnClick write FOnClick;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; Override;
@@ -1881,25 +1882,15 @@ type
   published
     property AlignButton;
     property Anchors;
-    property Associate;
     property ArrowKeys;
+    property Associate;
     property BorderSpacing;
+    property Constraints;
     property Enabled;
     property Hint;
-    property Min;
-    property Max;
     property Increment;
-    property Constraints;
-    property Orientation;
-    property ParentShowHint;
-    property PopupMenu;
-    property Position;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Thousands;
-    property Visible;
-    property Wrap;
+    property Max;
+    property Min;
     property OnChanging;
     property OnChangingEx;
     property OnClick;
@@ -1914,6 +1905,16 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property Orientation;
+    property ParentShowHint;
+    property PopupMenu;
+    property Position;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Thousands;
+    property Visible;
+    property Wrap;
   end;
 
 
