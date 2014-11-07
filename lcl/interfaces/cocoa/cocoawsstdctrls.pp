@@ -26,7 +26,8 @@ uses
   // Libs
   MacOSAll, CocoaAll,
   // LCL
-  Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue, Classes,
+  Controls, StdCtrls, Graphics, LCLType, LMessages, LCLProc, LCLMessageGlue,
+  Classes, LazUtf8Classes,
   // Widgetset
   WSStdCtrls, WSLCLClasses, WSControls, WSProc,
   // LCL Cocoa
@@ -573,6 +574,8 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: string); override;
+    procedure LoadFromFile(const FileName: string); override;
+    procedure SaveToFile(const FileName: string); override;
   end;
 
 { TCocoaMemoStrings }
@@ -679,6 +682,30 @@ begin
   GetLineStart(txt, Index, ofs, t);
   System.Insert(s+LineEnding, txt, ofs);
   SetTextStr(txt)
+end;
+
+procedure TCocoaMemoStrings.LoadFromFile(const FileName: string);
+var
+  TheStream: TFileStreamUTF8;
+begin
+  TheStream:=TFileStreamUtf8.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  try
+    LoadFromStream(TheStream);
+  finally
+    TheStream.Free;
+  end;
+end;
+
+procedure TCocoaMemoStrings.SaveToFile(const FileName: string);
+var
+  TheStream: TFileStreamUTF8;
+begin
+  TheStream:=TFileStreamUtf8.Create(FileName,fmCreate);
+  try
+    SaveToStream(TheStream);
+  finally
+    TheStream.Free;
+  end;
 end;
 
 { TCocoaWSCustomMemo }

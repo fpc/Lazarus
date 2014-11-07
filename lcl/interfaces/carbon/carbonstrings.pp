@@ -26,7 +26,7 @@ uses
  // rtl+ftl
   Classes, SysUtils,
  // LCL
-  LCLProc, LCLType, Graphics, Controls, StdCtrls,
+  LCLProc, LCLType, Graphics, Controls, StdCtrls, LazUtf8Classes,
  // LCL Carbon
   CarbonEdits, CarbonListViews;
 
@@ -93,6 +93,8 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: string); override;
+    procedure LoadFromFile(const FileName: string); override;
+    procedure SaveToFile(const FileName: string); override;
   public
     property Owner: TCarbonMemo read FOwner;
   end;
@@ -427,6 +429,30 @@ end;
 procedure TCarbonMemoStrings.Insert(Index: Integer; const S: string);
 begin
   FOwner.InsertLine(Index, S);
+end;
+
+procedure TCarbonMemoStrings.LoadFromFile(const FileName: string);
+var
+  TheStream: TFileStreamUTF8;
+begin
+  TheStream:=TFileStreamUtf8.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  try
+    LoadFromStream(TheStream);
+  finally
+    TheStream.Free;
+  end;
+end;
+
+procedure TCarbonMemoStrings.SaveToFile(const FileName: string);
+var
+  TheStream: TFileStreamUTF8;
+begin
+  TheStream:=TFileStreamUtf8.Create(FileName,fmCreate);
+  try
+    SaveToStream(TheStream);
+  finally
+    TheStream.Free;
+  end;
 end;
 
 
