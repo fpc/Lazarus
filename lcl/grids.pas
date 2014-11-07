@@ -35,7 +35,7 @@ uses
   Types, Classes, SysUtils, Math, Maps, LCLStrConsts, LCLProc, LCLType, LCLIntf,
   FileUtil, FPCanvas, Controls, GraphType, Graphics, Forms, DynamicArray,
   LMessages, StdCtrls, LResources, MaskEdit, Buttons, Clipbrd, Themes,
-  Laz2_XMLCfg; // <-- replaces XMLConf (part of FPC libs)
+  LazUtf8Classes, Laz2_XMLCfg; // <-- replaces XMLConf (part of FPC libs)
 
 const
   //GRIDFILEVERSION = 1; // Original
@@ -10824,9 +10824,9 @@ end;
 procedure TCustomStringGrid.LoadFromCSVFile(AFilename: string;
   ADelimiter: Char=','; WithHeader: boolean=true);
 var
-  TheStream: TFileStream;
+  TheStream: TFileStreamUtf8;
 begin
-  TheStream:=TFileStream.Create(AFileName,fmOpenRead or fmShareDenyWrite);
+  TheStream:=TFileStreamUtf8.Create(AFileName,fmOpenRead or fmShareDenyWrite);
   try
     LoadFromCSVStream(TheStream, ADelimiter, WithHeader);
   finally
@@ -10909,9 +10909,9 @@ end;
 procedure TCustomStringGrid.SaveToCSVFile(AFileName: string; ADelimiter: Char;
   WithHeader: boolean=true; VisibleColumnsOnly: boolean=false);
 var
-  TheStream: TFileStream;
+  TheStream: TFileStreamUtf8;
 begin
-  TheStream:=TFileStream.Create(AFileName,fmCreate);
+  TheStream:=TFileStreamUtf8.Create(AFileName,fmCreate);
   try
     SaveToCSVStream(TheStream, ADelimiter, WithHeader);
   finally

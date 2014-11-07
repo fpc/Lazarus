@@ -26,6 +26,8 @@ type
     procedure Delete(Index : integer); override;
     procedure Insert(Index : integer; const S: string); override;
     procedure SetTextStr(const Value: string); override;
+    procedure LoadFromFile(const FileName: string); override;
+    procedure SaveToFile(const FileName: string); override;
     //procedure Sort; virtual;
   public
     //property Sorted: boolean read FSorted write SetSorted;
@@ -265,6 +267,30 @@ begin
     FillChar(Msg, SizeOf(Msg), 0);
     Msg.Msg := CM_TEXTCHANGED;
     DeliverMessage(Owner, Msg);
+  end;
+end;
+
+procedure TWin32MemoStrings.LoadFromFile(const FileName: string);
+var
+  TheStream: TFileStreamUTF8;
+begin
+  TheStream:=TFileStreamUtf8.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  try
+    LoadFromStream(TheStream);
+  finally
+    TheStream.Free;
+  end;
+end;
+
+procedure TWin32MemoStrings.SaveToFile(const FileName: string);
+var
+  TheStream: TFileStreamUTF8;
+begin
+  TheStream:=TFileStreamUtf8.Create(FileName,fmCreate);
+  try
+    SaveToStream(TheStream);
+  finally
+    TheStream.Free;
   end;
 end;
 

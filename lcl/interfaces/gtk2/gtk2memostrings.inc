@@ -30,6 +30,8 @@ type
     procedure Delete(Index : integer); override;
     procedure Insert(Index : integer; const S: string); override;
     procedure SetTextStr(const Value: string); override;
+    procedure LoadFromFile(const FileName: string); override;
+    procedure SaveToFile(const FileName: string); override;
     //procedure Sort; virtual;
     procedure QueueCursorMove(APosition: Integer);
     procedure QueueSelectLength(ALength: Integer);
@@ -240,6 +242,30 @@ begin
   begin
     LockOnChange({%H-}PGtkObject(Owner.Handle), 1);
     gtk_text_buffer_set_text(FGtkBuf, PChar(Value), -1);
+  end;
+end;
+
+procedure TGtk2MemoStrings.LoadFromFile(const FileName: string);
+var
+  TheStream: TFileStreamUTF8;
+begin
+  TheStream:=TFileStreamUtf8.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  try
+    LoadFromStream(TheStream);
+  finally
+    TheStream.Free;
+  end;
+end;
+
+procedure TGtk2MemoStrings.SaveToFile(const FileName: string);
+var
+  TheStream: TFileStreamUTF8;
+begin
+  TheStream:=TFileStreamUtf8.Create(FileName,fmCreate);
+  try
+    SaveToStream(TheStream);
+  finally
+    TheStream.Free;
   end;
 end;
 

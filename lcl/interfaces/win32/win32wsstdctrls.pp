@@ -31,7 +31,7 @@ uses
   Classes, SysUtils, CommCtrl,
   StdCtrls, Controls, Graphics, Forms, Themes,
 ////////////////////////////////////////////////////
-  WSControls, WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType, LCLProc,
+  WSControls, WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLType, LCLProc, LazUtf8Classes,
   InterfaceBase, LMessages, LCLMessageGlue,
   Win32Int, Win32Proc, Win32WSControls, Win32Extra, Win32Themes;
 

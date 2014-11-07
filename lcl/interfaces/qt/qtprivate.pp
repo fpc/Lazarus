@@ -33,7 +33,7 @@ uses
   // Free Pascal
   Classes, SysUtils,
   // LCL
-  Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls,
+  Forms, Controls, LCLType, LCLProc, ExtCtrls, StdCtrls, LazUtf8Classes,
   //Widgetset
   QtWidgets, qtproc;
 
@@ -115,6 +115,8 @@ type
     procedure Clear; override;
     procedure Delete(Index : integer); override;
     procedure Insert(Index : integer; const S: string); override;
+    procedure LoadFromFile(const FileName: string); override;
+    procedure SaveToFile(const FileName: string); override;
   public
     property Owner: TWinControl read FOwner;
     property TextChanged: Boolean read FTextChanged write FTextChanged;
@@ -460,6 +462,30 @@ begin
       W := GetUTF8String(S);
       TQtTextEdit(FOwner.Handle).insertLine(Index, W);
     end;
+  end;
+end;
+
+procedure TQtMemoStrings.LoadFromFile(const FileName: string);
+var
+  TheStream: TFileStreamUTF8;
+begin
+  TheStream:=TFileStreamUtf8.Create(FileName,fmOpenRead or fmShareDenyWrite);
+  try
+    LoadFromStream(TheStream);
+  finally
+    TheStream.Free;
+  end;
+end;
+
+procedure TQtMemoStrings.SaveToFile(const FileName: string);
+var
+  TheStream: TFileStreamUTF8;
+begin
+  TheStream:=TFileStreamUtf8.Create(FileName,fmCreate);
+  try
+    SaveToStream(TheStream);
+  finally
+    TheStream.Free;
   end;
 end;
 
