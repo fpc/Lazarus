@@ -1030,7 +1030,7 @@ type
     function GetCompileSourceFilename: string;
     procedure AutoAddOutputDirToIncPath;
 
-    // state file
+    // compile state file
     function LoadStateFile(IgnoreErrors: boolean): TModalResult;
     function SaveStateFile(const CompilerFilename, CompilerParams: string;
                            Complete: boolean): TModalResult;
@@ -5684,7 +5684,10 @@ var
   AnUnitInfo: TUnitInfo;
   BestUnitInfo: TUnitInfo;
 begin
-  if FirstUnitWithEditorIndex<>nil then exit;
+  BestUnitInfo:=FirstUnitWithEditorIndex;
+  if (BestUnitInfo<>nil) and (BestUnitInfo.Loaded)
+  and FileExistsCached(BestUnitInfo.Filename) then
+    exit;
   BestUnitInfo:=nil;
 
   if (MainUnitID>=0) then begin
