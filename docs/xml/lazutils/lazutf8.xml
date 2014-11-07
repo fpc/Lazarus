@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lazutils">
     <!--
@@ -103,7 +103,7 @@
       <element name="UTF8CharacterToUnicode">
         <short>Returns the codepoint at p and the number of bytes to skip.</short>
         <descr>If p=nil then CharLen and result are 0 otherwise CharLen&gt;0.
-If there is an encoding error the Result is not defined, but CharLen is still&gt;0 to skip forward. It is safe to do:
+If there is an encoding error the Result is 0 and CharLen=1 to skip forward. It is safe to do:
 
 var s: string;
 

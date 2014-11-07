@@ -314,7 +314,7 @@ end;
 
 function UTF8CharacterToUnicode(p: PChar; out CharLen: integer): Cardinal;
 { if p=nil then CharLen=0 otherwise CharLen>0
-  If there is an encoding error the Result is undefined.
+  If there is an encoding error the Result is 0 and CharLen=1.
   Use UTF8FixBroken to fix UTF-8 encoding.
   It does not check if the codepoint is defined in the Unicode tables.
 }
