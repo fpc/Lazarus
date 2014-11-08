@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-28 02:43+0300\n"
+"PO-Revision-Date: 2014-11-08 04:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -564,7 +564,7 @@ msgstr "Предупредить при компиляции"
 
 #: lazarusidestrconsts.dlganiconforerrorwarninghintisshown
 msgid "An icon for error/warning/hint is shown in front of a message. The same icon shows in source editor gutter in any case."
-msgstr ""
+msgstr "Значок для ошибки/предупреждения/подсказки отображается перед сообщением. Тот же значок выводится в редакторе исходного кода в любом случае."
 
 #: lazarusidestrconsts.dlgansicommenttab
 msgid "Ansi (* *)"
@@ -584,7 +584,7 @@ msgstr "Автосоздаваемые формы:"
 
 #: lazarusidestrconsts.dlgautocreateformshint
 msgid "Main .lpr unit creates each form with Application.CreateForm(). They are also freed automatically."
-msgstr ""
+msgstr "Каждая форма создаётся в главном модуле .lpr посредством вызова Application.CreateForm(). Освобождаются формы также автоматически."
 
 #: lazarusidestrconsts.dlgautocreatenewforms
 msgid "When creating new forms, add them to auto-created forms"
@@ -630,7 +630,7 @@ msgstr "Доступные формы:"
 
 #: lazarusidestrconsts.dlgavailableformshint
 msgid "These forms must be created and freed in the program code."
-msgstr ""
+msgstr "Эти формы должны создаваться и освобождаться в коде программы."
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
@@ -691,7 +691,7 @@ msgstr "Отступ блока в ТАБах"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
 msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
-msgstr ""
+msgstr "Зазор может быть установлен в редакторе привязок. Если зазор больше нуля, отображается прямоугольник."
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -801,7 +801,7 @@ msgstr "Автопереименование в нижний регистр в �
 
 #: lazarusidestrconsts.dlgcheckandautosavefiles
 msgid "Check and Auto Save Files"
-msgstr ""
+msgstr "Проверка и автоматическое сохранение"
 
 #: lazarusidestrconsts.dlgcheckpackagesonformcreate
 msgid "Check packages on form create"
@@ -809,7 +809,7 @@ msgstr "Проверять пакеты при создании формы"
 
 #: lazarusidestrconsts.dlgcheckpackagesonformcreatehint
 msgid "The form may require a package to work. Install such a package automatically."
-msgstr ""
+msgstr "Форма может требовать пакета для корректной работы. Установить его автоматически."
 
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
@@ -1028,7 +1028,7 @@ msgstr "Завершать свойства"
 
 #: lazarusidestrconsts.dlgcomponentundermousecursorisfirstselected
 msgid "Component under mouse cursor is first selected, then the popup menu commands work on it."
-msgstr ""
+msgstr "Сначала компонент под курсором мыши выделяется, и только затем на нём срабатывают команды из всплывающего меню"
 
 #: lazarusidestrconsts.dlgconfigandtarget
 msgid "Config and Target"
@@ -1154,7 +1154,7 @@ msgstr "Фигурные скобки { }"
 
 #: lazarusidestrconsts.dlgcurrentlyrespectedbymessageswindow
 msgid "Currently respected by messages window, jump history and search results."
-msgstr ""
+msgstr "Параметр оказывает влияние на окно сообщений, диалоги истории переходов и результатов поиска"
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
@@ -1226,7 +1226,7 @@ msgstr "Отключить сглаживание"
 
 #: lazarusidestrconsts.dlgdistancebetweengridpointsissmalleststep
 msgid "Distance between grid points is the smallest step when moving a control."
-msgstr ""
+msgstr "Расстояние между точками сетки является минимальным шагом перемещения компонента"
 
 #: lazarusidestrconsts.dlgdividercolordefault
 msgid "Use right margin color"
@@ -1283,7 +1283,7 @@ msgstr "Секции Var/Type (локальные)"
 
 #: lazarusidestrconsts.dlgdrawcomponentsnamebelowit
 msgid "Draw the component's name below it."
-msgstr ""
+msgstr "Отображать имя компонента под ним"
 
 #: lazarusidestrconsts.dlgedback
 msgid "Back"
@@ -1474,7 +1474,7 @@ msgstr "Язык"
 
 #: lazarusidestrconsts.dlgenvlanguagehint
 msgid "Language of all IDE strings. Restart IDE after changing it for best result."
-msgstr ""
+msgstr "Язык интерфейса IDE. Для корректного переключения требуется перезапуск."
 
 #: lazarusidestrconsts.dlgenvlguidelines
 msgid "Guide lines"
@@ -1700,7 +1700,7 @@ msgstr "Сохранять порядок процедур"
 
 #: lazarusidestrconsts.dlgfpcexecutable
 msgid "Compiler executable (e.g. %s)"
-msgstr ""
+msgstr "Исполнимый файл компилятора (например, %s)"
 
 #: lazarusidestrconsts.dlgfpcsrcpath
 msgid "FPC source directory"
@@ -1749,7 +1749,7 @@ msgstr "Сетка"
 
 #: lazarusidestrconsts.dlggridconsistsofsmalldots
 msgid "Grid consists of small dots which help aligning controls."
-msgstr ""
+msgstr "Сетка состоит из точек, помогающих выравнивать компоненты"
 
 #: lazarusidestrconsts.dlggridx
 msgid "Grid size X"
@@ -1765,7 +1765,7 @@ msgstr "Размер Y сетки"
 
 #: lazarusidestrconsts.dlggridyhint
 msgid "Vertical grid step size"
-msgstr "Вертикальный шаг сетки"
+msgstr "Шаг сетки по вертикали"
 
 #: lazarusidestrconsts.dlggroupcodeexplorer
 msgctxt "lazarusidestrconsts.dlggroupcodeexplorer"
@@ -1800,7 +1800,7 @@ msgstr "Показывать линии позиционирования"
 
 #: lazarusidestrconsts.dlgguidelineshint
 msgid "When a control is aligned horizontally or vertically with another controls, a blue guide line is shown."
-msgstr ""
+msgstr "Когда компонент выровнен по горизонтали либо по вертикали с остальными, отображается линия позиционирования"
 
 #: lazarusidestrconsts.dlggutter
 msgctxt "lazarusidestrconsts.dlggutter"
@@ -1837,7 +1837,7 @@ msgstr "Размер кучи"
 
 #: lazarusidestrconsts.dlgheightofonepropertyingrid
 msgid "Height of one property in the grid."
-msgstr ""
+msgstr "Высота строки в инспекторе объектов"
 
 #: lazarusidestrconsts.dlgheightpos
 msgid "Height:"
@@ -1849,7 +1849,7 @@ msgstr "Скрывать окна IDE при запуске"
 
 #: lazarusidestrconsts.dlghideideonrunhint
 msgid "Do not show the IDE at all while program is running."
-msgstr ""
+msgstr "Не показывать IDE во время исполнения программы"
 
 #: lazarusidestrconsts.dlghidesingletabinnotebook
 msgid "Hide tab in single page windows"
@@ -2080,7 +2080,7 @@ msgstr "Показать модули проекта"
 
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
-msgstr ""
+msgstr "Исполнимый файл \"Make\""
 
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
@@ -2235,7 +2235,7 @@ msgstr "Смешивать методы и свойства"
 
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
-msgstr ""
+msgstr "Реакция на действия мышью"
 
 #: lazarusidestrconsts.dlgmouseoptbtn1
 msgid "Single"
@@ -2595,10 +2595,8 @@ msgid "Other optimizations"
 msgstr "Прочие оптимизации"
 
 #: lazarusidestrconsts.dlgotherunitfiles
-#, fuzzy
-#| msgid "Other unit files (-Fu) (delimiter is semicolon):"
 msgid "Other unit files (-Fu):"
-msgstr "Другие модули (-Fu) (разделитель - точка с запятой):"
+msgstr "Другие модули (-Fu):"
 
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
@@ -2750,7 +2748,7 @@ msgstr "Использовать manifest-файл для включения п�
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
-msgstr ""
+msgstr "Предпочитать двойной щелчок одинарному"
 
 #: lazarusidestrconsts.dlgpriorities
 msgid "Priorities"
@@ -2893,7 +2891,7 @@ msgstr "Сохранять сведения о закрываемых файла
 
 #: lazarusidestrconsts.dlgsaveeditorinfohint
 msgid "The files are available in the \"Open Recent\" history list."
-msgstr ""
+msgstr "Файлы доступны в списке \"Открыть недавний\""
 
 #: lazarusidestrconsts.dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
@@ -2901,7 +2899,7 @@ msgstr "Сохранять сведения только о файлах про�
 
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
-msgstr ""
+msgstr "Только файлы, принадлежащие проекту"
 
 #: lazarusidestrconsts.dlgscope
 msgid "Scope"
@@ -2946,7 +2944,7 @@ msgstr "Пути"
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
-msgstr ""
+msgstr "Выделять все компоненты-потомки вместе с их родителями"
 
 #: lazarusidestrconsts.dlgselectedtext
 msgid "&Selected text"
@@ -2970,7 +2968,7 @@ msgstr "Показывать все модули"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
 msgid "Show captions of non-visual components"
-msgstr ""
+msgstr "Показывать заголовки невизуальных компонентов"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -2991,11 +2989,11 @@ msgstr "Показывать отладочную информацию"
 
 #: lazarusidestrconsts.dlgshowdesignerhints
 msgid "Show designer hints"
-msgstr ""
+msgstr "Отображать подсказки редактора форм"
 
 #: lazarusidestrconsts.dlgshowdesignerhintshint
 msgid "Hint shows control's position or size while moving or resizing it."
-msgstr ""
+msgstr "Подсказка отображает положение и размер компонента при их изменении"
 
 #: lazarusidestrconsts.dlgshoweverything
 msgid "Show everything"
@@ -3020,7 +3018,7 @@ msgstr "Показывать подсказки"
 
 #: lazarusidestrconsts.dlgshowingwindows
 msgid "Showing Windows"
-msgstr ""
+msgstr "Отображение окон"
 
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
@@ -3029,7 +3027,7 @@ msgstr "Показывать номера строк"
 
 #: lazarusidestrconsts.dlgshowmessagesicons
 msgid "Show Messages Icons"
-msgstr ""
+msgstr "Показывать значки для сообщений"
 
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
@@ -3085,7 +3083,7 @@ msgstr "Выравнивать по линиям позиционировани�
 
 #: lazarusidestrconsts.dlgsnapguidelineshint
 msgid "When a control is close to being aligned with another control, it snaps to the aligned position."
-msgstr ""
+msgstr "Когда компонент уже почти выровнен с другим, он перемещается в выровненное положение"
 
 #: lazarusidestrconsts.dlgspacenotcosmos
 msgctxt "lazarusidestrconsts.dlgspacenotcosmos"
@@ -3777,7 +3775,7 @@ msgstr "О проекте Lazarus"
 
 #: lazarusidestrconsts.lisaboutlazarusmsg
 msgid "License: GPL/LGPL. See Lazarus and Free Pascal sources for license details.%sLazarus is an IDE to create graphical and console applications with Free Pascal. Free Pascal is Pascal and Object Pascal compiler that runs on Windows, Linux, Mac OS X, FreeBSD and more.%sLazarus is the missing part of the puzzle that will allow you to develop programs for all of the above platforms in a Delphi like environment. The IDE is a RAD tool that includes a form designer.%sAs Lazarus is growing we need more developers."
-msgstr "Лицензия: GPL/LGPL. Обратитесь к исходному коду Lazarus и Free Pascal за подробностями.%sLazarus - это IDE для создания графических и консольных приложений при помощи компилятора Free Pascal. Free Pascal - это компилятор языков Pascal и Object Pascal, работающий под Windows, Linux, Mac OS X, FreeBSD, и другими ОС.%sLazarus - это недостающий элемент, который позволит вам разрабатывать программы для всех вышеперечисленных платформ в Delphi-подобном окружении. Эта IDE является инструментом RAD, включающим в себя дизайнер форм.%sТак как проект Lazarus растёт, он нуждается в большем количестве разработчиков."
+msgstr "Лицензия: GPL/LGPL. Обратитесь к исходному коду Lazarus и Free Pascal за подробностями.%sLazarus - это IDE для создания графических и консольных приложений при помощи компилятора Free Pascal. Free Pascal - это компилятор языков Pascal и Object Pascal, работающий под Windows, Linux, Mac OS X, FreeBSD, и другими ОС.%sLazarus - это недостающий элемент, который позволит вам разрабатывать программы для всех вышеперечисленных платформ в Delphi-подобном окружении. Эта IDE является инструментом RAD, включающим в себя редактор форм.%sТак как проект Lazarus растёт, он нуждается в большем количестве разработчиков."
 
 #: lazarusidestrconsts.lisaboutnocontributors
 msgid "Cannot find contributors list."
@@ -4154,7 +4152,7 @@ msgstr "Применять соглашения по именованию"
 
 #: lazarusidestrconsts.lisapplyconventionshint
 msgid "Adjust name extension and character case for platform and file type."
-msgstr ""
+msgstr "Корректировать расширение и регистр символов в зависимости от платформы и типа файла"
 
 #: lazarusidestrconsts.lisaprojectunitcannotbeusedbyotherpackagesprojects
 msgid "A project unit can not be used by other packages/projects"
@@ -4173,8 +4171,6 @@ msgid "Ask before saving project's session"
 msgstr "Спрашивать перед сохранением сеанса работы с проектом"
 
 #: lazarusidestrconsts.lisaskforcomponentnameafterputtingitonform
-#, fuzzy
-#| msgid "Ask for component name after putting it on a designer form"
 msgid "Ask for component name after putting it on a designer form."
 msgstr "Спрашивать имя компонента при помещении его на форму"
 
@@ -4217,7 +4213,7 @@ msgstr "Автоматическая"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
 msgid "Automatically convert .lfm files to .lrs resource files"
-msgstr ""
+msgstr "Автоматически преобразовывать файлы .lfm  в файлы ресурсов .lrs"
 
 #: lazarusidestrconsts.lisautomaticallyignoreforselection
 msgid "do not complete selection"
@@ -5065,10 +5061,9 @@ msgid "Check All"
 msgstr "Отметить все"
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
-#, fuzzy
 msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
-msgstr "Проверять изменения файлов на диске по их содержимому (не по времени)"
+msgstr "Проверять изменения в файлах на диске по содержимому, а не по времени"
 
 #: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
 msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
@@ -5114,7 +5109,7 @@ msgstr "Выберите клавишу ..."
 
 #: lazarusidestrconsts.lischooseanameforthecomponent
 msgid "Choose a name for the component"
-msgstr ""
+msgstr "Выберите имя компонента"
 
 #: lazarusidestrconsts.lischooseanexamplefile
 msgid "Choose an example file"
@@ -5130,7 +5125,7 @@ msgstr "Выберите файл Паскаля для получения об�
 
 #: lazarusidestrconsts.lischoosecompilerexecutable
 msgid "Choose compiler executable (%s)"
-msgstr ""
+msgstr "Выберите исполнимый файл компилятора (%s)"
 
 #: lazarusidestrconsts.lischoosecompilermessages
 msgid "Choose compiler messages file"
@@ -5138,7 +5133,7 @@ msgstr "Выберите файл сообщений компилятора"
 
 #: lazarusidestrconsts.lischoosedebuggerexecutable
 msgid "Choose debugger executable"
-msgstr ""
+msgstr "Выберите исполнимый файл отладчика"
 
 #: lazarusidestrconsts.lischoosedelphipackage
 msgid "Choose Delphi package (*.dpk)"
@@ -5166,7 +5161,7 @@ msgstr "Выберите каталог Lazarus"
 
 #: lazarusidestrconsts.lischoosemakeexecutable
 msgid "Choose \"make\" executable"
-msgstr ""
+msgstr "Выберите исполнимый файл \"Make\""
 
 #: lazarusidestrconsts.lischoosename
 msgid "Choose name"
@@ -6835,7 +6830,7 @@ msgstr "Текущий"
 
 #: lazarusidestrconsts.liscurrentlclwidgetset
 msgid "Current LCL widgetset: \"%s\""
-msgstr ""
+msgstr "Текущая библиотека виджетов LCL: \"%s\""
 
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
@@ -7348,7 +7343,7 @@ msgstr "Не удалось удалить файл \"%s\"."
 
 #: lazarusidestrconsts.lisdelimiterissemicolon
 msgid "Delimiter is semicolon."
-msgstr ""
+msgstr "Разделителем является точка с запятой"
 
 #: lazarusidestrconsts.lisdelphi
 msgid "Delphi"
@@ -7356,7 +7351,7 @@ msgstr "Delphi"
 
 #: lazarusidestrconsts.lisdelphicompatibleresources
 msgid "Delphi compatible resources. Recommended."
-msgstr ""
+msgstr "Ресурсы, совместимые с Delphi. Рекомендуется использовать именно их."
 
 #: lazarusidestrconsts.lisdelphipackage
 msgid "Delphi package"
@@ -7934,7 +7929,7 @@ msgstr "Включить"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
-msgstr ""
+msgstr "Параметр активен только для пакетов"
 
 #: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
@@ -8372,13 +8367,12 @@ msgstr "Фатальная ошибка"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidle
 msgid "Reduce designer painting"
-msgstr "Уменьшить прорисовку дизайнеров"
+msgstr "Уменьшить прорисовку редакторов форм"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidlehint
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisfepaintdesigneritemsonidlehint"
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
-msgstr "Рисовать элементы дизайнеров только в паузах (уменьшает нагрузку на медленных машинах)"
+msgstr "Рисовать элементы редакторов форм только в простое (уменьшает нагрузку на медленные машины)"
 
 #: lazarusidestrconsts.lisfile
 msgctxt "lazarusidestrconsts.lisfile"
@@ -8708,10 +8702,8 @@ msgid "FPC messages: Appendix"
 msgstr "Сообщения FPC: приложение"
 
 #: lazarusidestrconsts.lisfpcresources
-#, fuzzy
-#| msgid "FPC resources"
 msgid "FPC resources (.res)"
-msgstr "Ресурсы FPC"
+msgstr "Ресурсы FPC (.res)"
 
 #: lazarusidestrconsts.lisfpcsources
 msgid "FPC sources"
@@ -8994,7 +8986,7 @@ msgstr "Подсказка: значение по умолчанию может 
 
 #: lazarusidestrconsts.lishintatpropertysnameshowsdescription
 msgid "A hint at property's name shows its description."
-msgstr ""
+msgstr "В подсказке, всплывающей над именем свойства, выводится его описание"
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -9066,7 +9058,7 @@ msgstr "По горизонтали"
 
 #: lazarusidestrconsts.lishorizontallinesbetweenproperties
 msgid "Horizontal lines between properties."
-msgstr ""
+msgstr "Горизонтальные линии между свойствами"
 
 #: lazarusidestrconsts.lisid
 msgctxt "lazarusidestrconsts.lisid"
@@ -9111,7 +9103,7 @@ msgstr "Макросы IDE"
 
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
-msgstr ""
+msgstr "IDE сохраняет заголовок в главном модуле"
 
 #: lazarusidestrconsts.lisidentifier
 msgid "identifier"
@@ -9199,7 +9191,7 @@ msgstr "если не отмечен:"
 
 #: lazarusidestrconsts.lisifonlysessioninfochangedthenask
 msgid "If only the session info changed, ask about saving it."
-msgstr ""
+msgstr "Если изменились только сведения о сеансе работы, спрашивать перед их сохранением"
 
 #: lazarusidestrconsts.lisifyouwanttousetwodifferentlazarusversionsyoumustst
 msgid "If you want to use two different Lazarus versions you must start the second Lazarus with the command line parameter primary-config-path or pcp.%sFor example:"
@@ -9658,7 +9650,7 @@ msgstr "Команды пользователя"
 
 #: lazarusidestrconsts.liskeycatdesigner
 msgid "Designer commands"
-msgstr "Команды дизайнера"
+msgstr "Команды редактора форм"
 
 #: lazarusidestrconsts.liskeycatobjinspector
 msgid "Object Inspector commands"
@@ -10632,10 +10624,8 @@ msgid "lpk is missing"
 msgstr "LPK отсутствует"
 
 #: lazarusidestrconsts.lislrsincludefiles
-#, fuzzy
-#| msgid "lrs include files"
 msgid "Lazarus resources (.lrs) include files"
-msgstr "Файлы LRS"
+msgstr "Ресурсы Lazarus (.lrs)"
 
 #: lazarusidestrconsts.lismacpascal
 msgid "Mac Pascal"
@@ -10667,11 +10657,11 @@ msgstr "Главный модуль имеет выражение uses, вклю
 
 #: lazarusidestrconsts.lismainunitispascalsource
 msgid "Main unit is Pascal source"
-msgstr "Главный модуль является исходым кодом на Паскале"
+msgstr "Главный модуль является исходным кодом на Паскале"
 
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
-msgstr ""
+msgstr "Предполагать, что файл содержит исходный код на Паскале, даже если он не имеет расширения .pas/.pp"
 
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
@@ -12337,7 +12327,7 @@ msgstr "Количество преобразуемых файлов: %s"
 
 #: lazarusidestrconsts.lisobjectinspectorbecomesvisible
 msgid "Object Inspector becomes visible when components are selected in designer."
-msgstr ""
+msgstr "Показывать инспектор объектов при выборе компонентов в редакторе форм"
 
 #: lazarusidestrconsts.lisobjectpascaldefault
 msgid "Object Pascal - default"
@@ -12492,7 +12482,7 @@ msgstr "Открывать редактор форм при открытии м�
 
 #: lazarusidestrconsts.lisopendesigneronopenunithint
 msgid "Form is loaded in designer always when source unit is opened."
-msgstr ""
+msgstr "Форма всегда загружается при открытии её модуля"
 
 #: lazarusidestrconsts.lisopenexistingfile
 msgid "Open existing file"
@@ -13973,10 +13963,8 @@ msgid "Pointer"
 msgstr "Указатель"
 
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
-#, fuzzy
-#| msgid "Save in IDE config directory"
 msgid "Save in .lps file in IDE config directory"
-msgstr "Сохранять в каталоге настройки IDE"
+msgstr "Сохранять в файле .lps в каталоге настройки IDE"
 
 #: lazarusidestrconsts.lisposaveinlpifil
 msgid "Save in .lpi file"
@@ -13992,7 +13980,7 @@ msgstr "Сохранять сведения о сеансе работы в"
 
 #: lazarusidestrconsts.lisposavesessioninformationinhint
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
-msgstr ""
+msgstr "Файл .lpi является главным хранилищем сведений о проекте, в то время как .lps содержит только сведения о сеансе работы"
 
 #: lazarusidestrconsts.lispositionoutsideofsource
 msgid "%s (position outside of source)"
@@ -14029,7 +14017,7 @@ msgstr "Скрытый метод"
 
 #: lazarusidestrconsts.lisprobablyyouneedtoinstallsomepackagesforbeforeconti
 msgid "Probably you need to install some packages before continuing.%sWarning:%sThe project uses the following design time packages, which might be needed to open the form in the designer. If you continue, you might get errors about missing components and the form loading will probably create very unpleasant results.%sIt is recommended to cancel and install these packages first."
-msgstr "Вероятно, вам следует установить некоторые пакеты перед продолжением.%sВнимание:%sПроект зависит от пакетов времени разработки, которые могут понадобиться для открытия форм в дизайнере. При продолжении вы можете получить ошибки об отсутствующих компонентах, и загрузка формы, возможно, приведёт к очень неприятным результатам.%sРекомендуется прервать процесс и установить сначала эти пакеты."
+msgstr "Вероятно, вам следует установить некоторые пакеты перед продолжением.%sВнимание:%sПроект зависит от пакетов времени разработки, которые могут понадобиться для открытия форм в редакторе. При продолжении вы можете получить ошибки об отсутствующих компонентах, и загрузка формы, возможно, приведёт к очень неприятным результатам.%sРекомендуется прервать процесс и установить сначала эти пакеты."
 
 #: lazarusidestrconsts.lisprocedure
 msgctxt "lazarusidestrconsts.lisprocedure"
@@ -14208,7 +14196,7 @@ msgstr "Проект является запускаемым"
 
 #: lazarusidestrconsts.lisprojectisrunnablehint
 msgid "Generates a binary executable which can be run."
-msgstr ""
+msgstr "Создаёт двоичный исполнимый файл, который можно непосредственно запустить"
 
 #: lazarusidestrconsts.lisprojectmacro
 msgctxt "lazarusidestrconsts.lisprojectmacro"
@@ -14334,7 +14322,7 @@ msgstr "Собирать всегда (даже при отсутствии из
 
 #: lazarusidestrconsts.lisprojoptsalwaysbuildhint
 msgid "May be needed if there is a bug in dependency check, normally not needed."
-msgstr ""
+msgstr "Может понадобиться для обхода ошибок при проверке зависимостей. В норме не требуется."
 
 #: lazarusidestrconsts.lisprojoptserror
 msgctxt "lazarusidestrconsts.lisprojoptserror"
@@ -14395,7 +14383,7 @@ msgstr "Сохранять файлы .lrs в каталоге вывода"
 
 #: lazarusidestrconsts.lisputlrsfilesinoutputdirectoryhint
 msgid "The resource will be available for FPC."
-msgstr ""
+msgstr "Ресурсы будут доступны для FPC"
 
 #: lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas
 msgctxt "lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas"
@@ -14968,24 +14956,22 @@ msgid "Save session changes to project %s?"
 msgstr "Сохранить изменения сеанса работы с проектом %s?"
 
 #: lazarusidestrconsts.lissavesessionfoldstate
-#, fuzzy
 msgctxt "lazarusidestrconsts.lissavesessionfoldstate"
 msgid "Save fold info"
 msgstr "Сохранять сведения о свёрнутости"
 
 #: lazarusidestrconsts.lissavesessionfoldstatehint
 msgid "Code editor supports folding (temporarily hiding) blocks of code."
-msgstr ""
+msgstr "Редактор поддерживает сворачивание (временное скрытие) блоков исходного кода"
 
 #: lazarusidestrconsts.lissavesessionjumphistory
-#, fuzzy
 msgctxt "lazarusidestrconsts.lissavesessionjumphistory"
 msgid "Save jump history"
 msgstr "Сохранять историю переходов"
 
 #: lazarusidestrconsts.lissavesessionjumphistoryhint
 msgid "Ctrl-Click on an identifier in code editor is stored in jump history."
-msgstr ""
+msgstr "Щелчок при нажатой клавише Ctrl по идентификатору в редакторе исходного кода сохраняется в истории переходов"
 
 #: lazarusidestrconsts.lissavesettings
 msgid "Save Settings"
@@ -15049,7 +15035,7 @@ msgstr "Выберите элемент"
 
 #: lazarusidestrconsts.lisselectanotherlclwidgetset
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
-msgstr ""
+msgstr "Выберите другую библиотеку виджетов LCL (макрос LCLWidgetType)"
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -15181,10 +15167,8 @@ msgid "Show empty units/packages"
 msgstr "Показывать пустые модули/пакеты"
 
 #: lazarusidestrconsts.lisshowglyphsfor
-#, fuzzy
-#| msgid "Show Glyphs for:"
 msgid "Show Glyphs for"
-msgstr "Показывать значки для:"
+msgstr "Показывать значки для"
 
 #: lazarusidestrconsts.lisshowgutterinobjectinspector
 msgid "Show gutter"
@@ -15241,11 +15225,11 @@ msgstr "Показывать относительные пути"
 
 #: lazarusidestrconsts.lisshowsallcontrolsintreehierarchy
 msgid "Shows all controls in tree hierarchy."
-msgstr ""
+msgstr "Показывает все компоненты в виде дерева"
 
 #: lazarusidestrconsts.lisshowsdescriptionforselectedproperty
 msgid "A box at the bottom shows description for the selected property."
-msgstr ""
+msgstr "В панели снизу выводится описание для выбранного свойства"
 
 #: lazarusidestrconsts.lisshowsetupdialogformostimportantsettings
 msgid "Show setup dialog for most important settings"
@@ -15256,8 +15240,6 @@ msgid "Show special characters"
 msgstr "Показывать специальные символы"
 
 #: lazarusidestrconsts.lisshowstatusbarinobjectinspector
-#, fuzzy
-#| msgid "Show status bar"
 msgid "Show statusbar"
 msgstr "Показывать строку состояния"
 
@@ -15323,7 +15305,7 @@ msgstr "Пропустить загрузку предыдущего проек�
 
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
-msgstr ""
+msgstr "Медленный, но более точный метод"
 
 #: lazarusidestrconsts.lissmallerratherthanfaster
 msgid "Smaller rather than faster"
@@ -15459,7 +15441,7 @@ msgstr "Начать новый проект"
 
 #: lazarusidestrconsts.lisstatusbarshowspropertysnameandclass
 msgid "Statusbar shows the property's name and the class where it is published."
-msgstr ""
+msgstr "В строке состояния выводятся имя свойства и класс, в котором оно опубликовано"
 
 #: lazarusidestrconsts.lisstop
 msgctxt "lazarusidestrconsts.lisstop"
@@ -15569,7 +15551,7 @@ msgstr "Настроить переключение фильтров"
 
 #: lazarusidestrconsts.lisswitchtofavoritestabafterasking
 msgid "Switch to Favorites tab after asking for component name."
-msgstr ""
+msgstr "Переключаться на вкладку 'Избранное' инспектора объектов после запроса имени компонента"
 
 #: lazarusidestrconsts.lissyntaxmode
 msgid "Syntax mode"
@@ -16158,7 +16140,7 @@ msgstr "это справочное сообщение"
 
 #: lazarusidestrconsts.listhisistestprojectfordesigntimepackage
 msgid "This is a test project for a design time package, testing it outside the IDE."
-msgstr ""
+msgstr "Тестовый проект для проверки пакета времени разработки вне IDE"
 
 #: lazarusidestrconsts.listhislookslikeapascalfileitisrecommendedtouselowerc
 msgid "This looks like a Pascal file.%sIt is recommended to use lower case filenames, to avoid various problems on some filesystems and different compilers.%sRename it to lowercase?"
@@ -16715,7 +16697,7 @@ msgstr "Невозможно определить изменения в реда
 
 #: lazarusidestrconsts.lisunabletogetsourcefordesigner
 msgid "Unable to get source for designer."
-msgstr "Невозможно получить исходный код для дизайнера."
+msgstr "Невозможно получить исходный код для редактора форм."
 
 #: lazarusidestrconsts.lisunabletoloadfile2
 msgid "unable to load file %s: %s"
@@ -16739,7 +16721,7 @@ msgstr "Невозможно открыть компонент-предок"
 
 #: lazarusidestrconsts.lisunabletoopendesignertheclassdoesnotdescendfromades
 msgid "Unable to open designer.%sThe class %s does not descend from a designable class like TForm or TDataModule."
-msgstr "Невозможно открыть дизайнер. %sКласс %s не унаследован от класса, подобного TForm или TDataModule."
+msgstr "Невозможно открыть редактор форм. %sКласс %s не унаследован от класса, подобного TForm или TDataModule."
 
 #: lazarusidestrconsts.lisunabletoread
 msgid "Unable to read %s"
@@ -17027,7 +17009,7 @@ msgstr "Использовать пакеты времени разработк�
 
 #: lazarusidestrconsts.lisusedforautocreatedforms
 msgid "Used for auto-created forms."
-msgstr ""
+msgstr "Используется для автоматически создаваемых форм"
 
 #: lazarusidestrconsts.lisuseexcludefilter
 msgid "Use exclude filter"
@@ -17123,7 +17105,7 @@ msgstr "Значения"
 
 #: lazarusidestrconsts.lisvaluesthatarechangedfromdefault
 msgid "Values that are changed from the default are stored in .lfm file and are shown differently in Object Inspector."
-msgstr ""
+msgstr "Значения свойств, не равные их значениям по умолчанию, сохраняются в файле .lfm и выделяются в инспекторе объектов"
 
 #: lazarusidestrconsts.lisvariable
 msgctxt "lazarusidestrconsts.lisvariable"
@@ -17474,7 +17456,7 @@ msgstr "Автоматически наращивать номер сборки"
 
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumberhint
 msgid "Increased every time the project is compiled."
-msgstr ""
+msgstr "Увеличивать при каждой компиляции проекта"
 
 #: lazarusidestrconsts.rsbuild
 msgid "&Build:"
@@ -17522,7 +17504,7 @@ msgstr "Параметры i18n"
 
 #: lazarusidestrconsts.rsincludeversioninfohint
 msgid "Version info is stored if the executable format supports it."
-msgstr ""
+msgstr "Сведения о версии сохраняются только при условии их поддержки форматом исполнимого файла"
 
 #: lazarusidestrconsts.rsincludeversioninfoinexecutable
 msgid "Include version info in executable"
