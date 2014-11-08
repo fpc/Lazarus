@@ -600,9 +600,9 @@ msgstr "Szürke szöveg"
 msgid "Green"
 msgstr "Zöld"
 
-#: lclstrconsts.rsgridfiledoesnotexists
-msgid "Grid file doesn't exists"
-msgstr "A táblafájl nem létezik"
+#: lclstrconsts.rsgridfiledoesnotexist
+msgid "Grid file doesn't exist"
+msgstr ""
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"

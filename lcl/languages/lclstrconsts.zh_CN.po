@@ -608,9 +608,9 @@ msgstr "灰色文本"
 msgid "Green"
 msgstr "绿"
 
-#: lclstrconsts.rsgridfiledoesnotexists
-msgid "Grid file doesn't exists"
-msgstr "网格文件不存在"
+#: lclstrconsts.rsgridfiledoesnotexist
+msgid "Grid file doesn't exist"
+msgstr ""
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"

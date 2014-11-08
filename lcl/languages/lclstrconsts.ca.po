@@ -605,9 +605,9 @@ msgstr ""
 msgid "Green"
 msgstr ""
 
-#: lclstrconsts.rsgridfiledoesnotexists
-msgid "Grid file doesn't exists"
-msgstr "No existeix fitxer de la graella"
+#: lclstrconsts.rsgridfiledoesnotexist
+msgid "Grid file doesn't exist"
+msgstr ""
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"

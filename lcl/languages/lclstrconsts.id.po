@@ -606,9 +606,9 @@ msgstr ""
 msgid "Green"
 msgstr ""
 
-#: lclstrconsts.rsgridfiledoesnotexists
-msgid "Grid file doesn't exists"
-msgstr "File grid tidak ada"
+#: lclstrconsts.rsgridfiledoesnotexist
+msgid "Grid file doesn't exist"
+msgstr ""
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"

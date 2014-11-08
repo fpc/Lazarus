@@ -604,9 +604,9 @@ msgstr "Texto Cinza"
 msgid "Green"
 msgstr "Verde"
 
-#: lclstrconsts.rsgridfiledoesnotexists
-msgid "Grid file doesn't exists"
-msgstr "Arquivo de grade não existe"
+#: lclstrconsts.rsgridfiledoesnotexist
+msgid "Grid file doesn't exist"
+msgstr ""
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
