@@ -10691,11 +10691,15 @@ end;
 procedure TCustomStringGrid.InsertRowWithValues(Index: Integer;
   Values: array of String);
 var
-  i: Integer;
+  i, OldRC: Integer;
 begin
+  OldRC := RowCount;
   if Length(Values) > ColCount then
     ColCount := Length(Values);
   InsertColRow(false, Index);
+  //if RowCount was 0, then setting ColCount restores RowCount (from FGridPropBackup)
+  //which is unwanted here, so reset it (Issue #0026943)
+  if (OldRc = 0) then RowCount := 1;
   for i := 0 to Length(Values)-1 do
     Cells[i, Index] := Values[i];
 end;
