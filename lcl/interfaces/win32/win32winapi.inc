@@ -2033,6 +2033,30 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetScrollBarVisible
+  Params: Handle, SBStyle
+  Returns: Boolean
+
+  Returns wether the ControlScrollBar of a given control is visible
+------------------------------------------------------------------------------}
+
+function TWin32WidgetSet.GetScrollBarVisible(Handle: HWND; SBStyle: Integer): boolean;
+var
+  Style: PtrInt;
+begin
+  Result := False;
+  Style := GetWindowLong(Handle, GWL_STYLE);
+  case SBStyle of
+    SB_HORZ: Result := ((Style and WS_HSCROLL) <> 0);
+    SB_VERT: Result := ((Style and WS_VSCROLL) <> 0);
+    SB_BOTH: Result := ((Style and (WS_VSCROLL or WS_HSCROLL)) <> 0);
+    else
+      Result := False;
+  end;//case
+end;
+
+
+{------------------------------------------------------------------------------
   Method:  GetScrollInfo
   Params:  Handle     - handle of window with scroll bar
            BarFlag    - scroll bar flag
@@ -2471,6 +2495,7 @@ function TWin32WidgetSet.IsIconic(handle: HWND): boolean;
 begin
   Result := Windows.IsIconic(handle);
 end;
+
 
 {------------------------------------------------------------------------------
   Function: IntersectClipRect

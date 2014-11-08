@@ -116,6 +116,7 @@ function GetParent(Handle: HWND): HWND; override;
 function GetProp(Handle: HWND; Str: PChar): Pointer; override;
 function GetROP2(DC: HDC): Integer; override;
 function GetRGNBox(Rgn: HRGN; lpRect : PRect) : Longint; override;
+function GetScrollBarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
 function GetScrollInfo(Handle: HWND; BarFlag: Integer; Var ScrollInfo: TScrollInfo): Boolean; override;
 function GetStockObject(Value: Integer): THandle; override;
 function GetSysColor(NIndex: Integer): DWORD; override;
