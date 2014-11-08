@@ -235,7 +235,7 @@ resourceString
   rsFormStreamingError = 'Form streaming "%s" error: %s';
   rsFixedColsTooBig = 'FixedCols can''t be > ColCount';
   rsFixedRowsTooBig = 'FixedRows can''t be > RowCount';
-  rsGridFileDoesNotExists = 'Grid file doesn''t exists';
+  rsGridFileDoesNotExist = 'Grid file doesn''t exist';
   rsNotAValidGridFile = 'Not a valid grid file';
   rsIndexOutOfRange = 'Index Out of range Cell[Col=%d Row=%d]';
   rsGridIndexOutOfRange = 'Grid index out of range.';

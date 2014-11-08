@@ -8985,7 +8985,7 @@ var
   Cfg: TXMLConfig;
 begin
   if not FileExistsUTF8(FileName) then
-    raise Exception.Create(rsGridFileDoesNotExists);
+    raise Exception.Create(rsGridFileDoesNotExist);
   Cfg:=TXMLConfig.Create(nil);
   Try
     Cfg.Filename := FileName;
