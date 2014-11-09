@@ -214,6 +214,8 @@ Type
     FOKCaption:TCaption;
     FCancelCaption:TCaption;
     FCalendar:TCalendar;
+    procedure OnDialogClose(Sender: TObject; var CloseAction: TCloseAction);
+    procedure OnDialogCloseQuery(Sender : TObject; var CanClose : boolean);
   protected
     class procedure WSRegisterClass; override;
     procedure GetNewDate(Sender:TObject);//or onClick
@@ -1279,6 +1281,18 @@ begin
   Result := rsPickDate;
 end;
 
+procedure TCalendarDialog.OnDialogClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  if Assigned(OnClose) then OnClose(Self);
+end;
+
+procedure TCalendarDialog.OnDialogCloseQuery(Sender: TObject;
+  var CanClose: boolean);
+begin
+  if Assigned(OnCanClose) then OnCanClose(Sender, CanClose);
+end;
+
 class procedure TCalendarDialog.WSRegisterClass;
 begin
   inherited WSRegisterClass;
@@ -1303,6 +1317,9 @@ begin
   DF.BorderStyle:=bsDialog;
   DF.AutoScroll:=false;
   DF.AutoSize:=true;
+  DF.OnShow:=Self.OnShow;
+  DF.OnClose:=@OnDialogClose;
+  DF.OnCloseQuery:=@OnDialogCloseQuery;
 
   FCalendar:=TCalendar.Create(DF);
   with FCalendar do begin
