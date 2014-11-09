@@ -13,11 +13,23 @@ msgstr ""
 "POT-Creation-Date: \n"
 
 #: reconstsunit.sabout
-msgid "About..."
+#, fuzzy
+#| msgid "About..."
+msgid "About ..."
 msgstr "Informazioni..."
 
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr ""
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr ""
+
 #: reconstsunit.sbuilddate
-msgid "Build date : "
+#, fuzzy
+#| msgid "Build date : "
+msgid "Build date: "
 msgstr "Data di compilazione: "
 
 #: reconstsunit.scarbonwidgetset
@@ -33,7 +45,9 @@ msgid "File"
 msgstr "File"
 
 #: reconstsunit.sfpcversion
-msgid "FPC version : "
+#, fuzzy
+#| msgid "FPC version : "
+msgid "FPC version: "
 msgstr "Versione FPC: "
 
 #: reconstsunit.sfpguiwidgetset
@@ -65,7 +79,9 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Questo programma è software libero distribuito sotto la licenza GNU GPL 2, vedi file COPYING"
 
 #: reconstsunit.sopen
-msgid "Open..."
+#, fuzzy
+#| msgid "Open..."
+msgid "Open ..."
 msgstr "Apri..."
 
 #: reconstsunit.sotherguiwidgetset
@@ -80,8 +96,14 @@ msgstr "Set di widget QT"
 msgid "Resource explorer"
 msgstr "Esploratore di risorse"
 
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr ""
+
 #: reconstsunit.ssaveresource
-msgid "Save resource..."
+#, fuzzy
+#| msgid "Save resource..."
+msgid "Save resource ..."
 msgstr "Salva risorse..."
 
 #: reconstsunit.sstrings
@@ -89,11 +111,15 @@ msgid "Strings"
 msgstr "Stringhe"
 
 #: reconstsunit.stargetcpu
-msgid "Target CPU : "
+#, fuzzy
+#| msgid "Target CPU : "
+msgid "Target CPU: "
 msgstr "CPU di riferimento: "
 
 #: reconstsunit.stargetos
-msgid "Target OS : "
+#, fuzzy
+#| msgid "Target OS : "
+msgid "Target OS: "
 msgstr "SO di riferimento: "
 
 #: reconstsunit.swin32_64widgetset

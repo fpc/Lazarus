@@ -5,15 +5,15 @@ object reMainForm: TreMainForm
   Width = 768
   ActiveControl = StringGrid1
   Caption = 'reMainForm'
-  ClientHeight = 584
+  ClientHeight = 585
   ClientWidth = 768
   Menu = MainMenu1
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object TreeView1: TTreeView
     Left = 0
-    Height = 508
+    Height = 506
     Top = 56
     Width = 288
     Align = alLeft
@@ -26,7 +26,7 @@ object reMainForm: TreMainForm
   end
   object PageControl1: TPageControl
     Left = 293
-    Height = 508
+    Height = 506
     Top = 56
     Width = 475
     ActivePage = tabString
@@ -35,11 +35,11 @@ object reMainForm: TreMainForm
     TabOrder = 1
     object tabString: TTabSheet
       Caption = 'String'
-      ClientHeight = 478
+      ClientHeight = 480
       ClientWidth = 467
       object StringGrid1: TStringGrid
         Left = 0
-        Height = 478
+        Height = 480
         Top = 0
         Width = 467
         Align = alClient
@@ -49,15 +49,15 @@ object reMainForm: TreMainForm
         FixedRows = 0
         TabOrder = 0
         ColWidths = (
-          230
           231
+          232
         )
       end
     end
     object tabImage: TTabSheet
       Caption = 'Image'
-      ClientHeight = 477
-      ClientWidth = 467
+      ClientHeight = 480
+      ClientWidth = 469
       object Image1: TImage
         Left = 0
         Height = 477
@@ -70,7 +70,7 @@ object reMainForm: TreMainForm
   end
   object Splitter1: TSplitter
     Left = 288
-    Height = 508
+    Height = 506
     Top = 56
     Width = 5
     OnChangeBounds = Splitter1ChangeBounds
@@ -84,7 +84,6 @@ object reMainForm: TreMainForm
     Sections = <    
       item
         Alignment = taLeftJustify
-        Text = 'Resources'
         Width = 150
         Visible = True
       end    
@@ -98,8 +97,8 @@ object reMainForm: TreMainForm
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 20
-    Top = 564
+    Height = 23
+    Top = 562
     Width = 768
     Panels = <>
   end
@@ -122,13 +121,13 @@ object reMainForm: TreMainForm
       AutoSize = True
     end
     object ToolButton2: TToolButton
-      Left = 74
+      Left = 67
       Top = 2
       Action = fileSave
       AutoSize = True
     end
     object ToolButton3: TToolButton
-      Left = 204
+      Left = 176
       Top = 2
       Width = 10
       AutoSize = True
@@ -136,7 +135,7 @@ object reMainForm: TreMainForm
       Style = tbsSeparator
     end
     object ToolButton4: TToolButton
-      Left = 214
+      Left = 186
       Top = 2
       Action = hlpAbout
       AutoSize = True

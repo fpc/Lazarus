@@ -10,12 +10,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: reconstsunit.sabout
+#| msgid "About..."
 msgctxt "reconstsunit.sabout"
-msgid "About..."
-msgstr "О программе..."
+msgid "About ..."
+msgstr "О программе ..."
+
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr "Все файлы (*.*)|*.*|Исполнимые файлы (*.exe)|*.exe|DLL (*.dll)|*.dll"
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr "Все файлы (*)|*|Динамические библиотеки (*.so)|*.so"
 
 #: reconstsunit.sbuilddate
-msgid "Build date : "
+#| msgid "Build date : "
+msgid "Build date: "
 msgstr "Дата сборки: "
 
 #: reconstsunit.scarbonwidgetset
@@ -33,7 +43,8 @@ msgid "File"
 msgstr "Файл"
 
 #: reconstsunit.sfpcversion
-msgid "FPC version : "
+#| msgid "FPC version : "
+msgid "FPC version: "
 msgstr "Версия FPC: "
 
 #: reconstsunit.sfpguiwidgetset
@@ -67,9 +78,10 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Это свободное ПО, распространяющееся под лицензией GNU GPL версии 2 (см. файл COPYING)."
 
 #: reconstsunit.sopen
+#| msgid "Open..."
 msgctxt "reconstsunit.sopen"
-msgid "Open..."
-msgstr "Открыть..."
+msgid "Open ..."
+msgstr "Открыть ..."
 
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
@@ -83,21 +95,28 @@ msgstr "Библиотека виджетов Qt"
 msgid "Resource explorer"
 msgstr "Обозреватель ресурсов"
 
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr "Ресурсы"
+
 #: reconstsunit.ssaveresource
+#| msgid "Save resource..."
 msgctxt "reconstsunit.ssaveresource"
-msgid "Save resource..."
-msgstr "Сохранить ресурс..."
+msgid "Save resource ..."
+msgstr "Сохранить ресурс ..."
 
 #: reconstsunit.sstrings
 msgid "Strings"
 msgstr "Строки"
 
 #: reconstsunit.stargetcpu
-msgid "Target CPU : "
+#| msgid "Target CPU : "
+msgid "Target CPU: "
 msgstr "Целевой процессор: "
 
 #: reconstsunit.stargetos
-msgid "Target OS : "
+#| msgid "Target OS : "
+msgid "Target OS: "
 msgstr "Целевая ОС: "
 
 #: reconstsunit.swin32_64widgetset

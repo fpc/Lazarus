@@ -95,11 +95,12 @@ begin
   MenuItem2.Caption:=sHelp;
   tabString.Caption:=sStrings;
   tabImage.Caption:=sImage;
+  HeaderControl1.Sections[0].Text := sResources;
 
   {$IFDEF Windows}
-  OpenDialog1.Filter:='All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll';
+  OpenDialog1.Filter := sAllFilesExcutableFilesExeExeDLLDllDll;
   {$ELSE}
-  OpenDialog1.Filter:='All files (*)|*|Shared lib (*.so)|*.so';
+  OpenDialog1.Filter := sAllFilesSharedLibSoSo;
   {$ENDIF}
   Splitter1ChangeBounds(nil);
 end;

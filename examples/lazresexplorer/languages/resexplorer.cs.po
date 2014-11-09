@@ -11,11 +11,23 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: reconstsunit.sabout
-msgid "About..."
+#, fuzzy
+#| msgid "About..."
+msgid "About ..."
 msgstr "O aplikaci..."
 
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr ""
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr ""
+
 #: reconstsunit.sbuilddate
-msgid "Build date : "
+#, fuzzy
+#| msgid "Build date : "
+msgid "Build date: "
 msgstr "Datum sestavení : "
 
 #: reconstsunit.scarbonwidgetset
@@ -31,7 +43,9 @@ msgid "File"
 msgstr "Soubor"
 
 #: reconstsunit.sfpcversion
-msgid "FPC version : "
+#, fuzzy
+#| msgid "FPC version : "
+msgid "FPC version: "
 msgstr "Verze FPC : "
 
 #: reconstsunit.sfpguiwidgetset
@@ -63,7 +77,9 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Tento program je svobodný software pod licencí GNU GPL 2, podívejte se do souboru COPYING"
 
 #: reconstsunit.sopen
-msgid "Open..."
+#, fuzzy
+#| msgid "Open..."
+msgid "Open ..."
 msgstr "Otevřít..."
 
 #: reconstsunit.sotherguiwidgetset
@@ -78,8 +94,14 @@ msgstr "Sada widgetů QT"
 msgid "Resource explorer"
 msgstr "Prohlížeč zdrojů"
 
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr ""
+
 #: reconstsunit.ssaveresource
-msgid "Save resource..."
+#, fuzzy
+#| msgid "Save resource..."
+msgid "Save resource ..."
 msgstr "Uložit zdroj..."
 
 #: reconstsunit.sstrings
@@ -87,11 +109,15 @@ msgid "Strings"
 msgstr "Řetězce"
 
 #: reconstsunit.stargetcpu
-msgid "Target CPU : "
+#, fuzzy
+#| msgid "Target CPU : "
+msgid "Target CPU: "
 msgstr "Cílový CPU : "
 
 #: reconstsunit.stargetos
-msgid "Target OS : "
+#, fuzzy
+#| msgid "Target OS : "
+msgid "Target OS: "
 msgstr "Cílový OS : "
 
 #: reconstsunit.swin32_64widgetset

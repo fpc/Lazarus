@@ -2,11 +2,19 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: reconstsunit.sabout
-msgid "About..."
+msgid "About ..."
+msgstr ""
+
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr ""
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
 msgstr ""
 
 #: reconstsunit.sbuilddate
-msgid "Build date : "
+msgid "Build date: "
 msgstr ""
 
 #: reconstsunit.scarbonwidgetset
@@ -22,7 +30,7 @@ msgid "File"
 msgstr ""
 
 #: reconstsunit.sfpcversion
-msgid "FPC version : "
+msgid "FPC version: "
 msgstr ""
 
 #: reconstsunit.sfpguiwidgetset
@@ -54,7 +62,7 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr ""
 
 #: reconstsunit.sopen
-msgid "Open..."
+msgid "Open ..."
 msgstr ""
 
 #: reconstsunit.sotherguiwidgetset
@@ -69,8 +77,12 @@ msgstr ""
 msgid "Resource explorer"
 msgstr ""
 
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr ""
+
 #: reconstsunit.ssaveresource
-msgid "Save resource..."
+msgid "Save resource ..."
 msgstr ""
 
 #: reconstsunit.sstrings
@@ -78,11 +90,11 @@ msgid "Strings"
 msgstr ""
 
 #: reconstsunit.stargetcpu
-msgid "Target CPU : "
+msgid "Target CPU: "
 msgstr ""
 
 #: reconstsunit.stargetos
-msgid "Target OS : "
+msgid "Target OS: "
 msgstr ""
 
 #: reconstsunit.swin32_64widgetset

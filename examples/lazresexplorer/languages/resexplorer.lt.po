@@ -12,11 +12,23 @@ msgstr ""
 "Language: lt\n"
 
 #: reconstsunit.sabout
-msgid "About..."
+#, fuzzy
+#| msgid "About..."
+msgid "About ..."
 msgstr "Apie…"
 
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr ""
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr ""
+
 #: reconstsunit.sbuilddate
-msgid "Build date : "
+#, fuzzy
+#| msgid "Build date : "
+msgid "Build date: "
 msgstr "Sukūrimo data: "
 
 #: reconstsunit.scarbonwidgetset
@@ -32,7 +44,9 @@ msgid "File"
 msgstr "Failas"
 
 #: reconstsunit.sfpcversion
-msgid "FPC version : "
+#, fuzzy
+#| msgid "FPC version : "
+msgid "FPC version: "
 msgstr "FPC laida: "
 
 #: reconstsunit.sfpguiwidgetset
@@ -64,7 +78,9 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Tai laisvoji programinė įranga, kuriai taikoma GNU GPL 2 licencija (žvilgtelėkite į COPYING failą)"
 
 #: reconstsunit.sopen
-msgid "Open..."
+#, fuzzy
+#| msgid "Open..."
+msgid "Open ..."
 msgstr "Atverti…"
 
 #: reconstsunit.sotherguiwidgetset
@@ -79,8 +95,14 @@ msgstr "Valdikliai „QT“"
 msgid "Resource explorer"
 msgstr "Išteklių naršyklė"
 
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr ""
+
 #: reconstsunit.ssaveresource
-msgid "Save resource..."
+#, fuzzy
+#| msgid "Save resource..."
+msgid "Save resource ..."
 msgstr "Įrašyti išteklius…"
 
 #: reconstsunit.sstrings
@@ -88,11 +110,15 @@ msgid "Strings"
 msgstr "Tekstas"
 
 #: reconstsunit.stargetcpu
-msgid "Target CPU : "
+#, fuzzy
+#| msgid "Target CPU : "
+msgid "Target CPU: "
 msgstr "Paskirties procesorius: "
 
 #: reconstsunit.stargetos
-msgid "Target OS : "
+#, fuzzy
+#| msgid "Target OS : "
+msgid "Target OS: "
 msgstr "Paskirties OS: "
 
 #: reconstsunit.swin32_64widgetset

@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
     <Version Value="9"/>
@@ -11,14 +11,16 @@
       <Icon Value="0"/>
     </General>
     <i18n>
+      <EnableI18N Value="True" LFM="False"/>
       <OutDir Value="languages"/>
     </i18n>
     <VersionInfo>
       <UseVersionInfo Value="True"/>
       <AutoIncrementBuild Value="True"/>
       <MinorVersionNr Value="1"/>
+      <BuildNr Value="3"/>
       <CharSet Value="04B0"/>
-      <StringTable Comments="Explore your resources in executables and resource files" CompanyName="Alexey Lagunov" FileDescription="Resource Explorer" InternalName="LazResExplorer" LegalCopyright="Alexey Lagunov" LegalTrademarks="No Trademarks" OriginalFilename="lazresexplorer" ProductName="Lazarus Resource Explorer"/>
+      <StringTable Comments="Explore your resources in executables and resource files" CompanyName="Alexey Lagunov" FileDescription="Resource Explorer" InternalName="LazResExplorer" LegalCopyright="Alexey Lagunov" LegalTrademarks="No Trademarks" OriginalFilename="lazresexplorer" ProductName="Lazarus Resource Explorer" ProductVersion=""/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
@@ -45,7 +47,6 @@
       <Unit0>
         <Filename Value="resexplorer.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="resexplorer"/>
       </Unit0>
       <Unit1>
         <Filename Value="remainunit.pas"/>
@@ -60,7 +61,6 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="reAboutForm"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="reAboutUnit"/>
       </Unit2>
       <Unit3>
         <Filename Value="reconstsunit.pas"/>
@@ -85,9 +85,6 @@
         </Win32>
       </Options>
     </Linking>
-    <Other>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">

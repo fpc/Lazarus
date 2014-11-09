@@ -21,10 +21,10 @@ resourcestring
 
 
   sLCLVersion          = 'LCL Version: ';
-  sBuildDate           = 'Build date : ';
-  sFpcVersion          = 'FPC version : ';
-  sTargetCPU           = 'Target CPU : ';
-  sTargetOS            = 'Target OS : ';
+  sBuildDate           = 'Build date: ';
+  sFpcVersion          = 'FPC version: ';
+  sTargetCPU           = 'Target CPU: ';
+  sTargetOS            = 'Target OS: ';
   sGTKWidgetSet        = 'GTK widget set';
   sGTK2WidgetSet       = 'GTK 2 widget set';
   sWin32_64WidgetSet   = 'Win32/Win64 widget set';
@@ -33,6 +33,9 @@ resourcestring
   sQTWidgetSet         = 'QT widget set';
   sFpGUIWidgetSet      = 'FpGUI widget set';
   sOtherGUIWidgetSet   = 'Other gui';
+  sAllFilesExcutableFilesExeExeDLLDllDll = 'All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll';
+  sAllFilesSharedLibSoSo = 'All files (*)|*|Shared libraries (*.so)|*.so';
+  sResources = 'Resources';
 
 
 function LCLVersionStr: string;

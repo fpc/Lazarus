@@ -10,11 +10,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: reconstsunit.sabout
-msgid "About..."
+#, fuzzy
+#| msgid "About..."
+msgid "About ..."
 msgstr "Про програму..."
 
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr ""
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr ""
+
 #: reconstsunit.sbuilddate
-msgid "Build date : "
+#, fuzzy
+#| msgid "Build date : "
+msgid "Build date: "
 msgstr "Дата збирання : "
 
 #: reconstsunit.scarbonwidgetset
@@ -30,7 +42,9 @@ msgid "File"
 msgstr "Файл"
 
 #: reconstsunit.sfpcversion
-msgid "FPC version : "
+#, fuzzy
+#| msgid "FPC version : "
+msgid "FPC version: "
 msgstr "Версія FPC : "
 
 #: reconstsunit.sfpguiwidgetset
@@ -62,7 +76,9 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Ця програма є вільним ПЗ, що лізензоване згідно ліцензії GNU GPL 2, див. файл COPYING"
 
 #: reconstsunit.sopen
-msgid "Open..."
+#, fuzzy
+#| msgid "Open..."
+msgid "Open ..."
 msgstr "Відкрити..."
 
 #: reconstsunit.sotherguiwidgetset
@@ -77,8 +93,14 @@ msgstr "Набір віджетів QT"
 msgid "Resource explorer"
 msgstr "Оглядач ресурсів"
 
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr ""
+
 #: reconstsunit.ssaveresource
-msgid "Save resource..."
+#, fuzzy
+#| msgid "Save resource..."
+msgid "Save resource ..."
 msgstr "Зберегти ресурс..."
 
 #: reconstsunit.sstrings
@@ -86,11 +108,15 @@ msgid "Strings"
 msgstr "Рядки"
 
 #: reconstsunit.stargetcpu
-msgid "Target CPU : "
+#, fuzzy
+#| msgid "Target CPU : "
+msgid "Target CPU: "
 msgstr "Цільовий Процесор : "
 
 #: reconstsunit.stargetos
-msgid "Target OS : "
+#, fuzzy
+#| msgid "Target OS : "
+msgid "Target OS: "
 msgstr "Цільова ОС : "
 
 #: reconstsunit.swin32_64widgetset

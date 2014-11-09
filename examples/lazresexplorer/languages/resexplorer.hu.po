@@ -12,11 +12,23 @@ msgstr ""
 "Language: hu\n"
 
 #: reconstsunit.sabout
-msgid "About..."
+#, fuzzy
+#| msgid "About..."
+msgid "About ..."
 msgstr "Névjegy..."
 
+#: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
+msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
+msgstr ""
+
+#: reconstsunit.sallfilessharedlibsoso
+msgid "All files (*)|*|Shared libraries (*.so)|*.so"
+msgstr ""
+
 #: reconstsunit.sbuilddate
-msgid "Build date : "
+#, fuzzy
+#| msgid "Build date : "
+msgid "Build date: "
 msgstr "Építés dátuma:"
 
 #: reconstsunit.scarbonwidgetset
@@ -32,7 +44,9 @@ msgid "File"
 msgstr "Fájl"
 
 #: reconstsunit.sfpcversion
-msgid "FPC version : "
+#, fuzzy
+#| msgid "FPC version : "
+msgid "FPC version: "
 msgstr "FPC változat:"
 
 #: reconstsunit.sfpguiwidgetset
@@ -64,7 +78,9 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Ez a program szabad szoftver GNU GPL 2 licenc alatt, lásd a COPYING fájlt!"
 
 #: reconstsunit.sopen
-msgid "Open..."
+#, fuzzy
+#| msgid "Open..."
+msgid "Open ..."
 msgstr "Megnyitás..."
 
 #: reconstsunit.sotherguiwidgetset
@@ -79,8 +95,14 @@ msgstr "QT elemkészlet"
 msgid "Resource explorer"
 msgstr "Erőforrás böngésző"
 
+#: reconstsunit.sresources
+msgid "Resources"
+msgstr ""
+
 #: reconstsunit.ssaveresource
-msgid "Save resource..."
+#, fuzzy
+#| msgid "Save resource..."
+msgid "Save resource ..."
 msgstr "Erőforrás mentése..."
 
 #: reconstsunit.sstrings
@@ -88,11 +110,15 @@ msgid "Strings"
 msgstr "Karakterláncok"
 
 #: reconstsunit.stargetcpu
-msgid "Target CPU : "
+#, fuzzy
+#| msgid "Target CPU : "
+msgid "Target CPU: "
 msgstr "Cél CPU:"
 
 #: reconstsunit.stargetos
-msgid "Target OS : "
+#, fuzzy
+#| msgid "Target OS : "
+msgid "Target OS: "
 msgstr "Cél OS:"
 
 #: reconstsunit.swin32_64widgetset
