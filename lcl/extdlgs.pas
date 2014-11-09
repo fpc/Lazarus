@@ -211,6 +211,7 @@ Type
     FDisplaySettings: TDisplaySettings;
     FMonthChanged: TNotifyEvent;
     FYearChanged: TNotifyEvent;
+    FOnChange: TNotifyEvent;
     FOKCaption:TCaption;
     FCancelCaption:TCaption;
     FCalendar:TCalendar;
@@ -219,6 +220,7 @@ Type
     procedure OnCalendarDayChanged(Sender: TObject);
     procedure OnCalendarMonthChanged(Sender: TObject);
     procedure OnCalendarYearChanged(Sender: TObject);
+    procedure OnCalendarChange(Sender: TObject);
   protected
     class procedure WSRegisterClass; override;
     procedure GetNewDate(Sender:TObject);//or onClick
@@ -233,6 +235,7 @@ Type
     property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OKCaption:TCaption read FOKCaption write FOKCaption;
     property CancelCaption:TCaption read FCancelCaption write FCancelCaption;
   end;
@@ -1314,6 +1317,11 @@ begin
   if Assigned(FYearChanged) then FYearChanged(Self);
 end;
 
+procedure TCalendarDialog.OnCalendarChange(Sender: TObject);
+begin
+  //Date already updated in OnCalendarXXXChanged
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
 
 class procedure TCalendarDialog.WSRegisterClass;
 begin
@@ -1353,6 +1361,7 @@ begin
     OnDayChanged:=@Self.OnCalendarDayChanged;
     OnMonthChanged:=@Self.OnCalendarMonthChanged;
     OnYearChanged:=@Self.OnCalendarYearChanged;
+    OnChange:=@Self.OnCalendarChange;
     OnDblClick:=@CalendarDblClick;
   end;
 
