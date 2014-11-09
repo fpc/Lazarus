@@ -1309,6 +1309,7 @@ begin
     Parent:=DF;
     Align:=alTop;
     DateTime:=Self.Date;
+    TabStop:=True;
     DisplaySettings:=Self.DisplaySettings;
     OnDayChanged:=Self.OnDayChanged;
     OnMonthChanged:=Self.OnMonthChanged;
