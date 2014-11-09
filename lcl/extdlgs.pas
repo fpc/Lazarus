@@ -216,6 +216,9 @@ Type
     FCalendar:TCalendar;
     procedure OnDialogClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure OnDialogCloseQuery(Sender : TObject; var CanClose : boolean);
+    procedure OnCalendarDayChanged(Sender: TObject);
+    procedure OnCalendarMonthChanged(Sender: TObject);
+    procedure OnCalendarYearChanged(Sender: TObject);
   protected
     class procedure WSRegisterClass; override;
     procedure GetNewDate(Sender:TObject);//or onClick
@@ -226,8 +229,8 @@ Type
     function Execute: Boolean; override;
   published
     property Date: TDateTime read FDate write FDate;
-    property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
     property DisplaySettings: TDisplaySettings read FDisplaySettings write FDisplaySettings default DefaultDisplaySettings;
+    property OnDayChanged: TNotifyEvent read FDayChanged write FDayChanged;
     property OnMonthChanged: TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged: TNotifyEvent read FYearChanged write FYearChanged;
     property OKCaption:TCaption read FOKCaption write FOKCaption;
@@ -1293,6 +1296,25 @@ begin
   if Assigned(OnCanClose) then OnCanClose(Sender, CanClose);
 end;
 
+procedure TCalendarDialog.OnCalendarDayChanged(Sender: TObject);
+begin
+  GetNewDate(Self);
+  if Assigned(FDayChanged) then FDayChanged(Self);
+end;
+
+procedure TCalendarDialog.OnCalendarMonthChanged(Sender: TObject);
+begin
+  GetNewDate(Self);
+  if Assigned(FMonthChanged) then FMonthChanged(Self);
+end;
+
+procedure TCalendarDialog.OnCalendarYearChanged(Sender: TObject);
+begin
+  GetNewDate(Self);
+  if Assigned(FYearChanged) then FYearChanged(Self);
+end;
+
+
 class procedure TCalendarDialog.WSRegisterClass;
 begin
   inherited WSRegisterClass;
@@ -1328,9 +1350,9 @@ begin
     DateTime:=Self.Date;
     TabStop:=True;
     DisplaySettings:=Self.DisplaySettings;
-    OnDayChanged:=Self.OnDayChanged;
-    OnMonthChanged:=Self.OnMonthChanged;
-    OnYearChanged:=Self.OnYearChanged;
+    OnDayChanged:=@Self.OnCalendarDayChanged;
+    OnMonthChanged:=@Self.OnCalendarMonthChanged;
+    OnYearChanged:=@Self.OnCalendarYearChanged;
     OnDblClick:=@CalendarDblClick;
   end;
 
