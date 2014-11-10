@@ -1,11 +1,20 @@
+aarre
+  ?
+  
+activex
+  ActiveX support (Windows only)
+  
 aggpas
   Anti-Grain Geometry - an antialiased graphic library
-
-cgi
-  CGI Data Modules
+  
+anchordocking
+  ?
+  
+cairocanvas
+  ?
 
 chmhelp
-  Package lhelpcontrolpkg for using chm files in the IDE.
+  Package lhelpcontrolpkg for using CHM help files in the IDE.
 
 codetools
   The builtin Pascal parser and Pascal completion/refactoring tools of the IDE.
@@ -17,6 +26,9 @@ custom
   Obsolete: Use packages instead
     User defined components for the IDE
 
+customdrawn
+  ?
+  
 customform
   Registering custom form descendants in the IDE.
 
@@ -27,8 +39,14 @@ daemon
 datadict
   Support for data dictionaries for the IDE and applications.
 
+datetimectrls
+  Date/time controls
+  
 dbexport
   Export databases to various file formats.
+  
+debuggerintf
+  ?
 
 editortoolbar
   A customizable toolbar for the source editor.
@@ -36,44 +54,83 @@ editortoolbar
 educationlaz
   Extends/configures the IDE for education, training, courses
 
+externhelp
+  External help (via website) for Lazarus IDE
+  
 filebrowser
   A file browser window for the IDE.
 
 fpcunit
   Template for a fpcunit GUI test runner.
+  
+fpdebug
+  ?
+  
+fppkg  
+  ?
 
+fpvectorial
+  Support for reading/writing vectorial  file formats
+  
 fpweb
   Units that support web server and web client programming.
 
 h2pas
   Adds graphical interface to the IDE for the h2pas command line tool.
 
+IdeInspector
+  ?
+  
+ideintf
+  ?
+
+IdeLazLogger
+  IDE support for LazLogger output
+  
 images
   More image formats for LCL applications.
 
-interbase
-  Database support for Interbase/Firebird.
-
+IndustrialStuff
+  Additional controls with industrial/process management theme
+  
+instantfpc
+  ?
+  
 jcf2
   Jedi code formatter 2.
 
+lazcontrols
+  ?
+
+lazdebuggergdbmi
+  Package for debugger using both gdb and additional native Pascal code.
+
+lazdebuggers
+  ?
+  
 lazreport
   Report generators and grpahical editors for the IDE.
 
+lazsvnpkg
+  Subversion version control support for the IDE.
+  
 lazthread
-   ?
+  ?
 
+lazutils
+  Various utility functions (has no package).
+  
 leakview
   Extends the IDE with a graphical viewer for heaptrc output.
-
-pochecker
-  Validates translated PO files.
 
 macfiles
   Package to create OS X application bundles.
 
+macroscript
+  ?
+  
 memds
-  Memory database package.
+  Memory database/dataset package.
 
 messagecomposer
   A graphical editor to create MessageDlg statements.
@@ -84,24 +141,27 @@ mouseandkeyinput
 mpaslex
   A small and fast Pascal parser.
 
+mrumenu
+  ?
+
+multithreadprocs
+  ?
+  
 opengl
   An OpenGL control.
 
 paradox
   Support for Paradox databases.
-	
+  
 PascalScript
   Version of RemObjects Pascal Script adapted for use in the Lazarus IDE.
 
 plotfunction
   A LCL control for drawing plots and graphs.
 
-popupnotifier
-  ?
-
-prettymessages
-  Hide unwanted hints, warnings and all kind of messages in the message window.
-
+pochecker
+  Validates translated PO files.
+  
 printers
   Printing support.
 
@@ -117,10 +177,14 @@ rx
   Controls based on rxlib.
 
 sdf
-  SDF (CSV+fixed length dataset) database package.
+  SDF (CSV-like+fixed length dataset) database package.
 
 simpleideintf
   A test environment for IDE packages.
+  
+sqldb
+  Support for FPC's sqldb's data access layer (Firebird, MySQL, PostgreSQL, SQLite etc.)
+  Preinstalled in default Lazarus
 
 sqlite
   SQLite database package.
@@ -135,16 +199,17 @@ tachart
   A control for graphs and plots.
 
 tdbf
-  TDBF database package.
+  TDBF database package; supports DBase III,IV, Visual DBase VII and (Visual) 
+  FoxPro databases.
 
-trayicon
-  An icon for the system tray.
-
+todolist
+  IDE to do list for source code. It extracts to do items from comments.
+  
 turbopower_ipro
   A HTML control.
 
 vlc
   A video player component based on the VLC libraries.
-	
+  
 wiki
   Tools to convert a wiki to offline help.
