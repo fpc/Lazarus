@@ -1,6 +1,5 @@
 aggpas
   Anti-Grain Geometry - an antialiased graphic library
-  License: gpc - not free for commercial use
 
 cgi
   CGI Data Modules
