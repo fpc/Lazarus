@@ -131,6 +131,8 @@ type
     FList: TFPList; // list of TBookmark
     FGrid: TCustomDbGrid;
     FDataset: TDataset;
+    FUseCompareBookmarks: boolean;
+    FCanDoBinarySearch: boolean;
     function GetCount: integer;
     function GetCurrentRowSelected: boolean;
     function GetItem(AIndex: Integer): TBookmark;
@@ -4133,9 +4135,9 @@ var
   Bookmark: TBookmark;
 begin
   CheckActive;
-  Bookmark := FGrid.Datasource.Dataset.GetBookmark;
+  Bookmark := FDataset.GetBookmark;
   Result := IndexOf(Bookmark)>=0;
-  FGrid.Datasource.Dataset.FreeBookmark(Bookmark);
+  FDataset.FreeBookmark(Bookmark);
 end;
 
 function TBookmarkList.GetItem(AIndex: Integer): TBookmark;
@@ -4151,11 +4153,9 @@ begin
   CheckActive;
 
   Bookmark := nil;
-  TBookmark(Bookmark) := FGrid.Datasource.Dataset.GetBookmark; // fetch and increase reference count
+  TBookmark(Bookmark) := FDataset.GetBookmark; // fetch and increase reference count
   if Bookmark = nil then
     Exit;
-
-  FDataset := FGrid.Datasource.Dataset;
 
   if Find(Bookmark, Index) then begin
     FDataset.FreeBookmark(Bookmark);
@@ -4189,6 +4189,43 @@ begin
   {$endif}
   if not FGrid.FDataLink.Active then
     raise EInvalidGridOperation.Create('Dataset Inactive');
+
+  if FGrid.DataSource.DataSet=FDataset then
+    exit;
+  FDataset := FGrid.DataSource.DataSet;
+
+  // Note.
+  //
+  // Some dataset descendants do not implement CompareBookmarks, for these we
+  // use MyCompareBookmarks in the hope the allocated bookmark memory is used
+  // to hold some kind of record index.
+  FUseCompareBookmarks := TMethod(@FDataset.CompareBookmarks).Code<>pointer(@TDataset.CompareBookmarks);
+
+  // Note.
+  //
+  // fpc help say CompareBookmarks should return -1, 0 or 1 ... which imply that
+  // bookmarks should be a sorted array (or list). In this scenario binary search
+  // is the prefered method for finding a bookmark.
+  //
+  // The problem here is that TBufDataset and TSQLQuery (and thus TCustomSQLQuery
+  // and TCustomBufDataset) CompareBookmarks only return 0 or -1 (some kind of
+  // is this a valid bookmark or not), the result is that it appears as an unsorted
+  // list (or array) and binary search should not be used.
+  //
+  // The weird thing is that if we use MyCompareBookmarks which deals with comparing
+  // the memory reserved for bookmarks in the hope bookmarks are just some kind of
+  // reocord indexes, currently work fine for TCustomBufDataset derived datasets.
+  // however using CompareBookmarks is always the right thing to use where implemented.
+  //
+  // As Dbgrid should be TDataset implementation agnostic this is a way I found
+  // to know if the dataset is derived from TCustomBufDataset or not.
+  // Once TCustomBufDataset is fixed, remove this ugly note & hack.
+  case FDataset.ClassName of
+    'TSQLQuery','TBufDataset','TCustomSQLQuery','TCustomBufDataset':
+      FCanDoBinarySearch := false;
+    else
+      FCanDoBinarySearch := true;
+  end;
 end;
 
 constructor TBookmarkList.Create(AGrid: TCustomDBGrid);
@@ -4273,33 +4310,62 @@ end;
 function TBookmarkList.Find(const Item: TBookmark; var AIndex: Integer): boolean;
 var
   L, R, I: Integer;
-  CompareRes: PtrInt;
+  CompareRes: Integer;
+
+  procedure BinarySearch;
+  begin
+    L := 0;
+    R := FList.Count - 1;
+    while (L <= R) do
+    begin
+      I := L + (R - L) div 2;
+      if FUseCompareBookmarks then
+        CompareRes := FDataset.CompareBookmarks(Item, TBookmark(FList[I]))
+      else
+        CompareRes := MyCompareBookmarks(FDataset, pointer(Item), FList[I]);
+      if (CompareRes > 0) then
+        L := I + 1
+      else
+      begin
+        R := I - 1;
+        if (CompareRes = 0) then
+        begin
+           Result := True;
+           L := I;
+        end;
+      end;
+    end;
+    AIndex := L;
+  end;
+
+  procedure VisitAll;
+  begin
+    AIndex := 0;
+    i := 0;
+    while i<FList.Count do begin
+      if FUseCompareBookmarks then
+        CompareRes := FDataset.CompareBookmarks(Item, TBookmark(FList[I]))
+      else
+        CompareRes := MyCompareBookmarks(FDataset, pointer(Item), FList[I]);
+      if CompareRes=0 then begin
+        result := true;
+        AIndex := i;
+        exit;
+      end;
+      inc(i);
+    end;
+  end;
+
 begin
   {$ifdef dbgDBGrid}
   DebugLn('%s.Find', [ClassName]);
   {$endif}
-  // From TStringList.Find() Use binary search.
+
   Result := False;
-  L := 0;
-  R := FList.Count - 1;
-  while (L <= R) do
-  begin
-    I := L + (R - L) div 2;
-    CompareRes := MyCompareBookmarks(FDataset, pointer(Item), FList[I]);
-    //CompareRes := FDataset.CompareBookmarks(Item, TBookmark(FList[I]));
-    if (CompareRes > 0) then
-      L := I + 1
-    else
-    begin
-      R := I - 1;
-      if (CompareRes = 0) then
-      begin
-         Result := True;
-         L := I;
-      end;
-    end;
-  end;
-  AIndex := L;
+  if FCanDoBinarySearch then
+    BinarySearch
+  else
+    VisitAll;
 end;
 
 function TBookmarkList.IndexOf(const Item: TBookmark): Integer;
