@@ -1,36 +1,35 @@
+# Giuliano Colla <giuliano.colla@fastwebnet.it>, 2014.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2014-10-03 20:01+0100\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2014-11-11 17:24+0200\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
-"Language-Team: PincoPallo Team\n"
+"Language-Team: Lazarus\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.5.1\n"
-"Project-Id-Version: \n"
-"POT-Creation-Date: \n"
+"X-Generator: Virtaal 0.6.1\n"
 
 #: reconstsunit.sabout
-#, fuzzy
 #| msgid "About..."
 msgid "About ..."
-msgstr "Informazioni..."
+msgstr "Informazioni ..."
 
 #: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
 msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
-msgstr ""
+msgstr "Tutti i file (*.*)|*.*|File eseguibili (*.exe)|*.exe|DLL (*.dll)|*.dll"
 
 #: reconstsunit.sallfilessharedlibsoso
 msgid "All files (*)|*|Shared libraries (*.so)|*.so"
-msgstr ""
+msgstr "Tutti i file (*)|*|Librerie condivise (*.so)|*.so"
 
 #: reconstsunit.sbuilddate
-#, fuzzy
 #| msgid "Build date : "
 msgid "Build date: "
-msgstr "Data di compilazione: "
+msgstr "Data di compilazione:"
 
 #: reconstsunit.scarbonwidgetset
 msgid "Carbon widget set"
@@ -45,7 +44,6 @@ msgid "File"
 msgstr "File"
 
 #: reconstsunit.sfpcversion
-#, fuzzy
 #| msgid "FPC version : "
 msgid "FPC version: "
 msgstr "Versione FPC: "
@@ -79,10 +77,9 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Questo programma è software libero distribuito sotto la licenza GNU GPL 2, vedi file COPYING"
 
 #: reconstsunit.sopen
-#, fuzzy
 #| msgid "Open..."
 msgid "Open ..."
-msgstr "Apri..."
+msgstr "Apri ..."
 
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
@@ -98,26 +95,23 @@ msgstr "Esploratore di risorse"
 
 #: reconstsunit.sresources
 msgid "Resources"
-msgstr ""
+msgstr "Risorse"
 
 #: reconstsunit.ssaveresource
-#, fuzzy
 #| msgid "Save resource..."
 msgid "Save resource ..."
-msgstr "Salva risorse..."
+msgstr "Salva risorse ..."
 
 #: reconstsunit.sstrings
 msgid "Strings"
 msgstr "Stringhe"
 
 #: reconstsunit.stargetcpu
-#, fuzzy
 #| msgid "Target CPU : "
 msgid "Target CPU: "
 msgstr "CPU di riferimento: "
 
 #: reconstsunit.stargetos
-#, fuzzy
 #| msgid "Target OS : "
 msgid "Target OS: "
 msgstr "SO di riferimento: "
@@ -129,4 +123,3 @@ msgstr "Set di widget Win32/Win64"
 #: reconstsunit.swincewidgetset
 msgid "WinCE widget set"
 msgstr "Set di widget WinCE"
-
