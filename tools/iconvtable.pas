@@ -23,7 +23,7 @@ program iconvtable;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, Unix, LazUTF8, FileUtil;
+  Classes, SysUtils, Unix, LazUTF8, FileUtil, LazUTF8Classes;
 
 var
   Table: array[0..255] of shortstring;
@@ -109,7 +109,7 @@ end;
 var
   i: Integer;
   Filename1, Filename2: String;
-  SL: TStringList;
+  SL: TStringListUTF8;
   FromEncoding: String;
   ToEncoding: String;
   s: String;
@@ -126,7 +126,7 @@ begin
   FromEncoding:=ParamStrUTF8(1);
   ToEncoding:='UTF-8';
 
-  SL:=TStringList.Create;
+  SL:=TStringListUTF8.Create;
   for i:=0 to 255 do begin
     Table[i]:=chr(i);
     if i<32 then continue;
@@ -136,10 +136,10 @@ begin
     DeleteFileUTF8(Filename2);
     SL.Clear;
     SL.Add(chr(i));
-    SL.SaveToFile(UTF8ToSys(Filename1));
+    SL.SaveToFile(Filename1);
     if fpSystem('iconv -f '+FromEncoding+' -t '+ToEncoding+' '+Filename1+' >'+Filename2)=0
     then begin
-      SL.LoadFromFile(UTF8ToSys(Filename2));
+      SL.LoadFromFile(Filename2);
       Table[i]:=SL[0];
       //writeln(i,'=',length(Table[i]));
     end else begin
