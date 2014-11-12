@@ -87,7 +87,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, FileUtil, StringHashList, AvgLvlTree,
-  LConvEncoding, jsonparser, fpjson;
+  LConvEncoding, LazUTF8Classes, jsonparser, fpjson;
 
 type
   TStringsType = (
@@ -448,7 +448,7 @@ end;
 
 function UpdatePOFile(RSTFiles: TStrings; const POFilename: string): boolean;
 var
-  InputLines: TStringList;
+  InputLines: TStringListUTF8;
   Filename: string;
   BasePoFile: TPoFile;
   i: Integer;
@@ -464,7 +464,7 @@ begin
     exit;
   end;
 
-  InputLines := TStringList.Create;
+  InputLines := TStringListUTF8.Create;
   try
     // Read base po items
     if FileExistsUTF8(POFilename) then
@@ -483,7 +483,7 @@ begin
           //DebugLn('');
           //DebugLn(['AddFiles2Po Filename="',Filename,'"']);
           InputLines.Clear;
-          InputLines.LoadFromFile(UTF8ToSys(FileName));
+          InputLines.LoadFromFile(FileName);
 
           if CompareFileExt(Filename,'.lrt')=0 then
             BasePOFile.UpdateStrings(InputLines, stLrt)
@@ -705,7 +705,7 @@ var
   f: TStream;
 begin
   FPoName := AFilename;
-  f := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyNone);
+  f := TFileStreamUTF8.Create(AFilename, fmOpenRead or fmShareDenyNone);
   try
     Create(f, Full);
     if FHeader=nil then
@@ -1415,12 +1415,12 @@ end;
 
 procedure TPOFile.SaveToFile(const AFilename: string);
 var
-  OutLst: TStringList;
+  OutLst: TStringListUTF8;
 begin
-  OutLst := TStringList.Create;
+  OutLst := TStringListUTF8.Create;
   try
     SaveToStrings(OutLst);
-    OutLst.SaveToFile(UTF8ToSys(AFilename));
+    OutLst.SaveToFile(AFilename);
   finally
     OutLst.Free;
   end;
