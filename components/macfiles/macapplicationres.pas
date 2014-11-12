@@ -15,7 +15,7 @@ unit MacApplicationRes;
 interface
 
 uses
-  Classes, SysUtils, FileUtil;
+  Classes, SysUtils, FileUtil, LazUTF8Classes;
   
 type
   EMacResourceException = Exception;
@@ -43,13 +43,13 @@ procedure CreateMacOSXApplicationResources(const Filename,
 
   procedure WriteInfoPlistFile(const Directory: string);
   var
-    sl: TStringList;
+    sl: TStringListUTF8;
     ExeName: String;
     PLInfoListFilename: String;
   begin
     ExeName:=ExtractFileName(Filename);
     PLInfoListFilename:=Directory+'Info.plist';
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8.Create;
     try
       sl.Add('<?xml version="1.0" encoding="UTF-8"?>');
       sl.Add('<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">');
@@ -89,7 +89,7 @@ procedure CreateMacOSXApplicationResources(const Filename,
       sl.Add('  </array>');
       sl.Add('</dict>');
       sl.Add('</plist>');
-      sl.SaveToFile(UTF8ToSys(PLInfoListFilename));
+      sl.SaveToFile(PLInfoListFilename);
     finally
       sl.Free;
     end;
@@ -97,14 +97,14 @@ procedure CreateMacOSXApplicationResources(const Filename,
 
   procedure WritePkgInfoFile(const Directory: string);
   var
-    sl: TStringList;
+    sl: TStringListUTF8;
     PkgInfoFilename: String;
   begin
     PkgInfoFilename:=Directory+'PkgInfo';
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8.Create;
     try
       sl.Add('APPL????');
-      sl.SaveToFile(UTF8ToSys(PkgInfoFilename));
+      sl.SaveToFile(PkgInfoFilename);
     finally
       sl.Free;
     end;
@@ -112,11 +112,11 @@ procedure CreateMacOSXApplicationResources(const Filename,
 
   procedure WriteREADMErtfFile(const Directory, Title, Description: string);
   var
-    sl: TStringList;
+    sl: TStringListUTF8;
     ReadmeFilename: String;
   begin
     ReadmeFilename:=Directory+'README.rtf';
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8.Create;
     try
       sl.Add('{\rtf1\mac\ansicpg10000\cocoartf102');
       sl.Add('{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;}');
@@ -131,7 +131,7 @@ procedure CreateMacOSXApplicationResources(const Filename,
       sl.Add('\');
       sl.Add('');
       sl.Add('}');
-      sl.SaveToFile(UTF8ToSys(ReadmeFilename));
+      sl.SaveToFile(ReadmeFilename);
     finally
       sl.Free;
     end;
