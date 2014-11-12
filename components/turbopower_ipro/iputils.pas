@@ -551,7 +551,7 @@ function InternetSumOfFile(const FileName : string) : DWORD;
 var
   FileSt : TFileStream;
 begin
-  FileSt := TFileStream.Create(UTF8ToSys(FileName), CrcFileMode);
+  FileSt := TFileStreamUTF8.Create(FileName, CrcFileMode);
   try
     Result := InternetSumOfStream(FileSt, 0);
   finally

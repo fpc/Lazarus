@@ -43,7 +43,7 @@ uses
   {$IFDEF IP_LAZARUS}
   LCLType,
   LCLIntf,
-  FileUtil,
+  FileUtil, LazUTF8Classes,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -1983,7 +1983,7 @@ var
   FS : TFileStream;
 begin
   if (FBody.Size > 0) then begin
-    FS := TFileStream.Create(UTF8ToSys(OutFile), fmCreate);
+    FS := TFileStreamUTF8.Create(OutFile, fmCreate);
     try
       ExtractBodyStream(FS);
     finally
@@ -3580,7 +3580,7 @@ var
 begin
   EncodeMessage;
   Position := 0;
-  FS := TFileStream.Create(UTF8ToSys(aFileName), fmCreate);
+  FS := TFileStreamUTF8.Create(aFileName, fmCreate);
   try
     FS.CopyFrom(MsgStream, MsgStream.Size);
   finally
