@@ -5,7 +5,7 @@ unit ProjectTemplates;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, IniFiles;
+  Classes, SysUtils, FileUtil, LazUTF8Classes, IniFiles;
 
 type
 
@@ -296,12 +296,12 @@ end;
 procedure TProjectTemplate.InitFromDir(const DirName: String);
 
 Var
-  L : TStringList;
+  L : TStringListUTF8;
   FN : String;
   
 begin
   FDirectory:=IncludeTrailingPathDelimiter(DirName);
-  L:=TStringList.Create;
+  L:=TStringListUTF8.Create;
   Try
     FN:=FDirectory+'project.ini';
     If FileExistsUTF8(FN) then
@@ -324,7 +324,7 @@ begin
     FN:=Directory+'description.txt';
     If FileExistsUTF8(FN) then
       begin
-      L.LoadFromFile(UTF8ToSys(FN));
+      L.LoadFromFile(FN);
       FDescription:=L.Text;
       end;
     GetFileList(FDirectory);
@@ -403,7 +403,7 @@ end;
 procedure TProjectTemplate.CopyAndSubstituteFile(Const SrcFN,DestFN : String; Values : Tstrings);
 
 Var
-  L : TStrings;
+  L : TStringListUTF8;
   
 begin
   If pos(ExtractFileExt(SrcFN)+',',Exclude)<>0 then
@@ -413,10 +413,10 @@ begin
     end
   else
     begin
-    L:=TstringList.Create;
+    L:=TStringListUTF8.Create;
     try
       CreateFile(SrcFN,L,Values);
-      L.SaveToFile(UTF8ToSys(DestFN));
+      L.SaveToFile(DestFN);
     Finally
       L.Free;
     end;
