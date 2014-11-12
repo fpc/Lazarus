@@ -354,7 +354,7 @@ var
   CurPage: TBaseComponentPage;
   SelectButtonOnPage: TSpeedButton;
 begin
-  for i:=0 to Count-1 do begin
+  for i:=0 to PageCount-1 do begin
     CurPage:=Pages[i];
     if (FSelected=nil) or (FSelected.RealPage<>CurPage) then begin
       SelectButtonOnPage:=TSpeedButton(CurPage.SelectButton);
@@ -511,7 +511,7 @@ begin
     Selected := nil;
 end;
 
-function TComponentPalette.GetUnregisteredIcon: TCustomBitMap;
+function TComponentPalette.GetUnregisteredIcon: TCustomBitmap;
 begin
   if fUnregisteredIcon = nil then 
   begin
@@ -539,7 +539,7 @@ begin
     PopupMenu:=nil;
     OpenPackageMenuItem:=nil;
   end;
-  inherited ClearButtons;
+  //inherited ClearButtons;
   if FPageControl<>nil then
     FPageControl.EnableAlign;
 end;
@@ -641,22 +641,22 @@ begin
     // First add user defined page order from EnvironmentOptions,
     fPagesUserOrder.Assign(ComponentPaletteOptions.PageNames);
     // then add other pages which don't have user configuration
-    for DefPgInd := 0 to fPagesDefaultOrder.Count-1 do
+    for DefPgInd := 0 to fOrigPagePriorities.Count-1 do
     begin
-      Pg:=TBaseComponentPage(fPagesDefaultOrder[DefPgInd]);
-      if (fPagesUserOrder.IndexOf(Pg.PageName) = -1)
-      and (ComponentPaletteOptions.HiddenPageNames.IndexOf(Pg.PageName) = -1) then
-        fPagesUserOrder.Add(Pg.PageName);
+      PgName:=fOrigPagePriorities.Keys[DefPgInd];
+      if (fPagesUserOrder.IndexOf(PgName) = -1)
+      and (ComponentPaletteOptions.HiddenPageNames.IndexOf(PgName) = -1) then
+        fPagesUserOrder.Add(PgName);
     end;
-    // Add components for every page
+    // Add pages and components for them
     for i := 0 to fPagesUserOrder.Count-1 do
     begin
       PgName := fPagesUserOrder[i];
-      DefPgInd := IndexOfPageName(PgName);
+      DefPgInd := IndexOfPageWithName(PgName);
       if DefPgInd >= 0 then
         Pg:=Pages[DefPgInd]
       else begin
-        // ToDo
+        Pg:=CreateNewPage(PgName, ComponentPriorityNormal);
       end;
       DstComps := TStringList.Create;
       fPagesUserOrder.Objects[i] := DstComps;
@@ -670,14 +670,20 @@ begin
         begin
           CompName := DstComps[CompInd];
           Comp := FindComponent(CompName);
-          Comp.RealPage := Pages[DefPgInd];
-//          (Comp.Button as TSpeedButton).Parent := Pg.GetScrollBox;
+          Comp.RealPage := Pg;
         end;
       end
       // Add components that were not reordered.
-      else
-        for CompInd := 0 to Pg.Count-1 do
-          DstComps.Add(Pg[CompInd].ComponentClass.ClassName);
+      else begin
+        OptPgInd := CompCount;
+        for CompInd := 0 to CompCount-1 do begin
+          Comp := Comps[CompInd];
+          if SameText(Comp.OrigPageName, Pg.PageName) then begin
+            Comp.RealPage:=Pg;
+            DstComps.Add(Comp.ComponentClass.ClassName);
+          end;
+        end;
+      end;
     end;
   end;
 end;
@@ -827,7 +833,6 @@ var
     end
     else if aComp.Button<>nil then begin
       //debugln(['TComponentPalette.UpdateNoteBookButtons Destroy Button: ',aComp.ComponentClass.ClassName,' ',aComp.Button.Name]);
-      //TControl(aComp.Button).Visible:=false; Not needed!
       Application.ReleaseComponent(aComp.Button);
       aComp.Button:=nil;
     end;
@@ -837,15 +842,12 @@ var
   // Create speedbuttons for every visible component
   var
     i, BtnIndex: Integer;
-    //NoteBookPg: TCustomPage;
     ScrollBox: TScrollBox;
     Pg: TBaseComponentPage;
     Comp: TPkgComponent;
   begin
     Pg := Pages[aPageIndex];
     if not Pg.Visible then Exit;
-    //NoteBookPg := Pg.PageComponent;
-    //Pg.PageComponent.OnResize := @OnPageResize;
     ScrollBox := Pg.GetScrollBox;
     ScrollBox.OnResize := @OnScrollBoxResize;
     Assert(Assigned(ScrollBox), 'CreateButtons: ScrollBox not assigned.');
@@ -879,7 +881,6 @@ begin
   FPageControl.DisableAlign;
   try
     OldActivePage:=FPageControl.ActivePage;
-    SortPagesDefaultOrder;           // Updates fPagesDefaultOrder
     SortPagesAndCompsUserOrder;      // Updates fPagesUserOrder
     // remove every page in the PageControl without a visible page
     for i:=FPageControl.PageCount-1 downto 0 do

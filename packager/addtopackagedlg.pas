@@ -1343,7 +1343,7 @@ var
 begin
   // get all current pagenames (excluding the hidden page)
   sl:=TStringList.Create;
-  for i:=0 to IDEComponentPalette.Count-1 do begin
+  for i:=0 to IDEComponentPalette.PageCount-1 do begin
     APageName:=IDEComponentPalette[i].PageName;
     if APageName<>'' then
       sl.Add(APageName);

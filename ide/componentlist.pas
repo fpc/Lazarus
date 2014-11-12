@@ -191,14 +191,16 @@ var
 begin
   if Assigned(IDEComponentPalette) then
   begin
-    for i := 0 to IDEComponentPalette.Count-1 do
+    for i := 0 to IDEComponentPalette.PageCount-1 do
     begin
       APage := IDEComponentPalette.Pages[i];
       if APage.Visible then
-        for j := 0 to APage.Count-1 do
+        for j := 0 to IDEComponentPalette.CompCount-1 do
         begin
-          AComponent := APage.Comps[j];
-          if AComponent.Visible and (AComponent.OrigPageName<>'') then
+          AComponent := IDEComponentPalette.Comps[j];
+          if (AComponent.RealPage = APage)
+          and AComponent.Visible
+          and (AComponent.OrigPageName <> '') then
             FComponentList.Add(AComponent);
         end;
     end;

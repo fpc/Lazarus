@@ -217,10 +217,11 @@ begin
       if Assigned(Pg) then       // Can be Nil if this page was added or renamed.
       begin
         // Collect original components from this page
-        for CompCnt := 0 to Pg.Count-1 do
+        for CompCnt := 0 to IDEComponentPalette.PageCount-1 do
         begin
-          Comp := Pg.Comps[CompCnt];
-          OrigComps.Add(Comp.ComponentClass.ClassName);
+          Comp := IDEComponentPalette.Comps[CompCnt];
+          if Comp.RealPage = Pg then
+            OrigComps.Add(Comp.ComponentClass.ClassName);
         end;
       end;
       // Differs from original order -> add configuration for components
