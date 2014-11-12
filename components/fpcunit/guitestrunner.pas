@@ -351,7 +351,7 @@ end;
 procedure TGUITestRunner.SaveAsToolButtonClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
-    XMLSynEdit.Lines.SaveToFile(UTF8ToSys(SaveDialog.FileName));
+    XMLSynEdit.Lines.SaveToFile(SaveDialog.FileName);
 end;
 
 procedure TGUITestRunner.TestTreeCreateNodeClass(Sender: TCustomTreeView;
