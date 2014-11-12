@@ -29,8 +29,10 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Types, Classes, Math, LCLStrConsts, LResources, LCLIntf, LCLType,
-  FileUtil, LCLProc, AvgLvlTree, LMessages, ImgList, ActnList, GraphType,
+  SysUtils, Types, Classes, Math,
+  AvgLvlTree, LazUTF8Classes,
+  LCLStrConsts, LResources, LCLIntf, LCLType,
+  FileUtil, LCLProc, LMessages, ImgList, ActnList, GraphType,
   Graphics, Menus, Controls, Forms, StdCtrls, ExtCtrls, ToolWin, Buttons,
   Themes, WSLCLClasses, LCLClasses;
 
