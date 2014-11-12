@@ -31,8 +31,8 @@ unit APIWizard;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  StdCtrls, Buttons, ExtCtrls, LCLproc, ComCtrls;
+  Classes, SysUtils, FileUtil, LazUTF8Classes, LResources, Forms, Controls,
+  Graphics, Dialogs, StdCtrls, Buttons, ExtCtrls, LCLproc, ComCtrls;
 
 type
 
@@ -67,7 +67,17 @@ type
 
   TProcType = (ptFunction, ptProcedure);
 
-  TApiWidgetset = (awCarbon, awCocoa, awFpgui, awGtk, awGtk2, awGtk3, awNoGui, awQt, awWin32, awWinCE);
+  TApiWidgetset = (
+    awCarbon,
+    awCocoa,
+    awFpgui,
+    awGtk,
+    awGtk2,
+    awGtk3,
+    awNoGui,
+    awQt,
+    awWin32,
+    awWinCE);
   TApiWidgetsets = set of TApiWidgetset;
 
   TApiLine = class
@@ -89,7 +99,16 @@ const
   DECL_OFFSET: array[TProctype] of Integer = (9, 10);
 
   WS_NAME: array[TApiWidgetset] of string = (
-    'carbon', 'cocoa', 'fpgui', 'gtk', 'gtk2', 'gtk3', 'nogui', 'qt', 'win32', 'wince',
+    'carbon',
+    'cocoa',
+    'fpgui',
+    'gtk',
+    'gtk2',
+    'gtk3',
+    'nogui',
+    'qt',
+    'win32',
+    'wince'
   );
 
 function GetName(const ADeclaration: String): String;
@@ -129,7 +148,9 @@ begin
 
 end;
 
-function SplitDeclaration(const ADeclaration: String; var ProcType: TProcType; var ProcName: String; const ProcParams: TStringList): Boolean;
+function SplitDeclaration(const ADeclaration: String;
+  out ProcType: TProcType; out ProcName: String; const ProcParams: TStringList): Boolean;
+
   function ProcessParams(Params: String): Boolean;
   var
     n: Integer;
@@ -327,14 +348,14 @@ var
   StartFound: Boolean;
   StartTag, EndTag: String;
   Line, LineName: String;
-  Lines: TStringList;
+  Lines: TStringListUTF8;
   n: Integer;
 begin
   AResult.Clear;
   if not FileExistsUTF8(AFileName) then Exit;
 
-  Lines := TStringList.Create;
-  Lines.LoadFromFile(UTF8ToSys(AFileName));
+  Lines := TStringListUTF8.Create;
+  Lines.LoadFromFile(AFileName);
 
   StartFound := False;
   StartTag := Format('##apiwiz##s%s##', [ATag]);
@@ -487,7 +508,7 @@ const
   PROC_DESC: array[TProcType] of String = ('Function',  'Procedure');
   PROC_RESULT: array[TProcType] of String = ('Result := ',  '');
 var
-  ApiText, ProcLines, ProcParams: TStringList;
+  ApiText, ProcLines, ProcParams: TStringListUTF8;
   S, DeclarationText: String;
   ProcName, FileName, IntfBase: String;
   PlatformPrefix, PlatformDir, PlatformObject: String;
@@ -527,9 +548,9 @@ begin
   end;
 
   LineCount := 0;
-  ProcParams := TStringList.Create;
-  ApiText := TStringList.Create;
-  ProcLines := TStringList.Create;
+  ProcParams := TStringListUTF8.Create;
+  ApiText := TStringListUTF8.Create;
+  ProcLines := TStringListUTF8.Create;
   try
     for Line := 0 to txtDeclarations.Lines.Count - 1 do
     begin
@@ -553,7 +574,7 @@ begin
       //--------------------------------
       // open winapih.inc / lclintfh.inc
       //--------------------------------
-      ApiText.LoadFromFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + FileName + 'h.inc'));
+      ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/' + FileName + 'h.inc');
       Idx := FindInsertPoint(ApiText, 'ps', ProcName, FileName + 'h.inc', True);
       if Idx <> -1
       then begin
@@ -576,12 +597,12 @@ begin
             InsertLines(Idx, ApiText, ProcLines);
           end;
         end;
-        ApiText.SaveToFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + FileName + 'h.inc'));
+        ApiText.SaveToFile(txtLazarus.text + '/lcl/include/' + FileName + 'h.inc');
       end;
       //------------------------------
       // open winapi.inc / lclintf.inc
       //------------------------------
-      ApiText.LoadFromFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + FileName + '.inc'));
+      ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/' + FileName + '.inc');
       if rbIndependent.Checked
       then begin
         Idx := FindInsertPoint(ApiText, 'pi', ProcName, FileName + '.inc', False);
@@ -639,7 +660,7 @@ begin
       if Idx <> -1
       then begin
         InsertLines(Idx, ApiText, ProcLines);
-        ApiText.SaveToFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + FileName + '.inc'));
+        ApiText.SaveToFile(txtLazarus.text + '/lcl/include/' + FileName + '.inc');
       end;
 
       // ++++++++++++++++++++++++++++++ //
@@ -650,7 +671,7 @@ begin
         //------------------------------------------
         // open intfbasewinapi.inc / intfbaselcl.inc
         //------------------------------------------
-        ApiText.LoadFromFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + IntfBase));
+        ApiText.LoadFromFile(txtLazarus.text + '/lcl/include/' + IntfBase);
         Idx := FindInsertPoint(ApiText, 'ps', ProcName, IntfBase, False);
         if Idx <> -1
         then begin
@@ -673,7 +694,7 @@ begin
             Add('end;');
           end;
           InsertLines(Idx, ApiText, ProcLines);
-          ApiText.SaveToFile(UTF8ToSys(txtLazarus.text + '/lcl/include/' + IntfBase));
+          ApiText.SaveToFile(txtLazarus.text + '/lcl/include/' + IntfBase);
         end;
 
         for WS := Low(WS) to High(Ws) do
@@ -688,7 +709,7 @@ begin
           //------------------
           // open *winapih.inc
           //------------------
-          ApiText.LoadFromFile(UTF8ToSys(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + 'h.inc'));
+          ApiText.LoadFromFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + 'h.inc');
           Idx := FindInsertPoint(ApiText, 'ps', ProcName, PlatformPrefix + FileName + 'h.inc', True);
           if IDX <> -1
           then begin
@@ -696,13 +717,13 @@ begin
             CreateLeadingCR;
             ProcLines.Add(DeclarationText + '; override;');
             InsertLines(Idx, ApiText, ProcLines);
-            ApiText.SaveToFile(UTF8ToSys(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + 'h.inc'));
+            ApiText.SaveToFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + 'h.inc');
           end;
 
           //-----------------
           // open *winapi.inc
           //-----------------
-          ApiText.LoadFromFile(UTF8ToSys(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + '.inc'));
+          ApiText.LoadFromFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + '.inc');
           Idx := FindInsertPoint(ApiText, 'ps', ProcName, PlatformPrefix + FileName + '.inc', False);
           if Idx <> -1
           then begin
@@ -733,7 +754,7 @@ begin
               Add('end;');
             end;
             InsertLines(Idx, ApiText, ProcLines);
-            ApiText.SaveToFile(UTF8ToSys(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + '.inc'));
+            ApiText.SaveToFile(txtLazarus.text + '/lcl/interfaces/' + PlatformDir + '/' + PlatformPrefix + FileName + '.inc');
           end;
         end;
       end;
