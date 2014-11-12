@@ -58,7 +58,7 @@ program Svn2RevisionInc;
 
 uses
   Classes, CustApp, SysUtils, Process, UTF8Process, LazFileUtils, LazUTF8,
-  LazLogger, FileUtil, Dom, XmlRead, GetOpts;
+  LazLogger, FileUtil, LazUTF8Classes, Dom, XmlRead, GetOpts;
 
 type
 
@@ -308,35 +308,36 @@ var
   function GetRevisionFromEntriesTxt: boolean;
   var
     EntriesFileName: string;
-    EntriesText: Text;
-    line: string;
+    Line: string;
+    Lines: TStringListUTF8;
+    i: Integer;
   begin
     Result:=false;
     EntriesFileName:=AppendPathDelim(SourceDirectory)+'.svn'+PathDelim+'entries';
     if FileExistsUTF8(EntriesFileName) then begin
-       try
-         AssignFile(EntriesText, EntriesFileName);
-         Reset(EntriesText);
-         try
-         // skip three lines
-           Readln(EntriesText, line);
-           if line<>'<?xml version="1.0" encoding="utf-8"?>' then begin
-             Readln(EntriesText);
-             Readln(EntriesText);
-             Readln(EntriesText, RevisionStr);
-             Result := RevisionStr <> '';
-           end;
-         finally
-           CloseFile(EntriesText);
-         end;
-       except
-         // ignore error, default result is false
-       end;
+      try
+        Lines:=TStringListUTF8.Create;
+        try
+          Lines.LoadFromFile(EntriesFileName);
+          // skip three lines
+          i:=0;
+          Line:=Lines[i];
+          if line<>'<?xml version="1.0" encoding="utf-8"?>' then begin
+            inc(i,3);
+            RevisionStr:=Lines[i];
+            Result := RevisionStr <> '';
+          end;
+        finally
+          Lines.Free;
+        end;
+      except
+        // ignore error, default result is false
+      end;
     end;
     if Result then
-     Show('Success retrieving revision with entries file: '+EntriesFileName)
+      Show('Success retrieving revision with entries file: '+EntriesFileName)
     else
-     Show('Failure retrieving revision with entries file: '+EntriesFileName);
+      Show('Failure retrieving revision with entries file: '+EntriesFileName);
     Show('');
   end;
 
@@ -420,14 +421,14 @@ end;
 
 function TSvn2RevisionApplication.IsValidRevisionInc: boolean;
 var
-  Lines: TStringList;
+  Lines: TStringListUTF8;
 begin
   Result := FileExistsUTF8(RevisionIncFileName);
   if Result then 
   begin
-    Lines := TStringList.Create;
+    Lines := TStringListUTF8.Create;
     try
-      Lines.LoadFromFile(UTF8ToSys(RevisionIncFileName));
+      Lines.LoadFromFile(RevisionIncFileName);
       Result := (Lines.Count = 2) and
         (Lines[0] = RevisionIncComment) and
         (Copy(Lines[1], 1, Length(ConstStart)) = ConstStart);
