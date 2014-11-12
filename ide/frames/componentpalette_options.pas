@@ -448,11 +448,13 @@ procedure TCompPaletteOptionsFrame.ComponentsListViewDragDrop(Sender, Source: TO
 var
   lv: TListView;
   DestInd: Integer;
-  SrcItem: TListItem;
+  SrcItem, DstItem: TListItem;
 begin
   lv := Sender as TListView;
-  DestInd := lv.GetItemAt(X, Y).Index;
+  DstItem := lv.GetItemAt(X, Y);
   SrcItem := lv.Selected;
+  if (DstItem = nil) or (SrcItem = nil) then exit;
+  DestInd := DstItem.Index;
   Assert(Source = Sender, 'TCompPaletteOptionsFrame.ComponentsListViewDragDrop: Source and Sender ListViews differ.');
   DebugLn(['TCompPaletteOptionsFrame.ComponentsListViewDragDrop: DestInd=', DestInd,
            ', ItemIndex=', SrcItem.Index]);
