@@ -39,7 +39,7 @@ interface
 
 
 uses
-  SysUtils, Math, Types, Classes, Contnrs, FPCAdds, LCLversion,
+  SysUtils, Math, Types, Classes, Contnrs, FPCAdds, LCLVersion, LazUTF8Classes,
   FileUtil,
   FPImage, FPCanvas,
   FPWriteBMP,              // bmp support
