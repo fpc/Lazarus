@@ -2502,14 +2502,14 @@ end;
 
 procedure ReadMakefileFPC(const Filename: string; List: TStrings);
 var
-  MakefileFPC: TStringList;
+  MakefileFPC: TStringListUTF8;
   i: Integer;
   Line: string;
   p: LongInt;
   NameValue: String;
 begin
-  MakefileFPC:=TStringList.Create;
-  MakefileFPC.LoadFromFile(UTF8ToSys(Filename));
+  MakefileFPC:=TStringListUTF8.Create;
+  MakefileFPC.LoadFromFile(Filename);
   i:=0;
   while i<MakefileFPC.Count do begin
     Line:=MakefileFPC[i];
