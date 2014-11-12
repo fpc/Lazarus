@@ -11,7 +11,7 @@ type
 
   { TFileStreamUTF8 }
 
-  TFileStreamUTF8 = class(THandleStream)
+  TFileStreamUTF8 = class(TFileStream)
   private
     FFileName: utf8string;
   public
@@ -106,7 +106,7 @@ begin
       raise EFOpenError.Createfmt({SFOpenError}'Unable to open file "%s"',[AFilename]);
   end
   else
-    inherited Create(lHandle);
+    THandleStream(Self).Create(lHandle);
 end;
 
 destructor TFileStreamUTF8.Destroy;

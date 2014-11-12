@@ -53,7 +53,7 @@ uses
   SysUtils,
   ////TL Windows,
   Graphics, Registry,
-  Classes, FileUtil,
+  Classes, FileUtil, LazUTF8Classes,
   SynEditTypes,
   GraphType, ////TL 2003-06-11: Added for TFontStyles
   SynEditHighlighter;
@@ -2702,11 +2702,11 @@ end;
 
 procedure TSynUniSyn.LoadFromFile(FileName: string);
 var
-  F: TFileStream;
+  F: TFileStreamUTF8;
 begin
   if FileName = '' then
     raise exception.Create('FileName is empty');
-  F:=TFileStream.Create(UTF8ToSys(FileName),fmOpenRead or fmShareDenyWrite);
+  F:=TFileStreamUTF8.Create(FileName,fmOpenRead or fmShareDenyWrite);
   try
     LoadFromStream( F );
   finally
@@ -2716,11 +2716,11 @@ end;
 
 procedure TSynUniSyn.SaveToFile(FileName: string);
 var
-  F: TFileStream;
+  F: TFileStreamUTF8;
 begin
   if FileName = '' then
     raise exception.Create('FileName is empty');
-  F:=TFileStream.Create(UTF8ToSys(FileName),fmOpenWrite or fmShareDenyNone);
+  F:=TFileStreamUTF8.Create(FileName,fmOpenWrite or fmShareDenyNone);
   try
     SaveToStream( F );
   finally
