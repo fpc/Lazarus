@@ -2910,7 +2910,6 @@ begin
   // componentpalette
   IDEComponentPalette:=TComponentPalette.Create;
   CompPalette:=TComponentPalette(IDEComponentPalette);
-  if CompPalette=nil then ;
   CompPalette.OnEndUpdate:=@IDEComponentPaletteEndUpdate;
   CompPalette.OnOpenPackage:=@IDEComponentPaletteOpenPackage;
   CompPalette.OnOpenUnit:=@IDEComponentPaletteOpenUnit;

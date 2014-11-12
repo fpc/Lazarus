@@ -464,8 +464,7 @@ begin
   PackageGraph.RegisterComponentsHandler(Page,ComponentClasses);
 end;
 
-procedure RegisterNoIconGlobalHandler(
-  ComponentClasses: array of TComponentClass);
+procedure RegisterNoIconGlobalHandler(ComponentClasses: array of TComponentClass);
 begin
   PackageGraph.RegisterComponentsHandler('',ComponentClasses);
 end;
