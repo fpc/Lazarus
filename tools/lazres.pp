@@ -36,7 +36,7 @@ program LazRes;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, FileUtil, LCLProc, LResources,
+  Classes, SysUtils, FileUtil, LazUTF8Classes, LCLProc, LResources,
   resource, reswriter, bitmapresource, groupresource, groupiconresource,
   groupcursorresource;
 
@@ -71,12 +71,12 @@ end;
 procedure OutputLRSFile(BinFilename, ResourceName: String; ResMemStream: TMemoryStream);
 var
   BinExt,ResourceType: String;
-  BinFileStream: TFileStream;
+  BinFileStream: TFileStreamUTF8;
   BinMemStream: TMemoryStream;
 begin
   dbgout(BinFilename);
   try
-    BinFileStream:=TFileStream.Create(UTF8ToSys(BinFilename),fmOpenRead);
+    BinFileStream:=TFileStreamUTF8.Create(BinFilename,fmOpenRead);
     BinMemStream:=TMemoryStream.Create;
     try
       BinMemStream.CopyFrom(BinFileStream,BinFileStream.Size);
@@ -160,9 +160,9 @@ var
 
   function GetResourceStream: TMemoryStream;
   var
-    FS: TFileStream;
+    FS: TFileStreamUTF8;
   begin
-    FS := TFileStream.Create(UTF8ToSys(FileName), fmOpenRead);
+    FS := TFileStreamUTF8.Create(FileName, fmOpenRead);
     Result := TMemoryStream.Create;
     try
       Result.CopyFrom(FS, FS.Size);
@@ -292,7 +292,7 @@ end;
 var
   a: Integer;
   ResourceFilename,FullResourceFilename:String;
-  ResFileStream:TFileStream;
+  ResFileStream:TFileStreamUTF8;
   ResMemStream:TMemoryStream;
   FileList:TStringList;
   S: String;
@@ -305,7 +305,7 @@ begin
        ,' resourcefilename @filelist');
     exit;
   end;
-  FileList:=TStringList.Create;
+  FileList:=TStringListUTF8.Create;
   try
     if ParamStrUTF8(2)[1] = '@' then
     begin
@@ -317,7 +317,7 @@ begin
         debugln('ERROR: file list not found: ',S);
         exit;
       end;
-      FileList.LoadFromFile(UTF8ToSys(S));
+      FileList.LoadFromFile(S);
       for a:=FileList.Count-1 downto 0 do
         if FileList[a]='' then
           FileList.Delete(a);
@@ -352,7 +352,7 @@ begin
     end;
   
     try
-      ResFileStream:=TFileStream.Create(UTF8ToSys(ResourceFilename),fmCreate);
+      ResFileStream:=TFileStreamUTF8.Create(ResourceFilename,fmCreate);
     except
       debugln('ERROR: unable to create file ''', ResourceFilename, '''');
       halt(1);
