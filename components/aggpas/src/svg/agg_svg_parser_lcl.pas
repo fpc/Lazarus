@@ -43,7 +43,7 @@ uses
  agg_trans_affine ,
  agg_math_stroke ,
  expat ,
- FileUtil ;
+ FileUtil, LazUTF8Classes ;
 
 { TYPES DEFINITION }
 const
@@ -659,9 +659,9 @@ end;
 
 procedure parser.parse(fname: string);
 var
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
 begin
-  fs:=TFileStream.Create(UTF8ToSys(fname),fmOpenRead+fmShareDenyWrite);
+  fs:=TFileStreamUTF8.Create(fname,fmOpenRead+fmShareDenyWrite);
   try
     parse(fs);
   finally
