@@ -62,8 +62,9 @@ interface
 
 uses
   // FCL, RTL, LCL
-  Classes, SysUtils, Math, LCLProc, Forms, Controls, Dialogs, StrUtils, ComCtrls,
-  ActnList, AvgLvlTree, LCLType, CodeCache, CodeToolManager, BasicCodeTools, FileProcs,
+  Classes, SysUtils, Math, LCLProc, Forms, Controls, Dialogs, StrUtils,
+  ComCtrls, ActnList, AvgLvlTree, LazUTF8Classes, LCLType, CodeCache,
+  CodeToolManager, BasicCodeTools, FileProcs,
   // IDEIntf
   LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf,
   // IDE
@@ -668,7 +669,7 @@ begin
   SaveDialog1.FileName:='TodoList_'+FormatDateTime('YYYY_MM_DD',now);
   if SaveDialog1.Execute then
   begin
-    CommaList:=TStringList.Create;
+    CommaList:=TStringListUTF8.Create;
     try
       CommaList.Add('Done,Description,Priority,Module,Line,Owner,Category');
       i:=0;
@@ -685,7 +686,7 @@ begin
         CommaList.Add(s);
         i:=i+1;
       end;
-      CommaList.SaveToFile(UTF8ToSys(SaveDialog1.FileName));
+      CommaList.SaveToFile(SaveDialog1.FileName);
     finally
       CommaList.Clear;
       CommaList.Free;
