@@ -52,7 +52,7 @@ interface
 uses
   SysUtils,
   ////TL Windows,
-  Graphics, Registry,
+  Graphics,
   Classes, FileUtil, LazUTF8Classes,
   SynEditTypes,
   GraphType, ////TL 2003-06-11: Added for TFontStyles

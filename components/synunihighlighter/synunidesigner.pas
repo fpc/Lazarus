@@ -50,9 +50,7 @@ unit SynUniDesigner;
 interface
 
 uses
-  LMessages,
   Graphics,
-  Registry,
   Controls,
   Forms,
   ExtCtrls,

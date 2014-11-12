@@ -15,7 +15,6 @@ uses
   ////TL DsgnIntf,
   componenteditors, ////TL added
   Classes,
-  SynEditStrConst,
   SynUniHighlighter,
   SynUniDesigner;
 
