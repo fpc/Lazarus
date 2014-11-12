@@ -26,7 +26,7 @@ uses
   cthreads,
   {$ENDIF}
   Classes, SysUtils, Unix, LazUTF8, FileUtil, LazLogger, LazFileUtils, MTProcs,
-  LConvEncoding;
+  LConvEncoding, LazUTF8Classes;
 
 var
   FromEncoding: String;
@@ -109,8 +109,8 @@ procedure AskIconvInParallel(Index: PtrInt; {%H-}Data: Pointer;
   {%H-}Item: TMultiThreadProcItem);
 var
   FilenameOrig: String;
-  FilenameUTF: String;
-  SL: TStringList;
+  FilenameUTF8: String;
+  SL: TStringListUTF8;
   s: String;
   CharLen: integer;
   i: Integer;
@@ -127,15 +127,15 @@ begin
   end;
   i:=GetThreadIndex;
   FilenameOrig:='testorig'+IntToStr(i)+'.txt';
-  FilenameUTF:='testutf'+IntToStr(i)+'.txt';
+  FilenameUTF8:='testutf'+IntToStr(i)+'.txt';
   DeleteFileUTF8(FilenameOrig);
-  DeleteFileUTF8(FilenameUTF);
-  SL:=TStringList.Create;
+  DeleteFileUTF8(FilenameUTF8);
+  SL:=TStringListUTF8.Create;
   SL.Add(chr(Index shr 8)+chr(Index and 255));
-  SL.SaveToFile(UTF8ToSys(FilenameOrig));
-  if fpSystem('iconv -f '+FromEncoding+' -t '+ToEncoding+' '+FilenameOrig+' >'+FilenameUTF)=0
+  SL.SaveToFile(FilenameOrig);
+  if fpSystem('iconv -f '+FromEncoding+' -t '+ToEncoding+' '+FilenameOrig+' >'+FilenameUTF8)=0
   then begin
-    SL.LoadFromFile(UTF8ToSys(FilenameUTF));
+    SL.LoadFromFile(FilenameUTF8);
     s:=SL[0];
     if s<>'' then begin
       DBCSToUTF8[Index]:=UTF8CharacterToUnicode(PChar(s),CharLen);
