@@ -12185,7 +12185,7 @@ begin
         btSubDetailFooter, btGroupFooter, btCrossFooter, btReportSummary]) and
          ((s2 = '1') or ((s2 <> '1') and CurBand.Visible)) then
       begin
-        VarName := List[FNo] + p1;
+        VarName := List[FNo] + StringReplace(p1, '=', '_', [rfReplaceAll]);
         if IsColumns then
           if AggrBand.Typ = btCrossFooter then
             VarName := VarName + '00' else
@@ -12276,7 +12276,7 @@ begin
   begin
     S:=VarToStr(Value);
     {$IFDEF DebugLR}
-    DebugLn('PropInfo for ',prop,' found, Setting Value=',St);
+    DebugLn('PropInfo for ',propName,' found, Setting Value=',S);
     {$ENDIF}
 
     Case PropInfo^.PropType^.Kind of
