@@ -1,20 +1,20 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="3">
+  <Package Version="4">
     <Name Value="H2PasWizard"/>
+    <AddToProjectUsesSection Value="True"/>
     <CompilerOptions>
-      <Version Value="5"/>
+      <Version Value="11"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
-      <CodeGeneration>
-        <Generate Value="Faster"/>
-      </CodeGeneration>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
+      <Parsing>
+        <SyntaxOptions>
+          <UseAnsiStrings Value="False"/>
+        </SyntaxOptions>
+      </Parsing>
     </CompilerOptions>
-    <Files Count="7">
+    <Files Count="6">
       <Item1>
         <Filename Value="h2pasconvert.pas"/>
         <UnitName Value="H2PasConvert"/>
@@ -29,21 +29,17 @@
         <Type Value="LFM"/>
       </Item3>
       <Item4>
-        <Filename Value="h2pasdlg.lrs"/>
-        <Type Value="LRS"/>
-      </Item4>
-      <Item5>
         <Filename Value="h2passtrconsts.pas"/>
         <UnitName Value="H2PasStrConsts"/>
-      </Item5>
-      <Item6>
+      </Item4>
+      <Item5>
         <Filename Value="idetextconvlistedit.pas"/>
         <UnitName Value="IDETextConvListEdit"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="idetextconvlistadd.pas"/>
         <UnitName Value="IDETextConvListAdd"/>
-      </Item7>
+      </Item6>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

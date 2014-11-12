@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, LazConfigStorage, XMLPropStorage,
-  Forms, Controls, Dialogs, FileUtil, LazFileUtils, AVL_Tree,
+  Forms, Controls, Dialogs, FileUtil, LazFileUtils, LazUTF8Classes, AVL_Tree,
   // CodeTools
   CodeAtom, CodeTree, KeywordFuncLists, NonPascalCodeTools, BasicCodeTools,
   FileProcs, CodeCache, SourceChanger, CodeToolManager,
@@ -621,7 +621,7 @@ type
   TH2PasParser = class(TExtToolParser)
   public
     class function DefaultSubTool: string; override;
-    procedure ReadLine(Line: string; OutputIndex: integer; var Handled: boolean
+    procedure ReadLine(Line: string; OutputIndex: integer; var {%H-}Handled: boolean
       ); override; // (worker thread)
   end;
 
@@ -1023,9 +1023,9 @@ begin
   FCIncludesValid:=true;
   //DebugLn(['TH2PasFile.ReadCIncludes Filename="',Filename,'"']);
   try
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8.Create;
     try
-      sl.LoadFromFile(UTF8ToSys(Filename));
+      sl.LoadFromFile(Filename);
       for i:=0 to sl.Count-1 do begin
         if not REMatches(sl[i],'^#include "(.+)"') then continue;
         SrcFilename:=Trim(REVar(1));
@@ -2236,7 +2236,7 @@ begin
       DebugLn(['TH2PasConverter.MergeIncludeFiles merging file '
          ,'"'+IncludeFile.Filename+'"'+' into "'+TextConverter.Filename+'"']);
       try
-        fs:=TFileStream.Create(UTF8ToSys(IncludeFile.Filename),fmOpenRead);
+        fs:=TFileStreamUTF8.Create(IncludeFile.Filename,fmOpenRead);
         try
           SetLength(s,fs.Size);
           if s<>'' then begin
