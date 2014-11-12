@@ -34,7 +34,7 @@ interface
 uses
   // LCL+FCL
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, LConvEncoding,
-  FileUtil, LazFileUtils, contnrs, IniFiles,
+  FileUtil, LazFileUtils, LazUTF8Classes, contnrs, IniFiles,
   // codetools
   CodeToolManager, DefineTemplates, CodeCache, LinkScanner, FileProcs, CodeToolsStructs,
   // IDEIntf
@@ -1234,15 +1234,15 @@ end;
 
 function TConvertDelphiProjPack.ExtractOptionsFromCFG(const CFGFilename: string): TModalResult;
 var
-  sl: TStringList;
+  sl: TStringListUTF8;
   i: Integer;
   Line, s: string;
   c: char;
 begin
   try
-    sl:=TStringList.Create;
+    sl:=TStringListUTF8.Create;
     try
-      sl.LoadFromFile(UTF8ToSys(CFGFilename));
+      sl.LoadFromFile(CFGFilename);
       for i:=0 to sl.Count-1 do begin
         Line:=sl[i];
         if Line='' then continue;

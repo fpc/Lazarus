@@ -33,8 +33,9 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, Math, LCLProc, Forms, Controls, Grids, LResources, LConvEncoding,
-  Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, contnrs, FileUtil, LCLType,
+  Classes, SysUtils, Math, LCLProc, Forms, Controls, Grids, LResources,
+  LConvEncoding, Graphics, Dialogs, Buttons, StdCtrls, ExtCtrls, contnrs,
+  FileUtil, LazUTF8Classes, LCLType,
   // components
   SynHighlighterLFM, SynEdit, SynEditMiscClasses, LFMTrees,
   // codetools
@@ -281,16 +282,16 @@ end;
 
 function TDFMConverter.ConvertDfmToLfm(const aFilename: string): TModalResult;
 var
-  DFMStream, LFMStream, Utf8LFMStream: TMemoryStream;
+  DFMStream, LFMStream, Utf8LFMStream: TMemoryStreamUTF8;
 begin
   Result:=mrOk;
-  DFMStream:=TMemoryStream.Create;
-  LFMStream:=TMemoryStream.Create;
-  Utf8LFMStream:=TMemoryStream.Create;
+  DFMStream:=TMemoryStreamUTF8.Create;
+  LFMStream:=TMemoryStreamUTF8.Create;
+  Utf8LFMStream:=TMemoryStreamUTF8.Create;
   try
     // Note: The file is copied from DFM file earlier. Load it.
     try
-      DFMStream.LoadFromFile(UTF8ToSys(aFilename));
+      DFMStream.LoadFromFile(aFilename);
     except
       on E: Exception do begin
         Result:=QuestionDlg(lisCodeToolsDefsReadError, Format(
@@ -319,7 +320,7 @@ begin
     FixWideString(LFMStream, Utf8LFMStream);
     // Save the converted file.
     try
-      Utf8LFMStream.SaveToFile(UTF8ToSys(aFilename));
+      Utf8LFMStream.SaveToFile(aFilename);
     except
       on E: Exception do begin
         Result:=MessageDlg(lisCodeToolsDefsWriteError,

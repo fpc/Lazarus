@@ -31,6 +31,14 @@ type
     procedure SaveToFile(const FileName: string); override;
   end;
 
+  { TMemoryStreamUTF8 }
+
+  TMemoryStreamUTF8 = class(TMemoryStream)
+  public
+    procedure LoadFromFile(const FileName: string);
+    procedure SaveToFile(const FileName: string);
+  end;
+
 procedure LoadStringsFromFileUTF8(List: TStrings; const FileName: string);
 procedure SaveStringsToFileUTF8(List: TStrings; const FileName: string);
 
@@ -81,6 +89,32 @@ function CompareStringListItemsUTF8LowerCase(List: TStringList; Index1,
   Index2: Integer): Integer;
 begin
   Result:=CompareStr(UTF8LowerCase(List[Index1]),UTF8LowerCase(List[Index2]));
+end;
+
+{ TMemoryStreamUTF8 }
+
+procedure TMemoryStreamUTF8.LoadFromFile(const FileName: string);
+var
+  S: TFileStreamUTF8;
+begin
+  S:=TFileStreamUTF8.Create (FileName,fmOpenRead or fmShareDenyWrite);
+  Try
+    LoadFromStream(S);
+  finally
+    S.free;
+  end;
+end;
+
+procedure TMemoryStreamUTF8.SaveToFile(const FileName: string);
+var
+  S: TFileStreamUTF8;
+begin
+  S:=TFileStreamUTF8.Create (FileName,fmCreate);
+  Try
+    SaveToStream(S);
+  finally
+    S.free;
+  end;
 end;
 
 constructor TFileStreamUTF8.Create(const AFileName: utf8string; Mode: Word);
