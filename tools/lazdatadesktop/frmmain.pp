@@ -398,7 +398,7 @@ begin
   ShowRecentConnections;
   ShowDDImports;
   ShowNewConnectionTypes;
-  PSMain.IniFileName:=ChangeFileExt(UTF8ToSys(FN),'.ini');
+  PSMain.IniFileName:=ChangeFileExt(FN,'.ini');
   LVDicts.Columns[0].Width:=120;
   LVDicts.Columns[1].Width:=380;
   LVDicts.Columns[2].Width:=150;

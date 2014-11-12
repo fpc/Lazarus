@@ -369,7 +369,7 @@ end;
 procedure TQueryPanel.LoadQuery(AFileName: String);
 
 begin
-  FMSQL.Lines.LoadFromFile(UTF8ToSys(AFileName));
+  FMSQL.Lines.LoadFromFile(AFileName);
 end;
 
 function TQueryPanel.AddToHistory(Qry: String): Integer;
@@ -413,7 +413,7 @@ end;
 procedure TQueryPanel.SaveQuery(AFileName: String);
 
 begin
-  FMSQL.Lines.SaveToFile(UTF8ToSys(AFileName));
+  FMSQL.Lines.SaveToFile(AFileName);
 end;
 
 procedure TQueryPanel.ExecuteQuery(Qry : String);
