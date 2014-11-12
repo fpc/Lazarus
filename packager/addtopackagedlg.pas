@@ -1176,7 +1176,7 @@ begin
                                                  fLastNewComponentAncestorType);
   // choose the same page name
   if (PalettePageCombobox.Text='') and (PkgComponent<>nil) then
-    PalettePageCombobox.Text:=PkgComponent.Page.PageName;
+    PalettePageCombobox.Text:=PkgComponent.RealPage.PageName;
   // filename
   AutoCompleteNewComponentUnitName;
   OkButton.Enabled := True;

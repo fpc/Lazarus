@@ -1172,7 +1172,7 @@ begin
     CurComponent:=TPkgComponent(CurObject);
     with RegisteredListBox.Canvas do begin
       CurStr:=Format(lisPckEditPage, [CurComponent.ComponentClass.ClassName,
-        CurComponent.Page.PageName]);
+        CurComponent.RealPage.PageName]);
       TxtH:=TextHeight(CurStr);
       FillRect(ARect);
       CurIcon:=CurComponent.Icon;

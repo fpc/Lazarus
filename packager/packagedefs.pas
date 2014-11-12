@@ -4002,7 +4002,7 @@ end;
 
 function TPkgComponent.HasIcon: boolean;
 begin
-  Result:=Page.PageName<>'';
+  Result:=RealPage.PageName<>'';
 end;
 
 function TPkgComponent.CanBeCreatedInDesigner: boolean;

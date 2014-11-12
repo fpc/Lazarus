@@ -4731,6 +4731,10 @@ begin
     IDEOptionsDialog.ReadAll;
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll(false);
+      //ToDo: implement this conditional update.
+      //if IDEOptionsDialog.PaletteConfigChanged then
+        TComponentPalette(IDEComponentPalette).UpdateNoteBookButtons;
+      ///!!!
       if EnvironmentOptions.SingleTaskBarButton then
         Application.TaskBarBehavior := tbSingleButton
       else

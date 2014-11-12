@@ -92,7 +92,7 @@ implementation
 {$R *.lfm}
 
 const
-  AllComponents = '<All>';
+  AllComponentsHeader = '<All>';
 
 { TCompPaletteOptionsFrame }
 
@@ -144,11 +144,11 @@ begin
 end;
 
 procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-//var
-//  cpo: TCompPaletteOptions;
+var
+  cpo: TCompPaletteOptions;
 begin
-  //cpo:=(AOptions as TEnvironmentOptions).ComponentPaletteOptions;
-
+  cpo:=(AOptions as TEnvironmentOptions).ComponentPaletteOptions;
+  // --- ToDo ---
   FLoaded := True;
 end;
 
@@ -169,7 +169,7 @@ var
   PgName: String;
 begin
   Assert(Assigned(IDEComponentPalette),
-    'TCompPaletteOptionsFrame.MakeDiffOptions: IDEComponentPalette is not assigned.');
+    'TCompPaletteOptionsFrame.WritePages: IDEComponentPalette is not assigned.');
   OrigPages := TStringList.Create;
   UserPages := TStringList.Create;
   try
@@ -243,7 +243,7 @@ begin
   if Assigned(IDEComponentPalette) then
   begin
     PagesListBox.Clear;
-    PagesListBox.AddItem(AllComponents, Nil);
+    PagesListBox.AddItem(AllComponentsHeader, Nil);
     for i := 0 to IDEComponentPalette.PagesUserOrder.Count-1 do
     begin
       PgName := IDEComponentPalette.PagesUserOrder[i];
@@ -277,7 +277,7 @@ begin
       CompName := OrderedComps[i];
       Comp := IDEComponentPalette.FindComponent(CompName);
       Assert(Assigned(Comp), 'TCompPaletteOptionsFrame.InitialComps: Component "'+CompName+'" not found');
-      if Comp.Visible and (Comp.PageName<>'') then
+      if Comp.Visible and (Comp.OrigPageName<>'') then
         aCompList.AddObject(Comp.ComponentClass.ClassName, Comp);
     end;
   end;
@@ -292,7 +292,7 @@ var
   StartInd, EndInd: Integer;
   RealPageName, CompName: String;
 begin
-  if aPageName = AllComponents then
+  if aPageName = AllComponentsHeader then
   begin
     StartInd := 1;                // Skip the first entry for all components.
     EndInd := PagesListBox.Count-1;
@@ -643,10 +643,8 @@ begin
   Result := TEnvironmentOptions;
 end;
 
-{$IFDEF EnableComponentPaletteOptions}
 initialization
   RegisterIDEOptionsEditor(GroupEnvironment, TCompPaletteOptionsFrame, EnvOptionsCompPalette);
-{$ENDIF}
 
 end.
 

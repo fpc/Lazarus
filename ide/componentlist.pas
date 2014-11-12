@@ -198,7 +198,7 @@ begin
         for j := 0 to APage.Count-1 do
         begin
           AComponent := APage.Comps[j];
-          if AComponent.Visible and (AComponent.PageName<>'') then
+          if AComponent.Visible and (AComponent.OrigPageName<>'') then
             FComponentList.Add(AComponent);
         end;
     end;
@@ -253,9 +253,9 @@ begin
         AComponent := FComponentList[i];
         AClassName := AComponent.ComponentClass.ClassName;
         //find out parent node
-        ANode := PalletteTree.Items.FindTopLvlNode(AComponent.PageName);
+        ANode := PalletteTree.Items.FindTopLvlNode(AComponent.OrigPageName);
         if ANode = nil then
-          ANode := PalletteTree.Items.AddChild(nil, AComponent.PageName);
+          ANode := PalletteTree.Items.AddChild(nil, AComponent.OrigPageName);
         //add the item
         ANode := PalletteTree.Items.AddChildObject(ANode, AClassName, AComponent);
       end;

@@ -39,9 +39,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       OnDragOver = PagesListBoxDragOver
       OnKeyDown = PagesListBoxKeyDown
       OnSelectionChange = PagesListBoxSelectionChange
-      ScrollWidth = 186
       TabOrder = 0
-      TopIndex = -1
     end
     object AddPageButton: TBitBtn
       AnchorSideLeft.Control = PagesListBox

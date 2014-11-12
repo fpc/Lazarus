@@ -179,7 +179,7 @@ begin
   if FPageControl=nil then exit;
   ReAlignButtons(FPageControl.ActivePage);
   if (FSelected<>nil)
-  and (FSelected.Page.PageComponent=FPageControl.ActivePage)
+  and (FSelected.RealPage.PageComponent=FPageControl.ActivePage)
   then exit;
   Selected:=nil;
 end;
@@ -356,7 +356,7 @@ var
 begin
   for i:=0 to Count-1 do begin
     CurPage:=Pages[i];
-    if (FSelected=nil) or (FSelected.Page<>CurPage) then begin
+    if (FSelected=nil) or (FSelected.RealPage<>CurPage) then begin
       SelectButtonOnPage:=TSpeedButton(CurPage.SelectButton);
       if SelectButtonOnPage<>nil then SelectButtonOnPage.Down:=true;
     end;
@@ -368,7 +368,7 @@ begin
   if FSelected=AValue then exit;
   FSelected:=AValue;
   if FSelected<>nil then begin
-    if (FSelected.Page=nil) or (FSelected.Page.Palette<>Self)
+    if (FSelected.RealPage=nil) or (FSelected.RealPage.Palette<>Self)
     or (not FSelected.Visible)
     or (not FSelected.CanBeCreatedInDesigner) then
       FSelected:=nil;
@@ -378,7 +378,7 @@ begin
   // select button
   if (FSelected<>nil) and (FPageControl<>nil) then begin
     TSpeedButton(FSelected.Button).Down:=true;
-    FPageControl.ActivePage:=TTabSheet(FSelected.Page.PageComponent);
+    FPageControl.ActivePage:=TTabSheet(FSelected.RealPage.PageComponent);
   end;
 end;
 
@@ -479,7 +479,7 @@ begin
     Invisible:=(csNoDesignVisible in AControl.ControlStyle)
   end else begin
     RegComp:=FindComponent(AComponent.ClassName);
-    Invisible:=(RegComp=nil) or (RegComp.PageName='');
+    Invisible:=(RegComp=nil) or (RegComp.OrigPageName='');
   end;
 end;
 
@@ -572,8 +572,7 @@ begin
   try
     if (Page.ComponentCount=0) or not (Page.Components[0] is TScrollBox) then exit;
     ButtonTree:=TAVLTree.Create(@CompareControlsWithTag);
-
-    ScrollBox := TScrollBox(Page.Components[0]);
+    ScrollBox:=TScrollBox(Page.Components[0]);
     // skip the first control (this is the selection tool (TSpeedButton))
     for j:= 1 to ScrollBox.ControlCount-1 do begin
       CurButton:=TSpeedbutton(ScrollBox.Controls[j]);
@@ -631,8 +630,8 @@ var
   Pg: TBaseComponentPage;
   Comp: TRegisteredComponent;
   SrcComps, DstComps: TStringList;
-  i, PgInd, CompInd: Integer;
-  PgName: String;
+  i, DefPgInd, OptPgInd, CompInd: Integer;
+  PgName, CompName: String;
 begin
   Result := True;
   for i:=0 to fPagesUserOrder.Count-1 do
@@ -642,9 +641,9 @@ begin
     // First add user defined page order from EnvironmentOptions,
     fPagesUserOrder.Assign(ComponentPaletteOptions.PageNames);
     // then add other pages which don't have user configuration
-    for PgInd := 0 to fPagesDefaultOrder.Count-1 do
+    for DefPgInd := 0 to fPagesDefaultOrder.Count-1 do
     begin
-      Pg:=TBaseComponentPage(fPagesDefaultOrder[PgInd]);
+      Pg:=TBaseComponentPage(fPagesDefaultOrder[DefPgInd]);
       if (fPagesUserOrder.IndexOf(Pg.PageName) = -1)
       and (ComponentPaletteOptions.HiddenPageNames.IndexOf(Pg.PageName) = -1) then
         fPagesUserOrder.Add(Pg.PageName);
@@ -653,28 +652,32 @@ begin
     for i := 0 to fPagesUserOrder.Count-1 do
     begin
       PgName := fPagesUserOrder[i];
+      DefPgInd := IndexOfPageName(PgName);
+      if DefPgInd >= 0 then
+        Pg:=Pages[DefPgInd]
+      else begin
+        // ToDo
+      end;
       DstComps := TStringList.Create;
       fPagesUserOrder.Objects[i] := DstComps;
-      PgInd := ComponentPaletteOptions.ComponentPages.IndexOf(PgName);
-      if PgInd >= 0 then
+      OptPgInd := ComponentPaletteOptions.ComponentPages.IndexOf(PgName);
+      if OptPgInd >= 0 then
       begin
         // Add components that were reordered by user
-        SrcComps := ComponentPaletteOptions.ComponentPages.Objects[PgInd] as TStringList;
+        SrcComps := ComponentPaletteOptions.ComponentPages.Objects[OptPgInd] as TStringList;
         DstComps.Assign(SrcComps);
-      end
-      else begin
-        // Add components that were not reordered.
-        PgInd := IndexOfPageName(PgName);
-        if PgInd >= 0 then
+        for CompInd := 0 to DstComps.Count-1 do
         begin
-          Pg:=Pages[PgInd];
-          for CompInd := 0 to Pg.Count-1 do
-          begin
-            Comp := Pg[CompInd];
-            DstComps.Add(Comp.ComponentClass.ClassName);
-          end;
+          CompName := DstComps[CompInd];
+          Comp := FindComponent(CompName);
+          Comp.RealPage := Pages[DefPgInd];
+//          (Comp.Button as TSpeedButton).Parent := Pg.GetScrollBox;
         end;
-      end;
+      end
+      // Add components that were not reordered.
+      else
+        for CompInd := 0 to Pg.Count-1 do
+          DstComps.Add(Pg[CompInd].ComponentClass.ClassName);
     end;
   end;
 end;
@@ -685,21 +688,21 @@ var
 
   procedure RemoveUnneededPage(aSheet: TCustomPage);
   var
-    PageIndex: Integer;
-    CurPage: TBaseComponentPage;
-    CurBtn: TSpeedButton;
+    PageInd: Integer;
+    Pg: TBaseComponentPage;
+    Btn: TSpeedButton;
   begin
-    PageIndex:=IndexOfPageComponent(aSheet);
-    if (PageIndex<0) or (not Pages[PageIndex].Visible) then begin
+    PageInd:=IndexOfPageComponent(aSheet);
+    if (PageInd<0) or (not Pages[PageInd].Visible) then begin
       // page is not needed anymore => delete
-      if PageIndex>=0 then begin
-        CurPage:=Pages[PageIndex];
-        CurBtn:=TSpeedButton(CurPage.SelectButton);
-        if CurBtn<>nil then begin
-          CurPage.SelectButton:=nil;
-          Application.ReleaseComponent(CurBtn);
+      if PageInd>=0 then begin
+        Pg:=Pages[PageInd];
+        Btn:=TSpeedButton(Pg.SelectButton);
+        if Btn<>nil then begin
+          Pg.SelectButton:=nil;
+          Application.ReleaseComponent(Btn);
         end;
-        Pages[PageIndex].PageComponent:=nil;
+        Pages[PageInd].PageComponent:=nil;
       end;
       if aSheet=OldActivePage then
         OldActivePage:=nil;
@@ -710,8 +713,7 @@ var
 
   procedure InsertVisiblePage(aCompPage: TBaseComponentPage; var aVisPageIndex: integer);
   var
-    CurPageIndex: Integer;
-    CurScrollBox: TScrollBox;
+    PageInd: Integer;
     PanelRight: TPanel;
     BtnRight: TSpeedButton;
   begin
@@ -720,8 +722,7 @@ var
       // insert a new PageControl page
       TCustomTabControl(FPageControl).Pages.Insert(aVisPageIndex, aCompPage.PageName);
       aCompPage.PageComponent := FPageControl.Page[aVisPageIndex];
-      CurScrollBox := TScrollBox.Create(aCompPage.PageComponent);
-      with CurScrollBox do begin
+      with TScrollBox.Create(aCompPage.PageComponent) do begin
         Align := alClient;
         BorderStyle := bsNone;
         BorderWidth := 0;
@@ -758,9 +759,9 @@ var
       end;
     end else begin
       // move to the right position
-      CurPageIndex := aCompPage.PageComponent.PageIndex;
-      if CurPageIndex<>aVisPageIndex then
-        TCustomTabControl(FPageControl).Pages.Move(CurPageIndex, aVisPageIndex);
+      PageInd := aCompPage.PageComponent.PageIndex;
+      if PageInd<>aVisPageIndex then
+        TCustomTabControl(FPageControl).Pages.Move(PageInd, aVisPageIndex);
     end;
     inc(aVisPageIndex);
   end;
@@ -768,12 +769,12 @@ var
   procedure CreateSelectionButton(aCompPage: TBaseComponentPage; aButtonUniqueName: string;
     aScrollBox: TScrollBox);
   var
-    CurBtn: TSpeedButton;
+    Btn: TSpeedButton;
   begin
     if Assigned(aCompPage.SelectButton) then Exit;
-    CurBtn := TSpeedButton.Create(nil);
-    aCompPage.SelectButton:=CurBtn;
-    with CurBtn do begin
+    Btn := TSpeedButton.Create(nil);
+    aCompPage.SelectButton:=Btn;
+    with Btn do begin
       Name := 'PaletteSelectBtn' + aButtonUniqueName;
       OnClick := @SelectionToolClick;
       OnMouseWheel := @OnPageMouseWheel;
@@ -788,19 +789,19 @@ var
     end;
   end;
 
-  procedure CreateOrDeleteButton(aComp: TPkgComponent; aButtonUniqueName: string;
+  procedure CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string;
     aScrollBox: TScrollBox; var aBtnIndex: integer);
   var
-    CurBtn: TSpeedButton;
+    Btn: TSpeedButton;
   begin
     if aComp.Visible then begin
       inc(aBtnIndex);
       //DebugLn(['TComponentPalette.UpdateNoteBookButtons Component ',DbgSName(aComp.ComponentClass),' ',aComp.Visible,' Prio=',dbgs(aComp.GetPriority)]);
       if aComp.Button=nil then begin
-        CurBtn := TSpeedButton.Create(nil);
-        aComp.Button:=CurBtn;
+        Btn := TSpeedButton.Create(nil);
+        aComp.Button:=Btn;
         CreatePopupMenu;
-        with CurBtn do begin
+        with Btn do begin
           Name := 'PaletteBtnPage' + aButtonUniqueName + aComp.ComponentClass.ClassName;
           // Left and Top will be set in ReAlignButtons.
           SetBounds(Left,Top,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
@@ -814,46 +815,50 @@ var
           ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
           Hint := aComp.ComponentClass.ClassName + sLineBreak
             + '(' + aComp.ComponentClass.UnitName + ')';
-          CurBtn.PopupMenu:=Self.PopupMenu;
+          Btn.PopupMenu:=Self.PopupMenu;
         end;
         //debugln(['TComponentPalette.UpdateNoteBookButtons Created Button: ',aComp.ComponentClass.ClassName,' ',aComp.Button.Name]);
       end else begin
-        CurBtn:=TSpeedButton(aComp.Button);
+        Btn:=TSpeedButton(aComp.Button);
         //DebugLn(['TComponentPalette.UpdateNoteBookButtons Keep Button: ',aComp.ComponentClass.ClassName,' ',aComp.Button.Name,' ',DbgSName(TControl(aComp.Button).Parent)]);
       end;
-      CurBtn.Parent := aScrollBox;
-      CurBtn.Tag:=aBtnIndex;
+      Btn.Parent := aScrollBox;
+      Btn.Tag:=aBtnIndex;
     end
     else if aComp.Button<>nil then begin
       //debugln(['TComponentPalette.UpdateNoteBookButtons Destroy Button: ',aComp.ComponentClass.ClassName,' ',aComp.Button.Name]);
-      TControl(aComp.Button).Visible:=false;
+      //TControl(aComp.Button).Visible:=false; Not needed!
       Application.ReleaseComponent(aComp.Button);
       aComp.Button:=nil;
     end;
   end;
 
-  procedure CreateButtons(aPageIndex: integer);
+  procedure CreateButtons(aPageIndex: integer; aCompNames: TStringList);
+  // Create speedbuttons for every visible component
   var
     i, BtnIndex: Integer;
-    CurNoteBookPage: TCustomPage;
-    CurScrollBox: TScrollBox;
-    CompPage: TBaseComponentPage;
+    //NoteBookPg: TCustomPage;
+    ScrollBox: TScrollBox;
+    Pg: TBaseComponentPage;
+    Comp: TPkgComponent;
   begin
-    CompPage := Pages[aPageIndex];
-    if not CompPage.Visible then Exit;
-    CurNoteBookPage := CompPage.PageComponent;
-    CurScrollBox := CurNoteBookPage.Components[0] as TScrollBox;
-    CurScrollBox.OnResize := @OnScrollBoxResize;
-    CurScrollBox.OnMouseWheel := @OnPageMouseWheel;
-    //DebugLn(['TComponentPalette.UpdateNoteBookButtons PAGE=',CompPage.PageName,' PageIndex=',CurNoteBookPage.PageIndex]);
+    Pg := Pages[aPageIndex];
+    if not Pg.Visible then Exit;
+    //NoteBookPg := Pg.PageComponent;
+    //Pg.PageComponent.OnResize := @OnPageResize;
+    ScrollBox := Pg.GetScrollBox;
+    ScrollBox.OnResize := @OnScrollBoxResize;
+    Assert(Assigned(ScrollBox), 'CreateButtons: ScrollBox not assigned.');
+    //DebugLn(['TComponentPalette.UpdateNoteBookButtons PAGE=',Pg.PageName,' PageIndex=',Pg.PageComponent.PageIndex]);
     // create selection button
-    CreateSelectionButton(CompPage, IntToStr(aPageIndex), CurScrollBox);
+    CreateSelectionButton(Pg, IntToStr(aPageIndex), ScrollBox);
     // create component buttons and delete unneeded ones
-    BtnIndex:=0;
-    for i:=0 to CompPage.Count-1 do
-      CreateOrDeleteButton(TPkgComponent(CompPage[i]),
-        IntToStr(aPageIndex)+'_'+IntToStr(i)+'_', CurScrollBox, BtnIndex);
-    ReAlignButtons(CurNoteBookPage);
+    BtnIndex := 0;
+    for i := 0 to aCompNames.Count-1 do begin
+      Comp := FindComponent(aCompNames[i]) as TPkgComponent;
+      CreateOrDelButton(Comp, Format('%d_%d_',[aPageIndex,i]), ScrollBox, BtnIndex);
+    end;
+    ReAlignButtons(Pg.PageComponent);
   end;
 
 var
@@ -888,7 +893,7 @@ begin
       if PgInd >= 0 then
       begin
         InsertVisiblePage(Pages[PgInd], VisPageIndex);
-        CreateButtons(PgInd);  // create speedbuttons for every visible component
+        CreateButtons(PgInd, fPagesUserOrder.Objects[i] as TStringList);
       end;
     end;
     // restore active page
