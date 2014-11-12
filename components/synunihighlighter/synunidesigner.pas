@@ -61,7 +61,7 @@ uses
   Menus,
   GraphType, ////TL Added for TFontStyles
   LCLType,   ////TL Added for vk_* key declarations
-  Classes, FileUtil,
+  Classes, FileUtil, LazUTF8Classes,
   SysUtils,
   SynEdit,
   SynEditHighlighter,
@@ -998,7 +998,7 @@ begin
     iDlg.Filter := sUniFileDescription + ' (*.hgl)|*.hgl';
     if not iDlg.Execute then
       Exit;
-    iFile := TFileStream.Create( UTF8ToSys(iDlg.FileName), fmOpenRead or fmShareDenyWrite );
+    iFile := TFileStreamUTF8.Create( iDlg.FileName, fmOpenRead or fmShareDenyWrite );
     try
       if iRange = h.MainRules then
       begin
