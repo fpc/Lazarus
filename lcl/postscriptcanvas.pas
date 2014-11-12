@@ -42,9 +42,9 @@ unit PostScriptCanvas;
 interface
 
 uses
-  Classes, SysUtils, strutils, FileUtil, Math, Types, Graphics, Forms, GraphMath,
-  GraphType, FPImage, IntfGraphics, Printers, LCLType, LCLIntf, LCLProc,
-  PostScriptUnicode;
+  Classes, SysUtils, strutils, FileUtil, LazUTF8Classes, Math, Types, Graphics,
+  Forms, GraphMath, GraphType, FPImage, IntfGraphics, Printers, LCLType,
+  LCLIntf, LCLProc, PostScriptUnicode;
   
 Type
 
@@ -1255,14 +1255,14 @@ begin
 end;
 
 procedure TPostScriptPrinterCanvas.SaveToFile(aFileName: string);
-Var Lst : TStringList;
+Var Lst : TStringListUTF8;
 begin
-  Lst:=TStringList.Create;
+  Lst:=TStringListUTF8.Create;
   try
      Lst.AddStrings(fHeader);
      Lst.AddStrings(fDocument);
      
-     Lst.SaveTofile(UTF8ToSys(ExpandFileNameUTF8(aFileName)));
+     Lst.SaveTofile(ExpandFileNameUTF8(aFileName));
   finally
     Lst.Free;
   end;
