@@ -630,6 +630,18 @@ procedure TToolButton.SetStyle(Value: TToolButtonStyle);
 begin
   if FStyle = Value then exit;
   FStyle := Value;
+  if Width = TToolBar.cDefButtonWidth then begin
+    case Value of
+      tbsSeparator: begin
+        Width := cDefSeparatorWidth;
+        Height := cDefSeparatorWidth;
+      end;
+      tbsDivider: begin
+        Width := cDefDividerWidth;
+        Height := cDefDividerWidth;
+      end;
+    end;
+  end;
   InvalidatePreferredSize;
   if IsControlVisible then
     UpdateVisibleToolbar;
@@ -808,6 +820,11 @@ begin
   Result := (ActionLink = nil) or not TToolButtonActionLink(ActionLink).IsCheckedLinked;
 end;
 
+function TToolButton.IsHeightStored: Boolean;
+begin
+  Result := Style in [tbsSeparator, tbsDivider];
+end;
+
 function TToolButton.IsImageIndexStored: Boolean;
 begin
   Result := (ActionLink = nil) or not TToolButtonActionLink(ActionLink).IsImageIndexLinked;
@@ -875,11 +892,19 @@ begin
   FToolBar := nil;
   if AParent is TToolBar then
   begin
-    if Style in [tbsButton,tbsDropDown,tbsCheck] then
-      NewWidth := TToolBar(AParent).ButtonWidth
-    else
-      NewWidth := Width;
-    NewHeight := TToolBar(AParent).ButtonHeight;
+    if not TToolBar(AParent).IsVertical then begin
+      if Style in [tbsButton,tbsDropDown,tbsCheck] then
+        NewWidth := TToolBar(AParent).ButtonWidth
+      else
+        NewWidth := Width;
+      NewHeight := TToolBar(AParent).ButtonHeight;
+    end else begin
+      if Style in [tbsButton,tbsDropDown,tbsCheck] then
+        NewHeight := TToolBar(AParent).ButtonHeight
+      else
+        NewHeight := Height;
+      NewWidth := TToolBar(AParent).ButtonWidth;
+    end;
     SetBoundsKeepBase(Left, Top, NewWidth, NewHeight);
   end;
   
@@ -1032,15 +1057,15 @@ begin
     else
     if Style = tbsDivider then
       if FToolBar.IsVertical then
-        PreferredHeight := 5
+        PreferredHeight := cDefDividerWidth
       else
-        PreferredWidth := 5
+        PreferredWidth := cDefDividerWidth
     else
     if Style = tbsSeparator then
       if FToolBar.IsVertical then
-        PreferredHeight := 10
+        PreferredHeight := cDefSeparatorWidth
       else
-        PreferredWidth := 10;
+        PreferredWidth := cDefSeparatorWidth;
   end;
   //DebugLn(['TToolButton.CalculatePreferredSize ',DbgSName(Self),' ',PreferredWidth,',',PreferredHeight,' Caption=',Caption]);
 end;

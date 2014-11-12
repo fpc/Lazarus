@@ -1953,7 +1953,7 @@ type
   end;
 
   TToolButtonActionLinkClass = class of TToolButtonActionLink;
-  
+
   TToolBar = class;
 
   TToolButton = class(TGraphicControl)
@@ -1976,6 +1976,7 @@ type
     function GetIndex: Integer;
     function GetTextSize: TSize;
     function IsCheckedStored: Boolean;
+    function IsHeightStored: Boolean;
     function IsImageIndexStored: Boolean;
     function IsWidthStored: Boolean;
     procedure SetDown(Value: Boolean);
@@ -1992,6 +1993,9 @@ type
     procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
+  protected const
+    cDefSeparatorWidth = 10;
+    cDefDividerWidth = 5;
   protected
     FToolBar: TToolBar;
     class procedure WSRegisterClass; override;
@@ -2045,7 +2049,7 @@ type
     property DropdownMenu: TPopupMenu read FDropdownMenu write SetDropdownMenu;
     property Enabled;
     property Grouped: Boolean read FGrouped write SetGrouped default False;
-    property Height stored False;
+    property Height stored IsHeightStored;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex stored IsImageIndexStored default -1;
     property Indeterminate: Boolean read FIndeterminate write SetIndeterminate default False;
     property Marked: Boolean read FMarked write SetMarked default False;
@@ -2149,7 +2153,11 @@ type
     procedure MoveSubMenuItems(SrcMenuItem, DestMenuItem: TMenuItem);
     procedure AddButton(Button: TToolButton);
     procedure RemoveButton(Button: TToolButton);
+  protected const
+    cDefButtonWidth = 23;
+    cDefButtonHeight = 22;
   protected
+    FPrevVertical: Boolean;
     function IsVertical: Boolean; virtual;
     class procedure WSRegisterClass; override;
     procedure AdjustClientRect(var ARect: TRect); override;
@@ -2191,8 +2199,8 @@ type
     property AutoSize;
     property BorderSpacing;
     property BorderWidth;
-    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 22;
-    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 23;
+    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default cDefButtonHeight;
+    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default cDefButtonWidth;
     property Caption;
     property ChildSizing;
     property Constraints;

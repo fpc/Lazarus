@@ -1252,8 +1252,6 @@ begin
   NewToolButton.Caption := NewName;
   NewToolButton.Name := NewName;
   NewToolButton.Style := NewStyle;
-  if NewStyle = tbsDivider then
-    NewToolButton.Width := 3;
   // position the button next to the last button
   if CurToolBar.ButtonCount > 0 then
   begin

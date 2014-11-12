@@ -89,8 +89,8 @@ begin
     csDoubleClicks, csMenuEvents, csSetCaption, csParentBackground, csOpaque];
   FFlat := True;
   Height := 32;
-  FButtonWidth := 23;
-  FButtonHeight := 22;
+  FButtonWidth := cDefButtonWidth;
+  FButtonHeight := cDefButtonHeight;
   Details := ThemeServices.GetElementDetails(ttbSplitButtonDropDownNormal);
   FDropDownWidth := ThemeServices.GetDetailSize(Details).cx;
   FNewStyle := True;
@@ -833,8 +833,24 @@ begin
       SeparatorWidthChange := (CurControl is TToolButton) and
         (TToolButton(CurControl).Style in [tbsSeparator, tbsDivider]);
       if SeparatorWidthChange then begin
-        SeparatorWidthChange := (w <> CurControl.Width);
-        w := CurControl.Width;
+        if not Vertical then begin
+          SeparatorWidthChange := (w <> CurControl.Width);
+          w := CurControl.Width;
+        end else begin
+          SeparatorWidthChange := (h <> CurControl.Height);
+          h := CurControl.Height;
+        end;
+      end;
+      if Vertical <> FPrevVertical then  //swap h/w when orientation changed
+      begin
+        if (CurControl is TToolButton) and
+          (TToolButton(CurControl).Style in [tbsSeparator, tbsDivider]) then
+          begin
+            if not Vertical then
+              w := CurControl.Height
+            else
+              h := CurControl.Width;
+          end;
       end;
       if (CurControl.Left <> x) or (CurControl.Top <> y) or
          (CurControl.Width <> w) or (CurControl.Height <> h) then
@@ -893,6 +909,7 @@ begin
     FullSizeObstacleControls.Free;
     EndUpdate;
     EnableAlign;
+    FPrevVertical := Vertical;
   end;
 end;
 
