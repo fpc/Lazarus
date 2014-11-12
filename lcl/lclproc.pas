@@ -31,7 +31,7 @@ uses
   {$ENDIF}
   {$IFnDEF WithOldDebugln} LazLogger, {$ENDIF}
   Classes, SysUtils, Math, TypInfo, Types, FPCAdds, AvgLvlTree, FileUtil,
-  LCLStrConsts, LCLType, WSReferences, LazMethodList, LazUTF8;
+  LCLStrConsts, LCLType, WSReferences, LazMethodList, LazUTF8, LazUTF8Classes;
 
 type
   TMethodList = LazMethodList.TMethodList;
@@ -2327,15 +2327,15 @@ end;
 procedure DbgOutThreadLog(const Msg: string);
 var
   PID: PtrInt;
-  fs: TFileStream;
+  fs: TFileStreamUTF8;
   Filename: string;
 begin
   PID:=PtrInt(GetThreadID);
   Filename:='Log'+IntToStr(PID);
   if FileExistsUTF8(Filename) then
-    fs:=TFileStream.Create(UTF8ToSys(Filename),fmOpenWrite or fmShareDenyNone)
+    fs:=TFileStreamUTF8.Create(Filename,fmOpenWrite or fmShareDenyNone)
   else
-    fs:=TFileStream.Create(UTF8ToSys(Filename),fmCreate);
+    fs:=TFileStreamUTF8.Create(Filename,fmCreate);
   fs.Position:=fs.Size;
   fs.Write(Msg[1], length(Msg));
   fs.Free;
@@ -2399,7 +2399,7 @@ procedure DbgSaveData(FileName: String; AData: PChar; ADataSize: PtrUInt);
 var
   S: TStream;
 begin
-  S := TFileStream.Create(UTF8ToSys(FileName), fmCreate);
+  S := TFileStreamUTF8.Create(FileName, fmCreate);
   S.Write(AData^, ADataSize);
   S.Free;
 end;
