@@ -49,7 +49,7 @@ unit SynHighlighterLFM;
 interface
 
 uses
-  SysUtils, Classes, FileUtil, Graphics,
+  SysUtils, Classes, FileUtil, LazUTF8Classes, Graphics,
   SynEditTypes, SynEditHighlighter, SynEditHighlighterFoldBase;
 
 type
@@ -181,7 +181,7 @@ begin
   WasText := FALSE;
   AStrings.Clear;
   try
-    Src := TFileStream.Create(UTF8ToSys(AFile), fmOpenRead or fmShareDenyWrite);
+    Src := TFileStreamUTF8.Create(AFile, fmOpenRead or fmShareDenyWrite);
     try
       Dest := TMemoryStream.Create;
       try
@@ -210,7 +210,7 @@ begin
     try
       AStrings.SaveToStream(Src);
       Src.Seek(0, soFromBeginning);
-      Dest := TFileStream.Create(UTF8ToSys(AFile), fmCreate);
+      Dest := TFileStreamUTF8.Create(AFile, fmCreate);
       try
         ObjectTextToResource(Src, Dest);
       finally

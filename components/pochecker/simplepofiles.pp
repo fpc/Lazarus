@@ -48,7 +48,7 @@ implementation
 
 {$ELSE}
 uses
-  Classes, SysUtils, LCLProc, FileUtil, StringHashList
+  Classes, SysUtils, LCLProc, FileUtil, StringHashList, LazUTF8Classes
   {, LConvEncoding}
   //{$IFDEF UNIX}{$IFNDEF DisableCWString}, cwstring{$ENDIF}{$ENDIF}
   ;
@@ -169,9 +169,9 @@ end;
 
 function UTF8ToSystemCharSet(const s: string): string; inline;
 begin
+  {$IFDEF NoUTF8Translations}
   if SystemCharSetIsUTF8 then
     exit(s);
-  {$IFDEF NoUTF8Translations}
   Result:=s;
   {$ELSE}
   Result:=UTF8ToSys(s);
@@ -271,7 +271,7 @@ begin
 
   end;
 
-  InputLines := TStringList.Create;
+  InputLines := TStringListUTF8.Create;
   try
     // Read base po items
     if FileExistsUTF8(POFilename) then
@@ -289,7 +289,7 @@ begin
           //DebugLn('');
           //DebugLn(['AddFiles2Po Filename="',Filename,'"']);
           InputLines.Clear;
-          InputLines.LoadFromFile(UTF8ToSys(FileName));
+          InputLines.LoadFromFile(FileName);
 
           if CompareFileExt(Filename,'.lrt')=0 then
             BasePOFile.UpdateStrings(InputLines, stLrt)
@@ -391,7 +391,7 @@ constructor TSimplePOFile.Create(const AFilename: String; const Full: Boolean = 
 var
   f: TStream;
 begin
-  f := TFileStream.Create(UTF8ToSys(AFilename), fmOpenRead or fmShareDenyNone);
+  f := TFileStreamUTF8.Create(AFilename, fmOpenRead or fmShareDenyNone);
   try
     Create(f, Full);
     if FHeader=nil then CreateHeader;
@@ -1020,7 +1020,7 @@ end;
 {
 procedure TSimplePOFile.SaveToFile(const AFilename: string);
 var
-  OutLst: TStringList;
+  OutLst: TStringListUTF8;
   j: Integer;
 
   procedure WriteLst(const AProp, AValue: string );
@@ -1084,7 +1084,7 @@ begin
     for j:=0 to Fitems.Count-1 do
       WriteItem(TPOFileItem(FItems[j]));
 
-    OutLst.SaveToFile(UTF8ToSys(AFilename));
+    OutLst.SaveToFile(AFilename);
 
   finally
     OutLst.Free;

@@ -41,7 +41,7 @@ unit SynMacroRecorder;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Types, LCLType, Menus,
+  Classes, SysUtils, FileUtil, LazUTF8Classes, Types, LCLType, Menus,
   SynEdit, SynEditKeyCmds, SynEditPlugins;
 
 resourcestring
@@ -939,7 +939,7 @@ procedure TCustomSynMacroRecorder.LoadFromFile(aFilename: string);
 var
   F : TFileStream;
 begin
-  F := TFileStream.Create(UTF8ToSys(aFilename), fmOpenRead);
+  F := TFileStreamUTF8.Create(aFilename, fmOpenRead);
   try
     LoadFromStream(F);
     MacroName := ChangeFileExt(ExtractFileName(aFilename), '');
@@ -952,7 +952,7 @@ procedure TCustomSynMacroRecorder.SaveToFile(aFilename: string);
 var
   F : TFileStream;
 begin
-  F := TFileStream.Create(UTF8ToSys(aFilename), fmCreate);
+  F := TFileStreamUTF8.Create(aFilename, fmCreate);
   try
     SaveToStream(F);
   finally
