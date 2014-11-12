@@ -278,7 +278,7 @@ begin
       CompName := OrderedComps[i];
       Comp := IDEComponentPalette.FindComponent(CompName);
       Assert(Assigned(Comp), 'TCompPaletteOptionsFrame.InitialComps: Component "'+CompName+'" not found');
-      if Comp.Visible and (Comp.OrigPageName<>'') then
+      if Comp.Visible {and (Comp.OrigPageName<>'')} then
         aCompList.AddObject(Comp.ComponentClass.ClassName, Comp);
     end;
   end;

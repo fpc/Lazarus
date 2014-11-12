@@ -199,8 +199,7 @@ begin
         begin
           AComponent := IDEComponentPalette.Comps[j];
           if (AComponent.RealPage = APage)
-          and AComponent.Visible
-          and (AComponent.OrigPageName <> '') then
+          and AComponent.Visible then
             FComponentList.Add(AComponent);
         end;
     end;
@@ -255,9 +254,9 @@ begin
         AComponent := FComponentList[i];
         AClassName := AComponent.ComponentClass.ClassName;
         //find out parent node
-        ANode := PalletteTree.Items.FindTopLvlNode(AComponent.OrigPageName);
+        ANode := PalletteTree.Items.FindTopLvlNode(AComponent.RealPage.PageName);
         if ANode = nil then
-          ANode := PalletteTree.Items.AddChild(nil, AComponent.OrigPageName);
+          ANode := PalletteTree.Items.AddChild(nil, AComponent.RealPage.PageName);
         //add the item
         ANode := PalletteTree.Items.AddChildObject(ANode, AClassName, AComponent);
       end;
