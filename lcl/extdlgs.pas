@@ -1365,6 +1365,7 @@ end;
 function TCalendarDialog.Execute:boolean;
 const
   dw=8;
+  bbs=2;
 var
   okButton,cancelButton: TButton;
   panel: TPanel;
@@ -1419,11 +1420,16 @@ begin
       Parent:=panel;
       Caption:=OKCaption;
       Constraints.MinWidth:=75;
-      Constraints.MaxWidth:=FCalendar.Width div 2;
+      Constraints.MaxWidth:=FCalendar.Width div 2 - bbs;
       Width:=FDlgForm.Canvas.TextWidth(OKCaption)+2*dw;
       ModalResult:=mrOK;
       OnClick:=@GetNewDate;
-      Align:=alRight;
+      //Align:=alRight;
+      Anchors := [akTop,akRight];
+      BorderSpacing.Right:=bbs;
+      AnchorSide[akRight].Side:=asrRight;
+      AnchorSide[akRight].Control:=panel;
+      AnchorVerticalCenterTo(panel);
       Default:=True;
     end;
 
@@ -1435,7 +1441,12 @@ begin
       Constraints.MaxWidth:=FCalendar.Width div 2;
       Width:=FDlgForm.Canvas.TextWidth(CancelCaption)+2*dw;;
       ModalResult:=mrCancel;
-      Align:=alLeft;
+      //Align:=alLeft;
+      BorderSpacing.Left:=bbs;
+      Anchors:=[akLeft,akTop];
+      AnchorSide[akLeft].Side:=asrLeft;
+      AnchorSide[akLeft].Control:=panel;
+      AnchorVerticalCenterTo(panel);
       Cancel:=True;
     end;
     FDlgForm.ClientWidth := FCalendar.Width;
