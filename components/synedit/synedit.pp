@@ -881,8 +881,8 @@ type
 
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;         // Set Blockbegin. For none persistent also sets Blockend. Setting Caret may undo this and should be done before setting block
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
-    property SelStart: Integer read GetSelStart write SetSelStart;
-    property SelEnd: Integer read GetSelEnd write SetSelEnd;
+    property SelStart: Integer read GetSelStart write SetSelStart;              // 1-based byte pos of first selected char
+    property SelEnd: Integer read GetSelEnd write SetSelEnd;                    // 1-based byte pos of first char after selction end
     property SelAvail: Boolean read GetSelAvail;
     property IsBackwardSel: Boolean read GetIsBackwardSel;
     property SelText: string read GetSelText write SetSelTextExternal;
@@ -6967,6 +6967,7 @@ var
   loop: integer;
   count: integer;
 begin
+  assert(Value > 0, 'SelStart must be >= 1');
   loop := 0;
   count := 0;
   while (loop < FTheLinesView.Count) and (count + llen(FTheLinesView[loop]) < value) do begin
@@ -7025,6 +7026,7 @@ var
   loop: integer;
   count: integer;
 begin
+  assert(Value > 0, 'SelEnd must be >= 1');
   loop := 0;
   count := 0;
   while (loop < FTheLinesView.Count) and (count + llen(FTheLinesView[loop]) < value) do begin
