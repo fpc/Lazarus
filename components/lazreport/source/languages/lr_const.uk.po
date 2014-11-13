@@ -89,6 +89,16 @@ msgid "Cross footer"
 msgstr "Перехресний нижній колонтитул"
 
 #: lr_const.sband22
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr "Немає"
+
+#: lr_const.sband23
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Немає"
 
@@ -2222,6 +2232,10 @@ msgstr "Масштаб"
 #: lr_const.spreviewformwhole
 msgid "&Whole page"
 msgstr "Сторінка &повністю"
+
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
+msgstr ""
 
 #: lr_const.sprintererror
 #, fuzzy

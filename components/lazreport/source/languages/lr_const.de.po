@@ -96,6 +96,16 @@ msgid "Cross footer"
 msgstr "Kreuz-Footer"
 
 #: lr_const.sband22
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr "Keiner"
+
+#: lr_const.sband23
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Keiner"
 
@@ -2223,6 +2233,10 @@ msgstr "Maßstab"
 #: lr_const.spreviewformwhole
 msgid "&Whole page"
 msgstr "&Ganze &Seite"
+
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
+msgstr ""
 
 #: lr_const.sprintererror
 #| msgid "Printer selected is not valid"

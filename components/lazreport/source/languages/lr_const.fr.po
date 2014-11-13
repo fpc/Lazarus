@@ -95,6 +95,16 @@ msgid "Cross footer"
 msgstr "Pied de page tableau"
 
 #: lr_const.sband22
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr "Aucun"
+
+#: lr_const.sband23
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Aucun"
 
@@ -2244,6 +2254,10 @@ msgstr "Échelle"
 #: lr_const.spreviewformwhole
 msgid "&Whole page"
 msgstr "&Page entière"
+
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
+msgstr ""
 
 #: lr_const.sprintererror
 #, fuzzy

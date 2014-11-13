@@ -71,7 +71,7 @@ var
   First: Boolean;
 begin
   First := True;
-  for bt := btReportTitle to btCrossFooter do
+  for bt := btReportTitle to btChild do
   begin
     b := TRadioButton.Create(GB1);
     b.Parent := GB1;
@@ -80,7 +80,7 @@ begin
     b.Caption := frBandNames[Bt];
     b.OnClick := @bClick;
     b.Enabled := (bt in [btMasterHeader..btSubDetailFooter,
-      btGroupHeader, btGroupFooter]) or not frCheckBand(bt);
+      btGroupHeader, btGroupFooter, btChild]) or not frCheckBand(bt);
     if b.Enabled and First then
     begin
       b.Checked := True;

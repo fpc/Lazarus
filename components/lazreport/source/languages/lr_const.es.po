@@ -89,6 +89,16 @@ msgid "Cross footer"
 msgstr "Pie de datos cruzados"
 
 #: lr_const.sband22
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr "Ninguno"
+
+#: lr_const.sband23
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Ninguno"
 
@@ -2213,6 +2223,10 @@ msgstr "Escala"
 #: lr_const.spreviewformwhole
 msgid "&Whole page"
 msgstr "&Toda la página"
+
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
+msgstr ""
 
 #: lr_const.sprintererror
 #| msgid "Printer selected is not valid"

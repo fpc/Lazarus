@@ -87,6 +87,16 @@ msgid "Cross footer"
 msgstr "Křížení patičky"
 
 #: lr_const.sband22
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr "Není"
+
+#: lr_const.sband23
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Není"
 
@@ -2231,6 +2241,10 @@ msgstr "Měřítko"
 #: lr_const.spreviewformwhole
 msgid "&Whole page"
 msgstr "Celá stránka"
+
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
+msgstr ""
 
 #: lr_const.sprintererror
 #, fuzzy

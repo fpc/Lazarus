@@ -81,6 +81,12 @@ msgid "Cross footer"
 msgstr ""
 
 #: lr_const.sband22
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr ""
+
+#: lr_const.sband23
+msgctxt "lr_const.sband23"
 msgid "None"
 msgstr ""
 
@@ -2185,6 +2191,10 @@ msgstr ""
 
 #: lr_const.spreviewformwhole
 msgid "&Whole page"
+msgstr ""
+
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
 msgstr ""
 
 #: lr_const.sprintererror

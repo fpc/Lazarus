@@ -88,6 +88,16 @@ msgid "Cross footer"
 msgstr ""
 
 #: lr_const.sband22
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr "Nincs"
+
+#: lr_const.sband23
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Nincs"
 
@@ -2197,6 +2207,10 @@ msgstr "Átméretezés"
 #: lr_const.spreviewformwhole
 msgid "&Whole page"
 msgstr "Teljes oldal"
+
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
+msgstr ""
 
 #: lr_const.sprintererror
 msgid "Selected printer is not valid"

@@ -186,7 +186,8 @@ resourcestring
   sBand19 = 'Cross header';
   sBand20 = 'Cross data';
   sBand21 = 'Cross footer';
-  sBand22 = 'None';
+  sBand22 = 'Child';
+  sBand23 = 'None';
 
   sVar1 = 'Page#';
   sVar2 = 'Expression';
@@ -223,6 +224,7 @@ resourcestring
   sNotAssigned = '[None]';
   sFormNewPage = 'Force new page';
   sPrintIfSubsetEmpty = 'Print if detail empty';
+  sPrintChildIfNotVisible = 'Print child if not visible';
   sBreaked = 'Breaked';
   sPictureCenter = 'Center picture';
   sKeepAspectRatio = 'Keep aspect ratio';

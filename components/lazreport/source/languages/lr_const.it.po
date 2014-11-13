@@ -90,6 +90,16 @@ msgid "Cross footer"
 msgstr "Pedice incrodiato"
 
 #: lr_const.sband22
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr "Nessuno"
+
+#: lr_const.sband23
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Nessuno"
 
@@ -2196,6 +2206,10 @@ msgstr "Scala"
 msgid "&Whole page"
 msgstr "&Intera pagina"
 
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
+msgstr ""
+
 #: lr_const.sprintererror
 msgid "Selected printer is not valid"
 msgstr "La stampante selezionata non è valida."
@@ -2544,3 +2558,4 @@ msgstr "a capo parole"
 #: lr_const.syes
 msgid "Yes"
 msgstr "&Sì"
+

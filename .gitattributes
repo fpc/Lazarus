@@ -2224,6 +2224,12 @@ components/lazreport/images/package_images.bat svneol=native#text/x-msdos-progra
 components/lazreport/license-lazreport.txt svneol=native#text/plain
 components/lazreport/license-rus.txt svneol=native#text/plain
 components/lazreport/license.txt svneol=native#text/plain
+components/lazreport/samples/ChildBand_Example/ChildBand_Example.ico -text
+components/lazreport/samples/ChildBand_Example/ChildBand_Example.lpi svneol=native#text/plain
+components/lazreport/samples/ChildBand_Example/ChildBand_Example.lpr svneol=native#text/pascal
+components/lazreport/samples/ChildBand_Example/ChildBand_Example.res -text
+components/lazreport/samples/ChildBand_Example/unit1.lfm svneol=native#text/plain
+components/lazreport/samples/ChildBand_Example/unit1.pas svneol=native#text/pascal
 components/lazreport/samples/Demo_CrossTab/demo_cross.lrf svneol=LF#text/xml eol=lf
 components/lazreport/samples/Demo_CrossTab/project1.ico -text
 components/lazreport/samples/Demo_CrossTab/project1.lpi svneol=native#text/plain

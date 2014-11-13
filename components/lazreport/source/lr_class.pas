@@ -37,6 +37,7 @@ const
   flBandOnFirstPage        = $10;
   flBandOnLastPage         = $20;
   flBandRepeatHeader       = $40;
+  flBandPrintChildIfNotVisible = $80;
 
   flPictCenter             = 2;
   flPictRatio              = 4;
@@ -67,7 +68,7 @@ type
                  btSubDetailHeader, btSubDetailData, btSubDetailFooter,
                  btOverlay, btColumnHeader, btColumnFooter,
                  btGroupHeader, btGroupFooter,
-                 btCrossHeader, btCrossData, btCrossFooter, btNone);
+                 btCrossHeader, btCrossData, btCrossFooter, btChild, btNone);
   TfrBandTypes = set of TfrBandType;
   TfrDataSetPosition = (psLocal, psGlobal);
   TfrValueType = (vtNotAssigned, vtDBField, vtOther, vtFRVar);
@@ -535,13 +536,15 @@ type
     fDataSetStr : String;
     fBandType   : TfrBandType;
     fCondition  : String;
-    
+    fChild      : String;
+
     procedure P1Click(Sender: TObject);
     procedure P2Click(Sender: TObject);
     procedure P3Click(Sender: TObject);
     procedure P4Click(Sender: TObject);
     procedure P5Click(Sender: TObject);
     procedure P6Click(Sender: TObject);
+    procedure P7Click(Sender: TObject);
     function  GetTitleRect: TRect;
     function  TitleSize: Integer;
     procedure CalcTitleSize;
@@ -569,6 +572,7 @@ type
   published
     property DataSet: String read fDataSetStr write fDataSetStr;
     property GroupCondition: String read fCondition write fCondition;
+    property Child: String read fChild write fChild;
 
     property BandType: TfrBandType read fBandType write fBandType;
 
@@ -693,6 +697,7 @@ type
     Positions: Array[TfrDatasetPosition] of Integer;
     LastGroupValue: Variant;
     HeaderBand, FooterBand, LastBand: TfrBand;
+    ChildBand: TfrBand;
     Values: TStringList;
     Count: Integer;
     DisableInit: Boolean;
@@ -725,6 +730,7 @@ type
 
     Typ: TfrBandType;
     PrintIfSubsetEmpty, NewPageAfter, Stretched, PageBreak: Boolean;
+    PrintChildIfNotVisible: Boolean;
     Objects: TFpList;
     DataSet: TfrDataSet;
     IsVirtualDS: Boolean;
@@ -1416,11 +1422,12 @@ function FindObjectProps(AObjStr:string; out frObj:TfrObject; out PropName:strin
 
 const
   lrTemplatePath = 'LazReportTemplate/';
-  frCurrentVersion = 27;
+  frCurrentVersion = 28;
     // version 2.5: lazreport: added to binary stream ParentBandType variable
     //                         on TfrView, used to extend export facilities
     // version 2.6: lazreport: added to binary stream Tag property on TfrView
     // version 2.7: lazreport: added to binary stream FOnClick, FOnMouseEnter, FOnMouseLeave, FCursor property on TfrMemoView
+    // version 2.8. lazreport: added support for child bands
 
   frSpecCount = 9;
   frSpecFuncs: Array[0..frSpecCount - 1] of String = ('PAGE#', '',
@@ -1740,7 +1747,8 @@ begin
   frBandNames[btCrossHeader] := sBand19;
   frBandNames[btCrossData] := sBand20;
   frBandNames[btCrossFooter] := sBand21;
-  frBandNames[btNone] := sBand22;
+  frBandNames[btChild] := sBand22;
+  frBandNames[btNone] := sBand23;
 
   frSpecArr[0] := sVar1;
   frSpecArr[1] := sVar2;
@@ -4844,6 +4852,7 @@ begin
     BandType := TFrBandView(Source).BandType;
     DataSet  := TFrBandView(Source).DataSet;
     GroupCondition:=TFrBandView(Source).GroupCondition;
+    Child := TFrBandView(Source).Child;
   end;
 end;
 
@@ -4854,8 +4863,12 @@ begin
   With Stream do
   if frVersion>23 then begin
     Read(fBandType,SizeOf(BandType));
+    if (frVersion<28) and (fBandType=btChild) then
+      fBandType := btNone; // btNone and btChild were swapped in version 29
     fCondition :=ReadString(Stream);
     fDataSetStr:=ReadString(Stream);
+    if frVersion>=28 then
+      fChild :=ReadString(Stream);
   end else
   begin
     if StreamMode=smDesigning then begin
@@ -4872,6 +4885,7 @@ begin
   RestoreProperty('BandType',XML.GetValue(Path+'BandType/Value','')); // todo chk
   FCondition := XML.GetValue(Path+'Condition/Value', ''); // todo chk
   FDatasetStr := XML.GetValue(Path+'DatasetStr/Value', ''); // todo chk
+  FChild := XML.GetValue(Path+'Child/Value', '');
 end;
 
 procedure TfrBandView.SaveToStream(Stream: TStream);
@@ -4883,6 +4897,7 @@ begin
     Write(fBandType,SizeOf(fBandType));
     frWriteString(Stream, fCondition);
     frWriteString(Stream, fDataSetStr);
+    frWriteString(Stream, fChild);
   end;
 end;
 
@@ -4892,6 +4907,7 @@ begin
   XML.SetValue(Path+'BandType/Value', GetSaveProperty('BandType')); //Ord(FBandType)); // todo: use symbolic values
   XML.SetValue(Path+'Condition/Value', FCondition);
   XML.SetValue(Path+'DatasetStr/Value', FDatasetStr);
+  XML.SetValue(Path+'Child/Value', FChild);
 end;
 
 procedure TfrBandView.Draw(aCanvas: TCanvas);
@@ -5033,7 +5049,7 @@ var
   m: TMenuItem;
 begin
   if BandType in [btReportTitle, btReportSummary, btPageHeader, btCrossHeader,
-    btMasterHeader..btSubDetailFooter, btGroupHeader, btGroupFooter] then
+    btMasterHeader..btSubDetailFooter, btGroupHeader, btGroupFooter, btChild] then
     inherited DefinePopupMenu(Popup);
 
   if BandType in [btReportTitle, btReportSummary, btMasterData, btDetailData,
@@ -5091,6 +5107,15 @@ begin
     m.Caption := sRepeatHeader;
     m.OnClick := @P6Click;
     m.Checked := (Flags and flBandRepeatHeader) <> 0;
+    Popup.Items.Add(m);
+  end;
+
+  if BandType <> btPageFooter then
+  begin
+    m := TMenuItem.Create(Popup);
+    m.Caption := sPrintChildIfNotVisible;
+    m.OnClick := @P7Click;
+    m.Checked := (Flags and flBandPrintChildIfNotVisible) <> 0;
     Popup.Items.Add(m);
   end;
 end;
@@ -5178,6 +5203,16 @@ begin
   begin
     Checked := not Checked;
     Flags := (Flags and not flBandRepeatHeader) + Word(Checked) * flBandRepeatHeader;
+  end;
+end;
+
+procedure TfrBandView.P7Click(Sender: TObject);
+begin
+  frDesigner.BeforeChange;
+  with Sender as TMenuItem do
+  begin
+    Checked := not Checked;
+    Flags := (Flags and not flBandPrintChildIfNotVisible) + Word(Checked) * flBandPrintChildIfNotVisible;
   end;
 end;
 
@@ -6921,6 +6956,8 @@ begin
         else
         begin
           DoDraw;
+          if (ChildBand <> nil) then
+            ChildBand.Draw;
           if not (Typ in [btMasterData, btDetailData, btSubDetailData, btGroupHeader]) and
             NewPageAfter then
             Parent.NewPage;
@@ -6931,9 +6968,13 @@ begin
     // if band is not visible, just performing aggregate calculations
     // relative to it
     else
-    if Typ in [btMasterData, btDetailData, btSubDetailData] then
-      Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter,
-                          btSubDetailFooter, btGroupFooter, btReportSummary]);
+    begin
+      if (ChildBand <> nil) and PrintChildIfNotVisible then
+        ChildBand.Draw;
+      if Typ in [btMasterData, btDetailData, btSubDetailData] then
+        Parent.DoAggregate([btPageFooter, btMasterFooter, btDetailFooter,
+                            btSubDetailFooter, btGroupFooter, btReportSummary]);
+    end;
 
     // check if multiple pagefooters (in cross-tab report) - resets last of them
     if not DisableInit then
@@ -7335,7 +7376,8 @@ begin
       end;
     end;
 
-  for b := btReportTitle to btGroupFooter do // fill other bands
+  for b := btReportTitle to btChild do // fill other bands
+  if not (b in [btCrossHeader..btCrossFooter]) then
   begin
     FirstBand := True;
     Bnd := Bands[b];
@@ -7370,6 +7412,7 @@ begin
             InitDataSet(TfrBandView(Bt).DataSet);
           Stretched := (Flags and flStretched) <> 0;
           PrintIfSubsetEmpty := (Flags and flBandPrintIfSubsetEmpty) <> 0;
+          PrintChildIfNotVisible := (Flags and flBandPrintChildIfNotVisible) <> 0;
           if Skip then
           begin
             NewPageAfter := False;
@@ -7524,6 +7567,26 @@ begin
         end;
       end;
       i := n + 1;
+    end;
+  end;
+
+  for b := btReportTitle to btChild do
+  begin
+    Bnd := Bands[b];
+    while Bnd <> nil do
+    begin
+      if Bnd.View <> nil then
+      begin
+        s := TfrBandView(Bnd.View).Child;
+
+        for i := 0 to RTObjects.Count - 1 do
+        begin
+          bt :=TfrView(RTObjects[i]);
+          if (bt.Typ = gtBand) and (TfrBandView(bt).BandType=btChild) and (bt.Name=s) then
+            Bnd.ChildBand:=bt.Parent;
+        end;
+      end;
+      Bnd := Bnd.Next;
     end;
   end;
 

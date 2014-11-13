@@ -87,6 +87,16 @@ msgid "Cross footer"
 msgstr "Rodapé Ref.Cruz."
 
 #: lr_const.sband22
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband22"
+msgid "Child"
+msgstr "Nenhum"
+
+#: lr_const.sband23
+#, fuzzy
+#| msgid "None"
+msgctxt "lr_const.sband23"
 msgid "None"
 msgstr "Nenhum"
 
@@ -2220,6 +2230,10 @@ msgstr "Escala"
 #: lr_const.spreviewformwhole
 msgid "&Whole page"
 msgstr "Página &inteira"
+
+#: lr_const.sprintchildifnotvisible
+msgid "Print child if not visible"
+msgstr ""
 
 #: lr_const.sprintererror
 #, fuzzy
