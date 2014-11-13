@@ -241,7 +241,8 @@ type
     eoFoldedCopyPaste,         // Remember folding states of blocks, on Copy/Paste operations
     eoPersistentBlock,         // Keeps selection, even if caret moves away or text is edited
     eoOverwriteBlock,          // Allows to overwrite currently selected block, when pasting or typing new text
-    eoAutoHideCursor           // Hide mouse cursor, when new text is typed
+    eoAutoHideCursor,          // Hide mouse cursor, when new text is typed
+    eoColorSelectionTillEol    // Colorize selection background only till EOL of each line, not till edge of control
   );
   TSynEditorOptions2 = set of TSynEditorOption2;
 
@@ -7499,7 +7500,7 @@ var
   ChangedOptions: TSynEditorOptions2;
 begin
   if (Value <> fOptions2) then begin
-    ChangedOptions:=(fOptions2 - Value) + (Value - fOptions2);
+    ChangedOptions := (fOptions2 - Value) + (Value - fOptions2);
     fOptions2 := Value;
     UpdateOptions2;
     if eoAlwaysVisibleCaret in fOptions2 then
@@ -7513,6 +7514,8 @@ procedure TCustomSynEdit.UpdateOptions2;
 begin
   FBlockSelection.Persistent := eoPersistentBlock in fOptions2;
   FCaret.SkipTabs := (eoCaretSkipTab in fOptions2);
+  if Assigned(fMarkupSelection) then
+    fMarkupSelection.ColorTillEol := eoColorSelectionTillEol in fOptions2;
 end;
 
 procedure TCustomSynEdit.SetMouseOptions(AValue: TSynEditorMouseOptions);

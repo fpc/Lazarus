@@ -36,17 +36,21 @@ type
   TSynEditMarkupSelection = class(TSynEditMarkup)
   private
     FSelection: TSynEditSelection;
+    FColorTillEol: boolean; // colorize selection only till EOL
     FMarkupInfoIncr: TSynSelectedColor; // Markup during incremental search
     FMarkupInfoSelection: TSynSelectedColor; // Markup for normal Selection
     FUseIncrementalColor : Boolean;
     nSelStart, nSelEnd: integer; // start, end of selected area in current line (physical)
+    procedure SetColorTillEol(AValue: boolean);
     procedure SetUseIncrementalColor(const AValue : Boolean);
     procedure MarkupChangedIntern(AMarkup: TObject);
+  protected
+    procedure DoMarkupChanged(AMarkup: TSynSelectedColor); override;
   public
     constructor Create(ASynEdit : TSynEditBase; ASelection: TSynEditSelection);
     destructor Destroy; override;
 
-    Procedure PrepareMarkupForRow(aRow : Integer); override;
+    procedure PrepareMarkupForRow(aRow : Integer); override;
     function GetMarkupAttributeAtRowCol(const aRow: Integer;
                                         const aStartCol: TLazSynDisplayTokenBound;
                                         const AnRtlInfo: TLazSynDisplayRtlInfo): TSynSelectedColor; override;
@@ -55,6 +59,7 @@ type
                                          const AnRtlInfo: TLazSynDisplayRtlInfo;
                                          out   ANextPhys, ANextLog: Integer); override;
 
+    property ColorTillEol: boolean read FColorTillEol write SetColorTillEol;
     property UseIncrementalColor : Boolean read FUseIncrementalColor write SetUseIncrementalColor;
     property MarkupInfoSeletion : TSynSelectedColor read FMarkupInfoSelection;
     property MarkupInfoIncr : TSynSelectedColor read FMarkupInfoIncr;
@@ -74,11 +79,31 @@ begin
   else MarkupInfo.Assign(FMarkupInfoSelection);
 end;
 
+procedure TSynEditMarkupSelection.SetColorTillEol(AValue: boolean);
+begin
+  if FColorTillEol = AValue then Exit;
+  FColorTillEol := AValue;
+  DoMarkupChanged(nil);
+end;
+
 procedure TSynEditMarkupSelection.MarkupChangedIntern(AMarkup : TObject);
 begin
   if FUseIncrementalColor
   then MarkupInfo.Assign(FMarkupInfoIncr)
   else MarkupInfo.Assign(FMarkupInfoSelection);
+end;
+
+procedure TSynEditMarkupSelection.DoMarkupChanged(AMarkup: TSynSelectedColor);
+var
+  p1, p2 : TPoint;
+begin
+  inherited DoMarkupChanged(AMarkup);
+  if (not FSelection.SelAvail) or (TCustomSynEdit(SynEdit).HideSelection and not TCustomSynEdit(SynEdit).Focused) then
+    exit;
+
+  p1 := FSelection.FirstLineBytePos;  // always ordered
+  p2 := FSelection.LastLineBytePos;
+  InvalidateSynLines(p1.y, p2.y);
 end;
 
 constructor TSynEditMarkupSelection.Create(ASynEdit : TSynEditBase; ASelection: TSynEditSelection);
@@ -89,6 +114,7 @@ begin
   FMarkupInfoSelection.OnChange := @MarkupChangedIntern;
   FMarkupInfoIncr := TSynSelectedColor.Create;
   FMarkupInfoIncr.OnChange := @MarkupChangedIntern;
+  FColorTillEol := false;
 
   MarkupInfo.Style := [];
   MarkupInfo.StyleMask := [];
@@ -136,6 +162,19 @@ begin
         p2 := LogicalToPhysicalPos(p2);
         nSelEnd := p2.x;
       end;
+
+      //colorize selected block only till EOL, not till edge of control
+      if FColorTillEol then begin
+        p2.x := Length(Lines[aRow-1]) + 1;
+        p2.y := aRow;
+        p2 := LogicalToPhysicalPos(p2);
+        if (nSelEnd = -1) then
+          Inc(p2.x, 1);
+
+        if (nSelEnd = -1) or (nSelEnd > p2.x) then
+          nSelEnd := p2.x;
+      end;
+
     end;
   end;
   MarkupInfo.SetFrameBoundsPhys(nSelStart, nSelEnd);
