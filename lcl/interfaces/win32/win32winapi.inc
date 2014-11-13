@@ -1135,6 +1135,7 @@ var
   lf: LOGFONT;
   aABC: ABC;
   paABC: LPABC;
+  len: Integer;
 {$endif}
 begin
  {$ifdef WindowsUnicodeSupport}
@@ -1150,12 +1151,14 @@ begin
   if UnicodeEnabledOS then
   begin
     W := UTF8ToUTF16(s);
-    Result := Windows.DrawTextW(DC, PWideChar(W), Length(W), @Rect, Flags);
+    len := Length(W);
+    Result := Windows.DrawTextW(DC, PWideChar(W), len, @Rect, Flags);
   end
   else
   begin
     S := Utf8ToAnsi(S);
-    Result := Windows.DrawText(DC, PChar(S), Length(S), @Rect, Flags);
+    len := Length(S);
+    Result := Windows.DrawText(DC, PChar(S), len, @Rect, Flags);
   end;
 
   // Theoretically, we need to augment the returned rect by the text overhang
@@ -1171,7 +1174,7 @@ begin
   // aligned bold italic text. The DrawText windows function is documented to
   // clip out text in some special cases, specially when drawing italic text,
   // but I found it's even worse with drawing bold italic text.
-  if (Count>0) and (flags and DT_CALCRECT = DT_CALCRECT) then
+  if (len>0) and (flags and DT_CALCRECT = DT_CALCRECT) then
   begin
 
     GetObject(GetCurrentObject(DC, OBJ_FONT), SizeOf(LOGFONT), @lf);
@@ -1181,9 +1184,9 @@ begin
 
       paABC := @aABC;
       if UnicodeEnabledOS then
-        res := GetCharABCWidthsW(DC, Uint(W[Count-1]), Uint(W[Count-1]), paABC)
+        res := GetCharABCWidthsW(DC, Uint(W[len]), Uint(W[len]), paABC)
       else
-        res := GetCharABCWidthsA(DC, ord(s[Count-1]), ord(s[Count-1]), paABC);
+        res := GetCharABCWidthsA(DC, ord(s[len]), ord(s[len]), paABC);
 
      if res then
        Rect.Right := Rect.Right + Abs(aABC.abcC);
