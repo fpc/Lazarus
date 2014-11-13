@@ -169,6 +169,10 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure LoadFromXML(XML: TLrXMLConfig; const Path: String); override;
     procedure SavetoXML(XML: TLrXMLConfig; const Path: String); override;
+
+    procedure LoadFromStream(Stream: TStream); override;
+    procedure SaveToStream(Stream: TStream); override;
+
     function ColCount:integer;
     function RowCount:integer;
 
@@ -1046,7 +1050,6 @@ begin
   FShowTotalRHCell:= XML.GetValue(Path+'ShowTotalRHCell/Value', true);
 
   FDataSetName:=XML.GetValue(Path+'DataSetName/Value', '');
-
   FCellFields.Text:=XML.GetValue(Path+'CellFields/Value', '');
   FColumnFields.Text:=XML.GetValue(Path+'ColumnFields/Value', '');
   FRowFields.Text:=XML.GetValue(Path+'RowFields/Value', '');
@@ -1083,9 +1086,9 @@ begin
   XML.SetValue(Path+'ShowRowTotal/Value', FShowRowTotal);
   XML.SetValue(Path+'ShowTitle/Value', FShowTitle);
   XML.SetValue(Path+'ShowGrandTotal/Value', FShowGrandTotal);
-  XML.SetValue(Path+'DataSetName/Value', FDataSetName);
   XML.SetValue(Path+'ShowTotalCHCell/Value', FShowTotalCHCell);
   XML.SetValue(Path+'ShowTotalRHCell/Value', FShowTotalRHCell);
+  XML.SetValue(Path+'DataSetName/Value', FDataSetName);
 
   XML.SetValue(Path+'CellFields/Value', FCellFields.Text);
   XML.SetValue(Path+'ColumnFields/Value', FColumnFields.Text);
@@ -1100,6 +1103,73 @@ begin
 
   FTotalCHCell.SaveToXML(XML, Path+'TotalCHCell/');
   FTotalRHCell.SaveToXML(XML, Path+'TotalRHCell/');
+end;
+
+procedure TlrCrossView.LoadFromStream(Stream: TStream);
+begin
+  inherited LoadFromStream(Stream);
+  Stream.Read(FShowColumnHeader, 1); { TODO : Need use SizeOf(????) }
+  Stream.Read(FShowColumnTotal, 1); { TODO : Need use SizeOf(????) }
+  Stream.Read(FShowCorner, 1); { TODO : Need use SizeOf(????) }
+  Stream.Read(FShowRowHeader, 1); { TODO : Need use SizeOf(????) }
+  Stream.Read(FShowRowTotal, 1); { TODO : Need use SizeOf(????) }
+  Stream.Read(FShowTitle, 1); { TODO : Need use SizeOf(????) }
+  Stream.Read(FShowGrandTotal, 1); { TODO : Need use SizeOf(????) }
+  Stream.Read(FShowTotalCHCell, 1); { TODO : Need use SizeOf(????) }
+  Stream.Read(FShowTotalRHCell, 1); { TODO : Need use SizeOf(????) }
+
+  FDataSetName:=frReadString(Stream);
+  FCellFields.Text:=frReadString(Stream);
+  FColumnFields.Text:=frReadString(Stream);
+  FRowFields.Text:=frReadString(Stream);
+
+  BeginUpdate;
+  FDataCell.LoadFromStream(Stream);
+  FRowTitleCell.LoadFromStream(Stream);
+  FRowTotalCell.LoadFromStream(Stream);
+  FColTitleCell.LoadFromStream(Stream);
+  FColTotalCell.LoadFromStream(Stream);
+  FGrandTotalCell.LoadFromStream(Stream);
+  FTotalCHCell.LoadFromStream(Stream);
+  FTotalRHCell.LoadFromStream(Stream);
+  EndUpdate;
+
+  FDataCell.DY:=18;
+  FRowTitleCell.DY:=18;
+  FRowTotalCell.DY:=18;
+  FColTitleCell.DY:=18;
+  FColTotalCell.DY:=18;
+  FGrandTotalCell.DY:=18;
+  FTotalCHCell.DY:=18;
+  FTotalRHCell.DY:=18;
+end;
+
+procedure TlrCrossView.SaveToStream(Stream: TStream);
+begin
+  inherited SaveToStream(Stream);
+  Stream.Write(FShowColumnHeader, 1);{ TODO : Need use SizeOf(????) }
+  Stream.Write(FShowColumnTotal, 1); { TODO : Need use SizeOf(????) }
+  Stream.Write(FShowCorner, 1);      { TODO : Need use SizeOf(????) }
+  Stream.Write(FShowRowHeader, 1);   { TODO : Need use SizeOf(????) }
+  Stream.Write(FShowRowTotal, 1);    { TODO : Need use SizeOf(????) }
+  Stream.Write(FShowTitle, 1);       { TODO : Need use SizeOf(????) }
+  Stream.Write(FShowGrandTotal, 1);  { TODO : Need use SizeOf(????) }
+  Stream.Write(FShowTotalCHCell, 1); { TODO : Need use SizeOf(????) }
+  Stream.Write(FShowTotalRHCell, 1); { TODO : Need use SizeOf(????) }
+
+  frWriteString(Stream, FDataSetName);
+  frWriteString(Stream, FCellFields.Text);
+  frWriteString(Stream, FColumnFields.Text);
+  frWriteString(Stream, FRowFields.Text);
+
+  FDataCell.SaveToStream(Stream);
+  FRowTitleCell.SaveToStream(Stream);
+  FRowTotalCell.SaveToStream(Stream);
+  FColTitleCell.SaveToStream(Stream);
+  FColTotalCell.SaveToStream(Stream);
+  FGrandTotalCell.SaveToStream(Stream);
+  FTotalCHCell.SaveToStream(Stream);
+  FTotalRHCell.SaveToStream(Stream);
 end;
 
 procedure InitCrossView;
