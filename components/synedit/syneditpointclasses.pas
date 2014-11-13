@@ -316,7 +316,7 @@ type
     property MaxLeftChar: TMaxLeftCharFunc write FMaxLeftChar;
   end;
 
-  TSynCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock);
+  TSynCaretType = (ctVerticalLine, ctHorizontalLine, ctHalfBlock, ctBlock, ctCostum);
   TSynCaretLockFlags = set of (sclfUpdateDisplay, sclfUpdateDisplayType);
 
   { TSynEditScreenCaret }
@@ -350,6 +350,8 @@ type
     {$ENDIF}
     FPixelWidth, FPixelHeight: Integer;
     FOffsetX, FOffsetY: Integer;
+    FCustomPixelWidth, FCustomPixelHeight: Array [TSynCaretType] of Integer;
+    FCustomOffsetX, FCustomOffsetY: Array [TSynCaretType] of Integer;
     FCurrentPosX, FCurrentPosY: Integer;
     FCurrentVisible, FCurrentCreated: Boolean;
     FCurrentClippedWidth: Integer;
@@ -375,6 +377,8 @@ type
     procedure  Lock;
     procedure  UnLock;
     procedure InvalidatePos;
+    procedure ResetCaretTypeSizes;
+    procedure SetCaretTypeSize(AType: TSynCaretType; AWidth, AHeight, AXOffs, AYOffs: Integer);
     property HandleOwner: TWinControl read FHandleOwner;
     property CharWidth:   Integer read FCharWidth write SetCharWidth;
     property CharHeight:  Integer read FCharHeight write SetCharHeight;
@@ -2191,6 +2195,8 @@ end;
 constructor TSynEditScreenCaret.Create(AHandleOwner: TWinControl);
 begin
   inherited Create;
+  FLockCount := -1;
+  ResetCaretTypeSizes;
   FHandleOwner := AHandleOwner;
   FVisible := False;
   FCurrentVisible := False;
@@ -2245,6 +2251,26 @@ procedure TSynEditScreenCaret.InvalidatePos;
 begin
   FCurrentPosY := -1;
   FCurrentPosX := -1;
+end;
+
+procedure TSynEditScreenCaret.ResetCaretTypeSizes;
+var
+  i: TSynCaretType;
+begin
+  for i := low(TSynCaretType) to high(TSynCaretType) do begin
+    FCustomPixelWidth[i] := 0;
+  end;
+  if FLockCount >= 0 then UpdateDisplayType;
+end;
+
+procedure TSynEditScreenCaret.SetCaretTypeSize(AType: TSynCaretType; AWidth, AHeight, AXOffs,
+  AYOffs: Integer);
+begin
+  FCustomPixelWidth[AType] := AWidth;
+  FCustomPixelHeight[AType] := AHeight;
+  FCustomOffsetX[AType] := AXOffs;
+  FCustomOffsetY[AType] := AYOffs;
+  if FDisplayType = AType then UpdateDisplayType;
 end;
 
 procedure TSynEditScreenCaret.SetClipRight(const AValue: Integer);
@@ -2311,7 +2337,7 @@ begin
   Exclude(FLockFlags, sclfUpdateDisplayType);
 
   case FDisplayType of
-    ctVerticalLine:
+    ctVerticalLine, ctCostum:
       begin
         FPixelWidth     := 2;
         FPixelHeight    := FCharHeight - 2;
@@ -2344,6 +2370,17 @@ begin
         FExtraLinePixel := FCharWidth;
       end;
   end;
+
+  if (FCustomPixelWidth[FDisplayType] <> 0) then begin
+    FPixelWidth     := FCustomPixelWidth[FDisplayType];
+    FOffsetX        := FCustomOffsetX[FDisplayType];
+    FExtraLinePixel := Max(0, FPixelWidth + FOffsetX);
+  end;
+  if (FCustomPixelHeight[FDisplayType] <> 0) then begin
+    FPixelHeight    := FCustomPixelHeight[FDisplayType];
+    FOffsetY        := FCustomOffsetY[FDisplayType];
+  end;
+
   CalcExtraLineChars;
   DestroyCaret(True);
   UpdateDisplay;
@@ -2425,16 +2462,27 @@ end;
 
 procedure TSynEditScreenCaret.ShowCaret;
 var
-  x, y, w: Integer;
+  x, y, w, h: Integer;
 begin
   if not HandleAllocated then
     exit;
   x := FDisplayPos.x + FOffsetX;
   y := FDisplayPos.y + FOffsetY;
   w := FPixelWidth;
+  h := FPixelHeight;
   if x + w >= FClipRight then
     w := FClipRight - x - 1;
-  if (w <= 0) or
+  if x < FClipLeft then begin
+    w := w - (FClipLeft - w);
+    x := FClipLeft;
+ end;
+  if y + h >= FClipBottom then
+    h := FClipBottom - y - 1;
+  if y < FClipTop then begin
+    h := h - (FClipTop - y);
+    y := FClipTop;
+ end;
+  if (w <= 0) or (h < 0) or
      (x < FClipLeft) or (x >= FClipRight) or
      (y < FClipTop) or (y >= FClipBottom)
   then begin
@@ -2450,7 +2498,7 @@ begin
     //if FCurrentCreated  then
     //  LCLIntf.DestroyCaret(Handle);
     // // Create caret includes destroy
-    CreateCaret(Handle, 0, w, FPixelHeight);
+    CreateCaret(Handle, 0, w, h);
     FCurrentCreated := True;
     FCurrentVisible := False;
     FCurrentClippedWidth := w;

@@ -1061,6 +1061,7 @@ type
     property TrimSpaceType: TSynEditStringTrimmingType read GetTrimSpaceType write SetTrimSpaceType;
   public
     // Caret
+    procedure SetCaretTypeSize(AType: TSynCaretType;AWidth, AHeight, AXOffs, AYOffs: Integer);
     property InsertCaret: TSynEditCaretType read FInsertCaret write SetInsertCaret default ctVerticalLine;
     property OverwriteCaret: TSynEditCaretType read FOverwriteCaret write SetOverwriteCaret default ctBlock;
 
@@ -4018,6 +4019,12 @@ end;
 function TCustomSynEdit.MarkupCount: Integer;
 begin
   Result := FMarkupManager.Count;
+end;
+
+procedure TCustomSynEdit.SetCaretTypeSize(AType: TSynCaretType; AWidth, AHeight, AXOffs,
+  AYOffs: Integer);
+begin
+  FScreenCaret.SetCaretTypeSize(AType, AWidth, AHeight, AXOffs, AYOffs);
 end;
 
 procedure TCustomSynEdit.PasteFromClipboard;
