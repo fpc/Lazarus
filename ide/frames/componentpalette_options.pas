@@ -500,20 +500,14 @@ var
   Comp: TRegisteredComponent;
   ARect: TRect;
   CurIcon: TCustomBitmap;
-  IconWidth, IconHeight: Integer;
 begin
   Comp := TRegisteredComponent(Item.Data);
   ARect := Item.DisplayRect(drIcon);
-  CurIcon := nil;
-  if Comp is TPkgComponent then
+  if Comp is TPkgComponent then begin
     CurIcon := TPkgComponent(Comp).Icon;
-  if CurIcon<>nil then
-  begin
-    IconWidth := CurIcon.Width;
-    IconHeight := CurIcon.Height;
-    Sender.Canvas.Draw(ARect.Left+(25-IconWidth) div 2,
-                       ARect.Top+(ARect.Bottom-ARect.Top-IconHeight) div 2, CurIcon);
-    ARect.Left := ARect.Left + IconWidth + 2;
+    if CurIcon<>nil then
+      Sender.Canvas.Draw(ARect.Left+(25-CurIcon.Width) div 2,
+               ARect.Top+(ARect.Bottom-ARect.Top-CurIcon.Height) div 2, CurIcon);
   end;
 end;
 
