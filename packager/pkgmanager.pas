@@ -3048,8 +3048,7 @@ begin
 
 end;
 
-function TPkgManager.GetDefaultSaveDirectoryForFile(const Filename: string
-  ): string;
+function TPkgManager.GetDefaultSaveDirectoryForFile(const Filename: string): string;
 var
   APackage: TLazPackage;
   PkgFile: TPkgFile;
@@ -3125,8 +3124,7 @@ begin
   end;
 end;
 
-procedure TPkgManager.OnSourceEditorPopupMenu(
-  const AddMenuItemProc: TAddMenuItemProc);
+procedure TPkgManager.OnSourceEditorPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
 var
   APackage: TIDEPackage;
 begin
