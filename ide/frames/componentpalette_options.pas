@@ -91,9 +91,6 @@ implementation
 
 {$R *.lfm}
 
-const
-  AllComponentsHeader = '<All>';
-
 { TCompPaletteOptionsFrame }
 
 function TCompPaletteOptionsFrame.GetTitle: String;
@@ -240,7 +237,7 @@ begin
   if Assigned(IDEComponentPalette) then
   begin
     PagesListBox.Clear;
-    PagesListBox.Items.Add(AllComponentsHeader);
+    PagesListBox.Items.Add(lis_All_);
     for i := 0 to IDEComponentPalette.PagesUserOrder.Count-1 do
     begin
       PgName := IDEComponentPalette.PagesUserOrder[i];
@@ -289,7 +286,7 @@ var
   StartInd, EndInd: Integer;
   RealPageName, CompName: String;
 begin
-  if aPageName = AllComponentsHeader then
+  if aPageName = lis_All_ then
   begin
     StartInd := 1;                // Skip the first entry for all components.
     EndInd := PagesListBox.Count-1;
@@ -330,7 +327,7 @@ procedure TCompPaletteOptionsFrame.AddPageButtonClick(Sender: TObject);
 var
   s: String;
 begin
-  s := InputBox('New page', 'Page name', '');
+  s := InputBox(lisNewPage, lisPageName, '');
   PagesListBox.AddItem(s, TStringList.Create);
 end;
 

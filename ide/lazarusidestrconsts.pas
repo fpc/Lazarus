@@ -5864,7 +5864,9 @@ resourcestring
   lisShowAbstractMethodsOf = 'Show abstract methods of "%s"';
   lisCopyMoveFileToDirectory = 'Copy/Move File to Directory';
   lisSelectTargetDirectory = 'Select target directory';
-
+  lisNewPage = 'New page';
+  lisPageName = 'Page name';
+  lis_All_ = '<All>';
 implementation
 
 end.
