@@ -851,8 +851,9 @@ var
     Pg := Pages[aPageIndex];
     if not Pg.Visible then Exit;
     ScrollBox := Pg.GetScrollBox;
-    ScrollBox.OnResize := @OnScrollBoxResize;
     Assert(Assigned(ScrollBox), 'CreateButtons: ScrollBox not assigned.');
+    ScrollBox.OnResize := @OnScrollBoxResize;
+    ScrollBox.OnMouseWheel := @OnPageMouseWheel;
     //DebugLn(['TComponentPalette.UpdateNoteBookButtons PAGE=',Pg.PageName,' PageIndex=',Pg.PageComponent.PageIndex]);
     // create selection button
     CreateSelectionButton(Pg, IntToStr(aPageIndex), ScrollBox);
