@@ -634,24 +634,24 @@ var
   PgName, CompName: String;
 begin
   Result := True;
-  for i:=0 to fPagesUserOrder.Count-1 do
-    fPagesUserOrder.Objects[i].Free;   // Free also the contained StringList.
-  fPagesUserOrder.Clear;
+  for i:=0 to PagesUserOrder.Count-1 do
+    PagesUserOrder.Objects[i].Free;   // Free also the contained StringList.
+  PagesUserOrder.Clear;
   with EnvironmentOptions do begin
     // First add user defined page order from EnvironmentOptions,
-    fPagesUserOrder.Assign(ComponentPaletteOptions.PageNames);
+    PagesUserOrder.Assign(ComponentPaletteOptions.PageNames);
     // then add other pages which don't have user configuration
-    for DefPgInd := 0 to fOrigPagePriorities.Count-1 do
+    for DefPgInd := 0 to OrigPagePriorities.Count-1 do
     begin
-      PgName:=fOrigPagePriorities.Keys[DefPgInd];
-      if (fPagesUserOrder.IndexOf(PgName) = -1)
+      PgName:=OrigPagePriorities.Keys[DefPgInd];
+      if (PagesUserOrder.IndexOf(PgName) = -1)
       and (ComponentPaletteOptions.HiddenPageNames.IndexOf(PgName) = -1) then
-        fPagesUserOrder.Add(PgName);
+        PagesUserOrder.Add(PgName);
     end;
     // Add pages and components for them
-    for i := 0 to fPagesUserOrder.Count-1 do
+    for i := 0 to PagesUserOrder.Count-1 do
     begin
-      PgName := fPagesUserOrder[i];
+      PgName := PagesUserOrder[i];
       DefPgInd := IndexOfPageWithName(PgName);
       if DefPgInd >= 0 then
         Pg:=Pages[DefPgInd]
@@ -659,7 +659,7 @@ begin
         Pg:=CreateNewPage(PgName, ComponentPriorityNormal);
       end;
       DstComps := TStringList.Create;
-      fPagesUserOrder.Objects[i] := DstComps;
+      PagesUserOrder.Objects[i] := DstComps;
       OptPgInd := ComponentPaletteOptions.ComponentPages.IndexOf(PgName);
       if OptPgInd >= 0 then
       begin
@@ -883,20 +883,20 @@ begin
   FPageControl.DisableAlign;
   try
     OldActivePage:=FPageControl.ActivePage;
-    SortPagesAndCompsUserOrder;      // Updates fPagesUserOrder
+    SortPagesAndCompsUserOrder;      // Updates PagesUserOrder
     // remove every page in the PageControl without a visible page
     for i:=FPageControl.PageCount-1 downto 0 do
       RemoveUnneededPage(FPageControl.Pages[i]);
     // insert a PageControl page for every visible palette page
     VisPageIndex := 0;
-    for i := 0 to fPagesUserOrder.Count-1 do
+    for i := 0 to PagesUserOrder.Count-1 do
     begin
-      PgName := fPagesUserOrder[i];
+      PgName := PagesUserOrder[i];
       PgInd := IndexOfPageName(PgName);
       if PgInd >= 0 then
       begin
         InsertVisiblePage(Pages[PgInd], VisPageIndex);
-        CreateButtons(PgInd, fPagesUserOrder.Objects[i] as TStringList);
+        CreateButtons(PgInd, PagesUserOrder.Objects[i] as TStringList);
       end;
     end;
     // restore active page

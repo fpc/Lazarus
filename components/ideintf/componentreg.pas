@@ -165,6 +165,11 @@ type
   private
     FPages: TList;  // list of TBaseComponentPage
     FComps: TList;  // list of all TRegisteredComponent in all pages
+    // New pages added and their priorities, ordered by priority.
+    fOrigPagePriorities: TPagePriorityList;
+    // Pages ordered by user. Contains page name + another StringList
+    //  for component names, just like TCompPaletteOptions.ComponentPages.
+    fPagesUserOrder: TStringList;
     FHandlers: array[TComponentPaletteHandlerType] of TMethodList;
     FBaseComponentPageClass: TBaseComponentPageClass;
     FRegisteredComponentClass: TRegisteredComponentClass;
@@ -181,11 +186,6 @@ type
                             const AMethod: TMethod);
     procedure SetHideControls(const AValue: boolean);
   protected
-    // New pages added and their priorities, ordered by priority.
-    fOrigPagePriorities: TPagePriorityList;
-    // Pages ordered by user. Contains page name + another StringList
-    //  for component names, just like TCompPaletteOptions.ComponentPages.
-    fPagesUserOrder: TStringList;
     procedure DoChange; virtual;
     procedure DoBeginUpdate; virtual;
     procedure DoEndUpdate(Changed: boolean); virtual;
@@ -247,6 +247,7 @@ type
     property OnEndUpdate: TEndUpdatePaletteEvent read FOnEndUpdate write FOnEndUpdate;
     property HideControls: boolean read FHideControls write SetHideControls;
     property Selected: TRegisteredComponent read GetSelected write SetSelected;
+    property OrigPagePriorities: TPagePriorityList read fOrigPagePriorities;
     property PagesUserOrder: TStringList read fPagesUserOrder;
   end;
   

@@ -68,7 +68,6 @@ type
     procedure PagesListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure RestoreButtonClick(Sender: TObject);
   private
-    FLoaded: Boolean;
     procedure WritePages(cpo: TCompPaletteOptions);
     procedure WriteComponents(cpo: TCompPaletteOptions);
     procedure FillPages;
@@ -136,20 +135,15 @@ begin
   CompMoveUpBtn.Hint:=lisMoveSelectedUp;
   CompMoveDownBtn.Hint:=lisMoveSelectedDown;
 
-  FillPages;
   UpdateButtons;
   UpdatePageMoveButtons(PagesListBox.ItemIndex);
   UpdateCompMoveButtons(ComponentsListView.ItemIndex);
-  FLoaded := False;
 end;
 
 procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  cpo: TCompPaletteOptions;
 begin
-  cpo:=(AOptions as TEnvironmentOptions).ComponentPaletteOptions;
-  // --- ToDo ---
-  FLoaded := True;
+  // AOptions is not needed because data is already loaded to IDEComponentPalette.
+  FillPages;
 end;
 
 procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -174,9 +168,9 @@ begin
   UserPages := TStringList.Create;
   try
     // Collect original page names
-    for i := 0 to IDEComponentPalette.PagesUserOrder.Count-1 do
+    for i := 0 to IDEComponentPalette.OrigPagePriorities.Count-1 do
     begin
-      PgName := IDEComponentPalette.PagesUserOrder[i];
+      PgName := IDEComponentPalette.OrigPagePriorities.Keys[i];
       Pg := IDEComponentPalette.GetPage(PgName, True);
       Assert(Assigned(Pg), 'TCompPaletteOptionsFrame.WritePages: PageName "'+PgName+'" not found.');
       if (Pg<>nil) and Pg.Visible then
@@ -217,7 +211,7 @@ begin
       if Assigned(Pg) then       // Can be Nil if this page was added or renamed.
       begin
         // Collect original components from this page
-        for CompCnt := 0 to IDEComponentPalette.PageCount-1 do
+        for CompCnt := 0 to IDEComponentPalette.CompCount-1 do
         begin
           Comp := IDEComponentPalette.Comps[CompCnt];
           if Comp.RealPage = Pg then
@@ -244,7 +238,7 @@ begin
   if Assigned(IDEComponentPalette) then
   begin
     PagesListBox.Clear;
-    PagesListBox.AddItem(AllComponentsHeader, Nil);
+    PagesListBox.Items.Add(AllComponentsHeader);
     for i := 0 to IDEComponentPalette.PagesUserOrder.Count-1 do
     begin
       PgName := IDEComponentPalette.PagesUserOrder[i];
@@ -324,8 +318,6 @@ procedure TCompPaletteOptionsFrame.PagesListBoxSelectionChange(Sender: TObject; 
 var
   lb: TListBox;
 begin
-  //if not (FLoaded and User) then
-  //  Exit;
   lb := Sender as TListBox;
   FillComponents(lb.Items[lb.ItemIndex]);
   UpdateButtons;
@@ -604,8 +596,6 @@ begin
     UpdateCompMoveButtons(i+1);
   end;
 end;
-
-///
 
 procedure TCompPaletteOptionsFrame.UpdateButtons;
 begin
