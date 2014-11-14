@@ -154,6 +154,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
         54657374436F6D700800000054657374506167650B000000546573745061636B
         616765FFFFFFFFFFFFFFFFFFFFFFFF
       }
+      RowSelect = True
       ScrollBars = ssAutoBoth
       TabOrder = 0
       ViewStyle = vsReport

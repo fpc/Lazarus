@@ -25,9 +25,10 @@ unit componentpalette_options;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Graphics, Forms, StdCtrls, Dialogs,
-  Buttons, ComCtrls, ExtCtrls, EnvironmentOpts, LazarusIDEStrConsts, IDEProcs,
-  IDEOptionsIntf, ComponentReg, Controls, LCLProc, LCLType, PackageDefs;
+  Classes, SysUtils,
+  Graphics, Forms, Controls, StdCtrls, Dialogs, Buttons, ComCtrls, ExtCtrls,
+  FileUtil, LCLProc, LCLType, IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
+  IDEOptionsIntf, IDEImagesIntf, ComponentReg, PackageDefs;
 
 type
   { TCompPaletteOptionsFrame }
@@ -124,6 +125,7 @@ begin
   ComponentsListView.Column[1].Caption  := lisName;
   ComponentsListView.Column[2].Caption  := lisPage;
   ComponentsListView.Column[3].Caption  := lisPackage;
+  ComponentsListView.SmallImages := IDEImages.Images_24;
   // Arrow buttons for pages
   PageMoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
   PageMoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
