@@ -66,4 +66,10 @@ begin
 {$ENDIF}
 end;
 
+{$IFDEF EnableUTF8RTL}
+initialization
+  DefaultSystemCodePage:=CP_UTF8;
+  DefaultRTLFileSystemCodePage:=CP_UTF8;
+{$ENDIF}
+
 end.
