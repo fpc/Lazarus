@@ -722,11 +722,13 @@ var
     PageInd: Integer;
     PanelRight: TPanel;
     BtnRight: TSpeedButton;
+    TabControl: TCustomTabControl;
   begin
     if not aCompPage.Visible then Exit;
+    TabControl := TCustomTabControl(FPageControl);
     if aCompPage.PageComponent=nil then begin
       // insert a new PageControl page
-      TCustomTabControl(FPageControl).Pages.Insert(aVisPageIndex, aCompPage.PageName);
+      TabControl.Pages.Insert(aVisPageIndex, aCompPage.PageName);
       aCompPage.PageComponent := FPageControl.Page[aVisPageIndex];
       with TScrollBox.Create(aCompPage.PageComponent) do begin
         Align := alClient;
@@ -763,13 +765,13 @@ var
         OnMouseWheel := @OnPageMouseWheel;
         Parent := PanelRight;
       end;
+      inc(aVisPageIndex);
     end else begin
       // move to the right position
       PageInd := aCompPage.PageComponent.PageIndex;
-      if PageInd<>aVisPageIndex then
-        TCustomTabControl(FPageControl).Pages.Move(PageInd, aVisPageIndex);
+      if (PageInd<>aVisPageIndex) and (aVisPageIndex < TabControl.Pages.Count) then
+        TabControl.Pages.Move(PageInd, aVisPageIndex);
     end;
-    inc(aVisPageIndex);
   end;
 
   procedure CreateSelectionButton(aCompPage: TBaseComponentPage; aButtonUniqueName: string;
