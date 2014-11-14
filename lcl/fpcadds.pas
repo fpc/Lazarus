@@ -68,8 +68,8 @@ end;
 
 {$IFDEF EnableUTF8RTL}
 initialization
-  DefaultSystemCodePage:=CP_UTF8;
-  DefaultRTLFileSystemCodePage:=CP_UTF8;
+  SetMultiByteConversionCodePage(CP_UTF8);
+  SetMultiByteRTLFileSystemCodePage(CP_UTF8)
 {$ENDIF}
 
 end.
