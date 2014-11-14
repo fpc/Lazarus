@@ -629,6 +629,7 @@ type
     FDesignerToBeFreed: TFilenameToStringTree; // form file names to be freed OnIdle.
     FApplicationIsActivate: boolean;
     fNeedSaveEnvironment: boolean;
+    FIDEStarted: boolean;
     FRemoteControlTimer: TTimer;
     FRemoteControlFileAge: integer;
 
@@ -1561,6 +1562,7 @@ begin
   DoShowMessagesView(false);           // reopen extra windows
   fUserInputSinceLastIdle:=true; // Idle work gets done initially before user action.
   FApplicationIsActivate:=true;
+  FIDEStarted:=true;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.StartIDE END');{$ENDIF}
 end;
 
@@ -5098,7 +5100,8 @@ procedure TMainIDE.SaveEnvironment(Immediately: boolean);
 begin
   if not Immediately then
   begin
-    fNeedSaveEnvironment:=true;
+    if FIDEStarted then
+      fNeedSaveEnvironment:=true;
     exit;
   end;
   fNeedSaveEnvironment:=false;

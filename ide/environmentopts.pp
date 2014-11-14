@@ -1051,8 +1051,9 @@ end;
 
 procedure TEnvironmentOptions.DoAfterWrite(Restore: boolean);
 begin
-  if not Restore then
-    Save(False);
+  // Note! Data is saved when the IDE is closed.
+  //if not Restore then
+  //  Save(False);
   inherited DoAfterWrite(Restore);
 end;
 
