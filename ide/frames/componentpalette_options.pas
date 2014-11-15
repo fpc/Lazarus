@@ -503,8 +503,11 @@ begin
   if Comp is TPkgComponent then begin
     CurIcon := TPkgComponent(Comp).Icon;
     if CurIcon<>nil then
+    begin
       Sender.Canvas.Draw(ARect.Left+(25-CurIcon.Width) div 2,
                ARect.Top+(ARect.Bottom-ARect.Top-CurIcon.Height) div 2, CurIcon);
+      DefaultDraw := False;
+    end;
   end;
 end;
 
