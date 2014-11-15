@@ -334,8 +334,10 @@ type
                                                Expand: boolean);
     procedure CopyNode(TVNode: TTreeNode; NodeType: TCopyNodeType);
     function GetCodeTool(AnUnit: TCodeBrowserUnit): TStandardCodeTool;
+    procedure GetNodeIdentifier(Tool: TStandardCodeTool;
+      CTNode: TCodeTreeNode; out Identifier: string);
     procedure GetNodeDescription(Tool: TStandardCodeTool;
-      CTNode: TCodeTreeNode; out Description, Identifier: string);
+      CTNode: TCodeTreeNode; Identifier: string; out Description: string);
     function GetSelectedUnit: TCodeBrowserUnit;
     function GetSelectedPackage: TLazPackage;
     function GetCurUnitInSrcEditor(out FileOwner: TObject;
@@ -1864,8 +1866,55 @@ begin
   //DebugLn(['TCodeBrowserView.GetCodeTool END ',AnUnit.Filename,' ',Result<>nil]);
 end;
 
+procedure TCodeBrowserView.GetNodeIdentifier(Tool: TStandardCodeTool;
+  CTNode: TCodeTreeNode; out Identifier: string);
+
+  function Shorten(const s: string): string;
+  const
+    MAX_LEN=100;
+  begin
+    Result:=DbgStr(s);
+    if Length(Result)>MAX_LEN then
+      Result:=LeftStr(Result, MAX_LEN)+'...';
+  end;
+
+const
+  NodeFlags = [];
+begin
+  if CTNode.StartPos>=CTNode.EndPos then begin
+    Identifier:='';
+    exit;
+  end;
+  case CTNode.Desc of
+  ctnProcedure:
+    begin
+      Identifier:=Tool.ExtractProcName(CTNode,ProcIdentifierFlags);
+    end;
+  ctnVarDefinition:
+    begin
+      Identifier:=Tool.ExtractDefinitionName(CTNode);
+    end;
+  ctnConstDefinition:
+    begin
+      Identifier:=Tool.ExtractDefinitionName(CTNode);
+    end;
+  ctnTypeDefinition,ctnGenericType:
+    begin
+      Identifier:=Tool.ExtractDefinitionName(CTNode);
+    end;
+  ctnProperty:
+    begin
+      Identifier:=Tool.ExtractPropName(CTNode,false);
+    end;
+  ctnEnumIdentifier:
+    begin
+      Identifier:=Tool.ExtractIdentifier(CTNode.StartPos);
+    end;
+  end;
+end;
+
 procedure TCodeBrowserView.GetNodeDescription(Tool: TStandardCodeTool;
-  CTNode: TCodeTreeNode; out Description, Identifier: string);
+  CTNode: TCodeTreeNode; Identifier: string; out Description: string);
 
   function Shorten(const s: string): string;
   const
@@ -1882,30 +1931,25 @@ var
   Inheritance: String;
 begin
   if CTNode.StartPos>=CTNode.EndPos then begin
-    Identifier:='';
     Description:='';
     exit;
   end;
   case CTNode.Desc of
   ctnProcedure:
     begin
-      Identifier:=Tool.ExtractProcName(CTNode,ProcIdentifierFlags);
       Description:=Tool.ExtractProcHead(CTNode,ProcDescFlags);
     end;
   ctnVarDefinition:
     begin
-      Identifier:=Tool.ExtractDefinitionName(CTNode);
       Description:='var '+Identifier
                  +' : '+Shorten(Tool.ExtractDefinitionNodeType(CTNode));
     end;
   ctnConstDefinition:
     begin
-      Identifier:=Tool.ExtractDefinitionName(CTNode);
       Description:='const '+Shorten(Tool.ExtractNode(CTNode,NodeFlags));
     end;
   ctnTypeDefinition,ctnGenericType:
     begin
-      Identifier:=Tool.ExtractDefinitionName(CTNode);
       Description:='type '+Identifier;
       if CTNode.FirstChild<>nil then begin
         case CTNode.FirstChild.Desc of
@@ -1940,12 +1984,10 @@ begin
     end;
   ctnProperty:
     begin
-      Identifier:=Tool.ExtractPropName(CTNode,false);
       Description:='property '+Shorten(Tool.ExtractProperty(CTNode,PropDescFlags));
     end;
   ctnEnumIdentifier:
     begin
-      Identifier:=Tool.ExtractIdentifier(CTNode.StartPos);
       Description:='enum '+Identifier;
     end;
   end;
@@ -2015,10 +2057,11 @@ var
       if (CTNode.Parent.Desc=ctnClassProtected) and (not ShowProtected)
       then
         exit;
-      GetNodeDescription(CTTool,CTNode,ChildDescription,ChildIdentifier);
+      GetNodeIdentifier(CTTool,CTNode,ChildIdentifier);
 
       if IdentifierFitsFilter(cblIdentifiers,ChildIdentifier) then begin
         inc(ShownIdentifierCount);
+        GetNodeDescription(CTTool,CTNode,ChildIdentifier,ChildDescription);
         NewChildNode:=ParentBrowserNode.AddNode(ChildDescription,ChildIdentifier);
         if NewChildNode<>nil then begin
           NewChildNode.Desc:=CTNode.Desc;
@@ -2049,8 +2092,8 @@ var
         DestUnit:=TCodeBrowserUnit.Create('');
       CurUnit:=TCodeBrowserUnit(DestUnit);
       //DebugLn(['AddIdentifierNode ',CTNode.DescAsString,' Description="',Description,'"']);
-      GetNodeDescription(CTTool,CTNode,Description,Identifier);
-      NewNode:=CurUnit.AddNode(Description,Identifier);
+      GetNodeIdentifier(CTTool,CTNode,Identifier);
+      NewNode:=CurUnit.AddNode('',Identifier);
       {$IFDEF VerboseCodeBrowser}
       if (length(Description)>100) then
         debugln(['AddIdentifierNode WARNING: big description ',CurUnit.Filename,' desc=',Description]);
@@ -2088,6 +2131,9 @@ var
         // ToDo: remove nodes later
         CurUnit.DeleteNode(NewNode);
       end else begin
+        // keep node, set Description
+        GetNodeDescription(CTTool,CTNode,Identifier,Description);
+        NewNode.Description:=Description;
         inc(ShownIdentifierCount);
       end;
     end;

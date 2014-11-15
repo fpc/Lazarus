@@ -62,7 +62,7 @@ type
     property CodePos: TCodePosition read FCodePos write FCodePos;
     property ParentNode: TCodeBrowserNode read FParentNode;
     property ChildNodes: TAVLTree read FChildNodes;
-    property Description: string read FDescription;
+    property Description: string read FDescription write FDescription;
     property Identifier: string read FIdentifier;
   end;
 
