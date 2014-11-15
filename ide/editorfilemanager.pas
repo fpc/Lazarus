@@ -69,17 +69,21 @@ type
 var
   EditorFileManagerForm: TEditorFileManagerForm;
 
-procedure ShowEditorFileManagerForm(BringToFront: boolean);
+procedure ShowEditorFileManagerForm(State: TIWGetFormState = iwgfShowOnTop);
 
 implementation
 
 {$R *.lfm}
 
-procedure ShowEditorFileManagerForm(BringToFront: boolean);
+procedure ShowEditorFileManagerForm(State: TIWGetFormState);
 begin
   if EditorFileManagerForm = Nil then
-    Application.CreateForm(TEditorFileManagerForm, EditorFileManagerForm);
-  IDEWindowCreators.ShowForm(EditorFileManagerForm,BringToFront);
+    IDEWindowCreators.CreateForm(EditorFileManagerForm,TEditorFileManagerForm,
+       State=iwgfDisabled,LazarusIDE.OwningComponent)
+  else if State=iwgfDisabled then
+    EditorFileManagerForm.DisableAlign;
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(EditorFileManagerForm,State=iwgfShowOnTop);
 end;
 
 { TEditorFileManagerForm }

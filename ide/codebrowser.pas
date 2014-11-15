@@ -40,6 +40,8 @@ unit CodeBrowser;
 
 {$mode objfpc}{$H+}
 
+{off $DEFINE VerboseCodeBrowser}
+
 interface
 
 uses
@@ -87,6 +89,7 @@ const
   CodeBrowserIDEName     = ' '+'Lazarus IDE';// Note: space is needed to avoid name clashing
   CodeBrowserProjectName = ' '+'Project';
   CodeBrowserHidden = ' ';
+  CodeBrowserMaxTVIdentifiers = 5000; // the maximum amount of identifiers shown in the treeview
 
 type
 
@@ -386,7 +389,7 @@ var
 function StringToCodeBrowserTextFilter(const s: string): TCodeBrowserTextFilter;
 
 procedure InitCodeBrowserQuickFixItems;
-procedure CreateCodeBrowser;
+procedure CreateCodeBrowser(DisableAutoSizing: boolean);
 procedure ShowCodeBrowser(const Identifier: string);
 
 implementation
@@ -433,18 +436,20 @@ begin
   RegisterIDEMsgQuickFix(TQuickFixIdentifierNotFound_Search.Create);
 end;
 
-procedure CreateCodeBrowser;
+procedure CreateCodeBrowser(DisableAutoSizing: boolean);
 begin
   if CodeBrowserView=nil then
-    CodeBrowserView:=TCodeBrowserView.Create(LazarusIDE.OwningComponent);
+    IDEWindowCreators.CreateForm(CodeBrowserView,TCodeBrowserView,
+      DisableAutoSizing,LazarusIDE.OwningComponent)
+  else if DisableAutoSizing then
+    CodeBrowserView.DisableAutoSizing;
 end;
 
 procedure ShowCodeBrowser(const Identifier: string);
 begin
-  CreateCodeBrowser;
+  IDEWindowCreators.ShowForm(NonModalIDEWindowNames[nmiwCodeBrowser],true);
   CodeBrowserView.SetScopeToCurUnitOwner(true,true);
   CodeBrowserView.SetFilterToSimpleIdentifier(Identifier);
-  IDEWindowCreators.ShowForm(CodeBrowserView,true);
 end;
 
 
@@ -1876,26 +1881,47 @@ const
 var
   Inheritance: String;
 begin
+  if CTNode.StartPos>=CTNode.EndPos then begin
+    Identifier:='';
+    Description:='';
+    exit;
+  end;
   case CTNode.Desc of
   ctnProcedure:
     begin
+      {$IFDEF CodeBrowseFix}
+      Identifier:=Tool.ExtractProcName(CTNode,ProcIdentifierFlags);
+      Description:=Identifier;
+      {$ELSE}
       Identifier:=Tool.ExtractProcHead(CTNode,ProcIdentifierFlags);
       Description:=Tool.ExtractProcHead(CTNode,ProcDescFlags);
+      {$ENDIF}
     end;
   ctnVarDefinition:
     begin
       Identifier:=Tool.ExtractDefinitionName(CTNode);
+      {$IFDEF CodeBrowseFix}
+      Description:=Identifier;
+      {$ELSE}
       Description:='var '+Identifier
                  +' : '+Shorten(Tool.ExtractDefinitionNodeType(CTNode));
+      {$ENDIF}
     end;
   ctnConstDefinition:
     begin
       Identifier:=Tool.ExtractDefinitionName(CTNode);
+      {$IFDEF CodeBrowseFix}
+      Description:=Identifier;
+      {$ELSE}
       Description:='const '+Shorten(Tool.ExtractNode(CTNode,NodeFlags));
+      {$ENDIF}
     end;
   ctnTypeDefinition,ctnGenericType:
     begin
       Identifier:=Tool.ExtractDefinitionName(CTNode);
+      {$IFDEF CodeBrowseFix}
+      Description:=Identifier;
+      {$ELSE}
       Description:='type '+Identifier;
       if CTNode.FirstChild<>nil then begin
         case CTNode.FirstChild.Desc of
@@ -1927,11 +1953,16 @@ begin
           Description:=Description+' = record';
         end;
       end;
+      {$ENDIF}
     end;
   ctnProperty:
     begin
       Identifier:=Tool.ExtractPropName(CTNode,false);
+      {$IFDEF CodeBrowseFix}
+      Description:=Identifier;
+      {$ELSE}
       Description:='property '+Shorten(Tool.ExtractProperty(CTNode,PropDescFlags));
+      {$ENDIF}
     end;
   ctnEnumIdentifier:
     begin
@@ -1951,10 +1982,17 @@ var
   ShowEmptyNodes: boolean;
   NewPackageCount: integer;
   NewUnitCount: integer;
-  NewIdentifierCount: PtrInt;
+  NewIdentifierCount, ShownIdentifierCount: PtrInt;
+  UsedMem: PtrUInt;
   
   LevelFilterText: array[TCodeBrowserLevel] of string;
   LevelFilterType: array[TCodeBrowserLevel] of TCodeBrowserTextFilter;
+
+  function IncUsedMem(c: integer): boolean;
+  begin
+    Result:=(UsedMem div 16384)<>((UsedMem+c) div 16384);
+    inc(UsedMem,c);
+  end;
 
   function IdentifierFitsFilter(LvlType: TCodeBrowserLevel;
     const Identifier: string): boolean;
@@ -1987,6 +2025,8 @@ var
       NewCodePos: TCodePosition;
     begin
       //DebugLn(['AddChildNode ',ChildCTNode.DescAsString,' ',ChildDescription]);
+      if ShownIdentifierCount>=CodeBrowserMaxTVIdentifiers then exit;
+
       if (CTNode.Parent.Desc=ctnClassPrivate) and (not ShowPrivate) then
         exit;
       if (CTNode.Parent.Desc=ctnClassProtected) and (not ShowProtected)
@@ -1995,11 +2035,18 @@ var
       GetNodeDescription(CTTool,CTNode,ChildDescription,ChildIdentifier);
 
       if IdentifierFitsFilter(cblIdentifiers,ChildIdentifier) then begin
+        inc(ShownIdentifierCount);
         NewChildNode:=ParentBrowserNode.AddNode(ChildDescription,ChildIdentifier);
         if NewChildNode<>nil then begin
           NewChildNode.Desc:=CTNode.Desc;
           CTTool.CleanPosToCodePos(CTNode.StartPos,NewCodePos);
           NewChildNode.CodePos:=NewCodePos;
+          {$IFDEF VerboseCodeBrowser}
+          if (length(ChildDescription)>1000) then
+            debugln(['AddChildNode WARNING: big description ',SrcUnit.Filename,' desc=',ChildDescription]);
+          if IncUsedMem(NewChildNode.GetMemSize) then
+            debugln(['AddChildNode used mem ',UsedMem]);
+          {$ENDIF}
         end;
       end;
     end;
@@ -2019,6 +2066,12 @@ var
       //DebugLn(['AddIdentifierNode ',CTNode.DescAsString,' Description="',Description,'"']);
       GetNodeDescription(CTTool,CTNode,Description,Identifier);
       NewNode:=CurUnit.AddNode(Description,Identifier);
+      {$IFDEF VerboseCodeBrowser}
+      if (length(Description)>1000) then
+        debugln(['AddIdentifierNode WARNING: big description ',CurUnit.Filename,' desc=',Description]);
+      if IncUsedMem(NewNode.GetMemSize) then
+        debugln(['AddIdentifierNode used mem ',UsedMem,' ',CurUnit.Filename]);
+      {$ENDIF}
       NewNode.Desc:=CTNode.Desc;
       CTTool.CleanPosToCodePos(CTNode.StartPos,NewCodePos);
       NewNode.CodePos:=NewCodePos;
@@ -2047,6 +2100,7 @@ var
       if (NewNode.ChildNodes=nil)
       and (not IdentifierFitsFilter(cblIdentifiers,Identifier)) then begin
         // identifier is not needed -> remove
+        // ToDo: remove nodes later
         CurUnit.DeleteNode(NewNode);
       end;
     end;
@@ -2304,6 +2358,7 @@ var
   lvl: TCodeBrowserLevel;
   i: Integer;
 begin
+  UsedMem:=0;
   ShowPackages:=Options.HasLevel(cblPackages);
   ShowUnits:=Options.HasLevel(cblUnits);
   ShowIdentifiers:=Options.HasLevel(cblIdentifiers);
@@ -2313,6 +2368,7 @@ begin
   NewPackageCount:=0;
   NewUnitCount:=0;
   NewIdentifierCount:=0;
+  ShownIdentifierCount:=0;
 
   for lvl:=Low(TCodeBrowserLevel) to High(TCodeBrowserLevel) do begin
     LevelFilterText[lvl]:=Options.LevelFilterText[lvl];
@@ -2523,7 +2579,13 @@ begin
     case CTNode.Desc of
     ctnProcedure:
       begin
-        if SysUtils.CompareText(Tool.ExtractProcHead(CTNode,ProcIdentifierFlags),
+        if SysUtils.CompareText(
+          {$IFDEF CodeBrowseFix}
+          Tool.ExtractProcName(CTNode,ProcIdentifierFlags)
+          {$ELSE}
+          Tool.ExtractProcHead(CTNode,ProcIdentifierFlags)
+          {$ENDIF}
+          ,
           Node.Identifier)<>0
         then
           exit; // source has changed
@@ -3254,10 +3316,7 @@ begin
   then exit;
 
   // start code browser
-  CreateCodeBrowser;
-  CodeBrowserView.SetScopeToCurUnitOwner(true,true);
-  CodeBrowserView.SetFilterToSimpleIdentifier(Identifier);
-  IDEWindowCreators.ShowForm(CodeBrowserView,true);
+  ShowCodeBrowser(Identifier);
 end;
 
 end.

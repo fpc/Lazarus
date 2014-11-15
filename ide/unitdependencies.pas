@@ -314,7 +314,7 @@ var
   UnitDependenciesWindow: TUnitDependenciesWindow;
 
 procedure ShowUnitDependenciesClicked(Sender: TObject);
-procedure ShowUnitDependencies(Show, BringToFront: boolean);
+procedure ShowUnitDependencies(State: TIWGetFormState = iwgfShowOnTop);
 procedure InitUnitDependenciesQuickFixItems;
 
 function CompareUDBaseNodes(UDNode1, UDNode2: Pointer): integer;
@@ -323,15 +323,18 @@ implementation
 
 procedure ShowUnitDependenciesClicked(Sender: TObject);
 begin
-  ShowUnitDependencies(true,true);
+  ShowUnitDependencies;
 end;
 
-procedure ShowUnitDependencies(Show, BringToFront: boolean);
+procedure ShowUnitDependencies(State: TIWGetFormState);
 begin
   if UnitDependenciesWindow = Nil then
-    Application.CreateForm(TUnitDependenciesWindow, UnitDependenciesWindow);
-  if Show then
-    IDEWindowCreators.ShowForm(UnitDependenciesWindow,BringToFront);
+    IDEWindowCreators.CreateForm(UnitDependenciesWindow,TUnitDependenciesWindow,
+       State=iwgfDisabled,LazarusIDE.OwningComponent)
+  else if State=iwgfDisabled then
+    UnitDependenciesWindow.DisableAlign;
+ if State>=iwgfShow then
+   IDEWindowCreators.ShowForm(UnitDependenciesWindow,State=iwgfShowOnTop);
 end;
 
 procedure InitUnitDependenciesQuickFixItems;
@@ -441,7 +444,7 @@ var
   Path: TStringList;
 begin
   if not IsApplicable(Msg,UnitName1,UnitName2) then exit;
-  ShowUnitDependencies(true,true);
+  ShowUnitDependencies;
   Path:=TStringList.Create;
   try
     Path.Add(UnitName1);

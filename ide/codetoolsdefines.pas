@@ -51,7 +51,7 @@ uses
   IDEWindowIntf, IDEImagesIntf, IDEDialogs,
   LazarusIDEStrConsts, CodeToolsOptions, CodeToolsDefPreview, TransferMacros,
   EditorOptions, InputFileDialog, IDEOptionDefs, LazConf, IDEProcs,
-  EditDefineTree;
+  EditDefineTree, CompilerOptions;
 
 type
 
@@ -573,7 +573,7 @@ begin
   with InputFileDlg do begin
   
     DefaultFPCSrcDir:='$(FPCSrcDir)';
-    DefaultCompiler:='$(CompPath)';
+    DefaultCompiler:=DefaultCompilerPath;
 
     BeginUpdate;
     Caption:=lisCodeToolsDefsCreateFPCMacrosAndPathsForAFPCProjectDirectory;
@@ -646,7 +646,7 @@ begin
   InputFileDlg:=GetInputFileDialog;
   InputFileDlg.Macros:=Macros;
   with InputFileDlg do begin
-    DefaultCompiler:='$(CompPath)';
+    DefaultCompiler:=DefaultCompilerPath;
     
     BeginUpdate;
     Caption:=lisCodeToolsDefsCreateDefinesForFreePascalCompiler;
@@ -690,7 +690,7 @@ begin
   InputFileDlg:=GetInputFileDialog;
   InputFileDlg.Macros:=Macros;
   with InputFileDlg do begin
-    DefaultCompiler:='$(CompPath)';
+    DefaultCompiler:=DefaultCompilerPath;
 
     BeginUpdate;
     Caption:=lisCodeToolsDefsCreateDefinesForFreePascalSVNSources;

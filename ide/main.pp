@@ -482,7 +482,7 @@ type
     procedure OnSrcNoteBookCloseQuery(Sender: TObject; var CloseAction: TCloseAction);
 
     // ObjectInspector + PropertyEditorHook events
-    procedure CreateObjectInspector; override;
+    procedure CreateObjectInspector(aDisableAutoSize: boolean);
     procedure OIOnSelectPersistents(Sender: TObject);
     procedure OIOnShowOptions(Sender: TObject);
     procedure OIOnViewRestricted(Sender: TObject);
@@ -748,14 +748,13 @@ type
     procedure DoExecuteRemoteControl;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     function DoSelectFrame: TComponentClass;
-    procedure DoViewUnitDependencies(Show: boolean);
-    procedure DoViewJumpHistory(Show: boolean);
     procedure DoViewUnitInfo;
-    procedure DoShowCodeExplorer(Show: boolean);
-    procedure DoShowCodeBrowser(Show: boolean);
-    procedure DoShowRestrictionBrowser(Show: boolean; const RestrictedName: String = '');
-    procedure DoShowComponentList(Show: boolean); override;
-    procedure DoShowInspector(Show: boolean);
+    procedure DoShowCodeExplorer(State: TIWGetFormState = iwgfShowOnTop);
+    procedure DoShowCodeBrowser(State: TIWGetFormState = iwgfShowOnTop);
+    procedure DoShowRestrictionBrowser(const RestrictedName: String = ''; State: TIWGetFormState = iwgfShowOnTop);
+    procedure DoShowComponentList(State: TIWGetFormState = iwgfShowOnTop); override;
+    procedure DoShowJumpHistory(State: TIWGetFormState = iwgfShowOnTop);
+    procedure DoShowInspector(State: TIWGetFormState = iwgfShowOnTop);
     procedure CreateIDEWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
     function CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -774,7 +773,7 @@ type
                                Flags: TOpenFlags): TModalResult; override;
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; override;
-    procedure DoShowProjectInspector(Show: boolean); override;
+    procedure DoShowProjectInspector(State: TIWGetFormState = iwgfShowOnTop); override;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
     function DoWarnAmbiguousFiles: TModalResult;
@@ -913,7 +912,7 @@ type
 
     // search results
     function DoJumpToSearchResult(FocusEditor: boolean): boolean;
-    procedure DoShowSearchResultsView(Show: boolean; BringToFront: boolean = False); override;
+    procedure DoShowSearchResultsView(State: TIWGetFormState = iwgfShowOnTop); override;
 
     // form editor and designer
     procedure DoBringToFrontFormOrUnit;
@@ -927,8 +926,8 @@ type
     procedure InvalidateAllDesignerForms;
     procedure UpdateIDEComponentPalette;
     procedure ShowDesignerForm(AForm: TCustomForm);
-    procedure DoViewAnchorEditor(Show: boolean);
-    procedure DoViewTabOrderEditor(Show: boolean);
+    procedure DoViewAnchorEditor(State: TIWGetFormState = iwgfShowOnTop);
+    procedure DoViewTabOrderEditor(State: TIWGetFormState = iwgfShowOnTop);
     procedure DoToggleViewComponentPalette;
     procedure DoToggleViewIDESpeedButtons;
 
@@ -1694,16 +1693,16 @@ begin
   if ObjectInspector1.GetActivePropertyRow = nil then
   begin
     if C <> nil then
-      DoShowRestrictionBrowser(true,C.ClassName)
+      DoShowRestrictionBrowser(C.ClassName)
     else
-      DoShowRestrictionBrowser(true);
+      DoShowRestrictionBrowser;
   end
   else
   begin
     if C <> nil then
-      DoShowRestrictionBrowser(true,C.ClassName + '.' + ObjectInspector1.GetActivePropertyRow.Name)
+      DoShowRestrictionBrowser(C.ClassName + '.' + ObjectInspector1.GetActivePropertyRow.Name)
     else
-      DoShowRestrictionBrowser(true);
+      DoShowRestrictionBrowser;
   end;
 end;
 
@@ -2838,12 +2837,12 @@ end;
 
 procedure TMainIDE.mnuViewAnchorEditorClicked(Sender: TObject);
 begin
-  DoViewAnchorEditor(true);
+  DoViewAnchorEditor;
 end;
 
 procedure TMainIDE.mnuViewTabOrderClicked(Sender: TObject);
 begin
-  DoViewTabOrderEditor(true);
+  DoViewTabOrderEditor;
 end;
 
 procedure TMainIDE.mnuViewComponentPaletteClicked(Sender: TObject);
@@ -3309,14 +3308,14 @@ begin
   ecExtractProc:              DoExtractProcFromSelection;
   // user used shortcut/menu item to show the window, so focusing is ok.
   ecToggleMessages:           DoShowMessagesView;
-  ecToggleCodeExpl:           DoShowCodeExplorer(true);
-  ecToggleCodeBrowser:        DoShowCodeBrowser(true);
-  ecToggleRestrictionBrowser: DoShowRestrictionBrowser(true);
-  ecViewComponents:           DoShowComponentList(true);
-  ecToggleFPDocEditor:        DoShowFPDocEditor(true,true);
+  ecToggleCodeExpl:           DoShowCodeExplorer;
+  ecToggleCodeBrowser:        DoShowCodeBrowser;
+  ecToggleRestrictionBrowser: DoShowRestrictionBrowser;
+  ecViewComponents:           DoShowComponentList;
+  ecToggleFPDocEditor:        DoShowFPDocEditor;
   ecViewProjectUnits:         DoViewUnitsAndForms(false);
   ecViewProjectForms:         DoViewUnitsAndForms(true);
-  ecProjectInspector:         DoShowProjectInspector(true);
+  ecProjectInspector:         DoShowProjectInspector;
   ecConfigCustomComps:        PkgBoss.ShowConfigureCustomComponents;
   ecExtToolFirst..ecExtToolLast: DoRunExternalTool(Command-ecExtToolFirst,false);
   ecSyntaxCheck:              DoCheckSyntax;
@@ -3702,20 +3701,26 @@ begin
   LCLIntf.ShowWindow(AForm.Handle,SW_SHOWNORMAL);
 end;
 
-procedure TMainIDE.DoViewAnchorEditor(Show: boolean);
+procedure TMainIDE.DoViewAnchorEditor(State: TIWGetFormState);
 begin
   if AnchorDesigner=nil then
-    AnchorDesigner:=TAnchorDesigner.Create(OwningComponent);
-  if Show then
-    IDEWindowCreators.ShowForm(AnchorDesigner,true);
+    IDEWindowCreators.CreateForm(AnchorDesigner,TAnchorDesigner,
+       State=iwgfDisabled,LazarusIDE.OwningComponent)
+  else if State=iwgfDisabled then
+    AnchorDesigner.DisableAlign;
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(AnchorDesigner,State=iwgfShowOnTop);
 end;
 
-procedure TMainIDE.DoViewTabOrderEditor(Show: boolean);
+procedure TMainIDE.DoViewTabOrderEditor(State: TIWGetFormState);
 begin
   if TabOrderDialog=nil then
-    TabOrderDialog:=TTabOrderDialog.Create(OwningComponent);
-  if Show then
-    IDEWindowCreators.ShowForm(TabOrderDialog,true);
+    IDEWindowCreators.CreateForm(TabOrderDialog,TTabOrderDialog,
+       State=iwgfDisabled,LazarusIDE.OwningComponent)
+  else if State=iwgfDisabled then
+    TabOrderDialog.DisableAlign;
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(TabOrderDialog,State=iwgfShowOnTop);
 end;
 
 procedure TMainIDE.DoToggleViewComponentPalette;
@@ -4017,29 +4022,29 @@ Begin
   DoViewUnitsAndForms(true);
 end;
 
-procedure TMainIDE.mnuSourceUnitDependenciesClicked(Sender: TObject);
-begin
-  DoViewUnitDependencies(true);
-end;
-
 procedure TMainIDE.mnuSourceUnitInfoClicked(Sender: TObject);
 begin
   DoViewUnitInfo;
 end;
 
+procedure TMainIDE.mnuSourceUnitDependenciesClicked(Sender: TObject);
+begin
+  ShowUnitDependenciesClicked(Sender);
+end;
+
 procedure TMainIDE.mnuViewCodeExplorerClick(Sender: TObject);
 begin
-  DoShowCodeExplorer(true);
+  DoShowCodeExplorer;
 end;
 
 procedure TMainIDE.mnuViewCodeBrowserClick(Sender: TObject);
 begin
-  DoShowCodeBrowser(true);
+  DoShowCodeBrowser;
 end;
 
 procedure TMainIDE.mnuViewComponentsClick(Sender: TObject);
 begin
-  DoShowComponentList(true);
+  DoShowComponentList;
 end;
 
 procedure TMainIDE.mnuViewMacroListClick(Sender: TObject);
@@ -4049,7 +4054,7 @@ end;
 
 procedure TMainIDE.mnuViewRestrictionBrowserClick(Sender: TObject);
 begin
-  DoShowRestrictionBrowser(true);
+  DoShowRestrictionBrowser;
 end;
 
 procedure TMainIDE.mnuViewMessagesClick(Sender: TObject);
@@ -4060,8 +4065,7 @@ end;
 
 procedure TMainIDE.mnuViewSearchResultsClick(Sender: TObject);
 Begin
-  // show and bring to front
-  DoShowSearchResultsView(true, true);
+  DoShowSearchResultsView;
 End;
 
 procedure TMainIDE.mnuNewProjectClicked(Sender: TObject);
@@ -4139,7 +4143,7 @@ end;
 
 procedure TMainIDE.mnuProjectInspectorClicked(Sender: TObject);
 begin
-  DoShowProjectInspector(true);
+  DoShowProjectInspector;
 end;
 
 procedure TMainIDE.mnuAddToProjectClicked(Sender: TObject);
@@ -4433,7 +4437,7 @@ end;
 
 procedure TMainIDE.mnuViewFPDocEditorClicked(Sender: TObject);
 begin
-  DoShowFPDocEditor(true,true);
+  DoShowFPDocEditor;
 end;
 
 procedure TMainIDE.mnuToolConvertDFMtoLFMClicked(Sender: TObject);
@@ -5093,7 +5097,7 @@ end;
 
 procedure TMainIDE.mnuWindowManagerClicked(Sender: TObject);
 begin
-  ShowEditorFileManagerForm(true);
+  ShowEditorFileManagerForm;
 end;
 
 procedure TMainIDE.SaveEnvironment(Immediately: boolean);
@@ -5705,16 +5709,6 @@ begin
   Result := mrOk;
 end;
 
-procedure TMainIDE.DoViewUnitDependencies(Show: boolean);
-begin
-  ShowUnitDependencies(true,Show);
-end;
-
-procedure TMainIDE.DoViewJumpHistory(Show: boolean);
-begin
-  IDEWindowCreators.ShowForm(NonModalIDEWindowNames[nmiwJumpHistory],Show);
-end;
-
 procedure TMainIDE.DoViewUnitInfo;
 var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
@@ -5794,56 +5788,75 @@ begin
     DoGotoIncludeDirective;
 end;
 
-procedure TMainIDE.DoShowCodeExplorer(Show: boolean);
+procedure TMainIDE.DoShowCodeExplorer(State: TIWGetFormState);
 begin
-  if CodeExplorerView=nil then 
+  if CodeExplorerView=nil then
   begin
-    CodeExplorerView:=TCodeExplorerView.Create(OwningComponent);
+    IDEWindowCreators.CreateForm(CodeExplorerView,TCodeExplorerView,
+       State=iwgfDisabled,OwningComponent);
     CodeExplorerView.OnGetDirectivesTree:=@OnCodeExplorerGetDirectivesTree;
     CodeExplorerView.OnJumpToCode:=@OnCodeExplorerJumpToCode;
     CodeExplorerView.OnShowOptions:=@OnCodeExplorerShowOptions;
-  end;
+  end else if State=iwgfDisabled then
+    CodeExplorerView.DisableAutoSizing;
 
-  if Show then
-  begin
-    IDEWindowCreators.ShowForm(CodeExplorerView,true);
+  if State>=iwgfShow then begin
+    IDEWindowCreators.ShowForm(CodeExplorerView,State=iwgfShowOnTop);
     CodeExplorerView.Refresh(true);
   end;
 end;
 
-procedure TMainIDE.DoShowCodeBrowser(Show: boolean);
+procedure TMainIDE.DoShowCodeBrowser(State: TIWGetFormState);
 begin
-  CreateCodeBrowser;
-  if Show then
-    IDEWindowCreators.ShowForm(CodeBrowserView,true);
+  CreateCodeBrowser(State=iwgfDisabled);
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(CodeBrowserView,State=iwgfShowOnTop);
 end;
 
-procedure TMainIDE.DoShowRestrictionBrowser(Show: boolean; const RestrictedName: String);
+procedure TMainIDE.DoShowRestrictionBrowser(const RestrictedName: String;
+  State: TIWGetFormState);
 begin
   if RestrictionBrowserView = nil then
-    RestrictionBrowserView := TRestrictionBrowserView.Create(OwningComponent);
+    IDEWindowCreators.CreateForm(RestrictionBrowserView,TRestrictionBrowserView,
+      State=iwgfDisabled,OwningComponent)
+  else if State=iwgfDisabled then
+    RestrictionBrowserView.DisableAutoSizing;
 
   RestrictionBrowserView.SetIssueName(RestrictedName);
-  if Show then
-    IDEWindowCreators.ShowForm(RestrictionBrowserView,true);
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(RestrictionBrowserView,State=iwgfShowOnTop);
 end;
 
-procedure TMainIDE.DoShowComponentList(Show: boolean);
+procedure TMainIDE.DoShowComponentList(State: TIWGetFormState);
 begin
   if ComponentListForm = nil then
   begin
-    ComponentListForm := TComponentListForm.Create(OwningComponent);
+    IDEWindowCreators.CreateForm(ComponentListForm,TComponentListForm,
+       State=iwgfDisabled,OwningComponent);
     ComponentListForm.Name:=NonModalIDEWindowNames[nmiwComponentList];
-  end;
-  if Show then
-    IDEWindowCreators.ShowForm(ComponentListForm,true);
+  end else if State=iwgfDisabled then
+    ComponentListForm.DisableAutoSizing;
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(ComponentListForm,State=iwgfShowOnTop);
 end;
 
-procedure TMainIDE.DoShowInspector(Show: boolean);
+procedure TMainIDE.DoShowJumpHistory(State: TIWGetFormState);
 begin
-  CreateObjectInspector;
-  if Show then begin
-    IDEWindowCreators.ShowForm(ObjectInspector1,true);
+  if JumpHistoryViewWin=nil then begin
+    IDEWindowCreators.CreateForm(JumpHistoryViewWin,TJumpHistoryViewWin,
+      State=iwgfDisabled,OwningComponent);
+    JumpHistoryViewWin.OnSelectionChanged := @JumpHistoryViewSelectionChanged;
+  end else if State=iwgfDisabled then
+    JumpHistoryViewWin.DisableAutoSizing;
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(JumpHistoryViewWin,State=iwgfShowOnTop);
+end;
+
+procedure TMainIDE.DoShowInspector(State: TIWGetFormState);
+begin
+  CreateObjectInspector(State=iwgfDisabled);
+  if State>=iwgfShow then begin
+    IDEWindowCreators.ShowForm(ObjectInspector1,State=iwgfShowOnTop);
     if ObjectInspector1.IsVisible then
     begin
       ObjectInspector1.FocusGrid;
@@ -5866,82 +5879,81 @@ procedure TMainIDE.CreateIDEWindow(Sender: TObject; aFormName: string; var
     Result:=SysUtils.CompareText(copy(aFormName,1,length(Prefix)),Prefix)=0;
   end;
 
+var
+  State: TIWGetFormState;
 begin
+  if DoDisableAutoSizing then
+    State:=iwgfDisabled
+  else
+    State:=iwgfEnabled;
   if ItIs(NonModalIDEWindowNames[nmiwMessagesViewName]) then
     AForm:=MessagesView
   else if ItIs(NonModalIDEWindowNames[nmiwUnitDependenciesName]) then
   begin
-    DoViewUnitDependencies(false);
+    ShowUnitDependencies(State);
     AForm:=UnitDependenciesWindow;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwCodeExplorerName]) then
   begin
-    DoShowCodeExplorer(false);
+    DoShowCodeExplorer(State);
     AForm:=CodeExplorerView;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwFPDocEditorName]) then
   begin
-    DoShowFPDocEditor(false,false);
+    DoShowFPDocEditor(State);
     AForm:=FPDocEditor;
   end
   // ToDo: nmiwClipbrdHistoryName:
   else if ItIs(NonModalIDEWindowNames[nmiwProjectInspector]) then
   begin
-    DoShowProjectInspector(false);
+    DoShowProjectInspector(State);
     AForm:=ProjInspector;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwSearchResultsViewName]) then
   begin
-    DoShowSearchResultsView(false);
+    DoShowSearchResultsView(State);
     AForm:=SearchResultsView;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwAnchorEditor]) then
   begin
-    DoViewAnchorEditor(false);
+    DoViewAnchorEditor(State);
     AForm:=AnchorDesigner;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwTabOrderEditor]) then
   begin
-    DoViewTabOrderEditor(false);
+    DoViewTabOrderEditor(State);
     AForm:=TabOrderDialog;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwCodeBrowser]) then
   begin
-    DoShowCodeBrowser(false);
+    DoShowCodeBrowser(State);
     AForm:=CodeBrowserView;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwIssueBrowser]) then
   begin
-    DoShowRestrictionBrowser(false);
+    DoShowRestrictionBrowser('',State);
     AForm:=RestrictionBrowserView;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwJumpHistory]) then
   begin
-    IDEWindowCreators.CreateForm(JumpHistoryViewWin,TJumpHistoryViewWin,
-      DoDisableAutoSizing,OwningComponent);
-    with JumpHistoryViewWin do begin
-      OnSelectionChanged := @JumpHistoryViewSelectionChanged;
-    end;
+    DoShowJumpHistory(State);
     AForm:=JumpHistoryViewWin;
-    exit;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwComponentList]) then
   begin
-    DoShowComponentList(false);
+    DoShowComponentList(State);
     AForm:=ComponentListForm;
   end
   else if ItIs(NonModalIDEWindowNames[nmiwEditorFileManager]) then
   begin
-    ShowEditorFileManagerForm(false);
+    ShowEditorFileManagerForm(State);
     AForm:=EditorFileManagerForm;
   end
   else if ItIs(DefaultObjectInspectorName) then
   begin
-    DoShowInspector(false);
+    DoShowInspector(State);
     AForm:=ObjectInspector1;
   end;
-  if (AForm<>nil) and DoDisableAutoSizing then
-    AForm.DisableAutoSizing;
 end;
 
 function TMainIDE.CreateNewUniqueFilename(const Prefix, Ext: string;
@@ -6275,10 +6287,11 @@ begin
     Project1.ProjectDirectory, MainBuildBoss.GetProjectPublishDir);
 end;
 
-procedure TMainIDE.DoShowProjectInspector(Show: boolean);
+procedure TMainIDE.DoShowProjectInspector(State: TIWGetFormState);
 begin
   if ProjInspector=nil then begin
-    ProjInspector:=TProjectInspectorForm.Create(OwningComponent);
+    IDEWindowCreators.CreateForm(ProjInspector,TProjectInspectorForm,
+       State=iwgfDisabled,LazarusIDE.OwningComponent);
     ProjInspector.OnShowOptions:=@mnuProjectOptionsClicked;
     ProjInspector.OnAddUnitToProject:=@ProjInspectorAddUnitToProject;
     ProjInspector.OnAddDependency:=@PkgBoss.OnProjectInspectorAddDependency;
@@ -6290,9 +6303,11 @@ begin
     ProjInspector.OnCopyMoveFiles:=@PkgBoss.OnProjectInspectorCopyMoveFiles;
 
     ProjInspector.LazProject:=Project1;
-  end;
-  if Show then
-    IDEWindowCreators.ShowForm(ProjInspector,true);
+  end else if STate=iwgfDisabled then
+    ProjInspector.DisableAlign;
+
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(ProjInspector,State=iwgfShowOnTop);
 end;
 
 function TMainIDE.DoAddActiveUnitToProject: TModalResult;
@@ -7998,7 +8013,7 @@ end;
 procedure TMainIDE.DoBringToFrontFormOrInspector(ForceInspector: boolean);
 begin
   if ForceInspector then begin
-    DoShowInspector(true);
+    DoShowInspector(iwgfShowOnTop);
     exit;
   end;
   {$IFDEF VerboseIDEDisplayState}
@@ -8008,7 +8023,7 @@ begin
   dsInspector: DoShowDesignerFormOfCurrentSrc;
   dsInspector2: DoShowSourceOfActiveDesignerForm;
   else
-    DoShowInspector(true);
+    DoShowInspector(iwgfShowOnTop);
   end;
 end;
 
@@ -8283,15 +8298,16 @@ begin
   IDEWindowCreators.ShowForm(MessagesView,BringToFront);
 end;
 
-procedure TMainIDE.DoShowSearchResultsView(Show: boolean; BringToFront: boolean = False);
+procedure TMainIDE.DoShowSearchResultsView(State: TIWGetFormState);
 begin
   if SearchresultsView=Nil then begin
-    SearchresultsView:=TSearchResultsView.Create(OwningComponent);
+    IDEWindowCreators.CreateForm(SearchresultsView,TSearchResultsView,
+       State=iwgfDisabled,LazarusIDE.OwningComponent);
     SearchresultsView.OnSelectionChanged := OnSearchResultsViewSelectionChanged;
-  end;
-  if Show then begin
-    IDEWindowCreators.ShowForm(SearchresultsView,BringToFront);
-  end;
+  end else if State=iwgfDisabled then
+    SearchResultsView.DisableAutoSizing;
+  if State>=iwgfShow then
+    IDEWindowCreators.ShowForm(SearchresultsView,State=iwgfShowOnTop);
 end;
 
 function TMainIDE.GetTestBuildDirectory: string;
@@ -9548,7 +9564,7 @@ begin
       exit;
     end;
 
-    LazarusIDE.DoShowSearchResultsView(false);
+    LazarusIDE.DoShowSearchResultsView(iwgfShow);
     // create a search result page
     //debugln(['ShowIdentifierReferences ',DbgSName(SearchResultsView)]);
     SearchPageIndex:=SearchResultsView.AddSearch(
@@ -10916,12 +10932,12 @@ end;
 
 procedure TMainIDE.OnDesignerShowAnchorEditor(Sender: TObject);
 begin
-  DoViewAnchorEditor(True);
+  DoViewAnchorEditor;
 end;
 
 procedure TMainIDE.OnDesignerShowTabOrderEditor(Sender: TObject);
 begin
-  DoViewTabOrderEditor(True);
+  DoViewTabOrderEditor;
 end;
 
 procedure TMainIDE.OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint;
@@ -11117,7 +11133,7 @@ end;
 
 procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender: TObject);
 begin
-  DoViewJumpHistory(true);
+  DoShowJumpHistory;
 end;
 
 procedure TMainIDE.OnSrcNoteBookPopupMenu(const AddMenuItemProc: TAddMenuItemProc);
@@ -11160,15 +11176,19 @@ begin
   end;
 end;
 
-procedure TMainIDE.CreateObjectInspector;
+procedure TMainIDE.CreateObjectInspector(aDisableAutoSize: boolean);
 begin
-  if ObjectInspector1<>nil then exit;
-  ObjectInspector1 := TObjectInspectorDlg.Create(OwningComponent);
+  if ObjectInspector1<>nil then begin
+    if aDisableAutoSize then
+      ObjectInspector1.DisableAutoSizing;
+    exit;
+  end;
+  IDEWindowCreators.CreateForm(ObjectInspector1,TObjectInspectorDlg,
+     aDisableAutoSize,OwningComponent);
   ObjectInspector1.Name:=DefaultObjectInspectorName;
   ObjectInspector1.ShowFavorites:=True;
   ObjectInspector1.ShowRestricted:=True;
   ObjectInspector1.Favorites:=LoadOIFavoriteProperties;
-//  ObjectInspector1.FindDeclarationPopupmenuItem.Visible:=true;
   ObjectInspector1.OnAddToFavorites:=@OIOnAddToFavorites;
   ObjectInspector1.OnFindDeclarationOfProperty:=@OIOnFindDeclarationOfProperty;
   ObjectInspector1.OnUpdateRestricted := @OIOnUpdateRestricted;

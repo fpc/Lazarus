@@ -990,7 +990,7 @@ function TPkgManager.PackageGraphExplorerOpenProject(Sender: TObject;
   AProject: TProject): TModalResult;
 begin
   if AProject<>Project1 then exit(mrCancel);
-  MainIDE.DoShowProjectInspector(true);
+  MainIDE.DoShowProjectInspector;
   Result:=mrOk;
 end;
 
@@ -1364,7 +1364,7 @@ begin
         if Dependency is TPkgDependency then begin
           // check if project
           if Dependency.Owner is TProject then begin
-            MainIDE.DoShowProjectInspector(true);
+            MainIDE.DoShowProjectInspector;
             Result:=IDEMessageDialogAb(lisPkgMangBrokenDependency,
               Format(lisPkgMangTheProjectRequiresThePackageButItWasNotFound,
                     [Dependency.AsString, LineEnding]),
@@ -3854,7 +3854,7 @@ begin
   if (ADependency.Owner is TProject) then begin
     // broken dependency used by project -> show project inspector
     if ADependency.Owner=Project1 then begin
-      MainIDE.DoShowProjectInspector(true);
+      MainIDE.DoShowProjectInspector;
       Msg:=Format(lisSeeProjectProjectInspector, [Msg]);
     end;
   end;

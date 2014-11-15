@@ -292,7 +292,7 @@ var
   SearchPageIndex: TTabSheet;
 begin
   Result:=mrCancel;
-  LazarusIDE.DoShowSearchResultsView(false);
+  LazarusIDE.DoShowSearchResultsView(iwgfShow);
   SearchPageIndex:=nil;
   try
     // show result

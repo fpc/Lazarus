@@ -64,7 +64,7 @@ uses
   CodeToolManager, CodeCache, AVL_Tree, SynEditKeyCmds,
   // IDEIntf
   PropEdits, ObjectInspector, MenuIntf, SrcEditorIntf, ProjectIntf,
-  CompOptsIntf, LazIDEIntf, IDEDialogs,
+  CompOptsIntf, LazIDEIntf, IDEDialogs, IDEWindowIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, ProjectDefs, Project, PublishModule, BuildLazDialog,
   TransferMacros, ProgressDlg, EnvironmentOpts, EditorOptions, CompilerOptions,
@@ -158,7 +158,7 @@ type
     function DoOpenMacroFile(Sender: TObject;
         const AFilename: string): TModalResult; virtual; abstract;
 
-    procedure DoShowProjectInspector(Show: boolean); virtual; abstract;
+    procedure DoShowProjectInspector(State: TIWGetFormState = iwgfShowOnTop); virtual; abstract;
     function PrepareForCompile: TModalResult; virtual; abstract; // stop things that interfere with compilation, like debugging
     function DoSaveBuildIDEConfigs(Flags: TBuildLazarusFlags): TModalResult; virtual; abstract;
     function DoExampleManager: TModalResult; virtual; abstract;

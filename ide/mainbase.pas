@@ -152,7 +152,6 @@ type
                            Flags: TCodeToolsFlags): boolean;
     procedure ActivateCodeToolAbortableMode;
     function OnCodeToolBossCheckAbort: boolean;
-    procedure CreateObjectInspector; virtual; abstract;
     procedure DoShowDesignerFormOfCurrentSrc; virtual; abstract;
     function CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
                         AComponent: TComponent): TCustomForm; virtual; abstract;
@@ -179,7 +178,7 @@ type
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
     procedure GetUnitWithPersistent(APersistent: TPersistent;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo); virtual; abstract;
-    procedure DoShowComponentList(Show: boolean); virtual; abstract;
+    procedure DoShowComponentList(State: TIWGetFormState = iwgfShowOnTop); virtual; abstract;
 
     function DoOpenMacroFile(Sender: TObject; const AFilename: string): TModalResult; override;
 

@@ -43,8 +43,8 @@ uses
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
-  LazarusIDEStrConsts, ComponentReg, ExtendedTabControls, DesignerProcs, PackageDefs,
-  EnvironmentOpts;
+  LazarusIDEStrConsts, ComponentReg, IDEWindowIntf, ExtendedTabControls,
+  DesignerProcs, PackageDefs, EnvironmentOpts;
 
 type
   TComponentSelectionMode = (
@@ -214,7 +214,7 @@ end;
 
 procedure TComponentPalette.ComponentListClicked(Sender: TObject);
 begin
-  MainIDE.DoShowComponentList(true);
+  MainIDE.DoShowComponentList;
 end;
 
 procedure TComponentPalette.PalettePopupMenuPopup(Sender: TObject);

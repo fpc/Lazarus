@@ -214,7 +214,7 @@ begin
   with cobCompiler do begin
     Items.BeginUpdate;
     Items.Assign(EnvironmentOptions.CompilerFileHistory);
-    AddFilenameToList(Items,'$(CompPath)');
+    AddFilenameToList(Items,DefaultCompilerPath);
     SetComboBoxText(cobCompiler,Options.CompilerPath,cstFilename);
     Items.EndUpdate;
   end;

@@ -5867,6 +5867,8 @@ resourcestring
   lisNewPage = 'New page';
   lisPageName = 'Page name';
   lis_All_ = '<All>';
+  lisJumpToProcedure = 'Jump to procedure %s';
+  lisFindDeclarationOf = 'Find Declaration of %s';
 implementation
 
 end.

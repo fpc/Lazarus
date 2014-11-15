@@ -49,7 +49,7 @@ uses
   LazFileCache,
   // codetools
   BasicCodeTools, CodeBeautifier, CodeToolManager, CodeCache, SourceLog,
-  LinkScanner,
+  LinkScanner, CodeTree,
   // synedit
   SynEditLines, SynEditStrConst, SynEditTypes, SynEdit, SynRegExpr,
   SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
@@ -6154,6 +6154,12 @@ var
   EditorPopupPoint, EditorCaret: TPoint;
   SelAvail, SelAvailAndWritable, AtIdentifier: Boolean;
   CurWordAtCursor: String;
+  CodeTool: TCodeTool;
+  CaretXY: TCodeXYPosition;
+  CleanPos: integer;
+  CodeNode: TCodeTreeNode;
+  ProcNode: TCodeTreeNode;
+  ProcName: String;
 begin
   SourceEditorMenuRoot.MenuItem:=SrcPopupMenu.Items;
   SourceEditorMenuRoot.BeginUpdate;
@@ -6183,11 +6189,34 @@ begin
     // add context specific menu items
     CurFilename:=ASrcEdit.FileName;
     ShortFileName:=ExtractFileName(CurFilename);
+    SelAvail:=ASrcEdit.EditorComponent.SelAvail;
+    SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);
+    CurWordAtCursor:=ASrcEdit.GetWordAtCurrentCaret;
+    AtIdentifier:=IsValidIdent(CurWordAtCursor);
+
+    // ask Codetools
     MainCodeBuf:=nil;
+    if FilenameIsPascalUnit(ShortFileName)
+    or (CompareFileExt(ShortFileName,'.inc',true)=0) then
+      MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer)
+    else if FilenameIsPascalSource(ShortFileName) then
+      MainCodeBuf:=ASrcEdit.CodeBuffer;
+    CodeTool:=nil;
+    CaretXY:=CleanCodeXYPosition;
+    CaretXY.Code:=ASrcEdit.CodeBuffer;
+    CaretXY.X:=ASrcEdit.CursorTextXY.X;
+    CaretXY.Y:=ASrcEdit.CursorTextXY.Y;
+    CodeNode:=nil;
+    if MainCodeBuf<>nil then begin
+      CodeToolBoss.Explore(MainCodeBuf,CodeTool,true);
+      if CodeTool<>nil then begin
+        CodeTool.CaretToCleanPos(CaretXY,CleanPos);
+        CodeNode:=CodeTool.FindDeepestNodeAtPos(CleanPos,false);
+      end;
+    end;
+
+
     if (FilenameIsAbsolute(CurFilename)) then begin
-      if FilenameIsPascalUnit(ShortFileName)
-      or (CompareFileExt(ShortFileName,'.inc',true)=0) then
-        MainCodeBuf:=CodeToolBoss.GetMainCode(ASrcEdit.CodeBuffer);
       if (MainCodeBuf<>nil) and (MainCodeBuf<>ASrcEdit.CodeBuffer)
       and (not MainCodeBuf.IsVirtual) then begin
         // this is an include file => add link to open unit
@@ -6204,6 +6233,7 @@ begin
         MaybeAddPopup('.lrs');
         MaybeAddPopup('.s');
       end;
+      // ToDo: unit resources
       if (CompareFileExt(ShortFileName,'.lfm',true)=0)
       or (CompareFileExt(ShortFileName,'.dfm',true)=0) then begin
         MaybeAddPopup('.pas');
@@ -6250,22 +6280,35 @@ begin
     EditorPopupPoint:=EditorComp.ScreenToClient(SrcPopUpMenu.PopupPoint);
     if EditorPopupPoint.X>EditorComp.Gutter.Width then begin
       // user clicked on text
-      // collect some flags
-      SelAvail:=ASrcEdit.EditorComponent.SelAvail;
-      SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);
-      // enable menu items
+      // enable search menu items
+      SrcEditMenuFindDeclaration.Enabled:=CurWordAtCursor<>'';
+      if CurWordAtCursor<>'' then
+        SrcEditMenuFindDeclaration.Caption:=Format(lisFindDeclarationOf, [
+          CurWordAtCursor])
+      else
+        SrcEditMenuFindDeclaration.Caption:=uemFindDeclaration;
+      SrcEditMenuFindIdentifierReferences.Enabled:=AtIdentifier;
+      SrcEditMenuFindUsedUnitReferences.Enabled:=AtIdentifier;
+      SrcEditMenuFindOverloads.Enabled:=AtIdentifier;
+      ProcName:='';
+      if CodeNode<>nil then begin
+        ProcNode:=CodeNode.GetNodeOfType(ctnProcedure);
+        if ProcNode<>nil then
+          ProcName:=CodeTool.ExtractProcName(ProcNode,[]);
+      end;
+      SrcEditMenuProcedureJump.Enabled:=(ProcName<>'');
+      if ProcName<>'' then
+        SrcEditMenuProcedureJump.Caption:=Format(lisJumpToProcedure, [ProcName])
+      else
+        SrcEditMenuProcedureJump.Caption:=uemProcedureJump;
+      // enable refactoring menu items
       SrcEditMenuEncloseSelection.Enabled := SelAvailAndWritable;
       SrcEditMenuEncloseInIFDEF.Enabled := SelAvailAndWritable;
       SrcEditMenuExtractProc.Enabled := SelAvailAndWritable;
       SrcEditMenuInvertAssignment.Enabled := SelAvailAndWritable;
-      CurWordAtCursor:=ASrcEdit.GetWordAtCurrentCaret;
-      AtIdentifier:=IsValidIdent(CurWordAtCursor);
-      SrcEditMenuFindIdentifierReferences.Enabled:=AtIdentifier;
-      SrcEditMenuFindUsedUnitReferences.Enabled:=AtIdentifier;
       SrcEditMenuRenameIdentifier.Enabled:=AtIdentifier and (not ASrcEdit.ReadOnly);
       SrcEditMenuShowAbstractMethods.Enabled:=not ASrcEdit.ReadOnly;
       SrcEditMenuShowEmptyMethods.Enabled:=not ASrcEdit.ReadOnly;
-      SrcEditMenuFindOverloads.Enabled:=AtIdentifier;
       SrcEditMenuMakeResourceString.Enabled:=not ASrcEdit.ReadOnly;
     end else
     begin
@@ -7269,7 +7312,7 @@ end;
 
 procedure TSourceNotebook.OnPopupOpenProjectInsp(Sender: TObject);
 begin
-  MainIDEInterface.DoShowProjectInspector(True);
+  MainIDEInterface.DoShowProjectInspector;
 end;
 
 procedure TSourceNotebook.OpenAtCursorClicked(Sender: TObject);
