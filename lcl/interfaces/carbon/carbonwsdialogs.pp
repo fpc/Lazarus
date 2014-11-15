@@ -279,8 +279,7 @@ begin
       if CallBackParms = nil then Exit;
       PMenuSpec := NavMenuItemSpecPtr(CallBackParms^.eventData.eventDataParms.param);
       if PMenuSpec = nil then Exit;
-      FileDialog.FilterIndex:= PMenuSpec^.menuType + 1;
-      FileDialog.DoTypeChange;
+      FileDialog.IntfFileTypeChanged(PMenuSpec^.menuType + 1);
     end;
   kNavCBSelectEntry:   // user has selected something
     begin
@@ -414,6 +413,7 @@ begin
 
     try
       // Display dialog
+      FileDialog.Handle := THandle(PtrUInt(DialogRef));
       if OSError(NavDialogRun(DialogRef), Self, SShowModal, 'NavDialogRun') then Exit;
       
       if NavDialogGetUserAction(DialogRef) <> kNavUserActionCancel then // User OK?
