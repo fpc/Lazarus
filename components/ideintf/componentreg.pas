@@ -408,16 +408,19 @@ begin
     Path:='ComponentPaletteOptions/';
 
     SubPath:=Path+'Pages/';
+    ConfigStore.DeletePath(SubPath);
     ConfigStore.SetDeleteValue(SubPath+'Count', FPageNames.Count, 0);
     for i:=0 to FPageNames.Count-1 do
       ConfigStore.SetDeleteValue(SubPath+'Item'+IntToStr(i+1)+'/Value', FPageNames[i], '');
 
     SubPath:=Path+'HiddenPages/';
+    ConfigStore.DeletePath(SubPath);
     ConfigStore.SetDeleteValue(SubPath+'Count', FHiddenPageNames.Count, 0);
     for i:=0 to FHiddenPageNames.Count-1 do
       ConfigStore.SetDeleteValue(SubPath+'Item'+IntToStr(i+1)+'/Value', FHiddenPageNames[i], '');
 
     SubPath:=Path+'ComponentPages/';
+    ConfigStore.DeletePath(SubPath);
     ConfigStore.SetDeleteValue(SubPath+'Count', FComponentPages.Count, 0);
     for i:=0 to FComponentPages.Count-1 do begin
       CompList:=FComponentPages.Objects[i] as TStringList;
