@@ -2120,6 +2120,8 @@ var
   bitmap: PGdkBitmap;
   Width, Height: integer;
   i: Integer;
+  APGList: PGList;
+  pixrenderer: PGtkCellRenderer;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetImageList')
   then Exit;
@@ -2167,6 +2169,18 @@ begin
             begin
               pixbuf := gdk_pixbuf_copy(GDIObj^.GDIPixbufObject);
             end;
+        end;
+        if GTK_IS_TREE_VIEW(Widgets^.MainView) and (TLVHack(ALV).Columns.Count > 0) and
+          not TLVHack(ALV).OwnerDraw then
+        begin
+          APGList := gtk_tree_view_column_get_cell_renderers(gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), 0));
+          pixrenderer := PGtkCellRenderer(g_list_last(APGList)^.prev^.data);
+          if Assigned(pixbuf) then
+            gtk_cell_renderer_set_fixed_size(pixrenderer, gdk_pixbuf_get_width(pixbuf) + 4, gdk_pixbuf_get_height(pixbuf) + 4)
+          else
+            gtk_cell_renderer_set_fixed_size(pixrenderer, -1, -1);
+          g_list_free(APGList);
+          gtk_tree_view_column_queue_resize(gtk_tree_view_get_column(PGtkTreeView(Widgets^.MainView), 0));
         end;
         Widgets^.Images.Add(pixbuf);
       finally
