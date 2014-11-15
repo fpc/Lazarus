@@ -11378,6 +11378,9 @@ begin
   Result := QListWidget_create(Parent);
 end;
 
+type
+  TCustomListViewHack = class(TCustomListView);
+
 procedure TQtListWidget.OwnerDataNeeded(ARect: TRect);
 var
   R: TRect;
@@ -11409,7 +11412,7 @@ begin
     TopItem := getRow(Item);
     RowHeight := getRowHeight(TopItem);
 
-    if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
+    if (TopItem < 0) or (TopItem > TCustomListViewHack(LCLObject).Items.Count - 1) then
       exit;
 
     i := 0;
@@ -11422,15 +11425,15 @@ begin
         TopItem := getRow(Item);
         RowHeight := getRowHeight(TopItem);
 
-        if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
+        if (TopItem < 0) or (TopItem > TCustomListViewHack(LCLObject).Items.Count - 1) then
           break;
 
-        if (TListView(LCLObject).Items[TopItem].ImageIndex <> -1) then
+        if (TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex <> -1) then
         begin
           // TODO: paint icons and reduce paint overhead by checking icon
         end;
 
-        WStr := GetUTF8String(TListView(LCLObject).Items[TopItem].Caption);
+        WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].Caption);
 
         // reduce paint overhead by checking text
         v := QVariant_create();
@@ -11441,7 +11444,7 @@ begin
           DataStr := '';
         QVariant_destroy(v);
 
-        ASelected := TListView(LCLObject).Items[TopItem].Selected;
+        ASelected := TCustomListViewHack(LCLObject).Items[TopItem].Selected;
 
         if (DataStr <> WStr) then
         begin
@@ -13429,7 +13432,7 @@ begin
     TopItem := getRow(item);
     RowHeight := getRowHeight(TopItem);
 
-    if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
+    if (TopItem < 0) or (TopItem > TCustomListViewHack(LCLObject).Items.Count - 1) then
       exit;
 
     i := 0;
@@ -13443,11 +13446,11 @@ begin
         TopItem := getRow(item);
         RowHeight := getRowHeight(TopItem);
 
-        if (TopItem < 0) or (TopItem > TListView(LCLObject).Items.Count - 1) then
+        if (TopItem < 0) or (TopItem > TCustomListViewHack(LCLObject).Items.Count - 1) then
           continue;
 
-        WStr := GetUTF8String(TListView(LCLObject).Items[TopItem].Caption);
-        ASelected := TListView(LCLObject).Items[TopItem].Selected;
+        WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].Caption);
+        ASelected := TCustomListViewHack(LCLObject).Items[TopItem].Selected;
 
         v := QVariant_create(PWideString(@WStr));
         try
@@ -13457,14 +13460,14 @@ begin
         end;
 
         ChildCount := QTreeWidgetItem_childCount(Item);
-        if ChildCount = TListView(LCLObject).Items[TopItem].SubItems.Count then
+        if ChildCount = TCustomListViewHack(LCLObject).Items[TopItem].SubItems.Count then
         begin
           for j := 0 to ChildCount - 1 do
           begin
             itemChild := QTreeWidgetItem_child(item, j);
             if itemChild <> nil then
             begin
-              WStr := GetUTF8String(TListView(LCLObject).Items[TopItem].SubItems[j]);
+              WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].SubItems[j]);
               v := QVariant_create(PWideString(@WStr));
               QTreeWidgetItem_setData(itemChild, 0, Ord(QtDisplayRole), v);
               QVariant_destroy(v);
@@ -13472,9 +13475,9 @@ begin
           end;
         end else
         begin
-          for j := 0 to TListView(LCLObject).Items[TopItem].SubItems.Count - 1 do
+          for j := 0 to TCustomListViewHack(LCLObject).Items[TopItem].SubItems.Count - 1 do
           begin
-            WStr := GetUTF8String(TListView(LCLObject).Items[TopItem].SubItems[j]);
+            WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].SubItems[j]);
             v := QVariant_create(PWideString(@WStr));
             QTreeWidgetItem_setData(item, j + 1, Ord(QtDisplayRole), v);
             QVariant_destroy(v);
@@ -14302,7 +14305,7 @@ begin
       B := False;
       if (ViewStyle = Ord(vsReport)) and (Previous <> nil) then
       begin
-        ListItem := TListView(LCLObject).Selected;
+        ListItem := TCustomListViewHack(LCLObject).Selected;
         if ListItem <> nil then
           B := ListItem.Index = AIndex;
       end;
@@ -14351,7 +14354,7 @@ begin
       if (ViewStyle = Ord(vsReport)) and (Current <> nil) and
         (Current <> Previous) then
       begin
-        ListItem := TListView(LCLObject).Selected;
+        ListItem := TCustomListViewHack(LCLObject).Selected;
         if ListItem <> nil then
           B := ListItem.Index = AIndex;
       end;
