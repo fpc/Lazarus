@@ -473,8 +473,6 @@ type
 
     // macros
     procedure InitMacros(AMacroList: TTransferMacroList);
-    function MacroFuncCompPath(const {%H-}s:string; const {%H-}Data: PtrInt;
-                               var {%H-}Abort: boolean): string;
     function MacroFuncFPCSrcDir(const {%H-}s:string; const {%H-}Data: PtrInt;
                                 var {%H-}Abort: boolean): string;
     function MacroFuncLazarusDir(const {%H-}s:string; const {%H-}Data: PtrInt;
@@ -2084,8 +2082,6 @@ end;
 
 procedure TEnvironmentOptions.InitMacros(AMacroList: TTransferMacroList);
 begin
-  AMacroList.Add(TTransferMacro.Create('CompPath','',
-                 lisCompilerFilename,@MacroFuncCompPath,[]));
   AMacroList.Add(TTransferMacro.Create('FPCSrcDir','',
                  lisFreePascalSourceDirectory,@MacroFuncFPCSrcDir,[]));
   AMacroList.Add(TTransferMacro.Create('LazarusDir','',
@@ -2102,13 +2098,6 @@ begin
                  lisConfigDirectory,@MacroFuncConfDir,[]));
   AMacroList.Add(TTransferMacro.Create('Home',GetUserDir,
                  lisUserSHomeDirectory, nil, []));
-end;
-
-function TEnvironmentOptions.MacroFuncCompPath(const s: string;
-  const Data: PtrInt; var Abort: boolean): string;
-// CompPath returns the default compiler file name of the environment options
-begin
-  Result:=GetParsedCompilerFilename;
 end;
 
 function TEnvironmentOptions.MacroFuncFPCSrcDir(const s: string;

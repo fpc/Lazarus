@@ -84,6 +84,8 @@ type
                              var {%H-}Abort: boolean): string;
     function MacroFuncEnv(const Param: string; const {%H-}Data: PtrInt;
                           var {%H-}Abort: boolean): string;
+    function MacroFuncCompPath(const {%H-}s:string; const {%H-}Data: PtrInt;
+                               var {%H-}Abort: boolean): string;
     function MacroFuncFPCMsgFile(const {%H-}Param: string; const {%H-}Data: PtrInt;
                           var {%H-}Abort: boolean): string;
     function MacroFuncFPCVer(const {%H-}Param: string; const {%H-}Data: PtrInt;
@@ -374,10 +376,14 @@ begin
                       lisTargetOS,@MacroFuncTargetOS,[]));
   GlobalMacroList.Add(TTransferMacro.Create('SrcOS','',
                       lisSrcOS,@MacroFuncSrcOS,[]));
+  GlobalMacroList.Add(TTransferMacro.Create('CompPath','',
+                      lisCompilerFilename,@MacroFuncCompPath,[]));
   GlobalMacroList.Add(TTransferMacro.Create('FPCVer','',
                       lisFPCVersionEG222, @MacroFuncFPCVer, []));
   GlobalMacroList.Add(TTransferMacro.Create('FPC_FULLVERSION','',
                       lisFPCFullVersionEG20701, @MacroFuncFPC_FULLVERSION, []));
+  GlobalMacroList.Add(TTransferMacro.Create('FPCMsgFile','',
+                     lisFPCMessageFile, @MacroFuncFPCMsgFile, []));
   GlobalMacroList.Add(TTransferMacro.Create('Params','',
                       lisCommandLineParamsOfProgram,@MacroFuncParams,[]));
   GlobalMacroList.Add(TTransferMacro.Create('ProjFile','',
@@ -402,8 +408,6 @@ begin
                       lisProjectOutDir,@MacroFuncProjOutDir,[]));
   GlobalMacroList.Add(TTransferMacro.Create('Env','',
                      lisEnvironmentVariableNameAsParameter, @MacroFuncEnv, []));
-  GlobalMacroList.Add(TTransferMacro.Create('FPCMsgFile','',
-                     lisFPCMessageFile, @MacroFuncFPCMsgFile, []));
   GlobalMacroList.Add(TTransferMacro.Create('MakeExe','',
                       lisMakeExe,@MacroFuncMakeExe,[]));
   GlobalMacroList.Add(TTransferMacro.Create('MakeLib','',
@@ -606,13 +610,16 @@ function TBuildManager.GetFPCompilerFilename: string;
 var
   s: string;
   AProject: TProject;
+  Opts: TProjectCompilerOptions;
 begin
   Result:='';
   if (FBuildTarget is TProject) then
   begin
     AProject:=TProject(FBuildTarget);
-    if ([crCompile,crBuild]*AProject.CompilerOptions.CompileReasons<>[])
-    and (AProject.CompilerOptions.CompilerPath<>'')
+    Opts:=AProject.CompilerOptions;
+    if ([crCompile,crBuild]*Opts.CompileReasons<>[])
+    and (Opts.CompilerPath<>'')
+    and (not Opts.ParsedOpts.Values[pcosCompilerPath].Parsing)
     then begin
       Result:=AProject.GetCompilerFilename;
       //debugln(['TBuildManager.GetFPCompilerFilename project compiler="',Result,'"']);
@@ -2212,6 +2219,18 @@ function TBuildManager.MacroFuncEnv(const Param: string; const Data: PtrInt;
   var Abort: boolean): string;
 begin
   Result:=GetEnvironmentVariableUTF8(Param);
+end;
+
+function TBuildManager.MacroFuncCompPath(const s: string; const Data: PtrInt;
+  var Abort: boolean): string;
+// if parameter is 'IDE' return the environment option
+// otherwise use active project's compiler
+begin
+  Result:='';
+  if CompareText(s,'IDE')<>0 then
+    Result:=GetFPCompilerFilename;
+  if Result='' then
+    Result:=EnvironmentOptions.GetParsedCompilerFilename;
 end;
 
 function TBuildManager.MacroFuncFPCMsgFile(const Param: string;
