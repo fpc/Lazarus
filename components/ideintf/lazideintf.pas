@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Dialogs, PropEdits, LazHelpHTML,
   IDEOptionsIntf, CompOptsIntf, ProjectIntf,
-  IDEExternToolIntf, SrcEditorIntf;
+  IDEExternToolIntf, SrcEditorIntf, IDEWindowIntf;
 
 type
   // open file flags
@@ -295,7 +295,8 @@ type
     procedure AbortBuild; virtual; abstract;
 
     // search results
-    procedure DoShowSearchResultsView(Show: boolean; BringToFront: boolean = False); virtual; abstract;
+    procedure DoShowSearchResultsView(Show: boolean; BringToFront: boolean = False); deprecated;
+    procedure DoShowSearchResultsView(State: TIWGetFormState = iwgfShowOnTop); virtual; abstract;
 
     // designer
     function GetDesignerForProjectEditor(AEditor: TSourceEditorInterface;
@@ -493,6 +494,22 @@ end;
 procedure TLazIDEInterface.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass; ACaption: String);
 begin
   DoOpenIDEOptions(AEditor, ACaption, [], []);
+end;
+
+procedure TLazIDEInterface.DoShowSearchResultsView(Show: boolean;
+  BringToFront: boolean);
+var
+  State: TIWGetFormState;
+begin
+  if Show then begin
+    if BringToFront then
+      State:=iwgfShowOnTop
+    else
+      State:=iwgfShow;
+  end else begin
+    State:=iwgfEnabled;
+  end;
+  DoShowSearchResultsView(State);
 end;
 
 procedure TLazIDEInterface.RemoveAllHandlersOfObject(AnObject: TObject);

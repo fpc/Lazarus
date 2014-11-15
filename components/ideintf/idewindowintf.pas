@@ -306,6 +306,13 @@ type
     iwcsNormal,
     iwcsDocked
     );
+  TIWGetFormState = (
+    iwgfDisabled, // create if not exist with disabled autosizing
+    iwgfEnabled, // create if not exists
+    iwgfShow, // create and show
+    iwgfShowOnTop // create, show and bring to front
+    );
+  TIWGetFormStates = set of TIWGetFormState;
 
   TCreateIDEWindowMethod = procedure(Sender: TObject; aFormName: string;
                 var AForm: TCustomForm; DoDisableAutoSizing: boolean) of object;
