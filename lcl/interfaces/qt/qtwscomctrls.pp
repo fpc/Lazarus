@@ -1988,19 +1988,10 @@ end;
 
 class procedure TQtWSCustomListView.SetImageList(const ALV: TCustomListView;
   const AList: TListViewImageList; const AValue: TCustomImageList);
-var
-  QtListWidget: TQtListWidget;
 begin
   if not WSCheckHandleAllocated(ALV, 'SetImageList') then
     Exit;
-
-  if not IsIconView(ALV) then
-    exit;
-
-  QtListWidget := TQtListWidget(ALV.Handle);
-  // issue #26770 , imediatelly apply changes.
-  if TViewStyle(QtListWidget.ViewStyle) in [vsIcon, vsSmallIcon] then
-    RecreateWnd(ALV);
+  RecreateWnd(ALV);
 end;
 
 class procedure TQtWSCustomListView.SetItemsCount(const ALV: TCustomListView;
