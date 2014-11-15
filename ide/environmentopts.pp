@@ -489,14 +489,15 @@ type
                               var {%H-}Abort: boolean): string;
 
     // auto save
-    property AskSaveSessionOnly: boolean read FAskSaveSessionOnly write FAskSaveSessionOnly; // ask even if only project session needs saving
+    // ask even if only project session needs saving
+    property AskSaveSessionOnly: boolean read FAskSaveSessionOnly write FAskSaveSessionOnly;
+    //
     property AutoSaveEditorFiles: boolean read FAutoSaveEditorFiles write FAutoSaveEditorFiles;
     property AutoSaveProject: boolean read FAutoSaveProject write FAutoSaveProject;
     property AutoSaveIntervalInSecs: integer read FAutoSaveIntervalInSecs write FAutoSaveIntervalInSecs;
        
     // window layouts
-    property IDEDialogLayoutList: TIDEDialogLayoutList
-                           read FIDEDialogLayoutList write FIDEDialogLayoutList;
+    property IDEDialogLayoutList: TIDEDialogLayoutList read FIDEDialogLayoutList;
     property SingleTaskBarButton: boolean read FSingleTaskBarButton
                                                write FSingleTaskBarButton;
     property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
@@ -530,8 +531,7 @@ type
     property GridSizeX: integer read FGridSizeX write FGridSizeX;
     property GridSizeY: integer read FGridSizeY write FGridSizeY;
     property ShowGuideLines: boolean read FShowGuideLines write FShowGuideLines;
-    property SnapToGuideLines: boolean
-                                 read FSnapToGuideLines write FSnapToGuideLines;
+    property SnapToGuideLines: boolean read FSnapToGuideLines write FSnapToGuideLines;
     property GuideLineColorLeftTop: TColor read FGuideLineColorLeftTop
                                            write FGuideLineColorLeftTop;
     property GuideLineColorRightBottom: TColor read FGuideLineColorRightBottom
@@ -562,8 +562,7 @@ type
                                              write FSwitchToFavoritesOITab;
 
     // object inspector
-    property ObjectInspectorOptions: TOIOptions read FObjectInspectorOptions
-                                                write FObjectInspectorOptions;
+    property ObjectInspectorOptions: TOIOptions read FObjectInspectorOptions;
 
     // project inspector
     property ProjInspSortAlphabetically: boolean read FProjInspSortAlphabetically
@@ -579,13 +578,11 @@ type
 
     // hints
     property CheckDiskChangesWithLoading: boolean read FCheckDiskChangesWithLoading
-                                             write FCheckDiskChangesWithLoading;
-    property ShowHintsForComponentPalette: boolean
-                                            read FShowHintsForComponentPalette
-                                            write FShowHintsForComponentPalette;
-    property ShowHintsForMainSpeedButtons: boolean
-                                            read FShowHintsForMainSpeedButtons
-                                            write FShowHintsForMainSpeedButtons;
+                                                 write FCheckDiskChangesWithLoading;
+    property ShowHintsForComponentPalette: boolean read FShowHintsForComponentPalette
+                                                  write FShowHintsForComponentPalette;
+    property ShowHintsForMainSpeedButtons: boolean read FShowHintsForMainSpeedButtons
+                                                  write FShowHintsForMainSpeedButtons;
     
     // files
     property LazarusDirectory: string read GetLazarusDirectory
@@ -598,16 +595,11 @@ type
                                               write FCompilerFileHistory;
     property FPCSourceDirectory: string read GetFPCSourceDirectory
                                         write SetFPCSourceDirectory;
-    property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory
-                                              write FFPCSourceDirHistory;
-    property MakeFilename: string read GetMakeFilename
-                                      write SetMakeFilename;
-    property MakeFileHistory: TStringList read FMakeFileHistory
-                                              write FMakeFileHistory;
-    property DebuggerFilename: string read GetDebuggerFilename
-                                      write SetDebuggerFilename;
-    property DebuggerFileHistory: TStringList read FDebuggerFileHistory
-                                              write FDebuggerFileHistory;
+    property FPCSourceDirHistory: TStringList read FFPCSourceDirHistory;
+    property MakeFilename: string read GetMakeFilename write SetMakeFilename;
+    property MakeFileHistory: TStringList read FMakeFileHistory;
+    property DebuggerFilename: string read GetDebuggerFilename write SetDebuggerFilename;
+    property DebuggerFileHistory: TStringList read FDebuggerFileHistory;
     property DebuggerSearchPath: string read GetDebuggerSearchPath
                                       write SetDebuggerSearchPath;
     property DebuggerShowStopMessage: boolean read FDebuggerShowStopMessage
@@ -620,12 +612,11 @@ type
                                              write FAutoCloseCompileDialog;
     property TestBuildDirectory: string read GetTestBuildDirectory
                                         write SetTestBuildDirectory;
-    property TestBuildDirHistory: TStringList read FTestBuildDirHistory
-                                              write FTestBuildDirHistory;
+    property TestBuildDirHistory: TStringList read FTestBuildDirHistory;
     property CompilerMessagesFilename: string read GetCompilerMessagesFilename
               write SetCompilerMessagesFilename; // non English translation file
-    property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory
-                                                     write FCompilerMessagesFileHistory;
+    property CompilerMessagesFileHistory: TStringList read FCompilerMessagesFileHistory;
+
     // Primary-config verification
     property LastCalledByLazarusFullPath: String read FLastCalledByLazarusFullPath write FLastCalledByLazarusFullPath;
 
@@ -654,20 +645,17 @@ type
     property DebuggerEventLogColors[AIndex: TDBGEventType]: TDebuggerEventLogColor read GetDebuggerEventLogColors write SetDebuggerEventLogColors;
 
     // recent files and directories
-    property RecentOpenFiles: TStringList read FRecentOpenFiles
-                                          write FRecentOpenFiles;
+    property RecentOpenFiles: TStringList read FRecentOpenFiles;
     property MaxRecentOpenFiles: integer read FMaxRecentOpenFiles
                                          write FMaxRecentOpenFiles;
     procedure AddToRecentOpenFiles(const AFilename: string);
     procedure RemoveFromRecentOpenFiles(const AFilename: string);
-    property RecentProjectFiles: TStringList read FRecentProjectFiles
-                                             write FRecentProjectFiles;
+    property RecentProjectFiles: TStringList read FRecentProjectFiles;
     property MaxRecentProjectFiles: integer read FMaxRecentProjectFiles
                                             write FMaxRecentProjectFiles;
     procedure AddToRecentProjectFiles(const AFilename: string);
     procedure RemoveFromRecentProjectFiles(const AFilename: string);
-    property RecentPackageFiles: TStringList read FRecentPackageFiles
-                                          write FRecentPackageFiles;
+    property RecentPackageFiles: TStringList read FRecentPackageFiles;
     property MaxRecentPackageFiles: integer read FMaxRecentPackageFiles
                                          write FMaxRecentPackageFiles;
     property LastSavedProjectFile: string read FLastSavedProjectFile
@@ -723,7 +711,7 @@ type
     property MsgViewFilenameStyle: TMsgWndFileNameStyle read FMsgViewFilenameStyle
                        write FMsgViewFilenameStyle;
     property MsgViewColors[c: TMsgWndColor]: TColor read GetMsgViewColors write SetMsgViewColors;
-    property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters write FMsgViewFilters;
+    property MsgViewFilters: TLMsgViewFilters read FMsgViewFilters;
 
     // glyphs
     property ShowButtonGlyphs: TApplicationShowGlyphs read FShowButtonGlyphs write FShowButtonGlyphs;
