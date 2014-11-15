@@ -4244,7 +4244,7 @@ function IdentifierPos(Search, Identifier: PChar): PtrInt;
 var
   i: Integer;
 begin
-  if Search=nil then exit(-1);
+  if (Search=nil) or (Search^=#0) then exit(-1);
   if Identifier=nil then exit(-1);
   Result:=0;
   while (IsIdentChar[Identifier[Result]]) do begin

@@ -1889,39 +1889,23 @@ begin
   case CTNode.Desc of
   ctnProcedure:
     begin
-      {$IFDEF CodeBrowseFix}
       Identifier:=Tool.ExtractProcName(CTNode,ProcIdentifierFlags);
-      Description:=Identifier;
-      {$ELSE}
-      Identifier:=Tool.ExtractProcHead(CTNode,ProcIdentifierFlags);
       Description:=Tool.ExtractProcHead(CTNode,ProcDescFlags);
-      {$ENDIF}
     end;
   ctnVarDefinition:
     begin
       Identifier:=Tool.ExtractDefinitionName(CTNode);
-      {$IFDEF CodeBrowseFix}
-      Description:=Identifier;
-      {$ELSE}
       Description:='var '+Identifier
                  +' : '+Shorten(Tool.ExtractDefinitionNodeType(CTNode));
-      {$ENDIF}
     end;
   ctnConstDefinition:
     begin
       Identifier:=Tool.ExtractDefinitionName(CTNode);
-      {$IFDEF CodeBrowseFix}
-      Description:=Identifier;
-      {$ELSE}
       Description:='const '+Shorten(Tool.ExtractNode(CTNode,NodeFlags));
-      {$ENDIF}
     end;
   ctnTypeDefinition,ctnGenericType:
     begin
       Identifier:=Tool.ExtractDefinitionName(CTNode);
-      {$IFDEF CodeBrowseFix}
-      Description:=Identifier;
-      {$ELSE}
       Description:='type '+Identifier;
       if CTNode.FirstChild<>nil then begin
         case CTNode.FirstChild.Desc of
@@ -1953,16 +1937,11 @@ begin
           Description:=Description+' = record';
         end;
       end;
-      {$ENDIF}
     end;
   ctnProperty:
     begin
       Identifier:=Tool.ExtractPropName(CTNode,false);
-      {$IFDEF CodeBrowseFix}
-      Description:=Identifier;
-      {$ELSE}
       Description:='property '+Shorten(Tool.ExtractProperty(CTNode,PropDescFlags));
-      {$ENDIF}
     end;
   ctnEnumIdentifier:
     begin
@@ -2006,8 +1985,12 @@ var
       Result:=ComparePrefixIdent(PChar(Pointer(LevelFilterText[LvlType])),
                                  PChar(Pointer(Identifier)));
     cbtfContains:
+      begin
       Result:=IdentifierPos(PChar(Pointer(LevelFilterText[LvlType])),
                             PChar(Pointer(Identifier)))>=0;
+      //if Result then
+      //  debugln(['IdentifierFitsFilter Identifier="',Identifier,'" Filter="',LevelFilterText[LvlType],'"']);
+      end
     else
       Result:=true;
     end;
@@ -2060,6 +2043,8 @@ var
       NewCodePos: TCodePosition;
     begin
       if not ShowIdentifiers then exit;
+      if ShownIdentifierCount>CodeBrowserMaxTVIdentifiers then exit;
+
       if DestUnit=nil then
         DestUnit:=TCodeBrowserUnit.Create('');
       CurUnit:=TCodeBrowserUnit(DestUnit);
@@ -2067,10 +2052,10 @@ var
       GetNodeDescription(CTTool,CTNode,Description,Identifier);
       NewNode:=CurUnit.AddNode(Description,Identifier);
       {$IFDEF VerboseCodeBrowser}
-      if (length(Description)>1000) then
+      if (length(Description)>100) then
         debugln(['AddIdentifierNode WARNING: big description ',CurUnit.Filename,' desc=',Description]);
       if IncUsedMem(NewNode.GetMemSize) then
-        debugln(['AddIdentifierNode used mem ',UsedMem,' ',CurUnit.Filename]);
+        debugln(['AddIdentifierNode used mem ',UsedMem,' ',CurUnit.Filename,' ',CurUnit.ChildNodeCount]);
       {$ENDIF}
       NewNode.Desc:=CTNode.Desc;
       CTTool.CleanPosToCodePos(CTNode.StartPos,NewCodePos);
@@ -2102,6 +2087,8 @@ var
         // identifier is not needed -> remove
         // ToDo: remove nodes later
         CurUnit.DeleteNode(NewNode);
+      end else begin
+        inc(ShownIdentifierCount);
       end;
     end;
     
@@ -2373,9 +2360,9 @@ begin
   for lvl:=Low(TCodeBrowserLevel) to High(TCodeBrowserLevel) do begin
     LevelFilterText[lvl]:=Options.LevelFilterText[lvl];
     LevelFilterType[lvl]:=Options.LevelFilterType[lvl];
+    debugln(['TCodeBrowserView.UpdateTreeView lvl=',ord(lvl),' type=',ord(LevelFilterType[lvl]),' filter="',LevelFilterText[lvl],'"']);
   end;
-  DebugLn(['TCodeBrowserView.UpdateTreeView UnitFilter=',LevelFilterText[cblUnits]]);
-  
+
   //DebugLn(['TCodeBrowserView.UpdateTreeView ShowPackages=',ShowPackages,' ShowUnits=',ShowUnits,' ShowIdentifiers=',ShowIdentifiers]);
 
   BrowseTreeView.Cursor:=crHourGlass;
@@ -2579,13 +2566,7 @@ begin
     case CTNode.Desc of
     ctnProcedure:
       begin
-        if SysUtils.CompareText(
-          {$IFDEF CodeBrowseFix}
-          Tool.ExtractProcName(CTNode,ProcIdentifierFlags)
-          {$ELSE}
-          Tool.ExtractProcHead(CTNode,ProcIdentifierFlags)
-          {$ENDIF}
-          ,
+        if SysUtils.CompareText(Tool.ExtractProcName(CTNode,ProcIdentifierFlags),
           Node.Identifier)<>0
         then
           exit; // source has changed
