@@ -1423,6 +1423,9 @@ var
   Str: WideString;
   i: Integer;
   AAlignment: QtAlignment;
+  AImages: TCustomImageList;
+  AMetric: Integer;
+  ASizeHint: TSize;
 begin
   if not WSCheckHandleAllocated(ALV, 'ItemInsert') then
     Exit;
@@ -1470,6 +1473,21 @@ begin
         QtTreeWidget.setItemData(TWI, i + 1, AItem);
       end;
     end;
+    // issue #27043
+    if (ALV.Items[AIndex].ImageIndex = -1) then
+    begin
+      AImages := TCustomListViewHack(ALV).LargeImages;
+      if not Assigned(AImages) then
+        AImages := TCustomListViewHack(ALV).SmallImages;
+      if Assigned(AImages) then
+      begin
+        AMetric := QStyle_pixelMetric(QApplication_style(), QStylePM_FocusFrameVMargin, nil, nil) * 2;
+        QTreeWidgetItem_sizeHint(TWI, @ASizeHint, 0);
+        ASizeHint.cy := AImages.Height + AMetric;
+        QTreeWidgetItem_setSizeHint(TWI, 0, @ASizeHint);
+      end;
+    end;
+
     QtTreeWidget.insertTopLevelItem(AIndex, TWI);
   end;
 end;
