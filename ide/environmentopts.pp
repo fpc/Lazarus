@@ -519,10 +519,8 @@ type
     // window menu list
     property IDENameForDesignedFormList: boolean read FIDENameForDesignedFormList
                                                write FIDENameForDesignedFormList;
-
     // component palette
-    property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions
-                                                         write FComponentPaletteOptions;
+    property ComponentPaletteOptions: TCompPaletteOptions read FComponentPaletteOptions;
 
     // form editor
     property ShowBorderSpacing: boolean read FShowBorderSpacing write FShowBorderSpacing;

@@ -213,7 +213,7 @@ begin
         for CompCnt := 0 to IDEComponentPalette.CompCount-1 do
         begin
           Comp := IDEComponentPalette.Comps[CompCnt];
-          if Comp.RealPage = Pg then
+          if Comp.OrigPageName = PgName then
             OrigComps.Add(Comp.ComponentClass.ClassName);
         end;
       end;

@@ -167,9 +167,10 @@ type
     FComps: TList;  // list of all TRegisteredComponent in all pages
     // New pages added and their priorities, ordered by priority.
     fOrigPagePriorities: TPagePriorityList;
-    // Pages ordered by user. Contains page name + another StringList
-    //  for component names, just like TCompPaletteOptions.ComponentPages.
+    // All pages, including the original ones, ordered by user. Contains page name +
+    // another StringList for component names, like TCompPaletteOptions.ComponentPages.
     fPagesUserOrder: TStringList;
+    //
     FHandlers: array[TComponentPaletteHandlerType] of TMethodList;
     FBaseComponentPageClass: TBaseComponentPageClass;
     FRegisteredComponentClass: TRegisteredComponentClass;
