@@ -231,8 +231,9 @@ var
   Node: TAVLTreeNode;
   Item: PStringToStringTreeItem;
   SubPath: String;
-  i, j: Integer;
+  i: Integer;
 begin
+  Config.DeletePath(Path);      // Make sure there are no old leftover items.
   Config.SetDeleteValue(Path+'Count', Tree.Tree.Count, 0);
   Node:=Tree.Tree.FindLowest;
   i:=0;
@@ -243,11 +244,6 @@ begin
     Config.SetDeleteValue(SubPath+'Value',Item^.Value,'');
     Node:=Tree.Tree.FindSuccessor(Node);
     inc(i);
-  end;
-  // Remove leftover items in case the list has become shorter.
-  for j:=i to i+10 do begin
-    SubPath:=Path+'Item'+IntToStr(j)+'/';
-    Config.DeletePath(SubPath);
   end;
 end;
 
