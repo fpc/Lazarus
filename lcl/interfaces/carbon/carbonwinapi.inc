@@ -3927,12 +3927,12 @@ end;
 
 function TCarbonWidgetSet.ShowScrollBar(Handle: HWND; wBar: Integer;
   bShow: Boolean): Boolean;
-var
-  CarbonControl: TCarbonControl;
+//var
+//  CarbonControl: TCarbonControl;
 begin
   Result:=false;
 
-  CarbonControl := TCarbonControl(Handle);
+  //CarbonControl := TCarbonControl(Handle);
 
   // ToDo:
 

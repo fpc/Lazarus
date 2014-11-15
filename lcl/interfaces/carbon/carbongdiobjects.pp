@@ -524,7 +524,6 @@ procedure TScanObject.ScanConvex;
 var
   PData, P: PByte;
   X, Xe, Y, SX,EX: Integer;
-  LC, C: Byte;
   {$ifdef DumpRegion}
   Line: string;
   {$endif}
