@@ -13386,6 +13386,9 @@ begin
           BeginEventProcessing;
           try
             Result := SlotMouseMove(Sender, Event);
+            // allow dnd inside listview (vsReport and vsList only).
+            if not Result and Assigned(LCLObject) and LCLObject.Dragging then
+              Result := True;
           finally
             EndEventProcessing;
           end;
