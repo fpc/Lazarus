@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-04 19:10+0100\n"
+"PO-Revision-Date: 2014-11-16 16:44+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -803,7 +803,7 @@ msgstr "Speichern unter (Pascaldateien in Kleinbuchstaben)"
 
 #: lazarusidestrconsts.dlgcheckandautosavefiles
 msgid "Check and Auto Save Files"
-msgstr ""
+msgstr "Automatisches Speichern"
 
 #: lazarusidestrconsts.dlgcheckpackagesonformcreate
 msgid "Check packages on form create"
@@ -1707,7 +1707,7 @@ msgstr "Reihenfolge der Prozeduren beibehalten"
 
 #: lazarusidestrconsts.dlgfpcexecutable
 msgid "Compiler executable (e.g. %s)"
-msgstr ""
+msgstr "Compilerdateiname (z.B. %s)"
 
 #: lazarusidestrconsts.dlgfpcsrcpath
 msgid "FPC source directory"
@@ -2087,7 +2087,7 @@ msgstr "Projektunits anzeigen"
 
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
-msgstr ""
+msgstr "Pfad zum \"Make\"-Programm"
 
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
@@ -2242,7 +2242,7 @@ msgstr "Methoden und Eigenschaften mischen"
 
 #: lazarusidestrconsts.dlgmouseaction
 msgid "Mouse Action"
-msgstr ""
+msgstr "Mausaktion"
 
 #: lazarusidestrconsts.dlgmouseoptbtn1
 msgid "Single"
@@ -2602,7 +2602,6 @@ msgid "Other optimizations"
 msgstr "Andere Optimierungen"
 
 #: lazarusidestrconsts.dlgotherunitfiles
-#, fuzzy
 #| msgid "Other unit files (-Fu) (delimiter is semicolon):"
 msgid "Other unit files (-Fu):"
 msgstr "Andere Units (-Fu) (Trenner ist der Strichpunkt):"
@@ -2757,7 +2756,7 @@ msgstr "Themen mit Manifest-Datei einschalten (nur in Windows)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
-msgstr ""
+msgstr "Doppelklick gegenüber Einfachklick bevorzugen"
 
 #: lazarusidestrconsts.dlgpriorities
 msgid "Priorities"
@@ -2908,7 +2907,7 @@ msgstr "Editorinformationen nur für Projektdateien speichern"
 
 #: lazarusidestrconsts.dlgsaveeditorinfoprojecthint
 msgid "Only files that belong to this project."
-msgstr ""
+msgstr "Nur Dateien, die zu diesem Projekt gehören."
 
 #: lazarusidestrconsts.dlgscope
 msgid "Scope"
@@ -2998,7 +2997,7 @@ msgstr "Debug-Informationen anzeigen"
 
 #: lazarusidestrconsts.dlgshowdesignerhints
 msgid "Show designer hints"
-msgstr ""
+msgstr "Zeige Designer-Hinweise"
 
 #: lazarusidestrconsts.dlgshowdesignerhintshint
 msgid "Hint shows control's position or size while moving or resizing it."
@@ -3036,7 +3035,7 @@ msgstr "Zeilennummern anzeigen"
 
 #: lazarusidestrconsts.dlgshowmessagesicons
 msgid "Show Messages Icons"
-msgstr ""
+msgstr "Zeige Nachrichten-Icons"
 
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
@@ -4228,7 +4227,7 @@ msgstr "Automatisch"
 
 #: lazarusidestrconsts.lisautomaticallyconvertlfmtolrs
 msgid "Automatically convert .lfm files to .lrs resource files"
-msgstr ""
+msgstr ".lfm-Dateien automatisch in .lrs-Ressourcendateien umwandeln"
 
 #: lazarusidestrconsts.lisautomaticallyignoreforselection
 msgid "do not complete selection"
@@ -5078,7 +5077,6 @@ msgid "Check All"
 msgstr ""
 
 #: lazarusidestrconsts.lischeckfordiskfilechangesviacontent
-#, fuzzy
 msgctxt "lazarusidestrconsts.lischeckfordiskfilechangesviacontent"
 msgid "Check for disk file changes via content rather than timestamp"
 msgstr "Dateiänderungen eher über den Inhalt als über den Zeitstempel ermitteln"
@@ -5127,7 +5125,7 @@ msgstr "Taste auswählen..."
 
 #: lazarusidestrconsts.lischooseanameforthecomponent
 msgid "Choose a name for the component"
-msgstr ""
+msgstr "Einen Namen für die Komponente wählen"
 
 #: lazarusidestrconsts.lischooseanexamplefile
 msgid "Choose an example file"
@@ -6855,7 +6853,7 @@ msgstr "Aktuell"
 
 #: lazarusidestrconsts.liscurrentlclwidgetset
 msgid "Current LCL widgetset: \"%s\""
-msgstr ""
+msgstr "Aktuelles LCL-Widgetset: \"%s\""
 
 #: lazarusidestrconsts.liscurrentstate
 msgid "Current state: "
@@ -7276,7 +7274,7 @@ msgstr "Löschen?"
 
 #: lazarusidestrconsts.lisdeleteaddition
 msgid "Delete addition \"%s\"?"
-msgstr ""
+msgstr "Hinzufügung \"%s\" löschen?"
 
 #: lazarusidestrconsts.lisdeleteall
 msgid "&Delete All"
@@ -7352,7 +7350,7 @@ msgstr "Ausgewähltes Makro löschen?"
 
 #: lazarusidestrconsts.lisdeletethisaddition
 msgid "Delete this addition"
-msgstr ""
+msgstr "Diese Hinzufügung löschen"
 
 #: lazarusidestrconsts.lisdeletevalue
 msgid "Delete value \"%s\"?"
@@ -7368,7 +7366,7 @@ msgstr "Löschen der Datei \"%s\" ist fehlgeschlagen."
 
 #: lazarusidestrconsts.lisdelimiterissemicolon
 msgid "Delimiter is semicolon."
-msgstr ""
+msgstr "Trenner ist Semikolon."
 
 #: lazarusidestrconsts.lisdelphi
 msgid "Delphi"
@@ -7376,7 +7374,7 @@ msgstr "Delphi"
 
 #: lazarusidestrconsts.lisdelphicompatibleresources
 msgid "Delphi compatible resources. Recommended."
-msgstr ""
+msgstr "Delphi-kompatible Ressourcen. Empfohlen."
 
 #: lazarusidestrconsts.lisdelphipackage
 msgid "Delphi package"
@@ -7954,7 +7952,7 @@ msgstr "Eingeschaltet"
 
 #: lazarusidestrconsts.lisenabledonlyforpackages
 msgid "Enabled only for packages."
-msgstr ""
+msgstr "Nur für Packages aktiviert."
 
 #: lazarusidestrconsts.lisenableflaguseunitofunitinpackage
 msgid ". Enable flag \"Use Unit\" of unit %s in package %s"
@@ -7990,7 +7988,7 @@ msgstr "In $IFDEF einschließen"
 
 #: lazarusidestrconsts.lisencodingnumberoffilesfailed
 msgid "Number of files failed to convert: %d"
-msgstr ""
+msgstr "Anzahl der nicht konvertierten Dateien: %d"
 
 #: lazarusidestrconsts.lisencodingoffileondiskisnewencodingis
 msgctxt "lazarusidestrconsts.lisencodingoffileondiskisnewencodingis"
@@ -8327,7 +8325,7 @@ msgstr "Den Includedateien-Suchpfad des Projekts mit%s\"%s\" erweitern?"
 
 #: lazarusidestrconsts.lisextendincludepath
 msgid "Extend include path?"
-msgstr ""
+msgstr "Includepfad erweitern?"
 
 #: lazarusidestrconsts.lisextendunitpath
 msgid "Extend unit path?"
@@ -8728,10 +8726,9 @@ msgid "FPC messages: Appendix"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
-#, fuzzy
 #| msgid "FPC resources"
 msgid "FPC resources (.res)"
-msgstr "FPC-Ressourcen"
+msgstr "FPC-Ressourcen (.res)"
 
 #: lazarusidestrconsts.lisfpcsources
 msgid "FPC sources"
@@ -9086,7 +9083,7 @@ msgstr "Waagrecht"
 
 #: lazarusidestrconsts.lishorizontallinesbetweenproperties
 msgid "Horizontal lines between properties."
-msgstr ""
+msgstr "Horizontale Linien zwischen den Eigenschaften."
 
 #: lazarusidestrconsts.lisid
 msgctxt "lazarusidestrconsts.lisid"
@@ -10653,7 +10650,6 @@ msgid "lpk is missing"
 msgstr "fehlende .lpk-Datei"
 
 #: lazarusidestrconsts.lislrsincludefiles
-#, fuzzy
 #| msgid "lrs include files"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "lrs Include-Dateien"
@@ -11975,7 +11971,7 @@ msgstr "(war \"%s\")"
 
 #: lazarusidestrconsts.lismode
 msgid ", Mode: %s"
-msgstr ""
+msgstr ", Modus: %s"
 
 #: lazarusidestrconsts.lismodifiedlgplnotice
 msgid ""
@@ -13991,7 +13987,6 @@ msgid "Pointer"
 msgstr "Zeiger"
 
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
-#, fuzzy
 #| msgid "Save in IDE config directory"
 msgid "Save in .lps file in IDE config directory"
 msgstr "Im IDE-Konfigurationsverzeichnis speichern"
@@ -14737,7 +14732,7 @@ msgstr ""
 
 #: lazarusidestrconsts.lisresourcenamemustbeunique
 msgid "Resource name must be unique."
-msgstr ""
+msgstr "Ressourcenname muss eindeutig sein."
 
 #: lazarusidestrconsts.lisresourcesaveerror
 msgid "Resource save error"
@@ -14996,7 +14991,6 @@ msgid "Save session changes to project %s?"
 msgstr "Sitzungsänderungen in Projekt %s speichern?"
 
 #: lazarusidestrconsts.lissavesessionfoldstate
-#, fuzzy
 msgctxt "lazarusidestrconsts.lissavesessionfoldstate"
 msgid "Save fold info"
 msgstr "Faltungsinformationen speichern"
@@ -15006,7 +15000,6 @@ msgid "Code editor supports folding (temporarily hiding) blocks of code."
 msgstr ""
 
 #: lazarusidestrconsts.lissavesessionjumphistory
-#, fuzzy
 msgctxt "lazarusidestrconsts.lissavesessionjumphistory"
 msgid "Save jump history"
 msgstr "Sprunghistorie speichern"
@@ -15077,7 +15070,7 @@ msgstr "Eintrag wählen"
 
 #: lazarusidestrconsts.lisselectanotherlclwidgetset
 msgid "Select another LCL widgetset (macro LCLWidgetType)"
-msgstr ""
+msgstr "Ein anderes LCL-Widgetset auswählen (Makro LCLWidgetType)"
 
 #: lazarusidestrconsts.lisselectdfmfiles
 msgid "Select Delphi form files (*.dfm)"
@@ -15209,7 +15202,6 @@ msgid "Show empty units/packages"
 msgstr "Leere Units/Packages anzeigen"
 
 #: lazarusidestrconsts.lisshowglyphsfor
-#, fuzzy
 #| msgid "Show Glyphs for:"
 msgid "Show Glyphs for"
 msgstr "Zeige Bildzeichen für"
@@ -15261,7 +15253,7 @@ msgstr "Zeige Position des Quelltexteditors"
 
 #: lazarusidestrconsts.lisshowrecentlyusedidentifiersattop
 msgid "Show recently used identifiers at top"
-msgstr ""
+msgstr "Zeige kürzlich benutzte Bezeichner oben an"
 
 #: lazarusidestrconsts.lisshowrelativepaths
 msgid "Show relative paths"
@@ -15284,7 +15276,6 @@ msgid "Show special characters"
 msgstr "Sonderzeichen anzeigen"
 
 #: lazarusidestrconsts.lisshowstatusbarinobjectinspector
-#, fuzzy
 #| msgid "Show status bar"
 msgid "Show statusbar"
 msgstr "Statusbalken anzeigen"
@@ -15351,7 +15342,7 @@ msgstr "Das Laden des letzten Projekts übergehen"
 
 #: lazarusidestrconsts.lisslowerbutmoreaccurate
 msgid "Slower but more accurate."
-msgstr ""
+msgstr "Langsamer dafür genauer."
 
 #: lazarusidestrconsts.lissmallerratherthanfaster
 msgid "Smaller rather than faster"
@@ -15367,7 +15358,7 @@ msgstr "Entschuldigung, dieser Typ ist (noch) nicht implementiert"
 
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
-msgstr ""
+msgstr "Nach Bereich sortieren"
 
 #: lazarusidestrconsts.lissortselascending
 msgid "Ascending"
@@ -15645,7 +15636,7 @@ msgstr "Ziel:"
 
 #: lazarusidestrconsts.listarget2
 msgid ", Target: %s"
-msgstr ""
+msgstr ", Ziel: %s"
 
 #: lazarusidestrconsts.listargetcpu
 msgid "Target CPU"
@@ -16440,19 +16431,19 @@ msgstr "(Suchen)"
 
 #: lazarusidestrconsts.lisudsearchnextoccurrenceofthisphrase
 msgid "Find next occurrence of this phrase"
-msgstr ""
+msgstr "Finde nächstes Vorkommen dieser Phrase"
 
 #: lazarusidestrconsts.lisudsearchnextunitofthisphrase
 msgid "Find next unit with this phrase"
-msgstr ""
+msgstr "Finde nächste Unit mit dieser Phrase"
 
 #: lazarusidestrconsts.lisudsearchpreviousoccurrenceofthisphrase
 msgid "Find previous occurrence of this phrase"
-msgstr ""
+msgstr "Finde vorheriges Vorkommen dieser Phrase"
 
 #: lazarusidestrconsts.lisudsearchpreviousunitofthisphrase
 msgid "Find previous unit with this phrase"
-msgstr ""
+msgstr "Finde vorherige Unit mit dieser Phrase"
 
 #: lazarusidestrconsts.lisudselectedunits
 msgid "Selected units"
