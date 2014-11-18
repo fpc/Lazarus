@@ -73,7 +73,6 @@ type
     fLocalUserOrder: TCompPaletteUserOrder;
     procedure WritePages(cpo: TCompPaletteOptions);
     procedure WriteComponents(cpo: TCompPaletteOptions);
-    procedure ClearPagesListBox;
     procedure FillPages;
     procedure InitialComps(aPageName: string; aCompList: TStringList);
     procedure FillComponents(aPageName: string);
@@ -235,15 +234,6 @@ begin
   end;
 end;
 
-procedure TCompPaletteOptionsFrame.ClearPagesListBox;
-var
-  i: Integer;
-begin
-  for i := 0 to PagesListBox.Items.Count-1 do
-    PagesListBox.Items.Objects[i].Free;
-  PagesListBox.Clear;
-end;
-
 procedure TCompPaletteOptionsFrame.FillPages;
 // Collect all available components (excluding hidden)
 var
@@ -251,20 +241,19 @@ var
   i: Integer;
   PgName: String;
 begin
-  if Assigned(IDEComponentPalette) then
+  for i := 0 to PagesListBox.Items.Count-1 do
+    PagesListBox.Items.Objects[i].Free;
+  PagesListBox.Clear;
+  PagesListBox.Items.Add(lis_All_);
+  for i := 0 to fLocalUserOrder.ComponentPages.Count-1 do
   begin
-    ClearPagesListBox;
-    PagesListBox.Items.Add(lis_All_);
-    for i := 0 to fLocalUserOrder.ComponentPages.Count-1 do
-    begin
-      PgName := fLocalUserOrder.ComponentPages[i];
-      Assert(PgName<>'', 'TCompPaletteOptionsFrame.FillPages: PageName is empty.');
-      CompList := TStringList.Create; // StringList will hold components for this page.
-      InitialComps(PgName, CompList);
-      PagesListBox.AddItem(PgName, CompList);
-    end;
-    PagesListBox.ItemIndex := 0;     // Activate first item
+    PgName := fLocalUserOrder.ComponentPages[i];
+    Assert(PgName<>'', 'TCompPaletteOptionsFrame.FillPages: PageName is empty.');
+    CompList := TStringList.Create; // StringList will hold components for this page.
+    InitialComps(PgName, CompList);
+    PagesListBox.AddItem(PgName, CompList);
   end;
+  PagesListBox.ItemIndex := 0;     // Activate first item
 end;
 
 procedure TCompPaletteOptionsFrame.InitialComps(aPageName: string; aCompList: TStringList);
