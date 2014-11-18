@@ -2116,6 +2116,8 @@ procedure TOICustomPropertyGrid.MouseDown(Button:TMouseButton;  Shift:TShiftStat
 var
   IconX,Index:integer;
   PointedRow:TOIpropertyGridRow;
+  Details: TThemedElementDetails;
+  Sz: TSize;
 begin
   //ShowMessageDialog('X'+IntToStr(X)+',Y'+IntToStr(Y));
   inherited MouseDown(Button,Shift,X,Y);
@@ -2144,8 +2146,11 @@ begin
               ExpandRow(Index);
           end;
         end;
-        // WasValueClick param is only for checkboxes, toggled if user clicks the square
-        SetItemIndexAndFocus(Index, (X>SplitterX) and (X<=SplitterX+PropCheckBoxSquareWidth));
+        // WasValueClick param is only for Boolean checkboxes, toggled if user
+        //  clicks the square. It has no effect for Boolean ComboBox editor.
+        Details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
+        Sz := ThemeServices.GetDetailSize(Details);
+        SetItemIndexAndFocus(Index, (X>SplitterX) and (X<=SplitterX+Sz.cx));
         SetCaptureControl(Self);
         Column := oipgcValue;
       end;

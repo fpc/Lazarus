@@ -31,7 +31,7 @@ uses
   GraphType, FPCAdds, // for StrToQWord in older fpc versions
   StringHashList, ButtonPanel, Graphics, StdCtrls, Buttons, Menus, LCLType,
   ExtCtrls, ComCtrls, LCLIntf, Dialogs, EditBtn, PropertyStorage, Grids, ValEdit,
-  FileUtil, FileCtrl, ObjInspStrConsts, PropEditUtils,
+  FileUtil, FileCtrl, ObjInspStrConsts, PropEditUtils, Themes,
   // Forms with .lfm files
   FrmSelectProps, StringsPropEditDlg, KeyValPropEditDlg, CollectionPropEditForm,
   FileFilterPropEditor;
@@ -441,8 +441,6 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
-
-const PropCheckBoxSquareWidth = 15;
 
 type
   { TBoolPropertyEditor
@@ -3247,69 +3245,27 @@ end;
 {$IFDEF UseOICheckBox}
 procedure TBoolPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
                                             AState: TPropEditDrawState);
-const
-  FRAME_LIGHT_GRAY = $00E2EFF1;
-  FRAME_GRAY       = $0099A8AC;
-  FRAME_DARK_GRAY  = $00646F71;
 var
   BRect: TRect;
-  DestPos: TPoint;
-  i: Integer;
+  Details: TThemedElementDetails;
+  Check: TThemedButton;
+  Sz: TSize;
 begin
-  // Draw a fake checkbox image (partly copied and modified from CustomDrawn code)
-  // first the square background
-  ACanvas.Pen.Style := psClear;
-  ACanvas.Brush.Style := bsSolid;
-  ACanvas.Brush.Color := clWhite;
+  // Draw the box using theme services.
+  if GetOrdValue <> 0 then
+    Check := tbCheckBoxCheckedNormal
+  else
+    Check := tbCheckBoxUncheckedNormal;
+  Details := ThemeServices.GetElementDetails(Check);
+  Sz := ThemeServices.GetDetailSize(Details);
   BRect := ARect;
-  BRect.Right:=BRect.Left+PropCheckBoxSquareWidth;
-  Inc(BRect.Top);
-  Dec(BRect.Bottom,3);
-  ACanvas.Rectangle(BRect);
-  // the square frame
-  Inc(BRect.Left);
-  Dec(BRect.Right);
-  Inc(BRect.Top);
-  Dec(BRect.Bottom);
-  // The Frame, except the lower-bottom which is white anyway
-  // outter top-right
-  ACanvas.Pen.Style := psSolid;
-  ACanvas.Pen.Color := FRAME_GRAY;
-  ACanvas.MoveTo(BRect.Left,    BRect.Bottom);
-  ACanvas.LineTo(BRect.Left,    BRect.Top);
-  ACanvas.LineTo(BRect.Right,   BRect.Top);
-  // inner top-right
-  ACanvas.Pen.Color := FRAME_DARK_GRAY;
-  ACanvas.MoveTo(BRect.Left+1,  BRect.Bottom-1);
-  ACanvas.LineTo(BRect.Left+1,  BRect.Top+1);
-  ACanvas.LineTo(BRect.Right-1, BRect.Top+1);
-  // inner bottom-right
-  ACanvas.Pen.Color := FRAME_LIGHT_GRAY;
-  ACanvas.MoveTo(BRect.Left+1,  BRect.Bottom-1);
-  ACanvas.LineTo(BRect.Right-1, BRect.Bottom-1);
-  ACanvas.LineTo(BRect.Right-1, BRect.Top);
-  // outter bottom-right
-  ACanvas.Pen.Color := clWhite;
-  ACanvas.MoveTo(BRect.Left,    BRect.Bottom);
-  ACanvas.LineTo(BRect.Right,   BRect.Bottom);
-  ACanvas.LineTo(BRect.Right,   BRect.Top);
-  // The Tickmark
-  if GetOrdValue <> 0 then begin
-    ACanvas.Pen.Color := clGray;
-    ACanvas.Pen.Style := psSolid;
-    DestPos.X := BRect.Left+3;
-    DestPos.Y := BRect.Top+6;
-    // 4 lines going down and to the right
-    for i := 0 to 3 do
-      ACanvas.Line(DestPos.X+i, DestPos.Y+i, DestPos.X+i, DestPos.Y+3+i);
-    // Now 5 lines going up and to the right
-    for i := 4 to 8 do
-     ACanvas.Line(DestPos.X+i, DestPos.Y+6-i, DestPos.X+i, DestPos.Y+9-i);
-  end;
-
+  Inc(BRect.Top, 3);
+  BRect.Right := BRect.Left + Sz.cx;
+  BRect.Bottom := BRect.Top + Sz.cy;
+  ThemeServices.DrawElement(ACanvas.Handle, Details, BRect, nil);
   // Write text after the image
   BRect := ARect;
-  Inc(BRect.Left, 17);
+  Inc(BRect.Left, Sz.cx+2);
   inherited PropDrawValue(ACanvas, BRect, AState);
 end;
 {$ENDIF}
