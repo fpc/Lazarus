@@ -73,6 +73,7 @@ type
     fLocalUserOrder: TCompPaletteUserOrder;
     procedure WritePages(cpo: TCompPaletteOptions);
     procedure WriteComponents(cpo: TCompPaletteOptions);
+    procedure ClearPagesListBox;
     procedure FillPages;
     procedure InitialComps(aPageName: string; aCompList: TStringList);
     procedure FillComponents(aPageName: string);
@@ -234,6 +235,15 @@ begin
   end;
 end;
 
+procedure TCompPaletteOptionsFrame.ClearPagesListBox;
+var
+  i: Integer;
+begin
+  for i := 0 to PagesListBox.Items.Count-1 do
+    PagesListBox.Items.Objects[i].Free;
+  PagesListBox.Clear;
+end;
+
 procedure TCompPaletteOptionsFrame.FillPages;
 // Collect all available components (excluding hidden)
 var
@@ -243,7 +253,7 @@ var
 begin
   if Assigned(IDEComponentPalette) then
   begin
-    PagesListBox.Clear;
+    ClearPagesListBox;
     PagesListBox.Items.Add(lis_All_);
     for i := 0 to fLocalUserOrder.ComponentPages.Count-1 do
     begin
