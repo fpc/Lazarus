@@ -2755,6 +2755,28 @@ begin
   end;
   CurSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
 
+  CompilerFilename:=ParsedOpts.GetParsedValue(pcosCompilerPath);
+  if IsFPCExecutable(CompilerFilename,s) then
+    FPCompilerFilename:=CompilerFilename
+  else
+    FPCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
+  CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
+    FPCompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
+
+  { ------------------ Target --------------------- }
+
+  { Target OS }
+  if (CurTargetOS<>'')
+  and ((TargetOS<>'') or (CurTargetOS<>DefaultTargetOS)) then
+    switches := switches + ' -T' + CurTargetOS;
+  { Target CPU }
+  if (CurTargetCPU<>'')
+  and ((TargetCPU<>'') or (CurTargetCPU<>DefaultTargetCPU)) then
+    switches := switches + ' -P' + CurTargetCPU;
+  { TargetProcessor }
+  if TargetProcessor<>'' then
+    Switches:=Switches+' -Cp'+UpperCase(TargetProcessor);
+
   { --------------- Parsing Tab ------------------- }
 
   { Assembler reading style  -Ratt = AT&T    -Rintel = Intel  -Rdirect = direct }
@@ -2768,13 +2790,6 @@ begin
   tempsw:=GetSyntaxOptionsString;
   if (tempsw <> '') then
     switches := switches + ' ' + tempsw;
-
-  { TODO: Implement the following switches. They need to be added
-          to the dialog. }
-{
-  -Un = Do not check the unit name
-  -Us = Compile a system unit
-}
 
   { ----------- Code Generation Tab --------------- }
 
@@ -2832,26 +2847,6 @@ begin
   // registers
   if (VariablesInRegisters) then
     Switches := Switches + ' -OoREGVAR';
-
-  CompilerFilename:=ParsedOpts.GetParsedValue(pcosCompilerPath);
-  if IsFPCExecutable(CompilerFilename,s) then
-    FPCompilerFilename:=CompilerFilename
-  else
-    FPCompilerFilename:=EnvironmentOptions.GetParsedCompilerFilename;
-  CodeToolBoss.FPCDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
-    FPCompilerFilename,'',DefaultTargetOS,DefaultTargetCPU);
-
-  { Target OS }
-  if (CurTargetOS<>'')
-  and ((TargetOS<>'') or (CurTargetOS<>DefaultTargetOS)) then
-    switches := switches + ' -T' + CurTargetOS;
-  { Target CPU }
-  if (CurTargetCPU<>'')
-  and ((TargetCPU<>'') or (CurTargetCPU<>DefaultTargetCPU)) then
-    switches := switches + ' -P' + CurTargetCPU;
-  { TargetProcessor }
-  if TargetProcessor<>'' then
-    Switches:=Switches+' -Cp'+UpperCase(TargetProcessor);
 
   { --------------- Linking Tab ------------------- }
 
@@ -2940,9 +2935,9 @@ begin
   { ---------------- Other Tab -------------------- }
 
   { Verbosity }
-  { The following switches will not be needed by the IDE
-      r = Rhide/GCC compatibility mode
-  }
+  if (WriteFPCLogo) then
+    switches := switches + ' -l';
+
   tempsw := '';
 
   if (ShowErrors) then
@@ -2978,6 +2973,13 @@ begin
     tempsw := '-v' + tempsw;
     switches := switches + ' ' + tempsw;
   end;
+
+  t := IDEMessageFlags.GetMsgIdList(',',cfvHide);
+  if t <> '' then
+    switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
+  t := IDEMessageFlags.GetMsgIdList(',',cfvShow);
+  if t <> '' then
+    switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
 
   if (StopAfterErrCount>1) then
     switches := switches + ' -Se'+IntToStr(StopAfterErrCount);
@@ -3034,54 +3036,7 @@ begin
       switches := switches + ' '+PrepareCmdLineOption('-FU'+CurOutputDir);
   end;
 
-  // verbosity
-  if (WriteFPCLogo) then
-    switches := switches + ' -l';
-  t := IDEMessageFlags.GetMsgIdList(',',cfvHide);
-  if t <> '' then
-    switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
-  t := IDEMessageFlags.GetMsgIdList(',',cfvShow);
-  if t <> '' then
-    switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
 
-
-  { ----------------------------------------------- }
-
-  { TODO: The following switches need to be implemented. They need to
-          be added to the dialog. }
-{
-  -P = Use pipes instead of files when assembling
-
-
-  -a = Delete generated assembler files
-  -al = Include source code lines in assembler files as comments
-  -ar = List register allocation in assembler files
-  -at = List temporary allocations and deallocations in assembler files
-  -Axxx = Assembler type
-       o = unix coff object file using GNU assembler as
-       nasmcoff = coff file using nasm assembler
-       nasmonj = obj file using nasm assembler
-       masm = obj file using Microsoft masm assembler
-       tasm = obj file using Borland tasm assembler
-
-  -B = Recompile all units even if they didn't change  ->  implemented by compiler.pp
-  -b = Generate browser info
-  -bl = Generate browser info, including local variables, types and procedures
-
-  -dxxx = Define symbol name xxx (Used for conditional compiles)
-  -uxxx = Undefine symbol name xxx
-
-  -Ce        Compilation with emulated floating point opcodes
-  -CR        verify object method call validity
-
-  -s = Do not call assembler or linker. Write ppas.bat/ppas.sh script.
-  -st        Generate script to link on target
-  -sh        Generate script to link on host
-  -V     write fpcdebug.txt file with lots of debugging info
-
-  -Xc = Link with C library (LINUX only)
-
-}
   // append -o Option if neccessary
   {   * -o to define the target file name.
       * -FE if the target file name is not in the project directory (where the lpi file is)
