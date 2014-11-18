@@ -144,8 +144,7 @@ procedure TCompilerParsingOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptio
 begin
   with AOptions as TBaseCompilerOptions do
   begin
-    if not fIsPackage then
-      SyntaxMode := CaptionToSyntaxMode(cmbSyntaxMode.Text);
+    SyntaxMode := CaptionToSyntaxMode(cmbSyntaxMode.Text);
 
     AssemblerStyle := grpAsmStyle.ItemIndex;
 
