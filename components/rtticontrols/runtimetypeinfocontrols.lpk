@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="RunTimeTypeInfoControls"/>
@@ -14,16 +14,13 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="LCL controls using the FreePascal RTTI to access TPersistent properties.
 
 "/>
     <License Value="LGPL"/>
     <Version Minor="1"/>
-    <Files Count="3">
+    <Files Count="2">
       <Item1>
         <Filename Value="rttictrls.pas"/>
         <HasRegisterProc Value="True"/>
@@ -34,10 +31,6 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="RTTIGrids"/>
       </Item2>
-      <Item3>
-        <Filename Value="rttictrls.lrs"/>
-        <Type Value="LRS"/>
-      </Item3>
     </Files>
     <LazDoc Paths="/home/mattias/pascal/wichtig/lazarus/components/rtticontrols/fpdoc"/>
     <Type Value="RunAndDesignTime"/>
