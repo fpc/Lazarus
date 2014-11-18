@@ -956,9 +956,8 @@ begin
   begin
     Name:='ValueCheckBox';
     Visible:=false;
-    AutoSize:=false;
     Enabled:=false;
-    SetBounds(0,-30,Width,Height); // hidden
+    AutoSize:=true;    // SetBounds does not work for CheckBox, AutoSize does.
     Parent:=Self;
     OnMouseDown := @ValueControlMouseDown;
     OnMouseMove := @ValueControlMouseMove;
@@ -1661,7 +1660,7 @@ begin
     FCurrentButton:=nil;
   end;
   FCurrentEditorLookupRoot:=nil;
-  if (NewIndex>=0) and (NewIndex<FRows.Count) then
+  if (NewIndex >= 0) and (NewIndex < FRows.Count) then
   begin
     NewRow:=Rows[NewIndex];
     ScrollToItem(NewIndex);
@@ -2572,38 +2571,32 @@ var
 
   function CompareRectangles(r1,r2:TRect):boolean;
   begin
-    Result:=(r1.Left=r2.Left) and (r1.Top=r2.Top) and (r1.Right=r2.Right)
-       and (r1.Bottom=r2.Bottom);
+    Result := (r1.Left=r2.Left) and (r1.Top=r2.Top)
+          and (r1.Right=r2.Right) and (r1.Bottom=r2.Bottom);
+  end;
+
+  function CompareTopLeft(r1,r2:TRect):boolean;
+  begin
+    Result := (r1.Left=r2.Left) and (r1.Top=r2.Top);
   end;
 
 // AlignEditComponents
 begin
-  if ItemIndex>=0
-  then begin
+  if ItemIndex>=0 then
+  begin
     RRect := RowRect(ItemIndex);
     EditCompRect := RRect;
     Dec(EditCompRect.Bottom);
 
-    if Layout = oilHorizontal
-    then begin
-      EditCompRect.Left := RRect.Left + SplitterX;
-      {$IFDEF UseOICheckBox}
-      {$IFDEF WINDOWS}
-      // Make the edit control short, it reveals redraw problems in many places
-      // on Windows. Normally the long control hides the problems.
-      // Note! This has nothing to do with CheckBox editors directly.
-      // CheckBox only revealed the problem originally because its caption
-      // does not cover all the drawing area.
-      EditCompRect.Right:=EditCompRect.Left+50; // This line can be removed
-      {$ENDIF}
-      {$ENDIF}
-    end
+    if Layout = oilHorizontal then
+      EditCompRect.Left := RRect.Left + SplitterX
     else begin
       EditCompRect.Top := RRect.Top + GetNameRowHeight;
       EditCompRect.Left := RRect.Left + GetTreeIconX(ItemIndex) + Indent;
     end;
 
-    if FCurrentButton<>nil then begin
+    if FCurrentButton<>nil then
+    begin
       // edit dialog button
       with EditBtnRect do begin
         Top := EditCompRect.Top;
@@ -2616,14 +2609,22 @@ begin
         FCurrentButton.BoundsRect:=EditBtnRect;
       //DebugLn(['TOICustomPropertyGrid.AlignEditComponents FCurrentButton.BoundsRect=',dbgs(FCurrentButton.BoundsRect),' EditBtnRect=',dbgs(EditBtnRect)]);
     end;
-    if FCurrentEdit<>nil then begin
+    if FCurrentEdit<>nil then
+    begin
       // resize the edit component
       Dec(EditCompRect.Left);
       Dec(EditCompRect.Top);
       Inc(EditCompRect.Bottom);
       //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
-      if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then begin
-        FCurrentEdit.BoundsRect:=EditCompRect;
+      if not CompareTopLeft(FCurrentEdit.BoundsRect,EditCompRect) then
+      begin
+        if FCurrentEdit is TCheckBox then
+        begin
+          TCheckBox(FCurrentEdit).Top := EditCompRect.Top;
+          TCheckBox(FCurrentEdit).Left := EditCompRect.Left;
+        end
+        else
+          FCurrentEdit.BoundsRect:=EditCompRect;
         if FCurrentEdit is TComboBox then
           TComboBox(FCurrentEdit).ItemHeight:=EditCompRect.Bottom-EditCompRect.Top-6;
         FCurrentEdit.Invalidate;
