@@ -2,7 +2,7 @@
 #
 #   Makefile.fpc for DebuggerIntf 0.1
 #
-#   This file was generated on 18-2-14
+#   This file was generated on 18-11-14
 
 [package]
 name=debuggerintf
@@ -11,7 +11,7 @@ version=0.1
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
 unitdir=../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) .
-options= -MObjFPC -Scghi -O1 -g -gl -vewnhi -l
+options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq
 
 [target]
 units=debuggerintf.pas

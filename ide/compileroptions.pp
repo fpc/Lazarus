@@ -2798,6 +2798,9 @@ begin
     switches := switches + ' -CX';
   if RelocatableUnit and (CurSrcOS='win') then
     switches := switches + ' -WR';
+  if (CurTargetOS='linux') or (CurTargetOS='freebsd') or (CurTargetOS='netbsd')
+  or (CurTargetOS='openbsd') or (CurTargetOS='solaris') then
+    switches := switches + ' -Cg'; // see bug 17412
 
   { Checks }
   tempsw := '';
