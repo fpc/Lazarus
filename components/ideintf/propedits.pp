@@ -451,10 +451,8 @@ type
     function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
-    {$IFDEF UseOICheckBox}
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
                             AState: TPropEditDrawState); override;
-    {$ENDIF}
   end;
 
 { TInt64PropertyEditor
@@ -1208,6 +1206,8 @@ type
   TPropHookModified = procedure(Sender: TObject) of object;
   TPropHookRevert = procedure(Instance:TPersistent; PropInfo:PPropInfo) of object;
   TPropHookRefreshPropertyValues = procedure of object;
+  // other
+  TPropHookGetCheckboxForBoolean = procedure(var Value: Boolean) of object;
 
   TPropHookType = (
     // lookup root
@@ -1247,7 +1247,9 @@ type
     htRevert,
     htRefreshPropertyValues,
     // dependencies
-    htAddDependency
+    htAddDependency,
+    // other
+    htGetCheckboxForBoolean
     );
 
   { TPropertyEditorHook }
@@ -1322,8 +1324,9 @@ type
     procedure Revert(Instance: TPersistent; PropInfo: PPropInfo);
     procedure RefreshPropertyValues;
     // dependencies
-    procedure AddDependency(const AClass: TClass;
-                            const AnUnitname: shortstring);
+    procedure AddDependency(const AClass: TClass; const AnUnitname: shortstring);
+    // other
+    function GetCheckboxForBoolean: Boolean;
   public
     // Handlers
     procedure RemoveAllHandlersForObject(const HandlerObject: TObject);
@@ -1445,6 +1448,8 @@ type
                                  const OnAddDependency: TPropHookAddDependency);
     procedure RemoveHandlerAddDependency(
                                  const OnAddDependency: TPropHookAddDependency);
+    procedure AddHandlerGetCheckboxForBoolean(
+                 const OnGetCheckboxForBoolean: TPropHookGetCheckboxForBoolean);
   end;
 
 //==============================================================================
@@ -3242,7 +3247,6 @@ begin
   SetOrdValue(I);
 end;
 
-{$IFDEF UseOICheckBox}
 procedure TBoolPropertyEditor.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
                                             AState: TPropEditDrawState);
 var
@@ -3251,24 +3255,26 @@ var
   Check: TThemedButton;
   Sz: TSize;
 begin
-  // Draw the box using theme services.
-  if GetOrdValue <> 0 then
-    Check := tbCheckBoxCheckedNormal
-  else
-    Check := tbCheckBoxUncheckedNormal;
-  Details := ThemeServices.GetElementDetails(Check);
-  Sz := ThemeServices.GetDetailSize(Details);
   BRect := ARect;
-  Inc(BRect.Top, 3);
-  BRect.Right := BRect.Left + Sz.cx;
-  BRect.Bottom := BRect.Top + Sz.cy;
-  ThemeServices.DrawElement(ACanvas.Handle, Details, BRect, nil);
-  // Write text after the image
-  BRect := ARect;
-  Inc(BRect.Left, Sz.cx+2);
+  if FPropertyHook.GetCheckboxForBoolean then
+  begin
+    // Draw the box using theme services.
+    if GetOrdValue <> 0 then
+      Check := tbCheckBoxCheckedNormal
+    else
+      Check := tbCheckBoxUncheckedNormal;
+    Details := ThemeServices.GetElementDetails(Check);
+    Sz := ThemeServices.GetDetailSize(Details);
+    Inc(BRect.Top, 3);
+    BRect.Right := BRect.Left + Sz.cx;
+    BRect.Bottom := BRect.Top + Sz.cy;
+    ThemeServices.DrawElement(ACanvas.Handle, Details, BRect, nil);
+    // Write text after the box
+    BRect := ARect;
+    Inc(BRect.Left, Sz.cx+2);
+  end;
   inherited PropDrawValue(ACanvas, BRect, AState);
 end;
-{$ENDIF}
 
 { TInt64PropertyEditor }
 
@@ -5812,6 +5818,16 @@ begin
     TPropHookRefreshPropertyValues(FHandlers[htRefreshPropertyValues][i])();
 end;
 
+function TPropertyEditorHook.GetCheckboxForBoolean: Boolean;
+var
+  i: Integer;
+begin
+  Result:=False;
+  i:=GetHandlerCount(htGetCheckboxForBoolean);
+  if i > 0 then
+    TPropHookGetCheckboxForBoolean(FHandlers[htGetCheckboxForBoolean][0])(Result);
+end;
+
 procedure TPropertyEditorHook.RemoveAllHandlersForObject(const HandlerObject: TObject);
 var
   HookType: TPropHookType;
@@ -6097,8 +6113,7 @@ begin
   RemoveHandler(htSetSelectedPersistents,TMethod(OnSetSelection));
 end;
 
-procedure TPropertyEditorHook.AddHandlerGetObject(
-  const OnGetObject: TPropHookGetObject);
+procedure TPropertyEditorHook.AddHandlerGetObject(const OnGetObject: TPropHookGetObject);
 begin
   AddHandler(htGetObject,TMethod(OnGetObject));
 end;
@@ -6189,6 +6204,12 @@ procedure TPropertyEditorHook.RemoveHandlerAddDependency(
   const OnAddDependency: TPropHookAddDependency);
 begin
   RemoveHandler(htAddDependency,TMethod(OnAddDependency));
+end;
+
+procedure TPropertyEditorHook.AddHandlerGetCheckboxForBoolean(
+  const OnGetCheckboxForBoolean: TPropHookGetCheckboxForBoolean);
+begin
+  AddHandler(htGetCheckboxForBoolean,TMethod(OnGetCheckboxForBoolean));
 end;
 
 procedure TPropertyEditorHook.SetLookupRoot(APersistent: TPersistent);

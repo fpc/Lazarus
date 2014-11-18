@@ -102,8 +102,9 @@ type
     FHighlightColor: TColor;
     FHighlightFontColor: TColor;
 
-    FShowHints: boolean;
+    FShowHints: Boolean;
     FAutoShow: Boolean;
+    FCheckboxForBoolean: Boolean;
     FBoldNonDefaultValues: Boolean;
     FDrawGridLines: Boolean;
     function FPropertyGridSplitterX(Page: TObjectInspectorPage): integer;
@@ -148,6 +149,7 @@ type
     property ShowHints: boolean read FShowHints
                                 write FShowHints;
     property AutoShow: boolean read FAutoShow write FAutoShow;
+    property CheckboxForBoolean: boolean read FCheckboxForBoolean write FCheckboxForBoolean;
     property BoldNonDefaultValues: boolean read FBoldNonDefaultValues write FBoldNonDefaultValues;
     property DrawGridLines: boolean read FDrawGridLines write FDrawGridLines;
     property ShowGutter: boolean read FShowGutter write FShowGutter;
@@ -264,6 +266,7 @@ type
     FReadOnlyColor: TColor;
     FRowSpacing: integer;
     FShowGutter: Boolean;
+    FCheckboxForBoolean: Boolean;
     FSubPropertiesColor: TColor;
     FChangeStep: integer;
     FCurrentButton: TControl; // nil or ValueButton
@@ -492,6 +495,8 @@ type
     property Selection: TPersistentSelectionList read FSelection
                                                  write SetSelection;
     property ShowGutter: Boolean read FShowGutter write SetShowGutter default True;
+    property CheckboxForBoolean: Boolean read FCheckboxForBoolean
+                                        write FCheckboxForBoolean;
     property PreferredSplitterX: integer read FPreferredSplitterX
                                          write FPreferredSplitterX default 100;
     property SplitterX: integer read FSplitterX write SetSplitterX default 100;
@@ -643,7 +648,6 @@ type
     procedure DoUpdateRestricted;
     procedure DoViewRestricted;
   private
-    FAutoShow: Boolean;
     FFavorites: TOIFavoriteProperties;
     FInfoBoxHeight: integer;
     FOnPropertyHint: TOIPropertyHint;
@@ -665,6 +669,8 @@ type
     FOnAddAvailablePersistent: TOnAddAvailablePersistent;
     FOnSelectPersistentsInOI: TNotifyEvent;
     FOnModified: TNotifyEvent;
+    FAutoShow: Boolean;
+    FCheckboxForBoolean: Boolean;
     FShowComponentTree: Boolean;
     FShowFavorites: Boolean;
     FShowInfoBox: Boolean;
@@ -715,6 +721,7 @@ type
     procedure SetAvailComboBoxText;
     procedure HookGetSelection(const ASelection: TPersistentSelectionList);
     procedure HookSetSelection(const ASelection: TPersistentSelectionList);
+    procedure HookGetCheckboxForBoolean(var Value: Boolean);
     procedure DestroyNoteBook;
     procedure CreateNoteBook;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -741,7 +748,6 @@ type
     procedure ActivateGrid(Grid: TOICustomPropertyGrid);
     procedure FocusGrid(Grid: TOICustomPropertyGrid = nil);
 
-    property AutoShow: Boolean read FAutoShow write FAutoShow;
     property ComponentPanelHeight: integer read GetComponentPanelHeight
                                           write SetComponentPanelHeight;
     property DefaultItemHeight: integer read FDefaultItemHeight
@@ -769,19 +775,21 @@ type
     property OnRemoveFromFavorites: TNotifyEvent read FOnRemoveFromFavorites
                                                   write FOnRemoveFromFavorites;
     property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
-    property OnSelectPersistentsInOI: TNotifyEvent
-                   read FOnSelectPersistentsInOI write FOnSelectPersistentsInOI;
-    property OnShowOptions: TNotifyEvent read FOnShowOptions
-                                         write SetOnShowOptions;
+    property OnSelectPersistentsInOI: TNotifyEvent read FOnSelectPersistentsInOI
+                                                  write FOnSelectPersistentsInOI;
+    property OnShowOptions: TNotifyEvent read FOnShowOptions write SetOnShowOptions;
     property OnUpdateRestricted: TNotifyEvent read FOnUpdateRestricted
                                          write FOnUpdateRestricted;
     property OnViewRestricted: TNotifyEvent read FOnViewRestricted write FOnViewRestricted;
-    property OnNodeGetImageIndex : TOnOINodeGetImageEvent read FOnNodeGetImageIndex write FOnNodeGetImageIndex;
-    property PropertyEditorHook: TPropertyEditorHook
-                           read FPropertyEditorHook write SetPropertyEditorHook;
+    property OnNodeGetImageIndex : TOnOINodeGetImageEvent read FOnNodeGetImageIndex
+                                                         write FOnNodeGetImageIndex;
+    property PropertyEditorHook: TPropertyEditorHook read FPropertyEditorHook
+                                                    write SetPropertyEditorHook;
     property RestrictedProps: TOIRestrictedProperties read FRestricted write SetRestricted;
-    property Selection: TPersistentSelectionList
-                                        read FSelection write SetSelection;
+    property Selection: TPersistentSelectionList read FSelection write SetSelection;
+    property AutoShow: Boolean read FAutoShow write FAutoShow;
+    property CheckboxForBoolean: Boolean read FCheckboxForBoolean
+                                        write FCheckboxForBoolean;
     property ShowComponentTree: Boolean read FShowComponentTree
                                         write SetShowComponentTree;
     property ShowFavorites: Boolean read FShowFavorites write SetShowFavorites;
@@ -1673,15 +1681,15 @@ begin
       //DebugLn(['TOICustomPropertyGrid.SetItemIndex FCurrentButton.BoundsRect=',dbgs(FCurrentButton.BoundsRect)]);
     end;
     NewValue:=NewRow.Editor.GetVisualValue;
-    {$IFDEF UseOICheckBox}
-    if (NewRow.Editor is TBoolPropertyEditor) then begin
+    if (NewRow.Editor is TBoolPropertyEditor) and FCheckboxForBoolean then
+    begin
       FCurrentEdit:=ValueCheckBox;
       ValueCheckBox.Enabled:=not NewRow.IsReadOnly;
       ValueCheckBox.Caption:=NewValue;
       ValueCheckBox.Checked:=(NewValue='True');
-    end else
-    {$ENDIF}
-    if paValueList in EditorAttributes then begin
+    end
+    else if paValueList in EditorAttributes then
+    begin
       FCurrentEdit:=ValueComboBox;
       if paCustomDrawn in EditorAttributes then
         ValueComboBox.Style:=csOwnerDrawVariable
@@ -1698,7 +1706,8 @@ begin
       Exclude(FStates,pgsGetComboItemsCalled);
       SetIdleEvent(true);
       ValueComboBox.Text:=NewValue;
-    end else begin
+    end
+    else begin
       FCurrentEdit:=ValueEdit;
       ValueEdit.ReadOnly:=NewRow.IsReadOnly;
       ValueEdit.Enabled:=true;
@@ -1706,7 +1715,8 @@ begin
       ValueEdit.Text:=NewValue;
     end;
     AlignEditComponents;
-    if FCurrentEdit<>nil then begin
+    if FCurrentEdit<>nil then
+    begin
       if FPropertyEditorHook<>nil then
         FCurrentEditorLookupRoot:=FPropertyEditorHook.LookupRoot;
       FCurrentEdit.Visible:=true;
@@ -3730,6 +3740,7 @@ begin
 
     FShowHints:=ConfigStore.GetValue(Path+'ShowHints',FileVersion>=3);
     FAutoShow := ConfigStore.GetValue(Path+'AutoShow',True);
+    FCheckboxForBoolean := ConfigStore.GetValue(Path+'CheckboxForBoolean',False);
     FBoldNonDefaultValues := ConfigStore.GetValue(Path+'BoldNonDefaultValues',True);
     FDrawGridLines := ConfigStore.GetValue(Path+'DrawGridLines',True);
     FShowGutter := ConfigStore.GetValue(Path+'ShowGutter',True);
@@ -3783,6 +3794,7 @@ begin
 
     ConfigStore.SetDeleteValue(Path+'ShowHints',FShowHints, True);
     ConfigStore.SetDeleteValue(Path+'AutoShow',FAutoShow, True);
+    ConfigStore.SetDeleteValue(Path+'CheckboxForBoolean',FCheckboxForBoolean, False);
     ConfigStore.SetDeleteValue(Path+'BoldNonDefaultValues',FBoldNonDefaultValues, True);
     ConfigStore.SetDeleteValue(Path+'DrawGridLines',FDrawGridLines, True);
     ConfigStore.SetDeleteValue(Path+'ShowGutter',FShowGutter, True);
@@ -3827,6 +3839,7 @@ begin
 
   FShowHints := AnObjInspector.PropertyGrid.ShowHint;
   FAutoShow := AnObjInspector.AutoShow;
+  FCheckboxForBoolean := AnObjInspector.CheckboxForBoolean;
   FBoldNonDefaultValues := fsBold in AnObjInspector.PropertyGrid.ValueFont.Style;
   FDrawGridLines := AnObjInspector.PropertyGrid.DrawHorzGridLines;
   FShowGutter := AnObjInspector.PropertyGrid.ShowGutter;
@@ -3855,11 +3868,12 @@ begin
     AssignTo(Grid);
   end;
   AnObjInspector.DefaultItemHeight := DefaultItemHeight;
+  AnObjInspector.AutoShow := AutoShow;
+  AnObjInspector.CheckboxForBoolean := FCheckboxForBoolean;
   AnObjInspector.ShowComponentTree := ShowComponentTree;
   AnObjInspector.ShowInfoBox := ShowInfoBox;
   AnObjInspector.ComponentPanelHeight := ComponentTreeHeight;
   AnObjInspector.InfoBoxHeight := InfoBoxHeight;
-  AnObjInspector.AutoShow := AutoShow;
   AnObjInspector.ShowStatusBar := ShowStatusBar;
 end;
 
@@ -3883,6 +3897,7 @@ begin
   AGrid.ShowHint := FShowHints;
   AGrid.DrawHorzGridLines := FDrawGridLines;
   AGrid.ShowGutter := FShowGutter;
+  AGrid.CheckboxForBoolean := FCheckboxForBoolean;
 end;
 
 
@@ -4095,6 +4110,7 @@ begin
     FPropertyEditorHook.AddHandlerRefreshPropertyValues(
                                                 @HookRefreshPropertyValues);
     FPropertyEditorHook.AddHandlerSetSelection(@HookSetSelection);
+    FPropertyEditorHook.AddHandlerGetCheckboxForBoolean(@HookGetCheckboxForBoolean);
     Selection := nil;
     for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
       if GridControl[Page]<>nil then
@@ -4709,6 +4725,11 @@ end;
 procedure TObjectInspectorDlg.HookSetSelection(const ASelection: TPersistentSelectionList);
 begin
   Selection := ASelection;
+end;
+
+procedure TObjectInspectorDlg.HookGetCheckboxForBoolean(var Value: Boolean);
+begin
+  Value := fCheckboxForBoolean;
 end;
 
 procedure TObjectInspectorDlg.SetShowComponentTree(const AValue: boolean);

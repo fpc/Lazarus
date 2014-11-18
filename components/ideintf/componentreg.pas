@@ -435,7 +435,7 @@ begin
     end;
   except
     on E: Exception do begin
-      DebugLn('ERROR: TOIOptions.Load: ',E.Message);
+      DebugLn('ERROR: TCompPaletteOptions.Load: ',E.Message);
       exit;
     end;
   end;
@@ -478,7 +478,7 @@ begin
     end;
   except
     on E: Exception do begin
-      DebugLn('ERROR: TOIOptions.Save: ',E.Message);
+      DebugLn('ERROR: TCompPaletteOptions.Save: ',E.Message);
       exit;
     end;
   end;

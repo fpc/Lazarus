@@ -51,6 +51,7 @@ type
     ooShowComponentTree,
     ooShowHints,
     ooAutoShow,
+    ooCheckboxForBoolean,
     ooBoldNonDefault,
     ooDrawGridLines,
     ooShowGutter,
@@ -83,14 +84,14 @@ type
     OIDrawGridLinesCheckBox: TCheckBox;
     OIOptionsGroupBox: TGroupBox;
     OIShowComponentTreeCheckBox: TCheckBox;
-    OIShowStatusBarCheckBox: TCheckBox;
     OIShowHintCheckBox: TCheckBox;
+    OIShowStatusBarCheckBox: TCheckBox;
+    OICheckboxForBooleanCheckBox: TCheckBox;
     OIShowInfoBoxCheckBox: TCheckBox;
     procedure BtnUseDefaultDelphiSettingsClick(Sender: TObject);
     procedure BtnUseDefaultLazarusSettingsClick(Sender: TObject);
     procedure ColorBoxChange(Sender: TObject);
-    procedure ColorsListBoxGetColors(Sender: TCustomColorListBox;
-      Items: TStrings);
+    procedure ColorsListBoxGetColors(Sender: TCustomColorListBox; Items: TStrings);
     procedure ColorsListBoxSelectionChange(Sender: TObject; User: boolean);
   private
     FLoaded: Boolean;
@@ -125,14 +126,15 @@ const
       { ocReadOnly      } DefReadOnlyColor
       );
     Options: (
-      { ooShowComponentTree } True,
-      { ooShowHints      } False,
-      { ooAutoShow       } True,
-      { ooBoldNonDefault } True,
-      { ooDrawGridLines  } True,
-      { ooShowGutter     } True,
-      { ooShowStatusBar  } True,
-      { ooShowInfoBox    } True
+      { ooShowComponentTree  } True,
+      { ooShowHints          } False,
+      { ooAutoShow           } True,
+      { ooCheckboxForBoolean } False,
+      { ooBoldNonDefault     } True,
+      { ooDrawGridLines      } True,
+      { ooShowGutter         } True,
+      { ooShowStatusBar      } True,
+      { ooShowInfoBox        } True
     );
   );
 
@@ -152,14 +154,15 @@ const
       { ocReadOnly      } clGrayText
       );
     Options: (
-      { ooShowComponentTree } True,
-      { ooShowHints      } False,
-      { ooAutoShow       } True,
-      { ooBoldNonDefault } True,
-      { ooDrawGridLines  } False,
-      { ooShowGutter     } True,
-      { ooShowStatusBar  } True,
-      { ooShowInfoBox    } False
+      { ooShowComponentTree  } True,
+      { ooShowHints          } False,
+      { ooAutoShow           } True,
+      { ooCheckboxForBoolean } False,
+      { ooBoldNonDefault     } True,
+      { ooDrawGridLines      } False,
+      { ooShowGutter         } True,
+      { ooShowStatusBar      } True,
+      { ooShowInfoBox        } False
     );
   );
 
@@ -171,9 +174,14 @@ begin
   OIMiscGroupBox.Caption := dlgOIMiscellaneous;
   OIOptionsGroupBox.Caption := dlgOIOptions;
   ObjectInspectorSpeedSettingsGroupBox.Caption := dlgOISpeedSettings;
+
+  BtnUseDefaultLazarusSettings.Caption := dlgOIUseDefaultLazarusSettings;
+  BtnUseDefaultDelphiSettings.Caption := dlgOIUseDefaultDelphiSettings;
   OIDefaultItemHeightLabel.Caption := dlgOIItemHeight;
   OIDefaultItemHeightSpinEdit.Hint := dlgHeightOfOnePropertyInGrid;
 
+  OIAutoShowCheckBox.Caption := lisAutoShowObjectInspector;
+  OIAutoShowCheckBox.Hint := lisObjectInspectorBecomesVisible;
   OIShowComponentTreeCheckBox.Caption := lisShowComponentTreeInObjectInspector;
   OIShowComponentTreeCheckBox.Hint := lisShowsAllControlsInTreeHierarchy;
   OIShowInfoBoxCheckBox.Caption := lisShowInfoBoxInObjectInspector;
@@ -183,16 +191,13 @@ begin
   OIShowHintCheckBox.Caption := lisShowHintsInObjectInspector;
   OIShowHintCheckBox.Hint := lisHintAtPropertysNameShowsDescription;
 
-  OIAutoShowCheckBox.Caption := lisAutoShowObjectInspector;
-  OIAutoShowCheckBox.Hint := lisObjectInspectorBecomesVisible;
+  OICheckboxForBooleanCheckBox.Caption := lisUseCheckBoxForBooleanValues;
+  OICheckboxForBooleanCheckBox.Hint := lisDefaultIsComboboxWithTrueAndFalse;
   OIBoldNonDefaultCheckBox.Caption := lisBoldNonDefaultObjectInspector;
   OIBoldNonDefaultCheckBox.Hint := lisValuesThatAreChangedFromDefault;
   OIShowGutterCheckBox.Caption := lisShowGutterInObjectInspector;
   OIDrawGridLinesCheckBox.Caption := lisDrawGridLinesObjectInspector;
   OIDrawGridLinesCheckBox.Hint := lisHorizontalLinesBetweenProperties;
-
-  BtnUseDefaultLazarusSettings.Caption := dlgOIUseDefaultLazarusSettings;
-  BtnUseDefaultDelphiSettings.Caption := dlgOIUseDefaultDelphiSettings;
 
   FLoaded := False;
 end;
@@ -228,6 +233,7 @@ begin
   OIShowComponentTreeCheckBox.Checked := ASettings.Options[ooShowComponentTree];
   OIShowHintCheckBox.Checked := ASettings.Options[ooShowHints];
   OIAutoShowCheckBox.Checked := ASettings.Options[ooAutoShow];
+  OICheckboxForBooleanCheckBox.Checked := ASettings.Options[ooCheckboxForBoolean];
   OIBoldNonDefaultCheckBox.Checked := ASettings.Options[ooBoldNonDefault];
   OIDrawGridLinesCheckBox.Checked := ASettings.Options[ooDrawGridLines];
   OIShowGutterCheckBox.Checked := ASettings.Options[ooShowGutter];
@@ -287,6 +293,7 @@ begin
   ASettings.Options[ooShowComponentTree] := o.ShowComponentTree;
   ASettings.Options[ooShowHints] := o.ShowHints;
   ASettings.Options[ooAutoShow] := o.AutoShow;
+  ASettings.Options[ooCheckboxForBoolean] := o.CheckboxForBoolean;
   ASettings.Options[ooBoldNonDefault] := o.BoldNonDefaultValues;
   ASettings.Options[ooDrawGridLines] := o.DrawGridLines;
   ASettings.Options[ooShowGutter] := o.ShowGutter;
@@ -317,6 +324,7 @@ begin
   o.ShowComponentTree := OIShowComponentTreeCheckBox.Checked;
   o.ShowHints := OIShowHintCheckBox.Checked;
   o.AutoShow := OIAutoShowCheckBox.Checked;
+  o.CheckboxForBoolean := OICheckboxForBooleanCheckBox.Checked;
   o.BoldNonDefaultValues := OIBoldNonDefaultCheckBox.Checked;
   o.DrawGridLines := OIDrawGridLinesCheckBox.Checked;
   o.ShowGutter := OIShowGutterCheckBox.Checked;
