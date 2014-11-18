@@ -25,10 +25,11 @@
  *                                                                         *
  ***************************************************************************
 
-  Author: Mattias Gaertner
+  Author: Mattias Gaertner, Juha Manninen
 
   Abstract:
    The implementation of the component palette.
+   Supports reordering of pages and components by user settings in environment options.
 }
 unit ComponentPalette;
 
@@ -52,6 +53,24 @@ type
     csmMulty   // don't reset selection on component add
   );
 
+  { TCompPaletteUserOrder }
+
+  // Like TCompPaletteOptions but collects all pages and components,
+  //  including the original ones. The palette is later synchronized with this.
+  TCompPaletteUserOrder = class(TBaseCompPaletteOptions)
+  private
+    fPalette: TBaseComponentPalette;
+    // Reference to either EnvironmentOptions.ComponentPaletteOptions or a copy of it.
+    fOptions: TCompPaletteOptions;
+  public
+    constructor Create(aPalette: TBaseComponentPalette);
+    destructor Destroy; override;
+    procedure Clear;
+    function SortPagesAndCompsUserOrder: Boolean;
+  public
+    property Options: TCompPaletteOptions read fOptions write fOptions;
+  end;
+
   { TComponentPalette }
 
   TComponentPalette = class(TBaseComponentPalette)
@@ -67,7 +86,8 @@ type
     procedure PalettePopupMenuPopup(Sender: TObject);
     procedure PopupMenuPopup(Sender: TObject);
   private
-    fComponents: TAVLTree; // tree of TRegisteredComponent sorted for componentclass
+    // Tree of TRegisteredComponent sorted for componentclass
+    fComponents: TAVLTree;
     FPageControl: TPageControl;
     fNoteBookNeedsUpdate: boolean;
     FOnOpenPackage: TNotifyEvent;
@@ -78,6 +98,8 @@ type
     fUnregisteredIcon: TCustomBitmap;
     fSelectButtonIcon: TCustomBitmap;
     fUpdatingPageControl: boolean;
+    // User ordered + original pages and components.
+    fUserOrder: TCompPaletteUserOrder;
     procedure SetPageControl(const AValue: TPageControl);
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
@@ -89,7 +111,6 @@ type
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure CreatePopupMenu;
     procedure UnselectAllButtons;
-    function SortPagesAndCompsUserOrder: Boolean;
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate(Changed: boolean); override;
@@ -104,10 +125,14 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Clear;
+    procedure ClearButtons;
+    function CreateNewPage(const NewPageName: string;
+                           const Priority: TComponentPriority): TBaseComponentPage;
+    function CreatePagesFromUserOrder: Boolean;
     procedure DoAfterComponentAdded; override;
     function GetUnregisteredIcon: TCustomBitmap;
     function GetSelectButtonIcon: TCustomBitmap;
-    procedure ClearButtons; override;
     function SelectButton(Button: TComponent): boolean;
     procedure ReAlignButtons(Page: TCustomPage);
     procedure UpdateNoteBookButtons;
@@ -124,6 +149,8 @@ type
     property OnOpenPackage: TNotifyEvent read FOnOpenPackage write FOnOpenPackage;
     property OnOpenUnit: TNotifyEvent read FOnOpenUnit write FOnOpenUnit;
     property OnClassSelected: TNotifyEvent read FOnClassSelected write FOnClassSelected;
+    // User ordered + original pages and components.
+    property UserOrder: TCompPaletteUserOrder read fUserOrder;
   end;
 
 function CompareControlsWithTag(Control1, Control2: Pointer): integer;
@@ -170,6 +197,66 @@ begin
     Result:=-1
   else
     Result:=0;
+end;
+
+{ TCompPaletteUserOrder }
+
+constructor TCompPaletteUserOrder.Create(aPalette: TBaseComponentPalette);
+begin
+  inherited Create;
+  fPalette:=aPalette;
+end;
+
+destructor TCompPaletteUserOrder.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TCompPaletteUserOrder.Clear;
+begin
+  inherited Clear;
+end;
+
+function TCompPaletteUserOrder.SortPagesAndCompsUserOrder: Boolean;
+// Calculate page order using user config and default order. User config takes priority.
+// This order will finally be shown in the palette.
+var
+  Comp: TRegisteredComponent;
+  DstComps: TStringList;
+  i, j: Integer;
+  PgName: String;
+begin
+  Result:=True;
+  Clear;
+  // First add user defined page order from EnvironmentOptions,
+  FComponentPages.Assign(fOptions.PageNames);
+  // then add other pages which don't have user configuration
+  for i := 0 to fPalette.OrigPagePriorities.Count-1 do
+  begin
+    PgName:=fPalette.OrigPagePriorities.Keys[i];
+    if (FComponentPages.IndexOf(PgName) = -1)
+    and (fOptions.HiddenPageNames.IndexOf(PgName) = -1) then
+      FComponentPages.Add(PgName);
+  end;
+  // Map components with their pages
+  for i := 0 to FComponentPages.Count-1 do
+  begin
+    PgName := FComponentPages[i];
+    DstComps := TStringList.Create;
+    FComponentPages.Objects[i] := DstComps;
+    j := fOptions.ComponentPages.IndexOf(PgName);
+    if j >= 0 then
+      // Add components that were reordered by user
+      DstComps.Assign(fOptions.ComponentPages.Objects[j] as TStringList)
+    else
+      // Add components that were not reordered.
+      for j := 0 to fPalette.Comps.Count-1 do begin
+        Comp := fPalette.Comps[j];
+        if SameText(Comp.OrigPageName, PgName) then
+          DstComps.Add(Comp.ComponentClass.ClassName);
+      end;
+  end;
 end;
 
 { TComponentPalette }
@@ -354,7 +441,7 @@ var
   CurPage: TBaseComponentPage;
   SelectButtonOnPage: TSpeedButton;
 begin
-  for i:=0 to PageCount-1 do begin
+  for i:=0 to Pages.Count-1 do begin
     CurPage:=Pages[i];
     if (FSelected=nil) or (FSelected.RealPage<>CurPage) then begin
       SelectButtonOnPage:=TSpeedButton(CurPage.SelectButton);
@@ -486,7 +573,9 @@ end;
 constructor TComponentPalette.Create;
 begin
   inherited Create;
-  FSelectionMode := csmSingle;
+  FSelectionMode:=csmSingle;
+  fUserOrder:=TCompPaletteUserOrder.Create(Self);
+  fUserOrder.Options:=EnvironmentOptions.ComponentPaletteOptions;
   fComponents:=TAVLTree.Create(@CompareRegisteredComponents);
   OnComponentIsInvisible:=@CheckComponentDesignerVisible;
 end;
@@ -497,11 +586,76 @@ begin
     OnComponentIsInvisible:=nil;
   PageControl:=nil;
   FreeAndNil(fComponents);
+  FreeAndNil(fUserOrder);
   FreeAndNil(fUnregisteredIcon);
   FreeAndNil(fSelectButtonIcon);
   FreeAndNil(PopupMenu);
   FreeAndNil(PalettePopupMenu);
   inherited Destroy;
+end;
+
+procedure TComponentPalette.Clear;
+begin
+  ClearButtons;
+  fUserOrder.Clear;
+  inherited Clear;
+end;
+
+procedure TComponentPalette.ClearButtons;
+begin
+  if FPageControl<>nil then
+    FPageControl.DisableAlign;
+  Selected:=nil;
+  if PopupMenu<>nil then begin
+    PopupMenu.Free;
+    PopupMenu:=nil;
+    OpenPackageMenuItem:=nil;
+  end;
+  if FPageControl<>nil then
+    FPageControl.EnableAlign;
+end;
+
+function TComponentPalette.CreateNewPage(const NewPageName: string;
+  const Priority: TComponentPriority): TBaseComponentPage;
+var
+  InsertIndex: Integer;
+begin
+  Result:=TBaseComponentPage.Create(NewPageName);
+  Result.Priority:=Priority;
+  InsertIndex:=0;
+  while (InsertIndex<Pages.Count)
+  and (ComparePriority(Priority,Pages[InsertIndex].Priority)<=0) do
+    inc(InsertIndex);
+  fPages.Insert(InsertIndex,Result);
+  Result.Palette:=Self;
+  if CompareText(NewPageName,'Hidden')=0 then
+    Result.Visible:=false;
+end;
+
+function TComponentPalette.CreatePagesFromUserOrder: Boolean;
+var
+  i, j: Integer;
+  PgName: String;
+  Pg: TBaseComponentPage;
+  CompNames: TStringList;
+  Comp: TRegisteredComponent;
+begin
+  Result := True;
+  for i:=0 to fPages.Count-1 do
+    fPages[i].Free;
+  fPages.Clear;
+  for i := 0 to fUserOrder.ComponentPages.Count-1 do
+  begin
+    PgName := fUserOrder.ComponentPages[i];
+    Pg:=CreateNewPage(PgName, ComponentPriorityNormal);
+    CompNames := TStringList(fUserOrder.ComponentPages.Objects[i]);
+    for j := 0 to CompNames.Count-1 do
+    begin
+      Comp := FindComponent(CompNames[j]);
+      if Assigned(Comp) then
+        Comp.RealPage := Pg;
+    end;
+  end;
 end;
 
 procedure TComponentPalette.DoAfterComponentAdded;
@@ -527,21 +681,6 @@ begin
   if fSelectButtonIcon=nil then 
     fSelectButtonIcon := CreateBitmapFromResourceName(hInstance, 'tmouse');
   Result:=fSelectButtonIcon;
-end;
-
-procedure TComponentPalette.ClearButtons;
-begin
-  if FPageControl<>nil then
-    FPageControl.DisableAlign;
-  Selected:=nil;
-  if PopupMenu<>nil then begin
-    PopupMenu.Free;
-    PopupMenu:=nil;
-    OpenPackageMenuItem:=nil;
-  end;
-  //inherited ClearButtons;
-  if FPageControl<>nil then
-    FPageControl.EnableAlign;
 end;
 
 function TComponentPalette.SelectButton(Button: TComponent): boolean;
@@ -620,71 +759,6 @@ begin
     if PageControl<>nil then
       PageControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
     FreeAndNil(ButtonTree);
-  end;
-end;
-
-function TComponentPalette.SortPagesAndCompsUserOrder: Boolean;
-// Calculate page order by user config and default order. User config takes priority.
-// This order will be shown in the palette.
-var
-  Pg: TBaseComponentPage;
-  Comp: TRegisteredComponent;
-  SrcComps, DstComps: TStringList;
-  i, DefPgInd, OptPgInd, CompInd: Integer;
-  PgName, CompName: String;
-begin
-  Result := True;
-  for i:=0 to PagesUserOrder.Count-1 do
-    PagesUserOrder.Objects[i].Free;   // Free also the contained StringList.
-  PagesUserOrder.Clear;
-  with EnvironmentOptions do begin
-    // First add user defined page order from EnvironmentOptions,
-    PagesUserOrder.Assign(ComponentPaletteOptions.PageNames);
-    // then add other pages which don't have user configuration
-    for DefPgInd := 0 to OrigPagePriorities.Count-1 do
-    begin
-      PgName:=OrigPagePriorities.Keys[DefPgInd];
-      if (PagesUserOrder.IndexOf(PgName) = -1)
-      and (ComponentPaletteOptions.HiddenPageNames.IndexOf(PgName) = -1) then
-        PagesUserOrder.Add(PgName);
-    end;
-    // Add pages and components for them
-    for i := 0 to PagesUserOrder.Count-1 do
-    begin
-      PgName := PagesUserOrder[i];
-      DefPgInd := IndexOfPageWithName(PgName);
-      if DefPgInd >= 0 then
-        Pg:=Pages[DefPgInd]
-      else begin
-        Pg:=CreateNewPage(PgName, ComponentPriorityNormal);
-      end;
-      DstComps := TStringList.Create;
-      PagesUserOrder.Objects[i] := DstComps;
-      OptPgInd := ComponentPaletteOptions.ComponentPages.IndexOf(PgName);
-      if OptPgInd >= 0 then
-      begin
-        // Add components that were reordered by user
-        SrcComps := ComponentPaletteOptions.ComponentPages.Objects[OptPgInd] as TStringList;
-        DstComps.Assign(SrcComps);
-        for CompInd := 0 to DstComps.Count-1 do
-        begin
-          CompName := DstComps[CompInd];
-          Comp := FindComponent(CompName);
-          Comp.RealPage := Pg;
-        end;
-      end
-      // Add components that were not reordered.
-      else begin
-        OptPgInd := CompCount;
-        for CompInd := 0 to CompCount-1 do begin
-          Comp := Comps[CompInd];
-          if SameText(Comp.OrigPageName, Pg.PageName) then begin
-            Comp.RealPage:=Pg;
-            DstComps.Add(Comp.ComponentClass.ClassName);
-          end;
-        end;
-      end;
-    end;
   end;
 end;
 
@@ -884,22 +958,24 @@ begin
   FPageControl.DisableAlign;
   try
     OldActivePage:=FPageControl.ActivePage;
-    SortPagesAndCompsUserOrder;      // Updates PagesUserOrder
+    fUserOrder.SortPagesAndCompsUserOrder;
+    CreatePagesFromUserOrder;
     // remove every page in the PageControl without a visible page
     for i:=FPageControl.PageCount-1 downto 0 do
       RemoveUnneededPage(FPageControl.Pages[i]);
     // insert a PageControl page for every visible palette page
     VisPageIndex := 0;
-    for i := 0 to PagesUserOrder.Count-1 do
+    for i := 0 to fUserOrder.ComponentPages.Count-1 do
     begin
-      PgName := PagesUserOrder[i];
+      PgName := fUserOrder.ComponentPages[i];
       PgInd := IndexOfPageName(PgName);
       if PgInd >= 0 then
       begin
         InsertVisiblePage(Pages[PgInd], VisPageIndex);
-        CreateButtons(PgInd, PagesUserOrder.Objects[i] as TStringList);
+        CreateButtons(PgInd, fUserOrder.ComponentPages.Objects[i] as TStringList);
       end;
     end;
+
     // restore active page
     if (OldActivePage<>nil) and (FPageControl.IndexOf(OldActivePage) >= 0) then
       FPageControl.ActivePage:=OldActivePage

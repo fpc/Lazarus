@@ -28,7 +28,7 @@ uses
   Classes, SysUtils,
   Graphics, Forms, Controls, StdCtrls, Dialogs, Buttons, ComCtrls, ExtCtrls,
   FileUtil, LCLProc, LCLType, IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
-  IDEOptionsIntf, IDEImagesIntf, ComponentReg, PackageDefs;
+  IDEOptionsIntf, IDEImagesIntf, ComponentReg, ComponentPalette, PackageDefs;
 
 type
   { TCompPaletteOptionsFrame }
@@ -69,6 +69,8 @@ type
     procedure PagesListBoxSelectionChange(Sender: TObject; User: boolean);
     procedure RestoreButtonClick(Sender: TObject);
   private
+    fLocalOptions: TCompPaletteOptions;
+    fLocalUserOrder: TCompPaletteUserOrder;
     procedure WritePages(cpo: TCompPaletteOptions);
     procedure WriteComponents(cpo: TCompPaletteOptions);
     procedure FillPages;
@@ -101,12 +103,16 @@ end;
 constructor TCompPaletteOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  fLocalOptions:=TCompPaletteOptions.Create;
+  fLocalUserOrder:=TCompPaletteUserOrder.Create(IDEComponentPalette);
 end;
 
 destructor TCompPaletteOptionsFrame.Destroy;
 var
   i: Integer;
 begin
+  fLocalUserOrder.Free;
+  fLocalOptions.Free;
   for i := 0 to PagesListBox.Count-1 do
     PagesListBox.Items.Objects[i].Free;     // Free the contained StringList.
   inherited Destroy;
@@ -119,9 +125,9 @@ begin
   RestoreButton.Caption := lisCmpRestoreDefaults;
 
   ComponentsGroupBox.Caption := lisCmpLstComponents;
-  ComponentsListView.Column[1].Caption  := lisName;
-  ComponentsListView.Column[2].Caption  := lisPage;
-  ComponentsListView.Column[3].Caption  := lisPackage;
+  ComponentsListView.Column[1].Caption := lisName;
+  ComponentsListView.Column[2].Caption := lisPage;
+  ComponentsListView.Column[3].Caption := lisPackage;
   ComponentsListView.SmallImages := IDEImages.Images_24;
   // Arrow buttons for pages
   PageMoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
@@ -141,7 +147,9 @@ end;
 
 procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
-  // AOptions is not needed because data is already loaded to IDEComponentPalette.
+  fLocalOptions.Assign((AOptions as TEnvironmentOptions).ComponentPaletteOptions);
+  fLocalUserOrder.Options:=fLocalOptions;
+  fLocalUserOrder.SortPagesAndCompsUserOrder;
   FillPages;
 end;
 
@@ -210,7 +218,7 @@ begin
       if Assigned(Pg) then       // Can be Nil if this page was added or renamed.
       begin
         // Collect original components from this page
-        for CompCnt := 0 to IDEComponentPalette.CompCount-1 do
+        for CompCnt := 0 to IDEComponentPalette.Comps.Count-1 do
         begin
           Comp := IDEComponentPalette.Comps[CompCnt];
           if Comp.OrigPageName = PgName then
@@ -219,7 +227,7 @@ begin
       end;
       // Differs from original order -> add configuration for components
       if not OrigComps.Equals(UserComps) then
-        cpo.AssignComponentPages(PgName, UserComps);
+        cpo.AssignComponentPage(PgName, UserComps);
     end;
   finally
     OrigComps.Free;
@@ -227,9 +235,8 @@ begin
 end;
 
 procedure TCompPaletteOptionsFrame.FillPages;
-//Collect all available components (excluding hidden)
+// Collect all available components (excluding hidden)
 var
-  Pg: TBaseComponentPage;
   CompList: TStringList;
   i: Integer;
   PgName: String;
@@ -238,17 +245,13 @@ begin
   begin
     PagesListBox.Clear;
     PagesListBox.Items.Add(lis_All_);
-    for i := 0 to IDEComponentPalette.PagesUserOrder.Count-1 do
+    for i := 0 to fLocalUserOrder.ComponentPages.Count-1 do
     begin
-      PgName := IDEComponentPalette.PagesUserOrder[i];
-      Pg := IDEComponentPalette.GetPage(PgName, True);
-      Assert(Assigned(Pg), 'TCompPaletteOptionsFrame.FillPages: PageName "'+PgName+'" not found.');
-      if (Pg<>nil) and Pg.Visible then
-      begin                     // StringList will hold components for this page.
-        CompList := TStringList.Create;
-        InitialComps(Pg.PageName, CompList);
-        PagesListBox.AddItem(Pg.PageName, CompList);
-      end;
+      PgName := fLocalUserOrder.ComponentPages[i];
+      Assert(PgName<>'', 'TCompPaletteOptionsFrame.FillPages: PageName is empty.');
+      CompList := TStringList.Create; // StringList will hold components for this page.
+      InitialComps(PgName, CompList);
+      PagesListBox.AddItem(PgName, CompList);
     end;
     PagesListBox.ItemIndex := 0;     // Activate first item
   end;
@@ -261,11 +264,11 @@ var
   i, PgInd: Integer;
   CompName: String;
 begin
-  PgInd := IDEComponentPalette.PagesUserOrder.IndexOf(aPageName);
+  PgInd := fLocalUserOrder.ComponentPages.IndexOf(aPageName);
   Assert(PgInd > -1, 'TCompPaletteOptionsFrame.InitialComps: PageName "'+aPageName+'" not found');
   if PgInd>=0 then
   begin
-    OrderedComps := IDEComponentPalette.PagesUserOrder.Objects[PgInd] as TStringList;
+    OrderedComps := fLocalUserOrder.ComponentPages.Objects[PgInd] as TStringList;
     for i := 0 to OrderedComps.Count-1 do
     begin
       CompName := OrderedComps[i];
@@ -333,7 +336,9 @@ end;
 
 procedure TCompPaletteOptionsFrame.RestoreButtonClick(Sender: TObject);
 begin
-  ; // ToDo
+  fLocalOptions.Clear;
+  fLocalUserOrder.SortPagesAndCompsUserOrder; // Only updates data structure.
+  FillPages;
 end;
 
 // Drag-drop PagesListBox
