@@ -2632,9 +2632,6 @@ begin
         begin
           FCurrentEdit.Top := EditCompRect.Top;
           FCurrentEdit.Left := EditCompRect.Left;
-          // For testing: Try to prevent redraw errors in some Windows machines.
-          //Canvas.Brush.Color := FBackgroundColor;
-          //Canvas.FillRect(EditCompRect);
         end
         else
           FCurrentEdit.BoundsRect:=EditCompRect;
@@ -2668,16 +2665,9 @@ begin
   Inc(FullRect.Bottom, FRowSpacing);
 
   if ARow = FItemIndex then 
-  begin
     if Layout = oilHorizontal then
-    begin
       if Assigned(FCurrentButton) and (FCurrentButton.Visible) then
         Dec(FullRect.Right, FCurrentButton.Width);
-
-      if Assigned(FCurrentEdit) and (FCurrentEdit.Visible) then
-        Dec(FullRect.Right, FCurrentEdit.Width);
-    end;
-  end;
 
   if Layout = oilHorizontal
   then begin
@@ -2785,7 +2775,6 @@ begin
       Font:=OldFont;
     end;
     CurRow.LastPaintedValue:=CurRow.Editor.GetVisualValue;
-
 
     // -----------------
     // frames
