@@ -18,7 +18,7 @@ uses
   Classes, SysUtils, types, math, typinfo,
   FPimage, FPCanvas,
   AvgLvlTree, LazLoggerBase, LMessages, LCLType, LResources,
-  GraphType, GraphMath, Graphics, Controls, ImgList, LCLIntf, Forms;
+  GraphType, GraphMath, Graphics, Controls, ImgList, LCLIntf, Forms, Themes;
 
 type
   TLazCtrlPalette = array of TFPColor;
@@ -409,7 +409,8 @@ type
     lgcNeedInvalidate,
     lgcNeedAutoLayout,
     lgcIgnoreGraphInvalidate,
-    lgcUpdatingScrollBars
+    lgcUpdatingScrollBars,
+    lgcFocusedPainting
     );
   TLvlGraphControlFlags = set of TLvlGraphControlFlag;
 
@@ -2035,6 +2036,8 @@ var
   p: TPoint;
   x: Integer;
   y: Integer;
+  Details: TThemedElementDetails;
+  NodeRect: TRect;
 begin
   Canvas.Font.Height:=round(single(TxtH)*NodeStyle.CaptionScale+0.5);
   for i:=0 to Graph.LevelCount-1 do begin
@@ -2056,15 +2059,22 @@ begin
       //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' DrawPosition=',Node.DrawPosition,' DrawSize=',Node.DrawSize,' TxtH=',TxtH,' TxtW=',TxtW,' p=',dbgs(p),' Selected=',Node.Selected]);
       x:=p.x-ScrollLeft;
       y:=p.y-ScrollTop;
-      Node.FDrawnCaptionRect:=Rect(x,y,x+TxtW,y+TxtH);
+      NodeRect:=Bounds(x,y,TxtW,TxtH);
+      Node.FDrawnCaptionRect:=NodeRect;
       if Node.Selected then begin
-        Canvas.Brush.Style:=bsSolid;
-        Canvas.Brush.Color:=clHighlight;
+        if lgcFocusedPainting in FFlags then
+          Details := ThemeServices.GetElementDetails(ttItemSelected)
+        else
+          Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
+        ThemeServices.DrawElement(Canvas.Handle, Details, NodeRect, nil);
       end else begin
-        Canvas.Brush.Style:=bsClear;
-        Canvas.Brush.Color:=clNone;
+        Details := ThemeServices.GetElementDetails(ttItemNormal);
+        //Canvas.Brush.Style:=bsClear;
+        //Canvas.Brush.Color:=clNone;
       end;
-      Canvas.TextOut(x,y,Node.Caption);
+      ThemeServices.DrawText(Canvas, Details, Node.Caption, NodeRect,
+           DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0)
+      //Canvas.TextOut(x,y,Node.Caption);
     end;
   end;
 end;
@@ -2459,6 +2469,8 @@ begin
   inherited Paint;
 
   Canvas.Font.Assign(Font);
+
+  Include(FFlags,lgcFocusedPainting);
 
   if (lgoAutoLayout in FOptions)
   and (lgcNeedAutoLayout in FFlags) then begin
