@@ -779,12 +779,10 @@ class function TCocoaWSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit
   ): integer;
 var
   txt: TCocoaTextView;
-  ns: NSArray;
 begin
   txt := MemoTextView(ACustomEdit);
   if not Assigned(txt) then Exit;
-  ns := txt.selectedRanges;
-  Result:=NSValue( ns.objectAtIndex(0) ).rangeValue.location;
+  Result := txt.selectedRange.location;
 end;
 
 class function TCocoaWSCustomMemo.GetSelLength(const ACustomEdit: TCustomEdit
@@ -795,8 +793,7 @@ var
 begin
   txt := MemoTextView(ACustomEdit);
   if not Assigned(txt) then Exit;
-  ns := txt.selectedRanges;
-  Result:=NSValue( ns.objectAtIndex(0) ).rangeValue.length;
+  Result := txt.selectedRange.length;
 end;
 
 class procedure TCocoaWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo;
