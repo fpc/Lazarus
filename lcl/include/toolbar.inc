@@ -868,7 +868,10 @@ begin
       end;
       
       // adjust NewWidth, NewHeight
-      NewWidth := Max(NewWidth, x + w + AdjustClientFrame.Right);
+      if Vertical or RowsLeftToRight then
+        NewWidth := Max(NewWidth, x + w + AdjustClientFrame.Right)
+      else
+        NewWidth := Max(NewWidth, ARect.Right - x + ARect.Left + AdjustClientFrame.Right);
       NewHeight := Max(NewHeight, y + h + AdjustClientFrame.Bottom);
 
       // step to next position
