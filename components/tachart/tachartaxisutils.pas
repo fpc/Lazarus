@@ -326,7 +326,9 @@ var
 begin
   coord := GraphToImage(AMark);
   if
-    not IsInClipRange(coord) or not InRangeUlps(AMark, FValueMin, FValueMax, 2)
+    not IsInClipRange(coord) or
+    ((FValueMax >= FValueMin) and not InRangeUlps(AMark, FValueMin, FValueMax, 2)) or
+    ((FValueMax < FValueMin) and not InRangeUlps(AMark, FValueMax, FValueMin, 2))
   then exit;
 
   if FAxis.Grid.Visible then begin
