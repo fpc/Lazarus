@@ -132,6 +132,9 @@ type
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
 
+    class function GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
+    class function GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
@@ -770,6 +773,30 @@ begin
     Result := TCocoaMemoStrings.Create(txt)
   else
     Result := nil
+end;
+
+class function TCocoaWSCustomMemo.GetSelStart(const ACustomEdit: TCustomEdit
+  ): integer;
+var
+  txt: TCocoaTextView;
+  ns: NSArray;
+begin
+  txt := MemoTextView(ACustomEdit);
+  if not Assigned(txt) then Exit;
+  ns := txt.selectedRanges;
+  Result:=NSValue( ns.objectAtIndex(0) ).rangeValue.location;
+end;
+
+class function TCocoaWSCustomMemo.GetSelLength(const ACustomEdit: TCustomEdit
+  ): integer;
+var
+  txt: TCocoaTextView;
+  ns: NSArray;
+begin
+  txt := MemoTextView(ACustomEdit);
+  if not Assigned(txt) then Exit;
+  ns := txt.selectedRanges;
+  Result:=NSValue( ns.objectAtIndex(0) ).rangeValue.length;
 end;
 
 class procedure TCocoaWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo;
