@@ -2700,7 +2700,7 @@ begin
   else
   begin
     inc(NameIconRect.Right, 2 + Ord(ShowGutter));
-    inc(NameTextRect.Left, 3 +  + Ord(ShowGutter));
+    inc(NameTextRect.Left,  3 + Ord(ShowGutter));
   end;
 
   DrawState:=[];
