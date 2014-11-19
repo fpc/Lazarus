@@ -2622,21 +2622,18 @@ begin
     if FCurrentEdit<>nil then
     begin
       // resize the edit component
-      Dec(EditCompRect.Left);
-      Dec(EditCompRect.Top);
-      Inc(EditCompRect.Bottom);
+      if (FCurrentEdit is TEdit) or (FCurrentEdit is TComboBox) then
+      begin
+        Dec(EditCompRect.Left);
+        Dec(EditCompRect.Top);
+        Inc(EditCompRect.Bottom);
+      end;
       //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
       if not CompareTopLeft(FCurrentEdit.BoundsRect,EditCompRect) then
       begin
-        if FCurrentEdit is TCheckBox then
-        begin
-          FCurrentEdit.Top := EditCompRect.Top;
-          FCurrentEdit.Left := EditCompRect.Left;
-        end
-        else
-          FCurrentEdit.BoundsRect:=EditCompRect;
-        if FCurrentEdit is TComboBox then
-          TComboBox(FCurrentEdit).ItemHeight:=EditCompRect.Bottom-EditCompRect.Top-6;
+        FCurrentEdit.BoundsRect:=EditCompRect;
+//        if FCurrentEdit is TComboBox then
+//          TComboBox(FCurrentEdit).ItemHeight:=EditCompRect.Bottom-EditCompRect.Top-6;
         FCurrentEdit.Invalidate;
       end;
     end;
@@ -2690,7 +2687,7 @@ begin
   else
   begin
     inc(NameIconRect.Right, 2 + Ord(ShowGutter));
-    inc(NameTextRect.Left,  3 + Ord(ShowGutter));
+    inc(NameTextRect.Left, 3 + Ord(ShowGutter));
   end;
 
   DrawState:=[];
