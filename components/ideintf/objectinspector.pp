@@ -2630,8 +2630,11 @@ begin
       begin
         if FCurrentEdit is TCheckBox then
         begin
-          TCheckBox(FCurrentEdit).Top := EditCompRect.Top;
-          TCheckBox(FCurrentEdit).Left := EditCompRect.Left;
+          FCurrentEdit.Top := EditCompRect.Top;
+          FCurrentEdit.Left := EditCompRect.Left;
+          // For testing: Try to prevent redraw errors in some Windows machines.
+          //Canvas.Brush.Color := FBackgroundColor;
+          //Canvas.FillRect(EditCompRect);
         end
         else
           FCurrentEdit.BoundsRect:=EditCompRect;
