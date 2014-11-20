@@ -72,6 +72,8 @@ type
     fLocalOptions: TCompPaletteOptions;
     fLocalUserOrder: TCompPaletteUserOrder;
     fPrevPageIndex: Integer;
+    fConfigChanged: Boolean;
+    fDialog: TAbstractOptionsEditorDialog;
     procedure WritePages(cpo: TCompPaletteOptions);
     procedure WriteComponents(cpo: TCompPaletteOptions);
     procedure FillPages;
@@ -88,6 +90,8 @@ type
     procedure ReadSettings(AOptions: TAbstractIDEOptions); override;
     procedure WriteSettings(AOptions: TAbstractIDEOptions); override;
     class function SupportedOptionsClass: TAbstractIDEOptionsClass; override;
+  public
+    property ConfigChanged: Boolean read fConfigChanged;
   end;
 
 implementation
@@ -121,6 +125,7 @@ end;
 
 procedure TCompPaletteOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
+  fDialog := ADialog;
   PagesGroupBox.Caption := lisCmpPages;
   AddPageButton.Caption := lisBtnDlgAdd;
   RestoreButton.Caption := lisCmpRestoreDefaults;
@@ -142,7 +147,6 @@ begin
   CompMoveDownBtn.Hint:=lisMoveSelectedDown;
 
   fPrevPageIndex := -1;
-
   UpdateButtons;
   UpdatePageMoveButtons(PagesListBox.ItemIndex);
   UpdateCompMoveButtons(ComponentsListView.ItemIndex);
@@ -337,6 +341,7 @@ var
 begin
   s := InputBox(lisNewPage, lisPageName, '');
   PagesListBox.AddItem(s, TStringList.Create);
+  fConfigChanged := True;
 end;
 
 procedure TCompPaletteOptionsFrame.RestoreButtonClick(Sender: TObject);
@@ -344,6 +349,7 @@ begin
   fLocalOptions.Clear;
   fLocalUserOrder.SortPagesAndCompsUserOrder; // Only updates data structure.
   FillPages;
+  fConfigChanged := True;
 end;
 
 // Drag-drop PagesListBox
@@ -364,6 +370,7 @@ var
     begin
       lb.Items.Move(lb.ItemIndex, DestInd);
       lb.ItemIndex := DestInd;
+      fConfigChanged := True;
     end;
   end;
 
@@ -414,6 +421,7 @@ var
       end;
       inc(OrigInd);
     end;
+    fConfigChanged := True;
   end;
 
 begin
@@ -467,6 +475,7 @@ begin
     lv.Items.Move(SrcItem.Index, DestInd);
     lv.Selected := lv.Items[DestInd];
     UpdateCompMoveButtons(DestInd);
+    fConfigChanged := True;
   end;
 end;
 
@@ -499,7 +508,7 @@ end;
 procedure TCompPaletteOptionsFrame.ComponentsListViewCustomDraw(Sender: TCustomListView;
   const ARect: TRect; var DefaultDraw: Boolean);
 begin
-  DebugLn(['TCompPaletteOptionsFrame.ComponentsListViewCustomDraw: DefaultDraw=', DefaultDraw]);
+  //DebugLn(['TCompPaletteOptionsFrame.ComponentsListViewCustomDraw: DefaultDraw=', DefaultDraw]);
 end;
 
 procedure TCompPaletteOptionsFrame.ComponentsListViewCustomDrawItem(Sender: TCustomListView;
@@ -543,6 +552,7 @@ begin
     PagesListBox.Items.Exchange(i, i-1);
     PagesListBox.ItemIndex := i-1;
     UpdatePageMoveButtons(i-1);
+    fConfigChanged := True;
   end;
 end;
 
@@ -556,6 +566,7 @@ begin
     PagesListBox.Items.Exchange(i, i+1);
     PagesListBox.ItemIndex := i+1;
     UpdatePageMoveButtons(i+1);
+    fConfigChanged := True;
   end;
 end;
 
@@ -584,6 +595,7 @@ begin
     ComponentsListView.Items.Exchange(i, i-1);
     ComponentsListView.Selected := ComponentsListView.Items[i-1];
     UpdateCompMoveButtons(i-1);
+    fConfigChanged := True;
   end;
 end;
 
@@ -598,6 +610,7 @@ begin
     ComponentsListView.Items.Exchange(i, i+1);
     ComponentsListView.Selected := ComponentsListView.Items[i+1];
     UpdateCompMoveButtons(i+1);
+    fConfigChanged := True;
   end;
 end;
 

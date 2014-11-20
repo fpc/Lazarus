@@ -4709,6 +4709,7 @@ procedure TMainIDE.DoOpenIDEOptions(AEditor: TAbstractIDEOptionsEditorClass;
 var
   IDEOptionsDialog: TIDEOptionsDialog;
   OptionsFilter: TIDEOptionsEditorFilter;
+  PaletteOpt: TCompPaletteOptionsFrame;
   i: Integer;
 begin
   IDEOptionsDialog := TIDEOptionsDialog.Create(nil);
@@ -4737,10 +4738,11 @@ begin
     IDEOptionsDialog.ReadAll;
     if IDEOptionsDialog.ShowModal = mrOk then begin
       IDEOptionsDialog.WriteAll(false);
-      //ToDo: implement this conditional update.
-      //if IDEOptionsDialog.PaletteConfigChanged then
+      // Update component palette only when needed.
+      PaletteOpt := TCompPaletteOptionsFrame(IDEOptionsDialog.FindEditor(TCompPaletteOptionsFrame));
+      if Assigned(PaletteOpt) and PaletteOpt.ConfigChanged then
         TComponentPalette(IDEComponentPalette).UpdateNoteBookButtons;
-      ///!!!
+      // Update TaskBarBehavior immediately.
       if EnvironmentOptions.SingleTaskBarButton then
         Application.TaskBarBehavior := tbSingleButton
       else
