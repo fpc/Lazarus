@@ -11,10 +11,13 @@
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
+        <Verbosity>
+          <ShowWarn Value="False"/>
+          <ShowHints Value="False"/>
+        </Verbosity>
         <CompilerMessages>
-          <MsgFileName Value=""/>
+          <IgnoredMessages idx4046="True"/>
         </CompilerMessages>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="DebuggerIntf

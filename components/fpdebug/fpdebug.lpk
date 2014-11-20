@@ -11,6 +11,15 @@
         <OtherUnitFiles Value="."/>
         <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Other>
+        <Verbosity>
+          <ShowWarn Value="False"/>
+          <ShowHints Value="False"/>
+        </Verbosity>
+        <CompilerMessages>
+          <IgnoredMessages idx6018="True" idx5063="True" idx5055="True" idx5043="True" idx4105="True" idx4066="True" idx4056="True" idx4045="True" idx4044="True" idx3057="True"/>
+        </CompilerMessages>
+      </Other>
     </CompilerOptions>
     <Description Value="A set of helperclasses for implementing a debugger.
 
