@@ -2484,6 +2484,15 @@ var
   FPCompilerFilename: String;
   s: string;
   FPCMsgFile: TFPCMsgFilePoolItem;
+
+  procedure EnableDisableVerbosityFlag(Enable: boolean; c: char);
+  begin
+    if Enable then
+      tempsw+=c
+    else
+      switches+=' -v'+c+'-';
+  end;
+
 begin
   CurMainSrcFile:=MainSourceFileName;
   if CurMainSrcFile='' then
@@ -2946,30 +2955,26 @@ begin
     switches := switches + ' -l';
 
   tempsw := '';
-
-  if (ShowErrors) then
-    tempsw := tempsw + 'e';
-  if (ShowWarn) then
-    tempsw := tempsw + 'w';
-  if (ShowNotes) then
-    tempsw := tempsw + 'n';
-  if (ShowHints) then
-    tempsw := tempsw + 'h';
-  if (ShowGenInfo) then
-    tempsw := tempsw + 'i';
-  if (ShowLineNum) then
+  // the default fpc.cfg normally contains -viwn, if the user does not want
+  // to see warning pass -vw-
+  EnableDisableVerbosityFlag(ShowErrors,'e');
+  EnableDisableVerbosityFlag(ShowWarn,'w');
+  EnableDisableVerbosityFlag(ShowNotes,'n');
+  EnableDisableVerbosityFlag(ShowHints,'h');
+  EnableDisableVerbosityFlag(ShowGenInfo,'i');
+  if ShowLineNum then
     tempsw := tempsw + 'l';
-  if (ShowDebugInfo) then
+  if ShowDebugInfo then
     tempsw := tempsw + 'd';
-  if (ShowUsedFiles) then
+  if ShowUsedFiles then
     tempsw := tempsw + 'u';
-  if (ShowTriedFiles) then
+  if ShowTriedFiles then
     tempsw := tempsw + 't';
-  if (ShowCompProc) then
+  if ShowCompProc then
     tempsw := tempsw + 'p';
-  if (ShowCond) then
+  if ShowCond then
     tempsw := tempsw + 'c';
-  if (ShowExecInfo) then
+  if ShowExecInfo then
     tempsw := tempsw + 'x';
 
   if ShowAll or (ccloAddVerboseAll in Flags) then
