@@ -271,6 +271,7 @@ type
     function GetSeriesColor: TColor;
     procedure SavePosToCoord(var APoint: TDoublePoint);
     procedure SetArrow(AValue: TChartArrow);
+    procedure SetAxisIndexX(AValue: TChartAxisIndex);
     procedure SetLineStyle(AValue: TLineStyle);
     procedure SetPen(AValue: TPen);
     procedure SetPosition(AValue: Double);
@@ -294,7 +295,7 @@ type
   published
     property Active default true;
     property Arrow: TChartArrow read FArrow write SetArrow;
-    property AxisIndexX;
+    property AxisIndexX write SetAxisIndexX;
     property LineStyle: TLineStyle
       read FLineStyle write SetLineStyle default lsHorizontal;
     property Pen: TPen read FPen write SetPen;
@@ -844,6 +845,16 @@ procedure TConstantLine.SetArrow(AValue: TChartArrow);
 begin
   FArrow.Assign(AValue);
   UpdateParentChart;
+end;
+
+procedure TConstantLine.SetAxisIndexX(AValue: TChartAxisIndex);
+begin
+  inherited AxisIndexX := AValue;
+  AxisIndexY := AValue;
+  // Make sure that both axis indexes have the same value. The ConstantLineSeries
+  // does use only the x axis index, but transformations of the y axis outside
+  // this unit may require tha y axis index - which would not be correct without
+  // this here...
 end;
 
 procedure TConstantLine.SetLineStyle(AValue: TLineStyle);
