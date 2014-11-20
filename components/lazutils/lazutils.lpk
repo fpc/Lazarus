@@ -9,17 +9,13 @@
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
       <Other>
-        <CompilerMessages>
-          <UseMsgFile Value="True"/>
-        </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="73">
+    <Files Count="74">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="Laz2_DOM"/>
@@ -310,9 +306,13 @@
         <Type Value="Include"/>
       </Item72>
       <Item73>
-       <Filename Value="lazloggerprofiling.pas"/>
+        <Filename Value="lazloggerprofiling.pas"/>
         <UnitName Value="LazLoggerProfiling"/>
       </Item73>
+      <Item74>
+        <Filename Value="fpcadds.pas"/>
+        <UnitName Value="FPCAdds"/>
+      </Item74>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
