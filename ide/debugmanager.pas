@@ -2166,8 +2166,8 @@ begin
         end;
       end;
 
-    //todo: this check depends on the debugger class
-    if (NewDebuggerClass <> TProcessDebugger)
+    // check if debugger needs an Exe and the exe is there
+    if (NewDebuggerClass.HasExePath)
     and not FileIsExecutable(EnvironmentOptions.GetParsedDebuggerFilename)
     then begin
       if not PromptOnError then
