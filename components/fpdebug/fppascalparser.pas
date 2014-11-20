@@ -1019,7 +1019,7 @@ end;
 
 function TFpPascalExpressionPartBracketIndex.DoGetResultValue: TFpDbgValue;
 var
-  TmpVal, TmpVal2, TmpIndex, TmpDeref: TFpDbgValue;
+  TmpVal, TmpVal2, TmpIndex: TFpDbgValue;
   i: Integer;
   Offs: Int64;
   ti: TFpDbgSymbol;

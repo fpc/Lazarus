@@ -73,7 +73,7 @@ type
 
   TDbgWinBreakpointEvent = procedure(const ASender: TDbgBreakpoint; const AContext: TContext) of object;
   TDbgWinBreakpoint = class(TDbgBreakpoint)
-  protected
+  public
     procedure SetBreak; override;
     procedure ResetBreak; override;
   end;
@@ -520,11 +520,9 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
   const
     PARAMCOLS = 12 - SizeOf(Pointer);
   var
-    N: Integer;
     Info0: QWORD;
     Info1: QWORD;
     Info1Str: String;
-    P: PByte;
     ExInfo32: TExceptionDebugInfo32 absolute AEvent.Exception;
     ExInfo64: TExceptionDebugInfo64 absolute AEvent.Exception;
   begin

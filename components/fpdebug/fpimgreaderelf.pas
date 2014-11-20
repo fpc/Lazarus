@@ -342,7 +342,7 @@ var
   SymbolArr32: PElf32symbolArray;
   SymbolArr64: PElf64symbolArray;
   SymbolStr: pointer;
-  i,j: integer;
+  i: integer;
   SymbolCount: integer;
   SymbolName: AnsiString;
 begin

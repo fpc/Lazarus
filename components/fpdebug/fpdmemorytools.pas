@@ -393,7 +393,7 @@ begin
     Result := 0;
 end;
 
-function EmptyMemReadOpts: TFpDbgMemReadOptions;
+function {%H-}EmptyMemReadOpts: TFpDbgMemReadOptions;
 begin
   //
 end;
