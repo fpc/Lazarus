@@ -1,20 +1,14 @@
-{ Diese Datei wurde automatisch von Lazarus erzeugt. Sie darf nicht bearbeitet werden!
-Dieser Quelltext dient nur dem Übersetzen und Installieren des Packages.
+{ This file was automatically created by Lazarus. Do not edit!
+  This source is only used to compile and install the package.
  }
 
-unit SimpleIDEIntf; 
+unit SimpleIDEIntf;
 
 interface
 
 uses
-  SimpleIDE, LazarusPackageIntf; 
+  SimpleIDE;
 
 implementation
 
-procedure Register; 
-begin
-end; 
-
-initialization
-  RegisterPackage('SimpleIDEIntf', @Register); 
 end.
