@@ -71,6 +71,7 @@ type
   private
     fLocalOptions: TCompPaletteOptions;
     fLocalUserOrder: TCompPaletteUserOrder;
+    fPrevPageIndex: Integer;
     procedure WritePages(cpo: TCompPaletteOptions);
     procedure WriteComponents(cpo: TCompPaletteOptions);
     procedure FillPages;
@@ -139,6 +140,8 @@ begin
   CompMoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
   CompMoveUpBtn.Hint:=lisMoveSelectedUp;
   CompMoveDownBtn.Hint:=lisMoveSelectedDown;
+
+  fPrevPageIndex := -1;
 
   UpdateButtons;
   UpdatePageMoveButtons(PagesListBox.ItemIndex);
@@ -320,9 +323,12 @@ var
   lb: TListBox;
 begin
   lb := Sender as TListBox;
+  if lb.ItemIndex = fPrevPageIndex then Exit;
   FillComponents(lb.Items[lb.ItemIndex]);
   UpdateButtons;
-  UpdateCompMoveButtons(ComponentsListView.ItemIndex);
+  UpdatePageMoveButtons(lb.ItemIndex);
+  UpdateCompMoveButtons(-1);
+  fPrevPageIndex := lb.ItemIndex;
 end;
 
 procedure TCompPaletteOptionsFrame.AddPageButtonClick(Sender: TObject);
@@ -474,7 +480,8 @@ end;
 procedure TCompPaletteOptionsFrame.ComponentsListViewChange(Sender: TObject;
   Item: TListItem; Change: TItemChange);
 begin
-  UpdateCompMoveButtons(ComponentsListView.ItemIndex);
+  if Item.Selected then
+    UpdateCompMoveButtons(ComponentsListView.Items.IndexOf(Item));
 end;
 
 procedure TCompPaletteOptionsFrame.ComponentsListViewClick(Sender: TObject);
