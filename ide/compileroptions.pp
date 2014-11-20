@@ -407,7 +407,7 @@ type
     function Equals(Obj: TObject): boolean; override;
     procedure IncreaseChangeStamp;
     function GetEnumerator: TCompilerMsgIDFlagsEnumerator;
-    function GetMsgIdList(Delim: char; aValue: TCompilerFlagValue): string;
+    function GetMsgIdList(Delim: char; aValue: TCompilerFlagValue; FPCMsgFile: TFPCMsgFilePoolItem = nil): string;
     function CreateDiff(Tool: TCompilerDiffTool; Other: TCompilerMsgIDFlags): boolean;
     function Count: SizeInt; inline;
     property ChangeStamp: int64 read FChangeStamp;
@@ -2483,6 +2483,7 @@ var
   DefaultTargetCPU: string;
   FPCompilerFilename: String;
   s: string;
+  FPCMsgFile: TFPCMsgFilePoolItem;
 begin
   CurMainSrcFile:=MainSourceFileName;
   if CurMainSrcFile='' then
@@ -2980,12 +2981,20 @@ begin
     switches := switches + ' ' + tempsw;
   end;
 
-  t := IDEMessageFlags.GetMsgIdList(',',cfvHide);
-  if t <> '' then
-    switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
-  t := IDEMessageFlags.GetMsgIdList(',',cfvShow);
-  if t <> '' then
-    switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
+  // -vm flags allow to enable/disable types of messages
+  // Passing a -vm ID, unknown by the current compiler will create an error
+  // => check the compiler message file
+  if IDEMessageFlags.Count>0 then begin
+    FPCMsgFile:=nil;
+    if FPCMsgFilePool<>nil then
+      FPCMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(true,nil);
+    t := IDEMessageFlags.GetMsgIdList(',',cfvHide,FPCMsgFile);
+    if t <> '' then
+      switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
+    t := IDEMessageFlags.GetMsgIdList(',',cfvShow,FPCMsgFile);
+    if t <> '' then
+      switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
+  end;
 
   if (StopAfterErrCount>1) then
     switches := switches + ' -Se'+IntToStr(StopAfterErrCount);
@@ -4674,13 +4683,14 @@ begin
 end;
 
 function TCompilerMsgIDFlags.GetMsgIdList(Delim: char;
-  aValue: TCompilerFlagValue): string;
+  aValue: TCompilerFlagValue; FPCMsgFile: TFPCMsgFilePoolItem): string;
 var
   Flag: PCompilerMsgIdFlag;
 begin
   Result:='';
   for Flag in Self do begin
     if Flag^.Flag<>aValue then continue;
+    if (FPCMsgFile<>nil) and (FPCMsgFile.GetMsg(Flag^.MsgId)=nil) then continue;
     if Result<>'' then
       Result+=Delim;
     Result+=IntToStr(Flag^.MsgId);
