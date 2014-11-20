@@ -89,6 +89,8 @@ unit H2PasTool;
 
 {$mode objfpc}{$H+}
 
+{off $DEFINE VerboseH2PasTool}
+
 interface
 
 uses
@@ -563,14 +565,18 @@ begin
   CurName:=CTool.ExtractStructName(CNode);
   if CurName='' then begin
     // this is an anonymous struct -> ignore
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.ConvertStruct SKIPPING anonymous struct at ',CTool.CleanPosToStr(CNode.StartPos)]);
+    {$ENDIF}
   end else begin
     // this struct has a name
     // create a type
     CurCName:=CurName;
     Result:=CreateH2PNode(CurName,CurCName,CNode,ctnRecordType,'',
                                nil,ParentNode=nil);
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.ConvertStruct ADDED ',Result.DescAsString(CTool)]);
+    {$ENDIF}
     // build recursively
     ChildCNode:=CNode.FirstChild;
     while (ChildCNode<>nil) do begin
@@ -585,9 +591,9 @@ procedure TH2PasTool.ConvertVariable(CNode: TCodeTreeNode; ParentNode: TH2PNode)
 var
   CurName: String;
   TypeH2PNode: TH2PNode;
-  CurType: String;
+  {%H-}CurType: String;
   SimpleType: String;
-  H2PNode: TH2PNode;
+  {%H-}H2PNode: TH2PNode;
   SubTypeName: String;
   CurCName: String;
 begin
@@ -600,7 +606,9 @@ begin
       CurCName:=CurName;
       TypeH2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnRecordCase,'',
                                  ParentNode,false);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertVariable added record case for nested union']);
+      {$ENDIF}
       // build recursively the record cases
       if CNode.FirstChild.FirstChild<>nil then
         BuildH2PTree(TypeH2PNode,CNode.FirstChild.FirstChild);
@@ -610,7 +618,9 @@ begin
       SubTypeName:='T'+CurName;
       TypeH2PNode:=CreateH2PNode(SubTypeName,'',CNode,ctnRecordCase,'',
                                  nil,true);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertVariable added record type for union: ',TypeH2PNode.DescAsString(CTool)]);
+      {$ENDIF}
       // build recursively
       if CNode.FirstChild.FirstChild<>nil then
         BuildH2PTree(TypeH2PNode,CNode.FirstChild.FirstChild);
@@ -620,9 +630,13 @@ begin
       H2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnVarDefinition,
                              TypeH2PNode.PascalName,
                              nil,ParentNode=nil);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertVariable added variable for union: ',H2PNode.DescAsString(CTool)]);
+      {$ENDIF}
     end else begin
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertVariable SKIPPING union variable at ',CTool.CleanPosToStr(CNode.StartPos)]);
+      {$ENDIF}
     end;
   end else begin
     CurName:=CTool.ExtractDefinitionName(CNode);
@@ -638,11 +652,15 @@ begin
         CurCName:=CurName;
         H2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnVarDefinition,SimpleType,
                                ParentNode,ParentNode=nil);
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.ConvertVariable CurName=',CurName,' ',H2PNode.PascalName]);
         DebugLn(['TH2PasTool.ConvertVariable added: ',H2PNode.DescAsString(CTool)]);
+        {$ENDIF}
       end else begin
         CurType:=CTool.ExtractDefinitionType(CNode);
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.ConvertVariable SKIPPING Variable Name="',CurName,'" Type="',CurType,'"']);
+        {$ENDIF}
       end;
     end;
   end;
@@ -653,7 +671,7 @@ function TH2PasTool.ConvertEnumBlock(CNode: TCodeTreeNode; ParentNode: TH2PNode
 var
   CurName: String;
   CurValue: String;
-  H2PNode: TH2PNode;
+  {%H-}H2PNode: TH2PNode;
   CurCName: String;
 begin
   CurName:=CTool.ExtractEnumBlockName(CNode);
@@ -668,7 +686,9 @@ begin
     Result:=CreateH2PNode(CurName,CurCName,CNode,ctnEnumerationType,'',
                                nil,true);
   end;
+  {$IFDEF VerboseH2PasTool}
   DebugLn(['TH2PasTool.ConvertEnumBlock added: ',Result.DescAsString(CTool)]);
+  {$ENDIF}
 
   CNode:=CNode.FirstChild;
   while CNode<>nil do begin
@@ -678,7 +698,9 @@ begin
       CurCName:=CurName;
       H2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnEnumIdentifier,CurValue,
                              Result,true);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertEnumBlock added: ',H2PNode.DescAsString(CTool)]);
+      {$ENDIF}
     end;
     CNode:=CNode.NextBrother;
   end;
@@ -687,7 +709,7 @@ end;
 procedure TH2PasTool.ConvertFunction(CNode: TCodeTreeNode; ParentNode: TH2PNode);
 var
   CurName: String;
-  CurType: String;
+  {%H-}CurType: String;
   SimpleType: String;
   IsPointerToFunction: Boolean;
   Ok: Boolean;
@@ -706,7 +728,9 @@ begin
   Ok:=true;
   if (CNode.LastChild<>nil) and (CNode.LastChild.Desc=ccnStatementBlock) then
     StatementNode:=CNode.LastChild;
+  {$IFDEF VerboseH2PasTool}
   DebugLn(['TH2PasTool.ConvertFunction Function Name="',CurName,'" ResultType="',CurType,'" SimpleType=',SimpleType,' HasStatements=',StatementNode<>nil,' IsPointer=',IsPointerToFunction,' ParentNode=',ParentNode<>nil]);
+  {$ENDIF}
   if StatementNode<>nil then begin
     // this function has a body
     Ok:=false;
@@ -727,12 +751,16 @@ begin
       SubTypeName:=CreatePascalNameFromCCode(CurName+CTool.ExtractFunctionParamList(CNode));
       TypeH2PNode:=CreateAutoGeneratedH2PNode(SubTypeName,ParamsNode,
                          ctnProcedureType,SimpleType,nil,true,ParentNode<>nil);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertFunction function type added: ',TypeH2PNode.DescAsString(CTool)]);
+      {$ENDIF}
       // create variable
       CurCName:=CurName;
       H2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnVarDefinition,SubTypeName,
                              ParentNode,ParentNode=nil);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertFunction variable added: ',H2PNode.DescAsString(CTool)]);
+      {$ENDIF}
       // build parameters recursively
       if ParamsNode.FirstChild<>nil then
         BuildH2PTree(TypeH2PNode,ParamsNode.FirstChild);
@@ -741,13 +769,17 @@ begin
       CurCName:=CurName;
       H2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnProcedure,SimpleType,
                              nil,true);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertFunction function added: ',H2PNode.DescAsString(CTool)]);
+      {$ENDIF}
       // build parameters recursively
       if CNode.FirstChild<>nil then
         BuildH2PTree(H2PNode);
     end;
   end else begin
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.ConvertFunction SKIPPING Function Name="',CurName,'" Type="',CurType,'" at ',CTool.CleanPosToStr(CNode.StartPos)]);
+    {$ENDIF}
   end;
 end;
 
@@ -758,7 +790,7 @@ var
   CurType: String;
   SimpleType: String;
   TypeH2PNode: TH2PNode;
-  H2PNode: TH2PNode;
+  {%H-}H2PNode: TH2PNode;
   CurCName: String;
 begin
   CurName:=CTool.ExtractParameterName(CNode);
@@ -768,7 +800,9 @@ begin
     exit;
   end;
   SimpleType:=GetSimplePascalTypeOfCParameter(CNode);
+  {$IFDEF VerboseH2PasTool}
   DebugLn(['TH2PasTool.ConvertFuncParameter Parameter: Name="',CurName,'" Type="',CurType,'" SimpleType="',SimpleType,'"']);
+  {$ENDIF}
   if SimpleType='' then begin
     // this variable has a complex type
     TypeH2PNode:=CreateH2PNodeForComplexType(CNode,true,true);
@@ -779,9 +813,13 @@ begin
     CurCName:=CurName;
     H2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnVarDefinition,SimpleType,
                            ParentNode,false);
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.ConvertFuncParameter added: ',H2PNode.DescAsString(CTool)]);
+    {$ENDIF}
   end else begin
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.ConvertFuncParameter SKIPPING parameter Name="',CurName,'" Type="',CurType,'" at ',CTool.CleanPosToStr(CNode.StartPos)]);
+    {$ENDIF}
   end;
 end;
 
@@ -789,7 +827,7 @@ procedure TH2PasTool.ConvertTypedef(CNode: TCodeTreeNode; ParentNode: TH2PNode);
 var
   CurName: String;
   ChildNode: TCodeTreeNode;
-  CurType: String;
+  {%H-}CurType: String;
   TypeH2PNode: TH2PNode;
   IsPointerToFunction: Boolean;
   SimpleType: String;
@@ -804,7 +842,9 @@ begin
     exit;
   end;
   CurName:=CTool.ExtractTypedefName(CNode);
+  {$IFDEF VerboseH2PasTool}
   DebugLn(['TH2PasTool.ConvertTypedef Typedef name="',CurName,'"']);
+  {$ENDIF}
   ChildNode:=CNode.FirstChild;
   case ChildNode.Desc of
 
@@ -821,10 +861,14 @@ begin
         CurCName:=CurName;
         H2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnTypeDefinition,
                                SimpleType);
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.ConvertTypedef added: ',H2PNode.DescAsString(CTool)]);
+        {$ENDIF}
       end else begin
         CurType:=CTool.ExtractDefinitionType(ChildNode);
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.ConvertTypedef SKIPPING Typedef Variable Name="',CurName,'" Type="',CurType,'"']);
+        {$ENDIF}
       end;
     end;
 
@@ -844,21 +888,27 @@ begin
         CurCName:=GetIdentifier(@CTool.Src[TypeNode.StartPos]);
         SubTypeName:=CurCName;
         TypeH2PNode:=CreateH2PNode(SubTypeName,CurCName,TypeNode,ctnRecordType,'');
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.ConvertTypedef added record: ',TypeH2PNode.DescAsString(CTool)]);
+        {$ENDIF}
         // build recursively
         BuildH2PTree(TypeH2PNode,SubChildNode.FirstChild);
         // create an alias  b=a
         CurCName:=CurName;
         TypeH2PNode:=CreateH2PNode(CurName,CurCName,CNode,
                                    ctnTypeDefinition,SubTypeName);
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.ConvertTypedef added type alias: ',TypeH2PNode.DescAsString(CTool)]);
+        {$ENDIF}
       end else if ChildNode.FirstChild.Desc=ccnSubDefs then begin
         // for example: typedef struct {} b;  => b = record
         // => create a new record type b
         SubChildNode:=ChildNode.LastChild;
         CurCName:=CurName;
         TypeH2PNode:=CreateH2PNode(CurName,CurCName,ChildNode,ctnRecordType,'');
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.ConvertTypedef added record: ',TypeH2PNode.DescAsString(CTool)]);
+        {$ENDIF}
         // build recursively
         BuildH2PTree(TypeH2PNode,SubChildNode.FirstChild);
       end else if (ChildNode.FirstChild.Desc=ccnTypeName)
@@ -870,7 +920,9 @@ begin
         CurCName:=CurName;
         TypeH2PNode:=CreateH2PNode(CurName,CurCName,CNode,
                                    ctnTypeDefinition,SubTypeName);
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.ConvertTypedef added type alias: ',TypeH2PNode.DescAsString(CTool)]);
+        {$ENDIF}
       end else begin
         raise Exception.Create('TH2PasTool.ConvertTypedef inconsistency: unknown format of typedef struct');
       end;
@@ -892,13 +944,17 @@ begin
         CurCName:=CurName;
         H2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnProcedureType,SimpleType,
                                nil,true);
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.ConvertTypedef function type added: ',H2PNode.DescAsString(CTool)]);
+        {$ENDIF}
         // build the param list
         if ChildNode.FirstChild<>nil then
           BuildH2PTree(H2PNode,ChildNode.FirstChild);
       end else begin
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.ConvertTypedef typdef function CurName=',CurName,' CurType=',CTool.ExtractFunctionResultType(ChildNode),' SimpleType=',SimpleType,' IsPointerToFunction=',IsPointerToFunction]);
         DebugLn(['TH2PasTool.ConvertTypedef SKIPPING typedef ',CCNodeDescAsString(ChildNode.Desc),' at ',CTool.CleanPosToStr(CNode.StartPos)]);
+        {$ENDIF}
       end;
     end;
     
@@ -908,7 +964,9 @@ begin
       CurCName:=CurName;
       TypeH2PNode:=CreateH2PNode(CurName,CurCName,CNode,ctnEnumerationType,'',
                                  nil,true);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertTypedef added: ',TypeH2PNode.DescAsString(CTool)]);
+      {$ENDIF}
 
       SubChildNode:=ChildNode.FirstChild;
       while SubChildNode<>nil do begin
@@ -919,14 +977,18 @@ begin
           H2PNode:=CreateH2PNode(CurName,CurCName,SubChildNode,
                                  ctnEnumIdentifier,CurValue,
                                  TypeH2PNode,true);
+          {$IFDEF VerboseH2PasTool}
           DebugLn(['TH2PasTool.ConvertTypedef added: ',H2PNode.DescAsString(CTool)]);
+          {$ENDIF}
         end;
         SubChildNode:=SubChildNode.NextBrother;
       end;
     end;
 
   else // typedef
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.ConvertTypedef SKIPPING typedef ',CTool.NodeAsString(ChildNode)]);
+    {$ENDIF}
   end;
 end;
 
@@ -958,7 +1020,9 @@ begin
       CurName:='$'+Directive;
       H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                              MacroName,ParentNode,false);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
+      {$ENDIF}
       DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnDefine);
       DirNode.MacroName:=MacroName;
       DirNode.MacroParams:=MacroParamList;
@@ -976,7 +1040,9 @@ begin
     PascalCode:=CTool.ExtractDirectiveFirstAtom(CNode);
     H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                            PascalCode,ParentNode,false);
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
+    {$ENDIF}
     if (Directive='ifdef') then
       Desc:=h2pdnIfDef
     else if (Directive='ifndef') then
@@ -1002,13 +1068,17 @@ begin
     if not ConvertCToPascalDirectiveExpression(CTool.Src,StartPos,EndPos,
       PascalCode,ErrorPos,ErrorMsg) then
     begin
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertDirective failed to convert expression at ',
         CTool.CleanPosToStr(ErrorPos)+': '+ErrorMsg]);
+      {$ENDIF}
     end else begin
       CurName:='$'+Directive;
       H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                              PascalCode,ParentNode,false);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
+      {$ENDIF}
       if (Directive='if') then
         Desc:=h2pdnIf
       else begin
@@ -1027,7 +1097,9 @@ begin
     CurName:='$'+Directive;
     H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                            '',ParentNode,false);
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
+    {$ENDIF}
     // end block
     FCurDirectiveNode:=TH2PDirectiveNode(FCurDirectiveNode.Parent);
     DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnElse);
@@ -1039,7 +1111,9 @@ begin
     CurName:='$'+Directive;
     H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                            '',ParentNode,false);
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.ConvertDirective added: ',H2PNode.DescAsString(CTool)]);
+    {$ENDIF}
     // end block
     FCurDirectiveNode:=TH2PDirectiveNode(FCurDirectiveNode.Parent);
     DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnEndIf);
@@ -1054,7 +1128,9 @@ begin
     CurName:='$'+Directive;
     H2PNode:=CreateH2PNode(CurName,'#'+Directive,CNode,ctnNone,
                            PascalCode,ParentNode,false);
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.ConvertDirective added $error: ',H2PNode.DescAsString(CTool)]);
+    {$ENDIF}
     DirNode:=CreateH2PDirectiveNode(H2PNode,h2pdnError);
     DirNode.Expression:=PascalCode;
     exit;
@@ -1065,7 +1141,9 @@ begin
     // #  : null
     exit;
   end;
+  {$IFDEF VerboseH2PasTool}
   DebugLn(['TH2PasTool.ConvertDirective SKIPPING directive at ',CTool.CleanPosToStr(CNode.StartPos),' Code="',dbgstr(CTool.ExtractCode(CNode.StartPos,CNode.EndPos)),'"']);
+  {$ENDIF}
 end;
 
 function TH2PasTool.ConvertCToPascalDirectiveExpression(const CCode: string;
@@ -1139,7 +1217,9 @@ var
            or (AtomStart+l>length(PasExpr))
            or (not IsIdentChar[PasExpr[AtomStart+l]]))
       then begin
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.ConvertCToPascalDirectiveExpression.Replace Old="',OldText,'" New="',NewText,'"']);
+        {$ENDIF}
         PasExpr:=copy(PasExpr,1,AtomStart-1)
                +NewText+copy(PasExpr,AtomStart+length(OldText),length(PasExpr));
       end;
@@ -1347,7 +1427,9 @@ begin
   if H2PNode.FirstChild=nil then begin
     W(H2PNode.PascalName+' = '+H2PNode.PascalCode+';');
   end else begin
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.WriteGlobalTypeNode SKIPPING ',H2PNode.DescAsString(CTool)]);
+    {$ENDIF}
   end;
 end;
 
@@ -1358,7 +1440,9 @@ begin
   if H2PNode.FirstChild=nil then begin
     W(H2PNode.PascalName+H2PNode.PascalCode+';');
   end else begin
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.WriteGlobalTypeNode SKIPPING ',H2PNode.DescAsString(CTool)]);
+    {$ENDIF}
   end;
 end;
 
@@ -1390,7 +1474,9 @@ begin
       end;
       PascalCode:=PascalCode+CurName+': '+ChildNode.PascalCode;
     end else begin
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.WriteGlobalProcedureNode SKIPPING ',ChildNode.DescAsString(CTool)]);
+      {$ENDIF}
     end;
     ChildNode:=TH2PNode(ChildNode.NextBrother);
   end;
@@ -1501,8 +1587,11 @@ begin
       // write footer
       W('end;');
       DecIndent;
-    end else
+    end else begin
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.WriteGlobalRecordTypeNode SKIPPING record sub ',ChildNode.DescAsString(CTool)]);
+      {$ENDIF}
+    end;
     ChildNode:=TH2PNode(ChildNode.NextBrother);
   end;
   DecIndent;
@@ -1570,10 +1659,14 @@ begin
         W('{off $Define '+DirNode.MacroName+':='+CreateDirectiveValue(DirNode.Expression)+'}');
       end;
     end else begin
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.WriteDirectiveNode SKIPPING ',DirNode.DescAsString(CTool)]);
+      {$ENDIF}
     end;
   else
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.WriteDirectiveNode SKIPPING ',DirNode.DescAsString(CTool)]);
+  {$ENDIF}
   end;
 end;
 
@@ -1674,7 +1767,9 @@ begin
       Node.H2PNode:=nil;
       H2PNode.Directive:=nil;
       DeleteDirectiveNode(Node,true,false);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.SimplifyDefineDirective ADDED constant ',H2PNode.DescAsString(CTool)]);
+      {$ENDIF}
       Changed:=true;
     end;
   end else begin
@@ -1694,7 +1789,9 @@ begin
        or (TH2PDirectiveNode(Node.NextBrother).H2PNode=Node.H2PNode.NextBrother))
   then begin
     // no content
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.SimplifyIfDirective REMOVING empty if directive: ',Node.DescAsString(CTool)]);
+    {$ENDIF}
     if NextNode.HasAsParent(Node)
     or ((NextNode=Node.NextBrother) and (NextNode.Desc=h2pdnEndIf)) then
       NextNode:=TH2PDirectiveNode(NextNode.NextSkipChilds);
@@ -1706,7 +1803,9 @@ begin
   Changed:=SimplifyIfDirectiveExpression(Expression);
   if Expression='0' then begin
     // always false
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.SimplifyIfDirective REMOVING directive, because always false: ',Node.DescAsString(CTool)]);
+    {$ENDIF}
     if NextNode.HasAsParent(Node)
     or ((NextNode=Node.NextBrother) and (NextNode.Desc=h2pdnEndIf)) then
       NextNode:=TH2PDirectiveNode(NextNode.NextSkipChilds);
@@ -1804,7 +1903,9 @@ begin
             Replace(UsedNode.PascalName);
         end else begin
           //
+          {$IFDEF VerboseH2PasTool}
           DebugLn(['TH2PasTool.MacroValueIsConstant NO, because this is not a constant: ',CurAtom]);
+          {$ENDIF}
           exit;
         end;
       end;
@@ -1816,7 +1917,9 @@ begin
       dec(p);
       if p-AtomStart>17 then begin
         // out of bounds
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.MacroValueIsConstant hex number out of bounds: "',PasExpression,'"']);
+        {$ENDIF}
         exit;
       end;
     end else if IsCOctalNumber(PasExpression,AtomStart) then begin
@@ -1848,7 +1951,9 @@ begin
       end else if (CurAtom='&') or (CurAtom='&&') then begin
         Replace('and');
       end else begin
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.MacroValueIsConstant NO ',CurAtom]);
+        {$ENDIF}
         // unknown
         exit;
       end;
@@ -1877,7 +1982,9 @@ begin
       // value is kept => the new Node is a redefinition
       if (NextNode=Node) or (Node.HasAsChild(NextNode)) then
         NextNode:=TH2PDirectiveNode(Node.NextSkipChilds);
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.SimplifyMacroRedefinition DELETE redefinition ',Node.DescAsString(CTool)]);
+      {$ENDIF}
       DeleteDirectiveNode(Node,false,false);
       Node:=nil;
       Changed:=true;
@@ -1889,7 +1996,9 @@ begin
       if Parent=Node.Parent then begin
         // last write was on same or lower level
         // => last write is not needed
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.SimplifyMacroRedefinition DELETE unused ',Macro.LastDefineNode.DescAsString(CTool)]);
+        {$ENDIF}
         DeleteH2PNode(Macro.LastDefineNode);
         Changed:=true;
       end;
@@ -1910,7 +2019,9 @@ begin
     Macro:=TH2PMacroStats(AVLNode.Data);
     if (Macro.LastDefineNode<>nil)
     and (Macro.LastReadNode=nil) then begin
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.SimplifyUnusedDefines DELETE unused ',Macro.LastDefineNode.DescAsString(CTool)]);
+      {$ENDIF}
       DeleteH2PNode(Macro.LastDefineNode);
       Changed:=true;
     end;
@@ -1930,7 +2041,9 @@ begin
   if (Node.H2PNode<>nil) and (Node.H2PNode.FirstChild<>nil) then begin
     raise Exception.Create('TH2PasTool.DeleteDirectiveNode: inconsistency: a directive can not have H2P children');
   end;
+  {$IFDEF VerboseH2PasTool}
   DebugLn(['TH2PasTool.DeleteDirectiveNode ',Node.DescAsString(CTool)]);
+  {$ENDIF}
 
   if AdaptNeighborhood then begin
     // adapt following Else and ElseIf directives
@@ -1949,7 +2062,9 @@ begin
             Sibling.Expression:='('+Sibling.Expression+') and '+Expression;
             if (Sibling.PriorBrother=Node) and (Node.Desc<>h2pdnElseIf) then
               Sibling.Desc:=h2pdnIf;
+            {$IFDEF VerboseH2PasTool}
             DebugLn(['TH2PasTool.DeleteDirectiveNode ADAPTED neighbour: ',Sibling.DescAsString(CTool)]);
+            {$ENDIF}
           end;
         h2pdnElse:
           begin
@@ -1958,7 +2073,9 @@ begin
               Sibling.Desc:=h2pdnIf
             else
               Sibling.Desc:=h2pdnElseIf;
+            {$IFDEF VerboseH2PasTool}
             DebugLn(['TH2PasTool.DeleteDirectiveNode ADAPTED neighbour: ',Sibling.DescAsString(CTool)]);
+            {$ENDIF}
           end;
         else break;
         end;
@@ -2006,7 +2123,9 @@ var
   AVLNode: TAVLTreeNode;
   Macro: TH2PMacroStats;
 begin
+  {$IFDEF VerboseH2PasTool}
   DebugLn(['TH2PasTool.DeleteH2PNode ',Node.DescAsString(CTool)]);
+  {$ENDIF}
   if Node.PascalName<>'' then
     FPascalNames.Remove(Node);
   if Node.CName<>'' then
@@ -2044,7 +2163,9 @@ begin
     CTool:=TCCodeParserTool.Create;
   // parse C header file
   CTool.Parse(CCode);
+  {$IFDEF VerboseH2PasTool}
   CTool.WriteDebugReport;
+  {$ENDIF}
 
   BuildH2PTree;
   
@@ -2061,10 +2182,13 @@ var
   CNode: TCodeTreeNode;
   NextCNode: TCodeTreeNode;
 begin
-  if ParentNode<>nil then
-    DebugLn(['TH2PasTool.BuildH2PTree ParentNode=',ParentNode.DescAsString(CTool)])
-  else
+  {$IFDEF VerboseH2PasTool}
+  if ParentNode<>nil then begin
+    DebugLn(['TH2PasTool.BuildH2PTree ParentNode=',ParentNode.DescAsString(CTool)]);
+  end else begin
     debugln(['TH2PasTool.BuildH2PTree START']);
+  end;
+  {$ENDIF}
   if ParentNode<>nil then begin
     if StartNode=nil then
       StartNode:=ParentNode.CNode.FirstChild;
@@ -2079,10 +2203,13 @@ begin
   end;
   CNode:=StartNode;
   while CNode<>nil do begin
-    if ParentNode<>nil then
-      DebugLn(['TH2PasTool.BuildH2PTree Current ParentNode=',ParentNode.DescAsString(CTool),' CNode=',CCNodeDescAsString(CNode.Desc)])
-    else
+    {$IFDEF VerboseH2PasTool}
+    if ParentNode<>nil then begin
+      DebugLn(['TH2PasTool.BuildH2PTree Current ParentNode=',ParentNode.DescAsString(CTool),' CNode=',CCNodeDescAsString(CNode.Desc)]);
+    end else begin
       DebugLn(['TH2PasTool.BuildH2PTree Current ParentNode=nil CNode=',CCNodeDescAsString(CNode.Desc)]);
+    end;
+    {$ENDIF}
     NextCNode:=CNode.NextSkipChilds;
     case CNode.Desc of
     ccnRoot, ccnExternBlock:
@@ -2114,7 +2241,9 @@ begin
     ccnDirective:
       ConvertDirective(CNode,ParentNode);
     else
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.BuildH2PTree SKIPPING ',CCNodeDescAsString(CNode.Desc),' at ',CTool.CleanPosToStr(CNode.StartPos)]);
+      {$ENDIF}
     end;
     // next C node
     if (ParentNode<>nil) and (not ParentNode.CNode.HasAsChild(NextCNode)) then
@@ -2282,11 +2411,16 @@ begin
     ctnNone:
       if H2PNode.Directive<>nil then begin
         WriteDirectiveNode(H2PNode.Directive);
-      end else
+      end else begin
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString(CTool)]);
+        {$ENDIF}
+      end
 
     else
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.WritePascalToStream SKIPPING ',H2PNode.DescAsString(CTool)]);
+      {$ENDIF}
     end;
     H2PNode:=TH2PNode(H2PNode.NextBrother);
   end;
@@ -2484,14 +2618,18 @@ begin
         exit;
       end;
       if SubCNode.Desc<>ccnConstant then begin
+        {$IFDEF VerboseH2PasTool}
         debugln(['TH2PasTool.GetH2PNodeForComplexType TODO: ',CCNodeDescAsString(CNode.Desc),' of ',CCNodeDescAsString(SubCNode.Desc)]);
+        {$ENDIF}
         exit;
       end;
     end;
   end;
 
   SubH2PNode:=nil;
+  {$IFDEF VerboseH2PasTool}
   debugln(['TH2PasTool.GetH2PNodeForComplexType CNode=',CCNodeDescAsString(CNode.Desc)]);
+  {$ENDIF}
   if CNode.Desc=ccnDefinition then
     CCode:=CTool.ExtractDefinitionType(CNode)
   else if CNode.Desc=ccnFunction then
@@ -2501,11 +2639,15 @@ begin
   else if CNode.Desc=ccnTypedef then
     CCode:=CTool.ExtractTypeDefType(CNode)
   else begin
+    {$IFDEF VerboseH2PasTool}
     debugln(['TH2PasTool.GetH2PNodeForComplexType not supported: CNode=',CCNodeDescAsString(CNode.Desc)]);
+    {$ENDIF}
     exit;
   end;
 
+  {$IFDEF VerboseH2PasTool}
   DebugLn(['TH2PasTool.GetH2PNodeForComplexType CCode="',CCode,'"']);
+  {$ENDIF}
   { int[][3]  -> array of array[0..2] of cint
     char**    -> PPchar
     int *[15] -> array[0..14] of pcint
@@ -2526,15 +2668,21 @@ begin
       break;
   until false;
   if BaseCType='' then begin
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.GetH2PNodeForComplexType no base type in c declaration: CCode="',dbgstr(CCode),'"']);
+    {$ENDIF}
     exit;
   end;
   BasePascalType:=ConvertSimpleCTypeToPascalType(BaseCType,true);
   if (BasePascalType='') then begin
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.GetH2PNodeForComplexType unknown c type: "',BaseCType,'"']);
+    {$ENDIF}
     exit;
   end;
+  {$IFDEF VerboseH2PasTool}
   DebugLn(['TH2PasTool.GetH2PNodeForComplexType BasePascalType="',BasePascalType,'" BaseCType="',BaseCType,'"']);
+  {$ENDIF}
 
   // read pointer(s)
   while (AtomStart<=length(CCode)) do begin
@@ -2550,11 +2698,15 @@ begin
         SubH2PNode:=CreateAutoGeneratedH2PNode(NewBasePascalType,nil,
                                   ctnTypeDefinition,'^'+BasePascalType,
                                   nil,true,InsertAsPreLast);
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.GetH2PNodeForComplexType added new pointer type: ',SubH2PNode.DescAsString(CTool)]);
+        {$ENDIF}
         NewBasePascalType:=SubH2PNode.PascalName;
       end;
       BasePascalType:=NewBasePascalType;
+      {$IFDEF VerboseH2PasTool}
       DebugLn(['TH2PasTool.GetH2PNodeForComplexType using pointer type: BasePascalType="',BasePascalType,'" BaseCType="',BaseCType,'"']);
+      {$ENDIF}
     end else if (CurAtom='const') then begin
       // skip 'const'
     end else begin
@@ -2575,7 +2727,9 @@ begin
       BracketOpenPos:=AtomStart;
       ReadRawNextCAtom(CCode,p,AtomStart);
       if AtomStart>length(CCode) then begin
+        {$IFDEF VerboseH2PasTool}
         DebugLn(['TH2PasTool.GetH2PNodeForComplexType untranslatable (missing ]): CCode="',dbgstr(CCode),'"']);
+        {$ENDIF}
         exit;
       end;
       CurAtom:=copy(CCode,AtomStart,p-AtomStart);
@@ -2619,11 +2773,15 @@ begin
   // check if the whole declaration was translated
   if AtomStart<=length(CCode) then begin
     // unknown C type
+    {$IFDEF VerboseH2PasTool}
     DebugLn(['TH2PasTool.GetTypeForVarType untranslatable: CCode="',dbgstr(CCode),'"']);
+    {$ENDIF}
     exit;
   end;
 
+  {$IFDEF VerboseH2PasTool}
   DebugLn(['TH2PasTool.GetTypeForVarType CCode="',dbgstr(CCode),'" PascalName="',PascalName,'"']);
+  {$ENDIF}
   Result:=SubH2PNode;
 end;
 

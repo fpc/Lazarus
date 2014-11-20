@@ -2524,7 +2524,9 @@ var
   Node: TCodeTreeNode;
 begin
   Result:=nil;
+  {$IFDEF VerboseCCodeParser}
   WriteDebugReport;
+  {$ENDIF}
   IfNDefNode:=Tree.Root;
   // skip root and extern nodes
   while (IfNDefNode<>nil) do begin
