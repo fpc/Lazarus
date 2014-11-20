@@ -211,8 +211,10 @@ end;
 
 
 function ConsoleToUTF8(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
+{$ifNdef WinCE}
 var
   Dst: PChar;
+{$endif}
 begin
   {$ifdef WinCE}
   Result := SysToUTF8(s);
@@ -228,8 +230,10 @@ begin
 end;
 
 function UTF8ToConsole(const s: string): string;
+{$ifNdef WinCE}
 var
   Dst: PChar;
+{$endif}
 begin
   {$ifdef WinCE}
   Result := UTF8ToSys(s);
@@ -241,6 +245,65 @@ begin
   FreeMem(Dst);
   {$endif}
 end;
+
+{$IFDEF MSWindows}
+// for all Windows supporting 8bit codepages (e.g. not WinCE)
+function WinCPToUTF8(const s: string): string;
+// result has codepage CP_ACP
+var
+  UTF16WordCnt: SizeInt;
+  UTF16Str: UnicodeString;
+begin
+  Result:=s;
+  if IsASCII(Result) then begin
+    {$ifdef FPC_HAS_CPSTRING}
+    // prevent codepage conversion magic
+    SetCodePage(RawByteString(Result), CP_ACP, False);
+    {$endif}
+    exit;
+  end;
+  UTF16WordCnt:=MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, Pointer(s), length(s), nil, 0);
+  // this will null-terminate
+  if UTF16WordCnt>0 then
+  begin
+    setlength(UTF16Str, UTF16WordCnt);
+    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, Pointer(s), length(s), @UTF16Str[1], UTF16WordCnt);
+    Result:=UTF8Encode(UTF16Str);
+    {$ifdef FPC_HAS_CPSTRING}
+    // prevent codepage conversion magic
+    SetCodePage(RawByteString(Result), CP_ACP, False);
+    {$endif}
+  end;
+end;
+
+function UTF8ToWinCP(const s: string): string;
+// result has codepage CP_ACP
+var
+  src: UnicodeString;
+  len: LongInt;
+begin
+  Result:=s;
+  if IsASCII(Result) then begin
+    {$ifdef FPC_HAS_CPSTRING}
+    // prevent codepage conversion magic
+    SetCodePage(RawByteString(Result), CP_ACP, False);
+    {$endif}
+    exit;
+  end;
+  src:=UTF8Decode(s);
+  if src='' then
+    exit;
+  len:=WideCharToMultiByte(CP_ACP,0,PUnicodeChar(src),length(src),nil,0,nil,nil);
+  SetLength(Result,len);
+  if len>0 then begin
+    WideCharToMultiByte(CP_ACP,0,PUnicodeChar(src),length(src),@Result[1],length(Result),nil,nil);
+    {$ifdef FPC_HAS_CPSTRING}
+    // prevent codepage conversion magic
+    SetCodePage(RawByteString(Result), CP_ACP, False);
+    {$endif}
+  end;
+end;
+{$ENDIF}
 
 {$ifdef debugparamstrutf8}
 procedure ParamStrUtf8Error;

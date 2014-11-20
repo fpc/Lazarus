@@ -35,6 +35,11 @@ function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independen
 function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
 function ConsoleToUTF8(const s: string): string;// converts OEM encoded string to UTF8 (used with some Windows specific functions)
 function UTF8ToConsole(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
+{$IFDEF MSWindows}
+// for all Windows supporting 8bit codepages (e.g. not WinCE)
+function WinCPToUTF8(const s: string): string;// converts string in Windows code page to UTF8 (used with some Windows specific functions)
+function UTF8ToWinCP(const s: string): string;// converts UTF8 string to Windows code page encoding (used by Write, WriteLn)
+{$ENDIF}
 
 function ParamStrUTF8(Param: Integer): string;
 
@@ -145,6 +150,14 @@ uses
 {$IFDEF Darwin}, MacOSAll{$ENDIF}
   ;
 
+function IsASCII(const s: string): boolean; inline;
+var
+  i: Integer;
+begin
+  for i:=1 to length(s) do if ord(s[i])>127 then exit(false);
+  Result:=true;
+end;
+
 {$ifdef windows}
   {$i winlazutf8.inc}
 {$else}
@@ -171,7 +184,11 @@ begin
   if FNeedRTLAnsiValid then
     exit(FNeedRTLAnsi);
   {$IFDEF Windows}
-  FNeedRTLAnsi:=GetACP<>CP_UTF8;
+    {$IF FPC_FULLVERSION>=20701}
+    FNeedRTLAnsi:=DefaultSystemCodePage<>CP_UTF8;
+    {$ELSE}
+    FNeedRTLAnsi:=GetACP<>CP_UTF8;
+    {$ENDIF}
   {$ELSE}
   FNeedRTLAnsi:=false;
   Lang := SysUtils.GetEnvironmentVariable('LC_ALL');
@@ -198,14 +215,6 @@ procedure SetNeedRTLAnsi(NewValue: boolean);
 begin
   FNeedRTLAnsi:=NewValue;
   FNeedRTLAnsiValid:=true;
-end;
-
-function IsASCII(const s: string): boolean; inline;
-var
-  i: Integer;
-begin
-  for i:=1 to length(s) do if ord(s[i])>127 then exit(false);
-  Result:=true;
 end;
 
 function UTF8ToSys(const s: string): string;
