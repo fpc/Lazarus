@@ -20,7 +20,7 @@ unit FPCAdds;
 interface
 
 uses
-  Classes, SysUtils, Math;
+  Classes, SysUtils;
 
 // current TStream calculates in int64, old in longint
 type
