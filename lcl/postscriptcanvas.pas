@@ -79,7 +79,7 @@ Type
 
     procedure psDrawRect(ARect:TRect);
     procedure WriteHeader(St : String);
-    procedure Write(const St : String; Lst : TstringList = nil); overload;
+    procedure Write(const St : String; Lst : TStringList = nil); overload;
     procedure WriteB(const St : string);
     procedure ClearBuffer;
     procedure Write(Lst : TStringList); overload;
@@ -112,6 +112,7 @@ Type
     function  GetFontIndex: Integer;
     function  FontUnitsToPixelsX(const Value:Integer): Integer;
     function  FontUnitsToPixelsY(const Value:Integer): Integer;
+    function  FontUnitsToPixelsY(const Value:Double): Integer;
   protected
     procedure CreateHandle; override;
     procedure CreateBrush; override;
@@ -665,7 +666,7 @@ begin
 end;
 
 //Write an instruction in the document
-procedure TPostScriptPrinterCanvas.Write(const St: String; Lst : TStringList = Nil);
+procedure TPostScriptPrinterCanvas.Write(const St: String; Lst: TStringList = nil);
 begin
   If not Assigned(Lst) then
     Lst:=fDocument;
@@ -1150,6 +1151,17 @@ function TPostScriptPrinterCanvas.FontUnitsToPixelsY(const Value: Integer
   ): Integer;
 begin
   result := Round(Value*Abs(GetFontSize/72)*0.001*YDPI);
+end;
+
+function TPostScriptPrinterCanvas.FontUnitsToPixelsY(const Value: Double
+  ): Integer;
+var
+  FontSize: Integer;
+begin
+  FontSize := GetFontSize;
+  if FontSize<0 then
+    FontSize := -FontSize;
+  result := Round(Value*FontSize/72*0.001*YDPI);
 end;
 
 procedure TPostScriptPrinterCanvas.CreateHandle;
@@ -2040,10 +2052,11 @@ end;
 //Out the text at the X,Y coord. Set the font
 procedure TPostScriptPrinterCanvas.TextOut(X, Y: Integer; const Text: String);
 var
-  PenUnder : Real;
+  PenUnder : Double;
   PosUnder : Integer;
   pp:TpsPoint;
   saved:boolean;
+  FontIndex: Integer;
 
   procedure rotate;
   begin
@@ -2073,10 +2086,19 @@ begin
   
   if fsUnderline in Font.Style then
   begin
+    FontIndex := GetFontIndex;
+
+    PosUnder := FontUnitsToPixelsY(cFontPSMetrics[FontIndex].ULPos);
+
+    // The current heuristics produces better underline thickness
+    {$IFDEF UseFontUnderlineThickness}
+    PenUnder := FontUnitsToPixelsY(cFontPSMetrics[FontIndex].ULThickness);
+    {$else}
     PenUnder:=0.5;
     if fsBold in Font.Style then
       PenUnder:=1.0;
-    PosUnder:=(Abs(Round(GetFontSize/3))*-1)+2;
+    {$endif}
+
     Write(format('%f %f uli',[pp.fx,pp.fy],FFs));
     if Font.Orientation<>0 then
       rotate();
