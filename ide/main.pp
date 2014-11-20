@@ -3410,7 +3410,8 @@ end;
 function TMainIDE.OnIDEQuestionDialog(const aCaption, aMsg: string;
   DlgType: TMsgDlgType; Buttons: array of const; const HelpKeyword: string): Integer;
 begin
-  Result:=QuestionDlg(aCaption,aMsg,DlgType,Buttons,HelpKeyword);
+  Result:=QuestionDlg{ !!! DO NOT REPLACE WITH IDEQuestionDialog }
+            (aCaption,aMsg,DlgType,Buttons,HelpKeyword);
 end;
 
 procedure TMainIDE.OnExecuteIDEShortCut(Sender: TObject; var Key: word;
