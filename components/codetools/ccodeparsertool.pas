@@ -677,7 +677,9 @@ var
           IncludeParam:=copy(IncludeParam,2,length(IncludeParam)-2);
         if IncludeParam<>'' then begin
           // for example: glib/gutils.h
+          {$IFDEF VerboseCCodeParser}
           debugln(['TCHeaderFileMerger.Merge Param=',IncludeParam]);
+          {$ENDIF}
           // search file in list
           for j:=1 to SourceBuffers.Count-1 do begin
             IncCode:=TCodeBuffer(SourceBuffers[j]);
@@ -689,7 +691,9 @@ var
             then begin
               // include file found
               if MergedBuffers.IndexOf(IncCode)<0 then begin
+                {$IFDEF VerboseCCodeParser}
                 debugln(['TCHeaderFileMerger.Merge file '+IncFilename+' into '+Code.Filename]);
+                {$ENDIF}
                 Append(Code,MergePos,Code.GetLineStart(i));
                 MergePos:=Code.GetLineStart(i+1);
                 Append('/* h2pas: merged '+IncludeParam+' into '+ExtractFileName(Code.Filename)+' */'+LineEnding);
