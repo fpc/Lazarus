@@ -2799,6 +2799,7 @@ begin
   if RelocatableUnit and (CurSrcOS='win') then
     switches := switches + ' -WR';
   if (not (ccloNoMacroParams in Flags))
+  and (CurTargetCPU='x86_64')
   and ((CurTargetOS='linux') or (CurTargetOS='freebsd') or (CurTargetOS='netbsd')
     or (CurTargetOS='openbsd') or (CurTargetOS='solaris'))
   then
