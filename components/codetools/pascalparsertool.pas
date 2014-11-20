@@ -3632,6 +3632,8 @@ function TPascalParserTool.KeyWordFuncConst: boolean;
       ;
       c =4;
       ErrorBase : Pointer = nil;public name 'FPC_ERRORBASE';
+      devcfg3: longWord = DEVCFG3_DEFAULT; section '.devcfg3';
+
 
     implementation
 
@@ -3833,6 +3835,7 @@ end;
 
 procedure TPascalParserTool.ReadConst;
 // ErrorBase : Pointer = nil;public name 'FPC_ERRORBASE';
+// devcfg3: longWord = DEVCFG3_DEFAULT; section '.devcfg3';
 begin
   ReadNextAtom;
   if (CurPos.Flag=cafColon) then begin
@@ -3869,6 +3872,12 @@ begin
           ReadNextAtom;
           if CurPos.Flag<>cafSemicolon then
             SaveRaiseStringExpectedButAtomFound(';');
+        end else
+        if UpAtomIs('SECTION') then begin
+          ReadNextAtom;
+          if not AtomIsStringConstant then
+            SaveRaiseStringExpectedButAtomFound(ctsStringConstant);
+          ReadNextAtomIsChar(';');
         end else
         begin
           UndoReadNextAtom;
