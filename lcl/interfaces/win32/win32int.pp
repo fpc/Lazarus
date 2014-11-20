@@ -1,4 +1,4 @@
-{ $Id: win32int.pp 39894 2013-01-19 17:42:38Z juha $ }
+{ $Id$ }
 {
  /***************************************************************************
                          WIN32INT.pp  -  Win32Interface Object
@@ -263,7 +263,7 @@ type
 
 var
   MouseDownCount: Integer;
-  MouseDownTime: dword;
+  MouseDownTime: QWord;
   MouseDownPos: TPoint;
   MouseDownWindow: HWND = 0;
   ComboBoxHandleSizeWindow: HWND = 0;

@@ -1688,7 +1688,7 @@ begin
       // always within the time-window
       if (MouseDownCount < 1) or (MouseDownCount > 4) then MouseDownCount := 1;
       inc(MouseDownCount);
-      MouseDownTime := GetTickCount;
+      MouseDownTime := GetTickCount64;
       with LMMouse Do
       begin
         case MouseDownCount of
@@ -1706,13 +1706,13 @@ begin
     begin
       if (MouseDownCount < 1) or (MouseDownCount > 4) then MouseDownCount := 1;
       if (MouseDownWindow = Window)
-          and (GetTickCount - MouseDownTime <= GetDoubleClickTime)
+          and (GetTickCount64 - MouseDownTime <= GetDoubleClickTime)
           and CheckMouseMovement then
         inc(MouseDownCount)
       else
         MouseDownCount := 1;
 
-      MouseDownTime := GetTickCount;
+      MouseDownTime := GetTickCount64;
       MouseDownWindow := Window;
       GetCursorPos(MouseDownPos);
       NotifyUserInput := True;
