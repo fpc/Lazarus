@@ -767,6 +767,12 @@ begin
     case LineStyle of
       lsHorizontal: begin
         p := YGraphToImage(AxisToGraphX(Position));
+        // The "X" here is correct:
+        // The constant line series needs only a single axis, which is its
+        // "x axis" - the user will set the axis index to that of the y axis
+        // for the case of a horizontal line. Therefore, AxisToGraph must get
+        // the transformation from the line's x axis (even if it is the y axis
+        // of the chart!).
         DrawLineHoriz(ADrawer, p);
         if Arrow.Inverted then
           Arrow.Draw(ADrawer, Point(ClipRect.Left, p), 0, Pen)
