@@ -103,8 +103,8 @@ interface
 
 {$I codetools.inc}
 
-{$DEFINE VerboseCCodeParser}
-{$DEFINE VerboseCDirectives}
+{off $DEFINE VerboseCCodeParser}
+{off $DEFINE VerboseCDirectives}
 
 uses
   {$IFDEF MEM_CHECK}
