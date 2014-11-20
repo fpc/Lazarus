@@ -142,7 +142,7 @@ begin
 
     // CheckNode return type
     V:=EvaluateXPathExpression('/bookstore',BookStoreNode);
-    debugln(['TTestLazXML.TestXPath ',dbgsname(V)]);
+    //debugln(['TTestLazXML.TestXPath ',dbgsname(V)]);
     AssertEquals('/bookstore returns class',TXPathNodeSetVariable,V.ClassType);
     NodeSet:=V.AsNodeSet;
     AssertEquals('/bookstore AsNodeSet',True,NodeSet<>nil);
