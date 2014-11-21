@@ -836,7 +836,7 @@ type
     function Count: Integer; virtual;
     function GetAddress(const {%H-}AIndex: Integer; const {%H-}ALine: Integer): TDbgPtr; virtual;
     function GetAddress(const ASource: String; const ALine: Integer): TDbgPtr;
-    function GetInfo({%H-}AAdress: TDbgPtr; out {%H-}ASource, {%H-}ALine, {%H-}AOffset: Integer): Boolean; virtual;
+    function GetInfo({%H-}AAddress: TDbgPtr; out {%H-}ASource, {%H-}ALine, {%H-}AOffset: Integer): Boolean; virtual;
     function IndexOf(const {%H-}ASource: String): integer; virtual;
     procedure Request(const {%H-}ASource: String); virtual;
     procedure Cancel(const {%H-}ASource: String); virtual;
@@ -3902,7 +3902,7 @@ begin
   else Result := GetAddress(idx, ALine);
 end;
 
-function TBaseLineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean;
+function TBaseLineInfo.GetInfo(AAddress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean;
 begin
   Result := False;
 end;

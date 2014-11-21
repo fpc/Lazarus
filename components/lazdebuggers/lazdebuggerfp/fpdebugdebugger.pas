@@ -173,7 +173,7 @@ type
     destructor Destroy; override;
     function Count: Integer; override;
     function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
-    function GetInfo({%H-}AAdress: TDbgPtr; out {%H-}ASource, {%H-}ALine, {%H-}AOffset: Integer): Boolean; override;
+    function GetInfo({%H-}AAddress: TDbgPtr; out {%H-}ASource, {%H-}ALine, {%H-}AOffset: Integer): Boolean; override;
     function IndexOf(const ASource: String): integer; override;
     procedure Request(const ASource: String); override;
     procedure Cancel(const {%H-}ASource: String); override;
@@ -908,7 +908,7 @@ begin
     Result := Map^.GetAddressForLine(ALine);
 end;
 
-function TFpLineInfo.GetInfo(AAdress: TDbgPtr; out ASource, ALine,
+function TFpLineInfo.GetInfo(AAddress: TDbgPtr; out ASource, ALine,
   AOffset: Integer): Boolean;
 begin
   Result := False;
