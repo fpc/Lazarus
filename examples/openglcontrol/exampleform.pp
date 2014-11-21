@@ -402,14 +402,8 @@ end;
 
 procedure TExampleForm.IdleFunc(Sender: TObject; var Done: Boolean);
 begin
-  {$IFDEF LCLQT}
-  // the QT backend currently uses a hack, which does not work together with the
-  // QT painting mechanism. You have to "paint" outside the paint message:
-  {$NOTE Remove this when the TOpenGLControl backend for QT uses the QT way of using OpenGL}
-  OpenGLControl1Paint(Self);
-  {$ELSE}
   OpenGLControl1.Invalidate;
-  {$ENDIF}
+  //OpenGLControl1Paint(Self);
   Done:=false; // tell lcl to handle messages and return immediatly
 end;
 

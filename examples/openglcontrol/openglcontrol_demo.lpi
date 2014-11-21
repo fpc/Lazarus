@@ -47,10 +47,5 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
-    <Parsing>
-      <SyntaxOptions>
-        <UseAnsiStrings Value="False"/>
-      </SyntaxOptions>
-    </Parsing>
   </CompilerOptions>
 </CONFIG>
