@@ -6,7 +6,7 @@ interface
 
 uses
   Classes,
-  SysUtils, fgl,
+  SysUtils,
   Forms,
   Maps,
   process,
@@ -93,7 +93,7 @@ type
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
     function ReadAnsiString(AnAddr: TDbgPtr): string;
     function SetSoftwareExceptionBreakpoint: boolean;
-    procedure HandleSoftwareException(var AnExceptionLocation: TDBGLocationRec; var continue: boolean);
+    procedure HandleSoftwareException(out AnExceptionLocation: TDBGLocationRec; var continue: boolean);
     procedure FreeDebugThread;
     procedure FDbgControllerHitBreakpointEvent(var continue: boolean; const Breakpoint: FpDbgClasses.TDbgBreakpoint);
     procedure FDbgControllerCreateProcessEvent(var continue: boolean);
@@ -239,11 +239,11 @@ type
     procedure SetBreak;
     procedure ResetBreak;
   protected
-    destructor Destroy; override;
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure DoEnableChange; override;
     procedure DoChanged; override;
   public
+    destructor Destroy; override;
   end;
 
   { TFPBreakpoints }
@@ -399,8 +399,6 @@ end;
 
 procedure TFPCallStackSupplier.RequestCount(ACallstack: TCallStackBase);
 var
-  Address, Frame, LastFrame: QWord;
-  Size, Count: integer;
   ThreadCallStack: TDbgCallstackEntryList;
 begin
   if (Debugger = nil) or not(Debugger.State = dsPause)
@@ -736,12 +734,10 @@ var
   p: pointer;
   ADump,
   AStatement,
-  ASrcFileName,
-  APriorFileName: string;
-  ASrcFileLine,
-  APriorFileLine: integer;
+  ASrcFileName: string;
+  ASrcFileLine: integer;
   i,j: Integer;
-  NextSym,Sym: TFpDbgSymbol;
+  Sym: TFpDbgSymbol;
   StatIndex: integer;
   FirstIndex: integer;
 
@@ -1316,7 +1312,8 @@ begin
   end;
 end;
 
-procedure TFpDebugDebugger.HandleSoftwareException(var AnExceptionLocation: TDBGLocationRec;var continue: boolean);
+procedure TFpDebugDebugger.HandleSoftwareException(out
+  AnExceptionLocation: TDBGLocationRec; var continue: boolean);
 var
   AnExceptionObjectLocation: TDBGPtr;
   ExceptionClass: string;
