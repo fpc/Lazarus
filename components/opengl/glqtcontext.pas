@@ -18,7 +18,7 @@ interface
 uses
   Classes, SysUtils, Controls, LCLProc, LCLType, X, XUtil, XLib, gl,
   InterfaceBase,
-  WSLCLClasses,
+  WSLCLClasses,glx,
   // Bindings
   qt4,
   qtwidgets, qtobjects, qtproc, qtint,
@@ -64,42 +64,19 @@ procedure LOpenGLSwapBuffers(Handle: HWND);
 function LOpenGLMakeCurrent(Handle: HWND): boolean;
 function LOpenGLReleaseContext(Handle: HWND): boolean;
 function LOpenGLCreateContext(AWinControl: TWinControl;
-             WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
-             DoubleBuffered, RGBA: boolean;
-             const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
-             const AParams: TCreateParams): HWND;
+                          WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
+                          DoubleBuffered, RGBA: boolean;
+                          const RedBits, GreenBits, BlueBits, MajorVersion, MinorVersion,
+                          MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
+                          const AParams: TCreateParams): HWND;
+
 procedure LOpenGLDestroyContextInfo(AWinControl: TWinControl);
-function CreateOpenGLContextAttrList(DoubleBuffered: boolean;
-                                     RGBA: boolean): PInteger;
+function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
+             const RedBits, GreenBits, BlueBits, AlphaBits, DepthBits,
+             StencilBits,  AUXBuffers: Cardinal): PInteger;
+
 
 implementation
-
-type
-  //PGLXPixmap = ^GLXPixmap;
-  GLXPixmap = TXID;
-
-  //PGLXDrawable = ^GLXDrawable;
-  GLXDrawable = TXID;
-
-{ GLX 1.0 functions. }
-
-function glXChooseVisual(dpy:PDisplay; screen:longint; attrib_list:Plongint):PXVisualInfo;cdecl;external;
-procedure glXCopyContext(dpy:PDisplay; src:TGLXContext; dst:TGLXContext; mask: cardinal);cdecl;external;
-function glXCreateContext(dpy:PDisplay; vis:PXVisualInfo; share_list:TGLXContext; direct:TBool):TGLXContext;cdecl;external;
-function glXCreateGLXPixmap(dpy:PDisplay; vis:PXVisualInfo; pixmap:TPixmap):GLXPixmap;cdecl;external;
-procedure glXDestroyContext(dpy:PDisplay; ctx:TGLXContext);cdecl;external;
-procedure glXDestroyGLXPixmap(dpy:PDisplay; pix:GLXPixmap);cdecl;external;
-function glXGetConfig(dpy:PDisplay; vis:PXVisualInfo; attrib:longint; value:Plongint):longint;cdecl;external;
-function glXGetCurrentContext:TGLXContext;cdecl;external;
-function glXGetCurrentDrawable:GLXDrawable;cdecl;external;
-function glXIsDirect(dpy:PDisplay; ctx:TGLXContext):TBool;cdecl;external;
-function glXMakeCurrent(dpy:PDisplay; drawable:GLXDrawable; ctx:TGLXContext):TBool;cdecl;external;
-function glXQueryExtension(dpy:PDisplay; error_base:Plongint; event_base:Plongint):TBool;cdecl;external;
-function glXQueryVersion(dpy:PDisplay; major:Plongint; minor:Plongint):TBool;cdecl;external;
-procedure glXSwapBuffers(dpy:PDisplay; drawable:GLXDrawable);cdecl;external;
-procedure glXUseXFont(font:TFont; first:longint; count:longint; list_base:longint);cdecl;external;
-procedure glXWaitGL;cdecl;external;
-procedure glXWaitX;cdecl;external;
 
 function XVisualAsString(AVisual: PVisual): string;
 begin
@@ -143,7 +120,7 @@ type
 
 function TQtGLWidget.GetGLXDrawable: GLXDrawable;
 begin
-  Result:=0; {$ERROR ToDo: get GLXDrawable}
+  result:=QWidget_winID(Widget);
 end;
 
 procedure LOpenGLViewport(Left, Top, Width, Height: integer);
@@ -173,9 +150,9 @@ begin
   Result:=false;
 
   Widget:=TQtGLWidget(Handle);
-  Result:=boolean(glXMakeCurrent(Widget.xdisplay,
+  Result:=glXMakeCurrent(Widget.xdisplay,
                                  Widget.GetGLXDrawable,
-                                 Widget.glxcontext));
+                                 Widget.glxcontext);
 end;
 
 function LOpenGLReleaseContext(Handle: HWND): boolean;
@@ -190,26 +167,33 @@ begin
   Result := glXMakeCurrent(Widget.xdisplay, 0, nil);
 end;
 
-end;
 
-function LOpenGLCreateContext(AWinControl: TWinControl;
+{function LOpenGLCreateContext(AWinControl: TWinControl;
   WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
   DoubleBuffered, RGBA: boolean;
   const MultiSampling, AlphaBits, DepthBits, StencilBits: Cardinal;
-  const AParams: TCreateParams): HWND;
+  const AParams: TCreateParams): HWND;}
+function LOpenGLCreateContext(AWinControl: TWinControl;
+                          WSPrivate: TWSPrivateClass; SharedControl: TWinControl;
+                          DoubleBuffered, RGBA: boolean;
+                          const RedBits, GreenBits, BlueBits, MajorVersion, MinorVersion,
+                          MultiSampling, AlphaBits, DepthBits, StencilBits, AUXBuffers: Cardinal;
+                          const AParams: TCreateParams): HWND;
+
 var
   AttrList: PInteger;
   NewQtWidget: TQtGLWidget;
-  direct: TBool;
+  direct: boolean;
 begin
   if WSPrivate=nil then ;
-  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA);
+  AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,BlueBits,AlphaBits,DepthBits,StencilBits,AUXBuffers);
   try
     NewQtWidget:=TQtGLWidget.Create(AWinControl,AParams);
+    NewQtWidget.HasPaint:=true;
     NewQtWidget.xdisplay := QX11Info_display;
     NewQtWidget.visual:=glXChooseVisual(NewQtWidget.xdisplay,
       DefaultScreen(NewQtWidget.xdisplay), @attrList[0]);
-    direct:=0;
+    direct:=false;
     NewQtWidget.glxcontext := glXCreateContext(NewQtWidget.xdisplay,
                                                NewQtWidget.visual, nil, direct);
     NewQtWidget.ref_count := 1;
@@ -228,10 +212,12 @@ begin
   // nothing to do
 end;
 
-function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean
-  ): PInteger;
+function CreateOpenGLContextAttrList(DoubleBuffered: boolean; RGBA: boolean;
+  const RedBits, GreenBits, BlueBits, AlphaBits, DepthBits, StencilBits,
+  AUXBuffers: Cardinal): PInteger;
 var
   p: integer;
+  UseFBConfig: boolean;
 
   procedure Add(i: integer);
   begin
@@ -242,26 +228,56 @@ var
 
   procedure CreateList;
   begin
+    p:=0;
+    if UseFBConfig then begin
+      Add(GLX_X_RENDERABLE); Add(1);
+      Add(GLX_X_VISUAL_TYPE); Add(GLX_TRUE_COLOR);
+    end;
     if DoubleBuffered then
-      Add(QT_GL_DOUBLEBUFFER);
+    begin
+      if UseFBConfig then
+        begin Add(GLX_DOUBLEBUFFER); Add(1); end else
+        Add(GLX_DOUBLEBUFFER);
+    end;
     if RGBA then
-      Add(QT_GL_RGBA);
-    Add(QT_GL_RED_SIZE);  Add(1);
-    Add(QT_GL_GREEN_SIZE);  Add(1);
-    Add(QT_GL_BLUE_SIZE);  Add(1);
-    Add(QT_GL_DEPTH_SIZE);  Add(1);
-    Add(QT_GL_STENCIL_SIZE); Add(1);
-    Add(QT_GL_None);
+    begin
+      if not UseFBConfig then Add(GLX_RGBA);
+      { For UseFBConfig, glXChooseFBConfig already defaults to RGBA }
+    end;
+    Add(GLX_RED_SIZE);  Add(RedBits);
+    Add(GLX_GREEN_SIZE);  Add(GreenBits);
+    Add(GLX_BLUE_SIZE);  Add(BlueBits);
+    if AlphaBits>0 then
+    begin
+      Add(GLX_ALPHA_SIZE);  Add(AlphaBits);
+    end;
+    if DepthBits>0 then
+    begin
+      Add(GLX_DEPTH_SIZE);  Add(DepthBits);
+    end;
+    if StencilBits>0 then
+    begin
+      Add(GLX_STENCIL_SIZE);  Add(StencilBits);
+    end;
+    if AUXBuffers>0 then
+    begin
+      Add(GLX_AUX_BUFFERS);  Add(AUXBuffers);
+    end;
+
+    Add(0); { 0 = X.None (be careful: GLX_NONE is something different) }
   end;
 
 begin
+  {$IFDEF VerboseMultiSampling}
+  debugln(['CreateOpenGLContextAttrList MultiSampling=',MultiSampling]);
+  {$ENDIF}
+  UseFBConfig := false; //GLX_version_1_3(GetDefaultXDisplay);
   Result:=nil;
-  p:=0;
   CreateList;
   GetMem(Result,SizeOf(integer)*p);
-  p:=0;
   CreateList;
 end;
+
 
 end.
 

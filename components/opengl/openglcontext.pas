@@ -46,6 +46,8 @@ unit OpenGLContext;
 {$ENDIF}
 {$IFDEF LCLQT}
   {$DEFINE UseQTGLX}
+  {$DEFINE UsesModernGL}
+  {$DEFINE HasRGBBits}
   {$DEFINE OpenGLTargetDefined}
 {$ENDIF}
 {$IFNDEF OpenGLTargetDefined}
