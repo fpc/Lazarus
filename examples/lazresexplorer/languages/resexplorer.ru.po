@@ -10,7 +10,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: reconstsunit.sabout
-#| msgid "About..."
 msgctxt "reconstsunit.sabout"
 msgid "About ..."
 msgstr "О программе ..."
@@ -24,7 +23,6 @@ msgid "All files (*)|*|Shared libraries (*.so)|*.so"
 msgstr "Все файлы (*)|*|Динамические библиотеки (*.so)|*.so"
 
 #: reconstsunit.sbuilddate
-#| msgid "Build date : "
 msgid "Build date: "
 msgstr "Дата сборки: "
 
@@ -43,7 +41,6 @@ msgid "File"
 msgstr "Файл"
 
 #: reconstsunit.sfpcversion
-#| msgid "FPC version : "
 msgid "FPC version: "
 msgstr "Версия FPC: "
 
@@ -78,7 +75,6 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Это свободное ПО, распространяющееся под лицензией GNU GPL версии 2 (см. файл COPYING)."
 
 #: reconstsunit.sopen
-#| msgid "Open..."
 msgctxt "reconstsunit.sopen"
 msgid "Open ..."
 msgstr "Открыть ..."
@@ -100,7 +96,6 @@ msgid "Resources"
 msgstr "Ресурсы"
 
 #: reconstsunit.ssaveresource
-#| msgid "Save resource..."
 msgctxt "reconstsunit.ssaveresource"
 msgid "Save resource ..."
 msgstr "Сохранить ресурс ..."
@@ -110,12 +105,10 @@ msgid "Strings"
 msgstr "Строки"
 
 #: reconstsunit.stargetcpu
-#| msgid "Target CPU : "
 msgid "Target CPU: "
 msgstr "Целевой процессор: "
 
 #: reconstsunit.stargetos
-#| msgid "Target OS : "
 msgid "Target OS: "
 msgstr "Целевая ОС: "
 

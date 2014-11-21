@@ -14,7 +14,6 @@ msgstr ""
 "X-Generator: Virtaal 0.6.1\n"
 
 #: reconstsunit.sabout
-#| msgid "About..."
 msgid "About ..."
 msgstr "Informazioni ..."
 
@@ -27,7 +26,6 @@ msgid "All files (*)|*|Shared libraries (*.so)|*.so"
 msgstr "Tutti i file (*)|*|Librerie condivise (*.so)|*.so"
 
 #: reconstsunit.sbuilddate
-#| msgid "Build date : "
 msgid "Build date: "
 msgstr "Data di compilazione:"
 
@@ -44,7 +42,6 @@ msgid "File"
 msgstr "File"
 
 #: reconstsunit.sfpcversion
-#| msgid "FPC version : "
 msgid "FPC version: "
 msgstr "Versione FPC: "
 
@@ -77,7 +74,6 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Questo programma è software libero distribuito sotto la licenza GNU GPL 2, vedi file COPYING"
 
 #: reconstsunit.sopen
-#| msgid "Open..."
 msgid "Open ..."
 msgstr "Apri ..."
 
@@ -98,7 +94,6 @@ msgid "Resources"
 msgstr "Risorse"
 
 #: reconstsunit.ssaveresource
-#| msgid "Save resource..."
 msgid "Save resource ..."
 msgstr "Salva risorse ..."
 
@@ -107,12 +102,10 @@ msgid "Strings"
 msgstr "Stringhe"
 
 #: reconstsunit.stargetcpu
-#| msgid "Target CPU : "
 msgid "Target CPU: "
 msgstr "CPU di riferimento: "
 
 #: reconstsunit.stargetos
-#| msgid "Target OS : "
 msgid "Target OS: "
 msgstr "SO di riferimento: "
 
@@ -123,3 +116,4 @@ msgstr "Set di widget Win32/Win64"
 #: reconstsunit.swincewidgetset
 msgid "WinCE widget set"
 msgstr "Set di widget WinCE"
+
