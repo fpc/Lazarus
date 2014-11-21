@@ -12,7 +12,7 @@ AUTHORS: Felipe Monteiro de Carvalho
 unit fpvectorial;
 
 {$ifdef fpc}
-  {$mode delphi}
+  {$mode objfpc}{$h+}
 {$endif}
 
 {$define USE_LCL_CANVAS}
@@ -1410,6 +1410,8 @@ type
   { TvCustomVectorialReader }
 
   TvCustomVectorialReader = class
+  protected
+    class function GetTextContentsFromNode(ANode: TDOMNode): DOMString;
   public
     { General reading methods }
     constructor Create; virtual;
@@ -1931,7 +1933,7 @@ begin
     // Page style
     sseMarginTop, sseMarginBottom, sseMarginLeft, sseMarginRight
     );
-{   Font.Size, Font.Name, Font.Orientation,
+   Font.Size, Font.Name, Font.Orientation,
     BoolToStr(Font.Underline),
     BoolToStr(Font.StrikeThrough),
     GetEnumName(TypeInfo(TvTextAnchor), integer(TextAnchor))}
@@ -2043,7 +2045,7 @@ begin
 
   // SolveNumerically
 
-  lT1 := SolveNumericallyAngle(AlignedEllipseCenterEquationT1, 0.0001, 20);
+  lT1 := SolveNumericallyAngle(@AlignedEllipseCenterEquationT1, 0.0001, 20);
 
   CX1 := E1.X - RX*cos(lt1);
   CY1 := E1.Y - RY*sin(lt1);
@@ -3020,7 +3022,7 @@ var
   CurveLength: Integer;
   t: Double;
   // For polygons
-  Points: array of TPoint;
+  lPoints: array of TPoint;
   // for elliptical arcs
   BoxLeft, BoxTop, BoxRight, BoxBottom: Double;
   EllipseRect: TRect;
@@ -3056,8 +3058,8 @@ begin
     DeleteObject(ClipRegion);
     // debug info
     {$ifdef DEBUG_CANVAS_CLIP_REGION}
-    ConvertPathToPoints(CurPath.ClipPath, ADestX, ADestY, AMulX, AMulY, Points);
-    ACanvas.Polygon(Points);
+    ConvertPathToPoints(CurPath.ClipPath, ADestX, ADestY, AMulX, AMulY, lPoints);
+    ACanvas.Polygon(lPoints);
     {$endif}
   end;
   {$endif}
@@ -3133,18 +3135,18 @@ begin
       CoordY3 := CoordToCanvasY(Cur2DBSegment.Y3);
       CoordX4 := CoordToCanvasX(Cur2DBSegment.X);
       CoordY4 := CoordToCanvasY(Cur2DBSegment.Y);
-      SetLength(Points, 0);
+      SetLength(lPoints, 0);
       AddBezierToPoints(
         Make2DPoint(CoordX, CoordY),
         Make2DPoint(CoordX2, CoordY2),
         Make2DPoint(CoordX3, CoordY3),
         Make2DPoint(CoordX4, CoordY4),
-        Points
+        lPoints
       );
 
       ADest.Brush.Style := Brush.Style;
-      if Length(Points) >= 3 then
-        ADest.Polygon(Points);
+      if Length(lPoints) >= 3 then
+        ADest.Polygon(lPoints);
 
       PosX := Cur2DSegment.X;
       PosY := Cur2DSegment.Y;
@@ -3184,7 +3186,7 @@ begin
       CoordX3 := CoordToCanvasX(Cur2DArcSegment.XRotation);
       CoordX4 := CoordToCanvasX(Cur2DArcSegment.X);
       CoordY4 := CoordToCanvasY(Cur2DArcSegment.Y);
-      SetLength(Points, 0);
+      SetLength(lPoints, 0);
 
       Cur2DArcSegment.CalculateEllipseBoundingBox(nil, BoxLeft, BoxTop, BoxRight, BoxBottom);
 
@@ -4773,14 +4775,14 @@ end;
 function TvFormula.GetFirstElement: TvFormulaElement;
 begin
   if FElements.Count = 0 then Exit(nil);
-  Result := FElements.Items[0];
+  Result := TvFormulaElement(FElements.Items[0]);
   FCurIndex := 1;
 end;
 
 function TvFormula.GetNextElement: TvFormulaElement;
 begin
   if FElements.Count <= FCurIndex then Exit(nil);
-  Result := FElements.Items[FCurIndex];
+  Result := TvFormulaElement(FElements.Items[FCurIndex]);
   Inc(FCurIndex);
 end;
 
@@ -4861,7 +4863,7 @@ begin
   try
     for i := 0 to AInfix.Count-1 do
     begin
-      CurItem := AInfix.Items[i];
+      CurItem := TvFormulaElement(AInfix.Items[i]);
       case CurItem.Kind of
       fekVariable:
       begin
@@ -5026,7 +5028,7 @@ end;
 procedure TvFormula.Clear;
 begin
   inherited Clear;
-  FElements.ForEachCall(CallbackDeleteElement, nil);
+  FElements.ForEachCall(@CallbackDeleteElement, nil);
   FElements.Clear;
 end;
 
@@ -5185,14 +5187,14 @@ end;
 function TvEntityWithSubEntities.GetFirstEntity: TvEntity;
 begin
   if FElements.Count = 0 then Exit(nil);
-  Result := FElements.Items[0];
+  Result := TvEntity(FElements.Items[0]);
   FCurIndex := 1;
 end;
 
 function TvEntityWithSubEntities.GetNextEntity: TvEntity;
 begin
   if FElements.Count <= FCurIndex then Exit(nil);
-  Result := FElements.Items[FCurIndex];
+  Result := TvEntity(FElements.Items[FCurIndex]);
   Inc(FCurIndex);
 end;
 
@@ -5225,7 +5227,7 @@ function TvEntityWithSubEntities.DeleteEntity(AIndex: Cardinal): Boolean;
 var
   lEntity: TvEntity;
 begin
-  lEntity := FElements.Items[AIndex];
+  lEntity := TvEntity(FElements.Items[AIndex]);
   FElements.Remove(lEntity);
   lEntity.Free;
   Result := True;
@@ -5257,7 +5259,7 @@ end;
 procedure TvEntityWithSubEntities.Clear;
 begin
   inherited Clear;
-  FElements.ForEachCall(CallbackDeleteElement, nil);
+  FElements.ForEachCall(@CallbackDeleteElement, nil);
   FElements.Clear;
 end;
 
@@ -5909,7 +5911,7 @@ end;
 
 procedure TvVectorialPage.Clear;
 begin
-  FEntities.ForEachCall(CallbackDeleteEntity, nil);
+  FEntities.ForEachCall(@CallbackDeleteEntity, nil);
   FEntities.Clear();
   ClearTmpPath();
   ClearLayerSelection();
@@ -7316,6 +7318,34 @@ begin
 end;
 
 { TvCustomVectorialReader }
+
+class function TvCustomVectorialReader.GetTextContentsFromNode(ANode: TDOMNode): DOMString;
+var
+  lNodeTextTmp: DOMString;
+  lContentNode: TDOMNode;
+begin
+  Result := '';
+
+  for lContentNode in ANode.GetEnumeratorAllChildren() do
+  begin
+    if lContentNode is TDOMText then
+      lNodeTextTmp := TDOMText(lContentNode).TextContent
+    else if lContentNode is TDOMEntityReference then
+    begin
+      lNodeTextTmp := UTF8LowerCase(lContentNode.NodeName);
+      case lNodeTextTmp of
+      'pi': lNodeTextTmp := 'π';
+      'invisibletimes': lNodeTextTmp := '';
+      else
+        lNodeTextTmp := '';//lContentNode.NodeName;
+      end;
+    end
+    else
+      lNodeTextTmp := lContentNode.NodeName;
+
+    Result := Result + lNodeTextTmp;
+  end;
+end;
 
 constructor TvCustomVectorialReader.Create;
 begin

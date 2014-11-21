@@ -15,7 +15,7 @@ interface
 uses
   Classes, SysUtils, math,
   laz2_xmlread, laz2_dom,
-  fpvectorial, fpvutils;
+  fpvectorial, fpvutils, lazutf8;
 
 type
   { TvMathMLVectorialReader }
@@ -68,8 +68,8 @@ var
   lNodeTextLen: Integer;
 begin
   lNodeName := ANode.NodeName;
-  if ANode.FirstChild <> nil then
-    lNodeText := ANode.FirstChild.NodeValue;
+  lNodeText := GetTextContentsFromNode(ANode);
+
   // mi - variables
   // Examples:
   // <mi>x</mi>
