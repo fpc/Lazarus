@@ -1577,6 +1577,7 @@ var
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
+    if Index=0 then ;
   end;
 
   procedure DoGroupP;

@@ -92,9 +92,11 @@ begin
 end;
 
 function GetLastErrorText(AErrorCode: Cardinal): String;
+{$ifdef windows}
 var
   R: cardinal;
   Temp: PChar;
+{$endif}
 begin
 {$ifdef windows}
   Temp := nil;

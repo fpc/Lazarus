@@ -687,7 +687,8 @@ implementation
 
 var
   FPDBG_DWARF_ERRORS, FPDBG_DWARF_WARNINGS, FPDBG_DWARF_SEARCH, FPDBG_DWARF_VERBOSE,
-  FPDBG_DWARF_VERBOSE_LOAD, FPDBG_DWARF_DATA_WARNINGS: PLazLoggerLogGroup;
+  // FPDBG_DWARF_DATA_WARNINGS,
+  FPDBG_DWARF_VERBOSE_LOAD: PLazLoggerLogGroup;
 
 var
   TheDwarfSymbolClassMapList: TFpDwarfSymbolClassMapList;
@@ -3499,8 +3500,8 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADataOffset: QWor
       HeaderLength := LNP32^.HeaderLength;
       Info := @LNP32^.Info;
     end;
+    if Version=0 then ;
     FLineInfo.DataStart := PByte(Info) + HeaderLength;
-
 
     FLineInfo.MinimumInstructionLength := Info^.MinimumInstructionLength;
     FLineInfo.DefaultIsStmt := Info^.DefaultIsStmt <> 0;
@@ -4194,7 +4195,8 @@ initialization
   FPDBG_DWARF_VERBOSE_LOAD  := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_VERBOSE_LOAD' {$IFDEF FPDBG_DWARF_VERBOSE_LOAD} , True {$ENDIF} );
   FPDBG_DWARF_SEARCH        := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_SEARCH' {$IFDEF FPDBG_DWARF_SEARCH} , True {$ENDIF} );
   // Target data anormalities
-  FPDBG_DWARF_DATA_WARNINGS := DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_DATA_WARNINGS' {$IFDEF FPDBG_DWARF_DATA_WARNINGS} , True {$ENDIF} );
+  //FPDBG_DWARF_DATA_WARNINGS :=
+  DebugLogger.FindOrRegisterLogGroup('FPDBG_DWARF_DATA_WARNINGS' {$IFDEF FPDBG_DWARF_DATA_WARNINGS} , True {$ENDIF} );
 
 finalization
   FreeAndNil(TheDwarfSymbolClassMapList);
