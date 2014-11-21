@@ -11,8 +11,8 @@ uses
   {$IFDEF UNIX}
     Unix,
   {$ENDIF}
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, PostScriptCanvas, StdCtrls;
+  Classes, SysUtils, types, FileUtil, LResources, Forms, Controls, Graphics,
+  Dialogs, Buttons, Printers, PostScriptCanvas, StdCtrls, ExtCtrls;
 
 type
 
@@ -22,18 +22,30 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    btnTestFonts: TButton;
+    gpOrientation: TRadioGroup;
     txtResX: TEdit;
     txtResY: TEdit;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     ListBox1: TListBox;
+    procedure btnTestFontsClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
+    fPsCanvas: TPostscriptCanvas;
+    function Sx(AX: Integer): Integer;
+    function Sy(AY: Integer): Integer;
+    function PointS(Ax,Ay:Integer): TPoint;
+    function RectS(Ax1,Ay1,Ax2,AY2: Integer): TRect;
+    function Pt2Pix(Pt: Integer): Integer;
+
+    procedure ShowFile(aFile:string);
+    procedure SelectPaper(res:Integer=0);
   public
     { public declarations }
   end;
@@ -55,72 +67,42 @@ var
     Xpm : TPixMap;
     png : TPortableNetworkGraphic;
     x,y,tmp : Integer;
-    PsCanvas: TPostscriptCanvas;
     R   : TRect;
-
-    function Sx(AX: Integer): Integer;
-    begin
-      // all values were based on 72 dpi
-      result := round(PsCanvas.XDPI/72*Ax);
-    end;
-
-    function Sy(AY: Integer): Integer;
-    begin
-      // all values were based on 72 dpi
-      result := round(PsCanvas.YDPI/72*Ay);
-    end;
-
-    function PointS(Ax,Ay:Integer): TPoint;
-    begin
-      Result.X:= Sx(Ax);
-      Result.Y:= Sy(Ay);
-    end;
-
-    function RectS(Ax1,Ay1,Ax2,AY2: Integer): TRect;
-    begin
-      Result.TopLeft := PointS(AX1,AY1);
-      Result.BottomRight := PointS(AX2,AY2);
-    end;
-
-    function Pt2Pix(Pt: Integer): Integer;
-    begin
-      result := round(PSCanvas.YDPI/72*Pt);
-    end;
 
     procedure LineSample(txt:string);
     begin
-      tmp := Pt2Pix(PsCanvas.Font.Size) div 2;
-      PsCanvas.Line(x+Sx(170),y+tmp,x+Sx(170+100),y+tmp);
-      PsCanvas.TextOut(x,y,txt);
+      tmp := Pt2Pix(fPsCanvas.Font.Size) div 2;
+      fPsCanvas.Line(x+Sx(170),y+tmp,x+Sx(170+100),y+tmp);
+      fPsCanvas.TextOut(x,y,txt);
       inc(y,tmp*3);
     end;
 
     procedure BrushSample(txt:string);
     begin
-      PsCanvas.Rectangle(x,y,x+Sx(50),y+Sy(40));
-      PsCanvas.TextOut(x+Sx(55),y+SY(40)-Pt2Pix(PsCanvas.Font.Size),txt);
+      fPsCanvas.Rectangle(x,y,x+Sx(50),y+Sy(40));
+      fPsCanvas.TextOut(x+Sx(55),y+SY(40)-Pt2Pix(fPsCanvas.Font.Size),txt);
       inc(y,Sy(50));
     end;
 
     procedure FontSample(txt:string);
     begin
-      PsCanvas.TextOut(x,y,txt);
-      inc(y,Pt2Pix(PsCanvas.Font.Size)+Sy(4));
+      fPsCanvas.TextOut(x,y,txt);
+      inc(y,Pt2Pix(fPsCanvas.Font.Size)+Sy(4));
     end;
 
     procedure LineSamples(AX,AY:Integer);
     begin
       x := AX;
       y := AY;
-      PsCanvas.Pen.Style:=psSolid;
+      fPsCanvas.Pen.Style:=psSolid;
       LineSample('Line style=psSolid');
-      PsCanvas.Pen.Style:=psDash;
+      fPsCanvas.Pen.Style:=psDash;
       LineSample('Line style=psDash');
-      PsCanvas.Pen.Style:=psDot;
+      fPsCanvas.Pen.Style:=psDot;
       LineSample('Line style=psDot');
-      PsCanvas.Pen.Style:=psDashDot;
+      fPsCanvas.Pen.Style:=psDashDot;
       LineSample('Line style=psDashDot');
-      PsCanvas.Pen.Style:=psDashDotDot;
+      fPsCanvas.Pen.Style:=psDashDotDot;
       LineSample('Line style=psDashDotDot');
     end;
 
@@ -128,20 +110,20 @@ var
     begin
       x := AX;
       y := AY;
-      PsCanvas.Pen.Style:=psSolid;
-      PsCanvas.Brush.Color:=clBlack;
+      fPsCanvas.Pen.Style:=psSolid;
+      fPsCanvas.Brush.Color:=clBlack;
 
-      PsCanvas.Brush.Style:=bsCross;
+      fPsCanvas.Brush.Style:=bsCross;
       BrushSample('Brush.Style:=bsCross');
-      PsCanvas.Brush.Style:=bsDiagCross;
+      fPsCanvas.Brush.Style:=bsDiagCross;
       BrushSample('Brush.Style:=bsDiagCross');
-      PsCanvas.Brush.Style:=bsBDiagonal;
+      fPsCanvas.Brush.Style:=bsBDiagonal;
       BrushSample('Brush.Style:=bsBDiagonal');
-      PsCanvas.Brush.Style:=bsFDiagonal;
+      fPsCanvas.Brush.Style:=bsFDiagonal;
       BrushSample('Brush.Style:=bsFDiagonal');
-      PsCanvas.Brush.Style:=bsVertical;
+      fPsCanvas.Brush.Style:=bsVertical;
       BrushSample('Brush.Style:=bsVertical');
-      PsCanvas.Brush.Style:=bsHorizontal;
+      fPsCanvas.Brush.Style:=bsHorizontal;
       BrushSample('Brush.Style:=bsHorizontal');
     end;
 
@@ -149,36 +131,26 @@ var
     begin
       x := AX;
       y := Ay;
-      PsCanvas.Font.Name:='Courier';
-      tmp := PsCanvas.Font.Size;
-      PsCanvas.Font.Style:=[fsUnderline];
+      fPsCanvas.Font.Name:='Courier';
+      tmp := fPsCanvas.Font.Size;
+      fPsCanvas.Font.Style:=[fsUnderline];
       FontSample('Underline text '+#13#10+'sample (éàçè)');
-      PsCanvas.Font.Style:=[fsUnderline,fsBold];
+      fPsCanvas.Font.Style:=[fsUnderline,fsBold];
       FontSample('Underline and bold text sample (éàçè)');
-      PsCanvas.Font.Style:=[fsItalic];
+      fPsCanvas.Font.Style:=[fsItalic];
       FontSample('Italic Пример текста Random:ęðšćàÀâ¿€ÂáÁçÇñÑüÜ');
-      PsCanvas.Font.Style:=[];
+      fPsCanvas.Font.Style:=[];
       FontSample('Normal Пример текста Random:ęðšćàÀâ¿€ÂáÁçÇñÑüÜ');
-      PsCanvas.Font.Style:=[fsUnderline,fsBold,fsItalic];
+      fPsCanvas.Font.Style:=[fsUnderline,fsBold,fsItalic];
       FontSample('all Пример текста Random:ęðšćàÀâ¿€ÂáÁçÇñÑüÜ');
-      PsCanvas.Font.Style:=[];
+      fPsCanvas.Font.Style:=[];
     end;
 begin
   if Sender=nil then ;
-  PsCanvas := TPostscriptCanvas.Create;
-  psCanvas.XDPI := StrToIntDef(txtResX.Text,300);
-  psCanvas.YDPI := StrToIntDef(txtResY.Text,300);
-  With PsCanvas do
+  fPsCanvas := TPostscriptCanvas.Create;
+  With fPsCanvas do
   try
-    if ListBox1.ItemIndex=1 then begin
-      PaperHeight:=Sx(792);
-      PaperWidth:=Sy(612);
-    end else begin
-      PaperHeight:=Sy(842);
-      PaperWidth:=Sx(595);
-    end;
-    TopMargin:=Sy(40);
-    LeftMargin:=Sx(20);
+    SelectPaper;
 
     BeginDoc;
 
@@ -268,12 +240,12 @@ begin
     BrushSamples(Sx(100),Sy(100));
 
     R := RectS(100,500,200,520);
-    PSCanvas.Brush.Style:=bsSolid;
-    PSCanvas.Brush.Color:=clWhite;
-    PSCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-    PSCanvas.ClipRect := R;
-    PSCanvas.TextRect(R, R.Left, R.Top, 'Testing clip rect on TextRect', PSCanvas.TextStyle);
-    PSCanvas.ClipRect := Rect(0,0,0,0);
+    fPSCanvas.Brush.Style:=bsSolid;
+    fPSCanvas.Brush.Color:=clWhite;
+    fPSCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+    fPSCanvas.ClipRect := R;
+    fPSCanvas.TextRect(R, R.Left, R.Top, 'Testing clip rect on TextRect', fPSCanvas.TextStyle);
+    fPSCanvas.ClipRect := Rect(0,0,0,0);
 
     EndDoc;
     SaveToFile('test1.ps');
@@ -282,54 +254,172 @@ begin
   end;
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
-var
-  FName: string;
-begin
-  if Sender=nil then ;
-  if FileExistsUTF8(ExpandFileNameUTF8('./test1.ps')) then
+procedure TForm1.btnTestFontsClick(Sender: TObject);
+const
+  arrNames:array[0..3] of string =
+    ('Courier', 'Helvetica', 'Times-Roman', 'Symbol');
+
+  function SampleFontName(ax, ay: Integer; aFontName: string): types.TSize;
+  const
+    SText = 'Tj1';
+    ArrStyles: array[0..3] of TFontStyles =
+      ([],[fsUnderline],[fsBold],[fsBold,fsUnderline]);
+  var
+    sz: types.TSize;
+    i, j, fontSize, x, y, dy: Integer;
   begin
-    {$IFDEF MSWINDOWS}
-      FName := '"C:\Program Files\Ghostgum\gsview\gsview32" '  + ExpandFileNameUTF8('./test1.ps');
-      ShellExecute(Handle, 'open', PChar(FName), nil, nil, SW_SHOWNORMAL)
-    {$ENDIF}
-    {$IFDEF UNIX}
-      Shell(format('gv %s',[ExpandFileNameUTF8('./test1.ps')]));
-    {$ENDIF}
+    y := Sy(aY);
+    x := Sx(ax);
+    dy := 0;
+    fPsCanvas.Font.Name:=aFontName;
+    fontSize := 16;
+    while fontSize<(12*3) do begin
+      fPsCanvas.Font.Size := fontSize;
+      for i:=0 to 3 do begin
+        fPsCanvas.Font.Style:=arrStyles[i];
+        fPsCanvas.TextOut(x, y, SText);
+        sz := fPsCanvas.TextExtent(SText);
+        inc(x, sz.cx);
+      end;
+      inc(fontSize, 8);
+    end;
+    inc(y, sz.cy);
+    result.cx := x;
+    result.cy := y;
+    //x := ax;
   end;
+var
+  i: Integer;
+  sz: Types.TSize;
+begin
+  fPsCanvas := TPostscriptCanvas.Create;
+  try
+    SelectPaper;
+
+    fPsCanvas.BeginDoc;
+
+    sz.cy := 10;
+    for i:=0 to High(ArrNames) do
+      sz := SampleFontName(10, sz.cy, ArrNames[i]);
+
+    fPsCanvas.EndDoc;
+    fPsCanvas.SaveToFile('fonts.ps');
+
+  finally
+    fPsCanvas.Free;
+  end;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  ShowFile('test1.ps');
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 var
-    png : TPortableNetworkGraphic;
-    x,y,tmp : Integer;
-    PsCanvas: TPostscriptCanvas;
+  png : TPortableNetworkGraphic;
+  x,y,tmp : Integer;
 begin
-  psCanvas := TPostscriptCanvas.Create;
-  psCanvas.XDPI := 72;
-  psCanvas.YDPI := 72;
-  psCanvas.PaperHeight:=842;
-  psCanvas.PaperWidth:=595;
-  psCanvas.TopMargin:=40;
-  psCanvas.LeftMargin:=20;
-  psCanvas.BeginDoc;
+  fPsCanvas := TPostscriptCanvas.Create;
+  SelectPaper(72);
+
+  fPsCanvas.BeginDoc;
 
   png := TPortableNetworkGraphic.Create;
   try
     png.LoadFromFile('small.png');
-    psCanvas.StretchDraw(Bounds(50,500,50,50),png);
+    fPsCanvas.StretchDraw(Bounds(50,500,50,50),png);
   finally
     png.Free;
   end;
 
-  psCanvas.EndDoc;
-  psCanvas.SaveToFile('small.ps');
-  psCanvas.Free;
+  fPsCanvas.EndDoc;
+  fPsCanvas.SaveToFile('small.ps');
+  fPsCanvas.Free;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   ListBox1.ItemIndex:=0;
+end;
+
+function TForm1.Sx(AX: Integer): Integer;
+begin
+  // all values were based on 72 dpi
+  result := round(fPsCanvas.XDPI/72*Ax);
+end;
+
+function TForm1.Sy(AY: Integer): Integer;
+begin
+  // all values were based on 72 dpi
+  result := round(fPsCanvas.YDPI/72*Ay);
+end;
+
+function TForm1.PointS(Ax, Ay: Integer): TPoint;
+begin
+  Result.X:= Sx(Ax);
+  Result.Y:= Sy(Ay);
+end;
+
+function TForm1.RectS(Ax1, Ay1, Ax2, AY2: Integer): TRect;
+begin
+  Result.TopLeft := PointS(AX1,AY1);
+  Result.BottomRight := PointS(AX2,AY2);
+end;
+
+function TForm1.Pt2Pix(Pt: Integer): Integer;
+begin
+  result := round(fPSCanvas.YDPI/72*Pt);
+end;
+
+procedure TForm1.ShowFile(aFile: string);
+{$IFDEF MSWINDOWS}
+var
+  FName: string;
+{$ENDIF}
+begin
+  aFile := ExpandFileNameUTF8('./'+aFile);
+  if FileExistsUTF8(aFile) then
+  begin
+    {$IFDEF MSWINDOWS}
+      FName := '"C:\Program Files\Ghostgum\gsview\gsview32" '  + aFile);
+      ShellExecute(Handle, 'open', PChar(FName), nil, nil, SW_SHOWNORMAL)
+    {$ENDIF}
+    {$IFDEF UNIX}
+      FpExecL('/usr/bin/evince', [aFile]);
+      //Shell(format('gv %s',[aFile]));
+    {$ENDIF}
+  end;
+end;
+
+procedure TForm1.SelectPaper(res:Integer=0);
+begin
+  with fPsCanvas do begin
+    if res=0 then begin
+      XDPI := StrToIntDef(txtResX.Text,300);
+      YDPI := StrToIntDef(txtResY.Text,300);
+    end else begin
+      XDPI := res;
+      YDPI := res;
+    end;
+    if ListBox1.ItemIndex=1 then begin
+      PaperHeight:=Sx(792);
+      PaperWidth:=Sy(612);
+    end else begin
+      PaperHeight:=Sy(842);
+      PaperWidth:=Sx(595);
+    end;
+    TopMargin:=Sy(40);
+    LeftMargin:=Sx(20);
+
+    case gpOrientation.ItemIndex of
+      1: Orientation := poReversePortrait;
+      2: Orientation := poLandscape;
+      3: Orientation := poReverseLandscape;
+      else Orientation := poPortrait;
+    end;
+
+  end;
 end;
 
 end.
