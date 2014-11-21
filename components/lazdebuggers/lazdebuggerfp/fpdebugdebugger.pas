@@ -799,14 +799,14 @@ begin
       AnEntry^.SrcStatementIndex:=StatIndex;
       ARange.Append(AnEntry);
       inc(StatIndex);
-      Inc(AnAddr, PtrUInt(p) - PtrUInt(@CodeBin));
+      Inc(AnAddr, {%H-}PtrUInt(p) - {%H-}PtrUInt(@CodeBin));
       end;
     end;
 
   if assigned(AnEntry) then
     begin
     ARange.RangeEndAddr:=AnEntry^.Addr;
-    ARange.LastEntryEndAddr:=TDBGPtr(p);
+    ARange.LastEntryEndAddr:={%H-}TDBGPtr(p);
     EntryRanges.AddRange(ARange);
     result := true;
     end
