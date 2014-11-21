@@ -423,8 +423,9 @@ type
     fInheritedOptParseStamps: integer;
     FParsedOpts: TParsedCompilerOptions;
     FStorePathDelim: TPathDelimSwitch;
+    FFPCMsgFile: TFPCMsgFilePoolItem;
 
-    // Compilation
+    // other tools
     fExecuteBefore: TCompilationToolOptions;
     fExecuteAfter: TCompilationToolOptions;
     FCreateMakefileOnBuild: boolean;
@@ -1105,6 +1106,8 @@ end;
 ------------------------------------------------------------------------------}
 destructor TBaseCompilerOptions.Destroy;
 begin
+  if (FPCMsgFilePool<>nil) and (FFPCMsgFile<>nil) then
+    FPCMsgFilePool.UnloadFile(FFPCMsgFile);
   FreeAndNil(fMessageFlags);
   FreeAndNil(fBuildMacros);
   FreeThenNil(fExecuteBefore);
@@ -2483,7 +2486,7 @@ var
   DefaultTargetCPU: string;
   FPCompilerFilename: String;
   s: string;
-  FPCMsgFile: TFPCMsgFilePoolItem;
+  CurFPCMsgFile: TFPCMsgFilePoolItem;
 
   procedure EnableDisableVerbosityFlag(Enable: boolean; c: char);
   begin
@@ -2990,13 +2993,19 @@ begin
   // Passing a -vm ID, unknown by the current compiler will create an error
   // => check the compiler message file
   if IDEMessageFlags.Count>0 then begin
-    FPCMsgFile:=nil;
-    if FPCMsgFilePool<>nil then
-      FPCMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(true,nil);
-    t := IDEMessageFlags.GetMsgIdList(',',cfvHide,FPCMsgFile);
+    if FPCMsgFilePool<>nil then begin
+      CurFPCMsgFile:=FPCMsgFilePool.LoadCurrentEnglishFile(true,nil);
+      if CurFPCMsgFile<>FFPCMsgFile then begin
+        if FFPCMsgFile<>nil then
+          FPCMsgFilePool.UnloadFile(FFPCMsgFile);
+        FFPCMsgFile:=CurFPCMsgFile;
+      end else
+        FPCMsgFilePool.UnloadFile(CurFPCMsgFile);
+    end;
+    t := IDEMessageFlags.GetMsgIdList(',',cfvHide,FFPCMsgFile);
     if t <> '' then
       switches := switches + ' ' + PrepareCmdLineOption('-vm'+t);
-    t := IDEMessageFlags.GetMsgIdList(',',cfvShow,FPCMsgFile);
+    t := IDEMessageFlags.GetMsgIdList(',',cfvShow,FFPCMsgFile);
     if t <> '' then
       switches := switches + ' ' + PrepareCmdLineOption('-vm-'+t);
   end;
