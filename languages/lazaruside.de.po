@@ -2602,7 +2602,6 @@ msgid "Other optimizations"
 msgstr "Andere Optimierungen"
 
 #: lazarusidestrconsts.dlgotherunitfiles
-#| msgid "Other unit files (-Fu) (delimiter is semicolon):"
 msgid "Other unit files (-Fu):"
 msgstr "Andere Units (-Fu) (Trenner ist der Strichpunkt):"
 
@@ -7251,6 +7250,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "Voreinstellung"
 
+#: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
+msgid "The default is ComboBox with \"True\" and \"False\" selections"
+msgstr ""
+
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr "(Vorgabe)"
@@ -8617,6 +8620,10 @@ msgstr ""
 msgid "Find ..."
 msgstr "Suchen ..."
 
+#: lazarusidestrconsts.lisfinddeclarationof
+msgid "Find Declaration of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
 msgstr "Verze&ichnisse"
@@ -8726,7 +8733,6 @@ msgid "FPC messages: Appendix"
 msgstr ""
 
 #: lazarusidestrconsts.lisfpcresources
-#| msgid "FPC resources"
 msgid "FPC resources (.res)"
 msgstr "FPC-Ressourcen (.res)"
 
@@ -9629,6 +9635,10 @@ msgstr "Wie haben Sie das geschafft? Fehler im Basisverzeichnis:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Sprungliste"
+
+#: lazarusidestrconsts.lisjumptoprocedure
+msgid "Jump to procedure %s"
+msgstr ""
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
@@ -10650,7 +10660,6 @@ msgid "lpk is missing"
 msgstr "fehlende .lpk-Datei"
 
 #: lazarusidestrconsts.lislrsincludefiles
-#| msgid "lrs include files"
 msgid "Lazarus resources (.lrs) include files"
 msgstr "lrs Include-Dateien"
 
@@ -12168,6 +12177,10 @@ msgstr "Makro %d"
 msgid "New Macroname"
 msgstr "Neuer Makroname"
 
+#: lazarusidestrconsts.lisnewpage
+msgid "New page"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(neues Projekt)"
@@ -12685,6 +12698,10 @@ msgstr "Package-Unit"
 #: lazarusidestrconsts.lispage
 msgid "Page"
 msgstr "Seite"
+
+#: lazarusidestrconsts.lispagename
+msgid "Page name"
+msgstr ""
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
@@ -13934,6 +13951,7 @@ msgid "Please select some code to extract a new procedure/method."
 msgstr "Bitte wählen Sie den Quelltext, um eine neue Prozedur/Methode zu extrahieren."
 
 #: lazarusidestrconsts.lisplistall
+msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
 msgstr "<Alle>"
 
@@ -13987,7 +14005,6 @@ msgid "Pointer"
 msgstr "Zeiger"
 
 #: lazarusidestrconsts.lisposaveinideconfigdirectory
-#| msgid "Save in IDE config directory"
 msgid "Save in .lps file in IDE config directory"
 msgstr "Im IDE-Konfigurationsverzeichnis speichern"
 
@@ -15202,7 +15219,6 @@ msgid "Show empty units/packages"
 msgstr "Leere Units/Packages anzeigen"
 
 #: lazarusidestrconsts.lisshowglyphsfor
-#| msgid "Show Glyphs for:"
 msgid "Show Glyphs for"
 msgstr "Zeige Bildzeichen für"
 
@@ -15276,7 +15292,6 @@ msgid "Show special characters"
 msgstr "Sonderzeichen anzeigen"
 
 #: lazarusidestrconsts.lisshowstatusbarinobjectinspector
-#| msgid "Show status bar"
 msgid "Show statusbar"
 msgstr "Statusbalken anzeigen"
 
@@ -17033,6 +17048,10 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Verwende Ansistrings"
 
+#: lazarusidestrconsts.lisusecheckboxforbooleanvalues
+msgid "Use CheckBox for Boolean values"
+msgstr ""
+
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr ""
@@ -17408,6 +17427,12 @@ msgstr "Sie können FPC und die FPC-Quellen herunterladen von http://sourceforge
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Lazarus kann während des Debuggens oder Kompilierens nicht neu kompiliert werden."
+
+#: lazarusidestrconsts.lis_all_
+#, fuzzy
+msgctxt "lazarusidestrconsts.lis_all_"
+msgid "<All>"
+msgstr "<Alle>"
 
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"

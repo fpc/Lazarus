@@ -7376,6 +7376,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "Padrão"
 
+#: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
+msgid "The default is ComboBox with \"True\" and \"False\" selections"
+msgstr ""
+
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr "(padrão)"
@@ -8780,6 +8784,10 @@ msgstr ""
 msgid "Find ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisfinddeclarationof
+msgid "Find Declaration of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
 msgstr ""
@@ -9793,6 +9801,10 @@ msgstr "Quero saber como você fez isso: Erro no diretório base:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Histórico de Saltos"
+
+#: lazarusidestrconsts.lisjumptoprocedure
+msgid "Jump to procedure %s"
+msgstr ""
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
@@ -12314,6 +12326,10 @@ msgstr "Macro %d"
 msgid "New Macroname"
 msgstr "Novo nome de macro"
 
+#: lazarusidestrconsts.lisnewpage
+msgid "New page"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(novo projeto)"
@@ -12839,6 +12855,10 @@ msgstr "unidade pacote"
 #: lazarusidestrconsts.lispage
 msgid "Page"
 msgstr "Página"
+
+#: lazarusidestrconsts.lispagename
+msgid "Page name"
+msgstr ""
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
@@ -14194,6 +14214,7 @@ msgid "Please select some code to extract a new procedure/method."
 msgstr "Favor selecionar algum código para extrair um novo procedimento/método."
 
 #: lazarusidestrconsts.lisplistall
+msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
 msgstr "<Todos>"
 
@@ -17489,6 +17510,10 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Usar \"Ansistrings\""
 
+#: lazarusidestrconsts.lisusecheckboxforbooleanvalues
+msgid "Use CheckBox for Boolean values"
+msgstr ""
+
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Usar comentários em opções customizadas"
@@ -17868,6 +17893,12 @@ msgstr "Você pode baixar o FPC e seu código fonte de http://sourceforge.net/pr
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Você não pode reconstruir o Lazarus enquanto estiver depurando ou compilando."
+
+#: lazarusidestrconsts.lis_all_
+#, fuzzy
+msgctxt "lazarusidestrconsts.lis_all_"
+msgid "<All>"
+msgstr "<Todos>"
 
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"

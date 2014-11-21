@@ -7246,6 +7246,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr ""
 
+#: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
+msgid "The default is ComboBox with \"True\" and \"False\" selections"
+msgstr ""
+
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr ""
@@ -8613,6 +8617,10 @@ msgstr ""
 msgid "Find ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisfinddeclarationof
+msgid "Find Declaration of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
 msgstr ""
@@ -9612,6 +9620,10 @@ msgstr ""
 #: lazarusidestrconsts.lisjhjumphistory
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoprocedure
+msgid "Jump to procedure %s"
 msgstr ""
 
 #: lazarusidestrconsts.liskb
@@ -12196,6 +12208,10 @@ msgstr ""
 msgid "New Macroname"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewpage
+msgid "New page"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr ""
@@ -12712,6 +12728,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispage
 msgid "Page"
+msgstr ""
+
+#: lazarusidestrconsts.lispagename
+msgid "Page name"
 msgstr ""
 
 #: lazarusidestrconsts.lispanic
@@ -13966,6 +13986,7 @@ msgid "Please select some code to extract a new procedure/method."
 msgstr ""
 
 #: lazarusidestrconsts.lisplistall
+msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
 msgstr "<Alles>"
 
@@ -17071,6 +17092,10 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr ""
 
+#: lazarusidestrconsts.lisusecheckboxforbooleanvalues
+msgid "Use CheckBox for Boolean values"
+msgstr ""
+
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr ""
@@ -17446,6 +17471,12 @@ msgstr ""
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr ""
+
+#: lazarusidestrconsts.lis_all_
+#, fuzzy
+msgctxt "lazarusidestrconsts.lis_all_"
+msgid "<All>"
+msgstr "<Alles>"
 
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"

@@ -7211,6 +7211,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "Oletus"
 
+#: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
+msgid "The default is ComboBox with \"True\" and \"False\" selections"
+msgstr ""
+
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr "(oletus)"
@@ -8579,6 +8583,10 @@ msgstr ""
 msgid "Find ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisfinddeclarationof
+msgid "Find Declaration of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
 msgstr ""
@@ -9578,6 +9586,10 @@ msgstr "Miten onnistuit tekemään sen? Virhe kantahakemistossa:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Hyppyhistoria"
+
+#: lazarusidestrconsts.lisjumptoprocedure
+msgid "Jump to procedure %s"
+msgstr ""
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
@@ -12081,6 +12093,10 @@ msgstr "Makro %d"
 msgid "New Macroname"
 msgstr "Uusi makron nimi"
 
+#: lazarusidestrconsts.lisnewpage
+msgid "New page"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(uusi projekti)"
@@ -12596,6 +12612,10 @@ msgstr "paketin käännösyksikkö"
 #: lazarusidestrconsts.lispage
 msgid "Page"
 msgstr "Sivu"
+
+#: lazarusidestrconsts.lispagename
+msgid "Page name"
+msgstr ""
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
@@ -13842,6 +13862,7 @@ msgid "Please select some code to extract a new procedure/method."
 msgstr "Valitse ensin jokin koodin osa josta tehdään uusi aliohjelma tai metodi"
 
 #: lazarusidestrconsts.lisplistall
+msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
 msgstr "<Kaikki>"
 
@@ -16930,6 +16951,10 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Käytä Ansistringia"
 
+#: lazarusidestrconsts.lisusecheckboxforbooleanvalues
+msgid "Use CheckBox for Boolean values"
+msgstr ""
+
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Käytä kommentteja mukautetuissa asetuksissa"
@@ -17304,6 +17329,12 @@ msgstr ""
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Lazarusta ei voi koota, kun ohjelmaa ajetaan tai käännetään."
+
+#: lazarusidestrconsts.lis_all_
+#, fuzzy
+msgctxt "lazarusidestrconsts.lis_all_"
+msgid "<All>"
+msgstr "<Kaikki>"
 
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"

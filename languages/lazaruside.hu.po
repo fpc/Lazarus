@@ -7240,6 +7240,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "Alapértelmezett"
 
+#: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
+msgid "The default is ComboBox with \"True\" and \"False\" selections"
+msgstr ""
+
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr "(alapértelmezett)"
@@ -8610,6 +8614,10 @@ msgstr "Figyelmeztetések és az alábbiak kiszűrése"
 msgid "Find ..."
 msgstr "Keresés ..."
 
+#: lazarusidestrconsts.lisfinddeclarationof
+msgid "Find Declaration of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
 msgstr "&Könyvtárak"
@@ -9621,6 +9629,10 @@ msgstr "Hát, ez nagyon furcsa: Hiba az alapkönyvtárban:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Ugrási előzmények"
+
+#: lazarusidestrconsts.lisjumptoprocedure
+msgid "Jump to procedure %s"
+msgstr ""
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
@@ -12164,6 +12176,10 @@ msgstr "Makró %d"
 msgid "New Macroname"
 msgstr "Új makrónév"
 
+#: lazarusidestrconsts.lisnewpage
+msgid "New page"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(új projekt)"
@@ -12681,6 +12697,10 @@ msgstr "csomag unit"
 #: lazarusidestrconsts.lispage
 msgid "Page"
 msgstr "Oldal"
+
+#: lazarusidestrconsts.lispagename
+msgid "Page name"
+msgstr ""
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
@@ -13932,6 +13952,7 @@ msgid "Please select some code to extract a new procedure/method."
 msgstr "Jelöljön ki kódot, amit új eljárásba/metódusba helyezhet!"
 
 #: lazarusidestrconsts.lisplistall
+msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
 msgstr "<Minden>"
 
@@ -17025,6 +17046,10 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "ANSI karakterláncok használata"
 
+#: lazarusidestrconsts.lisusecheckboxforbooleanvalues
+msgid "Use CheckBox for Boolean values"
+msgstr ""
+
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Megjegyzések használata az egyéni beállításoknál"
@@ -17400,6 +17425,12 @@ msgstr "Az FPC és az FPC forráskódjai letölthetők innen: http://sourceforge
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "A Lazarus nem építhető fordítás vagy hibakeresés közben."
+
+#: lazarusidestrconsts.lis_all_
+#, fuzzy
+msgctxt "lazarusidestrconsts.lis_all_"
+msgid "<All>"
+msgstr "<Minden>"
 
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"

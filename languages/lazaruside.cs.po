@@ -7257,6 +7257,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "Výchozí"
 
+#: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
+msgid "The default is ComboBox with \"True\" and \"False\" selections"
+msgstr ""
+
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr "(výchozí)"
@@ -8638,6 +8642,10 @@ msgstr "Filtrovat zprávy 'warning' a níže"
 msgid "Find ..."
 msgstr "Hledat ..."
 
+#: lazarusidestrconsts.lisfinddeclarationof
+msgid "Find Declaration of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
 msgstr ""
@@ -9651,6 +9659,10 @@ msgstr "Jak se to mohlo stát? Chyba v hlavním adresáři:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Historie skoků"
+
+#: lazarusidestrconsts.lisjumptoprocedure
+msgid "Jump to procedure %s"
+msgstr ""
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
@@ -12187,6 +12199,10 @@ msgstr "Makro %d"
 msgid "New Macroname"
 msgstr "Nové jméno makra"
 
+#: lazarusidestrconsts.lisnewpage
+msgid "New page"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(nový projekt)"
@@ -12704,6 +12720,10 @@ msgstr "jednotka balíčku"
 #: lazarusidestrconsts.lispage
 msgid "Page"
 msgstr "Strana"
+
+#: lazarusidestrconsts.lispagename
+msgid "Page name"
+msgstr ""
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
@@ -13977,6 +13997,7 @@ msgid "Please select some code to extract a new procedure/method."
 msgstr "Prosíme vyberte nějaký kód k vytažení nové procedury/metody."
 
 #: lazarusidestrconsts.lisplistall
+msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
 msgstr "<Všechno>"
 
@@ -17114,6 +17135,10 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Použít Ansi řetězce"
 
+#: lazarusidestrconsts.lisusecheckboxforbooleanvalues
+msgid "Use CheckBox for Boolean values"
+msgstr ""
+
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Použít komentáře ve vlastních volbách"
@@ -17492,6 +17517,12 @@ msgstr "Můžete stáhnout FPC a zdroje FPC z http://sourceforge.net/projects/la
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Nemůžete sestavit lazarus v průběhu ladění nebo překládání."
+
+#: lazarusidestrconsts.lis_all_
+#, fuzzy
+msgctxt "lazarusidestrconsts.lis_all_"
+msgid "<All>"
+msgstr "<Všechno>"
 
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"

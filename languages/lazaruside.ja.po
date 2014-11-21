@@ -7338,6 +7338,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "デフォルト"
 
+#: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
+msgid "The default is ComboBox with \"True\" and \"False\" selections"
+msgstr ""
+
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr "（既定）"
@@ -8740,6 +8744,10 @@ msgstr ""
 msgid "Find ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisfinddeclarationof
+msgid "Find Declaration of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
 msgstr ""
@@ -9753,6 +9761,10 @@ msgstr "どうやったらこうなったのか不思議です。基底ディレ
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "移動履歴"
+
+#: lazarusidestrconsts.lisjumptoprocedure
+msgid "Jump to procedure %s"
+msgstr ""
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
@@ -12274,6 +12286,10 @@ msgstr "マクロ %d"
 msgid "New Macroname"
 msgstr "新しいマクロ名"
 
+#: lazarusidestrconsts.lisnewpage
+msgid "New page"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(新規プロジェクト)"
@@ -12797,6 +12813,10 @@ msgstr "パッケージユニット"
 #: lazarusidestrconsts.lispage
 msgid "Page"
 msgstr "ページ"
+
+#: lazarusidestrconsts.lispagename
+msgid "Page name"
+msgstr ""
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
@@ -14150,6 +14170,7 @@ msgid "Please select some code to extract a new procedure/method."
 msgstr "新しい手続き/メソッドを抽出するためにコードの一部を選択してください。"
 
 #: lazarusidestrconsts.lisplistall
+msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
 msgstr "<全て>"
 
@@ -17425,6 +17446,10 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Ansistringsを使用"
 
+#: lazarusidestrconsts.lisusecheckboxforbooleanvalues
+msgid "Use CheckBox for Boolean values"
+msgstr ""
+
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "カスタムオプションでコメントを使用"
@@ -17804,6 +17829,12 @@ msgstr "次のURLからFPCとFPCソースをダウンロードできます：htt
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "デバッグ中もしくはコンパイル中に Lazarus を構築できません。"
+
+#: lazarusidestrconsts.lis_all_
+#, fuzzy
+msgctxt "lazarusidestrconsts.lis_all_"
+msgid "<All>"
+msgstr "<全て>"
 
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"

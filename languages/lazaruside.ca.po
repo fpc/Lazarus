@@ -7474,6 +7474,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "Predeterminat"
 
+#: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
+msgid "The default is ComboBox with \"True\" and \"False\" selections"
+msgstr ""
+
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr ""
@@ -8860,6 +8864,10 @@ msgstr ""
 msgid "Find ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisfinddeclarationof
+msgid "Find Declaration of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
 msgstr ""
@@ -9867,6 +9875,10 @@ msgstr ""
 #: lazarusidestrconsts.lisjhjumphistory
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
+msgstr ""
+
+#: lazarusidestrconsts.lisjumptoprocedure
+msgid "Jump to procedure %s"
 msgstr ""
 
 #: lazarusidestrconsts.liskb
@@ -12581,6 +12593,10 @@ msgstr ""
 msgid "New Macroname"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewpage
+msgid "New page"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 #, fuzzy,badformat
 #| msgid "%s - (new project)"
@@ -13109,6 +13125,10 @@ msgstr ""
 
 #: lazarusidestrconsts.lispage
 msgid "Page"
+msgstr ""
+
+#: lazarusidestrconsts.lispagename
+msgid "Page name"
 msgstr ""
 
 #: lazarusidestrconsts.lispanic
@@ -14481,6 +14501,7 @@ msgid "Please select some code to extract a new procedure/method."
 msgstr "Si us plau, seleccioneu el codi per extraure'n un nou procediment/mètode."
 
 #: lazarusidestrconsts.lisplistall
+msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
 msgstr "<Tot>"
 
@@ -17704,6 +17725,10 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Utilitza Ansi Strings"
 
+#: lazarusidestrconsts.lisusecheckboxforbooleanvalues
+msgid "Use CheckBox for Boolean values"
+msgstr ""
+
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr ""
@@ -18081,6 +18106,12 @@ msgstr ""
 #| msgid "You can not build lazarus while debugging or compiling."
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "No podeu muntar el lazarus mentre s'està depurant o compilant."
+
+#: lazarusidestrconsts.lis_all_
+#, fuzzy
+msgctxt "lazarusidestrconsts.lis_all_"
+msgid "<All>"
+msgstr "<Tot>"
 
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"

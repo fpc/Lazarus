@@ -7414,6 +7414,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "Numatytas"
 
+#: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
+msgid "The default is ComboBox with \"True\" and \"False\" selections"
+msgstr ""
+
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr "(numatytas)"
@@ -8822,6 +8826,10 @@ msgstr ""
 msgid "Find ..."
 msgstr ""
 
+#: lazarusidestrconsts.lisfinddeclarationof
+msgid "Find Declaration of %s"
+msgstr ""
+
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
 msgstr ""
@@ -9841,6 +9849,10 @@ msgstr "Stebėtina, kaip tai įmanoma - pagrindiniame aplanke yra klaida:"
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "Peršokimų praeitis"
+
+#: lazarusidestrconsts.lisjumptoprocedure
+msgid "Jump to procedure %s"
+msgstr ""
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
@@ -12372,6 +12384,10 @@ msgstr "Makrokomanda %d"
 msgid "New Macroname"
 msgstr ""
 
+#: lazarusidestrconsts.lisnewpage
+msgid "New page"
+msgstr ""
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(naujas projektas)"
@@ -12896,6 +12912,10 @@ msgstr "paketo modulis"
 
 #: lazarusidestrconsts.lispage
 msgid "Page"
+msgstr ""
+
+#: lazarusidestrconsts.lispagename
+msgid "Page name"
 msgstr ""
 
 #: lazarusidestrconsts.lispanic
@@ -14256,6 +14276,7 @@ msgid "Please select some code to extract a new procedure/method."
 msgstr "Prieš ištraukiant naują procedūrą/metodą pažymėkite kažkiek kodo."
 
 #: lazarusidestrconsts.lisplistall
+msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
 msgstr "<Visi>"
 
@@ -17578,6 +17599,10 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Naudoti ANSI tekstą"
 
+#: lazarusidestrconsts.lisusecheckboxforbooleanvalues
+msgid "Use CheckBox for Boolean values"
+msgstr ""
+
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr ""
@@ -17959,6 +17984,12 @@ msgstr ""
 #| msgid "You can not build lazarus while debugging or compiling."
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Derinimo ar kompiliavimo metu negalima daryti Lazarus."
+
+#: lazarusidestrconsts.lis_all_
+#, fuzzy
+msgctxt "lazarusidestrconsts.lis_all_"
+msgid "<All>"
+msgstr "<Visi>"
 
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-11-08 04:26+0300\n"
+"PO-Revision-Date: 2014-11-21 03:26+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7228,6 +7228,10 @@ msgctxt "lazarusidestrconsts.lisdefault"
 msgid "Default"
 msgstr "По умолчанию"
 
+#: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
+msgid "The default is ComboBox with \"True\" and \"False\" selections"
+msgstr "По умолчанию отображается раскрывающийся список с элементами \"True\" и \"False\""
+
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
 msgstr "(по умолчанию)"
@@ -8593,6 +8597,10 @@ msgstr "Не выводить предупреждения и ниже"
 msgid "Find ..."
 msgstr "Найти ..."
 
+#: lazarusidestrconsts.lisfinddeclarationof
+msgid "Find Declaration of %s"
+msgstr "Найти объявление %s"
+
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
 msgstr "Ката&логи"
@@ -9602,6 +9610,10 @@ msgstr "Интересно, как вам удалось добиться так
 msgctxt "lazarusidestrconsts.lisjhjumphistory"
 msgid "Jump History"
 msgstr "История переходов"
+
+#: lazarusidestrconsts.lisjumptoprocedure
+msgid "Jump to procedure %s"
+msgstr "Перейти к процедуре %s"
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
@@ -12144,6 +12156,10 @@ msgstr "Макрос %d"
 msgid "New Macroname"
 msgstr "Новое имя макроса"
 
+#: lazarusidestrconsts.lisnewpage
+msgid "New page"
+msgstr "Новая вкладка"
+
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
 msgstr "(новый проект)"
@@ -12661,6 +12677,10 @@ msgstr "модуль пакета"
 #: lazarusidestrconsts.lispage
 msgid "Page"
 msgstr "Вкладка"
+
+#: lazarusidestrconsts.lispagename
+msgid "Page name"
+msgstr "Имя вкладки"
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
@@ -13910,6 +13930,7 @@ msgid "Please select some code to extract a new procedure/method."
 msgstr "Выделите некоторый код, чтобы извлечь новую процедуру/метод."
 
 #: lazarusidestrconsts.lisplistall
+msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
 msgstr "<Все>"
 
@@ -16995,6 +17016,10 @@ msgctxt "lazarusidestrconsts.lisuseansistrings"
 msgid "Use Ansistrings"
 msgstr "Использовать строки Ansistring"
 
+#: lazarusidestrconsts.lisusecheckboxforbooleanvalues
+msgid "Use CheckBox for Boolean values"
+msgstr "Отображать флажок для логических значений"
+
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
 msgstr "Комментарии в параметрах пользователя"
@@ -17370,6 +17395,11 @@ msgstr "FPC и его исходный код можно загрузить с h
 #: lazarusidestrconsts.lisyoucannotbuildlazaruswhiledebuggingorcompiling
 msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Вы не можете пересобрать Lazarus в процессе отладки или компиляции."
+
+#: lazarusidestrconsts.lis_all_
+msgctxt "lazarusidestrconsts.lis_all_"
+msgid "<All>"
+msgstr "<Все>"
 
 #: lazarusidestrconsts.locwndsrceditor
 msgctxt "lazarusidestrconsts.locwndsrceditor"
