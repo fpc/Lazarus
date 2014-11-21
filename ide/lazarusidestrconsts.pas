@@ -1396,7 +1396,7 @@ resourcestring
   lisShowHintsInObjectInspector = 'Show hints';
   lisHintAtPropertysNameShowsDescription = 'A hint at property''s name shows its description.';
   lisUseCheckboxForBooleanValues = 'Use CheckBox for Boolean values';
-  lisDefaultIsComboboxWithTrueAndFalse = 'The default is ComboBox with "True and "False" selections';
+  lisDefaultIsComboboxWithTrueAndFalse = 'The default is ComboBox with "True" and "False" selections';
   lisAutoShowObjectInspector = 'Auto show';
   lisObjectInspectorBecomesVisible = 'Object Inspector becomes visible '
     +'when components are selected in designer.';
