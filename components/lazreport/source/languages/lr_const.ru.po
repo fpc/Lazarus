@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-31 01:30+0300\n"
+"PO-Revision-Date: 2014-11-21 03:46+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -86,14 +86,12 @@ msgid "Cross footer"
 msgstr "Cross-примечание"
 
 #: lr_const.sband22
-#, fuzzy
 #| msgid "None"
 msgctxt "lr_const.sband22"
 msgid "Child"
-msgstr "Нет"
+msgstr "Дочерний"
 
 #: lr_const.sband23
-#, fuzzy
 #| msgid "None"
 msgctxt "lr_const.sband23"
 msgid "None"
@@ -2230,7 +2228,7 @@ msgstr "&Вся страница"
 
 #: lr_const.sprintchildifnotvisible
 msgid "Print child if not visible"
-msgstr ""
+msgstr "Выводить дочерний в случае невидимости"
 
 #: lr_const.sprintererror
 #| msgid "Printer selected is not valid"
