@@ -710,15 +710,16 @@ begin
         Write(format('%d %d translate 180 rotate',[w,h]));
       end;
     poLandscape:
-      begin
-        h:=round(PaperWidth*72/XDPI);
-        Write(format('0 %d translate 90 neg rotate',[h]));
-      end;
-    poReverseLandscape:
-      begin
-        h:=round(PaperHeight*72/YDPI);
-        Write(format('%d 0 translate 90 rotate',[h]));
-      end;
+       begin
+         h:=round(PaperHeight*72/YDPI);
+         Write(format('%d 0 translate 90 rotate',[h]));
+       end;
+     poReverseLandscape:
+       begin
+         w:=round((PaperWidth-PaperHeight)*72/XDPI);
+         h:=round(PaperHeight*72/XDPI);
+         Write(format('%d %d translate 90 neg rotate',[w,h]));
+       end;
   end;
 end;
 
