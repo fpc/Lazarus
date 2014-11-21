@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-31 01:33+0300\n"
+"PO-Revision-Date: 2014-11-21 04:02+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -220,10 +220,9 @@ msgid "Connect: Loc: %s Rem: %s"
 msgstr "Соединение: Loc: %s Rem: %s"
 
 #: ipconst.seventdisconnect
-#, fuzzy
 #| msgid "Close:   Loc: %s Rem: %s"
 msgid "Close: Loc: %s Rem: %s"
-msgstr "Завершение:   Loc: %s Rem: %s"
+msgstr "Завершение: Loc: %s Rem: %s"
 
 #: ipconst.sfilename
 msgid " Filename: "
@@ -1545,7 +1544,6 @@ msgid "Logging on with User"
 msgstr "Вход под именем пользователя"
 
 #: ipconst.spterror
-#, fuzzy
 #| msgid "An error occured with the last task."
 msgid "An error occurred with the last task."
 msgstr "Во время выполнения последней задачи произошла ошибка."
@@ -2412,7 +2410,6 @@ msgid "Directory not empty"
 msgstr "Каталог не пустой"
 
 #: ipconst.swsaenotsock
-#, fuzzy
 #| msgid "Socket operation on nonsocket"
 msgid "Socket operation on non socket"
 msgstr "Сокет-операция над не-сокетом"
@@ -2506,10 +2503,9 @@ msgid "Network subsystem is unavailable"
 msgstr "Сетевая подсистема недоступна"
 
 #: ipconst.swsatry_again
-#, fuzzy
 #| msgid "Nonauthoritative host not found"
 msgid "Non-authoritative host not found"
-msgstr "Неавторитетный хост не найден"
+msgstr "Неполномочный хост не найден"
 
 #: ipconst.swsatype_not_found
 msgid "Type not found"
@@ -2533,7 +2529,6 @@ msgid "Error due to lack of resources"
 msgstr "Ошибка из-за отсутствия ресурсов"
 
 #: ipconst.swsa_qos_bad_object
-#, fuzzy
 #| msgid "Problem filterspec or providerspecific buffer"
 msgid "Problem filterspec or provider specific buffer"
 msgstr "Ошибка буфера провайдера либо фильтра"
