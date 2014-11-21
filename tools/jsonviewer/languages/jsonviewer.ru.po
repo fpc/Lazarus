@@ -157,11 +157,11 @@ msgstr "Добавить новый массив JSON"
 
 #: tmainform.anewbooleanvalue.caption
 msgid "New &boolean value"
-msgstr "Новое &булево значение"
+msgstr "Новое &логическое значение"
 
 #: tmainform.anewbooleanvalue.hint
 msgid "Add a new boolean value"
-msgstr "Добавить новое булево значение"
+msgstr "Добавить новое логическое значение"
 
 #: tmainform.anewnullvalue.caption
 msgid "New N&ull value"
