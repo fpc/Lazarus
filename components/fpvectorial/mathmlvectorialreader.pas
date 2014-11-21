@@ -308,8 +308,13 @@ begin
       ReadFormulaFromNodeChildren(lCurNode, lPage, lFormula);
       lPage.AddEntity(lFormula);
     end
-    else
-      raise Exception.Create(Format('[TvMathMLVectorialReader.ReadFromStream] Expected mrow or mstack, got %s', [lStr]));
+    else // If it is neither a mrow nor a mstack, consider everything as being in a row layout
+    begin
+      lFormula := TvFormula.Create(lPage);
+      ReadFormulaFromNodeChildren(lFirstLayer, lPage, lFormula);
+      lPage.AddEntity(lFormula);
+      Exit;
+    end;
 
     lCurNode := lCurNode.NextSibling;
   end;
