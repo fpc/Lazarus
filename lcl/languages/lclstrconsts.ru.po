@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-11-08 04:45+0300\n"
+"PO-Revision-Date: 2014-11-21 03:46+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 
@@ -359,7 +359,7 @@ msgstr "С учётом регистра"
 
 #: lclstrconsts.rscontrolclasscantcontainchildclass
 msgid "Control of class '%s' can't have control of class '%s' as a child"
-msgstr "Элемент управления класса '%s' не может иметь потомком элемент управления класса '%s'"
+msgstr "Элемент управления класса '%s' не может иметь дочерний элемент управления класса '%s'"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
 msgid "Control '%s' has no parent window"
@@ -601,15 +601,15 @@ msgstr "Тёмно-зелёный"
 
 #: lclstrconsts.rsgridfiledoesnotexist
 msgid "Grid file doesn't exist"
-msgstr ""
+msgstr "Файл Grid не существует"
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
-msgstr ""
+msgstr "Невозможно вставить строки, если отсутствуют столбцы"
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
-msgstr ""
+msgstr "Невозможно вставить столбцы, если отсутствуют строки"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."

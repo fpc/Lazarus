@@ -597,15 +597,15 @@ msgstr "Verde"
 
 #: lclstrconsts.rsgridfiledoesnotexist
 msgid "Grid file doesn't exist"
-msgstr ""
+msgstr "Il file della griglia non esiste"
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
-msgstr ""
+msgstr "Non si possono inserire righe in una grigli che non ha nessuna riga"
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
-msgstr ""
+msgstr "Non si possono inserire colonne in una griglia che non ha nessuna riga"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
@@ -1493,4 +1493,3 @@ msgstr "Simbolo token errato: atteso %s, trovato %s"
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Tipo token errato: atteso %s, trovato %s"
-
