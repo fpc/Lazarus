@@ -96,12 +96,12 @@ type
                                ATargetSize, ADestSize: Cardinal;
                                out AConvertorData: TFpDbgMemConvData
                               ): boolean; virtual; abstract;
-    function PrepareTargetRead(AReadDataType: TFpDbgMemReadDataType;
+    {function PrepareTargetRead(AReadDataType: TFpDbgMemReadDataType;
                                ATargetPointer: TDbgPtr; ADestPointer: Pointer;
                                ATargetSize, ADestSize: Cardinal;
                                AnOpts: TFpDbgMemReadOptions;
                                out AConvertorData: TFpDbgMemConvData
-                              ): boolean; virtual; abstract;
+                              ): boolean; virtual; abstract;}
 
     (* FinishTargetRead
        called after every Read operation.
@@ -111,12 +111,12 @@ type
                               ATargetSize, ADestSize: Cardinal;
                               AConvertorData: TFpDbgMemConvData
                              ): boolean; virtual; abstract;
-    function FinishTargetRead(AReadDataType: TFpDbgMemReadDataType;
+    {function FinishTargetRead(AReadDataType: TFpDbgMemReadDataType;
                               ATargetPointer: TDbgPtr; ADestPointer: Pointer;
                               ATargetSize, ADestSize: Cardinal;
                               AnOpts: TFpDbgMemReadOptions;
                               AConvertorData: TFpDbgMemConvData
-                             ): boolean; virtual; abstract;
+                             ): boolean; virtual; abstract;}
 
     // just to free any data
     procedure FailedTargetRead(AConvertorData: TFpDbgMemConvData); virtual; abstract;
