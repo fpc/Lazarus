@@ -305,7 +305,7 @@ procedure TGDBMINameValueList.Init(AResultValues: PChar; ALength: Integer);
 
       // only name, no value
       Item^.Name.Ptr := AStartPtr;
-      Item^.Name.Len := PtrUInt(AEndPtr) - PtrUInt(AStartPtr) + 1;
+      Item^.Name.Len := {%H-}PtrUInt(AEndPtr) - {%H-}PtrUInt(AStartPtr) + 1;
       Item^.Value.Ptr := nil;
       Item^.Value.Len := 0;
     end
@@ -320,7 +320,7 @@ procedure TGDBMINameValueList.Init(AResultValues: PChar; ALength: Integer);
       end;
 
       Item^.Name.Ptr := AStartPtr;
-      Item^.Name.Len := PtrUInt(AEquPtr) - PtrUInt(AStartPtr);
+      Item^.Name.Len := {%H-}PtrUInt(AEquPtr) - {%H-}PtrUInt(AStartPtr);
 
       // trim name spaces
       if UseTrim then
@@ -331,11 +331,11 @@ procedure TGDBMINameValueList.Init(AResultValues: PChar; ALength: Integer);
       then begin
         // strip surrounding "
         Item^.Value.Ptr := AEquPtr + 2;
-        Item^.Value.Len := PtrUInt(AEndPtr) - PtrUInt(AEquPtr) - 2;
+        Item^.Value.Len := {%H-}PtrUInt(AEndPtr) - {%H-}PtrUInt(AEquPtr) - 2;
       end
       else begin
         Item^.Value.Ptr := AEquPtr + 1;
-        Item^.Value.Len := PtrUInt(AEndPtr) - PtrUInt(AEquPtr)
+        Item^.Value.Len := {%H-}PtrUInt(AEndPtr) - {%H-}PtrUInt(AEquPtr)
       end;
       // trim value spaces
       if UseTrim then
