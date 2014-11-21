@@ -827,7 +827,7 @@ begin
       end;
     LCLQt_Destroy:
       begin
-        AObject := TQtObject(Pointer(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event))));
+        AObject := TQtObject({%H-}Pointer(QLCLMessageEvent_getWParam(QLCLMessageEventH(Event))));
         //WriteLn('Catched free for: ', PtrUInt(AObject), ' : ', AObject.ClassName);
         AObject.Free;
         Result := True;
@@ -1687,7 +1687,7 @@ var
   LogBrush: TLogBrush;
   logPen : TLogPen;
 begin
-  FillChar(LogBrush,SizeOf(TLogBrush),0);
+  FillChar(LogBrush{%H-},SizeOf(TLogBrush),0);
   LogBrush.lbStyle := BS_NULL;
   FStockNullBrush := CreateBrushIndirect(LogBrush);
   TQtBrush(FStockNullBrush).FShared := True;

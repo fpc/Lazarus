@@ -395,6 +395,7 @@ begin
   if ACommonDialog is TSaveDialog then
   begin
     {$ifdef QT_NATIVE_DIALOGS}
+    selectedFilter:='';
     saveFilter := GetQtFilterString(TSaveDialog(ACommonDialog), selectedFilter);
     sDir := FileDialog.InitialDir;
     if (SDir <> '') and (SDir[length(SDir)] <> PathDelim) then

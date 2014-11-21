@@ -616,7 +616,7 @@ function TQtWidgetSet.RawImage_DescriptionFromDevice(ADC: HDC; out ADesc: TRawIm
 begin
   Result := true;
 
-  FillStandardDescription(ADesc);
+  FillStandardDescription(ADesc{%H-});
 end;
 
 {------------------------------------------------------------------------------

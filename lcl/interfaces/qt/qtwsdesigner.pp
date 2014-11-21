@@ -43,7 +43,7 @@ uses
 // LCL
   Classes, Controls, RubberBand, LCLType,
 // Widgetset
-  WsLCLClasses, WsControls, WsDesigner, WsProc;
+  WsLCLClasses, WsDesigner, WsProc;
 
 type
   { TWsCustomRubberBand }

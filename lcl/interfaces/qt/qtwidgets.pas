@@ -256,7 +256,7 @@ type
     function MapToGlobal(APt: TPoint; const AWithScrollOffset: Boolean = False): TPoint; virtual;
     function MapFromGlobal(APt: TPoint; const AWithScrollOffset: Boolean = False): TPoint; virtual;
     procedure move(ANewLeft, ANewTop: Integer); virtual;
-    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); virtual;
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); virtual;
     procedure raiseWidget; virtual;
     procedure stackUnder(AWidget: QWidgetH); virtual;
     procedure frame_resize(ANewWidth, ANewHeight: Integer);
@@ -382,7 +382,7 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
   public
-    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     procedure SlotSliderReleased; cdecl; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -516,7 +516,7 @@ type
     procedure setDown(p1: Boolean);
     procedure SignalPressed; cdecl;
     procedure SignalReleased; cdecl;
-    procedure SignalClicked(Checked: Boolean = False); cdecl;
+    procedure SignalClicked({%H-}Checked: Boolean = False); cdecl;
     procedure SignalClicked2; cdecl;
   end;
 
@@ -529,13 +529,13 @@ type
   protected
     function CreateWidget(const AParams: TCreateParams): QWidgetH; override;
   public
-    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
   public
     procedure SetDefault(const ADefault: Boolean);
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     procedure SlotClicked; cdecl; virtual;
-    procedure SlotToggled(AChecked: Boolean); cdecl; virtual;
+    procedure SlotToggled({%H-}AChecked: Boolean); cdecl; virtual;
   end;
 
   { TQtBitBtn }
@@ -550,7 +550,7 @@ type
   public
     destructor Destroy; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
-    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure preferredSize(var PreferredWidth, PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
 
     function getIconSize: TSize; override;
     function getText: WideString; override;
@@ -566,7 +566,7 @@ type
   TQtToggleBox = class(TQtPushButton)
   public
     procedure SlotClicked; cdecl; override;
-    procedure SlotToggled(AChecked: Boolean); cdecl; override;
+    procedure SlotToggled({%H-}AChecked: Boolean); cdecl; override;
   end;
 
   { TQtMainWindow }
@@ -619,7 +619,7 @@ type
     FPopupParent: QWidgetH;
     FMDIStateHook: QMdiSubWindow_hookH;
   protected
-    function CreateWidget(const AParams: TCreateParams):QWidgetH; override;
+    function CreateWidget(const {%H-}AParams: TCreateParams):QWidgetH; override;
     procedure ChangeParent(NewParent: QWidgetH);
     procedure UpdateParent;
   public
@@ -750,7 +750,7 @@ type
     function getClientBounds: TRect; override;
     function getText: WideString; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
-      WithThemeSpace: Boolean); override;
+      {%H-}WithThemeSpace: Boolean); override;
     procedure setText(const W: WideString); override;
     procedure setFocusPolicy(const APolicy: QtFocusPolicy); override;
     property GroupBoxType: TQtGroupBoxType read FGroupBoxType write FGroupBoxType;
@@ -832,7 +832,7 @@ type
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
-      WithThemeSpace: Boolean); override;
+      {%H-}WithThemeSpace: Boolean); override;
     procedure SignalTextChanged(p1: PWideString); cdecl;
     property NumbersOnly: boolean read FNumbersOnly write SetNumbersOnly;
     property TextMargins: TRect read GetTextMargins write SetTextMargins;
@@ -1028,7 +1028,7 @@ type
     procedure DetachEvents; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
-      WithThemeSpace: Boolean); override;
+      {%H-}WithThemeSpace: Boolean); override;
 
     procedure SlotActivate(index: Integer); cdecl;
     procedure SlotChange(p1: PWideString); cdecl;
@@ -2714,7 +2714,7 @@ begin
   if inUpdate then
     exit;
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
   Msg.Msg := LM_SHOWWINDOW;
   Msg.Show := vShow;
@@ -2737,7 +2737,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtWidget.SlotClose');
   {$endif}
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
 
   Msg.Msg := LM_CLOSEQUERY;
 
@@ -2761,7 +2761,7 @@ begin
     WriteLn('TQtWidget.SlotDestroy');
   {$endif}
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_DESTROY;
   DeliverMessage(Msg);
   Release;
@@ -2859,7 +2859,7 @@ begin
   if (QApplication_mouseButtons() = 0) and
      not QWidget_hasMouseTracking(QWidgetH(Sender)) then // in other case MouseMove will be hooked
   begin
-    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
     MousePos := QHoverEvent_pos(QHoverEventH(Event))^;
     OffsetMousePos(@MousePos);
@@ -2982,8 +2982,8 @@ begin
   if not CanSendLCLMessage then
     exit;
 
-  FillChar(KeyMsg, SizeOf(KeyMsg), #0);
-  FillChar(CharMsg, SizeOf(CharMsg), #0);
+  FillChar(KeyMsg{%H-}, SizeOf(KeyMsg), #0);
+  FillChar(CharMsg{%H-}, SizeOf(CharMsg), #0);
   UTF8Text := '';
   UTF8Char := '';
   AChar := #0;
@@ -3501,7 +3501,7 @@ begin
 
   // idea of multi click implementation is taken from gtk
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
   OffsetMousePos(@MousePos);
@@ -3641,7 +3641,7 @@ var
   Msg: TLMessage;
 begin
   Result := False;
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   case QEvent_type(Event) of
     QEventEnter: Msg.Msg := LM_MOUSEENTER;
     QEventLeave: Msg.Msg := LM_MOUSELEAVE;
@@ -3766,7 +3766,7 @@ begin
     end;
   end;
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   
   MousePos := QMouseEvent_pos(QMouseEventH(Event))^;
   OffsetMousePos(@MousePos);
@@ -3817,7 +3817,7 @@ begin
   if not CanSendLCLMessage then
     exit;
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
   MousePos := QWheelEvent_Pos(QWheelEventH(Event))^;
   OffsetMousePos(@MousePos);
@@ -3916,7 +3916,7 @@ begin
     TQtMainWindow(Self).IsMdiChild)) then
     Exit;
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
   Msg.Msg := LM_MOVE;
 
@@ -4004,7 +4004,7 @@ begin
   {$endif}
   if CanSendLCLMessage and (LCLObject is TWinControl) then
   begin
-    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
     Msg.Msg := LM_PAINT;
     New(AStruct);
@@ -4075,7 +4075,9 @@ procedure TQtWidget.SlotResize(Event: QEventH); cdecl;
 var
   Msg: TLMSize;
   NewSize: TSize;
+  {$IFDEF VerboseQtResizeError}
   R: TRect;
+  {$ENDIF}
   B: Boolean;
   AQtClientRect: TRect;
 begin
@@ -4165,7 +4167,7 @@ begin
       end;
     end;
 
-    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
     Msg.Msg := LM_SIZE;
 
@@ -4214,7 +4216,7 @@ begin
   if not CanSendLCLMessage then
     Exit(False);
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   MousePos := QContextMenuEvent_globalPos(QContextMenuEventH(Event))^;
 
   Msg.Msg := LM_CONTEXTMENU;
@@ -4258,7 +4260,7 @@ begin
   Data.dwContextId := 0;
   with QHelpEvent_globalPos(QHelpEventH(Event))^ do
     Data.MousePos := Point(X, Y);
-  Application.HelpCommand(0, PtrInt(@Data));
+  Application.HelpCommand(0, {%H-}PtrInt(@Data));
 end;
 
 procedure TQtWidget.SlotLCLMessage(Sender: QObjectH; Event: QEventH); cdecl;
@@ -5660,7 +5662,7 @@ procedure TQtAbstractButton.SignalPressed; cdecl;
 var
   Msg: TLMessage;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_KEYDOWN;
   DeliverMessage(Msg);
 end;
@@ -5674,7 +5676,7 @@ procedure TQtAbstractButton.SignalReleased; cdecl;
 var
   Msg: TLMessage;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_KEYUP;
   DeliverMessage(Msg);
 end;
@@ -5688,7 +5690,7 @@ procedure TQtAbstractButton.SignalClicked(Checked: Boolean = False); cdecl;
 var
   Msg: TLMessage;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
   DeliverMessage(Msg);
 end;
@@ -5702,7 +5704,7 @@ procedure TQtAbstractButton.SignalClicked2; cdecl;
 var
   Msg: TLMessage;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_CLICKED;
   DeliverMessage(Msg);
 end;
@@ -5837,7 +5839,7 @@ procedure TQtPushButton.SlotClicked; cdecl;
 var
   Msg: TLMessage;
 begin
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_CLICKED;
   DeliverMessage(Msg);
 end;
@@ -6177,7 +6179,7 @@ begin
   if InUpdate then
     exit;
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
   DeliverMessage(Msg);
 end;
@@ -7164,7 +7166,7 @@ begin
   WriteLn('TQtWidget.SlotActivateWindow Name', LCLObject.Name, ' vActivate: ', dbgs(vActivate));
   {$endif}
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
   FIsActivated := TCustomForm(LCLObject).Active;
   {do not send activate if form is already activated,
@@ -7196,7 +7198,7 @@ begin
     WriteLn('TQtMainWindow.SlotWindowStateChange');
   {$endif}
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
   Msg.Msg := LM_SIZE;
   Msg.SizeType := SIZE_RESTORED;
@@ -7474,7 +7476,7 @@ var
 begin
   if not InUpdate then
   begin
-    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
     Msg.Msg := LM_CHANGED;
     DeliverMessage(Msg);
   end;
@@ -7524,7 +7526,7 @@ var
 begin
   if not InUpdate then
   begin
-    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
     Msg.Msg := LM_CHANGED;
     DeliverMessage(Msg);
   end;
@@ -8181,7 +8183,7 @@ begin
   ' FChildOfComplexWidget ',FChildOfComplexWidget);
   {$endif}
 
-  FillChar(LMScroll, SizeOf(LMScroll), #0);
+  FillChar(LMScroll{%H-}, SizeOf(LMScroll), #0);
 
   LMScroll.ScrollBar := PtrUInt(Self);
 
@@ -8226,7 +8228,7 @@ begin
   writeln('TQtAbstractSlider.SlotActionTriggered() action = ',action,' inUpdate ',inUpdate);
   {$endif}
 
-  FillChar(LMScroll, SizeOf(LMScroll), #0);
+  FillChar(LMScroll{%H-}, SizeOf(LMScroll), #0);
 
   LMScroll.ScrollBar := PtrUInt(Self);
 
@@ -8377,7 +8379,7 @@ begin
       QAbstractSlider_triggerAction(QAbstractSliderH(Widget), QAbstractSliderSliderToMaximum)
     else
     begin
-      FillChar(LMScroll, SizeOf(LMScroll), #0);
+      FillChar(LMScroll{%H-}, SizeOf(LMScroll), #0);
 
       LMScroll.ScrollBar := PtrUInt(Self);
 
@@ -8398,9 +8400,6 @@ end;
 
 function TQtScrollBar.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
-var
-  ASize: TSize;
-  AResizeEvent: QResizeEventH;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -8599,7 +8598,7 @@ begin
 
   if not SliderPressed and not InUpdate then
   begin
-    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
     Msg.Msg := LM_CHANGED;
     DeliverMessage(Msg);
   end;
@@ -8872,7 +8871,7 @@ procedure TQtLineEdit.SignalTextChanged(p1: PWideString); cdecl;
 var
   Msg: TLMessage;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
   DeliverMessage(Msg);
 end;
@@ -9338,7 +9337,7 @@ begin
     TQtMemoStrings(FList).TextChanged := True;
   if not InUpdate then
   begin
-    FillChar(Mess, SizeOf(Mess), #0);
+    FillChar(Mess{%H-}, SizeOf(Mess), #0);
     Mess.Msg := CM_TEXTCHANGED;
     DeliverMessage(Mess);
   end;
@@ -9413,9 +9412,9 @@ begin
   if TQtTabWidget(LCLObject.Handle).InUpdate then
     exit;
 
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_NOTIFY;
-  FillChar(Hdr, SizeOf(Hdr), 0);
+  FillChar(Hdr{%H-}, SizeOf(Hdr), 0);
 
   Hdr.hwndFrom := LCLObject.Handle;
   Hdr.Code := TCN_SELCHANGE;
@@ -9913,9 +9912,9 @@ begin
     exit;
   end;
 
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_NOTIFY;
-  FillChar(Hdr, SizeOf(Hdr), 0);
+  FillChar(Hdr{%H-}, SizeOf(Hdr), 0);
 
   Hdr.hwndFrom := LCLObject.Handle;
   Hdr.Code := TCN_SELCHANGING;
@@ -10400,7 +10399,7 @@ begin
     WriteLn('TQtComboBox.SlotPaintCombo ', dbgsName(LCLObject));
   {$endif}
   CurrIndex := currentIndex;
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
   Msg.Msg := LM_PAINT;
   New(AStruct);
@@ -10640,7 +10639,7 @@ begin
   if InUpdate then
     Exit;
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_ACTIVATE;
   DeliverMessage(Msg);
 end;
@@ -10652,7 +10651,7 @@ begin
   if InUpdate then
     Exit;
     
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
   Msg.Msg := LM_CHANGED;
 
@@ -10671,7 +10670,7 @@ begin
    comboboxes }
   if not getEditable then
   begin
-    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
     Msg.Msg := LM_CHANGED;
     DeliverMessage(Msg);
   end;
@@ -10696,7 +10695,7 @@ begin
   if InUpdate then
     Exit;
 
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := CN_COMMAND;
   Msg.NotifyCode := VisibilityToCodeMap[AVisible];
 
@@ -10971,7 +10970,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtAbstractSpinBox.SignalEditingFinished');
   {$endif}
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   { TODO: Find out which message should be sended here
     problem:
      everything is fine when we work with mouse, or
@@ -11057,7 +11056,7 @@ var
   Msg: TLMessage;
 begin
   FValue := p1;
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
   if not InUpdate then
     DeliverMessage(Msg);
@@ -11132,7 +11131,7 @@ var
   Msg: TLMessage;
 begin
   FValue := p1;
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
   if not InUpdate then
     DeliverMessage(Msg);
@@ -11604,8 +11603,8 @@ var
     Msg: TLMNotify;
     NMLV: TNMListView;
   begin
-    FillChar(Msg, SizeOf(Msg), #0);
-    FillChar(NMLV, SizeOf(NMLV), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
+    FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
 
     Msg.Msg := CN_NOTIFY;
 
@@ -11941,8 +11940,8 @@ begin
   if ViewStyle = -1 then
     exit;
 
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
 
   Msg.Msg := CN_NOTIFY;
 
@@ -12044,7 +12043,7 @@ begin
     (not InUpdate and (length(FSavedSelection) = 0)) ) then
     exit;
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_SELCHANGE;
   if (FChildOfComplexWidget <> ccwComboBox) then
   begin
@@ -12074,7 +12073,7 @@ begin
   {$ifdef VerboseQt}
     WriteLn('TQtListWidget.signalItemTextChanged');
   {$endif}
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := CM_TEXTCHANGED;
   DeliverMessage(Msg);
 end;
@@ -12093,8 +12092,8 @@ begin
   {$endif}
   if (ViewStyle >= 0) and (FChildOfComplexWidget <> ccwComboBox) then
   begin
-    FillChar(MsgN, SizeOf(MsgN), #0);
-    FillChar(NMLV, SizeOf(NMLV), #0);
+    FillChar(MsgN{%H-}, SizeOf(MsgN), #0);
+    FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
 
     MsgN.Msg := LM_CLICKED;
 
@@ -12121,7 +12120,7 @@ begin
 
   if Checkable then
   begin
-    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
     Msg.Msg := LM_CHANGED;
     ItemRow := QListWidget_row(QListWidgetH(Widget), Item);
     Msg.WParam := ItemRow;
@@ -12781,7 +12780,7 @@ var
 begin
   if InUpdate or not GetVisible then
     exit;
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
   Msg.WParam := PtrInt(QListWidget_row(QListWidgetH(Widget), Item));
   DeliverMessage(Msg);
@@ -12937,8 +12936,8 @@ begin
   writeln('TQtHeaderView.signalSectionClicked index ',logicalIndex);
   {$endif}
 
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
   
   Msg.Msg := CN_NOTIFY;
   NMLV.hdr.hwndfrom := LCLObject.Handle;
@@ -13194,8 +13193,8 @@ var
     NMLV: TNMListView;
   begin
 
-    FillChar(Msg, SizeOf(Msg), #0);
-    FillChar(NMLV, SizeOf(NMLV), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
+    FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
 
     Msg.Msg := CN_NOTIFY;
 
@@ -13946,7 +13945,7 @@ begin
   if Data = nil then
     v := QVariant_create(QVariantInvalid)
   else
-    v := QVariant_create(Int64(PtrUInt(Data)));
+    v := QVariant_create(Int64({%H-}PtrUInt(Data)));
   QTreeWidgetItem_setData(AItem, AColumn, ARole, v);
   QVariant_destroy(v);
 end;
@@ -13984,8 +13983,8 @@ begin
     (QTreeWidget_isItemSelected(QTreeWidgetH(Widget), AItem) = ASelect)) then
     exit;
 
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
   Msg.Msg := CN_NOTIFY;
 
   NMLV.hdr.hwndfrom := LCLObject.Handle;
@@ -14207,8 +14206,8 @@ var
   Msg: TLMNotify;
   NMLV: TNMListView;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
 
   Msg.Msg := CN_NOTIFY;
 
@@ -14236,7 +14235,7 @@ procedure TQtTreeWidget.SignalItemEntered(item: QTreeWidgetItemH;
 var
   Msg: TLMessage;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_ENTER;
   DeliverMessage(Msg);
 end;
@@ -14271,8 +14270,8 @@ begin
   if (Item <> nil) and (Current = Previous) then
     exit;
 
-  FillChar(Msg, SizeOf(Msg), #0);
-  FillChar(NMLV, SizeOf(NMLV), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  FillChar(NMLV{%H-}, SizeOf(NMLV), #0);
 
   Msg.Msg := CN_NOTIFY;
 
@@ -14604,7 +14603,7 @@ constructor TQtMenu.Create(const AMenuItem: TMenuItem);
 var
   AParams: TCreateParams;
 begin
-  FillChar(AParams, SizeOf(AParams), #0);
+  FillChar(AParams{%H-}, SizeOf(AParams), #0);
   FMenuItem := AMenuItem;
   inherited Create(nil, AParams);
 end;
@@ -14697,7 +14696,7 @@ begin
     if GetTickCount64 - FLastTick > 10 then
     begin
       FLastTick := GetTickCount64;
-      FillChar(Msg, SizeOf(Msg), 0);
+      FillChar(Msg{%H-}, SizeOf(Msg), 0);
       Msg.msg := LM_ACTIVATE;
       if Assigned(FMenuItem) then
         FMenuItem.Dispatch(Msg);
@@ -15007,7 +15006,7 @@ begin
   case QEvent_type(Event) of
     LCLQt_PopupMenuTriggered:
       begin
-        FillChar(Msg, SizeOf(Msg), 0);
+        FillChar(Msg{%H-}, SizeOf(Msg), 0);
         Msg.msg := LM_ACTIVATE;
         if MenuItemEnabled then
           FMenuItem.Dispatch(Msg);
@@ -15305,7 +15304,7 @@ procedure TQtProgressBar.SignalValueChanged(Value: Integer); cdecl;
 var
   Msg: TLMessage;
 begin
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_CHANGED;
   if not InUpdate then
     DeliverMessage(Msg);
@@ -15356,11 +15355,11 @@ begin
   {$endif}
   if CanSendLCLMessage and (LCLObject is TWinControl) then
   begin
-    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
     Msg.Msg := LM_DRAWITEM;
-    FillChar(AStruct, SizeOf(TPaintStruct), 0);
-    FillChar(ItemStruct, SizeOf(TDrawItemStruct), 0);
+    FillChar(AStruct{%H-}, SizeOf(TPaintStruct), 0);
+    FillChar(ItemStruct{%H-}, SizeOf(TDrawItemStruct), 0);
     New(ItemStruct);
 
     with PaintData do
@@ -15783,8 +15782,6 @@ end;
 function TQtAbstractScrollArea.getClientBounds: TRect;
 var
   HaveBar: Boolean;
-  AOldRect: TRect;
-  AOffset: Integer;
   ASize: TSize;
 begin
   if not QWidget_testAttribute(viewportWidget, QtWA_Mapped) then
@@ -16314,7 +16311,7 @@ var
 begin
   if FViewPortWidget <> niL then
     exit;
-  FillChar(AParams, SizeOf(AParams), #0);
+  FillChar(AParams{%H-}, SizeOf(AParams), #0);
   FViewPortWidget := TQtViewPort.Create(LCLObject, AParams);
   FViewPortWidget.setFocusProxy(Widget);
   FViewPortWidget.setBackgroundRole(QPaletteNoRole);
@@ -16608,7 +16605,7 @@ begin
   writeln('TQtCalendar.signalActivated ');
   {$ENDIF}
 
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_DAYCHANGED;
   y := QDate_year(ADate);
   m := QDate_month(ADate);
@@ -16663,7 +16660,7 @@ begin
   {$IFDEF VerboseQt}
   writeln('TQtCalendar.signalClicked');
   {$ENDIF}
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_DAYCHANGED;
   y := QDate_year(ADate);
   m := QDate_month(ADate);
@@ -16710,7 +16707,7 @@ begin
   {$ENDIF}
   if InUpdate then
     exit;
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   Msg.Msg := LM_SELCHANGE;
   DeliverMessage(Msg);
 end;
@@ -16735,7 +16732,7 @@ begin
   {$ENDIF}
   if InUpdate then
     exit;
-  FillChar(Msg, SizeOf(Msg), #0);
+  FillChar(Msg{%H-}, SizeOf(Msg), #0);
   HasChanges := (AYear <> p1) or (AMonth <> p2);
   if AYear <> p1 then
   begin
@@ -16827,7 +16824,7 @@ begin
     R := getGeometry;
     W := R.Right - R.Left;
     H := R.Bottom - R.Top;
-    LCLIntf.GetCursorPos(P);
+    LCLIntf.GetCursorPos(P{%H-});
     {we must make proper positioning of our hint if
      hint geometry intersects current cursor pos - issue #15882}
     if PtInRect(R, P) then
@@ -17117,7 +17114,7 @@ var
   Msg: TLMessage;
 begin
   // writeln('SIGNAL: TQtAbstractItemView.signalActivated');
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_ACTIVATE;
   DeliverMessage( Msg );
 end;
@@ -17138,7 +17135,7 @@ procedure TQtAbstractItemView.signalEntered(index: QModelIndexH); cdecl;
 var
   Msg: TLMessage;
 begin
-  FillChar(Msg, SizeOf(Msg), 0);
+  FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_ENTER;
   DeliverMessage( Msg );
 end;
@@ -17927,7 +17924,7 @@ begin
 
   if (LCLObject is TWinControl) then
   begin
-    FillChar(Msg, SizeOf(Msg), #0);
+    FillChar(Msg{%H-}, SizeOf(Msg), #0);
 
     Msg.Msg := LM_PAINT;
     New(AStruct);

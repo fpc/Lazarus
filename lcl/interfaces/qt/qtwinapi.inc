@@ -1021,7 +1021,7 @@ var
     begin
 
       APen := TQtPen.Create(True);
-      ColorRefToTQColor(TColorRef(ColorLeftTop), EdgeQtColor);
+      ColorRefToTQColor(TColorRef(ColorLeftTop), EdgeQtColor{%H-});
       APen.setColor(EdgeQtColor);
       OldPen := QtDC.setPen(APen);
 
@@ -1930,7 +1930,7 @@ begin
               AStyle);
             EnumLogFont.elfStyle := AStyle;
             if CharSetList.Count > 0 then
-              EnumLogFont.elfLogFont.lfCharSet := PtrUInt(CharsetList.Items[0]);
+              EnumLogFont.elfLogFont.lfCharSet := {%H-}PtrUInt(CharsetList.Items[0]);
             Result := Callback(EnumLogFont, Metric, FontType, LParam);
             for y := 1 to StylesCount - 1 do
             begin
@@ -1940,7 +1940,7 @@ begin
             end;
             for y := 1 to CharsetList.Count - 1 do
             begin
-              EnumLogFont.elfLogFont.lfCharSet := PtrUInt(CharsetList.Items[y]);
+              EnumLogFont.elfLogFont.lfCharSet := {%H-}PtrUInt(CharsetList.Items[y]);
               Result := Callback(EnumLogFont, Metric, FontType, LParam);
             end;
           end;
@@ -4189,7 +4189,7 @@ begin
   if IsValidDC(DC) then
   begin
     QtDC := TQtDeviceContext(DC);
-    ColorRefToTQColor(TColorRef(QtDC.vTextColor), Color);
+    ColorRefToTQColor(TColorRef(QtDC.vTextColor), Color{%H-});
     TQColorToColorRef(Color, Result);
   end;
 end;

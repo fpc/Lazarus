@@ -28,7 +28,6 @@ uses
   qtobjects, qtwidgets, qtproc,
   // LCL
   SysUtils, Classes, types, Controls, LCLType, Forms,
-  {$IFDEF QTSCROLLABLEFORMS}StdCtrls,{$ENDIF}
   // Widgetset
   InterfaceBase, WSForms, WSProc, WSLCLClasses;
 
@@ -133,7 +132,7 @@ type
 
 implementation
 
-uses qtint, QtWSControls, LCLIntf
+uses qtint, LCLIntf
   {$IFDEF VerboseQtResize}, LCLProc{$ENDIF}
   ;
 
@@ -164,7 +163,6 @@ var
   Str: WideString;
   PopupParent: QWidgetH;
   AForm: TCustomForm;
-  AFlags: QtWindowFlags;
 begin
   {$ifdef VerboseQt}
     WriteLn('[TQtWSCustomForm.CreateHandle] Height: ', IntToStr(AWinControl.Height),

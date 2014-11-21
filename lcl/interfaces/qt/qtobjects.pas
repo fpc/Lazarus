@@ -118,7 +118,7 @@ type
     constructor Create(const AHandle: QActionH);
     destructor Destroy; override;
   public
-    procedure SlotTriggered(checked: Boolean = False); cdecl;
+    procedure SlotTriggered({%H-}checked: Boolean = False); cdecl;
   public
     procedure setChecked(p1: Boolean);
     procedure setCheckable(p1: Boolean);
@@ -405,7 +405,7 @@ type
     procedure CreateObjects;
     procedure DestroyObjects;
     function CreateDCData: PQtDCDATA;
-    function RestoreDCData(var DCData: PQtDCData): boolean;
+    function RestoreDCData(var {%H-}DCData: PQtDCData): boolean;
     procedure DebugClipRect(const msg: string);
     procedure setImage(AImage: TQtImage);
     procedure CorrectCoordinates(var ARect: TRect);
@@ -1183,7 +1183,7 @@ end;
 procedure TQtAction.SlotTriggered(checked: Boolean); cdecl;
 begin
   if Assigned(MenuItem) and Assigned(MenuItem.OnClick) then
-   MenuItem.OnClick(Self.MenuItem);
+    MenuItem.OnClick(Self.MenuItem);
 end;
 
 {------------------------------------------------------------------------------
@@ -3262,7 +3262,7 @@ begin
   Write('TQtDeviceContext.setBKColor() ');
   {$endif}
   Result := GetBkColor;
-  ColorRefToTQColor(ColorToRGB(TColor(Color)), NColor);
+  ColorRefToTQColor(ColorToRGB(TColor(Color)), NColor{%H-});
   BackgroundBrush.setColor(@NColor);
 end;
 

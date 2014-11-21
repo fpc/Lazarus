@@ -55,7 +55,6 @@ type
 
 implementation
 
-uses QtWSControls;
 
 { TQtWSBitBtn }
 

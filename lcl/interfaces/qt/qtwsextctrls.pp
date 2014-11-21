@@ -29,9 +29,8 @@ uses
   // LCL
   LCLProc,
   SysUtils, Classes, Controls, Graphics, Forms, ExtCtrls, LCLType,
-  ImgList,
   // Widgetset
-  WSExtCtrls, WSProc, WSLCLClasses;
+  WSExtCtrls, WSLCLClasses;
 
 type
   { TQtWSPage }
@@ -305,8 +304,6 @@ class procedure TQtWSCustomTrayIcon.InternalUpdate(const ATrayIcon: TCustomTrayI
 var
   SystemTrayIcon: TQtSystemTrayIcon;
   AIcon: QIconH;
-  ABmp: TCustomBitmap;
-  APixmap: QPixmapH;
 begin
   if (ATrayIcon.Handle = 0) then Exit;
 

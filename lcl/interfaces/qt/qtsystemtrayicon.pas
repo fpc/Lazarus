@@ -193,7 +193,7 @@ begin
         // without searching in QtWidgetSet.EventFilter.
         {$IFDEF HASX11}
         QObject_event(QWidgetH(Sender), Event);
-        FillChar(PaintData, SizeOf(PaintData), 0);
+        FillChar(PaintData{%H-}, SizeOf(PaintData), 0);
         with PaintData do
         begin
           PaintWidget := FSysTrayWidget;
