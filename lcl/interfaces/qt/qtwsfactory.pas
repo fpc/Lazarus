@@ -556,5 +556,14 @@ begin
   Result := False;
 end;
 
+procedure Init;
+begin
+  // Keep a dummy Init to hide compiler messages "unit not used".
+  // The unit is used by the "alias" functions.
+end;
+
+initialization
+  Init;
+
 end.
 

@@ -318,7 +318,7 @@ uses
 ////////////////////////////////////////////////////
   Graphics, buttons, Menus,
   // Bindings
-  qtwidgets, qtobjects, qtsystemtrayicon;
+  QtWSFactory, qtwidgets, qtobjects, qtsystemtrayicon;
 
 function DTFlagsToQtFlags(const Flags: Cardinal): Integer;
 begin
