@@ -29,7 +29,7 @@ interface
 uses
   Classes, SysUtils, Math, TypInfo, contnrs, types,
   // FCL-Image
-  fpcanvas, fpimage,
+  fpcanvas, fpimage, fpwritebmp,
   // lazutils
   laz2_dom,
   // LCL
@@ -4283,6 +4283,8 @@ var
   lFinalX, lFinalY, lFinalW, lFinalH: Integer;
   {$ifdef USE_LCL_CANVAS}
   lBitmap: TBitmap;
+  lMemoryStream: TMemoryStream;
+  lImageWriter: TFPWriterBMP;
   {$endif}
 begin
   if (RasterImage = nil) then Exit;
@@ -4293,8 +4295,20 @@ begin
 
   {$ifdef USE_LCL_CANVAS}
   lBitmap := TBitmap.Create;
+  lMemoryStream := TMemoryStream.Create;
+  lImageWriter := TFPWriterBMP.Create;
   try
-    lBitmap.LoadFromIntfImage(TLazIntfImage(RasterImage));
+    // Previous try, but didn't work for some particular PNG images =(
+    // For example: qr_www_lazarus_freepascal_org.svg
+    // The image appeared corrupted in Qt, as if with wrong pixel format =(
+    // It also didn't work in Gtk at all due to not matching Gdk format =(
+    // But if it worked it would have been faster =)
+    // Old code:
+    // lBitmap.LoadFromIntfImage(TLazIntfImage(RasterImage));
+    // New code:
+    RasterImage.SaveToStream(lMemoryStream, lImageWriter);
+    lMemoryStream.Position := 0;
+    lBitmap.LoadFromStream(lMemoryStream);
 
     // without stretch support
     //TCanvas(ADest).Draw(lFinalX, lFinalY, lBitmap);
@@ -4306,6 +4320,8 @@ begin
     if lFinalH < 0 then lFinalH := lFinalH * -1;
     TCanvas(ADest).StretchDraw(Bounds(lFinalX, lFinalY, lFinalW, lFinalH), lBitmap);
   finally
+    lImageWriter.Free;
+    lMemoryStream.Free;
     lBitmap.Free;
   end;
   {$endif}
