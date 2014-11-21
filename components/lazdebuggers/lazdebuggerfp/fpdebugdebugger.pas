@@ -102,8 +102,8 @@ type
     procedure FDbgControllerDebugInfoLoaded(Sender: TObject);
     function GetDebugInfo: TDbgInfo;
     procedure DoWatchFreed(Sender: TObject);
-    procedure ProcessASyncWatches(Data: PtrInt);
-    procedure DoLog(Data: PtrInt);
+    procedure ProcessASyncWatches({%H-}Data: PtrInt);
+    procedure DoLog({%H-}Data: PtrInt);
   protected
     procedure ScheduleWatchValueEval(AWatchValue: TWatchValue);
     function EvaluateExpression(AWatchValue: TWatchValue;
@@ -173,10 +173,10 @@ type
     destructor Destroy; override;
     function Count: Integer; override;
     function GetAddress(const AIndex: Integer; const ALine: Integer): TDbgPtr; override;
-    function GetInfo(AAdress: TDbgPtr; out ASource, ALine, AOffset: Integer): Boolean; override;
+    function GetInfo({%H-}AAdress: TDbgPtr; out {%H-}ASource, {%H-}ALine, {%H-}AOffset: Integer): Boolean; override;
     function IndexOf(const ASource: String): integer; override;
     procedure Request(const ASource: String); override;
-    procedure Cancel(const ASource: String); override;
+    procedure Cancel(const {%H-}ASource: String); override;
   end;
 
   { TFPWatches }
@@ -382,6 +382,7 @@ end;
 
 function TFpDbgMemReader.ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean;
 begin
+  Assert(AnAddressSpace>0,'TFpDbgMemReader.ReadMemoryEx ignores AddressSpace');
   result := FFpDebugDebugger.ReadData(AnAddress, ASize, ADest^);
 end;
 
@@ -754,6 +755,8 @@ begin
   FirstIndex:=0;
   ARange := TDBGDisassemblerEntryRange.Create;
   ARange.RangeStartAddr:=AnAddr;
+
+  Assert(ALinesBefore<>0,'TFPDBGDisassembler.PrepareEntries LinesBefore not supported');
 
   for i := 0 to ALinesAfter-1 do
     begin
