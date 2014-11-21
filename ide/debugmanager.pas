@@ -182,6 +182,7 @@ type
     procedure ClearDebugEventsLog;
 
     function InitDebugger(AFlags: TDbgInitFlags = []): Boolean; override;
+    function DoSetBreakkPointWarnIfNoDebugger: boolean;
 
     function DoPauseProject: TModalResult; override;
     function DoShowExecutionPoint: TModalResult; override;
@@ -2344,6 +2345,25 @@ begin
 {$endif}
 end;
 
+function TDebugManager.DoSetBreakkPointWarnIfNoDebugger: boolean;
+var
+  DbgClass: TDebuggerClass;
+begin
+  DbgClass:=FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass);
+  if (DbgClass=nil)
+  or (DbgClass.HasExePath
+    and (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
+  then begin
+    if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
+      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,[LineEnding]),
+      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])
+      <>mrIgnore
+    then
+      exit(false);
+  end;
+  Result:=true;
+end;
+
 // still part of main, should go here when processdebugger is finished
 //
 //function TDebugManager.DoRunProject: TModalResult;
@@ -2712,17 +2732,8 @@ function TDebugManager.DoCreateBreakPoint(const AFilename: string; ALine: intege
   WarnIfNoDebugger: boolean; out ABrkPoint: TIDEBreakPoint): TModalResult;
 begin
   ABrkPoint := nil;
-  if WarnIfNoDebugger
-  and ((FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass)=nil)
-    or (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
-  then begin
-    if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
-      Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,[LineEnding]),
-      mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])
-      <>mrIgnore
-    then
-      exit;
-  end;
+  if WarnIfNoDebugger and not DoSetBreakkPointWarnIfNoDebugger then
+    exit(mrCancel);
 
   ABrkPoint := FBreakPoints.Add(AFilename, ALine);
   Result := mrOK;
@@ -2734,16 +2745,8 @@ begin
   LockCommandProcessing;
   try
     ABrkPoint := nil;
-    if WarnIfNoDebugger
-    and ((FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass)=nil)
-      or (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
-    then begin
-      if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,
-        Format(lisDbgMangThereIsNoDebuggerSpecifiedSettingBreakpointsHaveNo,[LineEnding]),
-        mtWarning, [mrCancel, mrIgnore, lisDbgMangSetTheBreakpointAnyway])<>mrIgnore
-      then
-        exit;
-    end;
+    if WarnIfNoDebugger and not DoSetBreakkPointWarnIfNoDebugger then
+      exit(mrCancel);
 
     ABrkPoint := FBreakPoints.Add(AnAddr);
     Result := mrOK;
