@@ -94,15 +94,15 @@ msgstr "Выберите"
 
 #: tform2.lblmoney.caption
 msgid "LblMoney"
-msgstr ""
+msgstr "LblMoney"
 
 #: tform2.lblsum.caption
 msgid "LblSum"
-msgstr ""
+msgstr "LblSum"
 
 #: tform2.lbltodayis.caption
 msgid "LblTodayIs"
-msgstr ""
+msgstr "LblTodayIs"
 
 #: tform2.radiogroup.caption
 msgctxt "TFORM2.RADIOGROUP.CAPTION"
@@ -111,7 +111,7 @@ msgstr "Одно число"
 
 #: tlocalizedform.caption
 msgid "LocalizedForm"
-msgstr ""
+msgstr "LocalizedForm"
 
 #: tmainform.button1.caption
 msgctxt "TMAINFORM.BUTTON1.CAPTION"
