@@ -1370,6 +1370,8 @@ begin
 
   // check debugger
   if (not ShowSetupDialog)
+  and ((EnvironmentOptions.DebuggerConfig.DebuggerClass='')
+      or (EnvironmentOptions.DebuggerConfig.DebuggerClass='TGDBMIDebugger'))
   and (CheckDebuggerQuality(EnvironmentOptions.GetParsedDebuggerFilename, Note)<>sddqCompatible)
   then begin
     debugln(['Warning: missing GDB exe',EnvironmentOptions.GetParsedLazarusDirectory]);
