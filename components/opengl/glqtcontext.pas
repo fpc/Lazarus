@@ -189,6 +189,9 @@ begin
   AttrList:=CreateOpenGLContextAttrList(DoubleBuffered,RGBA,RedBits,GreenBits,BlueBits,AlphaBits,DepthBits,StencilBits,AUXBuffers);
   try
     NewQtWidget:=TQtGLWidget.Create(AWinControl,AParams);
+    NewQtWidget.setAttribute(QtWA_PaintOnScreen);
+    NewQtWidget.setAttribute(QtWA_NoSystemBackground);
+    NewQtWidget.setAttribute(QtWA_OpaquePaintEvent);
     NewQtWidget.HasPaint:=true;
     NewQtWidget.xdisplay := QX11Info_display;
     NewQtWidget.visual:=glXChooseVisual(NewQtWidget.xdisplay,
