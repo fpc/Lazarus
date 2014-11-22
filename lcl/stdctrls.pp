@@ -1211,10 +1211,13 @@ type
 
   TCustomCheckBox = class(TButtonControl)
   private
+    FAlignment: TLeftRight;
     FAllowGrayed: Boolean;
     FState: TCheckBoxState;
     FShortCut: TShortcut;
     FShortCutKey2: TShortcut;
+    function GetAlignment: TLeftRight;
+    procedure SetAlignment(AValue: TLeftRight);
     procedure SetState(Value: TCheckBoxState);
     function GetState: TCheckBoxState;
     procedure DoChange(var Msg); message LM_CHANGED;
@@ -1238,6 +1241,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
   public
+    property Alignment: TLeftRight read GetAlignment write SetAlignment default taRightJustify;
     property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default false;
     property State: TCheckBoxState read GetState write SetState default cbUnchecked;
     property ShortCut: TShortcut read FShortCut;
@@ -1255,6 +1259,7 @@ type
   published
     property Action;
     property Align;
+    property Alignment;
     property AllowGrayed;
     property Anchors;
     property AutoSize default True;

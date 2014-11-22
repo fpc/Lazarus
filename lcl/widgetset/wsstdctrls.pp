@@ -233,6 +233,7 @@ type
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; virtual;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); virtual;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); virtual;
+    class procedure SetAlignment(const ACustomCheckBox: TCustomCheckBox; const NewAlignment: TLeftRight); virtual;
   end;
   TWSCustomCheckBoxClass = class of TWSCustomCheckBox;
 
@@ -666,6 +667,11 @@ begin
 end;
 
 class procedure TWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
+begin
+end;
+
+class procedure TWSCustomCheckBox.SetAlignment(
+  const ACustomCheckBox: TCustomCheckBox; const NewAlignment: TLeftRight);
 begin
 end;
 

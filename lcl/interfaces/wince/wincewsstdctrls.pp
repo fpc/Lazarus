@@ -257,6 +257,7 @@ type
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; const ShortCutK1, ShortCutK2: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState); override;
+    class procedure SetAlignment(const ACustomCheckBox: TCustomCheckBox; const NewAlignment: TLeftRight); override;
   end;
 
   { TWinCEWSCheckBox }
@@ -1365,6 +1366,13 @@ begin
   //Pass SKIP_LMCHANGE through lParam to avoid the OnChange event be fired
   Windows.SendMessage(ACustomCheckBox.Handle, BM_SETCHECK, Flags, SKIP_LMCHANGE);
 end;
+
+class procedure TWinCEWSCustomCheckBox.SetAlignment(
+  const ACustomCheckBox: TCustomCheckBox; const NewAlignment: TLeftRight);
+begin
+  RecreateWnd(ACustomCheckBox);
+end;
+
 
 { TWinCEWSToggleBox }
 

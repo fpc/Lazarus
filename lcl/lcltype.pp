@@ -953,6 +953,7 @@ const
   BS_3STATE        = $00000005;
   BS_GROUPBOX      = $00000007;
   BS_OWNERDRAW     = $0000000B;
+  BS_RIGHTBUTTON   = $00000020;
   BS_PUSHLIKE      = $00001000;
 
   { Edit styles }

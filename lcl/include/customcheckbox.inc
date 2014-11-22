@@ -32,6 +32,22 @@ begin
   end;
 end;
 
+function TCustomCheckBox.GetAlignment: TLeftRight;
+begin
+  Result := FAlignment;
+end;
+
+procedure TCustomCheckBox.SetAlignment(AValue: TLeftRight);
+begin
+  if (GetAlignment = AValue) then Exit;
+  FAlignment := AValue;
+  if HandleAllocated and (not (csLoading in ComponentState)) then
+  begin
+    //debugln('TCustomCheckBox.SetAlignment ',dbgsname(Self),' ',dbgs((FAlignment)),' ',WidgetSetClass.ClassName);
+    TWSCustomCheckBoxClass(WidgetSetClass).SetAlignment(Self, FAlignment);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomCheckBox.GetState
   Params:  none
@@ -85,6 +101,7 @@ end;
 constructor TCustomCheckBox.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  FAlignment := taRightJustify;
   //todo: move to TButtonControl
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
@@ -229,6 +246,7 @@ procedure TCustomCheckBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or BS_3STATE;
+  if (FAlignment = taLeftJustify) then Params.Style := Params.Style or BS_RIGHTBUTTON;
 end;
 
 procedure TCustomCheckBox.DoClickOnChange;

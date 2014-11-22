@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <package name="lcl">
 	<widgetset name="gtk2">
+		<issue name="TCheckBox.Alignment">
+			<short>CheckBox Alignment property is not supported</short>
+		</issue>
 		<issue name="TComboBox.DropDownCount">
 			<short>Combo box DropDownCount property is not supported</short>
 		</issue>

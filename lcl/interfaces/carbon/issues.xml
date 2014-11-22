@@ -70,6 +70,9 @@ After obtaining a CGImageRef, the next step to implement the RawImage_fromDevice
 		<issue name="TListBox.Columns">
 			<short>List box Columns property is not supported</short>
 		</issue>
+		<issue name="TCheckBox.Alignment">
+			<short>CheckBox Alignment property is not supported</short>
+		</issue>
 		<issue name="TComboBox.Height">
 			<short>Combo box height is constrined</short>
 			<descr>It's impossible to set an arbitrary height to a TComboBox under Carbon. Use AutoSize to make sure the size is good on all platforms.</descr>
