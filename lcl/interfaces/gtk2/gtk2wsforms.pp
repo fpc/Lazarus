@@ -1,4 +1,3 @@
-{ $Id$}
 {
  *****************************************************************************
  *                              Gtk2WSForms.pp                               * 
@@ -743,13 +742,12 @@ begin
       and (ModalWindows <> nil) and (ModalWindows.Count > 0)
       and (AForm.PopupParent = nil) and (AForm.BorderStyle = bsNone)
     then begin
-      // showing a non modal form above a modal form
+      // showing a non modal form with bsNone above a modal form
       gtk_window_set_transient_for(GtkWindow, nil);
       gtk_window_set_modal(GtkWindow, True);
     end else begin
-      // showing normal form
-      // clear former mods (e.g. when a modal form becomes a normal form)
-      // see bug 23876
+      // hiding/showing normal form
+      // clear former mods, e.g. when a modal form becomes a normal form, see bug 23876
       gtk_window_set_transient_for(GtkWindow, nil); //untransient
       gtk_window_set_modal(GtkWindow, False);
     end;
@@ -758,11 +756,11 @@ begin
     // issue #26018
     if AWinControl.HandleObjectShouldBeVisible and
       not (csDesigning in AForm.ComponentState) and
-      not (TCustomForm(AWinControl).FormStyle in fsAllStayOnTop) and
-      not (fsModal in TCustomForm(AWinControl).FormState) and
-      (TCustomForm(AWinControl).PopupMode = pmAuto) and
-      (TCustomForm(AWinControl).BorderStyle = bsNone) and
-      (TCustomForm(AWinControl).PopupParent = nil) then
+      not (AForm.FormStyle in fsAllStayOnTop) and
+      not (fsModal in AForm.FormState) and
+      (AForm.PopupMode = pmAuto) and
+      (AForm.BorderStyle = bsNone) and
+      (AForm.PopupParent = nil) then
     begin
       TempGdkWindow := {%H-}PGdkWindow(Gtk2WidgetSet.GetForegroundWindow);
       if (TempGdkWindow <> nil) and (GdkWindowObject_modal_hint(GDK_WINDOW_OBJECT(TempGdkWindow)^) = 0) then
