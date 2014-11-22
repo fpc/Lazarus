@@ -1310,6 +1310,7 @@ function TFpDebugDebugger.SetSoftwareExceptionBreakpoint: boolean;
 var
   AContext: TFpDbgInfoContext;
   AValue: TFpDbgValue;
+  AnAddr: TDBGPtr;
 begin
   result := false;
   if assigned(FDbgController.CurrentProcess.SymbolTableInfo) then
@@ -1320,7 +1321,9 @@ begin
       AValue := AContext.FindSymbol('FPC_RAISEEXCEPTION');
       if assigned(AValue) then
       begin
-        FRaiseExceptionBreakpoint := AddBreak(AValue.Address.Address);
+        AnAddr:=AValue.Address.Address;
+        AValue.ReleaseReference;
+        FRaiseExceptionBreakpoint := AddBreak(AnAddr);
         if assigned(FRaiseExceptionBreakpoint) then
           result := True;
       end;
@@ -1735,6 +1738,8 @@ end;
 
 destructor TFpDebugDebugger.Destroy;
 begin
+  if FLogAsyncQueued or FWatchAsyncQueued then
+    debugln(['WARNING: TFpDebugDebugger.Destroy FLogAsyncQueued=',FLogAsyncQueued,' FWatchAsyncQueued=',FWatchAsyncQueued]);
   Application.RemoveAsyncCalls(Self);
   if assigned(FFpDebugThread) then
     FreeDebugThread;
