@@ -70,7 +70,7 @@ type
 
   TFpDebugDebugger = class(TDebuggerIntf)
   private
-    FWatchEvalList: TList; // Schedule
+    FWatchEvalList: TFPList; // Schedule
     FWatchAsyncQueued: Boolean;
     FPrettyPrinter: TFpPascalPrettyPrinter;
     FDbgController: TDbgController;
@@ -341,6 +341,7 @@ end;
 
 destructor TFpWaitForConsoleOutputThread.Destroy;
 begin
+  Application.RemoveAsyncCalls(Self);
   RTLeventdestroy(FHasConsoleOutputQueued);
   inherited Destroy;
 end;
@@ -970,6 +971,7 @@ end;
 
 destructor TFpDebugThread.Destroy;
 begin
+  Application.RemoveAsyncCalls(Self);
   RTLeventdestroy(FStartDebugLoopEvent);
   RTLeventdestroy(FDebugLoopStoppedEvent);
   inherited Destroy;
@@ -1701,7 +1703,7 @@ end;
 constructor TFpDebugDebugger.Create(const AExternalDebugger: String);
 begin
   inherited Create(AExternalDebugger);
-  FWatchEvalList := TList.Create;
+  FWatchEvalList := TFPList.Create;
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
   InitCriticalSection(FLogCritSection);
   FMemReader := TFpDbgMemReader.Create(self);
@@ -1718,13 +1720,14 @@ end;
 
 destructor TFpDebugDebugger.Destroy;
 begin
+  Application.RemoveAsyncCalls(Self);
   if assigned(FFpDebugThread) then
     FreeDebugThread;
-  FDbgController.Free;
-  FPrettyPrinter.Free;
-  FWatchEvalList.Free;
-  FMemManager.Free;
-  FMemReader.Free;
+  FreeAndNil(FDbgController);
+  FreeAndNil(FPrettyPrinter);
+  FreeAndNil(FWatchEvalList);
+  FreeAndNil(FMemManager);
+  FreeAndNil(FMemReader);
   DoneCriticalsection(FLogCritSection);
   inherited Destroy;
 end;
