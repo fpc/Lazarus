@@ -8229,6 +8229,10 @@ begin
           if ParamList.Count<>1 then exit;
           Result:=ParamList.Items[0];
         end
+        else if (CompareIdentifiers(IdentPos,'ASSIGNED')=0) then begin
+          if ParamList.Count<>1 then exit;
+          Result.Desc:=xtConstBoolean;
+        end
         else if (CompareIdentifiers(IdentPos,'LOW')=0)
              or (CompareIdentifiers(IdentPos,'HIGH')=0) then
         begin
