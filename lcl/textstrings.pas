@@ -735,16 +735,15 @@ begin
   if FArraysValid then begin
     for i:=0 to FLineCount-1 do
       if FLineRanges[i].TheObject<>nil then begin
-        // objects have to be kept
+        // old objects have to be kept
         AddEachLine:=true;
         break;
       end;
   end;
   if not AddEachLine then begin
     for i:=0 to TheStrings.Count-1 do begin
-      s:=TheStrings[i];
-      if (Pos(#10,s)>0) or (Pos(#13,s)>0) then begin
-        // TheStrings contains a line with line breaks (multi lines)
+      if TheStrings.Objects[i]<>nil then begin
+        // new objects have to be kept
         AddEachLine:=true;
         break;
       end;
@@ -756,7 +755,7 @@ begin
       AddObject(TheStrings[i],TheStrings.Objects[i]);
   end else begin
     // append the whole text at once
-    OldCount:=Count;
+    // Beware: #10,#13 characters in lines are now converted to multiple lines
     if (FText<>'') and (not (FText[length(FText)] in [#10,#13])) then
       s:=LineEnding
     else
@@ -764,12 +763,6 @@ begin
     FArraysValid:=false;
     FText:=FText+s+TheStrings.Text;
     BuildArrays;
-    for i:=0 to TheStrings.Count-1 do begin
-      if i+OldCount<Count then
-        FLineRanges[i+OldCount].TheObject:=TheStrings.Objects[i]
-      else
-        AddObject('',TheStrings.Objects[i]);
-    end;
   end;
 end;
 
