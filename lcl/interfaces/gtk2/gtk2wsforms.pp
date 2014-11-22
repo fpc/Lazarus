@@ -733,17 +733,22 @@ begin
     GtkWindowShowModal(AForm, GtkWindow);
   end else
   begin
-    if ShowNonModalOverModal then
-    // issue #21459
+    if ShowNonModalOverModal then begin
+      // issue #21459
+    end
     else if not GTK_IS_WINDOW(GtkWindow) then begin
+      //
     end
     else if (AForm.FormStyle <> fsMDIChild) and AForm.HandleObjectShouldBeVisible
       and (ModalWindows <> nil) and (ModalWindows.Count > 0)
       and (AForm.PopupParent = nil) and (AForm.BorderStyle = bsNone)
     then begin
+      // showing a non modal form above a modal form
       gtk_window_set_transient_for(GtkWindow, nil);
       gtk_window_set_modal(GtkWindow, True);
     end else begin
+      // showing normal form
+      // clear former mods (e.g. when a modal form becomes a normal form)
       // see bug 23876
       gtk_window_set_transient_for(GtkWindow, nil); //untransient
       gtk_window_set_modal(GtkWindow, False);
