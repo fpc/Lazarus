@@ -81,6 +81,7 @@ type
     FRaiseExceptionBreakpoint: FpDbgClasses.TDBGBreakPoint;
     FDbgLogMessageList: array of TFpDbgLogMessage;
     FLogCritSection: TRTLCriticalSection;
+    FMemConverter: TFpDbgMemConvertorLittleEndian;
     FMemReader: TDbgMemReader;
     FMemManager: TFpDbgMemManager;
     FConsoleOutputThread: TThread;
@@ -1725,7 +1726,8 @@ begin
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
   InitCriticalSection(FLogCritSection);
   FMemReader := TFpDbgMemReader.Create(self);
-  FMemManager := TFpDbgMemManager.Create(FMemReader, TFpDbgMemConvertorLittleEndian.Create);
+  FMemConverter := TFpDbgMemConvertorLittleEndian.Create;
+  FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConverter);
   FDbgController := TDbgController.Create;
   FDbgController.OnLog:=@OnLog;
   FDbgController.OnCreateProcessEvent:=@FDbgControllerCreateProcessEvent;
@@ -1747,6 +1749,7 @@ begin
   FreeAndNil(FPrettyPrinter);
   FreeAndNil(FWatchEvalList);
   FreeAndNil(FMemManager);
+  FreeAndNil(FMemConverter);
   FreeAndNil(FMemReader);
   DoneCriticalsection(FLogCritSection);
   inherited Destroy;
