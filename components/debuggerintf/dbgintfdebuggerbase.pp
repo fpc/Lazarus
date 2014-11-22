@@ -4709,7 +4709,7 @@ end;
 function TDBGDisassemblerEntryRange.Append(const AnEntryPtr: PDisassemblerEntry): Integer;
 begin
   if FCount >= Capacity
-  then Capacity := FCount + Max(20, FCount div 4);
+  then Capacity := FCount + Max(20,FCount div 4);
 
   FEntries[FCount] := AnEntryPtr^;
   Result := FCount;

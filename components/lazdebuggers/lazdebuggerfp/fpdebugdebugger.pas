@@ -734,7 +734,7 @@ end;
 function TFPDBGDisassembler.PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean;
 var
   ARange: TDBGDisassemblerEntryRange;
-  AnEntry: PDisassemblerEntry;
+  AnEntry: TDisassemblerEntry;
   CodeBin: array[0..20] of byte;
   p: pointer;
   ADump,
@@ -745,13 +745,13 @@ var
   Sym: TFpDbgSymbol;
   StatIndex: integer;
   FirstIndex: integer;
+  ALastAddr: TDBGPtr;
 
 begin
   Result := False;
   if (Debugger = nil) or not(Debugger.State = dsPause) then
     exit;
 
-  AnEntry:=nil;
   Sym:=nil;
   ASrcFileLine:=0;
   ASrcFileName:='';
@@ -759,6 +759,7 @@ begin
   FirstIndex:=0;
   ARange := TDBGDisassemblerEntryRange.Create;
   ARange.RangeStartAddr:=AnAddr;
+  ALastAddr:=0;
 
   Assert(ALinesBefore<>0,'TFPDBGDisassembler.PrepareEntries LinesBefore not supported');
 
@@ -797,22 +798,22 @@ begin
         ASrcFileName:='';
         ASrcFileLine:=0;
         end;
-      new(AnEntry);
-      AnEntry^.Addr := AnAddr;
-      AnEntry^.Dump := ADump;
-      AnEntry^.Statement := AStatement;
-      AnEntry^.SrcFileLine:=ASrcFileLine;
-      AnEntry^.SrcFileName:=ASrcFileName;
-      AnEntry^.SrcStatementIndex:=StatIndex;
-      ARange.Append(AnEntry);
+      AnEntry.Addr := AnAddr;
+      AnEntry.Dump := ADump;
+      AnEntry.Statement := AStatement;
+      AnEntry.SrcFileLine:=ASrcFileLine;
+      AnEntry.SrcFileName:=ASrcFileName;
+      AnEntry.SrcStatementIndex:=StatIndex;
+      ARange.Append(@AnEntry);
+      ALastAddr:=AnAddr;
       inc(StatIndex);
       Inc(AnAddr, {%H-}PtrUInt(p) - {%H-}PtrUInt(@CodeBin));
       end;
     end;
 
-  if assigned(AnEntry) then
+  if ARange.Count>0 then
     begin
-    ARange.RangeEndAddr:=AnEntry^.Addr;
+    ARange.RangeEndAddr:=ALastAddr;
     ARange.LastEntryEndAddr:={%H-}TDBGPtr(p);
     EntryRanges.AddRange(ARange);
     result := true;
