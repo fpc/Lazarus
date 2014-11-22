@@ -35,13 +35,14 @@ type
     FDebugLoopStoppedEvent: PRTLEvent;
     FFpDebugDebugger: TFpDebugDebugger;
     FStartDebugLoopEvent: PRTLEvent;
-    FStartSuccesfull: boolean;
+    FStartSuccessfull: boolean;
+    FQueuedFinish: boolean;  // true = DoDebugLoopFinishedASync queud in main thread
     procedure DoDebugLoopFinishedASync({%H-}Data: PtrInt);
   public
     constructor Create(AFpDebugDebugger: TFpDebugDebugger);
     destructor Destroy; override;
     procedure Execute; override;
-    property StartSuccesfull: boolean read FStartSuccesfull;
+    property StartSuccesfull: boolean read FStartSuccessfull;
     property StartDebugLoopEvent: PRTLEvent read FStartDebugLoopEvent;
     property DebugLoopStoppedEvent: PRTLEvent read FDebugLoopStoppedEvent;
     property AsyncMethod: TFpDbgAsyncMethod read FAsyncMethod write FAsyncMethod;
@@ -72,6 +73,7 @@ type
   private
     FWatchEvalList: TFPList; // Schedule
     FWatchAsyncQueued: Boolean;
+    FLogAsyncQueued: boolean;
     FPrettyPrinter: TFpPascalPrettyPrinter;
     FDbgController: TDbgController;
     FFpDebugThread: TFpDebugThread;
@@ -958,6 +960,7 @@ end;
 
 procedure TFpDebugThread.DoDebugLoopFinishedASync(Data: PtrInt);
 begin
+  FQueuedFinish:=false;
   FFpDebugDebugger.DebugLoopFinished;
 end;
 
@@ -971,7 +974,8 @@ end;
 
 destructor TFpDebugThread.Destroy;
 begin
-  Application.RemoveAsyncCalls(Self);
+  if FQueuedFinish then
+    Application.RemoveAsyncCalls(Self);
   RTLeventdestroy(FStartDebugLoopEvent);
   RTLeventdestroy(FDebugLoopStoppedEvent);
   inherited Destroy;
@@ -980,11 +984,11 @@ end;
 procedure TFpDebugThread.Execute;
 begin
   if FFpDebugDebugger.FDbgController.Run then
-    FStartSuccesfull:=true;
+    FStartSuccessfull:=true;
 
   RTLeventSetEvent(FDebugLoopStoppedEvent);
 
-  if FStartSuccesfull then
+  if FStartSuccessfull then
     begin
     repeat
     RTLeventWaitFor(FStartDebugLoopEvent);
@@ -1002,7 +1006,11 @@ begin
       else
         begin
         FFpDebugDebugger.FDbgController.ProcessLoop;
-        Application.QueueAsyncCall(@DoDebugLoopFinishedASync, 0);
+        if not FQueuedFinish then
+          begin
+          FQueuedFinish:=true;
+          Application.QueueAsyncCall(@DoDebugLoopFinishedASync, 0);
+          end;
         end;
       end;
     until Terminated;
@@ -1056,8 +1064,10 @@ begin
   AWatchValue.AddFreeNotification(@DoWatchFreed);
   FWatchEvalList.Add(pointer(AWatchValue));
   if not FWatchAsyncQueued then
+    begin
     Application.QueueAsyncCall(@ProcessASyncWatches, 0);
-  FWatchAsyncQueued := True;
+    FWatchAsyncQueued := True;
+    end;
 end;
 
 function TFpDebugDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpression: String;
@@ -1248,6 +1258,7 @@ procedure TFpDebugDebugger.DoLog(Data: PtrInt);
 var
   AMessage: TFpDbgLogMessage;
 begin
+  FLogAsyncQueued:=false;
   EnterCriticalsection(FLogCritSection);
   try
     if length(FDbgLogMessageList) = 0 then
@@ -1543,7 +1554,11 @@ begin
   finally
     LeaveCriticalsection(FLogCritSection);
   end;
-  Application.QueueAsyncCall(@DoLog, 0);
+  if not FLogAsyncQueued then
+    begin
+    FLogAsyncQueued:=true;
+    Application.QueueAsyncCall(@DoLog, 0);
+    end;
 end;
 
 procedure TFpDebugDebugger.ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod);
