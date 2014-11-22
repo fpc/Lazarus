@@ -5065,7 +5065,7 @@ begin
     end;
 
     // before making the widget visible, set the position and size
-    // this is not possible for windows - for windows position will be setted
+    // this is not possible for windows - for windows position will be set
     // after widget become visible
     if FWidgetsWithResizeRequest.Contains(SenderWidget) then
     begin
@@ -5147,7 +5147,7 @@ begin
     end;
   end
   else begin
-
+    // hide
     if (ACustomForm<>nil) then
       UnshareWindowAccelGroups(SenderWidget);
 
