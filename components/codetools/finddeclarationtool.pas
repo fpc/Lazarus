@@ -8283,7 +8283,8 @@ begin
             DebugLn('NOTE: unimplemented Low(type) type=',ParamNode.DescAsString);
           end;
         end
-        else if (CompareIdentifiers(IdentPos,'LENGTH')=0) then
+        else if (CompareIdentifiers(IdentPos,'LENGTH')=0)
+        or (CompareIdentifiers(IdentPos,'ORD')=0) then
         begin
           if ParamList.Count<>1 then exit;
           Result.Desc:=xtConstOrdInteger;
