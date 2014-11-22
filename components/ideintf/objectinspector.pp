@@ -2632,8 +2632,11 @@ begin
       if not CompareTopLeft(FCurrentEdit.BoundsRect,EditCompRect) then
       begin
         FCurrentEdit.BoundsRect:=EditCompRect;
-//        if FCurrentEdit is TComboBox then
-//          TComboBox(FCurrentEdit).ItemHeight:=EditCompRect.Bottom-EditCompRect.Top-6;
+        // If ItemHeight is not set, Lazarus built with QT crashes
+        //  when Color combobox list is opened. Why is that?
+        if FCurrentEdit is TComboBox then
+          TComboBox(FCurrentEdit).ItemHeight:=EditCompRect.Bottom-EditCompRect.Top-6;
+        //
         FCurrentEdit.Invalidate;
       end;
     end;
