@@ -410,12 +410,6 @@ begin
     fUpdateRevisionInc:=True;
   end;
   Add(Profile);
-
-  // Defines to test.
-  if fAllDefines.Count = 0 then begin
-    fAllDefines.Add('Debug');
-    fAllDefines.Add('Verbose');
-  end;
 end;
 
 procedure TBuildLazarusProfiles.Load(XMLConfig: TXMLConfig; const Path: string;
@@ -469,13 +463,6 @@ begin
   if FileVersion<3 then begin
     // the IDE part of synedit was split into a new package syneditdsgn
     fStaticAutoInstallPackages.Add('syneditdsgn');
-  end;
-
-
-  // Defines to test.
-  if fAllDefines.Count = 0 then begin
-    fAllDefines.Add('Debug');
-    fAllDefines.Add('Verbose');
   end;
   fCurrentIndex:=ProfInd;
 end;
