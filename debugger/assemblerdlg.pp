@@ -146,9 +146,9 @@ type
     procedure DoEditorOptsChanged(Sender: TObject; Restore: boolean);
   protected
     function GetSourceCodeLine(SrcFileName: string; SrcLineNumber: Integer): string;
-    procedure VisibleChanged; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
+    procedure UpdateShowing; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -241,6 +241,7 @@ begin
   FCurrentLocation := 0;
   FLocation := 0;
   FLineCount := 0;
+  FLineHeight := 10;
   SetLength(FLineMap, FLineCount + 1);
   FGutterWidth := 32;
   FDisassemblerNotification := TIDEDisassemblerNotification.Create;
@@ -258,8 +259,6 @@ begin
   Caption := lisDisAssAssembler;
 
   EditorOpts.AddHandlerAfterWrite(@DoEditorOptsChanged);
-  pbAsm.Font.Size := EditorOpts.EditorFontSize;
-  pbAsm.Font.Name := EditorOpts.EditorFont;
   Caption := lisMenuViewAssembler;
   CopyToClipboard.Caption := lisDbgAsmCopyToClipboard;
 
@@ -538,20 +537,6 @@ begin
   end;
 end;
 
-procedure TAssemblerDlg.VisibleChanged;
-begin
-  inherited VisibleChanged;
-  if IsVisible then begin
-    if IsUpdating then begin
-      FVisibleChanged := True
-    end else begin
-      DoEditorOptsChanged(nil, False);
-      if FCurrentLocation <> 0 then
-        UpdateLocation(FCurrentLocation);
-    end;
-  end;
-end;
-
 procedure TAssemblerDlg.DoBeginUpdate;
 begin
   FVisibleChanged := False;
@@ -567,6 +552,20 @@ begin
       UpdateLocation(FCurrentLocation);
   end;
   FVisibleChanged := False;
+end;
+
+procedure TAssemblerDlg.UpdateShowing;
+begin
+  inherited UpdateShowing;
+  if IsVisible then begin
+    if IsUpdating then begin
+      FVisibleChanged := True
+    end else begin
+      DoEditorOptsChanged(nil, False);
+      if FCurrentLocation <> 0 then
+        UpdateLocation(FCurrentLocation);
+    end;
+  end;
 end;
 
 procedure TAssemblerDlg.pbAsmMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
@@ -851,7 +850,7 @@ begin
   FCharWidth := TM.tmMaxCharWidth; // EditorOpts.ExtraCharSpacing +
   sbHorizontal.SmallChange := FCHarWidth;
 
-  FLineHeight := EditorOpts.ExtraLineSpacing + TM.tmHeight;
+  FLineHeight := Max(6,EditorOpts.ExtraLineSpacing + TM.tmHeight);
   SetLineCount(pbAsm.Height div FLineHeight);
 end;
 
