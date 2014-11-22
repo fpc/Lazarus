@@ -30,7 +30,10 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, Types, RtlConsts, FileUtil, FPCAdds, TypInfo, DynQueue,
+  {$IFDEF Windows}
+  Windows,
+  {$ENDIF}
+  Classes, SysUtils, Types, RtlConsts, FPCAdds, TypInfo, FileUtil, DynQueue,
   LCLProc, LCLStrConsts, LazConfigStorage, LazUTF8Classes;
 
 {$DEFINE UseLRS}
