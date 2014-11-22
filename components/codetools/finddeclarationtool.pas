@@ -1055,6 +1055,8 @@ begin
     Result:=xtConstOrdInteger
   else if CompareIdentifiers(Identifier,'ORD')=0 then
     Result:=xtConstOrdInteger
+  else if CompareIdentifiers(Identifier,'ASSIGNED')=0 then
+    Result:=xtConstBoolean
   else if CompareIdentifiers(Identifier,'VARIANT')=0 then
     Result:=xtVariant
   else if IsWordBuiltInFunc.DoItCaseInsensitive(Identifier) then
@@ -8229,10 +8231,6 @@ begin
           if ParamList.Count<>1 then exit;
           Result:=ParamList.Items[0];
         end
-        else if (CompareIdentifiers(IdentPos,'ASSIGNED')=0) then begin
-          if ParamList.Count<>1 then exit;
-          Result.Desc:=xtConstBoolean;
-        end
         else if (CompareIdentifiers(IdentPos,'LOW')=0)
              or (CompareIdentifiers(IdentPos,'HIGH')=0) then
         begin
@@ -8283,8 +8281,7 @@ begin
             DebugLn('NOTE: unimplemented Low(type) type=',ParamNode.DescAsString);
           end;
         end
-        else if (CompareIdentifiers(IdentPos,'LENGTH')=0)
-        or (CompareIdentifiers(IdentPos,'ORD')=0) then
+        else if (CompareIdentifiers(IdentPos,'LENGTH')=0) then
         begin
           if ParamList.Count<>1 then exit;
           Result.Desc:=xtConstOrdInteger;
