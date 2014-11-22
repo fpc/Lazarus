@@ -232,6 +232,9 @@ begin
         ARadioButton.Checked := (i = FItemIndex);
         ARadioButton.Visible := true;
       end;
+      //FHiddenButton must remain the last item in Controls[], so that Controls[] is in sync with Items[]
+      Self.RemoveControl(FHiddenButton);
+      Self.InsertControl(FHiddenButton);
       FHiddenButton.Checked := (FItemIndex = -1);
       UpdateTabStops;
     end;
