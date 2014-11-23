@@ -119,6 +119,7 @@ type
     ttLibrary,
     ttObject,
     ttOf,
+    ttOperator,
     ttOut,
     ttPackage,
     ttPacked,
@@ -199,7 +200,6 @@ type
 
     { delphi.net keywords and directives }
     ttHelper,
-    ttOperator,
     ttStatic,
     ttSealed,
     ttFinal,
@@ -596,6 +596,7 @@ begin
   AddKeyword('library', wtReservedWord, ttLibrary);
   AddKeyword('object', wtReservedWord, ttObject);
   AddKeyword('of', wtReservedWord, ttOf);
+  AddKeyword('operator', wtReservedWord, ttOperator);
   AddKeyword('out', wtReservedWordDirective, ttOut);
   AddKeyword('packed', wtReservedWord, ttPacked);
   AddKeyword('procedure', wtReservedWord, ttProcedure);
@@ -680,7 +681,6 @@ begin
 
   { delphi.net directives}
   AddKeyword('helper', wtReservedWordDirective, ttHelper);
-  AddKeyword('operator', wtReservedWordDirective, ttOperator);
   AddKeyword('sealed', wtReservedWordDirective, ttSealed);
   AddKeyword('static', wtReservedWordDirective, ttStatic);
   AddKeyword('final', wtReservedWordDirective, ttFinal);
