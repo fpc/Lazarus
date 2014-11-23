@@ -2586,11 +2586,6 @@ var
           and (r1.Right=r2.Right) and (r1.Bottom=r2.Bottom);
   end;
 
-  function CompareTopLeft(r1,r2:TRect):boolean;
-  begin
-    Result := (r1.Left=r2.Left) and (r1.Top=r2.Top);
-  end;
-
 // AlignEditComponents
 begin
   if ItemIndex>=0 then
@@ -2630,11 +2625,8 @@ begin
         Inc(EditCompRect.Bottom);
       end;
       //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
-      if not CompareTopLeft(FCurrentEdit.BoundsRect,EditCompRect) then
-      begin
+      if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then
         FCurrentEdit.BoundsRect:=EditCompRect;
-        FCurrentEdit.Invalidate;
-      end;
     end;
   end;
 end;
