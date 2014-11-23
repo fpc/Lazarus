@@ -48,7 +48,7 @@ const
   G_CONNECT_SWAPPED: TGConnectFlags = 2;
 
 type
-  TGParamFlags = Integer;
+  TGParamFlags = DWord;
 const
   { GParamFlags }
   G_PARAM_READABLE: TGParamFlags = 1;
