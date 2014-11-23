@@ -7211,10 +7211,8 @@ begin
     if (Result=mrOK) then begin
       if BuildLazProfiles.RestartAfterBuild
       and (BuildLazProfiles.Current.TargetDirectory='')
-      and MainBuildBoss.BuildTargetIDEIsDefault
-      then begin
+      and MainBuildBoss.BuildTargetIDEIsDefault then
         mnuRestartClicked(nil);
-      end
     end
     else if Result=mrIgnore then
       Result:=mrOK;
@@ -7266,9 +7264,8 @@ begin
     finally
       BuildLazProfiles.CurrentIndex:=RealCurInd;
     end;
-    if MayNeedRestart and BuildLazProfiles.RestartAfterBuild then begin
+    if MayNeedRestart and BuildLazProfiles.RestartAfterBuild then
       mnuRestartClicked(nil);
-    end;
   end;
 end;
 
