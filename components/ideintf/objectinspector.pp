@@ -2660,11 +2660,6 @@ begin
   ValueRect := FullRect;
   Inc(FullRect.Bottom, FRowSpacing);
 
-  if ARow = FItemIndex then 
-    if Layout = oilHorizontal then
-      if Assigned(FCurrentButton) and (FCurrentButton.Visible) then
-        Dec(FullRect.Right, FCurrentButton.Width);
-
   if Layout = oilHorizontal
   then begin
     NameRect.Right:=SplitterX;
