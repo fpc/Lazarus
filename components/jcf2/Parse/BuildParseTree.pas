@@ -2330,7 +2330,7 @@ const
   OperatorTokens: TTokenTypeSet = [ttPlus, ttMinus, ttTimes, ttFloatDiv, ttExponent,
     ttEquals, ttGreaterThan, ttLessThan, ttGreaterThanOrEqual, ttLessThanOrEqual,
     ttAssign, ttPlusAssign, ttMinusAssign, ttTimesAssign, ttFloatDivAssign, ttXor,
-    ttAnd, ttOr];
+    ttAnd, ttOr, ttEnumerator];
 begin
   Recognise(OperatorTokens);
 end;
@@ -3960,6 +3960,11 @@ begin
           Recognise(ttMessage);
           RecogniseConstantExpression;
         end;
+        ttEnumerator:
+        begin
+          Recognise(ttEnumerator);
+          RecogniseIdentifier(False, idStrict);
+        end
         else
           Recognise(ProcedureDirectives);
       end;
@@ -5325,7 +5330,7 @@ const
 
   for non-array properties it is followed by an identifier
   }
-  PropertyDirectives = [ttDefault, ttNoDefault, ttStored];
+  PropertyDirectives = [ttDefault, ttNoDefault, ttStored, ttEnumerator];
 begin
   if ((fcTokenList.FirstSolidTokenType = ttSemicolon) and
     (fcTokenList.SolidTokenType(2) in PropertyDirectives)) or
@@ -5355,6 +5360,11 @@ begin
           if fcTokenList.FirstSolidTokenType <> ttSemicolon then
             RecogniseConstantExpression;
         end;
+        ttEnumerator:
+        begin
+          Recognise(ttEnumerator);
+          RecogniseIdentifier(False, idStrict);
+      end;
       end;
 
       PopNode;

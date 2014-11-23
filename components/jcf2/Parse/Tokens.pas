@@ -101,6 +101,7 @@ type
     ttDownto,
     ttElse,
     ttEnd,
+    ttEnumerator,
     ttExcept,
     ttExports,
     ttFile,
@@ -350,7 +351,7 @@ const
     ttVirtual, ttCdecl, ttMessage, ttName, ttRegister, ttDispId,
     ttNear, ttDynamic, ttExport, ttOverride, ttResident, ttLocal,
     ttOverload, ttReintroduce,
-    ttDeprecated, ttLibrary, ttPlatform, ttStatic, ttFinal, ttVarArgs, ttUnsafe];
+    ttDeprecated, ttLibrary, ttPlatform, ttStatic, ttFinal, ttVarArgs, ttUnsafe, ttEnumerator];
 
   ClassDirectives: TTokenTypeSet =
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated, ttStrict];
@@ -382,7 +383,7 @@ const
 
   VariantTypes: TTokenTypeSet = [ttVariant, ttOleVariant];
 
-  Operators: TTokenTypeSet = [ttAnd .. ttNotEqual];
+  Operators: TTokenTypeSet = [ttAnd .. ttNotEqual, ttEnumerator];
 
   { these words are
   - operators
@@ -578,6 +579,7 @@ begin
   AddKeyword('downto', wtReservedWord, ttDownTo);
   AddKeyword('else', wtReservedWord, ttElse);
   AddKeyword('end', wtReservedWord, ttEnd);
+  AddKeyword('enumerator', wtReservedWord, ttEnumerator);
   AddKeyword('except', wtReservedWord, ttExcept);
   AddKeyword('exports', wtReservedWord, ttExports);
   AddKeyword('file', wtReservedWord, ttFile);
