@@ -474,7 +474,7 @@ type
     property CurrentEditValue: string read GetCurrentEditValue
                                       write SetCurrentEditValue;
     property DefaultItemHeight:integer read FDefaultItemHeight
-                                       write FDefaultItemHeight default 25;
+                                       write FDefaultItemHeight default 22;
     property DrawHorzGridLines: Boolean read FDrawHorzGridLines write
       SetDrawHorzGridLines default True;
     property ExpandedProperties: TStringList read FExpandedProperties
@@ -1005,7 +1005,7 @@ end;
 
 constructor TOICustomPropertyGrid.Create(TheOwner: TComponent);
 begin
-  CreateWithParams(TheOwner,nil,AllTypeKinds,25);
+  CreateWithParams(TheOwner,nil,AllTypeKinds,22);
 end;
 
 destructor TOICustomPropertyGrid.Destroy;
@@ -3655,7 +3655,7 @@ begin
   FHeight:=400;
   for p:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
     FGridSplitterX[p]:=110;
-  FDefaultItemHeight:=20;
+  FDefaultItemHeight:=22;
   FShowComponentTree:=true;
   FComponentTreeHeight:=160;
   FInfoBoxHeight:=80;
@@ -3709,8 +3709,8 @@ begin
       if FGridSplitterX[Page]<10 then
         FGridSplitterX[Page]:=10;
 
-    FDefaultItemHeight:=ConfigStore.GetValue(Path+'Bounds/DefaultItemHeight',20);
-    if FDefaultItemHeight<0 then FDefaultItemHeight:=20;
+    FDefaultItemHeight:=ConfigStore.GetValue(Path+'Bounds/DefaultItemHeight',22);
+    if FDefaultItemHeight<0 then FDefaultItemHeight:=22;
     FShowComponentTree:=ConfigStore.GetValue(Path+'ComponentTree/Show/Value',True);
     FComponentTreeHeight:=ConfigStore.GetValue(Path+'ComponentTree/Height/Value',160);
 
@@ -3764,7 +3764,7 @@ begin
     for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
       ConfigStore.SetDeleteValue(Path+'Bounds/'+DefaultOIPageNames[Page]+'/SplitterX',
                                  FGridSplitterX[Page],110);
-    ConfigStore.SetDeleteValue(Path+'Bounds/DefaultItemHeight',FDefaultItemHeight,20);
+    ConfigStore.SetDeleteValue(Path+'Bounds/DefaultItemHeight',FDefaultItemHeight,22);
     ConfigStore.SetDeleteValue(Path+'ComponentTree/Show/Value',FShowComponentTree,True);
     ConfigStore.SetDeleteValue(Path+'ComponentTree/Height/Value',FComponentTreeHeight,160);
 
@@ -5511,7 +5511,7 @@ begin
   Hook:=TPropertyEditorHook.Create(Self);
   FAutoFreeHook:=true;
   FSaveOnChangeTIObject:=true;
-  CreateWithParams(TheOwner,Hook,AllTypeKinds,25);
+  CreateWithParams(TheOwner,Hook,AllTypeKinds,22);
 end;
 
 destructor TCustomPropertiesGrid.Destroy;
