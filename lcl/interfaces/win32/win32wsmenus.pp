@@ -1098,7 +1098,7 @@ var
   AImageIndex: Integer;
 begin
   AImageList := AMenuItem.GetImageList;
-  if AImageList = nil then
+  if (AImageList = nil) or (AMenuItem.ImageIndex < 0) then // using icon from Bitmap
   begin
     AImageList := TImageList.Create(nil);
     AImageList.Width := AMenuItem.Bitmap.Width; // maybe height to prevent too wide bitmaps?
@@ -1106,7 +1106,7 @@ begin
     AImageIndex := AImageList.Add(AMenuItem.Bitmap, nil);
     FreeImageList := True;
   end
-  else
+  else  // using icon from ImageList
   begin
     FreeImageList := False;
     AImageIndex := AMenuItem.ImageIndex;

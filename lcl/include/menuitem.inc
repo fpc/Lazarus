@@ -937,14 +937,14 @@ begin
   if HasIcon then
   begin
     AImageList := GetImageList;
-    if AImageList <> nil then
+    if (AImageList <> nil) and (FImageIndex >= 0) then // using size of ImageList
     begin
-      if (FImageIndex < 0) or (FImageIndex >= AImageList.Count) then
+      if (FImageIndex >= AImageList.Count) then
         Exit;
       Result.x := AImageList.Width;
       Result.y := AImageList.Height;
     end
-    else
+    else // using size of Bitmap
     begin
       Result.x := Bitmap.Width;
       Result.y := Bitmap.Height;
