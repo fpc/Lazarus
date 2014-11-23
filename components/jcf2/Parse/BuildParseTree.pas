@@ -143,6 +143,7 @@ type
     procedure RecogniseRecordBody;
     procedure RecogniseRecVariant;
     procedure RecogniseRestrictedType;
+    procedure RecogniseSpecializeType;
     procedure RecogniseSetType;
     procedure RecogniseSimpleType;
     procedure RecogniseStringType;
@@ -1160,6 +1161,13 @@ begin
 
   PushNode(nTypeDecl);
 
+
+  //Recognise generic keyword (for fpc)
+  if (fcTokenList.FirstSolidTokenType = ttGeneric) then
+  begin
+   Recognise(ttGeneric);
+  end;
+
   // Delph.Net Attribute?
   if (fcTokenList.FirstSolidTokenType = ttOpenSquareBracket) then
     RecogniseAttributes;
@@ -1582,6 +1590,8 @@ begin
 
     ttArray, ttSet, ttFile, ttRecord:
           RecogniseStrucType;
+    ttSpecialize:
+      RecogniseSpecializeType;
     ttHat:
       RecognisePointerType;
     ttString, ttAnsiString, ttWideString:
@@ -1838,6 +1848,13 @@ begin
   end
   else
     Recognise([ttAnsiString, ttWideString]);
+end;
+
+//Recognise specialize keyword in type definition (for fpc)
+procedure TBuildParseTree.RecogniseSpecializeType;
+begin
+ Recognise(ttSpecialize);
+ RecogniseType;
 end;
 
 procedure TBuildParseTree.RecogniseStrucType;

@@ -77,7 +77,7 @@ end;
 function TNoReturnAfter.NeedsNoReturn(const pt: TSourceToken): boolean;
 const
   NoReturnWords: TTokenTypeSet = [ttProcedure, ttFunction,
-    ttConstructor, ttDestructor, ttProperty, ttGoto];
+    ttConstructor, ttDestructor, ttProperty, ttGoto, ttGeneric];
 var
   lcSetReturns: TSetReturns;
   lcNext, lcNext2: TSourceToken;

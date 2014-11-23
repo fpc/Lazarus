@@ -99,8 +99,8 @@ begin
 
   lcPrev := pt.PriorSolidToken;
 
-  // not if there's an attibute before the identifier 
-  if (lcPrev.TokenType = ttCloseSquareBracket) and (lcPrev.HasParentNode(nAttribute)) then
+  // not if there's an attibute or generic keyword before the identifier
+  if (lcPrev.TokenType = ttCloseSquareBracket) and (lcPrev.HasParentNode(nAttribute)) or (lcPrev.TokenType = ttGeneric) then
     exit;
 
   if (lcPrev <> nil) and (lcPrev.TokenType <> ttType) then

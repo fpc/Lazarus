@@ -61,7 +61,7 @@ const
   SingleSpaceAfterWords: TTokenTypeSet = [
     ttProcedure, ttFunction,
     ttConstructor, ttDestructor, ttProperty,
-    ttOf, ttDo, ttWhile, ttUntil, ttCase, ttIf, ttTo, ttDownTo];
+    ttOf, ttDo, ttWhile, ttUntil, ttCase, ttIf, ttTo, ttDownTo, ttGeneric];
 
   PossiblyUnaryOperators: TTokenTypeSet = [ttPlus, ttMinus];
 

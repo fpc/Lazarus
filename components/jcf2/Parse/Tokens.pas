@@ -131,6 +131,7 @@ type
     ttRequires,
     ttResourcestring,
     ttSet,
+    ttSpecialize,
     ttThen,
     ttThreadvar,
     ttTo,
@@ -184,6 +185,7 @@ type
     ttLocal,
     ttImplements,
     ttReintroduce,
+    ttGeneric,
 
     // used in asm
     ttOffset,
@@ -604,6 +606,7 @@ begin
   AddKeyword('repeat', wtReservedWord, ttRepeat);
   AddKeyword('resourcestring', wtReservedWord, ttResourceString);
   AddKeyword('set', wtReservedWord, ttSet);
+  AddKeyword('specialize', wtReservedWord, ttSpecialize);
   AddKeyword('then', wtReservedWord, ttThen);
   AddKeyword('threadvar', wtReservedWord, ttThreadvar);
   AddKeyword('to', wtReservedWord, ttTo);
@@ -660,6 +663,7 @@ begin
   AddKeyword('overload', wtReservedWordDirective, ttOverload);
   AddKeyword('resident', wtReservedWordDirective, ttResident);
   AddKeyword('local', wtReservedWordDirective, ttLocal);
+  AddKeyword('generic', wtReservedWordDirective, ttGeneric);
 
   AddKeyword('implements', wtReservedWordDirective, ttImplements);
   AddKeyword('reintroduce', wtReservedWordDirective, ttReintroduce);
