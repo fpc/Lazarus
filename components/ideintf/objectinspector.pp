@@ -942,6 +942,7 @@ begin
     AutoSize:=false;
     SetBounds(0,-30,Width,Height); // hidden
     DropDownCount:=20;
+    ItemHeight:=17;
     Parent:=Self;
     OnMouseDown := @ValueControlMouseDown;
     OnMouseMove := @ValueControlMouseMove;
@@ -2632,11 +2633,6 @@ begin
       if not CompareTopLeft(FCurrentEdit.BoundsRect,EditCompRect) then
       begin
         FCurrentEdit.BoundsRect:=EditCompRect;
-        // If ItemHeight is not set, Lazarus built with QT crashes
-        //  when Color combobox list is opened. Why is that?
-        if FCurrentEdit is TComboBox then
-          TComboBox(FCurrentEdit).ItemHeight:=EditCompRect.Bottom-EditCompRect.Top-6;
-        //
         FCurrentEdit.Invalidate;
       end;
     end;
