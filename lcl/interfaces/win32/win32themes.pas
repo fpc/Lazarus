@@ -381,7 +381,12 @@ begin
     end;
   end
   else
+  begin
+    if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) and (Details.State = TREIS_HOT) then
+      Details.State := TREIS_NORMAL;
+
     inherited;
+  end;
 end;
 
 procedure TWin32ThemeServices.DrawIcon(DC: HDC; Details: TThemedElementDetails;
@@ -517,7 +522,7 @@ var
   end;
 
 begin
-  if NotImplementedInXP and (WindowsVersion < wvVista) then
+  if (NotImplementedInXP and (WindowsVersion < wvVista))or not ThemesEnabled then
   begin
     FontUnderlineSave:=TCanvas(ACanvas).Font.Underline;
     if (Details.Element = teTreeview) and (Details.Part = TVP_TREEITEM) and (Details.State = TREIS_HOT) then
