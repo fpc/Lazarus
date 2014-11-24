@@ -31,8 +31,10 @@ uses
 // is not needed.
 function NeedRTLAnsi: boolean;// true if system encoding is not UTF-8
 procedure SetNeedRTLAnsi(NewValue: boolean);
-function UTF8ToSys(const s: string): string;// as UTF8ToAnsi but more independent of widestringmanager
-function SysToUTF8(const s: string): string;// as AnsiToUTF8 but more independent of widestringmanager
+function UTF8ToSys(const s: string): string; overload;// as UTF8ToAnsi but more independent of widestringmanager
+function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings; overload;
+function SysToUTF8(const s: string): string; overload;// as AnsiToUTF8 but more independent of widestringmanager
+function SysToUTF8(const AFormatSettings: TFormatSettings): TFormatSettings; overload;
 function ConsoleToUTF8(const s: string): string;// converts OEM encoded string to UTF8 (used with some Windows specific functions)
 function UTF8ToConsole(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
 {$IFDEF MSWindows}
@@ -240,6 +242,37 @@ begin
     Result:=s;
 end;
 
+function SysToUTF8(const AFormatSettings: TFormatSettings): TFormatSettings;
+var
+  i: Integer;
+begin
+  Result := AFormatSettings;
+  Result.CurrencyString := SysToUTF8(AFormatSettings.CurrencyString);
+  for i:=1 to 12 do begin
+    Result.LongMonthNames[i] := SysToUTF8(AFormatSettings.LongMonthNames[i]);
+    Result.ShortMonthNames[i] := SysToUTF8(AFormatSettings.ShortMonthNames[i]);
+  end;
+  for i:=1 to 7 do begin
+    Result.LongDayNames[i] := SysToUTF8(AFormatSettings.LongDayNames[i]);
+    Result.ShortDayNames[i] := SysToUTF8(AFormatSettings.ShortDayNames[i]);
+  end;
+end;
+
+function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings;
+var
+  i: Integer;
+begin
+  Result := AFormatSettings;
+  Result.CurrencyString := UTF8ToSys(AFormatSettings.CurrencyString);
+  for i:=1 to 12 do begin
+    Result.LongMonthNames[i] := UTF8ToSys(AFormatSettings.LongMonthNames[i]);
+    Result.ShortMonthNames[i] := UTF8ToSys(AFormatSettings.ShortMonthNames[i]);
+  end;
+  for i:=1 to 7 do begin
+    Result.LongDayNames[i] := UTF8ToSys(AFormatSettings.LongDayNames[i]);
+    Result.ShortDayNames[i] := UTF8ToSys(AFormatSettings.ShortDayNames[i]);
+  end;
+end;
 
 function GetEnvironmentStringUTF8(Index: Integer): string;
 begin
@@ -261,7 +294,6 @@ function SysErrorMessageUTF8(ErrorCode: Integer): String;
 begin
   Result := SysToUTF8(SysUtils.SysErrorMessage(ErrorCode));
 end;
-
 
 function UTF8CharacterLength(p: PChar): integer;
 begin
