@@ -137,6 +137,7 @@ procedure TGtk3WidgetSet.SetDefaultAppFontName;
 var
   AValue: TGValue;
 begin
+  FillByte(AValue, SizeOf(AValue), 0);
   AValue.init(G_TYPE_STRING);
   g_object_get_property(gtk_settings_get_default, 'gtk-font-name', @AValue);
   FDefaultAppFontName := AValue.get_string;
@@ -334,9 +335,11 @@ begin
   {$ENDIF}
   CharSetEncodingList := TList.Create;
   CreateDefaultCharsetEncodings;
-  AValue.g_type := G_TYPE_BOOLEAN;
+  FillByte(AValue, SizeOf(AValue), 0);
+  AValue.init(G_TYPE_BOOLEAN);
   AValue.set_boolean(True);
   g_object_set_property(gtk_settings_get_default,'gtk-button-images',@AValue);
+  AValue.unset;
 
   FGlobalCursor := 0;
   FAppIcon := nil;
