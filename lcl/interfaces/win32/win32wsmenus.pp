@@ -736,6 +736,11 @@ begin
       end;
       ImageRect.Right := IconSize.x;
       ImageRect.Bottom := IconSize.y;
+      if AMenuItem.Checked then // draw checked rectangle around
+      begin
+        Tmp := ThemeServices.GetElementDetails(PopupCheckBgStates[AMenuItem.Enabled]);
+        ThemeDrawElement(AHDC, Tmp, CheckRect, nil);
+      end;
       DrawMenuItemIcon(AMenuItem, AHDC, ImageRect, ASelected);
       if IsRightToLeft then
         SetLayout(AHDC, LAYOUT_RTL);
