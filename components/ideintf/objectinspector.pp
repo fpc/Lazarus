@@ -1329,6 +1329,7 @@ procedure TOICustomPropertyGrid.SetRowValue(CheckFocus: boolean);
   var
     PropKind: TTypeKind;
     PropInfo: PPropInfo;
+    BoolVal: Boolean;
   begin
     Result:='';
     PropInfo := Editor.GetPropInfo;
@@ -1342,8 +1343,13 @@ procedure TOICustomPropertyGrid.SetRowValue(CheckFocus: boolean);
         Result := GetEnumName(PropInfo^.PropType, Editor.GetOrdValueAt(Index));
       tkFloat:
         Result := FloatToStr(Editor.GetFloatValueAt(Index));
-      tkBool:
-        Result := BoolToStr(Boolean(Editor.GetOrdValueAt(Index)), 'True', 'False');
+      tkBool: begin
+        BoolVal := Boolean(Editor.GetOrdValueAt(Index));
+        if FCheckboxForBoolean then
+          Result := BoolToStr(BoolVal, '(True)', '(False)')
+        else
+          Result := BoolToStr(BoolVal, 'True', 'False');
+      end;
       tkString, tkLString, tkAString, tkUString, tkWString:
         Result := Editor.GetStrValueAt(Index);
       tkSet:
@@ -1575,7 +1581,7 @@ var
   CurRow: TOIPropertyGridRow;
 begin
   if (pgsUpdatingEditControl in FStates) or not IsCurrentEditorAvailable then exit;
-  ValueCheckBox.Caption:=BoolToStr(ValueCheckBox.Checked, True); //'True','False';
+  ValueCheckBox.Caption:=BoolToStr(ValueCheckBox.Checked, '(True)', '(False)');
   CurRow:=Rows[FItemIndex];
   if paAutoUpdate in CurRow.Editor.GetAttributes then
     SetRowValue(true);
@@ -1687,7 +1693,7 @@ begin
       FCurrentEdit:=ValueCheckBox;
       ValueCheckBox.Enabled:=not NewRow.IsReadOnly;
       ValueCheckBox.Caption:=NewValue;
-      ValueCheckBox.Checked:=(NewValue='True');
+      ValueCheckBox.Checked:=(NewValue='(True)');
     end
     else if paValueList in EditorAttributes then
     begin
@@ -3020,7 +3026,7 @@ begin
   end
   else if FCurrentEdit=ValueCheckBox then begin
     ValueCheckBox.Caption:=NewValue;
-    ValueCheckBox.Checked:=NewValue='True';
+    ValueCheckBox.Checked:=NewValue='(True)';
   end;
 end;
 
