@@ -362,8 +362,7 @@ var
   procedure DoInsideListBox;
   begin
     Assert(Source = Sender, 'TCompPaletteOptionsFrame.PagesListBoxDragDrop: Source and Sender ListBoxes differ.');
-    DebugLn(['TCompPaletteOptionsFrame.PagesListBoxDragDrop: DestInd=', DestInd,
-             ', ItemIndex=', lb.ItemIndex]);
+    //DebugLn(['TCompPaletteOptionsFrame.PagesListBoxDragDrop: DestInd=',DestInd,', ItemIndex=',lb.ItemIndex]);
     if lb.ItemIndex < DestInd then
       Dec(DestInd);
     if (lb.ItemIndex > 0) and (lb.ItemIndex <> DestInd) then
@@ -416,8 +415,8 @@ var
           // Delete the original item from ListView
           aSrcView.Items.Delete(OrigInd);
         end;
-        DebugLn(['TCompPaletteOptionsFrame.PagesListBoxDragDrop: CompName=',
-                 CompName, ', SrcPage=', SrcPage, ', DestPage=', DestPage]);
+        //DebugLn(['TCompPaletteOptionsFrame.PagesListBoxDragDrop: CompName=',
+        //         CompName, ', SrcPage=', SrcPage, ', DestPage=', DestPage]);
       end;
       inc(OrigInd);
     end;
@@ -456,25 +455,31 @@ end;
 procedure TCompPaletteOptionsFrame.ComponentsListViewDragDrop(Sender, Source: TObject; X, Y: Integer);
 var
   lv: TListView;
-  DestInd: Integer;
+  SrcInd, DstInd: Integer;
   SrcItem, DstItem: TListItem;
+  Comps: TStringList;
 begin
   lv := Sender as TListView;
   DstItem := lv.GetItemAt(X, Y);
   SrcItem := lv.Selected;
   if (DstItem = nil) or (SrcItem = nil) then exit;
-  DestInd := DstItem.Index;
+  DstInd := DstItem.Index;
+  SrcInd := SrcItem.Index;
   Assert(Source = Sender, 'TCompPaletteOptionsFrame.ComponentsListViewDragDrop: Source and Sender ListViews differ.');
-  DebugLn(['TCompPaletteOptionsFrame.ComponentsListViewDragDrop: DestInd=', DestInd,
-           ', ItemIndex=', SrcItem.Index]);
-  if SrcItem.Index < DestInd then
-    Dec(DestInd);
-  if (SrcItem.Index > -1) and (DestInd > -1) and (SrcItem.Index <> DestInd) then
+  //DebugLn(['TCompPaletteOptionsFrame.ComponentsListViewDragDrop: DestInd=',DstInd,', ItemIndex=',SrcInd]);
+  if SrcInd < DstInd then
+    Dec(DstInd);
+  if (SrcInd > -1) and (DstInd > -1) and (SrcInd <> DstInd) then
   begin
+    // Move component names in ListView.
     lv.Selected := Nil;
-    lv.Items.Move(SrcItem.Index, DestInd);
-    lv.Selected := lv.Items[DestInd];
-    UpdateCompMoveButtons(DestInd);
+    lv.Items.Move(SrcInd, DstInd);
+    lv.Selected := lv.Items[DstInd];
+    // Move component names inside a StringList, too.
+    Comps := PagesListBox.Items.Objects[PagesListBox.ItemIndex] as TStringList;
+    Comps.Move(SrcInd, DstInd);
+    //
+    UpdateCompMoveButtons(DstInd);
     fConfigChanged := True;
   end;
 end;
@@ -495,7 +500,7 @@ end;
 
 procedure TCompPaletteOptionsFrame.ComponentsListViewClick(Sender: TObject);
 begin
-  DebugLn(['TCompPaletteOptionsFrame.ComponentsListViewClick: ']);
+  //DebugLn(['TCompPaletteOptionsFrame.ComponentsListViewClick: ']);
 end;
 
 procedure TCompPaletteOptionsFrame.ComponentsListViewItemChecked(Sender: TObject; Item: TListItem);
@@ -621,7 +626,7 @@ end;
 
 procedure TCompPaletteOptionsFrame.UpdatePageMoveButtons(ListIndex: integer);
 begin
-  DebugLn(['TCompPaletteOptionsFrame.UpdatePageMoveButtons: Page index=', ListIndex]);
+  //DebugLn(['TCompPaletteOptionsFrame.UpdatePageMoveButtons: Page index=', ListIndex]);
   if (ListIndex > 0) and (ListIndex < PagesListBox.Items.Count) then
   begin
     PageMoveUpBtn.Enabled := ListIndex > 1;
@@ -635,7 +640,7 @@ end;
 
 procedure TCompPaletteOptionsFrame.UpdateCompMoveButtons(ListIndex: integer);
 begin
-  DebugLn(['TCompPaletteOptionsFrame.UpdateCompMoveButtons: Component index=', ListIndex]);
+  //DebugLn(['TCompPaletteOptionsFrame.UpdateCompMoveButtons: Component index=', ListIndex]);
   if (ListIndex > -1) and (ListIndex < ComponentsListView.Items.Count)
   and (PagesListBox.ItemIndex > 0) then  // No moving when <All> components is selected.
   begin
