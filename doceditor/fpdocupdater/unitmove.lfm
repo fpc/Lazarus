@@ -13,7 +13,7 @@ object FormMove: TFormMove
   ChildSizing.TopBottomSpacing = 10
   ClientHeight = 471
   ClientWidth = 559
-  LCLVersion = '0.9.31'
+  LCLVersion = '1.3'
   object LabelSrc: TLabel
     Left = 10
     Height = 42

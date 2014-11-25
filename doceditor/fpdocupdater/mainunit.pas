@@ -70,7 +70,6 @@ type
     procedure ListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
   private
-    { private declarations }
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -125,7 +124,7 @@ begin
     else
     begin
       Brush.Color := ListBox.Color;
-      case Integer(ListBox.Items.Objects[Index]) of
+      case PtrInt(ListBox.Items.Objects[Index]) of
       0: SetTextColor(ListBox.Canvas.Handle, ListBox.Canvas.Font.Color); // normal
       1: SetTextColor(ListBox.Canvas.Handle, clRed);                     // new
       end;
@@ -190,7 +189,7 @@ begin
   BeginUpdate;
   try
     for I := 0 to ListBox.Items.Count - 1 do
-      if Integer(ListBox.items.Objects[I]) = 1 then UpdateFile(ListBox.Items[I]);
+      if PtrInt(ListBox.items.Objects[I]) = 1 then UpdateFile(ListBox.Items[I]);
   finally
     EndUpdate;
   end;
@@ -240,7 +239,7 @@ var
   DocsPath, UnitsPath: String;
   I: Integer;
   N: String;
-  State: Integer;
+  State: PtrInt;
 begin
   ListBox.Items.BeginUpdate;
   try
@@ -257,9 +256,10 @@ begin
       begin
         N := ExtractFileNameOnly(Units[I]);
 
-        if Docs.IndexOf(N) = -1 then State := 1
+        if Docs.IndexOf(N) = -1 then
+          State := 1
         else
-            State := 0;
+          State := 0;
             
         ListBox.Items.AddObject(Units[I], TObject(State));
       end;

@@ -19,7 +19,6 @@ type
     PaintBox: TPaintBox;
     procedure PaintBoxPaint(Sender: TObject);
   private
-    { private declarations }
   public
     OldInfo, NewInfo: TFPDocInfo;
   end; 

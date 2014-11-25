@@ -47,10 +47,8 @@ type
     procedure ListBoxDestDrawItem(Control: TWinControl; Index: Integer; ARect: TRect;
       State: TOwnerDrawState);
   private
-    { private declarations }
   public
-    { public declarations }
-  end; 
+  end;
 
 var
   FormMove: TFormMove;
@@ -73,7 +71,7 @@ begin
     else
     begin
       Brush.Color := ListBoxDest.Color;
-      case Integer(ListBoxDest.Items.Objects[Index]) of
+      case PtrInt(ListBoxDest.Items.Objects[Index]) of
       0: SetTextColor(ListBoxDest.Canvas.Handle, ListBoxDest.Canvas.Font.Color); // empty
       1: SetTextColor(ListBoxDest.Canvas.Handle, clRed);                         // nonempty
       end;

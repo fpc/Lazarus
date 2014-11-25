@@ -709,7 +709,7 @@ procedure TFPDocTopic.Assign(ASource: TFPDocTopic);
 var
   I: Integer;
 begin
-  inherited;
+  inherited Assign(ASource);
   
   for I := 0 to ASource.TopicsCount - 1 do
     AddTopic(ASource.Topics[I]);
