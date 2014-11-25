@@ -408,7 +408,8 @@ begin
     PageCount:=ConfigStore.GetValue(SubPath+'Count', 0);
     for i:=1 to PageCount do begin
       PageName:=ConfigStore.GetValue(SubPath+'Item'+IntToStr(i)+'/Value', '');
-      FPageNames.Add(PageName);
+      if PageName <> '' then
+        FPageNames.Add(PageName);
     end;
 
     FHiddenPageNames.Clear;
@@ -416,7 +417,8 @@ begin
     PageCount:=ConfigStore.GetValue(SubPath+'Count', 0);
     for i:=1 to PageCount do begin
       PageName:=ConfigStore.GetValue(SubPath+'Item'+IntToStr(i)+'/Value', '');
-      FHiddenPageNames.Add(PageName);
+      if PageName <> '' then
+        FHiddenPageNames.Add(PageName);
     end;
 
     ClearComponentPages;
