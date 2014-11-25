@@ -7,7 +7,7 @@
   Author: Andrew Johnson, Mattias Gaertner
 
   Abstract:
-    This units defines the property editors for graphic types.
+    This unit defines the property editors for graphic types.
 }
 unit GraphPropEdits;
 
