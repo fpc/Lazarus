@@ -428,10 +428,10 @@ function TWindowOptionsFrame.GetLayoutCaption(ALayout: TSimpleWindowLayout): Str
     SubIndex: LongInt;
   begin
     Result:=CompareText(FormName,copy(ALayout.FormID,1,length(FormName)))=0;
-    if not Result then exit(false);
+    if not Result then exit;
     SubIndex:=StrToIntDef(copy(ALayout.FormID,length(FormName)+1,10),-1);
     if SubIndex<0 then
-      GetLayoutCaption:=aCaption
+      GetLayoutCaption:=aCaption   // Set Result of the main function.
     else
       GetLayoutCaption:=aCaption+' '+IntToStr(SubIndex);
   end;
