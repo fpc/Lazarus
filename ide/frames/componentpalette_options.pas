@@ -79,7 +79,7 @@ type
     procedure FillPages;
     procedure InitialComps(aPageName: string; aCompList: TStringList);
     procedure FillComponents(aPageName: string);
-    procedure UpdateButtons;
+    procedure MarkAsChanged;
     procedure UpdatePageMoveButtons(ListIndex: integer);
     procedure UpdateCompMoveButtons(ListIndex: integer);
   public
@@ -147,17 +147,20 @@ begin
   CompMoveDownBtn.Hint:=lisMoveSelectedDown;
 
   fPrevPageIndex := -1;
-  UpdateButtons;
   UpdatePageMoveButtons(PagesListBox.ItemIndex);
   UpdateCompMoveButtons(ComponentsListView.ItemIndex);
 end;
 
 procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+var
+  cpo: TCompPaletteOptions;
 begin
-  fLocalOptions.Assign((AOptions as TEnvironmentOptions).ComponentPaletteOptions);
+  cpo:=(AOptions as TEnvironmentOptions).ComponentPaletteOptions;
+  fLocalOptions.Assign(cpo);
   fLocalUserOrder.Options:=fLocalOptions;
   fLocalUserOrder.SortPagesAndCompsUserOrder;
   FillPages;
+  RestoreButton.Enabled := not cpo.IsDefault; // Initial visibility for RestoreButton.
 end;
 
 procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -329,7 +332,6 @@ begin
   lb := Sender as TListBox;
   if lb.ItemIndex = fPrevPageIndex then Exit;
   FillComponents(lb.Items[lb.ItemIndex]);
-  UpdateButtons;
   UpdatePageMoveButtons(lb.ItemIndex);
   UpdateCompMoveButtons(-1);
   fPrevPageIndex := lb.ItemIndex;
@@ -341,7 +343,7 @@ var
 begin
   s := InputBox(lisNewPage, lisPageName, '');
   PagesListBox.AddItem(s, TStringList.Create);
-  fConfigChanged := True;
+  MarkAsChanged;
 end;
 
 procedure TCompPaletteOptionsFrame.RestoreButtonClick(Sender: TObject);
@@ -349,6 +351,7 @@ begin
   fLocalOptions.Clear;
   fLocalUserOrder.SortPagesAndCompsUserOrder; // Only updates data structure.
   FillPages;
+  RestoreButton.Enabled := False;
   fConfigChanged := True;
 end;
 
@@ -369,7 +372,7 @@ var
     begin
       lb.Items.Move(lb.ItemIndex, DestInd);
       lb.ItemIndex := DestInd;
-      fConfigChanged := True;
+      MarkAsChanged;
     end;
   end;
 
@@ -420,7 +423,7 @@ var
       end;
       inc(OrigInd);
     end;
-    fConfigChanged := True;
+    MarkAsChanged;
   end;
 
 begin
@@ -480,7 +483,7 @@ begin
     Comps.Move(SrcInd, DstInd);
     //
     UpdateCompMoveButtons(DstInd);
-    fConfigChanged := True;
+    MarkAsChanged;
   end;
 end;
 
@@ -557,7 +560,7 @@ begin
     PagesListBox.Items.Exchange(i, i-1);
     PagesListBox.ItemIndex := i-1;
     UpdatePageMoveButtons(i-1);
-    fConfigChanged := True;
+    MarkAsChanged;
   end;
 end;
 
@@ -571,7 +574,7 @@ begin
     PagesListBox.Items.Exchange(i, i+1);
     PagesListBox.ItemIndex := i+1;
     UpdatePageMoveButtons(i+1);
-    fConfigChanged := True;
+    MarkAsChanged;
   end;
 end;
 
@@ -600,7 +603,7 @@ begin
     ComponentsListView.Items.Exchange(i, i-1);
     ComponentsListView.Selected := ComponentsListView.Items[i-1];
     UpdateCompMoveButtons(i-1);
-    fConfigChanged := True;
+    MarkAsChanged;
   end;
 end;
 
@@ -615,13 +618,15 @@ begin
     ComponentsListView.Items.Exchange(i, i+1);
     ComponentsListView.Selected := ComponentsListView.Items[i+1];
     UpdateCompMoveButtons(i+1);
-    fConfigChanged := True;
+    MarkAsChanged;
   end;
 end;
 
-procedure TCompPaletteOptionsFrame.UpdateButtons;
+procedure TCompPaletteOptionsFrame.MarkAsChanged;
 begin
-  RestoreButton.Visible := PagesListBox.ItemIndex = 0;
+  // ToDo: compare settings with original palette options after each change.
+  RestoreButton.Enabled := True;
+  fConfigChanged := True;
 end;
 
 procedure TCompPaletteOptionsFrame.UpdatePageMoveButtons(ListIndex: integer);

@@ -87,6 +87,7 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure Assign(Source: TCompPaletteOptions);
+    function IsDefault: Boolean;
     function Load: boolean;
     function Save: boolean;
   public
@@ -387,6 +388,13 @@ procedure TCompPaletteOptions.Assign(Source: TCompPaletteOptions);
 begin
   inherited Assign(Source);
   FHiddenPageNames.Assign(Source.FHiddenPageNames);
+end;
+
+function TCompPaletteOptions.IsDefault: Boolean;
+begin
+  Result := (PageNames.Count = 0)
+    and (ComponentPages.Count = 0)
+    and (HiddenPageNames.Count = 0);
 end;
 
 function TCompPaletteOptions.Load: boolean;
