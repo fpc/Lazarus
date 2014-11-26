@@ -28,7 +28,9 @@ interface
   successful compilation.
 }
 uses
-  Windows, ActiveX, Classes, Translations, ComCtrls, Controls, Buttons,
+  Windows, // keep as first
+  ActiveX, Classes,
+  Translations, ComCtrls, Controls, Buttons,
   Forms, Dialogs, GraphMath, GraphType, InterfaceBase, LCLIntf,
   LCLType, LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus, CommCtrl,
   MultiMon, Themes{, Win32Debug};

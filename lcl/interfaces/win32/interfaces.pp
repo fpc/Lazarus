@@ -23,6 +23,9 @@ unit Interfaces;
 interface 
 
 uses
+  {$IFDEF EnableUTF8RTL}
+  FPCAdds, LazUTF8,
+  {$ENDIF}
   InterfaceBase;
 
 implementation
