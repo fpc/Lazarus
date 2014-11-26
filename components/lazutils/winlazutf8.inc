@@ -6,7 +6,11 @@ var
 
 var
   ArgsW: Array of WideString;
-  ArgsWCount: Integer;
+  ArgsWCount: Integer; // length(ArgsW)+1
+  {$IFDEF EnableUTF8RTL}
+  ArgsUTF8: Array of String; // the ArgsW array as UTF8
+  OldArgV: PPChar = nil;
+  {$ENDIF}
 
 //************ START "Stubs" that just call Ansi or Wide implementation
 
@@ -59,12 +63,9 @@ var
   procedure AllocArg(Idx, Len:longint);
   begin
     if (Idx >= ArgsWCount) then
-    begin
       SetLength(ArgsW, Idx + 1);
-      SetLength(ArgsW[Idx], Len);
-    end;
+    SetLength(ArgsW[Idx], Len);
   end;
-
 
 begin
   { create commandline, it starts with the executed filename which is argv[0] }
@@ -138,15 +139,13 @@ begin
         else Inc(ArgLen);
       end;//case
       Inc(i);
-
-
     end; //find next commandline parameter
 
     //debugln('ArgWCount=',DbgS(ArgsWCount),' Start=',DbgS(start),' ArgLen=',DbgS(arglen),' i=',DbgS(i));
 
     //we already have (a better) ArgW[0]
     if (ArgsWCount > 0) then
-    begin //Process commadline parameter
+    begin //Process commandline parameter
       AllocArg(ArgsWCount, ArgLen);
       Quote := False;
       i := Start;
@@ -188,6 +187,19 @@ begin
 
   end;
   Dec(ArgsWCount);
+
+  {$IFDEF EnableUTF8RTL}
+  if DefaultSystemCodePage=CP_UTF8 then begin
+    SetLength(ArgsUTF8,length(ArgsW));
+    OldArgV:=argv;
+    GetMem(argv,SizeOf(Pointer)*length(ArgsW));
+    for i:=0 to length(ArgsW)-1 do
+    begin
+      ArgsUTF8[i]:=ArgsW[i];
+      argv[i]:=PChar(ArgsUTF8[i]);
+    end;
+  end;
+  {$ENDIF}
 end;
 
 function ParamStrUtf8Wide(Param: Integer): String;
@@ -319,6 +331,82 @@ begin
 end;
 {$endif}
 
+{$IFDEF EnableUTF8RTL}
+function GetLocaleStr(aLocaleID, aLCType: Longint; const Def: string): String;
+var
+  L: Integer;
+  Buf: array[0..255] of WideChar;
+  W: WideString;
+begin
+  L := GetLocaleInfoW(aLocaleID, aLCType, Buf, SizeOf(Buf));
+  if L > 0 then
+  begin
+    SetString(W, PWideChar(@Buf[0]), L - 1);
+    Result := W;
+  end
+  else
+    Result := Def;
+end;
+
+function GetLocaleCharUTF8(aLocaleID, aLCType: Longint; Def: Char): Char;
+var
+  Buf: array[0..3] of Char; // sdate allows 4 chars.
+begin
+  if (GetLocaleInfoA(aLocaleID, aLCType, Buf, sizeof(buf)) > 0)
+  and (ord(Buf[0])<128) then
+    Result := Buf[0]
+  else
+    Result := Def;
+end;
+
+procedure GetFormatSettingsUTF8(LCID: Integer; var aFormatSettings: TFormatSettings);
+var
+  HF  : Shortstring;
+  LID : Windows.LCID;
+  I,Day : longint;
+begin
+  LID := LCID;
+  with FormatSettings do
+  begin
+    { Date stuff }
+    for I := 1 to 12 do
+      begin
+      ShortMonthNames[I]:=GetLocaleStr(LID,LOCALE_SABBREVMONTHNAME1+I-1,ShortMonthNames[i]);
+      LongMonthNames[I]:=GetLocaleStr(LID,LOCALE_SMONTHNAME1+I-1,LongMonthNames[i]);
+      end;
+    for I := 1 to 7 do
+      begin
+      Day := (I + 5) mod 7;
+      ShortDayNames[I]:=GetLocaleStr(LID,LOCALE_SABBREVDAYNAME1+Day,ShortDayNames[i]);
+      LongDayNames[I]:=GetLocaleStr(LID,LOCALE_SDAYNAME1+Day,LongDayNames[i]);
+      end;
+    DateSeparator := GetLocaleCharUTF8(LID, LOCALE_SDATE, '/');
+    ShortDateFormat := GetLocaleStr(LID, LOCALE_SSHORTDATE, 'm/d/yy');
+    LongDateFormat := GetLocaleStr(LID, LOCALE_SLONGDATE, 'mmmm d, yyyy');
+    { Time stuff }
+    TimeSeparator := GetLocaleCharUTF8(LID, LOCALE_STIME, ':');
+    TimeAMString := GetLocaleStr(LID, LOCALE_S1159, 'AM');
+    TimePMString := GetLocaleStr(LID, LOCALE_S2359, 'PM');
+    if StrToIntDef(GetLocaleStr(LID, LOCALE_ITLZERO, '0'), 0) = 0 then
+      HF:='h'
+    else
+      HF:='hh';
+    // No support for 12 hour stuff at the moment...
+    ShortTimeFormat := HF+':nn';
+    LongTimeFormat := HF + ':nn:ss';
+    { Currency stuff }
+    CurrencyString:=GetLocaleStr(LID, LOCALE_SCURRENCY, '');
+    CurrencyFormat:=StrToIntDef(GetLocaleStr(LID, LOCALE_ICURRENCY, '0'), 0);
+    NegCurrFormat:=StrToIntDef(GetLocaleStr(LID, LOCALE_INEGCURR, '0'), 0);
+    { Number stuff }
+    ThousandSeparator:=GetLocaleCharUTF8(LID, LOCALE_STHOUSAND, ',');
+    DecimalSeparator:=GetLocaleCharUTF8(LID, LOCALE_SDECIMAL, '.');
+    CurrencyDecimals:=StrToIntDef(GetLocaleStr(LID, LOCALE_ICURRDIGITS, '0'), 0);
+    ListSeparator := GetLocaleCharUTF8(LID, LOCALE_SLIST, ',');
+  end;
+end;
+{$ENDIF}
+
 procedure InitLazUtf8;
 begin
   {$ifndef WinCE}
@@ -336,6 +424,9 @@ begin
       {$ifdef debugparamstrutf8}
       if ParamCount <> ArgsWCount then ParamStrUtf8Error;
       {$endif}
+      {$ifdef EnableUTF8RTL}
+      GetFormatSettingsUTF8(GetThreadLocale,FormatSettings);
+      {$endif}
     Except
       begin
         ArgsWCount := -1;
@@ -345,4 +436,19 @@ begin
       end;
     end;
   end;
+end;
+
+procedure FinalizeLazUTF8;
+var
+  p: PPChar;
+begin
+  {$IFDEF EnableUTF8RTL}
+  // restore argv and free memory
+  if OldArgV<>nil then
+  begin
+    p:=argv;
+    argv:=OldArgV;
+    Freemem(p);
+  end;
+  {$ENDIF}
 end;

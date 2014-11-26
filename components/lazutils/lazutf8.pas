@@ -3333,10 +3333,10 @@ begin
 end;
 
 initialization
-begin
   InitFPUpchars;
   InitLazUtf8;
-end;
+finalization
+  FinalizeLazUTF8;
 
 end.
 

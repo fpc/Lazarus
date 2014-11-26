@@ -71,7 +71,6 @@ initialization
   SetMultiByteConversionCodePage(CP_UTF8);
   // SetMultiByteFileSystemCodePage(CP_UTF8); not needed, this is the default under Windows
   SetMultiByteRTLFileSystemCodePage(CP_UTF8);
-  GetFormatSettings;
 {$ENDIF}
 
 end.
