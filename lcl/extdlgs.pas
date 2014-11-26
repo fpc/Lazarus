@@ -236,6 +236,8 @@ Type
   public
     constructor Create(AOwner: TComponent); override;
     function Execute: Boolean; override;
+    property Left: Integer read GetLeft write SetLeft;
+    property Top: Integer read GetTop write SetTop;
   published
     property Date: TDateTime read FDate write FDate;
     property DisplaySettings: TDisplaySettings read FDisplaySettings write FDisplaySettings default DefaultDisplaySettings;
@@ -245,8 +247,6 @@ Type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OKCaption:TCaption read FOKCaption write FOKCaption;
     property CancelCaption:TCaption read FCancelCaption write FCancelCaption;
-    property Left: Integer read GetLeft write SetLeft;
-    property Top: Integer read GetTop write SetTop;
   end;
 
 procedure Register;
