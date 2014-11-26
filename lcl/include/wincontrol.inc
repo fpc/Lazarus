@@ -8160,9 +8160,9 @@ procedure TWinControl.WMContextMenu(var Message: TLMContextMenu);
 var
   Child: TControl;
 begin
-  // find if at the click place we have a control and if so then pass the message
-  // to it
-  // don't check csDesigning here - let a child control to check it
+  // Check if at the click place we have a control and if so then pass the
+  // message to it.
+  // Don't check csDesigning here - let a child control check it.
   if (Message.Result <> 0) then
     Exit;
 
