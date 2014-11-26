@@ -3262,7 +3262,7 @@ var
   Details: TThemedElementDetails;
   Check: TThemedButton;
   Sz: TSize;
-  TopMargin, RightMargin: Integer;
+  TopMargin: Integer;
 begin
   BRect := ARect;
   fUseCheckbox := FPropertyHook.GetCheckboxForBoolean;
@@ -3277,18 +3277,14 @@ begin
     Sz := ThemeServices.GetDetailSize(Details);
     TopMargin := (ARect.Bottom - ARect.Top - Sz.cy) div 2;
     Inc(BRect.Top, TopMargin);
-    {$IFDEF LCLGTK2}
-    RightMargin := 3; // A hack. GTK2 checkbox itself has a left margin.
-    {$ELSE}
-    RightMargin := 1;
-    {$ENDIF}
-    Inc(BRect.Left, RightMargin);
+    // Left varies by widgetset and theme etc. Real Checkbox itself has a left margin.
+    Inc(BRect.Left, 3);                // ToDo: How to find out the real margin?
     BRect.Right := BRect.Left + Sz.cx;
     BRect.Bottom := BRect.Top + Sz.cy;
     ThemeServices.DrawElement(ACanvas.Handle, Details, BRect, nil);
     // Write text after the box
     BRect := ARect;
-    Inc(BRect.Left, Sz.cx+RightMargin+2);
+    Inc(BRect.Left, Sz.cx + 5);
   end;
   inherited PropDrawValue(ACanvas, BRect, AState);
 end;
