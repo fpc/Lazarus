@@ -1174,16 +1174,12 @@ procedure TOICustomPropertyGrid.OnGridMouseWheel(Sender: TObject; Shift: TShiftS
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
 begin
   if Mouse.WheelScrollLines=-1 then
-  begin
     // -1 : scroll by page
-    TopY := TopY -
-              (WheelDelta * (ClientHeight - DefaultItemHeight)) div 120;
-  end else begin
+    TopY := TopY - (WheelDelta * (ClientHeight - DefaultItemHeight)) div 120
+  else
     // scrolling one line -> scroll half an item, see SB_LINEDOWN and SB_LINEUP
     // handler in WMVScroll
-    TopY := TopY -
-        (WheelDelta * Mouse.WheelScrollLines*DefaultItemHeight) div 240;
-  end;
+    TopY := TopY - (WheelDelta * Mouse.WheelScrollLines*DefaultItemHeight) div 240;
   Handled := True;
 end;
 
@@ -3171,8 +3167,7 @@ begin
       Font.Color:=Pen.Color;
       FillRect(ARect);
     end;
-    CurRow.Editor.ListDrawValue(ItemValue,Index,ValueComboBox.Canvas,ARect,
-                                AState);
+    CurRow.Editor.ListDrawValue(ItemValue,Index,ValueComboBox.Canvas,ARect,AState);
   end;
 end;
 
@@ -3392,83 +3387,55 @@ var
   OldLvl, RealChildCount: integer;
   AChild: TOIPropertyGridRow;
 begin
-  if Top<0 then begin
-    Result:=-1;
-    exit;
-  end;
-  if Height<0 then begin
-    Result:=-2;
-    exit;
-  end;
-  if Lvl<0 then begin
-    Result:=-3;
-    exit;
-  end;
+  if Top<0 then
+    exit(-1);
+  if Height<0 then
+    exit(-2);
+  if Lvl<0 then
+    exit(-3);
   OldLvl:=Lvl;
   GetLvl;
-  if Lvl<>OldLvl then begin
-    Result:=-4;
-    exit;
-  end;
-  if Name='' then begin
-    Result:=-5;
-    exit;
-  end;
+  if Lvl<>OldLvl then
+    exit(-4);
+  if Name='' then
+    exit(-5);
   if NextBrother<>nil then begin
-    if NextBrother.PriorBrother<>Self then begin
-      Result:=-6;
-      exit;
-    end;
-    if NextBrother.Index<Index+1 then begin
-      Result:=-7;
-      exit;
-    end;
+    if NextBrother.PriorBrother<>Self then
+      exit(-6);
+    if NextBrother.Index<Index+1 then
+      exit(-7);
   end;
   if PriorBrother<>nil then begin
-    if PriorBrother.NextBrother<>Self then begin
-      Result:=-8;
-      exit;
-    end;
-    if PriorBrother.Index>Index-1 then begin
+    if PriorBrother.NextBrother<>Self then
+      exit(-8);
+    if PriorBrother.Index>Index-1 then
       Result:=-9
-    end;
   end;
   if (Parent<>nil) then begin
     // has parent
-    if (not Parent.HasChild(Self)) then begin
-      Result:=-10;
-      exit;
-    end;
+    if (not Parent.HasChild(Self)) then
+      exit(-10);
   end else begin
     // no parent
   end;
   if FirstChild<>nil then begin
-    if Expanded then begin
-      if (FirstChild.Index<>Index+1) then begin
-        Result:=-11;
-        exit;
-      end;
-    end;
+    if Expanded then
+      if (FirstChild.Index<>Index+1) then
+        exit(-11);
   end else begin
-    if LastChild<>nil then begin
-      Result:=-12;
-      exit;
-    end;
+    if LastChild<>nil then
+      exit(-12);
   end;
   RealChildCount:=0;
   AChild:=FirstChild;
   while AChild<>nil do begin
-    if AChild.Parent<>Self then begin
-      Result:=-13;
-      exit;
-    end;
+    if AChild.Parent<>Self then
+      exit(-13);
     inc(RealChildCount);
     AChild:=AChild.NextBrother;
   end;
-  if RealChildCount<>ChildCount then begin
-    Result:=-14;
-    exit;
-  end;
+  if RealChildCount<>ChildCount then
+    exit(-14);
   Result:=0;
 end;
 
@@ -3477,12 +3444,9 @@ var
   ChildRow: TOIPropertyGridRow;
 begin
   ChildRow:=FirstChild;
-  while ChildRow<>nil do begin
-    if ChildRow=Row then begin
-      Result:=true;
-      exit;
-    end;
-  end;
+  while ChildRow<>nil do
+    if ChildRow=Row then
+      exit(true);
   Result:=false;
 end;
 
@@ -3531,10 +3495,8 @@ begin
   Result:=false;
   ParentRow:=Parent;
   while (ParentRow<>nil) do begin
-    if paDisableSubProperties in ParentRow.Editor.GetAttributes then begin
-      Result:=true;
-      exit;
-    end;
+    if paDisableSubProperties in ParentRow.Editor.GetAttributes then
+      exit(true);
     ParentRow:=ParentRow.Parent;
   end;
 end;
@@ -4290,8 +4252,7 @@ begin
   Result:=CurGrid.GetActiveRow;
 end;
 
-function TObjectInspectorDlg.GetCurRowDefaultValue(var DefaultStr: string
-  ): Boolean;
+function TObjectInspectorDlg.GetCurRowDefaultValue(var DefaultStr: string): Boolean;
 var
   CurRow: TOIPropertyGridRow;
 begin
@@ -4403,7 +4364,8 @@ begin
 end;
 
 procedure TObjectInspectorDlg.AvailComboBoxCloseUp(Sender:TObject);
-var NewComponent,Root:TComponent;
+var
+  NewComponent,Root:TComponent;
   a:integer;
 
   procedure SetSelectedPersistent(c:TPersistent);
