@@ -3262,6 +3262,7 @@ var
   Details: TThemedElementDetails;
   Check: TThemedButton;
   Sz: TSize;
+  TopMargin, RightMargin: Integer;
 begin
   BRect := ARect;
   fUseCheckbox := FPropertyHook.GetCheckboxForBoolean;
@@ -3274,13 +3275,20 @@ begin
       Check := tbCheckBoxUncheckedNormal;
     Details := ThemeServices.GetElementDetails(Check);
     Sz := ThemeServices.GetDetailSize(Details);
-    Inc(BRect.Top, 3);
+    TopMargin := (ARect.Bottom - ARect.Top - Sz.cy) div 2;
+    Inc(BRect.Top, TopMargin);
+    {$IFDEF LCLGTK2}
+    RightMargin := 3; // A hack. GTK2 checkbox itself has a left margin.
+    {$ELSE}
+    RightMargin := 1;
+    {$ENDIF}
+    Inc(BRect.Left, RightMargin);
     BRect.Right := BRect.Left + Sz.cx;
     BRect.Bottom := BRect.Top + Sz.cy;
     ThemeServices.DrawElement(ACanvas.Handle, Details, BRect, nil);
     // Write text after the box
     BRect := ARect;
-    Inc(BRect.Left, Sz.cx+2);
+    Inc(BRect.Left, Sz.cx+RightMargin+2);
   end;
   inherited PropDrawValue(ACanvas, BRect, AState);
 end;

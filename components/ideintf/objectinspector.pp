@@ -1743,8 +1743,8 @@ end;
 function TOICustomPropertyGrid.GetNameRowHeight: Integer;
 begin
   Result := Abs(FNameFont.Height);
-  if Result = 0
-  then Result := 16;
+  if Result = 0 then
+    Result := 16;
   Inc(Result, 2); // margin
 end;
 
@@ -2581,6 +2581,7 @@ end;
 procedure TOICustomPropertyGrid.AlignEditComponents;
 var
   RRect,EditCompRect,EditBtnRect:TRect;
+  TopMargin: Integer;
 
   function CompareRectangles(r1,r2:TRect):boolean;
   begin
@@ -2594,7 +2595,6 @@ begin
   begin
     RRect := RowRect(ItemIndex);
     EditCompRect := RRect;
-    Dec(EditCompRect.Bottom);
 
     if Layout = oilHorizontal then
       EditCompRect.Left := RRect.Left + SplitterX
@@ -2609,7 +2609,7 @@ begin
       with EditBtnRect do begin
         Top := EditCompRect.Top;
         Left := EditCompRect.Right - 20;
-        Bottom := EditCompRect.Bottom;
+        Bottom := EditCompRect.Bottom - 1;
         Right := EditCompRect.Right;
         EditCompRect.Right := Left;
       end;
@@ -2622,9 +2622,16 @@ begin
       // resize the edit component
       if (FCurrentEdit is TEdit) or (FCurrentEdit is TComboBox) then
       begin
+        {$IFnDEF LCLGTK2}
         Dec(EditCompRect.Left);
+        {$ENDIF}
         Dec(EditCompRect.Top);
-        Inc(EditCompRect.Bottom);
+      end
+      else if FCurrentEdit is TCheckBox then
+      begin                     // Align CheckBox to the middle vertically
+        TopMargin := (EditCompRect.Bottom - EditCompRect.Top - ValueCheckBox.Height) div 2;
+        Inc(EditCompRect.Top, TopMargin);
+        Inc(EditCompRect.Left); // and move it a little right.
       end;
       //debugln('TOICustomPropertyGrid.AlignEditComponents A ',dbgsName(FCurrentEdit),' ',dbgs(EditCompRect));
       if not CompareRectangles(FCurrentEdit.BoundsRect,EditCompRect) then
