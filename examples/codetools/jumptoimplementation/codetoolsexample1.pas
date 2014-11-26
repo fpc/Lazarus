@@ -27,7 +27,8 @@ interface
 
 uses
   Classes, SysUtils, MenuIntf, LazIDEIntf, Controls, SrcEditorIntf,
-  CodeToolManager, CodeTree, CodeCache, CodeAtom, CustomCodeTool;
+  CodeToolManager, CodeTree, CodeCache, CustomCodeTool, IDECommands,
+  LCLType;
   
 procedure JumpIDEToImplementationKeyword(Sender: TObject);
 
@@ -91,9 +92,18 @@ begin
 end;
 
 procedure Register;
+var
+  Key: TIDEShortCut;
+  Cat: TIDECommandCategory;
+  CmdMyTool: TIDECommand;
 begin
+  // register IDE shortcut and menu item
+  Key := IDEShortCut(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Cat:=IDECommandList.FindCategoryByName(CommandCategoryCodeTools);
+  CmdMyTool := RegisterIDECommand(Cat,'JumpToImplementation', 'Jump to implementation keyword', Key, nil, @JumpIDEToImplementationKeyword);
+
   RegisterIDEMenuCommand(itmCodeToolSearches,'JumpToImplementation',
-    'Jump to implementation keyword',nil,@JumpIDEToImplementationKeyword);
+    'Jump to implementation keyword',nil,@JumpIDEToImplementationKeyword, CmdMyTool);
 end;
 
 end.
