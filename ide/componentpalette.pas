@@ -118,9 +118,6 @@ type
     procedure CreatePopupMenu;
     procedure UnselectAllButtons;
   protected
-    procedure AssignOrigCompsForPage(DestComps: TStringList; PageName: string); override;
-    function RefOrigCompsForPage(PageName: string): TStringList; override;
-    function RefUserCompsForPage(PageName: string): TStringList; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate(Changed: boolean); override;
     procedure OnPageAddedComponent(Component: TRegisteredComponent); override;
@@ -149,6 +146,9 @@ type
     procedure RegisterCustomIDEComponents(
                        const RegisterProc: RegisterUnitComponentProc); override;
     procedure UpdateVisible; override;
+    procedure AssignOrigCompsForPage(DestComps: TStringList; PageName: string); override;
+    function RefOrigCompsForPage(PageName: string): TStringList; override;
+    function RefUserCompsForPage(PageName: string): TStringList; override;
   public
     property PageControl: TPageControl read FPageControl write SetPageControl;
     property SelectionMode: TComponentSelectionMode read FSelectionMode write FSelectionMode;
@@ -445,7 +445,8 @@ begin
     CurPage:=Pages[i];
     if (FSelected=nil) or (FSelected.RealPage<>CurPage) then begin
       SelectButtonOnPage:=TSpeedButton(CurPage.SelectButton);
-      if SelectButtonOnPage<>nil then SelectButtonOnPage.Down:=true;
+      if SelectButtonOnPage<>nil then
+        SelectButtonOnPage.Down:=true;
     end;
   end;
 end;
