@@ -33,8 +33,8 @@ interface
 
 uses
   Classes, SysUtils, LCLType, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  ComCtrls, ButtonPanel, Buttons, LazarusIDEStrConsts, ComponentReg, PackageDefs,
-  FormEditingIntf, IDEImagesIntf, TreeFilterEdit, fgl, LCLProc;
+  ComCtrls, ButtonPanel, LazarusIDEStrConsts, ComponentReg,
+  PackageDefs, IDEImagesIntf, TreeFilterEdit, fgl;
 
 type
 
@@ -70,15 +70,16 @@ type
     procedure TreeFilterEdAfterFilter(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure TreeKeyPress(Sender: TObject; var Key: char);
-    procedure UpdateComponentSelection(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     PrevPageIndex: Integer;
-    FComponentList: TRegisteredCompList;
+    // List for Component inheritence view
+    FClassList: TStringList;
     FKeepSelected: Boolean;
     procedure ClearSelection;
     procedure ComponentWasAdded;
-    procedure FindAllLazarusComponents;
+    procedure DoComponentInheritence(Comp: TRegisteredComponent);
+    procedure UpdateComponentSelection;
     procedure UpdateButtonState;
   protected
     procedure UpdateShowing; override;
@@ -100,8 +101,6 @@ implementation
 constructor TComponentListForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FComponentList := TRegisteredCompList.Create;
-
   //Translations
   LabelSearch.Caption := lisMenuFind;
   Caption := lisCmpLstComponents;
@@ -115,8 +114,7 @@ begin
   PalletteTree.Images:=ListTree.Images;
   PrevPageIndex := -1;
   PageControl.ActivePage := TabSheetList;
-  FindAllLazarusComponents;
-  UpdateComponentSelection(nil);
+  UpdateComponentSelection;
   with ListTree do
     Selected := Items.GetFirstNode;
   TreeFilterEd.InvalidateFilter;
@@ -128,7 +126,6 @@ begin
   if Assigned(IDEComponentPalette) then
     IDEComponentPalette.RemoveHandlerComponentAdded(@ComponentWasAdded);
   ComponentListForm := nil;
-  FreeAndNil(FComponentList);
   inherited Destroy;
 end;
 
@@ -182,30 +179,6 @@ begin
   UpdateButtonState;
 end;
 
-procedure TComponentListForm.FindAllLazarusComponents;
-//Collect all available components (excluding hidden)
-var
-  AComponent: TRegisteredComponent;
-  APage: TBaseComponentPage;
-  i, j: Integer;
-begin
-  if Assigned(IDEComponentPalette) then
-  begin
-    for i := 0 to IDEComponentPalette.Pages.Count-1 do
-    begin
-      APage := IDEComponentPalette.Pages[i];
-      if APage.Visible then
-        for j := 0 to IDEComponentPalette.Comps.Count-1 do
-        begin
-          AComponent := IDEComponentPalette.Comps[j];
-          if (AComponent.RealPage = APage)
-          and AComponent.Visible then
-            FComponentList.Add(AComponent);
-        end;
-    end;
-  end;
-end;
-
 procedure TComponentListForm.UpdateButtonState;
 begin
   ButtonPanel.OKButton.Enabled := Assigned(GetSelectedComponent);
@@ -218,103 +191,98 @@ begin
   inherited UpdateShowing;
 end;
 
-procedure TComponentListForm.UpdateComponentSelection(Sender: TObject);
-// Fill the three tabsheets.
+procedure TComponentListForm.DoComponentInheritence(Comp: TRegisteredComponent);
+// Walk down to parent, stop on TComponent,
+//  since components are at least TComponent descendants.
 var
-  AComponent: TRegisteredComponent;
-  AClassName: string;
-  AClassList, List: TStringList;
-  i, j, AIndex: Integer;
-  ANode: TTreeNode;
+  PalList: TStringList;
   AClass: TClass;
+  Node: TTreeNode;
+  ClssName: string;
+  i, Ind: Integer;
+begin
+  PalList := TStringList.Create;
+  try
+    AClass := Comp.ComponentClass;
+    while (AClass.ClassInfo <> nil) and (AClass.ClassType <> TComponent.ClassType) do
+    begin
+      PalList.AddObject(AClass.ClassName, TObject(AClass));
+      AClass := AClass.ClassParent;
+    end;
+    // Build the tree
+    for i := PalList.Count - 1 downto 0 do
+    begin
+      AClass := TClass(PalList.Objects[i]);
+      ClssName := PalList[i];
+      if not FClassList.Find(ClssName, Ind) then
+      begin
+        // Find out parent position
+        if Assigned(AClass.ClassParent)
+        and FClassList.Find(AClass.ClassParent.ClassName, Ind) then
+          Node := TTreeNode(FClassList.Objects[Ind])
+        else
+          Node := nil;
+        // Add the item
+        if ClssName <> Comp.ComponentClass.ClassName then
+          Node := InheritanceTree.Items.AddChild(Node, ClssName)
+        else
+          Node := InheritanceTree.Items.AddChildObject(Node, ClssName, Comp);
+        FClassList.AddObject(ClssName, Node);
+      end;
+    end;
+  finally
+    PalList.Free;
+  end;
+end;
+
+procedure TComponentListForm.UpdateComponentSelection;
+// Fill all three tabsheets: Flat list, Palette layout and Component inheritence.
+var
+  Pg: TBaseComponentPage;
+  Comps: TStringList;
+  Comp: TRegisteredComponent;
+  ParentNode: TTreeNode;
+  i, j: Integer;
 begin
   if [csDestroying,csLoading]*ComponentState<>[] then exit;
   Screen.Cursor := crHourGlass;
+  ListTree.BeginUpdate;
+  PalletteTree.BeginUpdate;
+  InheritanceTree.Items.BeginUpdate;
+  FClassList := TStringList.Create;
   try
-    //First tabsheet (List)
-    ListTree.BeginUpdate;
-    try
-      ListTree.Items.Clear;
-      for i := 0 to FComponentList.Count-1 do
-      begin
-        AComponent := FComponentList[i];
-        AClassName := AComponent.ComponentClass.ClassName;
-        ANode := ListTree.Items.AddChildObject(Nil, AClassName, AComponent);
+    ListTree.Items.Clear;
+    PalletteTree.Items.Clear;
+    InheritanceTree.Items.Clear;
+    FClassList.Sorted := true;
+    FClassList.CaseSensitive := false;
+    FClassList.Duplicates := dupIgnore;
+    // Iterate all pages
+    for i := 0 to IDEComponentPalette.Pages.Count-1 do
+    begin
+      Pg := IDEComponentPalette.Pages[i];
+      Comps := IDEComponentPalette.RefUserCompsForPage(Pg.PageName);
+      // Palette layout Page header
+      ParentNode := PalletteTree.Items.AddChild(nil, Pg.PageName);
+      // Iterate components of one page
+      for j := 0 to Comps.Count-1 do begin
+        Comp := Comps.Objects[j] as TRegisteredComponent;
+        // Flat list item
+        ListTree.Items.AddChildObject(Nil, Comps[j], Comp);
+        // Palette layout item
+        PalletteTree.Items.AddChildObject(ParentNode, Comps[j], Comp);
+        // Component inheritence item
+        DoComponentInheritence(Comp);
       end;
-    finally
-      ListTree.EndUpdate;
     end;
-
-    //Second tabsheet (palette layout)
-    PalletteTree.BeginUpdate;
-    try
-      PalletteTree.Items.Clear;
-      for i := 0 to FComponentList.Count-1 do
-      begin
-        AComponent := FComponentList[i];
-        AClassName := AComponent.ComponentClass.ClassName;
-        //find out parent node
-        ANode := PalletteTree.Items.FindTopLvlNode(AComponent.RealPage.PageName);
-        if ANode = nil then
-          ANode := PalletteTree.Items.AddChild(nil, AComponent.RealPage.PageName);
-        //add the item
-        ANode := PalletteTree.Items.AddChildObject(ANode, AClassName, AComponent);
-      end;
-      PalletteTree.FullExpand;
-    finally
-      PalletteTree.EndUpdate;
-    end;
-
-    //Third tabsheet (component inheritence)
-    List := TStringList.Create;
-    AClassList := TStringList.Create;
-    InheritanceTree.Items.BeginUpdate;
-    try
-      InheritanceTree.Items.Clear;
-      AClassList.Sorted := true;
-      AClassList.CaseSensitive := false;
-      AClassList.Duplicates := dupIgnore;
-      for i := 0 to FComponentList.Count-1 do
-      begin
-        AComponent := FComponentList[i];
-        AClassName := AComponent.ComponentClass.ClassName;
-        // walk down to parent, stop on tcomponent, since components are at least
-        // a tcomponent descendant
-        List.Clear;
-        AClass := AComponent.ComponentClass;
-        while (AClass.ClassInfo <> nil) and (AClass.ClassType <> TComponent.ClassType) do
-        begin
-          List.AddObject(AClass.ClassName, TObject(AClass));
-          AClass := AClass.ClassParent;
-        end;
-        //build the tree
-        for j := List.Count - 1 downto 0 do
-        begin
-          AClass := TClass(List.Objects[j]);
-          AClassName := List[j];
-          if not AClassList.Find(AClassName, AIndex)
-          then begin
-            //find out parent position
-            if Assigned(AClass.ClassParent) and AClassList.Find(AClass.ClassParent.ClassName, AIndex)
-            then ANode := TTreeNode(AClassList.Objects[AIndex])
-            else ANode := nil;
-            //add the item
-            if AClassName <> AComponent.ComponentClass.ClassName
-            then ANode := InheritanceTree.Items.AddChild(ANode, AClassName)
-            else ANode := InheritanceTree.Items.AddChildObject(ANode, AClassName, AComponent);
-            AClassList.AddObject(AClassName, ANode);
-          end;
-        end;
-      end;
-      InheritanceTree.AlphaSort;
-      InheritanceTree.FullExpand;
-    finally
-      List.Free;
-      AClassList.Free;
-      InheritanceTree.Items.EndUpdate;
-    end;
-    
+    PalletteTree.FullExpand;
+    InheritanceTree.AlphaSort;
+    InheritanceTree.FullExpand;
   finally
+    FClassList.Free;
+    InheritanceTree.Items.EndUpdate;
+    PalletteTree.EndUpdate;
+    ListTree.EndUpdate;
     Screen.Cursor := crDefault;
   end;
 end;
