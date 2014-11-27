@@ -86,10 +86,13 @@ type
     procedure PalettePopupMenuPopup(Sender: TObject);
     procedure PopupMenuPopup(Sender: TObject);
   private
-    // Tree of TRegisteredComponent sorted for componentclass
+    // Component cache, a tree of TRegisteredComponent sorted for componentclass
     fComponentCache: TAVLTree;
-    // List of original page names. Object holds another StringList for component names.
-    fComponentPageCache: TStringList;
+    // Two page caches, one for original pages, one for user ordered pages.
+    // Lists have page names. Object holds another StringList for component names.
+    fOrigComponentPageCache: TStringList;  // Original
+    fUserComponentPageCache: TStringList;  // User ordered
+    //
     FPageControl: TPageControl;
     fNoteBookNeedsUpdate: boolean;
     FOnOpenPackage: TNotifyEvent;
@@ -117,6 +120,7 @@ type
   protected
     procedure AssignOrigCompsForPage(DestComps: TStringList; PageName: string); override;
     function RefOrigCompsForPage(PageName: string): TStringList; override;
+    function RefUserCompsForPage(PageName: string): TStringList; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate(Changed: boolean); override;
     procedure OnPageAddedComponent(Component: TRegisteredComponent); override;
@@ -552,15 +556,15 @@ var
   PgName: string;
   Comp: TRegisteredComponent;
 begin
-  if fComponentPageCache.Count > 0 then Exit;  // Cache only once.
+  if fOrigComponentPageCache.Count > 0 then Exit;  // Cache only once.
   for PageI := 0 to fOrigPagePriorities.Count-1 do
   begin
     PgName:=fOrigPagePriorities.Keys[PageI];
-    Assert((PgName <> '') and not fComponentPageCache.Find(PgName, CompI),
+    Assert((PgName <> '') and not fOrigComponentPageCache.Find(PgName, CompI),
                   Format('CacheComponentPages: %s already cached.', [PgName]));
     // Add a cache StringList for this page name.
     sl := TStringList.Create;
-    fComponentPageCache.AddObject(PgName, sl);
+    fOrigComponentPageCache.AddObject(PgName, sl);
     // Find all components for this page and add them to cache.
     for CompI := 0 to fComps.Count-1 do begin
       Comp := fComps[CompI];
@@ -575,8 +579,8 @@ var
   sl: TStringList;
   i: Integer;
 begin
-  if fComponentPageCache.Find(PageName, i) then begin
-    sl := fComponentPageCache.Objects[i] as TStringList;
+  if fOrigComponentPageCache.Find(PageName, i) then begin
+    sl := fOrigComponentPageCache.Objects[i] as TStringList;
     DestComps.Assign(sl);
   end
   else
@@ -587,8 +591,18 @@ function TComponentPalette.RefOrigCompsForPage(PageName: string): TStringList;
 var
   i: Integer;
 begin
-  if fComponentPageCache.Find(PageName, i) then
-    Result := fComponentPageCache.Objects[i] as TStringList
+  if fOrigComponentPageCache.Find(PageName, i) then
+    Result := fOrigComponentPageCache.Objects[i] as TStringList
+  else
+    Result := Nil;
+end;
+
+function TComponentPalette.RefUserCompsForPage(PageName: string): TStringList;
+var
+  i: Integer;
+begin
+  if fUserComponentPageCache.Find(PageName, i) then
+    Result := fUserComponentPageCache.Objects[i] as TStringList
   else
     Result := Nil;
 end;
@@ -621,21 +635,22 @@ begin
   fUserOrder:=TCompPaletteUserOrder.Create(Self);
   fUserOrder.Options:=EnvironmentOptions.ComponentPaletteOptions;
   fComponentCache:=TAVLTree.Create(@CompareRegisteredComponents);
-  fComponentPageCache:=TStringList.Create;
-  fComponentPageCache.Sorted:=True;
+  fOrigComponentPageCache:=TStringList.Create;
+  fOrigComponentPageCache.OwnsObjects:=True;
+  fOrigComponentPageCache.Sorted:=True;
+  fUserComponentPageCache:=TStringList.Create;
+  fUserComponentPageCache.OwnsObjects:=True;
+  fUserComponentPageCache.Sorted:=True;
   OnComponentIsInvisible:=@CheckComponentDesignerVisible;
 end;
 
 destructor TComponentPalette.Destroy;
-var
-  i: Integer;
 begin
   if OnComponentIsInvisible=@CheckComponentDesignerVisible then
     OnComponentIsInvisible:=nil;
   PageControl:=nil;
-  for i := 0 to fComponentPageCache.Count-1 do
-    fComponentPageCache.Objects[i].Free;  // Free also the contained StringList.
-  FreeAndNil(fComponentPageCache);
+  FreeAndNil(fUserComponentPageCache);
+  FreeAndNil(fOrigComponentPageCache);
   FreeAndNil(fComponentCache);
   FreeAndNil(fUserOrder);
   FreeAndNil(fUnregisteredIcon);
@@ -671,16 +686,20 @@ var
   i, j: Integer;
   PgName: String;
   Pg: TBaseComponentPage;
-  CompNames: TStringList;
+  CompNames, UserComps: TStringList;
   Comp: TRegisteredComponent;
 begin
   Result := True;
   for i:=0 to fPages.Count-1 do
     fPages[i].Free;
   fPages.Clear;
+  fUserComponentPageCache.Clear;
   for i := 0 to fUserOrder.ComponentPages.Count-1 do
   begin
     PgName := fUserOrder.ComponentPages[i];
+    // New cache page
+    UserComps := TStringList.Create;
+    fUserComponentPageCache.AddObject(PgName, UserComps);
     // Create a new page
     Pg:=TBaseComponentPage.Create(PgName);
     fPages.Add(Pg);
@@ -692,8 +711,10 @@ begin
     for j := 0 to CompNames.Count-1 do
     begin
       Comp := FindComponent(CompNames[j]);
-      if Assigned(Comp) then
-        Comp.RealPage := Pg;
+      Assert(Assigned(Comp),
+        Format('TComponentPalette.CreatePagesFromUserOrder: Comp %s not found.',[CompNames[j]]));
+      Comp.RealPage := Pg;
+      UserComps.AddObject(CompNames[j], Comp);
     end;
   end;
 end;

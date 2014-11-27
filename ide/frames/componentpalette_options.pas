@@ -219,14 +219,11 @@ begin
   begin
     PgName := PagesListBox.Items[i];
     UserComps := PagesListBox.Items.Objects[i] as TStringList;
-    Assert(Assigned(UserComps), 'TCompPaletteOptionsFrame.WriteComponents: UserComps not assigned');
+    Assert(Assigned(UserComps), 'TCompPaletteOptionsFrame.WriteComponents: No UserComps for '+PgName);
     Pg := IDEComponentPalette.GetPage(PgName);
     if Assigned(Pg) then       // Can be Nil if this page was added or renamed.
-    begin
       // Collect original components from this page
-      OrigComps := IDEComponentPalette.RefOrigCompsForPage(PgName);
-      Assert(Assigned(OrigComps), 'TCompPaletteOptionsFrame.WriteComponents: OrigComps not assigned');
-    end
+      OrigComps := IDEComponentPalette.RefOrigCompsForPage(PgName)
     else
       OrigComps := Nil;
     // Differs from original order -> add configuration for components
