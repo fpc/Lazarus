@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, typinfo, Controls, ComCtrls, Forms,
-  LazarusPackageIntf, LazConfigStorage, LCLProc, fgl;
+  LazConfigStorage, LCLProc, fgl;
 
 type
   TComponentPriorityCategory = (
@@ -199,6 +199,7 @@ type
     fComps: TRegisteredComponentList;
     // New pages added and their priorities, ordered by priority.
     fOrigPagePriorities: TPagePriorityList;
+    procedure AssignCompsForPage(DestComps: TStringList; PageName: string); virtual; abstract;
     procedure DoChange; virtual;
     procedure DoBeginUpdate; virtual;
     procedure DoEndUpdate(Changed: boolean); virtual;
