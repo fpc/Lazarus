@@ -261,22 +261,19 @@ procedure TCompPaletteOptionsFrame.InitialComps(aPageName: string; aCompList: TS
 var
   OrderedComps: TStringList;
   Comp: TRegisteredComponent;
-  i, PgInd: Integer;
   CompName: String;
+  i: Integer;
 begin
-  PgInd := fLocalUserOrder.ComponentPages.IndexOf(aPageName);
-  Assert(PgInd > -1, 'TCompPaletteOptionsFrame.InitialComps: PageName "'+aPageName+'" not found');
-  if PgInd>=0 then
+  i := fLocalUserOrder.ComponentPages.IndexOf(aPageName);
+  Assert(i > -1, 'TCompPaletteOptionsFrame.InitialComps: PageName "'+aPageName+'" not found');
+  OrderedComps := fLocalUserOrder.ComponentPages.Objects[i] as TStringList;
+  for i := 0 to OrderedComps.Count-1 do
   begin
-    OrderedComps := fLocalUserOrder.ComponentPages.Objects[PgInd] as TStringList;
-    for i := 0 to OrderedComps.Count-1 do
-    begin
-      CompName := OrderedComps[i];
-      Comp := IDEComponentPalette.FindComponent(CompName);
-      Assert(Assigned(Comp), 'TCompPaletteOptionsFrame.InitialComps: Component "'+CompName+'" not found');
-      if Comp.Visible {and (Comp.OrigPageName<>'')} then
-        aCompList.AddObject(Comp.ComponentClass.ClassName, Comp);
-    end;
+    CompName := OrderedComps[i];
+    Comp := IDEComponentPalette.FindComponent(CompName);
+    Assert(Assigned(Comp), 'TCompPaletteOptionsFrame.InitialComps: Component "'+CompName+'" not found');
+    if Comp.Visible then
+      aCompList.AddObject(Comp.ComponentClass.ClassName, Comp);
   end;
 end;
 
