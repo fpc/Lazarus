@@ -3400,7 +3400,6 @@ begin
   SetStrValue(NewValue);
 end;
 
-
 { TWideStringPropertyEditor }
 
 function TWideStringPropertyEditor.AllEqual: Boolean;

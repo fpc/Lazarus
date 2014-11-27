@@ -193,7 +193,7 @@ type
                             const AMethod: TMethod);
     procedure SetHideControls(const AValue: boolean);
   protected
-    // List of pages, created based on fUserAndOrigPages data.
+    // List of pages, created based on user ordered and original pages.
     fPages: TBaseComponentPageList;
     // List of all components in all pages.
     fComps: TRegisteredComponentList;
