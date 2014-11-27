@@ -67,7 +67,6 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure ClearComponentPages;
     procedure Assign(Source: TBaseCompPaletteOptions);
     procedure AssignComponentPage(aPageName: string; aList: TStringList);
   public
@@ -321,11 +320,11 @@ begin
   inherited Create;
   FPageNames := TStringList.Create;
   FComponentPages := TStringList.Create;
+  FComponentPages.OwnsObjects := True;
 end;
 
 destructor TBaseCompPaletteOptions.Destroy;
 begin
-  ClearComponentPages;
   FComponentPages.Free;
   FPageNames.Free;
   inherited Destroy;
@@ -334,15 +333,6 @@ end;
 procedure TBaseCompPaletteOptions.Clear;
 begin
   FPageNames.Clear;
-  ClearComponentPages;
-end;
-
-procedure TBaseCompPaletteOptions.ClearComponentPages;
-var
-  i: Integer;
-begin
-  for i:=0 to FComponentPages.Count-1 do
-    FComponentPages.Objects[i].Free;   // Free also the contained StringList.
   FComponentPages.Clear;
 end;
 
@@ -351,7 +341,7 @@ var
   i: Integer;
 begin
   FPageNames.Assign(Source.FPageNames);
-  ClearComponentPages;
+  FComponentPages.Clear;
   for i:=0 to Source.FComponentPages.Count-1 do
     AssignComponentPage(Source.FComponentPages[i],
             TStringList(Source.FComponentPages.Objects[i]));
@@ -431,7 +421,7 @@ begin
         FHiddenPageNames.Add(PageName);
     end;
 
-    ClearComponentPages;
+    FComponentPages.Clear;
     SubPath:=Path+'ComponentPages/';
     PageCount:=ConfigStore.GetValue(SubPath+'Count', 0);
     for i:=1 to PageCount do begin

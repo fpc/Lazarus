@@ -214,7 +214,7 @@ var
   PgName: String;
   i: Integer;
 begin
-  cpo.ClearComponentPages;
+  cpo.ComponentPages.Clear;
   for i := 1 to PagesListBox.Count-1 do      // Skip all components page
   begin
     PgName := PagesListBox.Items[i];
