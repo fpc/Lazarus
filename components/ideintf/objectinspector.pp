@@ -33,9 +33,9 @@ uses
   SysUtils, Types, Classes, TypInfo, FPCanvas,
   // LCL
   InterfaceBase, Forms, Buttons, Graphics, GraphType, LCLProc, StdCtrls,
-  LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages, LResources,
+  LCLType, LCLIntf, Controls, ComCtrls, ExtCtrls, LMessages,
   LazConfigStorage, Menus, Dialogs, Themes, TreeFilterEdit, ObjInspStrConsts,
-  PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
+  PropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView, ComponentEditors, IDEImagesIntf, IDEHelpIntf,
   OIFavoriteProperties, PropEditUtils;
 
