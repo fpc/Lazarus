@@ -3278,13 +3278,13 @@ begin
     TopMargin := (ARect.Bottom - ARect.Top - Sz.cy) div 2;
     Inc(BRect.Top, TopMargin);
     // Left varies by widgetset and theme etc. Real Checkbox itself has a left margin.
-    Inc(BRect.Left, 3);                // ToDo: How to find out the real margin?
+    Inc(BRect.Left, 2);                // ToDo: How to find out the real margin?
     BRect.Right := BRect.Left + Sz.cx;
     BRect.Bottom := BRect.Top + Sz.cy;
     ThemeServices.DrawElement(ACanvas.Handle, Details, BRect, nil);
     // Write text after the box
     BRect := ARect;
-    Inc(BRect.Left, Sz.cx + 5);
+    Inc(BRect.Left, Sz.cx + 4);
   end;
   inherited PropDrawValue(ACanvas, BRect, AState);
 end;
