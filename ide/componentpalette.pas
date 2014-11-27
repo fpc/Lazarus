@@ -132,8 +132,6 @@ type
     destructor Destroy; override;
     procedure Clear;
     procedure ClearButtons;
-    function CreateNewPage(const NewPageName: string;
-                           const Priority: TComponentPriority): TBaseComponentPage;
     function CreatePagesFromUserOrder: Boolean;
     procedure DoAfterComponentAdded; override;
     function GetUnregisteredIcon: TCustomBitmap;
@@ -668,23 +666,6 @@ begin
     FPageControl.EnableAlign;
 end;
 
-function TComponentPalette.CreateNewPage(const NewPageName: string;
-  const Priority: TComponentPriority): TBaseComponentPage;
-var
-  InsertIndex: Integer;
-begin
-  Result:=TBaseComponentPage.Create(NewPageName);
-  Result.Priority:=Priority;
-  InsertIndex:=0;
-  while (InsertIndex<Pages.Count)
-  and (ComparePriority(Priority,Pages[InsertIndex].Priority)<=0) do
-    inc(InsertIndex);
-  fPages.Insert(InsertIndex,Result);
-  Result.Palette:=Self;
-  if CompareText(NewPageName,'Hidden')=0 then
-    Result.Visible:=false;
-end;
-
 function TComponentPalette.CreatePagesFromUserOrder: Boolean;
 var
   i, j: Integer;
@@ -700,7 +681,13 @@ begin
   for i := 0 to fUserOrder.ComponentPages.Count-1 do
   begin
     PgName := fUserOrder.ComponentPages[i];
-    Pg:=CreateNewPage(PgName, ComponentPriorityNormal);
+    // Create a new page
+    Pg:=TBaseComponentPage.Create(PgName);
+    fPages.Add(Pg);
+    Pg.Palette:=Self;
+    if CompareText(PgName,'Hidden')=0 then
+      Pg.Visible:=false;
+    // Assign components belonging to this page
     CompNames := TStringList(fUserOrder.ComponentPages.Objects[i]);
     for j := 0 to CompNames.Count-1 do
     begin

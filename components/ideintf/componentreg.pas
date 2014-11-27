@@ -138,7 +138,6 @@ type
     FPageComponent: TCustomPage;
     FPageName: string;
     FPalette: TBaseComponentPalette;
-    FPriority: TComponentPriority;
     FSelectButton: TComponent;
     FVisible: boolean;
   protected
@@ -152,7 +151,6 @@ type
   public
     property PageName: string read FPageName;
     property Palette: TBaseComponentPalette read FPalette write FPalette;
-    property Priority: TComponentPriority read FPriority write FPriority;
     property PageComponent: TCustomPage read FPageComponent write FPageComponent;
     property SelectButton: TComponent read FSelectButton write FSelectButton;
     property Visible: boolean read FVisible write SetVisible;
@@ -208,7 +206,7 @@ type
     procedure OnComponentVisibleChanged({%H-}AComponent: TRegisteredComponent); virtual;
     procedure OnPageVisibleChanged({%H-}APage: TBaseComponentPage); virtual;
     procedure Update; virtual;
-    function UpdateVisible(AComponent: TRegisteredComponent): Boolean; virtual;
+    function VoteCompVisibility(AComponent: TRegisteredComponent): Boolean; virtual;
     function GetSelected: TRegisteredComponent; virtual;
     procedure SetBaseComponentPageClass(const AValue: TBaseComponentPageClass); virtual;
     procedure SetRegisteredComponentClass(const AValue: TRegisteredComponentClass); virtual;
@@ -597,7 +595,7 @@ begin
   HasVisibleComponents:=false;
   for i:=0 to Palette.Comps.Count-1 do
     if (Palette.Comps[i].RealPage = Self) then
-      if Palette.UpdateVisible(Palette.Comps[i]) then
+      if Palette.VoteCompVisibility(Palette.Comps[i]) then
         HasVisibleComponents:=true;
   Visible:=HasVisibleComponents and (PageName<>'');
 end;
@@ -716,7 +714,7 @@ begin
 
 end;
 
-function TBaseComponentPalette.UpdateVisible(AComponent: TRegisteredComponent): Boolean;
+function TBaseComponentPalette.VoteCompVisibility(AComponent: TRegisteredComponent): Boolean;
 var
   i, Vote: Integer;
 begin
