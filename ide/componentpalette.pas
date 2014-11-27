@@ -116,6 +116,7 @@ type
     procedure UnselectAllButtons;
   protected
     procedure AssignCompsForPage(DestComps: TStringList; PageName: string); override;
+    function RefCompsForPage(PageName: string): TStringList; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate(Changed: boolean); override;
     procedure OnPageAddedComponent(Component: TRegisteredComponent); override;
@@ -582,6 +583,16 @@ begin
   end
   else
     raise Exception.Create(Format('AssignCompsFromCache: %s not found in cache.', [PageName]));
+end;
+
+function TComponentPalette.RefCompsForPage(PageName: string): TStringList;
+var
+  i: Integer;
+begin
+  if fComponentPageCache.Find(PageName, i) then
+    Result := fComponentPageCache.Objects[i] as TStringList
+  else
+    Result := Nil;
 end;
 
 procedure TComponentPalette.Update;

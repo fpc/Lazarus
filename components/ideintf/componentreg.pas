@@ -199,7 +199,6 @@ type
     fComps: TRegisteredComponentList;
     // New pages added and their priorities, ordered by priority.
     fOrigPagePriorities: TPagePriorityList;
-    procedure AssignCompsForPage(DestComps: TStringList; PageName: string); virtual; abstract;
     procedure DoChange; virtual;
     procedure DoBeginUpdate; virtual;
     procedure DoEndUpdate(Changed: boolean); virtual;
@@ -218,6 +217,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure AssignCompsForPage(DestComps: TStringList; PageName: string); virtual; abstract;
+    function RefCompsForPage(PageName: string): TStringList; virtual; abstract;
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
     function IsUpdateLocked: boolean;

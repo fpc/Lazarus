@@ -211,36 +211,27 @@ procedure TCompPaletteOptionsFrame.WriteComponents(cpo: TCompPaletteOptions);
 var
   UserComps, OrigComps: TStringList;
   Pg: TBaseComponentPage;
-  Comp: TRegisteredComponent;
-  i, CompCnt: Integer;
   PgName: String;
+  i: Integer;
 begin
-  OrigComps := TStringList.Create;
-  try
-    cpo.ClearComponentPages;
-    for i := 1 to PagesListBox.Count-1 do      // Skip all components page
+  cpo.ClearComponentPages;
+  for i := 1 to PagesListBox.Count-1 do      // Skip all components page
+  begin
+    PgName := PagesListBox.Items[i];
+    UserComps := PagesListBox.Items.Objects[i] as TStringList;
+    Assert(Assigned(UserComps), 'TCompPaletteOptionsFrame.WriteComponents: UserComps not assigned');
+    Pg := IDEComponentPalette.GetPage(PgName);
+    if Assigned(Pg) then       // Can be Nil if this page was added or renamed.
     begin
-      PgName := PagesListBox.Items[i];
-      UserComps := PagesListBox.Items.Objects[i] as TStringList;
-      Assert(Assigned(UserComps), 'TCompPaletteOptionsFrame.WriteComponents: UserComps not assigned');
-      OrigComps.Clear;
-      Pg := IDEComponentPalette.GetPage(PgName);
-      if Assigned(Pg) then       // Can be Nil if this page was added or renamed.
-      begin
-        // Collect original components from this page
-        for CompCnt := 0 to IDEComponentPalette.Comps.Count-1 do
-        begin
-          Comp := IDEComponentPalette.Comps[CompCnt];
-          if Comp.OrigPageName = PgName then
-            OrigComps.Add(Comp.ComponentClass.ClassName);
-        end;
-      end;
-      // Differs from original order -> add configuration for components
-      if not OrigComps.Equals(UserComps) then
-        cpo.AssignComponentPage(PgName, UserComps);
-    end;
-  finally
-    OrigComps.Free;
+      // Collect original components from this page
+      OrigComps := IDEComponentPalette.RefCompsForPage(PgName);
+      Assert(Assigned(OrigComps), 'TCompPaletteOptionsFrame.WriteComponents: OrigComps not assigned');
+    end
+    else
+      OrigComps := Nil;
+    // Differs from original order -> add configuration for components
+    if (OrigComps=Nil) or not OrigComps.Equals(UserComps) then
+      cpo.AssignComponentPage(PgName, UserComps);
   end;
 end;
 
