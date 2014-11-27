@@ -556,7 +556,7 @@ var
   PgName: string;
   Comp: TRegisteredComponent;
 begin
-  if fOrigComponentPageCache.Count > 0 then Exit;  // Cache only once.
+  if fOrigComponentPageCache.Count > 0 then Exit;  // Fill cache only once.
   for PageI := 0 to fOrigPagePriorities.Count-1 do
   begin
     PgName:=fOrigPagePriorities.Keys[PageI];
@@ -569,7 +569,7 @@ begin
     for CompI := 0 to fComps.Count-1 do begin
       Comp := fComps[CompI];
       if Comp.OrigPageName = PgName then //if SameText(Comp.OrigPageName, PgName) then
-        sl.Add(Comp.ComponentClass.ClassName);
+        sl.AddObject(Comp.ComponentClass.ClassName, Comp);
     end;
   end;
 end;
