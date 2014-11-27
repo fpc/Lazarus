@@ -217,8 +217,9 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure AssignCompsForPage(DestComps: TStringList; PageName: string); virtual; abstract;
-    function RefCompsForPage(PageName: string): TStringList; virtual; abstract;
+    procedure AssignOrigCompsForPage(DestComps: TStringList;
+                                     PageName: string); virtual; abstract;
+    function RefOrigCompsForPage(PageName: string): TStringList; virtual; abstract;
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
     function IsUpdateLocked: boolean;

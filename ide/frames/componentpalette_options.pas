@@ -224,7 +224,7 @@ begin
     if Assigned(Pg) then       // Can be Nil if this page was added or renamed.
     begin
       // Collect original components from this page
-      OrigComps := IDEComponentPalette.RefCompsForPage(PgName);
+      OrigComps := IDEComponentPalette.RefOrigCompsForPage(PgName);
       Assert(Assigned(OrigComps), 'TCompPaletteOptionsFrame.WriteComponents: OrigComps not assigned');
     end
     else

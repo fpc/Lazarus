@@ -102,7 +102,7 @@ type
     fUpdatingPageControl: boolean;
     // User ordered + original pages and components.
     fUserOrder: TCompPaletteUserOrder;
-    procedure CacheComponentPages;
+    procedure CacheOrigComponentPages;
     procedure SetPageControl(const AValue: TPageControl);
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
@@ -115,8 +115,8 @@ type
     procedure CreatePopupMenu;
     procedure UnselectAllButtons;
   protected
-    procedure AssignCompsForPage(DestComps: TStringList; PageName: string); override;
-    function RefCompsForPage(PageName: string): TStringList; override;
+    procedure AssignOrigCompsForPage(DestComps: TStringList; PageName: string); override;
+    function RefOrigCompsForPage(PageName: string): TStringList; override;
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate(Changed: boolean); override;
     procedure OnPageAddedComponent(Component: TRegisteredComponent); override;
@@ -232,7 +232,7 @@ var
 begin
   Result:=True;
   Clear;
-  fPalette.CacheComponentPages;
+  fPalette.CacheOrigComponentPages;
   // First add user defined page order from EnvironmentOptions,
   FComponentPages.Assign(fOptions.PageNames);
   // then add other pages which don't have user configuration
@@ -253,7 +253,7 @@ begin
     if i >= 0 then                      // Add components reordered by user.
       DstComps.Assign(fOptions.ComponentPages.Objects[i] as TStringList)
     else                                // Add components that were not reordered.
-      fPalette.AssignCompsForPage(DstComps, PgName);
+      fPalette.AssignOrigCompsForPage(DstComps, PgName);
   end;
 end;
 
@@ -547,7 +547,7 @@ begin
   inherited OnPageRemovedComponent(Page, Component);
 end;
 
-procedure TComponentPalette.CacheComponentPages;
+procedure TComponentPalette.CacheOrigComponentPages;
 var
   sl: TStringList;
   PageI, CompI: Integer;
@@ -572,7 +572,7 @@ begin
   end;
 end;
 
-procedure TComponentPalette.AssignCompsForPage(DestComps: TStringList; PageName: string);
+procedure TComponentPalette.AssignOrigCompsForPage(DestComps: TStringList; PageName: string);
 var
   sl: TStringList;
   i: Integer;
@@ -585,7 +585,7 @@ begin
     raise Exception.Create(Format('AssignCompsFromCache: %s not found in cache.', [PageName]));
 end;
 
-function TComponentPalette.RefCompsForPage(PageName: string): TStringList;
+function TComponentPalette.RefOrigCompsForPage(PageName: string): TStringList;
 var
   i: Integer;
 begin
