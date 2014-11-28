@@ -445,7 +445,8 @@ var
   Lang, FallbackLang: String;
   Dir: String;
 begin
-  if LazarusTranslations=nil then CollectTranslations(LazarusDir);
+  if LazarusTranslations=nil then
+    CollectTranslations(LazarusDir);
   if CustomLang='' then begin
     Lang:=SystemLanguageID1;
     FallbackLang:=SystemLanguageID2;
@@ -514,8 +515,7 @@ initialization
   LCLGetLanguageIDs(SystemLanguageID1,SystemLanguageID2);
 
 finalization
-  LazarusTranslations.Free;
-  LazarusTranslations:=nil;
+  FreeAndNil(LazarusTranslations);
 
 end.
 
