@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, Forms, Graphics, ComCtrls, Buttons, Menus, ExtCtrls,
-  FileUtil, LazFileCache, AVL_Tree, PropEdits, FormEditingIntf, LazIDEIntf,
+  FileUtil, LazFileCache, AVL_Tree, PropEdits, LCLProc, FormEditingIntf, LazIDEIntf,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
@@ -264,10 +264,12 @@ end;
 procedure TComponentPalette.ActivePageChanged(Sender: TObject);
 begin
   if FPageControl=nil then exit;
-  ReAlignButtons(FPageControl.ActivePage);
+  //DebugLn('TComponentPalette.ActivePageChanged: calling ReAlignButtons.');
+  //ReAlignButtons(FPageControl.ActivePage);
   if (FSelected<>nil)
   and (FSelected.RealPage.PageComponent=FPageControl.ActivePage)
   then exit;
+  DebugLn('TComponentPalette.ActivePageChanged: setting Selected:=nil.');
   Selected:=nil;
 end;
 
@@ -466,6 +468,9 @@ begin
   // select button
   if (FSelected<>nil) and (FPageControl<>nil) then begin
     TSpeedButton(FSelected.Button).Down:=true;
+    Assert(Assigned(FSelected.RealPage), 'TComponentPalette.SetSelected: FSelected.RealPage = Nil.');
+    DebugLn(['TComponentPalette.SetSelected: Setting FPageControl.ActivePage=',
+      FSelected.RealPage.PageComponent, ', Index ', FSelected.RealPage.PageComponent.PageIndex]);
     FPageControl.ActivePage:=TTabSheet(FSelected.RealPage.PageComponent);
   end;
 end;
@@ -1040,8 +1045,11 @@ begin
     end;
 
     // restore active page
-    if (OldActivePage<>nil) and (FPageControl.IndexOf(OldActivePage) >= 0) then
+    if (OldActivePage<>nil) and (FPageControl.IndexOf(OldActivePage) >= 0) then begin
+      DebugLn(['TComponentPalette.UpdateNoteBookButtons: Restoring FPageControl.ActivePage=',
+               OldActivePage]);
       FPageControl.ActivePage:=OldActivePage
+    end
     else if FPageControl.PageCount>0 then
       FPageControl.PageIndex:=0;
   finally
