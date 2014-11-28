@@ -330,8 +330,9 @@ begin
   except
   end;
   // translation didn't work
-  // there is no official way to get the default English value
-  //-> reset all resourcestrings
+  // => get the default value (English)
+  // there is no official way to get the default value of a resourcestring
+  // => reset all resourcestrings
   ResetResourceTables;
   Result:=Format(Fmt,Args);
 end;
