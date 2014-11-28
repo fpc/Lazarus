@@ -6490,7 +6490,8 @@ begin
     DebugLn('ay+ColFoot.dy+ady=%d CurBottomY=%d',[ay+Bands[btColumnFooter].dy+ady,CurBottomY]);
     {$ENDIF}
     if not RowsLayout then begin
-      if ay + Bands[btColumnFooter].dy + ady > CurBottomY then
+      if (Parent.Bands[btColumnFooter] <> self) and
+      	(ay + Bands[btColumnFooter].dy + ady > CurBottomY) then
       begin
         if not PBreak then
           NewColumn(Self);
