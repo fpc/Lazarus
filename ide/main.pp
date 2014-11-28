@@ -5024,8 +5024,8 @@ begin
     if AProject.ProjResources.Modified and (AProject.MainUnitID >= 0) then
     begin
       if not AProject.ProjResources.Regenerate(AProject.MainFilename, True, False, '') then
-        IDEMessageDialog(lisCCOWarningCaption, AProject.ProjResources.Messages.
-          Text, mtWarning, [mbOk]);
+        IDEMessageDialog(lisCCOWarningCaption, AProject.ProjResources.Messages.Text,
+                         mtWarning, [mbOk]);
     end;
     UpdateCaption;
     AProject.DefineTemplates.AllChanged;
@@ -5047,12 +5047,11 @@ end;
 procedure TMainIDE.ComponentPaletteClassSelected(Sender: TObject);
 begin
   if (Screen.CustomFormZOrderCount > 1)
-  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then begin
+  and Assigned(Screen.CustomFormsZOrdered[1].Designer) then
     // previous active form was designer form
-    ShowDesignerForm(Screen.CustomFormsZOrdered[1]);
-    Exit;
-  end;
-  DoShowDesignerFormOfCurrentSrc;
+    ShowDesignerForm(Screen.CustomFormsZOrdered[1])
+  else
+    DoShowDesignerFormOfCurrentSrc;
 end;
 
 procedure TMainIDE.SelComponentPageButtonClick(Sender: TObject);
