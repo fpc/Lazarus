@@ -581,26 +581,14 @@ procedure TBaseComponentPage.UpdateVisible;
 var
   i: Integer;
   HasVisibleComponents: Boolean;
-  sl: TStringList;
-  Comp: TRegisteredComponent;
 begin
   if Palette = nil then Exit;
-  if PageName = '' then begin
-    Visible := False;
-    Exit;
-  end;
   HasVisibleComponents:=false;
-  sl := Palette.RefUserCompsForPage(FPageName);
-  Assert(sl.Count > 0, 'TBaseComponentPage.UpdateVisible: ComponentCount = 0');
-  for i:=0 to sl.Count-1 do begin
-    Comp := sl.Objects[i] as TRegisteredComponent;
-    if Palette.VoteCompVisibility(Comp) then
-    begin
-      HasVisibleComponents:=true;
-      Break;
-    end;
-  end;
-  Visible:=HasVisibleComponents;
+  for i:=0 to Palette.Comps.Count-1 do
+    if (Palette.Comps[i].RealPage = Self) then
+      if Palette.VoteCompVisibility(Palette.Comps[i]) then
+        HasVisibleComponents:=true;
+  Visible:=HasVisibleComponents and (PageName<>'');
 end;
 
 function TBaseComponentPage.GetScrollBox: TScrollBox;

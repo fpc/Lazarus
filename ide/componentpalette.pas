@@ -1031,6 +1031,7 @@ begin
     begin
       PgName := fUserOrder.ComponentPages[i];
       PgInd := IndexOfPageName(PgName);
+      Assert(PgInd = i, Format('PgInd (%d) <> i (%d)', [PgInd, i]));
       if PgInd >= 0 then
       begin
         InsertVisiblePage(Pages[PgInd], VisPageIndex);
