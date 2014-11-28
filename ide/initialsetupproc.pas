@@ -33,8 +33,9 @@ interface
 
 uses
   Classes, SysUtils, strutils, LazFileCache, LazUTF8Classes, LazFileUtils,
-  LazLoggerBase, LazUTF8, Laz2_XMLCfg, DefineTemplates, CodeToolManager,
-  LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs, contnrs;
+  LazLoggerBase, LazUTF8, Laz2_XMLCfg, LazLogger, DefineTemplates,
+  CodeToolManager, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs,
+  contnrs;
 
 type
   TSDFilenameQuality = (
@@ -104,6 +105,8 @@ function GetValueFromPrimaryConfig(OptionFilename, Path: string): string;
 function GetValueFromSecondaryConfig(OptionFilename, Path: string): string;
 function GetValueFromIDEConfig(OptionFilename, Path: string): string;
 
+function SafeFormat(const Fmt: String; const Args: Array of const): String;
+function SimpleFormat(const Fmt: String; const Args: Array of const): String;
 
 implementation
 
@@ -887,6 +890,62 @@ begin
       on E: Exception do begin
         debugln(['GetValueFromIDEConfig File='+OptionFilename+': '+E.Message]);
       end;
+    end;
+  end;
+end;
+
+function SafeFormat(const Fmt: String; const Args: array of const): String;
+begin
+  // try with translated resourcestring
+  try
+    Result:=Format(Fmt,Args);
+    exit;
+  except
+    on E: Exception do
+      debugln(['ERROR: SafeFormat: ',E.Message]);
+  end;
+  // translation didn't work
+  // ToDo: find out how to get the resourcestring default value
+  //ResetResourceTables;
+
+  // use a safe fallback
+  Result:=SimpleFormat(Fmt,Args);
+end;
+
+function SimpleFormat(const Fmt: String; const Args: array of const): String;
+var
+  p: Integer;
+  i: Integer;
+  s: String;
+begin
+  Result:=Fmt;
+  p:=1;
+  for i:=Low(Args) to High(Args) do
+  begin
+    case Args[i].VType of
+    vtString:     s:=Args[i].VString^;
+    vtAnsiString: s:=AnsiString(Args[i].VAnsiString);
+    vtChar:       s:=Args[i].VChar;
+    else continue;
+    end;
+    while (p<length(Result)) do begin
+      if (Result[p]='%') then
+      begin
+        if (Result[p+1]='s') then
+          break
+        else
+          inc(p,2);
+      end else
+        inc(p);
+    end;
+    if p<length(Result) then begin
+      // found %s => replace
+      ReplaceSubstring(Result,p,2,s);
+      inc(p,length(s));
+    end else begin
+      // missing %s => append
+      Result+=', '+s;
+      p:=length(s)+1;
     end;
   end;
 end;

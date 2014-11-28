@@ -1132,7 +1132,7 @@ procedure TMainIDE.LoadGlobalOptions;
   var
     StartFile: String;
   begin
-    Result:=SafeFormat(lisIfYouWantToUseTwoDifferentLazarusVersionsYouMustSt,
+    Result:=SimpleFormat(lisIfYouWantToUseTwoDifferentLazarusVersionsYouMustSt,
                    [LineEnding+LineEnding]) + LineEnding;
     StartFile:=Application.ExeName;
     if StartedByStartLazarus then
@@ -1236,7 +1236,7 @@ begin
     debugln(['  CurPrgName="',CurPrgName,'"']);
     debugln(['  AltPrgName="',AltPrgName,'"']);
     MsgResult := IDEQuestionDialog(lisIncorrectConfigurationDirectoryFound,
-        SafeFormat(lisIDEConficurationFoundMayBelongToOtherLazarus,
+        SimpleFormat(lisIDEConficurationFoundMayBelongToOtherLazarus,
         [LineEnding, GetSecondConfDirWarning, GetPrimaryConfigPath,
          EnvironmentOptions.LastCalledByLazarusFullPath, CurPrgName]),
       mtWarning, [mrOK, lisUpdateInfo, mrIgnore, mrAbort]);
@@ -1265,8 +1265,8 @@ begin
   begin
     IsUpgrade:=CompareLazarusVersion(NowVer,OldVer)>0;
     if OldVer='' then
-      OldVer:=SafeFormat(lisPrior, [GetLazarusVersionString]);
-    s:=SafeFormat(lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe,
+      OldVer:=SimpleFormat(lisPrior, [GetLazarusVersionString]);
+    s:=SimpleFormat(lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe,
       [GetLazarusVersionString, LineEnding+LineEnding, OldVer, LineEnding, GetPrimaryConfigPath] );
     if IsUpgrade then
       s+=lisTheOldConfigurationWillBeUpgraded

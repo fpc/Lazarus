@@ -40,11 +40,12 @@ unit InitialSetupDlgs;
 interface
 
 uses
-  Classes, SysUtils, strutils, contnrs, LCLProc, Forms, Controls, Buttons, Dialogs, FileUtil,
-  Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache, Graphics, ComCtrls, ExtCtrls,
-  StdCtrls, DefineTemplates, CodeToolManager, TransferMacros, MacroDefIntf, GDBMIDebugger,
-  DbgIntfDebuggerBase, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs, AboutFrm,
-  IDETranslations, InitialSetupProc;
+  Classes, SysUtils, strutils, contnrs, LCLProc, Forms, Controls, Buttons,
+  Dialogs, FileUtil, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache,
+  LazLogger, Graphics, ComCtrls, ExtCtrls, StdCtrls, DefineTemplates,
+  CodeToolManager, TransferMacros, MacroDefIntf, GDBMIDebugger,
+  DbgIntfDebuggerBase, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs,
+  AboutFrm, IDETranslations, InitialSetupProc;
   
 type
   TInitialSetupDialog = class;
@@ -189,8 +190,6 @@ function CheckDebuggerQuality(AFilename: string; out Note: string): TSDFilenameQ
 // Search debugger candidates and add them to list, including quality level
 function SearchDebuggerCandidates(StopIfFits: boolean): TSDFileInfoList;
 
-function SafeFormat(const Fmt: String; const Args: Array of const): String;
-
 implementation
 
 const
@@ -319,22 +318,6 @@ begin
   finally
     EnvironmentOptions.DebuggerFilename:=OldDebuggerFilename;
   end;
-end;
-
-function SafeFormat(const Fmt: String; const Args: array of const): String;
-begin
-  // try with translated resourcestring
-  try
-    Result:=Format(Fmt,Args);
-    exit;
-  except
-  end;
-  // translation didn't work
-  // => get the default value (English)
-  // there is no official way to get the default value of a resourcestring
-  // => reset all resourcestrings
-  ResetResourceTables;
-  Result:=Format(Fmt,Args);
 end;
 
 function ShowInitialSetupDialog: TModalResult;
@@ -523,7 +506,7 @@ begin
   Dlg:=TOpenDialog.Create(nil);
   try
     Filename:='gdb'+GetExecutableExt;
-    Dlg.Title:=SafeFormat(lisSelectPathTo, [Filename]);
+    Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
     Filter:=dlgAllFiles+'|'+GetAllFilesMask;
     if ExtractFileExt(Filename)<>'' then
@@ -552,7 +535,7 @@ begin
   Dlg:=TOpenDialog.Create(nil);
   try
     Filename:='fpc'+GetExecutableExt;
-    Dlg.Title:=SafeFormat(lisSelectPathTo, [Filename]);
+    Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
     Filter:=dlgAllFiles+'|'+GetAllFilesMask;
     if ExtractFileExt(Filename)<>'' then
@@ -620,7 +603,7 @@ begin
   Dlg:=TOpenDialog.Create(nil);
   try
     Filename:='make'+GetExecutableExt;
-    Dlg.Title:=SafeFormat(lisSelectPathTo, [Filename]);
+    Dlg.Title:=SimpleFormat(lisSelectPathTo, [Filename]);
     Dlg.Options:=Dlg.Options+[ofFileMustExist];
     Filter:=dlgAllFiles+'|'+GetAllFilesMask;
     if ExtractFileExt(Filename)<>'' then
@@ -751,7 +734,7 @@ procedure TInitialSetupDialog.UpdateCaptions;
 var
   s: String;
 begin
-  Caption:=SafeFormat(lisWelcomeToLazarusIDE, [GetLazarusVersionString]);
+  Caption:=SimpleFormat(lisWelcomeToLazarusIDE, [GetLazarusVersionString]);
 
   StartIDEBitBtn.Caption:=lisStartIDE;
 
@@ -768,26 +751,26 @@ begin
   TVNodeDebugger.Text:=DebuggerTabSheet.Caption;
 
   LazDirBrowseButton.Caption:=lisPathEditBrowse;
-  LazDirLabel.Caption:=SafeFormat(
+  LazDirLabel.Caption:=SimpleFormat(
     lisTheLazarusDirectoryContainsTheSourcesOfTheIDEAndTh, [PathDelim]);
 
   CompilerBrowseButton.Caption:=lisPathEditBrowse;
-  CompilerLabel.Caption:=SafeFormat(lisTheFreePascalCompilerExecutableTypicallyHasTheName,
+  CompilerLabel.Caption:=SimpleFormat(lisTheFreePascalCompilerExecutableTypicallyHasTheName,
     [DefineTemplates.GetDefaultCompilerFilename,
      DefineTemplates.GetDefaultCompilerFilename(GetCompiledTargetCPU)]);
 
   FPCSrcDirBrowseButton.Caption:=lisPathEditBrowse;
-  FPCSrcDirLabel.Caption:=SafeFormat(lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro,
+  FPCSrcDirLabel.Caption:=SimpleFormat(lisTheSourcesOfTheFreePascalPackagesAreRequiredForBro,
     [SetDirSeparators('rtl/linux/system.pp')]);
   ScanLabel.Caption := lisScanning;
   StopScanButton.Caption:=lisStop;
 
   MakeExeBrowseButton.Caption:=lisPathEditBrowse;
-  MakeExeLabel.Caption:=SafeFormat(
+  MakeExeLabel.Caption:=SimpleFormat(
     lisTheMakeExecutableTypicallyHasTheName, ['make'+GetExecutableExt('')]);
 
   DebuggerBrowseButton.Caption:=lisPathEditBrowse;
-  s:=SafeFormat(lisTheDebuggerExecutableTypicallyHasTheNamePleaseGive, [
+  s:=SimpleFormat(lisTheDebuggerExecutableTypicallyHasTheNamePleaseGive, [
     'gdb'+GetExecutableExt]);
   {$IFDEF Windows}
   s+=' '+lisAUsefulSettingOnWindowsSystemsIsLazarusDirMingwBin;
