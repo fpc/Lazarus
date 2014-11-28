@@ -240,6 +240,7 @@ const DateAsCfgStrFormat='YYYYMMDD';
 function DateToCfgStr(const Date: TDateTime): string;
 function CfgStrToDate(const s: string; out Date: TDateTime): boolean;
 
+function SimpleFormat(const Fmt: String; const Args: Array of const): String;
 
 // debugging
 procedure RaiseCatchableException(const Msg: string);
@@ -357,6 +358,93 @@ uses
   {$ENDIF}
   Unix, BaseUnix;
 {$ENDIF}
+
+function SimpleFormat(const Fmt: String; const Args: array of const): String;
+var
+  Used: array of boolean;
+  p: Integer;
+  StartPos: Integer;
+
+  procedure ReplaceArg(i: integer; var s: string);
+  var
+    Arg: String;
+  begin
+    if (i<Low(Args)) or (i>High(Args)) then exit;
+    case Args[i].VType of
+    vtInteger:    Arg:=dbgs(Args[i].vinteger);
+    vtInt64:      Arg:=dbgs(Args[i].VInt64^);
+    vtQWord:      Arg:=dbgs(Args[i].VQWord^);
+    vtBoolean:    Arg:=dbgs(Args[i].vboolean);
+    vtExtended:   Arg:=dbgs(Args[i].VExtended^);
+    vtString:     Arg:=Args[i].VString^;
+    vtAnsiString: Arg:=AnsiString(Args[i].VAnsiString);
+    vtChar:       Arg:=Args[i].VChar;
+    vtPChar:      Arg:=Args[i].VPChar;
+    else exit;
+    end;
+    Used[i]:=true;
+    ReplaceSubstring(s,StartPos,p-StartPos,Arg);
+    p:=StartPos+length(Arg);
+  end;
+
+var
+  RunIndex: Integer;
+  FixedIndex: Integer;
+begin
+  Result:=Fmt;
+  if Low(Args)>High(Args) then exit;
+  SetLength(Used,High(Args)-Low(Args)+1);
+  for RunIndex:=Low(Args) to High(Args) do
+    Used[RunIndex]:=false;
+  RunIndex:=Low(Args);
+  p:=1;
+  while p<=length(Result) do
+  begin
+    if Result[p]='%' then
+    begin
+      StartPos:=p;
+      inc(p);
+      case Result[p] of
+      's':
+        begin
+          inc(p);
+          ReplaceArg(RunIndex,Result);
+          inc(RunIndex);
+        end;
+      '0'..'9':
+        begin
+          FixedIndex:=0;
+          while (p<=length(Result)) and (Result[p] in ['0'..'9']) do
+          begin
+            if FixedIndex<High(Args) then
+              FixedIndex:=FixedIndex*10+ord(Result[p])-ord('0');
+            inc(p);
+          end;
+          if (p<=length(Result)) and (Result[p]=':') then
+          begin
+            inc(p);
+            if (p<=length(Result)) and (Result[p]='s') then
+              inc(p);
+          end;
+          ReplaceArg(FixedIndex,Result);
+        end;
+      else
+        inc(p);
+      end;
+    end else
+      inc(p);
+  end;
+
+  // append all missing arguments
+  for RunIndex:=Low(Args) to High(Args) do
+  begin
+    if Used[RunIndex] then continue;
+    Result+=',';
+    StartPos:=length(Result)+1;
+    p:=StartPos;
+    ReplaceArg(RunIndex,Result);
+  end;
+end;
 
 procedure RaiseCatchableException(const Msg: string);
 begin
