@@ -1236,7 +1236,7 @@ begin
     Candidate:=GetFirstCandidate(FCandidates[sddtLazarusSrcDir]);
     if Candidate<>nil then
       EnvironmentOptions.LazarusDirectory:=Candidate.Caption;
-    if FileExistsCached(EnvironmentOptions.GetParsedLazarusDirectory) then
+    if Candidate.Quality=sddqCompatible then
       TranslateResourceStrings;
   end;
   LazDirComboBox.Text:=EnvironmentOptions.LazarusDirectory;
