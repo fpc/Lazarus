@@ -793,8 +793,10 @@ var
   p: PByte;
 begin
   SLen:=length(s);
-  if StartPos>SLen then
-    StartPos:=SLen;
+  if StartPos>SLen then begin
+    s:=s+Insertion;
+    exit;
+  end;
   if StartPos<1 then StartPos:=1;
   if Count<0 then Count:=0;
   MaxCount:=SLen-StartPos+1;
