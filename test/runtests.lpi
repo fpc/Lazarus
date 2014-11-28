@@ -48,11 +48,7 @@
             </Checks>
           </CodeGeneration>
           <Other>
-            <CompilerMessages>
-              <UseMsgFile Value="True"/>
-            </CompilerMessages>
             <CustomOptions Value="-dNoSemiAutomatedTests"/>
-            <CompilerPath Value="$(CompPath)"/>
           </Other>
         </CompilerOptions>
       </Item2>
@@ -90,37 +86,30 @@
       <Unit0>
         <Filename Value="runtests.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="runtests"/>
       </Unit0>
       <Unit1>
         <Filename Value="testlpi.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestLpi"/>
       </Unit1>
       <Unit2>
         <Filename Value="bugtestcase.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="BugTestCase"/>
       </Unit2>
       <Unit3>
         <Filename Value="testglobals.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="testglobals"/>
       </Unit3>
       <Unit4>
         <Filename Value="lcltests\testunicode.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestUnicode"/>
       </Unit4>
       <Unit5>
         <Filename Value="testunits.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="testunits"/>
       </Unit5>
       <Unit6>
         <Filename Value="lcltests\testpen.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestPen"/>
       </Unit6>
       <Unit7>
         <Filename Value="lcltests\testtextstrings.pas"/>
@@ -135,17 +124,14 @@
       <Unit9>
         <Filename Value="lazutils\testlazutils.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestLazUtils"/>
       </Unit9>
       <Unit10>
         <Filename Value="codetoolstests\testctxmlfixfragments.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestCTXMLFixFragments"/>
       </Unit10>
       <Unit11>
         <Filename Value="codetoolstests\testcfgscript.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestCfgScript"/>
       </Unit11>
       <Unit12>
         <Filename Value="codetoolstests\teststdcodetools.pas"/>
@@ -155,22 +141,18 @@
       <Unit13>
         <Filename Value="lazutils\testlazxml.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestLazXML"/>
       </Unit13>
       <Unit14>
         <Filename Value="lazutils\testavglvltree.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestAvgLvlTree"/>
       </Unit14>
       <Unit15>
         <Filename Value="codetoolstests\testmethodjumptool.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestMethodJumpTool"/>
       </Unit15>
       <Unit16>
         <Filename Value="lazutils\testlconvencoding.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestLConvEncoding"/>
       </Unit16>
     </Units>
   </ProjectOptions>
@@ -206,11 +188,7 @@
       </Checks>
     </CodeGeneration>
     <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
       <CustomOptions Value="-dNoSemiAutomatedTests"/>
-      <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
 </CONFIG>

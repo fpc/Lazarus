@@ -8,6 +8,7 @@
    ./runtests --format=plain --suite=TestCompareTextIgnoringSpace
    ./runtests --format=plain --suite=TestGuessIndentSize
    ./runtests --format=plain --suite=TestReindent
+   ./runtests --format=plain --suite=TestSimpleFormat
 }
 unit TestBasicCodetools;
 
@@ -31,6 +32,7 @@ type
     procedure TestCompareTextIgnoringSpace;
     procedure TestGuessIndentSize;
     procedure TestReIndent;
+    procedure TestSimpleFormat;
   end;
 
 implementation
@@ -213,6 +215,29 @@ begin
   t('      A',2,4, 4,4,#9#9#9'A');
   t(#9'A',4,4, 2,0,'  A');
   t('A'#10'  B'#10,2,4, 3,0,'A'#10'   B'#10);
+end;
+
+procedure TTestBasicCodeTools.TestSimpleFormat;
+
+  procedure t(const Fmt: string; Args: array of const; const Expected: string);
+  var
+    Actual: String;
+  begin
+    Actual:=SimpleFormat(Fmt,Args);
+    if Expected=Actual then exit;
+    writeln(dbgsDiff(Expected,Actual));
+    AssertEquals('"'+DbgStr(Fmt)+'"('+dbgs(High(Args)-Low(Args)+1)+')',true,false);
+  end;
+
+begin
+  t('A',['Foo'],'A,Foo');
+  t('A%sB',['Foo'],'AFooB');
+  t('A%sB%sC',['Foo'],'AFooB%sC');
+  t('A%sB',['Foo','Bar'],'AFooB,Bar');
+  t('A%0B',['Foo','Bar'],'AFooB,Bar');
+  t('A%1B',['Foo','Bar'],'ABarB,Foo');
+  t('A%1%0B',['Foo','Bar'],'ABarFooB');
+  t('A%1:s%0:sB',['Foo','Bar'],'ABarFooB');
 end;
 
 initialization

@@ -43,7 +43,7 @@ uses
   Classes, SysUtils, strutils, contnrs, LCLProc, Forms, Controls, Buttons,
   Dialogs, FileUtil, Laz2_XMLCfg, lazutf8classes, LazFileUtils, LazFileCache,
   LazLogger, Graphics, ComCtrls, ExtCtrls, StdCtrls, DefineTemplates,
-  CodeToolManager, TransferMacros, MacroDefIntf, GDBMIDebugger,
+  CodeToolManager, FileProcs, TransferMacros, MacroDefIntf, GDBMIDebugger,
   DbgIntfDebuggerBase, LazarusIDEStrConsts, LazConf, EnvironmentOpts, IDEProcs,
   AboutFrm, IDETranslations, InitialSetupProc;
   
