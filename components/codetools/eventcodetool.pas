@@ -1353,7 +1353,9 @@ begin
     // complete all child components
     for i:=0 to AComponent.ComponentCount-1 do begin
       CurComponent:=AComponent.Components[i];
+      {$IFDEF CTDEBUG}
       DebugLn('[TEventsCodeTool.CompleteComponent]  CurComponent=',CurComponent.Name,':',CurComponent.ClassName);
+      {$ENDIF}
       VarName:=CurComponent.Name;
       if VarName='' then continue;
       if (AncestorComponent<>nil)
