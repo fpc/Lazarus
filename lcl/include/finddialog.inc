@@ -384,6 +384,22 @@ begin
   CloseDialog;
 end;
 
+function TFindDialog.GetHeight: Integer;
+begin
+  if Assigned(FFindForm) then
+    Result := FFindForm.Height
+  else
+    Result := inherited GetHeight;
+end;
+
+function TFindDialog.GetWidth: Integer;
+begin
+  if Assigned(FFindForm) then
+    Result := FFindForm.Width
+  else
+  Result := inherited GetWidth;
+end;
+
 procedure TFindDialog.UpdatePosition;
 begin
   if Assigned(FFindForm) then
@@ -575,6 +591,8 @@ begin
     FFindForm.HelpContext:=HelpContext;
     FFindForm.Caption:=Title;
     FFindForm.Show;
+    FHeight := FFindForm.Height;
+    FWidth := FFindForm.Width;
     Result := true;
   end;
 end;

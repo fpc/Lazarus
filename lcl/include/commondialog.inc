@@ -126,3 +126,13 @@ function TCommonDialog.DefaultTitle: string;
 begin
   Result := '';
 end;
+
+function TCommonDialog.GetHeight: Integer;
+begin
+  Result := FHeight;
+end;
+
+function TCommonDialog.GetWidth: Integer;
+begin
+  Result := FWidth;
+end;
