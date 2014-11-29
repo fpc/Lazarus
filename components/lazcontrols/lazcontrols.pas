@@ -7,8 +7,9 @@ unit LazControls;
 interface
 
 uses
-  DividerBevel, ExtendedNotebook, ListFilterEdit, TreeFilterEdit, ShortPathEdit, 
-  LvlGraphCtrl, ExtendedTabControls, LazarusPackageIntf;
+  DividerBevel, ExtendedNotebook, ListFilterEdit, TreeFilterEdit, 
+  ShortPathEdit, LvlGraphCtrl, ExtendedTabControls, CheckBoxThemed, 
+  LazarusPackageIntf;
 
 implementation
 
@@ -22,6 +23,7 @@ begin
   RegisterUnit('TreeFilterEdit', @TreeFilterEdit.Register);
   RegisterUnit('ShortPathEdit', @ShortPathEdit.Register);
   RegisterUnit('LvlGraphCtrl', @LvlGraphCtrl.Register);
+  RegisterUnit('CheckBoxThemed', @CheckBoxThemed.Register);
 end;
 
 initialization

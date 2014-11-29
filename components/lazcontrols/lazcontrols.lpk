@@ -18,7 +18,7 @@
     <Description Value="Some extra LCL controls needed by the IDE."/>
     <License Value="modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="7">
+    <Files Count="8">
       <Item1>
         <Filename Value="dividerbevel.pas"/>
         <HasRegisterProc Value="True"/>
@@ -53,6 +53,11 @@
         <Filename Value="extendedtabcontrols.pas"/>
         <UnitName Value="ExtendedTabControls"/>
       </Item7>
+      <Item8>
+        <Filename Value="checkboxthemed.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="CheckBoxThemed"/>
+      </Item8>
     </Files>
     <LazDoc Paths="docs"/>
     <Type Value="RunAndDesignTime"/>
