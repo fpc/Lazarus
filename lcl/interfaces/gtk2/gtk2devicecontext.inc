@@ -792,7 +792,7 @@ begin
     ClipArea := ClipRect;
     RemovePixbuf;
     if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and
-       (IsBackgroundColor(CurrentBrush^.GDIBrushColor.ColorRef)) then
+       (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
       StyleFillRectangle(Drawable, GC,
                          CurrentBrush^.GDIBrushColor.ColorRef,
                          ARect.Left + DCOrigin.X, ARect.Top + DCOrigin.Y,

@@ -30,7 +30,7 @@ uses
   // LCL
   Gtk2Extra,
   LCLIntf, LCLProc, LCLType, LCLMemManager, DynHashArray,
-  GraphType, Gtk2Globals;
+  GraphType, Gtk2Globals, Graphics {for TColor};
 
 {$ifdef TraceGdiCalls}
 const
