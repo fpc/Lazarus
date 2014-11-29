@@ -550,9 +550,9 @@ var
   InValidPathsExist: Boolean;
 begin
   // Replace / add / delete / Delete Invalid Paths
-  ReplaceButton.Enabled:=(DirectoryEdit.Text<>'') and (DirectoryEdit.Text<>FEffectiveBaseDirectory)
+  AddButton.Enabled:=(DirectoryEdit.Text<>'') and (DirectoryEdit.Text<>FEffectiveBaseDirectory)
       and (PathListBox.Items.IndexOf(BaseRelative(DirectoryEdit.Text))=-1);
-  AddButton.Enabled:=ReplaceButton.Enabled;
+  ReplaceButton.Enabled:=AddButton.Enabled and (PathListBox.ItemIndex>-1) ;
   DeleteButton.Enabled:=PathListBox.SelCount=1; // or ItemIndex>-1; ?
   AddTemplateButton.Enabled:=(TemplatesListBox.SelCount>1) or ((TemplatesListBox.ItemIndex>-1)
       and (PathListBox.Items.IndexOf(TemplatesListBox.Items[TemplatesListBox.ItemIndex])=-1));
