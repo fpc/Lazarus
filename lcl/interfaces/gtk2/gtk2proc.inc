@@ -1184,7 +1184,7 @@ end;
 
 {$IFDEF VerboseGtkToDos}{$note remove when gtk native imagelist will be ready}{$ENDIF}
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
-  Index: integer; AEffect: TGraphicsDrawEffect; DestWidget: PGTKWidget;
+  Index: integer; AEffect: TGraphicsDrawEffect; Checked: boolean; DestWidget: PGTKWidget;
   CenterHorizontally, CenterVertically: boolean;
   DestLeft, DestTop: integer);
 // draw icon of imagelist centered on gdkwindow
@@ -1196,6 +1196,7 @@ var
   DestDC: HDC;
   Offset: TPoint;
   FixedWidget: PGtkWidget;
+  r:TRect;
 begin
   if ImgList=nil then exit;
   if (Index<0) or (Index>=ImgList.Count) then exit;
@@ -1223,6 +1224,12 @@ begin
     DestTop := DestWidget^.allocation.y - Offset.y +  ((WindowHeight-ImageHeight) div 2);
   DestDC := GetDC(HDC({%H-}PtrUInt(DestWidget)));
 
+  if Checked then
+  begin
+    r:=Rect(DestLeft-2, DestTop-2, ImageWidth+6, ImageHeight+6);
+    DrawEdge(DestDC,r,EDGE_SUNKEN,BF_ADJUST or BF_FLAT or BF_RECT or BF_SOFT);
+  end;
+
   //DebugLn('DrawImageListIconOnWidget B DestXY=',DestLeft,',',DestTop,
   //  ' DestWindowSize=',WindowWidth,',',WindowWidth,
   //  ' SrcRect=',ImageRect.Left,',',ImageRect.Top,',',ImageWidth,'x',ImageHeight);
@@ -1236,7 +1243,7 @@ end;
 procedure DrawImageListIconOnWidget(ImgList: TCustomImageList;
   Index: integer; DestWidget: PGTKWidget);
 begin
-  DrawImageListIconOnWidget(ImgList, Index, gdeNormal, DestWidget, true, true, 0, 0);
+  DrawImageListIconOnWidget(ImgList, Index, gdeNormal, false, DestWidget, true, true, 0, 0);
 end;
 
 function GetGdkImageBitsPerPixel(Image: PGdkImage): cardinal;
@@ -5779,7 +5786,7 @@ begin
   if AImageIndex < AImageList.Count then
     {$IFDEF VerboseGtkToDos}{$note reimplement}{$ENDIF}
     DrawImageListIconOnWidget(AImageList, AImageIndex, AEffect,
-      Widget, false, false, ALeft, ATop);
+        LCLMenuItem.Checked, Widget, false, false, ALeft, ATop);
 
   if FreeImageList then
     AImageList.Free;
