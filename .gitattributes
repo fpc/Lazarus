@@ -2025,6 +2025,7 @@ components/jcf2/readme.txt svneol=native#text/plain
 components/lazcontrols/Makefile svneol=native#text/plain
 components/lazcontrols/Makefile.compiled svneol=native#text/plain
 components/lazcontrols/Makefile.fpc svneol=native#text/plain
+components/lazcontrols/checkboxthemed.pas svneol=native#text/pascal
 components/lazcontrols/design/lazcontroldsgn.lpk svneol=native#text/pascal
 components/lazcontrols/design/lazcontroldsgn.pas svneol=native#text/pascal
 components/lazcontrols/design/registerlazcontrols.pas svneol=native#text/pascal
@@ -2032,6 +2033,7 @@ components/lazcontrols/dividerbevel.pas svneol=native#text/pascal
 components/lazcontrols/extendednotebook.pas svneol=native#text/pascal
 components/lazcontrols/extendedtabcontrols.pas svneol=native#text/pascal
 components/lazcontrols/fpmake.pp svneol=native#text/plain
+components/lazcontrols/images/checkboxthemed.png -text svneol=unset#image/png
 components/lazcontrols/images/dividerbevel.png -text
 components/lazcontrols/images/listfilteredit.png -text
 components/lazcontrols/images/shortpathedit.png -text svneol=unset#image/png
