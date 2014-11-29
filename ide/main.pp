@@ -642,6 +642,8 @@ type
     OldCompilerFilename, OldLanguage: String;
     OIChangedTimer: TIdleTimer;
 
+    FPrevForm: TCustomForm;
+
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
   protected
@@ -8580,7 +8582,9 @@ begin
     GlobalDesignHook.LookupRoot:=TheControlSelection.LookupRoot;
   if NewForm<>nil then
     NewForm.Invalidate;
-  UpdateIDEComponentPalette;
+  if NewForm<>FPrevForm then
+    UpdateIDEComponentPalette;
+  FPrevForm:=NewForm;
 end;
 
 procedure TMainIDE.OnGetDesignerSelection(const ASelection: TPersistentSelectionList);
@@ -10515,7 +10519,9 @@ begin
   {$ENDIF}
   DisplayState:= dsForm;
   LastFormActivated := (Sender as TDesigner).Form;
-  UpdateIDEComponentPalette;
+  if LastFormActivated<>FPrevForm then
+    UpdateIDEComponentPalette;
+  FPrevForm:=LastFormActivated;
 end;
 
 procedure TMainIDE.OnDesignerCloseQuery(Sender: TObject);
