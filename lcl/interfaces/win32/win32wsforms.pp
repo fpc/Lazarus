@@ -384,7 +384,7 @@ begin
           begin
             if Info^.RestoreState <> 0 then
             begin
-              Windows.ShowWindow(Window, Info^.RestoreState);
+              Windows.ShowWindowAsync(Window, Info^.RestoreState);
               Info^.RestoreState := 0;
               Exit(CallDefaultWindowProc(Window, Msg, WParam, LParam));
             end;
