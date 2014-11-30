@@ -778,7 +778,7 @@ begin
                     [// phpWithStart is no needed because there are icons
                      phpWithVarModifiers,
                      phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
-                     phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
+                     phpWithOfObject]);
 
     ctnProcedureHead:
       Result:='Procedure Header';
