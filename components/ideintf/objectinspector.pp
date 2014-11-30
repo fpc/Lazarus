@@ -5320,6 +5320,7 @@ end;
 procedure TObjectInspectorDlg.DoZOrderItemClick(Sender: TObject);
 var
   Control: TControl;
+  NewSelection: TPersistentSelectionList;
 begin
   if not (Sender is TMenuItem) then Exit;
   if (Selection.Count <> 1) or
@@ -5333,6 +5334,25 @@ begin
     2: Control.Parent.SetControlIndex(Control, Control.Parent.GetControlIndex(Control) + 1);
     3: Control.Parent.SetControlIndex(Control, Control.Parent.GetControlIndex(Control) - 1);
   end;
+
+  // Ensure controls that belong to a container are rearranged if required.
+  Control.Parent.ReAlign;
+
+  // Ensure the order of controls in the OI now reflects the new ZOrder
+  NewSelection := TPersistentSelectionList.Create;
+  try
+    NewSelection.ForceUpdate:=True;
+    NewSelection.Add(Control.Parent);
+    SetSelection(NewSelection);
+
+    NewSelection.Clear;
+    NewSelection.ForceUpdate:=True;
+    NewSelection.Add(Control);
+    SetSelection(NewSelection);
+  finally
+    NewSelection.Free;
+  end;
+
   DoModified(Self);
 end;
 

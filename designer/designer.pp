@@ -217,10 +217,7 @@ type
     procedure DoShowTabOrderEditor;
     procedure DoShowChangeClassDialog;
     procedure DoShowObjectInspector;
-    procedure DoOrderMoveSelectionToFront;
-    procedure DoOrderMoveSelectionToBack;
-    procedure DoOrderForwardSelectionOne;
-    procedure DoOrderBackSelectionOne;
+    procedure DoChangeZOrder(TheAction: Integer);
 
     procedure GiveComponentsNames;
     procedure NotifyPersistentAdded(APersistent: TPersistent);
@@ -1421,25 +1418,7 @@ begin
     OnShowObjectInspector(Self);
 end;
 
-procedure TDesigner.DoOrderMoveSelectionToFront;
-begin
-  if ControlSelection.Count <> 1 then Exit;
-  if not ControlSelection[0].IsTControl then Exit;
-
-  TControl(ControlSelection[0].Persistent).BringToFront;
-  Modified;
-end;
-
-procedure TDesigner.DoOrderMoveSelectionToBack;
-begin
-  if ControlSelection.Count <> 1 then Exit;
-  if not ControlSelection[0].IsTControl then Exit;
-
-  TControl(ControlSelection[0].Persistent).SendToBack;
-  Modified;
-end;
-
-procedure TDesigner.DoOrderForwardSelectionOne;
+procedure TDesigner.DoChangeZOrder(TheAction: Integer);
 var
   Control: TControl;
   Parent: TWinControl;
@@ -1449,26 +1428,24 @@ begin
 
   Control := TControl(ControlSelection[0].Persistent);
   Parent := Control.Parent;
-  if Parent = nil then Exit;
+  if (Parent = nil) and (TheAction in [2, 3]) then Exit;
 
-  Parent.SetControlIndex(Control, Parent.GetControlIndex(Control) + 1);
+  case TheAction of
+   0: Control.BringToFront;
+   1: Control.SendToBack;
+   2: Parent.SetControlIndex(Control, Parent.GetControlIndex(Control) + 1);
+   3: Parent.SetControlIndex(Control, Parent.GetControlIndex(Control) - 1);
+  end;
 
-  Modified;
-end;
-
-procedure TDesigner.DoOrderBackSelectionOne;
-var
-  Control: TControl;
-  Parent: TWinControl;
-begin
-  if ControlSelection.Count <> 1 then Exit;
-  if not ControlSelection[0].IsTControl then Exit;
-
-  Control := TControl(ControlSelection[0].Persistent);
-  Parent := Control.Parent;
-  if Parent = nil then Exit;
-
-  Parent.SetControlIndex(Control, Parent.GetControlIndex(Control) - 1);
+  // Ensure the order of controls in the OI now reflects the new ZOrder
+  // Unfortunately, if there is no parent, this code doesn't achieve a refresh
+  // of ComponentTree in the OI
+  if assigned(Parent) then
+  begin
+    Parent.ReAlign;
+    SelectOnlyThisComponent(Parent);
+  end;
+  SelectOnlyThisComponent(Control);
 
   Modified;
 end;
@@ -1590,10 +1567,10 @@ begin
     ecDesignerCopy         : CopySelection;
     ecDesignerCut          : CutSelection;
     ecDesignerPaste        : PasteSelection([cpsfFindUniquePositions]);
-    ecDesignerMoveToFront  : DoOrderMoveSelectionToFront;
-    ecDesignerMoveToBack   : DoOrderMoveSelectionToBack;
-    ecDesignerForwardOne   : DoOrderForwardSelectionOne;
-    ecDesignerBackOne      : DoOrderBackSelectionOne;
+    ecDesignerMoveToFront  : DoChangeZOrder(0);
+    ecDesignerMoveToBack   : DoChangeZOrder(1);
+    ecDesignerForwardOne   : DoChangeZOrder(2);
+    ecDesignerBackOne      : DoChangeZOrder(3);
   else
     Exit;
   end;
@@ -4122,22 +4099,22 @@ end;
 
 procedure TDesigner.OnOrderMoveToFrontMenuClick(Sender: TObject);
 begin
-  DoOrderMoveSelectionToFront;
+  DoChangeZOrder(0);
 end;
 
 procedure TDesigner.OnOrderMoveToBackMenuClick(Sender: TObject);
 begin
-  DoOrderMoveSelectionToBack;
+  DoChangeZOrder(1);
 end;
 
 procedure TDesigner.OnOrderForwardOneMenuClick(Sender: TObject);
 begin
-  DoOrderForwardSelectionOne;
+  DoChangeZOrder(2);
 end;
 
 procedure TDesigner.OnOrderBackOneMenuClick(Sender: TObject);
 begin
-  DoOrderBackSelectionOne;
+  DoChangeZOrder(3);
 end;
 
 procedure TDesigner.HintTimer(Sender: TObject);
