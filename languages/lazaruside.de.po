@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-11-16 16:44+0100\n"
+"PO-Revision-Date: 2014-11-30 19:09+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -598,7 +598,7 @@ msgstr "Datei automatisch löschen"
 
 #: lazarusidestrconsts.dlgautodisplayfuncproto
 msgid "Auto Display Function Prototypes"
-msgstr ""
+msgstr "Zeige Funktions-Prototypen automatisch"
 
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse when typing"
@@ -632,7 +632,7 @@ msgstr "Verfügbare Formulare:"
 
 #: lazarusidestrconsts.dlgavailableformshint
 msgid "These forms must be created and freed in the program code."
-msgstr ""
+msgstr "Diese Formulare müssen im Programmcode erzeugt und freigegeben werden."
 
 #: lazarusidestrconsts.dlgbackcolor
 msgid "Background"
@@ -1481,7 +1481,7 @@ msgstr "Sprache"
 
 #: lazarusidestrconsts.dlgenvlanguagehint
 msgid "Language of all IDE strings. Restart IDE after changing it for best result."
-msgstr ""
+msgstr "Sprache aller IDE-Zeichenketten. Ein Neustart der IDE wird nach einer Änderung empfohlen."
 
 #: lazarusidestrconsts.dlgenvlguidelines
 msgid "Guide lines"
@@ -1856,7 +1856,7 @@ msgstr "IDE-Fenster beim Start verstecken"
 
 #: lazarusidestrconsts.dlghideideonrunhint
 msgid "Do not show the IDE at all while program is running."
-msgstr ""
+msgstr "Während das Programm läuft wird die IDE nicht angezeigt."
 
 #: lazarusidestrconsts.dlghidesingletabinnotebook
 msgid "Hide tab in single page windows"
@@ -2975,7 +2975,7 @@ msgstr "Zeige alle Units"
 
 #: lazarusidestrconsts.dlgshowcaptionsofnonvisuals
 msgid "Show captions of non-visual components"
-msgstr ""
+msgstr "Zeige Titel nichtvisueller Komponenten"
 
 #: lazarusidestrconsts.dlgshowcompiledprocedures
 msgid "Show compiled procedures"
@@ -6507,7 +6507,7 @@ msgstr "Verwende bedingte Kompilierung zur Unterstützung von Delphi"
 
 #: lazarusidestrconsts.lisconvfixedunitname
 msgid "Fixed unit name from %s to %s."
-msgstr ""
+msgstr "Unitname von %s auf %s berichtigt."
 
 #: lazarusidestrconsts.lisconvfuncreplacements
 msgid "Function Replacements"
@@ -8300,7 +8300,7 @@ msgstr "Export ..."
 
 #: lazarusidestrconsts.lisexportallitemstofile
 msgid "Export All Items to File"
-msgstr ""
+msgstr "Alle Elemente in Datei exportieren"
 
 #: lazarusidestrconsts.lisexporthtml
 msgid "Export as HTML"
@@ -8396,7 +8396,6 @@ msgid "Reduce designer painting"
 msgstr "Designer möglichst selten neu zeichnen"
 
 #: lazarusidestrconsts.lisfepaintdesigneritemsonidlehint
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisfepaintdesigneritemsonidlehint"
 msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr "Zeichne Designerelemente nur wenn unbeschäftigt (reduziert die Prozessorbelastung langsamerer Rechner)"
@@ -9263,7 +9262,7 @@ msgstr "Import ..."
 
 #: lazarusidestrconsts.lisimportant
 msgid "Important"
-msgstr ""
+msgstr "Wichtig"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
@@ -9460,11 +9459,11 @@ msgstr "Properties"
 
 #: lazarusidestrconsts.lisinspectshowcolclass
 msgid "Show class column"
-msgstr ""
+msgstr "Zeige Klassen-Spalte"
 
 #: lazarusidestrconsts.lisinspectshowcoltype
 msgid "Show type column"
-msgstr ""
+msgstr "Zeige Typen-Spalte"
 
 #: lazarusidestrconsts.lisinspectshowcolvisibility
 msgid "Show visibility column"
@@ -12179,7 +12178,7 @@ msgstr "Neuer Makroname"
 
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
-msgstr ""
+msgstr "Neue Seite"
 
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
@@ -12701,7 +12700,7 @@ msgstr "Seite"
 
 #: lazarusidestrconsts.lispagename
 msgid "Page name"
-msgstr ""
+msgstr "Seitenname"
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
@@ -17050,7 +17049,7 @@ msgstr "Verwende Ansistrings"
 
 #: lazarusidestrconsts.lisusecheckboxforbooleanvalues
 msgid "Use CheckBox for Boolean values"
-msgstr ""
+msgstr "Verwende CheckBox für boolesche Werte"
 
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
@@ -17429,7 +17428,6 @@ msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Lazarus kann während des Debuggens oder Kompilierens nicht neu kompiliert werden."
 
 #: lazarusidestrconsts.lis_all_
-#, fuzzy
 msgctxt "lazarusidestrconsts.lis_all_"
 msgid "<All>"
 msgstr "<Alle>"
