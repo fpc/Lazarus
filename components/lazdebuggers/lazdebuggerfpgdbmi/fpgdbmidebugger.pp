@@ -368,7 +368,7 @@ end;
 function TFpGDBMIAndWin32DbgMemReader.ReadMemory(AnAddress: TDbgPtr;
   ASize: Cardinal; ADest: Pointer): Boolean;
 var
-  BytesRead: Cardinal;
+  BytesRead: SizeUInt;
 begin
   {$IFdef MSWindows}
   Result := ReadProcessMemory(
