@@ -1643,12 +1643,8 @@ Descendent classes can override this method to provide a different result.
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.Hint">
-        <short>
-          <var>Hint</var>
-
-
-
-: a pop-up help message that appears when the mouse hovers over an item.</short>
+        <short><var>Hint</var>
+: shown in a statusbar if the main window has one and if the statusbar has AutoHint = True.</short>
       </element>
       <!-- property Visibility: published -->
       <element name="TMenuItem.ImageIndex">
