@@ -954,18 +954,24 @@ begin
   FList := AList;
 end;
 
-function FindAllFiles(const SearchPath: String; SearchMask: String;
-  SearchSubDirs: Boolean): TStringList;
+procedure FindAllFiles(AList: TStrings; const SearchPath: String;
+  SearchMask: String; SearchSubDirs: Boolean);
 var
   Searcher: TListFileSearcher;
 begin
-  Result := TStringList.Create;
-  Searcher := TListFileSearcher.Create(Result);
+  Searcher := TListFileSearcher.Create(AList);
   try
     Searcher.Search(SearchPath, SearchMask, SearchSubDirs);
   finally
     Searcher.Free;
   end;
+end;
+
+function FindAllFiles(const SearchPath: String; SearchMask: String;
+  SearchSubDirs: Boolean): TStringList;
+begin
+  Result := TStringList.Create;
+  FindAllFiles(Result, SearchPath, SearchMask, SearchSubDirs);
 end;
 
 { TListDirectoriesSearcher }
@@ -983,11 +989,18 @@ end;
 
 function FindAllDirectories(const SearchPath : string;
   SearchSubDirs: Boolean = True): TStringList;
+begin
+  Result := TStringList.Create;
+  FindAllDirectories(Result, SearchPath, SearchSubDirs);
+end;
+
+procedure FindAllDirectories(AList: TStrings; const SearchPath: String;
+  SearchSubDirs: Boolean = true);
 var
   Searcher :TFileSearcher;
 begin
-  Result := TStringList.Create;
-  Searcher := TListDirectoriesSearcher.Create(Result);
+  Assert(AList <> nil);
+  Searcher := TListDirectoriesSearcher.Create(AList);
   try
     Searcher.Search(SearchPath, AllFilesMask, SearchSubDirs);
   finally

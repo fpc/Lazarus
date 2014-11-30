@@ -202,9 +202,14 @@ type
   end;
 
 function FindAllFiles(const SearchPath: String; SearchMask: String = '';
-  SearchSubDirs: Boolean = True): TStringList;
+  SearchSubDirs: Boolean = True): TStringList; overload;
+procedure FindAllFiles(AList: TStrings; const SearchPath: String;
+  SearchMask: String = ''; SearchSubDirs: Boolean = True); overload;
+
 function FindAllDirectories(const SearchPath: string;
-  SearchSubDirs: Boolean = True): TStringList;
+  SearchSubDirs: Boolean = True): TStringList; overload;
+procedure FindAllDirectories(AList: TStrings; const SearchPath: String;
+  SearchSubDirs: Boolean = true); overload;
 
 // flags for copy
 type
