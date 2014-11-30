@@ -3298,6 +3298,7 @@ resourcestring
   lisCodeToolsOptsSpace       = 'Space';
   lisCodeToolsOptsSymbol      = 'Symbol';
   lisCodeToolsOptsBracket     = 'Bracket';
+  lisCodeToolsOptsCaret       = 'Caret (^)';
 
   // codetools defines
   lisCodeToolsDefsWriteError = 'Write error';

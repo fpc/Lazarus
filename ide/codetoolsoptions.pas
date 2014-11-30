@@ -272,6 +272,7 @@ begin
   atSpace: Result:=lisCodeToolsOptsSpace;
   atSymbol: Result:=lisCodeToolsOptsSymbol;
   atBracket: Result:=lisCodeToolsOptsBracket;
+  atCaret: Result:=lisCodeToolsOptsCaret;
   else
     Result:='???';
   end;

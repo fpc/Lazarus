@@ -78,7 +78,7 @@ type
   TAtomType = (atNone, atKeyword, atIdentifier, atColon, atSemicolon, atComma,
                atPoint, atAt, atNumber, atStringConstant, atNewLine,
                atSpace, atCommentStart, atDirectiveStart, atCommentEnd,
-               atSymbol, atBracket);
+               atSymbol, atBracket, atCaret);
   TAtomTypes = set of TAtomType;
   
   TBeautifyCodeFlag = (
@@ -312,7 +312,8 @@ const
       'DirectiveStart',
       'CommentEnd',
       'Symbol',
-      'Bracket'
+      'Bracket',
+      'Caret'
     );
 
   WordPolicyNames: array[TWordPolicy] of shortstring = (
@@ -1594,6 +1595,7 @@ begin
               ':': CurAtomType:=atColon;
               ';': CurAtomType:=atSemicolon;
               '@': CurAtomType:=atAt;
+              '^': CurAtomType:=atCaret;
             end;
         end;
     end;
