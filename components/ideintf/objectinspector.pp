@@ -2421,7 +2421,7 @@ end;
 procedure TOICustomPropertyGrid.DoSelectionChange;
 begin
   if Assigned(FOnSelectionChange) then
-    OnSelectionChange(Self);
+    FOnSelectionChange(Self);
 end;
 
 procedure TOICustomPropertyGrid.OnUserInput(Sender: TObject; Msg: Cardinal);
@@ -4642,7 +4642,7 @@ end;
 
 procedure TObjectInspectorDlg.OnGridSelectionChange(Sender: TObject);
 begin
-  if Assigned(FOnSelectionChange) then OnSelectionChange(Self);
+  if Assigned(FOnSelectionChange) then FOnSelectionChange(Self);
 end;
 
 function TObjectInspectorDlg.OnGridPropertyHint(Sender: TObject;
@@ -4707,8 +4707,11 @@ begin
   FShowInfoBox := AValue;
   ShowInfoBoxPopupMenuItem.Checked := AValue;
   InfoPanel.Visible := AValue;
-  if AValue then
-    CreateBottomSplitter
+  if AValue then begin
+    CreateBottomSplitter;
+    if Assigned(FOnSelectionChange) then
+      FOnSelectionChange(Self);
+  end
   else
     FreeAndNil(Splitter2);
 end;
