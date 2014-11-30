@@ -272,6 +272,8 @@ var
   TmpSize: TSize; // used by WM_MEASUREITEM
   Info: TComboboxInfo;
   OrgCharCode: word; // used in WM_CHAR handling
+  SynapticsWindow: HWND; // used by WM_MOUSEWHEEL
+  SynapticsClassName: PAnsiChar; // used by WM_MOUSEWHEEL
 
   function GetMenuParent(ASearch, AParent: HMENU): HMENU;
   var
@@ -1862,6 +1864,19 @@ begin
         P.X := X;
         P.Y := Y;
         TargetWindow := TWin32WidgetSet(WidgetSet).WindowFromPoint(P);
+
+        // For Synaptics and Lenovo (and other?) touchpad driver
+        SynapticsWindow := Windows.WindowFromPoint(P);
+        GetMem(SynapticsClassName, 50);
+        try
+          GetClassNameA(SynapticsWindow, SynapticsClassName, 50);
+          // Not only for Synaptics any more
+          //if SynapticsClassName = 'SynTrackCursorWindowClass' then
+            TargetWindow := Window;
+        finally
+          FreeMem(SynapticsClassName);
+        end;
+
         if (TargetWindow = 0) or not IsWindowEnabled(TargetWindow) then
           exit;
 
