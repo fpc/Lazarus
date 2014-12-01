@@ -450,7 +450,7 @@ begin
   if FLastClickedItemIndex=FItemIndex then exit;
   FLastClickedItemIndex:=FItemIndex;
   EditingDone;
-  // for Delphi compatility: OnClick should be invoked, whenever ItemIndex
+  // for Delphi compatibility: OnClick should be invoked, whenever ItemIndex
   // has changed
   if Assigned (FOnClick) then FOnClick(Self);
   // And a better named LCL equivalent
