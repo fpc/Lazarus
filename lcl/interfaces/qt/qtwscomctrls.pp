@@ -1854,8 +1854,6 @@ var
   QtTreeWidget: TQtTreeWidget;
   {$IFDEF TEST_QT_SORTING}
   StdModel: QStandardItemModelH;
-  {$ELSE}
-  CanSort: Boolean;
   {$ENDIF}
 begin
   if not WSCheckHandleAllocated(ALV, 'SetSort') then
@@ -1885,13 +1883,12 @@ begin
     {$ELSE}
     with QtTreeWidget do
     begin
-      CanSort := ItemCount > 0;
       Header.SetSortIndicatorVisible(True);
-      if (AColumn >= 0) and (AColumn < ColCount) and
-        CanSort then
+      if (AColumn >= 0) and (AColumn < ColCount) then
       begin
         Header.SetSortIndicator(AColumn, QtSortOrder(Ord(ASortDirection)));
-        InternalUpdateItems(ALV);
+        if ItemCount > 0 then
+          InternalUpdateItems(ALV);
       end;
     end;
     {$ENDIF}
