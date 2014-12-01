@@ -18,8 +18,6 @@
 
 type
 
-  { TCheckGroupStringList }
-
   { TRadioGroupStringList }
 
   TRadioGroupStringList = class(TStringList)
@@ -32,7 +30,7 @@ type
     procedure Assign(Source: TPersistent); override;
   end;
 
-{ TCheckGroupStringList }
+{ TRadioGroupStringList }
 
 procedure TRadioGroupStringList.Changed;
 begin
@@ -129,10 +127,11 @@ procedure TCustomRadioGroup.InitializeWnd;
 begin
   if FCreatingWnd then RaiseGDBException('TCustomRadioGroup.InitializeWnd');
   FCreatingWnd := true;
-  //DebugLn('[TCustomRadioGroup.InitializeWnd] A ',Name,':',ClassName,' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex);
+  //DebugLn(['[TCustomRadioGroup.InitializeWnd] A ',DbgSName(Self),' FItems.Count=',FItems.Count,' HandleAllocated=',HandleAllocated,' ItemIndex=',ItemIndex]);
   UpdateItems;
   inherited InitializeWnd;
   RealizeItemIndex;
+  //debugln(['TCustomRadioGroup.InitializeWnd END']);
   FCreatingWnd := false;
 end;
 
