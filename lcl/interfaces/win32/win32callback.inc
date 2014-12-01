@@ -215,6 +215,30 @@ begin
     DisposeWindowInfo(Buddy);
 end;
 
+function GetLCLWindowFromPoint(BaseControl: TControl; const Point: TPoint): HWND;
+var
+  ParentForm: TCustomForm;
+  ParentRect: TRect;
+  TheControl: TControl;
+begin
+  Result := 0;
+  ParentForm := GetParentForm(BaseControl);
+  if ParentForm <> nil then
+  begin
+    TheControl := ParentForm.ControlAtPos(ParentForm.ScreenToClient(Point), [capfAllowDisabled, capfAllowWinControls,
+      capfRecursive, capfHasScrollOffset]);
+    if TheControl is TWinControl then
+      Result := TWinControlAccess(TheControl).WindowHandle;
+    if Result = 0 then
+    begin
+      ParentRect := Rect(ParentForm.Left, ParentForm.Top,
+        ParentForm.Left + ParentForm.Width, ParentForm.Top + ParentForm.Height);
+      if PtInRect(ParentRect, Point) then
+        Result := ParentForm.Handle;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
  Function: WindowProc
  Params: Window - The window that receives a message
@@ -1862,17 +1886,18 @@ begin
         // window the mouse is hovering over
         P.X := X;
         P.Y := Y;
-        TargetWindow := TWin32WidgetSet(WidgetSet).WindowFromPoint(P);
 
+        TargetWindow := Win32WidgetSet.WindowFromPoint(P);
+        //fallback to LCL function to get the actual window
         if TargetWindow = 0 then
-          TargetWindow := Window;
+          TargetWindow := GetLCLWindowFromPoint(lWinControl, P);
 
         if (TargetWindow = 0) or not IsWindowEnabled(TargetWindow) then
           exit;
 
         // check if the window is an edit control of a combobox, if so,
         // redirect it to the combobox, not the edit control
-        if GetWin32WindowInfo(TargetWindow)^.isComboEdit then
+        if WindowInfo^.isComboEdit then
           TargetWindow := Windows.GetParent(TargetWindow);
 
         // check InMouseWheelRedirection to prevent recursion
