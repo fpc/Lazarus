@@ -420,6 +420,7 @@ begin
       begin
         if Assigned(FOnClick) then FOnClick(Self);
         if Assigned(FOnSelectionChanged) then FOnSelectionChanged(Self);
+        FLastClickedItemIndex := FItemIndex;
       end;
     end;
   end;
