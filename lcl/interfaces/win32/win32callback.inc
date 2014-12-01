@@ -272,6 +272,7 @@ var
   TmpSize: TSize; // used by WM_MEASUREITEM
   Info: TComboboxInfo;
   OrgCharCode: word; // used in WM_CHAR handling
+  CharCodeNotEmpty: boolean; // used by WM_CHAR, WM_SYSCHAR and WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
 
   function GetMenuParent(ASearch, AParent: HMENU): HMENU;
   var
@@ -2599,10 +2600,16 @@ begin
           end;
         end;
 
+        case Msg of
+          WM_CHAR, WM_SYSCHAR:
+            CharCodeNotEmpty := (LMChar.CharCode<>0);
+          else
+            CharCodeNotEmpty := (LMKey.CharCode<>0);
+        end;
         // we cannot tell for sure windows didn't want the key
         // for WM_CHAR check WM_GETDLGCODE/DLGC_WANTCHARS
         // winapi too inconsistent about return value
-        if (lWinControl <> nil) and (PLMsg^.Result = 0) and (LMKey.CharCode<>0) then
+        if (lWinControl <> nil) and (PLMsg^.Result = 0) and CharCodeNotEmpty then
           DeliverMessage(lWinControl, PLMsg^);
 
         // handle Ctrl-A for edit controls
