@@ -167,6 +167,7 @@ procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 var
   cpo: TCompPaletteOptions;
 begin
+  if not fConfigChanged then Exit;
   cpo:=(AOptions as TEnvironmentOptions).ComponentPaletteOptions;
   WritePages(cpo);
   WriteComponents(cpo);
