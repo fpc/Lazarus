@@ -219,6 +219,7 @@ begin
     end;
     CurListItem.Caption:=CurPkg.Name;
   end;
+  PkgListView.AlphaSort;
   PkgListView.EndUpdate;
 end;
 
