@@ -481,6 +481,7 @@ begin
   inherited ReadState(Reader);
   FReading := False;
   if (fItemIndex<-1) or (fItemIndex>=FItems.Count) then fItemIndex:=-1;
+  FLastClickedItemIndex:=FItemIndex;
 end;
 
 {------------------------------------------------------------------------------
