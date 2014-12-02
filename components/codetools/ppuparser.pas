@@ -29,7 +29,7 @@ unit PPUParser;
 
 {$mode objfpc}{$H+}
 
-{$DEFINE VerbosePPUParser}
+{off $DEFINE VerbosePPUParser}
 
 interface
 
@@ -1622,13 +1622,13 @@ var
   defoptions: tdefoptions;
   defstates: tdefstates;
   genconstr: tgenericconstraintflags;
+  len: Int64;
+  i: Integer;
   {$IFDEF VerbosePPUParser}
   defopt: tdefoption;
   defstate: tdefstate;
   TokenBuf: Pointer;
   TokenBufSize: LongInt;
-  i: Integer;
-  len: Int64;
   {$ENDIF}
 begin
   ReadEntryLongint{$IFDEF VerbosePPUParser}('DefinitionID='){$ENDIF};
@@ -2420,7 +2420,7 @@ begin
       if Version>130 then
         {$IFDEF VerbosePPUParser}SymMangledName:={$ENDIF}ReadEntryShortstring
       else
-        {$IFDEF VerbosePPUParser}SymMangledName:={$ENDIF}SymbolName;
+        {$IFDEF VerbosePPUParser}SymMangledName:=SymbolName{$ENDIF};
       {$IFDEF VerbosePPUParser}SymbolOrdNr:={$ENDIF}ReadEntryLongint;
       {$IFDEF VerbosePPUParser}SymbolIsVar:=ReadEntryByte<>0{$ELSE}ReadEntryByte{$ENDIF};
       {$IFDEF VerbosePPUParser}
