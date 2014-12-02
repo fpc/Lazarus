@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="MemDSLaz"/>
@@ -14,16 +14,13 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="Memory (TMemDataset) dataset package for Lazarus
 "/>
     <License Value="LGPL
 "/>
     <Version Major="1" Minor="2" Release="1"/>
-    <Files Count="4">
+    <Files Count="3">
       <Item1>
         <Filename Value="memds.pp"/>
         <Type Value="Virtual Unit"/>
@@ -38,10 +35,6 @@
         <HasRegisterProc Value="True"/>
         <UnitName Value="frmSelectDataset"/>
       </Item3>
-      <Item4>
-        <Filename Value="memdsicons.lrs"/>
-        <Type Value="LRS"/>
-      </Item4>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
