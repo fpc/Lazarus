@@ -179,6 +179,26 @@ type
           cpu_i8086                     { 15 }
     );
 
+const
+  PPU_CPUNames : array[tsystemcpu] of string[9]=
+    ('none',
+     'i386',
+     'm68k',
+     'alpha',
+     'powerpc',
+     'sparc',
+     'vis',
+     'ia64',
+     'x86_64',
+     'mips',
+     'arm',
+     'powerpc64',
+     'avr',
+     'mipsel',
+     'jvm',
+     'i8086'
+     );
+
 // from ppu.pas
   { We need to use the correct size of aint and pint for
   the target CPU }
@@ -584,6 +604,7 @@ type
 
   TPPU = class
   private
+    FAIntSize: integer; // size of aint
     fChangeEndian: boolean;
     FHeader: TPPUHeader;
     FEntry: TPPUEntry;
@@ -617,6 +638,8 @@ type
     function ReadEntryByte(const Msg: string): byte;
     function ReadEntryShortstring: shortstring;
     function ReadEntryShortstring(const Msg: string): shortstring;
+    function ReadEntryAnsistring: ansistring;
+    function ReadEntryAnsistring(const Msg: string): ansistring;
     function ReadEntryLongint: longint;
     function ReadEntryLongint(const Msg: string): longint;
     function ReadEntryDWord: cardinal;
@@ -627,6 +650,8 @@ type
     function ReadEntryInt64(const Msg: string): int64;
     function ReadEntryQWord: QWord;
     function ReadEntryQWord(const Msg: string): QWord;
+    function ReadEntryAInt: int64;
+    function ReadEntryAInt(const Msg: string): int64;
     procedure ReadEntrySmallSet(var s);
     procedure ReadEntryNormalSet(var s);
     procedure ReadUsedUnits;
@@ -849,31 +874,9 @@ begin
 end;
 
 function PPUCpuToStr(w:longint):string;
-type
-  { Copied from systems.pas }
-       tsystemcpu=
-       (
-        cpu_no,                       { 0 }
-        cpu_i386,                     { 1 }
-        cpu_m68k,                     { 2 }
-        cpu_alpha,                    { 3 }
-        cpu_powerpc,                  { 4 }
-        cpu_sparc,                    { 5 }
-        cpu_vm,                       { 6 }
-        cpu_iA64,                     { 7 }
-        cpu_x86_64,                   { 8 }
-        cpu_mips,                     { 9 }
-        cpu_arm,                      { 10 }
-        cpu_powerpc64,                { 11 }
-        cpu_avr                       { 12 }
-       );
-const
-  CpuTxt : array[tsystemcpu] of string[9]=
-    ('none','i386','m68k','alpha','powerpc','sparc','vis','ia64',
-     'x86_64','mips','arm','powerpc64','avr');
 begin
   if w<=ord(high(tsystemcpu)) then
-    Result:=CpuTxt[tsystemcpu(w)]
+    Result:=PPU_CPUNames[tsystemcpu(w)]
   else
     Result:='<!! Unknown cpu value '+IntToStr(w)+'>';
 end;
@@ -1150,6 +1153,8 @@ begin
 end;
 
 procedure TPPU.ReadHeader;
+var
+  cpu: tsystemcpu;
 begin
   fChangeEndian:=PPUIsEndianBig;
   // read ID
@@ -1178,6 +1183,13 @@ begin
 
   FEntryPos:=0;
   FillByte(FEntry,SizeOf(FEntry),0);
+
+  {$R-}
+  cpu:=tsystemcpu(FHeader.cpu);
+  if (cpu<low(tsystemcpu)) or (cpu>high(tsystemcpu)) then
+    cpu:=tsystemcpu(FHeader.cpu);
+  {$R+}
+  FAIntSize:=CpuAluBitSize[cpu];
 
   {$IFDEF VerbosePPUParser}
   DumpHeader('');
@@ -1980,6 +1992,32 @@ begin
   debugln([Msg,Result]);
 end;
 
+function TPPU.ReadEntryAnsistring: ansistring;
+var
+  l: longint;
+
+  procedure ErrorOutOfBytes;
+  begin
+    Error('TPPU.ReadEntryAnsistring: out of bytes. needed='+IntToStr(l)+', found='+IntToStr(FEntry.size-FEntryPos));
+  end;
+
+begin
+  l:=ReadEntryLongint;
+  SetLength(Result,l);
+  if l>0 then begin
+    if FEntryPos+l>FEntry.size then
+      ErrorOutOfBytes;
+    System.Move(Pointer(FEntryBuf+FEntryPos)^,Result[1],l);
+  end;
+  inc(FEntryPos,l);
+end;
+
+function TPPU.ReadEntryAnsistring(const Msg: string): ansistring;
+begin
+  Result:=ReadEntryAnsistring();
+  debugln([Msg,Result]);
+end;
+
 function TPPU.ReadEntryLongint: longint;
 begin
   if FEntryPos+SizeOf(Longint)>FEntry.size then
@@ -2043,6 +2081,24 @@ end;
 function TPPU.ReadEntryQWord(const Msg: string): QWord;
 begin
   Result:=ReadEntryQWord();
+  debugln([Msg,Result]);
+end;
+
+function TPPU.ReadEntryAInt: int64;
+begin
+  case FAIntSize of
+    8: result:=ReadEntryInt64;
+    4: result:=ReadEntryLongint;
+    2: result:=smallint(ReadEntryWord);
+    1: result:=shortint(ReadEntryByte);
+  else
+    Result:=0;
+  end;
+end;
+
+function TPPU.ReadEntryAInt(const Msg: string): int64;
+begin
+  Result:=ReadEntryAInt();
   debugln([Msg,Result]);
 end;
 
