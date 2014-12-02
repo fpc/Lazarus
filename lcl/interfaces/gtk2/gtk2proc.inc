@@ -3490,6 +3490,9 @@ begin
   {$IFDEF VerboseTransient}
   DebugLn('DestroyCommonDialogAddOns ',DbgSName(ADialog));
   {$ENDIF}
+  {$IFDEF HASX}
+  gtk_window_set_modal(PGtkWindow(DlgWindow),false);
+  {$ENDIF}
   gtk_window_set_transient_for(PGtkWindow(DlgWindow),nil);
   if ADialog is TOpenDialog then begin
     FileSelWidget:=GTK_FILE_CHOOSER(DlgWindow);

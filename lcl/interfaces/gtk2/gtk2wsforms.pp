@@ -748,10 +748,13 @@ begin
     end else begin
       // hiding/showing normal form
       // clear former mods, e.g. when a modal form becomes a normal form, see bug 23876
-      // hide before disable modal see bug 27070
-      Gtk2WidgetSet.SetVisible(AWinControl, AForm.HandleObjectShouldBeVisible);
+      {$IFDEF HASX}
+      gtk_window_set_modal(GtkWindow, False);
+      gtk_window_set_transient_for(GtkWindow, nil); //untransient
+      {$ELSE}
       gtk_window_set_transient_for(GtkWindow, nil); //untransient
       gtk_window_set_modal(GtkWindow, False);
+      {$ENDIF}
     end;
 
     {$IFDEF HASX}
