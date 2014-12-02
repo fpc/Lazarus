@@ -20,9 +20,6 @@
 
   Author: Mattias Gaertner
 
-  Note:
-    This unit will be moved to the FCL when it has stabilized.
-
   Abstract:
     Functions and classes to read ppu streams (Free Pascal compiled units)
     of various versions. For example reading 2.3.1 ppus compiled for 64bit
@@ -32,7 +29,7 @@ unit PPUParser;
 
 {$mode objfpc}{$H+}
 
-{off $DEFINE VerbosePPUParser}
+{$DEFINE VerbosePPUParser}
 
 interface
 
@@ -41,7 +38,8 @@ uses
 
 const
   PPUIsEndianBig = {$IFDEF ENDIAN_BIG}True{$ELSE}False{$ENDIF};
-  
+
+// from ppu.pas
 const
 {ppu entries}
   mainentryid         = 1;
@@ -124,33 +122,108 @@ const
 
   ibmainname       = 90;  // svn rev 10406
   ibsymtableoptions = 91; // svn rev 17328  ppu version 128
+  ibrecsymtableoptions = 91; // svn rev 18114
   { target-specific things }
   iblinkotherframeworks = 100; // svn rev 8344
+  ibjvmnamespace = 101; // svn rec 21069
 
-{ unit flags }
-  uf_init          = $1;
-  uf_finalize      = $2;
-  uf_big_endian    = $4;
-//  uf_has_browser   = $10;
-  uf_in_library    = $20;     { is the file in another file than <ppufile>.* ? }
-  uf_smart_linked  = $40;     { the ppu can be smartlinked }
-  uf_static_linked = $80;     { the ppu can be linked static }
-  uf_shared_linked = $100;    { the ppu can be linked shared }
-//  uf_local_browser = $200;
-  uf_no_link       = $400;    { unit has no .o generated, but can still have
-                                external linking! }
-  uf_has_resourcestrings = $800;    { unit has resource string section }
-  uf_little_endian = $1000;
-  uf_release       = $2000;   { unit was compiled with -Ur option }
-  uf_threadvars    = $4000;   { unit has threadvars }
-  uf_fpu_emulation = $8000;   { this unit was compiled with fpu emulation on }
-  uf_has_debuginfo = $10000;  { this unit has debuginfo generated }
-  uf_local_symtable = $20000; { this unit has a local symtable stored }
-  uf_uses_variants  = $40000; { this unit uses variants }
-  uf_has_resourcefiles = $80000; { this unit has external resources (using $R directive)}
-  uf_has_exports = $100000;   { this module or a used unit has exports }
+  { unit flags }
+  uf_init                = $000001; { unit has initialization section }
+  uf_finalize            = $000002; { unit has finalization section   }
+  uf_big_endian          = $000004;
+  //uf_has_browser         = $000010;
+  uf_in_library          = $000020; { is the file in another file than <ppufile>.* ? }
+  uf_smart_linked        = $000040; { the ppu can be smartlinked }
+  uf_static_linked       = $000080; { the ppu can be linked static }
+  uf_shared_linked       = $000100; { the ppu can be linked shared }
+  //uf_local_browser       = $000200;
+  uf_no_link             = $000400; { unit has no .o generated, but can still have external linking! }
+  uf_has_resourcestrings = $000800; { unit has resource string section }
+  uf_little_endian       = $001000;
+  uf_release             = $002000; { unit was compiled with -Ur option }
+  uf_threadvars          = $004000; { unit has threadvars }
+  uf_fpu_emulation       = $008000; { this unit was compiled with fpu emulation on }
+  uf_has_stabs_debuginfo = $010000; { this unit has stabs debuginfo generated }
+  uf_local_symtable      = $020000; { this unit has a local symtable stored }
+  uf_uses_variants       = $040000; { this unit uses variants }
+  uf_has_resourcefiles   = $080000; { this unit has external resources (using $R directive)}
+  uf_has_exports         = $100000; { this module or a used unit has exports }
+  uf_has_dwarf_debuginfo = $200000; { this unit has dwarf debuginfo generated }
+  uf_wideinits           = $400000; { this unit has winlike widestring typed constants }
+  uf_classinits          = $800000; { this unit has class constructors/destructors }
+  uf_resstrinits        = $1000000; { svn rev 18968: this unit has string consts referencing resourcestrings }
+  uf_i8086_far_code     = $2000000; { svn rev 25365: this unit uses an i8086 memory model with far code (i.e. medium, large or huge) }
+  uf_i8086_far_data     = $4000000; { svn rev 25365: this unit uses an i8086 memory model with far data (i.e. compact or large) }
+  uf_i8086_huge_data    = $8000000; { svn rev 25365: this unit uses an i8086 memory model with huge data (i.e. huge) }
+  uf_i8086_cs_equals_ds = $10000000; { svn rev 27516: this unit uses an i8086 memory model with CS=DS (i.e. tiny) }
+
+// from systems.inc
+type
+   tsystemcpu=
+    (
+          cpu_no,                       { 0 }
+          cpu_i386,                     { 1 }
+          cpu_m68k,                     { 2 }
+          cpu_alpha,                    { 3 }
+          cpu_powerpc,                  { 4 }
+          cpu_sparc,                    { 5 }
+          cpu_vm,                       { 6 }
+          cpu_iA64,                     { 7 }
+          cpu_x86_64,                   { 8 }
+          cpu_mipseb,                   { 9 }
+          cpu_arm,                      { 10 }
+          cpu_powerpc64,                { 11 }
+          cpu_avr,                      { 12 }
+          cpu_mipsel,                   { 13 }
+          cpu_jvm,                      { 14 }
+          cpu_i8086                     { 15 }
+    );
+
+// from ppu.pas
+  { We need to use the correct size of aint and pint for
+  the target CPU }
+const
+  CpuAddrBitSize : array[tsystemcpu] of longint =
+    (
+    {  0 } 32 {'none'},
+    {  1 } 32 {'i386'},
+    {  2 } 32 {'m68k'},
+    {  3 } 32 {'alpha'},
+    {  4 } 32 {'powerpc'},
+    {  5 } 32 {'sparc'},
+    {  6 } 32 {'vis'},
+    {  7 } 64 {'ia64'},
+    {  8 } 64 {'x86_64'},
+    {  9 } 32 {'mipseb'},
+    { 10 } 32 {'arm'},
+    { 11 } 64 {'powerpc64'},
+    { 12 } 16 {'avr'},
+    { 13 } 32 {'mipsel'},
+    { 14 } 32 {'jvm'},
+    { 15 } 16 {'i8086'}
+    );
+  CpuAluBitSize : array[tsystemcpu] of longint =
+    (
+    {  0 } 32 {'none'},
+    {  1 } 32 {'i386'},
+    {  2 } 32 {'m68k'},
+    {  3 } 32 {'alpha'},
+    {  4 } 32 {'powerpc'},
+    {  5 } 32 {'sparc'},
+    {  6 } 32 {'vis'},
+    {  7 } 64 {'ia64'},
+    {  8 } 64 {'x86_64'},
+    {  9 } 32 {'mipseb'},
+    { 10 } 32 {'arm'},
+    { 11 } 64 {'powerpc64'},
+    { 12 }  8 {'avr'},
+    { 13 } 32 {'mipsel'},
+    { 14 } 64 {'jvm'},
+    { 15 } 16 {'i8086'}
+    );
 
 type
+  // from globtype.pas
   tproccalloption=(
     pocall_none,
     { procedure uses C styled calling }
@@ -185,7 +258,8 @@ type
     pocall_mwpascal
   );
   tproccalloptions = set of tproccalloption;
-  
+
+  // from symconst.pas
   tproctypeoption=(
     potype_none,
     potype_proginit,     { Program initialization }
@@ -549,6 +623,10 @@ type
     function ReadEntryDWord(const Msg: string): cardinal;
     function ReadEntryWord: word;
     function ReadEntryWord(const Msg: string): word;
+    function ReadEntryInt64: int64;
+    function ReadEntryInt64(const Msg: string): int64;
+    function ReadEntryQWord: QWord;
+    function ReadEntryQWord(const Msg: string): QWord;
     procedure ReadEntrySmallSet(var s);
     procedure ReadEntryNormalSet(var s);
     procedure ReadUsedUnits;
@@ -1904,10 +1982,10 @@ end;
 
 function TPPU.ReadEntryLongint: longint;
 begin
-  if FEntryPos+4>FEntry.size then
+  if FEntryPos+SizeOf(Longint)>FEntry.size then
     Error('TPPU.ReadEntryLongint: out of bytes');
   Result:=PLongint(FEntryBuf+FEntryPos)^;
-  inc(FEntryPos,4);
+  inc(FEntryPos,SizeOf(Longint));
 end;
 
 function TPPU.ReadEntryLongint(const Msg: string): longint;
@@ -1928,15 +2006,43 @@ end;
 
 function TPPU.ReadEntryWord: word;
 begin
-  if FEntryPos+2>FEntry.size then
+  if FEntryPos+SizeOf(Word)>FEntry.size then
     Error('TPPU.ReadEntryLongint: out of bytes');
   Result:=PWord(FEntryBuf+FEntryPos)^;
-  inc(FEntryPos,2);
+  inc(FEntryPos,SizeOf(Word));
 end;
 
 function TPPU.ReadEntryWord(const Msg: string): word;
 begin
   Result:=ReadEntryWord();
+  debugln([Msg,Result]);
+end;
+
+function TPPU.ReadEntryInt64: int64;
+begin
+  if FEntryPos+SizeOf(Int64)>FEntry.size then
+    Error('TPPU.ReadEntryInt64: out of bytes');
+  Result:=PInt64(FEntryBuf+FEntryPos)^;
+  inc(FEntryPos,SizeOf(Int64));
+end;
+
+function TPPU.ReadEntryInt64(const Msg: string): int64;
+begin
+  Result:=ReadEntryInt64();
+  debugln([Msg,Result]);
+end;
+
+function TPPU.ReadEntryQWord: QWord;
+begin
+  if FEntryPos+SizeOf(QWord)>FEntry.size then
+    Error('TPPU.ReadEntryQWord: out of bytes');
+  Result:=PQWord(FEntryBuf+FEntryPos)^;
+  inc(FEntryPos,SizeOf(QWord));
+end;
+
+function TPPU.ReadEntryQWord(const Msg: string): QWord;
+begin
+  Result:=ReadEntryQWord();
   debugln([Msg,Result]);
 end;
 

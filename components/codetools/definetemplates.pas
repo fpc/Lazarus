@@ -7832,7 +7832,7 @@ begin
       if (RealCompiler<>'') and FileExistsCached(RealCompiler) then begin
         RealCompilerDate:=FileAgeCached(RealCompiler);
       end else
-        debugln(['TFPCTargetConfigCache.Update WARNING: compiler is broken: '+Compiler+' '+ExtraOptions]);
+        debugln(['TFPCTargetConfigCache.Update WARNING: compiler is broken: Compiler="'+Compiler+'" Options="'+ExtraOptions+'" RealCompiler="',RealCompiler,'"']);
       // store the list of tried and read cfg files
       if CfgFiles<>nil then
         for i:=0 to CfgFiles.Count-1 do begin
