@@ -7041,8 +7041,17 @@ end;
  ------------------------------------------------------------------------------}
 function TGtk2WidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
 begin
-  //todo: sanity checks for valid handle etc. eg. like CombineRgn
-  Result := gdk_region_point_in({%H-}PGdiObject(RGN)^.GDIRegionObject, X, Y);
+  Result := False;
+  if not IsValidGDIObject(RGN) then
+    exit;
+  if (PGdiObject(RGN)^.GDIBitmapObject <> nil) or
+    (PGdiObject(RGN)^.GDIPixbufObject <> nil) or
+    (PGdiObject(RGN)^.GDIPixmapObject.Image <> nil) then
+  begin
+    // issue #27080
+    Result := False;
+  end else
+    Result := gdk_region_point_in({%H-}PGdiObject(RGN)^.GDIRegionObject, X, Y);
 end;
 
 {------------------------------------------------------------------------------
