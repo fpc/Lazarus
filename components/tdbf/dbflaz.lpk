@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="DBFLaz"/>
@@ -16,27 +16,22 @@
       </Parsing>
       <Other>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="DBase (DBF) package for Lazarus"/>
     <License Value="LGPL with linking exception (LCL license)"/>
     <Version Minor="1" Release="1"/>
-    <Files Count="3">
+    <Files Count="2">
       <Item1>
-        <Filename Value="registerdbf.lrs"/>
-        <Type Value="LRS"/>
-      </Item1>
-      <Item2>
         <Filename Value="registerdbf.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="RegisterDBF"/>
-      </Item2>
-      <Item3>
+      </Item1>
+      <Item2>
         <Filename Value="Dbf.pas"/>
         <Type Value="Virtual Unit"/>
         <UnitName Value="Dbf"/>
-      </Item3>
+      </Item2>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>
