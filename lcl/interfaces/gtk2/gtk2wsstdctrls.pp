@@ -2304,7 +2304,8 @@ begin
   g_object_set_data(PGObject(FrameBox), 'widgetinfo', WidgetInfo);
   gtk_widget_show(TempWidget);
   gtk_widget_show(P);
-  gtk_widget_show(FrameBox);
+  if AWinControl.Visible then
+    gtk_widget_show(FrameBox);
 
   Result := TLCLIntfHandle({%H-}PtrUInt(FrameBox));
 
