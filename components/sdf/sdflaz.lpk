@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="SDFLaz"/>
@@ -14,28 +14,21 @@
           <UseAnsiStrings Value="False"/>
         </SyntaxOptions>
       </Parsing>
-      <Other>
-        <CompilerPath Value="$(CompPath)"/>
-      </Other>
     </CompilerOptions>
     <Description Value="SDF (fixed/delimited file) dataset package for Lazarus"/>
     <License Value="LGPL"/>
     <Version Minor="1" Release="1"/>
-    <Files Count="3">
+    <Files Count="2">
       <Item1>
-        <Filename Value="registersdf.lrs"/>
-        <Type Value="LRS"/>
-      </Item1>
-      <Item2>
         <Filename Value="registersdf.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="RegisterSDF"/>
-      </Item2>
-      <Item3>
+      </Item1>
+      <Item2>
         <Filename Value="sdfdata.pp"/>
         <Type Value="Virtual Unit"/>
         <UnitName Value="sdfdata"/>
-      </Item3>
+      </Item2>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
