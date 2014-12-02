@@ -293,6 +293,10 @@ type
     procedure lclClearCallback; override;
     procedure resetCursorRects; override;
     function lclIsHandle: Boolean; override;
+    // key
+    procedure keyDown(event: NSEvent); override;
+    procedure keyUp(event: NSEvent); override;
+    procedure flagsChanged(event: NSEvent); override;
   end;
 
   { TCocoaPanel }
@@ -1698,6 +1702,24 @@ end;
 function TCocoaTextView.lclIsHandle: Boolean;
 begin
   Result := True;
+end;
+
+procedure TCocoaTextView.keyDown(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited keyDown(event);
+end;
+
+procedure TCocoaTextView.keyUp(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited keyUp(event);
+end;
+
+procedure TCocoaTextView.flagsChanged(event: NSEvent);
+begin
+  if not Assigned(callback) or not callback.KeyEvent(event) then
+    inherited flagsChanged(event);
 end;
 
 function TCocoaTextView.acceptsFirstResponder: Boolean;
