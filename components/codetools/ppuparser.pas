@@ -1070,8 +1070,10 @@ begin
 
   ibmainname:       Result:='ibmainname';
   ibsymtableoptions:Result:='ibsymtableoptions';
+  //ibrecsymtableoptions: duplicate with ibsymtableoptions
   { target-specific things }
   iblinkotherframeworks: Result:='iblinkotherframeworks';
+  ibjvmnamespace:   Result:='ibjvmnamespace';
   else Result:='unknown('+IntToStr(Entry)+')';
   end;
 end;
@@ -1161,7 +1163,7 @@ begin
   ReadData(FHeader.id,PPU_ID_Size);
   if String(FHeader.id)<>PPU_ID then
     Error('This is not a PPU. Wrong ID.');
-  // read version
+  // read Version
   ReadData(FHeader.ver,PPU_Ver_Size);
   FVersion:=StrToIntDef(String(FHeader.ver),0);
   if FVersion<16 then
@@ -1189,7 +1191,7 @@ begin
   if (cpu<low(tsystemcpu)) or (cpu>high(tsystemcpu)) then
     cpu:=tsystemcpu(FHeader.cpu);
   {$R+}
-  FAIntSize:=CpuAluBitSize[cpu];
+  FAIntSize:=CpuAluBitSize[cpu] div 8;
 
   {$IFDEF VerbosePPUParser}
   DumpHeader('');
@@ -1580,7 +1582,7 @@ begin
       inc(FEntryPos,TokenBufSize);
       i:=0;
       while i<TokenBufSize do begin
-        // The tokens depends on compiler version
+        // The tokens depends on compiler Version
         // ToDo: write tokens
         inc(i);
       end;
@@ -1893,7 +1895,7 @@ begin
   
   if String(FHeader.id)<>PPU_ID then
     Error('This is not a PPU. Wrong ID.');
-  // read version
+  // read Version
   FVersion:=StrToIntDef(String(FHeader.ver),0);
   if FVersion<16 then
     Error('Old PPU versions (<16) are not supported.');
@@ -2268,6 +2270,7 @@ var
   SymbolName: ShortString;
   SymbolOrdNr: LongInt;
   SymbolIsVar: Boolean;
+  SymMangledName: String;
   {$ENDIF}
 begin
   while not EndOfEntry do begin
@@ -2279,10 +2282,14 @@ begin
     for i:=0 to SymbolCount-1 do
     begin
       {$IFDEF VerbosePPUParser}SymbolName:={$ENDIF}ReadEntryShortstring;
+      if Version>130 then
+        {$IFDEF VerbosePPUParser}SymMangledName:={$ENDIF}ReadEntryShortstring
+      else
+        {$IFDEF VerbosePPUParser}SymMangledName:={$ENDIF}SymbolName;
       {$IFDEF VerbosePPUParser}SymbolOrdNr:={$ENDIF}ReadEntryLongint;
       {$IFDEF VerbosePPUParser}SymbolIsVar:=ReadEntryByte<>0{$ELSE}ReadEntryByte{$ENDIF};
       {$IFDEF VerbosePPUParser}
-      DebugLn(['TPPU.ReadImportSymbols ',SymbolName,' (OrdNr: ',SymbolOrdNr,' IsVar: ',SymbolIsVar,')']);
+      DebugLn(['TPPU.ReadImportSymbols "',SymbolName,'" Mangled="',SymMangledName,'" (OrdNr: ',SymbolOrdNr,' IsVar: ',SymbolIsVar,')']);
       {$ENDIF}
     end;
   end;
@@ -2458,6 +2465,7 @@ begin
   DebugLn([Prefix,'  Number of Definitions=',FHeader.deflistsize]);
   DebugLn([Prefix,'  Number of Symbols=',FHeader.symlistsize]);
   DebugLn([Prefix,'  Indirect Checksum=',HexStr(cardinal(FHeader.indirect_checksum),8)]);
+  DebugLn([Prefix,'  sizeof(aint)=',FAIntSize]);
 end;
 
 procedure TPPU.GetMainUsesSectionNames(var List: TStrings);
