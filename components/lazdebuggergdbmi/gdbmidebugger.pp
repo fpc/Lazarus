@@ -7479,6 +7479,7 @@ begin
   if not Result then
     exit;
 
+  AResult:=GDBMIExecResultDefault;
   ExecuteCommand('info mach-tasks',[],[], AResult);
   s := AResult.Values;
   i := pos(sLineBreak,s);
