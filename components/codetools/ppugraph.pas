@@ -833,7 +833,7 @@ begin
   if pmfAutoDisabled in Member.Flags then exit;
   Include(Member.Flags,pmfAutoDisabled);
   GraphNode:=FUnitGraph.GetGraphNode(Member.KeyNode,false);
-  if GraphNode.InTree=nil then exit;
+  if (GraphNode=nil) or (GraphNode.InTree=nil) then exit;
   AVLNode:=GraphNode.InTree.FindLowest;
   while AVLNode<>nil do begin
     GraphEdge:=TCodeGraphEdge(AVLNode.Data);
