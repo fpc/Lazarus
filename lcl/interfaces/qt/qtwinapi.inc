@@ -5131,13 +5131,38 @@ begin
 end;
 
 function TQtWidgetSet.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
+var
+  ARegion: TQtRegion;
+  AClipRegion: QRegionH;
+  AOrigin: TQtPoint;
+  APainter: QPainterH;
 begin
   Result := False;
 
   if not IsValidGDIObject(RGN) then
     exit;
-
-  Result := TQtRegion(RGN).containsPoint(X, Y);
+  if TObject(RGN) is TQtImage then
+  begin
+    ARegion := TQtRegion.Create(True, 0, 0, TQtImage(RGN).width,  TQtImage(RGN).height);
+    try
+      if QPaintEngine_isActive(QImage_paintEngine(TQtImage(RGN).Handle)) then
+      begin
+        APainter := QPaintEngine_painter(QImage_paintEngine(TQtImage(RGN).Handle));
+        if APainter = nil then
+          exit;
+        AClipRegion := QRegion_create();
+        QPainter_clipRegion(APainter, AClipRegion);
+        AOrigin.x := X;
+        AOrigin.y := Y;
+        Result := QRegion_contains(AClipRegion, PQtPoint(@AOrigin));
+        QRegion_destroy(AClipRegion);
+      end else
+        Result := ARegion.containsPoint(X, Y);
+    finally
+      ARegion.Free;
+    end;
+  end else
+    Result := TQtRegion(RGN).containsPoint(X, Y);
 end;
 
 {------------------------------------------------------------------------------
