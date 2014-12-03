@@ -576,10 +576,8 @@ begin
 end;
 
 procedure Register;
-{$IFDEF LCLQt}
 var
   MenuIcon: string;
-{$ENDIF}
 begin
   if uEditorToolbarList = nil then begin
     TEditorToolbarList.Create;
@@ -587,12 +585,9 @@ begin
       rsEditorToolbar,nil,@ToggleToolbar);
     EditorMenuCommand.Checked:= True;
     EditorMenuCommand.Enabled:= True;
-    // GTK2 and Windows do not show both Icon and checkbox. Only Qt Does
-{$IFDEF LCLQt}
     MenuIcon:= 'menu_editor_options';
     //MenuIcon:= 'menu_editor_toolbar'; TODO!
     EditorMenuCommand.ImageIndex := IDEImages.LoadImage(16, MenuIcon);
-{$ENDIF}
   end;
 
 end;
