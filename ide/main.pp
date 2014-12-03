@@ -3679,7 +3679,7 @@ begin
     and (LastFormActivated.Designer<>nil)
     and (LastFormActivated.Designer.LookupRoot<>nil)
     and not (LastFormActivated.Designer.LookupRoot is TControl);
-  IDEComponentPalette.UpdateVisible;
+  IDEComponentPalette.Update;
   TComponentPalette(IDEComponentPalette).OnClassSelected := @ComponentPaletteClassSelected;
   SetupHints;
 end;

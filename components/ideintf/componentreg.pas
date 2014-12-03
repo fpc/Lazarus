@@ -145,7 +145,6 @@ type
   public
     constructor Create(const ThePageName: string);
     destructor Destroy; override;
-    procedure UpdateVisible;
     function GetScrollBox: TScrollBox;
   public
     property PageName: string read FPageName;
@@ -188,7 +187,6 @@ type
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TComponentPaletteHandlerType;
                             const AMethod: TMethod);
-    procedure SetHideControls(const AValue: boolean);
   protected
     // List of pages, created based on user ordered and original pages.
     fPages: TBaseComponentPageList;
@@ -204,7 +202,6 @@ type
                                 {%H-}Component: TRegisteredComponent); virtual;
     procedure OnComponentVisibleChanged({%H-}AComponent: TRegisteredComponent); virtual;
     procedure OnPageVisibleChanged({%H-}APage: TBaseComponentPage); virtual;
-    procedure Update; virtual;
     function VoteCompVisibility(AComponent: TRegisteredComponent): Boolean; virtual;
     function GetSelected: TRegisteredComponent; virtual;
     procedure SetBaseComponentPageClass(const AValue: TBaseComponentPageClass); virtual;
@@ -231,7 +228,7 @@ type
     function FindButton(Button: TComponent): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
     function IndexOfPageComponent(AComponent: TComponent): integer;
-    procedure UpdateVisible; virtual;
+    procedure Update; virtual;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
     procedure RegisterCustomIDEComponents(
                         const RegisterProc: RegisterUnitComponentProc); virtual; abstract;
@@ -254,7 +251,7 @@ type
     property UpdateLock: integer read FUpdateLock;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnEndUpdate: TEndUpdatePaletteEvent read FOnEndUpdate write FOnEndUpdate;
-    property HideControls: boolean read FHideControls write SetHideControls;
+    property HideControls: boolean read FHideControls write FHideControls;
     property Selected: TRegisteredComponent read GetSelected write SetSelected;
     property OrigPagePriorities: TPagePriorityList read fOrigPagePriorities;
   end;
@@ -577,20 +574,6 @@ begin
     FPalette.OnComponentVisibleChanged(AComponent);
 end;
 
-procedure TBaseComponentPage.UpdateVisible;
-var
-  i: Integer;
-  HasVisibleComponents: Boolean;
-begin
-  if Palette = nil then Exit;
-  HasVisibleComponents:=false;
-  for i:=0 to Palette.Comps.Count-1 do
-    if (Palette.Comps[i].RealPage = Self) then
-      if Palette.VoteCompVisibility(Palette.Comps[i]) then
-        HasVisibleComponents:=true;
-  Visible:=HasVisibleComponents and (PageName<>'');
-end;
-
 function TBaseComponentPage.GetScrollBox: TScrollBox;
 begin
   if Assigned(PageComponent) and (PageComponent.ComponentCount > 0)
@@ -652,13 +635,6 @@ procedure TBaseComponentPalette.RemoveHandler(HandlerType: TComponentPaletteHand
   const AMethod: TMethod);
 begin
   FHandlers[HandlerType].Remove(AMethod);
-end;
-
-procedure TBaseComponentPalette.SetHideControls(const AValue: boolean);
-begin
-  if FHideControls=AValue then exit;
-  FHideControls:=AValue;
-  UpdateVisible;
 end;
 
 procedure TBaseComponentPalette.DoChange;
@@ -871,16 +847,6 @@ begin
       dec(Result);
   end else
     Result:=-1;
-end;
-
-procedure TBaseComponentPalette.UpdateVisible;
-var
-  i: Integer;
-begin
-  BeginUpdate(false);
-  for i:=0 to Pages.Count-1 do
-    Pages[i].UpdateVisible;
-  EndUpdate;
 end;
 
 procedure TBaseComponentPalette.IterateRegisteredClasses(Proc: TGetComponentClassEvent);
