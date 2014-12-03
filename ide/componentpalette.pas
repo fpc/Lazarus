@@ -45,6 +45,12 @@ uses
   {$ENDIF}
   LazarusIDEStrConsts, ComponentReg, DesignerProcs, PackageDefs, EnvironmentOpts;
 
+const
+  CompPalSelectionToolBtnPrefix = 'PaletteSelectBtn';
+  CompPaletteCompBtnPrefix = 'PaletteBtn';
+  {$IFDEF VerboseComponentPalette}
+  CompPalVerbPgName = 'Standard';
+  {$ENDIF}
 type
   TComponentSelectionMode = (
     csmSingle, // reset selection on component add
@@ -150,6 +156,7 @@ type
     function GetSelectButtonIcon: TCustomBitmap;
     function SelectButton(Button: TComponent): boolean;
     procedure ReAlignButtons(aSheet: TCustomPage);
+    function IsSelectionToolBtn(aControl: TControl): boolean;
     procedure UpdateNoteBookButtons;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
                                      AComponent: TComponent; var Icon: TCustomBitmap);
@@ -709,7 +716,7 @@ end;
 function TComponentPalette.CreatePagesFromUserOrder: Boolean;
 var
   UserPageI, CurPgInd, CompI: Integer;
-  HasVisibleComps: Boolean;
+  aVisibleCompCnt: integer;
   PgName: String;
   Pg: TBaseComponentPage;
   CompNames, UserComps: TStringList;
@@ -717,7 +724,9 @@ var
 begin
   Result := True;
   fUserComponentPageCache.Clear;
+  {$IFDEF VerboseComponentPalette}
   debugln(['TComponentPalette.CreatePagesFromUserOrder HideControls=',HideControls]);
+  {$ENDIF}
   for UserPageI := 0 to fUserOrder.ComponentPages.Count-1 do
   begin
     PgName := fUserOrder.ComponentPages[UserPageI];
@@ -738,7 +747,7 @@ begin
     UserComps := TStringList.Create;
     fUserComponentPageCache.AddObject(PgName, UserComps);
     // Associate components belonging to this page
-    HasVisibleComps := False;
+    aVisibleCompCnt := 0;
     CompNames := TStringList(fUserOrder.ComponentPages.Objects[UserPageI]);
     for CompI := 0 to CompNames.Count-1 do
     begin
@@ -748,9 +757,13 @@ begin
       Comp.RealPage := Pg;
       UserComps.AddObject(CompNames[CompI], Comp);
       if VoteCompVisibility(Comp) then
-        HasVisibleComps := True;
+        inc(aVisibleCompCnt);
     end;
-    Pg.Visible := (CompareText(PgName,'Hidden')<>0) and HasVisibleComps;
+    {$IFDEF VerboseComponentPalette}
+    if PgName=CompPalVerbPgName then
+      debugln(['TComponentPalette.CreatePagesFromUserOrder HideControl=',HideControls,' aVisibleCompCnt=',aVisibleCompCnt]);
+    {$ENDIF}
+    Pg.Visible := (CompareText(PgName,'Hidden')<>0) and (aVisibleCompCnt>0);
   end;
   // Remove left-over pages.
   while fPages.Count > fUserOrder.ComponentPages.Count do begin
@@ -809,20 +822,21 @@ var
   ScrollBox: TScrollBox;
 begin
   {$IFDEF VerboseComponentPalette}
-  if aSheet.Caption = 'Additional' then
-    DebugLn(['TComponentPalette.ReAlignButtons ',aSheet.Caption,' ',aSheet.ClientWidth]);
+  if aSheet.Caption = CompPalVerbPgName then
+    DebugLn(['TComponentPalette.ReAlignButtons START ',aSheet.Caption,' Visible=',aSheet.Visible,' ClientWidth=',aSheet.ClientWidth]);
   {$ENDIF}
   if not aSheet.Visible then exit;
   if FPageControl<>nil then
     PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
   ButtonTree:=nil;
   try
-    if (aSheet.ComponentCount=0) or not (aSheet.Components[0] is TScrollBox) then exit;
-    ButtonTree:=TAVLTree.Create(@CompareControlsWithTag);
+    if (aSheet.ComponentCount=0) or not (aSheet.Components[0] is TScrollBox) then
+      exit;
     ScrollBox:=TScrollBox(aSheet.Components[0]);
-    // skip the first control (this is the selection tool (TSpeedButton))
-    for j:= 1 to ScrollBox.ControlCount-1 do begin
+    ButtonTree:=TAVLTree.Create(@CompareControlsWithTag);
+    for j:=0 to ScrollBox.ControlCount-1 do begin
       CurButton:=TSpeedbutton(ScrollBox.Controls[j]);
+      if IsSelectionToolBtn(CurButton) then continue;
       if (CurButton is TSpeedButton) and CurButton.Visible then
         ButtonTree.Add(CurButton);
     end;
@@ -831,8 +845,11 @@ begin
     ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
 
     {$IFDEF VerboseComponentPalette}
-    if aSheet.Caption = 'Additional' then
-      DebugLn(['TComponentPalette.ReAlignButtons ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),
+    if aSheet.Caption = CompPalVerbPgName then
+      DebugLn(['TComponentPalette.ReAlignButtons',
+        ' ButtonTree.Count=',ButtonTree.Count,
+        ' ScrollBox.ControlCount=',ScrollBox.ControlCount,
+        ' ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),
         ' VertScrollBar.Size=',ScrollBox.VertScrollBar.Size,
         ' ClientSizeWithoutBar=',ScrollBox.VertScrollBar.ClientSizeWithoutBar,
         ' IsScrollBarVisible=',ScrollBox.VertScrollBar.IsScrollBarVisible,
@@ -861,7 +878,7 @@ begin
                           (j div MaxBtnPerRow) * ComponentPaletteBtnHeight,
                           CurButton.Width, CurButton.Height);
       {$IFDEF VerboseComponentPalette}
-      if aSheet.Caption = 'Additional' then
+      if aSheet.Caption = CompPalVerbPgName then
         DebugLn(['TComponentPalette.ReAlignButtons ',CurButton.Name,' ',dbgs(CurButton.BoundsRect)]);
       {$ENDIF}
       inc(j);
@@ -873,6 +890,12 @@ begin
       PageControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
     FreeAndNil(ButtonTree);
   end;
+end;
+
+function TComponentPalette.IsSelectionToolBtn(aControl: TControl): boolean;
+begin
+  Result:=(aControl is TSpeedButton)
+    and (LeftStr(aControl.Name,length(CompPalSelectionToolBtnPrefix))=CompPalSelectionToolBtnPrefix);
 end;
 
 // Methods used by UpdateNoteBookButtons:
@@ -892,6 +915,7 @@ begin
       if Btn<>nil then begin
         Pg.SelectButton:=nil;
         Application.ReleaseComponent(Btn);
+        Btn.Visible:=false;
       end;
       Pages[PageInd].PageComponent:=nil;
     end;
@@ -899,7 +923,7 @@ begin
       fOldActivePage:=nil;
     aSheet.Visible:=false;
     {$IFDEF VerboseComponentPalette}
-    if aSheet.Caption = 'Additional' then
+    if aSheet.Caption = CompPalVerbPgName then
       DebugLn(['TComponentPalette.RemoveUnneededPage: Removing Page=', aSheet.Caption, ', index=', PageInd]);
     {$ENDIF}
     Application.ReleaseComponent(aSheet);
@@ -919,7 +943,7 @@ begin
   begin
     // insert a new PageControl page
     {$IFDEF VerboseComponentPalette}
-    if aCompPage.PageName = 'Additional' then
+    if aCompPage.PageName = CompPalVerbPgName then
       DebugLn(['TComponentPalette.InsertVisiblePage: Inserting Page=', aCompPage.PageName, ', at index=', fVisiblePageIndex]);
     {$ENDIF}
     TabControl.Pages.Insert(fVisiblePageIndex, aCompPage.PageName);
@@ -966,7 +990,7 @@ begin
     if (TabIndex<>fVisiblePageIndex) and (fVisiblePageIndex < TabControl.Pages.Count) then
     begin
       {$IFDEF VerboseComponentPalette}
-      if aCompPage.PageName = 'Additional' then
+      if aCompPage.PageName = CompPalVerbPgName then
         DebugLn(['TComponentPalette.InsertVisiblePage: Moving Page=', aCompPage.PageName, ' from ', TabIndex, ' to ', fVisiblePageIndex]);
       {$ENDIF}
       TabControl.Pages.Move(TabIndex, fVisiblePageIndex);
@@ -975,8 +999,8 @@ begin
   inc(fVisiblePageIndex);
 end;
 
-procedure TComponentPalette.CreateSelectionButton(aCompPage: TBaseComponentPage; aButtonUniqueName: string;
-  aScrollBox: TScrollBox);
+procedure TComponentPalette.CreateSelectionButton(aCompPage: TBaseComponentPage;
+  aButtonUniqueName: string; aScrollBox: TScrollBox);
 var
   Btn: TSpeedButton;
 begin
@@ -984,7 +1008,7 @@ begin
   Btn := TSpeedButton.Create(nil);
   aCompPage.SelectButton:=Btn;
   with Btn do begin
-    Name := 'PaletteSelectBtn' + aButtonUniqueName;
+    Name := CompPalSelectionToolBtnPrefix + aButtonUniqueName;
     OnClick := @SelectionToolClick;
     OnMouseWheel := @OnPageMouseWheel;
     LoadGlyphFromResourceName(hInstance, 'tmouse');
@@ -1013,7 +1037,7 @@ begin
       aComp.Button:=Btn;
       CreatePopupMenu;
       with Btn do begin
-        Name := 'PaletteBtnPage' + aButtonUniqueName + aComp.ComponentClass.ClassName;
+        Name := CompPaletteCompBtnPrefix + aButtonUniqueName + aComp.ComponentClass.ClassName;
         // Left and Top will be set in ReAlignButtons.
         SetBounds(Left,Top,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
         Glyph.Assign(aComp.Icon);
@@ -1029,13 +1053,13 @@ begin
         Btn.PopupMenu:=Self.PopupMenu;
       end;
       {$IFDEF VerboseComponentPalette}
-      if aComp.RealPage.PageName = 'Additional' then
+      if aComp.RealPage.PageName = CompPalVerbPgName then
         DebugLn(['TComponentPalette.CreateOrDelButton Created Button: ',aComp.ComponentClass.ClassName,' ',aComp.Button.Name]);
       {$ENDIF}
     end else begin
       Btn:=TSpeedButton(aComp.Button);
       {$IFDEF VerboseComponentPalette}
-      if aComp.RealPage.PageName = 'Additional' then
+      if aComp.RealPage.PageName = CompPalVerbPgName then
         DebugLn(['TComponentPalette.CreateOrDelButton Keep Button: ',aComp.ComponentClass.ClassName,' ',aComp.Button.Name,' ',DbgSName(TControl(aComp.Button).Parent)]);
       {$ENDIF}
     end;
@@ -1044,11 +1068,13 @@ begin
   end
   else if aComp.Button<>nil then begin
     {$IFDEF VerboseComponentPalette}
-    if aComp.RealPage.PageName = 'Additional' then
+    if aComp.RealPage.PageName = CompPalVerbPgName then
       DebugLn(['TComponentPalette.CreateOrDelButton Destroy Button: ',aComp.ComponentClass.ClassName,' ',aComp.Button.Name]);
     {$ENDIF}
-    Application.ReleaseComponent(aComp.Button);
+    Btn:=TSpeedButton(aComp.Button);
+    Application.ReleaseComponent(Btn);
     aComp.Button:=nil;
+    Btn.Visible:=false;
   end;
 end;
 
@@ -1067,7 +1093,7 @@ begin
   ScrollBox.OnResize := @OnScrollBoxResize;
   ScrollBox.OnMouseWheel := @OnPageMouseWheel;
   {$IFDEF VerboseComponentPalette}
-  if Pg.PageName = 'Additional' then
+  if Pg.PageName = CompPalVerbPgName then
     DebugLn(['TComponentPalette.CreateButtons PAGE=',Pg.PageName,' PageIndex=',Pg.PageComponent.PageIndex]);
   {$ENDIF}
   // create selection button
