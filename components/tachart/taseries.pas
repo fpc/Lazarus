@@ -245,7 +245,6 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
   public
     procedure Assign(ASource: TPersistent); override;
-
     procedure Draw(ADrawer: IChartDrawer); override;
   published
     property AxisIndexX;
@@ -290,6 +289,7 @@ type
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
+    function IsEmpty: Boolean; override;
     procedure MovePoint(var AIndex: Integer; const ANewPos: TDoublePoint); override;
 
   published
@@ -826,6 +826,11 @@ end;
 function TConstantLine.GetSeriesColor: TColor;
 begin
   Result := FPen.Color;
+end;
+
+function TConstantLine.IsEmpty: Boolean;
+begin
+  Result := false;
 end;
 
 procedure TConstantLine.MovePoint(
