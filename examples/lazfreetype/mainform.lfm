@@ -12,6 +12,7 @@ object Form1: TForm1
   OnDestroy = FormDestroy
   OnMouseMove = FormMouseMove
   OnPaint = FormPaint
+  OnShow = FormShow
   Position = poDefault
   LCLVersion = '1.1'
   object Panel_Option: TPanel
