@@ -213,7 +213,8 @@ type
     procedure Clear;
     procedure AssignOrigCompsForPage(DestComps: TStringList;
                                      PageName: string); virtual; abstract;
-    function RefOrigCompsForPage(PageName: string): TStringList; virtual; abstract;
+    procedure AssignOrigVisibleCompsForPage(DestComps: TStringList;
+                                     PageName: string); virtual; abstract;
     function RefUserCompsForPage(PageName: string): TStringList; virtual; abstract;
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;

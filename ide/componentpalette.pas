@@ -157,9 +157,8 @@ type
     procedure RegisterCustomIDEComponents(
                        const RegisterProc: RegisterUnitComponentProc); override;
     procedure Update; override;
-    //procedure UpdateVisible; override;
     procedure AssignOrigCompsForPage(DestComps: TStringList; PageName: string); override;
-    function RefOrigCompsForPage(PageName: string): TStringList; override;
+    procedure AssignOrigVisibleCompsForPage(DestComps: TStringList; PageName: string); override;
     function RefUserCompsForPage(PageName: string): TStringList; override;
   public
     property PageControl: TPageControl read FPageControl write SetPageControl;
@@ -603,17 +602,24 @@ begin
     DestComps.Assign(sl);
   end
   else
-    raise Exception.Create(Format('AssignCompsFromCache: %s not found in cache.', [PageName]));
+    raise Exception.Create(Format('AssignOrigCompsForPage: %s not found in cache.', [PageName]));
 end;
 
-function TComponentPalette.RefOrigCompsForPage(PageName: string): TStringList;
+procedure TComponentPalette.AssignOrigVisibleCompsForPage(DestComps: TStringList;
+  PageName: string);
 var
+  sl: TStringList;
   i: Integer;
 begin
   if fOrigComponentPageCache.Find(PageName, i) then
-    Result := fOrigComponentPageCache.Objects[i] as TStringList
+  begin
+    sl := fOrigComponentPageCache.Objects[i] as TStringList;
+    for i := 0 to sl.Count-1 do
+      if FindComponent(sl[i]).Visible then
+        DestComps.Add(sl[i]);
+  end
   else
-    Result := Nil;
+    raise Exception.Create(Format('AssignOrigVisibleCompsForPage: %s not found in cache.', [PageName]));
 end;
 
 function TComponentPalette.RefUserCompsForPage(PageName: string): TStringList;

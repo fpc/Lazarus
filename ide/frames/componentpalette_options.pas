@@ -77,7 +77,7 @@ type
     procedure WritePages(cpo: TCompPaletteOptions);
     procedure WriteComponents(cpo: TCompPaletteOptions);
     procedure FillPages;
-    procedure InitialComps(aPageName: string; aCompList: TStringList);
+    procedure InitialComps(aPageInd: Integer; aCompList: TStringList);
     procedure FillComponents(aPageName: string);
     procedure MarkAsChanged;
     procedure UpdatePageMoveButtons(ListIndex: integer);
@@ -189,9 +189,8 @@ begin
     for i := 0 to IDEComponentPalette.OrigPagePriorities.Count-1 do
     begin
       PgName := IDEComponentPalette.OrigPagePriorities.Keys[i];
-      Pg := IDEComponentPalette.GetPage(PgName, True);
-      Assert(Assigned(Pg), 'TCompPaletteOptionsFrame.WritePages: PageName "'+PgName+'" not found.');
-      if (Pg<>nil) and Pg.Visible then
+      Pg := IDEComponentPalette.GetPage(PgName);
+      if Assigned(Pg) and Pg.Visible then
         OrigPages.Add(Pg.PageName);
     end;
     // Collect user defined page names
@@ -215,6 +214,7 @@ var
   PgName: String;
   i: Integer;
 begin
+  OrigComps := Nil;
   cpo.ComponentPages.Clear;
   for i := 1 to PagesListBox.Count-1 do      // Skip all components page
   begin
@@ -222,14 +222,19 @@ begin
     UserComps := PagesListBox.Items.Objects[i] as TStringList;
     Assert(Assigned(UserComps), 'TCompPaletteOptionsFrame.WriteComponents: No UserComps for '+PgName);
     Pg := IDEComponentPalette.GetPage(PgName);
-    if Assigned(Pg) then       // Can be Nil if this page was added or renamed.
-      // Collect original components from this page
-      OrigComps := IDEComponentPalette.RefOrigCompsForPage(PgName)
-    else
-      OrigComps := Nil;
-    // Differs from original order -> add configuration for components
-    if (OrigComps=Nil) or not OrigComps.Equals(UserComps) then
-      cpo.AssignComponentPage(PgName, UserComps);
+    try
+      if Assigned(Pg) and Pg.Visible then // Can be Nil if this page was added or renamed.
+      begin
+        OrigComps := TStringList.Create;
+        // Collect original visible components from this page.
+        IDEComponentPalette.AssignOrigVisibleCompsForPage(OrigComps, PgName)
+      end;
+      // Differs from original order -> add configuration for components.
+      if (OrigComps=Nil) or not OrigComps.Equals(UserComps) then
+        cpo.AssignComponentPage(PgName, UserComps);
+    finally
+      FreeAndNil(OrigComps);
+    end;
   end;
 end;
 
@@ -239,7 +244,9 @@ var
   CompList: TStringList;
   i: Integer;
   PgName: String;
+  Pg: TBaseComponentPage;
 begin
+  // First clear existing items and add <All> page.
   for i := 0 to PagesListBox.Items.Count-1 do
     PagesListBox.Items.Objects[i].Free;
   PagesListBox.Clear;
@@ -248,28 +255,30 @@ begin
   begin
     PgName := fLocalUserOrder.ComponentPages[i];
     Assert(PgName<>'', 'TCompPaletteOptionsFrame.FillPages: PageName is empty.');
-    CompList := TStringList.Create; // StringList will hold components for this page.
-    InitialComps(PgName, CompList);
-    PagesListBox.AddItem(PgName, CompList);
+    Pg := IDEComponentPalette.GetPage(PgName);
+    Assert(Assigned(Pg), 'TCompPaletteOptionsFrame.FillPages: Page is not assigned.');
+    if Pg.Visible then
+    begin
+      CompList := TStringList.Create; // StringList will hold components for this page.
+      InitialComps(i, CompList);
+      PagesListBox.AddItem(PgName, CompList);
+    end;
   end;
   PagesListBox.ItemIndex := 0;     // Activate first item
 end;
 
-procedure TCompPaletteOptionsFrame.InitialComps(aPageName: string; aCompList: TStringList);
+procedure TCompPaletteOptionsFrame.InitialComps(aPageInd: Integer; aCompList: TStringList);
 var
   OrderedComps: TStringList;
   Comp: TRegisteredComponent;
-  CompName: String;
   i: Integer;
 begin
-  i := fLocalUserOrder.ComponentPages.IndexOf(aPageName);
-  Assert(i > -1, 'TCompPaletteOptionsFrame.InitialComps: PageName "'+aPageName+'" not found');
-  OrderedComps := fLocalUserOrder.ComponentPages.Objects[i] as TStringList;
+  OrderedComps := fLocalUserOrder.ComponentPages.Objects[aPageInd] as TStringList;
   for i := 0 to OrderedComps.Count-1 do
   begin
-    CompName := OrderedComps[i];
-    Comp := IDEComponentPalette.FindComponent(CompName);
-    Assert(Assigned(Comp), 'TCompPaletteOptionsFrame.InitialComps: Component "'+CompName+'" not found');
+    Comp := IDEComponentPalette.FindComponent(OrderedComps[i]);
+    Assert(Assigned(Comp), 'TCompPaletteOptionsFrame.InitialComps: Component "'+
+                            OrderedComps[i]+'" not found');
     if Comp.Visible then
       aCompList.AddObject(Comp.ComponentClass.ClassName, Comp);
   end;
