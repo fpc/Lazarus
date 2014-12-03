@@ -1107,9 +1107,7 @@ begin
     // remove every page in the PageControl without a visible page
     for i:=FPageControl.PageCount-1 downto 0 do
       RemoveUnneededPage(FPageControl.Pages[i]);
-    {$IFDEF LCLQt}
     Application.ProcessMessages; // PageIndex of tabs are not updated without this.
-    {$ENDIF}
     // insert a PageControl page for every visible palette page
     fVisiblePageIndex := 0;
     for i := 0 to fPages.Count-1 do

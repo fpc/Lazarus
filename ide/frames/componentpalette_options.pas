@@ -74,6 +74,7 @@ type
     fPrevPageIndex: Integer;
     fConfigChanged: Boolean;
     fDialog: TAbstractOptionsEditorDialog;
+    function PageExists(aStr: string): Boolean;
     procedure WritePages(cpo: TCompPaletteOptions);
     procedure WriteComponents(cpo: TCompPaletteOptions);
     procedure FillPages;
@@ -332,13 +333,28 @@ begin
   fPrevPageIndex := lb.ItemIndex;
 end;
 
+function TCompPaletteOptionsFrame.PageExists(aStr: string): Boolean;
+var
+  i: Integer;
+begin
+  for i := 0 to PagesListBox.Count-1 do
+    if SameText(aStr, PagesListBox.Items[i]) then
+      Exit(True);
+  Result := False;
+end;
+
 procedure TCompPaletteOptionsFrame.AddPageButtonClick(Sender: TObject);
 var
   s: String;
 begin
   s := InputBox(lisNewPage, lisPageName, '');
-  PagesListBox.AddItem(s, TStringList.Create);
-  MarkAsChanged;
+  if s = '' then Exit;
+  if PageExists(s) then
+    ShowMessage(Format('Page name "%s" already exists. Not added.', [s]))
+  else begin
+    PagesListBox.AddItem(s, TStringList.Create);
+    MarkAsChanged;
+  end;
 end;
 
 procedure TCompPaletteOptionsFrame.RestoreButtonClick(Sender: TObject);
