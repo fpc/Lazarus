@@ -639,10 +639,9 @@ type
     FOIHelpProvider: TAbstractIDEHTMLProvider;
     FWaitForClose: Boolean;
     FFixingGlobalComponentLock: integer;
+    fLastCompPaletteForm: TCustomForm;
     OldCompilerFilename, OldLanguage: String;
     OIChangedTimer: TIdleTimer;
-
-    FPrevForm: TCustomForm;
 
     procedure RenameInheritedMethods(AnUnitInfo: TUnitInfo; List: TStrings);
     function OIHelpProvider: TAbstractIDEHTMLProvider;
@@ -926,7 +925,7 @@ type
     function CreateDesignerForComponent(AnUnitInfo: TUnitInfo;
                                 AComponent: TComponent): TCustomForm; override;
     procedure InvalidateAllDesignerForms;
-    procedure UpdateIDEComponentPalette;
+    procedure UpdateIDEComponentPalette(IfFormChanged: boolean);
     procedure ShowDesignerForm(AForm: TCustomForm);
     procedure DoViewAnchorEditor(State: TIWGetFormState = iwgfShowOnTop);
     procedure DoViewTabOrderEditor(State: TIWGetFormState = iwgfShowOnTop);
@@ -3673,8 +3672,10 @@ begin
   end;
 end;
 
-procedure TMainIDE.UpdateIDEComponentPalette;
+procedure TMainIDE.UpdateIDEComponentPalette(IfFormChanged: boolean);
 begin
+  if IfFormChanged and (fLastCompPaletteForm=LastFormActivated) then exit;
+  fLastCompPaletteForm:=LastFormActivated;
   IDEComponentPalette.HideControls:=(LastFormActivated<>nil)
     and (LastFormActivated.Designer<>nil)
     and (LastFormActivated.Designer.LookupRoot<>nil)
@@ -8582,9 +8583,7 @@ begin
     GlobalDesignHook.LookupRoot:=TheControlSelection.LookupRoot;
   if NewForm<>nil then
     NewForm.Invalidate;
-  if NewForm<>FPrevForm then
-    UpdateIDEComponentPalette;
-  FPrevForm:=NewForm;
+  UpdateIDEComponentPalette(true);
 end;
 
 procedure TMainIDE.OnGetDesignerSelection(const ASelection: TPersistentSelectionList);
@@ -10519,9 +10518,7 @@ begin
   {$ENDIF}
   DisplayState:= dsForm;
   LastFormActivated := (Sender as TDesigner).Form;
-  if LastFormActivated<>FPrevForm then
-    UpdateIDEComponentPalette;
-  FPrevForm:=LastFormActivated;
+  UpdateIDEComponentPalette(true);
 end;
 
 procedure TMainIDE.OnDesignerCloseQuery(Sender: TObject);
@@ -12023,7 +12020,8 @@ begin
       Format(lisACanNotHoldTControlsYouCanOnlyPutNonVisualComponen,
              [AParent.ClassName, LineEnding]),
       mtError,[mbCancel]);
-    UpdateIDEComponentPalette;
+    // make sure the component palette shows only the available components
+    UpdateIDEComponentPalette(false);
     exit;
   end;
 

@@ -717,6 +717,7 @@ var
 begin
   Result := True;
   fUserComponentPageCache.Clear;
+  debugln(['TComponentPalette.CreatePagesFromUserOrder HideControls=',HideControls]);
   for UserPageI := 0 to fUserOrder.ComponentPages.Count-1 do
   begin
     PgName := fUserOrder.ComponentPages[UserPageI];
@@ -1077,7 +1078,9 @@ begin
     Comp := FindComponent(aCompNames[i]) as TPkgComponent;
     CreateOrDelButton(Comp, Format('%d_%d_',[aPageIndex,i]), ScrollBox);
   end;
+  {$IFNDEF DisableCompPaletteProcMsg}
   Application.ProcessMessages; // ScrollBox.ControlCount of tabs are not updated without this.
+  {$ENDIF}
   ReAlignButtons(Pg.PageComponent);
 end;
 
