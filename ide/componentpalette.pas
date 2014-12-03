@@ -1083,8 +1083,7 @@ end;
 
 procedure TComponentPalette.UpdateNoteBookButtons;
 var
-  i, PgInd: Integer;
-  PgName: String;
+  i: Integer;
 begin
   if fUpdatingPageControl then exit;
   if IsUpdateLocked then begin

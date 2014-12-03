@@ -328,7 +328,7 @@ begin
       BasePOFile.ReadPOText(POBuf.Source);
     BasePOFile.Tag:=1;
 
-    // Update po file with lrt or/and rst files
+    // Update po file with lrt or/and rst/rsj files
     for i:=0 to SrcFiles.Count-1 do begin
       Filename:=SrcFiles[i];
       if CompareFileExt(Filename,'.lrt',false)=0 then
