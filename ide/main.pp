@@ -3673,13 +3673,22 @@ begin
 end;
 
 procedure TMainIDE.UpdateIDEComponentPalette(IfFormChanged: boolean);
+var
+  OldLastCompPaletteForm: TCustomForm;
 begin
-  if IfFormChanged and (fLastCompPaletteForm=LastFormActivated) then exit;
+  // Package manager updates the palette initially.
+  if not FIDEStarted
+  or (IfFormChanged and (fLastCompPaletteForm=LastFormActivated)) then
+    exit;
+  OldLastCompPaletteForm:=fLastCompPaletteForm;
   fLastCompPaletteForm:=LastFormActivated;
-  IDEComponentPalette.HideControls:=(LastFormActivated<>nil)
-    and (LastFormActivated.Designer<>nil)
+  Assert(Assigned(LastFormActivated), 'TMainIDE.UpdateIDEComponentPalette: LastFormActivated = Nil');
+  IDEComponentPalette.HideControls:= (LastFormActivated.Designer<>nil)
     and (LastFormActivated.Designer.LookupRoot<>nil)
     and not (LastFormActivated.Designer.LookupRoot is TControl);
+  // Don't update palette at the first time if not hiding controls.
+  if (OldLastCompPaletteForm = Nil) and not IDEComponentPalette.HideControls then
+    exit;
   {$IFDEF VerboseComponentPalette}
   DebugLn(['* TMainIDE.UpdateIDEComponentPalette: Updating palette *',
            ', HideControls=', IDEComponentPalette.HideControls]);
@@ -8589,7 +8598,8 @@ begin
     NewForm.Invalidate;
   {$IFDEF VerboseComponentPalette}
   DebugLn('***');
-  DebugLn('** TMainIDE.OnControlSelectionFormChanged: Calling UpdateIDEComponentPalette(true) **');
+  DebugLn(['** TMainIDE.OnControlSelectionFormChanged: Calling UpdateIDEComponentPalette(true)',
+           ', IDEStarted=', FIDEStarted, ' **']);
   {$ENDIF}
   UpdateIDEComponentPalette(true);
 end;
@@ -10528,7 +10538,8 @@ begin
   LastFormActivated := (Sender as TDesigner).Form;
   {$IFDEF VerboseComponentPalette}
   DebugLn('***');
-  DebugLn('** TMainIDE.OnDesignerActivated: Calling UpdateIDEComponentPalette(true) **');
+  DebugLn(['** TMainIDE.OnDesignerActivated: Calling UpdateIDEComponentPalette(true)',
+           ', IDEStarted=', FIDEStarted, ' **']);
   {$ENDIF}
   UpdateIDEComponentPalette(true);
 end;
