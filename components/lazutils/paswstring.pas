@@ -184,12 +184,21 @@ end;
 // Similar to AnsiCompareStr, but with PChar
 function StrCompAnsi(s1,s2 : PChar): PtrInt;
 var
-  ansi1, ansi2: ansistring;
+  Count1: SizeInt;
+  Count2: SizeInt;
+  Count: SizeInt;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('StrCompAnsi START');{$endif}
-  ansi1 := StrPas(S1);
-  ansi2 := StrPas(S2);
-  Result := SysUtils.CompareStr(ansi1, ansi2);
+  result := 0;
+  Count1:=StrLen(s1);
+  Count2:=StrLen(s2);
+  if Count1>Count2 then
+    Count:=Count2
+  else
+    Count:=Count1;
+  result := CompareMemRange(s1, s2, Count);
+  if result=0 then
+    result:=Count1-Count2;
 end;
 
 
