@@ -1,12 +1,18 @@
 {
  *****************************************************************************
+                                paswstring.pas
+
+  A widestring manager written in Pascal
+  and optimized for DefaultSystemCodePage CP_UTF8.
+
+ *****************************************************************************
   This file is part of the LazUtils package
 
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
  *****************************************************************************
 }
-unit paswstring;
+unit PasWString;
 
 {$mode objfpc}
 {$inline on}
@@ -17,7 +23,7 @@ unit paswstring;
 interface
 
 uses
-  SysUtils, lazutf8
+  SysUtils, LazUTF8
   {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}, lconvencoding{$endif}
   ;
 
@@ -32,16 +38,9 @@ procedure fpc_rangeerror; [external name 'FPC_RANGEERROR'];
 
 // len comes in widechars, not bytes
 procedure Wide2AnsiMove(source:pwidechar;var dest:ansistring;len:SizeInt);
-var
-  widestr: widestring;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('Wide2AnsiMove START');{$endif}
-  // Copy the originating string taking into account the specified length
-  SetLength(widestr, len);
-  System.Move(source^, widestr[1], len * SizeOf(WideChar));
-
-  // Now convert it, using UTF-16 -> UTF-8
-  dest := UTF16ToUTF8(widestr);
+  dest := UTF16ToUTF8(Source,len);
   {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
   // And correct to the real Ansi encoding
   dest := ConvertEncoding(dest, EncodingUTF8, GetDefaultTextEncoding());
@@ -49,20 +48,24 @@ begin
 end;
 
 procedure Ansi2WideMove(source:pchar;var dest:widestring;len:SizeInt);
+{$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
 var
   ansistr: ansistring;
+{$endif}
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('Ansi2WideMove START');{$endif}
+
+  {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
   // Copy the originating string taking into account the specified length
   SetLength(ansistr, len);
   System.Move(source^, ansistr[1], len);
-
-  {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
   // Convert to UTF-8
   ansistr := ConvertEncoding(ansistr, GetDefaultTextEncoding(), EncodingUTF8);
-  {$endif}
   // Now convert it, using UTF-8 -> UTF-16
   dest := UTF8ToUTF16(ansistr);
+  {$else}
+  dest := UTF8ToUTF16(source,len);
+  {$endif}
 end;
 
 function LowerWideString(const s : WideString) : WideString;

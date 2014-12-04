@@ -135,8 +135,10 @@ function ConvertUTF16ToUTF8(Dest: PChar; DestCharCount: SizeUInt;
   Src: PWideChar; SrcWideCharCount: SizeUInt; Options: TConvertOptions;
   out ActualCharCount: SizeUInt): TConvertResult;
 
-function UTF8ToUTF16(const S: AnsiString): UnicodeString;
-function UTF16ToUTF8(const S: UnicodeString): AnsiString;
+function UTF8ToUTF16(const S: AnsiString): UnicodeString; overload;
+function UTF8ToUTF16(const P: PChar; ByteCnt: SizeUInt): UnicodeString; overload;
+function UTF16ToUTF8(const S: UnicodeString): AnsiString; overload;
+function UTF16ToUTF8(const P: PWideChar; WideCnt: SizeUInt): AnsiString; overload;
 
 // locale
 procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
@@ -3209,18 +3211,19 @@ end;
   copy
  ------------------------------------------------------------------------------}
 function UTF8ToUTF16(const S: AnsiString): UnicodeString;
+begin
+  Result:=UTF8ToUTF16(PChar(S),length(S));
+end;
+
+function UTF8ToUTF16(const P: PChar; ByteCnt: SizeUInt): UnicodeString;
 var
   L: SizeUInt;
 begin
-  if S = ''
-  then begin
-    Result := '';
-    Exit;
-  end;
-
-  SetLength(Result, Length(S));
+  if ByteCnt=0 then
+    exit('');
+  SetLength(Result, ByteCnt);
   // wide chars of UTF-16 <= bytes of UTF-8 string
-  if ConvertUTF8ToUTF16(PWideChar(Result), Length(Result) + 1, PChar(S), Length(S),
+  if ConvertUTF8ToUTF16(PWideChar(Result), Length(Result) + 1, P, ByteCnt,
     [toInvalidCharToSymbol], L) = trNoError
   then SetLength(Result, L - 1)
   else Result := '';
@@ -3234,22 +3237,26 @@ end;
   Converts the specified UTF-16 encoded string (system endian) to UTF-8 encoded
  ------------------------------------------------------------------------------}
 function UTF16ToUTF8(const S: UnicodeString): AnsiString;
+begin
+  Result := UTF16ToUTF8(PWideChar(S),length(S));
+end;
+
+function UTF16ToUTF8(const P: PWideChar; WideCnt: SizeUInt): AnsiString;
 var
   L: SizeUInt;
-  R: AnsiString;
 begin
-  Result := '';
-  if S = '' then Exit;
+  if WideCnt=0 then
+    exit('');
 
-  SetLength(R, Length(S) * 3);
+  SetLength(Result, WideCnt * 3);
   // bytes of UTF-8 <= 3 * wide chars of UTF-16 string
   // e.g. %11100000 10100000 10000000 (UTF-8) is $0800 (UTF-16)
-  if ConvertUTF16ToUTF8(PChar(R), Length(R) + 1, PWideChar(S), Length(S),
+  if ConvertUTF16ToUTF8(PChar(Result), Length(Result) + 1, P, WideCnt,
     [toInvalidCharToSymbol], L) = trNoError then
   begin
-    SetLength(R, L - 1);
-    Result := R;
-  end;
+    SetLength(Result, L - 1);
+  end else
+    Result := '';
 end;
 
 procedure LazGetLanguageIDs(var Lang, FallbackLang: String);
