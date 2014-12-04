@@ -395,12 +395,14 @@ end;
 
 function PasUnicodeCompareText(const s1, s2 : unicodestring): PtrInt;
 var
-  a, b: unicodestring;
+  a, b: string;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('PasUnicodeCompareText START');{$endif}
-  a:=LowerWidestring(s1);
-  b:=LowerWidestring(s2);
-  result := WideCompareStr(a,b);
+  a := UTF16ToUTF8(s1);
+  a := UTF8LowerCase(a);
+  b := UTF16ToUTF8(s2);
+  b := UTF8LowerCase(b);
+  result := UTF8CompareText(a,b);
 end;
 
 Procedure SetPasWideStringManager;
