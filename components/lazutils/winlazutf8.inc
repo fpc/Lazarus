@@ -424,9 +424,6 @@ begin
       {$ifdef debugparamstrutf8}
       if ParamCount <> ArgsWCount then ParamStrUtf8Error;
       {$endif}
-      {$ifdef EnableUTF8RTL}
-      GetFormatSettingsUTF8(GetThreadLocale,FormatSettings);
-      {$endif}
     Except
       begin
         ArgsWCount := -1;
@@ -436,6 +433,9 @@ begin
       end;
     end;
   end;
+  {$ifdef EnableUTF8RTL}
+  GetFormatSettingsUTF8(GetThreadLocale,FormatSettings);
+  {$endif}
 end;
 
 procedure FinalizeLazUTF8;
