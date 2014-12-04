@@ -90,6 +90,7 @@ type
     procedure SetDisplayState(AValue: TDisplayState);
   protected
     FNeedUpdateHighlighters: boolean;
+    FIDEStarted: boolean;
 
     function CreateMenuSeparator : TMenuItem;
     procedure CreateMenuItem(Section: TIDEMenuSection;
@@ -189,13 +190,12 @@ type
     procedure FindInFilesPerDialog(AProject: TProject); override;
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
 
-    // Copied from CodeTyphon
     procedure SelComponentPageButtonClick(Sender: TObject); virtual; abstract;
-
   public
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
     property WindowMenuActiveForm: TCustomForm read FWindowMenuActiveForm write FWindowMenuActiveForm;
     property DisplayState: TDisplayState read FDisplayState write SetDisplayState;
+    property IDEStarted: boolean read FIDEStarted;
     property LastFormActivated: TCustomForm read FLastFormActivated write FLastFormActivated;
   end;
 

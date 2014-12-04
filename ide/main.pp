@@ -629,7 +629,6 @@ type
     FDesignerToBeFreed: TFilenameToStringTree; // form file names to be freed OnIdle.
     FApplicationIsActivate: boolean;
     fNeedSaveEnvironment: boolean;
-    FIDEStarted: boolean;
     FRemoteControlTimer: TTimer;
     FRemoteControlFileAge: integer;
 
@@ -8606,7 +8605,7 @@ end;
 procedure TMainIDE.OnControlSelectionFormChanged(Sender: TObject; OldForm,
   NewForm: TCustomForm);
 begin
-  if (TheControlSelection=nil) or (FormEditor1=nil) then exit;
+  if (TheControlSelection=nil) or (FormEditor1=nil) or not FIDEStarted then exit;
   if OldForm<>nil then
     OldForm.Invalidate;
   if TheControlSelection.LookupRoot<>nil then
@@ -8615,8 +8614,7 @@ begin
     NewForm.Invalidate;
   {$IFDEF VerboseComponentPalette}
   DebugLn('***');
-  DebugLn(['** TMainIDE.OnControlSelectionFormChanged: Calling UpdateIDEComponentPalette(true)',
-           ', IDEStarted=', FIDEStarted, ' **']);
+  DebugLn('** TMainIDE.OnControlSelectionFormChanged: Calling UpdateIDEComponentPalette(true)');
   {$ENDIF}
   UpdateIDEComponentPalette(true);
 end;
