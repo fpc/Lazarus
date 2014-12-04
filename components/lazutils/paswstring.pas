@@ -339,11 +339,8 @@ begin
     // Copy the originating string taking into account the specified length
     SetLength(ansistr, len);
     System.Move(source^, ansistr[1], len);
-
-    {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
     // Convert to UTF-8
     ansistr := ConvertEncoding(ansistr, GetDefaultTextEncoding(), EncodingUTF8);
-    {$endif}
     // Now convert it, using UTF-8 -> UTF-16
     dest := UTF8ToUTF16(ansistr);
   end else begin
