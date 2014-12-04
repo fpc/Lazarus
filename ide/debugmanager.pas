@@ -2168,7 +2168,7 @@ begin
       end;
 
     // check if debugger needs an Exe and the exe is there
-    if (NewDebuggerClass.HasExePath)
+    if (NewDebuggerClass.NeedsExePath)
     and not FileIsExecutable(EnvironmentOptions.GetParsedDebuggerFilename)
     then begin
       if not PromptOnError then
@@ -2351,7 +2351,7 @@ var
 begin
   DbgClass:=FindDebuggerClass(EnvironmentOptions.DebuggerConfig.DebuggerClass);
   if (DbgClass=nil)
-  or (DbgClass.HasExePath
+  or (DbgClass.NeedsExePath
     and (not FileIsExecutableCached(EnvironmentOptions.GetParsedDebuggerFilename)))
   then begin
     if IDEQuestionDialog(lisDbgMangNoDebuggerSpecified,

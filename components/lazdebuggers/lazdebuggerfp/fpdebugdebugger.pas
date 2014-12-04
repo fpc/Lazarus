@@ -156,7 +156,7 @@ type
     function GetLocationRec(AnAddress: TDBGPtr=0): TDBGLocationRec;
     function GetLocation: TDBGLocationRec; override;
     class function Caption: String; override;
-    class function HasExePath: boolean; override;
+    class function NeedsExePath: boolean; override;
     class function CreateProperties: TDebuggerProperties; override;
     function  GetSupportedCommands: TDBGCommands; override;
   end;
@@ -1799,7 +1799,7 @@ begin
   Result:='FpDebug internal Dwarf-debugger (alpha)';
 end;
 
-class function TFpDebugDebugger.HasExePath: boolean;
+class function TFpDebugDebugger.NeedsExePath: boolean;
 begin
   Result:=False;
 end;

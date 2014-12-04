@@ -293,7 +293,7 @@ function TDebuggerGeneralOptionsFrame.Check: Boolean;
 begin
   Result := false;
 
-  if assigned(FCurDebuggerClass) and FCurDebuggerClass.HasExePath
+  if assigned(FCurDebuggerClass) and FCurDebuggerClass.NeedsExePath
   and (EnvironmentOptions.DebuggerFilename <> cmbDebuggerPath.Text)
   then begin
     EnvironmentOptions.DebuggerFilename := cmbDebuggerPath.Text;
