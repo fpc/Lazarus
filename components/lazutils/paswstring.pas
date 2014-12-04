@@ -130,7 +130,7 @@ end;
 
 function UpperAnsiString(const s : AnsiString) : AnsiString;
 var
-  Str: utf8string;
+  Str: string;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('UpperAnsiString START');{$endif}
   Str := SysToUTF8(s);
@@ -159,12 +159,14 @@ end;
 
 function WideCompareText(const s1, s2 : WideString): PtrInt;
 var
-  a, b: WideString;
+  a, b: String;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('WideCompareText START');{$endif}
-  a:=LowerWidestring(s1);
-  b:=LowerWidestring(s2);
-  result := WideCompareStr(a,b);
+  a := UTF16ToUTF8(PWideChar(s1),length(s1));
+  a := UTF8LowerCase(a);
+  b := UTF16ToUTF8(PWideChar(s2),length(s2));
+  b := UTF8LowerCase(b);
+  result := UTF8CompareText(a,b);
 end;
 
 function CharLengthPChar(const Str: PChar): PtrInt;
@@ -193,7 +195,7 @@ end;
 
 function AnsiCompareText(const S1, S2: ansistring): PtrInt;
 var
-  str1, str2: utf8string;
+  str1, str2: string;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('AnsiCompareText START');{$endif}
   str1 := SysToUTF8(S1);
@@ -338,7 +340,7 @@ end;
 
 function UpperUnicodeString(const s : UnicodeString) : UnicodeString;
 var
-  str: utf8string;
+  str: string;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('UpperUnicodeString START');{$endif}
   str := UTF16ToUTF8(s);
@@ -348,7 +350,7 @@ end;
 
 function LowerUnicodeString(const s : UnicodeString) : UnicodeString;
 var
-  str: utf8string;
+  str: string;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('LowerUnicodeString START');{$endif}
   str := UTF16ToUTF8(s);
