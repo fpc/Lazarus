@@ -89,13 +89,16 @@ begin
 end;
 
 procedure EnsureAnsiLen(var S: AnsiString; const len: SizeInt); inline;
+var
+  l: SizeUInt;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('EnsureAnsiLen START');{$endif}
-  if (len>length(s)) then
-    if (length(s) < 10*256) then
-      setlength(s,length(s)+10)
+  l:=length(s);
+  if (len>l) then
+    if (l < 128) then
+      setlength(s,l+8)
     else
-      setlength(s,length(s)+length(s) shr 8);
+      setlength(s,l+l shr 8);
 end;
 
 
@@ -109,7 +112,7 @@ end;
 
 function LowerAnsiString(const s : AnsiString) : AnsiString;
 var
-  Str: utf8string;
+  Str: string;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('LowerAnsiString START');{$endif}
   Str := SysToUTF8(s);
