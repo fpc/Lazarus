@@ -125,6 +125,7 @@ type
       aButtonUniqueName: string; aScrollBox: TScrollBox);
     procedure InsertVisiblePage(aCompPage: TBaseComponentPage);
     procedure RemoveUnneededPage(aSheet: TCustomPage);
+    procedure ReAlignButtons(aSheet: TCustomPage);
     procedure SetPageControl(const AValue: TPageControl);
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
@@ -136,6 +137,10 @@ type
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure CreatePopupMenu;
     procedure UnselectAllButtons;
+    function GetUnregisteredIcon: TCustomBitmap;
+    function GetSelectButtonIcon: TCustomBitmap;
+    function SelectButton(Button: TComponent): boolean;
+    function IsSelectionToolBtn(aControl: TControl): boolean;
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate(Changed: boolean); override;
@@ -152,11 +157,6 @@ type
     procedure Clear;
     procedure ClearButtons;
     procedure DoAfterComponentAdded; override;
-    function GetUnregisteredIcon: TCustomBitmap;
-    function GetSelectButtonIcon: TCustomBitmap;
-    function SelectButton(Button: TComponent): boolean;
-    procedure ReAlignButtons(aSheet: TCustomPage);
-    function IsSelectionToolBtn(aControl: TControl): boolean;
     procedure UpdateNoteBookButtons;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
                                      AComponent: TComponent; var Icon: TCustomBitmap);
@@ -282,11 +282,11 @@ end;
 procedure TComponentPalette.ActivePageChanged(Sender: TObject);
 begin
   if FPageControl=nil then exit;
-  ReAlignButtons(FPageControl.ActivePage);
   if (FSelected<>nil)
-  and (FSelected.RealPage.PageComponent=FPageControl.ActivePage)
-  then exit;
-  DebugLn('TComponentPalette.ActivePageChanged: setting Selected:=nil.');
+  and (FSelected.RealPage.PageComponent=FPageControl.ActivePage) then
+    exit;
+  DebugLn('TComponentPalette.ActivePageChanged: Calling ReAlignButtons, setting Selected:=nil.');
+  ReAlignButtons(FPageControl.ActivePage);
   Selected:=nil;
 end;
 
