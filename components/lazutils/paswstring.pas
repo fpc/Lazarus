@@ -174,9 +174,19 @@ begin
 end;
 
 function CharLengthPChar(const Str: PChar): PtrInt;
+// return the number of codepoints (including invalid codepoints)
+var
+  p: PChar;
+  l: Integer;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('CharLengthPChar START');{$endif}
-  Result := UTF8CharacterLength(Str);
+  p:=Str;
+  if p=nil then exit(0);
+  while p^<>#0 do begin
+    l:=UTF8CharacterLength(p);
+    inc(Result);
+    inc(p,l);
+  end;
 end;
 
 function AnsiCompareStr(const s1, s2: ansistring): PtrInt;
