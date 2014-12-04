@@ -16726,29 +16726,17 @@ var
   Msg: TLMessage;
   ADate: QDateH;
   HasChanges: Boolean;
+  TempYear, TempMonth: Integer;
 begin
   {$IFDEF VerboseQt}
-  writeln('TQtCalendar.SignalCurrentPageChanged p1=',p1,' p2=',p2);
+  writeln('TQtCalendar.SignalCurrentPageChanged p1=',p1,' p2=',p2,' AMonth=',AMonth,' AYear=',AYear);
   {$ENDIF}
   if InUpdate then
     exit;
+  TempYear := AYear;
+  TempMonth := AMonth;
   FillChar(Msg{%H-}, SizeOf(Msg), #0);
-  HasChanges := (AYear <> p1) or (AMonth <> p2);
-  if AYear <> p1 then
-  begin
-    Msg.Msg := LM_YEARCHANGED;
-    DeliverMessage(Msg);
-    Msg.Msg := LM_CHANGED;
-    DeliverMessage(Msg);
-  end;
-
-  if AMonth <> p2 then
-  begin
-    Msg.Msg := LM_MONTHCHANGED;
-    DeliverMessage(Msg);
-    Msg.Msg := LM_CHANGED;
-    DeliverMessage(Msg);
-  end;
+  HasChanges := (TempYear <> p1) or (TempMonth <> p2);
 
   if HasChanges then
   begin
@@ -16760,6 +16748,24 @@ begin
     finally
       QDate_destroy(ADate);
     end;
+  end;
+
+  if TempYear <> p1 then
+  begin
+    Msg.Msg := LM_YEARCHANGED;
+    DeliverMessage(Msg);
+  end;
+
+  if TempMonth <> p2 then
+  begin
+    Msg.Msg := LM_MONTHCHANGED;
+    DeliverMessage(Msg);
+  end;
+
+  if HasChanges then
+  begin
+    Msg.Msg := LM_CHANGED;
+    DeliverMessage(Msg);
   end;
 end;
 
