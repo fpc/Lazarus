@@ -20,6 +20,10 @@ unit PasWString;
 //{.$define PASWSTRING_SUPPORT_NONUTF8_ANSISTRING} disabled by default because
 // non utf-8 ansistring is rare in UNIXes and lconvencoding makes the executable big
 
+{$IF defined(EnableUTF8RTL) and defined(PASWSTRING_SUPPORT_NONUTF8_ANSISTRING)}
+  {$error UTF8 or not UTF8}
+{$ENDIF}
+
 interface
 
 uses
@@ -314,16 +318,9 @@ end;
 { Unicode }
 
 procedure Unicode2AnsiMove(source:pwidechar;var dest:ansistring;len:SizeInt);
-var
-  widestr: unicodestring;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('Unicode2AnsiMove START');{$endif}
-  // Copy the originating string taking into account the specified length
-  SetLength(widestr, len);
-  System.Move(source^, widestr[1], len*2);
-
-  // Now convert it, using UTF-16 -> UTF-8
-  dest := UTF16ToUTF8(widestr);
+  dest := UTF16ToUTF8(source,len);
   {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
   // And correct to the real Ansi encoding
   dest := ConvertEncoding(dest, EncodingUTF8, GetDefaultTextEncoding());
@@ -331,20 +328,30 @@ begin
 end;
 
 procedure Ansi2UnicodeMove(source:pchar;var dest:UnicodeString;len:SizeInt);
+{$IFDEF PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
 var
   ansistr: ansistring;
+{$ENDIF}
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('Ansi2UnicodeMove START');{$endif}
-  // Copy the originating string taking into account the specified length
-  SetLength(ansistr, len);
-  System.Move(source^, ansistr[1], len);
+  {$IFDEF PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
+  if NeedRTLAnsi then begin
+    // Copy the originating string taking into account the specified length
+    SetLength(ansistr, len);
+    System.Move(source^, ansistr[1], len);
 
-  {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
-  // Convert to UTF-8
-  ansistr := ConvertEncoding(ansistr, GetDefaultTextEncoding(), EncodingUTF8);
-  {$endif}
-  // Now convert it, using UTF-8 -> UTF-16
-  dest := UTF8ToUTF16(ansistr);
+    {$ifdef PASWSTRING_SUPPORT_NONUTF8_ANSISTRING}
+    // Convert to UTF-8
+    ansistr := ConvertEncoding(ansistr, GetDefaultTextEncoding(), EncodingUTF8);
+    {$endif}
+    // Now convert it, using UTF-8 -> UTF-16
+    dest := UTF8ToUTF16(ansistr);
+  end else begin
+    dest := UTF8ToUTF16(source,len);
+  end;
+  {$ELSE}
+  dest := UTF8ToUTF16(source,len);
+  {$ENDIF}
 end;
 
 function UpperUnicodeString(const s : UnicodeString) : UnicodeString;
