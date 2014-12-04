@@ -654,11 +654,29 @@ begin
 end;
 
 procedure TSearchProgressForm.SearchFormCREATE(Sender: TObject);
+  Function MaxWidth(Labs : array of TLabel) : integer;
+  var i,w : integer;
+  begin
+    Result:=0;
+    for i:=low(Labs) to high(Labs) do
+      begin
+          w:=Canvas.TextWidth(Labs[i].Caption);
+          if Result<w then
+             Result:=w;
+      end;
+  end;
+
+var NewX : integer;
 begin
   //Set Defaults
   MatchesLabel.Caption:=lissMatches;
   SearchingLabel.Caption:=lissSearching;
   SearchTextLabel.Caption:=lissSearchText;
+  NewX:=MatchesLabel.Left+MaxWidth([MatchesLabel,SearchingLabel,SearchTextLabel])+10;
+  lblMatches.Left:=NewX;
+  lblProgress.Left:=NewX;
+  lblSearchText.Left:=NewX;
+
   Caption:=dlgSearchCaption;
   btnCancel.Caption:=lisCancel;
 
