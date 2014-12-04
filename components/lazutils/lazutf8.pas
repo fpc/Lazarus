@@ -91,7 +91,9 @@ function UTF8StringReplace(const S, OldPattern, NewPattern: String;
   Flags: TReplaceFlags; ALanguage: string=''): String;
 
 function UTF8LowerCase(const AInStr: string; ALanguage: string=''): string;
+function UTF8LowerString(const s: string): string;
 function UTF8UpperCase(const AInStr: string; ALanguage: string=''): string;
+function UTF8UpperString(const s: string): string;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
                                   StopOnNonASCII: Boolean = false): PtrInt;
 function ValidUTF8String(const s: String): String;
@@ -966,7 +968,7 @@ begin
   InStr := PChar(AInStr);
   InStrEnd := InStr + length(AInStr); // points behind last char
 
-  // Does a fast initial parsing of the string to maybe avoid doing
+  // Do a fast initial parsing of the string to maybe avoid doing
   // UniqueString if the resulting string will be identical
   while (InStr < InStrEnd) do
   begin
@@ -2085,6 +2087,12 @@ begin
   SetLength(Result,OutStr - PChar(Result));
 end;
 
+function UTF8LowerString(const s: string): string;
+begin
+  Result:=UTF8LowerCase(s);
+end;
+
+
 {
   AInStr - The input string
   ALanguage - The language. Use '' for maximum speed if one desires to ignore the language
@@ -2466,6 +2474,12 @@ begin
   // Final correction of the buffer size
   SetLength(Result,OutCounter);
 end;
+
+function UTF8UpperString(const s: string): string;
+begin
+  Result:=UTF8UpperCase(s);
+end;
+
 
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
   StopOnNonASCII: Boolean): PtrInt;

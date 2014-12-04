@@ -195,7 +195,7 @@ begin
     GetMem(argv,SizeOf(Pointer)*length(ArgsW));
     for i:=0 to length(ArgsW)-1 do
     begin
-      ArgsUTF8[i]:=ArgsW[i];
+      ArgsUTF8[i]:=ArgsW{%H-}[i];
       argv[i]:=PChar(ArgsUTF8[i]);
     end;
   end;
@@ -336,13 +336,12 @@ function GetLocaleStr(aLocaleID, aLCType: Longint; const Def: string): String;
 var
   L: Integer;
   Buf: array[0..255] of WideChar;
-  W: WideString;
 begin
   L := GetLocaleInfoW(aLocaleID, aLCType, Buf, SizeOf(Buf));
   if L > 0 then
   begin
-    SetString(W, PWideChar(@Buf[0]), L - 1);
-    Result := W;
+    Result:='';
+    widestringmanager.Wide2AnsiMoveProc(PWideChar(@Buf[0]),Result,CP_UTF8,L-1);
   end
   else
     Result := Def;
@@ -366,7 +365,7 @@ var
   I,Day : longint;
 begin
   LID := LCID;
-  with FormatSettings do
+  with aFormatSettings do
   begin
     { Date stuff }
     for I := 1 to 12 do
@@ -405,6 +404,66 @@ begin
     ListSeparator := GetLocaleCharUTF8(LID, LOCALE_SLIST, ',');
   end;
 end;
+
+function UTF8StrCompAnsiString(S1, S2: PChar): PtrInt;
+begin
+  Result:=UTF8CompareStrP(S1,S2);
+end;
+
+function UTF8StrICompAnsiString(S1, S2: PChar): PtrInt;
+var
+  U1, U2: String;
+begin
+  U1:=StrPas(S1);
+  U2:=StrPas(S2);
+  Result:=UTF8CompareText(U1,U2);
+end;
+
+function StrMaxLen(S: PChar; MaxLen: PtrUInt): PtrUInt;
+begin
+  Result:=0;
+  if S=nil then exit;
+  while (Result<MaxLen) and (S^<>#0) do begin
+    inc(S);
+    inc(Result);
+  end;
+end;
+
+function UTF8StrLCompAnsiString(S1, S2: PChar; MaxLen: PtrUInt): PtrInt;
+var
+  Count1, Count2: PtrUInt;
+begin
+  Count1:=StrMaxLen(S1,MaxLen);
+  Count2:=StrMaxLen(S2,MaxLen);
+  Result:=UTF8CompareStr(S1,Count1,S2,Count2);
+end;
+
+function UTF8StrLICompAnsiString(S1, S2: PChar; MaxLen: PtrUInt): PtrInt;
+var
+  Count1, Count2, Count: PtrUInt;
+  U1, U2: String;
+begin
+  Count1:=StrMaxLen(S1,MaxLen);
+  Count2:=StrMaxLen(S2,MaxLen);
+  if Count1<Count2 then
+    Count:=Count1
+  else
+    Count:=Count2;
+  if Count>0 then begin
+    SetLength(U1,Count);
+    Move(S1^,PByte(U1)^,Count);
+    SetLength(U2,Count);
+    Move(S2^,PByte(U2)^,Count);
+    Result:=UTF8CompareText(U1,U2);
+    if Result<>0 then exit;
+  end;
+  if Count1>Count2 then
+    Result:=1
+  else if Count1<Count2 then
+    Result:=-1
+  else
+    Result:=0;
+end;
 {$ENDIF}
 
 procedure InitLazUtf8;
@@ -435,6 +494,18 @@ begin
   end;
   {$ifdef EnableUTF8RTL}
   GetFormatSettingsUTF8(GetThreadLocale,FormatSettings);
+  widestringmanager.UpperAnsiStringProc:=@UTF8UpperString;
+  widestringmanager.LowerAnsiStringProc:=@UTF8LowerString;
+  widestringmanager.CompareStrAnsiStringProc:=@UTF8CompareStr;
+  widestringmanager.CompareTextAnsiStringProc:=@UTF8CompareText;
+  widestringmanager.StrCompAnsiStringProc:=@UTF8StrCompAnsiString;
+  widestringmanager.StrICompAnsiStringProc:=@UTF8StrICompAnsiString;
+  widestringmanager.StrLCompAnsiStringProc:=@UTF8StrLCompAnsiString;
+  widestringmanager.StrLICompAnsiStringProc:=@UTF8StrLICompAnsiString;
+  widestringmanager.StrLICompAnsiStringProc:=@UTF8StrLICompAnsiString;
+  // Does anyone need these two?
+  //widestringmanager.StrLowerAnsiStringProc;
+  //widestringmanager.StrUpperAnsiStringProc;
   {$endif}
 end;
 
