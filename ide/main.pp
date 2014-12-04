@@ -3680,6 +3680,10 @@ begin
     and (LastFormActivated.Designer<>nil)
     and (LastFormActivated.Designer.LookupRoot<>nil)
     and not (LastFormActivated.Designer.LookupRoot is TControl);
+  {$IFDEF VerboseComponentPalette}
+  DebugLn(['* TMainIDE.UpdateIDEComponentPalette: Updating palette *',
+           ', HideControls=', IDEComponentPalette.HideControls]);
+  {$ENDIF}
   IDEComponentPalette.Update;
   TComponentPalette(IDEComponentPalette).OnClassSelected := @ComponentPaletteClassSelected;
   SetupHints;
@@ -8583,6 +8587,10 @@ begin
     GlobalDesignHook.LookupRoot:=TheControlSelection.LookupRoot;
   if NewForm<>nil then
     NewForm.Invalidate;
+  {$IFDEF VerboseComponentPalette}
+  DebugLn('***');
+  DebugLn('** TMainIDE.OnControlSelectionFormChanged: Calling UpdateIDEComponentPalette(true) **');
+  {$ENDIF}
   UpdateIDEComponentPalette(true);
 end;
 
@@ -10518,6 +10526,10 @@ begin
   {$ENDIF}
   DisplayState:= dsForm;
   LastFormActivated := (Sender as TDesigner).Form;
+  {$IFDEF VerboseComponentPalette}
+  DebugLn('***');
+  DebugLn('** TMainIDE.OnDesignerActivated: Calling UpdateIDEComponentPalette(true) **');
+  {$ENDIF}
   UpdateIDEComponentPalette(true);
 end;
 
@@ -12020,6 +12032,10 @@ begin
       Format(lisACanNotHoldTControlsYouCanOnlyPutNonVisualComponen,
              [AParent.ClassName, LineEnding]),
       mtError,[mbCancel]);
+    {$IFDEF VerboseComponentPalette}
+    DebugLn('***');
+    DebugLn('** TMainIDE.OnPropHookBeforeAddPersistent: Calling UpdateIDEComponentPalette(false) **');
+    {$ENDIF}
     // make sure the component palette shows only the available components
     UpdateIDEComponentPalette(false);
     exit;
