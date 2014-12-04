@@ -70,10 +70,10 @@ end;
 
 function LowerWideString(const s : WideString) : WideString;
 var
-  str: utf8string;
+  str: string;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('LowerWideString START');{$endif}
-  str := UTF16ToUTF8(s);
+  str := UTF16ToUTF8(PWideChar(s),length(s));
   str := UTF8LowerCase(str);
   Result := UTF8ToUTF16(str);
 end;
