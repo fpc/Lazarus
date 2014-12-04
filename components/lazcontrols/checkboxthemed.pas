@@ -368,10 +368,10 @@ begin
       taLeftJustify: begin
         if not ARightToLeft then begin  { Caption is on the Left, aligned to the Left }
           aCaptionPoint.X := cFocusBorder;
-          aCheckBoxPoint.X := cFocusBorder + aTextSize.cx + cIndent;
+          aCheckBoxPoint.X := ARect.Right - CheckBoxSize.cx ;//cFocusBorder + aTextSize.cx + cIndent;
         end else begin  { Caption is on the Right, aligned to the Right }
           aCaptionPoint.X := ARect.Right - aTextSize.cx - cFocusBorder;
-          aCheckBoxPoint.X := aCaptionPoint.X - cIndent - CheckBoxSize.cx;
+          aCheckBoxPoint.X := 0;//aCaptionPoint.X - cIndent - CheckBoxSize.cx;
         end;
       end;
       taRightJustify: begin
