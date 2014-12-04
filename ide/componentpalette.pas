@@ -1104,9 +1104,6 @@ begin
     Comp := FindComponent(aCompNames[i]) as TPkgComponent;
     CreateOrDelButton(Comp, Format('%d_%d_',[aPageIndex,i]), ScrollBox);
   end;
-  {$IFNDEF DisableCompPaletteProcMsg}
-  Application.ProcessMessages; // ScrollBox.ControlCount of tabs are not updated without this.
-  {$ENDIF}
   ReAlignButtons(Pg.PageComponent);
 end;
 
