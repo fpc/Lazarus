@@ -125,7 +125,6 @@ type
       aButtonUniqueName: string; aScrollBox: TScrollBox);
     procedure InsertVisiblePage(aCompPage: TBaseComponentPage);
     procedure RemoveUnneededPage(aSheet: TCustomPage);
-    procedure ReAlignButtons(aSheet: TCustomPage);
     procedure SetPageControl(const AValue: TPageControl);
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
@@ -157,6 +156,7 @@ type
     procedure Clear;
     procedure ClearButtons;
     procedure DoAfterComponentAdded; override;
+    procedure ReAlignButtons(aSheet: TCustomPage = Nil);
     procedure UpdateNoteBookButtons;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
                                      AComponent: TComponent; var Icon: TCustomBitmap);
@@ -835,13 +835,17 @@ var
   Node: TAVLTreeNode;
   ScrollBox: TScrollBox;
 begin
+  if (FPageControl<>nil) and (aSheet=Nil) then
+    aSheet:=FPageControl.ActivePage;      // Use ActivePage if nothing was given.
+  if (aSheet=Nil) or not aSheet.Visible then
+    exit;
   {$IFDEF VerboseComponentPalette}
-  if aSheet.Caption = CompPalVerbPgName then
-    DebugLn(['TComponentPalette.ReAlignButtons START "',aSheet.Caption,'", Visible=',aSheet.Visible,' ClientWidth=',aSheet.ClientWidth]);
+  //if aSheet.Caption = CompPalVerbPgName then
+    DebugLn(['TComponentPalette.ReAlignButtons Visible="',aSheet.Caption,'", ClientWidth=',aSheet.ClientWidth]);
   {$ENDIF}
-  if not aSheet.Visible then exit;
-  if FPageControl<>nil then
-    PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
+  if FPageControl<>nil then begin
+    fPageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
+  end;
   ButtonTree:=nil;
   try
     if (aSheet.ComponentCount=0) or not (aSheet.Components[0] is TScrollBox) then

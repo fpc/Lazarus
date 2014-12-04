@@ -4758,8 +4758,10 @@ begin
       IDEOptionsDialog.WriteAll(false);
       // Update component palette only when needed.
       PaletteOpt := TCompPaletteOptionsFrame(IDEOptionsDialog.FindEditor(TCompPaletteOptionsFrame));
-      if Assigned(PaletteOpt) and PaletteOpt.ConfigChanged then
-        TComponentPalette(IDEComponentPalette).UpdateNoteBookButtons;
+      if Assigned(PaletteOpt) and PaletteOpt.ConfigChanged then begin
+        IDEComponentPalette.Update;
+        TComponentPalette(IDEComponentPalette).ReAlignButtons;
+      end;
       // Update TaskBarBehavior immediately.
       if EnvironmentOptions.SingleTaskBarButton then
         Application.TaskBarBehavior := tbSingleButton
