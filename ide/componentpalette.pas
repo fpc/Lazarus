@@ -292,8 +292,12 @@ end;
 
 procedure TComponentPalette.OnScrollBoxResize(Sender: TObject);
 begin
-  if TControl(Sender).Parent is TCustomPage then
+  if TControl(Sender).Parent is TCustomPage then begin
+    {$IFDEF VerboseComponentPalette}
+    DebugLn('TComponentPalette.OnScrollBoxResize Calling ReAlignButtons');
+    {$ENDIF}
     ReAlignButtons(TCustomPage(TControl(Sender).Parent));
+  end;
 end;
 
 procedure TComponentPalette.OpenPackageClicked(Sender: TObject);
@@ -383,6 +387,9 @@ begin
     end;
     FPageControl.PopupMenu:=PalettePopupMenu;
   end;
+  {$IFDEF VerboseComponentPalette}
+  DebugLn(['TComponentPalette.SetPageControl, calling UpdateNoteBookButtons, ', AValue]);
+  {$ENDIF}
   UpdateNoteBookButtons;
 end;
 
@@ -542,8 +549,12 @@ end;
 
 procedure TComponentPalette.DoEndUpdate(Changed: boolean);
 begin
-  if Changed or fNoteBookNeedsUpdate then
+  if Changed or fNoteBookNeedsUpdate then begin
+    {$IFDEF VerboseComponentPalette}
+    DebugLn(['TComponentPalette.DoEndUpdate, calling UpdateNoteBookButtons, Changed=', Changed]);
+    {$ENDIF}
     UpdateNoteBookButtons;
+  end;
   inherited DoEndUpdate(Changed);
 end;
 
@@ -641,6 +652,9 @@ end;
 procedure TComponentPalette.Update;
 begin
   inherited Update;
+  {$IFDEF VerboseComponentPalette}
+  DebugLn('TComponentPalette.Update, calling UpdateNoteBookButtons');
+  {$ENDIF}
   UpdateNoteBookButtons;
 end;
 
@@ -822,7 +836,7 @@ var
 begin
   {$IFDEF VerboseComponentPalette}
   if aSheet.Caption = CompPalVerbPgName then
-    DebugLn(['TComponentPalette.ReAlignButtons START ',aSheet.Caption,' Visible=',aSheet.Visible,' ClientWidth=',aSheet.ClientWidth]);
+    DebugLn(['TComponentPalette.ReAlignButtons START "',aSheet.Caption,'", Visible=',aSheet.Visible,' ClientWidth=',aSheet.ClientWidth]);
   {$ENDIF}
   if not aSheet.Visible then exit;
   if FPageControl<>nil then
@@ -1093,7 +1107,7 @@ begin
   ScrollBox.OnMouseWheel := @OnPageMouseWheel;
   {$IFDEF VerboseComponentPalette}
   if Pg.PageName = CompPalVerbPgName then
-    DebugLn(['TComponentPalette.CreateButtons PAGE=',Pg.PageName,' PageIndex=',Pg.PageComponent.PageIndex]);
+    DebugLn(['TComponentPalette.CreateButtons PAGE="',Pg.PageName,'", PageIndex=',Pg.PageComponent.PageIndex]);
   {$ENDIF}
   // create selection button
   CreateSelectionButton(Pg, IntToStr(aPageIndex), ScrollBox);
@@ -1103,6 +1117,9 @@ begin
     Comp := FindComponent(aCompNames[i]) as TPkgComponent;
     CreateOrDelButton(Comp, Format('%d_%d_',[aPageIndex,i]), ScrollBox);
   end;
+  {$IFDEF VerboseComponentPalette}
+  DebugLn('TComponentPalette.CreateButtons Calling ReAlignButtons');
+  {$ENDIF}
   ReAlignButtons(Pg.PageComponent);
 end;
 
@@ -1132,6 +1149,7 @@ begin
     for i:=FPageControl.PageCount-1 downto 0 do
       RemoveUnneededPage(FPageControl.Pages[i]);
     Application.ProcessMessages; // PageIndex of tabs are not updated without this.
+
     // insert a PageControl page for every visible palette page
     fVisiblePageIndex := 0;
     for i := 0 to fPages.Count-1 do
