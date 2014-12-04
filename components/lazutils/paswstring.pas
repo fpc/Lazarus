@@ -80,10 +80,10 @@ end;
 
 function UpperWideString(const s : WideString) : WideString;
 var
-  str: utf8string;
+  str: string;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('UpperWideString START');{$endif}
-  str := UTF16ToUTF8(s);
+  str := UTF16ToUTF8(PWideChar(s),length(s));
   str := UTF8UpperCase(str);
   Result := UTF8ToUTF16(str);
 end;
