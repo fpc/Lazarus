@@ -8,7 +8,7 @@ packages=rtl
 units=lcl.pas
 
 [compiler]
-options=-gl
+options=-gl -Sc
 unitdir=../../units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) \
     ../../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
