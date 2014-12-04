@@ -6820,6 +6820,7 @@ end;
 function TMainIDE.DoInitProjectRun: TModalResult;
 var
   ProgramFilename: string;
+  DebugClass: TDebuggerClass;
 begin
   if ToolStatus <> itNone
   then begin
@@ -6846,6 +6847,22 @@ begin
     Exit;
   end;
 
+  DebugClass:=DebugBoss.DebuggerClass;
+
+  // check if debugger supports compiler flags
+  if ((DebugClass <> nil)
+  and (not DebugClass.CanExternalDebugSymbolsFile))
+  and (Project1.CompilerOptions.UseExternalDbgSyms) then
+  begin
+    // this debugger does not support external debug symbols
+    if IDEQuestionDialog(lisDisableOptionXg, Format(
+      lisTheProjectWritesTheDebugSymbolsToAnExternalFileThe, [DebugClass.Caption
+      ]),
+      mtConfirmation, [mrYes, lisDisableOptionXg2, mrCancel])<>mrYes then
+        exit;
+    Project1.CompilerOptions.UseExternalDbgSyms:=false;
+  end;
+
   // Build project first
   debugln('TMainIDE.DoInitProjectRun Check build ...');
   if DoBuildProject(crRun,[pbfOnlyIfNeeded]) <> mrOk then
@@ -6854,7 +6871,7 @@ begin
   // Check project build
   ProgramFilename := MainBuildBoss.GetProjectTargetFilename(Project1);
   DebugLn(['TMainIDE.DoInitProjectRun ProgramFilename=',ProgramFilename]);
-  if ((DebugBoss.DebuggerClass = nil) or DebugBoss.DebuggerClass.RequiresLocalExecutable)
+  if ((DebugClass = nil) or DebugClass.RequiresLocalExecutable)
      and not FileExistsUTF8(ProgramFilename)
   then begin
     IDEMessageDialog(lisFileNotFound,

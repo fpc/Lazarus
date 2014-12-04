@@ -79,6 +79,7 @@ type
     constructor Create(const AExternalDebugger: String); override;
     destructor Destroy; override;
     procedure TestCmd(const ACommand: String); virtual;// For internal debugging purposes
+    class function CanExternalDebugSymbolsFile: boolean; override;
   public
     property DebugProcess: TProcessUTF8 read FDbgProcess;
     property DebugProcessRunning: Boolean read GetDebugProcessRunning;
@@ -575,6 +576,11 @@ end;
 procedure TCmdLineDebugger.TestCmd(const ACommand: String);
 begin
   SendCmdLn(ACommand);
+end;
+
+class function TCmdLineDebugger.CanExternalDebugSymbolsFile: boolean;
+begin
+  Result:=true;
 end;
 
 initialization

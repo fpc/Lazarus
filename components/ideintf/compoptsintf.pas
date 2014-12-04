@@ -404,7 +404,7 @@ type
     property Win32GraphicApp: boolean read FWin32GraphicApp write SetWin32GraphicApp;
     property ExecutableType: TCompilationExecutableType
                                      read FExecutableType write SetExecutableType;
-    property UseExternalDbgSyms: Boolean read FUseExternalDbgSyms write SetUseExternalDbgSyms;
+    property UseExternalDbgSyms: Boolean read FUseExternalDbgSyms write SetUseExternalDbgSyms; // -Xg
 
     // messages:
     property ShowErrors: Boolean read fShowErrors write SetShowErrors; // -ve

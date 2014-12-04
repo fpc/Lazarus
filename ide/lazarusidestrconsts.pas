@@ -3758,6 +3758,11 @@ resourcestring
     +'%sHit Stop, and hope the best, we''re pulling the plug.';
   lisExecutionStopped = 'Execution stopped';
   lisFileNotFound = 'File not found';
+  lisDisableOptionXg = 'Disable Option -Xg?';
+  lisTheProjectWritesTheDebugSymbolsToAnExternalFileThe = 'The project writes '
+    +'the debug symbols to an external file. The "%s" supports only symbols '
+    +'within the executable.';
+  lisDisableOptionXg2 = 'Disable option -Xg';
   lisCleanUpUnitPath = 'Clean up unit path?';
   lisTheDirectoryIsNoLongerNeededInTheUnitPathRemoveIt =
     'The directory "%s" is no longer needed in the unit path.%sRemove it?';

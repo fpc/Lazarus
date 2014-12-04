@@ -157,6 +157,7 @@ type
     function GetLocation: TDBGLocationRec; override;
     class function Caption: String; override;
     class function NeedsExePath: boolean; override;
+    class function CanExternalDebugSymbolsFile: boolean; override;
     class function CreateProperties: TDebuggerProperties; override;
     function  GetSupportedCommands: TDBGCommands; override;
   end;
@@ -1800,6 +1801,11 @@ begin
 end;
 
 class function TFpDebugDebugger.NeedsExePath: boolean;
+begin
+  Result:=False;
+end;
+
+class function TFpDebugDebugger.CanExternalDebugSymbolsFile: boolean;
 begin
   Result:=False;
 end;
