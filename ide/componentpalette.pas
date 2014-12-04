@@ -139,7 +139,7 @@ type
     procedure UnselectAllButtons;
     function GetUnregisteredIcon: TCustomBitmap;
     function GetSelectButtonIcon: TCustomBitmap;
-    function SelectButton(Button: TComponent): boolean;
+    function SelectAButton(Button: TComponent): boolean;
     function IsSelectionToolBtn(aControl: TControl): boolean;
   protected
     procedure DoBeginUpdate; override;
@@ -388,7 +388,7 @@ end;
 
 procedure TComponentPalette.SelectionToolClick(Sender: TObject);
 begin
-  SelectButton(TComponent(Sender));
+  SelectAButton(TComponent(Sender));
 end;
 
 procedure TComponentPalette.ComponentBtnMouseDown(Sender: TObject; Button: TMouseButton;
@@ -400,7 +400,7 @@ begin
       SelectionMode := csmMulty
     else
       SelectionMode := csmSingle;
-    SelectButton(TComponent(Sender));
+    SelectAButton(TComponent(Sender));
     if Assigned(OnClassSelected) then
       OnClassSelected(Self);
   end;
@@ -425,7 +425,7 @@ var
   DisableAutoSize: Boolean;
 begin
   //debugln('TComponentPalette.ComponentBtnDblClick ',TComponent(Sender).Name);
-  if SelectButton(TComponent(Sender)) and (FSelected<>nil) then begin
+  if SelectAButton(TComponent(Sender)) and (FSelected<>nil) then begin
     if FormEditingHook<>nil then begin
       if assigned(FSelected.OnGetCreationClass) then
       begin
@@ -802,7 +802,7 @@ begin
   Result:=fSelectButtonIcon;
 end;
 
-function TComponentPalette.SelectButton(Button: TComponent): boolean;
+function TComponentPalette.SelectAButton(Button: TComponent): boolean;
 var
   NewComponent: TRegisteredComponent;
 begin
