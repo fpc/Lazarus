@@ -618,15 +618,14 @@ var
   sl: TStringList;
   i: Integer;
 begin
+  DestComps.Clear;
   if fOrigComponentPageCache.Find(PageName, i) then
   begin
     sl := fOrigComponentPageCache.Objects[i] as TStringList;
     for i := 0 to sl.Count-1 do
       if FindComponent(sl[i]).Visible then
         DestComps.Add(sl[i]);
-  end
-  else
-    raise Exception.Create(Format('AssignOrigVisibleCompsForPage: %s not found in cache.', [PageName]));
+  end;
 end;
 
 function TComponentPalette.RefUserCompsForPage(PageName: string): TStringList;
