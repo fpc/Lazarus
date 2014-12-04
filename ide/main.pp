@@ -3674,11 +3674,6 @@ end;
 
 procedure TMainIDE.UpdateIDEComponentPalette(IfFormChanged: boolean);
 begin
-  {$IFDEF VerboseComponentPalette}
-  DebugLn(['* TMainIDE.UpdateIDEComponentPalette',
-           ', fLastCompPaletteForm=', fLastCompPaletteForm,
-           ', LastFormActivated=', LastFormActivated]);
-  {$ENDIF}
   if IfFormChanged and (fLastCompPaletteForm=LastFormActivated) then exit;
   fLastCompPaletteForm:=LastFormActivated;
   IDEComponentPalette.HideControls:=(LastFormActivated<>nil)
