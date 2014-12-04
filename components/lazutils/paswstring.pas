@@ -36,6 +36,14 @@ implementation
 {$IFNDEF VER2_7}
 procedure fpc_rangeerror; [external name 'FPC_RANGEERROR'];
 
+function IsASCII(const s: string): boolean; inline;
+var
+  i: Integer;
+begin
+  for i:=1 to length(s) do if ord(s[i])>127 then exit(false);
+  Result:=true;
+end;
+
 // len comes in widechars, not bytes
 procedure Wide2AnsiMove(source:pwidechar;var dest:ansistring;len:SizeInt);
 begin

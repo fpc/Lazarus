@@ -31,10 +31,15 @@ uses
 // is not needed.
 function NeedRTLAnsi: boolean;// true if system encoding is not UTF-8
 procedure SetNeedRTLAnsi(NewValue: boolean);
-function UTF8ToSys(const s: string): string; overload;// as UTF8ToAnsi but more independent of widestringmanager
-function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings; overload;
-function SysToUTF8(const s: string): string; overload;// as AnsiToUTF8 but more independent of widestringmanager
+
+// UTF8ToSys works like UTF8ToAnsi but more independent of widestringmanager
+function UTF8ToSys(const s: string): string; overload; {$IFDEF EnableUTF8RTL}inline;{$ENDIF}
+function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings; overload; {$IFDEF EnableUTF8RTL}inline;{$ENDIF}
+
+// SysToUTF8 works like AnsiToUTF8 but more independent of widestringmanager
+function SysToUTF8(const s: string): string; overload;
 function SysToUTF8(const AFormatSettings: TFormatSettings): TFormatSettings; overload;
+
 function ConsoleToUTF8(const s: string): string;// converts OEM encoded string to UTF8 (used with some Windows specific functions)
 function UTF8ToConsole(const s: string): string;// converts UTF8 string to console encoding (used by Write, WriteLn)
 {$IFDEF MSWindows}
@@ -154,6 +159,12 @@ uses
 {$IFDEF Darwin}, MacOSAll{$ENDIF}
   ;
 
+{$IFDEF WinCE}
+// CP_UTF8 is missing in the windows unit of the Windows CE RTL
+const
+  CP_UTF8 = 65001;
+{$ENDIF}
+
 function IsASCII(const s: string): boolean; inline;
 var
   i: Integer;
@@ -173,11 +184,6 @@ var
   FNeedRTLAnsiValid: boolean = false;
 
 function NeedRTLAnsi: boolean;
-{$IFDEF WinCE}
-// CP_UTF8 is missing in the windows unit of the Windows CE RTL
-const
-  CP_UTF8 = 65001;
-{$ENDIF}
 {$IFNDEF Windows}
 var
   Lang: String;
@@ -223,14 +229,21 @@ end;
 
 function UTF8ToSys(const s: string): string;
 begin
+  {$IFDEF EnableUTF8RTL}
+  Result:=s;
+  {$ELSE}
   if NeedRTLAnsi and (not IsASCII(s)) then
     Result:=UTF8ToAnsi(s)
   else
     Result:=s;
+  {$ENDIF}
 end;
 
 function SysToUTF8(const s: string): string;
 begin
+  {$IFDEF EnableUTF8RTL}
+  Result:=s;
+  {$ELSE}
   if NeedRTLAnsi and (not IsASCII(s)) then
   begin
     Result:=AnsiToUTF8(s);
@@ -242,6 +255,7 @@ begin
   end
   else
     Result:=s;
+  {$ENDIF}
 end;
 
 function SysToUTF8(const AFormatSettings: TFormatSettings): TFormatSettings;
@@ -261,10 +275,13 @@ begin
 end;
 
 function UTF8ToSys(const AFormatSettings: TFormatSettings): TFormatSettings;
+{$IFNDEF EnableUTF8RTL}
 var
   i: Integer;
+{$ENDIF}
 begin
   Result := AFormatSettings;
+  {$IFNDEF EnableUTF8RTL}
   Result.CurrencyString := UTF8ToSys(AFormatSettings.CurrencyString);
   for i:=1 to 12 do begin
     Result.LongMonthNames[i] := UTF8ToSys(AFormatSettings.LongMonthNames[i]);
@@ -274,22 +291,31 @@ begin
     Result.LongDayNames[i] := UTF8ToSys(AFormatSettings.LongDayNames[i]);
     Result.ShortDayNames[i] := UTF8ToSys(AFormatSettings.ShortDayNames[i]);
   end;
+  {$ENDIF}
 end;
 
 function GetEnvironmentStringUTF8(Index: Integer): string;
 begin
+  {$IFDEF FPC_RTL_UNICODE}
+  Result:=UTF16ToUTF8(SysUtils.GetEnvironmentString(Index));
+  {$ELSE}
   // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
   // so ConsoleToUTF8 function should be used!
   // RTL issue: http://bugs.freepascal.org/view.php?id=15233
   Result:=ConsoleToUTF8(SysUtils.GetEnvironmentString(Index));
+  {$ENDIF}
 end;
 
 function GetEnvironmentVariableUTF8(const EnvVar: string): String;
 begin
+  {$IFDEF FPC_RTL_UNICODE}
+  Result:=UTF16ToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToUTF16(EnvVar)));
+  {$ELSE}
   // on Windows SysUtils.GetEnvironmentString returns OEM encoded string
   // so ConsoleToUTF8 function should be used!
   // RTL issue: http://bugs.freepascal.org/view.php?id=15233
   Result:=ConsoleToUTF8(SysUtils.GetEnvironmentVariable(UTF8ToSys(EnvVar)));
+  {$ENDIF}
 end;
 
 function SysErrorMessageUTF8(ErrorCode: Integer): String;
