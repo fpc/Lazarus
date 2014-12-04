@@ -1,4 +1,3 @@
-{  $Id$  }
 {
  /***************************************************************************
                                 FPCAdds.pas
@@ -16,6 +15,10 @@
 unit FPCAdds;
 
 {$mode objfpc}{$H+}{$inline on}
+
+{$IF defined(EnableUTF8RTL) and (FPC_FULLVERSION<20701)}
+  {$error UTF8 RTl requires fpc 2.7.1+}
+{$ENDIF}
 
 interface
 
