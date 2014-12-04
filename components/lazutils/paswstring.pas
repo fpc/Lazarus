@@ -189,6 +189,56 @@ begin
   end;
 end;
 
+function CodePointLengthPChar(const p: PChar; MaxLookAhead: PtrInt): Ptrint;
+{ return value:
+  -1 if incomplete or invalid code point
+  0 if NULL character,
+  > 0 if that's the length in bytes of the code point }
+begin
+  {$ifdef PASWSTRING_VERBOSE}WriteLn('CodePointLengthPChar START');{$endif}
+  if (p=nil) then exit(0);
+  if (MaxLookAhead<0) then exit(-1);
+  if ord(p^)<%10000000 then begin
+    // regular single byte character
+    if p^=#0 then
+      exit(0)
+    else
+      exit(1);
+  end;
+  if ord(p^)<%11000000 then begin
+    // invalid single byte character
+    exit(-1);
+  end;
+  if (MaxLookAhead=0) then exit(-1);
+  if ((ord(p^) and %11100000) = %11000000) then begin
+    // should be 2 byte character
+    if (ord(p[1]) and %11000000) = %10000000 then
+      exit(2)
+    else
+      exit(-1);
+  end;
+  if (MaxLookAhead=1) then exit(-1);
+  if ((ord(p^) and %11110000) = %11100000) then begin
+    // should be 3 byte character
+    if ((ord(p[1]) and %11000000) = %10000000)
+    and ((ord(p[2]) and %11000000) = %10000000) then
+      exit(3)
+    else
+      exit(-1);
+  end;
+  if (MaxLookAhead=2) then exit(-1);
+  if ((ord(p^) and %11111000) = %11110000) then begin
+    // should be 4 byte character
+    if ((ord(p[1]) and %11000000) = %10000000)
+    and ((ord(p[2]) and %11000000) = %10000000)
+    and ((ord(p[3]) and %11000000) = %10000000) then
+      exit(4)
+    else
+      exit(-1);
+  end;
+  exit(-1);
+end;
+
 function AnsiCompareStr(const s1, s2: ansistring): PtrInt;
 begin
   {$ifdef PASWSTRING_VERBOSE}WriteLn('AnsiCompareStr START');{$endif}
@@ -440,6 +490,7 @@ begin
     are considered to form one "character" and the next character is
     considered to be the start of a new (possibly also invalid) code point }
   PasWideStringManager.CharLengthPCharProc:=@CharLengthPChar;
+  PasWideStringManager.CodePointLengthProc:=@CodePointLengthPChar;
 
   { Ansi }
   PasWideStringManager.UpperAnsiStringProc:=@UpperAnsiString;
