@@ -266,11 +266,10 @@ const
       ([],[fsUnderline],[fsBold],[fsBold,fsUnderline]);
   var
     sz: types.TSize;
-    i, j, fontSize, x, y, dy: Integer;
+    i, fontSize, x, y: Integer;
   begin
     y := Sy(aY);
     x := Sx(ax);
-    dy := 0;
     fPsCanvas.Font.Name:=aFontName;
     fontSize := 16;
     while fontSize<(12*3) do begin
@@ -318,7 +317,6 @@ end;
 procedure TForm1.Button3Click(Sender: TObject);
 var
   png : TPortableNetworkGraphic;
-  x,y,tmp : Integer;
 begin
   fPsCanvas := TPostscriptCanvas.Create;
   SelectPaper(72);
@@ -373,17 +371,12 @@ begin
 end;
 
 procedure TForm1.ShowFile(aFile: string);
-{$IFDEF MSWINDOWS}
-var
-  FName: string;
-{$ENDIF}
 begin
   aFile := ExpandFileNameUTF8('./'+aFile);
   if FileExistsUTF8(aFile) then
   begin
     {$IFDEF MSWINDOWS}
-      FName := '"C:\Program Files\Ghostgum\gsview\gsview32" '  + aFile);
-      ShellExecute(Handle, 'open', PChar(FName), nil, nil, SW_SHOWNORMAL)
+      ShellExecute(Handle, 'open', PChar(afile), nil, nil, SW_SHOWNORMAL);
     {$ENDIF}
     {$IFDEF UNIX}
       FpExecL('/usr/bin/evince', [aFile]);
