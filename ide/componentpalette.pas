@@ -156,7 +156,7 @@ type
     procedure Clear;
     procedure ClearButtons;
     procedure DoAfterComponentAdded; override;
-    procedure ReAlignButtons(aSheet: TCustomPage = Nil);
+    procedure ReAlignButtons(aSheet: TCustomPage);
     procedure UpdateNoteBookButtons;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
                                      AComponent: TComponent; var Icon: TCustomBitmap);
@@ -835,17 +835,13 @@ var
   Node: TAVLTreeNode;
   ScrollBox: TScrollBox;
 begin
-  if (FPageControl<>nil) and (aSheet=Nil) then
-    aSheet:=FPageControl.ActivePage;      // Use ActivePage if nothing was given.
   if (aSheet=Nil) or not aSheet.Visible then
     exit;
   {$IFDEF VerboseComponentPalette}
-  //if aSheet.Caption = CompPalVerbPgName then
-    DebugLn(['TComponentPalette.ReAlignButtons Visible="',aSheet.Caption,'", ClientWidth=',aSheet.ClientWidth]);
+  DebugLn(['TComponentPalette.ReAlignButtons Visible="',aSheet.Caption,'", ClientWidth=',aSheet.ClientWidth]);
   {$ENDIF}
-  if FPageControl<>nil then begin
+  if FPageControl<>nil then
     fPageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
-  end;
   ButtonTree:=nil;
   try
     if (aSheet.ComponentCount=0) or not (aSheet.Components[0] is TScrollBox) then
@@ -1122,10 +1118,6 @@ begin
     Comp := FindComponent(aCompNames[i]) as TPkgComponent;
     CreateOrDelButton(Comp, Format('%d_%d_',[aPageIndex,i]), ScrollBox);
   end;
-  {$IFDEF VerboseComponentPalette}
-  DebugLn('TComponentPalette.CreateButtons Calling ReAlignButtons');
-  {$ENDIF}
-  ReAlignButtons(Pg.PageComponent);
 end;
 
 procedure TComponentPalette.UpdateNoteBookButtons;
@@ -1176,6 +1168,10 @@ begin
     end
     else if FPageControl.PageCount>0 then
       FPageControl.PageIndex:=0;
+    {$IFDEF VerboseComponentPalette}
+    DebugLn('TComponentPalette.UpdateNoteBookButtons Calling ReAlignButtons');
+    {$ENDIF}
+    ReAlignButtons(FPageControl.ActivePage);      // Align only the active page.
   finally
     // unlock
     fUpdatingPageControl:=false;
