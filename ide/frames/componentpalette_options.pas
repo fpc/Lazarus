@@ -247,6 +247,7 @@ var
   Pg: TBaseComponentPage;
 begin
   // First clear existing items and add <All> page.
+  PagesListBox.Items.BeginUpdate;
   for i := 0 to PagesListBox.Items.Count-1 do
     PagesListBox.Items.Objects[i].Free;
   PagesListBox.Clear;
@@ -265,6 +266,7 @@ begin
     end;
   end;
   PagesListBox.ItemIndex := 0;     // Activate first item
+  PagesListBox.Items.EndUpdate;
 end;
 
 procedure TCompPaletteOptionsFrame.InitialComps(aPageInd: Integer; aCompList: TStringList);
@@ -302,6 +304,7 @@ begin
     StartInd := PagesListBox.Items.IndexOf(aPageName);
     EndInd := StartInd;
   end;
+  ComponentsListView.Items.BeginUpdate;
   ComponentsListView.Items.Clear;
   for PageCnt := StartInd to EndInd do
   begin
@@ -318,6 +321,7 @@ begin
       Item.Data := Comp;
     end;
   end;
+  ComponentsListView.Items.EndUpdate;
 end;
 
 procedure TCompPaletteOptionsFrame.PagesListBoxSelectionChange(Sender: TObject; User: boolean);
