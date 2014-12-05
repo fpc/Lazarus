@@ -292,7 +292,7 @@ end;
 
 procedure TComponentPalette.OnScrollBoxResize(Sender: TObject);
 begin
-  if MainIDE.IDEStarted and (TControl(Sender).Parent is TCustomPage) then
+  if TControl(Sender).Parent is TCustomPage then
   begin
     {$IFDEF VerboseComponentPalette}
     DebugLn(['TComponentPalette.OnScrollBoxResize Calling ReAlignButtons, IDEStarted=', MainIDE.IDEStarted]);
