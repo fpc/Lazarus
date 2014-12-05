@@ -134,7 +134,7 @@ begin
   ComponentsGroupBox.Caption := lisCmpLstComponents;
   ComponentsListView.Column[1].Caption := lisName;
   ComponentsListView.Column[2].Caption := lisPage;
-  ComponentsListView.Column[3].Caption := lisPackage;
+  ComponentsListView.Column[3].Caption := lisUnit;
   ComponentsListView.SmallImages := IDEImages.Images_24;
   // Arrow buttons for pages
   PageMoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');

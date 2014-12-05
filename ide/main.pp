@@ -3681,7 +3681,6 @@ begin
     exit;
   OldLastCompPaletteForm:=fLastCompPaletteForm;
   fLastCompPaletteForm:=LastFormActivated;
-  Assert(Assigned(LastFormActivated), 'TMainIDE.UpdateIDEComponentPalette: LastFormActivated = Nil');
   IDEComponentPalette.HideControls:= (LastFormActivated.Designer<>nil)
     and (LastFormActivated.Designer.LookupRoot<>nil)
     and not (LastFormActivated.Designer.LookupRoot is TControl);

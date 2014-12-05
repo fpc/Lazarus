@@ -171,7 +171,7 @@ end;
 procedure TPackageUsageOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   AddPathsGroupBox.Caption := lisPckOptsAddPathsToDependentPackagesProjects;
-  UnitPathLabel.Caption := lisPkgFileTypeUnit;
+  UnitPathLabel.Caption := lisUnit;
   IncludePathLabel.Caption := lisPckOptsInclude;
   ObjectPathLabel.Caption := lisPckOptsObject;
   LibraryPathLabel.Caption := lisPckOptsLibrary;

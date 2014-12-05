@@ -922,7 +922,7 @@ end;
 function GetPkgFileTypeLocalizedName(FileType: TPkgFileType): string;
 begin
   case FileType of
-  pftUnit: Result:=lisPkgFileTypeUnit;
+  pftUnit: Result:=lisUnit;
   pftVirtualUnit: Result:=lisPkgFileTypeVirtualUnit;
   pftMainUnit: Result:=lisPkgFileTypeMainUnit;
   pftLFM: Result:=lisPkgFileTypeLFM;

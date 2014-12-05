@@ -109,6 +109,7 @@ resourcestring
   lisPath = 'Path';
   lisId = 'ID';
   lisPage = 'Page';
+  lisUnit = 'Unit';
   lisPackage = 'Package';
   lisCompile = 'Compile';
   lisCompileStage = 'Compile';
@@ -3534,7 +3535,6 @@ resourcestring
   lisDiffDlgOpenDiffInEditor = 'Open difference in editor';
 
   // packages
-  lisPkgFileTypeUnit = 'Unit';
   lisPkgFileTypeVirtualUnit = 'Virtual Unit';
   lisPkgFileTypeMainUnit = 'Main Unit';
   lisPkgFileTypeLFM = 'LFM - Lazarus form text';
@@ -3557,7 +3557,6 @@ resourcestring
   lisUIDType = 'Type:';
   lisUIDinProject = 'in Project:';
   lisUIDIncludedBy = 'Included by:';
-  lisUIDUnit = 'Unit';
   lisUIDSize = 'Size:';
   lisUIDLines = 'Lines:';
   lisUIShowCodeToolsValues = 'Show CodeTools Values';

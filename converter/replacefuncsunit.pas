@@ -132,7 +132,7 @@ begin
     RFForm.Grid.Columns[1].Title.Caption:=lisConvDelphiFunc;
     RFForm.Grid.Columns[2].Title.Caption:=lisReplacement;
     RFForm.Grid.Columns[3].Title.Caption:=lisPackage;
-    RFForm.Grid.Columns[4].Title.Caption:=lisUIDUnit;
+    RFForm.Grid.Columns[4].Title.Caption:=lisUnit;
     RFForm.FromFuncListToUI(aFuncsAndCateg);
     Result:=RFForm.ShowModal;
     if Result=mrOK then
