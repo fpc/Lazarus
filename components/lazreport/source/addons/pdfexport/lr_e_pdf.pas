@@ -452,6 +452,7 @@ var
     PRTLabel: TPRLabel;
     nx, ny, ndx, ndy: Integer;
     gapx, gapy: integer;
+    memo: TfrMemoView;
 begin
     gapx := trunc(View.FrameWidth / 2 + 0.5) + 2;
     gapy := trunc(View.FrameWidth / 4 + 0.5) + 1;
@@ -464,28 +465,29 @@ begin
     PRTLabel.Parent := PRPanel;
     PRTLabel.Clipping := true;
     try
-        PRTLabel.Caption := Text;
-        PRTLabel.Left := nx;
-        PRTLabel.Top := ny;
-        PRTLabel.Width := ndx;
-        PRTLabel.Height := ndy;
-        if View is TfrMemoView then
-        begin
-            PRTLabel.Alignment :=  TfrMemoView_(View).Alignment;
-            if Pos('Arial', TfrMemoView_(View).Font.Name) > 0 then
-                PRTLabel.FontName := fnArial
-            else if Pos('Courier', TfrMemoView_(View).Font.Name) > 0 then
-                PRTLabel.FontName := fnFixedWidth
-            else if Pos('Times', TfrMemoView_(View).Font.Name) > 0 then
-                PRTLabel.FontName := fnTimesRoman;
-            PRTLabel.FontSize := TfrMemoView_(View).Font.Size;
-            PRTLabel.FontBold := fsBold in TfrMemoView_(View).Font.Style;
-            PRTLabel.FontItalic := fsItalic in TfrMemoView_(View).Font.Style;
-            PRTLabel.FontColor := TfrMemoView_(View).Font.Color;
-            PRTLabel.FontUnderline := fsUnderline in TfrMemoView_(View).Font.Style;
-            PRTLabel.Angle:= (View as TfrMemoView).Angle;
-        end;
-
+      PRTLabel.Caption := Text;
+      PRTLabel.Left := nx;
+      PRTLabel.Top := ny;
+      PRTLabel.Width := ndx;
+      PRTLabel.Height := ndy;
+      if View is TfrMemoView then
+      begin
+        memo := View as TfrMemoView;
+        PRTLabel.Alignment :=  memo.Alignment;
+        if Pos('Arial', memo.Font.Name) > 0 then
+          PRTLabel.FontName := fnArial
+        else if Pos('Courier', memo.Font.Name) > 0 then
+          PRTLabel.FontName := fnFixedWidth
+        else if Pos('Times', memo.Font.Name) > 0 then
+          PRTLabel.FontName := fnTimesRoman;
+        PRTLabel.FontSize := memo.Font.Size;
+        PRTLabel.FontBold := fsBold in memo.Font.Style;
+        PRTLabel.FontItalic := fsItalic in memo.Font.Style;
+        PRTLabel.FontColor := memo.Font.Color;
+        PRTLabel.FontUnderline := fsUnderline in memo.Font.Style;
+        PRTLabel.Angle:= memo.Angle;
+        PRTLabel.AlignJustified :=  memo.Justify and not memo.LastLine;
+      end;
     finally
     end;
 end;

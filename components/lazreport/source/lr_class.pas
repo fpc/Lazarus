@@ -16,7 +16,7 @@ interface
 
 uses
   SysUtils, Math, {$IFDEF UNIX}CLocale,{$ENDIF} Classes, MaskUtils, Controls, FileUtil,
-  Forms, Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters,
+  Forms, Dialogs, Menus, Variants, DB, Graphics, Printers, osPrinters, LazUTF8,
   DOM, XMLWrite, XMLRead, XMLConf, LCLType, LCLIntf, TypInfo, LCLProc, LR_View, LR_Pars,
   LR_Intrp, LR_DSet, LR_DBSet, LR_DBRel, LR_Const, LMessages, DbCtrls, LazUtf8Classes;
 
@@ -468,6 +468,7 @@ type
     Highlight: TfrHighlightAttr;
     HighlightStr: String;
     LineSpacing, CharacterSpacing: Integer;
+    LastLine: boolean; // are we painting/exporting the last line?
     
     constructor Create(AOwnerPage:TfrPage); override;
     destructor Destroy; override;
@@ -2100,12 +2101,7 @@ begin
     CEnd := Length(Arr)-1;
     if Trimmed then
     begin
-      s := Trim(Text);
-      if Arr[Cini].Space then
-      begin
-        Inc(Cini);
-        Dec(SpcCount);
-      end;
+      s := UTF8Trim(Text, [u8tKeepStart]);
       if Arr[CEnd].Space then
       begin
         Dec(CEnd);
@@ -3788,7 +3784,6 @@ var
       n, {nw, w, }curx, lasty: Integer;
       lastyf: Double;
       Ts: TTextStyle;
-      ParaEnd: boolean;
     begin
       lastyf := curyf + thf - LineSpc - 1;
       lastY := Round(lastyf);
@@ -3801,14 +3796,14 @@ var
       begin
         n := Length(St);
         //w := Ord(St[n - 1]) * 256 + Ord(St[n]);
-        ParaEnd := true;
+        LastLine := true;
         SetLength(St, n - 2);
         if Length(St) > 0 then
         begin
           if St[Length(St)] = #1 then
             SetLength(St, Length(St) - 1)
           else
-            ParaEnd := false;
+            LastLine := false;
         end;
 
         // handle any alignment with same code
@@ -3848,7 +3843,7 @@ var
 
         if not Exporting then
         begin
-          if Justify and not ParaEnd then
+          if Justify and not LastLine then
             CanvasTextRectJustify(Canvas, DR, x+gapx, x+dx-1-gapx, round(CurYf), St, true)
           else
             Canvas.TextRect(DR, CurX, round(curYf), St);
