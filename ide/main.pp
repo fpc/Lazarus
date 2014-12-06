@@ -9999,7 +9999,7 @@ begin
   if Result = mrYes then begin
     NewDiffFilename:=CreateSrcEditPageName('','FileDifference.diff', nil);
     Result:=DoNewEditorFile(FileDescriptorText,NewDiffFilename,DiffText,
-                            [nfOpenInEditor]);
+                            [nfOpenInEditor,nfIsNotPartOfProject]);
     GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
     if ActiveSrcEdit=nil then exit;
   end;
