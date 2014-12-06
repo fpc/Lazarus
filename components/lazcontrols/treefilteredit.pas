@@ -622,6 +622,8 @@ function TTreeFilterEdit.ReturnKeyHandled: Boolean;
 var
   Key: Char;
 begin
+  if fFilteredTreeview = nil then
+    exit(false);
   Key:=Char(VK_RETURN);
   Result:=Assigned(fFilteredTreeview.OnKeyPress);
   if Result then

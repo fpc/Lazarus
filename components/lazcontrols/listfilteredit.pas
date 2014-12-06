@@ -277,6 +277,8 @@ function TListFilterEdit.ReturnKeyHandled: Boolean;
 var
   Key: Char;
 begin
+  if fFilteredListbox = nil then
+    exit(false);
   Key:=Char(VK_RETURN);
   Result:=Assigned(fFilteredListbox.OnKeyPress);
   if Result then
