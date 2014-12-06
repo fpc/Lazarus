@@ -3674,6 +3674,7 @@ end;
 procedure TMainIDE.UpdateIDEComponentPalette(IfFormChanged: boolean);
 var
   OldLastCompPaletteForm: TCustomForm;
+  AResult: Boolean;
 begin
   // Package manager updates the palette initially.
   if not FIDEStarted
@@ -3681,9 +3682,10 @@ begin
     exit;
   OldLastCompPaletteForm:=fLastCompPaletteForm;
   fLastCompPaletteForm:=LastFormActivated;
-  IDEComponentPalette.HideControls:= (LastFormActivated.Designer<>nil)
+  AResult:=(LastFormActivated<>nil) and (LastFormActivated.Designer<>nil)
     and (LastFormActivated.Designer.LookupRoot<>nil)
     and not (LastFormActivated.Designer.LookupRoot is TControl);
+  IDEComponentPalette.HideControls:=AResult;
   // Don't update palette at the first time if not hiding controls.
   if (OldLastCompPaletteForm = Nil) and not IDEComponentPalette.HideControls then
     exit;
