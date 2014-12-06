@@ -3089,7 +3089,9 @@ function InitLazResourceComponent(Instance: TComponent;
     {$ifdef UseRES}
     if Stream = nil then
     begin
-      FPResource := FindResource(HInstance, PChar(ResName), PChar(RT_RCDATA));
+      FPResource := FindResource(HInstance, PChar(ResName),
+        {$IF (FPC_FULLVERSION>=20701) and defined(Windows)}Windows.{$ENDIF}RT_RCDATA
+        );
       if FPResource <> 0 then
         Stream := TLazarusResourceStream.CreateFromHandle(HInstance, FPResource);
     end;
