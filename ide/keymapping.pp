@@ -32,11 +32,9 @@ unit KeyMapping;
 interface
 
 uses
-  LCLIntf, LCLType, LCLProc, AvgLvlTree, Laz2_XMLCfg,
-  Forms, Classes, SysUtils, Buttons, LResources, Controls, contnrs,
-  Dialogs, StringHashList, ExtCtrls,
+  Classes, SysUtils, contnrs, Forms, LCLType, LCLProc, AvgLvlTree, Laz2_XMLCfg,
   SynEditKeyCmds, SynPluginTemplateEdit, SynPluginSyncroEdit,
-  PropEdits, IDECommands, LazarusIDEStrConsts, Debugger;
+  IDECommands, LazarusIDEStrConsts, Debugger;
 
 type
   TKeyMapScheme = (
@@ -152,10 +150,12 @@ type
   TKeyCommandRelationList = class(TIDECommands)
   private
     fLastKey: TIDEShortCut; // for multiple key commands
-    fRelations: TList; // list of TKeyCommandRelation, sorted with Command
-    fCategories: TList;// list of TKeyCommandCategory
+    fRelations: TFPList;    // list of TKeyCommandRelation
+    fCategories: TFPList;   // list of TKeyCommandCategory
     fExtToolCount: integer;
-    fLoadedKeyCommands: TAvgLvlTree;// tree of TLoadedKeyCommand sorted for name
+    fLoadedKeyCommands: TAvgLvlTree; // tree of TLoadedKeyCommand sorted for name
+    fCmdRelCache: TAvgLvlTree; // cache for TKeyCommandRelation sorted for command
+    function AddRelation(CmdRel: TKeyCommandRelation): Integer;
     function GetRelation(Index: integer): TKeyCommandRelation;
     function GetRelationCount: integer;
     function AddCategory(const Name, Description: string;
@@ -273,6 +273,26 @@ begin
   if (i and 16)<>0 then include(Result,ssSuper);
 end;
 
+// Compare functions for fCmdRelCache
+function CompareCmdRels(Data1, Data2: Pointer): integer;
+var
+  Key1: TKeyCommandRelation absolute Data1;
+  Key2: TKeyCommandRelation absolute Data2;
+begin
+  Result:=Key1.Command - Key2.Command;
+end;
+
+function CompareCmdWithCmdRel(aCommand, Key: Pointer): integer;
+var
+  Cmd1, Cmd2: PtrInt;
+  CmdRel: TKeyCommandRelation absolute Key;
+begin
+  Pointer(Cmd1):=aCommand;
+  Cmd2:=CmdRel.Command;
+  Result:=Cmd1-Cmd2;
+end;
+
+// Compare functions for fLoadedKeyCommands
 function CompareLoadedKeyCommands(Data1, Data2: Pointer): integer;
 var
   Key1: TLoadedKeyCommand absolute Data1;
@@ -2417,10 +2437,11 @@ end;
 constructor TKeyCommandRelationList.Create;
 begin
   inherited Create;
-  FRelations:=TList.Create;
-  fCategories:=TList.Create;
+  FRelations:=TFPList.Create;
+  fCategories:=TFPList.Create;
   fExtToolCount:=0;
   fLoadedKeyCommands:=TAvgLvlTree.Create(@CompareLoadedKeyCommands);
+  fCmdRelCache:=TAvgLvlTree.Create(@CompareCmdRels);
 end;
 
 destructor TKeyCommandRelationList.Destroy;
@@ -2428,6 +2449,7 @@ begin
   Clear;
   FRelations.Free;
   fCategories.Free;
+  fCmdRelCache.Free;
   fLoadedKeyCommands.Free;
   inherited Destroy;
 end;
@@ -2984,9 +3006,16 @@ begin
   for a:=0 to FRelations.Count-1 do
     Relations[a].Free;
   FRelations.Clear;
+  fCmdRelCache.Clear;
   for a:=0 to fCategories.Count-1 do
     Categories[a].Free;
   fCategories.Clear;
+end;
+
+function TKeyCommandRelationList.AddRelation(CmdRel: TKeyCommandRelation): Integer;
+begin
+  Result := FRelations.Add(CmdRel);
+  fCmdRelCache.Add(CmdRel);
 end;
 
 function TKeyCommandRelationList.GetRelation(Index:integer):TKeyCommandRelation;
@@ -3041,7 +3070,7 @@ begin
   CmdRel.DefaultShortcutA:=CmdRel.ShortcutA;
   CmdRel.DefaultShortcutB:=CmdRel.ShortcutB;
   SetKeyCommandToLoadedValues(CmdRel);
-  Result:=FRelations.Add(CmdRel);
+  Result:=AddRelation(CmdRel);
 end;
 
 procedure TKeyCommandRelationList.SetExtToolCount(NewCount: integer);
@@ -3063,7 +3092,7 @@ begin
       CmdRel:=TKeyCommandRelation.Create(ExtToolCat,
         Format('External tool %d',[fExtToolCount]), // keep name untranslated
         ToolLocalizedName, cmd);
-      FRelations.Add(CmdRel);
+      AddRelation(CmdRel);
       inc(fExtToolCount);
     end;
   end else begin
@@ -3368,12 +3397,13 @@ end;
 
 function TKeyCommandRelationList.FindByCommand(ACommand: word): TKeyCommandRelation;
 var
-  i: integer;
+  AVLNode: TAvgLvlTreeNode;
 begin
-  Result:=nil;
-  for i:=0 to FRelations.Count-1 do
-    if (Relations[i].Command=ACommand) then
-      Exit(Relations[i]);
+  AVLNode:=fCmdRelCache.FindKey(Pointer(PtrUInt(ACommand)), @CompareCmdWithCmdRel);
+  if Assigned(AVLNode) then
+    Result:=TKeyCommandRelation(AVLNode.Data)
+  else
+    Result:=nil;
 end;
 
 // Command compare functions for AvgLvlTree for fast lookup.
@@ -3596,7 +3626,7 @@ begin
       //DebugLn('TKeyCommandRelationList.Assign Add new command: ',OtherRelation.Name);
       OurCategory:=FindCategoryByName(OtherRelation.Category.Name);
       OurRelation:=TKeyCommandRelation.Create(OtherRelation,OurCategory);
-      fRelations.Add(OurRelation);
+      AddRelation(OurRelation);
     end;
   end;
 
@@ -3678,7 +3708,7 @@ begin
                       NewName, Description, cmd,
                       TheShortcutA, TheShortcutB, OnExecuteMethod, OnExecuteProc);
   SetKeyCommandToLoadedValues(CmdRel);
-  FRelations.Add(CmdRel);
+  AddRelation(CmdRel);
   Result:=CmdRel;
 end;
 
@@ -3700,8 +3730,7 @@ end;
 function TKeyCommandRelationList.AddCategory(const Name, Description: string;
   TheScope: TIDECommandScope): integer;
 begin
-  Result:=fCategories.Add(TKeyCommandCategory.Create(Name,Description,
-                          TheScope));
+  Result:=fCategories.Add(TKeyCommandCategory.Create(Name,Description,TheScope));
 end;
 
 function TKeyCommandRelationList.FindCategoryByName(const CategoryName: string): TIDECommandCategory;
@@ -3747,8 +3776,7 @@ begin
       if (IDEWindowClass<>nil)
       and (Category.Scope<>nil)
       and (not Category.Scope.HasIDEWindowClass(IDEWindowClass)) then continue;
-      if KeyFits(ShortcutA) or KeyFits(ShortcutB)
-      then
+      if KeyFits(ShortcutA) or KeyFits(ShortcutB) then
         Result.Add(Relations[i]);
     end;
 end;
