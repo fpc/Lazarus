@@ -285,7 +285,9 @@ begin
   if (FSelected<>nil)
   and (FSelected.RealPage.PageComponent=FPageControl.ActivePage) then
     exit;
+  {$IFDEF VerboseComponentPalette}
   DebugLn('TComponentPalette.ActivePageChanged: Calling ReAlignButtons, setting Selected:=nil.');
+  {$ENDIF}
   ReAlignButtons(FPageControl.ActivePage);
   Selected:=nil;
 end;
@@ -921,27 +923,27 @@ var
   Btn: TSpeedButton;
 begin
   PageInd:=IndexOfPageComponent(aSheet);
-  if (PageInd<0) or (not Pages[PageInd].Visible) then begin
-    // page is not needed anymore => delete
-    if PageInd>=0 then begin
-      Pg:=Pages[PageInd];
-      Btn:=TSpeedButton(Pg.SelectButton);
-      if Btn<>nil then begin
-        Pg.SelectButton:=nil;
-        Application.ReleaseComponent(Btn);
-        Btn.Visible:=false;
-      end;
-      Pages[PageInd].PageComponent:=nil;
+  if (PageInd>=0) and Pages[PageInd].Visible then
+    Exit;
+  // page is not needed anymore => delete
+  if PageInd>=0 then begin
+    Pg:=Pages[PageInd];
+    Btn:=TSpeedButton(Pg.SelectButton);
+    if Btn<>nil then begin
+      Pg.SelectButton:=nil;
+      Application.ReleaseComponent(Btn);
+      Btn.Visible:=false;
     end;
-    if aSheet=fOldActivePage then
-      fOldActivePage:=nil;
-    aSheet.Visible:=false;
-    {$IFDEF VerboseComponentPalette}
-    if aSheet.Caption = CompPalVerbPgName then
-      DebugLn(['TComponentPalette.RemoveUnneededPage: Removing Page=', aSheet.Caption, ', index=', PageInd]);
-    {$ENDIF}
-    Application.ReleaseComponent(aSheet);
+    Pg.PageComponent:=nil;
   end;
+  if aSheet=fOldActivePage then
+    fOldActivePage:=nil;
+  aSheet.Visible:=false;
+  {$IFDEF VerboseComponentPalette}
+  if aSheet.Caption = CompPalVerbPgName then
+    DebugLn(['TComponentPalette.RemoveUnneededPage: Removing Page=', aSheet.Caption, ', index=', PageInd]);
+  {$ENDIF}
+  Application.ReleaseComponent(aSheet);
 end;
 
 procedure TComponentPalette.InsertVisiblePage(aCompPage: TBaseComponentPage);
