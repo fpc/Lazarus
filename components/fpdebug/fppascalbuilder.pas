@@ -461,7 +461,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       Result := '';
   end;
 
-  procedure DoPointer;
+  procedure DoPointer(AnAddress: boolean);
   var
     s: String;
     v: QWord;
@@ -473,20 +473,23 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
     else
       s := '';
 
+    if AnAddress then
+      v := AValue.Address.Address
+    else
+      v := AValue.AsCardinal;
     if (ppvCreateDbgType in AFlags) then begin
       ADBGTypeInfo^ := TDBGType.Create(skPointer, s);
-      ADBGTypeInfo^.Value.AsPointer := Pointer(AValue.AsCardinal); // TODO: no cut off
+      ADBGTypeInfo^.Value.AsPointer := Pointer(v);  // TODO: no cut off
     end;
 
-    v := AValue.AsCardinal;
     case ADisplayFormat of
-      wdfDecimal, wdfUnsigned: APrintedValue := IntToStr(AValue.AsCardinal);
-      wdfHex: APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2);
+      wdfDecimal, wdfUnsigned: APrintedValue := IntToStr(v);
+      wdfHex: APrintedValue := '$'+IntToHex(v, AnAddressSize*2);
       else begin //wdfPointer/Default ;
           if v = 0 then
             APrintedValue := 'nil'
           else
-            APrintedValue := '$'+IntToHex(AValue.AsCardinal, AnAddressSize*2);
+            APrintedValue := '$'+IntToHex(v, AnAddressSize*2);
         end;
     end;
 
@@ -861,7 +864,7 @@ begin
     skUnit: ;
     skProcedure: ;
     skFunction: ;
-    skPointer:   DoPointer;
+    skPointer:   DoPointer(False);
     skInteger:   DoInt;
     skCardinal:  DoCardinal;
     skBoolean:   DoBool;
@@ -880,6 +883,7 @@ begin
     skClass:     DoStructure;
     skInterface: ;
     skArray:     DoArray;
+    skNone:      DoPointer(true);
   end;
 
   if (ADBGTypeInfo <> nil) and (ADBGTypeInfo^ <> nil) then
