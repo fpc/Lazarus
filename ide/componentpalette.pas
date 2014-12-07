@@ -82,13 +82,13 @@ type
   TComponentPage = class(TBaseComponentPage)
   private
     fBtnIndex: integer;
+    fIndex: Integer;       // Index in the Pages container.
     procedure ReAlignButtons;
     procedure RemoveSheet;
     procedure InsertVisiblePage;
     procedure CreateSelectionButton(aButtonUniqueName: string; aScrollBox: TScrollBox);
     procedure CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string);
-    procedure CreateButtons(aPageIndex: integer; aCompNames: TStringList);
-    procedure CreateGuiAndButtons(aPageIndex: integer; aCompNames: TStringList);
+    procedure CreateButtons(aCompNames: TStringList);
   protected
   public
     constructor Create(const ThePageName: string);
@@ -548,7 +548,7 @@ begin
   end;
 end;
 
-procedure TComponentPage.CreateButtons(aPageIndex: integer; aCompNames: TStringList);
+procedure TComponentPage.CreateButtons(aCompNames: TStringList);
 // Create speedbuttons for every visible component
 var
   Pal: TComponentPalette;
@@ -567,21 +567,14 @@ begin
     DebugLn(['TComponentPalette.CreateButtons PAGE="',PageName,'", PageIndex=',PageComponent.PageIndex]);
   {$ENDIF}
   // create selection button
-  CreateSelectionButton(IntToStr(aPageIndex), ScrollBox);
+  CreateSelectionButton(IntToStr(fIndex), ScrollBox);
   // create component buttons and delete unneeded ones
   fBtnIndex := 0;
   for i := 0 to aCompNames.Count-1 do begin
     Comp := Pal.FindComponent(aCompNames[i]) as TPkgComponent;
-    CreateOrDelButton(Comp, Format('%d_%d_',[aPageIndex,i]));
+    CreateOrDelButton(Comp, Format('%d_%d_',[fIndex,i]));
   end;
 end;
-
-procedure TComponentPage.CreateGuiAndButtons(aPageIndex: integer; aCompNames: TStringList);
-begin
-  InsertVisiblePage;
-  CreateButtons(aPageIndex, aCompNames);
-end;
-
 
 { TComponentPalette }
 
@@ -1041,7 +1034,7 @@ var
   UserPageI, CurPgInd, CompI: Integer;
   aVisibleCompCnt: integer;
   PgName: String;
-  Pg: TBaseComponentPage;
+  Pg: TComponentPage;
   CompNames, UserComps: TStringList;
   Comp: TRegisteredComponent;
 begin
@@ -1062,7 +1055,8 @@ begin
     end
     else if CurPgInd <> UserPageI then
       Pages.Move(CurPgInd, UserPageI); // Move page to right place.
-    Pg := Pages[UserPageI];
+    Pg := TComponentPage(Pages[UserPageI]);
+    Pg.fIndex := UserPageI;
     Assert(PgName = Pg.PageName,
       Format('TComponentPalette.CreatePagesFromUserOrder: Page names differ, "%s" and "%s".',
              [PgName, Pg.PageName]));
@@ -1090,7 +1084,7 @@ begin
   end;
   // Remove left-over pages.
   while fPages.Count > fUserOrder.ComponentPages.Count do begin
-    Pg := fPages[fPages.Count-1];
+    Pg := TComponentPage(fPages[fPages.Count-1]);
     {$IFDEF VerboseComponentPalette}
     DebugLn(['TComponentPalette.CreatePagesFromUserOrder: Deleting left-over page=',
              Pg.PageName, ', Index=', fPages.Count-1]);
@@ -1171,6 +1165,7 @@ end;
 procedure TComponentPalette.UpdateNoteBookButtons;
 var
   i: Integer;
+  Pg: TComponentPage;
 begin
   if fUpdatingPageControl then exit;
   if IsUpdateLocked then begin
@@ -1203,7 +1198,9 @@ begin
       // fPages and fUserOrder.ComponentPages are now synchronized, same index applies.
       Assert(Pages[i].PageName = fUserOrder.ComponentPages[i],
              'UpdateNoteBookButtons: Page names do not match.');
-      TComponentPage(Pages[i]).CreateGuiAndButtons(i, TStringList(fUserOrder.ComponentPages.Objects[i]));
+      Pg := TComponentPage(Pages[i]);
+      Pg.InsertVisiblePage;
+      Pg.CreateButtons(TStringList(fUserOrder.ComponentPages.Objects[i]));
     end;
 
     // restore active page
