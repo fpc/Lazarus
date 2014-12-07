@@ -929,7 +929,8 @@ begin
     DestComps.Assign(sl);
   end
   else
-    raise Exception.Create(Format('AssignOrigCompsForPage: %s not found in cache.', [PageName]));
+    DestComps.Clear;
+    //raise Exception.Create(Format('AssignOrigCompsForPage: %s not found in cache.', [PageName]));
 end;
 
 procedure TComponentPalette.AssignOrigVisibleCompsForPage(DestComps: TStringList;
