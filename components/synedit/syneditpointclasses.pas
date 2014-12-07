@@ -75,6 +75,12 @@ type
   TSynEditBaseCaret = class;
   TSynEditCaret = class;
 
+  TSynBlockPersistMode = (
+    sbpDefault,
+    sbpWeak,     // selstart/end are treated as outside the block
+    sbpStrong    // selstart/end are treated as inside the block
+  );
+
   { TSynEditSelection }
 
   TSynEditSelection = class(TSynEditPointBase)
@@ -95,7 +101,7 @@ type
     FEndLinePos: Integer; // 1 based
     FEndBytePos: Integer; // 1 based
     FPersistent: Boolean;
-    FPersistentLock: Integer;
+    FPersistentLock, FWeakPersistentIdx, FStrongPersistentIdx: Integer;
     FIgnoreNextCaretMove: Boolean;
     (* On any modification, remember the position of the caret.
        If it gets moved from there to either end of the block, this should be ignored
@@ -140,7 +146,8 @@ type
     procedure BeginMinimumSelection; // current selection will be minimum while follow caret (autoExtend) // until next setSelStart or end of follow
     procedure SortSelectionPoints;
     procedure IgnoreNextCaretMove;
-    procedure IncPersistentLock;
+    // Mode can NOT be changed in nested calls
+    procedure IncPersistentLock(AMode: TSynBlockPersistMode = sbpDefault); // Weak: Do not extend (but rather move) block, if at start/end
     procedure DecPersistentLock;
     procedure Clear;
     property  Enabled: Boolean read FEnabled write SetEnabled;
@@ -1542,7 +1549,7 @@ end;
 procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBytePos, aCount,
   aLineBrkCnt: Integer; aText: String);
 
-  function AdjustPoint(aPoint: Tpoint): TPoint; inline;
+  function AdjustPoint(aPoint: Tpoint; AIsStart: Boolean): TPoint; inline;
   begin
     Result := aPoint;
     if aLineBrkCnt < 0 then begin
@@ -1567,8 +1574,25 @@ procedure TSynEditSelection.DoLinesEdited(Sender: TSynEditStrings; aLinePos, aBy
     else
     if aCount <> 0 then begin
       (* Chars Insert/Deleted *)
-      if (aPoint.y = aLinePos) and (aPoint.x >= aBytePos) then
-        Result.x := Max(aBytePos, Result.x + aCount);
+      if (aPoint.y = aLinePos) then begin
+        if (FWeakPersistentIdx > 0) and (FWeakPersistentIdx > FStrongPersistentIdx) then begin
+          if (AIsStart and (aPoint.x >= aBytePos)) or
+             (not AIsStart and (aPoint.x > aBytePos))
+          then
+            Result.x := Max(aBytePos, Result.x + aCount);
+        end
+        else
+        if (FStrongPersistentIdx > 0) then begin
+          if (AIsStart and (aPoint.x > aBytePos)) or
+             (not AIsStart and (aPoint.x >= aBytePos))
+          then
+            Result.x := Max(aBytePos, Result.x + aCount);
+        end
+        else begin
+          if (aPoint.x >= aBytePos) then
+            Result.x := Max(aBytePos, Result.x + aCount);
+        end;
+      end;
     end;
   end;
 
@@ -1578,8 +1602,8 @@ begin
      ((FCaret <> nil) and (not FCaret.Locked))
   then begin
     if FActiveSelectionMode <> smColumn then begin // TODO: adjust ypos, height in smColumn mode
-      AdjustStartLineBytePos(AdjustPoint(StartLineBytePos));
-      EndLineBytePos := AdjustPoint(EndLineBytePos);
+      AdjustStartLineBytePos(AdjustPoint(StartLineBytePos, True));
+      EndLineBytePos := AdjustPoint(EndLineBytePos, False);
     end;
     // Todo: Change Lines in smColumn
   end
@@ -2170,14 +2194,22 @@ begin
   FIgnoreNextCaretMove := True;
 end;
 
-procedure TSynEditSelection.IncPersistentLock;
+procedure TSynEditSelection.IncPersistentLock(AMode: TSynBlockPersistMode);
 begin
   inc(FPersistentLock);
+  if (sbpWeak = AMode) and (FWeakPersistentIdx = 0) then
+    FWeakPersistentIdx := FPersistentLock;
+  if (sbpStrong = AMode) and (FStrongPersistentIdx = 0) then
+    FStrongPersistentIdx := FPersistentLock;
 end;
 
 procedure TSynEditSelection.DecPersistentLock;
 begin
   dec(FPersistentLock);
+  if FWeakPersistentIdx > FPersistentLock then
+    FWeakPersistentIdx := 0;
+  if FStrongPersistentIdx > FPersistentLock then
+    FStrongPersistentIdx := 0;
   if (FPersistentLock = 0) and (FCaret <> nil) and FCaret.Locked then
     FLastCarePos := Point(FCaret.OldCharPos, FCaret.OldLinePos);
 end;

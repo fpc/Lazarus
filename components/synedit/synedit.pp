@@ -173,7 +173,10 @@ type
   );
 
   TSynEditTextFlag = (
-    setSelect // select the new text
+    setSelect,          // select the new text
+    setPersistentBlock, // keep/move existent selection (only if not setSelect)
+    setMoveBlock,       // weak persistent // see TSynBlockPersistMode
+    setExtendBlock      // strong persistent // see TSynBlockPersistMode
   );
   TSynEditTextFlags = set of TSynEditTextFlag;
 
@@ -5624,6 +5627,12 @@ begin
   try
     if aCaretMode = scamAdjust then
       FCaret.IncAutoMoveOnEdit;
+    if setPersistentBlock in aFlags then
+      FBlockSelection.IncPersistentLock;
+    if setMoveBlock in aFlags then
+      FBlockSelection.IncPersistentLock(sbpWeak);
+    if setExtendBlock in aFlags then
+      FBlockSelection.IncPersistentLock(sbpStrong);
 
     if aSelectionMode = smCurrent then
       FInternalBlockSelection.SelectionMode    := FBlockSelection.ActiveSelectionMode
@@ -5650,6 +5659,12 @@ begin
         FBlockSelection.EndLineBytePos := Point(FBlockSelection.StartBytePos + 1, FBlockSelection.EndLinePos - 1);
     end;
   finally
+    if setPersistentBlock in aFlags then
+      FBlockSelection.DecPersistentLock;
+    if setMoveBlock in aFlags then
+      FBlockSelection.DecPersistentLock;
+    if setExtendBlock in aFlags then
+      FBlockSelection.DecPersistentLock;
     if aCaretMode = scamAdjust then
       FCaret.DecAutoMoveOnEdit;
     InternalEndUndoBlock;
