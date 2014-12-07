@@ -82,6 +82,7 @@ type
   TComponentPage = class(TBaseComponentPage)
   private
     fBtnIndex: integer;
+    procedure ReAlignButtons;
     procedure RemoveSheet;
     procedure InsertVisiblePage;
     procedure CreateSelectionButton(aButtonUniqueName: string; aScrollBox: TScrollBox);
@@ -149,7 +150,6 @@ type
     function GetUnregisteredIcon: TCustomBitmap;
     function GetSelectButtonIcon: TCustomBitmap;
     function SelectAButton(Button: TComponent): boolean;
-    function IsSelectionToolBtn(aControl: TControl): boolean;
   protected
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate(Changed: boolean); override;
@@ -297,6 +297,88 @@ end;
 destructor TComponentPage.Destroy;
 begin
   inherited Destroy;
+end;
+
+function IsSelectionToolBtn(aControl: TControl): boolean;
+begin
+  Result:=(aControl is TSpeedButton)
+    and (LeftStr(aControl.Name,length(CompPalSelectionToolBtnPrefix))=CompPalSelectionToolBtnPrefix);
+end;
+
+procedure TComponentPage.ReAlignButtons;
+var
+  Pal: TComponentPalette;
+  CurButton: TSpeedButton;
+  ButtonTree: TAVLTree;
+  Node: TAVLTreeNode;
+  ScrollBox: TScrollBox;
+  buttonx, MaxBtnPerRow, i: integer;
+begin
+  Pal := TComponentPalette(Palette);
+  if Pal.PageControl<>nil then
+    Pal.PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
+  ButtonTree:=nil;
+  try
+    if (PageComponent.ComponentCount=0) or not (PageComponent.Components[0] is TScrollBox) then
+      exit;
+    ScrollBox:=TScrollBox(PageComponent.Components[0]);
+    ButtonTree:=TAVLTree.Create(@CompareControlsWithTag);
+    for i:=0 to ScrollBox.ControlCount-1 do begin
+      CurButton:=TSpeedbutton(ScrollBox.Controls[i]);
+      if IsSelectionToolBtn(CurButton) then continue;
+      if (CurButton is TSpeedButton) and CurButton.Visible then
+        ButtonTree.Add(CurButton);
+    end;
+    if ButtonTree.Count=0 then exit;
+
+    ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
+
+    {$IFDEF VerboseComponentPalette}
+    if PageComponent.Caption = CompPalVerbPgName then
+      DebugLn(['TComponentPalette.ReAlignButtons',
+        ' ButtonTree.Count=',ButtonTree.Count,
+        ' ScrollBox.ControlCount=',ScrollBox.ControlCount,
+        ' ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),
+        ' VertScrollBar.Size=',ScrollBox.VertScrollBar.Size,
+        ' ClientSizeWithoutBar=',ScrollBox.VertScrollBar.ClientSizeWithoutBar,
+        ' IsScrollBarVisible=',ScrollBox.VertScrollBar.IsScrollBarVisible,
+        ' HorzScrollBar.Size=',ScrollBox.HorzScrollBar.Size,
+        ' Page=',ScrollBox.HorzScrollBar.Page,
+        ' Range=',ScrollBox.HorzScrollBar.Range,
+        ' IsScrollBarVisible=',ScrollBox.HorzScrollBar.IsScrollBarVisible
+        ]);
+    {$ENDIF}
+    {$IFDEF LCLCarbon}
+    MaxBtnPerRow:=ButtonTree.Count;
+    {$ELSE}
+    MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
+    {$ENDIF}
+    // If we need to wrap, make sure we have space for the scrollbar
+    if MaxBtnPerRow < ButtonTree.Count then
+      MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithBar - ButtonX) div ComponentPaletteBtnWidth);
+    //debugln(['TComponentPalette.ReAlignButtons MaxBtnPerRow=',MaxBtnPerRow,' ButtonTree.Count=',ButtonTree.Count,' ',ButtonX + MaxBtnPerRow * ComponentPaletteBtnWidth]);
+    if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
+
+    i:=0;
+    Node:=ButtonTree.FindLowest;
+    while Node<>nil do begin
+      CurButton:=TSpeedbutton(Node.Data);
+      CurButton.SetBounds(ButtonX + (i mod MaxBtnPerRow) * ComponentPaletteBtnWidth,
+                          (i div MaxBtnPerRow) * ComponentPaletteBtnHeight,
+                          CurButton.Width, CurButton.Height);
+      {$IFDEF VerboseComponentPalette}
+      if PageComponent.Caption = CompPalVerbPgName then
+        DebugLn(['TComponentPalette.ReAlignButtons ',CurButton.Name,' ',dbgs(CurButton.BoundsRect)]);
+      {$ENDIF}
+      inc(i);
+      Node:=ButtonTree.FindSuccessor(Node);
+    end;
+    PageComponent.Invalidate;
+  finally
+    if Pal.PageControl<>nil then
+      Pal.PageControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
+    FreeAndNil(ButtonTree);
+  end;
 end;
 
 procedure TComponentPage.RemoveSheet;
@@ -1053,89 +1135,16 @@ end;
 
 procedure TComponentPalette.ReAlignButtons(aSheet: TCustomPage);
 var
-  j: integer;
-  buttonx: integer;
-  CurButton: TSpeedButton;
-  MaxBtnPerRow: Integer;
-  ButtonTree: TAVLTree;
-  Node: TAVLTreeNode;
-  ScrollBox: TScrollBox;
+  PageInd: Integer;
 begin
   if (aSheet=Nil) or not aSheet.Visible then
     exit;
   {$IFDEF VerboseComponentPalette}
   DebugLn(['TComponentPalette.ReAlignButtons Visible="',aSheet.Caption,'", ClientWidth=',aSheet.ClientWidth]);
   {$ENDIF}
-  if PageControl<>nil then
-    PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
-  ButtonTree:=nil;
-  try
-    if (aSheet.ComponentCount=0) or not (aSheet.Components[0] is TScrollBox) then
-      exit;
-    ScrollBox:=TScrollBox(aSheet.Components[0]);
-    ButtonTree:=TAVLTree.Create(@CompareControlsWithTag);
-    for j:=0 to ScrollBox.ControlCount-1 do begin
-      CurButton:=TSpeedbutton(ScrollBox.Controls[j]);
-      if IsSelectionToolBtn(CurButton) then continue;
-      if (CurButton is TSpeedButton) and CurButton.Visible then
-        ButtonTree.Add(CurButton);
-    end;
-    if ButtonTree.Count=0 then exit;
-
-    ButtonX:= ((ComponentPaletteBtnWidth*3) div 2) + 2;
-
-    {$IFDEF VerboseComponentPalette}
-    if aSheet.Caption = CompPalVerbPgName then
-      DebugLn(['TComponentPalette.ReAlignButtons',
-        ' ButtonTree.Count=',ButtonTree.Count,
-        ' ScrollBox.ControlCount=',ScrollBox.ControlCount,
-        ' ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),
-        ' VertScrollBar.Size=',ScrollBox.VertScrollBar.Size,
-        ' ClientSizeWithoutBar=',ScrollBox.VertScrollBar.ClientSizeWithoutBar,
-        ' IsScrollBarVisible=',ScrollBox.VertScrollBar.IsScrollBarVisible,
-        ' HorzScrollBar.Size=',ScrollBox.HorzScrollBar.Size,
-        ' Page=',ScrollBox.HorzScrollBar.Page,
-        ' Range=',ScrollBox.HorzScrollBar.Range,
-        ' IsScrollBarVisible=',ScrollBox.HorzScrollBar.IsScrollBarVisible
-        ]);
-    {$ENDIF}
-    {$IFDEF LCLCarbon}
-    MaxBtnPerRow:=ButtonTree.Count;
-    {$ELSE}
-    MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
-    {$ENDIF}
-    // If we need to wrap, make sure we have space for the scrollbar
-    if MaxBtnPerRow < ButtonTree.Count then
-      MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithBar - ButtonX) div ComponentPaletteBtnWidth);
-    //debugln(['TComponentPalette.ReAlignButtons MaxBtnPerRow=',MaxBtnPerRow,' ButtonTree.Count=',ButtonTree.Count,' ',ButtonX + MaxBtnPerRow * ComponentPaletteBtnWidth]);
-    if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
-
-    j:=0;
-    Node:=ButtonTree.FindLowest;
-    while Node<>nil do begin
-      CurButton:=TSpeedbutton(Node.Data);
-      CurButton.SetBounds(ButtonX + (j mod MaxBtnPerRow) * ComponentPaletteBtnWidth,
-                          (j div MaxBtnPerRow) * ComponentPaletteBtnHeight,
-                          CurButton.Width, CurButton.Height);
-      {$IFDEF VerboseComponentPalette}
-      if aSheet.Caption = CompPalVerbPgName then
-        DebugLn(['TComponentPalette.ReAlignButtons ',CurButton.Name,' ',dbgs(CurButton.BoundsRect)]);
-      {$ENDIF}
-      inc(j);
-      Node:=ButtonTree.FindSuccessor(Node);
-    end;
-    aSheet.Invalidate;
-  finally
-    if PageControl<>nil then
-      PageControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
-    FreeAndNil(ButtonTree);
-  end;
-end;
-
-function TComponentPalette.IsSelectionToolBtn(aControl: TControl): boolean;
-begin
-  Result:=(aControl is TSpeedButton)
-    and (LeftStr(aControl.Name,length(CompPalSelectionToolBtnPrefix))=CompPalSelectionToolBtnPrefix);
+  PageInd:=IndexOfPageComponent(aSheet);
+  if PageInd>=0 then
+    TComponentPage(Pages[PageInd]).ReAlignButtons;
 end;
 
 procedure TComponentPalette.RemoveUnneededPage(aSheet: TCustomPage);
