@@ -82,13 +82,15 @@ type
   TComponentPage = class(TBaseComponentPage)
   private
     fBtnIndex: integer;
-    fIndex: Integer;       // Index in the Pages container.
+    fIndex: Integer;           // Index in the Pages container.
+    fCompNames: TStringList;   // Reference to component names.
+    fGuiCreated: Boolean;
     procedure ReAlignButtons;
     procedure RemoveSheet;
-    procedure InsertVisiblePage;
+    procedure InsertVisiblePage(aCompNames: TStringList);
     procedure CreateSelectionButton(aButtonUniqueName: string; aScrollBox: TScrollBox);
     procedure CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string);
-    procedure CreateButtons(aCompNames: TStringList);
+    procedure CreateButtons;
   protected
   public
     constructor Create(const ThePageName: string);
@@ -314,13 +316,20 @@ var
   ScrollBox: TScrollBox;
   buttonx, MaxBtnPerRow, i: integer;
 begin
+  if (PageComponent=Nil) or (PageComponent.ComponentCount=0)
+  or not (PageComponent.Components[0] is TScrollBox) then
+    exit;
+  if not fGuiCreated then begin
+    {$IFDEF VerboseComponentPalette}
+    DebugLn(['TComponentPage.ReAlignButtons, ', PageName, ', calling CreateButtons']);
+    {$ENDIF}
+    CreateButtons;         // Delayed creation of buttons at startup.
+  end;
   Pal := TComponentPalette(Palette);
   if Pal.PageControl<>nil then
-    Pal.PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
+    Pal.PageControl.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPage.ReAlignButtons'){$ENDIF};
   ButtonTree:=nil;
   try
-    if (PageComponent.ComponentCount=0) or not (PageComponent.Components[0] is TScrollBox) then
-      exit;
     ScrollBox:=TScrollBox(PageComponent.Components[0]);
     ButtonTree:=TAVLTree.Create(@CompareControlsWithTag);
     for i:=0 to ScrollBox.ControlCount-1 do begin
@@ -335,7 +344,7 @@ begin
 
     {$IFDEF VerboseComponentPalette}
     if PageComponent.Caption = CompPalVerbPgName then
-      DebugLn(['TComponentPalette.ReAlignButtons',
+      DebugLn(['TComponentPage.ReAlignButtons',
         ' ButtonTree.Count=',ButtonTree.Count,
         ' ScrollBox.ControlCount=',ScrollBox.ControlCount,
         ' ScrollBox.Bounds=',dbgs(ScrollBox.BoundsRect),
@@ -356,7 +365,7 @@ begin
     // If we need to wrap, make sure we have space for the scrollbar
     if MaxBtnPerRow < ButtonTree.Count then
       MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithBar - ButtonX) div ComponentPaletteBtnWidth);
-    //debugln(['TComponentPalette.ReAlignButtons MaxBtnPerRow=',MaxBtnPerRow,' ButtonTree.Count=',ButtonTree.Count,' ',ButtonX + MaxBtnPerRow * ComponentPaletteBtnWidth]);
+    //debugln(['TComponentPage.ReAlignButtons MaxBtnPerRow=',MaxBtnPerRow,' ButtonTree.Count=',ButtonTree.Count,' ',ButtonX + MaxBtnPerRow * ComponentPaletteBtnWidth]);
     if MaxBtnPerRow<1 then MaxBtnPerRow:=1;
 
     i:=0;
@@ -368,7 +377,7 @@ begin
                           CurButton.Width, CurButton.Height);
       {$IFDEF VerboseComponentPalette}
       if PageComponent.Caption = CompPalVerbPgName then
-        DebugLn(['TComponentPalette.ReAlignButtons ',CurButton.Name,' ',dbgs(CurButton.BoundsRect)]);
+        DebugLn(['TComponentPage.ReAlignButtons ',CurButton.Name,' ',dbgs(CurButton.BoundsRect)]);
       {$ENDIF}
       inc(i);
       Node:=ButtonTree.FindSuccessor(Node);
@@ -376,7 +385,7 @@ begin
     PageComponent.Invalidate;
   finally
     if Pal.PageControl<>nil then
-      Pal.PageControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPalette.ReAlignButtons'){$ENDIF};
+      Pal.PageControl.EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TComponentPage.ReAlignButtons'){$ENDIF};
     FreeAndNil(ButtonTree);
   end;
 end;
@@ -394,7 +403,7 @@ begin
   PageComponent:=nil;
 end;
 
-procedure TComponentPage.InsertVisiblePage;
+procedure TComponentPage.InsertVisiblePage(aCompNames: TStringList);
 var
   Pal: TComponentPalette;
   TabIndex: Integer;
@@ -403,6 +412,7 @@ var
   TabControl: TCustomTabControl;
 begin
   if not Visible then Exit;
+  fCompNames := aCompNames;
   Pal := TComponentPalette(Palette);
   TabControl := TCustomTabControl(Pal.FPageControl);
   if PageComponent=nil then
@@ -548,7 +558,7 @@ begin
   end;
 end;
 
-procedure TComponentPage.CreateButtons(aCompNames: TStringList);
+procedure TComponentPage.CreateButtons;
 // Create speedbuttons for every visible component
 var
   Pal: TComponentPalette;
@@ -570,10 +580,12 @@ begin
   CreateSelectionButton(IntToStr(fIndex), ScrollBox);
   // create component buttons and delete unneeded ones
   fBtnIndex := 0;
-  for i := 0 to aCompNames.Count-1 do begin
-    Comp := Pal.FindComponent(aCompNames[i]) as TPkgComponent;
+  Assert(Assigned(fCompNames), 'TComponentPage.CreateButtons: fCompNames is not assigned.');
+  for i := 0 to fCompNames.Count-1 do begin
+    Comp := Pal.FindComponent(fCompNames[i]) as TPkgComponent;
     CreateOrDelButton(Comp, Format('%d_%d_',[fIndex,i]));
   end;
+  fGuiCreated := True;
 end;
 
 { TComponentPalette }
@@ -1040,9 +1052,6 @@ var
 begin
   Result := True;
   fUserComponentPageCache.Clear;
-  {$IFDEF VerboseComponentPalette}
-  debugln(['TComponentPalette.CreatePagesFromUserOrder HideControls=',HideControls]);
-  {$ENDIF}
   for UserPageI := 0 to fUserOrder.ComponentPages.Count-1 do
   begin
     PgName := fUserOrder.ComponentPages[UserPageI];
@@ -1078,7 +1087,7 @@ begin
     end;
     {$IFDEF VerboseComponentPalette}
     if PgName=CompPalVerbPgName then
-      debugln(['TComponentPalette.CreatePagesFromUserOrder HideControl=',HideControls,' aVisibleCompCnt=',aVisibleCompCnt]);
+      debugln(['TComponentPalette.CreatePagesFromUserOrder HideControls=',HideControls,' aVisibleCompCnt=',aVisibleCompCnt]);
     {$ENDIF}
     Pg.Visible := (CompareText(PgName,'Hidden')<>0) and (aVisibleCompCnt>0);
   end;
@@ -1191,32 +1200,31 @@ begin
       RemoveUnneededPage(FPageControl.Pages[i]);
     Application.ProcessMessages; // PageIndex of tabs are not updated without this.
 
+    // Mark GUIs as not created. They will be created later when page gets selected.
+    for i := 0 to Pages.Count-1 do
+      TComponentPage(Pages[i]).fGuiCreated := False;
+
     // insert a PageControl page for every visible palette page
     fVisiblePageIndex := 0;
     for i := 0 to Pages.Count-1 do
     begin
       // fPages and fUserOrder.ComponentPages are now synchronized, same index applies.
-      Assert(Pages[i].PageName = fUserOrder.ComponentPages[i],
+      Assert(Pages[i].PageName=fUserOrder.ComponentPages[i],
              'UpdateNoteBookButtons: Page names do not match.');
       Pg := TComponentPage(Pages[i]);
-      Pg.InsertVisiblePage;
-      Pg.CreateButtons(TStringList(fUserOrder.ComponentPages.Objects[i]));
+      Pg.InsertVisiblePage(TStringList(fUserOrder.ComponentPages.Objects[i]));
+      // Initially do not create GUI for all pages but only for active page.
+      if ((fOldActivePage=Nil) and (i=0)) or (Pg.PageComponent=fOldActivePage) then
+        Pg.ReAlignButtons;
     end;
 
     // restore active page
-    if (fOldActivePage<>nil) and (FPageControl.IndexOf(fOldActivePage) >= 0) then begin
-      {$IFDEF VerboseComponentPalette}
-      DebugLn(['TComponentPalette.UpdateNoteBookButtons: Restoring FPageControl.ActivePage=',
-               fOldActivePage.Caption]);
-      {$ENDIF}
+    if fOldActivePage<>nil then begin
+      Assert(FPageControl.IndexOf(fOldActivePage) >= 0, 'UpdateNoteBookButtons: fOldActivePage not found.');
       FPageControl.ActivePage:=fOldActivePage
     end
     else if FPageControl.PageCount>0 then
       FPageControl.PageIndex:=0;
-    {$IFDEF VerboseComponentPalette}
-    DebugLn('TComponentPalette.UpdateNoteBookButtons Calling ReAlignButtons');
-    {$ENDIF}
-    ReAlignButtons(FPageControl.ActivePage);      // Align only the active page.
   finally
     // unlock
     fUpdatingPageControl:=false;
