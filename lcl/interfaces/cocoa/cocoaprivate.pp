@@ -38,6 +38,7 @@ uses
 const
   SPINEDIT_DEFAULT_STEPPER_WIDTH = 15;
   SPINEDIT_EDIT_SPACING_FOR_SELECTION = 4;
+  STATUSBAR_DEFAULT_HEIGHT = 18;
 
 type
 
@@ -455,9 +456,9 @@ type
   TCocoaStatusBar = objcclass(TCocoaCustomControl)
   public
     StatusBar : TStatusBar;
+    panelCell : NSCell;
     procedure drawRect(dirtyRect: NSRect); override;
-    procedure DrawSection(Ctx: CGContextRef; const r: TRect; data: TStatusItemData); message 'DrawSection:r:data:';
-    //procedure DrawStatusBar(Ctx: CGContextRef; const bnd: TRect; Items: array of TStatusItemData); message 'DrawStatusBar:bnd:Items:';
+    procedure dealloc; override;
   end;
 
   TCocoaComboBox = objcclass;
@@ -2970,119 +2971,59 @@ end;
 { TCocoaStatusBar }
 
 procedure TCocoaStatusBar.drawRect(dirtyRect: NSRect);
-
-  procedure DrawStatusBar(Ctx: CGContextRef;
-    const bnd: TRect; Items: TStatusItemDataArray);
-  var
-    i   : Integer;
-    x   : Integer;
-    xn  : Integer;
-    r   : TRect;
-  const
-    dummy : TStatusItemData = (Text: nil; Width:0; align: taLeftJustify);
-    ExtraWidth=2;
-  begin
-    if length(Items) = 0 then
-    begin
-      DrawSection(Ctx, bnd, dummy);
-      //if Assigned(OnItemDraw) then OnItemDraw(-1, bnd, dummy);
-      Exit;
-    end;
-
-    x := bnd.Left;
-    for i := 0 to length(Items)-1 do
-    begin
-      xn := x + Items[i].Width;
-      r := Types.Rect(x, bnd.Top, xn+ExtraWidth, bnd.Bottom);
-      if i = length(Items)-1 then
-        r := Types.Rect(x, bnd.Top, bnd.Right, bnd.Bottom);
-      DrawSection(Ctx, r, Items[i]);
-      dec(r.Right, ExtraWidth);
-      //if Assigned(OnItemDraw) then OnItemDraw(i, r, Items[i]);
-      x := xn;
-    end;
-  end;
-
 var
-  R         : TRect;
-  items     : array of TStatusItemData;
-  i         : Integer;
-  Ctx: CGContextRef;
+  R    : TRect;
+  i    : Integer;
+  txt  : NSString;
+  nr   : NSRect;
+  x    : Integer;
+const
+  CocoaAlign: array [TAlignment] of Integer = (NSNaturalTextAlignment, NSRightTextAlignment, NSCenterTextAlignment);
 begin
   //inherited NSControl.drawRect(dirtyRect);
   if callback = nil then Exit;
+
+  if not Assigned(panelCell) then Exit;
+
+  panelCell.setControlView(Self);
+  FillChar(nr, sizeof(nr), 0);
+
   r := lclClientFrame();
+  nr.size.height := STATUSBAR_DEFAULT_HEIGHT;
+
   if StatusBar.SimplePanel then
   begin
-    SetLength(items, 1);
-    items[0].Width := r.Right-r.Left;
-    items[0].Text := NSStringUtf8(StatusBar.SimpleText);
-    items[0].Align := taLeftJustify; //todo: select proper Justify based on lanuage text-mode (r2l, l2r)!
+    nr.size.width := r.Right-r.Left;
+    txt := NSStringUtf8(StatusBar.SimpleText);
+    panelCell.setAlignment( NSNaturalTextAlignment );
+    panelCell.setTitle( txt );
+    panelCell.drawWithFrame_inView(nr, Self);
+    txt.release;
   end
   else
   begin
-    SetLength(items, StatusBar.Panels.Count);
-    for i:=0 to length(items)-1 do
+    x:=0;
+    for i:=0 to StatusBar.Panels.Count-1 do
     begin
-      items[i].Width := StatusBar.Panels[i].Width;
-      items[i].Text := NSStringUtf8(StatusBar.Panels[i].Text);
-      items[i].Align := StatusBar.Panels[i].Alignment;
+      if i=StatusBar.Panels.Count-1 then
+        nr.size.width := r.Right-x+1
+      else
+        nr.size.width := StatusBar.Panels[i].Width+1;
+      nr.origin.x := x;
+      inc(x, StatusBar.Panels[i].Width);
+      txt := NSStringUtf8(StatusBar.Panels[i].Text);
+      panelCell.setTitle(txt);
+      panelCell.setAlignment(CocoaAlign[StatusBar.Panels[i].Alignment]);
+      panelCell.drawWithFrame_inView(nr, Self);
+      txt.release;
     end;
-  end;
-  Ctx := NSGraphicsContext.currentContext().graphicsPort();
-
-  DrawStatusBar(Ctx, r, items);
-
-  // Release all NSStrings
-  for i:=0 to length(items)-1 do
-  begin
-    items[i].Text.release;
   end;
 end;
 
-procedure TCocoaStatusBar.DrawSection(Ctx: CGContextRef; const r: TRect;
-  data: TStatusItemData);
-var
-  cr    : CGRect;
-  info  : HIThemeButtonDrawInfo;
-  txtinfo : HIThemeTextInfo;
-  lStr: string;
-const
-  txtHorzFlush : array [TAlignment] of Integer =
-    (kHIThemeTextHorizontalFlushLeft,kHIThemeTextHorizontalFlushRight,kHIThemeTextHorizontalFlushCenter);
-  StatusHeight = 15;
+procedure TCocoaStatusBar.dealloc;
 begin
-  // Otherwise the text gets printed upside down!
-  CGContextTranslateCTM(Ctx, 0, StatusHeight);
-  CGContextScaleCTM(Ctx, 1, -1);
-  try
-    cr:=RectToCGRect(r);
-    FillChar(info{%H-}, sizeof(info), 0);
-    info.kind:=kThemeListHeaderButton;
-    info.state:=kThemeStateActive;
-    HIThemeDrawButton( cr, info, ctx, 0, nil);
-
-    cr.origin.x:=cr.origin.x+2;
-    cr.origin.y:=cr.origin.y+1;
-    cr.size.width:=cr.size.width-6;
-    if data.Text <> nil then
-      lStr := NSStringToString(data.Text);
-    if (data.Text <> nil) and (lStr <> '') then
-    begin
-      FillChar(txtinfo{%H-}, sizeof(txtinfo), 0);
-      txtinfo.version:=1;
-      //txtinfo.fontID:=kThemeMiniSystemFont;
-      txtinfo.horizontalFlushness:=txtHorzFlush[data.align];
-      txtinfo.fontID:=kThemeSmallSystemFont;
-      txtinfo.state:=kThemeStateActive;
-      HIThemeSetTextFill(kThemeTextColorListView, nil, ctx, 0);
-      HIThemeDrawTextBox(CFStringRef(data.Text), cr, txtinfo, ctx, 0);
-    end;
-  finally
-    // It is very important to restore the coordinates ;)
-    CGContextScaleCTM(Ctx, 1, -1);
-    CGContextTranslateCTM(Ctx, 0, -1 * StatusHeight);
-  end;
+  if Assigned(panelCell) then panelCell.release;
+  inherited;
 end;
 
 { TCocoaComboBoxList }

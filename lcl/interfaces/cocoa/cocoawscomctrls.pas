@@ -215,6 +215,7 @@ class function TCocoaWSStatusBar.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): TLCLIntfHandle;
 var
   lResult: TCocoaStatusBar;
+  cell    : NSButtonCell;
 begin
   Result := 0;
   lResult := TCocoaStatusBar.alloc.lclInitWithCreateParams(AParams);
@@ -223,6 +224,15 @@ begin
 
   lResult.callback := TLCLCommonCallback.Create(lResult, AWinControl);
   lResult.StatusBar := TStatusBar(AWinControl);
+
+  cell:=NSButtonCell(NSButtonCell.alloc).initTextCell(nil);
+  // NSSmallSquareBezelStyle aka "Gradient button", is the best looking
+  // candidate for the status bar panel. Could be changed to any NSCell class
+  // since CocoaStatusBar doesn't suspect any specific cell type.
+  cell.setBezelStyle(NSSmallSquareBezelStyle);
+  cell.setFont( NSFont.systemFontOfSize( NSFont.smallSystemFontSize ));
+
+  lResult.panelCell := cell;
 end;
 
 class procedure TCocoaWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
