@@ -97,12 +97,12 @@ function UTF8UpperString(const s: string): string;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
                                   StopOnNonASCII: Boolean = false): PtrInt;
 function ValidUTF8String(const s: String): String;
-function Utf8StringOfChar(AUtf8Char: Utf8String; N: Integer): Utf8String;
-function Utf8AddChar(AUtf8Char: Utf8String; const S: Utf8String; N: Integer): Utf8String;
-function Utf8AddCharR(AUtf8Char: Utf8String; const S: Utf8String; N: Integer): Utf8String;
-function UTF8PadLeft(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
-function UTF8PadRight(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
-function UTF8PadCenter(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
+function Utf8StringOfChar(AUtf8Char: String; N: Integer): String;
+function Utf8AddChar(AUtf8Char: String; const S: String; N: Integer): String;
+function Utf8AddCharR(AUtf8Char: String; const S: String; N: Integer): String;
+function UTF8PadLeft(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
+function UTF8PadRight(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
+function UTF8PadCenter(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
 function Utf8LeftStr(const AText: String; const ACount: Integer): String;
 function Utf8RightStr(const AText: String; const ACount: Integer): String;
 //Utf8 version of MidStr is just Utf8Copy with same parameters, so it is not implemented here
@@ -2582,7 +2582,7 @@ begin
     FreeMem(p);
 end;
 
-function Utf8StringOfChar(AUtf8Char: Utf8String; N: Integer): Utf8String;
+function Utf8StringOfChar(AUtf8Char: String; N: Integer): String;
 var
   UCharLen, i: Integer;
   C1, C2, C3: Char;
@@ -2628,7 +2628,7 @@ begin
   end;
 end;
 
-function Utf8AddChar(AUtf8Char: Utf8String; const S: Utf8String; N: Integer): Utf8String;
+function Utf8AddChar(AUtf8Char: String; const S: String; N: Integer): String;
 var
   L : Integer;
 begin
@@ -2641,7 +2641,7 @@ begin
   end;
 end;
 
-function Utf8AddCharR(AUtf8Char: Utf8String; const S: Utf8String; N: Integer): Utf8String;
+function Utf8AddCharR(AUtf8Char: String; const S: String; N: Integer): String;
 var
   L : Integer;
 begin
@@ -2653,17 +2653,17 @@ begin
 end;
 
 
-function UTF8PadLeft(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
+function UTF8PadLeft(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
 begin
   Result := Utf8AddChar(AUtf8Char, S, N);
 end;
 
-function UTF8PadRight(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
+function UTF8PadRight(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
 begin
   Result := Utf8AddCharR(AUtf8Char, S, N);
 end;
 
-function UTF8PadCenter(const S: Utf8String; const N: Integer; const AUtf8Char: Utf8String = #32): Utf8String;
+function UTF8PadCenter(const S: String; const N: Integer; const AUtf8Char: String = #32): String;
 var
   ULen: PtrInt;
 begin
