@@ -480,7 +480,7 @@ end;
 
 procedure TComponentPage.CreateSelectionButton(aButtonUniqueName: string; aScrollBox: TScrollBox);
 var
-  Pal: TComponentPalette;
+  {%H-}Pal: TComponentPalette;
   Btn: TSpeedButton;
 begin
   if Assigned(SelectButton) then Exit;
@@ -504,7 +504,7 @@ end;
 
 procedure TComponentPage.CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string);
 var
-  Pal: TComponentPalette;
+  {%H-}Pal: TComponentPalette;
   Btn: TSpeedButton;
 begin
   if aComp.Visible then begin
