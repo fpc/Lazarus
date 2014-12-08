@@ -113,6 +113,7 @@ type
     function GetSelLength: Integer;
     function GetSelStart: Integer;
     function GetSelText: String;
+    function GetSpacing: Integer;
     function GetTabStop: Boolean;
     function GetText: TCaption;
     function IsCustomGlyph : Boolean;
@@ -169,6 +170,7 @@ type
     procedure SetSelLength(AValue: Integer);
     procedure SetSelStart(AValue: Integer);
     procedure SetSelText(AValue: String);
+    procedure SetSpacing(const Value: integer);
     procedure SetTabStop(AValue: Boolean);
     procedure SetText(AValue: TCaption);
   protected
@@ -238,6 +240,7 @@ type
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
     property IsMasked: Boolean read GetIsMasked;
     property NumGlyphs: Integer read GetNumGlyps write SetNumGlyphs;
+    property Spacing: Integer read GetSpacing write SetSpacing default 4;
 
     property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
   public
@@ -365,6 +368,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
+    property Spacing;
     property TabOrder;
     property TabStop;
     property Text;
@@ -463,6 +467,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
+    property Spacing;
     property TabOrder;
     property TabStop;
     property Visible;
@@ -570,6 +575,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
+    property Spacing;
     property TabOrder;
     property TabStop;
     property Visible;
@@ -656,6 +662,7 @@ type
     property ReadOnly;
     property ShowHint;
     property TabOrder;
+    property Spacing;
     property TabStop;
     property Visible;
     property OnButtonClick;
@@ -783,6 +790,7 @@ type
     property ShowHint;
     property TabStop;
     property TabOrder;
+    property Spacing;
     property Visible;
     property Text;
   end;
@@ -1062,6 +1070,11 @@ end;
 function TCustomEditButton.GetSelText: String;
 begin
   Result := FEdit.SelText;
+end;
+
+function TCustomEditButton.GetSpacing: Integer;
+begin
+  Result := FButton.Spacing;
 end;
 
 function TCustomEditButton.GetTabStop: Boolean;
@@ -1628,6 +1641,11 @@ begin
   FEdit.SelText := AValue;
 end;
 
+procedure TCustomEditButton.SetSpacing(const Value: integer);
+begin
+  FButton.Spacing := Value;
+end;
+
 procedure TCustomEditButton.SetTabStop(AValue: Boolean);
 begin
   inherited TabStop := AValue;
@@ -1659,6 +1677,7 @@ begin
   begin
     Align := alRight;
     OnClick := @InternalOnButtonClick;
+    Spacing := 4;
     Parent := Self;
   end;
   B := GetDefaultGlyph;
