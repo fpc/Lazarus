@@ -2921,6 +2921,8 @@ begin
 end;
 
 function TDesigner.IsDesignMsg(Sender: TControl; var TheMessage: TLMessage): Boolean;
+var
+  Act: Word;
 begin
   Result := false;
   if csDesigning in Sender.ComponentState then begin
@@ -2946,7 +2948,8 @@ begin
                    ', calling DoFormActivated(',TLMActivate(TheMessage).Active=WA_ACTIVE,')'
                   ]);
           {$ENDIF}
-          Result:=DoFormActivated(TLMActivate(TheMessage).Active=WA_ACTIVE);
+          Act:=TLMActivate(TheMessage).Active;
+          Result:=DoFormActivated(Act in [WA_ACTIVE, WA_CLICKACTIVE]);
         end;
         LM_CLOSEQUERY:  Result:=DoFormCloseQuery;
         LM_SETCURSOR:   Result:=HandleSetCursor(TheMessage);
