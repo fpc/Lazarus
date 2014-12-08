@@ -229,7 +229,7 @@ type
     function FindButton(Button: TComponent): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
     function IndexOfPageComponent(AComponent: TComponent): integer;
-    procedure Update; virtual;
+    procedure Update; virtual; abstract;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
     procedure RegisterCustomIDEComponents(
                         const RegisterProc: RegisterUnitComponentProc); virtual; abstract;
@@ -669,17 +669,12 @@ end;
 
 procedure TBaseComponentPalette.OnComponentVisibleChanged(AComponent: TRegisteredComponent);
 begin
-  DoChange;
+  ;
 end;
 
 procedure TBaseComponentPalette.OnPageVisibleChanged(APage: TBaseComponentPage);
 begin
-  DoChange;
-end;
-
-procedure TBaseComponentPalette.Update;
-begin
-
+  ;
 end;
 
 function TBaseComponentPalette.VoteCompVisibility(AComponent: TRegisteredComponent): Boolean;

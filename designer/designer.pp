@@ -2939,7 +2939,12 @@ begin
         LM_MOUSEMOVE:   MouseMoveOnControl(Sender, TLMMouse(TheMessage));
         LM_SIZE:        Result:=SizeControl(Sender, TLMSize(TheMessage));
         LM_MOVE:        Result:=MoveControl(Sender, TLMMove(TheMessage));
-        LM_ACTIVATE:    Result:=DoFormActivated(TLMActivate(TheMessage).Active=WA_ACTIVE);
+        LM_ACTIVATE: begin
+          {$IFDEF VerboseComponentPalette}
+          DebugLn('TDesigner.IsDesignMsg: Got LM_ACTIVATE message.');
+          {$ENDIF}
+          Result:=DoFormActivated(TLMActivate(TheMessage).Active=WA_ACTIVE);
+        end;
         LM_CLOSEQUERY:  Result:=DoFormCloseQuery;
         LM_SETCURSOR:   Result:=HandleSetCursor(TheMessage);
         LM_CONTEXTMENU: HandlePopupMenu(Sender, TLMContextMenu(TheMessage));

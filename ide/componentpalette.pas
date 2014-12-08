@@ -966,9 +966,9 @@ end;
 
 procedure TComponentPalette.Update;
 begin
-  inherited Update;
   {$IFDEF VerboseComponentPalette}
-  DebugLn('TComponentPalette.Update, calling UpdateNoteBookButtons');
+  DebugLn(['TComponentPalette.Update, calling UpdateNoteBookButtons, fUpdatingPageControl=',
+           fUpdatingPageControl, ', fNoteBookNeedsUpdate=', fNoteBookNeedsUpdate]);
   {$ENDIF}
   UpdateNoteBookButtons;
 end;
