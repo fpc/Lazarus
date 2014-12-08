@@ -202,9 +202,9 @@ type
   end;
 
 function FindAllFiles(const SearchPath: String; SearchMask: String = '';
-  SearchSubDirs: Boolean = True): TStringList; overload;
+  SearchSubDirs: Boolean = True; DirAttr: Word = faDirectory): TStringList; overload;
 procedure FindAllFiles(AList: TStrings; const SearchPath: String;
-  SearchMask: String = ''; SearchSubDirs: Boolean = True); overload;
+  SearchMask: String = ''; SearchSubDirs: Boolean = True; DirAttr: Word = faDirectory); overload;
 
 function FindAllDirectories(const SearchPath: string;
   SearchSubDirs: Boolean = True): TStringList; overload;

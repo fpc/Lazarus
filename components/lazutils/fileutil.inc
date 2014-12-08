@@ -955,11 +955,12 @@ begin
 end;
 
 procedure FindAllFiles(AList: TStrings; const SearchPath: String;
-  SearchMask: String; SearchSubDirs: Boolean);
+  SearchMask: String; SearchSubDirs: Boolean; DirAttr: Word);
 var
   Searcher: TListFileSearcher;
 begin
   Searcher := TListFileSearcher.Create(AList);
+  Searcher.DirectoryAttribute := DirAttr;
   try
     Searcher.Search(SearchPath, SearchMask, SearchSubDirs);
   finally
@@ -968,10 +969,10 @@ begin
 end;
 
 function FindAllFiles(const SearchPath: String; SearchMask: String;
-  SearchSubDirs: Boolean): TStringList;
+  SearchSubDirs: Boolean; DirAttr: Word): TStringList;
 begin
   Result := TStringList.Create;
-  FindAllFiles(Result, SearchPath, SearchMask, SearchSubDirs);
+  FindAllFiles(Result, SearchPath, SearchMask, SearchSubDirs, DirAttr);
 end;
 
 { TListDirectoriesSearcher }
