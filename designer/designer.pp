@@ -2941,7 +2941,10 @@ begin
         LM_MOVE:        Result:=MoveControl(Sender, TLMMove(TheMessage));
         LM_ACTIVATE: begin
           {$IFDEF VerboseComponentPalette}
-          DebugLn('TDesigner.IsDesignMsg: Got LM_ACTIVATE message.');
+          DebugLn(['TDesigner.IsDesignMsg: Got LM_ACTIVATE message.',
+                   ' Message.Active=',TLMActivate(TheMessage).Active,
+                   ', calling DoFormActivated(',TLMActivate(TheMessage).Active=WA_ACTIVE,')'
+                  ]);
           {$ENDIF}
           Result:=DoFormActivated(TLMActivate(TheMessage).Active=WA_ACTIVE);
         end;
