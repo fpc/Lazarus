@@ -370,8 +370,10 @@ begin
       LabelRect.origin.x := LabelRect.origin.x - 2;
       LabelRect.origin.y := LabelRect.origin.y - 1;
 
+      {$ifdef i386}
       HIThemeDrawButton(LabelRect, ButtonDrawInfo, DC.CGContext(),
         kHIThemeOrientationNormal, @LabelRect);
+      {$endif}
 
       Result := CGRectToRect(LabelRect);
     end;
