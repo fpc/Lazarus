@@ -32,13 +32,14 @@ unit etFPCMsgParser;
 interface
 
 uses
-  Classes, SysUtils, strutils, math, FileProcs, KeywordFuncLists,
+  Classes, SysUtils, strutils, math,
+  LazUTF8, LConvEncoding, LazFileUtils, FileUtil,
   IDEExternToolIntf, PackageIntf, LazIDEIntf, ProjectIntf, IDEUtils,
-  CompOptsIntf, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache, CodeToolManager,
-  DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog, LazUTF8,
-  FileUtil, LConvEncoding, LazFileUtils,
-  LazConf, TransferMacros, etMakeMsgParser,
-  EnvironmentOpts, LCLProc, LazarusIDEStrConsts;
+  CompOptsIntf, MacroIntf,
+  FileProcs, KeywordFuncLists, CodeToolsFPCMsgs, CodeToolsStructs, CodeCache,
+  CodeToolManager, DirectoryCacher, BasicCodeTools, DefineTemplates, SourceLog,
+  LazarusIDEStrConsts, EnvironmentOpts, LazConf, TransferMacros,
+  etMakeMsgParser;
 
 const
   FPCMsgIDLogo = 11023;
@@ -193,6 +194,7 @@ type
       MsgLine: TMessageLine; SourceOK: boolean);
     procedure Translate(p: PChar; MsgItem, TranslatedItem: TFPCMsgItem;
       out TranslatedMsg: String; out MsgType: TMessageLineUrgency);
+    procedure ReverseInstantFPCCacheDir(var aFilename: string; aSynchronized: boolean);
     function LongenFilename(MsgLine: TMessageLine; aFilename: string): string; // (worker thread)
   public
     DirectoryStack: TStrings;
@@ -200,6 +202,7 @@ type
     MsgFile: TFPCMsgFilePoolItem;
     TranslationFilename: string; // e.g. /path/to/fpcsrc/compiler/msg/errord.msg
     TranslationFile: TFPCMsgFilePoolItem;
+    InstantFPCCache: string; // with trailing pathdelim
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Init; override; // called after macros resolved, before starting thread (main thread)
@@ -1094,6 +1097,13 @@ begin
   fUnitPathValidForWorkerDir:=Tool.WorkerDirectory;
   fUnitPath:=CodeToolBoss.GetUnitPathForDirectory(
                            ChompPathDelim(fUnitPathValidForWorkerDir));
+
+  // get instantfpc cache directory
+  InstantFPCCache:='$(InstantFPCCache)';
+  if IDEMacros.SubstituteMacros(InstantFPCCache) then
+    InstantFPCCache:=AppendPathDelim(InstantFPCCache)
+  else
+    InstantFPCCache:='';
 end;
 
 procedure TIDEFPCParser.InitReading;
@@ -1134,9 +1144,11 @@ function TIDEFPCParser.CheckForCompilingState(p: PChar): boolean;
 const
   FPCMsgIDCompiling = 3104;
 var
-  AFilename: string;
-  MsgLine: TMessageLine;
   OldP: PChar;
+  AFilename: string;
+  aDir: String;
+  MsgLine: TMessageLine;
+  NewFilename: String;
 begin
   OldP:=p;
   // for example 'Compiling ./subdir/unit1.pas'
@@ -1153,14 +1165,30 @@ begin
   // add path to history
   if (p^='.') and (p[1]=PathDelim) then
     inc(p,2); // skip ./
-  AFilename:=ExtractFilePath(TrimFilename(p));
-  if AFilename<>'' then begin
-    if (not FilenameIsAbsolute(AFilename)) and (Tool.WorkerDirectory<>'') then
-      AFilename:=TrimFilename(AppendPathDelim(Tool.WorkerDirectory)+AFilename);
+  AFilename:=TrimFilename(p);
+  aDir:=ExtractFilePath(AFilename);
+  if aDir<>'' then begin
+    // make absolute
+    if (not FilenameIsAbsolute(aDir)) and (Tool.WorkerDirectory<>'') then begin
+      aDir:=TrimFilename(AppendPathDelim(Tool.WorkerDirectory)+aDir);
+      AFilename:=aDir+ExtractFileName(AFilename);
+    end;
+    // reverse instantfpc cache
+    if (InstantFPCCache<>'') and (Tool.WorkerDirectory<>'')
+    and (FilenameIsAbsolute(aDir))
+    and (CompareFilenames(InstantFPCCache,aDir)=0) then
+    begin
+      NewFilename:=AppendPathDelim(Tool.WorkerDirectory)+ExtractFileName(AFilename);
+      if FileExists(NewFilename,false) then begin
+        AFilename:=NewFilename;
+        aDir:=InstantFPCCache;
+      end;
+    end;
+    // store directory
     if DirectoryStack=nil then DirectoryStack:=TStringList.Create;
     if (DirectoryStack.Count=0)
-    or (DirectoryStack[DirectoryStack.Count-1]<>AFilename) then
-      DirectoryStack.Add(AFilename);
+    or (DirectoryStack[DirectoryStack.Count-1]<>aDir) then
+      DirectoryStack.Add(aDir);
   end;
   MsgLine:=CreateMsgLine;
   MsgLine.Urgency:=mluProgress;
@@ -2167,6 +2195,19 @@ begin
   end;
 end;
 
+procedure TIDEFPCParser.ReverseInstantFPCCacheDir(var aFilename: string;
+  aSynchronized: boolean);
+var
+  Reversed: String;
+begin
+  if (InstantFPCCache<>'')
+  and (CompareFilenames(ExtractFilePath(aFilename),InstantFPCCache)=0) then begin
+    Reversed:=AppendPathDelim(Tool.WorkerDirectory)+ExtractFilename(aFilename);
+    if FileExists(Reversed,aSynchronized) then
+      aFilename:=Reversed;
+  end;
+end;
+
 constructor TIDEFPCParser.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -2522,7 +2563,10 @@ var
   LastFilename: String;
 begin
   Result:=TrimFilename(aFilename);
-  if FilenameIsAbsolute(Result) then exit;
+  if FilenameIsAbsolute(Result) then begin
+    ReverseInstantFPCCacheDir(Result,false);
+    exit;
+  end;
   ShortFilename:=Result;
   // check last message line
   LastMsgLine:=Tool.WorkerMessages.GetLastLine;
@@ -2608,8 +2652,8 @@ begin
         and (fIncludePathValidForWorkerDir=MsgWorkerDir) then begin
           // include path is valid and in worker thread
           // -> search file
-          aFilename:=SearchFileInPath(aFilename,MsgWorkerDir,fIncludePath,';',
-                                 [sffSearchLoUpCase]);
+          aFilename:=FileUtil.SearchFileInPath(aFilename,MsgWorkerDir,fIncludePath,';',
+                                 [FileUtil.sffSearchLoUpCase]);
           if aFilename<>'' then
             MsgLine.Filename:=aFilename;
         end;
