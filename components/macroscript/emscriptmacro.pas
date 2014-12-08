@@ -82,7 +82,7 @@ type
     FSelfTestError: String;
     FSelfTestFailed: Integer; // stores EMSVersion that failed
   protected
-    function GetXmlConf: TRttiXMLConfig;
+    function GetXmlConf(CleanOnError: Boolean = False): TRttiXMLConfig;
   public
     constructor Create;
     procedure Init;
@@ -147,15 +147,24 @@ end;
 
 { TEMSConfig }
 
-function TEMSConfig.GetXmlConf: TRttiXMLConfig;
+function TEMSConfig.GetXmlConf(CleanOnError: Boolean): TRttiXMLConfig;
 var
   fn: String;
 begin
   fn := GetConfFileName;
-  if (not FileExistsUTF8(fn)) then
+  if (not FileExistsUTF8(fn)) then begin
     Result := TRttiXMLConfig.CreateClean(fn)
-  else
-    Result := TRttiXMLConfig.Create(fn);
+  end
+  else begin
+    if CleanOnError then
+      try
+        Result := TRttiXMLConfig.Create(fn);
+      except
+        Result := TRttiXMLConfig.CreateClean(fn)
+      end
+    else
+      Result := TRttiXMLConfig.Create(fn);
+  end;
 end;
 
 constructor TEMSConfig.Create;
@@ -189,7 +198,7 @@ var
   def: TEMSConfig;
   cfg: TRttiXMLConfig;
 begin
-  cfg := GetXmlConf;
+  cfg := GetXmlConf(True);
   def := TEMSConfig.Create;
   try
     cfg.WriteObject('EMS/Settings/', Self, def);
