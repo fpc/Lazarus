@@ -1090,7 +1090,7 @@ begin
   fIncludePathValidForWorkerDir:=Tool.WorkerDirectory;
   fIncludePath:=CodeToolBoss.GetIncludePathForDirectory(
                            ChompPathDelim(fIncludePathValidForWorkerDir));
-  // get include search path
+  // get unit search path
   fUnitPathValidForWorkerDir:=Tool.WorkerDirectory;
   fUnitPath:=CodeToolBoss.GetUnitPathForDirectory(
                            ChompPathDelim(fUnitPathValidForWorkerDir));
