@@ -727,7 +727,6 @@ procedure TTextStrings.AddStrings(TheStrings: TStrings);
 var
   s: String;
   i: Integer;
-  OldCount: Integer;
   AddEachLine: Boolean;
 begin
   if TheStrings.Count=0 then exit;
