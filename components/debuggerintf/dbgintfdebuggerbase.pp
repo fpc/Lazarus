@@ -5483,12 +5483,12 @@ end;
 
 class function TDebuggerIntf.HasExePath: boolean;
 begin
-  Result := true; // most debugger are external and have an exe path
+  Result := NeedsExePath;
 end;
 
 class function TDebuggerIntf.NeedsExePath: boolean;
 begin
-  Result := HasExePath;
+  Result := true; // most debugger are external and have an exe path
 end;
 
 class function TDebuggerIntf.CanExternalDebugSymbolsFile: boolean;
