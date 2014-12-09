@@ -588,7 +588,7 @@ begin
           exit(PrevChild);
         PrevChild:=PrevChild.PreviousSibling;
       end;
-      Start:=true;
+      Start:=false;
     until (PrevChild=nil) and (NextChild=nil);
     Result:=nil;
   end else
