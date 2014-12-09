@@ -42,26 +42,29 @@
         <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
-    <RequiredPackages Count="6">
+    <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="LCLBase"/>
-        <MinVersion Major="1" Release="1" Valid="True"/>
+        <PackageName Value="LazDebuggerGdbmi"/>
       </Item1>
       <Item2>
-        <PackageName Value="LazControls"/>
+        <PackageName Value="LCLBase"/>
+        <MinVersion Major="1" Release="1" Valid="True"/>
       </Item2>
       <Item3>
-        <PackageName Value="CodeTools"/>
+        <PackageName Value="LazControls"/>
       </Item3>
       <Item4>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="CodeTools"/>
       </Item4>
       <Item5>
-        <PackageName Value="LCL"/>
+        <PackageName Value="IDEIntf"/>
       </Item5>
       <Item6>
-        <PackageName Value="SynEdit"/>
+        <PackageName Value="LCL"/>
       </Item6>
+      <Item7>
+        <PackageName Value="SynEdit"/>
+      </Item7>
     </RequiredPackages>
     <Units Count="240">
       <Unit0>
@@ -75,42 +78,36 @@
         <ComponentName Value="OIOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="OI_options"/>
       </Unit1>
       <Unit2>
         <Filename Value="frames/files_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FilesOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="files_options"/>
       </Unit2>
       <Unit3>
         <Filename Value="frames/desktop_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DesktopOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="desktop_options"/>
       </Unit3>
       <Unit4>
         <Filename Value="frames/window_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="WindowOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="window_options"/>
       </Unit4>
       <Unit5>
         <Filename Value="frames/formed_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FormEditorOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="formed_options"/>
       </Unit5>
       <Unit6>
         <Filename Value="frames/backup_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="BackupOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="Backup_Options"/>
       </Unit6>
       <Unit7>
         <Filename Value="frames/naming_options.pas"/>
@@ -118,7 +115,6 @@
         <ComponentName Value="NamingOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="naming_options"/>
       </Unit7>
       <Unit8>
         <Filename Value="frames/fpdoc_options.pas"/>
@@ -126,7 +122,6 @@
         <ComponentName Value="FpDocOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="fpdoc_options"/>
       </Unit8>
       <Unit9>
         <Filename Value="frames/editor_indent_options.pas"/>
@@ -134,14 +129,12 @@
         <ComponentName Value="EditorIndentOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_indent_options"/>
       </Unit9>
       <Unit10>
         <Filename Value="frames/editor_display_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditorDisplayOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_display_options"/>
       </Unit10>
       <Unit11>
         <Filename Value="frames/editor_keymapping_options.pas"/>
@@ -149,7 +142,6 @@
         <ComponentName Value="EditorKeymappingOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_keymapping_options"/>
       </Unit11>
       <Unit12>
         <Filename Value="frames/editor_color_options.pas"/>
@@ -157,21 +149,18 @@
         <ComponentName Value="EditorColorOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_color_options"/>
       </Unit12>
       <Unit13>
         <Filename Value="frames/editor_codetools_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditorCodetoolsOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_codetools_options"/>
       </Unit13>
       <Unit14>
         <Filename Value="frames/editor_codefolding_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditorCodefoldingOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_codefolding_options"/>
       </Unit14>
       <Unit15>
         <Filename Value="frames/codetools_general_options.pas"/>
@@ -179,35 +168,30 @@
         <ComponentName Value="CodetoolsGeneralOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_general_options"/>
       </Unit15>
       <Unit16>
         <Filename Value="frames/codetools_codecreation_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodetoolsCodeCreationOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_codecreation_options"/>
       </Unit16>
       <Unit17>
         <Filename Value="frames/codetools_wordpolicy_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodetoolsWordPolicyOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_wordpolicy_options"/>
       </Unit17>
       <Unit18>
         <Filename Value="frames/codetools_linesplitting_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodetoolsLineSplittingOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_linesplitting_options"/>
       </Unit18>
       <Unit19>
         <Filename Value="frames/codetools_space_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="CodetoolsSpaceOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_space_options"/>
       </Unit19>
       <Unit20>
         <Filename Value="frames/codetools_identifiercompletion_options.pas"/>
@@ -215,7 +199,6 @@
         <ComponentName Value="CodetoolsIndentifierCompletionOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="codetools_identifiercompletion_options"/>
       </Unit20>
       <Unit21>
         <Filename Value="frames/editor_general_misc_options.pas"/>
@@ -223,7 +206,6 @@
         <ComponentName Value="EditorGeneralMiscOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="editor_general_misc_options"/>
       </Unit21>
       <Unit22>
         <Filename Value="../debugger/frames/debugger_general_options.pas"/>
@@ -231,48 +213,40 @@
         <ComponentName Value="DebuggerGeneralOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="debugger_general_options"/>
       </Unit22>
       <Unit23>
         <Filename Value="../debugger/frames/debugger_eventlog_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DebuggerEventLogOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="debugger_eventlog_options"/>
       </Unit23>
       <Unit24>
         <Filename Value="../debugger/frames/debugger_language_exceptions_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DebuggerLanguageExceptionsOptions"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="debugger_language_exceptions_options"/>
       </Unit24>
       <Unit25>
         <Filename Value="../debugger/frames/debugger_signals_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="DebuggerSignalsOptions"/>
         <ResourceBaseClass Value="Frame"/>
-        <UnitName Value="debugger_signals_options"/>
       </Unit25>
       <Unit26>
         <Filename Value="projectresources.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ProjectResources"/>
       </Unit26>
       <Unit27>
         <Filename Value="w32manifest.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="W32Manifest"/>
       </Unit27>
       <Unit28>
         <Filename Value="projecticon.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ProjectIcon"/>
       </Unit28>
       <Unit29>
         <Filename Value="w32versioninfo.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="W32VersionInfo"/>
       </Unit29>
       <Unit30>
         <Filename Value="sourceeditor.pp"/>
@@ -470,6 +444,7 @@
       <Unit61>
         <Filename Value="debugmanager.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="DebugManager"/>
       </Unit61>
       <Unit62>
         <Filename Value="progresswnd.pas"/>
@@ -801,7 +776,6 @@
       <Unit123>
         <Filename Value="lazarusidestrconsts.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="LazarusIDEStrConsts"/>
       </Unit123>
       <Unit124>
         <Filename Value="codetemplatesdlg.pas"/>
@@ -815,7 +789,6 @@
       <Unit126>
         <Filename Value="mainbase.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="MainBase"/>
       </Unit126>
       <Unit127>
         <Filename Value="buildmanager.pas"/>
@@ -833,7 +806,6 @@
       <Unit130>
         <Filename Value="componentpalette.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ComponentPalette"/>
       </Unit130>
       <Unit131>
         <Filename Value="codecontextform.pas"/>
