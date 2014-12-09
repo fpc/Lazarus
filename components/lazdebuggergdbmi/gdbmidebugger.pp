@@ -2656,9 +2656,13 @@ begin
     if FTheDebugger.FAsyncModeEnabled and FGotStopped then begin
       // There should not be a "(gdb) ",
       // but some versions print it, as they run none async, after accepting "run &"
-      S := FTheDebugger.ReadLine(50);
-      if (S <> '(gdb) ') then continue; // since no command was sent, we can loop
-      break;
+      S := FTheDebugger.ReadLine(True, 50);
+      if FTheDebugger.ReadLineTimedOut then break;
+      if (S = '(gdb) ') then begin
+        FTheDebugger.ReadLine(50); // read the extra "(gdb) "
+        break;
+      end;
+      // since no command was sent, we can loop
     end;
 
   end;
