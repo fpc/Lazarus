@@ -58,11 +58,12 @@ type
     procedure WriteXMLFile(ADoc: TXMLDocument; const AFileName: String); virtual;
     procedure FreeDoc; virtual;
     procedure SetPathNodeCache(Index: integer; Node: TDomNode);
-    function GetPathNodeCache(Index: integer): TDomNode;
+    function GetPathNodeCache(Index: integer): TDomNode; inline;
     procedure InvalidateCacheTilEnd(StartIndex: integer);
     function InternalFindNode(const APath: String; PathLen: integer;
                               CreateNodes: boolean = false): TDomNode;
     procedure InternalCleanNode(Node: TDomNode);
+    function FindChildNode(Parent, StartChild: TDomNode; const aName: string): TDomNode;
   public
     constructor Create(AOwner: TComponent); override; overload;
     constructor Create(const AFilename: String); overload; // create and load
@@ -123,6 +124,15 @@ type
 // ===================================================================
 
 implementation
+
+// inline
+function TXMLConfig.GetPathNodeCache(Index: integer): TDomNode;
+begin
+  if Index<length(fPathNodeCache) then
+    Result:=fPathNodeCache[Index]
+  else
+    Result:=nil;
+end;
 
 constructor TXMLConfig.Create(const AFilename: String);
 begin
@@ -458,21 +468,16 @@ var
 begin
   OldLength:=length(fPathNodeCache);
   if OldLength<=Index then begin
-    NewSize:=OldLength*2+4;
+    if OldLength<8 then
+      NewSize:=8
+    else
+      NewSize:=OldLength*2;
     if NewSize<Index then NewSize:=Index;
     SetLength(fPathNodeCache,NewSize);
     for i:=OldLength to length(fPathNodeCache)-1 do
       fPathNodeCache[i]:=nil;
   end;
   fPathNodeCache[Index]:=Node;
-end;
-
-function TXMLConfig.GetPathNodeCache(Index: integer): TDomNode;
-begin
-  if Index<length(fPathNodeCache) then
-    Result:=fPathNodeCache[Index]
-  else
-    Result:=nil;
 end;
 
 procedure TXMLConfig.InvalidateCacheTilEnd(StartIndex: integer);
@@ -520,9 +525,9 @@ begin
     if (Result=nil) or (length(NdName)<>NameLen)
     or not CompareMem(PChar(NdName),@APath[StartPos],NameLen) then begin
       // different path => search
-      InvalidateCacheTilEnd(PathIndex);
       NodePath:=copy(APath,StartPos,NameLen);
-      Result:=Parent.FindNode(NodePath);
+      Result:=FindChildNode(Parent,Result,NodePath);
+      InvalidateCacheTilEnd(PathIndex);
       if Result=nil then begin
         if not CreateNodes then exit;
         // create missing node
@@ -552,6 +557,42 @@ begin
     Node:=ParentNode;
     FModified := True;
   end;
+end;
+
+function TXMLConfig.FindChildNode(Parent, StartChild: TDomNode;
+  const aName: string): TDomNode;
+var
+  Start: boolean;
+  PrevChild: TDOMNode;
+  NextChild: TDOMNode;
+begin
+  if StartChild<>nil then begin
+    // usually the config is written in a similar order as it is read
+    // => the next config node is probably near the last node (StartChild)
+    // -> search beginning at StartChild in both directions
+    if StartChild.NodeName=aName then
+      exit(StartChild);
+    Start:=false;
+    repeat
+      if Start then
+        NextChild:=StartChild.NextSibling;
+      if (NextChild<>nil) then begin
+        if (NextChild.NodeName=aName) then
+          exit(NextChild);
+        NextChild:=NextChild.NextSibling;
+      end;
+      if Start then
+        PrevChild:=StartChild.PreviousSibling;
+      if (PrevChild<>nil) then begin
+        if (PrevChild.NodeName=aName) then
+          exit(PrevChild);
+        PrevChild:=PrevChild.PreviousSibling;
+      end;
+      Start:=true;
+    until (PrevChild=nil) and (NextChild=nil);
+    Result:=nil;
+  end else
+    Result:=Parent.FindNode(aName);
 end;
 
 constructor TXMLConfig.Create(AOwner: TComponent);
