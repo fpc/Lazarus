@@ -1720,13 +1720,13 @@ begin
   FPackage.ShortenFilename(TmpFilename,true);
   XMLConfig.SetDeleteValue(Path+'Filename/Value',
                            SwitchPathDelims(TmpFilename,UsePathDelim),'');
+  XMLConfig.SetDeleteValue(Path+'Type/Value',PkgFileTypeIdents[FileType],
+                           PkgFileTypeIdents[pftUnit]);
   XMLConfig.SetDeleteValue(Path+'HasRegisterProc/Value',HasRegisterProc,
                            false);
   XMLConfig.SetDeleteValue(Path+'AddToUsesPkgSection/Value',AddToUsesPkgSection,
                            FileType in PkgFileUnitTypes);
   XMLConfig.SetDeleteValue(Path+'DisableI18NForLFM/Value',DisableI18NForLFM,false);
-  XMLConfig.SetDeleteValue(Path+'Type/Value',PkgFileTypeIdents[FileType],
-                           PkgFileTypeIdents[pftUnit]);
   XMLConfig.SetDeleteValue(Path+'UnitName/Value',FUnitName,'');
   XMLConfig.SetDeleteValue(Path+'ResourceBaseClass/Value',
                            PFComponentBaseClassNames[FResourceBaseClass],
@@ -2864,6 +2864,10 @@ begin
   FAuthor:=XMLConfig.GetValue(Path+'Author/Value','');
   FAutoUpdate:=NameToAutoUpdatePolicy(
                                 XMLConfig.GetValue(Path+'AutoUpdate/Value',''));
+  if FileVersion<2 then
+    CompilerOptions.LoadFromXMLConfig(XMLConfig,'CompilerOptions/')
+  else
+    CompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
   FDescription:=XMLConfig.GetValue(Path+'Description/Value','');
   FLicense:=XMLConfig.GetValue(Path+'License/Value','');
   PkgVersionLoadFromXMLConfig(FVersion,XMLConfig,Path+'Version/',FileVersion);
@@ -2892,10 +2896,6 @@ begin
   LoadFlags(Path);
   LoadPkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires,Self,false,false);
-  if FileVersion<2 then
-    CompilerOptions.LoadFromXMLConfig(XMLConfig,'CompilerOptions/')
-  else
-    CompilerOptions.LoadFromXMLConfig(XMLConfig,Path+'CompilerOptions/');
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/',
                                   PathDelimChanged);
   fPublishOptions.LoadFromXMLConfig(XMLConfig,Path+'PublishOptions/',
@@ -2947,6 +2947,8 @@ begin
   XMLConfig.SetValue(Path+'Version',LazPkgXMLFileVersion);
   XMLConfig.SetDeleteValue(Path+'PathDelim/Value',PathDelimSwitchToDelim[UsePathDelim],'/');
   XMLConfig.SetDeleteValue(Path+'Name/Value',Name,'');
+  XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
+                           LazPackageTypeIdents[lptRunTime]);
   XMLConfig.SetDeleteValue(Path+'AddToProjectUsesSection/Value',
                            FAddToProjectUsesSection,false);
   XMLConfig.SetDeleteValue(Path+'Author/Value',FAuthor,'');
@@ -2967,8 +2969,6 @@ begin
   XMLConfig.SetDeleteValue(Path+'i18n/OutDir/Value',f(FPOOutputDirectory), '');
   XMLConfig.SetDeleteValue(Path+'i18n/EnableI18NForLFM/Value', EnableI18NForLFM, false);
 
-  XMLConfig.SetDeleteValue(Path+'Type/Value',LazPackageTypeIdents[FPackageType],
-                           LazPackageTypeIdents[lptRunTime]);
   SavePkgDependencyList(XMLConfig,Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires,UsePathDelim);
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/',UsePathDelim);
