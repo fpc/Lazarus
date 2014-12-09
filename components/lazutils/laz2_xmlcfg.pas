@@ -572,7 +572,7 @@ begin
     // -> search beginning at StartChild in both directions
     if StartChild.NodeName=aName then
       exit(StartChild);
-    Start:=false;
+    Start:=true;
     repeat
       if Start then
         NextChild:=StartChild.NextSibling;
