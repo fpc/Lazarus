@@ -93,8 +93,8 @@ type
     function FindFamily(AName: string): TFamilyCollectionItem;
     function FindFont(AFileName: string): TFontCollectionItem;
 
-    function CompareFontFileName({%H-} Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
-    function CompareFamilyName({%H-} Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
+    function CompareFontFileName({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
+    function CompareFamilyName({%H-}Tree: TAvgLvlTree; Data1, Data2: Pointer): integer;
 
   protected
     function GetFont(AFileName: string): TCustomFontCollectionItem; override;
