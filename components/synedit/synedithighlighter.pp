@@ -1756,14 +1756,16 @@ procedure TSynCustomHighlighter.DetachFromLines(Lines: TSynEditStringsBase);
 var
   r: TSynHighlighterRangeList;
 begin
-  //if Lines = CurrentLines then
-  //  CurrentLines := nil;
   r := TSynHighlighterRangeList(Lines.Ranges[GetRangeIdentifier]);
   if not assigned(r) then exit;
   r.DecRefCount;
   BeforeDetachedFromRangeList(r); // RefCount already decreased
   if r.RefCount = 0 then begin
     Lines.Ranges[GetRangeIdentifier] := nil;
+    if FCurrentRanges = r then begin
+      FCurrentRanges := nil;
+      FCurrentLines := nil;
+    end;
     r.Free;
   end;
   FKnownLines.Remove(Lines);
