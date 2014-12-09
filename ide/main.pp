@@ -11467,15 +11467,24 @@ begin
 end;
 
 procedure TMainIDE.OnScreenChangedForm(Sender: TObject; Form: TCustomForm);
+var
+  aForm: TForm;
 begin
-  if (Screen.ActiveForm<>MainIDEBar) and (WindowMenuActiveForm<>Screen.ActiveForm) then
-    WindowMenuActiveForm := Screen.ActiveForm;
+  aForm:=Screen.ActiveForm;
+  if (aForm<>MainIDEBar)
+  and (Screen.GetCurrentModalForm=nil)
+  and (aForm<>WindowMenuActiveForm) then
+    WindowMenuActiveForm := aForm;
 end;
 
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
 begin
   HiddenWindowsOnRun.Remove(AForm);
   LastActivatedWindows.Remove(AForm);
+  if WindowMenuActiveForm=AForm then
+    WindowMenuActiveForm:=nil;
+  if fLastCompPaletteForm=AForm then
+    fLastCompPaletteForm:=nil;
 end;
 
 procedure TMainIDE.OnRemoteControlTimer(Sender: TObject);
