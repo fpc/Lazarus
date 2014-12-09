@@ -8620,7 +8620,7 @@ begin
     else begin
       if DebugProcess = nil
       then MessageDlg('Debugger', 'Failed to create debug process for unknown reason', mtError, [mbOK], 0)
-      else MessageDlg('Debugger', Format('Failed to create debug process: %s', [ReadLine]), mtError, [mbOK], 0);
+      else MessageDlg('Debugger', Format('Failed to create debug process: %s', [ReadLine(50)]), mtError, [mbOK], 0);
       SetState(dsError);
     end;
 
@@ -8706,7 +8706,7 @@ begin
   // Get initial debugger lines
   S := '';
   Line := ReadLine;
-  while DebugProcessRunning and (Line <> '(gdb) ') do
+  while DebugProcessRunning and (Line <> '(gdb) ') and (State <> dsError) do
   begin
     if Line <> ''
     then

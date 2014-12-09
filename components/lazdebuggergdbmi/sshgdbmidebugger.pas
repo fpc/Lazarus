@@ -204,7 +204,7 @@ function TSSHGDBMIDebugger.ParseInitialization: Boolean;
   // returns True if we should process it
   // returns False if it is the gdb prompt
   begin
-    ALine := ReadLine(True);
+    ALine := ReadLine(True, 250);
     Result := Pos('(gdb)', ALine) = 0;
     if Result
     then ALine := StripLN(ReadLine);
@@ -215,7 +215,9 @@ begin
   Result := False;
   
   // strip leading empty lines
-  while CheckReadLine(Line) and (Line = '') do;
+  while CheckReadLine(Line) and (Line = '') and
+        (State <> dsError) and (not ReadLineTimedOut) and DebugProcessRunning
+  do ;
 
   // succesfull login ?
   while Pos('try again', Line) > 0 do CheckReadLine(Line);
@@ -238,7 +240,8 @@ begin
 *)
 
   ExtraText := '';
-  while CheckReadLine(Line) do
+  while CheckReadLine(Line) and (State <> dsError) and (not ReadLineTimedOut) and DebugProcessRunning
+  do
   begin
     // No prompt yet
     if ExtraText = ''
