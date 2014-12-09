@@ -534,6 +534,8 @@ function TestFormStreamFormat(Stream: TStream): TLRSStreamOriginalFormat;
 procedure FormDataToText(FormStream, TextStream: TStream;
   aFormat: TLRSStreamOriginalFormat = sofUnknown);
 
+function FindResourceLFM(ResName: string): HRSRC;
+
 procedure DefineRectProperty(Filer: TFiler; const Name: string;
                              ARect, DefaultRect: PRect);
 
@@ -586,7 +588,6 @@ procedure WriteLRSReversedWords(s: TStream; p: Pointer; Count: integer);
 
 function FloatToLFMStr(const Value: extended; Precision, Digits: Integer
                        ): string;
-
 
 function CompareLRPositionLinkWithLFMPosition(Item1, Item2: Pointer): integer;
 function CompareLRPositionLinkWithLRSPosition(Item1, Item2: Pointer): integer;
@@ -792,6 +793,21 @@ function InitResourceComponent(Instance: TComponent;
 begin
   Result := InitLazResourceComponent(Instance, RootAncestor);
 end;
+
+function FindResourceLFM(ResName: string): HRSRC;
+{$if (FPC_FULLVERSION>=20701) and defined(WinCE)}
+var
+  u: UnicodeString;
+begin
+  u:=ResName;
+  Result := FindResource(HInstance,PWideChar(u),Windows.RT_RCDATA);
+end;
+{$else}
+begin
+  Result := FindResource(HInstance,PChar(ResName),
+    {$if (FPC_FULLVERSION>=20701) and defined(Windows)}Windows.{$endif}RT_RCDATA);
+end;
+{$endif}
 
 procedure DefineRectProperty(Filer: TFiler; const Name: string; ARect,
   DefaultRect: PRect);
@@ -3089,9 +3105,7 @@ function InitLazResourceComponent(Instance: TComponent;
     {$ifdef UseRES}
     if Stream = nil then
     begin
-      FPResource := FindResource(HInstance, PChar(ResName),
-        {$IF (FPC_FULLVERSION>=20701) and defined(Windows)}Windows.{$ENDIF}RT_RCDATA
-        );
+      FPResource := FindResourceLFM(ResName);
       if FPResource <> 0 then
         Stream := TLazarusResourceStream.CreateFromHandle(HInstance, FPResource);
     end;
