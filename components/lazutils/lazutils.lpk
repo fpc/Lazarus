@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="LazUtils"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Lazarus Team"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -15,7 +16,7 @@
     <Description Value="Useful units for Lazarus packages."/>
     <License Value="Modified LGPL-2"/>
     <Version Major="1"/>
-    <Files Count="74">
+    <Files Count="75">
       <Item1>
         <Filename Value="laz2_dom.pas"/>
         <UnitName Value="Laz2_DOM"/>
@@ -90,7 +91,7 @@
       </Item18>
       <Item19>
         <Filename Value="paswstring.pas"/>
-        <UnitName Value="paswstring"/>
+        <UnitName Value="PasWString"/>
       </Item19>
       <Item20>
         <Filename Value="fileutil.pas"/>
@@ -313,13 +314,16 @@
         <Filename Value="fpcadds.pas"/>
         <UnitName Value="FPCAdds"/>
       </Item74>
+      <Item75>
+        <Filename Value="lazutilities.pas"/>
+        <UnitName Value="lazutilities"/>
+      </Item75>
     </Files>
     <LazDoc Paths="../../docs/xml/lazutils"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="FCL"/>

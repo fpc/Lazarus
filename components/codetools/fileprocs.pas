@@ -39,8 +39,8 @@ uses
   {$IFDEF Windows}
   Windows,
   {$ENDIF}
-  Classes, SysUtils, LazUTF8, LazDbgLog, LazFileCache, LazFileUtils,
-  LazUTF8Classes, LazLogger, AVL_Tree, CodeToolsStrConsts;
+  Classes, SysUtils, LazUtilities, LazUTF8, LazDbgLog, LazFileCache,
+  LazFileUtils, LazUTF8Classes, LazLogger, AVL_Tree, CodeToolsStrConsts;
 
 type
   TFPCStreamSeekType = int64;
@@ -224,16 +224,16 @@ function GetEnvironmentVariableUTF8(const EnvVar: String): String; inline;
 
 procedure InvalidateFileStateCache(const Filename: string = ''); inline;
 
-// basic utility -> should go to RTL
+// basic utility -> moved to LazUtilities
 function ComparePointers(p1, p2: Pointer): integer; inline;
 procedure MergeSort(List: PPointer; ListLength: PtrInt;
-                    Compare: TListSortCompare);
+                    const Compare: TListSortCompare); inline;
 function GetNextDelimitedItem(const List: string; Delimiter: char;
-                              var Position: integer): string;
+                              var Position: integer): string; inline;
 function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
-                          ): boolean;
+                          ): boolean; inline;
 function FindNextDelimitedItem(const List: string; Delimiter: char;
-                               var Position: integer; FindItem: string): string;
+                               var Position: integer; FindItem: string): string; inline;
 function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
 
 const DateAsCfgStrFormat='YYYYMMDD';
@@ -1815,112 +1815,31 @@ end;
 
 function ComparePointers(p1, p2: Pointer): integer;
 begin
-  if p1>p2 then
-    Result:=1
-  else if p1<p2 then
-    Result:=-1
-  else
-    Result:=0;
+  Result:=LazUtilities.ComparePointers(p1,p2);
 end;
 
 procedure MergeSort(List: PPointer; ListLength: PtrInt;
-  Compare: TListSortCompare);
-var
-  MergeList: PPointer;
-
-  procedure Merge(Pos1, Pos2, Pos3: PtrInt);
-  // merge two sorted arrays
-  // the first array ranges Pos1..Pos2-1, the second ranges Pos2..Pos3
-  var Src1Pos,Src2Pos,DestPos,cmp,i:PtrInt;
-  begin
-    while (Pos3>=Pos2) and (Compare(List[Pos2-1],List[Pos3])<=0) do
-      dec(Pos3);
-    if (Pos1>=Pos2) or (Pos2>Pos3) then exit;
-    Src1Pos:=Pos2-1;
-    Src2Pos:=Pos3;
-    DestPos:=Pos3;
-    while (Src2Pos>=Pos2) and (Src1Pos>=Pos1) do begin
-      cmp:=Compare(List[Src1Pos],List[Src2Pos]);
-      if cmp>0 then begin
-        MergeList[DestPos]:=List[Src1Pos];
-        dec(Src1Pos);
-      end else begin
-        MergeList[DestPos]:=List[Src2Pos];
-        dec(Src2Pos);
-      end;
-      dec(DestPos);
-    end;
-    while Src2Pos>=Pos2 do begin
-      MergeList[DestPos]:=List[Src2Pos];
-      dec(Src2Pos);
-      dec(DestPos);
-    end;
-    for i:=DestPos+1 to Pos3 do
-      List[i]:=MergeList[i];
-  end;
-
-  procedure Sort(const Pos1, Pos2: PtrInt);
-  // sort List from Pos1 to Pos2, usig MergeList as temporary buffer
-  var cmp, mid: PtrInt;
-  begin
-    if Pos1>=Pos2 then begin
-      // one element is always sorted -> nothing to do
-    end else if Pos1+1=Pos2 then begin
-      // two elements can be sorted easily
-      cmp:=Compare(List[Pos1],List[Pos2]);
-      if cmp>0 then begin
-        MergeList[Pos1]:=List[Pos1];
-        List[Pos1]:=List[Pos2];
-        List[Pos2]:=MergeList[Pos1];
-      end;
-    end else begin
-      mid:=(Pos1+Pos2) shr 1;
-      Sort(Pos1,mid);
-      Sort(mid+1,Pos2);
-      Merge(Pos1,mid+1,Pos2);
-    end;
-  end;
-
-// sort ascending
+  const Compare: TListSortCompare);
 begin
-  if ListLength<=1 then exit;
-  GetMem(MergeList,SizeOf(Pointer)*ListLength);
-  try
-    Sort(0,ListLength-1);
-  finally
-    FreeMem(MergeList);
-  end;
+  LazUtilities.MergeSort(List,ListLength,Compare);
 end;
 
 function GetNextDelimitedItem(const List: string; Delimiter: char;
   var Position: integer): string;
-var
-  StartPos: LongInt;
 begin
-  StartPos:=Position;
-  while (Position<=length(List)) and (List[Position]<>Delimiter) do
-    inc(Position);
-  Result:=copy(List,StartPos,Position-StartPos);
-  if Position<=length(List) then inc(Position); // skip Delimiter
+  Result:=LazUtilities.GetNextDelimitedItem(List,Delimiter,Position);
 end;
 
 function HasDelimitedItem(const List: string; Delimiter: char; FindItem: string
   ): boolean;
-var
-  p: Integer;
 begin
-  p:=1;
-  Result:=FindNextDelimitedItem(List,Delimiter,p,FindItem)<>'';
+  Result:=LazUtilities.HasDelimitedItem(List,Delimiter,FindItem);
 end;
 
 function FindNextDelimitedItem(const List: string; Delimiter: char;
   var Position: integer; FindItem: string): string;
 begin
-  while Position<=length(List) do begin
-    Result:=GetNextDelimitedItem(List,Delimiter,Position);
-    if Result=FindItem then exit;
-  end;
-  Result:='';
+  Result:=LazUtilities.FindNextDelimitedItem(List,Delimiter,Position,FindItem);
 end;
 
 function AVLTreeHasDoubles(Tree: TAVLTree): TAVLTreeNode;
@@ -2403,13 +2322,13 @@ end;
 
 function CompareCTLineInfoCacheItems(Data1, Data2: Pointer): integer;
 begin
-  Result:=ComparePointers(PCTLineInfoCacheItem(Data1)^.Addr,
+  Result:=LazUtilities.ComparePointers(PCTLineInfoCacheItem(Data1)^.Addr,
                           PCTLineInfoCacheItem(Data2)^.Addr);
 end;
 
 function CompareAddrWithCTLineInfoCacheItem(Addr, Item: Pointer): integer;
 begin
-  Result:=ComparePointers(Addr,PCTLineInfoCacheItem(Item)^.Addr);
+  Result:=LazUtilities.ComparePointers(Addr,PCTLineInfoCacheItem(Item)^.Addr);
 end;
 
 function FileAgeToStr(aFileAge: longint): string;

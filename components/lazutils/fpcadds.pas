@@ -17,7 +17,7 @@ unit FPCAdds;
 {$mode objfpc}{$H+}{$inline on}
 
 {$IF defined(EnableUTF8RTL) and (FPC_FULLVERSION<20701)}
-  {$error UTF8 RTl requires fpc 2.7.1+}
+  {$error UTF8 RTL requires fpc 2.7.1+}
 {$ENDIF}
 
 interface
@@ -25,11 +25,10 @@ interface
 uses
   Classes, SysUtils;
 
-// current TStream calculates in int64, old in longint
 type
   TStreamSeekType = int64;
-  TMemStreamSeekType = integer;
-  TCompareMemSize = integer;
+  TMemStreamSeekType = PtrInt;
+  TCompareMemSize = PtrUInt;
   PHandle = ^THandle;
 
 function StrToWord(const s: string): word;
