@@ -218,7 +218,6 @@ begin
     CurDir := GetCurrentDirUtf8;
     if ((Length(Fn) > 1) and (Fn[1] = '~') and (Fn[2] = '/')) or (Fn = '~') then
     begin
-      {$Hint use GetEnvironmentVariableUTF8}
       HomeDir := SysToUtf8(GetEnvironmentVariable('HOME'));
       if not FileNameIsUnixAbsolute(HomeDir) then
         HomeDir := ExpandFileNameUtf8(HomeDir,'');
