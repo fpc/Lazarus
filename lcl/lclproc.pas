@@ -355,7 +355,7 @@ procedure UTF8Insert(const source: String; var s: string; StartCharIndex: PtrInt
 function UTF8LowerCase(const s: String): String;
 function UTF8UpperCase(const s: String): String;
 function FindInvalidUTF8Character(p: PChar; Count: PtrInt;
-                                  StopOnNonASCII: Boolean = false): PtrInt; inline;
+                                  StopOnNonASCII: Boolean = true): PtrInt; inline;
 function ValidUTF8String(const s: String): String; inline;
 
 procedure AssignUTF8ListToAnsi(UTF8List, AnsiList: TStrings);

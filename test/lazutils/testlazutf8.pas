@@ -5,6 +5,7 @@
  Test specific with:
      ./runtests --format=plain --suite=TestUTF8Trim
      ./runtests --format=plain --suite=TestUTF8Pos
+     ./runtests --format=plain --suite=TestFindInvalidUTF8
 }
 unit TestLazUTF8;
 
@@ -13,7 +14,7 @@ unit TestLazUTF8;
 interface
 
 uses
-  Classes, SysUtils, fpcunit, testglobals, LazUTF8;
+  Classes, SysUtils, fpcunit, testglobals, LazUTF8, LazLoggerBase;
 
 type
 
@@ -24,6 +25,7 @@ type
   published
     procedure TestUTF8Trim;
     procedure TestUTF8Pos;
+    procedure TestFindInvalidUTF8;
   end;
 
 implementation
@@ -52,6 +54,53 @@ begin
   AssertEquals('Skip first occurence',4,UTF8Pos('ab','abcabc',2));
   AssertEquals('Not found',0,UTF8Pos('abc'#0,'abcabc'));
   AssertEquals('Check #0',2,UTF8Pos('bc'#0,'abc'#0'abc'));
+end;
+
+procedure TTestLazUTF8.TestFindInvalidUTF8;
+
+  procedure t(const s: string; Expected: PtrInt; const Title: string);
+  var
+    Actual: PtrInt;
+  begin
+    Actual:=FindInvalidUTF8Character(PChar(s),length(s));
+    AssertEquals(Title+': '+dbgMemRange(Pointer(s),length(s)),Expected,Actual);
+  end;
+
+begin
+  t('',-1,'empty');
+  t('a',-1,'');
+  t('a'#0,-1,'a with #0');
+  t(#0'a',-1,'#0 with a');
+  t(#128,0,'gap value 128');
+  t(#191,0,'gap value 192');
+  // 1 byte UTF-8
+  t(UnicodeToUTF8(0),-1,'unicode(0)');
+  t(UnicodeToUTF8(1),-1,'unicode(1)');
+  t(UnicodeToUTF8(65),-1,'unicode(65)');
+  t(UnicodeToUTF8($7f),-1,'unicode($7f)');
+  // 2 bytes UTF-8
+  t(UnicodeToUTF8($80),-1,'unicode($80)');
+  t(UnicodeToUTF8($7ff),-1,'unicode($7ff)');
+  // 3 bytes UTF-8
+  t(UnicodeToUTF8($800),-1,'unicode($800)');
+  t(UnicodeToUTF8($ffff),-1,'unicode($ffff)');
+  // 4 bytes UTF-8
+  t(UnicodeToUTF8($10000),-1,'unicode($10000)');
+  t(UnicodeToUTF8($10ffff),-1,'unicode($10ffff)');
+  t(#$c0#0,0,'invalid second byte of 2 byte');
+  t(#$e0#0,0,'invalid second byte of 3 byte');
+  t(#$e0#$80#0,0,'invalid third byte of 3 byte');
+  t(#$f0#0,0,'invalid second byte of 4 byte');
+  t(#$f0#$80#0,0,'invalid third byte of 4 byte');
+  t(#$f0#$80#$80#0,0,'// invalid fourth byte of 4 byte');
+  t(#$c0#$80,0,'invalid: ascii encoded as 2 byte');
+  t(#$c0#$8f,0,'invalid: ascii encoded as 2 byte');
+  t(#$c1#$80,0,'invalid: ascii encoded as 2 byte');
+  t(#$c1#$bf,0,'invalid: ascii encoded as 2 byte');
+  t(#$e0#$80#$80,0,'invalid: 0 encoded as 3 byte');
+  t(#$e0#$9f#$bf,0,'invalid: $7ff encoded as 3 byte');
+  t(#$f0#$80#$80#$80,0,'invalid: 0 encoded as 4 byte');
+  t(#$f0#$8f#$bf#$bf,0,'invalid: $ffff encoded as 4 byte');
 end;
 
 initialization

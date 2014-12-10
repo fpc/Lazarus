@@ -467,7 +467,7 @@ Returns 0 if not found.
       </element>
       <!-- function Visibility: default -->
       <element name="ValidUTF8String">
-        <short/>
+        <short>Replace invalid UTF8 and replace #0..#31 characters with '#0'..'#31'</short>
         <descr/>
         <errors/>
         <seealso/>

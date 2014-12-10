@@ -1544,7 +1544,7 @@ var
 begin
   if AppNoExceptionMessages in FFlags then exit;
   Msg := E.Message;
-  if FindInvalidUTF8Character(PChar(Msg), Length(Msg), False) > 0 then
+  if FindInvalidUTF8Character(PChar(Msg), Length(Msg)) > 0 then
     Msg := AnsiToUtf8(Msg);
   if (Msg <> '') and (Msg[length(Msg)] <> '.') then Msg := Msg + '.';
   if (not Terminated) and (Self <> nil) and (AppInitialized in FFlags) then
