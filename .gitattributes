@@ -2048,6 +2048,7 @@ components/lazcontrols/lazcontrols.pas svneol=native#text/pascal
 components/lazcontrols/lazcontrols.res -text
 components/lazcontrols/lazctrls.bat svneol=native#text/plain
 components/lazcontrols/listfilteredit.pas svneol=native#text/plain
+components/lazcontrols/listviewfilteredit.pas svneol=native#text/pascal
 components/lazcontrols/lvlgraphctrl.pas svneol=native#text/plain
 components/lazcontrols/shortpathedit.pas svneol=native#text/plain
 components/lazcontrols/treefilteredit.pas svneol=native#text/plain
