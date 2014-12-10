@@ -490,7 +490,10 @@ begin
     if NewLength<Index then NewLength:=Index;
     SetLength(fPathNodeCache,NewLength);
     FillByte(fPathNodeCache[OldLength],SizeOf(TNodeCache)*(NewLength-OldLength),0);
-  end;
+  end else if fPathNodeCache[Index].Node=aNode then
+    exit
+  else
+    InvalidateCacheTilEnd(Index+1);
   with fPathNodeCache[Index] do begin
     Node:=aNode;
     ChildrenValid:=false;
@@ -544,12 +547,13 @@ begin
       // different path => search
       NodePath:=copy(APath,StartPos,NameLen);
       Result:=FindChildNode(PathIndex-1,NodePath);
-      InvalidateCacheTilEnd(PathIndex);
       if Result=nil then begin
         if not CreateNodes then exit;
         // create missing node
         Result:=Doc.CreateElement(NodePath);
         Parent.AppendChild(Result);
+        fPathNodeCache[PathIndex-1].ChildrenValid:=false;
+        InvalidateCacheTilEnd(PathIndex);
         if EndPos>PathLen then exit;
       end;
       SetPathNodeCache(PathIndex,Result);
