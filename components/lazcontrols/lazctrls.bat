@@ -1,1 +1,0 @@
-..\..\tools\lazres lazcontrols.res images\dividerbevel.png=tdividerbevel images\textnotebook.png=textendednotebook images\listfilteredit.png=tlistfilteredit images\treefilteredit.png=ttreefilteredit  images\tlvlgraphcontrol.png  images\shortpathedit.png=tshortpathedit  images\checkboxthemed.png=tcheckboxthemed

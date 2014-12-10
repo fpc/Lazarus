@@ -47,15 +47,19 @@ begin
     P.Options.Add('-Fu../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
     P.Options.Add('-Fu.');
     T:=P.Targets.AddUnit('lazcontrols.pas');
+    t.Dependencies.AddUnit('checkboxthemed');
     t.Dependencies.AddUnit('dividerbevel');
     t.Dependencies.AddUnit('extendednotebook');
     t.Dependencies.AddUnit('listfilteredit');
+    t.Dependencies.AddUnit('listviewfilteredit');
     t.Dependencies.AddUnit('treefilteredit');
     t.Dependencies.AddUnit('shortpathedit');
 
+    T:=P.Targets.AddUnit('checkboxthemed.pas');
     T:=P.Targets.AddUnit('dividerbevel.pas');
     T:=P.Targets.AddUnit('extendednotebook.pas');
     T:=P.Targets.AddUnit('listfilteredit.pas');
+    T:=P.Targets.AddUnit('listviewfilteredit.pas');
     T:=P.Targets.AddUnit('treefilteredit.pas');
     T:=P.Targets.AddUnit('shortpathedit.pas');
 

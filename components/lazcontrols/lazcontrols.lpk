@@ -18,46 +18,51 @@
     <Description Value="Some extra LCL controls needed by the IDE."/>
     <License Value="modified LGPL-2"/>
     <Version Major="1" Release="1"/>
-    <Files Count="8">
+    <Files Count="9">
       <Item1>
-        <Filename Value="dividerbevel.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="DividerBevel"/>
-      </Item1>
-      <Item2>
-        <Filename Value="extendednotebook.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="ExtendedNotebook"/>
-      </Item2>
-      <Item3>
-        <Filename Value="listfilteredit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="ListFilterEdit"/>
-      </Item3>
-      <Item4>
-        <Filename Value="treefilteredit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="TreeFilterEdit"/>
-      </Item4>
-      <Item5>
-        <Filename Value="shortpathedit.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="ShortPathEdit"/>
-      </Item5>
-      <Item6>
-        <Filename Value="lvlgraphctrl.pas"/>
-        <HasRegisterProc Value="True"/>
-        <UnitName Value="LvlGraphCtrl"/>
-      </Item6>
-      <Item7>
-        <Filename Value="extendedtabcontrols.pas"/>
-        <UnitName Value="ExtendedTabControls"/>
-      </Item7>
-      <Item8>
         <Filename Value="checkboxthemed.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="CheckBoxThemed"/>
+      </Item1>
+      <Item2>
+        <Filename Value="dividerbevel.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="DividerBevel"/>
+      </Item2>
+      <Item3>
+        <Filename Value="extendednotebook.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="ExtendedNotebook"/>
+      </Item3>
+      <Item4>
+        <Filename Value="listfilteredit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="ListFilterEdit"/>
+      </Item4>
+      <Item5>
+        <Filename Value="listviewfilteredit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="ListViewFilterEdit"/>
+      </Item5>
+      <Item6>
+        <Filename Value="treefilteredit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="TreeFilterEdit"/>
+      </Item6>
+      <Item7>
+        <Filename Value="shortpathedit.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="ShortPathEdit"/>
+      </Item7>
+      <Item8>
+        <Filename Value="lvlgraphctrl.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="LvlGraphCtrl"/>
       </Item8>
+      <Item9>
+        <Filename Value="extendedtabcontrols.pas"/>
+        <UnitName Value="ExtendedTabControls"/>
+      </Item9>
     </Files>
     <LazDoc Paths="docs"/>
     <Type Value="RunAndDesignTime"/>

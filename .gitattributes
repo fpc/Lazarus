@@ -2046,7 +2046,6 @@ components/lazcontrols/images/ttreefilteredit.png -text svneol=unset#image/png
 components/lazcontrols/lazcontrols.lpk svneol=native#text/xml
 components/lazcontrols/lazcontrols.pas svneol=native#text/pascal
 components/lazcontrols/lazcontrols.res -text
-components/lazcontrols/lazctrls.bat svneol=native#text/plain
 components/lazcontrols/listfilteredit.pas svneol=native#text/plain
 components/lazcontrols/listviewfilteredit.pas svneol=native#text/pascal
 components/lazcontrols/lvlgraphctrl.pas svneol=native#text/plain

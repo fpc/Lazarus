@@ -158,7 +158,7 @@ begin
     if not (Pass or Done) then
       Pass:=(Filter='') or (Pos(Filter,UTF8LowerCase(s))>0);
     if Pass then begin
-      i:=fSortedData.Count-1;
+      i:=fSortedData.Count-1;       // Always sort the data.
       while i>=0 do begin
         if CompareFNs(s,fSortedData[i])>=0 then break;
         dec(i);
