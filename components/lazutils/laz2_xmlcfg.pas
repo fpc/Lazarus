@@ -585,8 +585,6 @@ var
   l, r, m: Integer;
   cmp: Integer;
 begin
-  Result:=fPathNodeCache[PathIndex].Node.FindNode(aName);
-  exit;
   with fPathNodeCache[PathIndex] do begin
     if not ChildrenValid then begin
       // collect all children and sort
