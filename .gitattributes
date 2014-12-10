@@ -2033,13 +2033,16 @@ components/lazcontrols/dividerbevel.pas svneol=native#text/pascal
 components/lazcontrols/extendednotebook.pas svneol=native#text/pascal
 components/lazcontrols/extendedtabcontrols.pas svneol=native#text/pascal
 components/lazcontrols/fpmake.pp svneol=native#text/plain
-components/lazcontrols/images/checkboxthemed.png -text svneol=unset#image/png
-components/lazcontrols/images/dividerbevel.png -text
-components/lazcontrols/images/listfilteredit.png -text
-components/lazcontrols/images/shortpathedit.png -text svneol=unset#image/png
-components/lazcontrols/images/textnotebook.png -text
+components/lazcontrols/images/lazcontrols.bat svneol=native#text/plain
+components/lazcontrols/images/lazcontrols_list.txt svneol=native#text/plain
+components/lazcontrols/images/tcheckboxthemed.png -text svneol=unset#image/png
+components/lazcontrols/images/tdividerbevel.png -text
+components/lazcontrols/images/textendednotebook.png -text
+components/lazcontrols/images/tlistfilteredit.png -text
+components/lazcontrols/images/tlistviewfilteredit.png -text svneol=unset#image/png
 components/lazcontrols/images/tlvlgraphcontrol.png -text svneol=unset#image/png
-components/lazcontrols/images/treefilteredit.png -text svneol=unset#image/png
+components/lazcontrols/images/tshortpathedit.png -text svneol=unset#image/png
+components/lazcontrols/images/ttreefilteredit.png -text svneol=unset#image/png
 components/lazcontrols/lazcontrols.lpk svneol=native#text/xml
 components/lazcontrols/lazcontrols.pas svneol=native#text/pascal
 components/lazcontrols/lazcontrols.res -text
