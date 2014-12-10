@@ -1070,7 +1070,7 @@ begin
     for i:=0 to FSearchItems.Count-1 do begin
       Node:=THelpDBItem(FSearchItems[i]).Node;
       if (Node=nil) or (not Node.IDValid) then continue;
-      if AnsiCompareText(Node.ID,HelpKeyword)<>0 then continue;
+      if UTF8CompareText(Node.ID,HelpKeyword)<>0 then continue;
       CreateNodeQueryListAndAdd(Node,nil,ListOfNodes,true);
     end;
   end;
@@ -1092,7 +1092,7 @@ begin
     for i:=0 to FSearchItems.Count-1 do begin
       Node:=THelpDBItem(FSearchItems[i]).Node;
       if (Node=nil) or (not Node.IDValid) then continue;
-      if AnsiCompareText(Node.ID,HelpDirective)<>0 then continue;
+      if UTF8CompareText(Node.ID,HelpDirective)<>0 then continue;
       CreateNodeQueryListAndAdd(Node,nil,ListOfNodes,true);
     end;
   end;
@@ -1390,7 +1390,7 @@ end;
 function THelpDatabases.IndexOf(ID: THelpDatabaseID): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (AnsiCompareText(ID,Items[Result].ID)<>0) do
+  while (Result>=0) and (UTF8CompareText(ID,Items[Result].ID)<>0) do
     dec(Result);
 end;
 
