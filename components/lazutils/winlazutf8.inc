@@ -419,49 +419,22 @@ begin
   Result:=UTF8CompareText(U1,U2);
 end;
 
-function StrMaxLen(S: PChar; MaxLen: PtrUInt): PtrUInt;
+function UTF8StrLCompAnsiString(S1, S2: PChar; Count: PtrUInt): PtrInt;
 begin
-  Result:=0;
-  if S=nil then exit;
-  while (Result<MaxLen) and (S^<>#0) do begin
-    inc(S);
-    inc(Result);
-  end;
+  Result:=UTF8CompareStr(S1,Count,S2,Count);
 end;
 
-function UTF8StrLCompAnsiString(S1, S2: PChar; MaxLen: PtrUInt): PtrInt;
+function UTF8StrLICompAnsiString(S1, S2: PChar; Count: PtrUInt): PtrInt;
 var
-  Count1, Count2: PtrUInt;
-begin
-  Count1:=StrMaxLen(S1,MaxLen);
-  Count2:=StrMaxLen(S2,MaxLen);
-  Result:=UTF8CompareStr(S1,Count1,S2,Count2);
-end;
-
-function UTF8StrLICompAnsiString(S1, S2: PChar; MaxLen: PtrUInt): PtrInt;
-var
-  Count1, Count2, Count: PtrUInt;
   U1, U2: String;
 begin
-  Count1:=StrMaxLen(S1,MaxLen);
-  Count2:=StrMaxLen(S2,MaxLen);
-  if Count1<Count2 then
-    Count:=Count1
-  else
-    Count:=Count2;
   if Count>0 then begin
     SetLength(U1,Count);
     Move(S1^,PByte(U1)^,Count);
     SetLength(U2,Count);
     Move(S2^,PByte(U2)^,Count);
     Result:=UTF8CompareText(U1,U2);
-    if Result<>0 then exit;
-  end;
-  if Count1>Count2 then
-    Result:=1
-  else if Count1<Count2 then
-    Result:=-1
-  else
+  end else
     Result:=0;
 end;
 {$ENDIF}
@@ -501,7 +474,6 @@ begin
   widestringmanager.StrCompAnsiStringProc:=@UTF8StrCompAnsiString;
   widestringmanager.StrICompAnsiStringProc:=@UTF8StrICompAnsiString;
   widestringmanager.StrLCompAnsiStringProc:=@UTF8StrLCompAnsiString;
-  widestringmanager.StrLICompAnsiStringProc:=@UTF8StrLICompAnsiString;
   widestringmanager.StrLICompAnsiStringProc:=@UTF8StrLICompAnsiString;
   // Does anyone need these two?
   //widestringmanager.StrLowerAnsiStringProc;
