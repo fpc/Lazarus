@@ -612,7 +612,13 @@ begin
       end;
       SetLength(Children,aCount);
       if aCount>1 then
-        MergeSort(@Children[0],aCount,@CompareDomNodeNames); // soet ascending [0]<[1]
+        MergeSort(@Children[0],aCount,@CompareDomNodeNames); // sort ascending [0]<[1]
+      for m:=0 to aCount-2 do
+        if Children[m].NodeName=Children[m+1].NodeName then begin
+          // duplicate found: nodes with same name
+          // -> use only the first
+          Children[m+1]:=Children[m];
+        end;
       ChildrenValid:=true;
     end;
 

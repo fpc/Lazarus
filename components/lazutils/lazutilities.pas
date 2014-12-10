@@ -9,8 +9,11 @@ uses
 
 function ComparePointers(p1, p2: Pointer): integer; inline;
 
+{ MergeSort:
+  sort ascending, e.g. Compare(List[0],List[1])<0
+  keeping order (for each i<j and Compare(List[i],List[j])=0) }
 procedure MergeSort(List: PPointer; ListLength: PtrInt;
-                    const Compare: TListSortCompare); // sort ascending, e.g. Compare(List[0],List[1])<0
+                    const Compare: TListSortCompare);
 
 function GetNextDelimitedItem(const List: string; Delimiter: char;
                               var Position: integer): string;
