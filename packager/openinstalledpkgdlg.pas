@@ -31,9 +31,8 @@ unit OpenInstalledPkgDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls,
-  FileCtrl, Dialogs, LCLProc, ExtCtrls, ButtonPanel,
-  IDEHelpIntf, IDEWindowIntf, PackageIntf,
+  SysUtils, Forms, Controls, ComCtrls, StdCtrls, ExtCtrls, LCLProc, ButtonPanel,
+  IDEHelpIntf, IDEWindowIntf, PackageIntf, ListViewFilterEdit,
   PackageDefs, LazarusIDEStrConsts, PackageSystem;
 
 type
@@ -42,6 +41,7 @@ type
 
   TOpenLoadedPackagesDlg = class(TForm)
     ButtonPanel1: TButtonPanel;
+    FilterEdit: TListViewFilterEdit;
     PkgListView: TListView;
     HintMemo: TMemo;
     Splitter1: TSplitter;
@@ -50,10 +50,8 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure OpenButtonClick(Sender: TObject);
     procedure PkgListViewDblClick(Sender: TObject);
-    procedure PkgListViewSelectItem(Sender: TObject; Item: TListItem;
-      Selected: Boolean);
+    procedure PkgListViewSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
   private
-    function PkgStateToString(APackage: TLazPackage): string;
   public
     Package: TLazPackage;
     procedure UpdateSelection;
@@ -127,12 +125,9 @@ begin
 end;
 
 procedure TOpenLoadedPackagesDlg.OpenButtonClick(Sender: TObject);
-var
-  PkgName: String;
 begin
   if PkgListView.Selected=nil then exit;
-  PkgName:=PkgListView.Selected.Caption;
-  Package:=PackageGraph.FindPackageWithName(PkgName,nil);
+  Package:=PackageGraph.FindPackageWithName(PkgListView.Selected.Caption,nil);
   if Package=nil then
     ModalResult:=mrCancel
   else
@@ -147,7 +142,6 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self,450,450);
 
   with PkgListView do begin
-    ViewStyle:=vsReport;
     NewColumn:=Columns.Add;
     NewColumn.Caption:=lisOIPPackageName;
     NewColumn.Width:=150;
@@ -172,7 +166,7 @@ begin
   LazarusHelp.ShowHelpForIDEControl(Self);
 end;
 
-function TOpenLoadedPackagesDlg.PkgStateToString(APackage: TLazPackage): string;
+function PkgStateToString(APackage: TLazPackage): string;
   
   procedure AddState(const s: string);
   begin
@@ -198,30 +192,41 @@ begin
 end;
 
 procedure TOpenLoadedPackagesDlg.UpdatePackageList;
-var
-  Cnt: Integer;
-  i: Integer;
-  CurPkg: TLazPackage;
-  CurListItem: TListItem;
-begin
-  PkgListView.BeginUpdate;
-  Cnt:=PackageGraph.Count;
-  for i:=0 to Cnt-1 do begin
-    CurPkg:=PackageGraph[i];
-    if PkgListView.Items.Count>i then begin
-      CurListItem:=PkgListView.Items[i];
-      CurListItem.SubItems[0]:=CurPkg.Version.AsString;
-      CurListItem.SubItems[1]:=PkgStateToString(CurPkg);
-    end else begin
-      CurListItem:=PkgListView.Items.Add;
-      CurListItem.SubItems.Add(CurPkg.Version.AsString);
-      CurListItem.SubItems.Add(PkgStateToString(CurPkg));
-    end;
-    CurListItem.Caption:=CurPkg.Name;
+
+  procedure UpdateOnePackage(aPkg: TLazPackage);
+  var
+    Data: TStringArray;
+  begin
+    SetLength(Data, 3);
+    Data[0] := aPkg.Name;
+    Data[1] := aPkg.Version.AsString;
+    Data[2] := PkgStateToString(aPkg);
+    FilterEdit.Items.Add(Data);
   end;
-  PkgListView.AlphaSort;
-  PkgListView.EndUpdate;
+
+var
+  i: Integer;
+begin
+  FilterEdit.Items.Clear;
+  for i:=0 to PackageGraph.Count-1 do
+    UpdateOnePackage(PackageGraph[i]);
+  FilterEdit.InvalidateFilter;
+  //PkgListView.BeginUpdate;
+  //PkgListView.AlphaSort;
+  //PkgListView.EndUpdate;
 end;
+
+//if PkgListView.Items.Count>i then begin
+//  CurListItem:=PkgListView.Items[i];
+//  CurListItem.SubItems[0]:=CurPkg.Version.AsString;
+//  CurListItem.SubItems[1]:=PkgStateToString(CurPkg);
+//end else begin
+  //CurListItem:=PkgListView.Items.Add;
+  //CurListItem.SubItems.Add(CurPkg.Version.AsString);
+  //CurListItem.SubItems.Add(PkgStateToString(CurPkg));
+//end;
+//CurListItem.Caption:=CurPkg.Name;
+
 
 end.
 
