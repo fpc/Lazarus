@@ -1267,7 +1267,7 @@ begin
     if OldVer='' then
       OldVer:=SimpleFormat(lisPrior, [GetLazarusVersionString]);
     s:=SimpleFormat(lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe,
-      [GetLazarusVersionString, LineEnding+LineEnding, OldVer, LineEnding, GetPrimaryConfigPath] );
+      [GetLazarusVersionString, LineEnding+LineEnding, OldVer, LineEnding, GetPrimaryConfigPath+LineEnding] );
     if IsUpgrade then
       s+=lisTheOldConfigurationWillBeUpgraded
     else
