@@ -5931,6 +5931,10 @@ msgstr "Zavináč"
 msgid "Bracket"
 msgstr "Závorka"
 
+#: lazarusidestrconsts.liscodetoolsoptscaret
+msgid "Caret (^)"
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsoptscolon
 msgid "Colon"
 msgstr "Dvojtečka"
@@ -7515,6 +7519,14 @@ msgstr "Zakázat skupiny"
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
 msgstr "Zakázat I18N pro LFM"
+
+#: lazarusidestrconsts.lisdisableoptionxg
+msgid "Disable Option -Xg?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisableoptionxg2
+msgid "Disable option -Xg"
+msgstr ""
 
 #: lazarusidestrconsts.lisdisassassembler
 msgctxt "lazarusidestrconsts.lisdisassassembler"
@@ -13390,11 +13402,6 @@ msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
 msgstr "Text"
 
-#: lazarusidestrconsts.lispkgfiletypeunit
-msgctxt "lazarusidestrconsts.lispkgfiletypeunit"
-msgid "Unit"
-msgstr "Jednotka"
-
 #: lazarusidestrconsts.lispkgfiletypevirtualunit
 msgid "Virtual Unit"
 msgstr "Virtuální jednotka"
@@ -16100,6 +16107,10 @@ msgstr "The project uses target OS=%s and CPU=%s.%sThe system.ppu for this targe
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr "Projekt používá nové zdroje FPC, což vyžaduje alespoň FPC 2.4"
 
+#: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
+msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
+msgstr ""
+
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
 msgstr ""
@@ -16665,11 +16676,6 @@ msgstr "Velikost:"
 msgid "Type:"
 msgstr "Typ:"
 
-#: lazarusidestrconsts.lisuidunit
-msgctxt "lazarusidestrconsts.lisuidunit"
-msgid "Unit"
-msgstr "Jednotka"
-
 #: lazarusidestrconsts.lisuidyes
 msgid "yes"
 msgstr "ano"
@@ -17012,6 +17018,12 @@ msgstr "Odinstalování není možné"
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "Odinstalovat vybrané?"
+
+#: lazarusidestrconsts.lisunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisunit"
+msgid "Unit"
+msgstr "Jednotka"
 
 #: lazarusidestrconsts.lisunithaschangedsave
 msgid "Unit \"%s\" has changed. Save?"

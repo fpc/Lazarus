@@ -5988,6 +5988,10 @@ msgstr "アットマーク"
 msgid "Bracket"
 msgstr "括弧"
 
+#: lazarusidestrconsts.liscodetoolsoptscaret
+msgid "Caret (^)"
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsoptscolon
 msgid "Colon"
 msgstr "コロン"
@@ -7608,6 +7612,14 @@ msgstr "グループを無効に"
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
 msgstr "LFMの国際化を無効化"
+
+#: lazarusidestrconsts.lisdisableoptionxg
+msgid "Disable Option -Xg?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisableoptionxg2
+msgid "Disable option -Xg"
+msgstr ""
 
 #: lazarusidestrconsts.lisdisassassembler
 msgctxt "lazarusidestrconsts.lisdisassassembler"
@@ -13493,11 +13505,6 @@ msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
 msgstr "テキスト"
 
-#: lazarusidestrconsts.lispkgfiletypeunit
-msgctxt "lazarusidestrconsts.lispkgfiletypeunit"
-msgid "Unit"
-msgstr "ユニット"
-
 #: lazarusidestrconsts.lispkgfiletypevirtualunit
 msgid "Virtual Unit"
 msgstr "仮想ユニット"
@@ -16335,6 +16342,10 @@ msgstr "プロジェクトは、 ターゲット OS=%s と CPU=%s を使って�
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr "プロジェクトは、新しいFPCリソースを使っています。 少なくともFPC 2.4を必要とします。"
 
+#: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
+msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
+msgstr ""
+
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
 msgstr ""
@@ -16919,11 +16930,6 @@ msgstr "サイズ"
 msgid "Type:"
 msgstr "タイプ:"
 
-#: lazarusidestrconsts.lisuidunit
-msgctxt "lazarusidestrconsts.lisuidunit"
-msgid "Unit"
-msgstr "ユニット"
-
 #: lazarusidestrconsts.lisuidyes
 msgid "yes"
 msgstr "はい"
@@ -17319,6 +17325,12 @@ msgstr "アンインストールできません"
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "選択対象をアンインストール"
+
+#: lazarusidestrconsts.lisunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisunit"
+msgid "Unit"
+msgstr "ユニット"
 
 #: lazarusidestrconsts.lisunithaschangedsave
 #, fuzzy,badformat

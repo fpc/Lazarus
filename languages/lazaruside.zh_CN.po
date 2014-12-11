@@ -6247,6 +6247,10 @@ msgstr ""
 msgid "Bracket"
 msgstr "括号"
 
+#: lazarusidestrconsts.liscodetoolsoptscaret
+msgid "Caret (^)"
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsoptscolon
 msgid "Colon"
 msgstr "冒号"
@@ -7865,6 +7869,14 @@ msgstr ""
 
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisableoptionxg
+msgid "Disable Option -Xg?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisableoptionxg2
+msgid "Disable option -Xg"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisassassembler
@@ -14067,11 +14079,6 @@ msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
 msgstr "文本"
 
-#: lazarusidestrconsts.lispkgfiletypeunit
-msgctxt "lazarusidestrconsts.lispkgfiletypeunit"
-msgid "Unit"
-msgstr "单元"
-
 #: lazarusidestrconsts.lispkgfiletypevirtualunit
 msgid "Virtual Unit"
 msgstr "虚单元"
@@ -16943,6 +16950,10 @@ msgstr ""
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr ""
 
+#: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
+msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
+msgstr ""
+
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
 msgstr ""
@@ -17525,11 +17536,6 @@ msgstr "大小:"
 msgid "Type:"
 msgstr "类型:"
 
-#: lazarusidestrconsts.lisuidunit
-msgctxt "lazarusidestrconsts.lisuidunit"
-msgid "Unit"
-msgstr "单元"
-
 #: lazarusidestrconsts.lisuidyes
 msgid "yes"
 msgstr "是"
@@ -17915,6 +17921,12 @@ msgstr ""
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "卸载所选"
+
+#: lazarusidestrconsts.lisunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisunit"
+msgid "Unit"
+msgstr "单元"
 
 #: lazarusidestrconsts.lisunithaschangedsave
 #, fuzzy,badformat

@@ -5912,6 +5912,10 @@ msgstr "Arobase"
 msgid "Bracket"
 msgstr "Parenthèse"
 
+#: lazarusidestrconsts.liscodetoolsoptscaret
+msgid "Caret (^)"
+msgstr ""
+
 #: lazarusidestrconsts.liscodetoolsoptscolon
 msgid "Colon"
 msgstr "Deux-points"
@@ -7496,6 +7500,14 @@ msgstr ""
 #: lazarusidestrconsts.lisdisablei18nforlfm
 msgid "Disable I18N for LFM"
 msgstr "Désactiver I18N pour LFM"
+
+#: lazarusidestrconsts.lisdisableoptionxg
+msgid "Disable Option -Xg?"
+msgstr ""
+
+#: lazarusidestrconsts.lisdisableoptionxg2
+msgid "Disable option -Xg"
+msgstr ""
 
 #: lazarusidestrconsts.lisdisassassembler
 msgctxt "lazarusidestrconsts.lisdisassassembler"
@@ -13323,11 +13335,6 @@ msgctxt "lazarusidestrconsts.lispkgfiletypetext"
 msgid "Text"
 msgstr "Texte"
 
-#: lazarusidestrconsts.lispkgfiletypeunit
-msgctxt "lazarusidestrconsts.lispkgfiletypeunit"
-msgid "Unit"
-msgstr "Unité"
-
 #: lazarusidestrconsts.lispkgfiletypevirtualunit
 msgid "Virtual Unit"
 msgstr "Unité virtuelle"
@@ -15981,6 +15988,10 @@ msgstr "Le projet utilise l'OS cible=%s et le CPU=%s.%sLe fichier system.ppu pou
 msgid "The project uses the new FPC resources, which requires at least FPC 2.4"
 msgstr "Le projet utilise les nouvelles ressources de FPC, ce qui nécessite au moins la version 2.4 de FPC"
 
+#: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
+msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
+msgstr ""
+
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
 msgstr "%sIl y a des notes supplémentaires pour ce message à%s"
@@ -16537,11 +16548,6 @@ msgstr "Taille :"
 msgid "Type:"
 msgstr "Type:"
 
-#: lazarusidestrconsts.lisuidunit
-msgctxt "lazarusidestrconsts.lisuidunit"
-msgid "Unit"
-msgstr "Unité"
-
 #: lazarusidestrconsts.lisuidyes
 msgid "yes"
 msgstr "Oui"
@@ -16879,6 +16885,12 @@ msgstr "Désinstallation impossible"
 #: lazarusidestrconsts.lisuninstallselection
 msgid "Uninstall selection"
 msgstr "Désinstaller la sélection"
+
+#: lazarusidestrconsts.lisunit
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisunit"
+msgid "Unit"
+msgstr "Unité"
 
 #: lazarusidestrconsts.lisunithaschangedsave
 msgid "Unit \"%s\" has changed. Save?"
