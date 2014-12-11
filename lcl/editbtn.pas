@@ -83,6 +83,9 @@ type
     FOnEditMouseEnter: TNotifyEvent;
     FOnEditMouseLeave: TNotifyEvent;
     FOnEditMouseMove: TMouseMoveEvent;
+    FOnEditMouseWheel: TMouseWheelEvent;
+    FOnEditMouseWheelUp: TMouseWheelUpDownEvent;
+    FOnEditMouseWheelDown: TMouseWheelUpDownEvent;
     FOnEditStartDrag: TStartDragEvent;
     FOnEditUtf8KeyPress: TUtf8KeyPressEvent;
 
@@ -139,6 +142,12 @@ type
     procedure InternalOnEditMouseEnter(Sender: TObject);
     procedure InternalOnEditMouseLeave(Sender: TObject);
     procedure InternalOnEditMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure InternalOnEditMouseWheel(Sender: TObject; Shift: TShiftState;
+         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure InternalOnEditMouseWheelUp(Sender: TObject;
+          Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure InternalOnEditMouseWheelDown(Sender: TObject;
+          Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure InternalOnEditUtf8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure InternalOnEditStartDrag(Sender: TObject; var DragObject: TDragObject);
 
@@ -207,6 +216,10 @@ type
     procedure EditMouseEnter; virtual;
     procedure EditMouseLeave; virtual;
     procedure EditMouseMove(Shift: TShiftState; X, Y: Integer); virtual;
+    procedure EditMouseWheel(Shift: TShiftState;
+         WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure EditMouseWheelUp(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+    procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
     procedure EditUtf8KeyPress(var UTF8Key: TUTF8Char); virtual;
     procedure EditStartDrag(var DragObject: TDragObject); virtual;
 
@@ -294,6 +307,9 @@ type
     property OnMouseEnter: TNotifyEvent read FOnEditMouseEnter write FOnEditMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnEditMouseLeave write FOnEditMouseLeave;
     property OnMouseMove: TMouseMoveEvent read FOnEditMouseMove write FOnEditMouseMove;
+    property OnMouseWheel: TMouseWheelEvent read FOnEditMouseWheel write FOnEditMouseWheel;
+    property OnMouseWheelUp: TMouseWheelUpDownEvent read FOnEditMouseWheelUp write FOnEditMouseWheelUp;
+    property OnMouseWheelDown: TMouseWheelUpDownEvent read FOnEditMouseWheelDown write FOnEditMouseWheelDown;
     property OnMouseUp: TMouseEvent read FOnEditMouseUp write FOnEditMouseUp;
     property OnStartDrag: TStartDragEvent read FOnEditStartDrag write FOnEditStartDrag;
     property OnUtf8KeyPress: TUtf8KeyPressEvent read FOnEditUtf8KeyPress write FOnEditUtf8KeyPress;
@@ -1014,6 +1030,25 @@ begin
   EditMouseMove(Shift, X, Y);
 end;
 
+procedure TCustomEditButton.InternalOnEditMouseWheel(Sender: TObject;
+  Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+  EditMouseWheel(Shift, WheelDelta, MousePos, Handled);
+end;
+
+procedure TCustomEditButton.InternalOnEditMouseWheelUp(Sender: TObject;
+  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  EditMouseWheelUp(Shift, MousePos, Handled);
+end;
+
+procedure TCustomEditButton.InternalOnEditMouseWheelDown(Sender: TObject;
+  Shift: TShiftState; MousePos: TPoint; var Handled: Boolean);
+begin
+  EditMouseWheelDown(Shift, MousePos, Handled);
+end;
+
 procedure TCustomEditButton.InternalOnEditUtf8KeyPress(Sender: TObject;
   var UTF8Key: TUTF8Char);
 begin
@@ -1557,6 +1592,24 @@ begin
   if Assigned(FOnEditMouseMove) then FOnEditMouseMove(Self, Shift, X, Y);
 end;
 
+procedure TCustomEditButton.EditMouseWheel(Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+begin
+  if Assigned(FOnEditMouseWheel) then FOnEditMouseWheel(Self, Shift, WheelDelta, MousePos, Handled);
+end;
+
+procedure TCustomEditButton.EditMouseWheelUp(Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  if Assigned(FOnEditMouseWheelUp) then FOnEditMouseWheelUp(Self, Shift, MousePos, Handled);
+end;
+
+procedure TCustomEditButton.EditMouseWheelDown(Shift: TShiftState;
+  MousePos: TPoint; var Handled: Boolean);
+begin
+  if Assigned(FOnEditMouseWheelDown) then FOnEditMouseWheelDown(Self, Shift, MousePos, Handled);
+end;
+
 procedure TCustomEditButton.EditUtf8KeyPress(var UTF8Key: TUTF8Char);
 begin
   if Assigned(FOnEditUtf8KeyPress) then FOnEditUtf8KeyPress(Self, Utf8Key);
@@ -1714,6 +1767,9 @@ begin
     OnMouseEnter := @InternalOnEditMouseEnter;
     OnMouseLeave := @InternalOnEditMouseLeave;
     OnMouseMove := @InternalOnEditMouseMove;
+    OnMouseWheel := @InternalOnEditMouseWheel;
+    OnMouseWheelUp := @InternalOnEditMouseWheelUp;
+    OnMouseWheelDown := @InternalOnEditMouseWheelDown;
     OnStartDrag := @InternalOnEditStartDrag;
     OnUtf8KeyPress := @InternalOnEditUtf8KeyPress;
 
