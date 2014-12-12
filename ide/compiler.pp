@@ -93,7 +93,7 @@ type
     fVisible: Boolean;                  // Used for filtering.
     fIgnored: Boolean;                  // Pretend this option does not exist.
     fChoices: TStrings;                 // Choices got from "fpc -i"
-    procedure AddChoices(aCategory: string);
+    procedure AddChoicesByOptOld;
     function Comment: string;
     procedure Filter(aFilter: string; aOnlySelected: Boolean);
     function GenerateOptValue(aUseComments: Boolean): string;
@@ -172,20 +172,26 @@ type
     fDefines: TStringList;
     // Options not accepted by parser. They may still be valid (a macro maybe)
     fInvalidOptions: TStringList;        // and will be included in output.
-    // Lists of selections parsed from "fpc -i". Contains supported technologies.
+    // List of categories parsed from "fpc -i". Contains category names,
+    //  Objects[] contains another StringList for the selection list.
     fSupportedCategories: TStringList;
     // Hierarchy of options parsed from "fpc -h".
     fRootOptGroup: TCompilerOptGroup;
     fCompilerExecutable: string;  // Compiler path must be set by caller.
-    //fCompilerVersion: string;     // Parsed from "fpc -h".
+    fFpcVersion: string;          // Parsed from "fpc -h".
+    fIsNewFpc: Boolean;
     fParsedTarget: String;
     fErrorMsg: String;
     fGenStrings: TStringList;     // Options generated from GUI.
     fUseComments: Boolean;        // Add option's description into generated data.
+    function AddChoicesNew(aOpt: string): TStrings;
+    function AddNewCategory(aCategoryName: String): TStringList;
     function AddOptInLowestOrigLine(OutStrings: TStrings): Boolean;
     procedure CopyOptions(aRoot: TCompilerOpt);
     function FindLowestOrigLine(aStrings: TStrings; out aOrigLine: Integer): integer;
-    //procedure ReadVersion(s: string);
+    function IsGroup(aOpt: string; var aCategoryList: TStrings): Boolean;
+    function ReadCategorySelections(aChar: Char): TStringList;
+    function ReadVersion(s: string): Boolean;
     procedure CreateNewGroupItem(aGroup: TCompilerOptGroup; aTxt: string);
     procedure AddGroupItems(aGroup: TCompilerOptGroup; aItems: TStrings);
     function ParseI(aLines: TStringList): TModalResult;
@@ -196,15 +202,13 @@ type
     procedure Clear;
     function UpdateTargetParam: Boolean;
     function ReadAndParseOptions: TModalResult;
-    function ParseOptions(OutputI, OutputH: TStringList): TModalResult;
-    procedure ReadCompiler(CompPath, Params: string; out OutputI, OutputH: TStringList);
     function FilterOptions(aFilter: string; aOnlySelected: Boolean): Boolean;
     function FindOptionById(aId: integer): TCompilerOpt;
     function FromCustomOptions(aStrings: TStrings): TModalResult;
     function ToCustomOptions(aStrings: TStrings; aUseComments: Boolean): TModalResult;
   public
     property Defines: TStringList read fDefines;
-    property SupportedCategories: TStringList read fSupportedCategories;
+    //property SupportedCategories: TStringList read fSupportedCategories;
     property RootOptGroup: TCompilerOptGroup read fRootOptGroup;
     property CompilerExecutable: string read fCompilerExecutable write fCompilerExecutable;
     property ParsedTarget: String read fParsedTarget write fParsedTarget;
@@ -217,10 +221,6 @@ type
   private
     fReader: TCompilerOptReader;
     fReadTime: TDateTime;
-    fCompPath: string;
-    fCompParams: string;
-    fOutputI: TStringList;
-    fOutputH: TStringList;
     fStartedOnce: boolean;
     function GetErrorMsg: string;
     procedure Clear; // (main thread)
@@ -238,9 +238,6 @@ type
 
 
 implementation
-
-var
-  CurrentCategories: TStringList;    // To pass categories to options parser.
 
 { TCompiler }
 
@@ -367,6 +364,7 @@ end;
 var
   OptionIdCounter: integer;
 
+
 function NextOptionId: integer;
 begin
   Result := OptionIdCounter;
@@ -393,25 +391,6 @@ begin
   Result := aOpt[2] in ['i', 'F', 'e', 'o', 'd', 'u', 'M', 'T'];
 end;
 
-function IsGroup(aOpt: string; var aCategoryList: TStrings): Boolean;
-// This option should be a group instead of a selection list.
-var
-  i: Integer;
-  Category: string;
-begin
-  if AnsiStartsStr('-Oo', aOpt) then
-    Category := 'Optimizations:'
-  else if AnsiStartsStr('-OW', aOpt) or AnsiStartsStr('-Ow', aOpt) then
-    Category := 'Whole Program Optimizations:'
-  ;
-  Result := Category <> '';
-  if Result then
-    if CurrentCategories.Find(Category, i) then
-      aCategoryList := CurrentCategories.Objects[i] as TStrings
-    else
-      raise Exception.CreateFmt('No list of options found for "%s".', [Category]);
-end;
-
 
 { TCompilerOpt }
 
@@ -430,15 +409,35 @@ begin
   inherited Destroy;
 end;
 
-procedure TCompilerOpt.AddChoices(aCategory: string);
-// Add selection choices for this option. Data originates from "fpc -i".
-var
-  i: Integer;
+procedure TCompilerOpt.AddChoicesByOptOld;
+// From FPC 2.6.x output
+
+  procedure AddChoices(aCategory: string);
+  // Add selection choices for this option. Data originates from "fpc -i".
+  var
+    i: Integer;
+  begin
+    with fOwnerGroup.fOwnerReader do
+      if fSupportedCategories.Find(aCategory, i) then
+        fChoices := fSupportedCategories.Objects[i] as TStrings
+      else
+        raise Exception.CreateFmt('No selection list for "%s" found.', [aCategory]);
+  end;
+
 begin
-  if CurrentCategories.Find(aCategory, i) then
-    fChoices := CurrentCategories.Objects[i] as TStrings
-  else
-    raise Exception.CreateFmt('No selection list for "%s" found.', [aCategory]);
+  if Pos('fpc -i', fDescription) = 0 then Exit;
+  fEditKind := oeList;                 // Values will be got later.
+  case fOption of
+    '-Ca': AddChoices('ABI targets:');
+    '-Cf': AddChoices('FPU instruction sets:');
+    '-Cp': AddChoices('CPU instruction sets:');
+//      '-Oo', '-Oo[NO]': AddChoices('Optimizations:');
+    '-Op': AddChoices('CPU instruction sets:');
+//      '-OW': AddChoices('Whole Program Optimizations:');
+//      '-Ow': AddChoices('Whole Program Optimizations:');
+    else
+      raise Exception.Create('Don''t know where to get selection list for option '+fOption);
+  end;
 end;
 
 procedure TCompilerOpt.ParseEditKind;
@@ -450,21 +449,13 @@ begin
       'x': fEditKind:=oeText;              // <x>
       'n': fEditKind:=oeNumber;            // <n>
     end;
-  if Pos('fpc -i', fDescription) > 0 then
-  begin
-    fEditKind := oeList;                   // Values will be got later.
-    case fOption of
-      '-Ca': AddChoices('ABI targets:');
-      '-Cf': AddChoices('FPU instruction sets:');
-      '-Cp': AddChoices('CPU instruction sets:');
-  //      '-Oo', '-Oo[NO]': AddChoices('Optimizations:');
-      '-Op': AddChoices('CPU instruction sets:');
-  //      '-OW': AddChoices('Whole Program Optimizations:');
-  //      '-Ow': AddChoices('Whole Program Optimizations:');
-      else
-        raise Exception.Create('Don''t know where to get selection list for option '+fOption);
-    end;
-  end;
+  if fOwnerGroup.fOwnerReader.fIsNewFpc then begin
+    fChoices := fOwnerGroup.fOwnerReader.AddChoicesNew(fDescription);
+    if Assigned(fChoices) then
+      fEditKind := oeList;
+  end
+  else
+    AddChoicesByOptOld;
 end;
 
 procedure TCompilerOpt.ParseOption(aDescr: string; aIndent: integer);
@@ -824,6 +815,7 @@ procedure TCompilerOptSet.SelectOptions(aOptStr: string);
 var
   i, Start: Integer;
   OneOpt: string;
+  OptOk: Boolean;
 begin
   i := 1;
   while i <= Length(aOptStr) do
@@ -836,14 +828,11 @@ begin
       Inc(i);
     OneOpt := Copy(aOptStr, Start, i-Start);
     if OneOpt[1] in ['0'..'9'] then
-    begin
-      if not SetNumberOpt(OneOpt) then
-        raise Exception.CreateFmt('Numeric value is not allowed for set %s.', [fOption]);
-    end
-    else begin
-      if not SetBooleanOpt(OneOpt) then
-        raise Exception.CreateFmt('Option %s is not found in set %s.', [OneOpt, fOption]);
-    end;
+      OptOk := SetNumberOpt(OneOpt)
+    else
+      OptOk := False;
+    if not (OptOk or SetBooleanOpt(OneOpt)) then
+      raise Exception.CreateFmt('Option %s is not found in set %s.', [OneOpt, fOption]);
   end;
 end;
 
@@ -918,8 +907,6 @@ begin
   fSupportedCategories := TStringList.Create;
   fGenStrings := TStringList.Create;
   fRootOptGroup := TCompilerOptGroup.Create(Self, Nil);
-  // Categories are passed to options parser through a global variable.
-  CurrentCategories := fSupportedCategories;
 end;
 
 destructor TCompilerOptReader.Destroy;
@@ -927,7 +914,6 @@ begin
   Clear;
   fRootOptGroup.Free;
   fGenStrings.Free;
-  CurrentCategories:=nil;
   fSupportedCategories.Free;
   fInvalidOptions.Free;
   fDefines.Free;
@@ -944,12 +930,76 @@ begin
   fSupportedCategories.Clear;
 end;
 
+function TCompilerOptReader.AddChoicesNew(aOpt: string): TStrings;
+// From FPC 2.7.1+ output
+const
+  FpcIStart = 'see fpc -i or fpc -i';
+var
+  ch: Char;
+  i: SizeInt;
+begin
+  Result := Nil;
+  i := Pos(FpcIStart, aOpt);
+  if i = 0 then Exit;
+  Assert(Length(aOpt) >= i+Length(FpcIStart));
+  ch := aOpt[i+Length(FpcIStart)]; // Pick the next char from description.
+  if fSupportedCategories.Find(ch, i) then
+    Result := fSupportedCategories.Objects[i] as TStrings
+  else begin
+    Result := ReadCategorySelections(ch);
+    Result.Insert(0, ''); // First an empty string. Allows removing selection.
+    fSupportedCategories.AddObject(ch, Result);
+  end;
+end;
+
+function TCompilerOptReader.IsGroup(aOpt: string; var aCategoryList: TStrings): Boolean;
+// This option should be a group instead of a selection list.
+// The information is not available in fpc -h output.
+var
+  i: Integer;
+  CategoryName: string;
+begin
+  Result := False;
+  if fIsNewFpc then
+  begin
+    // FPC 2.7.1+
+    if AnsiStartsStr('-Oo', aOpt)
+    or AnsiStartsStr('-OW', aOpt)
+    or AnsiStartsStr('-Ow', aOpt) then
+    begin
+      aCategoryList := AddChoicesNew(aOpt);
+      Result := Assigned(aCategoryList);
+    end;
+  end
+  else begin
+    // FPC 2.6.x
+    CategoryName := '';
+    if AnsiStartsStr('-Oo', aOpt) then
+      CategoryName := 'Optimizations:'
+    else if AnsiStartsStr('-OW', aOpt) or AnsiStartsStr('-Ow', aOpt) then
+      CategoryName := 'Whole Program Optimizations:';
+    Result := CategoryName <> '';
+    if Result then
+      if fSupportedCategories.Find(CategoryName, i) then
+        aCategoryList := fSupportedCategories.Objects[i] as TStrings
+      else
+        raise Exception.CreateFmt('No list of options found for "%s".', [CategoryName]);
+  end;
+end;
+
+function TCompilerOptReader.AddNewCategory(aCategoryName: String): TStringList;
+begin
+  Result := TStringList.Create;
+  Result.Add('');      // First an empty string. Allows removing selection.
+  fSupportedCategories.AddObject(aCategoryName, Result);
+end;
+
 function TCompilerOptReader.ParseI(aLines: TStringList): TModalResult;
 const
   Supported = 'Supported ';
 var
   i, j: Integer;
-  s, Line, TrimmedLine: String;
+  Line, TrimmedLine: String;
   Category, sl: TStringList;
 begin
   Result := mrOK;
@@ -970,41 +1020,58 @@ begin
           if Line[1] <> ' ' then
             raise Exception.Create('TCompilerReader.ParseI: Line should start with a space.');
           sl.Clear;
+          // Some old FPC versions had a comma separated list.
           sl.DelimitedText := Trim(Line);
           for j := 0 to sl.Count-1 do
             Category.Add(sl[j]);
         end;
       end
       else if AnsiStartsStr(Supported, Line) then
-      begin
-        Category := TStringList.Create;
-        Category.Add('');      // First an empty string. Allows removing selection.
-        s := Copy(Line, Length(Supported)+1, Length(Line));
-        fSupportedCategories.AddObject(s, Category);
-      end;
+        Category := AddNewCategory(Copy(Line, Length(Supported)+1, Length(Line)));
     end;
     fSupportedCategories.Sorted := True;
   finally
     sl.Free;
   end;
 end;
-{
-procedure TCompilerOptReader.ReadVersion(s: string);
+
+function TCompilerOptReader.ReadVersion(s: string): Boolean;
 const
   VersBegin = 'Free Pascal Compiler version ';
 var
-  i, Start: Integer;
+  Start, V1, V2: Integer;
+  OutputI: TStringList;      // fpc -Fr$(FPCMsgFile) -i
 begin
-  if AnsiStartsStr(VersBegin, s) then
+  Result := AnsiStartsStr(VersBegin, s);
+  if Result then
   begin
-    Start := Length(VersBegin);
-    i := PosEx(' ', s, Start+1);
-    if i > 0 then
-      fCompilerVersion := Copy(s, Start, i-Start);
-      // ToDo: the rest 2 fields are date and target CPU.
+    fIsNewFpc := False;
+    Start := Length(VersBegin)+1;
+    V1 := PosEx(' ', s, Start);
+    if V1 > 0 then
+    begin
+      fFpcVersion := Copy(s, Start, V1-Start);
+      if (Length(fFpcVersion)>2) then begin
+        V1 := StrToIntDef(fFpcVersion[1], 0);
+        V2 := StrToIntDef(fFpcVersion[3], 0);
+        fIsNewFpc := ((V1=2) and (V2>=7)) or (V1>2);
+      end;
+      // The rest 2 fields are date and target CPU.
+    end;
+    if not fIsNewFpc then
+    begin
+      // Get categories with FPC -i, once we know the version is old (2.6.x).
+      OutputI := RunTool(fCompilerExecutable, fParsedTarget + ' -i');
+      if OutputI = Nil then Exit(False);
+      try
+        Result := ParseI(OutputI) = mrOK;
+      finally
+        OutputI.Free;
+      end;
+    end;
   end;
 end;
-}
+
 procedure TCompilerOptReader.CreateNewGroupItem(aGroup: TCompilerOptGroup; aTxt: string);
 var
   Opt: TCompilerOpt;
@@ -1045,12 +1112,13 @@ begin
     ThisLine := StringReplace(aLines[i],'-Agas-darwinAssemble','-Agas-darwin Assemble',[]);
     ThisInd := CalcIndentation(ThisLine);
     ThisLine := Trim(ThisLine);
-    if ThisInd < 2 then Continue; //Call if needed: ReadVersion(ThisLine);// Top header lines for compiler version etc.
+    // Top header line for compiler version, check only once.
+    if (fFpcVersion = '') and ReadVersion(ThisLine) then Continue;
+    if ThisInd < 2 then Continue;
     if (ThisLine = '') or (ThisInd > 30)
     or (ThisLine[1] = '@')
     or (Pos('-? ', ThisLine) > 0)
     or (Pos('-h ', ThisLine) > 0) then Continue;
-
     if i < aLines.Count-1 then begin
       NextLine := aLines[i+1];
       NextInd := CalcIndentation(aLines[i+1]);
@@ -1104,53 +1172,36 @@ var
 begin
   NewTarget := '-T$(TargetOS) -P$(TargetCPU)';
   if not GlobalMacroList.SubstituteStr(NewTarget) then
-    raise Exception.CreateFmt('ReadAndParseOptions: Cannot substitute macros "%s".',
+    raise Exception.CreateFmt('UpdateTargetParam: Cannot substitute macros "%s".',
                               [NewTarget]);
   Result := fParsedTarget <> NewTarget;
   if Result then
     fParsedTarget := NewTarget;      // fParsedTarget is used as a param for FPC.
 end;
 
+function TCompilerOptReader.ReadCategorySelections(aChar: Char): TStringList;
+// Get the selection list for a category using "fpc -i+char", for new FPC versions.
+begin
+  Result:=RunTool(fCompilerExecutable, fParsedTarget + ' -i' + aChar);
+end;
+
 function TCompilerOptReader.ReadAndParseOptions: TModalResult;
 // fpc -Fr$(FPCMsgFile) -h
-// fpc -Fr$(FPCMsgFile) -i
 var
-  OutputI: TStringList;
   OutputH: TStringList;
 begin
   if fCompilerExecutable = '' then
     fCompilerExecutable := 'fpc';        // Let's hope "fpc" is found in PATH.
-  try
-    ReadCompiler(fCompilerExecutable, fParsedTarget, OutputI, OutputH);
-    Result:=ParseOptions(OutputI, OutputH);
-  finally
-    OutputI.Free;
-    OutputH.Free;
-  end;
-end;
-
-function TCompilerOptReader.ParseOptions(OutputI, OutputH: TStringList): TModalResult;
-begin
   OptionIdCounter := 0;
   fErrorMsg := '';
-  if OutputI = Nil then Exit(mrCancel);
-  Result := ParseI(OutputI);
-  if Result <> mrOK then Exit;
-  if OutputH = Nil then Exit(mrCancel);
-  Result := ParseH(OutputH);
-end;
-
-procedure TCompilerOptReader.ReadCompiler(CompPath, Params: string;
-  out OutputI, OutputH: TStringList);
-begin
-  OutputI:=nil;
-  OutputH:=nil;
-  if CompPath = '' then
-    CompPath := 'fpc';        // Let's hope "fpc" is found in PATH.
-  // FPC with option -i
-  OutputI:=RunTool(CompPath, Params + ' -i');
-  // FPC with option -h
-  OutputH:=RunTool(CompPath, Params + ' -h');
+  try
+    // FPC with option -h
+    OutputH := RunTool(fCompilerExecutable, fParsedTarget + ' -h');
+    if OutputH = Nil then Exit(mrCancel);
+    Result := ParseH(OutputH);
+  finally
+    OutputH.Free;
+  end;
 end;
 
 function TCompilerOptReader.FilterOptions(aFilter: string; aOnlySelected: Boolean): Boolean;
@@ -1345,8 +1396,7 @@ end;
 
 procedure TCompilerOptThread.Clear;
 begin
-  FreeAndNil(fOutputH);
-  FreeAndNil(fOutputI);
+  ;
 end;
 
 procedure TCompilerOptThread.StartParsing;
@@ -1355,8 +1405,6 @@ begin
     WaitFor;
   fReader.CompilerExecutable:=LazarusIDE.GetFPCompilerFilename;
   fReader.UpdateTargetParam;
-  fCompPath:=fReader.CompilerExecutable;
-  fCompParams:=fReader.ParsedTarget;
   Start;
   fStartedOnce:=true;
 end;
@@ -1365,15 +1413,6 @@ procedure TCompilerOptThread.EndParsing;
 begin
   if fStartedOnce then
     WaitFor;
-  if (fOutputI<>nil) or (fOutputH<>nil) then begin
-    try
-      fReader.ParseOptions(fOutputI,fOutputH);
-    except
-      on E: Exception do
-        fReader.ErrorMsg := 'Error parsing compiler output: '+E.Message;
-    end;
-    Clear;
-  end;
 end;
 
 procedure TCompilerOptThread.Execute;
@@ -1382,9 +1421,7 @@ var
 begin
   StartTime := Now;
   try
-    if fOutputI<>nil then exit;
-    if fOutputH<>nil then exit;
-    fReader.ReadCompiler(fCompPath,fCompParams,fOutputI,fOutputH);
+    fReader.ReadAndParseOptions;
   except
     on E: Exception do
       fReader.ErrorMsg := 'Error reading compiler: '+E.Message;
