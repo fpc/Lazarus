@@ -936,7 +936,7 @@ const
   FpcIStart = 'see fpc -i or fpc -i';
 var
   ch: Char;
-  i: SizeInt;
+  i: integer;
 begin
   Result := Nil;
   i := Pos(FpcIStart, aOpt);
