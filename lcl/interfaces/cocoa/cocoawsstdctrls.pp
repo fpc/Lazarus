@@ -872,7 +872,7 @@ begin
   else
   begin
     cmb := NSView(TCocoaComboBox.alloc).lclInitWithCreateParams(AParams);
-    if not Assigned(rocmb) then Exit;
+    if not Assigned(cmb) then Exit;
     cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
     cmb.list:=TCocoaComboBoxList.Create(cmb, nil);
     cmb.setUsesDataSource(true);
