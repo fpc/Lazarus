@@ -2944,9 +2944,7 @@ begin
         LM_ACTIVATE: begin
           {$IFDEF VerboseComponentPalette}
           DebugLn(['TDesigner.IsDesignMsg: Got LM_ACTIVATE message.',
-                   ' Message.Active=',TLMActivate(TheMessage).Active,
-                   ', calling DoFormActivated(',TLMActivate(TheMessage).Active=WA_ACTIVE,')'
-                  ]);
+                   ' Message.Active=',TLMActivate(TheMessage).Active]);
           {$ENDIF}
           Act:=TLMActivate(TheMessage).Active;
           Result:=DoFormActivated(Act in [WA_ACTIVE, WA_CLICKACTIVE]);
