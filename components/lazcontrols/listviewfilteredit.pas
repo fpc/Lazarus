@@ -30,9 +30,13 @@ type
 
   TListViewFilterEdit = class(TCustomControlFilterEdit)
   private
-    fFilteredListview: TCustomListView; // A control showing the (filtered) data.
-    fSelectionList: TStringList;      // Store/restore the old selections here.
-    // Data supplied by caller through Data property.
+    // A control showing the (filtered) data.
+    fFilteredListview: TCustomListView;
+    // All fields / Just the first field, caption.
+    fByAllFields: Boolean;
+    // Store/restore the old selections here.
+    fSelectionList: TStringList;
+    // Data supplied by caller through Items property.
     fOriginalData: TListViewDataList;
     // Data sorted for viewing.
     fFilteredData: TListViewDataList;
@@ -55,6 +59,7 @@ type
     property Items: TListViewDataList read fOriginalData;
   published
     property FilteredListview: TCustomListView read fFilteredListview write SetFilteredListview;
+    property ByAllFields: Boolean read fByAllFields write fByAllFields;
   end;
 
 var
@@ -124,11 +129,15 @@ end;
 
 function TListViewFilterEdit.MatchesFilter(aData: TStringArray): Boolean;
 var
-  i: Integer;
+  i, EndInd: Integer;
 begin
   if Filter='' then
     Exit(True);
-  for i := 0 to Pred(Length(aData)) do begin
+  if fByAllFields then
+    EndInd := Pred(Length(aData))
+  else
+    EndInd := 0;
+  for i := 0 to EndInd do begin
     Result := Pos(Filter,UTF8LowerCase(aData[i]))>0;
     if Result then
       Exit;
