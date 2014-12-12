@@ -809,8 +809,7 @@ procedure TBuildManager.RescanCompilerDefines(ResetBuildTarget,
       if ConsoleVerbosity>=0 then
         debugln(['PPUFilesAndCompilerMatch Compiler=',Cfg.Compiler,' RealComp=',Cfg.RealCompiler,' InPath=',Cfg.RealCompilerInPath]);
       IDEMessageDialog(lisCCOErrorCaption, Format(
-        lisCompilerDoesNotSupportTarget, [Cfg.Compiler, Cfg.TargetCPU,
-        Cfg.TargetOS]),
+        lisCompilerDoesNotSupportTarget, [Cfg.Compiler, Cfg.TargetCPU, Cfg.TargetOS]),
         mtError,[mbOk]);
       exit(false);
     end;

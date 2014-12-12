@@ -182,7 +182,7 @@ type
     fIsNewFpc: Boolean;
     fParsedTarget: String;
     fErrorMsg: String;
-    fGenStrings: TStringList;     // Options generated from GUI.
+    fGeneratedOptions: TStringList; // Options generated from GUI.
     fUseComments: Boolean;        // Add option's description into generated data.
     function AddChoicesNew(aOpt: string): TStrings;
     function AddNewCategory(aCategoryName: String): TStringList;
@@ -597,7 +597,13 @@ function TCompilerOptGroup.FindOption(aOptStr: string): TCompilerOpt;
     end
     else begin               // TCompilerOpt
       if aRoot.Option = aOptStr then
+        Result := aRoot
+      else if (aRoot.EditKind = oeText) and AnsiStartsStr(aRoot.Option, aOptStr) then
+      begin
+        aRoot.SetValue(Copy(aOptStr, Length(aRoot.Option)+1, Length(aOptStr)),
+                       fOwnerReader.fCurOrigLine);
         Result := aRoot;
+      end;
     end;
   end;
 
@@ -652,7 +658,7 @@ begin
       else
         Break;
     end;
-    // Set boolean options if they all are valid.
+    // Set boolean options but only if they all are valid.
     if Assigned(Result) then
       for i := 0 to List.Count-1 do
         TCompilerOpt(List[i]).SetValue('True', fOwnerReader.fCurOrigLine);
@@ -669,7 +675,11 @@ var
 begin
   Opt := FindOption(aOptAndValue);
   if Assigned(Opt) then
-    Opt.SetValue('True', fOwnerReader.fCurOrigLine)
+  begin
+    // Found. Set boolean option, other type of options are already set.
+    if Opt.EditKind = oeBoolean then
+      Opt.SetValue('True', fOwnerReader.fCurOrigLine);
+  end
   else begin
     // Option was not found, try separating the parameter.
     // ToDo: figure out the length in a more clever way.
@@ -690,10 +700,14 @@ begin
       if OptLen = 3 then // Can contain one char options like -Criot. Can be combined.
         Opt := OneCharOptions(aOptAndValue);
     end;
-    if Opt = Nil then begin
+    if Opt = Nil then
+    begin
       Opt := FindOption(Copy(aOptAndValue, 1, OptLen));
       if Assigned(Opt) then
+      begin
+        Assert(Opt.Value='', 'TCompilerOptGroup.SelectOption: Opt.Value is already set.');
         Opt.SetValue(Param, fOwnerReader.fCurOrigLine)
+      end;
     end;
   end;
   Result := Assigned(Opt);
@@ -905,7 +919,7 @@ begin
   fDefines := TStringList.Create;
   fInvalidOptions := TStringList.Create;
   fSupportedCategories := TStringList.Create;
-  fGenStrings := TStringList.Create;
+  fGeneratedOptions := TStringList.Create;
   fRootOptGroup := TCompilerOptGroup.Create(Self, Nil);
 end;
 
@@ -913,7 +927,7 @@ destructor TCompilerOptReader.Destroy;
 begin
   Clear;
   fRootOptGroup.Free;
-  fGenStrings.Free;
+  fGeneratedOptions.Free;
   fSupportedCategories.Free;
   fInvalidOptions.Free;
   fDefines.Free;
@@ -1275,7 +1289,7 @@ begin
 end;
 
 procedure TCompilerOptReader.CopyOptions(aRoot: TCompilerOpt);
-// Collect non-default options to fGenStrings
+// Collect non-default options from GUI to fGeneratedOptions
 var
   Children: TCompilerOptList;
   i: Integer;
@@ -1288,7 +1302,7 @@ begin
     begin                                       // TCompilerOptSet
       s := TCompilerOptSet(aRoot).CollectSelectedOptions(fUseComments);
       if s <> '' then
-        fGenStrings.AddObject(s, TObject({%H-}Pointer(PtrUInt(aRoot.fOrigLine))));
+        fGeneratedOptions.AddObject(s, TObject({%H-}Pointer(PtrUInt(aRoot.fOrigLine))));
     end
     else begin                                  // TCompilerOptGroup
       for i := 0 to Children.Count-1 do
@@ -1296,8 +1310,8 @@ begin
     end;
   end
   else if aRoot.Value <> '' then                // TCompilerOpt
-    fGenStrings.AddObject(aRoot.GenerateOptValue(fUseComments),
-                          TObject({%H-}Pointer(PtrUINt(aRoot.fOrigLine))));
+    fGeneratedOptions.AddObject(aRoot.GenerateOptValue(fUseComments),
+                                TObject({%H-}Pointer(PtrUINt(aRoot.fOrigLine))));
 end;
 
 function TCompilerOptReader.FindLowestOrigLine(aStrings: TStrings;
@@ -1330,7 +1344,7 @@ var
   iGenOrig, iInvOrig: Integer;
 begin
   // Find lowest lines from both generated and invalid options
-  iGen := FindLowestOrigLine(fGenStrings, iGenOrig);
+  iGen := FindLowestOrigLine(fGeneratedOptions, iGenOrig);
   iInv := FindLowestOrigLine(fInvalidOptions, iInvOrig);
   // then add the one that is lower.
   if (iGenOrig = -1) and (iInvOrig = -1) then Exit(False);
@@ -1338,9 +1352,9 @@ begin
   if ( (iGenOrig > -1) and (iInvOrig > -1) and (iGenOrig <= iInvOrig) )
   or ( (iGenOrig > -1) and (iInvOrig = -1) ) then
   begin
-    OutStrings.Add(fGenStrings[iGen]);
-    fGenStrings[iGen] := '';
-    fGenStrings.Objects[iGen] := TObject(Pointer(-1)); // Mark as processed.
+    OutStrings.Add(fGeneratedOptions[iGen]);
+    fGeneratedOptions[iGen] := '';
+    fGeneratedOptions.Objects[iGen] := TObject(Pointer(-1)); // Mark as processed.
   end
   else begin
     OutStrings.Add(fInvalidOptions[iInv]);
@@ -1357,16 +1371,16 @@ var
 begin
   Result := mrOK;
   fUseComments := aUseComments;
-  fGenStrings.Clear;
+  fGeneratedOptions.Clear;
   CopyOptions(fRootOptGroup);
-  // Options are now in fGenStrings. Move them to aStrings in a right order.
+  // Options are now in fGeneratedOptions. Move them to aStrings in a right order.
   aStrings.Clear;
   // First collect options that were in the original list.
   while AddOptInLowestOrigLine(aStrings) do ;
   // Then add all the rest.
-  for i := 0 to fGenStrings.Count-1 do
-    if fGenStrings[i] <> '' then
-      aStrings.Add(fGenStrings[i]);
+  for i := 0 to fGeneratedOptions.Count-1 do
+    if fGeneratedOptions[i] <> '' then
+      aStrings.Add(fGeneratedOptions[i]);
   // Then defines
   aStrings.AddStrings(fDefines);
 end;
