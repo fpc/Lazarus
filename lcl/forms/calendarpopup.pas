@@ -115,6 +115,9 @@ end;
 procedure TCalendarPopupForm.FormDeactivate(Sender: TObject);
 begin
   //DebugLn(['TCalendarPopupForm.FormDeactivate ',DbgSName(GetCaptureControl)]);
+  //Immediately hide the form, otherwise it stays visible while e.g. user is draging
+  //another form (Issue #0020647)
+  Hide;
   if (not FClosed) then
     Close;
 end;
