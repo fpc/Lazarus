@@ -562,6 +562,7 @@ begin
         Text := sResultText;
         SelStart := iSelStart;
         SelLength := UTF8Length(Text);
+        Select;
       end;
     end;
   end;
