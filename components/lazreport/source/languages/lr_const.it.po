@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-11-10 17:49+0200\n"
+"PO-Revision-Date: 2014-12-12 13:37+0200\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: Lazarus\n"
 "Language: it\n"
@@ -90,14 +90,12 @@ msgid "Cross footer"
 msgstr "Pedice incrodiato"
 
 #: lr_const.sband22
-#, fuzzy
 #| msgid "None"
 msgctxt "lr_const.sband22"
 msgid "Child"
-msgstr "Nessuno"
+msgstr "Figlio"
 
 #: lr_const.sband23
-#, fuzzy
 #| msgid "None"
 msgctxt "lr_const.sband23"
 msgid "None"
@@ -2208,7 +2206,7 @@ msgstr "&Intera pagina"
 
 #: lr_const.sprintchildifnotvisible
 msgid "Print child if not visible"
-msgstr ""
+msgstr "Stampa figlio se non visibile"
 
 #: lr_const.sprintererror
 msgid "Selected printer is not valid"
@@ -2558,4 +2556,3 @@ msgstr "a capo parole"
 #: lr_const.syes
 msgid "Yes"
 msgstr "&Sì"
-

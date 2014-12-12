@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-11-11 18:28+0200\n"
+"PO-Revision-Date: 2014-12-12 13:44+0200\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: Lazarus\n"
 "Language: it\n"
@@ -5911,7 +5911,7 @@ msgstr "Parentesi"
 
 #: lazarusidestrconsts.liscodetoolsoptscaret
 msgid "Caret (^)"
-msgstr ""
+msgstr "Circonflesso (^)"
 
 #: lazarusidestrconsts.liscodetoolsoptscolon
 msgid "Colon"
@@ -7241,7 +7241,7 @@ msgstr "Predefinito"
 
 #: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
 msgid "The default is ComboBox with \"True\" and \"False\" selections"
-msgstr ""
+msgstr "Il predefinito è ComboBox con selezione \"Vero\" e \"Falso\""
 
 #: lazarusidestrconsts.lisdefaultplaceholder
 msgid "(default)"
@@ -7498,11 +7498,11 @@ msgstr "Disabilita I18N per LFM"
 
 #: lazarusidestrconsts.lisdisableoptionxg
 msgid "Disable Option -Xg?"
-msgstr ""
+msgstr "Disabilitare opzione -Xg?"
 
 #: lazarusidestrconsts.lisdisableoptionxg2
 msgid "Disable option -Xg"
-msgstr ""
+msgstr "Disabilitare opzione -Xg"
 
 #: lazarusidestrconsts.lisdisassassembler
 msgctxt "lazarusidestrconsts.lisdisassassembler"
@@ -8618,7 +8618,7 @@ msgstr "Trova ..."
 
 #: lazarusidestrconsts.lisfinddeclarationof
 msgid "Find Declaration of %s"
-msgstr ""
+msgstr "Trova dichiarazione di %s"
 
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
@@ -9632,7 +9632,7 @@ msgstr "Storico dei salti"
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"
-msgstr ""
+msgstr "Salta alla procedura %s"
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
@@ -12176,7 +12176,7 @@ msgstr "Nuovo Macroname"
 
 #: lazarusidestrconsts.lisnewpage
 msgid "New page"
-msgstr ""
+msgstr "Nuova pagina"
 
 #: lazarusidestrconsts.lisnewproject
 msgid "(new project)"
@@ -12698,7 +12698,7 @@ msgstr "Pagina"
 
 #: lazarusidestrconsts.lispagename
 msgid "Page name"
-msgstr ""
+msgstr "Nome della pagina"
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
@@ -16010,6 +16010,8 @@ msgstr "Il progetto una le nuove risorse FPC, quindi necessita di FPC 2.4 o più
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
 msgstr ""
+"Il progetto scrive i simboli di debug in un file esterno. Il \"%s\" supporta "
+"solo simboli contenuti nell'eseguibile."
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
@@ -16906,7 +16908,6 @@ msgid "Uninstall selection"
 msgstr "Disinstalla la selezione"
 
 #: lazarusidestrconsts.lisunit
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisunit"
 msgid "Unit"
 msgstr "Unit"
@@ -17035,7 +17036,7 @@ msgstr "Usa Ansistring"
 
 #: lazarusidestrconsts.lisusecheckboxforbooleanvalues
 msgid "Use CheckBox for Boolean values"
-msgstr ""
+msgstr "Usare CheckBox per valori booleani"
 
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"
@@ -17414,7 +17415,6 @@ msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Impossibile costruire lazarus durante un debug o una compilazione."
 
 #: lazarusidestrconsts.lis_all_
-#, fuzzy
 msgctxt "lazarusidestrconsts.lis_all_"
 msgid "<All>"
 msgstr "<TUTTI>"
@@ -19356,4 +19356,3 @@ msgstr "Sola lettura"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informazioni di versione"
-
