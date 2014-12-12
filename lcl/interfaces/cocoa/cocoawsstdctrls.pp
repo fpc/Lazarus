@@ -82,6 +82,10 @@ type
 
     class function GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer; override;
     class procedure SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer); override;
+    class procedure GetPreferredSize(
+       const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+       WithThemeSpace: Boolean); override;
+
   end;
 
   { TCocoaWSCustomListBox }
@@ -869,7 +873,7 @@ begin
   begin
     cmb := NSView(TCocoaComboBox.alloc).lclInitWithCreateParams(AParams);
     if not Assigned(rocmb) then Exit;
-    cmb.callback:=TLCLComboboxCallback.Create(cmb, nil);
+    cmb.callback:=TLCLComboboxCallback.Create(cmb, AWinControl);
     cmb.list:=TCocoaComboBoxList.Create(cmb, nil);
     cmb.setUsesDataSource(true);
     cmb.setDataSource(cmb);
@@ -955,6 +959,15 @@ begin
     Exit // ToDo
   else
     TCocoaComboBox(ACustomComboBox.Handle).setItemHeight(AItemHeight);
+end;
+
+class procedure TCocoaWSCustomComboBox.GetPreferredSize(
+  const AWinControl: TWinControl; var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  // do not override PreferredWidth and Height
+  // see todo at TCocoaWSWinControl.GetPreferredSize
+  // once it's resolved, TCocoaWSCustomComboBox.GetPreferredSize could be removed
 end;
 
 { TCocoaWSToggleBox }

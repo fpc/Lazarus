@@ -1227,6 +1227,10 @@ begin
   lView := CocoaUtils.GetNSObjectView(NSObject(AWinControl.Handle));
   if lView = nil then Exit;
 
+  //todo: using fittingSize is wrong - it's based on constraints of the control solely.
+  //CocoaWidgetset is not using these constrains. As a result, CocoaComboBox
+  //produces wrong size: width 3 and height 26 (or OSX 10.9)
+  //as well as SpinEdit itself. The better approach is to use intrinsicContentSize method.
   if lView.respondsToSelector(objcselector('fittingSize')) then
   begin
     Size := lView.fittingSize();
