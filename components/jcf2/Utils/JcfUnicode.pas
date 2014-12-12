@@ -38,6 +38,7 @@ function WideCharIsAlpha(const wc: WideChar): Boolean;
 function WideCharIsAlphaNum(const wc: WideChar): Boolean;
 
 function WideCharIsHexDigitDot(const wc: WideChar): Boolean;
+function WideCharIsBinDigit(const wc: WideChar): Boolean; // ~bk 2014.11.01
 
 function WideCharIsPuncChar(const wc: WideChar): boolean;
 function WideCharIsWordChar(const wc: WideChar): Boolean;
@@ -156,6 +157,22 @@ begin
   Result := (ch in HexDigits) or (ch = '.');
 end;
 
+
+{ ~bk 2014.11.01 }
+function WideCharIsBinDigit(const wc: WideChar): Boolean;
+const
+  BinDigits: set of AnsiChar = ['0','1'];
+var
+  ch: AnsiChar;
+begin
+  if WideCharIsHigh(wc) then
+  begin
+    Result := False;
+    exit;
+  end;
+  ch := AnsiChar(wc);
+  Result := (ch in BinDigits);
+end;
 
 function WideCharIsWordChar(const wc: WideChar): Boolean;
 var

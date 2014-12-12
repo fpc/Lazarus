@@ -28,6 +28,8 @@ unit BuildTokenList;
 { AFS 29 Nov 1999
  converts the input string of chars into a list of tokens
  This is the lexical analysis phase of the parsing
+
+ 2014.11.02 ~bk Added lexing of binary constants (ex. -> const a=%101001;)
 }
 
 {$I JcfGlobal.inc}
@@ -72,6 +74,7 @@ type
 
     function TryNumber(const pcToken: TSourceToken): boolean;
     function TryHexNumber(const pcToken: TSourceToken): boolean;
+    function TryBinNumber(const pcToken: TSourceToken): boolean; // ~bk 14.11.01
 
     function TryDots(const pcToken: TSourceToken): boolean;
 
@@ -166,6 +169,8 @@ var
     if TryNumber(lcNewToken) then
       exit;
     if TryHexNumber(lcNewToken) then
+      exit;
+    if TryBinNumber(lcNewToken) then // ~bk 2014.11.01
       exit;
 
     if TryDots(lcNewToken) then
@@ -625,6 +630,29 @@ begin
         lbHasDecimalSep := True;
     end;
 
+    pcToken.SourceCode := pcToken.SourceCode + Current;
+    Consume;
+  end;
+
+  Result := True;
+end;
+
+{ ~bk 2014.11.01 - Bin numbers are prefixed with % }
+function TBuildTokenList.TryBinNumber(const pcToken: TSourceToken): boolean;
+begin
+  Result := False;
+
+  { starts with a % }
+  if Current <> '%' then
+    exit;
+
+  pcToken.TokenType  := ttNumber;
+  pcToken.SourceCode := Current;
+  Consume;
+
+  { concat any subsequent binary chars }
+  while WideCharIsBinDigit(Current) do
+  begin
     pcToken.SourceCode := pcToken.SourceCode + Current;
     Consume;
   end;
