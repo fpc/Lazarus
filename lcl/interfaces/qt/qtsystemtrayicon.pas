@@ -319,8 +319,6 @@ begin
 end;
 
 function TQtSystemTrayIcon.GetGeometry: TRect;
-var
-  R: TRect;
 begin
   Result := Classes.Rect(0, 0, 0, 0);
   if Assigned(TheObject) then
