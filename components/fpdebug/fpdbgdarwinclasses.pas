@@ -128,6 +128,7 @@ type
     FIsTerminating: boolean;
     FExceptionSignal: PtrUInt;
     FMasterPtyFd: cint;
+    FExecutableFilename: string;
     function GetDebugAccessRights: boolean;
     {$ifndef VER2_6}
     procedure OnForkEvent(Sender : TObject);
@@ -620,7 +621,7 @@ end;
 
 function TDbgDarwinProcess.InitializeLoader: TDbgImageLoader;
 begin
-  result := TDbgImageLoader.Create(Name);
+  result := TDbgImageLoader.Create(FExecutableFilename);
 end;
 
 function TDbgDarwinProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;
@@ -747,6 +748,7 @@ begin
     result := TDbgDarwinProcess.Create(AFileName, Pid, -1, AOnLog);
     TDbgDarwinProcess(result).FMasterPtyFd := GMasterPtyFd;
     TDbgDarwinProcess(result).FProcProcess := AProcess;
+    TDbgDarwinProcess(result).FExecutableFilename := AnExecutabeFilename;
   except
     on E: Exception do
     begin
