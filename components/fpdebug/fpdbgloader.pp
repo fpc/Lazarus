@@ -125,7 +125,8 @@ end;
 
 procedure TDbgImageLoader.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);
 begin
-  FImgReader.ParseSymbolTable(AFpSymbolInfo);
+  if IsValid then
+    FImgReader.ParseSymbolTable(AFpSymbolInfo);
 end;
 
 {$ifdef USE_WIN_FILE_MAPPING}
