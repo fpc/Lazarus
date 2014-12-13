@@ -4059,7 +4059,7 @@ begin
     end;
     // Switch back to original mode.
     Project1.ActiveBuildMode := ActiveMode;
-    MainIDE.UpdateCaption;
+    SaveProject([]);
     Msg := Format(lisSelectedModesWereBuilt, [ModeCnt]);
     IDEMessageDialog(lisSuccess, Msg, mtInformation, [mbOK]);
     Result:=True;
