@@ -1,0 +1,367 @@
+object Form1: TForm1
+  Left = 583
+  Height = 500
+  Top = 262
+  Width = 674
+  Caption = 'Form1'
+  ClientHeight = 500
+  ClientWidth = 674
+  OnCreate = FormCreate
+  LCLVersion = '1.3'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 472
+    Top = 0
+    Width = 674
+    ActivePage = TabSheet1
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    OnChange = PageControl1Change
+    object TabSheet1: TTabSheet
+      Caption = 'stacked'
+      ClientHeight = 444
+      ClientWidth = 666
+      object Panel1: TPanel
+        Left = 0
+        Height = 64
+        Top = 0
+        Width = 666
+        Align = alTop
+        BevelOuter = bvNone
+        ClientHeight = 64
+        ClientWidth = 666
+        TabOrder = 0
+        object EdLabelSizeLeft: TSpinEdit
+          Left = 96
+          Height = 23
+          Top = 8
+          Width = 74
+          OnChange = EdLabelSizeLeftChange
+          TabOrder = 0
+        end
+        object Label1: TLabel
+          Left = 19
+          Height = 15
+          Top = 14
+          Width = 51
+          Caption = 'LabelSize:'
+          ParentColor = False
+        end
+        object EdLabelSizeRight: TSpinEdit
+          Left = 536
+          Height = 23
+          Top = 8
+          Width = 66
+          OnChange = EdLabelSizeRightChange
+          TabOrder = 1
+        end
+        object Label2: TLabel
+          Left = 19
+          Height = 15
+          Top = 38
+          Width = 46
+          Caption = 'Position:'
+          ParentColor = False
+        end
+        object EdPositionLeft: TSpinEdit
+          Left = 96
+          Height = 23
+          Top = 32
+          Width = 74
+          OnChange = EdPositionLeftChange
+          TabOrder = 2
+        end
+        object Label6: TLabel
+          Left = 464
+          Height = 15
+          Top = 14
+          Width = 51
+          Caption = 'LabelSize:'
+          ParentColor = False
+        end
+        object Bevel2: TBevel
+          Left = 0
+          Height = 3
+          Top = 61
+          Width = 666
+          Align = alBottom
+          Shape = bsBottomLine
+        end
+      end
+      object ChartBottom: TChart
+        Left = 0
+        Height = 176
+        Top = 268
+        Width = 666
+        AxisList = <        
+          item
+            Grid.Color = clSilver
+            AxisPen.Visible = True
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Y axis title'
+          end        
+          item
+            Grid.Color = clSilver
+            Alignment = calBottom
+            Minors = <>
+          end        
+          item
+            Alignment = calRight
+            Marks.Visible = False
+            Minors = <>
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        MarginsExternal.Left = 10
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alBottom
+        Color = clWhite
+        ParentColor = False
+        object ChartBottomLineSeries1: TLineSeries
+          Source = RandomChartSource2
+        end
+      end
+      object ChartTop: TChart
+        Left = 0
+        Height = 204
+        Top = 64
+        Width = 666
+        AntialiasingMode = amOn
+        AxisList = <        
+          item
+            Grid.Color = clSilver
+            AxisPen.Visible = True
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Y axis title'
+          end        
+          item
+            Grid.Color = clSilver
+            Alignment = calBottom
+            Minors = <>
+            Title.Visible = True
+            Title.Caption = 'x'
+          end        
+          item
+            Alignment = calRight
+            Marks.Visible = False
+            Minors = <>
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        MarginsExternal.Left = 10
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clWhite
+        ParentColor = False
+        object ChartTopLineSeries1: TLineSeries
+          Source = RandomChartSource1
+        end
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'side-by-side'
+      ClientHeight = 422
+      ClientWidth = 666
+      object Panel2: TPanel
+        Left = 0
+        Height = 422
+        Top = 0
+        Width = 104
+        Align = alLeft
+        BevelOuter = bvNone
+        ClientHeight = 422
+        ClientWidth = 104
+        TabOrder = 0
+        object EdLabelSizeBottom: TSpinEdit
+          Left = 16
+          Height = 23
+          Top = 392
+          Width = 74
+          OnChange = EdLabelSizeBottomChange
+          TabOrder = 0
+        end
+        object Label3: TLabel
+          Left = 16
+          Height = 15
+          Top = 368
+          Width = 51
+          Caption = 'LabelSize:'
+          ParentColor = False
+        end
+        object EdLabelSizeTop: TSpinEdit
+          Left = 16
+          Height = 23
+          Top = 32
+          Width = 66
+          OnChange = EdLabelSizeTopChange
+          TabOrder = 1
+        end
+        object Label4: TLabel
+          Left = 16
+          Height = 15
+          Top = 304
+          Width = 46
+          Caption = 'Position:'
+          ParentColor = False
+        end
+        object EdPositionBottom: TSpinEdit
+          Left = 16
+          Height = 23
+          Top = 328
+          Width = 74
+          OnChange = EdPositionBottomChange
+          TabOrder = 2
+        end
+        object Label5: TLabel
+          Left = 16
+          Height = 15
+          Top = 8
+          Width = 51
+          Caption = 'LabelSize:'
+          ParentColor = False
+        end
+        object Bevel1: TBevel
+          Left = 96
+          Height = 422
+          Top = 0
+          Width = 8
+          Align = alRight
+          Shape = bsRightLine
+        end
+      end
+      object ChartRight: TChart
+        Left = 384
+        Height = 422
+        Top = 0
+        Width = 282
+        AxisList = <        
+          item
+            Grid.Color = clSilver
+            AxisPen.Visible = True
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Y axis'
+          end        
+          item
+            Grid.Color = clSilver
+            Alignment = calBottom
+            AxisPen.Visible = True
+            Marks.LabelFont.Orientation = 900
+            Minors = <>
+            Title.Visible = True
+            Title.Caption = 'X axis'
+          end        
+          item
+            Alignment = calTop
+            Marks.Visible = False
+            Minors = <>
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        MarginsExternal.Left = 10
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alRight
+        Color = clWhite
+        ParentColor = False
+        object Chart2LineSeries2: TLineSeries
+          Source = RandomChartSource2
+        end
+      end
+      object ChartLeft: TChart
+        Left = 104
+        Height = 422
+        Top = 0
+        Width = 280
+        AntialiasingMode = amOn
+        AxisList = <        
+          item
+            Grid.Color = clSilver
+            AxisPen.Visible = True
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.Visible = True
+            Title.Caption = 'Y axis'
+          end        
+          item
+            Grid.Color = clSilver
+            Alignment = calBottom
+            AxisPen.Visible = True
+            Marks.LabelFont.Orientation = 900
+            Minors = <>
+            Title.Visible = True
+            Title.Caption = 'X axis'
+          end        
+          item
+            Alignment = calTop
+            Marks.Visible = False
+            Minors = <>
+          end>
+        BackColor = clWhite
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        MarginsExternal.Left = 10
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Align = alClient
+        Color = clWhite
+        ParentColor = False
+        object Chart1LineSeries2: TLineSeries
+          Source = RandomChartSource1
+        end
+      end
+    end
+  end
+  object Panel3: TPanel
+    Left = 0
+    Height = 28
+    Top = 472
+    Width = 674
+    Align = alBottom
+    Caption = 'Panel3'
+    TabOrder = 1
+  end
+  object RandomChartSource1: TRandomChartSource
+    PointsNumber = 10
+    RandSeed = 1952997387
+    XMax = 1
+    XMin = 0
+    YMax = 1
+    YMin = 0
+    left = 264
+    top = 272
+  end
+  object RandomChartSource2: TRandomChartSource
+    PointsNumber = 20
+    RandSeed = 1953042499
+    XMax = 1000
+    XMin = -1000
+    YMax = 1000000
+    YMin = 0
+    left = 392
+    top = 272
+  end
+end

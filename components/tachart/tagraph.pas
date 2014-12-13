@@ -828,7 +828,6 @@ begin
     PrepareAxis(ADrawer);
     if (FPrevLogicalExtent <> FLogicalExtent) and Assigned(OnExtentChanging) then
       OnExtentChanging(Self);
-
     ADrawer.DrawingBegin(ARect);
     ADrawer.SetAntialiasingMode(AntialiasingMode);
     Clear(ADrawer, ARect);
