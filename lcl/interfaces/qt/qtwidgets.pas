@@ -792,6 +792,8 @@ type
 
   TQtLineEdit = class(TQtWidget, IQtEdit)
   private
+    FCachedSelectionLen: integer;
+    FCachedSelectionStart: integer;
     FNumbersOnly: boolean;
     FIntValidator: QIntValidatorH;
     FTextChanged: QLineEdit_hookH;
@@ -834,6 +836,8 @@ type
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
       {%H-}WithThemeSpace: Boolean); override;
     procedure SignalTextChanged(p1: PWideString); cdecl;
+    property CachedSelectionStart: integer read FCachedSelectionStart write FCachedSelectionStart;
+    property CachedSelectionLen: integer read FCachedSelectionLen write FCachedSelectionLen;
     property NumbersOnly: boolean read FNumbersOnly write SetNumbersOnly;
     property TextMargins: TRect read GetTextMargins write SetTextMargins;
   end;
@@ -8610,6 +8614,8 @@ function TQtLineEdit.CreateWidget(const AParams: TCreateParams): QWidgetH;
 var
   Parent: QWidgetH;
 begin
+  FCachedSelectionStart := -1;
+  FCachedSelectionLen := -1;
   FIntValidator := nil;
   FNumbersOnly := False;
   if AParams.WndParent <> 0 then
@@ -8644,7 +8650,12 @@ begin
   if hasSelectedText then
     Result := QLineEdit_selectionStart(QLineEditH(Widget))
   else
-    Result := getCursorPosition;
+  begin
+    if (CachedSelectionStart <> -1) and not hasFocus then
+      Result := CachedSelectionStart
+    else
+      Result := getCursorPosition;
+  end;
 end;
 
 function TQtLineEdit.getSelectionLength: Integer;
@@ -8654,10 +8665,14 @@ begin
   if hasSelectedText then
   begin
     W := getSelectedText;
-    Result := Length(W);
-  end
-  else
-    Result := 0;
+    Result := UTF8Length(W);
+  end else
+  begin
+    if (CachedSelectionStart <> -1) and (CachedSelectionLen <> -1) then
+      Result := CachedSelectionLen
+    else
+      Result := 0;
+  end;
 end;
 
 function TQtLineEdit.getText: WideString;
@@ -8746,6 +8761,17 @@ begin
   QEvent_accept(Event);
   if LCLObject = nil then
     exit;
+
+  if (QEvent_type(Event) = QEventFocusOut) then
+  begin
+    CachedSelectionStart := QLineEdit_selectionStart(QLineEditH(Widget));
+    CachedSelectionLen := UTF8Length(getSelectedText);
+  end else
+  if (QEvent_type(Event) = QEventFocusIn) then
+  begin
+    CachedSelectionStart := -1;
+    CachedSelectionLen := -1;
+  end;
 
   if (ChildOfComplexWidget = ccwComboBox) and
     ((QEvent_type(Event) = QEventPaint) or (QEvent_type(Event) = QEventResize))
@@ -10532,6 +10558,24 @@ begin
   BeginEventProcessing;
   try
     case QEvent_type(Event) of
+      QEventFocusOut:
+      begin
+        if Assigned(FLineEdit) and FLineEdit.getVisible then
+        begin
+          FLineEdit.CachedSelectionStart := QLineEdit_selectionStart(QLineEditH(FLineEdit.Widget));
+          FLineEdit.CachedSelectionLen := UTF8Length(FLineEdit.getSelectedText);
+        end;
+        Result := inherited EventFilter(Sender, Event);
+      end;
+      QEventFocusIn:
+      begin
+        if Assigned(FLineEdit) and FLineEdit.getVisible then
+        begin
+          FLineEdit.CachedSelectionStart := -1;
+          FLineEdit.CachedSelectionLen := -1;
+        end;
+        Result := inherited EventFilter(Sender, Event);
+      end;
       QEventHide:
       begin
         if getVisible then
@@ -10768,7 +10812,7 @@ begin
   if (LineEdit <> nil) and QLineEdit_hasSelectedText(LineEdit) then
   begin
     QLineEdit_selectedText(LineEdit, @W);
-    Result := Length(W);
+    Result := UTF8Length(W);
   end
   else
     Result := 0;
