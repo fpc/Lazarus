@@ -861,6 +861,15 @@ begin
       OnExtentChanged(Self);
     FPrevLogicalExtent := FLogicalExtent;
   end;
+
+  // Undo changes made by the drawer (mainly for printing). The user may print
+  // something else after the chart and, for example, would not expect the font
+  // to be rotated.
+  // (Workaround for issue #0027163)
+  ADrawer.SetGetFontOrientationFunc(nil);
+  ADrawer.SetPenParams(psSolid, clDefault);
+  ADrawer.SetBrushParams(bsSolid, clWhite);
+  ADrawer.SetAntialiasingMode(amDontCare);
 end;
 
 procedure TChart.DrawBackWall(ADrawer: IChartDrawer);
