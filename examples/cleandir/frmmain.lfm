@@ -1,14 +1,13 @@
 object MainForm: TMainForm
-  Left = 635
-  Height = 432
-  Top = 338
-  Width = 571
+  Left = 407
+  Height = 442
+  Top = 133
+  Width = 576
   HorzScrollBar.Page = 570
   VertScrollBar.Page = 405
-  ActiveControl = EDailyAt
   Caption = 'Configure Directory Cleaner'
-  ClientHeight = 412
-  ClientWidth = 571
+  ClientHeight = 417
+  ClientWidth = 576
   Menu = MMMain
   OnCloseQuery = FormCloseQuery
   OnShow = FormShow
@@ -17,7 +16,7 @@ object MainForm: TMainForm
     Left = 0
     Height = 26
     Top = 0
-    Width = 571
+    Width = 576
     Caption = 'TBMain'
     Images = ILMain
     TabOrder = 0
@@ -28,6 +27,7 @@ object MainForm: TMainForm
     end
     object ToolButton2: TToolButton
       Left = 24
+      Height = 22
       Top = 2
       Width = 10
       Caption = 'ToolButton2'
@@ -50,6 +50,7 @@ object MainForm: TMainForm
     end
     object ToolButton1: TToolButton
       Left = 103
+      Height = 22
       Top = 2
       Width = 10
       Caption = 'ToolButton1'
@@ -68,23 +69,23 @@ object MainForm: TMainForm
   end
   object PCConfig: TPageControl
     Left = 0
-    Height = 386
+    Height = 391
     Top = 26
-    Width = 571
-    ActivePage = TSScheduling
+    Width = 576
+    ActivePage = TSOptions
     Align = alClient
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 1
     OnChange = PCConfigChange
     object TSOptions: TTabSheet
       Caption = 'Options'
-      ClientHeight = 380
-      ClientWidth = 571
+      ClientHeight = 366
+      ClientWidth = 572
       object LVDirectories: TListView
         Left = 0
-        Height = 214
+        Height = 200
         Top = 50
-        Width = 571
+        Width = 572
         Align = alClient
         Columns = <        
           item
@@ -109,39 +110,45 @@ object MainForm: TMainForm
       object PDirectories: TPanel
         Left = 0
         Height = 116
-        Top = 264
-        Width = 571
+        Top = 250
+        Width = 572
         Align = alBottom
         BevelOuter = bvLowered
         ClientHeight = 116
-        ClientWidth = 571
+        ClientWidth = 572
         TabOrder = 1
         object Label1: TLabel
-          Left = 4
-          Height = 21
-          Top = 10
-          Width = 80
-          Alignment = taRightJustify
-          AutoSize = False
+          AnchorSideTop.Control = EDirName
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EDirName
+          Left = 51
+          Height = 15
+          Top = 11
+          Width = 37
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
           Caption = '&Name'
           FocusControl = EDirName
           Layout = tlCenter
           ParentColor = False
         end
         object Label2: TLabel
-          Left = 4
-          Height = 19
-          Top = 44
-          Width = 80
-          Alignment = taRightJustify
-          AutoSize = False
+          AnchorSideTop.Control = EDirPath
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EDirPath
+          Left = 62
+          Height = 15
+          Top = 43
+          Width = 26
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
           Caption = '&Path'
           FocusControl = EDirPath
           Layout = tlCenter
           ParentColor = False
         end
         object SBDirPath: TSpeedButton
-          Left = 533
+          Left = 534
           Height = 22
           Top = 41
           Width = 23
@@ -186,29 +193,31 @@ object MainForm: TMainForm
         end
         object CBDirEnabled: TTICheckBox
           Left = 94
-          Height = 22
-          Top = 72
-          Width = 70
+          Height = 20
+          Top = 70
+          Width = 73
+          AutoSize = True
           Caption = '&Enabled'
           Link.TIPropertyName = 'Enabled'
-          OnEditingDone = DirectoryChanged
+          OnChange = DirectoryChanged
           PropertyNameAsCaption = False
           TabOrder = 0
         end
         object CBDirRecurse: TTICheckBox
           Left = 94
-          Height = 22
-          Top = 96
-          Width = 70
+          Height = 20
+          Top = 90
+          Width = 73
+          AutoSize = True
           Caption = '&Recurse'
           Link.TIPropertyName = 'Recurse'
-          OnEditingDone = DirectoryChanged
+          OnChange = DirectoryChanged
           PropertyNameAsCaption = False
           TabOrder = 1
         end
         object EDirName: TTIEdit
           Left = 94
-          Height = 23
+          Height = 21
           Top = 8
           Width = 200
           Link.TIPropertyName = 'Name'
@@ -217,9 +226,9 @@ object MainForm: TMainForm
         end
         object EDirPath: TTIEdit
           Left = 94
-          Height = 23
+          Height = 21
           Top = 40
-          Width = 437
+          Width = 438
           Anchors = [akTop, akLeft, akRight]
           Link.TIPropertyName = 'Path'
           OnEditingDone = DirectoryChanged
@@ -230,17 +239,17 @@ object MainForm: TMainForm
         Left = 0
         Height = 50
         Top = 0
-        Width = 571
+        Width = 572
         Align = alTop
         BevelOuter = bvNone
         ClientHeight = 50
-        ClientWidth = 571
+        ClientWidth = 572
         TabOrder = 2
         object Label3: TLabel
           Left = 0
           Height = 24
           Top = 26
-          Width = 571
+          Width = 572
           Align = alBottom
           Alignment = taCenter
           AutoSize = False
@@ -285,42 +294,48 @@ object MainForm: TMainForm
     end
     object TSLocations: TTabSheet
       Caption = 'Locations'
-      ClientHeight = 380
-      ClientWidth = 571
+      ClientHeight = 366
+      ClientWidth = 572
       object PLocation: TPanel
         Left = 0
         Height = 188
-        Top = 192
-        Width = 571
+        Top = 178
+        Width = 572
         Align = alBottom
         BevelOuter = bvLowered
         ClientHeight = 188
-        ClientWidth = 571
+        ClientWidth = 572
         TabOrder = 0
         object LELocationName: TLabel
-          Left = 4
-          Height = 21
-          Top = 13
-          Width = 76
-          Alignment = taRightJustify
-          AutoSize = False
+          AnchorSideTop.Control = ELocationName
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = ELocationName
+          Left = 43
+          Height = 15
+          Top = 16
+          Width = 37
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
           Caption = '&Name'
           Layout = tlCenter
           ParentColor = False
         end
         object Label4: TLabel
-          Left = 4
-          Height = 23
-          Top = 48
-          Width = 76
-          Alignment = taRightJustify
-          AutoSize = False
+          AnchorSideTop.Control = ELocationBaseDir
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = ELocationBaseDir
+          Left = 54
+          Height = 15
+          Top = 51
+          Width = 26
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
           Caption = '&Path'
           Layout = tlCenter
           ParentColor = False
         end
         object SBLocationPath: TSpeedButton
-          Left = 524
+          Left = 525
           Height = 22
           Top = 49
           Width = 23
@@ -365,7 +380,7 @@ object MainForm: TMainForm
         end
         object ELocationBaseDir: TTIEdit
           Left = 86
-          Height = 23
+          Height = 21
           Top = 48
           Width = 432
           Link.TIPropertyName = 'BasePath'
@@ -374,7 +389,7 @@ object MainForm: TMainForm
         end
         object ELocationName: TTIEdit
           Left = 86
-          Height = 23
+          Height = 21
           Top = 13
           Width = 184
           Link.TIPropertyName = 'Name'
@@ -400,14 +415,14 @@ object MainForm: TMainForm
             'sdMin=Min'
             'sdTime=Time'
           )
-          OnEditingDone = LocationChanged
+          OnItemClick = LocationSubdirsItemClick
         end
       end
       object LVLocations: TListView
         Left = 0
-        Height = 192
+        Height = 178
         Top = 0
-        Width = 571
+        Width = 572
         Align = alClient
         Columns = <        
           item
@@ -430,13 +445,13 @@ object MainForm: TMainForm
     end
     object TSFileActions: TTabSheet
       Caption = 'Actions'
-      ClientHeight = 380
-      ClientWidth = 571
+      ClientHeight = 366
+      ClientWidth = 572
       object LVFileActions: TListView
         Left = 0
-        Height = 216
+        Height = 202
         Top = 0
-        Width = 571
+        Width = 572
         Align = alClient
         Columns = <        
           item
@@ -471,61 +486,74 @@ object MainForm: TMainForm
       object PFileAction: TPanel
         Left = 0
         Height = 164
-        Top = 216
-        Width = 571
+        Top = 202
+        Width = 572
         Align = alBottom
         BevelOuter = bvLowered
         ClientHeight = 164
-        ClientWidth = 571
+        ClientWidth = 572
         TabOrder = 1
         object LSEFileActionMinCompressSize: TLabel
-          Left = 214
-          Height = 20
-          Top = 131
-          Width = 85
-          Alignment = taRightJustify
-          AutoSize = False
+          AnchorSideTop.Control = SEFileActionMinCompressSize
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = SEFileActionMinCompressSize
+          Left = 212
+          Height = 15
+          Top = 128
+          Width = 84
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
           Caption = '&Minimum size'
           FocusControl = SEFileActionMinCompressSize
           Layout = tlCenter
           ParentColor = False
         end
         object Label5: TLabel
-          Left = 15
-          Height = 23
-          Top = 8
-          Width = 70
-          Alignment = taRightJustify
-          AutoSize = False
+          AnchorSideTop.Control = EFileActionName
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EFileActionName
+          Left = 49
+          Height = 15
+          Top = 11
+          Width = 37
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
           Caption = '&Name'
           Layout = tlCenter
           ParentColor = False
         end
         object Label6: TLabel
-          Left = 15
-          Height = 23
-          Top = 40
-          Width = 70
-          Alignment = taRightJustify
-          AutoSize = False
+          AnchorSideTop.Control = EFileActionExtensions
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = EFileActionExtensions
+          Left = 19
+          Height = 15
+          Top = 43
+          Width = 67
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
           Caption = '&Extensions'
           Layout = tlCenter
           ParentColor = False
         end
         object Label7: TLabel
-          Left = 13
-          Height = 25
-          Top = 72
-          Width = 72
+          AnchorSideTop.Control = CBFileActionLocationName
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = CBFileActionLocationName
+          Left = 35
+          Height = 15
+          Top = 75
+          Width = 51
           Alignment = taRightJustify
-          AutoSize = False
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 6
           Caption = 'Location'
           Layout = tlCenter
           ParentColor = False
         end
         object EFileActionName: TTIEdit
           Left = 92
-          Height = 23
+          Height = 21
           Top = 8
           Width = 178
           Link.TIPropertyName = 'Name'
@@ -534,7 +562,7 @@ object MainForm: TMainForm
         end
         object EFileActionExtensions: TTIEdit
           Left = 92
-          Height = 23
+          Height = 21
           Top = 40
           Width = 178
           Link.TIPropertyName = 'Extensions'
@@ -543,20 +571,22 @@ object MainForm: TMainForm
         end
         object CBFileActionDelete: TTICheckBox
           Left = 92
-          Height = 22
-          Top = 104
-          Width = 60
+          Height = 20
+          Top = 102
+          Width = 65
+          AutoSize = True
           Caption = '&Delete'
           Link.TIPropertyName = 'Delete'
-          OnEditingDone = ActionChanged
+          OnChange = ActionChanged
           PropertyNameAsCaption = False
           TabOrder = 2
         end
         object CBFileActionCompress: TTICheckBox
           Left = 92
-          Height = 22
-          Top = 131
-          Width = 79
+          Height = 20
+          Top = 125
+          Width = 85
+          AutoSize = True
           Caption = '&Compress'
           Link.TIPropertyName = 'Compress'
           OnChange = CBFileActionCompressChange
@@ -564,9 +594,11 @@ object MainForm: TMainForm
           TabOrder = 3
         end
         object SEFileActionMinCompressSize: TTISpinEdit
+          AnchorSideTop.Control = CBFileActionCompress
+          AnchorSideTop.Side = asrCenter
           Left = 302
-          Height = 23
-          Top = 128
+          Height = 21
+          Top = 125
           Width = 50
           Link.TIElementName = 'MinCompressSize'
           MaxValue = 10000
@@ -592,26 +624,32 @@ object MainForm: TMainForm
     end
     object TSScheduling: TTabSheet
       Caption = 'Scheduling'
-      ClientHeight = 360
-      ClientWidth = 563
+      ClientHeight = 366
+      ClientWidth = 572
       object LEDailyAt: TLabel
-        Left = 14
-        Height = 23
-        Top = 130
-        Width = 56
-        Alignment = taRightJustify
-        AutoSize = False
+        AnchorSideTop.Control = EDailyAt
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = EDailyAt
+        Left = 32
+        Height = 15
+        Top = 133
+        Width = 48
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 6
         Caption = 'Daily at'
         Layout = tlCenter
         ParentColor = False
       end
       object LSEHourlyAt: TLabel
-        Left = 14
-        Height = 23
-        Top = 170
-        Width = 56
-        Alignment = taRightJustify
-        AutoSize = False
+        AnchorSideTop.Control = SEHourlyAt
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = SEHourlyAt
+        Left = 23
+        Height = 15
+        Top = 173
+        Width = 57
+        Anchors = [akTop, akRight]
+        BorderSpacing.Right = 6
         Caption = 'Hourly at'
         Layout = tlCenter
         ParentColor = False
@@ -680,8 +718,7 @@ object MainForm: TMainForm
   end
   object MMMain: TMainMenu
     Images = ILMain
-    left = 80
-    top = 64
+    left = 382
     object MFile: TMenuItem
       Caption = '&File'
       object MNew: TMenuItem
@@ -857,96 +894,80 @@ object MainForm: TMainForm
       object MINewItem: TMenuItem
         Action = ANewItem
         Bitmap.Data = {
-          36050000424D3605000000000000360400002800000010000000100000000100
-          0800000000000001000000000000000000000000000000000000000000000000
-          80000080000000808000800000008000800080800000C0C0C000C0DCC000F0CA
-          A6000020400000206000002080000020A0000020C0000020E000004000000040
-          20000040400000406000004080000040A0000040C0000040E000006000000060
-          20000060400000606000006080000060A0000060C0000060E000008000000080
-          20000080400000806000008080000080A0000080C0000080E00000A0000000A0
-          200000A0400000A0600000A0800000A0A00000A0C00000A0E00000C0000000C0
-          200000C0400000C0600000C0800000C0A00000C0C00000C0E00000E0000000E0
-          200000E0400000E0600000E0800000E0A00000E0C00000E0E000400000004000
-          20004000400040006000400080004000A0004000C0004000E000402000004020
-          20004020400040206000402080004020A0004020C0004020E000404000004040
-          20004040400040406000404080004040A0004040C0004040E000406000004060
-          20004060400040606000406080004060A0004060C0004060E000408000004080
-          20004080400040806000408080004080A0004080C0004080E00040A0000040A0
-          200040A0400040A0600040A0800040A0A00040A0C00040A0E00040C0000040C0
-          200040C0400040C0600040C0800040C0A00040C0C00040C0E00040E0000040E0
-          200040E0400040E0600040E0800040E0A00040E0C00040E0E000800000008000
-          20008000400080006000800080008000A0008000C0008000E000802000008020
-          20008020400080206000802080008020A0008020C0008020E000804000008040
-          20008040400080406000804080008040A0008040C0008040E000806000008060
-          20008060400080606000806080008060A0008060C0008060E000808000008080
-          20008080400080806000808080008080A0008080C0008080E00080A0000080A0
-          200080A0400080A0600080A0800080A0A00080A0C00080A0E00080C0000080C0
-          200080C0400080C0600080C0800080C0A00080C0C00080C0E00080E0000080E0
-          200080E0400080E0600080E0800080E0A00080E0C00080E0E000C0000000C000
-          2000C0004000C0006000C0008000C000A000C000C000C000E000C0200000C020
-          2000C0204000C0206000C0208000C020A000C020C000C020E000C0400000C040
-          2000C0404000C0406000C0408000C040A000C040C000C040E000C0600000C060
-          2000C0604000C0606000C0608000C060A000C060C000C060E000C0800000C080
-          2000C0804000C0806000C0808000C080A000C080C000C080E000C0A00000C0A0
-          2000C0A04000C0A06000C0A08000C0A0A000C0A0C000C0A0E000C0C00000C0C0
-          2000C0C04000C0C06000C0C08000C0C0A000F0FBFF00A4A0A000808080000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00F6F6F6F6F6F6
-          F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F618181800F6F6F6F6F6F6F6F6F6F6F6
-          181802180010F6F6F6F6F6F6F6F6F61802022828181800F6F6F6F6F6F6F60202
-          2828302802181800F6F6F6F6F6F600022830BA3028021800F6F6F6F6F6F6FB28
-          30BAFA2828280218F6F6F600F6F60030BA00BABA28282802F6F6F6FB00F6FB28
-          00FBBABABABA2828F6F6F6F6FB000000FBBABABABABABA78F6F6F600F6FBFBFB
-          7800000079B9B9F6F6F6F6FBF6FBFBFBB9FBFBFBFA79F6F6F6F6F6F600FBFBFB
-          00F6B9B9F6F6F6F6F6F6F600FBF600F6FB00F6F6F6F6F6F6F6F6F6FBF6F6FBF6
-          F6FBF6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000F0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF006000FF006000FF0060
+          00FF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF006000FF006000FF008000FF0060
+          00FF000000FF004000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFF006000FF008000FF008000FF00A000FF00A0
+          00FF006000FF006000FF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF008000FF008000FF00A000FF00A000FF00C000FF00A0
+          00FF008000FF006000FF006000FF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF000000FF008000FF00A000FF00C000FF80E040FF00C0
+          00FF00A000FF008000FF006000FF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF00FFFFFF00A000FF00C000FF80E040FF00FF00FF00A0
+          00FF00A000FF00A000FF008000FF006000FFF0FBFFFFF0FBFFFFF0FBFFFF0000
+          00FFF0FBFFFFF0FBFFFF000000FF00C000FF80E040FF000000FF80E040FF80E0
+          40FF00A000FF00A000FF00A000FF008000FFF0FBFFFFF0FBFFFFF0FBFFFF00FF
+          FFFF000000FFF0FBFFFF00FFFFFF00A000FF000000FF00FFFFFF80E040FF80E0
+          40FF80E040FF80E040FF00A000FF00A000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFF00FFFFFF000000FF000000FF000000FF00FFFFFF80E040FF80E040FF80E0
+          40FF80E040FF80E040FF80E040FF40E000FFF0FBFFFFF0FBFFFFF0FBFFFF0000
+          00FFF0FBFFFF00FFFFFF00FFFFFF00FFFFFF40E000FF000000FF000000FF0000
+          00FF40E020FF80E020FF80E020FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF00FF
+          FFFFF0FBFFFF00FFFFFF00FFFFFF00FFFFFF80E020FF00FFFFFF00FFFFFF00FF
+          FFFF00FF00FF40E020FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFF000000FF00FFFFFF00FFFFFF00FFFFFF000000FFF0FBFFFF80E020FF80E0
+          20FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF0000
+          00FF00FFFFFFF0FBFFFF000000FFF0FBFFFF00FFFFFF000000FFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF00FF
+          FFFFF0FBFFFFF0FBFFFF00FFFFFFF0FBFFFFF0FBFFFF00FFFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF
         }
         OnClick = ANewItemExecute
       end
       object MIDeleteItem: TMenuItem
         Action = ADeleteItem
         Bitmap.Data = {
-          36050000424D3605000000000000360400002800000010000000100000000100
-          0800000000000001000000000000000000000000000000000000000000000000
-          80000080000000808000800000008000800080800000C0C0C000C0DCC000F0CA
-          A6000020400000206000002080000020A0000020C0000020E000004000000040
-          20000040400000406000004080000040A0000040C0000040E000006000000060
-          20000060400000606000006080000060A0000060C0000060E000008000000080
-          20000080400000806000008080000080A0000080C0000080E00000A0000000A0
-          200000A0400000A0600000A0800000A0A00000A0C00000A0E00000C0000000C0
-          200000C0400000C0600000C0800000C0A00000C0C00000C0E00000E0000000E0
-          200000E0400000E0600000E0800000E0A00000E0C00000E0E000400000004000
-          20004000400040006000400080004000A0004000C0004000E000402000004020
-          20004020400040206000402080004020A0004020C0004020E000404000004040
-          20004040400040406000404080004040A0004040C0004040E000406000004060
-          20004060400040606000406080004060A0004060C0004060E000408000004080
-          20004080400040806000408080004080A0004080C0004080E00040A0000040A0
-          200040A0400040A0600040A0800040A0A00040A0C00040A0E00040C0000040C0
-          200040C0400040C0600040C0800040C0A00040C0C00040C0E00040E0000040E0
-          200040E0400040E0600040E0800040E0A00040E0C00040E0E000800000008000
-          20008000400080006000800080008000A0008000C0008000E000802000008020
-          20008020400080206000802080008020A0008020C0008020E000804000008040
-          20008040400080406000804080008040A0008040C0008040E000806000008060
-          20008060400080606000806080008060A0008060C0008060E000808000008080
-          20008080400080806000808080008080A0008080C0008080E00080A0000080A0
-          200080A0400080A0600080A0800080A0A00080A0C00080A0E00080C0000080C0
-          200080C0400080C0600080C0800080C0A00080C0C00080C0E00080E0000080E0
-          200080E0400080E0600080E0800080E0A00080E0C00080E0E000C0000000C000
-          2000C0004000C0006000C0008000C000A000C000C000C000E000C0200000C020
-          2000C0204000C0206000C0208000C020A000C020C000C020E000C0400000C040
-          2000C0404000C0406000C0408000C040A000C040C000C040E000C0600000C060
-          2000C0604000C0606000C0608000C060A000C060C000C060E000C0800000C080
-          2000C0804000C0806000C0808000C080A000C080C000C080E000C0A00000C0A0
-          2000C0A04000C0A06000C0A08000C0A0A000C0A0C000C0A0E000C0C00000C0C0
-          2000C0C04000C0C06000C0C08000C0C0A000F0FBFF00A4A0A000808080000000
-          FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00F6F6F6F6F6F6
-          F6F6F6F6F6F6F6F6F6F6F6F6F9F9010A00F6F6F600F9F900F6F6F6F6F6F9F9F9
-          0100F6000DF900F6F6F6F6F6F6F6F9F9F90100F9F953F6F6F6F6F6F6F6F6F65C
-          F9F9F9F954F6F6F6F6F6F6F6F6F65C00F9F9F9F90052F6F6F6F6F6F6F65D00F9
-          F91266F9F90049F6F6F6F6F6F600F9F967BF675EF9F900F6F6F6F6F600F9F967
-          BF6F66665EF9F9F6F6F6F6F6F9F967BF67BFBF665E66F9F6F6F6F6F6F65D5D6F
-          BFBFBFBFBF5E66F6F6F6F6F6F66FBFBFBFBFBFBFBFBF6FF6F6F6F6F6F6F66F6F
-          777777777777F6F6F6F6F6F6F6F6F677776F6F6F77F6F6F6F6F6F6F6F6F6F6F6
-          F67777F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6F6
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000F0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFF0000FFFF0000FFFF000080FF002040FF000000FFF0FBFFFFF0FBFFFFF0FB
+          FFFF000000FF0000FFFF0000FFFF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFF0000FFFF0000FFFF0000FFFF000080FF000000FFF0FBFFFF0000
+          00FF0020A0FF0000FFFF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF0000FFFF0000FFFF0000FFFF000080FF000000FF0000
+          FFFF0000FFFF404060FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFF406080FF0000FFFF0000FFFF0000FFFF0000
+          FFFF404080FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF406080FF000000FF0000FFFF0000FFFF0000FFFF0000
+          FFFF000000FF404040FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFF4060A0FF000000FF0000FFFF0000FFFF004040FF4080C0FF0000
+          FFFF0000FFFF000000FF402020FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFF000000FF0000FFFF0000FFFF4080E0FF80E0E0FF4080E0FF4060
+          C0FF0000FFFF0000FFFF000000FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFF000000FF0000FFFF0000FFFF4080E0FF80E0E0FF40A0E0FF4080C0FF4080
+          C0FF4060C0FF0000FFFF0000FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFF0000FFFF0000FFFF4080E0FF80E0E0FF4080E0FF80E0E0FF80E0E0FF4080
+          C0FF4060C0FF4080C0FF0000FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFF4060A0FF4060A0FF40A0E0FF80E0E0FF80E0E0FF80E0E0FF80E0
+          E0FF80E0E0FF4060C0FF4080C0FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFF40A0E0FF80E0E0FF80E0E0FF80E0E0FF80E0E0FF80E0E0FF80E0
+          E0FF80E0E0FF80E0E0FF40A0E0FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFF40A0E0FF40A0E0FF40C0E0FF40C0E0FF40C0E0FF40C0
+          E0FF40C0E0FF40C0E0FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFF40C0E0FF40C0E0FF40A0E0FF40A0E0FF40A0
+          E0FF40C0E0FFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF40C0E0FF40C0E0FFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FB
+          FFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFFF0FBFFFF
         }
         OnClick = ADeleteItemExecute
       end
@@ -965,8 +986,8 @@ object MainForm: TMainForm
   end
   object ALMain: TActionList
     Images = ILMain
-    left = 80
-    top = 96
+    left = 382
+    top = 32
     object ANew: TAction
       Category = 'File'
       Caption = '&New'
@@ -1035,20 +1056,19 @@ object MainForm: TMainForm
     Filter = 'Configuration files|*.cfg|All files|*.*'
     FilterIndex = 0
     Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
-    left = 120
-    top = 64
+    left = 422
   end
   object ODConfig: TOpenDialog
     Title = 'Open existing configuration file'
-    Filter = 'Configuration files|*.cfg|All files|*.*'
+    Filter = 'Configuration files|*.cfg|All files|*'
     FilterIndex = 0
     Options = [ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 120
-    top = 96
+    left = 422
+    top = 32
   end
   object ILMain: TImageList
-    left = 42
-    top = 66
+    left = 344
+    top = 2
     Bitmap = {
       4C690600000010000000100000000000000000000000C88B4DFFC88C4FFFC88C
       4FFFC88C4FFFC88C4FFFC88D4FFFC98C4FFFC78B4FFFC5894BFFC4763BFF0000
@@ -1246,9 +1266,8 @@ object MainForm: TMainForm
     }
   end
   object SDDir: TSelectDirectoryDialog
-    Title = 'Select Directory'
     FilterIndex = 0
-    left = 162
-    top = 66
+    left = 464
+    top = 2
   end
 end

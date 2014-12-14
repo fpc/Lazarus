@@ -140,6 +140,7 @@ type
     procedure ATestExecute(Sender: TObject);
     procedure ActionChanged(Sender: TObject);
     procedure CBFileActionCompressChange(Sender: TObject);
+    procedure LocationSubdirsItemClick(Sender: TObject; Index: integer);
     procedure DirectoryChanged(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormShow(Sender: TObject);
@@ -342,6 +343,7 @@ end;
 
 procedure TMainForm.ActionChanged(Sender: TObject);
 begin
+  RefreshFileActionItem(LVFileActions.Selected);
   FFileActionChanged:=True;
 end;
 
@@ -729,7 +731,7 @@ begin
     LI.Free;
     If (I>=LV.Items.Count) then
       Dec(I);
-    If (I<LV.Items.Count) then
+    If (i>=0) and (I<LV.Items.Count) then
       Result:=LV.Items[I];
     end;
 end;
@@ -784,6 +786,11 @@ begin
   FLocationChanged:=True;
 end;
 
+procedure TMainForm.LocationSubdirsItemClick(Sender: TObject; Index: integer);
+begin
+  LocationChanged(Sender);
+end;
+
 
 procedure TMainForm.SBLocationPathClick(Sender: TObject);
 begin
@@ -793,7 +800,6 @@ begin
     ELocationBaseDir.Link.LoadFromProperty;
     end;
 end;
-
 
 
 procedure TMainForm.ShowLocations(ALocations: TLocations);
@@ -890,7 +896,9 @@ begin
   LI:=LVLocations.Items.Add;
   LI.Data:=D;
   LVLocations.Selected:=LI;
+  RefreshLocationItem(LI);
   ShowLocationItem(LI);
+  FLocationChanged:=True;
 end;
 
 procedure TMainForm.DeleteLocation;
@@ -924,7 +932,6 @@ begin
   ActionChanged(Sender);
   CheckCompressMinSize;
 end;
-
 
 procedure TMainForm.ShowFileActions(AFileActions: TFileActions);
 
@@ -1019,7 +1026,9 @@ begin
   LI:=LVFileActions.Items.Add;
   LI.Data:=D;
   LVFileActions.Selected:=LI;
+  RefreshFileActionItem(LI);
   ShowFileActionItem(LI);
+  FFileActionChanged:=True;
 end;
 
 procedure TMainForm.DeleteFileAction;
@@ -1027,6 +1036,7 @@ procedure TMainForm.DeleteFileAction;
 begin
   FreeAndNil(FFileAction);
   ShowDirectoryItem(DeleteListItem(LVFileActions));
+  FFileActionChanged:=True;
 end;
 
 Function TMainForm.HaveFileAction : Boolean;
