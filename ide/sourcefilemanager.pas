@@ -4027,7 +4027,6 @@ var
   md, ActiveMode: TProjectBuildMode;
   BuildActiveMode: Boolean;
   i: Integer;
-  Msg: String;
 begin
   Result := False;
   ModeCnt := 0;
@@ -4060,8 +4059,8 @@ begin
     // Switch back to original mode.
     Project1.ActiveBuildMode := ActiveMode;
     SaveProject([]);
-    Msg := Format(lisSelectedModesWereBuilt, [ModeCnt]);
-    IDEMessageDialog(lisSuccess, Msg, mtInformation, [mbOK]);
+    IDEMessageDialog(lisSuccess, Format(lisSelectedModesWereBuilt, [ModeCnt]),
+                     mtInformation, [mbOK]);
     Result:=True;
   finally
     ModeList.Free;
