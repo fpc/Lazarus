@@ -340,14 +340,17 @@ begin
 end;
 
 procedure TLegendItem.Draw(ADrawer: IChartDrawer; const ARect: TRect);
+var
+  symTextSpc: Integer;
 begin
+  symTextSpc := ADrawer.Scale(SYMBOL_TEXT_SPACING);
   if ADrawer.GetRightToLeft then
     ADrawer.TextOut.
-      Pos(ARect.Left - SYMBOL_TEXT_SPACING - ADrawer.TextExtent(FText).X, ARect.Top).
+      Pos(ARect.Left - symTextSpc - ADrawer.TextExtent(FText).X, ARect.Top).
       Text(FText).Done
   else
     ADrawer.TextOut.
-      Pos(ARect.Right + SYMBOL_TEXT_SPACING, ARect.Top).Text(FText).Done;
+      Pos(ARect.Right + symTextSpc, ARect.Top).Text(FText).Done;
 end;
 
 function TLegendItem.HasSymbol: Boolean;
@@ -435,8 +438,8 @@ begin
   if FPointer = nil then exit;
   c := CenterPoint(ARect);
   // Max width slightly narrower then ARect to leave place for the line.
-  sz.X := Min(FPointer.HorizSize, (ARect.Right - ARect.Left) div 3);
-  sz.Y := Min(FPointer.VertSize, (ARect.Bottom - ARect.Top) div 2);
+  sz.X := Min(ADrawer.Scale(FPointer.HorizSize), (ARect.Right - ARect.Left) div 3);
+  sz.Y := Min(ADrawer.Scale(FPointer.VertSize), (ARect.Bottom - ARect.Top) div 2);
   FPointer.DrawSize(ADrawer, c, sz, Color);
 end;
 
@@ -556,9 +559,12 @@ var
     prevFont: TFont = nil;
     r: TRect;
     isRTL: Boolean;
+    space, symwid: Integer;
   begin
     isRTL := drawer.GetRightToLeft;
     with AData do begin
+      space := FDrawer.Scale(Spacing);
+      symwid := FDrawer.Scale(SymbolWidth);
       for i := 0 to FItems.Count - 1 do begin
         FItems[i].UpdateFont(drawer, prevFont);
         drawer.Brush := BackgroundBrush;
@@ -574,22 +580,24 @@ var
         end;
         if isRTL then
           r := Bounds(
-            FBounds.Right - Spacing - x * (FItemSize.X + Spacing) - SymbolWidth,
-            FBounds.Top + Spacing + y * (FItemSize.Y + Spacing),
-            SymbolWidth, FItemSize.Y)
+            FBounds.Right - space - x * (FItemSize.X + space) - symwid,
+            FBounds.Top + space + y * (FItemSize.Y + space),
+            symwid,
+            FItemSize.Y)
         else
           r := Bounds(
-            FBounds.Left + Spacing + x * (FItemSize.X + Spacing),
-            FBounds.Top + Spacing + y * (FItemSize.Y + Spacing),
-            SymbolWidth, FItemSize.Y);
+            FBounds.Left + space + x * (FItemSize.X + space),
+            FBounds.Top + space + y * (FItemSize.Y + space),
+            symwid,
+            FItemSize.Y);
         FItems[i].Draw(drawer, r);
-        OffsetRect(r, 0, FItemSize.Y + Spacing);
+        OffsetRect(r, 0, FItemSize.Y + space);
       end;
       if GridHorizontal.EffVisible then begin
         drawer.Pen := GridHorizontal;
         drawer.SetBrushParams(bsClear, clTAColor);
         for i := 1 to FRowCount - 1 do begin
-          y := FBounds.Top + Spacing div 2 + i * (FItemSize.Y + Spacing);
+          y := FBounds.Top + space div 2 + i * (FItemSize.Y + space);
           drawer.Line(FBounds.Left, y, FBounds.Right, y);
         end;
       end;
@@ -597,7 +605,7 @@ var
         drawer.Pen := GridVertical;
         drawer.SetBrushParams(bsClear, clTAColor);
         for i := 1 to FColCount - 1 do begin
-          x := FBounds.Left + Spacing div 2 + i * (FItemSize.X + Spacing);
+          x := FBounds.Left + space div 2 + i * (FItemSize.X + space);
           drawer.Line(x, FBounds.Top, x, FBounds.Bottom);
         end;
       end;
@@ -646,11 +654,11 @@ begin
     else
       p := ADrawer.TextExtent(li.Text);
     if li.HasSymbol then
-      p.X += SYMBOL_TEXT_SPACING + SymbolWidth;
+      p.X += ADrawer.Scale(SYMBOL_TEXT_SPACING + SymbolWidth);
     Result := MaxPoint(p, Result);
   end;
   if FixedItemHeight > 0 then
-    Result.Y := FixedItemHeight;
+    Result.Y := ADrawer.Scale(FixedItemHeight);
 end;
 
 procedure TChartLegend.Prepare(
@@ -658,21 +666,25 @@ procedure TChartLegend.Prepare(
 var
   x, y: Integer;
   sidebar, legendSize: TPoint;
+  margX, margY, space: Integer;
 begin
   with AData do begin
+    margX := FDrawer.Scale(MarginX);
+    margY := FDrawer.Scale(MarginY);
+    space := FDrawer.Scale(Spacing);
     FColCount := Max(Min(ColumnCount, FItems.Count), 1);
     FRowCount := (FItems.Count - 1) div FColCount + 1;
     FItemSize := MeasureItem(FDrawer, FItems);
-    legendSize.X := (FItemSize.X + Spacing) * FColCount + Spacing;
-    legendSize.Y := (FItemSize.Y + Spacing) * FRowCount + Spacing;
+    legendSize.X := (FItemSize.X + space) * FColCount + space;
+    legendSize.Y := (FItemSize.Y + space) * FRowCount + space;
   end;
 
-  sidebar.X := 2 * MarginX;
+  sidebar.X := 2 * margX;
   with AClipRect do
     legendSize.X := EnsureRange(legendSize.X, 0, Right - Left - sidebar.X);
   sidebar.X += legendSize.X;
 
-  sidebar.Y := 2 * MarginX;
+  sidebar.Y := 2 * margX;
   with AClipRect do
     legendSize.Y := EnsureRange(legendSize.Y, 0, Bottom - Top - sidebar.Y);
   sidebar.Y += legendSize.Y;
@@ -680,17 +692,17 @@ begin
   // Determine position according to the alignment.
   case Alignment of
     laTopLeft, laCenterLeft, laBottomLeft:
-      x := AClipRect.Left + MarginX;
+      x := AClipRect.Left + margX;
     laTopRight, laCenterRight, laBottomRight:
-      x := AClipRect.Right - legendSize.X - MarginX;
+      x := AClipRect.Right - legendSize.X - margX;
     laTopCenter, laBottomCenter:
       x := (AClipRect.Right + AClipRect.Left - legendSize.X) div 2;
   end;
   case Alignment of
     laTopLeft, laTopCenter, laTopRight:
-      y := AClipRect.Top + MarginY;
+      y := AClipRect.Top + margY;
     laBottomLeft, laBottomCenter, laBottomRight:
-      y := AClipRect.Bottom - MarginY - legendSize.Y;
+      y := AClipRect.Bottom - margY - legendSize.Y;
     laCenterLeft, laCenterRight:
       y := (AClipRect.Top + AClipRect.Bottom - legendSize.Y) div 2;
   end;
@@ -701,9 +713,9 @@ begin
       laTopRight, laCenterRight, laBottomRight:
         AClipRect.Right -= sidebar.X;
       laTopCenter:
-        AClipRect.Top += legendSize.Y + 2 * MarginY;
+        AClipRect.Top += legendSize.Y + 2 * margY;
       laBottomCenter:
-        AClipRect.Bottom -= legendSize.Y + 2 * MarginY;
+        AClipRect.Bottom -= legendSize.Y + 2 * margY;
     end;
   AData.FBounds := Bounds(x, y, legendSize.X, legendSize.Y);
 end;
