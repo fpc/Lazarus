@@ -375,7 +375,11 @@ end;
 procedure TSeriesPointer.Draw(
   ADrawer: IChartDrawer; ACenter: TPoint; AColor: TColor);
 begin
-  DrawSize(ADrawer, ACenter, Point(HorizSize, VertSize), AColor);
+  DrawSize(ADrawer,
+    ACenter,
+    Point(ADrawer.Scale(HorizSize), ADrawer.Scale(VertSize)),
+    AColor
+  );
 end;
 
 procedure TSeriesPointer.DrawSize(ADrawer: IChartDrawer;
