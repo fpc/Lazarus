@@ -2407,6 +2407,8 @@ type
   protected const
     cDefGrabStyle = gsDouble;
     cDefGrabWidth = 10;
+    cNewRowBelow: SmallInt = -1;
+    cNewRowAbove: SmallInt = -2;
   protected
     FBorderEdges: TEdgeBorders;
     FBorderLeft, FBorderTop, FBorderRight, FBorderBottom: SmallInt;
