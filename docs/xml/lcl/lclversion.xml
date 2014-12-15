@@ -16,7 +16,7 @@ writers and component writers can offer different functionality or workarounds
 for bugs and take the LCL version into account while choosing their algorithms
 at run-time.</p><p>Likewise, these version constants can be used at compile time in conditional
 expressions, such as <i>{$IF lcl_major&gt;0}</i>. These kinds of
-expressions are supported in <i>{$mode delphi}</i> and <i>{$mode objfpc}.</p>
+expressions are supported in <i>{$mode delphi}</i> and <i>{$mode objfpc}</i>.</p>
       </descr>
 
 <!-- constant Visibility: default -->
