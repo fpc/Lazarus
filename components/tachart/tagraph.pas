@@ -802,6 +802,7 @@ procedure TChart.Draw(ADrawer: IChartDrawer; const ARect: TRect);
 var
   ldd: TChartLegendDrawingData;
   s: TBasicChartSeries;
+  fnt: TFont;
 begin
   Prepare;
 
@@ -866,7 +867,12 @@ begin
   // something else after the chart and, for example, would not expect the font
   // to be rotated.
   // (Workaround for issue #0027163)
-  ADrawer.SetGetFontOrientationFunc(nil);
+  fnt := TFont.Create;            // to effectively reset font orientation
+  try
+    ADrawer.Font := fnt;
+  finally
+    fnt.Free;
+  end;
   ADrawer.SetPenParams(psSolid, clDefault);
   ADrawer.SetBrushParams(bsSolid, clWhite);
   ADrawer.SetAntialiasingMode(amDontCare);
