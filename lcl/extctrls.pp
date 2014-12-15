@@ -1195,7 +1195,7 @@ type
   TBandPaintEvent = procedure (Sender: TObject; Control: TControl; Canvas: TCanvas;
     var ARect: TRect; var Options: TBandPaintOptions) of object;
 
-  TRowSize = 1..MaxInt;
+  TRowSize = Integer; // was 1..MaxInt; which causes SIGFPE on Windows with 32-bit FPC2.7.1
 
   TBandMove = (bmNone, bmReady, bmMoving);
   TCursorDesign = (cdDefault, cdGrabber, cdRestricted);
