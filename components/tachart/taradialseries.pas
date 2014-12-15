@@ -236,6 +236,7 @@ var
   i, numSteps: Integer;
   p: array of TPoint;
   a: Double;
+  scaled_depth: Integer;
 begin
   if IsEmpty then exit;
 
@@ -244,15 +245,16 @@ begin
 
   ADrawer.SetPen(EdgePen);
   if Depth > 0 then begin
+    scaled_depth := ADrawer.Scale(Depth);
     for ps in FSlices do begin
       if not ps.FVisible then continue;
       ADrawer.SetBrushParams(bsSolid, SliceColor(ps.FOrigIndex));
       if not InRange(ps.FNextAngle, Pi / 4, 5 * Pi / 4) then
         ADrawer.DrawLineDepth(
-          ps.FBase, ps.FBase + RotatePointX(FRadius, -ps.FNextAngle), Depth);
+          ps.FBase, ps.FBase + RotatePointX(FRadius, -ps.FNextAngle), scaled_depth);
       if InRange(ps.FPrevAngle, Pi / 4, 5 * Pi / 4) then
         ADrawer.DrawLineDepth(
-          ps.FBase, ps.FBase + RotatePointX(FRadius, -ps.FPrevAngle), Depth);
+          ps.FBase, ps.FBase + RotatePointX(FRadius, -ps.FPrevAngle), scaled_depth);
     end;
     for ps in FSlices do begin
       if not ps.FVisible then continue;
@@ -262,7 +264,7 @@ begin
       for i := 0 to numSteps - 1 do begin
         a := WeightedAverage(ps.FPrevAngle, ps.FNextAngle, i / (numSteps - 1));
         p[i] := ps.FBase + RotatePointX(FRadius, -a);
-        p[High(p) - i] := p[i] + Point(Depth, -Depth);
+        p[High(p) - i] := p[i] + Point(scaled_depth, -scaled_depth);
       end;
       ADrawer.Polygon(p, 0, Length(p));
     end;
@@ -487,9 +489,11 @@ var
   di: PChartDataItem;
   prevAngle: Double = 0;
   a, total: Double;
+  scaled_depth: Integer;
 begin
   Result.TopLeft := FCenter;
   Result.BottomRight := FCenter;
+  scaled_depth := ADrawer.Scale(Depth);
   SetLength(FSlices, Count);
   j := 0;
   // This is a workaround for db source invalidating the cache due to
@@ -511,7 +515,7 @@ begin
         ExpandRect(Result, FBase, FRadius, -FPrevAngle, -FNextAngle);
         if Depth > 0 then
           ExpandRect(
-            Result, FBase + Point(Depth, -Depth),
+            Result, FBase + Point(scaled_depth, -scaled_depth),
             FRadius, -FPrevAngle, -FNextAngle);
         FLabel.FAttachment := EndPoint(a, FRadius) + FBase;
         PrepareLabel(FLabel, i, a);

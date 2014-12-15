@@ -146,7 +146,6 @@ type
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
@@ -202,7 +201,6 @@ type
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Draw(ADrawer: IChartDrawer); override;
   public
     procedure BeginUpdate;
@@ -494,6 +492,7 @@ var
     i, j: Integer;
     p, pPrev: TDoublePoint;
     pNan, pPrevNan: Boolean;
+    scaled_depth: Integer;
   begin
     if LineType = ltNone then exit;
     // For extremely long series (10000 points or more), the Canvas.Line call
@@ -543,9 +542,10 @@ var
         ADrawer.SetBrushParams(bsSolid, LinePen.Color);
         ADrawer.SetPenParams(LinePen.Style, clBlack);
       end;
+      scaled_depth := ADrawer.Scale(Depth);
       for i := 0 to High(breaks) - 1 do
         for j := breaks[i] to breaks[i + 1] - 2 do
-          ADrawer.DrawLineDepth(points[j], points[j + 1], Depth);
+          ADrawer.DrawLineDepth(points[j], points[j + 1], scaled_depth);
     end;
   end;
 
@@ -950,6 +950,7 @@ end;
 procedure TBarSeries.Draw(ADrawer: IChartDrawer);
 var
   pointIndex, stackIndex: Integer;
+  scaled_depth: Integer;
 
   procedure DrawBar(const AR: TRect);
   var
@@ -978,9 +979,10 @@ var
     ADrawer.Rectangle(AR);
 
     if Depth = 0 then exit;
-    ADrawer.DrawLineDepth(AR.Left, AR.Top, AR.Right - 1, AR.Top, Depth);
+
+    ADrawer.DrawLineDepth(AR.Left, AR.Top, AR.Right - 1, AR.Top, scaled_depth);
     ADrawer.DrawLineDepth(
-      AR.Right - 1, AR.Top, AR.Right - 1, AR.Bottom - 1, Depth);
+      AR.Right - 1, AR.Top, AR.Right - 1, AR.Bottom - 1, scaled_depth);
   end;
 
 var
@@ -1026,6 +1028,8 @@ begin
   ext2 := ParentChart.CurrentExtent;
   ExpandRange(ext2.a.X, ext2.b.X, 1.0);
   ExpandRange(ext2.a.Y, ext2.b.Y, 1.0);
+
+  scaled_depth := ADrawer.Scale(Depth);
 
   PrepareGraphPoints(ext2, true);
   if IsRotated then
@@ -1211,6 +1215,7 @@ procedure TAreaSeries.Draw(ADrawer: IChartDrawer);
 var
   pts: TPointArray;
   numPts: Integer;
+  scaled_depth: Integer;
 
   procedure PushPoint(const AP: TPoint); overload;
   begin
@@ -1304,7 +1309,7 @@ var
       if Depth > 0 then
         // Rendering is incorrect when values cross zero level.
         for i := 1 to n2 - 2 do
-          ADrawer.DrawLineDepth(pts[i], pts[i + 1], Depth);
+          ADrawer.DrawLineDepth(pts[i], pts[i + 1], scaled_depth);
       ADrawer.Polygon(pts, 0, numPts);
     end;
     if AreaLinesPen.Style <> psClear then begin
@@ -1329,6 +1334,8 @@ begin
 
   PrepareGraphPoints(ext, true);
   if Length(FGraphPoints) = 0 then exit;
+
+  scaled_depth := ADrawer.Scale(Depth);
 
   SetLength(pts, Length(FGraphPoints) * 4 + 4);
   SetLength(prevPts, Length(pts));

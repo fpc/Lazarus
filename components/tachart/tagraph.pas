@@ -713,6 +713,8 @@ procedure TChart.DisplaySeries(ADrawer: IChartDrawer);
 
   procedure OffsetWithDepth(AZPos, ADepth: Integer);
   begin
+    AZPos := ADrawer.Scale(AZPos);
+    ADepth := ADrawer.Scale(ADepth);
     OffsetDrawArea(-AZPos, AZPos);
     FClipRect.Right += ADepth;
     FClipRect.Top -= ADepth;
@@ -882,6 +884,7 @@ procedure TChart.DrawBackWall(ADrawer: IChartDrawer);
 var
   defaultDrawing: Boolean = true;
   ic: IChartTCanvasDrawer;
+  scaled_depth: Integer;
 begin
   if Supports(ADrawer, IChartTCanvasDrawer, ic) and Assigned(OnBeforeDrawBackWall) then
     OnBeforeDrawBackWall(Self, ic.Canvas, FClipRect, defaultDrawing);
@@ -900,9 +903,10 @@ begin
 
   // Z axis
   if (Depth > 0) and FFrame.Visible then begin
+    scaled_depth := ADrawer.Scale(Depth);
     ADrawer.Pen := FFrame;
     with FClipRect do
-      ADrawer.Line(Left, Bottom, Left - Depth, Bottom + Depth);
+      ADrawer.Line(Left, Bottom, Left - scaled_depth, Bottom + scaled_depth);
   end;
 end;
 
@@ -1274,26 +1278,28 @@ var
   tries: Integer;
   prevExt: TDoubleRect;
   axis: TChartAxis;
+  scaled_depth: Integer;
 begin
+  scaled_depth := ADrawer.Scale(Depth);
   if not AxisVisible then begin
-    FClipRect.Left += Depth;
-    FClipRect.Bottom -= Depth;
+    FClipRect.Left += scaled_depth;
+    FClipRect.Bottom -= scaled_depth;
     CalculateTransformationCoeffs(GetMargins(ADrawer));
     exit;
   end;
 
   AxisList.PrepareGroups;
   for axis in AxisList do
-    axis.PrepareHelper(ADrawer, Self, @FClipRect, Depth);
+    axis.PrepareHelper(ADrawer, Self, @FClipRect, scaled_depth);
 
   // There is a cyclic dependency: extent -> visible marks -> margins.
   // We recalculate them iteratively hoping that the process converges.
   CalculateTransformationCoeffs(ZeroRect);
   cr := FClipRect;
   for tries := 1 to 10 do begin
-    axisMargin := AxisList.Measure(CurrentExtent, Depth);
-    axisMargin[calLeft] := Max(axisMargin[calLeft], Depth);
-    axisMargin[calBottom] := Max(axisMargin[calBottom], Depth);
+    axisMargin := AxisList.Measure(CurrentExtent, scaled_depth);
+    axisMargin[calLeft] := Max(axisMargin[calLeft], scaled_depth);
+    axisMargin[calBottom] := Max(axisMargin[calBottom], scaled_depth);
     FClipRect := cr;
     for aa := Low(aa) to High(aa) do
       SideByAlignment(FClipRect, aa, -axisMargin[aa]);

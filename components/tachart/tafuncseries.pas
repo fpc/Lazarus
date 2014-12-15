@@ -935,8 +935,21 @@ begin
 end;
 
 procedure TBSplineSeries.GetLegendItems(AItems: TChartLegendItems);
+var
+  cp: TChartPen;
+  p: TSeriesPointer;
 begin
-  AItems.Add(TLegendItemLine.Create(Pen, LegendTextSingle));
+  if FPen.Visible and (FPen.Style <> psClear) then
+    cp := FPen
+  else
+    cp := nil;
+
+  if FPointer.Visible then
+    p := FPointer
+  else
+    p := nil;
+
+  AItems.Add(TLegendItemLinePointer.Create(cp, p, LegendTextSingle));
 end;
 
 procedure TBSplineSeries.InternalPrepareGraphPoints;
@@ -1180,8 +1193,21 @@ begin
 end;
 
 procedure TCubicSplineSeries.GetLegendItems(AItems: TChartLegendItems);
+var
+  cp: TChartPen;
+  p: TSeriesPointer;
 begin
-  AItems.Add(TLegendItemLine.Create(Pen, LegendTextSingle));
+  if FPen.Visible and (FPen.Style <> psClear) then
+    cp := FPen
+  else
+    cp := nil;
+
+  if FPointer.Visible then
+    p := FPointer
+  else
+    p := nil;
+
+  AItems.Add(TLegendItemLinePointer.Create(cp, p, LegendTextSingle));
 end;
 
 function TCubicSplineSeries.GetNearestPoint(
@@ -1653,6 +1679,8 @@ var
   optimize: Boolean;
   x, y: Integer;
   cellColor: TChartColor;
+  scaled_stepX: Integer;
+  scaled_stepY: Integer;
 begin
   if not (csDesigning in ComponentState) and IsEmpty then exit;
 
@@ -1667,7 +1695,6 @@ begin
   r.BottomRight := ParentChart.GraphToImage(ext.b);
   NormalizeRect(r);
   offset := ParentChart.GraphToImage(ZeroDoublePoint);
-  pt.Y := (r.Top div StepY - 1) * StepY + offset.Y mod StepY;
 
   case UseImage of
     cmuiAuto: optimize := (StepX <= 2) and (StepY <= 2);
@@ -1681,16 +1708,20 @@ begin
     ADrawer.SetPenParams(psClear, clTAColor);
   end;
 
+  if StepX > 1 then scaled_stepX := Max(1, ADrawer.Scale(StepX));
+  if StepY > 1 then scaled_stepY := Max(1, ADrawer.Scale(StepY));
+
   try
+    pt.Y := (r.Top div scaled_stepY - 1) * scaled_stepY + offset.Y mod scaled_stepY;
     while pt.Y <= r.Bottom do begin
-      next.Y := pt.Y + StepY;
+      next.Y := pt.Y + scaled_stepY;
       if next.Y <= r.Top then begin
         pt.Y := next.Y;
         continue;
       end;
-      pt.X := (r.Left div StepX - 1) * StepX + offset.X mod StepX;
+      pt.X := (r.Left div scaled_stepX - 1) * scaled_stepX + offset.X mod scaled_stepX;
       while pt.X <= r.Right do begin
-        next.X := pt.X + StepX;
+        next.X := pt.X + scaled_stepX;
         if next.X <= r.Left then begin
           pt.X := next.X;
           continue;
