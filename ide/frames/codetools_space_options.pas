@@ -82,7 +82,7 @@ const
     '  PRec^.F:=PArr^[5];'#13 +
     '  {$I unit1.lrs}'#13 +
     '  {$R-}{$R+}'#13 +
-    '  // comment'#13 +
+    '  // ąčęęėįšųūž'#13+ //do not change this, Unicode characters are threated as symbols by CodeTools
     'end;';
 begin
   if BeautifyCodeOptions = nil then
