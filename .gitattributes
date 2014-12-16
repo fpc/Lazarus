@@ -4653,6 +4653,11 @@ examples/controlhint/Project1.lpr svneol=native#text/plain
 examples/controlhint/Project1.res -text
 examples/controlhint/Unit1.lfm svneol=native#text/plain
 examples/controlhint/Unit1.pas svneol=native#text/plain
+examples/cooltoolbar/README.txt svneol=native#text/plain
+examples/cooltoolbar/project1.lpi svneol=native#text/plain
+examples/cooltoolbar/project1.lpr svneol=native#text/pascal
+examples/cooltoolbar/unit1.lfm svneol=native#text/plain
+examples/cooltoolbar/unit1.pas svneol=native#text/pascal
 examples/cursors/car.cur -text svneol=unset#image/x-cursor
 examples/cursors/car.res -text
 examples/cursors/project1.lpi svneol=native#text/plain
