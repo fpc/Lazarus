@@ -1450,7 +1450,7 @@ begin
         Path+'LowercaseDefaultFilename/Value',true);
 
       // component palette
-      FComponentPaletteOptions.Load;
+      FComponentPaletteOptions.Load(XMLConfig);
 
       // fpdoc
       FPDocPaths := XMLConfig.GetValue(Path+'LazDoc/Paths','');
@@ -1812,7 +1812,7 @@ begin
                                FLowercaseDefaultFilename,true);
 
       // component palette
-      FComponentPaletteOptions.Save;
+      FComponentPaletteOptions.Save(XMLConfig);
 
       // fpdoc
       XMLConfig.SetDeleteValue(Path+'LazDoc/Paths',FPDocPaths,'');
@@ -2195,7 +2195,7 @@ begin
     else
       FXMLCfg:=TRttiXMLConfig.Create(Filename);
     FConfigStore:=TXMLOptionsStorage.Create(FXMLCfg);
-    ComponentPaletteOptions.ConfigStore:=FConfigStore;
+    //ComponentPaletteOptions.ConfigStore:=FConfigStore;
     ObjectInspectorOptions.ConfigStore:=FConfigStore;
     FDbgConfigStore:=TXMLOptionsStorage.Create(FXMLCfg, 'EnvironmentOptions/Debugger/');
     FDebuggerConfig.ConfigStore := FDbgConfigStore;

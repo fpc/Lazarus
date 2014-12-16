@@ -25,18 +25,25 @@ unit componentpalette_options;
 interface
 
 uses
-  Classes, SysUtils,
-  Graphics, Forms, Controls, StdCtrls, Dialogs, Buttons, ComCtrls, ExtCtrls,
-  FileUtil, LCLProc, LCLType, IDEProcs, EnvironmentOpts, LazarusIDEStrConsts,
-  IDEOptionsIntf, IDEImagesIntf, ComponentReg, ComponentPalette, PackageDefs;
+  Classes, SysUtils, Graphics, Forms, Controls, StdCtrls, Dialogs, Buttons,
+  ComCtrls, ExtCtrls, FileUtil, LCLProc, LCLType, IDEProcs, Laz2_XMLCfg,
+  LazConfigStorage, EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf,
+  IDEImagesIntf, DividerBevel, ComponentReg, ComponentPalette, IDEOptionDefs,
+  PackageDefs;
 
 type
   { TCompPaletteOptionsFrame }
 
   TCompPaletteOptionsFrame = class(TAbstractIDEOptionsEditor)
     AddPageButton: TBitBtn;
+    ImportButton: TBitBtn;
     ComponentsListView: TListView;
     CompMoveDownBtn: TSpeedButton;
+    RecentLabel: TLabel;
+    ExportButton: TBitBtn;
+    ImportDividerBevel: TDividerBevel;
+    RecentButton: TButton;
+    ImportDialog: TOpenDialog;
     PageMoveDownBtn: TSpeedButton;
     CompMoveUpBtn: TSpeedButton;
     PageMoveUpBtn: TSpeedButton;
@@ -44,6 +51,7 @@ type
     ComponentsGroupBox: TGroupBox;
     PagesGroupBox: TGroupBox;
     RestoreButton: TBitBtn;
+    ExportDialog: TSaveDialog;
     Splitter1: TSplitter;
     procedure AddPageButtonClick(Sender: TObject);
     procedure ComponentsListViewChange(Sender: TObject; Item: TListItem;
@@ -59,6 +67,8 @@ type
     procedure ComponentsListViewItemChecked(Sender: TObject; Item: TListItem);
     procedure ComponentsListViewKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure CompMoveDownBtnClick(Sender: TObject);
+    procedure ImportButtonClick(Sender: TObject);
+    procedure ExportButtonClick(Sender: TObject);
     procedure PageMoveDownBtnClick(Sender: TObject);
     procedure CompMoveUpBtnClick(Sender: TObject);
     procedure PageMoveUpBtnClick(Sender: TObject);
@@ -71,9 +81,11 @@ type
   private
     fLocalOptions: TCompPaletteOptions;
     fLocalUserOrder: TCompPaletteUserOrder;
+    fDialog: TAbstractOptionsEditorDialog;
     fPrevPageIndex: Integer;
     fConfigChanged: Boolean;
-    fDialog: TAbstractOptionsEditorDialog;
+    procedure ActualReadSettings;
+    procedure ActualWriteSettings(cpo: TCompPaletteOptions);
     function PageExists(aStr: string): Boolean;
     procedure WritePages(cpo: TCompPaletteOptions);
     procedure WriteComponents(cpo: TCompPaletteOptions);
@@ -127,10 +139,21 @@ end;
 procedure TCompPaletteOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   fDialog := ADialog;
+  // Component pages
   PagesGroupBox.Caption := lisCmpPages;
   AddPageButton.Caption := lisBtnDlgAdd;
+  AddPageButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
   RestoreButton.Caption := lisCmpRestoreDefaults;
-
+  ImportButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
+  ImportButton.Caption := lisDlgImport;
+  ExportButton.LoadGlyphFromResourceName(HInstance, 'laz_save');
+  ExportButton.Caption := lisDlgExport;
+  // File dialogs
+  ImportDialog.Title := lisImport;
+  ImportDialog.Filter := 'XML file (*.xml)|*.xml|All files (*)|*';
+  ExportDialog.Title := lisExport;
+  ExportDialog.Filter := ImportDialog.Filter;
+  // Components in one page
   ComponentsGroupBox.Caption := lisCmpLstComponents;
   ComponentsListView.Column[1].Caption := lisName;
   ComponentsListView.Column[2].Caption := lisPage;
@@ -139,39 +162,44 @@ begin
   // Arrow buttons for pages
   PageMoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
   PageMoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
-  PageMoveUpBtn.Hint:=lisMoveSelectedUp;
-  PageMoveDownBtn.Hint:=lisMoveSelectedDown;
+  PageMoveUpBtn.Hint := lisMoveSelectedUp;
+  PageMoveDownBtn.Hint := lisMoveSelectedDown;
   // Arrow buttons for components
   CompMoveUpBtn.LoadGlyphFromResourceName(HInstance, 'arrow_up');
   CompMoveDownBtn.LoadGlyphFromResourceName(HInstance, 'arrow_down');
-  CompMoveUpBtn.Hint:=lisMoveSelectedUp;
-  CompMoveDownBtn.Hint:=lisMoveSelectedDown;
+  CompMoveUpBtn.Hint := lisMoveSelectedUp;
+  CompMoveDownBtn.Hint := lisMoveSelectedDown;
 
   fPrevPageIndex := -1;
   UpdatePageMoveButtons(PagesListBox.ItemIndex);
   UpdateCompMoveButtons(ComponentsListView.ItemIndex);
 end;
 
-procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
-var
-  cpo: TCompPaletteOptions;
+procedure TCompPaletteOptionsFrame.ActualReadSettings;
 begin
-  cpo:=(AOptions as TEnvironmentOptions).ComponentPaletteOptions;
-  fLocalOptions.Assign(cpo);
-  fLocalUserOrder.Options:=fLocalOptions;
+  Assert(fLocalUserOrder.Options = fLocalOptions, 'fLocalUserOrder.Options <> fLocalOptions');
   fLocalUserOrder.SortPagesAndCompsUserOrder;
-  FillPages;
-  RestoreButton.Enabled := not cpo.IsDefault; // Initial visibility for RestoreButton.
+  FillPages;                             // Initial visibility for RestoreButton.
+  RestoreButton.Enabled := not fLocalOptions.IsDefault;
+end;
+
+procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+begin
+  fLocalOptions.Assign((AOptions as TEnvironmentOptions).ComponentPaletteOptions);
+  fLocalUserOrder.Options:=fLocalOptions;
+  ActualReadSettings;
+end;
+
+procedure TCompPaletteOptionsFrame.ActualWriteSettings(cpo: TCompPaletteOptions);
+begin
+  WritePages(cpo);
+  WriteComponents(cpo);
 end;
 
 procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
-var
-  cpo: TCompPaletteOptions;
 begin
   if not fConfigChanged then Exit;
-  cpo:=(AOptions as TEnvironmentOptions).ComponentPaletteOptions;
-  WritePages(cpo);
-  WriteComponents(cpo);
+  ActualWriteSettings((AOptions as TEnvironmentOptions).ComponentPaletteOptions);
 end;
 
 procedure TCompPaletteOptionsFrame.WritePages(cpo: TCompPaletteOptions);
@@ -257,8 +285,7 @@ begin
     PgName := fLocalUserOrder.ComponentPages[i];
     Assert(PgName<>'', 'TCompPaletteOptionsFrame.FillPages: PageName is empty.');
     Pg := IDEComponentPalette.GetPage(PgName);
-    Assert(Assigned(Pg), 'TCompPaletteOptionsFrame.FillPages: Page is not assigned.');
-    if Pg.Visible then
+    if (Pg=Nil) or Pg.Visible then
     begin
       CompList := TStringList.Create; // StringList will hold components for this page.
       InitialComps(i, CompList);
@@ -448,7 +475,7 @@ begin
     if Source is TListBox then
       DoInsideListBox
     else if Source is TListView then
-      DoFromListView(Source as TListView);
+      DoFromListView(TListView(Source));
   end;
 end;
 
@@ -669,6 +696,56 @@ begin
   else begin
     CompMoveUpBtn.Enabled := False;
     CompMoveDownBtn.Enabled := False;
+  end;
+end;
+
+function OpenXML(const Filename: string): TXMLConfig;
+begin
+  Result := Nil;
+  try
+    Result := TXMLConfig.Create(Filename);
+  except
+    on E: Exception do
+      MessageDlg(lisIECOErrorOpeningXml,
+        Format(lisIECOErrorOpeningXmlFile, [Filename, LineEnding, E.Message]),
+        mtError, [mbCancel], 0);
+  end;
+end;
+
+procedure TCompPaletteOptionsFrame.ImportButtonClick(Sender: TObject);
+var
+  XMLConfig: TXMLConfig;
+begin
+  if ImportDialog.Execute then
+  begin
+    XMLConfig := OpenXML(ImportDialog.Filename);
+    if Assigned(XMLConfig) then
+    try
+      fLocalOptions.Load(XMLConfig);
+      ActualReadSettings;                  // Read from options to GUI.
+      ShowMessageFmt(lisSuccessfullyImported, [ImportDialog.Filename]);
+      fConfigChanged := True;
+    finally
+      XMLConfig.Free;
+    end;
+  end;
+end;
+
+procedure TCompPaletteOptionsFrame.ExportButtonClick(Sender: TObject);
+var
+  XMLConfig: TXMLConfig;
+begin
+  if ExportDialog.Execute then
+  begin
+    XMLConfig := OpenXML(ExportDialog.Filename);
+    if Assigned(XMLConfig) then
+    try
+      ActualWriteSettings(fLocalOptions);  // Write from GUI to options.
+      fLocalOptions.Save(XMLConfig);
+      ShowMessageFmt(lisSuccessfullyExported, [ExportDialog.Filename]);
+    finally
+      XMLConfig.Free;
+    end;
   end;
 end;
 

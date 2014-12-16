@@ -4470,6 +4470,8 @@ resourcestring
   lisCmpLstList = 'List';
   lisCmpLstPalette = 'Palette';
   lisCmpLstInheritance = 'Inheritance';
+  lisSuccessfullyImported = 'Successfully imported from "%s".';
+  lisSuccessfullyExported = 'Successfully exported to "%s".';
 
   // menu editor
   lisMenuEditor = 'Menu Editor ...';

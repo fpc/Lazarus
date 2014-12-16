@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, SysUtils, typinfo, Controls, ComCtrls, Forms,
-  LazConfigStorage, LCLProc, fgl;
+  Laz2_XMLCfg, LCLProc, fgl;
 
 type
   TComponentPriorityCategory = (
@@ -78,7 +78,6 @@ type
 
   TCompPaletteOptions = class(TBaseCompPaletteOptions)
   private
-    FConfigStore: TConfigStorage;
     // Pages removed or renamed. They must be hidden in the palette.
     FHiddenPageNames: TStringList;
   public
@@ -87,10 +86,9 @@ type
     procedure Clear;
     procedure Assign(Source: TCompPaletteOptions);
     function IsDefault: Boolean;
-    function Load: boolean;
-    function Save: boolean;
+    function Load(XMLConfig: TXMLConfig): boolean;
+    function Save(XMLConfig: TXMLConfig): boolean;
   public
-    property ConfigStore: TConfigStorage read FConfigStore write FConfigStore;
     property HiddenPageNames: TStringList read FHiddenPageNames;
   end;
 
@@ -269,6 +267,9 @@ function dbgs(const p: TComponentPriority): string; overload;
 
 implementation
 
+const
+  BasePath = 'ComponentPaletteOptions/';
+
 procedure RaiseException(const Msg: string);
 begin
   raise Exception.Create(Msg);
@@ -387,48 +388,44 @@ begin
     and (HiddenPageNames.Count = 0);
 end;
 
-function TCompPaletteOptions.Load: boolean;
+function TCompPaletteOptions.Load(XMLConfig: TXMLConfig): boolean;
 var
   CompList: TStringList;
-  Path, SubPath, CompPath: String;
+  SubPath, CompPath: String;
   PageName, CompName: String;
   PageCount, CompCount: Integer;
   i, j: Integer;
 begin
   Result:=False;
-  if ConfigStore=nil then exit;
   try
-    Path:='ComponentPaletteOptions/';
-    //FileVersion := ConfigStore.GetValue(Path+'Version/Value',0);
-
     FPageNames.Clear;
-    SubPath:=Path+'Pages/';
-    PageCount:=ConfigStore.GetValue(SubPath+'Count', 0);
+    SubPath:=BasePath+'Pages/';
+    PageCount:=XMLConfig.GetValue(SubPath+'Count', 0);
     for i:=1 to PageCount do begin
-      PageName:=ConfigStore.GetValue(SubPath+'Item'+IntToStr(i)+'/Value', '');
+      PageName:=XMLConfig.GetValue(SubPath+'Item'+IntToStr(i)+'/Value', '');
       if PageName <> '' then
         FPageNames.Add(PageName);
     end;
 
     FHiddenPageNames.Clear;
-    SubPath:=Path+'HiddenPages/';
-    PageCount:=ConfigStore.GetValue(SubPath+'Count', 0);
+    SubPath:=BasePath+'HiddenPages/';
+    PageCount:=XMLConfig.GetValue(SubPath+'Count', 0);
     for i:=1 to PageCount do begin
-      PageName:=ConfigStore.GetValue(SubPath+'Item'+IntToStr(i)+'/Value', '');
+      PageName:=XMLConfig.GetValue(SubPath+'Item'+IntToStr(i)+'/Value', '');
       if PageName <> '' then
         FHiddenPageNames.Add(PageName);
     end;
 
     FComponentPages.Clear;
-    SubPath:=Path+'ComponentPages/';
-    PageCount:=ConfigStore.GetValue(SubPath+'Count', 0);
+    SubPath:=BasePath+'ComponentPages/';
+    PageCount:=XMLConfig.GetValue(SubPath+'Count', 0);
     for i:=1 to PageCount do begin
       CompPath:=SubPath+'Page'+IntToStr(i)+'/';
-      PageName:=ConfigStore.GetValue(CompPath+'Value', '');
+      PageName:=XMLConfig.GetValue(CompPath+'Value', '');
       CompList:=TStringList.Create;
-      CompCount:=ConfigStore.GetValue(CompPath+'Components/Count', 0);
+      CompCount:=XMLConfig.GetValue(CompPath+'Components/Count', 0);
       for j:=1 to CompCount do begin
-        CompName:=ConfigStore.GetValue(CompPath+'Components/Item'+IntToStr(j)+'/Value', '');
+        CompName:=XMLConfig.GetValue(CompPath+'Components/Item'+IntToStr(j)+'/Value', '');
         CompList.Add(CompName);
       end;
       FComponentPages.AddObject(PageName, CompList); // CompList is owned by FComponentPages
@@ -442,39 +439,36 @@ begin
   Result:=True;
 end;
 
-function TCompPaletteOptions.Save: boolean;
+function TCompPaletteOptions.Save(XMLConfig: TXMLConfig): boolean;
 var
   CompList: TStringList;
-  Path, SubPath, CompPath: String;
+  SubPath, CompPath: String;
   i, j: Integer;
 begin
   Result:=False;
-  if ConfigStore=nil then exit;
   try
-    Path:='ComponentPaletteOptions/';
-
-    SubPath:=Path+'Pages/';
-    ConfigStore.DeletePath(SubPath);
-    ConfigStore.SetDeleteValue(SubPath+'Count', FPageNames.Count, 0);
+    SubPath:=BasePath+'Pages/';
+    XMLConfig.DeletePath(SubPath);
+    XMLConfig.SetDeleteValue(SubPath+'Count', FPageNames.Count, 0);
     for i:=0 to FPageNames.Count-1 do
-      ConfigStore.SetDeleteValue(SubPath+'Item'+IntToStr(i+1)+'/Value', FPageNames[i], '');
+      XMLConfig.SetDeleteValue(SubPath+'Item'+IntToStr(i+1)+'/Value', FPageNames[i], '');
 
-    SubPath:=Path+'HiddenPages/';
-    ConfigStore.DeletePath(SubPath);
-    ConfigStore.SetDeleteValue(SubPath+'Count', FHiddenPageNames.Count, 0);
+    SubPath:=BasePath+'HiddenPages/';
+    XMLConfig.DeletePath(SubPath);
+    XMLConfig.SetDeleteValue(SubPath+'Count', FHiddenPageNames.Count, 0);
     for i:=0 to FHiddenPageNames.Count-1 do
-      ConfigStore.SetDeleteValue(SubPath+'Item'+IntToStr(i+1)+'/Value', FHiddenPageNames[i], '');
+      XMLConfig.SetDeleteValue(SubPath+'Item'+IntToStr(i+1)+'/Value', FHiddenPageNames[i], '');
 
-    SubPath:=Path+'ComponentPages/';
-    ConfigStore.DeletePath(SubPath);
-    ConfigStore.SetDeleteValue(SubPath+'Count', FComponentPages.Count, 0);
+    SubPath:=BasePath+'ComponentPages/';
+    XMLConfig.DeletePath(SubPath);
+    XMLConfig.SetDeleteValue(SubPath+'Count', FComponentPages.Count, 0);
     for i:=0 to FComponentPages.Count-1 do begin
       CompList:=FComponentPages.Objects[i] as TStringList;
       CompPath:=SubPath+'Page'+IntToStr(i+1)+'/';
-      ConfigStore.SetDeleteValue(CompPath+'Value', FComponentPages[i], '');
-      ConfigStore.SetDeleteValue(CompPath+'Components/Count', CompList.Count, 0);
+      XMLConfig.SetDeleteValue(CompPath+'Value', FComponentPages[i], '');
+      XMLConfig.SetDeleteValue(CompPath+'Components/Count', CompList.Count, 0);
       for j:=0 to CompList.Count-1 do
-        ConfigStore.SetDeleteValue(CompPath+'Components/Item'+IntToStr(j+1)+'/Value', CompList[j], '');
+        XMLConfig.SetDeleteValue(CompPath+'Components/Item'+IntToStr(j+1)+'/Value', CompList[j], '');
     end;
   except
     on E: Exception do begin
