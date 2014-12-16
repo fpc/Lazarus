@@ -12,7 +12,7 @@ interface
 uses
   LazarusPackageIntf, Menus, Buttons, StdCtrls, ExtCtrls, ComCtrls, MaskEdit,
   CheckLst, Forms, Grids, Controls, Dialogs, Spin, Arrow, Calendar,
-  PairSplitter, ExtDlgs, StdActns, DbCtrls, DBGrids, DBActns, EditBtn,
+  PairSplitter, ExtDlgs, StdActns, DbCtrls, DbExtCtrls, DBGrids, DBActns, EditBtn,
   ActnList, FileCtrl, Graphics, XMLPropStorage, IniPropStorage,
   ColorBox, ButtonPanel, LResources, LazHelpHTML, PopupNotifier, AsyncProcess,
   UTF8Process, ShellCtrls, ValEdit, ComboEx;
@@ -43,6 +43,7 @@ begin
   RegisterUnit('ExtDlgs',@ExtDlgs.Register);
   RegisterUnit('StdActns',@StdActns.Register);
   RegisterUnit('DBCtrls',@DBCtrls.Register);
+  RegisterUnit('DBExtCtrls',@DBExtCtrls.Register);
   RegisterUnit('DBGrids',@DBGrids.Register);
   RegisterUnit('DBActns',@DBActns.Register);
   RegisterUnit('EditBtn',@EditBtn.Register);

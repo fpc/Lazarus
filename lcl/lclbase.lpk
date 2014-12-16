@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="LCLBase"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Lazarus"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -26,7 +27,7 @@
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="3"/>
-    <Files Count="277">
+    <Files Count="278">
       <Item1>
         <Filename Value="checklst.pas"/>
         <UnitName Value="CheckLst"/>
@@ -1139,13 +1140,16 @@
         <Filename Value="comboex.pas"/>
         <UnitName Value="ComboEx"/>
       </Item277>
+      <Item278>
+        <Filename Value="dbextctrls.pp"/>
+        <UnitName Value="DBExtCtrls"/>
+      </Item278>
     </Files>
     <LazDoc Paths="../docs/xml/lcl"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LazUtils"/>

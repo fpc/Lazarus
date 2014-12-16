@@ -6221,6 +6221,7 @@ lcl/customdrawndrawers.pas svneol=native#text/pascal
 lcl/customtimer.pas svneol=native#text/pascal
 lcl/dbactns.pp svneol=native#text/pascal
 lcl/dbctrls.pp svneol=native#text/pascal
+lcl/dbextctrls.pp svneol=native#text/pascal
 lcl/dbgrids.pas svneol=native#text/pascal
 lcl/defaulttranslator.pas svneol=native#text/pascal
 lcl/dialog_icons.res -text
@@ -6391,6 +6392,7 @@ lcl/include/dbcalendar.inc svneol=native#text/pascal
 lcl/include/dbcheckbox.inc svneol=native#text/pascal
 lcl/include/dbcombobox.inc svneol=native#text/pascal
 lcl/include/dbcustomnavigator.inc svneol=native#text/pascal
+lcl/include/dbdateedit.inc svneol=native#text/pascal
 lcl/include/dbedit.inc svneol=native#text/pascal
 lcl/include/dbgroupbox.inc svneol=native#text/pascal
 lcl/include/dbimage.inc svneol=native#text/pascal
