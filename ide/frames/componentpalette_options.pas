@@ -175,6 +175,13 @@ begin
   UpdateCompMoveButtons(ComponentsListView.ItemIndex);
 end;
 
+procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+begin
+  fLocalOptions.Assign((AOptions as TEnvironmentOptions).ComponentPaletteOptions);
+  fLocalUserOrder.Options:=fLocalOptions;
+  ActualReadSettings;
+end;
+
 procedure TCompPaletteOptionsFrame.ActualReadSettings;
 begin
   Assert(fLocalUserOrder.Options = fLocalOptions, 'fLocalUserOrder.Options <> fLocalOptions');
@@ -183,23 +190,16 @@ begin
   RestoreButton.Enabled := not fLocalOptions.IsDefault;
 end;
 
-procedure TCompPaletteOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
+procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
-  fLocalOptions.Assign((AOptions as TEnvironmentOptions).ComponentPaletteOptions);
-  fLocalUserOrder.Options:=fLocalOptions;
-  ActualReadSettings;
+  if not fConfigChanged then Exit;
+  ActualWriteSettings((AOptions as TEnvironmentOptions).ComponentPaletteOptions);
 end;
 
 procedure TCompPaletteOptionsFrame.ActualWriteSettings(cpo: TCompPaletteOptions);
 begin
   WritePages(cpo);
   WriteComponents(cpo);
-end;
-
-procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
-begin
-  if not fConfigChanged then Exit;
-  ActualWriteSettings((AOptions as TEnvironmentOptions).ComponentPaletteOptions);
 end;
 
 procedure TCompPaletteOptionsFrame.WritePages(cpo: TCompPaletteOptions);
@@ -272,7 +272,6 @@ var
   CompList: TStringList;
   i: Integer;
   PgName: String;
-  Pg: TBaseComponentPage;
 begin
   // First clear existing items and add <All> page.
   PagesListBox.Items.BeginUpdate;
@@ -284,13 +283,9 @@ begin
   begin
     PgName := fLocalUserOrder.ComponentPages[i];
     Assert(PgName<>'', 'TCompPaletteOptionsFrame.FillPages: PageName is empty.');
-    Pg := IDEComponentPalette.GetPage(PgName);
-    if (Pg=Nil) or Pg.Visible then
-    begin
-      CompList := TStringList.Create; // StringList will hold components for this page.
-      InitialComps(i, CompList);
-      PagesListBox.AddItem(PgName, CompList);
-    end;
+    CompList := TStringList.Create; // StringList will hold components for this page.
+    InitialComps(i, CompList);
+    PagesListBox.AddItem(PgName, CompList);
   end;
   PagesListBox.ItemIndex := 0;     // Activate first item
   PagesListBox.Items.EndUpdate;
