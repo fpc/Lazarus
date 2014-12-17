@@ -36,6 +36,7 @@ type
   TXMLReaderFlag = (
     xrfAllowLowerThanInAttributeValue,
     xrfAllowSpecialCharsInAttributeValue,
+    xrfAllowSpecialCharsInComments,
     xrfPreserveWhiteSpace
     );
   TXMLReaderFlags = set of TXMLReaderFlag;
@@ -408,7 +409,8 @@ type
     procedure StandaloneError(LineOffs: Integer = 0);
     procedure CallErrorHandler(E: EXMLReadError);
     function  FindOrCreateElDef: TDOMElementDef;
-    function  SkipUntilSeq(const Delim: TSetOfChar; c1: DOMChar; c2: DOMChar = #0): Boolean;
+    function  SkipUntilSeq(const Delim: TSetOfChar; c1: DOMChar; c2: DOMChar = #0;
+      AllowSpecialChars: boolean = false): Boolean;
     procedure CheckMaxChars;
   protected
     FCursor: TDOMNode_WithChildren;
@@ -1439,7 +1441,8 @@ begin
   DoError(esFatal, Format(descr, args), LineOffs);
 end;
 
-procedure TXMLReader.ValidationError(const Msg: string; const Args: array of const; LineOffs: Integer);
+procedure TXMLReader.ValidationError(const Msg: string;
+  const args: array of const; LineOffs: Integer);
 begin
   FDocNotValid := True;
   if FValidate then
@@ -1556,7 +1559,7 @@ begin
     FatalError('Expected whitespace');
 end;
 
-function TXMLReader.SkipS(Required: Boolean): Boolean;
+function TXMLReader.SkipS(required: Boolean): Boolean;
 var
   p: DOMPChar;
 begin
@@ -2287,7 +2290,8 @@ begin
     Normalize(ToFill, Normalized);
 end;
 
-function TXMLReader.SkipUntilSeq(const Delim: TSetOfChar; c1: DOMChar; c2: DOMChar = #0): Boolean;
+function TXMLReader.SkipUntilSeq(const Delim: TSetOfChar; c1: DOMChar;
+  c2: DOMChar; AllowSpecialChars: boolean): Boolean;
 var
   wc: DOMChar;
 begin
@@ -2295,7 +2299,7 @@ begin
   FValue.Length := 0;
   StoreLocation(FTokenStart);
   repeat
-    wc := FSource.SkipUntil(FValue, Delim);
+    wc := FSource.SkipUntil(FValue, Delim, nil, AllowSpecialChars);
     if wc <> #0 then
     begin
       FSource.NextChar;
@@ -2315,9 +2319,12 @@ begin
 end;
 
 procedure TXMLReader.ParseComment;    // [15]
+var
+  AllowSpecialChars: Boolean;
 begin
   ExpectString('--');
-  if SkipUntilSeq([#0, '-'], '-') then
+  AllowSpecialChars := xrfAllowSpecialCharsInComments in FFlags;
+  if SkipUntilSeq([#0, '-'], '-', #0, AllowSpecialChars) then
   begin
     ExpectChar('>');
     DoComment(FValue.Buffer, FValue.Length);
