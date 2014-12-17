@@ -227,7 +227,7 @@ type
     function FindButton(Button: TComponent): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
     function IndexOfPageComponent(AComponent: TComponent): integer;
-    procedure Update; virtual; abstract;
+    procedure Update(ForceUpdateAll: Boolean); virtual; abstract;
     procedure IterateRegisteredClasses(Proc: TGetComponentClassEvent);
     procedure RegisterCustomIDEComponents(
                         const RegisterProc: RegisterUnitComponentProc); virtual; abstract;
@@ -637,7 +637,7 @@ begin
   if FUpdateLock>0 then
     fChanged:=true
   else
-    Update;
+    Update(False);
 end;
 
 procedure TBaseComponentPalette.DoBeginUpdate;

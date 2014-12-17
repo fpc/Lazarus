@@ -134,6 +134,8 @@ type
     fVisiblePageIndex: integer;
     // User ordered + original pages and components
     fUserOrder: TCompPaletteUserOrder;
+    procedure ReAlignButtons(aSheet: TCustomPage);
+    procedure UpdateNoteBookButtons(ForceUpdateAll: Boolean);
     //procedure AssociatePageComps(aPageInd: Integer; aCompNames: TStringList);
     function CreatePagesFromUserOrder: Boolean;
     procedure CacheOrigComponentPages;
@@ -168,14 +170,12 @@ type
     procedure Clear;
     procedure ClearButtons;
     procedure DoAfterComponentAdded; override;
-    procedure ReAlignButtons(aSheet: TCustomPage);
-    procedure UpdateNoteBookButtons;
     procedure OnGetNonVisualCompIcon(Sender: TObject;
                                      AComponent: TComponent; var Icon: TCustomBitmap);
     function FindComponent(const CompClassName: string): TRegisteredComponent; override;
     procedure RegisterCustomIDEComponents(
                        const RegisterProc: RegisterUnitComponentProc); override;
-    procedure Update; override;
+    procedure Update(ForceUpdateAll: Boolean); override;
     procedure AssignOrigCompsForPage(DestComps: TStringList; PageName: string); override;
     procedure AssignOrigVisibleCompsForPage(DestComps: TStringList; PageName: string); override;
     function RefUserCompsForPage(PageName: string): TStringList; override;
@@ -702,7 +702,7 @@ begin
   {$IFDEF VerboseComponentPalette}
   DebugLn(['TComponentPalette.SetPageControl, calling UpdateNoteBookButtons, ', AValue]);
   {$ENDIF}
-  UpdateNoteBookButtons;
+  UpdateNoteBookButtons(False);
 end;
 
 procedure TComponentPalette.SelectionToolClick(Sender: TObject);
@@ -869,7 +869,7 @@ begin
     {$IFDEF VerboseComponentPalette}
     DebugLn(['TComponentPalette.DoEndUpdate, calling UpdateNoteBookButtons, Changed=', Changed]);
     {$ENDIF}
-    UpdateNoteBookButtons;
+    UpdateNoteBookButtons(False);
   end;
   inherited DoEndUpdate(Changed);
 end;
@@ -966,13 +966,13 @@ begin
     Result := Nil;
 end;
 
-procedure TComponentPalette.Update;
+procedure TComponentPalette.Update(ForceUpdateAll: Boolean);
 begin
   {$IFDEF VerboseComponentPalette}
   DebugLn(['TComponentPalette.Update, calling UpdateNoteBookButtons, fUpdatingPageControl=',
            fUpdatingPageControl, ', fNoteBookNeedsUpdate=', fNoteBookNeedsUpdate]);
   {$ENDIF}
-  UpdateNoteBookButtons;
+  UpdateNoteBookButtons(ForceUpdateAll);
 end;
 
 procedure TComponentPalette.CheckComponentDesignerVisible(
@@ -1173,7 +1173,7 @@ begin
   Application.ReleaseComponent(aSheet);
 end;
 
-procedure TComponentPalette.UpdateNoteBookButtons;
+procedure TComponentPalette.UpdateNoteBookButtons(ForceUpdateAll: Boolean);
 var
   i: Integer;
   Pg: TComponentPage;
@@ -1215,16 +1215,23 @@ begin
              'UpdateNoteBookButtons: Page names do not match.');
       Pg := TComponentPage(Pages[i]);
       Pg.InsertVisiblePage(TStringList(fUserOrder.ComponentPages.Objects[i]));
-      // Initially create GUI only for the active page.
-      if ((fOldActivePage=Nil) and (i=0)) or (Pg.PageComponent=fOldActivePage) then
-        Pg.ReAlignButtons;
     end;
 
+    // OldActivePage can be invalid if a user defined page is just deleted.
+    if Assigned(fOldActivePage) and (FPageControl.IndexOf(fOldActivePage) = -1) then
+      fOldActivePage := Nil;
+    for i := Pages.Count-1 downto 0 do
+    begin
+      Pg := TComponentPage(Pages[i]);
+      // During IDE start create GUI only for the active page.
+      if ((fOldActivePage=Nil) and (i=0))  // First page is activated by default.
+      or (Pg.PageComponent=fOldActivePage) // Previous active page will be restored.
+      or (ForceUpdateAll) then             // Forced after changing configuration.
+        Pg.ReAlignButtons;
+    end;
     // restore active page
-    if fOldActivePage<>nil then begin
-      Assert(FPageControl.IndexOf(fOldActivePage) >= 0, 'UpdateNoteBookButtons: fOldActivePage not found.');
+    if Assigned(fOldActivePage) then
       FPageControl.ActivePage:=fOldActivePage
-    end
     else if FPageControl.PageCount>0 then
       FPageControl.PageIndex:=0;
   finally

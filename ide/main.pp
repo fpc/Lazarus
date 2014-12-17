@@ -3693,7 +3693,7 @@ begin
   DebugLn(['* TMainIDE.UpdateIDEComponentPalette: Updating palette *',
            ', HideControls=', IDEComponentPalette.HideControls]);
   {$ENDIF}
-  IDEComponentPalette.Update;
+  IDEComponentPalette.Update(False);
   TComponentPalette(IDEComponentPalette).OnClassSelected := @ComponentPaletteClassSelected;
   SetupHints;
 end;
@@ -4760,7 +4760,7 @@ begin
       // Update component palette only when needed.
       PaletteOpt := TCompPaletteOptionsFrame(IDEOptionsDialog.FindEditor(TCompPaletteOptionsFrame));
       if Assigned(PaletteOpt) and PaletteOpt.ConfigChanged then
-        IDEComponentPalette.Update;
+        IDEComponentPalette.Update(True);
       // Update TaskBarBehavior immediately.
       if EnvironmentOptions.SingleTaskBarButton then
         Application.TaskBarBehavior := tbSingleButton
