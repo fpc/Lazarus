@@ -5876,6 +5876,7 @@ resourcestring
   lisNewPage = 'New page';
   lisPageName = 'Page name';
   lis_All_ = '<All>';
+  lisPageNameAlreadyExists = 'Page name "%s" already exists. Not added.';
   lisJumpToProcedure = 'Jump to procedure %s';
   lisFindDeclarationOf = 'Find Declaration of %s';
 implementation

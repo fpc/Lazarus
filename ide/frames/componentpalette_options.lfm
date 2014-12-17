@@ -39,6 +39,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       OnDragOver = PagesListBoxDragOver
       OnKeyDown = PagesListBoxKeyDown
       OnSelectionChange = PagesListBoxSelectionChange
+      PopupMenu = PagesPopupMenu
       TabOrder = 0
     end
     object AddPageButton: TBitBtn
@@ -292,5 +293,18 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
   object ExportDialog: TSaveDialog
     left = 192
     top = 376
+  end
+  object PagesPopupMenu: TPopupMenu
+    OnPopup = PagesPopupMenuPopup
+    left = 192
+    top = 40
+    object RenameMenuItem: TMenuItem
+      Caption = 'Rename'
+      OnClick = RenameMenuItemClick
+    end
+    object DeleteMenuItem: TMenuItem
+      Caption = 'Delete'
+      OnClick = DeleteMenuItemClick
+    end
   end
 end

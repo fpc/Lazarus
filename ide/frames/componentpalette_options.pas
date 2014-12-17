@@ -25,8 +25,8 @@ unit componentpalette_options;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Forms, Controls, StdCtrls, Dialogs, Buttons,
-  ComCtrls, ExtCtrls, FileUtil, LCLProc, LCLType, IDEProcs, Laz2_XMLCfg,
+  Classes, SysUtils, fgl, Graphics, Forms, Controls, StdCtrls, Dialogs, Buttons,
+  ComCtrls, ExtCtrls, FileUtil, LCLProc, LCLType, Menus, IDEProcs, Laz2_XMLCfg,
   LazConfigStorage, EnvironmentOpts, LazarusIDEStrConsts, IDEOptionsIntf,
   IDEImagesIntf, DividerBevel, ComponentReg, ComponentPalette, IDEOptionDefs,
   PackageDefs;
@@ -39,6 +39,9 @@ type
     ImportButton: TBitBtn;
     ComponentsListView: TListView;
     CompMoveDownBtn: TSpeedButton;
+    DeleteMenuItem: TMenuItem;
+    RenameMenuItem: TMenuItem;
+    PagesPopupMenu: TPopupMenu;
     RecentLabel: TLabel;
     ExportButton: TBitBtn;
     ImportDividerBevel: TDividerBevel;
@@ -77,7 +80,10 @@ type
       State: TDragState; var Accept: Boolean);
     procedure PagesListBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure PagesListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure PagesPopupMenuPopup(Sender: TObject);
     procedure RestoreButtonClick(Sender: TObject);
+    procedure DeleteMenuItemClick(Sender: TObject);
+    procedure RenameMenuItemClick(Sender: TObject);
   private
     fLocalOptions: TCompPaletteOptions;
     fLocalUserOrder: TCompPaletteUserOrder;
@@ -86,6 +92,8 @@ type
     fConfigChanged: Boolean;
     procedure ActualReadSettings;
     procedure ActualWriteSettings(cpo: TCompPaletteOptions);
+    procedure AddOrRenamePage(aItemIndex: Integer);
+    function OrigPageExists(aStr: string): Boolean;
     function PageExists(aStr: string): Boolean;
     procedure WritePages(cpo: TCompPaletteOptions);
     procedure WriteComponents(cpo: TCompPaletteOptions);
@@ -246,7 +254,7 @@ begin
   OrigComps := TStringList.Create;
   try
     cpo.ComponentPages.Clear;
-    for i := 1 to PagesListBox.Count-1 do      // Skip all components page
+    for i := 1 to PagesListBox.Count-1 do      // Skip "all components" page
     begin
       PgName := PagesListBox.Items[i];
       UserComps := PagesListBox.Items.Objects[i] as TStringList;
@@ -358,6 +366,16 @@ begin
   fPrevPageIndex := lb.ItemIndex;
 end;
 
+function TCompPaletteOptionsFrame.OrigPageExists(aStr: string): Boolean;
+var
+  i: Integer;
+begin
+  for i := 0 to IDEComponentPalette.OrigPagePriorities.Count-1 do
+    if SameText(aStr, IDEComponentPalette.OrigPagePriorities.Keys[i]) then
+      Exit(True);
+  Result := False;
+end;
+
 function TCompPaletteOptionsFrame.PageExists(aStr: string): Boolean;
 var
   i: Integer;
@@ -368,18 +386,30 @@ begin
   Result := False;
 end;
 
-procedure TCompPaletteOptionsFrame.AddPageButtonClick(Sender: TObject);
+procedure TCompPaletteOptionsFrame.AddOrRenamePage(aItemIndex: Integer);
 var
-  s: String;
+  Def, NewName: String;
 begin
-  s := InputBox(lisNewPage, lisPageName, '');
-  if s = '' then Exit;
-  if PageExists(s) then
-    ShowMessage(Format('Page name "%s" already exists. Not added.', [s]))
-  else begin
-    PagesListBox.AddItem(s, TStringList.Create);
-    MarkAsChanged;
+  if aItemIndex = -1 then
+    Def := ''
+  else
+    Def := PagesListBox.Items[aItemIndex];
+  NewName := InputBox(lisNewPage, lisPageName, Def);
+  if NewName = Def then Exit;
+  if PageExists(NewName) then begin
+    ShowMessage(Format(lisPageNameAlreadyExists, [NewName]));
+    Exit;
   end;
+  if aItemIndex = -1 then
+    PagesListBox.AddItem(NewName, TStringList.Create)  // Add a new page
+  else
+    PagesListBox.Items[aItemIndex] := NewName;         // Rename an existing page
+  MarkAsChanged;
+end;
+
+procedure TCompPaletteOptionsFrame.AddPageButtonClick(Sender: TObject);
+begin
+  AddOrRenamePage(-1);
 end;
 
 procedure TCompPaletteOptionsFrame.RestoreButtonClick(Sender: TObject);
@@ -694,16 +724,44 @@ begin
   end;
 end;
 
+procedure TCompPaletteOptionsFrame.PagesPopupMenuPopup(Sender: TObject);
+var
+  IsNew, IsEmpty: Boolean;
+begin
+  if (PagesListBox.ItemIndex > 0) and (PagesListBox.ItemIndex < PagesListBox.Count) then
+    IsNew := not OrigPageExists(PagesListBox.Items[PagesListBox.ItemIndex])
+  else
+    IsNew := False;
+  if IsNew then
+    IsEmpty := (PagesListBox.Items.Objects[PagesListBox.ItemIndex] as TStringList).Count = 0
+  else
+    IsEmpty := False;
+  RenameMenuItem.Enabled := IsNew;
+  DeleteMenuItem.Enabled := IsEmpty;
+end;
+
+procedure TCompPaletteOptionsFrame.DeleteMenuItemClick(Sender: TObject);
+begin
+  PagesListBox.Items.Delete(PagesListBox.ItemIndex);
+end;
+
+procedure TCompPaletteOptionsFrame.RenameMenuItemClick(Sender: TObject);
+begin
+  Assert((PagesListBox.ItemIndex > 0) and (PagesListBox.ItemIndex < PagesListBox.Count));
+  AddOrRenamePage(PagesListBox.ItemIndex);
+end;
+
 function OpenXML(const Filename: string): TXMLConfig;
 begin
-  Result := Nil;
   try
     Result := TXMLConfig.Create(Filename);
   except
-    on E: Exception do
+    on E: Exception do begin
       MessageDlg(lisIECOErrorOpeningXml,
         Format(lisIECOErrorOpeningXmlFile, [Filename, LineEnding, E.Message]),
         mtError, [mbCancel], 0);
+      Result := Nil;
+    end;
   end;
 end;
 
