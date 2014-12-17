@@ -1096,17 +1096,20 @@ begin
   lList := TFPList.Create;
   try
     AWinControl.GetTabOrderList(lList);
-    prevControl := TWinControl(lList.Items[lList.Count-1]);
-    lPrevView := GetNSObjectView(NSObject(prevControl.Handle));
-    for i := 0 to lList.Count-1 do
-    begin
-      curControl := TWinControl(lList.Items[i]);
-      lCurView := GetNSObjectView(NSObject(curControl.Handle));
+    if lList.Count>0 then
+      begin
+      prevControl := TWinControl(lList.Items[lList.Count-1]);
+      lPrevView := GetNSObjectView(NSObject(prevControl.Handle));
+      for i := 0 to lList.Count-1 do
+      begin
+        curControl := TWinControl(lList.Items[i]);
+        lCurView := GetNSObjectView(NSObject(curControl.Handle));
 
-      if (lCurView <> nil) and (lPrevView <> nil) then
-        lPrevView.setNextKeyView(lCurView);
+        if (lCurView <> nil) and (lPrevView <> nil) then
+          lPrevView.setNextKeyView(lCurView);
 
-      lPrevView := lCurView;
+        lPrevView := lCurView;
+      end;
     end;
   finally
     lList.Free;
