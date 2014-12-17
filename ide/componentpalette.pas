@@ -49,7 +49,7 @@ const
   CompPalSelectionToolBtnPrefix = 'PaletteSelectBtn';
   CompPaletteCompBtnPrefix = 'PaletteBtn';
   {$IFDEF VerboseComponentPalette}
-  CompPalVerbPgName = 'Standard';
+  CompPalVerbPgName = 'Additional'; //'Standard';
   {$ENDIF}
 type
   TComponentSelectionMode = (
@@ -504,7 +504,7 @@ end;
 
 procedure TComponentPage.CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string);
 var
-  {%H-}Pal: TComponentPalette;
+  Pal: TComponentPalette;
   Btn: TSpeedButton;
 begin
   if aComp.Visible then begin
@@ -516,22 +516,20 @@ begin
       Pal := TComponentPalette(Palette);
       Btn := TSpeedButton.Create(nil);
       aComp.Button:=Btn;
-      with Btn do begin
-        Name := CompPaletteCompBtnPrefix + aButtonUniqueName + aComp.ComponentClass.ClassName;
-        // Left and Top will be set in ReAlignButtons.
-        SetBounds(Left,Top,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
-        Glyph.Assign(aComp.Icon);
-        GroupIndex := 1;
-        Flat := true;
-        OnMouseDown := @Pal.ComponentBtnMouseDown;
-        OnMouseUp := @Pal.ComponentBtnMouseUp;
-        OnDblClick := @Pal.ComponentBtnDblClick;
-        OnMouseWheel := @Pal.OnPageMouseWheel;
-        ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
-        Hint := aComp.ComponentClass.ClassName + sLineBreak
-          + '(' + aComp.ComponentClass.UnitName + ')';
-        Btn.PopupMenu:=PopupMenu;
-      end;
+      Btn.Name := CompPaletteCompBtnPrefix + aButtonUniqueName + aComp.ComponentClass.ClassName;
+      // Left and Top will be set in ReAlignButtons.
+      Btn.SetBounds(Btn.Left,Btn.Top,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
+      Btn.Glyph.Assign(aComp.Icon);
+      Btn.GroupIndex := 1;
+      Btn.Flat := true;
+      Btn.OnMouseDown := @Pal.ComponentBtnMouseDown;
+      Btn.OnMouseUp := @Pal.ComponentBtnMouseUp;
+      Btn.OnDblClick := @Pal.ComponentBtnDblClick;
+      Btn.OnMouseWheel := @Pal.OnPageMouseWheel;
+      Btn.ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
+      Btn.Hint := aComp.ComponentClass.ClassName + sLineBreak
+        + '(' + aComp.ComponentClass.UnitName + ')';
+      Btn.PopupMenu:=Pal.PopupMenu;
       {$IFDEF VerboseComponentPalette}
       if aComp.RealPage.PageName = CompPalVerbPgName then
         DebugLn(['TComponentPalette.CreateOrDelButton Created Button: ',aComp.ComponentClass.ClassName,' ',aComp.Button.Name]);
