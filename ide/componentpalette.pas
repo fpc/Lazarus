@@ -118,7 +118,7 @@ type
     // Lists have page names. Object holds another StringList for component names.
     fOrigComponentPageCache: TStringList;  // Original
     fUserComponentPageCache: TStringList;  // User ordered
-    //
+    // Visual container for tabs
     FPageControl: TPageControl;
     fNoteBookNeedsUpdate: boolean;
     FOnOpenPackage: TNotifyEvent;
@@ -803,16 +803,20 @@ begin
   end;
   if FPageControl=nil then exit;
   UnselectAllButtons;
-  // select button
-  if (FSelected<>nil) and (FPageControl<>nil) then begin
-    TSpeedButton(FSelected.Button).Down:=true;
-    Assert(Assigned(FSelected.RealPage), 'TComponentPalette.SetSelected: FSelected.RealPage = Nil.');
-    {$IFDEF VerboseComponentPalette}
-    DebugLn(['TComponentPalette.SetSelected: Setting FPageControl.ActivePage=',
-      FSelected.RealPage.PageComponent, ', Index ', FSelected.RealPage.PageComponent.PageIndex]);
-    {$ENDIF}
-    FPageControl.ActivePage:=TTabSheet(FSelected.RealPage.PageComponent);
-  end;
+  if FSelected=nil then exit;
+  Assert(Assigned(FSelected.RealPage), 'TComponentPalette.SetSelected: FSelected.RealPage = Nil.');
+  {$IFDEF VerboseComponentPalette}
+  DebugLn(['TComponentPalette.SetSelected: Setting FPageControl.ActivePage=',
+    FSelected.RealPage.PageComponent, ', Index ', FSelected.RealPage.PageComponent.PageIndex]);
+  {$ENDIF}
+  // Switch to the new page
+  FPageControl.ActivePage:=TTabSheet(FSelected.RealPage.PageComponent);
+  // Build the GUI layout for this page if not done yet.
+  if FSelected.Button=nil then
+    ReAlignButtons(FPageControl.ActivePage);
+  // Select button
+  Assert(Assigned(FSelected.Button), 'TComponentPalette.SetSelected: FSelected.Button = Nil');
+  TSpeedButton(FSelected.Button).Down:=true;
 end;
 
 function TComponentPalette.GetSelected: TRegisteredComponent;
@@ -1213,7 +1217,7 @@ begin
              'UpdateNoteBookButtons: Page names do not match.');
       Pg := TComponentPage(Pages[i]);
       Pg.InsertVisiblePage(TStringList(fUserOrder.ComponentPages.Objects[i]));
-      // Initially do not create GUI for all pages but only for active page.
+      // Initially create GUI only for the active page.
       if ((fOldActivePage=Nil) and (i=0)) or (Pg.PageComponent=fOldActivePage) then
         Pg.ReAlignButtons;
     end;
