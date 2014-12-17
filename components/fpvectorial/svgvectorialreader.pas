@@ -935,10 +935,34 @@ function TvSVGVectorialReader.ReadSVGBrushStyleWithKeyAndValue(AKey,
   AValue: string; ADestEntity: TvEntityWithPenAndBrush): TvSetPenBrushAndFontElements;
 var
   OldAlpha: Word;
+  Len: Integer;
+  lDefName: String;
+  i: Integer;
+  lCurBrush: TvEntityWithPenAndBrush;
 begin
   Result := [];
   if AKey = 'fill' then
   begin
+    // Suppose for fill="url(#grad2)"
+    lDefName := Trim(AValue);
+    if Copy(lDefName, 0, 3) = 'url' then
+    begin
+      lDefName := StringReplace(AValue, 'url(#', '', []);
+      lDefName := StringReplace(lDefName, ')', '', []);
+      if lDefName = '' then Exit;
+
+      for i := 0 to FBrushDefs.Count-1 do
+      begin
+        lCurBrush := TvEntityWithPenAndBrush(FBrushDefs.Items[i]);
+        if lCurBrush.Name = lDefName then
+        begin
+          ADestEntity.Brush := lCurBrush.Brush;
+          Exit;
+        end;
+      end;
+      Exit;
+    end;
+
     // We store and restore the old alpha to support the "-opacity" element
     OldAlpha := ADestEntity.Brush.Color.Alpha;
     if ADestEntity.Brush.Style = bsClear then ADestEntity.Brush.Style := bsSolid;
@@ -953,7 +977,14 @@ begin
     Result := Result + [spbfBrushColor, spbfBrushStyle];
   end
   else if AKey = 'fill-opacity' then
-    ADestEntity.Brush.Color.Alpha := StringFloatZeroToOneToWord(AValue);
+    ADestEntity.Brush.Color.Alpha := StringFloatZeroToOneToWord(AValue)
+  // For linear gradient => stop-color:rgb(255,255,0);stop-opacity:1
+  else if AKey = 'stop-color' then
+  begin
+    Len := Length(ADestEntity.Brush.Gradient_colors);
+    SetLength(ADestEntity.Brush.Gradient_colors, Len+1);
+    ADestEntity.Brush.Gradient_colors[Len] := ReadSVGColor(AValue);
+  end;
 end;
 
 function TvSVGVectorialReader.ReadSVGFontStyleWithKeyAndValue(AKey,
@@ -1232,13 +1263,15 @@ var
   lCurNode, lCurSubNode: TDOMNode;
   lBrushEntity: TvEntityWithPenAndBrush;
   lCurEntity: TvEntity;
+  lOffset: Double;
+  x1, x2, y1, y2: string;
 begin
   lCurNode := ANode.FirstChild;
   while Assigned(lCurNode) do
   begin
     lEntityName := LowerCase(lCurNode.NodeName);
     case lEntityName of
-      'RadialGradient':
+      'radialgradient':
       begin
         lBrushEntity := TvEntityWithPenAndBrush.Create(nil);
         lBrushEntity.Brush.Kind := bkRadialGradient;
@@ -1286,6 +1319,59 @@ begin
               lBlock.Name := lLayerName;
             end;
           end;}
+
+          lCurSubNode := lCurSubNode.NextSibling;
+        end;
+
+        FBrushDefs.Add(lBrushEntity);
+      end;
+      {
+      <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
+        <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+      </linearGradient>
+      }
+      'lineargradient':
+      begin
+        lBrushEntity := TvEntityWithPenAndBrush.Create(nil);
+
+        // <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
+        for i := 0 to lCurNode.Attributes.Length - 1 do
+        begin
+          lAttrName := lCurNode.Attributes.Item[i].NodeName;
+          lAttrValue := lCurNode.Attributes.Item[i].NodeValue;
+          if lAttrName = 'id' then
+            lBrushEntity.Name := lAttrValue
+          else if lAttrName = 'x1' then
+            x1 := lAttrValue
+          else if lAttrName = 'x2' then
+            x2 := lAttrValue
+          else if lAttrName = 'y1' then
+            y1 := lAttrValue
+          else if lAttrName = 'y2' then
+            y2 := lAttrValue;
+        end;
+        if x2 = '0%' then lBrushEntity.Brush.Kind := bkVerticalGradient
+        else lBrushEntity.Brush.Kind := bkHorizontalGradient;
+
+        // <stop offset="0%" style="stop-color:rgb(255,255,0);stop-opacity:1" />
+        // <stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+        lCurSubNode := lCurNode.FirstChild;
+        while Assigned(lCurSubNode) do
+        begin
+          lNodeName := LowerCase(lCurSubNode.NodeName);
+
+          for i := 0 to lCurSubNode.Attributes.Length - 1 do
+          begin
+            lAttrName := lCurSubNode.Attributes.Item[i].NodeName;
+            lAttrValue := lCurSubNode.Attributes.Item[i].NodeValue;
+            if lAttrName = 'offset' then
+            begin
+              lOffset := StringWithUnitToFloat(lAttrValue);
+            end
+            else if lAttrName = 'style' then
+              ReadSVGStyle(lAttrValue, lBrushEntity);
+          end;
 
           lCurSubNode := lCurSubNode.NextSibling;
         end;

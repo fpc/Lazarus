@@ -118,7 +118,7 @@ type
     Width: Integer;
   end;
 
-  TvBrushKind = (bkSimpleBrush, bkRadialGradient);
+  TvBrushKind = (bkSimpleBrush, bkHorizontalGradient, bkVerticalGradient, vkOtherLinearGradient, bkRadialGradient);
   TvCoordinateUnit = (vcuDocumentUnit, vcuPercentage);
 
   TvBrush = record
@@ -150,7 +150,7 @@ type
   TvSetStyleElement = (
     // Pen, Brush and Font
     spbfPenColor, spbfPenStyle, spbfPenWidth,
-    spbfBrushColor, spbfBrushStyle, spbfBrushGradient,
+    spbfBrushColor, spbfBrushStyle, spbfBrushGradient, spbfBrushKind,
     spbfFontColor, spbfFontSize, spbfFontName, spbfFontBold, spbfFontItalic,
     spbfFontUnderline, spbfFontStrikeThrough, spbfAlignment,
     // TextAnchor
@@ -1809,6 +1809,8 @@ begin
     Brush.Style := AFrom.Brush.Style;
   {if spbfBrushGradient in AFrom.SetElements then
     Brush.Gra := AFrom.Brush.Style;}
+  if spbfBrushKind in AFrom.SetElements then
+    Brush.Kind := AFrom.Brush.Kind;
 
   // Font
 
@@ -1871,6 +1873,8 @@ begin
     ADest.Brush.Style := Brush.Style;
   {if spbfBrushGradient in SetElements then
     Brush.Gra := AFrom.Brush.Style;}
+  if spbfBrushKind in SetElements then
+    ADest.Brush.Kind := Brush.Kind;
 
   // Font
 
@@ -3722,6 +3726,14 @@ begin
   {$endif}
   begin
     ADest.Ellipse(x1, y1, x2, y2);
+  end;
+  // Apply brush gradient
+  if Brush.Kind in [bkHorizontalGradient, bkVerticalGradient] then
+  begin
+    {PrepareBrushBitmap(x2, y2);
+    BrushBitmap.Canvas.Ellipse(0, 0, x2-x1, y2-y1);
+    AlphaBlendBrushBitmap(ADest, x1, y1);
+    FreeAndNil(BrushBitmap);}
   end;
 end;
 
