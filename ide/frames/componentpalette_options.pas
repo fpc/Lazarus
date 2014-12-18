@@ -309,9 +309,7 @@ begin
   for i := 0 to OrderedComps.Count-1 do
   begin
     Comp := IDEComponentPalette.FindComponent(OrderedComps[i]);
-    Assert(Assigned(Comp), 'TCompPaletteOptionsFrame.InitialComps: Component "'+
-                            OrderedComps[i]+'" not found');
-    if Comp.Visible then
+    if Assigned(Comp) and Comp.Visible then
       aCompList.AddObject(Comp.ComponentClass.ClassName, Comp);
   end;
 end;
