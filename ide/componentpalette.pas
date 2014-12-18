@@ -357,10 +357,11 @@ begin
         ' IsScrollBarVisible=',ScrollBox.HorzScrollBar.IsScrollBarVisible
         ]);
     {$ENDIF}
-    {$IFDEF LCLCarbon}
     MaxBtnPerRow:=ButtonTree.Count;
-    {$ELSE}
-    MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
+    {$IFnDEF LCLCarbon}
+    // This condition prevents a mysterious repagination on Windows during startup.
+    if MainIDE.IDEStarted then
+      MaxBtnPerRow:=((ScrollBox.VertScrollBar.ClientSizeWithoutBar - ButtonX) div ComponentPaletteBtnWidth);
     {$ENDIF}
     // If we need to wrap, make sure we have space for the scrollbar
     if MaxBtnPerRow < ButtonTree.Count then
@@ -592,8 +593,8 @@ procedure TComponentPalette.ActivePageChanged(Sender: TObject);
 begin
   if FPageControl=nil then exit;
   if (FSelected<>nil)
-  and (FSelected.RealPage.PageComponent=FPageControl.ActivePage) then
-    exit;
+  and (FSelected.RealPage.PageComponent=FPageControl.ActivePage) then exit;
+  if fUpdatingPageControl then exit;
   {$IFDEF VerboseComponentPalette}
   DebugLn('TComponentPalette.ActivePageChanged: Calling ReAlignButtons, setting Selected:=nil.');
   {$ENDIF}
@@ -603,7 +604,7 @@ end;
 
 procedure TComponentPalette.OnScrollBoxResize(Sender: TObject);
 begin
-  if TControl(Sender).Parent is TCustomPage then
+  if MainIDE.IDEStarted and (TControl(Sender).Parent is TCustomPage) then
   begin
     {$IFDEF VerboseComponentPalette}
     DebugLn(['TComponentPalette.OnScrollBoxResize Calling ReAlignButtons, IDEStarted=', MainIDE.IDEStarted]);
