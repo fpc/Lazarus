@@ -1043,6 +1043,8 @@ begin
     if (((FStoreStepSrcFilename=sym.FileName) and (FStoreStepSrcLineNo=sym.Line)) {or FStepOut}) and
               (FStoreStepFuncAddr=sym.Address.Address) then
       result := dcsiSameLine
+    else if sym.Line = 0 then
+      result := dcsiNoLineInfo
     else
       result := dcsiNewLine;
     sym.ReleaseReference;
