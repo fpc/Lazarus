@@ -434,7 +434,6 @@ begin
   ResourceFileName := ExtractFileName(FullResourceFileName);
   ClearMessages;
 
-  FullResourceFilename := ExpandFileNameUTF8(ResourceFilename);
   // check that all resources exists and are not the destination file
   for Index := 0 to FileCount-1 do
   begin
