@@ -378,6 +378,7 @@ object GLazResForm: TGLazResForm
     Width = 552
     OnAcceptFileName = DestEdtAcceptFileName
     DialogKind = dkSave
+    DialogTitle = 'Save resourcefile as'
     DialogOptions = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
     Filter = 'Lazarus Resource Files|*.lrs|All Files|*'
     FilterIndex = 0
