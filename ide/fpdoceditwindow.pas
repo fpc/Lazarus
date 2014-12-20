@@ -1373,7 +1373,8 @@ begin
         TopicDescr.Text := DFile.GetChildValuesAsString(Child);
       TopicShort.Enabled := True;
       TopicDescr.Enabled := True;
-      TopicShort.SetFocus;
+      if TopicShort.IsVisible then
+        TopicShort.SetFocus;
     finally
       Exclude(FFlags, fpdefTopicSettingUp);
     end;
