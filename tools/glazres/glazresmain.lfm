@@ -3,9 +3,8 @@ object GLazResForm: TGLazResForm
   Height = 532
   Top = 94
   Width = 610
-  HorzScrollBar.Page = 610
-  VertScrollBar.Page = 532
-  ActiveControl = DestEdt
+  HorzScrollBar.Page = 592
+  VertScrollBar.Page = 518
   AutoScroll = True
   Caption = 'LRS Builder'
   ClientHeight = 532
@@ -185,12 +184,12 @@ object GLazResForm: TGLazResForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '1.1'
+  LCLVersion = '1.3'
   object LrsLabel: TLabel
     Left = 16
     Height = 15
     Top = 14
-    Width = 141
+    Width = 174
     Caption = 'Lazarus Resource Filename'
     ParentColor = False
   end
@@ -259,14 +258,16 @@ object GLazResForm: TGLazResForm
     ItemHeight = 0
     MultiSelect = True
     OnDrawItem = FileListBoxDrawItem
+    ScrollWidth = 572
     Style = lbOwnerDrawFixed
     TabOrder = 1
+    TopIndex = -1
   end
   object FilesLabel: TLabel
     Left = 16
     Height = 15
     Top = 64
-    Width = 79
+    Width = 94
     Caption = 'Files to include'
     ParentColor = False
   end
@@ -341,25 +342,27 @@ object GLazResForm: TGLazResForm
     TabOrder = 5
   end
   object CloseBtn: TBitBtn
-    Left = 512
+    Left = 472
     Height = 30
     Hint = 'Exit the program'
     Top = 488
-    Width = 88
-    Caption = '&Close'
-    Kind = bkClose
+    Width = 120
+    Cancel = True
+    DefaultCaption = True
+    Kind = bkCancel
+    ModalResult = 2
     OnClick = AddAnyBtnClick
     ParentShowHint = False
     ShowHint = True
     TabOrder = 8
   end
   object StartBtn: TBitBtn
-    Left = 408
+    Left = 344
     Height = 30
     Hint = 'Create the output LRS file'
     Top = 488
-    Width = 88
-    Caption = 'Start'
+    Width = 120
+    Caption = 'Create LRS'
     Enabled = False
     Kind = bkAll
     ModalResult = 8
@@ -370,7 +373,7 @@ object GLazResForm: TGLazResForm
   end
   object DestEdt: TFileNameEdit
     Left = 16
-    Height = 23
+    Height = 21
     Top = 32
     Width = 552
     OnAcceptFileName = DestEdtAcceptFileName
@@ -390,7 +393,7 @@ object GLazResForm: TGLazResForm
     Left = 16
     Height = 15
     Top = 304
-    Width = 51
+    Width = 64
     Caption = 'Messages'
     ParentColor = False
   end
