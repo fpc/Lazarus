@@ -101,6 +101,7 @@ const
   ErrFileIsResource = 'ERROR: Cannot add resource file to itself ("%s")';
   ErrCreate = 'ERROR: Cannot create "%s"';
   ErrNoResourceName = 'ERROR: No resourcename found for "%s"';
+  MsgCreatingLrs = 'Creating "%s"';
   MsgProcessing = 'Processing "%s"';
   MsgResourceNameType = ' Resource name = "%s", Type = "%s"';
   ErrRead = 'ERROR: Cannot read from "%s"';
@@ -450,6 +451,7 @@ begin
     end;
   end;
   try
+    AddMessageFmt(MsgCreatingLrs,[FullResourceFilename]);
     ResFileStream:=TFileStreamUtf8.Create(FullResourceFileName,fmCreate);
   except
     AddMessageFmt(ErrCreate,[ResourceFileName]);
