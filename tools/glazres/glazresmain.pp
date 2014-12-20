@@ -444,7 +444,7 @@ begin
       AddMessageFmt(ErrFileNotfound,[S]);
       exit;
     end;
-    if CompareFileNames(ExpandFileNameUTF8(S), FullResourceFilename, True) = 0 then
+    if CompareFilenamesIgnoreCase(ExpandFileNameUTF8(S), FullResourceFilename) = 0 then
     begin
       AddMessageFmt(ErrFileIsResource,[S]);
       exit;
