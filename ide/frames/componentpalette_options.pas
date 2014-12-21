@@ -204,6 +204,7 @@ procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
   if not fConfigChanged then Exit;
   ActualWriteSettings((AOptions as TEnvironmentOptions).ComponentPaletteOptions);
+  IDEComponentPalette.IncChangeStamp;
 end;
 
 procedure TCompPaletteOptionsFrame.ActualWriteSettings(cpo: TCompPaletteOptions);

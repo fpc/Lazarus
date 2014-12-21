@@ -58,6 +58,7 @@ type
     InheritanceTree: TTreeView;
     PalletteTree: TTreeView;
     TreeFilterEd: TTreeFilterEdit;
+    procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
     procedure ComponentsDblClick(Sender: TObject);
@@ -73,6 +74,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     PrevPageIndex: Integer;
+    PrevChangeStamp: Integer;
     // List for Component inheritence view
     FClassList: TStringList;
     FKeepSelected: Boolean;
@@ -114,11 +116,14 @@ begin
   PalletteTree.Images:=ListTree.Images;
   PrevPageIndex := -1;
   PageControl.ActivePage := TabSheetList;
-  UpdateComponentSelection;
-  with ListTree do
-    Selected := Items.GetFirstNode;
-  TreeFilterEd.InvalidateFilter;
-  IDEComponentPalette.AddHandlerComponentAdded(@ComponentWasAdded);
+  if Assigned(IDEComponentPalette) then
+  begin
+    UpdateComponentSelection;
+    with ListTree do
+      Selected := Items.GetFirstNode;
+    TreeFilterEd.InvalidateFilter;
+    IDEComponentPalette.AddHandlerComponentAdded(@ComponentWasAdded);
+  end;
 end;
 
 destructor TComponentListForm.Destroy;
@@ -144,6 +149,12 @@ begin
   end
   else
     PageControl.AnchorSideBottom.Side := asrBottom;
+end;
+
+procedure TComponentListForm.FormActivate(Sender: TObject);
+begin
+  if Assigned(IDEComponentPalette) and (IDEComponentPalette.ChangeStamp<>PrevChangeStamp) then
+    UpdateComponentSelection;
 end;
 
 procedure TComponentListForm.ClearSelection;
@@ -278,6 +289,7 @@ begin
     PalletteTree.FullExpand;
     InheritanceTree.AlphaSort;
     InheritanceTree.FullExpand;
+    PrevChangeStamp := IDEComponentPalette.ChangeStamp;
   finally
     FClassList.Free;
     InheritanceTree.Items.EndUpdate;

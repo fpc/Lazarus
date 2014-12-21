@@ -181,6 +181,7 @@ type
     FHideControls: boolean;
     FUpdateLock: integer;
     fChanged: boolean;
+    fChangeStamp: integer;
     procedure AddHandler(HandlerType: TComponentPaletteHandlerType;
                          const AMethod: TMethod; AsLast: boolean = false);
     procedure RemoveHandler(HandlerType: TComponentPaletteHandlerType;
@@ -217,6 +218,7 @@ type
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
     function IsUpdateLocked: boolean;
+    function IncChangeStamp: integer;
     procedure DoAfterComponentAdded; virtual;
     function IndexOfPageName(const APageName: string): integer;
     function IndexOfPageWithName(const APageName: string): integer;
@@ -244,15 +246,16 @@ type
   public
     property Pages: TBaseComponentPageList read fPages;
     property Comps: TRegisteredComponentList read fComps;
+    property OrigPagePriorities: TPagePriorityList read fOrigPagePriorities;
     property BaseComponentPageClass: TBaseComponentPageClass read FBaseComponentPageClass;
     property RegisteredComponentClass: TRegisteredComponentClass
                                                  read FRegisteredComponentClass;
     property UpdateLock: integer read FUpdateLock;
+    property ChangeStamp: integer read fChangeStamp;
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnEndUpdate: TEndUpdatePaletteEvent read FOnEndUpdate write FOnEndUpdate;
     property HideControls: boolean read FHideControls write FHideControls;
     property Selected: TRegisteredComponent read GetSelected write SetSelected;
-    property OrigPagePriorities: TPagePriorityList read fOrigPagePriorities;
   end;
   
 
@@ -718,6 +721,11 @@ end;
 function TBaseComponentPalette.IsUpdateLocked: boolean;
 begin
   Result:=FUpdateLock>0;
+end;
+
+function TBaseComponentPalette.IncChangeStamp: integer;
+begin
+  Inc(fChangeStamp);
 end;
 
 procedure TBaseComponentPalette.DoAfterComponentAdded;
