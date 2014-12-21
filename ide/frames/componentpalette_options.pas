@@ -194,8 +194,10 @@ procedure TCompPaletteOptionsFrame.ActualReadSettings;
 begin
   Assert(fLocalUserOrder.Options = fLocalOptions, 'fLocalUserOrder.Options <> fLocalOptions');
   fLocalUserOrder.SortPagesAndCompsUserOrder;
-  FillPages;                             // Initial visibility for RestoreButton.
+  FillPages;
+  // Initial enabled-state for buttons.
   RestoreButton.Enabled := not fLocalOptions.IsDefault;
+  ExportButton.Enabled := RestoreButton.Enabled;
 end;
 
 procedure TCompPaletteOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
@@ -416,6 +418,7 @@ begin
   fLocalUserOrder.SortPagesAndCompsUserOrder; // Only updates data structure.
   FillPages;
   RestoreButton.Enabled := False;
+  ExportButton.Enabled := False;
   fConfigChanged := True;
 end;
 
@@ -690,6 +693,7 @@ procedure TCompPaletteOptionsFrame.MarkAsChanged;
 begin
   // ToDo: compare settings with original palette options after each change.
   RestoreButton.Enabled := True;
+  ExportButton.Enabled := True;
   fConfigChanged := True;
 end;
 
