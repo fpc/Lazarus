@@ -89,7 +89,8 @@ type
     procedure RemoveSheet;
     procedure InsertVisiblePage(aCompNames: TStringList);
     procedure CreateSelectionButton(aButtonUniqueName: string; aScrollBox: TScrollBox);
-    procedure CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string);
+    procedure CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string;
+      aScrollBox: TScrollBox);
     procedure CreateButtons;
   protected
   public
@@ -503,7 +504,8 @@ begin
   end;
 end;
 
-procedure TComponentPage.CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string);
+procedure TComponentPage.CreateOrDelButton(aComp: TPkgComponent; aButtonUniqueName: string;
+  aScrollBox: TScrollBox);
 var
   Pal: TComponentPalette;
   Btn: TSpeedButton;
@@ -529,7 +531,7 @@ begin
       Btn.OnMouseWheel := @Pal.OnPageMouseWheel;
       Btn.ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
       Btn.Hint := aComp.ComponentClass.ClassName + sLineBreak
-        + '(' + aComp.ComponentClass.UnitName + ')';
+          + '(' + aComp.ComponentClass.UnitName + ')';
       Btn.PopupMenu:=Pal.PopupMenu;
       {$IFDEF VerboseComponentPalette}
       if aComp.RealPage.PageName = CompPalVerbPgName then
@@ -542,7 +544,7 @@ begin
         DebugLn(['TComponentPalette.CreateOrDelButton Keep Button: ',aComp.ComponentClass.ClassName,' ',aComp.Button.Name,' ',DbgSName(TControl(aComp.Button).Parent)]);
       {$ENDIF}
     end;
-    Btn.Parent := GetScrollBox;
+    Btn.Parent := aScrollBox;
     Btn.Tag:=fBtnIndex;
   end
   else if aComp.Button<>nil then begin
@@ -582,7 +584,7 @@ begin
   Assert(Assigned(fCompNames), 'TComponentPage.CreateButtons: fCompNames is not assigned.');
   for i := 0 to fCompNames.Count-1 do begin
     Comp := Pal.FindComponent(fCompNames[i]) as TPkgComponent;
-    CreateOrDelButton(Comp, Format('%d_%d_',[fIndex,i]));
+    CreateOrDelButton(Comp, Format('%d_%d_',[fIndex,i]), ScrollBox);
   end;
   fGuiCreated := True;
 end;
