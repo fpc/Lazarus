@@ -411,8 +411,9 @@ var
           IfThen(FSuppressPrevUnit and (st.Minute = prevSt.Minute), 'ss', 'nn:ss'), AValue);
       dtsMillisecond:
         Result :=
-          IfThen(FSuppressPrevUnit and (st.Second = prevSt.Second), '', IntToStr(st.Second) + DefaultFormatSettings.DecimalSeparator) +
-          IntToStr(st.Millisecond) + 'ms';
+          IfThen(FSuppressPrevUnit and (st.Second = prevSt.Second),
+            IntToStr(st.Millisecond) + 'ms',
+            IntToStr(st.Second*1000 + st.Millisecond) + 'ms');
     end;
     if InRange(AValue, helper.FOrigParams.FMin, helper.FOrigParams.FMax) then
       prevSt := st;
