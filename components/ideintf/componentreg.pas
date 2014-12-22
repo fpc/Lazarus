@@ -218,7 +218,7 @@ type
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
     function IsUpdateLocked: boolean;
-    function IncChangeStamp: integer;
+    procedure IncChangeStamp;
     procedure DoAfterComponentAdded; virtual;
     function IndexOfPageName(const APageName: string): integer;
     function IndexOfPageWithName(const APageName: string): integer;
@@ -723,7 +723,7 @@ begin
   Result:=FUpdateLock>0;
 end;
 
-function TBaseComponentPalette.IncChangeStamp: integer;
+procedure TBaseComponentPalette.IncChangeStamp;
 begin
   Inc(fChangeStamp);
 end;
