@@ -2692,6 +2692,19 @@ type
   ETreeNodeError = class(Exception);
   ETreeViewError = class(ETreeNodeError);
 
+  TTreeNodeChangeReason = (
+    ncTextChanged,   //The Node's Text has changed
+    ncDataChanged,   //The Node's Data has changed
+    ncHeightChanged, //The Node's Height has changed
+    ncImageEffect,   //The Node's Image Effect has changed
+    ncImageIndex,    //The Node's Image Index has changed
+    ncParentChanged, //The Node's Parent has changed
+    ncVisibility,    //The Node's Visibility has changed
+    ncOverlayIndex,  //The Node's Overlay Index has Changed
+    ncStateIndex,    //The Node's State Index has Changed
+    ncSelectedIndex  //The Node's Selected Index has Changed
+    );
+
 const
   LCLStreamID = -7;
 
@@ -2699,6 +2712,8 @@ type
   TTVChangingEvent = procedure(Sender: TObject; Node: TTreeNode;
                                var AllowChange: Boolean) of object;
   TTVChangedEvent = procedure(Sender: TObject; Node: TTreeNode) of object;
+  TTVNodeChangedEvent = procedure(Sender: TObject; Node: TTreeNode;
+                               ChangeReason: TTreeNodeChangeReason) of object;
   TTVEditingEvent = procedure(Sender: TObject; Node: TTreeNode;
                               var AllowEdit: Boolean) of object;
   TTVEditingEndEvent = procedure(Sender: TObject; Node: TTreeNode;
@@ -2845,6 +2860,7 @@ type
     procedure WriteData(Stream: TStream);
     procedure WriteDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
   protected
+    procedure Changed(ChangeReason: TTreeNodeChangeReason);
     function GetOwner: TPersistent; override;
   public
     constructor Create(AnOwner: TTreeNodes); virtual;
@@ -2930,6 +2946,7 @@ type
     property Selected: Boolean read GetSelected write SetSelected;
     property SelectedIndex: Integer read FSelectedIndex write SetSelectedIndex default -1;
     property StateIndex: Integer read FStateIndex write SetStateIndex default -1;
+    property States: TNodeStates read FStates;
     property SubTreeCount: integer read FSubTreeCount;
     property Text: string read FText write SetText;
     property Top: integer read GetTop;
@@ -3126,6 +3143,7 @@ type
     tvimAsPrevSibling
   );
 
+
   TCustomTreeView = class(TCustomControl)
   private
     FAccessibilityOn: Boolean;
@@ -3170,6 +3188,7 @@ type
     FOnExpanding: TTVExpandingEvent;
     FOnGetImageIndex: TTVExpandedEvent;
     FOnGetSelectedIndex: TTVExpandedEvent;
+    FOnNodeChanged: TTVNodeChangedEvent;
     FOnSelectionChanged: TNotifyEvent;
     FOptions: TTreeViewOptions;
     FRClickNode: TTreeNode;
@@ -3263,7 +3282,7 @@ type
     procedure EditorEditingDone(Sender: TObject); virtual;
     procedure EditorKeyDown(Sender: TObject; var Key : Word; Shift : TShiftState); virtual;
     procedure BeginAutoDrag; override;
-    procedure BeginEditing(ANode: TTreeNode);
+    procedure BeginEditing(ANode: TTreeNode); virtual;
     function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint; ADragObject: TDragObject; ATarget: TControl; ADocking: Boolean): LRESULT; override;
     function CanChange(Node: TTreeNode): Boolean; virtual;
     function CanCollapse(Node: TTreeNode): Boolean; virtual;
@@ -3299,7 +3318,7 @@ type
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
                        var Accept: Boolean); override;
-    procedure EndEditing(Cancel: boolean = false);
+    procedure EndEditing(Cancel: boolean = false); virtual;
     procedure EnsureNodeIsVisible(ANode: TTreeNode);
     procedure Expand(Node: TTreeNode); virtual;
     procedure GetImageIndex(Node: TTreeNode); virtual;
@@ -3311,6 +3330,7 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseLeave; override;
+    procedure NodeChanged(Node: TTreeNode; ChangeReason: TTreeNodeChangeReason); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     procedure SetDragMode(Value: TDragMode); override;
@@ -3324,6 +3344,8 @@ type
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
     procedure Resize; override;
+    property EditingItem: TTreeNode read FEditingItem;
+    property States: TTreeViewStates read FStates;
   public
     // Accessibility
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; override;
@@ -3366,6 +3388,7 @@ type
       read FOnGetImageIndex write FOnGetImageIndex;
     property OnGetSelectedIndex: TTVExpandedEvent
       read FOnGetSelectedIndex write FOnGetSelectedIndex;
+    property OnNodeChanged: TTVNodeChangedEvent read FOnNodeChanged write FOnNodeChanged;
     property OnSelectionChanged: TNotifyEvent
       read FOnSelectionChanged write FOnSelectionChanged;
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly default False;
@@ -3541,6 +3564,7 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnNodeChanged;
     property OnSelectionChanged;
     property OnShowHint;
     //property OnStartDock;

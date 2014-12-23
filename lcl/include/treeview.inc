@@ -415,6 +415,7 @@ begin
     else TreeView.AlphaSort;
   end;
   Update;
+  Changed(ncTextChanged);
   // Update accessibility information
   lSelfAX := TreeView.GetAccessibleObject.GetChildAccessibleObjectWithDataObject(Self);
   if lSelfAX <> nil then
@@ -435,6 +436,7 @@ begin
     else
       TreeView.AlphaSort;
   end;
+  Changed(ncDataChanged);
 end;
 
 function TTreeNode.GetState(NodeState: TNodeState): Boolean;
@@ -450,6 +452,7 @@ begin
   if TreeView<>nil then
     TreeView.FStates:=TreeView.FStates+[tvsScrollbarChanged,tvsTopsNeedsUpdate];
   Update;
+  Changed(ncHeightChanged);
 end;
 
 procedure TTreeNode.SetImageEffect(AValue: TGraphicsDrawEffect);
@@ -457,6 +460,7 @@ begin
   if FNodeEffect=AValue then exit;
   FNodeEffect := AValue;
   Update;
+  Changed(ncImageEffect);
 end;
 
 procedure TTreeNode.SetImageIndex(AValue: TImageIndex);
@@ -464,6 +468,7 @@ begin
   if FImageIndex=AValue then exit;
   FImageIndex := AValue;
   Update;
+  Changed(ncImageIndex);
 end;
 
 procedure TTreeNode.SetIndex(const AValue: Integer);
@@ -503,6 +508,7 @@ begin
   if FSelectedIndex = AValue then exit;
   FSelectedIndex := AValue;
   Update;
+  Changed(ncSelectedIndex);
 end;
 
 procedure TTreeNode.SetVisible(const AValue: Boolean);
@@ -515,6 +521,7 @@ begin
                                         tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate,
                                         tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate];
   Update;
+  Changed(ncVisibility);
 end;
 
 procedure TTreeNode.SetOverlayIndex(AValue: Integer);
@@ -522,6 +529,7 @@ begin
   if FOverlayIndex = AValue then exit;
   FOverlayIndex := AValue;
   Update;
+  Changed(ncOverlayIndex)
 end;
 
 procedure TTreeNode.SetStateIndex(AValue: Integer);
@@ -529,6 +537,7 @@ begin
   if FStateIndex = AValue then exit;
   FStateIndex := AValue;
   Update;
+  Changed(ncStateIndex);
 end;
 
 function TTreeNode.AreParentsExpandedAndVisible: Boolean;
@@ -1529,6 +1538,7 @@ begin
       TreeView.OnChange := OldOnChange;
     end;
   end;
+  Changed(ncParentChanged)
 end;
 
 procedure TTreeNode.MultiSelectGroup;
@@ -1890,6 +1900,11 @@ begin
   Stream.WriteBuffer(Info^, Size);
   for I := 0 to ItemCount - 1 do
     Items[I].WriteDelphiData(Stream, Info);
+end;
+
+procedure TTreeNode.Changed(ChangeReason: TTreeNodeChangeReason);
+begin
+  TreeView.NodeChanged(self,ChangeReason);
 end;
 
 function TTreeNode.GetOwner: TPersistent;
@@ -5268,6 +5283,12 @@ begin
   FStates:=FStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked,
                     tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
   inherited MouseLeave;
+end;
+
+procedure TCustomTreeView.NodeChanged(Node: TTreeNode; ChangeReason: TTreeNodeChangeReason);
+begin
+  if assigned(FOnNodeChanged) then
+     OnNodeChanged(self,Node,ChangeReason);
 end;
 
 procedure TCustomTreeView.Notification(AComponent: TComponent; Operation: TOperation);
