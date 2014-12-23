@@ -3,7 +3,7 @@
 
    fpmake.pp for FCL 1.0.1
 
-   This file was generated on 08/21/12
+   This file was generated on 23-12-2014
 }
 
 {$ifndef ALLPACKAGES} 
@@ -26,27 +26,26 @@ begin
     P.Version:='1.0.1';
 
 {$ifdef ALLPACKAGES}
+    // when this is part of a meta package, set here the sub directory
     P.Directory:='packager/registration/';
 {$endif ALLPACKAGES}
-    P.SupportBuildModes := [bmBuildUnit];
-
-    P.Dependencies.Add('fcl-process');
-    P.Dependencies.Add('fcl-db');
 
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
     P.Options.Add('-g');
     P.Options.Add('-gl');
-    P.Options.Add('-vewnhi');
     P.Options.Add('-l');
-    P.Options.Add('-Fu.');
+    P.Options.Add('-vewnhibq');
+    P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('fcllaz.pas');
     t.Dependencies.AddUnit('registerfcl');
 
-    //P.Sources.AddSrc('lazaruspackageintf.pas');
+    P.Sources.AddSrc('lazaruspackageintf.pas');
     T:=P.Targets.AddUnit('registerfcl.pas');
-    T:=P.Targets.AddUnit('lazaruspackageintf.pas');
+
+    // copy the compiled file, so the IDE knows how the package was compiled
+    P.InstallFiles.Add('FCL.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
 end;

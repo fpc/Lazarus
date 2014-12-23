@@ -3,7 +3,7 @@
 
    fpmake.pp for IDEIntf 1.0
 
-   This file was generated on 09/07/12
+   This file was generated on 23-12-2014
 }
 
 {$ifndef ALLPACKAGES} 
@@ -27,27 +27,28 @@ begin
 
 {$ifdef ALLPACKAGES}
     // when this is part of a meta package, set here the sub directory
-    P.Directory:='ideintf';
+    P.Directory:='components/ideintf';
 {$endif ALLPACKAGES}
 
     P.Dependencies.Add('lazcontrols');
-    P.Dependencies.Add('fcl-res');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
     P.Options.Add('-g');
     P.Options.Add('-gl');
-    P.Options.Add('-vew');
     P.Options.Add('-l');
+    P.Options.Add('-vi-');
+    P.Options.Add('-vewnhbq');
     P.Options.Add('-dLCL');
     P.Options.Add('-dLCL$(LCL_PLATFORM)');
+    P.Options.Add('-dNoCarbon');
     P.IncludePath.Add('images');
-    P.Options.Add('-Fu../components/lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
-    P.Options.Add('-Fu../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
-    P.Options.Add('-Fu../lcl/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu.');
+    P.UnitPath.Add('../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
+    P.UnitPath.Add('../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
+    P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('ideintf.pas');
     t.Dependencies.AddUnit('actionseditor');
     t.Dependencies.AddUnit('actionseditorstd');
@@ -59,9 +60,11 @@ begin
     t.Dependencies.AddUnit('componenteditors');
     t.Dependencies.AddUnit('componentreg');
     t.Dependencies.AddUnit('componenttreeview');
+    t.Dependencies.AddUnit('compoptsintf');
     t.Dependencies.AddUnit('dbpropedits');
     t.Dependencies.AddUnit('fieldseditor');
     t.Dependencies.AddUnit('fieldslist');
+    t.Dependencies.AddUnit('filefilterpropeditor');
     t.Dependencies.AddUnit('formeditingintf');
     t.Dependencies.AddUnit('frmselectprops');
     t.Dependencies.AddUnit('graphicpropedit');
@@ -76,11 +79,14 @@ begin
     t.Dependencies.AddUnit('idemsgintf');
     t.Dependencies.AddUnit('ideoptionsintf');
     t.Dependencies.AddUnit('idetextconverter');
+    t.Dependencies.AddUnit('ideutils');
     t.Dependencies.AddUnit('idewindowintf');
     t.Dependencies.AddUnit('imagelisteditor');
+    t.Dependencies.AddUnit('keyvalpropeditdlg');
     t.Dependencies.AddUnit('lazideintf');
     t.Dependencies.AddUnit('lazstringgridedit');
     t.Dependencies.AddUnit('listviewpropedit');
+    t.Dependencies.AddUnit('macrodefintf');
     t.Dependencies.AddUnit('macrointf');
     t.Dependencies.AddUnit('maskpropedit');
     t.Dependencies.AddUnit('menuintf');
@@ -99,7 +105,9 @@ begin
     t.Dependencies.AddUnit('stringspropeditdlg');
     t.Dependencies.AddUnit('texttools');
     t.Dependencies.AddUnit('treeviewpropedit');
-    t.Dependencies.AddUnit('compoptsintf');
+    t.Dependencies.AddUnit('unitresources');
+    t.Dependencies.AddUnit('projpackintf');
+    t.Dependencies.AddUnit('dbgridcolumnspropeditform');
 
     T:=P.Targets.AddUnit('actionseditor.pas');
     T:=P.Targets.AddUnit('actionseditorstd.pas');
@@ -111,9 +119,11 @@ begin
     T:=P.Targets.AddUnit('componenteditors.pas');
     T:=P.Targets.AddUnit('componentreg.pas');
     T:=P.Targets.AddUnit('componenttreeview.pas');
+    T:=P.Targets.AddUnit('compoptsintf.pas');
     T:=P.Targets.AddUnit('dbpropedits.pas');
     T:=P.Targets.AddUnit('fieldseditor.pas');
     T:=P.Targets.AddUnit('fieldslist.pas');
+    T:=P.Targets.AddUnit('filefilterpropeditor.pas');
     T:=P.Targets.AddUnit('formeditingintf.pas');
     T:=P.Targets.AddUnit('frmselectprops.pas');
     T:=P.Targets.AddUnit('graphicpropedit.pas');
@@ -128,11 +138,14 @@ begin
     T:=P.Targets.AddUnit('idemsgintf.pas');
     T:=P.Targets.AddUnit('ideoptionsintf.pas');
     T:=P.Targets.AddUnit('idetextconverter.pas');
+    T:=P.Targets.AddUnit('ideutils.pas');
     T:=P.Targets.AddUnit('idewindowintf.pas');
     T:=P.Targets.AddUnit('imagelisteditor.pp');
+    T:=P.Targets.AddUnit('keyvalpropeditdlg.pas');
     T:=P.Targets.AddUnit('lazideintf.pas');
     T:=P.Targets.AddUnit('lazstringgridedit.pas');
     T:=P.Targets.AddUnit('listviewpropedit.pp');
+    T:=P.Targets.AddUnit('macrodefintf.pas');
     T:=P.Targets.AddUnit('macrointf.pas');
     T:=P.Targets.AddUnit('maskpropedit.pas');
     T:=P.Targets.AddUnit('menuintf.pas');
@@ -151,7 +164,9 @@ begin
     T:=P.Targets.AddUnit('stringspropeditdlg.pas');
     T:=P.Targets.AddUnit('texttools.pas');
     T:=P.Targets.AddUnit('treeviewpropedit.pas');
-    T:=P.Targets.AddUnit('compoptsintf.pas');
+    T:=P.Targets.AddUnit('unitresources.pas');
+    T:=P.Targets.AddUnit('projpackintf.pas');
+    T:=P.Targets.AddUnit('dbgridcolumnspropeditform.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.InstallFiles.Add('IDEIntf.compiled',AllOSes,'$(unitinstalldir)');

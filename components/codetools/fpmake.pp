@@ -3,7 +3,7 @@
 
    fpmake.pp for CodeTools 1.0.1
 
-   This file was generated on 09/07/12
+   This file was generated on 23-12-2014
 }
 
 {$ifndef ALLPACKAGES} 
@@ -31,17 +31,17 @@ begin
 {$endif ALLPACKAGES}
 
     P.Dependencies.Add('lazutils');
-    P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Sci');
     P.Options.Add('-O1');
     P.Options.Add('-g');
     P.Options.Add('-gl');
-    P.Options.Add('-vewni');
     P.Options.Add('-l');
-    P.Options.Add('-Fu../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu.');
+    P.Options.Add('-vh-');
+    P.Options.Add('-vewnibq');
+    P.UnitPath.Add('../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('codetools.pas');
     t.Dependencies.AddUnit('basiccodetools');
     t.Dependencies.AddUnit('cachecodetools');
@@ -95,6 +95,9 @@ begin
     t.Dependencies.AddUnit('codetoolsfpcmsgs');
     t.Dependencies.AddUnit('unitdictionary');
     t.Dependencies.AddUnit('ctloadlaz');
+    t.Dependencies.AddUnit('ctunitgroupgraph');
+    t.Dependencies.AddUnit('codecompletiontemplater');
+    t.Dependencies.AddUnit('codetoolgdbtracer');
 
     T:=P.Targets.AddUnit('basiccodetools.pas');
     T:=P.Targets.AddUnit('cachecodetools.pas');
@@ -149,6 +152,9 @@ begin
     T:=P.Targets.AddUnit('codetoolsfpcmsgs.pas');
     T:=P.Targets.AddUnit('unitdictionary.pas');
     T:=P.Targets.AddUnit('ctloadlaz.pas');
+    T:=P.Targets.AddUnit('ctunitgroupgraph.pas');
+    T:=P.Targets.AddUnit('codecompletiontemplater.pas');
+    T:=P.Targets.AddUnit('codetoolgdbtracer.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.InstallFiles.Add('CodeTools.compiled',AllOSes,'$(unitinstalldir)');

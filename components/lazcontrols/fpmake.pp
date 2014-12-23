@@ -3,7 +3,7 @@
 
    fpmake.pp for LazControls 1.0.1
 
-   This file was generated on 09/01/12
+   This file was generated on 23-12-2014
 }
 
 {$ifndef ALLPACKAGES} 
@@ -31,21 +31,21 @@ begin
 {$endif ALLPACKAGES}
 
     P.Dependencies.Add('lcl');
-    P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
     P.Options.Add('-g');
     P.Options.Add('-gl');
-    P.Options.Add('-vewnhi');
     P.Options.Add('-l');
+    P.Options.Add('-vewnhibq');
     P.Options.Add('-dLCL');
     P.Options.Add('-dLCL$(LCL_PLATFORM)');
-    P.Options.Add('-Fu../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
-    P.Options.Add('-Fu../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu.');
+    P.Options.Add('-dNoCarbon');
+    P.UnitPath.Add('../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
+    P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('lazcontrols.pas');
     t.Dependencies.AddUnit('checkboxthemed');
     t.Dependencies.AddUnit('dividerbevel');
@@ -54,6 +54,8 @@ begin
     t.Dependencies.AddUnit('listviewfilteredit');
     t.Dependencies.AddUnit('treefilteredit');
     t.Dependencies.AddUnit('shortpathedit');
+    t.Dependencies.AddUnit('lvlgraphctrl');
+    t.Dependencies.AddUnit('extendedtabcontrols');
 
     T:=P.Targets.AddUnit('checkboxthemed.pas');
     T:=P.Targets.AddUnit('dividerbevel.pas');
@@ -62,6 +64,8 @@ begin
     T:=P.Targets.AddUnit('listviewfilteredit.pas');
     T:=P.Targets.AddUnit('treefilteredit.pas');
     T:=P.Targets.AddUnit('shortpathedit.pas');
+    T:=P.Targets.AddUnit('lvlgraphctrl.pas');
+    T:=P.Targets.AddUnit('extendedtabcontrols.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.InstallFiles.Add('LazControls.compiled',AllOSes,'$(unitinstalldir)');

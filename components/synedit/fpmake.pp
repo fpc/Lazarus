@@ -3,7 +3,7 @@
 
    fpmake.pp for SynEdit 1.0
 
-   This file was generated on 09/07/12
+   This file was generated on 23-12-2014
 }
 
 {$ifndef ALLPACKAGES} 
@@ -31,26 +31,26 @@ begin
 {$endif ALLPACKAGES}
 
     P.Dependencies.Add('lcl');
-    P.Dependencies.Add('lazutils');
-    p.Dependencies.Add('fcl-registry');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-CR');
     P.Options.Add('-O1');
     P.Options.Add('-g');
     P.Options.Add('-gl');
-    P.Options.Add('-vewnh');
     P.Options.Add('-l');
-    P.Options.Add('-vm4055,5024');
+    P.Options.Add('-vi-');
+    P.Options.Add('-vewnhbq');
+    P.Options.Add('-vm5024,4055');
     P.Options.Add('-dLCL');
     P.Options.Add('-dLCL$(LCL_PLATFORM)');
+    P.Options.Add('-dNoCarbon');
     P.Options.Add('-CR');
     P.Options.Add('-dgc');
-    P.Options.Add('-Fu../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
-    P.Options.Add('-Fu../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu.');
+    P.UnitPath.Add('../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
+    P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('allsynedit.pas');
     t.Dependencies.AddUnit('synbeautifier');
     t.Dependencies.AddUnit('syncompletion');
@@ -83,7 +83,7 @@ begin
     t.Dependencies.AddUnit('syneditstrconst');
     t.Dependencies.AddUnit('synedittextbase');
     t.Dependencies.AddUnit('synedittextbuffer');
-    t.Dependencies.AddUnit('synedittextdoublewidthchars');
+    t.Dependencies.AddUnit('synedittextbidichars');
     t.Dependencies.AddUnit('synedittexttabexpander');
     t.Dependencies.AddUnit('synedittexttrimmer');
     t.Dependencies.AddUnit('synedittypes');
@@ -128,6 +128,9 @@ begin
     t.Dependencies.AddUnit('synhighlighterbat');
     t.Dependencies.AddUnit('synhighlighterini');
     t.Dependencies.AddUnit('syneditmarkupspecialchar');
+    t.Dependencies.AddUnit('synedittextdoublewidthchars');
+    t.Dependencies.AddUnit('synedittextsystemcharwidth');
+    t.Dependencies.AddUnit('syneditmarkupifdef');
 
     T:=P.Targets.AddUnit('synbeautifier.pas');
     T:=P.Targets.AddUnit('syncompletion.pas');
@@ -161,7 +164,7 @@ begin
     T:=P.Targets.AddUnit('syneditstrconst.pp');
     T:=P.Targets.AddUnit('synedittextbase.pas');
     T:=P.Targets.AddUnit('synedittextbuffer.pp');
-    T:=P.Targets.AddUnit('synedittextdoublewidthchars.pas');
+    T:=P.Targets.AddUnit('synedittextbidichars.pas');
     T:=P.Targets.AddUnit('synedittexttabexpander.pas');
     T:=P.Targets.AddUnit('synedittexttrimmer.pas');
     T:=P.Targets.AddUnit('synedittypes.pp');
@@ -206,6 +209,9 @@ begin
     T:=P.Targets.AddUnit('synhighlighterbat.pas');
     T:=P.Targets.AddUnit('synhighlighterini.pas');
     T:=P.Targets.AddUnit('syneditmarkupspecialchar.pp');
+    T:=P.Targets.AddUnit('synedittextdoublewidthchars.pas');
+    T:=P.Targets.AddUnit('synedittextsystemcharwidth.pas');
+    T:=P.Targets.AddUnit('syneditmarkupifdef.pp');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.InstallFiles.Add('SynEdit.compiled',AllOSes,'$(unitinstalldir)');
