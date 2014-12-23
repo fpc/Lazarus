@@ -1011,7 +1011,7 @@ end;
 
 procedure TCustomCoolBar.Paint;
 var i: Integer;
-    aGrabDetails: TThemedElementDetails;
+    aGrabDetails,aBackground: TThemedElementDetails;
     aGrabStyle: TGrabStyle;
     aRaisedBevel: Boolean;
     aRect: TRect;
@@ -1134,7 +1134,12 @@ begin
   inherited Paint;
   //DebugLn('TCoolBar.Paint');
   //draw Bitmap Background
-  if FBitmap.Width > 0 then DrawTiledBitmap(ClientRect, FBitmap);
+  if FBitmap.Width > 0 then
+    DrawTiledBitmap(ClientRect, FBitmap)
+  else begin
+    aBackground:=ThemeServices.GetElementDetails(trRebarRoot);
+    ThemeServices.DrawElement(Canvas.Handle,aBackground,ClientRect);
+  end;
   aCountM1 := length(FVisiBands)-1;
   if aCountM1 >= 0 then begin
     if FBandBorderStyle = bsSingle then
