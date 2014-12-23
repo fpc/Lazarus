@@ -4482,7 +4482,7 @@ begin
   s := s + StringToFpmakeOptionGroup('    P.Options.Add',OtherOptions);
   s := s + StringToFpmakeOptionGroup('    P.Options.Add',CustomOptions);
   s := s + StringToFpmakeOptionGroup('    P.IncludePath.Add',IncPath);
-  s := s + StringToFpmakeOptionGroup('    P.Options.Add',UnitPath,'-Fu');
+  s := s + StringToFpmakeOptionGroup('    P.UnitPath.Add', UnitPath);
 
   s:=s+'    T:=P.Targets.AddUnit('''+MainSrcFile+''');'+e;
   for i := 0 to APackage.FileCount-1 do
