@@ -179,6 +179,8 @@ type
     FNoEditingDone: Integer;
     FAllowDroppingCalendar: Boolean;
     FChangeInRecursiveCall: Boolean;
+    FCorrectedDTP: TDateTimePart;
+    FCorrectedValue: Word;
 
     function AreSeparatorsStored: Boolean;
     function GetChecked: Boolean;
@@ -224,7 +226,8 @@ type
     function GetMonth: Word;
     function GetYear: Word;
     function GetHMSMs(const NowIfNull: Boolean = False): THMSMs;
-    function GetYYYYMMDD(const TodayIfNull: Boolean = False): TYMD;
+    function GetYYYYMMDD(const TodayIfNull: Boolean = False;
+                               const WithCorrection: Boolean = False): TYMD;
     procedure SetHour(const AValue: Word);
     procedure SetMiliSec(const AValue: Word);
     procedure SetMinute(const AValue: Word);
@@ -1341,7 +1344,8 @@ begin
     DecodeTime(FDateTime, Result.Hour, Result.Minute, Result.Second, Result.MiliSec);
 end;
 
-function TCustomDateTimePicker.GetYYYYMMDD(const TodayIfNull: Boolean): TYMD;
+function TCustomDateTimePicker.GetYYYYMMDD(const TodayIfNull: Boolean;
+  const WithCorrection: Boolean): TYMD;
 begin
   if DateIsNull then begin
     if TodayIfNull then
@@ -1352,8 +1356,19 @@ begin
         Month := 0;
         Year := 0;
       end;
-  end else
+  end else begin
     DecodeDate(FDateTime, Result.Year, Result.Month, Result.Day);
+    if WithCorrection then begin
+      case FCorrectedDTP of
+        dtpDay:
+          Result.Day := FCorrectedValue;
+        dtpMonth:
+          Result.Month := FCorrectedValue;
+        dtpYear:
+          Result.Year := FCorrectedValue;
+      end;
+    end;
+  end;
 end;
 
 procedure TCustomDateTimePicker.SetHour(const AValue: Word);
@@ -1433,7 +1448,7 @@ var
   YMD: TYMD;
 begin
   SelectDay;
-  YMD := GetYYYYMMDD(True);
+  YMD := GetYYYYMMDD(True, True);
 
   YMD.Day := AValue;
   SetYYYYMMDD(YMD);
@@ -1445,7 +1460,7 @@ var
   N: Word;
 begin
   SelectMonth;
-  YMD := GetYYYYMMDD(True);
+  YMD := GetYYYYMMDD(True, True);
 
   YMD.Month := AValue;
 
@@ -1462,7 +1477,7 @@ var
 begin
   SelectYear;
 
-  YMD := GetYYYYMMDD(True);
+  YMD := GetYYYYMMDD(True, True);
   YMD.Year := AValue;
   if (YMD.Month = 2) and (YMD.Day > 28) and (not IsLeapYear(YMD.Year)) then
     YMD.Day := 28;
@@ -1568,6 +1583,7 @@ begin
 
       end;
     finally
+      FCorrectedDTP := dtpAMPM;
       Dec(FUserChanging);
     end;
   end;
@@ -2012,6 +2028,8 @@ begin
 
           if (Length(S) >= N) then begin
 
+            FCorrectedDTP := dtpAMPM;
+
             L := StrToInt(S);
             if DTP < dtpHour then begin
               YMD := GetYYYYMMDD(True);
@@ -2019,6 +2037,50 @@ begin
                 dtpDay: YMD.Day := L;
                 dtpMonth: YMD.Month := L;
                 dtpYear: YMD.Year := L;
+              end;
+
+              if AutoAdvance and (YMD.Day <= 31) and
+                  (YMD.Day > NumberOfDaysInMonth(YMD.Month, YMD.Year)) then begin
+                case DTP of
+                  dtpDay:
+                    case FEffectiveDateDisplayOrder of
+                      ddoDMY: begin
+                        FCorrectedValue := YMD.Month + 1;
+                        FCorrectedDTP := dtpMonth;
+                      end;
+                      ddoMDY:
+                        FCorrectedDTP := dtpYear;
+                    end;
+                  dtpMonth:
+                    case FEffectiveDateDisplayOrder of
+                      ddoMDY, ddoYMD: begin
+                          FCorrectedValue := NumberOfDaysInMonth(YMD.Month, YMD.Year);
+                          FCorrectedDTP := dtpDay;
+                        end;
+                      ddoDMY:
+                        FCorrectedDTP := dtpYear;
+                    end;
+                  dtpYear:
+                    if (FEffectiveDateDisplayOrder = ddoYMD) and (YMD.Month = 2)
+                          and (YMD.Day = 29) and not IsLeapYear(YMD.Year) then begin
+                      FCorrectedValue := YMD.Month + 1;
+                      FCorrectedDTP := dtpMonth;
+                    end;
+                end;
+
+                case FCorrectedDTP of
+                  dtpDay:
+                    YMD.Day := FCorrectedValue;
+                  dtpMonth:
+                    YMD.Month := FCorrectedValue;
+                  dtp.dtpYear:
+                    if (YMD.Day = 29) and (YMD.Month = 2) then begin
+                      while not IsLeapYear(YMD.Year) do
+                        Inc(YMD.Year);
+                      FCorrectedValue := YMD.Year;
+                    end;
+
+                end;
               end;
 
               if TryEncodeDate(YMD.Year, YMD.Month, YMD.Day, D)
@@ -2584,6 +2646,8 @@ var
   DTP: TDateTimePart;
 begin
   if HandleAllocated then begin
+    FCorrectedDTP := dtpAMPM;
+
     FUserChangedText := False;
 
     if not (DateIsNull or FJumpMinMax) then begin
@@ -3573,6 +3637,8 @@ begin
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, cx, cy);
 
+  FCorrectedDTP := dtpAMPM;
+  FCorrectedValue := 0;
   FChangeInRecursiveCall := False;
   FNoEditingDone := 0;
   FArrowShape := asModernSmaller;
