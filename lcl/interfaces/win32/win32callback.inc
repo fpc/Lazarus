@@ -1897,7 +1897,7 @@ begin
 
         // check if the window is an edit control of a combobox, if so,
         // redirect it to the combobox, not the edit control
-        if WindowInfo^.isComboEdit then
+        if GetWin32WindowInfo(TargetWindow)^.isComboEdit then
           TargetWindow := Windows.GetParent(TargetWindow);
 
         // check InMouseWheelRedirection to prevent recursion
