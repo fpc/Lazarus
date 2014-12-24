@@ -12830,6 +12830,10 @@ msgstr "ページ"
 msgid "Page name"
 msgstr ""
 
+#: lazarusidestrconsts.lispagenamealreadyexists
+msgid "Page name \"%s\" already exists. Not added."
+msgstr ""
+
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
 msgstr ""
@@ -15805,12 +15809,20 @@ msgstr "同じレベルのサブ手続き"
 msgid "Success"
 msgstr "成功"
 
+#: lazarusidestrconsts.lissuccessfullyexported
+msgid "Successfully exported to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lissuccessfullyexportedbuildmodes
 msgid "Successfully exported %d BuildModes to \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lissuccessfullyexportedcompileroptions
 msgid "Successfully exported compiler options to \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lissuccessfullyimported
+msgid "Successfully imported from \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lissuccessfullyimportedbuildmodes

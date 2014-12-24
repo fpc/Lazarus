@@ -12700,6 +12700,10 @@ msgstr "Pagina"
 msgid "Page name"
 msgstr "Nome della pagina"
 
+#: lazarusidestrconsts.lispagenamealreadyexists
+msgid "Page name \"%s\" already exists. Not added."
+msgstr ""
+
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
 msgstr "Panico"
@@ -15534,6 +15538,10 @@ msgstr "Sub procedura sullo stesso livello"
 msgid "Success"
 msgstr "Successo"
 
+#: lazarusidestrconsts.lissuccessfullyexported
+msgid "Successfully exported to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lissuccessfullyexportedbuildmodes
 msgid "Successfully exported %d BuildModes to \"%s\"."
 msgstr "Esportati con successo %d BuildMode in \"%s\""
@@ -15541,6 +15549,10 @@ msgstr "Esportati con successo %d BuildMode in \"%s\""
 #: lazarusidestrconsts.lissuccessfullyexportedcompileroptions
 msgid "Successfully exported compiler options to \"%s\"."
 msgstr "Esportate con successo le opzioni compilatore in \"%s\""
+
+#: lazarusidestrconsts.lissuccessfullyimported
+msgid "Successfully imported from \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lissuccessfullyimportedbuildmodes
 msgid "Successfully imported %d BuildModes from \"%s\"."
@@ -16009,9 +16021,7 @@ msgstr "Il progetto una le nuove risorse FPC, quindi necessita di FPC 2.4 o più
 
 #: lazarusidestrconsts.listheprojectwritesthedebugsymbolstoanexternalfilethe
 msgid "The project writes the debug symbols to an external file. The \"%s\" supports only symbols within the executable."
-msgstr ""
-"Il progetto scrive i simboli di debug in un file esterno. Il \"%s\" supporta "
-"solo simboli contenuti nell'eseguibile."
+msgstr "Il progetto scrive i simboli di debug in un file esterno. Il \"%s\" supporta solo simboli contenuti nell'eseguibile."
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
@@ -19356,3 +19366,4 @@ msgstr "Sola lettura"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informazioni di versione"
+

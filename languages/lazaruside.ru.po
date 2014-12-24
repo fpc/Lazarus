@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-12-12 02:09+0300\n"
+"PO-Revision-Date: 2014-12-25 02:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12694,6 +12694,10 @@ msgstr "Вкладка"
 msgid "Page name"
 msgstr "Имя вкладки"
 
+#: lazarusidestrconsts.lispagenamealreadyexists
+msgid "Page name \"%s\" already exists. Not added."
+msgstr "Вкладка с именем \"%s\" уже имеется. Добавление отменено."
+
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
 msgstr "Чрезвычайное"
@@ -15529,6 +15533,10 @@ msgstr "Подпроцедура того же уровня"
 msgid "Success"
 msgstr "Успешно"
 
+#: lazarusidestrconsts.lissuccessfullyexported
+msgid "Successfully exported to \"%s\"."
+msgstr "Экспорт в \"%s\" успешно завершён."
+
 #: lazarusidestrconsts.lissuccessfullyexportedbuildmodes
 msgid "Successfully exported %d BuildModes to \"%s\"."
 msgstr "Экспорт режимов сборки (%d шт.) в \"%s\" успешно завершён."
@@ -15536,6 +15544,10 @@ msgstr "Экспорт режимов сборки (%d шт.) в \"%s\" успе
 #: lazarusidestrconsts.lissuccessfullyexportedcompileroptions
 msgid "Successfully exported compiler options to \"%s\"."
 msgstr "Экспорт параметров компилятора в \"%s\" успешно завершён."
+
+#: lazarusidestrconsts.lissuccessfullyimported
+msgid "Successfully imported from \"%s\"."
+msgstr "Импорт из \"%s\" успешно завершён."
 
 #: lazarusidestrconsts.lissuccessfullyimportedbuildmodes
 msgid "Successfully imported %d BuildModes from \"%s\"."

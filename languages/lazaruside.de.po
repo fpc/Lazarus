@@ -12714,6 +12714,10 @@ msgstr "Seite"
 msgid "Page name"
 msgstr "Seitenname"
 
+#: lazarusidestrconsts.lispagenamealreadyexists
+msgid "Page name \"%s\" already exists. Not added."
+msgstr ""
+
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
 msgstr ""
@@ -15559,12 +15563,20 @@ msgstr "Unterprozedur derselben Stufe"
 msgid "Success"
 msgstr "Erfolg"
 
+#: lazarusidestrconsts.lissuccessfullyexported
+msgid "Successfully exported to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lissuccessfullyexportedbuildmodes
 msgid "Successfully exported %d BuildModes to \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lissuccessfullyexportedcompileroptions
 msgid "Successfully exported compiler options to \"%s\"."
+msgstr ""
+
+#: lazarusidestrconsts.lissuccessfullyimported
+msgid "Successfully imported from \"%s\"."
 msgstr ""
 
 #: lazarusidestrconsts.lissuccessfullyimportedbuildmodes

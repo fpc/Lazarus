@@ -12714,6 +12714,10 @@ msgstr "Oldal"
 msgid "Page name"
 msgstr ""
 
+#: lazarusidestrconsts.lispagenamealreadyexists
+msgid "Page name \"%s\" already exists. Not added."
+msgstr ""
+
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
 msgstr "Pánik"
@@ -15559,6 +15563,10 @@ msgstr "Al-eljárás azonos szinten"
 msgid "Success"
 msgstr "Sikerült"
 
+#: lazarusidestrconsts.lissuccessfullyexported
+msgid "Successfully exported to \"%s\"."
+msgstr ""
+
 #: lazarusidestrconsts.lissuccessfullyexportedbuildmodes
 msgid "Successfully exported %d BuildModes to \"%s\"."
 msgstr "%d építési mód sikeresen exportálva ide: \"%s\""
@@ -15566,6 +15574,10 @@ msgstr "%d építési mód sikeresen exportálva ide: \"%s\""
 #: lazarusidestrconsts.lissuccessfullyexportedcompileroptions
 msgid "Successfully exported compiler options to \"%s\"."
 msgstr "Fordítóbeállítások sikeresen exportálva ide: \"%s\""
+
+#: lazarusidestrconsts.lissuccessfullyimported
+msgid "Successfully imported from \"%s\"."
+msgstr ""
 
 #: lazarusidestrconsts.lissuccessfullyimportedbuildmodes
 msgid "Successfully imported %d BuildModes from \"%s\"."
