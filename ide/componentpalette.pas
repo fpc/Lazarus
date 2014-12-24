@@ -584,7 +584,8 @@ begin
   Assert(Assigned(fCompNames), 'TComponentPage.CreateButtons: fCompNames is not assigned.');
   for i := 0 to fCompNames.Count-1 do begin
     Comp := Pal.FindComponent(fCompNames[i]) as TPkgComponent;
-    CreateOrDelButton(Comp, Format('%d_%d_',[fIndex,i]), ScrollBox);
+    if Assigned(Comp) then
+      CreateOrDelButton(Comp, Format('%d_%d_',[fIndex,i]), ScrollBox);
   end;
   fGuiCreated := True;
 end;
@@ -1083,8 +1084,7 @@ begin
     for CompI := 0 to CompNames.Count-1 do
     begin
       Comp := FindComponent(CompNames[CompI]);
-      Assert(Assigned(Comp),
-        Format('TComponentPalette.CreatePagesFromUserOrder: Comp %s not found.',[CompNames[CompI]]));
+      if not Assigned(Comp) then Continue;
       Comp.RealPage := Pg;
       UserComps.AddObject(CompNames[CompI], Comp);
       if VoteCompVisibility(Comp) then
