@@ -2073,7 +2073,7 @@ begin
                     YMD.Day := FCorrectedValue;
                   dtpMonth:
                     YMD.Month := FCorrectedValue;
-                  dtp.dtpYear:
+                  dtpYear:
                     if (YMD.Day = 29) and (YMD.Month = 2) then begin
                       while not IsLeapYear(YMD.Year) do
                         Inc(YMD.Year);
