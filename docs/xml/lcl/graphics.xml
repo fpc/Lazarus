@@ -833,7 +833,7 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="clDefault">
-        <short>The main color of a given control. This color does not mean anything alone and needs to be resolved using a control instance and for example TColor.GetDefaultColor, TColor.GetColorResolvingParent or TColor.GetRGBColorResolvingParent</short>
+        <short>The main color of a given control. This color does not mean anything alone and needs to be resolved using a control instance and for example TControl.GetDefaultColor, TControl.GetColorResolvingParent or TControl.GetRGBColorResolvingParent</short>
         <descr/>
         <seealso>
           <link id="#LCL.Controls.TControl.GetDefaultColor"/>
@@ -1520,21 +1520,21 @@
         <short/>
       </element>
       <!-- constant Visibility: default -->
-      <element name="cmBlackness" link="#LCL.LCLType.BLACKNESS" />
-      <element name="cmDstInvert" link="#LCL.LCLType.DSTINVERT" />
-      <element name="cmMergeCopy" link="#LCL.LCLType.MERGECOPY" />
-      <element name="cmMergePaint" link="#LCL.LCLType.MERGEPAINT" />
-      <element name="cmNotSrcCopy" link="#LCL.LCLType.NOTSRCCOPY" />
-      <element name="cmNotSrcErase" link="#LCL.LCLType.NOTSRCERASE" />
-      <element name="cmPatCopy" link="#LCL.LCLType.PATCOPY" />
-      <element name="cmPatInvert" link="#LCL.LCLType.PATINVERT" />
-      <element name="cmPatPaint" link="#LCL.LCLType.PATPAINT" />
-      <element name="cmSrcAnd" link="#LCL.LCLType.SRCAND" />
-      <element name="cmSrcCopy" link="#LCL.LCLType.SRCCOPY" />
-      <element name="cmSrcErase" link="#LCL.LCLType.SRCERASE" />
-      <element name="cmSrcInvert" link="#LCL.LCLType.SRCINVERT" />
-      <element name="cmSrcPaint" link="#LCL.LCLType.SRCPAINT" />
-      <element name="cmWhiteness" link="#LCL.LCLType.WHITENESS" />
+      <element name="cmBlackness" link="#LCL.LCLType.BLACKNESS"/>
+      <element name="cmDstInvert" link="#LCL.LCLType.DSTINVERT"/>
+      <element name="cmMergeCopy" link="#LCL.LCLType.MERGECOPY"/>
+      <element name="cmMergePaint" link="#LCL.LCLType.MERGEPAINT"/>
+      <element name="cmNotSrcCopy" link="#LCL.LCLType.NOTSRCCOPY"/>
+      <element name="cmNotSrcErase" link="#LCL.LCLType.NOTSRCERASE"/>
+      <element name="cmPatCopy" link="#LCL.LCLType.PATCOPY"/>
+      <element name="cmPatInvert" link="#LCL.LCLType.PATINVERT"/>
+      <element name="cmPatPaint" link="#LCL.LCLType.PATPAINT"/>
+      <element name="cmSrcAnd" link="#LCL.LCLType.SRCAND"/>
+      <element name="cmSrcCopy" link="#LCL.LCLType.SRCCOPY"/>
+      <element name="cmSrcErase" link="#LCL.LCLType.SRCERASE"/>
+      <element name="cmSrcInvert" link="#LCL.LCLType.SRCINVERT"/>
+      <element name="cmSrcPaint" link="#LCL.LCLType.SRCPAINT"/>
+      <element name="cmWhiteness" link="#LCL.LCLType.WHITENESS"/>
       <!-- object Visibility: default -->
       <element name="TPortableNetworkGraphic">
         <short>
