@@ -1,9 +1,9 @@
 {
    File generated automatically by Lazarus Package Manager
 
-   fpmake.pp for LCLBase 1.0.1
+   fpmake.pp for LCLBase 1.3
 
-   This file was generated on 08/21/12
+   This file was generated on 25-12-2014
 }
 
 {$ifndef ALLPACKAGES} 
@@ -23,30 +23,31 @@ begin
   with Installer do
     begin
     P:=AddPAckage('lclbase');
-    P.Version:='1.0.1';
+    P.Version:='1.3';
+
 {$ifdef ALLPACKAGES}
+    // when this is part of a meta package, set here the sub directory
     P.Directory:='lcl';
 {$endif ALLPACKAGES}
-    P.SupportBuildModes := [bmBuildUnit];
 
     P.Dependencies.Add('lazutils');
-    P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
     P.Options.Add('-g');
     P.Options.Add('-gl');
-    P.Options.Add('-vew');
     P.Options.Add('-l');
+    P.Options.Add('-vn-');
+    P.Options.Add('-vh-');
+    P.Options.Add('-vi-');
+    P.Options.Add('-vewbq');
     P.IncludePath.Add('include');
-    P.SourcePath.Add('widgetset');
-    //P.Options.Add('-Fuforms');
-    P.SourcePath.Add('forms');
-    P.Options.Add('-Fuwidgetset');
-    P.Options.Add('-Funonwin32');
-    P.Options.Add('-Fu../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu.');
+    P.UnitPath.Add('forms');
+    P.UnitPath.Add('widgetset');
+    P.UnitPath.Add('nonwin32');
+    P.UnitPath.Add('../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
+    P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('alllclunits.pp');
     t.Dependencies.AddUnit('checklst');
     t.Dependencies.AddUnit('clipbrd');
@@ -62,14 +63,12 @@ begin
     t.Dependencies.AddUnit('dynamicarray');
     t.Dependencies.AddUnit('dynhasharray');
     t.Dependencies.AddUnit('dynqueue');
-    t.Dependencies.AddUnit('editbtn');
     t.Dependencies.AddUnit('extctrls');
     t.Dependencies.AddUnit('extdlgs');
     t.Dependencies.AddUnit('extendedstrings');
     t.Dependencies.AddUnit('extgraphics');
     t.Dependencies.AddUnit('filectrl');
     t.Dependencies.AddUnit('forms');
-    t.Dependencies.AddUnit('fpcadds');
     t.Dependencies.AddUnit('graphics');
     t.Dependencies.AddUnit('graphmath');
     t.Dependencies.AddUnit('graphtype');
@@ -118,7 +117,6 @@ begin
     t.Dependencies.AddUnit('tmschema');
     t.Dependencies.AddUnit('toolwin');
     t.Dependencies.AddUnit('translations');
-    t.Dependencies.AddUnit('utf8process');
     t.Dependencies.AddUnit('utrace');
     t.Dependencies.AddUnit('xmlpropstorage');
     t.Dependencies.AddUnit('messages');
@@ -144,14 +142,12 @@ begin
     t.Dependencies.AddUnit('wsstdctrls');
     t.Dependencies.AddUnit('wstoolwin');
     t.Dependencies.AddUnit('actnlist');
-    t.Dependencies.AddUnit('arrow');
     t.Dependencies.AddUnit('asyncprocess');
     t.Dependencies.AddUnit('buttonpanel');
     t.Dependencies.AddUnit('buttons');
     t.Dependencies.AddUnit('calendar');
     t.Dependencies.AddUnit('registerlcl');
     t.Dependencies.AddUnit('valedit');
-    t.Dependencies.AddUnit('comboex');
     t.Dependencies.AddUnit('lazcanvas');
     t.Dependencies.AddUnit('lazdialogs');
     t.Dependencies.AddUnit('lazregions');
@@ -163,6 +159,10 @@ begin
     t.Dependencies.AddUnit('lazfreetypeintfdrawer');
     t.Dependencies.AddUnit('customdrawn_winxp');
     t.Dependencies.AddUnit('customdrawn_android');
+    t.Dependencies.AddUnit('arrow');
+    t.Dependencies.AddUnit('editbtn');
+    t.Dependencies.AddUnit('comboex');
+    t.Dependencies.AddUnit('dbextctrls');
 
     T:=P.Targets.AddUnit('checklst.pas');
     T:=P.Targets.AddUnit('clipbrd.pp');
@@ -178,17 +178,12 @@ begin
     T:=P.Targets.AddUnit('dynamicarray.pas');
     T:=P.Targets.AddUnit('dynhasharray.pp');
     T:=P.Targets.AddUnit('dynqueue.pas');
-    T:=P.Targets.AddUnit('editbtn.pas');
     T:=P.Targets.AddUnit('extctrls.pp');
     T:=P.Targets.AddUnit('extdlgs.pas');
     T:=P.Targets.AddUnit('extendedstrings.pas');
     T:=P.Targets.AddUnit('extgraphics.pas');
     T:=P.Targets.AddUnit('filectrl.pp');
     T:=P.Targets.AddUnit('forms.pp');
-    p.InstallFiles.Add('forms/finddlgunit.lfm','$(unitinstalldir)');
-    p.InstallFiles.Add('forms/replacedlgunit.lfm','$(unitinstalldir)');
-
-    T:=P.Targets.AddUnit('fpcadds.pas');
     T:=P.Targets.AddUnit('graphics.pp');
     T:=P.Targets.AddUnit('graphmath.pp');
     T:=P.Targets.AddUnit('graphtype.pp');
@@ -237,13 +232,9 @@ begin
     T:=P.Targets.AddUnit('tmschema.pas');
     T:=P.Targets.AddUnit('toolwin.pp');
     T:=P.Targets.AddUnit('translations.pas');
-    T:=P.Targets.AddUnit('utf8process.pp');
     T:=P.Targets.AddUnit('utrace.pp');
     T:=P.Targets.AddUnit('xmlpropstorage.pas');
     P.Sources.AddSrc('forms/calendarpopup.pas');
-    P.Sources.AddSrc('forms/finddlgunit.pas');
-    P.Sources.AddSrc('forms/replacedlgunit.pas');
-    P.Targets.AddUnit('calendarpopup.pas');
     T:=P.Targets.AddUnit('nonwin32/messages.pp');
     T:=P.Targets.AddUnit('widgetset/wsbuttons.pp');
     T:=P.Targets.AddUnit('widgetset/wscalendar.pp');
@@ -267,14 +258,12 @@ begin
     T:=P.Targets.AddUnit('widgetset/wsstdctrls.pp');
     T:=P.Targets.AddUnit('widgetset/wstoolwin.pp');
     T:=P.Targets.AddUnit('actnlist.pas');
-    T:=P.Targets.AddUnit('arrow.pp');
     T:=P.Targets.AddUnit('asyncprocess.pp');
     T:=P.Targets.AddUnit('buttonpanel.pas');
     T:=P.Targets.AddUnit('buttons.pp');
     T:=P.Targets.AddUnit('calendar.pp');
     T:=P.Targets.AddUnit('registerlcl.pas');
     T:=P.Targets.AddUnit('valedit.pas');
-    T:=P.Targets.AddUnit('comboex.pas');
     T:=P.Targets.AddUnit('lazcanvas.pas');
     T:=P.Targets.AddUnit('lazdialogs.pas');
     T:=P.Targets.AddUnit('lazregions.pas');
@@ -286,6 +275,13 @@ begin
     T:=P.Targets.AddUnit('lazfreetypeintfdrawer.pas');
     T:=P.Targets.AddUnit('customdrawn_winxp.pas');
     T:=P.Targets.AddUnit('customdrawn_android.pas');
+    T:=P.Targets.AddUnit('arrow.pp');
+    T:=P.Targets.AddUnit('editbtn.pas');
+    T:=P.Targets.AddUnit('comboex.pas');
+    T:=P.Targets.AddUnit('dbextctrls.pp');
+
+    // copy the compiled file, so the IDE knows how the package was compiled
+    P.InstallFiles.Add('LCLBase.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
 end;
