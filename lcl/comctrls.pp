@@ -2435,7 +2435,6 @@ type
     procedure FontChanged(Sender: TObject); override;
     function IsFirstAtRow(ABand: Integer): Boolean;
     function IsRowEnd(ALeft, AVisibleIndex: Integer): Boolean;
-    procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;

@@ -706,6 +706,7 @@ begin
   inherited CreateWnd;
   FCursorBkgnd := Cursor;
   DoFontChanged;
+  CalculateAndAlign;
 end;
 
 procedure TCustomCoolBar.DoFontChanged;
@@ -816,13 +817,6 @@ end;
 function TCustomCoolBar.IsRowEnd(ALeft, AVisibleIndex: Integer): Boolean;
 begin
   Result := (AVisibleIndex < length(FVisiBands)-1) and RowEndHelper(ALeft, AVisibleIndex);
-end;
-
-procedure TCustomCoolBar.Loaded;
-begin
-  inherited Loaded;
-  //DebugLn('TCoolBar.Loaded');
-  FBands.Update(Nil);
 end;
 
 procedure TCustomCoolBar.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
