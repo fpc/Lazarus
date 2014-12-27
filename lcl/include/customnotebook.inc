@@ -184,7 +184,7 @@ begin
   else
     ActivePage := nil;
   //NewPageIndex := NewIndex;
-APage := TCustomPage(FPageList[CurIndex]);
+  APage := TCustomPage(FPageList[CurIndex]);
 
   // calculate new control index (i.e. ZOrderPosition)
   if NewIndex >= FPageList.Count - 1 then
