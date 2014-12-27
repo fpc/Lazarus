@@ -314,11 +314,9 @@ begin
 
   TabWidget.BeginUpdate;
   TabWidget.setUpdatesEnabled(false);
-  TabWidget.removeTab(Index);
-  TabWidget.insertTab(NewIndex, Page.Widget, Page.getIcon, Page.getText);
+  QTabBar_moveTab(QTabBarH(TabWidget.TabBar.Widget), Index, NewIndex);
+  // DebugLn('TQtWSCustomTabControl.MovePage from Index=',dbgs(Index),' to ',dbgs(NewIndex),' finished.');
   TabWidget.setUpdatesEnabled(true);
-  if TabWidget.getCurrentIndex <> NewIndex then
-    TabWidget.setCurrentWidget(Page, True);
   TabWidget.EndUpdate;
 end;
 

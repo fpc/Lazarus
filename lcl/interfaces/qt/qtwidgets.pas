@@ -903,12 +903,14 @@ type
   private
     FSavedIndexOnPageChanging: Integer; // used to handle OnPageChanging AllowChange param
     FTabBarChangedHook: QTabBar_hookH;
+    FTabBarMovedHook: QTabBar_hookH;
   public
     procedure AttachEvents; override;
     procedure DetachEvents; override;
     function GetTabRect(const AIndex: integer): TRect;
     // under some themes tabs doesn't start at 0,0 (eg. MacOSX)
     function TabBarOffset: TPoint;
+    procedure SignalTabBarMoved(fromIndex: integer; toIndex: Integer); cdecl;
     procedure SignalTabBarCurrentChanged(Index: Integer); cdecl;
     function SlotTabBarMouse(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
@@ -9375,11 +9377,18 @@ procedure TQtTabBar.AttachEvents;
 begin
   inherited AttachEvents;
   FTabBarChangedHook := QTabBar_hook_create(QTabBarH(Widget));
+  FTabBarMovedHook := QTabBar_hook_create(QTabBarH(Widget));
   QTabBar_hook_hook_currentChanged(FTabBarChangedHook, @SignalTabBarCurrentChanged);
+  QTabBar_hook_hook_tabMoved(FTabBarMovedHook, @SignalTabBarMoved);
 end;
 
 procedure TQtTabBar.DetachEvents;
 begin
+  if FTabBarMovedHook <> nil then
+  begin
+    QTabBar_hook_destroy(FTabBarMovedHook);
+    FTabBarMovedHook := nil;
+  end;
   if FTabBarChangedHook <> nil then
   begin
     QTabBar_hook_destroy(FTabBarChangedHook);
@@ -9427,6 +9436,21 @@ begin
   end;
 end;
 
+procedure TQtTabBar.SignalTabBarMoved(fromIndex: integer; toIndex: Integer);
+  cdecl;
+var
+  ANewIndex: Integer;
+begin
+  if LCLObject = nil then
+    Exit;
+  // DebugLn('TQtTabBar.SignalTabBarMoved From=',dbgs(fromIndex),' to ',dbgs(toIndex),' FSavedIndexOnPageChanging=',dbgs(FSavedIndexOnPageChanging));
+  if Assigned(FOwner) and not (FOwner.ChildOfComplexWidget = ccwTTabControl) then
+  begin
+    ANewIndex := TQtTabWidget(FOwner).GetLCLPageIndex(toIndex);
+    TQtTabWidget(FOwner).setCurrentWidget(TQtWidget(TCustomTabControl(LCLObject).Page[ANewIndex].Handle), True);
+  end;
+end;
+
 procedure TQtTabBar.SignalTabBarCurrentChanged(Index: Integer); cdecl;
 var
   Msg: TLMNotify;
@@ -9437,7 +9461,6 @@ begin
 
   if TQtTabWidget(LCLObject.Handle).InUpdate then
     exit;
-
   FillChar(Msg{%H-}, SizeOf(Msg), 0);
   Msg.Msg := LM_NOTIFY;
   FillChar(Hdr{%H-}, SizeOf(Hdr), 0);
