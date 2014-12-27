@@ -49,7 +49,7 @@ const
   CompPalSelectionToolBtnPrefix = 'PaletteSelectBtn';
   CompPaletteCompBtnPrefix = 'PaletteBtn';
   {$IFDEF VerboseComponentPalette}
-  CompPalVerbPgName = 'Additional'; //'Standard';
+  CompPalVerbPgName = 'Dialogs'; //'Standard';
   {$ENDIF}
 type
   TComponentSelectionMode = (
@@ -195,8 +195,8 @@ function CompareControlsWithTag(Control1, Control2: Pointer): integer;
 implementation
 
 {$R ../images/components_images.res}
-
-uses 
+{$DEFINE USE_PageIndex}
+uses
   MainBase;
 
 const
@@ -413,7 +413,14 @@ var
   BtnRight: TSpeedButton;
   TabControl: TCustomTabControl;
 begin
+  {$IFDEF VerboseComponentPalette}
+  if not Visible then begin
+    DebugLn(['TComponentPalette.InsertVisiblePage: Not inserting Page=', PageName]);
+    exit;
+  end;
+  {$ELSE}
   if not Visible then Exit;
+  {$ENDIF}
   fCompNames := aCompNames;
   Pal := TComponentPalette(Palette);
   TabControl := TCustomTabControl(Pal.FPageControl);
@@ -421,12 +428,18 @@ begin
   begin
     // insert a new PageControl page
     {$IFDEF VerboseComponentPalette}
-    if PageName = CompPalVerbPgName then
+    if {PageName = CompPalVerbPgName} true then
       DebugLn(['TComponentPalette.InsertVisiblePage: Inserting Page=', PageName,
                ', at index=', Pal.fVisiblePageIndex]);
     {$ENDIF}
+    {$IFDEF USE_PageIndex}
+    TabIndex:= TabControl.Pages.Add(PageName);
+    PageComponent := Pal.FPageControl.Page[TabIndex];
+    PageComponent.PageIndex := Pal.fVisiblePageIndex;
+    {$ELSE}
     TabControl.Pages.Insert(Pal.fVisiblePageIndex, PageName);
     PageComponent := Pal.FPageControl.Page[Pal.fVisiblePageIndex];
+    {$ENDIF}
     with TScrollBox.Create(PageComponent) do begin
       Align := alClient;
       BorderStyle := bsNone;
@@ -458,6 +471,7 @@ begin
       Flat := True;
       SetBounds(2,1,16,16);
       Hint := 'Click to Select Palette Page';
+      ShowHint := True;
       OnClick := @MainIDE.SelComponentPageButtonClick;
       OnMouseWheel := @Pal.OnPageMouseWheel;
       Parent := PanelRight;
@@ -465,17 +479,29 @@ begin
   end
   else begin
     // move to the right position
+    {$IFDEF USE_PageIndex}
+      {$IFDEF VerboseComponentPalette}
+      DebugLn(['TComponentPalette.InsertVisiblePage: Page=', PageName,
+               ' setting PageIndex from ', PageComponent.PageIndex , ' to ', Pal.fVisiblePageIndex]);
+      {$ENDIF}
+    PageComponent.PageIndex := Pal.fVisiblePageIndex;
+    {$ELSE}
     TabIndex := PageComponent.PageIndex;
+    {$IFDEF VerboseComponentPalette}
+    DebugLn(['TComponentPalette.InsertVisiblePage: Start moving Page=', PageName,
+             ' from ', TabIndex, ' to ', Pal.fVisiblePageIndex]);
+    {$ENDIF}
     if (TabIndex<>Pal.fVisiblePageIndex)
     and (Pal.fVisiblePageIndex < TabControl.Pages.Count) then
     begin
       {$IFDEF VerboseComponentPalette}
-      if PageName = CompPalVerbPgName then
+      if {PageName = CompPalVerbPgName} true then
         DebugLn(['TComponentPalette.InsertVisiblePage: Moving Page=', PageName,
                  ' from ', TabIndex, ' to ', Pal.fVisiblePageIndex]);
       {$ENDIF}
       TabControl.Pages.Move(TabIndex, Pal.fVisiblePageIndex);
     end;
+    {$ENDIF}
   end;
   inc(Pal.fVisiblePageIndex);
 end;
@@ -1064,12 +1090,22 @@ begin
     CurPgInd := IndexOfPageName(PgName);
     if CurPgInd = -1 then begin
       // Create a new page
+      {$IFDEF VerboseComponentPalette}
+      DebugLn(['TComponentPalette.CreatePagesFromUserOrder, page ', PgName, ' index ',UserPageI]);
+      {$ENDIF}
       Pg := TComponentPage.Create(PgName);
       fPages.Insert(UserPageI, Pg);
       Pg.Palette := Self;
     end
+    {$IFDEF VerboseComponentPalette}
+    else if CurPgInd <> UserPageI then begin
+      DebugLn(['TComponentPalette.CreatePagesFromUserOrder, move ', PgName, ' from ',CurPgInd, ' to ',UserPageI]);
+      fPages.Move(CurPgInd, UserPageI); // Move page to right place.
+    end;
+    {$ELSE}
     else if CurPgInd <> UserPageI then
       Pages.Move(CurPgInd, UserPageI); // Move page to right place.
+    {$ENDIF}
     Pg := TComponentPage(Pages[UserPageI]);
     Pg.fIndex := UserPageI;
     Assert(PgName = Pg.PageName,
@@ -1200,10 +1236,17 @@ begin
     CreatePagesFromUserOrder;
     CreatePopupMenu;
 
+    {$IFDEF VerboseComponentPalette}
+    DebugLn(['TComponentPalette.UpdateNoteBookButtons: FPageCount before=', FPageControl.PageCount]);
+    {$ENDIF}
     // remove every page in the PageControl without a visible page
     for i:=FPageControl.PageCount-1 downto 0 do
       RemoveUnneededPage(FPageControl.Pages[i]);
     Application.ProcessMessages; // PageIndex of tabs are not updated without this.
+    {$IFDEF VerboseComponentPalette}
+    DebugLn(['TComponentPalette.UpdateNoteBookButtons: FPageCount after=', FPageControl.PageCount,
+    ' PageCount=', Pages.count]);
+    {$ENDIF}
 
     // Mark GUIs as not created. They will be created later when page gets selected.
     for i := 0 to Pages.Count-1 do
@@ -1217,7 +1260,17 @@ begin
       Assert(Pages[i].PageName=fUserOrder.ComponentPages[i],
              'UpdateNoteBookButtons: Page names do not match.');
       Pg := TComponentPage(Pages[i]);
+      {$IFDEF LCLQt}   // Qt has some problems in moving existing tabs!
+      if Assigned(Pg.PageComponent) then begin
+        Pg.PageComponent.Free;
+        Pg.RemoveSheet;
+        {Pg.PageComponent := nil;}
+        end;
+      {$ENDIF}
       Pg.InsertVisiblePage(TStringList(fUserOrder.ComponentPages.Objects[i]));
+      {$IFDEF VerboseComponentPalette}
+      DebugLn(['TComponentPalette.UpdateNoteBookButtons: PageIndex=', i, ' PageName=',Pages[i].PageName]);
+      {$ENDIF}
     end;
 
     // OldActivePage can be invalid if a user defined page is just deleted.
