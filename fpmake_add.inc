@@ -6,4 +6,6 @@
   add_IDEIntf;
   add_CodeTools;
   add_SynEdit;
+  add_DebuggerIntf;
+  add_LazDebuggerGdbmi;
   add_ide;
