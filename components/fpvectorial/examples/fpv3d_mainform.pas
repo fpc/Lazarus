@@ -108,7 +108,7 @@ begin
   if glRotateAngleZ <> 0 then
     glRotatef(glRotateAngleZ, 0, 0, 1);
 
-  VecPage := VecDoc.GetCurrentPage();
+  VecPage := VecDoc.GetCurrentPageAsVectorial();
   if VecPage = nil then Exit;
   for i := 0 to VecPage.GetEntitiesCount() - 3 do
   begin
@@ -321,9 +321,9 @@ var
   x, y: Integer;
   lRed: Word;
 begin
-  lRasterImage := TvRasterImage.Create;
+  lPage := VecDoc.GetPageAsVectorial(0);
+  lRasterImage := TvRasterImage.Create(lPage);
   HeightMap := lRasterImage;
-  lPage := VecDoc.GetPage(0);
   lPage.AddEntity(lRasterImage);
   lRasterImage.InitializeWithConvertionOf3DPointsToHeightMap(lPage, 1024, 1024);
 
