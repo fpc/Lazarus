@@ -1,12 +1,4 @@
-{
-   File generated automatically by Lazarus Package Manager
-
-   fpmake.pp for ide 0.0
-
-   This file was generated on 09/07/12
-}
-
-{$ifndef ALLPACKAGES} 
+{$ifndef ALLPACKAGES}
 {$mode objfpc}{$H+}
 program fpmake;
 
@@ -22,8 +14,8 @@ var
 begin
   with Installer do
     begin
-    P:=AddPAckage('ide');
-    P.Version:='0.0';
+    P:=AddPAckage('lazaruside');
+    P.Version:='1.3';
 
 {$ifdef ALLPACKAGES}
     // when this is part of a meta package, set here the sub directory
@@ -35,36 +27,30 @@ begin
     P.Dependencies.Add('codetools');
     P.Dependencies.Add('lazcontrols');
     P.Dependencies.Add('ideintf');
+    P.Dependencies.Add('debuggerintf');
+    P.Dependencies.Add('lazdebuggergdbmi');
     P.Dependencies.Add('fcl');
+
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
     P.Options.Add('-O1');
-    P.Options.Add('-g');
     P.Options.Add('-gl');
     P.Options.Add('-vewnhi');
     P.Options.Add('-l');
     P.Options.Add('-dLCL');
     P.Options.Add('-dLCL$(LCL_PLATFORM)');
+
     P.IncludePath.Add('include');
     P.IncludePath.Add('include/$(OS)');
-    P.Options.Add('-Fuframes');
-    P.Options.Add('-Fu../converter');
-    P.Options.Add('-Fudebugger');
-    P.Options.Add('-Fudebugger/frames');
-    P.Options.Add('-Fu../packager');
-    //P.Options.Add('-Fu../designer');
-    P.Options.Add('-Fudesigner');
-    P.Options.Add('-Fu../packager/frames');
-    //P.Options.Add('-Fu../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
-    //P.Options.Add('-Fu../components/lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
-    //P.Options.Add('-Fu../components/codetools/units/$(CPU_TARGET)-$(OS_TARGET)');
-    //P.Options.Add('-Fu../components/synedit/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
-    //P.Options.Add('-Fu../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
-    //P.Options.Add('-Fu../lcl/units/$(CPU_TARGET)-$(OS_TARGET)');
-    //P.Options.Add('-Fu../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
-    //P.Options.Add('-Fu../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu.');
-    T:=P.Targets.AddUnit('ide.pas');
+    P.UnitPath.Add('../designer');
+    P.UnitPath.Add('../debugger');
+    P.UnitPath.Add('../debugger/frames');
+    P.UnitPath.Add('../converter');
+    P.UnitPath.Add('../packager');
+    P.UnitPath.Add('../packager/frames');
+    P.UnitPath.Add('frames');
+
+    T := P.Targets.AddProgram('lazarus.pp');
     t.Dependencies.AddUnit('packagesystem');
     t.Dependencies.AddUnit('adddirtopkgdlg');
     t.Dependencies.AddUnit('addfiletoapackagedlg');
@@ -87,25 +73,18 @@ begin
     t.Dependencies.AddUnit('pkglinksdlg');
     t.Dependencies.AddUnit('pkgmanager');
     t.Dependencies.AddUnit('pkgvirtualuniteditor');
-    t.Dependencies.AddUnit('ucomponentmanmain');
-    t.Dependencies.AddUnit('ufrmaddcomponent');
     t.Dependencies.AddUnit('assemblerdlg');
     t.Dependencies.AddUnit('breakpointsdlg');
     t.Dependencies.AddUnit('breakpropertydlg');
     t.Dependencies.AddUnit('breakpropertydlggroups');
     t.Dependencies.AddUnit('callstackdlg');
-    t.Dependencies.AddUnit('cmdlinedebugger');
     t.Dependencies.AddUnit('debugeventsform');
     t.Dependencies.AddUnit('debugger');
     t.Dependencies.AddUnit('debuggerdlg');
     t.Dependencies.AddUnit('debugoutputform');
-    t.Dependencies.AddUnit('debugutils');
     t.Dependencies.AddUnit('evaluatedlg');
     t.Dependencies.AddUnit('exceptiondlg');
     t.Dependencies.AddUnit('feedbackdlg');
-    t.Dependencies.AddUnit('gdbmidebugger');
-    t.Dependencies.AddUnit('gdbmimiscclasses');
-    t.Dependencies.AddUnit('gdbtypeinfo');
     t.Dependencies.AddUnit('historydlg');
     t.Dependencies.AddUnit('inspectdlg');
     t.Dependencies.AddUnit('localsdlg');
@@ -113,7 +92,6 @@ begin
     t.Dependencies.AddUnit('processlist');
     t.Dependencies.AddUnit('pseudoterminaldlg');
     t.Dependencies.AddUnit('registersdlg');
-    t.Dependencies.AddUnit('sshgdbmidebugger');
     t.Dependencies.AddUnit('threaddlg');
     t.Dependencies.AddUnit('watchesdlg');
     t.Dependencies.AddUnit('watchpropertydlg');
@@ -331,25 +309,18 @@ begin
     T:=P.Targets.AddUnit('../packager/pkglinksdlg.pas');
     T:=P.Targets.AddUnit('../packager/pkgmanager.pas');
     T:=P.Targets.AddUnit('../packager/pkgvirtualuniteditor.pas');
-    T:=P.Targets.AddUnit('../packager/ucomponentmanmain.pas');
-    T:=P.Targets.AddUnit('../packager/ufrmaddcomponent.pas');
     T:=P.Targets.AddUnit('../debugger/assemblerdlg.pp');
     T:=P.Targets.AddUnit('../debugger/breakpointsdlg.pp');
     T:=P.Targets.AddUnit('../debugger/breakpropertydlg.pas');
     T:=P.Targets.AddUnit('../debugger/breakpropertydlggroups.pas');
     T:=P.Targets.AddUnit('../debugger/callstackdlg.pp');
-    T:=P.Targets.AddUnit('../debugger/cmdlinedebugger.pp');
     T:=P.Targets.AddUnit('../debugger/debugeventsform.pp');
     T:=P.Targets.AddUnit('../debugger/debugger.pp');
     T:=P.Targets.AddUnit('../debugger/debuggerdlg.pp');
     T:=P.Targets.AddUnit('../debugger/debugoutputform.pp');
-    T:=P.Targets.AddUnit('../debugger/debugutils.pp');
     T:=P.Targets.AddUnit('../debugger/evaluatedlg.pp');
     T:=P.Targets.AddUnit('../debugger/exceptiondlg.pas');
     T:=P.Targets.AddUnit('../debugger/feedbackdlg.pp');
-    T:=P.Targets.AddUnit('../debugger/gdbmidebugger.pp');
-    T:=P.Targets.AddUnit('../debugger/gdbmimiscclasses.pp');
-    T:=P.Targets.AddUnit('../debugger/gdbtypeinfo.pp');
     T:=P.Targets.AddUnit('../debugger/historydlg.pp');
     T:=P.Targets.AddUnit('../debugger/inspectdlg.pas');
     T:=P.Targets.AddUnit('../debugger/localsdlg.pp');
@@ -357,7 +328,6 @@ begin
     T:=P.Targets.AddUnit('../debugger/processlist.pas');
     T:=P.Targets.AddUnit('../debugger/pseudoterminaldlg.pp');
     T:=P.Targets.AddUnit('../debugger/registersdlg.pp');
-    T:=P.Targets.AddUnit('../debugger/sshgdbmidebugger.pas');
     T:=P.Targets.AddUnit('../debugger/threaddlg.pp');
     T:=P.Targets.AddUnit('../debugger/watchesdlg.pp');
     T:=P.Targets.AddUnit('../debugger/watchpropertydlg.pp');
