@@ -19,35 +19,74 @@ var
   P : TPackage;
   T : TTarget;
   WidgetSetVariant: TPackageVariants;
+  CarbonWidgetset,
+  GtkWidgetset,
+  CocoaWidgetset,
+  Gtk2Widgetset,
+  Win32Widgetset,
+  WinCEWidgetset : TPackageVariant;
 
 begin
   with Installer do
     begin
     P:=AddPAckage('lcl');
-    P.Version:='1.0.1';
+    P.Version:='1.3.0';
 
-    WidgetSetVariant := P.AddPackageVariant('widgetset',true);
-    WidgetSetVariant.Add('carbon');
-    WidgetSetVariant.Add('gtk2');
-    WidgetSetVariant.Add('gtk3');
-    WidgetSetVariant.Add('win');
+    // Definition of Widgetsets
+    WidgetSetVariant := AddPackageVariant('widgetset',true);
+    p.AddPackageVariant(WidgetSetVariant);
 
+    CarbonWidgetset := WidgetSetVariant.Add('carbon');
+    GtkWidgetset := WidgetSetVariant.Add('gtk');
+    Gtk2Widgetset := WidgetSetVariant.Add('gtk2');
+    Win32Widgetset := WidgetSetVariant.Add('win32');
+    WinCEWidgetset := WidgetSetVariant.Add('wince');
+    CocoaWidgetset := WidgetSetVariant.Add('wince');
 
-    //GlobalDictionary.AddVariable('LCL_PLATFORM','carbon');
-    //P.SetUnitsOutputDir('units'+PathDelim+'$(target)'+PathDelim+'$(LCL_PLATFORM)');
-    //P.SetPackageUnitInstallDir('$(LCL_PLATFORM)');
+    case Defaults.OS of
+      darwin        : WidgetSetVariant.DefaultPackageVariantName:='carbon';
+      win32, win64  : WidgetSetVariant.DefaultPackageVariantName:='win32';
+      wince         : WidgetSetVariant.DefaultPackageVariantName:='wince';
+    else
+      WidgetSetVariant.DefaultPackageVariantName:='gtk2';
+    end;
+
+    // Widgetset-settings.
+    P.IncludePath.Add('$(widgetset)');
+    P.SourcePath.Add('$(widgetset)');
+    P.Options.Add('-dLCL$(widgetset)');
+    P.Options.Add('-d$(widgetset)');
+
+    // Widgetset-specific options
+    // gtk
+    GtkWidgetset.Options.Add('-dgtk1');
+    // wince
+    WinCEWidgetset.Options.Add('-dDisableChecks');
+    // Carbon
+    CarbonWidgetset.IncludePath.Add('carbon/objc');
+    CarbonWidgetset.IncludePath.Add('carbon/pascocoa/appkit');
+    CarbonWidgetset.IncludePath.Add('carbon/pascocoa/foundation');
+    CarbonWidgetset.SourcePath.Add('carbon/objc');
+    CarbonWidgetset.SourcePath.Add('carbon/pascocoa/appkit');
+    CarbonWidgetset.SourcePath.Add('carbon/pascocoa/foundation');
+
+    // Resolve simple Lazarus-macro's
+    GlobalDictionary.AddVariable('LCL_PLATFORM', '$(widgetset)');
+    GlobalDictionary.AddVariable('CPU_TARGET', '$(cpu)');
+    GlobalDictionary.AddVariable('OS_TARGET', '$(os)');
 
 {$ifdef ALLPACKAGES}
     P.Directory:='lcl/interfaces/';
 {$endif ALLPACKAGES}
     P.SupportBuildModes := [bmBuildUnit];
 
-
     P.Dependencies.Add('lclbase');
     P.Dependencies.Add('fcl');
-    P.Dependencies.Add('univint');
-    P.Dependencies.Add('cocoaint');
-    P.Dependencies.Add('opengl');
+    P.Dependencies.Add('univint',[darwin, iphonesim]);
+    P.Dependencies.Add('cocoaint',[darwin, iphonesim]);
+    P.Dependencies.Add('opengl',[darwin, iphonesim]);
+    P.Dependencies.Add('x11', [linux]);
+    P.Dependencies.Add('gtk2', [linux]);
 
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
@@ -57,71 +96,57 @@ begin
     P.Options.Add('-vewnhi');
     P.Options.Add('-l');
     P.Options.Add('-vm5044');
-    P.Options.Add('-dcarbon');
-    P.IncludePath.Add('$(widgetset)');
-    P.IncludePath.Add('carbon/objc');
-    P.IncludePath.Add('carbon/pascocoa/appkit');
-    P.IncludePath.Add('carbon/pascocoa/foundation');
-    P.SourcePath.Add('$(widgetset)');
-    P.SourcePath.Add('carbon/objc',[darwin]);
-    P.SourcePath.Add('carbon/pascocoa/appkit',[darwin]);
-    P.SourcePath.Add('carbon/pascocoa/foundation',[darwin]);
-    P.Options.Add('-Fu../units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu../../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.Options.Add('-Fu.');
+
     T:=P.Targets.AddUnit('lcl.pas');
     t.Dependencies.AddUnit('alllclintfunits');
-
 
     T:=P.Targets.AddUnit('foundation.pas',[darwin]);
     T:=P.Targets.AddUnit('lobjc.pas',[darwin]);
     T:=P.Targets.AddUnit('appkit.pas',[darwin]);
 
+    CarbonWidgetset.Targets.AddUnit('agl.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonbars.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonbuttons.pp');
+    CarbonWidgetset.Targets.AddUnit('carboncalendar.pas');
+    CarbonWidgetset.Targets.AddUnit('carboncalendarview.pas');
+    CarbonWidgetset.Targets.AddUnit('carboncanvas.pp');
+    CarbonWidgetset.Targets.AddUnit('carboncaret.pas');
+    CarbonWidgetset.Targets.AddUnit('carbonclipboard.pp');
+    CarbonWidgetset.Targets.AddUnit('carbondbgconsts.pp');
+    CarbonWidgetset.Targets.AddUnit('carbondebug.pp');
+    CarbonWidgetset.Targets.AddUnit('carbondef.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonedits.pp');
+    CarbonWidgetset.Targets.AddUnit('carbongdiobjects.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonint.pas');
+    CarbonWidgetset.Targets.AddUnit('carbonlistviews.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonmenus.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonprivate.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonproc.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonstrings.pp');
+    CarbonWidgetset.Targets.AddUnit('carbontabs.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonthemes.pas');
+    CarbonWidgetset.Targets.AddUnit('carbonutils.pas');
+    CarbonWidgetset.Targets.AddUnit('carbonwsbuttons.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwscalendar.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwschecklst.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwscomctrls.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwscontrols.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwsdialogs.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwsextctrls.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwsextdlgs.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwsfactory.pas');
+    CarbonWidgetset.Targets.AddUnit('carbonwsforms.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwsgrids.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwsimglist.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwsmenus.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwspairsplitter.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwsspin.pp');
+    CarbonWidgetset.Targets.AddUnit('carbonwsstdctrls.pp');
+    CarbonWidgetset.Targets.AddUnit('glgrab.pas');
+    CarbonWidgetset.Targets.AddUnit('opengl.pas');
 
-    P.Targets.AddUnit('agl.pp');
-    P.Targets.AddUnit('alllclintfunits.pas');
-    P.Targets.AddUnit('carbonbars.pp');
-    P.Targets.AddUnit('carbonbuttons.pp');
-    P.Targets.AddUnit('carboncalendar.pas');
-    P.Targets.AddUnit('carboncalendarview.pas');
-    P.Targets.AddUnit('carboncanvas.pp');
-    P.Targets.AddUnit('carboncaret.pas');
-    P.Targets.AddUnit('carbonclipboard.pp');
-    P.Targets.AddUnit('carbondbgconsts.pp');
-    P.Targets.AddUnit('carbondebug.pp');
-    P.Targets.AddUnit('carbondef.pp');
-    P.Targets.AddUnit('carbonedits.pp');
-    P.Targets.AddUnit('carbongdiobjects.pp');
-    P.Targets.AddUnit('carbonint.pas');
-    P.Targets.AddUnit('carbonlistviews.pp');
-    P.Targets.AddUnit('carbonmenus.pp');
-    P.Targets.AddUnit('carbonprivate.pp');
-    P.Targets.AddUnit('carbonproc.pp');
-    P.Targets.AddUnit('carbonstrings.pp');
-    P.Targets.AddUnit('carbontabs.pp');
-    P.Targets.AddUnit('carbonthemes.pas');
-    P.Targets.AddUnit('carbonutils.pas');
-    P.Targets.AddUnit('carbonwsbuttons.pp');
-    P.Targets.AddUnit('carbonwscalendar.pp');
-    P.Targets.AddUnit('carbonwschecklst.pp');
-    P.Targets.AddUnit('carbonwscomctrls.pp');
-    P.Targets.AddUnit('carbonwscontrols.pp');
-    P.Targets.AddUnit('carbonwsdialogs.pp');
-    P.Targets.AddUnit('carbonwsextctrls.pp');
-    P.Targets.AddUnit('carbonwsextdlgs.pp');
-    P.Targets.AddUnit('carbonwsfactory.pas');
-    P.Targets.AddUnit('carbonwsforms.pp');
-    P.Targets.AddUnit('carbonwsgrids.pp');
-    P.Targets.AddUnit('carbonwsimglist.pp');
-    P.Targets.AddUnit('carbonwsmenus.pp');
-    P.Targets.AddUnit('carbonwspairsplitter.pp');
-    P.Targets.AddUnit('carbonwsspin.pp');
-    P.Targets.AddUnit('carbonwsstdctrls.pp');
-    P.Targets.AddUnit('glgrab.pas');
     P.Targets.AddUnit('interfaces.pas');
-    P.Targets.AddUnit('opengl.pas');
-
+    P.Targets.AddUnit('alllclintfunits.pas');
 
     P.Sources.AddSrc('carbon/agl.pp');
     P.Sources.AddSrc('carbon/alllclintfunits.pas');
@@ -382,7 +407,6 @@ begin
     P.Sources.AddSrc('customdrawn/customdrawnwsdialogs.pas');
     P.Sources.AddSrc('customdrawn/customdrawnwsmenus.pas');
     P.Sources.AddSrc('gtk2/gtk2disableliboverlay.pas');
-
     end;
 end;
 
