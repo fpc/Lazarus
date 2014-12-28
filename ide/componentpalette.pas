@@ -413,14 +413,12 @@ var
   BtnRight: TSpeedButton;
   TabControl: TCustomTabControl;
 begin
-  {$IFDEF VerboseComponentPalette}
   if not Visible then begin
+    {$IFDEF VerboseComponentPalette}
     DebugLn(['TComponentPalette.InsertVisiblePage: Not inserting Page=', PageName]);
+    {$ENDIF}
     exit;
   end;
-  {$ELSE}
-  if not Visible then Exit;
-  {$ENDIF}
   fCompNames := aCompNames;
   Pal := TComponentPalette(Palette);
   TabControl := TCustomTabControl(Pal.FPageControl);
@@ -428,9 +426,8 @@ begin
   begin
     // insert a new PageControl page
     {$IFDEF VerboseComponentPalette}
-    if {PageName = CompPalVerbPgName} true then
-      DebugLn(['TComponentPalette.InsertVisiblePage: Inserting Page=', PageName,
-               ', at index=', Pal.fVisiblePageIndex]);
+    DebugLn(['TComponentPalette.InsertVisiblePage: Inserting Page=', PageName,
+             ', at index=', Pal.fVisiblePageIndex]);
     {$ENDIF}
     {$IFDEF USE_PageIndex}
     TabIndex:= TabControl.Pages.Add(PageName);
@@ -538,9 +535,6 @@ var
 begin
   if aComp.Visible then begin
     inc(fBtnIndex);
-    {$IFDEF VerboseComponentPalette}
-    //DebugLn(['TComponentPalette.CreateOrDelButton Component ',DbgSName(aComp.ComponentClass), ' ',aComp.Visible,' Prio=',dbgs(aComp.GetPriority)]);
-    {$ENDIF}
     if aComp.Button=nil then begin
       Pal := TComponentPalette(Palette);
       Btn := TSpeedButton.Create(nil);
@@ -1097,15 +1091,12 @@ begin
       fPages.Insert(UserPageI, Pg);
       Pg.Palette := Self;
     end
-    {$IFDEF VerboseComponentPalette}
     else if CurPgInd <> UserPageI then begin
+      {$IFDEF VerboseComponentPalette}
       DebugLn(['TComponentPalette.CreatePagesFromUserOrder, move ', PgName, ' from ',CurPgInd, ' to ',UserPageI]);
+      {$ENDIF}
       fPages.Move(CurPgInd, UserPageI); // Move page to right place.
     end;
-    {$ELSE}
-    else if CurPgInd <> UserPageI then
-      Pages.Move(CurPgInd, UserPageI); // Move page to right place.
-    {$ENDIF}
     Pg := TComponentPage(Pages[UserPageI]);
     Pg.fIndex := UserPageI;
     Assert(PgName = Pg.PageName,
@@ -1264,8 +1255,7 @@ begin
       if Assigned(Pg.PageComponent) then begin
         Pg.PageComponent.Free;
         Pg.RemoveSheet;
-        {Pg.PageComponent := nil;}
-        end;
+      end;
       {$ENDIF}
       Pg.InsertVisiblePage(TStringList(fUserOrder.ComponentPages.Objects[i]));
       {$IFDEF VerboseComponentPalette}
