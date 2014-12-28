@@ -42,6 +42,7 @@ begin
 
     P.IncludePath.Add('include');
     P.IncludePath.Add('include/$(OS)');
+    P.UnitPath.Add('.');
     P.UnitPath.Add('../designer');
     P.UnitPath.Add('../debugger');
     P.UnitPath.Add('../debugger/frames');
@@ -126,7 +127,6 @@ begin
     P.Sources.AddSrc('codetoolsoptions.pas');
     P.Sources.AddSrc('compatibilityrestrictions.pas');
     P.Sources.AddSrc('compiler.pp');
-    P.Sources.AddSrc('compileroptions.pp');
     P.Sources.AddSrc('componentlist.pas');
     P.Sources.AddSrc('componentpalette.pas');
     P.Sources.AddSrc('compoptsmodes.pas');
@@ -142,11 +142,9 @@ begin
     P.Sources.AddSrc('editoroptions.pp');
     P.Sources.AddSrc('emptymethodsdlg.pas');
     P.Sources.AddSrc('encloseselectiondlg.pas');
-    P.Sources.AddSrc('environmentopts.pp');
     P.Sources.AddSrc('extractprocdlg.pas');
     P.Sources.AddSrc('exttooldialog.pas');
     P.Sources.AddSrc('exttooleditdlg.pas');
-    P.Sources.AddSrc('filereferencelist.pas');
     P.Sources.AddSrc('findinfilesdlg.pas');
     P.Sources.AddSrc('findoverloadsdlg.pas');
     P.Sources.AddSrc('findpalettecomp.pas');
@@ -234,7 +232,6 @@ begin
     P.Sources.AddSrc('keymapschemedlg.pas');
     P.Sources.AddSrc('keymapshortcutdlg.pas');
     P.Sources.AddSrc('lazarus.pp');
-    P.Sources.AddSrc('lazarusidestrconsts.pas');
     P.Sources.AddSrc('lazarusmanager.pas');
     P.Sources.AddSrc('lazconf.pp');
     P.Sources.AddSrc('macropromptdlg.pas');
@@ -288,6 +285,10 @@ begin
     P.Sources.AddSrc('w32versioninfo.pas');
     P.Sources.AddSrc('wordcompletion.pp');
     T:=P.Targets.AddUnit('../packager/packagesystem.pas');
+    T.Dependencies.AddUnit('lazarusidestrconsts');
+    T.Dependencies.AddUnit('environmentopts');
+    T.Dependencies.AddUnit('compileroptions');
+    T.Dependencies.AddUnit('packagedefs');
     T:=P.Targets.AddUnit('../packager/adddirtopkgdlg.pas');
     T:=P.Targets.AddUnit('../packager/addfiletoapackagedlg.pas');
     T:=P.Targets.AddUnit('../packager/addtopackagedlg.pas');
@@ -303,6 +304,7 @@ begin
     T:=P.Targets.AddUnit('../packager/missingpkgfilesdlg.pas');
     T:=P.Targets.AddUnit('../packager/openinstalledpkgdlg.pas');
     T:=P.Targets.AddUnit('../packager/packagedefs.pas');
+    T.Dependencies.AddUnit('projpackbase');
     T:=P.Targets.AddUnit('../packager/packageeditor.pas');
     T:=P.Targets.AddUnit('../packager/packagelinks.pas');
     T:=P.Targets.AddUnit('../packager/pkggraphexplorer.pas');
@@ -331,6 +333,12 @@ begin
     T:=P.Targets.AddUnit('../debugger/threaddlg.pp');
     T:=P.Targets.AddUnit('../debugger/watchesdlg.pp');
     T:=P.Targets.AddUnit('../debugger/watchpropertydlg.pp');
+    T:=P.Targets.AddUnit('lazarusidestrconsts.pas');
+    T:=P.Targets.AddUnit('environmentopts.pp');
+    T:=P.Targets.AddUnit('compileroptions.pp');
+    T:=P.Targets.AddUnit('../packager/projpackbase.pas');
+    T.Dependencies.AddUnit('filereferencelist');
+    T:=P.Targets.AddUnit('filereferencelist.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.InstallFiles.Add('ide.compiled',AllOSes,'$(unitinstalldir)');
