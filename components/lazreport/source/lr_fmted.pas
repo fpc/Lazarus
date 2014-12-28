@@ -151,7 +151,7 @@ begin
   Label5.Caption := sFmtFormDeciD;
   Label6.Caption := sFmtFormFrac;
   Label1.Caption := sFmtFormFrmt;
-  SplEdit.Text := DecimalSeparator;
+  SplEdit.Text := DefaultFormatSettings.DecimalSeparator;
 end;
 
 procedure TfrFmtForm.frFmtFormShow(Sender: TObject);
@@ -197,7 +197,7 @@ var
 begin
   Result := ComboBox1.ItemIndex * $01000000 + ComboBox2.ItemIndex * $00010000 +
     StrToIntDef(Edit3.Text, 0) * $00000100;
-  c := DecimalSeparator;
+  c := DefaultFormatSettings.DecimalSeparator;
   if SplEdit.Text <> '' then
     c := SplEdit.Text[1];
   Result := Result + Ord(c);

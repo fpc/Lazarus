@@ -2409,7 +2409,7 @@ begin
   fFrameWidth := 1;
   fFrameColor := clBlack;
   FFillColor := clNone;
-  fFormat := 2*256 + Ord(DecimalSeparator);
+  fFormat := 2*256 + Ord(DefaultFormatSettings.DecimalSeparator);
   BaseName := 'View';
   FVisible := True;
   StreamMode := smDesigning;
@@ -9693,7 +9693,7 @@ begin
     Exit;
   end;
   
-  c := DecimalSeparator;
+  c := DefaultFormatSettings.DecimalSeparator;
   f1 := (AFormat div $01000000) and $0F;
   f2 := (AFormat div $00010000) and $FF;
   try
@@ -9714,7 +9714,7 @@ begin
           if not VarIsNumeric(v) then
             result := v
           else begin
-            DecimalSeparator := Chr(AFormat and $FF);
+            DefaultFormatSettings.DecimalSeparator := Chr(AFormat and $FF);
             case f2 of
               0: Result := FormatFloat('###.##', v);
               1: Result := FloatToStrF(Extended(v), ffFixed, 15, (AFormat div $0100) and $FF);
@@ -9753,7 +9753,7 @@ begin
     on e:exception do
       Result := v;
   end;
-  DecimalSeparator := c;
+  DefaultFormatSettings.DecimalSeparator := c;
 end;
 
 procedure TfrReport.GetVariableValue(const s: String; var aValue: Variant);
