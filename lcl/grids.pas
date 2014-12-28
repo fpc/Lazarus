@@ -7967,6 +7967,8 @@ begin
   end;
   if aEditor<>Editor then
     Editor := aEditor;
+  if Assigned(Editor) and not Assigned(Editor.Popupmenu) then
+    Editor.PopupMenu := PopupMenu;
   {$ifdef DbgGrid}
   DebugLnExit('TCustomGrid.SelectEditor END');
   {$endif}
