@@ -188,7 +188,7 @@ type
     procedure SetName(const AValue: string); virtual;
     procedure AfterLoad;virtual;
     procedure AfterCreate;virtual;
-    function ExecMetod(const AName: String; p1, p2, p3: Variant; var Val: Variant):boolean;virtual;
+    function ExecMetod(const {%H-}AName: String; {%H-}p1, {%H-}p2, {%H-}p3: Variant; var {%H-}Val: Variant):boolean;virtual;
     function GetLeft: Integer;virtual;
     function GetTop: Integer;virtual;
     function GetWidth: Integer;virtual;
@@ -2259,7 +2259,6 @@ end;
 procedure TlrDetailReports.SaveToXML(XML: TLrXMLConfig; const Path: String);
 var
   i: Integer;
-  P:TlrDetailReport;
 begin
   XML.SetValue(Path+'Count/Value', Count);
   for i:=0 to Count - 1 do
@@ -4519,7 +4518,7 @@ end;
 
 procedure TfrCustomMemoView.DoOnClick;
 var
-  FSaveRep,FDetailRep:TfrReport;
+  FSaveRep:TfrReport;
   FSaveView:TfrView;
   FSavePage:TfrPage;
   CmdList, ErrorList:TStringList;
@@ -6548,6 +6547,7 @@ begin
   {$IFDEF DebugLR}
   DebugLnEnter('DrawPageBreak INI y=%d Maxdy=%d',[y,maxdy]);
   {$ENDIF}
+  SetLength(PgArr,0);
   for i := 0 to Objects.Count - 1 do
   begin
     t :=TfrView(Objects[i]);
@@ -8376,8 +8376,8 @@ begin
 end;
 
 procedure TfrPage.LoadFromXML(XML: TLrXMLConfig; const Path: String);
-var
-  b:byte;
+{var
+  b:byte; }
 begin
   inherited LoadFromXML(XML,Path);
   
@@ -9894,13 +9894,12 @@ procedure TfrReport.OnGetParsFunction(const aName: String; p1, p2, p3: Variant;
 
 function ProcessObjMethods(Method:string):boolean;
 var
-  PgName, ObjName:string;
+  ObjName:string;
   Obj:TfrObject;
   i, j:integer;
 begin
   Result:=false;
   Obj:=nil;
-  PgName:='';
   ObjName:=Copy2SymbDel(Method, '.');
 
   for i:=0 to CurReport.Pages.Count - 1 do
@@ -11506,8 +11505,6 @@ end;
 procedure TfrReport.GetIntrpValue(AName: String; var AValue: Variant);
 var
   t:  TfrObject;
-  Prop: String;
-  n:integer;
   PropName: String;
   PropInfo:PPropInfo;
   St:string;
@@ -13009,8 +13006,8 @@ end;
 
 function TLrXMLConfig.GetValue(const APath: string; const ADefault: string
   ): string;
-var
-  wValue: widestring;
+{var
+  wValue: widestring;}
 begin
   if frUnWrapRead then
     result := {%H-}inherited GetValue(APath, ADefault{%H-})
