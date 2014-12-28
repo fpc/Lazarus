@@ -4454,7 +4454,7 @@ begin
   s:=s+'uses fpmkunit;'+e;
   s:=s+'{$endif ALLPACKAGES}'+e;
   s:=s+''+e;
-  s:=s+'procedure add_'+APackage.Name+';'+e;
+  s:=s+'procedure add_'+APackage.Name+'(const ADirectory: string);'+e;
   s:=s+''+e;
   s:=s+'var'+e;
   s:=s+'  P : TPackage;'+e;
@@ -4466,10 +4466,7 @@ begin
   s:=s+'    P:=AddPAckage('''+lowercase(APackage.Name)+''');'+e;
   s:=s+'    P.Version:='''+APackage.Version.AsString+''';'+e;
   s:=s+''+e;
-  s:=s+'{$ifdef ALLPACKAGES}'+e;
-  s:=s+'    // when this is part of a meta package, set here the sub directory'+e;
-  s:=s+'    // P.Directory:=''put here the relative path'';'+e;
-  s:=s+'{$endif ALLPACKAGES}'+e;
+  s:=s+'    P.Directory:=ADirectory;'+e;
   s:=s+''+e;
 
   ARequirement := APackage.FirstRequiredDependency;
@@ -4511,7 +4508,7 @@ begin
   s:=s+''+e;
   s:=s+'{$ifndef ALLPACKAGES}'+e;
   s:=s+'begin'+e;
-  s:=s+'  add_'+APackage.Name+';'+e;
+  s:=s+'  add_'+APackage.Name+'('''');'+e;
   s:=s+'  Installer.Run;'+e;
   s:=s+'end.'+e;
   s:=s+'{$endif ALLPACKAGES}'+e;
