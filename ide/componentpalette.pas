@@ -177,8 +177,10 @@ type
     procedure RegisterCustomIDEComponents(
                        const RegisterProc: RegisterUnitComponentProc); override;
     procedure Update(ForceUpdateAll: Boolean); override;
-    procedure AssignOrigCompsForPage(DestComps: TStringList; PageName: string); override;
-    procedure AssignOrigVisibleCompsForPage(DestComps: TStringList; PageName: string); override;
+    function AssignOrigCompsForPage(PageName: string;
+                                    DestComps: TStringList): Boolean; override;
+    function AssignOrigVisibleCompsForPage(PageName: string;
+                                    DestComps: TStringList): Boolean; override;
     function RefUserCompsForPage(PageName: string): TStringList; override;
   public
     property PageControl: TPageControl read FPageControl write SetPageControl;
@@ -286,7 +288,7 @@ begin
     if i >= 0 then                      // Add components reordered by user.
       DstComps.Assign(fOptions.ComponentPages.Objects[i] as TStringList)
     else                                // Add components that were not reordered.
-      fPalette.AssignOrigCompsForPage(DstComps, PgName);
+      fPalette.AssignOrigCompsForPage(PgName, DstComps);
   end;
 end;
 
@@ -950,12 +952,15 @@ begin
   end;
 end;
 
-procedure TComponentPalette.AssignOrigCompsForPage(DestComps: TStringList; PageName: string);
+function TComponentPalette.AssignOrigCompsForPage(PageName: string;
+  DestComps: TStringList): Boolean;
+// Returns True if the page was found.
 var
   sl: TStringList;
   i: Integer;
 begin
-  if fOrigComponentPageCache.Find(PageName, i) then begin
+  Result := fOrigComponentPageCache.Find(PageName, i);
+  if Result then begin
     sl := fOrigComponentPageCache.Objects[i] as TStringList;
     DestComps.Assign(sl);
   end
@@ -964,20 +969,20 @@ begin
     //raise Exception.Create(Format('AssignOrigCompsForPage: %s not found in cache.', [PageName]));
 end;
 
-procedure TComponentPalette.AssignOrigVisibleCompsForPage(DestComps: TStringList;
-  PageName: string);
+function TComponentPalette.AssignOrigVisibleCompsForPage(PageName: string;
+  DestComps: TStringList): Boolean;
+// Returns True if the page was found.
 var
   sl: TStringList;
   i: Integer;
 begin
   DestComps.Clear;
-  if fOrigComponentPageCache.Find(PageName, i) then
-  begin
-    sl := fOrigComponentPageCache.Objects[i] as TStringList;
-    for i := 0 to sl.Count-1 do
-      if FindComponent(sl[i]).Visible then
-        DestComps.Add(sl[i]);
-  end;
+  Result := fOrigComponentPageCache.Find(PageName, i);
+  if not Result then Exit;
+  sl := fOrigComponentPageCache.Objects[i] as TStringList;
+  for i := 0 to sl.Count-1 do
+    if FindComponent(sl[i]).Visible then
+      DestComps.Add(sl[i]);
 end;
 
 function TComponentPalette.RefUserCompsForPage(PageName: string): TStringList;

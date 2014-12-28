@@ -216,9 +216,7 @@ end;
 procedure TCompPaletteOptionsFrame.WritePages(cpo: TCompPaletteOptions);
 var
   OrigPages, UserPages: TStringList;
-  Pg: TBaseComponentPage;
   i: Integer;
-  PgName: String;
 begin
   Assert(Assigned(IDEComponentPalette),
     'TCompPaletteOptionsFrame.WritePages: IDEComponentPalette is not assigned.');
@@ -227,12 +225,7 @@ begin
   try
     // Collect original page names
     for i := 0 to IDEComponentPalette.OrigPagePriorities.Count-1 do
-    begin
-      PgName := IDEComponentPalette.OrigPagePriorities.Keys[i];
-      Pg := IDEComponentPalette.GetPage(PgName);
-      if Assigned(Pg) and Pg.Visible then
-        OrigPages.Add(Pg.PageName);
-    end;
+      OrigPages.Add(IDEComponentPalette.OrigPagePriorities.Keys[i]);
     // Collect user defined page names
     for i := 1 to PagesListBox.Items.Count-1 do     // Skip "all components" page
       UserPages.Add(PagesListBox.Items[i]);
@@ -250,7 +243,6 @@ end;
 procedure TCompPaletteOptionsFrame.WriteComponents(cpo: TCompPaletteOptions);
 var
   UserComps, OrigComps: TStringList;
-  Pg: TBaseComponentPage;
   PgName: String;
   i: Integer;
 begin
@@ -262,12 +254,8 @@ begin
       PgName := PagesListBox.Items[i];
       UserComps := PagesListBox.Items.Objects[i] as TStringList;
       Assert(Assigned(UserComps), 'TCompPaletteOptionsFrame.WriteComponents: No UserComps for '+PgName);
-      Pg := IDEComponentPalette.GetPage(PgName);
-      if Assigned(Pg) and Pg.Visible then // Can be Nil if this page was added or renamed.
-        // Collect original visible components from this page.
-        IDEComponentPalette.AssignOrigVisibleCompsForPage(OrigComps, PgName)
-      else
-        OrigComps.Clear;
+      // Collect original visible components from this page.
+      IDEComponentPalette.AssignOrigVisibleCompsForPage(PgName, OrigComps);
       // Differs from original order -> add configuration for components.
       if (OrigComps.Count=0) or not OrigComps.Equals(UserComps) then
         cpo.AssignComponentPage(PgName, UserComps);

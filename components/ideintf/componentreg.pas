@@ -210,10 +210,10 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure AssignOrigCompsForPage(DestComps: TStringList;
-                                     PageName: string); virtual; abstract;
-    procedure AssignOrigVisibleCompsForPage(DestComps: TStringList;
-                                     PageName: string); virtual; abstract;
+    function AssignOrigCompsForPage(PageName: string;
+                                    DestComps: TStringList): Boolean; virtual; abstract;
+    function AssignOrigVisibleCompsForPage(PageName: string;
+                                    DestComps: TStringList): Boolean; virtual; abstract;
     function RefUserCompsForPage(PageName: string): TStringList; virtual; abstract;
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
