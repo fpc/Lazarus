@@ -3,7 +3,7 @@
 
    fpmake.pp for DebuggerIntf 0.1
 
-   This file was generated on 25-12-2014
+   This file was generated on 28-12-2014
 }
 
 {$ifndef ALLPACKAGES} 
@@ -13,7 +13,7 @@ program fpmake;
 uses fpmkunit;
 {$endif ALLPACKAGES}
 
-procedure add_DebuggerIntf;
+procedure add_DebuggerIntf(const ADirectory: string);
 
 var
   P : TPackage;
@@ -25,10 +25,7 @@ begin
     P:=AddPAckage('debuggerintf');
     P.Version:='0.1';
 
-{$ifdef ALLPACKAGES}
-    // when this is part of a meta package, set here the sub directory
-    P.Directory:='components' + PathDelim + 'debuggerintf';
-{$endif ALLPACKAGES}
+    P.Directory:=ADirectory;
 
     P.Dependencies.Add('lclbase');
     P.Options.Add('-MObjFPC');
@@ -62,7 +59,7 @@ end;
 
 {$ifndef ALLPACKAGES}
 begin
-  add_DebuggerIntf;
+  add_DebuggerIntf('');
   Installer.Run;
 end.
 {$endif ALLPACKAGES}

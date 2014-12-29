@@ -1,9 +1,11 @@
+{$ifndef ALLPACKAGES}
 {$mode objfpc}{$H+}
 {$define allpackages}
+{$define no_parent}
 program fpmake;
 
 uses fpmkunit, sysutils, Classes;
-
+{$endif ALLPACKAGES}
 (*
 
 The include files are generated with the following commands:
@@ -14,8 +16,16 @@ rm fpmake_proc.inc fpmake_add.inc ; /bin/ls -1 */fpmake.pp| while read file; do 
 
 {$include fpmake_proc.inc}
 
+procedure add_packages(const ADirectory: string);
+
 begin
 {$include fpmake_add.inc}
+end;
 
+{$ifdef no_parent}
+begin
+  add_packages('');
   Installer.Run;
 end.
+{$endif no_parent}
+

@@ -5,7 +5,7 @@ program fpmake;
 uses fpmkunit;
 {$endif ALLPACKAGES}
 
-procedure add_ide;
+procedure add_ide(const ADirectory: string);
 
 var
   P : TPackage;
@@ -17,10 +17,7 @@ begin
     P:=AddPAckage('lazaruside');
     P.Version:='1.3';
 
-{$ifdef ALLPACKAGES}
-    // when this is part of a meta package, set here the sub directory
-    P.Directory:='ide';
-{$endif ALLPACKAGES}
+    P.Directory:=ADirectory;
 
     P.Dependencies.Add('lcl');
     P.Dependencies.Add('synedit');
@@ -348,7 +345,7 @@ end;
 
 {$ifndef ALLPACKAGES}
 begin
-  add_ide;
+  add_ide('');
   Installer.Run;
 end.
 {$endif ALLPACKAGES}

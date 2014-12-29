@@ -3,7 +3,7 @@
 
    fpmake.pp for IDEIntf 1.0
 
-   This file was generated on 23-12-2014
+   This file was generated on 28-12-2014
 }
 
 {$ifndef ALLPACKAGES} 
@@ -13,7 +13,7 @@ program fpmake;
 uses fpmkunit;
 {$endif ALLPACKAGES}
 
-procedure add_IDEIntf;
+procedure add_IDEIntf(const ADirectory: string);
 
 var
   P : TPackage;
@@ -25,10 +25,7 @@ begin
     P:=AddPAckage('ideintf');
     P.Version:='1.0';
 
-{$ifdef ALLPACKAGES}
-    // when this is part of a meta package, set here the sub directory
-    P.Directory:='components/ideintf';
-{$endif ALLPACKAGES}
+    P.Directory:=ADirectory;
 
     P.Dependencies.Add('lazcontrols');
     P.Options.Add('-MObjFPC');
@@ -176,7 +173,7 @@ end;
 
 {$ifndef ALLPACKAGES}
 begin
-  add_IDEIntf;
+  add_IDEIntf('');
   Installer.Run;
 end.
 {$endif ALLPACKAGES}

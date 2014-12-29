@@ -3,7 +3,7 @@
 
    fpmake.pp for LCLBase 1.3
 
-   This file was generated on 25-12-2014
+   This file was generated on 29-12-2014
 }
 
 {$ifndef ALLPACKAGES} 
@@ -13,7 +13,7 @@ program fpmake;
 uses fpmkunit;
 {$endif ALLPACKAGES}
 
-procedure add_LCLBase;
+procedure add_LCLBase(const ADirectory: string);
 
 var
   P : TPackage;
@@ -25,10 +25,7 @@ begin
     P:=AddPAckage('lclbase');
     P.Version:='1.3';
 
-{$ifdef ALLPACKAGES}
-    // when this is part of a meta package, set here the sub directory
-    P.Directory:='lcl';
-{$endif ALLPACKAGES}
+    P.Directory:=ADirectory;
 
     P.Dependencies.Add('lazutils');
     P.Options.Add('-MObjFPC');
@@ -288,7 +285,7 @@ end;
 
 {$ifndef ALLPACKAGES}
 begin
-  add_LCLBase;
+  add_LCLBase('');
   Installer.Run;
 end.
 {$endif ALLPACKAGES}

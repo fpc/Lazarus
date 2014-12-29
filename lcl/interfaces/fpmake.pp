@@ -13,7 +13,7 @@ program fpmake;
 uses fpmkunit;
 {$endif ALLPACKAGES}
 
-procedure add_LCL;
+procedure add_LCL(const ADirectory: string);
 
 var
   P : TPackage;
@@ -75,9 +75,7 @@ begin
     GlobalDictionary.AddVariable('CPU_TARGET', '$(cpu)');
     GlobalDictionary.AddVariable('OS_TARGET', '$(os)');
 
-{$ifdef ALLPACKAGES}
-    P.Directory:='lcl/interfaces/';
-{$endif ALLPACKAGES}
+    P.Directory:=ADirectory;
     P.SupportBuildModes := [bmBuildUnit];
 
     P.Dependencies.Add('lclbase');
@@ -412,7 +410,7 @@ end;
 
 {$ifndef ALLPACKAGES}
 begin
-  add_LCL;
+  add_LCL('');
   Installer.Run;
 end.
 {$endif ALLPACKAGES}

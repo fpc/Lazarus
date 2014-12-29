@@ -3,7 +3,7 @@
 
    fpmake.pp for FCL 1.0.1
 
-   This file was generated on 23-12-2014
+   This file was generated on 28-12-2014
 }
 
 {$ifndef ALLPACKAGES} 
@@ -13,7 +13,7 @@ program fpmake;
 uses fpmkunit;
 {$endif ALLPACKAGES}
 
-procedure add_FCL;
+procedure add_FCL(const ADirectory: string);
 
 var
   P : TPackage;
@@ -25,10 +25,7 @@ begin
     P:=AddPAckage('fcl');
     P.Version:='1.0.1';
 
-{$ifdef ALLPACKAGES}
-    // when this is part of a meta package, set here the sub directory
-    P.Directory:='packager/registration/';
-{$endif ALLPACKAGES}
+    P.Directory:=ADirectory;
 
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
@@ -52,7 +49,7 @@ end;
 
 {$ifndef ALLPACKAGES}
 begin
-  add_FCL;
+  add_FCL('');
   Installer.Run;
 end.
 {$endif ALLPACKAGES}

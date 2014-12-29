@@ -3,7 +3,7 @@
 
    fpmake.pp for CodeTools 1.0.1
 
-   This file was generated on 23-12-2014
+   This file was generated on 28-12-2014
 }
 
 {$ifndef ALLPACKAGES} 
@@ -13,7 +13,7 @@ program fpmake;
 uses fpmkunit;
 {$endif ALLPACKAGES}
 
-procedure add_CodeTools;
+procedure add_CodeTools(const ADirectory: string);
 
 var
   P : TPackage;
@@ -25,10 +25,7 @@ begin
     P:=AddPAckage('codetools');
     P.Version:='1.0.1';
 
-{$ifdef ALLPACKAGES}
-    // when this is part of a meta package, set here the sub directory
-    P.Directory:='components/codetools';
-{$endif ALLPACKAGES}
+    P.Directory:=ADirectory;
 
     P.Dependencies.Add('lazutils');
     P.Options.Add('-MObjFPC');
@@ -164,7 +161,7 @@ end;
 
 {$ifndef ALLPACKAGES}
 begin
-  add_CodeTools;
+  add_CodeTools('');
   Installer.Run;
 end.
 {$endif ALLPACKAGES}
