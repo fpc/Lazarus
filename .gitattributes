@@ -6948,6 +6948,7 @@ lcl/interfaces/gtk3/gtk3wscomctrls.pp svneol=native#text/plain
 lcl/interfaces/gtk3/gtk3wscontrols.pp svneol=native#text/plain
 lcl/interfaces/gtk3/gtk3wsdialogs.pp svneol=native#text/plain
 lcl/interfaces/gtk3/gtk3wsextctrls.pp svneol=native#text/plain
+lcl/interfaces/gtk3/gtk3wsextdlgs.pp svneol=native#text/plain
 lcl/interfaces/gtk3/gtk3wsfactory.pas svneol=native#text/plain
 lcl/interfaces/gtk3/gtk3wsforms.pp svneol=native#text/plain
 lcl/interfaces/gtk3/gtk3wsimglist.pp svneol=native#text/plain

@@ -1215,7 +1215,7 @@ begin
 
   FileChooser := PGtkFileChooser(SelWidget);
 
-  PreviewWidget := {%H-}PGtkWidget(AControl.Handle);
+  PreviewWidget := TGtk3CustomControl(AControl.Handle).Widget;
 
   g_object_set_data(PGObject(PreviewWidget),'LCLPreviewFixed',
                       PreviewWidget);

@@ -139,7 +139,7 @@ uses
 uses
   Gtk3WSImgList, Gtk3WSControls, Gtk3WSForms, Gtk3WSButtons, Gtk3WSStdCtrls,
   Gtk3WSComCtrls, Gtk3WSExtCtrls, Gtk3WSSpin, Gtk3WSMenus, Gtk3WSCalendar,
-  Gtk3WSDialogs, Gtk3WSCheckLst;
+  Gtk3WSDialogs, Gtk3WSCheckLst, Gtk3WSExtDlgs;
 
 // imglist
 function RegisterCustomImageList: Boolean; alias : 'WSRegisterCustomImageList';
@@ -467,8 +467,8 @@ end;
 function RegisterPreviewFileControl: Boolean; alias : 'WSRegisterPreviewFileControl';
 begin
   // RegisterWSComponent(TPreviewFileControl, TGtk2WSPreviewFileControl); { GTK1 }
-//  RegisterWSComponent(TPreviewFileControl, TGtk2WSPreviewFileControl);
-  Result := False;
+  RegisterWSComponent(TPreviewFileControl, TGtk3WSPreviewFileControl);
+  Result := True;
 end;
 
 function RegisterPreviewFileDialog: Boolean; alias : 'WSRegisterPreviewFileDialog';

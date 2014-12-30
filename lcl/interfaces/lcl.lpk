@@ -129,7 +129,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="1" Minor="3"/>
-    <Files Count="436">
+    <Files Count="438">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2167,6 +2167,16 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="qtsystemtrayicon"/>
       </Item436>
+      <Item437>
+        <Filename Value="gtk3/gtk3wsdialogs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSDialogs"/>
+      </Item437>
+      <Item438>
+        <Filename Value="gtk3/gtk3wsextdlgs.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Gtk3WSExtDlgs"/>
+      </Item438>      
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
