@@ -616,6 +616,7 @@ function cairo_device_get_type(device: PCairo_device_t): cairo_device_type_t; cd
 
 (* Image-surface functions *)
 
+function  cairo_format_stride_for_width(format: cairo_format_t; width : LongInt): LongInt; cdecl; external LIB_CAIRO;
 function  cairo_image_surface_create(format: cairo_format_t; width, height: LongInt): Pcairo_surface_t; cdecl; external LIB_CAIRO;
 function  cairo_image_surface_create_for_data(data: Pbyte; format: cairo_format_t; width, height, stride: LongInt): Pcairo_surface_t; cdecl; external LIB_CAIRO;
 function  cairo_image_surface_get_data(surface: Pcairo_surface_t): PChar; cdecl; external LIB_CAIRO;
