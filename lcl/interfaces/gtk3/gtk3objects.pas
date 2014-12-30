@@ -1748,12 +1748,18 @@ end;
 procedure TGtk3DeviceContext.SetImage(AImage: TGtk3Image);
 var
   APixBuf: PGdkPixbuf;
+  // AFormat : cairo_format_t;
+  // Stride : integer;
+  w,h : integer;
 begin
   FCurrentImage := AImage;
   cairo_destroy(Widget);
   APixBuf := AImage.Handle;
   if not Gtk3IsGdkPixbuf(APixBuf) then
+  begin
     DebugLn('ERROR: TGtk3DeviceContext.SetImage image handle isn''t PGdkPixbuf.');
+    exit;
+  end;
   (*
   DebugLn('TGtk3DeviceContext.SetImage w=',dbgs(APixBuf^.width),' h=',dbgs(APixBuf^.height),
   ' RowStride ',dbgs(APixBuf^.rowstride),' BPS=',dbgs(APixBuf^.get_bits_per_sample),
@@ -1762,12 +1768,19 @@ begin
   *)
   if FOwnsSurface and (CairoSurface <> nil) then
     cairo_surface_destroy(CairoSurface);
-  if APixBuf^.get_has_alpha then
-    CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, APixBuf^.get_width, APixBuf^.get_height)
-  else
-    CairoSurface := cairo_image_surface_create(CAIRO_FORMAT_RGB24, APixBuf^.get_width, APixBuf^.get_height);
+  w:=APixBuf^.get_width;
+  h:=APixBuf^.get_height;
+
+  // AFormat := AImage.getFormat;
+
+  // Stride := cairo_format_stride_for_width(AFormat,w);
+  CairoSurface := cairo_image_surface_create_for_data(APixBuf^.pixels,
+                                                AImage.getFormat,
+                                                w,
+                                                h,
+                                                APixBuf^.rowstride);
   Widget := cairo_create(CairoSurface);
-  // gdk_cairo_set_source_pixbuf(Widget, APixBuf, 0, 0);
+  FOwnsSurface := true;
 end;
 
 function TGtk3DeviceContext.ResetClip: Integer;
