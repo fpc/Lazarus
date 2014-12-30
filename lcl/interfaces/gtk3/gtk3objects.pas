@@ -639,7 +639,7 @@ begin
     gdk_pixbuf_fill(FHandle, 0);
   end else
   begin
-    FHandle := TGdkPixbuf.new_from_data(AData, GDK_COLORSPACE_RGB, True, 8, width, height, bytesPerLine, nil, nil);
+    FHandle := TGdkPixbuf.new_from_data(AData, GDK_COLORSPACE_RGB, format=CAIRO_FORMAT_ARGB32, 8, width, height, bytesPerLine, nil, nil);
   end;
 end;
 

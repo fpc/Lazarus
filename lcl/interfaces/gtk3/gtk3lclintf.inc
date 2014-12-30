@@ -234,8 +234,6 @@ var
   ARowStride: PtrUInt;
 begin
   Result := False;
-
-  Result := False;
   ABitmap := 0;
   AMask := 0;
 
@@ -251,9 +249,11 @@ begin
   case Desc.Depth of
     1: ImageFormat := CAIRO_FORMAT_A1;
     2: ImageFormat := CAIRO_FORMAT_A8;
-    24: ImageFormat := CAIRO_FORMAT_RGB24;
     else
-      ImageFormat := CAIRO_FORMAT_ARGB32;
+      if Desc.AlphaPrec=0 then
+         ImageFormat := CAIRO_FORMAT_RGB24
+      else
+         ImageFormat := CAIRO_FORMAT_ARGB32;
   end;
   ARowStride := GetBytesPerLine(Desc.Width, Desc.BitsPerPixel, rileDWordBoundary);
   ABitmap := HBitmap(TGtk3Image.Create(NewData, Desc.Width, Desc.Height, ARowStride, ImageFormat, True));
