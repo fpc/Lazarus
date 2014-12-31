@@ -147,6 +147,7 @@ type
     FData: PByte;
     FDataOwner: Boolean;
     FHandle: PGdkPixbuf;
+    FFormat : cairo_format_t;
   public
     constructor Create; override;
     constructor Create(vHandle: PGdkPixbuf); overload;
@@ -557,17 +558,23 @@ begin
   FHandle := gdk_pixbuf_get_from_surface(ASurface, 0 ,0, ARect.Width, ARect.Height);
   FData := nil;
   FDataOwner := False;
+  FFormat := CAIRO_FORMAT_ARGB32;
 end;
 
 constructor TGtk3Image.Create(vHandle: PGdkPixbuf);
 begin
   {$IFDEF VerboseGtk3DeviceContext}
-    DebugLn('TGtk3Image.Create 2 vHandle=',dbgs(vHandle));
+    DebugLn('TGtk3Image.Create 2 vHandle=',dbgs(vHandle),' channels ',dbgs(vHandle^.get_n_channels),' bps ',dbgs(vHandle^.get_bits_per_sample),' has_alpha=',dbgs(vHandle^.get_has_alpha));
   {$ENDIF}
   inherited Create;
   FHandle := vHandle^.copy;
   FData := nil;
   FDataOwner := False;
+
+  if FHandle^.get_has_alpha then
+    FFormat := CAIRO_FORMAT_ARGB32
+  else
+    FFormat := CAIRO_FORMAT_RGB24;
 end;
 
 constructor TGtk3Image.Create(AData: PByte; width: Integer; height: Integer;
@@ -579,6 +586,7 @@ begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3Image.Create 3 AData=',dbgs(AData <> nil),' format=',dbgs(Ord(format)),' w=',dbgs(width),' h=',dbgs(height),' dataowner=',dbgs(ADataOwner));
   {$ENDIF}
+  FFormat := format;
   FData := AData;
   FDataOwner := ADataOwner;
   if FData = nil then
@@ -595,7 +603,7 @@ begin
     gdk_pixbuf_fill(FHandle, 0);
   end else
   begin
-    FHandle := TGdkPixbuf.new_from_data(AData, GDK_COLORSPACE_RGB, True, 8, width, height, 0, nil, nil);
+    FHandle := TGdkPixbuf.new_from_data(AData, GDK_COLORSPACE_RGB, format=CAIRO_FORMAT_ARGB32, 8, width, height, 0, nil, nil);
   end;
   (*
   if FData = nil then
@@ -623,6 +631,7 @@ begin
     DebugLn('TGtk3Image.Create 4 AData=',dbgs(AData <> nil),' format=',dbgs(Ord(format)),' w=',dbgs(width),' h=',dbgs(height),' dataowner=',dbgs(ADataOwner),' bpl=',dbgs(bytesPerLine));
   {$endif}
   inherited Create;
+  FFormat := format;
   FData := AData;
   FDataOwner := ADataOwner;
 
@@ -723,7 +732,7 @@ end;
 
 function TGtk3Image.getFormat: cairo_format_t;
 begin
-  Result := CAIRO_FORMAT_ARGB32;
+  Result := FFormat;
 end;
 
 { TGtk3Pen }
@@ -1332,7 +1341,7 @@ procedure TGtk3DeviceContext.drawSurface(targetRect: PRect;
   Surface: Pcairo_surface_t; sourceRect: PRect; mask: PGdkPixBuf;
   maskRect: PRect);
 var
-  ASurface: Pcairo_surface_t;
+  M: cairo_matrix_t;
 begin
   {$IFDEF VerboseGtk3DeviceContext}
   DebugLn('TGtk3DeviceContext.DrawSurface ');
@@ -1342,6 +1351,12 @@ begin
     with targetRect^ do
       cairo_rectangle(Widget, Left, Top, Right - Left, Bottom - Top);
     cairo_set_source_surface(Widget, Surface, 0, 0);
+    cairo_matrix_init_identity(@M);
+    cairo_matrix_translate(@M, SourceRect^.Left, SourceRect^.Top);
+    cairo_matrix_scale(@M,  (sourceRect^.Right-sourceRect^.Left) / (targetRect^.Right-targetRect^.Left),
+        (sourceRect^.Bottom-sourceRect^.Top) / (targetRect^.Bottom-targetRect^.Top));
+    cairo_matrix_translate(@M, -targetRect^.Left, -targetRect^.Top);
+    cairo_pattern_set_matrix(cairo_get_source(Widget), @M);
     cairo_clip(Widget);
     cairo_paint(Widget);
   finally
@@ -1750,9 +1765,6 @@ end;
 procedure TGtk3DeviceContext.SetImage(AImage: TGtk3Image);
 var
   APixBuf: PGdkPixbuf;
-  // AFormat : cairo_format_t;
-  // Stride : integer;
-  w,h : integer;
 begin
   FCurrentImage := AImage;
   cairo_destroy(Widget);
@@ -1770,16 +1782,10 @@ begin
   *)
   if FOwnsSurface and (CairoSurface <> nil) then
     cairo_surface_destroy(CairoSurface);
-  w:=APixBuf^.get_width;
-  h:=APixBuf^.get_height;
-
-  // AFormat := AImage.getFormat;
-
-  // Stride := cairo_format_stride_for_width(AFormat,w);
   CairoSurface := cairo_image_surface_create_for_data(APixBuf^.pixels,
                                                 AImage.getFormat,
-                                                w,
-                                                h,
+                                                APixBuf^.get_width,
+                                                APixBuf^.get_height,
                                                 APixBuf^.rowstride);
   Widget := cairo_create(CairoSurface);
   FOwnsSurface := true;
