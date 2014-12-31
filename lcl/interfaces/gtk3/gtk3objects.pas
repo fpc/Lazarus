@@ -82,7 +82,7 @@ type
     procedure SetStyle(AValue: cardinal);
   public
     LogBrush: TLogBrush;
-    constructor Create;
+    constructor Create; override;
     property Color: TColor read GetColor write SetColor;
     property Context: TGtk3DeviceContext read FContext write FContext;
     property Style: LongWord read FStyle write SetStyle;
@@ -112,7 +112,7 @@ type
     procedure setWidth(p1: Integer);
   public
     LogPen: TLogPen;
-    constructor Create;
+    constructor Create; override;
     property Color: TColor read GetColor write SetColor;
     property Context: TGtk3DeviceContext read FContext write FContext;
 
@@ -148,7 +148,7 @@ type
     FDataOwner: Boolean;
     FHandle: PGdkPixbuf;
   public
-    constructor Create;
+    constructor Create; override;
     constructor Create(vHandle: PGdkPixbuf); overload;
     constructor Create(AData: PByte; width: Integer; height: Integer; format: cairo_format_t; const ADataOwner: Boolean = False); overload;
     constructor Create(AData: PByte; width: Integer; height: Integer; bytesPerLine: Integer; format: cairo_format_t; const ADataOwner: Boolean = False); overload;
@@ -160,7 +160,7 @@ type
     function dotsPerMeterX: Integer;
     function dotsPerMeterY: Integer;
     function bits: PByte;
-    function numBytes: Integer;
+    function numBytes: LongWord;
     function bytesPerLine: Integer;
     function getFormat: cairo_format_t;
     property Handle: PGdkPixbuf read FHandle;
@@ -675,12 +675,12 @@ end;
 
 function TGtk3Image.height: Integer;
 begin
-  FHandle^.get_height;
+  Result := FHandle^.get_height;
 end;
 
 function TGtk3Image.width: Integer;
 begin
-  FHandle^.get_width;
+  Result := FHandle^.get_width;
 end;
 
 function TGtk3Image.depth: Integer;
@@ -711,9 +711,9 @@ begin
   Result := FHandle^.pixels;
 end;
 
-function TGtk3Image.numBytes: Integer;
+function TGtk3Image.numBytes: LongWord;
 begin
-  FHandle^.get_byte_length;
+  Result := FHandle^.get_byte_length;
 end;
 
 function TGtk3Image.bytesPerLine: Integer;
@@ -1598,6 +1598,7 @@ var
   DY: Double;
   Pt: TPoint;
 begin
+  Result := False;
   cairo_surface_get_device_offset(cairo_get_target(Widget), @DX, @DY);
   cairo_translate(Widget, DX, DY);
   try
@@ -1611,6 +1612,7 @@ begin
     cairo_line_to(Widget, SX(X1), SY(Y1+RX));
     EllipseArcPath(X1+RX, Y1+RY, RX, RY, PI, PI*1.5, True, True);
     FillAndStroke;
+    Result := True;
   finally
     cairo_translate(Widget, -DX, -DY);
   end;
