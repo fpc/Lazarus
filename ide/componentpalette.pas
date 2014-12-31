@@ -43,7 +43,7 @@ uses
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
-  LazarusIDEStrConsts, ComponentReg, DesignerProcs, PackageDefs, EnvironmentOpts;
+  MainBase, LazarusIDEStrConsts, ComponentReg, DesignerProcs, PackageDefs, EnvironmentOpts;
 
 const
   CompPalSelectionToolBtnPrefix = 'PaletteSelectBtn';
@@ -156,7 +156,6 @@ type
     function GetSelectButtonIcon: TCustomBitmap;
     function SelectAButton(Button: TComponent): boolean;
   protected
-    procedure DoBeginUpdate; override;
     procedure DoEndUpdate(Changed: boolean); override;
     procedure OnPageAddedComponent(Component: TRegisteredComponent); override;
     procedure OnPageRemovedComponent(Page: TBaseComponentPage;
@@ -198,8 +197,6 @@ implementation
 
 {$R ../images/components_images.res}
 {$DEFINE USE_PageIndex}
-uses
-  MainBase;
 
 const
   OVERVIEW_PANEL_WIDTH = 20;
@@ -882,11 +879,6 @@ begin
     OnClick:=@ComponentListClicked;
   end;
   PopupMenu.Items.Add(MenuItem);
-end;
-
-procedure TComponentPalette.DoBeginUpdate;
-begin
-  inherited DoBeginUpdate;
 end;
 
 procedure TComponentPalette.DoEndUpdate(Changed: boolean);
