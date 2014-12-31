@@ -313,9 +313,15 @@ var
   PageCnt, CompCnt: Integer;
   StartInd, EndInd: Integer;
   RealPageName, CompName: String;
+  bListAll : Boolean;
+  TempWidth, NameWidth, PageWidth, UnitWidth : Integer;
 begin
-  if aPageName = lis_All_ then
+  bListAll := aPageName = lis_All_;
+  if bListAll then
   begin
+    NameWidth := 50;
+    PageWidth := 50;
+    UnitWidth := 50;
     StartInd := 1;                // Skip the first entry for all components.
     EndInd := PagesListBox.Count-1;
   end
@@ -338,7 +344,27 @@ begin
       Item.SubItems.Add(RealPageName);
       Item.SubItems.Add(Comp.GetUnitName);
       Item.Data := Comp;
+      if bListAll then
+      begin
+        TempWidth := 20 + ComponentsListView.Canvas.GetTextWidth(CompName);
+        if TempWidth > NameWidth then NameWidth := TempWidth;
+        TempWidth := 20 + ComponentsListView.Canvas.GetTextWidth(RealPageName);
+        if TempWidth > PageWidth then PageWidth := TempWidth;
+        TempWidth := 20 + ComponentsListView.Canvas.GetTextWidth(Comp.GetUnitName);
+        if TempWidth > UnitWidth then UnitWidth := TempWidth;
+      end;
     end;
+  end;
+  if bListAll then
+  begin
+    // Setting Width:=0 is needed at least on Windows. TListView refuses to set
+    // a column width which was set previously, even if user has adjusted it since.
+    ComponentsListView.Column[1].Width := 0;
+    ComponentsListView.Column[1].Width := NameWidth;
+    ComponentsListView.Column[2].Width := 0;
+    ComponentsListView.Column[2].Width := PageWidth;
+    ComponentsListView.Column[3].Width := 0;
+    ComponentsListView.Column[3].Width := UnitWidth;
   end;
   ComponentsListView.Items.EndUpdate;
 end;

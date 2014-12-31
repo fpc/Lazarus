@@ -216,17 +216,17 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
         end      
         item
           Caption = 'Name'
-          MaxWidth = 300
           MinWidth = 50
           Width = 145
         end      
         item
           Caption = 'Page'
-          MaxWidth = 1000
+          MinWidth = 50
           Width = 201
         end      
         item
-          Caption = 'Package'
+          Caption = 'Unit'
+          MinWidth = 50
           Width = 301
         end>
       DragMode = dmAutomatic
