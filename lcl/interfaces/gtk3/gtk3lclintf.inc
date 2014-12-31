@@ -682,112 +682,13 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtk3WidgetSet.RawImage_QueryDescription(AFlags: TRawImageQueryFlags; var ADesc: TRawImageDescription): Boolean;
-var
-  Desc: TRawImageDescription;
 begin
-  if riqfGrey in AFlags then
-  begin
-    DebugLn('TGtk3WidgetSet.RawImage_QueryDescription: riqfGrey not (yet) supported');
-    Exit(False);
-  end;
-  
-  if riqfPalette in AFlags then
-  begin
-    DebugLn('TGtk3WidgetSet.RawImage_QueryDescription: riqfPalette not (yet) supported');
-    Exit(False);
-  end;
-
-  Result := False;
-
-  Desc.Init;
-  Result := RawImage_DescriptionFromDrawable(Desc, nil, riqfAlpha in AFlags);
-  // RawImage_DescriptionFromPixbuf(Desc, nil);
-  // RawImage_DescriptionFromDrawable(Desc, nil, riqfAlpha in AFlags);
-  if not Result then Exit;
-
-  if not (riqfUpdate in AFlags) then
-    ADesc.Init;
-
-  // if there's mask gtk2 assumes it's rgba (not XBM format).issue #12362
-  if (riqfUpdate in AFlags) and (riqfMono in AFlags) and (riqfMask in AFlags) then
-      AFlags := AFlags - [riqfMono] + [riqfRgb];
-
-  if riqfMono in AFlags then
-  begin
-    ADesc.Format := ricfGray;
-    ADesc.Depth := 1;
-    ADesc.BitOrder := Desc.MaskBitOrder;
-    ADesc.ByteOrder := riboLSBFirst;
-    ADesc.LineOrder := Desc.LineOrder;
-    ADesc.LineEnd := Desc.MaskLineEnd;
-    ADesc.BitsPerPixel := Desc.MaskBitsPerPixel;
-    ADesc.RedPrec := 1;
-    ADesc.RedShift := Desc.MaskShift;
-    // in theory only redshift is used, but if someone reads it as color thsi works too.
-    ADesc.GreenPrec := 1;
-    ADesc.GreenShift := Desc.MaskShift;
-    ADesc.BluePrec := 1;
-    ADesc.BlueShift := Desc.MaskShift;
-  end
-  (*
-  //TODO
-  else if riqfGrey in AFlags
-  then begin
-    ADesc.Format := ricfGray;
-    ADesc.Depth := 8;
-    ADesc.BitOrder := Desc.BitOrder;
-    ADesc.ByteOrder := Desc.ByteOrder;
-    ADesc.LineOrder := Desc.LineOrder;
-    ADesc.LineEnd := Desc.LineEnd;
-    ADesc.BitsPerPixel := 8;
-    ADesc.RedPrec := 8;
-    ADesc.RedShift := 0;
-  end
-  *)
+  Result := inherited RawImage_QueryDescription(AFlags, ADesc);
+  if ADesc.BitsPerPixel > 8 then
+    ADesc.BitsPerPixel := 32
   else
-  if riqfRGB in AFlags then
-  begin
-    ADesc.Format := ricfRGBA;
-    ADesc.Depth := Desc.Depth;
-    ADesc.BitOrder := Desc.BitOrder;
-    ADesc.ByteOrder := Desc.ByteOrder;
-    ADesc.LineOrder := Desc.LineOrder;
-    ADesc.LineEnd := Desc.LineEnd;
-    ADesc.BitsPerPixel := Desc.BitsPerPixel;
-    ADesc.RedPrec := Desc.RedPrec;
-    ADesc.RedShift := Desc.RedShift;
-    ADesc.GreenPrec := Desc.GreenPrec;
-    ADesc.GreenShift := Desc.GreenShift;
-    ADesc.BluePrec := Desc.BluePrec;
-    ADesc.BlueShift := Desc.BlueShift;
-  end;
-
-  if riqfAlpha in AFlags then
-  begin
-    ADesc.AlphaPrec := Desc.AlphaPrec;
-    ADesc.AlphaShift := Desc.AlphaShift;
-  end;
-
-  if riqfMask in AFlags then
-  begin
-    ADesc.MaskBitsPerPixel := Desc.MaskBitsPerPixel;
-    ADesc.MaskShift := Desc.MaskShift;
-    ADesc.MaskLineEnd := Desc.MaskLineEnd;
-    ADesc.MaskBitOrder := Desc.MaskBitOrder;
-  end;
-
-(*
-  //TODO
-  if riqfPalette in AFlags
-  then begin
-    ADesc.PaletteColorCount := Desc.PaletteColorCount;
-    ADesc.PaletteBitsPerIndex := Desc.PaletteBitsPerIndex;
-    ADesc.PaletteShift := Desc.PaletteShift;
-    ADesc.PaletteLineEnd := Desc.PaletteLineEnd;
-    ADesc.PaletteBitOrder := Desc.PaletteBitOrder;
-    ADesc.PaletteByteOrder := Desc.PaletteByteOrder;
-  end;
-*)
+  if ADesc.BitsPerPixel > 1 then
+    ADesc.BitsPerPixel := 8;
 end;
 
 {------------------------------------------------------------------------------
