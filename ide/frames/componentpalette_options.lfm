@@ -7,8 +7,8 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
   ClientWidth = 511
   TabOrder = 0
   Visible = False
-  DesignLeft = 520
-  DesignTop = 374
+  DesignLeft = 494
+  DesignTop = 307
   object PagesGroupBox: TGroupBox
     AnchorSideRight.Side = asrBottom
     Left = 0
@@ -18,7 +18,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
     Align = alLeft
     Anchors = []
     Caption = 'PagesGroupBox'
-    ClientHeight = 392
+    ClientHeight = 394
     ClientWidth = 223
     TabOrder = 0
     object PagesListBox: TListBox
@@ -27,7 +27,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideRight.Control = PageMoveUpBtn
       AnchorSideBottom.Control = AddPageButton
       Left = 1
-      Height = 269
+      Height = 271
       Top = 0
       Width = 188
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -40,7 +40,9 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       OnKeyDown = PagesListBoxKeyDown
       OnSelectionChange = PagesListBoxSelectionChange
       PopupMenu = PagesPopupMenu
+      ScrollWidth = 186
       TabOrder = 0
+      TopIndex = -1
     end
     object AddPageButton: TBitBtn
       AnchorSideLeft.Control = PagesListBox
@@ -48,8 +50,8 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Control = ImportDividerBevel
       Left = 1
       Height = 27
-      Top = 275
-      Width = 51
+      Top = 277
+      Width = 46
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Top = 6
@@ -63,10 +65,10 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = AddPageButton
       AnchorSideBottom.Side = asrBottom
-      Left = 61
+      Left = 56
       Height = 27
-      Top = 275
-      Width = 105
+      Top = 277
+      Width = 99
       AutoSize = True
       BorderSpacing.Left = 9
       BorderSpacing.Bottom = 6
@@ -112,7 +114,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Control = ImportButton
       Left = 1
       Height = 15
-      Top = 308
+      Top = 310
       Width = 222
       Caption = 'Import / Export'
       Anchors = [akLeft, akRight, akBottom]
@@ -124,10 +126,10 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = RecentLabel
       AnchorSideTop.Side = asrCenter
-      Left = 131
+      Left = 122
       Height = 25
       Hint = 'Recent files'
-      Top = 327
+      Top = 329
       Width = 35
       BorderSpacing.Around = 6
       Caption = '>>'
@@ -141,10 +143,10 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ImportButton
       AnchorSideTop.Side = asrCenter
-      Left = 83
+      Left = 76
       Height = 15
-      Top = 332
-      Width = 42
+      Top = 334
+      Width = 40
       BorderSpacing.Left = 14
       Caption = 'Recent'
       ParentColor = False
@@ -156,8 +158,8 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Control = ExportButton
       Left = 1
       Height = 27
-      Top = 326
-      Width = 68
+      Top = 328
+      Width = 61
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Top = 3
@@ -174,8 +176,8 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Side = asrBottom
       Left = 1
       Height = 27
-      Top = 359
-      Width = 67
+      Top = 361
+      Width = 61
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Left = 1
@@ -194,7 +196,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
     Align = alClient
     Anchors = []
     Caption = 'ComponentsGroupBox'
-    ClientHeight = 392
+    ClientHeight = 394
     ClientWidth = 275
     TabOrder = 1
     object ComponentsListView: TListView
@@ -204,7 +206,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Control = ComponentsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 1
-      Height = 390
+      Height = 392
       Top = 1
       Width = 240
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -235,6 +237,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
         54657374436F6D700800000054657374506167650B000000546573745061636B
         616765FFFFFFFFFFFFFFFFFFFFFFFF
       }
+      ReadOnly = True
       RowSelect = True
       ScrollBars = ssAutoBoth
       TabOrder = 0
