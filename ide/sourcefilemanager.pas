@@ -2411,7 +2411,7 @@ begin
     if Result<>'' then exit;
   end;
 
-  if TheOwner=Self then begin
+  if TheOwner=LazarusIDE then begin
     // search in base IDE
     Result:=FindInBaseIDE;
     if Result<>'' then exit;
