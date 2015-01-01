@@ -5,6 +5,107 @@ program fpmake;
 uses fpmkunit;
 {$endif ALLPACKAGES}
 
+function IdeGetApplicationName: string;
+begin
+  result := 'lazarus';
+end;
+
+procedure IdeBeforeCompileProc(Sender: TObject);
+var
+  P : TPackage;
+  BE: TBuildEngine;
+  Inst : TCustomInstaller;
+  StoreAppName : TGetAppNameEvent;
+  StaticPackages : TStringList;
+  StaticPackagesFilename: string;
+  i : integer;
+  S: String;
+  AStream: TFileStream;
+
+  procedure AddDesignPackage(APackageName: string; AStaticPackages: TStrings);
+  begin
+    BE.Log(vlCommand,'  Package '+APackageName+' added to designtime-packages.');
+    P.Dependencies.Add(APackageName);
+    AStaticPackages.Add(APackageName);
+  end;
+
+  procedure ScanForInstalledDesignPackages(AStartPath: string; AStaticPackages: TStrings);
+  var
+    sr: TSearchRec;
+    res: LongInt;
+    APackage : TPackage;
+    AFile: string;
+  begin
+    if AStartPath='' then
+      Exit;
+    APackage := TPackage.Create(nil);
+    try
+      // Scan for Designtime-packages within the installed packages
+      AStartPath:=IncludeTrailingPathDelimiter(AStartPath)+'fpmkinst'+PathDelim+Defaults.Target+PathDelim;
+      res := FindFirst(AStartPath+'*'+FpmkExt,faAnyFile-faDirectory,sr);
+      while res=0 do
+        begin
+          AFile:=AStartPath+sr.Name;
+          APackage.LoadUnitConfigFromFile(AFile);
+          if APackage.Flags.IndexOf('LazarusDsgnPkg')>-1 then
+            AddDesignPackage(ChangeFileExt(sr.Name, ''),AStaticPackages);
+          res := FindNext(sr);
+        end;
+    finally
+      APackage.Free;
+    end;
+  end;
+
+begin
+  // Search in all available packages fo packages with the 'LazasurDsgnPkg'-flag.
+  // Add those packages to the staticpackages.inc include file so that they are
+  // linked into the IDE.
+  Inst := sender as TCustomInstaller;
+  P := Inst.Packages.Packages['lazaruside'];
+  BE := Inst.BuildEngine;
+  BE.Log(vlCommand,'Start searching for designtime packages.');
+
+  StoreAppName:=OnGetApplicationName;
+  OnGetApplicationName:=@IdeGetApplicationName;
+  ForceDirectories(GetAppConfigDir(false));
+  StaticPackagesFilename:=GetAppConfigDir(false)+'staticpackages.inc';
+  OnGetApplicationName:=StoreAppName;
+
+  P.IncludePath.Add(ExtractFilePath(StaticPackagesFilename));
+
+  // Search for Designtime-packages and add those to the dependencies and
+  // staticpackages.inc
+  StaticPackages := TStringList.Create;
+  StaticPackages.Sorted:=true;
+  StaticPackages.Duplicates:=dupIgnore;
+  try
+    // Scan for Designtime-packages within the set of packages being compiled
+    for i := 0 to Inst.Packages.Count-1 do
+      begin
+      if Inst.Packages.PackageItems[i].Flags.IndexOf('LazarusDsgnPkg')>-1 then
+        AddDesignPackage(Inst.Packages.PackageItems[i].Name, StaticPackages);
+      end;
+
+    ScanForInstalledDesignPackages(Defaults.LocalUnitDir, StaticPackages);
+    ScanForInstalledDesignPackages(Defaults.GlobalUnitDir, StaticPackages);
+
+    // Write staticpackages.inc
+    S:=StaticPackages.DelimitedText;
+    AStream := TFileStream.Create(StaticPackagesFilename,fmCreate);
+    try
+      if length(s)>0 then
+        begin
+        AStream.WriteBuffer(s[1],length(S));
+        AStream.WriteByte(ord(','));
+        end;
+    finally
+      AStream.Free;
+    end;
+  finally
+    StaticPackages.Free;
+  end;
+end;
+
 procedure add_ide(const ADirectory: string);
 
 var
@@ -16,6 +117,7 @@ begin
     begin
     P:=AddPAckage('lazaruside');
     P.Version:='1.3';
+    NotifyEventCollection.AppendProcEvent(neaBeforeCompile, @IdeBeforeCompileProc);
 
     P.Directory:=ADirectory;
 
@@ -36,6 +138,7 @@ begin
     P.Options.Add('-l');
     P.Options.Add('-dLCL');
     P.Options.Add('-dLCL$(LCL_PLATFORM)');
+    P.Options.Add('-dAddStaticPkgs');
 
     P.IncludePath.Add('include');
     P.IncludePath.Add('include/$(OS)');
