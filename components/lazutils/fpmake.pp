@@ -3,7 +3,7 @@
 
    fpmake.pp for LazUtils 1.0
 
-   This file was generated on 23-12-2014
+   This file was generated on 02-01-2015
 }
 
 {$ifndef ALLPACKAGES} 
@@ -13,7 +13,7 @@ program fpmake;
 uses fpmkunit;
 {$endif ALLPACKAGES}
 
-procedure add_LazUtils;
+procedure add_LazUtils(const ADirectory: string);
 
 var
   P : TPackage;
@@ -25,10 +25,9 @@ begin
     P:=AddPAckage('lazutils');
     P.Version:='1.0';
 
-{$ifdef ALLPACKAGES}
-    // when this is part of a meta package, set here the sub directory
-    P.Directory:='components/lazutils/';
-{$endif ALLPACKAGES}
+    P.Directory:=ADirectory;
+
+    P.Flags.Add('LazarusDsgnPkg');
 
     P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
@@ -38,7 +37,6 @@ begin
     P.Options.Add('-gl');
     P.Options.Add('-l');
     P.Options.Add('-vewnhibq');
-    P.UnitPath.Add('../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('lazutils.pas');
     t.Dependencies.AddUnit('laz2_dom');
@@ -157,7 +155,7 @@ end;
 
 {$ifndef ALLPACKAGES}
 begin
-  add_LazUtils;
+  add_LazUtils('');
   Installer.Run;
 end.
 {$endif ALLPACKAGES}

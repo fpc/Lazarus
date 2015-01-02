@@ -3,7 +3,7 @@
 
    fpmake.pp for FCL 1.0.1
 
-   This file was generated on 28-12-2014
+   This file was generated on 02-01-2015
 }
 
 {$ifndef ALLPACKAGES} 
@@ -26,6 +26,8 @@ begin
     P.Version:='1.0.1';
 
     P.Directory:=ADirectory;
+
+    P.Flags.Add('LazarusDsgnPkg');
 
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');

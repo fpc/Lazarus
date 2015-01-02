@@ -3,7 +3,7 @@
 
    fpmake.pp for LCLBase 1.3
 
-   This file was generated on 29-12-2014
+   This file was generated on 02-01-2015
 }
 
 {$ifndef ALLPACKAGES} 
@@ -27,6 +27,8 @@ begin
 
     P.Directory:=ADirectory;
 
+    P.Flags.Add('LazarusDsgnPkg');
+
     P.Dependencies.Add('lazutils');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
@@ -42,8 +44,6 @@ begin
     P.UnitPath.Add('forms');
     P.UnitPath.Add('widgetset');
     P.UnitPath.Add('nonwin32');
-    P.UnitPath.Add('../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.UnitPath.Add('../components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('alllclunits.pp');
     t.Dependencies.AddUnit('checklst');

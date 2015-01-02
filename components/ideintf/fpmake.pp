@@ -3,7 +3,7 @@
 
    fpmake.pp for IDEIntf 1.0
 
-   This file was generated on 28-12-2014
+   This file was generated on 02-01-2015
 }
 
 {$ifndef ALLPACKAGES} 
@@ -27,6 +27,8 @@ begin
 
     P.Directory:=ADirectory;
 
+    P.Flags.Add('LazarusDsgnPkg');
+
     P.Dependencies.Add('lazcontrols');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
@@ -37,14 +39,9 @@ begin
     P.Options.Add('-vi-');
     P.Options.Add('-vewnhbq');
     P.Options.Add('-dLCL');
-    P.Options.Add('-dLCL$(LCL_PLATFORM)');
+    P.Options.Add('-dLCL$(LCLWidgetType)');
     P.Options.Add('-dNoCarbon');
     P.IncludePath.Add('images');
-    P.UnitPath.Add('../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.UnitPath.Add('../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
-    P.UnitPath.Add('../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.UnitPath.Add('../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
-    P.UnitPath.Add('../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('ideintf.pas');
     t.Dependencies.AddUnit('actionseditor');

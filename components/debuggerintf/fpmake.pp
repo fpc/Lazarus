@@ -3,7 +3,7 @@
 
    fpmake.pp for DebuggerIntf 0.1
 
-   This file was generated on 28-12-2014
+   This file was generated on 02-01-2015
 }
 
 {$ifndef ALLPACKAGES} 
@@ -27,6 +27,8 @@ begin
 
     P.Directory:=ADirectory;
 
+    P.Flags.Add('LazarusDsgnPkg');
+
     P.Dependencies.Add('lclbase');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
@@ -38,9 +40,6 @@ begin
     P.Options.Add('-vh-');
     P.Options.Add('-venibq');
     P.Options.Add('-vm4046');
-    P.UnitPath.Add('../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.UnitPath.Add('../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
-    P.UnitPath.Add('../../lcl/units/$(CPU_TARGET)-$(OS_TARGET)');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('debuggerintf.pas');
     t.Dependencies.AddUnit('dbgintfbasetypes');

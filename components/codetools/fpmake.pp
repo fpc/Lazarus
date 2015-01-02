@@ -3,7 +3,7 @@
 
    fpmake.pp for CodeTools 1.0.1
 
-   This file was generated on 28-12-2014
+   This file was generated on 02-01-2015
 }
 
 {$ifndef ALLPACKAGES} 
@@ -27,6 +27,8 @@ begin
 
     P.Directory:=ADirectory;
 
+    P.Flags.Add('LazarusDsgnPkg');
+
     P.Dependencies.Add('lazutils');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Sci');
@@ -36,8 +38,6 @@ begin
     P.Options.Add('-l');
     P.Options.Add('-vh-');
     P.Options.Add('-vewnibq');
-    P.UnitPath.Add('../../packager/units/$(CPU_TARGET)-$(OS_TARGET)');
-    P.UnitPath.Add('../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET)');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('codetools.pas');
     t.Dependencies.AddUnit('basiccodetools');

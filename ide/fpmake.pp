@@ -137,7 +137,7 @@ begin
     P.Options.Add('-vewnhi');
     P.Options.Add('-l');
     P.Options.Add('-dLCL');
-    P.Options.Add('-dLCL$(LCL_PLATFORM)');
+    P.Options.Add('-dLCL$(LCLWidgetType)');
     P.Options.Add('-dAddStaticPkgs');
 
     P.IncludePath.Add('include');
