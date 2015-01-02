@@ -78,6 +78,7 @@ type
     EditTemplateGroupBox: TGroupBox;
     InsertMacroButton: TButton;
     KeepSubIndentCheckBox: TCheckBox;
+    OptionsPanel: TPanel;
     UseMacrosCheckBox: TCheckBox;
     RenameButton: TButton;
     DeleteButton: TButton;
@@ -102,6 +103,7 @@ type
     procedure OnInsertMacroMenuItem(Sender: TObject);
     procedure OnPasteMenuItem(Sender: TObject);
     procedure TemplateListBoxSelectionChange(Sender: TObject; User: boolean);
+    procedure UseMacrosCheckBoxChange(Sender: TObject);
   private
     SynAutoComplete: TSynEditAutoComplete;
     LastTemplate: integer;
@@ -1152,6 +1154,11 @@ begin
   ShowCurCodeTemplate;
 end;
 
+procedure TCodeTemplateDialog.UseMacrosCheckBoxChange(Sender: TObject);
+begin
+  InsertMacroButton.Enabled:=UseMacrosCheckBox.Checked;
+end;
+
 procedure TCodeTemplateDialog.BuildPopupMenu;
 begin
   CodeTemplateCopyIDEMenuCommand.OnClick:=@OnCopyMenuItem;
@@ -1265,6 +1272,7 @@ begin
   TemplateSynEdit.Lines.EndUpdate;
   TemplateSynEdit.Invalidate;
   UseMacrosCheckBox.Checked:=EnableMacros;
+  InsertMacroButton.Enabled:=EnableMacros;
   KeepSubIndentCheckBox.Checked:=KeepSubIndent;
   for c:=Low(TAutoCompleteOption) to High(TAutoCompleteOption) do
     AutoOnOptionsCheckGroup.Checked[ord(c)]:=AutoOnCat[c];
