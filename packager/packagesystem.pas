@@ -47,6 +47,7 @@ uses
   // FPC + LCL
   Classes, SysUtils, FileProcs, FileUtil, LCLProc, Forms, Controls, Dialogs,
   Laz2_XMLCfg, LazLogger, LazFileUtils, InterfaceBase, LazUTF8, laz2_XMLRead,
+  strutils,
   // codetools
   AVL_Tree, contnrs, DefineTemplates, CodeCache,
   BasicCodeTools, CodeToolsStructs, NonPascalCodeTools, SourceChanger,
@@ -4330,7 +4331,9 @@ var
 
   function ConvertPIMacrosToMakefileMacros(const s: string): string;
   begin
-    result := StringReplace(s,'%(','$(',[rfReplaceAll]);
+    result := StringsReplace(s, ['%(LCL_PLATFORM)', '%(CPU_TARGET)', '%(OS_TARGET)'],
+                                ['$(LCLWidgetType)','$(CPU)',        '$(OS)'],[rfReplaceAll, rfIgnoreCase]);
+    result := StringReplace(result,'%(','$(',[rfReplaceAll]);
   end;
 
   function ConvertLazarusToFpmakeSearchPath(const s: string): string;
