@@ -4468,6 +4468,8 @@ begin
   s:=s+''+e;
   s:=s+'    P.Directory:=ADirectory;'+e;
   s:=s+''+e;
+  if APackage.PackageType in [lptDesignTime, lptRunAndDesignTime] then
+    s:=s+'    P.Flags.Add(''LazarusDsgnPkg'');'+e+e;
 
   ARequirement := APackage.FirstRequiredDependency;
   while assigned(ARequirement) do
