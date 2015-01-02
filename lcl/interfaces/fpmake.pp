@@ -33,7 +33,7 @@ begin
     P.Version:='1.3.0';
 
     // Definition of Widgetsets
-    WidgetSetVariant := AddPackageVariant('widgetset',true);
+    WidgetSetVariant := AddPackageVariant('LCLWidgetType',true);
     p.AddPackageVariant(WidgetSetVariant);
 
     CarbonWidgetset := WidgetSetVariant.Add('carbon');
@@ -52,10 +52,10 @@ begin
     end;
 
     // Widgetset-settings.
-    P.IncludePath.Add('$(widgetset)');
-    P.SourcePath.Add('$(widgetset)');
-    P.Options.Add('-dLCL$(widgetset)');
-    P.Options.Add('-d$(widgetset)');
+    P.IncludePath.Add('$(LCLWidgetType)');
+    P.SourcePath.Add('$(LCLWidgetType)');
+    P.Options.Add('-dLCL$(LCLWidgetType)');
+    P.Options.Add('-d$(LCLWidgetType)');
 
     // Widgetset-specific options
     // gtk
@@ -69,11 +69,6 @@ begin
     CarbonWidgetset.SourcePath.Add('carbon/objc');
     CarbonWidgetset.SourcePath.Add('carbon/pascocoa/appkit');
     CarbonWidgetset.SourcePath.Add('carbon/pascocoa/foundation');
-
-    // Resolve simple Lazarus-macro's
-    GlobalDictionary.AddVariable('LCL_PLATFORM', '$(widgetset)');
-    GlobalDictionary.AddVariable('CPU_TARGET', '$(cpu)');
-    GlobalDictionary.AddVariable('OS_TARGET', '$(os)');
 
     P.Directory:=ADirectory;
     P.SupportBuildModes := [bmBuildUnit];
