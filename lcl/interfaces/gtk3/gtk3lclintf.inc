@@ -689,6 +689,8 @@ begin
   else
   if ADesc.BitsPerPixel > 1 then
     ADesc.BitsPerPixel := 8;
+  if (riqfMask in AFlags) then
+    RawImage_DescriptionFromDrawable(ADesc, nil, riqfAlpha in AFlags);
 end;
 
 {------------------------------------------------------------------------------
