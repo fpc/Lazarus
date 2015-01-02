@@ -4382,7 +4382,6 @@ var
   e: string;
   SrcFilename: String;
   FpmakeFPCFilename: String;
-  UnitOutputPath: String;
   UnitPath: String;
   CodeBuffer: TCodeBuffer;
   MainSrcFile: String;
@@ -4409,12 +4408,13 @@ begin
   FPmakeCompiledFilename:=AppendPathDelim(APackage.Directory)+APackage.Name+'.compiled';
 
   SrcFilename:=APackage.GetSrcFilename;
-  UnitPath:=APackage.CompilerOptions.GetUnitPath(true,
-                                                 coptParsedPlatformIndependent);
+
+  UnitPath:=APackage.CompilerOptions.ParsedOpts.GetParsedPIValue(pcosUnitPath);
+  UnitPath:=CreateRelativeSearchPath(UnitPath,APackage.CompilerOptions.BaseDirectory);
+  UnitPath:=MergeSearchPaths(UnitPath, '.');
+
   IncPath:=APackage.CompilerOptions.GetIncludePath(true,
                                            coptParsedPlatformIndependent,false);
-  UnitOutputPath:=APackage.CompilerOptions.GetUnitOutPath(true,
-                                                 coptParsedPlatformIndependent);
   CustomOptions:=APackage.CompilerOptions.GetCustomOptions(
                                                  coptParsedPlatformIndependent);
   debugln('CustomOptions (orig): ',CustomOptions);
@@ -4431,8 +4431,6 @@ begin
   UnitPath:=ConvertLazarusToFpmakeSearchPath(UnitPath);
   IncPath:=ConvertLazarusToFpmakeSearchPath(IncPath);
   // remove path delimiter at the end, or else it will fail on windows
-  UnitOutputPath:=ConvertLazarusToMakefileDirectory(
-                                                ChompPathDelim(UnitOutputPath));
   MainSrcFile:=CreateRelativePath(SrcFilename,APackage.Directory);
   CustomOptions:=ConvertLazarusOptionsToFpmakeOptions(CustomOptions);
   debugln('CustomOptions (fpmake format): ',CustomOptions);
