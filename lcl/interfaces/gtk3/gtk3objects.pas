@@ -555,7 +555,11 @@ begin
   ACairo := gdk_cairo_create(gdk_get_default_root_window);
   gdk_cairo_get_clip_rectangle(ACairo, @ARect);
   ASurface := cairo_image_surface_create(CAIRO_FORMAT_ARGB32, ARect.width, ARect.height);
-  FHandle := gdk_pixbuf_get_from_surface(ASurface, 0 ,0, ARect.Width, ARect.Height);
+  try
+    FHandle := gdk_pixbuf_get_from_surface(ASurface, 0 ,0, ARect.Width, ARect.Height);
+  finally
+    cairo_surface_destroy(ASurface);
+  end;
   FData := nil;
   FDataOwner := False;
   FFormat := CAIRO_FORMAT_ARGB32;
@@ -599,7 +603,11 @@ begin
       h := 16;
 
     ASurface := cairo_image_surface_create(format, w, h);
-    FHandle := gdk_pixbuf_get_from_surface(ASurface, 0 ,0, w, h);
+    try
+      FHandle := gdk_pixbuf_get_from_surface(ASurface, 0 ,0, w, h);
+    finally
+      cairo_surface_destroy(ASurface);
+    end;
     gdk_pixbuf_fill(FHandle, 0);
   end else
   begin
@@ -644,7 +652,11 @@ begin
     if (h <= 0) then
       h := 16;
     ASurface := cairo_image_surface_create(format, w, h);
-    FHandle := gdk_pixbuf_get_from_surface(ASurface, 0 ,0, w, h);
+    try
+      FHandle := gdk_pixbuf_get_from_surface(ASurface, 0 ,0, w, h);
+    finally
+      cairo_surface_destroy(ASurface);
+    end;
     gdk_pixbuf_fill(FHandle, 0);
   end else
   begin
