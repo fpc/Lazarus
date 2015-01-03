@@ -29,7 +29,7 @@ uses
   Classes, SysUtils, Types,
   // LCL
   LCLType, LCLProc, LCLIntf, LMessages, Graphics, Forms, Controls,
-  ComCtrls, ExtCtrls, StdCtrls, Menus, Dialogs;
+  ComCtrls, ExtCtrls, StdCtrls, Menus, Dialogs, ImgList;
 
 type
   // forward declarations
@@ -13473,7 +13473,7 @@ var
   R: TRect;
   TopItem: Integer;
   i: Integer;
-  j: Integer;
+  j, x: Integer;
   ChildCount: Integer;
   VHeight: Integer; // viewport height
   RowHeight: Integer;
@@ -13482,6 +13482,9 @@ var
   v: QVariantH;
   WStr: WideString;
   ASelected: Boolean;
+  ImgList: TCustomImageList;
+  AImageIndex: TImageIndex;
+  Bmp: TBitmap;
 begin
   {do not set items during design time}
   if csDesigning in LCLObject.ComponentState then
@@ -13524,6 +13527,36 @@ begin
         v := QVariant_create(PWideString(@WStr));
         try
           QTreeWidgetItem_setData(item, 0, Ord(QtDisplayRole), v);
+
+          // set imageindex, part of comment in issue #27233
+          ImgList := TCustomListViewHack(LCLObject).SmallImages;
+          if Assigned(ImgList) then
+          begin
+            AImageIndex := TCustomListViewHack(LCLObject).Items[TopItem].ImageIndex;
+            if (ImgList.Count > 0) and
+              ((AImageIndex >= 0) and (AImageIndex < ImgList.Count)) then
+            begin
+              Bmp := TBitmap.Create;
+              try
+                ImgList.GetBitmap(AImageIndex, Bmp);
+                QTreeWidgetItem_setIcon(item, 0, TQtImage(Bmp.Handle).AsIcon);
+              finally
+                Bmp.Free;
+              end;
+            end else
+            if (AImageIndex < 0) then
+              QTreeWidgetItem_setIcon(item, 0, nil);
+          end;
+
+          // set alignment, issue #27233
+          if TCustomListViewHack(LCLObject).Columns.Count > 0 then
+          begin
+            case TCustomListViewHack(LCLObject).Column[0].Alignment of
+              taRightJustify: QTreeWidgetItem_setTextAlignment(item, 0, QtAlignRight);
+              taCenter: QTreeWidgetItem_setTextAlignment(item, 0, QtAlignCenter);
+              taLeftJustify: QTreeWidgetItem_setTextAlignment(item, 0, QtAlignLeft);
+            end;
+          end;
         finally
           QVariant_destroy(v);
         end;
@@ -13538,7 +13571,7 @@ begin
             begin
               WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].SubItems[j]);
               v := QVariant_create(PWideString(@WStr));
-              QTreeWidgetItem_setData(itemChild, 0, Ord(QtDisplayRole), v);
+              QTreeWidgetItem_setData(itemChild, j, Ord(QtDisplayRole), v);
               QVariant_destroy(v);
             end;
           end;
@@ -13549,6 +13582,16 @@ begin
             WStr := GetUTF8String(TCustomListViewHack(LCLObject).Items[TopItem].SubItems[j]);
             v := QVariant_create(PWideString(@WStr));
             QTreeWidgetItem_setData(item, j + 1, Ord(QtDisplayRole), v);
+
+            // set alignment, issue #27233
+            if (TCustomListViewHack(LCLObject).Columns.Count > 0) then
+            begin
+              case TCustomListViewHack(LCLObject).Column[j + 1].Alignment of
+                taRightJustify: QTreeWidgetItem_setTextAlignment(item, j + 1, QtAlignRight);
+                taCenter: QTreeWidgetItem_setTextAlignment(item, j + 1, QtAlignCenter);
+                taLeftJustify: QTreeWidgetItem_setTextAlignment(item, j + 1, QtAlignLeft);
+              end;
+            end;
             QVariant_destroy(v);
           end;
         end;
