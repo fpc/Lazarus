@@ -6867,7 +6867,7 @@ begin
   RegisterPropertyEditor(TypeInfo(AnsiString), TFilterComboBox, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TFileNameEdit, 'Filter', TFileDlgFilterProperty);
   RegisterPropertyEditor(TypeInfo(AnsiString), TCustomPropertyStorage, 'Filename', TFileNamePropertyEditor);
-  RegisterPropertyEditor(TypeInfo(TStrings), TValueListEditor, '', TValueListPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TStrings), TValueListEditor, 'Strings', TValueListPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideLeft', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideTop', THiddenPropertyEditor);
   RegisterPropertyEditor(TypeInfo(TAnchorSide), TControl, 'AnchorSideRight', THiddenPropertyEditor);
