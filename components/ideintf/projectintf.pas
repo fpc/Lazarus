@@ -683,25 +683,21 @@ end;
 
 procedure TProjectFileDescriptor.SetDefaultFileExt(const AValue: string);
 begin
-  if FDefaultFileExt=AValue then exit;
   FDefaultFileExt:=AValue;
 end;
 
 procedure TProjectFileDescriptor.SetDefaultResFileExt(const AValue: string);
 begin
-  if FDefaultResFileExt=AValue then exit;
   FDefaultResFileExt:=AValue;
 end;
 
 procedure TProjectFileDescriptor.SetDefaultSourceName(const AValue: string);
 begin
-  if FDefaultSourceName=AValue then exit;
   FDefaultSourceName:=AValue;
 end;
 
 procedure TProjectFileDescriptor.SetRequiredPackages(const AValue: string);
 begin
-  if FRequiredPackages=AValue then exit;
   FRequiredPackages:=AValue;
 end;
 
@@ -715,7 +711,6 @@ end;
 
 procedure TProjectFileDescriptor.SetName(const AValue: string);
 begin
-  if FName=AValue then exit;
   FName:=AValue;
 end;
 
