@@ -1428,8 +1428,8 @@ begin
   end;
 
   if (i < NextInsertIdx) then begin
-    DebugLn(['Replacing match at idx=', i, ' Back:', FFindInsertIndex-i, ' y=', FFindLineY,
-             ' x1=', FMatches.StartPoint[i].X, ' x2=', MatchBegin-FFindLineText+1, ' with longer. Len=', Len]);
+    //DebugLn(['Replacing match at idx=', i, ' Back:', FFindInsertIndex-i, ' y=', FFindLineY,
+    //         ' x1=', FMatches.StartPoint[i].X, ' x2=', MatchBegin-FFindLineText+1, ' with longer. Len=', Len]);
     FMatches.StartPoint[i] := Point(MatchBegin-FFindLineText+1, FFindLineY);
     FMatches.EndPoint[i]   := Point(MatchBegin-FFindLineText+1+Len, FFindLineY);
     if i + 1 < FFindInsertIndex then
