@@ -12,7 +12,6 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: idetemplateproject.snewfromtemplate
-msgctxt "idetemplateproject.snewfromtemplate"
 msgid "New project from template"
 msgstr "Új projekt sablonból"
 

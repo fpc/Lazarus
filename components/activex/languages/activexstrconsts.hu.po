@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -41,9 +40,5 @@ msgid "Select directory to store package %sP.lpk"
 msgstr "Könyvtár választása a(z) %sP.lpk csomag tárolásához"
 
 #: activexstrconsts.axtypelibraryfilestlbdllexeocxolbtlbdllexeocxolballf
-msgid ""
-"Type library files (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*."
-"olb|All Files (*.*)|*.*"
-msgstr ""
-"Típustár fájlok (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*."
-"olb|Minden fájl (*.*)|*.*"
+msgid "Type library files (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|All Files (*.*)|*.*"
+msgstr "Típustár fájlok (*.tlb;*.dll;*.exe;*.ocx;*.olb)|*.tlb;*.dll;*.exe;*.ocx;*.olb|Minden fájl (*.*)|*.*"

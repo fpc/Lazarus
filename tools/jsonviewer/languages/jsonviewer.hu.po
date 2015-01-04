@@ -92,220 +92,219 @@ msgstr "Objektum (%d tag)"
 msgid "Save the changes"
 msgstr "Változások mentése"
 
-#: tmainform.acopy.caption
+#: TMAINFORM.ACOPY.CAPTION
 msgid "&Copy"
 msgstr "&Másolás"
 
-#: tmainform.acopy.hint
+#: TMAINFORM.ACOPY.HINT
 msgid "Copy selected node to clipboard as JSON"
 msgstr "A kijelölt csomópont másolása a vágólapra JSON-ként"
 
-#: tmainform.acut.caption
+#: TMAINFORM.ACUT.CAPTION
 msgid "C&ut"
 msgstr "Ki&vágás"
 
-#: tmainform.acut.hint
+#: TMAINFORM.ACUT.HINT
 msgid "Cut selected node to clipboard as JSON"
 msgstr "A kijelölt csomópont kivágása a vágólapra JSON-ként"
 
-#: tmainform.adeletevalue.caption
+#: TMAINFORM.ADELETEVALUE.CAPTION
 msgid "&Delete value"
 msgstr "Érték törlése"
 
-#: tmainform.adeletevalue.hint
+#: TMAINFORM.ADELETEVALUE.HINT
 msgid "Delete the selected value"
 msgstr "A kijelölt érték törlése"
 
-#: tmainform.aexpandall.caption
+#: TMAINFORM.AEXPANDALL.CAPTION
 msgid "E&xpand all nodes"
 msgstr "Minden csomópont kibontása"
 
-#: tmainform.aexpandall.hint
+#: TMAINFORM.AEXPANDALL.HINT
 msgid "Expand all nodes in the document"
 msgstr "Minden csomópont kibontása a dokumentumban"
 
-#: tmainform.aexpandcurrentcontainer.caption
+#: TMAINFORM.AEXPANDCURRENTCONTAINER.CAPTION
 msgid "Expand &current object/array"
 msgstr "Jelenlegi objektum/tömb kibontása"
 
-#: tmainform.aexpandcurrentcontainer.hint
+#: TMAINFORM.AEXPANDCURRENTCONTAINER.HINT
 msgid "Expand all nodes in the current object/array"
 msgstr "Minden csomópont kibontása a jelenlegi objektumban/tömbben"
 
-#: tmainform.afind.caption
+#: TMAINFORM.AFIND.CAPTION
 msgid "&Find"
 msgstr "Keresés"
 
-#: tmainform.afindnext.caption
+#: TMAINFORM.AFINDNEXT.CAPTION
 msgid "Find &next occurrence"
 msgstr "Következő előfordulás keresése"
 
-#: tmainform.anew.caption
+#: TMAINFORM.ANEW.CAPTION
 msgid "&New"
 msgstr "&Új"
 
-#: tmainform.anew.hint
+#: TMAINFORM.ANEW.HINT
 msgid "Create new JSON document"
 msgstr "Új JSON dokumentum létrehozása"
 
-#: tmainform.anewarray.caption
+#: TMAINFORM.ANEWARRAY.CAPTION
 msgid "New &Array"
 msgstr "Új tömb"
 
-#: tmainform.anewarray.hint
+#: TMAINFORM.ANEWARRAY.HINT
 msgid "Add a new JSON array"
 msgstr "Új JSON tömb hozzáadása"
 
-#: tmainform.anewbooleanvalue.caption
+#: TMAINFORM.ANEWBOOLEANVALUE.CAPTION
 msgid "New &boolean value"
 msgstr "Új logikai érték"
 
-#: tmainform.anewbooleanvalue.hint
+#: TMAINFORM.ANEWBOOLEANVALUE.HINT
 msgid "Add a new boolean value"
 msgstr "Új logikai érték hozzáadása"
 
-#: tmainform.anewnullvalue.caption
+#: TMAINFORM.ANEWNULLVALUE.CAPTION
 msgid "New N&ull value"
 msgstr "Új üres (null) érték"
 
-#: tmainform.anewnullvalue.hint
+#: TMAINFORM.ANEWNULLVALUE.HINT
 msgid "Add a new null value"
 msgstr "Új üres (null) érték hozzáadása"
 
-#: tmainform.anewnumbervalue.caption
+#: TMAINFORM.ANEWNUMBERVALUE.CAPTION
 msgid "&New numerical Value"
 msgstr "Új számérték"
 
-#: tmainform.anewnumbervalue.hint
+#: TMAINFORM.ANEWNUMBERVALUE.HINT
 msgid "Add a new number value"
 msgstr "Új számérték hozzáadása"
 
-#: tmainform.anewobject.caption
+#: TMAINFORM.ANEWOBJECT.CAPTION
 msgid "New &Object"
 msgstr "Új objektum"
 
-#: tmainform.anewobject.hint
+#: TMAINFORM.ANEWOBJECT.HINT
 msgid "Add a new JSON object"
 msgstr "Új JSON objektum hozzáadása"
 
-#: tmainform.anewstringvalue.caption
+#: TMAINFORM.ANEWSTRINGVALUE.CAPTION
 msgid "New &string value"
 msgstr "Új szövegérték"
 
-#: tmainform.anewstringvalue.hint
+#: TMAINFORM.ANEWSTRINGVALUE.HINT
 msgid "Add a new string value"
 msgstr "Új szövegérték hozzáadása"
 
-#: tmainform.aopen.caption
+#: TMAINFORM.AOPEN.CAPTION
 msgid "&Open"
 msgstr "Meg&nyitás"
 
-#: tmainform.aopen.hint
+#: TMAINFORM.AOPEN.HINT
 msgid "Open JSON document from file"
 msgstr "JSON dokumentum megnyitása fájlból"
 
-#: tmainform.apaste.caption
+#: TMAINFORM.APASTE.CAPTION
 msgid "&Paste"
 msgstr "&Beillesztés"
 
-#: tmainform.apaste.hint
+#: TMAINFORM.APASTE.HINT
 msgid "Paste JSON data in clipboard as new member"
 msgstr "JSON adatok beillesztése a vágólapról új tagként"
 
-#: tmainform.apasteasdocument.caption
+#: TMAINFORM.APASTEASDOCUMENT.CAPTION
 msgid "Paste as new document"
 msgstr "Beillesztés új dokumentumként"
 
-#: tmainform.apasteasdocument.hint
+#: TMAINFORM.APASTEASDOCUMENT.HINT
 msgid "Paste JSON data in clipboard as new document"
 msgstr "JSON adatok beillesztése a vágólapról új dokumentumként"
 
-#: tmainform.aquit.caption
+#: TMAINFORM.AQUIT.CAPTION
 msgid "&Quit"
 msgstr "&Kilépés"
 
-#: tmainform.aquit.hint
+#: TMAINFORM.AQUIT.HINT
 msgid "Exit the program"
 msgstr "Kilépés a programból"
 
-#: tmainform.asave.caption
+#: TMAINFORM.ASAVE.CAPTION
 msgid "&Save"
 msgstr "&Mentés"
 
-#: tmainform.asave.hint
+#: TMAINFORM.ASAVE.HINT
 msgid "Save the JSON document to file"
 msgstr "JSON dokumentum mentése fájlba"
 
-#: tmainform.asaveas.caption
+#: TMAINFORM.ASAVEAS.CAPTION
 msgid "Save &as"
 msgstr "Mentés másként"
 
-#: tmainform.asaveas.hint
+#: TMAINFORM.ASAVEAS.HINT
 msgid "Save JSON document with a new name"
 msgstr "JSON dokumentum mentése új névvel"
 
-#: tmainform.mainform.caption
+#: TMAINFORM.MAINFORM.CAPTION
 msgctxt "TMAINFORM.MAINFORM.CAPTION"
 msgid "JSON Viewer"
 msgstr "JSON Megjelenítő"
 
-#: tmainform.medit.caption
+#: TMAINFORM.MEDIT.CAPTION
 msgid "&Edit"
 msgstr "S&zerkesztés"
 
-#: tmainform.menuitem1.caption
+#: TMAINFORM.MENUITEM1.CAPTION
 msgctxt "TMAINFORM.MENUITEM1.CAPTION"
 msgid "-"
 msgstr "-"
 
-#: tmainform.menuitem2.caption
+#: TMAINFORM.MENUITEM2.CAPTION
 msgctxt "TMAINFORM.MENUITEM2.CAPTION"
 msgid "-"
 msgstr "-"
 
-#: tmainform.menuitem3.caption
+#: TMAINFORM.MENUITEM3.CAPTION
 msgctxt "TMAINFORM.MENUITEM3.CAPTION"
 msgid "-"
 msgstr "-"
 
-#: tmainform.menuitem8.caption
+#: TMAINFORM.MENUITEM8.CAPTION
 msgctxt "TMAINFORM.MENUITEM8.CAPTION"
 msgid "-"
 msgstr "-"
 
-#: tmainform.mfile.caption
+#: TMAINFORM.MFILE.CAPTION
 msgid "&File"
 msgstr "&Fájl"
 
-#: tmainform.midocument.caption
+#: TMAINFORM.MIDOCUMENT.CAPTION
 msgid "&New document with object"
 msgstr "Új dokumentum objektummal"
 
-#: tmainform.miinsert.caption
+#: TMAINFORM.MIINSERT.CAPTION
 msgid "&Values"
 msgstr "Érté&kek"
 
-#: tmainform.misortmembers.caption
+#: TMAINFORM.MISORTMEMBERS.CAPTION
 msgid "Sort object members"
 msgstr "Objektum-tagok rendezése"
 
-#: tmainform.mistrict.caption
+#: TMAINFORM.MISTRICT.CAPTION
 msgid "&Strict JSON"
 msgstr "Szigorú JSON"
 
-#: tmainform.moptions.caption
+#: TMAINFORM.MOPTIONS.CAPTION
 msgid "&Options"
 msgstr "Beállítás&ok"
 
-#: tmainform.tbjson.caption
+#: TMAINFORM.TBJSON.CAPTION
 msgid "TBJSON"
 msgstr "TBJSON"
 
-#: tmainform.toolbutton1.caption
+#: TMAINFORM.TOOLBUTTON1.CAPTION
 msgid "ToolButton1"
 msgstr "ToolButton1"
 
-#: tmainform.toolbutton4.caption
+#: TMAINFORM.TOOLBUTTON4.CAPTION
 msgid "ToolButton4"
 msgstr "ToolButton4"
-

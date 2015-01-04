@@ -38,4 +38,3 @@ msgstr "Források nyomtatása"
 #: ideprinting.sprintwhat
 msgid "What would you like to print ?"
 msgstr "Mit szeretne nyomtatni?"
-

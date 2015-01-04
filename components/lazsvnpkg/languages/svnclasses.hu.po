@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -150,8 +149,7 @@ msgstr "A projekt aktív"
 
 #: svnclasses.rsprojectisnotactiveinsvnsettingspleaseactivatefirst
 msgid "Project is not active in SVN settings, please activate first."
-msgstr ""
-"A projekt nem aktív az SVN beállítások alapján. Először aktiválni kell!"
+msgstr "A projekt nem aktív az SVN beállítások alapján. Először aktiválni kell!"
 
 #: svnclasses.rsprojectname
 msgid "Project name"
@@ -163,7 +161,7 @@ msgstr "Projekt beállítások"
 
 #: svnclasses.rspropertystatus
 msgid "Property status"
-msgstr ""
+msgstr "Tulajdonságok állapota"
 
 #: svnclasses.rsrefresh
 msgid "Refresh"

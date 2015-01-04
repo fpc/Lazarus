@@ -37,7 +37,7 @@ msgstr "Külső kulcsok átugrása"
 
 #: lazdatadeskstr.eouseoldinwhereparams
 msgid "Use OLD prefix in where parameters"
-msgstr ""
+msgstr "Az OLD előtag használata a paramétereknél"
 
 #: lazdatadeskstr.sclose
 msgid "Close result"
@@ -439,7 +439,7 @@ msgstr "Szótárak"
 
 #: lazdatadeskstr.sld_fromconnection
 msgid "From connection"
-msgstr ""
+msgstr "Ezen kapcsolaton:"
 
 #: lazdatadeskstr.sld_generatesql
 msgid "Generate SQL"
@@ -459,7 +459,7 @@ msgstr "Adatszótár importálása/frissítése"
 
 #: lazdatadeskstr.sld_indent
 msgid "I&ndent"
-msgstr ""
+msgstr "Behúzás"
 
 #: lazdatadeskstr.sld_insert
 msgid "&Insert"

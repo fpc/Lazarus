@@ -24,11 +24,9 @@ msgid "JSON-RPC class"
 msgstr "JSON-RPC osztály"
 
 #: frmrpcmoduleoptions.sregisterjson
-#, fuzzy
 msgid "Register JSON-RPC handlers in factory"
-msgstr "JSON-RPC kezelők regisztrálása a gyárban"
+msgstr "JSON-RPC kezelők regisztrálása az előállítóban"
 
 #: frmrpcmoduleoptions.sregisterwebm
 msgid "Register web module"
 msgstr "Web modul regisztrálása"
-

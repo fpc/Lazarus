@@ -21,7 +21,7 @@ msgstr "A kijelölt elem hozzáadása az eszköztárhoz"
 
 #: editortoolbar_str.rsall
 msgid "All"
-msgstr ""
+msgstr "Mind"
 
 #: editortoolbar_str.rsbottom
 msgid "Bottom"
@@ -33,7 +33,7 @@ msgstr "Mégsem"
 
 #: editortoolbar_str.rsclearselection
 msgid "Clear selection"
-msgstr ""
+msgstr "Kijelölés megszüntetése"
 
 #: editortoolbar_str.rscodeexplorer
 msgid "Code Explorer"
@@ -49,15 +49,15 @@ msgstr "Eszköztár beállítása"
 
 #: editortoolbar_str.rscustom
 msgid "Custom"
-msgstr ""
+msgstr "Egyéni"
 
 #: editortoolbar_str.rsdebug
 msgid "Debug"
-msgstr ""
+msgstr "Hibakeresés"
 
 #: editortoolbar_str.rsdesign
 msgid "Design"
-msgstr ""
+msgstr "Tervezés"
 
 #: editortoolbar_str.rsdesigner
 msgid "Designer"
@@ -73,19 +73,19 @@ msgstr "Szerkesztő eszköztár beállítása"
 
 #: editortoolbar_str.rshelp1
 msgid "The \"Add\" button inserts a Menu Item before the selected Item of the Toolbar."
-msgstr ""
+msgstr "A \"Hozzáadás\" gomb beszúrja a menüelemet az eszköztár kijelölt eleme elé."
 
 #: editortoolbar_str.rshelp2
 msgid "If none is selected, the Item will be appended at the end of the Toolbar."
-msgstr ""
+msgstr "Ha semmi sincs kijelölve akkor az elem az eszköztár végéhez lesz adva."
 
 #: editortoolbar_str.rshelp3
 msgid "You may rearrange Toolbar Items with \"Move Up\" and \"Move Down\" buttons."
-msgstr ""
+msgstr "Az eszköztár elemei átrendezhetők a \"Mozgatás felfelé\" és a \"Mozgatás lefelé\" gombokkal."
 
 #: editortoolbar_str.rshelp4
 msgid "Hint: to append an Item at the end, use \"Clear selection\""
-msgstr ""
+msgstr "Tipp: a \"Kijelölés megszüntetése\" után lehet egy elemet a lista végéhez adni"
 
 #: editortoolbar_str.rshint
 msgid "You may add here your favorite commands"
@@ -93,7 +93,7 @@ msgstr "Itt adhatja hozzá a kedvenc parancsait"
 
 #: editortoolbar_str.rshtml
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: editortoolbar_str.rsidemainmenu
 msgid "IDE Main Menu"
@@ -133,11 +133,11 @@ msgstr "OK"
 
 #: editortoolbar_str.rspackageeditor
 msgid "Package Editor"
-msgstr "Csomagszerkesztő"
+msgstr "Csomag-szerkesztő"
 
 #: editortoolbar_str.rspackageeditorfiles
 msgid "Package Editor Files"
-msgstr "Csomagszerkesztő fájljai"
+msgstr "Csomag-szerkesztő fájljai"
 
 #: editortoolbar_str.rsposition
 msgid "Position"
@@ -145,7 +145,7 @@ msgstr "Elhelyezés"
 
 #: editortoolbar_str.rsprofile
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: editortoolbar_str.rsremoveselected
 msgid "Remove selected item from toolbar"
@@ -157,7 +157,7 @@ msgstr "Jobbra"
 
 #: editortoolbar_str.rssourceeditor
 msgid "Source Editor"
-msgstr "Forráskódszerkesztő"
+msgstr "Forráskód-szerkesztő"
 
 #: editortoolbar_str.rssourcetab
 msgid "Source Tab"
@@ -174,4 +174,3 @@ msgstr "Felülre"
 #: editortoolbar_str.serrcouldnotfind
 msgid "Could not find <%s>"
 msgstr "Nem található: <%s>"
-

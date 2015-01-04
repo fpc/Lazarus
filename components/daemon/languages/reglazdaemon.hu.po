@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -13,12 +12,8 @@ msgstr ""
 "Language: hu\n"
 
 #: reglazdaemon.sdaemonappdescr
-msgid ""
-"Daemon (service) application is a non-gui application that runs in the "
-"background."
-msgstr ""
-"A démon (szolgáltatás) egy grafikus felület nélküli alkalmazás, mely a "
-"háttérben fut."
+msgid "Daemon (service) application is a non-gui application that runs in the background."
+msgstr "A démon (szolgáltatás) egy grafikus felület nélküli alkalmazás, mely a háttérben fut."
 
 #: reglazdaemon.sdaemonappname
 msgid "Daemon (service) application"

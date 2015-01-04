@@ -28,7 +28,6 @@ msgid "Paste Clipboard"
 msgstr "Vágólap beillesztése"
 
 #: heaptrcview.sbtnresolve
-#, fuzzy
 msgid "Resolve"
 msgstr "Megoldás"
 
@@ -46,8 +45,7 @@ msgstr "Maradjon mindig legfelül"
 
 #: heaptrcview.sfrmcap
 msgid "Leaks and Traces - HeapTrc and GDB backtrace output viewer"
-msgstr ""
-"Szivárgás és Nyomkövetés - HeapTrc és GDB visszakövetési kimenet megjelenítő"
+msgstr "Szivárgás és Nyomkövetés - HeapTrc és GDB visszakövetési kimenet megjelenítő"
 
 #: heaptrcview.sfrmselectfilewithdebuginfo
 msgid "Select File with debug info"
@@ -84,6 +82,3 @@ msgstr "Szivárgó memória mérete: %d"
 #: heaptrcview.strtotalmemalloc
 msgid "Total Mem allocated: %d"
 msgstr "Teljes lefoglalt memória: %d"
-
-#~ msgid "Find source lines for leak/stack-traces"
-#~ msgstr "Forrás sorainak megkeresése a szivárgás/verem követéséhez"

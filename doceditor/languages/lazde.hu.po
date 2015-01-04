@@ -166,9 +166,8 @@ msgid " in package "
 msgstr " a csomagban "
 
 #: lazdemsg.sfortopic
-#, fuzzy
 msgid " in topic "
-msgstr " a témában "
+msgstr " a témában: "
 
 #: lazdemsg.shideprotectedmethods
 msgid "&Hide protected methods"
@@ -334,7 +333,7 @@ msgstr "Táblázat beszúrása"
 
 #: lazdemsg.sitemscount
 msgid "Items count"
-msgstr ""
+msgstr "Elemek száma"
 
 #: lazdemsg.slazdoceditor
 msgid "Lazarus Documentation Editor"
@@ -687,8 +686,6 @@ msgid "Select output file name"
 msgstr "Kimeneti fájlnév választása"
 
 #: lazdemsg.sselectsometext
-#, fuzzy
-#| msgid "Select some text"
 msgid "Select some text."
 msgstr "Jelöljön ki szöveget!"
 

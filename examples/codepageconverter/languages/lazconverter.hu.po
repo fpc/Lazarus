@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -27,9 +26,7 @@ msgstr "Átalakítás"
 #: tlazconverterform.caption
 msgctxt "TLAZCONVERTERFORM.CAPTION"
 msgid "Codepage LazConverter for PAS, LFM, LRS, LRT & INC files v0.0.6"
-msgstr ""
-"Codepage LazConverter v0.0.6 a következő fájtípusokhoz: PAS, LFM, LRS, LRT, "
-"INC"
+msgstr "Codepage LazConverter v0.0.6 a következő fájtípusokhoz: PAS, LFM, LRS, LRT, INC"
 
 #: tlazconverterform.label1.caption
 msgid "Path to your project:"

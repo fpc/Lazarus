@@ -14,9 +14,8 @@ msgstr ""
 #: luresstrings.ctsfiledoesnotexist
 msgctxt "luresstrings.ctsfiledoesnotexist"
 msgid "file \"%s\" does not exist"
-msgstr "a(z) \"%s\" fájl  nem létezik"
+msgstr "a(z) \"%s\" fájl nem létezik"
 
 #: luresstrings.ctsfileisnotexecutable
 msgid "%s is not executable"
 msgstr "a(z) %s nem futtatható"
-

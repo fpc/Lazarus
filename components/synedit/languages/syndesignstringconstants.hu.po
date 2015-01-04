@@ -38,4 +38,3 @@ msgstr "Egérműveletek visszaállítása"
 #: syndesignstringconstants.syndsseparator
 msgid "Separator"
 msgstr "Elválasztó"
-

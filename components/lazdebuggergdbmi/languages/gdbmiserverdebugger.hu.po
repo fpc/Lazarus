@@ -14,4 +14,3 @@ msgstr ""
 #: gdbmiserverdebugger.gdbmisnoasyncmode
 msgid "GDB does not support async mode"
 msgstr "A GDB nem támogatja az aszinkron módot"
-

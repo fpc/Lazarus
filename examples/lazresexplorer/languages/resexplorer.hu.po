@@ -12,24 +12,20 @@ msgstr ""
 "Language: hu\n"
 
 #: reconstsunit.sabout
-#, fuzzy
-#| msgid "About..."
 msgid "About ..."
-msgstr "Névjegy..."
+msgstr "Névjegy ..."
 
 #: reconstsunit.sallfilesexcutablefilesexeexedlldlldll
 msgid "All files (*.*)|*.*|Excutable files (*.exe)|*.exe|DLL (*.dll)|*.dll"
-msgstr ""
+msgstr "Minden fájl (*.*)|*.*|Futtatható fájlok (*.exe)|*.exe|DLL (*.dll)|*.dll"
 
 #: reconstsunit.sallfilessharedlibsoso
 msgid "All files (*)|*|Shared libraries (*.so)|*.so"
-msgstr ""
+msgstr "Minden fájl (*)|*|Megosztott függvénytárak (*.so)|*.so"
 
 #: reconstsunit.sbuilddate
-#, fuzzy
-#| msgid "Build date : "
 msgid "Build date: "
-msgstr "Építés dátuma:"
+msgstr "Építés dátuma: "
 
 #: reconstsunit.scarbonwidgetset
 msgid "Carbon widget set"
@@ -44,10 +40,8 @@ msgid "File"
 msgstr "Fájl"
 
 #: reconstsunit.sfpcversion
-#, fuzzy
-#| msgid "FPC version : "
 msgid "FPC version: "
-msgstr "FPC változat:"
+msgstr "FPC változat: "
 
 #: reconstsunit.sfpguiwidgetset
 msgid "FpGUI widget set"
@@ -78,10 +72,8 @@ msgid "This program is free software under GNU GPL 2 license, see COPYING file"
 msgstr "Ez a program szabad szoftver GNU GPL 2 licenc alatt, lásd a COPYING fájlt!"
 
 #: reconstsunit.sopen
-#, fuzzy
-#| msgid "Open..."
 msgid "Open ..."
-msgstr "Megnyitás..."
+msgstr "Megnyitás ..."
 
 #: reconstsunit.sotherguiwidgetset
 msgid "Other gui"
@@ -97,29 +89,23 @@ msgstr "Erőforrás böngésző"
 
 #: reconstsunit.sresources
 msgid "Resources"
-msgstr ""
+msgstr "Erőforrások"
 
 #: reconstsunit.ssaveresource
-#, fuzzy
-#| msgid "Save resource..."
 msgid "Save resource ..."
-msgstr "Erőforrás mentése..."
+msgstr "Erőforrás mentése ..."
 
 #: reconstsunit.sstrings
 msgid "Strings"
 msgstr "Karakterláncok"
 
 #: reconstsunit.stargetcpu
-#, fuzzy
-#| msgid "Target CPU : "
 msgid "Target CPU: "
-msgstr "Cél CPU:"
+msgstr "Cél CPU: "
 
 #: reconstsunit.stargetos
-#, fuzzy
-#| msgid "Target OS : "
 msgid "Target OS: "
-msgstr "Cél OS:"
+msgstr "Cél OS: "
 
 #: reconstsunit.swin32_64widgetset
 msgid "Win32/Win64 widget set"

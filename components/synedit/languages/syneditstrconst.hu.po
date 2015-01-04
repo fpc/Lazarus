@@ -80,7 +80,6 @@ msgid "Comment"
 msgstr "Megjegyzés"
 
 #: syneditstrconst.syns_attrcondition
-#, fuzzy
 msgid "Condition"
 msgstr "Feltétel"
 
@@ -193,7 +192,6 @@ msgid "Invalid symbol"
 msgstr "Érvénytelen szimbólum"
 
 #: syneditstrconst.syns_attrkey
-#, fuzzy
 msgid "Key"
 msgstr "Billentyű"
 
@@ -479,11 +477,11 @@ msgstr "Nincs művelet"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
-msgstr ""
+msgstr "Kijelölés gyors beillesztése"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
-msgstr ""
+msgstr "Mód,Kezdés,Folytatás"
 
 #: syneditstrconst.syns_emcselectline
 msgid "Select Line"
@@ -491,7 +489,7 @@ msgstr "Sor kijelölése"
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
-msgstr "\"Szóközök beleszámítva\",nem,igen"
+msgstr "\"Szóközök beleszámítva\",Nem,Igen"
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"
@@ -780,4 +778,3 @@ msgstr "<nincs>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Névtelen"
-

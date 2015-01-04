@@ -133,27 +133,27 @@ msgstr "Fel"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
-msgstr ""
+msgstr "Mezők hozzáadása"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
-msgstr ""
+msgstr "DBGrid oszlop-szerkesztő"
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
-msgstr ""
+msgstr "Összes törlése"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
-msgstr ""
+msgstr "Címkék beolvasása"
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
-msgstr ""
+msgstr "Ez a művelet törli az összes oszlopot. Folytatás?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
-msgstr ""
+msgstr "Ez a művelet lecseréli az összes feliratot az adatkészletben találhatókra. Folytatás?"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -349,11 +349,11 @@ msgstr "Művelet"
 
 #: objinspstrconsts.oisactionlistcomponenteditor
 msgid "Action&List Editor ..."
-msgstr "Műveletlista szerkesztő ..."
+msgstr "Műveletlista-szerkesztő ..."
 
 #: objinspstrconsts.oisactionlisteditor
 msgid "ActionList Editor"
-msgstr "Műveletlista szerkesztő"
+msgstr "Műveletlista-szerkesztő"
 
 #: objinspstrconsts.oisaddcollectionitem
 msgid "&Add Item"
@@ -530,7 +530,7 @@ msgstr "&Súgó"
 
 #: objinspstrconsts.oisimagelistcomponenteditor
 msgid "I&mageList Editor ..."
-msgstr "Képlista szerkesztő ..."
+msgstr "Képlista-szerkesztő ..."
 
 #: objinspstrconsts.oisincompatibleidentifier
 msgid "Incompatible Identifier"
@@ -792,7 +792,7 @@ msgstr "String"
 
 #: objinspstrconsts.oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr "String szerkesztő ablak"
+msgstr "String-szerkesztő ablak"
 
 #: objinspstrconsts.oistdactcolorselect1headline
 msgid "Select &Color ..."
@@ -1149,7 +1149,7 @@ msgstr "Szűrő"
 
 #: objinspstrconsts.pefiltereditor
 msgid "Filter editor"
-msgstr "Szűrő szerkesztő"
+msgstr "Szűrő-szerkesztő"
 
 #: objinspstrconsts.pefiltername
 msgid "Filter name"
@@ -1173,7 +1173,7 @@ msgstr "Caption"
 
 #: objinspstrconsts.rscdcolumneditor
 msgid "Column Editor"
-msgstr "Oszlop szerkesztő"
+msgstr "Oszlop-szerkesztő"
 
 #: objinspstrconsts.rscdinvalidnumericvalue
 msgid "Invalid numeric Value"
@@ -1212,7 +1212,7 @@ msgstr "Width"
 
 #: objinspstrconsts.sccshceditsections
 msgid "Sections Editor ..."
-msgstr "Szakasz szerkesztő ..."
+msgstr "Szakasz-szerkesztő ..."
 
 #: objinspstrconsts.sccsiledtadd
 msgid "&Add ..."
@@ -1364,7 +1364,7 @@ msgstr "Beviteli maszk szerkesztő ..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
-msgstr "Panel szerkesztő ..."
+msgstr "Panel-szerkesztő ..."
 
 #: objinspstrconsts.sccssgedt
 msgid "Edit StringGrid ..."
@@ -1542,4 +1542,3 @@ msgstr "Fül mozgatása eggyel balra"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Fül mozgatása eggyel jobbra"
-

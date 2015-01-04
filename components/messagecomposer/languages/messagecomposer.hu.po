@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -58,7 +57,7 @@ msgstr "Párbeszéd típusa"
 
 #: messagecomposer.shelpcontext
 msgid "Help context"
-msgstr ""
+msgstr "Súgó azonosító"
 
 #: messagecomposer.shelpfilename
 msgid "Help filename"
@@ -77,23 +76,22 @@ msgid "Kind of message"
 msgstr "Az üzenet típusa"
 
 #: messagecomposer.smaskinput
-#, fuzzy
 msgid "Mask input"
-msgstr "Maszk bevitel"
+msgstr "Beviteli maszk"
 
 #: messagecomposer.smessagecomposercaption
 msgctxt "messagecomposer.smessagecomposercaption"
 msgid "Message Composer"
-msgstr "Üzenetszerkesztő"
+msgstr "Üzenet-szerkesztő"
 
 #: messagecomposer.smessagecomposermenucaption
 msgctxt "messagecomposer.smessagecomposermenucaption"
 msgid "Message Composer ..."
-msgstr "Üzenetszerkesztő ..."
+msgstr "Üzenet-szerkesztő ..."
 
 #: messagecomposer.smodalresult
 msgid "Modal result"
-msgstr ""
+msgstr "Visszatérési érték"
 
 #: messagecomposer.smsgcaption
 msgid "The message to be shown"
@@ -109,7 +107,7 @@ msgstr "A felhasználót adatbevitelre kérő szöveg"
 
 #: messagecomposer.ssourcewrapper
 msgid "Source wrapper"
-msgstr ""
+msgstr "Forrás kialakítása"
 
 #: messagecomposer.svaluevar
 msgid "Value (var)"

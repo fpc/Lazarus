@@ -233,7 +233,7 @@ msgstr "jobbra"
 
 #: anchordockstr.adrssavelayoutonclose
 msgid "Save layout on close"
-msgstr ""
+msgstr "Elrendezés mentése kilépéskor"
 
 #: anchordockstr.adrssavewindowlayoutasdefault
 msgid "Save window layout as default"
@@ -294,4 +294,3 @@ msgstr "A lehorgonyzás használatához először el kell távolítani ezt: %s"
 #: anchordockstr.adrsundock
 msgid "Undock"
 msgstr "Rögzítés feloldása"
-

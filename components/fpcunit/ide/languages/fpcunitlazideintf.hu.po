@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -17,26 +16,16 @@ msgid "FPCUnit Console Test Application"
 msgstr "FPCUnit Parancssoros Teszt Alkalmazás"
 
 #: fpcunitlazideintf.sfpcunconsoletestdesc
-msgid ""
-"FPCUnit Console Test Application%sAn application to run FPCUnit test cases "
-"in console mode.%sThe application source is automatically maintained by "
-"Lazarus."
-msgstr ""
-"FPCUnit Parancssoros Teszt Alkalmazás%sEgy alkalmazás FPCUnit tesztek "
-"futtatására parancssoros módban.%sAz alkalmazás forráskódját a Lazarus "
-"automatikusan karbantartja."
+msgid "FPCUnit Console Test Application%sAn application to run FPCUnit test cases in console mode.%sThe application source is automatically maintained by Lazarus."
+msgstr "FPCUnit Parancssoros Teszt Alkalmazás%sEgy alkalmazás FPCUnit tesztek futtatására parancssoros módban.%sAz alkalmazás forráskódját a Lazarus automatikusan karbantartja."
 
 #: fpcunitlazideintf.sfpcuntestapp
 msgid "FPCUnit Test Application"
 msgstr "FPCUnit Teszt Alkalmazás"
 
 #: fpcunitlazideintf.sfpcuntestappdesc
-msgid ""
-"FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe "
-"application source is automatically maintained by Lazarus."
-msgstr ""
-"FPCUnit Teszt Alkalmazás%sEgy alkalmazás FPCUnit tesztek futtatására.%sAz "
-"alkalmazás forráskódját a Lazarus automatikusan karbantartja."
+msgid "FPCUnit Test Application%sAn application to run FPCUnit test cases.%sThe application source is automatically maintained by Lazarus."
+msgstr "FPCUnit Teszt Alkalmazás%sEgy alkalmazás FPCUnit tesztek futtatására.%sAz alkalmazás forráskódját a Lazarus automatikusan karbantartja."
 
 #: fpcunitlazideintf.sfpcuntestcase
 msgid "FPCUnit Test Case"

@@ -12,17 +12,14 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "A böngésző nem végrehajtható: \"%s\""
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "A böngésző nem található: \"%s\""
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "Hiba a végrehajtás közben: \"%s\":%s%s"
 
@@ -35,7 +32,6 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "Nincs HTML böngésző. %s Meg kell adni egyet: Eszközök -> Beállítások -> Súgó -> Súgó beállítások"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "A(z) \"%s\" súgóadatbázishoz hiányzik a \"%s\" fájl."
 
@@ -77,12 +73,10 @@ msgid "Clear"
 msgstr "Törlés"
 
 #: lclstrconsts.ifsvk_cmd
-#, fuzzy
 msgid "Cmd"
 msgstr "Cmd"
 
 #: lclstrconsts.ifsvk_control
-#, fuzzy
 msgid "Control"
 msgstr "Control"
 
@@ -179,7 +173,6 @@ msgid "Next"
 msgstr "Következő"
 
 #: lclstrconsts.ifsvk_nonconvert
-#, fuzzy
 msgid "Nonconvert"
 msgstr "Nonconvert"
 
@@ -602,15 +595,15 @@ msgstr "Zöld"
 
 #: lclstrconsts.rsgridfiledoesnotexist
 msgid "Grid file doesn't exist"
-msgstr ""
+msgstr "A táblafájl nem létezik"
 
 #: lclstrconsts.rsgridhasnocols
 msgid "Cannot insert rows into a grid when it has no columns"
-msgstr ""
+msgstr "Nem szúrhatók be sorok a rácsba ha nincsenek oszlopok"
 
 #: lclstrconsts.rsgridhasnorows
 msgid "Cannot insert columns into a grid when it has no rows"
-msgstr ""
+msgstr "Nem szúrhatók be oszlopok a rácsba ha nincsenek sorok"
 
 #: lclstrconsts.rsgridindexoutofrange
 msgid "Grid index out of range."
@@ -630,7 +623,7 @@ msgstr "Előzmények:"
 
 #: lclstrconsts.rsgtkoptionclass
 msgid "--class classname     Following Xt conventions, the class of a program is the program name with the initial character capitalized. For example, the classname for gimp is \"Gimp\". If --class is specified, the class of the program will be set to \"classname\"."
-msgstr ""
+msgstr "--class osztálynév    Az Xt szabályok követése, a program osztálya a program neve nagy kezdőbetűvel. Például a gimp osztályneve \"Gimp\". Ha a --class meg van adva akkor a program osztályneveként az \"osztálynév\" lesz beállítva."
 
 #: lclstrconsts.rsgtkoptiondebug
 msgid "--gtk-debug flags     Turn on specific Gtk+ trace/debug messages."
@@ -638,7 +631,7 @@ msgstr "--gtk-debug jelzők     Bekapcsolja a megadott Gtk+ nyomkövetési/hibak
 
 #: lclstrconsts.rsgtkoptiondisplay
 msgid "--display h:s:d       Connect to the specified X server, where \"h\" is the hostname, \"s\" is the server number (usually 0), and \"d\" is the display number (typically omitted). If --display is not specified, the DISPLAY environment variable is used."
-msgstr ""
+msgstr "--display h:s:d       Kapcsolódás az adott X kiszolgálóhoz, ahol \"h\" az állomásnév, \"s\" a kiszolgáló száma (általában 0), és \"d\" a megjelenítő száma (általában elhagyható). Ha a --display nincs megadva akkor a DISPLAY környezeti változó értéke lesz használva."
 
 #: lclstrconsts.rsgtkoptionmodule
 msgid "--gtk-module module   Load the specified module at startup."
@@ -646,7 +639,7 @@ msgstr "--gtk-module modul    Betölti a megadott modult induláskor."
 
 #: lclstrconsts.rsgtkoptionname
 msgid "--name programe       Set program name to \"progname\". If not specified, program name will be set to ParamStrUTF8(0)."
-msgstr "--name prognév       Beállítja a program nevét a \"prognév\" értékére. Ha nincs megadva, a program neve a ParamStrUTF8(0) értékére lesz beállítva."
+msgstr "--name prognév        Beállítja a program nevét a \"prognév\" értékére. Ha nincs megadva, a program neve a ParamStrUTF8(0) értékére lesz beállítva."
 
 #: lclstrconsts.rsgtkoptionnodebug
 msgid "--gtk-no-debug flags  Turn off specific Gtk+ trace/debug messages."
@@ -662,7 +655,7 @@ msgstr "--no-xshm             Letiltja az X Shared Memory Extension használatá
 
 #: lclstrconsts.rsgtkoptionsync
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
-msgstr ""
+msgstr "--sync                XSynchronize (display, True) hívás a sikeres XServer csatlakozás után. Ez könnyebbé teszi a hibakeresést az X protokoll hibák esetén, mivel az X kérések pufferelése ki lesz kapcsolva és az X hibák azonnal fogadva lesznek az X kiszolgáló által feldolgozott, hibát okozó protokoll-kérések után."
 
 #: lclstrconsts.rshelpalreadyregistered
 msgid "%s: Already registered"
@@ -685,43 +678,34 @@ msgid "Help context %s not found."
 msgstr "A(z) %s súgó témakör nem található"
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "A(z) %s súgó témakör nem található a(z) \"%s\" adatbázisban."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy
-#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %sHelp Database \"%s\" did not found a viewer for a help page of type %s"
 msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
 msgstr "A(z) \"%s\" súgó adatbázis nem talált megjelenítőt a(z) %s típusú súgó oldalhoz"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
 msgstr "A(z) \"%s\" súgó adatbázis nem található"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-#| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
 msgstr "Nem található súgó a(z) \"%s\" direktívához."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-#| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr "Nem található súgó a(z) \"%s\" direktívához a(z) \"%s\" adatbázisban."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "A(z) \"%s\" súgó kulcsszó nem található."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "A(z) \"%s\" súgó kulcsszó nem található a(z) \"%s\" adatbázisban."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "A(z) \"%s\" elemhez nincs súgó adatbázis"
 
@@ -746,7 +730,6 @@ msgid "Help Selector Error"
 msgstr "Súgó kiválasztó hiba"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "Nincs megjelenítő a(z) \"%s\" típusú súgóhoz."
 
@@ -1081,7 +1064,7 @@ msgstr "-dograb (csak X11 alatt), a hibakeresőben történő futtatás akaratla
 
 #: lclstrconsts.rsqtoptiongraphicsstyle
 msgid "-graphicssystem param, sets the backend to be used for on-screen widgets and QPixmaps. Available options are native, raster and opengl. OpenGL is still unstable."
-msgstr ""
+msgstr "-graphicssystem param, megadja a háttérfolyamatot az ablakelemek és a QPixmap-ok megjelenítéséhez. Elérhető lehetőségek: native, raster, opengl. Az OpenGL még nem stabil."
 
 #: lclstrconsts.rsqtoptionnograb
 msgid "-nograb, tells Qt that it must never grab the mouse or the keyboard. Need QT_DEBUG."
@@ -1097,11 +1080,11 @@ msgstr "-session munkamenet, visszaállítja az alkalmazást egy korábbi munkam
 
 #: lclstrconsts.rsqtoptionstyle
 msgid "-style style or -style=style, sets the application GUI style. Possible values are motif, windows, and platinum. If you compiled Qt with additional styles or have additional styles as plugins these will be available to the -style  command line option. NOTE: Not all styles are available on all platforms. If style param does not exist Qt will start an application with default common style (windows)."
-msgstr ""
+msgstr "-style stílus vagy -style=stílus, megadja az alkalmazás grafikus felületének stílusát. Az elérhető értékek: motif, windows, és platinum. Ha a Qt további stílusokkal lett fordítva vagy bővítményként elérhetők további stílusok akkor azok is használhatók a -style parancssori paraméterben. MEGJEGYZÉS: Nem minden stílus érhető el minden platformon. Ha megadott stílus nem létezik akkor a Qt az alapértelmezett stílussal (windows) indítja az alkalmazást."
 
 #: lclstrconsts.rsqtoptionstylesheet
 msgid "-stylesheet stylesheet or -stylesheet=stylesheet, sets the application Style Sheet. The value must be a path to a file that contains the Style Sheet. Note: Relative URLs in the Style Sheet file are relative to the Style Sheet file's path."
-msgstr ""
+msgstr "-stylesheet stíluslap vagy -stylesheet=stíluslap, megadja az alkalmazás stíluslapját. Az érték egy stíluslapot tartalmazó fájl útvonala kell legyen. Megjegyzés: A relatív URL-ek a stíluslap fájlban a stíluslap fájlútvonalához képest lesznek értelmezve."
 
 #: lclstrconsts.rsqtoptionsync
 msgid "-sync (only under X11), switches to synchronous mode for debugging."
@@ -1109,7 +1092,7 @@ msgstr "-sync (csak X11 alatt), szinkronmódba kapcsol a hibakereséshez."
 
 #: lclstrconsts.rsqtoptionwidgetcount
 msgid "-widgetcount, prints debug message at the end about number of widgets left undestroyed and maximum number of widgets existed at the same time."
-msgstr ""
+msgstr "-widgetcount, hibakeresési üzeneteket jelenít meg befejezéskor a megmaradt ablakelemek és az egy időben létezett legtöbb ablakelem számáról."
 
 #: lclstrconsts.rsqtoptionx11bgcolor
 msgid "-bg or -background color, sets the default background color and an application palette (light and dark shades are calculated)."
@@ -1145,7 +1128,7 @@ msgstr "-im, beállítja a beviteli mód kiszolgálóját (ugyanúgy mint az XMO
 
 #: lclstrconsts.rsqtoptionx11inputstyle
 msgid "-inputstyle, defines how the input is inserted into the given widget, e.g. onTheSpot makes the input appear directly in the widget, while overTheSpot makes the input appear in a box floating over the widget and is not inserted until the editing is done."
-msgstr ""
+msgstr "-inputstyle, meghatározza a bevitel beszúrásának módját az adott ablakelembe, pl.: onTheSpot hatására a bevitel közvetlenül az ablakelemben jelenik meg, az overTheSpot hatására pedig a bevitel egy lebegő dobozban jelenik meg az ablakelem fölött és csak a szerkesztés befejezésekor lesz beszúrva."
 
 #: lclstrconsts.rsqtoptionx11name
 msgid "-name name, sets the application name."
@@ -1153,7 +1136,7 @@ msgstr "-name név, beállítja az alkalmazás nevét."
 
 #: lclstrconsts.rsqtoptionx11ncols
 msgid "-ncols count, limits the number of colors allocated in the color cube on an 8-bit display, if the application is using the QApplication::ManyColor color specification. If count is 216 then a 6x6x6 color cube is used (i.e. 6 levels of red, 6 of green, and 6 of blue); for other values, a cube approximately proportional to a 2x3x1 cube is used."
-msgstr ""
+msgstr "-ncols szám, korlátozza a színek számát a színkockában 8-bites megjelenítőn, ha az alkalmazás használja a QApplication::ManyColor színleírást. Ha a szám 216 akkor egy 6x6x6-os színkocka lesz használva (6 piros, 6 zöld és 6 kék szinttel); más értékek esetén egy körülbelül 2x3x1 arányú kocka lesz."
 
 #: lclstrconsts.rsqtoptionx11title
 msgid "-title title, sets the application title."
@@ -1164,7 +1147,6 @@ msgid "-visual TrueColor, forces the application to use a TrueColor visual on an
 msgstr "-visual TrueColor, az alkalmazást TrueColor megjelenítés használatára kényszeríti 8-bites megjelenítőn."
 
 #: lclstrconsts.rsrasterimageendupdate
-#, fuzzy
 msgid "Endupdate while no update in progress"
 msgstr "Endupdate esemény miközben nincs frissítés folyamatban"
 
@@ -1173,9 +1155,8 @@ msgid "Cannot save image while update in progress"
 msgstr "A kép mentése nem lehetséges frissítés közben"
 
 #: lclstrconsts.rsrasterimageupdateall
-#, fuzzy
 msgid "Cannot begin update all when canvas only update in progress"
-msgstr "Nem kezdhető el az összes frissítése amikor helyi frissítés van folyamatban"
+msgstr "Nem frissíthető az összes amíg egy rajzvászon frissítése folyik"
 
 #: lclstrconsts.rsredcolorcaption
 msgid "Red"
@@ -1478,7 +1459,7 @@ msgstr "Nincsenek elérhető időzítők"
 
 #: lclstrconsts.sparentrequired
 msgid "Control \"%s\" has no parent window."
-msgstr ""
+msgstr "A(z) '%s' vezérlőnek nincs szülő ablaka."
 
 #: lclstrconsts.sparexpected
 msgid "Wrong token type: %s expected"
@@ -1511,4 +1492,3 @@ msgstr "Rossz vezérjel szimbólum: %s az elvárt, de %s található"
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Rossz vezérjel típus: %s az elvárt, de %s található"
-
