@@ -1243,6 +1243,10 @@ begin
       // DebugLn('****** GDK_WINDOW_STATE FOR ' + dbgsName(TGtk3Widget(Data).LCLObject));
       // this doesn't work as expected ... must use GDK_CONFIGURE to get active status ?!?
     end;
+    35: // GDK_GRAB_BROKEN  could be broken eg. because of popupmenu
+    begin
+      DebugLn('****** GDK_GRAB_BROKEN (no problem if popupmenu is activated) ' + dbgsName(TGtk3Widget(Data).LCLObject));
+    end;
   otherwise
     DebugLn('****** GDK unhandled event type ' + dbgsName(TGtk3Widget(Data).LCLObject));
     WriteLn(event^.type_);
