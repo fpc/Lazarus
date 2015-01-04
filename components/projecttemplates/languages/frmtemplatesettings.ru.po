@@ -15,5 +15,5 @@ msgstr "&Каталог с шаблонами:"
 
 #: frmtemplatesettings.stitle
 msgid "Project templates settings"
-msgstr "Параметры шаблонов проекта"
+msgstr "Параметры шаблонов проектов"
 
