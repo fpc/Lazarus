@@ -2068,6 +2068,7 @@ function TGtk3Widget.GtkEventMouse(Sender: PGtkWidget; Event: PGdkEvent): Boolea
   cdecl;
 var
   Msg: TLMMouse;
+  MsgPopup : TLMMouse;
   MousePos: TPoint;
   MButton: guint;
 begin
@@ -2127,7 +2128,18 @@ begin
   {$ENDIF}
   NotifyApplicationUserInput(LCLObject, Msg.Msg);
   Event^.button.send_event := NO_PROPAGATION_TO_PARENT;
-  Result := DeliverMessage(Msg, True) <> 0;
+
+  Result := false;
+  if Msg.Msg = LM_RBUTTONDOWN then
+  begin
+    MsgPopup := Msg;
+    MsgPopup.Msg := LM_CONTEXTMENU;
+    MsgPopup.XPos := SmallInt(Round(Event^.button.x_root));
+    MsgPopup.YPos := SmallInt(Round(Event^.button.y_root));
+    Result := DeliverMessage(MsgPopup, True) <> 0;
+  end;
+  if not Result then
+    Result := DeliverMessage(Msg, True) <> 0;
   if Event^.type_ = GDK_BUTTON_RELEASE then
   begin
     Msg.Msg := LM_CLICKED;

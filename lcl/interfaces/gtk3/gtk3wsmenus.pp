@@ -274,7 +274,7 @@ begin
     ' IsMenuItem ',dbgs(Gtk3IsWidget(MenuItem.Widget)));
   {$ENDIF}
 
-  if (AMenuItem.GetParentMenu is TPopupMenu) then
+  if not(Assigned(AMenuItem.Parent)) and (AMenuItem.GetParentMenu is TPopupMenu) then
     ParentMenuWidget := TGtk3Menu(AMenuItem.GetParentMenu.Handle).Widget
   else
     ParentMenuWidget := MenuItem.Widget^.get_parent;
@@ -358,6 +358,9 @@ begin
   end
   else
     Result := HMENU(TGtk3MenuItem.Create(AMenuItem));
+
+  if AMenuItem.Visible then
+    gtk_widget_show(TGtk3MenuItem(Result).Widget);
 
   // create the menuitem widget (normal, check or radio)
   (*
