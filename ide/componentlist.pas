@@ -305,7 +305,7 @@ var
   Comp: TRegisteredComponent;
   ARect: TRect;
   CurIcon: TCustomBitmap;
-  Indent, IconWidth, IconHeight: Integer;
+  Indent, IconWidth, IconHeight, NodeTextHeight: Integer;
 begin
   DefaultDraw := False;
   Indent := (Sender as TTreeView).Indent;
@@ -339,6 +339,8 @@ begin
            ARect.Top+(ARect.Bottom-ARect.Top-IconHeight) div 2, CurIcon);
       ARect.Left := ARect.Left + IconWidth + 2;
     end;
+    NodeTextHeight := TextHeight(Node.Text);
+    Inc(ARect.Top, (ARect.Bottom - ARect.Top - NodeTextHeight) div 2);
     //Now we are finally in a position to draw the text.
     TextOut(ARect.Left, ARect.Top, Node.Text);
   end;
