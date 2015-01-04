@@ -40,7 +40,6 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       OnKeyDown = PagesListBoxKeyDown
       OnSelectionChange = PagesListBoxSelectionChange
       PopupMenu = PagesPopupMenu
-      ScrollWidth = 186
       TabOrder = 0
     end
     object AddPageButton: TBitBtn
