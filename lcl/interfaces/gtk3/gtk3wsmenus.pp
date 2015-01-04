@@ -360,7 +360,7 @@ begin
     Result := HMENU(TGtk3MenuItem.Create(AMenuItem));
 
   if AMenuItem.Visible then
-    gtk_widget_show(TGtk3MenuItem(Result).Widget);
+    TGtk3MenuItem(Result).show;
 
   // create the menuitem widget (normal, check or radio)
   (*
@@ -692,19 +692,19 @@ end;
 
 function gtkWSPopupDelayedClose(Data: Pointer): gboolean; cdecl;
 var
-  PopupMenu: TPopupMenu absolute data;
+  PopupMenu: TMenu absolute Data;
 begin
   Result := False;
-  if PopupMenu is TPopupMenu then
-    PopupMenu.Close;
+  if Assigned(PopupMenu) and (PopupMenu is TPopupMenu) then
+    TPopupMenu(PopupMenu).Close;
 end;
 
 procedure gtkWSPopupMenuDeactivate(widget: PGtkWidget; data: gPointer); cdecl;
 begin
   if widget = MenuWidget then
     MenuWidget := nil;
-  // if data <> nil then
-  //  g_idle_add(@gtkWSPopupDelayedClose, TGtk3Widget(data)^.LCLObject);
+  if data <> nil then
+    g_idle_add(@gtkWSPopupDelayedClose, TGtk3Menu(data).MenuObject);
 end;
 
 class function TGtk3WSPopupMenu.CreateHandle(const AMenu: TMenu): HMENU;
@@ -728,6 +728,9 @@ begin
   DebugLn('****** TGtk3WSPopupMenu.CreateHandle ******');
   {$ENDIF}
   Result := HMENU(TGtk3Menu.Create(AMenu, nil));
+  g_signal_connect_data(TGtk3Menu(Result).Widget,'deactivate',
+    TGCallback(@gtkWSPopupMenuDeactivate), TGtk3Menu(Result), nil, 0);
+
 end;
 
 class procedure TGtk3WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X,
