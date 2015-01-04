@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-12-25 02:12+0300\n"
+"PO-Revision-Date: 2015-01-04 20:34+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9253,6 +9253,10 @@ msgstr "Импортировать"
 #: lazarusidestrconsts.lisimportant
 msgid "Important"
 msgstr "Важное"
+
+#: lazarusidestrconsts.lisimportexport
+msgid "Import / Export"
+msgstr "Импорт / экспорт"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"

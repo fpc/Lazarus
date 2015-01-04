@@ -9259,6 +9259,10 @@ msgstr "Importálás"
 msgid "Important"
 msgstr "Fontos"
 
+#: lazarusidestrconsts.lisimportexport
+msgid "Import / Export"
+msgstr ""
+
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
 msgstr "Importálás fájlból"

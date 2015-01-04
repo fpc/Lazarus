@@ -152,6 +152,7 @@ begin
   AddPageButton.Caption := lisBtnDlgAdd;
   AddPageButton.LoadGlyphFromResourceName(HInstance, 'laz_add');
   RestoreButton.Caption := lisCmpRestoreDefaults;
+  ImportDividerBevel.Caption := lisImportExport;
   ImportButton.LoadGlyphFromResourceName(HInstance, 'laz_open');
   ImportButton.Caption := lisDlgImport;
   ExportButton.LoadGlyphFromResourceName(HInstance, 'laz_save');

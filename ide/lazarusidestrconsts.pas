@@ -4466,6 +4466,7 @@ resourcestring
   // components palette settings and list form
   lisCmpPages = 'Pages';
   lisCmpRestoreDefaults = '&Restore defaults';
+  lisImportExport = 'Import / Export';
   lisCmpLstComponents = 'Components';
   lisCmpLstList = 'List';
   lisCmpLstPalette = 'Palette';

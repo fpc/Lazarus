@@ -9261,6 +9261,10 @@ msgstr "Importare"
 msgid "Important"
 msgstr "Importante"
 
+#: lazarusidestrconsts.lisimportexport
+msgid "Import / Export"
+msgstr ""
+
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
 msgstr "Importare da file"

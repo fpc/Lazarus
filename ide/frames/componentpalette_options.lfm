@@ -18,7 +18,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
     Align = alLeft
     Anchors = []
     Caption = 'PagesGroupBox'
-    ClientHeight = 394
+    ClientHeight = 393
     ClientWidth = 223
     TabOrder = 0
     object PagesListBox: TListBox
@@ -27,7 +27,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideRight.Control = PageMoveUpBtn
       AnchorSideBottom.Control = AddPageButton
       Left = 1
-      Height = 271
+      Height = 284
       Top = 0
       Width = 188
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -42,16 +42,15 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       PopupMenu = PagesPopupMenu
       ScrollWidth = 186
       TabOrder = 0
-      TopIndex = -1
     end
     object AddPageButton: TBitBtn
       AnchorSideLeft.Control = PagesListBox
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Control = ImportDividerBevel
       Left = 1
-      Height = 27
-      Top = 277
-      Width = 46
+      Height = 23
+      Top = 290
+      Width = 60
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Top = 6
@@ -65,10 +64,10 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = AddPageButton
       AnchorSideBottom.Side = asrBottom
-      Left = 56
-      Height = 27
-      Top = 277
-      Width = 99
+      Left = 70
+      Height = 23
+      Top = 290
+      Width = 101
       AutoSize = True
       BorderSpacing.Left = 9
       BorderSpacing.Bottom = 6
@@ -113,8 +112,8 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = ImportButton
       Left = 1
-      Height = 15
-      Top = 310
+      Height = 13
+      Top = 319
       Width = 222
       Caption = 'Import / Export'
       Anchors = [akLeft, akRight, akBottom]
@@ -126,10 +125,10 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = RecentLabel
       AnchorSideTop.Side = asrCenter
-      Left = 122
+      Left = 128
       Height = 25
       Hint = 'Recent files'
-      Top = 329
+      Top = 334
       Width = 35
       BorderSpacing.Around = 6
       Caption = '>>'
@@ -143,10 +142,10 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = ImportButton
       AnchorSideTop.Side = asrCenter
-      Left = 76
-      Height = 15
-      Top = 334
-      Width = 40
+      Left = 88
+      Height = 13
+      Top = 340
+      Width = 34
       BorderSpacing.Left = 14
       Caption = 'Recent'
       ParentColor = False
@@ -157,9 +156,9 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideBottom.Control = ExportButton
       Left = 1
-      Height = 27
-      Top = 328
-      Width = 61
+      Height = 23
+      Top = 335
+      Width = 73
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Top = 3
@@ -175,9 +174,9 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Control = PagesGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 1
-      Height = 27
-      Top = 361
-      Width = 61
+      Height = 23
+      Top = 364
+      Width = 73
       Anchors = [akLeft, akBottom]
       AutoSize = True
       BorderSpacing.Left = 1
@@ -196,7 +195,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
     Align = alClient
     Anchors = []
     Caption = 'ComponentsGroupBox'
-    ClientHeight = 394
+    ClientHeight = 393
     ClientWidth = 275
     TabOrder = 1
     object ComponentsListView: TListView
@@ -206,7 +205,7 @@ object CompPaletteOptionsFrame: TCompPaletteOptionsFrame
       AnchorSideBottom.Control = ComponentsGroupBox
       AnchorSideBottom.Side = asrBottom
       Left = 1
-      Height = 392
+      Height = 391
       Top = 1
       Width = 240
       Anchors = [akTop, akLeft, akRight, akBottom]
