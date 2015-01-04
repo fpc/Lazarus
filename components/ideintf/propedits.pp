@@ -447,8 +447,6 @@ type
     Default property editor for all boolean properties }
 
   TBoolPropertyEditor = class(TEnumPropertyEditor)
-  private
-    fUseCheckbox: Boolean;
   public
     function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -3227,7 +3225,7 @@ begin
     Result := 'False'
   else
     Result := 'True';
-  if fUseCheckbox then
+  if FPropertyHook.GetCheckboxForBoolean then
     Result := '(' + Result + ')';
 end;
 
@@ -3265,8 +3263,7 @@ var
   TopMargin: Integer;
 begin
   BRect := ARect;
-  fUseCheckbox := FPropertyHook.GetCheckboxForBoolean;
-  if fUseCheckbox then
+  if FPropertyHook.GetCheckboxForBoolean then
   begin
     // Draw the box using theme services.
     if GetOrdValue <> 0 then

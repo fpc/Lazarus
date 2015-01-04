@@ -1704,7 +1704,7 @@ begin
       ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
       ValueComboBox.Enabled:=not NewRow.IsReadOnly;
       // Do not fill the items here, because it can be very slow.
-      // Just fill in some values and update the values, before the combobox popups
+      // Just fill in some values and update the values before the combobox popups
       ValueComboBox.Items.Text:=NewValue;
       Exclude(FStates,pgsGetComboItemsCalled);
       SetIdleEvent(true);
