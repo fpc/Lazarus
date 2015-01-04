@@ -8,7 +8,7 @@ object MemoForm: TMemoForm
   ClientWidth = 365
   Constraints.MinHeight = 230
   Constraints.MinWidth = 365
-  Position = poMainFormCenter
+  Position = poScreenCenter
   LCLVersion = '1.3'
   object BitBtn1: TBitBtn
     AnchorSideLeft.Control = MsgMemo
