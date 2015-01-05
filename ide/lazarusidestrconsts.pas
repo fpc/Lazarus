@@ -2584,6 +2584,7 @@ resourcestring
   uemMoveToOtherWindowNew = 'New Window';
   uemFindInOtherWindow = 'Find in other Window';
   uemCopyFilename = 'Copy Filename';
+  lisCopyFilename = 'Copy Filename %s';
   uemGotoBookmark = '&Goto Bookmark';
   uemSetFreeBookmark = 'Set a Free Bookmark';
   uemNextBookmark = 'Goto Next Bookmark';

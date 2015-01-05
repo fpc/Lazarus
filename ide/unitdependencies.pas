@@ -149,6 +149,7 @@ type
     AllUnitsShowGroupNodesSpeedButton: TSpeedButton;
     AllUnitsTreeView: TTreeView; // Node.Data is TUDNode
     MainPageControl: TPageControl;
+    UnitsTVOpenFileMenuItem: TMenuItem;
     RefreshButton: TButton;
     StatsLabel: TLabel;
     StatusPanel: TPanel;
@@ -212,6 +213,7 @@ type
     procedure UnitsTVCollapseAllMenuItemClick(Sender: TObject);
     procedure UnitsTVCopyFilenameMenuItemClick(Sender: TObject);
     procedure UnitsTVExpandAllMenuItemClick(Sender: TObject);
+    procedure UnitsTVOpenFileMenuItemClick(Sender: TObject);
     procedure UnitsTVPopupMenuPopup(Sender: TObject);
     procedure UnitsTVUnusedUnitsMenuItemClick(Sender: TObject);
   private
@@ -243,6 +245,7 @@ type
     procedure CreateTVNodes(TV: TTreeView;
       ParentTVNode: TTreeNode; ParentUDNode: TUDNode; Expand: boolean);
     procedure FreeUsesGraph;
+    function GetPopupTV_UDNode(out UDNode: TUDNode): boolean;
     procedure SelectNextSearchTV(TV: TTreeView; StartTVNode: TTreeNode;
       SearchNext, SkipStart: boolean);
     function FindNextTVNode(StartNode: TTreeNode;
@@ -931,14 +934,10 @@ end;
 
 procedure TUnitDependenciesWindow.UnitsTVCopyFilenameMenuItemClick(Sender: TObject);
 var
-  TV: TTreeView;
-  TVNode: TTreeNode;
+  UDNode: TUDNode;
 begin
-  TV:=TTreeView(UnitsTVPopupMenu.PopupComponent);
-  if not (TV is TTreeView) then exit;
-  TVNode:=TV.Selected;
-  if (TVNode=nil) or not (TObject(TVNode.Data) is TUDNode) then exit;
-  Clipboard.AsText:=GetFilename(TUDNode(TVNode.Data));
+  if not GetPopupTV_UDNode(UDNode) then exit;
+  Clipboard.AsText:=GetFilename(UDNode);
 end;
 
 procedure TUnitDependenciesWindow.UnitsTVExpandAllMenuItemClick(Sender: TObject);
@@ -954,11 +953,21 @@ begin
   TV.EndUpdate;
 end;
 
+procedure TUnitDependenciesWindow.UnitsTVOpenFileMenuItemClick(Sender: TObject);
+var
+  UDNode: TUDNode;
+begin
+  if not GetPopupTV_UDNode(UDNode) then exit;
+  LazarusIDE.DoOpenEditorFile(GetFilename(UDNode),-1,-1,OpnFlagsPlainFile);
+end;
+
 procedure TUnitDependenciesWindow.UnitsTVPopupMenuPopup(Sender: TObject);
 var
   TV: TTreeView;
   TVNode: TTreeNode;
   UDNode: TUDNode;
+  aFilename: String;
+  ShortFilename: String;
 begin
   TV:=UnitsTVPopupMenu.PopupComponent as TTreeView;
   UnitsTVExpandAllMenuItem.Visible:=TV=AllUnitsTreeView;
@@ -966,6 +975,21 @@ begin
   if (TVNode<>nil) and (TObject(TVNode.Data) is TUDNode) then begin
     UDNode:=TUDNode(TVNode.Data);
     UnitsTVUnusedUnitsMenuItem.Enabled:=UDNode.Typ=udnUnit;
+    aFilename:=GetFilename(UDNode);
+    if aFilename<>'' then begin
+      ShortFilename:=aFilename;
+      if length(ShortFilename)>50 then
+        ShortFilename:='...'+ExtractFilename(ShortFilename);
+      UnitsTVCopyFilenameMenuItem.Enabled:=true;
+      UnitsTVCopyFilenameMenuItem.Caption:=Format(lisCopyFilename, [
+        ShortFilename]);
+      UnitsTVOpenFileMenuItem.Visible:=true;
+      UnitsTVOpenFileMenuItem.Caption:=Format(lisOpenLfm, [ShortFilename]);
+    end else begin
+      UnitsTVCopyFilenameMenuItem.Enabled:=false;
+      UnitsTVCopyFilenameMenuItem.Caption:=uemCopyFilename;
+      UnitsTVOpenFileMenuItem.Visible:=false;
+    end;
   end else
     UnitsTVUnusedUnitsMenuItem.Enabled:=false;
 end;
@@ -2013,6 +2037,22 @@ begin
   UnitsLvlGraph.Clear;
   FreeAndNil(FGroups);
   FreeAndNil(FUsesGraph);
+end;
+
+function TUnitDependenciesWindow.GetPopupTV_UDNode(out UDNode: TUDNode
+  ): boolean;
+var
+  TV: TTreeView;
+  TVNode: TTreeNode;
+begin
+  Result:=false;
+  UDNode:=nil;
+  TV:=TTreeView(UnitsTVPopupMenu.PopupComponent);
+  if not (TV is TTreeView) then exit;
+  TVNode:=TV.Selected;
+  if (TVNode=nil) or not (TObject(TVNode.Data) is TUDNode) then exit;
+  UDNode:=TUDNode(TVNode.Data);
+  Result:=true;
 end;
 
 procedure TUnitDependenciesWindow.UpdateAllUnitsTreeView;

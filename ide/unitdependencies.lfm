@@ -40,7 +40,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Left = 3
           Height = 24
           Top = 4
-          Width = 181
+          Width = 182
           BorderSpacing.Around = 2
           Caption = 'SearchCustomFilesCheckBox'
           OnChange = SearchCustomFilesCheckBoxChange
@@ -69,10 +69,10 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = ScopePanel
           AnchorSideRight.Control = SearchCustomFilesBrowseButton
-          Left = 186
+          Left = 187
           Height = 27
           Top = 3
-          Width = 374
+          Width = 373
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Around = 2
           ItemHeight = 0
@@ -87,7 +87,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           Left = 3
           Height = 24
           Top = 32
-          Width = 141
+          Width = 142
           BorderSpacing.Around = 2
           Caption = 'SearchPkgsCheckBox'
           OnChange = SearchPkgsCheckBoxChange
@@ -98,7 +98,7 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = SearchPkgsCheckBox
           AnchorSideTop.Side = asrCenter
-          Left = 161
+          Left = 162
           Height = 24
           Top = 32
           Width = 156
@@ -398,6 +398,10 @@ object UnitDependenciesWindow: TUnitDependenciesWindow
     object UnitsTVCopyFilenameMenuItem: TMenuItem
       Caption = 'UnitsTVCopyFilenameMenuItem'
       OnClick = UnitsTVCopyFilenameMenuItemClick
+    end
+    object UnitsTVOpenFileMenuItem: TMenuItem
+      Caption = 'UnitsTVOpenFileMenuItem'
+      OnClick = UnitsTVOpenFileMenuItemClick
     end
     object UnitsTVUnusedUnitsMenuItem: TMenuItem
       Caption = 'UnitsTVUnusedUnitsMenuItem'
