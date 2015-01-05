@@ -66,6 +66,7 @@
       <Unit5>
         <Filename Value="testunits.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="testunits"/>
       </Unit5>
       <Unit6>
         <Filename Value="bugs\testfileproc.pas"/>
@@ -82,10 +83,12 @@
       <Unit9>
         <Filename Value="semiauto\semiautotest.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="semiautotest"/>
       </Unit9>
       <Unit10>
         <Filename Value="semiauto\idesemiautotests.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="idesemiautotests"/>
       </Unit10>
       <Unit11>
         <Filename Value="semiauto\lclsemiautotests.pas"/>
@@ -99,6 +102,7 @@
       <Unit13>
         <Filename Value="lcltests\testpagecontrol.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestPageControl"/>
       </Unit13>
     </Units>
   </ProjectOptions>

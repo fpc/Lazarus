@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, types, math, fpcunit, Interfaces, LCLType, LCLIntf, Forms, ComCtrls,
   Controls, StdCtrls, LMessages, LCLProc, WSComCtrls, testglobals,
-  MouseInputIntf, MouseAndKeyInput;
+  MouseAndKeyInput;
 
 type
 
@@ -293,8 +293,10 @@ begin
 end;
 
 procedure TTestPageControl.CheckPaint(AName: String; APaintedPage: TTestSheet);
+{$If (not defined(LCLGTK2)) and (not defined(LCLQT))}
 var
   i: Integer;
+{$ENDIF}
 begin
   {$IfDef LCLGTK2}
   if APaintedPage <> nil then begin
@@ -314,7 +316,7 @@ end;
 
 procedure TTestPageControl.TestPageCreation;
 var
-  s1, s2, s3, s4, s5, s6, s7: TTestSheet;
+  s1, s2, s3, s4, s5, s6: TTestSheet;
   Name, Name2: String;
 begin
   {%region  NON Setting PagControl.PageIndex}
@@ -729,8 +731,7 @@ end;
 
 procedure TTestPageControl.TestTabAndClientRect;
 var
-  s0, s1, s2, s3: TTestSheet;
-  Name, Name2: String;
+  s0, s3: TTestSheet;
   PgRect, PgRectScr: TRect;
   TsRect, TsRectScr: TRect;
   T0Rect, T0RectScr: TRect;
@@ -741,8 +742,8 @@ var
 begin
   RecreateForm(True);
   s0 := CreatePage('abc', 0, []);
-  s1 := CreatePage('a', 1, []);
-  s2 := CreatePage('foo bar 123 ...', 2, []);
+  CreatePage('a', 1, []);
+  CreatePage('foo bar 123 ...', 2, []);
   PageControl.ActivePageIndex := 0;
   ResetCounts;
   ResetPaintCounts;
@@ -832,24 +833,27 @@ end;
 
 procedure TTestPageControl.TestSwitchTabByClick;
 var
-  s0, s1, s2, s3: TTestSheet;
+  s2: TTestSheet;
   Name, Name2: String;
   T0Rect, T0RectScr: TRect;
   T1Rect, T1RectScr: TRect;
   T2Rect, T2RectScr: TRect;
-  T2Recta, T2RectaScr: TRect;
   T3Rect, T3RectScr: TRect;
 begin
   RecreateForm(True);
-  s0 := CreatePage('abc', 0, []);
-  s1 := CreatePage('a', 1, []);
+  CreatePage('abc', 0, []);
+  CreatePage('a', 1, []);
   s2 := CreatePage('foo 1', 2, []);
-  s3 := CreatePage('p3', 3, []);
+  CreatePage('p3', 3, []);
 
   T0Rect := PageControl.TabRect(0);
   T1Rect := PageControl.TabRect(1);
   T2Rect := PageControl.TabRect(2);
   T3Rect := PageControl.TabRect(3);
+  T0RectScr:=Rect(0,0,0,0);
+  T1RectScr:=Rect(0,0,0,0);
+  T2RectScr:=Rect(0,0,0,0);
+  T3RectScr:=Rect(0,0,0,0);
   T0RectScr.TopLeft := PageControl.ClientToScreen(T0Rect.TopLeft);
   T1RectScr.TopLeft := PageControl.ClientToScreen(T1Rect.TopLeft);
   T2RectScr.TopLeft := PageControl.ClientToScreen(T2Rect.TopLeft);
@@ -858,6 +862,12 @@ begin
   T1RectScr.BottomRight := PageControl.ClientToScreen(T1Rect.BottomRight);
   T2RectScr.BottomRight := PageControl.ClientToScreen(T2Rect.BottomRight);
   T3RectScr.BottomRight  := PageControl.ClientToScreen(T3Rect.BottomRight);
+
+  if T0RectScr.Left<0 then ;
+  if T1RectScr.Left<0 then ;
+  if T2Rect.Left<0 then ;
+  if T2RectScr.Left<0 then ;
+  if T3RectScr.Left<0 then ;
 
   //DebugLn([  dbgs(T2Rect),' / ',  dbgs(T2RectScr),' / '    ]);
 
@@ -870,6 +880,8 @@ begin
 
   MouseInput.Click(mbLeft, [], (T2RectScr.Right+T2RectScr.Left) div 2, (T2RectScr.Bottom+T2RectScr.Top) div 2);
   Application.ProcessMessages;
+  Name:='';
+  Name2:='';
   AssertEquals(Name+Name2+'PageIndex 2',             2, PageControl.ActivePageIndex);
   AssertEquals(Name+Name2+'OnChanging',              1, FOnChangingCalled);
   AssertEquals(Name+Name2+'OnChange',                1, FOnChangeCalled);
@@ -882,16 +894,16 @@ end;
 
 procedure TTestPageControl.TestPageDestruction;
 var
-  s0, s1, s2, s3, s4: TTestSheet;
+  s0: TTestSheet;
   Name, Name2: String;
 begin
 // http://bugs.freepascal.org/view.php?id=24972
   RecreateForm(True);
   s0 := CreatePage('abc', 0, []);
-  s1 := CreatePage('a', 1, []);
-  s2 := CreatePage('foo 1', 2, []);
-  s3 := CreatePage('p3', 3, []);
-  s4 := CreatePage('p4', 4, []);
+  CreatePage('a', 1, []);
+  CreatePage('foo 1', 2, []);
+  CreatePage('p3', 3, []);
+  CreatePage('p4', 4, []);
 
   PageControl.ActivePageIndex := 3;
   ResetCounts;
@@ -902,6 +914,8 @@ begin
   s0.Free;
 
   Application.ProcessMessages;
+
+  Name2:='';
   AssertEquals(Name+Name2+'PageIndex 2',             2, PageControl.ActivePageIndex);
   //AssertEquals(Name+Name2+'OnChanging',              0, FOnChangingCalled);
   //AssertEquals(Name+Name2+'OnChange',                0, FOnChangeCalled);

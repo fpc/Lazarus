@@ -5,7 +5,7 @@ unit idesemiautotests;
 interface
 
 uses
-  Classes, SysUtils, fpcunit,
+  Classes, SysUtils,
   Interfaces, LCLType, LCLIntf,
   testglobals, semiautotest;
 
