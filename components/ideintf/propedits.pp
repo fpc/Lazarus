@@ -3266,7 +3266,9 @@ begin
   if FPropertyHook.GetCheckboxForBoolean then
   begin
     // Draw the box using theme services.
-    if GetOrdValue <> 0 then
+    if GetVisualValue = '' then
+      Check := tbCheckBoxMixedNormal
+    else if GetOrdValue <> 0 then
       Check := tbCheckBoxCheckedNormal
     else
       Check := tbCheckBoxUncheckedNormal;

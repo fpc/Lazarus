@@ -322,6 +322,7 @@ type
     procedure ClearRows;
     function GetCurrentEditValue: string;
     procedure SetActiveControl(const AControl: TWinControl);
+    procedure SetCheckboxState(NewValue: string);
     procedure SetColumn(const AValue: TOICustomPropertyGridColumn);
     procedure SetCurrentEditValue(const NewValue: string);
     procedure SetDrawHorzGridLines(const AValue: Boolean);
@@ -1370,11 +1371,13 @@ var
   prpInfo: PPropInfo;
   Editor: TPropertyEditor;
 begin
-  //debugln(['TOICustomPropertyGrid.SetRowValue A ',dbgs(FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[]),' FItemIndex=',dbgs(FItemIndex),' CanEditRowValue=',CanEditRowValue]);
+  //if FItemIndex > -1 then
+  //  debugln(['TOICustomPropertyGrid.SetRowValue A, FItemIndex=',dbgs(FItemIndex),
+  //    ', CanEditRowValue=', CanEditRowValue(CheckFocus), ', IsReadOnly=', Rows[FItemIndex].IsReadOnly]);
+
   if not CanEditRowValue(CheckFocus) or Rows[FItemIndex].IsReadOnly then exit;
 
   NewValue:=GetCurrentEditValue;
-
   CurRow:=Rows[FItemIndex];
   if length(NewValue)>CurRow.Editor.GetEditLimit then
     NewValue:=LeftStr(NewValue,CurRow.Editor.GetEditLimit);
@@ -1408,9 +1411,9 @@ begin
     {$IFNDEF DoNotCatchOIExceptions}
     try
     {$ENDIF}
-      //debugln(['TOICustomPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual]);
+      //debugln(['TOICustomPropertyGrid.SetRowValue B ClassName=',CurRow.Editor.ClassName,' Visual="',CurRow.Editor.GetVisualValue,'" NewValue="',NewValue,'" AllEqual=',CurRow.Editor.AllEqual]);
       CurRow.Editor.SetValue(NewValue);
-      //debugln(['TOICustomPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual]);
+      //debugln(['TOICustomPropertyGrid.SetRowValue C ClassName=',CurRow.Editor.ClassName,' Visual="',CurRow.Editor.GetVisualValue,'" NewValue="',NewValue,'" AllEqual=',CurRow.Editor.AllEqual]);
     {$IFNDEF DoNotCatchOIExceptions}
     except
       on E: Exception do begin
@@ -1448,7 +1451,7 @@ begin
       if OldExpanded then
         ExpandRow(FItemIndex);
     end;
-    //debugln(['TOICustomPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual=',CurRow.Editor.GetVisualValue,' NewValue=',NewValue,' AllEqual=',CurRow.Editor.AllEqual]);
+    //debugln(['TOICustomPropertyGrid.SetRowValue D ClassName=',CurRow.Editor.ClassName,' Visual="',CurRow.Editor.GetVisualValue,'" NewValue="',NewValue,'" AllEqual=',CurRow.Editor.AllEqual]);
   finally
     Exclude(FStates,pgsApplyingValue);
   end;
@@ -1636,6 +1639,17 @@ begin
   end;
 end;
 
+procedure TOICustomPropertyGrid.SetCheckboxState(NewValue: string);
+begin
+  ValueCheckBox.Caption:=NewValue;
+  if NewValue='' then
+    ValueCheckBox.State:=cbGrayed
+  else if NewValue='(True)' then
+    ValueCheckBox.State:=cbChecked
+  else
+    ValueCheckBox.State:=cbUnchecked;
+end;
+
 procedure TOICustomPropertyGrid.SetItemIndex(NewIndex:integer);
 var
   NewRow: TOIPropertyGridRow;
@@ -1688,8 +1702,7 @@ begin
     begin
       FCurrentEdit:=ValueCheckBox;
       ValueCheckBox.Enabled:=not NewRow.IsReadOnly;
-      ValueCheckBox.Caption:=NewValue;
-      ValueCheckBox.Checked:=(NewValue='(True)');
+      SetCheckboxState(NewValue);
     end
     else if paValueList in EditorAttributes then
     begin
@@ -3027,10 +3040,8 @@ begin
     if ValueComboBox.Style=csOwnerDrawVariable then
        Exclude(FStates,pgsGetComboItemsCalled);
   end
-  else if FCurrentEdit=ValueCheckBox then begin
-    ValueCheckBox.Caption:=NewValue;
-    ValueCheckBox.Checked:=NewValue='(True)';
-  end;
+  else if FCurrentEdit=ValueCheckBox then
+    SetCheckboxState(NewValue);
 end;
 
 procedure TOICustomPropertyGrid.SetDrawHorzGridLines(const AValue: Boolean);
