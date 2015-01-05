@@ -24,7 +24,7 @@
           </Target>
           <SearchPaths>
             <OtherUnitFiles Value="bugs;lcltests;codetoolstests;lazutils"/>
-            <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+            <UnitOutputDirectory Value="unitsconsole\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <Conditionals Value="if defined(EnableCTRange) then
   CustomOptions += '-dEnableCTRange';"/>
@@ -106,6 +106,7 @@
       <Unit5>
         <Filename Value="testunits.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="testunits"/>
       </Unit5>
       <Unit6>
         <Filename Value="lcltests\testpen.pas"/>
@@ -124,6 +125,7 @@
       <Unit9>
         <Filename Value="lazutils\testlazutils.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TestLazUtils"/>
       </Unit9>
       <Unit10>
         <Filename Value="codetoolstests\testctxmlfixfragments.pas"/>
@@ -136,7 +138,6 @@
       <Unit12>
         <Filename Value="codetoolstests\teststdcodetools.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestStdCodetools"/>
       </Unit12>
       <Unit13>
         <Filename Value="lazutils\testlazxml.pas"/>

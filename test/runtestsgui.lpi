@@ -46,57 +46,46 @@
       <Unit0>
         <Filename Value="runtestsgui.lpr"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="runtestsgui"/>
       </Unit0>
       <Unit1>
         <Filename Value="testlpi.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestLpi"/>
       </Unit1>
       <Unit2>
         <Filename Value="testglobals.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="testglobals"/>
       </Unit2>
       <Unit3>
         <Filename Value="bugs\bug8432.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="bug8432"/>
       </Unit3>
       <Unit4>
         <Filename Value="bugs\testfileutil.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="testfileutil"/>
       </Unit4>
       <Unit5>
         <Filename Value="testunits.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="testunits"/>
       </Unit5>
       <Unit6>
         <Filename Value="bugs\testfileproc.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="testfileproc"/>
       </Unit6>
       <Unit7>
         <Filename Value="bugtestcase.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="BugTestCase"/>
       </Unit7>
       <Unit8>
         <Filename Value="lcltests\testpen.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestPen"/>
       </Unit8>
       <Unit9>
         <Filename Value="semiauto\semiautotest.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="semiautotest"/>
       </Unit9>
       <Unit10>
         <Filename Value="semiauto\idesemiautotests.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="idesemiautotests"/>
       </Unit10>
       <Unit11>
         <Filename Value="semiauto\lclsemiautotests.pas"/>
@@ -106,12 +95,10 @@
       <Unit12>
         <Filename Value="lazutils\testlazutils.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="TestLazUtils"/>
       </Unit12>
       <Unit13>
         <Filename Value="lcltests\testpagecontrol.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="testpagecontrol"/>
       </Unit13>
     </Units>
   </ProjectOptions>
@@ -123,7 +110,7 @@
     </Target>
     <SearchPaths>
       <OtherUnitFiles Value="bugs;codetoolstests;lcltests;semiauto;lazutils"/>
-      <UnitOutputDirectory Value="units\$(TargetCPU)-$(TargetOS)"/>
+      <UnitOutputDirectory Value="unitsgui\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
@@ -135,11 +122,5 @@
         <UseHeaptrc Value="True"/>
       </Debugging>
     </Linking>
-    <Other>
-      <CompilerMessages>
-        <UseMsgFile Value="True"/>
-      </CompilerMessages>
-      <CompilerPath Value="$(CompPath)"/>
-    </Other>
   </CompilerOptions>
 </CONFIG>

@@ -1,4 +1,4 @@
-unit testpagecontrol;
+unit TestPageControl;
 
 {$mode objfpc}{$H+}
 
