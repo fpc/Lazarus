@@ -728,8 +728,33 @@ var
   s: String;
   i: Integer;
   AddEachLine: Boolean;
+  SrcTextStrings: TTextStrings;
+  SrcItem: PTextLineRange;
+  DstItem: PTextLineRange;
 begin
   if TheStrings.Count=0 then exit;
+  if FLineCount=0 then begin
+    if TheStrings is TTextStrings then begin
+      // copy Text, lineranges
+      SrcTextStrings:=TTextStrings(TheStrings);
+      FText:=SrcTextStrings.Text;
+      ClearArrays;
+      if not SrcTextStrings.FArraysValid then exit;
+      // copy line range list
+      FLineCount:=SrcTextStrings.Count;
+      FLineCapacity:=FLineCount;
+      FLineRanges:=AllocMem(FLineCount*SizeOf(TTextLineRange));
+      SrcItem:=SrcTextStrings.FLineRanges;
+      DstItem:=FLineRanges;
+      for i:=0 to FLineCount-1 do begin
+        DstItem^:=SrcItem^;
+        inc(SrcItem);
+        inc(DstItem);
+      end;
+      FArraysValid:=true;
+      exit;
+    end;
+  end;
   AddEachLine:=false;
   if FArraysValid then begin
     for i:=0 to FLineCount-1 do
