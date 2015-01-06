@@ -7053,6 +7053,10 @@ msgstr "שגיאת העתקה"
 msgid "Copy error"
 msgstr "שגיאת העתקה"
 
+#: lazarusidestrconsts.liscopyfilename
+msgid "Copy Filename %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyfilenametoclipboard
 msgid "Copy File Name to Clipboard"
 msgstr ""

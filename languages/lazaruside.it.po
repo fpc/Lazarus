@@ -6632,6 +6632,10 @@ msgstr "Errore di copia"
 msgid "Copy error"
 msgstr "Errore di copia"
 
+#: lazarusidestrconsts.liscopyfilename
+msgid "Copy Filename %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyfilenametoclipboard
 msgid "Copy File Name to Clipboard"
 msgstr "Copia il nome del file negli appunti"

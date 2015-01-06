@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-04 20:34+0300\n"
+"PO-Revision-Date: 2015-01-06 03:38+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6624,6 +6624,10 @@ msgstr "Ошибка копирования"
 #: lazarusidestrconsts.liscopyerror2
 msgid "Copy error"
 msgstr "Ошибка копирования"
+
+#: lazarusidestrconsts.liscopyfilename
+msgid "Copy Filename %s"
+msgstr "Копировать имя файла %s"
 
 #: lazarusidestrconsts.liscopyfilenametoclipboard
 msgid "Copy File Name to Clipboard"

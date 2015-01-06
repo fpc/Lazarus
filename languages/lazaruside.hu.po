@@ -6630,6 +6630,10 @@ msgstr "Hiba másolása"
 msgid "Copy error"
 msgstr "Hiba másolása"
 
+#: lazarusidestrconsts.liscopyfilename
+msgid "Copy Filename %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyfilenametoclipboard
 msgid "Copy File Name to Clipboard"
 msgstr "Fájlnév másolása a vágólapra"

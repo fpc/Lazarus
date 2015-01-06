@@ -6783,6 +6783,10 @@ msgstr "Помилка при копіюванні"
 msgid "Copy error"
 msgstr "Помилка копіювання"
 
+#: lazarusidestrconsts.liscopyfilename
+msgid "Copy Filename %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyfilenametoclipboard
 msgid "Copy File Name to Clipboard"
 msgstr ""

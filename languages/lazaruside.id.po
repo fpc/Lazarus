@@ -6909,6 +6909,10 @@ msgstr "Copy Salah"
 msgid "Copy error"
 msgstr "Copy salah"
 
+#: lazarusidestrconsts.liscopyfilename
+msgid "Copy Filename %s"
+msgstr ""
+
 #: lazarusidestrconsts.liscopyfilenametoclipboard
 msgid "Copy File Name to Clipboard"
 msgstr ""
