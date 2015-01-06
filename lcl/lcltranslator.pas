@@ -72,7 +72,7 @@ type
       PropInfo: PPropInfo; var Content: string); override;
   end;
 
-procedure SetDefaultLang(Lang: string);
+procedure SetDefaultLang(Lang: string; Dir: string = ''; ForceUpdate: boolean = true);
 
 implementation
 
@@ -82,12 +82,12 @@ uses
 type
   TPersistentAccess = class(TPersistent);
 
-function FindLocaleFileName(LCExt: string; Lang: string): string;
+function FindLocaleFileName(LCExt: string; Lang: string; Dir: string): string;
 var
   T: string;
   i: integer;
 
-  function GetLocaleFileName(const LangID, LCExt: string): string;
+  function GetLocaleFileName(const LangID, LCExt: string; Dir: string): string;
   var
     LangShortID: string;
     AppDir,LCFileName,FullLCFileName: String;
@@ -97,6 +97,14 @@ var
       AppDir := ExtractFilePath(ParamStrUTF8(0));
       LCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), LCExt);
       FullLCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangID) + LCExt;
+
+      if Dir<>'' then
+      begin
+        Result := AppDir + Dir + DirectorySeparator + LangID +
+          DirectorySeparator + LCFileName;
+        if FileExistsUTF8(Result) then
+          exit;
+      end;
 
       //ParamStrUTF8(0) is said not to work properly in linux, but I've tested it
       Result := AppDir + LangID + DirectorySeparator + LCFileName;
@@ -126,6 +134,15 @@ var
       {$ENDIF}
       //Let us search for reducted files
       LangShortID := copy(LangID, 1, 2);
+
+      if Dir<>'' then
+      begin
+        Result := AppDir + Dir + DirectorySeparator +
+          LangShortID + DirectorySeparator + LCFileName;
+        if FileExistsUTF8(Result) then
+          exit;
+      end;
+
       //At first, check all was checked
       Result := AppDir + LangShortID + DirectorySeparator + LCFileName;
       if FileExistsUTF8(Result) then
@@ -149,9 +166,17 @@ var
       //Full language in file name - this will be default for the project
       //We need more careful handling, as it MAY result in incorrect filename
       try
+        if Dir<>'' then
+        begin
+          Result := AppDir + Dir + DirectorySeparator + FullLCFileName;
+          if FileExistsUTF8(Result) then
+            exit;
+        end;
+
         Result := AppDir + FullLCFileName;
         if FileExistsUTF8(Result) then
           exit;
+
         //Common location (like in Lazarus)
         Result := AppDir + 'locale' + DirectorySeparator + FullLCFileName;
         if FileExistsUTF8(Result) then
@@ -171,6 +196,13 @@ var
       {$ENDIF}
 
       FullLCFileName := ChangeFileExt(ExtractFileName(ParamStrUTF8(0)), '.' + LangShortID) + LCExt;
+
+      if Dir<>'' then
+      begin
+        Result := AppDir + Dir + DirectorySeparator + FullLCFileName;
+        if FileExistsUTF8(Result) then
+          exit;
+      end;
 
       Result := AppDir + FullLCFileName;
       if FileExistsUTF8(Result) then
@@ -204,7 +236,7 @@ begin
   if Lang = '' then
     LCLGetLanguageIDs(Lang, T);
 
-  Result := GetLocaleFileName(Lang, LCExt);
+  Result := GetLocaleFileName(Lang, LCExt, Dir);
   if Result <> '' then
     exit;
 
@@ -417,8 +449,13 @@ begin
   end;
 end;
 
-procedure SetDefaultLang(Lang: string);
-
+procedure SetDefaultLang(Lang: string; Dir: string = ''; ForceUpdate: boolean = true);
+{ Arguments:
+  Lang - language (e.g. 'ru', 'de'); empty argument is default language.
+  Dir - custom translation files subdirectory (e.g. 'mylng'); empty argument means searching only in predefined subdirectories.
+  ForceUpdate - true means forcing immediate interface update. Only should be set to false when the procedure is
+    called from unit Initialization section. User code normally should not specify it.
+}
 var
   Dot1: integer;
   LCLPath: string;
@@ -429,7 +466,7 @@ begin
   LocalTranslator := nil;
   // search first po translation resources
   try
-     lcfn := FindLocaleFileName('.po', Lang);
+     lcfn := FindLocaleFileName('.po', Lang, Dir);
      if lcfn <> '' then
      begin
        Translations.TranslateResourceStrings(lcfn);
@@ -451,7 +488,7 @@ begin
   begin
     // try now with MO traslation resources
     try
-      lcfn := FindLocaleFileName('.mo', Lang);
+      lcfn := FindLocaleFileName('.mo', Lang, Dir);
       if lcfn <> '' then
       begin
         GetText.TranslateResourceStrings(UTF8ToSys(lcfn));
@@ -479,7 +516,7 @@ begin
 
     // Do not update the translations when this function is called from within
     // the unit initialization.
-    if (Lang<>'') then
+    if ForceUpdate=true then
     begin
       for i := 0 to Screen.CustomFormCount-1 do
         LocalTranslator.UpdateTranslation(Screen.CustomForms[i]);
