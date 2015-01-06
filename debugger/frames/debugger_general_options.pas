@@ -62,6 +62,7 @@ type
     function  GetDebuggerClass: TDebuggerClass;
     procedure SetDebuggerClass(const AClass: TDebuggerClass);
     procedure ClearDbgProperties;
+    procedure HookGetCheckboxForBoolean(var Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -254,11 +255,18 @@ begin
   FCurrentDebPropertiesList.Clear;
 end;
 
+procedure TDebuggerGeneralOptionsFrame.HookGetCheckboxForBoolean(var Value: Boolean);
+begin
+  Value := EnvironmentOptions.ObjectInspectorOptions.CheckboxForBoolean;
+end;
+
 constructor TDebuggerGeneralOptionsFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   // create the PropertyEditorHook (the interface to the properties)
   FPropertyEditorHook:=TPropertyEditorHook.Create(Self);
+  FPropertyEditorHook.AddHandlerGetCheckboxForBoolean(@HookGetCheckboxForBoolean);
+
   FCurrentDebPropertiesList := TStringList.Create;
   // create the PropertyGrid
   PropertyGrid:=TOIPropertyGrid.CreateWithParams(Self,FPropertyEditorHook
