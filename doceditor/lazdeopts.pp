@@ -142,6 +142,8 @@ procedure TranslateResStrings;
 var
   Lang, FallbackLang, S: String;
 begin
+  FallbackLang:='';
+  Lang:='';
   GetLanguageIDs(Lang,FallbackLang); // in unit gettext
   S:=AppendPathDelim(AppendPathDelim(ExtractFileDir(ParamStr(0))) + 'languages');
   TranslateUnitResourceStrings('LazDEMsg',S+'lazde.%s.po', Lang,FallbackLang);

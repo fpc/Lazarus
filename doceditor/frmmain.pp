@@ -281,9 +281,14 @@ begin
 end;
 
 procedure TMainForm.AOpenExecute(Sender: TObject);
+var
+  i: SizeInt;
 begin
   if ODMain.Execute then
-    OpenFile(ODMain.FileName);
+  begin
+    for i := 0 to ODMain.Files.Count - 1 do
+      OpenFile(ODMain.Files.Strings[i]);
+  end;
 end;
 
 procedure TMainForm.AExitExecute(Sender: TObject);
