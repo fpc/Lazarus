@@ -53,8 +53,24 @@ type
     function IndexOf(const S: string): Integer; override;
   end;
 
+  procedure Deduplicate(AStrings: TStringList);
 
 implementation
+
+procedure Deduplicate(AStrings: TStringList);
+var
+  DSL :TDictionaryStringList;
+begin
+  if AStrings.OwnsObjects then
+    raise Exception.Create('Deduplicate: OwnsObjects in AStrings is not supported.');
+  DSL := TDictionaryStringList.Create;
+  try
+    DSL.Assign(AStrings);
+    AStrings.Assign(DSL);
+  finally
+    DSL.Free;
+  end;
+end;
 
 { TDictionaryStringList }
 
