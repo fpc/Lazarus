@@ -1022,7 +1022,7 @@ msgstr "Täydennyksen ominaisuudet"
 
 #: lazarusidestrconsts.dlgcomponentundermousecursorisfirstselected
 msgid "Component under mouse cursor is first selected, then the popup menu commands work on it."
-msgstr "Hiirikursorin alla oleva komponentti valitaan ensin, sitten popup valikon komenot vaikuttavat siihen."
+msgstr "Hiirikursorin alla oleva komponentti valitaan ensin, sitten popup valikon komennot vaikuttavat siihen."
 
 #: lazarusidestrconsts.dlgconfigandtarget
 msgid "Config and Target"
@@ -2646,7 +2646,7 @@ msgstr "Sovellus"
 
 #: lazarusidestrconsts.dlgpoasinvoker
 msgid "as invoker (asInvoker)"
-msgstr ""
+msgstr "kuten käynnistäjällä (asInvoker)"
 
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "&Clear Icon"
@@ -3725,7 +3725,7 @@ msgstr "Keskeytä kaikki lataus"
 
 #: lazarusidestrconsts.lisaborted
 msgid "Aborted"
-msgstr ""
+msgstr "Keskeytetty "
 
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
@@ -3738,7 +3738,7 @@ msgstr "Keskeytä lataus kokonaan"
 #: lazarusidestrconsts.lisabout
 msgctxt "lazarusidestrconsts.lisabout"
 msgid "About"
-msgstr ""
+msgstr "Tietoja"
 
 #: lazarusidestrconsts.lisabout2
 msgid "About %s"
@@ -4033,7 +4033,7 @@ msgstr "Aina"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
-msgstr "Muunna ehdotettu tiedostonimi pieniksi kirjaimiksi"
+msgstr "Muuta ehdotettu oletusnimi pieniksi kirjaimiksi"
 
 #: lazarusidestrconsts.lisalwaysdrawselecteditemsfocused
 msgid "Always draw selected items focused"
@@ -6111,7 +6111,7 @@ msgstr "Lazaruksen asetushakemisto"
 
 #: lazarusidestrconsts.lisconfigfileofadditions
 msgid "Config file of additions:"
-msgstr ""
+msgstr "Lisäysten asetustiedosto:"
 
 #: lazarusidestrconsts.lisconfigurebuild
 msgid "Configure Build %s"
@@ -6666,7 +6666,7 @@ msgstr "\"{$R %s}\" poisto päälähdekoodista ei onnistu!"
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
-msgstr ""
+msgstr "Kääntäjän lisäasetustiedostolla on sama nimi kuin Free Pascal kääntäjän omalla tiedostolla. Sen johdosta ehkä VAIN lisäasetukset luetaan ja perusasetukset jäävät pois."
 
 #: lazarusidestrconsts.liscpopenpackage
 msgid "Open Package %s"
@@ -7588,11 +7588,11 @@ msgstr "Alas"
 
 #: lazarusidestrconsts.lisdowngrade
 msgid "Downgrade"
-msgstr ""
+msgstr "Palauta aikaisempaan"
 
 #: lazarusidestrconsts.lisdowngradeconfiguration
 msgid "Downgrade configuration"
-msgstr ""
+msgstr "Palauta asetukset aikaisempaan"
 
 #: lazarusidestrconsts.lisdoyoustillwanttocreatethenewproject
 msgid "Do you still want to create the new project?"
@@ -7612,7 +7612,7 @@ msgstr "Näytä kohdistusviivat"
 
 #: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
 msgid "Draw the selection focused, even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
-msgstr ""
+msgstr "Piirrä valinta aina fokusoituna vaikkei viesti-ikkunalla olisi fokusta. Hyödyllinen jos työpöydän teema piirtää sen vaikeasti erottuvana."
 
 #: lazarusidestrconsts.lisdsgcopycomponents
 msgid "Copy selected components to clipboard"
@@ -7803,7 +7803,7 @@ msgstr "Parametrit:"
 
 #: lazarusidestrconsts.lisedtexttoolprogramfilename
 msgid "Program Filename:"
-msgstr "Ohjelman tiedostonimi"
+msgstr "Ohjelman tiedostonimi:"
 
 #: lazarusidestrconsts.lisedtexttoolscanoutputforfreepascalcompilermessages
 msgid "Scan output for Free Pascal Compiler messages"
@@ -7993,43 +7993,43 @@ msgstr "Virhe kääntäjän tiedostonimessä:"
 
 #: lazarusidestrconsts.liserrorinthecustomcompileroptionsother
 msgid "Error in the custom compiler options (Other):"
-msgstr "Virhe "
+msgstr "Virhe mukautetuissa kääntäjän asetuksissa (Muut):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
 msgid "Error in the custom linker options (Linking / Pass options to linker):"
-msgstr ""
+msgstr "Virhe mukautetuissa linkittäjän asetuksissa (Käännös ja Linkitys / Välitä asetukset linkittäjälle):"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
 msgid "Error in the \"Debugger path addition\":"
-msgstr ""
+msgstr "Virhe \"Virheenjäljittimen polun lisäyksessä\":"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforincludefiles
 msgid "Error in the search path for \"Include files\":"
-msgstr ""
+msgstr "Virhe Include-tiedostojen hakupolussa:"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforlibraries
 msgid "Error in the search path for \"Libraries\":"
-msgstr ""
+msgstr "Virhe Kirjastojen hakupolussa:"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforobjectfiles
 msgid "Error in the search path for \"Object files\":"
-msgstr ""
+msgstr "Virhe Käännöshakemiston hakupolussa:"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforothersources
 msgid "Error in the search path for \"Other sources\":"
-msgstr ""
+msgstr "Virhe \"Muut lähdekoodit\" hakupolussa:"
 
 #: lazarusidestrconsts.liserrorinthesearchpathforotherunitfiles
 msgid "Error in the search path for \"Other unit files\":"
-msgstr ""
+msgstr "Virhe \"Muut käännösyksiköt\" hakupolussa:"
 
 #: lazarusidestrconsts.liserrorintheunitoutputdirectory
 msgid "Error in the \"unit output directory\":"
-msgstr "Virhe käännöshakemistossa:"
+msgstr "Virhe Käännöshakemistossa:"
 
 #: lazarusidestrconsts.liserrorinvalidbuildmode
 msgid "ERROR: invalid build mode \"%s\""
-msgstr ""
+msgstr "Virhe: kelvoton koontamoodi \"%s\""
 
 #: lazarusidestrconsts.liserrorloadingfile
 msgid "Error loading file"
@@ -8080,13 +8080,12 @@ msgid "Error renaming file"
 msgstr "Virhe uudelleennimettäessä tiedostoa"
 
 #: lazarusidestrconsts.liserrors
-msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
 msgstr "Virheet"
 
 #: lazarusidestrconsts.liserrors2
 msgid ", Errors: %s"
-msgstr ""
+msgstr ", Virheet: %s"
 
 #: lazarusidestrconsts.liserrorsavingto
 msgid "Error saving %s to%s%s%s%s"
@@ -8462,7 +8461,7 @@ msgstr "Tiedoston %s syntaksi on väärä."
 
 #: lazarusidestrconsts.lisfileshasregisterprocedureinpackageusessection
 msgid "Files: %s, has Register procedure: %s, in package uses section: %s"
-msgstr ""
+msgstr "Tiedostolla: %s, on Register aliohjelma: %s, paketin uses-lauseessa: %s"
 
 #: lazarusidestrconsts.lisfileshaverightencoding
 msgid "*** All found files already have the right encoding ***"
@@ -8614,7 +8613,7 @@ msgstr "Liukuluku"
 
 #: lazarusidestrconsts.lisfocushint
 msgid "Focus hint"
-msgstr ""
+msgstr "Fokusoi vihje"
 
 #: lazarusidestrconsts.lisforcerenaming
 msgid "Force renaming"
@@ -9028,7 +9027,7 @@ msgstr "IDE käännetään ja käynnistetään pakettien asennuksen/poistamisen 
 
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts, and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration, but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
-msgstr ""
+msgstr "Tervetuloa Lazarukseen.%0:sLöydetyt IDE:n asetukset kuuluvat toiselle Lazarus-asennukselle.%0:sErillisten Lazarus-asennusten ei pitäisi jakaa samoja asetuksia. Se voi johtaa ristiriitoihin eikä Lazarus-asennus enää toimi kunnolla.%0:s%0:sJos on vain yksi asennus ja Lazarus-ohjelma on kopioitu, asetukset voi huoletta päivittää.%0:s%1:s%0:s%0:sValitse:%0:s%0:s* Päivitys-info: Käytä näitä asetuksia ja päivitä ne käytettäväksi Lazaruksen kanssa jatkossa. Vanha asennus ei enää käytä sitä.%0:s* Ohita: Käytä näitä asetuksia, mutta varoita uudelleen jatkossa. Tämä voi johtaa ristiriitaan toisten asennusten kanssa.%0:s* Keskeytä: Poistu nyt. Ongelmat voi sen jälkeen ratkaista käynnistämällä Lazarus oikeiden asetusten kanssa.%0:s%0:sLisätietoa:%0:sNämä asetukset ovat: %2:s%0:sNe kuuluvat Lazarus asennukseen täällä: %3:s%0:sNykyinen IDE käynnistettiin täältä: %4:s%0:s"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 msgid "Creating Makefile for package %s"
@@ -9842,11 +9841,11 @@ msgstr "Lazarus (oletus)"
 
 #: lazarusidestrconsts.liskmmacosxapple
 msgid "Mac OS X (Apple style)"
-msgstr ""
+msgstr "Mac OS X (Applen tyyli)"
 
 #: lazarusidestrconsts.liskmmacosxlaz
 msgid "Mac OS X (Lazarus style)"
-msgstr ""
+msgstr "Mac OS X (Lazarus tyyli)"
 
 #: lazarusidestrconsts.liskmnewpackage
 msgid "New package"
@@ -13559,7 +13558,7 @@ msgstr "Paketti \"%s\" oli merkitty asennettavaksi.%sNykyinen Lazarus tukee aino
 
 #: lazarusidestrconsts.lispkgmangtheprojectrequiresthepackagebutitwasnotfound
 msgid "The project requires the package \"%s\".%sBut it was not found. See Project -> Project Inspector."
-msgstr "Sovellus tarvitsee paketin \"%s\".%sMutta sitä ei löydy (tai ei ole asennettu). Katso projektivalikko -> Projektinhallinta."
+msgstr "Sovellus tarvitsee paketin \"%s\".%sMutta sitä ei löydy (tai ei ole asennettu). Katso Projekti -> Projektinhallinta."
 
 #: lazarusidestrconsts.lispkgmangtherearetwounitswiththesamename1from2from
 msgid "There are two units with the same name:%s1. \"%s\" from %s%s2. \"%s\" from %s"
@@ -14908,7 +14907,7 @@ msgstr "Katso \"Kääntäjän viestit \" -ikkunaa"
 
 #: lazarusidestrconsts.lisseeprojectprojectinspector
 msgid "%sSee Project -> Project Inspector"
-msgstr "%sKatso projektivalikon kohtaa -> Projektinhallinta"
+msgstr "%sKatso Projekti -> Projektinhallinta"
 
 #: lazarusidestrconsts.lisselectahelpitem
 msgid "Select a help item:"
@@ -15792,27 +15791,27 @@ msgstr "Omistajan nimi on"
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheincludepathoftheidethisi
 msgid "The package %s adds the path \"%s\" to the include path of the IDE.%sThis is probably a misconfiguration of the package."
-msgstr ""
+msgstr "Paketti %s lisää polun \"%s\" include-hakupolkuun IDE:ssä.%sSyynä lienee paketin väärät asetukset."
 
 #: lazarusidestrconsts.listhepackageaddsthepathtotheunitpathoftheidethisispr
 msgid "The package %s adds the path \"%s\" to the unit path of the IDE.%sThis is probably a misconfiguration of the package."
-msgstr ""
+msgstr "Paketti %s lisää polun \"%s\" käännösyksiköiden hakupolkuun IDE:ssä.%sSyynä lienee paketin väärät asetukset."
 
 #: lazarusidestrconsts.listhepackagealreadycontainsaunitwiththisname
 msgid "The package already contains a unit with this name."
-msgstr ""
+msgstr "Paketissa on jo tämän niminen käännösyksikkö."
 
 #: lazarusidestrconsts.listhepackagecannotbeinstalledbecauseitrequireswhichi
 msgid "The package %s cannot be installed, because it requires the package \"%s\", which is a runtime only package."
-msgstr ""
+msgstr "Pakettia %s ei voi asentaa, koska se vaatii paketin \"%s\", mikä on vain ajo-paketti."
 
 #: lazarusidestrconsts.listhepackagecannotbeuninstalledbecauseitisneededbyth
 msgid "The package %s can not be uninstalled, because it is needed by the IDE itself."
-msgstr ""
+msgstr "Paketin %s asennusta ei voi poistaa, koska IDE itse tarvitsee sitä."
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
 msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
-msgstr ""
+msgstr "Paketilla ei ole \"Register\" aliohjelmaa, mikä yleensä tarkoittaa ettei se tarjoa mitään lisäyksiä IDE:een. Sen asennus luultavasti vain kasvattaa IDE:n kokoa ja voi jopa heikentää sen vakautta.%sVihje: Jos tahdot käyttää pakettia projektissa, käytä \"Lisää projektiin\" valintaa."
 
 #: lazarusidestrconsts.listhepackageisalreadyinthelist
 msgid "The package %s is already in the list"
@@ -15828,15 +15827,15 @@ msgstr "\"make\" komennon polku on väärin: \"%s\""
 
 #: lazarusidestrconsts.listheprogrammakewasnotfoundthistoolisneededtobuildla
 msgid "The program \"make\" was not found.%sThis tool is needed to build Lazarus."
-msgstr ""
+msgstr "\"make\" ohjelmaa ei löydy.%sSe tarvitaan Lazaruksen kokoamiseen."
 
 #: lazarusidestrconsts.listheprojectcompileroptionsandthedirectivesinthemain
 msgid "The project compiler options and the directives in the main source differ. For the new unit the mode and string type of the project options are used:"
-msgstr ""
+msgstr "Projektin kääntäjän asetukset ja pää-lähdekoodissa olevat ohjeet eroavat. Uudelle käännösyksikölle käytetään projektin asetusten moodia ja string-tyyppiä:"
 
 #: lazarusidestrconsts.listheprojectdoesnotusethelclunitinterfacesbutitseems
 msgid "The project does not use the LCL unit interfaces, which is required by LCLBase.%sYou will get strange linker errors if you use the LCL without interfaces."
-msgstr ""
+msgstr "Projekti ei käytä LCL \"interfaces\" käännösyksikköä, Mitä LCLBase tarvitsee.%sLinkittäjä antaa omituisia virheitä, jos LCL käytetään ilman \"interfaces\":a."
 
 #: lazarusidestrconsts.listheprojecthasnomainsourcefile
 msgid "The project has no main source file."
@@ -15884,7 +15883,7 @@ msgstr "Tämänniminen koontamoodi on jo olemaassa."
 
 #: lazarusidestrconsts.listhereisalreadyacomponentclasswiththename
 msgid "There is already a component class with the name %s."
-msgstr ""
+msgstr "Komponenttiluokka nimellä %s on jo olemassa."
 
 #: lazarusidestrconsts.listhereisalreadyacomponentwiththisname
 msgid "There is already a component with this name"
@@ -15892,15 +15891,15 @@ msgstr "Samanniminen komponentti on jo olemassa"
 
 #: lazarusidestrconsts.listhereisalreadyafilein
 msgid "There is already a file%s%s%sin %s"
-msgstr ""
+msgstr "Tiedosto%s%s%s %s:ssa on jo olemassa"
 
 #: lazarusidestrconsts.listhereisalreadyafileinoldnewcontinue
 msgid "There is already a file \"%s\" in %s%sOld: %s%sNew: %s%s%sContinue?"
-msgstr ""
+msgstr "Tiedosto \"%s\" on jo olemassa täällä: %s%sVanha: %s%sUusi: %s%s%sJatka?"
 
 #: lazarusidestrconsts.listhereisalreadyaformwiththename
 msgid "There is already a form with the name \"%s\""
-msgstr "Projektissa on jo \"%s\"-niminen lomake"
+msgstr "\"%s\"-niminen lomake on jo olemassa"
 
 #: lazarusidestrconsts.listhereisalreadyamacrowiththename
 msgid "There is already a macro with the name \"%s\"."
@@ -16887,7 +16886,7 @@ msgstr "Käytä Ansistringia"
 
 #: lazarusidestrconsts.lisusecheckboxforbooleanvalues
 msgid "Use CheckBox for Boolean values"
-msgstr "Käytä CheckBox:ia Boolean tyyppisille arvoille"
+msgstr "Käytä CheckBox:ia Boolean tyypille"
 
 #: lazarusidestrconsts.lisusecommentsincustomoptions
 msgid "Use comments in custom options"

@@ -2040,7 +2040,7 @@ resourcestring
   lisErrorInTheSearchPathForLibraries = 'Error in the search path for "Libraries":';
   lisErrorInTheSearchPathForOtherSources = 'Error in the search path for "Other sources":';
   lisErrorInTheCustomLinkerOptionsLinkingPassOptionsToL = 'Error in the '
-    +'custom linker options (Linking / Pass options to linker):';
+    +'custom linker options (Compilation and Linking / Pass options to linker):';
   lisErrorInTheCustomCompilerOptionsOther = 'Error in the custom compiler options (Other):';
   lisErrorInTheUnitOutputDirectory = 'Error in the "unit output directory":';
   lisErrorInTheCompilerFileName = 'Error in the compiler file name:';
@@ -3144,10 +3144,8 @@ resourcestring
   lisKMConvertDelphiPackageToLazarusPackage = 'Convert Delphi package to Lazarus package';
   srkmCarHelpMenu       = 'Help menu commands';
   lisKeyCatDesigner     = 'Designer commands';
-  lisKMCopySelectedComponentsToClipboard = 'Copy selected Components to '
-    +'clipboard';
-  lisKMCutSelectedComponentsToClipboard =
-    'Cut selected Components to clipboard';
+  lisKMCopySelectedComponentsToClipboard = 'Copy selected Components to clipboard';
+  lisKMCutSelectedComponentsToClipboard = 'Cut selected Components to clipboard';
   lisKMPasteComponentsFromClipboard = 'Paste Components from clipboard';
   lisKeyCatObjInspector = 'Object Inspector commands';
   lisKeyCatCustom       = 'Custom commands';
@@ -3188,7 +3186,7 @@ resourcestring
   lisConfirmation = 'Confirmation';
   lisPkgTheProjectOverridesTheOutputDirectoryOfTheFollowin = 'The project '
     +'overrides the output directory of the following packages.'
-    +'%sSee Project / Project Options / Additions and Overrides'
+    +'%sSee Project / Compiler Options / Additions and Overrides'
     +'%s%s';
   lisConfirmBuildAllProfiles = 'Lazarus will be rebuilt with the following profiles:%sContinue?';
   lisNoBuildProfilesSelected = 'No profiles are selected to be built.';
