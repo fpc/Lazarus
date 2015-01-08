@@ -53,20 +53,27 @@ type
     function IndexOf(const S: string): Integer; override;
   end;
 
-  procedure Deduplicate(AStrings: TStringList);
+function Deduplicate(AStrings: TStrings): Boolean;
 
 implementation
 
-procedure Deduplicate(AStrings: TStringList);
+{
+  Removes duplicate strings (case sensitive) from the AStrings object
+  When the AStrings contains objects, the function will return false.
+}
+function Deduplicate(AStrings: TStrings): Boolean;
 var
-  DSL :TDictionaryStringList;
+  i: Integer;
+  DSL: TDictionaryStringList;
 begin
-  if AStrings.OwnsObjects then
-    raise Exception.Create('Deduplicate: OwnsObjects in AStrings is not supported.');
+  Result := False;
+  for i := 0 to AStrings.Count - 1 do
+    if Assigned(AStrings.Objects[i]) then Exit;
   DSL := TDictionaryStringList.Create;
   try
     DSL.Assign(AStrings);
     AStrings.Assign(DSL);
+    Result := True;
   finally
     DSL.Free;
   end;
