@@ -21,6 +21,7 @@ begin
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csOpaque];
   FSimplePanel := True;
   FSizeGrip := True;
+  FUseSystemFont := True;
   FPanels := CreatePanels;
   Color := {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
   Align := alBottom;

@@ -60,6 +60,7 @@ type
   
   TStatusPanel = class(TCollectionItem)
   private
+    FBidiMode: TBiDiMode;
     FText: TCaption;
     FWidth: Integer;
     FAlignment: TAlignment;
@@ -85,6 +86,8 @@ type
   published
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property Bevel: TStatusPanelBevel read FBevel write SetBevel default pbLowered;
+    property BidiMode: TBiDiMode read FBidiMode write FBidiMode default bdLeftToRight;
+    property ParentBiDiMode: Boolean read FParentBiDiMode write FParentBiDiMode default True;
     property Style: TStatusPanelStyle read FStyle write SetStyle default psText;
     property Text: TCaption read FText write SetText;
     property Width: Integer read FWidth write SetWidth;
@@ -128,6 +131,7 @@ type
     FSimplePanel: Boolean;
     FOnDrawPanel: TDrawPanelEvent;
     FOnHint: TNotifyEvent;
+    FUseSystemFont: Boolean;
     procedure SetPanels(Value: TStatusPanels);
     procedure SetSimpleText(const Value : TCaption);
     procedure SetSimplePanel(Value : Boolean);
@@ -170,19 +174,27 @@ type
     property Anchors;
     property AutoHint: Boolean read FAutoHint write FAutoHint default false;
     property AutoSize default true;
+    property BiDiMode;
     property BorderSpacing;
+    property BorderWidth;
     property Color default {$ifdef UseCLDefault}clDefault{$else}clBtnFace{$endif};
     property Constraints;
     property DragCursor;
     property DragKind;
     property DragMode;
     property Enabled;
+    property Font;
     property Panels: TStatusPanels read FPanels write SetPanels;
+    property ParentBiDiMode;
+    property ParentColor;
+    property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property SimpleText: TCaption read FSimpleText write SetSimpleText;
     property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
     property SizeGrip: Boolean read FSizeGrip write SetSizeGrip default True;
     property ShowHint;
+    property UseSystemFont: Boolean read FUseSystemFont write FUseSystemFont default True;
     property Visible default true;
     property OnClick;
     property OnContextPopup;
