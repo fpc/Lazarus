@@ -7,8 +7,8 @@ interface
 uses
   Classes, SysUtils, LCLProc, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls, Buttons, ComCtrls, ExtDlgs, Math, LCLType, IDEOptionsIntf,
-  LazIDEIntf, IDEDialogs, Project, LazarusIDEStrConsts, EnvironmentOpts,
-  ApplicationBundle, ProjectIcon, W32Manifest, CompilerOptions;
+  LazIDEIntf, IDEDialogs, DividerBevel, Project, LazarusIDEStrConsts,
+  EnvironmentOpts, ApplicationBundle, ProjectIcon, W32Manifest, CompilerOptions;
 
 type
 
@@ -16,12 +16,14 @@ type
 
   TProjectApplicationOptionsFrame = class(TAbstractIDEOptionsEditor)
     AppSettingsGroupBox: TGroupBox;
+    CreateAppBundleButton: TBitBtn;
     DefaultIconButton: TButton;
+    WindowsDividerBevel: TDividerBevel;
+    DarwinDividerBevel: TDividerBevel;
     UIAccessCheckBox: TCheckBox;
     ExecutionLevelComboBox: TComboBox;
     DpiAwareCheckBox: TCheckBox;
     ClearIconButton: TBitBtn;
-    CreateAppBundleButton: TBitBtn;
     IconImage: TImage;
     IconLabel: TLabel;
     IconPanel: TPanel;
@@ -215,7 +217,8 @@ begin
   UseAppBundleCheckBox.Caption := dlgPOUseAppBundle;
   UseAppBundleCheckBox.Checked := False;
 
-  // manifest
+  // Windows specific, Manifest
+  WindowsDividerBevel.Caption := lisForWindows;
   UseXPManifestCheckBox.Caption := dlgPOUseManifest;
   DpiAwareCheckBox.Caption := dlgPODpiAware;
   ExecutionLevelLabel.Caption := dlgPOExecutionLevel;
@@ -223,10 +226,12 @@ begin
     ExecutionLevelComboBox.Items.Add(ExecutionLevelToCaption[ExecutionLevel]^);
   UIAccessCheckBox.Caption := dlgPOUIAccess;
 
+  // Darwin specific, Application Bundle
+  DarwinDividerBevel.Caption := lisForDarwin;
   CreateAppBundleButton.Caption := dlgPOCreateAppBundle;
   CreateAppBundleButton.LoadGlyphFromResourceName(HInstance, 'pkg_compile');
 
-  // icon
+  // Icon
   IconLabel.Caption := dlgPOIcon;
   LoadIconButton.Caption := dlgPOLoadIcon;
   DefaultIconButton.Caption := dlgPODefaultIcon;

@@ -2728,11 +2728,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
 msgid "Use Application Bundle for running and debugging (Darwin only)"
-msgstr "Käytä \"Application Bundle\" ajoon ja virheiden jäljitykseen (Darwin)"
+msgstr "Käytä \"Application Bundle\" ajoon ja virheiden jäljitykseen"
 
 #: lazarusidestrconsts.dlgpousemanifest
 msgid "Use manifest file to enable themes (Windows only)"
-msgstr "Käytä manifest-tiedostoa teemoja varten (vain Windows)"
+msgstr "Käytä manifest-tiedostoa teemoja varten"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"

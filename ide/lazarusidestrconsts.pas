@@ -2374,9 +2374,11 @@ resourcestring
   lisTheOtherSourcesContainsADirectoryWhichIsAlreadyInT = 'The "Other sources" '
     +'contains a directory which is already in the "Other unit files".%s%s';
   lisRemoveThePathsFromOtherSources = 'Remove the paths from "Other sources"';
-  dlgPOUseAppBundle = 'Use Application Bundle for running and debugging (Darwin only)';
+  lisForWindows = 'For Windows';
+  lisForDarwin = 'For Darwin';
+  dlgPOUseAppBundle = 'Use Application Bundle for running and debugging';
   dlgPOCreateAppBundle = 'Create Application Bundle';
-  dlgPOUseManifest = 'Use manifest file to enable themes (Windows only)';
+  dlgPOUseManifest = 'Use manifest file to enable themes';
   dlgPODpiAware = 'Enabled DPI Awareness (for Vista+)';
   dlgPOUIAccess = 'UI Access (uiAccess)';
   dlgPOAsInvoker = 'as invoker (asInvoker)';
