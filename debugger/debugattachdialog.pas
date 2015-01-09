@@ -52,20 +52,26 @@ implementation
 
 {$ifdef windows}
 uses
-  Windows,
-  JwaTlHelp32;
+  Windows
+  {$ifndef WIN9XPLATFORM}
+  ,JwaTlHelp32
+  {$endif};
 
 // Enumerate running processes.
 // Result must be always set: True if enumeration supported or False otherwise.
 // If AList is not nil it must be filled with TRunningProcessInfo items.
 function EnumerateProcesses(AList: TRunningProcessInfoList): boolean;
+{$ifndef WIN9XPLATFORM}
 var
   hShot: HANDLE;
   pe: tagPROCESSENTRY32W;
   item: TRunningProcessInfo;
+{$endif}
 begin
+  {$ifdef WIN9XPLATFORM}
+  Result := False;
+  {$else}
   Result := True; // we can enumerate processes
-
   if not Assigned(AList) then
     Exit;
 
@@ -84,6 +90,7 @@ begin
   finally
     CloseHandle(hShot);
   end;
+  {$endif}
 end;
 {$else}
 {$ifdef linux}
