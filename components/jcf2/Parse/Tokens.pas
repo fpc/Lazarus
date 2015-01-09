@@ -212,6 +212,10 @@ type
     { delphi 2009 }
     ttReference,
 
+    { Additional Free Pascal directives }
+    ttExperimental,
+    ttUnimplemented,
+
     { built-in constants }
     ttNil,
     ttTrue,
@@ -335,13 +339,17 @@ const
     ttReadOnly, ttWriteOnly, ttDispId,
     // hints
     ttDeprecated, ttLibrary, ttPlatform,
+    // free pascal hints
+    ttExperimental, ttUnimplemented,
+
     // Delphi.Net
     ttAdd, ttRemove
     ];
 
   ExportDirectives: TTokenTypeSet = [ttIndex, ttName];
 
-  VariableDirectives: TTokenTypeSet = [ttAbsolute, ttDeprecated, ttLibrary, ttPlatform];
+  VariableDirectives: TTokenTypeSet = [ttAbsolute, ttDeprecated, ttLibrary, ttPlatform,
+                                       ttExperimental, ttUnimplemented];
 
   ClassVisibility: TTokenTypeSet =
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated];
@@ -351,11 +359,13 @@ const
     ttVirtual, ttCdecl, ttMessage, ttName, ttRegister, ttDispId,
     ttNear, ttDynamic, ttExport, ttOverride, ttResident, ttLocal,
     ttOverload, ttReintroduce,
-    ttDeprecated, ttLibrary, ttPlatform, ttStatic, ttFinal, ttVarArgs, ttUnsafe, ttEnumerator];
+    ttDeprecated, ttLibrary, ttPlatform, ttExperimental, ttUnimplemented,
+    ttStatic, ttFinal, ttVarArgs, ttUnsafe, ttEnumerator];
 
   ClassDirectives: TTokenTypeSet =
     [ttPrivate, ttProtected, ttPublic, ttPublished, ttAutomated, ttStrict];
-  HintDirectives: TTokenTypeSet  = [ttDeprecated, ttLibrary, ttPlatform];
+  HintDirectives: TTokenTypeSet  = [ttDeprecated, ttLibrary, ttPlatform,
+                                    ttExperimental, ttUnimplemented];
 
   AllDirectives: TTokenTypeSet =
   [ttAbsolute, ttExternal, ttPascal, ttSafecall,
@@ -695,6 +705,9 @@ begin
   { delphi 2009 }
     AddKeyword('reference', wtReservedWordDirective, ttReference);
 
+  { Additional Free Pascal directives }
+  AddKeyword('experimental', wtReservedWordDirective, ttExperimental);
+  AddKeyword('unimplemented', wtReservedWordDirective, ttUnimplemented);
 
   { operators that are words not symbols }
   AddKeyword('and', wtOperator, ttAnd);
