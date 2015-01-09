@@ -286,14 +286,17 @@ begin
 end;
 
 function GetShellLinkTargetAnsi(const FileName: string): string;
+{$if (fpc_fullversion >= 20604)}
 var
   ShellLinkA: IShellLinkA;
   PersistFile: IPersistFile;
   WideFileName: WideString;
   AnsiPath: array [0 .. MAX_PATH] of Char;
   WinFindData: WIN32_FIND_DATAA;
+{$endif}
 begin
   Result := FileName;
+  {$if fpc_fullversion >= 20604}
   if (LowerCase(ExtractFileExt(FileName)) = '.lnk') then
   begin
     if (CoCreateInstance(CLSID_ShellLink, nil, CLSCTX_INPROC_SERVER,
@@ -312,6 +315,7 @@ begin
       end;
     end;
   end;
+  {$endif}
 end;
 
 
