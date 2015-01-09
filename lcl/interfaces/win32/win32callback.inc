@@ -391,6 +391,50 @@ var
     needParentPaint: boolean;
     BufferWasSaved: Boolean;
     BackupBuffer: TDoubleBuffer;
+
+    RTLLayout: Boolean;
+    XFORM: TXFORM;
+    RgnData: PRgnData;
+    MirroredPaintRgn: HRGN;
+    nSize, BytesCount: DWORD;
+
+    procedure PrepareDoubleBuffer(const vDC: HDC);
+    begin
+      if CurDoubleBuffer.DC <> 0 then
+      begin
+        // we've been called from another paint handler. To prevent killing of
+        // not own DC and HBITMAP lets save then and restore on exit
+        BackupBuffer := CurDoubleBuffer;
+        FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
+        BufferWasSaved := True;
+      end
+      else
+        BufferWasSaved := False;
+      CurDoubleBuffer.DC := Windows.CreateCompatibleDC(vDC);
+
+      GetWindowSize(Window, WindowWidth, WindowHeight);
+      if (CurDoubleBuffer.BitmapWidth < WindowWidth) or (CurDoubleBuffer.BitmapHeight < WindowHeight) then
+      begin
+        if CurDoubleBuffer.Bitmap <> 0 then
+          Windows.DeleteObject(CurDoubleBuffer.Bitmap);
+        CurDoubleBuffer.BitmapWidth := WindowWidth;
+        CurDoubleBuffer.BitmapHeight := WindowHeight;
+        CurDoubleBuffer.Bitmap := Windows.CreateCompatibleBitmap(vDC, WindowWidth, WindowHeight);
+        if RTLLayout then  // change the default layout - LTR - of memory DC
+          {if (GetLayout(vDC) and LAYOUT_BITMAPORIENTATIONPRESERVED) > 0 then  // GetLayout is not in win32extra
+            SetLayout(CurDoubleBuffer.DC, LAYOUT_RTL or LAYOUT_BITMAPORIENTATIONPRESERVED)
+          else //}
+            SetLayout(CurDoubleBuffer.DC, LAYOUT_RTL);
+      end;
+      DoubleBufferBitmapOld := Windows.SelectObject(CurDoubleBuffer.DC, CurDoubleBuffer.Bitmap);
+      PaintMsg.DC := CurDoubleBuffer.DC;
+
+      {$ifdef MSG_DEBUG}
+        DebugLn(MessageStackDepth, ' *double buffering on DC: ', IntToHex(CurDoubleBuffer.DC, sizeof(HDC)*2));
+      {$endif}
+
+    end;
+
   begin
     // note: ignores the received DC
     // do not use default deliver message
@@ -425,38 +469,9 @@ var
 
     // check if double buffering is requested
     useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered or ThemeServices.ThemesEnabled);
-    if useDoubleBuffer then
-    begin
-      if CurDoubleBuffer.DC <> 0 then
-      begin
-        // we've been called from another paint handler. To prevent killing of
-        // not own DC and HBITMAP lets save then and restore on exit
-        BackupBuffer := CurDoubleBuffer;
-        FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
-        BufferWasSaved := True;
-      end
-      else
-        BufferWasSaved := False;
-      CurDoubleBuffer.DC := Windows.CreateCompatibleDC(0);
-      GetWindowSize(Window, WindowWidth, WindowHeight);
-      if (CurDoubleBuffer.BitmapWidth < WindowWidth) or (CurDoubleBuffer.BitmapHeight < WindowHeight) then
-      begin
-        DC := Windows.GetDC(0);
-        if CurDoubleBuffer.Bitmap <> 0 then
-          Windows.DeleteObject(CurDoubleBuffer.Bitmap);
-        CurDoubleBuffer.BitmapWidth := WindowWidth;
-        CurDoubleBuffer.BitmapHeight := WindowHeight;
-        CurDoubleBuffer.Bitmap := Windows.CreateCompatibleBitmap(DC, WindowWidth, WindowHeight);
-        Windows.ReleaseDC(0, DC);
-      end;
-      DoubleBufferBitmapOld := Windows.SelectObject(CurDoubleBuffer.DC, CurDoubleBuffer.Bitmap);
-      PaintMsg.DC := CurDoubleBuffer.DC;
-    end;
 
 {$ifdef MSG_DEBUG}
-    if useDoubleBuffer then
-      DebugLn(MessageStackDepth, ' *double buffering on DC: ', IntToHex(CurDoubleBuffer.DC, sizeof(HDC)*2))
-    else
+    if not useDoubleBuffer then
       DebugLn(MessageStackDepth, ' *painting, but not double buffering');
 {$endif}
 
@@ -476,6 +491,9 @@ var
           EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
         if useDoubleBuffer then
         begin
+          RTLLayout := (GetWindowLong(Window, GWL_EXSTYLE) and WS_EX_LAYOUTRTL) = WS_EX_LAYOUTRTL;
+          if useDoubleBuffer then
+            PrepareDoubleBuffer(DC);
 {$ifdef DEBUG_DOUBLEBUFFER}
           ORect.Left := 0;
           ORect.Top := 0;
@@ -492,10 +510,35 @@ var
             begin
               WindowOrg.X := 0;
               WindowOrg.Y := 0;
-              Windows.ClientToScreen(Window, WindowOrg);
+              MapWindowPoints(Window, 0, WindowOrg, 1);
+              if RTLLayout then // We need the left side of the client area in screen coordinates
+                WindowOrg.X := WindowOrg.X - lWinControl.ClientWidth;
               Windows.OffsetRgn(PaintRegion, -WindowOrg.X, -WindowOrg.Y);
             end;
-            Windows.SelectClipRgn(CurDoubleBuffer.DC, PaintRegion);
+
+            if RTLLayout then // Paint region needs to be mirrored before using it for clipping!
+            begin
+              {
+              //Method 1 - Switch Layout to LTR, Clip, Switch back to RTL
+              //Sometimes it's off by one or two pixels!!
+              SetLayout(CurDoubleBuffer.DC, LAYOUT_LTR);
+              Windows.SelectClipRgn(CurDoubleBuffer.DC, PaintRegion);
+              SetLayout(CurDoubleBuffer.DC, LAYOUT_RTL);//}
+
+              //Method 2 - Create a mirrored region based on the one we have
+              nSize := GetRegionData(PaintRegion, 0, nil);
+              RgnData := GetMem(nSize);
+              XForm.eDx:=0;   XForm.eDy:=0;
+              XForm.eM11:=-1; XForm.eM12:=0;
+              XForm.eM21:=0;  XForm.eM22:=1;
+
+              MirroredPaintRgn := ExtCreateRegion(@XForm, BytesCount, RgnData^);
+              Windows.SelectClipRgn(CurDoubleBuffer.DC, MirroredPaintRgn);
+              Windows.DeleteObject(MirroredPaintRgn);
+              Freemem(RgnData);
+            end
+            else
+              Windows.SelectClipRgn(CurDoubleBuffer.DC, PaintRegion);
           end;
 {$ifdef DEBUG_DOUBLEBUFFER}
           Windows.GetClipBox(CurDoubleBuffer.DC, ClipBox);
@@ -511,7 +554,10 @@ var
       end else begin
         DC := ControlDC;
         PaintRegion := 0;
+        if useDoubleBuffer then
+          PrepareDoubleBuffer(DC);
       end;
+
       if ParentPaintWindow <> 0 then
         GetWin32ControlPos(Window, ParentPaintWindow, parLeft, parTop);
       //Is not necessary to check the result of GetLCLClientBoundsOffset since
