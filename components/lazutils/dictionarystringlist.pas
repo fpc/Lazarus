@@ -53,22 +53,25 @@ type
     function IndexOf(const S: string): Integer; override;
   end;
 
-function Deduplicate(AStrings: TStrings): Boolean;
+function Deduplicate(AStrings: TStrings; AStringsOwnsObjects: Boolean = True): Boolean;
 
 implementation
 
 {
-  Removes duplicate strings (case sensitive) from the AStrings object
-  When the AStrings contains objects, the function will return false.
+  Removes duplicate strings (case sensitive) from AStrings.
+  When the AStrings owns and contains objects, the function will return false.
 }
-function Deduplicate(AStrings: TStrings): Boolean;
+function Deduplicate(AStrings: TStrings; AStringsOwnsObjects: Boolean): Boolean;
 var
   i: Integer;
   DSL: TDictionaryStringList;
 begin
   Result := False;
-  for i := 0 to AStrings.Count - 1 do
+  if AStringsOwnsObjects then
+  begin
+    for i := 0 to AStrings.Count - 1 do
     if Assigned(AStrings.Objects[i]) then Exit;
+  end;
   DSL := TDictionaryStringList.Create;
   try
     DSL.Assign(AStrings);
