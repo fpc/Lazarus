@@ -1078,8 +1078,8 @@ begin
   Dec(ClientRect.Bottom, 1);
   QtDC.save;
   try
-    ColorDark := ColorToRGB(cl3DDkShadow);
-    ColorLight := ColorToRGB(cl3DLight);
+    ColorDark := ColorToRGB(clBtnShadow);
+    ColorLight := ColorToRGB(clBtnHighlight);
     if grfFlags and BF_FLAT <> 0 then
       ColorLight := clSilver;
     if grfFlags and BF_MONO <> 0 then
@@ -1093,7 +1093,7 @@ begin
       InflateRect(ClientRect, -1, -1);
       if grfFlags and BF_MONO = 0 then
       begin
-        ColorLight := ColorToRGB(clBtnHiLight);
+        ColorLight := ColorToRGB(clBtnHighlight);
         ColorDark := ColorToRGB(clBtnShadow);
       end;
       if Edge and (BDR_SUNKENINNER or BDR_RAISEDINNER) <> 0 then
