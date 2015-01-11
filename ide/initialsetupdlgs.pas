@@ -1219,9 +1219,11 @@ begin
     // first start => choose first best candidate
     Candidate:=GetFirstCandidate(FCandidates[sddtLazarusSrcDir]);
     if Candidate<>nil then
+    begin
       EnvironmentOptions.LazarusDirectory:=Candidate.Caption;
-    if Candidate.Quality=sddqCompatible then
-      TranslateResourceStrings;
+      if Candidate.Quality=sddqCompatible then
+        TranslateResourceStrings;
+    end;
   end;
   LazDirComboBox.Text:=EnvironmentOptions.LazarusDirectory;
   FLastParsedLazDir:='. .';
