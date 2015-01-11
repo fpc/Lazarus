@@ -175,6 +175,7 @@ type
     class procedure SetSorted(const {%H-}ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
     class procedure SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer); override;
     class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
+    class procedure ShowHide(const AWinControl: TWinControl); override;
   end;
 
   { TGtk2WSListBox }
@@ -681,6 +682,15 @@ begin
        [GTK_STATE_NORMAL,GTK_STATE_ACTIVE,GTK_STATE_PRELIGHT,GTK_STATE_SELECTED,
         GTK_STYLE_TEXT]);
   Gtk2WidgetSet.SetWidgetFont(Widget, AFont);
+end;
+
+class procedure TGtk2WSCustomListBox.ShowHide(const AWinControl: TWinControl);
+begin
+  // issue #27276
+  if AWinControl.HandleAllocated and AWinControl.HandleObjectShouldBeVisible and
+    (TCustomListBox(AWinControl).ItemIndex = -1) then
+    SetItemIndex(TCustomListBox(AWinControl), TCustomListBox(AWinControl).ItemIndex);
+  inherited ShowHide(AWinControl);
 end;
 
 function gtk2ListBoxSelectionChangedAfter({%H-}Widget: PGtkWidget;
