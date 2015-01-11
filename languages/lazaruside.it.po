@@ -1,9 +1,9 @@
-# Giuliano Colla <giuliano.colla@fastwebnet.it>, 2014.
+# Giuliano Colla <giuliano.colla@fastwebnet.it>, 2014, 2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: lazaruside\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-12-12 13:44+0200\n"
+"PO-Revision-Date: 2015-01-12 00:43+0200\n"
 "Last-Translator: Giuliano Colla <giuliano.colla@fastwebnet.it>\n"
 "Language-Team: Lazarus\n"
 "Language: it\n"
@@ -6634,7 +6634,7 @@ msgstr "Errore di copia"
 
 #: lazarusidestrconsts.liscopyfilename
 msgid "Copy Filename %s"
-msgstr ""
+msgstr "Copia nome del file %s"
 
 #: lazarusidestrconsts.liscopyfilenametoclipboard
 msgid "Copy File Name to Clipboard"
@@ -9267,7 +9267,7 @@ msgstr "Importante"
 
 #: lazarusidestrconsts.lisimportexport
 msgid "Import / Export"
-msgstr ""
+msgstr "Importa / Esporta"
 
 #: lazarusidestrconsts.lisimportfromfile
 msgid "Import from File"
@@ -12710,7 +12710,7 @@ msgstr "Nome della pagina"
 
 #: lazarusidestrconsts.lispagenamealreadyexists
 msgid "Page name \"%s\" already exists. Not added."
-msgstr ""
+msgstr "Il nome della pagina \"%s\" esiste già. Non agggiunta."
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
@@ -15548,7 +15548,7 @@ msgstr "Successo"
 
 #: lazarusidestrconsts.lissuccessfullyexported
 msgid "Successfully exported to \"%s\"."
-msgstr ""
+msgstr "Esportato con successo in \"%s\""
 
 #: lazarusidestrconsts.lissuccessfullyexportedbuildmodes
 msgid "Successfully exported %d BuildModes to \"%s\"."
@@ -15560,7 +15560,7 @@ msgstr "Esportate con successo le opzioni compilatore in \"%s\""
 
 #: lazarusidestrconsts.lissuccessfullyimported
 msgid "Successfully imported from \"%s\"."
-msgstr ""
+msgstr "Importato con successo da \"%s\""
 
 #: lazarusidestrconsts.lissuccessfullyimportedbuildmodes
 msgid "Successfully imported %d BuildModes from \"%s\"."
@@ -19374,4 +19374,3 @@ msgstr "Sola lettura"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informazioni di versione"
-
