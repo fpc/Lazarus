@@ -3970,6 +3970,5 @@ begin
 end;
 
 initialization
-  writeln('AAA1 ',sizeof(TLazItemInfo));
 
 end.
