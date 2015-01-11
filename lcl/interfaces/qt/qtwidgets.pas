@@ -4226,7 +4226,10 @@ begin
   MousePos := QContextMenuEvent_globalPos(QContextMenuEventH(Event))^;
 
   Msg.Msg := LM_CONTEXTMENU;
-  Msg.hWnd := HWND(Self);
+  if FOwner <> nil then
+    Msg.hWnd := HWND(FOwner)
+  else
+    Msg.hWnd := HWND(Self);
   if QContextMenuEvent_reason(QContextMenuEventH(Event)) = QContextMenuEventKeyboard then
   begin
     Msg.XPos := -1;
@@ -4247,6 +4250,10 @@ begin
     if Assigned(LCLObject.PopupMenu) then
       QEvent_ignore(Event);
     SetNoMousePropagation(QWidgetH(Sender), False);
+    if (FOwner <> nil) and
+      ((FChildOfComplexWidget = ccwCustomControl) or
+      (FChildOfComplexWidget = ccwScrollingWinControl)) then
+      SetNoMousePropagation(FOwner.Widget, False);
   end;
 
   if Result and (csDesigning in LCLObject.ComponentState) then
