@@ -446,6 +446,7 @@ function TBoxAndWhiskerSeries.AddXY(
   AX, AYLoWhisker, AYLoBox, AY, AYHiBox, AYHiWhisker: Double; AXLabel: String;
   AColor: TColor): Integer;
 begin
+  if ListSource.YCount < 5 then ListSource.YCount := 5;
   Result := AddXY(
     AX, AYLoWhisker, [AYLoBox, AY, AYHiBox, AYHiWhisker], AXLabel, AColor);
 end;
