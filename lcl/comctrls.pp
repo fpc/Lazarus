@@ -3969,4 +3969,7 @@ begin
   Done := True;
 end;
 
+initialization
+  writeln('AAA1 ',sizeof(TLazItemInfo));
+
 end.

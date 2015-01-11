@@ -2,6 +2,7 @@
 <CONFIG>
   <Package Version="4">
     <Name Value="LCL"/>
+    <Type Value="RunAndDesignTime"/>
     <Author Value="Lazarus"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -118,17 +119,15 @@ end;"/>
       <Other>
         <CompilerMessages>
           <IgnoredMessages idx5044="True"/>
-          <UseMsgFile Value="True"/>
         </CompilerMessages>
         <CustomOptions Value="$(IDEBuildOptions)"/>
-        <CompilerPath Value="$(CompPath)"/>
       </Other>
     </CompilerOptions>
     <Description Value="Lazarus Component Library. Visual components with great Delphi VCL compatibility, but running natively on many platforms.
 "/>
     <License Value="modified LGPL-2
 "/>
-    <Version Major="1" Minor="3"/>
+    <Version Major="1" Minor="5"/>
     <Files Count="438">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
@@ -2176,14 +2175,13 @@ end;"/>
         <Filename Value="gtk3/gtk3wsextdlgs.pp"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="Gtk3WSExtDlgs"/>
-      </Item438>      
+      </Item438>
     </Files>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="../languages"/>
     </i18n>
-    <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
       <Item1>
         <PackageName Value="LCLBase"/>
