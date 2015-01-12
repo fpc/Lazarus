@@ -3188,7 +3188,7 @@ resourcestring
   lisConfirmation = 'Confirmation';
   lisPkgTheProjectOverridesTheOutputDirectoryOfTheFollowin = 'The project '
     +'overrides the output directory of the following packages.'
-    +'%sSee Project / Compiler Options / Additions and Overrides'
+    +'%sSee Project / Project Options (compiler options section) / Additions and Overrides'
     +'%s%s';
   lisConfirmBuildAllProfiles = 'Lazarus will be rebuilt with the following profiles:%sContinue?';
   lisNoBuildProfilesSelected = 'No profiles are selected to be built.';
