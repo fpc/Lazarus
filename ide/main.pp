@@ -7326,7 +7326,7 @@ begin
     Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
     if Result<>mrOk then exit;
 
-    // get values form directive list
+    // get values from directive list
     // build
     BuildWorkingDir:=GetIDEStringDirective(DirectiveList,
                                          IDEDirectiveNames[idedBuildWorkingDir],
