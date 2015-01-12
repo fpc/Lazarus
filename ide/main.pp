@@ -7320,6 +7320,7 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
   Result:=DoSaveProject([]);
   if Result<>mrOk then exit;
+  IDEMessagesWindow.Clear;
   DirectiveList:=TStringList.Create;
   try
     Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
