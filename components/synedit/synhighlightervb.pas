@@ -1009,7 +1009,8 @@ begin
       '(': fProcTable[I] := @SymbolProc;
       ';': fProcTable[I] := @SymbolProc;
       '/': fProcTable[I] := @SymbolProc;
-      #1..#9, #11, #12, #14..#32: fProcTable[I] := @SpaceProc;
+      '\': fProcTable[I] := @SymbolProc; // integer division
+       #1..#9, #11, #12, #14..#32: fProcTable[I] := @SpaceProc;
       '*': fProcTable[I] := @SymbolProc;
       #34: fProcTable[I] := @StringProc;
       else fProcTable[I] := @UnknownProc;
