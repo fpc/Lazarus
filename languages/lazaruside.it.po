@@ -2746,11 +2746,15 @@ msgid "UI Access (uiAccess)"
 msgstr "UI Access (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
-msgid "Use Application Bundle for running and debugging (Darwin only)"
+#, fuzzy
+#| msgid "Use Application Bundle for running and debugging (Darwin only)"
+msgid "Use Application Bundle for running and debugging"
 msgstr "Usa Application Bundle per esecuzione e debug (solo Darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (Windows only)"
+#, fuzzy
+#| msgid "Use manifest file to enable themes (Windows only)"
+msgid "Use manifest file to enable themes"
 msgstr "Usa il file manifest per abilitare i temi (solo Windows)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
@@ -8064,7 +8068,9 @@ msgid "Error in the custom compiler options (Other):"
 msgstr "Errore nelle opzioni personalizzate (Altro):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
-msgid "Error in the custom linker options (Linking / Pass options to linker):"
+#, fuzzy
+#| msgid "Error in the custom linker options (Linking / Pass options to linker):"
+msgid "Error in the custom linker options (Compilation and Linking / Pass options to linker):"
 msgstr "Errore nelle opzioni personalizzate del linker (Linking / Passare opzioni al linker):"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
@@ -8692,6 +8698,10 @@ msgstr "Fuoco sui consigli"
 msgid "Force renaming"
 msgstr "Forza rinomina"
 
+#: lazarusidestrconsts.lisfordarwin
+msgid "For Darwin"
+msgstr ""
+
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr "Per esempio mostrare in cima le variabili locali, poi i membri della classe corrente, poi gli antenati, poi l'unità corrente poi le unità usate"
@@ -8703,6 +8713,10 @@ msgstr "Form"
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "Errore di formato"
+
+#: lazarusidestrconsts.lisforwindows
+msgid "For Windows"
+msgstr ""
 
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
@@ -13901,7 +13915,9 @@ msgid "The following dependencies are not needed, because of the automatic trans
 msgstr "Le seguenti dipendenze non sono necessarie, per la transitività automatica delle dipendenze fra pacchetti."
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
-msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s"
+#, fuzzy
+#| msgid "The project overrides the output directory of the following packages.%sSee Project / Compiler Options / Additions and Overrides%s%s"
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options (compiler options section) / Additions and Overrides%s%s"
 msgstr "Il progetto scavalca la cartella di uscita dei seguenti pacchetti%sVedi Progetto / Opzioni Progetto / Aggiunte e Overrides%s%s"
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
@@ -19374,3 +19390,4 @@ msgstr "Sola lettura"
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
 msgstr "Informazioni di versione"
+

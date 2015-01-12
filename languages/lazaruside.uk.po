@@ -2779,11 +2779,15 @@ msgid "UI Access (uiAccess)"
 msgstr "Доступ UI (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
-msgid "Use Application Bundle for running and debugging (Darwin only)"
+#, fuzzy
+#| msgid "Use Application Bundle for running and debugging (Darwin only)"
+msgid "Use Application Bundle for running and debugging"
 msgstr "Використовувати Пакет Програм для запуску і налагодження (лише Darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (Windows only)"
+#, fuzzy
+#| msgid "Use manifest file to enable themes (Windows only)"
+msgid "Use manifest file to enable themes"
 msgstr "Використовувати manifest-файл для ввімкнення тем (лише Windows)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
@@ -8263,7 +8267,9 @@ msgid "Error in the custom compiler options (Other):"
 msgstr "Помилка в власних параметрах компілятора (Інше):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
-msgid "Error in the custom linker options (Linking / Pass options to linker):"
+#, fuzzy
+#| msgid "Error in the custom linker options (Linking / Pass options to linker):"
+msgid "Error in the custom linker options (Compilation and Linking / Pass options to linker):"
 msgstr "Помилка в власних параметрах компонувальника (Компонування / Передати опції до компонувальника):"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
@@ -8908,6 +8914,10 @@ msgstr "Фокусна підказка"
 msgid "Force renaming"
 msgstr "Розпочати зміну назв"
 
+#: lazarusidestrconsts.lisfordarwin
+msgid "For Darwin"
+msgstr ""
+
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr ""
@@ -8919,6 +8929,10 @@ msgstr "Форма"
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "Помилка формату"
+
+#: lazarusidestrconsts.lisforwindows
+msgid "For Windows"
+msgstr ""
 
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
@@ -14227,7 +14241,7 @@ msgid "The following dependencies are not needed, because of the automatic trans
 msgstr ""
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
-msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s"
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options (compiler options section) / Additions and Overrides%s%s"
 msgstr ""
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
