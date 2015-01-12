@@ -1549,6 +1549,7 @@ begin
   Application.AddOnEndSessionHandler(@OnApplicationEndSession);
   Screen.AddHandlerRemoveForm(@OnScreenRemoveForm);
   Screen.AddHandlerActiveFormChanged(@OnScreenChangedForm);
+  TComponentPalette(IDEComponentPalette).OnClassSelected := @ComponentPaletteClassSelected;
   SetupHints;
   SetupIDEWindowsLayout;
   RestoreIDEWindows;
@@ -3694,7 +3695,6 @@ begin
            ', HideControls=', IDEComponentPalette.HideControls]);
   {$ENDIF}
   IDEComponentPalette.Update(False);
-  TComponentPalette(IDEComponentPalette).OnClassSelected := @ComponentPaletteClassSelected;
   SetupHints;
 end;
 
