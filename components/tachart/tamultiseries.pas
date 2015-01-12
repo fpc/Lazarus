@@ -385,15 +385,22 @@ begin
   if Source.YCount < 2 then exit;
   r := 0;
   for i := 0 to Count - 1 do
-    r := Max(Source[i]^.YList[0], r);
+    if IsNaN(Source[i]^.YList[0]) then
+      continue
+    else
+      r := Max(Source[i]^.YList[0], r);
   with ParentChart.CurrentExtent do
     PrepareGraphPoints(DoubleRect(a.X - r, a.Y - r, b.X + r, b.Y + r), true);
   ADrawer.Pen := BubblePen;
   ADrawer.Brush := BubbleBrush;
   for i := 0 to High(FGraphPoints) do begin
+    if IsNaN(FGraphPoints[i].X) or IsNaN(FGraphPoints[i].Y) then
+      Continue;
     pt := ParentChart.GraphToImage(FGraphPoints[i]);
     pi := Source[i + FLoBound];
     r := pi^.YList[0];
+    if IsNaN(r) then
+      Continue;
     d.X := ParentChart.XGraphToImage(r) - ParentChart.XGraphToImage(0);
     d.Y := ParentChart.YGraphToImage(r) - ParentChart.YGraphToImage(0);
     if bocPen in OverrideColor then
@@ -415,6 +422,7 @@ begin
   for i := 0 to Count - 1 do
     with Source[i]^ do begin
       r := YList[0];
+      if IsNaN(X) or IsNaN(Y) or IsNaN(r) then continue;
       Result.a.X := Min(Result.a.X, X - r);
       Result.b.X := Max(Result.b.X, X + r);
       Result.a.Y := Min(Result.a.Y, Y - r);
