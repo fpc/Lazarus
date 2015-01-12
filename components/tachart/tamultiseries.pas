@@ -47,6 +47,8 @@ type
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
   public
+    function AddXY(AX, AY, ARadius: Double; AXLabel: String = '';
+      AColor: TColor = clTAColor): Integer; overload;
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
@@ -64,6 +66,7 @@ type
   end;
 
   TBoxAndWhiskerSeriesLegendDir = (bwlHorizontal, bwlVertical, bwlAuto);
+  TBoxAndWhiskerSeriesWidthStyle = (bwsPercent, bwsPercentMin);
 
   TBoxAndWhiskerSeries = class(TBasicPointSeries)
   strict private
@@ -74,6 +77,7 @@ type
     FMedianPen: TPen;
     FWhiskersPen: TPen;
     FWhiskersWidth: Integer;
+    FWidthStyle: TBoxAndWhiskerSeriesWidthStyle;
     procedure SetBoxBrush(AValue: TBrush);
     procedure SetBoxPen(AValue: TPen);
     procedure SetBoxWidth(AValue: Integer);
@@ -91,7 +95,6 @@ type
     procedure Assign(ASource: TPersistent); override;
     constructor Create(AOwner: TComponent); override;
     destructor  Destroy; override;
-
     procedure Draw(ADrawer: IChartDrawer); override;
     function Extent: TDoubleRect; override;
   published
@@ -102,6 +105,8 @@ type
     property LegendDirection: TBoxAndWhiskerSeriesLegendDir
       read FLegendDirection write SetLegendDirection default bwlHorizontal;
     property MedianPen: TPen read FMedianPen write SetMedianPen;
+    property WidthStyle: TBoxAndWhiskerSeriesWidthStyle
+      read FWidthStyle write FWidthStyle default bwsPercent;
     property WhiskersPen: TPen read FWhiskersPen write SetWhiskersPen;
     property WhiskersWidth: Integer
       read FWhiskersWidth write SetWhiskersWidth default DEF_WHISKERS_WIDTH;
@@ -334,7 +339,15 @@ begin
   ADrawer.Line(symbol[5].TopLeft, symbol[5].BottomRight);
 end;
 
+
 { TBubbleSeries }
+
+function TBubbleSeries.AddXY(AX, AY, ARadius: Double; AXLabel: String;
+  AColor: TColor): Integer;
+begin
+  if ListSource.YCount < 2 then ListSource.YCount := 2;
+  Result := AddXY(AX, AY, [ARadius], AXLabel, AColor);
+end;
 
 procedure TBubbleSeries.Assign(ASource: TPersistent);
 begin
@@ -519,7 +532,10 @@ var
   x, ymin, yqmin, ymed, yqmax, ymax, wb, ww, w: Double;
   i: Integer;
 begin
-  if IsEmpty or (Source.YCount < 5) then exit;
+  if IsEmpty or (Source.YCount < 5) then
+    exit;
+  if FWidthStyle = bwsPercentMin then
+    UpdateMinXRange;
 
   ext2 := ParentChart.CurrentExtent;
   ExpandRange(ext2.a.X, ext2.b.X, 1.0);
@@ -530,13 +546,18 @@ begin
   for i := FLoBound to FUpBound do begin
     x := GetGraphPointX(i);
     ymin := GetGraphPointY(i);
+    if IsNaN(x) or IsNaN(ymin) then
+      continue;
     with Source[i]^ do begin
-      yqmin := AxisToGraphY(YList[0]);
-      ymed := AxisToGraphY(YList[1]);
-      yqmax := AxisToGraphY(YList[2]);
-      ymax := AxisToGraphY(YList[3]);
+      if IsNaN(YList[0]) then continue else yqmin := AxisToGraphY(YList[0]);
+      if IsNaN(YList[1]) then continue else ymed := AxisToGraphY(YList[1]);
+      if IsNaN(YList[2]) then continue else yqmax := AxisToGraphY(YList[2]);
+      if IsNaN(YList[3]) then continue else ymax := AxisToGraphY(YList[3]);
     end;
-    w := GetXRange(x, i) * PERCENT / 2;
+    case FWidthStyle of
+      bwsPercent: w := GetXRange(x, i) * PERCENT / 2;
+      bwsPercentMin: w := FMinXRange * PERCENT / 2;
+    end;
     wb := w * BoxWidth;
     ww := w * WhiskersWidth;
 
@@ -547,7 +568,10 @@ begin
     DoLine(x - ww, ymax, x + ww, ymax);
     DoLine(x, ymax, x, yqmax);
     ADrawer.Pen := BoxPen;
-    ADrawer.Brush:= BoxBrush;
+    if Source[i]^.Color <> clTAColor then
+      ADrawer.SetBrushParams(bsSolid, Source[i]^.Color)
+    else
+      ADrawer.Brush := BoxBrush;
     DoRect(x - wb, yqmin, x + wb, yqmax);
     ADrawer.Pen := MedianPen;
     ADrawer.SetBrushParams(bsClear, clTAColor);
