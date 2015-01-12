@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-06 03:38+0300\n"
+"PO-Revision-Date: 2015-01-13 00:08+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2739,12 +2739,12 @@ msgid "UI Access (uiAccess)"
 msgstr "Доступ к интерфейсу пользователя (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
-msgid "Use Application Bundle for running and debugging (Darwin only)"
-msgstr "Использовать Application Bundle для запуска и отладки (только для Darwin)"
+msgid "Use Application Bundle for running and debugging"
+msgstr "Использовать Application Bundle для запуска и отладки"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (Windows only)"
-msgstr "Использовать manifest-файл для включения поддержки тем (только Windows)"
+msgid "Use manifest file to enable themes"
+msgstr "Использовать файл manifest для включения поддержки тем"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
@@ -8057,8 +8057,8 @@ msgid "Error in the custom compiler options (Other):"
 msgstr "Ошибка в пользовательских параметрах компилятора (вкладка \"Другие\"):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
-msgid "Error in the custom linker options (Linking / Pass options to linker):"
-msgstr "Ошибка в пользовательских параметрах компоновщика (вкладка \"Компоновка\"):"
+msgid "Error in the custom linker options (Compilation and Linking / Pass options to linker):"
+msgstr "Ошибка в пользовательских параметрах компоновщика (поле ввода параметров компоновщика на вкладке \"Компиляция и компоновка\"):"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
 msgid "Error in the \"Debugger path addition\":"
@@ -8685,6 +8685,10 @@ msgstr "Прикрепить подсказку"
 msgid "Force renaming"
 msgstr "Переименовать принудительно"
 
+#: lazarusidestrconsts.lisfordarwin
+msgid "For Darwin"
+msgstr "Для Darwin"
+
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr "Например, выводить сверху локальные переменные, затем элементы текущего класса, его предков, текущего и используемых модулей"
@@ -8696,6 +8700,10 @@ msgstr "Форма"
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "Ошибка форматирования"
+
+#: lazarusidestrconsts.lisforwindows
+msgid "For Windows"
+msgstr "Для Windows"
 
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
@@ -13896,8 +13904,8 @@ msgid "The following dependencies are not needed, because of the automatic trans
 msgstr "Следующие зависимости не требуются, так как они уже автоматически унаследованы."
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
-msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s"
-msgstr "Проект перекрывает каталоги вывода следующих пакетов.%sСмотрите Проект -> Параметры проекта -> Дополнения и перекрытия%s%s"
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options (compiler options section) / Additions and Overrides%s%s"
+msgstr "Проект перекрывает каталоги вывода следующих пакетов.%sСмотрите Проект -> Параметры проекта (раздел параметров компилятора) -> Дополнения и перекрытия%s%s"
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
 msgid "This file is not in any loaded package."

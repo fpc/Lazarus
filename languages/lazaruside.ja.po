@@ -2747,11 +2747,15 @@ msgid "UI Access (uiAccess)"
 msgstr "UIアクセス(uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
-msgid "Use Application Bundle for running and debugging (Darwin only)"
+#, fuzzy
+#| msgid "Use Application Bundle for running and debugging (Darwin only)"
+msgid "Use Application Bundle for running and debugging"
 msgstr "アプリケーションバンドルを実行およびデバッグに用いる（darwinのみ）"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (Windows only)"
+#, fuzzy
+#| msgid "Use manifest file to enable themes (Windows only)"
+msgid "Use manifest file to enable themes"
 msgstr "テーマを使用可能とするためマニフェストファイルを用いる（Windowsのみ）"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
@@ -8189,7 +8193,9 @@ msgid "Error in the custom compiler options (Other):"
 msgstr "カスタムコンパイラオプションにエラー"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
-msgid "Error in the custom linker options (Linking / Pass options to linker):"
+#, fuzzy
+#| msgid "Error in the custom linker options (Linking / Pass options to linker):"
+msgid "Error in the custom linker options (Compilation and Linking / Pass options to linker):"
 msgstr "カスタムリンカオプション(リンカへのLinking / Pass オプション)にエラー"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
@@ -8832,6 +8838,10 @@ msgstr "フォーカスヒント"
 msgid "Force renaming"
 msgstr "名称変更を強制"
 
+#: lazarusidestrconsts.lisfordarwin
+msgid "For Darwin"
+msgstr ""
+
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr ""
@@ -8843,6 +8853,10 @@ msgstr "フォーム"
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "フォーマットエラー"
+
+#: lazarusidestrconsts.lisforwindows
+msgid "For Windows"
+msgstr ""
 
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
@@ -14133,8 +14147,8 @@ msgstr "パッケージ依存性の間の自動的な他動性のため、以下
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
 #, fuzzy,badformat
-#| msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s%s"
-msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s"
+#| msgid "The project overrides the output directory of the following packages.%sSee Project / Compiler Options / Additions and Overrides%s%s"
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options (compiler options section) / Additions and Overrides%s%s"
 msgstr "このプロジェクトは引き続くパッケージの出力ディレクトリをオーバーライドします。%sプロジェクト / プロジェクトオプション/ %s%s%s"
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage

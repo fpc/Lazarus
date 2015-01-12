@@ -22,3 +22,4 @@ msgstr "Verem:"
 #: leakinfo.rsstacktrace
 msgid "Stack trace"
 msgstr "Verem"
+

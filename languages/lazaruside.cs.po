@@ -2744,11 +2744,15 @@ msgid "UI Access (uiAccess)"
 msgstr "UI přístup (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
-msgid "Use Application Bundle for running and debugging (Darwin only)"
+#, fuzzy
+#| msgid "Use Application Bundle for running and debugging (Darwin only)"
+msgid "Use Application Bundle for running and debugging"
 msgstr "Použít aplikační balík pro spuštění a ladění (pouze Darwin)"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (Windows only)"
+#, fuzzy
+#| msgid "Use manifest file to enable themes (Windows only)"
+msgid "Use manifest file to enable themes"
 msgstr "Použít soubor manifest k povolení grafických stylů (pouze Windows)"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
@@ -8091,7 +8095,9 @@ msgid "Error in the custom compiler options (Other):"
 msgstr "Chyba ve vlastních nastaveních překladače (Ostatní):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
-msgid "Error in the custom linker options (Linking / Pass options to linker):"
+#, fuzzy
+#| msgid "Error in the custom linker options (Linking / Pass options to linker):"
+msgid "Error in the custom linker options (Compilation and Linking / Pass options to linker):"
 msgstr "Chyba ve vlastních nastaveních spojovače (Spojování / Předat volby spojovači):"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
@@ -8730,6 +8736,10 @@ msgstr "Tip při fokusu"
 msgid "Force renaming"
 msgstr "Vynutit přejmenování"
 
+#: lazarusidestrconsts.lisfordarwin
+msgid "For Darwin"
+msgstr ""
+
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr ""
@@ -8741,6 +8751,10 @@ msgstr "Formulář"
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "Chyba formátování"
+
+#: lazarusidestrconsts.lisforwindows
+msgid "For Windows"
+msgstr ""
 
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
@@ -13963,7 +13977,8 @@ msgstr "Následující závislosti nejsou nutné kvůli automatické přechodnos
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
 #, fuzzy
-msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s"
+#| msgid "The project overrides the output directory of the following packages.%sSee Project / Compiler Options / Additions and Overrides%s%s"
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options (compiler options section) / Additions and Overrides%s%s"
 msgstr "Přojekt přepisuje výstupní složku následných balíčků.%sViz Projekt / Volby projektu / Přídavky a Přepisy%s%s"
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage

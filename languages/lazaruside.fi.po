@@ -1636,6 +1636,7 @@ msgid "Try"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasunit
+msgctxt "lazarusidestrconsts.dlgfoldpasunit"
 msgid "Unit"
 msgstr "Käännösyksikkö"
 
@@ -1648,6 +1649,7 @@ msgid "{%Region}"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldpasuses
+msgctxt "lazarusidestrconsts.dlgfoldpasuses"
 msgid "Uses"
 msgstr ""
 
@@ -1660,6 +1662,7 @@ msgid "CData"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlcomment
+msgctxt "lazarusidestrconsts.dlgfoldxmlcomment"
 msgid "Comment"
 msgstr "Kommentti"
 
@@ -1668,6 +1671,7 @@ msgid "DocType"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfoldxmlnode
+msgctxt "lazarusidestrconsts.dlgfoldxmlnode"
 msgid "Node"
 msgstr "Solmu"
 
@@ -2727,11 +2731,15 @@ msgid "UI Access (uiAccess)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
-msgid "Use Application Bundle for running and debugging (Darwin only)"
+#, fuzzy
+#| msgid "Use Application Bundle for running and debugging (Darwin only)"
+msgid "Use Application Bundle for running and debugging"
 msgstr "Käytä \"Application Bundle\" ajoon ja virheiden jäljitykseen"
 
 #: lazarusidestrconsts.dlgpousemanifest
-msgid "Use manifest file to enable themes (Windows only)"
+#, fuzzy
+#| msgid "Use manifest file to enable themes (Windows only)"
+msgid "Use manifest file to enable themes"
 msgstr "Käytä manifest-tiedostoa teemoja varten"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
@@ -5253,6 +5261,7 @@ msgid "Clean up"
 msgstr "Siivoa"
 
 #: lazarusidestrconsts.liscleanupandbuild
+msgctxt "lazarusidestrconsts.liscleanupandbuild"
 msgid "Clean up and build"
 msgstr "Siivoa ja kokoa"
 
@@ -5532,6 +5541,7 @@ msgid "Edit code template"
 msgstr "Muokkaa koodimallinetta"
 
 #: lazarusidestrconsts.liscodetemplerror
+msgctxt "lazarusidestrconsts.liscodetemplerror"
 msgid "Error"
 msgstr "Virhe"
 
@@ -5761,6 +5771,7 @@ msgid "Move node up"
 msgstr "Siirrä solmua ylös"
 
 #: lazarusidestrconsts.liscodetoolsdefsname
+msgctxt "lazarusidestrconsts.liscodetoolsdefsname"
 msgid "Name:"
 msgstr "Nimi:"
 
@@ -6868,26 +6879,32 @@ msgid "Date"
 msgstr "Päiväys"
 
 #: lazarusidestrconsts.lisdbgallitemdelete
+msgctxt "lazarusidestrconsts.lisdbgallitemdelete"
 msgid "Delete all"
 msgstr "Poista kaikki"
 
 #: lazarusidestrconsts.lisdbgallitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdeletehint"
 msgid "Delete all"
 msgstr "Poista kaikki"
 
 #: lazarusidestrconsts.lisdbgallitemdisable
+msgctxt "lazarusidestrconsts.lisdbgallitemdisable"
 msgid "Disable all"
 msgstr "Estä kaikki"
 
 #: lazarusidestrconsts.lisdbgallitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemdisablehint"
 msgid "Disable all"
 msgstr "Estä kaikki"
 
 #: lazarusidestrconsts.lisdbgallitemenable
+msgctxt "lazarusidestrconsts.lisdbgallitemenable"
 msgid "Enable all"
 msgstr "Salli kaikki"
 
 #: lazarusidestrconsts.lisdbgallitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
 msgid "Enable all"
 msgstr "Salli kaikki"
 
@@ -6896,6 +6913,7 @@ msgid "Copy to Clipboard"
 msgstr "Kopioi leikepöydälle"
 
 #: lazarusidestrconsts.lisdbgbreakpointpropertieshint
+msgctxt "lazarusidestrconsts.lisdbgbreakpointpropertieshint"
 msgid "Breakpoint Properties ..."
 msgstr "Keskeytyskohdan ominaisuudet ..."
 
@@ -6972,22 +6990,27 @@ msgid "Windows Message Sent"
 msgstr "Windows-viesti on lähetetty"
 
 #: lazarusidestrconsts.lisdbgitemdeletehint
+msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
 msgid "Delete"
 msgstr "Poista"
 
 #: lazarusidestrconsts.lisdbgitemdisable
+msgctxt "lazarusidestrconsts.lisdbgitemdisable"
 msgid "Disable"
 msgstr "Estä"
 
 #: lazarusidestrconsts.lisdbgitemdisablehint
+msgctxt "lazarusidestrconsts.lisdbgitemdisablehint"
 msgid "Disable"
 msgstr "Estä"
 
 #: lazarusidestrconsts.lisdbgitemenable
+msgctxt "lazarusidestrconsts.lisdbgitemenable"
 msgid "Enable"
 msgstr "Salli"
 
 #: lazarusidestrconsts.lisdbgitemenablehint
+msgctxt "lazarusidestrconsts.lisdbgitemenablehint"
 msgid "Enable"
 msgstr "Salli"
 
@@ -7455,22 +7478,27 @@ msgid "Disable option -Xg"
 msgstr "Poista valinta -Xg"
 
 #: lazarusidestrconsts.lisdisassassembler
+msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr ""
 
 #: lazarusidestrconsts.lisdisassgotoaddress
+msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
 msgid "Goto Address"
 msgstr "Mene osoitteeseen"
 
 #: lazarusidestrconsts.lisdisassgotoaddresshint
+msgctxt "lazarusidestrconsts.lisdisassgotoaddresshint"
 msgid "Goto Address"
 msgstr "Mene osoitteeseen"
 
 #: lazarusidestrconsts.lisdisassgotocurrentaddress
+msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddress"
 msgid "Goto Current Address"
 msgstr "Mene nykyiseen osoitteeseen"
 
 #: lazarusidestrconsts.lisdisassgotocurrentaddresshint
+msgctxt "lazarusidestrconsts.lisdisassgotocurrentaddresshint"
 msgid "Goto Current Address"
 msgstr "Mene nykyiseen osoitteeseen"
 
@@ -7822,6 +7850,7 @@ msgid "Working Directory:"
 msgstr "Työhakemisto"
 
 #: lazarusidestrconsts.lisemdall
+msgctxt "lazarusidestrconsts.lisemdall"
 msgid "All"
 msgstr "Kaikki"
 
@@ -7996,7 +8025,9 @@ msgid "Error in the custom compiler options (Other):"
 msgstr "Virhe mukautetuissa kääntäjän asetuksissa (Muut):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
-msgid "Error in the custom linker options (Linking / Pass options to linker):"
+#, fuzzy
+#| msgid "Error in the custom linker options (Linking / Pass options to linker):"
+msgid "Error in the custom linker options (Compilation and Linking / Pass options to linker):"
 msgstr "Virhe mukautetuissa linkittäjän asetuksissa (Käännös ja Linkitys / Välitä asetukset linkittäjälle):"
 
 #: lazarusidestrconsts.liserrorinthedebuggerpathaddition
@@ -8080,6 +8111,7 @@ msgid "Error renaming file"
 msgstr "Virhe uudelleennimettäessä tiedostoa"
 
 #: lazarusidestrconsts.liserrors
+msgctxt "lazarusidestrconsts.liserrors"
 msgid "Errors"
 msgstr "Virheet"
 
@@ -8424,6 +8456,7 @@ msgid "File not found"
 msgstr "Tiedostoa ei löytynyt"
 
 #: lazarusidestrconsts.lisfilenotfound2
+msgctxt "lazarusidestrconsts.lisfilenotfound2"
 msgid "File \"%s\" not found."
 msgstr "Tiedostoa \"%s\" ei löytynyt."
 
@@ -8619,6 +8652,10 @@ msgstr "Fokusoi vihje"
 msgid "Force renaming"
 msgstr "Pakota mineäminen"
 
+#: lazarusidestrconsts.lisfordarwin
+msgid "For Darwin"
+msgstr ""
+
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
 msgstr "Esimerkiksi näytä ylhäällä paikalliset muuttujat, sitten luokan jäsenet, sitten emoluokan, sitten nykyisen ja lopuksi käytettyjen käännösyksiköiden muuttujat"
@@ -8630,6 +8667,10 @@ msgstr "Lomake"
 #: lazarusidestrconsts.lisformaterror
 msgid "Format error"
 msgstr "Muotoiluvirhe"
+
+#: lazarusidestrconsts.lisforwindows
+msgid "For Windows"
+msgstr ""
 
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
@@ -9860,6 +9901,7 @@ msgid "New project from file"
 msgstr "Uusi projekti tiedostosta"
 
 #: lazarusidestrconsts.liskmnewunit
+msgctxt "lazarusidestrconsts.liskmnewunit"
 msgid "New Unit"
 msgstr "Uusi käännösyksikkö"
 
@@ -10072,6 +10114,7 @@ msgid "Toggle view Documentation Editor"
 msgstr "Vaihda dokumentti-editori näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewhistory
+msgctxt "lazarusidestrconsts.liskmtoggleviewhistory"
 msgid "View History"
 msgstr "Näytä historia"
 
@@ -10092,6 +10135,7 @@ msgid "Toggle view Object Inspector"
 msgstr "Vaihda komponenttimuokkain näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewpseudoterminal
+msgctxt "lazarusidestrconsts.liskmtoggleviewpseudoterminal"
 msgid "View Terminal Output"
 msgstr "Näytä komentorivituloste"
 
@@ -10108,6 +10152,7 @@ msgid "Toggle view Source Editor"
 msgstr "Vaihda lähdekoodimuokkaimen näkymä"
 
 #: lazarusidestrconsts.liskmtoggleviewthreads
+msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
 msgid "View Threads"
 msgstr "Näytä säikeet"
 
@@ -10790,6 +10835,7 @@ msgid "Compare files ..."
 msgstr "Vertaa tiedostoja ..."
 
 #: lazarusidestrconsts.lismenucompletecode
+msgctxt "lazarusidestrconsts.lismenucompletecode"
 msgid "Complete Code"
 msgstr "Täydennä koodi"
 
@@ -11083,6 +11129,7 @@ msgid "Current Username"
 msgstr "Käyttäjätunnus"
 
 #: lazarusidestrconsts.lismenuinspect
+msgctxt "lazarusidestrconsts.lismenuinspect"
 msgid "&Inspect ..."
 msgstr "&Tutki ..."
 
@@ -11131,6 +11178,7 @@ msgid "Make Resource String ..."
 msgstr "Tee resurssiteksti ..."
 
 #: lazarusidestrconsts.lismenunewcomponent
+msgctxt "lazarusidestrconsts.lismenunewcomponent"
 msgid "New Component"
 msgstr "Uusi komponentti"
 
@@ -12335,6 +12383,7 @@ msgid "readonly"
 msgstr "vai luku"
 
 #: lazarusidestrconsts.lisoipstate
+msgctxt "lazarusidestrconsts.lisoipstate"
 msgid "State"
 msgstr "Tila"
 
@@ -13761,7 +13810,9 @@ msgid "The following dependencies are not needed, because of the automatic trans
 msgstr "Seuraavia riippuvuuksia ei tarvita, koska riippuvuudet siirtyvät automaattisesti paketista toiseen."
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
-msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options / Additions and Overrides%s%s"
+#, fuzzy
+#| msgid "The project overrides the output directory of the following packages.%sSee Project / Compiler Options / Additions and Overrides%s%s"
+msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options (compiler options section) / Additions and Overrides%s%s"
 msgstr "Projekti ajaa yli seuraavien pakettien käännöshakemiston.%sKatso Projekti / Kääntäjän asetukset / Lisämääritykset%s%s"
 
 #: lazarusidestrconsts.lispkgthisfileisnotinanyloadedpackage
@@ -13781,6 +13832,7 @@ msgid "Play"
 msgstr "Aja"
 
 #: lazarusidestrconsts.lispldglobal
+msgctxt "lazarusidestrconsts.lispldglobal"
 msgid "Global"
 msgstr "Julkinen"
 
@@ -13813,6 +13865,7 @@ msgid "Please select some code to extract a new procedure/method."
 msgstr "Valitse ensin jokin koodin osa josta tehdään uusi aliohjelma tai metodi"
 
 #: lazarusidestrconsts.lisplistall
+msgctxt "lazarusidestrconsts.lisplistall"
 msgid "<All>"
 msgstr "<Kaikki>"
 
@@ -13906,6 +13959,7 @@ msgid "prior %s"
 msgstr "ennen %s"
 
 #: lazarusidestrconsts.lispriority
+msgctxt "lazarusidestrconsts.lispriority"
 msgid "Priority"
 msgstr "Ensisijaisuus"
 
@@ -13931,6 +13985,7 @@ msgid "Procedure with interface"
 msgstr "Aliohjelma ja sen rajapinta"
 
 #: lazarusidestrconsts.lisprogram
+msgctxt "lazarusidestrconsts.lisprogram"
 msgid "Program"
 msgstr "Ohjelma"
 
@@ -14065,6 +14120,7 @@ msgid "%d projects"
 msgstr "%d projektia"
 
 #: lazarusidestrconsts.lisprojectdirectory
+msgctxt "lazarusidestrconsts.lisprojectdirectory"
 msgid "Project directory"
 msgstr "Projektihakemisto"
 
@@ -14284,6 +14340,7 @@ msgid "The resource will be available for FPC."
 msgstr "Resurssi on FPC:n käytössä."
 
 #: lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas
+msgctxt "lazarusidestrconsts.lispvuapascalunitmusthavetheextensionpporpas"
 msgid "A Pascal unit must have the extension .pp or .pas"
 msgstr "Pascal-käännösyksiköllä pitää olla liite .pp tai .pas"
 
@@ -14365,6 +14422,7 @@ msgid "Recent tabs"
 msgstr "Edelliset välilehdet"
 
 #: lazarusidestrconsts.lisrecord
+msgctxt "lazarusidestrconsts.lisrecord"
 msgid "Record"
 msgstr "Nauhoita"
 
@@ -14381,6 +14439,7 @@ msgid "Redo"
 msgstr "Tee uudelleen"
 
 #: lazarusidestrconsts.lisregisters
+msgctxt "lazarusidestrconsts.lisregisters"
 msgid "Registers"
 msgstr "Rekisterit"
 
@@ -14522,6 +14581,7 @@ msgid "Reopen with another encoding"
 msgstr "Avaa uudestaan toisella merkistön koodauksella"
 
 #: lazarusidestrconsts.lisrepeat
+msgctxt "lazarusidestrconsts.lisrepeat"
 msgid "Repeat"
 msgstr "Toistoja"
 
@@ -15062,6 +15122,7 @@ msgid "Show help"
 msgstr "Näytä ohje"
 
 #: lazarusidestrconsts.lisshowhintsinobjectinspector
+msgctxt "lazarusidestrconsts.lisshowhintsinobjectinspector"
 msgid "Show hints"
 msgstr "Näytä vihjeet"
 
@@ -15366,6 +15427,7 @@ msgid "String"
 msgstr "Merkkijono"
 
 #: lazarusidestrconsts.lisstyle
+msgctxt "lazarusidestrconsts.lisstyle"
 msgid "Style"
 msgstr "Tyyli"
 
@@ -15514,6 +15576,7 @@ msgid "Target is read only"
 msgstr "Kohde on vain luettavissa"
 
 #: lazarusidestrconsts.listargetos
+msgctxt "lazarusidestrconsts.listargetos"
 msgid "Target OS"
 msgstr "Kohdekäyttöjärjestelmä"
 
@@ -15618,6 +15681,7 @@ msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Kohdehakemistoa%s\"%s\" ei ole."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
+#, fuzzy,badformat
 msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
 msgstr "Kohdehakemistoa%s\"%s\" ei ole.%sTarkista kohdehakemisto projektin asetuksista."
 
@@ -15810,6 +15874,7 @@ msgid "The package %s can not be uninstalled, because it is needed by the IDE it
 msgstr "Paketin %s asennusta ei voi poistaa, koska IDE itse tarvitsee sitä."
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
+#, fuzzy,badformat
 msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
 msgstr "Paketilla ei ole \"Register\" aliohjelmaa, mikä yleensä tarkoittaa ettei se tarjoa mitään lisäyksiä IDE:een. Sen asennus luultavasti vain kasvattaa IDE:n kokoa ja voi jopa heikentää sen vakautta.%sVihje: Jos tahdot käyttää pakettia projektissa, käytä \"Lisää projektiin\" valintaa."
 
@@ -16759,6 +16824,7 @@ msgid "Uninstall selection"
 msgstr "Poista asennuksesta"
 
 #: lazarusidestrconsts.lisunit
+msgctxt "lazarusidestrconsts.lisunit"
 msgid "Unit"
 msgstr "Käännösyksikkö"
 
@@ -17264,10 +17330,12 @@ msgid "You cannot build Lazarus while debugging or compiling."
 msgstr "Lazarusta ei voi koota, kun ohjelmaa ajetaan tai käännetään."
 
 #: lazarusidestrconsts.lis_all_
+msgctxt "lazarusidestrconsts.lis_all_"
 msgid "<All>"
 msgstr "<Kaikki>"
 
 #: lazarusidestrconsts.locwndsrceditor
+msgctxt "lazarusidestrconsts.locwndsrceditor"
 msgid "Source Editor"
 msgstr "Lähdekoodieditori"
 

@@ -32,9 +32,7 @@ msgstr "Lo scripting non è attivo. Non supportato su questa piattaforma o CPU."
 
 #: emsstrings.emspending
 msgid "Scripting not active. Selftest will run next time the IDE is started."
-msgstr ""
-"Lo scripting non è attivo. L'autotest sarà eseguito alla prossima partenza "
-"dell'IDE."
+msgstr "Lo scripting non è attivo. L'autotest sarà eseguito alla prossima partenza dell'IDE."
 
 #: emsstrings.emsselftesterrcaption
 msgid "Error in EditorMacroScript"
@@ -42,18 +40,13 @@ msgstr "Errore nell'EditorMacroScript"
 
 #: emsstrings.emsselftestfailed
 msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package failed its selftest with the message:%0:s\"%1:s\""
-msgstr ""
-"Il pacchetto EditorMacroScript (macro pascalscript) ha rilevato un problema "
-"ed è stato disattivato.%0:sIl pacchetto ha fallito l'autotest con il "
-"messaggio %0:s\"%1:s\""
+msgstr "Il pacchetto EditorMacroScript (macro pascalscript) ha rilevato un problema ed è stato disattivato.%0:sIl pacchetto ha fallito l'autotest con il messaggio %0:s\"%1:s\""
 
 #: emsstrings.emsselftestfailedlasttime
 msgid "The package EditorMacroScript (pascalscript macros) has detected a problem and was deactivated.%0:sThe package selftest was not completed during the last start of the IDE."
-msgstr ""
-"Il pacchetto EditorMacroScript (macro pascalscript) ha rilevato un problema "
-"ed è stato disattivato.%0:sL'autotest non è giunto a buon fine all'ultima "
-"partenza dell'IDE."
+msgstr "Il pacchetto EditorMacroScript (macro pascalscript) ha rilevato un problema ed è stato disattivato.%0:sL'autotest non è giunto a buon fine all'ultima partenza dell'IDE."
 
 #: emsstrings.emsstatustitle
 msgid "Status"
 msgstr "Stato"
+
