@@ -50,3 +50,4 @@ msgstr "Az EditorMacroScript (pascalscript makrók) hibát érzékelt és ki let
 #: emsstrings.emsstatustitle
 msgid "Status"
 msgstr "Állapot"
+
