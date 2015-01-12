@@ -41,6 +41,7 @@ type
 
   TSynPluginSyncroEditLowerLineCache = class
   private
+    FCaseSensitive: boolean;
     FLines: TSynEditStrings;
     FLower: Array of TSynPluginSyncroEditLowerLineCacheEntry;
     function GetLowLine(aIndex: Integer): String;
@@ -187,6 +188,7 @@ type
 
   TSynPluginSyncroEdit = class(TSynPluginCustomSyncroEdit)
   private
+    FCaseSensitive: boolean;
     FGutterGlyph: TBitmap;
     FLowerLines: TSynPluginSyncroEditLowerLineCache;
     FOnBeginEdit: TNotifyEvent;
@@ -203,6 +205,7 @@ type
 
     FKeystrokesSelecting: TSynEditKeyStrokes;
     FKeystrokes, FKeyStrokesOffCell: TSynEditKeyStrokes;
+    procedure SetCaseSensitive(AValue: boolean);
     procedure SetKeystrokesSelecting(const AValue: TSynEditKeyStrokes);
     procedure SetKeystrokes(const AValue: TSynEditKeyStrokes);
     procedure SetKeystrokesOffCell(const AValue: TSynEditKeyStrokes);
@@ -250,6 +253,7 @@ type
     class function ConvertBaseToCommand(Command: TSynEditorCommand): TSynEditorCommand;
 
   published
+    property CaseSensitive: boolean read FCaseSensitive write SetCaseSensitive default false;
     property GutterGlyph: TBitmap read FGutterGlyph write SetGutterGlyph;
     property KeystrokesSelecting: TSynEditKeyStrokes
       read FKeystrokesSelecting write SetKeystrokesSelecting;
@@ -337,11 +341,15 @@ var
   i, l: Integer;
 
 begin
+  if FCaseSensitive then begin
+    Result := FLines[aIndex];
+    exit;
+  end;
+
   l := length(FLower);
   for i := 0 to l-1 do
     if FLower[i].LineIndex = aIndex then
       exit(FLower[i].LineText);
-
   Result := UTF8LowerCase(FLines[aIndex]);
   if Result = '' then
     exit;
@@ -935,6 +943,13 @@ begin
     FKeystrokesSelecting.Assign(AValue);
 end;
 
+procedure TSynPluginSyncroEdit.SetCaseSensitive(AValue: boolean);
+begin
+  FCaseSensitive := AValue;
+  FLowerLines.FCaseSensitive := AValue;
+  FLowerLines.Clear;
+end;
+
 procedure TSynPluginSyncroEdit.SetKeystrokes(const AValue: TSynEditKeyStrokes);
 begin
   if AValue = nil then
@@ -1259,9 +1274,9 @@ end;
 procedure TSynPluginSyncroEdit.DoPreActiveEdit(aX, aY, aCount, aLineBrkCnt: Integer;
   aUndoRedo: Boolean);
 begin
-    FWordIndex.Clear;
-    Active := False;
-    Mode := spseInvalid;
+  FWordIndex.Clear;
+  Active := False;
+  Mode := spseInvalid;
 end;
 
 function TSynPluginSyncroEdit.MaybeHandleMouseAction(var AnInfo: TSynEditMouseActionInfo;
