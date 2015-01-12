@@ -319,9 +319,6 @@ begin
   ExtendedComponents[24] :=  'TDBLookupComboBox';
   ExtendedComponents[25] :=  'TDBCheckBox';
 
-
-
-
   ComponentsTreeView.BeginUpdate;
   Node:=ComponentsTreeView.Items.GetFirstNode;
   while Node<>nil do begin
@@ -391,8 +388,7 @@ end;
 
 { TEduComponentPaletteOptions }
 
-function TEduComponentPaletteOptions.GetComponentVisible(ComponentName: string
-  ): boolean;
+function TEduComponentPaletteOptions.GetComponentVisible(ComponentName: string): boolean;
 begin
   Result:=fVisible[ComponentName]='1';
 end;
@@ -428,8 +424,7 @@ begin
   inherited Destroy;
 end;
 
-function TEduComponentPaletteOptions.Load(Config: TConfigStorage
-  ): TModalResult;
+function TEduComponentPaletteOptions.Load(Config: TConfigStorage): TModalResult;
 var
   Cnt: LongInt;
   i: Integer;
@@ -445,8 +440,7 @@ begin
   Result:=inherited Load(Config);
 end;
 
-function TEduComponentPaletteOptions.Save(Config: TConfigStorage
-  ): TModalResult;
+function TEduComponentPaletteOptions.Save(Config: TConfigStorage): TModalResult;
 var
   Node: TAvgLvlTreeNode;
   Item: PStringToStringItem;
@@ -468,7 +462,7 @@ procedure TEduComponentPaletteOptions.Apply(Enable: boolean);
 begin
   inherited Apply(Enable);
   if IDEComponentPalette<>nil then
-    IDEComponentPalette.UpdateVisible;
+    IDEComponentPalette.Update(False);
 end;
 
 {$R *.lfm}
