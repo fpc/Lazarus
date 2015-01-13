@@ -6035,11 +6035,13 @@ end;
 procedure TWinControl.Insert(AControl: TControl; Index: integer);
 begin
   if AControl = nil then exit;
+  if AControl.FParent<>nil then
+    raise EInvalidOperation.Create('control has already a parent');
   
   if AControl = Self then
     raise EInvalidOperation.Create(rsAControlCanNotHaveItselfAsParent);
 
-  ListAdd(FControls, AControl);
+  ListInsert(FControls, Index, AControl);
   if AControl is TWinControl then
   begin
     ListAdd(FTabList, AControl);
