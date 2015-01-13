@@ -2156,7 +2156,11 @@ begin
   Create(skSimple, ''); // initialize
   FInternalTypeName := '';
   FEvalError := False;
-  FExpression := AnExpression;
+  (* uppercase due to https://sourceware.org/bugzilla/show_bug.cgi?id=17835
+     gdb 7.7 and 7.8 fail to find members, if lowercased
+     Alternative prefix with "self." if gdb returns &"Type TCLASSXXXX has no component named EXPRESSION.\n"
+  *)
+  FExpression := UpperCase(AnExpression);
   FOrigExpression := FExpression;
   FCreationFlags := AFlags;
   FExprEvaluateFormat := AFormat;

@@ -319,6 +319,26 @@ begin
     );
   {$UNDEF Global_Call_FooFunc}
 
+  {$DEFINE Global_Body_Extra}
+    { class/record/object }
+    {$I WatchesPrgStruct.inc}
+    { strings }
+    {$I WatchesPrgString.inc}
+    { simple }
+    {$I WatchesPrgSimple.inc}
+    { enum/set }
+    {$I WatchesPrgEnum.inc}
+    { Array }
+    {$I WatchesPrgArray.inc}
+    { variants }
+    {$I WatchesPrgVariant.inc}
+    { procedure/function/method }
+    {$I WatchesPrgProc.inc}
+
+  {$UNDEF Global_Body_Extra}
+
+
+
 
   // same with nil
   {$DEFINE Global_Body_NIL}

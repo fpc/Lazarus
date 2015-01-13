@@ -317,7 +317,16 @@
       TClassTCastUW1Component = class(TClassUW1BaseComponent)   public b: Integer;  end;
       {$ENDIF}
 
-      TClassTCast2 = class(TClassTCast)          public c: Integer;  end;
+      TClassTCast2 = class(TClassTCast)
+      private
+        privMember1: Integer;
+      protected
+        protMember1: Integer;
+      public
+        publMember1: Integer;
+        c: Integer;
+        procedure ClassTCast2Method1; //procedure TClassTCast2.ClassTCast2Method1;
+      end;
       TClassTCast3 = type TClassTCast;
     {$ENDIF}
 
@@ -480,6 +489,12 @@
       procedure TFoo.SetValueInt(AValue: Integer);
       begin
         PropInt := AValue;
+      end;
+
+      procedure TClassTCast2.ClassTCast2Method1;
+      begin
+        // break on next line
+        writeln(1);
       end;
     {$ENDIF}
 
@@ -692,6 +707,8 @@
     GlobPNewFooClass: PNewFooClass;
 
     PGlobTFooClass: ^TFooClass;
+
+    GlobClassTCast2: TClassTCast2;
   {$ENDIF}
 
   {$IFDEF Global_Body}
@@ -704,6 +721,15 @@
     GlobPNewFooClass := @GlobTNewFooClass;
 
     PGlobTFooClass := @GlobTNewFooClass;
+  {$ENDIF}
+
+  {$IFDEF Global_Body_Extra}
+  //begin
+    GlobClassTCast2 := TClassTCast2.Create;
+    GlobClassTCast2.privMember1 := 411;
+    GlobClassTCast2.protMember1 := 412;
+    GlobClassTCast2.publMember1 := 413;
+    GlobClassTCast2.ClassTCast2Method1;
   {$ENDIF}
 
   {$IFDEF Global_Body_NIL}
