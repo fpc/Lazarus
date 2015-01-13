@@ -4486,7 +4486,7 @@ begin
 
   s:=s+'    T:=P.Targets.AddUnit('''+MainSrcFile+''');'+e;
   for i := 0 to APackage.FileCount-1 do
-    if (APackage.Files[i].FileType=pftUnit) and (pffAddToPkgUsesSection in APackage.Files[i].Flags) then
+    if (APackage.Files[i].FileType=pftUnit) then
       s:=s+'    t.Dependencies.AddUnit('''+ExtractFileNameOnly(APackage.Files[i].Filename)+''');'+e;
 
   s:=s+''+e;
@@ -4497,7 +4497,9 @@ begin
       if (pffAddToPkgUsesSection in APackage.Files[i].Flags) then
         s:=s+'    T:=P.Targets.AddUnit('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+e
       else
-        s:=s+'    P.Sources.AddSrc('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+e;
+      begin
+        s:=s+'    P.Targets.AddImplicitUnit('''+CreateRelativePath(APackage.Files[i].Filename,APackage.Directory)+''');'+e;
+      end;
     end;
 
   s:=s+''+e;
