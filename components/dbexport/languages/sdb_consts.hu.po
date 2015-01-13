@@ -82,3 +82,4 @@ msgstr "%d rekord sikeresen exportálva."
 #: sdb_consts.sprogress
 msgid "Exporting %d records"
 msgstr "%d rekord exportálása"
+
