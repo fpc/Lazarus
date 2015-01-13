@@ -623,3 +623,4 @@ msgstr "Írási hiba"
 #: h2passtrconsts.h2pxhandlesys__trapofthepalmosheaderfiles
 msgid "-x  Handle SYS__TRAP of the PalmOS header files"
 msgstr "-x  A SYS__TRAP kezelése PalmOS fejlécfájlokban"
+
