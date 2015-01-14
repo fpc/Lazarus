@@ -9374,6 +9374,9 @@ begin
 
   RegisterDelphiFunction(@Unassigned, 'UNASSIGNED', cdRegister);
   RegisterDelphiFunction(@VarIsEmpty, 'VARISEMPTY', cdRegister);
+  {$IFDEF DELPHI7UP}
+  RegisterDelphiFunction(@VarIsClear, 'VARISCLEAR', cdRegister);
+  {$ENDIF}
   RegisterDelphiFunction(@Null, 'NULL', cdRegister);
   RegisterDelphiFunction(@VarIsNull, 'VARISNULL', cdRegister);
   {$IFNDEF FPC}
@@ -9930,10 +9933,18 @@ end;
 
 procedure CheckPackagePtr(var P: PByteArr);
 begin
+  {$ifdef Win32}
   if (word((@p[0])^) = $25FF) and (word((@p[6])^)=$C08B)then
   begin
     p := PPointer((@p[2])^)^;
   end;
+  {$endif}
+  {$ifdef Win64}
+  if (word((@p[0])^) = $25FF) {and (word((@p[6])^)=$C08B)}then
+  begin
+    p := PPointer(NativeUInt(@P[0]) + Cardinal((@p[2])^) + 6{Instruction Size})^
+  end;
+  {$endif}
 end;
 
 {$IFDEF VER90}{$DEFINE NO_vmtSelfPtr}{$ENDIF}
