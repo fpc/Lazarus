@@ -11396,6 +11396,7 @@ begin
   ACmd.ExecuteCommand('-break-delete %d', [FNameBreakID], [cfCheckError]);
   FNameBreakID := -1;
   FNameBreakAddr := 0;
+  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
 end;
 
 procedure TGDBMIInternalBreakPoint.ClearAddr(ACmd: TGDBMIDebuggerCommand);
@@ -11405,6 +11406,7 @@ begin
   FAddrBreakID := -1;
   FAddrBreakAddr := 0;
   FMainAddrFound := 0;
+  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
 end;
 
 procedure TGDBMIInternalBreakPoint.ClearCustom(ACmd: TGDBMIDebuggerCommand);
@@ -11413,6 +11415,7 @@ begin
   ACmd.ExecuteCommand('-break-delete %d', [FCustomID], [cfCheckError]);
   FCustomID := -1;
   FCustomAddr := 0;
+  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
 end;
 
 procedure TGDBMIInternalBreakPoint.ClearLineOffs(ACmd: TGDBMIDebuggerCommand);
@@ -11422,6 +11425,7 @@ begin
   FLineOffsID := -1;
   FLineOffsAddr := 0;
   FLineOffsFunction := '';
+  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
 end;
 
 function TGDBMIInternalBreakPoint.BreakSet(ACmd: TGDBMIDebuggerCommand; ALoc: String; out
@@ -11595,6 +11599,7 @@ begin
   ClearAddr(ACmd);
   ClearCustom(ACmd);
   ClearLineOffs(ACmd);
+  FEnabled := False;
 end;
 
 function TGDBMIInternalBreakPoint.ClearId(ACmd: TGDBMIDebuggerCommand; AnId: Integer): Boolean;
