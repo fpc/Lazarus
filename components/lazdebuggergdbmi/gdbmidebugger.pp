@@ -8622,10 +8622,8 @@ begin
       end;
     end
     else begin
-      if DebugProcess = nil
-      then MessageDlg('Debugger', 'Failed to create debug process for unknown reason', mtError, [mbOK], 0)
-      else MessageDlg('Debugger', Format('Failed to create debug process: %s', [ReadLine(50)]), mtError, [mbOK], 0);
-      SetState(dsError);
+      include(FErrorHandlingFlags, ehfDeferReadWriteError);
+      SetErrorState(gdbmiFailedToLaunchExternalDbg, ReadLine(50));
     end;
 
     FGDBPtrSize := CpuNameToPtrSize(FGDBCPU); // will be set in StartDebugging
