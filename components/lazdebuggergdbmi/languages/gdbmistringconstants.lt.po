@@ -110,6 +110,10 @@ msgctxt "gdbmistringconstants.gdbmieventlogprocessstart"
 msgid "Process Start: %s"
 msgstr ""
 
+#: gdbmistringconstants.gdbmifailedtolaunchexternaldbg
+msgid "Failed to create process for GDB"
+msgstr ""
+
 #: gdbmistringconstants.gdbmifailedtoterminategdb
 msgctxt "gdbmistringconstants.gdbmifailedtoterminategdb"
 msgid "The IDE was unable to terminate the GDB process. This process may be left running outside the control of IDE.%0:sTo ensure the process is not affecting your System, you should locate and terminate it yourself."

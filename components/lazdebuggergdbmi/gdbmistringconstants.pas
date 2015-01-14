@@ -60,6 +60,7 @@ resourcestring
   gdbmiEventLogDebugOutput = 'Debug Output: %s';
   gdbmiEventLogProcessExitNormally = 'Process Exit: normally';
   gdbmiEventLogProcessExitCode = 'Process Exit: %s';
+  gdbmiFailedToLaunchExternalDbg = 'Failed to create process for GDB';
   gdbmiFailedToTerminateGDBTitle = 'GDB did not terminate';
   gdbmiFailedToTerminateGDB = 'The IDE was unable to terminate the GDB process. '
     + 'This process may be left running outside the control of IDE.%0:s'

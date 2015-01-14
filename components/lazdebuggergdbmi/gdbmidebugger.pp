@@ -5592,6 +5592,15 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
           if tfExceptionIsPointer in TargetInfo^.TargetFlags
           then ExceptionMessage := GetText('Exception(%s).FMessage', [ExceptInfo.ObjAddr])
           else ExceptionMessage := GetText('^Exception(%s)^.FMessage', [ExceptInfo.ObjAddr]);
+          if FLastExecResult.State = dsError then begin
+            if tfExceptionIsPointer in TargetInfo^.TargetFlags then begin
+              ExceptionMessage := GetText('^Exception(%s).FMessage', [ExceptInfo.ObjAddr]);
+              if FLastExecResult.State <> dsError then
+                Exclude(TargetInfo^.TargetFlags, tfExceptionIsPointer);
+            end;
+            if FLastExecResult.State = dsError then
+              ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, ExceptInfo.ObjAddr]);
+          end;
           //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
         end else begin
           // Only works if Exception class is not changed. FMessage must be first member
@@ -8622,10 +8631,8 @@ begin
       end;
     end
     else begin
-      if DebugProcess = nil
-      then MessageDlg('Debugger', 'Failed to create debug process for unknown reason', mtError, [mbOK], 0)
-      else MessageDlg('Debugger', Format('Failed to create debug process: %s', [ReadLine(50)]), mtError, [mbOK], 0);
-      SetState(dsError);
+      include(FErrorHandlingFlags, ehfDeferReadWriteError);
+      SetErrorState(gdbmiFailedToLaunchExternalDbg, ReadLine(50));
     end;
 
     FGDBPtrSize := CpuNameToPtrSize(FGDBCPU); // will be set in StartDebugging
@@ -10900,6 +10907,7 @@ begin
   if not ExecuteCommand('x/s ' + AExpression, AValues, R, [],
                        DebuggerProperties.TimeoutForEval)
   then begin
+    FLastExecResult.State := dsError;
     Result := '';
     Exit;
   end;
@@ -10913,6 +10921,7 @@ var
 begin
   if not ExecuteCommand('x/c ' + AExpression, AValues, R)
   then begin
+    FLastExecResult.State := dsError;
     Result := '';
     Exit;
   end;
@@ -11398,6 +11407,7 @@ begin
   ACmd.ExecuteCommand('-break-delete %d', [FNameBreakID], [cfCheckError]);
   FNameBreakID := -1;
   FNameBreakAddr := 0;
+  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
 end;
 
 procedure TGDBMIInternalBreakPoint.ClearAddr(ACmd: TGDBMIDebuggerCommand);
@@ -11407,6 +11417,7 @@ begin
   FAddrBreakID := -1;
   FAddrBreakAddr := 0;
   FMainAddrFound := 0;
+  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
 end;
 
 procedure TGDBMIInternalBreakPoint.ClearCustom(ACmd: TGDBMIDebuggerCommand);
@@ -11415,6 +11426,7 @@ begin
   ACmd.ExecuteCommand('-break-delete %d', [FCustomID], [cfCheckError]);
   FCustomID := -1;
   FCustomAddr := 0;
+  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
 end;
 
 procedure TGDBMIInternalBreakPoint.ClearLineOffs(ACmd: TGDBMIDebuggerCommand);
@@ -11424,6 +11436,7 @@ begin
   FLineOffsID := -1;
   FLineOffsAddr := 0;
   FLineOffsFunction := '';
+  FEnabled := FEnabled and ((FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0));
 end;
 
 function TGDBMIInternalBreakPoint.BreakSet(ACmd: TGDBMIDebuggerCommand; ALoc: String; out
@@ -11455,6 +11468,7 @@ begin
     ACmd.ExecuteCommand('-break-insert %s', [ALoc], R);
   Result := R.State <> dsError;
   if not Result then exit;
+  FEnabled := True;
 
   ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
   AId       := StrToIntDef(ResultList.Values['number'], -1);
@@ -11512,7 +11526,7 @@ begin
   FLineOffsAddr := 0;
   FUseForceFlag := False;
   FName := AName;
-  FEnabled := True;
+  FEnabled := False;
 end;
 
 (* Using -insert-break with a function name allows GDB to adjust the address
@@ -11596,6 +11610,7 @@ begin
   ClearAddr(ACmd);
   ClearCustom(ACmd);
   ClearLineOffs(ACmd);
+  FEnabled := False;
 end;
 
 function TGDBMIInternalBreakPoint.ClearId(ACmd: TGDBMIDebuggerCommand; AnId: Integer): Boolean;
@@ -11644,7 +11659,7 @@ var
   R: TGDBMIExecResult;
 begin
   if FEnabled then exit;
-  FEnabled := True;
+  FEnabled := (FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0);
 
   if FNameBreakID >= 0 then
     ACmd.ExecuteCommand('-break-enable %d', [FNameBreakID], R);

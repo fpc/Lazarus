@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, LCLType, Forms,
   IDEWindowIntf, IDEImagesIntf, DbgIntfDebuggerBase, LazarusIDEStrConsts,
-  ComCtrls, StdCtrls, Menus, DebuggerDlg, BaseDebugManager,
+  ComCtrls, StdCtrls, Menus, Dialogs, DebuggerDlg, BaseDebugManager,
   InputHistory, IDEProcs, Debugger, DebuggerStrConst;
 
 type
@@ -253,7 +253,11 @@ begin
   S := Trim(cmbExpression.Text);
   if S = '' then Exit;
   V := cmbNewValue.Text;
-  if not DebugBoss.Modify(S, V) then Exit;
+  if not DebugBoss.Modify(S, V) then begin
+    MessageDlg(lisCCOErrorCaption, synfTheDebuggerWasNotAbleToModifyTheValue, mtError, [mbOK],
+      0);
+    Exit;
+  end;
 
   if cmbNewValue.Items.IndexOf(V) = -1
   then cmbNewValue.Items.Insert(0, V);
@@ -326,6 +330,10 @@ end;
 
 procedure TEvaluateDlg.tbModifyClick(Sender: TObject);
 begin
+  if cmbNewValue.Text = '' then begin
+    MessageDlg(lisCCOErrorCaption, synfNewValueIsEmpty, mtError, [mbOK], 0);
+    exit;
+  end;
   Modify;
 end;
 
