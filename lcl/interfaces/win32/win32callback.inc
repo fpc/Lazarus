@@ -239,6 +239,117 @@ begin
   end;
 end;
 
+// Used by WindowProc :
+
+function GetMenuParent(ASearch, AParent: HMENU): HMENU;
+var
+  c, i: integer;
+  sub: HMENU;
+begin
+  c := GetMenuItemCount(AParent);
+  for i:= 0 to c - 1 do
+  begin
+    sub := GetSubMenu(AParent, i);
+    if sub = ASearch
+    then begin
+      Result := AParent;
+      Exit;
+    end;
+
+    Result := GetMenuParent(ASearch, sub);
+    if Result <> 0 then Exit;
+  end;
+  Result := 0;
+end;
+
+function GetIsNativeControl(AWindow: HWND): Boolean;
+var
+  S: String;
+begin
+  S := WndClassName(AWindow);
+  Result := (S <> ClsName) and (S <> ClsHintName);
+end;
+
+procedure ClearSiblingRadioButtons(RadioButton: TRadioButton);
+var
+  Parent: TWinControl;
+  Sibling: TControl;
+  WinControl: TWinControlAccess absolute Sibling;
+  LParamFlag: LRESULT;
+  i: Integer;
+begin
+  Parent := RadioButton.Parent;
+  for i:= 0 to Parent.ControlCount - 1 do
+  begin
+    Sibling := Parent.Controls[i];
+    if (Sibling is TRadioButton) and (Sibling <> RadioButton) then
+    begin
+      // Pass previous state through LParam so the event handling can decide
+      // when to propagate LM_CHANGE (New State <> Previous State)
+      LParamFlag := Windows.SendMessage(WinControl.WindowHandle, BM_GETCHECK, 0, 0);
+      // Pass SKIP_LMCHANGE through LParam if previous state is already unchecked
+      if LParamFlag = BST_UNCHECKED then
+        LParamFlag := SKIP_LMCHANGE;
+      Windows.SendMessage(WinControl.WindowHandle, BM_SETCHECK,
+        Windows.WParam(BST_UNCHECKED), Windows.LParam(LParamFlag));
+    end;
+  end;
+end;
+
+// sets the text of the combobox,
+// because some events are risen, before the text is actually changed
+procedure UpdateComboBoxText(ComboBox: TCustomComboBox);
+var
+  Index: Integer;
+begin
+  with ComboBox do begin
+    Index := ItemIndex;
+    // Index might be -1, if current text is not in the list.
+    if (Index>=0) then
+      TWin32WSWinControl.SetText(ComboBox, Items[Index]);
+  end;
+end;
+
+procedure EnableChildWindows(WinControl: TWinControl; Enable: boolean);
+var
+  i: integer;
+  ChildControl: TWinControl;
+begin
+  for i := 0 to WinControl.ControlCount-1 do
+  begin
+    if WinControl.Controls[i] is TWinControl then
+    begin
+      ChildControl := TWinControl(WinControl.Controls[i]);
+      if Enable then
+      begin
+         if ChildControl.Enabled then
+           EnableWindow(ChildControl.Handle, true);
+      end
+      else
+        EnableWindow(ChildControl.Handle, false);
+
+      EnableChildWindows(ChildControl, Enable);
+    end;
+  end;
+end;
+
+// Gets the cursor position relative to a given window
+function GetClientCursorPos(ClientWindow: HWND) : TSmallPoint;
+var
+  P: TPoint;
+begin
+  Windows.GetCursorPos(P);
+  //if the mouse is not over the window is better to set to 0 to avoid weird behaviors
+  if Windows.WindowFromPoint(P) = ClientWindow then
+    Windows.ScreenToClient(ClientWindow, P)
+  else
+  begin
+    P.X:=0;
+    P.Y:=0;
+  end;
+  Result := PointToSmallPoint(P);
+end;
+
 {------------------------------------------------------------------------------
  Function: WindowProc
  Params: Window - The window that receives a message
@@ -256,8 +367,7 @@ function
 {$else}
   WindowProc
 {$endif}
-  (Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
+  (Window: HWnd; Msg: UInt; WParam: Windows.WParam; LParam: Windows.LParam): LResult; stdcall;
 var
   LMessage: TLMessage;
   menuItem: TObject;
@@ -297,27 +407,6 @@ var
   Info: TComboboxInfo;
   OrgCharCode: word; // used in WM_CHAR handling
   CharCodeNotEmpty: boolean; // used by WM_CHAR, WM_SYSCHAR and WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
-
-  function GetMenuParent(ASearch, AParent: HMENU): HMENU;
-  var
-    c, i: integer;
-    sub: HMENU;
-  begin
-    c := GetMenuItemCount(AParent);
-    for i:= 0 to c - 1 do
-    begin
-      sub := GetSubMenu(AParent, i);
-      if sub = ASearch
-      then begin
-        Result := AParent;
-        Exit;
-      end;
-
-      Result := GetMenuParent(ASearch, sub);
-      if Result <> 0 then Exit;
-    end;
-    Result := 0;
-  end;
 
   function GetPopMenuItemObject: TObject;
   var
@@ -362,14 +451,6 @@ var
       Result := nil;
   end;
 
-  function GetIsNativeControl(AWindow: HWND): Boolean;
-  var
-    S: String;
-  begin
-    S := WndClassName(AWindow);
-    Result := (S <> ClsName) and (S <> ClsHintName);
-  end;
-  
   procedure SendPaintMessage(ControlDC: HDC);
   var
     DC: HDC;
@@ -640,76 +721,11 @@ var
 {$endif}
       end;
     end;
-
 {$IFDEF DBG_SendPaintMessage}
     finally
     DebugLnExit('<<< SendPaintMessage for CtrlDC=', dbgs(ControlDC), ' Window=', dbgs(Window), ' WinCtrl=',dbgs(PtrUInt(lWinControl)), ' ', DbgSName(lWinControl));
     end;
 {$ENDIF}
-
-  end;
-
-  procedure ClearSiblingRadioButtons(RadioButton: TRadioButton);
-  var
-    Parent: TWinControl;
-    Sibling: TControl;
-    WinControl: TWinControlAccess absolute Sibling;
-    LParamFlag: LRESULT;
-    i: Integer;
-  begin
-    Parent := RadioButton.Parent;
-    for i:= 0 to Parent.ControlCount - 1 do
-    begin
-      Sibling := Parent.Controls[i];
-      if (Sibling is TRadioButton) and (Sibling <> RadioButton) then
-      begin
-        // Pass previous state through LParam so the event handling can decide
-        // when to propagate LM_CHANGE (New State <> Previous State)
-        LParamFlag := Windows.SendMessage(WinControl.WindowHandle, BM_GETCHECK, 0, 0);
-        // Pass SKIP_LMCHANGE through LParam if previous state is already unchecked
-        if LParamFlag = BST_UNCHECKED then
-          LParamFlag := SKIP_LMCHANGE;
-        Windows.SendMessage(WinControl.WindowHandle, BM_SETCHECK,
-          Windows.WParam(BST_UNCHECKED), Windows.LParam(LParamFlag));
-      end;
-    end;
-  end;
-
-  // sets the text of the combobox,
-  // because some events are risen, before the text is actually changed
-  procedure UpdateComboBoxText(ComboBox: TCustomComboBox);
-  var
-    Index: Integer;
-  begin
-    with ComboBox do begin
-      Index := ItemIndex;
-      // Index might be -1, if current text is not in the list.
-      if (Index>=0) then
-        TWin32WSWinControl.SetText(ComboBox, Items[Index]);
-    end;
-  end;
-
-  procedure EnableChildWindows(WinControl: TWinControl; Enable: boolean);
-  var
-    i: integer;
-    ChildControl: TWinControl;
-  begin
-    for i := 0 to WinControl.ControlCount-1 do
-    begin
-      if WinControl.Controls[i] is TWinControl then
-      begin
-        ChildControl := TWinControl(WinControl.Controls[i]);
-        if Enable then
-        begin
-           if ChildControl.Enabled then
-             EnableWindow(ChildControl.Handle, true);
-        end
-        else
-          EnableWindow(ChildControl.Handle, false);
-
-        EnableChildWindows(ChildControl, Enable);
-      end;
-    end;
   end;
 
   procedure HandleScrollMessage(LMsg: integer);
@@ -1038,23 +1054,6 @@ var
     finally
       DragFinish(Drop);
     end;
-  end;
-
-  // Gets the cursor position relative to a given window
-  function GetClientCursorPos(ClientWindow: HWND) : TSmallPoint;
-  var
-    P: TPoint;
-  begin
-    Windows.GetCursorPos(P);
-    //if the mouse is not over the window is better to set to 0 to avoid weird behaviors
-    if Windows.WindowFromPoint(P) = ClientWindow then
-      Windows.ScreenToClient(ClientWindow, P)
-    else
-    begin
-      P.X:=0;
-      P.Y:=0;
-    end;
-    Result := PointToSmallPoint(P);
   end;
 
   // returns false if the UnicodeChar is not handled
