@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="4">
     <Name Value="pascalscript"/>
@@ -60,7 +60,7 @@ Carlo Kok
 RemObjects Software
 "/>
     <Version Build="1"/>
-    <Files Count="43">
+    <Files Count="46">
       <Item1>
         <Filename Value="uPSRuntime.pas"/>
         <UnitName Value="uPSRuntime"/>
@@ -234,6 +234,18 @@ RemObjects Software
         <Filename Value="x86.inc"/>
         <Type Value="Include"/>
       </Item43>
+      <Item44>
+        <Filename Value="uPSC_comobj.pas"/>
+        <UnitName Value="uPSC_comobj"/>
+      </Item44>
+      <Item45>
+        <Filename Value="uPSComponent_COM.pas"/>
+        <UnitName Value="uPSComponent_COM"/>
+      </Item45>
+      <Item46>
+        <Filename Value="uPSR_comobj.pas"/>
+        <UnitName Value="uPSR_comobj"/>
+      </Item46>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">
