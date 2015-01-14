@@ -67,6 +67,7 @@ components/IndustrialStuff/source/ledbuttons.res -text
 components/IndustrialStuff/source/lednumber.pas svneol=native#text/pascal
 components/IndustrialStuff/source/sensors.pas svneol=native#text/pascal
 components/IndustrialStuff/source/sensors.res -text
+components/PascalScript/LICENSE.md svneol=native#text/plain
 components/PascalScript/README.lazarus.txt svneol=native#text/pascal
 components/PascalScript/Samples/Console/sample1.dpr svneol=native#text/pascal
 components/PascalScript/Samples/Console/sample2.dpr svneol=native#text/pascal
@@ -176,7 +177,6 @@ components/PascalScript/Source/PascalScript_RO_Reg.pas svneol=native#text/pascal
 components/PascalScript/Source/arm.inc svneol=native#text/pascal
 components/PascalScript/Source/changelog.txt svneol=native#text/pascal
 components/PascalScript/Source/eDefines.inc svneol=native#text/pascal
-components/PascalScript/Source/license.txt svneol=native#text/pascal
 components/PascalScript/Source/pascalscript.lpk svneol=native#text/pascal
 components/PascalScript/Source/pascalscript.lrs svneol=native#text/pascal
 components/PascalScript/Source/pascalscript.pas svneol=native#text/pascal
