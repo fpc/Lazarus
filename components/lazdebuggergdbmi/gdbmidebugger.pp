@@ -5592,6 +5592,15 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
           if tfExceptionIsPointer in TargetInfo^.TargetFlags
           then ExceptionMessage := GetText('Exception(%s).FMessage', [ExceptInfo.ObjAddr])
           else ExceptionMessage := GetText('^Exception(%s)^.FMessage', [ExceptInfo.ObjAddr]);
+          if FLastExecResult.State = dsError then begin
+            if tfExceptionIsPointer in TargetInfo^.TargetFlags then begin
+              ExceptionMessage := GetText('^Exception(%s).FMessage', [ExceptInfo.ObjAddr]);
+              if FLastExecResult.State <> dsError then
+                Exclude(TargetInfo^.TargetFlags, tfExceptionIsPointer);
+            end;
+            if FLastExecResult.State = dsError then
+              ExceptionMessage := GetText('^^char(^%s(%s)+1)^', [PointerTypeCast, ExceptInfo.ObjAddr]);
+          end;
           //ExceptionMessage := GetText('^^Exception($fp+8)^^.FMessage', []);
         end else begin
           // Only works if Exception class is not changed. FMessage must be first member
@@ -10898,6 +10907,7 @@ begin
   if not ExecuteCommand('x/s ' + AExpression, AValues, R, [],
                        DebuggerProperties.TimeoutForEval)
   then begin
+    FLastExecResult.State := dsError;
     Result := '';
     Exit;
   end;
@@ -10911,6 +10921,7 @@ var
 begin
   if not ExecuteCommand('x/c ' + AExpression, AValues, R)
   then begin
+    FLastExecResult.State := dsError;
     Result := '';
     Exit;
   end;
