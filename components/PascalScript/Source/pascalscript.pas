@@ -13,7 +13,7 @@ uses
   uPSComponent_DB, uPSComponent_Default, uPSComponent_Forms, uPSComponent_StdCtrls, uPSUtils, 
   uPSDebugger, uPSDisassembly, uPSPreProcessor, uPSR_buttons, uPSR_classes, uPSR_controls, 
   uPSR_dateutils, uPSR_DB, uPSR_dll, uPSR_extctrls, uPSR_forms, uPSR_graphics, uPSR_menus, 
-  uPSR_std, LazarusPackageIntf;
+  uPSR_std, uPSC_comobj, uPSComponent_COM, uPSR_comobj, LazarusPackageIntf;
 
 implementation
 
