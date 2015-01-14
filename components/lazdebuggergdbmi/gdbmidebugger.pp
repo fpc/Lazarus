@@ -11453,6 +11453,7 @@ begin
     ACmd.ExecuteCommand('-break-insert %s', [ALoc], R);
   Result := R.State <> dsError;
   if not Result then exit;
+  FEnabled := True;
 
   ResultList := TGDBMINameValueList.Create(R, ['bkpt']);
   AId       := StrToIntDef(ResultList.Values['number'], -1);
@@ -11510,7 +11511,7 @@ begin
   FLineOffsAddr := 0;
   FUseForceFlag := False;
   FName := AName;
-  FEnabled := True;
+  FEnabled := False;
 end;
 
 (* Using -insert-break with a function name allows GDB to adjust the address
@@ -11642,7 +11643,7 @@ var
   R: TGDBMIExecResult;
 begin
   if FEnabled then exit;
-  FEnabled := True;
+  FEnabled := (FNameBreakID >= 0) or (FAddrBreakID >= 0) or (FCustomID >= 0) or (FLineOffsID >= 0);
 
   if FNameBreakID >= 0 then
     ACmd.ExecuteCommand('-break-enable %d', [FNameBreakID], R);
