@@ -745,6 +745,7 @@ begin
     QtTreeWidget.OwnerDrawn := ALV.IsCustomDrawn(dtControl, cdPrePaint) or (ALV.OwnerDraw and
       (ALV.ViewStyle = vsReport));
     QtTreeWidget.setStretchLastSection(False);
+    QTreeView_setItemsExpandable(QTreeViewH(QtTreeWidget.Widget), False);
     QtTreeWidget.setRootIsDecorated(False);
     QtTreeWidget.AttachEvents;
     Result := TLCLIntfHandle(QtTreeWidget);
