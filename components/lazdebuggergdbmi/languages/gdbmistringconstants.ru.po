@@ -110,7 +110,7 @@ msgstr "Запуск процесса: %s"
 
 #: gdbmistringconstants.gdbmifailedtolaunchexternaldbg
 msgid "Failed to create process for GDB"
-msgstr ""
+msgstr "Не удалось создать процесс GDB"
 
 #: gdbmistringconstants.gdbmifailedtoterminategdb
 msgctxt "gdbmistringconstants.gdbmifailedtoterminategdb"
