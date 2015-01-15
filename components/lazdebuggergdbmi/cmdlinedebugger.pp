@@ -335,9 +335,13 @@ begin
     FDbgProcess := TProcessUTF8.Create(nil);
     try
       FDbgProcess.CommandLine := ExternalDebugger + ' ' + AOptions;
-      // TODO: under win9x and winMe should be created with console,
-      // otherwise no break can be sent.
       FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut, poNewProcessGroup];
+      {$if defined(windows) and not defined(wince)}
+      // under win9x and winMe should be created with console,
+      // otherwise no break can be sent.
+      if Win32MajorVersion <= 4 then
+        FDbgProcess.Options:= [poUsePipes, poNewConsole, poStdErrToOutPut, poNewProcessGroup];
+      {$endif windows}
       FDbgProcess.ShowWindow := swoNone;
       FDbgProcess.Environment:=DebuggerEnvironment;
     except
