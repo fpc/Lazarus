@@ -1576,14 +1576,10 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.ValueCheckBoxClick(Sender: TObject);
-var
-  CurRow: TOIPropertyGridRow;
 begin
   if (pgsUpdatingEditControl in FStates) or not IsCurrentEditorAvailable then exit;
   ValueCheckBox.Caption:=BoolToStr(ValueCheckBox.Checked, '(True)', '(False)');
-  CurRow:=Rows[FItemIndex];
-  if paAutoUpdate in CurRow.Editor.GetAttributes then
-    SetRowValue(true);
+  SetRowValue(true);
 end;
 
 procedure TOICustomPropertyGrid.ValueComboBoxExit(Sender: TObject);
