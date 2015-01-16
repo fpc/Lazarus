@@ -145,3 +145,11 @@ msgstr "Rezultatą pridėti istorijos apačioje"
 msgid "Insert result at top of history"
 msgstr "Rezultatą pridėti istorijos viršuje"
 
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr ""
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr ""
+

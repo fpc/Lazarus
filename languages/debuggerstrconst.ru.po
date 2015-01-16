@@ -143,3 +143,11 @@ msgstr "Добавлять результат в историю снизу"
 msgid "Insert result at top of history"
 msgstr "Добавлять результат в историю сверху"
 
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr "Поле \"Новое значение\" пусто."
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr "Отладчику не удалось изменить значение."
+
