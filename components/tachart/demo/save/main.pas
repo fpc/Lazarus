@@ -98,7 +98,6 @@ begin
   fs := TFileStream.Create(GetFileName('svg'), fmCreate);
   try
     id := TSVGDrawer.Create(fs, true);
-    id.DoChartColorToFPColor := @ChartColorSysToFPColor;
     with Chart1 do
       Draw(id, Rect(0, 0, Width, Height));
   finally

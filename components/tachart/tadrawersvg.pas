@@ -14,9 +14,20 @@ unit TADrawerSVG;
 interface
 
 uses
-  Classes, FPImage, FPCanvas, TAChartUtils, TADrawUtils;
+  Graphics, Classes, FPImage, FPCanvas, TAChartUtils, TADrawUtils;
 
 type
+  TSVGFont = record
+    Name: String;
+    Color: TFPColor;
+    Size: integer;
+    Orientation: Integer;  // angle * 10 (90° --> 900), >0 if ccw.
+    Bold: boolean;
+    Italic: boolean;
+    Underline: boolean;
+    StrikeThrough: boolean;
+  end;
+
 
   TSVGDrawer = class(TBasicDrawer, IChartDrawer)
   strict private
@@ -24,8 +35,7 @@ type
     FBrushColor: TFPColor;
     FBrushStyle: TFPBrushStyle;
     FClippingPathId: Integer;
-    FFont: TFPCustomFont;
-    FFontAngle: Double;
+    FFont: TSVGFont;
     FPatterns: TStrings;
     FPen: TFPCustomPen;
     FPrevPos: TPoint;
@@ -49,6 +59,7 @@ type
     function GetFontAngle: Double; override;
     function SimpleTextExtent(const AText: String): TPoint; override;
     procedure SimpleTextOut(AX, AY: Integer; const AText: String); override;
+
   public
     constructor Create(AStream: TStream; AWriteDocType: Boolean);
     destructor Destroy; override;
@@ -115,11 +126,25 @@ begin
   Result := FloatToStr(AValue, fmtSettings);
 end;
 
+function SVGGetFontOrientationFunc(AFont: TFPCustomFont): Integer;
+begin
+  if AFont is TFont then
+    Result := (AFont as TFont).Orientation
+  else
+    Result := AFont.Orientation;
+end;
+
+function SVGChartColorToFPColor(AChartColor: TChartColor): TFPColor;
+begin
+  Result := ChartColorToFPColor(ColorToRGB(AChartColor));
+end;
+
+
 { TSVGDrawer }
 
 procedure TSVGDrawer.AddToFontOrientation(ADelta: Integer);
 begin
-  FFontAngle += OrientToRad(ADelta);
+  FFont.Orientation += ADelta;
 end;
 
 procedure TSVGDrawer.ClippingStart(const AClipRect: TRect);
@@ -148,6 +173,8 @@ begin
   FStream := AStream;
   FPatterns := TStringList.Create;
   FPen := TFPCustomPen.Create;
+  FGetFontOrientationFunc := @SVGGetFontOrientationFunc;
+  FChartColorToFPColorFunc := @SVGChartColorToFPColor;
   if AWriteDocType then begin
     WriteStr('<?xml version="1.0"?>');
     WriteStr('<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"');
@@ -221,7 +248,7 @@ end;
 
 function TSVGDrawer.GetFontAngle: Double;
 begin
-  Result := FFontAngle;
+  Result := FFont.Orientation;
 end;
 
 procedure TSVGDrawer.Line(AX1, AY1, AX2, AY2: Integer);
@@ -374,10 +401,25 @@ begin
 end;
 
 procedure TSVGDrawer.SetFont(AFont: TFPCustomFont);
+var
+  i: Integer;
 begin
-  FFont := AFont;
-  if FMonochromeColor <> clTAColor then
-    FFont.FPColor := FChartColorToFPColorFunc(FMonochromeColor);
+  with FFont do begin
+    Name := AFont.Name;
+    Size := IfThen(AFont.Size=0, 8, AFont.Size);
+
+    // ???
+    if FMonochromeColor <> clTAColor then
+      Color := FChartColorToFPColorFunc(FMonochromeColor)
+    else
+      Color := AFont.FPColor;
+
+    Orientation := FGetFontOrientationFunc(AFont);
+    FFont.Bold := AFont.Bold;
+    FFont.Italic := AFont.Italic;
+    FFont.Underline := AFont.Underline;
+    FFont.Strikethrough := AFont.Strikethrough;
+  end;
 end;
 
 procedure TSVGDrawer.SetPen(APen: TFPCustomPen);
@@ -404,15 +446,35 @@ end;
 procedure TSVGDrawer.SimpleTextOut(AX, AY: Integer; const AText: String);
 var
   p: TPoint;
+  stext: String;
+  sstyle: String;
+  fs: TFormatSettings;
 begin
-  p := RotatePoint(Point(0, FontSize), -FFontAngle) + Point(AX, AY);
-  WriteFmt(
-    '<text x="%d" y="%d" textLength="%d" ' +
-    'style="stroke:none; fill:%s;%s font-family:%s; font-size:%dpt;">' +
-    '%s</text>',
-    [p.X, p.Y, SimpleTextExtent(AText).X,
-      ColorToHex(FFont.FPColor), FormatIfNotEmpty(' opacity:%s;', OpacityStr),
-      FFont.Name, FontSize, AText]);
+  fs := DefaultFormatSettings;
+  fs.DecimalSeparator := '.';
+  fs.ThousandSeparator := '#';
+
+  p := RotatePoint(Point(0, FontSize), OrientToRad(-FFont.Orientation)) + Point(AX, AY);
+  stext := Format('x="%d" y="%d"', [p.X, p.Y]);
+  if FFont.Orientation <> 0 then
+    stext := stext + Format(' transform="rotate(%g,%d,%d)"', [-FFont.Orientation*0.1, p.X, p.Y], fs);
+
+  sstyle := Format('fill:%s; font-family:''%s''; font-size:%dpt;',
+    [ColorToHex(FFont.Color), FFont.Name, FontSize]);
+  if FFont.Bold then
+    sstyle := sstyle + ' font-weight:bold;';
+  if FFont.Italic then
+    sstyle := sstyle + ' font-style:oblique;';
+  if FFont.Underline and FFont.Strikethrough then
+    sstyle := sstyle + ' text-decoration:underline,line-through;'
+  else if FFont.Underline then
+    sstyle := sstyle + ' text-deocration:underline;'
+  else if FFont.Strikethrough then
+    sstyle := sstyle + ' text-decoration:line-through;';
+  if OpacityStr <> '' then
+    sstyle := sstyle + OpacityStr + ';';
+
+  WriteFmt('<text %s style="%s">%s</text>', [stext, sstyle, AText]);
 end;
 
 function TSVGDrawer.StyleFill: String;
