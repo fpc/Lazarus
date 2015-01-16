@@ -145,3 +145,11 @@ msgstr "Eredmények az előzmények aljára"
 msgid "Insert result at top of history"
 msgstr "Eredmények az előzmények tetejére"
 
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr ""
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr ""
+

@@ -143,3 +143,11 @@ msgstr "Accodare il risultato in fondo allo storico"
 msgid "Insert result at top of history"
 msgstr "Inserire risultato in testa allo storico"
 
+#: debuggerstrconst.synfnewvalueisempty
+msgid "\"New value\" is empty."
+msgstr ""
+
+#: debuggerstrconst.synfthedebuggerwasnotabletomodifythevalue
+msgid "The debugger was not able to modify the value."
+msgstr ""
+
