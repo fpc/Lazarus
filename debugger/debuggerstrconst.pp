@@ -76,8 +76,8 @@ resourcestring
 
   drsUseInstanceClassType = 'Use Instance class type';
   drsLen = 'Len=%d: ';
-  synfNewValueIsEmpty = '"New value" is empty';
-  synfTheDebuggerWasNotAbleToModifyTheValue = 'The debugger was not able to modify the value';
+  synfNewValueIsEmpty = '"New value" is empty.';
+  synfTheDebuggerWasNotAbleToModifyTheValue = 'The debugger was not able to modify the value.';
 
 
 implementation
