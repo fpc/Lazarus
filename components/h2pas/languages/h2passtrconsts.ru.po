@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-31 03:50+0300\n"
+"PO-Revision-Date: 2015-01-16 23:53+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -282,7 +282,6 @@ msgid "Give anoymous c enums a typedef name"
 msgstr "Именовать анонимные перечисления C"
 
 #: h2passtrconsts.h2ph2pas
-#| msgid "H2Pas"
 msgid "H2Pas ..."
 msgstr "H2Pas ..."
 
@@ -415,8 +414,8 @@ msgid "Post H2Pas - a set of common tools to run after h2pas%sphReplaceUnitFilen
 msgstr "Пост-H2Pas - набор средств для запуска после h2pas%sphReplaceUnitFilenameWithUnitName - Заменить \"unit <имя файла>;\" на \"unit <имя>;\"%sphRemoveIncludeDirectives - Удалить директивы включенияphRemoveSystemTypes - Удалить переопределения типов, например PLongint%sphFixH2PasMissingIFDEFsInUnit - Добавить отсутствующие IFDEF в тела функций%sphReduceCompilerDirectivesInUnit - удалить лишние директивы%sphRemoveRedefinedPointerTypes - Удалить переопределённые типы указателей%sphRemoveEmptyTypeVarConstSections - Удалить пустые выражения type/var/const%sphReplaceImplicitTypes - Искать неявные типы параметров и добавлять их объявления%sphFixArrayOfParameterType - Заменить \"array of )\" на \"array of const)\"%sphRemoveRedefinitionsInUnit - Удалить повторные объявления типов, переменных, констант и строк ресурсов%sphFixAliasDefinitionsInUnit - Исправить тип выражения для объявлений псевдонимов%sphReplaceConstFunctionsInUnit - Заменить простые функции присваивания константами%sphReplaceTypeCastFunctionsInUnit - Заменить простые функции приведения типов собственно типами%sphFixForwardDefinitions - Исправить предваряющие объявления переупорядочиванием%sphAddUnitsToUsesSection - Добавить модули в выражение Uses%s"
 
 #: h2passtrconsts.h2ppreh2pasasetofcommontoolstorunbeforeh2pasphremovec
-msgid "Pre H2Pas - a set of common tools to run before h2pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to ypedef enums%sphCommentComplexCMacros - Comment macros too complex for hpas%sphCommentComplexCFunctions - Comment functions too complex for hpas%s"
-msgstr "Пред-H2Pas - набор средств для запуска перед h2pas%sphRemoveCPlusPlusExternCTool - Удалить строки 'extern \"C\"' языка C++%sphRemoveEmptyCMacrosTool - Удалить пустые макросы C%sphReplaceEdgedBracketPairWithStar - Заменить [] на *%sphReplace0PointerWithNULL - Заменить значения макросов с указателями на ноль, подобные (char *)0%sphConvertFunctionTypesToPointers - Преобразовывать типы функций в указатели%sphConvertEnumsToTypeDef - Именовать анонимные перечисления%sphCommentComplexCMacros - Закомментировать сложные для hpas макросы%sphCommentComplexCFunctions - Закомментировать сложные для hpas функции%s"
+msgid "Pre H2Pas - a set of common tools to run before h2pas%sphRemoveCPlusPlusExternCTool - Remove C++ 'extern \"C\"' lines%sphRemoveEmptyCMacrosTool - Remove empty C macros%sphReplaceEdgedBracketPairWithStar - Replace [] with *%sphReplace0PointerWithNULL - Replace macro values 0 pointer like (char *)0%sphConvertFunctionTypesToPointers - Convert function types to pointers%sphConvertEnumsToTypeDef - Convert anonymous enums to typedef enums%sphCommentComplexCMacros - Comment macros too complex for h2pas%sphCommentComplexCFunctions - Comment functions too complex for h2pas%s"
+msgstr "Пред-H2Pas - набор средств для запуска перед h2pas%sphRemoveCPlusPlusExternCTool - Удалить строки 'extern \"C\"' языка C++%sphRemoveEmptyCMacrosTool - Удалить пустые макросы C%sphReplaceEdgedBracketPairWithStar - Заменить [] на *%sphReplace0PointerWithNULL - Заменить значения макросов с указателями на ноль, подобные (char *)0%sphConvertFunctionTypesToPointers - Преобразовывать типы функций в указатели%sphConvertEnumsToTypeDef - Именовать анонимные перечисления%sphCommentComplexCMacros - Закомментировать сложные для h2pas макросы%sphCommentComplexCFunctions - Закомментировать сложные для h2pas функции%s"
 
 #: h2passtrconsts.h2pprpackallrecords1bytealignment
 msgid "-pr Pack all records (1 byte alignment)"
