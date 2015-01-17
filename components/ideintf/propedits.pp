@@ -336,7 +336,7 @@ type
     function GetValue: ansistring; virtual;
     function GetHint({%H-}HintType: TPropEditHint; {%H-}x, {%H-}y: integer): string; virtual;
     function GetDefaultValue: ansistring; virtual;
-    function GetVisualValue: ansistring;
+    function GetVisualValue: ansistring; virtual;
     procedure GetValues({%H-}Proc: TGetStrProc); virtual;
     procedure Initialize; virtual;
     procedure Revert; virtual;
@@ -449,6 +449,7 @@ type
   TBoolPropertyEditor = class(TEnumPropertyEditor)
   public
     function OrdValueToVisualValue(OrdValue: longint): string; override;
+    function GetVisualValue: ansistring; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const NewValue: ansistring); override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
@@ -3229,6 +3230,13 @@ begin
     Result := '(' + Result + ')';
 end;
 
+function TBoolPropertyEditor.GetVisualValue: ansistring;
+begin
+  Result := inherited GetVisualValue;
+  if Result = '' then
+    Result := '(Mixed)';
+end;
+
 procedure TBoolPropertyEditor.GetValues(Proc: TGetStrProc);
 begin
   Proc('False');
@@ -3261,12 +3269,14 @@ var
   Check: TThemedButton;
   Sz: TSize;
   TopMargin: Integer;
+  VisVal: String;
 begin
   BRect := ARect;
   if FPropertyHook.GetCheckboxForBoolean then
   begin
+    VisVal := GetVisualValue;
     // Draw the box using theme services.
-    if GetVisualValue = '' then
+    if (VisVal = '') or (VisVal = '(Mixed)') then
       Check := tbCheckBoxMixedNormal
     else if GetOrdValue <> 0 then
       Check := tbCheckBoxCheckedNormal
