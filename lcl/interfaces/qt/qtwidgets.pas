@@ -12216,6 +12216,7 @@ var
   TmpDC1, TmpDC2: HDC;
   SkipDefault: Boolean;
   Item: QListWidgetItemH;
+  APaintResult: TCustomDrawResult;
 begin
   if (ViewStyle >= 0) and not (FChildOfComplexWidget = ccwComboBox) then
   begin
@@ -12278,10 +12279,17 @@ begin
 
       // here we do only OnCustomDrawItem and OnCustomDrawSubItem
       // OnCustomDraw is done inside itemViewportEventFilter.
-      SkipDefault := cdrSkipDefault in TCustomListViewAccess(LCLObject).IntfCustomDraw(ATarget, cdPrePaint, ItemIndex, SubItemIndex, ACustomState, @R);
+
+      APaintResult := TCustomListViewAccess(LCLObject).IntfCustomDraw(ATarget, cdPrePaint, ItemIndex, SubItemIndex, ACustomState, @R);
+      SkipDefault := cdrSkipDefault in APaintResult;
 
       if not SkipDefault then // do default paint by unknown magic
         QAbstractItemDelegate_paint(FOldDelegate, painter, Option, index);
+
+      // issue #27315
+      if cdrNotifyPostpaint in APaintResult then
+        TCustomListViewAccess(LCLObject).IntfCustomDraw(ATarget, cdPostPaint, ItemIndex, SubItemIndex, ACustomState, @R);
+
     finally
       TCustomListView(LCLObject).Canvas.Handle := TmpDC2;
       TQtDeviceContext(TmpDC1).Free;
