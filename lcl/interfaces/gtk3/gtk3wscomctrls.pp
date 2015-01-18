@@ -879,9 +879,38 @@ end;
 
 class procedure TGtk3WSCustomListView.SetImageList(const ALV: TCustomListView;
   const AList: TListViewImageList; const AValue: TCustomImageList);
+var
+  AView: TGtk3ListView;
+  i: Integer;
+  Bmp: TBitmap;
 begin
+  if not WSCheckHandleAllocated(ALV, 'SetImageList') then
+    exit;
   DebugLn('TGtk3WSCustomListView.SetImageList ');
+  AView := TGtk3ListView(ALV.Handle);
   // inherited SetImageList(ALV, AList, AValue);
+  if ((AList = lvilLarge) and not AView.IsTreeView) or
+     ((AList = lvilSmall) and AView.IsTreeView) then
+  begin
+    if Assigned(AView.Images) then
+      AView.ClearImages
+    else
+      AView.Images := TFPList.Create;
+    if Assigned(AValue) then
+    begin
+      for i := 0 to AValue.Count - 1 do
+      begin
+        Bmp := TBitmap.Create;
+        AValue.GetBitmap(i, Bmp);
+        AView.Images.Add(Bmp);
+      end;
+    end;
+
+    if AView.IsTreeView then
+      AView.UpdateImageCellsSize;
+
+    AView.Update(nil);
+  end;
 end;
 
 class procedure TGtk3WSCustomListView.SetItemsCount(const ALV: TCustomListView;

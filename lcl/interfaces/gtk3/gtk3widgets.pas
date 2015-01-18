@@ -523,6 +523,7 @@ type
   TGtk3ListView = class(TGtk3ScrollableWin)
   private
     FPreselectedIndices: TFPList;
+    FImages: TFPList;
     FIsTreeView: Boolean;
   protected
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
@@ -533,6 +534,7 @@ type
     function getHorizontalScrollbar: PGtkScrollbar; override;
     function getVerticalScrollbar: PGtkScrollbar; override;
     function GetScrolledWindow: PGtkScrolledWindow; override;
+    procedure ClearImages;
     procedure ColumnDelete(AIndex: Integer);
     function ColumnGetWidth(AIndex: Integer): Integer;
     procedure ColumnInsert(AIndex: Integer; AColumn: TListColumn);
@@ -552,7 +554,9 @@ type
     function ItemGetState(const AIndex: Integer; const AItem: TListItem; const AState: TListItemState;
       out AIsSet: Boolean): Boolean;
 
+    procedure UpdateImageCellsSize;
 
+    property Images: TFPList read FImages write FImages;
     property IsTreeView: Boolean read FIsTreeView;
   end;
 
@@ -5166,6 +5170,7 @@ var
   PtrType: GType;
   TreeModel: PGtkTreeModel;
 begin
+  FImages := nil;
   FScrollX := 0;
   FScrollY := 0;
   FPreselectedIndices := nil;
@@ -5216,6 +5221,8 @@ end;
 
 destructor TGtk3ListView.Destroy;
 begin
+  ClearImages;
+  FreeAndNil(FImages);
   FreeAndNil(FPreselectedIndices);
   inherited Destroy;
 end;
@@ -5242,6 +5249,19 @@ begin
     Result := PGtkScrolledWindow(Widget)
   else
     Result := nil;
+end;
+
+procedure TGtk3ListView.ClearImages;
+var
+  i: Integer;
+begin
+  if Assigned(FImages) then
+  begin
+    for i := FImages.Count - 1 downto 0 do
+      if FImages[i] <> nil then
+        TGtk3Object(FImages[i]).Free;
+    FImages.Clear;
+  end;
 end;
 
 procedure TGtk3ListView.ColumnDelete(AIndex: Integer);
@@ -5273,7 +5293,7 @@ procedure Gtk3WSLV_ListViewGetPixbufDataFuncForColumn(tree_column: PGtkTreeViewC
   cell: PGtkCellRenderer; tree_model: PGtkTreeModel; iter: PGtkTreeIter; AData: GPointer); cdecl;
 var
   ListItem: TListItem;
-  Images: TList;
+  Images: TFPList;
   // Widgets: PTVWidgets;
   ListColumn: TListColumn;
   ImageIndex: Integer;
@@ -5289,7 +5309,7 @@ begin
     Exit;
   ColumnIndex := ListColumn.Index;
   // Images := Widgets^.Images;
-  Images := nil;
+  Images := TGtk3ListView(AData).Images;
   if Images = nil then
     Exit;
   ImageIndex := -1;
@@ -5675,6 +5695,12 @@ begin
       Result := True;
     end;
   end;
+end;
+
+procedure TGtk3ListView.UpdateImageCellsSize;
+begin
+  // must get renderer via property
+  // gtk_tree_view_column_get_cell_renderers
 end;
 
 { TGtk3ComboBox }
