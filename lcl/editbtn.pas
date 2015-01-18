@@ -93,6 +93,7 @@ type
     function GetAutoSelect: Boolean;
     function GetAutoSelected: Boolean;
     function GetBtnCaption: TCaption;
+    function GetButtonCursor: TCursor;
     function GetButtonHint: TTranslateString;
     function GetButtonWidth: Integer;
     function GetCanUndo: Boolean;
@@ -156,6 +157,7 @@ type
     procedure SetAutoSelected(AValue: Boolean);
     procedure SetButtonAlign(AValue: TButtonAlign);
     procedure SetBtnCaption(AValue: TCaption);
+    procedure SetButtonCursor(AValue: TCursor);
     procedure SetButtonHint(AValue: TTranslateString);
     procedure SetButtonOnlyWhenFocused(AValue: Boolean);
     procedure SetButtonWidth(AValue: Integer);
@@ -240,6 +242,7 @@ type
     property Button: TSpeedButton read FButton;
     property ButtonAlign: TButtonAlign read FButtonAlign write SetButtonAlign default BaRight;
     property ButtonCaption: TCaption read GetBtnCaption write SetBtnCaption;
+    property ButtonCursor: TCursor read GetButtonCursor write SetButtonCursor default crDefault;
     property ButtonHint: TTranslateString read GetButtonHint write SetButtonHint;
     property ButtonOnlyWhenFocused: Boolean read FButtonOnlyWhenFocused write SetButtonOnlyWhenFocused default False;
     property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth;
@@ -335,6 +338,7 @@ type
     property BorderStyle default bsNone;
     property ButtonAlign;
     property ButtonCaption;
+    property ButtonCursor;
     property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
@@ -456,6 +460,7 @@ type
     property OnCheckItem: TCheckItemEvent read fOnCheckItem write fOnCheckItem;
     property UseFormActivate: Boolean read fUseFormActivate write SetUseFormActivate default False;
     // TEditButton properties.
+    property ButtonCursor;
     property ButtonWidth;
     property DirectInput;
     property ButtonOnlyWhenFocused;
@@ -562,6 +567,7 @@ type
     property DefaultExt: String read FDefaultExt write FDefaultExt;
     property HideDirectories: Boolean read FHideDirectories write FHideDirectories;
     // TEditButton properties.
+    property ButtonCursor;
     property ButtonWidth;
     property DirectInput;
     property ButtonOnlyWhenFocused;
@@ -649,6 +655,7 @@ type
     property DialogTitle: String read FDialogTitle write FDialogTitle;
     property ShowHidden: Boolean read FShowHidden write FShowHidden;
     // TEditButton properties.
+    property ButtonCursor;
     property ButtonWidth;
     property DirectInput;
     property ButtonOnlyWhenFocused;
@@ -755,6 +762,7 @@ type
     property DefaultToday: Boolean read FDefaultToday write FDefaultToday default False;
     Property DateOrder : TDateOrder Read FDateOrder Write SetDateOrder;
     property ButtonOnlyWhenFocused;
+    property ButtonCursor;
     property ButtonWidth;
     property Action;
     property Align;
@@ -843,6 +851,7 @@ type
     property OnAcceptValue : TAcceptValueEvent read FOnAcceptValue write FOnAcceptValue;
     property DialogTitle : String read FDialogTitle write FDialogTitle stored TitleStored;
     // TEditButton properties.
+    property ButtonCursor;
     property ButtonWidth;
     property DirectInput;
     property ButtonOnlyWhenFocused;
@@ -1211,6 +1220,11 @@ begin
   Result := FButton.Caption;
 end;
 
+function TCustomEditButton.GetButtonCursor: TCursor;
+begin
+  Result := FButton.Cursor;
+end;
+
 procedure TCustomEditButton.SetButtonAlign(AValue: TButtonAlign);
 begin
   if FButtonAlign = AValue then
@@ -1354,6 +1368,11 @@ begin
   FButton.Caption := AValue;
 end;
 
+procedure TCustomEditButton.SetButtonCursor(AValue: TCursor);
+begin
+  FButton.Cursor := AValue;
+end;
+
 class function TCustomEditButton.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 80 + 23; //as TCustomEdit + TCustomSpeedButton
@@ -1409,7 +1428,6 @@ begin
   if Cursor = AValue then
     Exit;
   inherited SetCursor(AValue);
-  FButton.Cursor := AValue;
   FEdit.Cursor := AValue;
 end;
 
