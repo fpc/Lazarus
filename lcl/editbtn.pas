@@ -460,10 +460,13 @@ type
     property OnCheckItem: TCheckItemEvent read fOnCheckItem write fOnCheckItem;
     property UseFormActivate: Boolean read fUseFormActivate write SetUseFormActivate default False;
     // TEditButton properties.
+    property ButtonAlign;
+    property ButtonCaption;
     property ButtonCursor;
+    property ButtonHint;
+    property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    property ButtonOnlyWhenFocused;
     property NumGlyphs;
     property Flat;
     property FocusOnButtonClick;
@@ -567,10 +570,13 @@ type
     property DefaultExt: String read FDefaultExt write FDefaultExt;
     property HideDirectories: Boolean read FHideDirectories write FHideDirectories;
     // TEditButton properties.
+    property ButtonAlign;
+    property ButtonCaption;
     property ButtonCursor;
+    property ButtonHint;
+    property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    property ButtonOnlyWhenFocused;
     // property Glyph;
     property NumGlyphs;
     property Flat;
@@ -655,10 +661,13 @@ type
     property DialogTitle: String read FDialogTitle write FDialogTitle;
     property ShowHidden: Boolean read FShowHidden write FShowHidden;
     // TEditButton properties.
+    property ButtonAlign;
+    property ButtonCaption;
     property ButtonCursor;
+    property ButtonHint;
+    property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    property ButtonOnlyWhenFocused;
     // property Glyph;
     property NumGlyphs;
     property Flat;
@@ -762,7 +771,10 @@ type
     property DefaultToday: Boolean read FDefaultToday write FDefaultToday default False;
     Property DateOrder : TDateOrder Read FDateOrder Write SetDateOrder;
     property ButtonOnlyWhenFocused;
+    property ButtonAlign;
+    property ButtonCaption;
     property ButtonCursor;
+    property ButtonHint;
     property ButtonWidth;
     property Action;
     property Align;
@@ -851,10 +863,13 @@ type
     property OnAcceptValue : TAcceptValueEvent read FOnAcceptValue write FOnAcceptValue;
     property DialogTitle : String read FDialogTitle write FDialogTitle stored TitleStored;
     // TEditButton properties.
+    property ButtonAlign;
+    property ButtonCaption;
     property ButtonCursor;
+    property ButtonHint;
+    property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    property ButtonOnlyWhenFocused;
     // property Glyph;
     property NumGlyphs;
     property Flat;
