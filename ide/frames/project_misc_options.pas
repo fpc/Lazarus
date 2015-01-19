@@ -31,7 +31,6 @@ type
     UseFPCResourcesRadioButton: TRadioButton;
     UseLRSFilesRadioButton: TRadioButton;
   private
-    { private declarations }
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
