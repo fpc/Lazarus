@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-11-30 19:09+0100\n"
+"PO-Revision-Date: 2015-01-17 17:56+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -835,10 +835,9 @@ msgid "Use Ansistrings"
 msgstr "AnsiStrings verwenden"
 
 #: lazarusidestrconsts.dlgcoasmstyle
-#, fuzzy
 #| msgid "Assembler style:"
 msgid "Assembler style"
-msgstr "Assembler-Stil:"
+msgstr "Assembler-Stil"
 
 #: lazarusidestrconsts.dlgcocfgcmpmessages
 msgctxt "lazarusidestrconsts.dlgcocfgcmpmessages"
@@ -2746,16 +2745,14 @@ msgid "UI Access (uiAccess)"
 msgstr "UI-Zugriff (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
-#, fuzzy
 #| msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgid "Use Application Bundle for running and debugging"
-msgstr "Anwendungs-Bundle für Start und Debug verwenden (nur Darwin)"
+msgstr "Anwendungs-Bundle für Start und Debug verwenden"
 
 #: lazarusidestrconsts.dlgpousemanifest
-#, fuzzy
 #| msgid "Use manifest file to enable themes (Windows only)"
 msgid "Use manifest file to enable themes"
-msgstr "Themen mit Manifest-Datei einschalten (nur in Windows)"
+msgstr "Themen mit Manifest-Datei einschalten"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
@@ -3029,7 +3026,7 @@ msgstr "Hinweise zeigen"
 
 #: lazarusidestrconsts.dlgshowingwindows
 msgid "Showing Windows"
-msgstr ""
+msgstr "Fensteranzeige"
 
 #: lazarusidestrconsts.dlgshowlinenumbers
 msgctxt "lazarusidestrconsts.dlgshowlinenumbers"
@@ -3281,7 +3278,7 @@ msgstr "Startprogramm verwenden"
 
 #: lazarusidestrconsts.dlguseminimumime
 msgid "Ime handled by System"
-msgstr ""
+msgstr "IME vom System gehandhabt"
 
 #: lazarusidestrconsts.dlguserschemeerror
 msgid "Failed to load user-scheme file %s"
@@ -6281,7 +6278,7 @@ msgstr "Unit %s zum uses Abschnitt hinzugefügt"
 
 #: lazarusidestrconsts.lisconvaddingflagforregister
 msgid "Adding flag for \"Register\" procedure in unit %s."
-msgstr ""
+msgstr "Füge Flag für \"Register\" Prozedur in Unit %s hinzu."
 
 #: lazarusidestrconsts.lisconvbracketmissingfromreplfunc
 msgid "\")\" is missing from replacement function: %s"
@@ -6576,7 +6573,7 @@ msgstr "Gestoppt, weil es bereits ein Package mit dem selben Namen gibt"
 
 #: lazarusidestrconsts.lisconvthislogwassaved
 msgid "This log was saved to %s"
-msgstr ""
+msgstr "Dieses Protokoll wurde gespeichert in %s"
 
 #: lazarusidestrconsts.lisconvtopoff
 msgid "Top offset"
@@ -6653,7 +6650,7 @@ msgstr "Kopierfehler"
 
 #: lazarusidestrconsts.liscopyfilename
 msgid "Copy Filename %s"
-msgstr ""
+msgstr "Kopiere Dateiname %s"
 
 #: lazarusidestrconsts.liscopyfilenametoclipboard
 msgid "Copy File Name to Clipboard"
@@ -6773,7 +6770,7 @@ msgstr "Erzeuge lokale Variable \"%s\""
 
 #: lazarusidestrconsts.liscreatenewaddition
 msgid "Create new addition"
-msgstr ""
+msgstr "Neue Hinzufügung erstellen"
 
 #: lazarusidestrconsts.liscreatenewpackage
 msgid "(Create new package)"
@@ -7521,11 +7518,11 @@ msgstr "i18n für LFM deaktivieren"
 
 #: lazarusidestrconsts.lisdisableoptionxg
 msgid "Disable Option -Xg?"
-msgstr ""
+msgstr "Option -Xg deaktivieren?"
 
 #: lazarusidestrconsts.lisdisableoptionxg2
 msgid "Disable option -Xg"
-msgstr ""
+msgstr "Option -Xg deaktivieren"
 
 #: lazarusidestrconsts.lisdisassassembler
 msgctxt "lazarusidestrconsts.lisdisassassembler"
@@ -8643,7 +8640,7 @@ msgstr "Suchen ..."
 
 #: lazarusidestrconsts.lisfinddeclarationof
 msgid "Find Declaration of %s"
-msgstr ""
+msgstr "Finde Deklaration von %s"
 
 #: lazarusidestrconsts.lisfindfiledirectories
 msgid "D&irectories"
@@ -8715,7 +8712,7 @@ msgstr "Umbenennen erzwingen"
 
 #: lazarusidestrconsts.lisfordarwin
 msgid "For Darwin"
-msgstr ""
+msgstr "Für Darwin"
 
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
@@ -8731,7 +8728,7 @@ msgstr "Formatfehler"
 
 #: lazarusidestrconsts.lisforwindows
 msgid "For Windows"
-msgstr ""
+msgstr "Für Windows"
 
 #: lazarusidestrconsts.lisfoundversionexpected
 msgid "Found version %s, expected %s"
@@ -9671,7 +9668,7 @@ msgstr "Sprungliste"
 
 #: lazarusidestrconsts.lisjumptoprocedure
 msgid "Jump to procedure %s"
-msgstr ""
+msgstr "Springe zu Prozedur %s"
 
 #: lazarusidestrconsts.liskb
 msgid "%s KB"
@@ -10730,7 +10727,7 @@ msgstr "Hauptunit ist ein Pascal-Quelltext"
 
 #: lazarusidestrconsts.lismainunitispascalsourcehint
 msgid "Assume Pascal even if it does not end with .pas/.pp suffix."
-msgstr ""
+msgstr "Nehme Pascal an auch ohne .pas/.pp Dateierweiterung"
 
 #: lazarusidestrconsts.lismakeexe
 msgid "Make Executable"
@@ -12361,7 +12358,7 @@ msgstr "keine Vorlage ausgewählt"
 #: lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated
 msgctxt "lazarusidestrconsts.lisnotfoundinatlinecolumnmaybethemessageisoutdated"
 msgid "%s not found in %s at line %s, column %s.%sMaybe the message is outdated."
-msgstr ""
+msgstr "%s nicht gefunden in %s in Zeile %s, Spalte %s.%sMöglicherweise ist die Nachricht veraltet."
 
 #: lazarusidestrconsts.lisnotimplemented
 msgid "Not implemented"
@@ -12397,7 +12394,7 @@ msgstr "Zahl der umzuwandelnden Dateien: %s"
 
 #: lazarusidestrconsts.lisobjectinspectorbecomesvisible
 msgid "Object Inspector becomes visible when components are selected in designer."
-msgstr ""
+msgstr "Der Objektinspektor wird sichtbar, wenn Komponenten im Designer ausgewählt sind."
 
 #: lazarusidestrconsts.lisobjectpascaldefault
 msgid "Object Pascal - default"
@@ -12738,7 +12735,7 @@ msgstr "Seitenname"
 
 #: lazarusidestrconsts.lispagenamealreadyexists
 msgid "Page name \"%s\" already exists. Not added."
-msgstr ""
+msgstr "Seitenname \"%s\" existiert bereits. Nicht hinzugefügt."
 
 #: lazarusidestrconsts.lispanic
 msgid "Panic"
@@ -16966,7 +16963,6 @@ msgid "Uninstall selection"
 msgstr "Auswahl deinstallieren"
 
 #: lazarusidestrconsts.lisunit
-#, fuzzy
 msgctxt "lazarusidestrconsts.lisunit"
 msgid "Unit"
 msgstr "Unit"
@@ -17563,7 +17559,7 @@ msgstr "Kompiliernummer automatisch erhöhen"
 
 #: lazarusidestrconsts.rsautomaticallyincreasebuildnumberhint
 msgid "Increased every time the project is compiled."
-msgstr ""
+msgstr "Wird bei jeder Kompilierung des Projekts erhöht"
 
 #: lazarusidestrconsts.rsbuild
 #, fuzzy
