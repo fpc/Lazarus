@@ -2705,6 +2705,7 @@ resourcestring
     +'%s%s?';
   lisAlternativeKeyOr2KeySequence = 'Alternative key (or 2 key sequence)';
   srkmConflic  = 'Conflict ';
+  lisThereAreNoConflictingKeys = 'There are no conflicting keys.';
   srkmEditForCmd = 'Edit keys of command';
   lisChooseAKey = 'Choose a key ...';
 

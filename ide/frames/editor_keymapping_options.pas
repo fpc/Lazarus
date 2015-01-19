@@ -656,7 +656,7 @@ begin
   end;
 
   if ConflictsTreeView.Items.Count=0 then
-    ConflictsTreeView.Items.Add(nil,'There are no conflicting keys.');
+    ConflictsTreeView.Items.Add(nil, lisThereAreNoConflictingKeys);
 
   ConflictsTreeView.EndUpdate;
 end;
