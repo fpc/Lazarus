@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, StdCtrls,
-  CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf;
+  CodeToolsOptions, LazarusIDEStrConsts, IDEOptionsIntf, DividerBevel;
 
 type
 
@@ -35,11 +35,15 @@ type
   TCodetoolsIndentifierCompletionOptionsFrame = class(TAbstractIDEOptionsEditor)
     ICAddDoCheckBox: TCheckBox;
     ICAutoAddParameterBracketsCheckBox: TCheckBox;
+    ICMiscDividerBevel: TDividerBevel;
+    ICOpenDividerBevel: TDividerBevel;
     ICAutoStartAfterPointCheckBox: TCheckBox;
     ICAddAssignOperatorCheckBox: TCheckBox;
     ICAddSemicolonCheckBox: TCheckBox;
+    ICAddDividerBevel: TDividerBevel;
     ICReplaceCheckBox: TCheckBox;
     ICShowHelpCheckBox: TCheckBox;
+    ICSortDividerBevel: TDividerBevel;
     ICSortForHistoryCheckBox: TCheckBox;
     ICSortForScopeCheckBox: TCheckBox;
   private
@@ -65,21 +69,25 @@ end;
 procedure TCodetoolsIndentifierCompletionOptionsFrame.Setup(
   ADialog: TAbstractOptionsEditorDialog);
 begin
-  ICAddSemicolonCheckBox.Caption:=dlgAddSemicolon;
-  ICAddAssignOperatorCheckBox.Caption:=dlgAddAssignmentOperator;
-  ICAddDoCheckBox.Caption:=lisAddKeywordDo;
+  ICOpenDividerBevel.Caption:=lisOpen;
   ICAutoStartAfterPointCheckBox.Caption:=lisAutomaticallyInvokeAfterPoint;
-  ICAutoAddParameterBracketsCheckBox.Caption:=lisAddParameterBrackets;
-
-  ICReplaceCheckBox.Caption:=lisReplaceWholeIdentifier;
-  ICReplaceCheckBox.Hint:=lisEnableReplaceWholeIdentifierDisableReplacePrefix;
-
   ICShowHelpCheckBox.Caption:=lisShowHelp;
   ICShowHelpCheckBox.Hint:=lisBestViewedByInstallingAHTMLControlLikeTurbopowerip;
 
+  ICAddDividerBevel.Caption:=lisAdd;
+  ICAddSemicolonCheckBox.Caption:=dlgAddSemicolon;
+  ICAddAssignOperatorCheckBox.Caption:=dlgAddAssignmentOperator;
+  ICAddDoCheckBox.Caption:=lisAddKeywordDo;
+  ICAutoAddParameterBracketsCheckBox.Caption:=lisAddParameterBrackets;
+
+  ICSortDividerBevel.Caption:=lisSort;
   ICSortForHistoryCheckBox.Caption:=lisShowRecentlyUsedIdentifiersAtTop;
   ICSortForScopeCheckBox.Caption:=lisSortForScope;
   ICSortForScopeCheckBox.Hint:=lisForExampleShowAtTopTheLocalVariablesThenTheMembers;
+
+  ICMiscDividerBevel.Caption:=dlgEnvMisc;
+  ICReplaceCheckBox.Caption:=lisReplaceWholeIdentifier;
+  ICReplaceCheckBox.Hint:=lisEnableReplaceWholeIdentifierDisableReplacePrefix;
 end;
 
 procedure TCodetoolsIndentifierCompletionOptionsFrame.ReadSettings(

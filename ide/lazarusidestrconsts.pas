@@ -5300,6 +5300,7 @@ resourcestring
   lisBestViewedByInstallingAHTMLControlLikeTurbopowerip = 'Best viewed by '
     +'installing a HTML control like turbopoweriprodsgn';
   lisShowRecentlyUsedIdentifiersAtTop = 'Show recently used identifiers at top';
+  lisSort = 'Sort';
   lisSortForScope = 'Sort for scope';
   lisForExampleShowAtTopTheLocalVariablesThenTheMembers = 'For example show at'
     +' top the local variables, then the members of current class, then of the'
