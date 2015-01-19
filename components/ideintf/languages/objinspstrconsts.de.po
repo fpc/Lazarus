@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-09-07 16:39+0100\n"
+"PO-Revision-Date: 2015-01-11 23:20+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -134,27 +134,27 @@ msgstr "Hoch"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
-msgstr ""
+msgstr "Felder hinzufügen"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
-msgstr ""
+msgstr "DBGrid-Spalteneditor"
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
-msgstr ""
+msgstr "Alle löschen"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
-msgstr ""
+msgstr "Label abrufen"
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
-msgstr ""
+msgstr "Dies wird alle Spalten löschen. Fortfahren?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
-msgstr ""
+msgstr "Dies wird alle Titel aus dem Dataset ersetzen. Fortfahren?"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -175,7 +175,7 @@ msgstr "&Daten"
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
-msgstr ""
+msgstr "&Dataset:"
 
 #: objinspstrconsts.fesfetitle
 #| msgid "Edit Fields..."
@@ -199,11 +199,10 @@ msgid "FieldDefs"
 msgstr "Felddefinitionen"
 
 #: objinspstrconsts.fesformcaption
-#, fuzzy
 #| msgid "New fileld"
 msgctxt "objinspstrconsts.fesformcaption"
 msgid "New field"
-msgstr "Dialog"
+msgstr "Neues Feld"
 
 #: objinspstrconsts.feskeyfield
 msgid "&Key fields:"
@@ -1120,19 +1119,16 @@ msgid "Test Input"
 msgstr "Testeingabe"
 
 #: objinspstrconsts.oistheidentifierisnotamethodpresscanceltoundopressign
-#, fuzzy
 #| msgid "The identifier %s%s%s is not a method.%sPress Cancel to undo,%spress Ignore to force it.The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it.The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The identifier \"%s\" is not a method.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Der Bezeichner \"%s\" ist keine Methode.%sZurücknehmen mit Cancel,%sÜbergehen um ihn zu erzwingen"
 
 #: objinspstrconsts.oisthemethodisincompatibletothiseventpresscanceltound
-#, fuzzy
 #| msgid "The method %s%s%s is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it.The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it.The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is incompatible to this event (%s).%sPress Cancel to undo,%spress Ignore to force it."
-msgstr "Die Methode \"%s\" ist zu diesem Event (%s) inkompatibel.%sAbbrechen um zurückzunehmen,%sÜbergehen um sie zu erzwingen."
+msgstr "Die Methode \"%s\" ist inkompatibel zu diesem Ereignis (%s).%sAbbrechen um zurückzunehmen,%sÜbergehen um sie zu erzwingen."
 
 #: objinspstrconsts.oisthemethodisnotpublishedpresscanceltoundopressignor
-#, fuzzy
 #| msgid "The method %s%s%s is not published.%sPress Cancel to undo,%spress Ignore to force it.The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it.The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgid "The method \"%s\" is not published.%sPress Cancel to undo,%spress Ignore to force it."
 msgstr "Die Methode \"%s\" ist nicht published.%sAbbrechen um zurückzunehmen,%sÜbergehen um sie zu erzwingen."
