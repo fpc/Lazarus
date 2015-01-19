@@ -140,6 +140,16 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
     ClientHeight = 56
     ClientWidth = 532
     TabOrder = 8
+    object UseFPCResourcesRadioButton: TRadioButton
+      Left = 6
+      Height = 22
+      Top = 28
+      Width = 520
+      Caption = 'UseFPCResourcesRadioButton'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+    end
     object UseLRSFilesRadioButton: TRadioButton
       Left = 6
       Height = 22
@@ -151,16 +161,6 @@ object ProjectMiscOptionsFrame: TProjectMiscOptionsFrame
       ShowHint = True
       TabOrder = 0
       TabStop = True
-    end
-    object UseFPCResourcesRadioButton: TRadioButton
-      Left = 6
-      Height = 22
-      Top = 28
-      Width = 520
-      Caption = 'UseFPCResourcesRadioButton'
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 1
     end
   end
   object UseDesignTimePkgsCheckBox: TCheckBox
