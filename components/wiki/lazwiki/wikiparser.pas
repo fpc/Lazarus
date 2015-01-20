@@ -1536,8 +1536,8 @@ begin
           c:=Result[i+j];
           case c of
           '0'..'9': if Code<16 then Code:=Code*16+ord(c)-ord('0');
-          'a'..'z': if Code<16 then Code:=Code*16+ord(c)-ord('a')+10;
-          'A'..'Z': if Code<16 then Code:=Code*16+ord(c)-ord('A')+10;
+          'a'..'f': if Code<16 then Code:=Code*16+ord(c)-ord('a')+10;
+          'A'..'F': if Code<16 then Code:=Code*16+ord(c)-ord('A')+10;
           else break;
           end;
           if j=2 then break;
