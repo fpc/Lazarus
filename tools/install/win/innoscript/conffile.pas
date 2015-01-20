@@ -47,7 +47,7 @@ begin
     s := copy(s, 2, length(s)-2)
   else
   if (s[1] = '''') and (s[length(s)] = '''') then
-    s := copy(s, 2, length(s)-2)
+    s := copy(s, 2, length(s)-2);
 
   if s = '' then
     exit;
