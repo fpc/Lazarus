@@ -296,7 +296,7 @@ begin
           Page:=copy(s,StartPos,p-StartPos);
           while (Page<>'') and (Page[1]='/') do
             System.Delete(Page,1,1);
-          if (Page<>'') and (not IsIgnoredPage(Page)) then begin;
+          if (Page<>'') and (not IsIgnoredPage(Page)) then begin
             //writeln('TWikiGet.GetAll Page="',Page,'"');
             Filename:=PageToFilename(Page,false);
             AddWikiPage(Page);
@@ -790,6 +790,8 @@ end;
 var
   Application: TWikiGet;
 begin
+  //TestWikiPageToFilename;
+
   Application:=TWikiGet.Create(nil);
   Application.Title:='Wiki Get';
   Application.Run;
