@@ -611,6 +611,10 @@ msgstr "Маски ..."
 msgid "Method"
 msgstr "Метод"
 
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr ""
+
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
 msgstr "Перемістити &Вниз"

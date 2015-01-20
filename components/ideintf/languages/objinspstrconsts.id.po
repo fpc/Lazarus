@@ -620,6 +620,10 @@ msgstr "Masks..."
 msgid "Method"
 msgstr "Metode"
 
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr ""
+
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
 msgstr ""

@@ -627,6 +627,10 @@ msgstr "掩码..."
 msgid "Method"
 msgstr "方法"
 
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr ""
+
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
 msgstr ""

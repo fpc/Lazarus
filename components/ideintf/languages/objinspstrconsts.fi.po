@@ -585,6 +585,10 @@ msgstr "Maskit ..."
 msgid "Method"
 msgstr "Metodi"
 
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr ""
+
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
 msgstr "&Siirrä alas"

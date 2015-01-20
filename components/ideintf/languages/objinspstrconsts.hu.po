@@ -592,6 +592,10 @@ msgstr "Maszkok ..."
 msgid "Method"
 msgstr "Metódus"
 
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr ""
+
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
 msgstr "&Mozgatás le"
@@ -1542,3 +1546,4 @@ msgstr "Fül mozgatása eggyel balra"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Fül mozgatása eggyel jobbra"
+
