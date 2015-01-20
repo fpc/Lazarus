@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-10-02 03:39+0400\n"
+"PO-Revision-Date: 2015-01-21 01:06+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -613,6 +613,10 @@ msgstr "Маски ..."
 #: objinspstrconsts.oismethod
 msgid "Method"
 msgstr "Метод"
+
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr "(Смешанное)"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"

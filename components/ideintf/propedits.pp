@@ -3234,7 +3234,7 @@ function TBoolPropertyEditor.GetVisualValue: ansistring;
 begin
   Result := inherited GetVisualValue;
   if Result = '' then
-    Result := '(Mixed)';
+    Result := oisMixed;
 end;
 
 procedure TBoolPropertyEditor.GetValues(Proc: TGetStrProc);
@@ -3276,7 +3276,7 @@ begin
   begin
     VisVal := GetVisualValue;
     // Draw the box using theme services.
-    if (VisVal = '') or (VisVal = '(Mixed)') then
+    if (VisVal = '') or (VisVal = oisMixed) then
       Check := tbCheckBoxMixedNormal
     else if GetOrdValue <> 0 then
       Check := tbCheckBoxCheckedNormal

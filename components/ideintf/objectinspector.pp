@@ -1638,7 +1638,7 @@ end;
 procedure TOICustomPropertyGrid.SetCheckboxState(NewValue: string);
 begin
   ValueCheckBox.Caption:=NewValue;
-  if (NewValue='') or (NewValue='(Mixed)') then
+  if (NewValue='') or (NewValue=oisMixed) then
     ValueCheckBox.State:=cbGrayed
   else if NewValue='(True)' then
     ValueCheckBox.State:=cbChecked

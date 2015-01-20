@@ -593,6 +593,10 @@ msgstr "Maschere..."
 msgid "Method"
 msgstr "Metodo"
 
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr ""
+
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
 msgstr "Sposta &giù"

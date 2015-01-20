@@ -598,6 +598,10 @@ msgstr "マスク ..."
 msgid "Method"
 msgstr "メソッド"
 
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr ""
+
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
 msgstr "下に移動(&D)"

@@ -618,6 +618,10 @@ msgstr "מסכות ..."
 msgid "Method"
 msgstr "מתודה"
 
+#: objinspstrconsts.oismixed
+msgid "(Mixed)"
+msgstr ""
+
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
 msgstr "הזז למטה"

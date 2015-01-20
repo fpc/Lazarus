@@ -15,6 +15,7 @@ resourcestring
   // Object Inspector
   oisObjectInspector = 'Object Inspector';
   oisError = 'Error';
+  oisMixed = '(Mixed)';
   oisItemsSelected = '%u items selected';
   
   oiscAdd = '&Add';
