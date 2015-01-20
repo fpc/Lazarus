@@ -9326,6 +9326,18 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
+#: lazarusidestrconsts.lisidcadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisidcadd"
+msgid "Add"
+msgstr "Pridėti"
+
+#: lazarusidestrconsts.lisidcopen
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisidcopen"
+msgid "Open"
+msgstr "Atverti"
+
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr "IKA"
@@ -15767,6 +15779,10 @@ msgstr "Atitikmenys"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Deja, šis tipas dar neįgyvendintas"
 
+#: lazarusidestrconsts.lissort
+msgid "Sort"
+msgstr ""
+
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr ""
@@ -16522,6 +16538,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
+#: lazarusidestrconsts.listherearenoconflictingkeys
+msgid "There are no conflicting keys."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename

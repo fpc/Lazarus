@@ -9118,6 +9118,17 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr ""
 
+#: lazarusidestrconsts.lisidcadd
+msgctxt "lazarusidestrconsts.lisidcadd"
+msgid "Add"
+msgstr ""
+
+#: lazarusidestrconsts.lisidcopen
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisidcopen"
+msgid "Open"
+msgstr "إفتح"
+
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr ""
@@ -15377,6 +15388,10 @@ msgstr ""
 msgid "Sorry, this type is not yet implemented"
 msgstr ""
 
+#: lazarusidestrconsts.lissort
+msgid "Sort"
+msgstr ""
+
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr ""
@@ -16048,6 +16063,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
+#: lazarusidestrconsts.listherearenoconflictingkeys
+msgid "There are no conflicting keys."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename

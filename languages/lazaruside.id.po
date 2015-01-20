@@ -9419,6 +9419,18 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
+#: lazarusidestrconsts.lisidcadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisidcadd"
+msgid "Add"
+msgstr "Tambah"
+
+#: lazarusidestrconsts.lisidcopen
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisidcopen"
+msgid "Open"
+msgstr "Buka"
+
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr "IDE"
@@ -16124,6 +16136,10 @@ msgstr "Sama"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Maaf, tipe ini belum diimplementasikan"
 
+#: lazarusidestrconsts.lissort
+msgid "Sort"
+msgstr ""
+
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr ""
@@ -16839,6 +16855,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
+#: lazarusidestrconsts.listherearenoconflictingkeys
+msgid "There are no conflicting keys."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename

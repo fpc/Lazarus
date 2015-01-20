@@ -9641,6 +9641,18 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
+#: lazarusidestrconsts.lisidcadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisidcadd"
+msgid "Add"
+msgstr "הוסף"
+
+#: lazarusidestrconsts.lisidcopen
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisidcopen"
+msgid "Open"
+msgstr "פתח"
+
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr "IDE"
@@ -16500,6 +16512,10 @@ msgstr "התאמות"
 msgid "Sorry, this type is not yet implemented"
 msgstr "מצטער, סוג זה לא ממומש עדיין"
 
+#: lazarusidestrconsts.lissort
+msgid "Sort"
+msgstr ""
+
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr ""
@@ -17270,6 +17286,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
+#: lazarusidestrconsts.listherearenoconflictingkeys
+msgid "There are no conflicting keys."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename

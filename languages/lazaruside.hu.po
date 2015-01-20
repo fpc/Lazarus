@@ -9108,6 +9108,18 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
+#: lazarusidestrconsts.lisidcadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisidcadd"
+msgid "Add"
+msgstr "Hozzáadás"
+
+#: lazarusidestrconsts.lisidcopen
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisidcopen"
+msgid "Open"
+msgstr "Megnyitás"
+
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr "IDE"
@@ -15378,6 +15390,10 @@ msgstr "Találatok"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Sajnáljuk, ez a típus egyelőre nincs megvalósítva"
 
+#: lazarusidestrconsts.lissort
+msgid "Sort"
+msgstr ""
+
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr "Rendezés hatókör alapján"
@@ -16048,6 +16064,10 @@ msgstr "A projekt hibakeresési szimbólumai külső fájlba kerülnek. A(z) \"%
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
 msgstr "%sTovábbi megjegyzések találhatók ezen üzenethez:%s"
+
+#: lazarusidestrconsts.listherearenoconflictingkeys
+msgid "There are no conflicting keys."
+msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"

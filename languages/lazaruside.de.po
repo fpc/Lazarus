@@ -835,7 +835,6 @@ msgid "Use Ansistrings"
 msgstr "AnsiStrings verwenden"
 
 #: lazarusidestrconsts.dlgcoasmstyle
-#| msgid "Assembler style:"
 msgid "Assembler style"
 msgstr "Assembler-Stil"
 
@@ -2745,12 +2744,10 @@ msgid "UI Access (uiAccess)"
 msgstr "UI-Zugriff (uiAccess)"
 
 #: lazarusidestrconsts.dlgpouseappbundle
-#| msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgid "Use Application Bundle for running and debugging"
 msgstr "Anwendungs-Bundle für Start und Debug verwenden"
 
 #: lazarusidestrconsts.dlgpousemanifest
-#| msgid "Use manifest file to enable themes (Windows only)"
 msgid "Use manifest file to enable themes"
 msgstr "Themen mit Manifest-Datei einschalten"
 
@@ -9122,6 +9119,18 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "ID"
 
+#: lazarusidestrconsts.lisidcadd
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisidcadd"
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: lazarusidestrconsts.lisidcopen
+#, fuzzy
+msgctxt "lazarusidestrconsts.lisidcopen"
+msgid "Open"
+msgstr "Öffnen"
+
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr "IDE"
@@ -15400,6 +15409,10 @@ msgstr "Treffer"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Entschuldigung, dieser Typ ist (noch) nicht implementiert"
 
+#: lazarusidestrconsts.lissort
+msgid "Sort"
+msgstr ""
+
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr "Nach Bereich sortieren"
@@ -16069,6 +16082,10 @@ msgstr ""
 
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
+msgstr ""
+
+#: lazarusidestrconsts.listherearenoconflictingkeys
+msgid "There are no conflicting keys."
 msgstr ""
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
