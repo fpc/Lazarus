@@ -2015,6 +2015,7 @@ resourcestring
   dlgInsSpaceFront = 'Insert space in front of';
   dlgInsSpaceAfter = 'Insert space after';
   dlgWRDPreview = 'Preview';
+  lisIdCAdd = 'Add';
   dlgAddSemicolon = 'Add semicolon';
   dlgAddAssignmentOperator = 'Add assignment operator :=';
   lisAddKeywordDo = 'Add keyword "do"';
@@ -5292,6 +5293,7 @@ resourcestring
   lisClassesAndPropertiesExistValuesWereNotChecked = 'Classes and properties '
     +'exist. Values were not checked.';
   lisInsertPrintShortTag = 'Insert PrintShort tag';
+  lisIdCOpen = 'Open';
   lisAutomaticallyInvokeAfterPoint = 'Automatically invoke after point';
   lisAddParameterBrackets = 'Add parameter brackets';
   lisReplaceWholeIdentifier = 'Replace whole identifier';
