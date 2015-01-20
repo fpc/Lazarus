@@ -101,6 +101,10 @@ function WikiImageToFilename(Image: string; IsInternalLink, InsertCaseID: boolea
 function WikiHeaderToLink(Header: string): string;
 function WikiCreateCommonCodeTagList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
 
+function UTF8ToUTF7W(AnUTF8: string): string;
+function UTF7WToUTF8(anUTF7: string): string;
+procedure TestWikiPageToFilename;
+
 // language
 function GetWikiPageLanguage(const DocumentName: string): string;
 function GetWikiPageLanguageDelimiterPos(const DocumentName: string): integer;
@@ -483,6 +487,177 @@ begin
       Add('objc',@AllwaysTrue);
     end;
   end;
+end;
+
+const
+  UTF7WNormalChars = ['a'..'z','A'..'Z','0'..'9',',','-','_'];
+function UTF8ToUTF7W(AnUTF8: string): string;
+{ Keep a..z, A..Z, 0..9, , - _ % =
+  Replace + with +-
+  Rest encode as +base64-
+}
+const
+  Base64Chars: array[0..63] of char =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789,_';
+var
+  p: PChar;
+  CharLen: integer;
+  BufBits: byte;
+  BufBitLen: integer;
+  c: Char;
+  SrcBits: Integer;
+  i: Integer;
+begin
+  Result:='';
+  if AnUTF8='' then exit;
+  p:=PChar(AnUTF8);
+  repeat
+    c:=p^;
+    if (c=#0) and (p-PChar(AnUTF8)=length(AnUTF8)) then break;
+    if c in UTF7WNormalChars then begin
+      // common English character: keep
+      Result+=c;
+      inc(p);
+    end else if (c='+') and (p[1] in UTF7WNormalChars) then begin
+      // replace '+' with '+-'
+      Result+='+-';
+      inc(p);
+    end else begin
+      // special characters -> encode base64
+      // start marker: '+'
+      Result+='+';
+      // encode as base64
+      BufBits:=0;
+      BufBitLen:=0;
+      repeat
+        if (p^=#0) and (p-PChar(AnUTF8)=length(AnUTF8)) then
+          break; // end of string
+        if (p^ in UTF7WNormalChars) and (p[1] in UTF7WNormalChars)
+        and (p[2] in UTF7WNormalChars) then
+          break; // the next three are normal characters -> stop encoding as base64
+        CharLen:=UTF8CharacterLength(p);
+        for i:=1 to CharLen do begin
+          SrcBits:=ord(p^);
+          BufBits:=BufBits or (SrcBits shr (2+BufBitLen));
+          Result+=Base64Chars[BufBits];
+          BufBits:=(SrcBits shl (4-BufBitLen)) and %111111;
+          BufBitLen:=2+BufBitLen;
+          if BufBitLen=6 then begin
+            Result+=Base64Chars[BufBits];
+            BufBitLen:=0;
+          end;
+          inc(p);
+        end;
+      until false;
+      if BufBitLen>0 then begin
+        Result+=Base64Chars[BufBits];
+      end;
+      // end marker: '-'
+      Result+='-';
+    end;
+  until false;
+end;
+
+function UTF7WToUTF8(anUTF7: string): string;
+var
+  p: PChar;
+  SrcBits: Integer;
+  BufBits: byte;
+  BufBitLen: Integer;
+  c: Char;
+begin
+  Result:='';
+  if anUTF7='' then exit;
+  p:=PChar(anUTF7);
+  repeat
+    c:=p^;
+    if (c=#0) and (p-PChar(anUTF7)=length(anUTF7)) then break;
+    if c='+' then begin
+      inc(p);
+      if p^='-' then begin
+        inc(p);
+        Result+='+'; // single '+'
+      end else begin
+        // decode base64, read til '-'
+        BufBits:=0;
+        BufBitLen:=0;
+        repeat
+          c:=p^;
+          case c of
+          '-':
+            begin
+              inc(p);
+              break;
+            end;
+          'A'..'Z': SrcBits:=ord(c)-ord('A');
+          'a'..'z': SrcBits:=ord(c)-ord('a')+26;
+          '0'..'9': SrcBits:=ord(c)-ord('0')+52;
+          ',': SrcBits:=62;
+          '_': SrcBits:=63;
+          else
+            raise Exception.Create('invalid UTF7: invalid base64 character');
+          end;
+          if BufBitLen=0 then begin
+            BufBits:=BufBits or (SrcBits shl 2);
+            BufBitLen:=6;
+          end else begin
+            BufBits:=BufBits or (SrcBits shr (BufBitLen-2));
+            Result+=chr(BufBits);
+            BufBitLen-=2;
+            BufBits:=(SrcBits shl (8-BufBitLen)) and $FF;
+          end;
+          inc(p);
+        until false;
+        // Note: BufBitLen can be >0 (the last byte contains padding bits)
+      end;
+    end else if c in UTF7WNormalChars then begin
+      // normal char
+      Result+=c;
+      inc(p);
+    end else
+      raise Exception.Create('invalid UTF7: invalid character');
+  until false;
+  if FindInvalidUTF8Character(PChar(Result),length(Result))>=0 then
+    raise Exception.Create('invalid UTF7: result is not UTF-8');
+end;
+
+procedure TestWikiPageToFilename;
+
+  procedure t(PageName: string);
+  var
+    Filename: String;
+    NewPageName: String;
+    ok: Boolean;
+  begin
+    ok:=false;
+    try
+      Filename:=WikiPageToFilename(PageName,false,true);
+      NewPageName:=WikiFilenameToPage(Filename);
+      if PageName=NewPageName then begin
+        ok:=true;
+        exit;
+      end;
+    finally
+      if not ok then begin
+        writeln('TestPageToFilename failed:');
+        writeln('  PageName   ="',PageName,'"');
+        writeln('  NewPageName="',NewPageName,'"');
+        writeln('  Filename   ="',Filename,'"');
+        raise Exception.Create('TestPageToFilename failed');
+      end;
+    end;
+  end;
+
+begin
+  t('');
+  t('a');
+  t('A');
+  t('A1');
+  t('3');
+  t('/');
+  t('A/B');
+  t('A+B');
+  t('A-B');
 end;
 
 function GetWikiPageLanguage(const DocumentName: string): string;
