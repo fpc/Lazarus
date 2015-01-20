@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2015-01-13 00:08+0300\n"
+"PO-Revision-Date: 2015-01-21 00:21+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9097,6 +9097,16 @@ msgctxt "lazarusidestrconsts.lisid"
 msgid "ID"
 msgstr "Идентификатор"
 
+#: lazarusidestrconsts.lisidcadd
+msgctxt "lazarusidestrconsts.lisidcadd"
+msgid "Add"
+msgstr "Добавление"
+
+#: lazarusidestrconsts.lisidcopen
+msgctxt "lazarusidestrconsts.lisidcopen"
+msgid "Open"
+msgstr "Открытие"
+
 #: lazarusidestrconsts.liside
 msgid "IDE"
 msgstr "IDE"
@@ -15367,6 +15377,10 @@ msgstr "Совпадения"
 msgid "Sorry, this type is not yet implemented"
 msgstr "Извините, этот тип ещё не реализован"
 
+#: lazarusidestrconsts.lissort
+msgid "Sort"
+msgstr "Сортировка"
+
 #: lazarusidestrconsts.lissortforscope
 msgid "Sort for scope"
 msgstr "Сортировать по области действия"
@@ -16037,6 +16051,10 @@ msgstr "Проект записывает отладочные символы в
 #: lazarusidestrconsts.listhereareadditionalnotesforthismessageon
 msgid "%sThere are additional notes for this message on%s"
 msgstr "%sДля данного сообщения найдены дополнительные сведения по адресу%s"
+
+#: lazarusidestrconsts.listherearenoconflictingkeys
+msgid "There are no conflicting keys."
+msgstr "Конфликтующие комбинации клавиш отсутствуют."
 
 #: lazarusidestrconsts.listhereareotherfilesinthedirectorywiththesamename
 msgid "There are other files in the directory with the same name,%swhich only differ in case:%s%s%sDelete them?"
