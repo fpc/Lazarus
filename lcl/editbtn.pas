@@ -40,7 +40,6 @@ const
 type
 
 
-  TButtonAlign = (BaLeft, BaRight);
 
   { TEbEdit }
 
@@ -55,7 +54,6 @@ type
   TCustomEditButton = class(TCustomControl)
   private
     FButton: TSpeedButton;
-    FButtonAlign: TButtonAlign;
     FButtonOnlyWhenFocused: Boolean;
     FDirectInput: Boolean;
     FEdit: TEbEdit;
@@ -63,6 +61,7 @@ type
     FIsReadOnly: Boolean;
     FFlat: Boolean;
     FFocusOnButtonClick: Boolean;
+    FLayout: TLeftRight;
     //Forwarded events from FButton
     FOnButtonClick: TNotifyEvent;
     //Forwarded events from FEdit
@@ -93,6 +92,7 @@ type
     function GetAutoSelect: Boolean;
     function GetAutoSelected: Boolean;
     function GetBtnCaption: TCaption;
+    function GetButtonCursor: TCursor;
     function GetButtonHint: TTranslateString;
     function GetButtonWidth: Integer;
     function GetCanUndo: Boolean;
@@ -154,8 +154,8 @@ type
     procedure SetAlignment(AValue: TAlignment);
     procedure SetAutoSelect(AValue: Boolean);
     procedure SetAutoSelected(AValue: Boolean);
-    procedure SetButtonAlign(AValue: TButtonAlign);
     procedure SetBtnCaption(AValue: TCaption);
+    procedure SetButtonCursor(AValue: TCursor);
     procedure SetButtonHint(AValue: TTranslateString);
     procedure SetButtonOnlyWhenFocused(AValue: Boolean);
     procedure SetButtonWidth(AValue: Integer);
@@ -168,6 +168,7 @@ type
     procedure SetFlat(AValue: Boolean);
     procedure SetGlyph(AValue: TBitmap);
     procedure SetHideSelection(AValue: Boolean);
+    procedure SetLayout(AValue: TLeftRight);
     procedure SetMaxLength(AValue: Integer);
     procedure SetModified(AValue: Boolean);
     procedure SetNumbersOnly(AValue: Boolean);
@@ -238,8 +239,8 @@ type
     property AutoSelect: Boolean read GetAutoSelect write SetAutoSelect default True;
     property AutoSelected: Boolean read GetAutoSelected write SetAutoSelected;
     property Button: TSpeedButton read FButton;
-    property ButtonAlign: TButtonAlign read FButtonAlign write SetButtonAlign default BaRight;
     property ButtonCaption: TCaption read GetBtnCaption write SetBtnCaption;
+    property ButtonCursor: TCursor read GetButtonCursor write SetButtonCursor default crDefault;
     property ButtonHint: TTranslateString read GetButtonHint write SetButtonHint;
     property ButtonOnlyWhenFocused: Boolean read FButtonOnlyWhenFocused write SetButtonOnlyWhenFocused default False;
     property ButtonWidth: Integer read GetButtonWidth write SetButtonWidth;
@@ -252,6 +253,7 @@ type
     property FocusOnButtonClick: Boolean read FFocusOnButtonClick write FFocusOnButtonClick default False;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsCustomGlyph;
     property IsMasked: Boolean read GetIsMasked;
+    property Layout: TLeftRight read FLayout write SetLayout default taLeftJustify;
     property NumGlyphs: Integer read GetNumGlyps write SetNumGlyphs;
     property Spacing: Integer read GetSpacing write SetSpacing default 4;
 
@@ -333,8 +335,8 @@ type
     property BiDiMode;
     property BorderSpacing;
     property BorderStyle default bsNone;
-    property ButtonAlign;
     property ButtonCaption;
+    property ButtonCursor;
     property ButtonHint;
     property ButtonOnlyWhenFocused;
     property ButtonWidth;
@@ -351,6 +353,7 @@ type
     property Glyph;
 //    property HideSelection;
     property Hint;
+    property Layout;
     property MaxLength;
     property NumGlyphs;
     property OnButtonClick;
@@ -456,9 +459,12 @@ type
     property OnCheckItem: TCheckItemEvent read fOnCheckItem write fOnCheckItem;
     property UseFormActivate: Boolean read fUseFormActivate write SetUseFormActivate default False;
     // TEditButton properties.
+    property ButtonCaption;
+    property ButtonCursor;
+    property ButtonHint;
+    property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    property ButtonOnlyWhenFocused;
     property NumGlyphs;
     property Flat;
     property FocusOnButtonClick;
@@ -475,6 +481,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property Layout;
     property MaxLength;
     property ParentBidiMode;
     property ParentColor;
@@ -562,9 +569,12 @@ type
     property DefaultExt: String read FDefaultExt write FDefaultExt;
     property HideDirectories: Boolean read FHideDirectories write FHideDirectories;
     // TEditButton properties.
+    property ButtonCaption;
+    property ButtonCursor;
+    property ButtonHint;
+    property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    property ButtonOnlyWhenFocused;
     // property Glyph;
     property NumGlyphs;
     property Flat;
@@ -583,6 +593,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property Layout;
     property MaxLength;
     property ParentBidiMode;
     property ParentColor;
@@ -649,9 +660,12 @@ type
     property DialogTitle: String read FDialogTitle write FDialogTitle;
     property ShowHidden: Boolean read FShowHidden write FShowHidden;
     // TEditButton properties.
+    property ButtonCaption;
+    property ButtonCursor;
+    property ButtonHint;
+    property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    property ButtonOnlyWhenFocused;
     // property Glyph;
     property NumGlyphs;
     property Flat;
@@ -669,6 +683,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property Layout;
     property MaxLength;
     property ParentBidiMode;
     property ParentColor;
@@ -755,6 +770,9 @@ type
     property DefaultToday: Boolean read FDefaultToday write FDefaultToday default False;
     Property DateOrder : TDateOrder Read FDateOrder Write SetDateOrder;
     property ButtonOnlyWhenFocused;
+    property ButtonCaption;
+    property ButtonCursor;
+    property ButtonHint;
     property ButtonWidth;
     property Action;
     property Align;
@@ -776,6 +794,7 @@ type
     property Flat;
     property FocusOnButtonClick;
     property Font;
+    property Layout;
     property MaxLength;
     property OnButtonClick;
     property OnChange;
@@ -819,7 +838,7 @@ type
   TCalcEdit = class(TCustomEditButton)
   private
     FDialogTitle: String;
-    FLayout: TCalculatorLayout;
+    FCalculatorLayout: TCalculatorLayout;
     FOnAcceptValue: TAcceptValueEvent;
     function GetAsFloat: Double;
     function GetAsInteger: Integer;
@@ -837,15 +856,18 @@ type
     property AutoSelected;
   published
     // CalcEdit properties
-    property CalculatorLayout : TCalculatorLayout read FLayout write Flayout;
+    property CalculatorLayout : TCalculatorLayout read FCalculatorLayout write FCalculatorLayout;
     property AsFloat : Double read GetAsFloat write SetAsFloat;
     property AsInteger : Integer read GetAsInteger write SetAsInteger;
     property OnAcceptValue : TAcceptValueEvent read FOnAcceptValue write FOnAcceptValue;
     property DialogTitle : String read FDialogTitle write FDialogTitle stored TitleStored;
     // TEditButton properties.
+    property ButtonCaption;
+    property ButtonCursor;
+    property ButtonHint;
+    property ButtonOnlyWhenFocused;
     property ButtonWidth;
     property DirectInput;
-    property ButtonOnlyWhenFocused;
     // property Glyph;
     property NumGlyphs;
     property Flat;
@@ -863,6 +885,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property Layout;
     property MaxLength;
     property ParentBidiMode;
     property ParentColor;
@@ -1211,18 +1234,11 @@ begin
   Result := FButton.Caption;
 end;
 
-procedure TCustomEditButton.SetButtonAlign(AValue: TButtonAlign);
+function TCustomEditButton.GetButtonCursor: TCursor;
 begin
-  if FButtonAlign = AValue then
-    exit;
-  FButtonAlign := AValue;
-  case FButtonAlign of
-    BaRight:
-      FButton.Align := alRight;
-    BaLeft:
-      FButton.Align := alLeft;
-  end;
+  Result := FButton.Cursor;
 end;
+
 
 procedure TCustomEditButton.SetButtonHint(AValue: TTranslateString);
 begin
@@ -1354,6 +1370,11 @@ begin
   FButton.Caption := AValue;
 end;
 
+procedure TCustomEditButton.SetButtonCursor(AValue: TCursor);
+begin
+  FButton.Cursor := AValue;
+end;
+
 class function TCustomEditButton.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 80 + 23; //as TCustomEdit + TCustomSpeedButton
@@ -1409,7 +1430,6 @@ begin
   if Cursor = AValue then
     Exit;
   inherited SetCursor(AValue);
-  FButton.Cursor := AValue;
   FEdit.Cursor := AValue;
 end;
 
@@ -1429,6 +1449,17 @@ end;
 procedure TCustomEditButton.SetHideSelection(AValue: Boolean);
 begin
   FEdit.HideSelection := AValue;
+end;
+
+procedure TCustomEditButton.SetLayout(AValue: TLeftRight);
+begin
+  if (FLayout = AValue) then
+    Exit;
+  FLayout := AValue;
+  case FLayout of
+    taLeftJustify : FButton.Align := alRight;
+    taRightJustify: FButton.Align := alLeft;
+  end;
 end;
 
 procedure TCustomEditButton.SetMaxLength(AValue: Integer);
@@ -1716,7 +1747,7 @@ begin
   FEdit.ParentColor := False;
   FInitialColor := {$ifdef UseCLDefault}clDefault{$else}clWindow{$endif};
   BorderStyle := bsNone;
-  FButtonAlign := BaRight;
+  FLayout := taLeftjustify;
   FButtonOnlyWhenFocused := False;
   FDirectInput := True;
   FIsReadOnly := False;
@@ -2510,7 +2541,7 @@ var
   B : Boolean;
 begin
   D:=AsFloat;
-  with CreateCalculatorForm(Self,FLayout,0) do
+  with CreateCalculatorForm(Self,FCalculatorLayout,0) do
     try
       Caption:=DialogTitle;
       Value:=D;
