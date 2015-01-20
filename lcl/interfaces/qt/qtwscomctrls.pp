@@ -1452,27 +1452,15 @@ begin
       	QTreeWidgetItem_setCheckState(TWI, 0, QtUnchecked);
     end;
 
-    AAlignment := QtAlignLeft;
+    AAlignment := QtAlignLeft or QtAlignVCenter;
     if TCustomListViewHack(ALV).Columns.Count > 0 then
-      AAlignment := AlignmentToQtAlignmentMap[ALV.Column[0].Alignment];
+      AAlignment := AlignmentToQtAlignmentMap[ALV.Column[0].Alignment] or QtAlignVCenter;
 
     if Str <> '' then
       QtTreeWidget.setItemText(TWI, 0, Str, AAlignment);
 
     QtTreeWidget.setItemData(TWI, 0, AItem);
 
-    for i := 0 to AItem.SubItems.Count - 1 do
-    begin
-      AAlignment := QtAlignLeft;
-      if (TCustomListViewHack(ALV).Columns.Count > 0) and (i + 1 < TCustomListViewHack(ALV).Columns.Count) then
-        AAlignment := AlignmentToQtAlignmentMap[ALV.Column[i + 1].Alignment];
-      if AItem.Subitems.Strings[i] <> '' then
-      begin
-        Str := GetUtf8String(AItem.Subitems.Strings[i]);
-        QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
-        QtTreeWidget.setItemData(TWI, i + 1, AItem);
-      end;
-    end;
     // issue #27043
     if (ALV.Items[AIndex].ImageIndex = -1) then
     begin
@@ -1485,6 +1473,21 @@ begin
         QTreeWidgetItem_sizeHint(TWI, @ASizeHint, 0);
         ASizeHint.cy := AImages.Height + AMetric;
         QTreeWidgetItem_setSizeHint(TWI, 0, @ASizeHint);
+        for i := 0 to AItem.SubItems.Count - 1 do
+          QTreeWidgetItem_setSizeHint(TWI, i + 1, @ASizeHint);
+      end;
+    end;
+
+    for i := 0 to AItem.SubItems.Count - 1 do
+    begin
+      AAlignment := QtAlignLeft or QtAlignVCenter;
+      if (TCustomListViewHack(ALV).Columns.Count > 0) and (i + 1 < TCustomListViewHack(ALV).Columns.Count) then
+        AAlignment := AlignmentToQtAlignmentMap[ALV.Column[i + 1].Alignment] or QtAlignVCenter;
+      if AItem.Subitems.Strings[i] <> '' then
+      begin
+        Str := GetUtf8String(AItem.Subitems.Strings[i]);
+        QtTreeWidget.setItemText(TWI, i + 1, Str, AAlignment);
+        QtTreeWidget.setItemData(TWI, i + 1, AItem);
       end;
     end;
 
@@ -1525,9 +1528,9 @@ begin
     TWI := QtTreeWidget.topLevelItem(AIndex);
     if TWI <> NiL then
     begin
-      AAlignment := QtAlignLeft;
+      AAlignment := QtAlignLeft or QtAlignVCenter;
       if (TCustomListViewHack(ALV).Columns.Count > 0) and (ASubIndex < TCustomListViewHack(ALV).Columns.Count)  then
-        AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment];
+        AAlignment := AlignmentToQtAlignmentMap[ALV.Column[ASubIndex].Alignment]  or QtAlignVCenter;
       QtTreeWidget.setItemText(TWI, ASubIndex, Str, AAlignment);
     end;
   end;
