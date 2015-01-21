@@ -6,107 +6,107 @@ msgstr ""
 
 #: codetoolsstrconsts.crsbracketnotfound
 msgid "bracket ) not found"
-msgstr ""
+msgstr "sulkua ) ei löydy"
 
 #: codetoolsstrconsts.crsbracketnotfound2
 msgid "bracket ] not found"
-msgstr ""
+msgstr "sulkua ] ei löydy"
 
 #: codetoolsstrconsts.crsclosingbracketnotfound
 msgid "closing bracket not found"
-msgstr ""
+msgstr "lopettavaa sulkua ei löydy"
 
 #: codetoolsstrconsts.crsfoundunexpectedat
 msgid "%s, found unexpected %s at %s"
-msgstr ""
+msgstr "%s, löydettiin yllättäen %s kohdassa %s"
 
 #: codetoolsstrconsts.crsrecordendnotfound
 msgid "record end not found"
-msgstr ""
+msgstr "tietueen loppua ei löydy"
 
 #: codetoolsstrconsts.ctsaddsdirtoincludepath
 msgid "adds %s to IncPath"
-msgstr ""
+msgstr "lisää %s IncPath:iin"
 
 #: codetoolsstrconsts.ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
-msgstr ""
+msgstr "lisää %s SrcPath:iin"
 
 #: codetoolsstrconsts.ctsancestorisnotproperty
 msgid "ancestor of untyped property is not a property"
-msgstr ""
+msgstr "tyypitön ominaisuus ei periydy ominaisuudesta"
 
 #: codetoolsstrconsts.ctsanlclproject
 msgid "an LCL project"
-msgstr ""
+msgstr "LCL projekti"
 
 #: codetoolsstrconsts.ctsanonymdefinitionsarenotallowed
 msgid "Anonymous %s definitions are not allowed"
-msgstr ""
+msgstr "Nimettömät %s määritykset ovat kiellettyjä"
 
 #: codetoolsstrconsts.ctsawithoutb
 msgid "%s without %s"
-msgstr ""
+msgstr "%s ilman %s"
 
 #: codetoolsstrconsts.ctsbasetypeofnotfound
 msgid "base type of \"%s\" not found"
-msgstr ""
+msgstr "\"%s\":n kantatyyppiä ei löydy"
 
 #: codetoolsstrconsts.ctsbeginatwithoutend
 msgid "begin at %s without end"
-msgstr ""
+msgstr "begin %s:ssa ilman end"
 
 #: codetoolsstrconsts.ctsbinaryoperator
 msgid "binary operator"
-msgstr ""
+msgstr "binaaritoiminto"
 
 #: codetoolsstrconsts.ctsbracketcloseexpectedbutatomfound
 msgid "bracket close expected, but %s found"
-msgstr ""
+msgstr "odotettiin lopettavaa sulkua, saatiin %s"
 
 #: codetoolsstrconsts.ctsbracketnotfound
 msgid "bracket %s not found"
-msgstr ""
+msgstr "sulkua %s ei löydy"
 
 #: codetoolsstrconsts.ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
-msgstr ""
+msgstr "odotettiin avaavaa sulkua, saatiin %s"
 
 #: codetoolsstrconsts.ctscharacterconstantoutofrange
 msgid "character constant out of range"
-msgstr ""
+msgstr "merkkivakio sallitun alueen ulkopuolella"
 
 #: codetoolsstrconsts.ctscircleindefinitions
 msgid "circle in definitions"
-msgstr ""
+msgstr "kehäriippuvuus määrityksissä"
 
 #: codetoolsstrconsts.ctsclassidentifierexpected
 msgid "class identifier expected"
-msgstr ""
+msgstr "odotettiin luokan tunnistetta"
 
 #: codetoolsstrconsts.ctsclassnodewithoutparentnode
 msgid "class node without parent node"
-msgstr ""
+msgstr "lapsisolmu ilman emosolmua"
 
 #: codetoolsstrconsts.ctsclassnotfound
 msgid "class \"%s\" not found"
-msgstr ""
+msgstr "luokkaa \"%s\" ei löydy"
 
 #: codetoolsstrconsts.ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
-msgstr ""
+msgstr "\"class of\" määritystä ei löydy: %s"
 
 #: codetoolsstrconsts.ctsclasssnotfound
 msgid "Class %s not found"
-msgstr ""
+msgstr "luokkaa %s ei löydy"
 
 #: codetoolsstrconsts.ctsclasswithoutname
 msgid "class without name"
-msgstr ""
+msgstr "luokka ilman nimeä"
 
 #: codetoolsstrconsts.ctscommandlineparameters
 msgid "Command line parameters"
-msgstr ""
+msgstr "Komentoriviparametrit"
 
 #: codetoolsstrconsts.ctscommentendnotfound
 msgid "Comment end not found"
@@ -114,259 +114,259 @@ msgstr "Kommentin loppumerkkiä ei löytynyt"
 
 #: codetoolsstrconsts.ctscompiledsrcpath
 msgid "Compiled SrcPath"
-msgstr ""
+msgstr "Käännetty SrcPath"
 
 #: codetoolsstrconsts.ctscompiler
 msgid "Compiler"
-msgstr ""
+msgstr "Kääntäjä"
 
 #: codetoolsstrconsts.ctscomponentsdirectory
 msgid "Components Directory"
-msgstr ""
+msgstr "Komponenttihakemisto"
 
 #: codetoolsstrconsts.ctsconstant
 msgid "constant"
-msgstr ""
+msgstr "vakio"
 
 #: codetoolsstrconsts.ctsconverterdirectory
 msgid "Converter Directory"
-msgstr ""
+msgstr "Muuntimen hakemisto"
 
 #: codetoolsstrconsts.ctscpudirectory
 msgid "CPU directory"
-msgstr ""
+msgstr "CPU hakemisto"
 
 #: codetoolsstrconsts.ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
-msgstr ""
+msgstr "kursori on koodin ulkopuolella"
 
 #: codetoolsstrconsts.ctscustomcomponentsdirectory
 msgid "Custom Components Directory"
-msgstr ""
+msgstr "Mukautettujen komponenttien hakemisto"
 
 #: codetoolsstrconsts.ctsdebuggerdirectory
 msgid "Debugger Directory"
-msgstr ""
+msgstr "Virheenjäljittimen hakemisto"
 
 #: codetoolsstrconsts.ctsdefaultancestornotfound
 msgid "default ancestor %s not found"
-msgstr ""
+msgstr "oletus-emoa %s ei löydy"
 
 #: codetoolsstrconsts.ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
-msgstr ""
+msgstr "oletus-kantaluokkaa TObject ei löydy"
 
 #: codetoolsstrconsts.ctsdefaultdispinterfaceancestoridispatchnotfound
 msgid "default dispinterface ancestor IDispatch not found"
-msgstr ""
+msgstr "oletus dispinterface-emoa IDispatch ei löydy"
 
 #: codetoolsstrconsts.ctsdefaultfpcsource2operatingsystem
 msgid "Default fpc source Operating System 2"
-msgstr ""
+msgstr "Oletus fpc lähde-käyttöjärjestelmä 2"
 
 #: codetoolsstrconsts.ctsdefaultfpcsourceoperatingsystem
 msgid "Default fpc source Operating System"
-msgstr ""
+msgstr "Oletus fpc lähde-käyttöjärjestelmä"
 
 #: codetoolsstrconsts.ctsdefaultfpcsymbol
 msgid "Default fpc symbol"
-msgstr ""
+msgstr "Oletus fpc symboli"
 
 #: codetoolsstrconsts.ctsdefaultfpctargetoperatingsystem
 msgid "Default fpc target Operating System"
-msgstr ""
+msgstr "Oletus fpc kohde-käyttöjärjestelmä"
 
 #: codetoolsstrconsts.ctsdefaultfpctargetprocessor
 msgid "Default fpc target processor"
-msgstr ""
+msgstr "Oletus fpc kohde-prosessori"
 
 #: codetoolsstrconsts.ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
-msgstr ""
+msgstr "Oletus interface-emoa IInterface ei löydy"
 
 #: codetoolsstrconsts.ctsdefaultjavaclassancestorjlobjectnotfound
 msgid "default java class ancestor JLObject not found"
-msgstr ""
+msgstr "Oletus java kantaluokkaa JLObject ei löydy"
 
 #: codetoolsstrconsts.ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
-msgstr ""
+msgstr "Odotettiin oletus-parametria, saatiin %s"
 
 #: codetoolsstrconsts.ctsdefaultpropertynotfound
 msgid "default property not found"
-msgstr ""
+msgstr "Oletus-ominaisuutta ei löydy"
 
 #: codetoolsstrconsts.ctsdefaultspecifierredefined
 msgid "default specifier redefined"
-msgstr ""
+msgstr "Oletus-tarkenne määriteltiin uudestaan"
 
 #: codetoolsstrconsts.ctsdefine
 msgid "Define "
-msgstr ""
+msgstr "Määrittele "
 
 #: codetoolsstrconsts.ctsdefinelcl
 msgid "Define LCL"
-msgstr ""
+msgstr "Määrittele LCL"
 
 #: codetoolsstrconsts.ctsdefinelclwidgetset
 msgid "Define LCLwidgetset, e.g. LCLgtk"
-msgstr ""
+msgstr "Määrittele LCLwidgetset, esim. LCLgtk"
 
 #: codetoolsstrconsts.ctsdefinemacrocarbon1
 msgid "Define macro carbon1"
-msgstr ""
+msgstr "Määrittele makro carbon1"
 
 #: codetoolsstrconsts.ctsdefinemacrogtk1
 msgid "Define macro gtk1"
-msgstr ""
+msgstr "Määrittele makro gtk1"
 
 #: codetoolsstrconsts.ctsdefinemacrogtk2
 msgid "Define macro gtk2"
-msgstr ""
+msgstr "Määrittele makro gtk2"
 
 #: codetoolsstrconsts.ctsdefinemacroname
 msgid "Define Macro %s"
-msgstr ""
+msgstr "Määrittele makro %s"
 
 #: codetoolsstrconsts.ctsdefinemacroqt1
 msgid "Define macro qt1"
-msgstr ""
+msgstr "Määrittele makro qt1"
 
 #: codetoolsstrconsts.ctsdefinemacrowince1
 msgid "Define macro wince1"
-msgstr ""
+msgstr "Määrittele makro wince1"
 
 #: codetoolsstrconsts.ctsdefineprocessortype
 msgid "Define processor type"
-msgstr ""
+msgstr "Määrittele prosessorin tyyppi"
 
 #: codetoolsstrconsts.ctsdefsforlazarussources
 msgid "Definitions for the Lazarus Sources"
-msgstr ""
+msgstr "Lazarus lähdekoodin määritykset"
 
 #: codetoolsstrconsts.ctsdesignerdirectory
 msgid "Designer Directory"
-msgstr ""
+msgstr "Lomake-editorin hakemisto"
 
 #: codetoolsstrconsts.ctsdesignerunitsdirectory
 msgid "Designer Units"
-msgstr ""
+msgstr "Lomake-editorin käännösyksiköt"
 
 #: codetoolsstrconsts.ctsdircomponentdoesnotexistsorisdanglingsymlink
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr ""
+msgstr "hakemistokomponenttia %s:ssa ei löydy tai se on rikkinäinen symbolinen linkki"
 
 #: codetoolsstrconsts.ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
-msgstr ""
+msgstr "hakemistokomponentti %s:ssa ei ole hakemisto"
 
 #: codetoolsstrconsts.ctsdispidparameterexpectedbutatomfound
 msgid "dispid parameter expected, but %s found"
-msgstr ""
+msgstr "odotettiin dispid parametria, saatiin %s"
 
 #: codetoolsstrconsts.ctsdispidspecifierredefined
 msgid "dispid specifier redefined"
-msgstr ""
+msgstr "dispid tarkenne määriteltiin uudestaan"
 
 #: codetoolsstrconsts.ctsdoceditordirectory
 msgid "Doc Editor Directory"
-msgstr ""
+msgstr "Doc Editor hakemisto"
 
 #: codetoolsstrconsts.ctsduplicateidentifier
 msgid "duplicate identifier: %s"
-msgstr ""
+msgstr "Samanlaiset tunnisteet: %s"
 
 #: codetoolsstrconsts.ctselse
 msgid "else"
-msgstr ""
+msgstr "muutoin"
 
 #: codetoolsstrconsts.ctsendforclassnotfound
 msgid "\"end\" for class/object not found"
-msgstr ""
+msgstr "\"end\" luokalle/objektille ei löydy"
 
 #: codetoolsstrconsts.ctsendforrecordnotfound
 msgid "end for record not found"
-msgstr ""
+msgstr "end tietueelle ei löydy"
 
 #: codetoolsstrconsts.ctsendoffile
 msgid "end of file"
-msgstr ""
+msgstr "tiedoston loppu"
 
 #: codetoolsstrconsts.ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
-msgstr ""
+msgstr "odotettiin end., saatiin %s"
 
 #: codetoolsstrconsts.ctsendofsourcenotfound
 msgid "End of source not found."
-msgstr ""
+msgstr "Lähdekoodin loppua ei löydy."
 
 #: codetoolsstrconsts.ctsenumerationtype
 msgid "enumeration type"
-msgstr ""
+msgstr "Lueteltu tyyppi"
 
 #: codetoolsstrconsts.ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
-msgstr ""
+msgstr "virhe luotaessa uusia aliohjelmien runkoja"
 
 #: codetoolsstrconsts.ctserrorduringinsertingnewclassparts
 msgid "error during inserting new class parts"
-msgstr ""
+msgstr "virhe lisättäessä uusia luokan osia"
 
 #: codetoolsstrconsts.ctserrorduringinsertingnewusessection
 msgid "error during inserting new units to the main uses section"
-msgstr ""
+msgstr "virhe lisättäessä uusia käännösyksikköjä pää-uses-lauseenseen"
 
 #: codetoolsstrconsts.ctserrorindirectiveexpression
 msgid "error in directive expression"
-msgstr ""
+msgstr "virhe ohjeistuslauseessa"
 
 #: codetoolsstrconsts.ctserrorinparamlist
 msgid "error in paramlist"
-msgstr ""
+msgstr "virhe parametriluettelossa"
 
 #: codetoolsstrconsts.ctsexecuteaccessdeniedforfile
 msgid "execute access denied for %s"
-msgstr ""
+msgstr "suoritus on kielletty %s:lle"
 
 #: codetoolsstrconsts.ctsexpected
 msgid "\"%s\" expected"
-msgstr ""
+msgstr "odotettiin \"%s\""
 
 #: codetoolsstrconsts.ctsexpectedamethodtypebutfound
 msgid "expected a method type, but found %s"
-msgstr ""
+msgstr "odotettiin metodin tyyppiä, saatiin %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound
 msgid "expected (, but found %s"
-msgstr ""
+msgstr "odotettiin (, saatiin %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound2
 msgid "expected ), but found %s"
-msgstr ""
+msgstr "odotettiin ), saatiin %s"
 
 #: codetoolsstrconsts.ctsexpectedbutfound3
 msgid "expected :=, but %s found"
-msgstr ""
+msgstr "odotettiin :=, saatiin %s"
 
 #: codetoolsstrconsts.ctsexpectedidentifierbutfound
 msgid "expected identifier, but found %s"
-msgstr ""
+msgstr "odotettiin tunnistetta, saatiin %s"
 
 #: codetoolsstrconsts.ctsexpectedsemicolonofstatementbutfound
 msgid "expected ; of statement, but found %s"
-msgstr ""
+msgstr "odotettiin komennon ;, saatiin %s"
 
 #: codetoolsstrconsts.ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
-msgstr ""
+msgstr "exports-lause on sallittu vain kirjatoille"
 
 #: codetoolsstrconsts.ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
-msgstr ""
+msgstr "Ilmaisun tyypin pitää olla luokka tai record tyyppi"
 
 #: codetoolsstrconsts.ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
-msgstr ""
+msgstr "%s:ssa on kehäriippuvuus"
 
 #: codetoolsstrconsts.ctsfileisreadonly
 msgid "file is read only"
@@ -374,49 +374,49 @@ msgstr "Tiedosto on vain luettavissa"
 
 #: codetoolsstrconsts.ctsforward
 msgid "Forward"
-msgstr ""
+msgstr "Eteenpäin"
 
 #: codetoolsstrconsts.ctsforwardclassdefinitionnotresolved
 msgid "Forward class definition not resolved: %s"
-msgstr ""
+msgstr "Etukäteen määriteltyä luokkaa ei löydy: %s"
 
 #: codetoolsstrconsts.ctsfpdocsystemon
 msgid "enable FPDocSystem"
-msgstr ""
+msgstr "salli FPDocSystem"
 
 #: codetoolsstrconsts.ctsfreepascalcompilerinitialmacros
 msgid "Free Pascal Compiler initial macros"
-msgstr ""
+msgstr "Free Pascal kääntäjän alku-makrot"
 
 #: codetoolsstrconsts.ctsfreepascalcomponentlibrary
 msgid "Free Pascal Component Library"
-msgstr ""
+msgstr "Free Pascal komponenttikirjasto"
 
 #: codetoolsstrconsts.ctsfreepascalsourcedir
 msgid "Free Pascal Source Directory"
-msgstr ""
+msgstr "Free Pascal lähdehakemisto"
 
 #: codetoolsstrconsts.ctsfreepascalsourcesplusdesc
 msgid "Free Pascal Sources, %s"
-msgstr ""
+msgstr "Free Pascal lähdekoodit, %s"
 
 #: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass
 msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass"
 msgid "function GetEnumerator not found in this class"
-msgstr ""
+msgstr "funktiota GetEnumerator ei löydy tästä luokasta"
 
 #: codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2
 msgctxt "codetoolsstrconsts.ctsfunctiongetenumeratornotfoundinthisclass2"
 msgid "function GetEnumerator not found in this class"
-msgstr ""
+msgstr "funktiota GetEnumerator ei löydy tästä luokasta"
 
 #: codetoolsstrconsts.ctsgenericidentifier
 msgid "generic identifier"
-msgstr ""
+msgstr "yleinen tunniste"
 
 #: codetoolsstrconsts.ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
-msgstr ""
+msgstr "gtk2 rajapinnan hakemisto"
 
 #: codetoolsstrconsts.ctshaserror
 msgid "HasError"
@@ -424,35 +424,35 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsidedirectory
 msgid "IDE Directory"
-msgstr ""
+msgstr "IDE hakemisto"
 
 #: codetoolsstrconsts.ctsideintfdirectory
 msgid "IDEIntf Directory"
-msgstr ""
+msgstr "IDEIntf hakemisto"
 
 #: codetoolsstrconsts.ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
-msgstr ""
+msgstr "odotettiin tunnistetta, saatiin %s"
 
 #: codetoolsstrconsts.ctsidentexpectedbuteoffound
 msgid "unexpected end of file (identifier expected)"
-msgstr ""
+msgstr "odottamaton tiedoston loppu (odotettiin tunnistetta)"
 
 #: codetoolsstrconsts.ctsidentexpectedbutkeywordfound
 msgid "identifier expected, but keyword %s found"
-msgstr ""
+msgstr "odotettiin tunnistetta, saatiin avainsana %s"
 
 #: codetoolsstrconsts.ctsidentifier
 msgid "identifier"
-msgstr ""
+msgstr "tunniste"
 
 #: codetoolsstrconsts.ctsidentifieralreadydefined
 msgid "Identifier %s already defined"
-msgstr ""
+msgstr "Tunniste %s on jo määritelty"
 
 #: codetoolsstrconsts.ctsidentifiernotfound
 msgid "identifier not found: %s"
-msgstr ""
+msgstr "tunnistetta %s ei löydy"
 
 #: codetoolsstrconsts.ctsifdefdarwin
 msgid "IfDef Darwin"
@@ -484,349 +484,347 @@ msgstr ""
 
 #: codetoolsstrconsts.ctsillegalcircleinusedunits
 msgid "illegal circle using unit: %s"
-msgstr ""
+msgstr "Laiton kehäriippuvuus käännösyksikössä: %s"
 
 #: codetoolsstrconsts.ctsillegalqualifier
 msgid "illegal qualifier %s found"
-msgstr ""
+msgstr "Löytyi laiton tarkenne %s"
 
 #: codetoolsstrconsts.ctsimplementationnodenotfound
 msgid "implementation node not found"
-msgstr ""
+msgstr "implementation solmua ei löydy"
 
 #: codetoolsstrconsts.ctsincludecircledetected
 msgid "Include circle detected"
-msgstr ""
+msgstr "Havaittiin Include kehäriippuvuus"
 
 #: codetoolsstrconsts.ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
-msgstr ""
+msgstr "include hakemistot: %s"
 
 #: codetoolsstrconsts.ctsincludefilenotfound
 msgid "include file not found \"%s\""
-msgstr ""
+msgstr "include tiedostoja ei löydy \"%s\""
 
 #: codetoolsstrconsts.ctsincompatibletypesgotexpected
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
-msgstr ""
+msgstr "yhteensopimattomat tyypit: odotettiin \"%s\" mutta saatiin \"%s\""
 
 #: codetoolsstrconsts.ctsindexparameterexpectedbutatomfound
 msgid "index parameter expected, but %s found"
-msgstr ""
+msgstr "odotettiin osoitin-parametria, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsindexspecifierredefined
 msgid "index specifier redefined"
-msgstr ""
+msgstr "osoitin määriteltiin uudestaan"
 
 #: codetoolsstrconsts.ctsinheritedkeywordonlyallowedinmethods
 msgid "inherited keyword only allowed in methods"
-msgstr ""
+msgstr "inherited avainsana on sallittu vain metodeissa"
 
 #: codetoolsstrconsts.ctsinstalldirectory
 msgid "Install Directory"
-msgstr ""
+msgstr "Asennushakemisto"
 
 #: codetoolsstrconsts.ctsinstallerdirectories
 msgid "Installer directories"
-msgstr ""
+msgstr "Asennushakemistot"
 
 #: codetoolsstrconsts.ctsinsufficientmemory
 msgid "insufficient memory"
-msgstr ""
+msgstr "Riittämätön muisti"
 
 #: codetoolsstrconsts.ctsinterfacesectionnotfound
 msgid "interface section not found"
-msgstr ""
+msgstr "interface-lausetta ei löydy"
 
 #: codetoolsstrconsts.ctsintfdirectory
 msgid "interface directory"
-msgstr ""
+msgstr "interface-hakemisto"
 
 #: codetoolsstrconsts.ctsinvalidclassname
 msgid "invalid class name=\"%s\""
-msgstr ""
+msgstr "Kelvoton luokan nimi=\"%s\""
 
 #: codetoolsstrconsts.ctsinvalidclassname2
 msgid "invalid class name \"%s\""
-msgstr ""
+msgstr "Kelvoton luokan nimi \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
-msgstr ""
+msgstr "Kelvoton lipun arvo \"%s\" ohjeelle %s"
 
 #: codetoolsstrconsts.ctsinvalidmode
 msgid "invalid mode \"%s\""
-msgstr ""
+msgstr "Kelvoton moodi \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidmodeswitch
 msgid "invalid mode switch \"%s\""
-msgstr ""
+msgstr "Kelvoton moodin valitsin \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidoperator
 msgid "invalid operator %s"
-msgstr ""
+msgstr "Kelvoton operaattori %s"
 
 #: codetoolsstrconsts.ctsinvalidsubrange
 msgid "invalid subrange"
-msgstr ""
+msgstr "Kelvoton osaväli"
 
 #: codetoolsstrconsts.ctsinvalidtype
 msgid "invalid type"
-msgstr ""
+msgstr "Kelvoton tyyppi"
 
 #: codetoolsstrconsts.ctsinvalidvariablename
 msgid "invalid variable name \"%s\""
-msgstr ""
+msgstr "Kelvoton muuttujan nimi \"%s\""
 
 #: codetoolsstrconsts.ctsinvalidvariabletype
 msgid "invalid variable type \"%s\""
-msgstr ""
+msgstr "Kelvoton muuttujan tyyppi \"%s\""
 
 #: codetoolsstrconsts.ctsjitformdirectory
 msgid "JITForm Directory"
-msgstr ""
+msgstr "JITForm hakemisto"
 
 #: codetoolsstrconsts.ctskeyword
 msgid "keyword"
-msgstr ""
+msgstr "avainsana"
 
 #: codetoolsstrconsts.ctskeywordexampleexpectedbutatomfound
 msgid "keyword (e.g. %s) expected, but %s found"
-msgstr ""
+msgstr "odotettiin avainsanaa (esim. %s), mutta saatiin %s"
 
 #: codetoolsstrconsts.ctskeywordin
 msgid "keyword \"in\""
-msgstr ""
+msgstr "avainsana \"in\""
 
 #: codetoolsstrconsts.ctslazarusmaindirectory
 msgid "lazarus main directory"
-msgstr ""
+msgstr "lazarus päähakemisto"
 
 #: codetoolsstrconsts.ctslazarussources
 msgid "Lazarus Sources"
-msgstr ""
+msgstr "Lazarus lähdekoodit"
 
 #: codetoolsstrconsts.ctsmethodname
 msgid "method name"
-msgstr ""
+msgstr "metodin nimi"
 
 #: codetoolsstrconsts.ctsmethodsignaturesnotfoundinclass
 msgid "Method signature %s not found in class"
-msgstr ""
+msgstr "Metodin tunnistetta %s ei löydy luokasta"
 
 #: codetoolsstrconsts.ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
-msgstr ""
+msgstr "metodin tyypin määritystä ei löydy"
 
 #: codetoolsstrconsts.ctsmissing
 msgid "missing :="
-msgstr ""
+msgstr "puuttuva :="
 
 #: codetoolsstrconsts.ctsmissingenumlist
 msgid "missing enum list"
-msgstr ""
+msgstr "puuttuva luettelotyyppi"
 
 #: codetoolsstrconsts.ctsmissingpointafterend
 msgid "missing . after end"
-msgstr ""
+msgstr "puuttuva . end:n jälkeen"
 
 #: codetoolsstrconsts.ctsmissingtypeidentifier
 msgid "missing type identifier"
-msgstr ""
+msgstr "puuttuva tyypin tunniste"
 
 #: codetoolsstrconsts.ctsnameddirectory
 msgid "%s Directory"
-msgstr ""
+msgstr "%s hakemisto"
 
 #: codetoolsstrconsts.ctsnamedproject
 msgid "%s Project"
-msgstr ""
+msgstr "%s projekti"
 
 #: codetoolsstrconsts.ctsneededbymode
 msgid " (needed by mode \"%s\")"
-msgstr ""
+msgstr " (moodi \"%s\" tarvitsee)"
 
 #: codetoolsstrconsts.ctsnesteddefinitionsarenotallowed
 msgid "Nested %s definitions are not allowed"
-msgstr ""
+msgstr "Sisäkkäiset %s määritykset ovat kiellettyjä"
 
 #: codetoolsstrconsts.ctsnewprocbodynotfound
 msgid "new proc body not found"
-msgstr ""
+msgstr "uutta procedure runkoa ei löydy"
 
 #: codetoolsstrconsts.ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
-msgstr ""
+msgstr "tilanteeseen sopivaa solmua ei löydy kursorin kohdasta"
 
 #: codetoolsstrconsts.ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"
-msgstr ""
+msgstr "nodefault-tarkenne määriteltiin kahdesti"
 
 #: codetoolsstrconsts.ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
-msgstr ""
+msgstr "Pascal-koodia ei löydy (ensimmäinen sana on %s)"
 
 #: codetoolsstrconsts.ctsnoscanneravailable
 msgid "No scanner available"
-msgstr ""
+msgstr "Scanneria ei ole saatavilla"
 
 #: codetoolsstrconsts.ctsnoscannerfound
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
-msgstr ""
+msgstr "Skanneria ei löydy \"%s\":lle. Jos tämä on include-tiedosto, avaa ensin pää-lähdetiedosto."
 
 #: codetoolsstrconsts.ctsnotenoughgenparams
 msgid "Not enough actual generic parameters"
-msgstr ""
+msgstr "Ei tarpeeksi varsinaisia yleisiä parametereja"
 
 #: codetoolsstrconsts.ctsoldmethodnotfound
 msgid "old method not found: %s"
-msgstr ""
+msgstr "vanhaa metodia ei löydy: %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound
 msgid "operand expected but %s found"
-msgstr ""
+msgstr "odotettiin operandia, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsoperandexpectedbutfound2
 msgid "operand expected, but %s found"
-msgstr ""
+msgstr "odotettiin operandia, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutatomfound
-msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutatomfound"
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "odotettiin operaattoria, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbuteoffound
 msgid "unexpected end of file (operator expected)"
-msgstr ""
+msgstr "odottamaton tiedoston loppu (odotettiin operaattoria)"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound
 msgid "operator expected but %s found"
-msgstr ""
+msgstr "odotettiin operaattoria, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsoperatorexpectedbutfound2
-msgctxt "codetoolsstrconsts.ctsoperatorexpectedbutfound2"
 msgid "operator expected, but %s found"
-msgstr ""
+msgstr "odotettiin operaattoria, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsothercompilerdefines
 msgid "%s Compiler Defines"
-msgstr ""
+msgstr "%s kääntäjän määritteet"
 
 #: codetoolsstrconsts.ctspackagedirectories
 msgid "Package directories"
-msgstr ""
+msgstr "Pakettihakemistot"
 
 #: codetoolsstrconsts.ctspackagerdirectory
 msgid "Packager Directory"
-msgstr ""
+msgstr "Pakettihallinnan hakemisto"
 
 #: codetoolsstrconsts.ctspackagerregistrationdirectory
 msgid "Packager Registration Directory"
-msgstr ""
+msgstr "Pakettihallinnan rekisteröinnin hakemisto"
 
 #: codetoolsstrconsts.ctspackagerunitsdirectory
 msgid "Packager Units Directory"
-msgstr ""
+msgstr "Pakettihallinnan käännösyksikköjen hakemisto"
 
 #: codetoolsstrconsts.ctspointhintprocstartat
 msgid ".  Hint: proc start at "
-msgstr ""
+msgstr ".  Vihje: proc alkaa kohdassa "
 
 #: codetoolsstrconsts.ctspointstartat
 msgid ". start at "
-msgstr ""
+msgstr ". alkaa kohdassa "
 
 #: codetoolsstrconsts.ctspositionnotinsource
 msgid "Position not in source"
-msgstr ""
+msgstr "Paikka ei ole lähdekoodissa"
 
 #: codetoolsstrconsts.ctsprocedureorfunctionorconstructorordestructor
 msgid "procedure or function or constructor or destructor"
-msgstr ""
+msgstr "procedure tai funktio tai constructor tai destructor"
 
 #: codetoolsstrconsts.ctsprocessorspecific
 msgid "processor specific"
-msgstr ""
+msgstr "prosessori-riippuvainen"
 
 #: codetoolsstrconsts.ctsproperttypeexpectedbutatomfound
 msgid "property type expected, but %s found"
-msgstr ""
+msgstr "odotettiin ominaisuutta, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctspropertycurrentnotfound
 msgid "property Current not found"
-msgstr ""
+msgstr "ominaisuutta Current ei löydy"
 
 #: codetoolsstrconsts.ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
-msgstr ""
+msgstr "ominaisuus-tarkenne on jo määritelty: %s"
 
 #: codetoolsstrconsts.ctsqualifierexpectedbutatomfound
 msgid "qualifier expected but %s found"
-msgstr ""
+msgstr "odotettiin tarkennetta, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsresetalldefines
 msgid "Reset all defines"
-msgstr ""
+msgstr "Nollaa kaikki määritteet"
 
 #: codetoolsstrconsts.ctsresulttypeoffunctiongetenumeratornotfound
 msgid "result type of function GetEnumerator not found"
-msgstr ""
+msgstr "funktion GetEnumerator paluutyyppiä ei löydy"
 
 #: codetoolsstrconsts.ctsruntimelibrary
 msgid "Runtime library"
-msgstr ""
+msgstr "Ajonaikainen kirjasto"
 
 #: codetoolsstrconsts.ctsscannedfiles
 msgid "Scanned files: %s"
-msgstr ""
+msgstr "Käyty läpi tiedostot: %s"
 
 #: codetoolsstrconsts.ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
-msgstr ""
+msgstr "odotettiin ; \"%s\" ominaisuuuden jälkeen, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctssemicolonnotfound
 msgid "semicolon not found"
-msgstr ""
+msgstr "puolipistettä ei löydy"
 
 #: codetoolsstrconsts.ctssetsincpathto
 msgid "sets IncPath to %s"
-msgstr ""
+msgstr "aseta IncPath arvoksi %s"
 
 #: codetoolsstrconsts.ctssetssrcpathto
 msgid "sets SrcPath to %s"
-msgstr ""
+msgstr "aseta SrcPath arvoksi %s"
 
 #: codetoolsstrconsts.ctssourcefilenamesforstandardfpcunits
 msgid "Source filenames for the standard fpc units"
-msgstr ""
+msgstr "Lähdetiedostojen nimet vakio fpc käännösyksiköille"
 
 #: codetoolsstrconsts.ctssourceisnotunit
 msgid "source is not unit"
-msgstr ""
+msgstr "lähde ei ole käännösyksikkö"
 
 #: codetoolsstrconsts.ctssourcenotfoundunit
 msgid "source not found: unit %s. Check your FPC source directory."
-msgstr ""
+msgstr "lähdettä ei löydy: käännösyksikkö %s. Tarkista FPC lähdehakemisto."
 
 #: codetoolsstrconsts.ctssrcpathforcompiledunits
 msgid "src path for compiled units"
-msgstr ""
+msgstr "lähdehakemisto käännetyille yksiköille"
 
 #: codetoolsstrconsts.ctssrcpathinitialization
 msgid "SrcPath Initialization"
-msgstr ""
+msgstr "SrcPath alustus"
 
 #: codetoolsstrconsts.ctsstrexpectedbutatomfound
 msgid "expected %s, but %s found"
-msgstr ""
+msgstr "odotettiin %s, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctsstringconstant
 msgid "string constant"
-msgstr ""
+msgstr "tekstivakio"
 
 #: codetoolsstrconsts.ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
-msgstr ""
+msgstr "Kielioppivirhe lausekkeessa \"%s\""
 
 #: codetoolsstrconsts.ctstcodetoolmanagerconsistencycheck
 msgid "TCodeToolManager.ConsistencyCheck=%d"
@@ -834,117 +832,117 @@ msgstr ""
 
 #: codetoolsstrconsts.ctstermnotsimple
 msgid "Term has no simple type"
-msgstr ""
+msgstr "Termillä ei ole yksinkertaista tyyppiä"
 
 #: codetoolsstrconsts.ctsthenexpectedbutfound
 msgid "then expected, but %s found"
-msgstr ""
+msgstr "odotettiin then, mutta saatiin %s"
 
 #: codetoolsstrconsts.ctstoolsdirectory
 msgid "Tools Directory"
-msgstr ""
+msgstr "Työkaluhakemisto"
 
 #: codetoolsstrconsts.ctstype
 msgid "type"
-msgstr ""
+msgstr "tyyppi"
 
 #: codetoolsstrconsts.ctstypeidentifier
 msgid "type identifier"
-msgstr ""
+msgstr "tyypin tunniste"
 
 #: codetoolsstrconsts.ctstypeisonlyallowedingenericsendofclassnotfound
 msgid "type is only allowed in generics, end of class not found"
-msgstr ""
+msgstr "tyyppi sallitaan vain generics:n kanssa, luokan loppua ei löydy"
 
 #: codetoolsstrconsts.ctstypesectionofclassnotfound
 msgid "type section of class not found"
-msgstr ""
+msgstr "luokan tyyppi-osiota ei löydy"
 
 #: codetoolsstrconsts.ctsunabletoapplychanges
 msgid "unable to apply changes"
-msgstr ""
+msgstr "muutosten toteuttaminen ei onnistu"
 
 #: codetoolsstrconsts.ctsunabletocompleteproperty
 msgid "unable to complete property"
-msgstr ""
+msgstr "ominaisuuden täydennys ei onnistu"
 
 #: codetoolsstrconsts.ctsundefine
 msgid "Undefine "
-msgstr ""
+msgstr "Poista määritys "
 
 #: codetoolsstrconsts.ctsunexpectedendofsource
 msgid "unexpected end of source"
-msgstr ""
+msgstr "odottamaton lähdekoodin loppu"
 
 #: codetoolsstrconsts.ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
-msgstr ""
+msgstr "odottamaton avainsana \"%s\""
 
 #: codetoolsstrconsts.ctsunexpectedkeyword2
 msgid "unexpected keyword %s"
-msgstr ""
+msgstr "odottamaton avainsana %s"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"
-msgstr ""
+msgstr "odottamaton avainsana \"%s\" löydettiin asm-lohkossa"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordinbeginendblock
 msgid "unexpected keyword \"%s\" in begin..end found"
-msgstr ""
+msgstr "odottamaton avainsana \"%s\" löydettiin begin..end sisällä"
 
 #: codetoolsstrconsts.ctsunexpectedkeywordwhilereadingbackwards
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
-msgstr ""
+msgstr "odottamaton avainsana \"%s\" löydettiin kun lohkoja luettiin taaksepäin"
 
 #: codetoolsstrconsts.ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
-msgstr ""
+msgstr "odottamaton osaväli operaattori '..' löytyi"
 
 #: codetoolsstrconsts.ctsunitnotfound
 msgid "unit not found: %s"
-msgstr ""
+msgstr "käännösyksikköä %s ei löydy"
 
 #: codetoolsstrconsts.ctsunitpathinitialization
 msgid "UnitPath Initialization"
-msgstr ""
+msgstr "UnitPath alustus"
 
 #: codetoolsstrconsts.ctsunknownfunction
 msgid "Unknown function %s"
-msgstr ""
+msgstr "Tuntematon funktio %s"
 
 #: codetoolsstrconsts.ctsunknownmainfilename
 msgid "(unknown mainfilename)"
-msgstr ""
+msgstr "(tuntematon päätiedosto)"
 
 #: codetoolsstrconsts.ctsunknownsectionkeyword
 msgid "unknown section keyword %s found"
-msgstr ""
+msgstr "tuntematon lohkon avainsana %s löytyi"
 
 #: codetoolsstrconsts.ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"
-msgstr ""
+msgstr "(tuntematon alikuvaus %s)"
 
 #: codetoolsstrconsts.ctsunparsed
 msgid "Unparsed"
-msgstr ""
+msgstr "Ei jäsennetty"
 
 #: codetoolsstrconsts.ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
-msgstr ""
+msgstr "käytetty yksikkö ei ole Pascal käännösyksikkö"
 
 #: codetoolsstrconsts.ctsutilsdirectories
 msgid "Utils directories"
-msgstr ""
+msgstr "Apuhakemistot"
 
 #: codetoolsstrconsts.ctsvarisonlyallowedingenericsendofclassnotfound
 msgid "var is only allowed in generics, end of class not found"
-msgstr ""
+msgstr "var on sallittu vain generics:ssa, luokan loppua ei löydy"
 
 #: codetoolsstrconsts.ctswidgetdirectory
 msgid "Widget Directory"
-msgstr ""
+msgstr "Widget hakemisto"
 
 #: codetoolsstrconsts.ctswordnotfound
 msgid "\"%s\" not found"
-msgstr ""
+msgstr "\"%s\" ei löydy"
 

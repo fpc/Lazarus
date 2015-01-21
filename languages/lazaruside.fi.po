@@ -2731,14 +2731,10 @@ msgid "UI Access (uiAccess)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgpouseappbundle
-#, fuzzy
-#| msgid "Use Application Bundle for running and debugging (Darwin only)"
 msgid "Use Application Bundle for running and debugging"
 msgstr "Käytä \"Application Bundle\" ajoon ja virheiden jäljitykseen"
 
 #: lazarusidestrconsts.dlgpousemanifest
-#, fuzzy
-#| msgid "Use manifest file to enable themes (Windows only)"
 msgid "Use manifest file to enable themes"
 msgstr "Käytä manifest-tiedostoa teemoja varten"
 
@@ -8025,8 +8021,6 @@ msgid "Error in the custom compiler options (Other):"
 msgstr "Virhe mukautetuissa kääntäjän asetuksissa (Muut):"
 
 #: lazarusidestrconsts.liserrorinthecustomlinkeroptionslinkingpassoptionstol
-#, fuzzy
-#| msgid "Error in the custom linker options (Linking / Pass options to linker):"
 msgid "Error in the custom linker options (Compilation and Linking / Pass options to linker):"
 msgstr "Virhe mukautetuissa linkittäjän asetuksissa (Käännös ja Linkitys / Välitä asetukset linkittäjälle):"
 
@@ -9055,14 +9049,10 @@ msgid "ID"
 msgstr ""
 
 #: lazarusidestrconsts.lisidcadd
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcadd"
 msgid "Add"
 msgstr "Lisää"
 
 #: lazarusidestrconsts.lisidcopen
-#, fuzzy
-msgctxt "lazarusidestrconsts.lisidcopen"
 msgid "Open"
 msgstr "Avaa"
 
@@ -12436,7 +12426,6 @@ msgid "On paste from clipboard"
 msgstr "Liitettäessä leikepöydältä"
 
 #: lazarusidestrconsts.lisopen
-msgctxt "lazarusidestrconsts.lisopen"
 msgid "Open"
 msgstr "Avaa"
 
@@ -13822,8 +13811,6 @@ msgid "The following dependencies are not needed, because of the automatic trans
 msgstr "Seuraavia riippuvuuksia ei tarvita, koska riippuvuudet siirtyvät automaattisesti paketista toiseen."
 
 #: lazarusidestrconsts.lispkgtheprojectoverridestheoutputdirectoryofthefollowin
-#, fuzzy
-#| msgid "The project overrides the output directory of the following packages.%sSee Project / Compiler Options / Additions and Overrides%s%s"
 msgid "The project overrides the output directory of the following packages.%sSee Project / Project Options (compiler options section) / Additions and Overrides%s%s"
 msgstr "Projekti ajaa yli seuraavien pakettien käännöshakemiston.%sKatso Projekti / Kääntäjän asetukset / Lisämääritykset%s%s"
 
@@ -15697,9 +15684,8 @@ msgid "The destination directory%s\"%s\" does not exist."
 msgstr "Kohdehakemistoa%s\"%s\" ei ole."
 
 #: lazarusidestrconsts.listhedestinationdirectorydoesnotexistpleasecheckthep
-#, fuzzy,badformat
 msgid "The destination directory \"%s\" does not exist.%sPlease check the project target file name Menu > Project > Project Options."
-msgstr "Kohdehakemistoa%s\"%s\" ei ole.%sTarkista kohdehakemisto projektin asetuksista."
+msgstr "Kohdehakemistoa \"%s\" ei ole.%sTarkista kohdehakemisto projektin asetuksista."
 
 #: lazarusidestrconsts.listhedirectorycontainsnoprojectincludefilesanymorere
 msgid "The directory \"%s\" contains no project include files any more. Remove this directory from the project's include search path?"
@@ -15890,9 +15876,8 @@ msgid "The package %s can not be uninstalled, because it is needed by the IDE it
 msgstr "Paketin %s asennusta ei voi poistaa, koska IDE itse tarvitsee sitä."
 
 #: lazarusidestrconsts.listhepackagedoesnothaveanyregisterprocedurewhichtypi
-#, fuzzy,badformat
 msgid "The package %s does not have any \"Register\" procedure, which typically means, it does not provide any IDE addon. Installing it will probably only increase the size of the IDE and may even make it unstable.%sHint: If you want to use a package in your project, use the \"Add to project\" menu item."
-msgstr "Paketilla ei ole \"Register\" aliohjelmaa, mikä yleensä tarkoittaa ettei se tarjoa mitään lisäyksiä IDE:een. Sen asennus luultavasti vain kasvattaa IDE:n kokoa ja voi jopa heikentää sen vakautta.%sVihje: Jos tahdot käyttää pakettia projektissa, käytä \"Lisää projektiin\" valintaa."
+msgstr "Paketilla %s ei ole \"Register\" aliohjelmaa, mikä yleensä tarkoittaa ettei se tarjoa mitään lisäyksiä IDE:een. Sen asennus luultavasti vain kasvattaa IDE:n kokoa ja voi jopa heikentää sen vakautta.%sVihje: Jos tahdot käyttää pakettia projektissa, käytä \"Lisää projektiin\" valintaa."
 
 #: lazarusidestrconsts.listhepackageisalreadyinthelist
 msgid "The package %s is already in the list"

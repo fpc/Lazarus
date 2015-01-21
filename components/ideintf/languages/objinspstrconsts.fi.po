@@ -24,7 +24,7 @@ msgstr "Poista toiminto"
 #: objinspstrconsts.cactionlisteditordialogcategory
 msgctxt "objinspstrconsts.cactionlisteditordialogcategory"
 msgid "Dialog"
-msgstr ""
+msgstr "Dialogi"
 
 #: objinspstrconsts.cactionlisteditoreditcategory
 msgctxt "objinspstrconsts.cactionlisteditoreditcategory"
@@ -126,27 +126,27 @@ msgstr "Ylös"
 
 #: objinspstrconsts.dceaddfields
 msgid "Add Fields"
-msgstr ""
+msgstr "Kaikki kentät"
 
 #: objinspstrconsts.dcecolumneditor
 msgid "DBGrid Columns Editor"
-msgstr ""
+msgstr "DBGrid sarakemuokkain"
 
 #: objinspstrconsts.dcedeleteall
 msgid "Delete All"
-msgstr ""
+msgstr "Poista kaikki"
 
 #: objinspstrconsts.dcefetchlabels
 msgid "Fetch Labels"
-msgstr ""
+msgstr "Hae nimikkeet"
 
 #: objinspstrconsts.dceoktodelete
 msgid "This will delete all columns. Continue?"
-msgstr ""
+msgstr "Tämä tuhoaa kaikki sarakkeet. Jatka?"
 
 #: objinspstrconsts.dcewillreplacecontinue
 msgid "This will replace all captions from dataset. Continue?"
-msgstr ""
+msgstr "Tämä hakee ja korvaa kaikki otsikot tietokannasta. Jatka?"
 
 #: objinspstrconsts.fescalculated
 msgid "&Calculated"
@@ -200,7 +200,7 @@ msgstr "&Avainkentät:"
 
 #: objinspstrconsts.feslookup
 msgid "&Lookup"
-msgstr ""
+msgstr "&Haku"
 
 #: objinspstrconsts.feslookupdef
 msgid "Lookup definition"
@@ -587,7 +587,7 @@ msgstr "Metodi"
 
 #: objinspstrconsts.oismixed
 msgid "(Mixed)"
-msgstr ""
+msgstr "(Sekaisin)"
 
 #: objinspstrconsts.oismovedown
 msgid "Move &Down"
@@ -1096,7 +1096,7 @@ msgstr "Metodi \"%s\" ei ole julkaistu.%sPeru peruuttaa komennon,%sOhita pakotta
 
 #: objinspstrconsts.oisunabletochangeparentofcontroltonewparent
 msgid "Unable to change parent of control \"%s\" to new parent \"%s\".%s%s"
-msgstr "Komponentin \"%s\" vanhemman muuttaminen \"%s\":ksi ei onnistu.%s%s"
+msgstr "Komponentin \"%s\" emon muuttaminen \"%s\":ksi ei onnistu.%s%s"
 
 #: objinspstrconsts.oisundo
 msgctxt "objinspstrconsts.oisundo"
@@ -1166,7 +1166,7 @@ msgstr "Automaattinen koko"
 
 #: objinspstrconsts.rscdcaption
 msgid "Caption"
-msgstr ""
+msgstr "Otsikko"
 
 #: objinspstrconsts.rscdcolumneditor
 msgid "Column Editor"
@@ -1217,7 +1217,7 @@ msgstr "&Lisää ..."
 
 #: objinspstrconsts.sccsiledtadjustment
 msgid "Adjustment"
-msgstr ""
+msgstr "Säätö"
 
 #: objinspstrconsts.sccsiledtapply
 msgctxt "objinspstrconsts.sccsiledtapply"
@@ -1333,7 +1333,7 @@ msgstr "Kohta"
 
 #: objinspstrconsts.sccslvedtlabelcaption
 msgid "Caption:"
-msgstr ""
+msgstr "Otsikko:"
 
 #: objinspstrconsts.sccslvedtlabelimageindex
 msgctxt "objinspstrconsts.sccslvedtlabelimageindex"
@@ -1357,7 +1357,7 @@ msgstr "Uusi alakohta"
 
 #: objinspstrconsts.sccsmaskeditor
 msgid "Edit Mask Editor ..."
-msgstr ""
+msgstr "Muokkausmaskin editori ..."
 
 #: objinspstrconsts.sccssbeditpanels
 msgid "Panels Editor ..."
@@ -1382,7 +1382,7 @@ msgstr "Siivoa"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
-msgstr ""
+msgstr "Merkkijonotaulukko"
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load ..."
