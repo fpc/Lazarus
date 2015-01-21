@@ -409,6 +409,7 @@ type
     procedure DoMsgLButtonCommon;
     procedure DoMsgLButtonDoubleClick;
     procedure DoMsgLButtonDown;
+    procedure DoMsgMeasureItem;
     procedure DoMsgMouseMove;
     procedure DoMsgMouseUpDownClick(aMsg: Cardinal);
     procedure DoMsgContextMenu;
@@ -1797,6 +1798,41 @@ begin
   WinProcess := false;
 end;
 
+procedure TWindowProcHelper.DoMsgMeasureItem;
+begin
+  case PMeasureItemStruct(LParam)^.CtlType of
+    ODT_MENU:
+      begin
+        menuItem := TObject(PMeasureItemStruct(LParam)^.itemData);
+        if menuItem is TMenuItem then
+        begin
+          menuHDC := GetDC(Window);
+          TmpSize := MenuItemSize(TMenuItem(menuItem), menuHDC);
+          PMeasureItemStruct(LParam)^.itemWidth := TmpSize.cx;
+          PMeasureItemStruct(LParam)^.itemHeight := TmpSize.cy;
+          ReleaseDC(Window, menuHDC);
+          Winprocess := False;
+        end
+        {$ifdef MSG_DEBUG}
+        else
+          DebugLn('WM_MEASUREITEM for a menuitem catched but menuitem is not TmenuItem');
+        {$endif}
+      end;
+    else
+    if WParam <> 0 then
+    begin
+      lWinControl := TWinControl(WParam);
+      if Assigned(lWinControl) then
+      begin
+        LMessage.Msg := LM_MEASUREITEM;
+        LMessage.LParam := LParam;
+        LMessage.WParam := WParam;
+        Winprocess := False;
+      end;
+    end;
+  end;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -2214,44 +2250,9 @@ begin
       if (PWindowPos(LParam)^.flags and SWP_NOSIZE) = 0 then
         Windows.InvalidateRect(Window, nil, True);
     end;
-    WM_MEASUREITEM:
-    begin
-      case PMeasureItemStruct(LParam)^.CtlType of
-        ODT_MENU:
-          begin
-            menuItem := TObject(PMeasureItemStruct(LParam)^.itemData);
-            if menuItem is TMenuItem then
-            begin
-              menuHDC := GetDC(Window);
-              TmpSize := MenuItemSize(TMenuItem(menuItem), menuHDC);
-              PMeasureItemStruct(LParam)^.itemWidth := TmpSize.cx;
-              PMeasureItemStruct(LParam)^.itemHeight := TmpSize.cy;
-              ReleaseDC(Window, menuHDC);
-              Winprocess := False;
-            end
-            {$ifdef MSG_DEBUG}
-            else
-              DebugLn('WM_MEASUREITEM for a menuitem catched but menuitem is not TmenuItem');
-            {$endif}
-          end;
-        else
-        if WParam <> 0 then
-        begin
-          lWinControl := TWinControl(WParam);
-          if Assigned(lWinControl) then
-          begin
-            LMessage.Msg := LM_MEASUREITEM;
-            LMessage.LParam := LParam;
-            LMessage.WParam := WParam;
-            Winprocess := False;
-          end;
-        end;
-      end;
-    end;
-    WM_SETTINGCHANGE:
-      Application.IntfSettingsChange;
+    WM_MEASUREITEM:   DoMsgMeasureItem;
+    WM_SETTINGCHANGE: Application.IntfSettingsChange;
     WM_THEMECHANGED:
-    begin
       // winxp theme changed, recheck whether themes are enabled
       if Window = Win32WidgetSet.AppHandle then
       begin
@@ -2259,12 +2260,9 @@ begin
         Graphics.UpdateHandleObjects;
         ThemeServices.IntfDoOnThemeChange;
       end;
-    end;
     WM_UPDATEUISTATE:
-    begin
       if ThemeServices.ThemesEnabled then
         InvalidateRect(Window, nil, True);
-    end;
 
     { >= WM_USER }
 
