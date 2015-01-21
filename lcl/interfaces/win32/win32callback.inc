@@ -399,6 +399,7 @@ type
     OrgCharCode: word; // used in WM_CHAR handling
     CharCodeNotEmpty: boolean; // used by WM_CHAR, WM_SYSCHAR and WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
     function DoChildEdit(out WinResult: LResult): Boolean;
+    procedure DoCmdCheckBoxParam;
     procedure DoMsgChar(var WinResult: LResult);
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
@@ -1229,6 +1230,37 @@ begin
   {$endif}
 end;
 
+procedure TWindowProcHelper.DoCmdCheckBoxParam;
+begin
+  case HIWORD(WParam) of
+    BN_CLICKED:
+      begin
+        // to allow cbGrayed state at the same time as not AllowGrayed
+        // in checkboxes (needed by dbcheckbox for null fields) we need
+        // to handle checkbox state ourselves, according to msdn state
+        // sequence goes from checked->cleared->grayed etc.
+        Flags := SendMessage(lWinControl.Handle, BM_GETCHECK, 0, 0);
+        //do not update the check state if is TRadioButton and is already checked
+        if (Flags <> BST_CHECKED) or not (lWinControl is TRadioButton) then
+        begin
+          if (Flags=BST_CHECKED) then
+            Flags := BST_UNCHECKED
+          else
+          if (Flags=BST_UNCHECKED) and
+             TCustomCheckbox(lWinControl).AllowGrayed then
+            Flags := BST_INDETERMINATE
+          else
+            Flags := BST_CHECKED;
+          //pass 0 through LParam to force sending LM_CHANGE
+          Windows.SendMessage(lWinControl.Handle, BM_SETCHECK, Windows.WPARAM(Flags), 0);
+        end;
+        LMessage.Msg := LM_CLICKED;
+      end;
+    BN_KILLFOCUS:
+      LMessage.Msg := LM_EXIT;
+  end
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1354,37 +1386,8 @@ begin
         // TToggleBox is a TCustomCheckBox too, but we don't want to handle
         // state changes of TToggleBox ourselfves
         if (lWinControl is TCustomCheckBox) and not (lWinControl is TToggleBox) then
-        begin
-          case HIWORD(WParam) of
-            BN_CLICKED:
-              begin
-                // to allow cbGrayed state at the same time as not AllowGrayed
-                // in checkboxes (needed by dbcheckbox for null fields) we need
-                // to handle checkbox state ourselves, according to msdn state
-                // sequence goes from checked->cleared->grayed etc.
-                Flags := SendMessage(lWinControl.Handle, BM_GETCHECK, 0, 0);
-                //do not update the check state if is TRadioButton and is already checked
-                if (Flags <> BST_CHECKED) or not (lWinControl is TRadioButton) then
-                begin
-                  if (Flags=BST_CHECKED) then
-                    Flags := BST_UNCHECKED
-                  else
-                  if (Flags=BST_UNCHECKED) and
-                     TCustomCheckbox(lWinControl).AllowGrayed then
-                    Flags := BST_INDETERMINATE
-                  else
-                    Flags := BST_CHECKED;
-                  //pass 0 through LParam to force sending LM_CHANGE
-                  Windows.SendMessage(lWinControl.Handle, BM_SETCHECK,
-                    Windows.WPARAM(Flags), 0);
-                end;
-                LMessage.Msg := LM_CLICKED;
-              end;
-            BN_KILLFOCUS:
-              LMessage.Msg := LM_EXIT;
-          end
-        end else
-        if lWinControl is TButtonControl then
+          DoCmdCheckBoxParam
+        else if lWinControl is TButtonControl then
           case HIWORD(WParam) of
             BN_CLICKED:   LMessage.Msg := LM_CLICKED;
             BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
