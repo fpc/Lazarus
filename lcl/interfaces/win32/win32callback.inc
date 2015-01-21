@@ -411,6 +411,7 @@ type
     procedure DoMsgLButtonDown;
     procedure DoMsgMouseMove;
     procedure DoMsgMouseUpDownClick(aMsg: Cardinal);
+    procedure DoMsgContextMenu;
     function DoMsgMouseWheel(var WinResult: LResult): Boolean;
     procedure DoMsgNCLButtonDown;
     function DoMsgNotify(var WinResult: LResult): Boolean;
@@ -1592,6 +1593,20 @@ begin
   end;
 end;
 
+procedure TWindowProcHelper.DoMsgContextMenu;
+begin
+  WinProcess := False;
+  NotifyUserInput := True;
+  PLMsg := @LMContextMenu;
+  with LMContextMenu do
+  begin
+    Msg := LM_CONTEXTMENU;
+    XPos := GET_X_LPARAM(LParam);
+    YPos := GET_Y_LPARAM(LParam);
+    hWnd := Window;
+  end;
+end;
+
 procedure TWindowProcHelper.DoMsgMouseMove;
 begin
   NotifyUserInput := True;
@@ -2057,77 +2072,25 @@ begin
       Application.DoBeforeMouseMessage(nil);
     end;
     WM_NOTIFY: if DoMsgNotify(Result) then Exit;
-    WM_PAINT:
-    begin
-      SendPaintMessage(HDC(WParam));
-      // SendPaintMessage sets winprocess to false
-    end;
+    WM_PAINT: SendPaintMessage(HDC(WParam)); // SendPaintMessage sets winprocess to false
     WM_PRINTCLIENT:
-    begin
       if ((LParam and PRF_CLIENT) = PRF_CLIENT) and (lWinControl <> nil) then
         SendPaintMessage(HDC(WParam));
-    end;
-    WM_PASTE:
-    begin
-      LMessage.Msg := LM_PASTE;
-    end;
-    WM_RBUTTONDBLCLK:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_RBUTTONDBLCLK;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-      end;
-    end;
-    WM_RBUTTONDOWN:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_RBUTTONDOWN;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-        Result := 0;
-      end;
-    end;
+    WM_PASTE:         LMessage.Msg := LM_PASTE;
+    WM_RBUTTONDBLCLK: DoMsgMouseUpDownClick(LM_RBUTTONDBLCLK);
+    WM_RBUTTONDOWN:   DoMsgMouseUpDownClick(LM_RBUTTONDOWN);
     WM_RBUTTONUP:
     begin
-      NotifyUserInput := True;
+      DoMsgMouseUpDownClick(LM_RBUTTONUP);
       WinProcess := false;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_RBUTTONUP;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-        Result := 0;
-      end;
+      Result := 0;
     end;
     WM_CONTEXTMENU:
     begin
-      WinProcess := False;
-      NotifyUserInput := True;
-      PLMsg := @LMContextMenu;
-      with LMContextMenu do
-      begin
-        Msg := LM_CONTEXTMENU;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        hWnd := Window;
-        Result := 0;
-      end;
+      DoMsgContextMenu;
+      Result := 0;
     end;
-    WM_SETCURSOR:
-    begin
-      HandleSetCursor;
-    end;
+    WM_SETCURSOR:  HandleSetCursor;
     CM_ACTIVATE:
     begin
       if (Window = Win32WidgetSet.AppHandle) then
