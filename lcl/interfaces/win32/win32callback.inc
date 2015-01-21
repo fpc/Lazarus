@@ -409,7 +409,9 @@ type
     procedure DoMsgLButtonCommon;
     procedure DoMsgLButtonDoubleClick;
     procedure DoMsgLButtonDown;
+    procedure DoMsgMouseMove;
     procedure DoMsgMouseUpDownClick(aMsg: Cardinal);
+    function DoMsgMouseWheel(var WinResult: LResult): Boolean;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1588,6 +1590,81 @@ begin
   end;
 end;
 
+procedure TWindowProcHelper.DoMsgMouseMove;
+begin
+  NotifyUserInput := True;
+  PLMsg := @LMMouseMove;
+  with LMMouseMove Do
+  begin
+    Msg := LM_MOUSEMOVE;
+    XPos := GET_X_LPARAM(LParam);
+    YPos := GET_Y_LPARAM(LParam);
+    Keys := WParam;
+    // check if this is a spurious WM_MOUSEMOVE message, pos not actually changed
+    if (XPos = WindowInfo^.MouseX) and (YPos = WindowInfo^.MouseY) then
+    begin
+      // do not fire message after all (position not changed)
+      Msg := LM_NULL;
+      NotifyUserInput := false;
+    end else
+    if WindowInfo <> @DefaultWindowInfo then
+    begin
+      // position changed, update window info
+      WindowInfo^.MouseX := XPos;
+      WindowInfo^.MouseY := YPos;
+    end;
+  end;
+end;
+
+function TWindowProcHelper.DoMsgMouseWheel(var WinResult: LResult): Boolean;
+begin
+  NotifyUserInput := True;
+  PLMsg := @LMMouseEvent;
+  with LMMouseEvent Do
+  begin
+    X := GET_X_LPARAM(LParam);
+    Y := GET_Y_LPARAM(LParam);
+    // check if mouse cursor within this window, otherwise send message to
+    // window the mouse is hovering over
+    P.X := X;
+    P.Y := Y;
+    TargetWindow := Win32WidgetSet.WindowFromPoint(P);
+    //fallback to LCL function to get the actual window
+    if TargetWindow = 0 then
+      TargetWindow := GetLCLWindowFromPoint(lWinControl, P);
+    if (TargetWindow = 0) or not IsWindowEnabled(TargetWindow) then
+      Exit(True);
+
+    // check if the window is an edit control of a combobox, if so,
+    // redirect it to the combobox, not the edit control
+    if GetWin32WindowInfo(TargetWindow)^.isComboEdit then
+      TargetWindow := Windows.GetParent(TargetWindow);
+
+    // check InMouseWheelRedirection to prevent recursion
+    if not InMouseWheelRedirection and (TargetWindow <> Window) then
+    begin
+      InMouseWheelRedirection := true;
+      WinResult := SendMessage(TargetWindow, WM_MOUSEWHEEL, WParam, LParam);
+      InMouseWheelRedirection := false;
+      Exit(True);
+    end
+    else if TargetWindow <> Window then
+      Exit(True);
+    // the mousewheel message is for us
+    Msg := LM_MOUSEWHEEL;
+    Windows.ScreenToClient(TargetWindow, P);
+    X := P.X;
+    Y := P.Y;
+    Button := LOWORD(Integer(WParam));
+    WheelDelta := SmallInt(HIWORD(Integer(WParam)));
+    State := KeysToShiftState(Button);
+    WinResult := 0;
+    UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
+    WinProcess := false;
+  end;
+  Result := False;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1869,81 +1946,8 @@ begin
       NotifyUserInput := True;
       LMessage.Msg := LM_MOUSELEAVE;
     end;
-    WM_MOUSEMOVE:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouseMove;
-      with LMMouseMove Do
-      begin
-        Msg := LM_MOUSEMOVE;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-        // check if this is a spurious WM_MOUSEMOVE message, pos not actually changed
-        if (XPos = WindowInfo^.MouseX) and (YPos = WindowInfo^.MouseY) then
-        begin
-          // do not fire message after all (position not changed)
-          Msg := LM_NULL;
-          NotifyUserInput := false;
-        end else
-        if WindowInfo <> @DefaultWindowInfo then
-        begin
-          // position changed, update window info
-          WindowInfo^.MouseX := XPos;
-          WindowInfo^.MouseY := YPos;
-        end;
-      end;
-    end;
-    WM_MOUSEWHEEL:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouseEvent;
-      with LMMouseEvent Do
-      begin
-        X := GET_X_LPARAM(LParam);
-        Y := GET_Y_LPARAM(LParam);
-        // check if mouse cursor within this window, otherwise send message to
-        // window the mouse is hovering over
-        P.X := X;
-        P.Y := Y;
-
-        TargetWindow := Win32WidgetSet.WindowFromPoint(P);
-        //fallback to LCL function to get the actual window
-        if TargetWindow = 0 then
-          TargetWindow := GetLCLWindowFromPoint(lWinControl, P);
-
-        if (TargetWindow = 0) or not IsWindowEnabled(TargetWindow) then
-          exit;
-
-        // check if the window is an edit control of a combobox, if so,
-        // redirect it to the combobox, not the edit control
-        if GetWin32WindowInfo(TargetWindow)^.isComboEdit then
-          TargetWindow := Windows.GetParent(TargetWindow);
-
-        // check InMouseWheelRedirection to prevent recursion
-        if not InMouseWheelRedirection and (TargetWindow <> Window) then
-        begin
-          InMouseWheelRedirection := true;
-          Result := SendMessage(TargetWindow, WM_MOUSEWHEEL, WParam, LParam);
-          InMouseWheelRedirection := false;
-          exit;
-        end
-        else
-        if TargetWindow <> Window then
-          exit;
-        // the mousewheel message is for us
-        Msg := LM_MOUSEWHEEL;
-        Windows.ScreenToClient(TargetWindow, P);
-        X := P.X;
-        Y := P.Y;
-        Button := LOWORD(Integer(WParam));
-        WheelDelta := SmallInt(HIWORD(Integer(WParam)));
-        State := KeysToShiftState(Button);
-        Result := 0;
-        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
-        WinProcess := false;
-      end;
-    end;
+    WM_MOUSEMOVE:  DoMsgMouseMove;
+    WM_MOUSEWHEEL: if DoMsgMouseWheel(Result) then Exit;
     WM_DROPFILES:
       begin
         {$IFDEF EnableWMDropFiles}
