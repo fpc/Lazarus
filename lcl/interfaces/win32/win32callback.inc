@@ -399,6 +399,7 @@ type
     OrgCharCode: word; // used in WM_CHAR handling
     CharCodeNotEmpty: boolean; // used by WM_CHAR, WM_SYSCHAR and WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
     function DoChildEdit(out WinResult: LResult): Boolean;
+    procedure DoMsgChar(var WinResult: LResult);
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1191,6 +1192,43 @@ begin
   Result := False;
 end;
 
+procedure TWindowProcHelper.DoMsgChar(var WinResult: LResult);
+begin
+  {$ifdef WindowsUnicodeSupport}
+  // first send a IntfUTF8KeyPress to the LCL
+  // if the key was not handled send a CN_CHAR for AnsiChar<=#127
+  OrgCharCode := Word(WParam);
+  if not HandleUnicodeChar(OrgCharCode) then
+  begin
+    PLMsg := @LMChar;
+    with LMChar do
+    begin
+      Msg := CN_CHAR;
+      KeyData := LParam;
+      if UnicodeEnabledOS then
+        CharCode := Word(Char(WideChar(WParam)))
+      else
+        CharCode := Word(WParam);
+      OrgCharCode := CharCode;
+      WinResult := 0;
+    end;
+    WinProcess := false;
+  end
+  else
+    WParam := OrgCharCode;
+  {$else}
+  PLMsg:=@LMChar;
+  with LMChar do
+  begin
+    Msg := CN_CHAR;
+    KeyData := LParam;
+    CharCode := Word(WParam);
+    WinResult := 0;
+  end;
+  WinProcess := false;
+  {$endif}
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1241,50 +1279,9 @@ begin
       LMessage.LParam := LParam;
       //WinProcess := False;
     end;
-    WM_CANCELMODE:
-    begin
-      LMessage.Msg := LM_CANCELMODE;
-    end;
-    WM_CAPTURECHANGED:
-    begin
-      LMessage.Msg := LM_CAPTURECHANGED;
-    end;
-    WM_CHAR:
-    begin
-      {$ifdef WindowsUnicodeSupport}
-      // first send a IntfUTF8KeyPress to the LCL
-      // if the key was not handled send a CN_CHAR for AnsiChar<=#127
-      OrgCharCode := Word(WParam);
-      if not HandleUnicodeChar(OrgCharCode) then
-      begin
-        PLMsg := @LMChar;
-        with LMChar do
-        begin
-          Msg := CN_CHAR;
-          KeyData := LParam;
-          if UnicodeEnabledOS then
-            CharCode := Word(Char(WideChar(WParam)))
-          else
-            CharCode := Word(WParam);
-          OrgCharCode := CharCode;
-          Result := 0;
-        end;
-        WinProcess := false;
-      end
-      else
-        WParam := OrgCharCode;
-      {$else}
-      PLMsg:=@LMChar;
-      with LMChar do
-      begin
-        Msg := CN_CHAR;
-        KeyData := LParam;
-        CharCode := Word(WParam);
-        Result := 0;
-      end;
-      WinProcess := false;
-      {$endif}
-    end;
+    WM_CANCELMODE:     LMessage.Msg := LM_CANCELMODE;
+    WM_CAPTURECHANGED: LMessage.Msg := LM_CAPTURECHANGED;
+    WM_CHAR:           DoMsgChar(Result);
 
     WM_MENUCHAR:
     begin
