@@ -419,6 +419,7 @@ type
     procedure DoMsgNCLButtonDown;
     function DoMsgNotify(var WinResult: LResult): Boolean;
     procedure DoMsgShowWindow;
+    procedure DoMsgSize;
     procedure DoMsgSysKey(aMsg: Cardinal);
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
@@ -1905,6 +1906,52 @@ begin
   Result := False;
 end;
 
+procedure TWindowProcHelper.DoMsgSize;
+begin
+  with TLMSize(LMessage) do
+  begin
+    Msg := LM_SIZE;
+    SizeType := WParam or Size_SourceIsInterface;
+
+    // this is needed since we don't minimize the main form window
+    // we only hide and show it back on mimize and restore in case MainFormOnTaskbar = False
+    if (Window = Win32WidgetSet.AppHandle) and
+       Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+    begin
+      lWinControl := Application.MainForm;
+      Window := Application.MainFormHandle;
+      // lie LCL about the window state
+      if IsIconic(Win32WidgetSet.AppHandle) then
+        SizeType := SIZE_MINIMIZED or Size_SourceIsInterface
+      else
+      if IsZoomed(Window) then
+        SizeType := SIZE_MAXIMIZED or Size_SourceIsInterface
+      else
+        SizeType := SIZE_RESTORED or Size_SourceIsInterface;
+    end;
+
+    GetWindowSize(Window, NewWidth, NewHeight);
+    Width := NewWidth;
+    Height := NewHeight;
+    if Assigned(lWinControl) then
+    begin
+      {$IFDEF VerboseSizeMsg}
+      GetClientRect(Window,R);
+      DebugLn('Win32Callback: WM_SIZE '+ dbgsName(lWinControl)+
+        ' NewSize=', dbgs(Width)+','+dbgs(Height)+
+        ' HasVScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0)+
+        ' HasHScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0)+
+        ' OldClientSize='+dbgs(lWinControl.CachedClientWidth)+','+dbgs(lWinControl.CachedClientHeight)+
+        ' NewClientSize='+dbgs(R.Right)+','+dbgs(R.Bottom));
+      {$ENDIF}
+      lWinControl.InvalidateClientRectCache(false);
+    end;
+    OverlayWindow := GetWin32WindowInfo(Window)^.Overlay;
+    if OverlayWindow <> 0 then
+      Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
+  end;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -2379,51 +2426,7 @@ begin
   case Msg of
     WM_ACTIVATEAPP: DoMsgActivateApp;
     WM_MOVE:        if DoMsgMove then Exit;
-    WM_SIZE:
-    begin
-      with TLMSize(LMessage) do
-      begin
-        Msg := LM_SIZE;
-        SizeType := WParam or Size_SourceIsInterface;
-
-        // this is needed since we don't minimize the main form window
-        // we only hide and show it back on mimize and restore in case MainFormOnTaskbar = False
-        if (Window = Win32WidgetSet.AppHandle) and
-           Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
-        begin
-          lWinControl := Application.MainForm;
-          Window := Application.MainFormHandle;
-          // lie LCL about the window state
-          if IsIconic(Win32WidgetSet.AppHandle) then
-            SizeType := SIZE_MINIMIZED or Size_SourceIsInterface
-          else
-          if IsZoomed(Window) then
-            SizeType := SIZE_MAXIMIZED or Size_SourceIsInterface
-          else
-            SizeType := SIZE_RESTORED or Size_SourceIsInterface;
-        end;
-
-        GetWindowSize(Window, NewWidth, NewHeight);
-        Width := NewWidth;
-        Height := NewHeight;
-        if Assigned(lWinControl) then
-        begin
-          {$IFDEF VerboseSizeMsg}
-          GetClientRect(Window,R);
-          DebugLn('Win32Callback: WM_SIZE '+ dbgsName(lWinControl)+
-            ' NewSize=', dbgs(Width)+','+dbgs(Height)+
-            ' HasVScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0)+
-            ' HasHScroll='+dbgs((GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0)+
-            ' OldClientSize='+dbgs(lWinControl.CachedClientWidth)+','+dbgs(lWinControl.CachedClientHeight)+
-            ' NewClientSize='+dbgs(R.Right)+','+dbgs(R.Bottom));
-          {$ENDIF}
-          lWinControl.InvalidateClientRectCache(false);
-        end;
-        OverlayWindow := GetWin32WindowInfo(Window)^.Overlay;
-        if OverlayWindow <> 0 then
-          Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
-      end;
-    end;
+    WM_SIZE:        DoMsgSize;
     BM_SETCHECK:
     begin
       //LParam holds BST_CHECKED, BST_UNCHECKED or SKIP_LMCHANGE;
