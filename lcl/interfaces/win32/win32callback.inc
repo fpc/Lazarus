@@ -415,6 +415,7 @@ type
     function DoMsgMouseWheel(var WinResult: LResult): Boolean;
     procedure DoMsgNCLButtonDown;
     function DoMsgNotify(var WinResult: LResult): Boolean;
+    procedure DoMsgShowWindow;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1762,6 +1763,26 @@ begin
   Result := False;
 end;
 
+procedure TWindowProcHelper.DoMsgShowWindow;
+begin
+  with TLMShowWindow(LMessage) Do
+  begin
+    Msg := LM_SHOWWINDOW;
+    Show := WParam <> 0;
+    Status := LParam;
+  end;
+  if Assigned(lWinControl) and ((WParam <> 0) or not lWinControl.Visible) and
+      ((WParam = 0) or lWinControl.Visible) and Assigned(Application) and
+      (lWinControl = Application.MainForm) and not Application.MainFormOnTaskBar then
+  begin
+    if WParam=0 then
+      Flags := SW_HIDE
+    else
+      Flags := SW_SHOWNOACTIVATE;
+    Windows.ShowWindow(Win32WidgetSet.AppHandle, Flags);
+  end;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -2118,25 +2139,7 @@ begin
         PostMessage(Window, CM_ACTIVATE, 0, 0);
       LMessage.Msg := LM_SETFOCUS;
     end;
-    WM_SHOWWINDOW:
-    begin
-      with TLMShowWindow(LMessage) Do
-      begin
-        Msg := LM_SHOWWINDOW;
-        Show := WParam <> 0;
-        Status := LParam;
-      end;
-      if Assigned(lWinControl) and ((WParam <> 0) or not lWinControl.Visible) and
-          ((WParam = 0) or lWinControl.Visible) and Assigned(Application) and
-          (lWinControl = Application.MainForm) and not Application.MainFormOnTaskBar then
-      begin
-        if WParam=0 then
-          Flags := SW_HIDE
-        else
-          Flags := SW_SHOWNOACTIVATE;
-        Windows.ShowWindow(Win32WidgetSet.AppHandle, Flags);
-      end;
-    end;
+    WM_SHOWWINDOW: DoMsgShowWindow;
     WM_SYSCHAR:
     begin
       PLMsg:=@LMChar;
