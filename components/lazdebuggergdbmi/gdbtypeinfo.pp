@@ -162,6 +162,15 @@ type
     function IsCommaSeparated: Boolean;
   end;
 
+  { TGDBExpressionPartNumber }
+
+  TGDBExpressionPartNumber = class(TGDBExpression)
+  protected
+    function GetTextFixed(AOpts: TGDBExprTextOptions=[]): String; override;
+  public
+    constructor Create(AText: PChar; ATextLen: Integer); override; overload;
+  end;
+
   { TGDBExpressionPartBracketed }
 
   TGDBExpressionPartBracketed = class(TGDBExpression)
@@ -1532,6 +1541,43 @@ begin
   FTypeCastFixFlag := tcfEvalNeeded;
 end;
 
+{ TGDBExpressionPartNumber }
+
+function TGDBExpressionPartNumber.GetTextFixed(AOpts: TGDBExprTextOptions): String;
+begin
+  Result := FTextStr;
+end;
+
+constructor TGDBExpressionPartNumber.Create(AText: PChar; ATextLen: Integer);
+var
+  i: QWord;
+  e: word;
+begin
+  if AText^ = '%' then begin
+    Val(Copy(AText, 1, ATextLen), i, e);
+    if e <> 0 then begin
+      FTextStr := Copy(AText, 1, ATextLen); // pass error to gdb
+      exit;
+    end;
+    FTextStr := '('+IntToStr(Int64(i))+')'; // brackets so no decimal dot can follow
+    exit;
+  end;
+
+  if AText^ = '$' then
+    FTextStr := '0x'+Copy(AText, 2, ATextLen-1)
+  else
+  if AText^ = '&' then
+    FTextStr := '(0'+ Copy(AText, 2, ATextLen-1)+')'
+  else begin // strip leading zeros
+    while (AText^ = '0') and (ATextLen > 1) do begin
+      inc(AText);
+      dec(ATextLen);
+    end;
+    FTextStr := Copy(AText, 1, ATextLen);
+  end;
+
+end;
+
 { TGDBExpressionPartBracketed }
 
 function TGDBExpressionPartBracketed.GetTextFixed(AOpts: TGDBExprTextOptions
@@ -1573,7 +1619,7 @@ const
   // include "." (dots). currently there is no need to break expressions like "foo.bar"
   // Include "^" (deref)
   // do NOT include "@", it is applied after []() resolution
-  WordChar = ['a'..'z', 'A'..'Z', '0'..'9', '_', '#', '$', '%', '&', '^', '.'];
+  WordChar = ['a'..'z', 'A'..'Z', '0'..'9', '_', '#', '^', '.'];
 var
   CurPtr, EndPtr: PChar;
   CurPartPtr: PChar;
@@ -1704,7 +1750,8 @@ begin
   CurPtr := AText;
   EndPtr := AText + ATextLen;
 
-  while (CurPtr < EndPtr) and not(CurPtr^ in ['[', '(', ',']) do inc(CurPtr);
+
+  while (CurPtr < EndPtr) and not(CurPtr^ in ['[', '(', ',', '%', '&', '$', '0']) do inc(CurPtr);
   if CurPtr = EndPtr then exit; // no fixup needed
 
   CurPtr := AText;
@@ -1720,6 +1767,35 @@ begin
       FCommaList.Add(Result);
       Result := nil;
       inc(CurPtr);
+    end
+    else
+    if (CurPtr^ in ['%', '&', '$'])
+       or ((CurPtr^ = '0') and ((CurPtr+1)^ in ['0'..'9'])) // octal for gdb
+       // no need to handle decimal or 0xabcd
+    then begin
+      CurPartPtr := CurPtr;
+      if CurPtr^ in ['0'..'9'] then begin
+        while CurPtr^ in ['0'..'9'] do inc(CurPtr);
+        if (CurPtr^ = '.') and ((CurPtr+1)^ <> '.') then begin
+          // decimal, no need to convert
+          inc(CurPtr);
+          while CurPtr^ in ['0'..'9'] do inc(CurPtr);
+          CurWord := TGDBExpression.CreateSimple(CurPartPtr, CurPtr - CurPartPtr);
+        end
+        else begin
+          CurWord := TGDBExpressionPartNumber.Create(CurPartPtr, CurPtr - CurPartPtr);
+        end;
+      end
+      else begin
+        inc(CurPtr);
+        case CurPartPtr^ of
+          '$': while CurPtr^ in ['a'..'z', 'A'..'Z', '0'..'9'] do inc(CurPtr);
+          '&': while CurPtr^ in ['0'..'7'] do inc(CurPtr);
+          '%': while CurPtr^ in ['0'..'1'] do inc(CurPtr);
+        end;
+        CurWord := TGDBExpressionPartNumber.Create(CurPartPtr, CurPtr - CurPartPtr);
+      end;
+      CurList.Add(CurWord);
     end
     else
     if CurPtr^ in WordChar
