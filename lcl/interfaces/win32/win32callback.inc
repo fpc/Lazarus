@@ -412,6 +412,7 @@ type
     procedure DoMsgMouseMove;
     procedure DoMsgMouseUpDownClick(aMsg: Cardinal);
     function DoMsgMouseWheel(var WinResult: LResult): Boolean;
+    procedure DoMsgNCLButtonDown;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1665,6 +1666,31 @@ begin
   Result := False;
 end;
 
+procedure TWindowProcHelper.DoMsgNCLButtonDown;
+begin
+  LMessage.Msg := Msg;
+  LMessage.WParam := WParam;
+  LMessage.LParam := LParam;
+  NotifyUserInput := True;
+
+  //Drag&Dock support TCustomForm => Start BeginDrag()
+  if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState) then
+  begin
+    if WParam = HTCAPTION  then
+    begin
+      if lWinControl is TCustomForm then
+      begin
+        if (TWinControlAccess(lWinControl).DragKind = dkDock)
+        and (TWinControlAccess(lWinControl).DragMode = dmAutomatic) then
+          lWinControl.BeginDrag(true);
+      end;
+    end;
+  end;
+  // I see no other way to prevent crash at moment. This message calls WM_CLOSE
+  // which frees our form and we get a destructed lWinControl
+  lWinControl := nil;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1955,7 +1981,6 @@ begin
         LMessage.WParam := WParam;
         LMessage.LParam := LParam;
         {$ENDIF}
-        
         HandleDropFiles;
       end;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
@@ -1965,30 +1990,7 @@ begin
       LMessage.wParam := WParam;
       LMessage.lParam := LParam;
     end;
-    WM_NCLBUTTONDOWN:
-    begin
-      LMessage.Msg := Msg;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
-      NotifyUserInput := True;
-
-      //Drag&Dock support TCustomForm => Start BeginDrag()
-      if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState) then
-      begin
-        if WParam = HTCAPTION  then
-        begin
-          if lWinControl is TCustomForm then
-          begin
-            if (TWinControlAccess(lWinControl).DragKind = dkDock) and
-               (TWinControlAccess(lWinControl).DragMode = dmAutomatic) then
-              lWinControl.BeginDrag(true);
-          end;
-        end;
-      end;
-      // I see no other way to prevent crash at moment. This message calls WM_CLOSE
-      // which frees our form and we get a destructed lWinControl
-      lWinControl := nil;
-    end;
+    WM_NCLBUTTONDOWN: DoMsgNCLButtonDown;
     WM_NCMOUSEMOVE, WM_NCMOUSEHOVER:
     begin
       LMessage.Msg := Msg;
