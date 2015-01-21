@@ -402,6 +402,7 @@ type
     procedure DoCmdCheckBoxParam;
     function DoCmdComboBoxParam: Boolean;
     procedure DoMsgChar(var WinResult: LResult);
+    procedure DoMsgColor;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1289,6 +1290,50 @@ begin
   Result := False;
 end;
 
+procedure TWindowProcHelper.DoMsgColor;
+begin
+  WindowDC := HDC(WParam);
+  ChildWinControl := ChildWindowInfo^.WinControl;
+  if ChildWinControl = nil then
+    ChildWinControl := ChildWindowInfo^.AWinControl;
+
+  case Msg of
+    WM_CTLCOLORSTATIC,
+    WM_CTLCOLORBTN: begin
+      if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) and
+        not ChildWindowInfo^.ThemedCustomDraw then
+      begin
+        // need to draw transparently, draw background
+        DrawParentBackground(HWND(LParam), WindowDC);
+        LMessage.Result := GetStockObject(HOLLOW_BRUSH);
+        SetBkMode(WindowDC, TRANSPARENT);
+        WinProcess := false;
+      end;
+    end;
+    WM_CTLCOLORSCROLLBAR: begin
+      WinProcess := false;
+    end;
+  end;
+
+  if WinProcess then
+  begin
+    if ChildWinControl <> nil then
+    begin
+      WindowColor := ChildWinControl.Font.Color;
+      if WindowColor = clDefault then
+        WindowColor := ChildWinControl.GetDefaultColor(dctFont);
+      Windows.SetTextColor(WindowDC, ColorToRGB(WindowColor));
+      WindowColor := ChildWinControl.Brush.Color;
+      if WindowColor = clDefault then
+        WindowColor := ChildWinControl.GetDefaultColor(dctBrush);
+      Windows.SetBkColor(WindowDC, ColorToRGB(WindowColor));
+      LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
+      // Override default handling
+      WinProcess := false;
+    end;
+  end;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1454,64 +1499,14 @@ begin
       // others need to erased with their window color
       // scrollbar also has buttons
       ChildWindowInfo := GetWin32WindowInfo(HWND(LParam));
-      if Assigned(ChildWindowInfo^.ParentMsgHandler) then
-      begin
-        if ChildWindowInfo^.ParentMsgHandler(lWinControl,
-          Window, Msg, WParam, LParam, LMessage.Result, WinProcess) then Exit(LMessage.Result);
-      end;
-      WindowDC := HDC(WParam);
-      ChildWinControl := ChildWindowInfo^.WinControl;
-      if ChildWinControl = nil then
-        ChildWinControl := ChildWindowInfo^.AWinControl;
-
-      case Msg of
-        WM_CTLCOLORSTATIC,
-        WM_CTLCOLORBTN: begin
-          if GetNeedParentPaint(ChildWindowInfo, ChildWinControl) and
-            not ChildWindowInfo^.ThemedCustomDraw then
-          begin
-            // need to draw transparently, draw background
-            DrawParentBackground(HWND(LParam), WindowDC);
-            LMessage.Result := GetStockObject(HOLLOW_BRUSH);
-            SetBkMode(WindowDC, TRANSPARENT);
-            WinProcess := false;
-          end;
-        end;
-        WM_CTLCOLORSCROLLBAR: begin
-          WinProcess := false;
-        end;
-      end;
-
-      if WinProcess then
-      begin
-        if ChildWinControl <> nil then
-        begin
-          WindowColor := ChildWinControl.Font.Color;
-          if WindowColor = clDefault then
-            WindowColor := ChildWinControl.GetDefaultColor(dctFont);
-          Windows.SetTextColor(WindowDC, ColorToRGB(WindowColor));
-          WindowColor := ChildWinControl.Brush.Color;
-          if WindowColor = clDefault then
-            WindowColor := ChildWinControl.GetDefaultColor(dctBrush);
-          Windows.SetBkColor(WindowDC, ColorToRGB(WindowColor));
-          LMessage.Result := LResult(ChildWinControl.Brush.Reference.Handle);
-          // Override default handling
-          WinProcess := false;
-        end;
-      end;
+      if Assigned(ChildWindowInfo^.ParentMsgHandler)
+      and ChildWindowInfo^.ParentMsgHandler(lWinControl,
+        Window, Msg, WParam, LParam, LMessage.Result, WinProcess) then Exit(LMessage.Result);
+      DoMsgColor;
     end;
-    WM_CLEAR:
-    begin
-      LMessage.Msg := LM_CLEAR;
-    end;
-    WM_COPY:
-    begin
-      LMessage.Msg := LM_COPY;
-    end;
-    WM_CUT:
-    begin
-      LMessage.Msg := LM_CUT;
-    end;
+    WM_CLEAR: LMessage.Msg := LM_CLEAR;
+    WM_COPY:  LMessage.Msg := LM_COPY;
+    WM_CUT:   LMessage.Msg := LM_CUT;
     {$ifndef RedirectDestroyMessages}
     WM_DESTROY:
     begin
