@@ -421,6 +421,9 @@ type
     procedure DoMsgShowWindow;
     procedure DoMsgSize;
     procedure DoMsgSysKey(aMsg: Cardinal);
+    procedure DoSysCmdKeyMenu;
+    procedure DoSysCmdMinimize;
+    procedure DoSysCmdRestore;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -918,10 +921,79 @@ begin
   WinProcess := False;
 end;
 
-procedure TWindowProcHelper.HandleSysCommand;
+procedure TWindowProcHelper.DoSysCmdKeyMenu;
 var
   ParentForm: TCustomForm;
   prevFocus: HWND;
+begin
+  ParentForm := GetParentForm(lWinControl);
+  if (ParentForm <> nil) and ((ParentForm.Menu = nil) or (csDesigning in ParentForm.ComponentState))
+  and (Application <> nil) and (Application.MainForm <> nil)
+  and (Application.MainForm <> ParentForm)
+  and Application.MainForm.HandleAllocated then
+  begin
+    TargetWindow := Application.MainFormHandle;
+    if IsWindowEnabled(TargetWindow) and IsWindowVisible(TargetWindow) then
+    begin
+      prevFocus := Windows.GetFocus;
+      Windows.SetFocus(targetWindow);
+      PLMsg^.Result := Windows.SendMessage(TargetWindow, WM_SYSCOMMAND, WParam, LParam);
+      Windows.SetFocus(prevFocus);
+      WinProcess := False;
+    end;
+  end;
+end;
+
+procedure TWindowProcHelper.DoSysCmdMinimize;
+begin
+  if Assigned(lWinControl) and (Application.MainForm = lWinControl)
+  and not Application.MainFormOnTaskBar then
+    Window := Win32WidgetSet.AppHandle; //redirection
+
+  if (Window = Win32WidgetSet.AppHandle) and not Application.MainFormOnTaskBar then
+  begin
+    HidePopups(Win32WidgetSet.AppHandle);
+    if Assigned(Application.MainForm) then
+    begin
+      Windows.SetWindowPos(Window, HWND_TOP,
+        Application.MainForm.Left, Application.MainForm.Top,
+        Application.MainForm.Width, 0, SWP_NOACTIVATE);
+      if Application.MainForm.HandleAllocated then
+        Windows.ShowWindow(Application.MainFormHandle, SW_HIDE);
+    end;
+
+    PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
+    WinProcess := False;
+    Application.IntfAppMinimize;
+  end
+  else
+  if Assigned(lWinControl) and (lWinControl = Application.MainForm) then
+  begin
+    PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
+    WinProcess := False;
+    Application.IntfAppMinimize;
+  end;
+end;
+
+procedure TWindowProcHelper.DoSysCmdRestore;
+begin
+  if (Window = Win32WidgetSet.AppHandle) and not Application.MainFormOnTaskBar then
+  begin
+    PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
+    WinProcess := False;
+    if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
+    begin
+      if Application.MainForm.HandleObjectShouldBeVisible then
+        Windows.ShowWindow(Application.MainFormHandle, SW_SHOWNA);
+      RestorePopups;
+    end;
+    Application.IntfAppRestore;
+  end
+  else if Assigned(lWinControl) and (lWinControl = Application.MainForm) then
+    Application.IntfAppRestore;
+end;
+
+procedure TWindowProcHelper.HandleSysCommand;
 begin
   // forward keystroke to show window menu, if parent form has no menu
   // if wparam contains SC_KEYMENU, lparam contains key pressed
@@ -929,81 +1001,13 @@ begin
   case (WParam and $FFF0) of
     SC_KEYMENU:
       if (lWinControl <> nil) and (lParam <> VK_SPACE) then
-      begin
-        ParentForm := GetParentForm(lWinControl);
-        if (ParentForm <> nil) and ((ParentForm.Menu = nil) or (csDesigning in ParentForm.ComponentState))
-          and (Application <> nil) and (Application.MainForm <> nil)
-          and (Application.MainForm <> ParentForm)
-          and Application.MainForm.HandleAllocated then
-        begin
-          TargetWindow := Application.MainFormHandle;
-          if IsWindowEnabled(TargetWindow) and IsWindowVisible(TargetWindow) then
-          begin
-            prevFocus := Windows.GetFocus;
-            Windows.SetFocus(targetWindow);
-            PLMsg^.Result := Windows.SendMessage(TargetWindow, WM_SYSCOMMAND, WParam, LParam);
-            Windows.SetFocus(prevFocus);
-            WinProcess := False;
-          end;
-        end;
-      end;
-
+        DoSysCmdKeyMenu;
     SC_MINIMIZE:
-      begin
-        if Assigned(Application) then
-        begin
-          if Assigned(lWinControl) and (Application.MainForm = lWinControl) and not Application.MainFormOnTaskBar then
-            Window := Win32WidgetSet.AppHandle;//redirection
-
-          if (Window = Win32WidgetSet.AppHandle) and not Application.MainFormOnTaskBar then
-          begin
-            HidePopups(Win32WidgetSet.AppHandle);
-            if Assigned(Application.MainForm) then
-            begin
-              Windows.SetWindowPos(Window, HWND_TOP,
-                Application.MainForm.Left, Application.MainForm.Top,
-                Application.MainForm.Width, 0, SWP_NOACTIVATE);
-              if Application.MainForm.HandleAllocated then
-                Windows.ShowWindow(Application.MainFormHandle, SW_HIDE);
-            end;
-
-            PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
-            WinProcess := False;
-            Application.IntfAppMinimize;
-          end
-          else
-          if Assigned(lWinControl) and (lWinControl = Application.MainForm) then
-          begin
-            PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
-            WinProcess := False;
-            Application.IntfAppMinimize;
-          end;
-        end;
-      end;
-
+      if Assigned(Application) then
+        DoSysCmdMinimize;
     SC_RESTORE:
-      begin
-        if Assigned(Application) then
-        begin
-          if (Window = Win32WidgetSet.AppHandle) and not Application.MainFormOnTaskBar then
-          begin
-            PLMsg^.Result := Windows.DefWindowProc(Window, WM_SYSCOMMAND, WParam, LParam);
-            WinProcess := False;
-            if Assigned(Application.MainForm) and Application.MainForm.HandleAllocated then
-            begin
-              if Application.MainForm.HandleObjectShouldBeVisible then
-                Windows.ShowWindow(Application.MainFormHandle, SW_SHOWNA);
-              RestorePopups;
-            end;
-            Application.IntfAppRestore;
-          end
-          else
-          if Assigned(lWinControl) and (lWinControl = Application.MainForm) then
-          begin
-            Application.IntfAppRestore;
-          end;
-        end;
-      end;
+      if Assigned(Application) then
+        DoSysCmdRestore;
   end;
 end;
 
