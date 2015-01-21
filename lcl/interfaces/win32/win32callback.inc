@@ -361,6 +361,7 @@ type
     LMMouseEvent: TLMMouseEvent; // used by WM_MOUSEWHEEL
     LMMove: TLMMove; // used by WM_MOVE
     LMNotify: TLMNotify; // used by WM_NOTIFY
+    DrawListItemStruct: TDrawListItemStruct; //used by WM_DRAWITEM
     NMHdr: PNMHdr; // used by WM_NOTIFY
 
     procedure CalcClipRgn(PaintRegion: HRGN);
@@ -1340,8 +1341,6 @@ begin
 end;
 
 procedure TWindowProcHelper.UpdateDrawListItem(aMsg: UInt);
-var
-  DrawListItemStruct: TDrawListItemStruct; //used by WM_DRAWITEM
 begin
   if PDrawItemStruct(LParam)^.itemID <> dword(-1) then
   begin
