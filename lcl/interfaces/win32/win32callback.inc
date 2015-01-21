@@ -405,6 +405,7 @@ type
     procedure DoMsgDrawItem;
     procedure DoMsgEnable;
     function DoMsgEraseBkgnd(var WinResult: LResult): Boolean;
+    procedure DoMsgKeyDownUp(aMsg: Cardinal; var WinResult: LResult);
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1512,6 +1513,21 @@ begin
   Result := False;
 end;
 
+procedure TWindowProcHelper.DoMsgKeyDownUp(aMsg: Cardinal; var WinResult: LResult);
+begin
+  NotifyUserInput := True;
+  PLMsg := @LMKey;
+  UpdateUIState(Word(WParam));
+  with LMKey Do
+  begin
+    Msg := aMsg;
+    KeyData := LParam;
+    CharCode := Word(WParam);
+    WinResult := 0;
+  end;
+  WinProcess := false;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1755,32 +1771,13 @@ begin
     end;
     WM_KEYDOWN:
     begin
-      NotifyUserInput := True;
-      PLMsg := @LMKey;
-      UpdateUIState(Word(WParam));
-      with LMKey Do
-      begin
-        Msg := CN_KEYDOWN;
-        KeyData := LParam;
-        CharCode := Word(WParam);
-        Result := 0;
-      end;
+      DoMsgKeyDownUp(CN_KEYDOWN, Result);
       WindowInfo^.IMEComposed:=False;
-      WinProcess := false;
       IgnoreNextCharWindow := Window;
     end;
     WM_KEYUP:
     begin
-      NotifyUserInput := True;
-      PLMsg:=@LMKey;
-      with LMKey Do
-      begin
-        Msg := CN_KEYUP;
-        KeyData := LParam;
-        CharCode := Word(WParam);
-        Result := 0;
-      end;
-      WinProcess := false;
+      DoMsgKeyDownUp(CN_KEYUP, Result);
       if WindowInfo^.IMEComposed then
         LMKey.Msg:=LM_NULL;
     end;
