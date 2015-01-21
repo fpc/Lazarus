@@ -13,17 +13,14 @@ msgstr ""
 "X-Generator: Poedit 1.5.4\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "Browser \"%s\" nicht ausführbar."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "Browser \"%s\" nicht gefunden."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "Fehler beim Ausführen von \"%s\":%s%s"
 
@@ -36,7 +33,6 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "Kein HTML-Browser gefunden.%sBitte legen Sie einen fest unter Werkzeuge -> Einstellungen -> Hilfe -> Hilfeeinstellungen"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "Die Hilfedatenbank \"%s\" konnte die Datei \"%s\" nicht finden."
 
@@ -271,7 +267,6 @@ msgid "3D Light"
 msgstr "3D-Licht"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
-#| msgid "A control can't have itself as parent"
 msgid "A control can't have itself as a parent"
 msgstr "Ein Control kann nicht sein eigener Vorfahr sein"
 
@@ -532,12 +527,10 @@ msgid "First"
 msgstr "Erster"
 
 #: lclstrconsts.rsfixedcolstoobig
-#| msgid "FixedCols can't be >= ColCount"
 msgid "FixedCols can't be > ColCount"
 msgstr "FixedCols kann nicht größer ColCount sein"
 
 #: lclstrconsts.rsfixedrowstoobig
-#| msgid "FixedRows can't be >= RowCount"
 msgid "FixedRows can't be > RowCount"
 msgstr "FixedRows kann nicht größer RowCount sein"
 
@@ -662,7 +655,6 @@ msgid "--no-xshm             Disable use of the X Shared Memory Extension."
 msgstr "--no-xshm             Abschalten der Verwendung der Shared-Memory-Erweiterung von X"
 
 #: lclstrconsts.rsgtkoptionsync
-#| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server.--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server.--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                Aufruf von XSynchronize (Display, True) nachdem die XServer-Verbindung zustandegekommen ist. Dies erleichtert das Debugging des X-Protokolls, weil die X-Anfragepufferung abgeschaltet ist und X-Fehler sofort ankommen, nachdem die Anfrage, die den Fehler erzeugt hat, beim X-Server angekommen ist."
 
@@ -677,7 +669,6 @@ msgid "A help database was found for this topic, but this topic was not found"
 msgstr "Hilfekontext nicht gefunden"
 
 #: lclstrconsts.rshelpdatabasenotfound
-#| msgid "Help Database not found"
 msgid "There is no help database installed for this topic"
 msgstr "Es ist keine Hilfedatenbank installiert"
 
@@ -690,41 +681,36 @@ msgid "Help context %s not found."
 msgstr "Hilfekontext %s nicht gefunden."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "Hilfekontext %s nicht in der Datenbank \"%s\" gefunden."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+#, fuzzy
+#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Die Hilfedatenbank \"%s\" fand keinen Betrachter für eine Hilfeseite des Typs %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
 msgstr "Hilfedatenbank \"%s\" nicht gefunden"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-#| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
 msgstr "Hilfe für Direktive \"%s\" nicht gefunden."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-#| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr "Hilfe für Direktive \"%s\" nicht in Datenbank \"%s\" gefunden."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "Hilfeschlüsselwort \"%s\" nicht gefunden."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Hilfeschlüsselwort \"%s\" nicht in der Datenbank \"%s\" gefunden."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "Hilfeknoten \"%s\" besitzt keine Hilfedatenbank"
 
@@ -733,12 +719,10 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Keine Hilfe für Zeile %d, Spalte %d von %s gefunden."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-#| msgid "No help nodes available"
 msgid "No help entries available for this topic"
 msgstr "Keine Hilfeeinträge verfügbar"
 
 #: lclstrconsts.rshelpnotfound
-#| msgid "Help not found"
 msgid "No help found for this topic"
 msgstr "Hilfe für dieses Thema nicht gefunden"
 
@@ -751,7 +735,6 @@ msgid "Help Selector Error"
 msgstr "Hilfeauswahlfehler"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "Es gibt keinen Viewer für den Hilfetyp \"%s\"."
 
@@ -760,7 +743,6 @@ msgid "Help Viewer Error"
 msgstr "Hilfebetrachterfehler"
 
 #: lclstrconsts.rshelpviewernotfound
-#| msgid "Help Viewer not found"
 msgid "No viewer was found for this type of help content"
 msgstr "Hilfebetrachter nicht gefunden"
 
@@ -1062,7 +1044,6 @@ msgid "Post"
 msgstr "Übertragen"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
-#| msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program.%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program.%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgstr "%s%sOk übergeht und riskiert Dateninkonsistenz.%sMit Abbrechen wird das Programm abgebrochen."
 
@@ -1499,7 +1480,6 @@ msgid "Invalid integer number: %s"
 msgstr "Ungültiger Integerzahl: %s"
 
 #: lclstrconsts.sparlocinfo
-#| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
 msgstr " (bei %d,%d, Stream-Offset %d)"
 

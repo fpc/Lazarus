@@ -275,7 +275,6 @@ msgid "3D Light"
 msgstr "3D Licht"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
-#| msgid "A control can't have itself as parent"
 msgid "A control can't have itself as a parent"
 msgstr "Een control kan niet zijn eigen ouder zijn"
 
@@ -668,7 +667,6 @@ msgid "--no-xshm             Disable use of the X Shared Memory Extension."
 msgstr "--no-xshm             Maak geen gebruik van de X Shared Memory Extensie."
 
 #: lclstrconsts.rsgtkoptionsync
-#| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                Roep XSynchronize (display, True) aan na verbinding met de Xserver. Dit maakt het debuggen van X protocol fouten eenvoudiger, doordat X aanvraag buffering uitstaat en X fouten direct ontvangen worden nadat de aanvraag door de Xserver is behandeld."
 
@@ -677,12 +675,10 @@ msgid "%s: Already registered"
 msgstr "%s: Al vastgelegd"
 
 #: lclstrconsts.rshelpcontextnotfound
-#| msgid "Help Context not found"
 msgid "A help database was found for this topic, but this topic was not found"
 msgstr "Helpdatabase gevonden voor dit onderwerp, maar het onderwerp is niet gevonden"
 
 #: lclstrconsts.rshelpdatabasenotfound
-#| msgid "Help Database not found"
 msgid "There is no help database installed for this topic"
 msgstr "Geen helpdatabase geïnstalleerd voor dit onderwerp"
 
@@ -702,8 +698,8 @@ msgstr "Help context %s niet gevonden in Database \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, fuzzy
-#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Help Database \"%s\" heeft geen viewer gevonden voor help pagina van type %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
@@ -753,7 +749,6 @@ msgid "No help entries available for this topic"
 msgstr "Geen help nodes beschikbaar voor dit onder"
 
 #: lclstrconsts.rshelpnotfound
-#| msgid "Help not found"
 msgid "No help found for this topic"
 msgstr "Help niet gevonden voor dit onderwerp"
 
@@ -776,7 +771,6 @@ msgid "Help Viewer Error"
 msgstr "Help Viewer Fout"
 
 #: lclstrconsts.rshelpviewernotfound
-#| msgid "Help Viewer not found"
 msgid "No viewer was found for this type of help content"
 msgstr "Geen viewer gevonden voor dit type helpinhoud"
 
@@ -1076,7 +1070,6 @@ msgid "Post"
 msgstr "Versturen"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
-#| msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgstr "%s%sDruk op Ok om te negeren, met kans op gegevensverlies.%sDruk op Cancel om het programma te stoppen."
 

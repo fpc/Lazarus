@@ -684,7 +684,9 @@ msgid "Help context %s not found in Database \"%s\"."
 msgstr "Aiuto su %s non trovato nell'archivio \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+#, fuzzy
+#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "L'archivio Help \"%s\" non trova un visualizzatore per le pagine di aiuto di tipo %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
@@ -1493,3 +1495,4 @@ msgstr "Simbolo token errato: atteso %s, trovato %s"
 #: lclstrconsts.sparwrongtokentype
 msgid "Wrong token type: %s expected but %s found"
 msgstr "Tipo token errato: atteso %s, trovato %s"
+

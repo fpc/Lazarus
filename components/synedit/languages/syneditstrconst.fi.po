@@ -6,7 +6,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrannotation
 msgid "Annotation"
-msgstr ""
+msgstr "Reunahuomautus"
 
 #: syneditstrconst.syns_attrasp
 msgid "Asp"
@@ -18,23 +18,23 @@ msgstr ""
 
 #: syneditstrconst.syns_attrattributename
 msgid "Attribute Name"
-msgstr ""
+msgstr "Attribuutin nimi"
 
 #: syneditstrconst.syns_attrattributevalue
 msgid "Attribute Value"
-msgstr ""
+msgstr "Attribuutin arvo"
 
 #: syneditstrconst.syns_attrblock
 msgid "Block"
-msgstr ""
+msgstr "Lohko"
 
 #: syneditstrconst.syns_attrbrackets
 msgid "Brackets"
-msgstr ""
+msgstr "Sulut"
 
 #: syneditstrconst.syns_attrcaselabel
 msgid "Case label"
-msgstr ""
+msgstr "Tapauksen nimike"
 
 #: syneditstrconst.syns_attrcdata
 msgid "CDATA"
@@ -42,11 +42,11 @@ msgstr ""
 
 #: syneditstrconst.syns_attrcdatasection
 msgid "CDATA Section"
-msgstr ""
+msgstr "CDATA lohko"
 
 #: syneditstrconst.syns_attrcharacter
 msgid "Character"
-msgstr ""
+msgstr "Merkki"
 
 #: syneditstrconst.syns_attrchunkmarker
 msgid "Diff Chunk Marker"
@@ -66,31 +66,31 @@ msgstr ""
 
 #: syneditstrconst.syns_attrclass
 msgid "Class"
-msgstr ""
+msgstr "Luokka"
 
 #: syneditstrconst.syns_attrcomment
 msgid "Comment"
-msgstr ""
+msgstr "Kommentti"
 
 #: syneditstrconst.syns_attrcondition
 msgid "Condition"
-msgstr ""
+msgstr "Ehdot"
 
 #: syneditstrconst.syns_attrdatatype
 msgid "Data type"
-msgstr ""
+msgstr "Tiedon tyyppi"
 
 #: syneditstrconst.syns_attrdefaultpackage
 msgid "Default packages"
-msgstr ""
+msgstr "Oletuspaketit"
 
 #: syneditstrconst.syns_attrdir
 msgid "Direction"
-msgstr ""
+msgstr "Suunnat"
 
 #: syneditstrconst.syns_attrdirective
 msgid "Directive"
-msgstr ""
+msgstr "Toimintaohje"
 
 #: syneditstrconst.syns_attrdoctype
 msgid "DOCTYPE"
@@ -102,71 +102,71 @@ msgstr ""
 
 #: syneditstrconst.syns_attrdocumentation
 msgid "Documentation"
-msgstr ""
+msgstr "Dokumentaatio"
 
 #: syneditstrconst.syns_attrelementname
 msgid "Element Name"
-msgstr ""
+msgstr "Alkion nimi"
 
 #: syneditstrconst.syns_attrembedsql
 msgid "Embedded SQL"
-msgstr ""
+msgstr "Upotettu SQL"
 
 #: syneditstrconst.syns_attrembedtext
 msgid "Embedded text"
-msgstr ""
+msgstr "Upotettu teksti"
 
 #: syneditstrconst.syns_attrentityreference
 msgid "Entity Reference"
-msgstr ""
+msgstr "Viittaus kokonaisuuteen"
 
 #: syneditstrconst.syns_attrescapeampersand
 msgid "Escape ampersand"
-msgstr ""
+msgstr "Koodaa et-merkki"
 
 #: syneditstrconst.syns_attrevent
 msgid "Event"
-msgstr ""
+msgstr "Tapahtuma"
 
 #: syneditstrconst.syns_attrexception
 msgid "Exception"
-msgstr ""
+msgstr "Poikkeus"
 
 #: syneditstrconst.syns_attrflags
 msgid "Flags"
-msgstr ""
+msgstr "Liput"
 
 #: syneditstrconst.syns_attrfloat
 msgid "Float"
-msgstr ""
+msgstr "Kellua"
 
 #: syneditstrconst.syns_attrform
 msgid "Form"
-msgstr ""
+msgstr "Lomake"
 
 #: syneditstrconst.syns_attrfunction
 msgid "Function"
-msgstr ""
+msgstr "Funktio"
 
 #: syneditstrconst.syns_attrhexadecimal
 msgid "Hexadecimal"
-msgstr ""
+msgstr "Hexadecimaali"
 
 #: syneditstrconst.syns_attricon
 msgid "Icon reference"
-msgstr ""
+msgstr "Kuvakkeen viittaus"
 
 #: syneditstrconst.syns_attridedirective
 msgid "IDE Directive"
-msgstr ""
+msgstr "IDE:n toimintaohje"
 
 #: syneditstrconst.syns_attridentifier
 msgid "Identifier"
-msgstr ""
+msgstr "Tunniste"
 
 #: syneditstrconst.syns_attrillegalchar
 msgid "Illegal char"
-msgstr ""
+msgstr "Laiton merkki"
 
 #: syneditstrconst.syns_attrinclude
 msgid "Include"
@@ -174,23 +174,23 @@ msgstr ""
 
 #: syneditstrconst.syns_attrindirect
 msgid "Indirect"
-msgstr ""
+msgstr "Epäsuora"
 
 #: syneditstrconst.syns_attrinternalfunction
 msgid "Internal function"
-msgstr ""
+msgstr "Sisäinen funktio"
 
 #: syneditstrconst.syns_attrinvalidsymbol
 msgid "Invalid symbol"
-msgstr ""
+msgstr "Kelvoton tunnus"
 
 #: syneditstrconst.syns_attrkey
 msgid "Key"
-msgstr ""
+msgstr "Avain"
 
 #: syneditstrconst.syns_attrlabel
 msgid "Label"
-msgstr ""
+msgstr "Nimike"
 
 #: syneditstrconst.syns_attrlineadded
 msgid "Diff Added line"
@@ -210,31 +210,31 @@ msgstr ""
 
 #: syneditstrconst.syns_attrmacro
 msgid "Macro"
-msgstr ""
+msgstr "Makro"
 
 #: syneditstrconst.syns_attrmarker
 msgid "Marker"
-msgstr ""
+msgstr "Merkitsijä"
 
 #: syneditstrconst.syns_attrmathmode
 msgid "Math Mode"
-msgstr ""
+msgstr "Matematiikkamoodi"
 
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
-msgstr ""
+msgstr "Viesti"
 
 #: syneditstrconst.syns_attrmiscellaneous
 msgid "Miscellaneous"
-msgstr ""
+msgstr "Sekalainen"
 
 #: syneditstrconst.syns_attrnamespaceattrname
 msgid "Namespace Attribute Name"
-msgstr ""
+msgstr "Nimiavaruuden attribuutin nimi"
 
 #: syneditstrconst.syns_attrnamespaceattrvalue
 msgid "Namespace Attribute Value"
-msgstr ""
+msgstr "Nimiavaruuden attribuutin arvo"
 
 #: syneditstrconst.syns_attrnewfile
 msgid "Diff New File"
@@ -242,7 +242,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrnonreservedkeyword
 msgid "Non-reserved keyword"
-msgstr ""
+msgstr "Ei-varattu avainsana"
 
 #: syneditstrconst.syns_attrnull
 msgid "Null"
@@ -250,15 +250,15 @@ msgstr ""
 
 #: syneditstrconst.syns_attrnumber
 msgid "Number"
-msgstr ""
+msgstr "Numero"
 
 #: syneditstrconst.syns_attroctal
 msgid "Octal"
-msgstr ""
+msgstr "Oktaali"
 
 #: syneditstrconst.syns_attroperator
 msgid "Operator"
-msgstr ""
+msgstr "Operaattori"
 
 #: syneditstrconst.syns_attrorigfile
 msgid "Diff Original File"
@@ -266,7 +266,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrplsql
 msgid "Reserved word (PL/SQL)"
-msgstr ""
+msgstr "Varattu sana (PL/SQL)"
 
 #: syneditstrconst.syns_attrpragma
 msgid "Pragma"
@@ -274,31 +274,31 @@ msgstr ""
 
 #: syneditstrconst.syns_attrpreprocessor
 msgid "Preprocessor"
-msgstr ""
+msgstr "Esikääntäjä"
 
 #: syneditstrconst.syns_attrprevvalue
 msgid "Previous value"
-msgstr ""
+msgstr "Edellinen arvo"
 
 #: syneditstrconst.syns_attrprocessinginstr
 msgid "Processing Instruction"
-msgstr ""
+msgstr "Käsittelee käskyä"
 
 #: syneditstrconst.syns_attrqualifier
 msgid "Qualifier"
-msgstr ""
+msgstr "Tarkenne"
 
 #: syneditstrconst.syns_attrregister
 msgid "Register"
-msgstr ""
+msgstr "Rekisteri"
 
 #: syneditstrconst.syns_attrreservedword
 msgid "Reserved word"
-msgstr ""
+msgstr "Varattu sana"
 
 #: syneditstrconst.syns_attrroundbracket
 msgid "Round Bracket"
-msgstr ""
+msgstr "Pyöreä sulku"
 
 #: syneditstrconst.syns_attrrpl
 msgid "Rpl"
@@ -326,31 +326,31 @@ msgstr ""
 
 #: syneditstrconst.syns_attrsecondreservedword
 msgid "Second reserved word"
-msgstr ""
+msgstr "Toinen varattu sana"
 
 #: syneditstrconst.syns_attrsection
 msgid "Section"
-msgstr ""
+msgstr "Lohko"
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
-msgstr ""
+msgstr "Välilyönti"
 
 #: syneditstrconst.syns_attrspecialvariable
 msgid "Special variable"
-msgstr ""
+msgstr "Erikoismuuttuja"
 
 #: syneditstrconst.syns_attrsqlkey
 msgid "SQL keyword"
-msgstr ""
+msgstr "SQL avainsana"
 
 #: syneditstrconst.syns_attrsqlplus
 msgid "SQL*Plus command"
-msgstr ""
+msgstr "SQL*Plus komento"
 
 #: syneditstrconst.syns_attrsquarebracket
 msgid "Square Bracket"
-msgstr ""
+msgstr "Hakasulku"
 
 #: syneditstrconst.syns_attrstring
 msgid "String"
@@ -358,7 +358,7 @@ msgstr ""
 
 #: syneditstrconst.syns_attrsymbol
 msgid "Symbol"
-msgstr ""
+msgstr "Symboli"
 
 #: syneditstrconst.syns_attrsyntaxerror
 msgid "SyntaxError"
@@ -366,203 +366,203 @@ msgstr ""
 
 #: syneditstrconst.syns_attrsystem
 msgid "System functions and variables"
-msgstr ""
+msgstr "Järjestelmän funktiot ja muuttujat"
 
 #: syneditstrconst.syns_attrsystemvalue
 msgid "System value"
-msgstr ""
+msgstr "Järjestelmän arvo"
 
 #: syneditstrconst.syns_attrtablename
 msgid "Table Name"
-msgstr ""
+msgstr "Taulukon nimi"
 
 #: syneditstrconst.syns_attrterminator
 msgid "Terminator"
-msgstr ""
+msgstr "Lopetusmerkki"
 
 #: syneditstrconst.syns_attrtexcommand
 msgid "TeX Command"
-msgstr ""
+msgstr "TeX komento"
 
 #: syneditstrconst.syns_attrtext
 msgid "Text"
-msgstr ""
+msgstr "Teksti"
 
 #: syneditstrconst.syns_attrtextmathmode
 msgid "Text in Math Mode"
-msgstr ""
+msgstr "Teksti matematiikkamoodissa"
 
 #: syneditstrconst.syns_attrunknownword
 msgid "Unknown word"
-msgstr ""
+msgstr "Tuntematon sana"
 
 #: syneditstrconst.syns_attruser
 msgid "User functions and variables"
-msgstr ""
+msgstr "Käyttäjän funktiot ja muuttujat"
 
 #: syneditstrconst.syns_attruserfunction
 msgid "User functions"
-msgstr ""
+msgstr "Käyttäjän funktiot"
 
 #: syneditstrconst.syns_attrvalue
 msgid "Value"
-msgstr ""
+msgstr "Arvo"
 
 #: syneditstrconst.syns_attrvariable
 msgid "Variable"
-msgstr ""
+msgstr "Muuttuja"
 
 #: syneditstrconst.syns_attrwhitespace
 msgid "Whitespace"
-msgstr ""
+msgstr "Välilyönti"
 
 #: syneditstrconst.syns_duplicateshortcutmsg
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr ""
+msgstr "Näppäinyhdistelmä \"%s\" on jo annettu toiselle editorin komennolle. (%s)"
 
 #: syneditstrconst.syns_eduplicateshortcut
 msgid "Mouse-Shortcut already exists"
-msgstr ""
+msgstr "Hiiri-pikanäppäin on jo olemassa"
 
 #: syneditstrconst.syns_emcbreakpointtoggle
 msgid "Toggle Breakpoint"
-msgstr ""
+msgstr "Käännä keskeytyskohta"
 
 #: syneditstrconst.syns_emccodefoldcollaps
 msgid "Fold Code"
-msgstr ""
+msgstr "Laskosta koodi"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
 msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
-msgstr ""
+msgstr "Solmut,Yksi,Kaikki,\"kursorissa\",\"nykyinen solmu\""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
-msgstr ""
+msgstr "Laskostusvalikko"
 
 #: syneditstrconst.syns_emccodefoldexpand
 msgid "Unfold Code"
-msgstr ""
+msgstr "Poista koodin laskostus"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
 msgid "Nodes,One,All"
-msgstr ""
+msgstr "Solmut,Yksi,Kaikki"
 
 #: syneditstrconst.syns_emccontextmenu
 msgid "Popup Menu"
-msgstr ""
+msgstr "Popup valikko"
 
 #: syneditstrconst.syns_emccontextmenucaretmove_opt
 msgid "\"Move caret, when selection exists\", Never, \"Click outside\", Always"
-msgstr ""
+msgstr "\"Siirrä kursoria kun on valinta\", Ei koskaan, \"Klikkaa ulkopuolelle\", Aina"
 
 #: syneditstrconst.syns_emcmouselink
 msgid "Source Link"
-msgstr ""
+msgstr "Lähdekoodin linkki"
 
 #: syneditstrconst.syns_emcmouselink_opt
 msgid "Underline,yes, no"
-msgstr ""
+msgstr "Alleviivaus, kyllä, ei"
 
 #: syneditstrconst.syns_emcnone
 msgid "No Action"
-msgstr ""
+msgstr "Ei toimintoa"
 
 #: syneditstrconst.syns_emcpasteselection
 msgid "Quick Paste Selection"
-msgstr ""
+msgstr "Pika-liitä valinta"
 
 #: syneditstrconst.syns_emcselection_opt
 msgid "Mode,Begin,Continue"
-msgstr ""
+msgstr "Moodi,Ala,Jatka"
 
 #: syneditstrconst.syns_emcselectline
 msgid "Select Line"
-msgstr ""
+msgstr "Valitse rivi"
 
 #: syneditstrconst.syns_emcselectline_opt
 msgid "\"Include spaces\",no,yes"
-msgstr ""
+msgstr "\"Välilyönnit mukaan\",ei,kyllä"
 
 #: syneditstrconst.syns_emcselectpara
 msgid "Select Paragraph"
-msgstr ""
+msgstr "Valitse kappale"
 
 #: syneditstrconst.syns_emcselectword
 msgid "Select Word"
-msgstr ""
+msgstr "Valitse sana"
 
 #: syneditstrconst.syns_emcstartcolumnselections
 msgid "Column Selection"
-msgstr ""
+msgstr "Sarakevalinta"
 
 #: syneditstrconst.syns_emcstartdragmove
 msgid "Drag Selection"
-msgstr ""
+msgstr "Vedä valinta"
 
 #: syneditstrconst.syns_emcstartlineselections
 msgid "Line Selection"
-msgstr ""
+msgstr "Rivivalinta"
 
 #: syneditstrconst.syns_emcstartselection
 msgid "Selection"
-msgstr ""
+msgstr "Valinta"
 
 #: syneditstrconst.syns_emcstartselectlines
 msgid "Selection (lines)"
-msgstr ""
+msgstr "Valinta (rivit)"
 
 #: syneditstrconst.syns_emcstartselecttokens
 msgid "Selection (tokens) "
-msgstr ""
+msgstr "Valinta (token)"
 
 #: syneditstrconst.syns_emcstartselectwords
 msgid "Selection (words)"
-msgstr ""
+msgstr "Valinta (sanat)"
 
 #: syneditstrconst.syns_emcsyneditcommand
 msgid "IDE Command"
-msgstr ""
+msgstr "IDE Komento"
 
 #: syneditstrconst.syns_emcwheelhorizscrolldown
 msgid "Wheel scroll down (Horizontal)"
-msgstr ""
+msgstr "Rullan vieritys alas (vaakasuora)"
 
 #: syneditstrconst.syns_emcwheelhorizscrollup
 msgid "Wheel scroll up (Horizontal)"
-msgstr ""
+msgstr "Rullan vieritys ylös (vaakasuora)"
 
 #: syneditstrconst.syns_emcwheelscrolldown
 msgid "Wheel scroll down"
-msgstr ""
+msgstr "Rullan vieritys alas"
 
 #: syneditstrconst.syns_emcwheelscrollup
 msgid "Wheel scroll up"
-msgstr ""
+msgstr "Rullan vieritys ylös"
 
 #: syneditstrconst.syns_emcwheelscroll_opt
 msgid "Speed,\"System settings\",Lines,Pages,\"Pages (less one line)\""
-msgstr ""
+msgstr "Nopeus,\"Järjestelmäasetukset\",Rivit,Sivut,\"Sivut (miinus yksi rivi)\""
 
 #: syneditstrconst.syns_emcwheelvertscrolldown
 msgid "Wheel scroll down (Vertical)"
-msgstr ""
+msgstr "Rullan vieritys alas (pystysuora)"
 
 #: syneditstrconst.syns_emcwheelvertscrollup
 msgid "Wheel scroll up (Vertical)"
-msgstr ""
+msgstr "Rullan vieritys ylös (pystysuora)"
 
 #: syneditstrconst.syns_emcwheelzoomin
 msgid "Wheel zoom in"
-msgstr ""
+msgstr "Rullan zoomaus sisään"
 
 #: syneditstrconst.syns_emcwheelzoomnorm
 msgid "Wheel zoom default"
-msgstr ""
+msgstr "Rullan zoomaus oletus"
 
 #: syneditstrconst.syns_emcwheelzoomout
 msgid "Wheel zoom out"
-msgstr ""
+msgstr "Rullan zoomaus ulos"
 
 #: syneditstrconst.syns_exporterformathtml
 msgid "HTML"
@@ -762,13 +762,13 @@ msgstr ""
 
 #: syneditstrconst.syns_scrollinfofmttop
 msgid "Top Line: %d"
-msgstr ""
+msgstr "Ylärivi: %d"
 
 #: syneditstrconst.syns_shortcutnone
 msgid "<none>"
-msgstr ""
+msgstr "<ei mitään>"
 
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
-msgstr ""
+msgstr "ei otsikkoa"
 
