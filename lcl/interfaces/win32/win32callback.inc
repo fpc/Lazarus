@@ -406,6 +406,9 @@ type
     procedure DoMsgEnable;
     function DoMsgEraseBkgnd(var WinResult: LResult): Boolean;
     procedure DoMsgKeyDownUp(aMsg: Cardinal; var WinResult: LResult);
+    procedure DoMsgLButtonCommon;
+    procedure DoMsgLButtonDoubleClick;
+    procedure DoMsgLButtonDown;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1528,6 +1531,49 @@ begin
   WinProcess := false;
 end;
 
+procedure TWindowProcHelper.DoMsgLButtonCommon;
+begin
+  MouseDownTime := GetTickCount64;
+  NotifyUserInput := True;
+  PLMsg := @LMMouse;
+  with LMMouse Do
+  begin
+    case MouseDownCount of
+      2: Msg := LM_LBUTTONDBLCLK;
+      3: Msg := LM_LBUTTONTRIPLECLK;
+      4: Msg := LM_LBUTTONQUADCLK;
+      else Msg := LM_LBUTTONDOWN;
+    end;
+    XPos := GET_X_LPARAM(LParam);
+    YPos := GET_Y_LPARAM(LParam);
+    Keys := WParam;
+  end;
+end;
+
+procedure TWindowProcHelper.DoMsgLButtonDoubleClick;
+begin
+  // always within the time-window
+  if (MouseDownCount < 1) or (MouseDownCount > 4) then
+    MouseDownCount := 1;
+  inc(MouseDownCount);
+  DoMsgLButtonCommon;
+end;
+
+procedure TWindowProcHelper.DoMsgLButtonDown;
+begin
+  if (MouseDownCount < 1) or (MouseDownCount > 4) then
+    MouseDownCount := 1;
+  if (MouseDownWindow = Window)
+      and (GetTickCount64 - MouseDownTime <= GetDoubleClickTime)
+      and CheckMouseMovement then
+    inc(MouseDownCount)
+  else
+    MouseDownCount := 1;
+  MouseDownWindow := Window;
+  GetCursorPos(MouseDownPos);
+  DoMsgLButtonCommon;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1790,55 +1836,8 @@ begin
       LMessage.WParam := WParam;
     end;
     //TODO:LM_KILLCHAR,LM_KILLWORD,LM_KILLLINE
-    WM_LBUTTONDBLCLK:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      // always within the time-window
-      if (MouseDownCount < 1) or (MouseDownCount > 4) then MouseDownCount := 1;
-      inc(MouseDownCount);
-      MouseDownTime := GetTickCount64;
-      with LMMouse Do
-      begin
-        case MouseDownCount of
-          2: Msg := LM_LBUTTONDBLCLK;
-          3: Msg := LM_LBUTTONTRIPLECLK;
-          4: Msg := LM_LBUTTONQUADCLK;
-          else Msg := LM_LBUTTONDOWN;
-        end;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-      end;
-    end;
-    WM_LBUTTONDOWN:
-    begin
-      if (MouseDownCount < 1) or (MouseDownCount > 4) then MouseDownCount := 1;
-      if (MouseDownWindow = Window)
-          and (GetTickCount64 - MouseDownTime <= GetDoubleClickTime)
-          and CheckMouseMovement then
-        inc(MouseDownCount)
-      else
-        MouseDownCount := 1;
-
-      MouseDownTime := GetTickCount64;
-      MouseDownWindow := Window;
-      GetCursorPos(MouseDownPos);
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        case MouseDownCount of
-          2: Msg := LM_LBUTTONDBLCLK;
-          3: Msg := LM_LBUTTONTRIPLECLK;
-          4: Msg := LM_LBUTTONQUADCLK;
-          else Msg := LM_LBUTTONDOWN;
-        end;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-      end;
-    end;
+    WM_LBUTTONDBLCLK: DoMsgLButtonDoubleClick;
+    WM_LBUTTONDOWN:   DoMsgLButtonDown;
     WM_LBUTTONUP:
     begin
       NotifyUserInput := True;
