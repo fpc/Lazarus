@@ -413,6 +413,7 @@ type
     procedure DoMsgMouseUpDownClick(aMsg: Cardinal);
     function DoMsgMouseWheel(var WinResult: LResult): Boolean;
     procedure DoMsgNCLButtonDown;
+    function DoMsgNotify(var WinResult: LResult): Boolean;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1691,6 +1692,61 @@ begin
   lWinControl := nil;
 end;
 
+function TWindowProcHelper.DoMsgNotify(var WinResult: LResult): Boolean;
+begin
+  WindowInfo := GetWin32WindowInfo(PNMHdr(LParam)^.hwndFrom);
+{$ifdef MSG_DEBUG}
+  DebugLn([MessageStackDepth, 'Notify code: ', PNMHdr(LParam)^.code]);
+{$endif}
+  if Assigned(WindowInfo^.ParentMsgHandler) then
+  begin
+    LMNotify.Result := 0;
+    if WindowInfo^.ParentMsgHandler(WindowInfo^.WinControl,
+      Window, WM_NOTIFY, WParam, LParam, LMNotify.Result, WinProcess) then
+    begin
+      WinResult := LMNotify.Result;
+      Exit(True);
+    end;
+  end;
+  case PNMHdr(LParam)^.code of
+    MCN_SELCHANGE:
+    begin
+      LMessage.Msg := LM_CHANGED;
+      if WindowInfo^.WinControl <> nil then
+        lWinControl := WindowInfo^.WinControl;
+    end;
+  else
+    PLMsg:=@LMNotify;
+    LMNotify.Msg := LM_NOTIFY;
+    LMNotify.IDCtrl := WParam;
+    LMNotify.NMHdr := PNMHDR(LParam);
+    case LMNotify.NMHdr^.code of
+      NM_CUSTOMDRAW:
+      begin
+        if WindowInfo^.WinControl is TCustomBitBtn then
+          HandleBitBtnCustomDraw(TCustomBitBtn(WindowInfo^.WinControl))
+        else
+        if GetNeedParentPaint(WindowInfo, lWinControl) and WindowInfo^.ThemedCustomDraw then
+        begin
+          case PNMCustomDraw(LParam)^.dwDrawStage of
+            CDDS_PREPAINT:
+            begin
+              WinResult := CDRF_NOTIFYITEMDRAW;
+              WinProcess := false;
+            end;
+            CDDS_ITEMPREPAINT:
+            begin
+              WinResult := CDRF_DODEFAULT;
+              WinProcess := false;
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+  Result := False;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1991,7 +2047,8 @@ begin
       LMessage.lParam := LParam;
     end;
     WM_NCLBUTTONDOWN: DoMsgNCLButtonDown;
-    WM_NCMOUSEMOVE, WM_NCMOUSEHOVER:
+    WM_NCMOUSEMOVE,
+    WM_NCMOUSEHOVER:
     begin
       LMessage.Msg := Msg;
       LMessage.WParam := WParam;
@@ -1999,59 +2056,7 @@ begin
       NotifyUserInput := True;
       Application.DoBeforeMouseMessage(nil);
     end;
-    WM_NOTIFY:
-    begin
-      WindowInfo := GetWin32WindowInfo(PNMHdr(LParam)^.hwndFrom);
-{$ifdef MSG_DEBUG}
-      DebugLn([MessageStackDepth, 'Notify code: ', PNMHdr(LParam)^.code]);
-{$endif}
-      if Assigned(WindowInfo^.ParentMsgHandler) then
-      begin
-        LMNotify.Result := 0;
-        if WindowInfo^.ParentMsgHandler(WindowInfo^.WinControl,
-          Window, WM_NOTIFY, WParam, LParam, LMNotify.Result, WinProcess) then Exit(LMNotify.Result);
-      end;
-      case PNMHdr(LParam)^.code of
-        MCN_SELCHANGE:
-        begin
-          LMessage.Msg := LM_CHANGED;
-          if WindowInfo^.WinControl <> nil then
-            lWinControl := WindowInfo^.WinControl;
-        end;
-      else
-        PLMsg:=@LMNotify;
-        with LMNotify Do
-        begin
-          Msg := LM_NOTIFY;
-          IDCtrl := WParam;
-          NMHdr := PNMHDR(LParam);
-          with NMHdr^ do
-            case code of
-              NM_CUSTOMDRAW:
-              begin
-                if WindowInfo^.WinControl is TCustomBitBtn then
-                  HandleBitBtnCustomDraw(TCustomBitBtn(WindowInfo^.WinControl))
-                else
-                if GetNeedParentPaint(WindowInfo, lWinControl) and WindowInfo^.ThemedCustomDraw then
-                begin
-                  case PNMCustomDraw(LParam)^.dwDrawStage of
-                    CDDS_PREPAINT:
-                    begin
-                      Result := CDRF_NOTIFYITEMDRAW;
-                      WinProcess := false;
-                    end;
-                    CDDS_ITEMPREPAINT:
-                    begin
-                      Result := CDRF_DODEFAULT;
-                      WinProcess := false;
-                    end;
-                  end;
-                end;
-              end;
-            end;
-        end;
-      end;
-    end;
+    WM_NOTIFY: if DoMsgNotify(Result) then Exit;
     WM_PAINT:
     begin
       SendPaintMessage(HDC(WParam));
