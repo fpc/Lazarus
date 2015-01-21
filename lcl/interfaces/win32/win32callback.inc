@@ -376,7 +376,6 @@ type
     NotifyUserInput: Boolean;
     OverlayWindow: HWND;
     TargetWindow: HWND;
-    eraseBkgndCommand: TEraseBkgndCommand;
     WindowInfo: PWin32WindowInfo;
     Flags: dword;
     WindowDC: HDC;
@@ -405,6 +404,7 @@ type
     procedure DoMsgColor;
     procedure DoMsgDrawItem;
     procedure DoMsgEnable;
+    function DoMsgEraseBkgnd(var WinResult: LResult): Boolean;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1450,6 +1450,68 @@ begin
     DrawBitBtnImage(TCustomBitBtn(lWinControl), TCustomBitBtn(lWinControl).Caption);
 end;
 
+function TWindowProcHelper.DoMsgEraseBkgnd(var WinResult: LResult): Boolean;
+var
+  eraseBkgndCommand: TEraseBkgndCommand;
+begin
+  eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
+  DebugLnEnter(['>>> Do WM_ERASEBKGND for WParam= ', WParam, ' LParam=',LParam,
+      ' CurDbleBuffer.DC=', dbgs(CurDoubleBuffer.DC), ' Window=', dbgs(Window),
+      ' WinCtrl=',PtrUInt(lWinControl), ' ', DbgSName(lWinControl),
+      ' isTab=', dbgs(WindowInfo^.isTabPage)  ]);
+  try
+  case eraseBkgndCommand of
+    ecDefault: DebugLn(MessageStackDepth, ' *command: default');
+    ecDiscardNoRemove, ecDiscard: DebugLn(MessageStackDepth, ' *command: completely ignore');
+    ecDoubleBufferNoRemove: DebugLn(MessageStackDepth, ' *command: use double buffer');
+  end;
+  DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
+{$endif}
+  if eraseBkgndCommand = ecDoubleBufferNoRemove then
+  begin
+    if CurDoubleBuffer.DC <> 0 then
+      WParam := Windows.WParam(CurDoubleBuffer.DC);
+    if WindowInfo^.isTabPage then
+      EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1))
+        or dword(ecDiscardNoRemove);
+  end
+  else
+  if eraseBkgndCommand <> ecDiscardNoRemove then
+    EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
+  if eraseBkgndCommand in [ecDiscard, ecDiscardNoRemove] then
+  begin
+    WinResult := 0;
+    Exit(True);
+  end;
+  if not GetNeedParentPaint(WindowInfo, lWinControl) or (eraseBkgndCommand = ecDoubleBufferNoRemove) then
+  begin
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
+    DebugLn(['WM_ERASEBKGND  *NO* ParentPaint for WParam= ', WParam, ' LParam=',LParam, ' Window=', dbgs(Window) ]);
+{$endif}
+    LMessage.Msg := LM_ERASEBKGND;
+    LMessage.WParam := WParam;
+    LMessage.LParam := LParam;
+  end else
+  begin
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
+    DebugLn(['WM_ERASEBKGND got NeedParentPaint for WParam= ', WParam, ' LParam=',LParam, ' Window=', dbgs(Window) ]);
+{$endif}
+    if not ThemeServices.ThemesEnabled then
+      SendPaintMessage(HDC(WParam));
+    LMessage.Result := 1;
+  end;
+  WinProcess := False;
+{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
+  finally
+  DebugLnExit(['<<< Do WM_ERASEBKGND for WParam= ', WParam, ' LParam=',LParam,
+      ' Window=', dbgs(Window), ' MsgStackDepth=', MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString
+       ]);
+  end;
+{$endif}
+  Result := False;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1649,63 +1711,7 @@ begin
     WM_DRAWITEM: DoMsgDrawItem;
     WM_ENABLE:   DoMsgEnable;
     WM_ERASEBKGND:
-    begin
-      eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
-{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
-      DebugLnEnter(['>>> Do WM_ERASEBKGND for WParam= ', WParam, ' LParam=',LParam,
-          ' CurDbleBuffer.DC=', dbgs(CurDoubleBuffer.DC), ' Window=', dbgs(Window),
-          ' WinCtrl=',PtrUInt(lWinControl), ' ', DbgSName(lWinControl),
-          ' isTab=', dbgs(WindowInfo^.isTabPage)  ]);
-      try
-      case eraseBkgndCommand of
-        ecDefault: DebugLn(MessageStackDepth, ' *command: default');
-        ecDiscardNoRemove, ecDiscard: DebugLn(MessageStackDepth, ' *command: completely ignore');
-        ecDoubleBufferNoRemove: DebugLn(MessageStackDepth, ' *command: use double buffer');
-      end;
-      DebugLn(MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString);
-{$endif}
-      if eraseBkgndCommand = ecDoubleBufferNoRemove then
-      begin
-        if CurDoubleBuffer.DC <> 0 then
-          WParam := Windows.WParam(CurDoubleBuffer.DC);
-        if WindowInfo^.isTabPage then
-          EraseBkgndStack := (EraseBkgndStack and not ((1 shl EraseBkgndStackShift)-1))
-            or dword(ecDiscardNoRemove);
-      end
-      else
-      if eraseBkgndCommand <> ecDiscardNoRemove then
-        EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
-      if eraseBkgndCommand in [ecDiscard, ecDiscardNoRemove] then
-      begin
-        Result := 0;
-        exit;
-      end;
-      if not GetNeedParentPaint(WindowInfo, lWinControl) or (eraseBkgndCommand = ecDoubleBufferNoRemove) then
-      begin
-{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
-        DebugLn(['WM_ERASEBKGND  *NO* ParentPaint for WParam= ', WParam, ' LParam=',LParam, ' Window=', dbgs(Window) ]);
-{$endif}
-        LMessage.Msg := LM_ERASEBKGND;
-        LMessage.WParam := WParam;
-        LMessage.LParam := LParam;
-      end else
-      begin
-{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
-        DebugLn(['WM_ERASEBKGND got NeedParentPaint for WParam= ', WParam, ' LParam=',LParam, ' Window=', dbgs(Window) ]);
-{$endif}
-        if not ThemeServices.ThemesEnabled then
-          SendPaintMessage(HDC(WParam));
-        LMessage.Result := 1;
-      end;
-      WinProcess := False;
-{$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
-      finally
-      DebugLnExit(['<<< Do WM_ERASEBKGND for WParam= ', WParam, ' LParam=',LParam,
-          ' Window=', dbgs(Window), ' MsgStackDepth=', MessageStackDepth, ' *erasebkgndstack: ', EraseBkgndStackToString
-           ]);
-      end;
-{$endif}
-    end;
+      if DoMsgEraseBkgnd(Result) then Exit;
     WM_EXITMENULOOP:
       // is it a popup menu
       if longbool(WPARAM) and Assigned(WindowInfo^.PopupMenu) then
