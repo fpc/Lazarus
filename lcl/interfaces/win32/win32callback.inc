@@ -400,6 +400,7 @@ type
     function DoChildEdit(out WinResult: LResult): Boolean;
     procedure DoCmdCheckBoxParam;
     function DoCmdComboBoxParam: Boolean;
+    procedure DoMsgActivateApp;
     procedure DoMsgChar(var WinResult: LResult);
     procedure DoMsgColor;
     procedure DoMsgDrawItem;
@@ -1833,6 +1834,26 @@ begin
   end;
 end;
 
+procedure TWindowProcHelper.DoMsgActivateApp;
+begin
+  if Window = Win32WidgetSet.AppHandle then
+  begin
+    if WParam <> 0 then // activated
+    begin
+      //WriteLn('Restore');
+      RestoreStayOnTopFlags(Window);
+      if Assigned(Application) then
+        Application.IntfAppActivate(True);
+    end
+    else begin // deactivated
+      //WriteLn('Remove');
+      RemoveStayOnTopFlags(Window);
+      if Assigned(Application) then
+        Application.IntfAppDeactivate(True);
+    end;
+  end;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -2287,7 +2308,7 @@ begin
       LMessage.LParam := LParam;
       WinProcess := False;
     end;
-  else
+  else  // case Msg of
     // pass along user defined messages
     if Msg >= WM_USER then
     begin
@@ -2296,7 +2317,7 @@ begin
       LMessage.LParam := LParam;
       WinProcess := False;
     end;
-  end;
+  end;  // case Msg of
 
   if WinProcess then
   begin
@@ -2305,26 +2326,7 @@ begin
   end;
 
   case Msg of
-    WM_ACTIVATEAPP:
-    begin
-      if Window = Win32WidgetSet.AppHandle then
-      begin
-        if WParam <> 0 then // activated
-        begin
-          //WriteLn('Restore');
-          RestoreStayOnTopFlags(Window);
-          if Assigned(Application) then
-            Application.IntfAppActivate(True);
-        end
-        else
-        begin // deactivated
-          //WriteLn('Remove');
-          RemoveStayOnTopFlags(Window);
-          if Assigned(Application) then
-            Application.IntfAppDeactivate(True);
-        end;
-      end;
-    end;
+    WM_ACTIVATEAPP: DoMsgActivateApp;
     WM_MOVE:
     begin
       PLMsg:=@LMMove;
