@@ -415,6 +415,7 @@ type
     procedure DoMsgMouseUpDownClick(aMsg: Cardinal);
     procedure DoMsgContextMenu;
     function DoMsgMouseWheel(var WinResult: LResult): Boolean;
+    function DoMsgMove: Boolean;
     procedure DoMsgNCLButtonDown;
     function DoMsgNotify(var WinResult: LResult): Boolean;
     procedure DoMsgShowWindow;
@@ -1854,6 +1855,56 @@ begin
   end;
 end;
 
+function TWindowProcHelper.DoMsgMove: Boolean;
+begin
+  PLMsg := @LMMove;
+  with LMMove Do
+  begin
+    Msg := LM_MOVE;
+    // MoveType := WParam;   WParam is not defined!
+    MoveType := Move_SourceIsInterface;
+    if GetWindowLong(Window, GWL_STYLE) and WS_CHILD = 0 then
+    begin
+      WindowPlacement.length := SizeOf(WindowPlacement);
+      if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
+      begin
+        with WindowPlacement.rcNormalPosition do
+        begin
+          XPos := Left;
+          YPos := Top;
+        end;
+      end
+      else
+      if Windows.GetWindowRect(Window, @R) then
+      begin
+        XPos := R.Left;
+        YPos := R.Top;
+      end
+      else
+        Msg := LM_NULL;
+    end else
+    begin
+      if GetWindowRelativePosition(Window, NewLeft, NewTop) then
+      begin
+        XPos := NewLeft;
+        YPos := NewTop;
+      end
+      else
+        Msg := LM_NULL;
+    end;
+    if lWinControl <> nil then
+    begin
+      {$IFDEF VerboseSizeMsg}
+      DebugLn('Win32CallBack WM_MOVE ', dbgsName(lWinControl),
+        ' NewPos=',dbgs(XPos),',',dbgs(YPos));
+      {$ENDIF}
+      if (lWinControl.Left = XPos) and (lWinControl.Top = YPos) then
+        Exit(True);
+    end;
+  end;
+  Result := False;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -2327,54 +2378,7 @@ begin
 
   case Msg of
     WM_ACTIVATEAPP: DoMsgActivateApp;
-    WM_MOVE:
-    begin
-      PLMsg:=@LMMove;
-      with LMMove Do
-      begin
-        Msg := LM_MOVE;
-        // MoveType := WParam;   WParam is not defined!
-        MoveType := Move_SourceIsInterface;
-        if GetWindowLong(Window, GWL_STYLE) and WS_CHILD = 0 then
-        begin
-          WindowPlacement.length := SizeOf(WindowPlacement);
-          if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
-          begin
-            with WindowPlacement.rcNormalPosition do
-            begin
-              XPos := Left;
-              YPos := Top;
-            end;
-          end
-          else
-          if Windows.GetWindowRect(Window, @R) then
-          begin
-            XPos := R.Left;
-            YPos := R.Top;
-          end
-          else
-            Msg := LM_NULL;
-        end else
-        begin
-          if GetWindowRelativePosition(Window, NewLeft, NewTop) then
-          begin
-            XPos := NewLeft;
-            YPos := NewTop;
-          end
-          else
-            Msg := LM_NULL;
-        end;
-        if lWinControl <> nil then
-        begin
-          {$IFDEF VerboseSizeMsg}
-          DebugLn('Win32CallBack WM_MOVE ', dbgsName(lWinControl),
-            ' NewPos=',dbgs(XPos),',',dbgs(YPos));
-          {$ENDIF}
-          if (lWinControl.Left = XPos) and (lWinControl.Top = YPos) then
-            Exit;
-        end;
-      end;
-    end;
+    WM_MOVE:        if DoMsgMove then Exit;
     WM_SIZE:
     begin
       with TLMSize(LMessage) do
