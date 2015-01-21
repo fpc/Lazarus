@@ -13,19 +13,19 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "浏览 %s%s%s 不是可执行程序."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "浏览 %s%s%s 未找到."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "当执行 %s%s%s 时发生错误:%s%s "
@@ -39,7 +39,7 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "帮助数据库 %s%s%s 无法找到文件 %s%s%s."
@@ -468,6 +468,7 @@ msgid "The directory \"%s\" does not exist."
 msgstr "目录 \"%s\" 不存在."
 
 #: lclstrconsts.rsfdfilealreadyexists
+#, fuzzy,badformat
 msgid "The file \"%s\" already exists. Overwrite ?"
 msgstr "文件 \"%s\" 已经存在.%s替换吗?"
 
@@ -697,19 +698,19 @@ msgid "Help context %s not found."
 msgstr "未找到帮助上下文 %s."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "没有找到 %s 的帮助内容在数据库 %s%s%s 中."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy
-#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+#, fuzzy,badformat
+#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "帮助数据库 %s%s%s 未找到浏览器可以阅读帮助页 %s 的类型"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
 msgstr "未找到帮助数据库 %s%s%s"
@@ -723,24 +724,25 @@ msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "关键字 %s%s%s 未找到帮助."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "关键字 %s 的帮助在数据库 %s%s%s 中没有找到."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "帮助节点 %s%s%s 没有帮助数据库"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
+#, fuzzy,badformat
 msgid "No help found for line %d, column %d of %s."
 msgstr "没有找到 %s 的行 %d, 列 %d 的 %s 的相关帮助."
 
@@ -765,7 +767,7 @@ msgid "Help Selector Error"
 msgstr "帮助选择器错误"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "帮助类型 %s%s%s 没有查看器"
@@ -1516,7 +1518,7 @@ msgid "Invalid integer number: %s"
 msgstr "无效的整数：%s"
 
 #: lclstrconsts.sparlocinfo
-#, fuzzy
+#, fuzzy,badformat
 #| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
 msgstr "(在 %d,%d, 流偏移 %.8x)"

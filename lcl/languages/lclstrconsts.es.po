@@ -272,7 +272,6 @@ msgid "3D Light"
 msgstr "3D Iluminado"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
-#| msgid "A control can't have itself as parent"
 msgid "A control can't have itself as a parent"
 msgstr "Un control no puede tenerse a si mismo como padre"
 
@@ -665,7 +664,6 @@ msgid "--no-xshm             Disable use of the X Shared Memory Extension."
 msgstr "--no-xshm            Desactivar el uso de Extensión de Memoria Compartida de X"
 
 #: lclstrconsts.rsgtkoptionsync
-#| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync                Llama a XSynchronize (display, True) después que se haya establecido la conexión el servidor X. Esto hace más fácil depurar los errores de protocolo de X, porque se desactivará la solicitud de buffer y los errores de X serán recibidos inmediatamente después que el protocolo que generó el error haya sido procesado por el servidor X."
 
@@ -701,8 +699,8 @@ msgstr "Contexto de ayuda %s no encontrado en la base de datos \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, fuzzy
-#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "La base de datos de ayuda \"%s\" no encontró un visor para el tipo de página de ayuda %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
@@ -794,7 +792,6 @@ msgid "Hot Light"
 msgstr "Luz Intensa"
 
 #: lclstrconsts.rsicns
-#| msgid "OSX Icon Resource"
 msgid "Mac OS X Icon"
 msgstr "Icono Mac OS X"
 
@@ -1078,7 +1075,6 @@ msgid "Post"
 msgstr "Guardar"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
-#| msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgstr "%s%sPulse Aceptar para ignorar y correr el riesgo de corromper datos.%sPulse Cancelar para terminar el programa."
 

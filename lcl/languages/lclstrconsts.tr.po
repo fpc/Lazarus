@@ -10,19 +10,19 @@ msgstr ""
 "MIME-Version: 1.0\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "%s%s%s tarayıcısı çalıştırılabilir değil."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "%s%s%s tarayıcısı bulunamadı."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "%s%s%s:%s%s çalıştırılırken hata"
@@ -36,7 +36,7 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "%s%s%s yardım veritabanı, %s%s%s dosyasını bulamadı."
@@ -696,19 +696,19 @@ msgid "Help context %s not found."
 msgstr "%s yardım bağlamı bulunamadı."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "%s yardım bağlamı, %s%s%s veritabanı içinde bulunamadı."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy
-#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+#, fuzzy,badformat
+#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "%s%s%s yardım veritabanı %s türündeki yardım sayfası için bir görüntüleyici bulamadı"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
 msgstr "%s%s%s Yardım veritabanı bulunamadı"
@@ -722,24 +722,25 @@ msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "%s%s%s yardım anahtar sözcüğü bulunamadı."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "%s%s%s Yardım anahtar sözcüğü %s%s%s veritabanı içinde bulunamadı."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "%s%s%s yardım düğümü yardım veritabanına sahip değil"
 
 #: lclstrconsts.rshelpnohelpfoundforsource
+#, fuzzy,badformat
 msgid "No help found for line %d, column %d of %s."
 msgstr "%s'nin satır %d, sütun %d için yardım bulunamadı."
 
@@ -764,7 +765,7 @@ msgid "Help Selector Error"
 msgstr "Yardım seçici hatası"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "%s%s%s yardım türü için bir görüntüleyici yok"

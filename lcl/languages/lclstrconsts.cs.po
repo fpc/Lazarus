@@ -14,17 +14,14 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "Prohlížeč \"%s\" není spustitelný."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "Prohlížeč \"%s\" nenalezen."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "Chyba během spouštění \"%s\":%s%s"
 
@@ -37,7 +34,6 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "HTML prohlížeč nenalezen%sProsím nastav jeden v Nástroje -> Volby -> Nápověda -> Volby Nápovědy"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "Databáze nápovědy \"%s\" nemůže najít soubor \"%s\"."
 
@@ -272,7 +268,6 @@ msgid "3D Light"
 msgstr "3D světlo"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
-#| msgid "A control can't have itself as parent"
 msgid "A control can't have itself as a parent"
 msgstr "Prvek nemůže mít sebe jako rodiče"
 
@@ -533,12 +528,10 @@ msgid "First"
 msgstr "První"
 
 #: lclstrconsts.rsfixedcolstoobig
-#| msgid "FixedCols can't be >= ColCount"
 msgid "FixedCols can't be > ColCount"
 msgstr "FixedCols nemůže být > ColCount"
 
 #: lclstrconsts.rsfixedrowstoobig
-#| msgid "FixedRows can't be >= RowCount"
 msgid "FixedRows can't be > RowCount"
 msgstr "FixedRows nemůže být > RowCount"
 
@@ -671,12 +664,10 @@ msgid "%s: Already registered"
 msgstr "%s: Již zaregistrováno"
 
 #: lclstrconsts.rshelpcontextnotfound
-#| msgid "Help Context not found"
 msgid "A help database was found for this topic, but this topic was not found"
 msgstr "Databáze pro téma nalezena ale téma v databázi ne"
 
 #: lclstrconsts.rshelpdatabasenotfound
-#| msgid "Help Database not found"
 msgid "There is no help database installed for this topic"
 msgstr "Databáze nápovědy nenalezena"
 
@@ -689,43 +680,36 @@ msgid "Help context %s not found."
 msgstr "Kontext nápovědy %s nenalezen."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "Kontext nápovědy %s nenalezen v databázi \"%s\"."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
 #, fuzzy
-#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Databáze nápovědy \"%s\" nenalezla prohlížeč pro stránku nápovědy typu %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
 msgstr "Databáze nápovědy \"%s\" nenalezena"
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-#| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
 msgstr "Nápověda pro direktivu \"%s\" nenalezena"
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-#| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr "Nápověda pro direktivu \"%s\" nenalezena v databázi \"%s\"."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "Klíčové slovo \"%s\" nenalezeno."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Klíčové slovo \"%s\" nebylo nalezeno v Databázi \"%s\""
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "Uzel nápovědy \"%s\" nemá Databázi nápovědy"
 
@@ -734,12 +718,10 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Nápověda nenalezena pro řádek %d, sloupce %d pro %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-#| msgid "No help nodes available"
 msgid "No help entries available for this topic"
 msgstr "Uzly nápovědy nejsou dostupné"
 
 #: lclstrconsts.rshelpnotfound
-#| msgid "Help not found"
 msgid "No help found for this topic"
 msgstr "Nápověda pro téna nenalezena"
 
@@ -752,7 +734,6 @@ msgid "Help Selector Error"
 msgstr "Chyba výběru nápovědy"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "Pro typ \"%s\" není prohlížeč"
 
@@ -761,7 +742,6 @@ msgid "Help Viewer Error"
 msgstr "Chyba prohlížeče nápovědy"
 
 #: lclstrconsts.rshelpviewernotfound
-#| msgid "Help Viewer not found"
 msgid "No viewer was found for this type of help content"
 msgstr "Prohlížeč nápovědy nenalezen pro tento typ"
 
@@ -778,7 +758,6 @@ msgid "Hot Light"
 msgstr "Hot Light"
 
 #: lclstrconsts.rsicns
-#| msgid "OSX Icon Resource"
 msgid "Mac OS X Icon"
 msgstr "Zdroj ikony OS X"
 
@@ -1498,7 +1477,6 @@ msgid "Invalid integer number: %s"
 msgstr "Neplatné celé číslo: %s"
 
 #: lclstrconsts.sparlocinfo
-#| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
 msgstr " (u %d,%d, posun proudu %d)"
 

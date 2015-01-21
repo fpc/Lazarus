@@ -435,6 +435,7 @@ msgid "ERROR in LCL: "
 msgstr "VIRHE LCL:ssä"
 
 #: lclstrconsts.rserroroccurredinataddressframe
+#, fuzzy,badformat
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
 msgstr "Virhe tapahtui %s:ssa osoitteessa %s%s kehyksessä %s"
 
@@ -536,6 +537,7 @@ msgid "Form"
 msgstr "Lomake"
 
 #: lclstrconsts.rsformresourcesnotfoundforresourcelessformscreatenew
+#, fuzzy,badformat
 msgid "Form resource %s not found. For resourceless forms CreateNew constructor must be used. See the global variable RequireDerivedFormResource."
 msgstr "Lomakkeen resursseja ei löydy. Tällaisen lomakkeen kanssa pitää käyttää CreateNew constructoria. Katso globaali muuttuja RequireDerivedFormResource."
 
@@ -1276,6 +1278,7 @@ msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr "VAROITUS: On jäänyt %d TimerInfo tietuetta! Ne vapautetaan"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
+#, fuzzy,badformat
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr "VAROITUS: On jäänyt %d LM_PAINT/LM_GtkPAINT viestiä poistamatta."
 

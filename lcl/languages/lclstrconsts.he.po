@@ -10,19 +10,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "דפדפן  %s%s%s אינו קובץ ריצה."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "דפדפן  %s%s%s לא נמצא."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "שגיאה בזמן הרצת %s%s%s:%s%s"
@@ -36,7 +36,7 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "בסיס הנתונים של העזרה לא יכול למצוא את הקובץ %s%s%s."
@@ -187,6 +187,7 @@ msgid "Numlock"
 msgstr "נעילת לוח מקשי המספרים"
 
 #: lclstrconsts.ifsvk_numpad
+#, fuzzy,badformat
 msgid "Numpad %d"
 msgstr "לוח מקשי המספרים"
 
@@ -259,6 +260,7 @@ msgid "Up"
 msgstr "למעלה"
 
 #: lclstrconsts.lislclresourcesnotfound
+#, fuzzy,badformat
 msgctxt "lclstrconsts.lislclresourcesnotfound"
 msgid "Resource %s not found"
 msgstr "משאב s% לא נמצא"
@@ -361,10 +363,12 @@ msgid "Case sensitive"
 msgstr "רגיש לריישיות"
 
 #: lclstrconsts.rscontrolclasscantcontainchildclass
+#, fuzzy,badformat
 msgid "Control of class '%s' can't have control of class '%s' as a child"
 msgstr "פקד של המחלקה  '%s' לא יכול לקבל פקד של מחלקה s% בתור בן"
 
 #: lclstrconsts.rscontrolhasnoparentwindow
+#, fuzzy,badformat
 msgid "Control '%s' has no parent window"
 msgstr "לפקד s% אין חלון הורה"
 
@@ -443,6 +447,7 @@ msgid "ERROR in LCL: "
 msgstr "שגיאה ב LCL:"
 
 #: lclstrconsts.rserroroccurredinataddressframe
+#, fuzzy,badformat
 msgid "Error occurred in %s at %sAddress %s%s Frame %s"
 msgstr "שגיאה אירעה ב s% בכתובת %s%s מסגרת s%"
 
@@ -692,19 +697,19 @@ msgid "Help context %s not found."
 msgstr "עזרה תלויית הקשר %s לא נמצאה."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "עזרה תלויית הקשר %s לא נמצאה בבסיס הנתונים %s%s%s."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy
-#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+#, fuzzy,badformat
+#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "בסיס הנתונים של העזרה %s%s%s  לא מצא תוכנה להצגת דף עזרה מסוג %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
 msgstr "בסיס הנתונים של העזרה %s%s%s  לא נמצא "
@@ -718,19 +723,19 @@ msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "מלת מפתח לעזרה %s%s%s  לא נמצאה. "
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "מלת מפתח לעזרה %s%s%s  לא נמצאה בבסיס הנתונים %s%s%s. "
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "לצומת  העזרה %s%s% אין בסיס נתונים"
@@ -760,7 +765,7 @@ msgid "Help Selector Error"
 msgstr "שגיאת בורר העזרה"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "אין תוכנה להצגת עזרה מסוג  %s%s%s"
@@ -788,7 +793,6 @@ msgid "Hot Light"
 msgstr "לבן חם"
 
 #: lclstrconsts.rsicns
-#| msgid "OSX Icon Resource"
 msgid "Mac OS X Icon"
 msgstr "צלמית  של OSX של מקינטוש"
 
@@ -835,10 +839,12 @@ msgid "Inactive Caption"
 msgstr "כותרת לא פעילה"
 
 #: lclstrconsts.rsindexoutofbounds
+#, fuzzy,badformat
 msgid "%s Index %d out of bounds 0 .. %d"
 msgstr "אינדקס d% מחוץ לתחום 0 .. d%"
 
 #: lclstrconsts.rsindexoutofrange
+#, fuzzy,badformat
 msgid "Index Out of range Cell[Col=%d Row=%d]"
 msgstr "אידקס מחוץ לתחום תא [ עמודה=d% שורה=d% ]"
 
@@ -856,10 +862,12 @@ msgid "Insert"
 msgstr "הכנס"
 
 #: lclstrconsts.rsinvaliddate
+#, fuzzy,badformat
 msgid "Invalid Date : %s"
 msgstr "תאריך לא חוקי: s%"
 
 #: lclstrconsts.rsinvaliddaterangehint
+#, fuzzy,badformat
 msgid "Invalid Date: %s. Must be between %s and %s"
 msgstr "תאריך לא חוקי: s% חייב להיות בין s% ל s%"
 
@@ -876,6 +884,7 @@ msgid "Invalid stream format"
 msgstr "פורמט זרימה לא חוקי"
 
 #: lclstrconsts.rsisalreadyassociatedwith
+#, fuzzy,badformat
 msgid "%s is already associated with %s"
 msgstr "כבר משוייך ל s%"
 
@@ -892,6 +901,7 @@ msgid "Lime"
 msgstr "לימוני"
 
 #: lclstrconsts.rslistindexexceedsbounds
+#, fuzzy,badformat
 msgid "List index exceeds bounds (%d)"
 msgstr "אינדקס הרשימה עובר את הגבול"
 
@@ -1072,6 +1082,7 @@ msgid "Post"
 msgstr "אחרי"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
+#, fuzzy,badformat
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgstr "לחץ אישור להתעלמות וסיכון של השחתת מידע. לחץ ביטול כדי להרוג את התכנית."
 
@@ -1085,6 +1096,7 @@ msgid "Prompt on replace"
 msgstr ""
 
 #: lclstrconsts.rspropertydoesnotexist
+#, fuzzy,badformat
 msgid "Property %s does not exist"
 msgstr "התכונה s% לא קיימת"
 
@@ -1209,6 +1221,7 @@ msgid "Replace all"
 msgstr "החלף הכל"
 
 #: lclstrconsts.rsresourcenotfound
+#, fuzzy,badformat
 msgctxt "lclstrconsts.rsresourcenotfound"
 msgid "Resource %s not found"
 msgstr "משאב s% לא נמצא"
@@ -1293,26 +1306,32 @@ msgid "Unsupported bitmap format."
 msgstr "פורמט מפת סיביות לא נתמך."
 
 #: lclstrconsts.rsunsupportedclipboardformat
+#, fuzzy,badformat
 msgid "Unsupported clipboard format: %s"
 msgstr "פורמט לוח זמני לא נתמך"
 
 #: lclstrconsts.rswarningunreleaseddcsdump
+#, fuzzy,badformat
 msgid " WARNING: There are %d unreleased DCs, a detailed dump follows:"
 msgstr "אזהרה: יש DCs שלא שוחררו, הטלה מפורטת להלן:"
 
 #: lclstrconsts.rswarningunreleasedgdiobjectsdump
+#, fuzzy,badformat
 msgid " WARNING: There are %d unreleased GDIObjects, a detailed dump follows:"
 msgstr "אזהרה: יש GDIObjects שלא שוחררו, הטלה מפורטת להלן:"
 
 #: lclstrconsts.rswarningunreleasedmessagesinqueue
+#, fuzzy,badformat
 msgid " WARNING: There are %d messages left in the queue! I'll free them"
 msgstr "אזהרה: יש הודעות שנשארו בתור! אני אשחרר אותן"
 
 #: lclstrconsts.rswarningunreleasedtimerinfos
+#, fuzzy,badformat
 msgid " WARNING: There are %d TimerInfo structures left, I'll free them"
 msgstr "אזהרה: נשארו מבני TimerInfo, אני אשחרר אותם"
 
 #: lclstrconsts.rswarningunremovedpaintmessages
+#, fuzzy,badformat
 msgid " WARNING: There are %s unremoved LM_PAINT/LM_GtkPAINT message links left."
 msgstr "אזהרה: נשארו קישורים להודעות LM_PAINT/LM_GtkPAINT שלא הוסרו."
 

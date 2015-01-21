@@ -13,19 +13,19 @@ msgstr ""
 "Language: lt\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "Naršyklė %s%s%s nėra vykdomasis failas."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "Naršyklė %s%s%s nerasta."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "Įvyko klaida vykdant %s%s%s:%s%s"
@@ -39,7 +39,7 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr "Nerasta HTML Naršyklė.%sJą galima nustatyti „Aplinka -> Aplinkos parinktys -> Žinynas -> Žinyno parinktys“"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "Žinyno duomenų bazė %s%s%s nerado failo %s%s%s."
@@ -275,7 +275,6 @@ msgid "3D Light"
 msgstr "3D šviesuma"
 
 #: lclstrconsts.rsacontrolcannothaveitselfasparent
-#| msgid "A control can't have itself as parent"
 msgid "A control can't have itself as a parent"
 msgstr "Valdiklio tėvas negali būti pats valdiklis"
 
@@ -668,7 +667,6 @@ msgid "--no-xshm             Disable use of the X Shared Memory Extension."
 msgstr "--no-xshm     Nenaudoti „X Shared Memory“ plėtinio."
 
 #: lclstrconsts.rsgtkoptionsync
-#| msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediatey after the protocol request that generated the error has been processed by the X server."
 msgid "--sync                Call XSynchronize (display, True) after the Xserver connection has been established. This makes debugging X protocol errors easier, because X request buffering will be disabled and X errors will be received immediately after the protocol request that generated the error has been processed by the X server."
 msgstr "--sync     Kai XServer ryšys sukurtas, vykdyti „XSynchronize (display, True)“. Tai palengvins X protokolo klaidų derinimą, nes bus išjungtas X kreipinių buferis ir X serveriui apdorojant protokolo kreipinį įvykusi klaida bus gauta iškart."
 
@@ -677,12 +675,10 @@ msgid "%s: Already registered"
 msgstr "%s: jau yra registruotas"
 
 #: lclstrconsts.rshelpcontextnotfound
-#| msgid "Help Context not found"
 msgid "A help database was found for this topic, but this topic was not found"
 msgstr "Šiai temai rasta žinyno duomenų bazė, tačiau pačios temos rasti nepavyko"
 
 #: lclstrconsts.rshelpdatabasenotfound
-#| msgid "Help Database not found"
 msgid "There is no help database installed for this topic"
 msgstr "Šiai temai nėra įdiegtos žinyno duomenų bazės"
 
@@ -695,49 +691,49 @@ msgid "Help context %s not found."
 msgstr "Žinyno turinys %s nerastas."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "Žinyno turinys %s duomenų bazėje %s%s%s nerastas."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy
-#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+#, fuzzy,badformat
+#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Žinyno duomenų bazė %s%s%s nerado žiūryklės %s tipo žinyno lapui."
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
 msgstr "Žinyno duomenų bazė %s%s%s nerasta."
 
 #: lclstrconsts.rshelphelpfordirectivenotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help for directive %s%s%s not found."
 msgid "Help for directive \"%s\" not found."
 msgstr "Žinyne nėra informacijos apie direktyvą %s%s%s."
 
 #: lclstrconsts.rshelphelpfordirectivenotfoundindatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help for directive %s%s%s not found in Database %s%s%s."
 msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr "Informacijos apie direktyvą %s%s%s duomenų bazėje %s%s%s nerasta."
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "Žinyno raktažodis %s%s%s nerastas."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Žinyno raktažodis %s%s%s duomenų bazėje %s%s%s nerastas."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "Žinyno mazgas %s%s%s neturi žinyno duomenų bazės."
@@ -747,12 +743,10 @@ msgid "No help found for line %d, column %d of %s."
 msgstr "Žinyne nėra duomenų eilutei %d, stulpeliui %d šio %s."
 
 #: lclstrconsts.rshelpnohelpnodesavailable
-#| msgid "No help nodes available"
 msgid "No help entries available for this topic"
 msgstr "Žinyne nėra įrašų šia tema"
 
 #: lclstrconsts.rshelpnotfound
-#| msgid "Help not found"
 msgid "No help found for this topic"
 msgstr "Žinyne nėra informacijos šia tema"
 
@@ -765,7 +759,7 @@ msgid "Help Selector Error"
 msgstr "Žinyno parinkiklio klaida"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "Nerasta žiūryklė %s%s%s žinyno tipui."
@@ -775,7 +769,6 @@ msgid "Help Viewer Error"
 msgstr "Žinyno žiūryklės klaida"
 
 #: lclstrconsts.rshelpviewernotfound
-#| msgid "Help Viewer not found"
 msgid "No viewer was found for this type of help content"
 msgstr "Nepavyko rasti žiūryklės šio tipo žinyno turiniui"
 
@@ -792,7 +785,6 @@ msgid "Hot Light"
 msgstr "Indikatorius"
 
 #: lclstrconsts.rsicns
-#| msgid "OSX Icon Resource"
 msgid "Mac OS X Icon"
 msgstr "OSX piktogramos piktograma"
 
@@ -1076,7 +1068,6 @@ msgid "Post"
 msgstr "Išsiųsti"
 
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpresscanceltok
-#| msgid "%s%sPress Ok to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Cancel to kill the program."
 msgstr "%s%sSpauskite „Gerai“ jeigu norite ignoruoti ir rizikuoti sugadinti duomenis.%sSpauskite „Atsisakyti“, kad išjungtumėte programą."
 
@@ -1513,7 +1504,6 @@ msgid "Invalid integer number: %s"
 msgstr "Netinkamas sveikasis skaičius: %s"
 
 #: lclstrconsts.sparlocinfo
-#| msgid " (at %d,%d, stream offset %.8x)"
 msgid " (at %d,%d, stream offset %d)"
 msgstr " (ties %d,%d, srauto poslinkis: %d)"
 

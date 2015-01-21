@@ -13,19 +13,19 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Browser %s%s%s not executable."
 msgid "Browser \"%s\" not executable."
 msgstr "Prehliadač %s%s%s nie je spustiteľný."
 
 #: lclstrconsts.hhshelpbrowsernotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Browser %s%s%s not found."
 msgid "Browser \"%s\" not found."
 msgstr "Prehliadač %s%s%s nenájdený."
 
 #: lclstrconsts.hhshelperrorwhileexecuting
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Error while executing %s%s%s:%s%s"
 msgid "Error while executing \"%s\":%s%s"
 msgstr "Chyba·pri·vykonávaní·%s%s%s:%s%s"
@@ -39,7 +39,7 @@ msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> 
 msgstr ""
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "The help database %s%s%s was unable to find file %s%s%s."
 msgid "The help database \"%s\" was unable to find file \"%s\"."
 msgstr "Databáza pomocníka %s%s%s nemohla nájsť súbor %s%s%s."
@@ -697,19 +697,19 @@ msgid "Help context %s not found."
 msgstr "Kontextová pomoc %s nenájdená."
 
 #: lclstrconsts.rshelphelpcontextnotfoundindatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help context %s not found in Database %s%s%s."
 msgid "Help context %s not found in Database \"%s\"."
 msgstr "Kontextová pomoc %s nenájdená v databáze %s%s%s."
 
 #: lclstrconsts.rshelphelpdatabasedidnotfoundaviewerforahelppageoftype
-#, fuzzy
-#| msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
-msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+#, fuzzy,badformat
+#| msgid "Help Database \"%s\" did not found a viewer for a help page of type %s"
+msgid "Help Database \"%s\" did not find a viewer for a help page of type %s"
 msgstr "Databáza pomoci %s%s%s nenašla zobrazovač pre stránku pomocníka typu %s"
 
 #: lclstrconsts.rshelphelpdatabasenotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help Database %s%s%s not found"
 msgid "Help Database \"%s\" not found"
 msgstr "Databáza pomoci %s%s%s nenájdená"
@@ -723,19 +723,19 @@ msgid "Help for directive \"%s\" not found in Database \"%s\"."
 msgstr ""
 
 #: lclstrconsts.rshelphelpkeywordnotfound
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help keyword %s%s%s not found."
 msgid "Help keyword \"%s\" not found."
 msgstr "Kľúčové slovo pomoci %s%s%s nenájdené."
 
 #: lclstrconsts.rshelphelpkeywordnotfoundindatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help keyword %s%s%s not found in Database %s%s%s."
 msgid "Help keyword \"%s\" not found in Database \"%s\"."
 msgstr "Kľúčové·slovo·pomoci·%s%s%s nenájdené v databáze %s%s%s."
 
 #: lclstrconsts.rshelphelpnodehasnohelpdatabase
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "Help node %s%s%s has no Help Database"
 msgid "Help node \"%s\" has no Help Database"
 msgstr "Uzol pomocníka %s%s%s nemá databázu pomocníka"
@@ -765,7 +765,7 @@ msgid "Help Selector Error"
 msgstr "Chyba selektora pomoci"
 
 #: lclstrconsts.rshelpthereisnoviewerforhelptype
-#, fuzzy
+#, fuzzy,badformat
 #| msgid "There is no viewer for help type %s%s%s"
 msgid "There is no viewer for help type \"%s\""
 msgstr "Nie je zobrazovač pre pomoc typu %s%s%s"
