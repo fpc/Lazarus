@@ -409,6 +409,7 @@ type
     procedure DoMsgLButtonCommon;
     procedure DoMsgLButtonDoubleClick;
     procedure DoMsgLButtonDown;
+    procedure DoMsgMouseUpDownClick(aMsg: Cardinal);
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1574,6 +1575,19 @@ begin
   DoMsgLButtonCommon;
 end;
 
+procedure TWindowProcHelper.DoMsgMouseUpDownClick(aMsg: Cardinal);
+begin
+  NotifyUserInput := True;
+  PLMsg := @LMMouse;
+  with LMMouse Do
+  begin
+    Msg := aMsg;
+    XPos := GET_X_LPARAM(LParam);
+    YPos := GET_Y_LPARAM(LParam);
+    Keys := WParam;
+  end;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1838,90 +1852,13 @@ begin
     //TODO:LM_KILLCHAR,LM_KILLWORD,LM_KILLLINE
     WM_LBUTTONDBLCLK: DoMsgLButtonDoubleClick;
     WM_LBUTTONDOWN:   DoMsgLButtonDown;
-    WM_LBUTTONUP:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_LBUTTONUP;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-      end;
-    end;
-    WM_MBUTTONDBLCLK:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_MBUTTONDBLCLK;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-      end;
-    end;
-    WM_MBUTTONDOWN:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_MBUTTONDOWN;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-      end;
-    end;
-    WM_MBUTTONUP:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_MBUTTONUP;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-      end;
-    end;
-    WM_XBUTTONDBLCLK:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_XBUTTONDBLCLK;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-      end;
-    end;
-    WM_XBUTTONDOWN:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_XBUTTONDOWN;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-      end;
-    end;
-    WM_XBUTTONUP:
-    begin
-      NotifyUserInput := True;
-      PLMsg:=@LMMouse;
-      with LMMouse Do
-      begin
-        Msg := LM_XBUTTONUP;
-        XPos := GET_X_LPARAM(LParam);
-        YPos := GET_Y_LPARAM(LParam);
-        Keys := WParam;
-      end;
-    end;
+    WM_LBUTTONUP:     DoMsgMouseUpDownClick(LM_LBUTTONUP);
+    WM_MBUTTONDBLCLK: DoMsgMouseUpDownClick(LM_MBUTTONDBLCLK);
+    WM_MBUTTONDOWN:   DoMsgMouseUpDownClick(LM_MBUTTONDOWN);
+    WM_MBUTTONUP:     DoMsgMouseUpDownClick(LM_MBUTTONUP);
+    WM_XBUTTONDBLCLK: DoMsgMouseUpDownClick(LM_XBUTTONDBLCLK);
+    WM_XBUTTONDOWN:   DoMsgMouseUpDownClick(LM_XBUTTONDOWN);
+    WM_XBUTTONUP:     DoMsgMouseUpDownClick(LM_XBUTTONUP);
     WM_MOUSEHOVER:
     begin
       NotifyUserInput := True;
