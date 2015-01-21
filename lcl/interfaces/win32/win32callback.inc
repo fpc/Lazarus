@@ -404,6 +404,7 @@ type
     procedure DoMsgChar(var WinResult: LResult);
     procedure DoMsgColor;
     procedure DoMsgDrawItem;
+    procedure DoMsgEnable;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1423,6 +1424,32 @@ begin
   end;
 end;
 
+procedure TWindowProcHelper.DoMsgEnable;
+begin
+  if WParam <> 0 Then
+    LMessage.Msg := LM_SETEDITABLE;
+  if Window = Win32WidgetSet.AppHandle then
+    if WParam = 0 then
+    begin
+      RemoveStayOnTopFlags(Window);
+      DisabledForms := Screen.DisableForms(nil, DisabledForms);
+    end
+    else begin
+      RestoreStayOnTopFlags(Window);
+      Screen.EnableForms(DisabledForms);
+    end;
+
+  // disable child windows of for example groupboxes, but not of forms
+  if Assigned(lWinControl) and not (lWinControl is TCustomForm) then
+    EnableChildWindows(lWinControl, WParam<>0);
+
+  // ugly hack to give bitbtns a nice look
+  // When no theming active, the internal image needs to be
+  // recreated when the enabled state is changed
+  if not ThemeServices.ThemesEnabled and (lWinControl is TCustomBitBtn) then
+    DrawBitBtnImage(TCustomBitBtn(lWinControl), TCustomBitBtn(lWinControl).Caption);
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1620,33 +1647,7 @@ begin
       end;
     end;
     WM_DRAWITEM: DoMsgDrawItem;
-    WM_ENABLE:
-    begin
-      if WParam <> 0 Then
-        LMessage.Msg := LM_SETEDITABLE;
-      if Window = Win32WidgetSet.AppHandle then
-        if WParam = 0 then
-        begin
-          RemoveStayOnTopFlags(Window);
-          DisabledForms := Screen.DisableForms(nil, DisabledForms);
-        end
-        else
-        begin
-          RestoreStayOnTopFlags(Window);
-          Screen.EnableForms(DisabledForms);
-        end;
-        
-      // disable child windows of for example groupboxes, but not of forms
-      if Assigned(lWinControl) and not (lWinControl is TCustomForm) then
-        EnableChildWindows(lWinControl, WParam<>0);
-
-      // ugly hack to give bitbtns a nice look
-      // When no theming active, the internal image needs to be
-      // recreated when the enabled state is changed
-      if not ThemeServices.ThemesEnabled
-      and (lWinControl is TCustomBitBtn)
-      then DrawBitBtnImage(TCustomBitBtn(lWinControl), TCustomBitBtn(lWinControl).Caption);
-    end;
+    WM_ENABLE:   DoMsgEnable;
     WM_ERASEBKGND:
     begin
       eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
