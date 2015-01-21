@@ -361,26 +361,14 @@ type
     Msg: UInt;               // LongWord
     WParam: Windows.WParam;  // PtrInt
     LParam: Windows.LParam;  // PtrInt
-    //
+    // Other variables
     LMessage: TLMessage;
-    menuItem: TObject;
-    menuHDC: HDC;
     PLMsg: PLMessage;
-    R: TRect;
-    P: TPoint;
-    NewLeft, NewTop, NewWidth, NewHeight: integer;
-    lWinControl, ChildWinControl: TWinControl;
-    ChildWindowInfo: PWin32WindowInfo;
-    TargetObject: TObject;
-    WinProcess, WmSysCommandProcess: Boolean;
+    lWinControl: TWinControl;
+    WinProcess: Boolean;
     NotifyUserInput: Boolean;
-    OverlayWindow: HWND;
-    TargetWindow: HWND;
     WindowInfo: PWin32WindowInfo;
-    Flags: dword;
-    WindowDC: HDC;
-    WindowPlacement: TWINDOWPLACEMENT;
-    WindowColor: TColor;
+    // Records
     LMScroll: TLMScroll; // used by WM_HSCROLL
     LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
     LMChar: TLMChar; // used by WM_CHAR
@@ -390,19 +378,15 @@ type
     LMMouseEvent: TLMMouseEvent; // used by WM_MOUSEWHEEL
     LMMove: TLMMove; // used by WM_MOVE
     LMNotify: TLMNotify; // used by WM_NOTIFY
-    DrawListItemStruct: TDrawListItemStruct; //used by WM_DRAWITEM
-    CancelEndSession : Boolean;//use by WM_QUERYENDSESSION
     NMHdr: PNMHdr; // used by WM_NOTIFY
-    TmpSize: TSize; // used by WM_MEASUREITEM
-    Info: TComboboxInfo;
     OrgCharCode: word; // used in WM_CHAR handling
-    CharCodeNotEmpty: boolean; // used by WM_CHAR, WM_SYSCHAR and WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
+
     function DoChildEdit(out WinResult: LResult): Boolean;
     procedure DoCmdCheckBoxParam;
     function DoCmdComboBoxParam: Boolean;
     procedure DoMsgActivateApp;
     procedure DoMsgChar(var WinResult: LResult);
-    procedure DoMsgColor;
+    procedure DoMsgColor(ChildWindowInfo: PWin32WindowInfo);
     procedure DoMsgDrawItem;
     procedure DoMsgEnable;
     function DoMsgEraseBkgnd(var WinResult: LResult): Boolean;
@@ -582,11 +566,9 @@ var
     end;
     DoubleBufferBitmapOld := Windows.SelectObject(CurDoubleBuffer.DC, CurDoubleBuffer.Bitmap);
     PaintMsg.DC := CurDoubleBuffer.DC;
-
     {$ifdef MSG_DEBUG}
       DebugLn(MessageStackDepth, ' *double buffering on DC: ', IntToHex(CurDoubleBuffer.DC, sizeof(HDC)*2));
     {$endif}
-
   end;
 
 begin
@@ -785,10 +767,10 @@ begin
 {$ifdef DEBUG_DOUBLEBUFFER}
       if CopyBitmapToClipboard then
       begin
-//          Windows.OpenClipboard(0);
-//          Windows.EmptyClipboard;
-//          Windows.SetClipboardData(CF_BITMAP, DoubleBufferBitmap);
-//          Windows.CloseClipboard;
+//        Windows.OpenClipboard(0);
+//        Windows.EmptyClipboard;
+//        Windows.SetClipboardData(CF_BITMAP, DoubleBufferBitmap);
+//        Windows.CloseClipboard;
         CopyBitmapToClipboard := false;
       end;
 {$endif}
@@ -841,7 +823,6 @@ begin
   // messages
   // MWE.
 
-
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
   if LOWORD(WParam) = SB_THUMBTRACK
   then begin
@@ -891,6 +872,7 @@ var
   BoundsOffset: TRect;
   ACursor: TCursor;
   MouseMessage: Word;
+  P: TPoint;
 begin
   if Assigned(lWinControl) then
   begin
@@ -948,7 +930,7 @@ end;
 procedure TWindowProcHelper.DoSysCmdKeyMenu;
 var
   ParentForm: TCustomForm;
-  prevFocus: HWND;
+  TargetWindow, prevFocus: HWND;
 begin
   ParentForm := GetParentForm(lWinControl);
   if (ParentForm <> nil) and ((ParentForm.Menu = nil) or (csDesigning in ParentForm.ComponentState))
@@ -1189,6 +1171,8 @@ begin
 end;
 
 function TWindowProcHelper.DoChildEdit(out WinResult: LResult): Boolean;
+var
+  Info: TComboboxInfo;
 begin
   // combobox child edit weirdness
   // prevent combobox WM_SIZE message to get/set/compare text to list, to select text
@@ -1279,6 +1263,8 @@ begin
 end;
 
 procedure TWindowProcHelper.DoCmdCheckBoxParam;
+var
+  Flags: dword;
 begin
   case HIWORD(WParam) of
     BN_CLICKED:
@@ -1336,7 +1322,11 @@ begin
   Result := False;
 end;
 
-procedure TWindowProcHelper.DoMsgColor;
+procedure TWindowProcHelper.DoMsgColor(ChildWindowInfo: PWin32WindowInfo);
+var
+  WindowDC: HDC;
+  WindowColor: TColor;
+  ChildWinControl: TWinControl;
 begin
   WindowDC := HDC(WParam);
   ChildWinControl := ChildWindowInfo^.WinControl;
@@ -1381,6 +1371,9 @@ begin
 end;
 
 procedure TWindowProcHelper.DoMsgDrawItem;
+var
+  menuItem: TObject;
+  DrawListItemStruct: TDrawListItemStruct; //used by WM_DRAWITEM
 begin
   if (WParam = 0) and (PDrawItemStruct(LParam)^.ctlType = ODT_MENU) then
   begin
@@ -1661,6 +1654,9 @@ begin
 end;
 
 function TWindowProcHelper.DoMsgMouseWheel(var WinResult: LResult): Boolean;
+var
+  TargetWindow: HWND;
+  P: TPoint;
 begin
   NotifyUserInput := True;
   PLMsg := @LMMouseEvent;
@@ -1784,6 +1780,8 @@ begin
 end;
 
 procedure TWindowProcHelper.DoMsgShowWindow;
+var
+  Flags: dword;
 begin
   with TLMShowWindow(LMessage) Do
   begin
@@ -1812,6 +1810,10 @@ begin
 end;
 
 procedure TWindowProcHelper.DoMsgMeasureItem;
+var
+  menuItem: TObject;
+  menuHDC: HDC;
+  TmpSize: TSize; // used by WM_MEASUREITEM
 begin
   case PMeasureItemStruct(LParam)^.CtlType of
     ODT_MENU:
@@ -1862,6 +1864,10 @@ begin
 end;
 
 function TWindowProcHelper.DoMsgMove: Boolean;
+var
+  NewLeft, NewTop: integer;
+  WindowPlacement: TWINDOWPLACEMENT;
+  R: TRect;
 begin
   PLMsg := @LMMove;
   with LMMove Do
@@ -1874,11 +1880,8 @@ begin
       WindowPlacement.length := SizeOf(WindowPlacement);
       if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
       begin
-        with WindowPlacement.rcNormalPosition do
-        begin
-          XPos := Left;
-          YPos := Top;
-        end;
+        XPos := WindowPlacement.rcNormalPosition.Left;
+        YPos := WindowPlacement.rcNormalPosition.Top;
       end
       else
       if Windows.GetWindowRect(Window, @R) then
@@ -1912,6 +1915,12 @@ begin
 end;
 
 procedure TWindowProcHelper.DoMsgSize;
+var
+  NewWidth, NewHeight: integer;
+  OverlayWindow: HWND;
+{$IFDEF VerboseSizeMsg}
+  R: TRect;
+{$ENDIF}
 begin
   with TLMSize(LMessage) do
   begin
@@ -1960,6 +1969,15 @@ end;
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
+var
+  ChildWindowInfo: PWin32WindowInfo;
+  TargetObject: TObject;
+  TargetWindow: HWND;
+  WmSysCommandProcess: Boolean;
+  CancelEndSession : Boolean; // used by WM_QUERYENDSESSION
+  // used by WM_CHAR, WM_SYSCHAR and WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
+  CharCodeNotEmpty: boolean;
+  R: TRect;
 begin
   FillChar(LMessage, SizeOf(LMessage), 0);
   PLMsg := @LMessage;
@@ -2117,7 +2135,7 @@ begin
       if Assigned(ChildWindowInfo^.ParentMsgHandler)
       and ChildWindowInfo^.ParentMsgHandler(lWinControl,
         Window, Msg, WParam, LParam, LMessage.Result, WinProcess) then Exit(LMessage.Result);
-      DoMsgColor;
+      DoMsgColor(ChildWindowInfo);
     end;
     WM_CLEAR: LMessage.Msg := LM_CLEAR;
     WM_COPY:  LMessage.Msg := LM_COPY;
@@ -2230,6 +2248,7 @@ begin
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCHITTEST:     SetLMessageAndParams(LM_NCHITTEST);
     WM_NCLBUTTONDOWN: DoMsgNCLButtonDown;
+
     WM_NCMOUSEMOVE,
     WM_NCMOUSEHOVER:
     begin
