@@ -403,6 +403,7 @@ type
     function DoCmdComboBoxParam: Boolean;
     procedure DoMsgChar(var WinResult: LResult);
     procedure DoMsgColor;
+    procedure DoMsgDrawItem;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1334,6 +1335,94 @@ begin
   end;
 end;
 
+procedure TWindowProcHelper.DoMsgDrawItem;
+begin
+  if (WParam = 0) and (PDrawItemStruct(LParam)^.ctlType = ODT_MENU) then
+  begin
+    menuItem := TObject(PDrawItemStruct(LParam)^.itemData);
+    if menuItem is TMenuItem then
+    begin
+      DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC,
+         PDrawItemStruct(LParam)^.rcItem,
+         PDrawItemStruct(LParam)^.itemAction,
+         PDrawItemStruct(LParam)^.itemState);
+    end;
+    with TLMDrawItems(LMessage) do
+    begin
+      Msg := LM_DRAWITEM;
+      Ctl := 0;
+      DrawItemStruct := PDrawItemStruct(LParam);
+    end;
+    WinProcess := false;
+  end
+  else
+  begin
+    WindowInfo := GetWin32WindowInfo(PDrawItemStruct(LParam)^.hwndItem);
+    if WindowInfo^.WinControl<>nil then
+      lWinControl := WindowInfo^.WinControl;
+    {$IFDEF MSG_DEBUG}
+    with PDrawItemStruct(LParam)^ do
+      debugln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, integer(hwndItem)]));
+    {$ENDIF}
+
+    if (lWinControl<>nil) and
+       (((lWinControl is TCustomListbox) and
+          (TCustomListBox(lWinControl).Style <> lbStandard)) or
+       ((lWinControl is TCustomCombobox) and
+          ((TCustomCombobox(lWinControl).Style = csOwnerDrawFixed) or
+          (TCustomCombobox(lWinControl).Style = csOwnerDrawVariable)))) then
+    begin
+      if PDrawItemStruct(LParam)^.itemID <> dword(-1) then
+      begin
+        LMessage.Msg := LM_DRAWLISTITEM;
+        TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
+        with DrawListItemStruct do
+        begin
+          ItemID := PDrawItemStruct(LParam)^.itemID;
+          Area := PDrawItemStruct(LParam)^.rcItem;
+          ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
+          DC := PDrawItemStruct(LParam)^._hDC;
+        end;
+        if WindowInfo <> @DefaultWindowInfo then
+        begin
+          WindowInfo^.DrawItemIndex := PDrawItemStruct(LParam)^.itemID;
+          WindowInfo^.DrawItemSelected := (PDrawItemStruct(LParam)^.itemState
+            and ODS_SELECTED) = ODS_SELECTED;
+        end;
+        WinProcess := false;
+      end;
+    end else
+    if (lWinControl <> nil) and (lWinControl is TListView) and
+      (TListView(lWinControl).ViewStyle = vsReport) and
+      (PDrawItemStruct(LParam)^.ctlType = ODT_LISTVIEW) and
+      (TListView(lWinControl).OwnerDraw) then
+    begin
+      if PDrawItemStruct(LParam)^.itemID <> dword(-1) then
+      begin
+        LMessage.Msg := CN_DRAWITEM;
+        TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
+        with DrawListItemStruct do
+        begin
+          ItemID := PDrawItemStruct(LParam)^.itemID;
+          Area := PDrawItemStruct(LParam)^.rcItem;
+          ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
+          DC := PDrawItemStruct(LParam)^._hDC;
+        end;
+        WinProcess := false;
+      end;
+    end else
+    begin
+      with TLMDrawItems(LMessage) do
+      begin
+        Msg := LM_DRAWITEM;
+        Ctl := 0;
+        DrawItemStruct := PDrawItemStruct(LParam);
+      end;
+      WinProcess := false;
+    end;
+  end;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1530,93 +1619,7 @@ begin
         LMessage.Result := 0;
       end;
     end;
-    WM_DRAWITEM:
-    begin
-      if (WParam = 0) and (PDrawItemStruct(LParam)^.ctlType = ODT_MENU) then
-      begin
-        menuItem := TObject(PDrawItemStruct(LParam)^.itemData);
-        if menuItem is TMenuItem then
-        begin
-          DrawMenuItem(TMenuItem(menuItem), PDrawItemStruct(LParam)^._hDC,
-             PDrawItemStruct(LParam)^.rcItem,
-             PDrawItemStruct(LParam)^.itemAction,
-             PDrawItemStruct(LParam)^.itemState);
-        end;
-        with TLMDrawItems(LMessage) do
-        begin
-          Msg := LM_DRAWITEM;
-          Ctl := 0;
-          DrawItemStruct := PDrawItemStruct(LParam);
-        end;
-        WinProcess := false;
-      end
-      else
-      begin
-        WindowInfo := GetWin32WindowInfo(PDrawItemStruct(LParam)^.hwndItem);
-        if WindowInfo^.WinControl<>nil then
-          lWinControl := WindowInfo^.WinControl;
-        {$IFDEF MSG_DEBUG}
-        with PDrawItemStruct(LParam)^ do
-          debugln(format('Received WM_DRAWITEM type %d handle %x', [ctlType, integer(hwndItem)]));
-        {$ENDIF}
-
-        if (lWinControl<>nil) and
-           (((lWinControl is TCustomListbox) and
-              (TCustomListBox(lWinControl).Style <> lbStandard)) or
-           ((lWinControl is TCustomCombobox) and
-              ((TCustomCombobox(lWinControl).Style = csOwnerDrawFixed) or
-              (TCustomCombobox(lWinControl).Style = csOwnerDrawVariable)))) then
-        begin
-          if PDrawItemStruct(LParam)^.itemID <> dword(-1) then
-          begin
-            LMessage.Msg := LM_DRAWLISTITEM;
-            TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
-            with DrawListItemStruct do
-            begin
-              ItemID := PDrawItemStruct(LParam)^.itemID;
-              Area := PDrawItemStruct(LParam)^.rcItem;
-              ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
-              DC := PDrawItemStruct(LParam)^._hDC;
-            end;
-            if WindowInfo <> @DefaultWindowInfo then
-            begin
-              WindowInfo^.DrawItemIndex := PDrawItemStruct(LParam)^.itemID;
-              WindowInfo^.DrawItemSelected := (PDrawItemStruct(LParam)^.itemState
-                and ODS_SELECTED) = ODS_SELECTED;
-            end;
-            WinProcess := false;
-          end;
-        end else
-        if (lWinControl <> nil) and (lWinControl is TListView) and
-          (TListView(lWinControl).ViewStyle = vsReport) and
-          (PDrawItemStruct(LParam)^.ctlType = ODT_LISTVIEW) and
-          (TListView(lWinControl).OwnerDraw) then
-        begin
-          if PDrawItemStruct(LParam)^.itemID <> dword(-1) then
-          begin
-            LMessage.Msg := CN_DRAWITEM;
-            TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
-            with DrawListItemStruct do
-            begin
-              ItemID := PDrawItemStruct(LParam)^.itemID;
-              Area := PDrawItemStruct(LParam)^.rcItem;
-              ItemState := TOwnerDrawState(PDrawItemStruct(LParam)^.itemState);
-              DC := PDrawItemStruct(LParam)^._hDC;
-            end;
-            WinProcess := false;
-          end;
-        end else
-        begin
-          with TLMDrawItems(LMessage) do
-          begin
-            Msg := LM_DRAWITEM;
-            Ctl := 0;
-            DrawItemStruct := PDrawItemStruct(LParam);
-          end;
-          WinProcess := false;
-        end;
-      end;
-    end;
+    WM_DRAWITEM: DoMsgDrawItem;
     WM_ENABLE:
     begin
       if WParam <> 0 Then
