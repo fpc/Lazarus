@@ -426,6 +426,7 @@ type
     procedure DoSysCmdRestore;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
+    procedure SetLMessageAndParams(aMsg: Cardinal; ResetWinProcess: Boolean = False);
     procedure SendPaintMessage(ControlDC: HDC);
     procedure HandleScrollMessage(LMsg: integer);
     procedure HandleSetCursor;
@@ -451,6 +452,15 @@ end;
 destructor TWindowProcHelper.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TWindowProcHelper.SetLMessageAndParams(aMsg: Cardinal; ResetWinProcess: Boolean);
+begin
+  LMessage.Msg := aMsg;
+  LMessage.WParam := WParam;
+  LMessage.LParam := LParam;
+  if ResetWinProcess then
+    WinProcess := False;
 end;
 
 function TWindowProcHelper.GetPopMenuItemObject: TObject;
@@ -913,11 +923,7 @@ begin
     end;
   end;
   if LMessage.Result = 0 then
-  begin
-    LMessage.Msg := LM_SETCURSOR;
-    LMessage.WParam := WParam;
-    LMessage.LParam := LParam;
-  end;
+    SetLMessageAndParams(LM_SETCURSOR);
   WinProcess := False;
 end;
 
@@ -1509,9 +1515,7 @@ begin
 {$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
     DebugLn(['WM_ERASEBKGND  *NO* ParentPaint for WParam= ', WParam, ' LParam=',LParam, ' Window=', dbgs(Window) ]);
 {$endif}
-    LMessage.Msg := LM_ERASEBKGND;
-    LMessage.WParam := WParam;
-    LMessage.LParam := LParam;
+    SetLMessageAndParams(LM_ERASEBKGND);
   end else
   begin
 {$if defined(MSG_DEBUG) or defined(DBG_SendPaintMessage)}
@@ -1694,23 +1698,17 @@ end;
 
 procedure TWindowProcHelper.DoMsgNCLButtonDown;
 begin
-  LMessage.Msg := Msg;
-  LMessage.WParam := WParam;
-  LMessage.LParam := LParam;
+  SetLMessageAndParams(Msg);
   NotifyUserInput := True;
 
   //Drag&Dock support TCustomForm => Start BeginDrag()
   if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState) then
   begin
     if WParam = HTCAPTION  then
-    begin
       if lWinControl is TCustomForm then
-      begin
         if (TWinControlAccess(lWinControl).DragKind = dkDock)
         and (TWinControlAccess(lWinControl).DragMode = dmAutomatic) then
           lWinControl.BeginDrag(true);
-      end;
-    end;
   end;
   // I see no other way to prevent crash at moment. This message calls WM_CLOSE
   // which frees our form and we get a destructed lWinControl
@@ -1829,13 +1827,8 @@ begin
     if WParam <> 0 then
     begin
       lWinControl := TWinControl(WParam);
-      if Assigned(lWinControl) then
-      begin
-        LMessage.Msg := LM_MEASUREITEM;
-        LMessage.LParam := LParam;
-        LMessage.WParam := WParam;
-        Winprocess := False;
-      end;
+      //if Assigned(lWinControl) then   <- already tested
+      SetLMessageAndParams(LM_MEASUREITEM, True);
     end;
   end;
 end;
@@ -1991,20 +1984,12 @@ begin
         TWin32Widgetset(Widgetset).CheckPipeEvents;
       end;
     WM_ENTERIDLE: Application.Idle(False);
-    WM_ACTIVATE:
-    begin
-      LMessage.Msg := LM_ACTIVATE;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
-    end;
+    WM_ACTIVATE:  SetLMessageAndParams(LM_ACTIVATE);
     WM_IME_ENDCOMPOSITION:
     begin
       {IME Windows the composition has finished}
       WindowInfo^.IMEComposed:=True;
-      LMessage.Msg := Msg;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
-      //WinProcess := False;
+      SetLMessageAndParams(Msg);  //WinProcess := False;
     end;
     WM_CANCELMODE:     LMessage.Msg := LM_CANCELMODE;
     WM_CAPTURECHANGED: LMessage.Msg := LM_CAPTURECHANGED;
@@ -2166,21 +2151,11 @@ begin
       WinProcess := False;
     end;
     WM_HELP:
-    begin
-      LMessage.Msg := LM_HELP;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
       // Don't ask windows to process the message here. It will be processed
       // either by TCustomForm LM_HELP handler or passed to parent by DefaultHandler
-      WinProcess := False;
-    end;
+      SetLMessageAndParams(LM_HELP, True);
     WM_HOTKEY:
-    begin
-      LMessage.Msg := WM_HOTKEY;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
-      WinProcess := false;
-    end;
+      SetLMessageAndParams(WM_HOTKEY, True);
     WM_HSCROLL,
     WM_VSCROLL:
     begin
@@ -2190,10 +2165,8 @@ begin
         ChildWindowInfo := GetWin32WindowInfo(HWND(LParam));
         lWinControl := ChildWindowInfo^.WinControl;
         if Assigned(ChildWindowInfo^.ParentMsgHandler) then
-        begin
           if ChildWindowInfo^.ParentMsgHandler(lWinControl,
             Window, Msg, WParam, LParam, PLMsg^.Result, WinProcess) then Exit(PLMsg^.Result);
-        end;
       end;
       HandleScrollMessage(Msg);
     end;
@@ -2242,26 +2215,17 @@ begin
     WM_DROPFILES:
       begin
         {$IFDEF EnableWMDropFiles}
-        LMessage.Msg := LM_DROPFILES;
-        LMessage.WParam := WParam;
-        LMessage.LParam := LParam;
+        SetLMessageAndParams(LM_DROPFILES);
         {$ENDIF}
         HandleDropFiles;
       end;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
-    WM_NCHITTEST:
-    begin
-      LMessage.msg := LM_NCHITTEST;
-      LMessage.wParam := WParam;
-      LMessage.lParam := LParam;
-    end;
+    WM_NCHITTEST:     SetLMessageAndParams(LM_NCHITTEST);
     WM_NCLBUTTONDOWN: DoMsgNCLButtonDown;
     WM_NCMOUSEMOVE,
     WM_NCMOUSEHOVER:
     begin
-      LMessage.Msg := Msg;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
+      SetLMessageAndParams(Msg);
       NotifyUserInput := True;
       Application.DoBeforeMouseMessage(nil);
     end;
@@ -2328,9 +2292,7 @@ begin
     WM_SYSCOMMAND:
     begin
       HandleSysCommand;
-      LMessage.Msg := Msg;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
+      SetLMessageAndParams(Msg);
       WmSysCommandProcess := WinProcess;
       WinProcess := False;
     end;
@@ -2346,12 +2308,7 @@ begin
       DoMsgSysKey(CN_SYSKEYUP);
       Result := 0;
     end;
-    WM_TIMER:
-    begin
-      LMessage.Msg := LM_TIMER;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
-    end;
+    WM_TIMER:  SetLMessageAndParams(LM_TIMER);
     WM_WINDOWPOSCHANGING:
     begin
       with TLMWindowPosMsg(LMessage) Do
@@ -2404,21 +2361,11 @@ begin
     WM_IME_SELECT,
     WM_IME_SETCONTEXT,
     WM_IME_STARTCOMPOSITION:
-    begin
-      LMessage.Msg := Msg;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
-      WinProcess := False;
-    end;
-  else  // case Msg of
+      SetLMessageAndParams(Msg, True);
+  else
     // pass along user defined messages
     if Msg >= WM_USER then
-    begin
-      LMessage.Msg := Msg;
-      LMessage.WParam := WParam;
-      LMessage.LParam := LParam;
-      WinProcess := False;
-    end;
+      SetLMessageAndParams(Msg, True);
   end;  // case Msg of
 
   if WinProcess then
