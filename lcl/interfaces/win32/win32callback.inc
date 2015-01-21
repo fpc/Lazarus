@@ -400,6 +400,7 @@ type
     CharCodeNotEmpty: boolean; // used by WM_CHAR, WM_SYSCHAR and WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
     function DoChildEdit(out WinResult: LResult): Boolean;
     procedure DoCmdCheckBoxParam;
+    function DoCmdComboBoxParam: Boolean;
     procedure DoMsgChar(var WinResult: LResult);
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
@@ -1261,6 +1262,33 @@ begin
   end
 end;
 
+function TWindowProcHelper.DoCmdComboBoxParam: Boolean;
+begin
+  case HIWORD(WParam) of
+    CBN_DROPDOWN: TCustomCombobox(lWinControl).IntfGetItems;
+    CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
+    { CBN_EDITCHANGE is only sent after the user changes the edit box.
+      CBN_SELCHANGE is sent when the user changes the text by
+      selecting in the list, but before text is actually changed.
+      itemindex is updated, so set text manually }
+    CBN_SELCHANGE:
+    begin
+      if TCustomComboBox(lWinControl).Style in [csSimple, csDropDown] then
+        UpdateComboBoxText(TCustomComboBox(lWinControl));
+      SendSimpleMessage(lWinControl, LM_CHANGED);
+      LMessage.Msg := LM_SELCHANGE;
+    end;
+    CBN_CLOSEUP:
+    begin
+      // according to msdn CBN_CLOSEUP can happen before CBN_SELCHANGE and
+      // unfortunately it is simple truth. but we need correct order in the LCL
+      PostMessage(lWinControl.Handle, CN_COMMAND, WParam, LParam);
+      Exit(True);
+    end;
+  end;
+  Result := False;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -1410,28 +1438,7 @@ begin
             LBN_SELCHANGE:  LMessage.Msg := LM_SELCHANGE;
           end
         else if lWinControl is TCustomCombobox then
-          case HIWORD(WParam) of
-            CBN_DROPDOWN: TCustomCombobox(lWinControl).IntfGetItems;
-            CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
-            { CBN_EDITCHANGE is only sent after the user changes the edit box.
-              CBN_SELCHANGE is sent when the user changes the text by
-              selecting in the list, but before text is actually changed.
-              itemindex is updated, so set text manually }
-            CBN_SELCHANGE:
-            begin
-              if TCustomComboBox(lWinControl).Style in [csSimple, csDropDown] then
-                UpdateComboBoxText(TCustomComboBox(lWinControl));
-              SendSimpleMessage(lWinControl, LM_CHANGED);
-              LMessage.Msg := LM_SELCHANGE;
-            end;
-            CBN_CLOSEUP:
-            begin
-              // according to msdn CBN_CLOSEUP can happen before CBN_SELCHANGE and
-              // unfortunately it is simple truth. but we need correct order in the LCL
-              PostMessage(lWinControl.Handle, CN_COMMAND, WParam, LParam);
-              Exit;
-            end;
-          end;
+          if DoCmdComboBoxParam then Exit;
       end;
 
       // no specific message found? try send a general msg
