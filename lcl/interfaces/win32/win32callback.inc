@@ -426,6 +426,8 @@ type
     procedure DoSysCmdRestore;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
+    procedure SetLMCharData(aMsg: Cardinal; UpdateKeyData: Boolean = False);
+    procedure SetLMKeyData(aMsg: Cardinal; UpdateKeyData: Boolean = False);
     procedure SetLMessageAndParams(aMsg: Cardinal; ResetWinProcess: Boolean = False);
     procedure SendPaintMessage(ControlDC: HDC);
     procedure HandleScrollMessage(LMsg: integer);
@@ -452,6 +454,22 @@ end;
 destructor TWindowProcHelper.Destroy;
 begin
   inherited Destroy;
+end;
+
+procedure TWindowProcHelper.SetLMCharData(aMsg: Cardinal; UpdateKeyData: Boolean);
+begin
+  LMChar.Msg := aMsg;
+  LMChar.CharCode := Word(WParam);
+  if UpdateKeyData then
+    LMChar.KeyData := LParam;
+end;
+
+procedure TWindowProcHelper.SetLMKeyData(aMsg: Cardinal; UpdateKeyData: Boolean);
+begin
+  LMKey.Msg := aMsg;
+  LMKey.CharCode := Word(WParam);
+  if UpdateKeyData then
+    LMKey.KeyData := LParam;
 end;
 
 procedure TWindowProcHelper.SetLMessageAndParams(aMsg: Cardinal; ResetWinProcess: Boolean);
@@ -1248,7 +1266,7 @@ begin
   else
     WParam := OrgCharCode;
   {$else}
-  PLMsg:=@LMChar;
+  PLMsg := @LMChar;
   with LMChar do
   begin
     Msg := CN_CHAR;
@@ -1541,13 +1559,8 @@ begin
   NotifyUserInput := True;
   PLMsg := @LMKey;
   UpdateUIState(Word(WParam));
-  with LMKey Do
-  begin
-    Msg := aMsg;
-    KeyData := LParam;
-    CharCode := Word(WParam);
-    WinResult := 0;
-  end;
+  SetLMKeyData(aMsg, True);
+  WinResult := 0;
   WinProcess := false;
 end;
 
@@ -1794,12 +1807,7 @@ procedure TWindowProcHelper.DoMsgSysKey(aMsg: Cardinal);
 begin
   NotifyUserInput := True;
   PLMsg := @LMKey;
-  with LMKey Do
-  begin
-    Msg := aMsg;
-    KeyData := LParam;
-    CharCode := Word(WParam);
-  end;
+  SetLMKeyData(aMsg, True);
   WinProcess := false;
 end;
 
@@ -2280,12 +2288,7 @@ begin
     WM_SYSCHAR:
     begin
       PLMsg := @LMChar;
-      with LMChar Do
-      begin
-        Msg := CN_SYSCHAR;
-        KeyData := LParam;
-        CharCode := Word(WParam);
-      end;
+      SetLMCharData(CN_SYSCHAR, True);
       Result := 0;
       WinProcess := false;
     end;
@@ -2426,7 +2429,7 @@ begin
         LMessage.Result := 0;
       end;
     end;
-  end;
+  end;  // case Msg of
 
   // convert from win32 client to lcl client pos.
   //
@@ -2467,14 +2470,11 @@ begin
   // respond to result of LCL handling the message
   case PLMsg^.Msg of
     LM_ERASEBKGND, LM_SETCURSOR, LM_RBUTTONUP, LM_CONTEXTMENU, LM_MOUSEWHEEL:
-    begin
       if PLMsg^.Result = 0 then
         WinProcess := True;
-    end;
+
     WM_SYSCOMMAND:
-    begin
       WinProcess := WmSysCommandProcess;
-    end;
 
     CN_CHAR, CN_SYSCHAR:
     begin
@@ -2548,34 +2548,13 @@ begin
           begin
             // if want chars, then handled already
             PLMsg^.Result := CallDefaultWindowProc(Window, WM_GETDLGCODE, 0, 0) and DLGC_WANTCHARS;
-            LMChar.CharCode := Word(WParam);
-            LMChar.Msg := LM_CHAR;
+            SetLMCharData(LM_CHAR);
           end;
-          WM_SYSCHAR:
-          begin
-            LMChar.CharCode := Word(WParam);
-            LMChar.Msg := LM_SYSCHAR;
-          end;
-          WM_KEYDOWN:
-          begin
-            LMKey.CharCode := Word(WParam);
-            LMKey.Msg := LM_KEYDOWN;
-          end;
-          WM_KEYUP:
-          begin
-            LMKey.CharCode := Word(WParam);
-            LMKey.Msg := LM_KEYUP;
-          end;
-          WM_SYSKEYDOWN:
-          begin
-            LMKey.CharCode := Word(WParam);
-            LMKey.Msg := LM_SYSKEYDOWN;
-          end;
-          WM_SYSKEYUP:
-          begin
-            LMKey.CharCode := Word(WParam);
-            LMKey.Msg := LM_SYSKEYUP;
-          end;
+          WM_SYSCHAR:    SetLMCharData(LM_SYSCHAR);
+          WM_KEYDOWN:    SetLMKeyData(LM_KEYDOWN);
+          WM_KEYUP:      SetLMKeyData(LM_KEYUP);
+          WM_SYSKEYDOWN: SetLMKeyData(LM_SYSKEYDOWN);
+          WM_SYSKEYUP:   SetLMKeyData(LM_SYSKEYUP);
         end;
 
         case Msg of
@@ -2595,10 +2574,7 @@ begin
           and (GetKeyState(VK_CONTROL) < 0) and (GetKeyState(VK_MENU) >= 0) then
         begin
           if WndClassName(Window) = EditClsName then
-          begin
-            // select all
-            Windows.SendMessage(Window, EM_SETSEL, 0, -1);
-          end;
+            Windows.SendMessage(Window, EM_SETSEL, 0, -1);  // select all
         end;
       end;
     end;
