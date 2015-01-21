@@ -368,12 +368,9 @@ type
     WindowInfo: PWin32WindowInfo;
     // Used by SendPaintMessage
     BackupBuffer: TDoubleBuffer;
-    DoubleBufferBitmapOld: HBITMAP;
-    BufferWasSaved: Boolean;
     WindowWidth, WindowHeight: Integer;
     PaintMsg: TLMPaint;
     RTLLayout: Boolean;
-    PaintRegion: HRGN;
     // Structures for message handling
     OrgCharCode: word; // used in WM_CHAR handling
     LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -387,7 +384,7 @@ type
     LMNotify: TLMNotify; // used by WM_NOTIFY
     NMHdr: PNMHdr; // used by WM_NOTIFY
 
-    procedure CalcClipRgn;
+    procedure CalcClipRgn(PaintRegion: HRGN);
     function DoChildEdit(out WinResult: LResult): Boolean;
     procedure DoCmdCheckBoxParam;
     function DoCmdComboBoxParam: Boolean;
@@ -417,7 +414,7 @@ type
     procedure DoSysCmdRestore;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
-    procedure PrepareDoubleBuffer(vDC: HDC);
+    function PrepareDoubleBuffer(vDC: HDC; out DoubleBufferBitmapOld: HBITMAP): Boolean;
     procedure SetLMCharData(aMsg: Cardinal; UpdateKeyData: Boolean = False);
     procedure SetLMKeyData(aMsg: Cardinal; UpdateKeyData: Boolean = False);
     procedure SetLMessageAndParams(aMsg: Cardinal; ResetWinProcess: Boolean = False);
@@ -506,18 +503,17 @@ begin
     Result := nil;
 end;
 
-procedure TWindowProcHelper.PrepareDoubleBuffer(vDC: HDC);
+function TWindowProcHelper.PrepareDoubleBuffer(vDC: HDC; out DoubleBufferBitmapOld: HBITMAP): Boolean;
+// Returns True if BackupBuffer was saved.
 begin
-  if CurDoubleBuffer.DC <> 0 then
+  Result := CurDoubleBuffer.DC <> 0;
+  if Result then
   begin
     // we've been called from another paint handler. To prevent killing of
     // not own DC and HBITMAP lets save then and restore on exit
     BackupBuffer := CurDoubleBuffer;
     FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
-    BufferWasSaved := True;
-  end
-  else
-    BufferWasSaved := False;
+  end;
   CurDoubleBuffer.DC := Windows.CreateCompatibleDC(vDC);
 
   GetWindowSize(Window, WindowWidth, WindowHeight);
@@ -541,7 +537,7 @@ begin
   {$endif}
 end;
 
-procedure TWindowProcHelper.CalcClipRgn;
+procedure TWindowProcHelper.CalcClipRgn(PaintRegion: HRGN);
 var
   nSize, BytesCount: DWORD;
   RgnData: PRgnData;
@@ -589,7 +585,9 @@ end;
 procedure TWindowProcHelper.SendPaintMessage(ControlDC: HDC);
 var
   DC: HDC;
+  PaintRegion: HRGN;
   PS : TPaintStruct;
+  DoubleBufferBitmapOld: HBITMAP;
   ORect: TRect;
 {$ifdef DEBUG_DOUBLEBUFFER}
   ClipBox: Windows.RECT;
@@ -597,9 +595,10 @@ var
   ParentPaintWindow: HWND;
   DCIndex: integer;
   parLeft, parTop: integer;
-  useDoubleBuffer: boolean;
-  isNativeControl: boolean;
-  needParentPaint: boolean;
+  BufferWasSaved: Boolean;
+  useDoubleBuffer: Boolean;
+  isNativeControl: Boolean;
+  needParentPaint: Boolean;
 begin
   // note: ignores the received DC
   // do not use default deliver message
@@ -634,12 +633,11 @@ begin
 
   // check if double buffering is requested
   useDoubleBuffer := (ControlDC = 0) and (lWinControl.DoubleBuffered or ThemeServices.ThemesEnabled);
-
+  BufferWasSaved := False;
 {$ifdef MSG_DEBUG}
   if not useDoubleBuffer then
     DebugLn(MessageStackDepth, ' *painting, but not double buffering');
 {$endif}
-
   WinProcess := false;
   try
     if ControlDC = 0 then
@@ -657,7 +655,7 @@ begin
       if useDoubleBuffer then
       begin
         RTLLayout := (GetWindowLong(Window, GWL_EXSTYLE) and WS_EX_LAYOUTRTL) = WS_EX_LAYOUTRTL;
-        PrepareDoubleBuffer(DC);
+        BufferWasSaved := PrepareDoubleBuffer(DC, DoubleBufferBitmapOld);
 {$ifdef DEBUG_DOUBLEBUFFER}
         ORect.Left := 0;
         ORect.Top := 0;
@@ -667,7 +665,7 @@ begin
 {$endif}
         PaintRegion := CreateRectRgn(0, 0, 1, 1);
         if GetRandomRgn(DC, PaintRegion, SYSRGN) = 1 then
-          CalcClipRgn;
+          CalcClipRgn(PaintRegion);
 {$ifdef DEBUG_DOUBLEBUFFER}
         Windows.GetClipBox(CurDoubleBuffer.DC, ClipBox);
         DebugLn('Double buffering in DC ', IntToHex(CurDoubleBuffer.DC, sizeof(HDC)*2),
@@ -683,7 +681,7 @@ begin
       DC := ControlDC;
       PaintRegion := 0;
       if useDoubleBuffer then
-        PrepareDoubleBuffer(DC);
+        BufferWasSaved := PrepareDoubleBuffer(DC, DoubleBufferBitmapOld);
     end;
 
     if ParentPaintWindow <> 0 then
