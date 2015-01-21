@@ -398,6 +398,7 @@ type
     Info: TComboboxInfo;
     OrgCharCode: word; // used in WM_CHAR handling
     CharCodeNotEmpty: boolean; // used by WM_CHAR, WM_SYSCHAR and WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, WM_SYSKEYUP
+    function DoChildEdit(out WinResult: LResult): Boolean;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1137,6 +1138,61 @@ begin
   end;
 end;
 
+function TWindowProcHelper.DoChildEdit(out WinResult: LResult): Boolean;
+begin
+  // combobox child edit weirdness
+  // prevent combobox WM_SIZE message to get/set/compare text to list, to select text
+  if IsComboEditSelection then
+  begin
+    case Msg of
+      WM_GETTEXTLENGTH, EM_SETSEL:
+      begin
+        WinResult := 0;
+        Exit(True);
+      end;
+      WM_GETTEXT:
+      begin
+        if WParam > 0 then
+          PChar(LParam)^ := #0;
+        WinResult := 0;
+        Exit(True);
+      end;
+    end;
+  end;
+  lWinControl := WindowInfo^.AWinControl;
+  {for ComboBox IME sends WM_IME_NOTIFY with WParam=WM_IME_ENDCOMPOSITION}
+  if (Msg = WM_IME_NOTIFY) and (WPARAM=WM_IME_ENDCOMPOSITION) then
+    WindowInfo^.IMEComposed:=True;
+
+  // filter messages we want to pass on to LCL
+  if (Msg <> WM_KILLFOCUS) and (Msg <> WM_SETFOCUS)
+    {$ifndef RedirectDestroyMessages}and (Msg <> WM_NCDESTROY){$endif}
+    and not ((Msg >= WM_CUT) and (Msg <= WM_CLEAR))
+    and ((Msg < WM_KEYFIRST) or (Msg > WM_KEYLAST))
+    and ((Msg < WM_MOUSEFIRST) or (Msg > WM_MOUSELAST)) then
+  begin
+    WinResult := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+    Exit(True);
+  end
+  else
+  if (Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS) then
+  begin
+    // if focus jumps inside combo then no need to notify LCL
+    Info.cbSize := SizeOf(Info);
+    Win32Extra.GetComboBoxInfo(lWinControl.Handle, @Info);
+    if (HWND(WParam) = Info.hwndList) or
+       (HWND(WParam) = Info.hwndItem) or
+       (HWND(WParam) = Info.hwndCombo) then
+    begin
+      WinResult := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+      Exit(True);
+    end;
+  end;
+  Result := False;
+end;
+
+// This is called from the actual WindowProc.
+
 function TWindowProcHelper.DoWindowProc: LResult;
 begin
   FillChar(LMessage, SizeOf(LMessage), 0);
@@ -1147,54 +1203,7 @@ begin
   WindowInfo := GetWin32WindowInfo(Window);
   if WindowInfo^.isChildEdit then
   begin
-    // combobox child edit weirdness
-    // prevent combobox WM_SIZE message to get/set/compare text to list, to select text
-    if IsComboEditSelection then
-    begin
-      case Msg of
-        WM_GETTEXTLENGTH, EM_SETSEL:
-        begin
-          Result := 0;
-          exit;
-        end;
-        WM_GETTEXT:
-        begin
-          if WParam > 0 then
-            PChar(LParam)^ := #0;
-          Result := 0;
-          exit;
-        end;
-      end;
-    end;
-    lWinControl := WindowInfo^.AWinControl;
-    {for ComboBox IME sends WM_IME_NOTIFY with WParam=WM_IME_ENDCOMPOSITION}
-    if (Msg = WM_IME_NOTIFY) and (WPARAM=WM_IME_ENDCOMPOSITION) then
-      WindowInfo^.IMEComposed:=True;
-    
-    // filter messages we want to pass on to LCL
-    if (Msg <> WM_KILLFOCUS) and (Msg <> WM_SETFOCUS)
-      {$ifndef RedirectDestroyMessages}and (Msg <> WM_NCDESTROY){$endif}
-      and not ((Msg >= WM_CUT) and (Msg <= WM_CLEAR))
-      and ((Msg < WM_KEYFIRST) or (Msg > WM_KEYLAST))
-      and ((Msg < WM_MOUSEFIRST) or (Msg > WM_MOUSELAST)) then
-    begin
-      Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-      exit;
-    end
-    else
-    if (Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS) then
-    begin
-      // if focus jumps inside combo then no need to notify LCL
-      Info.cbSize := SizeOf(Info);
-      Win32Extra.GetComboBoxInfo(lWinControl.Handle, @Info);
-      if (HWND(WParam) = Info.hwndList) or
-         (HWND(WParam) = Info.hwndItem) or
-         (HWND(WParam) = Info.hwndCombo) then
-      begin
-        Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-        exit;
-      end;
-    end;
+    if DoChildEdit(Result) then Exit;
   end else begin
     lWinControl := WindowInfo^.WinControl;
   end;
