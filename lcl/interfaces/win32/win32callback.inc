@@ -366,7 +366,16 @@ type
     WinProcess: Boolean;
     NotifyUserInput: Boolean;
     WindowInfo: PWin32WindowInfo;
-    // Records
+    // Used by SendPaintMessage
+    BackupBuffer: TDoubleBuffer;
+    DoubleBufferBitmapOld: HBITMAP;
+    BufferWasSaved: Boolean;
+    WindowWidth, WindowHeight: Integer;
+    PaintMsg: TLMPaint;
+    RTLLayout: Boolean;
+    PaintRegion: HRGN;
+    // Structures for message handling
+    OrgCharCode: word; // used in WM_CHAR handling
     LMScroll: TLMScroll; // used by WM_HSCROLL
     LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
     LMChar: TLMChar; // used by WM_CHAR
@@ -377,8 +386,8 @@ type
     LMMove: TLMMove; // used by WM_MOVE
     LMNotify: TLMNotify; // used by WM_NOTIFY
     NMHdr: PNMHdr; // used by WM_NOTIFY
-    OrgCharCode: word; // used in WM_CHAR handling
 
+    procedure CalcClipRgn;
     function DoChildEdit(out WinResult: LResult): Boolean;
     procedure DoCmdCheckBoxParam;
     function DoCmdComboBoxParam: Boolean;
@@ -408,6 +417,7 @@ type
     procedure DoSysCmdRestore;
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
+    procedure PrepareDoubleBuffer(vDC: HDC);
     procedure SetLMCharData(aMsg: Cardinal; UpdateKeyData: Boolean = False);
     procedure SetLMKeyData(aMsg: Cardinal; UpdateKeyData: Boolean = False);
     procedure SetLMessageAndParams(aMsg: Cardinal; ResetWinProcess: Boolean = False);
@@ -496,69 +506,100 @@ begin
     Result := nil;
 end;
 
+procedure TWindowProcHelper.PrepareDoubleBuffer(vDC: HDC);
+begin
+  if CurDoubleBuffer.DC <> 0 then
+  begin
+    // we've been called from another paint handler. To prevent killing of
+    // not own DC and HBITMAP lets save then and restore on exit
+    BackupBuffer := CurDoubleBuffer;
+    FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
+    BufferWasSaved := True;
+  end
+  else
+    BufferWasSaved := False;
+  CurDoubleBuffer.DC := Windows.CreateCompatibleDC(vDC);
+
+  GetWindowSize(Window, WindowWidth, WindowHeight);
+  if (CurDoubleBuffer.BitmapWidth < WindowWidth) or (CurDoubleBuffer.BitmapHeight < WindowHeight) then
+  begin
+    if CurDoubleBuffer.Bitmap <> 0 then
+      Windows.DeleteObject(CurDoubleBuffer.Bitmap);
+    CurDoubleBuffer.BitmapWidth := WindowWidth;
+    CurDoubleBuffer.BitmapHeight := WindowHeight;
+    CurDoubleBuffer.Bitmap := Windows.CreateCompatibleBitmap(vDC, WindowWidth, WindowHeight);
+    if RTLLayout then  // change the default layout - LTR - of memory DC
+      {if (GetLayout(vDC) and LAYOUT_BITMAPORIENTATIONPRESERVED) > 0 then  // GetLayout is not in win32extra
+        SetLayout(CurDoubleBuffer.DC, LAYOUT_RTL or LAYOUT_BITMAPORIENTATIONPRESERVED)
+      else //}
+        SetLayout(CurDoubleBuffer.DC, LAYOUT_RTL);
+  end;
+  DoubleBufferBitmapOld := Windows.SelectObject(CurDoubleBuffer.DC, CurDoubleBuffer.Bitmap);
+  PaintMsg.DC := CurDoubleBuffer.DC;
+  {$ifdef MSG_DEBUG}
+    DebugLn(MessageStackDepth, ' *double buffering on DC: ', IntToHex(CurDoubleBuffer.DC, sizeof(HDC)*2));
+  {$endif}
+end;
+
+procedure TWindowProcHelper.CalcClipRgn;
+var
+  nSize, BytesCount: DWORD;
+  RgnData: PRgnData;
+  WindowOrg: Windows.POINT;
+  XFORM: TXFORM;
+  MirroredPaintRgn: HRGN;
+begin
+  // winnt returns in screen coordinates
+  // win9x returns in window coordinates
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+  begin
+    WindowOrg.X := 0;
+    WindowOrg.Y := 0;
+    MapWindowPoints(Window, 0, WindowOrg, 1);
+    if RTLLayout then // We need the left side of the client area in screen coordinates
+      WindowOrg.X := WindowOrg.X - lWinControl.ClientWidth;
+    Windows.OffsetRgn(PaintRegion, -WindowOrg.X, -WindowOrg.Y);
+  end;
+
+  if RTLLayout then // Paint region needs to be mirrored before using it for clipping!
+  begin
+    {
+    //Method 1 - Switch Layout to LTR, Clip, Switch back to RTL
+    //Sometimes it's off by one or two pixels!!
+    SetLayout(CurDoubleBuffer.DC, LAYOUT_LTR);
+    Windows.SelectClipRgn(CurDoubleBuffer.DC, PaintRegion);
+    SetLayout(CurDoubleBuffer.DC, LAYOUT_RTL);//}
+
+    //Method 2 - Create a mirrored region based on the one we have
+    nSize := GetRegionData(PaintRegion, 0, nil);
+    RgnData := GetMem(nSize);
+    XForm.eDx:=0;   XForm.eDy:=0;
+    XForm.eM11:=-1; XForm.eM12:=0;
+    XForm.eM21:=0;  XForm.eM22:=1;
+
+    MirroredPaintRgn := ExtCreateRegion(@XForm, BytesCount, RgnData^);
+    Windows.SelectClipRgn(CurDoubleBuffer.DC, MirroredPaintRgn);
+    Windows.DeleteObject(MirroredPaintRgn);
+    Freemem(RgnData);
+  end
+  else
+    Windows.SelectClipRgn(CurDoubleBuffer.DC, PaintRegion);
+end;
+
 procedure TWindowProcHelper.SendPaintMessage(ControlDC: HDC);
 var
   DC: HDC;
-  DoubleBufferBitmapOld: HBITMAP;
-  PaintRegion: HRGN;
   PS : TPaintStruct;
-  PaintMsg: TLMPaint;
   ORect: TRect;
-  WindowOrg: Windows.POINT;
 {$ifdef DEBUG_DOUBLEBUFFER}
   ClipBox: Windows.RECT;
 {$endif}
   ParentPaintWindow: HWND;
-  WindowWidth, WindowHeight: Integer;
   DCIndex: integer;
   parLeft, parTop: integer;
   useDoubleBuffer: boolean;
   isNativeControl: boolean;
   needParentPaint: boolean;
-  BufferWasSaved: Boolean;
-  BackupBuffer: TDoubleBuffer;
-
-  RTLLayout: Boolean;
-  XFORM: TXFORM;
-  RgnData: PRgnData;
-  MirroredPaintRgn: HRGN;
-  nSize, BytesCount: DWORD;
-
-  procedure PrepareDoubleBuffer(const vDC: HDC);
-  begin
-    if CurDoubleBuffer.DC <> 0 then
-    begin
-      // we've been called from another paint handler. To prevent killing of
-      // not own DC and HBITMAP lets save then and restore on exit
-      BackupBuffer := CurDoubleBuffer;
-      FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
-      BufferWasSaved := True;
-    end
-    else
-      BufferWasSaved := False;
-    CurDoubleBuffer.DC := Windows.CreateCompatibleDC(vDC);
-
-    GetWindowSize(Window, WindowWidth, WindowHeight);
-    if (CurDoubleBuffer.BitmapWidth < WindowWidth) or (CurDoubleBuffer.BitmapHeight < WindowHeight) then
-    begin
-      if CurDoubleBuffer.Bitmap <> 0 then
-        Windows.DeleteObject(CurDoubleBuffer.Bitmap);
-      CurDoubleBuffer.BitmapWidth := WindowWidth;
-      CurDoubleBuffer.BitmapHeight := WindowHeight;
-      CurDoubleBuffer.Bitmap := Windows.CreateCompatibleBitmap(vDC, WindowWidth, WindowHeight);
-      if RTLLayout then  // change the default layout - LTR - of memory DC
-        {if (GetLayout(vDC) and LAYOUT_BITMAPORIENTATIONPRESERVED) > 0 then  // GetLayout is not in win32extra
-          SetLayout(CurDoubleBuffer.DC, LAYOUT_RTL or LAYOUT_BITMAPORIENTATIONPRESERVED)
-        else //}
-          SetLayout(CurDoubleBuffer.DC, LAYOUT_RTL);
-    end;
-    DoubleBufferBitmapOld := Windows.SelectObject(CurDoubleBuffer.DC, CurDoubleBuffer.Bitmap);
-    PaintMsg.DC := CurDoubleBuffer.DC;
-    {$ifdef MSG_DEBUG}
-      DebugLn(MessageStackDepth, ' *double buffering on DC: ', IntToHex(CurDoubleBuffer.DC, sizeof(HDC)*2));
-    {$endif}
-  end;
-
 begin
   // note: ignores the received DC
   // do not use default deliver message
@@ -616,8 +657,7 @@ begin
       if useDoubleBuffer then
       begin
         RTLLayout := (GetWindowLong(Window, GWL_EXSTYLE) and WS_EX_LAYOUTRTL) = WS_EX_LAYOUTRTL;
-        if useDoubleBuffer then
-          PrepareDoubleBuffer(DC);
+        PrepareDoubleBuffer(DC);
 {$ifdef DEBUG_DOUBLEBUFFER}
         ORect.Left := 0;
         ORect.Top := 0;
@@ -627,43 +667,7 @@ begin
 {$endif}
         PaintRegion := CreateRectRgn(0, 0, 1, 1);
         if GetRandomRgn(DC, PaintRegion, SYSRGN) = 1 then
-        begin
-          // winnt returns in screen coordinates
-          // win9x returns in window coordinates
-          if Win32Platform = VER_PLATFORM_WIN32_NT then
-          begin
-            WindowOrg.X := 0;
-            WindowOrg.Y := 0;
-            MapWindowPoints(Window, 0, WindowOrg, 1);
-            if RTLLayout then // We need the left side of the client area in screen coordinates
-              WindowOrg.X := WindowOrg.X - lWinControl.ClientWidth;
-            Windows.OffsetRgn(PaintRegion, -WindowOrg.X, -WindowOrg.Y);
-          end;
-
-          if RTLLayout then // Paint region needs to be mirrored before using it for clipping!
-          begin
-            {
-            //Method 1 - Switch Layout to LTR, Clip, Switch back to RTL
-            //Sometimes it's off by one or two pixels!!
-            SetLayout(CurDoubleBuffer.DC, LAYOUT_LTR);
-            Windows.SelectClipRgn(CurDoubleBuffer.DC, PaintRegion);
-            SetLayout(CurDoubleBuffer.DC, LAYOUT_RTL);//}
-
-            //Method 2 - Create a mirrored region based on the one we have
-            nSize := GetRegionData(PaintRegion, 0, nil);
-            RgnData := GetMem(nSize);
-            XForm.eDx:=0;   XForm.eDy:=0;
-            XForm.eM11:=-1; XForm.eM12:=0;
-            XForm.eM21:=0;  XForm.eM22:=1;
-
-            MirroredPaintRgn := ExtCreateRegion(@XForm, BytesCount, RgnData^);
-            Windows.SelectClipRgn(CurDoubleBuffer.DC, MirroredPaintRgn);
-            Windows.DeleteObject(MirroredPaintRgn);
-            Freemem(RgnData);
-          end
-          else
-            Windows.SelectClipRgn(CurDoubleBuffer.DC, PaintRegion);
-        end;
+          CalcClipRgn;
 {$ifdef DEBUG_DOUBLEBUFFER}
         Windows.GetClipBox(CurDoubleBuffer.DC, ClipBox);
         DebugLn('Double buffering in DC ', IntToHex(CurDoubleBuffer.DC, sizeof(HDC)*2),
@@ -2520,7 +2524,6 @@ begin
 
   if WinProcess then
   begin
-
     if (Msg=WM_CHAR) and ((WParam=VK_RETURN) or (WPARAM=VK_ESCAPE)) and
        ((lWinControl is TCustomCombobox) or
         ((lWinControl is TCustomEdit) and not (lWinControl is TCustomMemo ))
@@ -2574,10 +2577,8 @@ begin
 
   // ignore WM_(SYS)CHAR message if LCL handled WM_(SYS)KEYDOWN
   if ((Msg = WM_KEYDOWN) or (Msg = WM_SYSKEYDOWN)) then
-  begin
     if (PLMsg^.Result = 0) then
       IgnoreNextCharWindow := 0;
-  end;
 
   { LMInsertText has no Result field }
 
@@ -2790,3 +2791,4 @@ end;
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$ENDIF}
+
