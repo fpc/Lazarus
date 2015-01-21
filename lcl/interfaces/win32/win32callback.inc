@@ -250,13 +250,9 @@ begin
   for i:= 0 to c - 1 do
   begin
     sub := GetSubMenu(AParent, i);
-    if sub = ASearch
-    then begin
-      Result := AParent;
-      Exit;
-    end;
-
-    Result := GetMenuParent(ASearch, sub);
+    if sub = ASearch then
+      Exit(AParent);
+    Result := GetMenuParent(ASearch, sub);     // Recursive call
     if Result <> 0 then Exit;
   end;
   Result := 0;
@@ -326,26 +322,9 @@ begin
       else
         EnableWindow(ChildControl.Handle, false);
 
-      EnableChildWindows(ChildControl, Enable);
+      EnableChildWindows(ChildControl, Enable);   // Recursive call
     end;
   end;
-end;
-
-// Gets the cursor position relative to a given window
-function GetClientCursorPos(ClientWindow: HWND) : TSmallPoint;
-var
-  P: TPoint;
-begin
-  Windows.GetCursorPos(P);
-  //if the mouse is not over the window is better to set to 0 to avoid weird behaviors
-  if Windows.WindowFromPoint(P) = ClientWindow then
-    Windows.ScreenToClient(ClientWindow, P)
-  else
-  begin
-    P.X:=0;
-    P.Y:=0;
-  end;
-  Result := PointToSmallPoint(P);
 end;
 
 // A helper class for WindowProc to make it easier to split code into smaller pieces.
