@@ -421,6 +421,7 @@ type
     function HandleUnicodeChar(var AChar: Word): boolean;
     procedure UpdateDrawItems;
     procedure UpdateDrawListItem(aMsg: UInt);
+    procedure UpdateLMMovePos(X, Y: Smallint);
     procedure UpdateUIState(CharCode: Word);
     function DoWindowProc: LResult;    // Called from the actual WindowProc.
   end;
@@ -1839,6 +1840,12 @@ begin
   end;
 end;
 
+procedure TWindowProcHelper.UpdateLMMovePos(X, Y: Smallint);
+begin
+  LMMove.XPos := X;
+  LMMove.YPos := Y;
+end;
+
 function TWindowProcHelper.DoMsgMove: Boolean;
 var
   NewLeft, NewTop: integer;
@@ -1846,46 +1853,36 @@ var
   R: TRect;
 begin
   PLMsg := @LMMove;
-  with LMMove Do
+  LMMove.Msg := LM_MOVE;
+  // MoveType := WParam;   WParam is not defined!
+  LMMove.MoveType := Move_SourceIsInterface;
+  if GetWindowLong(Window, GWL_STYLE) and WS_CHILD = 0 then
   begin
-    Msg := LM_MOVE;
-    // MoveType := WParam;   WParam is not defined!
-    MoveType := Move_SourceIsInterface;
-    if GetWindowLong(Window, GWL_STYLE) and WS_CHILD = 0 then
-    begin
-      WindowPlacement.length := SizeOf(WindowPlacement);
-      if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
-      begin
-        XPos := WindowPlacement.rcNormalPosition.Left;
-        YPos := WindowPlacement.rcNormalPosition.Top;
-      end
-      else
-      if Windows.GetWindowRect(Window, @R) then
-      begin
-        XPos := R.Left;
-        YPos := R.Top;
-      end
-      else
-        Msg := LM_NULL;
-    end else
-    begin
-      if GetWindowRelativePosition(Window, NewLeft, NewTop) then
-      begin
-        XPos := NewLeft;
-        YPos := NewTop;
-      end
-      else
-        Msg := LM_NULL;
-    end;
-    if lWinControl <> nil then
-    begin
-      {$IFDEF VerboseSizeMsg}
+    WindowPlacement.length := SizeOf(WindowPlacement);
+    if IsIconic(Window) and GetWindowPlacement(Window, @WindowPlacement) then
+      UpdateLMMovePos(WindowPlacement.rcNormalPosition.Left,
+                      WindowPlacement.rcNormalPosition.Top)
+    else if Windows.GetWindowRect(Window, @R) then
+      UpdateLMMovePos(R.Left, R.Top)
+    else
+      LMMove.Msg := LM_NULL;
+  end else
+  begin
+    if GetWindowRelativePosition(Window, NewLeft, NewTop) then
+      UpdateLMMovePos(NewLeft, NewTop)
+    else
+      LMMove.Msg := LM_NULL;
+  end;
+  if lWinControl <> nil then
+  begin
+    {$IFDEF VerboseSizeMsg}
+  with LMMove Do begin
       DebugLn('Win32CallBack WM_MOVE ', dbgsName(lWinControl),
         ' NewPos=',dbgs(XPos),',',dbgs(YPos));
+  end;
       {$ENDIF}
-      if (lWinControl.Left = XPos) and (lWinControl.Top = YPos) then
-        Exit(True);
-    end;
+    if (lWinControl.Left = LMMove.XPos) and (lWinControl.Top = LMMove.YPos) then
+      Exit(True);
   end;
   Result := False;
 end;
