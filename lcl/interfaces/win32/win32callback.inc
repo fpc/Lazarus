@@ -416,6 +416,7 @@ type
     procedure DoMsgNCLButtonDown;
     function DoMsgNotify(var WinResult: LResult): Boolean;
     procedure DoMsgShowWindow;
+    procedure DoMsgSysKey(aMsg: Cardinal);
     function GetPopMenuItemObject: TObject;
     function GetMenuItemObject(ByPosition: Boolean): TObject;
     procedure SendPaintMessage(ControlDC: HDC);
@@ -1783,6 +1784,19 @@ begin
   end;
 end;
 
+procedure TWindowProcHelper.DoMsgSysKey(aMsg: Cardinal);
+begin
+  NotifyUserInput := True;
+  PLMsg := @LMKey;
+  with LMKey Do
+  begin
+    Msg := aMsg;
+    KeyData := LParam;
+    CharCode := Word(WParam);
+  end;
+  WinProcess := false;
+end;
+
 // This is called from the actual WindowProc.
 
 function TWindowProcHelper.DoWindowProc: LResult;
@@ -2142,14 +2156,14 @@ begin
     WM_SHOWWINDOW: DoMsgShowWindow;
     WM_SYSCHAR:
     begin
-      PLMsg:=@LMChar;
+      PLMsg := @LMChar;
       with LMChar Do
       begin
         Msg := CN_SYSCHAR;
         KeyData := LParam;
         CharCode := Word(WParam);
-        Result := 0;
       end;
+      Result := 0;
       WinProcess := false;
     end;
     WM_SYSCOMMAND:
@@ -2163,31 +2177,15 @@ begin
     end;
     WM_SYSKEYDOWN:
     begin
-      NotifyUserInput := True;
       UpdateUIState(Word(WParam));
-      PLMsg := @LMKey;
-      with LMKey Do
-      begin
-        Msg := CN_SYSKEYDOWN;
-        KeyData := LParam;
-        CharCode := Word(WParam);
-        Result := 0;
-      end;
-      WinProcess := false;
+      DoMsgSysKey(CN_SYSKEYDOWN);
+      Result := 0;
       IgnoreNextCharWindow := Window;
     end;
     WM_SYSKEYUP:
     begin
-      NotifyUserInput := True;
-      PLMsg:=@LMKey;
-      with LMKey Do
-      begin
-        Msg := CN_SYSKEYUP;
-        KeyData := LParam;
-        CharCode := Word(WParam);
-        Result := 0;
-      end;
-      WinProcess := false;
+      DoMsgSysKey(CN_SYSKEYUP);
+      Result := 0;
     end;
     WM_TIMER:
     begin
