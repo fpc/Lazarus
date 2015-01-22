@@ -111,6 +111,16 @@ begin
   RB6.Caption := sDesOptionsFormPix;
   RB7.Caption := sDesOptionsFormmm;
   RB8.Caption := sDesOptionsFormInch;
+  TabSheet1.Caption := sEditor;
+  GroupBox6.Caption := sMemoEditor;
+  RadioButton1.Caption := sUseMemoFontSettings;
+  RadioButton2.Caption := sUseFixedFontSettings;
+  Label1.Caption := sFRDesignerFormFontName;
+  Label2.Caption := sFRDesignerFormFontSize;
+  GroupBox7.Caption := sScriptEditor;
+  Label3.Caption := sFRDesignerFormFontName;
+  Label4.Caption := sFRDesignerFormFontSize;
+  CheckBox1.Caption := sUseSyntaxHighlight;
   FillFonst;
   RadioButton1Change(nil);
 end;

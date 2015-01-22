@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, LR_Class, EditBtn, Buttons, ButtonPanel;
+  ExtCtrls, LR_Class, LR_Const, EditBtn, Buttons, ButtonPanel;
 
 type
 
@@ -28,6 +28,7 @@ type
     Label5: TLabel;
     Panel1: TPanel;
     procedure BitBtn5Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     FParCount:integer;
     FD:TfrFunctionDescription;
@@ -60,6 +61,15 @@ begin
   finally
     EF.Free;
   end;
+end;
+
+procedure TLR_FunctEditor1Form.FormCreate(Sender: TObject);
+begin
+  Caption:=sFunctionEditor;
+  GroupBox1.Caption:=sArguments;
+  Label3.Caption:=sArgument1;
+  Label4.Caption:=sArgument2;
+  Label5.Caption:=sArgument3;
 end;
 
 
