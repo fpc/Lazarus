@@ -773,10 +773,10 @@ begin
   writeln('                 ToDo: check more than last 500 changes.');
   writeln('--ignore-recent=<minutes> : do not download again files younger than this on disk.');
   writeln('                        combine with --recent. Default: ',IgnoreFilesYoungerThanMin);
-  writeln('--shownotusedpages    : show not used files in the output directory.');
-  writeln('--deletenotusedpages  : delete the files in the output directory that are not used.');
-  writeln('--shownotusedimages   : show not used files in the images directory.');
-  writeln('--deletenotusedimages : delete the files in the images directory that are not used.');
+  writeln('--shownotusedpages    : show files in the output directory which are not used by the wiki.');
+  writeln('--deletenotusedpages  : delete the files in the output directory which are not used by the wiki.');
+  writeln('--shownotusedimages   : show files in the images directory, which are not used by the wiki.');
+  writeln('--deletenotusedimages : delete the files in the images directory, which are not used by the wiki.');
   writeln('--nowrite             : do not write files, just print what would be written.');
   writeln;
   writeln('Example: download one page');
