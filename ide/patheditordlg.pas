@@ -515,7 +515,7 @@ end;
 procedure TPathEditorDialog.PathListBoxKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (ssCtrl in shift ) and ((Key = VK_UP) or (Key = VK_DOWN)) then begin
+  if (ssCtrl in shift) and ((Key = VK_UP) or (Key = VK_DOWN)) then begin
     if Key = VK_UP then
       MoveUpButtonClick(Nil)
     else
@@ -553,9 +553,15 @@ begin
 end;
 
 procedure TPathEditorDialog.SetTemplates(const AValue: string);
+var
+  NewVis: Boolean;
 begin
-  TemplatesListBox.Items.Text:=PathToText(AValue);
-  TemplateGroupBox.Visible:=TemplatesListBox.Count>0;
+  TemplatesListBox.Items.Text := PathToText(AValue);
+  NewVis := TemplatesListBox.Count > 0;
+  if NewVis = TemplateGroupBox.Visible then Exit;
+  TemplateGroupBox.Visible := NewVis;
+  if NewVis then
+    TemplateGroupBox.Top:=0;
 end;
 
 procedure TPathEditorDialog.UpdateButtons;
