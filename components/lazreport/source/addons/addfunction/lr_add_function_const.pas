@@ -9,7 +9,7 @@ uses
 
 resourcestring
   SDescriptionISWORDPRESENT = 'ISWORDPRESENT(<Word>,<String>,<Delimiters>)/'+
-    'Determines is word <Word> present in the string <String>.'+
+    'Determines if word <Word> is present in the string <String>.'+
     '<Delimiters> is the list of word delimiters.';
 
   SDescriptionWORDPOSITION = 'WORDPOSITION(<WordNo>,<String>,<Delimiters>)/'+

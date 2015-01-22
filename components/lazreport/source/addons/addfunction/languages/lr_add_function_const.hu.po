@@ -1,4 +1,3 @@
-#
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -109,7 +108,9 @@ msgid "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Returns True if <Number3> is be
 msgstr "ISRANGENUM(<Szám1>, <Szám2>, <Szám3>)/Igaz értéket ad vissza ha a <Szám3> a <Szám1> és a <Number2> közé esik."
 
 #: lr_add_function_const.sdescriptioniswordpresent
-msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines is word <Word> present in the string <String>.<Delimiters> is the list of word delimiters."
+#, fuzzy
+#| msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines is word <Word> present in the string <String>.<Delimiters> is the list of word delimiters."
+msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines if word <Word> is present in the string <String>.<Delimiters> is the list of word delimiters."
 msgstr "ISWORDPRESENT(<Szó>, <Karakterlánc>, <Elválasztó>)/Ellenőrzzi, hogy a <Szó> előfordul-e a <Karakterlánc>-ban. A szavakat az <Elválasztó> választja el."
 
 #: lr_add_function_const.sdescriptionlastdayofprevmonth
@@ -215,3 +216,4 @@ msgstr "Egyéb"
 #: lr_add_function_const.sstringcategory
 msgid "String"
 msgstr "Karakterlánc"
+
