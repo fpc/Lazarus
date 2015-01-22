@@ -23,6 +23,22 @@ msgstr "Összesítés"
 msgid "All files"
 msgstr "Minden fájl"
 
+#: lr_const.sargument1
+msgid "Argument 1"
+msgstr ""
+
+#: lr_const.sargument2
+msgid "Argument 2"
+msgstr ""
+
+#: lr_const.sargument3
+msgid "Argument 3"
+msgstr ""
+
+#: lr_const.sarguments
+msgid "Arguments"
+msgstr ""
+
 #: lr_const.sautosize
 msgid "Auto size"
 msgstr "Automatikus méretezés"
@@ -569,6 +585,10 @@ msgstr "Változat"
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
 msgstr "Egy \"%s\" nevű objektum már létezik"
+
+#: lr_const.seditor
+msgid "Editor"
+msgstr ""
 
 #: lr_const.seditorformbig
 msgid "&Big font"
@@ -1310,6 +1330,10 @@ msgstr "innen:"
 msgid "FR variables"
 msgstr "FR változók"
 
+#: lr_const.sfunctioneditor
+msgid "Function editor"
+msgstr ""
+
 #: lr_const.sfunctions
 msgid "Functions"
 msgstr "Függvények"
@@ -1502,6 +1526,10 @@ msgstr "LazReport sablon"
 #: lr_const.smathcategory
 msgid "Math"
 msgstr "Matematika"
+
+#: lr_const.smemoeditor
+msgid "Memo editor"
+msgstr ""
 
 #: lr_const.smm
 msgid "MM"
@@ -2350,6 +2378,10 @@ msgstr "Formázott szövegfájl"
 msgid "Save changes"
 msgstr "Változások mentése"
 
+#: lr_const.sscripteditor
+msgid "Script editor"
+msgstr ""
+
 #: lr_const.sshape1
 msgctxt "lr_const.sshape1"
 msgid "Rectangle"
@@ -2457,6 +2489,18 @@ msgstr "A jelentés változata nem olvasható"
 msgid "Untitled"
 msgstr "Névtelen"
 
+#: lr_const.susefixedfontsettings
+msgid "Use fixed font settings"
+msgstr ""
+
+#: lr_const.susememofontsettings
+msgid "Use Memo font settings"
+msgstr ""
+
+#: lr_const.susesyntaxhighlight
+msgid "Use syntax highlight"
+msgstr ""
+
 #: lr_const.svar1
 msgid "Page#"
 msgstr "Oldal#"
@@ -2552,3 +2596,4 @@ msgstr "Sortörés"
 #: lr_const.syes
 msgid "Yes"
 msgstr "Igen"
+

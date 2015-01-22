@@ -803,6 +803,17 @@ resourcestring
 
   sInsertExpression = 'Insert Expression';
   sFunctions = 'Functions';
+  sArguments = 'Arguments';
+  sFunctionEditor = 'Function editor';
+  sArgument1 = 'Argument 1';
+  sArgument2 = 'Argument 2';
+  sArgument3 = 'Argument 3';
+  sEditor = 'Editor';
+  sMemoEditor = 'Memo editor';
+  sUseMemoFontSettings = 'Use Memo font settings';
+  sUseFixedFontSettings = 'Use fixed font settings';
+  sScriptEditor = 'Script editor';
+  sUseSyntaxHighlight = 'Use syntax highlight';
 
 const
   frRes = 53000;

@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-11-21 03:46+0300\n"
+"PO-Revision-Date: 2015-01-23 00:22+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 
@@ -20,6 +20,22 @@ msgstr "Агрегатные"
 #: lr_const.sallfiles
 msgid "All files"
 msgstr "Все файлы"
+
+#: lr_const.sargument1
+msgid "Argument 1"
+msgstr "Аргумент 1"
+
+#: lr_const.sargument2
+msgid "Argument 2"
+msgstr "Аргумент 2"
+
+#: lr_const.sargument3
+msgid "Argument 3"
+msgstr "Аргумент 3"
+
+#: lr_const.sarguments
+msgid "Arguments"
+msgstr "Аргументы"
 
 #: lr_const.sautosize
 msgid "Auto size"
@@ -577,6 +593,10 @@ msgstr "Версия"
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
 msgstr "Объект с именем \"%s\" уже существует"
+
+#: lr_const.seditor
+msgid "Editor"
+msgstr "Редактор"
 
 #: lr_const.seditorformbig
 msgid "&Big font"
@@ -1331,6 +1351,10 @@ msgstr "из"
 msgid "FR variables"
 msgstr "Переменные FR"
 
+#: lr_const.sfunctioneditor
+msgid "Function editor"
+msgstr "Редактор функции"
+
 #: lr_const.sfunctions
 msgid "Functions"
 msgstr "Функции"
@@ -1527,6 +1551,10 @@ msgstr "Шаблон LazReport"
 #: lr_const.smathcategory
 msgid "Math"
 msgstr "Математические"
+
+#: lr_const.smemoeditor
+msgid "Memo editor"
+msgstr "Редактор блока текста"
 
 #: lr_const.smm
 msgid "MM"
@@ -2381,6 +2409,10 @@ msgstr "Файл Rich Text"
 msgid "Save changes"
 msgstr "Сохранить изменения"
 
+#: lr_const.sscripteditor
+msgid "Script editor"
+msgstr "Редактор сценария"
+
 #: lr_const.sshape1
 msgctxt "lr_const.sshape1"
 msgid "Rectangle"
@@ -2487,6 +2519,18 @@ msgstr "Невозможно прочитать версию отчёта"
 #: lr_const.suntitled
 msgid "Untitled"
 msgstr "Безымянный"
+
+#: lr_const.susefixedfontsettings
+msgid "Use fixed font settings"
+msgstr "Применять пользовательские параметры шрифта"
+
+#: lr_const.susememofontsettings
+msgid "Use Memo font settings"
+msgstr "Применять параметры шрифта блока текста"
+
+#: lr_const.susesyntaxhighlight
+msgid "Use syntax highlight"
+msgstr "Включить подсветку синтаксиса"
 
 #: lr_const.svar1
 msgid "Page#"

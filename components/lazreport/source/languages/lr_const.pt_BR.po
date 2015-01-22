@@ -22,6 +22,22 @@ msgstr "Agregado"
 msgid "All files"
 msgstr "Todos os Arquivos"
 
+#: lr_const.sargument1
+msgid "Argument 1"
+msgstr ""
+
+#: lr_const.sargument2
+msgid "Argument 2"
+msgstr ""
+
+#: lr_const.sargument3
+msgid "Argument 3"
+msgstr ""
+
+#: lr_const.sarguments
+msgid "Arguments"
+msgstr ""
+
 #: lr_const.sautosize
 msgid "Auto size"
 msgstr "Auto dimensionar"
@@ -580,6 +596,10 @@ msgstr "Versão"
 #: lr_const.sduplicatedobjectname
 msgid "An object named \"%s\" already exists"
 msgstr "Um objeto chamado \"%s\" já existe"
+
+#: lr_const.seditor
+msgid "Editor"
+msgstr ""
 
 #: lr_const.seditorformbig
 msgid "&Big font"
@@ -1335,6 +1355,10 @@ msgstr "de"
 msgid "FR variables"
 msgstr "FR variáveis"
 
+#: lr_const.sfunctioneditor
+msgid "Function editor"
+msgstr ""
+
 #: lr_const.sfunctions
 msgid "Functions"
 msgstr ""
@@ -1532,6 +1556,10 @@ msgstr "Modelo LazReport"
 #: lr_const.smathcategory
 msgid "Math"
 msgstr "Aritmética"
+
+#: lr_const.smemoeditor
+msgid "Memo editor"
+msgstr ""
 
 #: lr_const.smm
 msgid "MM"
@@ -2391,6 +2419,10 @@ msgstr "Arquivo Rich Text"
 msgid "Save changes"
 msgstr "Salvar alterações"
 
+#: lr_const.sscripteditor
+msgid "Script editor"
+msgstr ""
+
 #: lr_const.sshape1
 msgctxt "lr_const.sshape1"
 msgid "Rectangle"
@@ -2497,6 +2529,18 @@ msgstr ""
 #: lr_const.suntitled
 msgid "Untitled"
 msgstr "Sem título"
+
+#: lr_const.susefixedfontsettings
+msgid "Use fixed font settings"
+msgstr ""
+
+#: lr_const.susememofontsettings
+msgid "Use Memo font settings"
+msgstr ""
+
+#: lr_const.susesyntaxhighlight
+msgid "Use syntax highlight"
+msgstr ""
 
 #: lr_const.svar1
 msgid "Page#"

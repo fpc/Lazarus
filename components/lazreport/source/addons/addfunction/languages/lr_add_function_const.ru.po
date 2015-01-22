@@ -106,7 +106,7 @@ msgid "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Returns True if <Number3> is be
 msgstr "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Возвращает True, если число <Number3> находится между числами <Number1> и <Number2>."
 
 #: lr_add_function_const.sdescriptioniswordpresent
-msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines is word <Word> present in the string <String>.<Delimiters> is the list of word delimiters."
+msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines if word <Word> is present in the string <String>.<Delimiters> is the list of word delimiters."
 msgstr "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Определяет, имеется ли слово <Word> в строке <String>. <Delimiters> содержит список разделителей слов."
 
 #: lr_add_function_const.sdescriptionlastdayofprevmonth

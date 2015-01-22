@@ -98,7 +98,7 @@ msgid "ISRANGENUM(<Number1>,<Number2>,<Number3>)/Returns True if <Number3> is be
 msgstr ""
 
 #: lr_add_function_const.sdescriptioniswordpresent
-msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines is word <Word> present in the string <String>.<Delimiters> is the list of word delimiters."
+msgid "ISWORDPRESENT(<Word>,<String>,<Delimiters>)/Determines if word <Word> is present in the string <String>.<Delimiters> is the list of word delimiters."
 msgstr ""
 
 #: lr_add_function_const.sdescriptionlastdayofprevmonth
