@@ -184,10 +184,10 @@ begin
   FLazPackage := (AOptions as TPackageIDEOptions).Package;
   with FLazPackage.UsageOptions do
   begin
-    UnitPathEdit.Text := UnitPath;
-    IncludePathEdit.Text := IncludePath;
-    ObjectPathEdit.Text := ObjectPath;
-    LibraryPathEdit.Text := LibraryPath;
+    SetPathTextAndHint(UnitPath, UnitPathEdit);
+    SetPathTextAndHint(IncludePath, IncludePathEdit);
+    SetPathTextAndHint(ObjectPath, ObjectPathEdit);
+    SetPathTextAndHint(LibraryPath, LibraryPathEdit);
     LinkerOptionsMemo.Text := LinkerOptions;
     CustomOptionsMemo.Text := CustomOptions;
   end;

@@ -512,7 +512,6 @@ begin
     OnExecuted := @PathEditBtnExecuted;
   end;
   OtherUnitsEdit.AnchorToNeighbour(akRight, 0, OtherUnitsPathEditBtn);
-  OtherUnitsEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
@@ -536,7 +535,6 @@ begin
     OnExecuted := @PathEditBtnExecuted;
   end;
   IncludeFilesEdit.AnchorToNeighbour(akRight, 0, IncludeFilesPathEditBtn);
-  IncludeFilesEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
@@ -563,7 +561,6 @@ begin
     OnExecuted := @PathEditBtnExecuted;
   end;
   OtherSourcesEdit.AnchorToNeighbour(akRight, 0, OtherSourcesPathEditBtn);
-  OtherSourcesEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
@@ -587,7 +584,6 @@ begin
     OnExecuted := @PathEditBtnExecuted;
   end;
   LibrariesEdit.AnchorToNeighbour(akRight, 0, LibrariesPathEditBtn);
-  LibrariesEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
@@ -607,9 +603,6 @@ begin
     OnClick := @FileBrowseBtnClick;
   end;
   UnitOutputDirEdit.AnchorToNeighbour(akRight, 0, btnUnitOutputDir);
-  UnitOutputDirEdit.Hint := lisDelimiterIsSemicolon;
-
-  ProjTargetFileEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
@@ -635,7 +628,6 @@ begin
     OnExecuted := @PathEditBtnExecuted;
   end;
   DebugPathEdit.AnchorToNeighbour(akRight, 0, DebugPathEditBtn);
-  DebugPathEdit.Hint := lisDelimiterIsSemicolon;
 
   {------------------------------------------------------------}
 
@@ -694,12 +686,12 @@ begin
     ProjTargetApplyConventionsCheckBox.Visible:=false;
   end;
 
-  OtherUnitsEdit.Text := FCompilerOpts.OtherUnitFiles;
-  IncludeFilesEdit.Text := FCompilerOpts.IncludePath;
-  LibrariesEdit.Text := FCompilerOpts.Libraries;
-  OtherSourcesEdit.Text := FCompilerOpts.SrcPath;
+  SetPathTextAndHint(FCompilerOpts.OtherUnitFiles, OtherUnitsEdit);
+  SetPathTextAndHint(FCompilerOpts.IncludePath, IncludeFilesEdit);
+  SetPathTextAndHint(FCompilerOpts.Libraries, LibrariesEdit);
+  SetPathTextAndHint(FCompilerOpts.SrcPath, OtherSourcesEdit);
   UnitOutputDirEdit.Text := FCompilerOpts.UnitOutputDirectory;
-  DebugPathEdit.Text := FCompilerOpts.DebugPath;
+  SetPathTextAndHint(FCompilerOpts.DebugPath, DebugPathEdit);
 
   chkUseAsDefault.Visible := FCompilerOpts.CanBeDefaulForProject;
 end;

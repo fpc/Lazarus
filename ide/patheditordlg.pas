@@ -82,7 +82,6 @@ type
     FEffectiveBaseDirectory: string;
     function GetPath: string;
     function GetTemplates: string;
-    function PathToText(const APath: string): string;
     function BaseRelative(const APath: string): String;
     function PathAsAbsolute(const APath: string): String;
     function PathMayExist(APath: string): TObject;
@@ -90,7 +89,6 @@ type
     procedure SetBaseDirectory(const AValue: string);
     procedure SetPath(const AValue: string);
     procedure SetTemplates(const AValue: string);
-    function TextToPath(const AText: string): string;
     procedure UpdateButtons;
     procedure WriteHelper(Paths: TStringList);
   public
@@ -123,6 +121,7 @@ type
   end;
 
 function PathEditorDialog: TPathEditorDialog;
+procedure SetPathTextAndHint(aPath: String; aEdit: TCustomEdit);
 
 
 implementation
@@ -136,6 +135,71 @@ begin
   if PathEditor=nil then
     PathEditor:=TPathEditorDialog.Create(Application);
   Result:=PathEditor;
+end;
+
+function TextToPath(const AText: string): string;
+var
+  i, j: integer;
+begin
+  Result:=AText;
+  // convert all line ends to semicolons, remove empty paths and trailing spaces
+  i:=1;
+  j:=1;
+  while i<=length(AText) do begin
+    if AText[i] in [#10,#13] then begin
+      // new line -> new path
+      inc(i);
+      if (i<=length(AText)) and (AText[i] in [#10,#13])
+      and (AText[i]<>AText[i-1]) then
+        inc(i);
+      // skip spaces at end of path
+      while (j>1) and (Result[j-1]=' ') do
+        dec(j);
+      // skip empty paths
+      if (j=1) or (Result[j-1]<>';') then begin
+        Result[j]:=';';
+        inc(j);
+      end;
+    end else if ord(AText[i])<32 then begin
+      // skip trailing spaces
+      inc(i)
+    end else if AText[i]=' ' then begin
+      // space -> skip spaces at beginning of path
+      if (j>1) and (Result[j-1]<>';') then begin
+        Result[j]:=AText[i];
+        inc(j);
+      end;
+      inc(i);
+    end else begin
+      // path char -> just copy
+      Result[j]:=AText[i];
+      inc(j);
+      inc(i);
+    end;
+  end;
+  if (j>1) and (Result[j-1]=';') then dec(j);
+  SetLength(Result,j-1);
+end;
+
+function PathToText(const APath: string): string;
+var
+  i: integer;
+begin
+  Result:='';
+  for i:=1 to length(APath) do
+    if APath[i]=';' then
+      Result:=Result+LineEnding
+    else
+      Result:=Result+APath[i];
+end;
+
+procedure SetPathTextAndHint(aPath: String; aEdit: TCustomEdit);
+begin
+  aEdit.Text := aPath;
+  if Pos(';', aPath) > 0 then        // Zero or one separate paths.
+    aEdit.Hint := PathToText(aPath)
+  else
+    aEdit.Hint := lisDelimiterIsSemicolon;
 end;
 
 { TPathEditorDialog }
@@ -494,64 +558,6 @@ begin
   TemplateGroupBox.Visible:=TemplatesListBox.Count>0;
 end;
 
-function TPathEditorDialog.TextToPath(const AText: string): string;
-var
-  i, j: integer;
-  PathAsText: string;
-begin
-  PathAsText:=AText;
-  Result:=PathAsText;
-  // convert all line ends to semicolons, remove empty paths and trailing spaces
-  i:=1;
-  j:=1;
-  while i<=length(PathAsText) do begin
-    if PathAsText[i] in [#10,#13] then begin
-      // new line -> new path
-      inc(i);
-      if (i<=length(PathAsText)) and (PathAsText[i] in [#10,#13])
-      and (PathAsText[i]<>PathAsText[i-1]) then
-        inc(i);
-      // skip spaces at end of path
-      while (j>1) and (Result[j-1]=' ') do
-        dec(j);
-      // skip empty paths
-      if (j=1) or (Result[j-1]<>';') then begin
-        Result[j]:=';';
-        inc(j);
-      end;
-    end else if ord(PathAsText[i])<32 then begin
-      // skip trailing spaces
-      inc(i)
-    end else if PathAsText[i]=' ' then begin
-      // space -> skip spaces at beginning of path
-      if (j>1) and (Result[j-1]<>';') then begin
-        Result[j]:=PathAsText[i];
-        inc(j);
-      end;
-      inc(i);
-    end else begin
-      // path char -> just copy
-      Result[j]:=PathAsText[i];
-      inc(j);
-      inc(i);
-    end;
-  end;
-  if (j>1) and (Result[j-1]=';') then dec(j);
-  SetLength(Result,j-1);
-end;
-
-function TPathEditorDialog.PathToText(const APath: string): string;
-var
-  i: integer;
-  NewPath: string;
-begin
-  NewPath:=APath;
-  for i:=1 to length(NewPath) do
-    if NewPath[i]=';' then
-      NewPath[i]:=#13;
-  Result:=NewPath;
-end;
-
 procedure TPathEditorDialog.UpdateButtons;
 var
   i: integer;
@@ -614,7 +620,7 @@ begin
     Ok := OnExecuted(ContextCaption, NewPath);
   // Assign value only if old <> new and OnExecuted allows it.
   if Ok then
-    AssociatedEdit.Text := NewPath;
+    SetPathTextAndHint(NewPath, AssociatedEdit);
 end;
 
 end.

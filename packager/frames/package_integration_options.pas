@@ -168,7 +168,8 @@ begin
   FPDocPackageNameLabel.Caption := lisPckPackage;
   FPDocPackageNameEdit.Hint := lisPckClearToUseThePackageName;
   FPDocSearchPathsLabel.Caption := lisPathEditSearchPaths;
-  FPDocSearchPathsEdit.Hint := lisPckSearchPathsForFpdocXmlFilesMultiplePathsMustBeSepa;
+  // ToDo: remove the resource string later.
+  //FPDocSearchPathsEdit.Hint := lisPckSearchPathsForFpdocXmlFilesMultiplePathsMustBeSepa;
 
   FPDocPathButton := TPathEditorButton.Create(Self);
   with FPDocPathButton do
@@ -198,7 +199,7 @@ begin
     else
       UpdateRadioGroup.ItemIndex := 2;
   end;
-  FPDocSearchPathsEdit.Text:=FLazPackage.FPDocPaths;
+  SetPathTextAndHint(FLazPackage.FPDocPaths, FPDocSearchPathsEdit);
   if FLazPackage.FPDocPackageName='' then
     FPDocPackageNameEdit.Text:=lisDefaultPlaceholder
   else
