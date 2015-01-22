@@ -9049,10 +9049,12 @@ msgid "ID"
 msgstr ""
 
 #: lazarusidestrconsts.lisidcadd
+msgctxt "lazarusidestrconsts.lisidcadd"
 msgid "Add"
 msgstr "Lisää"
 
 #: lazarusidestrconsts.lisidcopen
+msgctxt "lazarusidestrconsts.lisidcopen"
 msgid "Open"
 msgstr "Avaa"
 
@@ -12426,6 +12428,7 @@ msgid "On paste from clipboard"
 msgstr "Liitettäessä leikepöydältä"
 
 #: lazarusidestrconsts.lisopen
+msgctxt "lazarusidestrconsts.lisopen"
 msgid "Open"
 msgstr "Avaa"
 
