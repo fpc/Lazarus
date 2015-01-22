@@ -46,8 +46,6 @@ type
     btnLoadSave: TBitBtn;
     btnExport: TBitBtn;
     chkUseAsDefault: TCheckBox;
-    function CheckSearchPath(const Context, ExpandedPath: string;
-      Level: TCheckCompileOptionsMsgLvl): boolean;
     function CheckSrcPathInUnitPath(OldParsedSrcPath, NewParsedSrcPath,
       OldParsedUnitPath, NewParsedUnitPath: string;
       out SrcPathChanged: boolean): boolean;
@@ -74,6 +72,70 @@ type
 implementation
 
 {$R *.lfm}
+
+function CheckSearchPath(const Context, ExpandedPath: string; Level: TCheckCompileOptionsMsgLvl): boolean;
+var
+  CurPath: string;
+  p: integer;
+  HasChars: TCCOSpecialChars;
+  ErrorMsg: string;
+begin
+  Result := False;
+
+  // check for *
+  if Ord(Level) <= Ord(ccomlHints) then
+  begin
+    if System.Pos('*', ExpandedPath) > 0 then
+    begin
+      if IDEMessageDialog(lisHint, Format(
+        lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh, [Context, LineEnding]),
+        mtWarning, [mbOK, mbCancel]) <> mrOk then
+        exit;
+    end;
+  end;
+
+  // check for non existing directories
+  if Ord(Level) <= Ord(ccomlWarning) then
+  begin
+    p := 1;
+    repeat
+      //DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
+      CurPath := GetNextDirectoryInSearchPath(ExpandedPath, p);
+      if (CurPath <> '') and (not IDEMacros.StrHasMacros(CurPath)) and
+        (FilenameIsAbsolute(CurPath)) then
+      begin
+        if not DirPathExistsCached(CurPath) then
+        begin
+          if IDEMessageDialog(lisCCOWarningCaption, Format(
+            lisTheContainsANotExistingDirectory, [Context, LineEnding, CurPath]),
+            mtWarning, [mbIgnore, mbCancel]) <> mrIgnore then
+            Exit;
+        end;
+      end;
+    until p > length(ExpandedPath);
+  end;
+
+  // check for special characters
+  if (not IDEMacros.StrHasMacros(ExpandedPath)) then
+  begin
+    FindSpecialCharsInPath(ExpandedPath, HasChars);
+    if Ord(Level) <= Ord(ccomlWarning) then
+    begin
+      if Ord(Level) >= Ord(ccomlErrors) then
+        ErrorMsg := SpecialCharsToStr(HasChars * [ccoscSpecialChars, ccoscNewLine])
+      else
+        ErrorMsg := SpecialCharsToStr(HasChars);
+      if ErrorMsg <> '' then
+      begin
+        if IDEMessageDialog(lisCCOWarningCaption, Context + LineEnding + ErrorMsg,
+          mtWarning, [mbOK, mbCancel]) <> mrOk then
+          exit;
+      end;
+    end;
+  end;
+
+  Result := True;
+end;
 
 { TCompilerPathOptionsFrame }
 
@@ -285,71 +347,6 @@ begin
   UpdateTargetFileLabel;
 end;
 
-function TCompilerPathOptionsFrame.CheckSearchPath(const Context, ExpandedPath: string;
-  Level: TCheckCompileOptionsMsgLvl): boolean;
-var
-  CurPath: string;
-  p: integer;
-  HasChars: TCCOSpecialChars;
-  ErrorMsg: string;
-begin
-  Result := False;
-
-  // check for *
-  if Ord(Level) <= Ord(ccomlHints) then
-  begin
-    if System.Pos('*', ExpandedPath) > 0 then
-    begin
-      if IDEMessageDialog(lisHint, Format(
-        lisTheContainsAStarCharacterLazarusUsesThisAsNormalCh, [Context, LineEnding]),
-        mtWarning, [mbOK, mbCancel]) <> mrOk then
-        exit;
-    end;
-  end;
-
-  // check for non existing directories
-  if Ord(Level) <= Ord(ccomlWarning) then
-  begin
-    p := 1;
-    repeat
-      //DebugLn(['CheckSearchPath ',ExpandedPath,' ',p,' ',length(ExpandedPath)]);
-      CurPath := GetNextDirectoryInSearchPath(ExpandedPath, p);
-      if (CurPath <> '') and (not IDEMacros.StrHasMacros(CurPath)) and
-        (FilenameIsAbsolute(CurPath)) then
-      begin
-        if not DirPathExistsCached(CurPath) then
-        begin
-          if IDEMessageDialog(lisCCOWarningCaption, Format(
-            lisTheContainsANotExistingDirectory, [Context, LineEnding, CurPath]),
-            mtWarning, [mbIgnore, mbCancel]) <> mrIgnore then
-            Exit;
-        end;
-      end;
-    until p > length(ExpandedPath);
-  end;
-
-  // check for special characters
-  if (not IDEMacros.StrHasMacros(ExpandedPath)) then
-  begin
-    FindSpecialCharsInPath(ExpandedPath, HasChars);
-    if Ord(Level) <= Ord(ccomlWarning) then
-    begin
-      if Ord(Level) >= Ord(ccomlErrors) then
-        ErrorMsg := SpecialCharsToStr(HasChars * [ccoscSpecialChars, ccoscNewLine])
-      else
-        ErrorMsg := SpecialCharsToStr(HasChars);
-      if ErrorMsg <> '' then
-      begin
-        if IDEMessageDialog(lisCCOWarningCaption, Context + LineEnding + ErrorMsg,
-          mtWarning, [mbOK, mbCancel]) <> mrOk then
-          exit;
-      end;
-    end;
-  end;
-
-  Result := True;
-end;
-
 function TCompilerPathOptionsFrame.CheckSrcPathInUnitPath(OldParsedSrcPath,
   NewParsedSrcPath, OldParsedUnitPath, NewParsedUnitPath: string; out
   SrcPathChanged: boolean): boolean;
@@ -497,6 +494,8 @@ begin
   begin
     Name := 'OtherUnitsPathEditBtn';
     Caption := '...';
+    Parent := Self;
+    TabOrder := 1;
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, OtherUnitsEdit);
     AnchorParallel(akBottom, 0, OtherUnitsEdit);
@@ -511,8 +510,6 @@ begin
               ';$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
-    Parent := Self;
-    TabOrder:=1;
   end;
   OtherUnitsEdit.AnchorToNeighbour(akRight, 0, OtherUnitsPathEditBtn);
   OtherUnitsEdit.Hint := lisDelimiterIsSemicolon;
@@ -525,6 +522,8 @@ begin
   begin
     Name := 'IncludeFilesPathEditBtn';
     Caption := '...';
+    Parent := Self;
+    TabOrder := 3;
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, IncludeFilesEdit);
     AnchorParallel(akBottom, 0, IncludeFilesEdit);
@@ -535,8 +534,6 @@ begin
     Templates := 'include;inc';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
-    Parent := Self;
-    TabOrder:=3;
   end;
   IncludeFilesEdit.AnchorToNeighbour(akRight, 0, IncludeFilesPathEditBtn);
   IncludeFilesEdit.Hint := lisDelimiterIsSemicolon;
@@ -549,6 +546,8 @@ begin
   begin
     Name := 'OtherSourcesPathEditBtn';
     Caption := '...';
+    Parent := Self;
+    TabOrder := 9;
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, OtherSourcesEdit);
     AnchorParallel(akBottom, 0, OtherSourcesEdit);
@@ -562,8 +561,6 @@ begin
                 ';$(LazarusDir)/components/codetools';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
-    Parent := Self;
-    TabOrder:=9;
   end;
   OtherSourcesEdit.AnchorToNeighbour(akRight, 0, OtherSourcesPathEditBtn);
   OtherSourcesEdit.Hint := lisDelimiterIsSemicolon;
@@ -576,6 +573,8 @@ begin
   begin
     Name := 'LibrariesPathEditBtn';
     Caption := '...';
+    Parent := Self;
+    TabOrder := 5;
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, LibrariesEdit);
     AnchorParallel(akBottom, 0, LibrariesEdit);
@@ -586,8 +585,6 @@ begin
     Templates := '/usr/X11R6/lib;/sw/lib';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
-    Parent := Self;
-    TabOrder:=5;
   end;
   LibrariesEdit.AnchorToNeighbour(akRight, 0, LibrariesPathEditBtn);
   LibrariesEdit.Hint := lisDelimiterIsSemicolon;
@@ -600,14 +597,14 @@ begin
   begin
     Name := 'btnUnitOutputDir';
     Caption := '...';
+    Parent := Self;
+    TabOrder := 7;
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, UnitOutputDirEdit);
     AnchorParallel(akBottom, 0, UnitOutputDirEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     OnClick := @FileBrowseBtnClick;
-    Parent := Self;
-    TabOrder:=7;
   end;
   UnitOutputDirEdit.AnchorToNeighbour(akRight, 0, btnUnitOutputDir);
   UnitOutputDirEdit.Hint := lisDelimiterIsSemicolon;
@@ -622,6 +619,8 @@ begin
   begin
     Name := 'DebugPathEditBtn';
     Caption := '...';
+    Parent := Self;
+    TabOrder := 13;
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, DebugPathEdit);
     AnchorParallel(akBottom, 0, DebugPathEdit);
@@ -634,8 +633,6 @@ begin
                 ';$(LazarusDir)/include';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
-    Parent := Self;
-    TabOrder:=13;
   end;
   DebugPathEdit.AnchorToNeighbour(akRight, 0, DebugPathEditBtn);
   DebugPathEdit.Hint := lisDelimiterIsSemicolon;
