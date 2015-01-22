@@ -1032,6 +1032,14 @@ begin
   *)
   {%endregion    * procedure/function/method * }
 
+  {%region       * numbers * }
+  AddFmtDef('21',     '21',    skSimple,   'int|Integer|LongInt', [fTpMtch]);
+  AddFmtDef('021',    '21',    skSimple,   'int|Integer|LongInt', [fTpMtch]); // octal
+  AddFmtDef('$15',    '21',    skSimple,   'int|Integer|LongInt', [fTpMtch]);
+  AddFmtDef('&25',    '21',    skSimple,   'int|Integer|LongInt', [fTpMtch]);
+  AddFmtDef('%10101', '21',    skSimple,   'int|Integer|LongInt', [fTpMtch]);
+  {%endregion    * numbers * }
+
   if RUN_TEST_ONLY > 0 then begin
     ExpectBreakFoo[0] := ExpectBreakFoo[abs(RUN_TEST_ONLY)];
     SetLength(ExpectBreakFoo, 1);
@@ -1096,6 +1104,35 @@ begin
   AddFmtDef('VarDynIntArray[1]',          '2',
                                 skSimple,       'Integer|LongInt',
                                 [fTpMtch]);
+  AddFmtDef('VarDynIntArray[18]',          '36',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  // index in hex
+  AddFmtDef('VarDynIntArray[$1]',          '2',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarDynIntArray[$12]',          '36',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarDynIntArray[&1]',          '2',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarDynIntArray[&22]',          '36',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarDynIntArray[%1]',          '2',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarDynIntArray[%10010]',          '36',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarDynIntArray[0x1]',          '2',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+  AddFmtDef('VarDynIntArray[0x12]',          '36',
+                                skSimple,       'Integer|LongInt',
+                                [fTpMtch]);
+
   AddFmtDef('VarStatIntArray[6]',         '12',
                                 skSimple,       'Integer|LongInt',
                                 [fTpMtch]);

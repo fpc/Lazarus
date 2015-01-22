@@ -768,7 +768,7 @@
   {%region CODE (initilization)}
     {$IFDEF FooFunc_Body}
     //begin
-      SetLength(VarDynIntArray,2);
+      SetLength(VarDynIntArray,20);
       SetLength(VarDynIntArrayA,2);
       VarPDynIntArray := @VarDynIntArray;
       VarPStatIntArray := @VarStatIntArray;
