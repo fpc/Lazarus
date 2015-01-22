@@ -431,54 +431,29 @@ end;
 procedure TCompilerPathOptionsFrame.PathEditBtnClick(Sender: TObject);
 var
   AButton: TPathEditorButton;
-  OldPath, Templates: string;
+  OldPath: string;
 begin
   if Sender is TPathEditorButton then
   begin
     AButton := TPathEditorButton(Sender);
     if AButton = OtherUnitsPathEditBtn then
-    begin
-      OldPath := OtherUnitsEdit.Text;
-      Templates := SetDirSeparators(
-        '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)' +
-        ';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)' +
-        ';$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)' +
-        ';$(LazarusDir)/components/custom' +
-        ';$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)');
-    end
+      OldPath := OtherUnitsEdit.Text
     else
     if AButton = IncludeFilesPathEditBtn then
-    begin
-      OldPath := IncludeFilesEdit.Text;
-      Templates := 'include' + ';inc';
-    end
+      OldPath := IncludeFilesEdit.Text
     else
     if AButton = OtherSourcesPathEditBtn then
-    begin
-      OldPath := OtherSourcesEdit.Text;
-      Templates := SetDirSeparators('$(LazarusDir)/lcl' +
-        ';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)' +
-        ';$(LazarusDir)/components/synedit' + ';$(LazarusDir)/components/codetools');
-    end
+      OldPath := OtherSourcesEdit.Text
     else
     if AButton = LibrariesPathEditBtn then
-    begin
-      OldPath := LibrariesEdit.Text;
-      Templates := SetDirSeparators('/usr/X11R6/lib;/sw/lib');
-    end
+      OldPath := LibrariesEdit.Text
     else
     if AButton = DebugPathEditBtn then
-    begin
-      OldPath := DebugPathEdit.Text;
-      Templates := SetDirSeparators('$(LazarusDir)/lcl/include' +
-        ';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)' +
-        ';$(LazarusDir)/include');
-    end
+      OldPath := DebugPathEdit.Text
     else
       Exit;
     AButton.CurrentPathEditor.BaseDirectory := FCompilerOpts.BaseDirectory;
     AButton.CurrentPathEditor.Path := OldPath;
-    AButton.CurrentPathEditor.Templates := SetDirSeparators(Templates);
   end;
 end;
 
@@ -596,6 +571,12 @@ begin
     AnchorParallel(akBottom, 0, OtherUnitsEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
+    AssociatedEdit := OtherUnitsEdit;
+    Templates:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)' +
+              ';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)' +
+              ';$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)' +
+              ';$(LazarusDir)/components/custom' +
+              ';$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
@@ -611,12 +592,14 @@ begin
   with IncludeFilesPathEditBtn do
   begin
     Name := 'IncludeFilesPathEditBtn';
+    Caption := '...';
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, IncludeFilesEdit);
     AnchorParallel(akBottom, 0, IncludeFilesEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
-    Caption := '...';
+    AssociatedEdit := IncludeFilesEdit;
+    Templates := 'include;inc';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
@@ -632,12 +615,17 @@ begin
   with OtherSourcesPathEditBtn do
   begin
     Name := 'OtherSourcesPathEditBtn';
+    Caption := '...';
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, OtherSourcesEdit);
     AnchorParallel(akBottom, 0, OtherSourcesEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
-    Caption := '...';
+    AssociatedEdit := OtherSourcesEdit;
+    Templates := '$(LazarusDir)/lcl' +
+                ';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)' +
+                ';$(LazarusDir)/components/synedit' +
+                ';$(LazarusDir)/components/codetools';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
@@ -653,12 +641,14 @@ begin
   with LibrariesPathEditBtn do
   begin
     Name := 'LibrariesPathEditBtn';
+    Caption := '...';
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, LibrariesEdit);
     AnchorParallel(akBottom, 0, LibrariesEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
-    Caption := '...';
+    AssociatedEdit := LibrariesEdit;
+    Templates := '/usr/X11R6/lib;/sw/lib';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;
@@ -674,12 +664,12 @@ begin
   with btnUnitOutputDir do
   begin
     Name := 'btnUnitOutputDir';
+    Caption := '...';
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, UnitOutputDirEdit);
     AnchorParallel(akBottom, 0, UnitOutputDirEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
-    Caption := '...';
     OnClick := @FileBrowseBtnClick;
     Parent := Self;
     TabOrder:=7;
@@ -696,12 +686,16 @@ begin
   with DebugPathEditBtn do
   begin
     Name := 'DebugPathEditBtn';
+    Caption := '...';
     Anchors := [akRight, akTop, akBottom];
     AnchorParallel(akTop, 0, DebugPathEdit);
     AnchorParallel(akBottom, 0, DebugPathEdit);
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
-    Caption := '...';
+    AssociatedEdit := DebugPathEdit;
+    Templates := '$(LazarusDir)/lcl/include' +
+                ';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)' +
+                ';$(LazarusDir)/include';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := Self;

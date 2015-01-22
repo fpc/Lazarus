@@ -102,15 +102,21 @@ type
 
   TOnPathEditorExecuted = TNotifyEvent;
 
+  { TPathEditorButton }
+
   TPathEditorButton = class(TButton)
   private
     FCurrentPathEditor: TPathEditorDialog;
+    FAssociatedEdit: TCustomEdit;
+    FTemplates: String;
     FOnExecuted: TOnPathEditorExecuted;
   protected
     procedure DoOnPathEditorExecuted;
   public
     procedure Click; override;
     property CurrentPathEditor: TPathEditorDialog read FCurrentPathEditor;
+    property AssociatedEdit: TCustomEdit read FAssociatedEdit write FAssociatedEdit;
+    property Templates: String read FTemplates write FTemplates;
     property OnExecuted: TOnPathEditorExecuted read FOnExecuted write FOnExecuted;
   end;
 
@@ -586,6 +592,7 @@ begin
   FCurrentPathEditor:=PathEditorDialog;
   try
     inherited Click;
+    FCurrentPathEditor.Templates := SetDirSeparators(FTemplates);
     FCurrentPathEditor.ShowModal;
     DoOnPathEditorExecuted;
   finally

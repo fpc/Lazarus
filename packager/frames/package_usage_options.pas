@@ -56,40 +56,12 @@ implementation
 procedure TPackageUsageOptionsFrame.PathEditBtnClick(Sender: TObject);
 var
   AButton: TPathEditorButton;
-  OldPath: string;
   AnEdit: TEdit;
-  Templates: string;
 begin
-  if not (Sender is TPathEditorButton) then
-    exit;
+  if not (Sender is TPathEditorButton) then exit;
   AButton := TPathEditorButton(Sender);
   AnEdit := GetEditForPathButton(AButton);
-  OldPath := AnEdit.Text;
-  if AButton = UnitPathButton then
-  begin
-    Templates := SetDirSeparators('$(PkgOutDir)' +
-      '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)' +
-      ';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)' +
-      ';$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)' +
-      ';$(LazarusDir)/components/custom' +
-      ';$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)');
-  end
-  else if AButton = IncludePathButton then
-  begin
-    Templates := 'include';
-  end
-  else
-  if AButton = ObjectPathButton then
-  begin
-    Templates := 'objects';
-  end
-  else
-  if AButton = LibraryPathButton then
-  begin
-    Templates := '';
-  end;
-  AButton.CurrentPathEditor.Path := OldPath;
-  AButton.CurrentPathEditor.Templates := SetDirSeparators(Templates);
+  AButton.CurrentPathEditor.Path := AnEdit.Text;
 end;
 
 procedure TPackageUsageOptionsFrame.PathEditBtnExecuted(Sender: TObject);
@@ -132,8 +104,7 @@ begin
             mrYes:
             begin
               // remove directory from search path
-              NewPath := copy(NewPath, 1, OldStartPos - 1) +
-                copy(NewPath, StartPos, length(NewPath));
+              NewPath := copy(NewPath,1,OldStartPos-1) + copy(NewPath,StartPos,length(NewPath));
               StartPos := OldStartPos;
             end;
             else
@@ -190,6 +161,13 @@ begin
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, UnitPathEdit);
     AnchorParallel(akBottom, 0, UnitPathEdit);
+    AssociatedEdit := UnitPathEdit;
+    Templates := '$(PkgOutDir)' +
+       '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)' +
+      ';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)' +
+      ';$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)' +
+      ';$(LazarusDir)/components/custom' +
+      ';$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
   end;
@@ -206,6 +184,8 @@ begin
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, IncludePathEdit);
     AnchorParallel(akBottom, 0, IncludePathEdit);
+    AssociatedEdit := IncludePathEdit;
+    Templates := 'include';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
   end;
@@ -222,6 +202,8 @@ begin
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, ObjectPathEdit);
     AnchorParallel(akBottom, 0, ObjectPathEdit);
+    AssociatedEdit := ObjectPathEdit;
+    Templates := 'objects';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
   end;
@@ -238,6 +220,7 @@ begin
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, LibraryPathEdit);
     AnchorParallel(akBottom, 0, LibraryPathEdit);
+    AssociatedEdit := LibraryPathEdit;
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
   end;

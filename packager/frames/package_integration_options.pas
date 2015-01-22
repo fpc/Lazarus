@@ -84,11 +84,8 @@ begin
 end;
 
 procedure TPackageIntegrationOptionsFrame.PathEditBtnClick(Sender: TObject);
-var
-  AButton: TPathEditorButton absolute Sender;
 begin
-  AButton.CurrentPathEditor.Path := FPDocSearchPathsEdit.Text;
-  AButton.CurrentPathEditor.Templates := '';
+  (Sender as TPathEditorButton).CurrentPathEditor.Path := FPDocSearchPathsEdit.Text;
 end;
 
 function TPackageIntegrationOptionsFrame.GetSelectedPkgType: TLazPackageType;
@@ -204,6 +201,7 @@ begin
     AnchorParallel(akRight, 6, DocGroupBox);
     AnchorParallel(akTop, 0, FPDocSearchPathsEdit);
     AnchorParallel(akBottom, 0, FPDocSearchPathsEdit);
+    AssociatedEdit := FPDocSearchPathsEdit;
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := DocGroupBox;
