@@ -53,7 +53,7 @@ type
       out SrcPathChanged: boolean): boolean;
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure PathEditBtnClick(Sender: TObject);
-    procedure PathEditBtnExecuted(Sender: TObject);
+    function PathEditBtnExecuted(Context: String; var NewPath: String): Boolean;
     procedure DoShowOptions(Sender: TObject);
     procedure DoCheck(Sender: TObject);
     procedure DoImport(Sender: TObject);
@@ -429,87 +429,18 @@ begin
 end;
 
 procedure TCompilerPathOptionsFrame.PathEditBtnClick(Sender: TObject);
-var
-  AButton: TPathEditorButton;
-  OldPath: string;
 begin
   if Sender is TPathEditorButton then
-  begin
-    AButton := TPathEditorButton(Sender);
-    if AButton = OtherUnitsPathEditBtn then
-      OldPath := OtherUnitsEdit.Text
-    else
-    if AButton = IncludeFilesPathEditBtn then
-      OldPath := IncludeFilesEdit.Text
-    else
-    if AButton = OtherSourcesPathEditBtn then
-      OldPath := OtherSourcesEdit.Text
-    else
-    if AButton = LibrariesPathEditBtn then
-      OldPath := LibrariesEdit.Text
-    else
-    if AButton = DebugPathEditBtn then
-      OldPath := DebugPathEdit.Text
-    else
-      Exit;
-    AButton.CurrentPathEditor.BaseDirectory := FCompilerOpts.BaseDirectory;
-    AButton.CurrentPathEditor.Path := OldPath;
-  end;
+    TPathEditorButton(Sender).CurrentPathEditor.BaseDirectory := FCompilerOpts.BaseDirectory;
 end;
 
-procedure TCompilerPathOptionsFrame.PathEditBtnExecuted(Sender: TObject);
-
-  function CheckPath(const Context, NewPath: string): boolean;
-  var
-    ExpandedPath: string;
-    BaseDir: string;
-  begin
-    BaseDir := FCompilerOpts.BaseDirectory;
-    ExpandedPath := TrimSearchPath(NewPath, BaseDir, true);
-    Result := CheckSearchPath(Context, ExpandedPath, ccomlHints);
-  end;
-
+function TCompilerPathOptionsFrame.PathEditBtnExecuted(Context: String; var NewPath: String): Boolean;
 var
-  AButton: TPathEditorButton;
-  NewPath: string;
+  ExpandedPath: string;
 begin
-  if Sender is TPathEditorButton then
-  begin
-    AButton := TPathEditorButton(Sender);
-    if AButton.CurrentPathEditor.ModalResult <> mrOk then
-      Exit;
-    NewPath := AButton.CurrentPathEditor.Path;
-    NewPath := FCompilerOpts.ShortenPath(NewPath, False);
-    if AButton = OtherUnitsPathEditBtn then
-    begin
-      if CheckPath(OtherUnitsLabel.Caption, NewPath) then
-        OtherUnitsEdit.Text := NewPath;
-    end
-    else
-    if AButton = IncludeFilesPathEditBtn then
-    begin
-      if CheckPath(IncludeFilesLabel.Caption, NewPath) then
-        IncludeFilesEdit.Text := NewPath;
-    end
-    else
-    if AButton = OtherSourcesPathEditBtn then
-    begin
-      if CheckPath(OtherSourcesLabel.Caption, NewPath) then
-        OtherSourcesEdit.Text := NewPath;
-    end
-    else
-    if AButton = LibrariesPathEditBtn then
-    begin
-      if CheckPath(LibrariesLabel.Caption, NewPath) then
-        LibrariesEdit.Text := NewPath;
-    end
-    else
-    if AButton = DebugPathEditBtn then
-    begin
-      if CheckPath(DebugPathLabel.Caption, NewPath) then
-        DebugPathEdit.Text := NewPath;
-    end;
-  end;
+  NewPath := FCompilerOpts.ShortenPath(NewPath, False);
+  ExpandedPath := TrimSearchPath(NewPath, FCompilerOpts.BaseDirectory, true);
+  Result := CheckSearchPath(Context, ExpandedPath, ccomlHints);
 end;
 
 procedure TCompilerPathOptionsFrame.FileBrowseBtnClick(Sender: TObject);
@@ -572,6 +503,7 @@ begin
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     AssociatedEdit := OtherUnitsEdit;
+    ContextCaption := OtherUnitsLabel.Caption;
     Templates:='$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)' +
               ';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)' +
               ';$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)' +
@@ -599,6 +531,7 @@ begin
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     AssociatedEdit := IncludeFilesEdit;
+    ContextCaption := IncludeFilesLabel.Caption;
     Templates := 'include;inc';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
@@ -622,6 +555,7 @@ begin
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     AssociatedEdit := OtherSourcesEdit;
+    ContextCaption := OtherSourcesLabel.Caption;
     Templates := '$(LazarusDir)/lcl' +
                 ';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)' +
                 ';$(LazarusDir)/components/synedit' +
@@ -648,6 +582,7 @@ begin
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     AssociatedEdit := LibrariesEdit;
+    ContextCaption := LibrariesLabel.Caption;
     Templates := '/usr/X11R6/lib;/sw/lib';
     OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
@@ -693,6 +628,7 @@ begin
     AnchorParallel(akRight, 0, Self);
     AutoSize := True;
     AssociatedEdit := DebugPathEdit;
+    ContextCaption := DebugPathLabel.Caption;
     Templates := '$(LazarusDir)/lcl/include' +
                 ';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)' +
                 ';$(LazarusDir)/include';

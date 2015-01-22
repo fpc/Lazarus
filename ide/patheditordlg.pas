@@ -100,7 +100,7 @@ type
     property Templates: string read GetTemplates write SetTemplates;
   end;
 
-  TOnPathEditorExecuted = TNotifyEvent;
+  TOnPathEditorExecuted = function (Context: String; var NewPath: String): Boolean of object;
 
   { TPathEditorButton }
 
@@ -108,6 +108,7 @@ type
   private
     FCurrentPathEditor: TPathEditorDialog;
     FAssociatedEdit: TCustomEdit;
+    FContextCaption: String;
     FTemplates: String;
     FOnExecuted: TOnPathEditorExecuted;
   protected
@@ -116,6 +117,7 @@ type
     procedure Click; override;
     property CurrentPathEditor: TPathEditorDialog read FCurrentPathEditor;
     property AssociatedEdit: TCustomEdit read FAssociatedEdit write FAssociatedEdit;
+    property ContextCaption: String read FContextCaption write FContextCaption;
     property Templates: String read FTemplates write FTemplates;
     property OnExecuted: TOnPathEditorExecuted read FOnExecuted write FOnExecuted;
   end;
@@ -593,6 +595,7 @@ begin
   try
     inherited Click;
     FCurrentPathEditor.Templates := SetDirSeparators(FTemplates);
+    FCurrentPathEditor.Path := AssociatedEdit.Text;
     FCurrentPathEditor.ShowModal;
     DoOnPathEditorExecuted;
   finally
@@ -601,8 +604,17 @@ begin
 end;
 
 procedure TPathEditorButton.DoOnPathEditorExecuted;
+var
+  Ok: Boolean;
+  NewPath: String;
 begin
-  if Assigned(OnExecuted) then OnExecuted(Self);
+  NewPath := FCurrentPathEditor.Path;
+  Ok := (FCurrentPathEditor.ModalResult = mrOk) and (AssociatedEdit.Text <> NewPath);
+  if Ok and Assigned(OnExecuted) then
+    Ok := OnExecuted(ContextCaption, NewPath);
+  // Assign value only if old <> new and OnExecuted allows it.
+  if Ok then
+    AssociatedEdit.Text := NewPath;
 end;
 
 end.

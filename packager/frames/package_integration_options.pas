@@ -33,8 +33,7 @@ type
     FPDocPathButton: TPathEditorButton;
     FStoredPkgType: TLazPackageType;
     function GetSelectedPkgType: TLazPackageType;
-    procedure PathEditBtnClick(Sender: TObject);
-    procedure PathEditBtnExecuted(Sender: TObject);
+    function PathEditBtnExecuted(Context: String; var NewPath: String): Boolean;
     procedure SetSelectedPkgType(PkgType: TLazPackageType);
     function ShowMsgPackageTypeMustBeDesign: boolean;
     function GetFPDocPkgNameEditValue: string;
@@ -83,11 +82,6 @@ begin
     FPDocPackageNameEdit.Text:=GetFPDocPkgNameEditValue;
 end;
 
-procedure TPackageIntegrationOptionsFrame.PathEditBtnClick(Sender: TObject);
-begin
-  (Sender as TPathEditorButton).CurrentPathEditor.Path := FPDocSearchPathsEdit.Text;
-end;
-
 function TPackageIntegrationOptionsFrame.GetSelectedPkgType: TLazPackageType;
 begin
   if RunTimeOnlyRadioButton.Checked then
@@ -100,59 +94,44 @@ begin
     Result:=lptRunAndDesignTime;
 end;
 
-procedure TPackageIntegrationOptionsFrame.PathEditBtnExecuted(Sender: TObject);
+function TPackageIntegrationOptionsFrame.PathEditBtnExecuted(Context: String;
+  var NewPath: String): Boolean;
 var
-  AButton: TPathEditorButton absolute Sender;
-  NewPath: string;
-  OldPath: string;
   CurDir: string;
-  StartPos: integer;
+  StartPos, OldStartPos: integer;
   DlgResult: TModalResult;
-  OldStartPos: longint;
 begin
-  if AButton.CurrentPathEditor.ModalResult <> mrOk then
-    Exit;
-  NewPath := AButton.CurrentPathEditor.Path;
-  OldPath := FPDocSearchPathsEdit.Text;
-  if OldPath <> NewPath then
-  begin
-    // check NewPath
-    StartPos := 1;
-    repeat
-      OldStartPos := StartPos;
-      CurDir := GetNextDirectoryInSearchPath(NewPath, StartPos);
-      if CurDir <> '' then
+  // check NewPath
+  StartPos := 1;
+  repeat
+    OldStartPos := StartPos;
+    CurDir := GetNextDirectoryInSearchPath(NewPath, StartPos);
+    if CurDir <> '' then
+    begin
+      IDEMacros.SubstituteMacros(CurDir);
+      FLazPackage.LongenFilename(CurDir);
+      if not DirPathExists(CurDir) then
       begin
-        IDEMacros.SubstituteMacros(CurDir);
-        FLazPackage.LongenFilename(CurDir);
-        if not DirPathExists(CurDir) then
-        begin
-          DlgResult := QuestionDlg(lisEnvOptDlgDirectoryNotFound,
-            Format(lisDirectoryNotFound, [CurDir]),
-            mtError, [mrIgnore, mrYes, lisRemoveFromSearchPath, mrCancel], 0);
-          case DlgResult of
-            mrIgnore: ;
-            mrYes:
-            begin
-              // remove directory from search path
-              NewPath := copy(NewPath, 1, OldStartPos - 1) +
-                copy(NewPath, StartPos, length(NewPath));
-              StartPos := OldStartPos;
-            end;
-            else
-              // undo
-              NewPath := OldPath;
-              break;
+        DlgResult := QuestionDlg(lisEnvOptDlgDirectoryNotFound,
+          Format(lisDirectoryNotFound, [CurDir]),
+          mtError, [mrIgnore, mrYes, lisRemoveFromSearchPath, mrCancel], 0);
+        case DlgResult of
+          mrIgnore: ;
+          mrYes:
+          begin  // remove directory from search path
+            NewPath := copy(NewPath,1,OldStartPos-1) + copy(NewPath,StartPos,length(NewPath));
+            StartPos := OldStartPos;
           end;
+          else   // undo
+            Exit(False);
         end;
       end;
-    until StartPos > length(NewPath);
-  end;
-  FPDocSearchPathsEdit.Text := NewPath;
+    end;
+  until StartPos > length(NewPath);
+  Result := True;
 end;
 
-procedure TPackageIntegrationOptionsFrame.SetSelectedPkgType(
-  PkgType: TLazPackageType);
+procedure TPackageIntegrationOptionsFrame.SetSelectedPkgType(PkgType: TLazPackageType);
 begin
   case PkgType of
   lptRunTime: RunTimeRadioButton.Checked:=true;
@@ -202,7 +181,6 @@ begin
     AnchorParallel(akTop, 0, FPDocSearchPathsEdit);
     AnchorParallel(akBottom, 0, FPDocSearchPathsEdit);
     AssociatedEdit := FPDocSearchPathsEdit;
-    OnClick := @PathEditBtnClick;
     OnExecuted := @PathEditBtnExecuted;
     Parent := DocGroupBox;
   end;
