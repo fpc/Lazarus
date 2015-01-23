@@ -1,4 +1,4 @@
-{ Browse and search form for offline wiki
+{ Browse and search form of offline wiki
 
   Copyright (C) 2012  Mattias Gaertner  mattias@freepascal.org
 
