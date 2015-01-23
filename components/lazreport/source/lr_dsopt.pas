@@ -64,7 +64,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure RadioButton1Change(Sender: TObject);
   private
-    procedure FillFonst;
+    procedure FillFonts;
   public
     { Public declarations }
   end;
@@ -121,7 +121,7 @@ begin
   Label3.Caption := sFRDesignerFormFontName;
   Label4.Caption := sFRDesignerFormFontSize;
   CheckBox1.Caption := sUseSyntaxHighlight;
-  FillFonst;
+  FillFonts;
   RadioButton1Change(nil);
 end;
 
@@ -133,7 +133,7 @@ begin
   SpinEdit1.Enabled:=RadioButton2.Checked;
 end;
 
-procedure TfrDesOptionsForm.FillFonst;
+procedure TfrDesOptionsForm.FillFonts;
 var
   DC: HDC;
   Lf: TLogFont;
@@ -144,7 +144,7 @@ var
   j: PtrInt;
   {$ENDIF}
 begin
-  ComboBox1.Items.Clear;
+  ComboBox1.Clear;
   DC := GetDC(0);
   try
     Lf.lfFaceName := '';
