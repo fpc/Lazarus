@@ -194,7 +194,7 @@ begin
     Param:=GetParams(i);
     //writeln('TWikiGet.DoRun Param="',Param,'"');
     if copy(Param,1,length(pPage))=pPage then
-      NeedWikiPage(WikiInternalLinkToPage(copy(Param,length(pPage)+1,length(Param))));
+      NeedWikiPage(WikiTitleToPage(copy(Param,length(pPage)+1,length(Param))));
   end;
   if (NeedSinglePage) and (FNeededPages.Tree.Count=0) then
     E('nothing to do',true);
@@ -539,7 +539,7 @@ begin
       try
         Client:=TFPHTTPClient.Create(nil);
         Response:=TMemoryStream.Create;
-        URL:=BaseURL+EscapeDocumentName('Image:'+WikiInternalLinkToPage(Link));
+        URL:=BaseURL+EscapeDocumentName('Image:'+WikiTitleToPage(Link));
         writeln('getting image page "',URL,'" ...');
         Client.Get(URL,Response);
         //Client.ResponseHeaders.SaveToFile('responseheaders.txt');
@@ -722,13 +722,15 @@ procedure TWikiGet.Test;
     Filename: String;
   begin
     debugln(['TWikiGet.Test [',URL,']']);
-    Page:=WikiInternalLinkToPage(URL);
+    Page:=WikiTitleToPage(URL);
     debugln(['  URL=[',dbgstr(URL),']  Page=[',Page,']']);
     Filename:=WikiImageToFilename(Page,false,true);
     debugln(['  URL=[',dbgstr(URL),']  Filename="',Filename,'"']);
   end;
 
 begin
+  TestWikiPageToFilename;
+
   //w('Image:Acs_demos.jpg');
   //w('Image:Acs demos.jpg');
   w('Image:Acs%20demos.jpg');
@@ -790,9 +792,8 @@ end;
 var
   Application: TWikiGet;
 begin
-  //TestWikiPageToFilename;
-
   Application:=TWikiGet.Create(nil);
+  //Application.Test;
   Application.Title:='Wiki Get';
   Application.Run;
   Application.Free;

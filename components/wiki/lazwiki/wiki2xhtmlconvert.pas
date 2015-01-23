@@ -323,7 +323,7 @@ var
       else if Scheme='image' then begin
         URL:=copy(URL,p+1,length(URL));
         URL:=UTF8Trim(URL);
-        URL:=WikiInternalLinkToPage(URL);
+        URL:=WikiTitleToPage(URL);
         if URL='' then exit;
         Filename:=WikiImageToFilename(URL,false,true,true);
         FoundImgFile:=FindImage(Filename);
@@ -345,7 +345,7 @@ var
     end;
 
     // convert %hh and remove special characters
-    URL:=WikiInternalLinkToPage(URL);
+    URL:=WikiTitleToPage(URL);
 
     // check if link to wiki page but with a full baseurl
     if (Page.WikiPage.BaseURL<>'')

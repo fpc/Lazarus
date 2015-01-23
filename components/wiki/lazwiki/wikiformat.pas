@@ -22,6 +22,8 @@ unit WikiFormat;
 
 {$mode objfpc}{$H+}
 
+{off $DEFINE VerboseWikiFileCode}
+
 interface
 
 uses
@@ -101,8 +103,8 @@ function WikiImageToFilename(Image: string; IsInternalLink, InsertCaseID: boolea
 function WikiHeaderToLink(Header: string): string;
 function WikiCreateCommonCodeTagList(AddLazWikiLangs: boolean): TKeyWordFunctionList;
 
-function UTF8ToUTF7W(AnUTF8: string): string;
-function UTF7WToUTF8(anUTF7: string): string;
+function UTF8ToWikiFileCode(AnUTF8: string): string;
+function WikiFileCodeToUTF8(aFileCode: string): string;
 procedure TestWikiPageToFilename;
 
 // language
@@ -356,25 +358,17 @@ begin
 end;
 
 function WikiPageToFilename(DocumentName: string; IsInternalLink, AppendCaseID: boolean): string;
-var
-  i: Integer;
-  s: string;
+{ IsInternalLink:
+  AppendCaseID=true: append a string encoding upper/lower case of letters
+}
 begin
   Result:=DocumentName;
+  // optional: convert title to wiki link
   if IsInternalLink then
-    Result:=WikiInternalLinkToPage(Result);
-  i:=1;
-  while i<=length(Result) do begin
-    s:=Result[i];
-    case s[1] of
-    ',','-','_','0'..'9','a'..'z','A'..'Z': ;
-    // Note: UTF-8 characters do not work with svn on OS X
-    else s:='%'+HexStr(ord(s[1]),2);
-    end;
-    if s<>Result[i] then
-      ReplaceSubstring(Result,i,1,s);
-    inc(i,length(s));
-  end;
+    Result:=WikiTitleToPage(Result);
+  // convert special characaters
+  Result:=UTF8ToWikiFileCode(Result);
+  // append case if
   if AppendCaseID and (Result<>'') then
     Result:=Result+'.'+WikiPageToCaseID(Result);
 end;
@@ -383,10 +377,6 @@ function WikiFilenameToPage(Filename: string): string;
 var
   Ext: String;
   p: Integer;
-  i: Integer;
-  Code: Integer;
-  j: Integer;
-  c: Char;
 begin
   Result:=ExtractFileName(Filename);
   if Result='' then exit;
@@ -400,22 +390,8 @@ begin
     dec(p);
   if (p>=1) and (Result[p]='.') then
     Delete(Result,p,length(Result));
-  // convert non literals
-  for i:=length(Result) downto 1 do begin
-    if Result[i]<>'%' then continue;
-    Code:=0;
-    for j:=1 to 2 do begin
-      if i+j>length(Result) then break;
-      c:=Result[i+j];
-      case c of
-      '0'..'9': Code:=Code*16+ord(c)-ord('0');
-      'a'..'z': Code:=Code*16+ord(c)-ord('a')+10;
-      'A'..'Z': Code:=Code*16+ord(c)-ord('A')+10;
-      else break;
-      end;
-    end;
-    ReplaceSubstring(Result,i,1+j,chr(Code));
-  end;
+  // convert special characaters
+  Result:=WikiFileCodeToUTF8(Result);
 end;
 
 function WikiImageToFilename(Image: string;
@@ -434,7 +410,7 @@ begin
       Delete(Result,1,p);
   end;
   if IsInternalLink then
-    Result:=WikiInternalLinkToPage(Result);
+    Result:=WikiTitleToPage(Result);
   Ext:=ExtractFileExt(Result);
   // encode file name without extension
   Result:=WikiPageToFilename(copy(Result,1,Length(Result)-length(Ext)),false,false);
@@ -490,11 +466,13 @@ begin
 end;
 
 const
-  UTF7WNormalChars = ['a'..'z','A'..'Z','0'..'9',',','-','_'];
-function UTF8ToUTF7W(AnUTF8: string): string;
-{ Keep a..z, A..Z, 0..9, , - _ % =
+  WFCAllowedChars = ['a'..'z','A'..'Z','0'..'9',',','!','#','%','(',')','-','_',' '];
+function UTF8ToWikiFileCode(AnUTF8: string): string;
+{ Keep a..z, A..Z, 0..9, ,!#-%()-_
   Replace + with +-
-  Rest encode as +base64-
+  Replace = with =-
+  Replace single invalid byte with =HexHex
+  Replace sequences of invalid bytes as +base64-
 }
 const
   Base64Chars: array[0..63] of char =
@@ -507,20 +485,38 @@ var
   c: Char;
   SrcBits: Integer;
   i: Integer;
+  AtEnd: Boolean;
 begin
+  {$ifdef VerboseWikiFileCode}
+  writeln('UTF8ToWikiFileCode START AnUTF8="',AnUTF8,'"');
+  {$endif}
   Result:='';
   if AnUTF8='' then exit;
   p:=PChar(AnUTF8);
   repeat
     c:=p^;
     if (c=#0) and (p-PChar(AnUTF8)=length(AnUTF8)) then break;
-    if c in UTF7WNormalChars then begin
+    AtEnd:=(p[1]=#0) and (p+1-PChar(AnUTF8)=length(AnUTF8));
+    if c in WFCAllowedChars then begin
       // common English character: keep
+      {$ifdef VerboseWikiFileCode}
+      writeln('UTF8ToWikiFileCode normal char "',c,'"');
+      {$endif}
       Result+=c;
       inc(p);
-    end else if (c='+') and (p[1] in UTF7WNormalChars) then begin
-      // replace '+' with '+-'
-      Result+='+-';
+    end else if (c in ['+','=']) and ((p[1] in WFCAllowedChars) or AtEnd) then begin
+      // replace '+' with '+-' and '=' with '=-'
+      {$ifdef VerboseWikiFileCode}
+      writeln('UTF8ToWikiFileCode single + or = "',c,'"');
+      {$endif}
+      Result+=c+'-';
+      inc(p);
+    end else if (p[1] in WFCAllowedChars) or AtEnd then begin
+      // replace single special byte with =HexHex
+      {$ifdef VerboseWikiFileCode}
+      writeln('UTF8ToWikiFileCode single special char "',HexStr(ord(c),2),'"');
+      {$endif}
+      Result+='='+HexStr(ord(c),2);
       inc(p);
     end else begin
       // special characters -> encode base64
@@ -532,24 +528,41 @@ begin
       repeat
         if (p^=#0) and (p-PChar(AnUTF8)=length(AnUTF8)) then
           break; // end of string
-        if (p^ in UTF7WNormalChars) and (p[1] in UTF7WNormalChars)
-        and (p[2] in UTF7WNormalChars) then
+        if (p^ in WFCAllowedChars) and (p[1] in WFCAllowedChars)
+        and (p[2] in WFCAllowedChars) then
           break; // the next three are normal characters -> stop encoding as base64
         CharLen:=UTF8CharacterLength(p);
+        {$ifdef VerboseWikiFileCode}
+        writeln('UTF8ToWikiFileCode sequence UTF8CharLen=',CharLen);
+        {$endif}
         for i:=1 to CharLen do begin
           SrcBits:=ord(p^);
           BufBits:=BufBits or (SrcBits shr (2+BufBitLen));
+          {$ifdef VerboseWikiFileCode}
+          writeln('UTF8ToWikiFileCode sequence 6bitA Byte=',i,' SrcBits=',binstr(SrcBits,8),' BufBits=',binstr(BufBits,6),' BufBitLen=',6);
+          {$endif}
           Result+=Base64Chars[BufBits];
           BufBits:=(SrcBits shl (4-BufBitLen)) and %111111;
           BufBitLen:=2+BufBitLen;
           if BufBitLen=6 then begin
+            {$ifdef VerboseWikiFileCode}
+            writeln('UTF8ToWikiFileCode sequence 6bitB Byte=',i,' SrcBits=',binstr(SrcBits,8),' BufBits=',binstr(BufBits,6),' BufBitLen=',BufBitLen);
+            {$endif}
             Result+=Base64Chars[BufBits];
             BufBitLen:=0;
+            BufBits:=0;
+          end else begin
+            {$ifdef VerboseWikiFileCode}
+            writeln('UTF8ToWikiFileCode sequence <6bit Byte=',i,' SrcBits=',binstr(SrcBits,8),' BufBits=',binstr(BufBits,6),' BufBitLen=',BufBitLen);
+            {$endif}
           end;
           inc(p);
         end;
       until false;
       if BufBitLen>0 then begin
+        {$ifdef VerboseWikiFileCode}
+        writeln('UTF8ToWikiFileCode sequence Paddi Byte=',i,' SrcBits=',binstr(SrcBits,8),' BufBits=',binstr(BufBits,6),' BufBitLen=',BufBitLen);
+        {$endif}
         Result+=Base64Chars[BufBits];
       end;
       // end marker: '-'
@@ -558,7 +571,7 @@ begin
   until false;
 end;
 
-function UTF7WToUTF8(anUTF7: string): string;
+function WikiFileCodeToUTF8(aFileCode: string): string;
 var
   p: PChar;
   SrcBits: Integer;
@@ -566,19 +579,28 @@ var
   BufBitLen: Integer;
   c: Char;
 begin
+  {$ifdef VerboseWikiFileCode}
+  writeln('WikiFileCodeToUTF8 Code="',aFileCode,'"');
+  {$endif}
   Result:='';
-  if anUTF7='' then exit;
-  p:=PChar(anUTF7);
+  if aFileCode='' then exit;
+  p:=PChar(aFileCode);
   repeat
     c:=p^;
-    if (c=#0) and (p-PChar(anUTF7)=length(anUTF7)) then break;
+    if (c=#0) and (p-PChar(aFileCode)=length(aFileCode)) then break;
     if c='+' then begin
       inc(p);
       if p^='-' then begin
+        {$ifdef VerboseWikiFileCode}
+        writeln('WikiFileCodeToUTF8 +- to +');
+        {$endif}
         inc(p);
         Result+='+'; // single '+'
       end else begin
         // decode base64, read til '-'
+        {$ifdef VerboseWikiFileCode}
+        writeln('WikiFileCodeToUTF8 base64 sequence');
+        {$endif}
         BufBits:=0;
         BufBitLen:=0;
         repeat
@@ -595,30 +617,86 @@ begin
           ',': SrcBits:=62;
           '_': SrcBits:=63;
           else
-            raise Exception.Create('invalid UTF7: invalid base64 character');
+            raise Exception.Create('invalid wiki file code: invalid base64 character');
           end;
+          {$ifdef VerboseWikiFileCode}
+          writeln('WikiFileCodeToUTF8 SrcBits=',binstr(SrcBits,6));
+          {$endif}
           if BufBitLen=0 then begin
             BufBits:=BufBits or (SrcBits shl 2);
             BufBitLen:=6;
+            {$ifdef VerboseWikiFileCode}
+            writeln('WikiFileCodeToUTF8 new byte      BufBits=',binstr(BufBits,8),' BufBitLen=',BufBitLen);
+            {$endif}
           end else begin
             BufBits:=BufBits or (SrcBits shr (BufBitLen-2));
+            {$ifdef VerboseWikiFileCode}
+            writeln('WikiFileCodeToUTF8 byte complete BufBits=',binstr(BufBits,8),' BufBitLen=',8);
+            {$endif}
             Result+=chr(BufBits);
             BufBitLen-=2;
             BufBits:=(SrcBits shl (8-BufBitLen)) and $FF;
+            {$ifdef VerboseWikiFileCode}
+            writeln('WikiFileCodeToUTF8 rest byte     BufBits=',binstr(BufBits,8),' BufBitLen=',BufBitLen);
+            {$endif}
           end;
           inc(p);
         until false;
         // Note: BufBitLen can be >0 (the last byte contains padding bits)
+        {$ifdef VerboseWikiFileCode}
+        writeln('WikiFileCodeToUTF8 D BufBits=',binstr(BufBits,8),' BufBitLen=',BufBitLen);
+        {$endif}
+        if (BufBits shr (8-BufBitLen))>0 then
+          raise Exception.Create('invalid wiki file code: padding bits not empty');
       end;
-    end else if c in UTF7WNormalChars then begin
+    end else if c='=' then begin
+      inc(p);
+      if p^='-' then begin
+        {$ifdef VerboseWikiFileCode}
+        writeln('WikiFileCodeToUTF8 =- to =');
+        {$endif}
+        Result+='=';
+        inc(p);
+      end else begin
+        // one byte as hex code
+        {$ifdef VerboseWikiFileCode}
+        writeln('WikiFileCodeToUTF8 =hex ',p^,p[1]);
+        {$endif}
+        SrcBits:=0;
+        case p^ of
+        '0'..'9': SrcBits:=ord(p^)-ord('0');
+        'A'..'F': SrcBits:=ord(p^)-ord('A')+10;
+        'a'..'f': SrcBits:=ord(p^)-ord('a')+10;
+        else
+          raise Exception.Create('invalid wiki file code: invalid hex code');
+        end;
+        inc(p);
+        SrcBits:=SrcBits*16;
+        case p^ of
+        '0'..'9': SrcBits+=ord(p^)-ord('0');
+        'A'..'F': SrcBits+=ord(p^)-ord('A')+10;
+        'a'..'f': SrcBits+=ord(p^)-ord('a')+10;
+        else
+          raise Exception.Create('invalid wiki file code: invalid hex code');
+        end;
+        inc(p);
+        {$ifdef VerboseWikiFileCode}
+        writeln('WikiFileCodeToUTF8 =hex byte=',SrcBits);
+        {$endif}
+        Result+=chr(SrcBits);
+      end;
+    end else if c in WFCAllowedChars then begin
       // normal char
+      {$ifdef VerboseWikiFileCode}
+      writeln('WikiFileCodeToUTF8 normal char "',c,'"');
+      {$endif}
       Result+=c;
       inc(p);
     end else
-      raise Exception.Create('invalid UTF7: invalid character');
+      raise Exception.Create('invalid wiki file code: invalid character');
   until false;
   if FindInvalidUTF8Character(PChar(Result),length(Result))>=0 then
-    raise Exception.Create('invalid UTF7: result is not UTF-8');
+    raise Exception.Create('invalid wiki file code: result is not UTF-8');
 end;
 
 procedure TestWikiPageToFilename;
@@ -627,24 +705,24 @@ procedure TestWikiPageToFilename;
   var
     Filename: String;
     NewPageName: String;
-    ok: Boolean;
+    step: integer;
   begin
-    ok:=false;
+    step:=0;
     try
       Filename:=WikiPageToFilename(PageName,false,true);
       NewPageName:=WikiFilenameToPage(Filename);
-      if PageName=NewPageName then begin
-        ok:=true;
-        exit;
-      end;
+      inc(step);
+      if PageName=NewPageName then
+        inc(step);
     finally
-      if not ok then begin
+      if step<2 then begin
         writeln('TestPageToFilename failed:');
         writeln('  PageName   ="',PageName,'"');
         writeln('  NewPageName="',NewPageName,'"');
         writeln('  Filename   ="',Filename,'"');
-        raise Exception.Create('TestPageToFilename failed');
       end;
+      if step=0 then
+        raise Exception.Create('TestPageToFilename failed');
     end;
   end;
 
@@ -658,6 +736,17 @@ begin
   t('A/B');
   t('A+B');
   t('A-B');
+  t('A=B');
+  t('A+=B');
+  t('A+-B');
+  t('A+');
+  t('A=');
+  t('A*');
+  t('A*$');
+  t('A*$%');
+  t('A*$*$');
+  t('A*$*$*');
+  t('A*$*$*$');
 end;
 
 function GetWikiPageLanguage(const DocumentName: string): string;

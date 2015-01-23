@@ -333,8 +333,8 @@ var
   IsWikiTagStartChar,
   IsWikiTagChar: array[char] of boolean;
 
-// normalize link to get the page, e.g. convert spaces to underscores
-function WikiInternalLinkToPage(Link: string): string;
+// normalize link to get the page, e.g. convert spaces to underscores, delete #0,$[]{}<>
+function WikiTitleToPage(Link: string): string;
 function WikiIsExternalLink(Link: string): boolean;
 
 function GetWikiPageID(doc: TDOMNode): string;
@@ -1513,7 +1513,7 @@ begin
   end;
 end;
 
-function WikiInternalLinkToPage(Link: string): string;
+function WikiTitleToPage(Link: string): string;
 var
   i: Integer;
   j: Integer;
