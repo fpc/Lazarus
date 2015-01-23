@@ -463,7 +463,7 @@ begin
       Add('objc',@AllwaysTrue);
     end;
   end;
-  Result.Sort;
+  Result.Sort; // init now, so that multiple threads can use it
 end;
 
 const
