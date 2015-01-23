@@ -15744,7 +15744,7 @@ msgstr "Tiedostomaski \"%s\" ei ole säännöllinen lauseke."
 
 #: lazarusidestrconsts.listhefileseemstobeaprogramclosecurrentproject
 msgid "The file \"%s\" seems to be a program.%sClose current project and create a new Lazarus project for this program?%s\"No\" will load the file as normal source."
-msgstr "Tiedosto \"%s\" näyttää olevan Pascal-ohjelma.%sSuljetaanko nykyinen projekti ja avataan tämä uutena projektina?%s\"Ei\"-näppäin lataa sen vain lähdekoodina."
+msgstr "Tiedosto \"%s\" näyttää olevan Pascal-ohjelma.%sSuljetaanko nykyinen projekti ja avataan tämä uutena projektina?%s\"Ei\" lataa sen vain lähdekoodina."
 
 #: lazarusidestrconsts.listhefileseemstobetheprogramfileofanexistinglazarusp
 msgid "The file %s seems to be the program file of an existing Lazarus Project."
@@ -15760,7 +15760,7 @@ msgstr "Tiedostoa \"%s\" ei löydy.%sTahdotko etsiä sen itse ?"
 
 #: lazarusidestrconsts.listhefilewasnotfoundignorewillgoonloadingtheproject
 msgid "The file \"%s\" was not found.%sIgnore will go on loading the project,%sAbort  will stop the loading."
-msgstr "Tiedostoa \"%s\" ei löytynyt.%sOhita-näppäimen nainallus jatkaa projektin lataamista,%sKeskeytä-näppäin keskeyttää sen."
+msgstr "Tiedostoa \"%s\" ei löytynyt.%sOhita-nappi jatkaa projektin lataamista,%sKeskeytä-nappi keskeyttää sen."
 
 #: lazarusidestrconsts.listhefollowingmethodsusedbyarenotinthesourceremoveth
 msgid "The following methods used by %s are not in the source%s%s%s%s%sRemove the dangling references?"
