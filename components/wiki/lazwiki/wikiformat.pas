@@ -463,6 +463,7 @@ begin
       Add('objc',@AllwaysTrue);
     end;
   end;
+  Result.Sort;
 end;
 
 const
