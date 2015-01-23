@@ -320,8 +320,7 @@ begin
   Result := lisGeneral;
 end;
 
-procedure TDebuggerGeneralOptionsFrame.Setup(
-  ADialog: TAbstractOptionsEditorDialog);
+procedure TDebuggerGeneralOptionsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   gbDebuggerType.Caption := dlgDebugType;
   gbAdditionalSearchPath.Caption := lisDebugOptionsFrmAdditionalSearchPath;

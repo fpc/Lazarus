@@ -36,9 +36,7 @@ type
     ObjectPathButton: TPathEditorButton;
     LibraryPathButton: TPathEditorButton;
     FLazPackage: TLazPackage;
-    procedure PathEditBtnClick(Sender: TObject);
-    procedure PathEditBtnExecuted(Sender: TObject);
-    function GetEditForPathButton(AButton: TPathEditorButton): TEdit;
+    function PathEditBtnExecuted(Context: String; var NewPath: String): Boolean;
   public
     function GetTitle: string; override;
     procedure Setup(ADialog: TAbstractOptionsEditorDialog); override;
@@ -53,114 +51,40 @@ implementation
 
 { TPackageUsageOptionsFrame }
 
-procedure TPackageUsageOptionsFrame.PathEditBtnClick(Sender: TObject);
+function TPackageUsageOptionsFrame.PathEditBtnExecuted(Context: String; var NewPath: String): Boolean;
 var
-  AButton: TPathEditorButton;
-  OldPath: string;
-  AnEdit: TEdit;
-  Templates: string;
-begin
-  if not (Sender is TPathEditorButton) then
-    exit;
-  AButton := TPathEditorButton(Sender);
-  AnEdit := GetEditForPathButton(AButton);
-  OldPath := AnEdit.Text;
-  if AButton = UnitPathButton then
-  begin
-    Templates := SetDirSeparators('$(PkgOutDir)' +
-      '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)' +
-      ';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)' +
-      ';$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)' +
-      ';$(LazarusDir)/components/custom' +
-      ';$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)');
-  end
-  else if AButton = IncludePathButton then
-  begin
-    Templates := 'include';
-  end
-  else
-  if AButton = ObjectPathButton then
-  begin
-    Templates := 'objects';
-  end
-  else
-  if AButton = LibraryPathButton then
-  begin
-    Templates := '';
-  end;
-  AButton.CurrentPathEditor.Path := OldPath;
-  AButton.CurrentPathEditor.Templates := SetDirSeparators(Templates);
-end;
-
-procedure TPackageUsageOptionsFrame.PathEditBtnExecuted(Sender: TObject);
-var
-  AButton: TPathEditorButton;
-  NewPath: string;
-  AnEdit: TEdit;
-  OldPath: string;
   CurDir: string;
-  StartPos: integer;
+  StartPos, OldStartPos: integer;
   DlgResult: TModalResult;
-  OldStartPos: longint;
 begin
-  if not (Sender is TPathEditorButton) then
-    exit;
-  AButton := TPathEditorButton(Sender);
-  if AButton.CurrentPathEditor.ModalResult <> mrOk then
-    exit;
-  NewPath := AButton.CurrentPathEditor.Path;
-  AnEdit := GetEditForPathButton(AButton);
-  OldPath := AnEdit.Text;
-  if OldPath <> NewPath then
-  begin
-    // check NewPath
-    StartPos := 1;
-    repeat
-      OldStartPos := StartPos;
-      CurDir := GetNextDirectoryInSearchPath(NewPath, StartPos);
-      if CurDir <> '' then
+  // check NewPath
+  StartPos := 1;
+  repeat
+    OldStartPos := StartPos;
+    CurDir := GetNextDirectoryInSearchPath(NewPath, StartPos);
+    if CurDir <> '' then
+    begin
+      IDEMacros.SubstituteMacros(CurDir);
+      FLazPackage.LongenFilename(CurDir);
+      if not DirPathExists(CurDir) then
       begin
-        IDEMacros.SubstituteMacros(CurDir);
-        FLazPackage.LongenFilename(CurDir);
-        if not DirPathExists(CurDir) then
-        begin
-          DlgResult := QuestionDlg(lisEnvOptDlgDirectoryNotFound,
-            Format(lisDirectoryNotFound, [CurDir]),
-            mtError, [mrIgnore, mrYes, lisRemoveFromSearchPath, mrCancel], 0);
-          case DlgResult of
-            mrIgnore: ;
-            mrYes:
-            begin
-              // remove directory from search path
-              NewPath := copy(NewPath, 1, OldStartPos - 1) +
-                copy(NewPath, StartPos, length(NewPath));
-              StartPos := OldStartPos;
-            end;
-            else
-              // undo
-              NewPath := OldPath;
-              break;
+        DlgResult := QuestionDlg(lisEnvOptDlgDirectoryNotFound,
+          Format(lisDirectoryNotFound, [CurDir]),
+          mtError, [mrIgnore, mrYes, lisRemoveFromSearchPath, mrCancel], 0);
+        case DlgResult of
+          mrIgnore: ;
+          mrYes:
+          begin  // remove directory from search path
+            NewPath := copy(NewPath,1,OldStartPos-1) + copy(NewPath,StartPos,length(NewPath));
+            StartPos := OldStartPos;
           end;
+          else   // undo
+            Exit(False);
         end;
       end;
-    until StartPos > length(NewPath);
-  end;
-  AnEdit.Text := NewPath;
-end;
-
-function TPackageUsageOptionsFrame.GetEditForPathButton(
-  AButton: TPathEditorButton): TEdit;
-begin
-  if AButton = UnitPathButton then
-    Result := UnitPathEdit
-  else if AButton = IncludePathButton then
-    Result := IncludePathEdit
-  else if AButton = ObjectPathButton then
-    Result := ObjectPathEdit
-  else if AButton = LibraryPathButton then
-    Result := LibraryPathEdit
-  else
-    Result := nil;
+    end;
+  until StartPos > length(NewPath);
+  Result := True;
 end;
 
 function TPackageUsageOptionsFrame.GetTitle: string;
@@ -190,7 +114,13 @@ begin
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, UnitPathEdit);
     AnchorParallel(akBottom, 0, UnitPathEdit);
-    OnClick := @PathEditBtnClick;
+    AssociatedEdit := UnitPathEdit;
+    Templates := '$(PkgOutDir)' +
+       '$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)' +
+      ';$(LazarusDir)/lcl/units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)' +
+      ';$(LazarusDir)/components/codetools/units/$(TargetCPU)-$(TargetOS)' +
+      ';$(LazarusDir)/components/custom' +
+      ';$(LazarusDir)/packager/units/$(TargetCPU)-$(TargetOS)';
     OnExecuted := @PathEditBtnExecuted;
   end;
   UnitPathEdit.AnchorToNeighbour(akRight,0,UnitPathButton);
@@ -206,7 +136,8 @@ begin
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, IncludePathEdit);
     AnchorParallel(akBottom, 0, IncludePathEdit);
-    OnClick := @PathEditBtnClick;
+    AssociatedEdit := IncludePathEdit;
+    Templates := 'include';
     OnExecuted := @PathEditBtnExecuted;
   end;
   IncludePathEdit.AnchorToNeighbour(akRight,0,IncludePathButton);
@@ -222,7 +153,8 @@ begin
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, ObjectPathEdit);
     AnchorParallel(akBottom, 0, ObjectPathEdit);
-    OnClick := @PathEditBtnClick;
+    AssociatedEdit := ObjectPathEdit;
+    Templates := 'objects';
     OnExecuted := @PathEditBtnExecuted;
   end;
   ObjectPathEdit.AnchorToNeighbour(akRight,0,ObjectPathButton);
@@ -238,7 +170,7 @@ begin
     AnchorParallel(akRight, 6, AddPathsGroupBox);
     AnchorParallel(akTop, 0, LibraryPathEdit);
     AnchorParallel(akBottom, 0, LibraryPathEdit);
-    OnClick := @PathEditBtnClick;
+    AssociatedEdit := LibraryPathEdit;
     OnExecuted := @PathEditBtnExecuted;
   end;
   LibraryPathEdit.AnchorToNeighbour(akRight,0,LibraryPathButton);
@@ -252,10 +184,10 @@ begin
   FLazPackage := (AOptions as TPackageIDEOptions).Package;
   with FLazPackage.UsageOptions do
   begin
-    UnitPathEdit.Text := UnitPath;
-    IncludePathEdit.Text := IncludePath;
-    ObjectPathEdit.Text := ObjectPath;
-    LibraryPathEdit.Text := LibraryPath;
+    SetPathTextAndHint(UnitPath, UnitPathEdit);
+    SetPathTextAndHint(IncludePath, IncludePathEdit);
+    SetPathTextAndHint(ObjectPath, ObjectPathEdit);
+    SetPathTextAndHint(LibraryPath, LibraryPathEdit);
     LinkerOptionsMemo.Text := LinkerOptions;
     CustomOptionsMemo.Text := CustomOptions;
   end;
