@@ -2342,6 +2342,17 @@ procedure TTestBasicSynEdit.TestSearchReplace;
       TestCoord(Name, ExpSearchCoord);
     PopBaseName;
 
+    PushBaseName('Search ssoRegExprMultiLine');
+      SetLines(TheTestText);
+      if NextTestSetSelection.BBx > 0 then
+        with NextTestSetSelection do SetCaretAndSel(BBx, BBy, BEx, BEy)
+      else
+        SetCaret(CaretX, CaretY);
+      got := SynEdit.SearchReplace(Find, '', SrcOpts - [ssoReplace, ssoReplaceAll]+[ssoRegExprMultiLine]);
+      AssertEquals(BaseTestName + Name + 'Result Count', Min(ExpCnt,1), got);
+      TestCoord(Name, ExpSearchCoord);
+    PopBaseName;
+
     if (SrcOpts * [ssoReplace, ssoReplaceAll]) = [] then exit;
 
     PushBaseName('Replace');
@@ -2351,6 +2362,18 @@ procedure TTestBasicSynEdit.TestSearchReplace;
       else
         SetCaret(CaretX, CaretY);
       got := SynEdit.SearchReplace(Find, Repl, SrcOpts);
+      AssertEquals(BaseTestName + Name + 'Result Count', ExpCnt, got);
+      TestIsText(Name + 'Result Text', TheTestText, ExpTxt);
+      TestCoord(Name, ExpReplCoord);
+    PopBaseName;
+
+    PushBaseName('Replace ssoRegExprMultiLine');
+      SetLines(TheTestText);
+      if NextTestSetSelection.BBx > 0 then
+        with NextTestSetSelection do SetCaretAndSel(BBx, BBy, BEx, BEy)
+      else
+        SetCaret(CaretX, CaretY);
+      got := SynEdit.SearchReplace(Find, Repl, SrcOpts+[ssoRegExprMultiLine]);
       AssertEquals(BaseTestName + Name + 'Result Count', ExpCnt, got);
       TestIsText(Name + 'Result Text', TheTestText, ExpTxt);
       TestCoord(Name, ExpReplCoord);
