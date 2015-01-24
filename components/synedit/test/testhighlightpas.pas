@@ -58,6 +58,7 @@ type
     procedure TestContextForClassHelper;
     procedure TestContextForRecordHelper;
     procedure TestContextForStatic;
+    procedure TestCaretAsString;
     procedure TestFoldNodeInfo;
   end;
 
@@ -1074,6 +1075,51 @@ begin
                       tkSpace, tkKey, tkSpace, tkIdentifier,     // #32 write static
                       tkSymbol                   // ;
                      ]);
+end;
+
+procedure TTestHighlighterPas.TestCaretAsString;
+begin
+  ReCreateEdit;
+  SetLines
+    ([ 'Unit A; interface',  // 0
+       'var',
+         'a:char=^o;',
+         'b:^char=nil;',
+       'type',
+         'c=^char;',         // 5
+       'implementation',
+       'function x(f:^char=^k):^v;', // actually the compiler does not allow ^ as pointer for result
+       'var',
+         'a:char=^o;',
+         'b:^char=nil;',     // 10
+       'type',
+         'c=^char;',
+       'begin',
+         'i:=^f;',
+       'end;',                   // 15
+       ''
+    ]);
+
+  CheckTokensForLine('a:char=^o;',   2,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkSymbol]);
+  CheckTokensForLine('b:^char=nil;',   3,
+                     [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkKey, tkSymbol]);
+  CheckTokensForLine('c=^char;',   5,
+                     [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);
+
+  CheckTokensForLine('function x(f:^char=^k):^v;',   7,
+                     [tkKey, tkSpace, tkIdentifier, tkSymbol, tkIdentifier,  // function x(f
+                      tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkString,  // :^char=^k
+                      tkSymbol, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);          // ):^v;
+  CheckTokensForLine('LOCAL a:char=^o;',   9,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkSymbol]);
+  CheckTokensForLine('LOCAL b:^char=nil;',   10,
+                     [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol, tkKey, tkSymbol]);
+  CheckTokensForLine('LOCAL c=^char;',   12,
+                     [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);
+  CheckTokensForLine('i:=^f',   14,
+                     [tkIdentifier, tkSymbol, tkString, tkSymbol]);
+
 end;
 
 procedure TTestHighlighterPas.TestFoldNodeInfo;
