@@ -106,6 +106,7 @@ type
     procedure TestIsCaretPhys(Name: String; X, Y: Integer);
     procedure TestIsCaretAndSel(Name: String; LogX1, LogY1, LogX2, LogY2: Integer); // logical caret
     procedure TestIsCaretAndSelBackward(Name: String; LogX1, LogY1, LogX2, LogY2: Integer); // logical caret
+    procedure TestIsSelection(Name: String; LogX1, LogY1, LogX2, LogY2: Integer);
 
     procedure TestCompareString(Name, Expect, Value: String; DbgInfo: String = '');
     procedure TestCompareString(Name: String; Expect, Value: Array of String; DbgInfo: String = '');
@@ -303,6 +304,18 @@ begin
              Format('X/Y=(%d, %d)', [SynEdit.BlockEnd.X, SynEdit.BlockEnd.Y]));
 end;
 
+procedure TTestBase.TestIsSelection(Name: String; LogX1, LogY1, LogX2, LogY2: Integer);
+begin
+  if (SynEdit.BlockBegin.X <> LogX1) or (SynEdit.BlockBegin.Y <> LogY1) then
+    TestFail(Name, 'IsBlockBegin(Log)',
+             Format('X/Y=(%d, %d)', [LogX1, LogY1]),
+             Format('X/Y=(%d, %d)', [SynEdit.BlockBegin.X, SynEdit.BlockBegin.Y]));
+  if (SynEdit.BlockEnd.X <> LogX2) or (SynEdit.BlockEnd.Y <> LogY2) then
+    TestFail(Name, 'IsBlockEnd(Log)',
+             Format('X/Y=(%d, %d)', [LogX2, LogY2]),
+             Format('X/Y=(%d, %d)', [SynEdit.BlockEnd.X, SynEdit.BlockEnd.Y]));
+end;
+
 procedure TTestBase.TestCompareString(Name, Expect, Value: String; DbgInfo: String);
 var
   i, j, x, y: Integer;
@@ -366,7 +379,7 @@ begin
   TestIsText(Name, LinesToText(Lines));
 end;
 
-procedure TTestBase.TestIsText(Name: String; Lines: Array of String; Repl: array of const);
+procedure TTestBase.TestIsText(Name: String; Lines: array of String; Repl: array of const);
 begin
   TestIsText(Name, LinesToText(LinesReplace(Lines, Repl)));
 end;
@@ -426,7 +439,7 @@ begin
   end;
 end;
 
-function TTestBase.LinesReplace(Lines: Array of String; Repl: array of const): TStringArray;
+function TTestBase.LinesReplace(Lines: array of String; Repl: array of const): TStringArray;
 var
   i, j, k: Integer;
   s: String;

@@ -12,7 +12,7 @@ interface
 uses
   Classes, SysUtils, testregistry, LCLProc, LCLType, Forms, TestBase, SynEdit,
   SynEditTextTrimmer, SynEditKeyCmds, LazSynEditText, SynEditPointClasses,
-  SynEditMiscClasses;
+  SynEditMiscClasses, SynEditTypes, SynEditMiscProcs;
 
 type
 
@@ -36,6 +36,7 @@ type
     procedure TestCaretAutoMove;
     procedure TestCaretDeleteWord_LastWord;
     procedure TestWordBreaker;
+    procedure TestSearchReplace;
   end;
 
 implementation
@@ -2238,6 +2239,279 @@ begin
 
 
   FreeAndNil(WBrker);
+end;
+
+procedure TTestBasicSynEdit.TestSearchReplace;
+  function TestText1: TStringArray;
+  begin
+    SetLength(Result, 9);
+    Result[0] := 'aaaa';
+    Result[1] := 'xx11';
+    Result[2] := 'cccc';
+    Result[3] := '1 1 x';
+    Result[4] := '9';
+    Result[5] := '1 1 x';
+    Result[6] := '9';
+    Result[7] := '';
+    Result[8] := '';
+  end;
+
+  type
+    TCaretBlockCoordinates = record x,y, BBx, BBy, BEx, BEy: Integer end;
+
+  function expC(ExpCaretX, ExpCaretY, ExpBBX, ExpBBY, ExpBEX, ExpBEY : Integer): TCaretBlockCoordinates;
+  begin
+    with result do begin
+      x   := ExpCaretX;      y   := ExpCaretY;
+      BBx := ExpBBX;         BBy := ExpBBY;
+      BEx := ExpBEX;         BEy := ExpBEY;
+    end;
+  end;
+  function expC(ExpCaretX, ExpCaretY: Integer; ExpBBX : Integer = -1): TCaretBlockCoordinates;
+  begin
+    Result := ExpC(ExpCaretX, ExpCaretY, ExpBBX, -1, -1, -1);
+  end;
+  function expC(ExpBBX, ExpBBY, ExpBEX, ExpBEY: Integer): TCaretBlockCoordinates;
+  begin
+    with result do begin
+      x   := -1;          y   := -1;
+      BBx := ExpBBX;      BBy := ExpBBY;
+      BEx := ExpBEX;      BEy := ExpBEY;
+    end;
+  end;
+  function expCNo(ExpCaretX, ExpCaretY: Integer): TCaretBlockCoordinates; // no solection
+  begin
+    Result := expC(ExpCaretX, ExpCaretY, -2);
+  end;
+  function expCFw(ExpBBX, ExpBBY, ExpBEX, ExpBEY: Integer): TCaretBlockCoordinates;
+  begin // Forward selection
+    with result do begin
+      x   := ExpBEX;      y   := ExpBEY;
+      BBx := ExpBBX;      BBy := ExpBBY;
+      BEx := ExpBEX;      BEy := ExpBEY;
+    end;
+  end;
+  function expCBw(ExpBBX, ExpBBY, ExpBEX, ExpBEY: Integer): TCaretBlockCoordinates;
+  begin // Backward selection
+    with result do begin
+      x   := ExpBBX;      y   := ExpBBY;
+      BBx := ExpBBX;      BBy := ExpBBY;
+      BEx := ExpBEX;      BEy := ExpBEY;
+    end;
+  end;
+
+  function nextSel(ExpBBX, ExpBBY, ExpBEX, ExpBEY: Integer): TCaretBlockCoordinates;
+  begin
+    Result := expC(ExpBBX, ExpBBY, ExpBEX, ExpBEY);
+  end;
+
+  var
+    TheTestText: TStringArray;
+    NextTestSetSelection: TCaretBlockCoordinates;
+
+  procedure TestCoord(Name: String; ExpCoord: TCaretBlockCoordinates);
+  begin
+    if ExpCoord.x > 0 then
+      TestIsCaret(Name+' Caret ', ExpCoord.x, ExpCoord.y);
+    if ExpCoord.BBx > 0 then
+      TestIsSelection(Name+' Selection ', ExpCoord.BBx, ExpCoord.BBy, ExpCoord.BEx, ExpCoord.BEy);
+    if ExpCoord.BBx = -2 then
+      TestIsSelection(Name+' NO Selection ', SynEdit.LogicalCaretXY.x, SynEdit.CaretY, SynEdit.LogicalCaretXY.x, SynEdit.CaretY);
+  end;
+
+  procedure TestSearch(Name, Find, Repl: String; SrcOpts: TSynSearchOptions;
+    CaretX, CaretY: Integer;
+    ExpCnt: Integer; ExpTxt: Array of const;
+    ExpSearchCoord, ExpReplCoord: TCaretBlockCoordinates
+  );
+  var
+    got: Integer;
+  begin
+    ReCreateEdit;
+    SynEdit.Options := SynEdit.Options + [eoScrollPastEol];
+    Name := ' - ' + Name;
+
+    PushBaseName('Search');
+      SetLines(TheTestText);
+      if NextTestSetSelection.BBx > 0 then
+        with NextTestSetSelection do SetCaretAndSel(BBx, BBy, BEx, BEy)
+      else
+        SetCaret(CaretX, CaretY);
+      got := SynEdit.SearchReplace(Find, '', SrcOpts - [ssoReplace, ssoReplaceAll]);
+      AssertEquals(BaseTestName + Name + 'Result Count', Min(ExpCnt,1), got);
+      TestCoord(Name, ExpSearchCoord);
+    PopBaseName;
+
+    if (SrcOpts * [ssoReplace, ssoReplaceAll]) = [] then exit;
+
+    PushBaseName('Replace');
+      SetLines(TheTestText);
+      if NextTestSetSelection.BBx > 0 then
+        with NextTestSetSelection do SetCaretAndSel(BBx, BBy, BEx, BEy)
+      else
+        SetCaret(CaretX, CaretY);
+      got := SynEdit.SearchReplace(Find, Repl, SrcOpts);
+      AssertEquals(BaseTestName + Name + 'Result Count', ExpCnt, got);
+      TestIsText(Name + 'Result Text', TheTestText, ExpTxt);
+      TestCoord(Name, ExpReplCoord);
+    PopBaseName;
+
+    NextTestSetSelection := expCNo(-1,-1);
+  end;
+
+  procedure TestSearch(Name, Find, Repl: String; SrcOpts: TSynSearchOptions;
+    CaretX, CaretY: Integer; ExpCnt: Integer; ExpTxt: Array of const);
+  begin
+    TestSearch(Name, Find, Repl, SrcOpts, CaretX, CaretY, ExpCnt, ExpTxt, ExpC(-1,-1), ExpC(-1,-1));
+  end;
+  procedure TestSearch(Name, Find, Repl: String; Opts: TSynSearchOptions;
+    ExpCnt: Integer; ExpTxt: Array of const);
+  begin
+    if ssoBackwards in Opts
+    then TestSearch(Name, Find, Repl, Opts, 1,length(TheTestText)-1, ExpCnt, ExpTxt)
+    else TestSearch(Name, Find, Repl, Opts, 1,1, ExpCnt, ExpTxt);
+  end;
+  procedure TestSearch(Name, Find, Repl: String; Opts: TSynSearchOptions;
+    ExpCnt: Integer; ExpTxt: Array of const; ExpSearchCoord, ExpReplCoord: TCaretBlockCoordinates);
+  begin
+    if ssoBackwards in Opts
+    then TestSearch(Name, Find, Repl, Opts, 1,length(TheTestText)-1, ExpCnt, ExpTxt, ExpSearchCoord, ExpReplCoord)
+    else TestSearch(Name, Find, Repl, Opts, 1,1, ExpCnt, ExpTxt, ExpSearchCoord, ExpReplCoord);
+  end;
+
+const
+  LE = LineEnding;
+  optAllAll: TSynSearchOptions = [ssoEntireScope, ssoReplace, ssoReplaceAll];
+  optAllAllB: TSynSearchOptions = [ssoEntireScope, ssoReplace, ssoReplaceAll, ssoBackwards];
+  optSelAll: TSynSearchOptions = [ssoSelectedOnly, ssoReplace, ssoReplaceAll];
+  optSelAllB: TSynSearchOptions = [ssoSelectedOnly, ssoReplace, ssoReplaceAll, ssoBackwards];
+  var f, r: String;
+  var txl: Integer;
+begin
+  TheTestText := TestText1;
+  txl := length(TheTestText)-1;
+
+  PushBaseName('Find single line term ');
+    PushBaseName('no match ');
+      f := '11xx';
+      r := '2222';
+      TestSearch('',         f, r, optAllAll,  0, [], expCNo(1,1),   expCNo(1,1) );
+      TestSearch('backward', f, r, optAllAllB, 0, [], expCNo(1,txl), expCNo(1,txl) );
+
+    PopPushBaseName('match - full line');
+      f := 'xx11';
+      r := '2222';
+      TestSearch('',         f, r, optAllAll,  1, [2, '2222'], expCFw(1,2, 5,2), expCFw(1,2, 5,2) );
+      TestSearch('backward', f, r, optAllAllB, 1, [2, '2222'], expCBw(1,2, 5,2), expCBw(1,2, 5,2) );
+
+      r := '';
+      TestSearch('repl-empty ',         f, r, optAllAll,  1, [2, ''], expCFw(1,2, 5,2), expCNo(1,2) );
+      TestSearch('repl-empty backward', f, r, optAllAllB, 1, [2, ''], expCBw(1,2, 5,2), expCNo(1,2) );
+
+      r := LE;
+      TestSearch('repl-CR ',         f, r, optAllAll,  1, [2, '', ''], expCFw(1,2, 5,2), expCFw(1,2, 1,3) );
+      TestSearch('repl-CR backward', f, r, optAllAllB, 1, [2, '', ''], expCBw(1,2, 5,2), expCBw(1,2, 1,3) );
+
+    PopPushBaseName('match - part line (end)');
+      f := 'x11';
+      r := '22';
+      TestSearch('repl-shorter ',         f, r, optAllAll,  1, [2, 'x22'], expCFw(2,2, 5,2), expCFw(2,2, 4,2) );
+      TestSearch('repl-shorter backward', f, r, optAllAllB, 1, [2, 'x22'], expCBw(2,2, 5,2), expCBw(2,2, 4,2) );
+
+      r := '2222';
+      TestSearch('repl-longer ',         f, r, optAllAll,  1, [2, 'x2222'], expCFw(2,2, 5,2), expCFw(2,2, 6,2) );
+      TestSearch('repl-longer backward', f, r, optAllAllB, 1, [2, 'x2222'], expCBw(2,2, 5,2), expCBw(2,2, 6,2) );
+
+      r := LE;
+      TestSearch('repl-CR ',         f, r, optAllAll,  1, [2, 'x', ''], expCFw(2,2, 5,2), expCFw(2,2, 1,3) );
+      TestSearch('repl-CR backward', f, r, optAllAllB, 1, [2, 'x', ''], expCBw(2,2, 5,2), expCBw(2,2, 1,3) );
+
+    PopPushBaseName('match in selection');
+      f := '1';
+      r := 'N';
+      NextTestSetSelection := nextSel(1,4, 2,6);
+      TestSearch('repl-at-end ',         f, r, optSelAll,  3, [4,'N N x', 6,'N 1 x'], expCFw(1,4, 2,4), expCFw(1,6, 2,6) );
+      NextTestSetSelection := nextSel(1,4, 2,6);
+      TestSearch('repl-at-end backward', f, r, optSelAllB, 3, [4,'N N x', 6,'N 1 x'], expCBw(1,6, 2,6), expCBw(1,4, 2,4) );
+
+      NextTestSetSelection := nextSel(1,4, 3,6);
+      TestSearch('no-repl-after-end ',         f, r, optSelAll,  3, [4,'N N x', 6,'N 1 x'], expCFw(1,4, 2,4), expCFw(1,6, 2,6) );
+      NextTestSetSelection := nextSel(1,4, 3,6);
+      TestSearch('no-repl-after-end backward', f, r, optSelAllB, 3, [4,'N N x', 6,'N 1 x'], expCBw(1,6, 2,6), expCBw(1,4, 2,4) );
+
+      NextTestSetSelection := nextSel(1,4, 1,6);
+      TestSearch('no-repl-after-end(BOL) ',         f, r, optSelAll,  2, [4,'N N x'], expCFw(1,4, 2,4), expCFw(3,4, 4,4) );
+      NextTestSetSelection := nextSel(1,4, 1,6);
+      TestSearch('no-repl-after-end(BOL) backward', f, r, optSelAllB, 2, [4,'N N x'], expCBw(3,4, 4,4), expCBw(1,4, 2,4) );
+
+    PopPushBaseName('match in selection, repl-SHORTER - to empty');
+      r := '';
+      NextTestSetSelection := nextSel(1,4, 4,6);
+      TestSearch('repl-at-end ',         f, r, optSelAll,  4, [4,'  x', 6,'  x'], expCFw(1,4, 2,4), expCNo(2,6) );
+      NextTestSetSelection := nextSel(1,4, 4,6);
+      TestSearch('repl-at-end backward', f, r, optSelAllB, 4, [4,'  x', 6,'  x'], expCBw(3,6, 4,6), expCNo(1,4) );
+
+      NextTestSetSelection := nextSel(1,4, 3,6);
+      TestSearch('no-repl-after-end ',         f, r, optSelAll,  3, [4,'  x', 6,' 1 x'], expCFw(1,4, 2,4), expCNo(1,6) );
+      NextTestSetSelection := nextSel(1,4, 3,6);
+      TestSearch('no-repl-after-end backward', f, r, optSelAllB, 3, [4,'  x', 6,' 1 x'], expCBw(1,6, 2,6), expCNo(1,4) );
+
+    PopPushBaseName('match in selection, repl-LONGER');
+      r := 'NN';
+      NextTestSetSelection := nextSel(1,4, 4,6);
+      TestSearch('repl-at-end ',         f, r, optSelAll,  4, [4,'NN NN x', 6,'NN NN x'], expCFw(1,4, 2,4), expCFw(4,6, 6,6) );
+      NextTestSetSelection := nextSel(1,4, 4,6);
+      TestSearch('repl-at-end backward', f, r, optSelAllB, 4, [4,'NN NN x', 6,'NN NN x'], expCBw(3,6, 4,6), expCBw(1,4, 3,4) );
+
+      NextTestSetSelection := nextSel(1,4, 3,6);
+      TestSearch('no-repl-after-end ',         f, r, optSelAll,  3, [4,'NN NN x', 6,'NN 1 x'], expCFw(1,4, 2,4), expCFw(1,6, 3,6) );
+      NextTestSetSelection := nextSel(1,4, 3,6);
+      TestSearch('no-repl-after-end backward', f, r, optSelAllB, 3, [4,'NN NN x', 6,'NN 1 x'], expCBw(1,6, 2,6), expCBw(1,4, 3,4) );
+
+    PopPushBaseName('match in selection, repl-CR');
+      r := LE;
+      NextTestSetSelection := nextSel(1,4, 4,6);
+      TestSearch('repl-at-end ',         f, r, optSelAll,  4, [4,'',' ',' x', 8,'',' ',' x'], expCFw(1,4, 2,4), expCFw(2,9, 1,10) );
+      NextTestSetSelection := nextSel(1,4, 4,6);
+      TestSearch('repl-at-end backward', f, r, optSelAllB, 4, [4,'',' ',' x', 8,'',' ',' x'], expCBw(3,6, 4,6), expCBw(1,4, 1,5) );
+
+      NextTestSetSelection := nextSel(1,4, 3,6);
+      TestSearch('no-repl-after-end ',         f, r, optSelAll,  3, [4,'',' ',' x', 8,'',' 1 x'], expCFw(1,4, 2,4), expCFw(1,8, 1,9) );
+      NextTestSetSelection := nextSel(1,4, 3,6);
+      TestSearch('no-repl-after-end backward', f, r, optSelAllB, 3, [4,'',' ',' x', 8,'',' 1 x'], expCBw(1,6, 2,6), expCBw(1,4, 1,5) );
+
+    PopBaseName;
+
+
+  PopPushBaseName('Find with trailing CR ');
+    PushBaseName('no match ');
+      f := 'xx'+LE;
+      r := '11'+LE;
+      TestSearch('',         f, r, optSelAll,  0, [], expCNo(1,1),   expCNo(1,1) );
+      TestSearch('backward', f, r, optSelAllB, 0, [], expCNo(1,txl), expCNo(1,txl) );
+
+    PopPushBaseName('match ');
+      f := '11'+LE;
+      r := 'bb'+LE;
+      TestSearch('',         f, r, optSelAll,  1, [2, 'xxbb'], expCFw(3,2, 1,3), expCFw(3,2, 1,3) );
+      TestSearch('backward', f, r, optSelAllB, 1, [2, 'xxbb'], expCBw(3,2, 1,3), expCBw(3,2, 1,3) );
+    PopBaseName;
+
+  PopPushBaseName('Find with leading CR ');
+    PushBaseName('no match ');
+      f := LE+'11';
+      r := LE+'xx';
+      TestSearch('',         f, r, optSelAll,  0, [], expCNo(1,1),   expCNo(1,1) );
+      TestSearch('backward', f, r, optSelAllB, 0, [], expCNo(1,txl), expCNo(1,txl) );
+
+    PopPushBaseName('match ');
+      f := LE+'xx';
+      r := LE+'bb';
+      TestSearch('',         f, r, optSelAll,  1, [2, 'bb11'], expCFw(5,1, 3,2), expCFw(5,1, 3,2) );
+      TestSearch('backward', f, r, optSelAllB, 1, [2, 'bb11'], expCBw(5,1, 3,2), expCBw(5,1, 3,2) );
+    PopBaseName;
+
+  PopBaseName;
 end;
 
 
