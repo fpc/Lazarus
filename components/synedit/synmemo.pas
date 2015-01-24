@@ -113,12 +113,15 @@ type
     property InsertMode;
     property Keystrokes;
     property MouseActions;
+    property MouseTextActions;
     property MouseSelActions;
     property Lines;
     property MaxLeftChar;
     property MaxUndo;
     property Options;
     property Options2;
+    property MouseOptions;
+    property VisibleSpecialChars;
     property OverwriteCaret;
     property ReadOnly;
     property RightEdge;

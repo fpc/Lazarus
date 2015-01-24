@@ -891,7 +891,13 @@ type
     property IsBackwardSel: Boolean read GetIsBackwardSel;
     property SelText: string read GetSelText write SetSelTextExternal;
 
-    // Text
+    // Text Raw (not undo-able)
+    procedure Clear;
+    procedure Append(const Value: String);
+    property LineText: string read GetLineText write SetLineText;               // textline at CaretY
+    property Text: string read SynGetText write SynSetText;                     // No uncommited (trailing/trimmable) spaces
+
+    // Text (unho-able)
     procedure ClearAll;
     procedure InsertTextAtCaret(aText: String; aCaretMode : TSynCaretAdjustMode = scamEnd);
 
@@ -907,8 +913,6 @@ type
                                    aSelectionMode: TSynSelectionMode = smNormal
                                   );
 
-    property LineText: string read GetLineText write SetLineText;
-    property Text: string read SynGetText write SynSetText;                     // No uncommited (trailing/trimmable) spaces
 
     function GetLineState(ALine: Integer): TSynLineState;
     procedure MarkTextAsSaved;
@@ -4138,6 +4142,16 @@ end;
 procedure TCustomSynEdit.SelectParagraph;
 begin
   SetParagraphBlock(CaretXY);
+end;
+
+procedure TCustomSynEdit.Clear;
+begin
+  FTheLinesView.Clear;
+end;
+
+procedure TCustomSynEdit.Append(const Value: String);
+begin
+  FTheLinesView.Append(Value);
 end;
 
 procedure TCustomSynEdit.DoBlockSelectionChanged(Sender : TObject);
