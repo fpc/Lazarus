@@ -202,7 +202,7 @@ begin
                            +length(AReplacement);
       end else begin
         // replace word with lines
-        Result.X:=Result.X-ReplaceEnd.X+GetLastLineLength(AReplacement);
+        Result.X:=1+GetLastLineLength(AReplacement)+(Result.X-ReplaceEnd.X);
       end;
     end else begin
       if aLineCount=0 then begin
@@ -210,7 +210,7 @@ begin
         Result.X:=ReplaceStart.X+length(AReplacement)+(Result.X-ReplaceEnd.X);
       end else begin
         // replace lines with lines
-        Result.X:=GetLastLineLength(AReplacement)+(Result.X-ReplaceEnd.X);
+        Result.X:=1+GetLastLineLength(AReplacement)+(Result.X-ReplaceEnd.X);
       end;
     end;
   end;
@@ -563,7 +563,7 @@ var
           dec(LineEndPos, length(LineEnding));
         CurLineStr:=Lines[CurY];
         if LineEndPos = 0 then begin // match empty string
-          FoundStartPos:=Point(length(CurLineStr),CurY+1);
+          FoundStartPos:=Point(length(CurLineStr)+1,CurY+1);
           exit(WholeWordAtStartFits);
         end;
         LineStartPos:=FindPrevPatternLineEnd(Pat,LineEndPos)+1;
@@ -754,7 +754,7 @@ begin
     exit;
   end;
   MinY:=Max(0,StartPos.Y-1);
-  MaxY:=Min(Lines.Count-1,EndPos.Y-1);
+  MaxY:=Min(Lines.Count,EndPos.Y-1);
   if MinY>MaxY then exit;
   if Backwards then begin
     // backwards
@@ -862,12 +862,14 @@ begin
       if (SearchLen=0) and ((LineLen=0) or IsMultiLinePattern) then
       begin
         // first (last if backwards) line of pattern is empty line
-        if FBackwards then
-          FoundStartPos:=Point(LineLen,y+1)
-        else
+        if FBackwards then begin
           FoundStartPos:=Point(1,y+1);
+          x:=0; // FoundStartPos.x-1;
+        end else begin
+          FoundStartPos:=Point(LineLen+1,y+1);
+          x:=MaxPos;  //FoundStartPos.x-1;
+        end;
         FoundEndPos:=FoundStartPos;
-        x:=MaxPos;
         if CheckFound then exit(true);
       end else begin
         //DebugLn(['TSynEditSearch.FindNextOne x=',x,' MaxPos=',MaxPos,' Line="',Line,'"']);
