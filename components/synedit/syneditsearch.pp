@@ -880,13 +880,18 @@ begin
         x:=EndPos.X-SearchLen-1
       else
         x:=StartPos.X-1;
+      if IsMultiLinePattern then begin
+        if FBackwards then
+          x:=Min(x, 0)   // keep negative to indicate pattern does not fit into line
+        else
+          x:=Max(x, LineLen-SearchLen)  // keep higher x, if pattern does not fit
+      end;
     end else begin
-      if FBackwards then
+      if FBackwards xor IsMultiLinePattern then
         x:=LineLen-SearchLen
       else
         x:=0;
     end;
-    x:=MinMax(x,0,LineLen-1);
     //DebugLn(['TSynEditSearch.FindNextOne Line="',LineStr,'" x=',x,' LineLen=',LineLen]);
 
     repeat
@@ -904,7 +909,9 @@ begin
         end;
         FoundEndPos:=FoundStartPos;
         if CheckFound then exit(true);
-      end else begin
+      end else
+      if (x >= 0) and (x+SearchLen <= LineLen) then // otherwise searchterm does not fit in this line
+      begin
         //DebugLn(['TSynEditSearch.FindNextOne x=',x,' MaxPos=',MaxPos,' Line="',Line,'"']);
         while (x>=0) and (x<=MaxPos) do begin
           //DebugLn(['TSynEditSearch.FindNextOne x=',x]);
@@ -956,11 +963,11 @@ begin
       if ASupportUnicodeCase and (not fSensitive) then LineStr := UTF8LowerCase(LineStr);
       LineLen:=length(LineStr);
       Line:=PChar(LineStr);
-      if FBackwards then
+      // IsMultiLinePattern must be at other end of line (continues in next/prev line)
+      if FBackwards xor IsMultiLinePattern then
         x:=LineLen-SearchLen
       else
         x:=0;
-      x:=MinMax(x,0,LineLen-1);
       //DebugLn(['TSynEditSearch.FindNextOne Line="',LineStr,'" x=',x,' LineLen=',LineLen]);
     until (y<MinY) or (y>MaxY);
 
