@@ -2756,8 +2756,14 @@ begin
        ) and
        (fRange * [rsInTypeBlock, rsAfterEqual] = [rsAfterEqual]) )
   then begin
-    if Run<fLineLen then
+    if Run<fLineLen then begin
+      if (Run+1 < fLineLen) and (fLine[Run] = '{') and (fLine[Run+1] = '$')  then begin
+        // "{$" directive takes precedence
+        fTokenID := tkSymbol;
+        exit;
+      end;
       inc(Run);
+    end;
     fTokenID := tkString;
   end;
 end;
