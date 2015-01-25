@@ -412,7 +412,6 @@ begin
     ecColumnSelect            : Result:= srkmecColumnSelect;
     ecLineSelect              : Result:= srkmecLineSelect;
     ecAutoCompletion          : Result:= srkmecAutoCompletion;
-    ecUserFirst               : Result:= srkmecPrevBookmark;
     ecSetFreeBookmark         : Result:= srkmecSetFreeBookmark;
     ecClearBookmarkForFile    : Result:= srkmecClearBookmarkForFile;
     ecClearAllBookmark        : Result:= srkmecClearAllBookmark;
