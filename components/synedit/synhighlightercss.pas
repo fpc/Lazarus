@@ -1992,7 +1992,7 @@ end;
 
 function TSynCssSyn.GetRange: Pointer;
 begin
-  Result := Pointer(PtrInt(fRange));
+  Result := {%H-}Pointer(Integer(fRange));
 end;
 
 function TSynCssSyn.GetToken: string;
@@ -2050,7 +2050,7 @@ end;
 
 procedure TSynCssSyn.SetRange(Value: Pointer);
 begin
-  FRange := TRangeStates(PtrUInt(Value));
+  FRange := TRangeStates({%H-}Cardinal(Value));
 end;
 
 function TSynCssSyn.GetIdentChars: TSynIdentChars;
