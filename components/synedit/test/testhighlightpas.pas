@@ -1101,7 +1101,11 @@ begin
          'c:=p ^;',
          'c:=p(**)^;',
          'c:=p{} ^;',
-         'c:=p^+^i''e''^a#13^x;',   //20
+         'i:=f(1)^;',     // 20
+         'i:=f[1]^;',
+         'i:=f^^;',
+         'c:=p^+^i''e''^a#13^x;',
+         'c:=x=^a and ^a=k and(^a^a=z);',
        'end;',
        ''
     ]);
@@ -1140,9 +1144,22 @@ begin
   CheckTokensForLine('c:=p{} ^;',   19,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkComment, tkSpace, tkSymbol, tkSymbol]);
 
-  CheckTokensForLine('c:=p^+^i''e''^a#13^x;',   20,
+  CheckTokensForLine('c:=p(1)^;',   20,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkNumber, tkSymbol, tkSymbol]);
+  CheckTokensForLine('c:=p[1]^;',   21,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkNumber, tkSymbol, tkSymbol]);
+  CheckTokensForLine('c:=p^^;',   22,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol, tkSymbol]);
+
+  CheckTokensForLine('c:=p^+^i''e''^a#13^x;',   23,
                      [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol, // c:=p^+
                       tkString, tkString, tkString, tkString, tkString, tkSymbol  // ^i'e'^a#13^x;
+                     ]);
+  CheckTokensForLine('c:=x=^a and ^a=k and(^a^a=z);',   24,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkString, tkSpace, // c:=x=^a
+                      tkKey, tkSpace, tkString, tkSymbol, tkIdentifier, tkSpace, // and ^a=k
+                      tkKey, tkSymbol, tkString, tkString, tkSymbol, tkIdentifier,  // and(^a^a=z
+                      tkSymbol, tkSymbol                                            // );'
                      ]);
 
 end;

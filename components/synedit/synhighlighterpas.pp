@@ -86,7 +86,8 @@ type
     // Also included after class modifiers "sealed" and "abstract"
     rsAtClass,
     rsAfterClass,
-    rsAfterIdentifier,
+    rsAfterIdentifierOrValue, // anywhere where a ^ deref can happen "foo^", "foo^^", "foo()^", "foo[]^"
+    rsAfterIdentifierOrValueAdd,
 
     rsAtClosingBracket,   // ')'
     rsAtCaseLabel,
@@ -2757,7 +2758,7 @@ begin
          ) and
          (fRange * [rsInTypeBlock, rsAfterEqual] = [rsAfterEqual])
      )) and
-     not(rsAfterIdentifier in fRange)
+     not(rsAfterIdentifierOrValue in fRange)
   then begin
     if Run<fLineLen then begin
       if (Run+1 < fLineLen) and (fLine[Run] = '{') and (fLine[Run+1] = '$')  then begin
@@ -2768,7 +2769,9 @@ begin
       inc(Run);
     end;
     fTokenID := tkString;
-  end;
+  end
+  else
+    fRange := fRange + [rsAfterIdentifierOrValueAdd];
 end;
 
 procedure TSynPasSyn.NullProc;
@@ -2876,6 +2879,7 @@ procedure TSynPasSyn.RoundCloseProc;
 begin
   inc(Run);
   fTokenID := tkSymbol;
+  fRange := fRange + [rsAfterIdentifierOrValueAdd];
   PasCodeFoldRange.DecBracketNestLevel;
   if (PasCodeFoldRange.BracketNestLevel = 0) then begin
     if (fRange * [rsAfterClass] <> []) then
@@ -2895,6 +2899,7 @@ procedure TSynPasSyn.SquareCloseProc;
 begin
   inc(Run);
   fTokenID := tkSymbol;
+  fRange := fRange + [rsAfterIdentifierOrValueAdd];
   PasCodeFoldRange.DecBracketNestLevel;
 end;
 
@@ -3071,8 +3076,8 @@ begin
             fRange := fRange - [rsAfterClass];
 
           fRange := fRange -
-            (FOldRange * [rsAfterEqualOrColon, rsAtPropertyOrReadWrite, rsAfterClassField]) -
-            [rsAtClosingBracket, rsAfterIdentifier];
+            (FOldRange * [rsAfterEqualOrColon, rsAtPropertyOrReadWrite, rsAfterClassField, rsAfterIdentifierOrValue]) -
+            [rsAtClosingBracket];
 
           if rsAtClass in fRange then begin
             if FOldRange * [rsAtClass, rsAfterClass] <> [] then
@@ -3087,8 +3092,8 @@ begin
             fRange := fRange + [rsAfterClass];
         end;
 
-        if FTokenID = tkIdentifier then
-          fRange := fRange + [rsAfterIdentifier];
+        if (FTokenID = tkIdentifier) or (rsAfterIdentifierOrValueAdd in fRange) then
+          fRange := fRange + [rsAfterIdentifierOrValue] - [rsAfterIdentifierOrValueAdd];
       end
   end;
   if FAtLineStart and not(FTokenID in [tkSpace, tkComment, tkIDEDirective]) then
