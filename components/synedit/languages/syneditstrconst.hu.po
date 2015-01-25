@@ -227,6 +227,10 @@ msgstr "Jelölő"
 msgid "Math Mode"
 msgstr "Matematikai mód"
 
+#: syneditstrconst.syns_attrmeasurementunitvalue
+msgid "Measurement unit"
+msgstr ""
+
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
 msgstr "Üzenet"
@@ -338,6 +342,10 @@ msgstr "Második védett szó"
 #: syneditstrconst.syns_attrsection
 msgid "Section"
 msgstr "Alfejezet"
+
+#: syneditstrconst.syns_attrselectorvalue
+msgid "Selector"
+msgstr ""
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
@@ -778,3 +786,4 @@ msgstr "<nincs>"
 #: syneditstrconst.syns_untitled
 msgid "Untitled"
 msgstr "Névtelen"
+

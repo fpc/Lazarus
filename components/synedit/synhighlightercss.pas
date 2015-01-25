@@ -57,9 +57,10 @@ uses
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkNull, tkNumber, tkSpace,
-    tkString, tkSymbol, tkUnknown);
+    tkString, tkSymbol, tkMeasurementUnit, tkSelector, tkUnknown);
 
-  TRangeState = (rsUnknown, rsCStyle);
+  TRangeState = (rsCStyle, rsInDeclarationBlock);
+  TRangeStates = set of TRangeState;
 
   TProcTableProc = procedure of object;
 
@@ -67,9 +68,12 @@ type
   TIdentFuncTableFunc = function: TtkTokenKind of object;
 
 type
+
+  { TSynCssSyn }
+
   TSynCssSyn = class(TSynCustomHighlighter)
   private
-    fRange: TRangeState;
+    fRange: TRangeStates;
     fLine: PChar;
     fLineNumber: Integer;
     fProcTable: array[#0..#255] of TProcTableProc;
@@ -86,6 +90,8 @@ type
     fSpaceAttri: TSynHighlighterAttributes;
     fStringAttri: TSynHighlighterAttributes;
     fSymbolAttri: TSynHighlighterAttributes;
+    fMeasurementUnitAttri: TSynHighlighterAttributes;
+    fSelectorAttri: TSynHighlighterAttributes;
     function KeyHash(ToHash: PChar): Integer;
     function KeyComp(const aKey: String): Boolean;
     function Func16: TtkTokenKind;
@@ -230,11 +236,17 @@ type
     function Func250: TtkTokenKind;
     function Func253: TtkTokenKind;
     function Func275: TtkTokenKind;
-    procedure AsciiCharProc;
+    procedure SymbolProc;
+    procedure ColonProc;
+    procedure SelectorProc;
+    procedure PercentProc;
+    procedure CurlyOpenProc;
+    procedure CurlyCloseProc;
     procedure CRProc;
     procedure CStyleCommentProc;
     procedure DashProc;
     procedure IdentProc;
+    procedure HashProc;
     procedure IntegerProc;
     procedure LFProc;
     procedure NullProc;
@@ -286,6 +298,10 @@ type
       write fStringAttri;
     property SymbolAttri: TSynHighlighterAttributes read fSymbolAttri
       write fSymbolAttri;
+    property MeasurementUnitAttri: TSynHighlighterAttributes read fMeasurementUnitAttri
+      write fMeasurementUnitAttri;
+    property SelectorAttri: TSynHighlighterAttributes read fSelectorAttri
+      write fSelectorAttri;
   end;
 
 implementation
@@ -479,7 +495,7 @@ begin
   FStringLen := ToHash - FToIdent;
 end;
 
-function TSynCssSyn.KeyComp(const aKey: string): Boolean;
+function TSynCssSyn.KeyComp(const aKey: String): Boolean;
 var
   iI  : Integer;
   Temp: PChar;
@@ -500,7 +516,10 @@ end;
 
 function TSynCssSyn.Func16: TtkTokenKind;
 begin
-  if KeyComp('cm') or KeyComp('deg') then
+  if KeyComp('cm') then
+    Result := tkMeasurementUnit
+  else
+  if KeyComp('deg') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -509,14 +528,16 @@ end;
 function TSynCssSyn.Func18: TtkTokenKind;
 begin
   if KeyComp('em') then
-    Result := tkKey
+    Result := tkMeasurementUnit
   else
     Result := tkIdentifier;
 end;
 
 function TSynCssSyn.Func19: TtkTokenKind;
 begin
-  if KeyComp('pc') or KeyComp('s') then
+  if KeyComp('pc') then
+    Result := tkMeasurementUnit
+  else if KeyComp('s') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -524,7 +545,10 @@ end;
 
 function TSynCssSyn.Func23: TtkTokenKind;
 begin
-  if KeyComp('in') or KeyComp('rad') then
+  if KeyComp('in') then
+    Result := tkMeasurementUnit
+  else
+  if  KeyComp('rad') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -541,15 +565,17 @@ end;
 function TSynCssSyn.Func26: TtkTokenKind;
 begin
   if KeyComp('mm') then
-    Result := tkKey
+    Result := tkMeasurementUnit
   else
     Result := tkIdentifier;
 end;
 
 function TSynCssSyn.Func29: TtkTokenKind;
 begin
-  if KeyComp('page') or KeyComp('cue') or KeyComp('ex') then
+  if KeyComp('page') or KeyComp('cue') then
     Result := tkKey
+  else if KeyComp('ex') then
+    Result := tkMeasurementUnit
   else
     Result := tkIdentifier;
 end;
@@ -581,7 +607,7 @@ end;
 function TSynCssSyn.Func36: TtkTokenKind;
 begin
   if KeyComp('pt') then
-    Result := tkKey
+    Result := tkMeasurementUnit
   else
     Result := tkIdentifier;
 end;
@@ -596,7 +622,10 @@ end;
 
 function TSynCssSyn.Func40: TtkTokenKind;
 begin
-  if KeyComp('px') or KeyComp('clip') or KeyComp('src') then
+  if KeyComp('px') then
+    Result := tkMeasurementUnit
+  else
+  if KeyComp('clip') or KeyComp('src') then
     Result := tkKey
   else
     Result := tkIdentifier;
@@ -1671,11 +1700,17 @@ var
 begin
   for chI := #0 to #255 do
     case chI of
-      '{', '}'                    : FProcTable[chI] := @AsciiCharProc;
+      '{'                         : FProcTable[chI] := @CurlyOpenProc;
+      '}'                         : FProcTable[chI] := @CurlyCloseProc;
+      ';'                         : FProcTable[chI] := @SymbolProc;
+      ':'                         : FProcTable[chI] := @ColonProc;
+      '.', '*', ',','>','+','~'   : FProcTable[chI] := @SelectorProc;
+      '%'                         : FProcTable[chI] := @PercentProc;
       #13                         : FProcTable[chI] := @CRProc;
       '-'                         : FProcTable[chI] := @DashProc;
       'A'..'Z', 'a'..'z', '_','@' : FProcTable[chI] := @IdentProc;
-      '#', '$'                    : FProcTable[chI] := @IntegerProc;
+      '#'                         : FProcTable[chI] := @HashProc;
+      '$'                         : FProcTable[chI] := @IntegerProc;
       #10                         : FProcTable[chI] := @LFProc;
       #0                          : FProcTable[chI] := @NullProc;
       '0'..'9'                    : FProcTable[chI] := @NumberProc;
@@ -1707,11 +1742,15 @@ begin
   AddAttribute(fStringAttri);
   fSymbolAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSymbol, SYNS_XML_AttrSymbol);
   AddAttribute(fSymbolAttri);
+  fMeasurementUnitAttri := TSynHighlighterAttributes.Create(@SYNS_AttrMeasurementUnitValue, SYNS_XML_AttrMeasurementUnitValue);
+  AddAttribute(fMeasurementUnitAttri);
+  fSelectorAttri := TSynHighlighterAttributes.Create(@SYNS_AttrSelectorValue, SYNS_XML_AttrSelectorValue);
+  AddAttribute(fSelectorAttri);
   SetAttributesOnChange(@DefHighlightChange);
   InitIdent;
   MakeMethodTables;
   fDefaultFilter := SYNS_FilterCSS;
-  fRange := rsUnknown;
+  fRange := [];
 end;
 
 procedure TSynCssSyn.SetLine(const NewValue: String; LineNumber: Integer);
@@ -1723,12 +1762,54 @@ begin
   Next;
 end;
 
-procedure TSynCssSyn.AsciiCharProc;
+procedure TSynCssSyn.SymbolProc;
 begin
-  FTokenID := tkString;
+  if rsInDeclarationBlock in fRange then
+    FTokenID := tkSymbol
+  else
+    FTokenID := tkIdentifier;
   Inc(Run);
-  while FLine[Run] in ['0'..'9'] do
-    Inc(Run);
+end;
+
+procedure TSynCssSyn.ColonProc;
+begin
+  if not(rsInDeclarationBlock in fRange) then
+    FTokenID := tkSelector
+  else
+    FTokenID := tkSymbol;
+  Inc(Run);
+end;
+
+procedure TSynCssSyn.SelectorProc;
+begin
+  if not(rsInDeclarationBlock in fRange) then
+    FTokenID := tkSelector
+  else
+    FTokenID := tkIdentifier;
+  Inc(Run);
+end;
+
+procedure TSynCssSyn.PercentProc;
+begin
+  if rsInDeclarationBlock in fRange then
+    FTokenID := tkMeasurementUnit
+  else
+    FTokenID := tkIdentifier;
+  Inc(Run);
+end;
+
+procedure TSynCssSyn.CurlyOpenProc;
+begin
+  FTokenID := tkSymbol;
+  Inc(Run);
+  fRange := fRange + [rsInDeclarationBlock];
+end;
+
+procedure TSynCssSyn.CurlyCloseProc;
+begin
+  FTokenID := tkSymbol;
+  Inc(Run);
+  fRange := fRange - [rsInDeclarationBlock];
 end;
 
 procedure TSynCssSyn.CRProc;
@@ -1747,7 +1828,7 @@ begin
     FTokenID := tkComment;
     repeat
       if (fLine[Run] = '*') and (fLine[Run + 1] = '/') then begin
-        FRange := rsUnKnown;
+        FRange := fRange - [rsCStyle];
         Inc(Run, 2);
         Break;
       end;
@@ -1778,9 +1859,25 @@ begin
     Inc(Run);
 end;
 
+procedure TSynCssSyn.HashProc;
+begin
+  if (rsInDeclarationBlock in fRange) then begin
+    IntegerProc;
+    exit;
+  end;
+
+  Inc(Run);
+  FTokenID := tkSelector;
+end;
+
 procedure TSynCssSyn.IntegerProc;
 begin
   Inc(Run);
+  if not(rsInDeclarationBlock in fRange) then begin
+    FTokenID := tkIdentifier;
+    exit;
+  end;
+
   FTokenID := tkNumber;
   while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do
     Inc(Run);
@@ -1820,12 +1917,12 @@ begin
   Inc(Run);
   if fLine[Run] = '*' then begin
     FTokenID := tkComment;
-    FRange := rsCStyle;
+    FRange := fRange + [rsCStyle];
     Inc(Run);
     if not (FLine[Run] in [#0, #10, #13]) then
       CStyleCommentProc;
   end else
-    FTokenID := tkSymbol;
+    FTokenID := tkIdentifier;
 end;
 
 procedure TSynCssSyn.SpaceProc;
@@ -1867,13 +1964,13 @@ end;
 procedure TSynCssSyn.Next;
 begin
   FTokenPos := Run;
-  if FRange = rsCStyle then
+  if rsCStyle in fRange then
     CStyleCommentProc
   else
     FProcTable[FLine[Run]]();
 end;
 
-function TSynCssSyn.GetDefaultAttribute(Index: Integer): TSynHighlighterAttributes;
+function TSynCssSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT   : Result := FCommentAttri;
@@ -1928,6 +2025,8 @@ begin
     tkSpace     : Result := FSpaceAttri;
     tkString    : Result := FStringAttri;
     tkSymbol    : Result := FSymbolAttri;
+    tkMeasurementUnit: Result := fMeasurementUnitAttri;
+    tkSelector  : Result := fSelectorAttri;
     tkUnknown   : Result := FIdentifierAttri;
   else
     Result := nil;
@@ -1946,12 +2045,12 @@ end;
 
 procedure TSynCssSyn.ReSetRange;
 begin
-  FRange := rsUnknown;
+  FRange := [];
 end;
 
 procedure TSynCssSyn.SetRange(Value: Pointer);
 begin
-  FRange := TRangeState(PtrUInt(Value));
+  FRange := TRangeStates(PtrUInt(Value));
 end;
 
 function TSynCssSyn.GetIdentChars: TSynIdentChars;
@@ -1974,7 +2073,7 @@ begin
     '}';
 end;
 
-function TSynCSSSyn.KeyHash2(ToHash: PChar): Integer;
+function TSynCssSyn.KeyHash2(ToHash: PChar): Integer;
 begin
   Result := KeyHash(ToHash);
 end;

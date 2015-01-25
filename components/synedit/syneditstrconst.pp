@@ -155,6 +155,8 @@ resourcestring
   SYNS_AttrLineChanged          =  'Diff Changed Line';
   SYNS_AttrLineContext          =  'Diff Context Line';
   SYNS_AttrPrevValue            =  'Previous value';
+  SYNS_AttrMeasurementUnitValue =  'Measurement unit';
+  SYNS_AttrSelectorValue        =  'Selector';
   SYNS_AttrFlags                =  'Flags';
   (* End of Attribute Names *)
 
@@ -270,6 +272,8 @@ const
   SYNS_XML_AttrLineChanged          =  'Diff Changed Line';
   SYNS_XML_AttrLineContext          =  'Diff Context Line';
   SYNS_XML_AttrPrevValue            =  'Previous value';
+  SYNS_XML_AttrMeasurementUnitValue =  'Measurement unit';
+  SYNS_XML_AttrSelectorValue        =  'Selector';
   SYNS_XML_AttrFlags                =  'Flags';
   (* End of Stored Attribute Names *)
 

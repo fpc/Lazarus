@@ -220,6 +220,10 @@ msgstr "Merkitsijä"
 msgid "Math Mode"
 msgstr "Matematiikkamoodi"
 
+#: syneditstrconst.syns_attrmeasurementunitvalue
+msgid "Measurement unit"
+msgstr ""
+
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
 msgstr "Viesti"
@@ -331,6 +335,10 @@ msgstr "Toinen varattu sana"
 #: syneditstrconst.syns_attrsection
 msgid "Section"
 msgstr "Lohko"
+
+#: syneditstrconst.syns_attrselectorvalue
+msgid "Selector"
+msgstr ""
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"

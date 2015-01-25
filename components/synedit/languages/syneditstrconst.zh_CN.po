@@ -228,6 +228,10 @@ msgstr ""
 msgid "Math Mode"
 msgstr ""
 
+#: syneditstrconst.syns_attrmeasurementunitvalue
+msgid "Measurement unit"
+msgstr ""
+
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
 msgstr ""
@@ -338,6 +342,10 @@ msgstr ""
 
 #: syneditstrconst.syns_attrsection
 msgid "Section"
+msgstr ""
+
+#: syneditstrconst.syns_attrselectorvalue
+msgid "Selector"
 msgstr ""
 
 #: syneditstrconst.syns_attrspace

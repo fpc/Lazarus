@@ -226,6 +226,10 @@ msgstr "Marcador"
 msgid "Math Mode"
 msgstr "Modo Aritmético"
 
+#: syneditstrconst.syns_attrmeasurementunitvalue
+msgid "Measurement unit"
+msgstr ""
+
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
 msgstr "Mensagem"
@@ -337,6 +341,10 @@ msgstr "Segunda palavra reservada"
 #: syneditstrconst.syns_attrsection
 msgid "Section"
 msgstr "Seção"
+
+#: syneditstrconst.syns_attrselectorvalue
+msgid "Selector"
+msgstr ""
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"

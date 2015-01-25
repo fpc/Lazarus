@@ -227,6 +227,10 @@ msgstr "Značkovač"
 msgid "Math Mode"
 msgstr "Matematický režim"
 
+#: syneditstrconst.syns_attrmeasurementunitvalue
+msgid "Measurement unit"
+msgstr ""
+
 #: syneditstrconst.syns_attrmessage
 msgid "Message"
 msgstr "Zpráva"
@@ -338,6 +342,10 @@ msgstr "Druhé vyhrazené slovo"
 #: syneditstrconst.syns_attrsection
 msgid "Section"
 msgstr "Sekce"
+
+#: syneditstrconst.syns_attrselectorvalue
+msgid "Selector"
+msgstr ""
 
 #: syneditstrconst.syns_attrspace
 msgid "Space"
