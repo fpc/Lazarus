@@ -1,0 +1,3416 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    ComboEx
+  ====================================================================
+-->
+
+<module name="ComboEx">
+<short></short>
+<descr>
+</descr>
+
+<!-- enumeration type Visibility: default -->
+<element name="TAutoCompleteOption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAutoCompleteOption.acoAutoSuggest">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAutoCompleteOption.acoAutoAppend">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAutoCompleteOption.acoSearch">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAutoCompleteOption.acoFilterPrefixes">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAutoCompleteOption.acoUseTab">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAutoCompleteOption.acoUpDownKeyDropsList">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TAutoCompleteOption.acoRtlReading">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TAutoCompleteOptions">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TComboBoxExStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TComboBoxExStyle.csExDropDown">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TComboBoxExStyle.csExSimple">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TComboBoxExStyle.csExDropDownList">
+<short></short>
+</element>
+
+<!-- enumeration type Visibility: default -->
+<element name="TComboBoxExStyleEx">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TComboBoxExStyleEx.csExCaseSensitive">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TComboBoxExStyleEx.csExNoEditImage">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TComboBoxExStyleEx.csExNoEditImageIndent">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TComboBoxExStyleEx.csExNoSizeLimit">
+<short></short>
+</element>
+
+<!-- enumeration value Visibility: default -->
+<element name="TComboBoxExStyleEx.csExPathWordBreak">
+<short></short>
+</element>
+
+<!-- set type Visibility: default -->
+<element name="TComboBoxExStyles">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TCustomData">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TListControlItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TListItemsCompare">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TListItemsCompare.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItemsCompare.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItemsCompare.AItem1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListItemsCompare.AItem2">
+<short></short>
+</element>
+
+<!-- alias type Visibility: default -->
+<element name="TListItemsSortType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure type Visibility: default -->
+<element name="TCheckItemChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCheckItemChange.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TCheckItemChange.AIndex">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TListControlItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function type Visibility: default -->
+<element name="TListCompareEvent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: default -->
+<element name="TListCompareEvent.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListCompareEvent.AList">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListCompareEvent.AItem1">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="TListCompareEvent.AItem2">
+<short></short>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TListControlItem.FCaption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TListControlItem.FData">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TListControlItem.FImageIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TListControlItem.SetCaption">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TListControlItem.SetCaption.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TListControlItem.SetImageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TListControlItem.SetImageIndex.AValue">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TListControlItem.Data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TListControlItem.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TListControlItem.Create.ACollection">
+<short></short>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListControlItem.Caption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListControlItem.ImageIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TComboExItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TComboExItem.FIndent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TComboExItem.FOverlayImageIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TComboExItem.FSelectedImageIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TComboExItem.SetIndent">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TComboExItem.SetIndent.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TComboExItem.SetOverlayImageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TComboExItem.SetOverlayImageIndex.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TComboExItem.SetSelectedImageIndex">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TComboExItem.SetSelectedImageIndex.AValue">
+<short></short>
+</element>
+
+<!-- constant Visibility: protected -->
+<element name="TComboExItem.cDefCaption">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TComboExItem.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TComboExItem.Create.ACollection">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TComboExItem.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboExItem.Indent">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboExItem.OverlayImageIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboExItem.SelectedImageIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TListControlItems.FCaseSensitive">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TListControlItems.FSortType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TListControlItems.FOnCompare">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TListControlItems.FCompare">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TListControlItems.GetItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TListControlItems.GetItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TListControlItems.GetItems.AIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TListControlItems.SetCaseSensitive">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TListControlItems.SetCaseSensitive.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TListControlItems.SetSortType">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TListControlItems.SetSortType.AValue">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TListControlItems.CompareItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: protected -->
+<element name="TListControlItems.CompareItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TListControlItems.CompareItems.AItem1">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TListControlItems.CompareItems.AItem2">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TListControlItems.DoCustomSort">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: protected -->
+<element name="TListControlItems.DoCustomSort.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TListControlItems.DoCustomSort.AItem1">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TListControlItems.DoCustomSort.AItem2">
+<short></short>
+</element>
+
+<!-- function Visibility: protected -->
+<element name="TListControlItems.DoOnCompare">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: protected -->
+<element name="TListControlItems.DoOnCompare.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TListControlItems.DoOnCompare.AItem1">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TListControlItems.DoOnCompare.AItem2">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TListControlItems.Update">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TListControlItems.Update.AItem">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TListControlItems.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TListControlItems.Add.Result">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TListControlItems.CustomSort">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TListControlItems.CustomSort.ACompare">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TListControlItems.Sort">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TListControlItems.Items">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TListControlItems.Items.AIndex">
+<short></short>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListControlItems.CaseSensitive">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListControlItems.SortType">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TListControlItems.OnCompare">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TComboExItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TComboExItems.GetComboItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TComboExItems.GetComboItems.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TComboExItems.GetComboItems.AIndex">
+<short></short>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TComboExItems.FAddingOrDeletingItem">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TComboExItems.Notify">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TComboExItems.Notify.Item">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TComboExItems.Notify.Action">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TComboExItems.Update">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TComboExItems.Update.Item">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TComboExItems.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TComboExItems.Add.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TComboExItems.AddItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TComboExItems.AddItem.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TComboExItems.AddItem.ACaption">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TComboExItems.AddItem.AImageIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TComboExItems.AddItem.AOverlayImageIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TComboExItems.AddItem.ASelectedImageIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TComboExItems.AddItem.AIndent">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TComboExItems.AddItem.AData">
+<short></short>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TComboExItems.Insert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TComboExItems.Insert.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TComboExItems.Insert.AIndex">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TComboExItems.ComboItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TComboExItems.ComboItems.AIndex">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TCustomComboBoxEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomComboBoxEx.FAutoCompleteOptions">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomComboBoxEx.FImages">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomComboBoxEx.FItemsEx">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomComboBoxEx.FStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomComboBoxEx.FStyleEx">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomComboBoxEx.SetImages">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomComboBoxEx.SetImages.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomComboBoxEx.SetStyle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomComboBoxEx.SetStyle.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomComboBoxEx.SetStyleEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomComboBoxEx.SetStyleEx.AValue">
+<short></short>
+</element>
+
+<!-- constant Visibility: protected -->
+<element name="TCustomComboBoxEx.cDefAutoCompOpts">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constant Visibility: protected -->
+<element name="TCustomComboBoxEx.cDefStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomComboBoxEx.FNeedMeasure">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomComboBoxEx.FRightToLeft">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomComboBoxEx.FTextHeight">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomComboBoxEx.CMBiDiModeChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomComboBoxEx.CMBiDiModeChanged.Message">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomComboBoxEx.DrawItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomComboBoxEx.DrawItem.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomComboBoxEx.DrawItem.ARect">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomComboBoxEx.DrawItem.State">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomComboBoxEx.FontChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomComboBoxEx.FontChanged.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomComboBoxEx.InitializeWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomComboBoxEx.SetItemHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomComboBoxEx.SetItemHeight.AValue">
+<short></short>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TCustomComboBoxEx.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Create.TheOwner">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TCustomComboBoxEx.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: public -->
+<element name="TCustomComboBoxEx.Add">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: public -->
+<element name="TCustomComboBoxEx.Add.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Add.ACaption">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Add.AIndent">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Add.AImgIdx">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Add.AOverlayImgIdx">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Add.ASelectedImgIdx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomComboBoxEx.AddItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.AddItem.Item">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.AddItem.AnObject">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomComboBoxEx.AssignItemsEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.AssignItemsEx.AItems">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.AssignItemsEx.AItemsEx">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomComboBoxEx.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomComboBoxEx.Delete">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Delete.AIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomComboBoxEx.DeleteSelected">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomComboBoxEx.Insert">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Insert.AIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Insert.ACaption">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Insert.AIndent">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Insert.AImgIdx">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Insert.AOverlayImgIdx">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomComboBoxEx.Insert.ASelectedImgIdx">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomComboBoxEx.AutoCompleteOptions">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomComboBoxEx.Images">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomComboBoxEx.ItemsEx">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomComboBoxEx.Style">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomComboBoxEx.StyleEx">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TComboBoxEx">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.Align">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.ArrowKeysTraverseList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.AutoComplete">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.AutoCompleteOptions">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.AutoCompleteText">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.AutoDropDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.AutoSelect">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.AutoSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.BidiMode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.BorderStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.CharCase">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.Color">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.Constraints">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.DragCursor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.DragKind">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.DragMode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.DropDownCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.Font">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.Images">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.ItemHeight">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.ItemsEx">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.ItemIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.ItemWidth">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.MaxLength">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnChangeBounds">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnClick">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnCloseUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnContextPopup">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnDblClick">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnDragDrop">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnDragOver">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnDropDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnEditingDone">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnEndDock">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnEndDrag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnEnter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnExit">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnGetItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnKeyDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnKeyPress">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnKeyUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnMouseEnter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnMouseLeave">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnMouseWheel">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnMouseWheelDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnMouseWheelUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnSelect">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnStartDock">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnStartDrag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.OnUTF8KeyPress">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.ParentBidiMode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.ParentColor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.ParentFont">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.ParentShowHint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.PopupMenu">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.ReadOnly">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.ShowHint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.Style">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.StyleEx">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.TabOrder">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.TabStop">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.Text">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TComboBoxEx.Visible">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- record type Visibility: default -->
+<element name="TCheckComboItemState">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCheckComboItemState.State">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCheckComboItemState.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: default -->
+<element name="TCheckComboItemState.Data">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- pointer type Visibility: default -->
+<element name="PTCheckComboItemState">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TCustomCheckCombo">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomCheckCombo.FAllowGrayed">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TCustomCheckCombo.FOnItemChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomCheckCombo.GetChecked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TCustomCheckCombo.GetChecked.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.GetChecked.AIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomCheckCombo.GetCount">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TCustomCheckCombo.GetCount.Result">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomCheckCombo.GetItemEnabled">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TCustomCheckCombo.GetItemEnabled.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.GetItemEnabled.AIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomCheckCombo.GetObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TCustomCheckCombo.GetObject.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.GetObject.AIndex">
+<short></short>
+</element>
+
+<!-- function Visibility: private -->
+<element name="TCustomCheckCombo.GetState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- function result Visibility: private -->
+<element name="TCustomCheckCombo.GetState.Result">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.GetState.AIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomCheckCombo.SetChecked">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.SetChecked.AIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.SetChecked.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomCheckCombo.SetItemEnabled">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.SetItemEnabled.AIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.SetItemEnabled.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomCheckCombo.SetObject">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.SetObject.AIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.SetObject.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TCustomCheckCombo.SetState">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.SetState.AIndex">
+<short></short>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TCustomCheckCombo.SetState.AValue">
+<short></short>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomCheckCombo.FCheckHighlight">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomCheckCombo.FCheckSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomCheckCombo.FHiLiteLeft">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomCheckCombo.FHiLiteRight">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomCheckCombo.FNeedMeasure">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomCheckCombo.FRejectDropDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomCheckCombo.FRejectToggleOnSelect">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomCheckCombo.FRightToLeft">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: protected -->
+<element name="TCustomCheckCombo.FTextHeight">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.CMBiDiModeChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomCheckCombo.CMBiDiModeChanged.Message">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.ClearItemStates">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.CloseUp">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.DrawItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomCheckCombo.DrawItem.Index">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomCheckCombo.DrawItem.ARect">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomCheckCombo.DrawItem.State">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.DropDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.FontChanged">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomCheckCombo.FontChanged.Sender">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.InitializeWnd">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.InitItemStates">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.KeyDown">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomCheckCombo.KeyDown.Key">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomCheckCombo.KeyDown.Shift">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.Loaded">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.MouseLeave">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.MouseMove">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomCheckCombo.MouseMove.Shift">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomCheckCombo.MouseMove.X">
+<short></short>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomCheckCombo.MouseMove.Y">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.SetItemHeight">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: protected -->
+<element name="TCustomCheckCombo.SetItemHeight.AValue">
+<short></short>
+</element>
+
+<!-- procedure Visibility: protected -->
+<element name="TCustomCheckCombo.Select">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TCustomCheckCombo.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.Create.AOwner">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TCustomCheckCombo.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomCheckCombo.AddItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.AddItem.AItem">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.AddItem.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.AddItem.AEnabled">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomCheckCombo.AssignItems">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.AssignItems.AItems">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomCheckCombo.Clear">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomCheckCombo.DeleteItem">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.DeleteItem.AIndex">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomCheckCombo.CheckAll">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.CheckAll.AState">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.CheckAll.AAllowGrayed">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.CheckAll.AAllowDisabled">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TCustomCheckCombo.Toggle">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.Toggle.AIndex">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCheckCombo.AllowGrayed">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCheckCombo.Count">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCheckCombo.Checked">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.Checked.AIndex">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCheckCombo.ItemEnabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.ItemEnabled.AIndex">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCheckCombo.Objects">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.Objects.AIndex">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCheckCombo.State">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TCustomCheckCombo.State.AIndex">
+<short></short>
+</element>
+
+<!-- property Visibility: public -->
+<element name="TCustomCheckCombo.OnItemChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TCheckComboBox">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.Align">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.AllowGrayed">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.Anchors">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.ArrowKeysTraverseList">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.AutoDropDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.AutoSize">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.BidiMode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.BorderSpacing">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.BorderStyle">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.Color">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.Constraints">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.Count">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.DragCursor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.DragKind">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.DragMode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.DropDownCount">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.Enabled">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.Font">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.ItemHeight">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.ItemIndex">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.Items">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.ItemWidth">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.MaxLength">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnChangeBounds">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnClick">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnCloseUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnContextPopup">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnDblClick">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnDragDrop">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnDragOver">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnEndDrag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnDropDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnEditingDone">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnEnter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnExit">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnGetItems">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnItemChange">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnKeyDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnKeyPress">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnKeyUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnMouseDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnMouseEnter">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnMouseLeave">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnMouseMove">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnMouseUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnMouseWheel">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnMouseWheelDown">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnMouseWheelUp">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnStartDrag">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnSelect">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.OnUTF8KeyPress">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.ParentBidiMode">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.ParentColor">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.ParentFont">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.ParentShowHint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.PopupMenu">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.ShowHint">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.Sorted">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.TabOrder">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.TabStop">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.Text">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- property Visibility: published -->
+<element name="TCheckComboBox.Visible">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="Register">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+</module> <!-- ComboEx -->
+
+</package>
+</fpdoc-descriptions>

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fpdoc-descriptions>
+<package name="lcl">
+
+<!--
+  ====================================================================
+    LCLTranslator
+  ====================================================================
+-->
+
+<module name="LCLTranslator">
+<short></short>
+<descr>
+</descr>
+
+<!-- class Visibility: default -->
+<element name="TUpdateTranslator">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TUpdateTranslator.FStackPath">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: private -->
+<element name="TUpdateTranslator.IntUpdateTranslation">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: private -->
+<element name="TUpdateTranslator.IntUpdateTranslation.AnInstance">
+<short></short>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TUpdateTranslator.UpdateTranslation">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TUpdateTranslator.UpdateTranslation.AnInstance">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TDefaultTranslator">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TDefaultTranslator.FMOFile">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TDefaultTranslator.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TDefaultTranslator.Create.MOFileName">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TDefaultTranslator.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TDefaultTranslator.TranslateStringProperty">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TDefaultTranslator.TranslateStringProperty.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TDefaultTranslator.TranslateStringProperty.Instance">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TDefaultTranslator.TranslateStringProperty.PropInfo">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TDefaultTranslator.TranslateStringProperty.Content">
+<short></short>
+</element>
+
+<!-- class Visibility: default -->
+<element name="TPOTranslator">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- variable Visibility: private -->
+<element name="TPOTranslator.FPOFile">
+<short></short>
+<descr>
+</descr>
+<seealso>
+</seealso>
+</element>
+
+<!-- constructor Visibility: public -->
+<element name="TPOTranslator.Create">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TPOTranslator.Create.POFileName">
+<short></short>
+</element>
+
+<!-- destructor Visibility: public -->
+<element name="TPOTranslator.Destroy">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- procedure Visibility: public -->
+<element name="TPOTranslator.TranslateStringProperty">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TPOTranslator.TranslateStringProperty.Sender">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TPOTranslator.TranslateStringProperty.Instance">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TPOTranslator.TranslateStringProperty.PropInfo">
+<short></short>
+</element>
+
+<!-- argument Visibility: public -->
+<element name="TPOTranslator.TranslateStringProperty.Content">
+<short></short>
+</element>
+
+<!-- procedure Visibility: default -->
+<element name="SetDefaultLang">
+<short></short>
+<descr>
+</descr>
+<errors>
+</errors>
+<seealso>
+</seealso>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetDefaultLang.Lang">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetDefaultLang.Dir">
+<short></short>
+</element>
+
+<!-- argument Visibility: default -->
+<element name="SetDefaultLang.ForceUpdate">
+<short></short>
+</element>
+
+</module> <!-- LCLTranslator -->
+
+</package>
+</fpdoc-descriptions>

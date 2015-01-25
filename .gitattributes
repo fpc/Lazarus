@@ -4354,6 +4354,7 @@ docs/xml/lcl/calendar.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/checklst.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/clipbrd.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/colorbox.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/comboex.xml svneol=native#text/plain
 docs/xml/lcl/comctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/comctrls/ttoolbutton.pas svneol=native#text/plain
 docs/xml/lcl/comctrls/ttreenode_data.pas svneol=native#text/plain
@@ -4367,6 +4368,7 @@ docs/xml/lcl/customdrawndrawers.xml svneol=native#text/plain
 docs/xml/lcl/customtimer.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dbactns.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dbctrls.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/dbextctrls.xml svneol=native#text/plain
 docs/xml/lcl/dbgrids.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/defaulttranslator.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dialogs.xml svneol=LF#text/xml eol=lf
@@ -4455,6 +4457,7 @@ docs/xml/lcl/lclmessageglue.xml svneol=native#text/plain
 docs/xml/lcl/lclproc.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclrescache.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclstrconsts.xml svneol=LF#text/xml eol=lf
+docs/xml/lcl/lcltranslator.xml svneol=native#text/plain
 docs/xml/lcl/lcltype.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/lclunicodedata.xml svneol=native#text/plain
 docs/xml/lcl/lclversion.xml svneol=native#text/plain
