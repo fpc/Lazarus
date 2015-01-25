@@ -1096,7 +1096,13 @@ begin
          'c=^char;',
        'begin',
          'i:=^f;',
-       'end;',                   // 15
+         'x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});', // 15
+         'c:=p^;',
+         'c:=p ^;',
+         'c:=p(**)^;',
+         'c:=p{} ^;',
+         'c:=p^+^i''e''^a#13^x;',   //20
+       'end;',
        ''
     ]);
 
@@ -1119,6 +1125,25 @@ begin
                      [tkIdentifier, tkSymbol, tkSymbol, tkIdentifier, tkSymbol]);
   CheckTokensForLine('i:=^f',   14,
                      [tkIdentifier, tkSymbol, tkString, tkSymbol]);
+
+  CheckTokensForLine('x:=GetTypeData(PropInfo^.PropType{$IFNDEF FPC}^{$ENDIF});',   15,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol,    // x:=GetTypeData(
+                      tkIdentifier, tkSymbol, tkSymbol, tkIdentifier,    // PropInfo^.PropType
+                      tkDirective, tkSymbol, tkDirective, tkSymbol, tkSymbol]);  // {$IFNDEF FPC}^{$ENDIF});
+
+  CheckTokensForLine('c:=p^;',   16,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol]);
+  CheckTokensForLine('c:=p ^;',   17,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkSpace, tkSymbol, tkSymbol]);
+  CheckTokensForLine('c:=p(**)^;',   18,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkComment, tkSymbol, tkSymbol]);
+  CheckTokensForLine('c:=p{} ^;',   19,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkComment, tkSpace, tkSymbol, tkSymbol]);
+
+  CheckTokensForLine('c:=p^+^i''e''^a#13^x;',   20,
+                     [tkIdentifier, tkSymbol, tkIdentifier, tkSymbol, tkSymbol, // c:=p^+
+                      tkString, tkString, tkString, tkString, tkString, tkSymbol  // ^i'e'^a#13^x;
+                     ]);
 
 end;
 

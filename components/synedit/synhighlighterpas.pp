@@ -86,6 +86,7 @@ type
     // Also included after class modifiers "sealed" and "abstract"
     rsAtClass,
     rsAfterClass,
+    rsAfterIdentifier,
 
     rsAtClosingBracket,   // ')'
     rsAtCaseLabel,
@@ -2750,11 +2751,13 @@ begin
   fTokenID := tkSymbol;
 
   t := TopPascalCodeFoldBlockType;
-  if (t in PascalStatementBlocks - [cfbtAsm]) or   //cfbtClass, cfbtClassSection,
-     ( ( (t in [cfbtVarType, cfbtLocalVarType]) or
-         ((t in [cfbtProcedure]) and (PasCodeFoldRange.BracketNestLevel > 0))
-       ) and
-       (fRange * [rsInTypeBlock, rsAfterEqual] = [rsAfterEqual]) )
+  if ( (t in PascalStatementBlocks - [cfbtAsm])  or               //cfbtClass, cfbtClassSection,
+       ( ( (t in [cfbtVarType, cfbtLocalVarType]) or
+           ((t in [cfbtProcedure]) and (PasCodeFoldRange.BracketNestLevel > 0))
+         ) and
+         (fRange * [rsInTypeBlock, rsAfterEqual] = [rsAfterEqual])
+     )) and
+     not(rsAfterIdentifier in fRange)
   then begin
     if Run<fLineLen then begin
       if (Run+1 < fLineLen) and (fLine[Run] = '{') and (fLine[Run+1] = '$')  then begin
@@ -3060,6 +3063,7 @@ begin
           if (FTokenID = tkKey) then
             fRange := fRange - [rsAtCaseLabel];
         end;
+
         if not (FTokenID in [tkSpace, tkComment, tkIDEDirective, tkDirective]) then begin
           if (PasCodeFoldRange.BracketNestLevel = 0) and
              not(rsAtClosingBracket in fRange)
@@ -3068,7 +3072,7 @@ begin
 
           fRange := fRange -
             (FOldRange * [rsAfterEqualOrColon, rsAtPropertyOrReadWrite, rsAfterClassField]) -
-            [rsAtClosingBracket];
+            [rsAtClosingBracket, rsAfterIdentifier];
 
           if rsAtClass in fRange then begin
             if FOldRange * [rsAtClass, rsAfterClass] <> [] then
@@ -3082,6 +3086,9 @@ begin
           if rsAtClass in fRange then
             fRange := fRange + [rsAfterClass];
         end;
+
+        if FTokenID = tkIdentifier then
+          fRange := fRange + [rsAfterIdentifier];
       end
   end;
   if FAtLineStart and not(FTokenID in [tkSpace, tkComment, tkIDEDirective]) then
