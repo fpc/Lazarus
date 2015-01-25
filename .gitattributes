@@ -4322,6 +4322,7 @@ docs/xml/lazutils/lazutf16.xml svneol=native#text/plain
 docs/xml/lazutils/lazutf8.xml svneol=native#text/plain
 docs/xml/lazutils/lazutf8classes.xml svneol=native#text/plain
 docs/xml/lazutils/lazutf8sysutils.xml svneol=native#text/plain
+docs/xml/lazutils/lazutilities.xml svneol=native#text/plain
 docs/xml/lazutils/lazutils.xml svneol=native#text/plain
 docs/xml/lazutils/lazutilsstrconsts.xml svneol=native#text/plain
 docs/xml/lazutils/lconvencoding.xml svneol=native#text/plain
