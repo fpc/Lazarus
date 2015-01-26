@@ -6806,10 +6806,9 @@ func="??"
         if copy(func, i + 4, 3) = '$$_' then
           inc(i, 3);
         NameEnd := PosEx('$', func, i + 4);
-        if NameEnd > 0
-        then NameEnd := NameEnd - (i + 4)
-        else NameEnd := length(func) + 1;
-        fn := copy(func, i + 4, NameEnd); // function
+        if NameEnd <= 0
+        then NameEnd := length(func) + 1;
+        fn := copy(func, i + 4, NameEnd - (i + 4)); // function
 
         i := pos('$_$', cl);
         if i > 1 then begin
