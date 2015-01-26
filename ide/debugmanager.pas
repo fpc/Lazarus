@@ -625,6 +625,7 @@ begin
   Result := Filename <> '';
   if Result then exit;
 
+  //debugln(['TDebugManager.GetFullFilename Src=',AUnitinfo.SrcClassName,' Func=',AUnitinfo.FunctionName]);
   if (dlfSearchByFunctionName in AUnitinfo.Flags)
   and (AUnitinfo.FunctionName<>'') then begin
     if FindSrc then exit;
