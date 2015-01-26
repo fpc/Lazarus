@@ -256,6 +256,10 @@ msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
 msgstr "Přidat"
 
+#: objinspstrconsts.itcssearchandreplace
+msgid "Search and replace"
+msgstr ""
+
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
 msgstr "Přidat hodnotu"

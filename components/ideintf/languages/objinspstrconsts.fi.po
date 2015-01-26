@@ -248,6 +248,10 @@ msgctxt "objinspstrconsts.ilesadd"
 msgid "Add"
 msgstr "Lisää"
 
+#: objinspstrconsts.itcssearchandreplace
+msgid "Search and replace"
+msgstr ""
+
 #: objinspstrconsts.liisaddvalue
 msgid "Add value"
 msgstr "Lisää arvo"
