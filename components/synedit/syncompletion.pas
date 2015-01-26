@@ -435,15 +435,14 @@ type
 procedure PrettyTextOut(c: TCanvas; x, y: integer; s: string);
 
 const
-  ecSynCompletionExecute     = ecPluginFirst +  0;
-  ecSynAutoCompletionExecute = ecPluginFirst +  1;
+  ecSynCompletionExecute     = ecPluginFirstCompletion +  0;
+  ecSynAutoCompletionExecute = ecPluginFirstCompletion +  1;
+
+  // If extending the list, reserve space in SynEditKeyCmds
 
   ecSynCompletionCount = 2;
 
 implementation
-
-var
-  KeyOffset: integer;
 
 function IsIdentifierChar(p: PChar): boolean; inline;
 {$IF FPC_FULLVERSION >= 20701}
@@ -1795,7 +1794,7 @@ begin
   Form.OnPaint:=@OnFormPaint;
   FEndOfTokenChr := '()[].';
   fShortCut := Menus.ShortCut(Ord(' '), [ssCtrl]);
-  FExecCommandID := KeyOffset + ecSynCompletionExecute;
+  FExecCommandID := ecSynCompletionExecute;
 end;
 
 procedure TSynCompletion.SetShortCut(Value: TShortCut);
@@ -1923,7 +1922,7 @@ begin
   FEndOfTokenChr := '()[].';
   fAutoCompleteList := TStringList.Create;
   fShortCut := Menus.ShortCut(Ord(' '), [ssShift]);
-  FExecCommandID := KeyOffset + ecSynAutoCompletionExecute;
+  FExecCommandID := ecSynAutoCompletionExecute;
 end;
 
 procedure TSynAutoComplete.SetShortCut(Value: TShortCut);
@@ -2166,14 +2165,13 @@ const
 function IdentToSynCompletionCommand(const Ident: string; var Cmd: longint): boolean;
 begin
   Result := IdentToInt(Ident, Cmd, SynComplutionCommandStrs);
-  if Result then inc(Cmd, KeyOffset);
 end;
 
 function SynCompletionCommandToIdent(Cmd: longint; var Ident: string): boolean;
 begin
-  Result := (Cmd - ecPluginFirst >= KeyOffset) and (Cmd - ecPluginFirst < KeyOffset + ecSynCompletionCount);
+  Result := (Cmd >= ecPluginFirstCompletion) and (Cmd - ecPluginFirstCompletion < ecSynCompletionCount);
   if not Result then exit;
-  Result := IntToIdent(Cmd - KeyOffset, Ident, SynComplutionCommandStrs);
+  Result := IntToIdent(Cmd, Ident, SynComplutionCommandStrs);
 end;
 
 procedure GetEditorCommandValues(Proc: TGetStrProc);
@@ -2186,8 +2184,6 @@ end;
 
 
 initialization
-  KeyOffset    := AllocatePluginKeyRange(ecSynCompletionCount, True);
-
   RegisterKeyCmdIdentProcs(@IdentToSynCompletionCommand,
                            @SynCompletionCommandToIdent);
   RegisterExtraGetEditorCommandValues(@GetEditorCommandValues);

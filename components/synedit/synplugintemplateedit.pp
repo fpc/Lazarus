@@ -71,8 +71,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    class function ConvertCommandToBase(Command: TSynEditorCommand): TSynEditorCommand;
-    class function ConvertBaseToCommand(Command: TSynEditorCommand): TSynEditorCommand;
 
     procedure SetTemplate(aTmpl: String; aLogCaretPos: TPoint); // Replaces current selection
     // Coords relativ to the template. base (1, 1)
@@ -86,30 +84,29 @@ type
   end;
 
 const
-  ecSynPTmplEdNextCell           = ecPluginFirst +  0;
-  ecSynPTmplEdNextCellSel        = ecPluginFirst +  1;
-  ecSynPTmplEdNextCellRotate     = ecPluginFirst +  2;
-  ecSynPTmplEdNextCellSelRotate  = ecPluginFirst +  3;
-  ecSynPTmplEdPrevCell           = ecPluginFirst +  4;
-  ecSynPTmplEdPrevCellSel        = ecPluginFirst +  5;
-  ecSynPTmplEdCellHome           = ecPluginFirst +  6;
-  ecSynPTmplEdCellEnd            = ecPluginFirst +  7;
-  ecSynPTmplEdCellSelect         = ecPluginFirst +  8;
-  ecSynPTmplEdFinish             = ecPluginFirst +  9;
-  ecSynPTmplEdEscape             = ecPluginFirst + 10;
-  ecSynPTmplEdNextFirstCell           = ecPluginFirst + 11;
-  ecSynPTmplEdNextFirstCellSel        = ecPluginFirst + 12;
-  ecSynPTmplEdNextFirstCellRotate     = ecPluginFirst + 13;
-  ecSynPTmplEdNextFirstCellSelRotate  = ecPluginFirst + 14;
-  ecSynPTmplEdPrevFirstCell           = ecPluginFirst + 15;
-  ecSynPTmplEdPrevFirstCellSel        = ecPluginFirst + 16;
+  ecSynPTmplEdNextCell           = ecPluginFirstTemplEdit +  0;
+  ecSynPTmplEdNextCellSel        = ecPluginFirstTemplEdit +  1;
+  ecSynPTmplEdNextCellRotate     = ecPluginFirstTemplEdit +  2;
+  ecSynPTmplEdNextCellSelRotate  = ecPluginFirstTemplEdit +  3;
+  ecSynPTmplEdPrevCell           = ecPluginFirstTemplEdit +  4;
+  ecSynPTmplEdPrevCellSel        = ecPluginFirstTemplEdit +  5;
+  ecSynPTmplEdCellHome           = ecPluginFirstTemplEdit +  6;
+  ecSynPTmplEdCellEnd            = ecPluginFirstTemplEdit +  7;
+  ecSynPTmplEdCellSelect         = ecPluginFirstTemplEdit +  8;
+  ecSynPTmplEdFinish             = ecPluginFirstTemplEdit +  9;
+  ecSynPTmplEdEscape             = ecPluginFirstTemplEdit + 10;
+  ecSynPTmplEdNextFirstCell           = ecPluginFirstTemplEdit + 11;
+  ecSynPTmplEdNextFirstCellSel        = ecPluginFirstTemplEdit + 12;
+  ecSynPTmplEdNextFirstCellRotate     = ecPluginFirstTemplEdit + 13;
+  ecSynPTmplEdNextFirstCellSelRotate  = ecPluginFirstTemplEdit + 14;
+  ecSynPTmplEdPrevFirstCell           = ecPluginFirstTemplEdit + 15;
+  ecSynPTmplEdPrevFirstCellSel        = ecPluginFirstTemplEdit + 16;
+
+  // If extending the list, reserve space in SynEditKeyCmds
 
   ecSynPTmplEdCount               = 17;
 
 implementation
-
-var
-  KeyOffset: integer;
 
 { TSynPluginTemplateEdit }
 
@@ -117,10 +114,8 @@ constructor TSynPluginTemplateEdit.Create(AOwner: TComponent);
 begin
   FKeystrokes := TSynEditTemplateEditKeyStrokes.Create(Self);
   FKeystrokes.ResetDefaults;
-  FKeystrokes.PluginOffset := KeyOffset;
   FKeyStrokesOffCell := TSynEditTemplateEditKeyStrokesOffCell.Create(self);
   FKeyStrokesOffCell.ResetDefaults;
-  FKeyStrokesOffCell.PluginOffset := KeyOffset;
   inherited Create(AOwner);
   CellParserEnabled := True;
 end;
@@ -130,22 +125,6 @@ begin
   inherited Destroy;
   FreeAndNil(FKeystrokes);
   FreeAndNil(FKeyStrokesOffCell);
-end;
-
-class function TSynPluginTemplateEdit.ConvertCommandToBase
-  (Command: TSynEditorCommand): TSynEditorCommand;
-begin
-  if (Command >= ecPluginFirst + KeyOffset) and
-     (Command <= ecPluginFirst + KeyOffset + ecSynPTmplEdCount)
-  then Result := Command - KeyOffset
-  else Result := ecNone;
-end;
-
-class function TSynPluginTemplateEdit.ConvertBaseToCommand(Command: TSynEditorCommand): TSynEditorCommand;
-begin
-  if (Command >= ecPluginFirst) and (Command <= ecPluginFirst + ecSynPTmplEdCount)
-  then Result := Command + KeyOffset
-  else Result := ecNone;
 end;
 
 procedure TSynPluginTemplateEdit.DoEditorRemoving(AValue: TCustomSynEdit);
@@ -197,14 +176,9 @@ begin
   else
     keys := FKeyStrokes;
 
-  try
-    keys.UsePluginOffset := True;
-    if not FinishComboOnly then
-      keys.ResetKeyCombo;
-    Command := keys.FindKeycodeEx(Code, SState, Data, IsStartOfCombo, FinishComboOnly, ComboKeyStrokes);
-  finally
-    keys.UsePluginOffset := False;
-  end;
+  if not FinishComboOnly then
+    keys.ResetKeyCombo;
+  Command := keys.FindKeycodeEx(Code, SState, Data, IsStartOfCombo, FinishComboOnly, ComboKeyStrokes);
 
   Handled := (Command <> ecNone) or IsStartOfCombo;
   if IsStartOfCombo then
@@ -214,14 +188,11 @@ end;
 procedure TSynPluginTemplateEdit.ProcessSynCommand(Sender: TObject; AfterProcessing: boolean;
   var Handled: boolean; var Command: TSynEditorCommand; var AChar: TUTF8Char; Data: pointer;
   HandlerData: pointer);
-var
-  Cmd: TSynEditorCommand;
 begin
   if Handled or AfterProcessing or not Active then exit;
-  Cmd := ConvertCommandToBase(Command);
 
   Handled := True;
-  case Cmd of
+  case Command of
     ecSynPTmplEdNextCell:          NextCellOrFinal(False);
     ecSynPTmplEdNextCellSel:       NextCellOrFinal(True);
     ecSynPTmplEdNextCellRotate:    NextCell(False);
@@ -498,8 +469,52 @@ begin
   AddKey(ecSynPTmplEdEscape,            VK_ESCAPE, []);
 end;
 
+const
+  EditorTmplEditCommandStrs: array[0..16] of TIdentMapEntry = (
+    (Value: ecSynPTmplEdNextCell;                Name: 'ecSynPTmplEdNextCell'),
+    (Value: ecSynPTmplEdNextCellSel;             Name: 'ecSynPTmplEdNextCellSel'),
+    (Value: ecSynPTmplEdNextCellRotate;          Name: 'ecSynPTmplEdNextCellRotate'),
+    (Value: ecSynPTmplEdNextCellSelRotate;       Name: 'ecSynPTmplEdNextCellSelRotate'),
+    (Value: ecSynPTmplEdPrevCell;                Name: 'ecSynPTmplEdPrevCell'),
+    (Value: ecSynPTmplEdPrevCellSel;             Name: 'ecSynPTmplEdPrevCellSel'),
+    (Value: ecSynPTmplEdCellHome;                Name: 'ecSynPTmplEdCellHome'),
+    (Value: ecSynPTmplEdCellEnd;                 Name: 'ecSynPTmplEdCellEnd'),
+    (Value: ecSynPTmplEdCellSelect;              Name: 'ecSynPTmplEdCellSelect'),
+    (Value: ecSynPTmplEdFinish;                  Name: 'ecSynPTmplEdFinish'),
+    (Value: ecSynPTmplEdEscape;                  Name: 'ecSynPTmplEdEscape'),
+    (Value: ecSynPTmplEdNextFirstCell;           Name: 'ecSynPTmplEdNextFirstCell'),
+    (Value: ecSynPTmplEdNextFirstCellSel;        Name: 'ecSynPTmplEdNextFirstCellSel'),
+    (Value: ecSynPTmplEdNextFirstCellRotate;     Name: 'ecSynPTmplEdNextFirstCellRotate'),
+    (Value: ecSynPTmplEdNextFirstCellSelRotate;  Name: 'ecSynPTmplEdNextFirstCellSelRotate'),
+    (Value: ecSynPTmplEdPrevFirstCell;           Name: 'ecSynPTmplEdPrevFirstCell'),
+    (Value: ecSynPTmplEdPrevFirstCellSel;        Name: 'ecSynPTmplEdPrevFirstCellSel')
+  );
+
+function IdentToTmplEditCommand(const Ident: string; var Cmd: longint): boolean;
+begin
+  Result := IdentToInt(Ident, Cmd, EditorTmplEditCommandStrs);
+end;
+
+function TmplEditCommandToIdent(Cmd: longint; var Ident: string): boolean;
+begin
+  Result := (Cmd >= ecPluginFirstTemplEdit) and (Cmd - ecPluginFirstTemplEdit < ecSynPTmplEdCount);
+  if not Result then exit;
+  Result := IntToIdent(Cmd, Ident, EditorTmplEditCommandStrs);
+end;
+
+procedure GetEditorCommandValues(Proc: TGetStrProc);
+var
+  i: integer;
+begin
+  for i := Low(EditorTmplEditCommandStrs) to High(EditorTmplEditCommandStrs) do
+    Proc(EditorTmplEditCommandStrs[I].Name);
+end;
+
+
 initialization
-  KeyOffset := AllocatePluginKeyRange(ecSynPTmplEdCount + 1, True);
+  RegisterKeyCmdIdentProcs(@IdentToTmplEditCommand,
+                           @TmplEditCommandToIdent);
+  RegisterExtraGetEditorCommandValues(@GetEditorCommandValues);
 
 end.
 

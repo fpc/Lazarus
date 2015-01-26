@@ -274,6 +274,10 @@ const
 
   ecUserFirst       = 1001; // Start of user-defined commands
 
+  ecPluginFirstCompletion = 19000;
+  ecPluginFirstSyncro     = 19010;
+  ecPluginFirstTemplEdit  = 19030;
+
   ecPluginFirst = 20000;
 
 // Plugins don't know of other plugins, so they need to map the codes
