@@ -23,7 +23,7 @@ program wikiconvert;
 
 uses
   Classes, SysUtils, CustApp, WikiParser, WikiFormat,
-  Wiki2FPDocConvert, Wiki2XHTMLConvert, Wiki2HTMLConvert, Wiki2CHMConvert,
+  Wiki2XHTMLConvert, Wiki2HTMLConvert, Wiki2CHMConvert, Wiki2FPDocConvert,
   LazFileUtils, FileUtil, LazLogger, KeywordFuncLists;
 
 type
@@ -293,10 +293,6 @@ begin
   writeln('     Duplicates are ignored.');
   writeln('     You can use globbing, like "wikixml/*.xml". You must quote such parameters on console/shell.');
   writeln;
-  writeln('Options for --format=fpdoc :');
-  writeln('  --root=<fpdoc xml root node> : default: ',FPDocConverter.RootName);
-  writeln('  --package=<fpdoc package name> : default: ',FPDocConverter.PackageName);
-  writeln;
   writeln('Options for --format=xhtml,html,chm :');
   writeln('  --css=<path of stylesheet> : default: ',XHTMLConverter.CSSFilename);
   writeln;
@@ -304,9 +300,13 @@ begin
   writeln('   Note: the default page is the first page');
   writeln('  --chm=<output chm file> : default: ',CHMConverter.CHMFile);
   writeln;
+  writeln('Options for --format=fpdoc :');
+  writeln('  --root=<fpdoc xml root node> : default: ',FPDocConverter.RootName);
+  writeln('  --package=<fpdoc package name> : default: ',FPDocConverter.PackageName);
+  writeln;
   writeln('Examples:');
-  writeln('  ',ParamStrUTF8(0),' --format=fpdoc --outputdir=fpdocxml wikipage1.xml wikipage2.xml');
   writeln('  ',ParamStrUTF8(0),' --format=html --outputdir=html --css=html/wiki.css "wikixml/*.xml"');
+  writeln('  ',ParamStrUTF8(0),' --format=fpdoc --outputdir=fpdocxml wikipage1.xml wikipage2.xml');
 end;
 
 var
