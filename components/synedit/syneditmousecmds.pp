@@ -276,6 +276,7 @@ const
 
   emcMax = 29;
 
+  emcPluginFirstSyncro     = 19000;
   emcPluginFirst = 20000;
 
   // Options
