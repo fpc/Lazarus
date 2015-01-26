@@ -305,7 +305,7 @@ begin
   writeln('  --chm=<output chm file> : default: ',CHMConverter.CHMFile);
   writeln;
   writeln('Examples:');
-  writeln('  ',ParamStrUTF8(0),' --format=fpdoc --outputdir=fpdoc wikipage1.xml wikipage2.xml');
+  writeln('  ',ParamStrUTF8(0),' --format=fpdoc --outputdir=fpdocxml wikipage1.xml wikipage2.xml');
   writeln('  ',ParamStrUTF8(0),' --format=html --outputdir=html --css=html/wiki.css "wikixml/*.xml"');
 end;
 

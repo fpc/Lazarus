@@ -357,7 +357,7 @@ begin
   FPageClass:=TW2FPDocPage;
   FOutputDir:='fpdocxml';
   FPackageName:='wiki';
-  FRootName:='fpdoc';
+  FRootName:='fpdoc-description';
 end;
 
 procedure TWiki2FPDocConverter.Convert;

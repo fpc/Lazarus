@@ -41,3 +41,8 @@ ToDos iphtml:
 -backslashes in text are not shown
 -slow on some pages (e.g. lazarus_documentation)
 
+Todos: convert to fpdoc
+ ./wikiconvert --format=fpdoc --outputdir=fpdocxml wikixml/1-dimensional_arrays.0000.xml
+ cd fpdocxml/
+ fpdoc --format=html --charset=UTF8 --image-url=../images --package=wiki --descr=../fpdocxml/1-dimensional_arrays.0000.xml--verbose
+ToDo: find out why fpdoc does not use the description.
