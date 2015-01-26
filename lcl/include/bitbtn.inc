@@ -100,10 +100,20 @@ begin
 end;
 
 function TCustomBitBtn.IsGlyphStored: Boolean;
+var
+  act: TCustomAction;
 begin
-  Result := (Kind = bkCustom) and (FButtonGlyph.Glyph <> nil)
-            and (not FButtonGlyph.Glyph.Empty)
-            and (FButtonGlyph.Glyph.Width>0) and (FButtonGlyph.Glyph.Height>0);
+  if Action <> nil then
+  begin
+    result := true;
+    act := TCustomAction(Action);
+    if (act.ActionList <> nil) and (act.ActionList.Images <> nil) and
+      (act.ImageIndex >= 0) and (act.ImageIndex < act.ActionList.Images.Count) then
+        result := false;
+  end 
+  else Result := (Kind = bkCustom) and (FButtonGlyph.Glyph <> nil)
+    and (not FButtonGlyph.Glyph.Empty)
+      and (FButtonGlyph.Glyph.Width>0) and (FButtonGlyph.Glyph.Height>0);
 end;
 
 procedure TCustomBitBtn.SetGlyph(AValue: TBitmap);
